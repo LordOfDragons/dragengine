@@ -22,17 +22,17 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "deoglRenderPlan.h"
-#include "deoglRenderPlanSkyLight.h"
 #include "deoglRPTSkyLightFindContent.h"
-#include "../../deGraphicOpenGl.h"
-#include "../../collidelist/deoglCollideListComponent.h"
-#include "../../collidelist/deoglCollideListLight.h"
-#include "../../envmap/deoglEnvironmentMap.h"
-#include "../../rendering/light/deoglRLSVisitorCollectElements.h"
-#include "../../renderthread/deoglRenderThread.h"
-#include "../../utils/collision/deoglDCollisionSphere.h"
-#include "../../world/deoglRWorld.h"
+#include "../deoglRenderPlan.h"
+#include "../deoglRenderPlanSkyLight.h"
+#include "../../../deGraphicOpenGl.h"
+#include "../../../collidelist/deoglCollideListComponent.h"
+#include "../../../collidelist/deoglCollideListLight.h"
+#include "../../../envmap/deoglEnvironmentMap.h"
+#include "../../../rendering/light/deoglRLSVisitorCollectElements.h"
+#include "../../../renderthread/deoglRenderThread.h"
+#include "../../../utils/collision/deoglDCollisionSphere.h"
+#include "../../../world/deoglRWorld.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -58,7 +58,7 @@ deoglRPTSkyLightFindContent::~deoglRPTSkyLightFindContent(){
 
 #define DO_SPECIAL_TIMING 1
 #ifdef DO_SPECIAL_TIMING
-#include "../../renderthread/deoglRTLogger.h"
+#include "../../../renderthread/deoglRTLogger.h"
 #include <dragengine/common/utils/decTimer.h>
 #define INIT_SPECIAL_TIMING decTimer sttimer;
 #define SPECIAL_TIMER_PRINT(w) if(pPlan.GetPlan().GetDebugTiming()) pPlan.GetPlan().GetRenderThread().GetLogger().LogInfoFormat("RPTSkyLightFindContent: " w "=%dys", (int)(sttimer.GetElapsedTime()*1e6f));

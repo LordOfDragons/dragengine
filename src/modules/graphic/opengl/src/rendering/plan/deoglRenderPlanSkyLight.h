@@ -36,6 +36,7 @@ class deoglRenderThread;
 class deoglRSkyInstance;
 class deoglRSkyInstanceLayer;
 class deoglRPTSkyLightFindContent;
+class deoglRPTSkyLightGIPrepare;
 class deoglRenderPlan;
 class deoglOcclusionTest;
 
@@ -90,8 +91,8 @@ private:
 	sShadowLayer pShadowLayers[ 4 ];
 	
 	deoglCollideList pGICollideList;
-	decVector pGIBoxMinExtend;
-	decVector pGIBoxMaxExtend;
+// 	decVector pGIBoxMinExtend;
+// 	decVector pGIBoxMaxExtend;
 	sShadowLayer pGIShadowLayer;
 	deoglPersistentRenderTask pGIRenderTask;
 	deoglAddToPersistentRenderTask pGIRenderTaskAdd;
@@ -99,6 +100,7 @@ private:
 	deObjectReference pGIComponentChangeListener;
 	
 	deoglRPTSkyLightFindContent *pTaskFindContent;
+	deoglRPTSkyLightGIPrepare *pTaskGIPrepare;
 	
 	
 	
@@ -179,10 +181,10 @@ public:
 	inline const deoglCollideList &GetGICollideList() const{ return pGICollideList; }
 	
 	/** GI box min extend. */
-	inline const decVector &GetGIBoxMinExtend() const{ return pGIBoxMinExtend; }
+// 	inline const decVector &GetGIBoxMinExtend() const{ return pGIBoxMinExtend; }
 	
 	/** GI box max extend. */
-	inline const decVector &GetGIBoxMaxExtend() const{ return pGIBoxMaxExtend; }
+// 	inline const decVector &GetGIBoxMaxExtend() const{ return pGIBoxMaxExtend; }
 	
 	/** GI shadow layer. */
 	inline sShadowLayer &GetGIShadowLayer(){ return pGIShadowLayer; }
@@ -191,6 +193,18 @@ public:
 	/** GI render task. */
 	inline deoglPersistentRenderTask &GetGIRenderTask(){ return pGIRenderTask; }
 	inline const deoglPersistentRenderTask &GetGIRenderTask() const{ return pGIRenderTask; }
+	
+	/** GI add to render task. */
+	inline deoglAddToPersistentRenderTask &GetGIRenderTaskAdd(){ return pGIRenderTaskAdd; }
+	inline const deoglAddToPersistentRenderTask &GetGIRenderTaskAdd() const{ return pGIRenderTaskAdd; }
+	
+	/** GI update marker. */
+	inline bool GetGIRenderTaskUpdateMarker() const{ return pGIRenderTaskUpdateMarker; }
+	void SetGIRenderTaskUpdateMarker( bool updateMarker );
+	
+	/** GI render task listener. */
+	inline deoglComponentListener *GetGIComponentChangeListener() const{
+		return ( deoglComponentListener* )( deObject* )pGIComponentChangeListener; }
 	
 	/** GI component destroyed. */
 	void GIComponentDestroyed( deoglRComponent &component );
@@ -215,6 +229,9 @@ public:
 	/** Prepare for rendering. */
 	void Prepare();
 	
+	/** Finish preparations. */
+	void FinishPrepare();
+	
 	/** Clean up after rendering. */
 	void CleanUp();
 	
@@ -224,9 +241,8 @@ private:
 	void pDetermineShadowParameters();
 	void pCalcShadowLayerParams();
 	void pWaitFinishedFindContent();
+	void pWaitFinishedGIPrepare();
 	void pGICalcShadowLayerParams();
-	void pGICollectElements();
-	void pGIUpdateRenderTask();
 	/*@}*/
 };
 

@@ -24,7 +24,8 @@
 
 #include "deoglRenderPlanSkyLight.h"
 #include "deoglRenderPlan.h"
-#include "deoglRPTSkyLightFindContent.h"
+#include "parallel/deoglRPTSkyLightFindContent.h"
+#include "parallel/deoglRPTSkyLightGIPrepare.h"
 #include "../light/deoglRenderGI.h"
 #include "../light/deoglRenderLight.h"
 #include "../light/deoglRLSVisitorCollectElements.h"
@@ -88,7 +89,8 @@ pShadowLayerCount( 0 ),
 pGIRenderTask( plan.GetRenderThread().GetPersistentRenderTaskPool() ),
 pGIRenderTaskAdd( plan.GetRenderThread(), pGIRenderTask ),
 pGIRenderTaskUpdateMarker( false ),
-pTaskFindContent( NULL )
+pTaskFindContent( NULL ),
+pTaskGIPrepare( NULL )
 {
 	pGIRenderTaskAdd.SetSkinShaderType( deoglSkinTexture::estComponentShadowOrthogonal );
 	pGIRenderTaskAdd.SetSolid( true );
@@ -142,6 +144,10 @@ const deoglRenderPlanSkyLight::sShadowLayer &deoglRenderPlanSkyLight::GetShadowL
 		DETHROW( deeInvalidParam );
 	}
 	return pShadowLayers[ index ];
+}
+
+void deoglRenderPlanSkyLight::SetGIRenderTaskUpdateMarker( bool updateMarker ){
+	pGIRenderTaskUpdateMarker = updateMarker;
 }
 
 void deoglRenderPlanSkyLight::GIComponentDestroyed( deoglRComponent &component ){
@@ -222,54 +228,47 @@ void deoglRenderPlanSkyLight::StartFindContent(){
 		return;
 	}
 	
-	if( pTaskFindContent ){
+	if( pTaskFindContent || pTaskGIPrepare ){
 		DETHROW( deeInvalidParam );
 	}
 	
+	deParallelProcessing &pp = pPlan.GetRenderThread().GetOgl().GetGameEngine()->GetParallelProcessing();
 	SetOcclusionTest( pPlan.GetRenderThread().GetOcclusionTestPool().Get() );
 	
-// 	pPlan.GetRenderThread().GetLogger().LogInfoFormat( "RenderPlanSkyLight(%p, %p) StartFindContent(%p)", this, &pPlan, pTaskFindContent );
 	pTaskFindContent = new deoglRPTSkyLightFindContent( *this );
-	pPlan.GetRenderThread().GetOgl().GetGameEngine()->GetParallelProcessing().AddTaskAsync( pTaskFindContent );
+	pp.AddTaskAsync( pTaskFindContent );
 	
 	if( pPlan.GetUpdateGIState() ){
-		// TODO same here but only finding content. no occlusion tests are done here
-		// pGICollectElements();
+		pTaskGIPrepare = new deoglRPTSkyLightGIPrepare( *this );
+		pp.AddTaskAsync( pTaskGIPrepare );
 	}
 }
 
 void deoglRenderPlanSkyLight::StartOcclusionTests(){
-	pWaitFinishedFindContent();
-	
-	// TODO start render occlusion test. this is not so trime consuming (<0.5ms) but still
-	//      reading back the results can be delayed
 }
 
 void deoglRenderPlanSkyLight::Prepare(){
-	INIT_SPECIAL_TIMING
-	if( ! pUseShadow ){
-		return;
-	}
+// 	if( ! pUseShadow ){
+// 		return;
+// 	}
 	
-	if( pPlan.GetUpdateGIState() ){
-		pPlan.GetRenderThread().GetRenderers().GetCanvas().ResetDebugInfoTimerGI( pPlan );
-		
-		pGICollectElements(); // has to come before pCollectElements due to
-			// deoglRComponent::SetSkyShadowSplitMask overwriting mask
-			// TODO remove
-		// TODO wait for pGICollectElements parallel task to finish
-		SPECIAL_TIMER_PRINT("GI Collect")
-		
-		pGIUpdateRenderTask();
-		pPlan.GetRenderThread().GetRenderers().GetCanvas().SampleDebugInfoPlanPrepareGISkyShadowRenderTask( pPlan );
-		SPECIAL_TIMER_PRINT("GI Update Render Task")
-	}
+	// TODO start render occlusion test. this is not so time consuming (<0.5ms) but still
+	//      reading back the results can be delayed
+}
+
+void deoglRenderPlanSkyLight::FinishPrepare(){
+	pWaitFinishedFindContent();
+	pWaitFinishedGIPrepare();
 	
-	SPECIAL_TIMER_PRINT("Collect")
+// 	if( pPlan.GetUpdateGIState() ){
+// 		pPlan.GetRenderThread().GetRenderers().GetCanvas().ResetDebugInfoTimerGI( pPlan );
+// 		pPlan.GetRenderThread().GetRenderers().GetCanvas().SampleDebugInfoPlanPrepareGISkyShadowRenderTask( pPlan );
+// 	}
 }
 
 void deoglRenderPlanSkyLight::CleanUp(){
 	pWaitFinishedFindContent();
+	pWaitFinishedGIPrepare();
 	
 	pGICollideList.Clear();
 	pCollideList.Clear();
@@ -548,6 +547,38 @@ void deoglRenderPlanSkyLight::pWaitFinishedFindContent(){
 	pTaskFindContent = NULL;
 }
 
+void deoglRenderPlanSkyLight::pWaitFinishedGIPrepare(){
+	if( ! pTaskGIPrepare ){
+		return;
+	}
+	
+	pTaskGIPrepare->GetSemaphore().Wait();
+	
+	const int countAdded = pTaskGIPrepare->GetCountAdded();
+	const int countRemoved = pTaskGIPrepare->GetCountRemoved();
+	const int elapsedAdded = pTaskGIPrepare->GetElapsedAdded();
+	const int elapsedRemoved = pTaskGIPrepare->GetElapsedRemoved();
+	
+	pTaskGIPrepare->FreeReference();
+	pTaskGIPrepare = NULL;
+	
+	if( countAdded == 0 && countRemoved == 0 ){
+		return;
+	}
+	
+		decTimer timer;
+	// this call does modify a shader parameter block and can thus not be parallel
+	pGIRenderTask.PrepareForRender( pPlan.GetRenderThread() );
+	
+	pPlan.GetRenderThread().GetLogger().LogInfoFormat(
+		"GIUpdateRenderTask: owners=%d shaders=%d textures=%d vaos=%d instances=%d subinstances=%d (+%d -%d) [%dys; +%dys -%dys]",
+		pGIRenderTask.GetOwnerCount(), pGIRenderTask.GetShaderCount(),
+		pGIRenderTask.GetTotalTextureCount(), pGIRenderTask.GetTotalVAOCount(),
+		pGIRenderTask.GetTotalInstanceCount(), pGIRenderTask.GetTotalSubInstanceCount(),
+		countAdded, countRemoved, ( int )( timer.GetElapsedTime() * 1e6f ), elapsedAdded, elapsedRemoved );
+	
+}
+
 void deoglRenderPlanSkyLight::pGICalcShadowLayerParams(){
 	const deoglGIState * const giState = pPlan.GetRenderGIState();
 	if( ! giState ){
@@ -570,117 +601,4 @@ void deoglRenderPlanSkyLight::pGICalcShadowLayerParams(){
 	
 	pGIShadowLayer.minExtend = enclosingBox.GetCenter() - enclosingBox.GetHalfSize();
 	pGIShadowLayer.maxExtend = enclosingBox.GetCenter() + enclosingBox.GetHalfSize();
-}
-
-void deoglRenderPlanSkyLight::pGICollectElements(){
-	const deoglGIState * const giState = pPlan.GetRenderGIState();
-	if( ! pLayer || ! giState ){
-		return;
-	}
-	
-	deoglRLSVisitorCollectElements collectElements( pGICollideList );
-	collectElements.InitFromGIBox( giState->GetPosition(), giState->GetDetectionBox(), *pLayer, 2000.0f );
-	collectElements.SetCullLayerMask( pPlan.GetUseLayerMask() );
-	collectElements.SetLayerMask( pPlan.GetLayerMask() );
-	
-	pGIBoxMinExtend = collectElements.GetFrustumBoxMinExtend();
-	pGIBoxMaxExtend = collectElements.GetFrustumBoxMaxExtend();
-	
-	// splits are not used for GI shadows but the minimum size restriction is.
-	// to avoid creating another method the AddSplit method is used for this
-	const float splitSizeLimitPixels = 1.0f;
-	const int shadowMapSize = 1024;
-	
-	const decVector boxSize( pGIBoxMaxExtend - pGIBoxMinExtend );
-	const float sizeThresholdX = ( boxSize.x / ( float )shadowMapSize ) * splitSizeLimitPixels;
-	const float sizeThresholdY = ( boxSize.y / ( float )shadowMapSize ) * splitSizeLimitPixels;
-	
-	collectElements.AddSplit( pGIBoxMinExtend, pGIBoxMaxExtend, decVector2( sizeThresholdX, sizeThresholdY ) );
-	
-	// visit world
-	collectElements.VisitWorldOctree( pPlan.GetWorld()->GetOctree() );
-}
-
-void deoglRenderPlanSkyLight::pGIUpdateRenderTask(){
-			decTimer timer;
-	int countAdded = 0, countRemoved = 0;
-	int i;
-	
-	// flip update marker. allows to track changes with the least amount of work
-	pGIRenderTaskUpdateMarker = ! pGIRenderTaskUpdateMarker;
-	
-	// add components not in task yet
-	const int countComponents = pGICollideList.GetComponentCount();
-	for( i=0; i<countComponents; i++ ){
-		deoglRComponent &component = *pGICollideList.GetComponentAt( i )->GetComponent();
-		deoglPersistentRenderTaskOwner *owner = pGIRenderTask.GetOwnerWith( &component, component.GetUniqueKey() );
-		if( owner ){
-			owner->SetUpdateMarker( pGIRenderTaskUpdateMarker );
-			//owner->SetExtends( component.GetMinimumExtend(), component.GetMaximumExtend() );
-			continue;
-		}
-		
-		owner = pGIRenderTask.AddOwner( &component, component.GetUniqueKey() );
-		owner->SetUpdateMarker( pGIRenderTaskUpdateMarker );
-		owner->SetComponent( &component );
-		//owner->SetExtends( component.GetMinimumExtend(), component.GetMaximumExtend() );
-		
-		pGIRenderTaskAdd.AddComponent( *owner, component, -1 );
-		
-		component.AddListener( ( cGIComponentChangeListener* )( deObject* )pGIComponentChangeListener );
-		countAdded++;
-		
-// 		{
-// 			const decDVector p(component.GetMatrix().GetPosition());
-// 			pRenderThread.GetLogger().LogInfoFormat("GIUpdateRenderTask: Added (%g,%g,%g) %s",
-// 				p.x, p.y, p.z, component.GetModel()->GetFilename().GetString());
-// 		}
-	}
-			const int elapsedAdd = ( int )( timer.GetElapsedTime() * 1e6f );
-	
-	// remove components no more in task
-	const int allCollideCounts = countComponents; // + countBillboards...
-	if( allCollideCounts < pGIRenderTask.GetOwnerCount() ){
-		decPointerLinkedList::cListEntry *iterOwner = pGIRenderTask.GetRootOwner();
-		while( iterOwner ){
-			deoglPersistentRenderTaskOwner * const owner = ( deoglPersistentRenderTaskOwner* )iterOwner->GetOwner();
-			iterOwner = iterOwner->GetNext();
-			
-			if( owner->GetUpdateMarker() == pGIRenderTaskUpdateMarker ){
-				continue;
-			}
-			
-	// 		{
-	// 			const deoglRComponent &component = *( ( deoglRComponent* )owner->GetOwner() );
-	// 			const decDVector p(component.GetMatrix().GetPosition());
-	// 			pRenderThread.GetLogger().LogInfoFormat("GIUpdateRenderTask: Remove (%g,%g,%g) %s",
-	// 				p.x, p.y, p.z, component.GetModel()->GetFilename().GetString());
-	// 		}
-			
-			if( owner->GetComponent() ){
-				owner->GetComponent()->RemoveListener(
-					( cGIComponentChangeListener* )( deObject* )pGIComponentChangeListener );
-			}
-			countRemoved++;
-			
-			pGIRenderTask.RemoveOwnedBy( *owner );
-			pGIRenderTask.RemoveOwner( owner );
-		}
-	}
-			const int elapsedRemove = ( int )( timer.GetElapsedTime() * 1e6f );
-	
-	// prepare task
-	if( countAdded > 0 || countRemoved > 0 ){
-		// WARNING this call does modify a shader parameter block and can thus not be parallel
-		pGIRenderTask.PrepareForRender( pPlan.GetRenderThread() );
-		
-		
-		pPlan.GetRenderThread().GetLogger().LogInfoFormat(
-			"GIUpdateRenderTask: owners=%d shaders=%d textures=%d vaos=%d instances=%d subinstances=%d (+%d -%d) [%dys; +%dys -%dys]",
-			pGIRenderTask.GetOwnerCount(), pGIRenderTask.GetShaderCount(),
-			pGIRenderTask.GetTotalTextureCount(), pGIRenderTask.GetTotalVAOCount(),
-			pGIRenderTask.GetTotalInstanceCount(), pGIRenderTask.GetTotalSubInstanceCount(),
-			countAdded, countRemoved, ( int )( timer.GetElapsedTime() * 1e6f ), elapsedAdd, elapsedRemove );
-		
-	}
 }

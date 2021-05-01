@@ -29,7 +29,7 @@
 #include "deoglRenderPlanMasked.h"
 #include "deoglPlanVisitorCullElements.h"
 #include "deoglRenderPlanEnvMap.h"
-#include "deoglRPTFindContent.h"
+#include "parallel/deoglRPTFindContent.h"
 #include "../deoglRenderOcclusion.h"
 #include "../deoglRenderReflection.h"
 #include "../deoglRenderWorld.h"
@@ -483,6 +483,12 @@ DEBUG_PRINT_TIMER( "RenderPlan: PrepareRender: Update height terrain" );
 	}
 	SPECIAL_TIMER_PRINT("PrepareForRenderParticle")
 	
+	// finish preparations
+	for( i=0; i<pSkyLightCount; i++ ){
+		( ( deoglRenderPlanSkyLight* )pSkyLights.GetAt( i ) )->FinishPrepare();
+	}
+	SPECIAL_TIMER_PRINT("Finish")
+	
 	// determine the stencil properties for pass and mask rendering. right now the
 	// mask is always 1 bit and the rest is available to the render pass number
 	pStencilRefValue = 0;
@@ -745,7 +751,6 @@ void deoglRenderPlan::pStartFindContent(){
 	pOcclusionTest->RemoveAllInputData();
 	
 	pTaskFindContent = new deoglRPTFindContent( *this );
-// 	pRenderThread.GetLogger().LogInfoFormat( "RenderPlan(%p) StartFindContent(%p)", this, pTaskFindContent );
 	pRenderThread.GetOgl().GetGameEngine()->GetParallelProcessing().AddTaskAsync( pTaskFindContent );
 }
 
