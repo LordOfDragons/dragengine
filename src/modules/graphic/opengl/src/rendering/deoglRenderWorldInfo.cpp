@@ -56,12 +56,12 @@ infoDebugDrawers( NULL ),
 infoPostProcessing( NULL ),
 
 infoSolidGeometryDetails( NULL ),
-infoSolidGeometryClear( NULL ),
 infoSolidGeometryDepthTask( NULL ),
 infoSolidGeometryDepthRender( NULL ),
 infoSolidGeometryOcclusion( NULL ),
 infoSolidGeometryTranspCounter( NULL ),
 infoSolidGeometrySky( NULL ),
+infoSolidGeometryGITraceRays( NULL ),
 infoSolidGeometryTask( NULL ),
 infoSolidGeometryRender( NULL ),
 infoSolidGeometryDecals( NULL ),
@@ -118,9 +118,6 @@ infoTransparentVolumetric( NULL )
 		
 		infoSolidGeometryDetails = new deoglDebugInformation( "Solid Geometry", colorText, colorBg );
 		
-		infoSolidGeometryClear = new deoglDebugInformation( "Clear", colorText, colorBgSub );
-		infoSolidGeometryDetails->GetChildren().Add( infoSolidGeometryClear );
-		
 		infoSolidGeometryDepthTask = new deoglDebugInformation( "Depth Task", colorText, colorBgSub );
 		infoSolidGeometryDetails->GetChildren().Add( infoSolidGeometryDepthTask );
 		
@@ -135,6 +132,9 @@ infoTransparentVolumetric( NULL )
 		
 		infoSolidGeometrySky = new deoglDebugInformation( "Sky", colorText, colorBgSub );
 		infoSolidGeometryDetails->GetChildren().Add( infoSolidGeometrySky );
+		
+		infoSolidGeometryGITraceRays = new deoglDebugInformation( "GI Trace Rays", colorText, colorBgSub );
+		infoSolidGeometryDetails->GetChildren().Add( infoSolidGeometryGITraceRays );
 		
 		infoSolidGeometryTask = new deoglDebugInformation( "Task", colorText, colorBgSub );
 		infoSolidGeometryDetails->GetChildren().Add( infoSolidGeometryTask );
@@ -210,12 +210,12 @@ void deoglRenderWorldInfo::ClearAll(){
 	infoDebugDrawers->Clear();
 	infoPostProcessing->Clear();
 	
-	infoSolidGeometryClear->Clear();
 	infoSolidGeometryDepthTask->Clear();
 	infoSolidGeometryDepthRender->Clear();
 	infoSolidGeometryOcclusion->Clear();
 	infoSolidGeometryTranspCounter->Clear();
 	infoSolidGeometrySky->Clear();
+	infoSolidGeometryGITraceRays->Clear();
 	infoSolidGeometryTask->Clear();
 	infoSolidGeometryRender->Clear();
 	infoSolidGeometryDecals->Clear();
@@ -298,9 +298,6 @@ void deoglRenderWorldInfo::pCleanUp(){
 			.RemoveIfPresent( infoSolidGeometryDetails );
 		infoSolidGeometryDetails->FreeReference();
 	}
-	if( infoSolidGeometryClear ){
-		infoSolidGeometryClear->FreeReference();
-	}
 	if( infoSolidGeometryDepthTask ){
 		infoSolidGeometryDepthTask->FreeReference();
 	}
@@ -315,6 +312,9 @@ void deoglRenderWorldInfo::pCleanUp(){
 	}
 	if( infoSolidGeometrySky ){
 		infoSolidGeometrySky->FreeReference();
+	}
+	if( infoSolidGeometryGITraceRays ){
+		infoSolidGeometryGITraceRays->FreeReference();
 	}
 	if( infoSolidGeometryTask ){
 		infoSolidGeometryTask->FreeReference();

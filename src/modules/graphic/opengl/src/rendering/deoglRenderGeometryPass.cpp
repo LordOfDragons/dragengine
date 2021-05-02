@@ -251,6 +251,7 @@ DBG_ENTER_PARAM("RenderSolidGeometryPass", "%p", mask)
 			renderGI.TraceRays( plan );
 			OGL_CHECK( renderThread, glViewport( 0, 0, defren.GetWidth(), defren.GetHeight() ) );
 			OGL_CHECK( renderThread, glScissor( 0, 0, defren.GetWidth(), defren.GetHeight() ) );
+			DebugTimer1Sample( plan, *renworld.GetDebugInfo().infoSolidGeometryGITraceRays, true );
 		}
 	}
 	

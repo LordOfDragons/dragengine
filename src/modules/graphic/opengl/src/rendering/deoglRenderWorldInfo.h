@@ -45,12 +45,12 @@ public:
 	deoglDebugInformation *infoPostProcessing;
 	
 	deoglDebugInformation *infoSolidGeometryDetails;
-	deoglDebugInformation *infoSolidGeometryClear;
 	deoglDebugInformation *infoSolidGeometryDepthTask;
 	deoglDebugInformation *infoSolidGeometryDepthRender;
 	deoglDebugInformation *infoSolidGeometryOcclusion;
 	deoglDebugInformation *infoSolidGeometryTranspCounter;
 	deoglDebugInformation *infoSolidGeometrySky;
+	deoglDebugInformation *infoSolidGeometryGITraceRays;
 	deoglDebugInformation *infoSolidGeometryTask;
 	deoglDebugInformation *infoSolidGeometryRender;
 	deoglDebugInformation *infoSolidGeometryDecals;

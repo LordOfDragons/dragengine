@@ -588,8 +588,7 @@ void deoglRenderTask::pAssignSPBInstances( deoglRenderThread &renderThread ){
 				deoglRenderTaskInstance *instance = vao->GetRootInstance();
 				
 				while( instance ){
-					if( ! paramBlock
-					|| firstIndex + instance->GetSubInstanceCount() > pSPBInstanceMaxEntries ){
+					if( ! paramBlock || firstIndex + instance->GetSubInstanceCount() > pSPBInstanceMaxEntries ){
 						if( paramBlock ){
 							paramBlock->SetElementCount( componentsPerIndex
 								* decMath::max( ( ( firstIndex - 1 ) / 4 ) + 1, 1 ) );
