@@ -45,7 +45,8 @@
 
 deoglRPTSkyLightFindContent::deoglRPTSkyLightFindContent( deoglRenderPlanSkyLight &plan ) :
 deParallelTask( &plan.GetPlan().GetRenderThread().GetOgl() ),
-pPlan( plan ){
+pPlan( plan ),
+pElapsedTime( 0.0f ){
 }
 
 deoglRPTSkyLightFindContent::~deoglRPTSkyLightFindContent(){
@@ -72,6 +73,7 @@ void deoglRPTSkyLightFindContent::Run(){
 		return;
 	}
 	
+	decTimer timerFindContent;
 	try{
 		INIT_SPECIAL_TIMING
 		
@@ -110,6 +112,7 @@ void deoglRPTSkyLightFindContent::Run(){
 		throw;
 	}
 	
+	pElapsedTime = timerFindContent.GetElapsedTime();
 	pSemaphore.Signal();
 }
 

@@ -706,6 +706,7 @@ private:
 	void pStartFindContent();
 	void pWaitFinishedFindContent();
 	void pPlanGI();
+	void pUpdateGI();
 	void pPlanLODLevels();
 	void pPlanEnvMaps();
 	void pStartOcclusionTests();

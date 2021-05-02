@@ -79,16 +79,18 @@ private:
 	
 	deoglDebugInformation *pDebugInfoPlanPrepare;
 	deoglDebugInformation *pDebugInfoPlanPrepareWorld;
-	deoglDebugInformation *pDebugInfoPlanPrepareCollect;
+	deoglDebugInformation *pDebugInfoPlanPrepareFindContent;
+	deoglDebugInformation *pDebugInfoPlanPrepareSkyLightFindContent;
+	deoglDebugInformation *pDebugInfoPlanPrepareSkyLightGIFindContent;
+	deoglDebugInformation *pDebugInfoPlanPrepareSkyLightGIUpdateRenderTask;
+	deoglDebugInformation *pDebugInfoPlanPrepareGIUpdate;
 	deoglDebugInformation *pDebugInfoPlanPrepareCulling;
 	deoglDebugInformation *pDebugInfoPlanPrepareEnvMaps;
+	deoglDebugInformation *pDebugInfoPlanPreparePrepareContent;
 	deoglDebugInformation *pDebugInfoPlanPrepareHTViewVBOs;
-	deoglDebugInformation *pDebugInfoPlanPrepareComponents;
-	deoglDebugInformation *pDebugInfoPlanPrepareSort;
 	deoglDebugInformation *pDebugInfoPlanPrepareBuildPlan;
 	deoglDebugInformation *pDebugInfoPlanPrepareLights;
-	deoglDebugInformation *pDebugInfoPlanPrepareGIUpdate;
-	deoglDebugInformation *pDebugInfoPlanPrepareGISkyShadowRenderTask;
+	deoglDebugInformation *pDebugInfoPlanPrepareFinish;
 	
 	
 	
@@ -145,18 +147,18 @@ public:
 	
 	void SampleDebugInfoPlanPrepare( deoglRenderPlan &plan );
 	void SampleDebugInfoPlanPrepareWorld( deoglRenderPlan &plan );
-	void SampleDebugInfoPlanPrepareCollect( deoglRenderPlan &plan );
+	void SampleDebugInfoPlanPrepareFindContent( deoglRenderPlan &plan, float elapsed );
+	void SampleDebugInfoPlanPrepareSkyLightFindContent( deoglRenderPlan &plan, float elapsed );
+	void SampleDebugInfoPlanPrepareSkyLightGIFindContent( deoglRenderPlan &plan, float elapsed );
+	void SampleDebugInfoPlanPrepareSkyLightGIUpdateRenderTask( deoglRenderPlan &plan, float elapsed );
+	void SampleDebugInfoPlanPrepareGIUpdate( deoglRenderPlan &plan );
 	void SampleDebugInfoPlanPrepareCulling( deoglRenderPlan &plan );
 	void SampleDebugInfoPlanPrepareEnvMaps( deoglRenderPlan &plan );
+	void SampleDebugInfoPlanPreparePrepareContent( deoglRenderPlan &plan );
 	void SampleDebugInfoPlanPrepareHTViewVBOs( deoglRenderPlan &plan );
-	void SampleDebugInfoPlanPrepareComponents( deoglRenderPlan &plan );
-	void SampleDebugInfoPlanPrepareSort( deoglRenderPlan &plan );
 	void SampleDebugInfoPlanPrepareBuildPlan( deoglRenderPlan &plan );
 	void SampleDebugInfoPlanPrepareLights( deoglRenderPlan &plan );
-	void SampleDebugInfoPlanPrepareGIUpdate( deoglRenderPlan &plan );
-	
-	void ResetDebugInfoTimerGI( deoglRenderPlan &plan );
-	void SampleDebugInfoPlanPrepareGISkyShadowRenderTask( deoglRenderPlan &plan );
+	void SampleDebugInfoPlanPrepareFinish( deoglRenderPlan &plan );
 	
 	
 	

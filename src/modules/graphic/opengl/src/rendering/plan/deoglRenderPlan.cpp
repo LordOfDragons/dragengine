@@ -347,63 +347,49 @@ void deoglRenderPlan::PrepareRender(){
 #endif
 
 void deoglRenderPlan::pBarePrepareRender(){
-	INIT_SPECIAL_TIMING
-	deoglRenderCanvas &renderCanvas = pRenderThread.GetRenderers().GetCanvas();
-	
-	deoglRComponent *oglComponent;
-	int c, componentCount;
-	deoglRLight *oglLight;
-	int i, l, lightCount;
-	
 	if( ! pWorld ){
 		return;
 	}
 	
+	deoglRenderCanvas &renderCanvas = pRenderThread.GetRenderers().GetCanvas();
 	renderCanvas.ClearAllDebugInfoPlanPrepare( *this );
+	INIT_SPECIAL_TIMING
 	
 	CleanUp(); // just to make sure everything is clean
 	
 	pDebugPrepare();
-	SPECIAL_TIMER_PRINT("Prepare1")
-	
 	pPlanCamera();
 	SPECIAL_TIMER_PRINT("PrepareCamera")
 	
-	// prepare world for rendering
 	pWorld->PrepareForRender( *this );
+	pDisableLights = pWorld->GetDisableLights();
 	renderCanvas.SampleDebugInfoPlanPrepareWorld( *this );
 	SPECIAL_TIMER_PRINT("PrepareWorld")
 	
-	// update environment maps
 	if( ! pNoReflections ){
 		pPlanEnvMaps(); // doing this here is safe and does not trash the occlusion maps
 	}
 	
-	// update the height terrain if present
 	pUpdateHTView();
-	SPECIAL_TIMER_PRINT("Prepare2")
+	SPECIAL_TIMER_PRINT("PrepareEnvHTV")
 	
 	// plan what we can plan already
-	pDisableLights = pWorld->GetDisableLights();
-	
 	pPlanDominance();
 	pPlanGI();
 	pPlanSky();
 	pPlanSkyLight();
 	pPlanShadowCasting();
-	SPECIAL_TIMER_PRINT("Plan1")
 	
-	pStartFindContent();
-	renderCanvas.SampleDebugInfoPlanPrepareCollect( *this );
-	SPECIAL_TIMER_PRINT("Collide")
+	pStartFindContent(); // starts parallel tasks
+	SPECIAL_TIMER_PRINT("Planning")
+	
+	pUpdateGI(); // runs in parallel with above started tasks
+	SPECIAL_TIMER_PRINT("UpdateGI")
 	
 	// visibility
 	pStartOcclusionTests();
 	renderCanvas.SampleDebugInfoPlanPrepareCulling( *this );
 	
-	lightCount = pCollideList.GetLightCount();
-	componentCount = pCollideList.GetComponentCount();
-	const int billboardCount = pCollideList.GetBillboardCount();
 	SPECIAL_TIMER_PRINT("Visibility")
 	
 	// update the blended environment map to use for rendering
@@ -419,6 +405,7 @@ void deoglRenderPlan::pBarePrepareRender(){
 	
 	// update height terrain vbo
 	if( pHTView ){
+		renderCanvas.DebugTimer3Reset( *this, false );
 		pHTView->GetHeightTerrain().UpdateVBOs();
 		renderCanvas.SampleDebugInfoPlanPrepareHTViewVBOs( *this );
 	}
@@ -438,36 +425,32 @@ DEBUG_PRINT_TIMER( "RenderPlan: PrepareRender: Update height terrain" );
 	*/
 	
 	// update dynamic skins and masked rendering if required
-	renderCanvas.DebugTimer3Reset( *this, false );
+	int i;
 	
-	for( c=0; c<componentCount; c++ ){
-		oglComponent = pCollideList.GetComponentAt( c )->GetComponent();
-		oglComponent->TestCameraInside( pCameraPosition );
-		oglComponent->AddSkinStateRenderPlans( *this );
+	const int componentCount = pCollideList.GetComponentCount();
+	for( i=0; i<componentCount; i++ ){
+		deoglRComponent &oglComponent = *pCollideList.GetComponentAt( i )->GetComponent();
+		oglComponent.AddSkinStateRenderPlans( *this );
 	}
 	
+	const int billboardCount = pCollideList.GetBillboardCount();
 	for( i=0; i<billboardCount; i++ ){
 		deoglRBillboard &billboard = *pCollideList.GetBillboardAt( i );
 		//billboard.TestCameraInside( pCameraPosition );
 		//renderCanvas.SampleDebugInfoPlanPrepareBillboardsRenderables( *this );
 		billboard.AddSkinStateRenderPlans( *this );
 	}
-	renderCanvas.SampleDebugInfoPlanPrepareComponents( *this );
 	SPECIAL_TIMER_PRINT("Components")
 	
 	// update lights adding them to the list of all lights touched by an upcoming render call
-	for( l=0; l<lightCount; l++ ){
-		oglLight = pCollideList.GetLightAt( l )->GetLight();
-		oglLight->TestCameraInside( *this );
-		GetLightFor( oglLight );
+	const int lightCount = pCollideList.GetLightCount();
+	for( i=0; i<lightCount; i++ ){
+		deoglRLight &oglLight = *pCollideList.GetLightAt( i )->GetLight();
+		oglLight.TestCameraInside( *this );
+		GetLightFor( &oglLight );
 	}
 	SPECIAL_TIMER_PRINT("Lights")
-	
-	// finish the collide list
-//	pCollideList.SortLinear( world->GetSectorSize(), pCameraSector, pCameraPosition, pCameraInverseMatrix.TransformView() );
-	pCollideList.SortComponentsByModels();
-	renderCanvas.SampleDebugInfoPlanPrepareSort( *this );
-	SPECIAL_TIMER_PRINT("Sort")
+	renderCanvas.SampleDebugInfoPlanPreparePrepareContent( *this );
 	
 	// now we are ready to produce a render plan
 	pBuildRenderPlan();
@@ -487,6 +470,7 @@ DEBUG_PRINT_TIMER( "RenderPlan: PrepareRender: Update height terrain" );
 	for( i=0; i<pSkyLightCount; i++ ){
 		( ( deoglRenderPlanSkyLight* )pSkyLights.GetAt( i ) )->FinishPrepare();
 	}
+	renderCanvas.SampleDebugInfoPlanPrepareFinish( *this );
 	SPECIAL_TIMER_PRINT("Finish")
 	
 	// determine the stencil properties for pass and mask rendering. right now the
@@ -761,6 +745,10 @@ void deoglRenderPlan::pWaitFinishedFindContent(){
 	
 // 	pRenderThread.GetLogger().LogInfoFormat( "RenderPlan(%p) WaitFinishedFindContent(%p)", this, pTaskFindContent );
 	pTaskFindContent->GetSemaphore().Wait();
+	
+	pRenderThread.GetRenderers().GetCanvas().SampleDebugInfoPlanPrepareFindContent(
+		*this, pTaskFindContent->GetElapsedTime() );
+	
 	pTaskFindContent->FreeReference();
 	pTaskFindContent = NULL;
 }
@@ -772,17 +760,19 @@ void deoglRenderPlan::pPlanGI(){
 		return;
 	}
 	
-	INIT_SPECIAL_TIMING
-	pRenderThread.GetRenderers().GetCanvas().ResetDebugInfoTimerGI( *this );
-	
 	if( ! pGIState ){
 		pGIState = new deoglGIState( pRenderThread );
 	}
-	pGIState->Update( *pWorld, pCameraPosition, pCameraMatrix, pCameraFov, pCameraFov * pCameraFovRatio );
-	
-	pRenderThread.GetRenderers().GetCanvas().SampleDebugInfoPlanPrepareGIUpdate( *this );
-	SPECIAL_TIMER_PRINT(">GI")
 #endif
+}
+
+void deoglRenderPlan::pUpdateGI(){
+	if( ! pGIState ){
+		return;
+	}
+	
+	pGIState->Update( *pWorld, pCameraPosition, pCameraMatrix, pCameraFov, pCameraFov * pCameraFovRatio );
+	pRenderThread.GetRenderers().GetCanvas().SampleDebugInfoPlanPrepareGIUpdate( *this );
 }
 
 void deoglRenderPlan::pPlanLODLevels(){
@@ -1147,7 +1137,10 @@ void deoglRenderPlan::pPlanEnvMaps(){
 }
 
 void deoglRenderPlan::pStartOcclusionTests(){
+	INIT_SPECIAL_TIMING
+	
 	pWaitFinishedFindContent();
+	SPECIAL_TIMER_PRINT("> WaitFinishFindContent")
 	
 	// debug information if demanded
 	pDebugVisibleNoCull();
@@ -1201,6 +1194,7 @@ void deoglRenderPlan::pStartOcclusionTests(){
 	
 	// debug
 	pDebugVisibleCulled();
+	SPECIAL_TIMER_PRINT("> RenderTestsCamera")
 }
 
 void deoglRenderPlan::pDebugPrepare(){

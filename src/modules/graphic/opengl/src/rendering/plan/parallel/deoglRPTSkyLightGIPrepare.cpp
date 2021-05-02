@@ -50,6 +50,8 @@
 deoglRPTSkyLightGIPrepare::deoglRPTSkyLightGIPrepare( deoglRenderPlanSkyLight &plan ) :
 deParallelTask( &plan.GetPlan().GetRenderThread().GetOgl() ),
 pPlan( plan ),
+pElapsedFindContent( 0.0f ),
+pElapsedUpdateRenderTask( 0.0f ),
 pCountAdded( 0 ),
 pCountRemoved( 0 ),
 pElapsedAdded( 0 ),
@@ -82,12 +84,17 @@ void deoglRPTSkyLightGIPrepare::Run(){
 	
 	try{
 		INIT_SPECIAL_TIMING
+		decTimer timer;
 		
 		pFindContent();
 		SPECIAL_TIMER_PRINT("FindContent")
 		
+		decTimer timer2;
 		pUpdateRenderTask();
+		pElapsedUpdateRenderTask = timer2.GetElapsedTime();
 		SPECIAL_TIMER_PRINT("UpdateRenderTask")
+		
+		pElapsedFindContent = timer.GetElapsedTime();
 		
 	}catch( const deException &e ){
 		pPlan.GetPlan().GetRenderThread().GetLogger().LogException( e );

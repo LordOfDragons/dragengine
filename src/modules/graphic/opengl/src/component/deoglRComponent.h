@@ -122,8 +122,6 @@ public:
 	bool pOccluded;
 	bool pDirtyModelRigMappings;
 	
-	bool pCameraInside;
-	
 	bool pFirstRender;
 	bool pRenderStatic;
 	float pStaticSince;
@@ -452,12 +450,6 @@ public:
 	
 	/** Set occluded. */
 	void SetOccluded( bool occluded );
-	
-	/** Camera is inside component boundaries. */
-	inline bool GetCameraInside() const{ return pCameraInside; }
-	
-	/** Test if camera is inside component boundaries. */
-	void TestCameraInside( const decDVector &position );
 	
 	
 	

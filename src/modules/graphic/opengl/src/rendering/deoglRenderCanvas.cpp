@@ -142,16 +142,18 @@ pDebugCountCanvasCanvasView( 0 ),
 
 pDebugInfoPlanPrepare( NULL ),
 pDebugInfoPlanPrepareWorld( NULL ),
-pDebugInfoPlanPrepareCollect( NULL ),
+pDebugInfoPlanPrepareFindContent( NULL ),
+pDebugInfoPlanPrepareSkyLightFindContent( NULL ),
+pDebugInfoPlanPrepareSkyLightGIFindContent( NULL ),
+pDebugInfoPlanPrepareSkyLightGIUpdateRenderTask( NULL ),
+pDebugInfoPlanPrepareGIUpdate( NULL ),
 pDebugInfoPlanPrepareCulling( NULL ),
 pDebugInfoPlanPrepareEnvMaps( NULL ),
+pDebugInfoPlanPreparePrepareContent( NULL ),
 pDebugInfoPlanPrepareHTViewVBOs( NULL ),
-pDebugInfoPlanPrepareComponents( NULL ),
-pDebugInfoPlanPrepareSort( NULL ),
 pDebugInfoPlanPrepareBuildPlan( NULL ),
 pDebugInfoPlanPrepareLights( NULL ),
-pDebugInfoPlanPrepareGIUpdate( NULL ),
-pDebugInfoPlanPrepareGISkyShadowRenderTask( NULL )
+pDebugInfoPlanPrepareFinish( NULL )
 {
 	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
 	deoglShaderSources *sources;
@@ -181,6 +183,8 @@ pDebugInfoPlanPrepareGISkyShadowRenderTask( NULL )
 		const decColor colorBg( 0.0f, 0.0f, 0.25f, 0.75f );
 		const decColor colorBgSub( 0.05f, 0.05f, 0.05f, 0.75f );
 		const decColor colorBgSub2( 0.1f, 0.1f, 0.1f, 0.75f );
+		const decColor colorBgParallel( 0.05f, 0.025f, 0.05f, 0.75f );
+		const decColor colorBgParallelSub( 0.075f, 0.0375f, 0.075f, 0.75f );
 		
 		pDebugInfoCanvas = new deoglDebugInformation( "Canvas", colorText, colorBg );
 		
@@ -212,8 +216,20 @@ pDebugInfoPlanPrepareGISkyShadowRenderTask( NULL )
 		pDebugInfoPlanPrepareWorld = new deoglDebugInformation( "World", colorText, colorBgSub );
 		pDebugInfoPlanPrepare->GetChildren().Add( pDebugInfoPlanPrepareWorld );
 		
-		pDebugInfoPlanPrepareCollect = new deoglDebugInformation( "Collect", colorText, colorBgSub );
-		pDebugInfoPlanPrepare->GetChildren().Add( pDebugInfoPlanPrepareCollect );
+		pDebugInfoPlanPrepareFindContent = new deoglDebugInformation( "Find Content", colorText, colorBgParallel );
+		pDebugInfoPlanPrepare->GetChildren().Add( pDebugInfoPlanPrepareFindContent );
+		
+		pDebugInfoPlanPrepareSkyLightFindContent = new deoglDebugInformation( "SL Find Content", colorText, colorBgParallel );
+		pDebugInfoPlanPrepare->GetChildren().Add( pDebugInfoPlanPrepareSkyLightFindContent );
+		
+		pDebugInfoPlanPrepareSkyLightGIFindContent = new deoglDebugInformation( "SL GI Find Content", colorText, colorBgParallel );
+		pDebugInfoPlanPrepare->GetChildren().Add( pDebugInfoPlanPrepareSkyLightGIFindContent );
+			
+			pDebugInfoPlanPrepareSkyLightGIUpdateRenderTask = new deoglDebugInformation( "SL GI Update RT", colorText, colorBgParallelSub );
+			pDebugInfoPlanPrepareSkyLightGIFindContent->GetChildren().Add( pDebugInfoPlanPrepareSkyLightGIUpdateRenderTask );
+		
+		pDebugInfoPlanPrepareGIUpdate = new deoglDebugInformation( "GI Update", colorText, colorBgParallel );
+		pDebugInfoPlanPrepare->GetChildren().Add( pDebugInfoPlanPrepareGIUpdate );
 		
 		pDebugInfoPlanPrepareCulling = new deoglDebugInformation( "Culling", colorText, colorBgSub );
 		pDebugInfoPlanPrepare->GetChildren().Add( pDebugInfoPlanPrepareCulling );
@@ -221,26 +237,20 @@ pDebugInfoPlanPrepareGISkyShadowRenderTask( NULL )
 		pDebugInfoPlanPrepareEnvMaps = new deoglDebugInformation( "Env-Maps", colorText, colorBgSub );
 		pDebugInfoPlanPrepare->GetChildren().Add( pDebugInfoPlanPrepareEnvMaps );
 		
-		pDebugInfoPlanPrepareHTViewVBOs = new deoglDebugInformation( "HT-View VBOs", colorText, colorBgSub );
-		pDebugInfoPlanPrepare->GetChildren().Add( pDebugInfoPlanPrepareHTViewVBOs );
-		
-		pDebugInfoPlanPrepareComponents = new deoglDebugInformation( "Components", colorText, colorBgSub );
-		pDebugInfoPlanPrepare->GetChildren().Add( pDebugInfoPlanPrepareComponents );
-		
-		pDebugInfoPlanPrepareSort = new deoglDebugInformation( "Sort", colorText, colorBgSub );
-		pDebugInfoPlanPrepare->GetChildren().Add( pDebugInfoPlanPrepareSort );
+		pDebugInfoPlanPreparePrepareContent = new deoglDebugInformation( "Prepare Content", colorText, colorBgSub );
+		pDebugInfoPlanPrepare->GetChildren().Add( pDebugInfoPlanPreparePrepareContent );
+			
+			pDebugInfoPlanPrepareHTViewVBOs = new deoglDebugInformation( "HT-View VBOs", colorText, colorBgSub2 );
+			pDebugInfoPlanPreparePrepareContent->GetChildren().Add( pDebugInfoPlanPrepareHTViewVBOs );
 		
 		pDebugInfoPlanPrepareBuildPlan = new deoglDebugInformation( "Build Plan", colorText, colorBgSub );
 		pDebugInfoPlanPrepare->GetChildren().Add( pDebugInfoPlanPrepareBuildPlan );
-			
-			pDebugInfoPlanPrepareGIUpdate = new deoglDebugInformation( "GI Update", colorText, colorBgSub2 );
-			pDebugInfoPlanPrepareBuildPlan->GetChildren().Add( pDebugInfoPlanPrepareGIUpdate );
-			
-			pDebugInfoPlanPrepareGISkyShadowRenderTask = new deoglDebugInformation( "GI Sky Shadow RT", colorText, colorBgSub2 );
-			pDebugInfoPlanPrepareBuildPlan->GetChildren().Add( pDebugInfoPlanPrepareGISkyShadowRenderTask );
 		
 		pDebugInfoPlanPrepareLights = new deoglDebugInformation( "Lights", colorText, colorBgSub );
 		pDebugInfoPlanPrepare->GetChildren().Add( pDebugInfoPlanPrepareLights );
+		
+		pDebugInfoPlanPrepareFinish = new deoglDebugInformation( "Finish", colorText, colorBgSub );
+		pDebugInfoPlanPrepare->GetChildren().Add( pDebugInfoPlanPrepareFinish );
 		
 	}catch( const deException & ){
 		pCleanUp();
@@ -853,16 +863,18 @@ void deoglRenderCanvas::ClearAllDebugInfoPlanPrepare( deoglRenderPlan &plan ){
 	
 	pDebugInfoPlanPrepare->Clear();
 	pDebugInfoPlanPrepareWorld->Clear();
-	pDebugInfoPlanPrepareCollect->Clear();
+	pDebugInfoPlanPrepareFindContent->Clear();
+	pDebugInfoPlanPrepareSkyLightFindContent->Clear();
+	pDebugInfoPlanPrepareSkyLightGIFindContent->Clear();
+	pDebugInfoPlanPrepareSkyLightGIUpdateRenderTask->Clear();
 	pDebugInfoPlanPrepareCulling->Clear();
 	pDebugInfoPlanPrepareEnvMaps->Clear();
+	pDebugInfoPlanPreparePrepareContent->Clear();
 	pDebugInfoPlanPrepareHTViewVBOs->Clear();
-	pDebugInfoPlanPrepareComponents->Clear();
-	pDebugInfoPlanPrepareSort->Clear();
 	pDebugInfoPlanPrepareBuildPlan->Clear();
 	pDebugInfoPlanPrepareLights->Clear();
 	pDebugInfoPlanPrepareGIUpdate->Clear();
-	pDebugInfoPlanPrepareGISkyShadowRenderTask->Clear();
+	pDebugInfoPlanPrepareFinish->Clear();
 	
 	DebugTimersReset( plan, false );
 }
@@ -881,11 +893,39 @@ void deoglRenderCanvas::SampleDebugInfoPlanPrepareWorld( deoglRenderPlan &plan )
 	DebugTimer2Sample( plan, *pDebugInfoPlanPrepareWorld, false );
 }
 
-void deoglRenderCanvas::SampleDebugInfoPlanPrepareCollect( deoglRenderPlan &plan ){
+void deoglRenderCanvas::SampleDebugInfoPlanPrepareFindContent( deoglRenderPlan &plan, float elapsed ){
 	if( ! plan.GetDebugTiming() || ! pDebugInfoPlanPrepare->GetVisible() ){
 		return;
 	}
-	DebugTimer2Sample( plan, *pDebugInfoPlanPrepareCollect, false );
+	DebugTimerIncrement( plan, *pDebugInfoPlanPrepareFindContent, elapsed, 0 );
+}
+
+void deoglRenderCanvas::SampleDebugInfoPlanPrepareSkyLightFindContent( deoglRenderPlan &plan, float elapsed ){
+	if( ! plan.GetDebugTiming() || ! pDebugInfoPlanPrepare->GetVisible() ){
+		return;
+	}
+	DebugTimerIncrement( plan, *pDebugInfoPlanPrepareSkyLightFindContent, elapsed, 1 );
+}
+
+void deoglRenderCanvas::SampleDebugInfoPlanPrepareSkyLightGIFindContent( deoglRenderPlan &plan, float elapsed ){
+	if( ! plan.GetDebugTiming() || ! pDebugInfoPlanPrepare->GetVisible() ){
+		return;
+	}
+	DebugTimerIncrement( plan, *pDebugInfoPlanPrepareSkyLightGIFindContent, elapsed, 1 );
+}
+
+void deoglRenderCanvas::SampleDebugInfoPlanPrepareSkyLightGIUpdateRenderTask( deoglRenderPlan &plan, float elapsed ){
+	if( ! plan.GetDebugTiming() || ! pDebugInfoPlanPrepare->GetVisible() ){
+		return;
+	}
+	DebugTimerIncrement( plan, *pDebugInfoPlanPrepareSkyLightGIUpdateRenderTask, elapsed, 1 );
+}
+
+void deoglRenderCanvas::SampleDebugInfoPlanPrepareGIUpdate( deoglRenderPlan &plan ){
+	if( ! plan.GetDebugTiming() || ! pDebugInfoPlanPrepare->GetVisible() ){
+		return;
+	}
+	DebugTimer2Sample( plan, *pDebugInfoPlanPrepareGIUpdate, true );
 }
 
 void deoglRenderCanvas::SampleDebugInfoPlanPrepareCulling( deoglRenderPlan &plan ){
@@ -902,25 +942,18 @@ void deoglRenderCanvas::SampleDebugInfoPlanPrepareEnvMaps( deoglRenderPlan &plan
 	DebugTimer2Sample( plan, *pDebugInfoPlanPrepareEnvMaps, true );
 }
 
+void deoglRenderCanvas::SampleDebugInfoPlanPreparePrepareContent( deoglRenderPlan &plan ){
+	if( ! plan.GetDebugTiming() || ! pDebugInfoPlanPrepare->GetVisible() ){
+		return;
+	}
+	DebugTimer2Sample( plan, *pDebugInfoPlanPreparePrepareContent, true );
+}
+
 void deoglRenderCanvas::SampleDebugInfoPlanPrepareHTViewVBOs( deoglRenderPlan &plan ){
 	if( ! plan.GetDebugTiming() || ! pDebugInfoPlanPrepare->GetVisible() ){
 		return;
 	}
-	DebugTimer2Sample( plan, *pDebugInfoPlanPrepareHTViewVBOs, true );
-}
-
-void deoglRenderCanvas::SampleDebugInfoPlanPrepareComponents( deoglRenderPlan &plan ){
-	if( ! plan.GetDebugTiming() || ! pDebugInfoPlanPrepare->GetVisible() ){
-		return;
-	}
-	DebugTimer2Sample( plan, *pDebugInfoPlanPrepareComponents, true );
-}
-
-void deoglRenderCanvas::SampleDebugInfoPlanPrepareSort( deoglRenderPlan &plan ){
-	if( ! plan.GetDebugTiming() || ! pDebugInfoPlanPrepare->GetVisible() ){
-		return;
-	}
-	DebugTimer2Sample( plan, *pDebugInfoPlanPrepareSort, false );
+	DebugTimer3Sample( plan, *pDebugInfoPlanPrepareHTViewVBOs, true );
 }
 
 void deoglRenderCanvas::SampleDebugInfoPlanPrepareBuildPlan( deoglRenderPlan &plan ){
@@ -937,27 +970,11 @@ void deoglRenderCanvas::SampleDebugInfoPlanPrepareLights( deoglRenderPlan &plan 
 	DebugTimer2Sample( plan, *pDebugInfoPlanPrepareLights, true );
 }
 
-void deoglRenderCanvas::SampleDebugInfoPlanPrepareGIUpdate( deoglRenderPlan &plan ){
+void deoglRenderCanvas::SampleDebugInfoPlanPrepareFinish( deoglRenderPlan &plan ){
 	if( ! plan.GetDebugTiming() || ! pDebugInfoPlanPrepare->GetVisible() ){
 		return;
 	}
-	DebugTimer2Sample( plan, *pDebugInfoPlanPrepareGIUpdate, true );
-}
-
-
-
-void deoglRenderCanvas::ResetDebugInfoTimerGI( deoglRenderPlan &plan ){
-	if( ! plan.GetDebugTiming() || ! pDebugInfoPlanPrepare->GetVisible() ){
-		return;
-	}
-	DebugTimer3Reset( plan, true );
-}
-
-void deoglRenderCanvas::SampleDebugInfoPlanPrepareGISkyShadowRenderTask( deoglRenderPlan &plan ){
-	if( ! plan.GetDebugTiming() || ! pDebugInfoPlanPrepare->GetVisible() ){
-		return;
-	}
-	DebugTimer3Sample( plan, *pDebugInfoPlanPrepareGISkyShadowRenderTask, true );
+	DebugTimer2Sample( plan, *pDebugInfoPlanPrepareFinish, true );
 }
 
 
@@ -1035,8 +1052,17 @@ void deoglRenderCanvas::pCleanUp(){
 	if( pDebugInfoPlanPrepareWorld ){
 		pDebugInfoPlanPrepareWorld->FreeReference();
 	}
-	if( pDebugInfoPlanPrepareCollect ){
-		pDebugInfoPlanPrepareCollect->FreeReference();
+	if( pDebugInfoPlanPrepareFindContent ){
+		pDebugInfoPlanPrepareFindContent->FreeReference();
+	}
+	if( pDebugInfoPlanPrepareSkyLightFindContent ){
+		pDebugInfoPlanPrepareSkyLightFindContent->FreeReference();
+	}
+	if( pDebugInfoPlanPrepareSkyLightGIFindContent ){
+		pDebugInfoPlanPrepareSkyLightGIFindContent->FreeReference();
+	}
+	if( pDebugInfoPlanPrepareSkyLightGIUpdateRenderTask ){
+		pDebugInfoPlanPrepareSkyLightGIUpdateRenderTask->FreeReference();
 	}
 	if( pDebugInfoPlanPrepareCulling ){
 		pDebugInfoPlanPrepareCulling->FreeReference();
@@ -1047,23 +1073,20 @@ void deoglRenderCanvas::pCleanUp(){
 	if( pDebugInfoPlanPrepareHTViewVBOs ){
 		pDebugInfoPlanPrepareHTViewVBOs->FreeReference();
 	}
-	if( pDebugInfoPlanPrepareComponents ){
-		pDebugInfoPlanPrepareComponents->FreeReference();
-	}
-	if( pDebugInfoPlanPrepareSort ){
-		pDebugInfoPlanPrepareSort->FreeReference();
+	if( pDebugInfoPlanPreparePrepareContent ){
+		pDebugInfoPlanPreparePrepareContent->FreeReference();
 	}
 	if( pDebugInfoPlanPrepareGIUpdate ){
 		pDebugInfoPlanPrepareGIUpdate->FreeReference();
-	}
-	if( pDebugInfoPlanPrepareGISkyShadowRenderTask ){
-		pDebugInfoPlanPrepareGISkyShadowRenderTask->FreeReference();
 	}
 	if( pDebugInfoPlanPrepareBuildPlan ){
 		pDebugInfoPlanPrepareBuildPlan->FreeReference();
 	}
 	if( pDebugInfoPlanPrepareLights ){
 		pDebugInfoPlanPrepareLights->FreeReference();
+	}
+	if( pDebugInfoPlanPrepareFinish ){
+		pDebugInfoPlanPrepareFinish->FreeReference();
 	}
 }
 

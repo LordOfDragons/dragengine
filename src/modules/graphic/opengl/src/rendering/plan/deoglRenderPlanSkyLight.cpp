@@ -543,6 +543,10 @@ void deoglRenderPlanSkyLight::pWaitFinishedFindContent(){
 	
 // 	pPlan.GetRenderThread().GetLogger().LogInfoFormat( "RenderPlanSkyLight(%p, %p) WaitFinishedFindContent(%p)", this, &pPlan, pTaskFindContent );
 	pTaskFindContent->GetSemaphore().Wait();
+	
+	pPlan.GetRenderThread().GetRenderers().GetCanvas().SampleDebugInfoPlanPrepareSkyLightFindContent(
+		pPlan, pTaskFindContent->GetElapsedTime() );
+	
 	pTaskFindContent->FreeReference();
 	pTaskFindContent = NULL;
 }
@@ -553,6 +557,10 @@ void deoglRenderPlanSkyLight::pWaitFinishedGIPrepare(){
 	}
 	
 	pTaskGIPrepare->GetSemaphore().Wait();
+	
+	deoglRenderCanvas &rc = pPlan.GetRenderThread().GetRenderers().GetCanvas();
+	rc.SampleDebugInfoPlanPrepareSkyLightGIFindContent( pPlan, pTaskGIPrepare->GetElapsedFindContent() );
+	rc.SampleDebugInfoPlanPrepareSkyLightGIUpdateRenderTask( pPlan, pTaskGIPrepare->GetElapsedUpdateRenderTask() );
 	
 	const int countAdded = pTaskGIPrepare->GetCountAdded();
 	const int countRemoved = pTaskGIPrepare->GetCountRemoved();

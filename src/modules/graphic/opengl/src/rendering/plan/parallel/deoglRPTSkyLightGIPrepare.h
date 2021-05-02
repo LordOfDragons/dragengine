@@ -34,6 +34,8 @@ class deoglRenderPlanSkyLight;
 class deoglRPTSkyLightGIPrepare : public deParallelTask{
 private:
 	deoglRenderPlanSkyLight &pPlan;
+	float pElapsedFindContent;
+	float pElapsedUpdateRenderTask;
 	int pCountAdded;
 	int pCountRemoved;
 	int pElapsedAdded;
@@ -65,6 +67,8 @@ public:
 	virtual decString GetDebugName() const;
 	
 	/** Information for updating render task. */
+	inline float GetElapsedFindContent() const{ return pElapsedFindContent; }
+	inline float GetElapsedUpdateRenderTask() const{ return pElapsedUpdateRenderTask; }
 	inline int GetCountAdded() const{ return pCountAdded; }
 	inline int GetCountRemoved() const{ return pCountRemoved; }
 	inline int GetElapsedAdded() const{ return pElapsedAdded; }

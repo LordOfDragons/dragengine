@@ -34,6 +34,7 @@ class deoglRenderPlanSkyLight;
 class deoglRPTSkyLightFindContent : public deParallelTask{
 private:
 	deoglRenderPlanSkyLight &pPlan;
+	float pElapsedTime;
 	deSemaphore pSemaphore;
 	
 	
@@ -59,6 +60,9 @@ public:
 	
 	/** Debug name. */
 	virtual decString GetDebugName() const;
+	
+	/** Elapsed time. */
+	inline float GetElapsedTime() const{ return pElapsedTime; }
 	
 	/** Finished semaphore. */
 	inline deSemaphore &GetSemaphore(){ return pSemaphore; }

@@ -1024,12 +1024,12 @@ void deoglRComponent::SetOccluded( bool occluded ){
 	pOccluded = occluded;
 }
 
-void deoglRComponent::TestCameraInside( const decDVector &position ){
-	const decVector relPos( position - pMatrix.GetPosition() );
-	const decVector minExtend( pLocalMinExtend - decVector( 0.1f, 0.1f, 0.1f ) );
-	const decVector maxExtend( pLocalMaxExtend + decVector( 0.1f, 0.1f, 0.1f ) );
-	pCameraInside = ( relPos >= minExtend && relPos <= maxExtend );
-}
+// void deoglRComponent::TestCameraInside( const decDVector &position ){
+// 	const decVector relPos( position - pMatrix.GetPosition() );
+// 	const decVector minExtend( pLocalMinExtend - decVector( 0.1f, 0.1f, 0.1f ) );
+// 	const decVector maxExtend( pLocalMaxExtend + decVector( 0.1f, 0.1f, 0.1f ) );
+// 	pCameraInside = ( relPos >= minExtend && relPos <= maxExtend );
+// }
 
 void deoglRComponent::SetRenderMode( eRenderModes renderMode ){
 	if( renderMode == pRenderMode ){

@@ -34,6 +34,7 @@
 #include "../../../world/deoglRWorld.h"
 
 #include <dragengine/common/exceptions.h>
+#include <dragengine/common/utils/decTimer.h>
 
 
 // Class deoglRPTFindContent
@@ -44,7 +45,8 @@
 
 deoglRPTFindContent::deoglRPTFindContent( deoglRenderPlan &plan ) :
 deParallelTask( &plan.GetRenderThread().GetOgl() ),
-pPlan( plan ){
+pPlan( plan ),
+pElapsedTime( 0.0f ){
 }
 
 deoglRPTFindContent::~deoglRPTFindContent(){
@@ -71,6 +73,7 @@ void deoglRPTFindContent::Run(){
 		return;
 	}
 	
+	decTimer timerFindContent;
 	try{
 		INIT_SPECIAL_TIMING
 		
@@ -87,6 +90,10 @@ void deoglRPTFindContent::Run(){
 		
 		visitor.VisitWorldOctree( world.GetOctree() );
 		SPECIAL_TIMER_PRINT("Octree")
+		
+		//collideList.SortLinear( world->GetSectorSize(), pCameraSector, pCameraPosition, pCameraInverseMatrix.TransformView() );
+		collideList.SortComponentsByModels();
+		SPECIAL_TIMER_PRINT("Sort Components")
 		
 		if( pPlan.GetHeightTerrainView() ){
 			collideList.AddHTSectorsColliding( pPlan.GetHeightTerrainView(), frustum );
@@ -127,6 +134,7 @@ void deoglRPTFindContent::Run(){
 		throw;
 	}
 	
+	pElapsedTime = timerFindContent.GetElapsedTime();
 	pSemaphore.Signal();
 }
 

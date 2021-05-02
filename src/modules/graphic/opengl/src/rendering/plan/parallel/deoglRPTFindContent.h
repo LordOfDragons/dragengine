@@ -34,7 +34,9 @@ class deoglRenderPlan;
 class deoglRPTFindContent : public deParallelTask{
 private:
 	deoglRenderPlan &pPlan;
+	float pElapsedTime;
 	deSemaphore pSemaphore;
+	
 	
 	
 public:
@@ -59,6 +61,9 @@ public:
 	
 	/** Debug name. */
 	virtual decString GetDebugName() const;
+	
+	/** Elapsed time. */
+	inline float GetElapsedTime() const{ return pElapsedTime; }
 	
 	/** Finished semaphore. */
 	inline deSemaphore &GetSemaphore(){ return pSemaphore; }
