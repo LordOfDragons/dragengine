@@ -28,6 +28,8 @@
 
 class deoglRLight;
 class deoglOcclusionTest;
+class deoglRenderPlan;
+class deoglOcclusionQuery;
 
 
 
@@ -38,6 +40,7 @@ class deoglCollideListLight : public deoglOcclusionTestListener{
 private:
 	deoglRLight *pLight;
 	bool pCulled;
+	bool pCameraInside;
 	
 	
 	
@@ -72,11 +75,26 @@ public:
 	/** Set light is culled. */
 	void SetCulled( bool visible );
 	
+	/** Camera is inside light volume. */
+	inline bool GetCameraInside() const{ return pCameraInside; }
+	
+	/** Test if camera is inside light volume. */
+	void TestCameraInside( const deoglRenderPlan &plan );
+	
 	/** Start occlusion test. */
 	void StartOcclusionTest( deoglOcclusionTest &occlusionTest, const decDVector &cameraPosition );
 	
 	/** Occlusion test finished with a result of invisible for the element. */
 	virtual void OcclusionTestInvisible();
+	
+	/** Occlusion query. */
+	deoglOcclusionQuery &GetOcclusionQuery();
+	
+	/**
+	 * Light is hidden according to the last time the occlusion query has been run.
+	 * Deals with various special cases preventing the caller to know or care about them.
+	 */
+	bool IsHiddenByOccQuery() const;
 	/*@}*/
 };
 

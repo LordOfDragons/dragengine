@@ -183,10 +183,8 @@ public:
 	
 	deoglDCollisionVolume *pColVol;
 	bool pDirtyColVol;
-	bool pCameraInside;
 	
 	bool pDirtyTouching;
-	bool pInsideCamera;
 	
 	bool pMarked;
 	
@@ -448,14 +446,6 @@ public:
 	
 	
 	
-	/** Camera is inside light volume. */
-	inline bool GetCameraInside() const{ return pCameraInside; }
-	
-	/** Test if camera is inside light volume. */
-	void TestCameraInside( deoglRenderPlan &plan );
-	
-	
-	
 	/** Static component list. */
 	inline deoglComponentList &GetStaticComponentList(){ return pStaticComponentList; }
 	inline const deoglComponentList &GetStaticComponentList() const{ return pStaticComponentList; }
@@ -498,12 +488,6 @@ public:
 	
 	/** Set light volume crop box or NULL if not set. */
 	void SetLightVolumeCropBox( decShapeBox *box );
-	
-	/**
-	 * Set if the light is inside the camera.
-	 * \details This affects the occlusion test.
-	 */
-	void SetInsideCamera( bool inside );
 	
 	
 	
@@ -606,12 +590,7 @@ public:
 	/*@{*/
 	/** Occlusion query. */
 	deoglOcclusionQuery &GetOcclusionQuery();
-	
-	/**
-	 * Light is hidden according to the last time the occlusion query has been run.
-	 * \details Deals with various special cases preventing the caller to know or care about them.
-	 */
-	bool IsHiddenByOccQuery();
+	inline bool HasOcclusionQuery() const{ return pOcclusionQuery != NULL; }
 	/*@}*/
 	
 	

@@ -767,7 +767,6 @@ DBG_ENTER_PARAM("RenderOcclusionQueryPass", "%p", mask)
 	const decDMatrix matrixP( plan.GetProjectionMatrix() );
 	deoglShapeManager &shapeManager = renderThread.GetBufferObject().GetShapeManager();
 	deoglShape &shapeBox = *shapeManager.GetShapeAt( deoglRTBufferObject::esBox );
-	const decDVector &campos = plan.GetCameraPosition();
 	const decDVector extoff( 0.1, 0.1, 0.1 );
 	deoglShaderCompiled *shader;
 	int l;
@@ -801,16 +800,14 @@ DBG_ENTER_PARAM("RenderOcclusionQueryPass", "%p", mask)
 	// spdoPFMatrix // not used for light
 	
 	for( l=0; l<lightCount; l++ ){
-		deoglRLight &light = *collideList.GetLightAt( l )->GetLight();
-		light.UpdateLightVolume();
-		
-		const decDVector &lminext = light.GetMinimumExtend();
-		const decDVector &lmaxext = light.GetMaximumExtend();
-		light.SetInsideCamera( ( campos > lminext - extoff ) && ( campos < lmaxext + extoff ) );
-		if( light.GetCameraInside() ){
+		const deoglCollideListLight &cllight = *collideList.GetLightAt( l );
+		if( cllight.GetCameraInside() ){
 			continue;
 		}
 		
+		deoglRLight &light = *cllight.GetLight();
+		const decDVector &lminext = light.GetMinimumExtend();
+		const decDVector &lmaxext = light.GetMaximumExtend();
 		const decDMatrix matrixModel( decDMatrix::CreateScale( ( lmaxext - lminext ) * 0.5 )
 			* decDMatrix::CreateTranslation( ( lminext + lmaxext ) * 0.5 ) );
 		const decDMatrix matrixMV( matrixModel * matrixV );

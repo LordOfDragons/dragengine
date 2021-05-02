@@ -604,16 +604,16 @@ DEBUG_RESET_TIMER_TOTAL
 	// DEBUG DEBUG this should NOT be needed
 	
 	for( i=0; i<lightCount; i++ ){
-		deoglRLight &light = *clist.GetLightAt( i )->GetLight();
-		if( light.GetLightType() != deLight::eltPoint ){
+		deoglCollideListLight &cllight = *clist.GetLightAt( i );
+		if( cllight.GetLight()->GetLightType() != deLight::eltPoint ){
 			continue;
 		}
 		
-		if( light.IsHiddenByOccQuery() ){
-			clist.GetLightAt( i )->SetCulled( true );
+		if( cllight.IsHiddenByOccQuery() ){
+			cllight.SetCulled( true );
 			
 		}else{
-			RenderLight( plan, solid, mask, light );
+			RenderLight( plan, solid, mask, cllight );
 		}
 	}
 	
@@ -630,7 +630,8 @@ DEBUG_PRINT_TIMER_TOTAL
 
 
 void deoglRenderLightPoint::RenderLight( deoglRenderPlan &plan, bool solid,
-deoglRenderPlanMasked *mask, deoglRLight &light ){
+deoglRenderPlanMasked *mask, deoglCollideListLight &cllight ){
+	deoglRLight &light = *cllight.GetLight();
 	deoglRenderThread &renderThread = GetRenderThread();
 	const deoglConfiguration &config = renderThread.GetConfiguration();
 	const bool useShadowCubeEncodeDepth = config.GetUseShadowCubeEncodeDepth();
@@ -884,7 +885,7 @@ DEBUG_RESET_TIMER
 	OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
 	OGL_CHECK( renderThread, glEnable( GL_CULL_FACE ) );
 	
-	if( light.GetCameraInside() ){ // cull front faces, no depth test
+	if( cllight.GetCameraInside() ){ // cull front faces, no depth test
 		OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
 		SetCullMode( ! plan.GetFlipCulling() );
 		

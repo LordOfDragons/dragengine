@@ -601,14 +601,15 @@ void deoglRenderDevMode::RenderLightInfos( deoglRenderPlan &plan ){
 		shader->SetParameterFloat( spsSCToDTC, defren.GetPixelSizeU(), defren.GetPixelSizeV() );
 		
 		for( l=0; l<lightCount; l++ ){
-			deoglRLight &light = *collideList.GetLightAt( l )->GetLight();
+			const deoglCollideListLight &cllight = *collideList.GetLightAt( l );
+			const deoglRLight &light = *cllight.GetLight();
 			const deoglLightVolume &lightVolume = *light.GetLightVolume();
 			
 			pglBindVertexArray( lightVolume.GetVAO() );
 			shader->SetParameterDMatrix4x4( spsMatrixMVP, light.GetMatrix() * matrixVP );
 			shader->SetParameterDMatrix4x4( spsMatrixMVP2, light.GetMatrix() * matrixVP );
 			
-			if( light.GetCameraInside() ){
+			if( cllight.GetCameraInside() ){
 				shader->SetParameterColor4( spsColor, decColor( 1.0f, 0.0f, 0.0f, 0.01f ) );
 				OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLES, 0, lightVolume.GetPointCount() ) );
 				
@@ -631,7 +632,8 @@ void deoglRenderDevMode::RenderLightInfos( deoglRenderPlan &plan ){
 	
 	if( devMode.GetShowLightVisualInfo() >= 0 && devMode.GetShowLightVisualInfo() < collideList.GetLightCount() ){
 		const decQuaternion orientationCylinder = decMatrix::CreateRotationX( DEG2RAD * 90.0f ).ToQuaternion();
-		deoglRLight &light = *collideList.GetLightAt( devMode.GetShowLightVisualInfo() )->GetLight();
+		const deoglCollideListLight &cllight = *collideList.GetLightAt( devMode.GetShowLightVisualInfo() );
+		const deoglRLight &light = *cllight.GetLight();
 		decMatrix matrix1, matrix2;
 		decDMatrix matrixMVP;
 		
@@ -718,7 +720,7 @@ void deoglRenderDevMode::RenderLightInfos( deoglRenderPlan &plan ){
 			shader->SetParameterDMatrix4x4( spsMatrixMVP, decDMatrix( matrix1 ) * matrixMVP );
 			shader->SetParameterDMatrix4x4( spsMatrixMVP2, decDMatrix( matrix2 ) * matrixMVP );
 			
-			if( light.GetCameraInside() ){
+			if( cllight.GetCameraInside() ){
 				shader->SetParameterColor4( spsColor, decColor( 1.0f, 0.0f, 0.0f, 0.1f ) );
 				shapeCylinder.RenderFaces();
 				

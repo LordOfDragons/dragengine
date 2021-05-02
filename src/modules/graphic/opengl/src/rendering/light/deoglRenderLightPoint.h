@@ -133,7 +133,8 @@ public:
 	void RenderLights( deoglRenderPlan &plan, bool solid, deoglRenderPlanMasked *mask );
 	
 	/** \brief Render point light. */
-	void RenderLight( deoglRenderPlan &plan, bool solid, deoglRenderPlanMasked *mask, deoglRLight &light );
+	void RenderLight( deoglRenderPlan &plan, bool solid, deoglRenderPlanMasked *mask,
+		deoglCollideListLight &cllight );
 	
 	/** \brief Activate textures for lighting. */
 	void ActivateTextures( deoglRLight &light, deoglLightShader &shader,

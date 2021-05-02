@@ -441,15 +441,6 @@ DEBUG_PRINT_TIMER( "RenderPlan: PrepareRender: Update height terrain" );
 		billboard.AddSkinStateRenderPlans( *this );
 	}
 	SPECIAL_TIMER_PRINT("Components")
-	
-	// update lights adding them to the list of all lights touched by an upcoming render call
-	const int lightCount = pCollideList.GetLightCount();
-	for( i=0; i<lightCount; i++ ){
-		deoglRLight &oglLight = *pCollideList.GetLightAt( i )->GetLight();
-		oglLight.TestCameraInside( *this );
-		GetLightFor( &oglLight );
-	}
-	SPECIAL_TIMER_PRINT("Lights")
 	renderCanvas.SampleDebugInfoPlanPreparePrepareContent( *this );
 	
 	// now we are ready to produce a render plan

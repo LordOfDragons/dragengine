@@ -81,6 +81,7 @@ void deoglRPTFindContent::Run(){
 		deoglDCollisionFrustum * const frustum = pPlan.GetUseFrustum();
 		deoglCollideList &collideList = pPlan.GetCollideList();
 		deoglRWorld &world = *pPlan.GetWorld();
+		int i;
 		
 		visitor.Init( frustum );
 		visitor.SetCullPixelSize( 1.0f );
@@ -94,6 +95,18 @@ void deoglRPTFindContent::Run(){
 		//collideList.SortLinear( world->GetSectorSize(), pCameraSector, pCameraPosition, pCameraInverseMatrix.TransformView() );
 		collideList.SortComponentsByModels();
 		SPECIAL_TIMER_PRINT("Sort Components")
+		
+		const int lightCount = collideList.GetLightCount();
+		for( i=0; i<lightCount; i++ ){
+			deoglCollideListLight &cllight = *collideList.GetLightAt( i );
+			cllight.TestCameraInside( pPlan );
+			
+			// NOTE this call is not thread safe because it potentially causes changes to the
+			//      internal array. but this thread is the only one using this function call
+			//      so it is safe to do it here
+			pPlan.GetLightFor( cllight.GetLight() );
+		}
+		SPECIAL_TIMER_PRINT("Lights")
 		
 		if( pPlan.GetHeightTerrainView() ){
 			collideList.AddHTSectorsColliding( pPlan.GetHeightTerrainView(), frustum );

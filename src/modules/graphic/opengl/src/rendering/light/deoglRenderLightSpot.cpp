@@ -637,7 +637,7 @@ deoglRenderPlanMasked *mask, deoglCollideListLight &cllight ){
 		light.GetRange() ) );
 	
 	// check if the light is hidden or not
-	if( light.IsHiddenByOccQuery() ){
+	if( cllight.IsHiddenByOccQuery() ){
 		cllight.SetCulled( true );
 		return;
 	}
@@ -797,7 +797,7 @@ deoglRenderPlanMasked *mask, deoglCollideListLight &cllight ){
 	OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
 	OGL_CHECK( renderThread, glEnable( GL_CULL_FACE ) );
 	
-	if( light.GetCameraInside() ){ // cull front faces, no depth test
+	if( cllight.GetCameraInside() ){ // cull front faces, no depth test
 		OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
 		SetCullMode( ! plan.GetFlipCulling() );
 		
