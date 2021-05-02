@@ -141,11 +141,12 @@ pDebugTimeCanvasCanvasView( 0.0f ),
 pDebugCountCanvasCanvasView( 0 ),
 
 pDebugInfoPlanPrepare( NULL ),
-pDebugInfoPlanPrepareWorld( NULL ),
+pDebugInfoPlanPrepareEarlyWorld( NULL ),
 pDebugInfoPlanPrepareFindContent( NULL ),
 pDebugInfoPlanPrepareSkyLightFindContent( NULL ),
 pDebugInfoPlanPrepareSkyLightGIFindContent( NULL ),
 pDebugInfoPlanPrepareSkyLightGIUpdateRenderTask( NULL ),
+pDebugInfoPlanPrepareWorld( NULL ),
 pDebugInfoPlanPrepareGIUpdate( NULL ),
 pDebugInfoPlanPrepareCulling( NULL ),
 pDebugInfoPlanPrepareEnvMaps( NULL ),
@@ -184,7 +185,6 @@ pDebugInfoPlanPrepareFinish( NULL )
 		const decColor colorBgSub( 0.05f, 0.05f, 0.05f, 0.75f );
 		const decColor colorBgSub2( 0.1f, 0.1f, 0.1f, 0.75f );
 		const decColor colorBgParallel( 0.05f, 0.025f, 0.05f, 0.75f );
-		const decColor colorBgParallelSub( 0.075f, 0.0375f, 0.075f, 0.75f );
 		
 		pDebugInfoCanvas = new deoglDebugInformation( "Canvas", colorText, colorBg );
 		
@@ -213,8 +213,8 @@ pDebugInfoPlanPrepareFinish( NULL )
 		
 		pDebugInfoPlanPrepare = new deoglDebugInformation( "Plan Prepare", colorText, colorBg );
 		
-		pDebugInfoPlanPrepareWorld = new deoglDebugInformation( "World", colorText, colorBgSub );
-		pDebugInfoPlanPrepare->GetChildren().Add( pDebugInfoPlanPrepareWorld );
+		pDebugInfoPlanPrepareEarlyWorld = new deoglDebugInformation( "Early World", colorText, colorBgSub );
+		pDebugInfoPlanPrepare->GetChildren().Add( pDebugInfoPlanPrepareEarlyWorld );
 		
 		pDebugInfoPlanPrepareFindContent = new deoglDebugInformation( "Find Content", colorText, colorBgParallel );
 		pDebugInfoPlanPrepare->GetChildren().Add( pDebugInfoPlanPrepareFindContent );
@@ -224,9 +224,12 @@ pDebugInfoPlanPrepareFinish( NULL )
 		
 		pDebugInfoPlanPrepareSkyLightGIFindContent = new deoglDebugInformation( "SL GI Find Content", colorText, colorBgParallel );
 		pDebugInfoPlanPrepare->GetChildren().Add( pDebugInfoPlanPrepareSkyLightGIFindContent );
-			
-			pDebugInfoPlanPrepareSkyLightGIUpdateRenderTask = new deoglDebugInformation( "SL GI Update RT", colorText, colorBgParallelSub );
-			pDebugInfoPlanPrepareSkyLightGIFindContent->GetChildren().Add( pDebugInfoPlanPrepareSkyLightGIUpdateRenderTask );
+		
+		pDebugInfoPlanPrepareSkyLightGIUpdateRenderTask = new deoglDebugInformation( "SL GI Update RT", colorText, colorBgParallel );
+		pDebugInfoPlanPrepare->GetChildren().Add( pDebugInfoPlanPrepareSkyLightGIUpdateRenderTask );
+		
+		pDebugInfoPlanPrepareWorld = new deoglDebugInformation( "World", colorText, colorBgParallel );
+		pDebugInfoPlanPrepare->GetChildren().Add( pDebugInfoPlanPrepareWorld );
 		
 		pDebugInfoPlanPrepareGIUpdate = new deoglDebugInformation( "GI Update", colorText, colorBgParallel );
 		pDebugInfoPlanPrepare->GetChildren().Add( pDebugInfoPlanPrepareGIUpdate );
@@ -862,18 +865,19 @@ void deoglRenderCanvas::ClearAllDebugInfoPlanPrepare( deoglRenderPlan &plan ){
 	}
 	
 	pDebugInfoPlanPrepare->Clear();
-	pDebugInfoPlanPrepareWorld->Clear();
+	pDebugInfoPlanPrepareEarlyWorld->Clear();
 	pDebugInfoPlanPrepareFindContent->Clear();
 	pDebugInfoPlanPrepareSkyLightFindContent->Clear();
 	pDebugInfoPlanPrepareSkyLightGIFindContent->Clear();
 	pDebugInfoPlanPrepareSkyLightGIUpdateRenderTask->Clear();
+	pDebugInfoPlanPrepareWorld->Clear();
+	pDebugInfoPlanPrepareGIUpdate->Clear();
 	pDebugInfoPlanPrepareCulling->Clear();
 	pDebugInfoPlanPrepareEnvMaps->Clear();
 	pDebugInfoPlanPreparePrepareContent->Clear();
 	pDebugInfoPlanPrepareHTViewVBOs->Clear();
 	pDebugInfoPlanPrepareBuildPlan->Clear();
 	pDebugInfoPlanPrepareLights->Clear();
-	pDebugInfoPlanPrepareGIUpdate->Clear();
 	pDebugInfoPlanPrepareFinish->Clear();
 	
 	DebugTimersReset( plan, false );
@@ -886,11 +890,11 @@ void deoglRenderCanvas::SampleDebugInfoPlanPrepare( deoglRenderPlan &plan ){
 	DebugTimer1Sample( plan, *pDebugInfoPlanPrepare, false );
 }
 
-void deoglRenderCanvas::SampleDebugInfoPlanPrepareWorld( deoglRenderPlan &plan ){
+void deoglRenderCanvas::SampleDebugInfoPlanPrepareEarlyWorld( deoglRenderPlan &plan ){
 	if( ! plan.GetDebugTiming() || ! pDebugInfoPlanPrepare->GetVisible() ){
 		return;
 	}
-	DebugTimer2Sample( plan, *pDebugInfoPlanPrepareWorld, false );
+	DebugTimer2Sample( plan, *pDebugInfoPlanPrepareEarlyWorld, false );
 }
 
 void deoglRenderCanvas::SampleDebugInfoPlanPrepareFindContent( deoglRenderPlan &plan, float elapsed ){
@@ -919,6 +923,13 @@ void deoglRenderCanvas::SampleDebugInfoPlanPrepareSkyLightGIUpdateRenderTask( de
 		return;
 	}
 	DebugTimerIncrement( plan, *pDebugInfoPlanPrepareSkyLightGIUpdateRenderTask, elapsed, 1 );
+}
+
+void deoglRenderCanvas::SampleDebugInfoPlanPrepareWorld( deoglRenderPlan &plan ){
+	if( ! plan.GetDebugTiming() || ! pDebugInfoPlanPrepare->GetVisible() ){
+		return;
+	}
+	DebugTimer2Sample( plan, *pDebugInfoPlanPrepareWorld, false );
 }
 
 void deoglRenderCanvas::SampleDebugInfoPlanPrepareGIUpdate( deoglRenderPlan &plan ){
@@ -1049,8 +1060,8 @@ void deoglRenderCanvas::pCleanUp(){
 		GetRenderThread().GetDebug().GetDebugInformationList().RemoveIfPresent( pDebugInfoPlanPrepare );
 		pDebugInfoPlanPrepare->FreeReference();
 	}
-	if( pDebugInfoPlanPrepareWorld ){
-		pDebugInfoPlanPrepareWorld->FreeReference();
+	if( pDebugInfoPlanPrepareEarlyWorld ){
+		pDebugInfoPlanPrepareEarlyWorld->FreeReference();
 	}
 	if( pDebugInfoPlanPrepareFindContent ){
 		pDebugInfoPlanPrepareFindContent->FreeReference();
@@ -1064,6 +1075,12 @@ void deoglRenderCanvas::pCleanUp(){
 	if( pDebugInfoPlanPrepareSkyLightGIUpdateRenderTask ){
 		pDebugInfoPlanPrepareSkyLightGIUpdateRenderTask->FreeReference();
 	}
+	if( pDebugInfoPlanPrepareWorld ){
+		pDebugInfoPlanPrepareWorld->FreeReference();
+	}
+	if( pDebugInfoPlanPrepareGIUpdate ){
+		pDebugInfoPlanPrepareGIUpdate->FreeReference();
+	}
 	if( pDebugInfoPlanPrepareCulling ){
 		pDebugInfoPlanPrepareCulling->FreeReference();
 	}
@@ -1075,9 +1092,6 @@ void deoglRenderCanvas::pCleanUp(){
 	}
 	if( pDebugInfoPlanPreparePrepareContent ){
 		pDebugInfoPlanPreparePrepareContent->FreeReference();
-	}
-	if( pDebugInfoPlanPrepareGIUpdate ){
-		pDebugInfoPlanPrepareGIUpdate->FreeReference();
 	}
 	if( pDebugInfoPlanPrepareBuildPlan ){
 		pDebugInfoPlanPrepareBuildPlan->FreeReference();

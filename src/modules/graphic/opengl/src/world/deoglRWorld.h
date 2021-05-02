@@ -160,6 +160,9 @@ public:
 	
 	
 	
+	/** Early prepare for rendering. */
+	void EarlyPrepareForRender( deoglRenderPlan &plan );
+	
 	/** Prepare for rendering. */
 	void PrepareForRender( deoglRenderPlan &plan );
 	

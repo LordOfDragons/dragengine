@@ -402,19 +402,19 @@ public:
 	
 	
 	/** Full minimum extend. */
-	const decDVector &GetFullMinExtend();
+	inline const decDVector &GetFullMinExtend() const{ return pFullMinExtend; }
 	
 	/** Full maximum extend. */
-	const decDVector &GetFullMaxExtend();
+	inline const decDVector &GetFullMaxExtend() const{ return pFullMaxExtend; }
 	
 	/** Mark full extends dirty. */
 	void SetDirtyFullExtends();
 	
 	/** Minimum extend. */
-	const decDVector &GetMinimumExtend();
+	inline const decDVector &GetMinimumExtend() const{ return pMinExtend; }
 	
 	/** Maximum extend. */
-	const decDVector &GetMaximumExtend();
+	inline const decDVector &GetMaximumExtend() const{ return pMaxExtend; }
 	
 	/** Mark extends dirty. */
 	void SetDirtyExtends();
@@ -432,14 +432,11 @@ public:
 	/** Convex light volume. */
 	inline decConvexVolumeList *GetConvexVolumeList() const{ return pConvexVolumeList; }
 	
-	/** Update convex volume. */
-	void UpdateConvexVolumeList();
-	
 	/** Has extends. */
 	bool HasExtends() const;
 	
 	/** Collision volume. */
-	deoglDCollisionVolume *GetCollisionVolume();
+	inline deoglDCollisionVolume *GetCollisionVolume() const{ return pColVol; }
 	
 	/** Mark collision volume dirty. */
 	void SetDirtyCollisionVolume();
@@ -473,12 +470,6 @@ public:
 	
 	/** Mark light volume dirty. */
 	void SetLightVolumeDirty();
-	
-	/** 
-	 * Update convex volume list and light volume.
-	 * \note Can be called indirectly from main thread during synchronization.
-	 */
-	void UpdateLightVolume();
 	
 	/** Light volume. */
 	inline deoglLightVolume *GetLightVolume() const{ return pLightVolume; }
@@ -528,8 +519,14 @@ public:
 	
 	
 	
+	/**
+	 * Does preparations required to allow parallel tasks in render plan to run while the
+	 * PrepareForRender runs meanwhile on the render thread
+	 */
+	void EarlyPrepareForRender();
+	
 	/** Prepare for rendering. */
-	void PrepareForRender( deoglRenderPlan &plan );
+	void PrepareForRender();
 	
 	
 	
@@ -641,6 +638,10 @@ private:
 	void pUpdateExtends();
 	void pUpdateCollideLists();
 	void pCheckTouching();
+	void pUpdateCollisionVolume();
+	
+	/** \note Can be called indirectly from main thread during synchronization. */
+	void pUpdateLightVolume();
 	
 	void pRequiresPrepareForRender();
 };

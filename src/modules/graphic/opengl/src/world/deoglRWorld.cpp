@@ -159,7 +159,33 @@ const decDVector &boxMaxExtend, deoglWorldOctreeVisitor &visitor ){
 }
 
 
+
+// #define DO_SPECIAL_TIMING 1
+#ifdef DO_SPECIAL_TIMING
+#include <dragengine/common/utils/decTimer.h>
+#define INIT_SPECIAL_TIMING decTimer sttimer;
+#define SPECIAL_TIMER_PRINT_EARLY(w) if(plan.GetDebugTiming()) pRenderThread.GetLogger().LogInfoFormat("RWorld.EarlyPrepareForRender: " w "=%dys", (int)(sttimer.GetElapsedTime()*1e6f));
+#define SPECIAL_TIMER_PRINT(w) if(plan.GetDebugTiming()) pRenderThread.GetLogger().LogInfoFormat("RWorld.PrepareForRender: " w "=%dys", (int)(sttimer.GetElapsedTime()*1e6f));
+#else
+#define INIT_SPECIAL_TIMING (void)plan;
+#define SPECIAL_TIMER_PRINT_EARLY(w)
+#define SPECIAL_TIMER_PRINT(w)
+#endif
+
+void deoglRWorld::EarlyPrepareForRender( deoglRenderPlan &plan ){
+	INIT_SPECIAL_TIMING
+	
+	// early prepare lights
+	const decPointerLinkedList::cListEntry *iterLight = pListPrepareForRenderLights.GetRoot();
+	while( iterLight ){
+		( ( deoglRLight* )iterLight->GetOwner() )->EarlyPrepareForRender();
+		iterLight = iterLight->GetNext();
+	}
+	SPECIAL_TIMER_PRINT_EARLY("Lights")
+}
+
 void deoglRWorld::PrepareForRender( deoglRenderPlan &plan ){
+	INIT_SPECIAL_TIMING
 	int i, count;
 	
 	// remove environment map probes marked for removal by deoglWorld. this call can not be done during
@@ -183,6 +209,7 @@ void deoglRWorld::PrepareForRender( deoglRenderPlan &plan ){
 			( ( deoglRParticleEmitterInstance* )pParticleEmitterInstances.GetAt( i ) )->UpdateRenderEnvMap();
 		}
 	}
+		SPECIAL_TIMER_PRINT("EnvMaps")
 	
 	// prepare sky
 	count = pSkies.GetCount();
@@ -202,6 +229,7 @@ void deoglRWorld::PrepareForRender( deoglRenderPlan &plan ){
 		EnvMapsNotifySkyChanged();
 		pDirtyNotifySkyChanged = false;
 	}
+		SPECIAL_TIMER_PRINT("Sky")
 	
 	// prepare components
 	decPointerLinkedList::cListEntry * const tailComponent = pListPrepareForRenderComponents.GetTail();
@@ -216,6 +244,7 @@ void deoglRWorld::PrepareForRender( deoglRenderPlan &plan ){
 			break; // processed last component. re-added component will come next
 		}
 	}
+		SPECIAL_TIMER_PRINT("Components")
 	
 	// prepare billboards
 	decPointerLinkedList::cListEntry * const tailBillboard = pListPrepareForRenderBillboards.GetTail();
@@ -230,6 +259,7 @@ void deoglRWorld::PrepareForRender( deoglRenderPlan &plan ){
 			break; // processed last billboard. re-added billboard will come next
 		}
 	}
+		SPECIAL_TIMER_PRINT("Billboards")
 	
 	// prepare lights
 	decPointerLinkedList::cListEntry * const tailLight = pListPrepareForRenderLights.GetTail();
@@ -238,24 +268,27 @@ void deoglRWorld::PrepareForRender( deoglRenderPlan &plan ){
 		deoglRLight &light = *( ( deoglRLight* )entry->GetOwner() );
 		pListPrepareForRenderLights.Remove( entry );
 		
-		light.PrepareForRender( plan ); // can potentially re-add the light
+		light.PrepareForRender(); // can potentially re-add the light
 		
 		if( entry == tailLight ){
 			break; // processed last light. re-added light will come next
 		}
 	}
+		SPECIAL_TIMER_PRINT("Lights")
 	
 	// prepare prop fields
 	count = pPropFields.GetCount();
 	for( i=0; i<count; i++ ){
 		( ( deoglRPropField* )pPropFields.GetAt( i ) )->PrepareForRender();
 	}
+		SPECIAL_TIMER_PRINT("PropFields")
 	
 	// prepare debug drawers
 	count = pDebugDrawers.GetCount();
 	for( i=0; i<count; i++ ){
 		( ( deoglRDebugDrawer* )pDebugDrawers.GetAt( i ) )->UpdateVBO();
 	}
+		SPECIAL_TIMER_PRINT("DebugDrawers")
 }
 
 void deoglRWorld::AddPrepareForRenderComponent( deoglRComponent *component ){

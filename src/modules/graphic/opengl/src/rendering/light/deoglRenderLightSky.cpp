@@ -26,7 +26,6 @@
 #include "deoglRenderLight.h"
 #include "deoglRenderLightSky.h"
 #include "deoglRenderGI.h"
-#include "deoglRLSVisitorCollectElements.h"
 #include "../deoglRenderGeometry.h"
 #include "../deoglRenderWorld.h"
 #include "../debug/deoglRenderDebug.h"
@@ -163,10 +162,6 @@ pDebugInfoTransparent( NULL ),
 pDebugInfoSolidDetail( NULL ),
 pDebugInfoSolidShadow( NULL ),
 pDebugInfoSolidShadowOcclusion( NULL ),
-pDebugInfoSolidShadowOcclusionStart( NULL ),
-pDebugInfoSolidShadowOcclusionVBO( NULL ),
-pDebugInfoSolidShadowOcclusionTest( NULL ),
-pDebugInfoSolidShadowClear( NULL ),
 pDebugInfoSolidShadowSplit( NULL ),
 pDebugInfoSolidShadowSplitContent( NULL ),
 pDebugInfoSolidShadowSplitLODLevels( NULL ),
@@ -222,18 +217,6 @@ pDebugInfoTransparentLight( NULL )
 		
 		pDebugInfoSolidShadowOcclusion = new deoglDebugInformation( "Occlusion", colorText, colorBgSub2 );
 		pDebugInfoSolidShadow->GetChildren().Add( pDebugInfoSolidShadowOcclusion );
-		
-		pDebugInfoSolidShadowOcclusionStart = new deoglDebugInformation( "Start", colorText, colorBgSub3 );
-		pDebugInfoSolidShadowOcclusion->GetChildren().Add( pDebugInfoSolidShadowOcclusionStart );
-		
-		pDebugInfoSolidShadowOcclusionVBO = new deoglDebugInformation( "VBO", colorText, colorBgSub3 );
-		pDebugInfoSolidShadowOcclusion->GetChildren().Add( pDebugInfoSolidShadowOcclusionVBO );
-		
-		pDebugInfoSolidShadowOcclusionTest = new deoglDebugInformation( "Test", colorText, colorBgSub3 );
-		pDebugInfoSolidShadowOcclusion->GetChildren().Add( pDebugInfoSolidShadowOcclusionTest );
-		
-		pDebugInfoSolidShadowClear = new deoglDebugInformation( "Clear", colorText, colorBgSub2 );
-		pDebugInfoSolidShadow->GetChildren().Add( pDebugInfoSolidShadowClear );
 		
 		pDebugInfoSolidShadowSplit = new deoglDebugInformation( "Splits", colorText, colorBgSub2 );
 		pDebugInfoSolidShadow->GetChildren().Add( pDebugInfoSolidShadowSplit );
@@ -610,38 +593,13 @@ deoglRenderPlanSkyLight &planSkyLight, deoglShadowMapper &shadowMapper ){
 	int i;
 	
 	// limitations
-	DebugTimer4Reset( plan, false );
-	
 	deoglCollideList &collideList = planSkyLight.GetCollideList();
-	#ifdef SKY_SHADOW_OCCMAP_VISIBLE
-	int componentCount;
-	#endif
 	
-	// occlusion test the content to remove as much as possible
+	// occlusion test the content to remove as much as possible. rendering the tests has
+	// been done ahead of time in the render plan sky light to avoid stalling
 #ifdef SKY_SHADOW_OCCMAP_VISIBLE
-	/* NOTE
-	 * in the collector test against all splits from smallest to largest. if an object is too small
-	 * in screen space for a split and no previous split considers it large enough skip the object
-	 * alltogether (if too small for split 0 it will be also too small for all larger splits).
-	 * add the object to the collide list of the matching split if large enough for this split
-	 * (with the correct lod that is).
-	 * testing the occ map then requires only testing objects not too small
-	 */
-	deoglOcclusionTest &occlusionTest = *planSkyLight.GetOcclusionTest();
-	occlusionTest.RemoveAllInputData();
-	
-	componentCount = collideList.GetComponentCount();
-	int c;
-	for( c=0; c<componentCount; c++ ){
-		collideList.GetComponentAt( c )->StartOcclusionTest( occlusionTest, referencePosition );
-	}
-	DebugTimer4Sample( plan, *pDebugInfoSolidShadowOcclusionStart, false );
-	
-	occlusionTest.UpdateVBO();
-	DebugTimer4Sample( plan, *pDebugInfoSolidShadowOcclusionVBO, true );
-	
-	GetRenderThread().GetRenderers().GetOcclusion().RenderTestsSkyLayer( plan, planSkyLight );
-	DebugTimer4Sample( plan, *pDebugInfoSolidShadowOcclusionTest, true );
+	planSkyLight.GetOcclusionTest()->UpdateResults();
+	collideList.RemoveCulledComponents();
 	DebugTimer3Sample( plan, *pDebugInfoSolidShadowOcclusion, false );
 #endif
 	
@@ -706,7 +664,6 @@ deoglRenderPlanSkyLight &planSkyLight, deoglShadowMapper &shadowMapper ){
 		OGL_CHECK( renderThread, pglClearBufferfi( GL_DEPTH_STENCIL, 0, 1.0f, 0xff ) );
 	}
 #endif
-	DebugTimer3Sample( plan, *pDebugInfoSolidShadowClear, true );
 	
 	// render all layers into the shadow map
 	DebugTimer4Reset( plan, true );
@@ -1093,6 +1050,8 @@ deoglRenderPlanSkyLight &planSkyLight, deoglShadowMapper &shadowMapper ){
 	}
 	
 	DebugTimer4Reset( plan, true );
+	planSkyLight.WaitFinishedGIUpdateRT();
+	
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	
 	const decMatrix matLig( decMatrix::CreateRotation( 0.0f, PI, 0.0f ) * planSkyLight.GetLayer()->GetMatrix() );
@@ -1425,10 +1384,6 @@ void deoglRenderLightSky::ResetDebugInfo(){
 	
 	pDebugInfoSolidShadow->Clear();
 	pDebugInfoSolidShadowOcclusion->Clear();
-	pDebugInfoSolidShadowOcclusionStart->Clear();
-	pDebugInfoSolidShadowOcclusionVBO->Clear();
-	pDebugInfoSolidShadowOcclusionTest->Clear();
-	pDebugInfoSolidShadowClear->Clear();
 	pDebugInfoSolidShadowSplit->Clear();
 	pDebugInfoSolidShadowSplitContent->Clear();
 	pDebugInfoSolidShadowSplitLODLevels->Clear();
@@ -1503,18 +1458,6 @@ void deoglRenderLightSky::pCleanUp(){
 	}
 	if( pDebugInfoSolidShadowOcclusion ){
 		pDebugInfoSolidShadowOcclusion->FreeReference();
-	}
-	if( pDebugInfoSolidShadowOcclusionStart ){
-		pDebugInfoSolidShadowOcclusionStart->FreeReference();
-	}
-	if( pDebugInfoSolidShadowOcclusionVBO ){
-		pDebugInfoSolidShadowOcclusionVBO->FreeReference();
-	}
-	if( pDebugInfoSolidShadowOcclusionTest ){
-		pDebugInfoSolidShadowOcclusionTest->FreeReference();
-	}
-	if( pDebugInfoSolidShadowClear ){
-		pDebugInfoSolidShadowClear->FreeReference();
 	}
 	if( pDebugInfoSolidShadowSplit ){
 		pDebugInfoSolidShadowSplit->FreeReference();

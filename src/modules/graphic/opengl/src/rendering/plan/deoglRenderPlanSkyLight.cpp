@@ -25,10 +25,10 @@
 #include "deoglRenderPlanSkyLight.h"
 #include "deoglRenderPlan.h"
 #include "parallel/deoglRPTSkyLightFindContent.h"
-#include "parallel/deoglRPTSkyLightGIPrepare.h"
+#include "parallel/deoglRPTSkyLightGIFindContent.h"
+#include "parallel/deoglRPTSkyLightGIUpdateRT.h"
 #include "../light/deoglRenderGI.h"
 #include "../light/deoglRenderLight.h"
-#include "../light/deoglRLSVisitorCollectElements.h"
 #include "../../deGraphicOpenGl.h"
 #include "../../collidelist/deoglCollideListComponent.h"
 #include "../../component/deoglRComponent.h"
@@ -39,6 +39,7 @@
 #include "../../occlusiontest/deoglOcclusionTest.h"
 #include "../../occlusiontest/deoglOcclusionTestPool.h"
 #include "../../rendering/deoglRenderCanvas.h"
+#include "../../rendering/deoglRenderOcclusion.h"
 #include "../../rendering/task/persistent/deoglPersistentRenderTaskOwner.h"
 #include "../../renderthread/deoglRenderThread.h"
 #include "../../renderthread/deoglRTRenderers.h"
@@ -90,7 +91,8 @@ pGIRenderTask( plan.GetRenderThread().GetPersistentRenderTaskPool() ),
 pGIRenderTaskAdd( plan.GetRenderThread(), pGIRenderTask ),
 pGIRenderTaskUpdateMarker( false ),
 pTaskFindContent( NULL ),
-pTaskGIPrepare( NULL )
+pTaskGIFindContent( NULL ),
+pTaskGIUpdateRT( NULL )
 {
 	pGIRenderTaskAdd.SetSkinShaderType( deoglSkinTexture::estComponentShadowOrthogonal );
 	pGIRenderTaskAdd.SetSolid( true );
@@ -228,47 +230,84 @@ void deoglRenderPlanSkyLight::StartFindContent(){
 		return;
 	}
 	
-	if( pTaskFindContent || pTaskGIPrepare ){
+	if( pTaskFindContent || pTaskGIFindContent || pTaskGIUpdateRT ){
 		DETHROW( deeInvalidParam );
 	}
 	
 	deParallelProcessing &pp = pPlan.GetRenderThread().GetOgl().GetGameEngine()->GetParallelProcessing();
 	SetOcclusionTest( pPlan.GetRenderThread().GetOcclusionTestPool().Get() );
 	
+	pOcclusionTest->RemoveAllInputData();
+	
 	pTaskFindContent = new deoglRPTSkyLightFindContent( *this );
 	pp.AddTaskAsync( pTaskFindContent );
 	
 	if( pPlan.GetUpdateGIState() ){
-		pTaskGIPrepare = new deoglRPTSkyLightGIPrepare( *this );
-		pp.AddTaskAsync( pTaskGIPrepare );
+		pTaskGIFindContent = new deoglRPTSkyLightGIFindContent( *this );
+		pp.AddTaskAsync( pTaskGIFindContent );
 	}
 }
 
-void deoglRenderPlanSkyLight::StartOcclusionTests(){
-}
-
-void deoglRenderPlanSkyLight::Prepare(){
-// 	if( ! pUseShadow ){
-// 		return;
-// 	}
-	
-	// TODO start render occlusion test. this is not so time consuming (<0.5ms) but still
-	//      reading back the results can be delayed
-}
-
 void deoglRenderPlanSkyLight::FinishPrepare(){
-	pWaitFinishedFindContent();
-	pWaitFinishedGIPrepare();
+	if( ! pLayer || ! pUseShadow ){
+		return;
+	}
 	
-// 	if( pPlan.GetUpdateGIState() ){
-// 		pPlan.GetRenderThread().GetRenderers().GetCanvas().ResetDebugInfoTimerGI( pPlan );
-// 		pPlan.GetRenderThread().GetRenderers().GetCanvas().SampleDebugInfoPlanPrepareGISkyShadowRenderTask( pPlan );
-// 	}
+	pWaitFinishedFindContent();
+	pWaitFinishedGIFindContent();
+	
+	// start the GI update render task parallel task. this will be waited on before rendering
+	if( pPlan.GetUpdateGIState() ){
+		pTaskGIUpdateRT = new deoglRPTSkyLightGIUpdateRT( *this );
+		pPlan.GetRenderThread().GetOgl().GetGameEngine()->GetParallelProcessing().AddTaskAsync( pTaskGIUpdateRT );
+	}
+	
+	// if occlusion test input data are present render the tests. reading back the result
+	// is delayed until used in the sky light renderer. this avoids stalling
+	if( pOcclusionTest->GetInputDataCount() > 0 ){
+		pOcclusionTest->UpdateVBO();
+		pPlan.GetRenderThread().GetRenderers().GetOcclusion().RenderTestsSkyLayer( pPlan, *this );
+	}
+}
+
+void deoglRenderPlanSkyLight::WaitFinishedGIUpdateRT(){
+	if( ! pTaskGIUpdateRT ){
+		return;
+	}
+	
+	pTaskGIUpdateRT->GetSemaphore().Wait();
+	
+	deoglRenderCanvas &rc = pPlan.GetRenderThread().GetRenderers().GetCanvas();
+	rc.SampleDebugInfoPlanPrepareSkyLightGIUpdateRenderTask( pPlan, pTaskGIUpdateRT->GetElapsedTime() );
+	
+	const int countAdded = pTaskGIUpdateRT->GetCountAdded();
+	const int countRemoved = pTaskGIUpdateRT->GetCountRemoved();
+	const int elapsedAdded = pTaskGIUpdateRT->GetElapsedAdded();
+	const int elapsedRemoved = pTaskGIUpdateRT->GetElapsedRemoved();
+	
+	pTaskGIUpdateRT->FreeReference();
+	pTaskGIUpdateRT= NULL;
+	
+	if( countAdded == 0 && countRemoved == 0 ){
+		return;
+	}
+	
+		decTimer timer;
+	// this call does modify a shader parameter block and can thus not be parallel
+	pGIRenderTask.PrepareForRender( pPlan.GetRenderThread() );
+	
+	pPlan.GetRenderThread().GetLogger().LogInfoFormat(
+		"GIUpdateRenderTask: owners=%d shaders=%d textures=%d vaos=%d instances=%d subinstances=%d (+%d -%d) [%dys; +%dys -%dys]",
+		pGIRenderTask.GetOwnerCount(), pGIRenderTask.GetShaderCount(),
+		pGIRenderTask.GetTotalTextureCount(), pGIRenderTask.GetTotalVAOCount(),
+		pGIRenderTask.GetTotalInstanceCount(), pGIRenderTask.GetTotalSubInstanceCount(),
+		countAdded, countRemoved, ( int )( timer.GetElapsedTime() * 1e6f ), elapsedAdded, elapsedRemoved );
 }
 
 void deoglRenderPlanSkyLight::CleanUp(){
 	pWaitFinishedFindContent();
-	pWaitFinishedGIPrepare();
+	pWaitFinishedGIFindContent();
+	WaitFinishedGIUpdateRT();
 	
 	pGICollideList.Clear();
 	pCollideList.Clear();
@@ -551,40 +590,18 @@ void deoglRenderPlanSkyLight::pWaitFinishedFindContent(){
 	pTaskFindContent = NULL;
 }
 
-void deoglRenderPlanSkyLight::pWaitFinishedGIPrepare(){
-	if( ! pTaskGIPrepare ){
+void deoglRenderPlanSkyLight::pWaitFinishedGIFindContent(){
+	if( ! pTaskGIFindContent ){
 		return;
 	}
 	
-	pTaskGIPrepare->GetSemaphore().Wait();
+	pTaskGIFindContent->GetSemaphore().Wait();
 	
 	deoglRenderCanvas &rc = pPlan.GetRenderThread().GetRenderers().GetCanvas();
-	rc.SampleDebugInfoPlanPrepareSkyLightGIFindContent( pPlan, pTaskGIPrepare->GetElapsedFindContent() );
-	rc.SampleDebugInfoPlanPrepareSkyLightGIUpdateRenderTask( pPlan, pTaskGIPrepare->GetElapsedUpdateRenderTask() );
+	rc.SampleDebugInfoPlanPrepareSkyLightGIFindContent( pPlan, pTaskGIFindContent->GetElapsedTime() );
 	
-	const int countAdded = pTaskGIPrepare->GetCountAdded();
-	const int countRemoved = pTaskGIPrepare->GetCountRemoved();
-	const int elapsedAdded = pTaskGIPrepare->GetElapsedAdded();
-	const int elapsedRemoved = pTaskGIPrepare->GetElapsedRemoved();
-	
-	pTaskGIPrepare->FreeReference();
-	pTaskGIPrepare = NULL;
-	
-	if( countAdded == 0 && countRemoved == 0 ){
-		return;
-	}
-	
-		decTimer timer;
-	// this call does modify a shader parameter block and can thus not be parallel
-	pGIRenderTask.PrepareForRender( pPlan.GetRenderThread() );
-	
-	pPlan.GetRenderThread().GetLogger().LogInfoFormat(
-		"GIUpdateRenderTask: owners=%d shaders=%d textures=%d vaos=%d instances=%d subinstances=%d (+%d -%d) [%dys; +%dys -%dys]",
-		pGIRenderTask.GetOwnerCount(), pGIRenderTask.GetShaderCount(),
-		pGIRenderTask.GetTotalTextureCount(), pGIRenderTask.GetTotalVAOCount(),
-		pGIRenderTask.GetTotalInstanceCount(), pGIRenderTask.GetTotalSubInstanceCount(),
-		countAdded, countRemoved, ( int )( timer.GetElapsedTime() * 1e6f ), elapsedAdded, elapsedRemoved );
-	
+	pTaskGIFindContent->FreeReference();
+	pTaskGIFindContent = NULL;
 }
 
 void deoglRenderPlanSkyLight::pGICalcShadowLayerParams(){

@@ -78,11 +78,12 @@ private:
 	int pDebugCountCanvasCanvasView;
 	
 	deoglDebugInformation *pDebugInfoPlanPrepare;
-	deoglDebugInformation *pDebugInfoPlanPrepareWorld;
+	deoglDebugInformation *pDebugInfoPlanPrepareEarlyWorld;
 	deoglDebugInformation *pDebugInfoPlanPrepareFindContent;
 	deoglDebugInformation *pDebugInfoPlanPrepareSkyLightFindContent;
 	deoglDebugInformation *pDebugInfoPlanPrepareSkyLightGIFindContent;
 	deoglDebugInformation *pDebugInfoPlanPrepareSkyLightGIUpdateRenderTask;
+	deoglDebugInformation *pDebugInfoPlanPrepareWorld;
 	deoglDebugInformation *pDebugInfoPlanPrepareGIUpdate;
 	deoglDebugInformation *pDebugInfoPlanPrepareCulling;
 	deoglDebugInformation *pDebugInfoPlanPrepareEnvMaps;
@@ -146,11 +147,12 @@ public:
 	void ClearAllDebugInfoPlanPrepare( deoglRenderPlan &plan );
 	
 	void SampleDebugInfoPlanPrepare( deoglRenderPlan &plan );
-	void SampleDebugInfoPlanPrepareWorld( deoglRenderPlan &plan );
+	void SampleDebugInfoPlanPrepareEarlyWorld( deoglRenderPlan &plan );
 	void SampleDebugInfoPlanPrepareFindContent( deoglRenderPlan &plan, float elapsed );
 	void SampleDebugInfoPlanPrepareSkyLightFindContent( deoglRenderPlan &plan, float elapsed );
 	void SampleDebugInfoPlanPrepareSkyLightGIFindContent( deoglRenderPlan &plan, float elapsed );
 	void SampleDebugInfoPlanPrepareSkyLightGIUpdateRenderTask( deoglRenderPlan &plan, float elapsed );
+	void SampleDebugInfoPlanPrepareWorld( deoglRenderPlan &plan );
 	void SampleDebugInfoPlanPrepareGIUpdate( deoglRenderPlan &plan );
 	void SampleDebugInfoPlanPrepareCulling( deoglRenderPlan &plan );
 	void SampleDebugInfoPlanPrepareEnvMaps( deoglRenderPlan &plan );

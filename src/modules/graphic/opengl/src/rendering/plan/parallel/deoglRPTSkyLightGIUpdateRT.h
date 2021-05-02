@@ -19,8 +19,8 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef _DEOGLRPTSKYLIGHTGIPREPARE_H_
-#define _DEOGLRPTSKYLIGHTGIPREPARE_H_
+#ifndef _DEOGLRPTSKYLIGHTGIUPDATERT_H_
+#define _DEOGLRPTSKYLIGHTGIUPDATERT_H_
 
 #include <dragengine/parallel/deParallelTask.h>
 #include <dragengine/threading/deSemaphore.h>
@@ -29,13 +29,12 @@ class deoglRenderPlanSkyLight;
 
 
 /**
- * Parallel task finding content.
+ * Parallel task update render task.
  */
-class deoglRPTSkyLightGIPrepare : public deParallelTask{
+class deoglRPTSkyLightGIUpdateRT : public deParallelTask{
 private:
 	deoglRenderPlanSkyLight &pPlan;
-	float pElapsedFindContent;
-	float pElapsedUpdateRenderTask;
+	float pElapsedTime;
 	int pCountAdded;
 	int pCountRemoved;
 	int pElapsedAdded;
@@ -47,10 +46,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create task. */
-	deoglRPTSkyLightGIPrepare( deoglRenderPlanSkyLight &plan );
+	deoglRPTSkyLightGIUpdateRT( deoglRenderPlanSkyLight &plan );
 	
 	/** Clean up task. */
-	virtual ~deoglRPTSkyLightGIPrepare();
+	virtual ~deoglRPTSkyLightGIUpdateRT();
 	/*@}*/
 	
 	
@@ -67,8 +66,7 @@ public:
 	virtual decString GetDebugName() const;
 	
 	/** Information for updating render task. */
-	inline float GetElapsedFindContent() const{ return pElapsedFindContent; }
-	inline float GetElapsedUpdateRenderTask() const{ return pElapsedUpdateRenderTask; }
+	inline float GetElapsedTime() const{ return pElapsedTime; }
 	inline int GetCountAdded() const{ return pCountAdded; }
 	inline int GetCountRemoved() const{ return pCountRemoved; }
 	inline int GetElapsedAdded() const{ return pElapsedAdded; }
@@ -77,12 +75,6 @@ public:
 	/** Finished semaphore. */
 	inline deSemaphore &GetSemaphore(){ return pSemaphore; }
 	/*@}*/
-	
-	
-	
-private:
-	void pFindContent();
-	void pUpdateRenderTask();
 };
 
 #endif

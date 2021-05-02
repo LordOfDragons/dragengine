@@ -469,10 +469,6 @@ void deoglRLight::SetMatrix( const decDMatrix &matrix ){
 
 
 
-void deoglRLight::UpdateConvexVolumeList(){
-	UpdateLightVolume();
-}
-
 bool deoglRLight::HasExtends() const{
 	/*if( pLight->GetType() == deLight::eltDirectional ){
 		return false;
@@ -480,30 +476,9 @@ bool deoglRLight::HasExtends() const{
 	return true;
 }
 
-const decDVector &deoglRLight::GetFullMinExtend(){
-	pUpdateFullExtends();
-	return pFullMinExtend;
-}
-
-const decDVector &deoglRLight::GetFullMaxExtend(){
-	pUpdateFullExtends();
-	return pFullMaxExtend;
-}
-
 void deoglRLight::SetDirtyFullExtends(){
 	pDirtyFullExtends = true;
 }
-
-const decDVector &deoglRLight::GetMinimumExtend(){
-	pUpdateExtends();
-	return pMinExtend;
-}
-
-const decDVector &deoglRLight::GetMaximumExtend(){
-	pUpdateExtends();
-	return pMaxExtend;
-}
-
 
 void deoglRLight::SetDirtyExtends(){
 	pDirtyExtends = true;
@@ -511,55 +486,6 @@ void deoglRLight::SetDirtyExtends(){
 }
 
 
-
-deoglDCollisionVolume *deoglRLight::GetCollisionVolume(){
-	if( ! pDirtyColVol ){
-		return pColVol;
-	}
-	
-	const decDVector lightPosition( pMatrix.GetPosition() );
-	deoglDCollisionVolume *newColVol = NULL;
-	
-	try{
-		// if there exists no light volume yet create a default collision volume
-		if( pConvexVolumeList->GetVolumeCount() == 0 ){
-			switch( pLightType ){
-			case deLight::eltPoint:
-				// create a sphere enclosing the point light
-				newColVol = new deoglDCollisionSphere( lightPosition, pRange );
-				break;
-				
-			default:
-				// create a sphere around the spot light. a frustum would be the best
-				// solution but currently the frustum is not able to test for collisions
-				// with another frustum
-				newColVol = new deoglDCollisionSphere( lightPosition, pRange );
-			}
-			
-		// otherwise calculate a box around the light volume list
-		}else{
-			pUpdateExtends();
-			const decDVector halfSize( ( pMaxExtend - pMinExtend ) * 0.5f );
-			newColVol = new deoglDCollisionBox( pMinExtend + halfSize, halfSize );
-		}
-		
-		// replace old collision volumes
-		if( pColVol ){
-			delete pColVol;
-		}
-		pColVol = newColVol;
-		
-	}catch( const deException & ){
-		if( newColVol ){
-			delete newColVol;
-		}
-		throw;
-	}
-	
-	pDirtyColVol = false;
-	
-	return pColVol;
-}
 
 void deoglRLight::SetDirtyCollisionVolume(){
 	pDirtyColVol = true;
@@ -594,117 +520,6 @@ void deoglRLight::SetLightVolumeDirty(){
 	}
 	
 	pRequiresPrepareForRender();
-}
-
-void deoglRLight::UpdateLightVolume(){
-	// NOTE Can be called indirectly from main thread during synchronization.
-	
-	if( ! pDirtyConvexVolumeList ){
-		return;
-	}
-	
-	deoglLightVolumeBuilder builder;
-	
-	// cropping produces unfortunately a concave volume which we can't use. to solve this
-	// a convex hull has to be calculated from the volume points. this is correctly done
-	// using a gift-wrap algorithm. for the time being though we simply calculate an axis
-	// aligned bounding box and clip the volume against it. this produces a result that
-	// is not as optimal as the gift-wrap but it's better than nothing for the time being
-//	decDVector boundingBoxMinExtend, boundingBoxMaxExtend;
-	
-//	builder.GetTransformedVolumeExtends( *pConvexVolumeList, pMatrix, boundingBoxMinExtend, boundingBoxMaxExtend );
-	
-	switch( pLightType ){
-	case deLight::eltPoint:
-		builder.BuildSphere( *pConvexVolumeList, decVector(), pRange );
-		break;
-		
-	case deLight::eltSpot:
-		builder.BuildCone( *pConvexVolumeList, decMatrix(), pRange,
-			pSpotAngle * 0.5f, pSpotAngle * pSpotRatio * 0.5f, 12 );
-		break;
-		
-	case deLight::eltProjector:
-		builder.BuildFrustum( *pConvexVolumeList, decMatrix(), pRange,
-			pSpotAngle * 0.5f, pSpotAngle * pSpotRatio * 0.5f );
-		break;
-	}
-	
-	if( pLightVolumeCropBox ){
-		const decDVector minExtend( pLightVolumeCropBox->GetPosition()
-			- pLightVolumeCropBox->GetHalfExtends() );
-		const decDVector maxExtend( pLightVolumeCropBox->GetPosition()
-			+ pLightVolumeCropBox->GetHalfExtends() );
-		
-		builder.CropByBoundingBox( *pConvexVolumeList,
-			pInverseMatrix.GetRotationMatrix(), minExtend, maxExtend );
-	}
-	
-//	builder.CropByBoundingBox( *pConvexVolumeList, invLightMatrix, boundingBoxMinExtend, boundingBoxMaxExtend );
-	
-	// optimizer stuff
-#if 0
-	if( ! pOptimizer ){
-		try{
-			pOptimizer = new deoglOptimizerLight( this, oglWorld );
-			if( ! pOptimizer ) DETHROW( deeOutOfMemory );
-			
-			if( lightType == deLight::eltPoint ){
-				pOptimizer->SetOptimizeShadowCaster( false );
-			}else{
-				pOptimizer->SetOptimizeShadowCaster( true );
-			}
-			
-			if( pLight->GetHintMovement() == deLight::emhStationary ){
-				pOptimizer->SetInitialWarmUpTime( 100 );
-				if( lightType == deLight::eltPoint ){
-					pOptimizer->SetMaximalVolumeCount( 200 );
-				}else{
-					pOptimizer->SetMaximalVolumeCount( 50 );
-				}
-				
-			}else{
-				pOptimizer->SetInitialWarmUpTime( 500 );
-				if( lightType == deLight::eltPoint ){
-					pOptimizer->SetMaximalVolumeCount( 100 );
-				}else{
-					pOptimizer->SetMaximalVolumeCount( 25 );
-				}
-			}
-			
-			pOptimizer->ResetAllOptimizations();
-			
-			pOgl->GetOptimizerManager()->AddOptimizer( pOptimizer );
-			
-		}catch( const deException & ){
-			if( pOptimizer ) delete pOptimizer;
-			throw;
-		}
-	}
-#endif
-	
-	// sanity check. if there is not a single volume in the list the chance is high the light volume
-	// becomes concave. we only write a warning here for the case we experiment during debugging
-	if( pConvexVolumeList->GetVolumeCount() > 1 ){
-		const decDVector position( pMatrix.GetPosition() );
-		pRenderThread.GetLogger().LogWarnFormat( "Light at (%g,%g,%g) has a light volume with %i volumes (potentially concave)",
-			position.x, position.y, position.z, pConvexVolumeList->GetVolumeCount() );
-	}
-	
-	// rebuild the light volume using the convex volume list
-	pLightVolume->CreateFrom( *pConvexVolumeList );
-	// we can not update the VBO here because this metho can be potentially called by the
-	// main thread during synchronization over detours
-	
-	// extends are usually dirty now
-	pDirtyExtends = true;
-	pDirtyCollideLists = true;
-	pDirtyColVol = true;
-	pDirtyTouching = true;
-	pRequiresPrepareForRender();
-	
-	// no more dirty
-	pDirtyConvexVolumeList = false;
 }
 
 
@@ -821,7 +636,14 @@ void deoglRLight::ClearOptimizer(){
 
 
 
-void deoglRLight::PrepareForRender( deoglRenderPlan &plan ){
+void deoglRLight::EarlyPrepareForRender(){
+	pUpdateFullExtends();
+	pUpdateExtends();
+	pUpdateLightVolume();
+	pUpdateCollisionVolume();
+}
+
+void deoglRLight::PrepareForRender(){
 	if( pDirtyPrepareLightCanvas ){
 		if( pLightCanvas ){
 			pLightCanvas->PrepareForRender();
@@ -837,10 +659,6 @@ void deoglRLight::PrepareForRender( deoglRenderPlan &plan ){
 	pCheckTouching();
 	
 	pShadowCaster->Update();
-	
-//DEBUG_RESET_TIMERS;
-	UpdateConvexVolumeList();
-//DEBUG_PRINT_TIMER( "UpdateConvexVolumeList" );
 	
 	// make sure the shadow caster is cleared of off dyamic shadow maps
 	//pShadowCaster->GetSolid().DropDynamic();
@@ -1716,7 +1534,7 @@ void deoglRLight::pUpdateExtends(){
 	pMinExtend = pFullMinExtend;
 	pMaxExtend = pFullMaxExtend;
 	
-	UpdateLightVolume();
+	pUpdateLightVolume();
 	
 	// if the light casts shadows determine a matching box using the light volume if existing
 	if( pCastShadows ){
@@ -1811,6 +1629,164 @@ void deoglRLight::pCheckTouching(){
 	// now the components can be safely removed in an efficient way
 	pStaticComponentList.RemoveAllMarked( true );
 	pDynamicComponentList.RemoveAllMarked( true );
+}
+
+void deoglRLight::pUpdateCollisionVolume(){
+	if( ! pDirtyColVol ){
+		return;
+	}
+	
+	const decDVector lightPosition( pMatrix.GetPosition() );
+	deoglDCollisionVolume *newColVol = NULL;
+	
+	try{
+		// if there exists no light volume yet create a default collision volume
+		if( pConvexVolumeList->GetVolumeCount() == 0 ){
+			switch( pLightType ){
+			case deLight::eltPoint:
+				// create a sphere enclosing the point light
+				newColVol = new deoglDCollisionSphere( lightPosition, pRange );
+				break;
+				
+			default:
+				// create a sphere around the spot light. a frustum would be the best
+				// solution but currently the frustum is not able to test for collisions
+				// with another frustum
+				newColVol = new deoglDCollisionSphere( lightPosition, pRange );
+			}
+			
+		// otherwise calculate a box around the light volume list
+		}else{
+			pUpdateExtends();
+			const decDVector halfSize( ( pMaxExtend - pMinExtend ) * 0.5f );
+			newColVol = new deoglDCollisionBox( pMinExtend + halfSize, halfSize );
+		}
+		
+		// replace old collision volumes
+		if( pColVol ){
+			delete pColVol;
+		}
+		pColVol = newColVol;
+		
+	}catch( const deException & ){
+		if( newColVol ){
+			delete newColVol;
+		}
+		throw;
+	}
+	
+	pDirtyColVol = false;
+}
+
+void deoglRLight::pUpdateLightVolume(){
+	// NOTE Can be called indirectly from main thread during synchronization.
+	
+	if( ! pDirtyConvexVolumeList ){
+		return;
+	}
+	
+	deoglLightVolumeBuilder builder;
+	
+	// cropping produces unfortunately a concave volume which we can't use. to solve this
+	// a convex hull has to be calculated from the volume points. this is correctly done
+	// using a gift-wrap algorithm. for the time being though we simply calculate an axis
+	// aligned bounding box and clip the volume against it. this produces a result that
+	// is not as optimal as the gift-wrap but it's better than nothing for the time being
+//	decDVector boundingBoxMinExtend, boundingBoxMaxExtend;
+	
+//	builder.GetTransformedVolumeExtends( *pConvexVolumeList, pMatrix, boundingBoxMinExtend, boundingBoxMaxExtend );
+	
+	switch( pLightType ){
+	case deLight::eltPoint:
+		builder.BuildSphere( *pConvexVolumeList, decVector(), pRange );
+		break;
+		
+	case deLight::eltSpot:
+		builder.BuildCone( *pConvexVolumeList, decMatrix(), pRange,
+			pSpotAngle * 0.5f, pSpotAngle * pSpotRatio * 0.5f, 12 );
+		break;
+		
+	case deLight::eltProjector:
+		builder.BuildFrustum( *pConvexVolumeList, decMatrix(), pRange,
+			pSpotAngle * 0.5f, pSpotAngle * pSpotRatio * 0.5f );
+		break;
+	}
+	
+	if( pLightVolumeCropBox ){
+		const decDVector minExtend( pLightVolumeCropBox->GetPosition()
+			- pLightVolumeCropBox->GetHalfExtends() );
+		const decDVector maxExtend( pLightVolumeCropBox->GetPosition()
+			+ pLightVolumeCropBox->GetHalfExtends() );
+		
+		builder.CropByBoundingBox( *pConvexVolumeList,
+			pInverseMatrix.GetRotationMatrix(), minExtend, maxExtend );
+	}
+	
+//	builder.CropByBoundingBox( *pConvexVolumeList, invLightMatrix, boundingBoxMinExtend, boundingBoxMaxExtend );
+	
+	// optimizer stuff
+#if 0
+	if( ! pOptimizer ){
+		try{
+			pOptimizer = new deoglOptimizerLight( this, oglWorld );
+			if( ! pOptimizer ) DETHROW( deeOutOfMemory );
+			
+			if( lightType == deLight::eltPoint ){
+				pOptimizer->SetOptimizeShadowCaster( false );
+			}else{
+				pOptimizer->SetOptimizeShadowCaster( true );
+			}
+			
+			if( pLight->GetHintMovement() == deLight::emhStationary ){
+				pOptimizer->SetInitialWarmUpTime( 100 );
+				if( lightType == deLight::eltPoint ){
+					pOptimizer->SetMaximalVolumeCount( 200 );
+				}else{
+					pOptimizer->SetMaximalVolumeCount( 50 );
+				}
+				
+			}else{
+				pOptimizer->SetInitialWarmUpTime( 500 );
+				if( lightType == deLight::eltPoint ){
+					pOptimizer->SetMaximalVolumeCount( 100 );
+				}else{
+					pOptimizer->SetMaximalVolumeCount( 25 );
+				}
+			}
+			
+			pOptimizer->ResetAllOptimizations();
+			
+			pOgl->GetOptimizerManager()->AddOptimizer( pOptimizer );
+			
+		}catch( const deException & ){
+			if( pOptimizer ) delete pOptimizer;
+			throw;
+		}
+	}
+#endif
+	
+	// sanity check. if there is not a single volume in the list the chance is high the light volume
+	// becomes concave. we only write a warning here for the case we experiment during debugging
+	if( pConvexVolumeList->GetVolumeCount() > 1 ){
+		const decDVector position( pMatrix.GetPosition() );
+		pRenderThread.GetLogger().LogWarnFormat( "Light at (%g,%g,%g) has a light volume with %i volumes (potentially concave)",
+			position.x, position.y, position.z, pConvexVolumeList->GetVolumeCount() );
+	}
+	
+	// rebuild the light volume using the convex volume list
+	pLightVolume->CreateFrom( *pConvexVolumeList );
+	// we can not update the VBO here because this metho can be potentially called by the
+	// main thread during synchronization over detours
+	
+	// extends are usually dirty now
+	pDirtyExtends = true;
+	pDirtyCollideLists = true;
+	pDirtyColVol = true;
+	pDirtyTouching = true;
+	pRequiresPrepareForRender();
+	
+	// no more dirty
+	pDirtyConvexVolumeList = false;
 }
 
 void deoglRLight::pRequiresPrepareForRender(){

@@ -85,7 +85,7 @@ void deoglCollideListComponent::SetCascadeMask( int mask ){
 }
 
 void deoglCollideListComponent::StartOcclusionTest( deoglOcclusionTest &occlusionTest,
-const decDVector &cameraPosition ){
+const decDVector &referencePosition ){
 	if( ! pComponent ){
 		DETHROW( deeInvalidParam );
 	}
@@ -102,8 +102,8 @@ const decDVector &cameraPosition ){
 	
 	pCulled = false;
 	occlusionTest.AddInputData(
-		( pComponent->GetMinimumExtend() - cameraPosition ).ToVector(),
-		( pComponent->GetMaximumExtend() - cameraPosition ).ToVector(), this );
+		( pComponent->GetMinimumExtend() - referencePosition ).ToVector(),
+		( pComponent->GetMaximumExtend() - referencePosition ).ToVector(), this );
 }
 
 void deoglCollideListComponent::OcclusionTestInvisible(){

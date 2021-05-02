@@ -361,17 +361,13 @@ void deoglRenderPlan::pBarePrepareRender(){
 	pPlanCamera();
 	SPECIAL_TIMER_PRINT("PrepareCamera")
 	
-	pWorld->PrepareForRender( *this );
 	pDisableLights = pWorld->GetDisableLights();
-	renderCanvas.SampleDebugInfoPlanPrepareWorld( *this );
-	SPECIAL_TIMER_PRINT("PrepareWorld")
-	
-	if( ! pNoReflections ){
-		pPlanEnvMaps(); // doing this here is safe and does not trash the occlusion maps
-	}
+	pWorld->EarlyPrepareForRender( *this );
+	renderCanvas.SampleDebugInfoPlanPrepareEarlyWorld( *this );
+	SPECIAL_TIMER_PRINT("EarlyPrepareWorld")
 	
 	pUpdateHTView();
-	SPECIAL_TIMER_PRINT("PrepareEnvHTV")
+	SPECIAL_TIMER_PRINT("PrepareHTV")
 	
 	// plan what we can plan already
 	pPlanDominance();
@@ -383,14 +379,22 @@ void deoglRenderPlan::pBarePrepareRender(){
 	pStartFindContent(); // starts parallel tasks
 	SPECIAL_TIMER_PRINT("Planning")
 	
-	pUpdateGI(); // runs in parallel with above started tasks
+	// these calls run in parallel with above started tasks
+	pWorld->PrepareForRender( *this );
+	renderCanvas.SampleDebugInfoPlanPrepareWorld( *this );
+	SPECIAL_TIMER_PRINT("PrepareWorld")
+	
+	if( ! pNoReflections ){
+		pPlanEnvMaps(); // requires world prepare to be fully done first
+		SPECIAL_TIMER_PRINT("PrepareEnv")
+	}
+	
+	pUpdateGI();
 	SPECIAL_TIMER_PRINT("UpdateGI")
 	
-	// visibility
-	pStartOcclusionTests();
+	pRenderOcclusionTests();
 	renderCanvas.SampleDebugInfoPlanPrepareCulling( *this );
-	
-	SPECIAL_TIMER_PRINT("Visibility")
+	SPECIAL_TIMER_PRINT("RenderOcclusionTests")
 	
 	// update the blended environment map to use for rendering
 	if( deoglSkinShader::REFLECTION_TEST_MODE == 2 ){
@@ -400,33 +404,44 @@ void deoglRenderPlan::pBarePrepareRender(){
 	renderCanvas.SampleDebugInfoPlanPrepareEnvMaps( *this );
 	SPECIAL_TIMER_PRINT("UpdateEnvMap")
 	
-	// update lod for visible elements
-	pPlanLODLevels();
-	
 	// update height terrain vbo
 	if( pHTView ){
 		renderCanvas.DebugTimer3Reset( *this, false );
 		pHTView->GetHeightTerrain().UpdateVBOs();
 		renderCanvas.SampleDebugInfoPlanPrepareHTViewVBOs( *this );
-	}
-	SPECIAL_TIMER_PRINT("Plan2")
-	
-	// prepare height terrain sectors
-	
-	/*
-	if( pHTView ){
+		
+		// prepare height terrain sectors
+		/*
 		pHTView->GetHeightTerrain()->UpdateVBOs();
-DEBUG_PRINT_TIMER( "RenderPlan: PrepareRender: Update height terrain vbos" );
+		DEBUG_PRINT_TIMER( "RenderPlan: PrepareRender: Update height terrain vbos" );
 		
 		pHTView->DetermineVisibilityUsing( &frustum );
 		pHTView->UpdateLODLevels( pCameraPosition.ToVector() );
-DEBUG_PRINT_TIMER( "RenderPlan: PrepareRender: Update height terrain" );
+		DEBUG_PRINT_TIMER( "RenderPlan: PrepareRender: Update height terrain" );
+		*/
 	}
-	*/
 	
-	// update dynamic skins and masked rendering if required
+	// update lod for visible elements
+	pPlanLODLevels();
+	
+	SPECIAL_TIMER_PRINT("Plan2")
+	
+	// prepare particles for rendering
+	const deoglParticleEmitterInstanceList &particleEmitterList = pCollideList.GetParticleEmitterList();
+	const int particleEmitterCount = particleEmitterList.GetCount();
 	int i;
 	
+	for( i=0; i<particleEmitterCount; i++ ){
+		particleEmitterList.GetAt( i )->PrepareForRender();
+	}
+	SPECIAL_TIMER_PRINT("PrepareForRenderParticle")
+	
+	// finish occlusion testing. we can not do this later since this usually removes a large
+	// quantity of elements. processing those below just to drop them later on is not helping
+	pFinishOcclusionTests();
+	SPECIAL_TIMER_PRINT("FinishOcclusionTests")
+	
+	// update dynamic skins and masked rendering if required
 	const int componentCount = pCollideList.GetComponentCount();
 	for( i=0; i<componentCount; i++ ){
 		deoglRComponent &oglComponent = *pCollideList.GetComponentAt( i )->GetComponent();
@@ -447,15 +462,6 @@ DEBUG_PRINT_TIMER( "RenderPlan: PrepareRender: Update height terrain" );
 	pBuildRenderPlan();
 	renderCanvas.SampleDebugInfoPlanPrepareBuildPlan( *this );
 	SPECIAL_TIMER_PRINT("PrepareRenderPlan")
-	
-	// prepare particles for rendering
-	const deoglParticleEmitterInstanceList &particleEmitterList = pCollideList.GetParticleEmitterList();
-	const int particleEmitterCount = particleEmitterList.GetCount();
-	
-	for( i=0; i<particleEmitterCount; i++ ){
-		particleEmitterList.GetAt( i )->PrepareForRender();
-	}
-	SPECIAL_TIMER_PRINT("PrepareForRenderParticle")
 	
 	// finish preparations
 	for( i=0; i<pSkyLightCount; i++ ){
@@ -1127,7 +1133,7 @@ void deoglRenderPlan::pPlanEnvMaps(){
 	}
 }
 
-void deoglRenderPlan::pStartOcclusionTests(){
+void deoglRenderPlan::pRenderOcclusionTests(){
 	INIT_SPECIAL_TIMING
 	
 	pWaitFinishedFindContent();
@@ -1136,56 +1142,40 @@ void deoglRenderPlan::pStartOcclusionTests(){
 	// debug information if demanded
 	pDebugVisibleNoCull();
 	
-	
-	
-	const deoglConfiguration &config = pRenderThread.GetConfiguration();
-	
-	if( pOcclusionTest->GetInputDataCount() > 0 ){
-		pOcclusionTest->UpdateVBO();
-		if( pDebug ){
-			pDebug->IncrementOccTestCount( pOcclusionTest->GetInputDataCount() );
-		}
-	}
-	
-	if( config.GetDebugNoCulling() ){
+	if( pRenderThread.GetConfiguration().GetDebugNoCulling() ){
 		pSkyVisible = true;
 		
 	}else{
 		// determine if height terrain and sky are visible
 		pCheckOutsideVisibility();
-// DEBUG_PRINT_TIMER( "RenderPlan.PrepareRender: Check outside visibility" );
 		
-		// use occlusion testing to cull components and lights
-		// 
-		// ( lod levels of components have to be calculated already here for the case they are rendered )
-		// 
-		// in the first stage coarse grain occlusion tests are done. these tests are supposed to figure out
-		// which elements and lights are potentially visible.
-		// 
-		// in the second stage fine grain occlusion tests are done. for this all elements and lights passing
-		// the first stage fill in another set of occlusion tests if required to determine precisely what
-		// has to be rendered. only some objects and lights require such an additional set of tests. typically
-		// these are large, static components where additional tests help to not render more faces than
-		// possible with the coarse grain tests. ( after the tests have been rendered there might be a chance
-		// to do some other small work before fetching the results ).
-		
-		// if there are no input points skip the test
-		
+		// render occlusion tests if there is input data. results are read back in
+		// pFinishOcclusionTests to avoid stalling
 		if( pOcclusionTest->GetInputDataCount() > 0 ){
+			pOcclusionTest->UpdateVBO();
+			if( pDebug ){
+				pDebug->IncrementOccTestCount( pOcclusionTest->GetInputDataCount() );
+			}
+			SPECIAL_TIMER_PRINT("> UpdateVBO")
+			
 			pRenderThread.GetRenderers().GetOcclusion().RenderTestsCamera( *this );
+			SPECIAL_TIMER_PRINT("> Render")
 		}
-// DEBUG_PRINT_TIMER( "RenderPlan.PrepareRender: Occlusion Testing" );
+	}
+}
+
+void deoglRenderPlan::pFinishOcclusionTests(){
+	if( pRenderThread.GetConfiguration().GetDebugNoCulling() ){
+		return;
 	}
 	
-	// sky lights
-	int i;
-	for( i=0; i<pSkyLightCount; i++ ){
-		( ( deoglRenderPlanSkyLight* )pSkyLights.GetAt( i ) )->StartOcclusionTests();
+	// occlusion tests have been rendered in pRenderOcclusionTests to avoid stalling
+	if( pOcclusionTest->GetInputDataCount() > 0 ){
+		pOcclusionTest->UpdateResults();
+		pCollideList.RemoveCulledElements();
 	}
 	
-	// debug
 	pDebugVisibleCulled();
-	SPECIAL_TIMER_PRINT("> RenderTestsCamera")
 }
 
 void deoglRenderPlan::pDebugPrepare(){
@@ -2008,12 +1998,6 @@ void deoglRenderPlan::pBuildRenderPlan(){
 		pMaskedPlans[ i ]->SetStencilMask( i + 1 );
 	}
 	SPECIAL_TIMER_PRINT(">Misc")
-	
-	// build sky light plan
-	for( i=0; i<pSkyLightCount; i++ ){
-		( ( deoglRenderPlanSkyLight* )pSkyLights.GetAt( i ) )->Prepare();
-	}
-	SPECIAL_TIMER_PRINT(">SkyLight")
 	
 	// first let's simply print out the number of lights and what
 	// a conservative assignment would cause

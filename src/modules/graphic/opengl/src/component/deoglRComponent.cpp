@@ -1210,6 +1210,7 @@ void deoglRComponent::PrepareForRender( deoglRenderPlan &plan ){
 	pPrepareSkinStateRenderables();
 	pPrepareSolidity();
 	
+	pPrepareParamBlocks();
 	pPrepareTextureTUCs();
 	pPrepareTextureParamBlocks(); // has to come after pPrepareTextureTUCs
 	
@@ -2083,6 +2084,10 @@ void deoglRComponent::pPrepareLODVBOs(){
 }
 
 void deoglRComponent::pPrepareParamBlocks(){
+	if( ! deoglSkinShader::USE_SHARED_SPB ){
+		return;
+	}
+	
 	if( ! pParamBlockSpecial ){
 		pParamBlockSpecial = deoglSkinShader::CreateSPBSpecial( pRenderThread );
 	}

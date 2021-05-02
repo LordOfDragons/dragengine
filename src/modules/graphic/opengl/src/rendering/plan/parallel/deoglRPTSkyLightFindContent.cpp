@@ -23,13 +23,13 @@
 #include <string.h>
 
 #include "deoglRPTSkyLightFindContent.h"
+#include "deoglRLSVisitorCollectElements.h"
 #include "../deoglRenderPlan.h"
 #include "../deoglRenderPlanSkyLight.h"
 #include "../../../deGraphicOpenGl.h"
 #include "../../../collidelist/deoglCollideListComponent.h"
 #include "../../../collidelist/deoglCollideListLight.h"
 #include "../../../envmap/deoglEnvironmentMap.h"
-#include "../../../rendering/light/deoglRLSVisitorCollectElements.h"
 #include "../../../renderthread/deoglRenderThread.h"
 #include "../../../utils/collision/deoglDCollisionSphere.h"
 #include "../../../world/deoglRWorld.h"
@@ -83,6 +83,9 @@ void deoglRPTSkyLightFindContent::Run(){
 		visitor.InitFromFrustum( pPlan.GetPlan(), *pPlan.GetLayer(), 2000.0f );
 		visitor.SetCullLayerMask( pPlan.GetPlan().GetUseLayerMask() );
 		visitor.SetLayerMask( pPlan.GetPlan().GetLayerMask() );
+		
+		visitor.AddOcclusionTestInputData( pPlan.GetOcclusionTest(),
+			pPlan.GetPlan().GetWorld()->GetReferencePosition() );
 		
 		const int shadowMapSize = pPlan.GetPlan().GetShadowSkySize();
 		const int shadowLayerCount = pPlan.GetShadowLayerCount();

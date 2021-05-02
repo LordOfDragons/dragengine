@@ -230,15 +230,16 @@ void deoglPlanVisitorCullElements::VisitNode( deoglDOctree *node, int intersecti
 	count = sonode.GetComponentCount();
 	
 	for( i=0; i<count; i++ ){
-		deoglRComponent * const component = sonode.GetComponentAt( i );
+		deoglRComponent * const addComponent = sonode.GetComponentAt( i );
+		const deoglRComponent &component = *addComponent;
 		
-		const decDVector &minExtend = component->GetMinimumExtend();
-		const decDVector &maxExtend = component->GetMaximumExtend();
+		const decDVector &minExtend = component.GetMinimumExtend();
+		const decDVector &maxExtend = component.GetMaximumExtend();
 		
 		// cull using layer mask if required. components with empty layer mask never match
 		// and thus are never culled
-		if( pCullLayerMask && component->GetLayerMask().IsNotEmpty()
-		&& pLayerMask.MatchesNot( component->GetLayerMask() ) ){
+		if( pCullLayerMask && component.GetLayerMask().IsNotEmpty()
+		&& pLayerMask.MatchesNot( component.GetLayerMask() ) ){
 			continue;
 		}
 		
@@ -261,18 +262,18 @@ void deoglPlanVisitorCullElements::VisitNode( deoglDOctree *node, int intersecti
 		const float radius = ( float )( ( maxExtend - minExtend ).Length() * 0.5 );
 		const float componentDistance = ( float )( ( center - cameraPosition ) * pCameraView ) - radius;
 		
-		if( componentDistance > ( radius * component->GetLODErrorScaling() ) * pErrorScaling ){
+		if( componentDistance > ( radius * component.GetLODErrorScaling() ) * pErrorScaling ){
 			continue;
 		}
 		
 		// cull dynamic if required
 		//if( pCullDynamicComponents && ! component->GetStatic() ){
-		if( pCullDynamicComponents && ! component->GetRenderStatic() ){
+		if( pCullDynamicComponents && ! component.GetRenderStatic() ){
 			continue;
 		}
 		
 		// add component and add occlusion test input
-		collideList.AddComponent( component )->StartOcclusionTest( occlusionTest, cameraPosition );
+		collideList.AddComponent( addComponent )->StartOcclusionTest( occlusionTest, cameraPosition );
 	}
 	
 	
@@ -280,18 +281,19 @@ void deoglPlanVisitorCullElements::VisitNode( deoglDOctree *node, int intersecti
 	count = sonode.GetBillboardList().GetCount();
 	
 	for( i=0; i<count; i++ ){
-		deoglRBillboard * const billboard = sonode.GetBillboardList().GetAt( i );
+		deoglRBillboard * const addBillboard = sonode.GetBillboardList().GetAt( i );
+		const deoglRBillboard &billboard = *addBillboard;
 		
 		// cull using layer mask if required. billboards with empty layer mask never match
 		// and thus are never culled
-		if( pCullLayerMask && billboard->GetLayerMask().IsNotEmpty()
-		&& pLayerMask.MatchesNot( billboard->GetLayerMask() ) ){
+		if( pCullLayerMask && billboard.GetLayerMask().IsNotEmpty()
+		&& pLayerMask.MatchesNot( billboard.GetLayerMask() ) ){
 			continue;
 		}
 		
 		// cull using cull volume if required
-		const decDVector &minExtend = billboard->GetMinimumExtend();
-		const decDVector &maxExtend = billboard->GetMaximumExtend();
+		const decDVector &minExtend = billboard.GetMinimumExtend();
+		const decDVector &maxExtend = billboard.GetMaximumExtend();
 		
 		if( cullWithVolume ){
 			// possible optmizations:
@@ -316,7 +318,7 @@ void deoglPlanVisitorCullElements::VisitNode( deoglDOctree *node, int intersecti
 		}
 		
 		// add billboard
-		collideList.AddBillboard( billboard );
+		collideList.AddBillboard( addBillboard );
 	}
 	
 	
@@ -325,30 +327,32 @@ void deoglPlanVisitorCullElements::VisitNode( deoglDOctree *node, int intersecti
 	
 	if( intersection == deoglDCollisionDetection::eirInside ){
 		for( i=0; i<count; i++ ){
-			deoglRLight * const light = sonode.GetLightAt( i );
-		
-			if( pCullLayerMask && light->GetLayerMask().IsNotEmpty()
-			&& pLayerMask.MatchesNot( light->GetLayerMask() ) ){
+			deoglRLight * const addLight = sonode.GetLightAt( i );
+			const deoglRLight &light = *addLight;
+			
+			if( pCullLayerMask && light.GetLayerMask().IsNotEmpty()
+			&& pLayerMask.MatchesNot( light.GetLayerMask() ) ){
 				continue;
 			}
 			
-			collideList.AddLight( light )->StartOcclusionTest( occlusionTest, cameraPosition );
+			collideList.AddLight( addLight )->StartOcclusionTest( occlusionTest, cameraPosition );
 		}
 		
 	}else{
 		for( i=0; i<count; i++ ){
-			deoglRLight * const light = sonode.GetLightAt( i );
+			deoglRLight * const addLight = sonode.GetLightAt( i );
+			const deoglRLight &light = *addLight;
 			
-			if( pCullLayerMask && light->GetLayerMask().IsNotEmpty()
-			&& pLayerMask.MatchesNot( light->GetLayerMask() ) ){
+			if( pCullLayerMask && light.GetLayerMask().IsNotEmpty()
+			&& pLayerMask.MatchesNot( light.GetLayerMask() ) ){
 				continue;
 			}
 			
-			if( ! light->GetCollisionVolume()->VolumeHitsVolume( pFrustum ) ){
+			if( ! light.GetCollisionVolume()->VolumeHitsVolume( pFrustum ) ){
 				continue;
 			}
 			
-			collideList.AddLight( light )->StartOcclusionTest( occlusionTest, cameraPosition );
+			collideList.AddLight( addLight )->StartOcclusionTest( occlusionTest, cameraPosition );
 		}
 	}
 	
@@ -360,28 +364,30 @@ void deoglPlanVisitorCullElements::VisitNode( deoglDOctree *node, int intersecti
 	
 	if( intersection == deoglDCollisionDetection::eirInside ){
 		for( i=0; i<count; i++ ){
-			deoglRParticleEmitterInstance * const instance = nodeParticleEmitterInstanceList.GetAt( i );
+			deoglRParticleEmitterInstance * const addInstance = nodeParticleEmitterInstanceList.GetAt( i );
+			const deoglRParticleEmitterInstance &instance = *addInstance;
 		
-			if( pCullLayerMask && instance->GetLayerMask().IsNotEmpty()
-			&& pLayerMask.MatchesNot( instance->GetLayerMask() ) ){
+			if( pCullLayerMask && instance.GetLayerMask().IsNotEmpty()
+			&& pLayerMask.MatchesNot( instance.GetLayerMask() ) ){
 				continue;
 			}
 			
-			clistParticleEmitterInstanceList.Add( instance );
+			clistParticleEmitterInstanceList.Add( addInstance );
 		}
 		
 	}else{
 		for( i=0; i<count; i++ ){
-			deoglRParticleEmitterInstance * const instance = nodeParticleEmitterInstanceList.GetAt( i );
+			deoglRParticleEmitterInstance * const addInstance = nodeParticleEmitterInstanceList.GetAt( i );
+			const deoglRParticleEmitterInstance &instance = *addInstance;
 			
-			if( pCullLayerMask && instance->GetLayerMask().IsNotEmpty()
-			&& pLayerMask.MatchesNot( instance->GetLayerMask() ) ){
+			if( pCullLayerMask && instance.GetLayerMask().IsNotEmpty()
+			&& pLayerMask.MatchesNot( instance.GetLayerMask() ) ){
 				continue;
 			}
 			
-			box.SetFromExtends( instance->GetMinExtend(), instance->GetMaxExtend() );
+			box.SetFromExtends( instance.GetMinExtend(), instance.GetMaxExtend() );
 			if( pFrustum->BoxHitsFrustum( &box ) ){
-				clistParticleEmitterInstanceList.Add( instance );
+				clistParticleEmitterInstanceList.Add( addInstance );
 			}
 		}
 	}

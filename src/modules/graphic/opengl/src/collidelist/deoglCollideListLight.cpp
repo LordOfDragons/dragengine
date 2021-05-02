@@ -149,8 +149,6 @@ const decDVector &cameraPosition ){
 	
 	pCulled = false;
 	
-	pLight->UpdateLightVolume();
-	
 	occlusionTest.AddInputData(
 		( pLight->GetMinimumExtend() - cameraPosition ).ToVector(),
 		( pLight->GetMaximumExtend() - cameraPosition ).ToVector(), this );

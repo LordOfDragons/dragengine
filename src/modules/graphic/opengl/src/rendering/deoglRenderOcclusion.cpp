@@ -410,8 +410,6 @@ void deoglRenderOcclusion::RenderTestsCamera( deoglRenderPlan &plan ){
 	}
 	
 	deoglRenderPlanDebug * const renderPlanDebug = plan.GetDebug();
-	decMatrix matrixProjection = plan.GetFrustumMatrix(); // occlusion uses linear depth: always non-infinite projection matrix 
-	decMatrix matrixCamera = plan.GetRefPosCameraMatrix();
 	
 	decTimer timer;
 	if( renderPlanDebug ){
@@ -436,6 +434,9 @@ void deoglRenderOcclusion::RenderTestsCamera( deoglRenderPlan &plan ){
 	
 	// update render parameter block
 	DEBUG_PRINT_TIMER( "Entering Render Occlusion Map" );
+	decMatrix matrixCamera( plan.GetRefPosCameraMatrix() );
+	decMatrix matrixProjection( plan.GetFrustumMatrix() ); // occlusion uses linear depth: always non-infinite projection matrix 
+	
 	pRenderParamBlock->MapBuffer();
 	try{
 		// 0: pMatrixVP[ 0 ]
@@ -466,6 +467,7 @@ void deoglRenderOcclusion::RenderTestsCamera( deoglRenderPlan &plan ){
 	}else{
 		RenderOcclusionMap( plan );
 	}
+	DEBUG_PRINT_TIMER( "Render occlusion map" );
 	
 	// render visibility tests
 	matrixProjection.a33 = zscale * 2.0f;
@@ -475,8 +477,7 @@ void deoglRenderOcclusion::RenderTestsCamera( deoglRenderPlan &plan ){
 	
 	RenderOcclusionTests( *plan.GetOcclusionTest(), *plan.GetOcclusionMap(),
 		plan.GetOcclusionMapBaseLevel(), -1.0f, matrixCamera );
-	plan.GetCollideList().RemoveCulledElements();
-	DEBUG_PRINT_TIMER( "End tests and remove invisible" );
+	DEBUG_PRINT_TIMER( "Render tests" );
 	if( renderPlanDebug ){
 		renderPlanDebug->SetOccTestTime( timer.GetElapsedTime() );
 	}
@@ -594,38 +595,34 @@ deoglRenderPlanSkyLight &planSkyLight ){
 		return;
 	}
 	
-	deoglRSkyInstanceLayer &skyLayer = *planSkyLight.GetLayer();
-	deoglCollideList &collideList = planSkyLight.GetCollideList();
-	deoglOcclusionMap &occlusionMap = *plan.GetOcclusionMap();
-	const int baselevel = plan.GetOcclusionMapBaseLevel();
+	// calculate the camera matrix fitting around all splits
+	const decDVector &referencePosition = plan.GetWorld()->GetReferencePosition();
 	const decVector &minExtend = planSkyLight.GetFrustumBoxMinExtend();
 	const decVector &maxExtend = planSkyLight.GetFrustumBoxMaxExtend();
-	
-	const decDVector &referencePosition = plan.GetWorld()->GetReferencePosition();
 	const decDVector &camPos = plan.GetCameraPosition();
-	decMatrix matrixCamera, matrixCamera2;
-	decVector position, scale;
 	
-	// calculate the camera matrix fitting around all splits
-	const decMatrix matLig = decMatrix::CreateRotation( 0.0f, PI, 0.0f ) * skyLayer.GetMatrix();
+	const decMatrix matLig( decMatrix::CreateRotation( 0.0f, PI, 0.0f )
+		* planSkyLight.GetLayer()->GetMatrix() );
 	
-	position.x = ( minExtend.x + maxExtend.x ) * 0.5f;
-	position.y = ( minExtend.y + maxExtend.y ) * 0.5f;
-	position.z = ( minExtend.z + maxExtend.z ) * 0.5f;
-	position = ( camPos - referencePosition ).ToVector() + ( matLig * position );
+	const decVector position( ( camPos - referencePosition ).ToVector() + ( matLig.Transform(
+		( minExtend.x + maxExtend.x ) * 0.5f, ( minExtend.y + maxExtend.y ) * 0.5f,
+		( minExtend.z + maxExtend.z ) * 0.5f ) ) );
 	
-	scale.x = 2.0f / ( maxExtend.x - minExtend.x );
-	scale.y = 2.0f / ( maxExtend.y - minExtend.y );
-	scale.z = 2.0f / ( maxExtend.z - minExtend.z );
+	const decVector scale( 2.0f / ( maxExtend.x - minExtend.x ),
+		2.0f / ( maxExtend.y - minExtend.y ), 2.0f / ( maxExtend.z - minExtend.z ) );
 	
-	matrixCamera = decMatrix::CreateCamera( position, matLig.TransformView(), matLig.TransformUp() ) * decMatrix::CreateScale( scale );
-	matrixCamera2 = matrixCamera.Invert() * decMatrix::CreateTranslation( ( referencePosition - camPos ).ToVector() ) * plan.GetOcclusionTestMatrix();
+	const decMatrix matrixCamera(
+		decMatrix::CreateCamera( position, matLig.TransformView(), matLig.TransformUp() )
+		* decMatrix::CreateScale( scale ) );
+	
+	const decMatrix matrixCamera2( matrixCamera.Invert()
+		* decMatrix::CreateTranslation( ( referencePosition - camPos ).ToVector() )
+		* plan.GetOcclusionTestMatrix() );
 	DEBUG_PRINT_TIMER( "Prepare" );
 	
-	RenderOcclusionTestsSun( *planSkyLight.GetOcclusionTest(), occlusionMap,
-		baselevel, -100.0f, matrixCamera, -1.0f, matrixCamera2, plan );
-	collideList.RemoveCulledComponents();
-	DEBUG_PRINT_TIMER( "End tests and remove invisible" );
+	RenderOcclusionTestsSun( *planSkyLight.GetOcclusionTest(), *plan.GetOcclusionMap(),
+		plan.GetOcclusionMapBaseLevel(), -100.0f, matrixCamera, -1.0f, matrixCamera2, plan );
+	DEBUG_PRINT_TIMER( "Render" );
 }
 
 void deoglRenderOcclusion::RenderOcclusionMap( deoglRenderPlan &plan ){
@@ -870,11 +867,6 @@ deoglOcclusionMap &occlusionMap, int baselevel, float clipNear, const decMatrix 
 		OGL_CHECK( renderThread, glDrawArrays( GL_POINTS, 0, occlusionTest.GetInputDataCount() ) );
 		OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
 	}
-	
-	// read back results
-	occlusionTest.UpdateResults();
-	DEBUG_PRINT_TIMER( "Update Results" );
-	DEBUG_PRINT_TIMER2( "Time until update results" );
 }
 
 void deoglRenderOcclusion::RenderOcclusionTestsSun( deoglOcclusionTest &occlusionTest,
@@ -1006,10 +998,6 @@ float clipNear2, const decMatrix &matrixCamera2, deoglRenderPlan &plan ){
 		OGL_CHECK( renderThread, glDrawArrays( GL_POINTS, 0, occlusionTest.GetInputDataCount() ) );
 		OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
 	}
-	
-	// read back results
-	occlusionTest.UpdateResults();
-	DEBUG_PRINT_TIMER( "Update Results" );
 }
 
 void deoglRenderOcclusion::RenderOcclusionTestsDual( deoglOcclusionTest &occlusionTest,

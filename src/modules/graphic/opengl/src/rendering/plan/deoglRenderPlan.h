@@ -709,7 +709,8 @@ private:
 	void pUpdateGI();
 	void pPlanLODLevels();
 	void pPlanEnvMaps();
-	void pStartOcclusionTests();
+	void pRenderOcclusionTests();
+	void pFinishOcclusionTests();
 	
 	void pDebugPrepare();
 	void pDebugVisibleNoCull();

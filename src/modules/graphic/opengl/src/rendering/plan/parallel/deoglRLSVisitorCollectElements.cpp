@@ -23,22 +23,22 @@
 #include <string.h>
 
 #include "deoglRLSVisitorCollectElements.h"
-#include "../plan/deoglRenderPlan.h"
-#include "../../collidelist/deoglCollideList.h"
-#include "../../collidelist/deoglCollideListComponent.h"
-#include "../../world/deoglWorldOctree.h"
-#include "../../billboard/deoglRBillboard.h"
-#include "../../component/deoglRComponent.h"
-#include "../../light/deoglRLight.h"
-#include "../../particle/deoglParticleEmitterInstance.h"
-#include "../../sky/deoglRSkyLayer.h"
-#include "../../sky/deoglRSkyInstanceLayer.h"
-#include "../../utils/convexhull/deoglConvexHull2D.h"
-#include "../../utils/collision/deoglCollisionBox.h"
-#include "../../utils/collision/deoglDCollisionVolume.h"
-#include "../../utils/collision/deoglDCollisionSphere.h"
-#include "../../utils/collision/deoglDCollisionBox.h"
-#include "../../utils/collision/deoglDCollisionDetection.h"
+#include "../../plan/deoglRenderPlan.h"
+#include "../../../collidelist/deoglCollideList.h"
+#include "../../../collidelist/deoglCollideListComponent.h"
+#include "../../../world/deoglWorldOctree.h"
+#include "../../../billboard/deoglRBillboard.h"
+#include "../../../component/deoglRComponent.h"
+#include "../../../light/deoglRLight.h"
+#include "../../../particle/deoglParticleEmitterInstance.h"
+#include "../../../sky/deoglRSkyLayer.h"
+#include "../../../sky/deoglRSkyInstanceLayer.h"
+#include "../../../utils/convexhull/deoglConvexHull2D.h"
+#include "../../../utils/collision/deoglCollisionBox.h"
+#include "../../../utils/collision/deoglDCollisionVolume.h"
+#include "../../../utils/collision/deoglDCollisionSphere.h"
+#include "../../../utils/collision/deoglDCollisionBox.h"
+#include "../../../utils/collision/deoglDCollisionDetection.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -56,7 +56,8 @@ pSplitCount( 0 ),
 pShaftFar( 0.0f ),
 pFrustumPlaneCount( 0 ),
 pEdgeCount( 0 ),
-pCullLayerMask( false )
+pCullLayerMask( false ),
+pOcclusionTest( NULL )
 {
 	int i;
 	for( i=0; i<6; i++ ){
@@ -386,6 +387,12 @@ const decVector &maxExtend, const decVector2 &sizeThreshold ){
 	pSplitCount++;
 }
 
+void deoglRLSVisitorCollectElements::AddOcclusionTestInputData(
+deoglOcclusionTest *occlusionTest, const decDVector &referencePosition ){
+	pOcclusionTest = occlusionTest;
+	pReferencePosition = referencePosition;
+}
+
 void deoglRLSVisitorCollectElements::VisitWorldOctree( deoglWorldOctree &octree ){
 	octree.VisitNodesColliding( this, pBoundaryBoxMinExtend, pBoundaryBoxMaxExtend );
 }
@@ -409,43 +416,48 @@ void deoglRLSVisitorCollectElements::VisitNode( deoglDOctree *node, int ){
 	count = sonode.GetComponentCount();
 	
 	for( i=0; i<count; i++ ){
-		deoglRComponent * const component = sonode.GetComponentAt( i );
+		deoglRComponent * const addComponent = sonode.GetComponentAt( i );
+		const deoglRComponent &component = *addComponent;
 		
 		// cull using layer mask if required. components with empty layer mask never match
 		// and thus are never culled
-		if( pCullLayerMask && component->GetLayerMask().IsNotEmpty()
-		&& pLayerMask.MatchesNot( component->GetLayerMask() ) ){
+		if( pCullLayerMask && component.GetLayerMask().IsNotEmpty()
+		&& pLayerMask.MatchesNot( component.GetLayerMask() ) ){
 			continue;
 		}
 		
-		if( ! TestAxisAlignedBox( component->GetMinimumExtend(), component->GetMaximumExtend(), cascadeMask ) ){
+		if( ! TestAxisAlignedBox( component.GetMinimumExtend(), component.GetMaximumExtend(), cascadeMask ) ){
 			continue;
 		}
 		
-		deoglCollideListComponent &clcomponent = *pCollideList.AddComponent( component );
+		deoglCollideListComponent &clcomponent = *pCollideList.AddComponent( addComponent );
 		clcomponent.SetCascadeMask( cascadeMask );
-		// TODO add occlusion test input
+		
+		if( pOcclusionTest ){
+			clcomponent.StartOcclusionTest( *pOcclusionTest, pReferencePosition );
+		}
 	}
 	
 	// test billboards
 	count = sonode.GetBillboardList().GetCount();
 	
 	for( i=0; i<count; i++ ){
-		deoglRBillboard * const billboard = sonode.GetBillboardList().GetAt( i );
+		deoglRBillboard * const addBillboard = sonode.GetBillboardList().GetAt( i );
+		const deoglRBillboard &billboard = *addBillboard;
 		
 		// cull using layer mask if required. billboards with empty layer mask never match
 		// and thus are never culled
-		if( pCullLayerMask && billboard->GetLayerMask().IsNotEmpty()
-		&& pLayerMask.MatchesNot( billboard->GetLayerMask() ) ){
+		if( pCullLayerMask && billboard.GetLayerMask().IsNotEmpty()
+		&& pLayerMask.MatchesNot( billboard.GetLayerMask() ) ){
 			continue;
 		}
 		
-		if( ! TestAxisAlignedBox( billboard->GetMinimumExtend(), billboard->GetMaximumExtend(), cascadeMask ) ){
+		if( ! TestAxisAlignedBox( billboard.GetMinimumExtend(), billboard.GetMaximumExtend(), cascadeMask ) ){
 			continue;
 		}
 		
-		billboard->SetSkyShadowSplitMask( cascadeMask );
-		pCollideList.AddBillboard( billboard );
+		addBillboard->SetSkyShadowSplitMask( cascadeMask ); // TODO move this into deoglCollideListBillboard
+		pCollideList.AddBillboard( addBillboard );
 		// TODO add occlusion test input
 	}
 }

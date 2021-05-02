@@ -90,7 +90,7 @@ public:
 	void SetCascadeMask( int mask );
 	
 	/** Start occlusion test. */
-	void StartOcclusionTest( deoglOcclusionTest &occlusionTest, const decDVector &cameraPosition );
+	void StartOcclusionTest( deoglOcclusionTest &occlusionTest, const decDVector &referencePosition );
 	
 	/** Occlusion test finished with a result of invisible for the element. */
 	virtual void OcclusionTestInvisible();

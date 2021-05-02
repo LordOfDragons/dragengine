@@ -36,7 +36,8 @@ class deoglRenderThread;
 class deoglRSkyInstance;
 class deoglRSkyInstanceLayer;
 class deoglRPTSkyLightFindContent;
-class deoglRPTSkyLightGIPrepare;
+class deoglRPTSkyLightGIFindContent;
+class deoglRPTSkyLightGIUpdateRT;
 class deoglRenderPlan;
 class deoglOcclusionTest;
 
@@ -100,7 +101,8 @@ private:
 	deObjectReference pGIComponentChangeListener;
 	
 	deoglRPTSkyLightFindContent *pTaskFindContent;
-	deoglRPTSkyLightGIPrepare *pTaskGIPrepare;
+	deoglRPTSkyLightGIFindContent *pTaskGIFindContent;
+	deoglRPTSkyLightGIUpdateRT *pTaskGIUpdateRT;
 	
 	
 	
@@ -223,14 +225,11 @@ public:
 	/** Start find content. */
 	void StartFindContent();
 	
-	/** Start occlusion tests*/
-	void StartOcclusionTests();
-	
-	/** Prepare for rendering. */
-	void Prepare();
-	
 	/** Finish preparations. */
 	void FinishPrepare();
+	
+	/** Wait for GI Update Render Task parallel task to finish. */
+	void WaitFinishedGIUpdateRT();
 	
 	/** Clean up after rendering. */
 	void CleanUp();
@@ -241,7 +240,7 @@ private:
 	void pDetermineShadowParameters();
 	void pCalcShadowLayerParams();
 	void pWaitFinishedFindContent();
-	void pWaitFinishedGIPrepare();
+	void pWaitFinishedGIFindContent();
 	void pGICalcShadowLayerParams();
 	/*@}*/
 };
