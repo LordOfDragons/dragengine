@@ -29,6 +29,7 @@
 #include "deoglRenderTaskVAO.h"
 #include "deoglRenderTaskInstance.h"
 #include "deoglRenderTaskInstanceGroup.h"
+#include "shared/deoglRenderTaskSharedShader.h"
 #include "../../capabilities/deoglCapabilities.h"
 #include "../../renderthread/deoglRenderThread.h"
 #include "../../renderthread/deoglRTLogger.h"
@@ -65,7 +66,13 @@ pTBOInstances( 0 ),
 pSPBInstanceMaxEntries( 0 ),
 pUseSPBInstanceFlags( false ),
 pTrackingNumber( 0 ),
+
+pRootShader( NULL ),
+pTailShader( NULL ),
 pShaderCount( 0 ),
+pHasShader( NULL ),
+pHasShaderCount( 0 ),
+pHasShaderSize( 0 ),
 
 pRootTexturePool( NULL ),
 pTailTexturePool( NULL ),
@@ -86,6 +93,10 @@ pInstancePoolCount( 0 ){
 deoglRenderTask::~deoglRenderTask(){
 	const int shaderCount = pListShaders.GetCount();
 	int i;
+	
+	if( pHasShader ){
+		delete [] pHasShader;
+	}
 	
 	for( i=0; i<shaderCount; i++ ){
 		delete ( deoglRenderTaskShader* )pListShaders.GetAt( i );
@@ -126,7 +137,18 @@ deoglRenderTask::~deoglRenderTask(){
 ///////////////
 
 void deoglRenderTask::Clear(){
-	RemoveAllShaders();
+	pHasShaderCount = 0;
+	pRootShader = NULL;
+	pTailShader = NULL;
+	pShaderCount = 0;
+	
+	pListInstanceGroup.RemoveAll();
+	pListVAOs.RemoveAll();
+	pListTUCs.RemoveAll();
+	pNextTexturePool = pRootTexturePool;
+	pNextVAOPool = pRootVAOPool;
+	pNextInstancePool = pRootInstancePool;
+	
 	SetRenderParamBlock( NULL );
 	SetTBOInstances( 0 );
 	pUseSPBInstanceFlags = false;
@@ -200,36 +222,60 @@ unsigned int deoglRenderTask::UpdateTracking(){
 
 
 
-deoglRenderTaskShader *deoglRenderTask::GetShaderAt( int index ) const{
-	return ( deoglRenderTaskShader* )pListShaders.GetAt( index );
-}
-
-deoglRenderTaskShader *deoglRenderTask::AddShader( deoglShaderProgram *shader ){
-	deoglRenderTaskShader *renderTaskShader;
+deoglRenderTaskShader *deoglRenderTask::AddShader( deoglRenderTaskSharedShader *shader ){
+	const int index = shader->GetIndex();
 	
-	if( pShaderCount == pListShaders.GetCount() ){
-		renderTaskShader = new deoglRenderTaskShader;
-		pListShaders.Add( renderTaskShader );
+	if( index >= pHasShaderCount ){
+		if( index >= pHasShaderSize ){
+			deoglRenderTaskShader ** const newArray = new deoglRenderTaskShader*[ index + 1 ];
+			
+			if( pHasShader ){
+				if( pHasShaderCount > 0 ){
+					memcpy( newArray, pHasShader, sizeof( deoglRenderTaskShader* ) * pHasShaderCount );
+				}
+				delete [] pHasShader;
+			}
+			
+			pHasShader = newArray;
+			pHasShaderSize = index + 1;
+		}
 		
-	}else{
-		renderTaskShader = ( deoglRenderTaskShader* )pListShaders.GetAt( pShaderCount );
-		renderTaskShader->Reset();
+		if( pHasShaderCount <= index ){
+			memset( pHasShader + pHasShaderCount, 0, sizeof( deoglRenderTaskShader* ) * ( index - pHasShaderCount + 1 ) );
+			pHasShaderCount = index + 1;
+		}
+		pHasShaderCount++;
 	}
 	
-	renderTaskShader->SetShader( shader );
+	deoglRenderTaskShader *rtshader = pHasShader[ index ];
+	if( rtshader ){
+		return rtshader;
+	}
 	
+	if( pShaderCount == pListShaders.GetCount() ){
+		rtshader = new deoglRenderTaskShader;
+		pListShaders.Add( rtshader );
+		
+	}else{
+		rtshader = ( deoglRenderTaskShader* )pListShaders.GetAt( pShaderCount );
+		rtshader->Reset();
+	}
 	pShaderCount++;
-	return renderTaskShader;
-}
-
-void deoglRenderTask::RemoveAllShaders(){
-	pShaderCount = 0;
-	pListInstanceGroup.RemoveAll();
-	pListVAOs.RemoveAll();
-	pListTUCs.RemoveAll();
-	pNextTexturePool = pRootTexturePool;
-	pNextVAOPool = pRootVAOPool;
-	pNextInstancePool = pRootInstancePool;
+	
+	if( pTailShader ){
+		pTailShader->SetNextShader( rtshader );
+	}
+	rtshader->SetNextShader( NULL );
+	
+	pTailShader = rtshader;
+	
+	if( ! pRootShader ){
+		pRootShader = rtshader;
+	}
+	
+	rtshader->SetShader( shader );
+	pHasShader[ index ] = rtshader;
+	return rtshader;
 }
 
 
@@ -416,7 +462,7 @@ void deoglRenderTask::DebugPrint( deoglRTLogger &rtlogger ){
 	
 	for( s=0; s<pShaderCount; s++ ){
 		const deoglRenderTaskShader &shader = *( ( deoglRenderTaskShader* )pListShaders.GetAt( s ) );
-		const deoglShaderDefines &defines = shader.GetShader()->GetDefines();
+		const deoglShaderDefines &defines = shader.GetShader()->GetShader()->GetDefines();
 		
 		rtlogger.LogInfoFormat( "- shader %i: shader=%p spb=%p textures=%i points=%i vaos=%i "
 			"instances=%i subInstances=%i", s, shader.GetShader(), shader.GetParameterBlock(),
@@ -424,12 +470,12 @@ void deoglRenderTask::DebugPrint( deoglRTLogger &rtlogger ){
 			shader.GetTotalInstanceCount(), shader.GetTotalSubInstanceCount() );
 		
 		rtlogger.LogInfo( "  - configuration:" );
-		rtlogger.LogInfoFormat( "    - vertex %s", shader.GetShader()->GetVertexSourceCode()
-			? shader.GetShader()->GetVertexSourceCode()->GetFilePath() : "-" );
-		rtlogger.LogInfoFormat( "    - geometry %s", shader.GetShader()->GetGeometrySourceCode()
-			? shader.GetShader()->GetGeometrySourceCode()->GetFilePath() : "-" );
-		rtlogger.LogInfoFormat( "    - fragment %s", shader.GetShader()->GetFragmentSourceCode()
-			? shader.GetShader()->GetFragmentSourceCode()->GetFilePath() : "-" );
+		rtlogger.LogInfoFormat( "    - vertex %s", shader.GetShader()->GetShader()->GetVertexSourceCode()
+			? shader.GetShader()->GetShader()->GetVertexSourceCode()->GetFilePath() : "-" );
+		rtlogger.LogInfoFormat( "    - geometry %s", shader.GetShader()->GetShader()->GetGeometrySourceCode()
+			? shader.GetShader()->GetShader()->GetGeometrySourceCode()->GetFilePath() : "-" );
+		rtlogger.LogInfoFormat( "    - fragment %s", shader.GetShader()->GetShader()->GetFragmentSourceCode()
+			? shader.GetShader()->GetShader()->GetFragmentSourceCode()->GetFilePath() : "-" );
 		
 		text = "    - defines: ";
 		const int defineCount = defines.GetDefineCount();

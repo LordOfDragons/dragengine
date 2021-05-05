@@ -26,6 +26,8 @@
 #include "deoglHTSCluster.h"
 #include "deoglRHeightTerrain.h"
 #include "deoglRHTSector.h"
+#include "../../rendering/task/shared/deoglRenderTaskSharedInstance.h"
+#include "../../rendering/task/shared/deoglRenderTaskSharedPool.h"
 #include "../../renderthread/deoglRenderThread.h"
 #include "../../renderthread/deoglRTLogger.h"
 #include "../../vao/deoglVAO.h"
@@ -51,6 +53,8 @@
 ////////////////////////////
 
 deoglHTSCluster::deoglHTSCluster(){
+	memset( pRTSInstance, 0, sizeof( pRTSInstance ) );
+	
 	pHTSector = NULL;
 	
 	pPointCountX = 0;
@@ -79,6 +83,13 @@ deoglHTSCluster::deoglHTSCluster(){
 }
 
 deoglHTSCluster::~deoglHTSCluster(){
+	int i;
+	for( i=0; i<5; i++ ){
+		if( pRTSInstance[ i ] ){
+			pRTSInstance[ i ]->ReturnToPool();
+		}
+	}
+	
 	if( pVAO ){
 		delete pVAO;
 	}
@@ -360,6 +371,20 @@ void deoglHTSCluster::UpdateVAO(){
 		if( pVAO ){
 			delete pVAO;
 			pVAO = NULL;
+		}
+	}
+}
+
+void deoglHTSCluster::UpdateRTSInstances(){
+	if( ! pHTSector ){
+		return;
+	}
+	
+	deoglRenderTaskSharedPool &pool = pHTSector->GetHeightTerrain().GetRenderThread().GetRenderTaskSharedPool();
+	int i;
+	for( i=0; i<5; i++ ){
+		if( ! pRTSInstance[ i ] ){
+			pRTSInstance[ i ] = pool.GetInstance();
 		}
 	}
 }

@@ -706,7 +706,7 @@ bool deoglSkinTexture::GetShaderConfigFor( eShaderTypes shaderType, deoglSkinSha
 	case deoglSkinShaderConfig::egmBillboard:
 	case deoglSkinShaderConfig::egmDecal:
 		if( ! config.GetGIMaterial() ){
-			config.SetSharedSPB( deoglSkinShader::USE_SHARED_SPB );
+			config.SetSharedSPB( true );
 		}
 		break;
 		

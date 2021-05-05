@@ -30,6 +30,7 @@
 class dePropFieldType;
 class deoglRPropFieldType;
 class deoglTexUnitsConfig;
+class deoglRenderTaskSharedInstance;
 
 
 
@@ -77,6 +78,9 @@ private:
 	GLuint pTBOBendStates;
 	GLuint pVBOInstances;
 	GLuint pVBOBendStates;
+	
+	deoglRenderTaskSharedInstance *pRTSInstance;
+	
 	
 public:
 	/** @name Constructors and Destructors */
@@ -155,6 +159,12 @@ public:
 	deoglTexUnitsConfig *BareGetTUCFor( deoglSkinTexture::eShaderTypes shaderType ) const;
 	/** Marks texture units configurations dirty. */
 	void MarkTUCsDirty();
+	
+	/** Render task shared instance. */
+	inline deoglRenderTaskSharedInstance *GetRTSInstance() const{ return pRTSInstance; }
+	
+	/** Update render task shared instances. */
+	void UpdateRTSInstances();
 	/*@}*/
 };
 

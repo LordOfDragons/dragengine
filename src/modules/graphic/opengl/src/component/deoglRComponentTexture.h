@@ -65,7 +65,6 @@ private:
 	bool pUseDoubleSided;
 	bool pUseDecal;
 	
-	deoglSPBlockUBO *pParamBlock;
 	deoglSharedSPBElement *pSharedSPBElement;
 	decObjectList pSharedSPBRTIGroup;
 	
@@ -176,12 +175,6 @@ public:
 	
 	
 	
-	/** Shader parameter block for a shader type. */
-	deoglSPBlockUBO *GetParamBlockFor( deoglSkinTexture::eShaderTypes shaderType ) const;
-	
-	/** Shader parameter block or NULL if there is no valid skin texture. */
-	inline deoglSPBlockUBO *GetParamBlock() const{ return pParamBlock; }
-	
 	/** Prepare parameter blocks. */
 	void PrepareParamBlocks();
 	
@@ -190,6 +183,9 @@ public:
 	
 	/** Shared SPB render task instance group. */
 	deoglSharedSPBRTIGroup &GetSharedSPBRTIGroup( int lodLevel ) const;
+	
+	/** Update render target shared instances. */
+	void UpdateRTSInstances();
 	
 	/** Texture units configuration for the given shader type. */
 	deoglTexUnitsConfig *GetTUCForShaderType( deoglSkinTexture::eShaderTypes shaderType ) const;

@@ -32,6 +32,11 @@
 #include "../task/deoglRenderTaskShader.h"
 #include "../task/deoglRenderTaskTexture.h"
 #include "../task/deoglAddToRenderTaskGIMaterial.h"
+#include "../task/shared/deoglRenderTaskSharedInstance.h"
+#include "../task/shared/deoglRenderTaskSharedShader.h"
+#include "../task/shared/deoglRenderTaskSharedSubInstance.h"
+#include "../task/shared/deoglRenderTaskSharedTexture.h"
+#include "../task/shared/deoglRenderTaskSharedVAO.h"
 #include "../../capabilities/deoglCapabilities.h"
 #include "../../component/deoglRComponent.h"
 #include "../../configuration/deoglConfiguration.h"
@@ -563,8 +568,8 @@ void deoglRenderGI::RenderMaterials( deoglRenderPlan &plan ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	const int rtShaderCount = pRenderTask->GetShaderCount();
-	if( rtShaderCount == 0 ){
+	const deoglRenderTaskShader *rtshader = pRenderTask->GetRootShader();
+	if( ! rtshader ){
 		return;
 	}
 	
@@ -600,15 +605,14 @@ void deoglRenderGI::RenderMaterials( deoglRenderPlan &plan ){
 	const float offsetScaleV = 2.0f / ( float )rowsPerImage;
 	const float offsetBaseU = offsetScaleU * 0.5f - 1.0f;
 	const float offsetBaseV = offsetScaleV * 0.5f - 1.0f;
-	int i;
 	
-	for( i=0; i<rtShaderCount; i++ ){
-		const deoglRenderTaskShader &rtShader = *pRenderTask->GetShaderAt( i );
-		deoglShaderCompiled &shader = *rtShader.GetShader()->GetCompiled();
+	while( rtshader ){
+		deoglShaderProgram &shaderProgram = *rtshader->GetShader()->GetShader();
+		deoglShaderCompiled &shader = *shaderProgram.GetCompiled();
 		
-		renderThread.GetShader().ActivateShader( rtShader.GetShader() );
+		renderThread.GetShader().ActivateShader( &shaderProgram );
 		
-		deoglRenderTaskTexture *rtTexture = rtShader.GetRootTexture();
+		deoglRenderTaskTexture *rtTexture = rtshader->GetRootTexture();
 		
 		while( rtTexture ){
 			deoglTexUnitsConfig &tuc = *rtTexture->GetTUC();
@@ -630,6 +634,7 @@ void deoglRenderGI::RenderMaterials( deoglRenderPlan &plan ){
 			rtTexture = rtTexture->GetNextTexture();
 		}
 		
+		rtshader = rtshader->GetNextShader();
 	}
 	
 	// clean up

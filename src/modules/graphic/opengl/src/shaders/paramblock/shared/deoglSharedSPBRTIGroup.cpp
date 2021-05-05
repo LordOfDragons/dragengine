@@ -21,6 +21,8 @@
 
 #include "deoglSharedSPBRTIGroup.h"
 #include "deoglSharedSPBRTIGroupList.h"
+#include "../../../rendering/task/shared/deoglRenderTaskSharedPool.h"
+#include "../../../rendering/task/shared/deoglRenderTaskSharedInstance.h"
 #include "../../../renderthread/deoglRenderThread.h"
 #include "../../../renderthread/deoglRTUniqueKey.h"
 
@@ -38,10 +40,16 @@ deoglSharedSPBRTIGroup::deoglSharedSPBRTIGroup( deoglSharedSPBRTIGroupList &pare
 deoglSharedSPB &sharedSPB ) :
 pParent( parent ),
 pSharedSPB( sharedSPB ),
-pUniqueKey( parent.GetRenderThread().GetUniqueKey().Get() ){
+pRTSInstance( NULL )
+{
+	pRTSInstance = parent.GetRenderThread().GetRenderTaskSharedPool().GetInstance();
+	pUniqueKey = parent.GetRenderThread().GetUniqueKey().Get();
 }
 
 deoglSharedSPBRTIGroup::~deoglSharedSPBRTIGroup(){
+	if( pRTSInstance ){
+		pRTSInstance->ReturnToPool();
+	}
 	pParent.GetRenderThread().GetUniqueKey().Return( pUniqueKey );
 	pParent.Remove( this );
 }

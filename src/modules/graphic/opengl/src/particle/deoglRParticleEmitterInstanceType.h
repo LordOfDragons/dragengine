@@ -33,6 +33,7 @@ class deoglRSkin;
 class deoglSkinShader;
 class deoglSkinTexture;
 class deoglTexUnitsConfig;
+class deoglRenderTaskSharedInstance;
 
 
 /**
@@ -73,6 +74,8 @@ private:
 	bool pDirtyTUCGeometryDepthTest;
 	
 	deoglSPBlockUBO *pParamBlockLightInstance;
+	deoglRenderTaskSharedInstance *pRTSInstance;
+	
 	
 public:
 	/** \name Constructors and Destructors */
@@ -209,6 +212,11 @@ public:
 	
 	/** \brief Drop light parameter block. */
 	void DropLightBlocks();
+	
+	
+	
+	/** Render task shared instance. */
+	inline deoglRenderTaskSharedInstance *GetRTSInstance() const{ return pRTSInstance; }
 	/*@}*/
 };
 

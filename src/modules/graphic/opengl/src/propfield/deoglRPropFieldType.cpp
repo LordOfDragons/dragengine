@@ -50,6 +50,7 @@
 #include "../texture/texunitsconfig/deoglTexUnitConfig.h"
 #include "../texture/texunitsconfig/deoglTexUnitsConfig.h"
 #include "../texture/texunitsconfig/deoglTexUnitsConfigList.h"
+#include "../vbo/deoglSharedVBOBlock.h"
 #include "../world/deoglRWorld.h"
 #include "../delayedoperation/deoglDelayedDeletion.h"
 #include "../delayedoperation/deoglDelayedOperations.h"
@@ -132,6 +133,7 @@ public:
 
 deoglRPropFieldType::~deoglRPropFieldType(){
 	LEAK_CHECK_FREE( pPropField.GetRenderThread(), PropFieldType );
+	
 	if( pSkin ){
 		pSkin->FreeReference();
 	}

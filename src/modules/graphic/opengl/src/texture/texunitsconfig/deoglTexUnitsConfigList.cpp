@@ -45,6 +45,7 @@ pTUCCount( 0 ),
 pTUCEmpty( NULL )
 {
 	pTUCEmpty = GetWith( NULL, 0 );
+	pTUCEmpty->EnsureRTSTexture();
 }
 
 deoglTexUnitsConfigList::~deoglTexUnitsConfigList(){

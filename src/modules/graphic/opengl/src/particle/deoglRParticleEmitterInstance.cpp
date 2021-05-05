@@ -579,6 +579,8 @@ void deoglRParticleEmitterInstance::UpdateParticlesVBO(){
 		OGL_CHECK( pRenderThread, pglBindBuffer( GL_ELEMENT_ARRAY_BUFFER, pIBO ) );
 		
 		OGL_CHECK( pRenderThread, pglBindVertexArray( 0 ) );
+		
+		pVAO->EnsureRTSVAO();
 	}
 	
 	OGL_CHECK( pRenderThread, pglBindBuffer( GL_ARRAY_BUFFER, 0 ) );

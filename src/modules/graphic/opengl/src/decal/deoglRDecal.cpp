@@ -32,6 +32,8 @@
 #include "../model/deoglModelLOD.h"
 #include "../model/deoglRModel.h"
 #include "../model/face/deoglModelFace.h"
+#include "../rendering/task/shared/deoglRenderTaskSharedPool.h"
+#include "../rendering/task/shared/deoglRenderTaskSharedInstance.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTBufferObject.h"
 #include "../renderthread/deoglRTChoices.h"
@@ -84,6 +86,7 @@ pComponentMarkedRemove( false ),
 
 pSharedSPBElement( NULL ),
 
+pRTSInstance( NULL ),
 pDirtySharedSPBElement( true )
 {
 	pSkin = NULL;
@@ -104,17 +107,9 @@ pDirtySharedSPBElement( true )
 	pDirtyUseTexture = true;
 	pDirtyVBO = true;
 	
-	pParamBlockGeometry = NULL;
-	pParamBlockEnvMap = NULL;
-	
 	pTUCGeometry = NULL;
 	pTUCShadow = NULL;
 	pTUCEnvMap = NULL;
-	
-	pValidParamBlockGeometry = false;
-	pValidParamBlockEnvMap = false;
-	pDirtyParamBlockGeometry = true;
-	pDirtyParamBlockEnvMap = true;
 	
 	pDirtyTUCGeometry = true;
 	pDirtyTUCShadow = true;
@@ -126,8 +121,6 @@ class deoglRDecalDeletion : public deoglDelayedDeletion{
 public:
 	deoglSkinState *skinState;
 	deoglSharedVBOBlock *vboBlock;
-	deoglSPBlockUBO *paramBlockGeometry;
-	deoglSPBlockUBO *paramBlockEnvMap;
 	deoglTexUnitsConfig *tucGeometry;
 	deoglTexUnitsConfig *tucShadow;
 	deoglTexUnitsConfig *tucEnvMap;
@@ -135,8 +128,6 @@ public:
 	deoglRDecalDeletion() :
 	skinState( NULL ),
 	vboBlock( NULL ),
-	paramBlockGeometry( NULL ),
-	paramBlockEnvMap( NULL ),
 	tucGeometry( NULL ),
 	tucShadow( NULL ),
 	tucEnvMap( NULL ){
@@ -159,12 +150,6 @@ public:
 		if( tucEnvMap ){
 			tucEnvMap->RemoveUsage();
 		}
-		if( paramBlockGeometry ){
-			paramBlockGeometry->FreeReference();
-		}
-		if( paramBlockEnvMap ){
-			paramBlockEnvMap->FreeReference();
-		}
 		if( skinState ){
 			delete skinState;
 		}
@@ -181,6 +166,9 @@ deoglRDecal::~deoglRDecal(){
 		pSkin->FreeReference();
 	}
 	
+	if( pRTSInstance ){
+		pRTSInstance->ReturnToPool();
+	}
 	if( pSharedSPBElement ){
 		pSharedSPBElement->FreeReference();
 	}
@@ -196,8 +184,6 @@ deoglRDecal::~deoglRDecal(){
 	
 	try{
 		delayedDeletion = new deoglRDecalDeletion;
-		delayedDeletion->paramBlockEnvMap = pParamBlockEnvMap;
-		delayedDeletion->paramBlockGeometry = pParamBlockGeometry;
 		delayedDeletion->skinState = pSkinState;
 		delayedDeletion->tucEnvMap = pTUCEnvMap;
 		delayedDeletion->tucGeometry = pTUCGeometry;
@@ -478,59 +464,6 @@ void deoglRDecal::SetComponentMarkedRemove( bool marked ){
 
 
 
-deoglSPBlockUBO *deoglRDecal::GetParamBlockFor( deoglSkinTexture::eShaderTypes shaderType ){
-	switch( shaderType ){
-	case deoglSkinTexture::estDecalGeometry:
-		return GetParamBlockGeometry();
-		
-	case deoglSkinTexture::estDecalEnvMap:
-		return GetParamBlockEnvMap();
-		
-	default:
-		DETHROW( deeInvalidParam );
-	}
-}
-
-deoglSPBlockUBO *deoglRDecal::GetParamBlockGeometry(){
-	if( ! pValidParamBlockGeometry ){
-		if( pParamBlockGeometry ){
-			pParamBlockGeometry->FreeReference();
-			pParamBlockGeometry = NULL;
-		}
-		
-		if( pUseSkinTexture && ! deoglSkinShader::USE_SHARED_SPB ){
-			pParamBlockGeometry = pUseSkinTexture->GetShaderFor(
-				deoglSkinTexture::estDecalGeometry )->CreateSPBInstParam();
-		}
-		
-		pValidParamBlockGeometry = true;
-		pDirtyParamBlockGeometry = true;
-	}
-	
-	if( pDirtyParamBlockGeometry ){
-		if( pParamBlockGeometry ){
-			pParamBlockGeometry->MapBuffer();
-			try{
-				UpdateInstanceParamBlock( *pParamBlockGeometry, 0,
-					*pUseSkinTexture->GetShaderFor( deoglSkinTexture::estDecalGeometry ) );
-				
-			}catch( const deException & ){
-				pParamBlockGeometry->UnmapBuffer();
-				throw;
-			}
-			pParamBlockGeometry->UnmapBuffer();
-		}
-		
-		pDirtyParamBlockGeometry = false;
-	}
-	
-	return pParamBlockGeometry;
-}
-
-deoglSPBlockUBO *deoglRDecal::GetParamBlockEnvMap(){
-	return NULL;
-}
-
 deoglSharedSPBElement *deoglRDecal::GetSharedSPBElement(){
 	if( ! pSharedSPBElement ){
 		if( pRenderThread.GetChoices().GetSharedSPBUseSSBO() ){
@@ -541,6 +474,10 @@ deoglSharedSPBElement *deoglRDecal::GetSharedSPBElement(){
 			pSharedSPBElement = pRenderThread.GetBufferObject().GetSharedSPBList(
 				deoglRTBufferObject::esspblSkinInstanceUBO ).AddElement();
 		}
+		
+		pRTSInstance = pRenderThread.GetRenderTaskSharedPool().GetInstance();
+		pRTSInstance->SetSubInstanceSPB( &pSharedSPBElement->GetSPB() );
+		pUpdateRTSInstance();
 	}
 	
 	if( pDirtySharedSPBElement ){
@@ -639,6 +576,7 @@ deoglTexUnitsConfig *deoglRDecal::GetTUCEnvMap(){
 			}
 			
 			pTUCEnvMap = pRenderThread.GetShader().GetTexUnitsConfigList().GetWith( &unit[ 0 ], 2 );
+			pTUCEnvMap->EnsureRTSTexture();
 		}
 		
 		pDirtyTUCEnvMap = false;
@@ -668,6 +606,7 @@ deoglTexUnitsConfig *deoglRDecal::BareGetTUCFor( deoglSkinTexture::eShaderTypes 
 				pParentComponent->GetRenderEnvMap(), pParentComponent->GetRenderEnvMapFade() );
 			tuc = pRenderThread.GetShader().GetTexUnitsConfigList().GetWith(
 				&units[ 0 ], skinShader.GetUsedTextureTargetCount() );
+			tuc->EnsureRTSTexture();
 		}
 	}
 	
@@ -675,15 +614,10 @@ deoglTexUnitsConfig *deoglRDecal::BareGetTUCFor( deoglSkinTexture::eShaderTypes 
 }
 
 void deoglRDecal::InvalidateParamBlocks(){
-	pValidParamBlockGeometry = false;
-	pValidParamBlockEnvMap = false;
-	
 	MarkParamBlocksDirty();
 }
 
 void deoglRDecal::MarkParamBlocksDirty(){
-	pDirtyParamBlockGeometry = true;
-	pDirtyParamBlockEnvMap = true;
 	pDirtySharedSPBElement = true;
 }
 
@@ -851,6 +785,7 @@ void deoglRDecal::pCreateMeshComponent(){
 	}
 	
 	pVBOBlock = svbolist.AddData( pPointCount );
+	pVBOBlock->GetVBO()->GetVAO()->EnsureRTSVAO();
 	
 	// get decal matrix and projection axis
 	const decMatrix decalMatrix( decMatrix::CreateWorld( pPosition, pOrientation ) );
@@ -928,9 +863,21 @@ void deoglRDecal::pPrepareVBO(){
 	
 	if( pParentComponent ){
 		pCreateMeshComponent();
+		pUpdateRTSInstance();
 	}
 	
 	pDirtyVBO = false;
+}
+
+void deoglRDecal::pUpdateRTSInstance(){
+	if( ! pRTSInstance ){
+		return;
+	}
+	
+	pRTSInstance->SetFirstPoint( pVBOBlock->GetOffset() );
+	pRTSInstance->SetPointCount( pPointCount );
+	pRTSInstance->SetDoubleSided( true );
+	
 }
 
 void deoglRDecal::pRequiresPrepareForRender(){

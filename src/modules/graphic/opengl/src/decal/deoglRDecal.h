@@ -43,6 +43,7 @@ class deoglSkinShader;
 class deoglSkinState;
 class deoglTexUnitsConfig;
 class deoglVAO;
+class deoglRenderTaskSharedInstance;
 
 
 
@@ -80,20 +81,14 @@ public:
 	deoglRComponent *pParentComponent;
 	bool pComponentMarkedRemove;
 	
-	deoglSPBlockUBO *pParamBlockGeometry;
-	deoglSPBlockUBO *pParamBlockEnvMap;
-	
 	deoglSharedSPBElement *pSharedSPBElement;
 	deoglRenderTaskInstanceGroup pRTIGroup;
+	deoglRenderTaskSharedInstance *pRTSInstance;
 	
 	deoglTexUnitsConfig *pTUCGeometry;
 	deoglTexUnitsConfig *pTUCShadow;
 	deoglTexUnitsConfig *pTUCEnvMap;
 	
-	bool pValidParamBlockGeometry;
-	bool pValidParamBlockEnvMap;
-	bool pDirtyParamBlockGeometry;
-	bool pDirtyParamBlockEnvMap;
 	bool pDirtySharedSPBElement;
 	
 	bool pDirtyTUCGeometry;
@@ -244,18 +239,9 @@ public:
 	/** Render task instance group. */
 	inline deoglRenderTaskInstanceGroup &GetRTIGroup(){ return pRTIGroup; }
 	
-	/** Retrieves the shader parameter block for a shader type. */
-	deoglSPBlockUBO *GetParamBlockFor( deoglSkinTexture::eShaderTypes shaderType );
-	/**
-	 * Retrieves the geometry shader parameter block or NULL if there is no valid skin texture.
-	 * This texture units configuration works for the shader type estComponentGeometry.
-	 */
-	deoglSPBlockUBO *GetParamBlockGeometry();
-	/**
-	 * Retrieves the environment map shader parameter block or NULL if there is no valid skin texture.
-	 * This texture units configuration works for the shader type estEnvMap.
-	 */
-	deoglSPBlockUBO *GetParamBlockEnvMap();
+	/** Render task shared instance or NULL. */
+	inline deoglRenderTaskSharedInstance *GetRTSInstance() const{ return pRTSInstance; }
+	
 	/** Retrieves the texture units configuration for the given shader type. */
 	deoglTexUnitsConfig *GetTUCForShaderType( deoglSkinTexture::eShaderTypes shaderType );
 	/**
@@ -303,6 +289,7 @@ public:
 private:
 	void pCreateMeshComponent();
 	void pPrepareVBO();
+	void pUpdateRTSInstance();
 	
 	void pRequiresPrepareForRender();
 };

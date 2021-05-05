@@ -56,26 +56,31 @@ deoglSharedSPBRTIGroup *deoglSharedSPBRTIGroupList::GetAt( int index ) const{
 	return ( deoglSharedSPBRTIGroup* )pGroups.GetAt( index );
 }
 
-deoglSharedSPBRTIGroup *deoglSharedSPBRTIGroupList::GetWith( deoglSharedSPB &sharedSPB ){
+deoglSharedSPBRTIGroup *deoglSharedSPBRTIGroupList::GetWith( deoglSharedSPB &sharedSPB ) const{
 	const int count = pGroups.GetCount();
 	int i;
 	
-	// find group with shared SPB
-	deoglSharedSPBRTIGroup *group = NULL;
-	
 	for( i=0; i<count; i++ ){
-		group = ( deoglSharedSPBRTIGroup* )pGroups.GetAt( i );
+		deoglSharedSPBRTIGroup * const group = ( deoglSharedSPBRTIGroup* )pGroups.GetAt( i );
 		if( &group->GetSharedSPB() == &sharedSPB ){
 			group->AddReference();
 			return group;
 		}
 	}
 	
-	// matching group not found. create a new group
+	return NULL;
+}
+
+deoglSharedSPBRTIGroup *deoglSharedSPBRTIGroupList::GetOrAddWith( deoglSharedSPB &sharedSPB ){
+	deoglSharedSPBRTIGroup * const group = GetWith( sharedSPB );
+	return group ? group : AddWith( sharedSPB );
+}
+
+deoglSharedSPBRTIGroup *deoglSharedSPBRTIGroupList::AddWith( deoglSharedSPB &sharedSPB ){
+	deoglSharedSPBRTIGroup *group = NULL;
 	try{
 		group = new deoglSharedSPBRTIGroup( *this, sharedSPB );
 		pGroups.Add( group );
-		return group;
 		
 	}catch( const deException & ){
 		if( group ){
@@ -83,6 +88,7 @@ deoglSharedSPBRTIGroup *deoglSharedSPBRTIGroupList::GetWith( deoglSharedSPB &sha
 		}
 		throw;
 	}
+	return group;
 }
 
 void deoglSharedSPBRTIGroupList::Remove( deoglSharedSPBRTIGroup *group ){

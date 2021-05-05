@@ -98,6 +98,7 @@ public:
 	deoglROcclusionMesh *pOcclusionMesh;
 	deoglDynamicOcclusionMesh *pDynamicOcclusionMesh;
 	deoglSharedSPBElement *pOccMeshSharedSPBElement;
+	bool pValidOccMeshSharedSPBElement;
 	bool pDirtyOccMeshSharedSPBElement;
 	deoglSharedSPBRTIGroup *pOccMeshSharedSPBDoubleSided;
 	deoglSharedSPBRTIGroup *pOccMeshSharedSPBSingleSided;
@@ -106,10 +107,6 @@ public:
 	float pLODErrorScaling;
 	bool pDirtyLODVBOs;
 	
-	deoglSPBlockUBO *pParamBlockOccMesh;
-	bool pDirtyParamBlockOccMesh;
-	
-	deoglSPBlockUBO *pParamBlockSpecial;
 	bool pCubeFaceVisible[ 6 ];
 	int pSpecialFlags;
 	
@@ -327,10 +324,13 @@ public:
 	inline deoglDynamicOcclusionMesh *GetDynamicOcclusionMesh() const{ return pDynamicOcclusionMesh; }
 	
 	/** Occlusion mesh shared shader parameter block element. */
-	deoglSharedSPBElement *GetOccMeshSharedSPBElement();
+	inline deoglSharedSPBElement *GetOccMeshSharedSPBElement() const{ return pOccMeshSharedSPBElement; }
 	
 	/** Shared SPB render task instance group. */
-	deoglSharedSPBRTIGroup &GetOccMeshSharedSPBRTIGroup( bool doubleSided );
+	deoglSharedSPBRTIGroup &GetOccMeshSharedSPBRTIGroup( bool doubleSided ) const;
+	
+	/** Invalidate occlusion mesh shared SPB render task instance group. */
+	void InvalidateOccMeshSharedSPBRTIGroup();
 	
 	/** Mesh changed. */
 	void MeshChanged();
@@ -355,9 +355,6 @@ public:
 	
 	
 	
-	/** Shader parameter block for a occlusion meshes (both static and dynamic). */
-	inline deoglSPBlockUBO *GetParamBlockOccMesh() const{ return pParamBlockOccMesh; }
-	
 	/** Mark occlusion mesh shader parameter block dirty. */
 	void MarkOccMeshParamBlockDirty();
 	
@@ -365,9 +362,6 @@ public:
 	void UpdateOccmeshInstanceParamBlock( deoglShaderParameterBlock &paramBlock, int element );
 	
 	
-	
-	/** Special shader parameter block. Has to be updated by caller. */
-	inline deoglSPBlockUBO *GetParamBlockSpecial() const{ return pParamBlockSpecial; }
 	
 	/**
 	 * Update cube face visibility.
@@ -394,18 +388,6 @@ public:
 	
 	/** Set special flags from cube map visibility. */
 	void SetSpecialFlagsFromFaceVisibility();
-	
-	/** Set special flags from sky shadow layer mask. */
-	void SetSpecialFlagsFromSkyShadowLayerMask( int mask );
-	
-	/**
-	 * Update special shader parameter block.
-	 * 
-	 * Depending on the usage these calls are required before using this call.
-	 * - UpdateCubeFaceVisibility(): for use by geometry shader cube rendering.
-	 */
-	void UpdateSpecialSPBCubeRender();
-	void UpdateSpecialSPBCascadedRender( int mask );
 	
 	
 	
@@ -558,6 +540,9 @@ public:
 	
 	/** Mark LOD VBOs dirty requiring preparing. */
 	void DirtyLODVBOs();
+	
+	/** Update render target shared instances. */
+	void UpdateRTSInstances();
 	/*@}*/
 	
 	
@@ -737,10 +722,10 @@ private:
 	void pPrepareSolidity();
 	void pPrepareModelVBOs();
 	void pPrepareLODVBOs();
-	void pPrepareParamBlocks();
 	void pPrepareRenderEnvMap();
 	void pPrepareSkinStateRenderables();
 	void pPrepareTextureTUCs();
+	void pPrepareParamBlocks();
 	void pPrepareTextureParamBlocks();
 	void pPrepareDecals( deoglRenderPlan &plan );
 	

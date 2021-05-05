@@ -51,6 +51,7 @@ class deoglRRenderWindow;
 class deoglShadowMapper;
 class deoglTriangleSorter;
 class deoglPersistentRenderTaskPool;
+class deoglRenderTaskSharedPool;
 class deoglRTUniqueKey;
 class deoglOcclusionTestPool;
 
@@ -131,6 +132,7 @@ private:
 	deoglShadowMapper *pShadowMapper;
 	deoglTriangleSorter *pTriangleSorter;
 	deoglPersistentRenderTaskPool *pPersistentRenderTaskPool;
+	deoglRenderTaskSharedPool *pRenderTaskSharedPool;
 	deoglRTUniqueKey *pUniqueKey;
 	deoglOcclusionTestPool *pOcclusionTestPool;
 	
@@ -318,6 +320,9 @@ public:
 	
 	/** Persistent render task pool. */
 	inline deoglPersistentRenderTaskPool &GetPersistentRenderTaskPool() const{ return *pPersistentRenderTaskPool; }
+	
+	/** Render task shared pool. */
+	inline deoglRenderTaskSharedPool &GetRenderTaskSharedPool() const{ return *pRenderTaskSharedPool; }
 	
 	/** Unique key. */
 	inline deoglRTUniqueKey &GetUniqueKey() const{ return *pUniqueKey; }

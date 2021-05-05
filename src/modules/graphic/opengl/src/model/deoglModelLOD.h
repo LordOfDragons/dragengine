@@ -33,6 +33,8 @@ class deoglModelTexture;
 class deoglModelOctree;
 class deoglModelLODTexCoordSet;
 class deoglSharedVBOBlock;
+class deoglSharedSPB;
+class deoglSharedSPBRTIGroup;
 class deoglSharedSPBRTIGroupList;
 class deoglGIBVHLocal;
 
@@ -168,6 +170,7 @@ public:
 	inline int GetTextureCount() const{ return pTextureCount; }
 	
 	/** Texture at index. */
+	deoglModelTexture &GetTextureAt( int index );
 	const deoglModelTexture &GetTextureAt( int index ) const;
 	
 	/** Texture render task instance group. */

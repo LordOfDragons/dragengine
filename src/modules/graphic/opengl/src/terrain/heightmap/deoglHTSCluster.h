@@ -33,6 +33,8 @@ class deoglRHTSector;
 class deImage;
 class deoglTerrainHeightImage;
 class deoglVAO;
+class deoglRenderTaskSharedInstance;
+
 
 enum eHTSCBorders{
 	ehtscbLeft = 0,
@@ -96,6 +98,9 @@ private:
 	deoglVBOHeightTerrain1 *pDataPoints1;
 	deoglVBOHeightTerrain2 *pDataPoints2;
 	int pDataPointCount;
+	
+	deoglRenderTaskSharedInstance *pRTSInstance[ 5 ];
+	
 	
 public:
 	/** @name Constructors and Destructors */
@@ -179,6 +184,12 @@ public:
 	void SetVBODataFaces( GLuint vbo );
 	/** Updates the data faces vbo. */
 	void UpdateVBODataFaces();
+	
+	/** Render task shared instance. */
+	inline deoglRenderTaskSharedInstance *GetRTSInstanceAt( int index ) const{ return pRTSInstance[ index ]; }
+	
+	/** Update render task shared instances. */
+	void UpdateRTSInstances();
 	/*@}*/
 	
 	/** @name Face Points */

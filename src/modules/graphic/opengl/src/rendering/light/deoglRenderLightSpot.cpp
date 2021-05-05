@@ -34,6 +34,7 @@
 #include "../task/deoglRenderTask.h"
 #include "../task/deoglAddToRenderTask.h"
 #include "../task/deoglRenderTaskShader.h"
+#include "../task/shared/deoglRenderTaskSharedShader.h"
 #include "../../capabilities/deoglCapabilities.h"
 #include "../../canvas/render/deoglRCanvasView.h"
 #include "../../collidelist/deoglCollideList.h"
@@ -268,6 +269,8 @@ pDebugInfoTransparentLight( NULL )
 		sources = shaderManager.GetSourcesNamed( "DefRen Occlusion OccMap" );
 		renderers.GetOcclusion().AddOccMapDefines( defines );
 		pShaderOccMap = shaderManager.GetProgramWith( sources, defines );
+		pShaderOccMap->EnsureRTSShader();
+		pShaderOccMap->GetRTSShader()->SetSPBInstanceIndexBase( 0 );
 		defines.RemoveAllDefines();
 		
 		
@@ -1590,7 +1593,7 @@ const deoglCollideList *clist1, const deoglCollideList *clist2, int ambientMapSi
 	renderTask.SetRenderParamBlock( renderParamBlock );
 	
 	addToRenderTask.Reset();
-	addToRenderTask.SetEnforceShader( pShaderOccMap );
+	addToRenderTask.SetEnforceShader( pShaderOccMap->GetRTSShader() );
 	addToRenderTask.SetSolid( true );
 	addToRenderTask.SetNoShadowNone( true );
 	

@@ -358,6 +358,7 @@ deoglTexUnitsConfig *deoglHTSTexture::GetTUCEnvMap(){
 			}
 			
 			pTUCEnvMap = renderThread.GetShader().GetTexUnitsConfigList().GetWith( &unit[ 0 ], 2 );
+			pTUCEnvMap->EnsureRTSTexture();
 		}
 		
 		pDirtyTUCEnvMap = false;
@@ -410,7 +411,9 @@ deoglTexUnitsConfig *deoglHTSTexture::BareGetTUCFor( deoglSkinTexture::eShaderTy
 				}
 			}
 			
-			tuc = renderThread.GetShader().GetTexUnitsConfigList().GetWith( &units[ 0 ], skinShader.GetUsedTextureTargetCount() );
+			tuc = renderThread.GetShader().GetTexUnitsConfigList().GetWith(
+				&units[ 0 ], skinShader.GetUsedTextureTargetCount() );
+			tuc->EnsureRTSTexture();
 		}
 	}
 	

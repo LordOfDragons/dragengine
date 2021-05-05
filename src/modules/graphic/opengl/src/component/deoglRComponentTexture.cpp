@@ -24,11 +24,13 @@
 
 #include "deoglComponent.h"
 #include "deoglRComponent.h"
+#include "deoglRComponentLOD.h"
 #include "deoglRComponentTexture.h"
 #include "../model/deoglModelLOD.h"
 #include "../model/deoglRModel.h"
 #include "../model/texture/deoglModelTexture.h"
 #include "../rendering/defren/deoglDeferredRendering.h"
+#include "../rendering/task/shared/deoglRenderTaskSharedInstance.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTDefaultTextures.h"
 #include "../renderthread/deoglRTShader.h"
@@ -51,6 +53,7 @@
 #include "../texture/texunitsconfig/deoglTexUnitConfig.h"
 #include "../texture/texunitsconfig/deoglTexUnitsConfig.h"
 #include "../texture/texunitsconfig/deoglTexUnitsConfigList.h"
+#include "../vbo/deoglSharedVBOBlock.h"
 #include "../world/deoglRWorld.h"
 #include "../delayedoperation/deoglDelayedDeletion.h"
 #include "../delayedoperation/deoglDelayedOperations.h"
@@ -81,7 +84,6 @@ pUseDynamicSkin( NULL ),
 pUseDoubleSided( false ),
 pUseDecal( false ),
 
-pParamBlock( NULL ),
 pSharedSPBElement( NULL ),
 
 pTUCDepth( NULL ),
@@ -106,7 +108,6 @@ pDirtyTUCs( true )
 class deoglRComponentTextureDeletion : public deoglDelayedDeletion{
 public:
 	deoglSkinState *skinState;
-	deoglSPBlockUBO *paramBlock;
 	deoglTexUnitsConfig *tucDepth;
 	deoglTexUnitsConfig *tucGeometry;
 	deoglTexUnitsConfig *tucCounter;
@@ -121,7 +122,6 @@ public:
 	
 	deoglRComponentTextureDeletion() :
 	skinState( NULL ),
-	paramBlock( NULL ),
 	tucDepth( NULL ),
 	tucGeometry( NULL ),
 	tucCounter( NULL ),
@@ -172,9 +172,6 @@ public:
 		if( tucGIMaterial ){
 			tucGIMaterial->RemoveUsage();
 		}
-		if( paramBlock ){
-			paramBlock->FreeReference();
-		}
 		if( skinState ){
 			delete skinState;
 		}
@@ -206,7 +203,6 @@ deoglRComponentTexture::~deoglRComponentTexture(){
 	
 	try{
 		delayedDeletion = new deoglRComponentTextureDeletion;
-		delayedDeletion->paramBlock = pParamBlock;
 		delayedDeletion->skinState = pSkinState;
 		delayedDeletion->tucDepth = pTUCDepth;
 		delayedDeletion->tucEnvMap = pTUCEnvMap;
@@ -460,51 +456,8 @@ decTexMatrix2 deoglRComponentTexture::CalcTexCoordMatrix() const{
 
 
 
-deoglSPBlockUBO *deoglRComponentTexture::GetParamBlockFor( deoglSkinTexture::eShaderTypes shaderType ) const{
-	switch( shaderType ){
-	case deoglSkinTexture::estComponentGeometry:
-	case deoglSkinTexture::estComponentLuminance:
-	case deoglSkinTexture::estComponentGIMaterial:
-	case deoglSkinTexture::estDecalGeometry:
-	case deoglSkinTexture::estOutlineGeometry:
-	case deoglSkinTexture::estComponentDepth:
-	case deoglSkinTexture::estComponentDepthClipPlane:
-	case deoglSkinTexture::estComponentDepthReversed:
-	case deoglSkinTexture::estComponentDepthClipPlaneReversed:
-	case deoglSkinTexture::estComponentCounter:
-	case deoglSkinTexture::estComponentCounterClipPlane:
-	case deoglSkinTexture::estComponentShadowProjection:
-	case deoglSkinTexture::estComponentShadowOrthogonal:
-	case deoglSkinTexture::estComponentShadowOrthogonalCascaded:
-	case deoglSkinTexture::estComponentShadowDistance:
-	case deoglSkinTexture::estComponentShadowDistanceCube:
-	case deoglSkinTexture::estOutlineDepth:
-	case deoglSkinTexture::estOutlineDepthClipPlane:
-	case deoglSkinTexture::estOutlineDepthReversed:
-	case deoglSkinTexture::estOutlineDepthClipPlaneReversed:
-	case deoglSkinTexture::estOutlineCounter:
-	case deoglSkinTexture::estOutlineCounterClipPlane:
-	case deoglSkinTexture::estComponentEnvMap:
-		return GetParamBlock();
-		
-	default:
-		DETHROW( deeInvalidParam );
-	}
-}
-
 void deoglRComponentTexture::PrepareParamBlocks(){
 	if( ! pValidParamBlocks ){
-		// parameter block
-		if( pParamBlock ){
-			pParamBlock->FreeReference();
-			pParamBlock = NULL;
-		}
-		
-		if( pUseSkinTexture && ! deoglSkinShader::USE_SHARED_SPB  ){
-			pParamBlock = pUseSkinTexture->GetShaderFor(
-				deoglSkinTexture::estComponentGeometry )->CreateSPBInstParam();
-		}
-		
 		// shared spb
 		if( pSharedSPBElement ){
 			pSharedSPBElement->FreeReference();
@@ -540,9 +493,19 @@ void deoglRComponentTexture::PrepareParamBlocks(){
 			deObjectReference group;
 			
 			for( i=0; i<count; i++ ){
-				group.TakeOver( model.GetLODAt( i ).GetSharedSPBRTIGroupListAt( pIndex ).GetWith( spb ) );
+				deoglModelLOD &modelLod = model.GetLODAt( i );
+				deoglSharedSPBRTIGroupList &list = modelLod.GetSharedSPBRTIGroupListAt( pIndex );
+				deoglSharedSPBRTIGroup *group = list.GetWith( spb );
+				
+				if( ! group ){
+					group = list.AddWith( spb );
+					group->GetRTSInstance()->SetSubInstanceSPB( &spb );
+				}
+				
 				pSharedSPBRTIGroup.Add( group );
 			}
+			
+			UpdateRTSInstances();
 			
 		}else{
 			for( i=0; i<count; i++ ){
@@ -555,20 +518,6 @@ void deoglRComponentTexture::PrepareParamBlocks(){
 	}
 	
 	if( pDirtyParamBlocks ){
-		// parameter block
-		if( pParamBlock && pUseSkinTexture ){
-			pParamBlock->MapBuffer();
-			try{
-				UpdateInstanceParamBlock( *pParamBlock, 0,
-					*pUseSkinTexture->GetShaderFor( deoglSkinTexture::estComponentGeometry ) );
-				
-			}catch( const deException & ){
-				pParamBlock->UnmapBuffer();
-				throw;
-			}
-			pParamBlock->UnmapBuffer();
-		}
-		
 		// shared spb
 		if( pSharedSPBElement && pUseSkinTexture ){
 			// it does not matter which shader type we use since all are required to use the
@@ -591,6 +540,26 @@ void deoglRComponentTexture::PrepareParamBlocks(){
 		
 		// done
 		pDirtyParamBlocks = false;
+	}
+}
+
+void deoglRComponentTexture::UpdateRTSInstances(){
+	const deoglRModel &model = pComponent.GetModelRef();
+	const int count = pSharedSPBRTIGroup.GetCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		deoglSharedSPBRTIGroup * const group = ( deoglSharedSPBRTIGroup* )pSharedSPBRTIGroup.GetAt( i );
+		if( ! group ){
+			continue;
+		}
+		
+		const deoglModelTexture &modelTexture = model.GetLODAt( i ).GetTextureAt( pIndex );
+		deoglRenderTaskSharedInstance &rtsi = *group->GetRTSInstance();
+		rtsi.SetFirstPoint( pComponent.GetPointOffset( i ) );
+		rtsi.SetFirstIndex( pComponent.GetIndexOffset( i ) + modelTexture.GetFirstFace() * 3 );
+		rtsi.SetIndexCount( modelTexture.GetFaceCount() * 3 );
+		rtsi.SetDoubleSided( pUseDoubleSided );
 	}
 }
 
@@ -752,6 +721,7 @@ void deoglRComponentTexture::PrepareTUCs(){
 		}
 		
 		pTUCEnvMap = renderThread.GetShader().GetTexUnitsConfigList().GetWith( &unit[ 0 ], 2 );
+		pTUCEnvMap->EnsureRTSTexture();
 	}
 	
 	// outline depth
@@ -829,6 +799,7 @@ deoglSkinTexture::eShaderTypes shaderType ) const{
 			pComponent.GetRenderEnvMap(), pComponent.GetRenderEnvMapFade() );
 		tuc = renderThread.GetShader().GetTexUnitsConfigList().GetWith(
 			&units[ 0 ], skinShader.GetUsedTextureTargetCount() );
+		tuc->EnsureRTSTexture();
 	}
 	
 	return tuc;

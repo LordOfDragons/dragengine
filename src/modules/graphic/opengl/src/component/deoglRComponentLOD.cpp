@@ -1225,6 +1225,10 @@ void deoglRComponentLOD::pUpdateVAO( deoglModelLOD &modelLOD ){
 	
 	OGL_CHECK( renderThread, pglBindBuffer( GL_ARRAY_BUFFER, 0 ) );
 	OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
+	
+	pVAO->EnsureRTSVAO();
+	
+	pComponent.UpdateRTSInstances();
 }
 
 

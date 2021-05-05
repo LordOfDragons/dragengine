@@ -29,6 +29,7 @@ class deoglCubeMap;
 class deoglRenderPlan;
 class deoglTexture;
 class deoglTexUnitConfig;
+class deoglRenderTaskSharedTexture;
 
 
 
@@ -58,6 +59,8 @@ public:
 	int pUsageCount;
 	unsigned int pHashCode;
 	unsigned int pUniqueKey;
+	
+	deoglRenderTaskSharedTexture *pRTSTexture;
 	
 	deoglTexUnitsConfig *pLLPrev;
 	deoglTexUnitsConfig *pLLNext;
@@ -165,6 +168,14 @@ public:
 	
 	/** Unique key for use with dictionaries. */
 	inline unsigned int GetUniqueKey() const{ return pUniqueKey; }
+	
+	
+	
+	/** Render task shared texture or NULL. */
+	inline deoglRenderTaskSharedTexture *GetRTSTexture() const{ return pRTSTexture; }
+	
+	/** Ensure render task shared texture is present. */
+	void EnsureRTSTexture();
 	
 	
 	

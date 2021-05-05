@@ -34,6 +34,7 @@
 #include "task/deoglAddToRenderTask.h"
 #include "task/deoglRenderTask.h"
 #include "task/deoglRenderTaskShader.h"
+#include "task/shared/deoglRenderTaskSharedShader.h"
 #include "../capabilities/deoglCapabilities.h"
 #include "../collidelist/deoglCollideListComponent.h"
 #include "../component/deoglRComponent.h"
@@ -206,9 +207,13 @@ pAddToRenderTask( NULL )
 		sources = shaderManager.GetSourcesNamed( "DefRen Occlusion OccMap" );
 		AddOccMapDefines( defines );
 		pShaderOccMapOrtho = shaderManager.GetProgramWith( sources, defines );
+		pShaderOccMapOrtho->EnsureRTSShader();
+		pShaderOccMapOrtho->GetRTSShader()->SetSPBInstanceIndexBase( 0 );
 		
 		defines.AddDefine( "PERSPECTIVE_TO_LINEAR", "1" );
 		pShaderOccMap = shaderManager.GetProgramWith( sources, defines );
+		pShaderOccMap->EnsureRTSShader();
+		pShaderOccMap->GetRTSShader()->SetSPBInstanceIndexBase( 0 );
 		defines.RemoveAllDefines();
 		
 		sources = shaderManager.GetSourcesNamed( "DefRen Occlusion OccMap Down-Sample" );
@@ -252,6 +257,8 @@ pAddToRenderTask( NULL )
 			}
 			
 			pShaderOccMapCube = shaderManager.GetProgramWith( sources, defines );
+			pShaderOccMapCube->EnsureRTSShader();
+			pShaderOccMapCube->GetRTSShader()->SetSPBInstanceIndexBase( 0 );
 			defines.RemoveAllDefines();
 		}
 		
@@ -343,38 +350,36 @@ deoglRenderOcclusion::~deoglRenderOcclusion(){
 void deoglRenderOcclusion::AddOccMapDefines( deoglShaderDefines &defines ){
 	AddBasicDefines( defines );
 	
-	if( deoglSkinShader::USE_SHARED_SPB ){
-		const deoglRenderThread &renderThread = GetRenderThread();
-		const deoglRTBufferObject &bo = renderThread.GetBufferObject();
-		decString value;
+	const deoglRenderThread &renderThread = GetRenderThread();
+	const deoglRTBufferObject &bo = renderThread.GetBufferObject();
+	decString value;
+	
+	defines.AddDefine( "SHARED_SPB", "1" );
+	
+	if( renderThread.GetChoices().GetSharedSPBUseSSBO() ){
+		defines.AddDefine( "SHARED_SPB_USE_SSBO", "1" );
 		
-		defines.AddDefine( "SHARED_SPB", "1" );
-		
-		if( renderThread.GetChoices().GetSharedSPBUseSSBO() ){
-			defines.AddDefine( "SHARED_SPB_USE_SSBO", "1" );
-			
-			if( bo.GetLayoutOccMeshInstanceSSBO()->GetOffsetPadding() >= 16 ){
-				value.SetValue( bo.GetLayoutOccMeshInstanceSSBO()->GetOffsetPadding() / 16 );
-				defines.AddDefine( "SHARED_SPB_PADDING", value );
-			}
-			
-		}else{
-			// NOTE UBO requires array size to be constant, SSBO does not
-			if( bo.GetLayoutOccMeshInstanceUBO()->GetElementCount() > 0 ){
-				value.SetValue( bo.GetLayoutOccMeshInstanceUBO()->GetElementCount() );
-				defines.AddDefine( "SHARED_SPB_ARRAY_SIZE", value );
-			}
-			
-			if( bo.GetLayoutOccMeshInstanceUBO()->GetOffsetPadding() >= 16 ){
-				value.SetValue( bo.GetLayoutOccMeshInstanceUBO()->GetOffsetPadding() / 16 );
-				defines.AddDefine( "SHARED_SPB_PADDING", value );
-			}
+		if( bo.GetLayoutOccMeshInstanceSSBO()->GetOffsetPadding() >= 16 ){
+			value.SetValue( bo.GetLayoutOccMeshInstanceSSBO()->GetOffsetPadding() / 16 );
+			defines.AddDefine( "SHARED_SPB_PADDING", value );
 		}
 		
-		if( bo.GetInstanceArraySizeUBO() > 0 ){
-			value.SetValue( bo.GetInstanceArraySizeUBO() );
-			defines.AddDefine( "SPB_INSTANCE_ARRAY_SIZE", value );
+	}else{
+		// NOTE UBO requires array size to be constant, SSBO does not
+		if( bo.GetLayoutOccMeshInstanceUBO()->GetElementCount() > 0 ){
+			value.SetValue( bo.GetLayoutOccMeshInstanceUBO()->GetElementCount() );
+			defines.AddDefine( "SHARED_SPB_ARRAY_SIZE", value );
 		}
+		
+		if( bo.GetLayoutOccMeshInstanceUBO()->GetOffsetPadding() >= 16 ){
+			value.SetValue( bo.GetLayoutOccMeshInstanceUBO()->GetOffsetPadding() / 16 );
+			defines.AddDefine( "SHARED_SPB_PADDING", value );
+		}
+	}
+	
+	if( bo.GetInstanceArraySizeUBO() > 0 ){
+		value.SetValue( bo.GetInstanceArraySizeUBO() );
+		defines.AddDefine( "SPB_INSTANCE_ARRAY_SIZE", value );
 	}
 }
 
@@ -734,10 +739,10 @@ void deoglRenderOcclusion::RenderOcclusionMap( deoglRenderPlan &plan ){
 	pAddToRenderTask->SetNoRendered( plan.GetNoRenderedOccMesh() );
 	
 	if( perspective ){
-		pAddToRenderTask->SetEnforceShader( pShaderOccMap );
+		pAddToRenderTask->SetEnforceShader( pShaderOccMap->GetRTSShader() );
 		
 	}else{
-		pAddToRenderTask->SetEnforceShader( pShaderOccMapOrtho );
+		pAddToRenderTask->SetEnforceShader( pShaderOccMapOrtho->GetRTSShader() );
 	}
 	
 	pAddToRenderTask->AddOcclusionMeshes( collideList );
@@ -1149,9 +1154,7 @@ deoglCubeMap *cubemap, const decDVector &position, float imageDistance, float vi
 		deoglRComponent &component = *collideList.GetComponentAt( i )->GetComponent();
 		if( component.GetOcclusionMesh() ){
 			component.UpdateCubeFaceVisibility( position );
-			if( deoglSkinShader::USE_SHARED_SPB ){
-				component.SetSpecialFlagsFromFaceVisibility();
-			}
+			component.SetSpecialFlagsFromFaceVisibility();
 		}
 	}
 	
@@ -1181,17 +1184,6 @@ deoglCubeMap *cubemap, const decDVector &position, float imageDistance, float vi
 			throw;
 		}
 		pRenderParamBlock->UnmapBuffer();
-		
-		// update object render cube face special parameter. optimizes rendering by skipping
-		// object faces on cube map faces they are not visible on
-		if( ! deoglSkinShader::USE_SHARED_SPB ){
-			for( i=0; i<componentCount; i++ ){
-				deoglRComponent &component = *collideList.GetComponentAt( i )->GetComponent();
-				if( component.GetOcclusionMesh() ){
-					component.UpdateSpecialSPBCubeRender();
-				}
-			}
-		}
 	}
 	
 	// set states
@@ -1213,9 +1205,9 @@ deoglCubeMap *cubemap, const decDVector &position, float imageDistance, float vi
 	
 	if( useGSRenderCube ){
 		pAddToRenderTask->SetUseSpecialParamBlock( true );
-		pAddToRenderTask->SetEnforceShader( pShaderOccMapCube );
+		pAddToRenderTask->SetEnforceShader( pShaderOccMapCube->GetRTSShader() );
 	}else{
-		pAddToRenderTask->SetEnforceShader( pShaderOccMap );
+		pAddToRenderTask->SetEnforceShader( pShaderOccMap->GetRTSShader() );
 	}
 	pAddToRenderTask->SetSolid( true );
 	pAddToRenderTask->SetWithHoles( false );

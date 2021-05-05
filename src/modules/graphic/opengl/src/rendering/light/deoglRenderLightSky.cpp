@@ -685,7 +685,7 @@ deoglRenderPlanSkyLight &planSkyLight, deoglShadowMapper &shadowMapper ){
 // 		lodBoxHeight[ i ] = sl.maxExtend.y - sl.minExtend.y;
 // 	}
 	
-	componentCount = collideList.GetComponentCount();
+	const int componentCount = collideList.GetComponentCount();
 	for( i=0; i<componentCount; i++ ){
 		deoglCollideListComponent &cl = *collideList.GetComponentAt( i );
 		deoglRComponent &component = *cl.GetComponent();
@@ -701,12 +701,7 @@ deoglRenderPlanSkyLight &planSkyLight, deoglShadowMapper &shadowMapper ){
 // 			cl.SetLODLevel( component.GetLODCount() - 1 );
 // 		}
 		
-		if( deoglSkinShader::USE_SHARED_SPB ){
-			component.SetSpecialFlagsFromSkyShadowLayerMask();
-			
-		}else{
-			component.UpdateSpecialSPBCascadedRender();
-		}
+		component.SetSpecialFlagsFromSkyShadowLayerMask( cl.GetCascadeMask() );
 	}
 	
 	

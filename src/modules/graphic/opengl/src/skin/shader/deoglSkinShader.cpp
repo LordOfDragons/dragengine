@@ -32,6 +32,7 @@
 #include "../../envmap/deoglEnvironmentMap.h"
 #include "../../extensions/deoglExtensions.h"
 #include "../../rendering/deoglRenderReflection.h"
+#include "../../rendering/task/shared/deoglRenderTaskSharedShader.h"
 #include "../../renderthread/deoglRenderThread.h"
 #include "../../renderthread/deoglRTChoices.h"
 #include "../../renderthread/deoglRTDefaultTextures.h"
@@ -394,8 +395,6 @@ static const deoglSkinShader::eInstanceUniformTargets vUBOInstParamMap[ vUBOInst
 
 // Class deoglSkinShader
 //////////////////////////
-
-bool deoglSkinShader::USE_SHARED_SPB = true;
 
 // Constructor, destructor
 ////////////////////////////
@@ -1575,6 +1574,8 @@ void deoglSkinShader::GenerateShader(){
 		
 		// compile shader
 		pShader->SetCompiled( pRenderThread.GetShader().GetShaderManager().GetLanguage()->CompileShader( *pShader ) );
+		pShader->EnsureRTSShader();
+		pShader->GetRTSShader()->SetSPBInstanceIndexBase( pTargetSPBInstanceIndexBase );
 		/*
 		if( pConfig.GetShaderMode() == deoglSkinShaderConfig::esmGeometry ){
 			const int count = pSources->GetParameterCount();

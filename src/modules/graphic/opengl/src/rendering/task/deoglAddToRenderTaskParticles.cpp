@@ -27,6 +27,11 @@
 #include "deoglRenderTaskParticles.h"
 #include "deoglRenderTaskParticlesStep.h"
 #include "../defren/deoglDeferredRendering.h"
+#include "../task/shared/deoglRenderTaskSharedInstance.h"
+#include "../task/shared/deoglRenderTaskSharedShader.h"
+#include "../task/shared/deoglRenderTaskSharedSubInstance.h"
+#include "../task/shared/deoglRenderTaskSharedTexture.h"
+#include "../task/shared/deoglRenderTaskSharedVAO.h"
 #include "../../configuration/deoglConfiguration.h"
 #include "../../envmap/deoglEnvironmentMap.h"
 #include "../../particle/deoglRParticleEmitter.h"
@@ -115,7 +120,7 @@ void deoglAddToRenderTaskParticles::SetSkinShaderTypeBeam( deoglSkinTexture::eSh
 
 
 
-void deoglAddToRenderTaskParticles::SetEnforceShader( deoglShaderProgram *shader ){
+void deoglAddToRenderTaskParticles::SetEnforceShader( deoglRenderTaskSharedShader *shader ){
 	pEnforceShader = shader;
 }
 
@@ -178,7 +183,11 @@ const deoglRParticleEmitterInstance::sParticle *particle ){
 	}
 	
 	// retrieve the shader and texture units configuration to use
-	deoglShaderProgram *shader = pEnforceShader;
+	deoglShaderProgram *shader = NULL;
+	
+	if( pEnforceShader ){
+		shader = pEnforceShader->GetShader();
+	}
 	
 	if( ! shader ){
 		deoglSkinShader * const skinShader = skinTexture->GetShaderFor( skinShaderType );

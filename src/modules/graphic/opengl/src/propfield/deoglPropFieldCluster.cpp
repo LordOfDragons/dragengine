@@ -29,12 +29,18 @@
 #include "deoglRPropFieldType.h"
 #include "../deGraphicOpenGl.h"
 #include "../envmap/deoglEnvironmentMap.h"
+#include "../model/deoglRModel.h"
+#include "../model/deoglModelLOD.h"
+#include "../model/texture/deoglModelTexture.h"
+#include "../rendering/task/shared/deoglRenderTaskSharedInstance.h"
+#include "../rendering/task/shared/deoglRenderTaskSharedPool.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTBufferObject.h"
 #include "../renderthread/deoglRTDefaultTextures.h"
 #include "../renderthread/deoglRTLogger.h"
 #include "../renderthread/deoglRTShader.h"
 #include "../renderthread/deoglRTTexture.h"
+#include "../shaders/paramblock/deoglSPBlockUBO.h"
 #include "../skin/channel/deoglSkinChannel.h"
 #include "../skin/deoglSkinTexture.h"
 #include "../skin/dynamic/deoglRDynamicSkin.h"
@@ -46,6 +52,7 @@
 #include "../texture/texunitsconfig/deoglTexUnitsConfig.h"
 #include "../texture/texunitsconfig/deoglTexUnitsConfigList.h"
 #include "../utils/deoglConvertFloatHalf.h"
+#include "../vbo/deoglSharedVBOBlock.h"
 #include "../world/deoglRWorld.h"
 
 #include <dragengine/common/exceptions.h>
@@ -84,7 +91,9 @@ pDirtyBendStates( true ),
 pTBOInstances( 0 ),
 pTBOBendStates( 0 ),
 pVBOInstances( 0 ),
-pVBOBendStates( 0 ){
+pVBOBendStates( 0 ),
+
+pRTSInstance( NULL ){
 }
 
 deoglPropFieldCluster::~deoglPropFieldCluster(){
@@ -94,6 +103,10 @@ deoglPropFieldCluster::~deoglPropFieldCluster(){
 	// is destroyed. the reason is that delayed deletion delets the clusters and at that time
 	// the parent objects do not exist anymore. Render thread is thus stored aside during
 	// construction time which is valid and prevents the problem
+	
+	if( pRTSInstance ){
+		pRTSInstance->ReturnToPool();
+	}
 	
 	if( pBendStateData ){
 		delete [] pBendStateData;
@@ -172,6 +185,19 @@ void deoglPropFieldCluster::UpdateTBOs(){
 	if( pDirtyBendStates ){
 		UpdateTBOBendStates();
 		pDirtyBendStates = false;
+	}
+	
+	if( pPropFieldType.GetModel() ){
+		if( ! pRTSInstance ){
+			pRTSInstance = pRenderThread.GetRenderTaskSharedPool().GetInstance();
+			UpdateRTSInstances();
+		}
+		
+	}else{
+		if( pRTSInstance ){
+			pRTSInstance->ReturnToPool();
+			pRTSInstance = NULL;
+		}
 	}
 }
 
@@ -409,6 +435,7 @@ deoglTexUnitsConfig *deoglPropFieldCluster::GetTUCEnvMap(){
 			}
 			
 			pTUCEnvMap = renderThread.GetShader().GetTexUnitsConfigList().GetWith( &unit[ 0 ], 2 );
+			pTUCEnvMap->EnsureRTSTexture();
 		}
 		
 		pDirtyTUCEnvMap = false;
@@ -447,6 +474,7 @@ deoglTexUnitsConfig *deoglPropFieldCluster::BareGetTUCFor( deoglSkinTexture::eSh
 			}
 			
 			tuc = renderThread.GetShader().GetTexUnitsConfigList().GetWith( &units[ 0 ], skinShader.GetUsedTextureTargetCount() );
+			tuc->EnsureRTSTexture();
 		}
 	}
 	
@@ -458,4 +486,30 @@ void deoglPropFieldCluster::MarkTUCsDirty(){
 	pDirtyTUCGeometry = true;
 	pDirtyTUCShadow = true;
 	pDirtyTUCEnvMap = true;
+}
+
+void deoglPropFieldCluster::UpdateRTSInstances(){
+	if( pRTSInstance ){
+		deoglModelLOD &modelLod = pPropFieldType.GetModel()->GetLODAt( 0 );
+		const deoglSharedVBOBlock &vboBlock = *modelLod.GetVBOBlock();
+		const deoglModelTexture &modelTexture = modelLod.GetTextureAt( 0 );
+		
+		pRTSInstance->SetParameterBlock( pPropFieldType.GetParamBlock() );
+		pRTSInstance->SetParameterBlockSpecial( NULL );
+		pRTSInstance->SetFirstPoint( vboBlock.GetOffset() );
+		pRTSInstance->SetPointCount( 0 );
+		pRTSInstance->SetFirstIndex( vboBlock.GetIndexOffset() + modelTexture.GetFirstFace() * 3 );
+		pRTSInstance->SetIndexCount( modelTexture.GetFaceCount() * 3 );
+		pRTSInstance->SetSubInstanceCount( pInstanceCount );
+		pRTSInstance->SetDoubleSided( modelTexture.GetDoubleSided() );
+		pRTSInstance->SetPrimitiveType( GL_TRIANGLES );
+		
+		/*
+		// for imposters
+		firstPoint = 0;
+		firstIndex = 0;
+		indexCount = 0;
+		pointCount = 6;
+		*/
+	}
 }

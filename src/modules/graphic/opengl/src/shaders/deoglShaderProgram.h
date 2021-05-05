@@ -28,7 +28,7 @@ class deoglRenderThread;
 class deoglShaderUnitSourceCode;
 class deoglShaderSources;
 class deoglShaderCompiled;
-class deoglRenderTaskShader;
+class deoglRenderTaskSharedShader;
 
 
 
@@ -52,10 +52,8 @@ private:
 	
 	deoglShaderCompiled *pCompiled;
 	
-	deoglRenderTaskShader *pRenderTaskShader;
-	unsigned int pRenderTaskTrackingNumber;
-	
 	unsigned int pUniqueKey;
+	deoglRenderTaskSharedShader *pRTSShader;
 	
 	int pUsageCount;
 	
@@ -111,17 +109,14 @@ public:
 	/** Sets the compiled shader. */
 	void SetCompiled( deoglShaderCompiled *compiled );
 	
-	/** Retrieves the render task shader pointer. */
-	inline deoglRenderTaskShader *GetRenderTaskShader() const{ return pRenderTaskShader; }
-	/** Sets the render task shader pointer. */
-	void SetRenderTaskShader( deoglRenderTaskShader *renderTaskShader );
-	/** Retrieves the render task tracking number. */
-	inline unsigned int GetRenderTaskTrackingNumber() const{ return pRenderTaskTrackingNumber; }
-	/** Sets the render task tracking number. */
-	void SetRenderTaskTrackingNumber( unsigned int trackingNumber );
-	
 	/** Unique key for use with dictionaries. */
 	inline unsigned int GetUniqueKey() const{ return pUniqueKey; }
+	
+	/** Render task shared shader. */
+	inline deoglRenderTaskSharedShader *GetRTSShader() const{ return pRTSShader; }
+	
+	/** Ensure render task sharded shader is present. */
+	void EnsureRTSShader();
 	
 	/** Retrieves the usage count. */
 	inline int GetUsageCount() const{ return pUsageCount; }

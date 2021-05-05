@@ -28,6 +28,8 @@
 #include "deoglRParticleEmitterInstanceType.h"
 #include "../envmap/deoglEnvironmentMap.h"
 #include "../light/shader/deoglLightShader.h"
+#include "../rendering/task/shared/deoglRenderTaskSharedInstance.h"
+#include "../rendering/task/shared/deoglRenderTaskSharedPool.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTShader.h"
 #include "../renderthread/deoglRTLogger.h"
@@ -92,8 +94,13 @@ pDirtyTUCCounter( true ),
 pDirtyTUCGeometry( true ),
 pDirtyTUCGeometryDepthTest( true ),
 
-pParamBlockLightInstance( NULL ){
+pParamBlockLightInstance( NULL ),
+
+pRTSInstance( NULL )
+{
 	LEAK_CHECK_CREATE( instance.GetRenderThread(), ParticleEmitterInstanceType );
+	
+	pRTSInstance = instance.GetRenderThread().GetRenderTaskSharedPool().GetInstance();
 }
 
 class deoglRParticleEmitterInstanceTypeDeletion : public deoglDelayedDeletion{
@@ -146,6 +153,11 @@ public:
 
 deoglRParticleEmitterInstanceType::~deoglRParticleEmitterInstanceType(){
 	LEAK_CHECK_FREE( pEmitterInstance.GetRenderThread(), ParticleEmitterInstanceType );
+	
+	if( pRTSInstance ){
+		pRTSInstance->ReturnToPool();
+	}
+	
 	if( pDynamicSkin ){
 		pDynamicSkin->FreeReference();
 	}
@@ -535,8 +547,10 @@ deoglSkinTexture::eShaderTypes shaderType ) const{
 			renderThread.GetShader().GetTexSamplerConfig( deoglRTShader::etscClampLinear ) );
 	}
 	
-	return renderThread.GetShader().GetTexUnitsConfigList().GetWith(
-		&units[ 0 ], skinShader.GetUsedTextureTargetCount() );
+	deoglTexUnitsConfig * const tuc = renderThread.GetShader().GetTexUnitsConfigList()
+		.GetWith( &units[ 0 ], skinShader.GetUsedTextureTargetCount() );
+	tuc->EnsureRTSTexture();
+	return tuc;
 }
 
 void deoglRParticleEmitterInstanceType::InvalidateParamBlocks(){

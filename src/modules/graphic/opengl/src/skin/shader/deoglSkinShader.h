@@ -47,7 +47,6 @@ class deoglShaderParameterBlock;
 class deoglSkinShader : public deObject{
 public:
 	static int REFLECTION_TEST_MODE;
-	static bool USE_SHARED_SPB;
 	
 	/** \brief Texture targets. */
 	enum eTextureTargets{

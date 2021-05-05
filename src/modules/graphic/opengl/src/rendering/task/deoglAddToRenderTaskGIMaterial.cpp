@@ -147,13 +147,11 @@ deoglRenderTaskTexture *deoglAddToRenderTaskGIMaterial::pGetTaskTexture(
 deoglSkinTexture *skinTexture, deoglTexUnitsConfig *tuc ){
 	// retrieve the shader and texture units configuration to use
 	deoglShaderProgram *shader = NULL;
-	int spbInstanceIndexBase = -1;
 	
 	if( ! shader ){
 		deoglSkinShader * const skinShader = skinTexture->GetShaderFor( pSkinShaderType );
 		if( skinShader ){
 			shader = skinShader->GetShader();
-			spbInstanceIndexBase = skinShader->GetTargetSPBInstanceIndexBase();
 		}
 	}
 	
@@ -166,17 +164,7 @@ deoglSkinTexture *skinTexture, deoglTexUnitsConfig *tuc ){
 	}
 	
 	// obtain render task shader
-	deoglRenderTaskShader *renderTaskShader;
-	if( shader->GetRenderTaskTrackingNumber() == pRenderTask.GetTrackingNumber() ){
-		renderTaskShader = shader->GetRenderTaskShader();
-		
-	}else{
-		renderTaskShader = pRenderTask.AddShader( shader );
-		renderTaskShader->SetParameterBlock( NULL );
-		renderTaskShader->SetSPBInstanceIndexBase( spbInstanceIndexBase );
-		shader->SetRenderTaskShader( renderTaskShader );
-		shader->SetRenderTaskTrackingNumber( pRenderTask.GetTrackingNumber() );
-	}
+	deoglRenderTaskShader * const renderTaskShader = pRenderTask.AddShader( shader->GetRTSShader() );
 	
 	// obtain render task texture
 	if( tuc->GetRenderTaskTrackingNumber() != pRenderTask.GetTrackingNumber() ){

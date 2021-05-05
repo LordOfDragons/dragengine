@@ -26,11 +26,11 @@
 #include "../vbo/deoglVBOLayout.h"
 
 class deoglRenderThread;
+class deoglRenderTaskSharedVAO;
 
 
 /**
- * @brief OpenGL VAO.
- * A small wrapper for VAO objects to help with tracking VAO switches, storing indexed rendering
+ * Small wrapper for VAO objects to help with tracking VAO switches, storing indexed rendering
  * properties and speeding up render task creation.
  */
 class deoglVAO{
@@ -46,44 +46,62 @@ public:
 	unsigned int pRenderTaskTrackingNumber;
 	int pRenderTaskVAOIndex;
 	unsigned int pUniqueKey;
+	deoglRenderTaskSharedVAO *pRTSVAO;
+	
+	
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Creates a new shared vbo. */
+	/** Create vao. */
 	deoglVAO( deoglRenderThread &renderThread );
-	/** Cleans up the shared vbo. */
+	
+	/** Clean up vao. */
 	virtual ~deoglVAO();
 	/*@}*/
 	
-	/** @name Management */
+	
+	
+	/** \name Management */
 	/*@{*/
-	/** \brief Render thread. */
+	/** Render thread. */
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
-	/** Retrieves the VAO. */
+	/** VAO. */
 	inline GLuint GetVAO() const{ return pVAO; }
 	
-	/** Retrieves the index type. */
+	/** Index type. */
 	inline deoglVBOLayout::eIndexTypes GetIndexType() const{ return pIndexType; }
-	/** Sets the index type. */
+	
+	/** Set index type. */
 	void SetIndexType( deoglVBOLayout::eIndexTypes indexType );
-	/** Retrieves the size in bytes of indices. */
+	
+	/** Size in bytes of indices. */
 	inline int GetIndexSize() const{ return pIndexSize; }
-	/** Retrieves the opengl type of the indices. */
+	
+	/** OpenGL type of the indices. */
 	inline int GetIndexGLType() const{ return pIndexGLType; }
 	
-	/** Retrieves the render task tracking number. */
+	/** Render task tracking number. */
 	inline unsigned int GetRenderTaskTrackingNumber() const{ return pRenderTaskTrackingNumber; }
-	/** Sets the render task tracking number. */
+	
+	/** Set render task tracking number. */
 	void SetRenderTaskTrackingNumber( unsigned int trackingNumber );
-	/** Retrieves the render task vao index. */
+	
+	/** Render task vao index. */
 	inline int GetRenderTaskVAOIndex() const{ return pRenderTaskVAOIndex; }
-	/** Sets the render task vao index. */
+	
+	/** Set render task vao index. */
 	void SetRenderTaskVAOIndex( int vaoIndex );
 	
 	/** Unique key for use with dictionaries. */
 	inline unsigned int GetUniqueKey() const{ return pUniqueKey; }
+	
+	/** Render task shared vao or NULL. */
+	inline deoglRenderTaskSharedVAO *GetRTSVAO() const{ return pRTSVAO; }
+	
+	/** Ensure render task shared vao is present. */
+	void EnsureRTSVAO();
 	/*@}*/
 };
 

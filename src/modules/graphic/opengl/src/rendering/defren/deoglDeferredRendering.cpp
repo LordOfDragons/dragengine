@@ -459,6 +459,8 @@ pTextureLuminance( NULL )
 		OGL_CHECK( renderThread, pglBindBuffer( GL_ARRAY_BUFFER, 0 ) );
 		OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
 		
+		pVAOBillboard->EnsureRTSVAO();
+		
 		// enfore a minimum size
 		Resize( 64, 64 );
 		

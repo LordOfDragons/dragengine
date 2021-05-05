@@ -45,6 +45,7 @@ class deoglRenderTask;
 class deoglRenderTaskStep;
 class deoglRenderTaskTexture;
 class deoglRenderTaskVAO;
+class deoglRenderTaskSharedShader;
 class deoglRenderThread;
 class deoglSPBlockUBO;
 class deoglShaderProgram;
@@ -57,7 +58,7 @@ class deoglVAO;
 
 
 /**
- * \brief Add elements to render task.
+ * Add elements to render task.
  * 
  * Provides support for filtering the elements using texture properties.
  */
@@ -90,7 +91,7 @@ private:
 	
 	bool pUseSpecialParamBlock;
 	
-	deoglShaderProgram *pEnforceShader;
+	deoglRenderTaskSharedShader *pEnforceShader;
 	deoglSPBlockUBO *pEnforceParamBlock;
 	
 	
@@ -98,10 +99,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create new add to render task. */
+	/** Create new add to render task. */
 	deoglAddToRenderTask( deoglRenderThread &renderThread, deoglRenderTask &renderTask );
 	
-	/** \brief Clean up add to render task . */
+	/** Clean up add to render task . */
 	~deoglAddToRenderTask();
 	/*@}*/
 	
@@ -109,162 +110,162 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Shader type to be used for skin shaders. */
+	/** Shader type to be used for skin shaders. */
 	inline deoglSkinTexture::eShaderTypes GetSkinShaderType() const{ return pSkinShaderType; }
 	
-	/** \brief Set shader type to be used for skin shaders. */
+	/** Set shader type to be used for skin shaders. */
 	void SetSkinShaderType( deoglSkinTexture::eShaderTypes shaderType );
 	
-	/** \brief Shader type to be used for ribbon skin shaders. */
+	/** Shader type to be used for ribbon skin shaders. */
 	inline deoglSkinTexture::eShaderTypes GetSkinShaderTypeRibbon() const{ return pSkinShaderTypeRibbon; }
 	
-	/** \brief Set shader type to be used for ribbon skin shaders. */
+	/** Set shader type to be used for ribbon skin shaders. */
 	void SetSkinShaderTypeRibbon( deoglSkinTexture::eShaderTypes shaderType );
 	
-	/** \brief Shader type to be used for beam skin shaders. */
+	/** Shader type to be used for beam skin shaders. */
 	inline deoglSkinTexture::eShaderTypes GetSkinShaderTypeBeam() const{ return pSkinShaderTypeBeam; }
 	
-	/** \brief Set shader type to be used for beam skin shaders. */
+	/** Set shader type to be used for beam skin shaders. */
 	void SetSkinShaderTypeBeam( deoglSkinTexture::eShaderTypes shaderType );
 	
 	
 	
-	/** \brief Solid or transparent textures are added. */
+	/** Solid or transparent textures are added. */
 	inline bool GetSolid() const{ return pSolid; }
 	
-	/** \brief Set if solid or transparent texture are added. */
+	/** Set if solid or transparent texture are added. */
 	void SetSolid( bool solid );
 	
-	/** \brief Textures with the shadow none property are not added. */
+	/** Textures with the shadow none property are not added. */
 	inline bool GetNoShadowNone() const{ return pNoShadowNone; }
 	
-	/** \brief Set if textures with the shadow none property are not added. */
+	/** Set if textures with the shadow none property are not added. */
 	void SetNoShadowNone( bool noShadowNone );
 	
-	/** \brief Textures without the reflected property are not added. */
+	/** Textures without the reflected property are not added. */
 	inline bool GetNoNotReflected() const{ return pNoNotReflected; }
 	
-	/** \brief Set if textures without the reflected property are not added. */
+	/** Set if textures without the reflected property are not added. */
 	void SetNoNotReflected( bool noNotReflected );
 	
-	/** \brief Rendered textures are not added. */
+	/** Rendered textures are not added. */
 	inline bool GetNoRendered() const{ return pNoRendered; }
 	
-	/** \brief Set if rendered textures are not added. */
+	/** Set if rendered textures are not added. */
 	void SetNoRendered( bool noRendered );
 	
-	/** \brief Outline textures are added. */
+	/** Outline textures are added. */
 	inline bool GetOutline() const{ return pOutline; }
 	
-	/** \brief Set if outline transparent texture are added. */
+	/** Set if outline transparent texture are added. */
 	void SetOutline( bool outline );
 	
 	
 	
-	/** \brief Filtering for holes is enabled. */
+	/** Filtering for holes is enabled. */
 	inline bool GetFilterHoles() const{ return pFilterHoles; }
 	
-	/** \brief Set if filtering for holes is enabled. */
+	/** Set if filtering for holes is enabled. */
 	void SetFilterHoles( bool filterHoles );
 	
-	/** \brief Textures with or without holes are added. */
+	/** Textures with or without holes are added. */
 	inline bool GetWithHoles() const{ return pWithHoles; }
 	
-	/** \brief Set if textures with or without holes are added. */
+	/** Set if textures with or without holes are added. */
 	void SetWithHoles( bool withHoles );
 	
 	
 	
-	/** \brief Filtering for double sided is enabled. */
+	/** Filtering for double sided is enabled. */
 	inline bool GetFilterDoubleSided() const{ return pFilterDoubleSided; }
 	
-	/** \brief Set if filtering for double sided is enabled. */
+	/** Set if filtering for double sided is enabled. */
 	void SetFilterDoubleSided( bool filterDoubleSided );
 	
-	/** \brief Doubled sided textures are selected if double sided filtering is enabled. */
+	/** Doubled sided textures are selected if double sided filtering is enabled. */
 	inline bool GetDoubleSided() const{ return pDoubleSided; }
 	
-	/** \brief Set if doubled sided textures are selected if double sided filtering is enabled. */
+	/** Set if doubled sided textures are selected if double sided filtering is enabled. */
 	void SetDoubleSided( bool doubleSided );
 	
-	/** \brief All geometry is forced to be double sided. */
+	/** All geometry is forced to be double sided. */
 	inline bool GetForceDoubleSided() const{ return pForceDoubleSided; }
 	
-	/** \brief Set all geometry is forced to be double sided. */
+	/** Set all geometry is forced to be double sided. */
 	void SetForceDoubleSided( bool doubleSided );
 	
 	
 	
-	/** \brief Filtering for decal is enabled. */
+	/** Filtering for decal is enabled. */
 	inline bool GetFilterDecal() const{ return pFilterDecal; }
 	
-	/** \brief Set if filtering for decal is enabled. */
+	/** Set if filtering for decal is enabled. */
 	void SetFilterDecal( bool filterDecal );
 	
-	/** \brief Decal textures are selected if decal filtering is enabled. */
+	/** Decal textures are selected if decal filtering is enabled. */
 	inline bool GetDecal() const{ return pDecal; }
 	
-	/** \brief Set if decal textures are selected if decal filtering is enabled. */
+	/** Set if decal textures are selected if decal filtering is enabled. */
 	void SetDecal( bool decal );
 	
 	
 	
-	/** \brief Filter by cube face test result or -1 if disabled. */
+	/** Filter by cube face test result or -1 if disabled. */
 	inline int GetFilterCubeFace() const{ return pFilterCubeFace; }
 	
-	/** \brief Set filter by cube face test result or -1 if disabled. */
+	/** Set filter by cube face test result or -1 if disabled. */
 	void SetFilterCubeFace( int cubeFace );
 	
 	
 	
-	/** \brief Use special shader parameter blocks. */
+	/** Use special shader parameter blocks. */
 	inline bool GetUseSpecialParamBlock() const{ return pUseSpecialParamBlock; }
 	
-	/** \brief Set if special shader parameter blocks are used. */
+	/** Set if special shader parameter blocks are used. */
 	void SetUseSpecialParamBlock( bool use );
 	
 	
 	
-	/** \brief Shader to enforce or \em NULL if free. */
-	inline deoglShaderProgram *GetEnforcedShader() const{ return pEnforceShader; }
+	/** Shader to enforce or NULL if free. */
+	inline deoglRenderTaskSharedShader *GetEnforcedShader() const{ return pEnforceShader; }
 	
-	/** \brief Set shader to enforce or \em NULL if free. */
-	void SetEnforceShader( deoglShaderProgram *shader );
+	/** Set shader to enforce or NULL if free. */
+	void SetEnforceShader( deoglRenderTaskSharedShader *shader );
 	
-	/** \brief Shader parameter block to enforce or \em NULL if free. */
+	/** Shader parameter block to enforce or NULL if free. */
 	inline deoglSPBlockUBO *GetEnforcedParamBlock() const{ return pEnforceParamBlock; }
 	
-	/** \brief Set shader parameter block to enforce or \em NULL if free. */
+	/** Set shader parameter block to enforce or NULL if free. */
 	void SetEnforceParamBlock( deoglSPBlockUBO *block );
 	
 	
 	
-	/** \brief Reset render task parameters. */
+	/** Reset render task parameters. */
 	void Reset();
 	
 	
 	
-	/** \brief Add component. */
+	/** Add component. */
 	void AddComponent( deoglRComponent &component, int lodLevel );
 	
-	/** \brief Add component. */
+	/** Add component. */
 	void AddComponent( const deoglCollideListComponent &clcomponent );
 	
-	/** \brief Add components from the given collide list. */
+	/** Add components from the given collide list. */
 	void AddComponents( const deoglCollideList &clist );
 	
-	/** \brief Add components from the given collide list using highest lod level. */
+	/** Add components from the given collide list using highest lod level. */
 	void AddComponentsHighestLod( const deoglCollideList &clist );
 	
 	/**
-	 * \brief Add continuous run of all faces of a texture of a component.
+	 * Add continuous run of all faces of a texture of a component.
 	 * \details The component is supposed to be updated already and that a model and skin exists
 	 *          as well as that a parent world exists.
 	 */
 	void AddComponentFaces( deoglRComponent &component, int texture, int lodLevel );
 	
 	/**
-	 * \brief Add continuous run of faces of a component.
+	 * Add continuous run of faces of a component.
 	 * \details The component is supposed to be updated already and that a model and skin
 	 *          exists as well as that a parent world exists.
 	 */
@@ -272,69 +273,69 @@ public:
 	
 	
 	
-	/** \brief Add billboards from collide list. */
+	/** Add billboards from collide list. */
 	void AddBillboards( const deoglCollideList &clist );
 	
-	/** \brief Add billboard. */
+	/** Add billboard. */
 	void AddBillboard( deoglRBillboard &billboard );
 	
 	
 	
-	/** \brief Add decal. */
+	/** Add decal. */
 	void AddDecal( deoglRDecal &decal, int lodLevel );
 	
-	/** \brief Add all decals of a component. */
+	/** Add all decals of a component. */
 	void AddDecals( deoglRComponent &component, int lodLevel );
 	
-	/** \brief Add all decals of all components from the given collide list. */
+	/** Add all decals of all components from the given collide list. */
 	void AddDecals( const deoglCollideList &clist );
 	
 	
 	
-	/** \brief Add all clusters of a collide list prop field type. */
+	/** Add all clusters of a collide list prop field type. */
 	void AddPropFieldType( deoglCollideListPropFieldType &clPropFieldType, deoglRPropFieldType &propFieldType, bool imposters );
 	
-	/** \brief Add all types of a collide list prop field. */
+	/** Add all types of a collide list prop field. */
 	void AddPropField( deoglCollideListPropField &clPropField, bool imposters );
 	
-	/** \brief Add all prop fields of a collide list. */
+	/** Add all prop fields of a collide list. */
 	void AddPropFields( const deoglCollideList &clist, bool imposters );
 	
 	
 	
-	/** \brief Add all clusters of height terrain sector texture. */
+	/** Add all clusters of height terrain sector texture. */
 	void AddHeightTerrainSectorClusters( const deoglHTViewSector &sectorView, int texture );
 	
-	/** \brief Add a height terrain sector. */
+	/** Add a height terrain sector. */
 	void AddHeightTerrainSector( const deoglCollideListHTSector &clhtsector, bool firstMask );
 	
-	/** \brief Add all height terrains of a collide list. */
+	/** Add all height terrains of a collide list. */
 	void AddHeightTerrains( const deoglCollideList &clist, bool firstMask );
 	
 	
 	
-	/** \brief Add an occlusion mesh from a component. */
+	/** Add an occlusion mesh from a component. */
 	void AddOcclusionMesh( deoglRComponent &component, deoglRenderTaskTexture *taskTexture );
 	
-	/** \brief Add occlusion meshes for all components in a collide list. */
+	/** Add occlusion meshes for all components in a collide list. */
 	void AddOcclusionMeshes( const deoglCollideList &clist );
 	
-	/** \brief Add a continuous run of faces of an occlusion mesh. */
+	/** Add a continuous run of faces of an occlusion mesh. */
 	void AddOcclusionMeshFaces( deoglRComponent &component, int firstFace,
 		int faceCount, bool doubleSided, deoglRenderTaskTexture *taskTexture );
 	
 	
 	
-	/** \brief Add particles from collide list. */
+	/** Add particles from collide list. */
 	void AddParticles( const deoglCollideList &list );
 	
-	/** \brief Add particles from all emitters in list. */
+	/** Add particles from all emitters in list. */
 	void AddParticles( const deoglParticleEmitterInstanceList &list );
 	
-	/** \brief Add particles from all emitters in list. */
+	/** Add particles from all emitters in list. */
 	void AddParticles( deoglRParticleEmitterInstance &emitter );
 	
-	/** \brief Add particles from emitter. */
+	/** Add particles from emitter. */
 	void AddParticles( deoglRParticleEmitterInstance &emitter,
 		deoglRParticleEmitterInstanceType &type );
 	/*@}*/

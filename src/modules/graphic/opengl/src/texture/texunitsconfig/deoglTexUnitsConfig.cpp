@@ -35,6 +35,8 @@
 #include "../../rendering/deoglRenderReflection.h"
 #include "../../configuration/deoglConfiguration.h"
 #include "../../envmap/deoglEnvironmentMap.h"
+#include "../../rendering/task/shared/deoglRenderTaskSharedPool.h"
+#include "../../rendering/task/shared/deoglRenderTaskSharedTexture.h"
 #include "../../renderthread/deoglRenderThread.h"
 #include "../../renderthread/deoglRTRenderers.h"
 #include "../../renderthread/deoglRTTexture.h"
@@ -63,15 +65,22 @@ pMaterialUsageCount( 0 ),
 pUsageCount( 1 ),
 pHashCode( 0 ),
 pUniqueKey( renderThread.GetUniqueKey().Get() ),
+pRTSTexture( NULL ),
 pLLPrev( NULL ),
 pLLNext( NULL ){
 }
 
 deoglTexUnitsConfig::~deoglTexUnitsConfig(){
+	if( pRTSTexture ){
+		pRenderThread.GetRenderTaskSharedPool().ReturnTexture( pRTSTexture );
+	}
+	
 	if( pUnits ){
 		delete [] pUnits;
 	}
+	
 	pRenderThread.GetUniqueKey().Return( pUniqueKey );
+	
 }
 
 
@@ -199,9 +208,16 @@ void deoglTexUnitsConfig::AddUsage(){
 void deoglTexUnitsConfig::RemoveUsage(){
 	pUsageCount--;
 	
-	if( pUsageCount == 0 ){
-		pRenderThread.GetShader().GetTexUnitsConfigList().Remove( this );
+	if( pUsageCount > 0 ){
+		return;
 	}
+	
+	if( pRTSTexture ){
+		pRenderThread.GetRenderTaskSharedPool().ReturnTexture( pRTSTexture );
+		pRTSTexture = NULL;
+	}
+	
+	pRenderThread.GetShader().GetTexUnitsConfigList().Remove( this );
 }
 
 void deoglTexUnitsConfig::CalcHashCode(){
@@ -258,6 +274,17 @@ unsigned int deoglTexUnitsConfig::CalcHashCodeForUnits( const deoglTexUnitConfig
 		}
 	}
 	*/
+}
+
+
+
+void deoglTexUnitsConfig::EnsureRTSTexture(){
+	if( pRTSTexture ){
+		return;
+	}
+	
+	pRTSTexture = pRenderThread.GetRenderTaskSharedPool().GetTexture();
+	pRTSTexture->SetTUC( this );
 }
 
 

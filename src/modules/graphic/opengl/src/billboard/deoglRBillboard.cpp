@@ -37,6 +37,7 @@
 #include "../renderthread/deoglRTShader.h"
 #include "../rendering/plan/deoglRenderPlan.h"
 #include "../rendering/plan/deoglRenderPlanMasked.h"
+#include "../rendering/task/shared/deoglRenderTaskSharedInstance.h"
 #include "../shaders/paramblock/deoglSPBlockUBO.h"
 #include "../shaders/paramblock/deoglSPBParameter.h"
 #include "../shaders/paramblock/shared/deoglSharedSPBElement.h"
@@ -101,9 +102,6 @@ pRenderEnvMapFadePerTime( 1.0f ),
 pRenderEnvMapFadeFactor( 1.0f ),
 pDirtyRenderEnvMap( true ),
 
-pParamBlockDepth( NULL ),
-pParamBlockGeometry( NULL ),
-pParamBlockEnvMap( NULL ),
 pSharedSPBElement( NULL ),
 pSharedSPBRTIGroup( NULL ),
 
@@ -112,12 +110,6 @@ pTUCGeometry( NULL ),
 pTUCCounter( NULL ),
 pTUCEnvMap( NULL ),
 
-pValidParamBlockDepth( false ),
-pValidParamBlockGeometry( false ),
-pValidParamBlockEnvMap( false ),
-pDirtyParamBlockDepth( true ),
-pDirtyParamBlockGeometry( true ),
-pDirtyParamBlockEnvMap( true ),
 pDirtySharedSPBElement( true ),
 
 pDirtyTUCDepth( true ),
@@ -125,7 +117,6 @@ pDirtyTUCGeometry( true ),
 pDirtyTUCCounter( true ),
 pDirtyTUCEnvMap( true ),
 
-pParamBlockSpecial( NULL ),
 pSpecialFlags( 0 ),
 
 pCullSphereRadius( 0.0f ),
@@ -374,103 +365,6 @@ void deoglRBillboard::UpdateExtends( const deBillboard &billboard ){
 
 
 
-deoglSPBlockUBO *deoglRBillboard::GetParamBlockFor( deoglSkinTexture::eShaderTypes shaderType ){
-	switch( shaderType ){
-	case deoglSkinTexture::estBillboardGeometry:
-		return GetParamBlockGeometry();
-		
-	case deoglSkinTexture::estBillboardDepth:
-	case deoglSkinTexture::estBillboardDepthClipPlane:
-	case deoglSkinTexture::estBillboardDepthReversed:
-	case deoglSkinTexture::estBillboardDepthClipPlaneReversed:
-	case deoglSkinTexture::estBillboardCounter:
-	case deoglSkinTexture::estBillboardCounterClipPlane:
-		return GetParamBlockDepth();
-		
-	case deoglSkinTexture::estBillboardEnvMap:
-		return GetParamBlockEnvMap();
-		
-	default:
-		DETHROW( deeInvalidParam );
-	}
-}
-
-deoglSPBlockUBO *deoglRBillboard::GetParamBlockDepth(){
-	if( ! pValidParamBlockDepth ){
-		if( pParamBlockDepth ){
-			pParamBlockDepth->FreeReference();
-			pParamBlockDepth = NULL;
-		}
-		
-		if( pUseSkinTexture && ! deoglSkinShader::USE_SHARED_SPB ){
-			pParamBlockDepth = pUseSkinTexture->GetShaderFor(
-				deoglSkinTexture::estBillboardDepth )->CreateSPBInstParam();
-		}
-		
-		pValidParamBlockDepth = true;
-		pDirtyParamBlockDepth = true;
-	}
-	
-	if( pDirtyParamBlockDepth ){
-		if( pParamBlockDepth && pUseSkinTexture ){
-			pParamBlockDepth->MapBuffer();
-			try{
-				UpdateInstanceParamBlock( *pParamBlockDepth, 0,
-					*pUseSkinTexture->GetShaderFor( deoglSkinTexture::estBillboardDepth ) );
-				
-			}catch( const deException & ){
-				pParamBlockDepth->UnmapBuffer();
-				throw;
-			}
-			pParamBlockDepth->UnmapBuffer();
-		}
-		
-		pDirtyParamBlockDepth = false;
-	}
-	
-	return pParamBlockDepth;
-}
-
-deoglSPBlockUBO *deoglRBillboard::GetParamBlockGeometry(){
-	if( ! pValidParamBlockGeometry ){
-		if( pParamBlockGeometry ){
-			pParamBlockGeometry->FreeReference();
-			pParamBlockGeometry = NULL;
-		}
-		
-		if( pUseSkinTexture && ! deoglSkinShader::USE_SHARED_SPB ){
-			pParamBlockGeometry = pUseSkinTexture->GetShaderFor(
-				deoglSkinTexture::estBillboardGeometry )->CreateSPBInstParam();
-		}
-		
-		pValidParamBlockGeometry = true;
-		pDirtyParamBlockGeometry = true;
-	}
-	
-	if( pDirtyParamBlockGeometry ){
-		if( pParamBlockGeometry && pUseSkinTexture ){
-			pParamBlockGeometry->MapBuffer();
-			try{
-				UpdateInstanceParamBlock( *pParamBlockGeometry, 0,
-					*pUseSkinTexture->GetShaderFor( deoglSkinTexture::estBillboardGeometry ) );
-				
-			}catch( const deException & ){
-				pParamBlockGeometry->UnmapBuffer();
-				throw;
-			}
-			pParamBlockGeometry->UnmapBuffer();
-		}
-		
-		pDirtyParamBlockGeometry = false;
-	}
-	
-	return pParamBlockGeometry;
-}
-
-deoglSPBlockUBO *deoglRBillboard::GetParamBlockEnvMap(){
-	return NULL;
-}
-
 deoglSharedSPBElement *deoglRBillboard::GetSharedSPBElement(){
 	if( ! pSharedSPBElement ){
 		if( pRenderThread.GetChoices().GetSharedSPBUseSSBO() ){
@@ -513,8 +407,21 @@ deoglSharedSPBElement *deoglRBillboard::GetSharedSPBElement(){
 
 deoglSharedSPBRTIGroup &deoglRBillboard::GetSharedSPBRTIGroup(){
 	if( ! pSharedSPBRTIGroup ){
-		pSharedSPBRTIGroup = pRenderThread.GetBufferObject().GetBillboardRTIGroups()
-			.GetWith( GetSharedSPBElement()->GetSPB() );
+		deoglSharedSPBRTIGroupList &list = pRenderThread.GetBufferObject().GetBillboardRTIGroups();
+		deoglSharedSPB &spb = GetSharedSPBElement()->GetSPB();
+		pSharedSPBRTIGroup = list.GetWith( spb );
+		
+		if( ! pSharedSPBRTIGroup ){
+			pSharedSPBRTIGroup = list.AddWith( spb );
+			
+			deoglRenderTaskSharedInstance &rtsi = *pSharedSPBRTIGroup->GetRTSInstance();
+			rtsi.SetSubInstanceSPB( &spb );
+			rtsi.SetFirstPoint( 0 );
+			rtsi.SetFirstIndex( 0 );
+			rtsi.SetIndexCount( 4 );
+			rtsi.SetDoubleSided( true );
+			rtsi.SetPrimitiveType( GL_TRIANGLE_FAN );
+		}
 	}
 	return *pSharedSPBRTIGroup;
 }
@@ -619,6 +526,7 @@ deoglTexUnitsConfig *deoglRBillboard::GetTUCEnvMap(){
 			}
 			
 			pTUCEnvMap = renderThread.GetShader().GetTexUnitsConfigList().GetWith( &unit[ 0 ], 2 );
+			pTUCEnvMap->EnsureRTSTexture();
 		}
 		
 		pDirtyTUCEnvMap = false;
@@ -647,23 +555,17 @@ deoglSkinTexture::eShaderTypes shaderType ) const{
 			pRenderEnvMap, pRenderEnvMapFade );
 		tuc = renderThread.GetShader().GetTexUnitsConfigList().GetWith(
 			&units[ 0 ], skinShader.GetUsedTextureTargetCount() );
+		tuc->EnsureRTSTexture();
 	}
 	
 	return tuc;
 }
 
 void deoglRBillboard::InvalidateParamBlocks(){
-	pValidParamBlockDepth = false;
-	pValidParamBlockGeometry = false;
-	pValidParamBlockEnvMap = false;
-	
 	MarkParamBlocksDirty();
 }
 
 void deoglRBillboard::MarkParamBlocksDirty(){
-	pDirtyParamBlockDepth = true;
-	pDirtyParamBlockGeometry = true;
-	pDirtyParamBlockEnvMap = true;
 	pDirtySharedSPBElement = true;
 }
 
@@ -777,12 +679,6 @@ int element, deoglSkinShader &skinShader ){
 }
 
 
-deoglSPBlockUBO *deoglRBillboard::GetParamBlockSpecial(){
-	if( ! pParamBlockSpecial ){
-		pParamBlockSpecial = deoglSkinShader::CreateSPBSpecial( pRenderThread );
-	}
-	return pParamBlockSpecial;
-}
 
 void deoglRBillboard::UpdateCubeFaceVisibility( const decDVector &cubePosition ){
 	deoglCubeHelper::CalcFaceVisibility(
@@ -826,22 +722,6 @@ void deoglRBillboard::SetSpecialFlagsFromFaceVisibility(){
 	if( pCubeFaceVisible[ 5 ] ){
 		pSpecialFlags |= 0x20;
 	}
-}
-
-void deoglRBillboard::UpdateSpecialSPBCubeRender(){
-	deoglSPBlockUBO &spb = *GetParamBlockSpecial();
-	
-	SetSpecialFlagsFromFaceVisibility();
-	
-	spb.MapBuffer();
-	try{
-		spb.SetParameterDataInt( deoglSkinShader::esutLayerVisibility, pSpecialFlags );
-		
-	}catch( const deException & ){
-		spb.UnmapBuffer();
-		throw;
-	}
-	spb.UnmapBuffer();
 }
 
 
@@ -1111,10 +991,6 @@ void deoglRBillboard::PrepareQuickDispose(){
 class deoglRBillboardDeletion : public deoglDelayedDeletion{
 public:
 	deoglSkinState *skinState;
-	deoglSPBlockUBO *paramBlockSpecial;
-	deoglSPBlockUBO *paramBlockDepth;
-	deoglSPBlockUBO *paramBlockGeometry;
-	deoglSPBlockUBO *paramBlockEnvMap;
 	deoglTexUnitsConfig *tucDepth;
 	deoglTexUnitsConfig *tucGeometry;
 	deoglTexUnitsConfig *tucCounter;
@@ -1122,10 +998,6 @@ public:
 	
 	deoglRBillboardDeletion() :
 	skinState( NULL ),
-	paramBlockSpecial( NULL ),
-	paramBlockDepth( NULL ),
-	paramBlockGeometry( NULL ),
-	paramBlockEnvMap( NULL ),
 	tucDepth( NULL ),
 	tucGeometry( NULL ),
 	tucCounter( NULL ),
@@ -1147,18 +1019,6 @@ public:
 		}
 		if( tucEnvMap ){
 			tucEnvMap->RemoveUsage();
-		}
-		if( paramBlockDepth ){
-			paramBlockDepth->FreeReference();
-		}
-		if( paramBlockGeometry ){
-			paramBlockGeometry->FreeReference();
-		}
-		if( paramBlockEnvMap ){
-			paramBlockEnvMap->FreeReference();
-		}
-		if( paramBlockSpecial ){
-			paramBlockSpecial->FreeReference();
 		}
 		if( skinState ){
 			delete skinState;
@@ -1201,10 +1061,6 @@ void deoglRBillboard::pCleanUp(){
 	try{
 		delayedDeletion = new deoglRBillboardDeletion;
 		delayedDeletion->skinState = pSkinState;
-		delayedDeletion->paramBlockSpecial = pParamBlockSpecial;
-		delayedDeletion->paramBlockDepth = pParamBlockDepth;
-		delayedDeletion->paramBlockEnvMap = pParamBlockEnvMap;
-		delayedDeletion->paramBlockGeometry = pParamBlockGeometry;
 		delayedDeletion->skinState = pSkinState;
 		delayedDeletion->tucDepth = pTUCDepth;
 		delayedDeletion->tucEnvMap = pTUCEnvMap;

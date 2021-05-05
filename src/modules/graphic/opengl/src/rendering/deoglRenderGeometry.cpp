@@ -30,6 +30,11 @@
 #include "task/deoglRenderTaskShader.h"
 #include "task/deoglRenderTaskTexture.h"
 #include "task/deoglRenderTaskVAO.h"
+#include "task/shared/deoglRenderTaskSharedInstance.h"
+#include "task/shared/deoglRenderTaskSharedShader.h"
+#include "task/shared/deoglRenderTaskSharedSubInstance.h"
+#include "task/shared/deoglRenderTaskSharedTexture.h"
+#include "task/shared/deoglRenderTaskSharedVAO.h"
 #include "task/persistent/deoglPersistentRenderTask.h"
 #include "task/persistent/deoglPersistentRenderTaskInstance.h"
 #include "task/persistent/deoglPersistentRenderTaskShader.h"
@@ -259,8 +264,8 @@ if( uniformSetup == deoglRenderTaskShader::eusEnvMap ){
 */
 
 void deoglRenderGeometry::RenderTask( const deoglRenderTask &renderTask ){
-	const int renderTaskShaderCount = renderTask.GetShaderCount();
-	if( renderTaskShaderCount == 0 ){
+	const deoglRenderTaskShader * rtshader = renderTask.GetRootShader();
+	if( ! rtshader ){
 		return;
 	}
 	
@@ -269,23 +274,22 @@ void deoglRenderGeometry::RenderTask( const deoglRenderTask &renderTask ){
 	deoglShaderParameterBlock *spbSIIndexInstance = NULL;
 	bool curDoubleSided = false;
 	deoglVAO *curVAO = NULL;
-	int i;
 	
 	OGL_CHECK( renderThread, glEnable( GL_CULL_FACE ) );
 	
 	renderThread.GetBufferObject().GetSharedVBOListList().PrepareAllLists(); // needs to be done better
 	
-	for( i=0; i<renderTaskShaderCount; i++ ){
-		const deoglRenderTaskShader &renderTaskShader = *renderTask.GetShaderAt( i );
-		deoglShaderCompiled &shader = *renderTaskShader.GetShader()->GetCompiled();
-		
-		renderThread.GetShader().ActivateShader( renderTaskShader.GetShader() );
+	while( rtshader ){
+		const int targetSPBInstanceIndexBase = rtshader->GetShader()->GetSPBInstanceIndexBase();
+		deoglShaderProgram &shaderProgram = *rtshader->GetShader()->GetShader();
+		deoglShaderCompiled &shader = *shaderProgram.GetCompiled();
+		renderThread.GetShader().ActivateShader( &shaderProgram );
 		
 		if( renderParamBlock ){
 			renderParamBlock->Activate();
 		}
 		
-		deoglRenderTaskTexture *renderTaskTexture = renderTaskShader.GetRootTexture();
+		deoglRenderTaskTexture *renderTaskTexture = rtshader->GetRootTexture();
 		
 		while( renderTaskTexture ){
 			if( renderTaskTexture->GetParameterBlock() ){
@@ -331,8 +335,8 @@ void deoglRenderGeometry::RenderTask( const deoglRenderTask &renderTask ){
 						spbSIIndexInstance = renderTaskInstance->GetSIIndexInstanceSPB();
 					}
 					
-					if( renderTaskShader.GetSPBInstanceIndexBase() != -1 ){
-						shader.SetParameterInt( renderTaskShader.GetSPBInstanceIndexBase(),
+					if( targetSPBInstanceIndexBase != -1 ){
+						shader.SetParameterInt( targetSPBInstanceIndexBase,
 							renderTaskInstance->GetSIIndexInstanceFirst() );
 					}
 					
@@ -415,6 +419,7 @@ void deoglRenderGeometry::RenderTask( const deoglRenderTask &renderTask ){
 			renderTaskTexture = renderTaskTexture->GetNextTexture();
 		}
 		
+		rtshader = rtshader->GetNextShader();
 	}
 	
 	pglBindVertexArray( 0 );

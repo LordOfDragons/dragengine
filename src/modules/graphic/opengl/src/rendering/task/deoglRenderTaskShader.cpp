@@ -40,7 +40,6 @@
 deoglRenderTaskShader::deoglRenderTaskShader() :
 pShader( NULL ),
 pParamBlock( NULL ),
-pSPBInstanceIndexBase( -1 ),
 
 pRootTexture( NULL ),
 pTailTexture( NULL ),
@@ -48,7 +47,9 @@ pTextureCount( 0 ),
 
 pHasTexture( NULL ),
 pHasTextureCount( 0 ),
-pHasTextureSize( 0 ){
+pHasTextureSize( 0 ),
+
+pNextShader( NULL ){
 }
 
 deoglRenderTaskShader::~deoglRenderTaskShader(){
@@ -65,7 +66,6 @@ deoglRenderTaskShader::~deoglRenderTaskShader(){
 void deoglRenderTaskShader::Reset(){
 	pShader = NULL;
 	pParamBlock = NULL;
-	pSPBInstanceIndexBase = -1;
 	pHasTextureCount = 0;
 	
 	pRootTexture = NULL;
@@ -125,16 +125,12 @@ int deoglRenderTaskShader::GetTotalSubInstanceCount() const{
 
 
 
-void deoglRenderTaskShader::SetShader( deoglShaderProgram *shader ){
+void deoglRenderTaskShader::SetShader( deoglRenderTaskSharedShader *shader ){
 	pShader = shader;
 }
 
 void deoglRenderTaskShader::SetParameterBlock( deoglSPBlockUBO *block ){
 	pParamBlock = block;
-}
-
-void deoglRenderTaskShader::SetSPBInstanceIndexBase( int parameter ){
-	pSPBInstanceIndexBase = parameter;
 }
 
 
@@ -191,4 +187,13 @@ deoglRenderTaskTexture *deoglRenderTaskShader::GetTextureForIndex( int tucIndex 
 	}else{
 		return NULL;
 	}
+}
+
+
+
+// Linked List
+////////////////
+
+void deoglRenderTaskShader::SetNextShader( deoglRenderTaskShader *shader ){
+	pNextShader = shader;
 }

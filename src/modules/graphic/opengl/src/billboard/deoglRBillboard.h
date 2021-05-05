@@ -87,9 +87,6 @@ public:
 	float pRenderEnvMapFadeFactor;
 	bool pDirtyRenderEnvMap;
 	
-	deoglSPBlockUBO *pParamBlockDepth;
-	deoglSPBlockUBO *pParamBlockGeometry;
-	deoglSPBlockUBO *pParamBlockEnvMap;
 	deoglSharedSPBElement *pSharedSPBElement;
 	deoglSharedSPBRTIGroup *pSharedSPBRTIGroup;
 	
@@ -98,12 +95,6 @@ public:
 	deoglTexUnitsConfig *pTUCCounter;
 	deoglTexUnitsConfig *pTUCEnvMap;
 	
-	bool pValidParamBlockDepth;
-	bool pValidParamBlockGeometry;
-	bool pValidParamBlockEnvMap;
-	bool pDirtyParamBlockDepth;
-	bool pDirtyParamBlockGeometry;
-	bool pDirtyParamBlockEnvMap;
 	bool pDirtySharedSPBElement;
 	
 	bool pDirtyTUCDepth;
@@ -111,7 +102,6 @@ public:
 	bool pDirtyTUCCounter;
 	bool pDirtyTUCEnvMap;
 	
-	deoglSPBlockUBO *pParamBlockSpecial;
 	bool pCubeFaceVisible[ 6 ];
 	int pSpecialFlags;
 	
@@ -214,33 +204,6 @@ public:
 	
 	
 	
-	/** \brief Shader parameter block for a shader type. */
-	deoglSPBlockUBO *GetParamBlockFor( deoglSkinTexture::eShaderTypes shaderType );
-	
-	/**
-	 * \brief Depth shader parameter block or NULL if there is no valid skin texture.
-	 * \details This texture units configuration works for the shader types:
-	 *          - deoglSkinTexture::estBillboardDepth
-	 *          - deoglSkinTexture::estBillboardDepthClipPlane
-	 *          - deoglSkinTexture::estBillboardCounter
-	 *          - deoglSkinTexture::estBillboardCounterClipPlane
-	 */
-	deoglSPBlockUBO *GetParamBlockDepth();
-	
-	/**
-	 * \brief Geometry shader parameter block or NULL if there is no valid skin texture.
-	 * \details This texture units configuration works for the shader types:
-	 *          - deoglSkinTexture::estBillboardGeometry
-	 */
-	deoglSPBlockUBO *GetParamBlockGeometry();
-	
-	/**
-	 * \brief Environment map shader parameter block or NULL if there is no valid skin texture.
-	 * \details This texture units configuration works for the shader types:
-	 *          - deoglSkinTexture::estEnvMap
-	 */
-	deoglSPBlockUBO *GetParamBlockEnvMap();
-	
 	/** \brief Shared shader parameter block element. */
 	deoglSharedSPBElement *GetSharedSPBElement();
 	
@@ -307,13 +270,6 @@ public:
 	
 	
 	/**
-	 * \brief Special shader parameter block.
-	 * 
-	 * Has to be updated by caller.
-	 */
-	deoglSPBlockUBO *GetParamBlockSpecial();
-	
-	/**
 	 * \brief Update cube face visibility.
 	 * 
 	 * Calculates for each face of a cube map if the object is potentially visible.
@@ -338,14 +294,6 @@ public:
 	
 	/** \brief Set special flags from cube map visibility. */
 	void SetSpecialFlagsFromFaceVisibility();
-	
-	/**
-	 * \brief Update special shader parameter block.
-	 * 
-	 * Depending on the usage these calls are required before using this call.
-	 * - UpdateCubeFaceVisibility(): for use by geometry shader cube rendering.
-	 */
-	void UpdateSpecialSPBCubeRender();
 	
 	
 	

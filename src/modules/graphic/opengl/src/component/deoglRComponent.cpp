@@ -51,6 +51,7 @@
 #include "../rendering/deoglRenderWorld.h"
 #include "../rendering/plan/deoglRenderPlan.h"
 #include "../rendering/plan/deoglRenderPlanMasked.h"
+#include "../rendering/task/shared/deoglRenderTaskSharedInstance.h"
 #include "../renderthread/deoglRTBufferObject.h"
 #include "../renderthread/deoglRTChoices.h"
 #include "../renderthread/deoglRTLogger.h"
@@ -127,7 +128,6 @@ pOccMeshSharedSPBSingleSided( NULL ),
 
 pDirtyLODVBOs( true ),
 
-pParamBlockSpecial( NULL ),
 pSpecialFlags( 0 ),
 
 pSkinRendered( renderThread, *this ),
@@ -149,9 +149,6 @@ pLLPrepareForRenderWorld( this )
 	pDynamicSkin = NULL;
 	pOcclusionMesh = NULL;
 	pDynamicOcclusionMesh = NULL;
-	
-	pParamBlockOccMesh = NULL;
-	pDirtyParamBlockOccMesh = true;
 	
 	pSkinState = NULL;
 	pDirtyPrepareSkinStateRenderables = true;
@@ -463,72 +460,28 @@ void deoglRComponent::SetOcclusionMesh( deoglROcclusionMesh *occlusionMesh ){
 		}
 	}
 	
+	InvalidateOccMeshSharedSPBRTIGroup();
 	NotifyOcclusionMeshChanged();
 }
 
-deoglSharedSPBElement *deoglRComponent::GetOccMeshSharedSPBElement(){
-	if( ! pOccMeshSharedSPBElement ){
-		if( pRenderThread.GetChoices().GetSharedSPBUseSSBO() ){
-			pOccMeshSharedSPBElement = pRenderThread.GetBufferObject()
-				.GetSharedSPBList( deoglRTBufferObject::esspblOccMeshInstanceSSBO ).AddElement();
-			
-		}else{
-			if( pRenderThread.GetChoices().GetGlobalSharedSPBLists() ){
-				pOccMeshSharedSPBElement = pRenderThread.GetBufferObject()
-					.GetSharedSPBList( deoglRTBufferObject::esspblOccMeshInstanceUBO ).AddElement();
-				
-			}else if( pOcclusionMesh ){
-				pOccMeshSharedSPBElement = pOcclusionMesh->GetSharedSPBListUBO().AddElement();
-			}
-		}
-	}
-	
-	if( pDirtyOccMeshSharedSPBElement ){
-		if( pOccMeshSharedSPBElement ){
-			deoglShaderParameterBlock &paramBlock = pOccMeshSharedSPBElement->MapBuffer();
-			try{
-				UpdateOccmeshInstanceParamBlock( paramBlock, pOccMeshSharedSPBElement->GetIndex() );
-				
-			}catch( const deException & ){
-				paramBlock.UnmapBuffer();
-				throw;
-			}
-			
-			paramBlock.UnmapBuffer();
-		}
-		
-		pDirtyOccMeshSharedSPBElement = false;
-	}
-	
-	return pOccMeshSharedSPBElement;
-}
-
-deoglSharedSPBRTIGroup &deoglRComponent::GetOccMeshSharedSPBRTIGroup( bool doubleSided ){
+deoglSharedSPBRTIGroup &deoglRComponent::GetOccMeshSharedSPBRTIGroup( bool doubleSided ) const{
 	if( doubleSided ){
-		if( pOccMeshSharedSPBDoubleSided ){
-			return *pOccMeshSharedSPBDoubleSided;
+		if( ! pOccMeshSharedSPBDoubleSided ){
+			DETHROW( deeInvalidParam );
 		}
-		
-	}else{
-		if( pOccMeshSharedSPBSingleSided ){
-			return *pOccMeshSharedSPBSingleSided;
-		}
-	}
-	
-	if( ! pOcclusionMesh ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	deoglSharedSPBElement * const element = GetOccMeshSharedSPBElement();
-	
-	if( doubleSided ){
-		pOccMeshSharedSPBDoubleSided = pOcclusionMesh->GetRTIGroupDouble().GetWith( element->GetSPB() );
 		return *pOccMeshSharedSPBDoubleSided;
 		
 	}else{
-		pOccMeshSharedSPBSingleSided = pOcclusionMesh->GetRTIGroupsSingle().GetWith( element->GetSPB() );
+		if( ! pOccMeshSharedSPBSingleSided ){
+			DETHROW( deeInvalidParam );
+		}
 		return *pOccMeshSharedSPBSingleSided;
 	}
+}
+
+void deoglRComponent::InvalidateOccMeshSharedSPBRTIGroup(){
+	pValidOccMeshSharedSPBElement = false;
+	pRequiresPrepareForRender();
 }
 
 void deoglRComponent::MeshChanged(){
@@ -596,8 +549,8 @@ void deoglRComponent::DirtyPrepareSkinStateRenderables(){
 
 
 void deoglRComponent::MarkOccMeshParamBlockDirty(){
-	pDirtyParamBlockOccMesh = true;
 	pDirtyOccMeshSharedSPBElement = true;
+	pValidOccMeshSharedSPBElement = false;
 	pRequiresPrepareForRender();
 }
 
@@ -660,42 +613,6 @@ void deoglRComponent::SetSpecialFlagsFromFaceVisibility(){
 	if( pCubeFaceVisible[ 5 ] ){
 		pSpecialFlags |= 0x20;
 	}
-}
-
-void deoglRComponent::SetSpecialFlagsFromSkyShadowLayerMask( int mask ){
-	pSpecialFlags = mask;
-}
-
-void deoglRComponent::UpdateSpecialSPBCubeRender(){
-	deoglSPBlockUBO &spb = *GetParamBlockSpecial();
-	
-	SetSpecialFlagsFromFaceVisibility();
-	
-	spb.MapBuffer();
-	try{
-		spb.SetParameterDataInt( deoglSkinShader::esutLayerVisibility, pSpecialFlags );
-		
-	}catch( const deException & ){
-		spb.UnmapBuffer();
-		throw;
-	}
-	spb.UnmapBuffer();
-}
-
-void deoglRComponent::UpdateSpecialSPBCascadedRender( int mask ){
-	deoglSPBlockUBO &spb = *GetParamBlockSpecial();
-	
-	SetSpecialFlagsFromSkyShadowLayerMask( mask );
-	
-	spb.MapBuffer();
-	try{
-		spb.SetParameterDataInt( deoglSkinShader::esutLayerVisibility, pSpecialFlags );
-		
-	}catch( const deException & ){
-		spb.UnmapBuffer();
-		throw;
-	}
-	spb.UnmapBuffer();
 }
 
 
@@ -1265,6 +1182,35 @@ void deoglRComponent::DirtyLODVBOs(){
 	pRequiresPrepareForRender();
 }
 
+void deoglRComponent::UpdateRTSInstances(){
+	const int count = pTextures.GetCount();
+	int i;
+	for( i=0; i<count; i++ ){
+		( ( deoglRComponentTexture* )pTextures.GetAt( i ) )->UpdateRTSInstances();
+	}
+	
+	if( pOccMeshSharedSPBDoubleSided || pOccMeshSharedSPBSingleSided ){
+		const deoglSharedVBOBlock &block = *pOcclusionMesh->GetVBOBlock();
+		const int pointOffset = pDynamicOcclusionMesh ? 0 : block.GetOffset();
+		
+		if( pOccMeshSharedSPBDoubleSided ){
+			deoglRenderTaskSharedInstance &rtsi = *pOccMeshSharedSPBDoubleSided->GetRTSInstance();
+			rtsi.SetFirstPoint( pointOffset );
+			rtsi.SetFirstIndex( block.GetIndexOffset() + pOcclusionMesh->GetSingleSidedFaceCount() * 3 );
+			rtsi.SetIndexCount( pOcclusionMesh->GetDoubleSidedFaceCount() * 3 );
+			rtsi.SetDoubleSided( true );
+		}
+		
+		if( pOccMeshSharedSPBSingleSided ){
+			deoglRenderTaskSharedInstance &rtsi = *pOccMeshSharedSPBSingleSided->GetRTSInstance();
+			rtsi.SetFirstPoint( pointOffset );
+			rtsi.SetFirstIndex( block.GetIndexOffset() );
+			rtsi.SetIndexCount( pOcclusionMesh->GetSingleSidedFaceCount() * 3 );
+			rtsi.SetDoubleSided( false );
+		}
+	}
+}
+
 
 
 // Textures
@@ -1663,25 +1609,14 @@ void deoglRComponent::SetLLWorldNext( deoglRComponent *component ){
 class deoglRComponentDeletion : public deoglDelayedDeletion{
 public:
 	deoglSkinState *skinState;
-	deoglSPBlockUBO *paramBlockOccMesh;
-	deoglSPBlockUBO *paramBlockSpecial;
 	
-	deoglRComponentDeletion() :
-	skinState( NULL ),
-	paramBlockOccMesh( NULL ),
-	paramBlockSpecial( NULL ){
+	deoglRComponentDeletion() : skinState( NULL ){
 	}
 	
 	virtual ~deoglRComponentDeletion(){
 	}
 	
 	virtual void DeleteObjects( deoglRenderThread& ){
-		if( paramBlockSpecial ){
-			paramBlockSpecial->FreeReference();
-		}
-		if( paramBlockOccMesh ){
-			paramBlockOccMesh->FreeReference();
-		}
 		if( skinState ){
 			delete skinState;
 		}
@@ -1757,8 +1692,6 @@ void deoglRComponent::pCleanUp(){
 	try{
 		delayedDeletion = new deoglRComponentDeletion;
 		delayedDeletion->skinState = pSkinState;
-		delayedDeletion->paramBlockOccMesh = pParamBlockOccMesh;
-		delayedDeletion->paramBlockSpecial = pParamBlockSpecial;
 		pRenderThread.GetDelayedOperations().AddDeletion( delayedDeletion );
 		
 	}catch( const deException &e ){
@@ -2083,50 +2016,6 @@ void deoglRComponent::pPrepareLODVBOs(){
 	}
 }
 
-void deoglRComponent::pPrepareParamBlocks(){
-	if( ! deoglSkinShader::USE_SHARED_SPB ){
-		return;
-	}
-	
-	if( ! pParamBlockSpecial ){
-		pParamBlockSpecial = deoglSkinShader::CreateSPBSpecial( pRenderThread );
-	}
-	
-	if( ! pParamBlockOccMesh ){
-		try{
-			pParamBlockOccMesh = new deoglSPBlockUBO( pRenderThread );
-			pParamBlockOccMesh->SetRowMajor( ! pRenderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Broken() );
-			pParamBlockOccMesh->SetParameterCount( 1 );
-			pParamBlockOccMesh->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtFloat, 4, 3, 1 ); // mat4x3 pMatrixModel
-			
-			pParamBlockOccMesh->MapToStd140();
-			pParamBlockOccMesh->SetBindingPoint( deoglSkinShader::eubInstanceParameters );
-			
-		}catch( const deException & ){
-			if( pParamBlockOccMesh ){
-				pParamBlockOccMesh->FreeReference();
-			}
-			pParamBlockOccMesh = NULL;
-			throw;
-		}
-	}
-	
-	if( pDirtyParamBlockOccMesh ){
-		if( pParamBlockOccMesh ){
-			pParamBlockOccMesh->MapBuffer();
-			try{
-				UpdateOccmeshInstanceParamBlock( *pParamBlockOccMesh, 0 );
-				
-			}catch( const deException & ){
-				pParamBlockOccMesh->UnmapBuffer();
-				throw;
-			}
-			pParamBlockOccMesh->UnmapBuffer();
-		}
-		pDirtyParamBlockOccMesh = false;
-	}
-}
-
 void deoglRComponent::pPrepareRenderEnvMap(){
 	if( ! pDirtyRenderEnvMap ){
 		return;
@@ -2203,6 +2092,77 @@ void deoglRComponent::pPrepareTextureTUCs(){
 	int i;
 	for( i=0; i<count; i++ ){
 		( ( deoglRComponentTexture* )pTextures.GetAt( i ) )->PrepareTUCs();
+	}
+}
+
+void deoglRComponent::pPrepareParamBlocks(){
+	if( ! pValidOccMeshSharedSPBElement ){
+		// shared spb
+		if( pOccMeshSharedSPBElement ){
+			pOccMeshSharedSPBElement->FreeReference();
+			pOccMeshSharedSPBElement = NULL;
+		}
+		
+		if( pRenderThread.GetChoices().GetSharedSPBUseSSBO() ){
+			pOccMeshSharedSPBElement = pRenderThread.GetBufferObject()
+				.GetSharedSPBList( deoglRTBufferObject::esspblOccMeshInstanceSSBO ).AddElement();
+			
+		}else{
+			if( pRenderThread.GetChoices().GetGlobalSharedSPBLists() ){
+				pOccMeshSharedSPBElement = pRenderThread.GetBufferObject()
+					.GetSharedSPBList( deoglRTBufferObject::esspblOccMeshInstanceUBO ).AddElement();
+				
+			}else if( pOcclusionMesh ){
+				pOccMeshSharedSPBElement = pOcclusionMesh->GetSharedSPBListUBO().AddElement();
+			}
+		}
+		
+		// shared spb render task instance group
+		if( pOccMeshSharedSPBDoubleSided ){
+			pOccMeshSharedSPBDoubleSided->FreeReference();
+			pOccMeshSharedSPBDoubleSided = NULL;
+		}
+		if( pOccMeshSharedSPBSingleSided ){
+			pOccMeshSharedSPBSingleSided->FreeReference();
+			pOccMeshSharedSPBSingleSided = NULL;
+		}
+		
+		if( pOccMeshSharedSPBElement && pOcclusionMesh ){
+			deoglSharedSPBRTIGroupList &listDouble = pOcclusionMesh->GetRTIGroupDouble();
+			pOccMeshSharedSPBDoubleSided = listDouble.GetWith( pOccMeshSharedSPBElement->GetSPB() );
+			if( ! pOccMeshSharedSPBDoubleSided ){
+				pOccMeshSharedSPBDoubleSided = listDouble.AddWith( pOccMeshSharedSPBElement->GetSPB() );
+				pOccMeshSharedSPBDoubleSided->GetRTSInstance()->SetSubInstanceSPB( &pOccMeshSharedSPBElement->GetSPB() );
+			}
+			
+			deoglSharedSPBRTIGroupList &listSingle = pOcclusionMesh->GetRTIGroupsSingle();
+			pOccMeshSharedSPBSingleSided = listSingle.GetWith( pOccMeshSharedSPBElement->GetSPB() );
+			if( ! pOccMeshSharedSPBSingleSided ){
+				pOccMeshSharedSPBSingleSided = listSingle.AddWith( pOccMeshSharedSPBElement->GetSPB() );
+				pOccMeshSharedSPBSingleSided->GetRTSInstance()->SetSubInstanceSPB( &pOccMeshSharedSPBElement->GetSPB() );
+			}
+			
+			UpdateRTSInstances();
+		}
+		
+		pValidOccMeshSharedSPBElement = true;
+	}
+	
+	if( pDirtyOccMeshSharedSPBElement ){
+		if( pOccMeshSharedSPBElement ){
+			deoglShaderParameterBlock &paramBlock = pOccMeshSharedSPBElement->MapBuffer();
+			try{
+				UpdateOccmeshInstanceParamBlock( paramBlock, pOccMeshSharedSPBElement->GetIndex() );
+				
+			}catch( const deException & ){
+				paramBlock.UnmapBuffer();
+				throw;
+			}
+			
+			paramBlock.UnmapBuffer();
+		}
+		
+		pDirtyOccMeshSharedSPBElement = false;
 	}
 }
 

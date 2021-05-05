@@ -22,20 +22,19 @@
 #ifndef _DEOGLRENDERTASKSHADER_H_
 #define _DEOGLRENDERTASKSHADER_H_
 
-class deoglShaderProgram;
+class deoglRenderTaskSharedShader;
 class deoglRenderTaskTexture;
 class deoglSPBlockUBO;
 
 
 
 /**
- * \brief Render Task Shader.
+ * Render Task Shader.
  */
 class deoglRenderTaskShader{
 private:
-	deoglShaderProgram *pShader;
+	deoglRenderTaskSharedShader *pShader;
 	deoglSPBlockUBO *pParamBlock;
-	int pSPBInstanceIndexBase;
 	
 	deoglRenderTaskTexture *pRootTexture;
 	deoglRenderTaskTexture *pTailTexture;
@@ -45,15 +44,17 @@ private:
 	int pHasTextureCount;
 	int pHasTextureSize;
 	
+	deoglRenderTaskShader *pNextShader;
+	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create render task shader. */
+	/** Create render task shader. */
 	deoglRenderTaskShader();
 	
-	/** \brief Clean up render task shader. */
+	/** Clean up render task shader. */
 	~deoglRenderTaskShader();
 	/*@}*/
 	
@@ -61,50 +62,50 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Reset shader. */
+	/** Reset shader. */
 	void Reset();
 	
-	/** \brief Total amount of points in this shader. */
+	/** Total amount of points in this shader. */
 	int GetTotalPointCount() const;
 	
-	/** \brief Total amount of vaos in this shader. */
+	/** Total amount of vaos in this shader. */
 	int GetTotalVAOCount() const;
 	
-	/** \brief Total amount of instances in this shader. */
+	/** Total amount of instances in this shader. */
 	int GetTotalInstanceCount() const;
 	
-	/** \brief Total amount of subinstances in this shader. */
+	/** Total amount of subinstances in this shader. */
 	int GetTotalSubInstanceCount() const;
 	
-	/** \brief Shader. */
-	inline deoglShaderProgram *GetShader() const{ return pShader; }
+	/** Shader. */
+	inline deoglRenderTaskSharedShader *GetShader() const{ return pShader; }
 	
-	/** \brief Set shader. */
-	void SetShader( deoglShaderProgram *shader );
+	/** Set shader. */
+	void SetShader( deoglRenderTaskSharedShader *shader );
 	
-	/** \brief Shader parameter block or \em NULL if not used. */
+	/** Shader parameter block or \em NULL if not used. */
 	inline deoglSPBlockUBO *GetParameterBlock() const{ return pParamBlock; }
 	
-	/** \brief Set shader parameter block or \em NULL if not used. */
+	/** Set shader parameter block or \em NULL if not used. */
 	void SetParameterBlock( deoglSPBlockUBO *block );
 	
-	/** \brief Shader parameter index of pSPBInstanceIndexBase or -1. */
-	inline int GetSPBInstanceIndexBase() const{ return pSPBInstanceIndexBase; }
-	
-	/** \brief Set shader parameter index of pSPBInstanceIndexBase or -1. */
-	void SetSPBInstanceIndexBase( int parameter );
-	
-	/** \brief Root render task texture or \em NULL if there is none. */
+	/** Root render task texture or \em NULL if there is none. */
 	inline deoglRenderTaskTexture *GetRootTexture() const{ return pRootTexture; }
 	
-	/** \brief Number of render task textures. */
+	/** Number of render task textures. */
 	inline int GetTextureCount() const{ return pTextureCount; }
 	
-	/** \brief Add render task texture. */
+	/** Add render task texture. */
 	void AddTexture( deoglRenderTaskTexture *texture );
 	
-	/** \brief Texture for texture units configuration index or \em NULL if absent. */
+	/** Texture for texture units configuration index or \em NULL if absent. */
 	deoglRenderTaskTexture *GetTextureForIndex( int tucIndex );
+	
+	/** Next shader or NULL. */
+	inline deoglRenderTaskShader *GetNextShader() const{ return pNextShader; }
+	
+	/** Set next shader or NULL. */
+	void SetNextShader( deoglRenderTaskShader *shader );
 	/*@}*/
 };
 

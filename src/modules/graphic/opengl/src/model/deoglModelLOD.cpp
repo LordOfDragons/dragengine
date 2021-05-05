@@ -33,13 +33,16 @@
 #include "texture/deoglModelTexture.h"
 #include "../deoglPreloader.h"
 #include "../configuration/deoglConfiguration.h"
+#include "../rendering/task/shared/deoglRenderTaskSharedInstance.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTBufferObject.h"
 #include "../renderthread/deoglRTLogger.h"
 #include "../renderthread/deoglRTChoices.h"
 #include "../shaders/paramblock/deoglSPBlockMemory.h"
+#include "../shaders/paramblock/shared/deoglSharedSPBRTIGroup.h"
 #include "../skin/shader/deoglSkinShader.h"
 #include "../utils/vcoptimizer/deoglVCOptimizer.h"
+#include "../vao/deoglVAO.h"
 #include "../vbo/deoglSharedVBOBlock.h"
 #include "../vbo/deoglSharedVBO.h"
 #include "../vbo/deoglSharedVBOList.h"
@@ -254,6 +257,7 @@ void deoglModelLOD::PrepareVBOBlock(){
 	}
 	
 	pVBOBlock = svbolist.AddData( pVertexCount, pFaceCount * 3 );
+	pVBOBlock->GetVBO()->GetVAO()->EnsureRTSVAO();
 	
 	pWriteVBOData();
 }
@@ -396,6 +400,13 @@ GLuint deoglModelLOD::GetIBO(){
 }
 
 
+
+deoglModelTexture &deoglModelLOD::GetTextureAt( int index ){
+	if( index < 0 || index >= pTextureCount ){
+		DETHROW( deeInvalidParam );
+	}
+	return *pTextures[ index ];
+}
 
 const deoglModelTexture &deoglModelLOD::GetTextureAt( int index ) const{
 	if( index < 0 || index >= pTextureCount ){

@@ -246,31 +246,19 @@ const deoglRComponent &component, int texture, int firstFace, int faceCount, int
 	deoglPersistentRenderTaskVAO * const rtvao = pGetTaskVAO( pSkinShaderType, *skinTexture,
 		componentTexture.GetTUCForShaderType( pSkinShaderType ), component.GetVAO( lodLevel ) );
 	
-	if( deoglSkinShader::USE_SHARED_SPB ){
-		const deoglSharedSPBElement &spbElement = *componentTexture.GetSharedSPBElement();
-		const deoglSharedSPBRTIGroup &group = componentTexture.GetSharedSPBRTIGroup( lodLevel );
-		
-		deoglPersistentRenderTaskInstance *rti = rtvao->GetInstanceWith( &group );
-		if( ! rti ){
-			rti = rtvao->AddInstance( &spbElement.GetSPB(), &group );
-			rti->SetFirstPoint( component.GetPointOffset( lodLevel ) );
-			rti->SetFirstIndex( component.GetIndexOffset( lodLevel ) + firstFace * 3 );
-			rti->SetIndexCount( faceCount * 3 );
-			rti->SetDoubleSided( doubleSided | pForceDoubleSided );
-		}
-		
-		owner.AddSubInstance( rti->AddSubInstance( spbElement.GetIndex(), component.GetSpecialFlags() ) );
-		
-	}else{
-		deoglPersistentRenderTaskInstance * const rti = rtvao->AddInstance();
-		rti->SetParameterBlock( componentTexture.GetParamBlockFor( pSkinShaderType ) );
-		rti->SetParameterBlockSpecial( pUseSpecialParamBlock ? component.GetParamBlockSpecial() : NULL );
+	const deoglSharedSPBElement &spbElement = *componentTexture.GetSharedSPBElement();
+	const deoglSharedSPBRTIGroup &group = componentTexture.GetSharedSPBRTIGroup( lodLevel );
+	
+	deoglPersistentRenderTaskInstance *rti = rtvao->GetInstanceWith( &group );
+	if( ! rti ){
+		rti = rtvao->AddInstance( &spbElement.GetSPB(), &group );
 		rti->SetFirstPoint( component.GetPointOffset( lodLevel ) );
 		rti->SetFirstIndex( component.GetIndexOffset( lodLevel ) + firstFace * 3 );
 		rti->SetIndexCount( faceCount * 3 );
 		rti->SetDoubleSided( doubleSided | pForceDoubleSided );
-		owner.AddInstance( rti );
 	}
+	
+	owner.AddSubInstance( rti->AddSubInstance( spbElement.GetIndex(), component.GetSpecialFlags() ) );
 }
 
 

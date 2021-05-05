@@ -34,9 +34,9 @@ class deoglRenderTaskInstanceGroup;
 class deoglRenderTaskShader;
 class deoglRenderTaskTexture;
 class deoglRenderTaskVAO;
+class deoglRenderTaskSharedShader;
 class deoglRenderThread;
 class deoglRTLogger;
-class deoglShaderProgram;
 class deoglSPBlockSSBO;
 class deoglSPBlockUBO;
 class deoglSPBlockUBO;
@@ -45,7 +45,7 @@ class deoglVAO;
 
 
 /**
- * \brief Render Task.
+ * Render Task.
  *
  * Stores a list of render steps to be carried out. Each step contains the combination of shader,
  * texture and vao required. The render task is usually not used directly for rendering. Instead
@@ -60,8 +60,13 @@ private:
 	int pSPBInstanceMaxEntries;
 	bool pUseSPBInstanceFlags;
 	unsigned int pTrackingNumber;
-	decPointerList pListShaders;
+	
+	deoglRenderTaskShader *pRootShader;
+	deoglRenderTaskShader *pTailShader;
 	int pShaderCount;
+	deoglRenderTaskShader **pHasShader;
+	int pHasShaderCount;
+	int pHasShaderSize;
 	
 	deoglRenderTaskTexture *pRootTexturePool;
 	deoglRenderTaskTexture *pTailTexturePool;
@@ -80,6 +85,7 @@ private:
 	
 	static unsigned int pUpdateTracking;
 	
+	decPointerList pListShaders;
 	decPointerList pListTUCs;
 	decPointerList pListVAOs;
 	decPointerList pListInstanceGroup;
@@ -89,10 +95,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create render task. */
+	/** Create render task. */
 	deoglRenderTask();
 	
-	/** \brief Clean up render task. */
+	/** Clean up render task. */
 	~deoglRenderTask();
 	/*@}*/
 	
@@ -100,85 +106,82 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Clear render task. */
+	/** Clear render task. */
 	void Clear();
 	
-	/** \brief Prepare task to be used for rendering. */
+	/** Prepare task to be used for rendering. */
 	void PrepareForRender( deoglRenderThread &renderThread );
 	
-	/** \brief Sort instances by distance. */
+	/** Sort instances by distance. */
 	void SortInstancesByDistance( deoglQuickSorter &sorter,
 		const decDVector &position, const decDVector &direction );
 	
-	/** \brief Render parameter shader parameter block or \em NULL. */
+	/** Render parameter shader parameter block or \em NULL. */
 	inline deoglSPBlockUBO *GetRenderParamBlock() const{ return pRenderParamBlock; }
 	
-	/** \brief Set render parameter shader parameter block or \em NULL to use none. */
+	/** Set render parameter shader parameter block or \em NULL to use none. */
 	void SetRenderParamBlock( deoglSPBlockUBO *paramBlock );
 	
-	/** \brief Instances texture buffer object or \em NULL. */
+	/** Instances texture buffer object or \em NULL. */
 	inline GLuint GetTBOInstances() const{ return pTBOInstances; }
 	
-	/** \brief Set instances texture buffer object or \em NULL to use none. */
+	/** Set instances texture buffer object or \em NULL to use none. */
 	void SetTBOInstances( GLuint tbo );
 	
-	/** \brief Use SPB instance flags. */
+	/** Use SPB instance flags. */
 	inline bool GetUseSPBInstanceFlags() const{ return pUseSPBInstanceFlags; }
 	
-	/** \brief Set use instance flags. */
+	/** Set use instance flags. */
 	void SetUseSPBInstanceFlags( bool useFlags );
 	
 	
 	
-	/** \brief Tracking number. */
+	/** Tracking number. */
 	inline unsigned int GetTrackingNumber() const{ return pTrackingNumber; }
 	
-	/** \brief Advance update tracking returning new value. */
+	/** Advance update tracking returning new value. */
 	static unsigned int UpdateTracking();
 	
 	
 	
-	/** \brief Number of shaders. */
+	/** Root render task shader or NULL if there is none. */
+	inline deoglRenderTaskShader *GetRootShader() const{ return pRootShader; }
+	
+	/** Number of shaders. */
 	inline int GetShaderCount() const{ return pShaderCount; }
 	
-	/** \brief Shader at index. */
-	deoglRenderTaskShader *GetShaderAt( int index ) const;
-	
-	/** \brief Add shader. */
-	deoglRenderTaskShader *AddShader( deoglShaderProgram *shader );
-	
-	/** \brief Remove all shaders. */
-	void RemoveAllShaders();
+	/** Add shader. */
+	deoglRenderTaskShader *AddShader( deoglRenderTaskSharedShader *shader );
 	
 	
 	
-	/** \brief Render task texture from pool. */
+	/** Render task texture from pool. */
 	deoglRenderTaskTexture *TextureFromPool();
 	
-	/** \brief Render task vao from pool. */
+	/** Render task vao from pool. */
 	deoglRenderTaskVAO *VAOFromPool();
 	
-	/** \brief Render task instance from pool. */
+	/** Render task instance from pool. */
 	deoglRenderTaskInstance *InstanceFromPool();
 	
 	
 	
-	/** \brief Number of points in all steps. */
+	/** Number of points in all steps. */
 	int GetTotalPointCount() const;
 	
 	/** Total amount of textures in this shader. */
 	int GetTotalTextureCount() const;
 	
-	/** \brief Total amount of vaos in this shader. */
+	/** Total amount of vaos in this shader. */
 	int GetTotalVAOCount() const;
 	
-	/** \brief Total amount of instances in this shader. */
+	/** Total amount of instances in this shader. */
 	int GetTotalInstanceCount() const;
 	
-	/** \brief Total amount of subinstances in this shader. */
+	/** Total amount of subinstances in this shader. */
 	int GetTotalSubInstanceCount() const;
 	
-	/** \brief Add texture units configuration. */
+	/** Add texture units configuration. */
 	void AddTUC( deoglTexUnitsConfig *tuc );
 	
 	/** \brfief Add vao. */
@@ -192,28 +195,28 @@ public:
 	
 	/** \name Debug */
 	/*@{*/
-	/** \brief Debug print. */
+	/** Debug print. */
 	void DebugPrint( deoglRTLogger &rtlogger );
 	
-	/** \brief Size of render task texture pool. */
+	/** Size of render task texture pool. */
 	inline int GetSizeTexturePool() const{ return pTexturePoolCount; }
 	
-	/** \brief Count number of used entries from render task texture pool. */
+	/** Count number of used entries from render task texture pool. */
 	int CountUsedTexturePool() const;
 	
-	/** \brief Size of render task vao pool. */
+	/** Size of render task vao pool. */
 	inline int GetSizeVAOPool() const{ return pVAOPoolCount; }
 	
-	/** \brief Count number of used entries from render task vao pool. */
+	/** Count number of used entries from render task vao pool. */
 	int CountUsedVAOPool() const;
 	
-	/** \brief Size of render task instance pool. */
+	/** Size of render task instance pool. */
 	inline int GetSizeInstancePool() const{ return pInstancePoolCount; }
 	
-	/** \brief Count number of used entries from render task instance pool. */
+	/** Count number of used entries from render task instance pool. */
 	int CountUsedInstancePool() const;
 	
-	/** \brief Debug output pool statistics. */
+	/** Debug output pool statistics. */
 	void DebugPrintPoolStats( deoglRTLogger &rtlogger );
 	/*@}*/
 	

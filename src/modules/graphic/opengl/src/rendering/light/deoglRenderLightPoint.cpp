@@ -34,6 +34,7 @@
 #include "../task/deoglAddToRenderTask.h"
 #include "../task/deoglRenderTask.h"
 #include "../task/deoglRenderTaskShader.h"
+#include "../task/shared/deoglRenderTaskSharedShader.h"
 #include "../../canvas/render/deoglRCanvasView.h"
 #include "../../capabilities/deoglCapabilities.h"
 #include "../../capabilities/deoglCapsTextureFormat.h"
@@ -332,6 +333,8 @@ pDebugInfoTransparentLight( NULL )
 		renderers.GetOcclusion().AddOccMapDefines( defines );
 		defines.AddDefine( "DEPTH_DISTANCE", "1" );
 		pShaderOccMap = shaderManager.GetProgramWith( sources, defines );
+		pShaderOccMap->EnsureRTSShader();
+		pShaderOccMap->GetRTSShader()->SetSPBInstanceIndexBase( 0 );
 		defines.RemoveAllDefines();
 		
 		
@@ -352,6 +355,8 @@ pDebugInfoTransparentLight( NULL )
 			}
 			
 			pShaderOccMapCube = shaderManager.GetProgramWith( sources, defines );
+			pShaderOccMapCube->EnsureRTSShader();
+			pShaderOccMapCube->GetRTSShader()->SetSPBInstanceIndexBase( 0 );
 			defines.RemoveAllDefines();
 		}
 		
@@ -1490,9 +1495,7 @@ bool debugSolid ){
 		for( i=0; i<componentCount; i++ ){
 			deoglRComponent &component = *clist1->GetComponentAt( i )->GetComponent();
 			component.UpdateCubeFaceVisibility( cubePosition );
-			if( deoglSkinShader::USE_SHARED_SPB ){
-				component.SetSpecialFlagsFromFaceVisibility();
-			}
+			component.SetSpecialFlagsFromFaceVisibility();
 		}
 	}
 	
@@ -1501,9 +1504,7 @@ bool debugSolid ){
 		for( i=0; i<componentCount; i++ ){
 			deoglRComponent &component = *clist2->GetComponentAt( i )->GetComponent();
 			component.UpdateCubeFaceVisibility( cubePosition );
-			if( deoglSkinShader::USE_SHARED_SPB ){
-				component.SetSpecialFlagsFromFaceVisibility();
-			}
+			component.SetSpecialFlagsFromFaceVisibility();
 		}
 	}
 	
@@ -1544,26 +1545,6 @@ bool debugSolid ){
 			throw;
 		}
 		renderParamBlock->UnmapBuffer();
-		
-		// update object render cube face special parameter. optimizes rendering by skipping
-		// object faces on cube map faces they are not visible on
-		int i;
-		
-		if( ! deoglSkinShader::USE_SHARED_SPB ){
-			if( clist1 ){
-				const int componentCount = clist1->GetComponentCount();
-				for( i=0; i<componentCount; i++ ){
-					clist1->GetComponentAt( i )->GetComponent()->UpdateSpecialSPBCubeRender();
-				}
-			}
-			
-			if( clist2 ){
-				const int componentCount = clist2->GetComponentCount();
-				for( i=0; i<componentCount; i++ ){
-					clist2->GetComponentAt( i )->GetComponent()->UpdateSpecialSPBCubeRender();
-				}
-			}
-		}
 	}
 	
 	// set states
@@ -1934,10 +1915,10 @@ const deoglCollideList *clist2, int ambientMapSize, float shadowScale, float sha
 	
 	if( useGSRenderCube ){
 		addToRenderTask.SetUseSpecialParamBlock( true );
-		addToRenderTask.SetEnforceShader( pShaderOccMapCube );
+		addToRenderTask.SetEnforceShader( pShaderOccMapCube->GetRTSShader() );
 		
 	}else{
-		addToRenderTask.SetEnforceShader( pShaderOccMap );
+		addToRenderTask.SetEnforceShader( pShaderOccMap->GetRTSShader() );
 	}
 	
 	// clear

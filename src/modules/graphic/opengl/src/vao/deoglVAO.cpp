@@ -25,6 +25,8 @@
 
 #include "deoglVAO.h"
 #include "../vbo/deoglVBOLayout.h"
+#include "../rendering/task/shared/deoglRenderTaskSharedPool.h"
+#include "../rendering/task/shared/deoglRenderTaskSharedVAO.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTUniqueKey.h"
 
@@ -39,15 +41,14 @@
 ////////////////////////////
 
 deoglVAO::deoglVAO( deoglRenderThread &renderThread ) :
-pRenderThread( renderThread ){
-	pVAO = 0;
-	
-	pIndexSize = 0;
-	pIndexGLType = GL_NONE;
-	
-	pRenderTaskTrackingNumber = 0;
-	pRenderTaskVAOIndex = 0;
-	
+pRenderThread( renderThread ),
+pVAO( 0 ),
+pIndexSize( 0 ),
+pIndexGLType( GL_NONE ),
+pRenderTaskTrackingNumber( 0 ),
+pRenderTaskVAOIndex( 0 ),
+pRTSVAO( NULL )
+{
 	OGL_CHECK( renderThread, pglGenVertexArrays( 1, &pVAO ) );
 	if( ! pVAO ){
 		DETHROW( deeOutOfMemory );
@@ -57,6 +58,10 @@ pRenderThread( renderThread ){
 }
 
 deoglVAO::~deoglVAO(){
+	if( pRTSVAO ){
+		pRenderThread.GetRenderTaskSharedPool().ReturnVAO( pRTSVAO );
+	}
+	
 	if( pVAO ){
 		pglDeleteVertexArrays( 1, &pVAO );
 	}
@@ -106,4 +111,13 @@ void deoglVAO::SetRenderTaskTrackingNumber( unsigned int trackingNumber ){
 
 void deoglVAO::SetRenderTaskVAOIndex( int vaoIndex ){
 	pRenderTaskVAOIndex = vaoIndex;
+}
+
+void deoglVAO::EnsureRTSVAO(){
+	if( pRTSVAO ){
+		return;
+	}
+	
+	pRTSVAO = pRenderThread.GetRenderTaskSharedPool().GetVAO();
+	pRTSVAO->SetVAO( this );
 }

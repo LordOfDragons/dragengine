@@ -60,6 +60,7 @@
 #include "../rendering/cache/deoglRenderCache.h"
 #include "../rendering/defren/deoglDeferredRendering.h"
 #include "../rendering/task/persistent/deoglPersistentRenderTaskPool.h"
+#include "../rendering/task/shared/deoglRenderTaskSharedPool.h"
 #include "../shadow/deoglShadowMapper.h"
 #include "../texture/deoglTextureStageManager.h"
 #include "../triangles/deoglTriangleSorter.h"
@@ -121,6 +122,7 @@ pRenderCache( NULL ),
 pShadowMapper( NULL ),
 pTriangleSorter( NULL ),
 pPersistentRenderTaskPool( NULL ),
+pRenderTaskSharedPool( NULL ),
 pUniqueKey( NULL ),
 pOcclusionTestPool( NULL ),
 
@@ -878,6 +880,7 @@ void deoglRenderThread::pInitThreadPhase4(){
 	
 	// required to be present before anything else
 	pUniqueKey = new deoglRTUniqueKey;
+	pRenderTaskSharedPool = new deoglRenderTaskSharedPool( *this );
 	
 	// init extensions
 	pInitExtensions();
@@ -2120,6 +2123,10 @@ void deoglRenderThread::pCleanUpThread(){
 		// deprecated
 		
 		// has to come last
+		if( pRenderTaskSharedPool ){
+			delete pRenderTaskSharedPool;
+			pRenderTaskSharedPool = NULL;
+		}
 		if( pUniqueKey ){
 			delete pUniqueKey;
 			pUniqueKey = NULL;
