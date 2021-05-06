@@ -45,6 +45,7 @@
 #include "../rendering/task/deoglRenderTask.h"
 #include "../rendering/task/deoglRenderTaskTexture.h"
 #include "../rendering/task/deoglAddToRenderTaskGIMaterial.h"
+#include "../rendering/task/shared/deoglRenderTaskSharedTexture.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTLogger.h"
 #include "../renderthread/deoglRTFramebuffer.h"
@@ -239,7 +240,7 @@ void deoglGIBVH::AddComponent( deoglRenderPlan &plan, const decMatrix &matrix, d
 		
 		for( i=0; i<textureCount; i++ ){
 			deoglRenderTaskTexture * const rttexture = addToRenderTask.AddComponentTexture( lod, i );
-			deoglTexUnitsConfig * const tuc = rttexture ? rttexture->GetTUC() : NULL;
+			deoglTexUnitsConfig * const tuc = rttexture ? rttexture->GetTexture()->GetTUC() : NULL;
 			pAddMaterial( instance, i, component.GetTextureAt( i ), tuc );
 			instance.AddTUC( tuc );
 		}

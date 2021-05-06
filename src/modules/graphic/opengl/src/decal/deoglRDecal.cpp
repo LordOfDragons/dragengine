@@ -575,7 +575,8 @@ deoglTexUnitsConfig *deoglRDecal::GetTUCEnvMap(){
 					NULL, NULL, pRenderThread.GetDefaultTextures().GetEmissivity() );
 			}
 			
-			pTUCEnvMap = pRenderThread.GetShader().GetTexUnitsConfigList().GetWith( &unit[ 0 ], 2 );
+			pTUCEnvMap = pRenderThread.GetShader().GetTexUnitsConfigList().GetWith(
+				&unit[ 0 ], 2, pUseSkinTexture->GetParameterBlock() );
 			pTUCEnvMap->EnsureRTSTexture();
 		}
 		
@@ -586,29 +587,35 @@ deoglTexUnitsConfig *deoglRDecal::GetTUCEnvMap(){
 }
 
 deoglTexUnitsConfig *deoglRDecal::BareGetTUCFor( deoglSkinTexture::eShaderTypes shaderType ){
-	deoglTexUnitsConfig *tuc = NULL;
-	
 	UpdateUseSkin();
 	
-	if( pUseSkinTexture ){
-		deoglTexUnitConfig units[ deoglSkinShader::ETT_COUNT ];
-		deoglEnvironmentMap *envmapSky = NULL;
-		
-		if( pParentComponent ){
-			envmapSky = pParentComponent->GetParentWorld()->GetSkyEnvironmentMap();
-		}
-		
-		deoglSkinShader &skinShader = *pUseSkinTexture->GetShaderFor( shaderType );
-		
-		if( skinShader.GetUsedTextureTargetCount() > 0 ){
-			skinShader.SetTUCCommon( &units[ 0 ], *pUseSkinTexture, pUseSkinState, pUseDynamicSkin );
-			skinShader.SetTUCPerObjectEnvMap( &units[ 0 ], envmapSky,
-				pParentComponent->GetRenderEnvMap(), pParentComponent->GetRenderEnvMapFade() );
-			tuc = pRenderThread.GetShader().GetTexUnitsConfigList().GetWith(
-				&units[ 0 ], skinShader.GetUsedTextureTargetCount() );
-			tuc->EnsureRTSTexture();
-		}
+	if( ! pUseSkinTexture ){
+		return NULL;
 	}
+	
+	deoglTexUnitConfig units[ deoglSkinShader::ETT_COUNT ];
+	deoglEnvironmentMap *envmapSky = NULL;
+	deoglTexUnitsConfig *tuc = NULL;
+	
+	if( pParentComponent ){
+		envmapSky = pParentComponent->GetParentWorld()->GetSkyEnvironmentMap();
+	}
+	
+	deoglSkinShader &skinShader = *pUseSkinTexture->GetShaderFor( shaderType );
+	
+	if( skinShader.GetUsedTextureTargetCount() > 0 ){
+		skinShader.SetTUCCommon( &units[ 0 ], *pUseSkinTexture, pUseSkinState, pUseDynamicSkin );
+		skinShader.SetTUCPerObjectEnvMap( &units[ 0 ], envmapSky,
+			pParentComponent->GetRenderEnvMap(), pParentComponent->GetRenderEnvMapFade() );
+		tuc = pRenderThread.GetShader().GetTexUnitsConfigList().GetWith( &units[ 0 ],
+			skinShader.GetUsedTextureTargetCount(), pUseSkinTexture->GetParameterBlock() );
+	}
+	
+	if( ! tuc ){
+		tuc = pRenderThread.GetShader().GetTexUnitsConfigList().GetWith(
+			NULL, 0, pUseSkinTexture->GetParameterBlock() );
+	}
+	tuc->EnsureRTSTexture();
 	
 	return tuc;
 }

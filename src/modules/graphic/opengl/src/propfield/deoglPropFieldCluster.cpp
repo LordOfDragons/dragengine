@@ -434,7 +434,8 @@ deoglTexUnitsConfig *deoglPropFieldCluster::GetTUCEnvMap(){
 					skinState, dynamicSkin, renderThread.GetDefaultTextures().GetEmissivity() );
 			}
 			
-			pTUCEnvMap = renderThread.GetShader().GetTexUnitsConfigList().GetWith( &unit[ 0 ], 2 );
+			pTUCEnvMap = renderThread.GetShader().GetTexUnitsConfigList().GetWith(
+				&unit[ 0 ], 2, pPropFieldType.GetUseSkinTexture()->GetParameterBlock() );
 			pTUCEnvMap->EnsureRTSTexture();
 		}
 		
@@ -446,37 +447,43 @@ deoglTexUnitsConfig *deoglPropFieldCluster::GetTUCEnvMap(){
 
 deoglTexUnitsConfig *deoglPropFieldCluster::BareGetTUCFor( deoglSkinTexture::eShaderTypes shaderType ) const{
 	deoglSkinTexture * const skinTexture = pPropFieldType.GetUseSkinTexture();
-	
-	deoglTexUnitsConfig *tuc = NULL;
-	
-	if( skinTexture ){
-		deoglRenderThread &renderThread = pPropFieldType.GetPropField().GetRenderThread();
-		deoglRDynamicSkin *dynamicSkin = NULL;
-		deoglSkinState *skinState = NULL;
-		deoglTexUnitConfig units[ deoglSkinShader::ETT_COUNT ];
-		int target;
-		
-		deoglSkinShader &skinShader = *skinTexture->GetShaderFor( shaderType );
-		
-		if( skinShader.GetUsedTextureTargetCount() > 0 ){
-			skinShader.SetTUCCommon( &units[ 0 ], *skinTexture, skinState, dynamicSkin );
-			skinShader.SetTUCPerObjectEnvMap( &units[ 0 ],
-				pPropFieldType.GetPropField().GetParentWorld()->GetSkyEnvironmentMap(), NULL, NULL );
-			
-			target = skinShader.GetTextureTarget( deoglSkinShader::ettSubInstance1 );
-			if( target != -1 ){
-				units[ target ].EnableTBO( pTBOInstances );
-			}
-			
-			target = skinShader.GetTextureTarget( deoglSkinShader::ettSubInstance2 );
-			if( target != -1 ){
-				units[ target ].EnableTBO( pTBOBendStates );
-			}
-			
-			tuc = renderThread.GetShader().GetTexUnitsConfigList().GetWith( &units[ 0 ], skinShader.GetUsedTextureTargetCount() );
-			tuc->EnsureRTSTexture();
-		}
+	if( ! skinTexture ){
+		return NULL;
 	}
+	
+	deoglRenderThread &renderThread = pPropFieldType.GetPropField().GetRenderThread();
+	deoglTexUnitConfig units[ deoglSkinShader::ETT_COUNT ];
+	deoglRDynamicSkin *dynamicSkin = NULL;
+	deoglSkinState *skinState = NULL;
+	deoglTexUnitsConfig *tuc = NULL;
+	int target;
+	
+	deoglSkinShader &skinShader = *skinTexture->GetShaderFor( shaderType );
+	
+	if( skinShader.GetUsedTextureTargetCount() > 0 ){
+		skinShader.SetTUCCommon( &units[ 0 ], *skinTexture, skinState, dynamicSkin );
+		skinShader.SetTUCPerObjectEnvMap( &units[ 0 ],
+			pPropFieldType.GetPropField().GetParentWorld()->GetSkyEnvironmentMap(), NULL, NULL );
+		
+		target = skinShader.GetTextureTarget( deoglSkinShader::ettSubInstance1 );
+		if( target != -1 ){
+			units[ target ].EnableTBO( pTBOInstances );
+		}
+		
+		target = skinShader.GetTextureTarget( deoglSkinShader::ettSubInstance2 );
+		if( target != -1 ){
+			units[ target ].EnableTBO( pTBOBendStates );
+		}
+		
+		tuc = renderThread.GetShader().GetTexUnitsConfigList().GetWith( &units[ 0 ],
+			skinShader.GetUsedTextureTargetCount(), skinTexture->GetParameterBlock() );
+	}
+	
+	if( ! tuc ){
+		tuc = renderThread.GetShader().GetTexUnitsConfigList().GetWith(
+			NULL, 0, skinTexture->GetParameterBlock() );
+	}
+	tuc->EnsureRTSTexture();
 	
 	return tuc;
 }

@@ -94,7 +94,7 @@ deoglRenderTaskSharedShader *deoglRenderTaskSharedPool::GetShader(){
 	}else{
 		shader = new deoglRenderTaskSharedShader( *this, pNextIndexShader++ );
 		
-		if( pNextIndexShader % 10 == 0 ){
+		if( pNextIndexShader % 100 == 0 ){
 			pRenderThread.GetLogger().LogInfoFormat( "RenderTaskSharedPool: Reached %d Shaders", pNextIndexShader );
 		}
 	}

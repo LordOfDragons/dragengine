@@ -720,7 +720,8 @@ void deoglRComponentTexture::PrepareTUCs(){
 				renderThread.GetDefaultTextures().GetEmissivity() );
 		}
 		
-		pTUCEnvMap = renderThread.GetShader().GetTexUnitsConfigList().GetWith( &unit[ 0 ], 2 );
+		pTUCEnvMap = renderThread.GetShader().GetTexUnitsConfigList().GetWith(
+			&unit[ 0 ], 2, pUseSkinTexture->GetParameterBlock() );
 		pTUCEnvMap->EnsureRTSTexture();
 	}
 	
@@ -797,10 +798,15 @@ deoglSkinTexture::eShaderTypes shaderType ) const{
 		skinShader.SetTUCPerObjectEnvMap( &units[ 0 ],
 			pComponent.GetParentWorld()->GetSkyEnvironmentMap(),
 			pComponent.GetRenderEnvMap(), pComponent.GetRenderEnvMapFade() );
-		tuc = renderThread.GetShader().GetTexUnitsConfigList().GetWith(
-			&units[ 0 ], skinShader.GetUsedTextureTargetCount() );
-		tuc->EnsureRTSTexture();
+		tuc = renderThread.GetShader().GetTexUnitsConfigList().GetWith( &units[ 0 ],
+			skinShader.GetUsedTextureTargetCount(), pUseSkinTexture->GetParameterBlock() );
 	}
+	
+	if( ! tuc ){
+		tuc = renderThread.GetShader().GetTexUnitsConfigList().GetWith(
+			NULL, 0, pUseSkinTexture->GetParameterBlock() );
+	}
+	tuc->EnsureRTSTexture();
 	
 	return tuc;
 }

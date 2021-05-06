@@ -163,26 +163,13 @@ deoglSkinTexture *skinTexture, deoglTexUnitsConfig *tuc ){
 		tuc = pRenderThread.GetShader().GetTexUnitsConfigList().GetEmptyNoUsage();
 	}
 	
-	// obtain render task shader
-	deoglRenderTaskShader * const renderTaskShader = pRenderTask.AddShader( shader->GetRTSShader() );
-	
 	// obtain render task texture
-	if( tuc->GetRenderTaskTrackingNumber() != pRenderTask.GetTrackingNumber() ){
-		pRenderTask.AddTUC( tuc );
-	}
-	deoglRenderTaskTexture *renderTaskTexture =
-		renderTaskShader->GetTextureForIndex( tuc->GetRenderTaskTUCIndex() );
-	if( ! renderTaskTexture ){
-		renderTaskTexture = pRenderTask.TextureFromPool();
-		renderTaskTexture->SetTUC( tuc );
-		renderTaskTexture->SetParameterBlock( skinTexture->GetParameterBlock() );
-		renderTaskTexture->SetTexture( skinTexture );
-		renderTaskShader->AddTexture( renderTaskTexture );
-	}
+	deoglRenderTaskShader &rtshader = *pRenderTask.AddShader( shader->GetRTSShader() );
+	deoglRenderTaskTexture &rttexture = *rtshader.AddTexture( pRenderTask, tuc->GetRTSTexture() );
 	
 	if( tuc->GetMaterialIndex() == -1 ){
 		pRenderThread.GetGI().GetMaterials().AddTUC( tuc );
 	}
 	
-	return renderTaskTexture;
+	return &rttexture;
 }

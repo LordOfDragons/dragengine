@@ -38,9 +38,7 @@
 ////////////////////////////
 
 deoglRenderTaskTexture::deoglRenderTaskTexture() :
-pTUC( NULL ),
 pTexture( NULL ),
-pParamBlock( NULL ),
 
 pRootVAO( NULL ),
 pTailVAO( NULL ),
@@ -67,9 +65,7 @@ deoglRenderTaskTexture::~deoglRenderTaskTexture(){
 ///////////////
 
 void deoglRenderTaskTexture::Reset(){
-	pTUC = NULL;
 	pTexture = NULL;
-	pParamBlock = NULL;
 	pHasVAOCount = 0;
 	
 	pRootVAO = NULL;
@@ -119,16 +115,8 @@ int deoglRenderTaskTexture::GetTotalSubInstanceCount() const{
 
 
 
-void deoglRenderTaskTexture::SetTUC( deoglTexUnitsConfig *tuc ){
-	pTUC = tuc;
-}
-
-void deoglRenderTaskTexture::SetTexture( deoglSkinTexture *texture ){
+void deoglRenderTaskTexture::SetTexture( deoglRenderTaskSharedTexture *texture ){
 	pTexture = texture;
-}
-
-void deoglRenderTaskTexture::SetParameterBlock( deoglSPBlockUBO *block ){
-	pParamBlock = block;
 }
 
 

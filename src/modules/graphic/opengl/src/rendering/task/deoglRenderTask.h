@@ -86,7 +86,6 @@ private:
 	static unsigned int pUpdateTracking;
 	
 	decPointerList pListShaders;
-	decPointerList pListTUCs;
 	decPointerList pListVAOs;
 	decPointerList pListInstanceGroup;
 	
@@ -180,9 +179,6 @@ public:
 	
 	/** Total amount of subinstances in this shader. */
 	int GetTotalSubInstanceCount() const;
-	
-	/** Add texture units configuration. */
-	void AddTUC( deoglTexUnitsConfig *tuc );
 	
 	/** \brfief Add vao. */
 	void AddVAO( deoglVAO *vao );

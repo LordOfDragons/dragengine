@@ -44,7 +44,7 @@ pTailTUC( NULL ),
 pTUCCount( 0 ),
 pTUCEmpty( NULL )
 {
-	pTUCEmpty = GetWith( NULL, 0 );
+	pTUCEmpty = GetWith( NULL, 0, NULL );
 	pTUCEmpty->EnsureRTSTexture();
 }
 
@@ -62,12 +62,13 @@ deoglTexUnitsConfigList::~deoglTexUnitsConfigList(){
 // Management
 ///////////////
 
-deoglTexUnitsConfig *deoglTexUnitsConfigList::GetWith( const deoglTexUnitConfig *units, int unitCount ){
+deoglTexUnitsConfig *deoglTexUnitsConfigList::GetWith( const deoglTexUnitConfig *units,
+int unitCount, deoglSPBlockUBO *paramBlock ){
 	deoglTexUnitsConfig *tuc = pRootTUC;
 	
 	// if there exists already a texture units configuration with these properties add a usage and return it
 	while( tuc ){
-		if( tuc->Equals( units, unitCount ) ){
+		if( tuc->Equals( units, unitCount, paramBlock ) ){
 			tuc->AddUsage();
 			return tuc;
 		}
@@ -79,7 +80,8 @@ deoglTexUnitsConfig *deoglTexUnitsConfigList::GetWith( const deoglTexUnitConfig 
 	
 	try{
 		tuc->SetUnits( units, unitCount );
-		tuc->CalcHashCode();
+		tuc->SetParameterBlock( paramBlock );
+		tuc->CalcUnitsHashCode();
 		
 		if( pTailTUC ){
 			pTailTUC->SetLLNext( tuc );

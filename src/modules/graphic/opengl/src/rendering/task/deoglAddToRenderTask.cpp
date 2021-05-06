@@ -543,7 +543,6 @@ deoglRPropFieldType &propFieldType, bool imposters ){
 	deoglSPBlockUBO *spbInstance = NULL;
 	deoglSkinShader *skinShader = NULL;
 	deoglShaderProgram *shader = NULL;
-	deoglTexUnitsConfig *tuc = NULL;
 	
 	skinShader = skinTexture->GetShaderFor( pSkinShaderType );
 	
@@ -568,7 +567,6 @@ deoglRPropFieldType &propFieldType, bool imposters ){
 	// obtain render task. this is the same for all clusters in the type
 	deoglDeferredRendering &defren = pRenderThread.GetDeferredRendering();
 	deoglSharedVBOBlock &vboBlock = *modelLOD.GetVBOBlock();
-	deoglRenderTaskTexture *renderTaskTexture;
 	deoglRenderTaskVAO *renderTaskVAO;
 	deoglVAO *vao = NULL;
 	
@@ -579,7 +577,7 @@ deoglRPropFieldType &propFieldType, bool imposters ){
 		vao = vboBlock.GetVBO()->GetVAO();
 	}
 	
-	deoglRenderTaskShader * const renderTaskShader = pRenderTask.AddShader( shader->GetRTSShader() );
+	deoglRenderTaskShader &rtshader = *pRenderTask.AddShader( shader->GetRTSShader() );
 	
 	// the rest is specific for each cluster except for the vao which is also the same for all clusters in the type
 	deoglPropFieldCluster ** const clusters = clPropFieldType.GetClusters();
@@ -616,32 +614,21 @@ deoglRPropFieldType &propFieldType, bool imposters ){
 		cluster.UpdateTBOs();
 		
 		// retrieve the tuc. this is potentially different for clusters as they use shared TBOs
-		tuc = cluster.GetTUCForShaderType( pSkinShaderType );
-		
+		deoglTexUnitsConfig * const tuc = cluster.GetTUCForShaderType( pSkinShaderType );
 		if( ! tuc ){
-			tuc = pRenderThread.GetShader().GetTexUnitsConfigList().GetEmptyNoUsage();
+			DETHROW( deeInvalidParam );
 		}
 		
-		if( tuc->GetRenderTaskTrackingNumber() != pRenderTask.GetTrackingNumber() ){
-			pRenderTask.AddTUC( tuc );
-		}
-		renderTaskTexture = renderTaskShader->GetTextureForIndex( tuc->GetRenderTaskTUCIndex() );
-		if( ! renderTaskTexture ){
-			renderTaskTexture = pRenderTask.TextureFromPool();
-			renderTaskTexture->SetTUC( tuc );
-			renderTaskTexture->SetParameterBlock( skinTexture->GetParameterBlock() );
-			renderTaskTexture->SetTexture( skinTexture );
-			renderTaskShader->AddTexture( renderTaskTexture );
-		}
+		deoglRenderTaskTexture &rttexture = *rtshader.AddTexture( pRenderTask, tuc->GetRTSTexture() );
 		
 		if( vao->GetRenderTaskTrackingNumber() != pRenderTask.GetTrackingNumber() ){
 			pRenderTask.AddVAO( vao );
 		}
-		renderTaskVAO = renderTaskTexture->GetVAOForIndex( vao->GetRenderTaskVAOIndex() );
+		renderTaskVAO = rttexture.GetVAOForIndex( vao->GetRenderTaskVAOIndex() );
 		if( ! renderTaskVAO ){
 			renderTaskVAO = pRenderTask.VAOFromPool();
 			renderTaskVAO->SetVAO( vao );
-			renderTaskTexture->AddVAO( renderTaskVAO );
+			rttexture.AddVAO( renderTaskVAO );
 		}
 		
 		// add an instance for this cluster. all clusters will be handled using sub-instances
@@ -723,29 +710,15 @@ void deoglAddToRenderTask::AddHeightTerrainSectorClusters( const deoglHTViewSect
 	}
 	
 	// obtain render task. this is the same for all clusters in the type
-	deoglRenderTaskTexture *renderTaskTexture;
-	deoglRenderTaskVAO *renderTaskVAO;
-	
-	deoglRenderTaskShader * const renderTaskShader = pRenderTask.AddShader( shader->GetRTSShader() );
+	deoglRenderTaskShader &rtshader = *pRenderTask.AddShader( shader->GetRTSShader() );
 	
 	// retrieve the tuc
 	tuc = httexture.GetTUCForShaderType( pSkinShaderType );
-	
 	if( ! tuc ){
 		tuc = pRenderThread.GetShader().GetTexUnitsConfigList().GetEmptyNoUsage();
 	}
 	
-	if( tuc->GetRenderTaskTrackingNumber() != pRenderTask.GetTrackingNumber() ){
-		pRenderTask.AddTUC( tuc );
-	}
-	renderTaskTexture = renderTaskShader->GetTextureForIndex( tuc->GetRenderTaskTUCIndex() );
-	if( ! renderTaskTexture ){
-		renderTaskTexture = pRenderTask.TextureFromPool();
-		renderTaskTexture->SetTUC( tuc );
-		renderTaskTexture->SetParameterBlock( skinTexture->GetParameterBlock() );
-		renderTaskTexture->SetTexture( skinTexture );
-		renderTaskShader->AddTexture( renderTaskTexture );
-	}
+	deoglRenderTaskTexture &rttexture = *rtshader.AddTexture( pRenderTask, tuc->GetRTSTexture() );
 	
 	// the rest is specific for each cluster
 	const int clusterCount = sector.GetClusterCount() * sector.GetClusterCount();
@@ -775,11 +748,12 @@ void deoglAddToRenderTask::AddHeightTerrainSectorClusters( const deoglHTViewSect
 			if( vao->GetRenderTaskTrackingNumber() != pRenderTask.GetTrackingNumber() ){
 				pRenderTask.AddVAO( vao );
 			}
-			renderTaskVAO = renderTaskTexture->GetVAOForIndex( vao->GetRenderTaskVAOIndex() );
+			
+			deoglRenderTaskVAO *renderTaskVAO = rttexture.GetVAOForIndex( vao->GetRenderTaskVAOIndex() );
 			if( ! renderTaskVAO ){
 				renderTaskVAO = pRenderTask.VAOFromPool();
 				renderTaskVAO->SetVAO( vao );
-				renderTaskTexture->AddVAO( renderTaskVAO );
+				rttexture.AddVAO( renderTaskVAO );
 			}
 			
 			// add an instance for this cluster
@@ -892,28 +866,23 @@ deoglRenderTaskTexture *taskTexture ){
 }
 
 void deoglAddToRenderTask::AddOcclusionMeshes( const deoglCollideList &clist ){
-	const int componentCount = clist.GetComponentCount();
-	int c;
-	
-	deoglRenderTaskTexture *rttexture;
+	deoglRenderTaskTexture *rttexture = NULL;
 	
 	if( pRenderTask.GetShaderCount() == 0 ){
-		deoglRenderTaskShader * const rtshader = pRenderTask.AddShader( pEnforceShader );
-		rtshader->SetParameterBlock( pEnforceParamBlock );
+		deoglRenderTaskShader &rtshader = *pRenderTask.AddShader( pEnforceShader );
+		rtshader.SetParameterBlock( pEnforceParamBlock );
 		
-		deoglTexUnitsConfig * const tuc = pRenderThread.GetShader().GetTexUnitsConfigList().GetEmptyNoUsage();
-		pRenderTask.AddTUC( tuc );
-		rttexture = pRenderTask.TextureFromPool();
-		rttexture->SetTUC( tuc );
-		rttexture->SetTexture( NULL );
-		rtshader->AddTexture( rttexture );
+		rttexture = rtshader.AddTexture( pRenderTask,
+			pRenderThread.GetShader().GetTexUnitsConfigList().GetEmptyNoUsage()->GetRTSTexture() );
 		
 	}else{
 		rttexture = pRenderTask.GetRootShader()->GetRootTexture();
 	}
 	
-	for( c=0; c<componentCount; c++ ){
-		AddOcclusionMesh( *clist.GetComponentAt( c )->GetComponent(), rttexture );
+	const int count = clist.GetComponentCount();
+	int i;
+	for( i=0; i<count; i++ ){
+		AddOcclusionMesh( *clist.GetComponentAt( i )->GetComponent(), rttexture );
 	}
 }
 
@@ -1173,32 +1142,18 @@ deoglSkinTexture *skinTexture, deoglTexUnitsConfig *tuc, deoglVAO *vao ) const{
 		tuc = pRenderThread.GetShader().GetTexUnitsConfigList().GetEmptyNoUsage();
 	}
 	
-	// obtain render task shader
-	deoglRenderTaskShader * const renderTaskShader = pRenderTask.AddShader( shader->GetRTSShader() );
-	
-	// obtain render task texture
-	if( tuc->GetRenderTaskTrackingNumber() != pRenderTask.GetTrackingNumber() ){
-		pRenderTask.AddTUC( tuc );
-	}
-	deoglRenderTaskTexture *renderTaskTexture =
-		renderTaskShader->GetTextureForIndex( tuc->GetRenderTaskTUCIndex() );
-	if( ! renderTaskTexture ){
-		renderTaskTexture = pRenderTask.TextureFromPool();
-		renderTaskTexture->SetTUC( tuc );
-		renderTaskTexture->SetParameterBlock( skinTexture->GetParameterBlock() );
-		renderTaskTexture->SetTexture( skinTexture );
-		renderTaskShader->AddTexture( renderTaskTexture );
-	}
-	
 	// obtain render task vao
+	deoglRenderTaskShader &rtshader = *pRenderTask.AddShader( shader->GetRTSShader() );
+	deoglRenderTaskTexture &rttexture = *rtshader.AddTexture( pRenderTask, tuc->GetRTSTexture() );
+	
 	if( vao->GetRenderTaskTrackingNumber() != pRenderTask.GetTrackingNumber() ){
 		pRenderTask.AddVAO( vao );
 	}
-	deoglRenderTaskVAO *renderTaskVAO = renderTaskTexture->GetVAOForIndex( vao->GetRenderTaskVAOIndex() );
+	deoglRenderTaskVAO *renderTaskVAO = rttexture.GetVAOForIndex( vao->GetRenderTaskVAOIndex() );
 	if( ! renderTaskVAO ){
 		renderTaskVAO = pRenderTask.VAOFromPool();
 		renderTaskVAO->SetVAO( vao );
-		renderTaskTexture->AddVAO( renderTaskVAO );
+		rttexture.AddVAO( renderTaskVAO );
 	}
 	
 	return renderTaskVAO;

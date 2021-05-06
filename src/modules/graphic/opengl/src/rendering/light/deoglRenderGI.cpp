@@ -608,14 +608,14 @@ void deoglRenderGI::RenderMaterials( deoglRenderPlan &plan ){
 	
 	while( rtshader ){
 		deoglShaderProgram &shaderProgram = *rtshader->GetShader()->GetShader();
-		deoglShaderCompiled &shader = *shaderProgram.GetCompiled();
+		const deoglShaderCompiled &shader = *shaderProgram.GetCompiled();
 		
 		renderThread.GetShader().ActivateShader( &shaderProgram );
 		
-		deoglRenderTaskTexture *rtTexture = rtshader->GetRootTexture();
+		const deoglRenderTaskTexture *rttexture = rtshader->GetRootTexture();
 		
-		while( rtTexture ){
-			deoglTexUnitsConfig &tuc = *rtTexture->GetTUC();
+		while( rttexture ){
+			const deoglTexUnitsConfig &tuc = *rttexture->GetTexture()->GetTUC();
 			const int matMapIndex = tuc.GetMaterialIndex();
 			if( matMapIndex < 1 ){ // no slot (-1), fallback slot (0)
 				continue;
@@ -631,7 +631,7 @@ void deoglRenderGI::RenderMaterials( deoglRenderPlan &plan ){
 			shader.SetParameterFloat( espmQuadParams, scaleU, scaleV, offsetU, offsetV );
 			OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
 			
-			rtTexture = rtTexture->GetNextTexture();
+			rttexture = rttexture->GetNextTexture();
 		}
 		
 		rtshader = rtshader->GetNextShader();

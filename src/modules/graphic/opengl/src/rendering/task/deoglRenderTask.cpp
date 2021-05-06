@@ -30,6 +30,7 @@
 #include "deoglRenderTaskInstance.h"
 #include "deoglRenderTaskInstanceGroup.h"
 #include "shared/deoglRenderTaskSharedShader.h"
+#include "shared/deoglRenderTaskSharedTexture.h"
 #include "../../capabilities/deoglCapabilities.h"
 #include "../../renderthread/deoglRenderThread.h"
 #include "../../renderthread/deoglRTLogger.h"
@@ -144,7 +145,6 @@ void deoglRenderTask::Clear(){
 	
 	pListInstanceGroup.RemoveAll();
 	pListVAOs.RemoveAll();
-	pListTUCs.RemoveAll();
 	pNextTexturePool = pRootTexturePool;
 	pNextVAOPool = pRootVAOPool;
 	pNextInstancePool = pRootInstancePool;
@@ -413,16 +413,6 @@ int deoglRenderTask::GetTotalSubInstanceCount() const{
 
 
 
-void deoglRenderTask::AddTUC( deoglTexUnitsConfig *tuc ){
-	if( ! tuc ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	tuc->SetRenderTaskTrackingNumber( pTrackingNumber );
-	tuc->SetRenderTaskTUCIndex( pListTUCs.GetCount() );
-	pListTUCs.Add( tuc );
-}
-
 void deoglRenderTask::AddVAO( deoglVAO *vao ){
 	if( ! vao ){
 		DETHROW( deeInvalidParam );
@@ -456,8 +446,8 @@ void deoglRenderTask::DebugPrint( deoglRTLogger &rtlogger ){
 	deoglRenderTaskVAO *vao;
 	decString text;
 	
-	rtlogger.LogInfoFormat( "RenderTask %p: spb=%p shaders=%d points=%d tucs=%d vaos=%d igrps=%d",
-		this, pRenderParamBlock, pShaderCount, GetTotalPointCount(), pListTUCs.GetCount(),
+	rtlogger.LogInfoFormat( "RenderTask %p: spb=%p shaders=%d points=%d textures=%d vaos=%d igrps=%d",
+		this, pRenderParamBlock, pShaderCount, GetTotalPointCount(), GetTotalTextureCount(),
 		pListVAOs.GetCount(), pListInstanceGroup.GetCount() );
 	
 	for( s=0; s<pShaderCount; s++ ){
@@ -494,16 +484,15 @@ void deoglRenderTask::DebugPrint( deoglRTLogger &rtlogger ){
 		
 		texture = shader.GetRootTexture(); t=0;
 		while( texture ){
-			rtlogger.LogInfoFormat( "  - texture %i: spb=%p tuc=%p texture=%p vaos=%i "
-				"points=%i instances=%i subInstances=%i", t, texture->GetParameterBlock(),
-				texture->GetTUC(), texture->GetTexture(), texture->GetVAOCount(),
-				texture->GetTotalPointCount(), texture->GetTotalInstanceCount(),
-				texture->GetTotalSubInstanceCount() );
+			rtlogger.LogInfoFormat( "  - texture %i: tuc=%p texture=%p vaos=%i "
+				"points=%i instances=%i subInstances=%i", t, texture->GetTexture()->GetTUC(),
+				texture->GetTexture(), texture->GetVAOCount(), texture->GetTotalPointCount(),
+				texture->GetTotalInstanceCount(), texture->GetTotalSubInstanceCount() );
 			
-			const int unitCount = texture->GetTUC()->GetUnitCount();
+			const int unitCount = texture->GetTexture()->GetTUC()->GetUnitCount();
 			text.Format( "    units(" );
 			for( u=0; u<unitCount; u++ ){
-				const deoglTexUnitConfig &unit = texture->GetTUC()->GetUnitAt( u );
+				const deoglTexUnitConfig &unit = texture->GetTexture()->GetTUC()->GetUnitAt( u );
 				if( unit.GetTexture() ){
 					text.AppendFormat( " T%i", unit.GetTexture()->GetTexture() );
 					

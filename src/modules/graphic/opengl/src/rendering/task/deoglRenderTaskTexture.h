@@ -24,21 +24,17 @@
 
 #include "../../deoglBasics.h"
 
-class deoglTexUnitsConfig;
-class deoglSkinTexture;
+class deoglRenderTaskSharedTexture;
 class deoglRenderTaskVAO;
-class deoglSPBlockUBO;
 class deoglVAO;
 
 
 /**
- * \brief Render Task Texture.
+ * Render Task Texture.
  */
 class deoglRenderTaskTexture{
 private:
-	deoglTexUnitsConfig *pTUC;
-	deoglSkinTexture *pTexture;
-	deoglSPBlockUBO *pParamBlock;
+	deoglRenderTaskSharedTexture *pTexture;
 	
 	deoglRenderTaskVAO *pRootVAO;
 	deoglRenderTaskVAO *pTailVAO;
@@ -57,36 +53,38 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Creates a new render task shader. */
+	/** Create render task shader. */
 	deoglRenderTaskTexture();
-	/** Cleans up the render task shader. */
+	
+	/** Clean up render task shader. */
 	~deoglRenderTaskTexture();
 	/*@}*/
 	
+	
+	
 	/** \name Management */
 	/*@{*/
-	/** Reset the texture. */
+	/** Reset. */
 	void Reset();
 	
-	/** Retrieves the total amount of points in this texture. */
+	/** Total count of points. */
 	int GetTotalPointCount() const;
-	/** Retrieves the total amount of instances in this texture. */
+	
+	/** Total count of instances. */
 	int GetTotalInstanceCount() const;
-	/** Retrieves the total amount of subinstances in this texture. */
+	
+	/** Total count of subinstances. */
 	int GetTotalSubInstanceCount() const;
 	
-	/** Retrieves the texture units configuration. */
-	inline deoglTexUnitsConfig *GetTUC() const{ return pTUC; }
-	/** Sets the texture units configuration. */
-	void SetTUC( deoglTexUnitsConfig *tuc );
-	/** Retrieves the skin texture. */
-	inline deoglSkinTexture *GetTexture() const{ return pTexture; }
-	/** Sets the skin texture. */
-	void SetTexture( deoglSkinTexture *texture );
-	/** Retrieves the shader parameter block or NULL if not used. */
-	inline deoglSPBlockUBO *GetParameterBlock() const{ return pParamBlock; }
-	/** Sets the shader parameter block or NULL if not used. */
-	void SetParameterBlock( deoglSPBlockUBO *block );
+	
+	
+	/** Shared texture. */
+	inline deoglRenderTaskSharedTexture *GetTexture() const{ return pTexture; }
+	
+	/** Set shared texture. */
+	void SetTexture( deoglRenderTaskSharedTexture *texture );
+	
+	
 	
 	/** Retrieves the root render task vao or NULL if there is none. */
 	inline deoglRenderTaskVAO *GetRootVAO() const{ return pRootVAO; }
@@ -100,17 +98,20 @@ public:
 	/** Retrieves the vao for a vao index or NULL if not existing yet. */
 	deoglRenderTaskVAO *GetVAOForIndex( int vaoIndex );
 	
-	/** Retrieves the next texture to render or NULL if this is the last one. */
+	
+	
+	/** Next texture or NULL. */
 	inline deoglRenderTaskTexture *GetNextTexture() const{ return pNextTexture; }
-	/** Sets the next texture to render or NULL if this is the last one. */
+	
+	/** Set next texture or NULL. */
 	void SetNextTexture( deoglRenderTaskTexture *texture );
 	/*@}*/
 	
+	
+	
 	/** \name Linked List */
 	/*@{*/
-	/** Retrieves the next texture in the pool in the parent render task or NULL if there is none. */
 	inline deoglRenderTaskTexture *GetLLNext() const{ return pLLNext; }
-	/** Sets the next texture in the pool in the parent render task or NULL if there is none. */
 	void SetLLNext( deoglRenderTaskTexture *texture );
 	/*@}*/
 };

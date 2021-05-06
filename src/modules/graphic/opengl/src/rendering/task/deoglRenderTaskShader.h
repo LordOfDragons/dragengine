@@ -22,7 +22,9 @@
 #ifndef _DEOGLRENDERTASKSHADER_H_
 #define _DEOGLRENDERTASKSHADER_H_
 
+class deoglRenderTask;
 class deoglRenderTaskSharedShader;
+class deoglRenderTaskSharedTexture;
 class deoglRenderTaskTexture;
 class deoglSPBlockUBO;
 
@@ -83,23 +85,20 @@ public:
 	/** Set shader. */
 	void SetShader( deoglRenderTaskSharedShader *shader );
 	
-	/** Shader parameter block or \em NULL if not used. */
+	/** Shader parameter block or NULL if not used. */
 	inline deoglSPBlockUBO *GetParameterBlock() const{ return pParamBlock; }
 	
-	/** Set shader parameter block or \em NULL if not used. */
+	/** Set shader parameter block or NULL if not used. */
 	void SetParameterBlock( deoglSPBlockUBO *block );
 	
-	/** Root render task texture or \em NULL if there is none. */
+	/** Root render task texture or NULL if there is none. */
 	inline deoglRenderTaskTexture *GetRootTexture() const{ return pRootTexture; }
 	
 	/** Number of render task textures. */
 	inline int GetTextureCount() const{ return pTextureCount; }
 	
 	/** Add render task texture. */
-	void AddTexture( deoglRenderTaskTexture *texture );
-	
-	/** Texture for texture units configuration index or \em NULL if absent. */
-	deoglRenderTaskTexture *GetTextureForIndex( int tucIndex );
+	deoglRenderTaskTexture *AddTexture( deoglRenderTask &task, deoglRenderTaskSharedTexture *texture );
 	
 	/** Next shader or NULL. */
 	inline deoglRenderTaskShader *GetNextShader() const{ return pNextShader; }

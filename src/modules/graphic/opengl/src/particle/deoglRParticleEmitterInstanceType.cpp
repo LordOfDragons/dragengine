@@ -482,74 +482,80 @@ deoglSkinTexture::eShaderTypes shaderType ) const{
 	}
 	
 	deoglSkinShader &skinShader = *pUseSkinTexture->GetShaderFor( shaderType );
-	if( skinShader.GetUsedTextureTargetCount() == 0 ){
-		return NULL;
-	}
-	
-	deoglRDynamicSkin *dynamicSkin = NULL;
-	deoglSkinState *skinState = NULL;
-	
-	if( pDynamicSkin ){
-		dynamicSkin = pDynamicSkin;
-		//skinState = pSkinState;
-		
-	}else{
-		//dynamicSkin = pEmitterInstance->GetDynamicSkin();
-		//skinState = pEmitterInstance->GetSkinState();
-	}
-	
-	// set common textures. for these adjust the samplers to linear without mip mapping. this is
-	// required since particles are usually small and ribbons and beams usually narrow. in this
-	// situation opengl starts mip mapping a lot resulting in poor results
 	deoglRenderThread &renderThread = pEmitterInstance.GetRenderThread();
-	deoglTexUnitConfig units[ deoglSkinShader::ETT_COUNT ];
-	int target;
+	deoglTexUnitsConfig *tuc = NULL;
 	
-	skinShader.SetTUCCommon( &units[ 0 ], *pUseSkinTexture, skinState, dynamicSkin );
-	
-	for( target=0; target<deoglSkinShader::ETT_COUNT; target++ ){
-		if( units[ target ].IsEnabled() ){
-			if( units[ target ].GetSampler() == renderThread.GetShader()
-			.GetTexSamplerConfig( deoglRTShader::etscClampNearestMipMap ) ){
-				units[ target ].SetSampler( renderThread.GetShader()
-					.GetTexSamplerConfig( deoglRTShader::etscClampNearest ) );
-				
-			}else if( units[ target ].GetSampler() == renderThread.GetShader()
-			.GetTexSamplerConfig( deoglRTShader::etscClampLinearMipMap ) ){
-				units[ target ].SetSampler( renderThread.GetShader()
-					.GetTexSamplerConfig( deoglRTShader::etscClampLinear ) );
-				
-			}else if( units[ target ].GetSampler() == renderThread.GetShader()
-			.GetTexSamplerConfig( deoglRTShader::etscClampLinearMipMapNearest ) ){
-				units[ target ].SetSampler( renderThread.GetShader()
-					.GetTexSamplerConfig( deoglRTShader::etscClampLinear ) );
-				
-			}else if( units[ target ].GetSampler() == renderThread.GetShader()
-			.GetTexSamplerConfig( deoglRTShader::etscRepeatLinearMipMap ) ){
-				units[ target ].SetSampler( renderThread.GetShader()
-					.GetTexSamplerConfig( deoglRTShader::etscRepeatLinear ) );
-				
-			}else{ // not mip mapped or we don't know what it is. either way leave it as it is
+	if( skinShader.GetUsedTextureTargetCount() > 0 ){
+		deoglRDynamicSkin *dynamicSkin = NULL;
+		deoglSkinState *skinState = NULL;
+		
+		if( pDynamicSkin ){
+			dynamicSkin = pDynamicSkin;
+			//skinState = pSkinState;
+			
+		}else{
+			//dynamicSkin = pEmitterInstance->GetDynamicSkin();
+			//skinState = pEmitterInstance->GetSkinState();
+		}
+		
+		// set common textures. for these adjust the samplers to linear without mip mapping. this is
+		// required since particles are usually small and ribbons and beams usually narrow. in this
+		// situation opengl starts mip mapping a lot resulting in poor results
+		deoglTexUnitConfig units[ deoglSkinShader::ETT_COUNT ];
+		int target;
+		
+		skinShader.SetTUCCommon( &units[ 0 ], *pUseSkinTexture, skinState, dynamicSkin );
+		
+		for( target=0; target<deoglSkinShader::ETT_COUNT; target++ ){
+			if( units[ target ].IsEnabled() ){
+				if( units[ target ].GetSampler() == renderThread.GetShader()
+				.GetTexSamplerConfig( deoglRTShader::etscClampNearestMipMap ) ){
+					units[ target ].SetSampler( renderThread.GetShader()
+						.GetTexSamplerConfig( deoglRTShader::etscClampNearest ) );
+					
+				}else if( units[ target ].GetSampler() == renderThread.GetShader()
+				.GetTexSamplerConfig( deoglRTShader::etscClampLinearMipMap ) ){
+					units[ target ].SetSampler( renderThread.GetShader()
+						.GetTexSamplerConfig( deoglRTShader::etscClampLinear ) );
+					
+				}else if( units[ target ].GetSampler() == renderThread.GetShader()
+				.GetTexSamplerConfig( deoglRTShader::etscClampLinearMipMapNearest ) ){
+					units[ target ].SetSampler( renderThread.GetShader()
+						.GetTexSamplerConfig( deoglRTShader::etscClampLinear ) );
+					
+				}else if( units[ target ].GetSampler() == renderThread.GetShader()
+				.GetTexSamplerConfig( deoglRTShader::etscRepeatLinearMipMap ) ){
+					units[ target ].SetSampler( renderThread.GetShader()
+						.GetTexSamplerConfig( deoglRTShader::etscRepeatLinear ) );
+					
+				}else{ // not mip mapped or we don't know what it is. either way leave it as it is
+				}
 			}
 		}
+		
+		// set environment map textures
+		skinShader.SetTUCPerObjectEnvMap( &units[ 0 ],
+			pEmitterInstance.GetParentWorld()->GetSkyEnvironmentMap(),
+			pEmitterInstance.GetRenderEnvMap(), pEmitterInstance.GetRenderEnvMap() );
+		
+		// set curve sampler texture
+		target = skinShader.GetTextureTarget( deoglSkinShader::ettSamples );
+		if( target != -1 ){
+			units[ target ].EnableTexture(
+				pEmitterInstance.GetEmitter()->GetTypeAt( pIndex ).GetTextureSamples(),
+				renderThread.GetShader().GetTexSamplerConfig( deoglRTShader::etscClampLinear ) );
+		}
+		
+		tuc = renderThread.GetShader().GetTexUnitsConfigList().GetWith( &units[ 0 ],
+			skinShader.GetUsedTextureTargetCount(), pUseSkinTexture->GetParameterBlock() );
 	}
 	
-	// set environment map textures
-	skinShader.SetTUCPerObjectEnvMap( &units[ 0 ],
-		pEmitterInstance.GetParentWorld()->GetSkyEnvironmentMap(),
-		pEmitterInstance.GetRenderEnvMap(), pEmitterInstance.GetRenderEnvMap() );
-	
-	// set curve sampler texture
-	target = skinShader.GetTextureTarget( deoglSkinShader::ettSamples );
-	if( target != -1 ){
-		units[ target ].EnableTexture(
-			pEmitterInstance.GetEmitter()->GetTypeAt( pIndex ).GetTextureSamples(),
-			renderThread.GetShader().GetTexSamplerConfig( deoglRTShader::etscClampLinear ) );
+	if( ! tuc ){
+		tuc = renderThread.GetShader().GetTexUnitsConfigList().GetWith(
+			NULL, 0, pUseSkinTexture->GetParameterBlock() );
 	}
+	tuc ->EnsureRTSTexture();
 	
-	deoglTexUnitsConfig * const tuc = renderThread.GetShader().GetTexUnitsConfigList()
-		.GetWith( &units[ 0 ], skinShader.GetUsedTextureTargetCount() );
-	tuc->EnsureRTSTexture();
 	return tuc;
 }
 

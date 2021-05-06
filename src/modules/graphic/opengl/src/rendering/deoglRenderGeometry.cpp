@@ -289,13 +289,16 @@ void deoglRenderGeometry::RenderTask( const deoglRenderTask &renderTask ){
 			renderParamBlock->Activate();
 		}
 		
-		deoglRenderTaskTexture *renderTaskTexture = rtshader->GetRootTexture();
+		const deoglRenderTaskTexture *renderTaskTexture = rtshader->GetRootTexture();
 		
 		while( renderTaskTexture ){
-			if( renderTaskTexture->GetParameterBlock() ){
-				renderTaskTexture->GetParameterBlock()->Activate();
+			const deoglTexUnitsConfig * const tuc = renderTaskTexture->GetTexture()->GetTUC();
+			if( tuc ){
+				if( tuc->GetParameterBlock() ){
+					tuc->GetParameterBlock()->Activate();
+				}
+				tuc->Apply();
 			}
-			renderTaskTexture->GetTUC()->Apply();
 			
 			deoglRenderTaskVAO *renderTaskVAO = renderTaskTexture->GetRootVAO();
 			

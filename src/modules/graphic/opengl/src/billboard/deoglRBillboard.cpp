@@ -503,29 +503,29 @@ deoglTexUnitsConfig *deoglRBillboard::GetTUCEnvMap(){
 		}
 		
 		if( pUseSkinTexture ){
-			deoglRenderThread &renderThread = pRenderThread;
 			deoglTexUnitConfig unit[ 8 ];
 			
 			if( pUseSkinTexture->GetVariationU() || pUseSkinTexture->GetVariationV() ){
-				unit[ 0 ].EnableArrayTextureFromChannel( renderThread, *pUseSkinTexture,
+				unit[ 0 ].EnableArrayTextureFromChannel( pRenderThread, *pUseSkinTexture,
 					deoglSkinChannel::ectColor, pSkinState, pDynamicSkin,
-					renderThread.GetDefaultTextures().GetColorArray() );
+					pRenderThread.GetDefaultTextures().GetColorArray() );
 				
-				unit[ 1 ].EnableArrayTextureFromChannel( renderThread, *pUseSkinTexture,
+				unit[ 1 ].EnableArrayTextureFromChannel( pRenderThread, *pUseSkinTexture,
 					deoglSkinChannel::ectEmissivity, pSkinState, pDynamicSkin,
-					renderThread.GetDefaultTextures().GetEmissivityArray() );
+					pRenderThread.GetDefaultTextures().GetEmissivityArray() );
 				
 			}else{
-				unit[ 0 ].EnableTextureFromChannel( renderThread, *pUseSkinTexture,
+				unit[ 0 ].EnableTextureFromChannel( pRenderThread, *pUseSkinTexture,
 					deoglSkinChannel::ectColor, pSkinState, pDynamicSkin,
-					renderThread.GetDefaultTextures().GetColor() );
+					pRenderThread.GetDefaultTextures().GetColor() );
 				
-				unit[ 1 ].EnableTextureFromChannel( renderThread, *pUseSkinTexture,
+				unit[ 1 ].EnableTextureFromChannel( pRenderThread, *pUseSkinTexture,
 					deoglSkinChannel::ectEmissivity, pSkinState, pDynamicSkin,
-					renderThread.GetDefaultTextures().GetEmissivity() );
+					pRenderThread.GetDefaultTextures().GetEmissivity() );
 			}
 			
-			pTUCEnvMap = renderThread.GetShader().GetTexUnitsConfigList().GetWith( &unit[ 0 ], 2 );
+			pTUCEnvMap = pRenderThread.GetShader().GetTexUnitsConfigList().GetWith(
+				&unit[ 0 ], 2, pUseSkinTexture->GetParameterBlock() );
 			pTUCEnvMap->EnsureRTSTexture();
 		}
 		
@@ -541,22 +541,25 @@ deoglSkinTexture::eShaderTypes shaderType ) const{
 		return NULL;
 	}
 	
-	deoglRenderThread &renderThread = pRenderThread;
+	deoglSkinShader &skinShader = *pUseSkinTexture->GetShaderFor( shaderType );
 	deoglTexUnitConfig units[ deoglSkinShader::ETT_COUNT ];
 	deoglRDynamicSkin *dynamicSkin = NULL;
 	deoglSkinState *skinState = NULL;
 	deoglTexUnitsConfig *tuc = NULL;
 	
-	deoglSkinShader &skinShader = *pUseSkinTexture->GetShaderFor( shaderType );
-	
 	if( skinShader.GetUsedTextureTargetCount() > 0 ){
 		skinShader.SetTUCCommon( &units[ 0 ], *pUseSkinTexture, skinState, dynamicSkin );
 		skinShader.SetTUCPerObjectEnvMap( &units[ 0 ], pParentWorld->GetSkyEnvironmentMap(),
 			pRenderEnvMap, pRenderEnvMapFade );
-		tuc = renderThread.GetShader().GetTexUnitsConfigList().GetWith(
-			&units[ 0 ], skinShader.GetUsedTextureTargetCount() );
-		tuc->EnsureRTSTexture();
+		tuc = pRenderThread.GetShader().GetTexUnitsConfigList().GetWith( &units[ 0 ],
+			skinShader.GetUsedTextureTargetCount(), pUseSkinTexture->GetParameterBlock() );
 	}
+	
+	if( ! tuc ){
+		tuc = pRenderThread.GetShader().GetTexUnitsConfigList().GetWith(
+			NULL, 0, pUseSkinTexture->GetParameterBlock() );
+	}
+	tuc ->EnsureRTSTexture();
 	
 	return tuc;
 }

@@ -23,8 +23,10 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "deoglRenderTask.h"
 #include "deoglRenderTaskShader.h"
 #include "deoglRenderTaskTexture.h"
+#include "shared/deoglRenderTaskSharedTexture.h"
 #include "../../texture/texunitsconfig/deoglTexUnitsConfig.h"
 
 #include <dragengine/common/exceptions.h>
@@ -135,30 +137,17 @@ void deoglRenderTaskShader::SetParameterBlock( deoglSPBlockUBO *block ){
 
 
 
-void deoglRenderTaskShader::AddTexture( deoglRenderTaskTexture *texture ){
+deoglRenderTaskTexture *deoglRenderTaskShader::AddTexture(
+deoglRenderTask &task, deoglRenderTaskSharedTexture *texture ){
 	if( ! texture ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	if( pTailTexture ){
-		pTailTexture->SetNextTexture( texture );
-	}
-	texture->SetNextTexture( NULL );
+	const int index = texture->GetIndex();
 	
-	pTailTexture = texture;
-	
-	if( ! pRootTexture ){
-		pRootTexture = texture;
-	}
-	
-	pTextureCount++;
-	
-	// mark as added
-	const int tucIndex = texture->GetTUC()->GetRenderTaskTUCIndex();
-	
-	if( tucIndex >= pHasTextureCount ){
-		if( tucIndex >= pHasTextureSize ){
-			deoglRenderTaskTexture ** const newArray = new deoglRenderTaskTexture*[ tucIndex + 1 ];
+	if( index >= pHasTextureCount ){
+		if( index >= pHasTextureSize ){
+			deoglRenderTaskTexture ** const newArray = new deoglRenderTaskTexture*[ index + 1 ];
 			
 			if( pHasTexture ){
 				if( pHasTextureCount > 0 ){
@@ -168,25 +157,38 @@ void deoglRenderTaskShader::AddTexture( deoglRenderTaskTexture *texture ){
 			}
 			
 			pHasTexture = newArray;
-			pHasTextureSize = tucIndex + 1;
+			pHasTextureSize = index + 1;
 		}
 		
-		while( pHasTextureCount < tucIndex ){
-			pHasTexture[ pHasTextureCount++ ] = NULL;
+		if( pHasTextureCount <= index ){
+			memset( pHasTexture + pHasTextureCount, 0, sizeof( deoglRenderTaskTexture* ) * ( index - pHasTextureCount + 1 ) );
+			pHasTextureCount = index + 1;
 		}
 		pHasTextureCount++;
 	}
 	
-	pHasTexture[ tucIndex ] = texture;
-}
-
-deoglRenderTaskTexture *deoglRenderTaskShader::GetTextureForIndex( int tucIndex ){
-	if( tucIndex < pHasTextureCount ){
-		return pHasTexture[ tucIndex ];
-		
-	}else{
-		return NULL;
+	deoglRenderTaskTexture *rttexture = pHasTexture[ index ];
+	if( rttexture ){
+		return rttexture;
 	}
+	
+	rttexture = task.TextureFromPool();
+	rttexture->SetTexture( texture );
+	
+	if( pTailTexture ){
+		pTailTexture->SetNextTexture( rttexture );
+	}
+	rttexture->SetNextTexture( NULL );
+	
+	pTailTexture = rttexture;
+	
+	if( ! pRootTexture ){
+		pRootTexture = rttexture;
+	}
+	
+	pTextureCount++;
+	pHasTexture[ index ] = rttexture;
+	return rttexture;
 }
 
 

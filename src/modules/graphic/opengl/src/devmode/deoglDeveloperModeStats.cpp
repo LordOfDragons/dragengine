@@ -618,7 +618,8 @@ void deoglDeveloperModeStats::TextureUnitsConfigurations( const decUnicodeArgume
 		unitCount = tuc->GetUnitCount();
 		
 		if( verbose ){
-			text.Format( "- Configuration %i: usage=%i units=%i hash=%u\n", i, tuc->GetUsageCount(), unitCount, tuc->GetHashCode() );
+			text.Format( "- Configuration %i: usage=%i units=%i spb=%p hash=%u\n", i,
+				tuc->GetUsageCount(), unitCount, tuc->GetParameterBlock(), tuc->GetUnitsHashCode() );
 			answer.AppendFromUTF8( text.GetString() );
 			
 			for( j=0; j<unitCount; j++ ){
@@ -684,7 +685,7 @@ void deoglDeveloperModeStats::TextureUnitsConfigurations( const decUnicodeArgume
 				text.AppendFormat( " -" );
 			}
 			
-			text.AppendFormat( " %u\n", tuc->GetHashCode() );
+			text.AppendFormat( " %u\n", tuc->GetUnitsHashCode() );
 			answer.AppendFromUTF8( text.GetString() );
 			
 		}else{
@@ -714,7 +715,7 @@ void deoglDeveloperModeStats::TextureUnitsConfigurations( const decUnicodeArgume
 				}
 			}
 			
-			text.AppendFormat( ") hash=%u\n", tuc->GetHashCode() );
+			text.AppendFormat( ") hash=%u\n", tuc->GetUnitsHashCode() );
 			answer.AppendFromUTF8( text.GetString() );
 		}
 		

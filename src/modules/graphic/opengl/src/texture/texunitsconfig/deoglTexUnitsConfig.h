@@ -24,24 +24,21 @@
 
 #include "../../deoglBasics.h"
 
-class deoglRenderThread;
 class deoglCubeMap;
 class deoglRenderPlan;
+class deoglRenderTaskSharedTexture;
+class deoglRenderThread;
+class deoglSPBlockUBO;
 class deoglTexture;
 class deoglTexUnitConfig;
-class deoglRenderTaskSharedTexture;
-
 
 
 /**
- * Texture Units Configuration.
- * 
- * Stores the configuration of up to 8 texture units. This class does not check
- * for errors. The user of the texture units configuration is responsible to
- * ensure a correct setup. The hash code is calculated from the opengl texture
- * names assigned to the units. This works no matter what texture is used since
- * every texture in opengl has a unique name no matter what type of texture it
- * is. These values are added up using a bit of bit shifting.
+ * Stores the configuration of up to 8 texture units and an optional shader parameter block.
+ * This class does not check for errors. The user of the texture units configuration is
+ * responsible to ensure a correct setup. The hash code is calculated from the opengl texture
+ * names assigned to the units. This works no matter what texture is used since every texture
+ * in opengl has a unique name no matter what type of texture it is.
  */
 class deoglTexUnitsConfig{
 public:
@@ -49,15 +46,13 @@ public:
 	
 	deoglTexUnitConfig *pUnits;
 	int pUnitCount;
-	
-	unsigned int pRenderTaskTrackingNumber;
-	int pRenderTaskTUCIndex;
+	deoglSPBlockUBO *pParamBlock;
 	
 	int pMaterialIndex;
 	int pMaterialUsageCount;
 	
 	int pUsageCount;
-	unsigned int pHashCode;
+	unsigned int pUnitsHashCode;
 	unsigned int pUniqueKey;
 	
 	deoglRenderTaskSharedTexture *pRTSTexture;
@@ -99,22 +94,16 @@ public:
 	/** Set units. */
 	void SetUnits( const deoglTexUnitConfig *units, int unitCount );
 	
+	/** Shader parameter block or NULL. */
+	inline deoglSPBlockUBO *GetParameterBlock() const{ return pParamBlock; }
+	
+	/** Set shader parameter block or NULL. */
+	void SetParameterBlock( deoglSPBlockUBO *paramBlock );
+	
+	
+	
 	/** Apply texture units configuration. */
 	void Apply() const;
-	
-	
-	
-	/** Render task tracking number. */
-	inline unsigned int GetRenderTaskTrackingNumber() const{ return pRenderTaskTrackingNumber; }
-	
-	/** Set render task tracking number. */
-	void SetRenderTaskTrackingNumber( unsigned int trackingNumber );
-	
-	/** Render task texture units configuration index. */
-	inline int GetRenderTaskTUCIndex() const{ return pRenderTaskTUCIndex; }
-	
-	/** Set render task texture units configuration index. */
-	void SetRenderTaskTUCIndex( int tucIndex );
 	
 	
 	
@@ -139,7 +128,7 @@ public:
 	bool Equals( const deoglTexUnitsConfig &tuc ) const;
 	
 	/** Texture units configuration matches another one. */
-	bool Equals( const deoglTexUnitConfig *units, int unitCount ) const;
+	bool Equals( const deoglTexUnitConfig *units, int unitCount, deoglSPBlockUBO *paramBlock ) const;
 	
 	/** Usage count. */
 	inline int GetUsageCount() const{ return pUsageCount; }
@@ -156,13 +145,13 @@ public:
 	
 	
 	/** Hash code. */
-	inline unsigned int GetHashCode() const{ return pHashCode; }
+	inline unsigned int GetUnitsHashCode() const{ return pUnitsHashCode; }
 	
 	/** Calculate hash code. */
-	void CalcHashCode();
+	void CalcUnitsHashCode();
 	
 	/** Calculate hash code for set of unit configurations. */
-	static unsigned int CalcHashCodeForUnits( const deoglTexUnitConfig *units, int unitCount );
+	static unsigned int CalcUnitsHashCodeForUnits( const deoglTexUnitConfig *units, int unitCount );
 	
 	
 	
