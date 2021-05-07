@@ -29,7 +29,7 @@
 class deoglQuickSorter;
 class deoglRenderTaskInstance;
 class deoglSharedSPB;
-class deoglVAO;
+class deoglRenderTaskSharedVAO;
 class deoglRenderTaskInstanceGroup;
 
 
@@ -38,7 +38,7 @@ class deoglRenderTaskInstanceGroup;
  */
 class deoglRenderTaskVAO{
 private:
-	deoglVAO *pVAO;
+	deoglRenderTaskSharedVAO *pVAO;
 	
 	deoglRenderTaskInstance *pRootInstance;
 	deoglRenderTaskInstance *pTailInstance;
@@ -82,10 +82,10 @@ public:
 	
 	
 	/** \brief VAO. */
-	inline deoglVAO *GetVAO() const{ return pVAO; }
+	inline deoglRenderTaskSharedVAO *GetVAO() const{ return pVAO; }
 	
 	/** \brief Set VAO. */
-	void SetVAO( deoglVAO *vao );
+	void SetVAO( deoglRenderTaskSharedVAO *vao );
 	
 	
 	

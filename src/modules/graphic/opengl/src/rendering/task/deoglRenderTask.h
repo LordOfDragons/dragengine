@@ -87,7 +87,6 @@ private:
 	static unsigned int pUpdateTracking;
 	
 	decPointerList pListShaders;
-	decPointerList pListVAOs;
 	decPointerList pListInstanceGroup;
 	
 	
@@ -186,9 +185,6 @@ public:
 	
 	/** Total amount of subinstances in this shader. */
 	int GetTotalSubInstanceCount() const;
-	
-	/** \brfief Add vao. */
-	void AddVAO( deoglVAO *vao );
 	
 	/** \brfief Add instance group. */
 	void AddInstanceGroup( deoglRenderTaskInstanceGroup *group );

@@ -31,6 +31,7 @@
 #include "../../renderthread/deoglRTBufferObject.h"
 #include "../../renderthread/deoglRTLogger.h"
 #include "../../shaders/paramblock/shared/deoglSharedSPBListUBO.h"
+#include "../../vao/deoglVAO.h"
 #include "../../vbo/deoglSharedVBOBlock.h"
 #include "../../vbo/deoglSharedVBOList.h"
 #include "../../vbo/deoglSharedVBOListList.h"
@@ -108,6 +109,7 @@ deoglSharedVBOBlock *deoglROcclusionMesh::GetVBOBlock(){
 		}
 		
 		pVBOBlock = svbolist.AddData( pVertexCount, pCornerCount );
+		pVBOBlock->GetVBO()->GetVAO()->EnsureRTSVAO();
 		
 		pWriteVBOData();
 	}

@@ -31,6 +31,7 @@
 #include "deoglRenderTaskInstanceGroup.h"
 #include "shared/deoglRenderTaskSharedShader.h"
 #include "shared/deoglRenderTaskSharedTexture.h"
+#include "shared/deoglRenderTaskSharedVAO.h"
 #include "../../capabilities/deoglCapabilities.h"
 #include "../../renderthread/deoglRenderThread.h"
 #include "../../renderthread/deoglRTLogger.h"
@@ -145,7 +146,6 @@ void deoglRenderTask::Clear(){
 	pShaderCount = 0;
 	
 	pListInstanceGroup.RemoveAll();
-	pListVAOs.RemoveAll();
 	pNextTexturePool = pRootTexturePool;
 	pNextVAOPool = pRootVAOPool;
 	pNextInstancePool = pRootInstancePool;
@@ -250,7 +250,6 @@ deoglRenderTaskShader *deoglRenderTask::AddShader( deoglRenderTaskSharedShader *
 			memset( pHasShader + pHasShaderCount, 0, sizeof( deoglRenderTaskShader* ) * ( index - pHasShaderCount + 1 ) );
 			pHasShaderCount = index + 1;
 		}
-		pHasShaderCount++;
 	}
 	
 	deoglRenderTaskShader *rtshader = pHasShader[ index ];
@@ -419,16 +418,6 @@ int deoglRenderTask::GetTotalSubInstanceCount() const{
 
 
 
-void deoglRenderTask::AddVAO( deoglVAO *vao ){
-	if( ! vao ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	vao->SetRenderTaskTrackingNumber( pTrackingNumber );
-	vao->SetRenderTaskVAOIndex( pListVAOs.GetCount() );
-	pListVAOs.Add( vao );
-}
-
 void deoglRenderTask::AddInstanceGroup( deoglRenderTaskInstanceGroup *group ){
 	if( ! group ){
 		DETHROW( deeInvalidParam );
@@ -452,9 +441,9 @@ void deoglRenderTask::DebugPrint( deoglRTLogger &rtlogger ){
 	deoglRenderTaskVAO *vao;
 	decString text;
 	
-	rtlogger.LogInfoFormat( "RenderTask %p: spb=%p shaders=%d points=%d textures=%d vaos=%d igrps=%d",
+	rtlogger.LogInfoFormat( "RenderTask %p: spb=%p shaders=%d points=%d textures=%d igrps=%d",
 		this, pRenderParamBlock, pShaderCount, GetTotalPointCount(), GetTotalTextureCount(),
-		pListVAOs.GetCount(), pListInstanceGroup.GetCount() );
+		pListInstanceGroup.GetCount() );
 	
 	for( s=0; s<pShaderCount; s++ ){
 		const deoglRenderTaskShader &shader = *( ( deoglRenderTaskShader* )pListShaders.GetAt( s ) );
@@ -520,7 +509,7 @@ void deoglRenderTask::DebugPrint( deoglRTLogger &rtlogger ){
 				sic = vao->GetTotalSubInstanceCount();
 				
 				rtlogger.LogInfoFormat( "    - vao %i: vao=%i instances=%i points=%i "
-					"subInstances=%i", v, vao->GetVAO()->GetVAO(), vao->GetInstanceCount(),
+					"subInstances=%i", v, vao->GetVAO()->GetVAO()->GetVAO(), vao->GetInstanceCount(),
 					vao->GetTotalPointCount(), sic );
 				
 				if( detailsInstances ){

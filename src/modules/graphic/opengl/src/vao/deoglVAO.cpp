@@ -45,8 +45,6 @@ pRenderThread( renderThread ),
 pVAO( 0 ),
 pIndexSize( 0 ),
 pIndexGLType( GL_NONE ),
-pRenderTaskTrackingNumber( 0 ),
-pRenderTaskVAOIndex( 0 ),
 pRTSVAO( NULL )
 {
 	OGL_CHECK( renderThread, pglGenVertexArrays( 1, &pVAO ) );
@@ -104,14 +102,6 @@ void deoglVAO::SetIndexType( deoglVBOLayout::eIndexTypes indexType ){
 }
 
 
-
-void deoglVAO::SetRenderTaskTrackingNumber( unsigned int trackingNumber ){
-	pRenderTaskTrackingNumber = trackingNumber;
-}
-
-void deoglVAO::SetRenderTaskVAOIndex( int vaoIndex ){
-	pRenderTaskVAOIndex = vaoIndex;
-}
 
 void deoglVAO::EnsureRTSVAO(){
 	if( pRTSVAO ){

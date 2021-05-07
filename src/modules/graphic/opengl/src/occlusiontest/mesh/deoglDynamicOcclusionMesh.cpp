@@ -524,4 +524,6 @@ void deoglDynamicOcclusionMesh::pUpdateVAO(){
 	OGL_CHECK( pRenderThread, pglBindBuffer( GL_ELEMENT_ARRAY_BUFFER, vboBlock.GetVBO()->GetIBO() ) );
 	
 	OGL_CHECK( pRenderThread, pglBindVertexArray( 0 ) );
+	
+	pVAO->EnsureRTSVAO();
 }

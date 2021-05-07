@@ -158,7 +158,6 @@ deoglRenderTask &task, deoglRenderTaskSharedTexture *texture ){
 			memset( pHasTexture + pHasTextureCount, 0, sizeof( deoglRenderTaskTexture* ) * ( index - pHasTextureCount + 1 ) );
 			pHasTextureCount = index + 1;
 		}
-		pHasTextureCount++;
 	}
 	
 	deoglRenderTaskTexture *rttexture = pHasTexture[ index ];

@@ -557,7 +557,6 @@ deoglRPropFieldType &propFieldType, bool imposters ){
 	// obtain render task. this is the same for all clusters in the type
 	deoglDeferredRendering &defren = pRenderThread.GetDeferredRendering();
 	deoglSharedVBOBlock &vboBlock = *modelLOD.GetVBOBlock();
-	deoglRenderTaskVAO *renderTaskVAO;
 	deoglVAO *vao = NULL;
 	
 	if( imposters ){
@@ -609,17 +608,8 @@ deoglRPropFieldType &propFieldType, bool imposters ){
 			DETHROW( deeInvalidParam );
 		}
 		
-		deoglRenderTaskTexture &rttexture = *rtshader.AddTexture( pRenderTask, tuc->GetRTSTexture() );
-		
-		if( vao->GetRenderTaskTrackingNumber() != pRenderTask.GetTrackingNumber() ){
-			pRenderTask.AddVAO( vao );
-		}
-		renderTaskVAO = rttexture.GetVAOForIndex( vao->GetRenderTaskVAOIndex() );
-		if( ! renderTaskVAO ){
-			renderTaskVAO = pRenderTask.VAOFromPool();
-			renderTaskVAO->SetVAO( vao );
-			rttexture.AddVAO( renderTaskVAO );
-		}
+		deoglRenderTaskVAO &rtvao = *rtshader.AddTexture( pRenderTask, tuc->GetRTSTexture() )->
+			AddVAO( pRenderTask, vao->GetRTSVAO() );
 		
 		// add an instance for this cluster. all clusters will be handled using sub-instances
 		renderTaskInstance = pRenderTask.InstanceFromPool();
@@ -634,7 +624,7 @@ deoglRPropFieldType &propFieldType, bool imposters ){
 		renderTaskInstance->SetDoubleSided( instanceDoubleSided );
 		renderTaskInstance->SetPrimitiveType( GL_TRIANGLES );
 		
-		renderTaskVAO->AddInstance( renderTaskInstance );
+		rtvao.AddInstance( renderTaskInstance );
 	}
 }
 
@@ -735,16 +725,7 @@ void deoglAddToRenderTask::AddHeightTerrainSectorClusters( const deoglHTViewSect
 			firstIndex = vboOffsetFaces + clod.firstBasePoint;
 			indexCount = clod.basePointCount;
 			
-			if( vao->GetRenderTaskTrackingNumber() != pRenderTask.GetTrackingNumber() ){
-				pRenderTask.AddVAO( vao );
-			}
-			
-			deoglRenderTaskVAO *renderTaskVAO = rttexture.GetVAOForIndex( vao->GetRenderTaskVAOIndex() );
-			if( ! renderTaskVAO ){
-				renderTaskVAO = pRenderTask.VAOFromPool();
-				renderTaskVAO->SetVAO( vao );
-				rttexture.AddVAO( renderTaskVAO );
-			}
+			deoglRenderTaskVAO &rtvao = *rttexture.AddVAO( pRenderTask, vao->GetRTSVAO() );
 			
 			// add an instance for this cluster
 			renderTaskInstance = pRenderTask.InstanceFromPool();
@@ -759,7 +740,7 @@ void deoglAddToRenderTask::AddHeightTerrainSectorClusters( const deoglHTViewSect
 			renderTaskInstance->SetDoubleSided( false );
 			renderTaskInstance->SetPrimitiveType( GL_TRIANGLES );
 			
-			renderTaskVAO->AddInstance( renderTaskInstance );
+			rtvao.AddInstance( renderTaskInstance );
 			
 			// add borders
 			if( htvsclusters[ i ].lodLevel > 0 ){
@@ -784,7 +765,7 @@ void deoglAddToRenderTask::AddHeightTerrainSectorClusters( const deoglHTViewSect
 					renderTaskInstance->SetDoubleSided( false );
 					renderTaskInstance->SetPrimitiveType( GL_TRIANGLES );
 					
-					renderTaskVAO->AddInstance( renderTaskInstance );
+					rtvao.AddInstance( renderTaskInstance );
 				}
 			}
 		}
@@ -893,15 +874,7 @@ int firstFace, int faceCount, bool doubleSided, deoglRenderTaskTexture *taskText
 		pointOffset = block.GetOffset();
 	}
 	
-	if( vao->GetRenderTaskTrackingNumber() != pRenderTask.GetTrackingNumber() ){
-		pRenderTask.AddVAO( vao );
-	}
-	deoglRenderTaskVAO *taskVAO = taskTexture->GetVAOForIndex( vao->GetRenderTaskVAOIndex() );
-	if( ! taskVAO ){
-		taskVAO = pRenderTask.VAOFromPool();
-		taskVAO->SetVAO( vao );
-		taskTexture->AddVAO( taskVAO );
-	}
+	deoglRenderTaskVAO &rtvao = *taskTexture->AddVAO( pRenderTask, vao->GetRTSVAO() );
 	
 	// add to render vao
 	deoglSharedSPBElement * const spbElement = component.GetOccMeshSharedSPBElement();
@@ -910,7 +883,7 @@ int firstFace, int faceCount, bool doubleSided, deoglRenderTaskTexture *taskText
 		pRenderTask.AddInstanceGroup( &rtiGroup );
 	}
 	
-	deoglRenderTaskInstance *rti = taskVAO->GetInstanceForIndex( rtiGroup.GetIndex() );
+	deoglRenderTaskInstance *rti = rtvao.GetInstanceForIndex( rtiGroup.GetIndex() );
 	if( ! rti ){
 		rti = pRenderTask.InstanceFromPool();
 		rti->SetGroup( &rtiGroup );
@@ -919,7 +892,7 @@ int firstFace, int faceCount, bool doubleSided, deoglRenderTaskTexture *taskText
 		rti->SetFirstIndex( block.GetIndexOffset() + firstFace * 3 );
 		rti->SetIndexCount( faceCount * 3 );
 		rti->SetDoubleSided( doubleSided );
-		taskVAO->AddInstance( rti );
+		rtvao.AddInstance( rti );
 	}
 	
 	rti->AddSubInstance( spbElement->GetIndex(), component.GetSpecialFlags() );
@@ -1107,9 +1080,7 @@ bool deoglAddToRenderTask::pFilterRejectNoSolid( const deoglSkinTexture *skinTex
 
 deoglRenderTaskVAO *deoglAddToRenderTask::pGetTaskVAO( deoglSkinTexture::eShaderTypes shaderType,
 deoglSkinTexture *skinTexture, deoglTexUnitsConfig *tuc, deoglVAO *vao ) const{
-	// retrieve the shader and texture units configuration to use
 	deoglShaderProgram *shader = NULL;
-	
 	if( pEnforceShader ){
 		shader = pEnforceShader->GetShader();
 	}
@@ -1129,19 +1100,7 @@ deoglSkinTexture *skinTexture, deoglTexUnitsConfig *tuc, deoglVAO *vao ) const{
 		tuc = pRenderThread.GetShader().GetTexUnitsConfigList().GetEmptyNoUsage();
 	}
 	
-	// obtain render task vao
-	deoglRenderTaskShader &rtshader = *pRenderTask.AddShader( shader->GetRTSShader() );
-	deoglRenderTaskTexture &rttexture = *rtshader.AddTexture( pRenderTask, tuc->GetRTSTexture() );
-	
-	if( vao->GetRenderTaskTrackingNumber() != pRenderTask.GetTrackingNumber() ){
-		pRenderTask.AddVAO( vao );
-	}
-	deoglRenderTaskVAO *renderTaskVAO = rttexture.GetVAOForIndex( vao->GetRenderTaskVAOIndex() );
-	if( ! renderTaskVAO ){
-		renderTaskVAO = pRenderTask.VAOFromPool();
-		renderTaskVAO->SetVAO( vao );
-		rttexture.AddVAO( renderTaskVAO );
-	}
-	
-	return renderTaskVAO;
+	return pRenderTask.AddShader( shader->GetRTSShader() )->
+		AddTexture( pRenderTask, tuc->GetRTSTexture() )->
+		AddVAO( pRenderTask, vao->GetRTSVAO() );
 }

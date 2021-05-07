@@ -23,9 +23,10 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "deoglRenderTask.h"
 #include "deoglRenderTaskTexture.h"
 #include "deoglRenderTaskVAO.h"
-#include "../../vao/deoglVAO.h"
+#include "shared/deoglRenderTaskSharedVAO.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -121,40 +122,17 @@ void deoglRenderTaskTexture::SetTexture( deoglRenderTaskSharedTexture *texture )
 
 
 
-deoglRenderTaskVAO *deoglRenderTaskTexture::GetVAOWith( deoglVAO *vao ){
-	deoglRenderTaskVAO *renderTaskVAO = pRootVAO;
-	
-	while( renderTaskVAO && renderTaskVAO->GetVAO() != vao ){
-		renderTaskVAO = renderTaskVAO->GetNextVAO();
-	}
-	
-	return renderTaskVAO;
-}
-
-void deoglRenderTaskTexture::AddVAO( deoglRenderTaskVAO *vao ){
+deoglRenderTaskVAO *deoglRenderTaskTexture::AddVAO(
+deoglRenderTask &task, deoglRenderTaskSharedVAO *vao ){
 	if( ! vao ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	if( pTailVAO ){
-		pTailVAO->SetNextVAO( vao );
-	}
-	vao->SetNextVAO( NULL );
+	const int index = vao->GetIndex();
 	
-	pTailVAO = vao;
-	
-	if( ! pRootVAO ){
-		pRootVAO = vao;
-	}
-	
-	pVAOCount++;
-	
-	// mark as added
-	const int vaoIndex = vao->GetVAO()->GetRenderTaskVAOIndex();
-	
-	if( vaoIndex >= pHasVAOCount ){
-		if( vaoIndex >= pHasVAOSize ){
-			deoglRenderTaskVAO ** const newArray = new deoglRenderTaskVAO*[ vaoIndex + 1 ];
+	if( index >= pHasVAOCount ){
+		if( index >= pHasVAOSize ){
+			deoglRenderTaskVAO ** const newArray = new deoglRenderTaskVAO*[ index + 1 ];
 			
 			if( pHasVAO ){
 				if( pHasVAOCount > 0 ){
@@ -164,22 +142,37 @@ void deoglRenderTaskTexture::AddVAO( deoglRenderTaskVAO *vao ){
 			}
 			
 			pHasVAO = newArray;
-			pHasVAOSize = vaoIndex + 1;
+			pHasVAOSize = index + 1;
 		}
 		
-		while( pHasVAOCount < vaoIndex ){
-			pHasVAO[ pHasVAOCount++ ] = NULL;
+		if( pHasVAOCount <= index ){
+			memset( pHasVAO + pHasVAOCount, 0, sizeof( deoglRenderTaskVAO* ) * ( index - pHasVAOCount + 1 ) );
+			pHasVAOCount = index + 1;
 		}
-		pHasVAOCount++;
 	}
 	
-	pHasVAO[ vaoIndex ] = vao;
-}
-
-
-
-deoglRenderTaskVAO *deoglRenderTaskTexture::GetVAOForIndex( int vaoIndex ){
-	return vaoIndex < pHasVAOCount ? pHasVAO[ vaoIndex ] : NULL;
+	deoglRenderTaskVAO *rtvao = pHasVAO[ index ];
+	if( rtvao ){
+		return rtvao;
+	}
+	
+	rtvao = task.VAOFromPool();
+	rtvao->SetVAO( vao );
+	
+	if( pTailVAO ){
+		pTailVAO->SetNextVAO( rtvao );
+	}
+	rtvao->SetNextVAO( NULL );
+	
+	pTailVAO = rtvao;
+	
+	if( ! pRootVAO ){
+		pRootVAO = rtvao;
+	}
+	
+	pVAOCount++;
+	pHasVAO[ index ] = rtvao;
+	return rtvao;
 }
 
 

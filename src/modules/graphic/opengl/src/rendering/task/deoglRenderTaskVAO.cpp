@@ -76,7 +76,7 @@ void deoglRenderTaskVAO::Reset(){
 
 
 
-void deoglRenderTaskVAO::SetVAO( deoglVAO *vao ){
+void deoglRenderTaskVAO::SetVAO( deoglRenderTaskSharedVAO *vao ){
 	pVAO = vao;
 }
 

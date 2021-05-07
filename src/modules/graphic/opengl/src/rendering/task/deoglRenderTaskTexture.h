@@ -24,7 +24,9 @@
 
 #include "../../deoglBasics.h"
 
+class deoglRenderTask;
 class deoglRenderTaskSharedTexture;
+class deoglRenderTaskSharedVAO;
 class deoglRenderTaskVAO;
 class deoglVAO;
 
@@ -86,17 +88,14 @@ public:
 	
 	
 	
-	/** Retrieves the root render task vao or NULL if there is none. */
+	/** Root render task vao or NULL. */
 	inline deoglRenderTaskVAO *GetRootVAO() const{ return pRootVAO; }
-	/** Retrieves the number of render task vaos. */
-	inline int GetVAOCount() const{ return pVAOCount; }
-	/** Retrieves the render task with the given vao or NULL if not found. */
-	deoglRenderTaskVAO *GetVAOWith( deoglVAO *vao );
-	/** Adds a render task vao. */
-	void AddVAO( deoglRenderTaskVAO *vao );
 	
-	/** Retrieves the vao for a vao index or NULL if not existing yet. */
-	deoglRenderTaskVAO *GetVAOForIndex( int vaoIndex );
+	/** Count of render task vaos. */
+	inline int GetVAOCount() const{ return pVAOCount; }
+	
+	/** Add render task vao. */
+	deoglRenderTaskVAO *AddVAO( deoglRenderTask &task, deoglRenderTaskSharedVAO *vao );
 	
 	
 	

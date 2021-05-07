@@ -43,8 +43,6 @@ public:
 	int pIndexSize;
 	int pIndexGLType;
 	
-	unsigned int pRenderTaskTrackingNumber;
-	int pRenderTaskVAOIndex;
 	unsigned int pUniqueKey;
 	deoglRenderTaskSharedVAO *pRTSVAO;
 	
@@ -81,18 +79,6 @@ public:
 	
 	/** OpenGL type of the indices. */
 	inline int GetIndexGLType() const{ return pIndexGLType; }
-	
-	/** Render task tracking number. */
-	inline unsigned int GetRenderTaskTrackingNumber() const{ return pRenderTaskTrackingNumber; }
-	
-	/** Set render task tracking number. */
-	void SetRenderTaskTrackingNumber( unsigned int trackingNumber );
-	
-	/** Render task vao index. */
-	inline int GetRenderTaskVAOIndex() const{ return pRenderTaskVAOIndex; }
-	
-	/** Set render task vao index. */
-	void SetRenderTaskVAOIndex( int vaoIndex );
 	
 	/** Unique key for use with dictionaries. */
 	inline unsigned int GetUniqueKey() const{ return pUniqueKey; }
