@@ -294,10 +294,10 @@ void deoglRenderGeometry::RenderTask( const deoglRenderTask &renderTask ){
 		while( renderTaskTexture ){
 			const deoglTexUnitsConfig * const tuc = renderTaskTexture->GetTexture()->GetTUC();
 			if( tuc ){
+				tuc->Apply();
 				if( tuc->GetParameterBlock() ){
 					tuc->GetParameterBlock()->Activate();
 				}
-				tuc->Apply();
 			}
 			
 			deoglRenderTaskVAO *renderTaskVAO = renderTaskTexture->GetRootVAO();

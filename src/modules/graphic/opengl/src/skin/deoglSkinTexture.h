@@ -32,6 +32,8 @@ class deoglRSkin;
 class deoglSPBlockUBO;
 class deoglSkinShader;
 class deoglSkinShaderConfig;
+class deoglSharedSPBElement;
+class deoglShaderParameterBlock;
 
 class deSkinTexture;
 class deSkinProperty;
@@ -226,6 +228,7 @@ private:
 	deoglSkinChannel *pChannels[ deoglSkinChannel::CHANNEL_COUNT ];
 	deoglSkinShader *pShaders[ ShaderTypeCount ];
 	deoglSPBlockUBO *pParamBlock;
+	deoglSharedSPBElement *pSharedSPBElement;
 	
 	decColor pAbsorption;
 	float pAbsorptionHalfIntensityDistance;
@@ -427,6 +430,9 @@ public:
 	
 	/** Parameter block. */
 	inline deoglSPBlockUBO *GetParameterBlock() const{ return pParamBlock; }
+	
+	/** Shared shader parameter block element. */
+	inline deoglSharedSPBElement *GetSharedSPBElement() const{ return pSharedSPBElement; }
 	
 	/** Prepare parameter block. */
 	void PrepareParamBlock();
@@ -844,6 +850,7 @@ private:
 	void pCompressTextures( deoglRSkin &skin, const deSkinTexture &texture );
 	void pWriteCached( deoglRSkin &skin );
 	void pProcessProperty( deoglRSkin &skin, deSkinProperty &property );
+	void pUpdateParamBlock( deoglShaderParameterBlock &paramBlock, int index );
 };
 
 #endif

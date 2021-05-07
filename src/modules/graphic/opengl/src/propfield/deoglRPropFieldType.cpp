@@ -680,6 +680,8 @@ void deoglRPropFieldType::UpdateInstanceParamBlock( deoglSPBlockUBO &paramBlock,
 			paramBlock.SetParameterDataBVec3( target, false, false, false );
 		}
 		
+		skinShader.SetTexParamsInInstParamSPB( paramBlock, *pUseSkinTexture );
+		
 		// per texture dynamic texture properties
 		skinShader.SetDynTexParamsInInstParamSPB( paramBlock, *pUseSkinTexture, useSkinState, useDynamicSkin );
 		

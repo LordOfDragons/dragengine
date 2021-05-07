@@ -51,6 +51,8 @@
 #include "../shaders/paramblock/deoglSPBlockSSBO.h"
 #include "../shaders/paramblock/deoglShaderParameterBlock.h"
 #include "../shaders/paramblock/shared/deoglSharedSPBList.h"
+#include "../shaders/paramblock/shared/deoglSharedSPBElement.h"
+#include "../shaders/paramblock/shared/deoglSharedSPBRTIGroup.h"
 #include "../texture/arraytexture/deoglArrayTexture.h"
 #include "../texture/compression/deoglTextureCompression.h"
 #include "../texture/cubemap/deoglCubeMap.h"
@@ -345,7 +347,8 @@ static sShaderConfigInfo vShaderConfigInfo[ deoglSkinTexture::ShaderTypeCount ] 
 deoglSkinTexture::deoglSkinTexture( deoglRenderThread &renderThread, deoglRSkin &skin, const deSkinTexture &texture ) :
 pRenderThread( renderThread ),
 pName( texture.GetName() ),
-pParamBlock( NULL )
+pParamBlock( NULL ),
+pSharedSPBElement( NULL )
 {
 	// NOTE this is called during asynchronous resource loading. careful accessing other objects
 	
@@ -1152,129 +1155,40 @@ bool deoglSkinTexture::GetShaderConfigFor( eShaderTypes shaderType, deoglSkinSha
 }
 
 void deoglSkinTexture::PrepareParamBlock(){
-	if( pParamBlock ){
-		return;
+	if( ! pParamBlock ){
+		pParamBlock = deoglSkinShader::CreateSPBTexParam( pRenderThread );
+		
+		pParamBlock->MapBuffer();
+		try{
+			pUpdateParamBlock( *pParamBlock, 0 );
+			
+		}catch( const deException & ){
+			pParamBlock->UnmapBuffer();
+			throw;
+		}
+		pParamBlock->UnmapBuffer();
 	}
 	
-	pParamBlock = deoglSkinShader::CreateSPBTexParam( pRenderThread );
-	
-	// etutValueColorTransparency,
-	// etutValueNormalHeight,
-	// etutValueReflectivityRoughness,
-	// etutValueRefractionDistort,
-	// etutValueAO,
-	deoglSPBlockUBO &spb = *pParamBlock;
-	spb.MapBuffer();
-	try{
-		spb.SetParameterDataVec3( deoglSkinShader::etutTexColorTint,
-			powf( pColorTint.r, 2.2f ), powf( pColorTint.g, 2.2f ), powf( pColorTint.b, 2.2f ) );
+	if( ! pSharedSPBElement ){
+		if( pRenderThread.GetChoices().GetSharedSPBUseSSBO() ){
+			pSharedSPBElement = pRenderThread.GetBufferObject()
+				.GetSharedSPBList( deoglRTBufferObject::esspblSkinTextureSSBO ).AddElement();
+			
+		}else{
+			pSharedSPBElement = pRenderThread.GetBufferObject()
+				.GetSharedSPBList( deoglRTBufferObject::esspblSkinTextureUBO ).AddElement();
+		}
 		
-		spb.SetParameterDataFloat( deoglSkinShader::etutTexColorGamma, pColorGamma );
-		
-		spb.SetParameterDataFloat( deoglSkinShader::etutTexColorSolidMultiplier,
-			pColorSolidityMultiplier );
-		
-		spb.SetParameterDataFloat( deoglSkinShader::etutTexAOSolidityMultiplier,
-			pAmbientOcclusionSolidityMultiplier );
-		
-		spb.SetParameterDataFloat( deoglSkinShader::etutTexTransparencyMultiplier,
-			pTransparencyMultiplier );
-		
-		spb.SetParameterDataFloat( deoglSkinShader::etutTexSolidityMultiplier,
-			pSolidityMultiplier );
-		
-		// (texHeight - 0.5 + offset) * scale = texHeight*scale + (offset-0.5)*scale
-		spb.SetParameterDataVec2( deoglSkinShader::etutTexHeightRemap,
-			pHeightScale, ( pHeightOffset - 0.5f ) * pHeightScale );
-		
-		spb.SetParameterDataFloat( deoglSkinShader::etutTexNormalStrength, pNormalStrength );
-		
-		spb.SetParameterDataFloat( deoglSkinShader::etutTexNormalSolidityMultiplier,
-			pNormalSolidityMultiplier );
-		
-		spb.SetParameterDataVec2( deoglSkinShader::etutTexRoughnessRemap,
-			pRoughnessRemapUpper - pRoughnessRemapLower, pRoughnessRemapLower );
-		
-		spb.SetParameterDataFloat( deoglSkinShader::etutTexRoughnessGamma, pRoughnessGamma );
-		
-		spb.SetParameterDataFloat( deoglSkinShader::etutTexRoughnessSolidityMultiplier,
-			pRoughnessSolidityMultiplier );
-		
-		spb.SetParameterDataFloat( deoglSkinShader::etutTexReflectivitySolidityMultiplier,
-			pReflectivitySolidityMultiplier );
-		
-		spb.SetParameterDataFloat( deoglSkinShader::etutTexRefractionDistortStrength,
-			pRefractDistortStrength );
-		
-		spb.SetParameterDataVec3( deoglSkinShader::etutTexEmissivityIntensity,
-			powf( pEmissivityTint.r, 2.2f ) * pEmissivityIntensity,
-			powf( pEmissivityTint.g, 2.2f ) * pEmissivityIntensity,
-			powf( pEmissivityTint.b, 2.2f ) * pEmissivityIntensity );
-		
-		spb.SetParameterDataVec2( deoglSkinShader::etutTexEnvRoomSize,
-			1.0f / pEnvironmentRoomSize.x, -1.0f / pEnvironmentRoomSize.y );
-		
-		spb.SetParameterDataVec3( deoglSkinShader::etutTexEnvRoomOffset,
-			pEnvironmentRoomOffset );
-		
-		spb.SetParameterDataVec3( deoglSkinShader::etutTexEnvRoomEmissivityIntensity,
-			powf( pEnvironmentRoomEmissivityTint.r, 2.2f ) * pEnvironmentRoomEmissivityIntensity,
-			powf( pEnvironmentRoomEmissivityTint.g, 2.2f ) * pEnvironmentRoomEmissivityIntensity,
-			powf( pEnvironmentRoomEmissivityTint.b, 2.2f ) * pEnvironmentRoomEmissivityIntensity );
-		
-		spb.SetParameterDataFloat( deoglSkinShader::etutTexThickness, pThickness );
-		spb.SetParameterDataFloat( deoglSkinShader::etutTexAbsorptionRange, pAbsorptionRange );
-		
-		spb.SetParameterDataVec2( deoglSkinShader::etutTexVariationEnableScale,
-			pVariationU ? 1.0f : 0.0f, pVariationV ? 1.0f : 0.0f );
-		
-		spb.SetParameterDataFloat( deoglSkinShader::etutTexReflectivityMultiplier,
-			pReflectivityMultiplier );
-		
-		// see shader source geometry/defren/skin/particle_ribbon.glsl for the
-		// calculation of the maximum number of supported sheets (8)
-		spb.SetParameterDataInt( deoglSkinShader::etutTexParticleSheetCount,
-			decMath::clamp( pParticleSheetCount, 1, 8 ) );
-		
-		spb.SetParameterDataVec3( deoglSkinShader::etutTexRimEmissivityIntensity,
-			powf( pRimEmissivityTint.r, 2.2f ) * pRimEmissivityIntensity,
-			powf( pRimEmissivityTint.g, 2.2f ) * pRimEmissivityIntensity,
-			powf( pRimEmissivityTint.b, 2.2f ) * pRimEmissivityIntensity );
-		
-		spb.SetParameterDataFloat( deoglSkinShader::etutTexRimAngle,
-			pRimAngle > 0.001f ? 1.0f / ( pRimAngle * HALF_PI ) : 0.0f );
-		
-		spb.SetParameterDataFloat( deoglSkinShader::etutTexRimExponent,
-			decMath::max( pRimExponent, 0.001f ) );
-		
-		spb.SetParameterDataVec3( deoglSkinShader::etutTexOutlineColor,
-			powf( pOutlineColor.r, 2.2f ), powf( pOutlineColor.g, 2.2f ),
-			powf( pOutlineColor.b, 2.2f ) );
-		
-		spb.SetParameterDataVec3( deoglSkinShader::etutTexOutlineColorTint,
-			powf( pOutlineColorTint.r, 2.2f ), powf( pOutlineColorTint.g, 2.2f ),
-			powf( pOutlineColorTint.b, 2.2f ) );
-		
-		spb.SetParameterDataFloat( deoglSkinShader::etutTexOutlineThickness, pOutlineThickness );
-		spb.SetParameterDataFloat( deoglSkinShader::etutTexOutlineSolidity, pOutlineSolidity );
-		
-		spb.SetParameterDataVec3( deoglSkinShader::etutTexOutlineEmissivity,
-			powf( pOutlineEmissivity.r, 2.2f ) * pOutlineEmissivityIntensity,
-			powf( pOutlineEmissivity.g, 2.2f ) * pOutlineEmissivityIntensity,
-			powf( pOutlineEmissivity.b, 2.2f ) * pOutlineEmissivityIntensity );
-		
-		spb.SetParameterDataVec3( deoglSkinShader::etutTexOutlineEmissivityTint,
-			powf( pOutlineEmissivityTint.r, 2.2f ), powf( pOutlineEmissivityTint.g, 2.2f ),
-			powf( pOutlineEmissivityTint.b, 2.2f ) );
-		
-		spb.SetParameterDataBool( deoglSkinShader::etutTexEmissivityCameraAdapted,
-			pEmissivityCameraAdapted );
-		
-	}catch( const deException & ){
-		spb.UnmapBuffer();
-		throw;
+		deoglShaderParameterBlock &paramBlock = pSharedSPBElement->MapBuffer();
+		try{
+			pUpdateParamBlock( paramBlock, pSharedSPBElement->GetIndex() );
+			
+		}catch( const deException & ){
+			paramBlock.UnmapBuffer();
+			throw;
+		}
+		paramBlock.UnmapBuffer();
 	}
-	spb.UnmapBuffer();
 }
 
 
@@ -1632,6 +1546,9 @@ void deoglSkinTexture::pCleanUp(){
 	if( pParamBlock ){
 		pParamBlock->FreeReference();
 		pParamBlock = NULL;
+	}
+	if( pSharedSPBElement ){
+		pSharedSPBElement->FreeReference();
 	}
 	
 	for( i=0; i<deoglSkinChannel::CHANNEL_COUNT; i++ ){
@@ -3166,4 +3083,115 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 			break;
 		}
 	}
+}
+
+void deoglSkinTexture::pUpdateParamBlock( deoglShaderParameterBlock &spb, int element ){
+	// etutValueColorTransparency,
+	// etutValueNormalHeight,
+	// etutValueReflectivityRoughness,
+	// etutValueRefractionDistort,
+	// etutValueAO,
+	spb.SetParameterDataVec3( deoglSkinShader::etutTexColorTint, element,
+		powf( pColorTint.r, 2.2f ), powf( pColorTint.g, 2.2f ), powf( pColorTint.b, 2.2f ) );
+	
+	spb.SetParameterDataFloat( deoglSkinShader::etutTexColorGamma, element, pColorGamma );
+	
+	spb.SetParameterDataFloat( deoglSkinShader::etutTexColorSolidMultiplier, element,
+		pColorSolidityMultiplier );
+	
+	spb.SetParameterDataFloat( deoglSkinShader::etutTexAOSolidityMultiplier, element,
+		pAmbientOcclusionSolidityMultiplier );
+	
+	spb.SetParameterDataFloat( deoglSkinShader::etutTexTransparencyMultiplier, element,
+		pTransparencyMultiplier );
+	
+	spb.SetParameterDataFloat( deoglSkinShader::etutTexSolidityMultiplier, element,
+		pSolidityMultiplier );
+	
+	// (texHeight - 0.5 + offset) * scale = texHeight*scale + (offset-0.5)*scale
+	spb.SetParameterDataVec2( deoglSkinShader::etutTexHeightRemap, element,
+		pHeightScale, ( pHeightOffset - 0.5f ) * pHeightScale );
+	
+	spb.SetParameterDataFloat( deoglSkinShader::etutTexNormalStrength, element, pNormalStrength );
+	
+	spb.SetParameterDataFloat( deoglSkinShader::etutTexNormalSolidityMultiplier, element,
+		pNormalSolidityMultiplier );
+	
+	spb.SetParameterDataVec2( deoglSkinShader::etutTexRoughnessRemap, element,
+		pRoughnessRemapUpper - pRoughnessRemapLower, pRoughnessRemapLower );
+	
+	spb.SetParameterDataFloat( deoglSkinShader::etutTexRoughnessGamma, element, pRoughnessGamma );
+	
+	spb.SetParameterDataFloat( deoglSkinShader::etutTexRoughnessSolidityMultiplier, element,
+		pRoughnessSolidityMultiplier );
+	
+	spb.SetParameterDataFloat( deoglSkinShader::etutTexReflectivitySolidityMultiplier, element,
+		pReflectivitySolidityMultiplier );
+	
+	spb.SetParameterDataFloat( deoglSkinShader::etutTexRefractionDistortStrength, element,
+		pRefractDistortStrength );
+	
+	spb.SetParameterDataVec3( deoglSkinShader::etutTexEmissivityIntensity, element,
+		powf( pEmissivityTint.r, 2.2f ) * pEmissivityIntensity,
+		powf( pEmissivityTint.g, 2.2f ) * pEmissivityIntensity,
+		powf( pEmissivityTint.b, 2.2f ) * pEmissivityIntensity );
+	
+	spb.SetParameterDataVec2( deoglSkinShader::etutTexEnvRoomSize, element,
+		1.0f / pEnvironmentRoomSize.x, -1.0f / pEnvironmentRoomSize.y );
+	
+	spb.SetParameterDataVec3( deoglSkinShader::etutTexEnvRoomOffset, element,
+		pEnvironmentRoomOffset );
+	
+	spb.SetParameterDataVec3( deoglSkinShader::etutTexEnvRoomEmissivityIntensity, element,
+		powf( pEnvironmentRoomEmissivityTint.r, 2.2f ) * pEnvironmentRoomEmissivityIntensity,
+		powf( pEnvironmentRoomEmissivityTint.g, 2.2f ) * pEnvironmentRoomEmissivityIntensity,
+		powf( pEnvironmentRoomEmissivityTint.b, 2.2f ) * pEnvironmentRoomEmissivityIntensity );
+	
+	spb.SetParameterDataFloat( deoglSkinShader::etutTexThickness, element, pThickness );
+	spb.SetParameterDataFloat( deoglSkinShader::etutTexAbsorptionRange, element, pAbsorptionRange );
+	
+	spb.SetParameterDataVec2( deoglSkinShader::etutTexVariationEnableScale, element,
+		pVariationU ? 1.0f : 0.0f, pVariationV ? 1.0f : 0.0f );
+	
+	spb.SetParameterDataFloat( deoglSkinShader::etutTexReflectivityMultiplier, element,
+		pReflectivityMultiplier );
+	
+	// see shader source geometry/defren/skin/particle_ribbon.glsl for the
+	// calculation of the maximum number of supported sheets (8)
+	spb.SetParameterDataInt( deoglSkinShader::etutTexParticleSheetCount, element,
+		decMath::clamp( pParticleSheetCount, 1, 8 ) );
+	
+	spb.SetParameterDataVec3( deoglSkinShader::etutTexRimEmissivityIntensity, element,
+		powf( pRimEmissivityTint.r, 2.2f ) * pRimEmissivityIntensity,
+		powf( pRimEmissivityTint.g, 2.2f ) * pRimEmissivityIntensity,
+		powf( pRimEmissivityTint.b, 2.2f ) * pRimEmissivityIntensity );
+	
+	spb.SetParameterDataFloat( deoglSkinShader::etutTexRimAngle, element,
+		pRimAngle > 0.001f ? 1.0f / ( pRimAngle * HALF_PI ) : 0.0f );
+	
+	spb.SetParameterDataFloat( deoglSkinShader::etutTexRimExponent, element,
+		decMath::max( pRimExponent, 0.001f ) );
+	
+	spb.SetParameterDataVec3( deoglSkinShader::etutTexOutlineColor, element,
+		powf( pOutlineColor.r, 2.2f ), powf( pOutlineColor.g, 2.2f ),
+		powf( pOutlineColor.b, 2.2f ) );
+	
+	spb.SetParameterDataVec3( deoglSkinShader::etutTexOutlineColorTint, element,
+		powf( pOutlineColorTint.r, 2.2f ), powf( pOutlineColorTint.g, 2.2f ),
+		powf( pOutlineColorTint.b, 2.2f ) );
+	
+	spb.SetParameterDataFloat( deoglSkinShader::etutTexOutlineThickness, element, pOutlineThickness );
+	spb.SetParameterDataFloat( deoglSkinShader::etutTexOutlineSolidity, element, pOutlineSolidity );
+	
+	spb.SetParameterDataVec3( deoglSkinShader::etutTexOutlineEmissivity, element,
+		powf( pOutlineEmissivity.r, 2.2f ) * pOutlineEmissivityIntensity,
+		powf( pOutlineEmissivity.g, 2.2f ) * pOutlineEmissivityIntensity,
+		powf( pOutlineEmissivity.b, 2.2f ) * pOutlineEmissivityIntensity );
+	
+	spb.SetParameterDataVec3( deoglSkinShader::etutTexOutlineEmissivityTint, element,
+		powf( pOutlineEmissivityTint.r, 2.2f ), powf( pOutlineEmissivityTint.g, 2.2f ),
+		powf( pOutlineEmissivityTint.b, 2.2f ) );
+	
+	spb.SetParameterDataBool( deoglSkinShader::etutTexEmissivityCameraAdapted, element,
+		pEmissivityCameraAdapted );
 }

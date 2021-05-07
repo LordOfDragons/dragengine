@@ -621,6 +621,8 @@ deoglSPBlockUBO &paramBlock, deoglSkinShader &skinShader ){
 			paramBlock.SetParameterDataInt( target, sheetCount );
 		}
 		
+		skinShader.SetTexParamsInInstParamSPB( paramBlock, *pUseSkinTexture );
+		
 		// per texture dynamic texture properties
 		//skinShader.SetDynTexParamsInInstParamSPB( paramBlock, *pUseSkinTexture, useSkinState, useDynamicSkin );
 		

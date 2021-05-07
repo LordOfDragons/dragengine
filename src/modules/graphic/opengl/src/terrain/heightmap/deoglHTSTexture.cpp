@@ -508,6 +508,8 @@ void deoglHTSTexture::UpdateInstanceParamBlock( deoglSPBlockUBO &paramBlock, deo
 			}
 		}
 		
+		skinShader.SetTexParamsInInstParamSPB( paramBlock, *pUseSkinTexture );
+		
 		// per texture dynamic texture properties
 		skinShader.SetDynTexParamsInInstParamSPB( paramBlock, *pUseSkinTexture, useSkinState, useDynamicSkin );
 		

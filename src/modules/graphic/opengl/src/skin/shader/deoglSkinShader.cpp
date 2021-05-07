@@ -48,6 +48,7 @@
 #include "../../shaders/paramblock/deoglSPBlockMemory.h"
 #include "../../shaders/paramblock/deoglSPBlockUBO.h"
 #include "../../shaders/paramblock/deoglSPBlockSSBO.h"
+#include "../../shaders/paramblock/shared/deoglSharedSPBElement.h"
 #include "../../texture/deoglTextureStageManager.h"
 #include "../../texture/texture2d/deoglTexture.h"
 #include "../../texture/texunitsconfig/deoglTexUnitConfig.h"
@@ -158,6 +159,8 @@ static const char *vInstanceUniformTargetNames[ deoglSkinShader::EIUT_COUNT ] = 
 	"pSamplesParams", // eiutSamplesParams
 	"pBurstFactor", // eiutBurstFactor
 	"pRibbonSheetCount", // eiutRibbonSheetCount
+	
+	"pIndexSPBTexParams", // eiutIndexSPBTexParams
 	
 	"pTCTransformColor", // eiutTCTransformColor
 	"pTCTransformNormal", // eiutTCTransformNormal
@@ -280,6 +283,8 @@ static const sSPBParameterDefinition vInstanceSPBParamDefs[ deoglSkinShader::EIU
 	{ deoglSPBParameter::evtFloat, 1, 1, 1 }, // eiutBurstFactor ( float )
 	{ deoglSPBParameter::evtInt, 1, 1, 1 }, // eiutRibbonSheetCount ( int )
 	
+	{ deoglSPBParameter::evtInt, 1, 1, 1 }, // eiutIndexSPBTexParams ( int )
+	
 	{ deoglSPBParameter::evtFloat, 4, 1, 1 }, // eiutTCTransformColor ( vec4 )
 	{ deoglSPBParameter::evtFloat, 4, 1, 1 }, // eiutTCTransformNormal ( vec4 )
 	{ deoglSPBParameter::evtFloat, 4, 1, 1 }, // eiutTCTransformReflectivity ( vec4 )
@@ -318,7 +323,7 @@ static const sSPBParameterDefinition vInstanceSPBParamDefs[ deoglSkinShader::EIU
 	{ deoglSPBParameter::evtFloat, 3, 1, 1 }  // eiutInstOutlineEmissivityTint ( vec3 )
 };
 
-static const int vUBOInstParamMapCount = 43;
+static const int vUBOInstParamMapCount = 44;
 static const deoglSkinShader::eInstanceUniformTargets vUBOInstParamMap[ vUBOInstParamMapCount ] = {
 	deoglSkinShader::eiutMatrixModel, // eiutMatrixModel ( mat4x3 )
 	deoglSkinShader::eiutMatrixNormal, // eiutMatrixNormal ( mat3 )
@@ -338,7 +343,7 @@ static const deoglSkinShader::eInstanceUniformTargets vUBOInstParamMap[ vUBOInst
 	deoglSkinShader::eiutPropFieldParams, // eiutPropFieldParams ( float )
 	deoglSkinShader::eiutDoubleSided, // eiutDoubleSided ( bool )
 	deoglSkinShader::eiutEnvMapFade, // eiutEnvMapFade ( float )
-	// padding 1 float
+	deoglSkinShader::eiutIndexSPBTexParams, // eiutIndexSPBTexParams ( int )
 	
 	/*
 	deoglSkinShader::eiutTCTransformColor, // eiutTCTransformColor ( vec4 )
@@ -719,7 +724,73 @@ deoglSPBlockSSBO *deoglSkinShader::CreateLayoutSkinInstanceSSBO( deoglRenderThre
 	return ssbo;
 }
 
+deoglSPBlockUBO *deoglSkinShader::CreateLayoutSkinTextureUBO( deoglRenderThread &renderThread ){
+	deoglSPBlockUBO * const spb = new deoglSPBlockUBO( renderThread );
+	int i;
+	
+	try{
+		spb->SetRowMajor( renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working() );
+		spb->SetParameterCount( ETUT_COUNT );
+		
+		for( i=0; i<ETUT_COUNT; i++ ){
+			spb->GetParameterAt( i ).SetAll( vTextureSPBParamDefs[ i ].dataType,
+				vTextureSPBParamDefs[ i ].componentCount, vTextureSPBParamDefs[ i ].vectorCount, 1 );
+		}
+		
+		spb->MapToStd140();
+		spb->SetBindingPoint( deoglSkinShader::eubTextureParameters );
+		
+	}catch( const deException & ){
+		if( spb ){
+			spb->FreeReference();
+		}
+		throw;
+	}
+	
+	return spb;
+}
 
+deoglSPBlockSSBO *deoglSkinShader::CreateLayoutSkinTextureSSBO( deoglRenderThread &renderThread ){
+	deoglSPBlockSSBO * const spb = new deoglSPBlockSSBO( renderThread );
+	int i;
+	
+	try{
+		spb->SetRowMajor( renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working() );
+		spb->SetParameterCount( ETUT_COUNT );
+		
+		for( i=0; i<ETUT_COUNT; i++ ){
+			spb->GetParameterAt( i ).SetAll( vTextureSPBParamDefs[ i ].dataType,
+				vTextureSPBParamDefs[ i ].componentCount, vTextureSPBParamDefs[ i ].vectorCount, 1 );
+		}
+		
+		spb->MapToStd140();
+		spb->SetBindingPoint( deoglSkinShader::eubTextureParameters );
+		
+	}catch( const deException & ){
+		if( spb ){
+			spb->FreeReference();
+		}
+		throw;
+	}
+	
+	return spb;
+}
+
+
+
+void deoglSkinShader::SetTexParamsInInstParamSPB( deoglShaderParameterBlock &paramBlock,
+const deoglSkinTexture &skinTexture ) const{
+	SetTexParamsInInstParamSPB( paramBlock, 0, skinTexture );
+}
+
+void deoglSkinShader::SetTexParamsInInstParamSPB( deoglShaderParameterBlock &paramBlock,
+int element, const deoglSkinTexture &skinTexture ) const{
+	if( pInstanceUniformTargets[ eiutIndexSPBTexParams ] != -1 ){
+		const deoglSharedSPBElement * const spbElement = skinTexture.GetSharedSPBElement();
+		paramBlock.SetParameterDataInt( pInstanceUniformTargets[ eiutIndexSPBTexParams ],
+			element, spbElement ? spbElement->GetIndex() : 0 );
+	}
+}
 
 void deoglSkinShader::SetDynTexParamsInInstParamSPB( deoglShaderParameterBlock &paramBlock,
 const deoglSkinTexture &skinTexture, deoglSkinState *skinState, deoglRDynamicSkin *dynamicSkin ) const{
@@ -2293,6 +2364,8 @@ void deoglSkinShader::UpdateUniformTargets(){
 		pInstanceUniformTargets[ eiutTCTransformAO ] = pUsedInstanceUniformTargetCount++;
 	}
 	*/
+	
+	pInstanceUniformTargets[ eiutIndexSPBTexParams ] = pUsedInstanceUniformTargetCount++;
 	
 	if( pConfig.GetGeometryMode() != deoglSkinShaderConfig::egmParticle ){
 		pInstanceUniformTargets[ eiutInstColorTint ] = pUsedInstanceUniformTargetCount++;

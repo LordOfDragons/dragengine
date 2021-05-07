@@ -703,6 +703,8 @@ int element, deoglSkinShader &skinShader ){
 		}
 	}
 	
+	skinShader.SetTexParamsInInstParamSPB( paramBlock, element, *pUseSkinTexture );
+	
 	// per texture dynamic texture properties
 	skinShader.SetDynTexParamsInInstParamSPB( paramBlock, element,
 		*pUseSkinTexture, pUseSkinState, pUseDynamicSkin );

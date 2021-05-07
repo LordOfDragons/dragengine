@@ -19,7 +19,7 @@ struct sInstanceParameters{
 	float pSPBPropFieldParams; // prop-field: bendFactor
 	bool pSPBDoubleSided; // component
 	float pSPBEnvMapFade; // component
-	// padding 1 float
+	int pSPBIndexSPBTexParams; // shared parameter block index for texture parameters
 	
 	/*
 	vec4 pSPBTCTransformColor;
@@ -138,6 +138,8 @@ UBOLAYOUT uniform InstanceParameters{
 		vec4 pBillboardPosTransform; // multiplyX, multiplyY, offsetX, offsetY
 		bvec3 pBillboardParams; // locked, spherical, sizeFixedToScreen
 	#endif  // PARTICLE
+	
+	int pIndexSPBTexParams; // shared parameter block index for texture parameters
 	
 	// texture coordinate transformations used for dynamic textures only
 	/*
