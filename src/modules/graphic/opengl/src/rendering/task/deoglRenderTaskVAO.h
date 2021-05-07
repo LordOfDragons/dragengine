@@ -38,7 +38,7 @@ class deoglRenderTaskInstanceGroup;
  */
 class deoglRenderTaskVAO{
 private:
-	deoglRenderTaskSharedVAO *pVAO;
+	const deoglRenderTaskSharedVAO *pVAO;
 	
 	deoglRenderTaskInstance *pRootInstance;
 	deoglRenderTaskInstance *pTailInstance;
@@ -82,10 +82,10 @@ public:
 	
 	
 	/** \brief VAO. */
-	inline deoglRenderTaskSharedVAO *GetVAO() const{ return pVAO; }
+	inline const deoglRenderTaskSharedVAO *GetVAO() const{ return pVAO; }
 	
 	/** \brief Set VAO. */
-	void SetVAO( deoglRenderTaskSharedVAO *vao );
+	void SetVAO( const deoglRenderTaskSharedVAO *vao );
 	
 	
 	

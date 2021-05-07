@@ -72,9 +72,10 @@ public:
 	
 	/** Render task instance group. */
 	inline deoglRenderTaskInstanceGroup &GetGroup(){ return pGroup; }
+	inline const deoglRenderTaskInstanceGroup &GetGroup() const{ return pGroup; }
 	
 	/** Render task shared instance. */
-	inline deoglRenderTaskSharedInstance *GetRTSInstance(){ return pRTSInstance; }
+	inline deoglRenderTaskSharedInstance *GetRTSInstance() const{ return pRTSInstance; }
 	
 	/** Unique key for use with dictionaries. */
 	inline unsigned int GetUniqueKey() const{ return pUniqueKey; }

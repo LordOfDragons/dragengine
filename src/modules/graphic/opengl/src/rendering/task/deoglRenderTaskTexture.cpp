@@ -116,7 +116,7 @@ int deoglRenderTaskTexture::GetTotalSubInstanceCount() const{
 
 
 
-void deoglRenderTaskTexture::SetTexture( deoglRenderTaskSharedTexture *texture ){
+void deoglRenderTaskTexture::SetTexture( const deoglRenderTaskSharedTexture *texture ){
 	pTexture = texture;
 }
 

@@ -34,7 +34,7 @@ class deoglRenderTaskTexture;
  */
 class deoglRenderTaskShader{
 private:
-	deoglRenderTaskSharedShader *pShader;
+	const deoglRenderTaskSharedShader *pShader;
 	
 	deoglRenderTaskTexture *pRootTexture;
 	deoglRenderTaskTexture *pTailTexture;
@@ -78,10 +78,10 @@ public:
 	int GetTotalSubInstanceCount() const;
 	
 	/** Shader. */
-	inline deoglRenderTaskSharedShader *GetShader() const{ return pShader; }
+	inline const deoglRenderTaskSharedShader *GetShader() const{ return pShader; }
 	
 	/** Set shader. */
-	void SetShader( deoglRenderTaskSharedShader *shader );
+	void SetShader( const deoglRenderTaskSharedShader *shader );
 	
 	/** Root render task texture or NULL if there is none. */
 	inline deoglRenderTaskTexture *GetRootTexture() const{ return pRootTexture; }

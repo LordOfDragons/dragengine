@@ -125,7 +125,7 @@ int deoglRenderTaskShader::GetTotalSubInstanceCount() const{
 
 
 
-void deoglRenderTaskShader::SetShader( deoglRenderTaskSharedShader *shader ){
+void deoglRenderTaskShader::SetShader( const deoglRenderTaskSharedShader *shader ){
 	pShader = shader;
 }
 

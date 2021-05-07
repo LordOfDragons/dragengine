@@ -36,7 +36,7 @@ class deoglVAO;
  */
 class deoglRenderTaskTexture{
 private:
-	deoglRenderTaskSharedTexture *pTexture;
+	const deoglRenderTaskSharedTexture *pTexture;
 	
 	deoglRenderTaskVAO *pRootVAO;
 	deoglRenderTaskVAO *pTailVAO;
@@ -81,10 +81,10 @@ public:
 	
 	
 	/** Shared texture. */
-	inline deoglRenderTaskSharedTexture *GetTexture() const{ return pTexture; }
+	inline const deoglRenderTaskSharedTexture *GetTexture() const{ return pTexture; }
 	
 	/** Set shared texture. */
-	void SetTexture( deoglRenderTaskSharedTexture *texture );
+	void SetTexture( const deoglRenderTaskSharedTexture *texture );
 	
 	
 	

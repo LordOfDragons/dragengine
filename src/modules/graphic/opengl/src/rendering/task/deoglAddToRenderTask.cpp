@@ -331,7 +331,7 @@ int firstFace, int faceCount, int lodLevel ){
 	}
 	
 	// obtain render task vao and add faces
-	deoglRenderTaskVAO * const rtvao = pGetTaskVAO( pSkinShaderType, skinTexture,
+	deoglRenderTaskVAO &rtvao = *pGetTaskVAO( pSkinShaderType, skinTexture,
 		componentTexture.GetTUCForShaderType( pSkinShaderType ), component.GetVAO( lodLevel ) );
 	
 	const deoglSharedSPBElement * const spbElement = componentTexture.GetSharedSPBElement();
@@ -341,7 +341,7 @@ int firstFace, int faceCount, int lodLevel ){
 		pRenderTask.AddInstanceGroup( &rtiGroup );
 	}
 	
-	deoglRenderTaskInstance *rti = rtvao->GetInstanceForIndex( rtiGroup.GetIndex() );
+	deoglRenderTaskInstance *rti = rtvao.GetInstanceForIndex( rtiGroup.GetIndex() );
 	if( ! rti ){
 		rti = pRenderTask.InstanceFromPool();
 		rti->SetGroup( &rtiGroup );
@@ -350,7 +350,7 @@ int firstFace, int faceCount, int lodLevel ){
 		rti->SetFirstIndex( component.GetIndexOffset( lodLevel ) + firstFace * 3 );
 		rti->SetIndexCount( faceCount * 3 );
 		rti->SetDoubleSided( doubleSided );
-		rtvao->AddInstance( rti );
+		rtvao.AddInstance( rti );
 	}
 	
 	rti->AddSubInstance( spbElement->GetIndex(), component.GetSpecialFlags() );
