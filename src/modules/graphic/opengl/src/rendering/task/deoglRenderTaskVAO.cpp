@@ -23,9 +23,10 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "deoglRenderTask.h"
 #include "deoglRenderTaskVAO.h"
 #include "deoglRenderTaskInstance.h"
-#include "deoglRenderTaskInstanceGroup.h"
+#include "shared/deoglRenderTaskSharedInstance.h"
 #include "../../vbo/deoglVBOLayout.h"
 #include "../../utils/deoglQuickSorter.h"
 
@@ -83,25 +84,22 @@ void deoglRenderTaskVAO::SetVAO( const deoglRenderTaskSharedVAO *vao ){
 
 
 int deoglRenderTaskVAO::GetTotalPointCount() const{
-	deoglRenderTaskInstance *instance = pRootInstance;
-	int subInstanceCount;
+	const deoglRenderTaskInstance *rtinstance = pRootInstance;
 	int pointCount = 0;
 	
-	while( instance ){
-		subInstanceCount = instance->GetSubInstanceCount();
-		if( subInstanceCount < 1 ){
-			subInstanceCount = 1;
-		}
+	while( rtinstance ){
+		const deoglRenderTaskSharedInstance &instance = *rtinstance->GetInstance();
+		pointCount += ( instance.GetIndexCount() + instance.GetPointCount() )
+			* decMath::max( instance.GetSubInstanceCount(), 1 );
 		
-		pointCount += ( instance->GetIndexCount() + instance->GetPointCount() ) * subInstanceCount;
-		instance = instance->GetNextInstance();
+		rtinstance = rtinstance->GetNextInstance();
 	}
 	
 	return pointCount;
 }
 
 int deoglRenderTaskVAO::GetTotalSubInstanceCount() const{
-	deoglRenderTaskInstance *instance = pRootInstance;
+	const deoglRenderTaskInstance *instance = pRootInstance;
 	int subInstanceCount = 0;
 	
 	while( instance ){
@@ -114,41 +112,13 @@ int deoglRenderTaskVAO::GetTotalSubInstanceCount() const{
 
 
 
-deoglRenderTaskInstance *deoglRenderTaskVAO::GetInstanceWith( deoglRenderTaskInstanceGroup *group ){
-	deoglRenderTaskInstance *instance = pRootInstance;
-	while( instance ){
-		if( instance->GetGroup() == group ){
-			return instance;
-		}
-		instance = instance->GetNextInstance();
-	}
-	return NULL;
-}
-
-void deoglRenderTaskVAO::AddInstance( deoglRenderTaskInstance *instance ){
+deoglRenderTaskInstance *deoglRenderTaskVAO::AddInstance(
+deoglRenderTask &task, deoglRenderTaskSharedInstance *instance ){
 	if( ! instance ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	if( pTailInstance ){
-		pTailInstance->SetNextInstance( instance );
-	}
-	instance->SetNextInstance( NULL );
-	
-	pTailInstance = instance;
-	
-	if( ! pRootInstance ){
-		pRootInstance = instance;
-	}
-	
-	pInstanceCount++;
-	
-	// mark as added if group is present
-	if( ! instance->GetGroup() ){
-		return;
-	}
-	
-	const int index = instance->GetGroup()->GetIndex();
+	const int index = instance->GetIndex();
 	
 	if( index >= pHasInstanceCount ){
 		if( index >= pHasInstanceSize ){
@@ -165,17 +135,35 @@ void deoglRenderTaskVAO::AddInstance( deoglRenderTaskInstance *instance ){
 			pHasInstanceSize = index + 1;
 		}
 		
-		while( pHasInstanceCount < index ){
-			pHasInstance[ pHasInstanceCount++ ] = NULL;
+		if( pHasInstanceCount <= index ){
+			memset( pHasInstance + pHasInstanceCount, 0,
+				sizeof( deoglRenderTaskInstance* ) * ( index - pHasInstanceCount + 1 ) );
+			pHasInstanceCount = index + 1;
 		}
-		pHasInstanceCount++;
 	}
 	
-	pHasInstance[ index ] = instance;
-}
-
-deoglRenderTaskInstance * deoglRenderTaskVAO::GetInstanceForIndex( int index ){
-	return index < pHasInstanceCount ? pHasInstance[ index ] : NULL;
+	deoglRenderTaskInstance *rtinstance = pHasInstance[ index ];
+	if( rtinstance ){
+		return rtinstance;
+	}
+	
+	rtinstance = task.InstanceFromPool();
+	rtinstance->SetInstance( instance );
+	
+	if( pTailInstance ){
+		pTailInstance->SetNextInstance( rtinstance );
+	}
+	rtinstance->SetNextInstance( NULL );
+	
+	pTailInstance = rtinstance;
+	
+	if( ! pRootInstance ){
+		pRootInstance = rtinstance;
+	}
+	
+	pInstanceCount++;
+	pHasInstance[ index ] = rtinstance;
+	return rtinstance;
 }
 
 

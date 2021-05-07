@@ -320,16 +320,17 @@ void deoglRenderGeometry::RenderTask( const deoglRenderTask &renderTask ){
 				const int indexSize = vao->GetIndexSize();
 				
 				while( rtinstance ){
-					const bool doubleSided = rtinstance->GetDoubleSided() | forceDoubleSided;
+					const deoglRenderTaskSharedInstance &instance = *rtinstance->GetInstance();
+					const bool doubleSided = instance.GetDoubleSided() | forceDoubleSided;
 					
-					if( rtinstance->GetParameterBlock() ){
-						rtinstance->GetParameterBlock()->Activate();
+					if( instance.GetParameterBlock() ){
+						instance.GetParameterBlock()->Activate();
 					}
-					if( rtinstance->GetParameterBlockSpecial() ){
-						rtinstance->GetParameterBlockSpecial()->Activate();
+					if( instance.GetParameterBlockSpecial() ){
+						instance.GetParameterBlockSpecial()->Activate();
 					}
-					if( rtinstance->GetSubInstanceSPB() ){
-						rtinstance->GetSubInstanceSPB()->GetParameterBlock()->Activate();
+					if( instance.GetSubInstanceSPB() ){
+						instance.GetSubInstanceSPB()->GetParameterBlock()->Activate();
 					}
 					
 					if( rtinstance->GetSIIndexInstanceSPB() != spbSIIndexInstance ){
@@ -355,19 +356,19 @@ void deoglRenderGeometry::RenderTask( const deoglRenderTask &renderTask ){
 						curDoubleSided = doubleSided;
 					}
 					
-					GLenum primitiveType = rtinstance->GetPrimitiveType();
+					GLenum primitiveType = instance.GetPrimitiveType();
 					
 					if( pglPatchParameteri && shader.GetHasTessellation() ){
-						pglPatchParameteri( GL_PATCH_VERTICES,
-						rtinstance->GetTessPatchVertexCount() );
+						pglPatchParameteri( GL_PATCH_VERTICES, instance.GetTessPatchVertexCount() );
 						primitiveType = GL_PATCHES;
 					}
 					
-					if( rtinstance->GetSubInstanceCount() == 0 ){
-						if( rtinstance->GetIndexCount() == 0 ){
+					const int subInstanceCount = rtinstance->GetSubInstanceCount() + instance.GetSubInstanceCount();
+					
+					if( subInstanceCount == 0 ){
+						if( instance.GetIndexCount() == 0 ){
 							OGL_CHECK( renderThread, glDrawArrays( primitiveType,
-							rtinstance->GetFirstPoint(),
-							rtinstance->GetPointCount() ) );
+								instance.GetFirstPoint(), instance.GetPointCount() ) );
 							
 						}else if( renderThread.GetChoices().GetSharedVBOUseBaseVertex() ){
 							// renderTaskInstance->GetFirstPoint() as base-vertex. required since
@@ -378,33 +379,32 @@ void deoglRenderGeometry::RenderTask( const deoglRenderTask &renderTask ){
 							// need to shift the indices by
 							
 							OGL_CHECK( renderThread, pglDrawElementsBaseVertex( primitiveType,
-								rtinstance->GetIndexCount(), indexGLType,
-								( GLvoid* )( intptr_t )( indexSize * rtinstance->GetFirstIndex() ),
-								rtinstance->GetFirstPoint() ) );
+								instance.GetIndexCount(), indexGLType,
+								( GLvoid* )( intptr_t )( indexSize * instance.GetFirstIndex() ),
+								instance.GetFirstPoint() ) );
 							
 						}else{
 							OGL_CHECK( renderThread, glDrawElements( primitiveType,
-								rtinstance->GetIndexCount(), indexGLType,
-								( GLvoid* )( intptr_t )( indexSize * rtinstance->GetFirstIndex() ) ) );
+								instance.GetIndexCount(), indexGLType,
+								( GLvoid* )( intptr_t )( indexSize * instance.GetFirstIndex() ) ) );
 						}
 						
 					}else{
-						if( rtinstance->GetIndexCount() == 0 ){
+						if( instance.GetIndexCount() == 0 ){
 							OGL_CHECK( renderThread, pglDrawArraysInstanced( primitiveType,
-								rtinstance->GetFirstPoint(), rtinstance->GetPointCount(),
-								rtinstance->GetSubInstanceCount() ) );
+								instance.GetFirstPoint(), instance.GetPointCount(), subInstanceCount ) );
 							
 						}else if( renderThread.GetChoices().GetSharedVBOUseBaseVertex() ){
 							OGL_CHECK( renderThread, pglDrawElementsInstancedBaseVertex(
-								primitiveType, rtinstance->GetIndexCount(),
-								indexGLType, ( GLvoid* )( intptr_t )( indexSize * rtinstance->GetFirstIndex() ),
-								rtinstance->GetSubInstanceCount(), rtinstance->GetFirstPoint() ) );
+								primitiveType, instance.GetIndexCount(), indexGLType,
+								( GLvoid* )( intptr_t )( indexSize * instance.GetFirstIndex() ),
+								subInstanceCount, instance.GetFirstPoint() ) );
 							
 						}else{
 							OGL_CHECK( renderThread, pglDrawElementsInstanced(
-								primitiveType, rtinstance->GetIndexCount(),
-								indexGLType, ( GLvoid* )( intptr_t )( indexSize * rtinstance->GetFirstIndex() ),
-								rtinstance->GetSubInstanceCount() ) );
+								primitiveType, instance.GetIndexCount(), indexGLType,
+								( GLvoid* )( intptr_t )( indexSize * instance.GetFirstIndex() ),
+								subInstanceCount ) );
 						}
 					}
 					

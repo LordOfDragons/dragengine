@@ -385,9 +385,12 @@ void deoglHTSCluster::UpdateRTSInstances(){
 	deoglRenderTaskSharedPool &pool = pHTSector->GetHeightTerrain().GetRenderThread().GetRenderTaskSharedPool();
 	int i;
 	for( i=0; i<5; i++ ){
-		if( ! pRTSInstance[ i ] ){
-			pRTSInstance[ i ] = pool.GetInstance();
+		if( pRTSInstance[ i ] ){
+			continue;
 		}
+		
+		pRTSInstance[ i ] = pool.GetInstance();
+		pRTSInstance[ i ]->SetPrimitiveType( GL_TRIANGLES );
 	}
 }
 

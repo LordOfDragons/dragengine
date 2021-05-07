@@ -29,12 +29,13 @@
 class deoglQuickSorter;
 class deoglRenderTaskInstance;
 class deoglSharedSPB;
+class deoglRenderTask;
 class deoglRenderTaskSharedVAO;
-class deoglRenderTaskInstanceGroup;
+class deoglRenderTaskSharedInstance;
 
 
 /**
- * \brief Render Task VAO.
+ * Render Task VAO.
  */
 class deoglRenderTaskVAO{
 private:
@@ -57,10 +58,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create render task vao. */
+	/** Create render task vao. */
 	deoglRenderTaskVAO();
 	
-	/** \brief Clean up render task vao. */
+	/** Clean up render task vao. */
 	~deoglRenderTaskVAO();
 	/*@}*/
 	
@@ -68,50 +69,44 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Reset vao. */
+	/** Reset vao. */
 	void Reset();
 	
 	
 	
-	/** \brief Total amount of points. */
+	/** Total amount of points. */
 	int GetTotalPointCount() const;
 	
-	/** \brief Total amount of sub-instances. */
+	/** Total amount of sub-instances. */
 	int GetTotalSubInstanceCount() const;
 	
 	
 	
-	/** \brief VAO. */
+	/** VAO. */
 	inline const deoglRenderTaskSharedVAO *GetVAO() const{ return pVAO; }
 	
-	/** \brief Set VAO. */
+	/** Set VAO. */
 	void SetVAO( const deoglRenderTaskSharedVAO *vao );
 	
 	
 	
-	/** \brief Root render task instance or \em NULL. */
+	/** Root render task instance or NULL. */
 	inline deoglRenderTaskInstance *GetRootInstance() const{ return pRootInstance; }
 	
-	/** \brief Number of render task instances. */
+	/** Number of render task instances. */
 	inline int GetInstanceCount() const{ return pInstanceCount; }
 	
-	/** \brief Add render task instance. */
-	void AddInstance( deoglRenderTaskInstance *instance );
+	/** Add render task instance. */
+	deoglRenderTaskInstance *AddInstance( deoglRenderTask &task, deoglRenderTaskSharedInstance *instance );
 	
-	/** \brief Find instance with group (slow call) or \em NULL. */
-	deoglRenderTaskInstance *GetInstanceWith( deoglRenderTaskInstanceGroup *group );
-	
-	/** \brief Instance for group instance index or \em NULL if absent. */
-	deoglRenderTaskInstance *GetInstanceForIndex( int index );
-	
-	/** \brief Sort instances by distance. */
+	/** Sort instances by distance. */
 	void SortInstancesByDistance( deoglQuickSorter &sorter, const decDVector &position,
 		const decDVector &direction, double posDotDir );
 	
-	/** \brief Next vao to render or \em NULL. */
+	/** Next vao to render or NULL. */
 	inline deoglRenderTaskVAO *GetNextVAO() const{ return pNextVAO; }
 	
-	/** \brief Set next vao to render or \em NULL. */
+	/** Set next vao to render or NULL. */
 	void SetNextVAO( deoglRenderTaskVAO *vao );
 	/*@}*/
 	
@@ -119,10 +114,10 @@ public:
 	
 	/** \name Linked List */
 	/*@{*/
-	/** \brief Next vao in parent render task VAO pool or \em NULL. */
+	/** Next vao in parent render task VAO pool or NULL. */
 	inline deoglRenderTaskVAO *GetLLNext() const{ return pLLNext; }
 	
-	/** \brief Set next vao in parent render task VAO pool or \em NULL. */
+	/** Set next vao in parent render task VAO pool or NULL. */
 	void SetLLNext( deoglRenderTaskVAO *vao );
 	/*@}*/
 };

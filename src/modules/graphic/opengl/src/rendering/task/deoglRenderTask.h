@@ -30,7 +30,6 @@
 
 class deoglQuickSorter;
 class deoglRenderTaskInstance;
-class deoglRenderTaskInstanceGroup;
 class deoglRenderTaskShader;
 class deoglRenderTaskTexture;
 class deoglRenderTaskVAO;
@@ -87,7 +86,6 @@ private:
 	static unsigned int pUpdateTracking;
 	
 	decPointerList pListShaders;
-	decPointerList pListInstanceGroup;
 	
 	
 	
@@ -185,9 +183,6 @@ public:
 	
 	/** Total amount of subinstances in this shader. */
 	int GetTotalSubInstanceCount() const;
-	
-	/** \brfief Add instance group. */
-	void AddInstanceGroup( deoglRenderTaskInstanceGroup *group );
 	/*@}*/
 	
 	

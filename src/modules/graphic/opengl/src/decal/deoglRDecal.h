@@ -23,7 +23,6 @@
 #define _DEOGLRDECAL_H_
 
 #include "../skin/deoglSkinTexture.h"
-#include "../rendering/task/deoglRenderTaskInstanceGroup.h"
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
@@ -82,7 +81,6 @@ public:
 	bool pComponentMarkedRemove;
 	
 	deoglSharedSPBElement *pSharedSPBElement;
-	deoglRenderTaskInstanceGroup pRTIGroup;
 	deoglRenderTaskSharedInstance *pRTSInstance;
 	
 	deoglTexUnitsConfig *pTUCGeometry;
@@ -235,9 +233,6 @@ public:
 	
 	/** Shared shader parameter block element. */
 	deoglSharedSPBElement *GetSharedSPBElement();
-	
-	/** Render task instance group. */
-	inline deoglRenderTaskInstanceGroup &GetRTIGroup(){ return pRTIGroup; }
 	
 	/** Render task shared instance or NULL. */
 	inline deoglRenderTaskSharedInstance *GetRTSInstance() const{ return pRTSInstance; }

@@ -29,7 +29,6 @@
 #include "deoglRenderTaskTexture.h"
 #include "deoglRenderTaskVAO.h"
 #include "deoglRenderTaskInstance.h"
-#include "deoglRenderTaskInstanceGroup.h"
 #include "../defren/deoglDeferredRendering.h"
 #include "../../collidelist/deoglCollideList.h"
 #include "../../collidelist/deoglCollideListComponent.h"

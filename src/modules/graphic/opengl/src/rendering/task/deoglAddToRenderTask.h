@@ -250,13 +250,6 @@ public:
 	 */
 	void AddComponentFaces( deoglRComponent &component, int texture, int lodLevel );
 	
-	/**
-	 * Add continuous run of faces of a component.
-	 * \details The component is supposed to be updated already and that a model and skin
-	 *          exists as well as that a parent world exists.
-	 */
-	void AddComponentFaces( deoglRComponent &component, int texture, int firstFace, int faceCount, int lodLevel );
-	
 	
 	
 	/** Add billboards from collide list. */
@@ -307,8 +300,8 @@ public:
 	void AddOcclusionMeshes( const deoglCollideList &clist );
 	
 	/** Add a continuous run of faces of an occlusion mesh. */
-	void AddOcclusionMeshFaces( deoglRComponent &component, int firstFace,
-		int faceCount, bool doubleSided, deoglRenderTaskTexture *taskTexture );
+	void AddOcclusionMeshFaces( deoglRComponent &component, bool doubleSided,
+		deoglRenderTaskTexture *taskTexture );
 	
 	
 	

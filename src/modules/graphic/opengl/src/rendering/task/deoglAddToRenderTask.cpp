@@ -30,6 +30,7 @@
 #include "deoglRenderTaskTexture.h"
 #include "deoglRenderTaskVAO.h"
 #include "shared/deoglRenderTaskSharedShader.h"
+#include "shared/deoglRenderTaskSharedInstance.h"
 #include "../defren/deoglDeferredRendering.h"
 #include "../../capabilities/deoglCapabilities.h"
 #include "../../collidelist/deoglCollideList.h"
@@ -232,17 +233,16 @@ void deoglAddToRenderTask::AddComponent( deoglRComponent &component, int lodLeve
 	int t;
 	
 	for( t=0; t<textureCount; t++ ){
+		#ifdef SPECIAL_DEBUG_ON
 		const deoglModelTexture &texture = modelLOD.GetTextureAt( t );
-		
 		if( texture.GetFaceCount() > 0 ){
-			#ifdef SPECIAL_DEBUG_ON
 			decTimer timer;
-			#endif
-			AddComponentFaces( component, t, texture.GetFirstFace(), texture.GetFaceCount(), lodLevel );
-			#ifdef SPECIAL_DEBUG_ON
+			AddComponentFaces( component, t, lodLevel );
 			debug1 += timer.GetElapsedTime(); debug1b++;
-			#endif
 		}
+		#else
+		AddComponentFaces( component, t, lodLevel );
+		#endif
 	}
 }
 
@@ -284,14 +284,11 @@ void deoglAddToRenderTask::AddComponentFaces( deoglRComponent &component, int te
 		return;
 	}
 	
-	const deoglModelTexture &t = component.GetModel()->GetLODAt( lodLevel ).GetTextureAt( texture );
-	if( t.GetFaceCount() > 0 ){
-		AddComponentFaces( component, texture, t.GetFirstFace(), t.GetFaceCount(), lodLevel );
+	const deoglModelTexture &modelTexture = component.GetModel()->GetLODAt( lodLevel ).GetTextureAt( texture );
+	if( modelTexture.GetFaceCount() == 0 ){
+		return;
 	}
-}
-
-void deoglAddToRenderTask::AddComponentFaces( deoglRComponent &component, int texture,
-int firstFace, int faceCount, int lodLevel ){
+	
 	deoglRComponentTexture &componentTexture = component.GetTextureAt( texture );
 	deoglSkinTexture * const skinTexture = componentTexture.GetUseSkinTexture();
 	if( ! skinTexture ){
@@ -331,29 +328,10 @@ int firstFace, int faceCount, int lodLevel ){
 	}
 	
 	// obtain render task vao and add faces
-	deoglRenderTaskVAO &rtvao = *pGetTaskVAO( pSkinShaderType, skinTexture,
-		componentTexture.GetTUCForShaderType( pSkinShaderType ), component.GetVAO( lodLevel ) );
-	
-	const deoglSharedSPBElement * const spbElement = componentTexture.GetSharedSPBElement();
-	
-	deoglRenderTaskInstanceGroup &rtiGroup = componentTexture.GetSharedSPBRTIGroup( lodLevel ).GetGroup();
-	if( rtiGroup.GetTrackingNumber() != pRenderTask.GetTrackingNumber() ){
-		pRenderTask.AddInstanceGroup( &rtiGroup );
-	}
-	
-	deoglRenderTaskInstance *rti = rtvao.GetInstanceForIndex( rtiGroup.GetIndex() );
-	if( ! rti ){
-		rti = pRenderTask.InstanceFromPool();
-		rti->SetGroup( &rtiGroup );
-		rti->SetSubInstanceSPB( &spbElement->GetSPB() );
-		rti->SetFirstPoint( component.GetPointOffset( lodLevel ) );
-		rti->SetFirstIndex( component.GetIndexOffset( lodLevel ) + firstFace * 3 );
-		rti->SetIndexCount( faceCount * 3 );
-		rti->SetDoubleSided( doubleSided );
-		rtvao.AddInstance( rti );
-	}
-	
-	rti->AddSubInstance( spbElement->GetIndex(), component.GetSpecialFlags() );
+	pGetTaskVAO( pSkinShaderType, skinTexture,
+		componentTexture.GetTUCForShaderType( pSkinShaderType ), component.GetVAO( lodLevel ) )->
+			AddInstance( pRenderTask, componentTexture.GetSharedSPBRTIGroup( lodLevel ).GetRTSInstance() )->
+			AddSubInstance( componentTexture.GetSharedSPBElement()->GetIndex(), component.GetSpecialFlags() );
 }
 
 
@@ -406,31 +384,10 @@ void deoglAddToRenderTask::AddBillboard( deoglRBillboard &billboard ){
 	}
 	
 	// obtain render task vao and add faces
-	deoglRenderTaskVAO * const rtvao = pGetTaskVAO( pSkinShaderType, &texture,
-		billboard.GetTUCForShaderType( pSkinShaderType ),
-		pRenderThread.GetDeferredRendering().GetVAOBillboard() );
-	
-	const deoglSharedSPBElement * const spbElement = billboard.GetSharedSPBElement();
-	
-	deoglRenderTaskInstanceGroup &rtiGroup = billboard.GetSharedSPBRTIGroup().GetGroup();
-	if( rtiGroup.GetTrackingNumber() != pRenderTask.GetTrackingNumber() ){
-		pRenderTask.AddInstanceGroup( &rtiGroup );
-	}
-	
-	deoglRenderTaskInstance *rti = rtvao->GetInstanceForIndex( rtiGroup.GetIndex() );
-	if( ! rti ){
-		rti = pRenderTask.InstanceFromPool();
-		rti->SetGroup( &rtiGroup );
-		rti->SetSubInstanceSPB( &spbElement->GetSPB() );
-		rti->SetFirstPoint( 0 );
-		rti->SetFirstIndex( 0 );
-		rti->SetPointCount( 4 );
-		rti->SetDoubleSided( true );
-		rti->SetPrimitiveType( GL_TRIANGLE_FAN );
-		rtvao->AddInstance( rti );
-	}
-	
-	rti->AddSubInstance( spbElement->GetIndex(), billboard.GetSpecialFlags() );
+	pGetTaskVAO( pSkinShaderType, &texture, billboard.GetTUCForShaderType( pSkinShaderType ),
+		pRenderThread.GetDeferredRendering().GetVAOBillboard() )->
+			AddInstance( pRenderTask, billboard.GetSharedSPBRTIGroup().GetRTSInstance() )->
+			AddSubInstance( billboard.GetSharedSPBElement()->GetIndex(), billboard.GetSpecialFlags() );
 }
 
 
@@ -459,28 +416,13 @@ void deoglAddToRenderTask::AddDecal( deoglRDecal &decal, int lodLevel ){
 	// TODO add step support to support the NOTE above
 	
 	// obtain render task vao and add faces
-	deoglRenderTaskVAO * const rtvao = pGetTaskVAO( pSkinShaderType, skinTexture,
-		decal.GetTUCForShaderType( pSkinShaderType ), vboBlock->GetVBO()->GetVAO() );
 	
-	const deoglSharedSPBElement * const spbElement = decal.GetSharedSPBElement();
+	/* TEMP HACK until decal properly PrepareForRender */ (void)decal.GetSharedSPBElement();
 	
-	deoglRenderTaskInstanceGroup &rtiGroup = decal.GetRTIGroup();
-	if( rtiGroup.GetTrackingNumber() != pRenderTask.GetTrackingNumber() ){
-		pRenderTask.AddInstanceGroup( &rtiGroup );
-	}
-	
-	deoglRenderTaskInstance *rti = rtvao->GetInstanceForIndex( rtiGroup.GetIndex() );
-	if( ! rti ){
-		rti = pRenderTask.InstanceFromPool();
-		rti->SetGroup( &rtiGroup );
-		rti->SetSubInstanceSPB( &spbElement->GetSPB() );
-		rti->SetFirstPoint( vboBlock->GetOffset() );
-		rti->SetPointCount( decal.GetPointCount() );
-		rti->SetDoubleSided( true );
-		rtvao->AddInstance( rti );
-	}
-	
-	rti->AddSubInstance( spbElement->GetIndex(), 0 );
+	pGetTaskVAO( pSkinShaderType, skinTexture,
+		decal.GetTUCForShaderType( pSkinShaderType ), vboBlock->GetVBO()->GetVAO() )->
+			AddInstance( pRenderTask, decal.GetRTSInstance() )->
+			AddSubInstance( decal.GetSharedSPBElement()->GetIndex(), 0 );
 }
 
 void deoglAddToRenderTask::AddDecals( deoglRComponent &component, int lodLevel ){
@@ -530,7 +472,6 @@ deoglRPropFieldType &propFieldType, bool imposters ){
 	}
 	
 	// retrieve the shader and texture units configuration to use
-	deoglSPBlockUBO *spbInstance = NULL;
 	deoglSkinShader *skinShader = NULL;
 	deoglShaderProgram *shader = NULL;
 	
@@ -542,11 +483,6 @@ deoglRPropFieldType &propFieldType, bool imposters ){
 	}else{
 		if( skinShader ){
 			shader = skinShader->GetShader();
-			
-			if( shader ){
-				// tuc is specific to the individual clusters
-				spbInstance = propFieldType.GetParamBlockFor( pSkinShaderType );
-			}
 		}
 	}
 	
@@ -570,22 +506,7 @@ deoglRPropFieldType &propFieldType, bool imposters ){
 	
 	// the rest is specific for each cluster except for the vao which is also the same for all clusters in the type
 	deoglPropFieldCluster ** const clusters = clPropFieldType.GetClusters();
-	deoglRenderTaskInstance *renderTaskInstance;
-	const bool instanceDoubleSided = doubleSided;
-	int i, firstPoint, firstIndex, indexCount, pointCount;
-	
-	if( imposters ){
-		firstPoint = 0;
-		firstIndex = 0;
-		indexCount = 0;
-		pointCount = 6;
-		
-	}else{
-		firstPoint = vboBlock.GetOffset();
-		firstIndex = vboBlock.GetIndexOffset() + modelTex.GetFirstFace() * 3;
-		indexCount = modelTex.GetFaceCount() * 3;
-		pointCount = 0;
-	}
+	int i;
 	
 	for( i=0; i<clusterCount; i++ ){
 		// TODO later on clusters are going to have the ability to share TBOs to reduce the number
@@ -608,23 +529,9 @@ deoglRPropFieldType &propFieldType, bool imposters ){
 			DETHROW( deeInvalidParam );
 		}
 		
-		deoglRenderTaskVAO &rtvao = *rtshader.AddTexture( pRenderTask, tuc->GetRTSTexture() )->
-			AddVAO( pRenderTask, vao->GetRTSVAO() );
-		
-		// add an instance for this cluster. all clusters will be handled using sub-instances
-		renderTaskInstance = pRenderTask.InstanceFromPool();
-		
-		renderTaskInstance->SetParameterBlock( spbInstance );
-		renderTaskInstance->SetParameterBlockSpecial( NULL );
-		renderTaskInstance->SetFirstPoint( firstPoint );
-		renderTaskInstance->SetPointCount( pointCount );
-		renderTaskInstance->SetFirstIndex( firstIndex );
-		renderTaskInstance->SetIndexCount( indexCount );
-		renderTaskInstance->SetSubInstanceCount( cluster.GetInstanceCount() );
-		renderTaskInstance->SetDoubleSided( instanceDoubleSided );
-		renderTaskInstance->SetPrimitiveType( GL_TRIANGLES );
-		
-		rtvao.AddInstance( renderTaskInstance );
+		rtshader.AddTexture( pRenderTask, tuc->GetRTSTexture() )->
+			AddVAO( pRenderTask, vao->GetRTSVAO() )->
+			AddInstance( pRenderTask, cluster.GetRTSInstance() );
 	}
 }
 
@@ -704,7 +611,6 @@ void deoglAddToRenderTask::AddHeightTerrainSectorClusters( const deoglHTViewSect
 	const int clusterCount = sector.GetClusterCount() * sector.GetClusterCount();
 	deoglHTSCluster * const htsclusters = sector.GetClusters();
 	sHTVSCluster * const htvsclusters = sectorView.GetClusters();
-	deoglRenderTaskInstance *renderTaskInstance;
 	int firstPoint, firstIndex, indexCount, i;
 	
 	for( i=0; i<clusterCount; i++ ){
@@ -728,19 +634,18 @@ void deoglAddToRenderTask::AddHeightTerrainSectorClusters( const deoglHTViewSect
 			deoglRenderTaskVAO &rtvao = *rttexture.AddVAO( pRenderTask, vao->GetRTSVAO() );
 			
 			// add an instance for this cluster
-			renderTaskInstance = pRenderTask.InstanceFromPool();
 			
-			renderTaskInstance->SetParameterBlock( spbInstance );
-			renderTaskInstance->SetParameterBlockSpecial( NULL );
-			renderTaskInstance->SetFirstPoint( firstPoint );
-			renderTaskInstance->SetPointCount( 0 );
-			renderTaskInstance->SetFirstIndex( firstIndex );
-			renderTaskInstance->SetIndexCount( indexCount );
-			renderTaskInstance->SetSubInstanceCount( 0 );
-			renderTaskInstance->SetDoubleSided( false );
-			renderTaskInstance->SetPrimitiveType( GL_TRIANGLES );
+			// NOTE using RTSInstance for the time beeing has to be updated by hand
 			
-			rtvao.AddInstance( renderTaskInstance );
+			htsclusters[ i ].UpdateRTSInstances();
+			
+			deoglRenderTaskSharedInstance &instance = *htsclusters[ i ].GetRTSInstanceAt( 0 );
+			instance.SetParameterBlock( spbInstance );
+			instance.SetFirstPoint( firstPoint );
+			instance.SetFirstIndex( firstIndex );
+			instance.SetIndexCount( indexCount );
+			
+			rtvao.AddInstance( pRenderTask, &instance );
 			
 			// add borders
 			if( htvsclusters[ i ].lodLevel > 0 ){
@@ -753,19 +658,13 @@ void deoglAddToRenderTask::AddHeightTerrainSectorClusters( const deoglHTViewSect
 					firstIndex = vboOffsetFaces + clod.firstBorderPoint[ border ];
 					indexCount = clod.borderPointCount[ border ];
 					
-					renderTaskInstance = pRenderTask.InstanceFromPool();
+					deoglRenderTaskSharedInstance &instance2 = *htsclusters[ i ].GetRTSInstanceAt( 1 + j );
+					instance2.SetParameterBlock( spbInstance );
+					instance2.SetFirstPoint( firstPoint );
+					instance2.SetFirstIndex( firstIndex );
+					instance2.SetIndexCount( indexCount );
 					
-					renderTaskInstance->SetParameterBlock( spbInstance );
-					renderTaskInstance->SetParameterBlockSpecial( NULL );
-					renderTaskInstance->SetFirstPoint( firstPoint );
-					renderTaskInstance->SetPointCount( 0 );
-					renderTaskInstance->SetFirstIndex( firstIndex );
-					renderTaskInstance->SetIndexCount( indexCount );
-					renderTaskInstance->SetSubInstanceCount( 0 );
-					renderTaskInstance->SetDoubleSided( false );
-					renderTaskInstance->SetPrimitiveType( GL_TRIANGLES );
-					
-					rtvao.AddInstance( renderTaskInstance );
+					rtvao.AddInstance( pRenderTask, &instance );
 				}
 			}
 		}
@@ -829,10 +728,10 @@ deoglRenderTaskTexture *taskTexture ){
 	}
 	
 	if( singleFaceCount > 0 ){
-		AddOcclusionMeshFaces( component, 0, singleFaceCount, false, taskTexture );
+		AddOcclusionMeshFaces( component, false, taskTexture );
 	}
 	if( doubleFaceCount > 0 ){
-		AddOcclusionMeshFaces( component, singleFaceCount, doubleFaceCount, true, taskTexture );
+		AddOcclusionMeshFaces( component, true, taskTexture );
 	}
 }
 
@@ -855,7 +754,7 @@ void deoglAddToRenderTask::AddOcclusionMeshes( const deoglCollideList &clist ){
 }
 
 void deoglAddToRenderTask::AddOcclusionMeshFaces( deoglRComponent &component,
-int firstFace, int faceCount, bool doubleSided, deoglRenderTaskTexture *taskTexture ){
+bool doubleSided, deoglRenderTaskTexture *taskTexture ){
 	if( ! pEnforceShader ){
 		DETHROW( deeInvalidParam );
 	}
@@ -864,38 +763,17 @@ int firstFace, int faceCount, bool doubleSided, deoglRenderTaskTexture *taskText
 	deoglDynamicOcclusionMesh * const dynoccmesh = component.GetDynamicOcclusionMesh();
 	const deoglSharedVBOBlock &block = *component.GetOcclusionMesh()->GetVBOBlock();
 	deoglVAO *vao = NULL;
-	int pointOffset = 0;
 	
 	if( dynoccmesh ){
 		vao = dynoccmesh->GetVAO();
 		
 	}else{
 		vao = block.GetVBO()->GetVAO();
-		pointOffset = block.GetOffset();
 	}
 	
-	deoglRenderTaskVAO &rtvao = *taskTexture->AddVAO( pRenderTask, vao->GetRTSVAO() );
-	
-	// add to render vao
-	deoglSharedSPBElement * const spbElement = component.GetOccMeshSharedSPBElement();
-	deoglRenderTaskInstanceGroup &rtiGroup = component.GetOccMeshSharedSPBRTIGroup( doubleSided ).GetGroup();
-	if( rtiGroup.GetTrackingNumber() != pRenderTask.GetTrackingNumber() ){
-		pRenderTask.AddInstanceGroup( &rtiGroup );
-	}
-	
-	deoglRenderTaskInstance *rti = rtvao.GetInstanceForIndex( rtiGroup.GetIndex() );
-	if( ! rti ){
-		rti = pRenderTask.InstanceFromPool();
-		rti->SetGroup( &rtiGroup );
-		rti->SetSubInstanceSPB( &spbElement->GetSPB() );
-		rti->SetFirstPoint( pointOffset );
-		rti->SetFirstIndex( block.GetIndexOffset() + firstFace * 3 );
-		rti->SetIndexCount( faceCount * 3 );
-		rti->SetDoubleSided( doubleSided );
-		rtvao.AddInstance( rti );
-	}
-	
-	rti->AddSubInstance( spbElement->GetIndex(), component.GetSpecialFlags() );
+	taskTexture->AddVAO( pRenderTask, vao->GetRTSVAO() )->
+		AddInstance( pRenderTask, component.GetOccMeshSharedSPBRTIGroup( doubleSided ).GetRTSInstance() )->
+		AddSubInstance( component.GetOccMeshSharedSPBElement()->GetIndex(), component.GetSpecialFlags() );
 }
 
 
@@ -1019,18 +897,19 @@ deoglRParticleEmitterInstanceType &type ){
 	}
 	
 	// obtain render task vao and add particles
-	deoglRenderTaskVAO * const rtvao = pGetTaskVAO( skinShaderType, skinTexture,
+	deoglRenderTaskVAO &rtvao = *pGetTaskVAO( skinShaderType, skinTexture,
 		type.GetTUCForShaderType( skinShaderType ), emitter.GetVAO() );
 	
 	// NOTE using RTSInstance for the time beeing has to be updated by hand
 	
-	deoglRenderTaskInstance * const rti = pRenderTask.InstanceFromPool();
-	rti->SetParameterBlock( type.GetParamBlockFor( skinShaderType ) );
-	rti->SetFirstIndex( firstIndex );
-	rti->SetIndexCount( indexCount );
-	rti->SetDoubleSided( doubleSided );
-	rti->SetPrimitiveType( primitiveType );
-	rtvao->AddInstance( rti );
+	deoglRenderTaskSharedInstance &instance = *type.GetRTSInstance();
+	instance.SetParameterBlock( type.GetParamBlockFor( skinShaderType ) );
+	instance.SetFirstIndex( firstIndex );
+	instance.SetIndexCount( indexCount );
+	instance.SetDoubleSided( doubleSided );
+	instance.SetPrimitiveType( primitiveType );
+	
+	rtvao.AddInstance( pRenderTask, &instance );
 }
 
 

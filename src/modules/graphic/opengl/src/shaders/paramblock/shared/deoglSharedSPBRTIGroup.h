@@ -24,8 +24,6 @@
 
 #include <dragengine/deObject.h>
 
-#include "../../../rendering/task/deoglRenderTaskInstanceGroup.h"
-
 class deoglSharedSPB;
 class deoglSharedSPBRTIGroupList;
 class deoglRenderTaskSharedInstance;
@@ -44,7 +42,6 @@ class deoglSharedSPBRTIGroup : public deObject{
 public:
 	deoglSharedSPBRTIGroupList &pParent;
 	deoglSharedSPB &pSharedSPB;
-	deoglRenderTaskInstanceGroup pGroup;
 	deoglRenderTaskSharedInstance *pRTSInstance;
 	unsigned int pUniqueKey;
 	
@@ -69,10 +66,6 @@ public:
 	
 	/** Shared SPB. */
 	inline deoglSharedSPB &GetSharedSPB() const{ return pSharedSPB; }
-	
-	/** Render task instance group. */
-	inline deoglRenderTaskInstanceGroup &GetGroup(){ return pGroup; }
-	inline const deoglRenderTaskInstanceGroup &GetGroup() const{ return pGroup; }
 	
 	/** Render task shared instance. */
 	inline deoglRenderTaskSharedInstance *GetRTSInstance() const{ return pRTSInstance; }

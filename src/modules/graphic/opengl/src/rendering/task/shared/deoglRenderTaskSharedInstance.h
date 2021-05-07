@@ -76,16 +76,16 @@ public:
 	
 	
 	
-	/** Shader parameter block or \em NULL. */
+	/** Shader parameter block or NULL. */
 	inline deoglShaderParameterBlock *GetParameterBlock() const{ return pParamBlock; }
 	
-	/** Set shader parameter block or \em NULL. */
+	/** Set shader parameter block or NULL. */
 	void SetParameterBlock( deoglShaderParameterBlock *block );
 	
-	/** Special shader parameter block or \em NULL. */
+	/** Special shader parameter block or NULL. */
 	inline deoglShaderParameterBlock *GetParameterBlockSpecial() const{ return pParamBlockSpecial; }
 	
-	/** Set special shader parameter block or \em NULL. */
+	/** Set special shader parameter block or NULL. */
 	void SetParameterBlockSpecial( deoglShaderParameterBlock *block );
 	
 	
@@ -120,10 +120,10 @@ public:
 	/** Set number of sub instances to render. */
 	void SetSubInstanceCount( int subInstanceCount );
 	
-	/** Sub instances SPB or \em NULL. */
+	/** Sub instances SPB or NULL. */
 	inline deoglSharedSPB *GetSubInstanceSPB() const{ return pSubInstanceSPB; }
 	
-	/** Set sub instances SPB or \em NULL. */
+	/** Set sub instances SPB or NULL. */
 	void SetSubInstanceSPB( deoglSharedSPB *element );
 	
 	/** Double sided. */
