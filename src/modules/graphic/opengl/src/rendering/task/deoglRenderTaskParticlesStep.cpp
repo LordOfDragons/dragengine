@@ -77,11 +77,11 @@ void deoglRenderTaskParticlesStep::SetShader( deoglShaderProgram *shader ){
 	pShader = shader;
 }
 
-void deoglRenderTaskParticlesStep::SetParameterBlockTexture( deoglSPBlockUBO *block ){
+void deoglRenderTaskParticlesStep::SetParameterBlockTexture( deoglShaderParameterBlock *block ){
 	pParamBlockTexture = block;
 }
 
-void deoglRenderTaskParticlesStep::SetParameterBlockInstance( deoglSPBlockUBO *block ){
+void deoglRenderTaskParticlesStep::SetParameterBlockInstance( deoglShaderParameterBlock *block ){
 	pParamBlockInstance = block;
 }
 

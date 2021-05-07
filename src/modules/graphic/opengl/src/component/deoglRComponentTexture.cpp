@@ -39,6 +39,7 @@
 #include "../renderthread/deoglRTChoices.h"
 #include "../shaders/deoglShaderProgram.h"
 #include "../shaders/paramblock/deoglSPBlockUBO.h"
+#include "../shaders/paramblock/shared/deoglSharedSPB.h"
 #include "../shaders/paramblock/shared/deoglSharedSPBElement.h"
 #include "../shaders/paramblock/shared/deoglSharedSPBListUBO.h"
 #include "../shaders/paramblock/shared/deoglSharedSPBRTIGroup.h"
@@ -720,8 +721,8 @@ void deoglRComponentTexture::PrepareTUCs(){
 				renderThread.GetDefaultTextures().GetEmissivity() );
 		}
 		
-		pTUCEnvMap = renderThread.GetShader().GetTexUnitsConfigList().GetWith(
-			&unit[ 0 ], 2, pUseSkinTexture->GetParameterBlock() );
+		pTUCEnvMap = renderThread.GetShader().GetTexUnitsConfigList().GetWith( &unit[ 0 ], 2,
+			pUseSkinTexture->GetSharedSPBElement()->GetSPB().GetParameterBlock() );
 		pTUCEnvMap->EnsureRTSTexture();
 	}
 	
@@ -798,13 +799,14 @@ deoglSkinTexture::eShaderTypes shaderType ) const{
 		skinShader.SetTUCPerObjectEnvMap( &units[ 0 ],
 			pComponent.GetParentWorld()->GetSkyEnvironmentMap(),
 			pComponent.GetRenderEnvMap(), pComponent.GetRenderEnvMapFade() );
-		tuc = renderThread.GetShader().GetTexUnitsConfigList().GetWith( &units[ 0 ],
-			skinShader.GetUsedTextureTargetCount(), pUseSkinTexture->GetParameterBlock() );
+		tuc = renderThread.GetShader().GetTexUnitsConfigList().GetWith(
+			&units[ 0 ], skinShader.GetUsedTextureTargetCount(),
+			pUseSkinTexture->GetSharedSPBElement()->GetSPB().GetParameterBlock() );
 	}
 	
 	if( ! tuc ){
-		tuc = renderThread.GetShader().GetTexUnitsConfigList().GetWith(
-			NULL, 0, pUseSkinTexture->GetParameterBlock() );
+		tuc = renderThread.GetShader().GetTexUnitsConfigList().GetWith( NULL, 0,
+			pUseSkinTexture->GetSharedSPBElement()->GetSPB().GetParameterBlock() );
 	}
 	tuc->EnsureRTSTexture();
 	

@@ -347,7 +347,6 @@ static sShaderConfigInfo vShaderConfigInfo[ deoglSkinTexture::ShaderTypeCount ] 
 deoglSkinTexture::deoglSkinTexture( deoglRenderThread &renderThread, deoglRSkin &skin, const deSkinTexture &texture ) :
 pRenderThread( renderThread ),
 pName( texture.GetName() ),
-pParamBlock( NULL ),
 pSharedSPBElement( NULL )
 {
 	// NOTE this is called during asynchronous resource loading. careful accessing other objects
@@ -718,23 +717,6 @@ bool deoglSkinTexture::GetShaderConfigFor( eShaderTypes shaderType, deoglSkinSha
 	case deoglSkinShaderConfig::egmPropField:
 	default:
 		break;
-	}
-	
-	if( config.GetSharedSPB() ){
-		const deoglRTBufferObject &bo = pRenderThread.GetBufferObject();
-		config.SetSharedSPBUsingSSBO( pRenderThread.GetChoices().GetSharedSPBUseSSBO() );
-		
-		if( config.GetSharedSPBUsingSSBO() ){
-			// NOTE UBO requires array size to be constant, SSBO does not
-			//config.SetSharedSPBArraySize( bo.GetLayoutSkinInstanceSSBO()->GetElementCount() );
-			config.SetSharedSPBPadding( bo.GetLayoutSkinInstanceSSBO()->GetOffsetPadding() );
-			
-		}else{
-			config.SetSharedSPBArraySize( bo.GetLayoutSkinInstanceUBO()->GetElementCount() );
-			config.SetSharedSPBPadding( bo.GetLayoutSkinInstanceUBO()->GetOffsetPadding() );
-		}
-		
-		config.SetSPBInstanceArraySize( bo.GetInstanceArraySizeUBO() );
 	}
 	
 	config.SetShaderMode( shaderConfigInfo.shaderMode );
@@ -1155,20 +1137,6 @@ bool deoglSkinTexture::GetShaderConfigFor( eShaderTypes shaderType, deoglSkinSha
 }
 
 void deoglSkinTexture::PrepareParamBlock(){
-	if( ! pParamBlock ){
-		pParamBlock = deoglSkinShader::CreateSPBTexParam( pRenderThread );
-		
-		pParamBlock->MapBuffer();
-		try{
-			pUpdateParamBlock( *pParamBlock, 0 );
-			
-		}catch( const deException & ){
-			pParamBlock->UnmapBuffer();
-			throw;
-		}
-		pParamBlock->UnmapBuffer();
-	}
-	
 	if( ! pSharedSPBElement ){
 		if( pRenderThread.GetChoices().GetSharedSPBUseSSBO() ){
 			pSharedSPBElement = pRenderThread.GetBufferObject()
@@ -1542,10 +1510,6 @@ void deoglSkinTexture::pCleanUp(){
 			pShaders[ i ]->FreeReference();
 			pShaders[ i ] = NULL;
 		}
-	}
-	if( pParamBlock ){
-		pParamBlock->FreeReference();
-		pParamBlock = NULL;
 	}
 	if( pSharedSPBElement ){
 		pSharedSPBElement->FreeReference();

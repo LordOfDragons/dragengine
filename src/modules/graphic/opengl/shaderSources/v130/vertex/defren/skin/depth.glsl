@@ -11,11 +11,8 @@
 	#include "v130/shared/defren/skin/shared_spb_index.glsl"
 	#include "v130/shared/defren/skin/shared_spb_redirect.glsl"
 #endif
+#include "v130/shared/defren/skin/shared_spb_texture_redirect.glsl"
 #include "v130/shared/defren/skin/ubo_dynamic_parameters.glsl"
-
-#ifdef NODE_VERTEX_UNIFORMS
-NODE_VERTEX_UNIFORMS
-#endif
 
 
 

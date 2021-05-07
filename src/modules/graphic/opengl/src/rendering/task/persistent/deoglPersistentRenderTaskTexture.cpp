@@ -104,7 +104,7 @@ int deoglPersistentRenderTaskTexture::GetTotalSubInstanceCount() const{
 
 
 
-void deoglPersistentRenderTaskTexture::SetParameterBlock( const deoglSPBlockUBO *block ){
+void deoglPersistentRenderTaskTexture::SetParameterBlock( const deoglShaderParameterBlock *block ){
 	pParamBlock = block;
 }
 

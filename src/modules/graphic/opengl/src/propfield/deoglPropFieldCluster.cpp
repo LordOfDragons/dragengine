@@ -41,6 +41,8 @@
 #include "../renderthread/deoglRTShader.h"
 #include "../renderthread/deoglRTTexture.h"
 #include "../shaders/paramblock/deoglSPBlockUBO.h"
+#include "../shaders/paramblock/shared/deoglSharedSPB.h"
+#include "../shaders/paramblock/shared/deoglSharedSPBElement.h"
 #include "../skin/channel/deoglSkinChannel.h"
 #include "../skin/deoglSkinTexture.h"
 #include "../skin/dynamic/deoglRDynamicSkin.h"
@@ -434,8 +436,8 @@ deoglTexUnitsConfig *deoglPropFieldCluster::GetTUCEnvMap(){
 					skinState, dynamicSkin, renderThread.GetDefaultTextures().GetEmissivity() );
 			}
 			
-			pTUCEnvMap = renderThread.GetShader().GetTexUnitsConfigList().GetWith(
-				&unit[ 0 ], 2, pPropFieldType.GetUseSkinTexture()->GetParameterBlock() );
+			pTUCEnvMap = renderThread.GetShader().GetTexUnitsConfigList().GetWith( &unit[ 0 ], 2,
+				pPropFieldType.GetUseSkinTexture()->GetSharedSPBElement()->GetSPB().GetParameterBlock() );
 			pTUCEnvMap->EnsureRTSTexture();
 		}
 		
@@ -475,13 +477,14 @@ deoglTexUnitsConfig *deoglPropFieldCluster::BareGetTUCFor( deoglSkinTexture::eSh
 			units[ target ].EnableTBO( pTBOBendStates );
 		}
 		
-		tuc = renderThread.GetShader().GetTexUnitsConfigList().GetWith( &units[ 0 ],
-			skinShader.GetUsedTextureTargetCount(), skinTexture->GetParameterBlock() );
+		tuc = renderThread.GetShader().GetTexUnitsConfigList().GetWith(
+			&units[ 0 ], skinShader.GetUsedTextureTargetCount(),
+			skinTexture->GetSharedSPBElement()->GetSPB().GetParameterBlock() );
 	}
 	
 	if( ! tuc ){
-		tuc = renderThread.GetShader().GetTexUnitsConfigList().GetWith(
-			NULL, 0, skinTexture->GetParameterBlock() );
+		tuc = renderThread.GetShader().GetTexUnitsConfigList().GetWith( NULL, 0,
+			skinTexture->GetSharedSPBElement()->GetSPB().GetParameterBlock() );
 	}
 	tuc->EnsureRTSTexture();
 	

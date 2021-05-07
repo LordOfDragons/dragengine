@@ -35,6 +35,8 @@
 #include "../renderthread/deoglRTLogger.h"
 #include "../renderthread/deoglRTBufferObject.h"
 #include "../shaders/paramblock/deoglSPBlockUBO.h"
+#include "../shaders/paramblock/shared/deoglSharedSPB.h"
+#include "../shaders/paramblock/shared/deoglSharedSPBElement.h"
 #include "../skin/channel/deoglSkinChannel.h"
 #include "../skin/deoglRSkin.h"
 #include "../skin/deoglSkinTexture.h"
@@ -546,13 +548,14 @@ deoglSkinTexture::eShaderTypes shaderType ) const{
 				renderThread.GetShader().GetTexSamplerConfig( deoglRTShader::etscClampLinear ) );
 		}
 		
-		tuc = renderThread.GetShader().GetTexUnitsConfigList().GetWith( &units[ 0 ],
-			skinShader.GetUsedTextureTargetCount(), pUseSkinTexture->GetParameterBlock() );
+		tuc = renderThread.GetShader().GetTexUnitsConfigList().GetWith(
+			&units[ 0 ], skinShader.GetUsedTextureTargetCount(),
+			pUseSkinTexture->GetSharedSPBElement()->GetSPB().GetParameterBlock() );
 	}
 	
 	if( ! tuc ){
-		tuc = renderThread.GetShader().GetTexUnitsConfigList().GetWith(
-			NULL, 0, pUseSkinTexture->GetParameterBlock() );
+		tuc = renderThread.GetShader().GetTexUnitsConfigList().GetWith( NULL, 0,
+			pUseSkinTexture->GetSharedSPBElement()->GetSPB().GetParameterBlock() );
 	}
 	tuc ->EnsureRTSTexture();
 	

@@ -63,7 +63,7 @@ deoglTexUnitsConfigList::~deoglTexUnitsConfigList(){
 ///////////////
 
 deoglTexUnitsConfig *deoglTexUnitsConfigList::GetWith( const deoglTexUnitConfig *units,
-int unitCount, deoglSPBlockUBO *paramBlock ){
+int unitCount, deoglShaderParameterBlock *paramBlock ){
 	deoglTexUnitsConfig *tuc = pRootTUC;
 	
 	// if there exists already a texture units configuration with these properties add a usage and return it

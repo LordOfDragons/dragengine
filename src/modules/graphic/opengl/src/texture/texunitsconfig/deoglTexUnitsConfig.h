@@ -28,7 +28,7 @@ class deoglCubeMap;
 class deoglRenderPlan;
 class deoglRenderTaskSharedTexture;
 class deoglRenderThread;
-class deoglSPBlockUBO;
+class deoglShaderParameterBlock;
 class deoglTexture;
 class deoglTexUnitConfig;
 
@@ -46,7 +46,7 @@ public:
 	
 	deoglTexUnitConfig *pUnits;
 	int pUnitCount;
-	deoglSPBlockUBO *pParamBlock;
+	deoglShaderParameterBlock *pParamBlock;
 	
 	int pMaterialIndex;
 	int pMaterialUsageCount;
@@ -95,10 +95,10 @@ public:
 	void SetUnits( const deoglTexUnitConfig *units, int unitCount );
 	
 	/** Shader parameter block or NULL. */
-	inline deoglSPBlockUBO *GetParameterBlock() const{ return pParamBlock; }
+	inline deoglShaderParameterBlock *GetParameterBlock() const{ return pParamBlock; }
 	
 	/** Set shader parameter block or NULL. */
-	void SetParameterBlock( deoglSPBlockUBO *paramBlock );
+	void SetParameterBlock( deoglShaderParameterBlock *paramBlock );
 	
 	
 	
@@ -128,7 +128,8 @@ public:
 	bool Equals( const deoglTexUnitsConfig &tuc ) const;
 	
 	/** Texture units configuration matches another one. */
-	bool Equals( const deoglTexUnitConfig *units, int unitCount, deoglSPBlockUBO *paramBlock ) const;
+	bool Equals( const deoglTexUnitConfig *units, int unitCount,
+		deoglShaderParameterBlock *paramBlock ) const;
 	
 	/** Usage count. */
 	inline int GetUsageCount() const{ return pUsageCount; }

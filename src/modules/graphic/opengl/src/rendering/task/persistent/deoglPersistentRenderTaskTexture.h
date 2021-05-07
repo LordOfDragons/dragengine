@@ -29,7 +29,7 @@ class deoglPersistentRenderTaskPool;
 class deoglPersistentRenderTaskShader;
 class deoglTexUnitsConfig;
 class deoglPersistentRenderTaskVAO;
-class deoglSPBlockUBO;
+class deoglShaderParameterBlock;
 class deoglVAO;
 
 
@@ -43,7 +43,7 @@ private:
 	
 	deoglPersistentRenderTaskShader *pParentShader;
 	const deoglTexUnitsConfig *pTUC;
-	const deoglSPBlockUBO *pParamBlock;
+	const deoglShaderParameterBlock *pParamBlock;
 	decPointerLinkedList pVAOs;
 	decPointerDictionaryExt pVAOsMap;
 	
@@ -83,10 +83,10 @@ public:
 	void SetTUC( const deoglTexUnitsConfig *tuc );
 	
 	/** Shader parameter block or NULL if not used. */
-	inline const deoglSPBlockUBO *GetParameterBlock() const{ return pParamBlock; }
+	inline const deoglShaderParameterBlock *GetParameterBlock() const{ return pParamBlock; }
 	
 	/** Set shader parameter block or NULL if not used. */
-	void SetParameterBlock( const deoglSPBlockUBO *block );
+	void SetParameterBlock( const deoglShaderParameterBlock *block );
 	
 	
 	

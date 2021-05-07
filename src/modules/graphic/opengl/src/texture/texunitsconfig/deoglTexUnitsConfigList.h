@@ -25,7 +25,7 @@
 class deoglRenderThread;
 class deoglTexUnitConfig;
 class deoglTexUnitsConfig;
-class deoglSPBlockUBO;
+class deoglShaderParameterBlock;
 
 
 /**
@@ -71,7 +71,7 @@ public:
 	 * if absent. Adds usage to texture units configuration. To remove a usage use RemoveUsage.
 	 */
 	deoglTexUnitsConfig *GetWith( const deoglTexUnitConfig *units,
-		int unitCount, deoglSPBlockUBO *paramBlock );
+		int unitCount, deoglShaderParameterBlock *paramBlock );
 	
 	/** Empty texture units configuration. */
 	deoglTexUnitsConfig *GetEmpty();

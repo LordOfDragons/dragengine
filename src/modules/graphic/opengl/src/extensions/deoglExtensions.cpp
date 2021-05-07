@@ -134,6 +134,7 @@ static const char * const vExtensionNames[ deoglExtensions::EXT_COUNT ] = {
 	"GL_ARB_viewport_array",
 	"GL_ARB_clip_control",
 	"GL_ARB_shader_storage_buffer_object",
+	"GL_ARB_program_interface_query",
 	"GL_ARB_shader_image_load_store",
 	"GL_ARB_compute_shader",
 	
@@ -285,6 +286,11 @@ void deoglExtensions::DisableExtension( eExtensions extension ){
 		
 	case ext_ARB_shader_storage_buffer_object:
 		pglShaderStorageBlockBinding = NULL;
+		break;
+		
+	case ext_ARB_program_interface_query:
+		pglGetProgramInterfaceiv = NULL;
+		pglGetProgramResourceIndex = NULL;
 		break;
 		
 	case ext_ARB_uniform_buffer_object:
@@ -938,6 +944,20 @@ void deoglExtensions::pFetchOptionalFunctions(){
 		#else
 		pGetOptionalFunction( (void**)&pglShaderStorageBlockBinding,
 			"glShaderStorageBlockBinding", ext_ARB_shader_storage_buffer_object );
+		#endif
+	}
+	
+	// GL_ARB_program_interface_query : opengl version 4.3
+	pHasExtension[ ext_ARB_program_interface_query ] &= ! pDisableExtension[ ext_ARB_program_interface_query ];
+	if( pHasExtension[ ext_ARB_program_interface_query ] ){
+		#ifdef ANDROID
+		pglGetProgramInterfaceiv = eglGetProgramInterfaceiv;
+		pglGetProgramResourceIndex = eglGetProgramResourceIndex;
+		#else
+		pGetOptionalFunction( (void**)&pglGetProgramInterfaceiv,
+			"glGetProgramInterfaceiv", ext_ARB_program_interface_query );
+		pGetOptionalFunction( (void**)&pglGetProgramResourceIndex,
+			"glGetProgramResourceIndex", ext_ARB_program_interface_query );
 		#endif
 	}
 	

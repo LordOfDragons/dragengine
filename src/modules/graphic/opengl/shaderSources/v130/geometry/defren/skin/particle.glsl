@@ -37,10 +37,6 @@ in vec4 vParticle1[ 1 ]; // red, green, blue, transparency
 	#include "v130/shared/defren/skin/shared_spb_redirect.glsl"
 #endif
 
-#ifdef NODE_GEOMETRY_INPUTS
-NODE_GEOMETRY_INPUTS
-#endif
-
 
 
 // Outputs

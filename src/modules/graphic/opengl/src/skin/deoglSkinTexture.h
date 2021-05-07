@@ -227,7 +227,6 @@ private:
 	bool pRenderableMaterialProperties;
 	deoglSkinChannel *pChannels[ deoglSkinChannel::CHANNEL_COUNT ];
 	deoglSkinShader *pShaders[ ShaderTypeCount ];
-	deoglSPBlockUBO *pParamBlock;
 	deoglSharedSPBElement *pSharedSPBElement;
 	
 	decColor pAbsorption;
@@ -427,9 +426,6 @@ public:
 	
 	/** Retrieves the shader configuration for a shader type. */
 	bool GetShaderConfigFor( eShaderTypes shaderType, deoglSkinShaderConfig &config ) const;
-	
-	/** Parameter block. */
-	inline deoglSPBlockUBO *GetParameterBlock() const{ return pParamBlock; }
 	
 	/** Shared shader parameter block element. */
 	inline deoglSharedSPBElement *GetSharedSPBElement() const{ return pSharedSPBElement; }

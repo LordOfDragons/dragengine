@@ -29,7 +29,7 @@
 
 class deoglCubeMap;
 class deoglRDynamicSkin;
-class deoglSPBlockUBO;
+class deoglShaderParameterBlock;
 class deoglShaderProgram;
 class deoglRSkin;
 class deoglTexture;
@@ -47,8 +47,8 @@ public:
 	
 private:
 	deoglShaderProgram *pShader;
-	deoglSPBlockUBO *pParamBlockTexture;
-	deoglSPBlockUBO *pParamBlockInstance;
+	deoglShaderParameterBlock *pParamBlockTexture;
+	deoglShaderParameterBlock *pParamBlockInstance;
 	deoglTexUnitsConfig *pTUC;
 	
 	deoglVAO *pVAO;
@@ -83,13 +83,13 @@ public:
 	/** Sets the shader. */
 	void SetShader( deoglShaderProgram *shader );
 	/** Retrieves the texture shader parameter block or NULL if not used. */
-	inline deoglSPBlockUBO *GetParameterBlockTexture() const{ return pParamBlockTexture; }
+	inline deoglShaderParameterBlock *GetParameterBlockTexture() const{ return pParamBlockTexture; }
 	/** Sets the texture shader parameter block or NULL if not used. */
-	void SetParameterBlockTexture( deoglSPBlockUBO *block );
+	void SetParameterBlockTexture( deoglShaderParameterBlock *block );
 	/** Retrieves the instance shader parameter block or NULL if not used. */
-	inline deoglSPBlockUBO *GetParameterBlockInstance() const{ return pParamBlockInstance; }
+	inline deoglShaderParameterBlock *GetParameterBlockInstance() const{ return pParamBlockInstance; }
 	/** Sets the instance shader parameter block or NULL if not used. */
-	void SetParameterBlockInstance( deoglSPBlockUBO *block );
+	void SetParameterBlockInstance( deoglShaderParameterBlock *block );
 	/** Retrieves the texture units configuration. */
 	inline deoglTexUnitsConfig *GetTUC() const{ return pTUC; }
 	/** Sets the texture units configuration. */

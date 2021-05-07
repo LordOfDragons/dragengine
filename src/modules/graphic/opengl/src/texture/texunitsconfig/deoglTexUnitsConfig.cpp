@@ -121,7 +121,7 @@ void deoglTexUnitsConfig::SetUnits( const deoglTexUnitConfig *units, int unitCou
 	}
 }
 
-void deoglTexUnitsConfig::SetParameterBlock( deoglSPBlockUBO *paramBlock ){
+void deoglTexUnitsConfig::SetParameterBlock( deoglShaderParameterBlock *paramBlock ){
 	pParamBlock = paramBlock;
 }
 
@@ -173,7 +173,7 @@ bool deoglTexUnitsConfig::Equals( const deoglTexUnitsConfig &tuc ) const{
 }
 
 bool deoglTexUnitsConfig::Equals( const deoglTexUnitConfig *units, int unitCount,
-deoglSPBlockUBO *paramBlock ) const{
+deoglShaderParameterBlock *paramBlock ) const{
 	if( unitCount < 0 || ( unitCount > 0 && ! units ) ){
 		DETHROW( deeInvalidParam );
 	}

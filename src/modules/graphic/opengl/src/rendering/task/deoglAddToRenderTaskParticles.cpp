@@ -46,6 +46,7 @@
 #include "../../shaders/deoglShaderProgram.h"
 #include "../../shaders/deoglShaderSources.h"
 #include "../../shaders/paramblock/deoglSPBlockUBO.h"
+#include "../../shaders/paramblock/shared/deoglSharedSPB.h"
 #include "../../shaders/paramblock/shared/deoglSharedSPBElement.h"
 #include "../../shaders/paramblock/shared/deoglSharedSPBRTIGroup.h"
 #include "../../skin/deoglSkinTexture.h"
@@ -238,7 +239,7 @@ const deoglRParticleEmitterInstance::sParticle *particle ){
 			rtps->SetPrimitiveType( GL_POINTS );
 		}
 		
-		rtps->SetParameterBlockTexture( skinTexture->GetParameterBlock() );
+		rtps->SetParameterBlockTexture( skinTexture->GetSharedSPBElement()->GetSPB().GetParameterBlock() );
 		rtps->SetParameterBlockInstance( itype.GetParamBlockFor( skinShaderType ) );
 	}
 	

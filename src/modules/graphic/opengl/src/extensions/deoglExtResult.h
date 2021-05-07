@@ -685,6 +685,14 @@ extern GLAPI PFNGLSHADERSTORAGEBLOCKBINDINGPROC pglShaderStorageBlockBinding;
 
 
 
+// GL_ARB_program_interface_query : opengl version 4.3
+/////////////////////////////////////////////////////////////
+
+extern GLAPI PFNGLGETPROGRAMINTERFACEIVPROC pglGetProgramInterfaceiv;
+extern GLAPI PFNGLGETPROGRAMRESOURCEINDEXPROC pglGetProgramResourceIndex;
+
+
+
 // GL_ARB_compute_shader : opengl version 4.3
 ///////////////////////////////////////////////
 

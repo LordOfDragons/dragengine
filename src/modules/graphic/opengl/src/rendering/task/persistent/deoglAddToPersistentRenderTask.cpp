@@ -40,6 +40,7 @@
 #include "../../../renderthread/deoglRTShader.h"
 #include "../../../renderthread/deoglRenderThread.h"
 #include "../../../shaders/paramblock/deoglSPBlockUBO.h"
+#include "../../../shaders/paramblock/shared/deoglSharedSPB.h"
 #include "../../../shaders/paramblock/shared/deoglSharedSPBElement.h"
 #include "../../../shaders/paramblock/shared/deoglSharedSPBRTIGroup.h"
 #include "../../../skin/dynamic/deoglRDynamicSkin.h"
@@ -339,7 +340,7 @@ const deoglTexUnitsConfig *tuc, const deoglVAO *vao ) const{
 	deoglPersistentRenderTaskTexture *rttexture = rtshader->GetTextureWith( tuc );
 	if( ! rttexture ){
 		rttexture = rtshader->AddTexture( tuc );
-		rttexture->SetParameterBlock( skinTexture.GetParameterBlock() );
+		rttexture->SetParameterBlock( skinTexture.GetSharedSPBElement()->GetSPB().GetParameterBlock() );
 	}
 	
 	deoglPersistentRenderTaskVAO *rtvao = rttexture->GetVAOWith( vao );

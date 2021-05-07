@@ -762,11 +762,18 @@ deoglShaderCompiled *deoglShaderLanguage::CompileShader( deoglShaderProgram &pro
 		}
 		
 		// bind shader storage blocks
-		if( pglGetUniformBlockIndex && pglShaderStorageBlockBinding ){
-			count = shaderStorageBlockList.GetCount();
+		count = shaderStorageBlockList.GetCount();
+		if( count > 0 ){
+			if( ! pglGetProgramResourceIndex ){
+				DETHROW_INFO( deeInvalidParam, "missing glGetProgramResourceIndex" );
+			}
+			if( ! pglShaderStorageBlockBinding ){
+				DETHROW_INFO( deeInvalidParam, "missing glShaderStorageBlockBinding" );
+			}
 			for( i=0; i<count; i++ ){
-				location = pglGetUniformBlockIndex( handleShader, shaderStorageBlockList.GetNameAt( i ) );
-				if( location != -1 ){
+				location = pglGetProgramResourceIndex( handleShader, GL_SHADER_STORAGE_BLOCK,
+					shaderStorageBlockList.GetNameAt( i ) );
+				if( location != -1 ){ // GL_INVALID_INDEX
 					OGL_CHECK( pRenderThread, pglShaderStorageBlockBinding(
 						handleShader, location, shaderStorageBlockList.GetTargetAt( i ) ) );
 				}

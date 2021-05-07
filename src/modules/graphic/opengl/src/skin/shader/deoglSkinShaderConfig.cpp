@@ -74,10 +74,6 @@ void deoglSkinShaderConfig::Reset(){
 	pGSRenderCube = false;
 	pGSRenderCascaded = false;
 	pSharedSPB = false;
-	pSharedSPBUsingSSBO = false;
-	pSharedSPBArraySize = 0;
-	pSharedSPBPadding = 0;
-	pSPBInstanceArraySize = 0;
 	pOutline = false;
 	pOutlineThicknessScreen = false;
 	pLuminanceOnly = false;
@@ -241,22 +237,6 @@ void deoglSkinShaderConfig::SetGSRenderCascaded( bool gsRenderCascaded ){
 
 void deoglSkinShaderConfig::SetSharedSPB( bool sharedSPB ){
 	pSharedSPB = sharedSPB;
-}
-
-void deoglSkinShaderConfig::SetSharedSPBUsingSSBO( bool useSSBO ){
-	pSharedSPBUsingSSBO = useSSBO;
-}
-
-void deoglSkinShaderConfig::SetSharedSPBArraySize( int size ){
-	pSharedSPBArraySize = size;
-}
-
-void deoglSkinShaderConfig::SetSharedSPBPadding( int size ){
-	pSharedSPBPadding = size;
-}
-
-void deoglSkinShaderConfig::SetSPBInstanceArraySize( int size ){
-	pSPBInstanceArraySize = size;
 }
 
 void deoglSkinShaderConfig::SetOutline( bool outline ){
@@ -608,18 +588,6 @@ void deoglSkinShaderConfig::DebugGetConfigString( decString &string ) const{
 	if( pSharedSPB ){
 		string.Append( " sharedSPB" );
 	}
-	if( pSharedSPBUsingSSBO ){
-		string.Append( " sspbSSBO" );
-	}
-	if( pSharedSPBArraySize != 0 ){
-		string.AppendFormat( " sSPBArrSize=%d", pSharedSPBArraySize );
-	}
-	if( pSharedSPBPadding != 0 ){
-		string.AppendFormat( " sSPBPad=%d", pSharedSPBPadding );
-	}
-	if( pSPBInstanceArraySize != 0 ){
-		string.AppendFormat( " spbInstArrSize=%d", pSPBInstanceArraySize );
-	}
 	if( pOutline ){
 		string.Append( " outline" );
 	}
@@ -829,10 +797,6 @@ deoglSkinShaderConfig &deoglSkinShaderConfig::operator=( const deoglSkinShaderCo
 	pGSRenderCube = config.pGSRenderCube;
 	pGSRenderCascaded = config.pGSRenderCascaded;
 	pSharedSPB = config.pSharedSPB;
-	pSharedSPBUsingSSBO = config.pSharedSPBUsingSSBO;
-	pSharedSPBArraySize = config.pSharedSPBArraySize;
-	pSharedSPBPadding = config.pSharedSPBPadding;
-	pSPBInstanceArraySize = config.pSPBInstanceArraySize;
 	pOutline = config.pOutline;
 	pOutlineThicknessScreen = config.pOutlineThicknessScreen;
 	pLuminanceOnly = config.pLuminanceOnly;
@@ -923,10 +887,6 @@ bool deoglSkinShaderConfig::operator==( const deoglSkinShaderConfig &config ) co
 		&& pGSRenderCube == config.pGSRenderCube
 		&& pGSRenderCascaded == config.pGSRenderCascaded
 		&& pSharedSPB == config.pSharedSPB
-		&& pSharedSPBUsingSSBO == config.pSharedSPBUsingSSBO
-		&& pSharedSPBArraySize == config.pSharedSPBArraySize
-		&& pSharedSPBPadding == config.pSharedSPBPadding
-		&& pSPBInstanceArraySize == config.pSPBInstanceArraySize
 		&& pOutline == config.pOutline
 		&& pOutlineThicknessScreen == config.pOutlineThicknessScreen
 		&& pLuminanceOnly == config.pLuminanceOnly

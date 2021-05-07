@@ -34,6 +34,7 @@
 #include "../../rendering/deoglRenderReflection.h"
 #include "../../rendering/task/shared/deoglRenderTaskSharedShader.h"
 #include "../../renderthread/deoglRenderThread.h"
+#include "../../renderthread/deoglRTBufferObject.h"
 #include "../../renderthread/deoglRTChoices.h"
 #include "../../renderthread/deoglRTDefaultTextures.h"
 #include "../../renderthread/deoglRTLogger.h"
@@ -712,7 +713,7 @@ deoglSPBlockSSBO *deoglSkinShader::CreateLayoutSkinInstanceSSBO( deoglRenderThre
 		
 		ssbo->MapToStd140();
 		ssbo->CalculateOffsetPadding();
-		ssbo->SetBindingPoint( eubInstanceParameters );
+		ssbo->SetBindingPoint( essboInstanceParameters );
 		
 	}catch( const deException & ){
 		if( ssbo ){
@@ -738,7 +739,7 @@ deoglSPBlockUBO *deoglSkinShader::CreateLayoutSkinTextureUBO( deoglRenderThread 
 		}
 		
 		spb->MapToStd140();
-		spb->SetBindingPoint( deoglSkinShader::eubTextureParameters );
+		spb->SetBindingPoint( eubTextureParameters );
 		
 	}catch( const deException & ){
 		if( spb ){
@@ -764,7 +765,7 @@ deoglSPBlockSSBO *deoglSkinShader::CreateLayoutSkinTextureSSBO( deoglRenderThrea
 		}
 		
 		spb->MapToStd140();
-		spb->SetBindingPoint( deoglSkinShader::eubTextureParameters );
+		spb->SetBindingPoint( essboTextureParameters );
 		
 	}catch( const deException & ){
 		if( spb ){
@@ -1869,25 +1870,41 @@ void deoglSkinShader::GenerateDefines( deoglShaderDefines &defines ){
 		}
 	}
 	
-	if( pConfig.GetSharedSPB() ){
-		decString value;
+	// shared parameter blocks
+	const deoglRTBufferObject &bo = pRenderThread.GetBufferObject();
+	
+	if( pRenderThread.GetChoices().GetSharedSPBUseSSBO() ){
+		defines.AddDefine( "SHARED_SPB_USE_SSBO", "1" );
 		
+		if( bo.GetLayoutSkinInstanceSSBO()->GetOffsetPadding() >= 16 ){
+			defines.AddDefine( "SHARED_SPB_PADDING", bo.GetLayoutSkinInstanceSSBO()->GetOffsetPadding() / 16 );
+		}
+		
+		if( bo.GetLayoutSkinTextureSSBO()->GetOffsetPadding() >= 16 ){
+			defines.AddDefine( "SHARED_SPB_TEXTURE_PADDING", bo.GetLayoutSkinTextureSSBO()->GetOffsetPadding() / 16 );
+		}
+		
+	}else{
+		// NOTE UBO requires array size to be constant, SSBO does not
+		if( bo.GetLayoutSkinInstanceUBO()->GetElementCount() > 0 ){
+			defines.AddDefine( "SHARED_SPB_ARRAY_SIZE", bo.GetLayoutSkinInstanceUBO()->GetElementCount() );
+		}
+		if( bo.GetLayoutSkinTextureUBO()->GetElementCount() > 0 ){
+			defines.AddDefine( "SHARED_SPB_TEXTURE_ARRAY_SIZE", bo.GetLayoutSkinTextureUBO()->GetElementCount() );
+		}
+		
+		if( bo.GetLayoutSkinInstanceUBO()->GetOffsetPadding() >= 16 ){
+			defines.AddDefine( "SHARED_SPB_PADDING", bo.GetLayoutSkinInstanceUBO()->GetOffsetPadding() / 16 );
+		}
+		if( bo.GetLayoutSkinTextureUBO()->GetOffsetPadding() >= 16 ){
+			defines.AddDefine( "SHARED_SPB_TEXTURE_PADDING", bo.GetLayoutSkinTextureUBO()->GetOffsetPadding() / 16 );
+		}
+	}
+	
+	if( pConfig.GetSharedSPB() ){ // affects only instance parameters
 		defines.AddDefine( "SHARED_SPB", "1" );
-		if( pConfig.GetSharedSPBUsingSSBO() ){
-			defines.AddDefine( "SHARED_SPB_USE_SSBO", "1" );
-		}
-		
-		if( pConfig.GetSharedSPBArraySize() > 0 ){
-			value.SetValue( pConfig.GetSharedSPBArraySize() );
-			defines.AddDefine( "SHARED_SPB_ARRAY_SIZE", value );
-		}
-		if( pConfig.GetSPBInstanceArraySize() > 0 ){
-			value.SetValue( pConfig.GetSPBInstanceArraySize() );
-			defines.AddDefine( "SPB_INSTANCE_ARRAY_SIZE", value );
-		}
-		if( pConfig.GetSharedSPBPadding() >= 16 ){
-			value.SetValue( pConfig.GetSharedSPBPadding() / 16 );
-			defines.AddDefine( "SHARED_SPB_PADDING", value );
+		if( bo.GetInstanceArraySizeUBO() > 0 ){
+			defines.AddDefine( "SPB_INSTANCE_ARRAY_SIZE", bo.GetInstanceArraySizeUBO() );
 		}
 	}
 	
@@ -2559,4 +2576,5 @@ void deoglSkinShader::InitShaderParameters(){
 	// shader storage blocks
 	shaderStorageBlockList.Add( "InstanceParametersSSBO", essboInstanceParameters );
 	shaderStorageBlockList.Add( "InstanceIndexSSBO", essboInstanceIndex );
+	shaderStorageBlockList.Add( "TextureParametersSSBO", essboTextureParameters );
 }

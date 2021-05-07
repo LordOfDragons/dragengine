@@ -150,10 +150,6 @@ public:
 	bool pGSRenderCube;
 	bool pGSRenderCascaded;
 	bool pSharedSPB;
-	bool pSharedSPBUsingSSBO;
-	int pSharedSPBArraySize;
-	int pSharedSPBPadding;
-	int pSPBInstanceArraySize;
 	bool pOutline;
 	bool pOutlineThicknessScreen;
 	bool pLuminanceOnly;
@@ -390,30 +386,6 @@ public:
 	
 	/** Set use shared SPB. */
 	void SetSharedSPB( bool sharedSPB );
-	
-	/** Use shared SPB using SSBO. */
-	inline bool GetSharedSPBUsingSSBO() const{ return pSharedSPBUsingSSBO; }
-	
-	/** Set use shared SPB using SSBO. */
-	void SetSharedSPBUsingSSBO( bool useSSBO );
-	
-	/** Shared SPB array size. */
-	inline int GetSharedSPBArraySize() const{ return pSharedSPBArraySize; }
-	
-	/** Set shared SPB array size. */
-	void SetSharedSPBArraySize( int arraySize );
-	
-	/** Shared SPB padding. */
-	inline int GetSharedSPBPadding() const{ return pSharedSPBPadding; }
-	
-	/** Set shared SPB padding. */
-	void SetSharedSPBPadding( int padding );
-	
-	/** SPB instance array size. */
-	inline int GetSPBInstanceArraySize() const{ return pSPBInstanceArraySize; }
-	
-	/** Set SPB instance array size. */
-	void SetSPBInstanceArraySize( int arraySize );
 	
 	/** Render outline. */
 	inline bool GetOutline() const{ return pOutline; }

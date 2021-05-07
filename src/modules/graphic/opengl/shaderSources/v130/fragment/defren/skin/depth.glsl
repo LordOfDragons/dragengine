@@ -9,10 +9,6 @@
 #include "v130/shared/defren/skin/ubo_instance_parameters.glsl"
 #include "v130/shared/defren/skin/ubo_dynamic_parameters.glsl"
 
-#ifdef NODE_FRAGMENT_UNIFORMS
-NODE_FRAGMENT_UNIFORMS
-#endif
-
 
 
 // Samplers
@@ -96,14 +92,14 @@ NODE_FRAGMENT_SAMPLERS
 #ifdef FADEOUT_RANGE
 	in float vFadeZ;
 #endif
+
 #ifdef SHARED_SPB
 	flat in int vSPBIndex;
 	#define spbIndex vSPBIndex
 	#include "v130/shared/defren/skin/shared_spb_redirect.glsl"
 #endif
-#ifdef NODE_FRAGMENT_INPUTS
-NODE_FRAGMENT_INPUTS
-#endif
+
+#include "v130/shared/defren/skin/shared_spb_texture_redirect.glsl"
 
 
 
