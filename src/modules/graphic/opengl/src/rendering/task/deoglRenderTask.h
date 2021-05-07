@@ -60,6 +60,7 @@ private:
 	int pSPBInstanceMaxEntries;
 	bool pUseSPBInstanceFlags;
 	unsigned int pTrackingNumber;
+	bool pForceDoubleSided;
 	
 	deoglRenderTaskShader *pRootShader;
 	deoglRenderTaskShader *pTailShader;
@@ -115,16 +116,16 @@ public:
 	void SortInstancesByDistance( deoglQuickSorter &sorter,
 		const decDVector &position, const decDVector &direction );
 	
-	/** Render parameter shader parameter block or \em NULL. */
+	/** Render parameter shader parameter block or NULL. */
 	inline deoglSPBlockUBO *GetRenderParamBlock() const{ return pRenderParamBlock; }
 	
-	/** Set render parameter shader parameter block or \em NULL to use none. */
+	/** Set render parameter shader parameter block or NULL to use none. */
 	void SetRenderParamBlock( deoglSPBlockUBO *paramBlock );
 	
-	/** Instances texture buffer object or \em NULL. */
+	/** Instances texture buffer object or NULL. */
 	inline GLuint GetTBOInstances() const{ return pTBOInstances; }
 	
-	/** Set instances texture buffer object or \em NULL to use none. */
+	/** Set instances texture buffer object or NULL to use none. */
 	void SetTBOInstances( GLuint tbo );
 	
 	/** Use SPB instance flags. */
@@ -132,6 +133,12 @@ public:
 	
 	/** Set use instance flags. */
 	void SetUseSPBInstanceFlags( bool useFlags );
+	
+	/** Force double sided rendering. */
+	inline bool GetForceDoubleSided() const{ return pForceDoubleSided; }
+	
+	/** Set force double sided rendering. */
+	void SetForceDoubleSided( bool forceDoubleSided );
 	
 	
 	

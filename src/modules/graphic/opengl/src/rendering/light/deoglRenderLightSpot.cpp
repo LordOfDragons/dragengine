@@ -1449,12 +1449,12 @@ int transpShadowMapSize, bool withTransparent, bool copyDepth, bool debugSolid )
 	
 	renderTask.Clear();
 	renderTask.SetRenderParamBlock( renderParamBlock );
+	renderTask.SetForceDoubleSided( true );
 	
 	addToRenderTask.Reset();
 	addToRenderTask.SetSkinShaderType( deoglSkinTexture::estComponentShadowProjection );
 	addToRenderTask.SetSolid( true );
 	addToRenderTask.SetNoShadowNone( true );
-	addToRenderTask.SetForceDoubleSided( true );
 	if( clist1 ){
 		addToRenderTask.AddComponents( *clist1 );
 	}
@@ -1472,7 +1472,7 @@ int transpShadowMapSize, bool withTransparent, bool copyDepth, bool debugSolid )
 	renderTask.PrepareForRender( renderThread );
 	rengeom.RenderTask( renderTask );
 	
-	addToRenderTask.SetForceDoubleSided( false );
+	renderTask.SetForceDoubleSided( false );
 	
 	if( debugSolid ){
 		DebugTimer3Sample( plan, *pDebugInfoSolidShadowRender, true );

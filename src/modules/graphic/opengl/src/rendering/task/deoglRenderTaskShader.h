@@ -26,7 +26,6 @@ class deoglRenderTask;
 class deoglRenderTaskSharedShader;
 class deoglRenderTaskSharedTexture;
 class deoglRenderTaskTexture;
-class deoglSPBlockUBO;
 
 
 
@@ -36,7 +35,6 @@ class deoglSPBlockUBO;
 class deoglRenderTaskShader{
 private:
 	deoglRenderTaskSharedShader *pShader;
-	deoglSPBlockUBO *pParamBlock;
 	
 	deoglRenderTaskTexture *pRootTexture;
 	deoglRenderTaskTexture *pTailTexture;
@@ -84,12 +82,6 @@ public:
 	
 	/** Set shader. */
 	void SetShader( deoglRenderTaskSharedShader *shader );
-	
-	/** Shader parameter block or NULL if not used. */
-	inline deoglSPBlockUBO *GetParameterBlock() const{ return pParamBlock; }
-	
-	/** Set shader parameter block or NULL if not used. */
-	void SetParameterBlock( deoglSPBlockUBO *block );
 	
 	/** Root render task texture or NULL if there is none. */
 	inline deoglRenderTaskTexture *GetRootTexture() const{ return pRootTexture; }

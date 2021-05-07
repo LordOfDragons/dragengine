@@ -885,16 +885,17 @@ deoglRenderPlanSkyLight &planSkyLight, deoglShadowMapper &shadowMapper ){
 			throw;
 		}
 		renderParamBlock->UnmapBuffer();
+			printf("SkyLight %d: ParamBlock %dys\n", i, (int)(timer.GetElapsedTime()*1e6f));
 		
 #ifdef SKY_SHADOW_FILTERED
 		renderTask.Clear();
 		renderTask.SetRenderParamBlock( renderParamBlock );
+		renderTask.SetForceDoubleSided( true );
 		
 		addToRenderTask.Reset();
 		addToRenderTask.SetSkinShaderType( deoglSkinTexture::estComponentShadowOrthogonal );
 		addToRenderTask.SetSolid( true );
 		addToRenderTask.SetNoShadowNone( true );
-		addToRenderTask.SetForceDoubleSided( true );
 		
 		#if 0
 		const int faceCountLimitNear = 100000;
@@ -1009,7 +1010,7 @@ deoglRenderPlanSkyLight &planSkyLight, deoglShadowMapper &shadowMapper ){
 	}
 #endif
 	
-	addToRenderTask.SetForceDoubleSided( false );
+	renderTask.SetForceDoubleSided( false );
 	
 	shadowMapper.DropForeignArrayTextures();
 	

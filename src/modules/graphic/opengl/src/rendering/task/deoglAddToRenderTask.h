@@ -82,7 +82,6 @@ private:
 	
 	bool pFilterDoubleSided;
 	bool pDoubleSided;
-	bool pForceDoubleSided;
 	
 	bool pFilterDecal;
 	bool pDecal;
@@ -92,7 +91,6 @@ private:
 	bool pUseSpecialParamBlock;
 	
 	deoglRenderTaskSharedShader *pEnforceShader;
-	deoglSPBlockUBO *pEnforceParamBlock;
 	
 	
 	
@@ -188,12 +186,6 @@ public:
 	/** Set if doubled sided textures are selected if double sided filtering is enabled. */
 	void SetDoubleSided( bool doubleSided );
 	
-	/** All geometry is forced to be double sided. */
-	inline bool GetForceDoubleSided() const{ return pForceDoubleSided; }
-	
-	/** Set all geometry is forced to be double sided. */
-	void SetForceDoubleSided( bool doubleSided );
-	
 	
 	
 	/** Filtering for decal is enabled. */
@@ -231,12 +223,6 @@ public:
 	
 	/** Set shader to enforce or NULL if free. */
 	void SetEnforceShader( deoglRenderTaskSharedShader *shader );
-	
-	/** Shader parameter block to enforce or NULL if free. */
-	inline deoglSPBlockUBO *GetEnforcedParamBlock() const{ return pEnforceParamBlock; }
-	
-	/** Set shader parameter block to enforce or NULL if free. */
-	void SetEnforceParamBlock( deoglSPBlockUBO *block );
 	
 	
 	

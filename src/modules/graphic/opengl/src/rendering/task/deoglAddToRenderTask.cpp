@@ -164,10 +164,6 @@ void deoglAddToRenderTask::SetDoubleSided( bool doubleSided ){
 	pDoubleSided = doubleSided;
 }
 
-void deoglAddToRenderTask::SetForceDoubleSided( bool doubleSided ){
-	pForceDoubleSided = doubleSided;
-}
-
 void deoglAddToRenderTask::SetFilterDecal( bool filterDecal ){
 	pFilterDecal = filterDecal;
 }
@@ -188,10 +184,6 @@ void deoglAddToRenderTask::SetEnforceShader( deoglRenderTaskSharedShader *shader
 	pEnforceShader = shader;
 }
 
-void deoglAddToRenderTask::SetEnforceParamBlock( deoglSPBlockUBO *block ){
-	pEnforceParamBlock = block;
-}
-
 
 
 void deoglAddToRenderTask::Reset(){
@@ -208,7 +200,6 @@ void deoglAddToRenderTask::Reset(){
 	
 	pFilterDoubleSided = false;
 	pDoubleSided = false;
-	pForceDoubleSided = false;
 	
 	pFilterDecal = false;
 	pDecal = false;
@@ -218,7 +209,6 @@ void deoglAddToRenderTask::Reset(){
 	pUseSpecialParamBlock = false;
 	
 	pEnforceShader = NULL;
-	pEnforceParamBlock = NULL;
 }
 
 // #define SPECIAL_DEBUG_ON
@@ -344,7 +334,7 @@ int firstFace, int faceCount, int lodLevel ){
 	deoglRenderTaskVAO * const rtvao = pGetTaskVAO( pSkinShaderType, skinTexture,
 		componentTexture.GetTUCForShaderType( pSkinShaderType ), component.GetVAO( lodLevel ) );
 	
-	deoglSharedSPBElement * const spbElement = componentTexture.GetSharedSPBElement();
+	const deoglSharedSPBElement * const spbElement = componentTexture.GetSharedSPBElement();
 	
 	deoglRenderTaskInstanceGroup &rtiGroup = componentTexture.GetSharedSPBRTIGroup( lodLevel ).GetGroup();
 	if( rtiGroup.GetTrackingNumber() != pRenderTask.GetTrackingNumber() ){
@@ -359,7 +349,7 @@ int firstFace, int faceCount, int lodLevel ){
 		rti->SetFirstPoint( component.GetPointOffset( lodLevel ) );
 		rti->SetFirstIndex( component.GetIndexOffset( lodLevel ) + firstFace * 3 );
 		rti->SetIndexCount( faceCount * 3 );
-		rti->SetDoubleSided( doubleSided | pForceDoubleSided );
+		rti->SetDoubleSided( doubleSided );
 		rtvao->AddInstance( rti );
 	}
 	
@@ -420,7 +410,7 @@ void deoglAddToRenderTask::AddBillboard( deoglRBillboard &billboard ){
 		billboard.GetTUCForShaderType( pSkinShaderType ),
 		pRenderThread.GetDeferredRendering().GetVAOBillboard() );
 	
-	deoglSharedSPBElement * const spbElement = billboard.GetSharedSPBElement();
+	const deoglSharedSPBElement * const spbElement = billboard.GetSharedSPBElement();
 	
 	deoglRenderTaskInstanceGroup &rtiGroup = billboard.GetSharedSPBRTIGroup().GetGroup();
 	if( rtiGroup.GetTrackingNumber() != pRenderTask.GetTrackingNumber() ){
@@ -472,7 +462,7 @@ void deoglAddToRenderTask::AddDecal( deoglRDecal &decal, int lodLevel ){
 	deoglRenderTaskVAO * const rtvao = pGetTaskVAO( pSkinShaderType, skinTexture,
 		decal.GetTUCForShaderType( pSkinShaderType ), vboBlock->GetVBO()->GetVAO() );
 	
-	deoglSharedSPBElement * const spbElement = decal.GetSharedSPBElement();
+	const deoglSharedSPBElement * const spbElement = decal.GetSharedSPBElement();
 	
 	deoglRenderTaskInstanceGroup &rtiGroup = decal.GetRTIGroup();
 	if( rtiGroup.GetTrackingNumber() != pRenderTask.GetTrackingNumber() ){
@@ -582,7 +572,7 @@ deoglRPropFieldType &propFieldType, bool imposters ){
 	// the rest is specific for each cluster except for the vao which is also the same for all clusters in the type
 	deoglPropFieldCluster ** const clusters = clPropFieldType.GetClusters();
 	deoglRenderTaskInstance *renderTaskInstance;
-	const bool instanceDoubleSided = ( doubleSided || pForceDoubleSided );
+	const bool instanceDoubleSided = doubleSided;
 	int i, firstPoint, firstIndex, indexCount, pointCount;
 	
 	if( imposters ){
@@ -869,10 +859,7 @@ void deoglAddToRenderTask::AddOcclusionMeshes( const deoglCollideList &clist ){
 	deoglRenderTaskTexture *rttexture = NULL;
 	
 	if( pRenderTask.GetShaderCount() == 0 ){
-		deoglRenderTaskShader &rtshader = *pRenderTask.AddShader( pEnforceShader );
-		rtshader.SetParameterBlock( pEnforceParamBlock );
-		
-		rttexture = rtshader.AddTexture( pRenderTask,
+		rttexture = pRenderTask.AddShader( pEnforceShader )->AddTexture( pRenderTask,
 			pRenderThread.GetShader().GetTexUnitsConfigList().GetEmptyNoUsage()->GetRTSTexture() );
 		
 	}else{

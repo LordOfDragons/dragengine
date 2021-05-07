@@ -67,6 +67,7 @@ pTBOInstances( 0 ),
 pSPBInstanceMaxEntries( 0 ),
 pUseSPBInstanceFlags( false ),
 pTrackingNumber( 0 ),
+pForceDoubleSided( false ),
 
 pRootShader( NULL ),
 pTailShader( NULL ),
@@ -152,6 +153,7 @@ void deoglRenderTask::Clear(){
 	SetRenderParamBlock( NULL );
 	SetTBOInstances( 0 );
 	pUseSPBInstanceFlags = false;
+	pForceDoubleSided = false;
 	pTrackingNumber = UpdateTracking();
 }
 
@@ -200,6 +202,10 @@ void deoglRenderTask::SetTBOInstances( GLuint tbo ){
 
 void deoglRenderTask::SetUseSPBInstanceFlags( bool useFlags ){
 	pUseSPBInstanceFlags = useFlags;
+}
+
+void deoglRenderTask::SetForceDoubleSided( bool forceDoubleSided ){
+	pForceDoubleSided = forceDoubleSided;
 }
 
 
@@ -454,9 +460,9 @@ void deoglRenderTask::DebugPrint( deoglRTLogger &rtlogger ){
 		const deoglRenderTaskShader &shader = *( ( deoglRenderTaskShader* )pListShaders.GetAt( s ) );
 		const deoglShaderDefines &defines = shader.GetShader()->GetShader()->GetDefines();
 		
-		rtlogger.LogInfoFormat( "- shader %i: shader=%p spb=%p textures=%i points=%i vaos=%i "
-			"instances=%i subInstances=%i", s, shader.GetShader(), shader.GetParameterBlock(),
-			shader.GetTextureCount(), shader.GetTotalPointCount(), shader.GetTotalVAOCount(),
+		rtlogger.LogInfoFormat( "- shader %i: shader=%p textures=%i points=%i vaos=%i "
+			"instances=%i subInstances=%i", s, shader.GetShader(), shader.GetTextureCount(),
+			shader.GetTotalPointCount(), shader.GetTotalVAOCount(),
 			shader.GetTotalInstanceCount(), shader.GetTotalSubInstanceCount() );
 		
 		rtlogger.LogInfo( "  - configuration:" );

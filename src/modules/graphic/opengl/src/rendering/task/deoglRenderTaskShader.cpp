@@ -41,7 +41,6 @@
 
 deoglRenderTaskShader::deoglRenderTaskShader() :
 pShader( NULL ),
-pParamBlock( NULL ),
 
 pRootTexture( NULL ),
 pTailTexture( NULL ),
@@ -67,7 +66,6 @@ deoglRenderTaskShader::~deoglRenderTaskShader(){
 
 void deoglRenderTaskShader::Reset(){
 	pShader = NULL;
-	pParamBlock = NULL;
 	pHasTextureCount = 0;
 	
 	pRootTexture = NULL;
@@ -129,10 +127,6 @@ int deoglRenderTaskShader::GetTotalSubInstanceCount() const{
 
 void deoglRenderTaskShader::SetShader( deoglRenderTaskSharedShader *shader ){
 	pShader = shader;
-}
-
-void deoglRenderTaskShader::SetParameterBlock( deoglSPBlockUBO *block ){
-	pParamBlock = block;
 }
 
 

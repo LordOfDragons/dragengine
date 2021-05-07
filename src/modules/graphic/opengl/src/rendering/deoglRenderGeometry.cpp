@@ -271,6 +271,7 @@ void deoglRenderGeometry::RenderTask( const deoglRenderTask &renderTask ){
 	
 	deoglRenderThread &renderThread = GetRenderThread();
 	deoglSPBlockUBO * const renderParamBlock = renderTask.GetRenderParamBlock();
+	const bool forceDoubleSided = renderTask.GetForceDoubleSided();
 	deoglShaderParameterBlock *spbSIIndexInstance = NULL;
 	bool curDoubleSided = false;
 	deoglVAO *curVAO = NULL;
@@ -319,7 +320,7 @@ void deoglRenderGeometry::RenderTask( const deoglRenderTask &renderTask ){
 				const int indexSize = vao->GetIndexSize();
 				
 				while( renderTaskInstance ){
-					const bool doubleSided = renderTaskInstance->GetDoubleSided();
+					const bool doubleSided = renderTaskInstance->GetDoubleSided() | forceDoubleSided;
 					
 					if( renderTaskInstance->GetParameterBlock() ){
 						renderTaskInstance->GetParameterBlock()->Activate();

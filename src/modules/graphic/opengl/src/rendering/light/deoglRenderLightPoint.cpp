@@ -1571,7 +1571,6 @@ bool debugSolid ){
 	addToRenderTask.Reset();
 	addToRenderTask.SetSolid( true );
 	addToRenderTask.SetNoShadowNone( true );
-	addToRenderTask.SetForceDoubleSided( true );
 	
 	if( useGSRenderCube ){
 		addToRenderTask.SetUseSpecialParamBlock( true );
@@ -1603,9 +1602,9 @@ bool debugSolid ){
 		renderTask.Clear();
 		renderTask.SetRenderParamBlock( renderParamBlock );
 		renderTask.SetUseSPBInstanceFlags( true );
+		renderTask.SetForceDoubleSided( true );
 		
 		addToRenderTask.SetSolid( true );
-		addToRenderTask.SetForceDoubleSided( true );
 		if( clist1 ){
 			addToRenderTask.AddComponents( *clist1 );
 		}
@@ -1625,7 +1624,7 @@ bool debugSolid ){
 // 			renderTask.DebugPrint( renderThread.GetLogger() );
 		rengeom.RenderTask( renderTask );
 		
-		addToRenderTask.SetForceDoubleSided( false );
+		renderTask.SetForceDoubleSided( false );
 		
 		if( debugSolid ){
 			DebugTimer4Sample( plan, *pDebugInfoSolidShadowFaceRender, true );
@@ -1678,9 +1677,9 @@ bool debugSolid ){
 			
 			renderTask.Clear();
 			renderTask.SetRenderParamBlock( renderParamBlock );
+			renderTask.SetForceDoubleSided( true );
 			
 			addToRenderTask.SetSolid( true );
-			addToRenderTask.SetForceDoubleSided( true );
 			addToRenderTask.SetFilterCubeFace( cmf );
 			if( clist1 ){
 				addToRenderTask.AddComponents( *clist1 );
@@ -1699,7 +1698,7 @@ bool debugSolid ){
 			renderTask.PrepareForRender( renderThread );
 			rengeom.RenderTask( renderTask );
 			
-			addToRenderTask.SetForceDoubleSided( false );
+			renderTask.SetForceDoubleSided( false );
 			
 			if( debugSolid ){
 				DebugTimer4Sample( plan, *pDebugInfoSolidShadowFaceRender, true );
