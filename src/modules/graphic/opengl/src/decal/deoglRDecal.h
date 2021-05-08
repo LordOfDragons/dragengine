@@ -88,10 +88,7 @@ public:
 	deoglTexUnitsConfig *pTUCEnvMap;
 	
 	bool pDirtySharedSPBElement;
-	
-	bool pDirtyTUCGeometry;
-	bool pDirtyTUCShadow;
-	bool pDirtyTUCEnvMap;
+	bool pDirtyTUCs;
 	
 	
 	
@@ -185,8 +182,6 @@ public:
 	inline deoglRDynamicSkin *GetUseDynamicSkin() const{ return pUseDynamicSkin; }
 	/** Retrieves the actual skin state to use. */
 	inline deoglSkinState *GetUseSkinState() const{ return pUseSkinState; }
-	/** Updates the actual texture parameters to use. */
-	void UpdateUseSkin();
 	
 	/**
 	 * Update skin state depending on skin and dynamic skin.
@@ -202,7 +197,6 @@ public:
 	
 	
 	void DirtyPrepareSkinStateRenderables();
-	void PrepareSkinStateRenderables();
 	void DynamicSkinRenderablesChanged();
 	void UpdateRenderableMapping();
 	
@@ -232,43 +226,44 @@ public:
 	
 	
 	/** Shared shader parameter block element. */
-	deoglSharedSPBElement *GetSharedSPBElement();
+	inline deoglSharedSPBElement *GetSharedSPBElement() const{ return pSharedSPBElement; }
 	
 	/** Render task shared instance or NULL. */
 	inline deoglRenderTaskSharedInstance *GetRTSInstance() const{ return pRTSInstance; }
 	
-	/** Retrieves the texture units configuration for the given shader type. */
-	deoglTexUnitsConfig *GetTUCForShaderType( deoglSkinTexture::eShaderTypes shaderType );
+	/** Texture units configuration for the given shader type. */
+	deoglTexUnitsConfig *GetTUCForShaderType( deoglSkinTexture::eShaderTypes shaderType ) const;
+	
 	/**
-	 * Retrieves the texture units configuration for geometry type shaders or NULL if empty.
+	 * Texture units configuration for geometry type shaders or NULL if empty.
 	 * This texture units configuration works for the shader type estComponentGeometry.
 	 */
-	deoglTexUnitsConfig *GetTUCGeometry();
+	inline deoglTexUnitsConfig *GetTUCGeometry() const{ return pTUCGeometry; }
+	
 	/**
-	 * Retrieves the texture units configuration for shadow type shaders or NULL if empty.
+	 * Texture units configuration for shadow type shaders or NULL if empty.
 	 * This texture units configuration works for these shader types:
 	 * - estComponentShadowProjection
 	 * - estComponentShadowOrthogonal
 	 * - estComponentShadowOrthogonalCascaded
 	 * - estComponentShadowDistance
 	 */
-	deoglTexUnitsConfig *GetTUCShadow();
+	inline deoglTexUnitsConfig *GetTUCShadow() const{ return pTUCShadow; }
+	
 	/**
-	 * Retrieves the texture units configuration for the environment map shader or NULL if empty.
+	 * Texture units configuration for the environment map shader or NULL if empty.
 	 * This texture units configuration works for the shader type estEnvMap.
 	 */
-	deoglTexUnitsConfig *GetTUCEnvMap();
+	inline deoglTexUnitsConfig *GetTUCEnvMap() const{ return pTUCEnvMap; }
+	
 	/** Obtain texture units configuration for a shader type. Bare call not to be used directly. */
-	deoglTexUnitsConfig *BareGetTUCFor( deoglSkinTexture::eShaderTypes shaderType );
+	deoglTexUnitsConfig *BareGetTUCFor( deoglSkinTexture::eShaderTypes shaderType ) const;
 	/** Invalidate parameter blocks. */
 	void InvalidateParamBlocks();
 	/** Mark parameter blocks dirty. */
 	void MarkParamBlocksDirty();
 	/** Marks texture units configurations dirty. */
 	void MarkTUCsDirty();
-	
-	/** Update instance parameter shader parameter block. */
-	void UpdateInstanceParamBlock( deoglShaderParameterBlock &paramBlock, int element, deoglSkinShader &skinShader );
 	
 	
 	
@@ -284,7 +279,13 @@ public:
 private:
 	void pCreateMeshComponent();
 	void pPrepareVBO();
+	void pUpdateUseSkin();
+	void pPrepareTUCs();
+	void pPrepareParamBlocks();
+	void pPrepareSkinStateRenderables();
 	void pUpdateRTSInstance();
+	void pUpdateInstanceParamBlock( deoglShaderParameterBlock &paramBlock,
+		int element, deoglSkinShader &skinShader );
 	
 	void pRequiresPrepareForRender();
 };

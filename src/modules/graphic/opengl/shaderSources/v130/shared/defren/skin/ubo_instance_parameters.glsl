@@ -60,6 +60,7 @@ struct sInstanceParameters{
 	
 	vec3 instRimEmissivityIntensity; // rim.emissivity.intensity
 	float instRimAngle; // rim.angle
+	
 	float instRimExponent; // rim.exponent
 	
 	vec3 instOutlineColor;
@@ -107,11 +108,6 @@ UBOLAYOUT uniform InstanceParameters{
 		float pBurstFactor;
 		#if defined PARTICLE_RIBBON || defined PARTICLE_BEAM
 			int pRibbonSheetCount;
-		#endif
-		
-		#define pDoubleSided true
-		#ifdef WITH_VARIATIONS
-			#define pVariationSeed vec2(0)
 		#endif
 		
 	#else  // PARTICLE
@@ -183,10 +179,9 @@ UBOLAYOUT uniform InstanceParameters{
 	float pInstReflectivityMultiplier; // reflectivity.multiplier
 	
 	vec3 pInstRimEmissivityIntensity; // rim.emissivity.intensity
+	float pInstRimAngle; // rim.angle
 	
-	vec3 pInstRimAngle; // rim.angle
-	
-	vec3 pInstRimExponent; // rim.exponent
+	float pInstRimExponent; // rim.exponent
 	
 	vec3 pInstOutlineColor;
 	
@@ -198,5 +193,12 @@ UBOLAYOUT uniform InstanceParameters{
 	
 	vec3 pInstOutlineEmissivityTint;
 };
+
+#ifdef PARTICLE
+	const bool pDoubleSided = true;
+	#ifdef WITH_VARIATIONS
+		const vec2 pVariationSeed = vec2( 0.0 );
+	#endif
+#endif
 
 #endif  // SHARED_SPB

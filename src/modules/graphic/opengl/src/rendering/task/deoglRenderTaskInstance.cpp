@@ -65,10 +65,6 @@ void deoglRenderTaskInstance::SetInstance( const deoglRenderTaskSharedInstance *
 
 
 
-void deoglRenderTaskInstance::SetSubInstanceCount( int subInstanceCount ){
-	pSubInstanceCount = subInstanceCount;
-}
-
 void deoglRenderTaskInstance::AddSubInstance( int indexInstance, int flags ){
 	pSIIndexInstance.Add( indexInstance );
 	pSIFlags.Add( flags );

@@ -50,8 +50,7 @@ private:
 	deoglSkinTexture::eShaderTypes pSkinShaderTypeRibbon;
 	deoglSkinTexture::eShaderTypes pSkinShaderTypeBeam;
 	
-	deoglRenderTaskSharedShader *pEnforceShader;
-	deoglSPBlockUBO *pEnforceParamBlock;
+	
 	
 public:
 	/** \name Constructors and Destructors */
@@ -84,20 +83,6 @@ public:
 	
 	/** \brief Set shader type to be used for beam skin shaders. */
 	void SetSkinShaderTypeBeam( deoglSkinTexture::eShaderTypes shaderType );
-	
-	
-	
-	/** \brief Shader to enforce or NULL if free. */
-	inline deoglRenderTaskSharedShader *GetEnforcedShader() const{ return pEnforceShader; }
-	
-	/** \brief Set shader to enforce or NULL if free. */
-	void SetEnforceShader( deoglRenderTaskSharedShader *shader );
-	
-	/** \brief Shader parameter block to enforce or NULL if free. */
-	inline deoglSPBlockUBO *GetEnforcedParamBlock() const{ return pEnforceParamBlock; }
-	
-	/** \brief Set shader parameter block to enforce or NULL if free. */
-	void SetEnforceParamBlock( deoglSPBlockUBO *block );
 	
 	
 	

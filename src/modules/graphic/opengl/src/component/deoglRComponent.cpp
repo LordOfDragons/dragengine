@@ -245,6 +245,8 @@ void deoglRComponent::SetOctreeNode( deoglWorldOctree *octreeNode ){
 // extern float hackCSSpecialTime;
 
 void deoglRComponent::UpdateOctreeNode(){
+	// WARNING Called during synchronization from main thread.
+	
 	if( ! pParentWorld ){
 		return;
 	}
@@ -1005,40 +1007,26 @@ void deoglRComponent::SetRenderEnvMap( deoglEnvironmentMap *envmap ){
 	}
 	
 	deoglEnvironmentMap * const prevEnvMap = pRenderEnvMap;
-	if( prevEnvMap ){
-		prevEnvMap->AddReference(); // guard reference
+	const deObjectReference guard( prevEnvMap );
+	
+	if( pRenderEnvMap ){
+		pRenderEnvMap->GetComponentList().RemoveIfExisting( this );
+		pRenderEnvMap->FreeReference();
 	}
 	
-	try{
-		if( pRenderEnvMap ){
-			pRenderEnvMap->GetComponentList().RemoveIfExisting( this );
-			pRenderEnvMap->FreeReference();
-		}
-		
-		pRenderEnvMap = envmap;
-		
-		if( envmap ){
-			envmap->AddReference();
-			envmap->GetComponentList().Add( this );
-		}
-		
-		// now it is safe to set the fade env map
-		SetRenderEnvMapFade( prevEnvMap );
-		pRenderEnvMapFadeFactor = 0.0f;
-		
-		if( ! prevEnvMap ){ // in case SetRenderEnvMapFade did not mark all textures dirty yet
-			MarkAllTexturesTUCsDirty();
-		}
-		
-	}catch( const deException & ){
-		if( prevEnvMap ){
-			prevEnvMap->FreeReference(); // drop guard reference
-		}
-		throw;
+	pRenderEnvMap = envmap;
+	
+	if( envmap ){
+		envmap->AddReference();
+		envmap->GetComponentList().Add( this );
 	}
 	
-	if( prevEnvMap ){
-		prevEnvMap->FreeReference(); // drop guard reference
+	// now it is safe to set the fade env map
+	SetRenderEnvMapFade( prevEnvMap );
+	pRenderEnvMapFadeFactor = 0.0f;
+	
+	if( ! prevEnvMap ){ // in case SetRenderEnvMapFade did not mark all textures dirty yet
+		MarkAllTexturesTUCsDirty();
 	}
 }
 
@@ -1393,7 +1381,7 @@ int deoglRComponent::GetDecalCount() const{
 	return pDecals.GetCount();
 }
 
-deoglRDecal *deoglRComponent::GetDecalAt( int index ){
+deoglRDecal *deoglRComponent::GetDecalAt( int index ) const{
 	return ( deoglRDecal* )pDecals.GetAt( index );
 }
 

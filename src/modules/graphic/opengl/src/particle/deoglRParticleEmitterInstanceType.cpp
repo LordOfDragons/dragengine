@@ -80,16 +80,14 @@ pUseSkin( NULL ),
 pUseTextureNumber( 0 ),
 pUseSkinTexture( NULL ),
 
-pParamBlockDepth( NULL ),
-pParamBlockGeometry( NULL ),
+pParamBlock( NULL ),
 pTUCDepth( NULL ),
 pTUCCounter( NULL ),
 pTUCGeometry( NULL ),
 pTUCGeometryDepthTest( NULL ),
 
-pValidParamBlockDepth( false ),
-pValidParamBlockGeometry( false ),
-pDirtyParamBlockGeometry( true ),
+pValidParamBlock( false ),
+pDirtyParamBlock( true ),
 
 pDirtyTUCDepth( true ),
 pDirtyTUCCounter( true ),
@@ -107,8 +105,7 @@ pRTSInstance( NULL )
 
 class deoglRParticleEmitterInstanceTypeDeletion : public deoglDelayedDeletion{
 public:
-	deoglSPBlockUBO *paramBlockDepth;
-	deoglSPBlockUBO *paramBlockGeometry;
+	deoglSPBlockUBO *paramBlock;
 	deoglTexUnitsConfig *tucDepth;
 	deoglTexUnitsConfig *tucCounter;
 	deoglTexUnitsConfig *tucGeometry;
@@ -116,8 +113,7 @@ public:
 	deoglSPBlockUBO *paramBlockLightInstance;
 	
 	deoglRParticleEmitterInstanceTypeDeletion() :
-	paramBlockDepth( NULL ),
-	paramBlockGeometry( NULL ),
+	paramBlock( NULL ),
 	tucDepth( NULL ),
 	tucCounter( NULL ),
 	tucGeometry( NULL ),
@@ -144,11 +140,8 @@ public:
 		if( tucCounter ){
 			tucCounter->RemoveUsage();
 		}
-		if( paramBlockGeometry ){
-			paramBlockGeometry->FreeReference();
-		}
-		if( paramBlockDepth ){
-			paramBlockDepth->FreeReference();
+		if( paramBlock ){
+			paramBlock->FreeReference();
 		}
 	}
 };
@@ -172,8 +165,7 @@ deoglRParticleEmitterInstanceType::~deoglRParticleEmitterInstanceType(){
 	
 	try{
 		delayedDeletion = new deoglRParticleEmitterInstanceTypeDeletion;
-		delayedDeletion->paramBlockDepth = pParamBlockDepth;
-		delayedDeletion->paramBlockGeometry = pParamBlockGeometry;
+		delayedDeletion->paramBlock = pParamBlock;
 		delayedDeletion->paramBlockLightInstance = pParamBlockLightInstance;
 		delayedDeletion->tucDepth = pTUCDepth;
 		delayedDeletion->tucCounter = pTUCCounter;
@@ -265,113 +257,74 @@ void deoglRParticleEmitterInstanceType::SetUseSkin( deoglRSkin *skin ){
 
 
 
-deoglSPBlockUBO *deoglRParticleEmitterInstanceType::GetParamBlockFor(
-deoglSkinTexture::eShaderTypes shaderType ){
-	switch( shaderType ){
-	case deoglSkinTexture::estParticleGeometry:
-	case deoglSkinTexture::estParticleGeometryDepthTest:
-	case deoglSkinTexture::estParticleRibbonGeometry:
-	case deoglSkinTexture::estParticleRibbonGeometryDepthTest:
-	case deoglSkinTexture::estParticleBeamGeometry:
-	case deoglSkinTexture::estParticleBeamGeometryDepthTest:
-		return GetParamBlockGeometry();
-		
-	case deoglSkinTexture::estParticleDepth:
-	case deoglSkinTexture::estParticleDepthClipPlane:
-	case deoglSkinTexture::estParticleDepthReversed:
-	case deoglSkinTexture::estParticleDepthClipPlaneReversed:
-	case deoglSkinTexture::estParticleShadowProjection:
-	case deoglSkinTexture::estParticleShadowOrthogonal:
-	case deoglSkinTexture::estParticleShadowDistance:
-	case deoglSkinTexture::estParticleCounter:
-	case deoglSkinTexture::estParticleCounterClipPlane:
-	case deoglSkinTexture::estParticleRibbonDepth:
-	case deoglSkinTexture::estParticleRibbonDepthClipPlane:
-	case deoglSkinTexture::estParticleRibbonDepthReversed:
-	case deoglSkinTexture::estParticleRibbonDepthClipPlaneReversed:
-	case deoglSkinTexture::estParticleRibbonCounter:
-	case deoglSkinTexture::estParticleRibbonCounterClipPlane:
-	case deoglSkinTexture::estParticleBeamDepth:
-	case deoglSkinTexture::estParticleBeamDepthClipPlane:
-	case deoglSkinTexture::estParticleBeamDepthReversed:
-	case deoglSkinTexture::estParticleBeamDepthClipPlaneReversed:
-	case deoglSkinTexture::estParticleBeamCounter:
-	case deoglSkinTexture::estParticleBeamCounterClipPlane:
-		return GetParamBlockDepth();
-		
-	default:
-		DETHROW( deeInvalidParam );
-	}
-}
-
-deoglSPBlockUBO *deoglRParticleEmitterInstanceType::GetParamBlockDepth(){
-	if( ! pValidParamBlockDepth ){
-		if( pParamBlockDepth ){
-			pParamBlockDepth->FreeReference();
-			pParamBlockDepth = NULL;
+deoglSPBlockUBO *deoglRParticleEmitterInstanceType::GetParamBlock(){
+	if( ! pValidParamBlock ){
+		if( pParamBlock ){
+			pParamBlock->FreeReference();
+			pParamBlock = NULL;
 		}
 		
 		if( pUseSkinTexture ){
-			deoglSkinShader &skinShader = *pUseSkinTexture->GetShaderFor( deoglSkinTexture::estParticleDepth );
+			deoglSkinTexture::eShaderTypes shaderType;
+			switch( pEmitterInstance.GetEmitter()->GetTypeAt( pIndex ).GetSimulationType() ){
+			case deParticleEmitterType::estParticle:
+				shaderType = deoglSkinTexture::estParticleGeometry;
+				break;
+				
+			case deParticleEmitterType::estBeam:
+				shaderType = deoglSkinTexture::estParticleBeamGeometry;
+				break;
+				
+			case deParticleEmitterType::estRibbon:
+				shaderType = deoglSkinTexture::estParticleRibbonGeometry;
+				break;
+				
+			default:
+				DETHROW( deeInvalidParam );
+			}
+			
+			deoglSkinShader &skinShader = *pUseSkinTexture->GetShaderFor( shaderType );
 			
 			/*if( deoglSkinShader::USE_SHARED_SPB ){
 				pParamBlockDepth = new deoglSPBlockUBO( *pEmitterInstance.GetRenderThread()
 					.GetBufferObject().GetLayoutSkinInstanceUBO() );
 				
 			}else{*/
-				pParamBlockDepth = skinShader.CreateSPBInstParam();
+				pParamBlock = skinShader.CreateSPBInstParam();
 			//}
 		}
 		
-		pValidParamBlockDepth = true;
-		pDirtyParamBlockDepth = true;
+		pValidParamBlock = true;
+		pDirtyParamBlock = true;
 	}
 	
-	if( pDirtyParamBlockDepth ){
-		if( pParamBlockDepth ){
-			UpdateInstanceParamBlock( *pParamBlockDepth,
-				*pUseSkinTexture->GetShaderFor( deoglSkinTexture::estParticleDepth ) );
-		}
-		
-		pDirtyParamBlockDepth = false;
-	}
-	
-	return pParamBlockDepth;
-}
-
-deoglSPBlockUBO *deoglRParticleEmitterInstanceType::GetParamBlockGeometry(){
-	if( ! pValidParamBlockGeometry ){
-		if( pParamBlockGeometry ){
-			pParamBlockGeometry->FreeReference();
-			pParamBlockGeometry = NULL;
-		}
-		
-		if( pUseSkinTexture ){
-			deoglSkinShader &skinShader = *pUseSkinTexture->GetShaderFor( deoglSkinTexture::estParticleGeometry );
-			
-			/*if( deoglSkinShader::USE_SHARED_SPB ){
-				pParamBlockGeometry = new deoglSPBlockUBO( *pEmitterInstance.GetRenderThread()
-					.GetBufferObject().GetLayoutSkinInstanceUBO() );
+	if( pDirtyParamBlock ){
+		if( pParamBlock ){
+			deoglSkinTexture::eShaderTypes shaderType;
+			switch( pEmitterInstance.GetEmitter()->GetTypeAt( pIndex ).GetSimulationType() ){
+			case deParticleEmitterType::estParticle:
+				shaderType = deoglSkinTexture::estParticleGeometry;
+				break;
 				
-			}else{*/
-				pParamBlockGeometry = skinShader.CreateSPBInstParam();
-			//}
+			case deParticleEmitterType::estBeam:
+				shaderType = deoglSkinTexture::estParticleBeamGeometry;
+				break;
+				
+			case deParticleEmitterType::estRibbon:
+				shaderType = deoglSkinTexture::estParticleRibbonGeometry;
+				break;
+				
+			default:
+				DETHROW( deeInvalidParam );
+			}
+			
+			UpdateInstanceParamBlock( *pParamBlock, *pUseSkinTexture->GetShaderFor( shaderType ) );
 		}
 		
-		pValidParamBlockGeometry = true;
-		pDirtyParamBlockGeometry = true;
+		pDirtyParamBlock = false;
 	}
 	
-	if( pDirtyParamBlockGeometry ){
-		if( pParamBlockGeometry ){
-			UpdateInstanceParamBlock( *pParamBlockGeometry,
-				*pUseSkinTexture->GetShaderFor( deoglSkinTexture::estParticleGeometry ) );
-		}
-		
-		pDirtyParamBlockGeometry = false;
-	}
-	
-	return pParamBlockGeometry;
+	return pParamBlock;
 }
 
 deoglTexUnitsConfig *deoglRParticleEmitterInstanceType::GetTUCForShaderType(
@@ -563,14 +516,12 @@ deoglSkinTexture::eShaderTypes shaderType ) const{
 }
 
 void deoglRParticleEmitterInstanceType::InvalidateParamBlocks(){
-	pValidParamBlockDepth = false;
-	pValidParamBlockGeometry = false;
-	
+	pValidParamBlock = false;
 	MarkParamBlocksDirty();
 }
 
 void deoglRParticleEmitterInstanceType::MarkParamBlocksDirty(){
-	pDirtyParamBlockGeometry = true;
+	pDirtyParamBlock = true;
 }
 
 void deoglRParticleEmitterInstanceType::MarkTUCsDirty(){

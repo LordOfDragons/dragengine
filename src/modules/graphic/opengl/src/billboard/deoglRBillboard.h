@@ -51,7 +51,7 @@ class deBillboard;
 
 
 /**
- * \brief Render billboard.
+ * Render billboard.
  */
 class deoglRBillboard : public deObject, public deoglOcclusionTestListener{
 public:
@@ -96,11 +96,7 @@ public:
 	deoglTexUnitsConfig *pTUCEnvMap;
 	
 	bool pDirtySharedSPBElement;
-	
-	bool pDirtyTUCDepth;
-	bool pDirtyTUCGeometry;
-	bool pDirtyTUCCounter;
-	bool pDirtyTUCEnvMap;
+	bool pDirtyTUCs;
 	
 	bool pCubeFaceVisible[ 6 ];
 	int pSpecialFlags;
@@ -127,10 +123,10 @@ public:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create render decal. */
+	/** Create render decal. */
 	deoglRBillboard( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up render decal. */
+	/** Clean up render decal. */
 	virtual ~deoglRBillboard();
 	/*@}*/
 	
@@ -138,57 +134,57 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Render thread. */
+	/** Render thread. */
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
 	
 	
-	/** \brief Parent world or NULL if not part of a world. */
+	/** Parent world or NULL if not part of a world. */
 	inline deoglRWorld *GetParentWorld() const{ return pParentWorld; }
 	
-	/** \brief Set parent world. */
+	/** Set parent world. */
 	void SetParentWorld( deoglRWorld *parentWorld );
 	
-	/** \brief Octree node or NULL if not inserted into the parent world octree. */
+	/** Octree node or NULL if not inserted into the parent world octree. */
 	inline deoglWorldOctree *GetOctreeNode() const{ return pOctreeNode; }
 	
 	/**
-	 * \brief Set octree node or NULL if not inserted into the parent world octree.
+	 * Set octree node or NULL if not inserted into the parent world octree.
 	 * \details This call is to be used only by deoglWorldOctree.
 	 */
 	void SetOctreeNode( deoglWorldOctree *octreeNode );
 	
-	/** \brief Update octree position. */
+	/** Update octree position. */
 	void UpdateOctreeNode();
 	
 	
 	
-	/** \brief Skin or NULL if not set. */
+	/** Skin or NULL if not set. */
 	inline deoglRSkin *GetSkin() const{ return pSkin; }
 	
-	/** \brief Set skin or NULL if not set. */
+	/** Set skin or NULL if not set. */
 	void SetSkin( deoglRSkin *skin );
 	
-	/** \brief Skin texture to use or NULL if not present. */
+	/** Skin texture to use or NULL if not present. */
 	inline deoglSkinTexture *GetUseSkinTexture() const{ return pUseSkinTexture; }
 	
-	/** \brief Dynamic skin or NULL if not set. */
+	/** Dynamic skin or NULL if not set. */
 	inline deoglRDynamicSkin *GetDynamicSkin() const{ return pDynamicSkin; }
 	
-	/** \brief Set dynamic skin or NULL if not set. */
+	/** Set dynamic skin or NULL if not set. */
 	void SetDynamicSkin( deoglRDynamicSkin *dynamicSkin );
 	
-	/** \brief Update skin. */
+	/** Update skin. */
 	void UpdateSkin( float elapsed );
 	
-	/** \brief Skin state. */
+	/** Skin state. */
 	inline deoglSkinState *GetSkinState() const{ return pSkinState; }
 	
-	/** \brief Init skin state calculated properties. */
+	/** Init skin state calculated properties. */
 	void InitSkinStateCalculatedProperties();
 	void UpdateSkinStateCalculatedProperties();
 	
-	/** \brief Skin rendered. */
+	/** Skin rendered. */
 	inline deoglSkinRendered &GetSkinRendered(){ return pSkinRendered; }
 	inline const deoglSkinRendered &GetSkinRendered() const{ return pSkinRendered; }
 	
@@ -199,67 +195,71 @@ public:
 	
 	
 	
-	/** \brief Add plans for renderables in the component if existing and requiring one. */
+	/** Add plans for renderables in the component if existing and requiring one. */
 	void AddSkinStateRenderPlans( deoglRenderPlan &plan );
 	
 	
 	
-	/** \brief Shared shader parameter block element. */
-	deoglSharedSPBElement *GetSharedSPBElement();
+	/** Shared shader parameter block element. */
+	inline deoglSharedSPBElement *GetSharedSPBElement() const{ return pSharedSPBElement; }
 	
-	/** \brief Shared SPB render task instance group. */
-	deoglSharedSPBRTIGroup &GetSharedSPBRTIGroup();
+	/** Shared SPB render task instance group. */
+	inline deoglSharedSPBRTIGroup &GetSharedSPBRTIGroup() const{ return *pSharedSPBRTIGroup; }
 	
-	/** \brief Texture units configuration for the given shader type. */
-	deoglTexUnitsConfig *GetTUCForShaderType( deoglSkinTexture::eShaderTypes shaderType );
+	/** Texture units configuration for the given shader type. */
+	deoglTexUnitsConfig *GetTUCForShaderType( deoglSkinTexture::eShaderTypes shaderType ) const;
 	
 	/**
-	 * \brief Texture units configuration for depth type shaders or NULL if empty.
-	 * \details This texture units configuration works for the shader types:
-	 *          - deoglSkinTexture::estBillboardDepth
-	 *          - deoglSkinTexture::estBillboardDepthClipPlane
+	 * Texture units configuration for depth type shaders or NULL if empty.
+	 * 
+	 * This texture units configuration works for the shader types:
+	 * - deoglSkinTexture::estBillboardDepth
+	 * - deoglSkinTexture::estBillboardDepthClipPlane
 	 */
-	deoglTexUnitsConfig *GetTUCDepth();
+	inline deoglTexUnitsConfig *GetTUCDepth() const{ return pTUCDepth; }
 	
 	/**
-	 * \brief Texture units configuration for geometry type shaders or NULL if empty.
-	 * \details This texture units configuration works for the shader types:
-	 *          - deoglSkinTexture::estBillboardGeometry
+	 * Texture units configuration for geometry type shaders or NULL if empty.
+	 * 
+	 * This texture units configuration works for the shader types:
+	 * - deoglSkinTexture::estBillboardGeometry
 	 */
-	deoglTexUnitsConfig *GetTUCGeometry();
+	inline deoglTexUnitsConfig *GetTUCGeometry() const{ return pTUCGeometry; }
 	
 	/**
-	 * \brief Texture units configuration for counter type shaders or NULL if empty.
-	 * \details This texture units configuration works for the shader types:
-	 *          - deoglSkinTexture::estBillboardCounter
-	 *          - deoglSkinTexture::estBillboardCounterClipPlane
+	 * Texture units configuration for counter type shaders or NULL if empty.
+	 * 
+	 * This texture units configuration works for the shader types:
+	 * - deoglSkinTexture::estBillboardCounter
+	 * - deoglSkinTexture::estBillboardCounterClipPlane
 	 */
-	deoglTexUnitsConfig *GetTUCCounter();
+	inline deoglTexUnitsConfig *GetTUCCounter() const{ return pTUCCounter; }
 	
 	/**
-	 * \brief Texture units configuration for the environment map shader or NULL if empty.
-	 * \details This texture units configuration works for the shader types:
-	 *          - deoglSkinTexture::estEnvMap
+	 * Texture units configuration for the environment map shader or NULL if empty.
+	 * 
+	 * This texture units configuration works for the shader types:
+	 * - deoglSkinTexture::estEnvMap
 	 */
-	deoglTexUnitsConfig *GetTUCEnvMap();
+	inline deoglTexUnitsConfig *GetTUCEnvMap() const{ return pTUCEnvMap; }
 	
 	/**
-	 * \brief Obtain texture units configuration for a shader type.
+	 * Obtain texture units configuration for a shader type.
 	 * \details Bare call not to be used directly.
 	 */
 	deoglTexUnitsConfig *BareGetTUCFor( deoglSkinTexture::eShaderTypes shaderType ) const;
 	
-	/** \brief Invalidate parameter blocks. */
+	/** Invalidate parameter blocks. */
 	void InvalidateParamBlocks();
 	
-	/** \brief Mark parameter blocks dirty. */
+	/** Mark parameter blocks dirty. */
 	void MarkParamBlocksDirty();
 	
-	/** \brief Marks texture units configurations dirty. */
+	/** Marks texture units configurations dirty. */
 	void MarkTUCsDirty();
 	
 	/**
-	 * \brief Update instance parameter shader parameter block.
+	 * Update instance parameter shader parameter block.
 	 * 
 	 * Parameter block has to be mapped while calling this method.
 	 * Caller is responsible to properly unmap in case of exceptions.
@@ -270,7 +270,7 @@ public:
 	
 	
 	/**
-	 * \brief Update cube face visibility.
+	 * Update cube face visibility.
 	 * 
 	 * Calculates for each face of a cube map if the object is potentially visible.
 	 * Used to optimize rendering cube maps by not rendering objects on cube map faces
@@ -279,134 +279,134 @@ public:
 	void UpdateCubeFaceVisibility( const decDVector &cubePosition );
 	
 	/**
-	 * \brief Object is visible in cube map face.
+	 * Object is visible in cube map face.
 	 * 
 	 * Only valid after UpdateCubeFaceVisibility() has been called.
 	 */
 	bool GetCubeFaceVisible( int cubeFace ) const;
 	
 	/**
-	 * \brief Special flags for use with render task.
+	 * Special flags for use with render task.
 	 * 
 	 * Call appropriate flags update method to update the special flags before use.
 	 */
 	inline int GetSpecialFlags() const{ return pSpecialFlags; }
 	
-	/** \brief Set special flags from cube map visibility. */
+	/** Set special flags from cube map visibility. */
 	void SetSpecialFlagsFromFaceVisibility();
 	
 	
 	
-	/** \brief Position. */
+	/** Position. */
 	inline const decDVector &GetPosition() const{ return pPosition; }
 	
-	/** \brief Set position. */
+	/** Set position. */
 	void SetPosition( const decDVector &position );
 	
-	/** \brief Axis. */
+	/** Axis. */
 	inline const decVector &GetAxis() const{ return pAxis; }
 	
-	/** \brief Set axis. */
+	/** Set axis. */
 	void SetAxis( const decVector &axis );
 	
-	/** \brief Size. */
+	/** Size. */
 	inline const decVector2 &GetSize() const{ return pSize; }
 	
-	/** \brief Set size. */
+	/** Set size. */
 	void SetSize( const decVector2 &size );
 	
-	/** \brief Offset. */
+	/** Offset. */
 	inline const decVector2 &GetOffset() const{ return pOffset; }
 	
 	/** Sets the offset. */
 	void SetOffset( const decVector2 &offset );
 	
-	/** \brief Layer mask. */
+	/** Layer mask. */
 	inline const decLayerMask &GetLayerMask() const{ return pLayerMask; }
 	
-	/** \brief Set layer mask. */
+	/** Set layer mask. */
 	void SetLayerMask( const decLayerMask &layerMask );
 	
-	/** \brief Visible. */
+	/** Visible. */
 	inline bool GetVisible() const{ return pVisible; }
 	
-	/** \brief Set visible. */
+	/** Set visible. */
 	void SetVisible( bool visible );
 	
-	/** \brief Billboard is locked. */
+	/** Billboard is locked. */
 	inline bool GetLocked() const{ return pLocked; }
 	
-	/** \brief Set billboard is locked. */
+	/** Set billboard is locked. */
 	void SetLocked( bool locked );
 	
-	/** \brief Billboard is spherical. */
+	/** Billboard is spherical. */
 	inline bool GetSpherical() const{ return pSpherical; }
 	
-	/** \brief Set if billboard is spherical. */
+	/** Set if billboard is spherical. */
 	void SetSpherical( bool spherical );
 	
-	/** \brief Billboard size is fixed to the screen size. */
+	/** Billboard size is fixed to the screen size. */
 	inline bool GetSizeFixedToScreen() const{ return pSizeFixedToScreen; }
 	
-	/** \brief Set if billboard size is fixed to the screen size. */
+	/** Set if billboard size is fixed to the screen size. */
 	void SetSizeFixedToScreen( bool sizeFixedToScreen );
 	
 	
 	
-	/** \brief Minimum extend. */
+	/** Minimum extend. */
 	inline const decDVector &GetMinimumExtend() const{ return pMinExtend; }
 	
-	/** \brief Maximum extend. */
+	/** Maximum extend. */
 	inline const decDVector &GetMaximumExtend() const{ return pMaxExtend; }
 	
-	/** \brief Update extends. */
+	/** Update extends. */
 	void UpdateExtends( const deBillboard &billboard );
 	
 	
 	
-	/** \brief  Cull sphere center. */
+	/**  Cull sphere center. */
 	const decDVector &GetCullSphereCenter();
 	
-	/** \brief Cull sphere radius. */
+	/** Cull sphere radius. */
 	float GetCullSphereRadius();
 	
-	/** \brief Set culling parameters dirty. */
+	/** Set culling parameters dirty. */
 	void SetDirtyCulling();
 	
-	/** \brief Start occlusion test. */
+	/** Start occlusion test. */
 	void StartOcclusionTest( deoglOcclusionTest &occlusionTest, const decDVector &cameraPosition );
 	
-	/** \brief Occlusion test finished with a result of invisible for the element. */
+	/** Occlusion test finished with a result of invisible for the element. */
 	virtual void OcclusionTestInvisible();
 	
-	/** \brief Render visible. */
+	/** Render visible. */
 	inline bool GetRenderVisible() const{ return pRenderVisible; }
 	
-	/** \brief Set if render visible. */
+	/** Set if render visible. */
 	void SetRenderVisible( bool visible );
 	
-	/** \brief Marked flag. */
+	/** Marked flag. */
 	inline bool GetMarked() const{ return pMarked; }
 	
-	/** \brief Set marked flag. */
+	/** Set marked flag. */
 	inline void SetMarked( bool marked ){ pMarked = marked; }
 	
-	/** \brief Sort distance. */
+	/** Sort distance. */
 	inline float GetSortDistance() const{ return pSortDistance; }
 	
-	/** \brief Set sort distance. */
+	/** Set sort distance. */
 	void SetSortDistance( float distance );
 	
-	/** \brief Occluded. */
+	/** Occluded. */
 	inline bool GetOccluded() const{ return pOccluded; }
 	
-	/** \brief Set occluded. */
+	/** Set occluded. */
 	void SetOccluded( bool occluded );
 	
-	/** \brief Sky shadow split mask. */
+	/** Sky shadow split mask. */
 	inline int GetSkyShadowSplitMask() const{ return pSkyShadowSplitMask; }
 	
-	/** \brief Set sky shadow split mask. */
+	/** Set sky shadow split mask. */
 	void SetSkyShadowSplitMask( int mask );
 	/*@}*/
 	
@@ -415,54 +415,54 @@ public:
 	/** \name Render world usage */
 	/*@{*/
 	/**
-	 * \brief Marked for removal.
+	 * Marked for removal.
 	 * \details For use by deoglRWorld only. Non-thread safe.
 	 */
 	inline bool GetWorldMarkedRemove() const{ return pWorldMarkedRemove; }
 	
 	/**
-	 * \brief Set marked for removal.
+	 * Set marked for removal.
 	 * \details For use by deoglRWorld only. Non-thread safe.
 	 */
 	void SetWorldMarkedRemove( bool marked );
 	
-	/** \brief Render environment map or NULL if not used. */
+	/** Render environment map or NULL if not used. */
 	inline deoglEnvironmentMap *GetRenderEnvMap() const{ return pRenderEnvMap; }
 	
-	/** \brief Set render environment map or NULL if not assigned yet. */
+	/** Set render environment map or NULL if not assigned yet. */
 	void SetRenderEnvMap( deoglEnvironmentMap *envmap );
 	
-	/** \brief Fading render environment map or NULL if not used. */
+	/** Fading render environment map or NULL if not used. */
 	inline deoglEnvironmentMap *GetRenderEnvMapFade() const{ return pRenderEnvMapFade; }
 	
-	/** \brief Set fading render environment map or NULL if not used. */
+	/** Set fading render environment map or NULL if not used. */
 	void SetRenderEnvMapFade( deoglEnvironmentMap *envmap );
 	
-	/** \brief Render environment map fade per time. */
+	/** Render environment map fade per time. */
 	inline float GetRenderEnvMapFadePerTime() const{ return pRenderEnvMapFadePerTime; }
 	
-	/** \brief Set render environment map fade per time. */
+	/** Set render environment map fade per time. */
 	void SetRenderEnvMapFadePerTime( float fadePerTime );
 	
-	/** \brief Render environment map fade factor. */
+	/** Render environment map fade factor. */
 	inline float GetRenderEnvMapFadeFactor() const{ return pRenderEnvMapFadeFactor; }
 	
-	/** \brief Set render environment map fade factor. */
+	/** Set render environment map fade factor. */
 	void SetRenderEnvMapFadeFactor( float factor );
 	
-	/** \brief World environment map layout changed. */
+	/** World environment map layout changed. */
 	void WorldEnvMapLayoutChanged();
 	
-	/** \brief Update render environment map. */
+	/** Update render environment map. */
 	void UpdateRenderEnvMap();
 	
-	/** \brief Invalidate render environment map. */
+	/** Invalidate render environment map. */
 	void InvalidateRenderEnvMap();
 	
-	/** \brief Invalidate render environment map. */
+	/** Invalidate render environment map. */
 	void InvalidateRenderEnvMapIf( deoglEnvironmentMap *envmap );
 	
-	/** \brief The world reference point changed. */
+	/** The world reference point changed. */
 	void WorldReferencePointChanged();
 	
 	
@@ -470,21 +470,21 @@ public:
 	/** Prepare for render. Called by deoglRWorld if registered previously. */
 	void PrepareForRender( deoglRenderPlan &plan );
 	
-	/** \brief Prepare for quick disposal of component. */
+	/** Prepare for quick disposal of component. */
 	void PrepareQuickDispose();
 	
 	
 	
-	/** \brief Linked list world previous. */
+	/** Linked list world previous. */
 	inline deoglRBillboard *GetLLWorldPrev() const{ return pLLWorldPrev; }
 	
-	/** \brief Set linked list world previous. */
+	/** Set linked list world previous. */
 	void SetLLWorldPrev( deoglRBillboard *billboard );
 	
-	/** \brief Linked list world next. */
+	/** Linked list world next. */
 	inline deoglRBillboard *GetLLWorldNext() const{ return pLLWorldNext; }
 	
-	/** \brief Set linked list world next. */
+	/** Set linked list world next. */
 	void SetLLWorldNext( deoglRBillboard *billboard );
 	
 	/** World prepare for render linked list. */
@@ -498,6 +498,8 @@ private:
 	void pCleanUp();
 	
 	void pUpdateCullSphere();
+	void pPrepareTUCs();
+	void pPrepareParamBlocks();
 	
 	void pRequiresPrepareForRender();
 };

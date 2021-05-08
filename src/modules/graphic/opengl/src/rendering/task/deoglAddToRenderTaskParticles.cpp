@@ -79,9 +79,7 @@ pRenderThread( renderThread ),
 pRenderTask( renderTask ),
 pSkinShaderType( deoglSkinTexture::estParticleGeometry ),
 pSkinShaderTypeRibbon( deoglSkinTexture::estParticleRibbonGeometry ),
-pSkinShaderTypeBeam( deoglSkinTexture::estParticleBeamGeometry ),
-pEnforceShader( NULL ),
-pEnforceParamBlock( NULL ){
+pSkinShaderTypeBeam( deoglSkinTexture::estParticleBeamGeometry ){
 }
 
 deoglAddToRenderTaskParticles::~deoglAddToRenderTaskParticles(){
@@ -121,16 +119,6 @@ void deoglAddToRenderTaskParticles::SetSkinShaderTypeBeam( deoglSkinTexture::eSh
 
 
 
-void deoglAddToRenderTaskParticles::SetEnforceShader( deoglRenderTaskSharedShader *shader ){
-	pEnforceShader = shader;
-}
-
-void deoglAddToRenderTaskParticles::SetEnforceParamBlock( deoglSPBlockUBO *block ){
-	pEnforceParamBlock = block;
-}
-
-
-
 void deoglAddToRenderTaskParticles::AddParticles( const deoglParticleEmitterInstanceList &list ){
 	const int count = list.GetCount();
 	int e, p;
@@ -148,19 +136,15 @@ void deoglAddToRenderTaskParticles::AddParticles( const deoglParticleEmitterInst
 
 void deoglAddToRenderTaskParticles::AddParticle( deoglRParticleEmitterInstance &emitterInstance,
 const deoglRParticleEmitterInstance::sParticle *particle ){
-	deoglRDynamicSkin *dynamicSkin = NULL;
-	deoglSkinTexture *skinTexture = NULL;
-	deoglRSkin *skin = NULL;
-	
 	// fetch parameters
 	deoglRParticleEmitterInstanceType &itype = emitterInstance.GetTypeAt( particle->type );
 	const deoglRParticleEmitterType &etype = emitterInstance.GetEmitter()->GetTypeAt( particle->type );
 	const bool simulationRibbon = ( etype.GetSimulationType() == deParticleEmitterType::estRibbon );
 	const bool simulationBeam = ( etype.GetSimulationType() == deParticleEmitterType::estBeam );
 	
-	skin = itype.GetUseSkin();
-	dynamicSkin = itype.GetDynamicSkin();
-	skinTexture = itype.GetUseSkinTexture();
+	const deoglRSkin * const skin = itype.GetUseSkin();
+	const deoglRDynamicSkin * const dynamicSkin = itype.GetDynamicSkin();
+	const deoglSkinTexture * const skinTexture = itype.GetUseSkinTexture();
 	
 	// if there is no texture we can skip the geometry attached to it
 	if( ! skinTexture ){
@@ -184,30 +168,24 @@ const deoglRParticleEmitterInstance::sParticle *particle ){
 	}
 	
 	// retrieve the shader and texture units configuration to use
-	deoglShaderProgram *shader = NULL;
+	const deoglShaderProgram *shader = NULL;
 	
-	if( pEnforceShader ){
-		shader = pEnforceShader->GetShader();
-	}
-	
-	if( ! shader ){
-		deoglSkinShader * const skinShader = skinTexture->GetShaderFor( skinShaderType );
-		if( skinShader ){
-			shader = skinShader->GetShader();
-		}
+	deoglSkinShader * const skinShader = skinTexture->GetShaderFor( skinShaderType );
+	if( skinShader ){
+		shader = skinShader->GetShader();
 	}
 	
 	if( ! shader ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	deoglTexUnitsConfig *tuc = itype.GetTUCForShaderType( skinShaderType );
+	const deoglTexUnitsConfig *tuc = itype.GetTUCForShaderType( skinShaderType );
 	if( ! tuc ){
 		tuc = pRenderThread.GetShader().GetTexUnitsConfigList().GetEmptyNoUsage();
 	}
 	
 	// determine if the last step has the same texture
-	deoglVAO * const vao = emitterInstance.GetVAO();
+	const deoglVAO * const vao = emitterInstance.GetVAO();
 	deoglRenderTaskParticlesStep *rtps = NULL;
 	
 	if( pRenderTask->GetStepCount() > 0 ){
@@ -240,7 +218,7 @@ const deoglRParticleEmitterInstance::sParticle *particle ){
 		}
 		
 		rtps->SetParameterBlockTexture( skinTexture->GetSharedSPBElement()->GetSPB().GetParameterBlock() );
-		rtps->SetParameterBlockInstance( itype.GetParamBlockFor( skinShaderType ) );
+		rtps->SetParameterBlockInstance( itype.GetParamBlock() );
 	}
 	
 	// add an instance

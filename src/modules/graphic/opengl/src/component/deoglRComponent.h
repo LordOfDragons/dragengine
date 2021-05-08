@@ -213,7 +213,10 @@ public:
 	 */
 	void SetOctreeNode( deoglWorldOctree *octreeNode );
 	
-	/** Update octree position. */
+	/**
+	 * Update octree position.
+	 * \warning Called during synchronization from main thread.
+	 */
 	void UpdateOctreeNode();
 	
 	
@@ -594,7 +597,7 @@ public:
 	int GetDecalCount() const;
 	
 	/** Decal at index. */
-	deoglRDecal *GetDecalAt( int index );
+	deoglRDecal *GetDecalAt( int index ) const;
 	
 	/**
 	 * Synchronize decal references.

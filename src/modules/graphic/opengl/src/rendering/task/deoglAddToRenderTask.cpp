@@ -219,7 +219,7 @@ static float debug1 = 0.0f;
 static int debug1b = 0;
 #endif
 
-void deoglAddToRenderTask::AddComponent( deoglRComponent &component, int lodLevel ){
+void deoglAddToRenderTask::AddComponent( const deoglRComponent &component, int lodLevel ){
 	if( ! component.GetParentWorld() || ! component.GetModel() ){
 		return;
 	}
@@ -227,21 +227,24 @@ void deoglAddToRenderTask::AddComponent( deoglRComponent &component, int lodLeve
 		return;
 	}
 	
+	#ifdef SPECIAL_DEBUG_ON
 	const deoglRModel &model = *component.GetModel();
 	const deoglModelLOD &modelLOD = model.GetLODAt( lodLevel );
-	const int textureCount = modelLOD.GetTextureCount();
-	int t;
+	#endif
 	
-	for( t=0; t<textureCount; t++ ){
+	const int count = component.GetTextureCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
 		#ifdef SPECIAL_DEBUG_ON
-		const deoglModelTexture &texture = modelLOD.GetTextureAt( t );
+		const deoglModelTexture &texture = modelLOD.GetTextureAt( i );
 		if( texture.GetFaceCount() > 0 ){
 			decTimer timer;
-			AddComponentFaces( component, t, lodLevel );
+			AddComponentFaces( component, i, lodLevel );
 			debug1 += timer.GetElapsedTime(); debug1b++;
 		}
 		#else
-		AddComponentFaces( component, t, lodLevel );
+		AddComponentFaces( component, i, lodLevel );
 		#endif
 	}
 }
@@ -251,15 +254,15 @@ void deoglAddToRenderTask::AddComponent( const deoglCollideListComponent &clcomp
 }
 
 void deoglAddToRenderTask::AddComponents( const deoglCollideList &clist ){
-	const int componentCount = clist.GetComponentCount();
-	int c;
+	const int count = clist.GetComponentCount();
+	int i;
 	
 	#ifdef SPECIAL_DEBUG_ON
 	decTimer timer;
 	debug1 = 0.0f; debug1b = 0;
 	#endif
-	for( c=0; c<componentCount; c++ ){
-		AddComponent( *clist.GetComponentAt( c ) );
+	for( i=0; i<count; i++ ){
+		AddComponent( *clist.GetComponentAt( i ) );
 	}
 	#ifdef SPECIAL_DEBUG_ON
 	pRenderThread.GetLogger().LogInfoFormat( "deoglAddToRenderTask::AddComponents(%i) = %iys",
@@ -279,7 +282,7 @@ void deoglAddToRenderTask::AddComponentsHighestLod( const deoglCollideList &clis
 	}
 }
 
-void deoglAddToRenderTask::AddComponentFaces( deoglRComponent &component, int texture, int lodLevel ){
+void deoglAddToRenderTask::AddComponentFaces( const deoglRComponent &component, int texture, int lodLevel ){
 	if( ! component.GetModel() ){
 		return;
 	}
@@ -289,8 +292,8 @@ void deoglAddToRenderTask::AddComponentFaces( deoglRComponent &component, int te
 		return;
 	}
 	
-	deoglRComponentTexture &componentTexture = component.GetTextureAt( texture );
-	deoglSkinTexture * const skinTexture = componentTexture.GetUseSkinTexture();
+	const deoglRComponentTexture &componentTexture = component.GetTextureAt( texture );
+	const deoglSkinTexture * const skinTexture = componentTexture.GetUseSkinTexture();
 	if( ! skinTexture ){
 		return;
 	}
@@ -309,8 +312,8 @@ void deoglAddToRenderTask::AddComponentFaces( deoglRComponent &component, int te
 	}
 	
 	// hack style test for a camera renderable
-	deoglSkinChannel *skinChannel = skinTexture->GetChannelAt( deoglSkinChannel::ectColor );
-	deoglSkinState * const useSkinState = componentTexture.GetUseSkinState();
+	const deoglSkinChannel *skinChannel = skinTexture->GetChannelAt( deoglSkinChannel::ectColor );
+	const deoglSkinState * const useSkinState = componentTexture.GetUseSkinState();
 	
 	if( skinChannel && useSkinState ){
 		const deoglRDynamicSkin *dynamicSkin = component.GetDynamicSkin();
@@ -345,7 +348,7 @@ void deoglAddToRenderTask::AddBillboards( const deoglCollideList &clist ){
 	}
 }
 
-void deoglAddToRenderTask::AddBillboard( deoglRBillboard &billboard ){
+void deoglAddToRenderTask::AddBillboard( const deoglRBillboard &billboard ){
 	if( ! billboard.GetParentWorld() || ! billboard.GetSkin() ){
 		return;
 	}
@@ -353,7 +356,7 @@ void deoglAddToRenderTask::AddBillboard( deoglRBillboard &billboard ){
 		return;
 	}
 	
-	deoglSkinTexture &texture = billboard.GetSkin()->GetTextureAt( 0 );
+	const deoglSkinTexture &texture = billboard.GetSkin()->GetTextureAt( 0 );
 	if( pFilterReject( &texture ) ){
 		return;
 	}
@@ -365,8 +368,8 @@ void deoglAddToRenderTask::AddBillboard( deoglRBillboard &billboard ){
 	}
 	
 	// hack style test for a camera renderable
-	deoglSkinChannel *skinChannel = texture.GetChannelAt( deoglSkinChannel::ectColor );
-	deoglSkinState * const skinState = billboard.GetSkinState();
+	const deoglSkinChannel *skinChannel = texture.GetChannelAt( deoglSkinChannel::ectColor );
+	const deoglSkinState * const skinState = billboard.GetSkinState();
 	
 	if( skinChannel && skinState ){
 		const deoglRDynamicSkin * const dynamicSkin = billboard.GetDynamicSkin();
@@ -392,19 +395,17 @@ void deoglAddToRenderTask::AddBillboard( deoglRBillboard &billboard ){
 
 
 
-void deoglAddToRenderTask::AddDecal( deoglRDecal &decal, int lodLevel ){
+void deoglAddToRenderTask::AddDecal( const deoglRDecal &decal, int lodLevel ){
 	if( ! decal.GetVisible() ){
 		return;
 	}
 	
-	deoglSharedVBOBlock * const vboBlock = decal.GetVBOBlock();
+	const deoglSharedVBOBlock * const vboBlock = decal.GetVBOBlock();
 	if( ! vboBlock ){
 		return;
 	}
 	
-	decal.UpdateUseSkin();
-	
-	deoglSkinTexture * const skinTexture = decal.GetUseSkinTexture();
+	const deoglSkinTexture * const skinTexture = decal.GetUseSkinTexture();
 	if( pFilterRejectNoSolid( skinTexture ) ){
 		return;
 	}
@@ -415,31 +416,27 @@ void deoglAddToRenderTask::AddDecal( deoglRDecal &decal, int lodLevel ){
 	//      only solution to properly respect decal sorting order.
 	// TODO add step support to support the NOTE above
 	
-	// obtain render task vao and add faces
-	
-	/* TEMP HACK until decal properly PrepareForRender */ (void)decal.GetSharedSPBElement();
-	
 	pGetTaskVAO( pSkinShaderType, skinTexture,
 		decal.GetTUCForShaderType( pSkinShaderType ), vboBlock->GetVBO()->GetVAO() )->
 			AddInstance( pRenderTask, decal.GetRTSInstance() )->
 			AddSubInstance( decal.GetSharedSPBElement()->GetIndex(), 0 );
 }
 
-void deoglAddToRenderTask::AddDecals( deoglRComponent &component, int lodLevel ){
-	const int decalCount = component.GetDecalCount();
+void deoglAddToRenderTask::AddDecals( const deoglRComponent &component, int lodLevel ){
+	const int count = component.GetDecalCount();
 	int i;
 	
-	for( i=0; i<decalCount; i++ ){
+	for( i=0; i<count; i++ ){
 		AddDecal( *component.GetDecalAt( i ), lodLevel );
 	}
 }
 
 void deoglAddToRenderTask::AddDecals( const deoglCollideList &clist ){
-	const int componentCount = clist.GetComponentCount();
-	int c;
+	const int count = clist.GetComponentCount();
+	int i;
 	
-	for( c=0; c<componentCount; c++ ){
-		const deoglCollideListComponent &clcomponent = *clist.GetComponentAt( c );
+	for( i=0; i<count; i++ ){
+		const deoglCollideListComponent &clcomponent = *clist.GetComponentAt( i );
 		AddDecals( *clcomponent.GetComponent(), clcomponent.GetLODLevel() );
 	}
 }
@@ -865,8 +862,7 @@ deoglRParticleEmitterInstanceType &type ){
 	
 	// update index buffer
 	const int firstParticle = type.GetFirstParticle();
-	const deoglRParticleEmitterInstance::sParticle * const particles =
-		emitter.GetParticles() + firstParticle;
+	const deoglRParticleEmitterInstance::sParticle * const particles = emitter.GetParticles() + firstParticle;
 	const int firstIndex = emitter.GetIBOUsedIndexCount();
 	int i, indexCount = 0;
 	GLenum primitiveType;
@@ -903,7 +899,7 @@ deoglRParticleEmitterInstanceType &type ){
 	// NOTE using RTSInstance for the time beeing has to be updated by hand
 	
 	deoglRenderTaskSharedInstance &instance = *type.GetRTSInstance();
-	instance.SetParameterBlock( type.GetParamBlockFor( skinShaderType ) );
+	instance.SetParameterBlock( type.GetParamBlock() );
 	instance.SetFirstIndex( firstIndex );
 	instance.SetIndexCount( indexCount );
 	instance.SetDoubleSided( doubleSided );
@@ -958,7 +954,7 @@ bool deoglAddToRenderTask::pFilterRejectNoSolid( const deoglSkinTexture *skinTex
 }
 
 deoglRenderTaskVAO *deoglAddToRenderTask::pGetTaskVAO( deoglSkinTexture::eShaderTypes shaderType,
-deoglSkinTexture *skinTexture, deoglTexUnitsConfig *tuc, deoglVAO *vao ) const{
+const deoglSkinTexture *skinTexture, deoglTexUnitsConfig *tuc, deoglVAO *vao ) const{
 	deoglShaderProgram *shader = NULL;
 	if( pEnforceShader ){
 		shader = pEnforceShader->GetShader();

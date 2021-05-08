@@ -70,13 +70,10 @@ public:
 	/** Set shared render task instance. */
 	void SetInstance( const deoglRenderTaskSharedInstance *instance );
 	
+	
+	
 	/** Count of sub instances to render. */
 	inline int GetSubInstanceCount() const{ return pSubInstanceCount; }
-	
-	/** Set count of sub instances to render. */
-	void SetSubInstanceCount( int subInstanceCount );
-	
-	
 	
 	/** Add sub instance. */
 	void AddSubInstance( int indexInstance, int flags );

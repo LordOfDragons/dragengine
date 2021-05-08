@@ -73,33 +73,33 @@ void deoglRenderTaskParticlesStep::Reset(){
 
 
 
-void deoglRenderTaskParticlesStep::SetShader( deoglShaderProgram *shader ){
+void deoglRenderTaskParticlesStep::SetShader( const deoglShaderProgram *shader ){
 	pShader = shader;
 }
 
-void deoglRenderTaskParticlesStep::SetParameterBlockTexture( deoglShaderParameterBlock *block ){
+void deoglRenderTaskParticlesStep::SetParameterBlockTexture( const deoglShaderParameterBlock *block ){
 	pParamBlockTexture = block;
 }
 
-void deoglRenderTaskParticlesStep::SetParameterBlockInstance( deoglShaderParameterBlock *block ){
+void deoglRenderTaskParticlesStep::SetParameterBlockInstance( const deoglShaderParameterBlock *block ){
 	pParamBlockInstance = block;
 }
 
-void deoglRenderTaskParticlesStep::SetTUC( deoglTexUnitsConfig *tuc ){
+void deoglRenderTaskParticlesStep::SetTUC( const deoglTexUnitsConfig *tuc ){
 	pTUC = tuc;
 }
 
 
 
-void deoglRenderTaskParticlesStep::SetVAO( deoglVAO *vao ){
+void deoglRenderTaskParticlesStep::SetVAO( const deoglVAO *vao ){
 	pVAO = vao;
 }
 
-void deoglRenderTaskParticlesStep::SetSkin( deoglRSkin *skin ){
+void deoglRenderTaskParticlesStep::SetSkin( const deoglRSkin *skin ){
 	pSkin = skin;
 }
 
-void deoglRenderTaskParticlesStep::SetDynamicSkin( deoglRDynamicSkin *dynamicSkin ){
+void deoglRenderTaskParticlesStep::SetDynamicSkin( const deoglRDynamicSkin *dynamicSkin ){
 	pDynamicSkin = dynamicSkin;
 }
 

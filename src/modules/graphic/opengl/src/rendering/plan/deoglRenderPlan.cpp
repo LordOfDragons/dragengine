@@ -1115,15 +1115,8 @@ void deoglRenderPlan::pPlanEnvMaps(){
 		
 		// if we found an environment map update it
 		if( updateEnvmap ){
-			updateEnvmap->AddReference(); // guard reference
-			try{
-				updateEnvmap->Update( *this );
-				
-			}catch( const deException & ){
-				updateEnvmap->FreeReference();
-				throw;
-			}
-			updateEnvmap->FreeReference();
+			const deObjectReference guard( updateEnvmap );
+			updateEnvmap->Update( *this );
 			
 			// rendering the environment map potentially alters the reference position. ensure the reference
 			// position is back to a proper value and that the reference position camera matrix is correct

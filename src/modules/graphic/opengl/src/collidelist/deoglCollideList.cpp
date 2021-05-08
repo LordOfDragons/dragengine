@@ -593,8 +593,9 @@ void deoglCollideList::AddBillboardsColliding( deoglWorldOctree &octree, deoglDC
 void deoglCollideList::RemoveCulledBillboards(){
 	int i, last = 0;
 	for( i=0; i<pBillboardCount; i++ ){
-		//if( ! pBillboards[ i ]->GetCulled() ){
-		if( pBillboards[ i ]->GetVisible() ){
+		//if( pBillboards[ i ]->GetCulled() ){
+		if( ! pBillboards[ i ]->GetVisible() ){
+			//pBillboards[ i ]->Clear();
 			continue;
 		}
 		

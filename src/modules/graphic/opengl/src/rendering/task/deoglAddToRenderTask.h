@@ -232,7 +232,7 @@ public:
 	
 	
 	/** Add component. */
-	void AddComponent( deoglRComponent &component, int lodLevel );
+	void AddComponent( const deoglRComponent &component, int lodLevel );
 	
 	/** Add component. */
 	void AddComponent( const deoglCollideListComponent &clcomponent );
@@ -248,7 +248,7 @@ public:
 	 * \details The component is supposed to be updated already and that a model and skin exists
 	 *          as well as that a parent world exists.
 	 */
-	void AddComponentFaces( deoglRComponent &component, int texture, int lodLevel );
+	void AddComponentFaces( const deoglRComponent &component, int texture, int lodLevel );
 	
 	
 	
@@ -256,15 +256,15 @@ public:
 	void AddBillboards( const deoglCollideList &clist );
 	
 	/** Add billboard. */
-	void AddBillboard( deoglRBillboard &billboard );
+	void AddBillboard( const deoglRBillboard &billboard );
 	
 	
 	
 	/** Add decal. */
-	void AddDecal( deoglRDecal &decal, int lodLevel );
+	void AddDecal( const deoglRDecal &decal, int lodLevel );
 	
 	/** Add all decals of a component. */
-	void AddDecals( deoglRComponent &component, int lodLevel );
+	void AddDecals( const deoglRComponent &component, int lodLevel );
 	
 	/** Add all decals of all components from the given collide list. */
 	void AddDecals( const deoglCollideList &clist );
@@ -326,7 +326,7 @@ private:
 	bool pFilterRejectNoSolid( const deoglSkinTexture *skinTexture ) const;
 	
 	deoglRenderTaskVAO *pGetTaskVAO( deoglSkinTexture::eShaderTypes shaderType,
-		deoglSkinTexture *skinTexture, deoglTexUnitsConfig *tuc, deoglVAO *vao ) const;
+		const deoglSkinTexture *skinTexture, deoglTexUnitsConfig *tuc, deoglVAO *vao ) const;
 };
 
 #endif

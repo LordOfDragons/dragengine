@@ -100,10 +100,10 @@ deoglRenderParticles::~deoglRenderParticles(){
 
 void deoglRenderParticles::RenderTaskParticles( const deoglRenderTaskParticles &renderTask ){
 	deoglRenderThread &renderThread = GetRenderThread();
-	deoglSPBlockUBO * const renderParamBlock = renderTask.GetRenderParamBlock();
-	int s, stepCount = renderTask.GetStepCount();
-	deoglVAO *vao, *curVAO = NULL;
-	int instanceCount;
+	const deoglSPBlockUBO * const renderParamBlock = renderTask.GetRenderParamBlock();
+	const int stepCount = renderTask.GetStepCount();
+	const deoglVAO *curVAO = NULL;
+	int i;
 	
 	if( stepCount == 0 ){
 		return;
@@ -116,10 +116,10 @@ void deoglRenderParticles::RenderTaskParticles( const deoglRenderTaskParticles &
 	OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
 // 	OGL_CHECK( renderThread, glEnable( GL_CULL_FACE ) );
 	
-	for( s=0; s<stepCount; s++ ){
-		const deoglRenderTaskParticlesStep &renderTaskStep = *renderTask.GetStepAt( s );
+	for( i=0; i<stepCount; i++ ){
+		const deoglRenderTaskParticlesStep &renderTaskStep = *renderTask.GetStepAt( i );
 		
-		instanceCount = renderTaskStep.GetInstanceCount();
+		const int instanceCount = renderTaskStep.GetInstanceCount();
 		if( instanceCount == 0 ){
 			continue;
 		}
@@ -135,10 +135,17 @@ void deoglRenderParticles::RenderTaskParticles( const deoglRenderTaskParticles &
 		if( renderTaskStep.GetParameterBlockTexture() ){
 			renderTaskStep.GetParameterBlockTexture()->Activate();
 		}
-		renderTaskStep.GetTUC()->Apply();
+		
+		const deoglTexUnitsConfig * const tuc = renderTaskStep.GetTUC();
+		if( tuc ){
+			tuc->Apply();
+			if( tuc->GetParameterBlock() ){
+				tuc->GetParameterBlock()->Activate();
+			}
+		}
 		
 		// activate vao
-		vao = renderTaskStep.GetVAO();
+		const deoglVAO * const vao = renderTaskStep.GetVAO();
 		if( vao != curVAO ){
 			pglBindVertexArray( vao->GetVAO() );
 			curVAO = vao;

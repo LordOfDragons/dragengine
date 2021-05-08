@@ -37,7 +37,7 @@ class deoglRenderTaskSharedInstance;
 
 
 /**
- * \brief Render particle emitter instance type.
+ * Render particle emitter instance type.
  */
 class deoglRParticleEmitterInstanceType : public deObject{
 private:
@@ -55,18 +55,15 @@ private:
 	int pUseTextureNumber;
 	deoglSkinTexture *pUseSkinTexture;
 	
-	deoglSPBlockUBO *pParamBlockDepth;
-	deoglSPBlockUBO *pParamBlockGeometry;
+	deoglSPBlockUBO *pParamBlock;
 	
 	deoglTexUnitsConfig *pTUCDepth;
 	deoglTexUnitsConfig *pTUCCounter;
 	deoglTexUnitsConfig *pTUCGeometry;
 	deoglTexUnitsConfig *pTUCGeometryDepthTest;
 	
-	bool pValidParamBlockDepth;
-	bool pValidParamBlockGeometry;
-	bool pDirtyParamBlockDepth;
-	bool pDirtyParamBlockGeometry;
+	bool pValidParamBlock;
+	bool pDirtyParamBlock;
 	
 	bool pDirtyTUCDepth;
 	bool pDirtyTUCCounter;
@@ -80,10 +77,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create type. */
+	/** Create type. */
 	deoglRParticleEmitterInstanceType( deoglRParticleEmitterInstance &instance, int index );
 	
-	/** \brief Clean up type. */
+	/** Clean up type. */
 	virtual ~deoglRParticleEmitterInstanceType();
 	/*@}*/
 	
@@ -91,126 +88,114 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Emitter instance. */
+	/** Emitter instance. */
 	inline deoglRParticleEmitterInstance &GetEmitterInstance(){ return pEmitterInstance; }
 	
-	/** \brief Index. */
+	/** Index. */
 	inline int GetIndex() const{ return pIndex; }
 	
 	
 	
-	/** \brief First particle. */
+	/** First particle. */
 	inline int GetFirstParticle() const{ return pFirstParticle; }
 	
-	/** \brief Set first particle. */
+	/** Set first particle. */
 	void SetFirstParticle( int first );
 	
-	/** \brief Particle count. */
+	/** Particle count. */
 	inline int GetParticleCount() const{ return pParticleCount; }
 	
-	/** \brief Set particle count. */
+	/** Set particle count. */
 	void SetParticleCount( int count );
 	
-	/** \brief First index. */
+	/** First index. */
 	inline int GetFirstIndex() const{ return pFirstIndex; }
 	
-	/** \brief Set first index. */
+	/** Set first index. */
 	void SetFirstIndex( int index );
 	
-	/** \brief Index count. */
+	/** Index count. */
 	inline int GetIndexCount() const{ return pIndexCount; }
 	
-	/** \brief Set index count. */
+	/** Set index count. */
 	void SetIndexCount( int count );
 	
 	
 	
-	/** \brief Dynamic skin or \em NULL if there is none. */
+	/** Dynamic skin or NULL if there is none. */
 	inline deoglRDynamicSkin *GetDynamicSkin() const{ return pDynamicSkin; }
 	
-	/** \brief Set dynamic skin or \em NULL if there is none. */
+	/** Set dynamic skin or NULL if there is none. */
 	void SetDynamicSkin( deoglRDynamicSkin *dynamicSkin );
 	
-	/** \brief Skin to use. */
+	/** Skin to use. */
 	inline deoglRSkin *GetUseSkin() const{ return pUseSkin; }
 	
-	/** \brief Set skin to use. */
+	/** Set skin to use. */
 	void SetUseSkin( deoglRSkin *skin );
 	
-	/** \brief Skin texture number to use. */
+	/** Skin texture number to use. */
 	inline int GetUseTextureNumber() const{ return pUseTextureNumber; }
 	
-	/** \brief Skin texture to use. */
+	/** Skin texture to use. */
 	inline deoglSkinTexture *GetUseSkinTexture() const{ return pUseSkinTexture; }
 	
 	
 	
-	/** \brief Shader parameter block for a shader type. */
-	deoglSPBlockUBO *GetParamBlockFor( deoglSkinTexture::eShaderTypes shaderType );
+	/** Shader parameter block or NULL if there is no valid skin texture. */
+	deoglSPBlockUBO *GetParamBlock();
 	
-	/**
-	 * \brief Geometry shader parameter block or \em NULL if there is no valid skin texture.
-	 * \details This texture units configuration works for the shader type estParticleGeometry.
-	 */
-	deoglSPBlockUBO *GetParamBlockDepth();
-	
-	/**
-	 * \brief Geometry shader parameter block or \em NULL if there is no valid skin texture.
-	 * \details This texture units configuration works for the shader type estParticleGeometry.
-	 */
-	deoglSPBlockUBO *GetParamBlockGeometry();
-	
-	/** \brief Texture units configuration for the given shader type. */
+	/** Texture units configuration for the given shader type. */
 	deoglTexUnitsConfig *GetTUCForShaderType( deoglSkinTexture::eShaderTypes shaderType );
 	
 	/**
-	 * \brief Texture units configuration for depth type shaders or \em NULL if empty.
+	 * Texture units configuration for depth type shaders or NULL if empty.
 	 * \details This texture units configuration works for the shader type estParticleGeometry.
 	 */
 	deoglTexUnitsConfig *GetTUCDepth();
 	
 	/**
-	 * \brief Texture units configuration for counter type shaders or \em NULL if empty.
+	 * Texture units configuration for counter type shaders or NULL if empty.
 	 * \details This texture units configuration works for the shader type estParticleGeometry.
 	 */
 	deoglTexUnitsConfig *GetTUCCounter();
 	
 	/**
-	 * \brief Texture units configuration for geometry type shaders or \em NULL if empty.
+	 * Texture units configuration for geometry type shaders or NULL if empty.
 	 * \details This texture units configuration works for the shader type estParticleGeometry.
 	 */
 	deoglTexUnitsConfig *GetTUCGeometry();
 	
 	/**
-	 * \brief Texture units configuration for geometry type shaders with depth test or \em NULL if empty.
+	 * Texture units configuration for geometry type shaders with depth test or NULL if empty.
 	 * \details This texture units configuration works for the shader type estParticleGeometry.
 	 */
 	deoglTexUnitsConfig *GetTUCGeometryDepthTest();
 	
 	/**
-	 * \brief Texture units configuration for a shader type.
+	 * Texture units configuration for a shader type.
 	 * \details Bare call not to be used directly.
 	 */
 	deoglTexUnitsConfig *BareGetTUCFor( deoglSkinTexture::eShaderTypes shaderType ) const;
 	
 	
 	
-	/** \brief Invalidate parameter blocks. */
+	/** Invalidate parameter blocks. */
 	void InvalidateParamBlocks();
 	
-	/** \brief Mark parameter blocks dirty. */
+	/** Mark parameter blocks dirty. */
 	void MarkParamBlocksDirty();
 	
-	/** \brief Mark texture units configurations dirty. */
+	/** Mark texture units configurations dirty. */
 	void MarkTUCsDirty();
 	
-	/** \brief Update instance parameter shader parameter block. */
+	/** Update instance parameter shader parameter block. */
 	void UpdateInstanceParamBlock( deoglSPBlockUBO &paramBlock, deoglSkinShader &skinShader );
 	
-	/** \brief Light instance parameter block. */
+	/** Light instance parameter block. */
 	deoglSPBlockUBO *GetLightInstanceParameterBlock();
 	
-	/** \brief Drop light parameter block. */
+	/** Drop light parameter block. */
 	void DropLightBlocks();
 	
 	
