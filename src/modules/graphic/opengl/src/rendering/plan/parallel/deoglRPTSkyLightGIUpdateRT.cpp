@@ -35,6 +35,7 @@
 #include "../../../rendering/task/persistent/deoglPersistentRenderTask.h"
 #include "../../../rendering/task/persistent/deoglPersistentRenderTaskOwner.h"
 #include "../../../renderthread/deoglRenderThread.h"
+#include "../../../renderthread/deoglRTLogger.h"
 #include "../../../utils/collision/deoglDCollisionSphere.h"
 #include "../../../world/deoglRWorld.h"
 
@@ -65,9 +66,8 @@ deoglRPTSkyLightGIUpdateRT::~deoglRPTSkyLightGIUpdateRT(){
 // Management
 ///////////////
 
-#define DO_SPECIAL_TIMING 1
+// #define DO_SPECIAL_TIMING 1
 #ifdef DO_SPECIAL_TIMING
-#include "../../../renderthread/deoglRTLogger.h"
 #include <dragengine/common/utils/decTimer.h>
 #define INIT_SPECIAL_TIMING decTimer sttimer;
 #define SPECIAL_TIMER_PRINT(w) if(pPlan.GetPlan().GetDebugTiming()) pPlan.GetPlan().GetRenderThread().GetLogger().LogInfoFormat("RPTSkyLightGIUpdateRT: " w "=%dys", (int)(sttimer.GetElapsedTime()*1e6f));

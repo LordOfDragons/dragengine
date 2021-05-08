@@ -30,6 +30,7 @@
 #include "../../../collidelist/deoglCollideListLight.h"
 #include "../../../envmap/deoglEnvironmentMap.h"
 #include "../../../renderthread/deoglRenderThread.h"
+#include "../../../renderthread/deoglRTLogger.h"
 #include "../../../utils/collision/deoglDCollisionSphere.h"
 #include "../../../world/deoglRWorld.h"
 
@@ -57,9 +58,8 @@ deoglRPTFindContent::~deoglRPTFindContent(){
 // Management
 ///////////////
 
-#define DO_SPECIAL_TIMING 1
+// #define DO_SPECIAL_TIMING 1
 #ifdef DO_SPECIAL_TIMING
-#include "../../../renderthread/deoglRTLogger.h"
 #include <dragengine/common/utils/decTimer.h>
 #define INIT_SPECIAL_TIMING decTimer sttimer;
 #define SPECIAL_TIMER_PRINT(w) if(pPlan.GetDebugTiming()) pPlan.GetRenderThread().GetLogger().LogInfoFormat("RPTFindContent: " w "=%dys", (int)(sttimer.GetElapsedTime()*1e6f));
