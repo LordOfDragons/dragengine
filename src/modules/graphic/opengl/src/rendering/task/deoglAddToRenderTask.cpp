@@ -443,20 +443,19 @@ void deoglAddToRenderTask::AddDecals( const deoglCollideList &clist ){
 
 
 
-void deoglAddToRenderTask::AddPropFieldType( deoglCollideListPropFieldType &clPropFieldType,
-deoglRPropFieldType &propFieldType, bool imposters ){
+void deoglAddToRenderTask::AddPropFieldType( const deoglCollideListPropFieldType &clPropFieldType,
+const deoglRPropFieldType &propFieldType, bool imposters ){
 	const int clusterCount = clPropFieldType.GetClusterCount();
-	
 	if( clusterCount == 0 || ! propFieldType.GetModel() ){
 		return;
 	}
 	
-	deoglSkinTexture * const skinTexture = propFieldType.GetUseSkinTexture();
+	const deoglSkinTexture * const skinTexture = propFieldType.GetUseSkinTexture();
 	if( pFilterReject( skinTexture ) ){
 		return;
 	}
 	
-	deoglModelLOD &modelLOD = propFieldType.GetModel()->GetLODAt( 0 );
+	const deoglModelLOD &modelLOD = propFieldType.GetModel()->GetLODAt( 0 );
 	const deoglModelTexture &modelTex = modelLOD.GetTextureAt( 0 );
 	
 	const bool doubleSided = modelTex.GetDoubleSided();
@@ -469,18 +468,14 @@ deoglRPropFieldType &propFieldType, bool imposters ){
 	}
 	
 	// retrieve the shader and texture units configuration to use
-	deoglSkinShader *skinShader = NULL;
-	deoglShaderProgram *shader = NULL;
-	
-	skinShader = skinTexture->GetShaderFor( pSkinShaderType );
+	const deoglSkinShader *skinShader = skinTexture->GetShaderFor( pSkinShaderType );
+	const deoglShaderProgram *shader = NULL;
 	
 	if( pEnforceShader ){
 		shader = pEnforceShader->GetShader();
 		
-	}else{
-		if( skinShader ){
-			shader = skinShader->GetShader();
-		}
+	}else if( skinShader ){
+		shader = skinShader->GetShader();
 	}
 	
 	if( ! shader ){
@@ -488,23 +483,22 @@ deoglRPropFieldType &propFieldType, bool imposters ){
 	}
 	
 	// obtain render task. this is the same for all clusters in the type
-	deoglDeferredRendering &defren = pRenderThread.GetDeferredRendering();
-	deoglSharedVBOBlock &vboBlock = *modelLOD.GetVBOBlock();
-	deoglVAO *vao = NULL;
+	const deoglDeferredRendering &defren = pRenderThread.GetDeferredRendering();
+	const deoglVAO *vao = NULL;
 	
 	if( imposters ){
 		vao = defren.GetVAOBillboard();
 		
 	}else{
-		vao = vboBlock.GetVBO()->GetVAO();
+		vao = modelLOD.GetVBOBlock()->GetVBO()->GetVAO();
 	}
 	
 	deoglRenderTaskShader &rtshader = *pRenderTask.AddShader( shader->GetRTSShader() );
 	
 	// the rest is specific for each cluster except for the vao which is also the same for all clusters in the type
-	deoglPropFieldCluster ** const clusters = clPropFieldType.GetClusters();
-	int i;
+	const deoglPropFieldCluster ** const clusters = clPropFieldType.GetClusters();
 	
+	int i;
 	for( i=0; i<clusterCount; i++ ){
 		// TODO later on clusters are going to have the ability to share TBOs to reduce the number
 		//      of TBOs and VBOs reducing also the need for switching between clusters of the same
@@ -515,13 +509,10 @@ deoglRPropFieldType &propFieldType, bool imposters ){
 		//      is the same. if so the last instance belongs to the same prop field type and thus
 		//      a new sub-instance can be added (if supported)
 		//if( i > 0 ) break; // TEMPORARY
-		deoglPropFieldCluster &cluster = *clusters[ i ];
-			// => RenderTaskSharedInstance in "cluster"
-		
-		cluster.UpdateTBOs();
+		const deoglPropFieldCluster &cluster = *clusters[ i ];
 		
 		// retrieve the tuc. this is potentially different for clusters as they use shared TBOs
-		deoglTexUnitsConfig * const tuc = cluster.GetTUCForShaderType( pSkinShaderType );
+		const deoglTexUnitsConfig * const tuc = cluster.GetTUCForShaderType( pSkinShaderType );
 		if( ! tuc ){
 			DETHROW( deeInvalidParam );
 		}
@@ -532,22 +523,22 @@ deoglRPropFieldType &propFieldType, bool imposters ){
 	}
 }
 
-void deoglAddToRenderTask::AddPropField( deoglCollideListPropField &clPropField, bool imposters ){
-	const int propFieldTypeCount = clPropField.GetTypeCount();
-	deoglRPropField &propField = *clPropField.GetPropField();
+void deoglAddToRenderTask::AddPropField( const deoglCollideListPropField &clPropField, bool imposters ){
+	const deoglRPropField &propField = *clPropField.GetPropField();
+	const int count = clPropField.GetTypeCount();
 	int i;
 	
-	for( i=0; i<propFieldTypeCount; i++ ){
+	for( i=0; i<count; i++ ){
 		AddPropFieldType( *clPropField.GetTypeAt( i ), propField.GetTypeAt( i ), imposters );
 	}
 }
 
 void deoglAddToRenderTask::AddPropFields( const deoglCollideList &clist, bool imposters ){
 	if( imposters ) return; // HACK
-	const int propFieldCount = clist.GetPropFieldCount();
+	const int count = clist.GetPropFieldCount();
 	int i;
 	
-	for( i=0; i<propFieldCount; i++ ){
+	for( i=0; i<count; i++ ){
 		AddPropField( *clist.GetPropFieldAt( i ), imposters );
 	}
 }

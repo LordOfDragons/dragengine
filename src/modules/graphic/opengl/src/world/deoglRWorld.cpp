@@ -277,11 +277,23 @@ void deoglRWorld::PrepareForRender( deoglRenderPlan &plan ){
 		SPECIAL_TIMER_PRINT("Lights")
 	
 	// prepare prop fields
-	count = pPropFields.GetCount();
-	for( i=0; i<count; i++ ){
-		( ( deoglRPropField* )pPropFields.GetAt( i ) )->PrepareForRender();
+	decPointerLinkedList::cListEntry * const tailPropField = pListPrepareForRenderPropFields.GetTail();
+	while( pListPrepareForRenderPropFields.GetRoot() ){
+		decPointerLinkedList::cListEntry * const entry = pListPrepareForRenderPropFields.GetRoot();
+		deoglRPropField &propField = *( ( deoglRPropField* )entry->GetOwner() );
+		pListPrepareForRenderPropFields.Remove( entry );
+		
+		propField.PrepareForRender(); // can potentially re-add the prop field
+		
+		if( entry == tailPropField ){
+			break; // processed last prop field. re-added prop field will come next
+		}
 	}
 		SPECIAL_TIMER_PRINT("PropFields")
+	
+	
+	
+	
 	
 	// prepare debug drawers
 	count = pDebugDrawers.GetCount();
@@ -342,6 +354,24 @@ void deoglRWorld::RemovePrepareForRenderLight( deoglRLight *light ){
 	}
 	if( light->GetLLPrepareForRenderWorld().GetList() ){
 		pListPrepareForRenderLights.Remove( &light->GetLLPrepareForRenderWorld() );
+	}
+}
+
+void deoglRWorld::AddPrepareForRenderPropField( deoglRPropField *propField ){
+	if( ! propField ){
+		DETHROW( deeInvalidParam );
+	}
+	if( ! propField->GetLLPrepareForRenderWorld().GetList() ){
+		pListPrepareForRenderPropFields.Add( &propField->GetLLPrepareForRenderWorld() );
+	}
+}
+
+void deoglRWorld::RemovePrepareForRenderPropField( deoglRPropField *propField ){
+	if( ! propField ){
+		DETHROW( deeInvalidParam );
+	}
+	if( propField->GetLLPrepareForRenderWorld().GetList() ){
+		pListPrepareForRenderPropFields.Remove( &propField->GetLLPrepareForRenderWorld() );
 	}
 }
 

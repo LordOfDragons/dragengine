@@ -40,7 +40,6 @@ class deoglTexUnitsConfig;
 class dePropFieldType;
 
 
-
 /**
  * Render prop field type.
  */
@@ -54,6 +53,7 @@ private:
 	deoglSkinTexture *pUseSkinTexture;
 	
 	decPointerList pClusters;
+	bool pClustersRequirePrepareForRender;
 	
 	decVector pMinExtend;
 	decVector pMaxExtend;
@@ -87,19 +87,25 @@ public:
 	
 	
 	
-	/** Model or \em NULL if not set. */
+	/** Model or NULL if not set. */
 	inline deoglRModel *GetModel() const{ return pModel; }
 	
-	/** Set model or \em NULL if not set. */
+	/**
+	 * Set model or NULL if not set.
+	 * \warning Called during synchronization from main thread.
+	 */
 	void SetModel( deoglRModel *model );
 	
-	/** Skin or \em NULL if not set. */
+	/** Skin or NULL if not set. */
 	inline deoglRSkin *GetSkin() const{ return pSkin; }
 	
-	/** Set skin or \em NULL if not set. */
+	/**
+	 * Set skin or NULL if not set.
+	 * \warning Called during synchronization from main thread.
+	 */
 	void SetSkin( deoglRSkin *skin );
 	
-	/** Skin texture to use or \em NULL if not valid. */
+	/** Skin texture to use or NULL if not valid. */
 	inline deoglSkinTexture *GetUseSkinTexture() const{ return pUseSkinTexture; }
 	
 	
@@ -115,7 +121,10 @@ public:
 	
 	
 	
-	/** Rebuild instances. */
+	/**
+	 * Rebuild instances.
+	 * \warning Called during synchronization from main thread.
+	 */
 	void RebuildInstances( const dePropFieldType &type );
 	
 	/** Add clusters with a point sieve. */
@@ -129,7 +138,7 @@ public:
 	
 	
 	
-	/** Prepare for rendering. */
+	/** Prepare for render. Called by deoglRWorld if registered previously. */
 	void PrepareForRender();
 	
 	/** Update instances. */
@@ -149,21 +158,21 @@ public:
 	/** Remove all clusters. */
 	void RemoveAllClusters();
 	
+	/** Cluster requires prepare for render. */
+	void ClusterRequiresPrepareForRender();
 	
 	
-	/** Prepare bend states. */
+	
+	/**
+	 * Prepare bend states.
+	 * \warning Called during synchronization from main thread.
+	 */
 	void PrepareBendStateData( const dePropFieldType &type );
 	
 	
 	
-	/** Shader parameter block for a shader type. */
-	deoglSPBlockUBO *GetParamBlockFor( deoglSkinTexture::eShaderTypes shaderType );
-	
-	/**
-	 * Sarameter block or \em NULL if there is no valid skin texture.
-	 * \details This texture units configuration works for the shader types estComponent*.
-	 */
-	deoglSPBlockUBO *GetParamBlock();
+	/** Parameter block or NULL if there is no valid skin texture. */
+	inline deoglSPBlockUBO *GetParamBlock() const{ return pParamBlock; }
 	
 	/** Invalidate parameter blocks. */
 	void InvalidateParamBlocks();
@@ -182,6 +191,12 @@ public:
 	/** World reference point changed. */
 	void WorldReferencePointChanged();
 	/*@}*/
+	
+	
+	
+private:
+	void pPrepareModel();
+	void pPrepareParamBlock();
 };
 
 #endif

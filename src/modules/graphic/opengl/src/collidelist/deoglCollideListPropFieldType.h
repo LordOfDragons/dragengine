@@ -54,7 +54,8 @@ public:
 	/** Retrieves the number of clusters. */
 	inline int GetClusterCount() const{ return pClusterCount; }
 	/** Retrieves the the clusters. */
-	inline deoglPropFieldCluster **GetClusters() const{ return pClusters; }
+	inline deoglPropFieldCluster **GetClusters(){ return pClusters; }
+	inline const deoglPropFieldCluster **GetClusters() const{ return ( const deoglPropFieldCluster ** )pClusters; }
 	/** Adds a cluster. */
 	void AddCluster( deoglPropFieldCluster *cluster );
 	/** Removes all clusters. */

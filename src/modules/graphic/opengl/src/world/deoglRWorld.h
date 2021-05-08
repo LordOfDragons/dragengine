@@ -94,6 +94,7 @@ private:
 	decPointerLinkedList pListPrepareForRenderComponents;
 	decPointerLinkedList pListPrepareForRenderBillboards;
 	decPointerLinkedList pListPrepareForRenderLights;
+	decPointerLinkedList pListPrepareForRenderPropFields;
 	
 	
 	
@@ -174,6 +175,9 @@ public:
 	
 	void AddPrepareForRenderLight( deoglRLight *light );
 	void RemovePrepareForRenderLight( deoglRLight *light );
+	
+	void AddPrepareForRenderPropField( deoglRPropField *propField );
+	void RemovePrepareForRenderPropField( deoglRPropField *propField );
 	/*@}*/
 	
 	

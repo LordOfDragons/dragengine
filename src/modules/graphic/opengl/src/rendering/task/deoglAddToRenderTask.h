@@ -272,10 +272,11 @@ public:
 	
 	
 	/** Add all clusters of a collide list prop field type. */
-	void AddPropFieldType( deoglCollideListPropFieldType &clPropFieldType, deoglRPropFieldType &propFieldType, bool imposters );
+	void AddPropFieldType( const deoglCollideListPropFieldType &clPropFieldType,
+		const deoglRPropFieldType &propFieldType, bool imposters );
 	
 	/** Add all types of a collide list prop field. */
-	void AddPropField( deoglCollideListPropField &clPropField, bool imposters );
+	void AddPropField( const deoglCollideListPropField &clPropField, bool imposters );
 	
 	/** Add all prop fields of a collide list. */
 	void AddPropFields( const deoglCollideList &clist, bool imposters );
