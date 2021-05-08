@@ -1317,8 +1317,7 @@ void deoglRComponent::DynamicSkinRenderablesChanged(){
 }
 
 void deoglRComponent::TextureDynamicSkinRenderablesChanged( deoglRComponentTexture &texture ){
-	deoglSkinState * const skinState = texture.GetSkinState();
-	if( ! skinState || ( ! texture.GetDynamicSkin() && ! pDynamicSkin ) ){
+	if( ! texture.GetUseSkinState() || ! texture.GetUseDynamicSkin() ){
 		return;
 	}
 	

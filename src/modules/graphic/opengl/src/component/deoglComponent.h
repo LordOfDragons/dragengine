@@ -288,6 +288,7 @@ private:
 	void pSyncOcclusionMesh();
 	void pSyncLodTextures();
 	void pSyncDecals();
+	void pSyncTextureDynamicSkinRenderablesChanged();
 	void pCheckRequiresUpdateEverySync();
 	
 	void pRequiresSync();

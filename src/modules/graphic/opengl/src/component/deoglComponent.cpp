@@ -320,6 +320,9 @@ void deoglComponent::SyncToRender(){
 		pRComponent->UpdateTexturesUseSkin();
 		pDirtyTextureUseSkin = false;
 	}
+	
+	pSyncTextureDynamicSkinRenderablesChanged(); // requires UpdateTexturesUseSkin()
+	
 	if( pDirtyStaticTexture ){
 		pRComponent->UpdateStaticTextures();
 		pDirtyStaticTexture = false;
@@ -448,6 +451,13 @@ void deoglComponent::DynamicSkinRenderablesChanged(){
 	pNotifyTUCChanged = true;
 	pDirtySolid = true;
 	
+	int i;
+	for( i=0; i<pTextureCount; i++ ){
+		pTextures[ i ]->SetDynamicSkinRenderablesChanged( true );
+	}
+	pTextureDynamicSkinRenderablesChanged = true;
+	pTextureDynamicSkinRequiresSync = true;
+	
 	pRequiresSync();
 }
 
@@ -459,6 +469,13 @@ void deoglComponent::DynamicSkinRenderableChanged( deoglDSRenderable& ){
 	pNotifyTexturesChanged = true;
 	pNotifyTUCChanged = true;
 	pDirtySolid = true;
+	
+	int i;
+	for( i=0; i<pTextureCount; i++ ){
+		pTextures[ i ]->SetDynamicSkinRenderablesChanged( true );
+	}
+	pTextureDynamicSkinRenderablesChanged = true;
+	pTextureDynamicSkinRequiresSync = true;
 	
 	pRequiresSync();
 }
@@ -1021,18 +1038,6 @@ void deoglComponent::pSyncDynamicSkin(){
 		pRComponent->DynamicSkinRenderablesChanged();
 	}
 	
-	if( pTextureDynamicSkinRenderablesChanged ){
-		pTextureDynamicSkinRenderablesChanged = false;
-		
-		int i;
-		for( i=0; i<pTextureCount; i++ ){
-			if( pTextures[ i ]->GetDynamicSkinRenderablesChanged() ){
-				pTextures[ i ]->SetDynamicSkinRenderablesChanged( false );
-				pRComponent->TextureDynamicSkinRenderablesChanged( *pTextures[ i ]->GetRTexture() );
-			}
-		}
-	}
-	
 	if( pDynamicSkinRequiresSync ){
 		pDynamicSkinRequiresSync = false;
 		if( pDynamicSkin ){
@@ -1107,6 +1112,22 @@ void deoglComponent::pSyncDecals(){
 		while( decal ){
 			( ( deoglDecal* )decal->GetPeerGraphic() )->SyncToRender();
 			decal = decal->GetLLComponentNext();
+		}
+	}
+}
+
+void deoglComponent::pSyncTextureDynamicSkinRenderablesChanged(){
+	if( ! pTextureDynamicSkinRenderablesChanged ){
+		return;
+	}
+	
+	pTextureDynamicSkinRenderablesChanged = false;
+	
+	int i;
+	for( i=0; i<pTextureCount; i++ ){
+		if( pTextures[ i ]->GetDynamicSkinRenderablesChanged() ){
+			pTextures[ i ]->SetDynamicSkinRenderablesChanged( false );
+			pRComponent->TextureDynamicSkinRenderablesChanged( *pTextures[ i ]->GetRTexture() );
 		}
 	}
 }
