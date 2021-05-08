@@ -885,7 +885,6 @@ deoglRenderPlanSkyLight &planSkyLight, deoglShadowMapper &shadowMapper ){
 			throw;
 		}
 		renderParamBlock->UnmapBuffer();
-			printf("SkyLight %d: ParamBlock %dys\n", i, (int)(timer.GetElapsedTime()*1e6f));
 		
 #ifdef SKY_SHADOW_FILTERED
 		renderTask.Clear();
