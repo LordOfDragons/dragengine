@@ -66,7 +66,7 @@ deoglRPTSkyLightGIFindContent::~deoglRPTSkyLightGIFindContent(){
 #ifdef DO_SPECIAL_TIMING
 #include <dragengine/common/utils/decTimer.h>
 #define INIT_SPECIAL_TIMING decTimer sttimer;
-#define SPECIAL_TIMER_PRINT(w) if(pPlan.GetPlan().GetDebugTiming()) pPlan.GetPlan().GetRenderThread().GetLogger().LogInfoFormat("RPTSkyLightGIFindContent: " w "=%dys", (int)(sttimer.GetElapsedTime()*1e6f));
+#define SPECIAL_TIMER_PRINT(w) if(plan.GetDebugTiming()) plan.GetRenderThread().GetLogger().LogInfoFormat("RPTSkyLightGIFindContent: " w "=%dys", (int)(sttimer.GetElapsedTime()*1e6f));
 #else
 #define INIT_SPECIAL_TIMING
 #define SPECIAL_TIMER_PRINT(w)
@@ -77,6 +77,8 @@ void deoglRPTSkyLightGIFindContent::Run(){
 		return;
 	}
 	
+	deoglRenderPlan &plan = pPlan.GetPlan();
+	
 	try{
 		INIT_SPECIAL_TIMING
 		decTimer timer;
@@ -84,14 +86,17 @@ void deoglRPTSkyLightGIFindContent::Run(){
 		// collect elements. we have to calculate the gi position ourself since the real
 		// position update happens in parallel. the detection box though is static so
 		// we do not have to calculate it on our own
-		const deoglGIState &giState = *pPlan.GetPlan().GetRenderGIState();
+		const deoglGIState &giState = *plan.GetRenderGIState();
 		
-		const decDVector position( giState.WorldClosestGrid( pPlan.GetPlan().GetCameraPosition() ) );
+		const decDVector position( giState.WorldClosestGrid( plan.GetCameraPosition() ) );
+// 		deoglDCollisionFrustum * const frustum = plan.GetUseFrustum();
+		deoglCollideList &collideList = pPlan.GetGICollideList();
+		deoglRWorld &world = *plan.GetWorld();
 		
-		deoglRLSVisitorCollectElements collectElements( pPlan.GetGICollideList() );
+		deoglRLSVisitorCollectElements collectElements( collideList );
 		collectElements.InitFromGIBox( position, giState.GetDetectionBox(), *pPlan.GetLayer(), 2000.0f );
-		collectElements.SetCullLayerMask( pPlan.GetPlan().GetUseLayerMask() );
-		collectElements.SetLayerMask( pPlan.GetPlan().GetLayerMask() );
+		collectElements.SetCullLayerMask( plan.GetUseLayerMask() );
+		collectElements.SetLayerMask( plan.GetLayerMask() );
 		
 		const decVector &boxMinExtend = collectElements.GetFrustumBoxMinExtend();
 		const decVector &boxMaxExtend = collectElements.GetFrustumBoxMaxExtend();
@@ -107,13 +112,19 @@ void deoglRPTSkyLightGIFindContent::Run(){
 		
 		collectElements.AddSplit( boxMinExtend, boxMaxExtend, decVector2( sizeThresholdX, sizeThresholdY ) );
 		
-		collectElements.VisitWorldOctree( pPlan.GetPlan().GetWorld()->GetOctree() );
+		collectElements.VisitWorldOctree( world.GetOctree() );
+		
+// 		if( plan.GetHeightTerrainView() ){
+// 			collideList.AddHTSectorsColliding( plan.GetHeightTerrainView(), frustum );
+// 		}
+// 		
+// 		collideList.AddPropFieldsColliding( world, frustum );
 		
 		SPECIAL_TIMER_PRINT("FindContent")
 		pElapsedTime = timer.GetElapsedTime();
 		
 	}catch( const deException &e ){
-		pPlan.GetPlan().GetRenderThread().GetLogger().LogException( e );
+		plan.GetRenderThread().GetLogger().LogException( e );
 		pSemaphore.Wait();
 		throw;
 	}

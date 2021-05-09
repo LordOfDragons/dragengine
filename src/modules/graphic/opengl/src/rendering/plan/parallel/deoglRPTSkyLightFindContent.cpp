@@ -29,6 +29,8 @@
 #include "../../../deGraphicOpenGl.h"
 #include "../../../collidelist/deoglCollideListComponent.h"
 #include "../../../collidelist/deoglCollideListLight.h"
+#include "../../../collidelist/deoglCollideListHTSCluster.h"
+#include "../../../collidelist/deoglCollideListHTSector.h"
 #include "../../../envmap/deoglEnvironmentMap.h"
 #include "../../../renderthread/deoglRenderThread.h"
 #include "../../../renderthread/deoglRTLogger.h"
@@ -73,21 +75,23 @@ void deoglRPTSkyLightFindContent::Run(){
 		return;
 	}
 	
+	deoglRenderPlan &plan = pPlan.GetPlan();
+	
 	decTimer timerFindContent;
 	try{
 		INIT_SPECIAL_TIMING
 		
 		deoglCollideList &collideList = pPlan.GetCollideList();
 		deoglRLSVisitorCollectElements visitor( collideList );
+		deoglDCollisionFrustum * const frustum = plan.GetUseFrustum();
 		
-		visitor.InitFromFrustum( pPlan.GetPlan(), *pPlan.GetLayer(), 2000.0f );
-		visitor.SetCullLayerMask( pPlan.GetPlan().GetUseLayerMask() );
-		visitor.SetLayerMask( pPlan.GetPlan().GetLayerMask() );
+		visitor.InitFromFrustum( plan, *pPlan.GetLayer(), 2000.0f );
+		visitor.SetCullLayerMask( plan.GetUseLayerMask() );
+		visitor.SetLayerMask( plan.GetLayerMask() );
 		
-		visitor.AddOcclusionTestInputData( pPlan.GetOcclusionTest(),
-			pPlan.GetPlan().GetWorld()->GetReferencePosition() );
+		visitor.AddOcclusionTestInputData( pPlan.GetOcclusionTest(), plan.GetWorld()->GetReferencePosition() );
 		
-		const int shadowMapSize = pPlan.GetPlan().GetShadowSkySize();
+		const int shadowMapSize = plan.GetShadowSkySize();
 		const int shadowLayerCount = pPlan.GetShadowLayerCount();
 		const float splitSizeLimitPixels = 1.0f;
 		const float splitFactor = ( 1.0f / ( float )shadowMapSize ) * splitSizeLimitPixels;
@@ -103,14 +107,21 @@ void deoglRPTSkyLightFindContent::Run(){
 			visitor.AddSplit( splitMinExtend, splitMaxExtend, decVector2( sizeThresholdX, sizeThresholdY ) );
 		}
 		
-		visitor.VisitWorldOctree( pPlan.GetPlan().GetWorld()->GetOctree() );
+		visitor.VisitWorldOctree( plan.GetWorld()->GetOctree() );
 		
 		pPlan.SetFrustumBoxExtend( visitor.GetFrustumBoxMinExtend(), visitor.GetFrustumBoxMaxExtend() );
-		
 		SPECIAL_TIMER_PRINT("Octree")
 		
+		if( plan.GetHeightTerrainView() ){
+			visitor.VisitHTView( *plan.GetHeightTerrainView() );
+			SPECIAL_TIMER_PRINT("HTSector")
+		}
+		
+		collideList.AddPropFieldsColliding( *plan.GetWorld(), frustum );
+		SPECIAL_TIMER_PRINT("PropField")
+		
 	}catch( const deException &e ){
-		pPlan.GetPlan().GetRenderThread().GetLogger().LogException( e );
+		plan.GetRenderThread().GetLogger().LogException( e );
 		pSemaphore.Wait();
 		throw;
 	}

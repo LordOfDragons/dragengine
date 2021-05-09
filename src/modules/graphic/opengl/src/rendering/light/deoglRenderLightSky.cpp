@@ -41,6 +41,8 @@
 #include "../../collidelist/deoglCollideList.h"
 #include "../../collidelist/deoglCollideListComponent.h"
 #include "../../collidelist/deoglCollideListManager.h"
+#include "../../collidelist/deoglCollideListHTSector.h"
+#include "../../collidelist/deoglCollideListHTSCluster.h"
 #include "../../component/deoglComponentLOD.h"
 #include "../../component/deoglRComponent.h"
 #include "../../configuration/deoglConfiguration.h"
@@ -599,7 +601,7 @@ deoglRenderPlanSkyLight &planSkyLight, deoglShadowMapper &shadowMapper ){
 	// been done ahead of time in the render plan sky light to avoid stalling
 #ifdef SKY_SHADOW_OCCMAP_VISIBLE
 	planSkyLight.GetOcclusionTest()->UpdateResults();
-	collideList.RemoveCulledComponents();
+	collideList.RemoveCulledElements();
 	DebugTimer3Sample( plan, *pDebugInfoSolidShadowOcclusion, false );
 #endif
 	
@@ -806,7 +808,6 @@ deoglRenderPlanSkyLight &planSkyLight, deoglShadowMapper &shadowMapper ){
 #else
 	for( i=0; i<layerCount; i++ ){
 		deoglRenderPlanSkyLight::sShadowLayer &sl = planSkyLight.GetShadowLayerAt( i );
-		
 #ifdef SKY_SHADOW_FILTERED
 		const int cascadeMask = 1 << i;
 		
@@ -814,13 +815,29 @@ deoglRenderPlanSkyLight &planSkyLight, deoglShadowMapper &shadowMapper ){
 		pColList2->Clear();
 		
 		const int componentCount = collideList.GetComponentCount();
-		int j;
+		int j, k;
 		
 		for( j=0; j<componentCount; j++ ){
 			const deoglCollideListComponent &clcomponent = *collideList.GetComponentAt( j );
-			
 			if( ( clcomponent.GetCascadeMask() & cascadeMask ) == cascadeMask ){
 				pColList2->AddComponent( clcomponent.GetComponent() );
+			}
+		}
+		
+		const int htsectorCount = collideList.GetHTSectorCount();
+		for( j=0; j<htsectorCount; j++ ){
+			const deoglCollideListHTSector &sector = *collideList.GetHTSectorAt( j );
+			const int clusterCount = sector.GetClusterCount();
+			
+			deoglCollideListHTSector *addSector = NULL;
+			for( k=0; k<clusterCount; k++ ){
+				const deoglCollideListHTSCluster &cluster = sector.GetClusterAt( k );
+				if( ( cluster.GetCascadeMask() & cascadeMask ) == cascadeMask ){
+					if( ! addSector ){
+						addSector = pColList2->AddHTSector( sector.GetSector() );
+					}
+					addSector->AddCluster( cluster.GetCoordinates() );
+				}
 			}
 		}
 		DebugTimer4Sample( plan, *pDebugInfoSolidShadowSplitContent, false );
@@ -937,6 +954,12 @@ deoglRenderPlanSkyLight &planSkyLight, deoglShadowMapper &shadowMapper ){
 		#else
 		addToRenderTask.AddComponents( *pColList2 );
 		#endif
+		
+		addToRenderTask.SetSkinShaderType( deoglSkinTexture::estPropFieldShadowOrthogonal );
+		addToRenderTask.AddPropFields( collideList, false );
+		
+		addToRenderTask.SetSkinShaderType( deoglSkinTexture::estHeightMapShadowOrthogonal );
+		addToRenderTask.AddHeightTerrains( *pColList2, true );
 		
 		if( renderThread.GetConfiguration().GetDebugSnapshot() == edbgsnapLightSkyShadowRenTask ){
 			renderThread.GetLogger().LogInfoFormat( "RenderLightSky: shadow split %i", i );

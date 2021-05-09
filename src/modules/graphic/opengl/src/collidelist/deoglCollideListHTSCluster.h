@@ -1,7 +1,7 @@
 /* 
  * Drag[en]gine OpenGL Graphic Module
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * Copyright (C) 2021, Roland Plüss (roland@rptd.ch)
  * 
  * This program is free software; you can redistribute it and/or 
  * modify it under the terms of the GNU General Public License 
@@ -19,25 +19,26 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef _DEOGLCOLLIDELISTCOMPONENT_H_
-#define _DEOGLCOLLIDELISTCOMPONENT_H_
+#ifndef _DEOGLCOLLIDELISTHTSCLUSTER_H_
+#define _DEOGLCOLLIDELISTHTSCLUSTER_H_
 
 #include "../occlusiontest/deoglOcclusionTestListener.h"
 
 #include <dragengine/common/math/decMath.h>
 
-class deoglRComponent;
+class deoglCollideListHTSector;
 class deoglOcclusionTest;
 
 
-
 /**
- * Component in collide list.
+ * Collide List Height Terrain Sector.
  */
-class deoglCollideListComponent : public deoglOcclusionTestListener{
+class deoglCollideListHTSCluster : public deoglOcclusionTestListener{
 private:
-	deoglRComponent *pComponent;
-	int pLODLevel;
+	deoglCollideListHTSector &pSector;
+	decPoint pCoordinates;
+	int pIndex;
+	
 	bool pCulled;
 	int pCascadeMask;
 	
@@ -46,34 +47,28 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Create collide list component. */
-	deoglCollideListComponent();
+	/** Create cluster. */
+	deoglCollideListHTSCluster( deoglCollideListHTSector &sector );
 	
-	/** Clean up collide list component. */
-	~deoglCollideListComponent();
+	/** Clean up cluster. */
+	~deoglCollideListHTSCluster();
 	/*@}*/
 	
 	
 	
 	/** \name Management */
 	/*@{*/
-	/** Clear collide list. */
+	/** Clear. */
 	void Clear();
 	
-	/** Component. */
-	inline deoglRComponent *GetComponent() const{ return pComponent; }
+	/** Cluster coordinates. */
+	inline const decPoint &GetCoordinates() const{ return pCoordinates; }
 	
-	/** Set component. */
-	void SetComponent( deoglRComponent *component );
+	/** Set cluster coordinates. */
+	void SetCoordinates( const decPoint &coordinates );
 	
-	/** LOD level to use. */
-	inline int GetLODLevel() const{ return pLODLevel; }
-	
-	/** Set LOD level to use. */
-	void SetLODLevel( int lodLevel );
-	
-	/** Set LOD level to use to maximum LOD level. */
-	void SetLODLevelMax();
+	/** Cluster index. */
+	inline int GetIndex() const{ return pIndex; }
 	
 	
 	
@@ -90,7 +85,7 @@ public:
 	void SetCascadeMask( int mask );
 	
 	/** Start occlusion test. */
-	void StartOcclusionTest( deoglOcclusionTest &occlusionTest, const decDVector &referencePosition );
+	void StartOcclusionTest( deoglOcclusionTest &occlusionTest, const decVector &offset );
 	
 	/** Occlusion test finished with a result of invisible for the element. */
 	virtual void OcclusionTestInvisible();

@@ -440,12 +440,9 @@ void deoglHTSTexture::UpdateInstanceParamBlock( deoglSPBlockUBO &paramBlock, deo
 		return;
 	}
 	
-	// prop field matrix
-	const decDVector &referencePosition = pSector.GetHeightTerrain().GetParentWorld()->GetReferencePosition();
+	// matrix
 	const float sectorDim = pSector.GetHeightTerrain().GetSectorSize();
-	const decPoint &scoord = pSector.GetCoordinates();
-	const decDVector &htspos = decDVector( sectorDim * ( double )scoord.x, 0.0, sectorDim * ( double )scoord.y ) - referencePosition;
-	decDMatrix matrixModel = decDMatrix::CreateTranslation( htspos );
+	const decDMatrix matrixModel( pSector.CalcWorldMatrix() );
 	
 	// update shader parameter block
 	paramBlock.MapBuffer();

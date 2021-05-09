@@ -36,6 +36,7 @@ class deoglRSkyInstanceLayer;
 class deoglDCollisionBox;
 class deoglDCollisionFrustum;
 class deoglOcclusionTest;
+class deoglHTView;
 
 
 /**
@@ -156,6 +157,9 @@ public:
 	
 	/** Visit world octree using visitor. */
 	void VisitWorldOctree( deoglWorldOctree &octree );
+	
+	/** Visit height terrain view. */
+	void VisitHTView( const deoglHTView &htview );
 	/*@}*/
 	
 	

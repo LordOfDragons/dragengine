@@ -231,15 +231,22 @@ public:
 	
 	/** \name Height Terrain Sectors */
 	/*@{*/
-	/** Retrieves the number of height terrain sectors. */
+	/** Count of height terrain sectors. */
 	inline int GetHTSectorCount() const{ return pHTSectorCount; }
-	/** Retrieves the height terrain sector at the given index. */
+	
+	/** Height terrain sector at index. */
 	deoglCollideListHTSector *GetHTSectorAt( int index ) const;
-	/** Adds height terrain sector. */
+	
+	/** Add height terrain sector. */
+	deoglCollideListHTSector *AddHTSector( deoglHTViewSector *sector );
+	
+	/** Add height terrain sector colliding with volume. */
 	void AddHTSector( deoglHTViewSector *sector, deoglDCollisionVolume *volume );
-	/** Removes all height terrain sectors. */
+	
+	/** Remove all height terrain sectors. */
 	void RemoveAllHTSectors();
-	/** Adds height terrain sectors colliding with the given volume. */
+	
+	/** Add height terrain sectors colliding with volume. */
 	void AddHTSectorsColliding( deoglHTView *htview, deoglDCollisionVolume *volume );
 	/*@}*/
 	

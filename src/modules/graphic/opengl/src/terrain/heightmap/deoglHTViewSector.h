@@ -81,6 +81,7 @@ public:
 	 * to patch up cracks.
 	 */
 	sHTVSCluster &GetClusterAt( int x, int z ) const;
+	sHTVSCluster &GetClusterAt( const decPoint &coordinates ) const;
 	
 	/** Resets the lod levels to 0 for all clusters and unsets all borders. */
 	void ResetClusters();

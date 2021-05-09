@@ -618,18 +618,17 @@ deoglCollideListHTSector *deoglCollideList::GetHTSectorAt( int index ) const{
 	return pHTSectors[ index ];
 }
 
-void deoglCollideList::AddHTSector( deoglHTViewSector *sector, deoglDCollisionVolume *volume ){
-	if( ! sector ) DETHROW( deeInvalidParam );
-	
-	deoglCollideListHTSector *clsector;
-	bool empty = true;
+deoglCollideListHTSector *deoglCollideList::AddHTSector( deoglHTViewSector *sector ){
+	if( ! sector ){
+		DETHROW( deeInvalidParam );
+	}
 	
 	if( pHTSectorCount == pHTSectorSize ){
-		int newSize = pHTSectorCount * 3 / 2 + 1;
-		deoglCollideListHTSector **newArray = new deoglCollideListHTSector*[ newSize ];
-		if( ! newArray ) DETHROW( deeOutOfMemory );
+		const int newSize = pHTSectorCount * 3 / 2 + 1;
+		deoglCollideListHTSector ** const newArray = new deoglCollideListHTSector*[ newSize ];
 		if( newSize > pHTSectorSize ){
-			memset( newArray + pHTSectorSize, '\0', sizeof( deoglCollideListHTSector* ) * ( newSize - pHTSectorSize ) );
+			memset( newArray + pHTSectorSize, 0,
+				sizeof( deoglCollideListHTSector* ) * ( newSize - pHTSectorSize ) );
 		}
 		if( pHTSectors ){
 			memcpy( newArray, pHTSectors, sizeof( deoglCollideListHTSector* ) * pHTSectorSize );
@@ -641,31 +640,37 @@ void deoglCollideList::AddHTSector( deoglHTViewSector *sector, deoglDCollisionVo
 	
 	if( ! pHTSectors[ pHTSectorCount ] ){
 		pHTSectors[ pHTSectorCount ] = new deoglCollideListHTSector;
-		if( ! pHTSectors[ pHTSectorCount ] ) DETHROW( deeOutOfMemory );
 	}
 	pHTSectors[ pHTSectorCount ]->SetSector( sector );
-	clsector = pHTSectors[ pHTSectorCount ];
-	pHTSectorCount++;
+	return pHTSectors[ pHTSectorCount++ ];
+}
+
+void deoglCollideList::AddHTSector( deoglHTViewSector *sector, deoglDCollisionVolume *volume ){
+	deoglCollideListHTSector &clsector = *AddHTSector( sector );
+	bool empty = true;
 	
 	if( volume ){
-		deoglRHTSector &htsector = sector->GetSector();
-		int c, clusterCount = htsector.GetClusterCount() * htsector.GetClusterCount();
-		deoglHTSCluster * const clusters = htsector.GetClusters();
+		const deoglRHTSector &htsector = sector->GetSector();
+		const int count = htsector.GetClusterCount();
+		const deoglHTSCluster *cluster = htsector.GetClusters();
 		deoglDCollisionBox box;
+		decPoint i;
 		
-		for( c=0; c<clusterCount; c++ ){
-			box.SetCenter( clusters[ c ].GetCenter() );
-			box.SetHalfSize( clusters[ c ].GetHalfExtends() );
-			
-			if( volume->BoxHitsVolume( &box ) ){
-				clsector->AddCluster( c );
-				empty = false;
+		for( i.y=0; i.y<count; i.y++ ){
+			for( i.x=0; i.x<count; i.x++, cluster++ ){
+				box.SetCenter( cluster->GetCenter() );
+				box.SetHalfSize( cluster->GetHalfExtends() );
+				
+				if( volume->BoxHitsVolume( &box ) ){
+					clsector.AddCluster( i );
+					empty = false;
+				}
 			}
 		}
 	}
 	
 	if( empty ){
-		clsector->Clear();
+		clsector.Clear();
 		pHTSectorCount--;
 	}
 }
@@ -678,21 +683,21 @@ void deoglCollideList::RemoveAllHTSectors(){
 }
 
 void deoglCollideList::AddHTSectorsColliding( deoglHTView *htview, deoglDCollisionVolume *volume ){
-	if( ! htview || ! volume ) DETHROW( deeInvalidParam );
+	if( ! htview || ! volume ){
+		DETHROW( deeInvalidParam );
+	}
 	
 	//htview->DetermineVisibilityUsing( volume );
 	
-	int s, sectorCount = htview->GetSectorCount();
-	deoglHTViewSector *sector;
+	const int count = htview->GetSectorCount();
+	int i;
 	
-	for( s=0; s<sectorCount; s++ ){
-		sector = htview->GetSectorAt( s );
+	for( i=0; i<count; i++ ){
+		deoglHTViewSector * const sector = htview->GetSectorAt( i );
 		
 		// TODO test if the sector is visible using a bounding box test
 		
-		//if( sector->GetVisible() ){
-			AddHTSector( sector, volume );
-		//}
+		AddHTSector( sector, volume );
 	}
 }
 

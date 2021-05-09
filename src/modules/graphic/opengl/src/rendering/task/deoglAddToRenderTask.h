@@ -284,7 +284,7 @@ public:
 	
 	
 	/** Add all clusters of height terrain sector texture. */
-	void AddHeightTerrainSectorClusters( const deoglHTViewSector &sectorView, int texture );
+	void AddHeightTerrainSectorClusters( const deoglCollideListHTSector &clhtsector, int texture );
 	
 	/** Add a height terrain sector. */
 	void AddHeightTerrainSector( const deoglCollideListHTSector &clhtsector, bool firstMask );

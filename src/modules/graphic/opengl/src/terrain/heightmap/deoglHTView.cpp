@@ -75,7 +75,7 @@ deoglHTView::~deoglHTView(){
 // Management
 ///////////////
 
-deoglHTViewSector *deoglHTView::GetSectorAt( int index ){
+deoglHTViewSector *deoglHTView::GetSectorAt( int index ) const{
 	if( index < 0 || index >= pSectorCount ) DETHROW( deeInvalidParam );
 	
 	return pSectors[ index ];

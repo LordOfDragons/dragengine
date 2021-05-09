@@ -27,7 +27,7 @@ class deoglPropFieldCluster;
 
 
 /**
- * @brief Collide List Prop Field Type.
+ * Collide List Prop Field Type.
  */
 class deoglCollideListPropFieldType{
 private:
@@ -35,30 +35,39 @@ private:
 	int pClusterCount;
 	int pClusterSize;
 	
+	
+	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Creates a new collide list prop field type. */
+	/** Create collide list prop field type. */
 	deoglCollideListPropFieldType();
-	/** Cleans up the collide list prop field type. */
+	
+	/** Clean up collide list prop field type. */
 	~deoglCollideListPropFieldType();
 	/*@}*/
 	
-	/** @name Management */
+	
+	
+	/** \name Management */
 	/*@{*/
-	/** Determines if the prop field type is empty. */
+	/** Prop field type is empty. */
 	inline bool GetIsEmpty() const{ return pClusterCount == 0; }
-	/** Determines if the prop field type is not empty. */
+	
+	/** Prop field type is not empty. */
 	inline bool GetIsNotEmpty() const{ return pClusterCount > 0; }
 	
-	/** Retrieves the number of clusters. */
+	/** Count of clusters. */
 	inline int GetClusterCount() const{ return pClusterCount; }
-	/** Retrieves the the clusters. */
+	
+	/** Clusters direct access. */
 	inline deoglPropFieldCluster **GetClusters(){ return pClusters; }
 	inline const deoglPropFieldCluster **GetClusters() const{ return ( const deoglPropFieldCluster ** )pClusters; }
-	/** Adds a cluster. */
+	
+	/** Add cluster. */
 	void AddCluster( deoglPropFieldCluster *cluster );
-	/** Removes all clusters. */
+	
+	/** Remove all clusters. */
 	void RemoveAllClusters();
 	/*@}*/
 };

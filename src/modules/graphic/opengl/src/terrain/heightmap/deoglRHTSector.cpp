@@ -28,7 +28,6 @@
 #include "deoglRHeightTerrain.h"
 #include "deoglRHTSector.h"
 #include "deoglTerrainMaskImage.h"
-
 #include "../../deoglBasics.h"
 #include "../../extensions/deoglExtResult.h"
 #include "../../skin/deoglSkin.h"
@@ -41,6 +40,7 @@
 #include "../../delayedoperation/deoglDelayedDeletion.h"
 #include "../../delayedoperation/deoglDelayedOperations.h"
 #include "../../utils/collision/deoglDCollisionBox.h"
+#include "../../world/deoglRWorld.h"
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/resources/image/deImage.h>
@@ -127,13 +127,32 @@ void deoglRHTSector::UpdateVBO(){
 	}
 }
 
+decDMatrix deoglRHTSector::CalcWorldMatrix() const{
+	return CalcWorldMatrix( pHeightTerrain.GetParentWorld()->GetReferencePosition() );
+}
+
+decDMatrix deoglRHTSector::CalcWorldMatrix( const decDVector &referencePosition ) const{
+	return decDMatrix::CreateTranslation( CalcWorldPosition( referencePosition ) );
+}
+
+decDVector deoglRHTSector::CalcWorldPosition() const{
+	if( ! pHeightTerrain.GetParentWorld() ){
+		DETHROW( deeInvalidParam );
+	}
+	return CalcWorldPosition( pHeightTerrain.GetParentWorld()->GetReferencePosition() );
+}
+
+decDVector deoglRHTSector::CalcWorldPosition( const decDVector &referencePosition ) const{
+	return decDVector( pHeightTerrain.GetSectorSize() * ( double )pCoordinates.x, 0.0,
+		pHeightTerrain.GetSectorSize() * ( double )pCoordinates.y ) - referencePosition;
+}
 
 
-deoglHTSTexture &deoglRHTSector::GetTextureAt( int index ){
+
+deoglHTSTexture &deoglRHTSector::GetTextureAt( int index ) const{
 	if( index < 0 || index >= pTextureCount ){
 		DETHROW( deeInvalidParam );
 	}
-	
 	return *pTextures[ index ];
 }
 

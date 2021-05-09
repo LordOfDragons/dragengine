@@ -28,9 +28,13 @@
 #include "../../../deGraphicOpenGl.h"
 #include "../../../collidelist/deoglCollideListComponent.h"
 #include "../../../collidelist/deoglCollideListLight.h"
+#include "../../../collidelist/deoglCollideListHTSector.h"
+#include "../../../collidelist/deoglCollideListHTSCluster.h"
 #include "../../../envmap/deoglEnvironmentMap.h"
 #include "../../../renderthread/deoglRenderThread.h"
 #include "../../../renderthread/deoglRTLogger.h"
+#include "../../../terrain/heightmap/deoglHTViewSector.h"
+#include "../../../terrain/heightmap/deoglRHTSector.h"
 #include "../../../utils/collision/deoglDCollisionSphere.h"
 #include "../../../world/deoglRWorld.h"
 
@@ -110,6 +114,16 @@ void deoglRPTFindContent::Run(){
 		
 		if( pPlan.GetHeightTerrainView() ){
 			collideList.AddHTSectorsColliding( pPlan.GetHeightTerrainView(), frustum );
+				/*{
+				const int sc = collideList.GetHTSectorCount();
+				for(i=0; i<sc; i++){
+					const deoglCollideListHTSector &s = *collideList.GetHTSectorAt(i);
+					const decPoint &c = s.GetSector()->GetSector().GetCoordinates();
+					const int cc = s.GetSector()->GetSector().GetClusterCount();
+					pPlan.GetRenderThread().GetLogger().LogInfoFormat(
+						"FindContent: HTSector (%d,%d) %d/%d\n", c.x, c.y, s.GetClusterCount(), cc * cc);
+				}
+				}*/
 			SPECIAL_TIMER_PRINT("HTSector")
 		}
 		

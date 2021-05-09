@@ -65,7 +65,7 @@ public:
 	/** Retrieves the number of sectors. */
 	inline int GetSectorCount() const{ return pSectorCount; }
 	/** Retrieves the sector at the given index. */
-	deoglHTViewSector *GetSectorAt( int index );
+	deoglHTViewSector *GetSectorAt( int index ) const;
 	/** Adds a sector. */
 	void AddSector( deoglHTViewSector *sector );
 	/** Removes all sectors. */

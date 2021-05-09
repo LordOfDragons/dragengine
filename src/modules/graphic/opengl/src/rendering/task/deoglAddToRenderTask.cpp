@@ -36,6 +36,7 @@
 #include "../../collidelist/deoglCollideList.h"
 #include "../../collidelist/deoglCollideListComponent.h"
 #include "../../collidelist/deoglCollideListHTSector.h"
+#include "../../collidelist/deoglCollideListHTSCluster.h"
 #include "../../collidelist/deoglCollideListPropField.h"
 #include "../../collidelist/deoglCollideListPropFieldType.h"
 #include "../../billboard/deoglRBillboard.h"
@@ -545,9 +546,9 @@ void deoglAddToRenderTask::AddPropFields( const deoglCollideList &clist, bool im
 
 
 
-void deoglAddToRenderTask::AddHeightTerrainSectorClusters( const deoglHTViewSector &sectorView, int texture ){
-	deoglRHTSector &sector = sectorView.GetSector();
-	
+void deoglAddToRenderTask::AddHeightTerrainSectorClusters( const deoglCollideListHTSector &clhtsector, int texture ){
+	const deoglHTViewSector &htvsector = *clhtsector.GetSector();
+	const deoglRHTSector &sector = htvsector.GetSector();
 	if( ! sector.GetValid() || ! sector.GetValidTextures() ){
 		return;
 	}
@@ -559,12 +560,9 @@ void deoglAddToRenderTask::AddHeightTerrainSectorClusters( const deoglHTViewSect
 	}
 	
 	// retrieve the shader and texture units configuration to use
+	const deoglSkinShader * const skinShader = skinTexture->GetShaderFor( pSkinShaderType );
+	const deoglShaderProgram *shader = NULL;
 	deoglSPBlockUBO *spbInstance = NULL;
-	deoglSkinShader *skinShader = NULL;
-	deoglShaderProgram *shader = NULL;
-	deoglTexUnitsConfig *tuc = NULL;
-	
-	skinShader = skinTexture->GetShaderFor( pSkinShaderType );
 	
 	if( pEnforceShader ){
 		shader = pEnforceShader->GetShader();
@@ -588,7 +586,7 @@ void deoglAddToRenderTask::AddHeightTerrainSectorClusters( const deoglHTViewSect
 	deoglRenderTaskShader &rtshader = *pRenderTask.AddShader( shader->GetRTSShader() );
 	
 	// retrieve the tuc
-	tuc = httexture.GetTUCForShaderType( pSkinShaderType );
+	deoglTexUnitsConfig *tuc = httexture.GetTUCForShaderType( pSkinShaderType );
 	if( ! tuc ){
 		tuc = pRenderThread.GetShader().GetTexUnitsConfigList().GetEmptyNoUsage();
 	}
@@ -596,63 +594,58 @@ void deoglAddToRenderTask::AddHeightTerrainSectorClusters( const deoglHTViewSect
 	deoglRenderTaskTexture &rttexture = *rtshader.AddTexture( pRenderTask, tuc->GetRTSTexture() );
 	
 	// the rest is specific for each cluster
-	const int clusterCount = sector.GetClusterCount() * sector.GetClusterCount();
+	sHTVSCluster * const htvsclusters = htvsector.GetClusters();
 	deoglHTSCluster * const htsclusters = sector.GetClusters();
-	sHTVSCluster * const htvsclusters = sectorView.GetClusters();
-	int firstPoint, firstIndex, indexCount, i;
+	const int clusterCount = clhtsector.GetClusterCount();
+	int i;
 	
 	for( i=0; i<clusterCount; i++ ){
-		if( htvsclusters[ i ].lodLevel >= 0 ){
-			const deoglHTSClusterLOD &clod = htsclusters[ i ].GetLODAt( htvsclusters[ i ].lodLevel );
-			const int vboOffsetFaces = htsclusters[ i ].GetOffsetVBODataFaces();
-			deoglVAO * const vao = htsclusters[ i ].GetVAO();
+		const deoglCollideListHTSCluster &clhtscluster = clhtsector.GetClusterAt( i );
+		deoglHTSCluster &htscluster = htsclusters[ clhtscluster.GetIndex() ];
+		sHTVSCluster &htvscluster = htvsclusters[ clhtscluster.GetIndex() ];
+		
+		if( htvscluster.lodLevel >= 0 ){
+			const deoglHTSClusterLOD &clod = htscluster.GetLODAt( htvscluster.lodLevel );
+			const int vboOffsetFaces = htscluster.GetOffsetVBODataFaces();
 			
 			/*
 			// for RTSI usage call
-			htsclusters[ i ].UpdateRTSInstances();
+			htscluster.UpdateRTSInstances();
 			
 			// then 5 instance are usable one for the cluster and 4 for the borders.
 			// these have to be updated below (no pre-update yet)
 			*/
 			
-			firstPoint = 0;
-			firstIndex = vboOffsetFaces + clod.firstBasePoint;
-			indexCount = clod.basePointCount;
-			
-			deoglRenderTaskVAO &rtvao = *rttexture.AddVAO( pRenderTask, vao->GetRTSVAO() );
+			deoglRenderTaskVAO &rtvao = *rttexture.AddVAO( pRenderTask, htscluster.GetVAO()->GetRTSVAO() );
 			
 			// add an instance for this cluster
 			
 			// NOTE using RTSInstance for the time beeing has to be updated by hand
 			
-			htsclusters[ i ].UpdateRTSInstances();
+			htscluster.UpdateRTSInstances();
 			
-			deoglRenderTaskSharedInstance &instance = *htsclusters[ i ].GetRTSInstanceAt( 0 );
+			deoglRenderTaskSharedInstance &instance = *htscluster.GetRTSInstanceAt( 0 );
 			instance.SetParameterBlock( spbInstance );
-			instance.SetFirstPoint( firstPoint );
-			instance.SetFirstIndex( firstIndex );
-			instance.SetIndexCount( indexCount );
+			instance.SetFirstPoint( 0 );
+			instance.SetFirstIndex( vboOffsetFaces + clod.firstBasePoint );
+			instance.SetIndexCount( clod.basePointCount );
 			
 			rtvao.AddInstance( pRenderTask, &instance );
 			
 			// add borders
-			if( htvsclusters[ i ].lodLevel > 0 ){
+			if( htvscluster.lodLevel > 0 ){
 				int j;
 				
 				for( j=0; j<4; j++ ){
-					const int border = htvsclusters[ i ].borders[ j ];
+					const int border = htvscluster.borders[ j ];
 					
-					firstPoint = 0;
-					firstIndex = vboOffsetFaces + clod.firstBorderPoint[ border ];
-					indexCount = clod.borderPointCount[ border ];
-					
-					deoglRenderTaskSharedInstance &instance2 = *htsclusters[ i ].GetRTSInstanceAt( 1 + j );
+					deoglRenderTaskSharedInstance &instance2 = *htscluster.GetRTSInstanceAt( 1 + j );
 					instance2.SetParameterBlock( spbInstance );
-					instance2.SetFirstPoint( firstPoint );
-					instance2.SetFirstIndex( firstIndex );
-					instance2.SetIndexCount( indexCount );
+					instance2.SetFirstPoint( 0 );
+					instance2.SetFirstIndex( vboOffsetFaces + clod.firstBorderPoint[ border ] );
+					instance2.SetIndexCount( clod.borderPointCount[ border ] );
 					
-					rtvao.AddInstance( pRenderTask, &instance );
+					rtvao.AddInstance( pRenderTask, &instance2 );
 				}
 			}
 		}
@@ -660,20 +653,18 @@ void deoglAddToRenderTask::AddHeightTerrainSectorClusters( const deoglHTViewSect
 }
 
 void deoglAddToRenderTask::AddHeightTerrainSector( const deoglCollideListHTSector &clhtsector, bool firstMask ){
-	deoglHTViewSector &viewSector = *clhtsector.GetSector();
-	
-	const int textureCount = viewSector.GetSector().GetTextureCount();
+	const int textureCount = clhtsector.GetSector()->GetSector().GetTextureCount();
 	if( textureCount == 0 ){
 		return;
 	}
 	
 	if( firstMask ){
-		AddHeightTerrainSectorClusters( viewSector, 0 );
+		AddHeightTerrainSectorClusters( clhtsector, 0 );
 		
 	}else{
 		int i;
 		for( i=1; i<textureCount; i++ ){
-			AddHeightTerrainSectorClusters( viewSector, i );
+			AddHeightTerrainSectorClusters( clhtsector, i );
 		}
 	}
 }

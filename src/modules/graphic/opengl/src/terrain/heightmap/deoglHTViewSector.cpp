@@ -67,9 +67,15 @@ deoglHTViewSector::~deoglHTViewSector(){
 ///////////////
 
 sHTVSCluster &deoglHTViewSector::GetClusterAt( int x, int z ) const{
-	if( x < 0 || x >= pSector.GetClusterCount() || z < 0 || z >= pSector.GetClusterCount() ) DETHROW( deeInvalidParam );
+	if( x < 0 || x >= pSector.GetClusterCount() || z < 0 || z >= pSector.GetClusterCount() ){
+		DETHROW( deeInvalidParam );
+	}
 	
 	return pClusters[ pSector.GetClusterCount() * z + x ];
+}
+
+sHTVSCluster & deoglHTViewSector::GetClusterAt( const decPoint &coordinates ) const{
+	return GetClusterAt( coordinates.x, coordinates.y );
 }
 
 void deoglHTViewSector::ResetClusters(){

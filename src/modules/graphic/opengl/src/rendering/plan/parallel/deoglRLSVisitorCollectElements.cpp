@@ -26,6 +26,8 @@
 #include "../../plan/deoglRenderPlan.h"
 #include "../../../collidelist/deoglCollideList.h"
 #include "../../../collidelist/deoglCollideListComponent.h"
+#include "../../../collidelist/deoglCollideListHTSector.h"
+#include "../../../collidelist/deoglCollideListHTSCluster.h"
 #include "../../../world/deoglWorldOctree.h"
 #include "../../../billboard/deoglRBillboard.h"
 #include "../../../component/deoglRComponent.h"
@@ -33,6 +35,10 @@
 #include "../../../particle/deoglParticleEmitterInstance.h"
 #include "../../../sky/deoglRSkyLayer.h"
 #include "../../../sky/deoglRSkyInstanceLayer.h"
+#include "../../../terrain/heightmap/deoglHTSCluster.h"
+#include "../../../terrain/heightmap/deoglHTView.h"
+#include "../../../terrain/heightmap/deoglHTViewSector.h"
+#include "../../../terrain/heightmap/deoglRHTSector.h"
 #include "../../../utils/convexhull/deoglConvexHull2D.h"
 #include "../../../utils/collision/deoglCollisionBox.h"
 #include "../../../utils/collision/deoglDCollisionVolume.h"
@@ -395,6 +401,47 @@ deoglOcclusionTest *occlusionTest, const decDVector &referencePosition ){
 
 void deoglRLSVisitorCollectElements::VisitWorldOctree( deoglWorldOctree &octree ){
 	octree.VisitNodesColliding( this, pBoundaryBoxMinExtend, pBoundaryBoxMaxExtend );
+}
+
+void deoglRLSVisitorCollectElements::VisitHTView( const deoglHTView &htview ){
+	const int sectorCount = htview.GetSectorCount();
+	int i;
+	
+	for( i=0; i<sectorCount; i++ ){
+		deoglHTViewSector &sector = *htview.GetSectorAt( i );
+		
+		// TODO test if the sector is visible using a bounding box test
+		
+		const deoglRHTSector &htsector = sector.GetSector();
+		const decDVector offset( htsector.CalcWorldPosition( pReferencePosition ) );
+		const deoglHTSCluster *cluster = htsector.GetClusters();
+		const int count = htsector.GetClusterCount();
+		decPoint i;
+		
+		deoglCollideListHTSector *clsector = NULL;
+		
+		for( i.y=0; i.y<count; i.y++ ){
+			for( i.x=0; i.x<count; i.x++, cluster++ ){
+				const decDVector realOffset( offset + decDVector( cluster->GetCenter() ) );
+				const decDVector realHalfExtend( cluster->GetHalfExtends() );
+				
+				int cascadeMask = 0;
+				if( ! TestAxisAlignedBox( realOffset - realHalfExtend, realOffset + realHalfExtend, cascadeMask ) ){
+					continue;
+				}
+				
+				if( ! clsector ){
+					clsector = pCollideList.AddHTSector( &sector );
+				}
+				
+				clsector->AddCluster( i ).SetCascadeMask( cascadeMask );
+			}
+		}
+		
+// 		if( pOcclusionTest && clsector ){
+// 			clsector->StartOcclusionTest( *pOcclusionTest, pReferencePosition );
+// 		}
+	}
 }
 
 
