@@ -243,11 +243,7 @@ public:
 	/** Add components from the given collide list using highest lod level. */
 	void AddComponentsHighestLod( const deoglCollideList &clist );
 	
-	/**
-	 * Add continuous run of all faces of a texture of a component.
-	 * \details The component is supposed to be updated already and that a model and skin exists
-	 *          as well as that a parent world exists.
-	 */
+	/** Add continuous run of all faces of a texture of a component. */
 	void AddComponentFaces( const deoglRComponent &component, int texture, int lodLevel );
 	
 	

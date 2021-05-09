@@ -77,7 +77,7 @@ public:
 	deoglCollideListHTSCluster &GetClusterAt( int index ) const;
 	
 	/** Add cluster. */
-	deoglCollideListHTSCluster &AddCluster( const decPoint &coordinates );
+	deoglCollideListHTSCluster *AddCluster( const decPoint &coordinates );
 	
 	/** Remove all clusters. */
 	void RemoveAllClusters();

@@ -127,7 +127,7 @@ void deoglRPTFindContent::Run(){
 			SPECIAL_TIMER_PRINT("HTSector")
 		}
 		
-		collideList.AddPropFieldsColliding( world, frustum );
+		collideList.AddPropFieldsColliding( world, *frustum );
 		SPECIAL_TIMER_PRINT("PropField")
 		
 		

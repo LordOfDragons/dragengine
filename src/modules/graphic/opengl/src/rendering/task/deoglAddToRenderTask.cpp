@@ -39,6 +39,7 @@
 #include "../../collidelist/deoglCollideListHTSCluster.h"
 #include "../../collidelist/deoglCollideListPropField.h"
 #include "../../collidelist/deoglCollideListPropFieldType.h"
+#include "../../collidelist/deoglCollideListPropFieldCluster.h"
 #include "../../billboard/deoglRBillboard.h"
 #include "../../component/deoglRComponent.h"
 #include "../../component/deoglRComponentLOD.h"
@@ -496,9 +497,8 @@ const deoglRPropFieldType &propFieldType, bool imposters ){
 	
 	deoglRenderTaskShader &rtshader = *pRenderTask.AddShader( shader->GetRTSShader() );
 	
-	// the rest is specific for each cluster except for the vao which is also the same for all clusters in the type
-	const deoglPropFieldCluster ** const clusters = clPropFieldType.GetClusters();
-	
+	// the rest is specific for each cluster except for the vao which is also the same
+	// for all clusters in the type
 	int i;
 	for( i=0; i<clusterCount; i++ ){
 		// TODO later on clusters are going to have the ability to share TBOs to reduce the number
@@ -510,7 +510,7 @@ const deoglRPropFieldType &propFieldType, bool imposters ){
 		//      is the same. if so the last instance belongs to the same prop field type and thus
 		//      a new sub-instance can be added (if supported)
 		//if( i > 0 ) break; // TEMPORARY
-		const deoglPropFieldCluster &cluster = *clusters[ i ];
+		const deoglPropFieldCluster &cluster = *clPropFieldType.GetClusterAt( i ).GetCluster();
 		
 		// retrieve the tuc. this is potentially different for clusters as they use shared TBOs
 		const deoglTexUnitsConfig * const tuc = cluster.GetTUCForShaderType( pSkinShaderType );

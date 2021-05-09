@@ -19,58 +19,73 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-// include only once
 #ifndef _DEOGLCOLLIDELISTPROPFIELD_H_
 #define _DEOGLCOLLIDELISTPROPFIELD_H_
 
-// includes
+#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/math/decMath.h>
 
-// predefinitions
 class deoglRPropField;
+class deoglRPropFieldType;
 class deoglCollideListPropFieldType;
-
+class deoglOcclusionTest;
 
 
 /**
- * @brief Collide List Prop Field.
- *
- * A prop field in a collide list.
+ * Collide List Prop Field.
  */
 class deoglCollideListPropField{
 private:
 	deoglRPropField *pPropField;
 	
-	deoglCollideListPropFieldType **pTypes;
+	decPointerList pTypes;
 	int pTypeCount;
-	int pTypeSize;
+	
+	
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Creates a new collide list prop field. */
+	/** Create collide list prop field. */
 	deoglCollideListPropField();
-	/** Cleans up the collide list prop field. */
+	
+	/** Clean up collide list prop field. */
 	~deoglCollideListPropField();
 	/*@}*/
 	
-	/** @name Management */
+	
+	
+	/** \name Management */
 	/*@{*/
-	/** Clears the collide list prop field. */
+	/** Clear collide list prop field. */
 	void Clear();
-	/** Determines if the prop field is empty. */
+	
+	/** Start occlusion test. */
+	void StartOcclusionTest( deoglOcclusionTest &occlusionTest, const decDVector &referencePosition );
+	
+	
+	
+	/** Prop field is empty. */
 	bool GetIsEmpty() const;
 	
-	/** Retrieves the prop field. */
+	/** Prop field. */
 	inline deoglRPropField *GetPropField() const{ return pPropField; }
-	/** Sets the prop field. */
+	
+	/** Set prop field. */
 	void SetPropField( deoglRPropField *propField );
 	
-	/** Retrieves the number of types. */
+	/** Count of types. */
 	inline int GetTypeCount() const{ return pTypeCount; }
-	/** Retrieves the type at the given position. */
+	
+	/** Type at the index. */
 	deoglCollideListPropFieldType *GetTypeAt( int index ) const;
+	
+	/** Add type. */
+	deoglCollideListPropFieldType *AddType( deoglRPropFieldType *type );
+	
+	/** Remove all types. */
+	void RemoveAllTypes();
 	/*@}*/
 };
 
-// end of include only once
 #endif

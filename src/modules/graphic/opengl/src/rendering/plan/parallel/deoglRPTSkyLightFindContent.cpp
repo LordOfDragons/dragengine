@@ -83,7 +83,6 @@ void deoglRPTSkyLightFindContent::Run(){
 		
 		deoglCollideList &collideList = pPlan.GetCollideList();
 		deoglRLSVisitorCollectElements visitor( collideList );
-		deoglDCollisionFrustum * const frustum = plan.GetUseFrustum();
 		
 		visitor.InitFromFrustum( plan, *pPlan.GetLayer(), 2000.0f );
 		visitor.SetCullLayerMask( plan.GetUseLayerMask() );
@@ -117,7 +116,7 @@ void deoglRPTSkyLightFindContent::Run(){
 			SPECIAL_TIMER_PRINT("HTSector")
 		}
 		
-		collideList.AddPropFieldsColliding( *plan.GetWorld(), frustum );
+		visitor.VisitPropFields( *plan.GetWorld() );
 		SPECIAL_TIMER_PRINT("PropField")
 		
 	}catch( const deException &e ){

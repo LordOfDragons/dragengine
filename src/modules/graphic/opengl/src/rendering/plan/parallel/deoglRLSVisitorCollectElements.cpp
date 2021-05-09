@@ -28,11 +28,18 @@
 #include "../../../collidelist/deoglCollideListComponent.h"
 #include "../../../collidelist/deoglCollideListHTSector.h"
 #include "../../../collidelist/deoglCollideListHTSCluster.h"
+#include "../../../collidelist/deoglCollideListPropField.h"
+#include "../../../collidelist/deoglCollideListPropFieldType.h"
+#include "../../../collidelist/deoglCollideListPropFieldCluster.h"
 #include "../../../world/deoglWorldOctree.h"
+#include "../../../world/deoglRWorld.h"
 #include "../../../billboard/deoglRBillboard.h"
 #include "../../../component/deoglRComponent.h"
 #include "../../../light/deoglRLight.h"
 #include "../../../particle/deoglParticleEmitterInstance.h"
+#include "../../../propfield/deoglRPropField.h"
+#include "../../../propfield/deoglRPropFieldType.h"
+#include "../../../propfield/deoglPropFieldCluster.h"
 #include "../../../sky/deoglRSkyLayer.h"
 #include "../../../sky/deoglRSkyInstanceLayer.h"
 #include "../../../terrain/heightmap/deoglHTSCluster.h"
@@ -431,13 +438,56 @@ void deoglRLSVisitorCollectElements::VisitHTView( const deoglHTView &htview ){
 				if( ! clsector ){
 					clsector = pCollideList.AddHTSector( &sector );
 				}
-				
-				clsector->AddCluster( i ).SetCascadeMask( cascadeMask );
+				clsector->AddCluster( i )->SetCascadeMask( cascadeMask );
 			}
 		}
 		
 // 		if( pOcclusionTest && clsector ){
 // 			clsector->StartOcclusionTest( *pOcclusionTest, pReferencePosition );
+// 		}
+	}
+}
+
+void deoglRLSVisitorCollectElements::VisitPropFields( const deoglRWorld &world ){
+	const int count = world.GetPropFieldCount();
+	int i, cascadeMask;
+	
+	for( i=0; i<count; i++ ){
+		deoglRPropField &propField = *world.GetPropFieldAt( i );
+		const decDVector offset( propField.GetPosition() - pReferencePosition );
+		const int typeCount = propField.GetTypeCount();
+		int j;
+		
+		deoglCollideListPropField *clpropfield = NULL;
+		
+		for( j=0; j<typeCount; j++ ){
+			deoglRPropFieldType &type = propField.GetTypeAt( j );
+			const int clusterCount = type.GetClusterCount();
+			int k;
+			
+			deoglCollideListPropFieldType *cltype = NULL;
+			
+			for( k=0; k<clusterCount; k++ ){
+				deoglPropFieldCluster &cluster = *type.GetClusterAt( k );
+				
+				const decDVector minExtend( offset + decDVector( cluster.GetMinimumExtend() ) );
+				const decDVector maxExtend( offset + decDVector( cluster.GetMaximumExtend() ) );
+				if( ! TestAxisAlignedBox( minExtend, maxExtend, cascadeMask ) ){
+					continue;
+				}
+				
+				if( ! clpropfield ){
+					clpropfield = pCollideList.AddPropField( &propField );
+				}
+				if( ! cltype ){
+					cltype = clpropfield->AddType( &type );
+				}
+				cltype->AddCluster( &cluster )->SetCascadeMask( cascadeMask );
+			}
+		}
+		
+// 		if( pOcclusionTest && clpropfield ){
+// 			clpropfield->StartOcclusionTest( *pOcclusionTest, pReferencePosition );
 // 		}
 	}
 }

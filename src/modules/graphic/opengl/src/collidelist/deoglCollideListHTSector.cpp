@@ -84,7 +84,7 @@ deoglCollideListHTSCluster &deoglCollideListHTSector::GetClusterAt( int index ) 
 	return *( ( deoglCollideListHTSCluster* )pClusters.GetAt( index ) );
 }
 
-deoglCollideListHTSCluster &deoglCollideListHTSector::AddCluster( const decPoint &coordinates ){
+deoglCollideListHTSCluster *deoglCollideListHTSector::AddCluster( const decPoint &coordinates ){
 	deoglCollideListHTSCluster *cluster = NULL;
 	
 	if( pClusterCount < pClusters.GetCount() ){
@@ -97,7 +97,7 @@ deoglCollideListHTSCluster &deoglCollideListHTSector::AddCluster( const decPoint
 	
 	cluster->SetCoordinates( coordinates );
 	pClusterCount++;
-	return *cluster;
+	return cluster;
 }
 
 void deoglCollideListHTSector::RemoveAllClusters(){

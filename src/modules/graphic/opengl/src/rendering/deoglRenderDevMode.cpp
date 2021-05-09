@@ -34,6 +34,7 @@
 #include "../collidelist/deoglCollideListManager.h"
 #include "../collidelist/deoglCollideListPropField.h"
 #include "../collidelist/deoglCollideListPropFieldType.h"
+#include "../collidelist/deoglCollideListPropFieldCluster.h"
 #include "../component/deoglRComponent.h"
 #include "../configuration/deoglConfiguration.h"
 #include "../deoglDebugFont.h"
@@ -504,12 +505,11 @@ void deoglRenderDevMode::RenderPropFieldInfo( deoglRenderPlan &plan ){
 			
 			for( j=0; j<typeCount; j++ ){
 				if( j == typeIndex ){
-					const deoglCollideListPropFieldType &clPropFieldType = *clPropField.GetTypeAt( j );
-					const deoglPropFieldCluster ** const clusters = clPropFieldType.GetClusters();
-					const int clusterCount = clPropFieldType.GetClusterCount();
+					const deoglCollideListPropFieldType &cltype = *clPropField.GetTypeAt( j );
+					const int clusterCount = cltype.GetClusterCount();
 					
 					for( k=0; k<clusterCount; k++ ){
-						const deoglPropFieldCluster &cluster = *clusters[ k ];
+						const deoglPropFieldCluster &cluster = *cltype.GetClusterAt( k ).GetCluster();
 						
 						box.SetFromExtends( propFieldOffset + decDVector( cluster.GetMinimumExtend() ),
 							propFieldOffset + decDVector( cluster.GetMaximumExtend() ) );

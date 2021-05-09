@@ -30,13 +30,14 @@
 #include "../../../world/deoglDefaultWorldOctreeVisitor.h"
 
 class deoglCollideList;
-class deoglRenderPlan;
-class deoglRSkyLayer;
-class deoglRSkyInstanceLayer;
 class deoglDCollisionBox;
 class deoglDCollisionFrustum;
 class deoglOcclusionTest;
 class deoglHTView;
+class deoglRenderPlan;
+class deoglRSkyLayer;
+class deoglRSkyInstanceLayer;
+class deoglRWorld;
 
 
 /**
@@ -160,6 +161,9 @@ public:
 	
 	/** Visit height terrain view. */
 	void VisitHTView( const deoglHTView &htview );
+	
+	/** Visit prop fields view. */
+	void VisitPropFields( const deoglRWorld &world );
 	/*@}*/
 	
 	

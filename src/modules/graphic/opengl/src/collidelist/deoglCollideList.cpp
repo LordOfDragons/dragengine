@@ -707,22 +707,23 @@ void deoglCollideList::AddHTSectorsColliding( deoglHTView *htview, deoglDCollisi
 ////////////////
 
 deoglCollideListPropField *deoglCollideList::GetPropFieldAt( int index ) const{
-	if( index < 0 || index >= pPropFieldCount ) DETHROW( deeInvalidParam );
-	
+	if( index < 0 || index >= pPropFieldCount ){
+		DETHROW( deeInvalidParam );
+	}
 	return pPropFields[ index ];
 }
 
-void deoglCollideList::AddPropField( deoglRPropField *propField, deoglDCollisionVolume *volume ){
-	if( ! propField ) DETHROW( deeInvalidParam );
-	
-	deoglCollideListPropField *clpf;
+deoglCollideListPropField *deoglCollideList::AddPropField( deoglRPropField *propField ){
+	if( ! propField ){
+		DETHROW( deeInvalidParam );
+	}
 	
 	if( pPropFieldCount == pPropFieldSize ){
 		int newSize = pPropFieldCount * 3 / 2 + 1;
 		deoglCollideListPropField **newArray = new deoglCollideListPropField*[ newSize ];
-		if( ! newArray ) DETHROW( deeOutOfMemory );
 		if( newSize > pPropFieldSize ){
-			memset( newArray + pPropFieldSize, '\0', sizeof( deoglCollideListPropField* ) * ( newSize - pPropFieldSize ) );
+			memset( newArray + pPropFieldSize, '\0',
+				sizeof( deoglCollideListPropField* ) * ( newSize - pPropFieldSize ) );
 		}
 		if( pPropFields ){
 			memcpy( newArray, pPropFields, sizeof( deoglCollideListPropField* ) * pPropFieldSize );
@@ -734,47 +735,43 @@ void deoglCollideList::AddPropField( deoglRPropField *propField, deoglDCollision
 	
 	if( ! pPropFields[ pPropFieldCount ] ){
 		pPropFields[ pPropFieldCount ] = new deoglCollideListPropField;
-		if( ! pPropFields[ pPropFieldCount ] ) DETHROW( deeOutOfMemory );
 	}
 	pPropFields[ pPropFieldCount ]->SetPropField( propField );
-	clpf = pPropFields[ pPropFieldCount++ ];
+	return pPropFields[ pPropFieldCount++ ];
+}
+
+void deoglCollideList::AddPropField( deoglRPropField *propField, deoglDCollisionVolume &volume ){
+	const decDVector &pfpos = propField->GetPosition();
+	const int typeCount = propField->GetTypeCount();
+	deoglDCollisionBox box;
+	int i, j;
 	
-	if( volume ){
-		const decDVector &pfpos = propField->GetPosition();
-		decDVector clusterMinExtend, clusterMaxExtend;
-		int t, typeCount = clpf->GetTypeCount();
-		deoglCollideListPropFieldType *cltype;
-		deoglPropFieldCluster *cluster;
-		deoglDCollisionBox box;
-		int c, clusterCount;
-		bool isEmpty = true;
+	deoglCollideListPropField *clpropfield = NULL;
+	
+	for( i=0; i<typeCount; i++ ){
+		deoglRPropFieldType &type = propField->GetTypeAt( i );
+		const int clusterCount = type.GetClusterCount();
 		
-		for( t=0; t<typeCount; t++ ){
-			cltype = clpf->GetTypeAt( t );
-			deoglRPropFieldType &type = propField->GetTypeAt( t );
-			clusterCount = type.GetClusterCount();
+		deoglCollideListPropFieldType *cltype = NULL;
+		
+		for( j=0; j<clusterCount; j++ ){
+			deoglPropFieldCluster &cluster = *type.GetClusterAt( j );
 			
-			cltype->RemoveAllClusters();
+			const decDVector clusterMinExtend( pfpos + cluster.GetMinimumExtend() );
+			const decDVector clusterMaxExtend( pfpos + cluster.GetMaximumExtend() );
+			box.SetFromExtends( clusterMinExtend, clusterMaxExtend );
 			
-			for( c=0; c<clusterCount; c++ ){
-				cluster = type.GetClusterAt( c );
-				
-				clusterMinExtend = pfpos + cluster->GetMinimumExtend();
-				clusterMaxExtend = pfpos + cluster->GetMaximumExtend();
-				
-				box.SetFromExtends( clusterMinExtend, clusterMaxExtend );
-				
-				if( volume->BoxHitsVolume( &box ) ){
-					cltype->AddCluster( cluster );
-					isEmpty = false;
-				}
+			if( ! volume.BoxHitsVolume( &box ) ){
+				continue;
 			}
-			//propField->GetOpenGL()->LogInfo( "CollideList: propField=%p t=%i(%p;%p) c=%i", propField, t, cltype, type, cltype->GetClusterCount() );
-		}
-		
-		if( isEmpty ){
-			clpf->Clear();
-			pPropFieldCount--;
+			
+			if( ! clpropfield ){
+				clpropfield = AddPropField( propField );
+			}
+			if( ! cltype ){
+				cltype = clpropfield->AddType( &type );
+			}
+			cltype->AddCluster( &cluster );
 		}
 	}
 }
@@ -786,25 +783,19 @@ void deoglCollideList::RemoveAllPropFields(){
 	}
 }
 
-void deoglCollideList::AddPropFieldsColliding( deoglRWorld &world, deoglDCollisionVolume *volume ){
-	if( ! volume ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	int p, propFieldCount = world.GetPropFieldCount();
+void deoglCollideList::AddPropFieldsColliding( deoglRWorld &world, deoglDCollisionVolume &volume ){
+	const int count = world.GetPropFieldCount();
 	deoglDCollisionBox box;
+	int i;
 	
-	for( p=0; p<propFieldCount; p++ ){
-		deoglRPropField * const propField = world.GetPropFieldAt( p );
+	for( i=0; i<count; i++ ){
+		deoglRPropField &propField = *world.GetPropFieldAt( i );
+		const decDVector &minExtend = propField.GetMinimumExtend();
+		const decDVector &maxExtend = propField.GetMaximumExtend();
 		
-		if( propField ){
-			const decDVector &minExtend = propField->GetMinimumExtend();
-			const decDVector &maxExtend = propField->GetMaximumExtend();
-			
-			box.SetFromExtends( minExtend, maxExtend );
-			if( volume->BoxHitsVolume( &box ) ){
-				AddPropField( propField, volume );
-			}
+		box.SetFromExtends( minExtend, maxExtend );
+		if( volume.BoxHitsVolume( &box ) ){
+			AddPropField( &propField, volume );
 		}
 	}
 }

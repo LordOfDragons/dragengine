@@ -43,6 +43,9 @@
 #include "../../collidelist/deoglCollideListManager.h"
 #include "../../collidelist/deoglCollideListHTSector.h"
 #include "../../collidelist/deoglCollideListHTSCluster.h"
+#include "../../collidelist/deoglCollideListPropField.h"
+#include "../../collidelist/deoglCollideListPropFieldType.h"
+#include "../../collidelist/deoglCollideListPropFieldCluster.h"
 #include "../../component/deoglComponentLOD.h"
 #include "../../component/deoglRComponent.h"
 #include "../../configuration/deoglConfiguration.h"
@@ -815,7 +818,7 @@ deoglRenderPlanSkyLight &planSkyLight, deoglShadowMapper &shadowMapper ){
 		pColList2->Clear();
 		
 		const int componentCount = collideList.GetComponentCount();
-		int j, k;
+		int j, k, l;
 		
 		for( j=0; j<componentCount; j++ ){
 			const deoglCollideListComponent &clcomponent = *collideList.GetComponentAt( j );
@@ -837,6 +840,32 @@ deoglRenderPlanSkyLight &planSkyLight, deoglShadowMapper &shadowMapper ){
 						addSector = pColList2->AddHTSector( sector.GetSector() );
 					}
 					addSector->AddCluster( cluster.GetCoordinates() );
+				}
+			}
+		}
+		
+		const int propfieldCount = collideList.GetPropFieldCount();
+		for( j=0; j<propfieldCount; j++ ){
+			const deoglCollideListPropField &propfield = *collideList.GetPropFieldAt( j );
+			const int typeCount = propfield.GetTypeCount();
+			
+			deoglCollideListPropField *addPropField = NULL;
+			for( k=0; k<typeCount; k++ ){
+				const deoglCollideListPropFieldType &type = *propfield.GetTypeAt( k );
+				const int clusterCount = type.GetClusterCount();
+				
+				deoglCollideListPropFieldType *addType = NULL;
+				for( l=0; l<clusterCount; l++ ){
+					const deoglCollideListPropFieldCluster &cluster = type.GetClusterAt( l );
+					if( ( cluster.GetCascadeMask() & cascadeMask ) == cascadeMask ){
+						if( ! addPropField ){
+							addPropField = pColList2->AddPropField( propfield.GetPropField() );
+						}
+						if( ! addType ){
+							addType = addPropField->AddType( type.GetType() );
+						}
+						addType->AddCluster( cluster.GetCluster() );
+					}
 				}
 			}
 		}
@@ -956,7 +985,7 @@ deoglRenderPlanSkyLight &planSkyLight, deoglShadowMapper &shadowMapper ){
 		#endif
 		
 		addToRenderTask.SetSkinShaderType( deoglSkinTexture::estPropFieldShadowOrthogonal );
-		addToRenderTask.AddPropFields( collideList, false );
+		addToRenderTask.AddPropFields( *pColList2, false );
 		
 		addToRenderTask.SetSkinShaderType( deoglSkinTexture::estHeightMapShadowOrthogonal );
 		addToRenderTask.AddHeightTerrains( *pColList2, true );

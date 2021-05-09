@@ -250,18 +250,27 @@ public:
 	void AddHTSectorsColliding( deoglHTView *htview, deoglDCollisionVolume *volume );
 	/*@}*/
 	
+	
+	
 	/** \name Prop Fields */
 	/*@{*/
-	/** Retrieves the number of prop fields. */
+	/** Count of prop fields. */
 	inline int GetPropFieldCount() const{ return pPropFieldCount; }
-	/** Retrieves the prop field at the given index. */
+	
+	/** Prop field at index. */
 	deoglCollideListPropField *GetPropFieldAt( int index ) const;
-	/** Adds a prop field. */
-	void AddPropField( deoglRPropField *propField, deoglDCollisionVolume *volume );
-	/** Removes all prop fields. */
+	
+	/** Add prop field. */
+	deoglCollideListPropField *AddPropField( deoglRPropField *propField );
+	
+	/** Add prop field if colliding with volume. */
+	void AddPropField( deoglRPropField *propField, deoglDCollisionVolume &volume );
+	
+	/** Remove all prop fields. */
 	void RemoveAllPropFields();
+	
 	/** Adds prop fields colliding with the given volume. */
-	void AddPropFieldsColliding( deoglRWorld &world, deoglDCollisionVolume *volume );
+	void AddPropFieldsColliding( deoglRWorld &world, deoglDCollisionVolume &volume );
 	/*@}*/
 	
 private:
