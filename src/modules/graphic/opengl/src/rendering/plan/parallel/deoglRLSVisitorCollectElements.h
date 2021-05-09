@@ -175,6 +175,12 @@ public:
 	/** Test axis aligned box for visibility and store the shadow box split extends to be written to the element. */
 	bool TestAxisAlignedBox( const decDVector &minExtend, const decDVector &maxExtend, int &splitMask );
 	/*@}*/
+	
+	
+	
+private:
+	void pVisitComponents( const deoglWorldOctree &sonode );
+	void pVisitBillboards( const deoglWorldOctree &sonode );
 };
 
 #endif

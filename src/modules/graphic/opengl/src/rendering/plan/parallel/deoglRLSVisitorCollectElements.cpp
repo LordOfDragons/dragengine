@@ -405,7 +405,7 @@ void deoglRLSVisitorCollectElements::VisitWorldOctree( deoglWorldOctree &octree 
 
 void deoglRLSVisitorCollectElements::VisitHTView( const deoglHTView &htview ){
 	const int sectorCount = htview.GetSectorCount();
-	int i;
+	int i, cascadeMask;
 	
 	for( i=0; i<sectorCount; i++ ){
 		deoglHTViewSector &sector = *htview.GetSectorAt( i );
@@ -424,8 +424,6 @@ void deoglRLSVisitorCollectElements::VisitHTView( const deoglHTView &htview ){
 			for( i.x=0; i.x<count; i.x++, cluster++ ){
 				const decDVector realOffset( offset + decDVector( cluster->GetCenter() ) );
 				const decDVector realHalfExtend( cluster->GetHalfExtends() );
-				
-				int cascadeMask = 0;
 				if( ! TestAxisAlignedBox( realOffset - realHalfExtend, realOffset + realHalfExtend, cascadeMask ) ){
 					continue;
 				}
@@ -455,58 +453,10 @@ void deoglRLSVisitorCollectElements::VisitNode( deoglDOctree *node, int ){
 		return; // axis aligned box of node is outside the boundary box. ignore all contained elements
 	}
 	
-	// test content
+	// visit content
 	const deoglWorldOctree &sonode = *( ( deoglWorldOctree* )node );
-	int i, count, cascadeMask;
-	
-	// test components
-	count = sonode.GetComponentCount();
-	
-	for( i=0; i<count; i++ ){
-		deoglRComponent * const addComponent = sonode.GetComponentAt( i );
-		const deoglRComponent &component = *addComponent;
-		
-		// cull using layer mask if required. components with empty layer mask never match
-		// and thus are never culled
-		if( pCullLayerMask && component.GetLayerMask().IsNotEmpty()
-		&& pLayerMask.MatchesNot( component.GetLayerMask() ) ){
-			continue;
-		}
-		
-		if( ! TestAxisAlignedBox( component.GetMinimumExtend(), component.GetMaximumExtend(), cascadeMask ) ){
-			continue;
-		}
-		
-		deoglCollideListComponent &clcomponent = *pCollideList.AddComponent( addComponent );
-		clcomponent.SetCascadeMask( cascadeMask );
-		
-		if( pOcclusionTest ){
-			clcomponent.StartOcclusionTest( *pOcclusionTest, pReferencePosition );
-		}
-	}
-	
-	// test billboards
-	count = sonode.GetBillboardList().GetCount();
-	
-	for( i=0; i<count; i++ ){
-		deoglRBillboard * const addBillboard = sonode.GetBillboardList().GetAt( i );
-		const deoglRBillboard &billboard = *addBillboard;
-		
-		// cull using layer mask if required. billboards with empty layer mask never match
-		// and thus are never culled
-		if( pCullLayerMask && billboard.GetLayerMask().IsNotEmpty()
-		&& pLayerMask.MatchesNot( billboard.GetLayerMask() ) ){
-			continue;
-		}
-		
-		if( ! TestAxisAlignedBox( billboard.GetMinimumExtend(), billboard.GetMaximumExtend(), cascadeMask ) ){
-			continue;
-		}
-		
-		addBillboard->SetSkyShadowSplitMask( cascadeMask ); // TODO move this into deoglCollideListBillboard
-		pCollideList.AddBillboard( addBillboard );
-		// TODO add occlusion test input
-	}
+	pVisitComponents( sonode );
+	pVisitBillboards( sonode );
 }
 
 
@@ -633,4 +583,62 @@ bool deoglRLSVisitorCollectElements::TestAxisAlignedBox( const decDVector &minEx
 	
 	// the box shaft potentially affects the shadow casting
 	return true;
+}
+
+
+
+// Private Functions
+//////////////////////
+
+void deoglRLSVisitorCollectElements::pVisitComponents( const deoglWorldOctree &sonode ){
+	const int count = sonode.GetComponentCount();
+	int i, cascadeMask;
+	
+	for( i=0; i<count; i++ ){
+		deoglRComponent * const addComponent = sonode.GetComponentAt( i );
+		const deoglRComponent &component = *addComponent;
+		
+		// cull using layer mask if required. components with empty layer mask never match
+		// and thus are never culled
+		if( pCullLayerMask && component.GetLayerMask().IsNotEmpty()
+		&& pLayerMask.MatchesNot( component.GetLayerMask() ) ){
+			continue;
+		}
+		
+		if( ! TestAxisAlignedBox( component.GetMinimumExtend(), component.GetMaximumExtend(), cascadeMask ) ){
+			continue;
+		}
+		
+		deoglCollideListComponent &clcomponent = *pCollideList.AddComponent( addComponent );
+		clcomponent.SetCascadeMask( cascadeMask );
+		
+		if( pOcclusionTest ){
+			clcomponent.StartOcclusionTest( *pOcclusionTest, pReferencePosition );
+		}
+	}
+}
+
+void deoglRLSVisitorCollectElements::pVisitBillboards( const deoglWorldOctree &sonode ){
+	const int count = sonode.GetBillboardList().GetCount();
+	int i, cascadeMask;
+	
+	for( i=0; i<count; i++ ){
+		deoglRBillboard * const addBillboard = sonode.GetBillboardList().GetAt( i );
+		const deoglRBillboard &billboard = *addBillboard;
+		
+		// cull using layer mask if required. billboards with empty layer mask never match
+		// and thus are never culled
+		if( pCullLayerMask && billboard.GetLayerMask().IsNotEmpty()
+		&& pLayerMask.MatchesNot( billboard.GetLayerMask() ) ){
+			continue;
+		}
+		
+		if( ! TestAxisAlignedBox( billboard.GetMinimumExtend(), billboard.GetMaximumExtend(), cascadeMask ) ){
+			continue;
+		}
+		
+		addBillboard->SetSkyShadowSplitMask( cascadeMask ); // TODO move this into deoglCollideListBillboard
+		pCollideList.AddBillboard( addBillboard );
+		// TODO add occlusion test input
+	}
 }
