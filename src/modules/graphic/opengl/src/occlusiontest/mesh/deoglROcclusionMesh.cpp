@@ -97,24 +97,24 @@ deoglROcclusionMesh::~deoglROcclusionMesh(){
 // Management
 ///////////////
 
-deoglSharedVBOBlock *deoglROcclusionMesh::GetVBOBlock(){
-	if( ! pVBOBlock ){
-		deoglSharedVBOList &svbolist = pRenderThread.GetBufferObject().
-			GetSharedVBOListForType( deoglRTBufferObject::esvbolStaticOcclusionMesh );
-		
-		if( pVertexCount > svbolist.GetMaxPointCount() ){
-			pRenderThread.GetLogger().LogInfoFormat( "OcclusionMesh(%s): Too many points (%i) "
-				"to fit into shared VBOs. Using over-sized VBO (performance not optimal).",
-				pFilename.GetString(), pVertexCount );
-		}
-		
-		pVBOBlock = svbolist.AddData( pVertexCount, pCornerCount );
-		pVBOBlock->GetVBO()->GetVAO()->EnsureRTSVAO();
-		
-		pWriteVBOData();
+void deoglROcclusionMesh::PrepareVBOBlock(){
+	if( pVBOBlock ){
+		return;
 	}
 	
-	return pVBOBlock;
+	deoglSharedVBOList &svbolist = pRenderThread.GetBufferObject().
+		GetSharedVBOListForType( deoglRTBufferObject::esvbolStaticOcclusionMesh );
+	
+	if( pVertexCount > svbolist.GetMaxPointCount() ){
+		pRenderThread.GetLogger().LogInfoFormat( "OcclusionMesh(%s): Too many points (%i) "
+			"to fit into shared VBOs. Using over-sized VBO (performance not optimal).",
+			pFilename.GetString(), pVertexCount );
+	}
+	
+	pVBOBlock = svbolist.AddData( pVertexCount, pCornerCount );
+	pVBOBlock->GetVBO()->GetVAO()->EnsureRTSVAO();
+	
+	pWriteVBOData();
 }
 
 deoglSharedSPBListUBO &deoglROcclusionMesh::GetSharedSPBListUBO(){

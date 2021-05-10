@@ -96,7 +96,9 @@ public:
 	bool pDirtyModelVBOs;
 	
 	deoglROcclusionMesh *pOcclusionMesh;
+	bool pDirtyOccMeshVBO;
 	deoglDynamicOcclusionMesh *pDynamicOcclusionMesh;
+	bool pDynOccMeshRequiresPrepareForRender;
 	deoglSharedSPBElement *pOccMeshSharedSPBElement;
 	bool pValidOccMeshSharedSPBElement;
 	bool pDirtyOccMeshSharedSPBElement;
@@ -325,6 +327,9 @@ public:
 	
 	/** Dynamic occlusion mesh or NULL if not set. */
 	inline deoglDynamicOcclusionMesh *GetDynamicOcclusionMesh() const{ return pDynamicOcclusionMesh; }
+	
+	/** Dynamic occlusion mesh requires prepare for render. */
+	void DynOccMeshRequiresPrepareForRender();
 	
 	/** Occlusion mesh shared shader parameter block element. */
 	inline deoglSharedSPBElement *GetOccMeshSharedSPBElement() const{ return pOccMeshSharedSPBElement; }
@@ -731,6 +736,9 @@ private:
 	void pPrepareParamBlocks();
 	void pPrepareTextureParamBlocks();
 	void pPrepareDecals( deoglRenderPlan &plan );
+	void pPrepareOccMeshVBO();
+	void pPrepareOccMeshRTSInstances();
+	void pPrepareDynOccMesh();
 	
 	void pResizeBoneMatrices();
 	

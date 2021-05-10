@@ -84,10 +84,12 @@ public:
 	/** Retrieves the occlusion mesh. */
 	inline deoglROcclusionMesh *GetOcclusionMesh() const{ return pOcclusionMesh; }
 	
-	/** Retrives the vbo. */
+	/** VBO. */
 	inline GLuint GetVBO() const{ return pVBO; }
-	/** Retrieves the VAO. */
-	deoglVAO *GetVAO();
+	
+	/** VAO. */
+	deoglVAO *GetVAO() const;
+	
 	/** Invalidates the VAO. */
 	void InvalidateVAO();
 	
@@ -98,7 +100,7 @@ public:
 	void UpdateBoneMappings( const deComponent &component );
 	
 	/** Prepare for rendering. */
-	void Prepare();
+	void PrepareForRender();
 	
 	/** Direct access to vertices. */
 	inline const decVector *GetVertices() const{ return pVertices; }

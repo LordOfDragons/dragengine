@@ -121,6 +121,7 @@ pMovementHint( deComponent::emhStationary ),
 pStaticTextures( true ),
 pDirtyModelVBOs( true ),
 
+pDirtyOccMeshVBO( true ),
 pOccMeshSharedSPBElement( NULL ),
 pDirtyOccMeshSharedSPBElement( true ),
 pOccMeshSharedSPBDoubleSided( NULL ),
@@ -149,6 +150,7 @@ pLLPrepareForRenderWorld( this )
 	pDynamicSkin = NULL;
 	pOcclusionMesh = NULL;
 	pDynamicOcclusionMesh = NULL;
+	pDynOccMeshRequiresPrepareForRender = true;
 	
 	pSkinState = NULL;
 	pDirtyPrepareSkinStateRenderables = true;
@@ -462,6 +464,11 @@ void deoglRComponent::SetOcclusionMesh( deoglROcclusionMesh *occlusionMesh ){
 		}
 	}
 	
+	pDirtyOccMeshVBO = true;
+	pDynOccMeshRequiresPrepareForRender = true;
+	
+	pRequiresPrepareForRender();
+	
 	InvalidateOccMeshSharedSPBRTIGroup();
 	NotifyOcclusionMeshChanged();
 }
@@ -481,6 +488,11 @@ deoglSharedSPBRTIGroup &deoglRComponent::GetOccMeshSharedSPBRTIGroup( bool doubl
 	}
 }
 
+void deoglRComponent::DynOccMeshRequiresPrepareForRender(){
+	pDynOccMeshRequiresPrepareForRender = true;
+	pRequiresPrepareForRender();
+}
+
 void deoglRComponent::InvalidateOccMeshSharedSPBRTIGroup(){
 	pValidOccMeshSharedSPBElement = false;
 	pRequiresPrepareForRender();
@@ -491,6 +503,7 @@ void deoglRComponent::MeshChanged(){
 	
 	if( pDynamicOcclusionMesh ){
 		pDynamicOcclusionMesh->ComponentStateChanged();
+		DynOccMeshRequiresPrepareForRender();
 	}
 }
 
@@ -1119,6 +1132,10 @@ void deoglRComponent::PrepareForRender( deoglRenderPlan &plan ){
 	pPrepareTextureTUCs();
 	pPrepareTextureParamBlocks(); // has to come after pPrepareTextureTUCs
 	
+	pPrepareOccMeshVBO();
+	pPrepareDynOccMesh();
+	pPrepareOccMeshRTSInstances(); // requires (dyn) occmesh VBOs to be prepared
+	
 	pPrepareDecals( plan );
 }
 
@@ -1175,27 +1192,6 @@ void deoglRComponent::UpdateRTSInstances(){
 	int i;
 	for( i=0; i<count; i++ ){
 		( ( deoglRComponentTexture* )pTextures.GetAt( i ) )->UpdateRTSInstances();
-	}
-	
-	if( pOccMeshSharedSPBDoubleSided || pOccMeshSharedSPBSingleSided ){
-		const deoglSharedVBOBlock &block = *pOcclusionMesh->GetVBOBlock();
-		const int pointOffset = pDynamicOcclusionMesh ? 0 : block.GetOffset();
-		
-		if( pOccMeshSharedSPBDoubleSided ){
-			deoglRenderTaskSharedInstance &rtsi = *pOccMeshSharedSPBDoubleSided->GetRTSInstance();
-			rtsi.SetFirstPoint( pointOffset );
-			rtsi.SetFirstIndex( block.GetIndexOffset() + pOcclusionMesh->GetSingleSidedFaceCount() * 3 );
-			rtsi.SetIndexCount( pOcclusionMesh->GetDoubleSidedFaceCount() * 3 );
-			rtsi.SetDoubleSided( true );
-		}
-		
-		if( pOccMeshSharedSPBSingleSided ){
-			deoglRenderTaskSharedInstance &rtsi = *pOccMeshSharedSPBSingleSided->GetRTSInstance();
-			rtsi.SetFirstPoint( pointOffset );
-			rtsi.SetFirstIndex( block.GetIndexOffset() );
-			rtsi.SetIndexCount( pOcclusionMesh->GetSingleSidedFaceCount() * 3 );
-			rtsi.SetDoubleSided( false );
-		}
 	}
 }
 
@@ -2180,6 +2176,51 @@ void deoglRComponent::pPrepareDecals( deoglRenderPlan &plan ){
 	}
 }
 
+void deoglRComponent::pPrepareOccMeshVBO(){
+	if( ! pDirtyOccMeshVBO ){
+		return;
+	}
+	pDirtyOccMeshVBO = false;
+	
+	if( pOcclusionMesh ){
+		pOcclusionMesh->PrepareVBOBlock();
+	}
+}
+
+void deoglRComponent::pPrepareOccMeshRTSInstances(){
+	if( pOccMeshSharedSPBDoubleSided || pOccMeshSharedSPBSingleSided ){
+		const deoglSharedVBOBlock &block = *pOcclusionMesh->GetVBOBlock();
+		const int pointOffset = pDynamicOcclusionMesh ? 0 : block.GetOffset();
+		
+		if( pOccMeshSharedSPBDoubleSided ){
+			deoglRenderTaskSharedInstance &rtsi = *pOccMeshSharedSPBDoubleSided->GetRTSInstance();
+			rtsi.SetFirstPoint( pointOffset );
+			rtsi.SetFirstIndex( block.GetIndexOffset() + pOcclusionMesh->GetSingleSidedFaceCount() * 3 );
+			rtsi.SetIndexCount( pOcclusionMesh->GetDoubleSidedFaceCount() * 3 );
+			rtsi.SetDoubleSided( true );
+		}
+		
+		if( pOccMeshSharedSPBSingleSided ){
+			deoglRenderTaskSharedInstance &rtsi = *pOccMeshSharedSPBSingleSided->GetRTSInstance();
+			rtsi.SetFirstPoint( pointOffset );
+			rtsi.SetFirstIndex( block.GetIndexOffset() );
+			rtsi.SetIndexCount( pOcclusionMesh->GetSingleSidedFaceCount() * 3 );
+			rtsi.SetDoubleSided( false );
+		}
+	}
+}
+
+void deoglRComponent::pPrepareDynOccMesh(){
+	if( ! pDynOccMeshRequiresPrepareForRender ){
+		return;
+	}
+	pDynOccMeshRequiresPrepareForRender = false;
+	
+	if( pDynamicOcclusionMesh ){
+		pDynamicOcclusionMesh->PrepareForRender();
+	}
+}
+
 
 
 void deoglRComponent::pResizeBoneMatrices(){
@@ -2202,6 +2243,7 @@ void deoglRComponent::pResizeBoneMatrices(){
 	
 	if( pDynamicOcclusionMesh ){
 		pDynamicOcclusionMesh->ComponentStateChanged();
+		pDynOccMeshRequiresPrepareForRender = true;
 	}
 }
 

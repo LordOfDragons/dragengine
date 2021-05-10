@@ -95,7 +95,7 @@ deoglDynamicOcclusionMesh::~deoglDynamicOcclusionMesh(){
 // Management
 ///////////////
 
-deoglVAO *deoglDynamicOcclusionMesh::GetVAO(){
+deoglVAO *deoglDynamicOcclusionMesh::GetVAO() const{
 	if( pVAO ){
 		return pVAO;
 		
@@ -146,7 +146,7 @@ void deoglDynamicOcclusionMesh::UpdateBoneMappings( const deComponent &component
 	pDirtyVBO = true;
 }
 
-void deoglDynamicOcclusionMesh::Prepare(){
+void deoglDynamicOcclusionMesh::PrepareForRender(){
 	if( ! pDirtyVBO ){
 		return;
 	}
@@ -165,7 +165,7 @@ void deoglDynamicOcclusionMesh::PrepareBVH(){
 		return;
 	}
 	
-	Prepare(); // make sure vertices are transformed
+	   PrepareForRender(); // make sure vertices are transformed
 	
 	deoglBVH::sBuildPrimitive *primitives = NULL;
 	const int faceCount = pOcclusionMesh->GetSingleSidedFaceCount() + pOcclusionMesh->GetDoubleSidedFaceCount();

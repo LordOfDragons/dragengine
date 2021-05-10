@@ -291,13 +291,13 @@ public:
 	
 	
 	/** Add an occlusion mesh from a component. */
-	void AddOcclusionMesh( deoglRComponent &component, deoglRenderTaskTexture *taskTexture );
+	void AddOcclusionMesh( const deoglRComponent &component, deoglRenderTaskTexture *taskTexture );
 	
 	/** Add occlusion meshes for all components in a collide list. */
 	void AddOcclusionMeshes( const deoglCollideList &clist );
 	
 	/** Add a continuous run of faces of an occlusion mesh. */
-	void AddOcclusionMeshFaces( deoglRComponent &component, bool doubleSided,
+	void AddOcclusionMeshFaces( const deoglRComponent &component, bool doubleSided,
 		deoglRenderTaskTexture *taskTexture );
 	
 	

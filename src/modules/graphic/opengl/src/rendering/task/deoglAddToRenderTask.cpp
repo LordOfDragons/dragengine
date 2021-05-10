@@ -640,9 +640,9 @@ void deoglAddToRenderTask::AddHeightTerrains( const deoglCollideList &clist, boo
 
 
 
-void deoglAddToRenderTask::AddOcclusionMesh( deoglRComponent &component,
+void deoglAddToRenderTask::AddOcclusionMesh( const deoglRComponent &component,
 deoglRenderTaskTexture *taskTexture ){
-	deoglROcclusionMesh * const occlusionMesh = component.GetOcclusionMesh();
+	const deoglROcclusionMesh * const occlusionMesh = component.GetOcclusionMesh();
 	if( ! occlusionMesh ){
 		return;
 	}
@@ -657,13 +657,6 @@ deoglRenderTaskTexture *taskTexture ){
 	const int doubleFaceCount = occlusionMesh->GetDoubleSidedFaceCount();
 	if( singleFaceCount == 0 && doubleFaceCount == 0 ){
 		return;
-	}
-	
-	if( component.GetDynamicOcclusionMesh() ){
-		component.GetDynamicOcclusionMesh()->Prepare();
-		
-	}else{
-		occlusionMesh->GetVBOBlock()->Prepare();
 	}
 	
 	if( singleFaceCount > 0 ){
@@ -692,22 +685,20 @@ void deoglAddToRenderTask::AddOcclusionMeshes( const deoglCollideList &clist ){
 	}
 }
 
-void deoglAddToRenderTask::AddOcclusionMeshFaces( deoglRComponent &component,
+void deoglAddToRenderTask::AddOcclusionMeshFaces( const deoglRComponent &component,
 bool doubleSided, deoglRenderTaskTexture *taskTexture ){
 	if( ! pEnforceShader ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	// obtain render task vao object to add instance to
-	deoglDynamicOcclusionMesh * const dynoccmesh = component.GetDynamicOcclusionMesh();
-	const deoglSharedVBOBlock &block = *component.GetOcclusionMesh()->GetVBOBlock();
-	deoglVAO *vao = NULL;
+	const deoglDynamicOcclusionMesh * const dynoccmesh = component.GetDynamicOcclusionMesh();
+	const deoglVAO *vao = NULL;
 	
 	if( dynoccmesh ){
 		vao = dynoccmesh->GetVAO();
 		
 	}else{
-		vao = block.GetVBO()->GetVAO();
+		vao = component.GetOcclusionMesh()->GetVBOBlock()->GetVBO()->GetVAO();
 	}
 	
 	taskTexture->AddVAO( pRenderTask, vao->GetRTSVAO() )->
