@@ -24,11 +24,11 @@
 
 #include "../../deoglBasics.h"
 
-class deoglRenderTask;
+#include <dragengine/common/collection/decPointerList.h>
+
 class deoglRenderTaskSharedTexture;
 class deoglRenderTaskSharedVAO;
 class deoglRenderTaskVAO;
-class deoglVAO;
 
 
 /**
@@ -38,13 +38,8 @@ class deoglRenderTaskTexture{
 private:
 	const deoglRenderTaskSharedTexture *pTexture;
 	
-	deoglRenderTaskVAO *pRootVAO;
-	deoglRenderTaskVAO *pTailVAO;
+	decPointerList pVAOs;
 	int pVAOCount;
-	
-	deoglRenderTaskTexture *pNextTexture;
-	
-	deoglRenderTaskTexture *pLLNext;
 	
 	deoglRenderTaskVAO **pHasVAO;
 	int pHasVAOCount;
@@ -88,30 +83,14 @@ public:
 	
 	
 	
-	/** Root render task vao or NULL. */
-	inline deoglRenderTaskVAO *GetRootVAO() const{ return pRootVAO; }
-	
 	/** Count of render task vaos. */
 	inline int GetVAOCount() const{ return pVAOCount; }
 	
+	/** Render task vao at index. */
+	deoglRenderTaskVAO *GetVAOAt( int index ) const;
+	
 	/** Add render task vao. */
-	deoglRenderTaskVAO *AddVAO( deoglRenderTask &task, deoglRenderTaskSharedVAO *vao );
-	
-	
-	
-	/** Next texture or NULL. */
-	inline deoglRenderTaskTexture *GetNextTexture() const{ return pNextTexture; }
-	
-	/** Set next texture or NULL. */
-	void SetNextTexture( deoglRenderTaskTexture *texture );
-	/*@}*/
-	
-	
-	
-	/** \name Linked List */
-	/*@{*/
-	inline deoglRenderTaskTexture *GetLLNext() const{ return pLLNext; }
-	void SetLLNext( deoglRenderTaskTexture *texture );
+	deoglRenderTaskVAO *AddVAO( deoglRenderTaskSharedVAO *vao );
 	/*@}*/
 };
 

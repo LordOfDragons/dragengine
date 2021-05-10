@@ -164,7 +164,7 @@ deoglSkinTexture *skinTexture, deoglTexUnitsConfig *tuc ){
 	
 	// obtain render task texture
 	deoglRenderTaskShader &rtshader = *pRenderTask.AddShader( shader->GetRTSShader() );
-	deoglRenderTaskTexture &rttexture = *rtshader.AddTexture( pRenderTask, tuc->GetRTSTexture() );
+	deoglRenderTaskTexture &rttexture = *rtshader.AddTexture( tuc->GetRTSTexture() );
 	
 	if( tuc->GetMaterialIndex() == -1 ){
 		pRenderThread.GetGI().GetMaterials().AddTUC( tuc );

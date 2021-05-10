@@ -289,9 +289,7 @@ void deoglAddToRenderTask::AddComponentFaces( const deoglRComponent &component, 
 	if( ! component.GetModel() ){
 		return;
 	}
-	
-	const deoglModelTexture &modelTexture = component.GetModel()->GetLODAt( lodLevel ).GetTextureAt( texture );
-	if( modelTexture.GetFaceCount() == 0 ){
+	if( component.GetModel()->GetLODAt( lodLevel ).GetTextureAt( texture ).GetFaceCount() == 0 ){
 		return;
 	}
 	
@@ -336,7 +334,7 @@ void deoglAddToRenderTask::AddComponentFaces( const deoglRComponent &component, 
 	// obtain render task vao and add faces
 	pGetTaskVAO( pSkinShaderType, skinTexture,
 		componentTexture.GetTUCForShaderType( pSkinShaderType ), component.GetVAO( lodLevel ) )->
-			AddInstance( pRenderTask, componentTexture.GetSharedSPBRTIGroup( lodLevel ).GetRTSInstance() )->
+			AddInstance( componentTexture.GetSharedSPBRTIGroup( lodLevel ).GetRTSInstance() )->
 			AddSubInstance( componentTexture.GetSharedSPBElement()->GetIndex(), component.GetSpecialFlags() );
 }
 
@@ -392,7 +390,7 @@ void deoglAddToRenderTask::AddBillboard( const deoglRBillboard &billboard ){
 	// obtain render task vao and add faces
 	pGetTaskVAO( pSkinShaderType, &texture, billboard.GetTUCForShaderType( pSkinShaderType ),
 		pRenderThread.GetDeferredRendering().GetVAOBillboard() )->
-			AddInstance( pRenderTask, billboard.GetSharedSPBRTIGroup().GetRTSInstance() )->
+			AddInstance( billboard.GetSharedSPBRTIGroup().GetRTSInstance() )->
 			AddSubInstance( billboard.GetSharedSPBElement()->GetIndex(), billboard.GetSpecialFlags() );
 }
 
@@ -421,7 +419,7 @@ void deoglAddToRenderTask::AddDecal( const deoglRDecal &decal, int lodLevel ){
 	
 	pGetTaskVAO( pSkinShaderType, skinTexture,
 		decal.GetTUCForShaderType( pSkinShaderType ), vboBlock->GetVBO()->GetVAO() )->
-			AddInstance( pRenderTask, decal.GetRTSInstance() )->
+			AddInstance( decal.GetRTSInstance() )->
 			AddSubInstance( decal.GetSharedSPBElement()->GetIndex(), 0 );
 }
 
@@ -519,9 +517,9 @@ const deoglRPropFieldType &propFieldType, bool imposters ){
 			DETHROW( deeInvalidParam );
 		}
 		
-		rtshader.AddTexture( pRenderTask, tuc->GetRTSTexture() )->
-			AddVAO( pRenderTask, vao->GetRTSVAO() )->
-			AddInstance( pRenderTask, cluster.GetRTSInstance() );
+		rtshader.AddTexture( tuc->GetRTSTexture() )->
+			AddVAO( vao->GetRTSVAO() )->
+			AddInstance( cluster.GetRTSInstance() );
 	}
 }
 
@@ -585,7 +583,7 @@ const deoglCollideListHTSector &clhtsector, int texture ){
 		tuc = pRenderThread.GetShader().GetTexUnitsConfigList().GetEmptyNoUsage();
 	}
 	
-	deoglRenderTaskTexture &rttexture = *rtshader.AddTexture( pRenderTask, tuc->GetRTSTexture() );
+	deoglRenderTaskTexture &rttexture = *rtshader.AddTexture( tuc->GetRTSTexture() );
 	
 	// the rest is specific for each cluster
 	const deoglHTSCluster * const htsclusters = sector.GetClusters();
@@ -599,14 +597,13 @@ const deoglCollideListHTSector &clhtsector, int texture ){
 			continue;
 		}
 		
-		deoglRenderTaskVAO &rtvao = *rttexture.AddVAO( pRenderTask,
-			htsclusters[ clhtscluster.GetIndex() ].GetVAO()->GetRTSVAO() );
+		deoglRenderTaskVAO &rtvao = *rttexture.AddVAO( htsclusters[ clhtscluster.GetIndex() ].GetVAO()->GetRTSVAO() );
 		
-		rtvao.AddInstance( pRenderTask, htvscluster.GetRTSInstanceAt( texture, 0 ) );
+		rtvao.AddInstance( htvscluster.GetRTSInstanceAt( texture, 0 ) );
 		
 		if( htvscluster.GetLodLevel() > 0 ){
 			for( j=1; j<5; j++ ){
-				rtvao.AddInstance( pRenderTask, htvscluster.GetRTSInstanceAt( texture, j ) );
+				rtvao.AddInstance( htvscluster.GetRTSInstanceAt( texture, j ) );
 			}
 		}
 	}
@@ -671,11 +668,11 @@ void deoglAddToRenderTask::AddOcclusionMeshes( const deoglCollideList &clist ){
 	deoglRenderTaskTexture *rttexture = NULL;
 	
 	if( pRenderTask.GetShaderCount() == 0 ){
-		rttexture = pRenderTask.AddShader( pEnforceShader )->AddTexture( pRenderTask,
+		rttexture = pRenderTask.AddShader( pEnforceShader )->AddTexture(
 			pRenderThread.GetShader().GetTexUnitsConfigList().GetEmptyNoUsage()->GetRTSTexture() );
 		
 	}else{
-		rttexture = pRenderTask.GetRootShader()->GetRootTexture();
+		rttexture = pRenderTask.GetShaderAt( 0 )->GetTextureAt( 0 );
 	}
 	
 	const int count = clist.GetComponentCount();
@@ -701,8 +698,8 @@ bool doubleSided, deoglRenderTaskTexture *taskTexture ){
 		vao = component.GetOcclusionMesh()->GetVBOBlock()->GetVBO()->GetVAO();
 	}
 	
-	taskTexture->AddVAO( pRenderTask, vao->GetRTSVAO() )->
-		AddInstance( pRenderTask, component.GetOccMeshSharedSPBRTIGroup( doubleSided ).GetRTSInstance() )->
+	taskTexture->AddVAO( vao->GetRTSVAO() )->
+		AddInstance( component.GetOccMeshSharedSPBRTIGroup( doubleSided ).GetRTSInstance() )->
 		AddSubInstance( component.GetOccMeshSharedSPBElement()->GetIndex(), component.GetSpecialFlags() );
 }
 
@@ -838,7 +835,7 @@ deoglRParticleEmitterInstanceType &type ){
 	instance.SetDoubleSided( doubleSided );
 	instance.SetPrimitiveType( primitiveType );
 	
-	rtvao.AddInstance( pRenderTask, &instance );
+	rtvao.AddInstance( &instance );
 }
 
 
@@ -909,6 +906,6 @@ const deoglSkinTexture *skinTexture, deoglTexUnitsConfig *tuc, deoglVAO *vao ) c
 	}
 	
 	return pRenderTask.AddShader( shader->GetRTSShader() )->
-		AddTexture( pRenderTask, tuc->GetRTSTexture() )->
-		AddVAO( pRenderTask, vao->GetRTSVAO() );
+		AddTexture( tuc->GetRTSTexture() )->
+		AddVAO( vao->GetRTSVAO() );
 }

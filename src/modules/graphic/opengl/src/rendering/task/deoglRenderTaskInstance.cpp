@@ -44,11 +44,7 @@ pInstance( NULL ),
 
 pSubInstanceCount( 0 ),
 pSIIndexInstanceSPB( NULL ),
-pSIIndexInstanceFirst( 0 ),
-
-pNextInstance( NULL ),
-
-pLLNext( NULL ){
+pSIIndexInstanceFirst( 0 ){
 }
 
 deoglRenderTaskInstance::~deoglRenderTaskInstance(){
@@ -139,24 +135,11 @@ void deoglRenderTaskInstance::WriteSIIndexInstanceShort( bool useFlags ){
 
 
 
-void deoglRenderTaskInstance::Clear(){
+void deoglRenderTaskInstance::Reset(){
 	pInstance = NULL;
 	pSubInstanceCount = 0;
 	pSIIndexInstance.RemoveAll();
 	pSIFlags.RemoveAll();
 	pSIIndexInstanceSPB = NULL;
 	pSIIndexInstanceFirst = 0;
-}
-
-void deoglRenderTaskInstance::SetNextInstance( deoglRenderTaskInstance *instance ){
-	pNextInstance = instance;
-}
-
-
-
-// Linked List
-////////////////
-
-void deoglRenderTaskInstance::SetLLNext( deoglRenderTaskInstance *instance ){
-	pLLNext = instance;
 }

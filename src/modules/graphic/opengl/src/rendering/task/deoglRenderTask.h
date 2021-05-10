@@ -31,8 +31,6 @@
 class deoglQuickSorter;
 class deoglRenderTaskInstance;
 class deoglRenderTaskShader;
-class deoglRenderTaskTexture;
-class deoglRenderTaskVAO;
 class deoglRenderTaskSharedShader;
 class deoglRenderTaskSharedInstance;
 class deoglRenderThread;
@@ -41,7 +39,6 @@ class deoglSPBlockSSBO;
 class deoglSPBlockUBO;
 class deoglSPBlockUBO;
 class deoglTexUnitsConfig;
-class deoglVAO;
 
 
 /**
@@ -64,29 +61,11 @@ private:
 	unsigned int pTrackingNumber;
 	bool pForceDoubleSided;
 	
-	deoglRenderTaskShader *pRootShader;
-	deoglRenderTaskShader *pTailShader;
+	decPointerList pShaders;
 	int pShaderCount;
 	deoglRenderTaskShader **pHasShader;
 	int pHasShaderCount;
 	int pHasShaderSize;
-	
-	deoglRenderTaskTexture *pRootTexturePool;
-	deoglRenderTaskTexture *pTailTexturePool;
-	deoglRenderTaskTexture *pNextTexturePool;
-	int pTexturePoolCount;
-	
-	deoglRenderTaskVAO *pRootVAOPool;
-	deoglRenderTaskVAO *pTailVAOPool;
-	deoglRenderTaskVAO *pNextVAOPool;
-	int pVAOPoolCount;
-	
-	deoglRenderTaskInstance *pRootInstancePool;
-	deoglRenderTaskInstance *pTailInstancePool;
-	deoglRenderTaskInstance *pNextInstancePool;
-	int pInstancePoolCount;
-	
-	decPointerList pListShaders;
 	
 	
 	
@@ -143,25 +122,14 @@ public:
 	
 	
 	
-	/** Root render task shader or NULL if there is none. */
-	inline deoglRenderTaskShader *GetRootShader() const{ return pRootShader; }
-	
 	/** Number of shaders. */
 	inline int GetShaderCount() const{ return pShaderCount; }
 	
+	/** Shader at index. */
+	deoglRenderTaskShader *GetShaderAt( int index ) const;
+	
 	/** Add shader. */
 	deoglRenderTaskShader *AddShader( deoglRenderTaskSharedShader *shader );
-	
-	
-	
-	/** Render task texture from pool. */
-	deoglRenderTaskTexture *TextureFromPool();
-	
-	/** Render task vao from pool. */
-	deoglRenderTaskVAO *VAOFromPool();
-	
-	/** Render task instance from pool. */
-	deoglRenderTaskInstance *InstanceFromPool();
 	
 	
 	
@@ -187,27 +155,6 @@ public:
 	/*@{*/
 	/** Debug print. */
 	void DebugPrint( deoglRTLogger &rtlogger );
-	
-	/** Size of render task texture pool. */
-	inline int GetSizeTexturePool() const{ return pTexturePoolCount; }
-	
-	/** Count number of used entries from render task texture pool. */
-	int CountUsedTexturePool() const;
-	
-	/** Size of render task vao pool. */
-	inline int GetSizeVAOPool() const{ return pVAOPoolCount; }
-	
-	/** Count number of used entries from render task vao pool. */
-	int CountUsedVAOPool() const;
-	
-	/** Size of render task instance pool. */
-	inline int GetSizeInstancePool() const{ return pInstancePoolCount; }
-	
-	/** Count number of used entries from render task instance pool. */
-	int CountUsedInstancePool() const;
-	
-	/** Debug output pool statistics. */
-	void DebugPrintPoolStats( deoglRTLogger &rtlogger );
 	/*@}*/
 	
 	

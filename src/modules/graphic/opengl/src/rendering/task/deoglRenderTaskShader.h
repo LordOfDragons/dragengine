@@ -22,7 +22,8 @@
 #ifndef _DEOGLRENDERTASKSHADER_H_
 #define _DEOGLRENDERTASKSHADER_H_
 
-class deoglRenderTask;
+#include <dragengine/common/collection/decPointerList.h>
+
 class deoglRenderTaskSharedShader;
 class deoglRenderTaskSharedTexture;
 class deoglRenderTaskTexture;
@@ -36,15 +37,12 @@ class deoglRenderTaskShader{
 private:
 	const deoglRenderTaskSharedShader *pShader;
 	
-	deoglRenderTaskTexture *pRootTexture;
-	deoglRenderTaskTexture *pTailTexture;
+	decPointerList pTextures;
 	int pTextureCount;
 	
 	deoglRenderTaskTexture **pHasTexture;
 	int pHasTextureCount;
 	int pHasTextureSize;
-	
-	deoglRenderTaskShader *pNextShader;
 	
 	
 	
@@ -83,20 +81,14 @@ public:
 	/** Set shader. */
 	void SetShader( const deoglRenderTaskSharedShader *shader );
 	
-	/** Root render task texture or NULL if there is none. */
-	inline deoglRenderTaskTexture *GetRootTexture() const{ return pRootTexture; }
-	
 	/** Number of render task textures. */
 	inline int GetTextureCount() const{ return pTextureCount; }
 	
+	/** Render task texture at index. */
+	deoglRenderTaskTexture *GetTextureAt( int index ) const;
+	
 	/** Add render task texture. */
-	deoglRenderTaskTexture *AddTexture( deoglRenderTask &task, deoglRenderTaskSharedTexture *texture );
-	
-	/** Next shader or NULL. */
-	inline deoglRenderTaskShader *GetNextShader() const{ return pNextShader; }
-	
-	/** Set next shader or NULL. */
-	void SetNextShader( deoglRenderTaskShader *shader );
+	deoglRenderTaskTexture *AddTexture( deoglRenderTaskSharedTexture *texture );
 	/*@}*/
 };
 

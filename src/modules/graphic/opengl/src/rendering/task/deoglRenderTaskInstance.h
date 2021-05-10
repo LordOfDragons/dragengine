@@ -44,10 +44,6 @@ private:
 	deoglShaderParameterBlock *pSIIndexInstanceSPB;
 	int pSIIndexInstanceFirst;
 	
-	deoglRenderTaskInstance *pNextInstance;
-	
-	deoglRenderTaskInstance *pLLNext;
-	
 	
 	
 public:
@@ -101,27 +97,8 @@ public:
 	
 	
 	
-	/** Clear. */
-	void Clear();
-	
-	
-	
-	/** Next instance or NULL. */
-	inline deoglRenderTaskInstance *GetNextInstance() const{ return pNextInstance; }
-	
-	/** Set next instance or NULL. */
-	void SetNextInstance( deoglRenderTaskInstance *instance );
-	/*@}*/
-	
-	
-	
-	/** \name Linked List */
-	/*@{*/
-	/** Next instance in pool or NULL. */
-	inline deoglRenderTaskInstance *GetLLNext() const{ return pLLNext; }
-	
-	/** Set next instance in pool or NULL. */
-	void SetLLNext( deoglRenderTaskInstance *instance );
+	/** Reset. */
+	void Reset();
 	/*@}*/
 };
 

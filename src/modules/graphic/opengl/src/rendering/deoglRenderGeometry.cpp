@@ -264,8 +264,8 @@ if( uniformSetup == deoglRenderTaskShader::eusEnvMap ){
 */
 
 void deoglRenderGeometry::RenderTask( const deoglRenderTask &renderTask ){
-	const deoglRenderTaskShader * rtshader = renderTask.GetRootShader();
-	if( ! rtshader ){
+	const int shaderCount = renderTask.GetShaderCount();
+	if( shaderCount == 0 ){
 		return;
 	}
 	
@@ -275,14 +275,16 @@ void deoglRenderGeometry::RenderTask( const deoglRenderTask &renderTask ){
 	deoglShaderParameterBlock *spbSIIndexInstance = NULL;
 	bool curDoubleSided = false;
 	deoglVAO *curVAO = NULL;
+	int i, j, k, l;
 	
 	OGL_CHECK( renderThread, glEnable( GL_CULL_FACE ) );
 	
 	renderThread.GetBufferObject().GetSharedVBOListList().PrepareAllLists(); // needs to be done better
 	
-	while( rtshader ){
-		const int targetSPBInstanceIndexBase = rtshader->GetShader()->GetSPBInstanceIndexBase();
-		deoglShaderProgram &shaderProgram = *rtshader->GetShader()->GetShader();
+	for( i=0; i<shaderCount; i++ ){
+		const deoglRenderTaskShader &rtshader = *renderTask.GetShaderAt( i );
+		const int targetSPBInstanceIndexBase = rtshader.GetShader()->GetSPBInstanceIndexBase();
+		deoglShaderProgram &shaderProgram = *rtshader.GetShader()->GetShader();
 		deoglShaderCompiled &shader = *shaderProgram.GetCompiled();
 		renderThread.GetShader().ActivateShader( &shaderProgram );
 		
@@ -290,10 +292,10 @@ void deoglRenderGeometry::RenderTask( const deoglRenderTask &renderTask ){
 			renderParamBlock->Activate();
 		}
 		
-		const deoglRenderTaskTexture *rttexture = rtshader->GetRootTexture();
-		
-		while( rttexture ){
-			const deoglTexUnitsConfig * const tuc = rttexture->GetTexture()->GetTUC();
+		const int textureCount = rtshader.GetTextureCount();
+		for( j=0; j<textureCount; j++ ){
+			const deoglRenderTaskTexture &rttexture = *rtshader.GetTextureAt( j );
+			const deoglTexUnitsConfig * const tuc = rttexture.GetTexture()->GetTUC();
 			if( tuc ){
 				tuc->Apply();
 				if( tuc->GetParameterBlock() ){
@@ -301,16 +303,15 @@ void deoglRenderGeometry::RenderTask( const deoglRenderTask &renderTask ){
 				}
 			}
 			
-			deoglRenderTaskVAO *rtvao = rttexture->GetRootVAO();
-			
-			while( rtvao ){
-				deoglRenderTaskInstance *rtinstance = rtvao->GetRootInstance();
-				if( ! rtinstance ){
-					rtvao = rtvao->GetNextVAO();
+			const int vaoCount = rttexture.GetVAOCount();
+			for( k=0; k<vaoCount; k++ ){
+				const deoglRenderTaskVAO &rtvao = *rttexture.GetVAOAt( k );
+				const int instanceCount = rtvao.GetInstanceCount();
+				if( instanceCount == 0 ){
 					continue;
 				}
 				
-				deoglVAO * const vao = rtvao->GetVAO()->GetVAO();
+				deoglVAO * const vao = rtvao.GetVAO()->GetVAO();
 				if( vao != curVAO ){
 					pglBindVertexArray( vao->GetVAO() );
 					curVAO = vao;
@@ -319,8 +320,9 @@ void deoglRenderGeometry::RenderTask( const deoglRenderTask &renderTask ){
 				const GLenum indexGLType = vao->GetIndexGLType();
 				const int indexSize = vao->GetIndexSize();
 				
-				while( rtinstance ){
-					const deoglRenderTaskSharedInstance &instance = *rtinstance->GetInstance();
+				for( l=0; l<instanceCount; l++ ){
+					const deoglRenderTaskInstance &rtinstance = *rtvao.GetInstanceAt( l );
+					const deoglRenderTaskSharedInstance &instance = *rtinstance.GetInstance();
 					const bool doubleSided = instance.GetDoubleSided() | forceDoubleSided;
 					
 					if( instance.GetParameterBlock() ){
@@ -333,16 +335,16 @@ void deoglRenderGeometry::RenderTask( const deoglRenderTask &renderTask ){
 						instance.GetSubInstanceSPB()->GetParameterBlock()->Activate();
 					}
 					
-					if( rtinstance->GetSIIndexInstanceSPB() != spbSIIndexInstance ){
-						if( rtinstance->GetSIIndexInstanceSPB() ){
-							rtinstance->GetSIIndexInstanceSPB()->Activate();
+					if( rtinstance.GetSIIndexInstanceSPB() != spbSIIndexInstance ){
+						if( rtinstance.GetSIIndexInstanceSPB() ){
+							rtinstance.GetSIIndexInstanceSPB()->Activate();
 						}
-						spbSIIndexInstance = rtinstance->GetSIIndexInstanceSPB();
+						spbSIIndexInstance = rtinstance.GetSIIndexInstanceSPB();
 					}
 					
 					if( targetSPBInstanceIndexBase != -1 ){
 						shader.SetParameterInt( targetSPBInstanceIndexBase,
-						rtinstance->GetSIIndexInstanceFirst() );
+						rtinstance.GetSIIndexInstanceFirst() );
 					}
 					
 					if( doubleSided != curDoubleSided ){
@@ -363,7 +365,7 @@ void deoglRenderGeometry::RenderTask( const deoglRenderTask &renderTask ){
 						primitiveType = GL_PATCHES;
 					}
 					
-					const int subInstanceCount = rtinstance->GetSubInstanceCount() + instance.GetSubInstanceCount();
+					const int subInstanceCount = rtinstance.GetSubInstanceCount() + instance.GetSubInstanceCount();
 					
 					if( subInstanceCount == 0 ){
 						if( instance.GetIndexCount() == 0 ){
@@ -407,17 +409,9 @@ void deoglRenderGeometry::RenderTask( const deoglRenderTask &renderTask ){
 								subInstanceCount ) );
 						}
 					}
-					
-					rtinstance = rtinstance->GetNextInstance();
 				}
-				
-				rtvao = rtvao->GetNextVAO();
 			}
-			
-			rttexture = rttexture->GetNextTexture();
 		}
-		
-		rtshader = rtshader->GetNextShader();
 	}
 	
 	pglBindVertexArray( 0 );

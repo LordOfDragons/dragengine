@@ -22,6 +22,7 @@
 #ifndef _DEOGLRENDERTASKVAO_H_
 #define _DEOGLRENDERTASKVAO_H_
 
+#include <dragengine/common/collection/decPointerList.h>
 #include <dragengine/common/math/decMath.h>
 
 #include "../../deoglBasics.h"
@@ -29,7 +30,6 @@
 class deoglQuickSorter;
 class deoglRenderTaskInstance;
 class deoglSharedSPB;
-class deoglRenderTask;
 class deoglRenderTaskSharedVAO;
 class deoglRenderTaskSharedInstance;
 
@@ -41,13 +41,8 @@ class deoglRenderTaskVAO{
 private:
 	const deoglRenderTaskSharedVAO *pVAO;
 	
-	deoglRenderTaskInstance *pRootInstance;
-	deoglRenderTaskInstance *pTailInstance;
+	decPointerList pInstances;
 	int pInstanceCount;
-	
-	deoglRenderTaskVAO *pNextVAO;
-	
-	deoglRenderTaskVAO *pLLNext;
 	
 	deoglRenderTaskInstance **pHasInstance;
 	int pHasInstanceCount;
@@ -90,35 +85,18 @@ public:
 	
 	
 	
-	/** Root render task instance or NULL. */
-	inline deoglRenderTaskInstance *GetRootInstance() const{ return pRootInstance; }
-	
 	/** Number of render task instances. */
 	inline int GetInstanceCount() const{ return pInstanceCount; }
 	
+	/** Render task instance at index. */
+	deoglRenderTaskInstance *GetInstanceAt( int index ) const;
+	
 	/** Add render task instance. */
-	deoglRenderTaskInstance *AddInstance( deoglRenderTask &task, deoglRenderTaskSharedInstance *instance );
+	deoglRenderTaskInstance *AddInstance( deoglRenderTaskSharedInstance *instance );
 	
 	/** Sort instances by distance. */
 	void SortInstancesByDistance( deoglQuickSorter &sorter, const decDVector &position,
 		const decDVector &direction, double posDotDir );
-	
-	/** Next vao to render or NULL. */
-	inline deoglRenderTaskVAO *GetNextVAO() const{ return pNextVAO; }
-	
-	/** Set next vao to render or NULL. */
-	void SetNextVAO( deoglRenderTaskVAO *vao );
-	/*@}*/
-	
-	
-	
-	/** \name Linked List */
-	/*@{*/
-	/** Next vao in parent render task VAO pool or NULL. */
-	inline deoglRenderTaskVAO *GetLLNext() const{ return pLLNext; }
-	
-	/** Set next vao in parent render task VAO pool or NULL. */
-	void SetLLNext( deoglRenderTaskVAO *vao );
 	/*@}*/
 };
 

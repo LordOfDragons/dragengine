@@ -41,13 +41,7 @@
 deoglRenderTaskTexture::deoglRenderTaskTexture() :
 pTexture( NULL ),
 
-pRootVAO( NULL ),
-pTailVAO( NULL ),
 pVAOCount( 0 ),
-
-pNextTexture( NULL ),
-
-pLLNext( NULL ),
 
 pHasVAO( NULL ),
 pHasVAOCount( 0 ),
@@ -58,6 +52,13 @@ deoglRenderTaskTexture::~deoglRenderTaskTexture(){
 	if( pHasVAO ){
 		delete [] pHasVAO;
 	}
+	
+	const int vaoCount = pVAOs.GetCount();
+	int i;
+	for( i=0; i<vaoCount; i++ ){
+		delete ( deoglRenderTaskVAO* )pVAOs.GetAt( i );
+	}
+	pVAOs.RemoveAll();
 }
 
 
@@ -68,49 +69,32 @@ deoglRenderTaskTexture::~deoglRenderTaskTexture(){
 void deoglRenderTaskTexture::Reset(){
 	pTexture = NULL;
 	pHasVAOCount = 0;
-	
-	pRootVAO = NULL;
-	pTailVAO = NULL;
 	pVAOCount = 0;
-	
-	pNextTexture = NULL;
 }
 
 
 
 int deoglRenderTaskTexture::GetTotalPointCount() const{
-	deoglRenderTaskVAO *vao = pRootVAO;
-	int pointCount = 0;
-	
-	while( vao ){
-		pointCount += vao->GetTotalPointCount();
-		vao = vao->GetNextVAO();
+	int i, pointCount = 0;
+	for( i=0; i<pVAOCount; i++ ){
+		pointCount += ( ( deoglRenderTaskVAO* )pVAOs.GetAt( i ) )->GetTotalPointCount();
 	}
-	
 	return pointCount;
 }
 
 int deoglRenderTaskTexture::GetTotalInstanceCount() const{
-	deoglRenderTaskVAO *vao = pRootVAO;
-	int instanceCount = 0;
-	
-	while( vao ){
-		instanceCount += vao->GetInstanceCount();
-		vao = vao->GetNextVAO();
+	int i, instanceCount = 0;
+	for( i=0; i<pVAOCount; i++ ){
+		instanceCount += ( ( deoglRenderTaskVAO* )pVAOs.GetAt( i ) )->GetInstanceCount();
 	}
-	
 	return instanceCount;
 }
 
 int deoglRenderTaskTexture::GetTotalSubInstanceCount() const{
-	deoglRenderTaskVAO *vao = pRootVAO;
-	int subInstanceCount = 0;
-	
-	while( vao ){
-		subInstanceCount += vao->GetTotalSubInstanceCount();
-		vao = vao->GetNextVAO();
+	int i, subInstanceCount = 0;
+	for( i=0; i<pVAOCount; i++ ){
+		subInstanceCount += ( ( deoglRenderTaskVAO* )pVAOs.GetAt( i ) )->GetTotalSubInstanceCount();
 	}
-	
 	return subInstanceCount;
 }
 
@@ -122,8 +106,11 @@ void deoglRenderTaskTexture::SetTexture( const deoglRenderTaskSharedTexture *tex
 
 
 
-deoglRenderTaskVAO *deoglRenderTaskTexture::AddVAO(
-deoglRenderTask &task, deoglRenderTaskSharedVAO *vao ){
+deoglRenderTaskVAO *deoglRenderTaskTexture::GetVAOAt( int index ) const{
+	return ( deoglRenderTaskVAO* )pVAOs.GetAt( index );
+}
+
+deoglRenderTaskVAO *deoglRenderTaskTexture::AddVAO( deoglRenderTaskSharedVAO *vao ){
 	if( ! vao ){
 		DETHROW( deeInvalidParam );
 	}
@@ -156,36 +143,17 @@ deoglRenderTask &task, deoglRenderTaskSharedVAO *vao ){
 		return rtvao;
 	}
 	
-	rtvao = task.VAOFromPool();
-	rtvao->SetVAO( vao );
-	
-	if( pTailVAO ){
-		pTailVAO->SetNextVAO( rtvao );
+	if( pVAOCount == pVAOs.GetCount() ){
+		rtvao = new deoglRenderTaskVAO;
+		pVAOs.Add( rtvao );
+		
+	}else{
+		rtvao = ( deoglRenderTaskVAO* )pVAOs.GetAt( pVAOCount );
+		rtvao->Reset();
 	}
-	rtvao->SetNextVAO( NULL );
-	
-	pTailVAO = rtvao;
-	
-	if( ! pRootVAO ){
-		pRootVAO = rtvao;
-	}
-	
 	pVAOCount++;
+	
+	rtvao->SetVAO( vao );
 	pHasVAO[ index ] = rtvao;
 	return rtvao;
-}
-
-
-
-void deoglRenderTaskTexture::SetNextTexture( deoglRenderTaskTexture *texture ){
-	pNextTexture = texture;
-}
-
-
-
-// Linked List
-////////////////
-
-void deoglRenderTaskTexture::SetLLNext( deoglRenderTaskTexture *texture ){
-	pLLNext = texture;
 }

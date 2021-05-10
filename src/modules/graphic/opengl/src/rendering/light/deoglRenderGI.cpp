@@ -568,8 +568,8 @@ void deoglRenderGI::RenderMaterials( deoglRenderPlan &plan ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	const deoglRenderTaskShader *rtshader = pRenderTask->GetRootShader();
-	if( ! rtshader ){
+	const int shaderCount = pRenderTask->GetShaderCount();
+	if( shaderCount == 0 ){
 		return;
 	}
 	
@@ -579,6 +579,7 @@ void deoglRenderGI::RenderMaterials( deoglRenderPlan &plan ){
 	deoglGIMaterials &materials = gi.GetMaterials();
 	const int width = materials.GetTextureDiffuse().GetWidth();
 	const int height = materials.GetTextureDiffuse().GetHeight();
+	int i, j;
 	
 	if( pDebugInfoGI->GetVisible() ){
 		GetDebugTimerAt( 0 ).Reset();
@@ -606,16 +607,17 @@ void deoglRenderGI::RenderMaterials( deoglRenderPlan &plan ){
 	const float offsetBaseU = offsetScaleU * 0.5f - 1.0f;
 	const float offsetBaseV = offsetScaleV * 0.5f - 1.0f;
 	
-	while( rtshader ){
-		deoglShaderProgram &shaderProgram = *rtshader->GetShader()->GetShader();
+	for( i=0; i<shaderCount; i++ ){
+		const deoglRenderTaskShader &rtshader = *pRenderTask->GetShaderAt( i );
+		deoglShaderProgram &shaderProgram = *rtshader.GetShader()->GetShader();
 		const deoglShaderCompiled &shader = *shaderProgram.GetCompiled();
 		
 		renderThread.GetShader().ActivateShader( &shaderProgram );
 		
-		const deoglRenderTaskTexture *rttexture = rtshader->GetRootTexture();
-		
-		while( rttexture ){
-			const deoglTexUnitsConfig &tuc = *rttexture->GetTexture()->GetTUC();
+		const int textureCount = rtshader.GetTextureCount();
+		for( j=0; j<textureCount; j++ ){
+			const deoglRenderTaskTexture &rttexture = *rtshader.GetTextureAt( j );
+			const deoglTexUnitsConfig &tuc = *rttexture.GetTexture()->GetTUC();
 			const int matMapIndex = tuc.GetMaterialIndex();
 			if( matMapIndex < 1 ){ // no slot (-1), fallback slot (0)
 				continue;
@@ -630,11 +632,7 @@ void deoglRenderGI::RenderMaterials( deoglRenderPlan &plan ){
 			
 			shader.SetParameterFloat( espmQuadParams, scaleU, scaleV, offsetU, offsetV );
 			OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
-			
-			rttexture = rttexture->GetNextTexture();
 		}
-		
-		rtshader = rtshader->GetNextShader();
 	}
 	
 	// clean up
