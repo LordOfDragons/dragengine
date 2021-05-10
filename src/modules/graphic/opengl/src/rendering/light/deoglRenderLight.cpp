@@ -177,7 +177,7 @@ pDebugInfoTransparentSSSSS( NULL )
 		pShadowCubePB = deoglSkinShader::CreateSPBRender( renderThread, true, false );
 		pOccMapPB = deoglSkinShader::CreateSPBOccMap( renderThread );
 		
-		pRenderTask = new deoglRenderTask;
+		pRenderTask = new deoglRenderTask( renderThread );
 		pAddToRenderTask = new deoglAddToRenderTask( renderThread, *pRenderTask );
 		pLightProbesTexture = new deoglLightProbeTexture( renderThread );
 		

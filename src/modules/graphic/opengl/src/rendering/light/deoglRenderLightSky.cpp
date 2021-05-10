@@ -996,7 +996,7 @@ deoglRenderPlanSkyLight &planSkyLight, deoglShadowMapper &shadowMapper ){
 		}
 		DebugTimer4Sample( plan, *pDebugInfoSolidShadowSplitTask, true );
 		
-		renderTask.PrepareForRender( renderThread );
+		renderTask.PrepareForRender();
 #endif
 		rengeom.RenderTask( renderTask );
 		

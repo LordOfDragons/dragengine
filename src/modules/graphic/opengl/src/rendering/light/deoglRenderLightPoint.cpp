@@ -1619,7 +1619,7 @@ bool debugSolid ){
 			DebugTimer4Sample( plan, *pDebugInfoTransparentShadowFaceTask, true );
 		}
 		
-		renderTask.PrepareForRender( renderThread );
+		renderTask.PrepareForRender();
 // 			renderThread.GetLogger().LogInfo( "RenderLightPoint: render task" );
 // 			renderTask.DebugPrint( renderThread.GetLogger() );
 		rengeom.RenderTask( renderTask );
@@ -1695,7 +1695,7 @@ bool debugSolid ){
 				DebugTimer4Sample( plan, *pDebugInfoTransparentShadowFaceTask, true );
 			}
 			
-			renderTask.PrepareForRender( renderThread );
+			renderTask.PrepareForRender();
 			rengeom.RenderTask( renderTask );
 			
 			renderTask.SetForceDoubleSided( false );
@@ -1750,7 +1750,7 @@ bool debugSolid ){
 				DebugTimer4Sample( plan, *pDebugInfoTransparentShadowFaceTranspTask, true );
 			}
 			
-			renderTask.PrepareForRender( renderThread );
+			renderTask.PrepareForRender();
 			rengeom.RenderTask( renderTask );
 			
 			if( debugSolid ){
@@ -1816,7 +1816,7 @@ bool debugSolid ){
 					DebugTimer4Sample( plan, *pDebugInfoTransparentShadowFaceTranspTask, true );
 				}
 				
-				renderTask.PrepareForRender( renderThread );
+				renderTask.PrepareForRender();
 				rengeom.RenderTask( renderTask );
 				
 				if( debugSolid ){
@@ -1947,7 +1947,7 @@ const deoglCollideList *clist2, int ambientMapSize, float shadowScale, float sha
 			addToRenderTask.AddOcclusionMeshes( *clist2 );
 		}
 		
-		renderTask.PrepareForRender( renderThread );
+		renderTask.PrepareForRender();
 		rengeom.RenderTask( renderTask );
 		
 		// PROBLEM: depth, geometry and shadow map rendering uses new shared-spb system.
@@ -1998,7 +1998,7 @@ const deoglCollideList *clist2, int ambientMapSize, float shadowScale, float sha
 				addToRenderTask.AddOcclusionMeshes( *clist2 );
 			}
 			
-			renderTask.PrepareForRender( renderThread );
+			renderTask.PrepareForRender();
 			rengeom.RenderTask( renderTask );
 		}
 	}

@@ -557,7 +557,7 @@ DBG_ENTER_PARAM3("RenderDepthPass", "%p", mask, "%d", solid, "%d", maskedOnly)
 		//if( config.GetQuickDebug() == 100 ){
 		//	renderTask.SortInstancesByDistance( ogl.GetQuickSorter(), plan.GetCameraPosition(), plan.GetInverseCameraMatrix().TransformView() );
 		//}
-		renderTask.PrepareForRender( renderThread );
+		renderTask.PrepareForRender();
 		
 		if( config.GetDebugSnapshot() == edbgsnapDepthPassRenTask ){
 			renderThread.GetLogger().LogInfo( "RenderWorld.pRenderDepthPass: render task" );
@@ -613,7 +613,7 @@ DBG_ENTER_PARAM3("RenderDepthPass", "%p", mask, "%d", solid, "%d", maskedOnly)
 	addToRenderTask.AddComponents( collideList );
 	
 	if( renderTask.GetShaderCount() > 0 ){
-		renderTask.PrepareForRender( renderThread );
+		renderTask.PrepareForRender();
 		
 		if( solid ){
 			DebugTimer1Sample( plan, *renworld.GetDebugInfo().infoSolidGeometryDepthTask, true );

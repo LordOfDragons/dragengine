@@ -173,7 +173,7 @@ pDebugInfo( renderThread )
 		pRenderLuminancePB = deoglSkinShader::CreateSPBRender( renderThread, false, false );
 		pRenderCubePB = deoglSkinShader::CreateSPBRender( renderThread, true, false );
 		
-		pRenderTask = new deoglRenderTask;
+		pRenderTask = new deoglRenderTask( renderThread );
 		pAddToRenderTask = new deoglAddToRenderTask( renderThread, *pRenderTask );
 		
 		pParticleSorter = new deoglParticleSorter;
@@ -737,7 +737,7 @@ DBG_EXIT("RenderMaskedPass(early)")
 		
 		pAddToRenderTask->AddComponentFaces( *maskedPlan->GetComponent(), maskedPlan->GetComponentTexture(), 0 );
 		
-		pRenderTask->PrepareForRender( renderThread );
+		pRenderTask->PrepareForRender();
 		rengeom.RenderTask( *pRenderTask );
 		
 		// render the world using this mask

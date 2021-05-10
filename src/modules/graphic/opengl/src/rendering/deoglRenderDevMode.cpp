@@ -68,6 +68,7 @@
 #include "../terrain/heightmap/deoglHTSCluster.h"
 #include "../terrain/heightmap/deoglHTView.h"
 #include "../terrain/heightmap/deoglHTViewSector.h"
+#include "../terrain/heightmap/deoglHTViewSectorCluster.h"
 #include "../terrain/heightmap/deoglRHeightTerrain.h"
 #include "../terrain/heightmap/deoglRHTSector.h"
 #include "../texture/arraytexture/deoglRenderableArrayTextureManager.h"
@@ -1030,7 +1031,6 @@ void deoglRenderDevMode::RenderHeightTerrainLODLevels( deoglRenderPlan &plan, co
 			if( scoord.x >= fromSector.x && scoord.y >= fromSector.y && scoord.x <= toSector.x && scoord.y <= toSector.y ){
 				const deoglHTViewSector &htvsector = *htview->GetSectorAt( s );
 				const deoglHTSCluster * const htclusters = htsector.GetClusters();
-				const sHTVSCluster * const htvclusters = htvsector.GetClusters();
 				const int clusterCount = htsector.GetClusterCount();
 				
 				camrelpos = campos.ToVector(); // TODO adjust to sector
@@ -1058,7 +1058,7 @@ void deoglRenderDevMode::RenderHeightTerrainLODLevels( deoglRenderPlan &plan, co
 				ci = 0;
 				for( z=0; z<clusterCount; z++ ){
 					for( x=0; x<clusterCount; x++ ){
-						lodLevel = htvclusters[ ci ].lodLevel;
+						lodLevel = htvsector.GetClusterAt( ci ).GetLodLevel();
 						
 						if( lodLevel < 0 ){
 							shader.SetParameterFloat( spsc2dColor, 0.25f, 0.25f, 0.25f, 1.0f );

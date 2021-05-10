@@ -24,6 +24,7 @@
 
 #include "../../deoglBasics.h"
 
+#include <dragengine/common/collection/decPointerList.h>
 #include <dragengine/common/math/decMath.h>
 
 #define HTSC_MAX_LOD				4
@@ -33,19 +34,7 @@ class deoglRHTSector;
 class deImage;
 class deoglTerrainHeightImage;
 class deoglVAO;
-class deoglRenderTaskSharedInstance;
 
-
-enum eHTSCBorders{
-	ehtscbLeft = 0,
-	ehtscbTop,
-	ehtscbRight,
-	ehtscbBottom,
-	ehtscbFixLeft,
-	ehtscbFixTop,
-	ehtscbFixRight,
-	ehtscbFixBottom
-};
 
 /** Height Terrain Sector Cluster LOD. */
 struct deoglHTSClusterLOD{
@@ -59,8 +48,6 @@ struct deoglHTSClusterLOD{
 
 
 /**
- * @brief Height Terrain Sector Cluster.
- *
  * Cluster in a height terrain sector. Stores the maximum variance in the cluster
  * as well as an axis aligned box enclosing all contained vertices. The AABB is
  * stored only as the middle height and half-height since the X and Z values of
@@ -99,110 +86,148 @@ private:
 	deoglVBOHeightTerrain2 *pDataPoints2;
 	int pDataPointCount;
 	
-	deoglRenderTaskSharedInstance *pRTSInstance[ 5 ];
 	
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Creates a new cluster. */
+	/** Create cluster. */
 	deoglHTSCluster();
-	/** Cleans up the cluster. */
+	
+	/** Clean up cluster. */
 	~deoglHTSCluster();
 	/*@}*/
 	
-	/** @name Management */
+	
+	
+	/** \name Management */
 	/*@{*/
-	/** Sets the height terrain sector. */
+	/** Set height terrain sector. */
 	void SetHTSector( deoglRHTSector *htsector );
 	
-	/** Retrieves the first point in X direction. */
+	
+	
+	/** First point in X direction. */
 	inline int GetFirstPointX() const{ return pFirstPointX; }
-	/** Retrieves the first point in Z direction. */
+	
+	/** First point in Z direction. */
 	inline int GetFirstPointZ() const{ return pFirstPointZ; }
-	/** Retrieves the number of points in X direction. */
+	
+	/** Count of points in X direction. */
 	inline int GetPointCountX() const{ return pPointCountX; }
-	/** Retrieves the number of points in Z direction. */
+	
+	/** Count of points in Z direction. */
 	inline int GetPointCountZ() const{ return pPointCountZ; }
-	/** Sets the size. */
+	
+	/** Set size. */
 	void SetSize( int firstPointX, int firstPointZ, int pointCountX, int pointCountZ );
 	
-	/** Retrieves the center of the enclosing box. */
+	
+	
+	/** Center of the enclosing box. */
 	inline const decVector &GetCenter() const{ return pCenter; }
-	/** Retrieves the half extends of the enclosing box. */
+	
+	/** Half extends of the enclosing box. */
 	inline const decVector &GetHalfExtends() const{ return pHalfExtends; }
 	
-	/** \brief Initializes the cluster from the given height image during main thread. */
+	
+	
+	/** Initializes the cluster from the given height image during main thread. */
 	void InitFromHeightImage( const deHeightTerrainSector &sector );
 	
-	/** Determines if this cluster has no lod levels. */
-	inline bool GetNoLOD() const{ return pNoLOD; }
-	/** Retrieves the given LOD level. */
-	deoglHTSClusterLOD &GetLODAt( int level );
 	
-	/** Updates the height extends. */
+	
+	/** Cluster has no lod levels. */
+	inline bool GetNoLOD() const{ return pNoLOD; }
+	
+	/** LOD level. */
+	deoglHTSClusterLOD &GetLODAt( int level );
+	const deoglHTSClusterLOD &GetLODAt( int level ) const;
+	
+	
+	
+	/** Update height extends. */
 	void UpdateHeightExtends( float minHeight, float maxHeight );
 	
 	/** Print out some debuging information. */
 	void DebugPrint();
 	
-	/** Retrieves the vbo point offset. */
+	
+	
+	/** VBO point offset. */
 	inline int GetOffsetVBODataPoints() const{ return pOffsetVBODataPoints; }
-	/** Sets the offset to the data vbo. */
+	
+	/** Set offset data vbo. */
 	void SetOffsetVBODataPoints( int offset );
-	/** Retrieves the number of data vbo points. */
+	
+	/** Count of data vbo points. */
 	inline int GetCountVBODataPoints() const{ return pDataPointCount; }
 	
-	/** Retrieves the position data vbo. */
+	/** Position data vbo. */
 	inline GLuint GetVBODataPoints1() const{ return pVBODataPoints1; }
-	/** Sets the position data vbo. */
+	
+	/** Set position data vbo. */
 	void SetVBODataPoints1( GLuint vbo );
-	/** Updates the position vbo. */
+	
+	/** Update position vbo. */
 	void UpdateVBOData1();
 	
-	/** Retrieves the height data vbo. */
+	/** Height data vbo. */
 	inline GLuint GetVBODataPoints2() const{ return pVBODataPoints2; }
-	/** Sets the height data vbo. */
+	
+	/** Set height data vbo. */
 	void SetVBODataPoints2( GLuint vbo );
-	/** Update the height vbo. */
+	
+	/** Update height vbo. */
 	void UpdateVBOData2();
 	
-	/** Retrieves the vao. */
+	
+	
+	/** VAO. */
 	inline deoglVAO *GetVAO() const{ return pVAO; }
-	/** Update the vao. */
+	
+	/** Update vao. */
 	void UpdateVAO();
 	
-	/** Retrieves the vbo data faces offset. */
+	
+	
+	/** VBO data faces offset. */
 	inline int GetOffsetVBODataFaces() const{ return pOffsetVBODataFaces; }
-	/** Sets the offset to the data faces vbo. */
+	
+	/** Set offset data faces vbo. */
 	void SetOffsetVBODataFaces( int offset );
-	/** Retrieves the number of data vbo faces. */
+	
+	/** Count of data vbo faces. */
 	inline int GetCountVBODataFaces() const{ return pFacePointCount; }
-	/** Retrieves the faces data vbo. */
+	
+	/** Faces data vbo. */
 	inline GLuint GetVBODataFaces() const{ return pVBODataFaces; }
-	/** Sets the faces data vbo. */
+	
+	/** Set faces data vbo. */
 	void SetVBODataFaces( GLuint vbo );
-	/** Updates the data faces vbo. */
+	
+	/** Update data faces vbo. */
 	void UpdateVBODataFaces();
-	
-	/** Render task shared instance. */
-	inline deoglRenderTaskSharedInstance *GetRTSInstanceAt( int index ) const{ return pRTSInstance[ index ]; }
-	
-	/** Update render task shared instances. */
-	void UpdateRTSInstances();
 	/*@}*/
 	
-	/** @name Face Points */
+	
+	
+	/** \name Face Points */
 	/*@{*/
-	/** Retrieves the face points. */
+	/** Face points. */
 	inline GLushort *GetFacePoints() const{ return pFacePoints; }
-	/** Retrieves the number of face points. */
+	
+	/** Count of face points. */
 	inline int GetFacePointCount() const{ return pFacePointCount; }
-	/** Adds a face point. */
+	
+	/** Add face point. */
 	void AddFacePoints( int p1, int p2, int p3 );
-	/** Sets the face point count. Has to be less or equal the current point count. */
+	
+	/** Set face point count. Has to be less or equal the current point count. */
 	void SetFacePointCount( int count );
 	/*@}*/
+	
+	
 	
 private:
 	void pCreateBaseLOD( const deHeightTerrainSector &sector, int width );

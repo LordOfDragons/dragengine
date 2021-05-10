@@ -25,6 +25,7 @@
 
 #include "deoglRHeightTerrain.h"
 #include "deoglRHTSector.h"
+#include "deoglHeightTerrainListener.h"
 
 #include "../../renderthread/deoglRenderThread.h"
 #include "../../world/deoglRWorld.h"
@@ -45,12 +46,16 @@ pRenderThread( renderThread ),
 pParentWorld( NULL ),
 pSectorResolution( heightTerrain.GetSectorResolution() ),
 pSectorSize( heightTerrain.GetSectorSize() ),
-pUpdateTracker( 0 ){
+pSectorsRequirePrepareForRender( true ),
+pListenerIndex( 0 )
+{
 	LEAK_CHECK_CREATE( renderThread, HeightTerrain );
 }
 
 deoglRHeightTerrain::~deoglRHeightTerrain(){
 	LEAK_CHECK_FREE( pRenderThread, HeightTerrain );
+	NotifyHeightTerrainDestroyed();
+	pListeners.RemoveAll();
 	SetParentWorld( NULL );
 }
 
@@ -61,6 +66,18 @@ deoglRHeightTerrain::~deoglRHeightTerrain(){
 
 void deoglRHeightTerrain::SetParentWorld( deoglRWorld *world ){
 	pParentWorld = world;
+}
+
+void deoglRHeightTerrain::PrepareForRender(){
+	if( pSectorsRequirePrepareForRender ){
+		pSectorsRequirePrepareForRender = false;
+		
+		const int count = pSectors.GetCount();
+		int i;
+		for( i=0; i<count; i++ ){
+			( ( deoglRHTSector* )pSectors.GetAt( i ) )->PrepareForRender();
+		}
+	}
 }
 
 
@@ -75,21 +92,57 @@ deoglRHTSector &deoglRHeightTerrain::GetSectorAt( int index ) const{
 
 void deoglRHeightTerrain::AddSector( deoglRHTSector *htsector ){
 	pSectors.Add( htsector );
-	pUpdateTracker++;
+	SectorRequirePrepareForRender();
+	NotifySectorsChanged();
 }
 
 void deoglRHeightTerrain::RemoveAllSectors(){
 	pSectors.RemoveAll();
-	pUpdateTracker++;
+	SectorRequirePrepareForRender();
+	NotifySectorsChanged();
+}
+
+void deoglRHeightTerrain::SectorRequirePrepareForRender(){
+	pSectorsRequirePrepareForRender = true;
 }
 
 
 
-void deoglRHeightTerrain::UpdateVBOs(){
-	const int count = pSectors.GetCount();
-	int i;
+// Listeners
+//////////////
+
+void deoglRHeightTerrain::AddListener( deoglHeightTerrainListener *listener ){
+	if( ! listener ){
+		DETHROW( deeInvalidParam );
+	}
+	pListeners.Add( listener );
+}
+
+void deoglRHeightTerrain::RemoveListener( deoglHeightTerrainListener *listener ){
+	const int index = pListeners.IndexOf( listener );
+	if( index == -1 ){
+		return;
+	}
 	
-	for( i=0; i<count; i++ ){
-		( ( deoglRHTSector*)pSectors.GetAt( i ) )->UpdateVBO();
+	pListeners.Remove( listener );
+	
+	if( pListenerIndex >= index ){
+		pListenerIndex--;
+	}
+}
+
+void deoglRHeightTerrain::NotifyHeightTerrainDestroyed(){
+	pListenerIndex = 0;
+	while( pListenerIndex < pListeners.GetCount() ){
+		( ( deoglHeightTerrainListener* )pListeners.GetAt( pListenerIndex ) )->HeightTerrainDestroyed( *this );
+		pListenerIndex++;
+	}
+}
+
+void deoglRHeightTerrain::NotifySectorsChanged(){
+	pListenerIndex = 0;
+	while( pListenerIndex < pListeners.GetCount() ){
+		( ( deoglHeightTerrainListener* )pListeners.GetAt( pListenerIndex ) )->SectorsChanged( *this );
+		pListenerIndex++;
 	}
 }

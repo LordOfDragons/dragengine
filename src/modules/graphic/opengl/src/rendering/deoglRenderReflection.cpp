@@ -523,7 +523,7 @@ deoglRenderBase( renderThread )
 		pRenderParamBlock->MapToStd140();
 		pRenderParamBlock->SetBindingPoint( 0 );
 		
-		pRenderTask = new deoglRenderTask;
+		pRenderTask = new deoglRenderTask( renderThread );
 		pAddToRenderTask = new deoglAddToRenderTask( renderThread, *pRenderTask );
 		
 		if( config.GetEnvMapMethod() == deoglConfiguration::eemmSingle ){

@@ -404,26 +404,9 @@ void deoglRenderPlan::pBarePrepareRender(){
 	renderCanvas.SampleDebugInfoPlanPrepareEnvMaps( *this );
 	SPECIAL_TIMER_PRINT("UpdateEnvMap")
 	
-	// update height terrain vbo
-	if( pHTView ){
-		renderCanvas.DebugTimer3Reset( *this, false );
-		pHTView->GetHeightTerrain().UpdateVBOs();
-		renderCanvas.SampleDebugInfoPlanPrepareHTViewVBOs( *this );
-		
-		// prepare height terrain sectors
-		/*
-		pHTView->GetHeightTerrain()->UpdateVBOs();
-		DEBUG_PRINT_TIMER( "RenderPlan: PrepareRender: Update height terrain vbos" );
-		
-		pHTView->DetermineVisibilityUsing( &frustum );
-		pHTView->UpdateLODLevels( pCameraPosition.ToVector() );
-		DEBUG_PRINT_TIMER( "RenderPlan: PrepareRender: Update height terrain" );
-		*/
-	}
-	
 	// update lod for visible elements
 	pPlanLODLevels();
-	
+	pUpdateHTViewRTSInstances();
 	SPECIAL_TIMER_PRINT("Plan2")
 	
 	// prepare particles for rendering
@@ -2252,6 +2235,19 @@ void deoglRenderPlan::pUpdateHTView(){
 	if( pWorld && pWorld->GetHeightTerrain() ){
 		pHTView = new deoglHTView( pWorld->GetHeightTerrain() );
 	}
+}
+
+void deoglRenderPlan::pUpdateHTViewRTSInstances(){
+	if( ! pHTView ){
+		return;
+	}
+	
+	// we have to wait until the LOD level is calculated. now we can update the render task
+	// shared instances of clusters in the collide list or all clusters. updating only the
+	// clusters in the collide list is faster but other render code can potentially use it
+	// too so it is better to update all clusters to avoid having to manage additional
+	// height terrain views
+	pHTView->UpdateAllRTSInstances();
 }
 
 void deoglRenderPlan::pCheckOutsideVisibility(){

@@ -32,6 +32,7 @@
 #include "shared/deoglRenderTaskSharedTexture.h"
 #include "shared/deoglRenderTaskSharedVAO.h"
 #include "shared/deoglRenderTaskSharedInstance.h"
+#include "shared/deoglRenderTaskSharedPool.h"
 #include "../../capabilities/deoglCapabilities.h"
 #include "../../renderthread/deoglRenderThread.h"
 #include "../../renderthread/deoglRTLogger.h"
@@ -57,17 +58,16 @@
 // Class deoglRenderTask
 //////////////////////////
 
-unsigned int deoglRenderTask::pUpdateTracking = 0;
-
 // Constructor, destructor
 ////////////////////////////
 
-deoglRenderTask::deoglRenderTask() :
+deoglRenderTask::deoglRenderTask( deoglRenderThread &renderThread ) :
+pRenderThread( renderThread ),
+
 pRenderParamBlock( NULL ),
 pTBOInstances( 0 ),
 pSPBInstanceMaxEntries( 0 ),
 pUseSPBInstanceFlags( false ),
-pTrackingNumber( 0 ),
 pForceDoubleSided( false ),
 
 pRootShader( NULL ),
@@ -153,16 +153,15 @@ void deoglRenderTask::Clear(){
 	SetTBOInstances( 0 );
 	pUseSPBInstanceFlags = false;
 	pForceDoubleSided = false;
-	pTrackingNumber = UpdateTracking();
 }
 
-void deoglRenderTask::PrepareForRender( deoglRenderThread &renderThread ){
+void deoglRenderTask::PrepareForRender(){
 	if( pShaderCount == 0 ){
 		return;
 	}
 	
-	pCalcSPBInstancesMaxEntries( renderThread );
-	pAssignSPBInstances( renderThread );
+	pCalcSPBInstancesMaxEntries();
+	pAssignSPBInstances();
 	pUpdateSPBInstances();
 }
 
@@ -205,24 +204,6 @@ void deoglRenderTask::SetUseSPBInstanceFlags( bool useFlags ){
 
 void deoglRenderTask::SetForceDoubleSided( bool forceDoubleSided ){
 	pForceDoubleSided = forceDoubleSided;
-}
-
-
-
-unsigned int deoglRenderTask::UpdateTracking(){
-	// additional tracker value for shaders and texture unit configurations to avoid
-	// the need for a clearing operation. the render task class stores a global tracker
-	// number. whenever a new render task is started (using the Clear function). the
-	// global tracker number is increased by one. while building the render task the
-	// global tracker number is compared to the tracker number stored in the
-	// shader/tuc. if it is not the same the shader/tuc has not been added to the
-	// render task yet. the render task is set and the tracker number updated. if the
-	// tracker number is the same the render task is already set and can be used
-	// directly.
-	// 
-	// this method updates the tracker number by one wrapping around upon overflowing
-	// and returns the new tracker number
-	return ++pUpdateTracking;
 }
 
 
@@ -570,11 +551,11 @@ void deoglRenderTask::DebugPrintPoolStats( deoglRTLogger &rtlogger ){
 // Private Functions
 //////////////////////
 
-void deoglRenderTask::pCalcSPBInstancesMaxEntries( deoglRenderThread &renderThread ){
+void deoglRenderTask::pCalcSPBInstancesMaxEntries(){
 	// since std140 layout adds a lot of padding between array elements we use ivec4.
 	// this groups indices in blocks of four so the final index is pSPB[i/4][i%4].
 	//pSPBInstanceMaxEntries = ( renderThread.GetCapabilities().GetUBOMaxSize() / 16 ) * 4;
-	pSPBInstanceMaxEntries = renderThread.GetBufferObject().GetInstanceArraySizeUBO();
+	pSPBInstanceMaxEntries = pRenderThread.GetBufferObject().GetInstanceArraySizeUBO();
 	
 	if( pUseSPBInstanceFlags ){
 		// if instance flags are used the vector <instanceIndex, instanceFlags> is
@@ -584,7 +565,7 @@ void deoglRenderTask::pCalcSPBInstancesMaxEntries( deoglRenderThread &renderThre
 	}
 }
 
-void deoglRenderTask::pAssignSPBInstances( deoglRenderThread &renderThread ){
+void deoglRenderTask::pAssignSPBInstances(){
 	const int componentsPerIndex = pUseSPBInstanceFlags ? 2 : 1;
 	deoglShaderParameterBlock *paramBlock = NULL;
 	int paramBlockCount = 0;
@@ -609,7 +590,7 @@ void deoglRenderTask::pAssignSPBInstances( deoglRenderThread &renderThread ){
 						}
 						
 						if( paramBlockCount == pSPBInstances.GetCount() ){
-							pCreateSPBInstanceParamBlock( renderThread );
+							pCreateSPBInstanceParamBlock();
 						}
 						paramBlock = pSPBInstances.GetAt( paramBlockCount++ );
 						firstIndex = 0;
@@ -684,13 +665,13 @@ void deoglRenderTask::pUpdateSPBInstances(){
 	}
 }
 
-void deoglRenderTask::pCreateSPBInstanceParamBlock( deoglRenderThread &renderThread ){
+void deoglRenderTask::pCreateSPBInstanceParamBlock(){
 	// since std140 layout adds a lot of padding between array elements we use ivec4.
 	// this groups indices in blocks of four so the final index is pSPB[i/4][i%4]
-	deoglSPBlockUBO * const ubo = new deoglSPBlockUBO( renderThread );
+	deoglSPBlockUBO * const ubo = new deoglSPBlockUBO( pRenderThread );
 	
 	try{
-		ubo->SetRowMajor( renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working() );
+		ubo->SetRowMajor( pRenderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working() );
 		ubo->SetParameterCount( 1 );
 		ubo->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtInt, 4, 1, 1 );
 		ubo->MapToStd140();

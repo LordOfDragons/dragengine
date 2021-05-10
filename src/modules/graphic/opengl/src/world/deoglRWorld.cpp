@@ -231,6 +231,11 @@ void deoglRWorld::PrepareForRender( deoglRenderPlan &plan ){
 	}
 		SPECIAL_TIMER_PRINT("Sky")
 	
+	// prepare height terrain
+	if( pHeightTerrain ){
+		pHeightTerrain->PrepareForRender();
+	}
+	
 	// prepare components
 	decPointerLinkedList::cListEntry * const tailComponent = pListPrepareForRenderComponents.GetTail();
 	while( pListPrepareForRenderComponents.GetRoot() ){
@@ -290,8 +295,6 @@ void deoglRWorld::PrepareForRender( deoglRenderPlan &plan ){
 		}
 	}
 		SPECIAL_TIMER_PRINT("PropFields")
-	
-	
 	
 	
 	

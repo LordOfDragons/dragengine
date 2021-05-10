@@ -289,7 +289,7 @@ DBG_ENTER_PARAM("deoglRenderTranspCounting::CountTransparency", "%p", mask)
 	}
 	
 	// render
-	renderTask.PrepareForRender( renderThread );
+	renderTask.PrepareForRender();
 	rengeom.RenderTask( renderTask );
 	
 	if( renderThread.GetConfiguration().GetDebugSnapshot() == edbgsnapTranspCounting ){
@@ -321,7 +321,7 @@ DBG_ENTER_PARAM("deoglRenderTranspCounting::CountTransparency", "%p", mask)
 	addToRenderTask.AddComponents( collideList );
 	
 	if( renderTask.GetShaderCount() > 0 ){
-		renderTask.PrepareForRender( renderThread );
+		renderTask.PrepareForRender();
 		SetCullMode( ! plan.GetFlipCulling() );
 		rengeom.RenderTask( renderTask );
 		SetCullMode( plan.GetFlipCulling() );

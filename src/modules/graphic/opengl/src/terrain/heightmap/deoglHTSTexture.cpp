@@ -73,9 +73,7 @@ pSector( sector )
 	
 	pUseSkinTexture = NULL;
 	
-	pParamBlockDepth = NULL;
-	pParamBlockGeometry = NULL;
-	pParamBlockEnvMap = NULL;
+	pParamBlock = NULL;
 	
 	pTUCDepth = NULL;
 	pTUCGeometry = NULL;
@@ -83,18 +81,10 @@ pSector( sector )
 	pTUCEnvMap = NULL;
 	pTUCLuminance = NULL;
 	
-	pValidParamBlockDepth = false;
-	pValidParamBlockGeometry = false;
-	pValidParamBlockEnvMap = false;
-	pDirtyParamBlockDepth = true;
-	pDirtyParamBlockGeometry = true;
-	pDirtyParamBlockEnvMap = true;
+	pValidParamBlock = false;
+	pDirtyParamBlock = true;
 	
-	pDirtyTUCDepth = true;
-	pDirtyTUCGeometry = true;
-	pDirtyTUCShadow = true;
-	pDirtyTUCEnvMap = true;
-	pDirtyTUCLuminance = true;
+	pDirtyTUCs = true;
 }
 
 deoglHTSTexture::~deoglHTSTexture(){
@@ -111,7 +101,7 @@ void deoglHTSTexture::SetMatrix( const decTexMatrix &matrix ){
 	MarkParamBlocksDirty();
 }
 
-void deoglHTSTexture::SetSkin ( deoglRSkin *skin ){
+void deoglHTSTexture::SetSkin( deoglRSkin *skin ){
 	if( skin == pSkin ){
 		return;
 	}
@@ -131,133 +121,26 @@ void deoglHTSTexture::SetSkin ( deoglRSkin *skin ){
 	
 	InvalidateParamBlocks();
 	MarkTUCsDirty();
-	//pComponent->MarkTextureUseSkinDirty();
 }
 
 
-
-deoglSPBlockUBO *deoglHTSTexture::GetParamBlockFor( deoglSkinTexture::eShaderTypes shaderType ){
-	switch( shaderType ){
-	case deoglSkinTexture::estHeightMapGeometry:
-	case deoglSkinTexture::estHeightMapLuminance:
-		return GetParamBlockGeometry();
-		
-	case deoglSkinTexture::estHeightMapDepth:
-	case deoglSkinTexture::estHeightMapDepthClipPlane:
-	case deoglSkinTexture::estHeightMapDepthReversed:
-	case deoglSkinTexture::estHeightMapDepthClipPlaneReversed:
-	case deoglSkinTexture::estHeightMapTranspCount:
-	case deoglSkinTexture::estHeightMapTranspCountClipPlane:
-	case deoglSkinTexture::estHeightMapShadowProjection:
-	case deoglSkinTexture::estHeightMapShadowOrthogonal:
-	case deoglSkinTexture::estHeightMapShadowDistance:
-		return GetParamBlockDepth();
-		
-	case deoglSkinTexture::estHeightMapEnvMap:
-		return GetParamBlockEnvMap();
-		
-	default:
-		DETHROW( deeInvalidParam );
-	}
-}
-
-deoglSPBlockUBO *deoglHTSTexture::GetParamBlockDepth(){
-	if( ! pValidParamBlockDepth ){
-		if( pParamBlockDepth ){
-			pParamBlockDepth->FreeReference();
-			pParamBlockDepth = NULL;
-		}
-		
-		if( pUseSkinTexture ){
-			deoglSkinShader &skinShader = *pUseSkinTexture->GetShaderFor( deoglSkinTexture::estHeightMapDepth );
-			
-			/*if( deoglSkinShader::USE_SHARED_SPB ){
-				pParamBlockDepth = new deoglSPBlockUBO( *pSector.GetHeightTerrain()
-					.GetRenderThread().GetBufferObject().GetLayoutSkinInstanceUBO() );
-				
-			}else{*/
-				pParamBlockDepth = skinShader.CreateSPBInstParam();
-			//}
-		}
-		
-		pValidParamBlockDepth = true;
-		pDirtyParamBlockDepth = true;
-	}
-	
-	if( pDirtyParamBlockDepth ){
-		if( pParamBlockDepth ){
-			UpdateInstanceParamBlock( *pParamBlockDepth, *pUseSkinTexture->GetShaderFor( deoglSkinTexture::estHeightMapDepth ) );
-		}
-		
-		pDirtyParamBlockDepth = false;
-	}
-	
-	return pParamBlockDepth;
-}
-
-deoglSPBlockUBO *deoglHTSTexture::GetParamBlockGeometry(){
-	if( ! pValidParamBlockGeometry ){
-		if( pParamBlockGeometry ){
-			pParamBlockGeometry->FreeReference();
-			pParamBlockGeometry = NULL;
-		}
-		
-		if( pUseSkinTexture ){
-			deoglSkinShader &skinShader = *pUseSkinTexture->GetShaderFor( deoglSkinTexture::estHeightMapGeometry );
-			
-			/*if( deoglSkinShader::USE_SHARED_SPB ){
-				pParamBlockGeometry = new deoglSPBlockUBO( *pSector.GetHeightTerrain()
-					.GetRenderThread().GetBufferObject().GetLayoutSkinInstanceUBO() );
-				
-			}else{*/
-				pParamBlockGeometry = skinShader.CreateSPBInstParam();
-			//}
-		}
-		
-		pValidParamBlockGeometry = true;
-		pDirtyParamBlockGeometry = true;
-	}
-	
-	if( pDirtyParamBlockGeometry ){
-		if( pParamBlockGeometry ){
-			UpdateInstanceParamBlock( *pParamBlockGeometry, *pUseSkinTexture->GetShaderFor( deoglSkinTexture::estHeightMapGeometry ) );
-		}
-		
-		pDirtyParamBlockGeometry = false;
-	}
-	
-	return pParamBlockGeometry;
-}
-
-deoglSPBlockUBO *deoglHTSTexture::GetParamBlockEnvMap(){
-	return NULL;
-}
 
 void deoglHTSTexture::InvalidateParamBlocks(){
-	pValidParamBlockDepth = false;
-	pValidParamBlockGeometry = false;
-	pValidParamBlockEnvMap = false;
-	
+	pValidParamBlock = false;
 	MarkParamBlocksDirty();
 }
 
 void deoglHTSTexture::MarkParamBlocksDirty(){
-	pDirtyParamBlockDepth = true;
-	pDirtyParamBlockGeometry = true;
-	pDirtyParamBlockEnvMap = true;
+	pDirtyParamBlock = true;
 }
 
 void deoglHTSTexture::MarkTUCsDirty(){
-	pDirtyTUCDepth = true;
-	pDirtyTUCGeometry = true;
-	pDirtyTUCShadow = true;
-	pDirtyTUCEnvMap = true;
-	pDirtyTUCLuminance = true;
+	pDirtyTUCs = true;
 }
 
 
 
-deoglTexUnitsConfig *deoglHTSTexture::GetTUCForShaderType( deoglSkinTexture::eShaderTypes shaderType ){
+deoglTexUnitsConfig *deoglHTSTexture::GetTUCForShaderType( deoglSkinTexture::eShaderTypes shaderType ) const{
 	switch( shaderType ){
 	case deoglSkinTexture::estHeightMapGeometry:
 		return GetTUCGeometry();
@@ -286,102 +169,7 @@ deoglTexUnitsConfig *deoglHTSTexture::GetTUCForShaderType( deoglSkinTexture::eSh
 	}
 }
 
-deoglTexUnitsConfig *deoglHTSTexture::GetTUCDepth(){
-	if( pDirtyTUCDepth ){
-		if( pTUCDepth ){
-			pTUCDepth->RemoveUsage();
-			pTUCDepth = NULL;
-		}
-		
-		pTUCDepth = BareGetTUCFor( deoglSkinTexture::estHeightMapDepth );
-		
-		pDirtyTUCDepth = false;
-	}
-	
-	return pTUCDepth;
-}
 
-deoglTexUnitsConfig *deoglHTSTexture::GetTUCGeometry(){
-	if( pDirtyTUCGeometry ){
-		if( pTUCGeometry ){
-			pTUCGeometry->RemoveUsage();
-			pTUCGeometry = NULL;
-		}
-		
-		pTUCGeometry = BareGetTUCFor( deoglSkinTexture::estHeightMapGeometry );
-		
-		pDirtyTUCGeometry = false;
-	}
-	
-	return pTUCGeometry;
-}
-
-deoglTexUnitsConfig *deoglHTSTexture::GetTUCShadow(){
-	if( pDirtyTUCShadow ){
-		if( pTUCShadow ){
-			pTUCShadow->RemoveUsage();
-			pTUCShadow = NULL;
-		}
-		
-		pTUCShadow = BareGetTUCFor( deoglSkinTexture::estHeightMapShadowProjection );
-		
-		pDirtyTUCShadow = false;
-	}
-	
-	return pTUCShadow;
-}
-
-deoglTexUnitsConfig *deoglHTSTexture::GetTUCEnvMap(){
-	if( pDirtyTUCEnvMap ){
-		if( pTUCEnvMap ){
-			pTUCEnvMap->RemoveUsage();
-			pTUCEnvMap = NULL;
-		}
-		
-		deoglRenderThread &renderThread = pSector.GetHeightTerrain().GetRenderThread();
-		
-		if( pUseSkinTexture ){
-			deoglRDynamicSkin *dynamicSkin = NULL;
-			deoglSkinState *skinState = NULL;
-			deoglTexUnitConfig unit[ 8 ];
-			
-			if( pUseSkinTexture->GetVariationU() || pUseSkinTexture->GetVariationV() ){
-				unit[ 0 ].EnableArrayTextureFromChannel( renderThread, *pUseSkinTexture, deoglSkinChannel::ectColor,
-					skinState, dynamicSkin, renderThread.GetDefaultTextures().GetColorArray() );
-				
-				unit[ 1 ].EnableArrayTextureFromChannel( renderThread, *pUseSkinTexture, deoglSkinChannel::ectEmissivity,
-					skinState, dynamicSkin, renderThread.GetDefaultTextures().GetEmissivityArray() );
-				
-			}else{
-				unit[ 0 ].EnableTextureFromChannel( renderThread, *pUseSkinTexture, deoglSkinChannel::ectColor,
-					skinState, dynamicSkin, renderThread.GetDefaultTextures().GetColor() );
-				
-				unit[ 1 ].EnableTextureFromChannel( renderThread, *pUseSkinTexture, deoglSkinChannel::ectEmissivity,
-					skinState, dynamicSkin, renderThread.GetDefaultTextures().GetEmissivity() );
-			}
-			
-			pTUCEnvMap = renderThread.GetShader().GetTexUnitsConfigList().GetWith( &unit[ 0 ], 2,
-				pUseSkinTexture->GetSharedSPBElement()->GetSPB().GetParameterBlock() );
-			pTUCEnvMap->EnsureRTSTexture();
-		}
-		
-		pDirtyTUCEnvMap = false;
-	}
-	
-	return pTUCEnvMap;
-}
-
-deoglTexUnitsConfig *deoglHTSTexture::GetTUCLuminance(){
-	if( pDirtyTUCLuminance ){
-		if( pTUCLuminance ){
-			pTUCLuminance->RemoveUsage();
-			pTUCLuminance = NULL;
-		}
-		pTUCLuminance = BareGetTUCFor( deoglSkinTexture::estHeightMapLuminance );
-		pDirtyTUCLuminance = false;
-	}
-	return pTUCLuminance;
-}
 
 deoglTexUnitsConfig *deoglHTSTexture::BareGetTUCFor( deoglSkinTexture::eShaderTypes shaderType ) const{
 	if( ! pUseSkinTexture ){
@@ -520,6 +308,11 @@ void deoglHTSTexture::UpdateInstanceParamBlock( deoglSPBlockUBO &paramBlock, deo
 	paramBlock.UnmapBuffer();
 }
 
+void deoglHTSTexture::PrepareForRender(){
+	pPrepareParamBlock();
+	pPrepareTUCs();
+}
+
 
 
 // Private functions
@@ -530,17 +323,9 @@ void deoglHTSTexture::pCleanUp(){
 		pSkin->FreeReference();
 	}
 	
-	if( pParamBlockDepth ){
-		pParamBlockDepth->FreeReference();
-		pParamBlockDepth = NULL;
-	}
-	if( pParamBlockGeometry ){
-		pParamBlockGeometry->FreeReference();
-		pParamBlockGeometry = NULL;
-	}
-	if( pParamBlockEnvMap ){
-		pParamBlockEnvMap->FreeReference();
-		pParamBlockEnvMap = NULL;
+	if( pParamBlock ){
+		pParamBlock->FreeReference();
+		pParamBlock = NULL;
 	}
 	
 	if( pTUCDepth ){
@@ -563,4 +348,115 @@ void deoglHTSTexture::pCleanUp(){
 		pTUCLuminance->RemoveUsage();
 		pTUCLuminance = NULL;
 	}
+}
+
+
+
+void deoglHTSTexture::pPrepareParamBlock(){
+	if( ! pDirtyParamBlock ){
+		return;
+	}
+	pDirtyParamBlock = false;
+	
+	if( ! pValidParamBlock ){
+		if( pParamBlock ){
+			pParamBlock->FreeReference();
+			pParamBlock = NULL;
+		}
+		
+		if( pUseSkinTexture ){
+			deoglSkinShader &skinShader = *pUseSkinTexture->GetShaderFor( deoglSkinTexture::estHeightMapGeometry );
+			
+			/*if( deoglSkinShader::USE_SHARED_SPB ){
+				pParamBlockGeometry = new deoglSPBlockUBO( *pSector.GetHeightTerrain()
+					.GetRenderThread().GetBufferObject().GetLayoutSkinInstanceUBO() );
+				
+			}else{*/
+				pParamBlock = skinShader.CreateSPBInstParam();
+			//}
+		}
+		
+		pValidParamBlock = true;
+		pDirtyParamBlock = true;
+	}
+	
+	if( pDirtyParamBlock ){
+		if( pParamBlock ){
+			UpdateInstanceParamBlock( *pParamBlock,
+				*pUseSkinTexture->GetShaderFor( deoglSkinTexture::estHeightMapGeometry ) );
+		}
+		
+		pDirtyParamBlock = false;
+	}
+}
+
+void deoglHTSTexture::pPrepareTUCs(){
+	if( ! pDirtyTUCs ){
+		return;
+	}
+	pDirtyTUCs = false;
+	
+	// depth
+	if( pTUCDepth ){
+		pTUCDepth->RemoveUsage();
+		pTUCDepth = NULL;
+	}
+	pTUCDepth = BareGetTUCFor( deoglSkinTexture::estHeightMapDepth );
+	
+	// geometry
+	if( pTUCGeometry ){
+		pTUCGeometry->RemoveUsage();
+		pTUCGeometry = NULL;
+	}
+	pTUCGeometry = BareGetTUCFor( deoglSkinTexture::estHeightMapGeometry );
+	
+	// shadow
+	if( pTUCShadow ){
+		pTUCShadow->RemoveUsage();
+		pTUCShadow = NULL;
+	}
+	pTUCShadow = BareGetTUCFor( deoglSkinTexture::estHeightMapShadowProjection );
+	
+	// envmap
+	if( pTUCEnvMap ){
+		pTUCEnvMap->RemoveUsage();
+		pTUCEnvMap = NULL;
+	}
+	
+	if( pUseSkinTexture ){
+		deoglRenderThread &renderThread = pSector.GetHeightTerrain().GetRenderThread();
+		deoglRDynamicSkin *dynamicSkin = NULL;
+		deoglSkinState *skinState = NULL;
+		deoglTexUnitConfig unit[ 8 ];
+		
+		if( pUseSkinTexture->GetVariationU() || pUseSkinTexture->GetVariationV() ){
+			unit[ 0 ].EnableArrayTextureFromChannel( renderThread, *pUseSkinTexture,
+				deoglSkinChannel::ectColor, skinState, dynamicSkin,
+				renderThread.GetDefaultTextures().GetColorArray() );
+			
+			unit[ 1 ].EnableArrayTextureFromChannel( renderThread, *pUseSkinTexture,
+				deoglSkinChannel::ectEmissivity, skinState, dynamicSkin,
+				renderThread.GetDefaultTextures().GetEmissivityArray() );
+			
+		}else{
+			unit[ 0 ].EnableTextureFromChannel( renderThread, *pUseSkinTexture,
+				deoglSkinChannel::ectColor, skinState, dynamicSkin,
+				renderThread.GetDefaultTextures().GetColor() );
+			
+			unit[ 1 ].EnableTextureFromChannel( renderThread, *pUseSkinTexture,
+				deoglSkinChannel::ectEmissivity, skinState, dynamicSkin,
+				renderThread.GetDefaultTextures().GetEmissivity() );
+		}
+		
+		pTUCEnvMap = renderThread.GetShader().GetTexUnitsConfigList().GetWith( &unit[ 0 ], 2,
+			pUseSkinTexture->GetSharedSPBElement()->GetSPB().GetParameterBlock() );
+		pTUCEnvMap->EnsureRTSTexture();
+	}
+	
+	// luminance
+	if( pTUCLuminance ){
+		pTUCLuminance->RemoveUsage();
+		pTUCLuminance = NULL;
+	}
+	pTUCLuminance = BareGetTUCFor( deoglSkinTexture::estHeightMapLuminance );
 }

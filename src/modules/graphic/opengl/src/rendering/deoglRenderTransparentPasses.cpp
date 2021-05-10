@@ -625,7 +625,7 @@ DBG_ENTER_PARAM("RenderTransparentGeometryPass", "%p", mask)
 		addToRenderTask.AddParticles( collideList );
 	}
 	
-	renderTask.PrepareForRender( renderThread );
+	renderTask.PrepareForRender();
 	DebugTimer2Sample( plan, *renworld.GetDebugInfo().infoTransparentTask, true );
 	
 	rengeom.RenderTask( renderTask );
@@ -646,7 +646,7 @@ DBG_ENTER_PARAM("RenderTransparentGeometryPass", "%p", mask)
 	addToRenderTask.SetSkinShaderType( deoglSkinTexture::estOutlineGeometry );
 	addToRenderTask.AddComponents( collideList );
 	
-	renderTask.PrepareForRender( renderThread );
+	renderTask.PrepareForRender();
 	DebugTimer2Sample( plan, *renworld.GetDebugInfo().infoTransparentTask, true );
 	
 	if( renderTask.GetShaderCount() > 0 ){

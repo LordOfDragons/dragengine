@@ -34,6 +34,7 @@ class deoglRenderTaskShader;
 class deoglRenderTaskTexture;
 class deoglRenderTaskVAO;
 class deoglRenderTaskSharedShader;
+class deoglRenderTaskSharedInstance;
 class deoglRenderThread;
 class deoglRTLogger;
 class deoglSPBlockSSBO;
@@ -53,6 +54,8 @@ class deoglVAO;
  */
 class deoglRenderTask{
 private:
+	deoglRenderThread &pRenderThread;
+	
 	deoglSPBlockUBO *pRenderParamBlock;
 	GLuint pTBOInstances;
 	deoglShaderParameterBlockList pSPBInstances;
@@ -83,8 +86,6 @@ private:
 	deoglRenderTaskInstance *pNextInstancePool;
 	int pInstancePoolCount;
 	
-	static unsigned int pUpdateTracking;
-	
 	decPointerList pListShaders;
 	
 	
@@ -93,7 +94,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render task. */
-	deoglRenderTask();
+	deoglRenderTask( deoglRenderThread &renderThread );
 	
 	/** Clean up render task. */
 	~deoglRenderTask();
@@ -103,11 +104,14 @@ public:
 	
 	/** \name Management */
 	/*@{*/
+	/** Render thread. */
+	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
+	
 	/** Clear render task. */
 	void Clear();
 	
 	/** Prepare task to be used for rendering. */
-	void PrepareForRender( deoglRenderThread &renderThread );
+	void PrepareForRender();
 	
 	/** Sort instances by distance. */
 	void SortInstancesByDistance( deoglQuickSorter &sorter,
@@ -136,14 +140,6 @@ public:
 	
 	/** Set force double sided rendering. */
 	void SetForceDoubleSided( bool forceDoubleSided );
-	
-	
-	
-	/** Tracking number. */
-	inline unsigned int GetTrackingNumber() const{ return pTrackingNumber; }
-	
-	/** Advance update tracking returning new value. */
-	static unsigned int UpdateTracking();
 	
 	
 	
@@ -217,10 +213,10 @@ public:
 	
 	
 private:
-	void pCalcSPBInstancesMaxEntries( deoglRenderThread &renderThread );
-	void pAssignSPBInstances( deoglRenderThread &renderThread );
+	void pCalcSPBInstancesMaxEntries();
+	void pAssignSPBInstances();
 	void pUpdateSPBInstances();
-	void pCreateSPBInstanceParamBlock( deoglRenderThread &renderThread );
+	void pCreateSPBInstanceParamBlock();
 };
 
 #endif

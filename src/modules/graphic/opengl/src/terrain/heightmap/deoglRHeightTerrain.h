@@ -26,18 +26,19 @@
 
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decObjectOrderedSet.h>
 #include <dragengine/deObject.h>
 
 class deoglRWorld;
 class deoglRHTSector;
 class deoglRenderThread;
+class deoglHeightTerrainListener;
 
 class deHeightTerrain;
 
 
-
 /**
- * \brief Render height terrain.
+ * Render height terrain.
  */
 class deoglRHeightTerrain : public deObject{
 private:
@@ -45,20 +46,24 @@ private:
 	
 	deoglRWorld *pParentWorld;
 	
-	decObjectList pSectors;
-	
 	int pSectorResolution;
 	float pSectorSize;
 	
-	unsigned int pUpdateTracker;
+	decObjectList pSectors;
+	bool pSectorsRequirePrepareForRender;
+	
+	decObjectOrderedSet pListeners;
+	int pListenerIndex;
+	
+	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create render height terrain. */
+	/** Create render height terrain. */
 	deoglRHeightTerrain( deoglRenderThread &renderThread, const deHeightTerrain &heightTerrain );
 	
-	/** \brief Clean up render height terrain. */
+	/** Clean up render height terrain. */
 	virtual ~deoglRHeightTerrain();
 	/*@}*/
 	
@@ -66,44 +71,57 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Render thread. */
+	/** Render thread. */
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
-	/** \brief Parent world. */
+	/** Parent world. */
 	inline deoglRWorld *GetParentWorld() const{ return pParentWorld; }
 	
-	/** \brief Set parent world. */
+	/** Set parent world. */
 	void SetParentWorld( deoglRWorld *parentWorld );
 	
-	/** \brief Height image size. */
+	/** Height image size. */
 	inline int GetSectorResolution() const{ return pSectorResolution; }
 	
-	/** \brief Sector dimension. */
+	/** Sector dimension. */
 	inline float GetSectorSize() const{ return pSectorSize; }
 	
+	/** Prepare for render. */
+	void PrepareForRender();
 	
 	
-	/** \brief Number of sectors. */
+	
+	/** Number of sectors. */
 	int GetSectorCount() const;
 	
-	/** \brief Sector at index. */
+	/** Sector at index. */
 	deoglRHTSector &GetSectorAt( int index ) const;
 	
-	/** \brief Add sector. */
+	/** Add sector. */
 	void AddSector( deoglRHTSector *htsector );
 	
-	/** \brief Remove all sectors. */
+	/** Remove all sectors. */
 	void RemoveAllSectors();
 	
+	/** Sector requires prepare for render. */
+	void SectorRequirePrepareForRender();
+	/*@}*/
 	
 	
-	/** \brief Update tracker value. */
-	inline unsigned int GetUpdateTracker() const{ return pUpdateTracker; }
 	
+	/** \name Listeners */
+	/*@{*/
+	/** Add a listener. */
+	void AddListener( deoglHeightTerrainListener *listener );
 	
+	/** Remove listener if existing. */
+	void RemoveListener( deoglHeightTerrainListener *listener );
 	
-	/** \brief Update VBOs. */
-	void UpdateVBOs();
+	/** Notify all that this height terrain has been destroyed. */
+	void NotifyHeightTerrainDestroyed();
+	
+	/** Notify all sectors changed. */
+	void NotifySectorsChanged();
 	/*@}*/
 };
 

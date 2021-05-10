@@ -280,7 +280,7 @@ pAddToRenderTask( NULL )
 		pOccMapFrustumParamBlock->MapToStd140();
 		pOccMapFrustumParamBlock->SetBindingPoint( deoglSkinShader::eubInstanceParameters );
 		
-		pRenderTask = new deoglRenderTask;
+		pRenderTask = new deoglRenderTask( renderThread );
 		pAddToRenderTask = new deoglAddToRenderTask( renderThread, *pRenderTask );
 		
 		// create frustum planes VBO and VAO. the frustum planes mesh is actually a reduced frustum composing
@@ -749,7 +749,7 @@ void deoglRenderOcclusion::RenderOcclusionMap( deoglRenderPlan &plan ){
 	DEBUG_PRINT_TIMER( "Build Render Task" );
 	
 	DEBUG_PRINT_TIMER2( "Time until before render occmap" );
-	pRenderTask->PrepareForRender( renderThread );
+	pRenderTask->PrepareForRender();
 	rengeom.RenderTask( *pRenderTask );
 	DEBUG_PRINT_TIMER( "Render Render Task" );
 	DEBUG_PRINT_TIMER2( "Time until after render occmap" );
@@ -1241,7 +1241,7 @@ deoglCubeMap *cubemap, const decDVector &position, float imageDistance, float vi
 			
 			pAddToRenderTask->AddOcclusionMeshes( collideList );
 			
-			pRenderTask->PrepareForRender( renderThread );
+			pRenderTask->PrepareForRender();
 			rengeom.RenderTask( *pRenderTask );
 			
 		}else{
@@ -1275,7 +1275,7 @@ deoglCubeMap *cubemap, const decDVector &position, float imageDistance, float vi
 				pAddToRenderTask->SetFilterCubeFace( cmf );
 				pAddToRenderTask->AddOcclusionMeshes( collideList );
 				
-				pRenderTask->PrepareForRender( renderThread );
+				pRenderTask->PrepareForRender();
 				rengeom.RenderTask( *pRenderTask );
 			}
 		}

@@ -1469,7 +1469,7 @@ int transpShadowMapSize, bool withTransparent, bool copyDepth, bool debugSolid )
 		DebugTimer3Sample( plan, *pDebugInfoTransparentShadowTask, true );
 	}
 	
-	renderTask.PrepareForRender( renderThread );
+	renderTask.PrepareForRender();
 	rengeom.RenderTask( renderTask );
 	
 	renderTask.SetForceDoubleSided( false );
@@ -1515,7 +1515,7 @@ int transpShadowMapSize, bool withTransparent, bool copyDepth, bool debugSolid )
 			DebugTimer3Sample( plan, *pDebugInfoTransparentShadowTranspTask, true );
 		}
 		
-		renderTask.PrepareForRender( renderThread );
+		renderTask.PrepareForRender();
 		rengeom.RenderTask( renderTask );
 		
 		if( debugSolid ){
@@ -1604,7 +1604,7 @@ const deoglCollideList *clist1, const deoglCollideList *clist2, int ambientMapSi
 		addToRenderTask.AddOcclusionMeshes( *clist2 );
 	}
 	
-	renderTask.PrepareForRender( renderThread );
+	renderTask.PrepareForRender();
 	rengeom.RenderTask( renderTask );
 	
 	// cleanup

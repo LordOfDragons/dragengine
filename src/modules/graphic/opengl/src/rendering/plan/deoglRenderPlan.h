@@ -726,6 +726,7 @@ private:
 	void pBuildLightProbes();
 	
 	void pUpdateHTView();
+	void pUpdateHTViewRTSInstances();
 	
 	void pCheckOutsideVisibility();
 	

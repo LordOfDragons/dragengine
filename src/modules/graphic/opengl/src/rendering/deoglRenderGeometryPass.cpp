@@ -184,7 +184,7 @@ DBG_ENTER("RenderDecals")
 	
 	addToRenderTask.AddDecals( collideList );
 	
-	renderTask.PrepareForRender( renderThread );
+	renderTask.PrepareForRender();
 	rengeom.RenderTask( renderTask );
 	
 	// cleanup
@@ -320,7 +320,7 @@ DBG_ENTER_PARAM("RenderSolidGeometryPass", "%p", mask)
 		addToRenderTask.SetSkinShaderType( deoglSkinTexture::estHeightMapGeometry );
 		addToRenderTask.AddHeightTerrains( collideList, true );
 		OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
-		renderTask.PrepareForRender( renderThread );
+		renderTask.PrepareForRender();
 		if( config.GetDebugSnapshot() == edbgsnapDepthPassRenTask ){
 			renderThread.GetLogger().LogInfo( "RenderWorld.pRenderGeometryPass: render task height terrain pass 1" );
 			renderTask.DebugPrint( renderThread.GetLogger() );
@@ -332,7 +332,7 @@ DBG_ENTER_PARAM("RenderSolidGeometryPass", "%p", mask)
 		addToRenderTask.AddHeightTerrains( collideList, false );
 		OGL_CHECK( renderThread, glEnable( GL_BLEND ) );
 		OGL_CHECK( renderThread, glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA ) );
-		renderTask.PrepareForRender( renderThread );
+		renderTask.PrepareForRender();
 		if( config.GetDebugSnapshot() == edbgsnapDepthPassRenTask ){
 			renderThread.GetLogger().LogInfo( "RenderWorld.pRenderGeometryPass: render task height terrain pass 2" );
 			renderTask.DebugPrint( renderThread.GetLogger() );
@@ -374,7 +374,7 @@ DBG_ENTER_PARAM("RenderSolidGeometryPass", "%p", mask)
 		addToRenderTask.AddParticles( collideList );
 	}
 	
-	renderTask.PrepareForRender( renderThread );
+	renderTask.PrepareForRender();
 	
 	if( config.GetDebugSnapshot() == edbgsnapDepthPassRenTask ){
 		renderThread.GetLogger().LogInfo( "RenderWorld.pRenderGeometryPass: render task" );
@@ -402,7 +402,7 @@ DBG_ENTER_PARAM("RenderSolidGeometryPass", "%p", mask)
 	addToRenderTask.SetSkinShaderType( deoglSkinTexture::estOutlineGeometry );
 	addToRenderTask.AddComponents( collideList );
 	
-	renderTask.PrepareForRender( renderThread );
+	renderTask.PrepareForRender();
 	DebugTimer1Sample( plan, *renworld.GetDebugInfo().infoSolidGeometryTask, true );
 	
 	if( renderTask.GetShaderCount() > 0 ){

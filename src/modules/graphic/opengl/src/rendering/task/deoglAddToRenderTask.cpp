@@ -81,6 +81,7 @@
 #include "../../terrain/heightmap/deoglHTSCluster.h"
 #include "../../terrain/heightmap/deoglHTSTexture.h"
 #include "../../terrain/heightmap/deoglHTViewSector.h"
+#include "../../terrain/heightmap/deoglHTViewSectorCluster.h"
 #include "../../terrain/heightmap/deoglRHTSector.h"
 #include "../../texture/cubemap/deoglCubeMap.h"
 #include "../../texture/deoglTextureStageManager.h"
@@ -546,15 +547,16 @@ void deoglAddToRenderTask::AddPropFields( const deoglCollideList &clist, bool im
 
 
 
-void deoglAddToRenderTask::AddHeightTerrainSectorClusters( const deoglCollideListHTSector &clhtsector, int texture ){
+void deoglAddToRenderTask::AddHeightTerrainSectorClusters(
+const deoglCollideListHTSector &clhtsector, int texture ){
 	const deoglHTViewSector &htvsector = *clhtsector.GetSector();
 	const deoglRHTSector &sector = htvsector.GetSector();
 	if( ! sector.GetValid() || ! sector.GetValidTextures() ){
 		return;
 	}
 	
-	deoglHTSTexture &httexture = sector.GetTextureAt( texture );
-	deoglSkinTexture * const skinTexture = httexture.GetUseSkinTexture();
+	const deoglHTSTexture &httexture = sector.GetTextureAt( texture );
+	const deoglSkinTexture * const skinTexture = httexture.GetUseSkinTexture();
 	if( ! skinTexture || pFilterReject( skinTexture ) ){
 		return;
 	}
@@ -562,20 +564,12 @@ void deoglAddToRenderTask::AddHeightTerrainSectorClusters( const deoglCollideLis
 	// retrieve the shader and texture units configuration to use
 	const deoglSkinShader * const skinShader = skinTexture->GetShaderFor( pSkinShaderType );
 	const deoglShaderProgram *shader = NULL;
-	deoglSPBlockUBO *spbInstance = NULL;
 	
 	if( pEnforceShader ){
 		shader = pEnforceShader->GetShader();
 		
-	}else{
-		if( skinShader ){
-			shader = skinShader->GetShader();
-			
-			if( shader ){
-				// tuc is specific to the individual clusters
-				spbInstance = httexture.GetParamBlockFor( pSkinShaderType );
-			}
-		}
+	}else if( skinShader ){
+		shader = skinShader->GetShader();
 	}
 	
 	if( ! shader ){
@@ -585,8 +579,8 @@ void deoglAddToRenderTask::AddHeightTerrainSectorClusters( const deoglCollideLis
 	// obtain render task. this is the same for all clusters in the type
 	deoglRenderTaskShader &rtshader = *pRenderTask.AddShader( shader->GetRTSShader() );
 	
-	// retrieve the tuc
-	deoglTexUnitsConfig *tuc = httexture.GetTUCForShaderType( pSkinShaderType );
+	// retrieve tuc
+	const deoglTexUnitsConfig *tuc = httexture.GetTUCForShaderType( pSkinShaderType );
 	if( ! tuc ){
 		tuc = pRenderThread.GetShader().GetTexUnitsConfigList().GetEmptyNoUsage();
 	}
@@ -594,59 +588,25 @@ void deoglAddToRenderTask::AddHeightTerrainSectorClusters( const deoglCollideLis
 	deoglRenderTaskTexture &rttexture = *rtshader.AddTexture( pRenderTask, tuc->GetRTSTexture() );
 	
 	// the rest is specific for each cluster
-	sHTVSCluster * const htvsclusters = htvsector.GetClusters();
-	deoglHTSCluster * const htsclusters = sector.GetClusters();
+	const deoglHTSCluster * const htsclusters = sector.GetClusters();
 	const int clusterCount = clhtsector.GetClusterCount();
-	int i;
+	int i, j;
 	
 	for( i=0; i<clusterCount; i++ ){
 		const deoglCollideListHTSCluster &clhtscluster = clhtsector.GetClusterAt( i );
-		deoglHTSCluster &htscluster = htsclusters[ clhtscluster.GetIndex() ];
-		sHTVSCluster &htvscluster = htvsclusters[ clhtscluster.GetIndex() ];
+		const deoglHTViewSectorCluster &htvscluster = htvsector.GetClusterAt( clhtscluster.GetIndex() );
+		if( htvscluster.GetLodLevel() < 0 ){
+			continue;
+		}
 		
-		if( htvscluster.lodLevel >= 0 ){
-			const deoglHTSClusterLOD &clod = htscluster.GetLODAt( htvscluster.lodLevel );
-			const int vboOffsetFaces = htscluster.GetOffsetVBODataFaces();
-			
-			/*
-			// for RTSI usage call
-			htscluster.UpdateRTSInstances();
-			
-			// then 5 instance are usable one for the cluster and 4 for the borders.
-			// these have to be updated below (no pre-update yet)
-			*/
-			
-			deoglRenderTaskVAO &rtvao = *rttexture.AddVAO( pRenderTask, htscluster.GetVAO()->GetRTSVAO() );
-			
-			// add an instance for this cluster
-			
-			// NOTE using RTSInstance for the time beeing has to be updated by hand
-			
-			htscluster.UpdateRTSInstances();
-			
-			deoglRenderTaskSharedInstance &instance = *htscluster.GetRTSInstanceAt( 0 );
-			instance.SetParameterBlock( spbInstance );
-			instance.SetFirstPoint( 0 );
-			instance.SetFirstIndex( vboOffsetFaces + clod.firstBasePoint );
-			instance.SetIndexCount( clod.basePointCount );
-			
-			rtvao.AddInstance( pRenderTask, &instance );
-			
-			// add borders
-			if( htvscluster.lodLevel > 0 ){
-				int j;
-				
-				for( j=0; j<4; j++ ){
-					const int border = htvscluster.borders[ j ];
-					
-					deoglRenderTaskSharedInstance &instance2 = *htscluster.GetRTSInstanceAt( 1 + j );
-					instance2.SetParameterBlock( spbInstance );
-					instance2.SetFirstPoint( 0 );
-					instance2.SetFirstIndex( vboOffsetFaces + clod.firstBorderPoint[ border ] );
-					instance2.SetIndexCount( clod.borderPointCount[ border ] );
-					
-					rtvao.AddInstance( pRenderTask, &instance2 );
-				}
+		deoglRenderTaskVAO &rtvao = *rttexture.AddVAO( pRenderTask,
+			htsclusters[ clhtscluster.GetIndex() ].GetVAO()->GetRTSVAO() );
+		
+		rtvao.AddInstance( pRenderTask, htvscluster.GetRTSInstanceAt( texture, 0 ) );
+		
+		if( htvscluster.GetLodLevel() > 0 ){
+			for( j=1; j<5; j++ ){
+				rtvao.AddInstance( pRenderTask, htvscluster.GetRTSInstanceAt( texture, j ) );
 			}
 		}
 	}

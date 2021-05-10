@@ -54,7 +54,8 @@ private:
 	deoglHTSTexture **pTextures;
 	int pTextureCount;
 	bool pValidTextures;
-	bool pDirtyTextures;
+	bool pDirtyMaskTextures;
+	bool pTexturesRequirePrepareForRender;
 	
 	deoglTexture *pMasks[ OGLHTS_MAX_MASK_TEXTURES ];
 	deoglPixelBuffer *pPixBufMasks[ OGLHTS_MAX_MASK_TEXTURES ];
@@ -75,6 +76,8 @@ private:
 	
 	bool pValid;
 	
+	
+	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
@@ -91,9 +94,6 @@ public:
 	/*@{*/
 	/** Height terrain. */
 	inline deoglRHeightTerrain &GetHeightTerrain() const{ return pHeightTerrain; }
-	
-	/** Update vbo if required. */
-	void UpdateVBO();
 	
 	/** Sector coordinates. */
 	inline const decPoint &GetCoordinates() const{ return pCoordinates; }
@@ -112,6 +112,9 @@ public:
 	decDVector CalcWorldPosition() const;
 	decDVector CalcWorldPosition( const decDVector &referencePosition ) const;
 	
+	/** Prepare for render. */
+	void PrepareForRender();
+	
 	
 	
 	/** Number of textures. */
@@ -128,6 +131,9 @@ public:
 	
 	/** Textures are valid. */
 	inline bool GetValidTextures() const{ return pValidTextures; }
+	
+	/** Texture requires prepare for render. */
+	void TextureRequirePrepareForRender();
 	
 	
 	
@@ -147,10 +153,13 @@ public:
 	
 	/** Cluster at location. */
 	deoglHTSCluster &GetClusterAt( int x, int z ) const;
+	deoglHTSCluster &GetClusterAt( const decPoint &coordinate ) const;
 	
 	/** List of clusters. */
 	inline deoglHTSCluster *GetClusters() const{ return pClusters; }
 	/*@}*/
+	
+	
 	
 private:
 	void pCleanUp();
@@ -167,10 +176,7 @@ private:
 	void pSyncMaskTextures( const deHeightTerrainSector &sector );
 	void pSyncHeightMap( const deHeightTerrainSector &sector, const decPoint &from, const decPoint &to );
 	
-	void pUpdateTextures();
 	void pUpdateMaskTextures();
-	void pCalculateUVs();
-	void pCalculateUVsPlanar( int textureIndex );
 	void pCreateVBODataPoints1();
 	void pCreateVBODataFaces();
 	void pUpdateHeightMap();

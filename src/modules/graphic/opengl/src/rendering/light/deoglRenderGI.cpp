@@ -261,7 +261,7 @@ pDebugInfoGIRenderLightGIRay( NULL )
 		
 		
 		// render task for GI material
-		pRenderTask = new deoglRenderTask;
+		pRenderTask = new deoglRenderTask( renderThread );
 		pAddToRenderTask = new deoglAddToRenderTaskGIMaterial( renderThread, *pRenderTask );
 		
 		

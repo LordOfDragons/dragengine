@@ -33,9 +33,8 @@ class deoglSkinShader;
 class deoglTexUnitsConfig;
 
 
-
 /**
- * @brief Height Terrain Sector Texture.
+ * Height Terrain Sector Texture.
  */
 class deoglHTSTexture{
 private:
@@ -48,9 +47,7 @@ private:
 	
 	deoglSkinTexture *pUseSkinTexture;
 	
-	deoglSPBlockUBO *pParamBlockDepth;
-	deoglSPBlockUBO *pParamBlockGeometry;
-	deoglSPBlockUBO *pParamBlockEnvMap;
+	deoglSPBlockUBO *pParamBlock;
 	
 	deoglTexUnitsConfig *pTUCDepth;
 	deoglTexUnitsConfig *pTUCGeometry;
@@ -58,124 +55,121 @@ private:
 	deoglTexUnitsConfig *pTUCEnvMap;
 	deoglTexUnitsConfig *pTUCLuminance;
 	
-	bool pValidParamBlockDepth;
-	bool pValidParamBlockGeometry;
-	bool pValidParamBlockEnvMap;
-	bool pDirtyParamBlockDepth;
-	bool pDirtyParamBlockGeometry;
-	bool pDirtyParamBlockEnvMap;
+	bool pValidParamBlock;
+	bool pDirtyParamBlock;
 	
-	bool pDirtyTUCDepth;
-	bool pDirtyTUCGeometry;
-	bool pDirtyTUCShadow;
-	bool pDirtyTUCEnvMap;
-	bool pDirtyTUCLuminance;
+	bool pDirtyTUCs;
+	
+	
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Creates a new height terrain sector texture. */
+	/** Create height terrain sector texture. */
 	deoglHTSTexture( deoglRHTSector &sector, int index );
-	/** Cleans up the height terrain sector texture. */
+	
+	/** Clean up height terrain sector texture. */
 	~deoglHTSTexture();
 	/*@}*/
 	
-	/** @name Management */
+	
+	
+	/** \name Management */
 	/*@{*/
-	/** \brief Height terrain sector. */
+	/** Height terrain sector. */
 	inline deoglRHTSector &GetHTSector() const{ return pSector; }
 	
-	/** Retrieves the texture index. */
+	/** Texture index. */
 	inline int GetIndex() const{ return pIndex; }
 	
-	/** Retrieves the texture matrix. */
+	/** Texture matrix. */
 	inline const decTexMatrix &GetMatrix() const{ return pMatrix; }
-	/** Sets the texture matrix. */
+	
+	/** Set texture matrix. */
 	void SetMatrix( const decTexMatrix &matrix );
 	
-	/** Retrieves the opengl skin or NULL if not set. */
+	/** Skin or NULL. */
 	inline deoglRSkin *GetSkin() const{ return pSkin; }
-	/** Sets the skin or NULL if not set. */
+	
+	/** Set skin or NULL. */
 	void SetSkin( deoglRSkin *skin );
 	
-	/** Retrieves the skin texture to use or NULL if not valid. */
+	/** Skin texture to use or NULL. */
 	inline deoglSkinTexture *GetUseSkinTexture() const{ return pUseSkinTexture; }
 	
-	/** Retrieves the shader parameter block for a shader type. */
-	deoglSPBlockUBO *GetParamBlockFor( deoglSkinTexture::eShaderTypes shaderType );
+	/** Shader parameter block. */
+	inline deoglSPBlockUBO *GetParamBlock() const{ return pParamBlock; }
+	
+	/** Invalidate parameter blocks. */
+	void InvalidateParamBlocks();
+	
+	/** Mark parameter blocks dirty. */
+	void MarkParamBlocksDirty();
+	
+	/** Mark texture units configurations dirty. */
+	void MarkTUCsDirty();
+	
+	/** Texture units configuration for shader type. */
+	deoglTexUnitsConfig *GetTUCForShaderType( deoglSkinTexture::eShaderTypes shaderType ) const;
+	
 	/**
-	 * Retrieves the depth shader parameter block or NULL if there is no valid skin texture.
-	 * This texture units configuration works for these shader types:
+	 * Texture units configuration for depth type shaders or NULL if empty.
+	 * Works for these shader types:
 	 * - estComponentDepth
 	 * - estComponentDepthClipPlane
 	 * - estComponentCounter
 	 * - estComponentCounterClipPlane
-	 * - estComponentShadowProjection
-	 * - estComponentShadowOrthogonal
-	 * - estComponentShadowOrthogonalCascaded
-	 * - estComponentShadowDistance
 	 */
-	deoglSPBlockUBO *GetParamBlockDepth();
-	/**
-	 * Retrieves the geometry shader parameter block or NULL if there is no valid skin texture.
-	 * This texture units configuration works for the shader type estComponentGeometry.
-	 */
-	deoglSPBlockUBO *GetParamBlockGeometry();
-	/**
-	 * Retrieves the environment map shader parameter block or NULL if there is no valid skin texture.
-	 * This texture units configuration works for the shader type estEnvMap.
-	 */
-	deoglSPBlockUBO *GetParamBlockEnvMap();
-	/** Invalidate parameter blocks. */
-	void InvalidateParamBlocks();
-	/** Mark parameter blocks dirty. */
-	void MarkParamBlocksDirty();
-	/** Marks texture units configurations dirty. */
-	void MarkTUCsDirty();
+	inline deoglTexUnitsConfig *GetTUCDepth() const{ return pTUCDepth; }
 	
-	/** Retrieves the texture units configuration for the given shader type. */
-	deoglTexUnitsConfig *GetTUCForShaderType( deoglSkinTexture::eShaderTypes shaderType );
 	/**
-	 * Retrieves the texture units configuration for depth type shaders or NULL if empty.
-	 * This texture units configuration works for the shader types estComponentDepth, estComponentDepthClipPlane,
-	 * estComponentCounter and estComponentCounterClipPlane.
+	 * Texture units configuration for geometry type shaders or NULL if empty.
+	 * Works for these shader types:
+	 * - estComponentGeometry.
 	 */
-	deoglTexUnitsConfig *GetTUCDepth();
+	inline deoglTexUnitsConfig *GetTUCGeometry() const{ return pTUCGeometry; }
+	
 	/**
-	 * Retrieves the texture units configuration for geometry type shaders or NULL if empty.
-	 * This texture units configuration works for the shader type estComponentGeometry.
-	 */
-	deoglTexUnitsConfig *GetTUCGeometry();
-	/**
-	 * Retrieves the texture units configuration for shadow type shaders or NULL if empty.
-	 * This texture units configuration works for these shader types:
+	 * Texture units configuration for shadow type shaders or NULL if empty.
+	 * Works for these shader types:
 	 * - estComponentShadowProjection
 	 * - estComponentShadowOrthogonal
 	 * - estComponentShadowOrthogonalCascaded
 	 * - estComponentShadowDistance
 	 */
-	deoglTexUnitsConfig *GetTUCShadow();
+	inline deoglTexUnitsConfig *GetTUCShadow() const{ return pTUCShadow; }
+	
 	/**
-	 * Retrieves the texture units configuration for the environment map shader or NULL if empty.
-	 * This texture units configuration works for the shader type estEnvMap.
+	 * Texture units configuration for the environment map shader or NULL if empty.
+	 * Works for these shader types:
+	 * - estEnvMap.
 	 */
-	deoglTexUnitsConfig *GetTUCEnvMap();
+	inline deoglTexUnitsConfig *GetTUCEnvMap() const{ return pTUCEnvMap; }
 	
 	/**
 	 * Texture units configuration for luminance type shaders or NULL if empty.
-	 * Works for the shader type estHeightMapLuminance.
+	 * Works for these shader types:
+	 * - estHeightMapLuminance.
 	 */
-	deoglTexUnitsConfig *GetTUCLuminance();
+	inline deoglTexUnitsConfig *GetTUCLuminance() const{ return pTUCLuminance; }
 	
 	/** Obtain texture units configuration for a shader type. Bare call not to be used directly. */
 	deoglTexUnitsConfig *BareGetTUCFor( deoglSkinTexture::eShaderTypes shaderType ) const;
 	
 	/** Update instance parameter shader parameter block. */
 	void UpdateInstanceParamBlock( deoglSPBlockUBO &paramBlock, deoglSkinShader &skinShader );
+	
+	/** Prepare for render. */
+	void PrepareForRender();
 	/*@}*/
+	
+	
 	
 private:
 	void pCleanUp();
+	
+	void pPrepareParamBlock();
+	void pPrepareTUCs();
 };
 
 #endif
