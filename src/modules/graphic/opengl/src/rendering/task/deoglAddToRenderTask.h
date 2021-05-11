@@ -37,6 +37,7 @@ class deoglHTViewSector;
 class deoglParticleEmitterInstanceList;
 class deoglRBillboard;
 class deoglRComponent;
+class deoglRComponentLOD;
 class deoglRDecal;
 class deoglRParticleEmitterInstance;
 class deoglRParticleEmitterInstanceType;
@@ -46,6 +47,7 @@ class deoglRenderTaskStep;
 class deoglRenderTaskTexture;
 class deoglRenderTaskVAO;
 class deoglRenderTaskSharedShader;
+class deoglRenderTaskSharedVAO;
 class deoglRenderThread;
 class deoglSPBlockUBO;
 class deoglShaderProgram;
@@ -79,9 +81,6 @@ private:
 	
 	bool pFilterHoles;
 	bool pWithHoles;
-	
-	bool pFilterDoubleSided;
-	bool pDoubleSided;
 	
 	bool pFilterDecal;
 	bool pDecal;
@@ -174,20 +173,6 @@ public:
 	
 	
 	
-	/** Filtering for double sided is enabled. */
-	inline bool GetFilterDoubleSided() const{ return pFilterDoubleSided; }
-	
-	/** Set if filtering for double sided is enabled. */
-	void SetFilterDoubleSided( bool filterDoubleSided );
-	
-	/** Doubled sided textures are selected if double sided filtering is enabled. */
-	inline bool GetDoubleSided() const{ return pDoubleSided; }
-	
-	/** Set if doubled sided textures are selected if double sided filtering is enabled. */
-	void SetDoubleSided( bool doubleSided );
-	
-	
-	
 	/** Filtering for decal is enabled. */
 	inline bool GetFilterDecal() const{ return pFilterDecal; }
 	
@@ -232,7 +217,7 @@ public:
 	
 	
 	/** Add component. */
-	void AddComponent( const deoglRComponent &component, int lodLevel );
+	void AddComponent( const deoglRComponentLOD &lod );
 	
 	/** Add component. */
 	void AddComponent( const deoglCollideListComponent &clcomponent );
@@ -244,7 +229,9 @@ public:
 	void AddComponentsHighestLod( const deoglCollideList &clist );
 	
 	/** Add continuous run of all faces of a texture of a component. */
-	void AddComponentFaces( const deoglRComponent &component, int texture, int lodLevel );
+	void AddComponentFaces( const deoglRComponentLOD &lod, int texture );
+	
+	void AddComponentFaces( const deoglRComponentLOD &lod, int texture, deoglRenderTaskSharedVAO *rtvao );
 	
 	
 	
@@ -319,8 +306,8 @@ public:
 	
 	
 private:
-	bool pFilterReject( const deoglSkinTexture *skinTexture ) const;
-	bool pFilterRejectNoSolid( const deoglSkinTexture *skinTexture ) const;
+	bool pFilterReject( const deoglSkinTexture &skinTexture ) const;
+	bool pFilterRejectNoSolid( const deoglSkinTexture &skinTexture ) const;
 	
 	deoglRenderTaskVAO *pGetTaskVAO( deoglSkinTexture::eShaderTypes shaderType,
 		const deoglSkinTexture *skinTexture, deoglTexUnitsConfig *tuc, deoglVAO *vao ) const;

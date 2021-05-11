@@ -185,6 +185,9 @@ public:
 	/** VAO. */
 	inline deoglVAO *GetVAO() const{ return pVAO; }
 	
+	/** VAO to use. Can be dynamic VAO or static model VAO. */
+	deoglVAO *GetUseVAO() const;
+	
 	/** Invalidate VAO. */
 	void InvalidateVAO();
 	

@@ -168,6 +168,10 @@ int deoglRComponentLOD::GetIndexOffset() const{
 	}
 }
 
+deoglVAO *deoglRComponentLOD::GetUseVAO() const{
+	return pVAO ? pVAO : GetModelLODRef().GetVBOBlock()->GetVBO()->GetVAO();
+}
+
 void deoglRComponentLOD::InvalidateVAO(){
 	pDirtyVAO = true;
 	pVBOBlock = NULL;

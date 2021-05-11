@@ -440,6 +440,11 @@ void deoglRenderOcclusion::RenderTestsCamera( deoglRenderPlan &plan ){
 	// update render parameter block
 	DEBUG_PRINT_TIMER( "Entering Render Occlusion Map" );
 	decMatrix matrixCamera( plan.GetRefPosCameraMatrix() );
+	
+	if( plan.GetFlipCulling() ){
+		matrixCamera = plan.GetRefPosCameraMatrixNonMirrored();
+	}
+	
 	decMatrix matrixProjection( plan.GetFrustumMatrix() ); // occlusion uses linear depth: always non-infinite projection matrix 
 	
 	pRenderParamBlock->MapBuffer();
@@ -478,6 +483,12 @@ void deoglRenderOcclusion::RenderTestsCamera( deoglRenderPlan &plan ){
 	matrixProjection.a33 = zscale * 2.0f;
 	matrixProjection.a34 = zoffset * 2.0f - 1.0f;
 	matrixCamera = matrixCamera.GetRotationMatrix() * matrixProjection;
+	
+// 	if( plan.GetFlipCulling() ){
+// 		matrixCamera = matrixCamera.GetRotationMatrix()
+// 			* decMatrix::CreateScale( 1.0f, 1.0f, -1.0f ) * matrixProjection;
+// 	}
+	
 	plan.SetOcclusionTestMatrix( matrixCamera );
 	
 	RenderOcclusionTests( *plan.GetOcclusionTest(), *plan.GetOcclusionMap(),

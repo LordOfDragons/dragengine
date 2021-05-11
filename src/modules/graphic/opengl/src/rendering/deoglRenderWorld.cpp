@@ -41,6 +41,7 @@
 #include "task/deoglAddToRenderTaskParticles.h"
 #include "task/deoglRenderTask.h"
 #include "task/deoglRenderTaskParticles.h"
+#include "../component/deoglRComponent.h"
 #include "../debug/deoglDebugSnapshot.h"
 #include "../debug/deoglDebugInformation.h"
 #include "../devmode/deoglDeveloperMode.h"
@@ -735,7 +736,8 @@ DBG_EXIT("RenderMaskedPass(early)")
 		pAddToRenderTask->SetSkinShaderType( deoglSkinTexture::estComponentDepth );
 		pAddToRenderTask->SetNoRendered( false );
 		
-		pAddToRenderTask->AddComponentFaces( *maskedPlan->GetComponent(), maskedPlan->GetComponentTexture(), 0 );
+		pAddToRenderTask->AddComponentFaces( maskedPlan->GetComponent()->GetLODAt( 0 ),
+			maskedPlan->GetComponentTexture() );
 		
 		pRenderTask->PrepareForRender();
 		rengeom.RenderTask( *pRenderTask );

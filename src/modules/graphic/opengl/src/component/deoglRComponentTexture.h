@@ -64,6 +64,7 @@ private:
 	deoglRDynamicSkin *pUseDynamicSkin;
 	bool pUseDoubleSided;
 	bool pUseDecal;
+	bool pIsRendered;
 	
 	deoglSharedSPBElement *pSharedSPBElement;
 	decObjectList pSharedSPBRTIGroup;
@@ -137,9 +138,6 @@ public:
 	 */
 	void SetSkinState( deoglSkinState *skinState );
 	
-	/** Check if skin has dynamic channels. */
-	void CheckSkinDynamicChannels();
-	
 	/**
 	 * Update skin state depending on skin and dynamic skin.
 	 * \warning Only call from main thread during synchronization.
@@ -166,6 +164,9 @@ public:
 	
 	/** Texture has to be rendered as decal. */
 	inline bool GetUseDecal() const{ return pUseDecal; }
+	
+	/** Render color content is rendered instead of texture mapped. */
+	inline bool GetIsRendered() const{ return pIsRendered; }
 	
 	/** Updates the actual texture parameters to use. */
 	void UpdateUseSkin();
@@ -314,6 +315,11 @@ public:
 	/** Prepare skin state renderables if dirty. */
 	void PrepareSkinStateRenderables();
 	/*@}*/
+	
+	
+	
+private:
+	void pUpdateIsRendered();
 };
 
 #endif

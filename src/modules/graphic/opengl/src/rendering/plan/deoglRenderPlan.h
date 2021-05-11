@@ -82,9 +82,11 @@ private:
 	decDVector pCameraPosition;
 	decDMatrix pCameraMatrix;
 	decDMatrix pCameraInverseMatrix;
+	decDMatrix pCameraMatrixNonMirrored;
 	decDMatrix pProjectionMatrix;
 	decDMatrix pFrustumMatrix;
 	decDMatrix pRefPosCameraMatrix;
+	decDMatrix pRefPosCameraMatrixNonMirrored;
 	float pCameraFov;
 	float pCameraFovRatio;
 	float pCameraImageDistance;
@@ -289,8 +291,14 @@ public:
 	/** Inverse camera matrix. */
 	inline const decDMatrix &GetInverseCameraMatrix() const{ return pCameraInverseMatrix; }
 	
+	/** Mirror free camera matrix. */
+	inline const decDMatrix &GetCameraMatrixNonMirrored() const{ return pCameraMatrixNonMirrored; }
+	
 	/** Set camera matrix including the inverse one. */
 	void SetCameraMatrix( const decDMatrix &matrix );
+	
+	/** Set mirror free camera matrix. */
+	void SetCameraMatrixNonMirrored( const decDMatrix &matrix );
 	
 	/** Projection matrix. */
 	inline const decDMatrix &GetProjectionMatrix() const{ return pProjectionMatrix; }
@@ -300,6 +308,9 @@ public:
 	
 	/** Reference position camera matrix. */
 	inline const decDMatrix &GetRefPosCameraMatrix() const{ return pRefPosCameraMatrix; }
+	
+	/** Reference position camera matrix mirror free. */
+	inline const decDMatrix &GetRefPosCameraMatrixNonMirrored() const{ return pRefPosCameraMatrixNonMirrored; }
 	
 	/** Camera position in world space. */
 	inline const decDVector &GetCameraPosition() const{ return pCameraPosition; }

@@ -161,13 +161,6 @@ void deoglAddToRenderTask::SetWithHoles( bool withHoles ){
 	pWithHoles = withHoles;
 }
 
-void deoglAddToRenderTask::SetFilterDoubleSided( bool filterDoubleSided ){
-	pFilterDoubleSided = filterDoubleSided;
-}
-void deoglAddToRenderTask::SetDoubleSided( bool doubleSided ){
-	pDoubleSided = doubleSided;
-}
-
 void deoglAddToRenderTask::SetFilterDecal( bool filterDecal ){
 	pFilterDecal = filterDecal;
 }
@@ -202,9 +195,6 @@ void deoglAddToRenderTask::Reset(){
 	pFilterHoles = false;
 	pWithHoles = false;
 	
-	pFilterDoubleSided = false;
-	pDoubleSided = false;
-	
 	pFilterDecal = false;
 	pDecal = false;
 	
@@ -222,7 +212,12 @@ static float debug1 = 0.0f;
 static int debug1b = 0;
 #endif
 
-void deoglAddToRenderTask::AddComponent( const deoglRComponent &component, int lodLevel ){
+void deoglAddToRenderTask::AddComponent( const deoglRComponentLOD &lod ){
+	const deoglRComponent &component = lod.GetComponent();
+	deoglVAO * const vao = lod.GetUseVAO();
+	if( ! vao ){
+		return;
+	}
 	if( ! component.GetParentWorld() || ! component.GetModel() ){
 		return;
 	}
@@ -235,6 +230,7 @@ void deoglAddToRenderTask::AddComponent( const deoglRComponent &component, int l
 	const deoglModelLOD &modelLOD = model.GetLODAt( lodLevel );
 	#endif
 	
+	deoglRenderTaskSharedVAO * const rtvao = vao->GetRTSVAO();
 	const int count = component.GetTextureCount();
 	int i;
 	
@@ -243,17 +239,17 @@ void deoglAddToRenderTask::AddComponent( const deoglRComponent &component, int l
 		const deoglModelTexture &texture = modelLOD.GetTextureAt( i );
 		if( texture.GetFaceCount() > 0 ){
 			decTimer timer;
-			AddComponentFaces( component, i, lodLevel );
+			AddComponentFaces( lod, i, rtvao );
 			debug1 += timer.GetElapsedTime(); debug1b++;
 		}
 		#else
-		AddComponentFaces( component, i, lodLevel );
+		AddComponentFaces( lod, i, rtvao );
 		#endif
 	}
 }
 
 void deoglAddToRenderTask::AddComponent( const deoglCollideListComponent &clcomponent ){
-	AddComponent( *clcomponent.GetComponent(), clcomponent.GetLODLevel() );
+	AddComponent( clcomponent.GetComponent()->GetLODAt( clcomponent.GetLODLevel() ) );
 }
 
 void deoglAddToRenderTask::AddComponents( const deoglCollideList &clist ){
@@ -280,31 +276,31 @@ void deoglAddToRenderTask::AddComponentsHighestLod( const deoglCollideList &clis
 	int i;
 	
 	for( i=0; i<count; i++ ){
-		deoglRComponent &component = *clist.GetComponentAt( i )->GetComponent();
-		AddComponent( component, component.GetLODCount() - 1 );
+		AddComponent( clist.GetComponentAt( i )->GetComponent()->GetLODAt( -1 ) );
 	}
 }
 
-void deoglAddToRenderTask::AddComponentFaces( const deoglRComponent &component, int texture, int lodLevel ){
-	if( ! component.GetModel() ){
-		return;
+void deoglAddToRenderTask::AddComponentFaces( const deoglRComponentLOD &lod, int texture ){
+	const deoglVAO * const vao = lod.GetUseVAO();
+	if( vao ){
+		AddComponentFaces( lod, texture, vao->GetRTSVAO() );
 	}
-	if( component.GetModel()->GetLODAt( lodLevel ).GetTextureAt( texture ).GetFaceCount() == 0 ){
+}
+
+void deoglAddToRenderTask::AddComponentFaces( const deoglRComponentLOD &lod, int texture,
+deoglRenderTaskSharedVAO *rtvao ){
+	const deoglRComponent &component = lod.GetComponent();
+	if( lod.GetModelLODRef().GetTextureAt( texture ).GetFaceCount() == 0 ){
 		return;
 	}
 	
 	const deoglRComponentTexture &componentTexture = component.GetTextureAt( texture );
+	if( pNoRendered && componentTexture.GetIsRendered() ){
+		return;
+	}
+	
 	const deoglSkinTexture * const skinTexture = componentTexture.GetUseSkinTexture();
-	if( ! skinTexture ){
-		return;
-	}
-	
-	if( pFilterReject( skinTexture ) ){
-		return;
-	}
-	
-	const bool doubleSided = componentTexture.GetUseDoubleSided();
-	if( pFilterDoubleSided && pDoubleSided != doubleSided ){
+	if( ! skinTexture || pFilterReject( *skinTexture ) ){
 		return;
 	}
 	
@@ -312,30 +308,15 @@ void deoglAddToRenderTask::AddComponentFaces( const deoglRComponent &component, 
 		return;
 	}
 	
-	// hack style test for a camera renderable
-	const deoglSkinChannel *skinChannel = skinTexture->GetChannelAt( deoglSkinChannel::ectColor );
-	const deoglSkinState * const useSkinState = componentTexture.GetUseSkinState();
+	// obtain render task vao and add faces
+	pGetTaskVAO( pSkinShaderType, skinTexture,
+		componentTexture.GetTUCForShaderType( pSkinShaderType ), rtvao )->
+			AddInstance( componentTexture.GetSharedSPBRTIGroup( lodLevel ).GetRTSInstance() )->
+			AddSubInstance( componentTexture.GetSharedSPBElement()->GetIndex(), component.GetSpecialFlags() );
 	
-	if( skinChannel && useSkinState ){
-		const deoglRDynamicSkin *dynamicSkin = component.GetDynamicSkin();
-		const int skinRenderable = skinChannel->GetRenderable();
-		
-		if( skinRenderable >= 0 && skinRenderable < useSkinState->GetRenderableCount() && dynamicSkin ){
-			const deoglSkinStateRenderable &skinStateRenderable = *useSkinState->GetRenderableAt( skinRenderable );
-			
-			if( skinStateRenderable.GetHostRenderable() != -1 ){
-				if( dynamicSkin->GetRenderableAt( skinStateRenderable.GetHostRenderable() )->GetRenderPlan() ){
-					return;
-				}
-			}
 		}
 	}
 	
-	// obtain render task vao and add faces
-	pGetTaskVAO( pSkinShaderType, skinTexture,
-		componentTexture.GetTUCForShaderType( pSkinShaderType ), component.GetVAO( lodLevel ) )->
-			AddInstance( componentTexture.GetSharedSPBRTIGroup( lodLevel ).GetRTSInstance() )->
-			AddSubInstance( componentTexture.GetSharedSPBElement()->GetIndex(), component.GetSpecialFlags() );
 }
 
 
@@ -358,11 +339,11 @@ void deoglAddToRenderTask::AddBillboard( const deoglRBillboard &billboard ){
 	}
 	
 	const deoglSkinTexture &texture = billboard.GetSkin()->GetTextureAt( 0 );
-	if( pFilterReject( &texture ) ){
+	if( pFilterReject( texture ) ){
 		return;
 	}
-	if( pFilterDoubleSided && ! pDoubleSided ){
-		return;
+	if( pNoRendered && texture.GetRendered() ){
+		return; // TODO move to billboard as texture flag
 	}
 	if( pFilterDecal && pDecal ){
 		return;
@@ -407,8 +388,11 @@ void deoglAddToRenderTask::AddDecal( const deoglRDecal &decal, int lodLevel ){
 	}
 	
 	const deoglSkinTexture * const skinTexture = decal.GetUseSkinTexture();
-	if( pFilterRejectNoSolid( skinTexture ) ){
+	if( ! skinTexture || pFilterRejectNoSolid( *skinTexture ) ){
 		return;
+	}
+	if( pNoRendered && skinTexture->GetRendered() ){
+		return; // TODO move to decal as texture flag;
 	}
 	
 	// NOTE this works only if decals to not overlap. if they do overlap the adding to the render task
@@ -452,17 +436,15 @@ const deoglRPropFieldType &propFieldType, bool imposters ){
 	}
 	
 	const deoglSkinTexture * const skinTexture = propFieldType.GetUseSkinTexture();
-	if( pFilterReject( skinTexture ) ){
+	if( ! skinTexture || pFilterReject( *skinTexture ) ){
 		return;
+	}
+	if( pNoRendered && skinTexture->GetRendered() ){
+		return; // TODO move to prop field as texture flag
 	}
 	
 	const deoglModelLOD &modelLOD = propFieldType.GetModel()->GetLODAt( 0 );
 	const deoglModelTexture &modelTex = modelLOD.GetTextureAt( 0 );
-	
-	const bool doubleSided = modelTex.GetDoubleSided();
-	if( pFilterDoubleSided && pDoubleSided != doubleSided ){
-		return;
-	}
 	
 	if( pFilterDecal && pDecal != modelTex.GetDecal() ){
 		return;
@@ -555,8 +537,11 @@ const deoglCollideListHTSector &clhtsector, int texture ){
 	
 	const deoglHTSTexture &httexture = sector.GetTextureAt( texture );
 	const deoglSkinTexture * const skinTexture = httexture.GetUseSkinTexture();
-	if( ! skinTexture || pFilterReject( skinTexture ) ){
+	if( ! skinTexture || pFilterReject( *skinTexture ) ){
 		return;
+	}
+	if( pNoRendered && skinTexture->GetRendered() ){
+		return; // TODO move to height terrain as texture flag
 	}
 	
 	// retrieve the shader and texture units configuration to use
@@ -843,17 +828,17 @@ deoglRParticleEmitterInstanceType &type ){
 // Private Functions
 //////////////////////
 
-bool deoglAddToRenderTask::pFilterReject( const deoglSkinTexture *skinTexture ) const{
+bool deoglAddToRenderTask::pFilterReject( const deoglSkinTexture &skinTexture ) const{
 	if( pOutline ){
-		if( ! skinTexture->GetHasOutline() ){
+		if( ! skinTexture.GetHasOutline() ){
 			return true;
 		}
-		if( pSolid != skinTexture->GetIsOutlineSolid() ){
+		if( pSolid != skinTexture.GetIsOutlineSolid() ){
 			return true;
 		}
 		
 	}else{
-		if( pSolid != skinTexture->GetSolid() ){
+		if( pSolid != skinTexture.GetSolid() ){
 			return true;
 		}
 	}
@@ -864,20 +849,14 @@ bool deoglAddToRenderTask::pFilterReject( const deoglSkinTexture *skinTexture ) 
 	return false;
 }
 
-bool deoglAddToRenderTask::pFilterRejectNoSolid( const deoglSkinTexture *skinTexture ) const{
-	if( ! skinTexture ){
+bool deoglAddToRenderTask::pFilterRejectNoSolid( const deoglSkinTexture &skinTexture ) const{
+	if( pFilterHoles && pWithHoles != skinTexture.GetHasHoles() ){
 		return true;
 	}
-	if( pFilterHoles && pWithHoles != skinTexture->GetHasHoles() ){
+	if( pNoShadowNone && skinTexture.GetShadowNone() ){
 		return true;
 	}
-	if( pNoRendered && skinTexture->GetRendered() ){
-		return true;
-	}
-	if( pNoShadowNone && skinTexture->GetShadowNone() ){
-		return true;
-	}
-	if( pNoNotReflected && ! skinTexture->GetReflected() ){
+	if( pNoNotReflected && ! skinTexture.GetReflected() ){
 		return true;
 	}
 	return false;

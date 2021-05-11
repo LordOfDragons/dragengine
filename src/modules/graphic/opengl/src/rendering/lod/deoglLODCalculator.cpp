@@ -136,14 +136,12 @@ const decDVector &view, float fovX, float fovY, int screenWidth, int screenHeigh
 	const float factorX = ( float )screenWidth * 0.5f / ( float )pMaxPixelError / tanf( fovX * 0.5f );
 	const float factorY = ( float )screenHeight * 0.5f / ( float )pMaxPixelError / tanf( fovY * 0.5f );
 	const float factor = ( factorX > factorY ) ? factorX : factorY;
-	int lodLevel;
 	int i, j;
 	
 	for( i=0; i<componentCount; i++ ){
 		deoglCollideListComponent &clistComponent = *collideList.GetComponentAt( i );
-		deoglRComponent &component = *clistComponent.GetComponent();
-		
-		lodLevel = 0;
+		const deoglRComponent &component = *clistComponent.GetComponent();
+		int lodLevel = 0;
 		
 		if( component.GetModel() ){
 			const deoglRModel &model = *component.GetModel();
@@ -210,12 +208,11 @@ int screenWidth, int screenHeight ){
 	const float factorX = ( float )screenWidth / boxWidth;
 	const float factorY = ( float )screenHeight / boxHeight;
 	const float factor = ( factorX > factorY ) ? factorX : factorY;
-	int lodLevel;
 	int i, j;
 	
 	for( i=0; i<componentCount; i++ ){
 		deoglCollideListComponent &clistComponent = *collideList.GetComponentAt( i );
-		deoglRComponent &component = *clistComponent.GetComponent();
+		const deoglRComponent &component = *clistComponent.GetComponent();
 		
 		if( ! component.GetModel() ){
 			clistComponent.SetLODLevel( 0 );
@@ -232,7 +229,7 @@ int screenWidth, int screenHeight ){
 		
 		const float errorScaling = component.GetLODErrorScaling();
 		float clampError = pMaxErrorPerLevel;
-		lodLevel = 0;
+		int lodLevel = 0;
 		
 		for( j=1; j<lodLevelCount; j++ ){
 			const deoglModelLOD &lod = model.GetLODAt( j );
@@ -256,8 +253,7 @@ float boxWidth, float boxHeight, int screenWidth, int screenHeight ){
 	const float factorX = ( float )screenWidth / boxWidth;
 	const float factorY = ( float )screenHeight / boxHeight;
 	const float factor = ( factorX > factorY ) ? factorX : factorY;
-	
-	deoglRComponent &component = *clistComponent.GetComponent();
+	const deoglRComponent &component = *clistComponent.GetComponent();
 	
 	if( ! component.GetModel() ){
 		clistComponent.SetLODLevel( 0 );

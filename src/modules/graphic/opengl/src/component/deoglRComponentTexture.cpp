@@ -47,8 +47,10 @@
 #include "../skin/deoglRSkin.h"
 #include "../skin/deoglSkinTexture.h"
 #include "../skin/dynamic/deoglRDynamicSkin.h"
+#include "../skin/dynamic/renderables/render/deoglRDSRenderable.h"
 #include "../skin/shader/deoglSkinShader.h"
 #include "../skin/state/deoglSkinState.h"
+#include "../skin/state/deoglSkinStateRenderable.h"
 #include "../sky/deoglRSkyInstance.h"
 #include "../texture/deoglTextureStageManager.h"
 #include "../texture/texunitsconfig/deoglTexUnitConfig.h"
@@ -84,6 +86,7 @@ pUseSkinState( NULL ),
 pUseDynamicSkin( NULL ),
 pUseDoubleSided( false ),
 pUseDecal( false ),
+pIsRendered( false ),
 
 pSharedSPBElement( NULL ),
 
@@ -251,6 +254,7 @@ void deoglRComponentTexture::SetSkin( deoglRSkin *skin ){
 		skin->AddReference();
 	}
 	
+	pIsRendered = false;
 	InvalidateParamBlocks();
 	MarkTUCsDirty();
 	pComponent.GetSkinRendered().SetDirty();
@@ -269,6 +273,7 @@ void deoglRComponentTexture::SetDynamicSkin( deoglRDynamicSkin *dynamicSkin ){
 		dynamicSkin->AddReference();
 	}
 	
+	pIsRendered = false;
 	InvalidateParamBlocks();
 	MarkTUCsDirty();
 	pComponent.GetSkinRendered().SetDirty();
@@ -303,15 +308,10 @@ void deoglRComponentTexture::SetSkinState( deoglSkinState *skinState ){
 	
 	pSkinState = skinState;
 	
+	pIsRendered = false;
 	InvalidateParamBlocks();
 	MarkTUCsDirty();
 	pComponent.GetSkinRendered().SetDirty();
-}
-
-void deoglRComponentTexture::CheckSkinDynamicChannels(){
-	/*if( ! pSkin || ! pSkin->GetHasDynamicChannels() ){
-		return;
-	}*/
 }
 
 void deoglRComponentTexture::UpdateSkinState( deoglComponent &component ){
@@ -359,6 +359,7 @@ void deoglRComponentTexture::UpdateUseSkin(){
 	
 	const deoglRModel * const model = pComponent.GetModel();
 	if( ! model ){
+		pIsRendered = false;
 		return;
 	}
 	
@@ -404,6 +405,8 @@ void deoglRComponentTexture::UpdateUseSkin(){
 	if( pUseSkin && pUseTextureNumber != -1 ){
 		pUseSkinTexture = &pUseSkin->GetTextureAt( pUseTextureNumber );
 	}
+	
+	pUpdateIsRendered();
 }
 
 decTexMatrix2 deoglRComponentTexture::CalcTexCoordMatrix() const{
@@ -571,7 +574,7 @@ deoglSharedSPBRTIGroup &deoglRComponentTexture::GetSharedSPBRTIGroup( int lodLev
 	if( lodLevel < 0 ){
 		DETHROW( deeInvalidParam );
 	}
-	deoglSharedSPBRTIGroup * group = ( deoglSharedSPBRTIGroup* )pSharedSPBRTIGroup.GetAt( lodLevel );
+	deoglSharedSPBRTIGroup * const group = ( deoglSharedSPBRTIGroup* )pSharedSPBRTIGroup.GetAt( lodLevel );
 	if( ! group ){
 		DETHROW( deeInvalidParam );
 	}
@@ -925,4 +928,45 @@ void deoglRComponentTexture::PrepareSkinStateRenderables(){
 	}else{
 		pSkinState->PrepareRenderables( pSkin, pComponent.GetDynamicSkin() );
 	}
+	
+	pUpdateIsRendered();
+}
+
+
+
+// Private Functions
+//////////////////////
+
+void deoglRComponentTexture::pUpdateIsRendered(){
+	pIsRendered = false;
+	
+	if( ! pUseSkinTexture ){
+		return;
+	}
+	
+	if( pUseSkinTexture->GetRendered() ){
+		pIsRendered = true;
+		return;
+	}
+	
+	if( ! pUseSkinState || ! pUseDynamicSkin ){
+		return;
+	}
+	
+	const deoglSkinChannel * const skinChannel = pUseSkinTexture->GetChannelAt( deoglSkinChannel::ectColor );
+	if( ! skinChannel ){
+		return;
+	}
+	
+	const int skinRenderable = skinChannel->GetRenderable();
+	if( skinRenderable < 0 || skinRenderable >= pUseSkinState->GetRenderableCount() ){
+		return;
+	}
+	
+	const deoglSkinStateRenderable &skinStateRenderable = *pUseSkinState->GetRenderableAt( skinRenderable );
+	if( skinStateRenderable.GetHostRenderable() == -1 ){
+		return;
+	}
+	
+	pIsRendered = pUseDynamicSkin->GetRenderableAt( skinStateRenderable.GetHostRenderable() )->GetRenderPlan() != NULL;
 }

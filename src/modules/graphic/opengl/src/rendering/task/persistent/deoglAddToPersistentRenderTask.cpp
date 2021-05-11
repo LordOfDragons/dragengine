@@ -208,6 +208,10 @@ const deoglRComponent &component, int texture, int lodLevel ){
 void deoglAddToPersistentRenderTask::AddComponentFaces( deoglPersistentRenderTaskOwner &owner,
 const deoglRComponent &component, int texture, int firstFace, int faceCount, int lodLevel ){
 	const deoglRComponentTexture &componentTexture = component.GetTextureAt( texture );
+	if( componentTexture.GetIsRendered() ){
+		return;
+	}
+	
 	const deoglSkinTexture * const skinTexture = componentTexture.GetUseSkinTexture();
 	if( ! skinTexture ){
 		return;
@@ -222,25 +226,6 @@ const deoglRComponent &component, int texture, int firstFace, int faceCount, int
 	}
 	if( pFilterDecal && pDecal != componentTexture.GetUseDecal() ){
 		return;
-	}
-	
-	// hack style test for a camera renderable
-	const deoglSkinChannel *skinChannel = skinTexture->GetChannelAt( deoglSkinChannel::ectColor );
-	const deoglSkinState * const useSkinState = componentTexture.GetUseSkinState();
-	
-	if( skinChannel && useSkinState ){
-		const deoglRDynamicSkin * const dynamicSkin = component.GetDynamicSkin();
-		const int skinRenderable = skinChannel->GetRenderable();
-		
-		if( skinRenderable >= 0 && skinRenderable < useSkinState->GetRenderableCount() && dynamicSkin ){
-			const deoglSkinStateRenderable &skinStateRenderable = *useSkinState->GetRenderableAt( skinRenderable );
-			
-			if( skinStateRenderable.GetHostRenderable() != -1 ){
-				if( dynamicSkin->GetRenderableAt( skinStateRenderable.GetHostRenderable() )->GetRenderPlan() ){
-					return;
-				}
-			}
-		}
 	}
 	
 	// obtain render task vao and add faces

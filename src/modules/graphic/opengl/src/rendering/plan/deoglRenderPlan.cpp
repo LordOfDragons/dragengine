@@ -756,19 +756,18 @@ void deoglRenderPlan::pUpdateGI(){
 }
 
 void deoglRenderPlan::pPlanLODLevels(){
-	const deoglConfiguration &config = pRenderThread.GetConfiguration();
-	const decDVector view = pCameraInverseMatrix.TransformView();
-	deoglLODCalculator lodCalculator;
-	
 	if( pHTView ){
 		pHTView->UpdateLODLevels( pCameraPosition.ToVector() );
 	}
 	
+	const deoglConfiguration &config = pRenderThread.GetConfiguration();
+	deoglLODCalculator lodCalculator;
 	lodCalculator.SetMaxPixelError( config.GetLODMaxPixelError() );
 	lodCalculator.SetMaxErrorPerLevel( config.GetLODMaxErrorPerLevel() );
 	
-	lodCalculator.SetComponentLODProjection( pCollideList, pCameraPosition, view,
-		pCameraFov, pCameraFov * pCameraFovRatio, pViewportWidth, pViewportHeight );
+	lodCalculator.SetComponentLODProjection( pCollideList, pCameraPosition,
+		pCameraInverseMatrix.TransformView(), pCameraFov, pCameraFov * pCameraFovRatio,
+		pViewportWidth, pViewportHeight );
 }
 
 void deoglRenderPlan::pPlanEnvMaps(){
@@ -1396,6 +1395,7 @@ void deoglRenderPlan::SetCamera( deoglRCamera *camera ){
 void deoglRenderPlan::SetCameraMatrix( const decDMatrix &matrix ){
 	pCameraMatrix = matrix;
 	pCameraInverseMatrix = matrix.Invert();
+	pCameraMatrixNonMirrored = matrix;
 	
 	// NOTE has to be this way. the camera can be the same but the matrix can be
 	// something else for example in a mirror situation. the position from the
@@ -1408,6 +1408,10 @@ void deoglRenderPlan::SetCameraMatrix( const decDMatrix &matrix ){
 //	}else{
 		pCameraPosition = pCameraInverseMatrix.GetPosition();
 //	}
+}
+
+void deoglRenderPlan::SetCameraMatrixNonMirrored( const decDMatrix &matrix ){
+	pCameraMatrixNonMirrored = matrix;
 }
 
 void deoglRenderPlan::SetCameraParameters( float fov, float fovRatio, float imageDistance, float viewDistance ){
@@ -1458,20 +1462,49 @@ void deoglRenderPlan::CopyCameraParametersFrom( const deoglRenderPlan &plan ){
 }
 
 void deoglRenderPlan::UpdateRefPosCameraMatrix(){
-	const decVector refPosCam = ( pWorld->GetReferencePosition() - pCameraPosition ).ToVector(); // -( campos - refpos )
+	// -( campos - refpos )
+	const decVector refPosCam( pWorld->GetReferencePosition() - pCameraPosition );
 	
 	pRefPosCameraMatrix.a11 = ( float )pCameraMatrix.a11;
 	pRefPosCameraMatrix.a12 = ( float )pCameraMatrix.a12;
 	pRefPosCameraMatrix.a13 = ( float )pCameraMatrix.a13;
-	pRefPosCameraMatrix.a14 = refPosCam.x * pRefPosCameraMatrix.a11 + refPosCam.y * pRefPosCameraMatrix.a12 + refPosCam.z * pRefPosCameraMatrix.a13;
+	pRefPosCameraMatrix.a14 = refPosCam.x * pRefPosCameraMatrix.a11
+		+ refPosCam.y * pRefPosCameraMatrix.a12 + refPosCam.z * pRefPosCameraMatrix.a13;
+	
 	pRefPosCameraMatrix.a21 = ( float )pCameraMatrix.a21;
 	pRefPosCameraMatrix.a22 = ( float )pCameraMatrix.a22;
 	pRefPosCameraMatrix.a23 = ( float )pCameraMatrix.a23;
-	pRefPosCameraMatrix.a24 = refPosCam.x * pRefPosCameraMatrix.a21 + refPosCam.y * pRefPosCameraMatrix.a22 + refPosCam.z * pRefPosCameraMatrix.a23;
+	pRefPosCameraMatrix.a24 = refPosCam.x * pRefPosCameraMatrix.a21
+		+ refPosCam.y * pRefPosCameraMatrix.a22 + refPosCam.z * pRefPosCameraMatrix.a23;
+	
 	pRefPosCameraMatrix.a31 = ( float )pCameraMatrix.a31;
 	pRefPosCameraMatrix.a32 = ( float )pCameraMatrix.a32;
 	pRefPosCameraMatrix.a33 = ( float )pCameraMatrix.a33;
-	pRefPosCameraMatrix.a34 = refPosCam.x * pRefPosCameraMatrix.a31 + refPosCam.y * pRefPosCameraMatrix.a32 + refPosCam.z * pRefPosCameraMatrix.a33;
+	pRefPosCameraMatrix.a34 = refPosCam.x * pRefPosCameraMatrix.a31
+		+ refPosCam.y * pRefPosCameraMatrix.a32 + refPosCam.z * pRefPosCameraMatrix.a33;
+	
+	// mirror free
+	
+	pRefPosCameraMatrixNonMirrored.a11 = ( float )pCameraMatrixNonMirrored.a11;
+	pRefPosCameraMatrixNonMirrored.a12 = ( float )pCameraMatrixNonMirrored.a12;
+	pRefPosCameraMatrixNonMirrored.a13 = ( float )pCameraMatrixNonMirrored.a13;
+	pRefPosCameraMatrixNonMirrored.a14 = refPosCam.x * pRefPosCameraMatrixNonMirrored.a11
+		+ refPosCam.y * pRefPosCameraMatrixNonMirrored.a12
+		+ refPosCam.z * pRefPosCameraMatrixNonMirrored.a13;
+	
+	pRefPosCameraMatrixNonMirrored.a21 = ( float )pCameraMatrixNonMirrored.a21;
+	pRefPosCameraMatrixNonMirrored.a22 = ( float )pCameraMatrixNonMirrored.a22;
+	pRefPosCameraMatrixNonMirrored.a23 = ( float )pCameraMatrixNonMirrored.a23;
+	pRefPosCameraMatrixNonMirrored.a24 = refPosCam.x * pRefPosCameraMatrixNonMirrored.a21
+		+ refPosCam.y * pRefPosCameraMatrixNonMirrored.a22
+		+ refPosCam.z * pRefPosCameraMatrixNonMirrored.a23;
+	
+	pRefPosCameraMatrixNonMirrored.a31 = ( float )pCameraMatrixNonMirrored.a31;
+	pRefPosCameraMatrixNonMirrored.a32 = ( float )pCameraMatrixNonMirrored.a32;
+	pRefPosCameraMatrixNonMirrored.a33 = ( float )pCameraMatrixNonMirrored.a33;
+	pRefPosCameraMatrixNonMirrored.a34 = refPosCam.x * pRefPosCameraMatrixNonMirrored.a31
+		+ refPosCam.y * pRefPosCameraMatrixNonMirrored.a32
+		+ refPosCam.z * pRefPosCameraMatrixNonMirrored.a33;
 }
 
 

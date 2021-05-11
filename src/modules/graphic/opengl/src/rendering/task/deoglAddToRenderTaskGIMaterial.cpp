@@ -95,6 +95,13 @@ void deoglAddToRenderTaskGIMaterial::Reset(){
 
 deoglRenderTaskTexture *deoglAddToRenderTaskGIMaterial::AddComponentTexture( deoglRComponentLOD &lod, int texture ){
 	deoglRComponentTexture &componentTexture = lod.GetComponent().GetTextureAt( texture );
+	if( componentTexture.GetIsRendered() ){
+		// NOTE for this to work we have to recast the ray into the direction of the direct
+		//      rendering camera. this is though quite complex to achieve fast in a ray
+		//      tracer. for this reason this is skipped
+		return NULL;
+	}
+	
 	deoglSkinTexture * const skinTexture = componentTexture.GetUseSkinTexture();
 	if( ! skinTexture ){
 		return NULL;
@@ -102,25 +109,6 @@ deoglRenderTaskTexture *deoglAddToRenderTaskGIMaterial::AddComponentTexture( deo
 	
 	if( pFilterReject( skinTexture ) ){
 		return NULL;
-	}
-	
-	// hack style test for a camera renderable
-	deoglSkinChannel *skinChannel = skinTexture->GetChannelAt( deoglSkinChannel::ectColor );
-	deoglSkinState * const useSkinState = componentTexture.GetUseSkinState();
-	
-	if( skinChannel && useSkinState ){
-		const deoglRDynamicSkin *dynamicSkin = lod.GetComponent().GetDynamicSkin();
-		const int skinRenderable = skinChannel->GetRenderable();
-		
-		if( skinRenderable >= 0 && skinRenderable < useSkinState->GetRenderableCount() && dynamicSkin ){
-			const deoglSkinStateRenderable &skinStateRenderable = *useSkinState->GetRenderableAt( skinRenderable );
-			
-			if( skinStateRenderable.GetHostRenderable() != -1 ){
-				if( dynamicSkin->GetRenderableAt( skinStateRenderable.GetHostRenderable() )->GetRenderPlan() ){
-					return NULL;
-				}
-			}
-		}
 	}
 	
 	// obtain render task texture

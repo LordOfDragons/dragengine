@@ -175,11 +175,18 @@ void deoglSkinRenderedTexture::pMirrorAddRenderPlans( deoglRenderPlan &plan ){
 	mirrorNormal = mirrorMatrix.TransformNormal( mirrorNormal );
 	mirrorRefPoint = mirrorMatrix * mirrorRefPoint;
 	
+	decDMatrix mirrorFreeMatrix( mirrorMatrix );
+	mirrorFreeMatrix.a11 = -mirrorMatrix.a11;
+	mirrorFreeMatrix.a12 = -mirrorMatrix.a12;
+	mirrorFreeMatrix.a13 = -mirrorMatrix.a13;
+	mirrorFreeMatrix.a14 = -mirrorMatrix.a14;
+	
 	// set the plan properties
 	pPlan->SetWorld( plan.GetWorld() );
 	pPlan->SetCamera( NULL ); // since this is a fake camera
 	pPlan->CopyCameraParametersFrom( plan );
 	pPlan->SetCameraMatrix( mirrorMatrix );
+	pPlan->SetCameraMatrixNonMirrored( mirrorFreeMatrix );
 	pPlan->UpdateRefPosCameraMatrix();
 	
 	pPlan->SetFlipCulling( ! plan.GetFlipCulling() );
