@@ -31,6 +31,7 @@
 #include "deoglRenderTaskVAO.h"
 #include "shared/deoglRenderTaskSharedShader.h"
 #include "shared/deoglRenderTaskSharedInstance.h"
+#include "shared/deoglRenderTaskSharedVAO.h"
 #include "../defren/deoglDeferredRendering.h"
 #include "../../capabilities/deoglCapabilities.h"
 #include "../../collidelist/deoglCollideList.h"
@@ -318,47 +319,10 @@ deoglRenderTaskSharedVAO *rtvao ){
 	}
 	
 	// obtain render task vao and add faces
-// 	pGetTaskVAO( pSkinShaderType, skinTexture,
-// 		componentTexture.GetTUCForShaderType( pSkinShaderType ), rtvao )->
-// 			AddInstance( componentTexture.GetSharedSPBRTIGroup( lodLevel ).GetRTSInstance() )->
-// 			AddSubInstance( componentTexture.GetSharedSPBElement()->GetIndex(), component.GetSpecialFlags() );
-	
-	deoglTexUnitsConfig *tuc = componentTexture.GetTUCForShaderType( pSkinShaderType );
-	deoglRenderTaskSharedInstance *rtsi = componentTexture.GetSharedSPBRTIGroup( lod.GetLODIndex() ).GetRTSInstance();
-	const int index = componentTexture.GetSharedSPBElement()->GetIndex();
-	const int flags = component.GetSpecialFlags();
-	
-	deoglShaderProgram *shader = NULL;
-	if( pEnforceShader ){
-		shader = pEnforceShader->GetShader();
-	}else{
-		deoglSkinShader * const skinShader = skinTexture->GetShaderFor(pSkinShaderType);
-		if( skinShader ){
-			shader = skinShader->GetShader();
-		}
-	}
-	if( ! shader ){
-		DETHROW( deeInvalidParam );
-	}
-	if( ! tuc ){
-		tuc = pRenderThread.GetShader().GetTexUnitsConfigList().GetEmptyNoUsage();
-	}
-	deoglRenderTaskSharedShader *rts = shader->GetRTSShader();
-	deoglRenderTaskSharedTexture *rtt = tuc->GetRTSTexture();
-// 	deoglRenderTaskSharedVAO *rtvao = component.GetVAO( lodLevel )->GetRTSVAO();
-		// same for all textures
-		// same for everything sharing the same shared vbo (or unique if weighted)
-	
-		atrtElapsed1 += atrtTimer.GetElapsedTime();
-	pRenderTask.AddShader(rts)->AddTexture(rtt)->AddVAO(rtvao)->AddInstance(rtsi)->AddSubInstance(index, flags);
-		atrtElapsed2 += atrtTimer.GetElapsedTime();
-		
-		// consequtive search rules:
-		// - if rtvao is not the same ignore all cached textures
-		// - for each texture:
-		//   - if rtsi is not the same ignore cached texture
-		//   - if rts or rtt is not the same ignore cached texture
-		//   - else use last found deoglRenderTaskInstance to add sub instance to
+	pGetTaskVAO( pSkinShaderType, skinTexture,
+		componentTexture.GetTUCForShaderType( pSkinShaderType ), rtvao->GetVAO() )->
+			AddInstance( componentTexture.GetSharedSPBRTIGroup( lod.GetLODIndex() ).GetRTSInstance() )->
+			AddSubInstance( componentTexture.GetSharedSPBElement()->GetIndex(), component.GetSpecialFlags() );
 }
 
 
