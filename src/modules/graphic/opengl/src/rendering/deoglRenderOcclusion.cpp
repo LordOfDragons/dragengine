@@ -652,28 +652,41 @@ deoglRenderPlanSkyLight &planSkyLight ){
 		return;
 	}
 	
-	// calculate the camera matrix fitting around all splits
+	// calculate the camera matrix fitting around all splits. the camera matrix transform
+	// the points into the range [-1..1] for all axes
 	const decDVector &referencePosition = plan.GetWorld()->GetReferencePosition();
 	const decVector &minExtend = planSkyLight.GetFrustumBoxMinExtend();
 	const decVector &maxExtend = planSkyLight.GetFrustumBoxMaxExtend();
 	const decDVector &camPos = plan.GetCameraPosition();
 	
-	const decMatrix matLig( decMatrix::CreateRotation( 0.0f, PI, 0.0f )
-		* planSkyLight.GetLayer()->GetMatrix() );
+	const decDMatrix matLig( decDMatrix::CreateRotation( 0.0, PI, 0.0 )
+		* decDMatrix( planSkyLight.GetLayer()->GetMatrix() ) );
 	
-	const decVector position( ( camPos - referencePosition ).ToVector() + ( matLig.Transform(
-		( minExtend.x + maxExtend.x ) * 0.5f, ( minExtend.y + maxExtend.y ) * 0.5f,
-		( minExtend.z + maxExtend.z ) * 0.5f ) ) );
+	const decDVector boxCenter( ( minExtend + maxExtend ) * 0.5f );
+	const decDVector boxSize( maxExtend - minExtend );
 	
-	const decVector scale( 2.0f / ( maxExtend.x - minExtend.x ),
-		2.0f / ( maxExtend.y - minExtend.y ), 2.0f / ( maxExtend.z - minExtend.z ) );
+	const decDVector position( camPos - referencePosition + matLig * boxCenter );
+	const decDVector scale( 2.0 / boxSize.x, 2.0 / boxSize.y, 2.0 / boxSize.z );
 	
-	const decMatrix matrixCamera(
-		decMatrix::CreateCamera( position, matLig.TransformView(), matLig.TransformUp() )
-		* decMatrix::CreateScale( scale ) );
+	// test input valus use world reference position as reference position instead of
+	// camera position as the camera tests do
 	
-	const decMatrix matrixCamera2( matrixCamera.Invert()
-		* decMatrix::CreateTranslation( ( referencePosition - camPos ).ToVector() )
+	// the test shader expects z coordinate to be transformed into the range [0..1]
+	// and x/y/z in the range [-w..w]. this requires adding a scale of z=0.5 and a
+	// translation of z=0.5
+	const decDMatrix matrixCamera(
+		decDMatrix::CreateCamera( position, matLig.TransformView(), matLig.TransformUp() )
+		* decDMatrix::CreateScale( scale ) * decDMatrix::CreateScale( 1.0, 1.0, 0.5 )
+		* decDMatrix::CreateTranslation( 0.0, 0.0, 0.5 ) );
+	
+	// the result of the first occlusion test has to be transformed back into occlusion
+	// map space. this is done by first reverting the matrixCamera which transforms back
+	// into world space relative to world reference position. then the position has to
+	// be transformed into world space relative to camera position. now the position is
+	// in the same space as the camera tests used. then the occlusion matrix is applied
+	// the same way as camera tests did
+	const decMatrix matrixCamera2( ( matrixCamera.Invert()
+		* decDMatrix::CreateTranslation( referencePosition - camPos ) ).ToMatrix()
 		* plan.GetOcclusionTestMatrix() );
 	DEBUG_PRINT_TIMER( "Prepare" );
 	
@@ -977,6 +990,11 @@ float clipNear2, const decMatrix &matrixCamera2, deoglRenderPlan &plan ){
 	for( i=0; i<4; i++ ){
 		frustumPlaneNormal[ i ] = ( ( fpts[ 1 + i ] - fpts[ 0 ] ) % ( fpts[ 1 + ( ( 3 + i ) % 4 ) ] - fpts[ 0 ] ) ).Normalized();
 		
+		if( plan.GetFlipCulling() ){
+			// mirroring causes normals to point outside instead of inside
+			frustumPlaneNormal[ i ] = -frustumPlaneNormal[ i ];
+		}
+		
 		if( frustumPlaneNormal[ i ].z < 0.0f ){
 			denom = 1.0f / frustumPlaneNormal[ i ].z; // 1/(sunDir*planeNormal) = 1/((0,0,01)*planeNormal) = 1/planeNormal.z
 			frustumFactorAdd[ i ] = ( fpts[ 0 ] * frustumPlaneNormal[ i ] ) * denom;
@@ -1006,8 +1024,10 @@ float clipNear2, const decMatrix &matrixCamera2, deoglRenderPlan &plan ){
 		shader->SetParameterVector3( spttfbFrustumNormal2, frustumPlaneNormal[ 1 ] );
 		shader->SetParameterVector3( spttfbFrustumNormal3, frustumPlaneNormal[ 2 ] );
 		shader->SetParameterVector3( spttfbFrustumNormal4, frustumPlaneNormal[ 3 ] );
-		shader->SetParameterFloat( spttfbFrustumTestAdd, frustumFactorAdd[ 0 ], frustumFactorAdd[ 1 ], frustumFactorAdd[ 2 ], frustumFactorAdd[ 3 ] );
-		shader->SetParameterFloat( spttfbFrustumTestMul, frustumFactorMul[ 0 ], frustumFactorMul[ 1 ], frustumFactorMul[ 2 ], frustumFactorMul[ 3 ] );
+		shader->SetParameterFloat( spttfbFrustumTestAdd, frustumFactorAdd[ 0 ],
+			frustumFactorAdd[ 1 ], frustumFactorAdd[ 2 ], frustumFactorAdd[ 3 ] );
+		shader->SetParameterFloat( spttfbFrustumTestMul, frustumFactorMul[ 0 ],
+			frustumFactorMul[ 1 ], frustumFactorMul[ 2 ], frustumFactorMul[ 3 ] );
 		DEBUG_PRINT_TIMER( "Set Uniforms" );
 		
 		tsmgr.EnableTexture( 0, *occlusionMap.GetTexture(), GetSamplerClampNearestMipMap() );
