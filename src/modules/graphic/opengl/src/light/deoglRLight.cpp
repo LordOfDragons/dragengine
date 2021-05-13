@@ -424,9 +424,9 @@ void deoglRLight::DirtyPrepareSkinStateRenderables(){
 	pRequiresPrepareForRender();
 }
 
-void deoglRLight::PrepareSkinStateRenderables(){
+void deoglRLight::PrepareSkinStateRenderables( const deoglRenderPlanMasked *renderPlanMask ){
 	if( pSkinState ){
-		pSkinState->PrepareRenderables( pLightSkin, pDynamicSkin );
+		pSkinState->PrepareRenderables( pLightSkin, pDynamicSkin, renderPlanMask );
 	}
 }
 
@@ -643,16 +643,16 @@ void deoglRLight::EarlyPrepareForRender(){
 	pUpdateCollisionVolume();
 }
 
-void deoglRLight::PrepareForRender(){
+void deoglRLight::PrepareForRender( const deoglRenderPlanMasked *renderPlanMask ){
 	if( pDirtyPrepareLightCanvas ){
 		if( pLightCanvas ){
-			pLightCanvas->PrepareForRender();
+			pLightCanvas->PrepareForRender( renderPlanMask );
 		}
 		pDirtyPrepareLightCanvas = false;
 	}
 	
 	if( pDirtyPrepareSkinStateRenderables ){
-		PrepareSkinStateRenderables();
+		PrepareSkinStateRenderables( renderPlanMask );
 		pDirtyPrepareSkinStateRenderables = false;
 	}
 	

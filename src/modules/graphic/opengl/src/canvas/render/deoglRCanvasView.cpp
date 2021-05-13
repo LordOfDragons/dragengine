@@ -142,8 +142,8 @@ void deoglRCanvasView::SetResizeRenderTarget(){
 	pResizeRenderTarget = true;
 }
 
-void deoglRCanvasView::PrepareRenderTarget(){
-	PrepareForRender();
+void deoglRCanvasView::PrepareRenderTarget( const deoglRenderPlanMasked *renderPlanMask ){
+	PrepareForRender( renderPlanMask );
 	
 	if( pRenderTarget ){
 		if( pResizeRenderTarget ){
@@ -174,7 +174,8 @@ void deoglRCanvasView::PrepareRenderTarget(){
 		// render content
 		const decPoint viewportSize( pRenderTarget->GetWidth(), pRenderTarget->GetHeight() );
 		
-		deoglRenderCanvasContext context( *this, pRenderTarget->GetFBO(), decPoint(), viewportSize, false );
+		deoglRenderCanvasContext context( *this, pRenderTarget->GetFBO(),
+			decPoint(), viewportSize, false, renderPlanMask );
 		// for rendering into the render target the canvas position and transform has to be negated.
 		// this way rendering with the position and transform as used for regular rendering cancels
 		// each other out resulting in an identity transformation. this way no second code path is
@@ -192,19 +193,19 @@ void deoglRCanvasView::PrepareRenderTarget(){
 
 
 
-void deoglRCanvasView::PrepareForRender(){
+void deoglRCanvasView::PrepareForRender( const deoglRenderPlanMasked *renderPlanMask ){
 	const int count = pChildren.GetCount();
 	if( count == 0 ){
 		return;
 	}
 	
-	deoglRCanvas::PrepareForRender();
+	deoglRCanvas::PrepareForRender( renderPlanMask );
 	
 	int i;
 	for( i=0; i<count; i++ ){
 		deoglRCanvas &child = *( ( deoglRCanvas* )pChildren.GetAt( i ) );
 		if( child.GetVisible() ){
-			child.PrepareForRender();
+			child.PrepareForRender( renderPlanMask );
 		}
 	}
 }

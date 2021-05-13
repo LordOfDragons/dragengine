@@ -137,7 +137,7 @@ public:
 	
 	
 	/** Render lights. */
-	void RenderLights( deoglRenderPlan &plan, bool solid, deoglRenderPlanMasked *mask );
+	void RenderLights( deoglRenderPlan &plan, bool solid, const deoglRenderPlanMasked *mask );
 	
 	/**
 	 * Render ambient occlusion.

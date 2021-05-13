@@ -86,12 +86,12 @@ void deoglRCanvasVideoPlayer::SetTCClampMaximum( const decVector2 &clamp ){
 
 
 
-void deoglRCanvasVideoPlayer::PrepareForRender(){
+void deoglRCanvasVideoPlayer::PrepareForRender( const deoglRenderPlanMasked *renderPlanMask ){
 	if( ! pVideoPlayer ){
 		return;
 	}
 	
-	deoglRCanvas::PrepareForRender();
+	deoglRCanvas::PrepareForRender( renderPlanMask );
 	pVideoPlayer->UpdateTexture();
 }
 

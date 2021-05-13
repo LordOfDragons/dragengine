@@ -323,9 +323,9 @@ void deoglRBillboard::DynamicSkinRenderablesChanged(){
 	MarkTUCsDirty();
 }
 
-void deoglRBillboard::PrepareSkinStateRenderables(){
+void deoglRBillboard::PrepareSkinStateRenderables( const deoglRenderPlanMasked *renderPlanMask ){
 	if( pSkinState ){
-		pSkinState->PrepareRenderables( pSkin, pDynamicSkin );
+		pSkinState->PrepareRenderables( pSkin, pDynamicSkin, renderPlanMask );
 	}
 }
 
@@ -812,9 +812,9 @@ void deoglRBillboard::WorldReferencePointChanged(){
 
 
 
-void deoglRBillboard::PrepareForRender( deoglRenderPlan &plan ){
+void deoglRBillboard::PrepareForRender( deoglRenderPlan&, const deoglRenderPlanMasked *mask ){
 	if( pDirtyPrepareSkinStateRenderables ){
-		PrepareSkinStateRenderables();
+		PrepareSkinStateRenderables( mask );
 		pDirtyPrepareSkinStateRenderables = false;
 	}
 	

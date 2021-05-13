@@ -41,6 +41,7 @@ class deoglSkinTexture;
 class deoglSPBlockUBO;
 class deoglTexUnitsConfig;
 class deoglComponent;
+class deoglRenderPlanMasked;
 
 
 /**
@@ -313,7 +314,7 @@ public:
 		int element, const deoglSkinShader &skinShader );
 	
 	/** Prepare skin state renderables if dirty. */
-	void PrepareSkinStateRenderables();
+	void PrepareSkinStateRenderables( const deoglRenderPlanMasked *renderPlanMask );
 	/*@}*/
 	
 	

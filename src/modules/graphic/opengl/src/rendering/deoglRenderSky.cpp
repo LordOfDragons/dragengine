@@ -751,7 +751,7 @@ deoglEnvironmentMap &envmap ){
 	plan.SetViewport( 0, 0, size, size );
 	
 	plan.SetWorld( NULL ); // little hack since we only want the projection matrix to be updated
-	plan.PrepareRender();
+	plan.PrepareRender( NULL );
 	plan.SetWorld( &world );
 	
 	//defren.Resize( size, size );

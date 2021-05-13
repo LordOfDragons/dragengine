@@ -8,6 +8,7 @@ UBOLAYOUT uniform RenderParameters{
 	mat4x3 pMatrixV[ 6 ];
 	vec4 pTransformZ[ 6 ];
 	vec2 pZToDepth;
+	vec4 pClipPlane; // normal.xyz, distance
 };
 
 #ifdef PERSPECTIVE_TO_LINEAR
@@ -16,8 +17,14 @@ in float vDepth;
 #ifdef DEPTH_DISTANCE
 in vec3 vPosition;
 #endif
+#ifdef USE_CLIP_PLANE
+in vec3 vClipCoord;
+#endif
 
 void main( void ){
+	#ifdef USE_CLIP_PLANE
+	if( dot( vClipCoord, pClipPlane.xyz ) <= pClipPlane.w ) discard;
+	#endif
 	#ifdef PERSPECTIVE_TO_LINEAR
 	gl_FragDepth = vDepth;
 	#endif

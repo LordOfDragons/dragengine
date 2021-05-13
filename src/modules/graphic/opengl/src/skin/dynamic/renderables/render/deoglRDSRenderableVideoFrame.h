@@ -58,7 +58,7 @@ public:
 	void SetVideoPlayer( deoglRVideoPlayer *videoPlayer );
 	
 	/** Prepare for render. */
-	virtual void PrepareForRender();
+	virtual void PrepareForRender( const deoglRenderPlanMasked *renderPlanMask );
 	
 	/**
 	 * Get texture to use for rendering or \em NULL if not applicable.

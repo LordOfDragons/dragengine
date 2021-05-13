@@ -725,7 +725,7 @@ const deoglRCanvasRenderWorld &canvas ){
 	const deoglDeveloperMode &devmode = renderThread.GetDebug().GetDeveloperMode();
 	plan.SetDebugTiming( ! context.GetFBO() && devmode.GetEnabled() && devmode.GetShowDebugInfo() );
 	
-	plan.PrepareRender();
+	plan.PrepareRender( context.GetRenderPlanMask() );
 	
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	defren.Resize( rwidth, rheight );

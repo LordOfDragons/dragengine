@@ -88,17 +88,17 @@ public:
 	/** \name Rendering */
 	/*@{*/
 	/** Render lights. */
-	void RenderLights( deoglRenderPlan &plan, bool solid, deoglRenderPlanMasked *mask );
+	void RenderLights( deoglRenderPlan &plan, bool solid, const deoglRenderPlanMasked *mask );
 	
 	/** Render sky light ambient occlusion. */
 	void RenderAO( deoglRenderPlan &plan );
 	
 	/** Render sky light. */
-	void RenderLight( deoglRenderPlan &plan, bool solid, deoglRenderPlanMasked *mask,
+	void RenderLight( deoglRenderPlan &plan, bool solid, const deoglRenderPlanMasked *mask,
 		deoglRenderPlanSkyLight &planSkyLight );
 	
 	/** Render shadows maps. */
-	void RenderShadows( deoglRenderPlan &plan, bool solid, deoglRenderPlanMasked *mask,
+	void RenderShadows( deoglRenderPlan &plan, bool solid, const deoglRenderPlanMasked *mask,
 		deoglRenderPlanSkyLight &planSkyLight );
 	
 	/** Render shadow map. */

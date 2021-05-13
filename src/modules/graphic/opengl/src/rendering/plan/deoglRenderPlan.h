@@ -68,6 +68,10 @@ class deoglRPTFindContent;
  * Instead all camera attributes are located in the render plan itself. This
  * way indirect rendering or other forms of intermediate rendering are
  * possible where there exists no explicite camera.
+ * 
+ * \note It is not possible to store the owner deoglRenderPlanMasked pointer since a render
+ *       plan can be visible by multiple other plans and thus can be part of multiple masked
+ *       render plans.
  */
 class deoglRenderPlan{
 private:
@@ -246,7 +250,7 @@ public:
 	
 	
 	/** Prepare plan for rendering. */
-	void PrepareRender();
+	void PrepareRender( const deoglRenderPlanMasked *mask );
 	
 	/**
 	 * Prepare whatever can be prepared for a one turn of rendering.
@@ -708,7 +712,7 @@ public:
 	
 	
 private:
-	void pBarePrepareRender();
+	void pBarePrepareRender( const deoglRenderPlanMasked *mask );
 	void pPlanCamera();
 	void pPlanSky();
 	void pPlanSkyLight();
@@ -720,7 +724,7 @@ private:
 	void pUpdateGI();
 	void pPlanLODLevels();
 	void pPlanEnvMaps();
-	void pRenderOcclusionTests();
+	void pRenderOcclusionTests( const deoglRenderPlanMasked *mask );
 	void pFinishOcclusionTests();
 	
 	void pDebugPrepare();

@@ -596,7 +596,7 @@ void deoglRenderLightPoint::CalculateBoxBoundary( deoglRLight &light ){
 
 
 
-void deoglRenderLightPoint::RenderLights( deoglRenderPlan &plan, bool solid, deoglRenderPlanMasked *mask ){
+void deoglRenderLightPoint::RenderLights( deoglRenderPlan &plan, bool solid, const deoglRenderPlanMasked *mask ){
 DEBUG_RESET_TIMER_TOTAL
 	deoglCollideList &clist = plan.GetCollideList();
 	const int lightCount = clist.GetLightCount();
@@ -635,7 +635,7 @@ DEBUG_PRINT_TIMER_TOTAL
 
 
 void deoglRenderLightPoint::RenderLight( deoglRenderPlan &plan, bool solid,
-deoglRenderPlanMasked *mask, deoglCollideListLight &cllight ){
+const deoglRenderPlanMasked *mask, deoglCollideListLight &cllight ){
 	deoglRLight &light = *cllight.GetLight();
 	deoglRenderThread &renderThread = GetRenderThread();
 	const deoglConfiguration &config = renderThread.GetConfiguration();

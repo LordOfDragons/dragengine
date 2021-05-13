@@ -473,12 +473,12 @@ void deoglRDecal::MarkTUCsDirty(){
 
 
 
-void deoglRDecal::PrepareForRender( deoglRenderPlan &plan ){
+void deoglRDecal::PrepareForRender( deoglRenderPlan&, const deoglRenderPlanMasked *mask ){
 	pUpdateUseSkin();
 	pPrepareVBO();
 	pPrepareParamBlocks();
 	pPrepareTUCs();
-	pPrepareSkinStateRenderables();
+	pPrepareSkinStateRenderables( mask );
 }
 
 void deoglRDecal::PrepareQuickDispose(){
@@ -774,7 +774,7 @@ void deoglRDecal::pPrepareParamBlocks(){
 	}
 }
 
-void deoglRDecal::pPrepareSkinStateRenderables(){
+void deoglRDecal::pPrepareSkinStateRenderables( const deoglRenderPlanMasked *renderPlanMask ){
 	if( ! pDirtyPrepareSkinStateRenderables ){
 		return;
 	}
@@ -782,7 +782,7 @@ void deoglRDecal::pPrepareSkinStateRenderables(){
 	pDirtyPrepareSkinStateRenderables = false;
 	
 	if( pSkinState ){
-		pSkinState->PrepareRenderables( pSkin, pDynamicSkin );
+		pSkinState->PrepareRenderables( pSkin, pDynamicSkin, renderPlanMask );
 	}
 }
 

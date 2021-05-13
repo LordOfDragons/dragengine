@@ -260,7 +260,7 @@ void deoglRenderWorld::RenderBlackScreen( deoglRenderPlan &plan ){
 	defren.SwapPostProcessTarget();
 }
 
-void deoglRenderWorld::RenderWorld( deoglRenderPlan &plan, deoglRenderPlanMasked *mask ){
+void deoglRenderWorld::RenderWorld( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask ){
 DBG_ENTER_PARAM("RenderWorld", "%p", mask)
 DEBUG_RESET_TIMER
 //	bool maskedRendering = info->GetUseRenderMask();
@@ -532,7 +532,7 @@ DBG_EXIT("RenderWorld")
 
 
 
-void deoglRenderWorld::PrepareRenderParamBlock( deoglRenderPlan &plan, deoglRenderPlanMasked *mask ){
+void deoglRenderWorld::PrepareRenderParamBlock( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask ){
 DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 	deoglRenderThread &renderThread = GetRenderThread();
 	const decDMatrix matrixEnvMap( plan.GetRefPosCameraMatrix().GetRotationMatrix().Invert() );

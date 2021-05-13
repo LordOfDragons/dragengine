@@ -725,7 +725,7 @@ void deoglEnvironmentMap::RenderEnvCubeMap( deoglRenderPlan &parentPlan ){
 			deoglCubeMap::CreateMatrixForFace( matrixCamera, pPosition, vCubeFaces[ cmf ] );
 			plan.SetCameraMatrix( matrixCamera );
 			
-			plan.PrepareRender();
+			plan.PrepareRender( NULL );
 			// ^-- this can cause ourself to be marked for deletion. due to the render plan
 			//     keeping a guard reference we do not die ending up with a segfault but the
 			//     pEnvMap has been NULL-ed already. if pEnvMap is NULL we drop out since

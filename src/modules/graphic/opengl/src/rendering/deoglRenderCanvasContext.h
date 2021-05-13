@@ -29,17 +29,19 @@ class deoglRCanvas;
 class deoglRCanvasView;
 class deoglRenderTarget;
 class deoglTexture;
+class deoglRenderPlanMasked;
 
 
 
 /**
- * \brief Render canvas context.
+ * Render canvas context.
  */
 class deoglRenderCanvasContext{
 private:
 	deoglFramebuffer *pFBO;
 	decPoint pViewportOffset;
 	decPoint pViewportSize;
+	const deoglRenderPlanMasked *pRenderPlanMask;
 	
 	decVector2 pClipFactor;
 	decVector2 pClipMin;
@@ -58,17 +60,19 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create copy of a render canvas context. */
+	/** Create copy of a render canvas context. */
 	deoglRenderCanvasContext( const deoglRenderCanvasContext &copy );
 	
-	/** \brief Create render canvas context for an initial canvas view. */
+	/** Create render canvas context for an initial canvas view. */
 	deoglRenderCanvasContext( const deoglRCanvas &canvas, deoglFramebuffer *fbo,
-		const decPoint &viewportOffset, const decPoint &viewportSize, bool upsideDown );
+		const decPoint &viewportOffset, const decPoint &viewportSize, bool upsideDown,
+		const deoglRenderPlanMasked *renderPlanMask );
 	
-	/** \brief Create render canvas context for a child canvas. */
-	deoglRenderCanvasContext( const deoglRenderCanvasContext &parentContext, const deoglRCanvas &childCanvas );
+	/** Create render canvas context for a child canvas. */
+	deoglRenderCanvasContext( const deoglRenderCanvasContext &parentContext,
+		const deoglRCanvas &childCanvas );
 	
-	/** \brief Clean up render canvas context. */
+	/** Clean up render canvas context. */
 	~deoglRenderCanvasContext();
 	/*@}*/
 	
@@ -76,80 +80,82 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Framebuffer if offscreen rendering or \em NULL to use the primary framebuffer. */
+	/** Framebuffer if offscreen rendering or \em NULL to use the primary framebuffer. */
 	inline deoglFramebuffer *GetFBO() const{ return pFBO; }
 	
-	/** \brief Viewport offset. */
+	/** Viewport offset. */
 	inline const decPoint &GetViewportOffset() const{ return pViewportOffset; }
 	
-	/** \brief Viewport size. */
+	/** Viewport size. */
 	inline const decPoint &GetViewportSize() const{ return pViewportSize; }
 	
+	/** Render plan mask or NULL. */
+	inline const deoglRenderPlanMasked *GetRenderPlanMask() const{ return pRenderPlanMask; }
 	
 	
-	/** \brief Factor to scale clipping to proper opengl coordinates. */
+	/** Factor to scale clipping to proper opengl coordinates. */
 	inline const decVector2 &GetClipFactor() const{ return pClipFactor; }
 	
-	/** \brief Rectangular clipping minimum. Shader version of glViewport/glScissor. */
+	/** Rectangular clipping minimum. Shader version of glViewport/glScissor. */
 	inline const decVector2 &GetClipMin() const{ return pClipMin; }
 	
-	/** \brief Set rectangular clipping minimum. Shader version of glViewport/glScissor. */
+	/** Set rectangular clipping minimum. Shader version of glViewport/glScissor. */
 	void SetClipMin( const decVector2 &clipMin );
 	
-	/** \brief Rectangular clipping maximum. Shader version of glViewport/glScissor. */
+	/** Rectangular clipping maximum. Shader version of glViewport/glScissor. */
 	inline const decVector2 &GetClipMax() const{ return pClipMax; }
 	
-	/** \brief Set rectangular clipping maximum. Shader version of glViewport/glScissor. */
+	/** Set rectangular clipping maximum. Shader version of glViewport/glScissor. */
 	void SetClipMax( const decVector2 &clipMax );
 	
-	/** \brief Clip max is less than or equal to clip min for at least one coordinate. */
+	/** Clip max is less than or equal to clip min for at least one coordinate. */
 	bool IsZeroClip() const;
 	
 	
 	
-	/** \brief Transformation relative to render target. */
+	/** Transformation relative to render target. */
 	inline const decTexMatrix2 &GetTransform() const{ return pTransform; }
 	
-	/** \brief Set transformation relative to render target. */
+	/** Set transformation relative to render target. */
 	void SetTransform( const decTexMatrix2 &transform );
 	
-	/** \brief Texture coordinates clamp minimum. */
+	/** Texture coordinates clamp minimum. */
 	inline const decVector2 &GetTCClampMinimum() const{ return pTCClampMin; }
 	
-	/** \brief Set texture coordinates clamp minimum. */
+	/** Set texture coordinates clamp minimum. */
 	void SetTCClampMinimum( const decVector2 &clamp );
 	
-	/** \brief Texture coordinates clamp maximum. */
+	/** Texture coordinates clamp maximum. */
 	inline const decVector2 &GetTCClampMaximum() const{ return pTCClampMax; }
 	
-	/** \brief Set texture coordinates clamp maximum. */
+	/** Set texture coordinates clamp maximum. */
 	void SetTCClampMaximum( const decVector2 &clamp );
 	
-	/** \brief Color transformation relative to render target. */
+	/** Color transformation relative to render target. */
 	inline const decColorMatrix &GetColorTransform() const{ return pColorTransform; }
 	
-	/** \brief Set color transformation relative to render target. */
+	/** Set color transformation relative to render target. */
 	void SetColorTransform( const decColorMatrix &transform );
 	
-	/** \brief Transparency relative to render target. */
+	/** Transparency relative to render target. */
 	inline float GetTransparency() const{ return pTransparency; }
 	
-	/** \brief Set transparency relative to render target. */
+	/** Set transparency relative to render target. */
 	void SetTransparency( float transparency );
 	
-	/** \brief Mask or NULL. */
+	/** Mask or NULL. */
 	inline deoglTexture *GetMask() const{ return pMask; }
 	
-	/** \brief Set mask or NULL. */
+	/** Set mask or NULL. */
 	void SetMask( deoglTexture *mask );
 	
-	/** \brief Transformation relative to mask render target. */
+	/** Transformation relative to mask render target. */
 	inline const decTexMatrix2 &GetTransformMask() const{ return pTransformMask; }
 	
-	/** \brief Set transformation relative to mask render target. */
+	/** Set transformation relative to mask render target. */
 	void SetTransformMask( const decTexMatrix2 &transform );
 	
-	/** \brief Update transformation mask from transformation. */
+	/** Update transformation mask from transformation. */
 	void UpdateTransformMask();
 	/*@}*/
 	

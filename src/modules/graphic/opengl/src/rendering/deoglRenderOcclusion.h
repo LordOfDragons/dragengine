@@ -24,19 +24,20 @@
 
 #include "deoglRenderBase.h"
 
-class deoglCollisionFrustum;
 class deoglAddToRenderTask;
 class deoglCollideList;
+class deoglCollisionFrustum;
 class deoglCubeMap;
 class deoglOcclusionMap;
 class deoglOcclusionTest;
 class deoglRenderPlan;
 class deoglRenderPlanSkyLight;
+class deoglRenderPlanMasked;
 class deoglRenderTask;
-class deoglSPBlockUBO;
-class deoglShaderProgram;
-class deoglRSkyLayer;
 class deoglRSkyInstanceLayer;
+class deoglRSkyLayer;
+class deoglShaderProgram;
+class deoglSPBlockUBO;
 
 
 /**
@@ -45,7 +46,9 @@ class deoglRSkyInstanceLayer;
 class deoglRenderOcclusion : public deoglRenderBase{
 private:
 	deoglShaderProgram *pShaderOccMap;
+	deoglShaderProgram *pShaderOccMapClipPlane;
 	deoglShaderProgram *pShaderOccMapOrtho;
+	deoglShaderProgram *pShaderOccMapOrthoClipPlane;
 	deoglShaderProgram *pShaderOccMapDownSample;
 	deoglShaderProgram *pShaderOccTest;
 	deoglShaderProgram *pShaderOccTestDual;
@@ -78,13 +81,13 @@ public:
 	void AddOccMapDefines( deoglShaderDefines &defines );
 	
 	/** Render occlusion tests. */
-	void RenderTestsCamera( deoglRenderPlan &plan );
+	void RenderTestsCamera( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask );
 	
 	/** Render occlusion tests. */
 	void RenderTestsSkyLayer( deoglRenderPlan &plan, deoglRenderPlanSkyLight &planSkyLigh );
 	
 	/** Render occlusion meshes into the occlusion map. */
-	void RenderOcclusionMap( deoglRenderPlan &plan );
+	void RenderOcclusionMap( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask );
 	
 	/** Render occlusion tests. */
 	void RenderOcclusionTests( deoglOcclusionTest &occlusionTest, deoglOcclusionMap &occlusionMap,

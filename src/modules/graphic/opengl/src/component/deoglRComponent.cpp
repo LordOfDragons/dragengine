@@ -1119,13 +1119,13 @@ void deoglRComponent::WorldReferencePointChanged(){
 
 
 
-void deoglRComponent::PrepareForRender( deoglRenderPlan &plan ){
+void deoglRComponent::PrepareForRender( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask ){
 	pPrepareModelVBOs();
 	pPrepareLODVBOs();
 	pPrepareRenderEnvMap();
 	
 	pCheckRenderModifier( plan.GetCamera() );
-	pPrepareSkinStateRenderables();
+	pPrepareSkinStateRenderables( mask );
 	pPrepareSolidity();
 	
 	pPrepareParamBlocks();
@@ -1136,7 +1136,7 @@ void deoglRComponent::PrepareForRender( deoglRenderPlan &plan ){
 	pPrepareDynOccMesh();
 	pPrepareOccMeshRTSInstances(); // requires (dyn) occmesh VBOs to be prepared
 	
-	pPrepareDecals( plan );
+	pPrepareDecals( plan, mask );
 }
 
 
@@ -2047,20 +2047,20 @@ void deoglRComponent::pPrepareRenderEnvMap(){
 	//pOgl->LogInfoFormat( "update component %p render env map %p\n", pComponent, pRenderEnvMap );
 }
 
-void deoglRComponent::pPrepareSkinStateRenderables(){
+void deoglRComponent::pPrepareSkinStateRenderables( const deoglRenderPlanMasked *plan ){
 	if( ! pDirtyPrepareSkinStateRenderables ){
 		return;
 	}
 	pDirtyPrepareSkinStateRenderables = false;
 	
 	if( pSkinState ){
-		pSkinState->PrepareRenderables( pSkin, pDynamicSkin );
+		pSkinState->PrepareRenderables( pSkin, pDynamicSkin, plan );
 	}
 	
 	const int textureCount = pTextures.GetCount();
 	int i;
 	for( i=0; i<textureCount; i++ ){
-		( ( deoglRComponentTexture* )pTextures.GetAt( i ) )->PrepareSkinStateRenderables();
+		( ( deoglRComponentTexture* )pTextures.GetAt( i ) )->PrepareSkinStateRenderables( plan );
 	}
 }
 
@@ -2163,7 +2163,7 @@ void deoglRComponent::pPrepareTextureParamBlocks(){
 	}
 }
 
-void deoglRComponent::pPrepareDecals( deoglRenderPlan &plan ){
+void deoglRComponent::pPrepareDecals( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask ){
 	if( ! pDirtyDecals ){
 		return;
 	}
@@ -2172,7 +2172,7 @@ void deoglRComponent::pPrepareDecals( deoglRenderPlan &plan ){
 	const int count = pDecals.GetCount();
 	int i;
 	for( i=0; i<count; i++ ){
-		( ( deoglRDecal* )pDecals.GetAt( i ) )->PrepareForRender( plan );
+		( ( deoglRDecal* )pDecals.GetAt( i ) )->PrepareForRender( plan, mask );
 	}
 }
 

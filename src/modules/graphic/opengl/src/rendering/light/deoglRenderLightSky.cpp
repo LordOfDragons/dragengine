@@ -269,7 +269,7 @@ deoglRenderLightSky::~deoglRenderLightSky(){
 // Rendering
 //////////////
 
-void deoglRenderLightSky::RenderLights( deoglRenderPlan &plan, bool solid, deoglRenderPlanMasked *mask ){
+void deoglRenderLightSky::RenderLights( deoglRenderPlan &plan, bool solid, const deoglRenderPlanMasked *mask ){
 	if( ! solid ){
 // 		return;
 	}
@@ -356,7 +356,7 @@ void deoglRenderLightSky::RenderAO( deoglRenderPlan &plan ){
 }
 
 void deoglRenderLightSky::RenderLight( deoglRenderPlan &plan, bool solid,
-deoglRenderPlanMasked *mask, deoglRenderPlanSkyLight &planSkyLight ){
+const deoglRenderPlanMasked *mask, deoglRenderPlanSkyLight &planSkyLight ){
 	if( ! planSkyLight.GetUseLight() ){
 		return;
 	}
@@ -550,7 +550,7 @@ deoglRenderPlanMasked *mask, deoglRenderPlanSkyLight &planSkyLight ){
 
 
 void deoglRenderLightSky::RenderShadows( deoglRenderPlan &plan, bool solid,
-deoglRenderPlanMasked *mask, deoglRenderPlanSkyLight &planSkyLight ){
+const deoglRenderPlanMasked *mask, deoglRenderPlanSkyLight &planSkyLight ){
 	deoglRenderThread &renderThread = GetRenderThread();
 	deoglShadowMapper &shadowMapper = renderThread.GetShadowMapper();
 	

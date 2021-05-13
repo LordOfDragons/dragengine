@@ -59,6 +59,7 @@ class deoglSkinState;
 class deoglVAO;
 class deoglVBOLayout;
 class deoglWorldOctree;
+class deoglRenderPlanMasked;
 
 class deComponent;
 
@@ -518,7 +519,7 @@ public:
 	
 	
 	/** Prepare for render. Called by deoglRWorld if registered previously. */
-	void PrepareForRender( deoglRenderPlan &plan );
+	void PrepareForRender( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask );
 	
 	/** Prepare for quick disposal of component. */
 	void PrepareQuickDispose();
@@ -731,11 +732,11 @@ private:
 	void pPrepareModelVBOs();
 	void pPrepareLODVBOs();
 	void pPrepareRenderEnvMap();
-	void pPrepareSkinStateRenderables();
+	void pPrepareSkinStateRenderables( const deoglRenderPlanMasked *mask );
 	void pPrepareTextureTUCs();
 	void pPrepareParamBlocks();
 	void pPrepareTextureParamBlocks();
-	void pPrepareDecals( deoglRenderPlan &plan );
+	void pPrepareDecals( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask );
 	void pPrepareOccMeshVBO();
 	void pPrepareOccMeshRTSInstances();
 	void pPrepareDynOccMesh();

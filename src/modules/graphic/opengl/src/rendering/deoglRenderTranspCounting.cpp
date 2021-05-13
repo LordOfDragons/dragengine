@@ -181,7 +181,7 @@ deoglRenderTranspCounting::~deoglRenderTranspCounting(){
 
 
 
-void deoglRenderTranspCounting::CountTransparency( deoglRenderPlan &plan, deoglRenderPlanMasked *mask ){
+void deoglRenderTranspCounting::CountTransparency( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask ){
 DBG_ENTER_PARAM("deoglRenderTranspCounting::CountTransparency", "%p", mask)
 	deoglRenderThread &renderThread = GetRenderThread();
 	deoglRenderGeometry &rengeom = renderThread.GetRenderers().GetGeometry();

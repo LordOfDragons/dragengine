@@ -72,9 +72,9 @@ void deoglRDSRenderableCamera::SetCamera( deoglRCamera *camera ){
 	}
 }
 
-void deoglRDSRenderableCamera::PrepareForRender(){
+void deoglRDSRenderableCamera::PrepareForRender( const deoglRenderPlanMasked *renderPlanMask ){
 	if( pCamera ){
-		pCamera->GetPlan().PrepareRender();
+		pCamera->GetPlan().PrepareRender( renderPlanMask );
 	}
 }
 

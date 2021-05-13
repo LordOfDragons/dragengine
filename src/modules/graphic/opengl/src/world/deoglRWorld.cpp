@@ -184,7 +184,7 @@ void deoglRWorld::EarlyPrepareForRender( deoglRenderPlan &plan ){
 	SPECIAL_TIMER_PRINT_EARLY("Lights")
 }
 
-void deoglRWorld::PrepareForRender( deoglRenderPlan &plan ){
+void deoglRWorld::PrepareForRender( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask ){
 	INIT_SPECIAL_TIMING
 	int i, count;
 	
@@ -243,7 +243,7 @@ void deoglRWorld::PrepareForRender( deoglRenderPlan &plan ){
 		deoglRComponent &component = *( ( deoglRComponent* )entry->GetOwner() );
 		pListPrepareForRenderComponents.Remove( entry );
 		
-		component.PrepareForRender( plan ); // can potentially re-add the component
+		component.PrepareForRender( plan, mask ); // can potentially re-add the component
 		
 		if( entry == tailComponent ){
 			break; // processed last component. re-added component will come next
@@ -258,7 +258,7 @@ void deoglRWorld::PrepareForRender( deoglRenderPlan &plan ){
 		deoglRBillboard &billboard = *( ( deoglRBillboard* )entry->GetOwner() );
 		pListPrepareForRenderBillboards.Remove( entry );
 		
-		billboard.PrepareForRender( plan ); // can potentially re-add the billboard
+		billboard.PrepareForRender( plan, mask ); // can potentially re-add the billboard
 		
 		if( entry == tailBillboard ){
 			break; // processed last billboard. re-added billboard will come next
@@ -273,7 +273,7 @@ void deoglRWorld::PrepareForRender( deoglRenderPlan &plan ){
 		deoglRLight &light = *( ( deoglRLight* )entry->GetOwner() );
 		pListPrepareForRenderLights.Remove( entry );
 		
-		light.PrepareForRender(); // can potentially re-add the light
+		light.PrepareForRender( mask ); // can potentially re-add the light
 		
 		if( entry == tailLight ){
 			break; // processed last light. re-added light will come next

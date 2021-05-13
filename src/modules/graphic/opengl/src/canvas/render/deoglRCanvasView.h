@@ -27,6 +27,7 @@
 #include <dragengine/common/collection/decObjectList.h>
 
 class deoglRenderTarget;
+class deoglRenderPlanMasked;
 
 
 /**
@@ -85,12 +86,12 @@ public:
 	 *          returns a render target with a valid texture object suitable for
 	 *          rendering unless an error occurred.
 	 */
-	void PrepareRenderTarget();
+	void PrepareRenderTarget( const deoglRenderPlanMasked *renderPlanMask );
 	
 	
 	
 	/** \brief Prepare for rendering. */
-	virtual void PrepareForRender();
+	virtual void PrepareForRender( const deoglRenderPlanMasked *renderPlanMask );
 	
 	/**
 	 * \brief Render.

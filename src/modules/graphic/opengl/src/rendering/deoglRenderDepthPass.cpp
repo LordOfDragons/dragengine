@@ -260,7 +260,7 @@ deoglRenderDepthPass::~deoglRenderDepthPass(){
 
 
 
-void deoglRenderDepthPass::RenderSolidDepthPass( deoglRenderPlan &plan, deoglRenderPlanMasked *mask ){
+void deoglRenderDepthPass::RenderSolidDepthPass( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask ){
 	deoglRenderThread &renderThread = GetRenderThread();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	deoglRenderWorld &renworld = renderThread.GetRenderers().GetWorld();
@@ -347,7 +347,7 @@ void deoglRenderDepthPass::RenderSolidDepthPass( deoglRenderPlan &plan, deoglRen
 
 
 
-void deoglRenderDepthPass::RenderDepth( deoglRenderPlan &plan, deoglRenderPlanMasked *mask,
+void deoglRenderDepthPass::RenderDepth( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask,
 bool solid, bool maskedOnly, bool reverseDepthTest ){
 DBG_ENTER_PARAM3("RenderDepthPass", "%p", mask, "%d", solid, "%d", maskedOnly)
 	deoglRenderThread &renderThread = GetRenderThread();
@@ -736,7 +736,7 @@ DBG_EXIT("DownsampleDepth")
 
 
 
-void deoglRenderDepthPass::RenderOcclusionQueryPass( deoglRenderPlan &plan, deoglRenderPlanMasked *mask ){
+void deoglRenderDepthPass::RenderOcclusionQueryPass( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask ){
 DBG_ENTER_PARAM("RenderOcclusionQueryPass", "%p", mask)
 	deoglRenderThread &renderThread = GetRenderThread();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();

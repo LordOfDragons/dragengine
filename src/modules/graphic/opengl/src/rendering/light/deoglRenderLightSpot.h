@@ -109,10 +109,10 @@ public:
 	void CalculateBoxBoundary( deoglRenderPlan &plan, deoglRLight &light );
 	
 	/** \brief Render lights. */
-	void RenderLights( deoglRenderPlan &plan, bool solid, deoglRenderPlanMasked *mask );
+	void RenderLights( deoglRenderPlan &plan, bool solid, const deoglRenderPlanMasked *mask );
 	
 	/** \brief Render light. */
-	void RenderLight( deoglRenderPlan &plan, bool solid, deoglRenderPlanMasked *mask,
+	void RenderLight( deoglRenderPlan &plan, bool solid, const deoglRenderPlanMasked *mask,
 		deoglCollideListLight &cllight );
 	
 	/** \brief Activate textures for lighting. */

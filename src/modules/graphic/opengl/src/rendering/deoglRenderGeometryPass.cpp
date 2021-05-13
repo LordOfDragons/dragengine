@@ -192,7 +192,7 @@ DBG_ENTER("RenderDecals")
 DBG_EXIT("RenderDecals")
 }
 
-void deoglRenderGeometryPass::RenderSolidGeometryPass( deoglRenderPlan &plan, deoglRenderPlanMasked *mask ){
+void deoglRenderGeometryPass::RenderSolidGeometryPass( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask ){
 DBG_ENTER_PARAM("RenderSolidGeometryPass", "%p", mask)
 	deoglRenderThread &renderThread = GetRenderThread();
 	deoglRenderGeometry &rengeom = renderThread.GetRenderers().GetGeometry();

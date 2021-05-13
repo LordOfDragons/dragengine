@@ -71,7 +71,7 @@ void deoglRDSRenderableVideoFrame::SetVideoPlayer( deoglRVideoPlayer *videoPlaye
 	}
 }
 
-void deoglRDSRenderableVideoFrame::PrepareForRender(){
+void deoglRDSRenderableVideoFrame::PrepareForRender( const deoglRenderPlanMasked * ){
 	if( pVideoPlayer ){
 		pVideoPlayer->UpdateTexture();
 	}

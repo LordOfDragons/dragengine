@@ -499,7 +499,7 @@ void deoglRenderLightSpot::CalculateBoxBoundary( deoglRenderPlan &plan, deoglRLi
 
 
 
-void deoglRenderLightSpot::RenderLights( deoglRenderPlan &plan, bool solid, deoglRenderPlanMasked *mask ){
+void deoglRenderLightSpot::RenderLights( deoglRenderPlan &plan, bool solid, const deoglRenderPlanMasked *mask ){
 	const deoglCollideList &clist = plan.GetCollideList();
 	const int lightCount = clist.GetLightCount();
 	int i;
@@ -531,7 +531,7 @@ void deoglRenderLightSpot::RenderLights( deoglRenderPlan &plan, bool solid, deog
 
 #include "../../debug/deoglDebugStateSnapshot.h"
 void deoglRenderLightSpot::RenderLight( deoglRenderPlan &plan, bool solid,
-deoglRenderPlanMasked *mask, deoglCollideListLight &cllight ){
+const deoglRenderPlanMasked *mask, deoglCollideListLight &cllight ){
 	deoglRenderThread &renderThread = GetRenderThread();
 	deoglRLight &light = *cllight.GetLight();
 	deoglShadowCaster &shadowCaster = *light.GetShadowCaster();

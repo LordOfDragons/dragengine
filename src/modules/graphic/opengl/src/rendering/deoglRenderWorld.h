@@ -103,10 +103,10 @@ public:
 	void RenderBlackScreen( deoglRenderPlan &plan );
 	
 	/** Render world. */
-	void RenderWorld( deoglRenderPlan &plan, deoglRenderPlanMasked *mask );
+	void RenderWorld( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask );
 	
 	/** Prepare render parameter shader parameter block. */
-	void PrepareRenderParamBlock( deoglRenderPlan &plan, deoglRenderPlanMasked *mask );
+	void PrepareRenderParamBlock( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask );
 	
 	/** Render masked pass. */
 	void RenderMaskedPass( deoglRenderPlan &plan );

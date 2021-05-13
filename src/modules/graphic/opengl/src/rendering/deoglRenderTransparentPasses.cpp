@@ -181,7 +181,7 @@ deoglRenderTransparentPasses::~deoglRenderTransparentPasses(){
 
 
 
-void deoglRenderTransparentPasses::RenderTransparentPasses( deoglRenderPlan &plan, deoglRenderPlanMasked *mask ){
+void deoglRenderTransparentPasses::RenderTransparentPasses( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask ){
 DBG_ENTER_PARAM("RenderTransparentPasses", "%p", mask)
 	// to handle pixel correct transparency a depth peeling approach is used but different
 	// than the conventional depth peeling approach. in the conventional approach peeling
@@ -332,7 +332,7 @@ DBG_EXIT("RenderTransparentPasses")
 
 
 
-void deoglRenderTransparentPasses::RenderTransparentGeometryPass( deoglRenderPlan &plan, deoglRenderPlanMasked *mask ){
+void deoglRenderTransparentPasses::RenderTransparentGeometryPass( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask ){
 DBG_ENTER_PARAM("RenderTransparentGeometryPass", "%p", mask)
 	deoglRenderThread &renderThread = GetRenderThread();
 	deoglRenderGeometry &rengeom = renderThread.GetRenderers().GetGeometry();
@@ -679,7 +679,7 @@ DBG_EXIT("RenderTransparentGeometryPass")
 }
 
 void deoglRenderTransparentPasses::RenderTransparentLimitDepth(
-deoglRenderPlan &plan, deoglRenderPlanMasked *mask ){
+deoglRenderPlan &plan, const deoglRenderPlanMasked *mask ){
 DBG_ENTER_PARAM("RenderTransparentLimitDepth", "%p", mask)
 	deoglRenderThread &renderThread = GetRenderThread();
 	deoglRenderDepthPass &rendepth = renderThread.GetRenderers().GetDepthPass();
@@ -827,7 +827,7 @@ DBG_EXIT("RenderTransparentLimitDepth")
 
 
 void deoglRenderTransparentPasses::RenderVolumetricPass( deoglRenderPlan &plan,
-deoglRenderPlanMasked *mask, bool inbetween ){
+const deoglRenderPlanMasked *mask, bool inbetween ){
 	deoglRenderThread &renderThread = GetRenderThread();
 	if( renderThread.GetChoices().GetRealTransparentParticles() ){
 		return;

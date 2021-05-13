@@ -623,13 +623,13 @@ void deoglRRenderWindow::Render(){
 	deoglRCanvas * const debugOverlayCanvas = pRenderThread.GetCanvasDebugOverlay();
 	bool isMainWindow = true; // a problem only if more than one render window exists
 	
-	pRCanvasView->PrepareForRender();
+	pRCanvasView->PrepareForRender( NULL );
 	if( isMainWindow ){
 		if( inputOverlayCanvas ){
-			inputOverlayCanvas->PrepareForRender();
+			inputOverlayCanvas->PrepareForRender( NULL );
 		}
 		if( debugOverlayCanvas ){
-			debugOverlayCanvas->PrepareForRender();
+			debugOverlayCanvas->PrepareForRender( NULL );
 		}
 	}
 	
@@ -638,7 +638,8 @@ void deoglRRenderWindow::Render(){
 	// render canvas
 	pRenderThread.GetFramebuffer().Activate( NULL );
 	
-	const deoglRenderCanvasContext context( *pRCanvasView, NULL, decPoint(), decPoint( pWidth, pHeight ), true );
+	const deoglRenderCanvasContext context( *pRCanvasView, NULL,
+		decPoint(), decPoint( pWidth, pHeight ), true, NULL );
 	pRenderThread.GetRenderers().GetCanvas().Prepare( context );
 	
 	pRCanvasView->Render( context );

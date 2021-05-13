@@ -45,6 +45,7 @@ class deoglSharedSPBElement;
 class deoglSharedSPBRTIGroup;
 class deoglRenderPlan;
 class deoglOcclusionTest;
+class deoglRenderPlanMasked;
 
 class deBillboard;
 
@@ -189,7 +190,7 @@ public:
 	inline const deoglSkinRendered &GetSkinRendered() const{ return pSkinRendered; }
 	
 	void DirtyPrepareSkinStateRenderables();
-	void PrepareSkinStateRenderables();
+	void PrepareSkinStateRenderables( const deoglRenderPlanMasked *renderPlanMask );
 	void DynamicSkinRenderablesChanged();
 	void UpdateRenderableMapping();
 	
@@ -468,7 +469,7 @@ public:
 	
 	
 	/** Prepare for render. Called by deoglRWorld if registered previously. */
-	void PrepareForRender( deoglRenderPlan &plan );
+	void PrepareForRender( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask );
 	
 	/** Prepare for quick disposal of component. */
 	void PrepareQuickDispose();

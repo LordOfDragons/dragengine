@@ -159,9 +159,9 @@ void deoglRCanvas::DirtyMaskRenderTarget(){
 
 
 
-void deoglRCanvas::PrepareForRender(){
+void deoglRCanvas::PrepareForRender( const deoglRenderPlanMasked *renderPlanMask ){
 	if( pMask ){
-		pMask->PrepareForRender();
+		pMask->PrepareForRender( renderPlanMask );
 		
 		const int width = ( int )( GetSize().x + 0.5f );
 		const int height = ( int )( GetSize().y + 0.5f );
@@ -180,7 +180,8 @@ void deoglRCanvas::PrepareForRender(){
 			
 			const decPoint viewportSize( pMaskRenderTarget->GetWidth(), pMaskRenderTarget->GetHeight() );
 			
-			deoglRenderCanvasContext context( *pMask, pMaskRenderTarget->GetFBO(), decPoint(), viewportSize, false );
+			deoglRenderCanvasContext context( *pMask, pMaskRenderTarget->GetFBO(),
+				decPoint(), viewportSize, false, renderPlanMask );
 			
 			// for rendering into the render target the canvas position and transform has
 			// to be negated. this way rendering with the position and transform as used

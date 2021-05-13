@@ -74,9 +74,9 @@ void deoglRDSRenderableCanvas::SetCanvas( deoglRCanvasView *canvas ){
 	}
 }
 
-void deoglRDSRenderableCanvas::PrepareForRender(){
+void deoglRDSRenderableCanvas::PrepareForRender( const deoglRenderPlanMasked *renderPlanMask ){
 	if( pCanvas ){
-		pCanvas->PrepareRenderTarget();
+		pCanvas->PrepareRenderTarget( renderPlanMask );
 	}
 }
 

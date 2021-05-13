@@ -232,7 +232,7 @@ void deoglSkinRenderedTexture::pMirrorAddRenderPlans( deoglRenderPlan &plan ){
 	maskedPlan.SetClipDistance( mirrorNormal * mirrorRefPoint );
 	
 	// prepare the just added plan for rendering
-	pPlan->PrepareRender();
+	pPlan->PrepareRender( &maskedPlan );
 }
 
 void deoglSkinRenderedTexture::pPlaneFromTexture( decVector &planeNormal, decVector &planePosition ) const{

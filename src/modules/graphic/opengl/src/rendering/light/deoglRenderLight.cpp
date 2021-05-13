@@ -284,7 +284,7 @@ deoglRenderLight::~deoglRenderLight(){
 // Rendering
 //////////////
 
-void deoglRenderLight::RenderLights( deoglRenderPlan &plan, bool solid, deoglRenderPlanMasked *mask ){
+void deoglRenderLight::RenderLights( deoglRenderPlan &plan, bool solid, const deoglRenderPlanMasked *mask ){
 	deoglRenderThread &renderThread = GetRenderThread();
 	const deoglConfiguration &config = renderThread.GetConfiguration();
 	const bool sssssEnable = config.GetSSSSSEnable();

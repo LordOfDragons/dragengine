@@ -50,6 +50,7 @@ class deoglSkinState;
 class deoglSkinTexture;
 class deoglWorldOctree;
 class deoglOcclusionTest;
+class deoglRenderPlanMasked;
 
 class decConvexVolumeList;
 class deoglDCollisionVolume;
@@ -381,7 +382,7 @@ public:
 	void UpdateSkinStateCalculatedProperties();
 	
 	void DirtyPrepareSkinStateRenderables();
-	void PrepareSkinStateRenderables();
+	void PrepareSkinStateRenderables( const deoglRenderPlanMasked *renderPlanMask );
 	
 	void DynamicSkinRenderablesChanged();
 	void UpdateRenderableMapping();
@@ -526,7 +527,7 @@ public:
 	void EarlyPrepareForRender();
 	
 	/** Prepare for rendering. */
-	void PrepareForRender();
+	void PrepareForRender( const deoglRenderPlanMasked *renderPlanMask );
 	
 	
 	

@@ -917,16 +917,16 @@ int element, const deoglSkinShader &skinShader ){
 
 
 
-void deoglRComponentTexture::PrepareSkinStateRenderables(){
+void deoglRComponentTexture::PrepareSkinStateRenderables( const deoglRenderPlanMasked *renderPlanMask ){
 	if( ! pSkinState ){
 		return;
 	}
 	
 	if( pDynamicSkin ){
-		pSkinState->PrepareRenderables( pSkin, pDynamicSkin );
+		pSkinState->PrepareRenderables( pSkin, pDynamicSkin, renderPlanMask );
 		
 	}else{
-		pSkinState->PrepareRenderables( pSkin, pComponent.GetDynamicSkin() );
+		pSkinState->PrepareRenderables( pSkin, pComponent.GetDynamicSkin(), renderPlanMask );
 	}
 	
 	pUpdateIsRendered();

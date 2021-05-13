@@ -204,7 +204,8 @@ void deoglSkinState::SetVideoPlayerAt( int index, deoglRVideoPlayer *videoPlayer
 
 
 
-void deoglSkinState::PrepareRenderables( deoglRSkin *skin, deoglRDynamicSkin *dynamicSkin ){
+void deoglSkinState::PrepareRenderables( deoglRSkin *skin, deoglRDynamicSkin *dynamicSkin,
+const deoglRenderPlanMasked *renderPlanMask ){
 	const int videoPlayerCount = pVideoPlayers.GetCount();
 	int i;
 	for( i=0; i< videoPlayerCount; i++ ){
@@ -221,7 +222,7 @@ void deoglSkinState::PrepareRenderables( deoglRSkin *skin, deoglRDynamicSkin *dy
 		const int hostIndex = skinStateRenderable.GetHostRenderable();
 		
 		if( hostIndex != -1 && dynamicSkin ){
-			dynamicSkin->GetRenderableAt( hostIndex )->PrepareForRender();
+			dynamicSkin->GetRenderableAt( hostIndex )->PrepareForRender( renderPlanMask );
 		}
 	}
 }

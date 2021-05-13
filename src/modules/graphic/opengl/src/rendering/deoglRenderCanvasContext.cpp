@@ -43,6 +43,7 @@ deoglRenderCanvasContext::deoglRenderCanvasContext( const deoglRenderCanvasConte
 pFBO( copy.pFBO ),
 pViewportOffset( copy.pViewportOffset ),
 pViewportSize( copy.pViewportSize ),
+pRenderPlanMask( copy.pRenderPlanMask ),
 
 pClipFactor( copy.pClipFactor ),
 pClipMin( copy.pClipMin ),
@@ -59,10 +60,11 @@ pTransformMask( copy.pTransformMask ){
 
 deoglRenderCanvasContext::deoglRenderCanvasContext( const deoglRCanvas &canvas,
 deoglFramebuffer *fbo, const decPoint &viewportOffset, const decPoint &viewportSize,
-bool upsideDown ) :
+bool upsideDown, const deoglRenderPlanMasked *renderPlanMask ) :
 pFBO( fbo ),
 pViewportOffset( viewportOffset ),
 pViewportSize( viewportSize ),
+pRenderPlanMask( renderPlanMask ),
 
 pClipMin( -1.0f, -1.0f ),
 pClipMax( 1.0f, 1.0f ),
@@ -103,6 +105,7 @@ const deoglRCanvas &childCanvas ) :
 pFBO( parentContext.pFBO ),
 pViewportOffset( parentContext.pViewportOffset ),
 pViewportSize( parentContext.pViewportSize ),
+pRenderPlanMask( parentContext.pRenderPlanMask ),
 
 pClipFactor( parentContext.pClipFactor ),
 

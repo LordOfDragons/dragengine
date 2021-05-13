@@ -45,6 +45,7 @@ class deoglRSkyInstance;
 class deoglWorldOctree;
 class deoglWorldOctreeVisitor;
 class deoglEnvironmentMap;
+class deoglRenderPlanMasked;
 
 
 
@@ -165,7 +166,7 @@ public:
 	void EarlyPrepareForRender( deoglRenderPlan &plan );
 	
 	/** Prepare for rendering. */
-	void PrepareForRender( deoglRenderPlan &plan );
+	void PrepareForRender( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask );
 	
 	void AddPrepareForRenderComponent( deoglRComponent *component );
 	void RemovePrepareForRenderComponent( deoglRComponent *component );

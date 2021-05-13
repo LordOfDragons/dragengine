@@ -31,6 +31,7 @@
 #include "plan/deoglRenderPlanDebug.h"
 #include "plan/deoglRenderPlan.h"
 #include "plan/deoglRenderPlanSkyLight.h"
+#include "plan/deoglRenderPlanMasked.h"
 #include "task/deoglAddToRenderTask.h"
 #include "task/deoglRenderTask.h"
 #include "task/deoglRenderTaskShader.h"
@@ -183,7 +184,9 @@ deoglRenderOcclusion::deoglRenderOcclusion( deoglRenderThread &renderThread ) :
 deoglRenderBase( renderThread ),
 
 pShaderOccMap( NULL ),
+pShaderOccMapClipPlane( NULL ),
 pShaderOccMapOrtho( NULL ),
+pShaderOccMapOrthoClipPlane( NULL ),
 pShaderOccMapDownSample( NULL ),
 pShaderOccTest( NULL ),
 pShaderOccTestDual( NULL ),
@@ -210,10 +213,21 @@ pAddToRenderTask( NULL )
 		pShaderOccMapOrtho->EnsureRTSShader();
 		pShaderOccMapOrtho->GetRTSShader()->SetSPBInstanceIndexBase( 0 );
 		
+		defines.AddDefine( "USE_CLIP_PLANE", "1" );
+		pShaderOccMapOrthoClipPlane = shaderManager.GetProgramWith( sources, defines );
+		pShaderOccMapOrthoClipPlane->EnsureRTSShader();
+		pShaderOccMapOrthoClipPlane->GetRTSShader()->SetSPBInstanceIndexBase( 0 );
+		defines.RemoveDefine( "USE_CLIP_PLANE" );
+		
 		defines.AddDefine( "PERSPECTIVE_TO_LINEAR", "1" );
 		pShaderOccMap = shaderManager.GetProgramWith( sources, defines );
 		pShaderOccMap->EnsureRTSShader();
 		pShaderOccMap->GetRTSShader()->SetSPBInstanceIndexBase( 0 );
+		
+		defines.AddDefine( "USE_CLIP_PLANE", "1" );
+		pShaderOccMapClipPlane = shaderManager.GetProgramWith( sources, defines );
+		pShaderOccMapClipPlane->EnsureRTSShader();
+		pShaderOccMapClipPlane->GetRTSShader()->SetSPBInstanceIndexBase( 0 );
 		defines.RemoveAllDefines();
 		
 		sources = shaderManager.GetSourcesNamed( "DefRen Occlusion OccMap Down-Sample" );
@@ -266,11 +280,12 @@ pAddToRenderTask( NULL )
 		
 		pRenderParamBlock = new deoglSPBlockUBO( renderThread );
 		pRenderParamBlock->SetRowMajor( ! indirectMatrixAccessBug );
-		pRenderParamBlock->SetParameterCount( 4 );
+		pRenderParamBlock->SetParameterCount( 5 );
 		pRenderParamBlock->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtFloat, 4, 4, 6 ); // mat4 pMatrixVP[ 6 ]
 		pRenderParamBlock->GetParameterAt( 1 ).SetAll( deoglSPBParameter::evtFloat, 4, 3, 6 ); // mat4x3 pMatrixV[ 6 ]
 		pRenderParamBlock->GetParameterAt( 2 ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 6 ); // vec4 pTransformZ[ 6 ]
 		pRenderParamBlock->GetParameterAt( 3 ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2 pZToDepth
+		pRenderParamBlock->GetParameterAt( 4 ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4 pClipPlane
 		pRenderParamBlock->MapToStd140();
 		pRenderParamBlock->SetBindingPoint( deoglSkinShader::eubRenderParameters );
 		
@@ -407,7 +422,7 @@ if inverse depth is used.
 Depth compare direction has to change from <= to >= if inverse depth is used.
 */
 
-void deoglRenderOcclusion::RenderTestsCamera( deoglRenderPlan &plan ){
+void deoglRenderOcclusion::RenderTestsCamera( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask ){
 	const deoglConfiguration &config = GetRenderThread().GetConfiguration();
 	
 	if( config.GetOcclusionTestMode() == deoglConfiguration::eoctmNone ){
@@ -439,25 +454,29 @@ void deoglRenderOcclusion::RenderTestsCamera( deoglRenderPlan &plan ){
 	
 	// update render parameter block
 	DEBUG_PRINT_TIMER( "Entering Render Occlusion Map" );
-	decMatrix matrixCamera( plan.GetRefPosCameraMatrix() );
+	const decDMatrix &matrixCamera = plan.GetRefPosCameraMatrix();
 	
-	if( plan.GetFlipCulling() ){
-		matrixCamera = plan.GetRefPosCameraMatrixNonMirrored();
-	}
-	
-	decMatrix matrixProjection( plan.GetFrustumMatrix() ); // occlusion uses linear depth: always non-infinite projection matrix 
+	// linear depth: use non-infinite projection matrix 
+	const decDMatrix &matrixProjection = plan.GetFrustumMatrix();
 	
 	pRenderParamBlock->MapBuffer();
 	try{
 		// 0: pMatrixVP[ 0 ]
 		// 1: pMatrixV[ 0 ]
 		// 2: pTransformZ[ 0 ]
-		// 3: pZToDepth
 		pRenderParamBlock->SetParameterDataMat4x4( 0, matrixCamera * matrixProjection );
 		pRenderParamBlock->SetParameterDataMat4x3( 1, matrixCamera );
-		pRenderParamBlock->SetParameterDataVec4( 2, matrixCamera.a31,
-			matrixCamera.a32, matrixCamera.a33, matrixCamera.a34 );
+		pRenderParamBlock->SetParameterDataVec4( 2, ( float )matrixCamera.a31 * zscale,
+			( float )matrixCamera.a32 * zscale, ( float )matrixCamera.a33 * zscale,
+			( float )matrixCamera.a34 * zscale + occmapResolution * occmapBias );
 		pRenderParamBlock->SetParameterDataVec2( 3, zscale, zoffset + occmapResolution * occmapBias );
+		
+		if( mask && mask->GetUseClipPlane() ){
+			pRenderParamBlock->SetParameterDataVec4( 4, mask->GetClipNormal(), mask->GetClipDistance() );
+			
+		}else{
+			pRenderParamBlock->SetParameterDataVec4( 4, 0.0f, 0.0f, 0.0f, 0.0f ); // pClipPlane
+		}
 		
 	}catch( const deException & ){
 		pRenderParamBlock->UnmapBuffer();
@@ -469,30 +488,52 @@ void deoglRenderOcclusion::RenderTestsCamera( deoglRenderPlan &plan ){
 	// render occlusion map
 	if( renderPlanDebug ){
 		renderPlanDebug->IncrementOccMapObjects( plan.GetCollideList().GetComponentCount() );
-		RenderOcclusionMap( plan );
+		RenderOcclusionMap( plan, mask );
 		renderPlanDebug->IncrementOccMapTriangles( pRenderTask->GetTotalPointCount() / 3 );
 		//glFinish();
 		renderPlanDebug->SetOccMapRenderTime( timer.GetElapsedTime() );
 		
 	}else{
-		RenderOcclusionMap( plan );
+		RenderOcclusionMap( plan, mask );
 	}
 	DEBUG_PRINT_TIMER( "Render occlusion map" );
 	
-	// render visibility tests
-	matrixProjection.a33 = zscale * 2.0f;
-	matrixProjection.a34 = zoffset * 2.0f - 1.0f;
-	matrixCamera = matrixCamera.GetRotationMatrix() * matrixProjection;
+	// render visibility tests. we use linear depth. the shaders do not apply perspective
+	// division to the z coordinate. we thus have to recreate the same transformation applied
+	// during rendering of the occlusion map:
+	//   vDepth = dot( pTransformZ[ 0 ], position )
+	// 
+	// we have to keep the x, y and w transformation the same so the perspective division
+	// works as intended. the z row in the matrix thus has to be modified to reflect the
+	// transformation mentioned above. written out the transformation looks like this:
+	//   depth = (m31 * px + m32 * py + m33 * pz + m34) * scale + offset
+	//   depth = m31 * px * scale + m32 * py * scale + m33 * pz * scale + m34 * scale + offset
+	//   depth = px * (m31 * scale) + py * (m32 * scale) + pz * (m33 * scale) + (m34 * scale + offset)
+	// 
+	// the modified z row values thus have to look like this:
+	//   m31' = m31 * scale
+	//   m32' = m32 * scale
+	//   m33' = m33 * scale
+	//   m34' = m34 * scale + offset
+	// 
+	// note about the rotation part. the test input data is calculated relative to the camera
+	// position. for this reason the transformation part of the camera matrix (this is the
+	// camera position) has to be dropped to not apply it twice. since the last row is (0,0,0,1)
+	// using the rotation part of the matrix is working out of the box.
+	// 
+	// for this reason the last line looks different than above because m34 is 0:
+	//   m34' = offset
 	
-// 	if( plan.GetFlipCulling() ){
-// 		matrixCamera = matrixCamera.GetRotationMatrix()
-// 			* decMatrix::CreateScale( 1.0f, 1.0f, -1.0f ) * matrixProjection;
-// 	}
+	decDMatrix testMatrix( matrixCamera.GetRotationMatrix() * matrixProjection );
+	testMatrix.a31 = matrixCamera.a31 * zscale;
+	testMatrix.a32 = matrixCamera.a32 * zscale;
+	testMatrix.a33 = matrixCamera.a33 * zscale;
+	testMatrix.a34 = zoffset + occmapResolution * occmapBias;
 	
-	plan.SetOcclusionTestMatrix( matrixCamera );
+	plan.SetOcclusionTestMatrix( testMatrix );
 	
 	RenderOcclusionTests( *plan.GetOcclusionTest(), *plan.GetOcclusionMap(),
-		plan.GetOcclusionMapBaseLevel(), -1.0f, matrixCamera );
+		plan.GetOcclusionMapBaseLevel(), -1.0f, testMatrix );
 	DEBUG_PRINT_TIMER( "Render tests" );
 	if( renderPlanDebug ){
 		renderPlanDebug->SetOccTestTime( timer.GetElapsedTime() );
@@ -641,7 +682,7 @@ deoglRenderPlanSkyLight &planSkyLight ){
 	DEBUG_PRINT_TIMER( "Render" );
 }
 
-void deoglRenderOcclusion::RenderOcclusionMap( deoglRenderPlan &plan ){
+void deoglRenderOcclusion::RenderOcclusionMap( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask ){
 	deoglOcclusionMap &occmap = *plan.GetOcclusionMap();
 	const int baselevel = plan.GetOcclusionMapBaseLevel();
 	const deoglCollideList &collideList = plan.GetCollideList();
@@ -750,10 +791,20 @@ void deoglRenderOcclusion::RenderOcclusionMap( deoglRenderPlan &plan ){
 	pAddToRenderTask->SetNoRendered( plan.GetNoRenderedOccMesh() );
 	
 	if( perspective ){
-		pAddToRenderTask->SetEnforceShader( pShaderOccMap->GetRTSShader() );
+		if( mask && mask->GetUseClipPlane() ){
+			pAddToRenderTask->SetEnforceShader( pShaderOccMapClipPlane->GetRTSShader() );
+			
+		}else{
+			pAddToRenderTask->SetEnforceShader( pShaderOccMap->GetRTSShader() );
+		}
 		
 	}else{
-		pAddToRenderTask->SetEnforceShader( pShaderOccMapOrtho->GetRTSShader() );
+		if( mask && mask->GetUseClipPlane() ){
+			pAddToRenderTask->SetEnforceShader( pShaderOccMapOrthoClipPlane->GetRTSShader() );
+			
+		}else{
+			pAddToRenderTask->SetEnforceShader( pShaderOccMapOrtho->GetRTSShader() );
+		}
 	}
 	
 	pAddToRenderTask->AddOcclusionMeshes( collideList );
@@ -1185,9 +1236,11 @@ deoglCubeMap *cubemap, const decDVector &position, float imageDistance, float vi
 				
 				pRenderParamBlock->SetParameterDataArrayMat4x4( 0, cmf, matrixCamera * matrixProjection );
 				pRenderParamBlock->SetParameterDataArrayMat4x3( 1, cmf, matrixCamera );  // unused
-				pRenderParamBlock->SetParameterDataVec4( 2, matrixCamera.a31,
-					matrixCamera.a32, matrixCamera.a33, matrixCamera.a34 ); // pTransformZ
+				pRenderParamBlock->SetParameterDataVec4( 2, matrixCamera.a31 * zscale,
+					matrixCamera.a32 * zscale, matrixCamera.a33 * zscale,
+					matrixCamera.a34 * zscale + zoffset ); // pTransformZ
 				pRenderParamBlock->SetParameterDataVec2( 3, zscale, zoffset ); // pZToDepth
+				pRenderParamBlock->SetParameterDataVec4( 4, 0.0f, 0.0f, 0.0f, 0.0f ); // pClipPlane
 			}
 			
 		}catch( const deException & ){
@@ -1263,9 +1316,11 @@ deoglCubeMap *cubemap, const decDVector &position, float imageDistance, float vi
 				try{
 					pRenderParamBlock->SetParameterDataMat4x4( 0, matrixCamera * matrixProjection );
 					pRenderParamBlock->SetParameterDataMat4x3( 1, matrixCamera );  // unused
-					pRenderParamBlock->SetParameterDataVec4( 2, matrixCamera.a31,
-						matrixCamera.a32, matrixCamera.a33, matrixCamera.a34 );
+					pRenderParamBlock->SetParameterDataVec4( 2, matrixCamera.a31 * zscale,
+						matrixCamera.a32 * zscale, matrixCamera.a33 * zscale,
+						matrixCamera.a34 * zscale + zoffset );
 					pRenderParamBlock->SetParameterDataVec2( 3, zscale, zoffset ); // pZToDepth
+					pRenderParamBlock->SetParameterDataVec4( 4, 0.0f, 0.0f, 0.0f, 0.0f ); // pClipPlane
 					
 				}catch( const deException & ){
 					pRenderParamBlock->UnmapBuffer();
@@ -1314,8 +1369,14 @@ void deoglRenderOcclusion::pCleanUp(){
 	if( pShaderOccMap ){
 		pShaderOccMap->RemoveUsage();
 	}
+	if( pShaderOccMapClipPlane ){
+		pShaderOccMapClipPlane->RemoveUsage();
+	}
 	if( pShaderOccMapOrtho ){
 		pShaderOccMapOrtho->RemoveUsage();
+	}
+	if( pShaderOccMapOrthoClipPlane ){
+		pShaderOccMapOrthoClipPlane->RemoveUsage();
 	}
 	if( pShaderOccMapDownSample ){
 		pShaderOccMapDownSample->RemoveUsage();

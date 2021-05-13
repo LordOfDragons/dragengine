@@ -318,7 +318,7 @@ void deoglRenderPlan::SetForceShadowMapSize( int forcedSize ){
 
 
 
-void deoglRenderPlan::PrepareRender(){
+void deoglRenderPlan::PrepareRender( const deoglRenderPlanMasked *mask ){
 	if( pIsRendering ){
 		return; // re-entrant rendering causes exceptions. ignore rendering in this case
 	}
@@ -326,7 +326,7 @@ void deoglRenderPlan::PrepareRender(){
 	pIsRendering = true;
 	
 	try{
-		pBarePrepareRender();
+		pBarePrepareRender( mask );
 		
 	}catch( const deException & ){
 		pIsRendering = false;
@@ -346,7 +346,7 @@ void deoglRenderPlan::PrepareRender(){
 #define SPECIAL_TIMER_PRINT(w)
 #endif
 
-void deoglRenderPlan::pBarePrepareRender(){
+void deoglRenderPlan::pBarePrepareRender( const deoglRenderPlanMasked *mask ){
 	if( ! pWorld ){
 		return;
 	}
@@ -380,7 +380,7 @@ void deoglRenderPlan::pBarePrepareRender(){
 	SPECIAL_TIMER_PRINT("Planning")
 	
 	// these calls run in parallel with above started tasks
-	pWorld->PrepareForRender( *this );
+	pWorld->PrepareForRender( *this, mask );
 	renderCanvas.SampleDebugInfoPlanPrepareWorld( *this );
 	SPECIAL_TIMER_PRINT("PrepareWorld")
 	
@@ -392,7 +392,7 @@ void deoglRenderPlan::pBarePrepareRender(){
 	pUpdateGI();
 	SPECIAL_TIMER_PRINT("UpdateGI")
 	
-	pRenderOcclusionTests();
+	pRenderOcclusionTests( mask );
 	renderCanvas.SampleDebugInfoPlanPrepareCulling( *this );
 	SPECIAL_TIMER_PRINT("RenderOcclusionTests")
 	
@@ -1108,7 +1108,7 @@ void deoglRenderPlan::pPlanEnvMaps(){
 	}
 }
 
-void deoglRenderPlan::pRenderOcclusionTests(){
+void deoglRenderPlan::pRenderOcclusionTests( const deoglRenderPlanMasked *mask ){
 	INIT_SPECIAL_TIMING
 	
 	pWaitFinishedFindContent();
@@ -1133,7 +1133,7 @@ void deoglRenderPlan::pRenderOcclusionTests(){
 			}
 			SPECIAL_TIMER_PRINT("> UpdateVBO")
 			
-			pRenderThread.GetRenderers().GetOcclusion().RenderTestsCamera( *this );
+			pRenderThread.GetRenderers().GetOcclusion().RenderTestsCamera( *this, mask );
 			SPECIAL_TIMER_PRINT("> Render")
 		}
 	}

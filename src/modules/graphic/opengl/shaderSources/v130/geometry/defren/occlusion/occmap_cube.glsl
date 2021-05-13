@@ -28,6 +28,7 @@ UBOLAYOUT uniform RenderParameters{
 	mat4x3 pMatrixV[ 6 ];
 	vec4 pTransformZ[ 6 ];
 	vec2 pZToDepth;
+	vec4 pClipPlane; // normal.xyz, distance
 };
 
 #ifdef GS_RENDER_CUBE
@@ -65,7 +66,7 @@ out vec3 vPosition;
 
 void emitCorner( in int face, in vec4 position ){
 	#ifdef PERSPECTIVE_TO_LINEAR
-		vDepth = dot( pTransformZ[ face ], position ) * pZToDepth.x + pZToDepth.y;
+		vDepth = dot( pTransformZ[ face ], position );
 	#endif
 	#ifdef DEPTH_DISTANCE
 		vPosition = pMatrixV[ face ] * position;

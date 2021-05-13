@@ -43,6 +43,7 @@ class deoglSkinState;
 class deoglTexUnitsConfig;
 class deoglVAO;
 class deoglRenderTaskSharedInstance;
+class deoglRenderPlanMasked;
 
 
 
@@ -268,7 +269,7 @@ public:
 	
 	
 	/** Prepare for render. Called by owner deoglRComponent if registered previously. */
-	void PrepareForRender( deoglRenderPlan &plan );
+	void PrepareForRender( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask );
 	
 	/** Prepare for quick disposal of decal. */
 	void PrepareQuickDispose();
@@ -282,7 +283,7 @@ private:
 	void pUpdateUseSkin();
 	void pPrepareTUCs();
 	void pPrepareParamBlocks();
-	void pPrepareSkinStateRenderables();
+	void pPrepareSkinStateRenderables( const deoglRenderPlanMasked *renderPlanMask );
 	void pUpdateRTSInstance();
 	void pUpdateInstanceParamBlock( deoglShaderParameterBlock &paramBlock,
 		int element, deoglSkinShader &skinShader );

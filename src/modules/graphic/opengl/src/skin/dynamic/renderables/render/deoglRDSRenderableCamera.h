@@ -55,7 +55,7 @@ public:
 	void SetCamera( deoglRCamera *camera );
 	
 	/** \brief Prepare for render. */
-	virtual void PrepareForRender();
+	virtual void PrepareForRender( const deoglRenderPlanMasked *renderPlanMask );
 	
 	/**
 	 * \brief Get render plan to use for rendering or \em NULL if not applicable.

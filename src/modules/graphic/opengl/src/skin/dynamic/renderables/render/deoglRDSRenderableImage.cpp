@@ -71,7 +71,7 @@ void deoglRDSRenderableImage::SetImage( deoglRImage *image ){
 	}
 }
 
-void deoglRDSRenderableImage::PrepareForRender(){
+void deoglRDSRenderableImage::PrepareForRender( const deoglRenderPlanMasked * ){
 	if( pImage ){
 		pImage->PrepareForRender();
 	}

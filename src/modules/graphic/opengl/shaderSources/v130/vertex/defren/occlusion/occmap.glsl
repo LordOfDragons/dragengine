@@ -8,6 +8,7 @@ UBOLAYOUT uniform RenderParameters{
 	mat4x3 pMatrixV[ 6 ];
 	vec4 pTransformZ[ 6 ];
 	vec2 pZToDepth;
+	vec4 pClipPlane; // normal.xyz, distance
 };
 
 #include "v130/shared/defren/occmap.glsl"
@@ -25,6 +26,10 @@ out float vDepth;
 #ifdef DEPTH_DISTANCE
 out vec3 vPosition;
 #endif
+#ifdef USE_CLIP_PLANE
+out vec3 vClipCoord;
+#endif
+
 #if defined GS_RENDER_CUBE || defined GS_RENDER_CASCADED
 	flat out int vSPBIndex;
 #endif
@@ -41,7 +46,7 @@ void main( void ){
 	#else
 		gl_Position = pMatrixVP[ 0 ] * position;
 		#ifdef PERSPECTIVE_TO_LINEAR
-			vDepth = dot( pTransformZ[ 0 ], position ) * pZToDepth.x + pZToDepth.y;
+			vDepth = dot( pTransformZ[ 0 ], position );
 		#endif
 		#ifdef DEPTH_DISTANCE
 			vPosition = pMatrixV[ 0 ] * position;
@@ -53,5 +58,9 @@ void main( void ){
 	#endif
 	#if defined GS_RENDER_CUBE && defined GS_RENDER_CUBE_CULLING
 		vSPBFlags = spbFlags;
+	#endif
+	
+	#ifdef USE_CLIP_PLANE
+		vClipCoord = pMatrixV[ 0 ] * position;
 	#endif
 }

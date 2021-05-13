@@ -36,6 +36,7 @@ class deoglRComponent;
 class deoglRBillboard;
 class deoglRDecal;
 class deoglRLight;
+class deoglRenderPlanMasked;
 
 class deComponent;
 
@@ -140,7 +141,8 @@ public:
 	
 	
 	/** Prepare renderables for rendering if required. */
-	void PrepareRenderables( deoglRSkin *skin, deoglRDynamicSkin *dynamicSkin );
+	void PrepareRenderables( deoglRSkin *skin, deoglRDynamicSkin *dynamicSkin,
+		const deoglRenderPlanMasked *renderPlanMask );
 	
 	/** Add render plans. */
 	void AddRenderPlans( deoglRenderPlan &plan );
