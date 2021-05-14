@@ -226,4 +226,19 @@ struct deoglVBOHeightTerrain2{
 
 
 
+/** Render task filters. */
+enum eRenderTaskFilters{
+	ertfRender = 0x1,
+	ertfSolid = 0x2,
+	ertfShadowNone = 0x4,
+	ertfReflected = 0x8,
+	ertfRendered = 0x10,
+	ertfOutline = 0x20,
+	ertfOutlineSolid = 0x40,
+	ertfHoles = 0x80,
+	ertfDecal = 0x100
+};
+
+
+
 #endif

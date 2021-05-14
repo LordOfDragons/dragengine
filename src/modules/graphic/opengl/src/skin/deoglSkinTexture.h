@@ -41,7 +41,7 @@ class deSkinProperty;
 
 
 /**
- * \brief Skin texture.
+ * Skin texture.
  */
 class deoglSkinTexture{
 public:
@@ -301,6 +301,7 @@ private:
 	bool pHasOutline;
 	bool pIsOutlineSolid;
 	bool pIsOutlineEmissive;
+	int pRenderTaskFilters;
 	
 	decColor pRimEmissivity;
 	decColor pRimEmissivityTint;
@@ -316,7 +317,7 @@ public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/**
-	 * \brief Create skin texture.
+	 * Create skin texture.
 	 * 
 	 * Prepares channels and load caches. To build the actual channel texture use BuildChannels().
 	 */
@@ -328,48 +329,48 @@ public:
 	
 	/** @name Management */
 	/*@{*/
-	/** \brief Render thread. */
+	/** Render thread. */
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
 	
 	
 	/**
-	 * \brief Build channel textures.
+	 * Build channel textures.
 	 * 
 	 * Ignores channels loaded from caches and channels using already loaded shared images.
 	 */
 	void BuildChannels( deoglRSkin &skin, const deSkinTexture &texture );
 	
-	/** \brief Finalize after asynchronous resource loading. */
+	/** Finalize after asynchronous resource loading. */
 	void FinalizeAsyncResLoading();
 	
 	
 	
-	/** \brief Texture name. */
+	/** Texture name. */
 	inline const decString &GetName() const{ return pName; }
 	
-	/** \brief Texture contains solidity. */
+	/** Texture contains solidity. */
 	inline bool GetHasSolidity() const{ return pHasSolidity; }
 	
-	/** \brief Set if texture contains solidity. */
+	/** Set if texture contains solidity. */
 	void SetHasSolidity( bool hasSolidity );
 	
-	/** \brief Texture contains zero solidity. */
+	/** Texture contains zero solidity. */
 	inline bool GetHasZeroSolidity() const{ return pHasZeroSolidity; }
 	
-	/** \brief Set if texture contains zero solidity. */
+	/** Set if texture contains zero solidity. */
 	void SetHasZeroSolidity( bool hasZeroSolidity );
 	
-	/** \brief Texture contains transparency. */
+	/** Texture contains transparency. */
 	inline bool GetHasTransparency() const{ return pHasTransparency; }
 	
-	/** \brief Set if texture contains transparency. */
+	/** Set if texture contains transparency. */
 	void SetHasTransparency( bool hasTransparency );
 	
-	/** \brief Texture contains emissivity. */
+	/** Texture contains emissivity. */
 	inline bool GetHasEmissivity() const{ return pHasEmissivity; }
 	
-	/** \brief Set if texture contains emissivity. */
+	/** Set if texture contains emissivity. */
 	void SetHasEmissivity( bool hasEmissivity );
 	
 	/** Determines if the texture uses masked solidity. */
@@ -394,28 +395,28 @@ public:
 	/** Sets if quick transparency can be used for this texture. */
 	void SetQuickTransparency( bool quickTransp );
 	
-	/** \brief Texture has dynamic channels. */
+	/** Texture has dynamic channels. */
 	inline bool GetDynamicChannels() const{ return pDynamicChannels; }
 	
-	/** \brief Set if texture has dynamic channels. */
+	/** Set if texture has dynamic channels. */
 	void SetDynamicChannels( bool dynamicChannels );
 	
-	/** \brief Texture has calculated properties. */
+	/** Texture has calculated properties. */
 	inline bool GetCalculatedProperties() const{ return pCalculatedProperties; }
 	
-	/** \brief Set if texture has calculated properties. */
+	/** Set if texture has calculated properties. */
 	void SetCalculatedProperties( bool calculatedProperties );
 	
-	/** \brief Texture has renderable channels. */
+	/** Texture has renderable channels. */
 	inline bool GetRenderableChannels() const{ return pRenderableChannels; }
 	
-	/** \brief Set if texture has renderable channels. */
+	/** Set if texture has renderable channels. */
 	void SetRenderableChannels( bool renderableChannels );
 	
-	/** \brief Texture has renderable material properties. */
+	/** Texture has renderable material properties. */
 	inline bool GetRenderableMaterialProperties() const{ return pRenderableMaterialProperties; }
 	
-	/** \brief Set if texture has renderable material properties. */
+	/** Set if texture has renderable material properties. */
 	void SetRenderableMaterialProperties( bool renderableMaterialProperties );
 	
 	/** Retrieves the shader for a shader type. */
@@ -436,10 +437,10 @@ public:
 	
 	/** @name Material Properties */
 	/*@{*/
-	/** \brief Color. */
+	/** Color. */
 	inline const decColor &GetColor() const{ return pColor; }
 	
-	/** \brief Set color. */
+	/** Set color. */
 	void SetColor( const decColor &color );
 	
 	/** Retrieves the color gamma correction. */
@@ -447,16 +448,16 @@ public:
 	/** Sets the color gamma correction. */
 	void SetColorGamma( float gamma );
 	
-	/** \brief Color tint. */
+	/** Color tint. */
 	inline const decColor &GetColorTint() const{ return pColorTint; }
 	
-	/** \brief Set color tint. */
+	/** Set color tint. */
 	void SetColorTint( const decColor &tint );
 	
-	/** \brief Color tint mask. */
+	/** Color tint mask. */
 	inline float GetColorTintMask() const{ return pColorTintMask; }
 	
-	/** \brief Set color tint mask. */
+	/** Set color tint mask. */
 	void SetColorTintMask( float mask );
 	
 	/** Retrieves the color solidity multiplier. */
@@ -464,16 +465,16 @@ public:
 	/** Sets the color solidity multiplier. */
 	void SetColorSolidityMultiplier( float multiplier );
 	
-	/** \brief Omni-directional color cube map. */
+	/** Omni-directional color cube map. */
 	inline const decColor &GetColorOmnidirCube() const{ return pColorOmnidirCube; }
 	
-	/** \brief Set omni-directional color cube map. */
+	/** Set omni-directional color cube map. */
 	void SetColorOmnidirCube( const decColor &color );
 	
-	/** \brief Omni-directional color equirectangular map. */
+	/** Omni-directional color equirectangular map. */
 	inline const decColor &GetColorOmnidirEquirect() const{ return pColorOmnidirEquirect; }
 	
-	/** \brief Set omni-directional color equirectangular map. */
+	/** Set omni-directional color equirectangular map. */
 	void SetColorOmnidirEquirect( const decColor &color );
 	
 	/** Retrieves the transparency. */
@@ -503,13 +504,13 @@ public:
 	/** Sets the ambient occlusion solidity multiplier. */
 	void SetAmbientOcclusionSolidityMultiplier( float multiplier );
 	
-	/** \brief Retrieves the height scale. */
+	/** Retrieves the height scale. */
 	inline float GetHeightScale() const{ return pHeightScale; }
-	/** \brief Sets the height scale. */
+	/** Sets the height scale. */
 	void SetHeightScale( float scale );
-	/** \brief Retrieves the height offset. */
+	/** Retrieves the height offset. */
 	inline float GetHeightOffset() const{ return pHeightOffset; }
-	/** \brief Sets the height offset. */
+	/** Sets the height offset. */
 	void SetHeightOffset( float offset );
 	
 	/** Retrieves the normal. */
@@ -568,10 +569,10 @@ public:
 	/** Sets if this texture is a perfect mirror. */
 	void SetMirror( bool mirror );
 	
-	/** \brief Texture is render. */
+	/** Texture is render. */
 	inline bool GetRendered() const{ return pRendered; }
 	
-	/** \brief Set if texture is rendered. */
+	/** Set if texture is rendered. */
 	void SetRendered( bool rendered );
 	
 	/** Determines if the texture is reflected by other geometry. */
@@ -581,54 +582,54 @@ public:
 	
 	
 	
-	/** \brief Emissivity. */
+	/** Emissivity. */
 	inline const decColor &GetEmissivity() const{ return pEmissivity; }
 	
-	/** \brief Set emissivity. */
+	/** Set emissivity. */
 	void SetEmissivity( const decColor &emissivity );
 	
-	/** \brief Emissivity tint. */
+	/** Emissivity tint. */
 	inline const decColor &GetEmissivityTint() const{ return pEmissivityTint; }
 	
-	/** \brief Set emissivity tint. */
+	/** Set emissivity tint. */
 	void SetEmissivityTint( const decColor &tint );
 	
-	/** \brief Emissivity intensity. */
+	/** Emissivity intensity. */
 	inline float GetEmissivityIntensity() const{ return pEmissivityIntensity; }
 	
-	/** \brief Set emissivity intensity. */
+	/** Set emissivity intensity. */
 	void SetEmissivityIntensity( float intensity );
 	
-	/** \brief Emissivity camera adapted. */
+	/** Emissivity camera adapted. */
 	inline bool GetEmissivityCameraAdapted() const{ return pEmissivityCameraAdapted; }
 	
-	/** \brief Set emissivity camera adapted. */
+	/** Set emissivity camera adapted. */
 	void SetEmissivityCameraAdapted( bool cameraAdapted );
 	
 	
 	
-	/** \brief Environment room size. */
+	/** Environment room size. */
 	inline const decVector2 &GetEnvironmentRoomSize() const{ return pEnvironmentRoomSize; }
 	
-	/** \brief Set environment room size. */
+	/** Set environment room size. */
 	void SetEnvironmentRoomSize( const decVector2 &size );
 	
-	/** \brief Environment room offset. */
+	/** Environment room offset. */
 	inline const decVector &GetEnvironmentRoomOffset() const{ return pEnvironmentRoomOffset; }
 	
-	/** \brief Set environment room offset. */
+	/** Set environment room offset. */
 	void SetEnvironmentRoomOffset( const decVector &offset );
 	
-	/** \brief Environment room emissivity tint. */
+	/** Environment room emissivity tint. */
 	inline const decColor &GetEnvironmentRoomEmissivityTint() const{ return pEnvironmentRoomEmissivityTint; }
 	
-	/** \brief Set environment room emissivity tint. */
+	/** Set environment room emissivity tint. */
 	void SetEnvironmentRoomEmissivityTint( const decColor &tint );
 	
-	/** \brief Environment room emissivity intensity. */
+	/** Environment room emissivity intensity. */
 	inline float GetEnvironmentRoomEmissivityIntensity() const{ return pEnvironmentRoomEmissivityIntensity; }
 	
-	/** \brief Set environment room emissivity intensity. */
+	/** Set environment room emissivity intensity. */
 	void SetEnvironmentRoomEmissivityIntensity( float intensity );
 	
 	
@@ -650,34 +651,34 @@ public:
 	/** Sets the absorption half intensity distance. */
 	void SetAbsorptionHalfIntensityDistance( float distance );
 	
-	/** \brief Rim emissivity. */
+	/** Rim emissivity. */
 	inline const decColor &GetRimEmissivity() const{ return pRimEmissivity; }
 	
-	/** \brief Set rim emissivity. */
+	/** Set rim emissivity. */
 	void SetRimEmissivity( const decColor &emissivity );
 	
-	/** \brief Rim emissivity tint. */
+	/** Rim emissivity tint. */
 	inline const decColor &GetRimEmissivityTint() const{ return pRimEmissivityTint; }
 	
-	/** \brief Set rim emissivity tint. */
+	/** Set rim emissivity tint. */
 	void SetRimEmissivityTint( const decColor &emissivity );
 	
-	/** \brief Rim emissivity intensity. */
+	/** Rim emissivity intensity. */
 	inline float GetRimEmissivityIntensity() const{ return pRimEmissivityIntensity; }
 	
-	/** \brief Set rim emissivity intensity. */
+	/** Set rim emissivity intensity. */
 	void SetRimEmissivityIntensity( float intensity );
 	
-	/** \brief Rim angle. */
+	/** Rim angle. */
 	inline float GetRimAngle() const{ return pRimAngle; }
 	
-	/** \brief Set rim angle. */
+	/** Set rim angle. */
 	void SetRimAngle( float angle );
 	
-	/** \brief Rim exponent. */
+	/** Rim exponent. */
 	inline float GetRimExponent() const{ return pRimExponent; }
 	
-	/** \brief Set rim exponent. */
+	/** Set rim exponent. */
 	void SetRimExponent( float exponent );
 	
 	/** Determines if the texture is shadeless. */
@@ -708,132 +709,134 @@ public:
 	/** Sets if the texture coordinates are clamped. */
 	void SetTexCoordClamp( bool clamp );
 	
-	/** \brief Texture coordinates offset. */
+	/** Texture coordinates offset. */
 	inline const decVector2 &GetTexCoordOffset() const{ return pTexCoordOffset; }
 	
-	/** \brief Set texture coordinates offset. */
+	/** Set texture coordinates offset. */
 	void SetTexCoordOffset( const decVector2 &offset );
 	
-	/** \brief Texture coordinates scale. */
+	/** Texture coordinates scale. */
 	inline const decVector2 &GetTexCoordScale() const{ return pTexCoordScale; }
 	
-	/** \brief Set texture coordinates scale. */
+	/** Set texture coordinates scale. */
 	void SetTexCoordScale( const decVector2 &scale );
 	
-	/** \brief Texture coordinates rotate. */
+	/** Texture coordinates rotate. */
 	inline float GetTexCoordRotate() const{ return pTexCoordRotate; }
 	
-	/** \brief Set texture coordinates rotate. */
+	/** Set texture coordinates rotate. */
 	void SetTexCoordRotate( float rotate );
 	
-	/** \brief Omni directional texture rotate. */
+	/** Omni directional texture rotate. */
 	inline const decVector &GetOmniDirRotate() const{ return pOmniDirRotate; }
 	
-	/** \brief Set omni directional texture rotate. */
+	/** Set omni directional texture rotate. */
 	void SetOmniDirRotate( const decVector &rotate );
 	
-	/** \brief Omni directional texture rotate for spot lights only. */
+	/** Omni directional texture rotate for spot lights only. */
 	inline const decVector &GetOmniDirRotateSpot() const{ return pOmniDirRotateSpot; }
 	
-	/** \brief Set omni directional texture rotate for spot lights only. */
+	/** Set omni directional texture rotate for spot lights only. */
 	void SetOmniDirRotateSpot( const decVector &rotate );
 	
 	
 	
-	/** \brief Texture has variation in U direction. */
+	/** Texture has variation in U direction. */
 	inline bool GetVariationU() const{ return pVariationU; }
 	
-	/** \brief Set if texture has variation in U direction. */
+	/** Set if texture has variation in U direction. */
 	void SetVariationU( bool enable );
 	
-	/** \brief Texture has variation in V direction. */
+	/** Texture has variation in V direction. */
 	inline bool GetVariationV() const{ return pVariationV; }
 	
-	/** \brief Set if texture has variation in V direction. */
+	/** Set if texture has variation in V direction. */
 	void SetVariationV( bool enable );
 	
 	
 	
-	/** \brief Particle sheets count. */
+	/** Particle sheets count. */
 	inline int GetParticleSheetCount() const{ return pParticleSheetCount; }
 	
-	/** \brief Set particle sheets count. */
+	/** Set particle sheets count. */
 	void SetParticleSheetCount( int count );
 	
 	
 	
-	/** \brief Outline color. */
+	/** Outline color. */
 	inline const decColor &GetOutlineColor() const{ return pOutlineColor; }
 	
-	/** \brief Set outline color. */
+	/** Set outline color. */
 	void SetOutlineColor( const decColor &color );
 	
-	/** \brief Outline color tint. */
+	/** Outline color tint. */
 	inline const decColor &GetOutlineColorTint() const{ return pOutlineColorTint; }
 	
-	/** \brief Set outline color tint. */
+	/** Set outline color tint. */
 	void SetOutlineColorTint( const decColor &color );
 	
-	/** \brief Outline thickness. */
+	/** Outline thickness. */
 	inline float GetOutlineThickness() const{ return pOutlineThickness; }
 	
-	/** \brief Set outline thickness. */
+	/** Set outline thickness. */
 	void SetOutlineThickness( float thickness );
 	
-	/** \brief Outline thickness is relative to screen width. */
+	/** Outline thickness is relative to screen width. */
 	inline bool GetOutlineThicknessScreen() const{ return pOutlineThicknessScreen; }
 	
-	/** \brief Set if outline thickness is relative to screen width. */
+	/** Set if outline thickness is relative to screen width. */
 	void SetOutlineThicknessScreen( bool enable );
 	
-	/** \brief Outline solidity. */
+	/** Outline solidity. */
 	inline float GetOutlineSolidity() const{ return pOutlineSolidity; }
 	
-	/** \brief Set outline solidity. */
+	/** Set outline solidity. */
 	void SetOutlineSolidity( float solidity );
 	
-	/** \brief Outline emissivity. */
+	/** Outline emissivity. */
 	inline const decColor &GetOutlineEmissivity() const{ return pOutlineEmissivity; }
 	
-	/** \brief Set outline emissivity. */
+	/** Set outline emissivity. */
 	void SetOutlineEmissivity( const decColor &emissivity );
 	
-	/** \brief Outline emissivity tint. */
+	/** Outline emissivity tint. */
 	inline const decColor &GetOutlineEmissivityTint() const{ return pOutlineEmissivityTint; }
 	
-	/** \brief Set outline emissivity tint. */
+	/** Set outline emissivity tint. */
 	void SetOutlineEmissivityTint( const decColor &emissivity );
 	
-	/** \brief Outline emissivity intensity. */
+	/** Outline emissivity intensity. */
 	inline float GetOutlineEmissivityIntensity() const{ return pOutlineEmissivityIntensity; }
 	
-	/** \brief Set outline emissivity intensity. */
+	/** Set outline emissivity intensity. */
 	void SetOutlineEmissivityIntensity( float intensity );
 	
-	/** \brief Has outline. */
+	/** Has outline. */
 	inline bool GetHasOutline() const{ return pHasOutline; }
 	
-	/** \brief Outline is solid. */
+	/** Outline is solid. */
 	inline bool GetIsOutlineSolid() const{ return pIsOutlineSolid; }
 	
-	/** \brief Outline is emissive. */
+	/** Outline is emissive. */
 	inline bool GetIsOutlineEmissive() const{ return pIsOutlineEmissive; }
 	
+	/** Render task filters. */
+	inline int GetRenderTaskFilters() const{ return pRenderTaskFilters; }
 	
 	
 	/** Retrieves a material property. */
 	deoglSkinTextureProperty &GetMaterialPropertyAt( int property );
 	const deoglSkinTextureProperty &GetMaterialPropertyAt( int property ) const;
 	
-	/** \brief Channel for type or \em NULL if not used. */
+	/** Channel for type or \em NULL if not used. */
 	deoglSkinChannel *GetChannelAt( deoglSkinChannel::eChannelTypes type ) const;
 	
-	/** \brief Channel for type is not \em NULL. */
+	/** Channel for type is not \em NULL. */
 	bool IsChannelEnabled( deoglSkinChannel::eChannelTypes type ) const;
 	
 	
 	
-	/** \brief Drop objects containing delayed deletion support. */
+	/** Drop objects containing delayed deletion support. */
 	void DropDelayedDeletionObjects();
 	/*@}*/
 	
@@ -847,6 +850,7 @@ private:
 	void pWriteCached( deoglRSkin &skin );
 	void pProcessProperty( deoglRSkin &skin, deSkinProperty &property );
 	void pUpdateParamBlock( deoglShaderParameterBlock &paramBlock, int index );
+	void pUpdateRenderTaskFilters();
 };
 
 #endif

@@ -136,38 +136,47 @@ void deoglAddToRenderTask::SetSkinShaderTypeBeam( deoglSkinTexture::eShaderTypes
 
 void deoglAddToRenderTask::SetSolid( bool solid ){
 	pSolid = solid;
+	pUpdateFilters();
 }
 
 void deoglAddToRenderTask::SetNoNotReflected( bool noNotReflected ){
 	pNoNotReflected = noNotReflected;
+	pUpdateFilters();
 }
 
 void deoglAddToRenderTask::SetNoRendered( bool noRendered ){
 	pNoRendered = noRendered;
+	pUpdateFilters();
 }
 
 void deoglAddToRenderTask::SetOutline( bool outline ){
 	pOutline = outline;
+	pUpdateFilters();
 }
 
 void deoglAddToRenderTask::SetNoShadowNone( bool noShadowNone ){
 	pNoShadowNone = noShadowNone;
+	pUpdateFilters();
 }
 
 void deoglAddToRenderTask::SetFilterHoles( bool filterHoles ){
 	pFilterHoles = filterHoles;
+	pUpdateFilters();
 }
 
 void deoglAddToRenderTask::SetWithHoles( bool withHoles ){
 	pWithHoles = withHoles;
+	pUpdateFilters();
 }
 
 void deoglAddToRenderTask::SetFilterDecal( bool filterDecal ){
 	pFilterDecal = filterDecal;
+	pUpdateFilters();
 }
 
 void deoglAddToRenderTask::SetDecal( bool decal ){
 	pDecal = decal;
+	pUpdateFilters();
 }
 
 void deoglAddToRenderTask::SetFilterCubeFace( int cubeFace ){
@@ -201,6 +210,8 @@ void deoglAddToRenderTask::Reset(){
 	
 	pFilterCubeFace = -1;
 	
+	pUpdateFilters();
+	
 	pUseSpecialParamBlock = false;
 	
 	pEnforceShader = NULL;
@@ -213,44 +224,42 @@ static float debug1 = 0.0f;
 static int debug1b = 0;
 #endif
 
+// #define ATRT_TIMING
+#ifdef ATRT_TIMING
+static float atrtElapsed0 = 0;
 static float atrtElapsed1 = 0;
 static float atrtElapsed1b = 0;
 static float atrtElapsed2 = 0;
 static decTimer atrtTimer;
 #include "../../renderthread/deoglRTLogger.h"
+#endif
 
 void deoglAddToRenderTask::AddComponent( const deoglRComponentLOD &lod ){
-	const deoglRComponent &component = lod.GetComponent();
-	deoglVAO * const vao = lod.GetUseVAO();
+	const deoglVAO * const vao = lod.GetUseVAO();
 	if( ! vao ){
 		return;
 	}
-	if( ! component.GetParentWorld() || ! component.GetModel() ){
-		return;
-	}
+	
+	const deoglRComponent &component = lod.GetComponent();
 	if( pFilterCubeFace != -1 && ! component.GetCubeFaceVisible( pFilterCubeFace ) ){
 		return;
 	}
 	
-	#ifdef SPECIAL_DEBUG_ON
-	const deoglRModel &model = *component.GetModel();
-	const deoglModelLOD &modelLOD = model.GetLODAt( lodLevel );
-	#endif
-	
-	deoglRenderTaskSharedVAO * const rtvao = vao->GetRTSVAO();
+	const deoglRenderTaskSharedVAO * const rtvao = vao->GetRTSVAO();
+	const deoglModelLOD &modelLod = lod.GetModelLODRef();
 	const int count = component.GetTextureCount();
 	int i;
 	
 	for( i=0; i<count; i++ ){
 		#ifdef SPECIAL_DEBUG_ON
-		const deoglModelTexture &texture = modelLOD.GetTextureAt( i );
+		const deoglModelTexture &texture = modelLod.GetTextureAt( i );
 		if( texture.GetFaceCount() > 0 ){
 			decTimer timer;
 			AddComponentFaces( lod, i, rtvao );
 			debug1 += timer.GetElapsedTime(); debug1b++;
 		}
 		#else
-		AddComponentFaces( lod, i, rtvao );
+		AddComponentFaces( lod, modelLod, i, rtvao );
 		#endif
 	}
 }
@@ -260,7 +269,9 @@ void deoglAddToRenderTask::AddComponent( const deoglCollideListComponent &clcomp
 }
 
 void deoglAddToRenderTask::AddComponents( const deoglCollideList &clist ){
-		atrtElapsed1=0; atrtElapsed2=0; atrtElapsed1b=0; atrtTimer.Reset();
+		#ifdef ATRT_TIMING
+		atrtElapsed0=0; atrtElapsed1=0; atrtElapsed2=0; atrtElapsed1b=0; atrtTimer.Reset();
+		#endif
 	const int count = clist.GetComponentCount();
 	int i;
 	
@@ -277,8 +288,10 @@ void deoglAddToRenderTask::AddComponents( const deoglCollideList &clist ){
 	pRenderThread.GetLogger().LogInfoFormat( "deoglAddToRenderTask::AddComponent "
 		"AddComponentFaces(%i) = %iys", debug1b, (int)(debug1*1e6f) );
 	#endif
-		pRenderThread.GetLogger().LogInfoFormat("AddToRenderTask %dys (%dys) %dys",
-			(int)(atrtElapsed1*1e6f), (int)(atrtElapsed1b*1e6f), (int)(atrtElapsed2*1e6f));
+		#ifdef ATRT_TIMING
+		pRenderThread.GetLogger().LogInfoFormat("AddToRenderTask %dys %dys (%dys) %dys",
+			(int)(atrtElapsed0*1e6f), (int)(atrtElapsed1*1e6f), (int)(atrtElapsed1b*1e6f), (int)(atrtElapsed2*1e6f));
+		#endif
 }
 
 void deoglAddToRenderTask::AddComponentsHighestLod( const deoglCollideList &clist ){
@@ -293,36 +306,58 @@ void deoglAddToRenderTask::AddComponentsHighestLod( const deoglCollideList &clis
 void deoglAddToRenderTask::AddComponentFaces( const deoglRComponentLOD &lod, int texture ){
 	const deoglVAO * const vao = lod.GetUseVAO();
 	if( vao ){
-		AddComponentFaces( lod, texture, vao->GetRTSVAO() );
+		AddComponentFaces( lod, lod.GetModelLODRef(), texture, vao->GetRTSVAO() );
 	}
 }
 
-void deoglAddToRenderTask::AddComponentFaces( const deoglRComponentLOD &lod, int texture,
-deoglRenderTaskSharedVAO *rtvao ){
+void deoglAddToRenderTask::AddComponentFaces( const deoglRComponentLOD &lod,
+const deoglModelLOD &modelLod, int texture, const deoglRenderTaskSharedVAO *rtvao ){
+	if( modelLod.GetTextureAt( texture ).GetFaceCount() == 0 ){
+		return;
+	}
+	
 	const deoglRComponent &component = lod.GetComponent();
-	if( lod.GetModelLODRef().GetTextureAt( texture ).GetFaceCount() == 0 ){
-		return;
-	}
-	
 	const deoglRComponentTexture &componentTexture = component.GetTextureAt( texture );
-	if( pNoRendered && componentTexture.GetIsRendered() ){
+	if( ( componentTexture.GetRenderTaskFilters() & pFilterMask ) != pFiltersMasked ){
 		return;
 	}
-	
-	const deoglSkinTexture * const skinTexture = componentTexture.GetUseSkinTexture();
-	if( ! skinTexture || pFilterReject( *skinTexture ) ){
-		return;
-	}
-	
-	if( pFilterDecal && pDecal != componentTexture.GetUseDecal() ){
-		return;
-	}
+		#ifdef ATRT_TIMING
+		atrtElapsed0 += atrtTimer.GetElapsedTime();
+		#endif
 	
 	// obtain render task vao and add faces
-	pGetTaskVAO( pSkinShaderType, skinTexture,
-		componentTexture.GetTUCForShaderType( pSkinShaderType ), rtvao->GetVAO() )->
-			AddInstance( componentTexture.GetSharedSPBRTIGroup( lod.GetLODIndex() ).GetRTSInstance() )->
-			AddSubInstance( componentTexture.GetSharedSPBElement()->GetIndex(), component.GetSpecialFlags() );
+// 	pGetTaskVAO( pSkinShaderType, skinTexture,
+// 		componentTexture.GetTUCForShaderType( pSkinShaderType ), rtvao->GetVAO() )->
+// 			AddInstance( componentTexture.GetSharedSPBRTIGroup( lod.GetLODIndex() ).GetRTSInstance() )->
+// 			AddSubInstance( componentTexture.GetSharedSPBElement()->GetIndex(), component.GetSpecialFlags() );
+	
+	const deoglRenderTaskSharedShader * const rts = componentTexture.GetUseSkinTexture()->
+		GetShaderFor( pSkinShaderType )->GetShader()->GetRTSShader();
+	
+	const deoglTexUnitsConfig *tuc = componentTexture.GetTUCForShaderType( pSkinShaderType );
+	if( ! tuc ){
+		tuc = pRenderThread.GetShader().GetTexUnitsConfigList().GetEmptyNoUsage();
+	}
+	const deoglRenderTaskSharedTexture * const rtt = tuc->GetRTSTexture();
+	
+	deoglRenderTaskSharedInstance * const rtsi = componentTexture.GetSharedSPBRTIGroup( lod.GetLODIndex() ).GetRTSInstance();
+	const int index = componentTexture.GetSharedSPBElement()->GetIndex();
+	const int flags = component.GetSpecialFlags();
+	
+		#ifdef ATRT_TIMING
+		atrtElapsed1 += atrtTimer.GetElapsedTime();
+		#endif
+	pRenderTask.AddShader(rts)->AddTexture(rtt)->AddVAO(rtvao)->AddInstance(rtsi)->AddSubInstance(index, flags);
+		#ifdef ATRT_TIMING
+		atrtElapsed2 += atrtTimer.GetElapsedTime();
+		#endif
+		
+		// consequtive search rules:
+		// - if rtvao is not the same ignore all cached textures
+		// - for each texture:
+		//   - if rtsi is not the same ignore cached texture
+		//   - if rts or rtt is not the same ignore cached texture
+		//   - else use last found deoglRenderTaskInstance to add sub instance to
 }
 
 
@@ -833,6 +868,50 @@ deoglRParticleEmitterInstanceType &type ){
 
 // Private Functions
 //////////////////////
+
+void deoglAddToRenderTask::pUpdateFilters(){
+	pFilters = ertfRender;
+	pFilterMask = ertfRender;
+	
+	if( pOutline ){
+		pFilters |= ertfOutline;
+		if( pSolid ){
+			pFilters |= ertfOutlineSolid;
+		}
+		pFilterMask |= ertfOutline | ertfOutlineSolid;
+		
+	}else{
+		if( pSolid ){
+			pFilters |= ertfSolid;
+		}
+		pFilterMask |= ertfSolid;
+	}
+	
+	if( pNoNotReflected ){
+		pFilters |= ertfReflected;
+		pFilterMask |= ertfReflected;
+	}
+	if( pNoRendered ){
+		pFilterMask |= ertfRendered;
+	}
+	if( pNoShadowNone ){
+		pFilterMask |= ertfShadowNone;
+	}
+	if( pFilterHoles ){
+		pFilterMask |= ertfHoles;
+		if( pWithHoles ){
+			pFilters |= ertfHoles;
+		}
+	}
+	if( pFilterDecal ){
+		pFilterMask |= ertfDecal;
+		if( pDecal ){
+			pFilters |= ertfDecal;
+		}
+	}
+	
+	pFiltersMasked = pFilters & pFilterMask;
+}
 
 bool deoglAddToRenderTask::pFilterReject( const deoglSkinTexture &skinTexture ) const{
 	if( pOutline ){

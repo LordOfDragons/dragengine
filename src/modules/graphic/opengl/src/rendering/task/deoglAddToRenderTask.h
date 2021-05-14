@@ -35,6 +35,7 @@ class deoglCollideListPropFieldType;
 class deoglCubeMap;
 class deoglHTViewSector;
 class deoglParticleEmitterInstanceList;
+class deoglModelLOD;
 class deoglRBillboard;
 class deoglRComponent;
 class deoglRComponentLOD;
@@ -86,6 +87,10 @@ private:
 	bool pDecal;
 	
 	int pFilterCubeFace;
+	
+	int pFilters;
+	int pFilterMask;
+	int pFiltersMasked;
 	
 	bool pUseSpecialParamBlock;
 	
@@ -231,7 +236,8 @@ public:
 	/** Add continuous run of all faces of a texture of a component. */
 	void AddComponentFaces( const deoglRComponentLOD &lod, int texture );
 	
-	void AddComponentFaces( const deoglRComponentLOD &lod, int texture, deoglRenderTaskSharedVAO *rtvao );
+	void AddComponentFaces( const deoglRComponentLOD &lod, const deoglModelLOD &modelLod,
+		int texture, const deoglRenderTaskSharedVAO *rtvao );
 	
 	
 	
@@ -306,6 +312,7 @@ public:
 	
 	
 private:
+	void pUpdateFilters();
 	bool pFilterReject( const deoglSkinTexture &skinTexture ) const;
 	bool pFilterRejectNoSolid( const deoglSkinTexture &skinTexture ) const;
 	

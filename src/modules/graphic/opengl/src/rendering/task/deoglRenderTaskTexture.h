@@ -90,7 +90,7 @@ public:
 	deoglRenderTaskVAO *GetVAOAt( int index ) const;
 	
 	/** Add render task vao. */
-	deoglRenderTaskVAO *AddVAO( deoglRenderTaskSharedVAO *vao );
+	deoglRenderTaskVAO *AddVAO( const deoglRenderTaskSharedVAO *vao );
 	/*@}*/
 };
 

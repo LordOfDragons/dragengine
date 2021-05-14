@@ -425,6 +425,7 @@ pSharedSPBElement( NULL )
 	pTexCoordOffset.Set( 0.0f, 0.0f );
 	pTexCoordScale.Set( 1.0f, 1.0f );
 	pTexCoordRotate = 0.0f;
+	pRenderTaskFilters = 0;
 	
 	pVariationU = false;
 	pVariationV = false;
@@ -493,6 +494,8 @@ pSharedSPBElement( NULL )
 			pHasHoles = false;
 		}
 	}
+	
+	pUpdateRenderTaskFilters();
 }
 
 deoglSkinTexture::~deoglSkinTexture(){
@@ -3158,4 +3161,26 @@ void deoglSkinTexture::pUpdateParamBlock( deoglShaderParameterBlock &spb, int el
 	
 	spb.SetParameterDataBool( deoglSkinShader::etutTexEmissivityCameraAdapted, element,
 		pEmissivityCameraAdapted );
+}
+
+void deoglSkinTexture::pUpdateRenderTaskFilters(){
+	pRenderTaskFilters = ertfRender;
+	if( pSolid ){
+		pRenderTaskFilters |= ertfSolid;
+	}
+	if( pHasOutline ){
+		pRenderTaskFilters |= ertfOutline;
+	}
+	if( pIsOutlineSolid ){
+		pRenderTaskFilters |= ertfOutlineSolid;
+	}
+	if( pHasHoles ){
+		pRenderTaskFilters |= ertfHoles;
+	}
+	if( pShadowNone ){
+		pRenderTaskFilters |= ertfShadowNone;
+	}
+	if( pReflected ){
+		pRenderTaskFilters |= ertfReflected;
+	}
 }

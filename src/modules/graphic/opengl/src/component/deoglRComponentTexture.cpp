@@ -87,6 +87,7 @@ pUseDynamicSkin( NULL ),
 pUseDoubleSided( false ),
 pUseDecal( false ),
 pIsRendered( false ),
+pRenderTaskFilters( 0 ),
 
 pSharedSPBElement( NULL ),
 
@@ -258,6 +259,7 @@ void deoglRComponentTexture::SetSkin( deoglRSkin *skin ){
 	InvalidateParamBlocks();
 	MarkTUCsDirty();
 	pComponent.GetSkinRendered().SetDirty();
+	pUpdateRenderTaskFilters();
 }
 
 void deoglRComponentTexture::SetDynamicSkin( deoglRDynamicSkin *dynamicSkin ){
@@ -277,6 +279,7 @@ void deoglRComponentTexture::SetDynamicSkin( deoglRDynamicSkin *dynamicSkin ){
 	InvalidateParamBlocks();
 	MarkTUCsDirty();
 	pComponent.GetSkinRendered().SetDirty();
+	pUpdateRenderTaskFilters();
 }
 
 void deoglRComponentTexture::SetSkinState( deoglSkinState *skinState ){
@@ -312,6 +315,7 @@ void deoglRComponentTexture::SetSkinState( deoglSkinState *skinState ){
 	InvalidateParamBlocks();
 	MarkTUCsDirty();
 	pComponent.GetSkinRendered().SetDirty();
+	pUpdateRenderTaskFilters();
 }
 
 void deoglRComponentTexture::UpdateSkinState( deoglComponent &component ){
@@ -360,6 +364,7 @@ void deoglRComponentTexture::UpdateUseSkin(){
 	const deoglRModel * const model = pComponent.GetModel();
 	if( ! model ){
 		pIsRendered = false;
+		pUpdateRenderTaskFilters();
 		return;
 	}
 	
@@ -407,6 +412,7 @@ void deoglRComponentTexture::UpdateUseSkin(){
 	}
 	
 	pUpdateIsRendered();
+	pUpdateRenderTaskFilters();
 }
 
 decTexMatrix2 deoglRComponentTexture::CalcTexCoordMatrix() const{
@@ -969,4 +975,19 @@ void deoglRComponentTexture::pUpdateIsRendered(){
 	}
 	
 	pIsRendered = pUseDynamicSkin->GetRenderableAt( skinStateRenderable.GetHostRenderable() )->GetRenderPlan() != NULL;
+}
+
+void deoglRComponentTexture::pUpdateRenderTaskFilters(){
+	pRenderTaskFilters = 0;
+	if( pComponent.GetModel() ){
+		if( pUseSkinTexture ){
+			pRenderTaskFilters |= pUseSkinTexture->GetRenderTaskFilters();
+		}
+		if( pIsRendered ){
+			pRenderTaskFilters |= ertfRendered;
+		}
+		if( pUseDecal ){
+			pRenderTaskFilters |= ertfDecal;
+		}
+	}
 }

@@ -156,7 +156,7 @@ deoglRenderTaskShader *deoglRenderTask::GetShaderAt( int index ) const{
 	return ( deoglRenderTaskShader* )pShaders.GetAt( index );
 }
 
-deoglRenderTaskShader *deoglRenderTask::AddShader( deoglRenderTaskSharedShader *shader ){
+deoglRenderTaskShader *deoglRenderTask::AddShader( const deoglRenderTaskSharedShader *shader ){
 	const int index = shader->GetIndex();
 	
 	if( index >= pHasShaderCount ){

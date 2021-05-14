@@ -66,6 +66,7 @@ private:
 	bool pUseDoubleSided;
 	bool pUseDecal;
 	bool pIsRendered;
+	int pRenderTaskFilters;
 	
 	deoglSharedSPBElement *pSharedSPBElement;
 	decObjectList pSharedSPBRTIGroup;
@@ -168,6 +169,9 @@ public:
 	
 	/** Render color content is rendered instead of texture mapped. */
 	inline bool GetIsRendered() const{ return pIsRendered; }
+	
+	/** Render task filters. */
+	inline int GetRenderTaskFilters() const{ return pRenderTaskFilters; }
 	
 	/** Updates the actual texture parameters to use. */
 	void UpdateUseSkin();
@@ -321,6 +325,7 @@ public:
 	
 private:
 	void pUpdateIsRendered();
+	void pUpdateRenderTaskFilters();
 };
 
 #endif

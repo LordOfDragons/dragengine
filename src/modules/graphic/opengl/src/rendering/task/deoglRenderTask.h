@@ -129,7 +129,7 @@ public:
 	deoglRenderTaskShader *GetShaderAt( int index ) const;
 	
 	/** Add shader. */
-	deoglRenderTaskShader *AddShader( deoglRenderTaskSharedShader *shader );
+	deoglRenderTaskShader *AddShader( const deoglRenderTaskSharedShader *shader );
 	
 	
 	

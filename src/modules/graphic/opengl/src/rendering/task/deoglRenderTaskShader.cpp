@@ -119,7 +119,7 @@ deoglRenderTaskTexture *deoglRenderTaskShader::GetTextureAt( int index ) const{
 	return ( deoglRenderTaskTexture* )pTextures.GetAt( index );
 }
 
-deoglRenderTaskTexture *deoglRenderTaskShader::AddTexture( deoglRenderTaskSharedTexture *texture ){
+deoglRenderTaskTexture *deoglRenderTaskShader::AddTexture( const deoglRenderTaskSharedTexture *texture ){
 	if( ! texture ){
 		DETHROW( deeInvalidParam );
 	}

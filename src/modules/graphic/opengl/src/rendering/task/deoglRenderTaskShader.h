@@ -88,7 +88,7 @@ public:
 	deoglRenderTaskTexture *GetTextureAt( int index ) const;
 	
 	/** Add render task texture. */
-	deoglRenderTaskTexture *AddTexture( deoglRenderTaskSharedTexture *texture );
+	deoglRenderTaskTexture *AddTexture( const deoglRenderTaskSharedTexture *texture );
 	/*@}*/
 };
 
