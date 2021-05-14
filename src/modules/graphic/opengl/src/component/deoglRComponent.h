@@ -109,6 +109,7 @@ public:
 	decObjectList pLODs;
 	float pLODErrorScaling;
 	bool pDirtyLODVBOs;
+	bool pDirtyLODRenderTaskConfigs;
 	
 	bool pCubeFaceVisible[ 6 ];
 	int pSpecialFlags;
@@ -550,6 +551,9 @@ public:
 	/** Mark LOD VBOs dirty requiring preparing. */
 	void DirtyLODVBOs();
 	
+	/** Mark LOD render task configurations dirty requiring preparing. */
+	void DirtyLODRenderTaskConfigs();
+	
 	/** Update render target shared instances. */
 	void UpdateRTSInstances();
 	/*@}*/
@@ -731,6 +735,7 @@ private:
 	void pPrepareSolidity();
 	void pPrepareModelVBOs();
 	void pPrepareLODVBOs();
+	void pPrepareLODRenderTaskConfigs();
 	void pPrepareRenderEnvMap();
 	void pPrepareSkinStateRenderables( const deoglRenderPlanMasked *mask );
 	void pPrepareTextureTUCs();

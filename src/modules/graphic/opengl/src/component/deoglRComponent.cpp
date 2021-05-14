@@ -128,6 +128,7 @@ pOccMeshSharedSPBDoubleSided( NULL ),
 pOccMeshSharedSPBSingleSided( NULL ),
 
 pDirtyLODVBOs( true ),
+pDirtyLODRenderTaskConfigs( true ),
 
 pSpecialFlags( 0 ),
 
@@ -500,6 +501,7 @@ void deoglRComponent::InvalidateOccMeshSharedSPBRTIGroup(){
 
 void deoglRComponent::MeshChanged(){
 	pInvalidateLODVBOs();
+	DirtyLODRenderTaskConfigs();
 	
 	if( pDynamicOcclusionMesh ){
 		pDynamicOcclusionMesh->ComponentStateChanged();
@@ -970,6 +972,7 @@ void deoglRComponent::SetRenderMode( eRenderModes renderMode ){
 	
 	pRenderMode = renderMode;
 	pDirtyLODVBOs = true;
+	pDirtyLODRenderTaskConfigs = true;
 	pRequiresPrepareForRender();
 }
 
@@ -1136,6 +1139,8 @@ void deoglRComponent::PrepareForRender( deoglRenderPlan &plan, const deoglRender
 	pPrepareDynOccMesh();
 	pPrepareOccMeshRTSInstances(); // requires (dyn) occmesh VBOs to be prepared
 	
+	pPrepareLODRenderTaskConfigs();
+	
 	pPrepareDecals( plan, mask );
 }
 
@@ -1184,6 +1189,12 @@ void deoglRComponent::SetLODErrorScaling( float errorScaling ){
 
 void deoglRComponent::DirtyLODVBOs(){
 	pDirtyLODVBOs = true;
+	pDirtyLODRenderTaskConfigs = true;
+	pRequiresPrepareForRender();
+}
+
+void deoglRComponent::DirtyLODRenderTaskConfigs(){
+	pDirtyLODRenderTaskConfigs = true;
 	pRequiresPrepareForRender();
 }
 
@@ -1356,6 +1367,7 @@ void deoglRComponent::DirtyTextureTUCs(){
 	}
 	
 	pDirtyTextureTUCs = true;
+	pDirtyLODRenderTaskConfigs = true;
 	pRequiresPrepareForRender();
 }
 
@@ -1365,6 +1377,7 @@ void deoglRComponent::DirtyTextureParamBlocks(){
 	}
 	
 	pDirtyTextureParamBlocks = true;
+	pDirtyLODRenderTaskConfigs = true;
 	pRequiresPrepareForRender();
 }
 
@@ -1996,6 +2009,19 @@ void deoglRComponent::pPrepareLODVBOs(){
 		for( i=0; i<count; i++ ){
 			( ( deoglRComponentLOD* )pLODs.GetAt( i ) )->FreeVBO();
 		}
+	}
+}
+
+void deoglRComponent::pPrepareLODRenderTaskConfigs(){
+	if( ! pDirtyLODRenderTaskConfigs ){
+		return;
+	}
+	pDirtyLODRenderTaskConfigs = false;
+	
+	const int count = pLODs.GetCount();
+	int i;
+	for( i=0; i<count; i++ ){
+		( ( deoglRComponentLOD* )pLODs.GetAt( i ) )->UpdateRenderTaskConfigurations();
 	}
 }
 

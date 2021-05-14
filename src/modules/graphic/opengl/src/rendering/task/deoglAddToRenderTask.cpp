@@ -29,6 +29,8 @@
 #include "deoglRenderTaskShader.h"
 #include "deoglRenderTaskTexture.h"
 #include "deoglRenderTaskVAO.h"
+#include "config/deoglRenderTaskConfig.h"
+#include "config/deoglRenderTaskConfigTexture.h"
 #include "shared/deoglRenderTaskSharedShader.h"
 #include "shared/deoglRenderTaskSharedInstance.h"
 #include "shared/deoglRenderTaskSharedVAO.h"
@@ -235,13 +237,20 @@ static decTimer atrtTimer;
 #endif
 
 void deoglAddToRenderTask::AddComponent( const deoglRComponentLOD &lod ){
-	const deoglVAO * const vao = lod.GetUseVAO();
-	if( ! vao ){
+	const deoglRComponent &component = lod.GetComponent();
+	if( pFilterCubeFace != -1 && ! component.GetCubeFaceVisible( pFilterCubeFace ) ){
 		return;
 	}
 	
-	const deoglRComponent &component = lod.GetComponent();
-	if( pFilterCubeFace != -1 && ! component.GetCubeFaceVisible( pFilterCubeFace ) ){
+	const deoglRenderTaskConfig * const rtc = lod.GetRenderTaskConfig( pSkinShaderType );
+	if( rtc ){
+		AddRenderTaskConfig( *rtc, component.GetSpecialFlags() );
+		return;
+	}
+	
+	// conventional way
+	const deoglVAO * const vao = lod.GetUseVAO();
+	if( ! vao ){
 		return;
 	}
 	
@@ -862,6 +871,31 @@ deoglRParticleEmitterInstanceType &type ){
 	instance.SetPrimitiveType( primitiveType );
 	
 	rtvao.AddInstance( &instance );
+}
+
+
+
+void deoglAddToRenderTask::AddRenderTaskConfig( const deoglRenderTaskConfig &config, int specialFlags ){
+	const int count = config.GetTextureCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		const deoglRenderTaskConfigTexture &texture = config.GetTextureAt( i );
+		if( ( texture.GetRenderTaskFilter() & pFilterMask ) != pFiltersMasked ){
+			continue;
+		}
+		
+		#ifdef ATRT_TIMING
+		atrtElapsed0 += atrtTimer.GetElapsedTime();
+		#endif
+		
+		pRenderTask.AddShader( texture.GetShader() )->AddTexture( texture.GetTexture() )->
+			AddVAO( texture.GetVAO() )->AddInstance( texture.GetInstance() )->
+			AddSubInstance( texture.GetGroupIndex(), specialFlags );
+		#ifdef ATRT_TIMING
+		atrtElapsed2 += atrtTimer.GetElapsedTime();
+		#endif
+	}
 }
 
 

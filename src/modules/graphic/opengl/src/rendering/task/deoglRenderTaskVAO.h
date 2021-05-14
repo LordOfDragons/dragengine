@@ -92,7 +92,7 @@ public:
 	deoglRenderTaskInstance *GetInstanceAt( int index ) const;
 	
 	/** Add render task instance. */
-	deoglRenderTaskInstance *AddInstance( deoglRenderTaskSharedInstance *instance );
+	deoglRenderTaskInstance *AddInstance( const deoglRenderTaskSharedInstance *instance );
 	
 	/** Sort instances by distance. */
 	void SortInstancesByDistance( deoglQuickSorter &sorter, const decDVector &position,

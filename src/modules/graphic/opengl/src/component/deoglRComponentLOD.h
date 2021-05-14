@@ -23,6 +23,8 @@
 #define _DEOGLRCOMPONENTLOD_H_
 
 #include "../deoglBasics.h"
+#include "../rendering/task/config/deoglRenderTaskConfig.h"
+#include "../skin/deoglSkinTexture.h"
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
@@ -91,6 +93,7 @@ public:
 	deoglGIBVHDynamic *pGIBVHDynamic;
 	bool pDirtyGIBVHPositions;
 	
+	deoglRenderTaskConfig pRenderTaskConfigs[ 5 ];
 	
 	
 public:
@@ -240,6 +243,14 @@ public:
 	
 	/** Drop GI Dynamic BVH if present. */
 	void DropGIDynamicBVH();
+	
+	
+	
+	/** Render task configuration or NULL. */
+	const deoglRenderTaskConfig *GetRenderTaskConfig( deoglSkinTexture::eShaderTypes type ) const;
+	
+	/** Update render task configuration. */
+	void UpdateRenderTaskConfigurations();
 	/*@}*/
 	
 	
@@ -256,6 +267,7 @@ private:
 	void pCalculateNormalsAndTangents( const deoglModelLOD &modelLOD );
 	
 	void pPrepareVBOLayout( const deoglModelLOD &modelLOD );
+	void pUpdateRenderTaskConfig( deoglRenderTaskConfig &config, deoglSkinTexture::eShaderTypes type );
 };
 
 #endif

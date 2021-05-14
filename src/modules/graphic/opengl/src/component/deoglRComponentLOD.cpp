@@ -26,6 +26,7 @@
 
 #include "deoglRComponent.h"
 #include "deoglRComponentLOD.h"
+#include "deoglRComponentTexture.h"
 #include "../capabilities/deoglCapabilities.h"
 #include "../configuration/deoglConfiguration.h"
 #include "../delayedoperation/deoglDelayedDeletion.h"
@@ -35,8 +36,10 @@
 #include "../memory/deoglMemoryManager.h"
 #include "../model/deoglModelLOD.h"
 #include "../model/deoglRModel.h"
+#include "../model/texture/deoglModelTexture.h"
 #include "../model/face/deoglModelFace.h"
 #include "../rendering/deoglRenderGeometry.h"
+#include "../rendering/task/config/deoglRenderTaskConfigTexture.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTBufferObject.h"
 #include "../renderthread/deoglRTFramebuffer.h"
@@ -44,11 +47,17 @@
 #include "../renderthread/deoglRTTexture.h"
 #include "../renderthread/deoglRTChoices.h"
 #include "../renderthread/deoglRTLogger.h"
+#include "../renderthread/deoglRTShader.h"
+#include "../shaders/deoglShaderProgram.h"
 #include "../shaders/paramblock/shared/deoglSharedSPBElement.h"
 #include "../shaders/paramblock/shared/deoglSharedSPBListUBO.h"
+#include "../shaders/paramblock/shared/deoglSharedSPBRTIGroup.h"
+#include "../skin/shader/deoglSkinShader.h"
 #include "../texture/deoglTextureStageManager.h"
 #include "../texture/texture1d/deoglTexture1D.h"
 #include "../texture/texture2d/deoglTexture.h"
+#include "../texture/texunitsconfig/deoglTexUnitsConfig.h"
+#include "../texture/texunitsconfig/deoglTexUnitsConfigList.h"
 #include "../vao/deoglVAO.h"
 #include "../vbo/deoglSharedVBOBlock.h"
 #include "../vbo/deoglSharedVBO.h"
@@ -699,6 +708,38 @@ void deoglRComponentLOD::DropGIDynamicBVH(){
 		delete pGIBVHDynamic;
 		pGIBVHDynamic = NULL;
 	}
+}
+
+
+
+const deoglRenderTaskConfig *deoglRComponentLOD::GetRenderTaskConfig( deoglSkinTexture::eShaderTypes type ) const{
+	switch( type ){
+	case deoglSkinTexture::estComponentShadowProjection:
+		return &pRenderTaskConfigs[ 0 ];
+		
+	case deoglSkinTexture::estComponentShadowOrthogonal:
+		return &pRenderTaskConfigs[ 1 ];
+		
+	case deoglSkinTexture::estComponentShadowOrthogonalCascaded:
+		return &pRenderTaskConfigs[ 2 ];
+		
+	case deoglSkinTexture::estComponentShadowDistance:
+		return &pRenderTaskConfigs[ 3 ];
+		
+	case deoglSkinTexture::estComponentShadowDistanceCube:
+		return &pRenderTaskConfigs[ 4 ];
+		
+	default:
+		return NULL;
+	}
+}
+
+void deoglRComponentLOD::UpdateRenderTaskConfigurations(){
+	pUpdateRenderTaskConfig( pRenderTaskConfigs[ 0 ], deoglSkinTexture::estComponentShadowProjection );
+	pUpdateRenderTaskConfig( pRenderTaskConfigs[ 1 ], deoglSkinTexture::estComponentShadowOrthogonal );
+	pUpdateRenderTaskConfig( pRenderTaskConfigs[ 2 ], deoglSkinTexture::estComponentShadowOrthogonalCascaded );
+	pUpdateRenderTaskConfig( pRenderTaskConfigs[ 3 ], deoglSkinTexture::estComponentShadowDistance );
+	pUpdateRenderTaskConfig( pRenderTaskConfigs[ 4 ], deoglSkinTexture::estComponentShadowDistanceCube );
 }
 
 
@@ -1606,4 +1647,51 @@ void deoglRComponentLOD::pPrepareVBOLayout( const deoglModelLOD &modelLOD ){
 	attrTangent.SetComponentCount( 4 );
 	attrTangent.SetDataType( deoglVBOAttribute::edtFloat );
 	attrTangent.SetOffset( 36 );
+}
+
+void deoglRComponentLOD::pUpdateRenderTaskConfig( deoglRenderTaskConfig &config,
+deoglSkinTexture::eShaderTypes type ){
+	config.RemoveAllTextures();
+	
+	if( ! pComponent.GetModel() ){
+		return;
+	}
+	
+	const deoglVAO * const vao = GetUseVAO();
+	if( ! vao ){
+		return;
+	}
+	
+	const deoglRenderTaskSharedVAO * const rtvao = vao->GetRTSVAO();
+	const deoglModelLOD &modelLod = GetModelLODRef();
+	const int count = pComponent.GetTextureCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		if( modelLod.GetTextureAt( i ).GetFaceCount() == 0 ){
+			continue;
+		}
+		
+		const deoglRComponentTexture &texture = pComponent.GetTextureAt( i );
+		if( ( texture.GetRenderTaskFilters() & ertfRender ) != ertfRender ){
+			continue;
+		}
+		
+		const deoglSkinTexture * const skinTexture = texture.GetUseSkinTexture();
+		if( ! skinTexture ){
+			continue; // actually covered by filter above but better safe than sorry
+		}
+		
+		deoglRenderTaskConfigTexture &rct = config.AddTexture();
+		rct.SetRenderTaskFilter( texture.GetRenderTaskFilters() );
+		rct.SetShader( skinTexture->GetShaderFor( type )->GetShader()->GetRTSShader() );
+		const deoglTexUnitsConfig *tuc = texture.GetTUCForShaderType( type );
+		if( ! tuc ){
+			tuc = pComponent.GetRenderThread().GetShader().GetTexUnitsConfigList().GetEmptyNoUsage();
+		}
+		rct.SetTexture( tuc->GetRTSTexture() );
+		rct.SetVAO( rtvao );
+		rct.SetInstance( texture.GetSharedSPBRTIGroup( pLODIndex ).GetRTSInstance() );
+		rct.SetGroupIndex( texture.GetSharedSPBElement()->GetIndex() );
+	}
 }

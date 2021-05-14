@@ -44,6 +44,7 @@ class deoglRParticleEmitterInstance;
 class deoglRParticleEmitterInstanceType;
 class deoglRPropFieldType;
 class deoglRenderTask;
+class deoglRenderTaskConfig;
 class deoglRenderTaskStep;
 class deoglRenderTaskTexture;
 class deoglRenderTaskVAO;
@@ -307,6 +308,11 @@ public:
 	/** Add particles from emitter. */
 	void AddParticles( deoglRParticleEmitterInstance &emitter,
 		deoglRParticleEmitterInstanceType &type );
+	
+	
+	
+	/** Add render task configuration. */
+	void AddRenderTaskConfig( const deoglRenderTaskConfig &config, int specialFlags );
 	/*@}*/
 	
 	

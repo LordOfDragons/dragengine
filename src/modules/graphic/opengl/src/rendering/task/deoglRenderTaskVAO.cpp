@@ -105,7 +105,7 @@ deoglRenderTaskInstance *deoglRenderTaskVAO::GetInstanceAt( int index ) const{
 	return ( deoglRenderTaskInstance* )pInstances.GetAt( index );
 }
 
-deoglRenderTaskInstance *deoglRenderTaskVAO::AddInstance( deoglRenderTaskSharedInstance *instance ){
+deoglRenderTaskInstance *deoglRenderTaskVAO::AddInstance( const deoglRenderTaskSharedInstance *instance ){
 	if( ! instance ){
 		DETHROW( deeInvalidParam );
 	}
