@@ -319,7 +319,7 @@ void deoglRenderDevMode::RenderComponentLodLevels( deoglRenderPlan &plan ){
 	const float alphaSolid = 0.1f;
 	const float alphaWire = 1.0f;
 	deoglDCollisionBox box;
-	int c, lodLevel;
+	int c;
 	
 	renderThread.GetShader().ActivateShader( pShaderSolidColor3D );
 	deoglShaderCompiled &shader = *pShaderSolidColor3D->GetCompiled();
@@ -333,10 +333,7 @@ void deoglRenderDevMode::RenderComponentLodLevels( deoglRenderPlan &plan ){
 		deoglCollideListComponent &clComponent = *collideList.GetComponentAt( c );
 		deoglRComponent &component = *clComponent.GetComponent();
 		
-		lodLevel = clComponent.GetLODLevel();
-		if( lodLevel > 5 ){
-			lodLevel = 5;
-		}
+		const int lodLevel = decMath::min( clComponent.GetLODLevel(), 5 );
 		shader.SetParameterFloat( spsc3dColor, colorLevels[ lodLevel ].r, colorLevels[ lodLevel ].g, colorLevels[ lodLevel ].b, alphaSolid );
 		
 		box.SetFromExtends( component.GetMinimumExtend(), component.GetMaximumExtend() );
@@ -349,10 +346,7 @@ void deoglRenderDevMode::RenderComponentLodLevels( deoglRenderPlan &plan ){
 		deoglCollideListComponent &clComponent = *collideList.GetComponentAt( c );
 		deoglRComponent &component = *clComponent.GetComponent();
 		
-		lodLevel = clComponent.GetLODLevel();
-		if( lodLevel > 5 ){
-			lodLevel = 5;
-		}
+		const int lodLevel = decMath::min( clComponent.GetLODLevel(), 5 );
 		shader.SetParameterFloat( spsc3dColor, colorLevels[ lodLevel ].r, colorLevels[ lodLevel ].g, colorLevels[ lodLevel ].b, alphaWire );
 		
 		box.SetFromExtends( component.GetMinimumExtend(), component.GetMaximumExtend() );

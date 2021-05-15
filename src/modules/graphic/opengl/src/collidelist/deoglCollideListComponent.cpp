@@ -40,6 +40,7 @@
 deoglCollideListComponent::deoglCollideListComponent() :
 pComponent( NULL ),
 pLODLevel( 0 ),
+pComponentLOD( NULL ),
 pCulled( false ),
 pCascadeMask( 0 ){
 }
@@ -53,8 +54,9 @@ deoglCollideListComponent::~deoglCollideListComponent(){
 ///////////////
 
 void deoglCollideListComponent::Clear(){
-	SetComponent( NULL );
+	pComponent = NULL;
 	pLODLevel = 0;
+	pComponentLOD = NULL;
 	pCulled = false;
 	pCascadeMask = 0;
 }
@@ -62,18 +64,17 @@ void deoglCollideListComponent::Clear(){
 void deoglCollideListComponent::SetComponent( deoglRComponent *component ){
 	pComponent = component;
 	pLODLevel = 0;
+	pComponentLOD = &pComponent->GetLODAt( pLODLevel );
 }
 
 void deoglCollideListComponent::SetLODLevel( int lodLevel ){
 	pLODLevel = lodLevel;
+	pComponentLOD = &pComponent->GetLODAt( pLODLevel );
 }
 
 void deoglCollideListComponent::SetLODLevelMax(){
-	if( ! pComponent ){
-		DETHROW( deeInvalidParam );
-	}
-	
 	pLODLevel = pComponent->GetLODCount() - 1;
+	pComponentLOD = &pComponent->GetLODAt( pLODLevel );
 }
 
 void deoglCollideListComponent::SetCulled( bool culled ){
@@ -86,10 +87,6 @@ void deoglCollideListComponent::SetCascadeMask( int mask ){
 
 void deoglCollideListComponent::StartOcclusionTest( deoglOcclusionTest &occlusionTest,
 const decDVector &referencePosition ){
-	if( ! pComponent ){
-		DETHROW( deeInvalidParam );
-	}
-	
 	// this check is wrong. components can have no skin assigned but having skins assigned
 	// to individual textures. this check should instead check all textures if they have
 	// a UseTexture which is not NULL. doing this though over and over again is bad.

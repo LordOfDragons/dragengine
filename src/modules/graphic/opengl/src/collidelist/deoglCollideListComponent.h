@@ -27,6 +27,7 @@
 #include <dragengine/common/math/decMath.h>
 
 class deoglRComponent;
+class deoglRComponentLOD;
 class deoglOcclusionTest;
 
 
@@ -38,6 +39,7 @@ class deoglCollideListComponent : public deoglOcclusionTestListener{
 private:
 	deoglRComponent *pComponent;
 	int pLODLevel;
+	deoglRComponentLOD *pComponentLOD;
 	bool pCulled;
 	int pCascadeMask;
 	
@@ -63,7 +65,10 @@ public:
 	/** Component. */
 	inline deoglRComponent *GetComponent() const{ return pComponent; }
 	
-	/** Set component. */
+	/**
+	 * Set component.
+	 * \note For use by deoglCollideList only.
+	 */
 	void SetComponent( deoglRComponent *component );
 	
 	/** LOD level to use. */
@@ -74,6 +79,9 @@ public:
 	
 	/** Set LOD level to use to maximum LOD level. */
 	void SetLODLevelMax();
+	
+	/** Component LOD. */
+	inline deoglRComponentLOD &GetComponentLOD() const{ return *pComponentLOD; }
 	
 	
 	

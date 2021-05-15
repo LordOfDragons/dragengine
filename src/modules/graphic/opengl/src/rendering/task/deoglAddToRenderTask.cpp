@@ -244,6 +244,9 @@ void deoglAddToRenderTask::AddComponent( const deoglRComponentLOD &lod ){
 	
 	const deoglRenderTaskConfig * const rtc = lod.GetRenderTaskConfig( pSkinShaderType );
 	if( rtc ){
+			#ifdef ATRT_TIMING
+			atrtElapsed0 += atrtTimer.GetElapsedTime();
+			#endif
 		AddRenderTaskConfig( *rtc, component.GetSpecialFlags() );
 		return;
 	}
@@ -274,7 +277,7 @@ void deoglAddToRenderTask::AddComponent( const deoglRComponentLOD &lod ){
 }
 
 void deoglAddToRenderTask::AddComponent( const deoglCollideListComponent &clcomponent ){
-	AddComponent( clcomponent.GetComponent()->GetLODAt( clcomponent.GetLODLevel() ) );
+	AddComponent( clcomponent.GetComponentLOD() );
 }
 
 void deoglAddToRenderTask::AddComponents( const deoglCollideList &clist ){
@@ -289,7 +292,7 @@ void deoglAddToRenderTask::AddComponents( const deoglCollideList &clist ){
 	debug1 = 0.0f; debug1b = 0;
 	#endif
 	for( i=0; i<count; i++ ){
-		AddComponent( *clist.GetComponentAt( i ) );
+		AddComponent( clist.GetComponentAt( i )->GetComponentLOD() );
 	}
 	#ifdef SPECIAL_DEBUG_ON
 	pRenderThread.GetLogger().LogInfoFormat( "deoglAddToRenderTask::AddComponents(%i) = %iys",
@@ -886,7 +889,7 @@ void deoglAddToRenderTask::AddRenderTaskConfig( const deoglRenderTaskConfig &con
 		}
 		
 		#ifdef ATRT_TIMING
-		atrtElapsed0 += atrtTimer.GetElapsedTime();
+		atrtElapsed1 += atrtTimer.GetElapsedTime();
 		#endif
 		
 		pRenderTask.AddShader( texture.GetShader() )->AddTexture( texture.GetTexture() )->
