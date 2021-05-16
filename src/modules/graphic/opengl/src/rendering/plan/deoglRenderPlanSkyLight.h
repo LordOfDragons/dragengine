@@ -22,10 +22,9 @@
 #ifndef _DEOGLRENDERPLANSKYLIGHT_H_
 #define _DEOGLRENDERPLANSKYLIGHT_H_
 
-#include "../task/persistent/deoglPersistentRenderTask.h"
-#include "../task/persistent/deoglAddToPersistentRenderTask.h"
+#include "../task/deoglAddToRenderTask.h"
+#include "../task/deoglRenderTask.h"
 #include "../../collidelist/deoglCollideList.h"
-#include "../../component/deoglComponentListener.h"
 
 #include <dragengine/deObjectReference.h>
 #include <dragengine/common/collection/decObjectList.h>
@@ -63,18 +62,6 @@ public:
 	
 	
 private:
-	class cGIComponentChangeListener : public deoglComponentListener {
-	private:
-		deoglRenderPlanSkyLight &pPlan;
-		
-	public:
-		cGIComponentChangeListener( deoglRenderPlanSkyLight &plan );
-		virtual void ComponentDestroyed( deoglRComponent &component );
-		virtual void TUCChanged( deoglRComponent &component );
-	};
-	
-	
-	
 	deoglRenderPlan &pPlan;
 	deoglRSkyInstance *pSky;
 	deoglRSkyInstanceLayer *pLayer;
@@ -95,10 +82,8 @@ private:
 // 	decVector pGIBoxMinExtend;
 // 	decVector pGIBoxMaxExtend;
 	sShadowLayer pGIShadowLayer;
-	deoglPersistentRenderTask pGIRenderTask;
-	deoglAddToPersistentRenderTask pGIRenderTaskAdd;
-	bool pGIRenderTaskUpdateMarker;
-	deObjectReference pGIComponentChangeListener;
+	deoglRenderTask pGIRenderTask;
+	deoglAddToRenderTask pGIRenderTaskAdd;
 	
 	deoglRPTSkyLightFindContent *pTaskFindContent;
 	deoglRPTSkyLightGIFindContent *pTaskGIFindContent;
@@ -193,26 +178,12 @@ public:
 	inline const sShadowLayer &GetGIShadowLayer() const{ return pGIShadowLayer; }
 	
 	/** GI render task. */
-	inline deoglPersistentRenderTask &GetGIRenderTask(){ return pGIRenderTask; }
-	inline const deoglPersistentRenderTask &GetGIRenderTask() const{ return pGIRenderTask; }
+	inline deoglRenderTask &GetGIRenderTask(){ return pGIRenderTask; }
+	inline const deoglRenderTask &GetGIRenderTask() const{ return pGIRenderTask; }
 	
 	/** GI add to render task. */
-	inline deoglAddToPersistentRenderTask &GetGIRenderTaskAdd(){ return pGIRenderTaskAdd; }
-	inline const deoglAddToPersistentRenderTask &GetGIRenderTaskAdd() const{ return pGIRenderTaskAdd; }
-	
-	/** GI update marker. */
-	inline bool GetGIRenderTaskUpdateMarker() const{ return pGIRenderTaskUpdateMarker; }
-	void SetGIRenderTaskUpdateMarker( bool updateMarker );
-	
-	/** GI render task listener. */
-	inline deoglComponentListener *GetGIComponentChangeListener() const{
-		return ( deoglComponentListener* )( deObject* )pGIComponentChangeListener; }
-	
-	/** GI component destroyed. */
-	void GIComponentDestroyed( deoglRComponent &component );
-	
-	/** GI component changed TUC. */
-	void GIComponentChangedTUC( deoglRComponent &component );
+	inline deoglAddToRenderTask &GetGIRenderTaskAdd(){ return pGIRenderTaskAdd; }
+	inline const deoglAddToRenderTask &GetGIRenderTaskAdd() const{ return pGIRenderTaskAdd; }
 	
 	
 	

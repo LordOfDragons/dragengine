@@ -32,8 +32,7 @@
 #include "../../../component/deoglRComponent.h"
 #include "../../../envmap/deoglEnvironmentMap.h"
 #include "../../../gi/deoglGIState.h"
-#include "../../../rendering/task/persistent/deoglPersistentRenderTask.h"
-#include "../../../rendering/task/persistent/deoglPersistentRenderTaskOwner.h"
+#include "../../../rendering/task/deoglRenderTask.h"
 #include "../../../renderthread/deoglRenderThread.h"
 #include "../../../renderthread/deoglRTLogger.h"
 #include "../../../utils/collision/deoglDCollisionSphere.h"
@@ -51,11 +50,7 @@
 deoglRPTSkyLightGIUpdateRT::deoglRPTSkyLightGIUpdateRT( deoglRenderPlanSkyLight &plan ) :
 deParallelTask( &plan.GetPlan().GetRenderThread().GetOgl() ),
 pPlan( plan ),
-pElapsedTime( 0.0f ),
-pCountAdded( 0 ),
-pCountRemoved( 0 ),
-pElapsedAdded( 0 ),
-pElapsedRemoved( 0 ){
+pElapsedTime( 0.0f ){
 }
 
 deoglRPTSkyLightGIUpdateRT::~deoglRPTSkyLightGIUpdateRT(){
@@ -83,76 +78,24 @@ void deoglRPTSkyLightGIUpdateRT::Run(){
 	
 	try{
 		INIT_SPECIAL_TIMING
-		decTimer timer, timer2;
-		int i;
+		decTimer timer;
 		
-		// flip update marker. allows to track changes with the least amount of work
-		const bool updateMarker = ! pPlan.GetGIRenderTaskUpdateMarker();
-		pPlan.SetGIRenderTaskUpdateMarker( updateMarker );
+		deoglAddToRenderTask &addToRenderTask = pPlan.GetGIRenderTaskAdd();
+		const deoglCollideList &collideList = pPlan.GetGICollideList();
 		
-		// add components not in task yet
-		deoglComponentListener * const componentChangeListener = pPlan.GetGIComponentChangeListener();
-		deoglAddToPersistentRenderTask &addToRenderTask = pPlan.GetGIRenderTaskAdd();
-		deoglPersistentRenderTask &renderTask = pPlan.GetGIRenderTask();
-		deoglCollideList &collideList = pPlan.GetGICollideList();
+		pPlan.GetGIRenderTask().Clear();
 		
-		const int countComponents = collideList.GetComponentCount();
-		for( i=0; i<countComponents; i++ ){
-			deoglRComponent &component = *collideList.GetComponentAt( i )->GetComponent();
-			deoglPersistentRenderTaskOwner *owner = renderTask.GetOwnerWith( &component, component.GetUniqueKey() );
-			if( owner ){
-				owner->SetUpdateMarker( updateMarker );
-				//owner->SetExtends( component.GetMinimumExtend(), component.GetMaximumExtend() );
-				continue;
-			}
-			
-			owner = renderTask.AddOwner( &component, component.GetUniqueKey() );
-			owner->SetUpdateMarker( updateMarker );
-			owner->SetComponent( &component );
-			//owner->SetExtends( component.GetMinimumExtend(), component.GetMaximumExtend() );
-			
-			addToRenderTask.AddComponent( *owner, component, -1 );
-			
-			component.AddListener( componentChangeListener );
-			pCountAdded++;
-			
-	// 		{
-	// 			const decDVector p(component.GetMatrix().GetPosition());
-	// 			pRenderThread.GetLogger().LogInfoFormat("GIUpdateRenderTask: Added (%g,%g,%g) %s",
-	// 				p.x, p.y, p.z, component.GetModel()->GetFilename().GetString());
-	// 		}
-		}
-				pElapsedAdded = ( int )( timer2.GetElapsedTime() * 1e6f );
+		addToRenderTask.SetSolid( true );
+		addToRenderTask.SetNoShadowNone( true );
 		
-		// remove components no more in task
-		const int allCollideCounts = countComponents; // + countBillboards...
-		if( allCollideCounts < renderTask.GetOwnerCount() ){
-			decPointerLinkedList::cListEntry *iterOwner = renderTask.GetRootOwner();
-			while( iterOwner ){
-				deoglPersistentRenderTaskOwner * const owner = ( deoglPersistentRenderTaskOwner* )iterOwner->GetOwner();
-				iterOwner = iterOwner->GetNext();
-				
-				if( owner->GetUpdateMarker() == updateMarker ){
-					continue;
-				}
-				
-		// 		{
-		// 			const deoglRComponent &component = *( ( deoglRComponent* )owner->GetOwner() );
-		// 			const decDVector p(component.GetMatrix().GetPosition());
-		// 			pRenderThread.GetLogger().LogInfoFormat("GIUpdateRenderTask: Remove (%g,%g,%g) %s",
-		// 				p.x, p.y, p.z, component.GetModel()->GetFilename().GetString());
-		// 		}
-				
-				if( owner->GetComponent() ){
-					owner->GetComponent()->RemoveListener( componentChangeListener );
-				}
-				pCountRemoved++;
-				
-				renderTask.RemoveOwnedBy( *owner );
-				renderTask.RemoveOwner( owner );
-			}
-		}
-				pElapsedRemoved = ( int )( timer2.GetElapsedTime() * 1e6f );
+		addToRenderTask.SetSkinShaderType( deoglSkinTexture::estComponentShadowOrthogonal );
+		addToRenderTask.AddComponents( collideList );
+		
+		addToRenderTask.SetSkinShaderType( deoglSkinTexture::estPropFieldShadowOrthogonal );
+		addToRenderTask.AddPropFields( collideList, false );
+		
+		addToRenderTask.SetSkinShaderType( deoglSkinTexture::estHeightMapShadowOrthogonal );
+		addToRenderTask.AddHeightTerrains( collideList, true );
 		
 		pElapsedTime = timer.GetElapsedTime();
 		SPECIAL_TIMER_PRINT("UpdateRenderTask")

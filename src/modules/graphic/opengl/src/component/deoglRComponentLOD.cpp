@@ -735,11 +735,18 @@ const deoglRenderTaskConfig *deoglRComponentLOD::GetRenderTaskConfig( deoglSkinT
 }
 
 void deoglRComponentLOD::UpdateRenderTaskConfigurations(){
-	pUpdateRenderTaskConfig( pRenderTaskConfigs[ 0 ], deoglSkinTexture::estComponentShadowProjection );
-	pUpdateRenderTaskConfig( pRenderTaskConfigs[ 1 ], deoglSkinTexture::estComponentShadowOrthogonal );
-	pUpdateRenderTaskConfig( pRenderTaskConfigs[ 2 ], deoglSkinTexture::estComponentShadowOrthogonalCascaded );
-	pUpdateRenderTaskConfig( pRenderTaskConfigs[ 3 ], deoglSkinTexture::estComponentShadowDistance );
-	pUpdateRenderTaskConfig( pRenderTaskConfigs[ 4 ], deoglSkinTexture::estComponentShadowDistanceCube );
+	const int rtfShadow = ertfRender;
+	const int rtfmShadow = ertfRender | ertfDecal | ertfShadowNone;
+	const deoglSkinTexture::eShaderTypes typesShadow[ 5 ] = {
+		deoglSkinTexture::estComponentShadowProjection,
+		deoglSkinTexture::estComponentShadowOrthogonal,
+		deoglSkinTexture::estComponentShadowOrthogonalCascaded,
+		deoglSkinTexture::estComponentShadowDistance,
+		deoglSkinTexture::estComponentShadowDistanceCube };
+	int i;
+	for( i=0; i<5; i++ ){
+		pUpdateRenderTaskConfig( pRenderTaskConfigs[ i ], typesShadow[ i ], rtfShadow, rtfmShadow, true );
+	}
 }
 
 
@@ -1650,7 +1657,7 @@ void deoglRComponentLOD::pPrepareVBOLayout( const deoglModelLOD &modelLOD ){
 }
 
 void deoglRComponentLOD::pUpdateRenderTaskConfig( deoglRenderTaskConfig &config,
-deoglSkinTexture::eShaderTypes type ){
+deoglSkinTexture::eShaderTypes type, int renderTaskFlags, int renderTaskFlagMask, bool shadow ){
 	config.RemoveAllTextures();
 	
 	if( ! pComponent.GetModel() ){
@@ -1673,13 +1680,23 @@ deoglSkinTexture::eShaderTypes type ){
 		}
 		
 		const deoglRComponentTexture &texture = pComponent.GetTextureAt( i );
-		if( ( texture.GetRenderTaskFilters() & ertfRender ) != ertfRender ){
+		if( ( texture.GetRenderTaskFilters() & renderTaskFlagMask ) != renderTaskFlags ){
 			continue;
 		}
 		
 		const deoglSkinTexture * const skinTexture = texture.GetUseSkinTexture();
 		if( ! skinTexture ){
 			continue; // actually covered by filter above but better safe than sorry
+		}
+		
+		deoglRenderTaskSharedInstance *rtsi = texture.GetSharedSPBRTIGroup( pLODIndex ).GetRTSInstance();
+		
+		if( shadow ){
+			deoglSharedSPBRTIGroup *group = texture.GetSharedSPBRTIGroupShadow( pLODIndex );
+			if( group ){
+				rtsi = group->GetRTSInstance();
+				i += group->GetTextureCount() - 1;
+			}
 		}
 		
 		deoglRenderTaskConfigTexture &rct = config.AddTexture();
@@ -1691,7 +1708,7 @@ deoglSkinTexture::eShaderTypes type ){
 		}
 		rct.SetTexture( tuc->GetRTSTexture() );
 		rct.SetVAO( rtvao );
-		rct.SetInstance( texture.GetSharedSPBRTIGroup( pLODIndex ).GetRTSInstance() );
+		rct.SetInstance( rtsi );
 		rct.SetGroupIndex( texture.GetSharedSPBElement()->GetIndex() );
 	}
 }

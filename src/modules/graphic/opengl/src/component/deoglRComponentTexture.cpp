@@ -193,6 +193,7 @@ deoglRComponentTexture::~deoglRComponentTexture(){
 	}
 	
 	pSharedSPBRTIGroup.RemoveAll();
+	pSharedSPBRTIGroupShadow.RemoveAll();
 	if( pSharedSPBElement ){
 		pSharedSPBElement->FreeReference();
 	}
@@ -496,6 +497,7 @@ void deoglRComponentTexture::PrepareParamBlocks(){
 		int i;
 		
 		pSharedSPBRTIGroup.RemoveAll();
+		pSharedSPBRTIGroupShadow.RemoveAll();
 		
 		if( pSharedSPBElement ){
 			const deoglRModel &model = pComponent.GetModelRef();
@@ -515,11 +517,39 @@ void deoglRComponentTexture::PrepareParamBlocks(){
 				pSharedSPBRTIGroup.Add( group );
 			}
 			
+			if( ( pRenderTaskFilters & ( ertfRender | ertfShadowNone | ertfDecal ) ) == ertfRender ){
+				// combine shadow textures if possible
+				for( i=0; i<count; i++ ){
+					const int combineCount = pShadowCombineCount( i );
+					if( combineCount < 2 ){
+						pSharedSPBRTIGroupShadow.Add( NULL );
+						continue;
+					}
+					
+					deoglModelLOD &modelLod = model.GetLODAt( i );
+					deoglSharedSPBRTIGroupList &list = modelLod.GetSharedSPBRTIGroupListAt( pIndex );
+					deoglSharedSPBRTIGroup *group = list.GetWith( spb, combineCount );
+					
+					if( ! group ){
+						group = list.AddWith( spb, combineCount );
+						group->GetRTSInstance()->SetSubInstanceSPB( &spb );
+					}
+					
+					pSharedSPBRTIGroupShadow.Add( group );
+				}
+				
+			}else{
+				for( i=0; i<count; i++ ){
+					pSharedSPBRTIGroupShadow.Add( NULL );
+				}
+			}
+			
 			UpdateRTSInstances();
 			
 		}else{
 			for( i=0; i<count; i++ ){
 				pSharedSPBRTIGroup.Add( NULL );
+				pSharedSPBRTIGroupShadow.Add( NULL );
 			}
 		}
 		
@@ -571,21 +601,40 @@ void deoglRComponentTexture::UpdateRTSInstances(){
 		rtsi.SetIndexCount( modelTexture.GetFaceCount() * 3 );
 		rtsi.SetDoubleSided( pUseDoubleSided );
 	}
+	
+	// shadow combine groups
+	for( i=0; i<count; i++ ){
+		deoglSharedSPBRTIGroup * const group = ( deoglSharedSPBRTIGroup* )pSharedSPBRTIGroupShadow.GetAt( i );
+		if( ! group ){
+			continue;
+		}
+		
+		const deoglModelLOD &modelLod = model.GetLODAt( i );
+		deoglRenderTaskSharedInstance &rtsi = *group->GetRTSInstance();
+		rtsi.SetDoubleSided( pUseDoubleSided );
+		rtsi.SetFirstPoint( pComponent.GetPointOffset( i ) );
+		rtsi.SetFirstIndex( pComponent.GetIndexOffset( i ) + modelLod.GetTextureAt( pIndex ).GetFirstFace() * 3 );
+		
+		int j, faceCount = 0;
+		for( j=0; j<group->GetTextureCount(); j++ ){
+			faceCount += modelLod.GetTextureAt( pIndex + j ).GetFaceCount();
+		}
+		rtsi.SetIndexCount( faceCount * 3 );
+	}
 }
 
 deoglSharedSPBRTIGroup &deoglRComponentTexture::GetSharedSPBRTIGroup( int lodLevel ) const{
-	if( lodLevel < 0 ){
-		lodLevel += pComponent.GetLODCount();
-	}
-	if( lodLevel < 0 ){
-		DETHROW( deeInvalidParam );
-	}
-	deoglSharedSPBRTIGroup * const group = ( deoglSharedSPBRTIGroup* )pSharedSPBRTIGroup.GetAt( lodLevel );
+	deoglSharedSPBRTIGroup * const group = ( ( deoglSharedSPBRTIGroup* )pSharedSPBRTIGroup.GetAt(
+		lodLevel >= 0 ? lodLevel : lodLevel + pComponent.GetLODCount() ) );
 	if( ! group ){
 		DETHROW( deeInvalidParam );
 	}
-	
 	return *group;
+}
+
+deoglSharedSPBRTIGroup *deoglRComponentTexture::GetSharedSPBRTIGroupShadow( int lodLevel ) const{
+	return ( ( deoglSharedSPBRTIGroup* )pSharedSPBRTIGroupShadow.GetAt(
+		lodLevel >= 0 ? lodLevel : lodLevel + pComponent.GetLODCount() ) );
 }
 
 
@@ -979,15 +1028,57 @@ void deoglRComponentTexture::pUpdateIsRendered(){
 
 void deoglRComponentTexture::pUpdateRenderTaskFilters(){
 	pRenderTaskFilters = 0;
-	if( pComponent.GetModel() ){
-		if( pUseSkinTexture ){
-			pRenderTaskFilters |= pUseSkinTexture->GetRenderTaskFilters();
-		}
-		if( pIsRendered ){
-			pRenderTaskFilters |= ertfRendered;
-		}
-		if( pUseDecal ){
-			pRenderTaskFilters |= ertfDecal;
+	if( ! pComponent.GetModel() ){
+		return;
+	}
+	
+	if( pUseSkinTexture ){
+		pRenderTaskFilters |= pUseSkinTexture->GetRenderTaskFilters();
+	}
+	if( pIsRendered ){
+		pRenderTaskFilters |= ertfRendered;
+	}
+	if( pUseDecal ){
+		pRenderTaskFilters |= ertfDecal;
+	}
+	if( pUseDoubleSided ){
+		pRenderTaskFilters |= ertfDoubleSided;
+	}
+}
+
+int deoglRComponentTexture::pShadowCombineCount( int lodLevel ) const{
+	const bool hasHoles = ( pRenderTaskFilters & ( ertfSolid | ertfHoles ) ) == ( ertfSolid | ertfHoles );
+	if( hasHoles && pUseSkinState && ( pUseSkinTexture->GetVariationU() || pUseSkinTexture->GetVariationV() ) ){
+		return 1; // can not combine since variation is used
+	}
+	
+	int i;
+	for( i=0; i<pIndex; i++ ){
+		const deoglRComponentTexture &texture = pComponent.GetTextureAt( i );
+		const deoglSharedSPBRTIGroup * const group = texture.GetSharedSPBRTIGroupShadow( lodLevel );
+		if( group && group->GetTextureCount() > pIndex - i ){
+			return 1; // covered by a previous combined group
 		}
 	}
+	
+	const int mask = ertfRender | ertfSolid | ertfShadowNone | ertfHoles | ertfDecal | ertfDoubleSided;
+	const int filter = pRenderTaskFilters & mask;
+	const int count = pComponent.GetTextureCount();
+	
+	for( i=pIndex+1; i<count; i++ ){
+		const deoglRComponentTexture &texture = pComponent.GetTextureAt( i );
+		if( ( texture.pRenderTaskFilters & mask ) != filter ){
+			break; // can not be combined because filters differ
+		}
+		if( hasHoles ){
+			if( pTUCShadow != texture.pTUCShadow ){
+				break; // can not be combined because TUC differs
+			}
+			if( ! pTransform.IsEqualTo( texture.pTransform ) ){
+				break; // can not be combined because transform differs
+			}
+		}
+	}
+	
+	return i - pIndex; // count of matching textures that can be combined
 }

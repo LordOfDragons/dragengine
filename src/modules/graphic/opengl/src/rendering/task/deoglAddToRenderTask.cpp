@@ -281,6 +281,37 @@ void deoglAddToRenderTask::AddComponent( const deoglCollideListComponent &clcomp
 }
 
 void deoglAddToRenderTask::AddComponents( const deoglCollideList &clist ){
+	/*{
+		decTimer timer;
+		const int count = clist.GetComponentCount();
+		int i;
+		for( i=0; i<count; i++ ){
+			const deoglRComponentLOD &lod = clist.GetComponentAt( i )->GetComponentLOD();
+			const deoglRComponent &component = lod.GetComponent();
+			if( pFilterCubeFace != -1 && ! component.GetCubeFaceVisible( pFilterCubeFace ) ){
+				return;
+			}
+			
+			const deoglRenderTaskConfig * const rtc = lod.GetRenderTaskConfig( pSkinShaderType );
+			if( rtc ){
+				const int specialFlags = component.GetSpecialFlags();
+				const int count2 = rtc->GetTextureCount();
+				int j;
+				
+				for( j=0; j<count2; j++ ){
+					const deoglRenderTaskConfigTexture &texture = rtc->GetTextureAt( j );
+					if( ( texture.GetRenderTaskFilter() & pFilterMask ) == pFiltersMasked ){
+						pRenderTask.AddConfigTexture( texture, specialFlags );
+					}
+				}
+			}
+		}
+		const float t1 = timer.GetElapsedTime();
+		pRenderTask.ApplyConfigTextures();
+		const float t2 = timer.GetElapsedTime();
+		pRenderThread.GetLogger().LogInfoFormat("SPECIALTIMING %dys %dys", (int)(t1*1e6f), (int)(t2*1e6f));
+	}*/
+	
 		#ifdef ATRT_TIMING
 		atrtElapsed0=0; atrtElapsed1=0; atrtElapsed2=0; atrtElapsed1b=0; atrtTimer.Reset();
 		#endif
@@ -338,11 +369,12 @@ const deoglModelLOD &modelLod, int texture, const deoglRenderTaskSharedVAO *rtva
 		#endif
 	
 	// obtain render task vao and add faces
-// 	pGetTaskVAO( pSkinShaderType, skinTexture,
-// 		componentTexture.GetTUCForShaderType( pSkinShaderType ), rtvao->GetVAO() )->
-// 			AddInstance( componentTexture.GetSharedSPBRTIGroup( lod.GetLODIndex() ).GetRTSInstance() )->
-// 			AddSubInstance( componentTexture.GetSharedSPBElement()->GetIndex(), component.GetSpecialFlags() );
+	pGetTaskVAO( pSkinShaderType, componentTexture.GetUseSkinTexture(),
+		componentTexture.GetTUCForShaderType( pSkinShaderType ), rtvao->GetVAO() )->
+			AddInstance( componentTexture.GetSharedSPBRTIGroup( lod.GetLODIndex() ).GetRTSInstance() )->
+			AddSubInstance( componentTexture.GetSharedSPBElement()->GetIndex(), component.GetSpecialFlags() );
 	
+#if 0
 	const deoglRenderTaskSharedShader * const rts = componentTexture.GetUseSkinTexture()->
 		GetShaderFor( pSkinShaderType )->GetShader()->GetRTSShader();
 	
@@ -370,6 +402,7 @@ const deoglModelLOD &modelLod, int texture, const deoglRenderTaskSharedVAO *rtva
 		//   - if rtsi is not the same ignore cached texture
 		//   - if rts or rtt is not the same ignore cached texture
 		//   - else use last found deoglRenderTaskInstance to add sub instance to
+#endif
 }
 
 

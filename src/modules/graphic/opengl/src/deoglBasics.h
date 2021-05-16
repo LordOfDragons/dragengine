@@ -236,7 +236,8 @@ enum eRenderTaskFilters{
 	ertfOutline = 0x20,
 	ertfOutlineSolid = 0x40,
 	ertfHoles = 0x80,
-	ertfDecal = 0x100
+	ertfDecal = 0x100,
+	ertfDoubleSided = 0200
 };
 
 

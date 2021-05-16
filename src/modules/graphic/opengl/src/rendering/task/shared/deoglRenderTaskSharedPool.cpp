@@ -28,7 +28,6 @@
 #include "deoglRenderTaskSharedTexture.h"
 #include "deoglRenderTaskSharedVAO.h"
 #include "deoglRenderTaskSharedInstance.h"
-#include "deoglRenderTaskSharedSubInstance.h"
 #include "../../../renderthread/deoglRenderThread.h"
 #include "../../../renderthread/deoglRTLogger.h"
 
@@ -47,17 +46,11 @@ pRenderThread( renderThread ),
 pNextIndexShader( 0 ),
 pNextIndexTexture( 0 ),
 pNextIndexVAO( 0 ),
-pNextIndexInstance( 0 ),
-pNextIndexSubInstance( 0 ){
+pNextIndexInstance( 0 ){
 }
 
 deoglRenderTaskSharedPool::~deoglRenderTaskSharedPool(){
-	int i, count = pSubInstances.GetCount();
-	for( i=0; i<count; i++ ){
-		delete ( deoglRenderTaskSharedSubInstance* )pSubInstances.GetAt( i );
-	}
-	
-	count = pInstances.GetCount();
+	int i, count = pInstances.GetCount();
 	for( i=0; i<count; i++ ){
 		delete ( deoglRenderTaskSharedInstance* )pInstances.GetAt( i );
 	}
@@ -159,25 +152,6 @@ deoglRenderTaskSharedInstance *deoglRenderTaskSharedPool::GetInstance(){
 	return instance;
 }
 
-deoglRenderTaskSharedSubInstance *deoglRenderTaskSharedPool::GetSubInstance(){
-	deoglRenderTaskSharedSubInstance *subInstance;
-	
-	const int index = pSubInstances.GetCount() - 1;
-	if( index > -1 ){
-		subInstance = ( deoglRenderTaskSharedSubInstance* )pSubInstances.GetAt( index );
-		pSubInstances.RemoveFrom( index );
-		
-	}else{
-		subInstance = new deoglRenderTaskSharedSubInstance( *this, pNextIndexSubInstance++ );
-		
-		if( pNextIndexSubInstance % 5000 == 0 ){
-			pRenderThread.GetLogger().LogInfoFormat( "RenderTaskSharedPool: Reached %d SubInstances", pNextIndexSubInstance );
-		}
-	}
-	
-	return subInstance;
-}
-
 
 
 void deoglRenderTaskSharedPool::ReturnShader( deoglRenderTaskSharedShader *shader ){
@@ -214,13 +188,4 @@ void deoglRenderTaskSharedPool::ReturnInstance( deoglRenderTaskSharedInstance *i
 	
 	instance->Clear();
 	pInstances.Add( instance );
-}
-
-void deoglRenderTaskSharedPool::ReturnSubInstance( deoglRenderTaskSharedSubInstance *subInstance ){
-	if( ! subInstance ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	subInstance->Clear();
-	pSubInstances.Add( subInstance );
 }

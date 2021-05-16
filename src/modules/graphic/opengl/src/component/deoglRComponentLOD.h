@@ -267,7 +267,9 @@ private:
 	void pCalculateNormalsAndTangents( const deoglModelLOD &modelLOD );
 	
 	void pPrepareVBOLayout( const deoglModelLOD &modelLOD );
-	void pUpdateRenderTaskConfig( deoglRenderTaskConfig &config, deoglSkinTexture::eShaderTypes type );
+	
+	void pUpdateRenderTaskConfig( deoglRenderTaskConfig &config, deoglSkinTexture::eShaderTypes type,
+		int renderTaskFlags, int renderTaskFlagMask, bool shadow );
 };
 
 #endif

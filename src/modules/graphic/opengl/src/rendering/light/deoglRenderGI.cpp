@@ -34,7 +34,6 @@
 #include "../task/deoglAddToRenderTaskGIMaterial.h"
 #include "../task/shared/deoglRenderTaskSharedInstance.h"
 #include "../task/shared/deoglRenderTaskSharedShader.h"
-#include "../task/shared/deoglRenderTaskSharedSubInstance.h"
 #include "../task/shared/deoglRenderTaskSharedTexture.h"
 #include "../task/shared/deoglRenderTaskSharedVAO.h"
 #include "../../capabilities/deoglCapabilities.h"

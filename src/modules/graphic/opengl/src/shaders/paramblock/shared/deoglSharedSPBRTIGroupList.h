@@ -68,21 +68,21 @@ public:
 	 * Release reference if not used anymore. Group is removed from this list once all
 	 * references are released.
 	 */
-	deoglSharedSPBRTIGroup *GetWith( deoglSharedSPB &sharedSPB ) const;
+	deoglSharedSPBRTIGroup *GetWith( deoglSharedSPB &sharedSPB, int textureCount = 1 ) const;
 	
 	/**
 	 * Group group with shared SPB. If group does not exist creates it first. Caller obtains
 	 * reference to the group. Release reference if not used anymore. Group is removed from
 	 * this list once all references are released.
 	 */
-	deoglSharedSPBRTIGroup *GetOrAddWith( deoglSharedSPB &sharedSPB );
+	deoglSharedSPBRTIGroup *GetOrAddWith( deoglSharedSPB &sharedSPB, int textureCount = 1 );
 	
 	/**
 	 * Add group with shared SPB. Call only after GetWith returned NULL. If group does not
 	 * exist creates it first. Caller obtains reference to the group. Release reference if
 	 * not used anymore. Group is removed from this list once all references are released.
 	 */
-	deoglSharedSPBRTIGroup *AddWith( deoglSharedSPB &sharedSPB );
+	deoglSharedSPBRTIGroup *AddWith( deoglSharedSPB &sharedSPB, int textureCount = 1 );
 	
 	
 	

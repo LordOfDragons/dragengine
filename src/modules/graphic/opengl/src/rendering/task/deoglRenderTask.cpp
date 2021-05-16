@@ -28,6 +28,7 @@
 #include "deoglRenderTaskTexture.h"
 #include "deoglRenderTaskVAO.h"
 #include "deoglRenderTaskInstance.h"
+#include "config/deoglRenderTaskConfigTexture.h"
 #include "shared/deoglRenderTaskSharedShader.h"
 #include "shared/deoglRenderTaskSharedTexture.h"
 #include "shared/deoglRenderTaskSharedVAO.h"
@@ -73,7 +74,11 @@ pForceDoubleSided( false ),
 pShaderCount( 0 ),
 pHasShader( NULL ),
 pHasShaderCount( 0 ),
-pHasShaderSize( 0 ){
+pHasShaderSize( 0 ),
+
+pConfigTextures( NULL ),
+pConfigTextureCount( 0 ),
+pConfigTextureSize( 0 ){
 }
 
 deoglRenderTask::~deoglRenderTask(){
@@ -87,6 +92,10 @@ deoglRenderTask::~deoglRenderTask(){
 		delete ( deoglRenderTaskShader* )pShaders.GetAt( i );
 	}
 	pShaders.RemoveAll();
+	
+	if( pConfigTextures ){
+		delete [] pConfigTextures;
+	}
 }
 
 
@@ -95,6 +104,7 @@ deoglRenderTask::~deoglRenderTask(){
 ///////////////
 
 void deoglRenderTask::Clear(){
+	RemoveAllConfigTextures();
 	pHasShaderCount = 0;
 	pShaderCount = 0;
 	
@@ -200,6 +210,107 @@ deoglRenderTaskShader *deoglRenderTask::AddShader( const deoglRenderTaskSharedSh
 	return rtshader;
 }
 
+deoglRenderTaskShader *deoglRenderTask::AddShaderDirect( const deoglRenderTaskSharedShader *shader ){
+	deoglRenderTaskShader *rtshader;
+	if( pShaderCount == pShaders.GetCount() ){
+		rtshader = new deoglRenderTaskShader;
+		pShaders.Add( rtshader );
+		
+	}else{
+		rtshader = ( deoglRenderTaskShader* )pShaders.GetAt( pShaderCount );
+		rtshader->Reset();
+	}
+	pShaderCount++;
+	
+	rtshader->SetShader( shader );
+	return rtshader;
+}
+
+
+
+void deoglRenderTask::AddConfigTexture( const deoglRenderTaskConfigTexture &texture, int specialFlags ){
+	if( pConfigTextureCount == pConfigTextureSize ){
+		const int newSize = pConfigTextureCount * 3 / 2 + 1;
+		sConfigTexture * const newArray = new sConfigTexture[ newSize ];
+		if( pConfigTextures ){
+			memcpy( newArray, pConfigTextures, sizeof( sConfigTexture ) * pConfigTextureCount );
+			delete [] pConfigTextures;
+		}
+		pConfigTextures = newArray;
+		pConfigTextureSize = newSize;
+	}
+	
+	sConfigTexture &ct = pConfigTextures[ pConfigTextureCount++ ];
+	ct.shader = texture.GetShader();
+	ct.texture = texture.GetTexture();
+	ct.vao = texture.GetVAO();
+	ct.instance = texture.GetInstance();
+	ct.rtshader = NULL;
+	ct.rttexture = NULL;
+	ct.rtvao = NULL;
+	ct.rtinstance = NULL;
+// 	ct.shaderIndex = texture.GetShaderIndex();
+// 	ct.textureIndex = texture.GetTextureIndex();
+// 	ct.vaoIndex = texture.GetVAOIndex();
+// 	ct.instanceIndex = texture.GetInstanceIndex();
+	ct.groupIndex = texture.GetGroupIndex();
+	ct.specialFlags = specialFlags;
+}
+
+void deoglRenderTask::RemoveAllConfigTextures(){
+	pConfigTextureCount = 0;
+}
+
+void deoglRenderTask::ApplyConfigTextures(){
+#if 0
+	/*
+	int i;
+	for( i=0; i<pConfigTextureCount; i++ ){
+		const sConfigTexture &ct = pConfigTextures[ i ];
+		AddShader( ct.shader, ct.shaderIndex )->AddTexture( ct.texture, ct.textureIndex )->
+			AddVAO( ct.vao, ct.vaoIndex )->AddInstance( ct.instance, ct.instanceIndex )->
+			AddSubInstance( ct.groupIndex, ct.specialFlags );
+	}
+	*/
+	
+	// shader
+	int i, j;
+	for( i=0; i<pConfigTextureCount; ){
+		const deoglRenderTaskSharedShader *shader = pConfigTextures[ i ].shader;
+		deoglRenderTaskShader * const rtshader = AddShaderDirect( shader );
+		pConfigTextures[ i ].rtshader = rtshader;
+		
+		for( j=i+1; j<pConfigTextureCount; j++ ){
+			if( pConfigTextures[ j ].shader == shader ){
+				pConfigTextures[ j ].rtshader = rtshader;
+			}
+		}
+		
+		for( i++; i<pConfigTextureCount && !pConfigTextures[ i ].rtshader; i++ );
+	}
+	
+	// texture
+	int s;
+	for( s=0; s<pShaderCount; s++ ){
+		deoglRenderTaskShader * const rtshader = ( deoglRenderTaskShader* )pShaders[ s ];
+		
+		for( i=0; i<pConfigTextureCount; ){
+			if( pConfigTextures[ i ].shader != 
+			const deoglRenderTaskSharedTexture *texture = pConfigTextures[ i ].texture;
+			pConfigTextures[ i ].marker = true;
+			AddShaderDirect( shader );
+			
+			for( j=i+1; j<pConfigTextureCount; j++ ){
+				if( pConfigTextures[ j ].shader == shader ){
+					pConfigTextures[ j ].marker = true;
+				}
+			}
+			
+			for( i++; i<pConfigTextureCount && pConfigTextures[ i ].marker; i++ );
+		}
+	}
+#endif
+}
 
 
 int deoglRenderTask::GetTotalPointCount() const{

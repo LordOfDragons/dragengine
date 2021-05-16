@@ -25,7 +25,6 @@
 #include <dragengine/common/collection/decPointerList.h>
 
 class deoglRenderThread;
-class deoglRenderTaskSharedSubInstance;
 class deoglRenderTaskSharedInstance;
 class deoglRenderTaskSharedShader;
 class deoglRenderTaskSharedTexture;
@@ -43,13 +42,11 @@ private:
 	int pNextIndexTexture;
 	int pNextIndexVAO;
 	int pNextIndexInstance;
-	int pNextIndexSubInstance;
 	
 	decPointerList pShaders;
 	decPointerList pTextures;
 	decPointerList pVAOs;
 	decPointerList pInstances;
-	decPointerList pSubInstances;
 	
 	
 	
@@ -79,9 +76,6 @@ public:
 	/** Get instance. */
 	deoglRenderTaskSharedInstance *GetInstance();
 	
-	/** Get sub instance. */
-	deoglRenderTaskSharedSubInstance *GetSubInstance();
-	
 	
 	
 	/** Return shader. */
@@ -95,9 +89,6 @@ public:
 	
 	/** Return instance. */
 	void ReturnInstance( deoglRenderTaskSharedInstance *instance );
-	
-	/** Return sub instance. */
-	void ReturnSubInstance( deoglRenderTaskSharedSubInstance *subInstance );
 	/*@}*/
 };
 

@@ -31,8 +31,13 @@
 class deoglQuickSorter;
 class deoglRenderTaskInstance;
 class deoglRenderTaskShader;
+class deoglRenderTaskTexture;
+class deoglRenderTaskVAO;
 class deoglRenderTaskSharedShader;
 class deoglRenderTaskSharedInstance;
+class deoglRenderTaskSharedTexture;
+class deoglRenderTaskSharedVAO;
+class deoglRenderTaskConfigTexture;
 class deoglRenderThread;
 class deoglRTLogger;
 class deoglSPBlockSSBO;
@@ -51,6 +56,23 @@ class deoglTexUnitsConfig;
  */
 class deoglRenderTask{
 private:
+	struct sConfigTexture{
+		const deoglRenderTaskSharedShader *shader;
+		const deoglRenderTaskSharedTexture *texture;
+		const deoglRenderTaskSharedVAO *vao;
+		const deoglRenderTaskSharedInstance *instance;
+		deoglRenderTaskShader *rtshader;
+		deoglRenderTaskTexture *rttexture;
+		deoglRenderTaskVAO *rtvao;
+		deoglRenderTaskInstance *rtinstance;
+// 		int shaderIndex;
+// 		int textureIndex;
+// 		int vaoIndex;
+// 		int instanceIndex;
+		int groupIndex;
+		int specialFlags;
+	};
+	
 	deoglRenderThread &pRenderThread;
 	
 	deoglSPBlockUBO *pRenderParamBlock;
@@ -66,6 +88,10 @@ private:
 	deoglRenderTaskShader **pHasShader;
 	int pHasShaderCount;
 	int pHasShaderSize;
+	
+	sConfigTexture *pConfigTextures;
+	int pConfigTextureCount;
+	int pConfigTextureSize;
 	
 	
 	
@@ -130,6 +156,18 @@ public:
 	
 	/** Add shader. */
 	deoglRenderTaskShader *AddShader( const deoglRenderTaskSharedShader *shader );
+	deoglRenderTaskShader *AddShaderDirect( const deoglRenderTaskSharedShader *shader );
+	
+	
+	
+	/** Add configuration texture. */
+	void AddConfigTexture( const deoglRenderTaskConfigTexture &texture, int specialFlags );
+	
+	/** Remove all configuration textures. */
+	void RemoveAllConfigTextures();
+	
+	/** Apply configuration textures. */
+	void ApplyConfigTextures();
 	
 	
 	

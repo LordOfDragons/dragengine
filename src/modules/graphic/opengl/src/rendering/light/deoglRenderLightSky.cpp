@@ -1181,7 +1181,10 @@ deoglRenderPlanSkyLight &planSkyLight, deoglShadowMapper &shadowMapper ){
 	}
 	renderParamBlock->UnmapBuffer();
 	
-	deoglPersistentRenderTask &renderTask = planSkyLight.GetGIRenderTask();
+	deoglRenderTask &renderTask = planSkyLight.GetGIRenderTask();
+	renderTask.SetRenderParamBlock( renderParamBlock );
+	renderTask.SetForceDoubleSided( true );
+	
 	renderThread.GetRenderers().GetGeometry().RenderTask( renderTask );
 	
 	// clear back facing fragments. back facing fragments cause a lot of troubles to shadow

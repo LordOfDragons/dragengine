@@ -70,6 +70,7 @@ private:
 	
 	deoglSharedSPBElement *pSharedSPBElement;
 	decObjectList pSharedSPBRTIGroup;
+	decObjectList pSharedSPBRTIGroupShadow;
 	
 	deoglTexUnitsConfig *pTUCDepth;
 	deoglTexUnitsConfig *pTUCGeometry;
@@ -189,6 +190,9 @@ public:
 	
 	/** Shared SPB render task instance group. */
 	deoglSharedSPBRTIGroup &GetSharedSPBRTIGroup( int lodLevel ) const;
+	
+	/** Shadow shared SPB render task instance group or NULL. */
+	deoglSharedSPBRTIGroup *GetSharedSPBRTIGroupShadow( int lodLevel ) const;
 	
 	/** Update render target shared instances. */
 	void UpdateRTSInstances();
@@ -326,6 +330,7 @@ public:
 private:
 	void pUpdateIsRendered();
 	void pUpdateRenderTaskFilters();
+	int pShadowCombineCount( int lodLevel ) const;
 };
 
 #endif

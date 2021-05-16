@@ -40,8 +40,12 @@ private:
 	const deoglRenderTaskSharedVAO *pVAO;
 	const deoglRenderTaskSharedInstance *pInstance;
 	
-	int pGroupIndex;
+	int pShaderIndex;
+	int pTextureIndex;
+	int pVAOIndex;
+	int pInstanceIndex;
 	
+	int pGroupIndex;
 	
 	
 public:
@@ -87,6 +91,20 @@ public:
 	
 	/** Set instance. */
 	void SetInstance( const deoglRenderTaskSharedInstance *instance );
+	
+	
+	
+	/** Shader index. */
+	inline int GetShaderIndex() const{ return pShaderIndex; }
+	
+	/** Texture index. */
+	inline int GetTextureIndex() const{ return pTextureIndex; }
+	
+	/** VAO index. */
+	inline int GetVAOIndex() const{ return pVAOIndex; }
+	
+	/** Instance index. */
+	inline int GetInstanceIndex() const{ return pInstanceIndex; }
 	
 	
 	

@@ -35,10 +35,6 @@ class deoglRPTSkyLightGIUpdateRT : public deParallelTask{
 private:
 	deoglRenderPlanSkyLight &pPlan;
 	float pElapsedTime;
-	int pCountAdded;
-	int pCountRemoved;
-	int pElapsedAdded;
-	int pElapsedRemoved;
 	deSemaphore pSemaphore;
 	
 	
@@ -67,10 +63,6 @@ public:
 	
 	/** Information for updating render task. */
 	inline float GetElapsedTime() const{ return pElapsedTime; }
-	inline int GetCountAdded() const{ return pCountAdded; }
-	inline int GetCountRemoved() const{ return pCountRemoved; }
-	inline int GetElapsedAdded() const{ return pElapsedAdded; }
-	inline int GetElapsedRemoved() const{ return pElapsedRemoved; }
 	
 	/** Finished semaphore. */
 	inline deSemaphore &GetSemaphore(){ return pSemaphore; }

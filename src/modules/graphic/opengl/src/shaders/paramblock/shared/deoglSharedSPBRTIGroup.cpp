@@ -37,9 +37,10 @@
 ////////////////////////////
 
 deoglSharedSPBRTIGroup::deoglSharedSPBRTIGroup( deoglSharedSPBRTIGroupList &parent,
-deoglSharedSPB &sharedSPB ) :
+deoglSharedSPB &sharedSPB, int textureCount ) :
 pParent( parent ),
 pSharedSPB( sharedSPB ),
+pTextureCount( textureCount ),
 pRTSInstance( NULL )
 {
 	pRTSInstance = parent.GetRenderThread().GetRenderTaskSharedPool().GetInstance();

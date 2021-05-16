@@ -52,18 +52,22 @@ void deoglRenderTaskConfigTexture::SetRenderTaskFilter( int filter ){
 
 void deoglRenderTaskConfigTexture::SetShader( const deoglRenderTaskSharedShader *shader ){
 	pShader = shader;
+	pShaderIndex = shader ? shader->GetIndex() : 0;
 }
 
 void deoglRenderTaskConfigTexture::SetTexture( const deoglRenderTaskSharedTexture *texture ){
 	pTexture = texture;
+	pTextureIndex = texture ? texture->GetIndex() : 0;
 }
 
 void deoglRenderTaskConfigTexture::SetVAO( const deoglRenderTaskSharedVAO *vao ){
 	pVAO = vao;
+	pVAOIndex = vao ? vao->GetIndex() : 0;
 }
 
 void deoglRenderTaskConfigTexture::SetInstance( const deoglRenderTaskSharedInstance *instance ){
 	pInstance = instance;
+	pInstanceIndex = instance ? instance->GetIndex() : 0;
 }
 
 void deoglRenderTaskConfigTexture::SetGroupIndex( int groupIndex ){
@@ -78,5 +82,9 @@ void deoglRenderTaskConfigTexture::Clear(){
 	pTexture = NULL;
 	pVAO = NULL;
 	pInstance = NULL;
+	pShaderIndex = 0;
+	pTextureIndex = 0;
+	pVAOIndex = 0;
+	pInstanceIndex = 0;
 	pGroupIndex = 0;
 }
