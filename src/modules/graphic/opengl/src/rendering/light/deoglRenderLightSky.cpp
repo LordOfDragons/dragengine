@@ -566,9 +566,18 @@ const deoglRenderPlanMasked *mask, deoglRenderPlanSkyLight &planSkyLight ){
 // #define SKY_SHADOW_LAYERED_RENDERING 1
 #define SKY_SHADOW_FILTERED 1
 #define SKY_SHADOW_OCCMAP_VISIBLE 1
+// #define SKY_SHADOW_DEBUG_TIME 1
 
 #if defined SKY_SHADOW_LAYERED_RENDERING && defined SKY_SHADOW_FILTERED
 	#undef SKY_SHADOW_FILTERED
+#endif
+
+#ifdef SKY_SHADOW_DEBUG_TIME
+	#define SSDTPF(...) printf(__VA_ARGS__)
+	#define SSDTLOG(...) renderThread.GetLogger().LogInfoFormat(__VA_ARGS__)
+#else
+	#define SSDTPF(...)
+	#define SSDTLOG(...)
 #endif
 
 void deoglRenderLightSky::RenderShadowMap( deoglRenderPlan &plan,
@@ -674,6 +683,9 @@ deoglRenderPlanSkyLight &planSkyLight, deoglShadowMapper &shadowMapper ){
 	DebugTimer4Reset( plan, true );
 	
 #ifndef SKY_SHADOW_FILTERED
+		#ifdef SKY_SHADOW_DEBUG_TIME
+		decTimer timer;
+		#endif
 	// render task "all in one". calculating the optimal LOD to use would require using
 	// SetComponentLODOrtho() on the lowest split the component is visible in. since this
 	// is calculated on the GPU this can not be done here without expensive CPU calculations.
@@ -719,6 +731,7 @@ deoglRenderPlanSkyLight &planSkyLight, deoglShadowMapper &shadowMapper ){
 		plan.GetInverseCameraMatrix().TransformView(), plan.GetCameraFov(),
 		plan.GetCameraFov() * plan.GetCameraFovRatio(), plan.GetViewportWidth(),
 		plan.GetViewportHeight() );
+			SSDT("SkyLight %d: Prepare %dys\n", i, (int)(timer.GetElapsedTime()*1e6f));
 	
 	
 	renderTask.Clear();
@@ -736,9 +749,14 @@ deoglRenderPlanSkyLight &planSkyLight, deoglShadowMapper &shadowMapper ){
 	addToRenderTask.SetNoShadowNone( true );
 	addToRenderTask.SetForceDoubleSided( true );
 	addToRenderTask.AddComponents( collideList );
+			SSDT("SkyLight %d: RTBuild %dys\n", i, (int)(timer.GetElapsedTime()*1e6f));
 	
 	renderTask.PrepareForRender( renderThread );
 	DebugTimer4Sample( plan, *pDebugInfoSolidShadowSplitTask, true );
+			SSDT("SkyLight %d: RTPrepare %dys (s=%d t=%d v=%d i=%d si=%d)\n", i,
+				(int)(timer.GetElapsedTime()*1e6f), renderTask.GetShaderCount(),
+				renderTask.GetTotalTextureCount(), renderTask.GetTotalVAOCount(),
+				renderTask.GetTotalInstanceCount(), renderTask.GetTotalSubInstanceCount());
 #endif
 	
 	// render layers
@@ -783,6 +801,7 @@ deoglRenderPlanSkyLight &planSkyLight, deoglShadowMapper &shadowMapper ){
 		throw;
 	}
 	renderParamBlock->UnmapBuffer();
+			SSDT("SkyLight %d: ParamBlock %dys\n", i, (int)(timer.GetElapsedTime()*1e6f));
 	
 	OGL_CHECK( renderThread, pglStencilOpSeparate( GL_FRONT, GL_KEEP, GL_KEEP, GL_ZERO ) );
 	OGL_CHECK( renderThread, pglStencilOpSeparate( GL_BACK, GL_KEEP, GL_KEEP, GL_REPLACE ) );
@@ -804,6 +823,7 @@ deoglRenderPlanSkyLight &planSkyLight, deoglShadowMapper &shadowMapper ){
 	pShaderClearDepth->GetCompiled()->SetParameterFloat( 0, -1.0f );
 	
 	defren.RenderFSQuadVAO();
+			SSDT("SkyLight %d: Render %dys\n", i, (int)(timer.GetElapsedTime()*1e6f));
 	
 	DebugTimer4Sample( plan, *pDebugInfoSolidShadowSplitRender, true );
 	DebugTimer3SampleCount( plan, *pDebugInfoSolidShadowSplit, 1, false );
@@ -811,6 +831,9 @@ deoglRenderPlanSkyLight &planSkyLight, deoglShadowMapper &shadowMapper ){
 #else
 	for( i=0; i<layerCount; i++ ){
 		deoglRenderPlanSkyLight::sShadowLayer &sl = planSkyLight.GetShadowLayerAt( i );
+			#ifdef SKY_SHADOW_DEBUG_TIME
+			decTimer timer;
+			#endif
 #ifdef SKY_SHADOW_FILTERED
 		const int cascadeMask = 1 << i;
 		
@@ -871,6 +894,7 @@ deoglRenderPlanSkyLight &planSkyLight, deoglShadowMapper &shadowMapper ){
 		}
 		DebugTimer4Sample( plan, *pDebugInfoSolidShadowSplitContent, false );
 #endif
+			SSDTPF("SkyLight %d: CollideList %dys\n", i, (int)(timer.GetElapsedTime()*1e6f));
 		
 		// determine the shadow limits
 		position.x = ( sl.minExtend.x + sl.maxExtend.x ) * 0.5f;
@@ -915,6 +939,7 @@ deoglRenderPlanSkyLight &planSkyLight, deoglShadowMapper &shadowMapper ){
 			OGL_CHECK( renderThread, pglClearBufferfi( GL_DEPTH_STENCIL, 0, 1.0f, 0xff ) );
 			DebugTimer4Sample( plan, *pDebugInfoSolidShadowSplitClear, true );
 		}
+			SSDTPF("SkyLight %d: Prepare %dys\n", i, (int)(timer.GetElapsedTime()*1e6f));
 		
 		// render solid content. two different depth offsets for front and back faces are used. double sided always
 		// counts as front facing. this way all can be rendered in one go
@@ -931,6 +956,7 @@ deoglRenderPlanSkyLight &planSkyLight, deoglShadowMapper &shadowMapper ){
 			throw;
 		}
 		renderParamBlock->UnmapBuffer();
+			SSDTPF("SkyLight %d: ParamBlock %dys\n", i, (int)(timer.GetElapsedTime()*1e6f));
 		
 #ifdef SKY_SHADOW_FILTERED
 		renderTask.Clear();
@@ -995,8 +1021,13 @@ deoglRenderPlanSkyLight &planSkyLight, deoglShadowMapper &shadowMapper ){
 			renderTask.DebugPrint( renderThread.GetLogger() );
 		}
 		DebugTimer4Sample( plan, *pDebugInfoSolidShadowSplitTask, true );
+			SSDTPF("SkyLight %d: RTBuild %dys\n", i, (int)(timer.GetElapsedTime()*1e6f));
 		
 		renderTask.PrepareForRender();
+			SSDTPF("SkyLight %d: RTPrepare %dys (s=%d t=%d v=%d i=%d si=%d)\n", i,
+				(int)(timer.GetElapsedTime()*1e6f), renderTask.GetShaderCount(),
+				renderTask.GetTotalTextureCount(), renderTask.GetTotalVAOCount(),
+				renderTask.GetTotalInstanceCount(), renderTask.GetTotalSubInstanceCount());
 #endif
 		rengeom.RenderTask( renderTask );
 		
@@ -1014,6 +1045,7 @@ deoglRenderPlanSkyLight &planSkyLight, deoglShadowMapper &shadowMapper ){
 		pShaderClearDepth->GetCompiled()->SetParameterFloat( 0, -1.0f );
 		
 		defren.RenderFSQuadVAO();
+			SSDTPF("SkyLight %d: Render %dys\n", i, (int)(timer.GetElapsedTime()*1e6f));
 		
 		// debug
 		if( renderThread.GetConfiguration().GetDebugSnapshot() == edbgsnapLightSkySplits ){
@@ -1096,6 +1128,9 @@ deoglRenderPlanSkyLight &planSkyLight, deoglShadowMapper &shadowMapper ){
 		return;
 	}
 	
+			#ifdef SKY_SHADOW_DEBUG_TIME
+			decTimer timer;
+			#endif
 	DebugTimer4Reset( plan, true );
 	planSkyLight.WaitFinishedGIUpdateRT();
 	
@@ -1134,12 +1169,14 @@ deoglRenderPlanSkyLight &planSkyLight, deoglShadowMapper &shadowMapper ){
 		pSolidGIShadowMap = renderThread.GetTexture().GetRenderableDepthTexture()
 			.GetTextureWith( shadowMapSize, shadowMapSize, true, false );
 	}
+			SSDTLOG("RenderGIShadowMap Prepare %d", (int)(timer.GetElapsedTime() * 1e6f));
 	
 	// clear shadow map
 	shadowMapper.SetForeignSolidDepthTexture( pSolidGIShadowMap->GetTexture() );
 	shadowMapper.ActivateSolidTexture( shadowMapSize, false, true );
 	
 	OGL_CHECK( renderThread, pglClearBufferfi( GL_DEPTH_STENCIL, 0, 1.0f, 0xff ) );
+			SSDTLOG("RenderGIShadowMap Clear %d", (int)(timer.GetElapsedTime() * 1e6f));
 	
 	// render shadow map. only solid content without holes is rendered at the highest lod level
 	deoglRenderPlanSkyLight::sShadowLayer &sl = planSkyLight.GetGIShadowLayer();
@@ -1165,6 +1202,7 @@ deoglRenderPlanSkyLight &planSkyLight, deoglShadowMapper &shadowMapper ){
 		* decMatrix::CreateTranslation( -sl.minExtend ) * decMatrix::CreateScale( sl.scale );
 	
 	const decMatrix matrixGI( matrixCamera.ToMatrix() * decMatrix::CreateScale( sl.scale * 2.0f ) );
+			SSDTLOG("RenderGIShadowMap Prepare2 %d", (int)(timer.GetElapsedTime() * 1e6f));
 	
 	deoglSPBlockUBO * const renderParamBlock = renderThread.GetRenderers().GetLight().GetShadowPB();
 	renderParamBlock->MapBuffer();
@@ -1180,13 +1218,16 @@ deoglRenderPlanSkyLight &planSkyLight, deoglShadowMapper &shadowMapper ){
 		throw;
 	}
 	renderParamBlock->UnmapBuffer();
+			SSDTLOG("RenderGIShadowMap RenderParamBlock %d", (int)(timer.GetElapsedTime() * 1e6f));
 	
 	deoglRenderTask &renderTask = planSkyLight.GetGIRenderTask();
 	renderTask.SetRenderParamBlock( renderParamBlock );
 	renderTask.SetForceDoubleSided( true );
 	
 	renderThread.GetRenderers().GetGeometry().RenderTask( renderTask );
-	
+			SSDTLOG("RenderGIShadowMap Render %d (s=%d t=%d v=%d i=%d si=%d)",
+				(int)(timer.GetElapsedTime() * 1e6f), renderTask.GetShaderCount(), renderTask.GetTotalTextureCount(),
+				renderTask.GetTotalVAOCount(), renderTask.GetTotalInstanceCount(), renderTask.GetTotalSubInstanceCount() );
 	// clear back facing fragments. back facing fragments cause a lot of troubles to shadow
 	// casting. the idea here is to consider back facing fragments hit before any front facing
 	// fragments to belong to the outer hull of a map. this is similar to a fragment blocking
@@ -1201,6 +1242,7 @@ deoglRenderPlanSkyLight &planSkyLight, deoglShadowMapper &shadowMapper ){
 	pShaderClearDepth->GetCompiled()->SetParameterFloat( 0, -1.0f );
 	
 	defren.RenderFSQuadVAO();
+			SSDTLOG("RenderGIShadowMap BackFaceClear %d", (int)(timer.GetElapsedTime() * 1e6f));
 	
 	// clean up
 	shadowMapper.DropForeignTextures();

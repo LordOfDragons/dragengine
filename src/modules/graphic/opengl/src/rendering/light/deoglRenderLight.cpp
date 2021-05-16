@@ -332,9 +332,14 @@ void deoglRenderLight::RenderLights( deoglRenderPlan &plan, bool solid, const de
 		pRenderGI->PrepareUBORenderLight( plan );
 	}
 	
-	pRenderLightSky->RenderLights( plan, solid, mask );
 	pRenderLightPoint->RenderLights( plan, solid, mask );
 	pRenderLightSpot->RenderLights( plan, solid, mask );
+	
+	// sky light requires large render tasks that can be expensive to build. to do this as
+	// fast as possible the render task building is done using parallel tasks. by rendering
+	// sky light as last light type before GI reduces the time waiting for the parallel
+	// tasks to finish
+	pRenderLightSky->RenderLights( plan, solid, mask );
 	
 	if( solid && ! mask && hasGIStateUpdate ){
 		if( hasGIStateRender ){
