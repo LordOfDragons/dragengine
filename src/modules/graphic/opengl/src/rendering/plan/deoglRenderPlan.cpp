@@ -1151,6 +1151,11 @@ void deoglRenderPlan::pFinishOcclusionTests(){
 	}
 	
 	pDebugVisibleCulled();
+	
+	int i;
+	for( i=0; i<pSkyLightCount; i++ ){
+		( ( deoglRenderPlanSkyLight* )pSkyLights.GetAt( i ) )->RenderOcclusionTests();
+	}
 }
 
 void deoglRenderPlan::pDebugPrepare(){

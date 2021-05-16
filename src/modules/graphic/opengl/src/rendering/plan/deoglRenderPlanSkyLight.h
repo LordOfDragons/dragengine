@@ -196,6 +196,9 @@ public:
 	/** Start find content. */
 	void StartFindContent();
 	
+	/** Render occlusion tests. */
+	void RenderOcclusionTests();
+	
 	/** Finish preparations. */
 	void FinishPrepare();
 	

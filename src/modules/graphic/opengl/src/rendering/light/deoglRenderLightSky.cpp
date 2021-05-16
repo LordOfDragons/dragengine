@@ -612,9 +612,10 @@ deoglRenderPlanSkyLight &planSkyLight, deoglShadowMapper &shadowMapper ){
 	// occlusion test the content to remove as much as possible. rendering the tests has
 	// been done ahead of time in the render plan sky light to avoid stalling
 #ifdef SKY_SHADOW_OCCMAP_VISIBLE
-	planSkyLight.GetOcclusionTest()->UpdateResults();
-	collideList.RemoveCulledElements();
-	DebugTimer3Sample( plan, *pDebugInfoSolidShadowOcclusion, false );
+	// done by deoglRenderPlanSkyLight
+// 	planSkyLight.GetOcclusionTest()->UpdateResults();
+// 	collideList.RemoveCulledElements();
+// 	DebugTimer3Sample( plan, *pDebugInfoSolidShadowOcclusion, false );
 #endif
 	
 	// get light properties
