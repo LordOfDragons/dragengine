@@ -25,6 +25,7 @@
 #include "deoglRenderPlanSkyLight.h"
 #include "deoglRenderPlan.h"
 #include "parallel/deoglRPTSkyLightFindContent.h"
+#include "parallel/deoglRPTSkyLightBuildRT.h"
 #include "parallel/deoglRPTSkyLightGIFindContent.h"
 #include "parallel/deoglRPTSkyLightGIUpdateRT.h"
 #include "../light/deoglRenderGI.h"
@@ -73,13 +74,33 @@ pShadowLayerCount( 0 ),
 pGIRenderTask( plan.GetRenderThread() ),
 pGIRenderTaskAdd( plan.GetRenderThread(), pGIRenderTask ),
 pTaskFindContent( NULL ),
+pTaskBuildRT1( NULL ),
+pTaskBuildRT2( NULL ),
 pTaskGIFindContent( NULL ),
 pTaskGIUpdateRT( NULL )
 {
+	memset( &pShadowLayers, 0, sizeof( sShadowLayer ) * 4 );
+	
+	int i;
+	for( i=0; i<4; i++ ){
+		pShadowLayers[ i ].renderTask = new deoglRenderTask( plan.GetRenderThread() );
+		pShadowLayers[ i ].addToRenderTask = new deoglAddToRenderTask( 
+			plan.GetRenderThread(), *pShadowLayers[ i ].renderTask );
+	}
 }
 
 deoglRenderPlanSkyLight::~deoglRenderPlanSkyLight(){
 	Clear();
+	
+	int i;
+	for( i=0; i<4; i++ ){
+		if( pShadowLayers[ i ].addToRenderTask ){
+			delete pShadowLayers[ i ].addToRenderTask;
+		}
+		if( pShadowLayers[ i ].renderTask ){
+			delete pShadowLayers[ i ].renderTask;
+		}
+	}
 }
 
 
@@ -128,6 +149,11 @@ void deoglRenderPlanSkyLight::Clear(){
 	pGIRenderTask.Clear();
 	pGICollideList.Clear();
 	
+	int i;
+	for( i=0; i<4; i++ ){
+		pShadowLayers[ i ].renderTask->Clear();
+	}
+	
 	SetOcclusionTest( NULL );
 	pCollideList.Clear();
 	pUseLight = false;
@@ -173,7 +199,7 @@ void deoglRenderPlanSkyLight::StartFindContent(){
 		return;
 	}
 	
-	if( pTaskFindContent || pTaskGIFindContent || pTaskGIUpdateRT ){
+	if( pTaskFindContent || pTaskBuildRT1 || pTaskBuildRT2 || pTaskGIFindContent || pTaskGIUpdateRT ){
 		DETHROW( deeInvalidParam );
 	}
 	
@@ -222,7 +248,15 @@ void deoglRenderPlanSkyLight::FinishPrepare(){
 	pOcclusionTest->UpdateResults();
 	pCollideList.RemoveCulledElements();
 	
-	// start parallel task to build split render plans
+	// start parallel task to build split render plans. the first 3 cascades usually have
+	// small amount of content so they can be process sequentially. the 4th cascade on the
+	// other hand usually has large amount of content. for this reason the 4th cascade
+	// render task is build in a separate task
+	pTaskBuildRT1 = new deoglRPTSkyLightBuildRT( *this, pSLCollideList1, 0, 2 );
+	pPlan.GetRenderThread().GetOgl().GetGameEngine()->GetParallelProcessing().AddTaskAsync( pTaskBuildRT1 );
+	
+	pTaskBuildRT2 = new deoglRPTSkyLightBuildRT( *this, pSLCollideList2, 3, 3 );
+	pPlan.GetRenderThread().GetOgl().GetGameEngine()->GetParallelProcessing().AddTaskAsync( pTaskBuildRT2 );
 	
 	/*
 	pWaitFinishedFindContent();
@@ -256,7 +290,7 @@ void deoglRenderPlanSkyLight::WaitFinishedGIUpdateRT(){
 // 	const float timePrepare = pTaskGIUpdateRT->GetElapsedTime();
 	
 	pTaskGIUpdateRT->FreeReference();
-	pTaskGIUpdateRT= NULL;
+	pTaskGIUpdateRT = NULL;
 	
 	// this call does modify a shader parameter block and can thus not be parallel
 		decTimer timer;
@@ -269,11 +303,55 @@ void deoglRenderPlanSkyLight::WaitFinishedGIUpdateRT(){
 // 		pGIRenderTask.GetTotalInstanceCount(), pGIRenderTask.GetTotalSubInstanceCount() );
 }
 
+void deoglRenderPlanSkyLight::WaitFinishedBuildRT1(){
+	if( ! pTaskBuildRT1 ){
+		return;
+	}
+	
+	pTaskBuildRT1->GetSemaphore().Wait();
+	
+	deoglRenderCanvas &rc = pPlan.GetRenderThread().GetRenderers().GetCanvas();
+	rc.SampleDebugInfoPlanPrepareSkyLightBuildRT( pPlan, pTaskBuildRT1->GetElapsedTime() );
+	
+	pTaskBuildRT1->FreeReference();
+	pTaskBuildRT1 = NULL;
+	
+	// this call does modify a shader parameter block and can thus not be parallel
+	pShadowLayers[ 0 ].renderTask->PrepareForRender();
+	pShadowLayers[ 1 ].renderTask->PrepareForRender();
+	pShadowLayers[ 2 ].renderTask->PrepareForRender();
+}
+
+void deoglRenderPlanSkyLight::WaitFinishedBuildRT2(){
+	if( ! pTaskBuildRT2 ){
+		return;
+	}
+	
+	pTaskBuildRT2->GetSemaphore().Wait();
+	
+	deoglRenderCanvas &rc = pPlan.GetRenderThread().GetRenderers().GetCanvas();
+	rc.SampleDebugInfoPlanPrepareSkyLightBuildRT( pPlan, pTaskBuildRT2->GetElapsedTime() );
+	
+	pTaskBuildRT2->FreeReference();
+	pTaskBuildRT2 = NULL;
+	
+	// this call does modify a shader parameter block and can thus not be parallel
+	pShadowLayers[ 3 ].renderTask->PrepareForRender();
+}
+
 void deoglRenderPlanSkyLight::CleanUp(){
 	pWaitFinishedFindContent();
 	pWaitFinishedGIFindContent();
 	WaitFinishedGIUpdateRT();
+	WaitFinishedBuildRT1();
+	WaitFinishedBuildRT2();
 	
+	int i;
+	for( i=0; i<4; i++ ){
+		pShadowLayers[ i ].renderTask->Clear();
+	}
+	pSLCollideList1.Clear();
+	pSLCollideList2.Clear();
 	pGICollideList.Clear();
 	pCollideList.Clear();
 	pGIRenderTask.Clear();

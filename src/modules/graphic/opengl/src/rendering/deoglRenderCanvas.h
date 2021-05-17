@@ -81,6 +81,7 @@ private:
 	deoglDebugInformation *pDebugInfoPlanPrepareEarlyWorld;
 	deoglDebugInformation *pDebugInfoPlanPrepareFindContent;
 	deoglDebugInformation *pDebugInfoPlanPrepareSkyLightFindContent;
+	deoglDebugInformation *pDebugInfoPlanPrepareSkyLightBuildRT;
 	deoglDebugInformation *pDebugInfoPlanPrepareSkyLightGIFindContent;
 	deoglDebugInformation *pDebugInfoPlanPrepareSkyLightGIUpdateRenderTask;
 	deoglDebugInformation *pDebugInfoPlanPrepareWorld;
@@ -150,6 +151,7 @@ public:
 	void SampleDebugInfoPlanPrepareEarlyWorld( deoglRenderPlan &plan );
 	void SampleDebugInfoPlanPrepareFindContent( deoglRenderPlan &plan, float elapsed );
 	void SampleDebugInfoPlanPrepareSkyLightFindContent( deoglRenderPlan &plan, float elapsed );
+	void SampleDebugInfoPlanPrepareSkyLightBuildRT( deoglRenderPlan &plan, float elapsed );
 	void SampleDebugInfoPlanPrepareSkyLightGIFindContent( deoglRenderPlan &plan, float elapsed );
 	void SampleDebugInfoPlanPrepareSkyLightGIUpdateRenderTask( deoglRenderPlan &plan, float elapsed );
 	void SampleDebugInfoPlanPrepareWorld( deoglRenderPlan &plan );

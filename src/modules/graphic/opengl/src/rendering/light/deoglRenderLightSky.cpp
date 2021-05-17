@@ -590,8 +590,8 @@ deoglRenderPlanSkyLight &planSkyLight, deoglShadowMapper &shadowMapper ){
 	deoglSPBlockUBO * const renderParamBlock = renderThread.GetRenderers().GetLight().GetShadowPB();
 #endif
 	const bool bugClearEntireArrTex = renderThread.GetCapabilities().GetClearEntireArrayTexture().Broken();
-	deoglAddToRenderTask &addToRenderTask = renderThread.GetRenderers().GetLight().GetAddToRenderTask();
-	deoglRenderTask &renderTask = renderThread.GetRenderers().GetLight().GetRenderTask();
+// 	deoglAddToRenderTask &addToRenderTask = renderThread.GetRenderers().GetLight().GetAddToRenderTask();
+// 	deoglRenderTask &renderTask = renderThread.GetRenderers().GetLight().GetRenderTask();
 	const decDVector &referencePosition = world.GetReferencePosition();
 	const deoglConfiguration &config = renderThread.GetConfiguration();
 	deoglRenderGeometry &rengeom = renderThread.GetRenderers().GetGeometry();
@@ -605,9 +605,6 @@ deoglRenderPlanSkyLight &planSkyLight, deoglShadowMapper &shadowMapper ){
 	deoglDCollisionBox box;
 	decVector position;
 	int i;
-	
-	// limitations
-	deoglCollideList &collideList = planSkyLight.GetCollideList();
 	
 	// occlusion test the content to remove as much as possible. rendering the tests has
 	// been done ahead of time in the render plan sky light to avoid stalling
@@ -835,63 +832,13 @@ deoglRenderPlanSkyLight &planSkyLight, deoglShadowMapper &shadowMapper ){
 			#ifdef SKY_SHADOW_DEBUG_TIME
 			decTimer timer;
 			#endif
+		
 #ifdef SKY_SHADOW_FILTERED
-		const int cascadeMask = 1 << i;
-		
-		// determine split content
-		pColList2->Clear();
-		
-		const int componentCount = collideList.GetComponentCount();
-		int j, k, l;
-		
-		for( j=0; j<componentCount; j++ ){
-			const deoglCollideListComponent &clcomponent = *collideList.GetComponentAt( j );
-			if( ( clcomponent.GetCascadeMask() & cascadeMask ) == cascadeMask ){
-				pColList2->AddComponent( clcomponent.GetComponent() );
-			}
-		}
-		
-		const int htsectorCount = collideList.GetHTSectorCount();
-		for( j=0; j<htsectorCount; j++ ){
-			const deoglCollideListHTSector &sector = *collideList.GetHTSectorAt( j );
-			const int clusterCount = sector.GetClusterCount();
+		if( i == 0 ){
+			planSkyLight.WaitFinishedBuildRT1();
 			
-			deoglCollideListHTSector *addSector = NULL;
-			for( k=0; k<clusterCount; k++ ){
-				const deoglCollideListHTSCluster &cluster = sector.GetClusterAt( k );
-				if( ( cluster.GetCascadeMask() & cascadeMask ) == cascadeMask ){
-					if( ! addSector ){
-						addSector = pColList2->AddHTSector( sector.GetSector() );
-					}
-					addSector->AddCluster( cluster.GetCoordinates() );
-				}
-			}
-		}
-		
-		const int propfieldCount = collideList.GetPropFieldCount();
-		for( j=0; j<propfieldCount; j++ ){
-			const deoglCollideListPropField &propfield = *collideList.GetPropFieldAt( j );
-			const int typeCount = propfield.GetTypeCount();
-			
-			deoglCollideListPropField *addPropField = NULL;
-			for( k=0; k<typeCount; k++ ){
-				const deoglCollideListPropFieldType &type = *propfield.GetTypeAt( k );
-				const int clusterCount = type.GetClusterCount();
-				
-				deoglCollideListPropFieldType *addType = NULL;
-				for( l=0; l<clusterCount; l++ ){
-					const deoglCollideListPropFieldCluster &cluster = type.GetClusterAt( l );
-					if( ( cluster.GetCascadeMask() & cascadeMask ) == cascadeMask ){
-						if( ! addPropField ){
-							addPropField = pColList2->AddPropField( propfield.GetPropField() );
-						}
-						if( ! addType ){
-							addType = addPropField->AddType( type.GetType() );
-						}
-						addType->AddCluster( cluster.GetCluster() );
-					}
-				}
-			}
+		}else if( i == 3 ){
+			planSkyLight.WaitFinishedBuildRT2();
 		}
 		DebugTimer4Sample( plan, *pDebugInfoSolidShadowSplitContent, false );
 #endif
@@ -960,77 +907,20 @@ deoglRenderPlanSkyLight &planSkyLight, deoglShadowMapper &shadowMapper ){
 			SSDTPF("SkyLight %d: ParamBlock %dys\n", i, (int)(timer.GetElapsedTime()*1e6f));
 		
 #ifdef SKY_SHADOW_FILTERED
-		renderTask.Clear();
-		renderTask.SetRenderParamBlock( renderParamBlock );
-		renderTask.SetForceDoubleSided( true );
-		
-		addToRenderTask.Reset();
-		addToRenderTask.SetSkinShaderType( deoglSkinTexture::estComponentShadowOrthogonal );
-		addToRenderTask.SetSolid( true );
-		addToRenderTask.SetNoShadowNone( true );
-		
-		#if 0
-		const int faceCountLimitNear = 100000;
-		const int faceCountLimitFar = 100;
-		const double faceCountLimitDistanceNear = 1.0;
-		const double faceCountLimitDistanceFar = 51.0;
-		
-		const decDVector &fclcampos = plan.GetCameraPosition();
-		const decDVector &fclcamview = plan.GetInverseCameraMatrix().TransformView();
-		const double fclcamdist = fclcamview * fclcampos + faceCountLimitDistanceNear;
-		double fclcompdist;
-		int faceCountLimit;
-		componentCount = pColList2->GetComponentCount();
-		for( c=0; c<componentCount; c++ ){
-			const double faceCountLimitRange = faceCountLimitDistanceFar - faceCountLimitDistanceNear;
-			
-			const deoglCollideListComponent &clcomponent = *pColList2->GetComponentAt( c );
-			component = clcomponent.GetComponent();
-			fclcompdist = fclcamview * component->GetMatrix().GetPosition() - fclcamdist;
-			
-			if( fclcompdist < 0.0 ){
-				faceCountLimit = faceCountLimitNear;
-				
-			}else if( fclcompdist > faceCountLimitRange ){
-				faceCountLimit = faceCountLimitFar;
-				
-			}else{
-				const double faceCountLimitFactor = ( double )( faceCountLimitFar - faceCountLimitNear ) / faceCountLimitRange;
-				faceCountLimit = faceCountLimitNear + ( int )( fclcompdist * faceCountLimitFactor );
-			}
-			
-			if( ! component->GetModel() ){
-				continue;
-			}
-			
-			if( component->GetModel()->GetLODAt( clcomponent.GetLODLevel() ).GetFaceCount() <= faceCountLimit ){
-				addToRenderTask.AddComponent( clcomponent );
-			}
-		}
-		#else
-		addToRenderTask.AddComponents( *pColList2 );
-		#endif
-		
-		addToRenderTask.SetSkinShaderType( deoglSkinTexture::estPropFieldShadowOrthogonal );
-		addToRenderTask.AddPropFields( *pColList2, false );
-		
-		addToRenderTask.SetSkinShaderType( deoglSkinTexture::estHeightMapShadowOrthogonal );
-		addToRenderTask.AddHeightTerrains( *pColList2, true );
+		sl.renderTask->SetRenderParamBlock( renderParamBlock );
+		sl.renderTask->SetForceDoubleSided( true );
 		
 		if( renderThread.GetConfiguration().GetDebugSnapshot() == edbgsnapLightSkyShadowRenTask ){
 			renderThread.GetLogger().LogInfoFormat( "RenderLightSky: shadow split %i", i );
-			renderTask.DebugPrint( renderThread.GetLogger() );
+			sl.renderTask->DebugPrint( renderThread.GetLogger() );
 		}
 		DebugTimer4Sample( plan, *pDebugInfoSolidShadowSplitTask, true );
-			SSDTPF("SkyLight %d: RTBuild %dys\n", i, (int)(timer.GetElapsedTime()*1e6f));
-		
-		renderTask.PrepareForRender();
-			SSDTPF("SkyLight %d: RTPrepare %dys (s=%d t=%d v=%d i=%d si=%d)\n", i,
-				(int)(timer.GetElapsedTime()*1e6f), renderTask.GetShaderCount(),
-				renderTask.GetTotalTextureCount(), renderTask.GetTotalVAOCount(),
-				renderTask.GetTotalInstanceCount(), renderTask.GetTotalSubInstanceCount());
+			SSDTPF("SkyLight %d: RTBuild %dys (s=%d t=%d v=%d i=%d si=%d)\n", i,
+				(int)(timer.GetElapsedTime()*1e6f), sl.renderTask->GetShaderCount(),
+				sl.renderTask->GetTotalTextureCount(), sl.renderTask->GetTotalVAOCount(),
+				sl.renderTask->GetTotalInstanceCount(), sl.renderTask->GetTotalSubInstanceCount());
 #endif
-		rengeom.RenderTask( renderTask );
+		rengeom.RenderTask( *sl.renderTask );
 		
 		// clear back facing fragments. back facing fragments cause a lot of troubles to shadow
 		// casting. the idea here is to consider back facing fragments hit before any front facing
@@ -1093,8 +983,6 @@ deoglRenderPlanSkyLight &planSkyLight, deoglShadowMapper &shadowMapper ){
 		DebugTimer3SampleCount( plan, *pDebugInfoSolidShadowSplit, 1, false );
 	}
 #endif
-	
-	renderTask.SetForceDoubleSided( false );
 	
 	shadowMapper.DropForeignArrayTextures();
 	

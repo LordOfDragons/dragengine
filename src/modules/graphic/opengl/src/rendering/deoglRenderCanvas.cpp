@@ -144,6 +144,7 @@ pDebugInfoPlanPrepare( NULL ),
 pDebugInfoPlanPrepareEarlyWorld( NULL ),
 pDebugInfoPlanPrepareFindContent( NULL ),
 pDebugInfoPlanPrepareSkyLightFindContent( NULL ),
+pDebugInfoPlanPrepareSkyLightBuildRT( NULL ),
 pDebugInfoPlanPrepareSkyLightGIFindContent( NULL ),
 pDebugInfoPlanPrepareSkyLightGIUpdateRenderTask( NULL ),
 pDebugInfoPlanPrepareWorld( NULL ),
@@ -221,6 +222,9 @@ pDebugInfoPlanPrepareFinish( NULL )
 		
 		pDebugInfoPlanPrepareSkyLightFindContent = new deoglDebugInformation( "SL Find Content", colorText, colorBgParallel );
 		pDebugInfoPlanPrepare->GetChildren().Add( pDebugInfoPlanPrepareSkyLightFindContent );
+		
+		pDebugInfoPlanPrepareSkyLightBuildRT = new deoglDebugInformation( "SL Build RT", colorText, colorBgParallel );
+		pDebugInfoPlanPrepare->GetChildren().Add( pDebugInfoPlanPrepareSkyLightBuildRT );
 		
 		pDebugInfoPlanPrepareSkyLightGIFindContent = new deoglDebugInformation( "SL GI Find Content", colorText, colorBgParallel );
 		pDebugInfoPlanPrepare->GetChildren().Add( pDebugInfoPlanPrepareSkyLightGIFindContent );
@@ -868,6 +872,7 @@ void deoglRenderCanvas::ClearAllDebugInfoPlanPrepare( deoglRenderPlan &plan ){
 	pDebugInfoPlanPrepareEarlyWorld->Clear();
 	pDebugInfoPlanPrepareFindContent->Clear();
 	pDebugInfoPlanPrepareSkyLightFindContent->Clear();
+	pDebugInfoPlanPrepareSkyLightBuildRT->Clear();
 	pDebugInfoPlanPrepareSkyLightGIFindContent->Clear();
 	pDebugInfoPlanPrepareSkyLightGIUpdateRenderTask->Clear();
 	pDebugInfoPlanPrepareWorld->Clear();
@@ -909,6 +914,13 @@ void deoglRenderCanvas::SampleDebugInfoPlanPrepareSkyLightFindContent( deoglRend
 		return;
 	}
 	DebugTimerIncrement( plan, *pDebugInfoPlanPrepareSkyLightFindContent, elapsed, 1 );
+}
+
+void deoglRenderCanvas::SampleDebugInfoPlanPrepareSkyLightBuildRT( deoglRenderPlan &plan, float elapsed ){
+	if( ! plan.GetDebugTiming() || ! pDebugInfoPlanPrepare->GetVisible() ){
+		return;
+	}
+	DebugTimerIncrement( plan, *pDebugInfoPlanPrepareSkyLightBuildRT, elapsed, 1 );
 }
 
 void deoglRenderCanvas::SampleDebugInfoPlanPrepareSkyLightGIFindContent( deoglRenderPlan &plan, float elapsed ){
@@ -1068,6 +1080,9 @@ void deoglRenderCanvas::pCleanUp(){
 	}
 	if( pDebugInfoPlanPrepareSkyLightFindContent ){
 		pDebugInfoPlanPrepareSkyLightFindContent->FreeReference();
+	}
+	if( pDebugInfoPlanPrepareSkyLightBuildRT ){
+		pDebugInfoPlanPrepareSkyLightBuildRT->FreeReference();
 	}
 	if( pDebugInfoPlanPrepareSkyLightGIFindContent ){
 		pDebugInfoPlanPrepareSkyLightGIFindContent->FreeReference();

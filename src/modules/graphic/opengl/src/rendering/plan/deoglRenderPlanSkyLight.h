@@ -35,6 +35,7 @@ class deoglRenderThread;
 class deoglRSkyInstance;
 class deoglRSkyInstanceLayer;
 class deoglRPTSkyLightFindContent;
+class deoglRPTSkyLightBuildRT;
 class deoglRPTSkyLightGIFindContent;
 class deoglRPTSkyLightGIUpdateRT;
 class deoglRenderPlan;
@@ -57,6 +58,8 @@ public:
 		decVector position;
 		decVector scale;
 		decMatrix matrix;
+		deoglRenderTask *renderTask;
+		deoglAddToRenderTask *addToRenderTask;
 	};
 	
 	
@@ -77,6 +80,8 @@ private:
 	bool pUseShadow;
 	int pShadowLayerCount;
 	sShadowLayer pShadowLayers[ 4 ];
+	deoglCollideList pSLCollideList1;
+	deoglCollideList pSLCollideList2;
 	
 	deoglCollideList pGICollideList;
 // 	decVector pGIBoxMinExtend;
@@ -86,6 +91,8 @@ private:
 	deoglAddToRenderTask pGIRenderTaskAdd;
 	
 	deoglRPTSkyLightFindContent *pTaskFindContent;
+	deoglRPTSkyLightBuildRT *pTaskBuildRT1;
+	deoglRPTSkyLightBuildRT *pTaskBuildRT2;
 	deoglRPTSkyLightGIFindContent *pTaskGIFindContent;
 	deoglRPTSkyLightGIUpdateRT *pTaskGIUpdateRT;
 	
@@ -204,6 +211,10 @@ public:
 	
 	/** Wait for GI Update Render Task parallel task to finish. */
 	void WaitFinishedGIUpdateRT();
+	
+	/** Wait for Build Render Task parallel task to finish. */
+	void WaitFinishedBuildRT1();
+	void WaitFinishedBuildRT2();
 	
 	/** Clean up after rendering. */
 	void CleanUp();
