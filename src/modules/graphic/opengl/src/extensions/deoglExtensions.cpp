@@ -788,6 +788,12 @@ void deoglExtensions::pFetchRequiredFunctions(){
 	pGetRequiredFunction( (void**)&pglGetActiveUniformBlockName, "glGetActiveUniformBlockName" );
 	pGetRequiredFunction( (void**)&pglUniformBlockBinding, "glUniformBlockBinding" );
 	
+	// OpenGL 3.2 core stuff
+	pGetRequiredFunction( (void**)&pglFenceSync, "glFenceSync" );
+	pGetRequiredFunction( (void**)&pglDeleteSync, "glDeleteSync" );
+	pGetRequiredFunction( (void**)&pglClientWaitSync, "glClientWaitSync" );
+	pGetRequiredFunction( (void**)&pglWaitSync, "glWaitSync" );
+	
 	// GL_ARB_timer_query : opengl version 3.3
 	pGetRequiredFunction( (void**)&pglQueryCounter, "glQueryCounter" );
 	pGetRequiredFunction( (void**)&pglGetQueryObjectui64v, "glGetQueryObjectui64v" );

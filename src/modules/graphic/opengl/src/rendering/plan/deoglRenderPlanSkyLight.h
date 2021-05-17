@@ -209,6 +209,9 @@ public:
 	/** Finish preparations. */
 	void FinishPrepare();
 	
+	/** Start building render task. */
+	void StartBuildRT();
+	
 	/** Wait for GI Update Render Task parallel task to finish. */
 	void WaitFinishedGIUpdateRT();
 	

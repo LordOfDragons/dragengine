@@ -22,6 +22,7 @@
 #ifndef _DEOGLRENDERERPLAN_H_
 #define _DEOGLRENDERERPLAN_H_
 
+#include "deoglRenderPlanTasks.h"
 #include "../../collidelist/deoglCollideList.h"
 #include "../../envmap/deoglEnvMapFader.h"
 #include "../../utils/collision/deoglDCollisionFrustum.h"
@@ -181,6 +182,8 @@ private:
 	int pOcclusionMapBaseLevel;
 	decMatrix pOcclusionTestMatrix;
 	deoglGIState *pGIState;
+	
+	deoglRenderPlanTasks pTasks;
 	
 	deoglRPTFindContent *pTaskFindContent;
 	
@@ -613,6 +616,11 @@ public:
 	
 	
 	
+	/** Tasks. */
+	inline deoglRenderPlanTasks &GetTasks(){ return pTasks; }
+	
+	
+	
 	/** Debug object or \em NULL if not existing. */
 	inline deoglRenderPlanDebug *GetDebug() const{ return pDebug; }
 	
@@ -670,6 +678,9 @@ public:
 	
 	/** Remove sky lights. */
 	void RemoveAllSkyLights();
+	
+	/** Sky lights start building render tasks. */
+	void SkyLightsStartBuildRT();
 	/*@}*/
 	
 	
@@ -725,7 +736,7 @@ private:
 	void pPlanLODLevels();
 	void pPlanEnvMaps();
 	void pRenderOcclusionTests( const deoglRenderPlanMasked *mask );
-	void pFinishOcclusionTests();
+	void pFinishOcclusionTests( const deoglRenderPlanMasked *mask );
 	
 	void pDebugPrepare();
 	void pDebugVisibleNoCull();

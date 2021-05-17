@@ -270,8 +270,31 @@ deoglRenderLightSky::~deoglRenderLightSky(){
 //////////////
 
 void deoglRenderLightSky::RenderLights( deoglRenderPlan &plan, bool solid, const deoglRenderPlanMasked *mask ){
-	if( ! solid ){
+// 	if( ! solid ){
 // 		return;
+// 	}
+	
+	if( solid ){
+		// this situation is annoying. to build sky shadow render tasks these actions are required:
+		// - find sky light content (parallel task)
+		// - render occlusion tests => requires view occlusion map to be rendered
+		// - resolve occlusion tests and remove invisible components
+		// - build render tasks (2 parallel tasks)
+		// 
+		// the problem here is the dependency on the view occlusion map to be rendered paired
+		// with the time consumption of finding sky light content. due to this rendering the
+		// occlusion tests can be done earliest at the end of the prepare render plan stage.
+		// but to build render plans in parallel we need to first wait for the occlusion test
+		// results to come in. by this time we are often close to rendering the sky light
+		// and the effect is voided.
+		// 
+		// a solution would be to use glFenceSync() and periodically check if a render process
+		// finished to start a following one as soon as possible. this is though quite complex
+		// and possibly not helping. kept for later.
+		// 
+		// what is done here is starting the parellel tasks here. while rendering the GI shadow
+		// is rendered first in the hope to hide the building of the render tasks there
+		plan.SkyLightsStartBuildRT();
 	}
 	
 	const int count = plan.GetSkyLightCount();
@@ -554,10 +577,11 @@ const deoglRenderPlanMasked *mask, deoglRenderPlanSkyLight &planSkyLight ){
 	deoglRenderThread &renderThread = GetRenderThread();
 	deoglShadowMapper &shadowMapper = renderThread.GetShadowMapper();
 	
-	RenderShadowMap( plan, planSkyLight, shadowMapper );
 	if( solid && ! mask ){
 		RenderGIShadowMap( plan, planSkyLight, shadowMapper );
 	}
+	
+	RenderShadowMap( plan, planSkyLight, shadowMapper );
 	
 	// activate stencil as we had to disable it for rendering the shadow maps
 	OGL_CHECK( renderThread, glEnable( GL_STENCIL_TEST ) );
@@ -678,6 +702,7 @@ deoglRenderPlanSkyLight &planSkyLight, deoglShadowMapper &shadowMapper ){
 #endif
 	
 	// render all layers into the shadow map
+	DebugTimer3Reset( plan, true );
 	DebugTimer4Reset( plan, true );
 	
 #ifndef SKY_SHADOW_FILTERED
@@ -980,11 +1005,11 @@ deoglRenderPlanSkyLight &planSkyLight, deoglShadowMapper &shadowMapper ){
 		}
 		
 		DebugTimer4Sample( plan, *pDebugInfoSolidShadowSplitRender, true );
-		DebugTimer3SampleCount( plan, *pDebugInfoSolidShadowSplit, 1, false );
 	}
 #endif
 	
 	shadowMapper.DropForeignArrayTextures();
+	DebugTimer3SampleCount( plan, *pDebugInfoSolidShadowSplit, layerCount, true );
 	
 	if( renderThread.GetConfiguration().GetDebugSnapshot() == edbgsnapLightSkySplits ){
 		renderThread.GetConfiguration().SetDebugSnapshot( 0 );

@@ -240,8 +240,16 @@ void deoglRenderPlanSkyLight::RenderOcclusionTests(){
 }
 
 void deoglRenderPlanSkyLight::FinishPrepare(){
+	RenderOcclusionTests();
+}
+
+void deoglRenderPlanSkyLight::StartBuildRT(){
 	if( ! pLayer || ! pUseShadow ){
 		return;
+	}
+	
+	if( pTaskBuildRT1 || pTaskBuildRT2 ){
+		DETHROW( deeInvalidParam );
 	}
 	
 	// potentially stalls if not finished yet
@@ -257,24 +265,6 @@ void deoglRenderPlanSkyLight::FinishPrepare(){
 	
 	pTaskBuildRT2 = new deoglRPTSkyLightBuildRT( *this, pSLCollideList2, 3, 3 );
 	pPlan.GetRenderThread().GetOgl().GetGameEngine()->GetParallelProcessing().AddTaskAsync( pTaskBuildRT2 );
-	
-	/*
-	pWaitFinishedFindContent();
-	pWaitFinishedGIFindContent();
-	
-	// start the GI update render task parallel task. this will be waited on before rendering
-	if( pPlan.GetUpdateGIState() ){
-		pTaskGIUpdateRT = new deoglRPTSkyLightGIUpdateRT( *this );
-		pPlan.GetRenderThread().GetOgl().GetGameEngine()->GetParallelProcessing().AddTaskAsync( pTaskGIUpdateRT );
-	}
-	
-	// if occlusion test input data are present render the tests. reading back the result
-	// is delayed until used in the sky light renderer. this avoids stalling
-	if( pOcclusionTest->GetInputDataCount() > 0 ){
-		pOcclusionTest->UpdateVBO();
-		pPlan.GetRenderThread().GetRenderers().GetOcclusion().RenderTestsSkyLayer( pPlan, *this );
-	}
-	*/
 }
 
 void deoglRenderPlanSkyLight::WaitFinishedGIUpdateRT(){

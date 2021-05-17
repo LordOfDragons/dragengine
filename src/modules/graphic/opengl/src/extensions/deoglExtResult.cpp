@@ -208,6 +208,16 @@ GLAPI PFNGLVERTEXATTRIBIPOINTERPROC pglVertexAttribIPointer = NULL;
 
 
 
+// OpenGL 3.2 core stuff
+//////////////////////////
+
+GLAPI PFNGLFENCESYNCPROC pglFenceSync = NULL;
+GLAPI PFNGLDELETESYNCPROC pglDeleteSync = NULL;
+GLAPI PFNGLCLIENTWAITSYNCPROC pglClientWaitSync = NULL;
+GLAPI PFNGLWAITSYNCPROC pglWaitSync = NULL;
+
+
+
 // GL_ARB_draw_elements_base_vertex : opengl version 3.2
 //////////////////////////////////////////////////////////
 

@@ -220,6 +220,9 @@ pDebugInfoPlanPrepareFinish( NULL )
 		pDebugInfoPlanPrepareFindContent = new deoglDebugInformation( "Find Content", colorText, colorBgParallel );
 		pDebugInfoPlanPrepare->GetChildren().Add( pDebugInfoPlanPrepareFindContent );
 		
+		pDebugInfoPlanPrepareBuildRTs = new deoglDebugInformation( "Build RTs", colorText, colorBgParallel );
+		pDebugInfoPlanPrepare->GetChildren().Add( pDebugInfoPlanPrepareBuildRTs );
+		
 		pDebugInfoPlanPrepareSkyLightFindContent = new deoglDebugInformation( "SL Find Content", colorText, colorBgParallel );
 		pDebugInfoPlanPrepare->GetChildren().Add( pDebugInfoPlanPrepareSkyLightFindContent );
 		
@@ -871,6 +874,7 @@ void deoglRenderCanvas::ClearAllDebugInfoPlanPrepare( deoglRenderPlan &plan ){
 	pDebugInfoPlanPrepare->Clear();
 	pDebugInfoPlanPrepareEarlyWorld->Clear();
 	pDebugInfoPlanPrepareFindContent->Clear();
+	pDebugInfoPlanPrepareBuildRTs->Clear();
 	pDebugInfoPlanPrepareSkyLightFindContent->Clear();
 	pDebugInfoPlanPrepareSkyLightBuildRT->Clear();
 	pDebugInfoPlanPrepareSkyLightGIFindContent->Clear();
@@ -907,6 +911,13 @@ void deoglRenderCanvas::SampleDebugInfoPlanPrepareFindContent( deoglRenderPlan &
 		return;
 	}
 	DebugTimerIncrement( plan, *pDebugInfoPlanPrepareFindContent, elapsed, 0 );
+}
+
+void deoglRenderCanvas::SampleDebugInfoPlanPrepareBuildRTs( deoglRenderPlan &plan, float elapsed ){
+	if( ! plan.GetDebugTiming() || ! pDebugInfoPlanPrepare->GetVisible() ){
+		return;
+	}
+	DebugTimerIncrement( plan, *pDebugInfoPlanPrepareBuildRTs, elapsed, 0 );
 }
 
 void deoglRenderCanvas::SampleDebugInfoPlanPrepareSkyLightFindContent( deoglRenderPlan &plan, float elapsed ){
@@ -1077,6 +1088,9 @@ void deoglRenderCanvas::pCleanUp(){
 	}
 	if( pDebugInfoPlanPrepareFindContent ){
 		pDebugInfoPlanPrepareFindContent->FreeReference();
+	}
+	if( pDebugInfoPlanPrepareBuildRTs ){
+		pDebugInfoPlanPrepareBuildRTs->FreeReference();
 	}
 	if( pDebugInfoPlanPrepareSkyLightFindContent ){
 		pDebugInfoPlanPrepareSkyLightFindContent->FreeReference();

@@ -115,6 +115,7 @@ pSkyLightCount( 0 ),
 pOcclusionMap( NULL ),
 pOcclusionTest( NULL ),
 pGIState( NULL ),
+pTasks( *this ),
 pTaskFindContent( NULL )
 {
 	pWorld = NULL;
@@ -421,7 +422,7 @@ void deoglRenderPlan::pBarePrepareRender( const deoglRenderPlanMasked *mask ){
 	
 	// finish occlusion testing. we can not do this later since this usually removes a large
 	// quantity of elements. processing those below just to drop them later on is not helping
-	pFinishOcclusionTests();
+	pFinishOcclusionTests( mask );
 	SPECIAL_TIMER_PRINT("FinishOcclusionTests")
 	
 	// update dynamic skins and masked rendering if required
@@ -1139,7 +1140,7 @@ void deoglRenderPlan::pRenderOcclusionTests( const deoglRenderPlanMasked *mask )
 	}
 }
 
-void deoglRenderPlan::pFinishOcclusionTests(){
+void deoglRenderPlan::pFinishOcclusionTests( const deoglRenderPlanMasked *mask ){
 	if( pRenderThread.GetConfiguration().GetDebugNoCulling() ){
 		return;
 	}
@@ -1152,10 +1153,7 @@ void deoglRenderPlan::pFinishOcclusionTests(){
 	
 	pDebugVisibleCulled();
 	
-	int i;
-	for( i=0; i<pSkyLightCount; i++ ){
-		( ( deoglRenderPlanSkyLight* )pSkyLights.GetAt( i ) )->RenderOcclusionTests();
-	}
+	pTasks.StartBuildTasks( mask );
 }
 
 void deoglRenderPlan::pDebugPrepare(){
@@ -1373,6 +1371,7 @@ void deoglRenderPlan::CleanUp(){
 		( ( deoglRenderPlanSkyLight* )pSkyLights.GetAt( i ) )->CleanUp();
 	}
 	
+	pTasks.CleanUp();
 	pWaitFinishedFindContent();
 	
 	RemoveAllSkyInstances();
@@ -1818,6 +1817,13 @@ deoglRenderPlanSkyLight *deoglRenderPlan::GetSkyLightAt( int index ) const{
 void deoglRenderPlan::RemoveAllSkyLights(){
 	while( pSkyLightCount > 0 ){
 		( ( deoglRenderPlanSkyLight* )pSkyLights.GetAt( --pSkyLightCount ) )->Clear();
+	}
+}
+
+void deoglRenderPlan::SkyLightsStartBuildRT(){
+	int i;
+	for( i=0; i<pSkyLightCount; i++ ){
+		( ( deoglRenderPlanSkyLight* )pSkyLights.GetAt( i ) )->StartBuildRT();
 	}
 }
 

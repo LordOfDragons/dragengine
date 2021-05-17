@@ -416,6 +416,16 @@ extern GLAPI PFNGLCLEARBUFFERFIPROC pglClearBufferfi;
 
 
 
+// OpenGL 3.2 core stuff
+//////////////////////////
+
+extern GLAPI PFNGLFENCESYNCPROC pglFenceSync;
+extern GLAPI PFNGLDELETESYNCPROC pglDeleteSync;
+extern GLAPI PFNGLCLIENTWAITSYNCPROC pglClientWaitSync;
+extern GLAPI PFNGLWAITSYNCPROC pglWaitSync;
+
+
+
 // GL_ARB_draw_elements_base_vertex : opengl version 3.2
 //////////////////////////////////////////////////////////
 

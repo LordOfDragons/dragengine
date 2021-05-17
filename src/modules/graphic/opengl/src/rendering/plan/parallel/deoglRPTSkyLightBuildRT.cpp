@@ -113,7 +113,7 @@ void deoglRPTSkyLightBuildRT::Finished(){
 }
 
 decString deoglRPTSkyLightBuildRT::GetDebugName() const{
-	return "RPTSkyLightGIUpdateRT";
+	return "RPTSkyLightBuildRT";
 }
 
 
