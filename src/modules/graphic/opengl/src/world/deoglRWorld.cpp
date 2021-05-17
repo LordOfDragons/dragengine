@@ -243,7 +243,9 @@ void deoglRWorld::PrepareForRender( deoglRenderPlan &plan, const deoglRenderPlan
 		deoglRComponent &component = *( ( deoglRComponent* )entry->GetOwner() );
 		pListPrepareForRenderComponents.Remove( entry );
 		
-		component.PrepareForRender( plan, mask ); // can potentially re-add the component
+		if( component.GetParentWorld() ){ // sanity check
+			component.PrepareForRender( plan, mask ); // can potentially re-add the component
+		}
 		
 		if( entry == tailComponent ){
 			break; // processed last component. re-added component will come next
@@ -258,7 +260,9 @@ void deoglRWorld::PrepareForRender( deoglRenderPlan &plan, const deoglRenderPlan
 		deoglRBillboard &billboard = *( ( deoglRBillboard* )entry->GetOwner() );
 		pListPrepareForRenderBillboards.Remove( entry );
 		
-		billboard.PrepareForRender( plan, mask ); // can potentially re-add the billboard
+		if( billboard.GetParentWorld() ){ // sanity check
+			billboard.PrepareForRender( plan, mask ); // can potentially re-add the billboard
+		}
 		
 		if( entry == tailBillboard ){
 			break; // processed last billboard. re-added billboard will come next
@@ -273,7 +277,9 @@ void deoglRWorld::PrepareForRender( deoglRenderPlan &plan, const deoglRenderPlan
 		deoglRLight &light = *( ( deoglRLight* )entry->GetOwner() );
 		pListPrepareForRenderLights.Remove( entry );
 		
-		light.PrepareForRender( mask ); // can potentially re-add the light
+		if( light.GetParentWorld() ){ // sanity check
+			light.PrepareForRender( mask ); // can potentially re-add the light
+		}
 		
 		if( entry == tailLight ){
 			break; // processed last light. re-added light will come next
@@ -288,7 +294,9 @@ void deoglRWorld::PrepareForRender( deoglRenderPlan &plan, const deoglRenderPlan
 		deoglRPropField &propField = *( ( deoglRPropField* )entry->GetOwner() );
 		pListPrepareForRenderPropFields.Remove( entry );
 		
-		propField.PrepareForRender(); // can potentially re-add the prop field
+		if( propField.GetParentWorld() ){ // sanity check
+			propField.PrepareForRender(); // can potentially re-add the prop field
+		}
 		
 		if( entry == tailPropField ){
 			break; // processed last prop field. re-added prop field will come next
@@ -1179,18 +1187,21 @@ void deoglRWorld::pCleanUp(){
 	}
 	pParticleEmitterInstances.RemoveAll();
 	
+	pListPrepareForRenderPropFields.RemoveAll();
 	/*count = pPropFields.GetCount();
 	for( i=0; i<count; i++ ){
 		( ( deoglRPropField* )pPropFields.GetAt( i ) )->SetParentWorld( NULL );
 	}*/  // deoglRPropField has no special code in SetParentWorld or destructor
 	pPropFields.RemoveAll();
 	
+	pListPrepareForRenderLights.RemoveAll();
 	count = pLights.GetCount();
 	for( i=0; i<count; i++ ){
 		( ( deoglRLight* )pLights.GetAt( i ) )->PrepareQuickDispose();
 	}
 	pLights.RemoveAll();
 	
+	pListPrepareForRenderBillboards.RemoveAll();
 	while( pRootBillboard ){
 		deoglRBillboard * const next = pRootBillboard->GetLLWorldNext();
 		pRootBillboard->PrepareQuickDispose();
@@ -1198,6 +1209,7 @@ void deoglRWorld::pCleanUp(){
 		pRootBillboard = next;
 	}
 	
+	pListPrepareForRenderComponents.RemoveAll();
 	while( pRootComponent ){
 		deoglRComponent * const next = pRootComponent->GetLLWorldNext();
 		pRootComponent->PrepareQuickDispose();

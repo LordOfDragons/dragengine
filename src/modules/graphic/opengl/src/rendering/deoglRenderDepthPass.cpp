@@ -400,6 +400,7 @@ DBG_ENTER_PARAM3("RenderDepthPass", "%p", mask, "%d", solid, "%d", maskedOnly)
 		renderTask = &tasks.GetSolidDepthTask();
 		
 	}else{
+		DebugTimer1Reset( plan, true );
 		renderTask = renworld.GetRenderTask();
 		deoglAddToRenderTask &addToRenderTask = *renworld.GetAddToRenderTask();
 		
@@ -595,6 +596,7 @@ DBG_ENTER_PARAM3("RenderDepthPass", "%p", mask, "%d", solid, "%d", maskedOnly)
 		renderTask = &tasks.GetSolidDepthOutlineTask();
 		
 	}else{
+		DebugTimer1Reset( plan, true );
 		renderTask = renworld.GetRenderTask();
 		deoglAddToRenderTask &addToRenderTask = *renworld.GetAddToRenderTask();
 		
