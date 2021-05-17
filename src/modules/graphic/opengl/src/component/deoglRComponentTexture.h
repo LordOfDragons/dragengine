@@ -87,6 +87,8 @@ private:
 	bool pValidParamBlocks;
 	bool pDirtyParamBlocks;
 	bool pDirtyTUCs;
+	bool pDirtyTUCsAll;
+	bool pDirtyTUCsEnvMapUse;
 	
 	
 	
@@ -311,6 +313,9 @@ public:
 	
 	/** Marks texture units configurations dirty. */
 	void MarkTUCsDirty();
+	
+	/** Marks env map using texture units configurations dirty. */
+	void MarkTUCsDirtyEnvMapUse();
 	
 	/**
 	 * Update instance parameter shader parameter block.

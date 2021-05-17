@@ -735,8 +735,6 @@ const deoglRenderTaskConfig *deoglRComponentLOD::GetRenderTaskConfig( deoglSkinT
 }
 
 void deoglRComponentLOD::UpdateRenderTaskConfigurations(){
-	const int rtfShadow = ertfRender;
-	const int rtfmShadow = ertfRender | ertfDecal | ertfShadowNone;
 	const deoglSkinTexture::eShaderTypes typesShadow[ 5 ] = {
 		deoglSkinTexture::estComponentShadowProjection,
 		deoglSkinTexture::estComponentShadowOrthogonal,
@@ -744,8 +742,66 @@ void deoglRComponentLOD::UpdateRenderTaskConfigurations(){
 		deoglSkinTexture::estComponentShadowDistance,
 		deoglSkinTexture::estComponentShadowDistanceCube };
 	int i;
+	
 	for( i=0; i<5; i++ ){
-		pUpdateRenderTaskConfig( pRenderTaskConfigs[ i ], typesShadow[ i ], rtfShadow, rtfmShadow, true );
+		pRenderTaskConfigs[ i ].RemoveAllTextures();
+	}
+	
+	if( ! pComponent.GetModel() ){
+		return;
+	}
+	
+	const deoglVAO * const vao = GetUseVAO();
+	if( ! vao ){
+		return;
+	}
+	
+	const deoglRenderTaskSharedVAO * const rtvao = vao->GetRTSVAO();
+	const deoglModelLOD &modelLod = GetModelLODRef();
+	const int count = pComponent.GetTextureCount();
+	const int rtfmShadow = ertfRender | ertfDecal | ertfShadowNone;
+	const int rtfShadow = ertfRender;
+	
+	for( i=0; i<count; i++ ){
+		if( modelLod.GetTextureAt( i ).GetFaceCount() == 0 ){
+			continue;
+		}
+		
+		const deoglRComponentTexture &texture = pComponent.GetTextureAt( i );
+		if( ( texture.GetRenderTaskFilters() & rtfmShadow ) != rtfShadow ){
+			continue;
+		}
+		
+		const deoglSkinTexture * const skinTexture = texture.GetUseSkinTexture();
+		if( ! skinTexture ){
+			continue; // actually covered by filter above but better safe than sorry
+		}
+		
+		const deoglSharedSPBRTIGroup * const group = texture.GetSharedSPBRTIGroupShadow( pLODIndex );
+		deoglRenderTaskSharedInstance *rtsi;
+		
+		if( group ){
+			rtsi = group->GetRTSInstance();
+			i += group->GetTextureCount() - 1;
+			
+		}else{
+			rtsi = texture.GetSharedSPBRTIGroup( pLODIndex ).GetRTSInstance();
+		}
+		
+		int j;
+		for( j=0; j<5; j++ ){
+			deoglRenderTaskConfigTexture &rct = pRenderTaskConfigs[ j ].AddTexture();
+			rct.SetRenderTaskFilter( texture.GetRenderTaskFilters() );
+			rct.SetShader( skinTexture->GetShaderFor( typesShadow[ j ] )->GetShader()->GetRTSShader() );
+			const deoglTexUnitsConfig *tuc = texture.GetTUCForShaderType( typesShadow[ j ] );
+			if( ! tuc ){
+				tuc = pComponent.GetRenderThread().GetShader().GetTexUnitsConfigList().GetEmptyNoUsage();
+			}
+			rct.SetTexture( tuc->GetRTSTexture() );
+			rct.SetVAO( rtvao );
+			rct.SetInstance( rtsi );
+			rct.SetGroupIndex( texture.GetSharedSPBElement()->GetIndex() );
+		}
 	}
 }
 

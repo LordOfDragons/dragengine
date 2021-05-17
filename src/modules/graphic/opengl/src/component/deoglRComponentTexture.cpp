@@ -105,7 +105,9 @@ pTUCGIMaterial( NULL ),
 
 pValidParamBlocks( false ),
 pDirtyParamBlocks( true ),
-pDirtyTUCs( true )
+pDirtyTUCs( true ),
+pDirtyTUCsAll( true ),
+pDirtyTUCsEnvMapUse( true )
 {
 	LEAK_CHECK_CREATE( component.GetRenderThread(), ComponentTexture );
 }
@@ -697,130 +699,136 @@ void deoglRComponentTexture::PrepareTUCs(){
 		return;
 	}
 	
-	// depth
-	if( pTUCDepth ){
-		pTUCDepth->RemoveUsage();
-		pTUCDepth = NULL;
-	}
-	pTUCDepth = BareGetTUCFor( deoglSkinTexture::estComponentDepth );
-	
-	// geometry
-	if( pTUCGeometry ){
-		pTUCGeometry->RemoveUsage();
-		pTUCGeometry = NULL;
-	}
-	pTUCGeometry = BareGetTUCFor( deoglSkinTexture::estComponentGeometry );
-	
-	// counter
-	if( pTUCCounter ){
-		pTUCCounter->RemoveUsage();
-		pTUCCounter = NULL;
-	}
-	pTUCCounter = BareGetTUCFor( deoglSkinTexture::estComponentCounter );
-	
-	// shadow
-	if( pTUCShadow ){
-		pTUCShadow->RemoveUsage();
-		pTUCShadow = NULL;
-	}
-	pTUCShadow = BareGetTUCFor( deoglSkinTexture::estComponentShadowProjection );
-	
-	// shadow cube
-	if( pTUCShadowCube ){
-		pTUCShadowCube->RemoveUsage();
-		pTUCShadowCube = NULL;
-	}
-	pTUCShadowCube = BareGetTUCFor( deoglSkinTexture::estComponentShadowDistanceCube );
-	
-	// environment map
-	if( pTUCEnvMap ){
-		pTUCEnvMap->RemoveUsage();
-		pTUCEnvMap = NULL;
-	}
-	
-	if( pUseSkinTexture ){
-		deoglRenderThread &renderThread = pComponent.GetRenderThread();
-		deoglRDynamicSkin *dynamicSkin = NULL;
-		deoglSkinState *skinState = NULL;
-		deoglTexUnitConfig unit[ 8 ];
+	if( pDirtyTUCsAll ){
+		// depth
+		if( pTUCDepth ){
+			pTUCDepth->RemoveUsage();
+			pTUCDepth = NULL;
+		}
+		pTUCDepth = BareGetTUCFor( deoglSkinTexture::estComponentDepth );
 		
-		if( pSkinState ){
-			skinState = pSkinState;
+		// counter
+		if( pTUCCounter ){
+			pTUCCounter->RemoveUsage();
+			pTUCCounter = NULL;
+		}
+		pTUCCounter = BareGetTUCFor( deoglSkinTexture::estComponentCounter );
+		
+		// shadow
+		if( pTUCShadow ){
+			pTUCShadow->RemoveUsage();
+			pTUCShadow = NULL;
+		}
+		pTUCShadow = BareGetTUCFor( deoglSkinTexture::estComponentShadowProjection );
+		
+		// shadow cube
+		if( pTUCShadowCube ){
+			pTUCShadowCube->RemoveUsage();
+			pTUCShadowCube = NULL;
+		}
+		pTUCShadowCube = BareGetTUCFor( deoglSkinTexture::estComponentShadowDistanceCube );
+		
+		// environment map
+		if( pTUCEnvMap ){
+			pTUCEnvMap->RemoveUsage();
+			pTUCEnvMap = NULL;
+		}
+		
+		if( pUseSkinTexture ){
+			deoglRenderThread &renderThread = pComponent.GetRenderThread();
+			deoglRDynamicSkin *dynamicSkin = NULL;
+			deoglSkinState *skinState = NULL;
+			deoglTexUnitConfig unit[ 8 ];
 			
-			if( pDynamicSkin ){
-				dynamicSkin = pDynamicSkin;
+			if( pSkinState ){
+				skinState = pSkinState;
+				
+				if( pDynamicSkin ){
+					dynamicSkin = pDynamicSkin;
+					
+				}else{
+					dynamicSkin = pComponent.GetDynamicSkin();
+				}
 				
 			}else{
+				// for texture with no own skin
+				skinState = pComponent.GetSkinState();
 				dynamicSkin = pComponent.GetDynamicSkin();
 			}
 			
-		}else{
-			// for texture with no own skin
-			skinState = pComponent.GetSkinState();
-			dynamicSkin = pComponent.GetDynamicSkin();
+			if( pUseSkinTexture->GetVariationU() || pUseSkinTexture->GetVariationV() ){
+				unit[ 0 ].EnableArrayTextureFromChannel( renderThread, *pUseSkinTexture,
+					deoglSkinChannel::ectColor, skinState, dynamicSkin,
+					renderThread.GetDefaultTextures().GetColorArray() );
+				
+				unit[ 1 ].EnableArrayTextureFromChannel( renderThread, *pUseSkinTexture,
+					deoglSkinChannel::ectEmissivity, skinState, dynamicSkin,
+					renderThread.GetDefaultTextures().GetEmissivityArray() );
+				
+			}else{
+				unit[ 0 ].EnableTextureFromChannel( renderThread, *pUseSkinTexture,
+					deoglSkinChannel::ectColor, skinState, dynamicSkin,
+					renderThread.GetDefaultTextures().GetColor() );
+				
+				unit[ 1 ].EnableTextureFromChannel( renderThread, *pUseSkinTexture,
+					deoglSkinChannel::ectEmissivity, skinState, dynamicSkin,
+					renderThread.GetDefaultTextures().GetEmissivity() );
+			}
+			
+			pTUCEnvMap = renderThread.GetShader().GetTexUnitsConfigList().GetWith( &unit[ 0 ], 2,
+				pUseSkinTexture->GetSharedSPBElement()->GetSPB().GetParameterBlock() );
+			pTUCEnvMap->EnsureRTSTexture();
 		}
 		
-		if( pUseSkinTexture->GetVariationU() || pUseSkinTexture->GetVariationV() ){
-			unit[ 0 ].EnableArrayTextureFromChannel( renderThread, *pUseSkinTexture,
-				deoglSkinChannel::ectColor, skinState, dynamicSkin,
-				renderThread.GetDefaultTextures().GetColorArray() );
-			
-			unit[ 1 ].EnableArrayTextureFromChannel( renderThread, *pUseSkinTexture,
-				deoglSkinChannel::ectEmissivity, skinState, dynamicSkin,
-				renderThread.GetDefaultTextures().GetEmissivityArray() );
-			
-		}else{
-			unit[ 0 ].EnableTextureFromChannel( renderThread, *pUseSkinTexture,
-				deoglSkinChannel::ectColor, skinState, dynamicSkin,
-				renderThread.GetDefaultTextures().GetColor() );
-			
-			unit[ 1 ].EnableTextureFromChannel( renderThread, *pUseSkinTexture,
-				deoglSkinChannel::ectEmissivity, skinState, dynamicSkin,
-				renderThread.GetDefaultTextures().GetEmissivity() );
+		// outline depth
+		if( pTUCOutlineDepth ){
+			pTUCOutlineDepth->RemoveUsage();
+			pTUCOutlineDepth = NULL;
 		}
+		pTUCOutlineDepth = BareGetTUCFor( deoglSkinTexture::estOutlineDepth );
 		
-		pTUCEnvMap = renderThread.GetShader().GetTexUnitsConfigList().GetWith( &unit[ 0 ], 2,
-			pUseSkinTexture->GetSharedSPBElement()->GetSPB().GetParameterBlock() );
-		pTUCEnvMap->EnsureRTSTexture();
+		// outline geometry
+		if( pTUCOutlineGeometry ){
+			pTUCOutlineGeometry->RemoveUsage();
+			pTUCOutlineGeometry = NULL;
+		}
+		pTUCOutlineGeometry = BareGetTUCFor( deoglSkinTexture::estOutlineGeometry );
+		
+		// outline counter
+		if( pTUCOutlineCounter ){
+			pTUCOutlineCounter->RemoveUsage();
+			pTUCOutlineCounter = NULL;
+		}
+		pTUCOutlineCounter = BareGetTUCFor( deoglSkinTexture::estOutlineCounter );
+		
+		// global illumination material
+		if( pTUCGIMaterial ){
+			pTUCGIMaterial->RemoveUsage();
+			pTUCGIMaterial = NULL;
+		}
+		pTUCGIMaterial = BareGetTUCFor( deoglSkinTexture::estComponentGIMaterial );
 	}
 	
-	// outline depth
-	if( pTUCOutlineDepth ){
-		pTUCOutlineDepth->RemoveUsage();
-		pTUCOutlineDepth = NULL;
+	if( pDirtyTUCsAll || pDirtyTUCsEnvMapUse ){
+		// geometry
+		if( pTUCGeometry ){
+			pTUCGeometry->RemoveUsage();
+			pTUCGeometry = NULL;
+		}
+		pTUCGeometry = BareGetTUCFor( deoglSkinTexture::estComponentGeometry );
+		
+		// luminance
+		if( pTUCLuminance ){
+			pTUCLuminance->RemoveUsage();
+			pTUCLuminance = NULL;
+		}
+		pTUCLuminance = BareGetTUCFor( deoglSkinTexture::estComponentLuminance );
 	}
-	pTUCOutlineDepth = BareGetTUCFor( deoglSkinTexture::estOutlineDepth );
-	
-	// outline geometry
-	if( pTUCOutlineGeometry ){
-		pTUCOutlineGeometry->RemoveUsage();
-		pTUCOutlineGeometry = NULL;
-	}
-	pTUCOutlineGeometry = BareGetTUCFor( deoglSkinTexture::estOutlineGeometry );
-	
-	// outline counter
-	if( pTUCOutlineCounter ){
-		pTUCOutlineCounter->RemoveUsage();
-		pTUCOutlineCounter = NULL;
-	}
-	pTUCOutlineCounter = BareGetTUCFor( deoglSkinTexture::estOutlineCounter );
-	
-	// luminance
-	if( pTUCLuminance ){
-		pTUCLuminance->RemoveUsage();
-		pTUCLuminance = NULL;
-	}
-	pTUCLuminance = BareGetTUCFor( deoglSkinTexture::estComponentLuminance );
-	
-	// global illumination material
-	if( pTUCGIMaterial ){
-		pTUCGIMaterial->RemoveUsage();
-		pTUCGIMaterial = NULL;
-	}
-	pTUCGIMaterial = BareGetTUCFor( deoglSkinTexture::estComponentGIMaterial );
 	
 	// finished
 	pDirtyTUCs = false;
+	pDirtyTUCsAll = false;
+	pDirtyTUCsEnvMapUse = false;
 }
 
 deoglTexUnitsConfig *deoglRComponentTexture::BareGetTUCFor(
@@ -875,6 +883,7 @@ void deoglRComponentTexture::InvalidateParamBlocks(){
 	pValidParamBlocks = false;
 	pDirtyParamBlocks = true;
 	pComponent.DirtyTextureParamBlocks();
+	pComponent.DirtyLODRenderTaskConfigs();
 }
 
 void deoglRComponentTexture::MarkParamBlocksDirty(){
@@ -884,7 +893,16 @@ void deoglRComponentTexture::MarkParamBlocksDirty(){
 
 void deoglRComponentTexture::MarkTUCsDirty(){
 	pDirtyTUCs = true;
+	pDirtyTUCsAll = true;
 	pComponent.DirtyTextureTUCs();
+	pComponent.DirtyLODRenderTaskConfigs();
+}
+
+void deoglRComponentTexture::MarkTUCsDirtyEnvMapUse(){
+	pDirtyTUCs = true;
+	pDirtyTUCsEnvMapUse = true;
+	pComponent.DirtyTextureTUCs();
+	pComponent.DirtyLODRenderTaskConfigs();
 }
 
 

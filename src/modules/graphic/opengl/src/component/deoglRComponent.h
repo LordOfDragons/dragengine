@@ -583,6 +583,9 @@ public:
 	/** Marks texture units configurations of all textures dirty. */
 	void MarkAllTexturesTUCsDirty();
 	
+	/** Marks env-map using texture units configurations of all textures dirty. */
+	void MarkAllTexturesTUCsDirtyEnvMapUse();
+	
 	/** Update static textures. */
 	void UpdateStaticTextures();
 	

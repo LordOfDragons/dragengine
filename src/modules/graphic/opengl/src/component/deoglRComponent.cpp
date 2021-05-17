@@ -336,6 +336,7 @@ void deoglRComponent::SetModel( deoglRModel *model ){
 	pDirtyModelVBOs = true;
 	
 	pDirtyTextureParamBlocks = true;
+	pDirtyLODRenderTaskConfigs = true;
 	InvalidateAllTexturesParamBlocks(); // required only if not using world shared spb
 	
 	pResizeModelSkinMappings();
@@ -370,6 +371,7 @@ void deoglRComponent::RigChanged(){
 	InvalidateVAO();
 	
 	pDirtyModelRigMappings = true;
+	pDirtyLODRenderTaskConfigs = true;
 	
 	pUpdateRenderMode();
 	pResizeBoneMatrices();
@@ -501,7 +503,6 @@ void deoglRComponent::InvalidateOccMeshSharedSPBRTIGroup(){
 
 void deoglRComponent::MeshChanged(){
 	pInvalidateLODVBOs();
-	DirtyLODRenderTaskConfigs();
 	
 	if( pDynamicOcclusionMesh ){
 		pDynamicOcclusionMesh->ComponentStateChanged();
@@ -972,7 +973,6 @@ void deoglRComponent::SetRenderMode( eRenderModes renderMode ){
 	
 	pRenderMode = renderMode;
 	pDirtyLODVBOs = true;
-	pDirtyLODRenderTaskConfigs = true;
 	pRequiresPrepareForRender();
 }
 
@@ -1042,7 +1042,7 @@ void deoglRComponent::SetRenderEnvMap( deoglEnvironmentMap *envmap ){
 	pRenderEnvMapFadeFactor = 0.0f;
 	
 	if( ! prevEnvMap ){ // in case SetRenderEnvMapFade did not mark all textures dirty yet
-		MarkAllTexturesTUCsDirty();
+		MarkAllTexturesTUCsDirtyEnvMapUse();
 	}
 }
 
@@ -1063,7 +1063,7 @@ void deoglRComponent::SetRenderEnvMapFade( deoglEnvironmentMap *envmap ){
 		envmap->GetComponentList().Add( this );
 	}
 	
-	MarkAllTexturesTUCsDirty();
+	MarkAllTexturesTUCsDirtyEnvMapUse();
 }
 
 void deoglRComponent::SetRenderEnvMapFadePerTime( float fadePerTime ){
@@ -1122,26 +1122,63 @@ void deoglRComponent::WorldReferencePointChanged(){
 
 
 
+// #define DO_PFR_TIMING
+
+#ifdef DO_PFR_TIMING
+#define PFRT_INIT decTimer timer;
+#define PFRT_SAMPLE(n) const float time##n = timer.GetElapsedTime();
+#define PFRT_FINAL(m,...) if(pModel) printf("PrepareForRender %s: " m "\n", pModel->GetFilename().GetString(), __VA_ARGS__);
+#else
+#define PFRT_INIT
+#define PFRT_SAMPLE(n)
+#define PFRT_FINAL(...)
+#endif
+
 void deoglRComponent::PrepareForRender( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask ){
-	pPrepareModelVBOs();
-	pPrepareLODVBOs();
-	pPrepareRenderEnvMap();
+	/*
+	if(pDirtyModelVBOs|pDirtyOccMeshVBO|pDirtyOccMeshSharedSPBElement|pDirtyLODVBOs
+	|pDirtyLODRenderTaskConfigs|pDirtyModelRigMappings|pDirtySolid|pDirtyPrepareSkinStateRenderables
+	|pDirtyTextureTUCs|pDirtyTextureParamBlocks|pDirtyDecals|pDirtyCulling|pDirtyRenderEnvMap){
+		printf("RComponent.PrepareForRender %s:%s%s%s%s%s%s%s%s%s%s%s%s%s\n", pModel->GetFilename().GetString(),
+		pDirtyModelVBOs?" dirtyModelVBOs":"", pDirtyOccMeshVBO?" dirtyOccMeshVBO":"",
+		pDirtyOccMeshSharedSPBElement?" dirtyOccMeshSharedSPBElement":"", pDirtyLODVBOs?" dirtyLODVBOs":"",
+		pDirtyLODRenderTaskConfigs?" dirtyLODRenderTaskConfigs":"",
+		pDirtyModelRigMappings?" pDirtyModelRigMappings":"", pDirtySolid?" dirtySolid":"",
+		pDirtyPrepareSkinStateRenderables?" dirtyPrepareSkinStateRenderables":"",
+		pDirtyTextureTUCs?" dirtyTextureTUCs":"", pDirtyTextureParamBlocks?" dirtyTextureParamBlocks":"",
+		pDirtyDecals?" dirtyDecals":"", pDirtyCulling?" dirtyCulling":"", pDirtyRenderEnvMap?" dirtyRenderEnvMap":"");
+	}
+	*/
+	
+	PFRT_INIT
+	
+	pPrepareModelVBOs(); PFRT_SAMPLE(ModelVBOs)
+	pPrepareLODVBOs(); PFRT_SAMPLE(LODVBOs)
+	pPrepareRenderEnvMap(); PFRT_SAMPLE(RenderEnvMap)
 	
 	pCheckRenderModifier( plan.GetCamera() );
-	pPrepareSkinStateRenderables( mask );
-	pPrepareSolidity();
+	pPrepareSkinStateRenderables( mask ); PFRT_SAMPLE(SkinStateRenderables)
+	pPrepareSolidity(); PFRT_SAMPLE(Solidity)
 	
-	pPrepareParamBlocks();
-	pPrepareTextureTUCs();
-	pPrepareTextureParamBlocks(); // has to come after pPrepareTextureTUCs
+	pPrepareParamBlocks(); PFRT_SAMPLE(ParamBlocks)
+	pPrepareTextureTUCs(); PFRT_SAMPLE(TextureTUCs)
+	pPrepareTextureParamBlocks(); PFRT_SAMPLE(TextureParamBlocks) // has to come after pPrepareTextureTUCs
 	
-	pPrepareOccMeshVBO();
-	pPrepareDynOccMesh();
-	pPrepareOccMeshRTSInstances(); // requires (dyn) occmesh VBOs to be prepared
+	pPrepareOccMeshVBO(); PFRT_SAMPLE(OccMeshVBO)
+	pPrepareDynOccMesh(); PFRT_SAMPLE(DynOccMesh)
+	pPrepareOccMeshRTSInstances(); PFRT_SAMPLE(OccMeshRTSInstances) // requires (dyn) occmesh VBOs to be prepared
 	
-	pPrepareLODRenderTaskConfigs();
+	pPrepareLODRenderTaskConfigs(); PFRT_SAMPLE(LODRenderTaskConfigs)
 	
-	pPrepareDecals( plan, mask );
+	pPrepareDecals( plan, mask ); PFRT_SAMPLE(Decals)
+	
+	PFRT_FINAL("mv=%dys lv=%dys rem=%dys ssr=%dys s=%dys pb=%dys tt=%dys tpb=%dys omv=%dys dom=%dys omri=%dys lrtc=%dys d=%dys",
+		(int)(timeModelVBOs*1e6f), (int)(timeLODVBOs*1e6f), (int)(timeRenderEnvMap*1e6f),
+		(int)(timeSkinStateRenderables*1e6f), (int)(timeSolidity*1e6f), (int)(timeParamBlocks*1e6f),
+		(int)(timeTextureTUCs*1e6f), (int)(timeTextureParamBlocks*1e6f), (int)(timeOccMeshVBO*1e6f),
+		(int)(timeDynOccMesh*1e6f), (int)(timeOccMeshRTSInstances*1e6f),
+		(int)(timeLODRenderTaskConfigs*1e6f), (int)(timeDecals*1e6f))
+// 	if(pModel) printf("RComponent.PrepareForRender %s %dys\n", pModel->GetFilename().GetString(), (int)(timer.GetElapsedTime()*1e6f));
 }
 
 
@@ -1189,7 +1226,6 @@ void deoglRComponent::SetLODErrorScaling( float errorScaling ){
 
 void deoglRComponent::DirtyLODVBOs(){
 	pDirtyLODVBOs = true;
-	pDirtyLODRenderTaskConfigs = true;
 	pRequiresPrepareForRender();
 }
 
@@ -1251,6 +1287,15 @@ void deoglRComponent::MarkAllTexturesTUCsDirty(){
 	
 	for( i=0; i<count; i++ ){
 		( ( deoglRComponentTexture* )pTextures.GetAt( i ) )->MarkTUCsDirty();
+	}
+}
+
+void deoglRComponent::MarkAllTexturesTUCsDirtyEnvMapUse(){
+	const int count = pTextures.GetCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		( ( deoglRComponentTexture* )pTextures.GetAt( i ) )->MarkTUCsDirtyEnvMapUse();
 	}
 }
 
@@ -1367,7 +1412,6 @@ void deoglRComponent::DirtyTextureTUCs(){
 	}
 	
 	pDirtyTextureTUCs = true;
-	pDirtyLODRenderTaskConfigs = true;
 	pRequiresPrepareForRender();
 }
 
@@ -1377,7 +1421,6 @@ void deoglRComponent::DirtyTextureParamBlocks(){
 	}
 	
 	pDirtyTextureParamBlocks = true;
-	pDirtyLODRenderTaskConfigs = true;
 	pRequiresPrepareForRender();
 }
 
