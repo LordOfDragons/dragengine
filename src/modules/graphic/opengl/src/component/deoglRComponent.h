@@ -111,9 +111,6 @@ public:
 	bool pDirtyLODVBOs;
 	bool pDirtyLODRenderTaskConfigs;
 	
-	bool pCubeFaceVisible[ 6 ];
-	int pSpecialFlags;
-	
 	// dynamic model data
 	oglMatrix3x4 *pBoneMatrices;
 	int pBoneMatrixCount;
@@ -370,34 +367,6 @@ public:
 	
 	/** Update occlusion mesh instance parameter block. */
 	void UpdateOccmeshInstanceParamBlock( deoglShaderParameterBlock &paramBlock, int element );
-	
-	
-	
-	/**
-	 * Update cube face visibility.
-	 * 
-	 * Calculates for each face of a cube map if the object is potentially visible.
-	 * Used to optimize rendering cube maps by not rendering objects on cube map faces
-	 * where the object is not visible.
-	 */
-	void UpdateCubeFaceVisibility( const decDVector &cubePosition );
-	
-	/**
-	 * Object is visible in cube map face.
-	 * 
-	 * Only valid after UpdateCubeFaceVisibility() has been called.
-	 */
-	bool GetCubeFaceVisible( int cubeFace ) const;
-	
-	/**
-	 * Special flags for use with render task.
-	 * 
-	 * Call appropriate flags update method to update the special flags before use.
-	 */
-	inline int GetSpecialFlags() const{ return pSpecialFlags; }
-	
-	/** Set special flags from cube map visibility. */
-	void SetSpecialFlagsFromFaceVisibility();
 	
 	
 	

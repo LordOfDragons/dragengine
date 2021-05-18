@@ -1450,10 +1450,9 @@ void deoglRenderLightPoint::ClearCubeMap( deoglShadowMapper &shadowMapper, int s
 bool HACK1 = false;
 
 void deoglRenderLightPoint::RenderShadowMaps( deoglRenderPlan &plan, deoglRLight &light,
-const decDMatrix &matrixProjection, deoglShadowMapper &shadowMapper,
-const deoglCollideList *clist1, const deoglCollideList *clist2, int solidShadowMapSize,
-int transpShadowMapSize, bool withTransparent, float shadowScale, float shadowOffset,
-bool debugSolid ){
+const decDMatrix &matrixProjection, deoglShadowMapper &shadowMapper, const deoglCollideList *clist1,
+const deoglCollideList *clist2, int solidShadowMapSize, int transpShadowMapSize, bool withTransparent,
+float shadowScale, float shadowOffset, bool debugSolid ){
 	deoglRenderThread &renderThread = GetRenderThread();
 	deoglAddToRenderTask &addToRenderTask = renderThread.GetRenderers().GetLight().GetAddToRenderTask();
 	deoglRenderTask &renderTask = renderThread.GetRenderers().GetLight().GetRenderTask();
@@ -1488,24 +1487,11 @@ bool debugSolid ){
 	// calculate object render cube face special parameter. optimizes rendering by skipping
 	// object faces on cube map faces they are not visible on
 	const decDVector cubePosition( light.GetMatrix().GetPosition() );
-	int i;
-	
 	if( clist1 ){
-		const int componentCount = clist1->GetComponentCount();
-		for( i=0; i<componentCount; i++ ){
-			deoglRComponent &component = *clist1->GetComponentAt( i )->GetComponent();
-			component.UpdateCubeFaceVisibility( cubePosition );
-			component.SetSpecialFlagsFromFaceVisibility();
-		}
+		clist1->UpdateCubeFaceMasks( cubePosition );
 	}
-	
 	if( clist2 ){
-		const int componentCount = clist2->GetComponentCount();
-		for( i=0; i<componentCount; i++ ){
-			deoglRComponent &component = *clist2->GetComponentAt( i )->GetComponent();
-			component.UpdateCubeFaceVisibility( cubePosition );
-			component.SetSpecialFlagsFromFaceVisibility();
-		}
+		clist2->UpdateCubeFaceMasks( cubePosition );
 	}
 	
 	// configuration

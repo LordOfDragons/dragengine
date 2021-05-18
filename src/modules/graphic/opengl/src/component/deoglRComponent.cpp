@@ -130,8 +130,6 @@ pOccMeshSharedSPBSingleSided( NULL ),
 pDirtyLODVBOs( true ),
 pDirtyLODRenderTaskConfigs( true ),
 
-pSpecialFlags( 0 ),
-
 pSkinRendered( renderThread, *this ),
 
 pDirtyTextureTUCs( true ),
@@ -184,11 +182,6 @@ pLLPrepareForRenderWorld( this )
 	pListenerIndex = 0;
 	
 	pEnvMap = NULL;
-	
-	int i;
-	for( i=0; i<6; i++ ){
-		pCubeFaceVisible[ i ] = true;
-	}
 	
 	try{
 		pUniqueKey = renderThread.GetUniqueKey().Get();
@@ -585,52 +578,6 @@ int element ){
 	matrix.a34 -= referencePosition.z;
 	
 	paramBlock.SetParameterDataMat4x3( 0, element, matrix ); // pMatrixModel
-}
-
-
-
-void deoglRComponent::UpdateCubeFaceVisibility( const decDVector &cubePosition ){
-	deoglCubeHelper::CalcFaceVisibility(
-		pMinExtend - cubePosition, pMaxExtend - cubePosition, pCubeFaceVisible );
-	
-	// DEBUG
-	/*
-	pRenderThread.GetLogger().LogInfoFormat( "DEBUG: (%g,%g,%g) [%d, %d, %d, %d, %d, %d] {(%g,%g,%g), (%g,%g,%g)}",
-		pMatrix.GetPosition().x, pMatrix.GetPosition().y, pMatrix.GetPosition().z,
-		    pCubeFaceVisible[0], pCubeFaceVisible[1], pCubeFaceVisible[2],
-		    pCubeFaceVisible[3], pCubeFaceVisible[4], pCubeFaceVisible[5],
-		    (pMinExtend - cubePosition).x, (pMinExtend - cubePosition).y, (pMinExtend - cubePosition).z,
-		    (pMaxExtend - cubePosition).x, (pMaxExtend - cubePosition).y, (pMaxExtend - cubePosition).z );
-	*/
-}
-
-bool deoglRComponent::GetCubeFaceVisible( int cubeFace ) const{
-	if( cubeFace < 0 || cubeFace > 5 ){
-		DETHROW( deeInvalidParam );
-	}
-	return pCubeFaceVisible[ cubeFace ];
-}
-
-void deoglRComponent::SetSpecialFlagsFromFaceVisibility(){
-	pSpecialFlags = 0;
-	if( pCubeFaceVisible[ 0 ] ){
-		pSpecialFlags |= 0x1;
-	}
-	if( pCubeFaceVisible[ 1 ] ){
-		pSpecialFlags |= 0x2;
-	}
-	if( pCubeFaceVisible[ 2 ] ){
-		pSpecialFlags |= 0x8;
-	}
-	if( pCubeFaceVisible[ 3 ] ){
-		pSpecialFlags |= 0x4;
-	}
-	if( pCubeFaceVisible[ 4 ] ){
-		pSpecialFlags |= 0x10;
-	}
-	if( pCubeFaceVisible[ 5 ] ){
-		pSpecialFlags |= 0x20;
-	}
 }
 
 

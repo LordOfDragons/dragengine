@@ -56,6 +56,9 @@
 deoglRWorld::deoglRWorld( deoglRenderThread &renderThread, const decDVector &octreeSize ) :
 pRenderThread( renderThread ),
 
+pDirtyPrepareForRenderEarly( true ),
+pDirtyPrepareForRender( true ),
+
 pDirtyNotifySkyChanged( false ),
 pDirtySkyOrder( false ),
 pSkyEnvMap( NULL ),
@@ -105,6 +108,11 @@ deoglRWorld::~deoglRWorld(){
 
 // Management
 ///////////////
+
+void deoglRWorld::RequiresPrepareForRender(){
+	pDirtyPrepareForRenderEarly = true;
+	pDirtyPrepareForRender = true;
+}
 
 void deoglRWorld::MarkSkyOrderDirty(){
 	pDirtySkyOrder = true;
@@ -173,7 +181,17 @@ const decDVector &boxMaxExtend, deoglWorldOctreeVisitor &visitor ){
 #endif
 
 void deoglRWorld::EarlyPrepareForRender( deoglRenderPlan &plan ){
+	if( ! pDirtyPrepareForRenderEarly ){
+		return;
+	}
+	pDirtyPrepareForRenderEarly = false;
+	
 	INIT_SPECIAL_TIMING
+	
+	// ensure sky environment map exists. has to be done early since this calls AddEnvMap
+	// which can cause a data-race with deoglRPTFindContent and other code accessing
+	// deoglEnvironmentMap::GetSkyOnly(). anyways done only once at the beginning
+	pCreateSkyEnvMap();
 	
 	// early prepare lights
 	const decPointerLinkedList::cListEntry *iterLight = pListPrepareForRenderLights.GetRoot();
@@ -185,6 +203,11 @@ void deoglRWorld::EarlyPrepareForRender( deoglRenderPlan &plan ){
 }
 
 void deoglRWorld::PrepareForRender( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask ){
+	if( ! pDirtyPrepareForRender ){
+		return;
+	}
+	pDirtyPrepareForRender = false;
+	
 	INIT_SPECIAL_TIMING
 	int i, count;
 	
@@ -222,7 +245,6 @@ void deoglRWorld::PrepareForRender( deoglRenderPlan &plan, const deoglRenderPlan
 		pDirtySkyOrder = false;
 	}
 	
-	pCreateSkyEnvMap();
 	pSkyEnvMap->PrepareForRender();
 	
 	if( pDirtyNotifySkyChanged ){
@@ -737,6 +759,8 @@ deoglREnvMapProbe *deoglRWorld::GetEnvMapProbeAt( int index ) const{
 }
 
 void deoglRWorld::AddEnvMapProbe( deoglREnvMapProbe *envMapProbe ){
+	// NOTE Called during synchrinization by main thread.
+	
 	if( ! envMapProbe ){
 		DETHROW( deeInvalidParam );
 	}
@@ -750,6 +774,8 @@ void deoglRWorld::AddEnvMapProbe( deoglREnvMapProbe *envMapProbe ){
 }
 
 void deoglRWorld::RemoveEnvMapProbe( deoglREnvMapProbe *envMapProbe ){
+	// NOTE Called during synchrinization by main thread.
+	
 	const int index = pEnvMapProbes.IndexOf( envMapProbe );
 	if( index == -1 ){
 		DETHROW( deeInvalidParam );

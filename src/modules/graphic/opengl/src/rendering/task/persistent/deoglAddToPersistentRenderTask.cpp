@@ -167,14 +167,17 @@ void deoglAddToPersistentRenderTask::SetEnforceParamBlock( const deoglSPBlockUBO
 }
 
 void deoglAddToPersistentRenderTask::AddComponent( deoglPersistentRenderTaskOwner &owner,
-const deoglRComponent &component, int lodLevel ){
+const deoglCollideListComponent &clcomponent ){
+	deoglRComponent &component = *clcomponent.GetComponent();
 	if( ! component.GetParentWorld() || ! component.GetModel() ){
 		return;
 	}
-	if( pFilterCubeFace != -1 && ! component.GetCubeFaceVisible( pFilterCubeFace ) ){
+	if( pFilterCubeFace != -1 && ! clcomponent.GetCubeFaceMaskAt( pFilterCubeFace ) ){
 		return;
 	}
 	
+	const int lodLevel = clcomponent.GetLODLevel();
+	const int specialFlags = clcomponent.GetSpecialFlags();
 	const deoglRModel &model = *component.GetModel();
 	const deoglModelLOD &modelLOD = model.GetLODAt( lodLevel );
 	const int textureCount = modelLOD.GetTextureCount();
@@ -183,30 +186,25 @@ const deoglRComponent &component, int lodLevel ){
 	for( i=0; i<textureCount; i++ ){
 		const deoglModelTexture &texture = modelLOD.GetTextureAt( i );
 		if( texture.GetFaceCount() > 0 ){
-			AddComponentFaces( owner, component, i, texture.GetFirstFace(), texture.GetFaceCount(), lodLevel );
+			AddComponentFaces( owner, component, i, texture.GetFirstFace(), texture.GetFaceCount(), lodLevel, specialFlags );
 		}
 	}
 }
 
-void deoglAddToPersistentRenderTask::AddComponent( deoglPersistentRenderTaskOwner &owner,
-const deoglCollideListComponent &clcomponent ){
-	AddComponent( owner, *clcomponent.GetComponent(), clcomponent.GetLODLevel() );
-}
-
 void deoglAddToPersistentRenderTask::AddComponentFaces( deoglPersistentRenderTaskOwner &owner,
-const deoglRComponent &component, int texture, int lodLevel ){
+const deoglRComponent &component, int texture, int lodLevel, int specialFlags ){
 	if( ! component.GetModel() ){
 		return;
 	}
 	
 	const deoglModelTexture &t = component.GetModel()->GetLODAt( lodLevel ).GetTextureAt( texture );
 	if( t.GetFaceCount() > 0 ){
-		AddComponentFaces( owner, component, texture, t.GetFirstFace(), t.GetFaceCount(), lodLevel );
+		AddComponentFaces( owner, component, texture, t.GetFirstFace(), t.GetFaceCount(), lodLevel, specialFlags );
 	}
 }
 
 void deoglAddToPersistentRenderTask::AddComponentFaces( deoglPersistentRenderTaskOwner &owner,
-const deoglRComponent &component, int texture, int firstFace, int faceCount, int lodLevel ){
+const deoglRComponent &component, int texture, int firstFace, int faceCount, int lodLevel, int specialFlags ){
 	const deoglRComponentTexture &componentTexture = component.GetTextureAt( texture );
 	if( componentTexture.GetIsRendered() ){
 		return;
@@ -244,7 +242,7 @@ const deoglRComponent &component, int texture, int firstFace, int faceCount, int
 		rti->SetDoubleSided( doubleSided | pForceDoubleSided );
 	}
 	
-	owner.AddSubInstance( rti->AddSubInstance( spbElement.GetIndex(), component.GetSpecialFlags() ) );
+	owner.AddSubInstance( rti->AddSubInstance( spbElement.GetIndex(), specialFlags ) );
 }
 
 

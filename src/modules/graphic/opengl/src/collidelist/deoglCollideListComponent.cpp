@@ -26,6 +26,7 @@
 #include "../component/deoglRComponent.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../occlusiontest/deoglOcclusionTest.h"
+#include "../utils/deoglCubeHelper.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -42,7 +43,9 @@ pComponent( NULL ),
 pLODLevel( 0 ),
 pComponentLOD( NULL ),
 pCulled( false ),
-pCascadeMask( 0 ){
+pCascadeMask( 0 ),
+pCubeFaceMask( 0x2f ),
+pSpecialFlags( 0 ){
 }
 
 deoglCollideListComponent::~deoglCollideListComponent(){
@@ -59,6 +62,8 @@ void deoglCollideListComponent::Clear(){
 	pComponentLOD = NULL;
 	pCulled = false;
 	pCascadeMask = 0;
+	pCubeFaceMask = 0x2f;
+	pSpecialFlags = 0;
 }
 
 void deoglCollideListComponent::SetComponent( deoglRComponent *component ){
@@ -83,6 +88,35 @@ void deoglCollideListComponent::SetCulled( bool culled ){
 
 void deoglCollideListComponent::SetCascadeMask( int mask ){
 	pCascadeMask = mask;
+}
+
+void deoglCollideListComponent::UpdateCubeFaceMask( const decDVector &cubePosition ){
+	pCubeFaceMask = deoglCubeHelper::CalcFaceVisibility(
+		pComponent->GetMinimumExtend() - cubePosition,
+		pComponent->GetMaximumExtend() - cubePosition );
+	
+	// DEBUG
+	/*
+	const deoglDMatrix &m = pComponent.GetMatrix();
+	pRenderThread.GetLogger().LogInfoFormat( "DEBUG: (%g,%g,%g) [%d, %d, %d, %d, %d, %d] {(%g,%g,%g), (%g,%g,%g)}",
+		m.GetPosition().x, m.GetPosition().y, m.GetPosition().z, ( pCubeFaceMask & 0x1 ) == 0x1,
+		( pCubeFaceMask & 0x2 ) == 0x2, ( pCubeFaceMask & 0x4 ) == 0x4, ( pCubeFaceMask & 0x8 ) == 0x8,
+		( pCubeFaceMask & 0x10 ) == 0x10, ( pCubeFaceMask & 0x20 ) == 0x20,
+		( pComponent->GetMinimumExtend() - cubePosition ).x, ( pComponent->GetMinimumExtend() - cubePosition ).y,
+		( pComponent->GetMinimumExtend() - cubePosition ).z, ( pComponent->GetMaximumExtend() - cubePosition ).x,
+		( pComponent->GetMaximumExtend() - cubePosition ).y, ( pComponent->GetMaximumExtend() - cubePosition ).z );
+	*/
+}
+
+bool deoglCollideListComponent::GetCubeFaceMaskAt( int face ) const{
+	if( face < 0 || face > 5 ){
+		DETHROW( deeInvalidParam );
+	}
+	return ( pCubeFaceMask & ( 1 << face ) ) != 0;
+}
+
+void deoglCollideListComponent::SetSpecialFlags( int flags ){
+	pSpecialFlags = flags;
 }
 
 void deoglCollideListComponent::StartOcclusionTest( deoglOcclusionTest &occlusionTest,

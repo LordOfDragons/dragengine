@@ -212,10 +212,6 @@ public:
 	
 	/** Add component. */
 	void AddComponent( deoglPersistentRenderTaskOwner &owner,
-		const deoglRComponent &component, int lodLevel );
-	
-	/** Add component. */
-	void AddComponent( deoglPersistentRenderTaskOwner &owner,
 		const deoglCollideListComponent &clcomponent );
 	
 	/**
@@ -223,14 +219,14 @@ public:
 	 * updated already and model and skin exist as well as parent world exists.
 	 */
 	void AddComponentFaces( deoglPersistentRenderTaskOwner &owner,
-		const deoglRComponent &component, int texture, int lodLevel );
+		const deoglRComponent &component, int texture, int lodLevel, int specialFlags );
 	
 	/**
 	 * Add continuous run of faces of component. Component is supposed to be updated already
 	 * and that model and skin exist as well as parent world exist.
 	 */
 	void AddComponentFaces( deoglPersistentRenderTaskOwner &owner, const deoglRComponent &component,
-		int texture, int firstFace, int faceCount, int lodLevel );
+		int texture, int firstFace, int faceCount, int lodLevel, int specialFlags );
 	/*@}*/
 	
 	

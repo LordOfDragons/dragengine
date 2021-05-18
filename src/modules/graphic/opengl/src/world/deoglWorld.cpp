@@ -266,6 +266,11 @@ void deoglWorld::SyncToRender(){
 	
 	DEBUG_RESET_TIMERS;
 	try{
+		// should be done better. these situations only require a prepare for render:
+		// - Update called (hence always in regular games)
+		// - Content requires an update (TODO)
+		pRWorld->RequiresPrepareForRender();
+		
 		if( pDirtyLighting ){
 			pRWorld->SetDisableLights( pWorld.GetDisableLights() );
 			pRWorld->SetAmbientLight( pWorld.GetAmbientLight() );

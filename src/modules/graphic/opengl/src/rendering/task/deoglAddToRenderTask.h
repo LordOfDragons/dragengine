@@ -223,7 +223,7 @@ public:
 	
 	
 	/** Add component. */
-	void AddComponent( const deoglRComponentLOD &lod );
+	void AddComponent( const deoglRComponentLOD &lod, int specialFlags );
 	
 	/** Add component. */
 	void AddComponent( const deoglCollideListComponent &clcomponent );
@@ -231,14 +231,11 @@ public:
 	/** Add components from the given collide list. */
 	void AddComponents( const deoglCollideList &clist );
 	
-	/** Add components from the given collide list using highest lod level. */
-	void AddComponentsHighestLod( const deoglCollideList &clist );
-	
 	/** Add continuous run of all faces of a texture of a component. */
-	void AddComponentFaces( const deoglRComponentLOD &lod, int texture );
+	void AddComponentFaces( const deoglRComponentLOD &lod, int texture, int specialFlags );
 	
 	void AddComponentFaces( const deoglRComponentLOD &lod, const deoglModelLOD &modelLod,
-		int texture, const deoglRenderTaskSharedVAO *rtvao );
+		int texture, const deoglRenderTaskSharedVAO *rtvao, int specialFlags );
 	
 	
 	
@@ -285,14 +282,15 @@ public:
 	
 	
 	/** Add an occlusion mesh from a component. */
-	void AddOcclusionMesh( const deoglRComponent &component, deoglRenderTaskTexture *taskTexture );
+	void AddOcclusionMesh( const deoglCollideListComponent &clcomponent,
+		deoglRenderTaskTexture *taskTexture );
 	
 	/** Add occlusion meshes for all components in a collide list. */
 	void AddOcclusionMeshes( const deoglCollideList &clist );
 	
 	/** Add a continuous run of faces of an occlusion mesh. */
 	void AddOcclusionMeshFaces( const deoglRComponent &component, bool doubleSided,
-		deoglRenderTaskTexture *taskTexture );
+		deoglRenderTaskTexture *taskTexture, int specialFlags );
 	
 	
 	

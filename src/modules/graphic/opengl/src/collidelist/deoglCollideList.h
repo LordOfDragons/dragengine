@@ -103,6 +103,18 @@ public:
 	/** Remove all culled elements. */
 	void RemoveCulledElements();
 	
+	/**
+	 * Update cube face masks and assign them as special flags.
+	 * \note Although declared const this method modifies content.
+	 */
+	void UpdateCubeFaceMasks( const decDVector &position ) const;
+	
+	/**
+	 * Update cube face masks and assign them as special flags.
+	 * \note Although declared const this method modifies content.
+	 */
+	void UpdateOccMeshCubeFaceMasks( const decDVector &position ) const;
+	
 	/** Retrieves the list of particle emitters. */
 	inline deoglParticleEmitterInstanceList &GetParticleEmitterList(){ return pParticleEmitterList; }
 	inline const deoglParticleEmitterInstanceList &GetParticleEmitterList() const{ return pParticleEmitterList; }

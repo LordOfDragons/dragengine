@@ -386,7 +386,14 @@ void deoglRenderPlan::pBarePrepareRender( const deoglRenderPlanMasked *mask ){
 	SPECIAL_TIMER_PRINT("PrepareWorld")
 	
 	if( ! pNoReflections ){
-		pPlanEnvMaps(); // requires world prepare to be fully done first
+		// NOTE requires world prepare to be fully done first.
+		// 
+		// NOTE this can trigger rendering in the world and thus can trigger
+		//      deoglRWorld::EarlyPrepareForRender() and deoglRWorld::PrepareForRender()
+		//      calls. if this would happen the EarlyPrepareForRender call can potentially
+		//      run in parallel to find content tasks which can cause data race. a dirty
+		//      flag in deoglRWorld prevents this from happening
+		pPlanEnvMaps();
 		SPECIAL_TIMER_PRINT("PrepareEnv")
 	}
 	

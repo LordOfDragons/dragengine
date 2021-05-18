@@ -661,6 +661,7 @@ void deoglRLSVisitorCollectElements::pVisitComponents( const deoglWorldOctree &s
 		
 		deoglCollideListComponent &clcomponent = *pCollideList.AddComponent( addComponent );
 		clcomponent.SetCascadeMask( cascadeMask );
+		clcomponent.SetSpecialFlags( cascadeMask );
 		
 		if( pOcclusionTest ){
 			clcomponent.StartOcclusionTest( *pOcclusionTest, pReferencePosition );

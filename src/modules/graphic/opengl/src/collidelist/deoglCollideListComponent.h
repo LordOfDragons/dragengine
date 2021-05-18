@@ -42,6 +42,8 @@ private:
 	deoglRComponentLOD *pComponentLOD;
 	bool pCulled;
 	int pCascadeMask;
+	int pCubeFaceMask;
+	int pSpecialFlags;
 	
 	
 	
@@ -96,6 +98,24 @@ public:
 	
 	/** Set cascade mask. */
 	void SetCascadeMask( int mask );
+	
+	/**
+	 * Calculate for each cube map face if component is potentially visible. Optimizes rendering
+	 * cube maps by not rendering components on cube map faces where they are not visible
+	 */
+	void UpdateCubeFaceMask( const decDVector &cubePosition );
+	
+	/** Component cube face mask. */
+	inline int GetCubeFaceMask() const{ return pCubeFaceMask; }
+	
+	/** Component is visible on cube map face. Valid after calling UpdateCubeFaceVisibility() */
+	bool GetCubeFaceMaskAt( int face ) const;
+	
+	/** Special flags. */
+	inline int GetSpecialFlags() const{ return pSpecialFlags; }
+	
+	/** Set special flags. */
+	void SetSpecialFlags( int flags );
 	
 	/** Start occlusion test. */
 	void StartOcclusionTest( deoglOcclusionTest &occlusionTest, const decDVector &referencePosition );

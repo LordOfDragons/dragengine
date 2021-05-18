@@ -166,6 +166,30 @@ void deoglCollideList::RemoveCulledElements(){
 	RemoveCulledBillboards();
 }
 
+void deoglCollideList::UpdateCubeFaceMasks( const decDVector &position ) const{
+	int i;
+	
+	for( i=0; i<pComponentCount; i++ ){
+		deoglCollideListComponent &component = *pComponents[ i ];
+		component.UpdateCubeFaceMask( position );
+		component.SetSpecialFlags( component.GetCubeFaceMask() );
+	}
+	
+	// TODO same for billboard
+}
+
+void deoglCollideList::UpdateOccMeshCubeFaceMasks( const decDVector &position ) const{
+	int i;
+	
+	for( i=0; i<pComponentCount; i++ ){
+		deoglCollideListComponent &component = *pComponents[ i ];
+		if( component.GetComponent()->GetOcclusionMesh() ){
+			component.UpdateCubeFaceMask( position );
+			component.SetSpecialFlags( component.GetCubeFaceMask() );
+		}
+	}
+}
+
 
 
 void deoglCollideList::AddParticleEmittersColliding( deoglWorldOctree &octree, deoglDCollisionVolume *volume ){

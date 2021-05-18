@@ -56,6 +56,9 @@ class deoglRWorld : public deObject{
 private:
 	deoglRenderThread &pRenderThread;
 	
+	bool pDirtyPrepareForRenderEarly;
+	bool pDirtyPrepareForRender;
+	
 	bool pDirtyNotifySkyChanged;
 	bool pDirtySkyOrder;
 	deoglEnvironmentMap *pSkyEnvMap;
@@ -113,6 +116,9 @@ public:
 	
 	/** \name Management */
 	/*@{*/
+	/** Requires prepare for render. */
+	void RequiresPrepareForRender();
+	
 	/** Mark sky order dirty. */
 	void MarkSkyOrderDirty();
 	
@@ -314,19 +320,22 @@ public:
 	/** environment map probe at index. */
 	deoglREnvMapProbe *GetEnvMapProbeAt( int index ) const;
 	
-	/** Add environment map probe. */
+	/**
+	 * Add environment map probe.
+	 * \note Called during synchronization by main thread.
+	 */
 	void AddEnvMapProbe( deoglREnvMapProbe *envMapProbe );
 	
-	/** Remove environment map probe. */
+	/**
+	 * Remove environment map probe.
+	 * \note Called during synchronization by main thread.
+	 */
 	void RemoveEnvMapProbe( deoglREnvMapProbe *envMapProbe );
 	
 	/** Remove all environment map probes. */
 	void RemoveAllEnvMapProbes();
 	
-	/**
-	 * Remove environment map probes marked for removal.
-	 * \details Called from the main thread.
-	 */
+	/** Remove environment map probes marked for removal. */
 	void RemoveRemovalMarkedEnvMapProbes();
 	/*@}*/
 	

@@ -1229,16 +1229,7 @@ deoglCubeMap *cubemap, const decDVector &position, float imageDistance, float vi
 	
 	// calculate object render cube face special parameter. optimizes rendering by skipping
 	// object faces on cube map faces they are not visible on
-	int i;
-	
-	const int componentCount = collideList.GetComponentCount();
-	for( i=0; i<componentCount; i++ ){
-		deoglRComponent &component = *collideList.GetComponentAt( i )->GetComponent();
-		if( component.GetOcclusionMesh() ){
-			component.UpdateCubeFaceVisibility( position );
-			component.SetSpecialFlagsFromFaceVisibility();
-		}
-	}
+	collideList.UpdateOccMeshCubeFaceMasks( position );
 	
 	// configuration
 	const bool bugClearEntireCubeMap = renderThread.GetCapabilities().GetClearEntireCubeMap().Broken();

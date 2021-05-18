@@ -236,18 +236,15 @@ static decTimer atrtTimer;
 #include "../../renderthread/deoglRTLogger.h"
 #endif
 
-void deoglAddToRenderTask::AddComponent( const deoglRComponentLOD &lod ){
+void deoglAddToRenderTask::AddComponent( const deoglRComponentLOD &lod, int specialFlags ){
 	const deoglRComponent &component = lod.GetComponent();
-	if( pFilterCubeFace != -1 && ! component.GetCubeFaceVisible( pFilterCubeFace ) ){
-		return;
-	}
 	
 	const deoglRenderTaskConfig * const rtc = lod.GetRenderTaskConfig( pSkinShaderType );
 	if( rtc ){
 			#ifdef ATRT_TIMING
 			atrtElapsed0 += atrtTimer.GetElapsedTime();
 			#endif
-		AddRenderTaskConfig( *rtc, component.GetSpecialFlags() );
+		AddRenderTaskConfig( *rtc, specialFlags );
 		return;
 	}
 	
@@ -271,13 +268,17 @@ void deoglAddToRenderTask::AddComponent( const deoglRComponentLOD &lod ){
 			debug1 += timer.GetElapsedTime(); debug1b++;
 		}
 		#else
-		AddComponentFaces( lod, modelLod, i, rtvao );
+		AddComponentFaces( lod, modelLod, i, rtvao, specialFlags );
 		#endif
 	}
 }
 
 void deoglAddToRenderTask::AddComponent( const deoglCollideListComponent &clcomponent ){
-	AddComponent( clcomponent.GetComponentLOD() );
+	if( pFilterCubeFace != -1 && ! clcomponent.GetCubeFaceMaskAt( pFilterCubeFace ) ){
+		return;
+	}
+	
+	AddComponent( clcomponent.GetComponentLOD(), clcomponent.GetSpecialFlags() );
 }
 
 void deoglAddToRenderTask::AddComponents( const deoglCollideList &clist ){
@@ -323,7 +324,7 @@ void deoglAddToRenderTask::AddComponents( const deoglCollideList &clist ){
 	debug1 = 0.0f; debug1b = 0;
 	#endif
 	for( i=0; i<count; i++ ){
-		AddComponent( clist.GetComponentAt( i )->GetComponentLOD() );
+		AddComponent( *clist.GetComponentAt( i ) );
 	}
 	#ifdef SPECIAL_DEBUG_ON
 	pRenderThread.GetLogger().LogInfoFormat( "deoglAddToRenderTask::AddComponents(%i) = %iys",
@@ -337,24 +338,15 @@ void deoglAddToRenderTask::AddComponents( const deoglCollideList &clist ){
 		#endif
 }
 
-void deoglAddToRenderTask::AddComponentsHighestLod( const deoglCollideList &clist ){
-	const int count = clist.GetComponentCount();
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		AddComponent( clist.GetComponentAt( i )->GetComponent()->GetLODAt( -1 ) );
-	}
-}
-
-void deoglAddToRenderTask::AddComponentFaces( const deoglRComponentLOD &lod, int texture ){
+void deoglAddToRenderTask::AddComponentFaces( const deoglRComponentLOD &lod, int texture, int specialFlags ){
 	const deoglVAO * const vao = lod.GetUseVAO();
 	if( vao ){
-		AddComponentFaces( lod, lod.GetModelLODRef(), texture, vao->GetRTSVAO() );
+		AddComponentFaces( lod, lod.GetModelLODRef(), texture, vao->GetRTSVAO(), specialFlags );
 	}
 }
 
 void deoglAddToRenderTask::AddComponentFaces( const deoglRComponentLOD &lod,
-const deoglModelLOD &modelLod, int texture, const deoglRenderTaskSharedVAO *rtvao ){
+const deoglModelLOD &modelLod, int texture, const deoglRenderTaskSharedVAO *rtvao, int specialFlags ){
 	if( modelLod.GetTextureAt( texture ).GetFaceCount() == 0 ){
 		return;
 	}
@@ -372,7 +364,7 @@ const deoglModelLOD &modelLod, int texture, const deoglRenderTaskSharedVAO *rtva
 	pGetTaskVAO( pSkinShaderType, componentTexture.GetUseSkinTexture(),
 		componentTexture.GetTUCForShaderType( pSkinShaderType ), rtvao->GetVAO() )->
 			AddInstance( componentTexture.GetSharedSPBRTIGroup( lod.GetLODIndex() ).GetRTSInstance() )->
-			AddSubInstance( componentTexture.GetSharedSPBElement()->GetIndex(), component.GetSpecialFlags() );
+			AddSubInstance( componentTexture.GetSharedSPBElement()->GetIndex(), specialFlags );
 	
 #if 0
 	const deoglRenderTaskSharedShader * const rts = componentTexture.GetUseSkinTexture()->
@@ -386,12 +378,11 @@ const deoglModelLOD &modelLod, int texture, const deoglRenderTaskSharedVAO *rtva
 	
 	deoglRenderTaskSharedInstance * const rtsi = componentTexture.GetSharedSPBRTIGroup( lod.GetLODIndex() ).GetRTSInstance();
 	const int index = componentTexture.GetSharedSPBElement()->GetIndex();
-	const int flags = component.GetSpecialFlags();
 	
 		#ifdef ATRT_TIMING
 		atrtElapsed1 += atrtTimer.GetElapsedTime();
 		#endif
-	pRenderTask.AddShader(rts)->AddTexture(rtt)->AddVAO(rtvao)->AddInstance(rtsi)->AddSubInstance(index, flags);
+	pRenderTask.AddShader(rts)->AddTexture(rtt)->AddVAO(rtvao)->AddInstance(rtsi)->AddSubInstance(index, specialFlags);
 		#ifdef ATRT_TIMING
 		atrtElapsed2 += atrtTimer.GetElapsedTime();
 		#endif
@@ -708,13 +699,14 @@ void deoglAddToRenderTask::AddHeightTerrains( const deoglCollideList &clist, boo
 
 
 
-void deoglAddToRenderTask::AddOcclusionMesh( const deoglRComponent &component,
+void deoglAddToRenderTask::AddOcclusionMesh( const deoglCollideListComponent &clcomponent,
 deoglRenderTaskTexture *taskTexture ){
+	const deoglRComponent &component = *clcomponent.GetComponent();
 	const deoglROcclusionMesh * const occlusionMesh = component.GetOcclusionMesh();
 	if( ! occlusionMesh ){
 		return;
 	}
-	if( pFilterCubeFace != -1 && ! component.GetCubeFaceVisible( pFilterCubeFace ) ){
+	if( pFilterCubeFace != -1 && ! clcomponent.GetCubeFaceMaskAt( pFilterCubeFace ) ){
 		return;
 	}
 	if( pNoRendered && component.GetSkinRendered().GetTexturedCount() > 0 ){
@@ -728,10 +720,10 @@ deoglRenderTaskTexture *taskTexture ){
 	}
 	
 	if( singleFaceCount > 0 ){
-		AddOcclusionMeshFaces( component, false, taskTexture );
+		AddOcclusionMeshFaces( component, false, taskTexture, clcomponent.GetSpecialFlags() );
 	}
 	if( doubleFaceCount > 0 ){
-		AddOcclusionMeshFaces( component, true, taskTexture );
+		AddOcclusionMeshFaces( component, true, taskTexture, clcomponent.GetSpecialFlags() );
 	}
 }
 
@@ -749,12 +741,12 @@ void deoglAddToRenderTask::AddOcclusionMeshes( const deoglCollideList &clist ){
 	const int count = clist.GetComponentCount();
 	int i;
 	for( i=0; i<count; i++ ){
-		AddOcclusionMesh( *clist.GetComponentAt( i )->GetComponent(), rttexture );
+		AddOcclusionMesh( *clist.GetComponentAt( i ), rttexture );
 	}
 }
 
 void deoglAddToRenderTask::AddOcclusionMeshFaces( const deoglRComponent &component,
-bool doubleSided, deoglRenderTaskTexture *taskTexture ){
+bool doubleSided, deoglRenderTaskTexture *taskTexture, int specialFlags ){
 	if( ! pEnforceShader ){
 		DETHROW( deeInvalidParam );
 	}
@@ -771,7 +763,7 @@ bool doubleSided, deoglRenderTaskTexture *taskTexture ){
 	
 	taskTexture->AddVAO( vao->GetRTSVAO() )->
 		AddInstance( component.GetOccMeshSharedSPBRTIGroup( doubleSided ).GetRTSInstance() )->
-		AddSubInstance( component.GetOccMeshSharedSPBElement()->GetIndex(), component.GetSpecialFlags() );
+		AddSubInstance( component.GetOccMeshSharedSPBElement()->GetIndex(), specialFlags );
 }
 
 

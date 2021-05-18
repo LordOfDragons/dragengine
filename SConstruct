@@ -459,11 +459,11 @@ params.Update( parent_env )
 
 # determine sanitize flags to use
 parent_env.Replace(SANITIZE_FLAGS = [])
+parent_env.Replace(SANITIZE_LINK_FLAGS = [])
 
 if parent_env['with_debug'] and parent_env['with_sanitize']:
 	if parent_env['with_sanitize_thread']:
 		parent_env.Append(SANITIZE_FLAGS = ['-fsanitize=thread'])
-		parent_env.Append(SANITIZE_LINK_FLAGS = ['-lpthread'])
 		
 	else:
 		parent_env.Append(SANITIZE_FLAGS = [

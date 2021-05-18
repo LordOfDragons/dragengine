@@ -737,7 +737,7 @@ DBG_EXIT("RenderMaskedPass(early)")
 		pAddToRenderTask->SetNoRendered( false );
 		
 		pAddToRenderTask->AddComponentFaces( maskedPlan->GetComponent()->GetLODAt( 0 ),
-			maskedPlan->GetComponentTexture() );
+			maskedPlan->GetComponentTexture(), 0 );
 		
 		pRenderTask->PrepareForRender();
 		rengeom.RenderTask( *pRenderTask );
