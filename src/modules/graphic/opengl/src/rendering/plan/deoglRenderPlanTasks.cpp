@@ -47,25 +47,12 @@ deoglRenderPlanTasks::deoglRenderPlanTasks( deoglRenderPlan &plan ) :
 pPlan( plan ),
 
 pSolidDepthTask( plan.GetRenderThread() ),
-pSolidDepthAdd( plan.GetRenderThread(), pSolidDepthTask ),
-
 pSolidDepthOutlineTask( plan.GetRenderThread() ),
-pSolidDepthOutlineAdd( plan.GetRenderThread(), pSolidDepthOutlineTask ),
-
 pSolidGeometryTask( plan.GetRenderThread() ),
-pSolidGeometryAdd( plan.GetRenderThread(), pSolidGeometryTask ),
-
 pSolidGeometryHeight1Task( plan.GetRenderThread() ),
-pSolidGeometryHeight1Add( plan.GetRenderThread(), pSolidGeometryHeight1Task ),
-
 pSolidGeometryHeight2Task( plan.GetRenderThread() ),
-pSolidGeometryHeight2Add( plan.GetRenderThread(), pSolidGeometryHeight2Task ),
-
 pSolidGeometryOutlineTask( plan.GetRenderThread() ),
-pSolidGeometryOutlineAdd( plan.GetRenderThread(), pSolidGeometryOutlineTask ),
-
 pSolidDecalsTask( plan.GetRenderThread() ),
-pSolidDecalsAdd( plan.GetRenderThread(), pSolidDecalsTask ),
 
 pTaskDepth( NULL ),
 pTaskGeometry( NULL ){

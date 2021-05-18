@@ -463,6 +463,7 @@ parent_env.Replace(SANITIZE_FLAGS = [])
 if parent_env['with_debug'] and parent_env['with_sanitize']:
 	if parent_env['with_sanitize_thread']:
 		parent_env.Append(SANITIZE_FLAGS = ['-fsanitize=thread'])
+		parent_env.Append(SANITIZE_LINK_FLAGS = ['-lpthread'])
 		
 	else:
 		parent_env.Append(SANITIZE_FLAGS = [
@@ -508,8 +509,10 @@ if parent_env['with_debug']:
 	if parent_env['with_sanitize']:
 		parent_env.Append(MODULE_CPPFLAGS = parent_env['SANITIZE_FLAGS'])
 		parent_env.Append(MODULE_LINKFLAGS = parent_env['SANITIZE_FLAGS'])
+		parent_env.Append(MODULE_LINKFLAGS = parent_env['SANITIZE_LINK_FLAGS'])
 		parent_env.Append(CROSSCOMPILE_CPPFLAGS = parent_env['SANITIZE_FLAGS'])
 		parent_env.Append(CROSSCOMPILE_LINKFLAGS = parent_env['SANITIZE_FLAGS'])
+		parent_env.Append(CROSSCOMPILE_LINKFLAGS = parent_env['SANITIZE_LINK_FLAGS'])
 	
 else:
 	parent_env.Append(MODULE_CPPFLAGS = ['-fvisibility=hidden'])

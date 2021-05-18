@@ -27,6 +27,7 @@
 #include "../deoglRenderPlanTasks.h"
 #include "../deoglRenderPlanMasked.h"
 #include "../../../deGraphicOpenGl.h"
+#include "../../../rendering/task/deoglAddToRenderTask.h"
 #include "../../../renderthread/deoglRenderThread.h"
 #include "../../../renderthread/deoglRTChoices.h"
 #include "../../../renderthread/deoglRTLogger.h"
@@ -92,11 +93,11 @@ decString deoglRPTBuildRTsDepth::GetDebugName() const{
 
 void deoglRPTBuildRTsDepth::pSolid(){
 	const deoglCollideList &collideList = pPlan.GetPlan().GetCollideList();
-	deoglAddToRenderTask &addToRenderTask = pPlan.GetSolidDepthAdd();
+	deoglRenderTask &renderTask = pPlan.GetSolidDepthTask();
+	deoglAddToRenderTask addToRenderTask( pPlan.GetPlan().GetRenderThread(), renderTask );
 	
-	pPlan.GetSolidDepthTask().Clear();
+	renderTask.Clear();
 	
-	addToRenderTask.Reset();
 	addToRenderTask.SetSolid( true );
 	addToRenderTask.SetNoNotReflected( pPlan.GetPlan().GetNoReflections() );
 	addToRenderTask.SetNoRendered( pMask );
@@ -167,11 +168,11 @@ void deoglRPTBuildRTsDepth::pSolid(){
 
 void deoglRPTBuildRTsDepth::pSolidOutline(){
 	const deoglCollideList &collideList = pPlan.GetPlan().GetCollideList();
-	deoglAddToRenderTask &addToRenderTask = pPlan.GetSolidDepthOutlineAdd();
+	deoglRenderTask &renderTask = pPlan.GetSolidDepthOutlineTask();
+	deoglAddToRenderTask addToRenderTask( pPlan.GetPlan().GetRenderThread(), renderTask );
 	
-	pPlan.GetSolidDepthOutlineTask().Clear();
+	renderTask.Clear();
 	
-	addToRenderTask.Reset();
 	addToRenderTask.SetOutline( true );
 	addToRenderTask.SetFilterDecal( true );
 	addToRenderTask.SetDecal( false );

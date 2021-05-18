@@ -84,6 +84,36 @@ void dbgOnMainThreadCheck(){
 	}
 	#endif
 }
+
+void dbgOnRenderThreadCheck(){
+	#ifdef OS_UNIX
+	if( pthread_self() != pRenderThreadPid ){
+		DETHROW( deeInvalidAction );
+	}
+	#endif
+	
+	#ifdef OS_W32
+	if( GetCurrentThreadId() != pRenderThreadPid ){
+		DETHROW( deeInvalidAction );
+	}
+	#endif
+}
+
+void dbgOnMainOrRenderThreadCheck(){
+	#ifdef OS_UNIX
+	const pthread_t t = pthread_self();
+	if( t != pMainThreadPid && t != pRenderThreadPid ){
+		DETHROW( deeInvalidAction );
+	}
+	#endif
+	
+	#ifdef OS_W32
+	const DWORD t = GetCurrentThreadId();
+	if( t != pMainThreadPid && t != pRenderThreadPid ){
+		DETHROW( deeInvalidAction );
+	}
+	#endif
+}
 #endif
 
 
@@ -213,19 +243,5 @@ void dbgCheckOglError( deoglRenderThread &renderThread, const char *file, int li
 		}
 	}
 	
-	#ifdef OGL_THREAD_CHECK
-	
-	#ifdef OS_UNIX
-	if( pthread_self() != pRenderThreadPid ){
-		DETHROW( deeInvalidAction );
-	}
-	#endif
-	
-	#ifdef OS_W32
-	if( GetCurrentThreadId() != pRenderThreadPid ){
-		DETHROW( deeInvalidAction );
-	}
-	#endif
-	
-	#endif
+	OGL_ON_RENDER_THREAD
 }

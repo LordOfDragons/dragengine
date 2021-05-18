@@ -33,17 +33,25 @@ class deoglRenderThread;
 
 #ifdef OGL_THREAD_CHECK
 	void dbgInitThreadCheck();
-	#define OGL_INIT_THREAD_CHECK		dbgInitThreadCheck()
+	#define OGL_INIT_THREAD_CHECK dbgInitThreadCheck()
 	void dbgInitMainThreadCheck();
-	#define OGL_INIT_MAIN_THREAD_CHECK	dbgInitMainThreadCheck()
+	#define OGL_INIT_MAIN_THREAD_CHECK dbgInitMainThreadCheck()
 	
 	void dbgOnMainThreadCheck();
-	#define OGL_ON_MAIN_THREAD			dbgOnMainThreadCheck();
+	#define OGL_ON_MAIN_THREAD dbgOnMainThreadCheck();
+	
+	void dbgOnRenderThreadCheck();
+	#define OGL_ON_RENDER_THREAD dbgOnRenderThreadCheck();
+	
+	void dbgOnMainOrRenderThreadCheck();
+	#define OGL_ON_MAIN_OR_RENDER_THREAD dbgOnMainOrRenderThreadCheck();
 	
 #else
 	#define OGL_INIT_THREAD_CHECK
 	#define OGL_INIT_MAIN_THREAD_CHECK
 	#define OGL_ON_MAIN_THREAD
+	#define OGL_ON_RENDER_THREAD
+	#define OGL_ON_MAIN_OR_RENDER_THREAD
 #endif
 
 

@@ -22,7 +22,6 @@
 #ifndef _DEOGLRENDERERPLANTASKS_H_
 #define _DEOGLRENDERERPLANTASKS_H_
 
-#include "../task/deoglAddToRenderTask.h"
 #include "../task/deoglRenderTask.h"
 
 class deoglRenderPlan;
@@ -39,25 +38,12 @@ private:
 	deoglRenderPlan &pPlan;
 	
 	deoglRenderTask pSolidDepthTask;
-	deoglAddToRenderTask pSolidDepthAdd;
-	
 	deoglRenderTask pSolidDepthOutlineTask;
-	deoglAddToRenderTask pSolidDepthOutlineAdd;
-	
 	deoglRenderTask pSolidGeometryTask;
-	deoglAddToRenderTask pSolidGeometryAdd;
-	
 	deoglRenderTask pSolidGeometryHeight1Task;
-	deoglAddToRenderTask pSolidGeometryHeight1Add;
-	
 	deoglRenderTask pSolidGeometryHeight2Task;
-	deoglAddToRenderTask pSolidGeometryHeight2Add;
-	
 	deoglRenderTask pSolidGeometryOutlineTask;
-	deoglAddToRenderTask pSolidGeometryOutlineAdd;
-	
 	deoglRenderTask pSolidDecalsTask;
-	deoglAddToRenderTask pSolidDecalsAdd;
 	
 	deoglRPTBuildRTsDepth *pTaskDepth;
 	deoglRPTBuildRTsGeometry *pTaskGeometry;
@@ -83,30 +69,22 @@ public:
 	
 	/** Solid depth. */
 	inline deoglRenderTask &GetSolidDepthTask(){ return pSolidDepthTask; }
-	inline deoglAddToRenderTask &GetSolidDepthAdd(){ return pSolidDepthAdd; }
 	
 	/** Solid depth outline. */
 	inline deoglRenderTask &GetSolidDepthOutlineTask(){ return pSolidDepthOutlineTask; }
-	inline deoglAddToRenderTask &GetSolidDepthOutlineAdd(){ return pSolidDepthOutlineAdd; }
 	
 	/** Solid geometry. */
 	inline deoglRenderTask &GetSolidGeometryTask(){ return pSolidGeometryTask; }
-	inline deoglAddToRenderTask &GetSolidGeometryAdd(){ return pSolidGeometryAdd; }
 	
 	/** Solid geometry height terrain. */
 	inline deoglRenderTask &GetSolidGeometryHeight1Task(){ return pSolidGeometryHeight1Task; }
-	inline deoglAddToRenderTask &GetSolidGeometryHeight1Add(){ return pSolidGeometryHeight1Add; }
-	
 	inline deoglRenderTask &GetSolidGeometryHeight2Task(){ return pSolidGeometryHeight2Task; }
-	inline deoglAddToRenderTask &GetSolidGeometryHeight2Add(){ return pSolidGeometryHeight2Add; }
 	
 	/** Solid geometry outline. */
 	inline deoglRenderTask &GetSolidGeometryOutlineTask(){ return pSolidGeometryOutlineTask; }
-	inline deoglAddToRenderTask &GetSolidGeometryOutlineAdd(){ return pSolidGeometryOutlineAdd; }
 	
 	/** Solid decals. */
 	inline deoglRenderTask &GetSolidDecalsTask(){ return pSolidDecalsTask; }
-	inline deoglAddToRenderTask &GetSolidDecalsAdd(){ return pSolidDecalsAdd; }
 	
 	/** Start building render tasks. */
 	void StartBuildTasks( const deoglRenderPlanMasked *mask );

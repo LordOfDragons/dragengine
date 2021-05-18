@@ -27,6 +27,7 @@
 #include "../deoglRenderPlanTasks.h"
 #include "../deoglRenderPlanMasked.h"
 #include "../../../deGraphicOpenGl.h"
+#include "../../../rendering/task/deoglAddToRenderTask.h"
 #include "../../../renderthread/deoglRenderThread.h"
 #include "../../../renderthread/deoglRTChoices.h"
 #include "../../../renderthread/deoglRTLogger.h"
@@ -94,11 +95,11 @@ decString deoglRPTBuildRTsGeometry::GetDebugName() const{
 
 void deoglRPTBuildRTsGeometry::pSolid(){
 	const deoglCollideList &collideList = pPlan.GetPlan().GetCollideList();
-	deoglAddToRenderTask &addToRenderTask = pPlan.GetSolidGeometryAdd();
+	deoglRenderTask &renderTask = pPlan.GetSolidGeometryTask();
+	deoglAddToRenderTask addToRenderTask( pPlan.GetPlan().GetRenderThread(), renderTask );
 	
-	pPlan.GetSolidGeometryTask().Clear();
+	renderTask.Clear();
 	
-	addToRenderTask.Reset();
 	addToRenderTask.SetSolid( true );
 	addToRenderTask.SetNoRendered( true );
 	addToRenderTask.SetNoNotReflected( pPlan.GetPlan().GetNoReflections() );
@@ -136,38 +137,40 @@ void deoglRPTBuildRTsGeometry::pSolidTerrain(){
 		return;
 	}
 	
-	// pass 1
-	deoglAddToRenderTask &addToRenderTask1 = pPlan.GetSolidGeometryHeight1Add();
+	{ // pass 1
+	deoglRenderTask &renderTask = pPlan.GetSolidGeometryHeight1Task();
+	deoglAddToRenderTask addToRenderTask( pPlan.GetPlan().GetRenderThread(), renderTask );
 	
-	pPlan.GetSolidGeometryHeight1Task().Clear();
+	renderTask.Clear();
 	
-	addToRenderTask1.Reset();
-	addToRenderTask1.SetSolid( true );
-	addToRenderTask1.SetNoRendered( true );
-	addToRenderTask1.SetNoNotReflected( pPlan.GetPlan().GetNoReflections() );
-	addToRenderTask1.SetSkinShaderType( deoglSkinTexture::estHeightMapGeometry );
-	addToRenderTask1.AddHeightTerrains( collideList, true );
+	addToRenderTask.SetSolid( true );
+	addToRenderTask.SetNoRendered( true );
+	addToRenderTask.SetNoNotReflected( pPlan.GetPlan().GetNoReflections() );
+	addToRenderTask.SetSkinShaderType( deoglSkinTexture::estHeightMapGeometry );
+	addToRenderTask.AddHeightTerrains( collideList, true );
+	}
 	
-	// pass 2
-	deoglAddToRenderTask &addToRenderTask2 = pPlan.GetSolidGeometryHeight2Add();
+	{ // pass 2
+	deoglRenderTask &renderTask = pPlan.GetSolidGeometryHeight2Task();
+	deoglAddToRenderTask addToRenderTask( pPlan.GetPlan().GetRenderThread(), renderTask );
 	
-	pPlan.GetSolidGeometryHeight2Task().Clear();
+	renderTask.Clear();
 	
-	addToRenderTask2.Reset();
-	addToRenderTask2.SetSolid( true );
-	addToRenderTask2.SetNoRendered( true );
-	addToRenderTask2.SetNoNotReflected( pPlan.GetPlan().GetNoReflections() );
-	addToRenderTask2.SetSkinShaderType( deoglSkinTexture::estHeightMapGeometry );
-	addToRenderTask2.AddHeightTerrains( collideList, false );
+	addToRenderTask.SetSolid( true );
+	addToRenderTask.SetNoRendered( true );
+	addToRenderTask.SetNoNotReflected( pPlan.GetPlan().GetNoReflections() );
+	addToRenderTask.SetSkinShaderType( deoglSkinTexture::estHeightMapGeometry );
+	addToRenderTask.AddHeightTerrains( collideList, false );
+	}
 }
 
 void deoglRPTBuildRTsGeometry::pSolidOutline(){
 	const deoglCollideList &collideList = pPlan.GetPlan().GetCollideList();
-	deoglAddToRenderTask &addToRenderTask = pPlan.GetSolidGeometryOutlineAdd();
+	deoglRenderTask &renderTask = pPlan.GetSolidGeometryOutlineTask();
+	deoglAddToRenderTask addToRenderTask( pPlan.GetPlan().GetRenderThread(), renderTask );
 	
-	pPlan.GetSolidGeometryOutlineTask().Clear();
+	renderTask.Clear();
 	
-	addToRenderTask.Reset();
 	addToRenderTask.SetOutline( true );
 	addToRenderTask.SetFilterDecal( true );
 	addToRenderTask.SetDecal( false );
@@ -181,11 +184,11 @@ void deoglRPTBuildRTsGeometry::pSolidOutline(){
 
 void deoglRPTBuildRTsGeometry::pSolidDecals(){
 	const deoglCollideList &collideList = pPlan.GetPlan().GetCollideList();
-	deoglAddToRenderTask &addToRenderTask = pPlan.GetSolidDecalsAdd();
+	deoglRenderTask &renderTask = pPlan.GetSolidDecalsTask();
+	deoglAddToRenderTask addToRenderTask( pPlan.GetPlan().GetRenderThread(), renderTask );
 	
-	pPlan.GetSolidDecalsTask().Clear();
+	renderTask.Clear();
 	
-	addToRenderTask.Reset();
 	addToRenderTask.SetNoRendered( true );
 	addToRenderTask.SetNoNotReflected( pPlan.GetPlan().GetNoReflections() );
 	addToRenderTask.SetSkinShaderType( deoglSkinTexture::estDecalGeometry );
