@@ -416,9 +416,9 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 		bvh.Clear();
 			decTimer timer1;
 		bvh.AddComponents( plan, giState->GetPosition(), giState->GetInstances(), false );
-			renderThread.GetLogger().LogInfoFormat("Cache BVH Add Components: %d", (int)(timer1.GetElapsedTime() * 1e6f));
+// 			renderThread.GetLogger().LogInfoFormat("Cache BVH Add Components: %d", (int)(timer1.GetElapsedTime() * 1e6f));
 		bvh.BuildBVH();
-			renderThread.GetLogger().LogInfoFormat("Cache BVH Build: %d", (int)(timer1.GetElapsedTime() * 1e6f));
+// 			renderThread.GetLogger().LogInfoFormat("Cache BVH Build: %d", (int)(timer1.GetElapsedTime() * 1e6f));
 		
 		giState->PrepareUBOStateRayCache(); // has to be done here since it is shared
 		
@@ -468,9 +468,9 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 	#else
 		bvh.AddComponents( plan, giState->GetPosition(), giState->GetInstances() );
 	#endif
-		renderThread.GetLogger().LogInfoFormat("Frame BVH Add Components: %d", (int)(timer2.GetElapsedTime() * 1e6f));
+// 		renderThread.GetLogger().LogInfoFormat("Frame BVH Add Components: %d", (int)(timer2.GetElapsedTime() * 1e6f));
 	bvh.BuildBVH();
-		renderThread.GetLogger().LogInfoFormat("Frame BVH Build: %d", (int)(timer2.GetElapsedTime() * 1e6f));
+// 		renderThread.GetLogger().LogInfoFormat("Frame BVH Build: %d", (int)(timer2.GetElapsedTime() * 1e6f));
 	//bvh.DebugPrint( giState.GetPosition() );
 	
 	giState->PrepareUBOState(); // has to be done here since it is shared

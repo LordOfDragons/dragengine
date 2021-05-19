@@ -280,6 +280,7 @@ void deoglGIState::PrepareUBOClearProbes() const{
 
 
 
+// #define DO_SPECIAL_TIMING 1
 #ifdef DO_SPECIAL_TIMING
 #include <dragengine/common/utils/decTimer.h>
 #define INIT_SPECIAL_TIMING decTimer sttimer;
