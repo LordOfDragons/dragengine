@@ -142,8 +142,6 @@ deoglGIState::~deoglGIState(){
 // Management
 ///////////////
 
-// #define DO_TIMING 1
-
 void deoglGIState::FindContent( deoglRWorld &world ){
 	deoglDCollisionBox colbox( pPosition, pDetectionBox );
 	pCollideList.Clear();

@@ -41,6 +41,13 @@ void main( void ){
 	
 	outOffset = vec3( 0.0 );
 	
+	// if we apply the offset of all back faces we end up in troubles. for example if
+	// two back faces face each other the offset towards the other side of both faces
+	// cancels out causing the probe to not move at all. what we do here is finding the
+	// closest back face and applying the offset only if it is the closest.
+	float closestBackDistance = backFaceMinDistToSurface;
+	vec3 closestBackOffset = vec3( 0.0 );
+	
 	for( i=0; i<pGIRaysPerProbe; i++ ){
 		ivec2 rayTC = rayOffset + ivec2( i, 0 );
 		
@@ -86,11 +93,16 @@ void main( void ){
 		}else{
 			backfaceCount++;
 			
-			if( rayDistance >= backFaceMinDistToSurface ){
-				continue; // too far away to reach other side. do not move
+			if( rayDistance >= closestBackDistance ){
+				// too far away to reach other side. do not move. actually the threshold
+				// is backFaceMinDistToSurface but since we look for the closest back face
+				// this threshold can be replaced with closestBackDistance which starts
+				// out at backFaceMinDistToSurface to begin with
+				continue;
 				
 			}else{
-				outOffset += rayDirection + hitNormal * pGIMoveMinDistToSurface;
+				closestBackOffset = rayDirection + hitNormal * pGIMoveMinDistToSurface;
+				closestBackDistance = rayDistance;
 			}
 			/*
 			vec3 offset = rayDirection + hitNormal * pGIMoveMinDistToSurface;
@@ -105,6 +117,10 @@ void main( void ){
 	}
 	
 	// TODO using back/front face count to disable probes
+	
+	if( closestBackDistance < backFaceMinDistToSurface ){
+		outOffset += closestBackOffset;
+	}
 	
 	if( countOffsets > 0 ){
 		outOffset /= float( countOffsets );
