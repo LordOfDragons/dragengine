@@ -29,10 +29,16 @@ UBOLAYOUT uniform GIParameters{
 	vec2 pGIRayMapScale;
 	int pGIMaterialMapsPerRow;
 	int pGIMaterialMapSize;
-	
-	ivec4 pGIProbeIndex[ GI_PROBE_INDEX_COUNT ];
-	
-	vec4 pGIProbePosition[ GI_PROBE_COUNT ]; // position(xyz), blendFactor(w)
-	
-	vec3 pGIRayDirection[ GI_RAYS_PER_PROBE ];
+};
+
+UBOLAYOUT uniform GIProbeIndices{
+	ivec4 pGIProbeIndex[ 1024 ]; // 4 indices per element
+};
+
+UBOLAYOUT uniform GIProbePositions{
+	vec4 pGIProbePosition[ 4096 ]; // position(xyz), blendFactor(w)
+};
+
+UBOLAYOUT uniform GIRayDirections{
+	vec3 pGIRayDirection[ 512 ];
 };

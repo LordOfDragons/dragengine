@@ -32,6 +32,9 @@ class deoglROcclusionMesh;
 
 
 //#define ENABLE_GI 1
+#define GI_MAX_PROBE_COUNT 4096
+
+
 // #define GI_USE_RAY_LIMIT 1
 #define GI_USE_RAY_CACHE 1
 #define GI_MOVE_PROBES_RAY_CACHE 1
@@ -73,10 +76,7 @@ public:
 		eupMoveMinDistToSurface, // float
 		eupRayMapScale, // vec2: scale factor for ray map
 		eupMaterialMapsPerRow, // int
-		eupMaterialMapSize, // int
-		eupProbeIndex, // ivec4[]: group of 4 probes to trace
-		eupProbePosition, // vec3[]: probe position and ray origin
-		eupRayDirection // vec3[]: ray direction
+		eupMaterialMapSize // int
 	};
 	
 	
@@ -88,7 +88,10 @@ private:
 	deoglGITraceRays pTraceRays;
 	deoglGIMaterials pMaterials;
 	
-	deObjectReference pUBO;
+	deObjectReference pUBOParameter;
+	deObjectReference pUBOProbeIndex;
+	deObjectReference pUBOProbePosition;
+	deObjectReference pUBORayDirection;
 	
 	
 	
@@ -122,14 +125,20 @@ public:
 	inline const deoglGIMaterials &GetMaterials() const{ return pMaterials; }
 	
 	/** \brief UBO. */
-	inline deoglSPBlockUBO &GetUBO() const{ return ( deoglSPBlockUBO& )( deObject& )pUBO; }
+	inline deoglSPBlockUBO &GetUBOParameter() const{ return ( deoglSPBlockUBO& )( deObject& )pUBOParameter; }
+	inline deoglSPBlockUBO &GetUBOProbeIndex() const{ return ( deoglSPBlockUBO& )( deObject& )pUBOProbeIndex; }
+	inline deoglSPBlockUBO &GetUBOProbePosition() const{ return ( deoglSPBlockUBO& )( deObject& )pUBOProbePosition; }
+	inline deoglSPBlockUBO &GetUBORayDirection() const{ return ( deoglSPBlockUBO& )( deObject& )pUBORayDirection; }
 	/*@}*/
 	
 	
 	
 private:
 	void pCleanUp();
-	void pCreateUBO();
+	void pCreateUBOParameter();
+	void pCreateUBOProbeIndex();
+	void pCreateUBOProbePosition();
+	void pCreateUBORayDirection();
 };
 
 #endif

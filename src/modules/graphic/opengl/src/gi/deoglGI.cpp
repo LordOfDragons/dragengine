@@ -44,7 +44,10 @@ pTraceRays( renderThread ),
 pMaterials( renderThread )
 {
 	try{
-		pCreateUBO();
+		pCreateUBOParameter();
+		pCreateUBOProbeIndex();
+		pCreateUBOProbePosition();
+		pCreateUBORayDirection();
 		
 	}catch( const deException & ){
 		pCleanUp();
@@ -69,31 +72,14 @@ deoglGI::~deoglGI(){
 void deoglGI::pCleanUp(){
 }
 
-void deoglGI::pCreateUBO(){
-	pUBO.TakeOver( new deoglSPBlockUBO( pRenderThread ) );
-	deoglSPBlockUBO &ubo = GetUBO();
+void deoglGI::pCreateUBOParameter(){
+	pUBOParameter.TakeOver( new deoglSPBlockUBO( pRenderThread ) );
+	deoglSPBlockUBO &ubo = GetUBOParameter();
 	
 	// memory consumption:
 	// - 10 vec4 blocks = 40 components = 160 bytes
-	// - 2048 probe indices = 2048 components = 8192 bytes
-	// - 2048 probe positions = 8192 components = 32768 bytes
-	// - 512 rays = 2048 components = 8192 bytes
-	// 
-	// total 49312 bytes (UBO maximum at minimum 65535)
-	// 
-	// for different probe counts (probeCount*20):
-	// - 256 => 5120 bytes
-	// - 512 => 10240 bytes
-	// - 1024 => 20480 bytes
-	// - 2048 => 40960 bytes
-	// - 4096 => 81920 bytes
-	// 
-	// 2048 is the maximum number of probes to update fitting into the minimum UBO size
-	// of 65535 required to be supported. 4096 can be used with larger supported UBO size.
-	const int maxProbeCount = pTraceRays.GetProbeCount();
-	
 	ubo.SetRowMajor( pRenderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working() );
-	ubo.SetParameterCount( eupRayDirection + 1 );
+	ubo.SetParameterCount( eupMaterialMapSize + 1 );
 	ubo.GetParameterAt( eupSampleImageScale ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
 	ubo.GetParameterAt( eupProbeCount ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // int
 	ubo.GetParameterAt( eupRaysPerProbe ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // int
@@ -116,9 +102,45 @@ void deoglGI::pCreateUBO(){
 	ubo.GetParameterAt( eupRayMapScale ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
 	ubo.GetParameterAt( eupMaterialMapsPerRow ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // int
 	ubo.GetParameterAt( eupMaterialMapSize ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // int
-	ubo.GetParameterAt( eupProbeIndex ).SetAll( deoglSPBParameter::evtInt, 4, 1, maxProbeCount / 4 ); // ivec4
-	ubo.GetParameterAt( eupProbePosition ).SetAll( deoglSPBParameter::evtFloat, 4, 1, maxProbeCount ); // vec4
-	ubo.GetParameterAt( eupRayDirection ).SetAll( deoglSPBParameter::evtFloat, 3, 1, GI_MAX_RAYS_PER_PROBE ); // vec3
 	ubo.MapToStd140();
-	ubo.SetBindingPoint( 0 );
+	ubo.SetBindingPoint( 1 );
+}
+
+void deoglGI::pCreateUBOProbeIndex(){
+	pUBOProbeIndex.TakeOver( new deoglSPBlockUBO( pRenderThread ) );
+	deoglSPBlockUBO &ubo = GetUBOProbeIndex();
+	
+	// memory consumption (UBO maximum at minimum 65536):
+	// - 4096 probe indices = 4096 components = 16384 bytes
+	ubo.SetRowMajor( pRenderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working() );
+	ubo.SetParameterCount( 1 );
+	ubo.GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtInt, 4, 1, GI_MAX_PROBE_COUNT / 4 ); // ivec4
+	ubo.MapToStd140();
+	ubo.SetBindingPoint( 2 );
+}
+
+void deoglGI::pCreateUBOProbePosition(){
+	pUBOProbePosition.TakeOver( new deoglSPBlockUBO( pRenderThread ) );
+	deoglSPBlockUBO &ubo = GetUBOProbePosition();
+	
+	// memory consumption (UBO maximum at minimum 65536):
+	// - 4096 probe positions = 16384 components = 65536 bytes
+	ubo.SetRowMajor( pRenderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working() );
+	ubo.SetParameterCount( 1 );
+	ubo.GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtFloat, 4, 1, GI_MAX_PROBE_COUNT ); // vec4
+	ubo.MapToStd140();
+	ubo.SetBindingPoint( 3 );
+}
+
+void deoglGI::pCreateUBORayDirection(){
+	pUBORayDirection.TakeOver( new deoglSPBlockUBO( pRenderThread ) );
+	deoglSPBlockUBO &ubo = GetUBORayDirection();
+	
+	// memory consumption (UBO maximum at minimum 65536):
+	// - 512 rays = 2048 components = 8192 bytes
+	ubo.SetRowMajor( pRenderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working() );
+	ubo.SetParameterCount( 1  );
+	ubo.GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtFloat, 3, 1, GI_MAX_RAYS_PER_PROBE ); // vec3
+	ubo.MapToStd140();
+	ubo.SetBindingPoint( 4 );
 }

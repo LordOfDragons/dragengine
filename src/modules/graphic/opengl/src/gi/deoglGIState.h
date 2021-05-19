@@ -358,7 +358,8 @@ private:
 	void pPrepareRayLimitProbes();
 	void pPrepareRayCacheProbes();
 	void pPrepareProbeTexturesAndFBO();
-	void pPrepareUBOShared( deoglSPBlockUBO &ubo ) const;
+	void pPrepareUBOParameters() const;
+	void pPrepareUBORayDirections() const;
 };
 
 #endif

@@ -18,6 +18,9 @@
 	
 	<uniformBlock name='RenderParameters' target='0'/>
 	<uniformBlock name='GIParameters' target='1'/>
+	<uniformBlock name='GIProbeIndices' target='2'/>
+	<uniformBlock name='GIProbePositions' target='3'/>
+	<uniformBlock name='GIRayDirections' target='4'/>
 	
 	<attribute name='inPosition' target='0'/>
 	

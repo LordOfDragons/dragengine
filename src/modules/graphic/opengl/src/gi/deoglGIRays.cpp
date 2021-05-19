@@ -113,6 +113,7 @@ void deoglGIRays::pCreateFBO(){
 	// memory consumption (assuming 8k probes):
 	// case 1: 64 rays per probe => 512x1024
 	// case 2: 256 rays per probe => 2048x1024
+	// case 2: 512 rays per probe => 4096x1024
 	// 
 	// distance limit: (4MB, 1MB) [4194304, 1048576]
 	// 

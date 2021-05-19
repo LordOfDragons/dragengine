@@ -149,6 +149,7 @@ private:
 	void pSharedTraceRays( deoglRenderPlan &plan );
 	void pClearTraceRays();
 	void pInitTraceTextures();
+	void pActivateGIUBOs();
 };
 
 #endif

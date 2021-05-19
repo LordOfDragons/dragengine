@@ -29,7 +29,7 @@
 class deoglRenderThread;
 class deoglConfiguration;
 
-#define GI_MAX_RAYS_PER_PROBE 256
+#define GI_MAX_RAYS_PER_PROBE 512
 
 
 /**

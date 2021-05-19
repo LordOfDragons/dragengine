@@ -160,8 +160,6 @@ pDebugInfoGIRenderLight( NULL ),
 pDebugInfoGIRenderLightGIRay( NULL )
 {
 	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
-	const deoglGI &gi = renderThread.GetGI();
-	const deoglGITraceRays &traceRays = gi.GetTraceRays();
 	deoglShaderSources *sources;
 	deoglShaderDefines defines;
 	
@@ -173,9 +171,6 @@ pDebugInfoGIRenderLightGIRay( NULL )
 		pShaderResizeMaterials = shaderManager.GetProgramWith( sources, defines );
 		
 		// trace rays
-		defines.AddDefine( "GI_PROBE_INDEX_COUNT", traceRays.GetProbeCount() / 4 );
-		defines.AddDefine( "GI_PROBE_COUNT", traceRays.GetProbeCount() );
-		defines.AddDefine( "GI_RAYS_PER_PROBE", GI_MAX_RAYS_PER_PROBE );
 		defines.AddDefine( "GI_CLEAR_PROBES_COUNT", ( 32 * 32 * 8 ) / 32 / 4 );
 		
 		#ifdef GI_RENDERDOC_DEBUG
@@ -369,7 +364,7 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 			// render only if BVH has nodes. if not clearing sets the right distance
 			//renderThread.GetShader().ActivateShader( pShaderTraceRaysDistance );
 			renderThread.GetShader().ActivateShader( pShaderTraceRaysDistanceOccMesh );
-			gi.GetUBO().Activate();
+			pActivateGIUBOs();
 			
 			tsmgr.EnableTBO( 0, bvh.GetTBONodeBox().GetTBO(), GetSamplerClampNearest() );
 			tsmgr.EnableTBO( 1, bvh.GetTBOIndex().GetTBO(), GetSamplerClampNearest() );
@@ -398,7 +393,7 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 		OGL_CHECK( renderThread, glScissor( 0, 0, distLimSize.x, distLimSize.y ) );
 		
 		renderThread.GetShader().ActivateShader( pShaderCopyRayLimits );
-		gi.GetUBO().Activate();
+		pActivateGIUBOs();
 		
 		tsmgr.EnableTexture( 0, traceRays.GetTexturePosition(), GetSamplerClampNearest() );
 		tsmgr.DisableStagesAbove( 0 );
@@ -427,7 +422,7 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 		pClearTraceRays();
 		
 		renderThread.GetShader().ActivateShader( pShaderTraceRaysCache );
-		gi.GetUBO().Activate();
+		pActivateGIUBOs();
 		pInitTraceTextures();
 		
 		OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
@@ -441,7 +436,7 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 		OGL_CHECK( renderThread, glScissor( 0, 0, copySize.x, copySize.y ) );
 		
 		renderThread.GetShader().ActivateShader( pShaderCopyRayCache );
-		gi.GetUBO().Activate();
+		pActivateGIUBOs();
 		
 		deoglGITraceRays &traceRays = gi.GetTraceRays();
 		tsmgr.EnableTexture( 0, traceRays.GetTexturePosition(), GetSamplerClampNearest() );
@@ -481,7 +476,7 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 	
 	#ifdef GI_USE_RAY_CACHE
 		renderThread.GetShader().ActivateShader( pShaderCopyRayCacheRev );
-		gi.GetUBO().Activate();
+		pActivateGIUBOs();
 		
 		deoglGIRays &rays = giState->GetRays();
 		tsmgr.EnableTexture( 0, rays.GetTextureDistance(), GetSamplerClampNearest() );
@@ -495,7 +490,7 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 	#endif
 	
 	renderThread.GetShader().ActivateShader( pShaderTraceRays );
-	gi.GetUBO().Activate();
+	pActivateGIUBOs();
 	pInitTraceTextures();
 	
 	#ifdef GI_USE_RAY_LIMIT
@@ -737,14 +732,14 @@ void deoglRenderGI::UpdateProbes( deoglRenderPlan &plan ){
 	
 	if( giState->HasClearProbes() ){
 		renderThread.GetShader().ActivateShader( pShaderClearProbeIrradiance );
-		gi.GetUBO().Activate();
+		pActivateGIUBOs();
 		giState->GetUBOClearProbes().Activate();
 		
 		OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
 	}
 	
 	renderThread.GetShader().ActivateShader( pShaderUpdateProbeIrradiance );
-	gi.GetUBO().Activate();
+	pActivateGIUBOs();
 	
 	OGL_CHECK( renderThread, pglDrawArraysInstanced( GL_TRIANGLE_FAN, 0, 4, giState->GetUpdateProbeCount() ) );
 	
@@ -757,14 +752,14 @@ void deoglRenderGI::UpdateProbes( deoglRenderPlan &plan ){
 	
 	if( giState->HasClearProbes() ){
 		renderThread.GetShader().ActivateShader( pShaderClearProbeDistance );
-		gi.GetUBO().Activate();
+		pActivateGIUBOs();
 		giState->GetUBOClearProbes().Activate();
 		
 		OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
 	}
 	
 	renderThread.GetShader().ActivateShader( pShaderUpdateProbeDistance );
-	gi.GetUBO().Activate();
+	pActivateGIUBOs();
 	
 	OGL_CHECK( renderThread, pglDrawArraysInstanced( GL_TRIANGLE_FAN, 0, 4, giState->GetUpdateProbeCount() ) );
 	
@@ -794,7 +789,6 @@ void deoglRenderGI::MoveProbes( deoglRenderPlan &plan ){
 	deoglRenderThread &renderThread = GetRenderThread();
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
-	deoglGI &gi = renderThread.GetGI();
 	
 	if( pDebugInfoGI->GetVisible() ){
 		GetDebugTimerAt( 0 ).Reset();
@@ -830,7 +824,7 @@ void deoglRenderGI::MoveProbes( deoglRenderPlan &plan ){
 	tsmgr.DisableStagesAbove( 1 );
 	
 	renderThread.GetShader().ActivateShader( pShaderMoveProbes );
-	gi.GetUBO().Activate();
+	pActivateGIUBOs();
 	
 	OGL_CHECK( renderThread, pglDrawArraysInstanced( GL_TRIANGLE_FAN, 0, 4, giState->GetUpdateProbeCount() ) );
 	
@@ -959,7 +953,6 @@ void deoglRenderGI::RenderDebugOverlay( deoglRenderPlan &plan ){
 	const decDMatrix matrixC( decDMatrix::CreateTranslation( giState->GetPosition()
 		+ decDVector( giState->GetProbeOrigin() ) ) * plan.GetCameraMatrix() );
 	const decDMatrix matrixCP( matrixC * decDMatrix( plan.GetProjectionMatrix() ) );
-	deoglGI &gi = renderThread.GetGI();
 	
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
@@ -976,7 +969,7 @@ void deoglRenderGI::RenderDebugOverlay( deoglRenderPlan &plan ){
 	shader.SetParameterDMatrix4x4( spdpMatrixMVP, matrixCP );
 	shader.SetParameterPoint3( spdpGIGridCoordShift, giState->GetProbeCount() - giState->GetGridCoordShift() );
 	
-	gi.GetUBO().Activate();
+	pActivateGIUBOs();
 	
 	tsmgr.EnableTexture( 0, giState->GetTextureProbeIrradiance(), GetSamplerClampLinear() );
 	tsmgr.EnableTexture( 1, giState->GetTextureProbeDistance(), GetSamplerClampLinear() );
@@ -1004,7 +997,7 @@ void deoglRenderGI::RenderDebugOverlay( deoglRenderPlan &plan ){
 		shader2.SetParameterDMatrix4x4( spdpoMatrixMVP, matrixCP );
 		shader2.SetParameterPoint3( spdpoGIGridCoordShift, giState->GetProbeCount() - giState->GetGridCoordShift() );
 		
-		gi.GetUBO().Activate();
+		pActivateGIUBOs();
 		
 		tsmgr.EnableTexture( 0, giState->GetTextureProbeOffset(), GetSamplerClampNearest() );
 		tsmgr.DisableStagesAbove( 0 );
@@ -1228,4 +1221,12 @@ void deoglRenderGI::pInitTraceTextures(){
 	tsmgr.EnableTexture( 10, materials.GetTextureReflectivity(), GetSamplerClampNearest() );
 	tsmgr.EnableTexture( 11, materials.GetTextureEmissivity(), GetSamplerClampNearest() );
 	tsmgr.DisableStagesAbove( 12 );
+}
+
+void deoglRenderGI::pActivateGIUBOs(){
+	const deoglGI &gi = GetRenderThread().GetGI();
+	gi.GetUBOParameter().Activate();
+	gi.GetUBOProbeIndex().Activate();
+	gi.GetUBOProbePosition().Activate();
+	gi.GetUBORayDirection().Activate();
 }
