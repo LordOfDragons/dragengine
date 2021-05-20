@@ -45,7 +45,8 @@
 deoglCollideListLight::deoglCollideListLight() :
 pLight( NULL ),
 pCulled( false ),
-pCameraInside( false ){
+pCameraInside( false ),
+    pCameraInsideOccQueryBox( true ){
 }
 
 deoglCollideListLight::~deoglCollideListLight(){
@@ -69,31 +70,42 @@ void deoglCollideListLight::SetCulled( bool culled ){
 	pCulled = culled;
 }
 
-void deoglCollideListLight::TestCameraInside( const deoglRenderPlan &plan ){
+void deoglCollideListLight::TestInside( const deoglRenderPlan &plan ){
 	if( ! pLight ){
 		DETHROW( deeInvalidParam );
 	}
 	
 	const float safetyMargin = 0.01; // 1cm should be enough to be safe
+	const decDVector &cameraPosition = plan.GetCameraPosition();
+	const decDVector &minExtend = pLight->GetMinimumExtend();
+	const decDVector &maxExtend = pLight->GetMaximumExtend();
+	
+	// unfortunately checking for camera inside is not enough for occlusion query. the camera
+	// inside test checks against the light extends but also against the light volume. it is
+	// thus possible the light is outside the view frustum but still inside the extends box
+	// which is used for rendering the occlusion query. if the camera is though inside the
+	// occlusion query box it is possible the box faces on the far side end up behind geometry
+	// which causes the occlusion query to return 0 and the light is incorrectly culled
+	// 
+	// if the light volume is used for rendering the occlusion query then the camera inside
+	// result is working.
+	const decDVector vsm( safetyMargin, safetyMargin, safetyMargin );
+	pCameraInsideOccQueryBox = ( cameraPosition >= minExtend - vsm ) && ( cameraPosition <= maxExtend + vsm );
+	
+	// for camera inside light use a slightly different test which uses a larger box. this is
+	// required since the light volume is a low resolution mesh and thus is larger than the
+	// mathematically perfect volume
 	const float imageDistance = plan.GetCameraImageDistance();
 	const float nx = imageDistance * tanf( plan.GetCameraFov() * 0.5f );
 	const float ny = imageDistance * tanf( plan.GetCameraFov() * plan.GetCameraFovRatio() * 0.5f );
 	const float nd = sqrtf( nx * nx + ny * ny + imageDistance * imageDistance ) + safetyMargin;
-	const decDVector &cameraPosition = plan.GetCameraPosition();
-	const decDVector extendOffset( nd, nd, nd );
+	const decDVector extend( nd, nd, nd );
 	
-	// by default the camera is not inside unless some other evidence is found
-	pCameraInside = false;
+	pCameraInside = ( cameraPosition >= minExtend - extend ) && ( cameraPosition <= maxExtend + extend );
 	
 	// if the camera is not inside the extends box then there is no chance to inside the
 	// light volumes at all. to avoid flickering the box is slightly enlarged as the
 	// camera near plane has a certain distance from the position itself
-	const decDVector &minExtend = pLight->GetMinimumExtend(); // WARNING potential side effect. not parallel. move to PrepareForRender
-	const decDVector &maxExtend = pLight->GetMaximumExtend(); // WARNING potential side effect. not parallel. move to PrepareForRender
-	
-	pCameraInside = ( cameraPosition >= minExtend - extendOffset )
-		&& ( cameraPosition <= maxExtend + extendOffset );
-	
 	if( ! pCameraInside ){
 		return;
 	}
@@ -171,7 +183,8 @@ bool deoglCollideListLight::IsHiddenByOccQuery() const{
 		DETHROW( deeInvalidParam );
 	}
 	
-	if( ! pCameraInside && pLight->HasOcclusionQuery() ){
+// 	if( ! pCameraInside && pLight->HasOcclusionQuery() ){
+	if( ! pCameraInsideOccQueryBox && pLight->HasOcclusionQuery() ){
 		// check if the query result exists already
 		//if( pOcclusionQuery->HasResult() ){
 			// retrieve the result. later on we are going to store this value

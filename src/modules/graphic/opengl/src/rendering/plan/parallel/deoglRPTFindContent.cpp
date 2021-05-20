@@ -103,7 +103,7 @@ void deoglRPTFindContent::Run(){
 		const int lightCount = collideList.GetLightCount();
 		for( i=0; i<lightCount; i++ ){
 			deoglCollideListLight &cllight = *collideList.GetLightAt( i );
-			cllight.TestCameraInside( pPlan );
+			cllight.TestInside( pPlan );
 			
 			// NOTE this call is not thread safe because it potentially causes changes to the
 			//      internal array. but this thread is the only one using this function call

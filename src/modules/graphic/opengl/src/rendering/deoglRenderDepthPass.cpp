@@ -813,22 +813,24 @@ DBG_ENTER_PARAM("RenderOcclusionQueryPass", "%p", mask)
 	// spdoPFMatrix // not used for light
 	
 	for( l=0; l<lightCount; l++ ){
-		const deoglCollideListLight &cllight = *collideList.GetLightAt( l );
-		if( cllight.GetCameraInside() ){
+		deoglCollideListLight &cllight = *collideList.GetLightAt( l );
+// 		if( cllight.GetCameraInside() ){
+		if( cllight.GetCameraInsideOccQueryBox() ){
 			continue;
 		}
 		
-		deoglRLight &light = *cllight.GetLight();
-		const decDVector &lminext = light.GetMinimumExtend();
-		const decDVector &lmaxext = light.GetMaximumExtend();
-		const decDMatrix matrixModel( decDMatrix::CreateScale( ( lmaxext - lminext ) * 0.5 )
-			* decDMatrix::CreateTranslation( ( lminext + lmaxext ) * 0.5 ) );
+		const deoglRLight &light = *cllight.GetLight();
+		const decDVector &minExtend = light.GetMinimumExtend();
+		const decDVector &maxExtend = light.GetMaximumExtend();
+		
+		const decDMatrix matrixModel( decDMatrix::CreateScale( ( maxExtend - minExtend ) * 0.5 )
+			* decDMatrix::CreateTranslation( ( minExtend + maxExtend ) * 0.5 ) );
 		const decDMatrix matrixMV( matrixModel * matrixV );
 		
 		shader->SetParameterDMatrix4x3( spdoMatrixMV, matrixMV );
 		shader->SetParameterDMatrix4x4( spdoMatrixMVP, matrixMV * matrixP );
 		
-		deoglOcclusionQuery &occquery = light.GetOcclusionQuery();
+		deoglOcclusionQuery &occquery = cllight.GetOcclusionQuery();
 		occquery.BeginQuery( deoglOcclusionQuery::eqtAny );
 		shapeBox.RenderFaces();
 		occquery.EndQuery();

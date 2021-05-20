@@ -41,6 +41,7 @@ private:
 	deoglRLight *pLight;
 	bool pCulled;
 	bool pCameraInside;
+	bool pCameraInsideOccQueryBox;
 	
 	
 	
@@ -78,8 +79,11 @@ public:
 	/** Camera is inside light volume. */
 	inline bool GetCameraInside() const{ return pCameraInside; }
 	
-	/** Test if camera is inside light volume. */
-	void TestCameraInside( const deoglRenderPlan &plan );
+	/** Camera is inside ccclusion query box. */
+	inline bool GetCameraInsideOccQueryBox() const{ return pCameraInsideOccQueryBox; }
+	
+	/** Test if camera is inside light volume and occlusion query box. */
+	void TestInside( const deoglRenderPlan &plan );
 	
 	/** Start occlusion test. */
 	void StartOcclusionTest( deoglOcclusionTest &occlusionTest, const decDVector &cameraPosition );
