@@ -37,10 +37,6 @@ class deoglRComponent;
 class deoglRWorld;
 class deoglSPBlockUBO;
 
-#define GI_PROBE_FLAGS_INIT 0
-
-#define GI_PROBE_FLAG_SMOOTH_UPDATE 0x1
-
 
 /**
  * Global illumination state.
@@ -49,23 +45,24 @@ class deoglSPBlockUBO;
  */
 class deoglGIState{
 public:
+	/** Probe flags. */
+	enum eProbeFlags{
+		epfSmoothUpdate = 0x1,
+		epfValid = 0x2, //<! Probe has been updated at least once
+		epfRayLimitsValid = 0x4, //<! Ray-Tracing distance limits are valid
+		epfRayCacheValid = 0x8, //<! Ray-Tracing ray cache is valid
+		epfInsideView = 0x10
+	};
+	
 	/** Probe parameters. */
 	struct sProbe{
 		decPoint3 coord; //<! Grid coordinates
-		int index; //<! Grid index
-		int flags;
-		int age; //<! Age in update runs since probe has been last updated
-		bool valid; //<! Probe has been updated at least once
-		bool rayLimitsValid; //<! Ray-Tracing distance limits are valid
-		bool rayCacheValid; //<! Ray-Tracing ray cache is valid
 		decPoint3 shiftedCoord;
 		decVector position;
 		decVector offset;
-		float weightDistance;
-		decVector2 weightViewAngle;
-		float weightAge;
-		bool insideView;
-		int countOffsetMoved;
+		uint16_t index; //<! Grid index
+		uint8_t flags;
+		uint8_t countOffsetMoved;
 	};
 	
 	
@@ -104,26 +101,18 @@ private:
 	decPoint pSampleImageSize;
 	decPoint3 pGridCoordShift;
 	
-	decTimer pTimerUpdateProbe;
-	float pElapsedUpdateProbe;
-	float pUpdateProbeInterval;
-	sProbe **pUpdateProbes;
+	uint16_t *pAgedProbes;
+	uint16_t *pUpdateProbes;
 	int pUpdateProbeCount;
-	sProbe **pRayLimitProbes;
+	uint16_t *pRayLimitProbes;
 	int pRayLimitProbeCount;
-	sProbe **pRayCacheProbes;
+	uint16_t *pRayCacheProbes;
 	int pRayCacheProbeCount;
 	
-	uint32_t *pClearProbes;
+	uint16_t *pClearProbes;
 	int pClearProbeCount;
 	bool pHasClearProbes;
 	deObjectReference pUBOClearProbes;
-	
-	sProbe **pWeightedProbes;
-	int pWeightedProbeBinSize;
-	int pWeightedProbeBinCount;
-	int pWeightedProbeBinClamp;
-	int *pWeightedProbeBinProbeCounts;
 	
 	deoglTexture pTexProbeIrradiance;
 	deoglTexture pTexProbeDistance;
@@ -351,10 +340,9 @@ private:
 	void pSyncTrackedInstances();
 	void pUpdatePosition( const decDVector &position );
 	void pPrepareTraceProbes( const decMatrix &matrixView, float fovX, float fovY );
-	void pAgeProbes();
 	void pFindProbesToUpdate( const decMatrix &matrixView, float fovX, float fovY);
 	void pBinWeightedProbe( sProbe *probe, float weight );
-	void pAddUpdateProbe( sProbe *probe );
+	void pAddUpdateProbe( sProbe &probe );
 	void pPrepareRayLimitProbes();
 	void pPrepareRayCacheProbes();
 	void pPrepareProbeTexturesAndFBO();

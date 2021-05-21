@@ -82,8 +82,7 @@ pDistanceMapScale( 1.0f / ( ( pSizeTexDistance + 2 ) * pProbeCount.x * pProbeCou
 	1.0f / ( ( pSizeTexDistance + 2 ) * pProbeCount.z + 2 ) ),
 
 pProbes( NULL ),
-pElapsedUpdateProbe( 0.0f ),
-pUpdateProbeInterval( 0.1f ),
+pAgedProbes( NULL ),
 pUpdateProbes( NULL ),
 pUpdateProbeCount( 0 ),
 pRayLimitProbes( NULL ),
@@ -95,11 +94,6 @@ pClearProbes( NULL ),
 pClearProbeCount( pRealProbeCount / 32 ),
 pHasClearProbes( false ),
 
-pWeightedProbes( NULL ),
-pWeightedProbeBinSize( pRealProbeCount / 20 ),
-pWeightedProbeBinCount( 20 ),
-pWeightedProbeBinClamp( pWeightedProbeBinCount - 1 ),
-pWeightedProbeBinProbeCounts( NULL ),
 pTexProbeIrradiance( renderThread ),
 pTexProbeDistance( renderThread ),
 pTexProbeOffset( renderThread ),
@@ -115,16 +109,14 @@ pRays( renderThread, 64, pRealProbeCount )
 {
 	try{
 		pInitProbes();
-		pClearProbes = new uint32_t[ pClearProbeCount ];
+		pClearProbes = new uint16_t[ pClearProbeCount ];
 		pInitUBOClearProbes();
-		pUpdateProbes = new sProbe*[ renderThread.GetGI().GetTraceRays().GetProbeCount() ];
-		pWeightedProbes = new sProbe*[ pRealProbeCount ];
-		pWeightedProbeBinProbeCounts = new int[ pWeightedProbeBinCount ];
+		pUpdateProbes = new uint16_t[ renderThread.GetGI().GetTraceRays().GetProbeCount() ];
 		#ifdef GI_USE_RAY_LIMIT
-			pRayLimitProbes = new sProbe*[ renderThread.GetGI().GetTraceRays().GetProbeCount() ];
+			pRayLimitProbes = new uint16_t[ renderThread.GetGI().GetTraceRays().GetProbeCount() ];
 		#endif
 		#ifdef GI_USE_RAY_CACHE
-			pRayCacheProbes = new sProbe*[ renderThread.GetGI().GetTraceRays().GetProbeCount() ];
+			pRayCacheProbes = new uint16_t[ renderThread.GetGI().GetTraceRays().GetProbeCount() ];
 		#endif
 		
 	}catch( const deException & ){
@@ -252,7 +244,7 @@ decPoint3 deoglGIState::ShiftedGrid2LocalGrid( const decPoint3 &coord ) const{
 
 
 void deoglGIState::ClearClearProbes(){
-	memset( pClearProbes, 0, pClearProbeCount * sizeof( uint32_t ) );
+	memset( pClearProbes, 0, pClearProbeCount * sizeof( uint16_t ) );
 	pHasClearProbes = false;
 }
 
@@ -353,10 +345,10 @@ void deoglGIState::PrepareUBOState() const{
 		
 		for( i=0, j=0; i<count; i++, j+=4 ){
 			uboIndices.SetParameterDataArrayIVec4( 0, i,
-				j < pUpdateProbeCount ? pUpdateProbes[ j ]->index : 0,
-				j + 1 < pUpdateProbeCount ? pUpdateProbes[ j + 1 ]->index : 0,
-				j + 2 < pUpdateProbeCount ? pUpdateProbes[ j + 2 ]->index : 0,
-				j + 3 < pUpdateProbeCount ? pUpdateProbes[ j + 3 ]->index : 0 );
+				j < pUpdateProbeCount ? pUpdateProbes[ j ] : 0,
+				j + 1 < pUpdateProbeCount ? pUpdateProbes[ j + 1 ] : 0,
+				j + 2 < pUpdateProbeCount ? pUpdateProbes[ j + 2 ] : 0,
+				j + 3 < pUpdateProbeCount ? pUpdateProbes[ j + 3 ] : 0 );
 		}
 		
 	}catch( const deException & ){
@@ -371,7 +363,7 @@ void deoglGIState::PrepareUBOState() const{
 	try{
 		int i;
 		for( i=0; i<pUpdateProbeCount; i++ ){
-			const sProbe &p = *pUpdateProbes[ i ];
+			const sProbe &p = pProbes[ pUpdateProbes[ i ] ];
 			uboPositions.SetParameterDataArrayVec4( 0, i, p.position + p.offset, ( float )p.flags );
 		}
 		
@@ -398,10 +390,10 @@ void deoglGIState::PrepareUBOStateRayLimit() const{
 		int i, j;
 		for( i=0, j=0; i<count; i++, j+=4 ){
 			uboIndices.SetParameterDataArrayIVec4( 0, i,
-				j < pRayLimitProbeCount ? pRayLimitProbes[ j ]->index : 0,
-				j + 1 < pRayLimitProbeCount ? pRayLimitProbes[ j + 1 ]->index : 0,
-				j + 2 < pRayLimitProbeCount ? pRayLimitProbes[ j + 2 ]->index : 0,
-				j + 3 < pRayLimitProbeCount ? pRayLimitProbes[ j + 3 ]->index : 0 );
+				j < pRayLimitProbeCount ? pRayLimitProbes[ j ] : 0,
+				j + 1 < pRayLimitProbeCount ? pRayLimitProbes[ j + 1 ] : 0,
+				j + 2 < pRayLimitProbeCount ? pRayLimitProbes[ j + 2 ] : 0,
+				j + 3 < pRayLimitProbeCount ? pRayLimitProbes[ j + 3 ] : 0 );
 		}
 		
 	}catch( const deException & ){
@@ -416,7 +408,7 @@ void deoglGIState::PrepareUBOStateRayLimit() const{
 	try{
 		int i;
 		for( i=0; i<pRayLimitProbeCount; i++ ){
-			const sProbe &p = *pRayLimitProbes[ i ];
+			const sProbe &p = pProbes[ pRayLimitProbes[ i ] ];
 			uboPositions.SetParameterDataArrayVec4( 0, i, p.position + p.offset, ( float )p.flags );
 		}
 		
@@ -443,10 +435,10 @@ void deoglGIState::PrepareUBOStateRayCache() const{
 		int i, j;
 		for( i=0, j=0; i<count; i++, j+=4 ){
 			uboIndices.SetParameterDataArrayIVec4( 0, i,
-				j < pRayCacheProbeCount ? pRayCacheProbes[ j ]->index : 0,
-				j + 1 < pRayCacheProbeCount ? pRayCacheProbes[ j + 1 ]->index : 0,
-				j + 2 < pRayCacheProbeCount ? pRayCacheProbes[ j + 2 ]->index : 0,
-				j + 3 < pRayCacheProbeCount ? pRayCacheProbes[ j + 3 ]->index : 0 );
+				j < pRayCacheProbeCount ? pRayCacheProbes[ j ] : 0,
+				j + 1 < pRayCacheProbeCount ? pRayCacheProbes[ j + 1 ] : 0,
+				j + 2 < pRayCacheProbeCount ? pRayCacheProbes[ j + 2 ] : 0,
+				j + 3 < pRayCacheProbeCount ? pRayCacheProbes[ j + 3 ] : 0 );
 		}
 		
 	}catch( const deException & ){
@@ -461,7 +453,7 @@ void deoglGIState::PrepareUBOStateRayCache() const{
 	try{
 		int i;
 		for( i=0; i<pRayCacheProbeCount; i++ ){
-			const sProbe &probe = *pRayCacheProbes[ i ];
+			const sProbe &probe = pProbes[ pRayCacheProbes[ i ] ];
 			uboPositions.SetParameterDataArrayVec4( 0, i,
 				probe.position + probe.offset, ( float )probe.flags );
 		}
@@ -474,17 +466,12 @@ void deoglGIState::PrepareUBOStateRayCache() const{
 }
 
 void deoglGIState::Invalidate(){
-	int i;
-	
+	uint16_t i;
 	for( i=0; i<pRealProbeCount; i++ ){
 		sProbe &probe = pProbes[ i ];
-		probe.age = 0;
-		probe.flags = GI_PROBE_FLAGS_INIT;
+		probe.flags = 0;
 		probe.offset.SetZero();
 		probe.countOffsetMoved = 0;
-		probe.valid = false;
-		probe.rayLimitsValid = false;
-		probe.rayCacheValid = false;
 	}
 	
 	pClearMaps = true;
@@ -514,7 +501,7 @@ void deoglGIState::UpdateProbeOffsetFromTexture(){
 	int i;
 	
 	for( i=0; i<pUpdateProbeCount; i++ ){
-		sProbe &probe = *pUpdateProbes[ i ];
+		sProbe &probe = pProbes[ pUpdateProbes[ i ] ];
 		
 		// PROBLEM some probes flicker between two positions and can not make up their mind.
 		//         this causes GI flickering and endless ray cache invalidating.
@@ -539,15 +526,14 @@ void deoglGIState::UpdateProbeOffsetFromTexture(){
 		
 		probe.offset = offset;
 		probe.countOffsetMoved++;
-		probe.rayLimitsValid = false;
-		probe.rayCacheValid = false;
+		probe.flags &= ~( epfRayLimitsValid | epfRayCacheValid );
 	}
 }
 
 void deoglGIState::ValidatedRayCaches(){
 	int i;
 	for( i=0; i<pRayCacheProbeCount; i++ ){
-		pRayCacheProbes[ i ]->rayCacheValid = true;
+		pProbes[ pRayCacheProbes[ i ] ].flags |= epfRayCacheValid;
 	}
 }
 
@@ -569,14 +555,11 @@ void deoglGIState::pCleanUp(){
 	if( pUpdateProbes ){
 		delete [] pUpdateProbes;
 	}
-	if( pWeightedProbes ){
-		delete [] pWeightedProbes;
-	}
-	if( pWeightedProbeBinProbeCounts ){
-		delete [] pWeightedProbeBinProbeCounts;
-	}
 	if( pClearProbes ){
 		delete [] pClearProbes;
+	}
+	if( pAgedProbes ){
+		delete [] pAgedProbes;
 	}
 	if( pProbes ){
 		delete [] pProbes;
@@ -584,20 +567,20 @@ void deoglGIState::pCleanUp(){
 }
 
 void deoglGIState::pInitProbes(){
-	pProbes = new sProbe[ pRealProbeCount ];
+	uint16_t  i;
 	
-	int i;
+	pProbes = new sProbe[ pRealProbeCount ];
+	pAgedProbes = new uint16_t[ pRealProbeCount ];
+	
 	for( i=0; i<pRealProbeCount; i++ ){
 		sProbe &probe = pProbes[ i ];
 		probe.index = i;
-		probe.flags = GI_PROBE_FLAGS_INIT;
-		probe.age = 0;
+		probe.flags = 0;
 		probe.offset.SetZero();
 		probe.countOffsetMoved = 0;
-		probe.valid = false;
-		probe.rayLimitsValid = false;
-		probe.rayCacheValid = false;
 		probe.coord = ProbeIndex2GridCoord( i );
+		
+		pAgedProbes[ i ] = i;
 	}
 }
 
@@ -614,14 +597,14 @@ void deoglGIState::pInitUBOClearProbes(){
 void deoglGIState::pInvalidateAllRayLimits(){
 	int i;
 	for( i=0; i<pRealProbeCount; i++ ){
-		pProbes[ i ].rayLimitsValid = false;
+		pProbes[ i ].flags &= ~epfRayLimitsValid;
 	}
 }
 
 void deoglGIState::pInvalidateAllRayCaches(){
 	int i;
 	for( i=0; i<pRealProbeCount; i++ ){
-		pProbes[ i ].rayCacheValid = false;
+		pProbes[ i ].flags &= ~epfRayCacheValid;
 	}
 }
 
@@ -685,25 +668,21 @@ void deoglGIState::pUpdatePosition( const decDVector &position ){
 	
 	// invalidate probes shifted out
 	const decPoint3 gridOffset( ( closestPosition - pPosition ).Multiply( pProbeSpacingInv ).Round() );
-	
 	int i;
 	
 	for( i=0; i<pRealProbeCount; i++ ){
 		sProbe &probe = pProbes[ i ];
+		
 		const decPoint3 coord( LocalGrid2ShiftedGrid( probe.coord ) - gridOffset );
 		if( coord >= decPoint3() && coord < pProbeCount ){
 			continue; // probe is still valid
 		}
 		
-		probe.age = 0;
-		probe.flags = GI_PROBE_FLAGS_INIT;
+		probe.flags = 0;
 		probe.offset.SetZero();
 		probe.countOffsetMoved = 0;
-		probe.valid = false;
-		probe.rayLimitsValid = false;
-		probe.rayCacheValid = false;
 		
-		pClearProbes[ i / 32 ] |= uint32_t( 1 ) << ( i % 32 );
+		pClearProbes[ i / 32 ] |= 1 << ( i % 32 );
 		pHasClearProbes = true;
 	}
 	
@@ -719,118 +698,157 @@ void deoglGIState::pUpdatePosition( const decDVector &position ){
 	pGridCoordShift.x %= pProbeCount.x;
 	pGridCoordShift.y %= pProbeCount.y;
 	pGridCoordShift.z %= pProbeCount.z;
+	
+	// update probe cordinates. has to come after adjusting the parameters
+	for( i=0; i<pRealProbeCount; i++ ){
+		sProbe &probe = pProbes[ i ];
+		probe.shiftedCoord = LocalGrid2ShiftedGrid( probe.coord );
+		probe.position = Grid2Local( probe.shiftedCoord );
+	}
 }
 
 void deoglGIState::pPrepareTraceProbes( const decMatrix &matrixView, float fovX, float fovY ){
-	pElapsedUpdateProbe += pTimerUpdateProbe.GetElapsedTime();
-	if( pElapsedUpdateProbe < pUpdateProbeInterval ){
-// 		return; // how to use this properly? we track snapped position already
-	}
-	
-	// keep only the remainder. this avoids updates to pile up if framerate drops or staggers
-	pElapsedUpdateProbe = fmodf( pElapsedUpdateProbe, pUpdateProbeInterval );
-	
 	INIT_SPECIAL_TIMING
-	pAgeProbes();
-	SPECIAL_TIMER_PRINT(">AgeProbes")
 	pFindProbesToUpdate( matrixView, fovX, fovY );
 	SPECIAL_TIMER_PRINT(">FindProbesToUpdate")
 	pPrepareProbeTexturesAndFBO();
 	SPECIAL_TIMER_PRINT(">PrepareProbeTexturesAndFBO")
 }
 
-void deoglGIState::pAgeProbes(){
-	int i;
-	
-	for( i=0; i<pRealProbeCount; i++ ){
-		sProbe &probe = pProbes[ i ];
-		probe.age++;
-		probe.shiftedCoord = LocalGrid2ShiftedGrid( probe.coord );
-		probe.position = Grid2Local( probe.shiftedCoord );
-	}
-}
-
 void deoglGIState::pFindProbesToUpdate( const decMatrix &matrixView, float fovX, float fovY ){
-	// prepare weighting probes
-	const deoglGITraceRays &traceRays = pRenderThread.GetGI().GetTraceRays();
-	const float weightDistanceLimit = pProbeSpacing.z * 8.0f;
-	const decVector2 viewAngleBorder( decVector2( fovX, fovY ) * 0.5f );
-	const decVector2 weightViewAngleLimit( viewAngleBorder * 0.25f ); // 25% from center
-	const float weightAgeLimit = 30.0f;
-	int i = 0;
+	//const int maxUpdateCount = pRenderThread.GetGI().GetTraceRays().GetProbeCount();
+	const int maxUpdateCount = 1024; // 256
+	const int maxUpdateCountOutsideView = maxUpdateCount / 5; // 20%
+	const int maxUpdateCountInsideView = maxUpdateCount - maxUpdateCountOutsideView; // 80%
+	int updateCountOutsideView = 0;
+	int updateCountInsideView = 0;
 	
+	const deoglGITraceRays &traceRays = pRenderThread.GetGI().GetTraceRays();
+	const float viewAngleX = fovX * 0.5f;
+	const float viewAngleY = fovY * 0.5f;
+	int i, last;
+	
+	pUpdateProbeCount = 0;
+	
+	// classify probes into inside view and outside view
 	for( i=0; i<pRealProbeCount; i++ ){
-		sProbe &probe = pProbes[ i ];
+		sProbe &probe = pProbes[ pAgedProbes[ i ] ];
 		
-		// geometric weight considers distance from field center and view orientation
 		const decVector view( matrixView * probe.position );
 		const float length = view.Length();
 		
-		if( length > FLOAT_SAFE_EPSILON ){
-			const decVector2 angle( acosf( view.z / length ), asinf( view.y / length ) );
-			
-			probe.weightDistance = decMath::linearStep( length, 0.0f, weightDistanceLimit, 1.0f, 0.25f );
-			probe.weightViewAngle.x = decMath::linearStep( angle.x, weightViewAngleLimit.x, PI, 1.0f, 0.25f );
-			probe.weightViewAngle.y = decMath::linearStep( angle.y, weightViewAngleLimit.y, PI, 1.0f, 0.25f );
-			probe.insideView = angle < viewAngleBorder;
+		if( length < FLOAT_SAFE_EPSILON
+		|| ( acosf( view.z / length ) < viewAngleX && asinf( view.y / length ) < viewAngleY ) ){
+			probe.flags |= epfInsideView;
 			
 		}else{
-			probe.weightDistance = 1.0f;
-			probe.weightViewAngle.Set( 1.0f, 1.0f );
-			probe.insideView = true;
+			probe.flags &= ~epfInsideView;
 		}
-		
-		// age weight
-		probe.weightAge = decMath::linearStep( ( float )probe.age, 0.0f, weightAgeLimit );
-// 			probe.weightDistance = 1.0f;
-// 			probe.weightViewAngle.Set( 1.0f, 1.0f );
 	}
 	
-	// add invalid probes inside the view. they are always added up to the maximum number of
-	// allowed update probes. invalid probes outside the view and valid probes are binned
-	for( i=0; i<pWeightedProbeBinCount; i++ ){
-		pWeightedProbeBinProbeCounts[ i ] = 0;
-	}
-	pUpdateProbeCount = 0;
-#if 0
-	for( i=0; i<pRealProbeCount; i++ ){
-		sProbe &probe = pProbes[ i ];
-		if( probe.valid ){
-			pBinWeightedProbe( &probe, probe.weightDistance * probe.weightViewAngle.x
-				* probe.weightViewAngle.y * probe.weightAge );
+	// add all invalid probes up to the limits
+	for( i=0, last=0; i<pRealProbeCount; i++ ){
+		sProbe &probe = pProbes[ pAgedProbes[ i ] ];
+		
+		// determine if probe has to be added (hence not exceeding the limits)
+		bool addProbe = false;
+		
+		if( ( probe.flags & epfValid ) != epfValid ){
+			if( ( probe.flags & epfInsideView ) == epfInsideView ){
+				if( updateCountInsideView < maxUpdateCountInsideView ){
+					addProbe = true;
+					updateCountInsideView++;
+				}
+				
+			}else{
+				if( updateCountOutsideView < maxUpdateCountOutsideView ){
+					addProbe = true;
+					updateCountOutsideView++;
+				}
+			}
+		}
+		
+		// add probe if not exceeding the limits. the aged probes list is adjusted in a way
+		// all not added probes are packaged at the beginning. then the added probes are
+		// appended to the end of the list to obtain a full list again
+		if( addProbe ){
+			pAddUpdateProbe( probe );
+			
+			if( pUpdateProbeCount == maxUpdateCount ){
+				i++;
+				break;
+			}
 			
 		}else{
-			if( probe.insideView ){
-				pAddUpdateProbe( &probe );
-				if( pUpdateProbeCount >= rays.GetProbeCount() ){
+			pAgedProbes[ last++ ] = pAgedProbes[ i ];
+		}
+	}
+	
+	while( i < pRealProbeCount ){
+		pAgedProbes[ last++ ] = pAgedProbes[ i++ ];
+	}
+	
+	// add all regular probes up to the limits
+	if( pUpdateProbeCount < maxUpdateCount ){
+		const int endIndex = last;
+		
+		for( i=0, last=0; i<endIndex; i++ ){
+			sProbe &probe = pProbes[ pAgedProbes[ i ] ];
+			
+			// determine if probe has to be added (hence not exceeding the limits)
+			bool addProbe = false;
+			
+			if( ( probe.flags & epfInsideView ) == epfInsideView ){
+				if( updateCountInsideView < maxUpdateCountInsideView ){
+					addProbe = true;
+					updateCountInsideView++;
+				}
+				
+			}else{
+				if( updateCountOutsideView < maxUpdateCountOutsideView ){
+					addProbe = true;
+					updateCountOutsideView++;
+				}
+			}
+			
+			// add probe if not exceeding the limits. the aged probes list is adjusted in a way
+			// all not added probes are packaged at the beginning. then the added probes are
+			// appended to the end of the list to obtain a full list again
+			if( addProbe ){
+				pAddUpdateProbe( probe );
+				
+				if( pUpdateProbeCount == maxUpdateCount ){
+					i++;
 					break;
 				}
 				
 			}else{
-				pBinWeightedProbe( &probe, probe.weightDistance
-					* probe.weightViewAngle.x * probe.weightViewAngle.y );
+				pAgedProbes[ last++ ] = pAgedProbes[ i ];
 			}
+		}
+		
+		while( i < endIndex ){
+			pAgedProbes[ last++ ] = pAgedProbes[ i++ ];
 		}
 	}
 	
-	// add top rated probes as update probe up to the desired update probe count.
-	// this only fills up the reminaing counts unless already above the limit
-	const int maxUpdateCount = 256; //rays.GetProbeCount();
-	
-	if( pUpdateProbeCount < maxUpdateCount ){
-		int j;
-		for( i=0; i<pWeightedProbeBinCount; i++ ){
-			sProbe ** const binProbes = pWeightedProbes + pWeightedProbeBinSize * i;
-			
-			for( j=0; j<pWeightedProbeBinProbeCounts[ i ]; j++ ){
-				pAddUpdateProbe( binProbes[ j ] );
-				if( pUpdateProbeCount >= maxUpdateCount ){
-					break;
-				}
-			}
-		}
+	for( i=0; i<pUpdateProbeCount; i++ ){
+		pAgedProbes[ last++ ] = pUpdateProbes[ i ];
 	}
-#endif
+	
+		/*{
+		pRenderThread.GetLogger().LogInfoFormat("DEBUG: pUpdateProbeCount=%d", pUpdateProbeCount);
+		decString s("pUpdateProbes:");
+		for(i=0; i<pUpdateProbeCount; i++){
+			s.AppendFormat(" % 4d,", pUpdateProbes[i]);
+		}
+		pRenderThread.GetLogger().LogInfo(s);
+		s = "pAgedProbes";
+		for(i=0; i<pRealProbeCount; i++){
+			s.AppendFormat(" % 4d,", pAgedProbes[i]);
+		}
+		pRenderThread.GetLogger().LogInfo(s);
+		}*/
 	
 	// TODO update probe grid. for the time being 8x4x8
 // 	const decPoint3 spread( 16, 4, 32 ); // 2048 probes
@@ -838,32 +856,13 @@ void deoglGIState::pFindProbesToUpdate( const decMatrix &matrixView, float fovX,
 	const decPoint3 spread( 8, 4, 8 ); // 256 probes
 	const decPoint3 gis( ( pProbeCount - spread ) / 2 );
 	const decPoint3 gie( gis + spread );
-	pUpdateProbeCount = spread.x * spread.y * spread.z;
+	pUpdateProbeCount = 0;
 	
 	decPoint3 gi;
-	i = 0;
 	for( gi.y=gis.y; gi.y<gie.y; gi.y++ ){
 		for( gi.z=gis.z; gi.z<gie.z; gi.z++ ){
 			for( gi.x=gis.x; gi.x<gie.x; gi.x++ ){
-				sProbe &probe = pProbes[ GridCoord2ProbeIndex( ShiftedGrid2LocalGrid( gi ) ) ];
-				
-				if( probe.valid ){
-					probe.flags |= GI_PROBE_FLAG_SMOOTH_UPDATE;
-					
-					if( probe.countOffsetMoved == 1 ){
-						probe.flags &= ~GI_PROBE_FLAG_SMOOTH_UPDATE;
-					}
-					
-				}else{
-					probe.flags &= ~GI_PROBE_FLAG_SMOOTH_UPDATE;
-					probe.offset.SetZero();
-					probe.countOffsetMoved = 0;
-				}
-				
-				probe.age = 0;
-				probe.valid = true;
-				
-				pUpdateProbes[ i++ ] = &probe;
+				pAddUpdateProbe( pProbes[ GridCoord2ProbeIndex( ShiftedGrid2LocalGrid( gi ) ) ] );
 			}
 		}
 	}
@@ -874,36 +873,25 @@ void deoglGIState::pFindProbesToUpdate( const decMatrix &matrixView, float fovX,
 	pSampleImageSize.y = ( pUpdateProbeCount - 1 ) / traceRays.GetProbesPerLine() + 1;
 }
 
-void deoglGIState::pBinWeightedProbe( sProbe *probe, float weight ){
-	int index = pWeightedProbeBinClamp - decMath::clamp( ( int )( weight * pWeightedProbeBinClamp ), 0, pWeightedProbeBinClamp );
-	for( ; index<pWeightedProbeBinCount; index++ ){
-		if( pWeightedProbeBinProbeCounts[ index ] < pWeightedProbeBinSize ){
-			pWeightedProbes[ pWeightedProbeBinSize * index + pWeightedProbeBinProbeCounts[ index ]++ ] = probe;
-			return;
-		}
-	}
-}
-
-void deoglGIState::pAddUpdateProbe( sProbe *probe ){
-	if( probe->valid ){
-		probe->flags |= GI_PROBE_FLAG_SMOOTH_UPDATE;
+void deoglGIState::pAddUpdateProbe( sProbe &probe ){
+	if( ( probe.flags & epfValid ) == epfValid ){
+		probe.flags |= epfSmoothUpdate;
 		
-		if( probe->countOffsetMoved == 1 ){
+		if( probe.countOffsetMoved == 1 ){
 			// probe moved for the first time. this is usually a large jump from an invalid
 			// or unfortunate position to the first potentially good position. for this
 			// reason an update has to be forced for this first move but not following ones
-			probe->flags &= ~GI_PROBE_FLAG_SMOOTH_UPDATE;
+			probe.flags &= ~epfSmoothUpdate;
 		}
 		
 	}else{
-		probe->offset.SetZero();
-		probe->countOffsetMoved = 0;
-		probe->flags &= ~GI_PROBE_FLAG_SMOOTH_UPDATE;
-		probe->valid = true;
+		probe.offset.SetZero();
+		probe.countOffsetMoved = 0;
+		probe.flags &= ~epfSmoothUpdate;
+		probe.flags |= epfValid;
 	}
-	probe->age = 0;
 	
-	pUpdateProbes[ pUpdateProbeCount++ ] = probe;
+	pUpdateProbes[ pUpdateProbeCount++ ] = probe.index;
 }
 
 void deoglGIState::pPrepareRayLimitProbes(){
@@ -911,7 +899,8 @@ void deoglGIState::pPrepareRayLimitProbes(){
 	
 	int i;
 	for( i=0; i<pUpdateProbeCount; i++ ){
-		if( ! pUpdateProbes[ i ]->rayLimitsValid ){
+		const sProbe &probe = pProbes[ pUpdateProbes[ i ] ];
+		if( ( probe.flags & epfRayLimitsValid ) != epfRayLimitsValid ){
 			pRayLimitProbes[ pRayLimitProbeCount++ ] = pUpdateProbes[ i ];
 		}
 	}
@@ -928,7 +917,8 @@ void deoglGIState::pPrepareRayCacheProbes(){
 	
 	int i;
 	for( i=0; i<pUpdateProbeCount; i++ ){
-		if( ! pUpdateProbes[ i ]->rayCacheValid ){
+		const sProbe &probe = pProbes[ pUpdateProbes[ i ] ];
+		if( ( probe.flags & epfRayCacheValid ) != epfRayCacheValid ){
 			pRayCacheProbes[ pRayCacheProbeCount++ ] = pUpdateProbes[ i ];
 		}
 	}

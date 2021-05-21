@@ -1,3 +1,8 @@
+#define GI_MAX_COUNT_PROBE_POSITIONS 4096
+
+// #define GI_MAX_COUNT_RAY_DIRECTIONS 512
+#define GI_MAX_COUNT_RAY_DIRECTIONS 256
+
 UBOLAYOUT uniform GIParameters{
 	vec2 pGISampleImageScale;
 	int pGIProbeCount;
@@ -32,13 +37,13 @@ UBOLAYOUT uniform GIParameters{
 };
 
 UBOLAYOUT uniform GIProbeIndices{
-	ivec4 pGIProbeIndex[ 1024 ]; // 4 indices per element
+	ivec4 pGIProbeIndex[ GI_MAX_COUNT_PROBE_POSITIONS / 4 ]; // 4 indices per element
 };
 
 UBOLAYOUT uniform GIProbePositions{
-	vec4 pGIProbePosition[ 4096 ]; // position(xyz), blendFactor(w)
+	vec4 pGIProbePosition[ GI_MAX_COUNT_PROBE_POSITIONS ]; // position(xyz), blendFactor(w)
 };
 
 UBOLAYOUT uniform GIRayDirections{
-	vec3 pGIRayDirection[ 512 ];
+	vec3 pGIRayDirection[ GI_MAX_COUNT_RAY_DIRECTIONS];
 };
