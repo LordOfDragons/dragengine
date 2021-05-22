@@ -1320,7 +1320,7 @@ void deoglRComponentLOD::pUpdateVAO( deoglModelLOD &modelLOD ){
 		? vboLayout.GetStride() * pVBOBlock->GetOffset() : 0 );*/
 			// texcoord(3) => vao_tc_diffuse(3)
 	
-	if( renderThread.GetChoices().GetSharedVBOUseBaseVertex() ){
+	if( renderThread.GetChoices().GetSharedVBOUseBaseVertex() && pVBOBlock->GetVBO()->GetIBO() ){
 		OGL_CHECK( renderThread, pglBindBuffer( GL_ELEMENT_ARRAY_BUFFER, pVBOBlock->GetVBO()->GetIBO() ) );
 		pVAO->SetIndexType( vboLayout.GetIndexType() );
 		

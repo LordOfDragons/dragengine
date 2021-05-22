@@ -89,7 +89,7 @@ deoglRTBufferObject::~deoglRTBufferObject(){
 ///////////////
 
 void deoglRTBufferObject::Init(){
-	pSharedVBOListList = new deoglSharedVBOListList( pRenderThread, 4194304 ); // 8388608
+	pSharedVBOListList = new deoglSharedVBOListList( pRenderThread, 4194304, 4194304 ); // 8388608
 	pCreateSharedVBOLists();
 	
 	pCreateShapes();

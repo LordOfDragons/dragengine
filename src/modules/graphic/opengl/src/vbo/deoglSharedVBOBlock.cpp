@@ -37,52 +37,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglSharedVBOBlock::deoglSharedVBOBlock( deoglSharedVBO *vbo ){
-	if( ! vbo ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	pVBO = vbo;
-	pOffset = 0;
-	pSize = 0;
-	pData = NULL;
-	pIndexOffset = 0;
-	pIndexCount = 0;
-	pIndexData = NULL;
-	pValid = false;
-	pEmpty = true;
-}
-
-deoglSharedVBOBlock::deoglSharedVBOBlock( deoglSharedVBO *vbo, int offset, int size ){
-	if( ! vbo || offset < 0 || size < 0 ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	pVBO = vbo;
-	pOffset = offset;
-	pSize = size;
-	pData = NULL;
-	pIndexOffset = 0;
-	pIndexCount = 0;
-	pIndexData = NULL;
-	pValid = false;
-	pEmpty = true;
-}
-
-deoglSharedVBOBlock::deoglSharedVBOBlock( deoglSharedVBO *vbo, int offset, int size, int indexOffset, int indexCount ){
+deoglSharedVBOBlock::deoglSharedVBOBlock( deoglSharedVBO *vbo, int offset, int size,
+int indexOffset, int indexCount ) :
+pVBO( vbo ),
+pOffset( offset ),
+pSize( size ),
+pData( NULL ),
+pIndexOffset( indexOffset ),
+pIndexCount( indexCount ),
+pIndexData( NULL ),
+pValid(  false ),
+pEmpty( true )
+{
 	if( ! vbo || offset < 0 || size < 0 || indexOffset < 0 || indexCount < 0 ){
 		DETHROW( deeInvalidParam );
 	}
-	
-	pVBO = vbo;
-	pOffset = offset;
-	pSize = size;
-	pData = NULL;
-	pIndexOffset = indexOffset;
-	pIndexCount = indexCount;
-	pIndexData = NULL;
-	pValid = false;
-	pEmpty = true;
 }
 
 deoglSharedVBOBlock::~deoglSharedVBOBlock(){
@@ -103,17 +72,6 @@ void deoglSharedVBOBlock::DropVBO(){
 	pVBO = NULL;
 }
 
-void deoglSharedVBOBlock::SetOffset( int offset ){
-	if( offset < 0 ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	if( offset != pOffset ){
-		pOffset = offset;
-		pValid = false;
-	}
-}
-
 void deoglSharedVBOBlock::SetSize( int size ){
 	if( size < 0 ){
 		DETHROW( deeInvalidParam );
@@ -122,17 +80,6 @@ void deoglSharedVBOBlock::SetSize( int size ){
 	if( size != pSize ){
 		pSize = size;
 		pReallocData();
-	}
-}
-
-void deoglSharedVBOBlock::SetIndexOffset( int offset ){
-	if( offset < 0 ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	if( offset != pIndexOffset ){
-		pIndexOffset = offset;
-		pValid = false;
 	}
 }
 

@@ -60,7 +60,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new shared vbo. */
-	deoglSharedVBO( deoglSharedVBOList *parentList, int size );
+	deoglSharedVBO( deoglSharedVBOList *parentList, int size, int indexSize );
 	/** Cleans up the shared vbo. */
 	virtual ~deoglSharedVBO();
 	/*@}*/
@@ -102,20 +102,17 @@ public:
 	int GetBlockCount() const;
 	/** Retrieves the block at the given location. */
 	deoglSharedVBOBlock *GetBlockAt( int index ) const;
+	
 	/**
 	 * Tries to add a block of data to the VBO. Returns the block representing this data if a suitable
 	 * location has been found or NULL if there is not enough space left in the VBO.
 	 */
-	deoglSharedVBOBlock *AddBlock( int size );
-	/**
-	 * Tries to add a block of data to the VBO. Returns the block representing this data if a suitable
-	 * location has been found or NULL if there is not enough space left in the VBO.
-	 */
-	deoglSharedVBOBlock *AddBlock( int size, int indexCount );
+	deoglSharedVBOBlock *AddBlock( int size, int indexCount = 0 );
 	/** Removes a block of data returning the space to the pool of free space. */
 	void RemoveBlock( deoglSharedVBOBlock *block );
-	/** Retrieves the index of the first empty block with at least the given amount of size or NULL if not found. */
-	int IndexOfEmptyBlockWithMinSize( int size );
+	
+	/** Index of first empty block with minimum size and index count available or NULL if not found. */
+	int IndexOfEmptyBlockWithMinSize( int size, int indexCount );
 	/*@}*/
 	
 private:

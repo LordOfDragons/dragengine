@@ -58,12 +58,6 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create empty shared vbo block. */
-	deoglSharedVBOBlock( deoglSharedVBO *vbo );
-	
-	/** Create empty shared vbo block. */
-	deoglSharedVBOBlock( deoglSharedVBO *vbo, int offset, int size );
-	
-	/** Create empty shared vbo block. */
 	deoglSharedVBOBlock( deoglSharedVBO *vbo, int offset, int size, int indexOffset, int indexCount );
 	
 	/** Clean up shared vbo. */
@@ -82,23 +76,13 @@ public:
 	
 	
 	
-	/**
-	 * Offset to block (points).
-	 * \warning Can potentially change during block lifetime. Do not store in class variables.
-	 */
+	/** Offset to block (points). */
 	inline int GetOffset() const{ return pOffset; }
-	
-	/** Set offset to block (offset to points). */
-	void SetOffset( int offset );
 	
 	/** Size of block. */
 	inline int GetSize() const{ return pSize; }
 	
-	/**
-	 * Set size of block.
-	 * 
-	 * Also sets data pointer to NULL.
-	 */
+	/** Set size of block. Sets data pointer to NULL. */
 	void SetSize( int size );
 	
 	/** Data pointer or NULL if block is empty. */
@@ -106,23 +90,13 @@ public:
 	
 	
 	
-	/**
-	 * Offset to index block.
-	 * \warning Can potentially change during block lifetime. Do not store in class variables.
-	 */
+	/** Offset to index block. */
 	inline int GetIndexOffset() const{ return pIndexOffset; }
 	
-	/** Set offset to index block. */
-	void SetIndexOffset( int offset );
-	
-	/** Number of indices in block. */
+	/** Count of indices in block. */
 	inline int GetIndexCount() const{ return pIndexCount; }
 	
-	/**
-	 * Set number of indices in block.
-	 * 
-	 * Also sets index data pointer to NULL.
-	 */
+	/** Set count of indices in block. Sets index data pointer to NULL. */
 	void SetIndexCount( int count );
 	
 	/** Index data pointer or NULL if block is empty. */

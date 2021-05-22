@@ -34,7 +34,6 @@ class deoglSharedVBOBlock;
 
 
 /**
- * @brief OpenGL Shared VBO List.
  * A shared VBO list contains a list of VBOs all having the same layout. Each VBO contains
  * one or more blocks of data belonging to different resources. Each VBO has one VAO assigned
  * to reduce the VAO switching. Shared VBOs can be used in a static or dynamic way but all
@@ -47,42 +46,59 @@ public:
 	GLenum pDrawType;
 	int pMaxSize;
 	int pMaxPointCount;
+	int pMaxIndexSize;
+	int pMaxIndexCount;
 	decObjectList pVBOs;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Creates a new shared vbo list. */
-	deoglSharedVBOList( deoglRenderThread &renderThread, const deoglVBOLayout &layout, GLenum drawType, int maxSize );
-	/** Cleans up the shared vbo list. */
+	/** Create shared vbo list. */
+	deoglSharedVBOList( deoglRenderThread &renderThread, const deoglVBOLayout &layout,
+		GLenum drawType, int maxSize, int maxIndexSize );
+	
+	/** Clean up shared vbo list. */
 	~deoglSharedVBOList();
 	/*@}*/
 	
-	/** @name Management */
+	
+	
+	/** \name Management */
 	/*@{*/
-	/** \brief Render thread. */
+	/** Render thread. */
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
-	/** Retrieves the layout. */
+	
+	/** Layout. */
 	inline const deoglVBOLayout &GetLayout() const{ return pLayout; }
-	/** Retrieves the draw type. */
+	
+	/** Draw type. */
 	inline GLenum GetDrawType() const{ return pDrawType; }
-	/** Retrieves the maximum vbo size. */
+	
+	/** Maximum VBO size. */
 	inline int GetMaxSize() const{ return pMaxSize; }
-	/** Retrieves the maximum number of points. */
+	
+	/** Maximum count of points. */
 	inline int GetMaxPointCount() const{ return pMaxPointCount; }
-	/** Determines if this vbo list matches the given layout and draw type. */
+	
+	/** Maximum IBO size. */
+	inline int GetMaxIndexSize() const{ return pMaxIndexSize; }
+	
+	/** Maximum count of indices. */
+	inline int GetMaxIndexCount() const{ return pMaxIndexCount; }
+	
+	/** VBO list matches the layout and draw type. */
 	bool Matches( const deoglVBOLayout &layout, GLenum drawType ) const;
 	
-	/** Retrieves the number of VBOs. */
+	/** Count of VBOs. */
 	int GetCount() const;
-	/** Retrieves the VBO at the given location. */
-	deoglSharedVBO *GetAt( int index ) const;
-	/** Add block of data to a matching VBO returning the resulting block. */
-	deoglSharedVBOBlock *AddData( int size );
-	/** Add block of data to a matching VBO returning the resulting block. */
-	deoglSharedVBOBlock *AddData( int size, int indexCount );
 	
-	/** Prepares all VBOs not yet prepared. */
+	/** VBO at index. */
+	deoglSharedVBO *GetAt( int index ) const;
+	
+	/** Add block of data to a matching VBO returning the resulting block. */
+	deoglSharedVBOBlock *AddData( int size, int indexCount = 0 );
+	
+	/** Prepare all VBOs not yet prepared. */
 	void PrepareVBOs();
 	/*@}*/
 };

@@ -521,7 +521,9 @@ void deoglDynamicOcclusionMesh::pUpdateVAO(){
 	vboLayout.SetVAOAttributeAt( pRenderThread, 0, 0 ); // pos(0) => vao(0)
 	OGL_CHECK( pRenderThread, pglBindBuffer( GL_ARRAY_BUFFER, 0 ) );
 	
-	OGL_CHECK( pRenderThread, pglBindBuffer( GL_ELEMENT_ARRAY_BUFFER, vboBlock.GetVBO()->GetIBO() ) );
+	if( vboBlock.GetVBO()->GetIBO() ){
+		OGL_CHECK( pRenderThread, pglBindBuffer( GL_ELEMENT_ARRAY_BUFFER, vboBlock.GetVBO()->GetIBO() ) );
+	}
 	
 	OGL_CHECK( pRenderThread, pglBindVertexArray( 0 ) );
 	
