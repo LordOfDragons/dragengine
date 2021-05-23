@@ -35,6 +35,7 @@ class deoglRenderWorldInfo : public deoglRenderBase{
 public:
 	deoglDebugInformation *infoWorld;
 	deoglDebugInformation *infoPassMasked;
+	deoglDebugInformation *infoGITraceRays;
 	deoglDebugInformation *infoSolidGeometry;
 	deoglDebugInformation *infoReflection;
 	deoglDebugInformation *infoSSR;
@@ -50,7 +51,6 @@ public:
 	deoglDebugInformation *infoSolidGeometryOcclusion;
 	deoglDebugInformation *infoSolidGeometryTranspCounter;
 	deoglDebugInformation *infoSolidGeometrySky;
-	deoglDebugInformation *infoSolidGeometryGITraceRays;
 	deoglDebugInformation *infoSolidGeometryTask;
 	deoglDebugInformation *infoSolidGeometryRender;
 	deoglDebugInformation *infoSolidGeometryDecals;

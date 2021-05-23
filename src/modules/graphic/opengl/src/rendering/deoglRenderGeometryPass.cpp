@@ -222,18 +222,6 @@ DBG_ENTER_PARAM("RenderSolidGeometryPass", "%p", mask)
 	QUICK_DEBUG_END
 	
 	
-	// trace global illumination rays if in main render pass
-	if( ! mask ){
-		deoglRenderGI &renderGI = renderThread.GetRenderers().GetLight().GetRenderGI();
-		if( plan.GetUpdateGIState() ){
-			renderGI.TraceRays( plan );
-			OGL_CHECK( renderThread, glViewport( 0, 0, defren.GetWidth(), defren.GetHeight() ) );
-			OGL_CHECK( renderThread, glScissor( 0, 0, defren.GetWidth(), defren.GetHeight() ) );
-			DebugTimer1Sample( plan, *renworld.GetDebugInfo().infoSolidGeometryGITraceRays, true );
-		}
-	}
-	
-	
 	// activate material fbo and clear all color attachments except color and depth buffer
 	defren.ActivateFBOMaterialColor();
 	

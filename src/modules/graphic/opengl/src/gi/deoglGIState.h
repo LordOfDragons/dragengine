@@ -36,6 +36,7 @@ class deoglRenderThread;
 class deoglRComponent;
 class deoglRWorld;
 class deoglSPBlockUBO;
+class deoglDCollisionFrustum;
 
 
 /**
@@ -294,7 +295,7 @@ public:
 	
 	/** Update. */
 	void Update( deoglRWorld &world, const decDVector &cameraPosition,
-		const decDMatrix &cameraMatrix, float fovX, float fovY );
+		const deoglDCollisionFrustum &frustum );
 	
 	/** Prepare UBO state. */
 	void PrepareUBOState() const;
@@ -339,8 +340,8 @@ private:
 	void pTrackInstanceChanges();
 	void pSyncTrackedInstances();
 	void pUpdatePosition( const decDVector &position );
-	void pPrepareTraceProbes( const decMatrix &matrixView, float fovX, float fovY );
-	void pFindProbesToUpdate( const decMatrix &matrixView, float fovX, float fovY);
+	void pPrepareTraceProbes( const deoglDCollisionFrustum &frustum );
+	void pFindProbesToUpdate( const deoglDCollisionFrustum &frustum );
 	void pBinWeightedProbe( sProbe *probe, float weight );
 	void pAddUpdateProbe( sProbe &probe );
 	void pPrepareRayLimitProbes();

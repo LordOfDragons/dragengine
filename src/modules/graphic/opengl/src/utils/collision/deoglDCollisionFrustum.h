@@ -180,12 +180,12 @@ public:
 	
 	/** @name Collision Routines */
 	/*@{*/
-	inline decDVector GetLeftNormal() const{ return pNormalLeft; }
-	inline decDVector GetRightNormal() const{ return pNormalRight; }
-	inline decDVector GetTopNormal() const{ return pNormalTop; }
-	inline decDVector GetBottomNormal() const{ return pNormalBottom; }
-	inline decDVector GetNearNormal() const{ return pNormalNear; }
-	inline decDVector GetFarNormal() const{ return pNormalFar; }
+	inline const decDVector &GetLeftNormal() const{ return pNormalLeft; }
+	inline const decDVector &GetRightNormal() const{ return pNormalRight; }
+	inline const decDVector &GetTopNormal() const{ return pNormalTop; }
+	inline const decDVector &GetBottomNormal() const{ return pNormalBottom; }
+	inline const decDVector &GetNearNormal() const{ return pNormalNear; }
+	inline const decDVector &GetFarNormal() const{ return pNormalFar; }
 	inline double GetLeftDistance() const{ return pDistLeft; }
 	inline double GetRightDistance() const{ return pDistRight; }
 	inline double GetTopDistance() const{ return pDistTop; }

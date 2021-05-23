@@ -346,6 +346,17 @@ DEBUG_RESET_TIMER
 	// prepare for one render turn with this camera
 	plan.PrepareRenderOneTurn();
 	
+	// trace global illumination rays if in main render pass
+	if( ! mask ){
+		deoglRenderGI &renderGI = renderThread.GetRenderers().GetLight().GetRenderGI();
+		if( plan.GetUpdateGIState() ){
+			renderGI.TraceRays( plan );
+			OGL_CHECK( renderThread, glViewport( 0, 0, defren.GetWidth(), defren.GetHeight() ) );
+			OGL_CHECK( renderThread, glScissor( 0, 0, defren.GetWidth(), defren.GetHeight() ) );
+			DebugTimer2Sample( plan, *pDebugInfo.infoGITraceRays, true );
+		}
+	}
+	
 	// solid pass
 	QUICK_DEBUG_START( 15, 19 )
 	//if( ! plan->GetFBOTarget() )
@@ -397,7 +408,9 @@ DEBUG_RESET_TIMER
 		DBG_ENTER("RenderLights")
 		renderers.GetLight().RenderLights( plan, true, mask );
 		DBG_EXIT("RenderLights")
-		DebugTimer2Sample( plan, *pDebugInfo.infoSolidGeometryLights, true );
+		if( debugMainPass ){
+			DebugTimer2Sample( plan, *pDebugInfo.infoSolidGeometryLights, true );
+		}
 #if 0
 			if(plan.GetFBOTarget()){
 				static int c = 0;
@@ -507,9 +520,7 @@ DEBUG_RESET_TIMER
 			DebugTimer2Sample( plan, *pDebugInfo.infoDebugDrawers, true );
 		}
 		
-		if( ! mask ){
-			renderers.GetLight().GetRenderGI().MoveProbes( plan );
-		}
+		renderers.GetLight().GetRenderGI().MoveProbes( plan );
 		
 		// effects
 		RenderEffects( plan );

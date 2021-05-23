@@ -46,6 +46,7 @@ deoglRenderBase( renderThread ),
 
 infoWorld( NULL ),
 infoPassMasked( NULL ),
+infoGITraceRays( NULL ),
 infoSolidGeometry( NULL ),
 infoReflection( NULL ),
 infoSSR( NULL ),
@@ -61,7 +62,6 @@ infoSolidGeometryDepthRender( NULL ),
 infoSolidGeometryOcclusion( NULL ),
 infoSolidGeometryTranspCounter( NULL ),
 infoSolidGeometrySky( NULL ),
-infoSolidGeometryGITraceRays( NULL ),
 infoSolidGeometryTask( NULL ),
 infoSolidGeometryRender( NULL ),
 infoSolidGeometryDecals( NULL ),
@@ -89,6 +89,9 @@ infoTransparentVolumetric( NULL )
 		
 		infoPassMasked = new deoglDebugInformation( "Masked", colorText, colorBgSub );
 		infoWorld->GetChildren().Add( infoPassMasked );
+		
+		infoGITraceRays = new deoglDebugInformation( "GI Trace Rays", colorText, colorBgSub );
+		infoWorld->GetChildren().Add( infoGITraceRays );
 		
 		infoSolidGeometry = new deoglDebugInformation( "Solid Geometry", colorText, colorBgSub );
 		infoWorld->GetChildren().Add( infoSolidGeometry );
@@ -132,9 +135,6 @@ infoTransparentVolumetric( NULL )
 		
 		infoSolidGeometrySky = new deoglDebugInformation( "Sky", colorText, colorBgSub );
 		infoSolidGeometryDetails->GetChildren().Add( infoSolidGeometrySky );
-		
-		infoSolidGeometryGITraceRays = new deoglDebugInformation( "GI Trace Rays", colorText, colorBgSub );
-		infoSolidGeometryDetails->GetChildren().Add( infoSolidGeometryGITraceRays );
 		
 		infoSolidGeometryTask = new deoglDebugInformation( "Task", colorText, colorBgSub );
 		infoSolidGeometryDetails->GetChildren().Add( infoSolidGeometryTask );
@@ -200,6 +200,7 @@ deoglRenderWorldInfo::~deoglRenderWorldInfo(){
 void deoglRenderWorldInfo::ClearAll(){
 	infoWorld->Clear();
 	infoPassMasked->Clear();
+	infoGITraceRays->Clear();
 	infoSolidGeometry->Clear();
 	infoReflection->Clear();
 	infoSSR->Clear();
@@ -215,7 +216,6 @@ void deoglRenderWorldInfo::ClearAll(){
 	infoSolidGeometryOcclusion->Clear();
 	infoSolidGeometryTranspCounter->Clear();
 	infoSolidGeometrySky->Clear();
-	infoSolidGeometryGITraceRays->Clear();
 	infoSolidGeometryTask->Clear();
 	infoSolidGeometryRender->Clear();
 	infoSolidGeometryDecals->Clear();
@@ -268,6 +268,9 @@ void deoglRenderWorldInfo::pCleanUp(){
 	if( infoPassMasked ){
 		infoPassMasked->FreeReference();
 	}
+	if( infoGITraceRays ){
+		infoGITraceRays->FreeReference();
+	}
 	if( infoSolidGeometry ){
 		infoSolidGeometry->FreeReference();
 	}
@@ -294,8 +297,7 @@ void deoglRenderWorldInfo::pCleanUp(){
 	}
 	
 	if( infoSolidGeometryDetails ){
-		GetRenderThread().GetDebug().GetDebugInformationList()
-			.RemoveIfPresent( infoSolidGeometryDetails );
+		GetRenderThread().GetDebug().GetDebugInformationList().RemoveIfPresent( infoSolidGeometryDetails );
 		infoSolidGeometryDetails->FreeReference();
 	}
 	if( infoSolidGeometryDepthTask ){
@@ -312,9 +314,6 @@ void deoglRenderWorldInfo::pCleanUp(){
 	}
 	if( infoSolidGeometrySky ){
 		infoSolidGeometrySky->FreeReference();
-	}
-	if( infoSolidGeometryGITraceRays ){
-		infoSolidGeometryGITraceRays->FreeReference();
 	}
 	if( infoSolidGeometryTask ){
 		infoSolidGeometryTask->FreeReference();

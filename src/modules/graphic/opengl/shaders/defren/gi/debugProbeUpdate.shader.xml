@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shader>
+	<name>DefRen GI Debug Probe Update</name>
+	
+	<version>130</version>
+	
+	<uniformBlock name='GIParameters' target='1'/>
+	<uniformBlock name='GIProbeIndices' target='2'/>
+	<uniformBlock name='GIProbePositions' target='3'/>
+	
+	<parameter name='pPosTransform'/> <!-- 0 -->
+	<parameter name='pTCTransform'/> <!-- 1 -->
+	<parameter name='pGIGridCoordShift'/> <!-- 2 -->
+	<parameter name='pParams'/> <!-- 3 -->
+	<parameter name='pPlaneLeft'/> <!-- 4 -->
+	<parameter name='pPlaneRight'/> <!-- 5 -->
+	<parameter name='pPlaneTop'/> <!-- 6 -->
+	<parameter name='pPlaneBottom'/> <!-- 7 -->
+	<parameter name='pPlaneNear'/> <!-- 8 -->
+	
+	<attribute name='inPosition' target='0'/>
+	
+	<output name='outColor' target='0'/>
+	
+	<sourceCode unit='vertex'>v130/vertex/defren/gi/debugProbeUpdate.glsl</sourceCode>
+	<sourceCode unit='fragment'>v130/fragment/defren/gi/debugProbeUpdate.glsl</sourceCode>
+</shader>

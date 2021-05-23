@@ -64,6 +64,7 @@
 #include "../../particle/deoglRParticleEmitterType.h"
 #include "../../propfield/deoglRPropField.h"
 #include "../../rendering/deoglRenderCanvas.h"
+#include "../../rendering/light/deoglRenderGI.h"
 #include "../../renderthread/deoglRenderThread.h"
 #include "../../renderthread/deoglRTChoices.h"
 #include "../../renderthread/deoglRTDebug.h"
@@ -753,11 +754,12 @@ void deoglRenderPlan::pPlanGI(){
 }
 
 void deoglRenderPlan::pUpdateGI(){
-	if( ! pGIState ){
+	deoglGIState * const giState = GetUpdateGIState();
+	if( ! giState ){
 		return;
 	}
 	
-	pGIState->Update( *pWorld, pCameraPosition, pCameraMatrix, pCameraFov, pCameraFov * pCameraFovRatio );
+	giState->Update( *pWorld, pCameraPosition, *pUseFrustum );
 	pRenderThread.GetRenderers().GetCanvas().SampleDebugInfoPlanPrepareGIUpdate( *this );
 }
 

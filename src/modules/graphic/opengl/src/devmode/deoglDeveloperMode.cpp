@@ -240,6 +240,7 @@ pDebugInfoDetails( 0 ),
 
 pGIShowProbes( false ),
 pGIShowProbeOffsets( false ),
+pGIShowProbeUpdate( false ),
 
 pTextureDebugImage( NULL ),
 pFBODebugImage( NULL ),
@@ -470,6 +471,10 @@ bool deoglDeveloperMode::ExecuteCommand( const decUnicodeArgumentList &command, 
 				
 			}else if( command.MatchesArgumentAt( 0, "dm_gi_show_probe_offsets" ) ){
 				pCmdGIShowProbeOffsets( command, answer );
+				result = true;
+				
+			}else if( command.MatchesArgumentAt( 0, "dm_gi_show_probe_update" ) ){
+				pCmdGIShowProbeUpdate( command, answer );
 				result = true;
 			}
 		}
@@ -1319,6 +1324,10 @@ void deoglDeveloperMode::pCmdGIShowProbes( const decUnicodeArgumentList &command
 
 void deoglDeveloperMode::pCmdGIShowProbeOffsets( const decUnicodeArgumentList &command, decUnicodeString &answer ){
 	pBaseCmdBool( command, answer, pGIShowProbeOffsets, "dm_gi_show_probe_offsets" );
+}
+
+void deoglDeveloperMode::pCmdGIShowProbeUpdate( const decUnicodeArgumentList &command, decUnicodeString &answer ){
+	pBaseCmdBool( command, answer, pGIShowProbeUpdate, "dm_gi_show_probe_update" );
 }
 
 

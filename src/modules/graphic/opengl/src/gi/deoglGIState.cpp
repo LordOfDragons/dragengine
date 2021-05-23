@@ -39,6 +39,7 @@
 #include "../renderthread/deoglRTRenderers.h"
 #include "../world/deoglRWorld.h"
 #include "../utils/collision/deoglDCollisionBox.h"
+#include "../utils/collision/deoglDCollisionFrustum.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -281,7 +282,7 @@ void deoglGIState::PrepareUBOClearProbes() const{
 #endif
 
 void deoglGIState::Update( deoglRWorld &world, const decDVector &cameraPosition,
-const decDMatrix &cameraMatrix, float fovX, float fovY ){
+const deoglDCollisionFrustum &frustum ){
 // 		pRenderThread.GetLogger().LogInfoFormat( "Update GIState %p (%g,%g,%g)",
 // 			this, cameraPosition.x, cameraPosition.y, cameraPosition.z );
 	if( pProbesHaveMoved ){
@@ -312,7 +313,7 @@ const decDMatrix &cameraMatrix, float fovX, float fovY ){
 	pUpdateProbeCount = 0;
 	pUpdatePosition( cameraPosition );
 	SPECIAL_TIMER_PRINT("UpdatePosition")
-	pPrepareTraceProbes( decDMatrix::CreateTranslation( pPosition ) * cameraMatrix, fovX, fovY );
+	pPrepareTraceProbes( frustum );
 	SPECIAL_TIMER_PRINT("PrepareTraceProbes")
 	
 	#ifdef GI_USE_RAY_LIMIT
@@ -707,38 +708,70 @@ void deoglGIState::pUpdatePosition( const decDVector &position ){
 	}
 }
 
-void deoglGIState::pPrepareTraceProbes( const decMatrix &matrixView, float fovX, float fovY ){
+void deoglGIState::pPrepareTraceProbes( const deoglDCollisionFrustum &frustum ){
 	INIT_SPECIAL_TIMING
-	pFindProbesToUpdate( matrixView, fovX, fovY );
+	pFindProbesToUpdate( frustum );
 	SPECIAL_TIMER_PRINT(">FindProbesToUpdate")
 	pPrepareProbeTexturesAndFBO();
 	SPECIAL_TIMER_PRINT(">PrepareProbeTexturesAndFBO")
 }
 
-void deoglGIState::pFindProbesToUpdate( const decMatrix &matrixView, float fovX, float fovY ){
+void deoglGIState::pFindProbesToUpdate( const deoglDCollisionFrustum &frustum ){
 	//const int maxUpdateCount = pRenderThread.GetGI().GetTraceRays().GetProbeCount();
-	const int maxUpdateCount = 1024; // 256
+	const int maxUpdateCount = 2048; // 256
 	const int maxUpdateCountOutsideView = maxUpdateCount / 5; // 20%
 	const int maxUpdateCountInsideView = maxUpdateCount - maxUpdateCountOutsideView; // 80%
 	int updateCountOutsideView = 0;
 	int updateCountInsideView = 0;
 	
 	const deoglGITraceRays &traceRays = pRenderThread.GetGI().GetTraceRays();
-	const float viewAngleX = fovX * 0.5f;
-	const float viewAngleY = fovY * 0.5f;
 	int i, last;
 	
 	pUpdateProbeCount = 0;
 	
-	// classify probes into inside view and outside view
+	// classify probes into inside view and outside view. for this we test the probe position
+	// against the frustum planes. this classifies though probes at the broder of the frustum
+	// as outside if their position is outside but their extends protrude into the frustum.
+	// as a quick fix for this the frustum planes are pushed backwards by half the maximum
+	// possible box extend to be on the safe side. since we have now a modified frustum  the
+	// near plane has to be checked too. plane normals point inside the frustum
+	// 
+	// the frustum handed to us is a camera frustum. we would have to translate all probe
+	// positions into world space to use it. this is much more expesnvie than moving the
+	// plane normals into GI space. the plane normals we can keep since GI space is not
+	// rotated. the distance though we need to adjust. we need this kind of calculation:
+	//   
+	//   distance = planeNormal * planePosition
+	//   distance' = planeNormal * (planePosition - giPosition)
+	//   distance' = planeNormal * planePosition - planeNormal * giPosition
+	//   distance' = distance - planeNormal * giPosition
+	const decVector frustumNormalLeft( frustum.GetLeftNormal() );
+	const decVector frustumNormalTop( frustum.GetTopNormal() );
+	const decVector frustumNormalRight( frustum.GetRightNormal() );
+	const decVector frustumNormalBottom( frustum.GetBottomNormal() );
+	const decVector frustumNormalNear( frustum.GetNearNormal() );
+	
+	const float frustumPlaneShift = pProbeSpacing.Length() * 0.5f;
+	
+	const float frustumDistanceLeft = ( float )( frustum.GetLeftDistance()
+		- frustum.GetLeftNormal() * pPosition ) - frustumPlaneShift;
+	const float frustumDistanceTop = ( float )( frustum.GetTopDistance()
+		- frustum.GetTopNormal() * pPosition ) - frustumPlaneShift;
+	const float frustumDistanceRight = ( float )( frustum.GetRightDistance()
+		- frustum.GetRightNormal() * pPosition ) - frustumPlaneShift;
+	const float frustumDistanceBottom = ( float )( frustum.GetBottomDistance()
+		- frustum.GetBottomNormal() * pPosition ) - frustumPlaneShift;
+	const float frustumDistanceNear = ( float )( frustum.GetNearDistance()
+		- frustum.GetNearNormal() * pPosition ) - frustumPlaneShift;
+	
 	for( i=0; i<pRealProbeCount; i++ ){
-		sProbe &probe = pProbes[ pAgedProbes[ i ] ];
+		sProbe &probe = pProbes[ i ];
 		
-		const decVector view( matrixView * probe.position );
-		const float length = view.Length();
-		
-		if( length < FLOAT_SAFE_EPSILON
-		|| ( acosf( view.z / length ) < viewAngleX && asinf( view.y / length ) < viewAngleY ) ){
+		if( ( frustumNormalNear * probe.position >= frustumDistanceNear )
+		&& ( frustumNormalLeft * probe.position >= frustumDistanceLeft )
+		&& ( frustumNormalRight * probe.position >= frustumDistanceRight )
+		&& ( frustumNormalTop * probe.position >= frustumDistanceTop )
+		&& ( frustumNormalBottom * probe.position >= frustumDistanceBottom ) ){
 			probe.flags |= epfInsideView;
 			
 		}else{
@@ -746,41 +779,24 @@ void deoglGIState::pFindProbesToUpdate( const decMatrix &matrixView, float fovX,
 		}
 	}
 	
-	// add all invalid probes up to the limits
+	// add all invalid probes inside view up to the limits
 	for( i=0, last=0; i<pRealProbeCount; i++ ){
 		sProbe &probe = pProbes[ pAgedProbes[ i ] ];
 		
-		// determine if probe has to be added (hence not exceeding the limits)
-		bool addProbe = false;
-		
-		if( ( probe.flags & epfValid ) != epfValid ){
-			if( ( probe.flags & epfInsideView ) == epfInsideView ){
-				if( updateCountInsideView < maxUpdateCountInsideView ){
-					addProbe = true;
-					updateCountInsideView++;
-				}
-				
-			}else{
-				if( updateCountOutsideView < maxUpdateCountOutsideView ){
-					addProbe = true;
-					updateCountOutsideView++;
-				}
-			}
+		if( ( probe.flags & ( epfValid | epfInsideView ) ) != epfInsideView ){
+			pAgedProbes[ last++ ] = pAgedProbes[ i ];
+			continue;
 		}
 		
 		// add probe if not exceeding the limits. the aged probes list is adjusted in a way
 		// all not added probes are packaged at the beginning. then the added probes are
 		// appended to the end of the list to obtain a full list again
-		if( addProbe ){
-			pAddUpdateProbe( probe );
-			
-			if( pUpdateProbeCount == maxUpdateCount ){
-				i++;
-				break;
-			}
-			
-		}else{
-			pAgedProbes[ last++ ] = pAgedProbes[ i ];
+		updateCountInsideView++;
+		pAddUpdateProbe( probe );
+		
+		if( pUpdateProbeCount == maxUpdateCount ){
+			i++;
+			break;
 		}
 	}
 	
@@ -788,42 +804,27 @@ void deoglGIState::pFindProbesToUpdate( const decMatrix &matrixView, float fovX,
 		pAgedProbes[ last++ ] = pAgedProbes[ i++ ];
 	}
 	
-	// add all regular probes up to the limits
+	// add all invalid probes outside view up to the limits
 	if( pUpdateProbeCount < maxUpdateCount ){
 		const int endIndex = last;
 		
 		for( i=0, last=0; i<endIndex; i++ ){
 			sProbe &probe = pProbes[ pAgedProbes[ i ] ];
 			
-			// determine if probe has to be added (hence not exceeding the limits)
-			bool addProbe = false;
-			
-			if( ( probe.flags & epfInsideView ) == epfInsideView ){
-				if( updateCountInsideView < maxUpdateCountInsideView ){
-					addProbe = true;
-					updateCountInsideView++;
-				}
-				
-			}else{
-				if( updateCountOutsideView < maxUpdateCountOutsideView ){
-					addProbe = true;
-					updateCountOutsideView++;
-				}
+			if( ( probe.flags & ( epfValid | epfInsideView ) ) != 0 ){
+				pAgedProbes[ last++ ] = pAgedProbes[ i ];
+				continue;
 			}
 			
 			// add probe if not exceeding the limits. the aged probes list is adjusted in a way
 			// all not added probes are packaged at the beginning. then the added probes are
 			// appended to the end of the list to obtain a full list again
-			if( addProbe ){
-				pAddUpdateProbe( probe );
-				
-				if( pUpdateProbeCount == maxUpdateCount ){
-					i++;
-					break;
-				}
-				
-			}else{
-				pAgedProbes[ last++ ] = pAgedProbes[ i ];
+			updateCountOutsideView++;
+			pAddUpdateProbe( probe );
+			
+			if( pUpdateProbeCount == maxUpdateCount ){
+				i++;
+				break;
 			}
 		}
 		
@@ -832,6 +833,67 @@ void deoglGIState::pFindProbesToUpdate( const decMatrix &matrixView, float fovX,
 		}
 	}
 	
+	// add all regular probes inside view up to the limits. the valid flag is not checked
+	// anymore since if we end up here with remaining update slots all invalid probes have
+	// been added. in this case only valid probes are left
+	if( pUpdateProbeCount < maxUpdateCount && updateCountInsideView < maxUpdateCountInsideView ){
+		const int endIndex = last;
+		
+		for( i=0, last=0; i<endIndex; i++ ){
+			sProbe &probe = pProbes[ pAgedProbes[ i ] ];
+			
+			if( ( probe.flags & epfInsideView ) != epfInsideView ){
+				pAgedProbes[ last++ ] = pAgedProbes[ i ];
+				continue;
+			}
+			
+			// add probe if not exceeding the limits. the aged probes list is adjusted in a way
+			// all not added probes are packaged at the beginning. then the added probes are
+			// appended to the end of the list to obtain a full list again
+			updateCountInsideView++;
+			pAddUpdateProbe( probe );
+			
+			if( pUpdateProbeCount == maxUpdateCount || updateCountInsideView == maxUpdateCountInsideView ){
+				i++;
+				break;
+			}
+		}
+		
+		while( i < endIndex ){
+			pAgedProbes[ last++ ] = pAgedProbes[ i++ ];
+		}
+	}
+	
+	// add all regular probes outside view filling up all remaining update slots
+	if( pUpdateProbeCount < maxUpdateCount ){
+		const int endIndex = last;
+		
+		for( i=0, last=0; i<endIndex; i++ ){
+			sProbe &probe = pProbes[ pAgedProbes[ i ] ];
+			
+			if( ( probe.flags & epfInsideView ) != 0 ){
+				pAgedProbes[ last++ ] = pAgedProbes[ i ];
+				continue;
+			}
+			
+			// add probe if not exceeding the limits. the aged probes list is adjusted in a way
+			// all not added probes are packaged at the beginning. then the added probes are
+			// appended to the end of the list to obtain a full list again
+			updateCountOutsideView++;
+			pAddUpdateProbe( probe );
+			
+			if( pUpdateProbeCount == maxUpdateCount ){
+				i++;
+				break;
+			}
+		}
+		
+		while( i < endIndex ){
+			pAgedProbes[ last++ ] = pAgedProbes[ i++ ];
+		}
+	}
+	
+	// finish the aged probe list to make it valid again
 	for( i=0; i<pUpdateProbeCount; i++ ){
 		pAgedProbes[ last++ ] = pUpdateProbes[ i ];
 	}
@@ -851,6 +913,7 @@ void deoglGIState::pFindProbesToUpdate( const decMatrix &matrixView, float fovX,
 		}*/
 	
 	// TODO update probe grid. for the time being 8x4x8
+#if 0
 // 	const decPoint3 spread( 16, 4, 32 ); // 2048 probes
 // 	const decPoint3 spread( 16, 4, 16 ); // 1024 probes
 	const decPoint3 spread( 8, 4, 8 ); // 256 probes
@@ -866,7 +929,7 @@ void deoglGIState::pFindProbesToUpdate( const decMatrix &matrixView, float fovX,
 			}
 		}
 	}
-	
+#endif
 	
 	// determine the required sample image size
 	pSampleImageSize.x = traceRays.GetProbesPerLine() * traceRays.GetRaysPerProbe();

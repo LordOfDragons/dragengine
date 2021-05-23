@@ -87,6 +87,7 @@ private:
 	deoglDebugInformation *pDebugInfoPlanPrepareSkyLightGIUpdateRenderTask;
 	deoglDebugInformation *pDebugInfoPlanPrepareWorld;
 	deoglDebugInformation *pDebugInfoPlanPrepareGIUpdate;
+	deoglDebugInformation *pDebugInfoPlanPrepareGITraceRays;
 	deoglDebugInformation *pDebugInfoPlanPrepareCulling;
 	deoglDebugInformation *pDebugInfoPlanPrepareEnvMaps;
 	deoglDebugInformation *pDebugInfoPlanPreparePrepareContent;
@@ -158,6 +159,7 @@ public:
 	void SampleDebugInfoPlanPrepareSkyLightGIUpdateRenderTask( deoglRenderPlan &plan, float elapsed );
 	void SampleDebugInfoPlanPrepareWorld( deoglRenderPlan &plan );
 	void SampleDebugInfoPlanPrepareGIUpdate( deoglRenderPlan &plan );
+	void SampleDebugInfoPlanPrepareGITraceRays( deoglRenderPlan &plan );
 	void SampleDebugInfoPlanPrepareCulling( deoglRenderPlan &plan );
 	void SampleDebugInfoPlanPrepareEnvMaps( deoglRenderPlan &plan );
 	void SampleDebugInfoPlanPreparePrepareContent( deoglRenderPlan &plan );

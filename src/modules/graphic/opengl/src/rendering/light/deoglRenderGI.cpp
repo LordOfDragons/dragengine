@@ -81,6 +81,7 @@
 #include "../../vao/deoglVAO.h"
 #include "../../vbo/deoglSharedVBOBlock.h"
 #include "../../world/deoglRWorld.h"
+#include "../../utils/collision/deoglDCollisionFrustum.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -147,6 +148,7 @@ pShaderLight( NULL ),
 pShaderLightGIRay( NULL ),
 pShaderDebugProbe( NULL ),
 pShaderDebugProbeOffset( NULL ),
+pShaderDebugProbeUpdate( NULL ),
 
 pRenderTask( NULL ),
 pAddToRenderTask( NULL ),
@@ -244,6 +246,9 @@ pDebugInfoGIRenderLightGIRay( NULL )
 		sources = shaderManager.GetSourcesNamed( "DefRen GI Debug Probe Offset" );
 		pShaderDebugProbeOffset = shaderManager.GetProgramWith( sources, defines );
 		
+		sources = shaderManager.GetSourcesNamed( "DefRen GI Debug Probe Update" );
+		pShaderDebugProbeUpdate = shaderManager.GetProgramWith( sources, defines );
+		
 		// render light
 		defines.RemoveAllDefines();
 		sources = shaderManager.GetSourcesNamed( "DefRen Light GI" );
@@ -314,7 +319,7 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 	deoglGIBVH &bvh = gi.GetBVH();
 	
 	if( pDebugInfoGI->GetVisible() ){
-		GetDebugTimerAt( 0 ).Reset();
+		DebugTimer1Reset( plan, true );
 	}
 	
 	#ifdef GI_USE_RAY_LIMIT
@@ -514,7 +519,7 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 		if( renderThread.GetDebug().GetDeveloperMode().GetDebugInfoSync() ){
 			glFinish();
 		}
-		pDebugInfoGITraceRays->IncrementElapsedTime( GetDebugTimerAt( 0 ).GetElapsedTime() );
+		DebugTimer1Sample( plan, *pDebugInfoGITraceRays, true );
 	}
 }
 
@@ -576,7 +581,7 @@ void deoglRenderGI::RenderMaterials( deoglRenderPlan &plan ){
 	int i, j;
 	
 	if( pDebugInfoGI->GetVisible() ){
-		GetDebugTimerAt( 0 ).Reset();
+		DebugTimer1Reset( plan, true );
 	}
 	
 	renderThread.GetFramebuffer().Activate( &materials.GetFBOMaterial() );
@@ -637,7 +642,7 @@ void deoglRenderGI::RenderMaterials( deoglRenderPlan &plan ){
 		if( renderThread.GetDebug().GetDeveloperMode().GetDebugInfoSync() ){
 			glFinish();
 		}
-		pDebugInfoGIRenderMaterials->IncrementElapsedTime( GetDebugTimerAt( 0 ).GetElapsedTime() );
+		DebugTimer1Sample( plan, *pDebugInfoGIRenderMaterials, true );
 	}
 	
 // 	materials.DEBUG();
@@ -696,7 +701,7 @@ void deoglRenderGI::UpdateProbes( deoglRenderPlan &plan ){
 	deoglGITraceRays &traceRays = gi.GetTraceRays();
 	
 	if( pDebugInfoGI->GetVisible() ){
-		GetDebugTimerAt( 0 ).Reset();
+		DebugTimer1Reset( plan, true );
 	}
 	
 	
@@ -776,7 +781,7 @@ void deoglRenderGI::UpdateProbes( deoglRenderPlan &plan ){
 		if( renderThread.GetDebug().GetDeveloperMode().GetDebugInfoSync() ){
 			glFinish();
 		}
-		pDebugInfoGIUpdateProbes->IncrementElapsedTime( GetDebugTimerAt( 0 ).GetElapsedTime() );
+		DebugTimer1Sample( plan, *pDebugInfoGIUpdateProbes, true );
 	}
 }
 
@@ -791,7 +796,7 @@ void deoglRenderGI::MoveProbes( deoglRenderPlan &plan ){
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	
 	if( pDebugInfoGI->GetVisible() ){
-		GetDebugTimerAt( 0 ).Reset();
+		DebugTimer1Reset( plan, true );
 	}
 	
 	
@@ -844,7 +849,7 @@ void deoglRenderGI::MoveProbes( deoglRenderPlan &plan ){
 		if( renderThread.GetDebug().GetDeveloperMode().GetDebugInfoSync() ){
 			glFinish();
 		}
-		pDebugInfoGIMoveProbes->IncrementElapsedTime( GetDebugTimerAt( 0 ).GetElapsedTime() );
+		DebugTimer1Sample( plan, *pDebugInfoGIMoveProbes, true );
 	}
 }
 
@@ -859,7 +864,7 @@ void deoglRenderGI::RenderLight( deoglRenderPlan &plan, bool solid ){
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	
 	if( pDebugInfoGI->GetVisible() ){
-		GetDebugTimerAt( 0 ).Reset();
+		DebugTimer1Reset( plan, true );
 	}
 	
 	RestoreFBO( plan );
@@ -896,7 +901,7 @@ void deoglRenderGI::RenderLight( deoglRenderPlan &plan, bool solid ){
 		if( renderThread.GetDebug().GetDeveloperMode().GetDebugInfoSync() ){
 			glFinish();
 		}
-		pDebugInfoGIRenderLight->IncrementElapsedTime( GetDebugTimerAt( 0 ).GetElapsedTime() );
+		DebugTimer1Sample( plan, *pDebugInfoGIRenderLight, true );
 	}
 }
 
@@ -912,7 +917,7 @@ void deoglRenderGI::RenderLightGIRay( deoglRenderPlan &plan ){
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	
 	if( pDebugInfoGI->GetVisible() ){
-		GetDebugTimerAt( 0 ).Reset();
+		DebugTimer1Reset( plan, true );
 	}
 	
 	RestoreFBOGITraceRays( *giStateUpdate );
@@ -933,7 +938,7 @@ void deoglRenderGI::RenderLightGIRay( deoglRenderPlan &plan ){
 		if( renderThread.GetDebug().GetDeveloperMode().GetDebugInfoSync() ){
 			glFinish();
 		}
-		pDebugInfoGIRenderLightGIRay->IncrementElapsedTime( GetDebugTimerAt( 0 ).GetElapsedTime() );
+		DebugTimer1Sample( plan, *pDebugInfoGIRenderLightGIRay, true );
 	}
 }
 
@@ -1008,6 +1013,67 @@ void deoglRenderGI::RenderDebugOverlay( deoglRenderPlan &plan ){
 		OGL_CHECK( renderThread, pglDrawArraysInstanced( GL_LINES, 0, 2, probeCount.x * probeCount.y * probeCount.z ) );
 	}
 	
+	// update
+	if( devmode.GetGIShowProbeUpdate() ){
+		OGL_CHECK( renderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) );
+		
+		deoglShaderCompiled &shader2 = *pShaderDebugProbeUpdate->GetCompiled();
+		shader2.Activate();
+		
+		const decPoint3 &count = giState->GetProbeCount();
+		const int probeSize = 2;
+		const int probeSpacing = 1;
+		const int groupSpacing = 4;
+		const decPoint position( 5, 300 );
+		const decPoint size(
+			( probeSize * count.x + probeSpacing * ( count.x - 1 ) ) * count.y
+				+ groupSpacing * ( count.y - 1 ),
+			( probeSize * count.z + probeSpacing * ( count.z - 1 ) ) );
+		
+		const decVector2 scale( 1.0f / ( float )plan.GetViewportWidth(), 1.0f / ( float )plan.GetViewportHeight() );
+		const decVector2 offset( scale.x * size.x - 1.0f, scale.y * size.y - 1.0f );
+		
+		shader2.SetParameterFloat( 0, scale.x * size.x, scale.y * size.y,
+			scale.x * position.x * 2.0f + offset.x, scale.y * position.y * 2.0f + offset.y );
+		shader2.SetParameterFloat( 1, ( float )size.x * 0.5f, ( float )size.y * -0.5f,
+			( float )size.x * 0.5, ( float )size.y * 0.5f );
+		shader2.SetParameterPoint3( 2, giState->GetProbeCount() - giState->GetGridCoordShift() );
+		shader2.SetParameterInt( 3, probeSize, probeSpacing, groupSpacing );
+		
+		const deoglDCollisionFrustum &frustum = *plan.GetUseFrustum();
+		
+		const decDVector &fnleft = frustum.GetLeftNormal();
+		const decDVector &fntop = frustum.GetTopNormal();
+		const decDVector &fnright = frustum.GetRightNormal();
+		const decDVector &fnbottom = frustum.GetBottomNormal();
+		const decDVector &fnnear = frustum.GetNearNormal();
+		
+		const double fpshift = 0.5 * giState->GetProbeSpacing().Length();
+		const decDVector &fmove = giState->GetPosition();
+		
+		const double fdleft = frustum.GetLeftDistance() - fnleft * fmove - fpshift;
+		const float fdtop = frustum.GetTopDistance() - fntop * fmove - fpshift;
+		const float fdright = frustum.GetRightDistance() - fnright * fmove - fpshift;
+		const float fdbottom = frustum.GetBottomDistance() - fnbottom * fmove - fpshift;
+		const float fdnear = frustum.GetNearDistance() - fnnear * fmove - fpshift;
+		
+		shader2.SetParameterFloat( 4, ( float )fnleft.x, ( float )fnleft.y, ( float )fnleft.z, ( float )fdleft );
+		shader2.SetParameterFloat( 5, ( float )fnright.x, ( float )fnright.y, ( float )fnright.z, ( float )fdright );
+		shader2.SetParameterFloat( 6, ( float )fntop.x, ( float )fntop.y, ( float )fntop.z, ( float )fdtop );
+		shader2.SetParameterFloat( 7, ( float )fnbottom.x, ( float )fnbottom.y, ( float )fnbottom.z, ( float )fdbottom );
+		shader2.SetParameterFloat( 8, ( float )fnnear.x, ( float )fnnear.y, ( float )fnnear.z, ( float )fdnear );
+
+		pActivateGIUBOs();
+		
+		OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
+		OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
+		OGL_CHECK( renderThread, glDepthFunc( GL_ALWAYS ) );
+		OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
+		OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
+		
+		defren.RenderFSQuadVAO();
+	}
+	
 	
 	// clean up
 	pglBindVertexArray( 0 );
@@ -1050,6 +1116,9 @@ void deoglRenderGI::pCleanUp(){
 		delete pRenderTask;
 	}
 	
+	if( pShaderDebugProbeUpdate ){
+		pShaderDebugProbeUpdate->RemoveUsage();
+	}
 	if( pShaderDebugProbeOffset ){
 		pShaderDebugProbeOffset->RemoveUsage();
 	}
