@@ -57,7 +57,6 @@
 #include "../occquery/deoglOcclusionQueryManager.h"
 #include "../optimizer/deoglOptimizerManager.h"
 #include "../rendering/deoglRenderCanvas.h"
-#include "../rendering/cache/deoglRenderCache.h"
 #include "../rendering/defren/deoglDeferredRendering.h"
 #include "../rendering/task/persistent/deoglPersistentRenderTaskPool.h"
 #include "../rendering/task/shared/deoglRenderTaskSharedPool.h"
@@ -118,7 +117,6 @@ pExtensions( NULL ),
 pLightBoundarybox( NULL ),
 pOccQueryMgr( NULL ),
 pGI( NULL ),
-pRenderCache( NULL ),
 pShadowMapper( NULL ),
 pTriangleSorter( NULL ),
 pPersistentRenderTaskPool( NULL ),
@@ -963,7 +961,6 @@ void deoglRenderThread::pInitThreadPhase4(){
 	pOcclusionTestPool = new deoglOcclusionTestPool( *this );
 	pPersistentRenderTaskPool = new deoglPersistentRenderTaskPool;
 	pDelayedOperations = new deoglDelayedOperations( *this );
-	pRenderCache = new deoglRenderCache( *this );
 	pShadowMapper = new deoglShadowMapper( *this );
 	pDeferredRendering = new deoglDeferredRendering( *this );
 	pEnvMapSlotManager = new deoglEnvMapSlotManager( *this );
@@ -1701,7 +1698,6 @@ void deoglRenderThread::pBeginFrame(){
 	// hickups if lots of objects are deleted.
 	pDelayedOperations->ProcessFreeOperations( false );
 	
-	pRenderCache->Clear(); // just to be safe in case an exception messed things up
 	pDelayedOperations->ProcessInitOperations();
 	
 	pPreloader->PreloadAll(); // DEPRECATED
@@ -1767,7 +1763,6 @@ void deoglRenderThread::pCaptureCanvas(){
 }
 
 void deoglRenderThread::pEndFrame(){
-	pRenderCache->Clear();
 }
 
 void deoglRenderThread::pLimitFrameRate( float elapsed ){
@@ -1942,13 +1937,6 @@ void deoglRenderThread::pCleanUpThread(){
 		}
 		#ifdef TIME_CLEANUP
 		pLogger->LogInfoFormat( "RT-CleanUp: destroy shadow mapper (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f) );
-		#endif
-		if( pRenderCache ){
-			delete pRenderCache;
-			pRenderCache = NULL;
-		}
-		#ifdef TIME_CLEANUP
-		pLogger->LogInfoFormat( "RT-CleanUp: destroy render cache (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f) );
 		#endif
 		if( pEnvMapSlotManager ){
 			delete pEnvMapSlotManager;

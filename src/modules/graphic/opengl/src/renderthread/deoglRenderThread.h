@@ -46,7 +46,6 @@ class deoglGI;
 class deoglLightBoundaryMap;
 class deoglOcclusionQueryManager;
 class deoglRCanvas;
-class deoglRenderCache;
 class deoglRRenderWindow;
 class deoglShadowMapper;
 class deoglTriangleSorter;
@@ -128,7 +127,6 @@ private:
 	deoglLightBoundaryMap *pLightBoundarybox;
 	deoglOcclusionQueryManager *pOccQueryMgr;
 	deoglGI *pGI;
-	deoglRenderCache *pRenderCache;
 	deoglShadowMapper *pShadowMapper;
 	deoglTriangleSorter *pTriangleSorter;
 	deoglPersistentRenderTaskPool *pPersistentRenderTaskPool;
@@ -293,9 +291,6 @@ public:
 	
 	/** Delayed operations manager. */
 	inline deoglDelayedOperations &GetDelayedOperations() const{ return *pDelayedOperations; }
-	
-	/** Render cache. */
-	inline deoglRenderCache &GetRenderCache() const{ return *pRenderCache; }
 	
 	/** Shadow mapper. */
 	inline deoglShadowMapper &GetShadowMapper() const{ return *pShadowMapper; }

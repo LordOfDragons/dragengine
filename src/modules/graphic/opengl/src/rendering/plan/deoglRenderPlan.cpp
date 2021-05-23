@@ -33,8 +33,6 @@
 #include "../deoglRenderOcclusion.h"
 #include "../deoglRenderReflection.h"
 #include "../deoglRenderWorld.h"
-#include "../cache/deoglRenderCacheLight.h"
-#include "../cache/deoglRenderCacheLightShadow.h"
 #include "../defren/deoglDeferredRendering.h"
 #include "../light/deoglRenderLight.h"
 #include "../lod/deoglLODCalculator.h"
@@ -1331,35 +1329,6 @@ void deoglRenderPlan::Render(){
 	
 	// to make sure we clean up everyting even after an exception try this all
 	try{
-		// update the shadow maps for all lights if not already existing
-		
-		// currently we just state what amount of memory would be used
-		/*
-		ogl.LogInfoFormat( "RenderPlan: %i lights.", pLightCount );
-		deoglRenderCacheLight *cacheLight;
-		int l, totalMemory=0, sizeSolid, sizeTransp, memSolid, memTransp;
-		for( l=0; l<pLightCount; l++ ){
-			cacheLight = pLights[ l ]->GetCacheLight();
-			deoglRenderCacheLightShadow &shadowSolid = cacheLight->GetShadowSolid();
-			sizeSolid = shadowSolid.GetSize();
-			memSolid = shadowSolid.GetMemoryConsumption();
-			if( cacheLight->GetUseTransparency() ){
-				deoglRenderCacheLightShadow &shadowTransp = cacheLight->GetShadowTransparent();
-				sizeTransp = shadowTransp.GetSize();
-				memTransp = shadowTransp.GetMemoryConsumption();
-			}else{
-				sizeTransp = 0;
-				memTransp = 0;
-			}
-			ogl.LogInfoFormat( "- light: cube=%i encDepth=%i transp=%i mem=%i ( sizeSolid=%i memSolid=%i ) ( sizeTransp=%i memTransp=%i )",
-				cacheLight->GetUseCubeMaps() ? 1 : 0, cacheLight->GetUseEncodedDepth() ? 1 : 0,
-				cacheLight->GetUseTransparency() ? 1 : 0, cacheLight->GetMemoryConsumption(),
-				sizeSolid, memSolid, sizeTransp, memTransp );
-			totalMemory += cacheLight->GetMemoryConsumption();
-		}
-		ogl.LogInfoFormat( "total memory consumption of shadow maps: %i", totalMemory );
-		*/
-		
 		pRenderThread.GetRenderers().GetWorld().RenderWorld( *this, NULL );
 		
 	}catch( const deException &e ){
@@ -2029,19 +1998,10 @@ void deoglRenderPlan::pBuildRenderPlan(){
 	// first let's simply print out the number of lights and what
 	// a conservative assignment would cause
 	pBuildLightPlan();
-	
-	// determine light probes
-	pBuildLightProbes();
 	SPECIAL_TIMER_PRINT(">Light")
 }
 
 void deoglRenderPlan::pBuildLightPlan(){
-	deoglConfiguration &config = pRenderThread.GetConfiguration();
-	const bool useEncodeDepth = config.GetUseEncodeDepth();
-	const int shadowSize = config.GetShadowMapSize();
-	deoglRenderCacheLight *cacheLight;
-	int l;
-	
 	// plan light shadow map sizes.
 	// 
 	// the static shadow maps are used across multiple frames and uses the best resolution.
@@ -2115,159 +2075,6 @@ void deoglRenderPlan::pBuildLightPlan(){
 		scambient.SetPlanStaticSize( sizeSolidStatic );
 		scambient.SetPlanDynamicSize( sizeSolidDynamic );
 	}
-	
-	// below is deprecated
-	
-	// here we walk over all lights we found and we determine for
-	// each light what kind of shadow textures are required and
-	// how much memory this is going to cost us
-	for( l=0; l<pLightCount; l++ ){
-		cacheLight = pLights[ l ]->GetCacheLight();
-		
-		// if the light has not been prepared yet we do it now
-		if( ! cacheLight->GetPrepared() ){
-			deoglRLight *light = pLights[ l ]->GetLight();
-			
-			// determine the parameters
-			cacheLight->SetUseCubeMaps( light->GetLightType() == deLight::eltPoint );
-			cacheLight->SetUseEncodedDepth( useEncodeDepth );
-			
-			// determine if we need transparency
-			cacheLight->SetUseTransparency( false );
-			//if( ! cacheLight->GetUseTransparency() ){
-				const deoglCollideList &clistStatic = *light->GetStaticCollideList();
-				const deoglCollideList &clistDynamic = *light->GetDynamicCollideList();
-				int i, count;
-				
-				count = clistStatic.GetComponentCount();
-				for( i=0; i<count; i++ ){
-					const deoglRComponent &component = *clistStatic.GetComponentAt( i )->GetComponent();
-					
-					if( ! component.GetSolid() && component.GetSkin() && component.GetSkin()->GetCastTransparentShadow() ){
-						cacheLight->SetUseTransparency( true );
-						break;
-					}
-				}
-				
-				count = clistDynamic.GetComponentCount();
-				for( i=0; i<count; i++ ){
-					const deoglRComponent &component = *clistDynamic.GetComponentAt( i )->GetComponent();
-					
-					if( ! component.GetSolid() && component.GetSkin() && component.GetSkin()->GetCastTransparentShadow() ){
-						cacheLight->SetUseTransparency( true );
-						break;
-					}
-				}
-			//}
-			
-			// now determine the size of the shadow map to use. currently this is
-			// just the shadow map size given by the configuration. the idea is to
-			// make this depedent later on the actual screen size the light covers
-			// to down-tune less important lights to gain memory and speed.
-			// also calculate the memory consumption at the same time
-			deoglRenderCacheLightShadow &shadowSolid = cacheLight->GetShadowSolid();
-			shadowSolid.SetSize( shadowSize );
-			
-			pCalcShadowMemoryConsumption( *cacheLight, shadowSolid, false );
-			
-			if( cacheLight->GetUseTransparency() ){
-				deoglRenderCacheLightShadow &shadowTransp = cacheLight->GetShadowTransparent();
-				shadowTransp.SetSize( shadowSize ); // shadowSize >> 1
-				
-				pCalcShadowMemoryConsumption( *cacheLight, shadowTransp, true );
-			}
-			
-			// now the light is prepared
-			cacheLight->SetPrepared( true );
-		}
-	}
-}
-
-void deoglRenderPlan::pCalcShadowMemoryConsumption( deoglRenderCacheLight &light, deoglRenderCacheLightShadow &shadow, bool withColor ){
-	int size, consumption, totalConsumption = 0;
-	
-	size = shadow.GetSize();
-	
-	// add depth texture memory consumption
-	consumption = size * size;
-	
-	if( light.GetUseEncodedDepth() ){
-		consumption *= 3; // RGB
-		
-	}else{
-		consumption *= 3; // 24-bit depth ( maybe different )
-	}
-	
-	if( light.GetUseCubeMaps() ){
-		consumption *= 6; // 6 sides
-	}
-	
-	totalConsumption += consumption;
-	
-	// add color texture memory consumption
-	if( withColor ){
-		consumption = size * size * 4; // RGBA
-		
-		if( light.GetUseCubeMaps() ){
-			consumption *= 6; // 6 sides
-		}
-		
-		totalConsumption += consumption;
-	}
-	
-	// set the memory consumption and also add it to the light memory consumption
-	shadow.SetMemoryConsumption( totalConsumption );
-	light.SetMemoryConsumption( light.GetMemoryConsumption() + totalConsumption );
-}
-
-void deoglRenderPlan::pBuildLightProbes(){
-#if 0
-	deoglLightProbeTexture &probes = pRenderThread.GetRenderers().GetLight()->GetLightProbesTexture();
-	
-	// clear the light probles
-	probes.RemoveAllProbes();
-	
-	// add a probe for each visible particle
-	const deoglParticleEmitterList &particleEmitterList = pCollideList.GetParticleEmitterList();
-	const int particleEmitterCount = particleEmitterList.GetCount();
-	decMatrix matrixMV;
-	deSkin *engSkin;
-	deoglSkin *skin;
-	int i, p;
-	
-	for( i=0; i<particleEmitterCount; i++ ){
-		const deoglParticleEmitter &emitter = *particleEmitterList.GetAt( i );
-		const int particleCount = emitter.GetParticleCount();
-		
-		if( particleCount > 0 ){
-			const deParticleEmitter &engEmitter = *emitter.GetParticleEmitter();
-			engSkin = engEmitter.GetSkin();
-			
-			if( engSkin ){
-				skin = ( deoglSkin* )engSkin->GetPeerGraphic();
-				
-				if( ! skin->GetIsSolid() ){
-					const deoglParticleEmitter::sParticle *particles = emitter.GetParticles();
-					
-					matrixMV = ( decDMatrix::CreateTranslation( engEmitter.GetPosition() ) * pCameraMatrix ).ToMatrix();
-					
-					// NOTE: it would be enough to store the index of the first probe in the particle emitter. this
-					// way during rendering the actual probe texture coordinates can be retrieved.
-					for( p=0; p<particleCount; p++ ){
-						// particleProbeIndex = probes.GetProbeCount();
-						probes.AddProbe( matrixMV * particles[ p ].position );
-					}
-				}
-			}
-		}
-	}
-	
-	// update the probes
-	probes.Update();
-	
-	// debug
-	//pRenderThread.GetLogger().LogInfoFormat( "RenderPlan: light probe count = %i\n", probes.GetProbeCount() );
-#endif
 }
 
 

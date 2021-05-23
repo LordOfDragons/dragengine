@@ -23,8 +23,6 @@
 #include <string.h>
 
 #include "deoglRenderPlanLight.h"
-#include "../cache/deoglRenderCache.h"
-#include "../cache/deoglRenderCacheLight.h"
 #include "../../light/deoglRLight.h"
 #include "../../renderthread/deoglRenderThread.h"
 
@@ -33,15 +31,14 @@
 
 
 // Class deoglRenderPlanLight
-////////////////////////////////
+///////////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
 
 deoglRenderPlanLight::deoglRenderPlanLight( deoglRenderThread &renderThread ) :
 pRenderThread( renderThread ),
-pLight( NULL ),
-pCacheLight( NULL ){
+pLight( NULL ){
 }
 
 deoglRenderPlanLight::~deoglRenderPlanLight(){
@@ -53,14 +50,5 @@ deoglRenderPlanLight::~deoglRenderPlanLight(){
 ///////////////
 
 void deoglRenderPlanLight::SetLight( deoglRLight *light ){
-	if( light != pLight ){
-		pLight = light;
-		
-		if( light ){
-			pCacheLight = pRenderThread.GetRenderCache().GetLightFor( light );
-			
-		}else{
-			pCacheLight = NULL;
-		}
-	}
+	pLight = light;
 }

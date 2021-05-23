@@ -26,7 +26,6 @@
 
 class deoglRenderThread;
 class deoglRLight;
-class deoglRenderCacheLight;
 
 
 
@@ -38,8 +37,6 @@ private:
 	deoglRenderThread &pRenderThread;
 	
 	deoglRLight *pLight;
-	
-	deoglRenderCacheLight *pCacheLight;
 	
 	
 	
@@ -62,9 +59,6 @@ public:
 	
 	/** \brief Set light. */
 	void SetLight( deoglRLight *light );
-	
-	/** \brief Cache light. */
-	inline deoglRenderCacheLight *GetCacheLight(){ return pCacheLight; }
 	/*@}*/
 };
 

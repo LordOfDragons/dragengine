@@ -111,8 +111,6 @@
 
 #include "propfield/deoglPropField.h"
 
-#include "rendering/cache/deoglRenderCache.h"
-
 #include "window/deoglRenderWindow.h"
 
 #include "sensor/deoglLumimeter.h"

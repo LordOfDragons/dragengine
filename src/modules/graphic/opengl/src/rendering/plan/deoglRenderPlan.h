@@ -45,8 +45,6 @@ class deoglOcclusionTest;
 class deoglGIState;
 class deoglRenderPlanEnvMap;
 class deoglPlanVisitorCullElements;
-class deoglRenderCacheLight;
-class deoglRenderCacheLightShadow;
 class deoglRenderPlanDebug;
 class deoglRenderPlanLight;
 class deoglRenderPlanMasked;
@@ -747,9 +745,6 @@ private:
 	void pCheckTransparency();
 	void pBuildRenderPlan();
 	void pBuildLightPlan();
-	void pCalcShadowMemoryConsumption( deoglRenderCacheLight &light,
-		deoglRenderCacheLightShadow &shadow, bool withColor );
-	void pBuildLightProbes();
 	
 	void pUpdateHTView();
 	void pUpdateHTViewRTSInstances();
