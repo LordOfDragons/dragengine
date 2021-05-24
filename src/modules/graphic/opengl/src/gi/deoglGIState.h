@@ -61,10 +61,13 @@ public:
 		decPoint3 shiftedCoord;
 		decVector position;
 		decVector offset;
+		decVector minExtend;
+		decVector maxExtend;
 		uint16_t index; //<! Grid index
 		uint8_t flags;
 		uint8_t countOffsetMoved;
 	};
+	
 	
 	
 private:
@@ -74,7 +77,8 @@ private:
 	decVector pProbeSpacingInv;
 	decPoint3 pProbeCount;
 	decPoint3 pGridCoordClamp;
-	decVector pProbeOrigin;
+	decVector pFieldSize;
+	decVector pFieldOrigin;
 	decVector pPositionClamp;
 	int pStrideProbeCount;
 	int pRealProbeCount;
@@ -125,6 +129,10 @@ private:
 	bool pClearMaps;
 	bool pProbesHaveMoved;
 	
+	GLuint pVBOProbeExtends;
+	GLfloat *pVBOProbeExtendsData;
+	bool pProbesExtendsChanged;
+	
 	deoglGIInstances pInstances;
 	deoglGIRays pRays;
 	
@@ -159,8 +167,11 @@ public:
 	/** Grid coord clamp. */
 	inline const decPoint3 &GetGridCoordClamp() const{ return pGridCoordClamp; }
 	
-	/** Probe origin. */
-	inline const decVector &GetProbeOrigin() const{ return pProbeOrigin; }
+	/** Probe field origin. */
+	inline const decVector &GetFieldOrigin() const{ return pFieldOrigin; }
+	
+	/** Size of probe field. */
+	inline const decVector &GetFieldSize() const{ return pFieldSize; }
 	
 	/** Position clamp. */
 	inline const decVector &GetPositionClamp() const{ return pPositionClamp; }
@@ -293,6 +304,9 @@ public:
 	/** Probe offset fbo. */
 	inline deoglFramebuffer &GetFBOProbeOffset(){ return pFBOProbeOffset; }
 	
+	/** Probe extends feedback VBO. */
+	inline GLuint GetVBOProbeExtends() const{ return pVBOProbeExtends; }
+	
 	/** Update. */
 	void Update( deoglRWorld &world, const decDVector &cameraPosition,
 		const deoglDCollisionFrustum &frustum );
@@ -314,6 +328,9 @@ public:
 	
 	/** Update probe offsets from probe offset texture. */
 	void UpdateProbeOffsetFromTexture();
+	
+	/** Update probe extends from probe extends VBO. */
+	void UpdateProbeExtendsFromVBO();
 	
 	/** Validate ray caches marked for update. */
 	void ValidatedRayCaches();
@@ -346,6 +363,7 @@ private:
 	void pPrepareRayLimitProbes();
 	void pPrepareRayCacheProbes();
 	void pPrepareProbeTexturesAndFBO();
+	void pPrepareProbeVBO();
 	void pPrepareUBOParameters() const;
 	void pPrepareUBORayDirections() const;
 };

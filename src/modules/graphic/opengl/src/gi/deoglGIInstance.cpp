@@ -50,18 +50,24 @@ pInstance( instance ){
 }
 
 void deoglGIInstance::cComponentListener::ComponentDestroyed( deoglRComponent& ){
+	const bool dynamic = pInstance.GetDynamic();
 	pInstance.Clear();
 	pInstance.SetChanged( true );
+	pInstance.SetDynamic( dynamic );
 }
 
 void deoglGIInstance::cComponentListener::ParentWorldChanged( deoglRComponent& ){
+	const bool dynamic = pInstance.GetDynamic();
 	pInstance.Clear();
 	pInstance.SetChanged( true );
+	pInstance.SetDynamic( dynamic );
 }
 
 void deoglGIInstance::cComponentListener::LayerMaskChanged( deoglRComponent& ){
+	const bool dynamic = pInstance.GetDynamic();
 	pInstance.Clear();
 	pInstance.SetChanged( true );
+	pInstance.SetDynamic( dynamic );
 }
 
 void deoglGIInstance::cComponentListener::BoundariesChanged( deoglRComponent& ){

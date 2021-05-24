@@ -25,7 +25,7 @@ UBOLAYOUT uniform GIParameters{
 	vec3 pGIGridOrigin;
 	ivec3 pGIGridCoordUnshift;
 	
-	vec3 pGIFieldOrigin;
+	vec3 pGIFieldSize;
 	float pGIBlendUpdateProbe;
 	
 	vec3 pGIMoveMaxOffset;

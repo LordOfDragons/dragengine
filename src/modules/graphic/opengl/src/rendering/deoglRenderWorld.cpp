@@ -521,6 +521,7 @@ DEBUG_RESET_TIMER
 			DebugTimer2Sample( plan, *pDebugInfo.infoDebugDrawers, true );
 		}
 		
+		renderers.GetLight().GetRenderGI().ProbeExtends( plan );
 		renderers.GetLight().GetRenderGI().MoveProbes( plan );
 		
 		// effects

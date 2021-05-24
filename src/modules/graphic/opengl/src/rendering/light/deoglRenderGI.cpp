@@ -144,6 +144,7 @@ pShaderUpdateProbeDistance( NULL ),
 pShaderClearProbeIrradiance( NULL ),
 pShaderClearProbeDistance( NULL ),
 pShaderMoveProbes( NULL ),
+pShaderProbeExtends( NULL ),
 pShaderLight( NULL ),
 pShaderLightGIRay( NULL ),
 pShaderDebugProbe( NULL ),
@@ -238,6 +239,10 @@ pDebugInfoGIRenderLightGIRay( NULL )
 		#endif
 		pShaderMoveProbes = shaderManager.GetProgramWith( sources, defines );
 		defines.RemoveDefine( "WITH_RAY_CACHE" );
+		
+		// probe extends
+		sources = shaderManager.GetSourcesNamed( "DefRen GI Probe Extends" );
+		pShaderProbeExtends = shaderManager.GetProgramWith( sources, defines );
 		
 		// debug
 		sources = shaderManager.GetSourcesNamed( "DefRen GI Debug Probe" );
@@ -534,7 +539,7 @@ void deoglRenderGI::PrepareUBORenderLight( deoglRenderPlan &plan ){
 	ubo.MapBuffer();
 	try{
 		const decDMatrix matrix( plan.GetInverseCameraMatrix()
-			* decDMatrix::CreateTranslation( -( giState->GetPosition() + giState->GetProbeOrigin() ) ) );
+			* decDMatrix::CreateTranslation( -( giState->GetPosition() + giState->GetFieldOrigin() ) ) );
 		
 		ubo.SetParameterDataMat4x3( euprlMatrix, matrix );
 		ubo.SetParameterDataMat3x3( euprlMatrixNormal, matrix.GetRotationMatrix().QuickInvert() );
@@ -853,6 +858,45 @@ void deoglRenderGI::MoveProbes( deoglRenderPlan &plan ){
 	}
 }
 
+void deoglRenderGI::ProbeExtends( deoglRenderPlan &plan ){
+	deoglGIState * const giState = plan.GetUpdateGIState();
+	if( ! giState || giState->GetRayCacheProbeCount() == 0 ){
+		return;
+	}
+	
+	deoglRenderThread &renderThread = GetRenderThread();
+	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
+	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
+	
+	if( pDebugInfoGI->GetVisible() ){
+		DebugTimer1Reset( plan, true );
+	}
+	
+	renderThread.GetShader().ActivateShader( pShaderProbeExtends );
+	pActivateGIUBOs();
+	
+	renderThread.GetFramebuffer().Activate( &giState->GetFBOProbeOffset() ); // unimportant since not written to
+	
+	#ifdef GI_MOVE_PROBES_RAY_CACHE
+		tsmgr.EnableTexture( 0, giState->GetRays().GetTextureDistance(), GetSamplerClampNearest() );
+	#else
+		tsmgr.EnableTexture( 0, gi.GetTraceRays().GetTexturePosition(), GetSamplerClampNearest() );
+	#endif
+	tsmgr.DisableStagesAbove( 0 );
+	
+	OGL_CHECK( renderThread, glColorMask( GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE ) );
+	OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
+	
+	OGL_CHECK( renderThread, glEnable( GL_RASTERIZER_DISCARD ) );
+	OGL_CHECK( renderThread, pglBindBufferBase( GL_TRANSFORM_FEEDBACK_BUFFER, 0, giState->GetVBOProbeExtends() ) );
+	OGL_CHECK( renderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) ); // unimportant since not used
+	OGL_CHECK( renderThread, pglBeginTransformFeedback( GL_POINTS ) );
+	OGL_CHECK( renderThread, pglDrawArraysInstanced( GL_POINTS, 0, 1, giState->GetRayCacheProbeCount() ) );
+	OGL_CHECK( renderThread, pglEndTransformFeedback() );
+	OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
+	OGL_CHECK( renderThread, glDisable( GL_RASTERIZER_DISCARD ) );
+}
+
 void deoglRenderGI::RenderLight( deoglRenderPlan &plan, bool solid ){
 	deoglGIState * const giState = plan.GetRenderGIState();
 	if( ! giState ){
@@ -956,7 +1000,7 @@ void deoglRenderGI::RenderDebugOverlay( deoglRenderPlan &plan ){
 	
 	const decPoint3 &probeCount = giState->GetProbeCount();
 	const decDMatrix matrixC( decDMatrix::CreateTranslation( giState->GetPosition()
-		+ decDVector( giState->GetProbeOrigin() ) ) * plan.GetCameraMatrix() );
+		+ decDVector( giState->GetFieldOrigin() ) ) * plan.GetCameraMatrix() );
 	const decDMatrix matrixCP( matrixC * decDMatrix( plan.GetProjectionMatrix() ) );
 	
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
@@ -1163,6 +1207,9 @@ void deoglRenderGI::pCleanUp(){
 	}
 	if( pShaderMoveProbes ){
 		pShaderMoveProbes->RemoveUsage();
+	}
+	if( pShaderProbeExtends ){
+		pShaderProbeExtends->RemoveUsage();
 	}
 	if( pShaderClearProbeIrradiance ){
 		pShaderClearProbeIrradiance->RemoveUsage();

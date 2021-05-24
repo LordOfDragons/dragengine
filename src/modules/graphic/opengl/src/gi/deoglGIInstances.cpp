@@ -187,6 +187,15 @@ bool deoglGIInstances::AddComponents( deoglCollideList &list ){
 		const bool isStatic = IsComponentStatic( component );
 		NextFreeSlot().SetComponent( &component, ! isStatic );
 		if( isStatic ){
+			// TODO we have a problem here. the component can show up because either it has been
+			//      added to the world or is now inside the moved GI area. only if the
+			//      
+			// TODO add a box around each probe storing the minium and maximum extends retrieved
+			//      from the cached ray distances. changes to components (including adding and
+			//      removing them) should only invalidate probes with overlapping boxes. this
+			//      works since the box stores the largest distance from the probe position.
+			//      changes outside this box can not affect the result of the ray casting neither
+			//      the cached results nor the dynamic results
 			anyAdded = true;
 		}
 		
@@ -218,8 +227,20 @@ bool deoglGIInstances::RemoveComponents( deoglCollideList &list ){
 	for( i=0; i<count; i++ ){
 		deoglGIInstance &instance = *( ( deoglGIInstance* )pInstances.GetAt( i ) );
 		if( ! instance.GetComponent() ){
+			// note about this check. components can be removed for two reasons. either
+			// the component has been removed from the game world or the component left
+			// the GI area. if the component leaves the game world then the cached ray
+			// results potentially change and the caches have to be discarded. if the
+			// component though just leaves the GI area then the cached results can be
+			// kept. if the component leaves the game world deoglGIInstance will be
+			// cleared but the dynamic flag restored. this way the two situations can
+			// be told apart by checking if the component is still set. if it has been
+			// cleared the component left the world
+			anyRemoved |= ! instance.GetDynamic();
+			
 			continue;
 		}
+		
 		if( ! instance.GetComponent()->GetMarked() ){
 			continue;
 		}
@@ -232,9 +253,6 @@ bool deoglGIInstances::RemoveComponents( deoglCollideList &list ){
 // 		}
 		
 		instance.Clear();
-		if( ! instance.GetDynamic() ){
-			anyRemoved = true;
-		}
 	}
 	
 	return anyRemoved;

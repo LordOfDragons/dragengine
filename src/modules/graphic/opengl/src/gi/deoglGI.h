@@ -70,7 +70,7 @@ public:
 		eupDepthSharpness, // float
 		eupGridOrigin, // vec3
 		eupGridCoordUnshift, // ivec3
-		eupFieldOrigin, // vec3
+		eupFieldSize, // vec3
 		eupBlendUpdateProbe, // float
 		eupMoveMaxOffset, // vec3
 		eupMoveMinDistToSurface, // float
