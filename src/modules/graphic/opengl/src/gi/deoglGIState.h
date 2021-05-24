@@ -342,7 +342,6 @@ private:
 	void pUpdatePosition( const decDVector &position );
 	void pPrepareTraceProbes( const deoglDCollisionFrustum &frustum );
 	void pFindProbesToUpdate( const deoglDCollisionFrustum &frustum );
-	void pBinWeightedProbe( sProbe *probe, float weight );
 	void pAddUpdateProbe( sProbe &probe );
 	void pPrepareRayLimitProbes();
 	void pPrepareRayCacheProbes();

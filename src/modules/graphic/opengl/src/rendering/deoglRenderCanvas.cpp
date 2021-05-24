@@ -800,7 +800,7 @@ const deoglRCanvasRenderWorld &canvas ){
 	
 	if( pDebugInfoCanvas->GetVisible() ){
 		// ATTENTION RenderWorld also does printing developer mode information. The mearures time
-		//           for Canvas and RenderThread are going to be higher my 4-6ms due to this
+		//           for Canvas and RenderThread are going to be higher by 4-6ms due to this
 		pDebugTimeCanvasRenderWorld += GetDebugTimerAt( 0 ).GetElapsedTime();
 		pDebugCountCanvasRenderWorld++;
 	}

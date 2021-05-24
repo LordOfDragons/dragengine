@@ -403,6 +403,7 @@ DEBUG_RESET_TIMER
 		if( ! mask ){
 			renderers.GetToneMap().LuminancePrepare( plan );
 // 			renderers.GetGeometryPass().RenderLuminanceOnly( plan );
+			DebugTimer2Sample( plan, *pDebugInfo.infoLuminancePrepare, true );
 		}
 		
 		DBG_ENTER("RenderLights")
