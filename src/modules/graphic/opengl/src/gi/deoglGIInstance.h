@@ -68,11 +68,13 @@ private:
 	deoglRComponent *pOcclusionMesh;
 	deObjectReference pComponentListener;
 	
+	decDVector pMinExtend;
+	decDVector pMaxExtend;
+	
 	deoglGIBVHLocal *pGIBVHLocal;
 	deoglGIBVHDynamic *pGIBVHDynamic;
-	
-	decVector pMinExtend;
-	decVector pMaxExtend;
+	decVector pBVHMinExtend;
+	decVector pBVHMaxExtend;
 	int pIndexNodes;
 	int pIndexFaces;
 	int pIndexVertices;
@@ -86,6 +88,7 @@ private:
 	
 	bool pDynamic;
 	bool pChanged;
+	bool pMoved;
 	bool pRecheckDynamic;
 	
 	
@@ -118,6 +121,17 @@ public:
 	
 	
 	
+	/** Tracked instance minimum extend in world space. */
+	inline const decDVector &GetMinimumExtend() const{ return pMinExtend; }
+	
+	/** Tracked instance maximum extend in world space. */
+	inline const decDVector &GetMaximumExtend() const{ return pMaxExtend; }
+	
+	/** Set tracked instance extends in world space. */
+	void SetExtends( const decDVector &minExtend, const decDVector &maxExtend );
+	
+	
+	
 	/** Local GI BVH or NULL. */
 	inline deoglGIBVHLocal *GetGIBVHLocal() const{ return pGIBVHLocal; }
 	
@@ -125,10 +139,10 @@ public:
 	inline deoglGIBVHDynamic *GetGIBVHDynamic() const{ return pGIBVHDynamic; }
 	
 	/** Local minimum extend for BVH. */
-	inline const decVector &GetMinimumExtend() const{ return pMinExtend; }
+	inline const decVector &GetBVHMinimumExtend() const{ return pBVHMinExtend; }
 	
 	/** Local maximum extend for BVH. */
-	inline const decVector &GetMaximumExtend() const{ return pMaxExtend; }
+	inline const decVector &GetBVHMaximumExtend() const{ return pBVHMaxExtend; }
 	
 	/** First BVH node index. */
 	inline int GetIndexNodes() const{ return pIndexNodes; }
@@ -142,8 +156,8 @@ public:
 	/** BVH has nodes. */
 	inline bool GetHasBVHNodes() const{ return pHasBVHNodes; }
 	
-	/** Update extends. */
-	void UpdateExtends();
+	/** Update BVH local extends. */
+	void UpdateBVHExtends();
 	
 	
 	
@@ -158,6 +172,12 @@ public:
 	
 	/** Set instance changed in a way ray cast results are invalidated. */
 	void SetChanged( bool changed );
+	
+	/** Instance moved. */
+	inline bool GetMoved() const{ return pMoved; }
+	
+	/** Set instance moved. */
+	void SetMoved( bool moved );
 	
 	/** Slot dynamic state potentially changed. */
 	inline bool GetRecheckDynamic() const{ return pRecheckDynamic; }

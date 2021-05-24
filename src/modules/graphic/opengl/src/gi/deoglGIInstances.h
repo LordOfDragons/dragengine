@@ -26,7 +26,9 @@
 #include <dragengine/common/collection/decObjectList.h>
 
 class deoglCollideList;
+class deoglRComponent;
 class deoglGIInstance;
+class deoglGIState;
 class deoglRenderThread;
 
 
@@ -38,7 +40,7 @@ class deoglRenderThread;
  */
 class deoglGIInstances{
 private:
-	deoglRenderThread &pRenderThread;
+	deoglGIState &pGIState;
 	
 	decObjectList pInstances;
 	
@@ -48,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create global illumination ray tracing. */
-	deoglGIInstances( deoglRenderThread &renderThread );
+	deoglGIInstances( deoglGIState &giState );
 	
 	/** Clean up global illumination ray tracing. */
 	~deoglGIInstances();
@@ -58,8 +60,8 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** Render thread. */
-	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
+	/** GI state. */
+	inline deoglGIState &GetGIState() const{ return pGIState; }
 	
 	/** Classify content. */
 	static bool IsComponentStatic( const deoglRComponent &component );
@@ -78,22 +80,16 @@ public:
 	deoglGIInstance &NextFreeSlot();
 	
 	/** One or more static instances have changed. */
-	bool AnyChanged() const;
-	
-	/** One or more static components have changed. */
-	bool AnyComponentChanged() const;
-	
-	/** One or more static occlusion meshes have changed. */
-	bool AnyOcclusionMeshChanged() const;
+	void AnyChanged() const;
 	
 	/** Clear changed flag of all instances. */
 	void ClearAllChanged();
 	
-	/** Add components if not present. Returns true if static components have been added. */
-	bool AddComponents( deoglCollideList &list );
+	/** Add components if not present */
+	void AddComponents( deoglCollideList &list );
 	
-	/** Remove components if present. Returns true if static components have been removed. */
-	bool RemoveComponents( deoglCollideList &list );
+	/** Remove components if present */
+	void RemoveComponents( deoglCollideList &list );
 	
 	/** Add occlusion meshes if not present already. Returns true if static occlusion meshes have been added. */
 	bool AddOcclusionMeshes( deoglCollideList &list );

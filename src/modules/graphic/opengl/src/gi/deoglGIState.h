@@ -332,6 +332,9 @@ public:
 	/** Update probe extends from probe extends VBO. */
 	void UpdateProbeExtendsFromVBO();
 	
+	/** Invalidate area. */
+	void InvalidateArea( const decDVector &minExtend, const decDVector &maxExtend );
+	
 	/** Validate ray caches marked for update. */
 	void ValidatedRayCaches();
 	
@@ -364,7 +367,7 @@ private:
 	void pPrepareRayCacheProbes();
 	void pPrepareProbeTexturesAndFBO();
 	void pPrepareProbeVBO();
-	void pPrepareUBOParameters() const;
+	void pPrepareUBOParameters( int probeCount ) const;
 	void pPrepareUBORayDirections() const;
 };
 

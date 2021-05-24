@@ -72,6 +72,7 @@ void deoglGIInstance::cComponentListener::LayerMaskChanged( deoglRComponent& ){
 
 void deoglGIInstance::cComponentListener::BoundariesChanged( deoglRComponent& ){
 	pInstance.SetChanged( true );
+	pInstance.SetMoved( true );
 }
 
 void deoglGIInstance::cComponentListener::OcclusionMeshChanged( deoglRComponent& ){
@@ -117,6 +118,7 @@ pTBOMaterial( NULL ),
 pTBOMaterial2( NULL ),
 pDynamic( false ),
 pChanged( false ),
+pMoved( false ),
 pRecheckDynamic( false )
 {
 	try{
@@ -148,11 +150,15 @@ void deoglGIInstance::SetComponent( deoglRComponent *component, bool dynamic ){
 	pComponent = component;
 	pDynamic = dynamic;
 	pChanged = false;
+	pMoved = false;
 	pRecheckDynamic = false;
 	
 	if( ! component ){
 		return;
 	}
+	
+	pMinExtend = component->GetMinimumExtend();
+	pMaxExtend = component->GetMaximumExtend();
 	
 	if( ! pComponentListener ){
 		pComponentListener.TakeOver( new cComponentListener( *this ) );
@@ -199,7 +205,11 @@ void deoglGIInstance::SetOcclusionMesh( deoglRComponent *occlusionMesh, bool dyn
 	pOcclusionMesh = occlusionMesh;
 	pDynamic = dynamic;
 	pChanged = false;
+	pMoved = false;
 	pRecheckDynamic = false;
+	
+	pMinExtend = occlusionMesh->GetMinimumExtend();
+	pMaxExtend = occlusionMesh->GetMaximumExtend();
 	
 	if( occlusionMesh ){
 		if( ! pComponentListener ){
@@ -209,10 +219,15 @@ void deoglGIInstance::SetOcclusionMesh( deoglRComponent *occlusionMesh, bool dyn
 	}
 }
 
-void deoglGIInstance::UpdateExtends(){
+void deoglGIInstance::SetExtends( const decDVector &minExtend, const decDVector &maxExtend ){
+	pMinExtend = minExtend;
+	pMaxExtend = maxExtend;
+}
+
+void deoglGIInstance::UpdateBVHExtends(){
 	if( pGIBVHDynamic ){
-		pMinExtend = pGIBVHDynamic->GetMinimumExtend();
-		pMaxExtend = pGIBVHDynamic->GetMaximumExtend();
+		pBVHMinExtend = pGIBVHDynamic->GetMinimumExtend();
+		pBVHMaxExtend = pGIBVHDynamic->GetMaximumExtend();
 	}
 }
 
@@ -227,6 +242,10 @@ void deoglGIInstance::SetDynamic( bool dynamic ){
 
 void deoglGIInstance::SetChanged( bool changed ){
 	pChanged = changed;
+}
+
+void deoglGIInstance::SetMoved( bool moved ){
+	pMoved = moved;
 }
 
 void deoglGIInstance::SetRecheckDynamic( bool recheckDynamic ){
@@ -244,8 +263,8 @@ void deoglGIInstance::Clear(){
 	pIndexNodes = 0;
 	pIndexFaces = 0;
 	pIndexVertices = 0;
-	pMinExtend.SetZero();
-	pMaxExtend.SetZero();
+	pBVHMinExtend.SetZero();
+	pBVHMaxExtend.SetZero();
 	pHasBVHNodes = false;
 	
 	pDynamic = false;
@@ -366,8 +385,8 @@ void deoglGIInstance::pInitParameters(){
 		const deoglBVHNode * const rootNode = pGIBVHLocal->GetBVH().GetRootNode();
 		if( rootNode ){
 			pHasBVHNodes = true;
-			pMinExtend = rootNode->GetMinExtend();
-			pMaxExtend = rootNode->GetMaxExtend();
+			pBVHMinExtend = rootNode->GetMinExtend();
+			pBVHMaxExtend = rootNode->GetMaxExtend();
 		}
 		
 	}else if( pGIBVHDynamic ){
@@ -387,7 +406,7 @@ void deoglGIInstance::pInitParameters(){
 		}
 		
 		pHasBVHNodes = pGIBVHDynamic->GetGIBVHLocal().GetBVH().GetRootNode() != NULL;
-		pMinExtend = pGIBVHDynamic->GetMinimumExtend();
-		pMaxExtend = pGIBVHDynamic->GetMaximumExtend();
+		pBVHMinExtend = pGIBVHDynamic->GetMinimumExtend();
+		pBVHMaxExtend = pGIBVHDynamic->GetMaximumExtend();
 	}
 }

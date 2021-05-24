@@ -23,6 +23,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "deoglGIState.h"
 #include "deoglGIInstance.h"
 #include "deoglGIInstances.h"
 #include "../renderthread/deoglRenderThread.h"
@@ -44,8 +45,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglGIInstances::deoglGIInstances( deoglRenderThread &renderThread ) :
-pRenderThread( renderThread  ){
+deoglGIInstances::deoglGIInstances( deoglGIState &giState ) :
+pGIState( giState  ){
 }
 
 deoglGIInstances::~deoglGIInstances(){
@@ -78,7 +79,7 @@ deoglGIInstance &deoglGIInstances::GetInstanceAt( int slot ) const{
 
 deoglGIInstance &deoglGIInstances::AddInstance(){
 	deObjectReference ref;
-	ref.TakeOver( new deoglGIInstance( pRenderThread ) );
+	ref.TakeOver( new deoglGIInstance( pGIState.GetRenderThread() ) );
 	pInstances.Add( ref );
 	
 	return ( deoglGIInstance& )( deObject& )ref;
@@ -98,9 +99,8 @@ deoglGIInstance &deoglGIInstances::NextFreeSlot(){
 	return AddInstance();
 }
 
-bool deoglGIInstances::AnyChanged() const{
+void deoglGIInstances::AnyChanged() const{
 	const int count = pInstances.GetCount();
-	bool changed = false;
 	int i;
 	
 	for( i=0; i<count; i++ ){
@@ -109,7 +109,7 @@ bool deoglGIInstances::AnyChanged() const{
 			continue;
 		}
 		
-		changed |= ! instance.GetDynamic();
+		bool invalidate = ! instance.GetDynamic();
 		
 		if( instance.GetRecheckDynamic() ){
 			instance.SetRecheckDynamic( false );
@@ -126,39 +126,31 @@ bool deoglGIInstances::AnyChanged() const{
 				instance.SetDynamic( false );
 			}
 			
-			changed |= instance.GetDynamic() != dynamic;
+			invalidate |= instance.GetDynamic() != dynamic;
+		}
+		
+		if( invalidate ){
+// 				pGIState.GetRenderThread().GetLogger().LogInfoFormat("GIInstances.AnyChanged: %s",
+// 					instance.GetComponent()?instance.GetComponent()->GetModel()->GetFilename().GetString():"-");
+			pGIState.InvalidateArea( instance.GetMinimumExtend(), instance.GetMaximumExtend() );
+		}
+		
+		if( instance.GetMoved() ){
+			instance.SetMoved( false );
+			
+			if( instance.GetComponent() ){
+				const decDVector &minExtend = instance.GetComponent()->GetMinimumExtend();
+				const decDVector &maxExtend = instance.GetComponent()->GetMaximumExtend();
+				instance.SetExtends( minExtend, maxExtend );
+				
+				if( invalidate ){
+// 						pGIState.GetRenderThread().GetLogger().LogInfoFormat("GIInstances.AnyChanged: Moved %s",
+// 							instance.GetComponent()?instance.GetComponent()->GetModel()->GetFilename().GetString():"-");
+					pGIState.InvalidateArea( minExtend, maxExtend );
+				}
+			}
 		}
 	}
-	
-	return changed;
-}
-
-bool deoglGIInstances::AnyComponentChanged() const{
-	const int count = pInstances.GetCount();
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		const deoglGIInstance &instance = *( ( deoglGIInstance* )pInstances.GetAt( i ) );
-		if( instance.GetComponent() && instance.GetChanged() && ! instance.GetDynamic() ){
-			return true;
-		}
-	}
-	
-	return false;
-}
-
-bool deoglGIInstances::AnyOcclusionMeshChanged() const{
-	const int count = pInstances.GetCount();
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		const deoglGIInstance &instance = *( ( deoglGIInstance* )pInstances.GetAt( i ) );
-		if( instance.GetOcclusionMesh() && instance.GetChanged() && ! instance.GetDynamic() ){
-			return true;
-		}
-	}
-	
-	return false;
 }
 
 void deoglGIInstances::ClearAllChanged(){
@@ -170,9 +162,8 @@ void deoglGIInstances::ClearAllChanged(){
 	}
 }
 
-bool deoglGIInstances::AddComponents( deoglCollideList &list ){
+void deoglGIInstances::AddComponents( deoglCollideList &list ){
 	const int count = list.GetComponentCount();
-	bool anyAdded = false;
 	int i;
 	
 	list.MarkComponents( true );
@@ -187,16 +178,9 @@ bool deoglGIInstances::AddComponents( deoglCollideList &list ){
 		const bool isStatic = IsComponentStatic( component );
 		NextFreeSlot().SetComponent( &component, ! isStatic );
 		if( isStatic ){
-			// TODO we have a problem here. the component can show up because either it has been
-			//      added to the world or is now inside the moved GI area. only if the
-			//      
-			// TODO add a box around each probe storing the minium and maximum extends retrieved
-			//      from the cached ray distances. changes to components (including adding and
-			//      removing them) should only invalidate probes with overlapping boxes. this
-			//      works since the box stores the largest distance from the probe position.
-			//      changes outside this box can not affect the result of the ray casting neither
-			//      the cached results nor the dynamic results
-			anyAdded = true;
+// 				pGIState.GetRenderThread().GetLogger().LogInfoFormat("GIInstances.AddComponent: %s",
+// 					component.GetModel()->GetFilename().GetString());
+			pGIState.InvalidateArea( component.GetMinimumExtend(), component.GetMaximumExtend() );
 		}
 		
 // 		{ // debug
@@ -212,13 +196,10 @@ bool deoglGIInstances::AddComponents( deoglCollideList &list ){
 // 				index, p.x, p.y, p.z, component.GetModel() ? component.GetModel()->GetFilename().GetString() : "-", isStatic );
 // 		}
 	}
-	
-	return anyAdded;
 }
 
-bool deoglGIInstances::RemoveComponents( deoglCollideList &list ){
+void deoglGIInstances::RemoveComponents( deoglCollideList &list ){
 	const int count = pInstances.GetCount();
-	bool anyRemoved = false;
 	int i;
 	
 	MarkComponents( true );
@@ -227,17 +208,14 @@ bool deoglGIInstances::RemoveComponents( deoglCollideList &list ){
 	for( i=0; i<count; i++ ){
 		deoglGIInstance &instance = *( ( deoglGIInstance* )pInstances.GetAt( i ) );
 		if( ! instance.GetComponent() ){
-			// note about this check. components can be removed for two reasons. either
-			// the component has been removed from the game world or the component left
-			// the GI area. if the component leaves the game world then the cached ray
-			// results potentially change and the caches have to be discarded. if the
-			// component though just leaves the GI area then the cached results can be
-			// kept. if the component leaves the game world deoglGIInstance will be
-			// cleared but the dynamic flag restored. this way the two situations can
-			// be told apart by checking if the component is still set. if it has been
-			// cleared the component left the world
-			anyRemoved |= ! instance.GetDynamic();
-			
+			if( instance.GetChanged() ){
+				// component has been removed from game world
+				instance.SetChanged( false );
+				if( ! instance.GetDynamic() ){
+// 						pGIState.GetRenderThread().GetLogger().LogInfoFormat("GIInstances.RemoveComponents: LeftWorld %d", i);
+					pGIState.InvalidateArea( instance.GetMinimumExtend(), instance.GetMaximumExtend() );
+				}
+			}
 			continue;
 		}
 		
@@ -252,10 +230,17 @@ bool deoglGIInstances::RemoveComponents( deoglCollideList &list ){
 // 					? instance.GetComponent()->GetModel()->GetFilename().GetString() : "-" );
 // 		}
 		
+		// either GI field moved and component is no longer inside the GI field or the component
+		// moved out of the GI field. if GI field moved no invalidating is required. if component
+		// moved invalidating is required
+		if( instance.GetChanged() && ! instance.GetDynamic() ){
+// 				pGIState.GetRenderThread().GetLogger().LogInfoFormat("GIInstances.AnyChanged: LeftField %s",
+// 					instance.GetComponent()->GetModel()->GetFilename().GetString());
+			pGIState.InvalidateArea( instance.GetMinimumExtend(), instance.GetMaximumExtend() );
+		}
+		
 		instance.Clear();
 	}
-	
-	return anyRemoved;
 }
 
 bool deoglGIInstances::AddOcclusionMeshes( deoglCollideList &list ){
@@ -361,7 +346,7 @@ void deoglGIInstances::MarkOcclusionMeshes( bool marked ){
 }
 
 void deoglGIInstances::DebugPrint(){
-	deoglRTLogger &logger = pRenderThread.GetLogger();
+	deoglRTLogger &logger = pGIState.GetRenderThread().GetLogger();
 	const int count = pInstances.GetCount();
 	int i;
 	for( i=0; i<count; i++ ){

@@ -38,6 +38,7 @@
 #include "../renderthread/deoglRTFramebuffer.h"
 #include "../renderthread/deoglRTRenderers.h"
 #include "../world/deoglRWorld.h"
+#include "../utils/collision/deoglCollisionDetection.h"
 #include "../utils/collision/deoglDCollisionBox.h"
 #include "../utils/collision/deoglDCollisionFrustum.h"
 
@@ -109,7 +110,7 @@ pVBOProbeExtends( 0 ),
 pVBOProbeExtendsData( NULL ),
 pProbesExtendsChanged( false ),
 
-pInstances( renderThread ),
+pInstances( *this ),
 pRays( renderThread, 64, pRealProbeCount )
 {
 	try{
@@ -338,7 +339,7 @@ const deoglDCollisionFrustum &frustum ){
 }
 
 void deoglGIState::PrepareUBOState() const{
-	pPrepareUBOParameters();
+	pPrepareUBOParameters( pUpdateProbeCount );
 	pPrepareUBORayDirections();
 	
 	if( pUpdateProbeCount == 0 ){
@@ -384,7 +385,7 @@ void deoglGIState::PrepareUBOState() const{
 }
 
 void deoglGIState::PrepareUBOStateRayLimit() const{
-	pPrepareUBOParameters();
+	pPrepareUBOParameters( pRayLimitProbeCount );
 	pPrepareUBORayDirections();
 	
 	if( pRayLimitProbeCount == 0 ){
@@ -429,7 +430,7 @@ void deoglGIState::PrepareUBOStateRayLimit() const{
 }
 
 void deoglGIState::PrepareUBOStateRayCache() const{
-	pPrepareUBOParameters();
+	pPrepareUBOParameters( pRayCacheProbeCount );
 	pPrepareUBORayDirections();
 	
 	if( pRayCacheProbeCount == 0 ){
@@ -481,8 +482,8 @@ void deoglGIState::Invalidate(){
 		probe.flags = 0;
 		probe.offset.SetZero();
 		probe.countOffsetMoved = 0;
-		probe.minExtend = pFieldSize;
-		probe.maxExtend = -pFieldSize;
+		probe.minExtend = -pFieldSize;
+		probe.maxExtend = pFieldSize;
 	}
 	
 	pClearMaps = true;
@@ -539,6 +540,7 @@ void deoglGIState::UpdateProbeOffsetFromTexture(){
 		probe.offset = offset;
 		probe.countOffsetMoved++;
 		probe.flags &= ~( epfRayLimitsValid | epfRayCacheValid );
+// 			pRenderThread.GetLogger().LogInfoFormat("UpdateProbeOffsetFromTexture: RayCacheInvalidate %d", pUpdateProbes[i]);
 	}
 }
 
@@ -570,6 +572,24 @@ void deoglGIState::UpdateProbeExtendsFromVBO(){
 	}
 	printf("\n");
 	*/
+}
+
+void deoglGIState::InvalidateArea( const decDVector &minExtend, const decDVector &maxExtend ){
+	const decVector lminExtend( minExtend - pPosition );
+	const decVector lmaxExtend( maxExtend - pPosition );
+// 		decString debugText( "InvalidateArea: (%g,%g,%g) (%g,%g,%g);" );
+		
+	int i;
+	for( i=0; i<pRealProbeCount; i++ ){
+		sProbe &probe = pProbes[ i ];
+		if( ( probe.flags & epfRayCacheValid ) == epfRayCacheValid
+		&& deoglCollisionDetection::AABoxHitsAABox( probe.minExtend, probe.maxExtend, lminExtend, lmaxExtend ) ){
+			probe.flags &= ~epfRayCacheValid;
+// 				debugText.AppendFormat( " %d,", i );
+		}
+	}
+		
+// 		pRenderThread.GetLogger().LogInfoFormat( debugText, lminExtend.x, lminExtend.y, lminExtend.z, lmaxExtend.x, lmaxExtend.y, lmaxExtend.z );
 }
 
 void deoglGIState::ValidatedRayCaches(){
@@ -627,8 +647,8 @@ void deoglGIState::pInitProbes(){
 		probe.flags = 0;
 		probe.offset.SetZero();
 		probe.countOffsetMoved = 0;
-		probe.minExtend = pFieldSize;
-		probe.maxExtend = -pFieldSize;
+		probe.minExtend = -pFieldSize;
+		probe.maxExtend = pFieldSize;
 		probe.coord = ProbeIndex2GridCoord( i );
 		
 		pAgedProbes[ i ] = i;
@@ -674,23 +694,14 @@ void deoglGIState::pTrackInstanceChanges(){
 		}
 	}*/
 	
-	bool invalidateCaches = pInstances.AnyChanged();
+	pInstances.AnyChanged();
 	#ifdef GI_USE_RAY_LIMIT
-		invalidateCaches |= pInstances.RemoveOcclusionMeshes( pCollideListFiltered );
-		invalidateCaches |= pInstances.AddOcclusionMeshes( pCollideListFiltered );
+		pInstances.RemoveOcclusionMeshes( pCollideListFiltered );
+		pInstances.AddOcclusionMeshes( pCollideListFiltered );
 	#else
-		invalidateCaches |= pInstances.RemoveComponents( pCollideListFiltered );
-		invalidateCaches |= pInstances.AddComponents( pCollideListFiltered );
+		pInstances.RemoveComponents( pCollideListFiltered );
+		pInstances.AddComponents( pCollideListFiltered );
 	#endif
-	
-	if( invalidateCaches ){
-// 		pRenderThread.GetLogger().LogInfo( "GIState.TrackInstanceChanges: invalidate all ray limits" );
-		#ifdef GI_USE_RAY_LIMIT
-			pInvalidateAllRayLimits();
-		#else
-			pInvalidateAllRayCaches();
-		#endif
-	}
 	
 // 	pRenderThread.GetLogger().LogInfo( "pTrackInstanceChanges" );
 // 	pInstances.DebugPrint();
@@ -736,8 +747,8 @@ void deoglGIState::pUpdatePosition( const decDVector &position ){
 			probe.flags = 0;
 			probe.offset.SetZero();
 			probe.countOffsetMoved = 0;
-			probe.minExtend = pFieldSize;
-			probe.maxExtend = -pFieldSize;
+			probe.minExtend = -pFieldSize;
+			probe.maxExtend = pFieldSize;
 			
 			pClearProbes[ i / 32 ] |= 1 << ( i % 32 );
 			pHasClearProbes = true;
@@ -996,7 +1007,7 @@ void deoglGIState::pFindProbesToUpdate( const deoglDCollisionFrustum &frustum ){
 	// determine the required sample image size
 	pSampleImageSize.x = traceRays.GetProbesPerLine() * traceRays.GetRaysPerProbe();
 	pSampleImageSize.y = ( pUpdateProbeCount - 1 ) / traceRays.GetProbesPerLine() + 1;
-		pRenderThread.GetLogger().LogInfoFormat( "GIFindProbesUpdate invalid=%d valid=%d", specialCountInvalid, specialCountValid );
+// 		pRenderThread.GetLogger().LogInfoFormat( "GIFindProbesUpdate invalid=%d valid=%d", specialCountInvalid, specialCountValid );
 }
 
 void deoglGIState::pAddUpdateProbe( sProbe &probe ){
@@ -1147,7 +1158,7 @@ void deoglGIState::pPrepareProbeVBO(){
 		pRenderThread.GetGI().GetTraceRays().GetProbeCount() * 6 * 4, NULL, GL_STREAM_READ ) );
 }
 
-void deoglGIState::pPrepareUBOParameters() const{
+void deoglGIState::pPrepareUBOParameters( int probeCount ) const{
 	const deoglGI &gi = pRenderThread.GetGI();
 	const deoglGITraceRays &traceRays = gi.GetTraceRays();
 	const int raysPerProbe = traceRays.GetRaysPerProbe();
@@ -1157,7 +1168,7 @@ void deoglGIState::pPrepareUBOParameters() const{
 	try{
 		ubo.SetParameterDataVec2( deoglGI::eupSampleImageScale,
 			1.0f / ( float )pSampleImageSize.x, 1.0f / ( float )pSampleImageSize.y );
-		ubo.SetParameterDataInt( deoglGI::eupProbeCount, pUpdateProbeCount );
+		ubo.SetParameterDataInt( deoglGI::eupProbeCount, probeCount );
 		ubo.SetParameterDataInt( deoglGI::eupRaysPerProbe, raysPerProbe );
 		ubo.SetParameterDataInt( deoglGI::eupProbesPerLine, traceRays.GetProbesPerLine() );
 		ubo.SetParameterDataInt( deoglGI::eupIrradianceMapSize, pIrradianceMapSize );

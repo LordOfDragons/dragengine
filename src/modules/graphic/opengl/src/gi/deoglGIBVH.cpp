@@ -201,7 +201,7 @@ void deoglGIBVH::AddComponent( deoglRenderPlan &plan, const decMatrix &matrix, d
 	if( instance.GetDynamic() ){
 		// update vertices and BVH extends if dirty
 		lod.PrepareGIDynamicBVH();
-		instance.UpdateExtends();
+		instance.UpdateBVHExtends();
 		
 		if( ! component.GetStaticTextures() ){
 			instance.SetDirtyTUCs( true );
@@ -429,8 +429,8 @@ void deoglGIBVH::BuildBVH(){
 		deoglBVH::sBuildPrimitive &primitive = pPrimitives[ i ];
 		const sComponent &component = pComponents[ i ];
 		const deoglGIInstance &instance = *component.instance;
-		const decVector &minExtend = instance.GetMinimumExtend();
-		const decVector &maxExtend = instance.GetMaximumExtend();
+		const decVector &minExtend = instance.GetBVHMinimumExtend();
+		const decVector &maxExtend = instance.GetBVHMaximumExtend();
 		const decVector center( ( minExtend + maxExtend ) * 0.5f );
 		const decVector halfSize( ( maxExtend - minExtend ) * 0.5f );
 		deoglCollisionBox box( component.matrix * center,
