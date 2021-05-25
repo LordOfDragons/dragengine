@@ -141,5 +141,5 @@ void main( void ){
 	
 	// clamp offset
 	outOffset = clamp( outOffset, -pGIMoveMaxOffset, pGIMoveMaxOffset );
-// 		outOffset = vec3(0);
+// 		outOffset = vec3(0); // DEBUG
 }

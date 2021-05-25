@@ -76,17 +76,39 @@ void main( void ){
 	
 	outValue = vec4( 0.0 );
 	
-	#ifdef MAP_DISTANCE
-	int rayCount = 0, rayBackCount = 0;
-	//int rayFrontCount = 0, rayMissCount = 0;
-	#endif
+	bool tooCloseToSurface = false;
+	int rayBackCount = 0;
+	int rayFrontCount = 0;
+	int rayMissCount = 0;
 	
 	#define rayDirection pGIRayDirection[ i ]
 	
 	for( i=0; i<pGIRaysPerProbe; i++ ){
 		ivec2 rayTC = vRayOffset + ivec2( i, 0 );
 		vec4 rayPosition = texelFetch( texPosition, rayTC, 0 ); // position, distance
-		bool rayMisses = rayPosition.w > 9999.0;
+		vec3 rayNormal = texelFetch( texNormal, rayTC, 0 ).xyz;
+		bool rayMisses, frontFacing;
+		
+		if( rayPosition.w > 9999.0 ){
+			// ray misses. rayNormal is not valid in this case
+			rayMisses = true;
+			frontFacing = true;
+			rayMissCount++;
+			
+		}else if( dot( rayNormal, rayDirection ) < 0.0 ){
+			// ray hits front facing geometry
+			rayMisses = false;
+			frontFacing = true;
+			rayFrontCount++;
+			
+		}else{
+			// ray hits back facing geometry
+			rayMisses = false;
+			frontFacing = false;
+			rayBackCount++;
+		}
+		
+		tooCloseToSurface = tooCloseToSurface || rayPosition.w < 0.001;
 		
 		// for dynamic ray-tracing only the pGIRayDirection[i] (see define) can be used
 		//vec3 rayDirection = normalize( rayPosition.xyz - vProbePosition );
@@ -100,12 +122,9 @@ void main( void ){
 		}
 		
 		#ifdef MAP_DISTANCE
-			rayCount++;
-			
 			// here we deviate from the paper. ignoring misses to influence the result
 			// removes the most glaring light leaks
 			if( rayMisses ){
-				//rayMissCount++;
 				continue;
 			}
 		#endif
@@ -113,69 +132,81 @@ void main( void ){
 		sumWeight += weight;
 		
 		#ifdef MAP_IRRADIANCE
-			// rayMisses is required since ray normal is only valid if ray hits something
-			if( rayMisses || dot( texelFetch( texNormal, rayTC, 0 ).xyz, rayDirection ) < 0.0 ){
+			if( frontFacing ){
 				// ray misses or hits front facing geometry. ray misses are handled
 				// the same since sky lighting is applied to missing rays too
 				outValue.rgb += texelFetch( texLight, rayTC, 0 ).rgb * weight;
 			}
 			
 		#else
-			// ray misses is already handled above so only front facing check here
-			if( dot( texelFetch( texNormal, rayTC, 0 ).xyz, rayDirection ) < 0.0 ){
-				// ray hits front facing geometry
-				//rayFrontCount++;
-				
+			// ray misses do not end up here due to the check above
+			if( frontFacing ){
 				// if ray misses hit distance is set to 10000. in this case max probe distance
 				// has to be used. this works with the min code below so no extra code required
 				float rayProbeDistance = min( rayPosition.w, pGIMaxProbeDistance );
 				
 				outValue.x += rayProbeDistance * weight;
 				outValue.y += rayProbeDistance * rayProbeDistance * weight;
-				
-			}else{
-				rayBackCount++;
 			}
 		#endif
 	}
 	
-	if( sumWeight > epsilon ){
+	// determine if the probe is enabled
+	bool enableProbe = sumWeight > epsilon;
+	
+	// this is taken from the paper code update probe offset. there it is used
+	// to disable the probe (although I have no clue how this "disable" works).
+	// the idea is that if at least 35% of all probe rays hit a backface the
+	// probe is likely outside geometry.
+	// 
+	// in this case here we want to counter the effect of probes outside
+	// geometry grazing room corners. in this situation some rays hit back faces
+	// of the room while some fly close by the corner and hit nothing. in this
+	// situation mean/meanSquared are not 0 and light leaks in.
+	// 
+	// the 35% rule can though be also applied to only the rays affecting this
+	// probe map texel. this is not as optimal as applying the rule to all rays
+	// but it helps to remedy out such cases. the rule can not remedy all such
+	// cases especially if front faces are visible. but such situations should
+	// usually not happen since geometry outside rooms or in walls should not
+	// see front faces at all
+	//
+	// this extra check increases the shader run cost roughly by 50%. for example
+	// with 256 rays the cost raises from 80ys to 120ys in average
+	// 
+	// we count the rays hitting front faces, back faces or miss geometry altogether.
+	// rays missing geometry should be counted either to front face hits or back
+	// face hits depending where the probe is located. out in the open misses should
+	// be counted towards front faces while inside walls they should be counted
+	// towards back faces. we do not know though which case is true. we can only
+	// guess. so if the count of back faces relative to the total amount of rays
+	// is above the 35% threshold then we count it as inside walls
+	enableProbe = enableProbe && float( rayBackCount ) / float( pGIRaysPerProbe ) < 0.35;
+	
+	// if probes are too close to the surface various problems happen including view
+	// dependent flickering and potential bright flashing on the first update step
+	// using blend factor of 1. if at least one ray is too short disable the probe
+	enableProbe = enableProbe && ! tooCloseToSurface;
+	
+	// finalize the probe
+	if( enableProbe ){
 		#ifdef MAP_IRRADIANCE
 			outValue.rgb /= sumWeight;
+// 				outValue.rgb = vec3(0,1,0); // DEBUG
 		#else
 			outValue.xy /= sumWeight;
-			
-			// this is taken from the paper code update probe offset. there it is used
-			// to disable the probe (although I have no clue how this "disable" works).
-			// the idea is that if at least 35% of all probe rays hit a backface the
-			// probe is likely outside geometry.
-			// 
-			// in this case here we want to counter the effect of probes outside
-			// geometry grazing room corners. in this situation some rays hit back faces
-			// of the room while some fly close by the corner and hit nothing. in this
-			// situation mean/meanSquared are not 0 and light leaks in.
-			// 
-			// the 35% rule can though be also applied to only the rays affecting this
-			// probe map texel. this is not as optimal as applying the rule to all rays
-			// but it helps to remedy out such cases. the rule can not remedy all such
-			// cases especially if front faces are visible. but such situations should
-			// usually not happen since geometry outside rooms or in walls should not
-			// see front faces at all
-			//
-			// this extra check increases the shader run cost roughly by 50%. for example
-			// with 256 rays the cost raises from 80ys to 120ys in average
-			if( float( rayBackCount ) / float( rayCount ) > 0.35 ){
-				outValue.xy = vec2( 0.0 );
-			}
 		#endif
 		
-	#ifdef MAP_DISTANCE
-	// by deviating from the paper above we need to handle the case of no hit being scored
-	// at all otherwise the probe turns black
 	}else{
-		//outValue.xy = vec2( pGIMaxProbeDistance, pGIMaxProbeDistance * pGIMaxProbeDistance );
-		outValue.xy = vec2( 0.0 );
-	#endif
+		#ifdef MAP_IRRADIANCE
+			outValue.rgb = vec3( 0.0 );
+// 				outValue.rgb = vec3(1,0,0); // DEBUG
+		#else
+			// by deviating from the paper above we need to handle the case of no hit
+			// being scored at all otherwise the probe turns black
+			//outValue.xy = vec2( pGIMaxProbeDistance, pGIMaxProbeDistance * pGIMaxProbeDistance );
+			outValue.xy = vec2( 0.0 );
+		#endif
 	}
 	
 	outValue.a = vBlendFactor; // 1-hysteresis. modified by update code per-probe

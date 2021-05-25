@@ -100,8 +100,30 @@ vec3 giIlluminate( in vec3 position, in vec3 normal, in vec3 bendNormal ){
 	normal = normalize( normal * pGIMatrixNormal ); // reverse order does transpose()
 	bendNormal = normalize( bendNormal * pGIMatrixNormal ); // reverse order does transpose()
 	
-	ivec3 baseCoord = clamp( ivec3( pGIProbeSpacingInv * position ), ivec3( 0 ), pGIProbeClamp );
+	// if the fragment happens to end up exactly on the grid hell can break loose. in this
+	// situation neighbor fragments can choose different cages to sample from depending on
+	// numerical inaccuricies. this results in flickering lightings on walls because probes
+	// inside the wall tend to be disabled. if the cage inside the wall is chosen all probes
+	// are disabled which contrasts with probes inside the room being lit. even without
+	// disabled probes the problem persists since using a cage inside the wall has no chance
+	// to pick up light from inside room probes even if the probe sits right on the wall.
+	// 
+	// as a solution the fragment position is slightly nudged away from the grid boundary.
+	// the question is though in which direction to push. the most sane direction to nudge
+	// along is the fragment normal. this raises the chance to end up in a cage with useful
+	// probes to sample lighting from. both the normal and bendNormal can be used for this
+	// 
+	// nudging the position slightly is not wrong for positions far away from grid boundaries.
+	// for this reason no condition or mix call is required to prevent nudging. instead all
+	// positions are slightly nudges along their normals
+// 	vec3 gridPosition = pGIProbeSpacingInv * position;
+// 	vec3 nudgePosition = mix( vec3( 0.0 ), bendNormal * 0.01,
+// 		lessThan( abs( gridPosition - floor( gridPosition + vec3( 0.5 ) ) ), vec3( 0.01 ) ) );
+// 	gridPosition = pGIProbeSpacingInv * clamp( unclampedPosition + nudgePosition, vec3( 0.0 ), pGIPositionClamp );
+	ivec3 baseCoord = clamp( ivec3( pGIProbeSpacingInv
+		* ( unclampedPosition + bendNormal * 0.01 ) ), ivec3( 0 ), pGIProbeClamp );
 	
+	// from here on we should be located in a good cage
 	vec3 basePosition = pGIProbeSpacing * vec3( baseCoord );
 	vec3 sumIrradiance = vec3( 0.0 );
 	float sumWeight = 0.0;

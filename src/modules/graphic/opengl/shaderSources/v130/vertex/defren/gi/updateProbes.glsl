@@ -48,7 +48,7 @@ void main( void ){
 	
 	vRayOffset.x = ( gl_InstanceID % pGIProbesPerLine ) * pGIRaysPerProbe;
 	vRayOffset.y = gl_InstanceID / pGIProbesPerLine;
-	vBlendFactor = ( flags & 1 ) == 1 ? pGIBlendUpdateProbe : 1.0f;
+	vBlendFactor = ( flags & 1 ) == 1 ? pGIBlendUpdateProbe : 1.0;
 	vProbePosition = pGIProbePosition[ gl_InstanceID ].xyz;
 	
 	int probeIndex = pGIProbeIndex[ gl_InstanceID >> 2 ][ gl_InstanceID & 3 ]; // 4 IDs per array entry

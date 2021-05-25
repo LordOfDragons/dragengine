@@ -1200,12 +1200,12 @@ void deoglGIState::pPrepareUBOParameters( int probeCount ) const{
 		
 		// move probes. probe can move at most 50% inside the grid acording to the paper.
 		// to be on the safe side use 49%. the minimum distance to the surface is set to
-		// 35% of the smallest spacing. this is rather random value with the aim to
+		// 25% of the smallest spacing. this is rather random value with the aim to
 		// increase the visible surface captured by probes but without approaching the
 		// maximum offset too much.
 		ubo.SetParameterDataVec3( deoglGI::eupMoveMaxOffset, pProbeSpacing * 0.49f );
 		ubo.SetParameterDataFloat( deoglGI::eupMoveMinDistToSurface,
-			decMath::min( pProbeSpacing.x, pProbeSpacing.y, pProbeSpacing.z ) * 0.35f );
+			decMath::min( pProbeSpacing.x, pProbeSpacing.y, pProbeSpacing.z ) * 0.25f );
 		
 		// rays
 		ubo.SetParameterDataVec2( deoglGI::eupRayMapScale, pRays.GetRayMapScale() );
