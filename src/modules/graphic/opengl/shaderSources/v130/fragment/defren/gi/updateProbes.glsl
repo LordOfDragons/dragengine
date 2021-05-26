@@ -76,7 +76,7 @@ void main( void ){
 	
 	outValue = vec4( 0.0 );
 	
-	bool tooCloseToSurface = false;
+// 	bool tooCloseToSurface = false;
 	int rayBackCount = 0;
 	int rayFrontCount = 0;
 	int rayMissCount = 0;
@@ -108,7 +108,7 @@ void main( void ){
 			rayBackCount++;
 		}
 		
-		tooCloseToSurface = tooCloseToSurface || rayPosition.w < 0.001;
+// 		tooCloseToSurface = tooCloseToSurface || rayPosition.w < 0.001;
 		
 		// for dynamic ray-tracing only the pGIRayDirection[i] (see define) can be used
 		//vec3 rayDirection = normalize( rayPosition.xyz - vProbePosition );
@@ -186,7 +186,7 @@ void main( void ){
 	// if probes are too close to the surface various problems happen including view
 	// dependent flickering and potential bright flashing on the first update step
 	// using blend factor of 1. if at least one ray is too short disable the probe
-	enableProbe = enableProbe && ! tooCloseToSurface;
+// 	enableProbe = enableProbe && ! tooCloseToSurface;
 	
 	// finalize the probe
 	if( enableProbe ){
