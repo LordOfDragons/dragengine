@@ -102,6 +102,7 @@ void deoglGI::pCreateUBOParameter(){
 	ubo.GetParameterAt( eupRayMapScale ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
 	ubo.GetParameterAt( eupMaterialMapsPerRow ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // int
 	ubo.GetParameterAt( eupMaterialMapSize ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // int
+	ubo.GetParameterAt( eupIrradianceGamma ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 1 ); // float
 	ubo.GetParameterAt( eupInvIrradianceGamma ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 1 ); // float
 	ubo.MapToStd140();
 	ubo.SetBindingPoint( 1 );

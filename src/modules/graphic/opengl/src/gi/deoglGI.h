@@ -77,6 +77,7 @@ public:
 		eupRayMapScale, // vec2: scale factor for ray map
 		eupMaterialMapsPerRow, // int
 		eupMaterialMapSize, // int
+		eupIrradianceGamma, // float
 		eupInvIrradianceGamma // float
 	};
 	

@@ -35,6 +35,7 @@ UBOLAYOUT uniform GIParameters{
 	int pGIMaterialMapsPerRow;
 	int pGIMaterialMapSize;
 	
+	float pGIIrradianceGamma;
 	float pGIInvIrradianceGamma;
 };
 

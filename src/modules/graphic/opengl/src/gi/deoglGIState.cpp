@@ -1190,6 +1190,7 @@ void deoglGIState::pPrepareUBOParameters( int probeCount ) const{
 		ubo.SetParameterDataInt( deoglGI::eupBVHInstanceRootNode, gi.GetBVH().GetIndexRootNode() );
 		ubo.SetParameterDataIVec3( deoglGI::eupGridProbeCount, pProbeCount );
 		ubo.SetParameterDataVec3( deoglGI::eupGridProbeSpacing, pProbeSpacing );
+		ubo.SetParameterDataFloat( deoglGI::eupIrradianceGamma, pIrradianceGamma );
 		ubo.SetParameterDataFloat( deoglGI::eupInvIrradianceGamma, 1.0f / pIrradianceGamma );
 		
 		// material

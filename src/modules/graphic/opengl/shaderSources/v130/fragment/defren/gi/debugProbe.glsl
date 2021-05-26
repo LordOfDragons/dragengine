@@ -29,6 +29,7 @@ void main( void ){
 	vec2 texCoord = giTCFromDirection( normalize( vDirection ),
 		vProbeCoord, pGIIrradianceMapScale, pGIIrradianceMapSize );
 	vec3 irradiance = texture( texGIIrradiance, texCoord ).rgb;
+	irradiance = pow( irradiance, vec3( pGIIrradianceGamma ) );
 	irradiance /= vec3( 4.0 ); // squash HDRR a bit
 	outColor = irradiance;
 }
