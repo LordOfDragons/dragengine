@@ -71,6 +71,7 @@ private:
 	deoglDebugInformation *pDebugInfoGI;
 	deoglDebugInformation *pDebugInfoGITraceRays;
 	deoglDebugInformation *pDebugInfoGIRenderMaterials;
+	deoglDebugInformation *pDebugInfoGIClearProbes;
 	deoglDebugInformation *pDebugInfoGIUpdateProbes;
 	deoglDebugInformation *pDebugInfoGIMoveProbes;
 	deoglDebugInformation *pDebugInfoGIRenderLight;
@@ -115,6 +116,9 @@ public:
 	/** Resize materials. */
 	void ResizeMaterials( deoglTexture &texDiffuse, deoglTexture &texReflectivity,
 		deoglTexture &texEmissivity, int mapsPerRow, int rowsPerImage );
+	
+	/** Clear probes. */
+	void ClearProbes( deoglRenderPlan &plan );
 	
 	/** Update probes. */
 	void UpdateProbes( deoglRenderPlan &plan );

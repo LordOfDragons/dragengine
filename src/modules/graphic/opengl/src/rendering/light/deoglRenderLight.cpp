@@ -308,6 +308,13 @@ void deoglRenderLight::RenderLights( deoglRenderPlan &plan, bool solid, const de
 	}
 	
 	// render lights
+	const bool hasGIStateUpdate = plan.GetUpdateGIState() != NULL;
+	const bool hasGIStateRender = plan.GetRenderGIState() != NULL;
+	
+	if( solid && ! mask && hasGIStateUpdate ){
+		pRenderGI->ClearProbes( plan );
+	}
+	
 	RestoreFBO( plan );
 	
 	if( sssssEnable ){
@@ -323,9 +330,6 @@ void deoglRenderLight::RenderLights( deoglRenderPlan &plan, bool solid, const de
 		
 		OGL_CHECK( renderThread, glEnable( GL_SCISSOR_TEST ) );
 	}
-	
-	const bool hasGIStateUpdate = plan.GetUpdateGIState() != NULL;
-	const bool hasGIStateRender = plan.GetRenderGIState() != NULL;
 	
 	PrepareRenderParamBlockLight( plan );
 	if( hasGIStateRender ){

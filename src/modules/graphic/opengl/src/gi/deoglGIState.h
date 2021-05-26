@@ -114,7 +114,7 @@ private:
 	uint16_t *pRayCacheProbes;
 	int pRayCacheProbeCount;
 	
-	uint16_t *pClearProbes;
+	uint32_t *pClearProbes;
 	int pClearProbeCount;
 	bool pHasClearProbes;
 	deObjectReference pUBOClearProbes;

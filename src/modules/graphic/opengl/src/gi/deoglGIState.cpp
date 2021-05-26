@@ -64,7 +64,7 @@ pPositionClamp( pFieldSize ),
 pStrideProbeCount( pProbeCount.x * pProbeCount.z ),
 pRealProbeCount( pStrideProbeCount * pProbeCount.y ),
 
-pMaxDetectionRange( 10.0f ),
+pMaxDetectionRange( 50.0f ),
 pDetectionBox( pFieldSize * 0.5f + decVector( pMaxDetectionRange, pMaxDetectionRange, pMaxDetectionRange ) ),
 
 pIrradianceMapSize( 8 ),
@@ -115,7 +115,7 @@ pRays( renderThread, 64, pRealProbeCount )
 {
 	try{
 		pInitProbes();
-		pClearProbes = new uint16_t[ pClearProbeCount ];
+		pClearProbes = new uint32_t[ pClearProbeCount ];
 		pInitUBOClearProbes();
 		pUpdateProbes = new uint16_t[ renderThread.GetGI().GetTraceRays().GetProbeCount() ];
 		#ifdef GI_USE_RAY_LIMIT
@@ -250,7 +250,7 @@ decPoint3 deoglGIState::ShiftedGrid2LocalGrid( const decPoint3 &coord ) const{
 
 
 void deoglGIState::ClearClearProbes(){
-	memset( pClearProbes, 0, pClearProbeCount * sizeof( uint16_t ) );
+	memset( pClearProbes, 0, pClearProbeCount * sizeof( uint32_t ) );
 	pHasClearProbes = false;
 }
 
@@ -750,7 +750,7 @@ void deoglGIState::pUpdatePosition( const decDVector &position ){
 			probe.minExtend = -pFieldSize;
 			probe.maxExtend = pFieldSize;
 			
-			pClearProbes[ i / 32 ] |= 1 << ( i % 32 );
+			pClearProbes[ i / 32 ] |= ( uint32_t )1 << ( i % 32 );
 			pHasClearProbes = true;
 		}
 	}

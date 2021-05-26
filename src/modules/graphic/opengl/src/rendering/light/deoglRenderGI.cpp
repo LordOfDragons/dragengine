@@ -157,6 +157,7 @@ pAddToRenderTask( NULL ),
 pDebugInfoGI( NULL ),
 pDebugInfoGITraceRays( NULL ),
 pDebugInfoGIRenderMaterials( NULL ),
+pDebugInfoGIClearProbes( NULL ),
 pDebugInfoGIUpdateProbes( NULL ),
 pDebugInfoGIMoveProbes( NULL ),
 pDebugInfoGIRenderLight( NULL ),
@@ -282,6 +283,9 @@ pDebugInfoGIRenderLightGIRay( NULL )
 		
 		pDebugInfoGIRenderMaterials = new deoglDebugInformation( "Render Materials", colorText, colorBgSub );
 		pDebugInfoGI->GetChildren().Add( pDebugInfoGIRenderMaterials );
+		
+		pDebugInfoGIClearProbes = new deoglDebugInformation( "Clear Probes", colorText, colorBgSub );
+		pDebugInfoGI->GetChildren().Add( pDebugInfoGIClearProbes );
 		
 		pDebugInfoGIUpdateProbes = new deoglDebugInformation( "Update Probes", colorText, colorBgSub );
 		pDebugInfoGI->GetChildren().Add( pDebugInfoGIUpdateProbes );
@@ -693,6 +697,73 @@ deoglTexture &texEmissivity, int mapsPerRow, int rowsPerImage ){
 	renderThread.GetTexture().GetStages().DisableAllStages();
 }
 
+void deoglRenderGI::ClearProbes( deoglRenderPlan &plan ){
+	deoglGIState * const giState = plan.GetUpdateGIState();
+	if( ! giState  ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	if( ! giState->HasClearProbes() ){
+		return;
+	}
+	
+	deoglRenderThread &renderThread = GetRenderThread();
+	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
+	
+	if( pDebugInfoGI->GetVisible() ){
+		DebugTimer1Reset( plan, true );
+	}
+	
+	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
+	OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
+	OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
+	OGL_CHECK( renderThread, glDepthFunc( GL_ALWAYS ) );
+	OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
+	OGL_CHECK( renderThread, glDisable( GL_STENCIL_TEST ) );
+	OGL_CHECK( renderThread, glDisable( GL_SCISSOR_TEST ) );
+	OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
+	
+	OGL_CHECK( renderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) );
+	
+	giState->PrepareUBOClearProbes();
+	
+	// clear probes: irradiance map
+	renderThread.GetFramebuffer().Activate( &giState->GetFBOProbeIrradiance() );
+	
+	OGL_CHECK( renderThread, glViewport( 0, 0, giState->GetTextureProbeIrradiance().GetWidth(),
+		giState->GetTextureProbeIrradiance().GetHeight() ) );
+	
+	renderThread.GetShader().ActivateShader( pShaderClearProbeIrradiance );
+	pActivateGIUBOs();
+	giState->GetUBOClearProbes().Activate();
+	
+	OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
+	
+	// clear probes: distance map
+	renderThread.GetFramebuffer().Activate( &giState->GetFBOProbeDistance() );
+	
+	OGL_CHECK( renderThread, glViewport( 0, 0, giState->GetTextureProbeDistance().GetWidth(),
+		giState->GetTextureProbeDistance().GetHeight() ) );
+	
+	renderThread.GetShader().ActivateShader( pShaderClearProbeDistance );
+	pActivateGIUBOs();
+	giState->GetUBOClearProbes().Activate();
+	
+	OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
+	
+	// clean up
+	giState->ClearClearProbes();
+	
+	OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
+	
+	if( pDebugInfoGI->GetVisible() ){
+		if( renderThread.GetDebug().GetDeveloperMode().GetDebugInfoSync() ){
+			glFinish();
+		}
+		DebugTimer1Sample( plan, *pDebugInfoGIClearProbes, true );
+	}
+}
+
 void deoglRenderGI::UpdateProbes( deoglRenderPlan &plan ){
 	deoglGIState * const giState = plan.GetUpdateGIState();
 	if( ! giState ){
@@ -702,13 +773,11 @@ void deoglRenderGI::UpdateProbes( deoglRenderPlan &plan ){
 	deoglRenderThread &renderThread = GetRenderThread();
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
-	deoglGI &gi = renderThread.GetGI();
-	deoglGITraceRays &traceRays = gi.GetTraceRays();
+	deoglGITraceRays &traceRays = renderThread.GetGI().GetTraceRays();
 	
 	if( pDebugInfoGI->GetVisible() ){
 		DebugTimer1Reset( plan, true );
 	}
-	
 	
 	// common
 	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
@@ -728,31 +797,16 @@ void deoglRenderGI::UpdateProbes( deoglRenderPlan &plan ){
 	tsmgr.EnableTexture( 2, traceRays.GetTextureLight(), GetSamplerClampNearest() );
 	tsmgr.DisableStagesAbove( 2 );
 	
-	
-	if( giState->HasClearProbes() ){
-		giState->PrepareUBOClearProbes();
-	}
-	
-	
 	// update probes: irradiance map
 	renderThread.GetFramebuffer().Activate( &giState->GetFBOProbeIrradiance() );
 	
 	OGL_CHECK( renderThread, glViewport( 0, 0, giState->GetTextureProbeIrradiance().GetWidth(),
 		giState->GetTextureProbeIrradiance().GetHeight() ) );
 	
-	if( giState->HasClearProbes() ){
-		renderThread.GetShader().ActivateShader( pShaderClearProbeIrradiance );
-		pActivateGIUBOs();
-		giState->GetUBOClearProbes().Activate();
-		
-		OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
-	}
-	
 	renderThread.GetShader().ActivateShader( pShaderUpdateProbeIrradiance );
 	pActivateGIUBOs();
 	
 	OGL_CHECK( renderThread, pglDrawArraysInstanced( GL_TRIANGLE_FAN, 0, 4, giState->GetUpdateProbeCount() ) );
-	
 	
 	// update probes: distance map
 	renderThread.GetFramebuffer().Activate( &giState->GetFBOProbeDistance() );
@@ -760,25 +814,12 @@ void deoglRenderGI::UpdateProbes( deoglRenderPlan &plan ){
 	OGL_CHECK( renderThread, glViewport( 0, 0, giState->GetTextureProbeDistance().GetWidth(),
 		giState->GetTextureProbeDistance().GetHeight() ) );
 	
-	if( giState->HasClearProbes() ){
-		renderThread.GetShader().ActivateShader( pShaderClearProbeDistance );
-		pActivateGIUBOs();
-		giState->GetUBOClearProbes().Activate();
-		
-		OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
-	}
-	
 	renderThread.GetShader().ActivateShader( pShaderUpdateProbeDistance );
 	pActivateGIUBOs();
 	
 	OGL_CHECK( renderThread, pglDrawArraysInstanced( GL_TRIANGLE_FAN, 0, 4, giState->GetUpdateProbeCount() ) );
 	
-	
 	// clean up
-	if( giState->HasClearProbes() ){
-		giState->ClearClearProbes();
-	}
-	
 	OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
 	tsmgr.DisableAllStages();
 	
@@ -1226,6 +1267,9 @@ void deoglRenderGI::pCleanUp(){
 	}
 	if( pDebugInfoGIRenderMaterials ){
 		pDebugInfoGIRenderMaterials->FreeReference();
+	}
+	if( pDebugInfoGIClearProbes ){
+		pDebugInfoGIClearProbes->FreeReference();
 	}
 	if( pDebugInfoGIUpdateProbes ){
 		pDebugInfoGIUpdateProbes->FreeReference();

@@ -210,5 +210,6 @@ void main( void ){
 	}
 	
 	outValue.a = vBlendFactor; // 1-hysteresis. modified by update code per-probe
-// 		outValue.a = 1; // debug only
+// 		outValue.a = 1; // DEBUG
+// 		outValue.a = pGIBlendUpdateProbe;
 }

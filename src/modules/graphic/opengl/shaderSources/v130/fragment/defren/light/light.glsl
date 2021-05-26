@@ -936,7 +936,7 @@ void main( void ){
 						// prevent the test depth from reaching 0 or below. if this happens the test
 						// result incorrectly considers the fragment not in shadows even if it is.
 						// it is not enough to clamp to 0. it has to be larger than 0.
-						shapos1.q = max( shapos1.q, 0.0001 );
+// 						shapos1.q = max( shapos1.q, 0.0001 );
 						
 // 					}else{
 // 						shadow = min( shadow, evaluateShadow2D( texShadow1SolidDepth, pShadow1Solid, ES2D( shapos1 ) ) );
