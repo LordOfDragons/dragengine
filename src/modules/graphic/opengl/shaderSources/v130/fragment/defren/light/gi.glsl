@@ -94,60 +94,22 @@ ivec3 giGridShiftToLocal( in ivec3 shifted ){
 
 // calculate illumination to apply to fragment
 vec3 giIlluminate( in vec3 position, in vec3 normal, in vec3 bendNormal ){
-	vec3 unclampedPosition = vec3( pGIMatrix * vec4( position, 1.0 ) );
-	position = clamp( unclampedPosition, vec3( 0.0 ), pGIPositionClamp );
-	
 	normal = normalize( normal * pGIMatrixNormal ); // reverse order does transpose()
 	bendNormal = normalize( bendNormal * pGIMatrixNormal ); // reverse order does transpose()
+	position = vec3( pGIMatrix * vec4( position, 1.0 ) );
 	
-	// if the fragment happens to end up exactly on the grid hell can break loose. in this
-	// situation neighbor fragments can choose different cages to sample from depending on
-	// numerical inaccuricies. this results in flickering lightings on walls because probes
-	// inside the wall tend to be disabled. if the cage inside the wall is chosen all probes
-	// are disabled which contrasts with probes inside the room being lit. even without
-	// disabled probes the problem persists since using a cage inside the wall has no chance
-	// to pick up light from inside room probes even if the probe sits right on the wall.
-	// 
-	// as a solution the fragment position is slightly nudged away from the grid boundary.
-	// the question is though in which direction to push. the most sane direction to nudge
-	// along is the fragment normal. this raises the chance to end up in a cage with useful
-	// probes to sample lighting from. both the normal and bendNormal can be used for this
-	// 
-	// nudging the position slightly is not wrong for positions far away from grid boundaries.
-	// for this reason no condition or mix call is required to prevent nudging. instead all
-	// positions are slightly nudges along their normals
-// 	vec3 gridPosition = pGIProbeSpacingInv * position;
-// 	vec3 nudgePosition = mix( vec3( 0.0 ), bendNormal * 0.01,
-// 		lessThan( abs( gridPosition - floor( gridPosition + vec3( 0.5 ) ) ), vec3( 0.01 ) ) );
-// 	gridPosition = pGIProbeSpacingInv * clamp( unclampedPosition + nudgePosition, vec3( 0.0 ), pGIPositionClamp );
-	ivec3 baseCoord = clamp( ivec3( pGIProbeSpacingInv
-		* ( unclampedPosition + bendNormal * 0.01 ) ), ivec3( 0 ), pGIProbeClamp );
+	// in the paper offset is not defined. from the look of it it should be normal
+	// but this is me guessing around
+	vec3 offsetPosition = normal * pGINormalBias;
 	
-	// from here on we should be located in a good cage
+	ivec3 baseCoord = clamp( ivec3( ( position + offsetPosition ) * pGIProbeSpacingInv ), ivec3( 0 ), pGIProbeClamp );
 	vec3 basePosition = pGIProbeSpacing * vec3( baseCoord );
+	
 	vec3 sumIrradiance = vec3( 0.0 );
 	float sumWeight = 0.0;
 	
-	// distance from floor(currentVertex) position
-	//vec3 alpha = clamp( pGIProbeSpacingInv * ( position - basePosition ), vec3( 0.0 ), vec3( 1.0 ) );
-	
-	// here something can go wrong. in the paper all probes are used which causes leaking.
-	// by disabling probes (inside walls) or samples thereof (rays hitting geometry from
-	// the outside) annoying artifacts can happen. "alpha" value contains 0 if the position
-	// aligns with the base probe coordinate in one or more axes. basically this means one
-	// or more fragment coordinates fall on probe grid. if this happens "trilinear" calculated
-	// in the loop can contain 0 in one or more components. this causes weight to drop to 0.
-	// now what happens is that disabled probes have 0 weight but good trilinear value.
-	// on the other hand the enabled probes which should be used end up with >0 weight but
-	// trilinear contains 0 components killing off the weight. all probes end up with 0 weight
-	// and a problem is born.
-	// 
-	// the main problem here is disabling probes or samples thereof. but this is required
-	// to remove the annoying artifacts. to solve this the alpha value used for calculating
-	// trilinear value is slightly nudged off the grid if it happens to be on it. this does
-	// affect only the rare case of fragments ending up in the bad spot
-	//alpha = mix( alpha, alpha + vec3( 0.001 ), lessThan( abs( alpha ), vec3( 0.001 ) ) );
-	vec3 alpha = clamp( pGIProbeSpacingInv * ( position - basePosition ), vec3( 0.01 ), vec3( 0.99 ) );
+// 	vec3 alpha = clamp( pGIProbeSpacingInv * ( position + offsetPosition - basePosition ), vec3( 0.01 ), vec3( 0.99 ) ); // test
+	vec3 alpha = clamp( pGIProbeSpacingInv * ( position + offsetPosition - basePosition ), vec3( 0.0 ), vec3( 1.0 ) ); // paper
 	
 	// iterate over adjacent probe cage
 	int i;
@@ -161,51 +123,52 @@ vec3 giIlluminate( in vec3 position, in vec3 normal, in vec3 bendNormal ){
 		
 		probePosition += gipoProbeOffset( probeCoord );
 		
-		vec3 viewVector = probePosition - position;
-		vec3 viewDir = normalize( viewVector );
-		
-		// in the original paper code something really strange is going on. they use
-		// ws_o (or w_o) to offset. the code calculates ws_o in front of the for-loop
-		// as "rayOrigin - position", which would be "viewDir" but outside the for-loop
-		// there exists no rayOrigin. which of the cage probes is the ray origin?
-		// this term makes no sense
-		vec3 probeToPoint = -viewVector + ( normal /*+ 3.0 * ws_o*/ ) * pGINormalBias;
+		vec3 viewDir = normalize( probePosition - position );
 		
 		vec3 trilinear = mix( vec3( 1.0 ) - alpha, alpha, offset );
+		trilinear = max( vec3( 0.001 ), trilinear ); // paper
 		float weight = 1.0;
 		
 		// smooth backface test
 		{
-		float value = max( 0.0001, ( dot( viewDir, normal ) + 1.0 ) * 0.5 );
-		//weight *= value * value + 0.2;
+// 		float value = max( 0.0001, ( dot( viewDir, normal ) + 1.0 ) * 0.5 ); // test
+// 		weight *= value * value;
 		
-		// deviating from the paper here. the 0.2 addition term creates additional
-		// light leaks. removing this term reduces the light leaks in dark rooms
-		weight *= value * value;
+		// paper. causes heavy light leaks if pGINormalBias is 0.05. if pGINormalBias
+		// is 0.25 this works better but certain artifacts still remain
+		float value = dot( viewDir, normal ) * 0.5 + 0.5;
+		weight *= value * value + 0.2;
 		}
 		
 		// moment visibility test
 		{
-		vec2 texCoord = giTCFromDirection( normalize( probeToPoint ), probeCoord, pGIDistanceMapScale, pGIDistanceMapSize );
+		// in the paper offset is not defined. from the look of it it should be normal
+		// but this is me guessing around
+		vec3 probeToPoint = position + offsetPosition - probePosition;
 		float distToProbe = length( probeToPoint );
+		
+		vec2 texCoord = giTCFromDirection( probeToPoint / distToProbe,
+			probeCoord, pGIDistanceMapScale, pGIDistanceMapSize );
 		
 		vec2 temp = texture( texGIDistance, texCoord ).ra; // RG16 in opengl has RRRG as swizzle
 		float mean = temp.x;
 		float variance = abs( mean * mean - temp.y );
 		
-		float chebyshevWeight = max( distToProbe - mean, 0.0 );
-		chebyshevWeight = variance / ( variance + chebyshevWeight * chebyshevWeight );
-		chebyshevWeight = max( chebyshevWeight * chebyshevWeight * chebyshevWeight, 0.0 );
+		float chebyshevWeight = 1.0;
+		if( distToProbe > mean ){
+			// in shadow case according to paper
+			chebyshevWeight = distToProbe - mean;
+			chebyshevWeight = variance / ( variance + chebyshevWeight * chebyshevWeight );
+			chebyshevWeight = max( chebyshevWeight * chebyshevWeight * chebyshevWeight, 0.05 );
+		}
 		
-		weight *= distToProbe <= mean ? 1.0 : chebyshevWeight;
+		weight *= chebyshevWeight;
 		}
 		
 		// avoid zero weight
 		weight = max( 0.000001, weight );
 		
 		vec2 texCoord = giTCFromDirection( bendNormal, probeCoord, pGIIrradianceMapScale, pGIIrradianceMapSize );
-		
-		vec3 probeIrradiance = texture( texGIIrradiance, texCoord ).rgb;
 		
 		const float crushThreshold = 0.2;
 		if( weight < crushThreshold ){
@@ -214,20 +177,41 @@ vec3 giIlluminate( in vec3 position, in vec3 normal, in vec3 bendNormal ){
 		
 		// trilinear weights
 		weight *= trilinear.x * trilinear.y * trilinear.z;
+		
+		vec3 probeIrradiance = texture( texGIIrradiance, texCoord ).rgb;
+		
+		// from source code. using some kind of gamma=2 curve (basically an sqrt) to
+		// approximate sRGB blending. should help somehow with trilinear?
+		probeIrradiance = pow( probeIrradiance, vec3( pGIIrradianceGamma * 0.5 ) );
+		
 		sumIrradiance += probeIrradiance * weight;
 		sumWeight += weight;
 	}
 	
-	// outside the grid of probes the irradiance is not known. the clamping above extends the
-	// outer most probe result. the blend factor below fades out into non-irradiated over a
-	// short distance.
+	// normalize
+	sumIrradiance /= sumWeight;
+	
+	// from source code. convert back to linear irradiance (aka square root it)
+	sumIrradiance.rgb *= sumIrradiance.rgb;
+	
+	// from source code: "was factored out of probes". no idea what this means.
+	// if I leave this uncommented the irradiance in the scene keeps on increading
+	// until all blows out
+// 	const float pi = 3.1415926538;
+// 	sumIrradiance.rgb *= 2.0 * pi;
+	
+	// energy conservation
+	sumIrradiance *= pGIEnergyPreservation;
+	
+	// outside the grid of probes the irradiance is not known. the clamping above
+	// extends the outer most probe result. the blend factor below fades out into
+	// non-irradiated over a short distance.
 	// 
 	// this can be later on improved by using probe cascades
-	float blend = 1.0 / sumWeight;
-	blend *= 1.0 - min( length( unclampedPosition - position ) / 2.0, 1.0 );
-	blend *= pGIEnergyPreservation;
+	sumIrradiance *= 1.0 - min( length( position - clamp( position, vec3( 0.0 ), pGIPositionClamp ) ) / 2.0, 1.0 );
 	
-	return sumIrradiance * blend;
+	// final result
+	return sumIrradiance;
 }
 
 

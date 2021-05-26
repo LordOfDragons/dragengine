@@ -69,11 +69,17 @@ pDetectionBox( pFieldSize * 0.5f + decVector( pMaxDetectionRange, pMaxDetectionR
 
 pIrradianceMapSize( 8 ),
 pDistanceMapSize( 16 ),
-pMaxProbeDistance( 4.0f ),
+//pMaxProbeDistance( 4.0f ),
+
+// according to comment in source code this should be slightly larger than the length
+// of the diagonal across cells
+pMaxProbeDistance( pProbeSpacing.Length() * 1.5f ),
+
 pDepthSharpness( 50.0f ),
 pHysteresis( 0.9f ), // 0.98 (paper)
-pNormalBias( 0.05f ), //0.25f ),
+pNormalBias( 0.25f ), //0.25f (paper), 0.05 (test)
 pEnergyPreservation( 0.85f ),
+pIrradianceGamma( 5.0f ),
 
 pSizeTexIrradiance( pIrradianceMapSize ),
 pSizeTexDistance( pDistanceMapSize ),
@@ -1184,6 +1190,7 @@ void deoglGIState::pPrepareUBOParameters( int probeCount ) const{
 		ubo.SetParameterDataInt( deoglGI::eupBVHInstanceRootNode, gi.GetBVH().GetIndexRootNode() );
 		ubo.SetParameterDataIVec3( deoglGI::eupGridProbeCount, pProbeCount );
 		ubo.SetParameterDataVec3( deoglGI::eupGridProbeSpacing, pProbeSpacing );
+		ubo.SetParameterDataFloat( deoglGI::eupInvIrradianceGamma, 1.0f / pIrradianceGamma );
 		
 		// material
 		/*

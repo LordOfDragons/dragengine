@@ -25,8 +25,9 @@ out vec4 outValue;
 	#define mapProbeSize pGIDistanceMapSize
 #endif
 
-const float epsilon = 1e-6;
 
+//const float epsilon = 1e-9 * float( pGIRaysPerProbe );
+const float epsilon = 1e-6;
 
 void main( void ){
 	// this fragement shader is run for the entire map including the 1 pixel border around it
@@ -78,8 +79,8 @@ void main( void ){
 	
 // 	bool tooCloseToSurface = false;
 	int rayBackCount = 0;
-	int rayFrontCount = 0;
-	int rayMissCount = 0;
+// 	int rayFrontCount = 0;
+// 	int rayMissCount = 0;
 	
 	#define rayDirection pGIRayDirection[ i ]
 	
@@ -93,13 +94,13 @@ void main( void ){
 			// ray misses. rayNormal is not valid in this case
 			rayMisses = true;
 			frontFacing = true;
-			rayMissCount++;
+// 			rayMissCount++;
 			
 		}else if( dot( rayNormal, rayDirection ) < 0.0 ){
 			// ray hits front facing geometry
 			rayMisses = false;
 			frontFacing = true;
-			rayFrontCount++;
+// 			rayFrontCount++;
 			
 		}else{
 			// ray hits back facing geometry
@@ -140,9 +141,15 @@ void main( void ){
 			
 		#else
 			// ray misses do not end up here due to the check above
+			
+			// according to source code distance distance hits and misses should be clamped
+			// to a maximum value to not blow out variance. furthermore back face hits
+			// should be shortened
+			
 			if( frontFacing ){
 				// if ray misses hit distance is set to 10000. in this case max probe distance
 				// has to be used. this works with the min code below so no extra code required
+// 				float rayProbeDistance = min( rayPosition.w, pGIMaxProbeDistance ) * ( frontFacing ? 1.0 : 0.2 );
 				float rayProbeDistance = min( rayPosition.w, pGIMaxProbeDistance );
 				
 				outValue.x += rayProbeDistance * weight;
@@ -190,11 +197,21 @@ void main( void ){
 	
 	// finalize the probe
 	if( enableProbe ){
+		sumWeight = 1.0 / max( sumWeight, epsilon );
+		
 		#ifdef MAP_IRRADIANCE
-			outValue.rgb /= sumWeight;
+			// according to source code this is required to account for the extra factor
+			// of two from summing the cosine weights. I do not see such a factor
+// 			sumWeight *= 0.5;
+			
+			outValue.rgb *= sumWeight;
+			
+			// not sure what this does to the end result. mentioned in the source code
+			outValue.rgb = pow( outValue.rgb, vec3( pGIInvIrradianceGamma ) );
+			
 // 				outValue.rgb = vec3(0,1,0); // DEBUG
 		#else
-			outValue.xy /= sumWeight;
+			outValue.xy *= sumWeight;
 		#endif
 		
 	}else{

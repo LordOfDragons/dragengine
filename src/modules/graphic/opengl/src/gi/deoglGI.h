@@ -76,7 +76,8 @@ public:
 		eupMoveMinDistToSurface, // float
 		eupRayMapScale, // vec2: scale factor for ray map
 		eupMaterialMapsPerRow, // int
-		eupMaterialMapSize // int
+		eupMaterialMapSize, // int
+		eupInvIrradianceGamma // float
 	};
 	
 	

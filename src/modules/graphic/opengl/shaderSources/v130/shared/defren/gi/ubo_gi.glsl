@@ -34,6 +34,8 @@ UBOLAYOUT uniform GIParameters{
 	vec2 pGIRayMapScale;
 	int pGIMaterialMapsPerRow;
 	int pGIMaterialMapSize;
+	
+	float pGIInvIrradianceGamma;
 };
 
 UBOLAYOUT uniform GIProbeIndices{

@@ -95,6 +95,7 @@ private:
 	float pHysteresis;
 	float pNormalBias;
 	float pEnergyPreservation;
+	float pIrradianceGamma;
 	
 	int pSizeTexIrradiance;
 	int pSizeTexDistance;
@@ -257,6 +258,9 @@ public:
 	
 	/** Energy preservation. */
 	inline float GetEnergyPreservation() const{ return pEnergyPreservation; }
+	
+	/** Irradiance gamma. */
+	inline float GetIrradianceGamma() const{ return pIrradianceGamma; }
 	
 	/** Count of probes to update. */
 	inline int GetUpdateProbeCount() const{ return pUpdateProbeCount; }
