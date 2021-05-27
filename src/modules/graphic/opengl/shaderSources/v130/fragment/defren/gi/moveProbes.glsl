@@ -17,7 +17,7 @@ uniform sampler2D texNormal;
 flat in int vInstanceID;
 flat in ivec3 vProbeCoord;
 
-out vec3 outOffset;
+out vec4 outOffset; // offset(xyz), flags(w)
 
 
 ivec3 giGridLocalToShift( in ivec3 local ){
@@ -32,6 +32,7 @@ void main( void ){
 	#endif
 	
 	vec3 probePosition = pGIProbePosition[ vInstanceID ].xyz;
+	uint flags = uint( pGIProbePosition[ vInstanceID ].w );
 	
 	float backFaceMinDistToSurface = pGIMoveMinDistToSurface + 0.05;
 	int frontFaceCount = 0;
@@ -39,7 +40,7 @@ void main( void ){
 	int countOffsets = 0;
 	int i;
 	
-	outOffset = vec3( 0.0 );
+	outOffset = vec4( 0.0, 0.0, 0.0, flags );
 	
 	// if we apply the offset of all back faces we end up in troubles. for example if
 	// two back faces face each other the offset towards the other side of both faces
@@ -79,7 +80,7 @@ void main( void ){
 				
 			}else if( rayDistance < 0.001 ){
 				// at surface. move along normal
-				outOffset += hitNormal * pGIMoveMinDistToSurface;
+				outOffset.xyz += hitNormal * pGIMoveMinDistToSurface;
 				
 			}else{
 				// move back on ray until pGIMoveMinDistToSurface distance
@@ -87,7 +88,7 @@ void main( void ){
 				// offset = normalize(rayDirection) * (rayLength - pGIMoveMinDistToSurface)
 				// offset = rayDirection / rayLength * (rayLength - pGIMoveMinDistToSurface)
 				// offset = rayDirection * ((rayLength - pGIMoveMinDistToSurface) / rayLength)
-				outOffset += rayDirection * ( 1.0 - pGIMoveMinDistToSurface / rayDistance );
+				outOffset.xyz += rayDirection * ( 1.0 - pGIMoveMinDistToSurface / rayDistance );
 			}
 			
 		}else{
@@ -119,27 +120,27 @@ void main( void ){
 	// TODO using back/front face count to disable probes
 	
 	if( closestBackDistance < backFaceMinDistToSurface ){
-		outOffset += closestBackOffset;
+		outOffset.xyz += closestBackOffset;
 	}
 	
 	if( countOffsets > 0 ){
-		outOffset /= float( countOffsets );
+		outOffset.xyz /= float( countOffsets );
 		
 		// averaging the offsets has the tendency to shorten the offset if multiple
 		// rays contribute. reduce this effect by enlaring the offset with larger
 		// counts. a base scaling is always applied to reduce the chance of moving
 		// the probe again in the future
-		//outOffset *= 1.0 + 0.05 * ( countOffsets - 1 );
-		outOffset *= 1.0 + 0.05 * countOffsets;
+		//outOffset.xyz *= 1.0 + 0.05 * ( countOffsets - 1 );
+		outOffset.xyz *= 1.0 + 0.05 * countOffsets;
 	}
 	
 	// position used for ray tracing contains the previous update probe offset.
 	// the previous offset has to be added to the new offset for it to be correct.
 	// vProbeCoord is local. we need it though shifted
 	vec3 gridPosition = pGIGridProbeSpacing * vec3( giGridLocalToShift( vProbeCoord ) ) + pGIGridOrigin;
-	outOffset += probePosition - gridPosition;
+	outOffset.xyz += probePosition - gridPosition;
 	
 	// clamp offset
-	outOffset = clamp( outOffset, -pGIMoveMaxOffset, pGIMoveMaxOffset );
-// 		outOffset = vec3(0); // DEBUG
+	outOffset.xyz = clamp( outOffset.xyz, -pGIMoveMaxOffset, pGIMoveMaxOffset );
+// 		outOffset.xyz = vec3(0); // DEBUG
 }

@@ -6,13 +6,13 @@ precision highp int;
 
 flat in int vInstanceID;
 
-out vec3 outOffset;
+out vec4 outOffset;
 
 void main( void ){
-	int flags = int( pGIProbePosition[ vInstanceID ].w );
-	if( ( flags & 1 ) == 1 ){
+	uint flags = uint( pGIProbePosition[ vInstanceID ].w );
+	if( ( flags & uint( 1 ) ) == uint( 1 ) ){
 		discard;
 	}
 	
-	outOffset = vec3( 0.0 );
+	outOffset = vec4( 0.0, 0.0, 0.0, flags );
 }

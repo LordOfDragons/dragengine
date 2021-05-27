@@ -113,6 +113,8 @@ enum eSPMaterial{
 };
 
 enum eSPDebugProbe{
+	spdpMatrixNormal,
+	spdpMatrixMV,
 	spdpMatrixMVP,
 	spdpGIGridCoordShift
 };
@@ -150,6 +152,7 @@ pShaderProbeExtends( NULL ),
 pShaderLight( NULL ),
 pShaderLightGIRay( NULL ),
 pShaderDebugProbe( NULL ),
+pShaderDebugProbeFlags( NULL ),
 pShaderDebugProbeOffset( NULL ),
 pShaderDebugProbeUpdate( NULL ),
 
@@ -250,6 +253,10 @@ pDebugInfoGIRenderLightGIRay( NULL )
 		// debug
 		sources = shaderManager.GetSourcesNamed( "DefRen GI Debug Probe" );
 		pShaderDebugProbe = shaderManager.GetProgramWith( sources, defines );
+		
+		defines.AddDefine( "DEBUG_FLAGS", true );
+		pShaderDebugProbeFlags = shaderManager.GetProgramWith( sources, defines );
+		defines.RemoveDefine( "DEBUG_FLAGS" );
 		
 		sources = shaderManager.GetSourcesNamed( "DefRen GI Debug Probe Offset" );
 		pShaderDebugProbeOffset = shaderManager.GetProgramWith( sources, defines );
@@ -1047,6 +1054,7 @@ void deoglRenderGI::RenderDebugOverlay( deoglRenderPlan &plan ){
 	const decDMatrix matrixC( decDMatrix::CreateTranslation( giState->GetPosition()
 		+ decDVector( giState->GetFieldOrigin() ) ) * plan.GetCameraMatrix() );
 	const decDMatrix matrixCP( matrixC * decDMatrix( plan.GetProjectionMatrix() ) );
+	const decDMatrix matrixNormal( matrixC.GetRotationMatrix().QuickInvert() );
 	
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
@@ -1055,13 +1063,42 @@ void deoglRenderGI::RenderDebugOverlay( deoglRenderPlan &plan ){
 	
 	defren.ActivatePostProcessFBO( true );
 	
-	// probe
+	// probe flags
 	shapeSphere.ActivateVAO();
 	
-	deoglShaderCompiled &shader = *pShaderDebugProbe->GetCompiled();
-	shader.Activate();
-	shader.SetParameterDMatrix4x4( spdpMatrixMVP, matrixCP );
-	shader.SetParameterPoint3( spdpGIGridCoordShift, giState->GetProbeCount() - giState->GetGridCoordShift() );
+	deoglShaderCompiled &shaderFlags = *pShaderDebugProbeFlags->GetCompiled();
+	shaderFlags.Activate();
+	shaderFlags.SetParameterDMatrix4x3( spdpMatrixNormal, matrixNormal );
+	shaderFlags.SetParameterDMatrix4x3( spdpMatrixMV, matrixC );
+	shaderFlags.SetParameterDMatrix4x4( spdpMatrixMVP, matrixCP );
+	shaderFlags.SetParameterPoint3( spdpGIGridCoordShift, giState->GetProbeCount() - giState->GetGridCoordShift() );
+	
+	pActivateGIUBOs();
+	
+	tsmgr.EnableTexture( 0, giState->GetTextureProbeIrradiance(), GetSamplerClampLinear() );
+	tsmgr.EnableTexture( 1, giState->GetTextureProbeDistance(), GetSamplerClampLinear() );
+	tsmgr.EnableTexture( 2, giState->GetTextureProbeOffset(), GetSamplerClampNearest() );
+	tsmgr.DisableStagesAbove( 2 );
+	
+	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
+	OGL_CHECK( renderThread, glDepthMask( GL_TRUE ) );
+	OGL_CHECK( renderThread, glEnable( GL_DEPTH_TEST ) );
+	OGL_CHECK( renderThread, glDepthFunc( defren.GetDepthCompareFuncRegular() ) );
+	OGL_CHECK( renderThread, glEnable( GL_CULL_FACE ) );
+	SetCullMode( ! plan.GetFlipCulling() );
+	OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
+	
+	OGL_CHECK( renderThread, pglDrawArraysInstanced( GL_TRIANGLES,
+		shapeSphere.GetVBOBlock()->GetOffset() + shapeSphere.GetPointOffsetFaces(),
+		shapeSphere.GetPointCountFaces(), probeCount.x * probeCount.y * probeCount.z ) );
+	
+	// probe
+	deoglShaderCompiled &shaderProbe = *pShaderDebugProbe->GetCompiled();
+	shaderProbe.Activate();
+	shaderProbe.SetParameterDMatrix4x3( spdpMatrixNormal, matrixNormal );
+	shaderProbe.SetParameterDMatrix4x3( spdpMatrixMV, matrixC );
+	shaderProbe.SetParameterDMatrix4x4( spdpMatrixMVP, matrixCP );
+	shaderProbe.SetParameterPoint3( spdpGIGridCoordShift, giState->GetProbeCount() - giState->GetGridCoordShift() );
 	
 	pActivateGIUBOs();
 	
@@ -1086,10 +1123,10 @@ void deoglRenderGI::RenderDebugOverlay( deoglRenderPlan &plan ){
 	if( devmode.GetGIShowProbeOffsets() ){
 		OGL_CHECK( renderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) );
 		
-		deoglShaderCompiled &shader2 = *pShaderDebugProbeOffset->GetCompiled();
-		shader2.Activate();
-		shader2.SetParameterDMatrix4x4( spdpoMatrixMVP, matrixCP );
-		shader2.SetParameterPoint3( spdpoGIGridCoordShift, giState->GetProbeCount() - giState->GetGridCoordShift() );
+		deoglShaderCompiled &shaderOffset = *pShaderDebugProbeOffset->GetCompiled();
+		shaderOffset.Activate();
+		shaderOffset.SetParameterDMatrix4x4( spdpoMatrixMVP, matrixCP );
+		shaderOffset.SetParameterPoint3( spdpoGIGridCoordShift, giState->GetProbeCount() - giState->GetGridCoordShift() );
 		
 		pActivateGIUBOs();
 		
@@ -1213,6 +1250,9 @@ void deoglRenderGI::pCleanUp(){
 	}
 	if( pShaderDebugProbe ){
 		pShaderDebugProbe->RemoveUsage();
+	}
+	if( pShaderDebugProbeFlags ){
+		pShaderDebugProbeFlags->RemoveUsage();
 	}
 	if( pShaderLight ){
 		pShaderLight->RemoveUsage();

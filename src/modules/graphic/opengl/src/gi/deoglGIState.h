@@ -50,9 +50,10 @@ public:
 	enum eProbeFlags{
 		epfSmoothUpdate = 0x1,
 		epfValid = 0x2, //<! Probe has been updated at least once
-		epfRayLimitsValid = 0x4, //<! Ray-Tracing distance limits are valid
-		epfRayCacheValid = 0x8, //<! Ray-Tracing ray cache is valid
-		epfInsideView = 0x10
+		epfRayCacheValid = 0x4, //<! Ray-Tracing ray cache is valid
+		epfInsideView = 0x8,
+		
+		epfRayLimitsValid = 0x80, //<! Ray-Tracing distance limits are valid
 	};
 	
 	/** Probe parameters. */

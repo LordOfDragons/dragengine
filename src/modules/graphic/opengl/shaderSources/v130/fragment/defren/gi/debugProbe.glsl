@@ -6,6 +6,7 @@ precision highp int;
 #include "v130/shared/ubo_defines.glsl"
 #include "v130/shared/defren/gi/ubo_gi.glsl"
 #include "v130/shared/octahedral.glsl"
+#include "v130/shared/defren/gi/probe_offset.glsl"
 
 uniform lowp sampler2D texGIIrradiance;
 uniform HIGHP sampler2D texGIDistance;
@@ -13,6 +14,7 @@ uniform HIGHP sampler2D texGIDistance;
 flat in ivec3 vProbeCoord;
 flat in vec3 vProbePosition;
 in vec3 vDirection;
+in vec3 vCameraDirection;
 
 out vec3 outColor;
 
@@ -26,10 +28,32 @@ vec2 giTCFromDirection( in vec3 dir, in ivec3 probeCoord, in vec2 mapScale, in i
 }
 
 void main( void ){
-	vec2 texCoord = giTCFromDirection( normalize( vDirection ),
-		vProbeCoord, pGIIrradianceMapScale, pGIIrradianceMapSize );
-	vec3 irradiance = texture( texGIIrradiance, texCoord ).rgb;
-	irradiance = pow( irradiance, vec3( pGIIrradianceGamma ) );
-	irradiance /= vec3( 4.0 ); // squash HDRR a bit
-	outColor = irradiance;
+	#ifdef DEBUG_FLAGS
+		const float pi = 3.1415926538;
+		vec3 direction = normalize( vCameraDirection );
+		float angle = 0.5 - atan( direction.x, -direction.y ) / ( pi * 2.0 );
+		
+		uint flags = gipoProbeFlags( vProbeCoord );
+		
+		const vec3 colorOff = vec3( 0.01, 0.01, 0.01 );
+		if( angle < 0.25 ){
+			const vec3 colorOn = vec3( 1.0, 0.0, 0.0 );
+			outColor = mix( colorOff, colorOn, bvec3( ( flags & gipfSmoothUpdate ) == gipfSmoothUpdate ) );
+			
+		}else if( angle < 0.5 ){
+			const vec3 colorOn = vec3( 0.0, 1.0, 0.0 );
+			outColor = mix( colorOff, colorOn, bvec3( ( flags & gipfRayCacheValid ) == gipfRayCacheValid ) );
+			
+		}else{
+			outColor = colorOff;
+		}
+		
+	#else
+		vec2 texCoord = giTCFromDirection( normalize( vDirection ),
+			vProbeCoord, pGIIrradianceMapScale, pGIIrradianceMapSize );
+		vec3 irradiance = texture( texGIIrradiance, texCoord ).rgb;
+		irradiance = pow( irradiance, vec3( pGIIrradianceGamma ) );
+		irradiance /= vec3( 4.0 ); // squash HDRR a bit
+		outColor = irradiance;
+	#endif
 }

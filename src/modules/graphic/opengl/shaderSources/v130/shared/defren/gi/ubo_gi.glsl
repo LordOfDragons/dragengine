@@ -3,6 +3,13 @@
 // #define GI_MAX_COUNT_RAY_DIRECTIONS 512
 #define GI_MAX_COUNT_RAY_DIRECTIONS 256
 
+// probe flags. use in pGIProbePosition.w and offset texture (.w)
+const uint gipfSmoothUpdate = uint( 1 );
+const uint gipfValid = uint( 2 );
+const uint gipfRayCacheValid = uint( 4 );
+const uint gipfInsideView = uint( 8 );
+
+
 UBOLAYOUT uniform GIParameters{
 	vec2 pGISampleImageScale;
 	int pGIProbeCount;
@@ -45,7 +52,7 @@ UBOLAYOUT uniform GIProbeIndices{
 };
 
 UBOLAYOUT uniform GIProbePositions{
-	vec4 pGIProbePosition[ GI_MAX_COUNT_PROBE_POSITIONS ]; // position(xyz), blendFactor(w)
+	vec4 pGIProbePosition[ GI_MAX_COUNT_PROBE_POSITIONS ]; // position(xyz), flags(w)
 };
 
 UBOLAYOUT uniform GIRayDirections{

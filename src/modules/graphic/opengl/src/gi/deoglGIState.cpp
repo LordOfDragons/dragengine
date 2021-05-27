@@ -509,7 +509,7 @@ void deoglGIState::ProbesMoved(){
 
 void deoglGIState::UpdateProbeOffsetFromTexture(){
 	if( ! pPixBufProbeOffset ){
-		pPixBufProbeOffset = new deoglPixelBuffer( deoglPixelBuffer::epfFloat3,
+		pPixBufProbeOffset = new deoglPixelBuffer( deoglPixelBuffer::epfFloat4,
 			pTexProbeOffset.GetWidth(), pTexProbeOffset.GetHeight(), 1 );
 	}
 	
@@ -520,7 +520,7 @@ void deoglGIState::UpdateProbeOffsetFromTexture(){
 	pTexProbeOffset.GetPixels( *pPixBufProbeOffset );
 // 	printf( "GetPixels: %d\n", ( int )( timer.GetElapsedTime() * 1e6f ) );
 	
-	const deoglPixelBuffer::sFloat3 * const pixels = pPixBufProbeOffset->GetPointerFloat3();
+	const deoglPixelBuffer::sFloat4 * const pixels = pPixBufProbeOffset->GetPointerFloat4();
 	const int stride = pTexProbeOffset.GetWidth();
 	int i;
 	
@@ -541,8 +541,10 @@ void deoglGIState::UpdateProbeOffsetFromTexture(){
 		
 		const decPoint tc( pProbeCount.x * probe.coord.y + probe.coord.x, probe.coord.z );
 		
-		const deoglPixelBuffer::sFloat3 &pixel = pixels[ stride * tc.y + tc.x ];
+		const deoglPixelBuffer::sFloat4 &pixel = pixels[ stride * tc.y + tc.x ];
 		const decVector offset( pixel.r, pixel.g, pixel.b );
+		
+// 		probe.flags = ( uint8_t )( pixel.a ); // TODO LATER
 		
 		if( offset.IsEqualTo( probe.offset, 0.05f ) ){
 			continue; // update offset only if it moved far enough to justify an expensive update
@@ -1121,7 +1123,7 @@ void deoglGIState::pPrepareProbeTexturesAndFBO(){
 		const int width = pProbeCount.x * pProbeCount.y;
 		const int height = pProbeCount.z;
 		
-		pTexProbeOffset.SetFBOFormat( 3, true );
+		pTexProbeOffset.SetFBOFormat( 4, true );
 		pTexProbeOffset.SetSize( width, height );
 		pTexProbeOffset.CreateTexture();
 		

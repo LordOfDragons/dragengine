@@ -57,6 +57,7 @@ private:
 	deoglShaderProgram *pShaderLight;
 	deoglShaderProgram *pShaderLightGIRay;
 	deoglShaderProgram *pShaderDebugProbe;
+	deoglShaderProgram *pShaderDebugProbeFlags;
 	deoglShaderProgram *pShaderDebugProbeOffset;
 	deoglShaderProgram *pShaderDebugProbeUpdate;
 	
