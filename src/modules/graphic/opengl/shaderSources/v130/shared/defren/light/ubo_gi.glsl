@@ -14,4 +14,5 @@ UBOLAYOUT uniform GIParameters{
 	vec2 pGIDistanceMapScale; // distance map pixel to texture coordinate scaling
 	ivec3 pGIGridCoordShift; // grid coordinate shift (wrapping around)
 	float pGIIrradianceGamma;
+	float pGISelfShadowBias;
 };

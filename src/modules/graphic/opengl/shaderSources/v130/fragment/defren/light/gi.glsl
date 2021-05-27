@@ -94,13 +94,19 @@ ivec3 giGridShiftToLocal( in ivec3 shifted ){
 
 // calculate illumination to apply to fragment
 vec3 giIlluminate( in vec3 position, in vec3 normal, in vec3 bendNormal ){
+	// in the paper this calculation looks like this:
+	//   BiasVector = (n * 0.2 + wo * 0.8 ) * ( 0.75 * minDistanceBetweenProbes ) * TurnableShadowBias
+	// whereas n is the normal and wo the direction from fragment to camera.
+	// 
+	// we need the offset in GI space so the pGIMatrixNormal is used to transform it. since
+	// position is the vector from camera to fragment w0 is the negation of the normalized
+	// position. furthermore the GI state sets pGISelfShadowBias is set to 0.75 * selfShadowBias.
+	vec3 offsetPosition = mix( normal, -normalize( position ), vec3( pGINormalBias ) ) * pGISelfShadowBias;
+	offsetPosition = offsetPosition * pGIMatrixNormal; // reverse order does transpose()
+	
 	normal = normalize( normal * pGIMatrixNormal ); // reverse order does transpose()
 	bendNormal = normalize( bendNormal * pGIMatrixNormal ); // reverse order does transpose()
 	position = vec3( pGIMatrix * vec4( position, 1.0 ) );
-	
-	// in the paper offset is not defined. from the look of it it should be normal
-	// but this is me guessing around
-	vec3 offsetPosition = normal * pGINormalBias;
 	
 	ivec3 baseCoord = clamp( ivec3( ( position + offsetPosition ) * pGIProbeSpacingInv ), ivec3( 0 ), pGIProbeClamp );
 	vec3 basePosition = pGIProbeSpacing * vec3( baseCoord );
@@ -134,16 +140,12 @@ vec3 giIlluminate( in vec3 position, in vec3 normal, in vec3 bendNormal ){
 // 		float value = max( 0.0001, ( dot( viewDir, normal ) + 1.0 ) * 0.5 ); // test
 // 		weight *= value * value;
 		
-		// paper. causes heavy light leaks if pGINormalBias is 0.05. if pGINormalBias
-		// is 0.25 this works better but certain artifacts still remain
 		float value = dot( viewDir, normal ) * 0.5 + 0.5;
 		weight *= value * value + 0.2;
 		}
 		
 		// moment visibility test
 		{
-		// in the paper offset is not defined. from the look of it it should be normal
-		// but this is me guessing around
 		vec3 probeToPoint = position + offsetPosition - probePosition;
 		float distToProbe = length( probeToPoint );
 		

@@ -37,6 +37,7 @@ UBOLAYOUT uniform GIParameters{
 	
 	float pGIIrradianceGamma;
 	float pGIInvIrradianceGamma;
+	float pGISelfShadowBias;
 };
 
 UBOLAYOUT uniform GIProbeIndices{

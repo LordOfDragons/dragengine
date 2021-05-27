@@ -104,7 +104,8 @@ enum eUBORenderLightParameters{
 	euprlOcclusionMapScale,
 	euprlDistanceMapScale,
 	euprlGridCoordShift,
-	euprlIrradianceGamma
+	euprlIrradianceGamma,
+	euprlSelfShadowBias
 };
 
 enum eSPMaterial{
@@ -564,6 +565,7 @@ void deoglRenderGI::PrepareUBORenderLight( deoglRenderPlan &plan ){
 		ubo.SetParameterDataFloat( euprlNormalBias, giState->GetNormalBias() );
 		ubo.SetParameterDataFloat( euprlEnergyPreservation, giState->GetEnergyPreservation() );
 		ubo.SetParameterDataFloat( euprlIrradianceGamma, giState->GetIrradianceGamma() );
+		ubo.SetParameterDataFloat( euprlSelfShadowBias, giState->CalcUBOSelfShadowBias() );
 		
 	}catch( const deException & ){
 		ubo.UnmapBuffer();
@@ -1293,7 +1295,7 @@ void deoglRenderGI::pCreateUBORenderLight(){
 	deoglSPBlockUBO &ubo = GetUBORenderLight();
 	
 	ubo.SetRowMajor( ! renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Broken() );
-	ubo.SetParameterCount( euprlIrradianceGamma + 1 );
+	ubo.SetParameterCount( euprlSelfShadowBias + 1 );
 	
 	ubo.GetParameterAt( euprlMatrix ).SetAll( deoglSPBParameter::evtFloat, 4, 3, 1 ); // mat4x3
 	ubo.GetParameterAt( euprlMatrixNormal ).SetAll( deoglSPBParameter::evtFloat, 3, 3, 1 ); // mat3
@@ -1310,6 +1312,7 @@ void deoglRenderGI::pCreateUBORenderLight(){
 	ubo.GetParameterAt( euprlEnergyPreservation ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 1 ); // float
 	ubo.GetParameterAt( euprlGridCoordShift ).SetAll( deoglSPBParameter::evtInt, 3, 1, 1 ); // ivec3
 	ubo.GetParameterAt( euprlIrradianceGamma ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 1 ); // float
+	ubo.GetParameterAt( euprlSelfShadowBias ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 1 ); // float
 	
 	ubo.MapToStd140();
 	ubo.SetBindingPoint( 1 );

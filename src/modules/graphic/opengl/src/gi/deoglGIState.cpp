@@ -77,9 +77,10 @@ pMaxProbeDistance( pProbeSpacing.Length() * 1.5f ),
 
 pDepthSharpness( 50.0f ),
 pHysteresis( 0.9f ), // 0.98 (paper)
-pNormalBias( 0.25f ), //0.25f (paper), 0.05 (test)
+pNormalBias( 0.2f ),
 pEnergyPreservation( 0.85f ),
 pIrradianceGamma( 5.0f ),
+pSelfShadowBias( 0.3f ), // 0.3 default, higher when variance is higher (lower ray count)
 
 pSizeTexIrradiance( pIrradianceMapSize ),
 pSizeTexDistance( pDistanceMapSize ),
@@ -251,6 +252,10 @@ decPoint3 deoglGIState::ShiftedGrid2LocalGrid( const decPoint3 &coord ) const{
 	local.y %= pProbeCount.y;
 	local.z %= pProbeCount.z;
 	return local;
+}
+
+float deoglGIState::CalcUBOSelfShadowBias() const{
+	return 0.75f * pSelfShadowBias * decMath::min( pProbeSpacing.x, pProbeSpacing.y, pProbeSpacing.z );
 }
 
 
@@ -1192,6 +1197,7 @@ void deoglGIState::pPrepareUBOParameters( int probeCount ) const{
 		ubo.SetParameterDataVec3( deoglGI::eupGridProbeSpacing, pProbeSpacing );
 		ubo.SetParameterDataFloat( deoglGI::eupIrradianceGamma, pIrradianceGamma );
 		ubo.SetParameterDataFloat( deoglGI::eupInvIrradianceGamma, 1.0f / pIrradianceGamma );
+		ubo.SetParameterDataFloat( deoglGI::eupSelfShadowBias, CalcUBOSelfShadowBias() );
 		
 		// material
 		/*

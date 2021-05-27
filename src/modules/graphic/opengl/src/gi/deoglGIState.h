@@ -96,6 +96,7 @@ private:
 	float pNormalBias;
 	float pEnergyPreservation;
 	float pIrradianceGamma;
+	float pSelfShadowBias;
 	
 	int pSizeTexIrradiance;
 	int pSizeTexDistance;
@@ -261,6 +262,12 @@ public:
 	
 	/** Irradiance gamma. */
 	inline float GetIrradianceGamma() const{ return pIrradianceGamma; }
+	
+	/** Self shadow bias. */
+	inline float GetSelfShadowBias() const{ return pSelfShadowBias; }
+	
+	/** Calculate UBO self shadow bias value. */
+	float CalcUBOSelfShadowBias() const;
 	
 	/** Count of probes to update. */
 	inline int GetUpdateProbeCount() const{ return pUpdateProbeCount; }
