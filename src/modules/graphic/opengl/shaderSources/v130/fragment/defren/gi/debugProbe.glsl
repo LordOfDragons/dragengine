@@ -35,17 +35,15 @@ void main( void ){
 		
 		uint flags = gipoProbeFlags( vProbeCoord );
 		
-		const vec3 colorOff = vec3( 0.01, 0.01, 0.01 );
-		if( angle < 0.25 ){
-			const vec3 colorOn = vec3( 1.0, 0.0, 0.0 );
-			outColor = mix( colorOff, colorOn, bvec3( ( flags & gipfSmoothUpdate ) == gipfSmoothUpdate ) );
-			
-		}else if( angle < 0.5 ){
-			const vec3 colorOn = vec3( 0.0, 1.0, 0.0 );
-			outColor = mix( colorOff, colorOn, bvec3( ( flags & gipfRayCacheValid ) == gipfRayCacheValid ) );
+		if( angle < 0.35 || angle > 0.65 ){
+			const vec3 colorEnabled = vec3( 0.0, 1.0, 0.0 );
+			const vec3 colorDisabled = vec3( 1.0, 0.0, 0.0 );
+			outColor = mix( colorEnabled, colorDisabled, bvec3( ( flags & gipfDisabled ) == gipfDisabled ) );
 			
 		}else{
-			outColor = colorOff;
+			const vec3 colorOn = vec3( 0.0, 0.0, 1.0 );
+			const vec3 colorOff = vec3( 0.0, 0.0, 0.0 );
+			outColor = mix( colorOff, colorOn, bvec3( ( flags & gipfSmoothUpdate ) == gipfSmoothUpdate ) );
 		}
 		
 	#else

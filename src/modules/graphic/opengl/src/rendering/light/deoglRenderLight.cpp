@@ -350,6 +350,8 @@ void deoglRenderLight::RenderLights( deoglRenderPlan &plan, bool solid, const de
 			pRenderGI->RenderLightGIRay( plan );
 		}
 		pRenderGI->UpdateProbes( plan );
+		pRenderGI->MoveProbes( plan );
+		pRenderGI->ProbeExtends( plan );
 	}
 	if( hasGIStateRender ){
 		pRenderGI->RenderLight( plan, solid );

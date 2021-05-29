@@ -55,6 +55,7 @@ deoglGIState::deoglGIState( deoglRenderThread &renderThread ) :
 pRenderThread( renderThread ),
 
 pProbeSpacing( 1.0f, 1.0f, 1.0f ),
+// pProbeSpacing( 0.5f, 0.5f, 0.5f ),
 pProbeSpacingInv( 1.0f / pProbeSpacing.x, 1.0f / pProbeSpacing.y, 1.0f / pProbeSpacing.z ),
 pProbeCount( 32, 8, 32 ),
 pGridCoordClamp( pProbeCount - decPoint3( 1, 1, 1 ) ),
@@ -538,6 +539,7 @@ void deoglGIState::UpdateProbeOffsetFromTexture(){
 		if( probe.countOffsetMoved >= 5 ){
 			continue;
 		}
+		probe.countOffsetMoved++;
 		
 		const decPoint tc( pProbeCount.x * probe.coord.y + probe.coord.x, probe.coord.z );
 		
@@ -551,7 +553,6 @@ void deoglGIState::UpdateProbeOffsetFromTexture(){
 		}
 		
 		probe.offset = offset;
-		probe.countOffsetMoved++;
 		probe.flags &= ~( epfRayLimitsValid | epfRayCacheValid );
 // 			pRenderThread.GetLogger().LogInfoFormat("UpdateProbeOffsetFromTexture: RayCacheInvalidate %d", pUpdateProbes[i]);
 	}

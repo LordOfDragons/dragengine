@@ -32,6 +32,7 @@ void main( void ){
 	#endif
 	
 	vec3 probePosition = pGIProbePosition[ vInstanceID ].xyz;
+	uint flags = uint( pGIProbePosition[ vInstanceID ].w );
 	
 	vec4 closestBackface = vec4( 0.0, 0.0, 0.0, 10000.0 );
 	vec4 closestFrontface = vec4( 0.0, 0.0, 0.0, 10000.0 );
@@ -85,7 +86,7 @@ void main( void ){
 	// position used for ray tracing contains the previous update probe offset. the previous
 	// offset thus can be calculated this way. vProbeCoord is local and has to be shifted
 	vec3 gridPosition = pGIGridProbeSpacing * vec3( giGridLocalToShift( vProbeCoord ) ) + pGIGridOrigin;
-	outOffset = vec4( probePosition - gridPosition, 0.0 );
+	outOffset = vec4( probePosition - gridPosition, flags );
 	
 	vec3 fullOffset = vec3( 10000.0 );
 	
@@ -97,9 +98,7 @@ void main( void ){
 	const float probeMinFrontfaceDistance = 1.0;
 	
 	// if closest backface is hit and more than 25% backfaces are hit consider inside geometry
-	bool assumeInGeometry = backfaceCount / float( pGIRaysPerProbe ) > 0.25;
-	
-	if( closestBackface.w < 9999.0 && assumeInGeometry ){
+	if( closestBackface.w < 9999.0 && backfaceCount / float( pGIRaysPerProbe ) > 0.25 ){
 		vec3 direction = closestBackface.xyz * closestBackface.w;
 		
 		fullOffset = outOffset.xyz + direction * ( probeDistanceScale + 1.0 );
@@ -137,26 +136,6 @@ void main( void ){
 	if( dot( normalizedOffset, normalizedOffset ) < 0.2025f ){ // 0.45 * 0.45 == 0.2025
 		outOffset.xyz = fullOffset;
 	}
-	
-	// update flags
-	uint flags = uint( pGIProbePosition[ vInstanceID ].w );
-	
-	// in the original source code "spacing * 2 * 1.45" is used. but I think only
-	// "spacing * (1 + 0.45 * 2)" aka "spacing * 1.9" is required. the thinking is this:
-	// if a surface is farther away than "spacing" then it falls into the next cell and this
-	// probe has no effect on it anymore no matter if by direct lighting nor ray lighting.
-	// offset can be at most 0.45 . so if both probes are have maximum offset but in opposite
-	// direction then this yields "1 + 0.45 + 0.45" times the spacing which is "spacing * 1.9"
-	const vec3 geometryBounds = pGIGridProbeSpacing * 1.9;
-	
-	if( all( lessThanEqual( vec3( closestFrontface.w ), geometryBounds ) ) && ! assumeInGeometry ) {
-		flags &= ~gipfDisabled;
-		
-	}else{
-		flags |= gipfDisabled;
-	}
-	
-	outOffset.w = float( flags );
 	
 // 	outOffset.xyz = vec3(0); // DEBUG
 }

@@ -78,7 +78,7 @@ void main( void ){
 	outValue = vec4( 0.0 );
 	
 // 	bool tooCloseToSurface = false;
-	int rayBackCount = 0;
+	float rayBackCount = 0.0;
 // 	int rayFrontCount = 0;
 // 	int rayMissCount = 0;
 	
@@ -106,7 +106,7 @@ void main( void ){
 			// ray hits back facing geometry
 			rayMisses = false;
 			frontFacing = false;
-			rayBackCount++;
+			rayBackCount += 1.0;
 		}
 		
 // 		tooCloseToSurface = tooCloseToSurface || rayPosition.w < 0.001;
@@ -187,8 +187,8 @@ void main( void ){
 	// be counted towards front faces while inside walls they should be counted
 	// towards back faces. we do not know though which case is true. we can only
 	// guess. so if the count of back faces relative to the total amount of rays
-	// is above the 35% threshold then we count it as inside walls
-	enableProbe = enableProbe && float( rayBackCount ) / float( pGIRaysPerProbe ) < 0.35;
+	// is above the 25% threshold then we count it as inside walls
+	enableProbe = enableProbe && rayBackCount / float( pGIRaysPerProbe ) < 0.25;
 	
 	// if probes are too close to the surface various problems happen including view
 	// dependent flickering and potential bright flashing on the first update step

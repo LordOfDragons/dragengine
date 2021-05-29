@@ -194,16 +194,13 @@ vec3 giIlluminate( in vec3 position, in vec3 normal, in vec3 bendNormal ){
 	sumIrradiance /= sumWeight;
 	
 	// from source code. convert back to linear irradiance (aka square root it)
-	sumIrradiance.rgb *= sumIrradiance.rgb;
+	sumIrradiance *= sumIrradiance;
 	
 	// from source code: "was factored out of probes". no idea what this means.
 	// if I leave this uncommented the irradiance in the scene keeps on increading
 	// until all blows out
 // 	const float pi = 3.1415926538;
-// 	sumIrradiance.rgb *= 2.0 * pi;
-	
-	// energy conservation
-	sumIrradiance *= pGIEnergyPreservation;
+// 	sumIrradiance *= 2.0 * pi;
 	
 	// outside the grid of probes the irradiance is not known. the clamping above
 	// extends the outer most probe result. the blend factor below fades out into
