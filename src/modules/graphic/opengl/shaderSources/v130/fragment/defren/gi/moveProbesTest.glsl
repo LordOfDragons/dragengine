@@ -6,6 +6,7 @@ precision highp int;
 
 #include "v130/shared/ubo_defines.glsl"
 #include "v130/shared/defren/gi/ubo_gi.glsl"
+#include "v130/shared/defren/gi/probe_flags.glsl"
 
 #ifdef WITH_RAY_CACHE
 	#include "v130/shared/defren/gi/raycast/ray_cache.glsl"
@@ -134,14 +135,24 @@ void main( void ){
 // 		outOffset.xyz = vec3(0); // DEBUG
 	
 	// update flags
-	vec3 geometryBounds = pGIGridProbeSpacing;
-	geometryBounds *= 2.0; // conservatively increase the geometry search area
-	geometryBounds *= 1.45f; // probe offset: conservative bound that assumes the maximum offset value for this probe
+	/*
+	uint flags = uint( pGIProbePosition[ vInstanceID ].w );
 	
-	if( all( lessThanEqual( vec3( closestFrontfaceDistance ), geometryBounds ) ) && ! assumeInGeometry ) {
-		// flags => PROBE_STATE_ACTIVE;
+	// in the original source code "spacing * 2 * 1.45" is used. but I think only
+	// "spacing * (1 + 0.45 * 2)" aka "spacing * 1.9" is required. the thinking is this:
+	// if a surface is farther away than "spacing" then it falls into the next cell and this
+	// probe has no effect on it anymore no matter if by direct lighting nor ray lighting.
+	// offset can be at most 0.45 . so if both probes are have maximum offset but in opposite
+	// direction then this yields "1 + 0.45 + 0.45" times the spacing which is "spacing * 1.9"
+	const vec3 geometryBounds = pGIGridProbeSpacing * 1.9;
+	
+	if( all( lessThanEqual( vec3( closestFrontface.w ), geometryBounds ) ) && ! assumeInGeometry ) {
+		flags &= ~gipfDisabled;
 		
 	}else{
-		// flags => PROBE_STATE_INACTIVE;
+		flags |= gipfDisabled;
 	}
+	
+	outOffset.w = float( flags );
+	*/
 }

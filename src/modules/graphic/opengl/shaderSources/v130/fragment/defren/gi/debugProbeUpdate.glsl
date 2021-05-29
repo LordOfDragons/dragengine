@@ -5,6 +5,8 @@ precision highp int;
 
 #include "v130/shared/ubo_defines.glsl"
 #include "v130/shared/defren/gi/ubo_gi.glsl"
+#include "v130/shared/defren/gi/probe_offset.glsl"
+#include "v130/shared/defren/gi/probe_flags.glsl"
 
 uniform ivec3 pGIGridCoordShift; // grid coordinate shift (wrapping around)
 uniform ivec3 pParams; // probeSize, spaceSize, groupSpaceSize
@@ -62,12 +64,45 @@ void main( void ){
 	probeCoord = giGridShiftToLocal( probeCoord );
 	int index = giCoordToIndex( probeCoord );
 	
-	outColor = mix( vec3( 0, 0.1, 0 ), vec3( 0.1, 0, 0 ), bvec3( insideView ) );
+	uint flags = gipoProbeFlags( probeCoord );
+	bool disabled = ( flags & gipfDisabled ) == gipfDisabled;
+	
+	if( disabled ){
+		if( insideView ){
+			outColor = vec3( 0.15 );
+			
+		}else{
+			outColor = vec3( 0.1 );
+		}
+		
+	}else{
+		if( insideView ){
+			outColor = vec3( 0.1, 0.0, 0.0 );
+			
+		}else{
+			outColor = vec3( 0.0, 0.1, 0.0 );
+		}
+	}
 	
 	int i;
 	for( i=0; i<pGIProbeCount; i++ ){
 		if( pGIProbeIndex[ i / 4 ][ i % 4 ] == index ){
-			outColor = mix( vec3( 0, 1, 0 ), vec3( 1, 0, 0 ), bvec3( insideView ) );
+			if( disabled ){
+				if( insideView ){
+					outColor = vec3( 0.25 );
+					
+				}else{
+					outColor = vec3( 0.2 );
+				}
+				
+			}else{
+				if( insideView ){
+					outColor = vec3( 1.0, 0.0, 0.0 );
+					
+				}else{
+					outColor = vec3( 0.0, 1.0, 0.0 );
+				}
+			}
 			break;
 		}
 	}

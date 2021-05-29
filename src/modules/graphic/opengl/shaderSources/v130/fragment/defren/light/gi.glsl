@@ -6,6 +6,7 @@ precision highp int;
 #include "v130/shared/ubo_defines.glsl"
 #include "v130/shared/defren/light/ubo_render_parameters.glsl"
 #include "v130/shared/defren/light/ubo_gi.glsl"
+#include "v130/shared/defren/gi/probe_flags.glsl"
 #include "v130/shared/octahedral.glsl"
 
 
@@ -114,7 +115,6 @@ vec3 giIlluminate( in vec3 position, in vec3 normal, in vec3 bendNormal ){
 	vec3 sumIrradiance = vec3( 0.0 );
 	float sumWeight = 0.0;
 	
-// 	vec3 alpha = clamp( pGIProbeSpacingInv * ( position + offsetPosition - basePosition ), vec3( 0.01 ), vec3( 0.99 ) ); // test
 	vec3 alpha = clamp( pGIProbeSpacingInv * ( position + offsetPosition - basePosition ), vec3( 0.0 ), vec3( 1.0 ) ); // paper
 	
 	// iterate over adjacent probe cage
@@ -127,59 +127,76 @@ vec3 giIlluminate( in vec3 position, in vec3 normal, in vec3 bendNormal ){
 		
 		probeCoord = giGridShiftToLocal( probeCoord );
 		
-		probePosition += gipoProbeOffset( probeCoord );
-		
-		vec3 viewDir = normalize( probePosition - position );
-		
-		vec3 trilinear = mix( vec3( 1.0 ) - alpha, alpha, offset );
-		trilinear = max( vec3( 0.001 ), trilinear ); // paper
-		float weight = 1.0;
-		
-		// smooth backface test
-		{
-// 		float value = max( 0.0001, ( dot( viewDir, normal ) + 1.0 ) * 0.5 ); // test
-// 		weight *= value * value;
-		
-		float value = dot( viewDir, normal ) * 0.5 + 0.5;
-		weight *= value * value + 0.2;
+		// ignore disabled probes. probes are disabled if >25% of cached rays hit backfaces
+		vec4 offsetFlags = gipoProbeOffsetFlags( probeCoord );
+		if( ( uint( offsetFlags.w ) & gipfDisabled ) == gipfDisabled ){
+			continue;
 		}
 		
-		// moment visibility test
-		{
+		probePosition += offsetFlags.xyz;
+		float weight = 1.0;
+		
+		// get visibility
 		vec3 probeToPoint = position + offsetPosition - probePosition;
 		float distToProbe = length( probeToPoint );
 		
 		vec2 texCoord = giTCFromDirection( probeToPoint / distToProbe,
 			probeCoord, pGIDistanceMapScale, pGIDistanceMapSize );
 		
-		vec2 temp = texture( texGIDistance, texCoord ).ra; // RG16 in opengl has RRRG as swizzle
-		float mean = temp.x;
-		float variance = abs( mean * mean - temp.y );
+		vec2 visibility = texture( texGIDistance, texCoord ).ra; // RG16 in opengl has RRRG as swizzle
+		
+		// ignore disabled probes. this is different than the disabled flag above.
+		// the disabled flag is set due to more than 25% of cached rays hitting backfaces.
+		// zero visibility is set if more than 25% of all rays hit backfaces. this covers
+		// the situation of probes being dynamically disabled because dynamic geometry
+		// swallows them. once the dynamic geometry moves away the probe is enabled again
+		// 
+		// NOTE by using compute shaders this could be handled by using another disabled
+		//      flag and both can be checked above without needing to tap the visibility.
+		//      without using compute shaders though this is a bit complicated so the
+		//      detour over the visibility is used
+		if( visibility.x == 0.0 ){
+			continue;
+		}
+		
+		// smooth backface test
+		vec3 viewDir = normalize( probePosition - position );
+		
+// 		float backfaceValue = max( 0.0001, ( dot( viewDir, normal ) + 1.0 ) * 0.5 ); // test
+// 		weight *= backfaceValue * backfaceValue;
+		
+		float backfaceValue = dot( viewDir, normal ) * 0.5 + 0.5;
+		weight *= backfaceValue * backfaceValue + 0.2;
+		
+		// visibility test
+		float meanDist = visibility.x;
+		float variance = abs( meanDist * meanDist - visibility.y );
 		
 		float chebyshevWeight = 1.0;
-		if( distToProbe > mean ){
+		if( distToProbe > meanDist ){
 			// in shadow case according to paper
-			chebyshevWeight = distToProbe - mean;
+			chebyshevWeight = distToProbe - meanDist;
 			chebyshevWeight = variance / ( variance + chebyshevWeight * chebyshevWeight );
 			chebyshevWeight = max( chebyshevWeight * chebyshevWeight * chebyshevWeight, 0.05 );
 		}
 		
 		weight *= chebyshevWeight;
-		}
 		
 		// avoid zero weight
 		weight = max( 0.000001, weight );
 		
-		vec2 texCoord = giTCFromDirection( bendNormal, probeCoord, pGIIrradianceMapScale, pGIIrradianceMapSize );
-		
+		// crush small intensities
 		const float crushThreshold = 0.2;
 		if( weight < crushThreshold ){
 			weight *= weight * weight / ( crushThreshold * crushThreshold );
 		}
 		
 		// trilinear weights
+		vec3 trilinear = max( mix( vec3( 1.0 ) - alpha, alpha, offset ), 0.001 );
 		weight *= trilinear.x * trilinear.y * trilinear.z;
 		
+		// sample irradiance
+		texCoord = giTCFromDirection( bendNormal, probeCoord, pGIIrradianceMapScale, pGIIrradianceMapSize );
 		vec3 probeIrradiance = texture( texGIIrradiance, texCoord ).rgb;
 		
 		// from source code. using some kind of gamma=2 curve (basically an sqrt) to
@@ -191,7 +208,9 @@ vec3 giIlluminate( in vec3 position, in vec3 normal, in vec3 bendNormal ){
 	}
 	
 	// normalize
-	sumIrradiance /= sumWeight;
+	if( sumWeight > 0.001 ){
+		sumIrradiance /= sumWeight;
+	}
 	
 	// from source code. convert back to linear irradiance (aka square root it)
 	sumIrradiance *= sumIrradiance;

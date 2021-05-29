@@ -196,6 +196,8 @@ void main( void ){
 // 	enableProbe = enableProbe && ! tooCloseToSurface;
 	
 	// finalize the probe
+	outValue.a = vBlendFactor; // 1-hysteresis. modified by update code per-probe
+	
 	if( enableProbe ){
 		sumWeight = 1.0 / max( sumWeight, epsilon );
 		
@@ -216,17 +218,16 @@ void main( void ){
 		
 	}else{
 		#ifdef MAP_IRRADIANCE
-			outValue.rgb = vec3( 0.0 );
-// 				outValue.rgb = vec3(1,0,0); // DEBUG
+			outValue = vec4( 0.0, 0.0, 0.0, 1.0 );
+// 				outValue = vec3(1,0,0,1); // DEBUG
 		#else
 			// by deviating from the paper above we need to handle the case of no hit
 			// being scored at all otherwise the probe turns black
 			//outValue.xy = vec2( pGIMaxProbeDistance, pGIMaxProbeDistance * pGIMaxProbeDistance );
-			outValue.xy = vec2( 0.0 );
+			outValue = vec4( 0.0, 0.0, 0.0, 1.0 );
 		#endif
 	}
 	
-	outValue.a = vBlendFactor; // 1-hysteresis. modified by update code per-probe
 // 		outValue.a = 1; // DEBUG
 // 		outValue.a = pGIBlendUpdateProbe;
 }

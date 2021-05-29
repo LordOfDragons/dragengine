@@ -7,6 +7,7 @@ precision highp int;
 #include "v130/shared/defren/gi/ubo_gi.glsl"
 #include "v130/shared/octahedral.glsl"
 #include "v130/shared/defren/gi/probe_offset.glsl"
+#include "v130/shared/defren/gi/probe_flags.glsl"
 
 uniform lowp sampler2D texGIIrradiance;
 uniform HIGHP sampler2D texGIDistance;

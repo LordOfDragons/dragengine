@@ -3,6 +3,7 @@ precision highp int;
 
 #include "v130/shared/ubo_defines.glsl"
 #include "v130/shared/defren/gi/ubo_gi.glsl"
+#include "v130/shared/defren/gi/probe_flags.glsl"
 
 #ifdef WITH_RAY_CACHE
 	#include "v130/shared/defren/gi/raycast/ray_cache.glsl"

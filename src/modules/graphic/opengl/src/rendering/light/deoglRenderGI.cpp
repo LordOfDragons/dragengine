@@ -1191,6 +1191,9 @@ void deoglRenderGI::RenderDebugOverlay( deoglRenderPlan &plan ){
 
 		pActivateGIUBOs();
 		
+		tsmgr.EnableTexture( 0, giState->GetTextureProbeOffset(), GetSamplerClampNearest() );
+		tsmgr.DisableStagesAbove( 0 );
+		
 		OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
 		OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
 		OGL_CHECK( renderThread, glDepthFunc( GL_ALWAYS ) );

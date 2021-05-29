@@ -4,6 +4,8 @@
 	
 	<version>130</version>
 	
+	<texture name='texGIProbeOffset' target='0'/>
+	
 	<uniformBlock name='GIParameters' target='1'/>
 	<uniformBlock name='GIProbeIndices' target='2'/>
 	<uniformBlock name='GIProbePositions' target='3'/>

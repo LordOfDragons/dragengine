@@ -528,6 +528,12 @@ void deoglGIState::UpdateProbeOffsetFromTexture(){
 	for( i=0; i<pUpdateProbeCount; i++ ){
 		sProbe &probe = pProbes[ pUpdateProbes[ i ] ];
 		
+		const decPoint tc( pProbeCount.x * probe.coord.y + probe.coord.x, probe.coord.z );
+		
+		const deoglPixelBuffer::sFloat4 &pixel = pixels[ stride * tc.y + tc.x ];
+		
+		probe.flags = ( uint8_t )( pixel.a );
+		
 		// PROBLEM some probes flicker between two positions and can not make up their mind.
 		//         this causes GI flickering and endless ray cache invalidating.
 		//         
@@ -536,24 +542,22 @@ void deoglGIState::UpdateProbeOffsetFromTexture(){
 		//         offset anymore. invalidating a probe resets the counter
 		//         
 		//         the root cause is unknown. would be better to find and fix it
-		if( probe.countOffsetMoved >= 5 ){
-			continue;
+		if( probe.countOffsetMoved < 5 ){
+			if( ( probe.flags & epfDisabled ) != epfDisabled ){
+				probe.countOffsetMoved++;
+				
+			}else{
+				probe.countOffsetMoved = 5;
+			}
+			
+			const decVector offset( pixel.r, pixel.g, pixel.b );
+			
+			if( ! offset.IsEqualTo( probe.offset, 0.05f ) ){
+				// update offset only if it moved far enough to justify an expensive update
+				probe.offset = offset;
+				probe.flags &= ~( epfRayLimitsValid | epfRayCacheValid );
+			}
 		}
-		probe.countOffsetMoved++;
-		
-		const decPoint tc( pProbeCount.x * probe.coord.y + probe.coord.x, probe.coord.z );
-		
-		const deoglPixelBuffer::sFloat4 &pixel = pixels[ stride * tc.y + tc.x ];
-		const decVector offset( pixel.r, pixel.g, pixel.b );
-		
-// 		probe.flags = ( uint8_t )( pixel.a ); // TODO LATER
-		
-		if( offset.IsEqualTo( probe.offset, 0.05f ) ){
-			continue; // update offset only if it moved far enough to justify an expensive update
-		}
-		
-		probe.offset = offset;
-		probe.flags &= ~( epfRayLimitsValid | epfRayCacheValid );
 // 			pRenderThread.GetLogger().LogInfoFormat("UpdateProbeOffsetFromTexture: RayCacheInvalidate %d", pUpdateProbes[i]);
 	}
 }
@@ -866,7 +870,7 @@ void deoglGIState::pFindProbesToUpdate( const deoglDCollisionFrustum &frustum ){
 	for( i=0, last=0; i<pRealProbeCount; i++ ){
 		sProbe &probe = pProbes[ pAgedProbes[ i ] ];
 		
-		if( ( probe.flags & ( epfValid | epfInsideView ) ) != epfInsideView ){
+		if( ( probe.flags & ( epfValid | epfInsideView | epfDisabled ) ) != epfInsideView ){
 			pAgedProbes[ last++ ] = pAgedProbes[ i ];
 			continue;
 		}
@@ -895,7 +899,7 @@ void deoglGIState::pFindProbesToUpdate( const deoglDCollisionFrustum &frustum ){
 		for( i=0, last=0; i<endIndex; i++ ){
 			sProbe &probe = pProbes[ pAgedProbes[ i ] ];
 			
-			if( ( probe.flags & ( epfValid | epfInsideView ) ) != 0 ){
+			if( ( probe.flags & ( epfValid | epfInsideView | epfDisabled ) ) != 0 ){
 				pAgedProbes[ last++ ] = pAgedProbes[ i ];
 				continue;
 			}
@@ -927,7 +931,7 @@ void deoglGIState::pFindProbesToUpdate( const deoglDCollisionFrustum &frustum ){
 		for( i=0, last=0; i<endIndex; i++ ){
 			sProbe &probe = pProbes[ pAgedProbes[ i ] ];
 			
-			if( ( probe.flags & epfInsideView ) != epfInsideView ){
+			if( ( probe.flags & ( epfInsideView | epfDisabled ) ) != epfInsideView ){
 				pAgedProbes[ last++ ] = pAgedProbes[ i ];
 				continue;
 			}
@@ -957,7 +961,7 @@ void deoglGIState::pFindProbesToUpdate( const deoglDCollisionFrustum &frustum ){
 		for( i=0, last=0; i<endIndex; i++ ){
 			sProbe &probe = pProbes[ pAgedProbes[ i ] ];
 			
-			if( ( probe.flags & epfInsideView ) != 0 ){
+			if( ( probe.flags & ( epfInsideView | epfDisabled ) ) != 0 ){
 				pAgedProbes[ last++ ] = pAgedProbes[ i ];
 				continue;
 			}
@@ -1216,11 +1220,11 @@ void deoglGIState::pPrepareUBOParameters( int probeCount ) const{
 		ubo.SetParameterDataInt( deoglGI::eupMaterialMapSize, gi.GetMaterials().GetMaterialMapSize() );
 		
 		// move probes. probe can move at most 50% inside the grid acording to the paper.
-		// to be on the safe side use 49%. the minimum distance to the surface is set to
+		// to be on the safe side use 45%. the minimum distance to the surface is set to
 		// 25% of the smallest spacing. this is rather random value with the aim to
 		// increase the visible surface captured by probes but without approaching the
 		// maximum offset too much.
-		ubo.SetParameterDataVec3( deoglGI::eupMoveMaxOffset, pProbeSpacing * 0.49f );
+		ubo.SetParameterDataVec3( deoglGI::eupMoveMaxOffset, pProbeSpacing * 0.45f );
 		ubo.SetParameterDataFloat( deoglGI::eupMoveMinDistToSurface,
 			decMath::min( pProbeSpacing.x, pProbeSpacing.y, pProbeSpacing.z ) * 0.25f );
 		
