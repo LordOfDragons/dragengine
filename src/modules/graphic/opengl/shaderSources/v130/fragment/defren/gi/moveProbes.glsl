@@ -44,12 +44,21 @@ void main( void ){
 	
 	outOffset = vec4( 0.0 );
 	
+	// position used for ray tracing contains the previous update probe offset.
+	// the previous offset has to be added to the new offset for it to be correct.
+	// vProbeCoord is local. we need it though shifted
+	vec3 gridPosition = pGIGridProbeSpacing * vec3( giGridLocalToShift( vProbeCoord ) ) + pGIGridOrigin;
+	vec3 prevOffset = probePosition - gridPosition;
+	
+	// max offset test scaling factor
+	vec3 moveMaxOffsetFactor = vec3( 1.0 ) / pGIMoveMaxOffset;
+	
 	// if we apply the offset of all back faces we end up in troubles. for example if
 	// two back faces face each other the offset towards the other side of both faces
 	// cancels out causing the probe to not move at all. what we do here is finding the
 	// closest back face and applying the offset only if it is the closest.
 	float closestBackDistance = 10000.0;
-	vec3 closestBackOffset = vec3( 0.0 );
+	vec3 closestBackOffset = vec3( 10000.0 ); // very large to force disable if no good hit found
 	
 	for( i=0; i<pGIRaysPerProbe; i++ ){
 		ivec2 rayTC = rayOffset + ivec2( i, 0 );
@@ -97,8 +106,13 @@ void main( void ){
 			backfaceCount += 1.0;
 			
 			if( rayDistance < closestBackDistance ){
-				closestBackOffset = rayDirection + hitNormal * pGIMoveMinDistToSurface;
-				closestBackDistance = rayDistance;
+				vec3 direction = rayDirection + hitNormal * pGIMoveMinDistToSurface;
+				
+				if( length( ( prevOffset + direction ) * moveMaxOffsetFactor ) < 1.0 ){
+					// consider backface ray only if not leaving allowed area
+					closestBackOffset = direction;
+					closestBackDistance = rayDistance;
+				}
 			}
 		}
 		
@@ -128,9 +142,6 @@ void main( void ){
 	// position used for ray tracing contains the previous update probe offset.
 	// the previous offset has to be added to the new offset for it to be correct.
 	// vProbeCoord is local. we need it though shifted
-	vec3 gridPosition = pGIGridProbeSpacing * vec3( giGridLocalToShift( vProbeCoord ) ) + pGIGridOrigin;
-	vec3 prevOffset = probePosition - gridPosition;
-	
 	outOffset.xyz += prevOffset;
 	
 	uint flags = uint( pGIProbePosition[ vInstanceID ].w );
@@ -138,7 +149,7 @@ void main( void ){
 	
 	// if frontfaces are hit clamp offset to maximum radius around grid position.
 	// if backfaces are hit do not move if outside maximum radius
-	vec3 gridOffset = outOffset.xyz / pGIMoveMaxOffset;
+	vec3 gridOffset = outOffset.xyz * moveMaxOffsetFactor;
 	float gridOffsetLen = length( gridOffset );
 	
 	if( gridOffsetLen > 1.0 ){

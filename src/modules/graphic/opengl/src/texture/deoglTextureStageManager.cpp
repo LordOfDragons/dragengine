@@ -117,19 +117,23 @@ void deoglTextureStageManager::EnableBareTBO( int stage, GLuint tbo ){
 	BindTexture( stage, tbo, GL_TEXTURE_BUFFER );
 }
 
-void deoglTextureStageManager::EnableTexture( int stage, deoglTexture& texture, deoglTexSamplerConfig &samplerConfig ){
+void deoglTextureStageManager::EnableTexture( int stage, const deoglTexture& texture,
+deoglTexSamplerConfig &samplerConfig ){
 	BindTexture( stage, texture.GetTexture(), GL_TEXTURE_2D, samplerConfig.GetSamplerObject() );
 }
 
-void deoglTextureStageManager::EnableTexture1D( int stage, deoglTexture1D &texture, deoglTexSamplerConfig &samplerConfig ){
+void deoglTextureStageManager::EnableTexture1D( int stage, const deoglTexture1D &texture,
+deoglTexSamplerConfig &samplerConfig ){
 	BindTexture( stage, texture.GetTexture(), GL_TEXTURE_1D, samplerConfig.GetSamplerObject() );
 }
 
-void deoglTextureStageManager::EnableCubeMap( int stage, deoglCubeMap &cubemap, deoglTexSamplerConfig &samplerConfig ){
+void deoglTextureStageManager::EnableCubeMap( int stage, const deoglCubeMap &cubemap,
+deoglTexSamplerConfig &samplerConfig ){
 	BindTexture( stage, cubemap.GetTexture(), GL_TEXTURE_CUBE_MAP, samplerConfig.GetSamplerObject() );
 }
 
-void deoglTextureStageManager::EnableArrayTexture( int stage, deoglArrayTexture &texture, deoglTexSamplerConfig &samplerConfig ){
+void deoglTextureStageManager::EnableArrayTexture( int stage, const deoglArrayTexture &texture,
+deoglTexSamplerConfig &samplerConfig ){
 	BindTexture( stage, texture.GetTexture(), GL_TEXTURE_2D_ARRAY, samplerConfig.GetSamplerObject() );
 }
 
@@ -137,7 +141,7 @@ void deoglTextureStageManager::EnableTBO( int stage, GLuint tbo, deoglTexSampler
 	BindTexture( stage, tbo, GL_TEXTURE_BUFFER, samplerConfig.GetSamplerObject() );
 }
 
-void deoglTextureStageManager::EnableSkin( int stage, deoglRSkin &skin, int texture,
+void deoglTextureStageManager::EnableSkin( int stage, const deoglRSkin &skin, int texture,
 deoglSkinChannel::eChannelTypes channel, deoglTexture *defaultTexture, deoglTexSamplerConfig &samplerConfig ){
 	if( stage < 0 || stage >= OGL_MAX_TEXTURE_STAGES || ! defaultTexture ){
 		DETHROW( deeInvalidParam );

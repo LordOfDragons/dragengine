@@ -240,9 +240,9 @@ pDebugInfoGIRenderLightGIRay( NULL )
 		
 		// move probes
 		sources = shaderManager.GetSourcesNamed( "DefRen GI Move Probes" );
-		#ifdef GI_MOVE_PROBES_RAY_CACHE
+		if( renderThread.GetChoices().GetGIMoveUsingCache() ){
 			defines.AddDefine( "WITH_RAY_CACHE", true );
-		#endif
+		}
 		pShaderMoveProbes = shaderManager.GetProgramWith( sources, defines );
 		defines.RemoveDefine( "WITH_RAY_CACHE" );
 		
@@ -874,15 +874,16 @@ void deoglRenderGI::MoveProbes( deoglRenderPlan &plan ){
 	OGL_CHECK( renderThread, glViewport( 0, 0, giState->GetTextureProbeOffset().GetWidth(),
 		giState->GetTextureProbeOffset().GetHeight() ) );
 	
-	#ifdef GI_MOVE_PROBES_RAY_CACHE
-		deoglGIRays &rays = giState->GetRays();
+	if( renderThread.GetChoices().GetGIMoveUsingCache() ){
+		const deoglGIRays &rays = giState->GetRays();
 		tsmgr.EnableTexture( 0, rays.GetTextureDistance(), GetSamplerClampNearest() );
 		tsmgr.EnableTexture( 1, rays.GetTextureNormal(), GetSamplerClampNearest() );
-	#else
-		deoglGITraceRays &traceRays = gi.GetTraceRays();
+		
+	}else{
+		const deoglGITraceRays &traceRays = renderThread.GetGI().GetTraceRays();
 		tsmgr.EnableTexture( 0, traceRays.GetTexturePosition(), GetSamplerClampNearest() );
 		tsmgr.EnableTexture( 1, traceRays.GetTextureNormal(), GetSamplerClampNearest() );
-	#endif
+	}
 	tsmgr.DisableStagesAbove( 1 );
 	
 	renderThread.GetShader().ActivateShader( pShaderMoveProbes );
@@ -929,7 +930,7 @@ void deoglRenderGI::ProbeExtends( deoglRenderPlan &plan ){
 	
 	renderThread.GetFramebuffer().Activate( &giState->GetFBOProbeOffset() ); // unimportant since not written to
 	
-	#ifdef GI_MOVE_PROBES_RAY_CACHE
+	#ifdef GI_USE_RAY_CACHE
 		tsmgr.EnableTexture( 0, giState->GetRays().GetTextureDistance(), GetSamplerClampNearest() );
 	#else
 		tsmgr.EnableTexture( 0, gi.GetTraceRays().GetTexturePosition(), GetSamplerClampNearest() );

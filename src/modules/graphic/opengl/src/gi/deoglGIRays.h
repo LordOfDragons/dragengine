@@ -91,18 +91,23 @@ public:
 	
 	/** Distance texture. */
 	inline deoglTexture &GetTextureDistance(){ return pTexDistance; }
+	inline const deoglTexture &GetTextureDistance() const{ return pTexDistance; }
 	
 	/** Normal texture. */
 	inline deoglTexture &GetTextureNormal(){ return pTexNormal; }
+	inline const deoglTexture &GetTextureNormal() const{ return pTexNormal; }
 	
 	/** Diffuse/TintMask texture. */
 	inline deoglTexture &GetTextureDiffuse(){ return pTexDiffuse; }
+	inline const deoglTexture &GetTextureDiffuse() const{ return pTexDiffuse; }
 	
 	/** Reflectivity/Roughness texture. */
 	inline deoglTexture &GetTextureReflectivity(){ return pTexReflectivity; }
+	inline const deoglTexture &GetTextureReflectivity() const{ return pTexReflectivity; }
 	
 	/** Light texture. */
 	inline deoglTexture &GetTextureLight(){ return pTexLight; }
+	inline const deoglTexture &GetTextureLight() const{ return pTexLight; }
 	
 	/** Result FBO. */
 	inline deoglFramebuffer &GetFBOResult(){ return pFBOResult; }
@@ -111,6 +116,7 @@ public:
 	
 	/** Distance limit texture. */
 	inline deoglTexture &GetTextureDistanceLimit(){ return pTexDistanceLimit; }
+	inline const deoglTexture &GetTextureDistanceLimit() const{ return pTexDistanceLimit; }
 	
 	/** Distance limit FBO. */
 	inline deoglFramebuffer &GetFBODistanceLimit(){ return pFBODistanceLimit; }

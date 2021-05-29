@@ -48,6 +48,7 @@ private:
 	bool pGlobalSharedSPBLists;
 	bool pRealTransparentParticles;
 	eGPUTransformVertices pGPUTransformVertices;
+	bool pGIMoveUsingCache;
 	
 	
 	
@@ -87,6 +88,9 @@ public:
 	
 	/** Transform component vertices on the GPU. */
 	inline eGPUTransformVertices GetGPUTransformVertices() const{ return pGPUTransformVertices; }
+	
+	/** GI move probes using ray cache instead of all rays. */
+	inline bool GetGIMoveUsingCache() const{ return pGIMoveUsingCache; }
 	/*@}*/
 };
 

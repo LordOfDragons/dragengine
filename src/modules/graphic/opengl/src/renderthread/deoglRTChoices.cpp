@@ -59,6 +59,9 @@ pRenderThread( renderThread ){
 	// render real transparent particles
 	pRealTransparentParticles = false;
 	
+	// GI move using probes using ray cache instead of all rays
+	pGIMoveUsingCache = true;
+	
 	// transform component vertices on the GPU
 	#ifdef OS_ANDROID
 		// NOTE android OpenGL ES 3.0 does not support texture buffer objects (TBO). as a replacement

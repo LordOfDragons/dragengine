@@ -91,18 +91,23 @@ public:
 	
 	/** Position texture (also used for distance using a component only). */
 	inline deoglTexture &GetTexturePosition(){ return pTexPosition; }
+	inline const deoglTexture &GetTexturePosition() const{ return pTexPosition; }
 	
 	/** Normal texture. */
 	inline deoglTexture &GetTextureNormal(){ return pTexNormal; }
+	inline const deoglTexture &GetTextureNormal() const{ return pTexNormal; }
 	
 	/** Diffuse/TintMask texture. */
 	inline deoglTexture &GetTextureDiffuse(){ return pTexDiffuse; }
+	inline const deoglTexture &GetTextureDiffuse() const{ return pTexDiffuse; }
 	
 	/** Reflectivity/Roughness texture. */
 	inline deoglTexture &GetTextureReflectivity(){ return pTexReflectivity; }
+	inline const deoglTexture &GetTextureReflectivity() const{ return pTexReflectivity; }
 	
 	/** Light texture. */
 	inline deoglTexture &GetTextureLight(){ return pTexLight; }
+	inline const deoglTexture &GetTextureLight() const{ return pTexLight; }
 	
 	/** Result FBO. */
 	inline deoglFramebuffer &GetFBOResult(){ return pFBOResult; }
