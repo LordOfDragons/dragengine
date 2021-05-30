@@ -54,6 +54,7 @@ public:
 		epfValid = 0x8, //<! Probe has been updated at least once
 		epfRayCacheValid = 0x10, //<! Ray-Tracing ray cache is valid
 		epfInsideView = 0x20,
+		epfDynamicDisable = 0x40,
 		
 		epfRayLimitsValid = 0x80, //<! Ray-Tracing distance limits are valid
 	};
@@ -83,6 +84,7 @@ private:
 	decVector pFieldSize;
 	decVector pFieldOrigin;
 	decVector pPositionClamp;
+	decVector pDynamicHalfEnlarge;
 	int pStrideProbeCount;
 	int pRealProbeCount;
 	
@@ -127,9 +129,11 @@ private:
 	deoglTexture pTexProbeIrradiance;
 	deoglTexture pTexProbeDistance;
 	deoglTexture pTexProbeOffset;
+	deoglTexture pTexProbeState;
 	deoglFramebuffer pFBOProbeIrradiance;
 	deoglFramebuffer pFBOProbeDistance;
 	deoglFramebuffer pFBOProbeOffset;
+	deoglFramebuffer pFBOProbeState;
 	deoglPixelBuffer *pPixBufProbeOffset;
 	bool pClearMaps;
 	bool pProbesHaveMoved;
@@ -309,6 +313,10 @@ public:
 	inline deoglTexture &GetTextureProbeOffset(){ return pTexProbeOffset; }
 	inline const deoglTexture &GetTextureProbeOffset() const{ return pTexProbeOffset; }
 	
+	/** Probe state texture. */
+	inline deoglTexture &GetTextureProbeState(){ return pTexProbeState; }
+	inline const deoglTexture &GetTextureProbeState() const{ return pTexProbeState; }
+	
 	/** Probe fbo irradiance. */
 	inline deoglFramebuffer &GetFBOProbeIrradiance(){ return pFBOProbeIrradiance; }
 	
@@ -317,6 +325,9 @@ public:
 	
 	/** Probe offset fbo. */
 	inline deoglFramebuffer &GetFBOProbeOffset(){ return pFBOProbeOffset; }
+	
+	/** Probe state fbo. */
+	inline deoglFramebuffer &GetFBOProbeState(){ return pFBOProbeState; }
 	
 	/** Probe extends feedback VBO. */
 	inline GLuint GetVBOProbeExtends() const{ return pVBOProbeExtends; }
@@ -348,6 +359,9 @@ public:
 	
 	/** Invalidate area. */
 	void InvalidateArea( const decDVector &minExtend, const decDVector &maxExtend );
+	
+	/** Dynamic area count increment. */
+	void TouchDynamicArea( const decDVector &minExtend, const decDVector &maxExtend );
 	
 	/** Validate ray caches marked for update. */
 	void ValidatedRayCaches();

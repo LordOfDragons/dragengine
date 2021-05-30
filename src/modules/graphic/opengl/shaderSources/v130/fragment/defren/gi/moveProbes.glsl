@@ -16,6 +16,7 @@ precision highp int;
 
 uniform sampler2D texPosition;
 uniform sampler2D texNormal;
+uniform usampler2D texState; // dynamic state from previous dynamicState.glsl run
 
 
 flat in int vInstanceID;
@@ -145,7 +146,7 @@ void main( void ){
 	outOffset.xyz += prevOffset;
 	
 	uint flags = uint( pGIProbePosition[ vInstanceID ].w );
-	flags &= ~gipfDisabled;
+	flags &= ~( gipfDisabled | gipfDynamicDisable );
 	
 	// in the original source code "spacing * 2 * 1.45" is used. but I think only
 	// "spacing * (1 + 0.45 * 2)" aka "spacing * 1.9" is required. the thinking is this:
@@ -180,6 +181,12 @@ void main( void ){
 		}
 	}
 	
+	// merge dynamic state
+	if( ( flags & ( gipfNearGeometry | gipfDisabled ) ) == uint( 0 ) ){
+		flags |= texelFetch( texState, ivec2( gl_FragCoord.xy ), 0 ).r;
+	}
+	
+	// write out flags
 	outOffset.w = float( flags );
 	
 	// debug

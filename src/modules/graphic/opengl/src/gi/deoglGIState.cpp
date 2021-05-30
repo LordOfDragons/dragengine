@@ -62,6 +62,7 @@ pGridCoordClamp( pProbeCount - decPoint3( 1, 1, 1 ) ),
 pFieldSize( pProbeSpacing.Multiply( decVector( pGridCoordClamp ) ) ),
 pFieldOrigin( pFieldSize * -0.5f ),
 pPositionClamp( pFieldSize ),
+pDynamicHalfEnlarge( pProbeSpacing * 1.9f * 0.5f ), // enlarge = spacing * (1 + 0.45 * 2)
 pStrideProbeCount( pProbeCount.x * pProbeCount.z ),
 pRealProbeCount( pStrideProbeCount * pProbeCount.y ),
 
@@ -107,9 +108,11 @@ pHasClearProbes( false ),
 pTexProbeIrradiance( renderThread ),
 pTexProbeDistance( renderThread ),
 pTexProbeOffset( renderThread ),
+pTexProbeState( renderThread ),
 pFBOProbeIrradiance( renderThread, false ),
 pFBOProbeDistance( renderThread, false ),
 pFBOProbeOffset( renderThread, false ),
+pFBOProbeState( renderThread, false ),
 pPixBufProbeOffset( NULL ),
 pClearMaps( true ),
 pProbesHaveMoved( false ),
@@ -488,6 +491,8 @@ void deoglGIState::PrepareUBOStateRayCache() const{
 }
 
 void deoglGIState::Invalidate(){
+	pInstances.Clear();
+	
 	uint16_t i;
 	for( i=0; i<pRealProbeCount; i++ ){
 		sProbe &probe = pProbes[ i ];
@@ -555,7 +560,7 @@ void deoglGIState::UpdateProbeOffsetFromTexture(){
 			if( ! offset.IsEqualTo( probe.offset, 0.05f ) ){
 				// update offset only if it moved far enough to justify an expensive update
 				probe.offset = offset;
-				probe.flags &= ~( epfRayLimitsValid | epfRayCacheValid );
+				probe.flags &= ~( epfRayLimitsValid | epfRayCacheValid | epfDynamicDisable );
 			}
 		}
 // 			pRenderThread.GetLogger().LogInfoFormat("UpdateProbeOffsetFromTexture: RayCacheInvalidate %d", pUpdateProbes[i]);
@@ -602,12 +607,32 @@ void deoglGIState::InvalidateArea( const decDVector &minExtend, const decDVector
 		sProbe &probe = pProbes[ i ];
 		if( ( probe.flags & epfRayCacheValid ) == epfRayCacheValid
 		&& deoglCollisionDetection::AABoxHitsAABox( probe.minExtend, probe.maxExtend, lminExtend, lmaxExtend ) ){
-			probe.flags &= ~epfRayCacheValid;
+			probe.flags &= ~( epfRayCacheValid | epfDisabled | epfDynamicDisable );
 // 				debugText.AppendFormat( " %d,", i );
 		}
 	}
 		
 // 		pRenderThread.GetLogger().LogInfoFormat( debugText, lminExtend.x, lminExtend.y, lminExtend.z, lmaxExtend.x, lmaxExtend.y, lmaxExtend.z );
+}
+
+void deoglGIState::TouchDynamicArea( const decDVector &minExtend, const decDVector &maxExtend ){
+	const decVector lminExtend( ( minExtend - pPosition ).ToVector() - pDynamicHalfEnlarge );
+	const decVector lmaxExtend( ( maxExtend - pPosition ).ToVector() + pDynamicHalfEnlarge );
+	
+	const decPoint3 from( ( ( lminExtend - pFieldOrigin ).Multiply( pProbeSpacingInv ) ).Clamped( decPoint3(), pGridCoordClamp ) );
+	const decPoint3 to( ( ( lmaxExtend - pFieldOrigin ).Multiply( pProbeSpacingInv ) ).Clamped( decPoint3(), pGridCoordClamp ) );
+	decPoint3 i;
+	
+	for( i.y=from.y; i.y<=to.y; i.y++ ){
+		for( i.z=from.z; i.z<=to.z; i.z++ ){
+			for( i.x=from.x; i.x<=to.x; i.x++ ){
+				sProbe &probe = pProbes[ GridCoord2ProbeIndex( ShiftedGrid2LocalGrid( i ) ) ];
+				if( probe.position >= lminExtend && probe.position <= lmaxExtend ){
+					probe.flags &= ~epfDynamicDisable;
+				}
+			}
+		}
+	}
 }
 
 void deoglGIState::ValidatedRayCaches(){
@@ -693,7 +718,7 @@ void deoglGIState::pInvalidateAllRayLimits(){
 void deoglGIState::pInvalidateAllRayCaches(){
 	int i;
 	for( i=0; i<pRealProbeCount; i++ ){
-		pProbes[ i ].flags &= ~epfRayCacheValid;
+		pProbes[ i ].flags &= ~( epfRayCacheValid | epfDisabled | epfDynamicDisable );
 	}
 }
 
@@ -759,18 +784,18 @@ void deoglGIState::pUpdatePosition( const decDVector &position ){
 			// probe is still valid
 			probe.minExtend += extendsOffset;
 			probe.maxExtend += extendsOffset;
-			
-		}else{
-			// probe rotated out and becomes invalid
-			probe.flags = 0;
-			probe.offset.SetZero();
-			probe.countOffsetMoved = 0;
-			probe.minExtend = -pFieldSize;
-			probe.maxExtend = pFieldSize;
-			
-			pClearProbes[ i / 32 ] |= ( uint32_t )1 << ( i % 32 );
-			pHasClearProbes = true;
+			continue;
 		}
+		
+		// probe rotated out and becomes invalid
+		probe.flags = 0;
+		probe.offset.SetZero();
+		probe.countOffsetMoved = 0;
+		probe.minExtend = -pFieldSize;
+		probe.maxExtend = pFieldSize;
+		
+		pClearProbes[ i / 32 ] |= ( uint32_t )1 << ( i % 32 );
+		pHasClearProbes = true;
 	}
 	
 	// set the new tracing position
@@ -832,6 +857,9 @@ void deoglGIState::pFindProbesToUpdate( const deoglDCollisionFrustum &frustum ){
 	//   distance' = planeNormal * (planePosition - giPosition)
 	//   distance' = planeNormal * planePosition - planeNormal * giPosition
 	//   distance' = distance - planeNormal * giPosition
+	// 
+	// at the same time determine if probes that are neither disabled nor near static geometry
+	// are near dynamic geometry
 	const decVector frustumNormalLeft( frustum.GetLeftNormal() );
 	const decVector frustumNormalTop( frustum.GetTopNormal() );
 	const decVector frustumNormalRight( frustum.GetRightNormal() );
@@ -854,6 +882,7 @@ void deoglGIState::pFindProbesToUpdate( const deoglDCollisionFrustum &frustum ){
 	for( i=0; i<pRealProbeCount; i++ ){
 		sProbe &probe = pProbes[ i ];
 		
+		// inside view
 		if( ( frustumNormalNear * probe.position >= frustumDistanceNear )
 		&& ( frustumNormalLeft * probe.position >= frustumDistanceLeft )
 		&& ( frustumNormalRight * probe.position >= frustumDistanceRight )
@@ -870,7 +899,7 @@ void deoglGIState::pFindProbesToUpdate( const deoglDCollisionFrustum &frustum ){
 	for( i=0, last=0; i<pRealProbeCount; i++ ){
 		sProbe &probe = pProbes[ pAgedProbes[ i ] ];
 		
-		if( ( probe.flags & ( epfValid | epfInsideView | epfDisabled ) ) != epfInsideView ){
+		if( ( probe.flags & ( epfValid | epfInsideView | epfDisabled | epfDynamicDisable ) ) != epfInsideView ){
 			pAgedProbes[ last++ ] = pAgedProbes[ i ];
 			continue;
 		}
@@ -899,7 +928,7 @@ void deoglGIState::pFindProbesToUpdate( const deoglDCollisionFrustum &frustum ){
 		for( i=0, last=0; i<endIndex; i++ ){
 			sProbe &probe = pProbes[ pAgedProbes[ i ] ];
 			
-			if( ( probe.flags & ( epfValid | epfInsideView | epfDisabled ) ) != 0 ){
+			if( ( probe.flags & ( epfValid | epfInsideView | epfDisabled | epfDynamicDisable ) ) != 0 ){
 				pAgedProbes[ last++ ] = pAgedProbes[ i ];
 				continue;
 			}
@@ -931,7 +960,7 @@ void deoglGIState::pFindProbesToUpdate( const deoglDCollisionFrustum &frustum ){
 		for( i=0, last=0; i<endIndex; i++ ){
 			sProbe &probe = pProbes[ pAgedProbes[ i ] ];
 			
-			if( ( probe.flags & ( epfInsideView | epfDisabled ) ) != epfInsideView ){
+			if( ( probe.flags & ( epfInsideView | epfDisabled | epfDynamicDisable ) ) != epfInsideView ){
 				pAgedProbes[ last++ ] = pAgedProbes[ i ];
 				continue;
 			}
@@ -961,7 +990,7 @@ void deoglGIState::pFindProbesToUpdate( const deoglDCollisionFrustum &frustum ){
 		for( i=0, last=0; i<endIndex; i++ ){
 			sProbe &probe = pProbes[ pAgedProbes[ i ] ];
 			
-			if( ( probe.flags & ( epfInsideView | epfDisabled ) ) != 0 ){
+			if( ( probe.flags & ( epfInsideView | epfDisabled | epfDynamicDisable ) ) != 0 ){
 				pAgedProbes[ last++ ] = pAgedProbes[ i ];
 				continue;
 			}
@@ -1046,6 +1075,8 @@ void deoglGIState::pAddUpdateProbe( sProbe &probe ){
 		probe.flags |= epfValid;
 	}
 	
+	probe.flags &= ~( epfDisabled | epfDynamicDisable );
+	
 	pUpdateProbes[ pUpdateProbeCount++ ] = probe.index;
 }
 
@@ -1081,11 +1112,14 @@ void deoglGIState::pPrepareRayCacheProbes(){
 	if( pRayCacheProbeCount > 0 ){
 		pPrepareProbeVBO();
 	}
+	
+	pRenderThread.GetLogger().LogInfoFormat("PrepareRayCacheProbes: %d", pRayCacheProbeCount);
 }
 
 void deoglGIState::pPrepareProbeTexturesAndFBO(){
 	if( pTexProbeIrradiance.GetTexture() && pTexProbeDistance.GetTexture()
-	&& pTexProbeOffset.GetTexture() && ! pClearMaps && pPixBufProbeOffset ){
+	&& pTexProbeOffset.GetTexture() && pTexProbeState.GetTexture()
+	&& ! pClearMaps && pPixBufProbeOffset ){
 		return;
 	}
 	
@@ -1140,6 +1174,22 @@ void deoglGIState::pPrepareProbeTexturesAndFBO(){
 		pFBOProbeOffset.Verify();
 	}
 	
+	if( ! pTexProbeState.GetTexture() ){
+		const int width = pProbeCount.x * pProbeCount.y;
+		const int height = pProbeCount.z;
+		
+		pTexProbeState.SetFBOFormatIntegral( 1, 8, true );
+		pTexProbeState.SetSize( width, height );
+		pTexProbeState.CreateTexture();
+		
+		pRenderThread.GetFramebuffer().Activate( &pFBOProbeState );
+		pFBOProbeState.DetachAllImages();
+		pFBOProbeState.AttachColorTexture( 0, &pTexProbeState );
+		OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
+		OGL_CHECK( pRenderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
+		pFBOProbeState.Verify();
+	}
+	
 	if( pClearMaps ){
 		OGL_CHECK( pRenderThread, glDisable( GL_SCISSOR_TEST ) );
 		OGL_CHECK( pRenderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
@@ -1155,6 +1205,10 @@ void deoglGIState::pPrepareProbeTexturesAndFBO(){
 		pRenderThread.GetFramebuffer().Activate( &pFBOProbeOffset );
 		const GLfloat clearOffset[ 4 ] = { 0.0f, 0.0f, 0.0f, 0.0f };
 		OGL_CHECK( pRenderThread, pglClearBufferfv( GL_COLOR, 0, &clearOffset[ 0 ] ) );
+		
+		pRenderThread.GetFramebuffer().Activate( &pFBOProbeState );
+		const GLuint clearState[ 4 ] = { 0, 0, 0, 0 };
+		OGL_CHECK( pRenderThread, pglClearBufferuiv( GL_COLOR, 0, &clearState[ 0 ] ) );
 	}
 	
 	pRenderThread.GetFramebuffer().Activate( oldfbo );

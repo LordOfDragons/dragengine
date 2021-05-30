@@ -148,6 +148,7 @@ pShaderUpdateProbeDistance( NULL ),
 pShaderClearProbeIrradiance( NULL ),
 pShaderClearProbeDistance( NULL ),
 pShaderMoveProbes( NULL ),
+pShaderDynamicState( NULL ),
 pShaderProbeExtends( NULL ),
 pShaderLight( NULL ),
 pShaderLightGIRay( NULL ),
@@ -245,6 +246,10 @@ pDebugInfoGIRenderLightGIRay( NULL )
 		}
 		pShaderMoveProbes = shaderManager.GetProgramWith( sources, defines );
 		defines.RemoveDefine( "WITH_RAY_CACHE" );
+		
+		// dynamic state
+		sources = shaderManager.GetSourcesNamed( "DefRen GI Dynamic State" );
+		pShaderDynamicState = shaderManager.GetProgramWith( sources, defines );
 		
 		// probe extends
 		sources = shaderManager.GetSourcesNamed( "DefRen GI Probe Extends" );
@@ -780,6 +785,9 @@ void deoglRenderGI::UpdateProbes( deoglRenderPlan &plan ){
 	if( ! giState ){
 		DETHROW( deeInvalidParam );
 	}
+	if( giState->GetUpdateProbeCount() == 0 ){
+		return;
+	}
 	
 	deoglRenderThread &renderThread = GetRenderThread();
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
@@ -844,7 +852,7 @@ void deoglRenderGI::UpdateProbes( deoglRenderPlan &plan ){
 
 void deoglRenderGI::MoveProbes( deoglRenderPlan &plan ){
 	deoglGIState * const giState = plan.GetUpdateGIState();
-	if( ! giState ){
+	if( ! giState || giState->GetUpdateProbeCount() == 0 ){
 		return;
 	}
 	
@@ -857,7 +865,7 @@ void deoglRenderGI::MoveProbes( deoglRenderPlan &plan ){
 	}
 	
 	
-	// calculate new offset
+	// shared
 	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
 	OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
 	OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
@@ -869,10 +877,26 @@ void deoglRenderGI::MoveProbes( deoglRenderPlan &plan ){
 	
 	OGL_CHECK( renderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) );
 	
-	renderThread.GetFramebuffer().Activate( &giState->GetFBOProbeOffset() );
-	
 	OGL_CHECK( renderThread, glViewport( 0, 0, giState->GetTextureProbeOffset().GetWidth(),
 		giState->GetTextureProbeOffset().GetHeight() ) );
+	
+	
+	// update dynamic state
+	renderThread.GetFramebuffer().Activate( &giState->GetFBOProbeState() );
+	
+	const deoglGITraceRays &traceRays = renderThread.GetGI().GetTraceRays();
+	tsmgr.EnableTexture( 0, traceRays.GetTexturePosition(), GetSamplerClampNearest() );
+	tsmgr.EnableTexture( 1, traceRays.GetTextureNormal(), GetSamplerClampNearest() );
+	tsmgr.DisableStagesAbove( 1 );
+	
+	renderThread.GetShader().ActivateShader( pShaderDynamicState );
+	pActivateGIUBOs();
+	
+	OGL_CHECK( renderThread, pglDrawArraysInstanced( GL_TRIANGLE_FAN, 0, 4, giState->GetUpdateProbeCount() ) );
+	
+	
+	// calculate new offset
+	renderThread.GetFramebuffer().Activate( &giState->GetFBOProbeOffset() );
 	
 	if( renderThread.GetChoices().GetGIMoveUsingCache() ){
 		const deoglGIRays &rays = giState->GetRays();
@@ -880,11 +904,10 @@ void deoglRenderGI::MoveProbes( deoglRenderPlan &plan ){
 		tsmgr.EnableTexture( 1, rays.GetTextureNormal(), GetSamplerClampNearest() );
 		
 	}else{
-		const deoglGITraceRays &traceRays = renderThread.GetGI().GetTraceRays();
 		tsmgr.EnableTexture( 0, traceRays.GetTexturePosition(), GetSamplerClampNearest() );
 		tsmgr.EnableTexture( 1, traceRays.GetTextureNormal(), GetSamplerClampNearest() );
 	}
-	tsmgr.DisableStagesAbove( 1 );
+	tsmgr.EnableTexture( 2, giState->GetTextureProbeState(), GetSamplerClampNearest() );
 	
 	renderThread.GetShader().ActivateShader( pShaderMoveProbes );
 	pActivateGIUBOs();
@@ -1296,6 +1319,9 @@ void deoglRenderGI::pCleanUp(){
 	}
 	if( pShaderMoveProbes ){
 		pShaderMoveProbes->RemoveUsage();
+	}
+	if( pShaderDynamicState ){
+		pShaderDynamicState->RemoveUsage();
 	}
 	if( pShaderProbeExtends ){
 		pShaderProbeExtends->RemoveUsage();

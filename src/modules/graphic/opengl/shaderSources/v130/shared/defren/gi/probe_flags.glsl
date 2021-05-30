@@ -5,3 +5,4 @@ const uint gipfNearGeometry = uint( 0x4 );
 const uint gipfValid = uint( 0x8 );
 const uint gipfRayCacheValid = uint( 0x10 );
 const uint gipfInsideView = uint( 0x20 );
+const uint gipfDynamicDisable = uint( 0x40 );

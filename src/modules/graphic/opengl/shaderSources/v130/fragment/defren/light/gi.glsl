@@ -162,9 +162,6 @@ vec3 giIlluminate( in vec3 position, in vec3 normal, in vec3 bendNormal ){
 		// smooth backface test
 		vec3 viewDir = normalize( probePosition - position );
 		
-// 		float backfaceValue = max( 0.0001, ( dot( viewDir, normal ) + 1.0 ) * 0.5 ); // test
-// 		weight *= backfaceValue * backfaceValue;
-		
 		float backfaceValue = dot( viewDir, normal ) * 0.5 + 0.5;
 		weight *= backfaceValue * backfaceValue + 0.2;
 		

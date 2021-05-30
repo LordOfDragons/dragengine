@@ -24,6 +24,7 @@
 
 #include <dragengine/deObjectReference.h>
 #include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/math/decMath.h>
 
 class deoglCollideList;
 class deoglRComponent;
@@ -39,10 +40,22 @@ class deoglRenderThread;
  * used for ray tracing.
  */
 class deoglGIInstances{
+public:
+	struct sDynamicBox{
+		decVector minExtend;
+		decVector maxExtend;
+	};
+	
+	
+	
 private:
 	deoglGIState &pGIState;
 	
 	decObjectList pInstances;
+	
+	sDynamicBox *pDynamicBoxes;
+	int pDynamicBoxCount;
+	int pDynamicBoxSize;
 	
 	
 	
@@ -79,6 +92,28 @@ public:
 	/** First free instance slot creating a new one if all slots are occupied. */
 	deoglGIInstance &NextFreeSlot();
 	
+	
+	
+	/** Dynamic boxes list. */
+	inline const sDynamicBox * const GetDynamicBoxes() const{ return pDynamicBoxes; }
+	
+	/** Count of dynamic boxes. */
+	inline int GetDynamicBoxCount() const{ return pDynamicBoxCount; }
+	
+	/** Update dynamic boxes list from dynamic instances while enlarging boxes. */
+	void UpdateDynamicBoxes( const decDVector &offset, const decVector &enlarge );
+	
+	/** One or more dynamic boxes contains point. */
+	bool DynamicBoxesContain( const decVector &point ) const;
+	
+	/** Count of dynamic boxes contains point. */
+	int CountDynamicBoxesContaining( const decVector &point ) const;
+	
+	
+	
+	/** Clear without triggering effects. */
+	void Clear();
+	
 	/** One or more static instances have changed. */
 	void AnyChanged() const;
 	
@@ -105,6 +140,8 @@ public:
 	
 	/** Mark occlusion meshes. */
 	void MarkOcclusionMeshes( bool marked );
+	
+	
 	
 	/** Debug print. */
 	void DebugPrint();

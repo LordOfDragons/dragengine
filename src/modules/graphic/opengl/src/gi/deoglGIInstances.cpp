@@ -46,7 +46,10 @@
 ////////////////////////////
 
 deoglGIInstances::deoglGIInstances( deoglGIState &giState ) :
-pGIState( giState  ){
+pGIState( giState  ),
+pDynamicBoxes( NULL ),
+pDynamicBoxCount( 0 ),
+pDynamicBoxSize( 0 ){
 }
 
 deoglGIInstances::~deoglGIInstances(){
@@ -99,6 +102,68 @@ deoglGIInstance &deoglGIInstances::NextFreeSlot(){
 	return AddInstance();
 }
 
+
+
+void deoglGIInstances::UpdateDynamicBoxes( const decDVector &offset, const decVector &enlarge ){
+	pDynamicBoxCount = 0;
+	
+	const decVector halfEnlarge( enlarge * 0.5f );
+	const int count = pInstances.GetCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		const deoglGIInstance &instance = *( ( deoglGIInstance* )pInstances.GetAt( i ) );
+		if( ! instance.GetDynamic() ){
+			continue;
+		}
+		
+		if( pDynamicBoxCount == pDynamicBoxSize ){
+			const int newSize = pDynamicBoxCount * 3 / 2 + 1;
+			sDynamicBox * const newArray = new sDynamicBox[ newSize ];
+			if( pDynamicBoxes ){
+				memcpy( newArray, pDynamicBoxes, sizeof( sDynamicBox ) * pDynamicBoxCount );
+				delete [] pDynamicBoxes;
+			}
+			pDynamicBoxes = newArray;
+			pDynamicBoxSize = newSize;
+		}
+		
+		sDynamicBox &box = pDynamicBoxes[ pDynamicBoxCount++ ];
+		box.minExtend = ( instance.GetMinimumExtend() + offset ).ToVector() - halfEnlarge;
+		box.maxExtend = ( instance.GetMaximumExtend() + offset ).ToVector() + halfEnlarge;
+	}
+}
+
+bool deoglGIInstances::DynamicBoxesContain( const decVector &point ) const{
+	int i;
+	for( i=0; i<pDynamicBoxCount; i++ ){
+		if( point >= pDynamicBoxes[ i ].minExtend && point <= pDynamicBoxes[ i ].maxExtend ){
+			return true;
+		}
+	}
+	return false;
+}
+
+int deoglGIInstances::CountDynamicBoxesContaining( const decVector &point ) const{
+	int i, count = 0;
+	for( i=0; i<pDynamicBoxCount; i++ ){
+		if( point >= pDynamicBoxes[ i ].minExtend && point <= pDynamicBoxes[ i ].maxExtend ){
+			count++;
+		}
+	}
+	return count;
+}
+
+
+
+void deoglGIInstances::Clear(){
+	const int count = pInstances.GetCount();
+	int i;
+	for( i=0; i<count; i++ ){
+		( ( deoglGIInstance* )pInstances.GetAt( i ) )->Clear();
+	}
+}
+
 void deoglGIInstances::AnyChanged() const{
 	const int count = pInstances.GetCount();
 	int i;
@@ -127,6 +192,10 @@ void deoglGIInstances::AnyChanged() const{
 			}
 			
 			invalidate |= instance.GetDynamic() != dynamic;
+			
+			if( invalidate ){
+				pGIState.TouchDynamicArea( instance.GetMinimumExtend(), instance.GetMaximumExtend() );
+			}
 		}
 		
 		if( invalidate ){
@@ -139,9 +208,17 @@ void deoglGIInstances::AnyChanged() const{
 			instance.SetMoved( false );
 			
 			if( instance.GetComponent() ){
+				if( instance.GetDynamic() ){
+					pGIState.TouchDynamicArea( instance.GetMinimumExtend(), instance.GetMaximumExtend() );
+				}
+				
 				const decDVector &minExtend = instance.GetComponent()->GetMinimumExtend();
 				const decDVector &maxExtend = instance.GetComponent()->GetMaximumExtend();
 				instance.SetExtends( minExtend, maxExtend );
+				
+				if( instance.GetDynamic() ){
+					pGIState.TouchDynamicArea( minExtend, maxExtend );
+				}
 				
 				if( invalidate ){
 // 						pGIState.GetRenderThread().GetLogger().LogInfoFormat("GIInstances.AnyChanged: Moved %s",
@@ -181,6 +258,11 @@ void deoglGIInstances::AddComponents( deoglCollideList &list ){
 // 				pGIState.GetRenderThread().GetLogger().LogInfoFormat("GIInstances.AddComponent: %s",
 // 					component.GetModel()->GetFilename().GetString());
 			pGIState.InvalidateArea( component.GetMinimumExtend(), component.GetMaximumExtend() );
+			
+		}else{
+// 				pGIState.GetRenderThread().GetLogger().LogInfoFormat("GIInstances.AddComponent: %s",
+// 					component.GetModel()->GetFilename().GetString());
+			pGIState.TouchDynamicArea( component.GetMinimumExtend(), component.GetMaximumExtend() );
 		}
 		
 // 		{ // debug
@@ -211,7 +293,10 @@ void deoglGIInstances::RemoveComponents( deoglCollideList &list ){
 			if( instance.GetChanged() ){
 				// component has been removed from game world
 				instance.SetChanged( false );
-				if( ! instance.GetDynamic() ){
+				if( instance.GetDynamic() ){
+					pGIState.TouchDynamicArea( instance.GetMinimumExtend(), instance.GetMaximumExtend() );
+					
+				}else{
 // 						pGIState.GetRenderThread().GetLogger().LogInfoFormat("GIInstances.RemoveComponents: LeftWorld %d", i);
 					pGIState.InvalidateArea( instance.GetMinimumExtend(), instance.GetMaximumExtend() );
 				}
@@ -233,10 +318,15 @@ void deoglGIInstances::RemoveComponents( deoglCollideList &list ){
 		// either GI field moved and component is no longer inside the GI field or the component
 		// moved out of the GI field. if GI field moved no invalidating is required. if component
 		// moved invalidating is required
-		if( instance.GetChanged() && ! instance.GetDynamic() ){
+		if( instance.GetChanged() ){
+			if( instance.GetDynamic() ){
+				pGIState.TouchDynamicArea( instance.GetMinimumExtend(), instance.GetMaximumExtend() );
+				
+			}else{
 // 				pGIState.GetRenderThread().GetLogger().LogInfoFormat("GIInstances.AnyChanged: LeftField %s",
 // 					instance.GetComponent()->GetModel()->GetFilename().GetString());
-			pGIState.InvalidateArea( instance.GetMinimumExtend(), instance.GetMaximumExtend() );
+				pGIState.InvalidateArea( instance.GetMinimumExtend(), instance.GetMaximumExtend() );
+			}
 		}
 		
 		instance.Clear();
@@ -345,6 +435,8 @@ void deoglGIInstances::MarkOcclusionMeshes( bool marked ){
 	}
 }
 
+
+
 void deoglGIInstances::DebugPrint(){
 	deoglRTLogger &logger = pGIState.GetRenderThread().GetLogger();
 	const int count = pInstances.GetCount();
@@ -373,4 +465,7 @@ void deoglGIInstances::DebugPrint(){
 //////////////////////
 
 void deoglGIInstances::pCleanUp(){
+	if( pDynamicBoxes ){
+		delete [] pDynamicBoxes;
+	}
 }
