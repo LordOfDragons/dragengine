@@ -66,44 +66,28 @@ void main( void ){
 	
 	uint flags = gipoProbeFlags( probeCoord );
 	bool disabled = ( flags & gipfDisabled ) == gipfDisabled;
-	
-	if( disabled ){
-		if( insideView ){
-			outColor = vec3( 0.15 );
-			
-		}else{
-			outColor = vec3( 0.1 );
-		}
-		
-	}else{
-		if( insideView ){
-			outColor = vec3( 0.1, 0.0, 0.0 );
-			
-		}else{
-			outColor = vec3( 0.0, 0.1, 0.0 );
-		}
-	}
+	bool nearGeometry = ( flags & gipfNearGeometry ) == gipfNearGeometry;
+	bool updated = false;
 	
 	int i;
 	for( i=0; i<pGIProbeCount; i++ ){
 		if( pGIProbeIndex[ i / 4 ][ i % 4 ] == index ){
-			if( disabled ){
-				if( insideView ){
-					outColor = vec3( 0.25 );
-					
-				}else{
-					outColor = vec3( 0.2 );
-				}
-				
-			}else{
-				if( insideView ){
-					outColor = vec3( 1.0, 0.0, 0.0 );
-					
-				}else{
-					outColor = vec3( 0.0, 1.0, 0.0 );
-				}
-			}
+			updated = true;
 			break;
 		}
+	}
+	
+	if( disabled ){
+		outColor = mix( vec3( 0.5 ), vec3( 1 ), bvec3( insideView ) );
+		
+	}else if( nearGeometry ){
+		outColor = mix( vec3( 0, 1, 0 ), vec3( 1, 0, 0 ), bvec3( insideView ) );
+		
+	}else{
+		outColor = mix( vec3( 0.25, 0, 0.25 ), vec3( 0.5, 0, 0.5 ), bvec3( insideView ) );
+	}
+	
+	if( ! updated ){
+		outColor *= 0.1;
 	}
 }

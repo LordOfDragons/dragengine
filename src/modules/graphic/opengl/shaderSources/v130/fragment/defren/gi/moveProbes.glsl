@@ -147,6 +147,18 @@ void main( void ){
 	uint flags = uint( pGIProbePosition[ vInstanceID ].w );
 	flags &= ~gipfDisabled;
 	
+	// in the original source code "spacing * 2 * 1.45" is used. but I think only
+	// "spacing * (1 + 0.45 * 2)" aka "spacing * 1.9" is required. the thinking is this:
+	// if a surface is farther away than "spacing" then it falls into the next cell and this
+	// probe has no effect on it anymore no matter if by direct lighting nor ray lighting.
+	// offset can be at most 0.45 . so if both probes are have maximum offset but in opposite
+	// direction then this yields "1 + 0.45 + 0.45" times the spacing which is "spacing * 1.9"
+	const vec3 nearGeometryRange = pGIGridProbeSpacing + pGIMoveMaxOffset * 2.0;
+	
+	if( all( lessThanEqual( vec3( closestFrontfaceDistance ), nearGeometryRange ) ) && ! assumeInGeometry ) {
+		flags |= gipfNearGeometry;
+	}
+	
 	// if frontfaces are hit clamp offset to maximum radius around grid position.
 	// if backfaces are hit do not move if outside maximum radius
 	vec3 gridOffset = outOffset.xyz * moveMaxOffsetFactor;

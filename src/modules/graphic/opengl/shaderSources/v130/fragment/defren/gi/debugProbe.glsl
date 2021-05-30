@@ -37,14 +37,14 @@ void main( void ){
 		uint flags = gipoProbeFlags( vProbeCoord );
 		
 		if( angle < 0.35 || angle > 0.65 ){
-			const vec3 colorEnabled = vec3( 0.0, 1.0, 0.0 );
-			const vec3 colorDisabled = vec3( 1.0, 0.0, 0.0 );
+			const vec3 colorEnabled = vec3( 0, 1, 0 );
+			const vec3 colorDisabled = vec3( 1, 0, 0 );
 			outColor = mix( colorEnabled, colorDisabled, bvec3( ( flags & gipfDisabled ) == gipfDisabled ) );
 			
 		}else{
-			const vec3 colorOn = vec3( 0.0, 0.0, 1.0 );
-			const vec3 colorOff = vec3( 0.0, 0.0, 0.0 );
-			outColor = mix( colorOff, colorOn, bvec3( ( flags & gipfSmoothUpdate ) == gipfSmoothUpdate ) );
+			const vec3 colorOn = vec3( 0.5, 0, 0.5 );
+			const vec3 colorOff = vec3( 0, 0, 0 );
+			outColor = mix( colorOff, colorOn, bvec3( ( flags & gipfNearGeometry ) == gipfNearGeometry ) );
 		}
 		
 	#else
