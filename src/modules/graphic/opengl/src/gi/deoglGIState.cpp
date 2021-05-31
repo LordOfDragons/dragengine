@@ -766,9 +766,32 @@ void deoglGIState::pSyncTrackedInstances(){
 void deoglGIState::pUpdatePosition( const decDVector &position ){
 	// find world position closest to the next grid position. if the position is
 	// the same no updating is required
-	const decDVector closestPosition( WorldClosestGrid( position ) );
+	decDVector closestPosition( WorldClosestGrid( position ) );
 	if( closestPosition.IsEqualTo( pPosition ) ){
 		return;
+	}
+	
+	// skip update if position is too close to the last reference position. this avoids
+	// excessive updates if the position oscillates around grid boundaries. this can
+	// happen with player cameras affected by view bobbing
+	const decDVector refPosDiff( ( position - pLastRefPosition ).Absolute() );
+	const bool refPosKeepX = refPosDiff.x < pProbeSpacing.x * 0.8;
+	const bool refPosKeepY = refPosDiff.y < pProbeSpacing.y * 0.8;
+	const bool refPosKeepZ = refPosDiff.z < pProbeSpacing.z * 0.8;
+	
+	if( refPosKeepX && refPosKeepY && refPosKeepZ ){
+		return;
+	}
+	
+	// modify the closest position to change along each axis only if really necessary
+	if( refPosKeepX ){
+		closestPosition.x = pPosition.x;
+	}
+	if( refPosKeepY ){
+		closestPosition.y = pPosition.y;
+	}
+	if( refPosKeepZ ){
+		closestPosition.z = pPosition.z;
 	}
 	
 	// invalidate probes shifted out
@@ -800,6 +823,7 @@ void deoglGIState::pUpdatePosition( const decDVector &position ){
 	
 	// set the new tracing position
 	pPosition = closestPosition;
+	pLastRefPosition = position;
 	
 	// update shift
 	pGridCoordShift -= gridOffset;
@@ -1113,7 +1137,7 @@ void deoglGIState::pPrepareRayCacheProbes(){
 		pPrepareProbeVBO();
 	}
 	
-	pRenderThread.GetLogger().LogInfoFormat("PrepareRayCacheProbes: %d", pRayCacheProbeCount);
+// 	pRenderThread.GetLogger().LogInfoFormat("PrepareRayCacheProbes: %d", pRayCacheProbeCount);
 }
 
 void deoglGIState::pPrepareProbeTexturesAndFBO(){

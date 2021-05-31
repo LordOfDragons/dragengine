@@ -109,6 +109,7 @@ private:
 	decVector2 pDistanceMapScale;
 	
 	decDVector pPosition;
+	decDVector pLastRefPosition;
 	sProbe *pProbes;
 	decPoint pSampleImageSize;
 	decPoint3 pGridCoordShift;
