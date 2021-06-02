@@ -27,7 +27,6 @@
 #include "../collidelist/deoglCollideList.h"
 #include "../framebuffer/deoglFramebuffer.h"
 #include "../texture/texture2d/deoglTexture.h"
-#include "../texture/pixelbuffer/deoglPixelBuffer.h"
 
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/utils/decTimer.h>
@@ -135,8 +134,9 @@ private:
 	deoglFramebuffer pFBOProbeDistance;
 	deoglFramebuffer pFBOProbeOffset;
 	deoglFramebuffer pFBOProbeState;
-	deoglPixelBuffer *pPixBufProbeOffset;
 	bool pClearMaps;
+	GLuint pVBOProbeOffsets;
+	GLfloat *pVBOProbeOffsetsData;
 	bool pProbesHaveMoved;
 	
 	GLuint pVBOProbeExtends;
@@ -330,6 +330,9 @@ public:
 	/** Probe state fbo. */
 	inline deoglFramebuffer &GetFBOProbeState(){ return pFBOProbeState; }
 	
+	/** Probe offset feedback VBO. */
+	inline GLuint GetVBOProbeOffsets() const{ return pVBOProbeOffsets; }
+	
 	/** Probe extends feedback VBO. */
 	inline GLuint GetVBOProbeExtends() const{ return pVBOProbeExtends; }
 	
@@ -352,11 +355,11 @@ public:
 	/** Probe moved. */
 	void ProbesMoved();
 	
-	/** Update probe offsets from probe offset texture. */
-	void UpdateProbeOffsetFromTexture();
+	/** Update probe offsets from probe offset shader result. */
+	void UpdateProbeOffsetFromShader();
 	
-	/** Update probe extends from probe extends VBO. */
-	void UpdateProbeExtendsFromVBO();
+	/** Update probe extends from probe extends shader result. */
+	void UpdateProbeExtendsFromShader();
 	
 	/** Invalidate area. */
 	void InvalidateArea( const decDVector &minExtend, const decDVector &maxExtend );
@@ -391,7 +394,8 @@ private:
 	void pUpdatePosition( const decDVector &position );
 	void pPrepareTraceProbes( const deoglDCollisionFrustum &frustum );
 	void pFindProbesToUpdate( const deoglDCollisionFrustum &frustum );
-	void pAddUpdateProbe( sProbe &probe );
+	void pAddUpdateProbes( uint8_t mask, uint8_t flags, int &lastIndex,
+		int &remainingMatchCount, int maxUpdateCount );
 	void pPrepareRayLimitProbes();
 	void pPrepareRayCacheProbes();
 	void pPrepareProbeTexturesAndFBO();

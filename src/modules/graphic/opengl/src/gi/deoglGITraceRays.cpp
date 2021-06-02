@@ -43,7 +43,7 @@ deoglGITraceRays::deoglGITraceRays( deoglRenderThread &renderThread ) :
 pRenderThread( renderThread  ),
 pRaysPerProbe( ConfigRaysPerProbe( renderThread.GetConfiguration() ) ),
 pProbesPerLine( 8 ),
-pProbeCount( 4096 ), // 4096 is the maximum supported in smallest UBO size
+pProbeCount( 2048 ), // 4096 is the maximum supported in smallest UBO size
 pTexPosition( renderThread ),
 pTexNormal( renderThread ),
 pTexDiffuse( renderThread ),

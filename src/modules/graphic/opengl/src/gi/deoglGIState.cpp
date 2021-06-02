@@ -79,10 +79,12 @@ pMaxProbeDistance( pProbeSpacing.Length() * 1.5f ),
 
 pDepthSharpness( 50.0f ),
 pHysteresis( 0.9f ), // 0.98 (paper)
-pNormalBias( 0.2f ),
+pNormalBias( 0.25f ), // 0.25 or 0.2 in examples
 pEnergyPreservation( 0.85f ),
 pIrradianceGamma( 5.0f ),
-pSelfShadowBias( 0.3f ), // 0.3 default, higher when variance is higher (lower ray count)
+pSelfShadowBias( 0.35f ), // higher when variance is higher (lower ray count)
+	// paper 0.3*0.75. sdk examples 0.4, 0.1 or even 4.0 (pre-scaled by spacing).
+	// examples unscaled: 0.1, 0.32, 0.33, 0.4 . 0.35 seems a good middle ground
 
 pSizeTexIrradiance( pIrradianceMapSize ),
 pSizeTexDistance( pDistanceMapSize ),
@@ -113,8 +115,9 @@ pFBOProbeIrradiance( renderThread, false ),
 pFBOProbeDistance( renderThread, false ),
 pFBOProbeOffset( renderThread, false ),
 pFBOProbeState( renderThread, false ),
-pPixBufProbeOffset( NULL ),
 pClearMaps( true ),
+pVBOProbeOffsets( 0 ),
+pVBOProbeOffsetsData( NULL ),
 pProbesHaveMoved( false ),
 
 pVBOProbeExtends( 0 ),
@@ -259,7 +262,7 @@ decPoint3 deoglGIState::ShiftedGrid2LocalGrid( const decPoint3 &coord ) const{
 }
 
 float deoglGIState::CalcUBOSelfShadowBias() const{
-	return 0.75f * pSelfShadowBias * decMath::min( pProbeSpacing.x, pProbeSpacing.y, pProbeSpacing.z );
+	return pSelfShadowBias * decMath::min( pProbeSpacing.x, pProbeSpacing.y, pProbeSpacing.z );
 }
 
 
@@ -305,20 +308,23 @@ void deoglGIState::Update( deoglRWorld &world, const decDVector &cameraPosition,
 const deoglDCollisionFrustum &frustum ){
 // 		pRenderThread.GetLogger().LogInfoFormat( "Update GIState %p (%g,%g,%g)",
 // 			this, cameraPosition.x, cameraPosition.y, cameraPosition.z );
+	INIT_SPECIAL_TIMING
+	
 	if( pProbesHaveMoved ){
 		pProbesHaveMoved = false;
-		UpdateProbeOffsetFromTexture();
+		      UpdateProbeOffsetFromShader();
+		SPECIAL_TIMER_PRINT("UpdateProbeOffsetFromTexture")
 	}
 	if( pProbesExtendsChanged ){
 		pProbesExtendsChanged = false;
-		UpdateProbeExtendsFromVBO();
+		      UpdateProbeExtendsFromShader();
+		SPECIAL_TIMER_PRINT("UpdateProbeExtendsFromVBO")
 	}
 	
 	// monitor configuration changes
 	pRenderThread.GetGI().GetTraceRays().UpdateFromConfig();
 	
 	// find content to track. only static and dynamic content is tracked
-	INIT_SPECIAL_TIMING
 	FindContent( world );
 	SPECIAL_TIMER_PRINT("FindContent")
 	
@@ -513,31 +519,25 @@ void deoglGIState::ProbesMoved(){
 	pProbesHaveMoved = true;
 }
 
-void deoglGIState::UpdateProbeOffsetFromTexture(){
-	if( ! pPixBufProbeOffset ){
-		pPixBufProbeOffset = new deoglPixelBuffer( deoglPixelBuffer::epfFloat4,
-			pTexProbeOffset.GetWidth(), pTexProbeOffset.GetHeight(), 1 );
+void deoglGIState::UpdateProbeOffsetFromShader(){
+	if( ! pVBOProbeOffsetsData ){
+		pVBOProbeOffsetsData = new GLfloat[ pRenderThread.GetGI().GetTraceRays().GetProbeCount() * 4 ];
 	}
 	
-	// this call is slow (>5ms) if used right after rendering the probe offset update
-	// shader. by delaying the read-back to the next GI update cycle reduces the
-	// time consumption to <300ys, which is acceptable
 // 	decTimer timer;
-	pTexProbeOffset.GetPixels( *pPixBufProbeOffset );
-// 	printf( "GetPixels: %d\n", ( int )( timer.GetElapsedTime() * 1e6f ) );
+	OGL_CHECK( pRenderThread, pglBindBuffer( GL_ARRAY_BUFFER, pVBOProbeOffsets ) );
+	OGL_CHECK( pRenderThread, pglGetBufferSubData( GL_ARRAY_BUFFER,
+		0, pUpdateProbeCount * 4 * sizeof( GLfloat ), pVBOProbeOffsetsData ) );
+	OGL_CHECK( pRenderThread, pglBindBuffer( GL_ARRAY_BUFFER, 0 ) );
+// 	printf( "UpdateProbeOffsetFromTexture: GetVBOData %d\n", ( int )( timer.GetElapsedTime() * 1e6f ) );
 	
-	const deoglPixelBuffer::sFloat4 * const pixels = pPixBufProbeOffset->GetPointerFloat4();
-	const int stride = pTexProbeOffset.GetWidth();
+	const GLfloat *data = pVBOProbeOffsetsData;
 	int i;
 	
-	for( i=0; i<pUpdateProbeCount; i++ ){
+	for( i=0; i<pUpdateProbeCount; i++, data+=4 ){
 		sProbe &probe = pProbes[ pUpdateProbes[ i ] ];
 		
-		const decPoint tc( pProbeCount.x * probe.coord.y + probe.coord.x, probe.coord.z );
-		
-		const deoglPixelBuffer::sFloat4 &pixel = pixels[ stride * tc.y + tc.x ];
-		
-		probe.flags = ( uint8_t )( pixel.a );
+		probe.flags = ( uint8_t )data[ 3 ];
 		
 		// PROBLEM some probes flicker between two positions and can not make up their mind.
 		//         this causes GI flickering and endless ray cache invalidating.
@@ -555,7 +555,7 @@ void deoglGIState::UpdateProbeOffsetFromTexture(){
 				probe.countOffsetMoved = 5;
 			}
 			
-			const decVector offset( pixel.r, pixel.g, pixel.b );
+			const decVector offset( data[ 0 ], data[ 1 ], data[ 2 ] );
 			
 			if( ! offset.IsEqualTo( probe.offset, 0.05f ) ){
 				// update offset only if it moved far enough to justify an expensive update
@@ -567,7 +567,7 @@ void deoglGIState::UpdateProbeOffsetFromTexture(){
 	}
 }
 
-void deoglGIState::UpdateProbeExtendsFromVBO(){
+void deoglGIState::UpdateProbeExtendsFromShader(){
 	if( pRayCacheProbeCount == 0 ){
 		return;
 	}
@@ -579,7 +579,8 @@ void deoglGIState::UpdateProbeExtendsFromVBO(){
 // 	decTimer timer;
 	OGL_CHECK( pRenderThread, pglBindBuffer( GL_ARRAY_BUFFER, pVBOProbeExtends ) );
 	OGL_CHECK( pRenderThread, pglGetBufferSubData( GL_ARRAY_BUFFER, 0,
-		pRayCacheProbeCount * 6 * 4, pVBOProbeExtendsData ) );
+		pRayCacheProbeCount * 6 * sizeof( GLfloat ), pVBOProbeExtendsData ) );
+	OGL_CHECK( pRenderThread, pglBindBuffer( GL_ARRAY_BUFFER, 0 ) );
 // 	printf( "GetVBOResult: %d\n", ( int )( timer.GetElapsedTime() * 1e6f ) );
 	
 	/*
@@ -649,14 +650,17 @@ void deoglGIState::ValidatedRayCaches(){
 //////////////////////
 
 void deoglGIState::pCleanUp(){
+	if( pVBOProbeOffsetsData ){
+		delete [] pVBOProbeOffsetsData;
+	}
+	if( pVBOProbeOffsets ){
+		pglDeleteBuffers( 1, &pVBOProbeOffsets );
+	}
 	if( pVBOProbeExtendsData ){
 		delete [] pVBOProbeExtendsData;
 	}
 	if( pVBOProbeExtends ){
 		pglDeleteBuffers( 1, &pVBOProbeExtends );
-	}
-	if( pPixBufProbeOffset ){
-		delete pPixBufProbeOffset;
 	}
 	if( pRayCacheProbes ){
 		delete [] pRayCacheProbes;
@@ -854,14 +858,9 @@ void deoglGIState::pPrepareTraceProbes( const deoglDCollisionFrustum &frustum ){
 void deoglGIState::pFindProbesToUpdate( const deoglDCollisionFrustum &frustum ){
 	//const int maxUpdateCount = pRenderThread.GetGI().GetTraceRays().GetProbeCount();
 	const int maxUpdateCount = 2048; // 256
-	const int maxUpdateCountOutsideView = maxUpdateCount / 5; // 20%
-	const int maxUpdateCountInsideView = maxUpdateCount - maxUpdateCountOutsideView; // 80%
-	int updateCountOutsideView = 0;
-	int updateCountInsideView = 0;
-		int specialCountValid = 0, specialCountInvalid = 0;
 	
 	const deoglGITraceRays &traceRays = pRenderThread.GetGI().GetTraceRays();
-	int i, last;
+	int i;
 	
 	pUpdateProbeCount = 0;
 	
@@ -919,127 +918,71 @@ void deoglGIState::pFindProbesToUpdate( const deoglDCollisionFrustum &frustum ){
 		}
 	}
 	
-	// add all invalid probes inside view up to the limits
-	for( i=0, last=0; i<pRealProbeCount; i++ ){
-		sProbe &probe = pProbes[ pAgedProbes[ i ] ];
-		
-		if( ( probe.flags & ( epfValid | epfInsideView | epfDisabled | epfDynamicDisable ) ) != epfInsideView ){
-			pAgedProbes[ last++ ] = pAgedProbes[ i ];
-			continue;
-		}
-		
-		// add probe if not exceeding the limits. the aged probes list is adjusted in a way
-		// all not added probes are packaged at the beginning. then the added probes are
-		// appended to the end of the list to obtain a full list again
-		updateCountInsideView++;
-		pAddUpdateProbe( probe );
-			specialCountInvalid++;
-		
-		if( pUpdateProbeCount == maxUpdateCount ){
-			i++;
-			break;
-		}
-	}
+	// add probes by priority:
+	// - invalid probes inside view. expensive updates. at most 1/8 count
+	// - invalid probes outside view. expensive updates. at most 1/8 count
+	// - valid requiring cache update probes inside view. expensive updates. at most 1/8 count
+	// - valid requiring cache update probes outside view. expensive updates. at most 1/8 count
+	// - valid requiring dynamic update probes inside view. cheap updates. at most 80% count
+	// - valid requiring dynamic update probes outside view. cheap updates. fill up to max count
+	const int mask = epfValid | epfInsideView | epfDisabled | epfDynamicDisable | epfRayCacheValid;
+	int last = pRealProbeCount;
 	
-	while( i < pRealProbeCount ){
-		pAgedProbes[ last++ ] = pAgedProbes[ i++ ];
-	}
+	const int maxUpdateCountExpensive = maxUpdateCount / 8;
+	int maxUpdateCountExpensiveOutside = maxUpdateCountExpensive / 5; // 20%
+	int maxUpdateCountExpensiveInside = maxUpdateCountExpensive - maxUpdateCountExpensiveOutside; // 80%
 	
-	// add all invalid probes outside view up to the limits
-	if( pUpdateProbeCount < maxUpdateCount ){
-		const int endIndex = last;
-		
-		for( i=0, last=0; i<endIndex; i++ ){
-			sProbe &probe = pProbes[ pAgedProbes[ i ] ];
-			
-			if( ( probe.flags & ( epfValid | epfInsideView | epfDisabled | epfDynamicDisable ) ) != 0 ){
-				pAgedProbes[ last++ ] = pAgedProbes[ i ];
-				continue;
-			}
-			
-			// add probe if not exceeding the limits. the aged probes list is adjusted in a way
-			// all not added probes are packaged at the beginning. then the added probes are
-			// appended to the end of the list to obtain a full list again
-			updateCountOutsideView++;
-			pAddUpdateProbe( probe );
-				specialCountInvalid++;
-			
-			if( pUpdateProbeCount == maxUpdateCount ){
-				i++;
-				break;
-			}
-		}
-		
-		while( i < endIndex ){
-			pAgedProbes[ last++ ] = pAgedProbes[ i++ ];
-		}
-	}
+	pAddUpdateProbes( mask, epfInsideView, last, maxUpdateCountExpensiveInside, maxUpdateCount );
+	pAddUpdateProbes( mask, epfValid | epfInsideView, last, maxUpdateCountExpensiveInside, maxUpdateCount );
 	
-	// add all regular probes inside view up to the limits. the valid flag is not checked
-	// anymore since if we end up here with remaining update slots all invalid probes have
-	// been added. in this case only valid probes are left
-	if( pUpdateProbeCount < maxUpdateCount && updateCountInsideView < maxUpdateCountInsideView ){
-		const int endIndex = last;
-		
-		for( i=0, last=0; i<endIndex; i++ ){
-			sProbe &probe = pProbes[ pAgedProbes[ i ] ];
-			
-			if( ( probe.flags & ( epfInsideView | epfDisabled | epfDynamicDisable ) ) != epfInsideView ){
-				pAgedProbes[ last++ ] = pAgedProbes[ i ];
-				continue;
-			}
-			
-			// add probe if not exceeding the limits. the aged probes list is adjusted in a way
-			// all not added probes are packaged at the beginning. then the added probes are
-			// appended to the end of the list to obtain a full list again
-			updateCountInsideView++;
-			pAddUpdateProbe( probe );
-				specialCountValid++;
-			
-			if( pUpdateProbeCount == maxUpdateCount || updateCountInsideView == maxUpdateCountInsideView ){
-				i++;
-				break;
-			}
-		}
-		
-		while( i < endIndex ){
-			pAgedProbes[ last++ ] = pAgedProbes[ i++ ];
-		}
-	}
+	pAddUpdateProbes( mask, 0, last, maxUpdateCountExpensiveOutside, maxUpdateCount );
+	pAddUpdateProbes( mask, epfValid, last, maxUpdateCountExpensiveOutside, maxUpdateCount );
 	
-	// add all regular probes outside view filling up all remaining update slots
-	if( pUpdateProbeCount < maxUpdateCount ){
-		const int endIndex = last;
-		
-		for( i=0, last=0; i<endIndex; i++ ){
-			sProbe &probe = pProbes[ pAgedProbes[ i ] ];
-			
-			if( ( probe.flags & ( epfInsideView | epfDisabled | epfDynamicDisable ) ) != 0 ){
-				pAgedProbes[ last++ ] = pAgedProbes[ i ];
-				continue;
-			}
-			
-			// add probe if not exceeding the limits. the aged probes list is adjusted in a way
-			// all not added probes are packaged at the beginning. then the added probes are
-			// appended to the end of the list to obtain a full list again
-			updateCountOutsideView++;
-			pAddUpdateProbe( probe );
-				specialCountValid++;
-			
-			if( pUpdateProbeCount == maxUpdateCount ){
-				i++;
-				break;
-			}
-		}
-		
-		while( i < endIndex ){
-			pAgedProbes[ last++ ] = pAgedProbes[ i++ ];
-		}
-	}
+	const int maxUpdateCountCheap = maxUpdateCount - pUpdateProbeCount;
+	int maxUpdateCountCheapOutside = maxUpdateCountCheap / 5; // 20%
+	int maxUpdateCountCheapInside = maxUpdateCountCheap - maxUpdateCountCheapOutside; // 80%
+	
+	pAddUpdateProbes( mask, epfValid | epfInsideView | epfRayCacheValid, last, maxUpdateCountCheapInside, maxUpdateCount );
+	
+	maxUpdateCountCheapOutside = maxUpdateCount - pUpdateProbeCount;
+	
+	pAddUpdateProbes( mask, epfValid | epfRayCacheValid, last, maxUpdateCountCheapOutside, maxUpdateCount );
 	
 	// finish the aged probe list to make it valid again
 	for( i=0; i<pUpdateProbeCount; i++ ){
 		pAgedProbes[ last++ ] = pUpdateProbes[ i ];
+	}
+	
+	// update states of probes to update. has to be done after adding the probes to avoid
+	// changing flags to affect the filtering
+		int specialCountExpensive = 0, specialCountCheap = 0;
+	
+	for( i=0; i<pUpdateProbeCount; i++ ){
+		sProbe &probe = pProbes[ pUpdateProbes[ i ] ];
+			if( ( probe.flags & epfRayCacheValid ) == epfRayCacheValid ){
+				specialCountCheap++;
+			}else{
+				specialCountExpensive++;
+			}
+		
+		if( ( probe.flags & epfValid ) == epfValid ){
+			probe.flags |= epfSmoothUpdate;
+			
+			if( probe.countOffsetMoved == 1 ){
+				// probe moved for the first time. this is usually a large jump from an invalid
+				// or unfortunate position to the first potentially good position. for this
+				// reason an update has to be forced for this first move but not following ones
+				probe.flags &= ~epfSmoothUpdate;
+			}
+			
+		}else{
+			probe.offset.SetZero();
+			probe.countOffsetMoved = 0;
+			probe.flags &= ~epfSmoothUpdate;
+			probe.flags |= epfValid;
+		}
+		
+		probe.flags &= ~( epfDisabled | epfDynamicDisable );
 	}
 	
 		/*{
@@ -1081,27 +1024,38 @@ void deoglGIState::pFindProbesToUpdate( const deoglDCollisionFrustum &frustum ){
 // 		pRenderThread.GetLogger().LogInfoFormat( "GIFindProbesUpdate invalid=%d valid=%d", specialCountInvalid, specialCountValid );
 }
 
-void deoglGIState::pAddUpdateProbe( sProbe &probe ){
-	if( ( probe.flags & epfValid ) == epfValid ){
-		probe.flags |= epfSmoothUpdate;
-		
-		if( probe.countOffsetMoved == 1 ){
-			// probe moved for the first time. this is usually a large jump from an invalid
-			// or unfortunate position to the first potentially good position. for this
-			// reason an update has to be forced for this first move but not following ones
-			probe.flags &= ~epfSmoothUpdate;
-		}
-		
-	}else{
-		probe.offset.SetZero();
-		probe.countOffsetMoved = 0;
-		probe.flags &= ~epfSmoothUpdate;
-		probe.flags |= epfValid;
+void deoglGIState::pAddUpdateProbes( uint8_t mask, uint8_t flags, int& lastIndex,
+int &remainingMatchCount, int maxUpdateCount ){
+	if( remainingMatchCount == 0 || pUpdateProbeCount >= maxUpdateCount ){
+		return;
 	}
 	
-	probe.flags &= ~( epfDisabled | epfDynamicDisable );
+	const int endIndex = lastIndex;
+	int i;
 	
-	pUpdateProbes[ pUpdateProbeCount++ ] = probe.index;
+	for( i=0, lastIndex=0; i<endIndex; i++ ){
+		sProbe &probe = pProbes[ pAgedProbes[ i ] ];
+		
+		if( ( probe.flags & mask ) != flags ){
+			pAgedProbes[ lastIndex++ ] = pAgedProbes[ i ];
+			continue;
+		}
+		
+		// add probe if not exceeding the limits. the aged probes list is adjusted in a way
+		// all not added probes are packaged at the beginning. then the added probes are
+		// appended to the end of the list to obtain a full list again
+		remainingMatchCount--;
+		pUpdateProbes[ pUpdateProbeCount++ ] = probe.index;
+		
+		if( pUpdateProbeCount == maxUpdateCount || remainingMatchCount == 0 ){
+			i++;
+			break;
+		}
+	}
+	
+	while( i < endIndex ){
+		pAgedProbes[ lastIndex++ ] = pAgedProbes[ i++ ];
+	}
 }
 
 void deoglGIState::pPrepareRayLimitProbes(){
@@ -1142,8 +1096,7 @@ void deoglGIState::pPrepareRayCacheProbes(){
 
 void deoglGIState::pPrepareProbeTexturesAndFBO(){
 	if( pTexProbeIrradiance.GetTexture() && pTexProbeDistance.GetTexture()
-	&& pTexProbeOffset.GetTexture() && pTexProbeState.GetTexture()
-	&& ! pClearMaps && pPixBufProbeOffset ){
+	&& pTexProbeOffset.GetTexture() && pTexProbeState.GetTexture() && ! pClearMaps ){
 		return;
 	}
 	
@@ -1240,18 +1193,27 @@ void deoglGIState::pPrepareProbeTexturesAndFBO(){
 }
 
 void deoglGIState::pPrepareProbeVBO(){
-	if( pVBOProbeExtends ){
-		return;
+	if( ! pVBOProbeOffsets ){
+		OGL_CHECK( pRenderThread, pglGenBuffers( 1, &pVBOProbeOffsets ) );
+		if( ! pVBOProbeOffsets ){
+			DETHROW( deeOutOfMemory );
+		}
+		
+		OGL_CHECK( pRenderThread, pglBindBuffer( GL_ARRAY_BUFFER, pVBOProbeOffsets ) );
+		OGL_CHECK( pRenderThread, pglBufferData( GL_ARRAY_BUFFER,
+			pRenderThread.GetGI().GetTraceRays().GetProbeCount() * 4 * sizeof( GLfloat ), NULL, GL_STREAM_READ ) );
 	}
 	
-	OGL_CHECK( pRenderThread, pglGenBuffers( 1, &pVBOProbeExtends ) );
 	if( ! pVBOProbeExtends ){
-		DETHROW( deeOutOfMemory );
+		OGL_CHECK( pRenderThread, pglGenBuffers( 1, &pVBOProbeExtends ) );
+		if( ! pVBOProbeExtends ){
+			DETHROW( deeOutOfMemory );
+		}
+		
+		OGL_CHECK( pRenderThread, pglBindBuffer( GL_ARRAY_BUFFER, pVBOProbeExtends ) );
+		OGL_CHECK( pRenderThread, pglBufferData( GL_ARRAY_BUFFER,
+			pRenderThread.GetGI().GetTraceRays().GetProbeCount() * 6 * sizeof( GLfloat ), NULL, GL_STREAM_READ ) );
 	}
-	
-	OGL_CHECK( pRenderThread, pglBindBuffer( GL_ARRAY_BUFFER, pVBOProbeExtends ) );
-	OGL_CHECK( pRenderThread, pglBufferData( GL_ARRAY_BUFFER,
-		pRenderThread.GetGI().GetTraceRays().GetProbeCount() * 6 * 4, NULL, GL_STREAM_READ ) );
 }
 
 void deoglGIState::pPrepareUBOParameters( int probeCount ) const{

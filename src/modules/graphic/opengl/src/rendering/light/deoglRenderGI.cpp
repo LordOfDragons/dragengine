@@ -892,10 +892,10 @@ void deoglRenderGI::MoveProbes( deoglRenderPlan &plan ){
 	renderThread.GetShader().ActivateShader( pShaderDynamicState );
 	pActivateGIUBOs();
 	
-	OGL_CHECK( renderThread, pglDrawArraysInstanced( GL_TRIANGLE_FAN, 0, 4, giState->GetUpdateProbeCount() ) );
+	OGL_CHECK( renderThread, pglDrawArraysInstanced( GL_POINTS, 0, 1, giState->GetUpdateProbeCount() ) );
 	
 	
-	// calculate new offset
+	// calculate new offset and state
 	renderThread.GetFramebuffer().Activate( &giState->GetFBOProbeOffset() );
 	
 	if( renderThread.GetChoices().GetGIMoveUsingCache() ){
@@ -912,7 +912,10 @@ void deoglRenderGI::MoveProbes( deoglRenderPlan &plan ){
 	renderThread.GetShader().ActivateShader( pShaderMoveProbes );
 	pActivateGIUBOs();
 	
-	OGL_CHECK( renderThread, pglDrawArraysInstanced( GL_TRIANGLE_FAN, 0, 4, giState->GetUpdateProbeCount() ) );
+	OGL_CHECK( renderThread, pglBindBufferBase( GL_TRANSFORM_FEEDBACK_BUFFER, 0, giState->GetVBOProbeOffsets() ) );
+	OGL_CHECK( renderThread, pglBeginTransformFeedback( GL_POINTS ) );
+	OGL_CHECK( renderThread, pglDrawArraysInstanced( GL_POINTS, 0, 1, giState->GetUpdateProbeCount() ) );
+	OGL_CHECK( renderThread, pglEndTransformFeedback() );
 	
 	giState->ProbesMoved(); // tell state probes moved so it can read it later without stalling
 	
@@ -1070,7 +1073,7 @@ void deoglRenderGI::RenderDebugOverlay( deoglRenderPlan &plan ){
 	
 	deoglRenderThread &renderThread = GetRenderThread();
 	const deoglDeveloperMode &devmode = renderThread.GetDebug().GetDeveloperMode();
-	if( ! devmode.GetEnabled() || ! devmode.GetGIShowProbes() ){
+	if( ! devmode.GetEnabled() || ( ! devmode.GetGIShowProbes() && ! devmode.GetGIShowProbeUpdate() ) ){
 		return;
 	}
 	
@@ -1117,34 +1120,36 @@ void deoglRenderGI::RenderDebugOverlay( deoglRenderPlan &plan ){
 		shapeSphere.GetPointCountFaces(), probeCount.x * probeCount.y * probeCount.z ) );
 	
 	// probe
-	deoglShaderCompiled &shaderProbe = *pShaderDebugProbe->GetCompiled();
-	shaderProbe.Activate();
-	shaderProbe.SetParameterDMatrix4x3( spdpMatrixNormal, matrixNormal );
-	shaderProbe.SetParameterDMatrix4x3( spdpMatrixMV, matrixC );
-	shaderProbe.SetParameterDMatrix4x4( spdpMatrixMVP, matrixCP );
-	shaderProbe.SetParameterPoint3( spdpGIGridCoordShift, giState->GetProbeCount() - giState->GetGridCoordShift() );
-	
-	pActivateGIUBOs();
-	
-	tsmgr.EnableTexture( 0, giState->GetTextureProbeIrradiance(), GetSamplerClampLinear() );
-	tsmgr.EnableTexture( 1, giState->GetTextureProbeDistance(), GetSamplerClampLinear() );
-	tsmgr.EnableTexture( 2, giState->GetTextureProbeOffset(), GetSamplerClampNearest() );
-	tsmgr.DisableStagesAbove( 2 );
-	
-	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
-	OGL_CHECK( renderThread, glDepthMask( GL_TRUE ) );
-	OGL_CHECK( renderThread, glEnable( GL_DEPTH_TEST ) );
-	OGL_CHECK( renderThread, glDepthFunc( defren.GetDepthCompareFuncRegular() ) );
-	OGL_CHECK( renderThread, glEnable( GL_CULL_FACE ) );
-	SetCullMode( plan.GetFlipCulling() );
-	OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
-	
-	OGL_CHECK( renderThread, pglDrawArraysInstanced( GL_TRIANGLES,
-		shapeSphere.GetVBOBlock()->GetOffset() + shapeSphere.GetPointOffsetFaces(),
-		shapeSphere.GetPointCountFaces(), probeCount.x * probeCount.y * probeCount.z ) );
+	if( devmode.GetGIShowProbes() ){
+		deoglShaderCompiled &shaderProbe = *pShaderDebugProbe->GetCompiled();
+		shaderProbe.Activate();
+		shaderProbe.SetParameterDMatrix4x3( spdpMatrixNormal, matrixNormal );
+		shaderProbe.SetParameterDMatrix4x3( spdpMatrixMV, matrixC );
+		shaderProbe.SetParameterDMatrix4x4( spdpMatrixMVP, matrixCP );
+		shaderProbe.SetParameterPoint3( spdpGIGridCoordShift, giState->GetProbeCount() - giState->GetGridCoordShift() );
+		
+		pActivateGIUBOs();
+		
+		tsmgr.EnableTexture( 0, giState->GetTextureProbeIrradiance(), GetSamplerClampLinear() );
+		tsmgr.EnableTexture( 1, giState->GetTextureProbeDistance(), GetSamplerClampLinear() );
+		tsmgr.EnableTexture( 2, giState->GetTextureProbeOffset(), GetSamplerClampNearest() );
+		tsmgr.DisableStagesAbove( 2 );
+		
+		OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
+		OGL_CHECK( renderThread, glDepthMask( GL_TRUE ) );
+		OGL_CHECK( renderThread, glEnable( GL_DEPTH_TEST ) );
+		OGL_CHECK( renderThread, glDepthFunc( defren.GetDepthCompareFuncRegular() ) );
+		OGL_CHECK( renderThread, glEnable( GL_CULL_FACE ) );
+		SetCullMode( plan.GetFlipCulling() );
+		OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
+		
+		OGL_CHECK( renderThread, pglDrawArraysInstanced( GL_TRIANGLES,
+			shapeSphere.GetVBOBlock()->GetOffset() + shapeSphere.GetPointOffsetFaces(),
+			shapeSphere.GetPointCountFaces(), probeCount.x * probeCount.y * probeCount.z ) );
+	}
 	
 	// offset
-	if( devmode.GetGIShowProbeOffsets() ){
+	if( devmode.GetGIShowProbes() && devmode.GetGIShowProbeOffsets() ){
 		OGL_CHECK( renderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) );
 		
 		deoglShaderCompiled &shaderOffset = *pShaderDebugProbeOffset->GetCompiled();

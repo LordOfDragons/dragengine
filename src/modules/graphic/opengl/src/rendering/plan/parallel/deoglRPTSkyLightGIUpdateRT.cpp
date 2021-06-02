@@ -33,6 +33,7 @@
 #include "../../../envmap/deoglEnvironmentMap.h"
 #include "../../../gi/deoglGIState.h"
 #include "../../../rendering/task/deoglRenderTask.h"
+#include "../../../rendering/lod/deoglLODCalculator.h"
 #include "../../../renderthread/deoglRenderThread.h"
 #include "../../../renderthread/deoglRTLogger.h"
 #include "../../../utils/collision/deoglDCollisionSphere.h"
@@ -81,19 +82,29 @@ void deoglRPTSkyLightGIUpdateRT::Run(){
 		decTimer timer;
 		
 		deoglAddToRenderTask &addToRenderTask = pPlan.GetGIRenderTaskAdd();
-		const deoglCollideList &collideList = pPlan.GetGICollideList();
+		deoglCollideList &collideList = pPlan.GetGICollideList();
 		
 		pPlan.GetGIRenderTask().Clear();
 		
 		addToRenderTask.SetSolid( true );
 		addToRenderTask.SetNoShadowNone( true );
 		
+		// components. we can use here the sky light way of choosing LOD levels. but GI shadows
+		// are typically broader than sky shadows and thus are more expensive to render. for
+		// this reason it is better to use the highest LOD level available. this is acceptable
+		// since GI shadow maps are not high resolution and GI rays do not need high resolution
+		// shadow maps to work good enough
+		deoglLODCalculator lodCalculator;
+		lodCalculator.SetComponentLODMax( collideList );
+		
 		addToRenderTask.SetSkinShaderType( deoglSkinTexture::estComponentShadowOrthogonal );
 		addToRenderTask.AddComponents( collideList );
 		
+		// prop fields
 		addToRenderTask.SetSkinShaderType( deoglSkinTexture::estPropFieldShadowOrthogonal );
 		addToRenderTask.AddPropFields( collideList, false );
 		
+		// height terrain
 		addToRenderTask.SetSkinShaderType( deoglSkinTexture::estHeightMapShadowOrthogonal );
 		addToRenderTask.AddHeightTerrains( collideList, true );
 		

@@ -257,10 +257,6 @@ deoglRSkyInstanceLayer &skyLayer, float backtrack ){
 
 void deoglRLSVisitorCollectElements::InitFromGIBox( const decDVector &position,
 const decVector &detectionBox, deoglRSkyInstanceLayer &skyLayer, float backtrack ){
-	decDVector planeNormal, planePosition;
-	deoglDCollisionFrustum volumeFrustum;
-	deoglConvexHull2D frustumHull;
-	
 	// parameters required for the calculations later on
 	const decMatrix matLig( decMatrix::CreateRotation( 0.0f, PI, 0.0f ) * skyLayer.GetMatrix() );
 	
@@ -315,6 +311,8 @@ const decVector &detectionBox, deoglRSkyInstanceLayer &skyLayer, float backtrack
 	pFrustumPlaneCount = 0;
 	
 #if 0
+	decDVector planeNormal, planePosition;
+	
 	planeNormal = pMatrixLightSpace.TransformRight(); // left plane
 	planePosition = pMatrixLightSpace.Transform( -detectionBox.x, 0.0, 0.0 );
 	if( planeNormal.z < 0.0 ){
@@ -589,6 +587,8 @@ bool deoglRLSVisitorCollectElements::TestAxisAlignedBox( const decDVector &minEx
 	if( pFrustumPlaneCount == 0 && pEdgeCount == 0 ){
 		splitMask = 1;
 		return decVector2( nhe.x * 2.0f, nhe.y * 2.0f ) > pSplitSizeThreshold[ 0 ];
+		// this additional check costs 2ms CPU time and saves 400ys GPU time
+// 			&& pVolumeShadowBox.BoxHitsBox( &cbox );
 	}
 	
 	// otherwise finish box for testing

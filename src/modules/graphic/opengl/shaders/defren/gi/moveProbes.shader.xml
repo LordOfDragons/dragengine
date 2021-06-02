@@ -13,9 +13,9 @@
 	<uniformBlock name='GIProbePositions' target='3'/>
 	<uniformBlock name='GIRayDirections' target='4'/>
 	
-	<attribute name='inPosition' target='0'/>
-	
 	<output name='outOffset' target='0'/>
+	
+	<feedback name='fbOffset'/>
 	
 	<sourceCode unit='vertex'>v130/vertex/defren/gi/moveProbes.glsl</sourceCode>
 	<sourceCode unit='fragment'>v130/fragment/defren/gi/moveProbes.glsl</sourceCode>

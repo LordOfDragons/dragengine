@@ -73,21 +73,20 @@ void deoglLODCalculator::SetMaxErrorPerLevel( float maxErrorPerLevel ){
 
 
 void deoglLODCalculator::SetComponentLOD0( deoglCollideList &collideList ){
-	const int componentCount = collideList.GetComponentCount();
+	const int count = collideList.GetComponentCount();
 	int i;
 	
-	for( i=0; i<componentCount; i++ ){
+	for( i=0; i<count; i++ ){
 		collideList.GetComponentAt( i )->SetLODLevel( 0 );
 	}
 }
 
 void deoglLODCalculator::SetComponentLODMax( deoglCollideList &collideList ){
-	const int componentCount = collideList.GetComponentCount();
+	const int count = collideList.GetComponentCount();
 	int i;
 	
-	for( i=0; i<componentCount; i++ ){
-		deoglCollideListComponent &c = *collideList.GetComponentAt( i );
-		c.SetLODLevel( c.GetComponent()->GetLODCount() - 1 );
+	for( i=0; i<count; i++ ){
+		collideList.GetComponentAt( i )->SetLODLevelMax();
 	}
 }
 

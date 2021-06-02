@@ -88,6 +88,8 @@ void main( void ){
 		ivec2 rayTC = vRayOffset + ivec2( i, 0 );
 		vec4 rayPosition = texelFetch( texPosition, rayTC, 0 ); // position, distance
 		vec3 rayNormal = texelFetch( texNormal, rayTC, 0 ).xyz;
+		
+		/*
 		bool rayMisses, frontFacing;
 		
 		if( rayPosition.w > 9999.0 ){
@@ -108,6 +110,23 @@ void main( void ){
 			frontFacing = false;
 			rayBackCount += 1.0;
 		}
+		*/
+		
+		// optimized version of the above commented out code block. the ray misses check
+		// has been moved inside the optimized block to save more time
+		bool rayMisses = rayPosition.w > 9999.0;
+		
+		#ifdef MAP_DISTANCE
+			// here we deviate from the paper. ignoring misses to influence the result
+			// removes the most glaring light leaks
+			if( rayMisses ){
+				continue;
+			}
+		#endif
+		
+		bool frontFacing = rayMisses || dot( rayNormal, rayDirection ) < 0.0;
+		rayBackCount += frontFacing ? 0.0 : 1.0;
+		// end of optimized block
 		
 // 		tooCloseToSurface = tooCloseToSurface || rayPosition.w < 0.001;
 		
@@ -122,6 +141,7 @@ void main( void ){
 			continue;
 		}
 		
+		/*
 		#ifdef MAP_DISTANCE
 			// here we deviate from the paper. ignoring misses to influence the result
 			// removes the most glaring light leaks
@@ -129,6 +149,7 @@ void main( void ){
 				continue;
 			}
 		#endif
+		*/
 		
 		sumWeight += weight;
 		

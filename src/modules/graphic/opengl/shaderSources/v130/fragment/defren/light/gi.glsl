@@ -102,8 +102,7 @@ vec3 giIlluminate( in vec3 position, in vec3 normal, in vec3 bendNormal ){
 	// we need the offset in GI space so the pGIMatrixNormal is used to transform it. since
 	// position is the vector from camera to fragment w0 is the negation of the normalized
 	// position. furthermore the GI state sets pGISelfShadowBias is set to 0.75 * selfShadowBias.
-// 	vec3 offsetPosition = mix( bendNormal, -normalize( position ), vec3( pGINormalBias ) ) * pGISelfShadowBias;
-	vec3 offsetPosition = bendNormal * 0.1 - normalize( position ) * 0.1;
+	vec3 offsetPosition = mix( bendNormal, -normalize( position ), vec3( pGINormalBias ) ) * pGISelfShadowBias;
 	offsetPosition = offsetPosition * pGIMatrixNormal; // reverse order does transpose()
 	
 	normal = normalize( normal * pGIMatrixNormal ); // reverse order does transpose()
