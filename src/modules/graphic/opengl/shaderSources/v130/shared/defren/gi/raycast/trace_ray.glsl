@@ -25,7 +25,7 @@
 // - tboGIRayCastMatrix: RGBA16F (stride 3 pixels)
 //   stores instance matrixes. row1(0:RGBA) row2(1:RGBA) row3(2:RGBA).
 //   
-// - tboGIRayCastFace: RGBA16UI (stride 3 pixels)
+// - tboGIRayCastFace: RGBA16UI (stride 1 pixel)
 //   stores mesh faces. vertex1(R) vertex2(G) vertex3(B) textureIndex(A). indices into
 //   tboGIRayCastVertex. textureIndex is relative index into materialIndex.
 // 
@@ -34,17 +34,55 @@
 // 
 // - tboGIRayCastTexCoord: RG16F (stride 3 pixel)
 //   stores mesh texture coordinates. same unstrided index as TBOFace.
-uniform samplerBuffer tboGIRayCastNodeBox;
-uniform usamplerBuffer tboGIRayCastIndex;
-uniform usamplerBuffer tboGIRayCastInstance;
-uniform samplerBuffer tboGIRayCastMatrix;
-uniform usamplerBuffer tboGIRayCastFace;
-uniform samplerBuffer tboGIRayCastVertex;
 
-#ifndef GI_RAYCAST_DISTANCE_ONLY
-	uniform samplerBuffer tboGIRayCastTexCoord;
+#ifdef GI_RAYCAST_USE_SSBO
+	struct sGIRayCastNode{
+		vec3 minExtend;
+		int firstIndex;
+		vec3 maxExtend;
+		int primitiveCount;
+	};
+	
+	struct sGIRayCastInstance{
+		mat4x3 matrix;
+		ivec4 indices; // nodes, material, vertices, faces
+	};
+	
+	struct sGIRayCastFace{
+		ivec4 indices; // rgb=(v1,v2,v3), a{doubleSided flag or materialIndex}
+		vec2 tc1, tc2, tc3;
+	};
+	
+	struct sGIRayCastVertex{
+		vec3 position;
+	};
+	
+	UBOLAYOUT readonly buffer GIRayCastNodes{
+		sGIRayCastNode pGIRayCastNodes[];
+	};
+	UBOLAYOUT readonly buffer GIRayCastInstances{
+		sGIRayCastInstance pGIRayCastInstances[];
+	};
+	UBOLAYOUT readonly buffer GIRayCastFaces{
+		sGIRayCastFace pGIRayCastFaces[];
+	};
+	UBOLAYOUT readonly buffer GIRayCastVertices{
+		sGIRayCastVertex pGIRayCastVertices[];
+	};
+};
+	
+#else
+	uniform samplerBuffer tboGIRayCastNodeBox;
+	uniform usamplerBuffer tboGIRayCastIndex;
+	uniform usamplerBuffer tboGIRayCastInstance;
+	uniform samplerBuffer tboGIRayCastMatrix;
+	uniform usamplerBuffer tboGIRayCastFace;
+	uniform samplerBuffer tboGIRayCastVertex;
+
+	#ifndef GI_RAYCAST_DISTANCE_ONLY
+		uniform samplerBuffer tboGIRayCastTexCoord;
+	#endif
 #endif
-
 
 // ray cast result
 #ifdef GI_RAYCAST_DISTANCE_ONLY
@@ -83,11 +121,17 @@ float giRayCastBvhNodeHit( in vec3 minExtend, in vec3 maxExtend, in vec3 rayOrig
 // Calculate texture coordinates of hit face.
 #ifndef GI_RAYCAST_DISTANCE_ONLY
 vec2 giRayCastFaceTexCoord( in int face, in vec3 barycentric ){
-	int baseIndex = face * 3;
-	vec2 tc1 = texelFetch( tboGIRayCastTexCoord, baseIndex ).xy;
-	vec2 tc2 = texelFetch( tboGIRayCastTexCoord, baseIndex + 1 ).xy;
-	vec2 tc3 = texelFetch( tboGIRayCastTexCoord, baseIndex + 2 ).xy;
-	return tc1 * barycentric.x + tc2 * barycentric.y + tc3 * barycentric.z;
+	#ifdef GI_RAYCAST_USE_SSBO
+		return pGIRayCastFaces[ face ].tc1 * barycentric.x
+			+ pGIRayCastFaces[ face ].tc2 * barycentric.y
+			+ pGIRayCastFaces[ face ].tc3 * barycentric.z;
+	#else
+		int baseIndex = face * 3;
+		vec2 tc1 = texelFetch( tboGIRayCastTexCoord, baseIndex ).xy;
+		vec2 tc2 = texelFetch( tboGIRayCastTexCoord, baseIndex + 1 ).xy;
+		vec2 tc3 = texelFetch( tboGIRayCastTexCoord, baseIndex + 2 ).xy;
+		return tc1 * barycentric.x + tc2 * barycentric.y + tc3 * barycentric.z;
+	#endif
 }
 #endif
 
@@ -113,8 +157,13 @@ in float distanceLimit, out GIRayCastResult result ){
 	// we do the test here and not in giRayCastTraceInstance since otherwise we have
 	// to calculate invRayDirection twice
 	{
-	vec3 minExtend = texelFetch( tboGIRayCastNodeBox, rootNode * 2 ).xyz;
-	vec3 maxExtend = texelFetch( tboGIRayCastNodeBox, rootNode * 2 + 1 ).xyz;
+	#ifdef GI_RAYCAST_USE_SSBO
+		vec3 minExtend = pGIRayCastNodes[ rootNode ].minExtend;
+		vec3 maxExtend = pGIRayCastNodes[ rootNode ].maxExtend;
+	#else
+		vec3 minExtend = texelFetch( tboGIRayCastNodeBox, rootNode * 2 ).xyz;
+		vec3 maxExtend = texelFetch( tboGIRayCastNodeBox, rootNode * 2 + 1 ).xyz;
+	#endif
 	if( giRayCastBvhNodeHit( minExtend, maxExtend, rayOrigin, invRayDirection ) >= distanceLimit ){
 		return false;
 	}
@@ -151,7 +200,11 @@ in float distanceLimit, out GIRayCastResult result ){
 		// node pass
 		ivec2 index;
 		while( curNode > -1 ){
-			index = ivec2( texelFetch( tboGIRayCastIndex, curNode ).xy ); // firstIndex, primitiveCount
+			#ifdef GI_RAYCAST_USE_SSBO
+				index = ivec2( pGIRayCastNodes[ curNode ].firstIndex, pGIRayCastNodes[ curNode ].primitiveCount );
+			#else
+				index = ivec2( texelFetch( tboGIRayCastIndex, curNode ).xy ); // firstIndex, primitiveCount
+			#endif
 			if( index.y > 0 ){
 				break;
 			}
@@ -236,7 +289,11 @@ in float distanceLimit, out GIRayCastResult result ){
 		// node pass
 		ivec2 index;
 		while( curNode > -1 ){
-			index = ivec2( texelFetch( tboGIRayCastIndex, curNode ).xy );
+			#ifdef GI_RAYCAST_USE_SSBO
+				index = ivec2( pGIRayCastNodes[ curNode ].firstIndex, pGIRayCastNodes[ curNode ].primitiveCount );
+			#else
+				index = ivec2( texelFetch( tboGIRayCastIndex, curNode ).xy );
+			#endif
 			if( index.y > 0 ){
 				break;
 			}

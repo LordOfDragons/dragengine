@@ -42,8 +42,6 @@ class deoglRenderGI : public deoglRenderLightBase{
 private:
 	deoglShaderProgram *pShaderResizeMaterials;
 	deoglShaderProgram *pShaderTraceRays;
-	deoglShaderProgram *pShaderTraceRaysDistance;
-	deoglShaderProgram *pShaderTraceRaysDistanceOccMesh;
 	deoglShaderProgram *pShaderTraceRaysCache;
 	deoglShaderProgram *pShaderCopyRayCache;
 	deoglShaderProgram *pShaderCopyRayCacheRev;

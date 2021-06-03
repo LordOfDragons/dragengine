@@ -11,17 +11,26 @@
 // - GIRayCastResult result
 // - bool hasHit
 
-			int i, tcMatrix = index.x * 3;
+			#ifndef GI_RAYCAST_USE_SSBO
+				int tcMatrix = index.x * 3;
+			#endif
 			
+			int i;
 			for( i=0; i<index.y; i++ ){
-				vec4 mrow1 = texelFetch( tboGIRayCastMatrix, tcMatrix++ );
-				vec4 mrow2 = texelFetch( tboGIRayCastMatrix, tcMatrix++ );
-				vec4 mrow3 = texelFetch( tboGIRayCastMatrix, tcMatrix++ );
+				#ifndef GI_RAYCAST_USE_SSBO
+					vec4 mrow1 = texelFetch( tboGIRayCastMatrix, tcMatrix++ );
+					vec4 mrow2 = texelFetch( tboGIRayCastMatrix, tcMatrix++ );
+					vec4 mrow3 = texelFetch( tboGIRayCastMatrix, tcMatrix++ );
+				#endif
 				
 				// the inverse matrix needs to be transposed to be usable for right-side
 				// multiplication. by switching to left-side multiplication the transpose
 				// can be avoided which is faster
-				mat4 invMatrix = mat4( mrow1, mrow2, mrow3, vec4( 0.0, 0.0, 0.0, 1.0 ) );
+				#ifdef GI_RAYCAST_USE_SSBO
+					mat4 invMatrix = mat4( pGIRayCastInstances[ index.x ].matrix, vec4( 0.0, 0.0, 0.0, 1.0 ) );
+				#else
+					mat4 invMatrix = mat4( mrow1, mrow2, mrow3, vec4( 0.0, 0.0, 0.0, 1.0 ) );
+				#endif
 				vec3 meshRayOrigin = vec3( vec4( rayOrigin, 1.0 ) * invMatrix );
 				
 				// for normal transformation the correct matrix to use is
@@ -31,8 +40,13 @@
 				
 				GIRayCastResult meshResult;
 				
-				if( giRayCastTraceMesh( ivec4( texelFetch( tboGIRayCastInstance, index.x + i ) ),
-				meshRayOrigin, normalize( meshRayDirection ), result.distance, meshResult ) ){
+				#ifdef GI_RAYCAST_USE_SSBO
+					ivec4 instIndices = pGIRayCastInstances[ index.x ].indices;
+				#else
+					ivec4 instIndices = ivec4( texelFetch( tboGIRayCastInstance, index.x + i ) );
+				#endif
+				if( giRayCastTraceMesh( instIndices, meshRayOrigin,
+				normalize( meshRayDirection ), result.distance, meshResult ) ){
 					// we can not use directly the distance since it is possible the matrix
 					// contains scaling. we have to calculate the hit point in tracing space
 					// and from there the distance can be calculated as difference between the

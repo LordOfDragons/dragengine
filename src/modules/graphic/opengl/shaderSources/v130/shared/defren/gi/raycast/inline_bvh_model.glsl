@@ -15,12 +15,22 @@
 
 			int i;
 			for( i=0; i<index.y; i++ ){
-				ivec4 corners = ivec4( texelFetch( tboGIRayCastFace, index.x + i ) );
+				#ifdef GI_RAYCAST_USE_SSBO
+					ivec4 corners = pGIRayCastFaces[ index.x ].indices;
+				#else
+					ivec4 corners = ivec4( texelFetch( tboGIRayCastFace, index.x + i ) );
+				#endif
 				corners.xyz += ivec3( rootVertex );
 				
-				vec3 v1 = texelFetch( tboGIRayCastVertex, corners.x ).xyz;
-				vec3 v2 = texelFetch( tboGIRayCastVertex, corners.y ).xyz;
-				vec3 v3 = texelFetch( tboGIRayCastVertex, corners.z ).xyz;
+				#ifdef GI_RAYCAST_USE_SSBO
+					vec3 v1 = pGIRayCastVertices[ corners.x ].position;
+					vec3 v2 = pGIRayCastVertices[ corners.y ].position;
+					vec3 v3 = pGIRayCastVertices[ corners.z ].position;
+				#else
+					vec3 v1 = texelFetch( tboGIRayCastVertex, corners.x ).xyz;
+					vec3 v2 = texelFetch( tboGIRayCastVertex, corners.y ).xyz;
+					vec3 v3 = texelFetch( tboGIRayCastVertex, corners.z ).xyz;
+				#endif
 				
 				vec3 e0 = v2 - v1;
 				vec3 e1 = v3 - v1;

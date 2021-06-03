@@ -11,12 +11,22 @@
 // - int stack[13]
 // - int stackPosition
 
-			vec3 minExtend = texelFetch( tboGIRayCastNodeBox, index.x * 2 ).xyz;
-			vec3 maxExtend = texelFetch( tboGIRayCastNodeBox, index.x * 2 + 1 ).xyz;
+			#ifdef GI_RAYCAST_USE_SSBO
+				vec3 minExtend = pGIRayCastNodes[ index.x ].minExtend;
+				vec3 maxExtend = pGIRayCastNodes[ index.x ].maxExtend;
+			#else
+				vec3 minExtend = texelFetch( tboGIRayCastNodeBox, index.x * 2 ).xyz;
+				vec3 maxExtend = texelFetch( tboGIRayCastNodeBox, index.x * 2 + 1 ).xyz;
+			#endif
 			float leftHit = giRayCastBvhNodeHit( minExtend, maxExtend, rayOrigin, invRayDirection );
 			
-			minExtend = texelFetch( tboGIRayCastNodeBox, index.x * 2 + 2 ).xyz;
-			maxExtend = texelFetch( tboGIRayCastNodeBox, index.x * 2 + 3 ).xyz;
+			#ifdef GI_RAYCAST_USE_SSBO
+				minExtend = pGIRayCastNodes[ index.x + 1 ].minExtend;
+				maxExtend = pGIRayCastNodes[ index.x + 1 ].maxExtend;
+			#else
+				minExtend = texelFetch( tboGIRayCastNodeBox, index.x * 2 + 2 ).xyz;
+				maxExtend = texelFetch( tboGIRayCastNodeBox, index.x * 2 + 3 ).xyz;
+			#endif
 			float rightHit = giRayCastBvhNodeHit( minExtend, maxExtend, rayOrigin, invRayDirection );
 			
 			if( leftHit < result.distance && rightHit < result.distance ){

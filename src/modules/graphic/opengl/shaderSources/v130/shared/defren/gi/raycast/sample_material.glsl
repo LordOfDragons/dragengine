@@ -53,8 +53,22 @@
 //   - pixel 1: texCoordMatrix.row1(rgb) unused(a)
 //   - pixel 2: texCoordMatrix.row2(rgb) unused(a)
 //   - pixel 3: emissivity(rgb) unused(a)
-uniform usamplerBuffer tboGIRayCastMaterial;
-uniform samplerBuffer tboGIRayCastMaterial2;
+
+#ifdef GI_RAYCAST_USE_SSBO
+	struct sGIRayCastMaterial{
+		uvec4 params;
+		mat3x2 transform;
+		vec3 emissivity;
+	};
+	
+	UBOLAYOUT readonly buffer GIRayCastMaterial{
+		sGIRayCastMaterial pGIRayCastMaterials[];
+	};
+	
+#else
+	uniform usamplerBuffer tboGIRayCastMaterial;
+	uniform samplerBuffer tboGIRayCastMaterial2;
+#endif
 
 // material atlas textures
 uniform sampler2D tboGIRayCastMaterialDiffuse; // diffuse=rgb, tintMask=a
@@ -73,7 +87,11 @@ const uint giRayCastMatFlagIgnoreBackFace = uint( 0x8 );
 // 
 // - material: RayResult.material
 uvec4 giRayCastMaterialParams( in int material ){
-	return texelFetch( tboGIRayCastMaterial, material );
+	#ifdef GI_RAYCAST_USE_SSBO
+		return pGIRayCastMaterials[ material ].params;
+	#else
+		return texelFetch( tboGIRayCastMaterial, material );
+	#endif
 }
 
 
@@ -81,7 +99,11 @@ uvec4 giRayCastMaterialParams( in int material ){
 // 
 // - material: RayResult.material
 uint giRayCastMaterialCastParams( in int material ){
-	return texelFetch( tboGIRayCastMaterial, material ).r;
+	#ifdef GI_RAYCAST_USE_SSBO
+		return pGIRayCastMaterials[ material ].params.r;
+	#else
+		return texelFetch( tboGIRayCastMaterial, material ).r;
+	#endif
 }
 
 
@@ -114,9 +136,13 @@ vec4 giRayCastMaterialRoughnessGammaReflMul( in uint params ){
 // - material: RayResult.material
 // - texCoord: giRayCastFaceTexCoord(RayResult.face, RayResult.barycentric)
 vec2 giRayCastTCTransform( in int material, in vec2 texCoord ){
-	return vec2( vec3( texCoord, 1.0 ) * mat2x3(
-		texelFetch( tboGIRayCastMaterial2, material * 3 ).xyz,
-		texelFetch( tboGIRayCastMaterial2, material * 3 + 1 ).xyz ) );
+	#ifdef GI_RAYCAST_USE_SSBO
+		return vec2( vec3( texCoord, 1.0 ) * pGIRayCastMaterials[ material ].transform );
+	#else
+		return vec2( vec3( texCoord, 1.0 ) * mat2x3(
+			texelFetch( tboGIRayCastMaterial2, material * 3 ).xyz,
+			texelFetch( tboGIRayCastMaterial2, material * 3 + 1 ).xyz ) );
+	#endif
 }
 
 
@@ -175,7 +201,11 @@ out vec3 reflectivity, out float roughness ){
 // - texCoord: giRayCastMaterialTC(...)
 vec3 giRayCastMaterialEmissivity( in int material, in ivec2 texCoord ){
 	return texelFetch( tboGIRayCastMaterialEmissivity, texCoord, 0 ).rgb
+	#ifdef GI_RAYCAST_USE_SSBO
+		* pGIRayCastMaterials[ material ].emissivity;
+	#else
 		* texelFetch( tboGIRayCastMaterial2, material * 3 + 2 ).rgb;
+	#endif
 }
 
 
@@ -197,7 +227,11 @@ out vec3 color, out vec3 reflectivity, out float roughness, out vec3 emissivity 
 // - texCoord: giRayCastFaceTexCoord(RayResult.face, RayResult.barycentric)
 void giRayCastMaterialAll( in int material, in vec2 texCoord, out vec3 color,
 out vec3 reflectivity, out float roughness, out vec3 emissivity ){
-	uvec3 params = texelFetch( tboGIRayCastMaterial, material ).rgb;
+	#ifdef GI_RAYCAST_USE_SSBO
+		uvec3 params = uvec3( pGIRayCastMaterials[ material ].params );
+	#else
+		uvec3 params = texelFetch( tboGIRayCastMaterial, material ).rgb;
+	#endif
 	ivec2 matTC = giRayCastMaterialTC( params.r, giRayCastTCTransform( material, texCoord ) );
 	
 	color = giRayCastSampleColor( params.g, matTC );

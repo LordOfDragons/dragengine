@@ -137,8 +137,6 @@ deoglRenderLightBase( renderThread ),
 
 pShaderResizeMaterials( NULL ),
 pShaderTraceRays( NULL ),
-pShaderTraceRaysDistance( NULL ),
-pShaderTraceRaysDistanceOccMesh( NULL ),
 pShaderTraceRaysCache( NULL ),
 pShaderCopyRayCache( NULL ),
 pShaderCopyRayCacheRev( NULL ),
@@ -194,15 +192,6 @@ pDebugInfoGIRenderLightGIRay( NULL )
 		defines.RemoveDefine( "GI_USE_RAY_CACHE" );
 		
 		pShaderTraceRaysCache = shaderManager.GetProgramWith( sources, defines );
-		
-		defines.AddDefine( "GI_RAYCAST_DISTANCE_ONLY", true );
-		pShaderTraceRaysDistance = shaderManager.GetProgramWith( sources, defines );
-		
-		defines.AddDefine( "GI_RAYCAST_OCCMESH_ONLY", true );
-		pShaderTraceRaysDistanceOccMesh = shaderManager.GetProgramWith( sources, defines );
-		defines.RemoveDefine( "GI_RAYCAST_OCCMESH_ONLY" );
-		
-		defines.RemoveDefine( "GI_RAYCAST_DISTANCE_ONLY" );
 		
 		sources = shaderManager.GetSourcesNamed( "DefRen GI Copy Ray Cache" );
 		defines.AddDefine( "FROM_TRACE_TO_CACHE", true );
@@ -1201,12 +1190,6 @@ void deoglRenderGI::pCleanUp(){
 	}
 	if( pShaderTraceRays ){
 		pShaderTraceRays->RemoveUsage();
-	}
-	if( pShaderTraceRaysDistance ){
-		pShaderTraceRaysDistance->RemoveUsage();
-	}
-	if( pShaderTraceRaysDistanceOccMesh ){
-		pShaderTraceRaysDistanceOccMesh->RemoveUsage();
 	}
 	if( pShaderTraceRaysCache ){
 		pShaderTraceRaysCache->RemoveUsage();
