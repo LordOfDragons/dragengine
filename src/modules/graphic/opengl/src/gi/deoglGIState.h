@@ -22,7 +22,7 @@
 #ifndef _DEOGLGISTATE_H_
 #define _DEOGLGISTATE_H_
 
-#include "deoglGIRays.h"
+#include "deoglGIRayCache.h"
 #include "deoglGIInstances.h"
 #include "../collidelist/deoglCollideList.h"
 #include "../framebuffer/deoglFramebuffer.h"
@@ -140,7 +140,7 @@ private:
 	bool pProbesExtendsChanged;
 	
 	deoglGIInstances pInstances;
-	deoglGIRays pRays;
+	deoglGIRayCache pRayCache;
 	
 	
 	
@@ -367,8 +367,8 @@ public:
 	inline const deoglGIInstances &GetInstances() const{ return pInstances; }
 	
 	/** Rays. */
-	inline deoglGIRays &GetRays(){ return pRays; }
-	inline const deoglGIRays &GetRays() const{ return pRays; }
+	inline deoglGIRayCache &GetRayCache(){ return pRayCache; }
+	inline const deoglGIRayCache &GetRayCache() const{ return pRayCache; }
 	/*@}*/
 	
 	

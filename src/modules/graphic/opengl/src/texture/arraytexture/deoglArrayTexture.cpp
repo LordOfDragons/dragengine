@@ -873,6 +873,157 @@ void deoglArrayTexture::SetFBOFormat( int channels, bool useFloat ){
 	}
 }
 
+void deoglArrayTexture::SetFBOFormatFloat32( int channels ){
+	if( channels == 1 ){
+		SetFormatFBOByNumber( deoglCapsFmtSupport::eutfR32F );
+		
+	}else if( channels == 2 ){
+		SetFormatFBOByNumber( deoglCapsFmtSupport::eutfRG32F );
+		
+	}else if( channels == 3 ){
+		SetFormatFBOByNumber( deoglCapsFmtSupport::eutfRGB32F );
+		
+	}else if( channels == 4 ){
+		SetFormatFBOByNumber( deoglCapsFmtSupport::eutfRGBA32F );
+		
+	}else{
+		DETHROW( deeInvalidParam );
+	}
+}
+
+void deoglArrayTexture::SetFBOFormatIntegral( int channels, int bpp, bool useUnsigned ){
+	if( bpp == 8 ){
+		if( channels == 1 ){
+			if( useUnsigned ){
+				SetFormatFBOByNumber( deoglCapsFmtSupport::eutfR8UI );
+				
+			}else{
+				SetFormatFBOByNumber( deoglCapsFmtSupport::eutfR8I );
+			}
+			
+		}else if( channels == 2 ){
+			if( useUnsigned ){
+				SetFormatFBOByNumber( deoglCapsFmtSupport::eutfRG8UI );
+				
+			}else{
+				SetFormatFBOByNumber( deoglCapsFmtSupport::eutfRG8I );
+			}
+			
+		}else if( channels == 3 ){
+			if( useUnsigned ){
+				SetFormatFBOByNumber( deoglCapsFmtSupport::eutfRGB8UI );
+				
+			}else{
+				SetFormatFBOByNumber( deoglCapsFmtSupport::eutfRGB8I );
+			}
+			
+		}else if( channels == 4 ){
+			if( useUnsigned ){
+				SetFormatFBOByNumber( deoglCapsFmtSupport::eutfRGBA8UI );
+				
+			}else{
+				SetFormatFBOByNumber( deoglCapsFmtSupport::eutfRGBA8I );
+			}
+			
+		}else{
+			DETHROW( deeInvalidParam );
+		}
+		
+	}else if( bpp == 16 ){
+		if( channels == 1 ){
+			if( useUnsigned ){
+				SetFormatFBOByNumber( deoglCapsFmtSupport::eutfR16UI );
+				
+			}else{
+				SetFormatFBOByNumber( deoglCapsFmtSupport::eutfR16I );
+			}
+			
+		}else if( channels == 2 ){
+			if( useUnsigned ){
+				SetFormatFBOByNumber( deoglCapsFmtSupport::eutfRG16UI );
+				
+			}else{
+				SetFormatFBOByNumber( deoglCapsFmtSupport::eutfRG16I );
+			}
+			
+		}else if( channels == 3 ){
+			if( useUnsigned ){
+				SetFormatFBOByNumber( deoglCapsFmtSupport::eutfRGB16UI );
+				
+			}else{
+				SetFormatFBOByNumber( deoglCapsFmtSupport::eutfRGB16I );
+			}
+			
+		}else if( channels == 4 ){
+			if( useUnsigned ){
+				SetFormatFBOByNumber( deoglCapsFmtSupport::eutfRGBA16UI );
+				
+			}else{
+				SetFormatFBOByNumber( deoglCapsFmtSupport::eutfRGBA16I );
+			}
+			
+		}else{
+			DETHROW( deeInvalidParam );
+		}
+		
+	}else{
+		DETHROW( deeInvalidParam );
+	}
+}
+
+void deoglArrayTexture::SetFBOFormatSNorm( int channels, int bpp ){
+	switch( bpp ){
+	case 8:
+		switch( channels ){
+		case 1:
+			SetFormatFBOByNumber( deoglCapsFmtSupport::eutfR8_S );
+			break;
+			
+		case 2:
+			SetFormatFBOByNumber( deoglCapsFmtSupport::eutfRG8_S );
+			break;
+			
+		case 3:
+			SetFormatFBOByNumber( deoglCapsFmtSupport::eutfRGB8_S );
+			break;
+			
+		case 4:
+			SetFormatFBOByNumber( deoglCapsFmtSupport::eutfRGBA8_S );
+			break;
+			
+		default:
+			DETHROW( deeInvalidParam );
+		}
+		break;
+		
+	case 16:
+		switch( channels ){
+		case 1:
+			SetFormatFBOByNumber( deoglCapsFmtSupport::eutfR16_S );
+			break;
+			
+		case 2:
+			SetFormatFBOByNumber( deoglCapsFmtSupport::eutfRG16_S );
+			break;
+			
+		case 3:
+			SetFormatFBOByNumber( deoglCapsFmtSupport::eutfRGB16_S );
+			break;
+			
+		case 4:
+			SetFormatFBOByNumber( deoglCapsFmtSupport::eutfRGBA16_S );
+			break;
+			
+		default:
+			DETHROW( deeInvalidParam );
+		}
+		break;
+		
+	default:
+		DETHROW( deeInvalidParam );
+	}
+}
+
 void deoglArrayTexture::SetDepthFormat( bool packedStencil ){
 	if( packedStencil ){
 		SetFormatFBOByNumber( deoglCapsFmtSupport::eutfDepth_Stencil );

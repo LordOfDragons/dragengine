@@ -24,7 +24,7 @@
 #include <string.h>
 
 #include "deoglGI.h"
-#include "deoglGIRays.h"
+#include "deoglGIRayCache.h"
 #include "../capabilities/deoglCapabilities.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTFramebuffer.h"
@@ -32,13 +32,13 @@
 #include <dragengine/common/exceptions.h>
 
 
-// Class deoglGIRays
+// Class deoglGIRayCache
 //////////////////////
 
 // Constructor, destructor
 ////////////////////////////
 
-deoglGIRays::deoglGIRays( deoglRenderThread &renderThread, int raysPerProbe, int probeCount ) :
+deoglGIRayCache::deoglGIRayCache( deoglRenderThread &renderThread, int raysPerProbe, int probeCount ) :
 pRenderThread( renderThread  ),
 pRaysPerProbe( raysPerProbe ),
 pProbesPerLine( 8 ),
@@ -64,7 +64,7 @@ pFBOResult( renderThread, false )
 	}
 }
 
-deoglGIRays::~deoglGIRays(){
+deoglGIRayCache::~deoglGIRayCache(){
 	pCleanUp();
 }
 
@@ -73,7 +73,7 @@ deoglGIRays::~deoglGIRays(){
 // Management
 ///////////////
 
-void deoglGIRays::SetRaysPerProbe( int raysPerProbe ){
+void deoglGIRayCache::SetRaysPerProbe( int raysPerProbe ){
 	if( raysPerProbe == pRaysPerProbe ){
 		return;
 	}
@@ -86,7 +86,7 @@ void deoglGIRays::SetRaysPerProbe( int raysPerProbe ){
 	pCreateFBO();
 }
 
-void deoglGIRays::SetProbeCount( int count ){
+void deoglGIRayCache::SetProbeCount( int count ){
 	if( count == pProbeCount ){
 		return;
 	}
@@ -104,10 +104,10 @@ void deoglGIRays::SetProbeCount( int count ){
 // Private Functions
 //////////////////////
 
-void deoglGIRays::pCleanUp(){
+void deoglGIRayCache::pCleanUp(){
 }
 
-void deoglGIRays::pCreateFBO(){
+void deoglGIRayCache::pCreateFBO(){
 	// memory consumption (assuming 8k probes):
 	// case 1: 64 rays per probe => 512x1024
 	// case 2: 256 rays per probe => 2048x1024

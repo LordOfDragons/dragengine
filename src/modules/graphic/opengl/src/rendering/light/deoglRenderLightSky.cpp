@@ -56,7 +56,7 @@
 #include "../../framebuffer/deoglFramebuffer.h"
 #include "../../framebuffer/deoglFramebufferManager.h"
 #include "../../gi/deoglGI.h"
-#include "../../gi/deoglGIRays.h"
+#include "../../gi/deoglGIRayCache.h"
 #include "../../gi/deoglGIState.h"
 #include "../../light/deoglRLight.h"
 #include "../../light/shader/deoglLightShader.h"

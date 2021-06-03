@@ -123,7 +123,7 @@ pVBOProbeExtendsData( NULL ),
 pProbesExtendsChanged( false ),
 
 pInstances( *this ),
-pRays( renderThread, 64, pRealProbeCount )
+pRayCache( renderThread, 64, pRealProbeCount )
 {
 	try{
 		pInitProbes();
@@ -131,7 +131,7 @@ pRays( renderThread, 64, pRealProbeCount )
 		pInitUBOClearProbes();
 		pUpdateProbes = new uint16_t[ GI_MAX_PROBE_COUNT ];
 		#ifdef GI_USE_RAY_CACHE
-			pRayCacheProbes = new uint16_t[ GI_MAX_PROBE_COUNT ];
+		pRayCacheProbes = new uint16_t[ GI_MAX_PROBE_COUNT ];
 		#endif
 		
 	}catch( const deException & ){
@@ -1035,9 +1035,9 @@ int &remainingMatchCount, int maxUpdateCount ){
 
 void deoglGIState::pPrepareRayCacheProbes(){
 	const int raysPerProbe = pRenderThread.GetGI().GetTraceRays().GetRaysPerProbe();
-	if( raysPerProbe != pRays.GetRaysPerProbe() ){
+	if( raysPerProbe != pRayCache.GetRaysPerProbe() ){
 		pInvalidateAllRayCaches();
-		pRays.SetRaysPerProbe( raysPerProbe );
+		pRayCache.SetRaysPerProbe( raysPerProbe );
 	}
 	
 	pRayCacheProbeCount = 0;
@@ -1232,7 +1232,7 @@ void deoglGIState::pPrepareUBOParameters( int probeCount ) const{
 			decMath::min( pProbeSpacing.x, pProbeSpacing.y, pProbeSpacing.z ) * 0.25f );
 		
 		// rays
-		ubo.SetParameterDataVec2( deoglGI::eupRayMapScale, pRays.GetRayMapScale() );
+		ubo.SetParameterDataVec2( deoglGI::eupRayMapScale, pRayCache.GetRayMapScale() );
 		
 	}catch( const deException & ){
 		ubo.UnmapBuffer();

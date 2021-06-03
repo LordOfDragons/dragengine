@@ -10,6 +10,8 @@
 	<texture name='texReflectivity' target='3'/>
 	<texture name='texLight' target='4'/>
 	
+	<parameter name='pCascade'/>
+	
 	<uniformBlock name='GIParameters' target='1'/>
 	<uniformBlock name='GIProbeIndices' target='2'/>
 	<uniformBlock name='GIProbePositions' target='3'/>

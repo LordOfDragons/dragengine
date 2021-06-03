@@ -363,10 +363,10 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 		OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
 		
 		// init ray textures with cached rays
-		deoglGIRays &rays = giState->GetRays();
-		renderThread.GetFramebuffer().Activate( &rays.GetFBOResult() );
+		deoglGIRayCache &rayCache = giState->GetRayCache();
+		renderThread.GetFramebuffer().Activate( &rayCache.GetFBOResult() );
 		
-		const decPoint &copySize = rays.GetTextureDistance().GetSize();
+		const decPoint &copySize = rayCache.GetTextureDistance().GetSize();
 		OGL_CHECK( renderThread, glViewport( 0, 0, copySize.x, copySize.y ) );
 		OGL_CHECK( renderThread, glScissor( 0, 0, copySize.x, copySize.y ) );
 		
@@ -413,12 +413,12 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 		renderThread.GetShader().ActivateShader( pShaderCopyRayCacheRev );
 		pActivateGIUBOs();
 		
-		deoglGIRays &rays = giState->GetRays();
-		tsmgr.EnableTexture( 0, rays.GetTextureDistance(), GetSamplerClampNearest() );
-		tsmgr.EnableTexture( 1, rays.GetTextureNormal(), GetSamplerClampNearest() );
-		tsmgr.EnableTexture( 2, rays.GetTextureDiffuse(), GetSamplerClampNearest() );
-		tsmgr.EnableTexture( 3, rays.GetTextureReflectivity(), GetSamplerClampNearest() );
-		tsmgr.EnableTexture( 4, rays.GetTextureLight(), GetSamplerClampNearest() );
+		deoglGIRayCache &rayCache = giState->GetRayCache();
+		tsmgr.EnableTexture( 0, rayCache.GetTextureDistance(), GetSamplerClampNearest() );
+		tsmgr.EnableTexture( 1, rayCache.GetTextureNormal(), GetSamplerClampNearest() );
+		tsmgr.EnableTexture( 2, rayCache.GetTextureDiffuse(), GetSamplerClampNearest() );
+		tsmgr.EnableTexture( 3, rayCache.GetTextureReflectivity(), GetSamplerClampNearest() );
+		tsmgr.EnableTexture( 4, rayCache.GetTextureLight(), GetSamplerClampNearest() );
 		tsmgr.DisableStagesAbove( 4 );
 		
 		OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
@@ -429,7 +429,7 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 	pInitTraceTextures();
 	
 	#ifdef GI_USE_RAY_CACHE
-		tsmgr.EnableTexture( 12, rays.GetTextureDistance(), GetSamplerClampNearest() );
+		tsmgr.EnableTexture( 12, rayCache.GetTextureDistance(), GetSamplerClampNearest() );
 	#endif
 	
 	#ifdef GI_RENDERDOC_DEBUG
@@ -803,9 +803,9 @@ void deoglRenderGI::MoveProbes( deoglRenderPlan &plan ){
 	renderThread.GetFramebuffer().Activate( &giState->GetFBOProbeOffset() );
 	
 	if( renderThread.GetChoices().GetGIMoveUsingCache() ){
-		const deoglGIRays &rays = giState->GetRays();
-		tsmgr.EnableTexture( 0, rays.GetTextureDistance(), GetSamplerClampNearest() );
-		tsmgr.EnableTexture( 1, rays.GetTextureNormal(), GetSamplerClampNearest() );
+		const deoglGIRayCache &rayCache = giState->GetRayCache();
+		tsmgr.EnableTexture( 0, rayCache.GetTextureDistance(), GetSamplerClampNearest() );
+		tsmgr.EnableTexture( 1, rayCache.GetTextureNormal(), GetSamplerClampNearest() );
 		
 	}else{
 		tsmgr.EnableTexture( 0, traceRays.GetTexturePosition(), GetSamplerClampNearest() );
@@ -861,7 +861,7 @@ void deoglRenderGI::ProbeExtends( deoglRenderPlan &plan ){
 	renderThread.GetFramebuffer().Activate( &giState->GetFBOProbeOffset() ); // unimportant since not written to
 	
 	#ifdef GI_USE_RAY_CACHE
-		tsmgr.EnableTexture( 0, giState->GetRays().GetTextureDistance(), GetSamplerClampNearest() );
+		tsmgr.EnableTexture( 0, giState->GetRayCache().GetTextureDistance(), GetSamplerClampNearest() );
 	#else
 		tsmgr.EnableTexture( 0, gi.GetTraceRays().GetTexturePosition(), GetSamplerClampNearest() );
 	#endif

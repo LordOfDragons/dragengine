@@ -19,8 +19,8 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef _DEOGLGIRAYS_H_
-#define _DEOGLGIRAYS_H_
+#ifndef _DEOGLGIRAYCACHE_H_
+#define _DEOGLGIRAYCACHE_H_
 
 #include "../framebuffer/deoglFramebuffer.h"
 #include "../texture/texture2d/deoglTexture.h"
@@ -31,7 +31,7 @@ class deoglRenderThread;
 /**
  * Global illumination rays.
  */
-class deoglGIRays{
+class deoglGIRayCache{
 private:
 	deoglRenderThread &pRenderThread;
 	
@@ -53,10 +53,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create global illumination ray tracing. */
-	deoglGIRays( deoglRenderThread &renderThread, int raysPerProbe, int probeCount );
+	deoglGIRayCache( deoglRenderThread &renderThread, int raysPerProbe, int probeCount );
 	
 	/** Clean up global illumination ray tracing. */
-	~deoglGIRays();
+	~deoglGIRayCache();
 	/*@}*/
 	
 	

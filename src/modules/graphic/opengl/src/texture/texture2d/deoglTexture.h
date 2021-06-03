@@ -34,7 +34,7 @@ class deoglCapsTextureFormat;
 
 
 /**
- * \brief OpenGL 2D texture
+ * OpenGL 2D texture
  * 
  * Manages an OpenGL texture. The texture is resizable and can be created
  * once required. By default the texture is not created. After changing the
@@ -65,10 +65,10 @@ public:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create opengl texture. */
+	/** Create opengl texture. */
 	deoglTexture( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up opengl texture. */
+	/** Clean up opengl texture. */
 	~deoglTexture();
 	/*@}*/
 	
@@ -76,105 +76,105 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Texture handle. */
+	/** Texture handle. */
 	inline GLuint GetTexture() const{ return pTexture; }
 	
 	
 	
-	/** \brief Width in pixels. */
+	/** Width in pixels. */
 	inline int GetWidth() const{ return pSize.x; }
 	
-	/** \brief Height in pixels. */
+	/** Height in pixels. */
 	inline int GetHeight() const{ return pSize.y; }
 	
-	/** \brief Size. */
+	/** Size. */
 	inline const decPoint &GetSize() const{ return pSize; }
 	
-	/** \brief Set size in pixels destroying opengl texture if present. */
+	/** Set size in pixels destroying opengl texture if present. */
 	void SetSize( int width, int height );
 	
-	/** \brief Set size in pixels destroying opengl texture if present. */
+	/** Set size in pixels destroying opengl texture if present. */
 	void SetSize( const decPoint &size );
 	
 	
 	
-	/** \brief Texture format. */
+	/** Texture format. */
 	inline const deoglCapsTextureFormat *GetFormat() const{ return pFormat; }
 	
-	/** \brief Set texture format. */
+	/** Set texture format. */
 	void SetFormat( const deoglCapsTextureFormat *format );
 	
-	/** \brief Set texture format by number from the list of mapping texture formats to use. */
+	/** Set texture format by number from the list of mapping texture formats to use. */
 	void SetFormatMappingByNumber( deoglCapsFmtSupport::eUseTextureFormats formatNumber );
 	
-	/** \brief Set texture format by number from the list of fbo texture formats to use. */
+	/** Set texture format by number from the list of fbo texture formats to use. */
 	void SetFormatFBOByNumber( deoglCapsFmtSupport::eUseTextureFormats formatNumber );
 	
 	
 	
-	/** \brief Mip mapping has to be used on this texture. */
+	/** Mip mapping has to be used on this texture. */
 	inline bool GetMipMapped() const{ return pMipMapped; }
 	
-	/** \brief Set if mip mapping has to be used on this texture. */
+	/** Set if mip mapping has to be used on this texture. */
 	void SetMipMapped( bool mipmapped );
 	
-	/** \brief Mip map level count or 0 to let the hardware auto-generate them. */
+	/** Mip map level count or 0 to let the hardware auto-generate them. */
 	inline int GetMipMapLevelCount() const{ return pMipMapLevelCount; }
 	
-	/** \brief Set mip map level count or 0 to let the hardware auto-generate them. */
+	/** Set mip map level count or 0 to let the hardware auto-generate them. */
 	void SetMipMapLevelCount( int count );
 	
 	/**
-	 * \brief Real mip map level count.
+	 * Real mip map level count.
 	 * \details Is either mipMapLevelCount or the real texture mip map level count.
 	 */
 	inline int GetRealMipMapLevelCount() const{ return pRealMipMapLevelCount; }
 	
 	
 	
-	/** \brief Create texture if not created yet. */
+	/** Create texture if not created yet. */
 	void CreateTexture();
 	
-	/** \brief Destroy texture if existing. */
+	/** Destroy texture if existing. */
 	void DestroyTexture();
 	
-	/** \brief Set base level texture pixels from a pixel buffer. */
+	/** Set base level texture pixels from a pixel buffer. */
 	void SetPixels( const deoglPixelBuffer &pixelBuffer );
 	
-	/** \brief Set texture level pixels from a pixel buffer. */
+	/** Set texture level pixels from a pixel buffer. */
 	void SetPixelsLevel( int level, const deoglPixelBuffer &pixelBuffer );
 	
-	/** \brief Set texture level pixels from a pixel buffer layer. */
+	/** Set texture level pixels from a pixel buffer layer. */
 	void SetPixelsLevelLayer( int level, const deoglPixelBuffer &pixelBuffer, int layer );
 	
-	/** \brief Copy pixels from first level into pixel buffer. */
+	/** Copy pixels from first level into pixel buffer. */
 	void GetPixels( deoglPixelBuffer &pixelBuffer ) const;
 	
-	/** \brief Copy pixels from level into pixel buffer. */
+	/** Copy pixels from level into pixel buffer. */
 	void GetPixelsLevel( int level, deoglPixelBuffer &pixelBuffer ) const;
 	
-	/** \brief Size of a mip map level. */
+	/** Size of a mip map level. */
 	void GetLevelSize( int level, int &width, int &height ) const;
 	
-	/** \brief Create mip maps if texture foramt is mip mapped. */
+	/** Create mip maps if texture foramt is mip mapped. */
 	void CreateMipMaps();
 	
-	/** \brief Copy from another texture to this texture. */
+	/** Copy from another texture to this texture. */
 	void CopyFrom( const deoglTexture &texture, bool withMipMaps );
 	
-	/** \brief Copy area from another texture to this texture. */
+	/** Copy area from another texture to this texture. */
 	void CopyFrom( const deoglTexture &texture, bool withMipMaps,
 		int width, int height, int srcX, int srcY, int destX, int destY );
 	
 	
 	
-	/** \brief GPU memory usage. */
+	/** GPU memory usage. */
 	inline int GetMemoryUsageGPU() const{ return pMemoryUsageGPU; }
 	
-	/** \brief GPU memory usage is compressed image data. */
+	/** GPU memory usage is compressed image data. */
 	inline bool GetMemoryUsageCompressed() const{ return pMemoryUsageCompressed; }
 	
-	/** \brief Update memory usage. */
+	/** Update memory usage. */
 	void UpdateMemoryUsage();
 	/*@}*/
 	
@@ -182,22 +182,22 @@ public:
 	
 	/** \name Helper Functions */
 	/*@{*/
-	/** \brief Set texture format suitable for texture mapping. */
+	/** Set texture format suitable for texture mapping. */
 	void SetMapingFormat( int channels, bool useFloat, bool compressed );
 	
-	/** \brief Set texture format suitable for attaching as FBO render target. */
+	/** Set texture format suitable for attaching as FBO render target. */
 	void SetFBOFormat( int channels, bool useFloat );
 	
-	/** \brief Set texture format suitable for attaching as FBO render target. */
+	/** Set texture format suitable for attaching as FBO render target. */
 	void SetFBOFormatFloat32( int channels );
 	
-	/** \brief Set texture format suitable for rendering to an integral texture using an FBO. */
+	/** Set texture format suitable for rendering to an integral texture using an FBO. */
 	void SetFBOFormatIntegral( int channels, int bpp, bool useUnsigned );
 	
-	/** \brief Set texture format suitable for attaching as FBO render target. */
+	/** Set texture format suitable for attaching as FBO render target. */
 	void SetFBOFormatSNorm( int channels, int bpp );
 	
-	/** \brief Set depth texture format suitable for attaching as FBO render target. */
+	/** Set depth texture format suitable for attaching as FBO render target. */
 	void SetDepthFormat( bool packedStencil, bool useFloat );
 	/*@}*/
 };
