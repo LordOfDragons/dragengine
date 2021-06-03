@@ -47,9 +47,6 @@ private:
 	deoglTexture pTexLight;
 	deoglFramebuffer pFBOResult;
 	
-	deoglTexture pTexDistanceLimit;
-	deoglFramebuffer pFBODistanceLimit;
-	
 	
 	
 public:
@@ -111,15 +108,6 @@ public:
 	
 	/** Result FBO. */
 	inline deoglFramebuffer &GetFBOResult(){ return pFBOResult; }
-	
-	
-	
-	/** Distance limit texture. */
-	inline deoglTexture &GetTextureDistanceLimit(){ return pTexDistanceLimit; }
-	inline const deoglTexture &GetTextureDistanceLimit() const{ return pTexDistanceLimit; }
-	
-	/** Distance limit FBO. */
-	inline deoglFramebuffer &GetFBODistanceLimit(){ return pFBODistanceLimit; }
 	/*@}*/
 	
 	

@@ -53,9 +53,7 @@ public:
 		epfValid = 0x8, //<! Probe has been updated at least once
 		epfRayCacheValid = 0x10, //<! Ray-Tracing ray cache is valid
 		epfInsideView = 0x20,
-		epfDynamicDisable = 0x40,
-		
-		epfRayLimitsValid = 0x80, //<! Ray-Tracing distance limits are valid
+		epfDynamicDisable = 0x40
 	};
 	
 	/** Probe parameters. */
@@ -116,8 +114,6 @@ private:
 	uint16_t *pAgedProbes;
 	uint16_t *pUpdateProbes;
 	int pUpdateProbeCount;
-	uint16_t *pRayLimitProbes;
-	int pRayLimitProbeCount;
 	uint16_t *pRayCacheProbes;
 	int pRayCacheProbeCount;
 	
@@ -280,9 +276,6 @@ public:
 	/** Count of probes to update. */
 	inline int GetUpdateProbeCount() const{ return pUpdateProbeCount; }
 	
-	/** Count of probes to ray limit update. */
-	inline int GetRayLimitProbeCount() const{ return pRayLimitProbeCount; }
-	
 	/** Count of probes to ray cache update. */
 	inline int GetRayCacheProbeCount() const{ return pRayCacheProbeCount; }
 	
@@ -343,9 +336,6 @@ public:
 	/** Prepare UBO state. */
 	void PrepareUBOState() const;
 	
-	/** Prepare UBO state for ray limit rendering. */
-	void PrepareUBOStateRayLimit() const;
-	
 	/** Prepare UBO state for ray cache rendering. */
 	void PrepareUBOStateRayCache() const;
 	
@@ -387,7 +377,6 @@ private:
 	void pCleanUp();
 	void pInitProbes();
 	void pInitUBOClearProbes();
-	void pInvalidateAllRayLimits();
 	void pInvalidateAllRayCaches();
 	void pTrackInstanceChanges();
 	void pSyncTrackedInstances();
@@ -396,7 +385,6 @@ private:
 	void pFindProbesToUpdate( const deoglDCollisionFrustum &frustum );
 	void pAddUpdateProbes( uint8_t mask, uint8_t flags, int &lastIndex,
 		int &remainingMatchCount, int maxUpdateCount );
-	void pPrepareRayLimitProbes();
 	void pPrepareRayCacheProbes();
 	void pPrepareProbeTexturesAndFBO();
 	void pPrepareProbeVBO();

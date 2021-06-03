@@ -30,12 +30,7 @@
 class deoglRenderThread;
 class deoglROcclusionMesh;
 
-
-#define GI_MAX_PROBE_COUNT 4096
-
-
 // #define GI_ENABLE 1
-// #define GI_USE_RAY_LIMIT 1
 #define GI_USE_RAY_CACHE 1
 
 // #define GI_RENDERDOC_DEBUG 1

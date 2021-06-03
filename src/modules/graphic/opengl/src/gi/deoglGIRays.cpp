@@ -49,9 +49,7 @@ pTexNormal( renderThread ),
 pTexDiffuse( renderThread ),
 pTexReflectivity( renderThread ),
 pTexLight( renderThread ),
-pFBOResult( renderThread, false ),
-pTexDistanceLimit( renderThread ),
-pFBODistanceLimit( renderThread, false )
+pFBOResult( renderThread, false )
 {
 	if( raysPerProbe < 16 || probeCount < 64 ){
 		DETHROW( deeInvalidParam );
@@ -122,7 +120,7 @@ void deoglGIRays::pCreateFBO(){
 	// total: (37M, 9M) [37748736, 9437184]
 	// 
 	deoglFramebuffer * const oldfbo = pRenderThread.GetFramebuffer().GetActive();
-	#if defined GI_USE_RAY_LIMIT || defined GI_USE_RAY_CACHE
+	#ifdef GI_USE_RAY_CACHE
 	const GLenum buffers[ 5 ] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1,
 		GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3, GL_COLOR_ATTACHMENT4 };
 	#endif
@@ -130,23 +128,10 @@ void deoglGIRays::pCreateFBO(){
 	const int width = pProbesPerLine * pRaysPerProbe;
 	const int height = pProbeCount / pProbesPerLine;
 	
-	#ifdef GI_USE_RAY_LIMIT
-		bool updateFBODistanceLimit = false;
-	#endif
-	
 	pRayMapScale.x = 1.0f / ( float )width;
 	pRayMapScale.y = 1.0f / ( float )height;
 	
 	// create/resize textures
-	#ifdef GI_USE_RAY_LIMIT
-		if( ! pTexDistanceLimit.GetTexture() ){
-			pTexDistanceLimit.SetFBOFormat( 1, true );
-			updateFBODistanceLimit = true;
-		}
-		pTexDistanceLimit.SetSize( width, height );
-		pTexDistanceLimit.CreateTexture();
-	#endif
-	
 	#ifdef GI_USE_RAY_CACHE
 		if( ! pTexDistance.GetTexture() ){
 			pTexDistance.SetFBOFormat( 1, true );
@@ -180,20 +165,6 @@ void deoglGIRays::pCreateFBO(){
 	#endif
 	
 	// update framebuffer if required and clear textures
-	#ifdef GI_USE_RAY_LIMIT
-		pRenderThread.GetFramebuffer().Activate( &pFBODistanceLimit );
-		
-		if( updateFBODistanceLimit ){
-			pFBODistanceLimit.AttachColorTexture( 0, &pTexDistanceLimit );
-			OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
-			OGL_CHECK( pRenderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
-			pFBODistanceLimit.Verify();
-		}
-		
-		const GLfloat clearDistanceLimit[ 4 ] = { 10000.0f, 10000.0f, 10000.0f, 10000.0f };
-		OGL_CHECK( pRenderThread, pglClearBufferfv( GL_COLOR, 0, &clearDistanceLimit[ 0 ] ) );
-	#endif
-	
 	#ifdef GI_USE_RAY_CACHE
 		pRenderThread.GetFramebuffer().Activate( &pFBOResult );
 		
