@@ -11,9 +11,6 @@ precision highp int;
 
 #include "v130/shared/defren/gi/raycast/trace_ray.glsl"
 
-#ifdef GI_USE_RAY_LIMIT
-	#include "v130/shared/defren/gi/raycast/distance_limit.glsl"
-#endif
 #ifdef GI_USE_RAY_CACHE
 	#include "v130/shared/defren/gi/raycast/ray_cache_distance.glsl"
 #endif
@@ -156,9 +153,7 @@ void main( void ){
 		}
 		
 	#else
-		#ifdef GI_USE_RAY_LIMIT
-			float distLimit = giRayCastDistanceLimit( instanceID, rayIndex ) + 0.1;
-		#elif defined GI_USE_RAY_CACHE
+		#ifdef GI_USE_RAY_CACHE
 			float distLimit = giRayCastCacheDistance( instanceID, rayIndex );
 		#else
 			float distLimit = giRayCastNoHitDistance;

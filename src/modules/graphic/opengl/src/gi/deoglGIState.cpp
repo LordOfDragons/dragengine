@@ -98,8 +98,6 @@ pProbes( NULL ),
 pAgedProbes( NULL ),
 pUpdateProbes( NULL ),
 pUpdateProbeCount( 0 ),
-pRayLimitProbes( NULL ),
-pRayLimitProbeCount( 0 ),
 pRayCacheProbes( NULL ),
 pRayCacheProbeCount( 0 ),
 
@@ -132,9 +130,6 @@ pRays( renderThread, 64, pRealProbeCount )
 		pClearProbes = new uint32_t[ pClearProbeCount ];
 		pInitUBOClearProbes();
 		pUpdateProbes = new uint16_t[ GI_MAX_PROBE_COUNT ];
-		#ifdef GI_USE_RAY_LIMIT
-			pRayLimitProbes = new uint16_t[ GI_MAX_PROBE_COUNT ];
-		#endif
 		#ifdef GI_USE_RAY_CACHE
 			pRayCacheProbes = new uint16_t[ GI_MAX_PROBE_COUNT ];
 		#endif
@@ -328,11 +323,7 @@ const deoglDCollisionFrustum &frustum ){
 	FindContent( world );
 	SPECIAL_TIMER_PRINT("FindContent")
 	
-	#ifdef GI_USE_RAY_LIMIT
-		FilterOcclusionMeshes();
-	#else
-		FilterComponents();
-	#endif
+	FilterComponents();
 	SPECIAL_TIMER_PRINT("FilterContent")
 	
 	// track changes in static instances has to be done first
@@ -346,9 +337,6 @@ const deoglDCollisionFrustum &frustum ){
 	pPrepareTraceProbes( frustum );
 	SPECIAL_TIMER_PRINT("PrepareTraceProbes")
 	
-	#ifdef GI_USE_RAY_LIMIT
-		pPrepareRayLimitProbes();
-	#endif
 	#ifdef GI_USE_RAY_CACHE
 		pPrepareRayCacheProbes();
 	#endif
@@ -395,51 +383,6 @@ void deoglGIState::PrepareUBOState() const{
 		int i;
 		for( i=0; i<pUpdateProbeCount; i++ ){
 			const sProbe &p = pProbes[ pUpdateProbes[ i ] ];
-			uboPositions.SetParameterDataArrayVec4( 0, i, p.position + p.offset, ( float )p.flags );
-		}
-		
-	}catch( const deException & ){
-		uboPositions.UnmapBuffer();
-		throw;
-	}
-	uboPositions.UnmapBuffer();
-}
-
-void deoglGIState::PrepareUBOStateRayLimit() const{
-	pPrepareUBOParameters( pRayLimitProbeCount );
-	pPrepareUBORayDirections();
-	
-	if( pRayLimitProbeCount == 0 ){
-		return;
-	}
-	
-	// probe indices
-	deoglSPBlockUBO &uboIndices = pRenderThread.GetGI().GetUBOProbeIndex();
-	uboIndices.MapBuffer();
-	try{
-		const int count = ( pRayLimitProbeCount - 1 ) / 4 + 1;
-		int i, j;
-		for( i=0, j=0; i<count; i++, j+=4 ){
-			uboIndices.SetParameterDataArrayIVec4( 0, i,
-				j < pRayLimitProbeCount ? pRayLimitProbes[ j ] : 0,
-				j + 1 < pRayLimitProbeCount ? pRayLimitProbes[ j + 1 ] : 0,
-				j + 2 < pRayLimitProbeCount ? pRayLimitProbes[ j + 2 ] : 0,
-				j + 3 < pRayLimitProbeCount ? pRayLimitProbes[ j + 3 ] : 0 );
-		}
-		
-	}catch( const deException & ){
-		uboIndices.UnmapBuffer();
-		throw;
-	}
-	uboIndices.UnmapBuffer();
-	
-	// probe positions
-	deoglSPBlockUBO &uboPositions = pRenderThread.GetGI().GetUBOProbePosition();
-	uboPositions.MapBuffer();
-	try{
-		int i;
-		for( i=0; i<pRayLimitProbeCount; i++ ){
-			const sProbe &p = pProbes[ pRayLimitProbes[ i ] ];
 			uboPositions.SetParameterDataArrayVec4( 0, i, p.position + p.offset, ( float )p.flags );
 		}
 		
@@ -560,7 +503,7 @@ void deoglGIState::UpdateProbeOffsetFromShader(){
 			if( ! offset.IsEqualTo( probe.offset, 0.05f ) ){
 				// update offset only if it moved far enough to justify an expensive update
 				probe.offset = offset;
-				probe.flags &= ~( epfRayLimitsValid | epfRayCacheValid | epfDynamicDisable );
+				probe.flags &= ~( epfRayCacheValid | epfDynamicDisable );
 			}
 		}
 // 			pRenderThread.GetLogger().LogInfoFormat("UpdateProbeOffsetFromTexture: RayCacheInvalidate %d", pUpdateProbes[i]);
@@ -665,9 +608,6 @@ void deoglGIState::pCleanUp(){
 	if( pRayCacheProbes ){
 		delete [] pRayCacheProbes;
 	}
-	if( pRayLimitProbes ){
-		delete [] pRayLimitProbes;
-	}
 	if( pUpdateProbes ){
 		delete [] pUpdateProbes;
 	}
@@ -712,13 +652,6 @@ void deoglGIState::pInitUBOClearProbes(){
 	ubo.SetBindingPoint( 0 );
 }
 
-void deoglGIState::pInvalidateAllRayLimits(){
-	int i;
-	for( i=0; i<pRealProbeCount; i++ ){
-		pProbes[ i ].flags &= ~epfRayLimitsValid;
-	}
-}
-
 void deoglGIState::pInvalidateAllRayCaches(){
 	int i;
 	for( i=0; i<pRealProbeCount; i++ ){
@@ -742,27 +675,16 @@ void deoglGIState::pTrackInstanceChanges(){
 	}*/
 	
 	pInstances.AnyChanged();
-	#ifdef GI_USE_RAY_LIMIT
-		pInstances.RemoveOcclusionMeshes( pCollideListFiltered );
-		pInstances.AddOcclusionMeshes( pCollideListFiltered );
-	#else
-		pInstances.RemoveComponents( pCollideListFiltered );
-		pInstances.AddComponents( pCollideListFiltered );
-	#endif
+	pInstances.RemoveComponents( pCollideListFiltered );
+	pInstances.AddComponents( pCollideListFiltered );
 	
 // 	pRenderThread.GetLogger().LogInfo( "pTrackInstanceChanges" );
 // 	pInstances.DebugPrint();
 }
 
 void deoglGIState::pSyncTrackedInstances(){
-	#ifdef GI_USE_RAY_LIMIT
-		pInstances.RemoveOcclusionMeshes( pCollideListFiltered );
-		pInstances.AddOcclusionMeshes( pCollideListFiltered );
-		
-	#else
-		pInstances.RemoveComponents( pCollideListFiltered );
-		pInstances.AddComponents( pCollideListFiltered );
-	#endif
+	pInstances.RemoveComponents( pCollideListFiltered );
+	pInstances.AddComponents( pCollideListFiltered );
 	
 	pInstances.ClearAllChanged();
 }
@@ -972,16 +894,16 @@ void deoglGIState::pFindProbesToUpdate( const deoglDCollisionFrustum &frustum ){
 	}
 	
 	// add probes by priority:
-	// - invalid probes inside view. expensive updates. at most 1/8 count
-	// - invalid probes outside view. expensive updates. at most 1/8 count
-	// - valid requiring cache update probes inside view. expensive updates. at most 1/8 count
-	// - valid requiring cache update probes outside view. expensive updates. at most 1/8 count
+	// - invalid probes inside view. expensive updates. at most 1/2 count
+	// - invalid probes outside view. expensive updates. at most 1/2 count
+	// - valid requiring cache update probes inside view. expensive updates. at most 1/2 count
+	// - valid requiring cache update probes outside view. expensive updates. at most 1/2 count
 	// - valid requiring dynamic update probes inside view. cheap updates. at most 80% count
 	// - valid requiring dynamic update probes outside view. cheap updates. fill up to max count
 	const int mask = epfValid | epfInsideView | epfDisabled | epfDynamicDisable | epfRayCacheValid;
 	int last = pRealProbeCount;
 	
-	const int maxUpdateCountExpensive = maxUpdateCount / 8;
+	const int maxUpdateCountExpensive = maxUpdateCount / 2;
 	int maxUpdateCountExpensiveOutside = maxUpdateCountExpensive / 5; // 20%
 	int maxUpdateCountExpensiveInside = maxUpdateCountExpensive - maxUpdateCountExpensiveOutside; // 80%
 	
@@ -1108,18 +1030,6 @@ int &remainingMatchCount, int maxUpdateCount ){
 	
 	while( i < endIndex ){
 		pAgedProbes[ lastIndex++ ] = pAgedProbes[ i++ ];
-	}
-}
-
-void deoglGIState::pPrepareRayLimitProbes(){
-	pRayLimitProbeCount = 0;
-	
-	int i;
-	for( i=0; i<pUpdateProbeCount; i++ ){
-		const sProbe &probe = pProbes[ pUpdateProbes[ i ] ];
-		if( ( probe.flags & epfRayLimitsValid ) != epfRayLimitsValid ){
-			pRayLimitProbes[ pRayLimitProbeCount++ ] = pUpdateProbes[ i ];
-		}
 	}
 }
 
