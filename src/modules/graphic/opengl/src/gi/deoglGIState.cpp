@@ -131,12 +131,12 @@ pRays( renderThread, 64, pRealProbeCount )
 		pInitProbes();
 		pClearProbes = new uint32_t[ pClearProbeCount ];
 		pInitUBOClearProbes();
-		pUpdateProbes = new uint16_t[ renderThread.GetGI().GetTraceRays().GetProbeCount() ];
+		pUpdateProbes = new uint16_t[ GI_MAX_PROBE_COUNT ];
 		#ifdef GI_USE_RAY_LIMIT
-			pRayLimitProbes = new uint16_t[ renderThread.GetGI().GetTraceRays().GetProbeCount() ];
+			pRayLimitProbes = new uint16_t[ GI_MAX_PROBE_COUNT ];
 		#endif
 		#ifdef GI_USE_RAY_CACHE
-			pRayCacheProbes = new uint16_t[ renderThread.GetGI().GetTraceRays().GetProbeCount() ];
+			pRayCacheProbes = new uint16_t[ GI_MAX_PROBE_COUNT ];
 		#endif
 		
 	}catch( const deException & ){
@@ -521,7 +521,7 @@ void deoglGIState::ProbesMoved(){
 
 void deoglGIState::UpdateProbeOffsetFromShader(){
 	if( ! pVBOProbeOffsetsData ){
-		pVBOProbeOffsetsData = new GLfloat[ pRenderThread.GetGI().GetTraceRays().GetProbeCount() * 4 ];
+		pVBOProbeOffsetsData = new GLfloat[ GI_MAX_PROBE_COUNT * 4 ];
 	}
 	
 // 	decTimer timer;
@@ -573,7 +573,7 @@ void deoglGIState::UpdateProbeExtendsFromShader(){
 	}
 	
 	if( ! pVBOProbeExtendsData ){
-		pVBOProbeExtendsData = new GLfloat[ pRenderThread.GetGI().GetTraceRays().GetProbeCount() * 6 ];
+		pVBOProbeExtendsData = new GLfloat[ GI_MAX_PROBE_COUNT * 6 ];
 	}
 	
 // 	decTimer timer;
@@ -856,13 +856,66 @@ void deoglGIState::pPrepareTraceProbes( const deoglDCollisionFrustum &frustum ){
 }
 
 void deoglGIState::pFindProbesToUpdate( const deoglDCollisionFrustum &frustum ){
-	//const int maxUpdateCount = pRenderThread.GetGI().GetTraceRays().GetProbeCount();
-	const int maxUpdateCount = 2048; // 256
-	
 	const deoglGITraceRays &traceRays = pRenderThread.GetGI().GetTraceRays();
+	const int maxUpdateCount = traceRays.GetProbeCount();
 	int i;
 	
 	pUpdateProbeCount = 0;
+	
+	// performance notes:
+	// 
+	// using 32*8*32 grid this yields a total of 8192 probes. inside view covers roughly 1/5
+	// probes (view single face 1/6, view entire quart 1/4 and thus somewhere in the middle).
+	// hence inside probes count is roughly 1600.
+	// 
+	// for non-RTX/compute supporting hardware this giUpdateSpeed mapping can be used:
+	// veryHigh(2048), high(1024), medium(512), low(256), veryLow(128).
+	// 
+	// using veryHigh(2048) this can update roughly 400 probes outside view and 1600 probes
+	// inside view (20%/80% ratio). this setting allows to update visible probes every frame
+	// update (or every 2 using multi-volume). this refreshes 20 times per second.
+	// 
+	// using high(1024) this can update roughly 200 probes outside view and 800 probes inside
+	// view. this setting allows to update visible probes every 2 frame updates (or every 4
+	// using multi-volume). on 40 FPS this is 0.1s (or 0.2s on 20 FPS). this refreshes
+	// 10 times per second.
+	// 
+	// using medium(512) this can update roughly 100 probes outside view and 400 probes inside
+	// view. this setting allows to update visible probes every 4 frame updates (or every 8
+	// using multi-volume). on 40 FPS this is 0.2s (or 0.4s on 20 FPS). this refreshes 5 times
+	// per second. for medium update speed this is rather okay.
+	// 
+	// using low(256) this can update roughly 50 probes outside view and 200 probes inside
+	// view. this setting allows to update visible probes every 8 frame updates (or every 16
+	// using multi-volume). on 40 FPS this is 0.4s (or 0.8s on 20 FPS). this refreshes 2.5 times
+	// per second. for low update speed the delay becomes already noticeable if frame rate drops.
+	// still 0.5ms to get full screen update is still okay.
+	// 
+	// using veryLow(128) this can update roughly 25 probes outside view and 100 probes inside
+	// view. this setting allows to update visible probes every 16 frame updates (or every 32
+	// using multi-volume). on 40 FPS this is 0.8s (or 1.6s on 20 FPS). this refreshes 1.25
+	// times per second. for veryLow update speed the delay is noticeable on good FPS and more
+	// noticeable on bad FPS. still this is acceptable for certain games especially if
+	// performance is improved with it.
+	// 
+	// using smaller grid this can be speed up but requires more distribution across volumes.
+	// using fewer volumes helps in general.
+	// 
+	// now about the expensive/cheap probe update ratio. using medium update speed of 512
+	// probes this can be 256 maximum (factor 2) or 128 maxiimum (factor 4). using factor
+	// 2 doubles the inside view probe refresh time after teleporting and thus requires
+	// 0.4s on 40 FPS (or 0.8s on 20 FPS). using factor 4 this quadruples the time hence
+	// 0.8s on 40 FPS (or 1.6s on 20 FPS). this delay is certainly noticeable.
+	// 
+	// now expensive probes depends on the game content. with good LODing and not too many
+	// objects on screen it should be possible to even update using a ratio of 1. now while
+	// moving this invalidates roughly 256 probes per shift. at worst this is 768 if 3 planes
+	// shift at the same time. this is though unlikely. it is enough to assume one plane
+	// updates per frame. using a factor of 2 would allow to update all invalidated probes
+	// at once in the medium scenario without adding a delay. this seems thus a good middle
+	// ground.
+	
+	
 	
 	// classify probes into inside view and outside view. for this we test the probe position
 	// against the frustum planes. this classifies though probes at the broder of the frustum
@@ -1201,7 +1254,7 @@ void deoglGIState::pPrepareProbeVBO(){
 		
 		OGL_CHECK( pRenderThread, pglBindBuffer( GL_ARRAY_BUFFER, pVBOProbeOffsets ) );
 		OGL_CHECK( pRenderThread, pglBufferData( GL_ARRAY_BUFFER,
-			pRenderThread.GetGI().GetTraceRays().GetProbeCount() * 4 * sizeof( GLfloat ), NULL, GL_STREAM_READ ) );
+			GI_MAX_PROBE_COUNT * 4 * sizeof( GLfloat ), NULL, GL_STREAM_READ ) );
 	}
 	
 	if( ! pVBOProbeExtends ){
@@ -1212,7 +1265,7 @@ void deoglGIState::pPrepareProbeVBO(){
 		
 		OGL_CHECK( pRenderThread, pglBindBuffer( GL_ARRAY_BUFFER, pVBOProbeExtends ) );
 		OGL_CHECK( pRenderThread, pglBufferData( GL_ARRAY_BUFFER,
-			pRenderThread.GetGI().GetTraceRays().GetProbeCount() * 6 * sizeof( GLfloat ), NULL, GL_STREAM_READ ) );
+			GI_MAX_PROBE_COUNT * 6 * sizeof( GLfloat ), NULL, GL_STREAM_READ ) );
 	}
 }
 

@@ -71,6 +71,15 @@ public:
 		egiqVeryHigh
 	};
 	
+	enum eGIUpdateSpeed{
+		egiusOff,
+		egiusVeryLow,
+		egiusLow,
+		egiusMedium,
+		egiusHigh,
+		egiusVeryHigh
+	};
+	
 	
 	
 private:
@@ -181,6 +190,7 @@ private:
 	int pMaxSPBIndexCount;
 	
 	eGIQuality pGIQuality;
+	eGIUpdateSpeed pGIUpdateSpeed;
 	
 	decStringSet pDisableExtensions;
 	
@@ -544,6 +554,9 @@ public:
 	
 	inline eGIQuality GetGIQuality() const{ return pGIQuality; }
 	void SetGIQuality( eGIQuality quality );
+	
+	inline eGIUpdateSpeed GetGIUpdateSpeed() const{ return pGIUpdateSpeed; }
+	void SetGIUpdateSpeed( eGIUpdateSpeed updateSpeed );
 	
 	/** \brief OpenGL extensions to disable. */
 	inline decStringSet &GetDisableExtensions(){ return pDisableExtensions; }

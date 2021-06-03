@@ -39,7 +39,9 @@
 
 deoglPGIQuality::deoglPGIQuality( deGraphicOpenGl &ogl ) : deoglParameter( ogl ){
 	SetName( "giQuality" );
-	SetDescription( "Global Illumination Quality. Influences quality versus performance." );
+	SetDescription( "Global Illumination Quality. Higher quality uses higher count of traced "
+		"rays to improve lighting quality. Lower quality uses lower count of traced rays "
+		"improving performance." );
 	SetType( deModuleParameter::eptSelection );
 	SetCategory( ecBasic );
 	SetDisplayName( "GI Quality" );

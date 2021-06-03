@@ -43,7 +43,7 @@ deoglGITraceRays::deoglGITraceRays( deoglRenderThread &renderThread ) :
 pRenderThread( renderThread  ),
 pRaysPerProbe( ConfigRaysPerProbe( renderThread.GetConfiguration() ) ),
 pProbesPerLine( 8 ),
-pProbeCount( 2048 ), // 4096 is the maximum supported in smallest UBO size
+pProbeCount( ConfigProbeCount( renderThread.GetConfiguration() ) ),
 pTexPosition( renderThread ),
 pTexNormal( renderThread ),
 pTexDiffuse( renderThread ),
@@ -93,13 +93,39 @@ int deoglGITraceRays::ConfigRaysPerProbe( const deoglConfiguration &config ){
 	}
 }
 
+int deoglGITraceRays::ConfigProbeCount( const deoglConfiguration &config ){
+	switch( config.GetGIUpdateSpeed() ){
+	case deoglConfiguration::egiusVeryHigh:
+		return 2048;
+		
+	case deoglConfiguration::egiusHigh:
+		return 1024;
+		
+	case deoglConfiguration::egiusMedium:
+		return 512;
+		
+	case deoglConfiguration::egiusLow:
+		return 256;
+		
+	case deoglConfiguration::egiusVeryLow:
+		return 128;
+		
+	default:
+		return 512;
+	}
+}
+
 void deoglGITraceRays::UpdateFromConfig(){
 	const int raysPerProbe = ConfigRaysPerProbe( pRenderThread.GetConfiguration() );
-	if( raysPerProbe == pRaysPerProbe ){
+	const int probeCount = ConfigProbeCount( pRenderThread.GetConfiguration() );
+	
+	if( raysPerProbe == pRaysPerProbe && probeCount == pProbeCount ){
 		return;
 	}
 	
 	pRaysPerProbe = raysPerProbe;
+	pProbeCount = probeCount;
+	
 	pCreateFBORay();
 }
 

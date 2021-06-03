@@ -29,8 +29,10 @@
 class deoglRenderThread;
 class deoglConfiguration;
 
-// #define GI_MAX_RAYS_PER_PROBE 512
 #define GI_MAX_RAYS_PER_PROBE 256
+
+// 4096 is the maximum supported in smallest UBO size
+#define GI_MAX_PROBE_COUNT 2048
 
 
 /**
@@ -83,6 +85,9 @@ public:
 	
 	/** Get rays per probe matching configuration quality. */
 	static int ConfigRaysPerProbe( const deoglConfiguration &config );
+	
+	/** Get probe count matching configuration quality. */
+	static int ConfigProbeCount( const deoglConfiguration &config );
 	
 	/** Update from configuration. */
 	void UpdateFromConfig();
