@@ -16,7 +16,8 @@
 	<parameter name='pMatrixNormal'/> <!-- 0 -->
 	<parameter name='pMatrixMV'/> <!-- 1 -->
 	<parameter name='pMatrixMVP'/> <!-- 2 -->
-	<parameter name='pGIGridCoordShift'/> <!-- 3 -->
+	<parameter name='pMatrixP'/> <!-- 3 -->
+	<parameter name='pGIGridCoordShift'/> <!-- 4 -->
 	
 	<attribute name='inPosition' target='0'/>
 	

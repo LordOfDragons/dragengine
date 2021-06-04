@@ -9,13 +9,15 @@ precision highp int;
 #include "v130/shared/defren/gi/probe_offset.glsl"
 #include "v130/shared/defren/gi/probe_flags.glsl"
 
+uniform mat4x3 pMatrixNormal;
+
 uniform lowp sampler2D texGIIrradiance;
 uniform HIGHP sampler2D texGIDistance;
 
 flat in ivec3 vProbeCoord;
 flat in vec3 vProbePosition;
-in vec3 vDirection;
-in vec3 vCameraDirection;
+in vec2 vTexCoord;
+flat in float vRimThickness;
 
 out vec3 outColor;
 
@@ -29,10 +31,14 @@ vec2 giTCFromDirection( in vec3 dir, in ivec3 probeCoord, in vec2 mapScale, in i
 }
 
 void main( void ){
-	#ifdef DEBUG_FLAGS
+	float radius = length( vTexCoord );
+	if( radius > 1.0 ){
+		discard; // outside sphere
+	}
+	
+	if( radius > vRimThickness ){
 		const float pi = 3.1415926538;
-		vec3 direction = normalize( vCameraDirection );
-		float angle = 0.5 - atan( direction.x, -direction.y ) / ( pi * 2.0 );
+		float angle = 0.5 - atan( vTexCoord.x, -vTexCoord.y ) / ( pi * 2.0 );
 		
 		uint flags = gipoProbeFlags( vProbeCoord );
 		
@@ -47,12 +53,16 @@ void main( void ){
 			outColor = mix( colorOff, colorOn, bvec3( ( flags & gipfNearGeometry ) == gipfNearGeometry ) );
 		}
 		
-	#else
-		vec2 texCoord = giTCFromDirection( normalize( vDirection ),
+	}else{
+		vec3 direction = vec3( vTexCoord, sqrt( 1.0 - dot( vTexCoord, vTexCoord ) ) );
+		direction.z = -direction.z; // make Z point away from camera
+		direction = vec3( direction * pMatrixNormal ); // inverse order does transpose();
+		
+		vec2 texCoord = giTCFromDirection( normalize( direction ),
 			vProbeCoord, pGIIrradianceMapScale, pGIIrradianceMapSize );
 		vec3 irradiance = texture( texGIIrradiance, texCoord ).rgb;
 		irradiance = pow( irradiance, vec3( pGIIrradianceGamma ) );
 		irradiance /= vec3( 4.0 ); // squash HDRR a bit
 		outColor = irradiance;
-	#endif
+	}
 }
