@@ -117,6 +117,17 @@ float giRayCastBvhNodeHit( in vec3 minExtend, in vec3 maxExtend, in vec3 rayOrig
 	return min( t.x, t.y ) > t0 ? t0 : giRayCastNoHitDistance;
 }
 
+bool giRayCastBvhNodeHitAny( in vec3 minExtend, in vec3 maxExtend, in vec3 rayOrigin, in vec3 invRayDirection ){
+	vec3 tbottom = ( minExtend - rayOrigin ) * invRayDirection;
+	vec3 ttop = ( maxExtend - rayOrigin ) * invRayDirection;
+	vec3 tmin = min( ttop, tbottom );
+	vec3 tmax = max( ttop, tbottom );
+	vec2 t = max( tmin.xx, tmin.yz );
+	float t0 = max( max( t.x, t.y ), 0.0 );
+	t = min( tmax.xx, tmax.yz );
+	return min( t.x, t.y ) > t0;
+}
+
 
 // Calculate texture coordinates of hit face.
 #ifndef GI_RAYCAST_DISTANCE_ONLY
@@ -151,7 +162,7 @@ in float distanceLimit, out GIRayCastResult result ){
 	#define rootMaterial indices.y
 	#define rootVertex indices.z
 	#define rootFace indices.w
-	vec3 invRayDirection = 1.0 / rayDirection;
+	vec3 invRayDirection = vec3( 1.0 ) / rayDirection;
 	
 	// early exit. if the ray misses the root box node skip the mesh entirely.
 	// we do the test here and not in giRayCastTraceInstance since otherwise we have
@@ -230,12 +241,84 @@ in float distanceLimit, out GIRayCastResult result ){
 }
 
 
+// Perform ray cast against mesh BVH starting at absolute strided index.
+// 
+// Parameter indices contains indices required to trace rays in the model:
+// - indices.x = root node index
+// - indices.y = root material index
+// - indices.z = root vertex index
+// - indices.w = root face index
+// 
+// Returns true if any hit is found otherwise false.
+bool giRayCastTraceMeshAny( in ivec4 indices, in vec3 rayOrigin, in vec3 rayDirection ){
+	#define rootNode indices.x
+	#define rootMaterial indices.y
+	#define rootVertex indices.z
+	#define rootFace indices.w
+	vec3 invRayDirection = vec3( 1.0 ) / rayDirection;
+	
+	// early exit. if the ray misses the root box node skip the mesh entirely.
+	// we do the test here and not in giRayCastTraceInstance since otherwise we have
+	// to calculate invRayDirection twice
+	{
+	#ifdef GI_RAYCAST_USE_SSBO
+		vec3 minExtend = pGIRayCastNodes[ rootNode ].minExtend;
+		vec3 maxExtend = pGIRayCastNodes[ rootNode ].maxExtend;
+	#else
+		vec3 minExtend = texelFetch( tboGIRayCastNodeBox, rootNode * 2 ).xyz;
+		vec3 maxExtend = texelFetch( tboGIRayCastNodeBox, rootNode * 2 + 1 ).xyz;
+	#endif
+	if( ! giRayCastBvhNodeHitAny( minExtend, maxExtend, rayOrigin, invRayDirection ) ){
+		return false;
+	}
+	}
+	
+	// continue ray casting against mesh faces
+	int stack[ 13 ];
+	stack[ 0 ] = -1;
+	int stackPosition = 1;
+	
+	int curNode = rootNode;
+	
+	while( curNode > -1 ){
+		// node pass
+		ivec2 index;
+		while( curNode > -1 ){
+			#ifdef GI_RAYCAST_USE_SSBO
+				index = ivec2( pGIRayCastNodes[ curNode ].firstIndex, pGIRayCastNodes[ curNode ].primitiveCount );
+			#else
+				index = ivec2( texelFetch( tboGIRayCastIndex, curNode ).xy ); // firstIndex, primitiveCount
+			#endif
+			if( index.y > 0 ){
+				break;
+			}
+			index.x += rootNode;
+#include "v130/shared/defren/gi/raycast/inline_bvh_node_any.glsl"
+			curNode = stack[ --stackPosition ];
+		}
+		
+		// face pass
+		if( curNode > -1 ){
+			index.x += rootFace;
+#include "v130/shared/defren/gi/raycast/inline_bvh_model_any.glsl"
+			curNode = stack[ --stackPosition ];
+		}
+	}
+	
+	return false;
+	#undef rootNode
+	#undef rootMaterial
+	#undef rootVertex
+	#undef rootFace
+}
+
+
 // Perform ray cast against instance BVH starting at absolute strided index.
 // 
 // Returns true if hit is found otherwise false.
 bool giRayCastTraceInstance( in int rootNode, in vec3 rayOrigin, in vec3 rayDirection,
 in float distanceLimit, out GIRayCastResult result ){
-	vec3 invRayDirection = 1.0 / rayDirection;
+	vec3 invRayDirection = vec3( 1.0 ) / rayDirection;
 	
 	int stack[ 13 ];
 	stack[ 0 ] = -1;
@@ -310,4 +393,44 @@ in float distanceLimit, out GIRayCastResult result ){
 	}
 	
 	return hasHit;
+}
+
+
+// Perform ray cast against instance BVH starting at absolute strided index.
+// 
+// Returns true if any hit is found otherwise false.
+bool giRayCastTraceInstanceAny( in int rootNode, in vec3 rayOrigin, in vec3 rayDirection ){
+	vec3 invRayDirection = vec3( 1.0 ) / rayDirection;
+	
+	int stack[ 13 ];
+	stack[ 0 ] = -1;
+	int stackPosition = 1;
+	
+	int curNode = rootNode;
+	
+	while( curNode > -1 ){
+		// node pass
+		ivec2 index;
+		while( curNode > -1 ){
+			#ifdef GI_RAYCAST_USE_SSBO
+				index = ivec2( pGIRayCastNodes[ curNode ].firstIndex, pGIRayCastNodes[ curNode ].primitiveCount );
+			#else
+				index = ivec2( texelFetch( tboGIRayCastIndex, curNode ).xy );
+			#endif
+			if( index.y > 0 ){
+				break;
+			}
+			index.x += rootNode;
+#include "v130/shared/defren/gi/raycast/inline_bvh_node_any.glsl"
+			curNode = stack[ --stackPosition ];
+		}
+		
+		// instance pass
+		if( curNode > -1 ){
+#include "v130/shared/defren/gi/raycast/inline_bvh_instances_any.glsl"
+			curNode = stack[ --stackPosition ];
+		}
+	}
+	
+	return false;
 }
