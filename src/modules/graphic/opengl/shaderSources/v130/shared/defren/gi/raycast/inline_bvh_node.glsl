@@ -30,6 +30,7 @@
 			float rightHit = giRayCastBvhNodeHit( minExtend, maxExtend, rayOrigin, invRayDirection );
 			
 			if( leftHit < result.distance && rightHit < result.distance ){
+				/*
 				if( leftHit > rightHit ){
 					curNode = index.x + 1; // right node
 					stack[ stackPosition++ ] = index.x; // left node
@@ -38,6 +39,9 @@
 					curNode = index.x; // left node
 					stack[ stackPosition++ ] = index.x + 1; // right node
 				}
+				*/
+				curNode = leftHit > rightHit ? index.x + 1 : index.x;
+				stack[ stackPosition++ ] = leftHit > rightHit ? index.x : index.x + 1;
 				continue;
 				
 			}else if( leftHit < result.distance ){

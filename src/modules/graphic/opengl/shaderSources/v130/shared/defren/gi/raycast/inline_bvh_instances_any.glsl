@@ -43,7 +43,7 @@
 				#else
 					ivec4 instIndices = ivec4( texelFetch( tboGIRayCastInstance, index.x + i ) );
 				#endif
-				if( giRayCastTraceMeshAny( instIndices, meshRayOrigin, normalize( meshRayDirection ) ) ){
+				if( giRayCastTraceMeshAny( instIndices, meshRayOrigin, normalize( meshRayDirection ), distanceLimit ) ){
 					return true;
 				}
 			}

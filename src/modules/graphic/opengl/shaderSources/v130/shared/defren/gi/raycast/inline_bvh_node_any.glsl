@@ -18,7 +18,7 @@
 				vec3 minExtend = texelFetch( tboGIRayCastNodeBox, index.x * 2 ).xyz;
 				vec3 maxExtend = texelFetch( tboGIRayCastNodeBox, index.x * 2 + 1 ).xyz;
 			#endif
-			bool leftHit = giRayCastBvhNodeHitAny( minExtend, maxExtend, rayOrigin, invRayDirection );
+			float leftHit = giRayCastBvhNodeHit( minExtend, maxExtend, rayOrigin, invRayDirection );
 			
 			#ifdef GI_RAYCAST_USE_SSBO
 				minExtend = pGIRayCastNodes[ index.x + 1 ].minExtend;
@@ -27,16 +27,18 @@
 				minExtend = texelFetch( tboGIRayCastNodeBox, index.x * 2 + 2 ).xyz;
 				maxExtend = texelFetch( tboGIRayCastNodeBox, index.x * 2 + 3 ).xyz;
 			#endif
-			bool rightHit = giRayCastBvhNodeHitAny( minExtend, maxExtend, rayOrigin, invRayDirection );
+			float rightHit = giRayCastBvhNodeHit( minExtend, maxExtend, rayOrigin, invRayDirection );
 			
-			if( leftHit ){
-				curNode = index.x; // left node
-				if( rightHit ){
-					stack[ stackPosition++ ] = index.x + 1; // right node
-				}
+			if( leftHit < distanceLimit && rightHit < distanceLimit ){
+				curNode = leftHit > rightHit ? index.x + 1 : index.x;
+				stack[ stackPosition++ ] = leftHit > rightHit ? index.x : index.x + 1;
 				continue;
 				
-			}else if( rightHit ){
+			}else if( leftHit < distanceLimit ){
+				curNode = index.x; // left node
+				continue;
+				
+			}else if( rightHit < distanceLimit ){
 				curNode = index.x + 1; // right node
 				continue;
 			}

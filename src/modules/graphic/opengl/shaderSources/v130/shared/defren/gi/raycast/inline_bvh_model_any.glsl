@@ -49,7 +49,7 @@
 					uvt.xyz /= det;
 					uvt.w = 1.0 - uvt.x - uvt.y;
 					
-					if( all( greaterThanEqual( uvt, vec4( 0.0 ) ) ) ){
+					if( all( greaterThanEqual( uvt, vec4( 0.0 ) ) ) && uvt.z < distanceLimit ){
 						vec3 normal = cross( e0, e1 ); // no normalize here since caller needs to do this anyways
 						bool frontface = dot( rayDirection, normal ) < 0.0;
 						
