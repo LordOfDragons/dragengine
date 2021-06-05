@@ -1024,11 +1024,21 @@ void deoglArrayTexture::SetFBOFormatSNorm( int channels, int bpp ){
 	}
 }
 
-void deoglArrayTexture::SetDepthFormat( bool packedStencil ){
+void deoglArrayTexture::SetDepthFormat( bool packedStencil, bool useFloat ){
 	if( packedStencil ){
-		SetFormatFBOByNumber( deoglCapsFmtSupport::eutfDepth_Stencil );
+		if( useFloat ){
+			SetFormatFBOByNumber( deoglCapsFmtSupport::eutfDepthF_Stencil );
+			
+		}else{
+			SetFormatFBOByNumber( deoglCapsFmtSupport::eutfDepth_Stencil );
+		}
 		
 	}else{
-		SetFormatFBOByNumber( deoglCapsFmtSupport::eutfDepth );
+		if( useFloat ){
+			SetFormatFBOByNumber( deoglCapsFmtSupport::eutfDepthF );
+			
+		}else{
+			SetFormatFBOByNumber( deoglCapsFmtSupport::eutfDepth );
+		}
 	}
 }

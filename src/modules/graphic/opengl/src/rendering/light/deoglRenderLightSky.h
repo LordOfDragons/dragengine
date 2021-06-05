@@ -26,7 +26,7 @@
 
 class deoglCollideList;
 class deoglLightShader;
-class deoglRenderableArrayTexture;
+class deoglRenderableDepthArrayTexture;
 class deoglRenderableDepthTexture;
 class deoglRenderPlan;
 class deoglRLight;
@@ -48,7 +48,7 @@ private:
 	deoglShaderProgram *pShaderAO;
 	deoglShaderProgram *pShaderClearDepth;
 	
-	deoglRenderableArrayTexture *pSolidShadowMap;
+	deoglRenderableDepthArrayTexture *pSolidShadowMap;
 	deoglRenderableDepthTexture *pSolidGIShadowMap;
 	
 	

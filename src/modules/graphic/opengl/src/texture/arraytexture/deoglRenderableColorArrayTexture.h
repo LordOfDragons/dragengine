@@ -19,8 +19,8 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef _DEOGLRENDERABLEARRAYTEXTURE_H_
-#define _DEOGLRENDERABLEARRAYTEXTURE_H_
+#ifndef _DEOGLRENDERABLECOLORARRAYTEXTURE_H_
+#define _DEOGLRENDERABLECOLORARRAYTEXTURE_H_
 
 class deoglRenderThread;
 class deoglArrayTexture;
@@ -28,60 +28,76 @@ class deoglArrayTexture;
 
 
 /**
- * @brief Renderable Array Texture.
- * Stores a renderable array texture of any kind. Renderable array textures
- * can not be used by more than one entity at the same time. They can also
- * not change the size or format once created. They can though be reused if
- * the entity holding the texture gives it up.
+ * Stores a renderable texture of any kind. Renderable textures can not be
+ * used by more than one entity at the same time. They can also not change
+ * the size of format once created. They can though be reused if the entity
+ * holding the texture gives it up.
  */
-class deoglRenderableArrayTexture{
+class deoglRenderableColorArrayTexture{
 private:
 	int pWidth;
 	int pHeight;
 	int pLayerCount;
-	int pFormat;
+	int pComponentCount;
+	bool pIsFloat;
 	bool pInUse;
 	
-	deoglArrayTexture *pTexture;
+	deoglArrayTexture *pArrayTexture;
 	
 	int pMemoryUsageGPU;
 	
+	
+	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Creates a new renderable array texture. */
-	deoglRenderableArrayTexture( deoglRenderThread &renderThread, int width, int height, int layerCount, int format );
-	/** Cleans up the renderable array texture. */
-	~deoglRenderableArrayTexture();
+	/** Create renderable texture. */
+	deoglRenderableColorArrayTexture( deoglRenderThread &renderThread, int width,
+		int height, int layerCount, int componentCount, bool isFloat );
+	
+	/** Clean up renderable texture. */
+	~deoglRenderableColorArrayTexture();
 	/*@}*/
 	
-	/** @name Management */
+	
+	
+	/** \name Management */
 	/*@{*/
-	/** Retrieves the width. */
+	/** Width. */
 	inline int GetWidth() const{ return pWidth; }
-	/** Retrieves the height. */
+	
+	/** Height. */
 	inline int GetHeight() const{ return pHeight; }
-	/** Retrieves the number of layers. */
+	
+	/** Layer count. */
 	inline int GetLayerCount() const{ return pLayerCount; }
-	/** Retrieves the format. */
-	inline int GetFormat() const{ return pFormat; }
 	
-	/** Determines if this array texture has the matching parameters. */
-	bool Matches( int width, int height, int layerCount, int format ) const;
+	/** Count of components. */
+	inline int GetComponentCount() const{ return pComponentCount; }
 	
-	/** Determines if the shadow map is in use. */
+	/** Use float format. */
+	inline bool GetIsFloat() const{ return pIsFloat; }
+	
+	/** Format matches. */
+	bool Matches( int width, int height, int layers, int componentCount, bool isFloat ) const;
+	
+	/** Texture is in use. */
 	inline bool GetInUse() const{ return pInUse; }
-	/** Sets if the shadow map is in use. */
+	
+	/** Set if texture is in use. */
 	void SetInUse( bool inUse );
 	
-	/** Retrieves the array texture. */
-	inline deoglArrayTexture *GetTexture() const{ return pTexture; }
+	/** Texture. */
+	inline deoglArrayTexture *GetArrayTexture() const{ return pArrayTexture; }
 	
-	/** Retrieves the GPU memory usage. */
+	/** GPU memory usage. */
 	inline int GetMemoryUsageGPU() const{ return pMemoryUsageGPU; }
-	/** Updates the GPU memory consumption. */
+	
+	/** Update GPU memory consumption. */
 	void UpdateMemoryUsage();
 	/*@}*/
+	
+	
 	
 private:
 	void pCleanUp();

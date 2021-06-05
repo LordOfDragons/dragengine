@@ -28,7 +28,6 @@
 #include "deoglRSkyInstance.h"
 #include "deoglRSkyInstanceLayer.h"
 #include "deoglRSkyControllerTarget.h"
-#include "deoglSkyLayerShadowCaster.h"
 #include "deoglSkyLayerTracker.h"
 #include "../configuration/deoglConfiguration.h"
 #include "../light/shader/deoglLightShader.h"
@@ -41,6 +40,7 @@
 #include "../skin/deoglRSkin.h"
 #include "../skin/deoglSkin.h"
 #include "../skin/deoglSkinTexture.h"
+#include "../shadow/deoglShadowCaster.h"
 #include "../delayedoperation/deoglDelayedDeletion.h"
 #include "../delayedoperation/deoglDelayedOperations.h"
 
@@ -73,7 +73,7 @@ pParamBlockInstance( NULL )
 		pShaders[ i ] = NULL;
 	}
 	
-	pShadowCaster = new deoglSkyLayerShadowCaster( instance.GetRenderThread() );
+	pShadowCaster = new deoglShadowCaster( instance.GetRenderThread() );
 }
 
 class deoglRSkyInstanceLayerDeletion : public deoglDelayedDeletion{
@@ -81,7 +81,7 @@ public:
 	deoglLightShader *shaders[ deoglRSkyInstanceLayer::EST_COUNT ];
 	deoglSPBlockUBO *paramBlockLight;
 	deoglSPBlockUBO *paramBlockInstance;
-	deoglSkyLayerShadowCaster *shadowCaster;
+	deoglShadowCaster *shadowCaster;
 	
 	deoglRSkyInstanceLayerDeletion() :
 	paramBlockLight( NULL ),
@@ -96,7 +96,7 @@ public:
 	virtual ~deoglRSkyInstanceLayerDeletion(){
 	}
 	
-	virtual void DeleteObjects( deoglRenderThread &renderThread ){
+	virtual void DeleteObjects( deoglRenderThread& ){
 		int i;
 		
 		if( shadowCaster ){

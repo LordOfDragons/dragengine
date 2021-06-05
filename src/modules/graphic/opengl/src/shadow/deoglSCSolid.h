@@ -23,10 +23,12 @@
 #define _DEOGLSCSOLID_H_
 
 class deoglRenderThread;
+class deoglArrayTexture;
 class deoglTexture;
 class deoglCubeMap;
 class deoglRenderableDepthTexture;
 class deoglRenderableDepthCubeMap;
+class deoglRenderableDepthArrayTexture;
 
 
 
@@ -39,11 +41,13 @@ private:
 	
 	deoglTexture *pStaticMap;
 	deoglCubeMap *pStaticCubeMap;
+	deoglArrayTexture *pStaticArrayMap;
 	int pLastUseStatic;
 	bool pHasStatic;
 	
 	deoglRenderableDepthTexture *pDynamicMap;
 	deoglRenderableDepthCubeMap *pDynamicCubeMap;
+	deoglRenderableDepthArrayTexture *pDynamicArrayMap;
 	
 	int pPlanStaticSize;
 	int pPlanDynamicSize;
@@ -65,17 +69,23 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** Static shadow map if present or \em NULL otherwise. */
+	/** Static shadow map if present or NULL otherwise. */
 	inline deoglTexture *GetStaticMap() const{ return pStaticMap; }
 	
 	/** Request static shadow map with size if absent. */
 	deoglTexture *ObtainStaticMapWithSize( int size, bool useFloat );
 	
-	/** Static shadow cube map if present or \em NULL otherwise. */
+	/** Static shadow cube map if present or NULL otherwise. */
 	inline deoglCubeMap *GetStaticCubeMap() const{ return pStaticCubeMap; }
 	
 	/** Request static cube map with size if absent. */
 	deoglCubeMap *ObtainStaticCubeMapWithSize( int size );
+	
+	/** Static array shadow map if present or NULL otherwise. */
+	inline deoglArrayTexture *GetStaticArrayMap() const{ return pStaticArrayMap; }
+	
+	/** Request static array shadow map with size if absent. */
+	deoglArrayTexture *ObtainStaticArrayMapWithSize( int size, int layers, bool useFloat );
 	
 	/** Drop static shadow map if present. */
 	void DropStatic();
@@ -91,17 +101,23 @@ public:
 	
 	
 	
-	/** Dynamic shadow map if present or \em NULL otherwise. */
+	/** Dynamic shadow map if present or NULL otherwise. */
 	inline deoglRenderableDepthTexture *GetDynamicMap() const{ return pDynamicMap; }
 	
 	/** Obtain dynamic shadow map with size if absent. */
 	deoglRenderableDepthTexture *ObtainDynamicMapWithSize( int size, bool useFloat );
 	
-	/** Dynamic shadow cube map if present or \em NULL otherwise. */
+	/** Dynamic shadow cube map if present or NULL otherwise. */
 	inline deoglRenderableDepthCubeMap *GetDynamicCubeMap() const{ return pDynamicCubeMap; }
 	
 	/** Obtain dynamic shadow cube map with size if absent. */
 	deoglRenderableDepthCubeMap *ObtainDynamicCubeMapWithSize( int size );
+	
+	/** Dynamic array shadow map if present or NULL otherwise. */
+	inline deoglRenderableDepthArrayTexture *GetDynamicArrayMap() const{ return pDynamicArrayMap; }
+	
+	/** Obtain dynamic array shadow map with size if absent. */
+	deoglRenderableDepthArrayTexture *ObtainDynamicArrayMapWithSize( int size, int layers, bool useFloat );
 	
 	/** Drop dynamic shadow map if present. */
 	void DropDynamic();

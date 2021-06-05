@@ -27,7 +27,8 @@
 #include "deoglRenderThread.h"
 #include "../occlusiontest/deoglOcclusionMapPool.h"
 #include "../skin/combinedTexture/deoglCombinedTextureList.h"
-#include "../texture/arraytexture/deoglRenderableArrayTextureManager.h"
+#include "../texture/arraytexture/deoglRenderableColorArrayTextureManager.h"
+#include "../texture/arraytexture/deoglRenderableDepthArrayTextureManager.h"
 #include "../texture/cubemap/deoglRenderableColorCubeMapManager.h"
 #include "../texture/cubemap/deoglRenderableDepthCubeMapManager.h"
 #include "../texture/deoglTextureStageManager.h"
@@ -53,7 +54,8 @@ pRenDepthTexMgr( NULL ),
 pRenColorCubeMgr( NULL ),
 pRenDepthCubeMgr( NULL ),
 pRenTex1DMgr( NULL ),
-pRenArrTexMgr( NULL ),
+pRenColorArrTexMgr( NULL ),
+pRenDepthArrTexMgr( NULL ),
 pOcclusionMapPool( NULL )
 {
 	try{
@@ -65,7 +67,8 @@ pOcclusionMapPool( NULL )
 		pRenColorCubeMgr = new deoglRenderableColorCubeMapManager( renderThread );
 		pRenDepthCubeMgr = new deoglRenderableDepthCubeMapManager( renderThread );
 		pRenTex1DMgr = new deoglRenderableTexture1DManager( renderThread );
-		pRenArrTexMgr = new deoglRenderableArrayTextureManager( renderThread );
+		pRenColorArrTexMgr = new deoglRenderableColorArrayTextureManager( renderThread );
+		pRenDepthArrTexMgr = new deoglRenderableDepthArrayTextureManager( renderThread );
 		
 		pOcclusionMapPool = new deoglOcclusionMapPool( renderThread );
 		
@@ -94,8 +97,11 @@ void deoglRTTexture::pCleanUp(){
 		delete pOcclusionMapPool;
 	}
 	
-	if( pRenArrTexMgr ){
-		delete pRenArrTexMgr;
+	if( pRenColorArrTexMgr ){
+		delete pRenColorArrTexMgr;
+	}
+	if( pRenDepthArrTexMgr ){
+		delete pRenDepthArrTexMgr;
 	}
 	if( pRenTex1DMgr ){
 		delete pRenTex1DMgr;

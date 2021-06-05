@@ -28,10 +28,11 @@ class deoglRenderThread;
 
 class deoglCombinedTextureList;
 class deoglRenderableTexture1DManager;
-class deoglRenderableArrayTextureManager;
+class deoglRenderableColorArrayTextureManager;
 class deoglRenderableColorCubeMapManager;
 class deoglRenderableColorTextureManager;
 class deoglRenderableDepthCubeMapManager;
+class deoglRenderableDepthArrayTextureManager;
 class deoglRenderableDepthTextureManager;
 class deoglTextureStageManager;
 class deoglOcclusionMapPool;
@@ -51,7 +52,8 @@ private:
 	deoglRenderableColorCubeMapManager *pRenColorCubeMgr;
 	deoglRenderableDepthCubeMapManager *pRenDepthCubeMgr;
 	deoglRenderableTexture1DManager *pRenTex1DMgr;
-	deoglRenderableArrayTextureManager *pRenArrTexMgr;
+	deoglRenderableColorArrayTextureManager *pRenColorArrTexMgr;
+	deoglRenderableDepthArrayTextureManager *pRenDepthArrTexMgr;
 	deoglOcclusionMapPool *pOcclusionMapPool;
 	
 public:
@@ -89,8 +91,11 @@ public:
 	/** Renderable 1d texture manager. */
 	inline deoglRenderableTexture1DManager &GetRenderableTexture1D() const{ return *pRenTex1DMgr; }
 	
-	/** Renderable array texture manager. */
-	inline deoglRenderableArrayTextureManager &GetRenderableArrayTexture() const{ return *pRenArrTexMgr; }
+	/** Renderable color array texture manager. */
+	inline deoglRenderableColorArrayTextureManager &GetRenderableColorArrayTexture() const{ return *pRenColorArrTexMgr; }
+	
+	/** Renderable depth array texture manager. */
+	inline deoglRenderableDepthArrayTextureManager &GetRenderableDepthArrayTexture() const{ return *pRenDepthArrTexMgr; }
 	
 	/** Occlusion map pool. */
 	inline deoglOcclusionMapPool &GetOcclusionMapPool() const{ return *pOcclusionMapPool; }

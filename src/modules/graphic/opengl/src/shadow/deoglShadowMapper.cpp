@@ -32,8 +32,10 @@
 #include "../renderthread/deoglRTFramebuffer.h"
 #include "../renderthread/deoglRTTexture.h"
 #include "../texture/arraytexture/deoglArrayTexture.h"
-#include "../texture/arraytexture/deoglRenderableArrayTexture.h"
-#include "../texture/arraytexture/deoglRenderableArrayTextureManager.h"
+#include "../texture/arraytexture/deoglRenderableColorArrayTexture.h"
+#include "../texture/arraytexture/deoglRenderableColorArrayTextureManager.h"
+#include "../texture/arraytexture/deoglRenderableDepthArrayTexture.h"
+#include "../texture/arraytexture/deoglRenderableDepthArrayTextureManager.h"
 #include "../texture/cubemap/deoglCubeMap.h"
 #include "../texture/cubemap/deoglRenderableColorCubeMap.h"
 #include "../texture/cubemap/deoglRenderableColorCubeMapManager.h"
@@ -864,7 +866,7 @@ deoglArrayTexture *deoglShadowMapper::GetSolidDepthArrayTexture() const{
 		DETHROW( deeInvalidParam );
 	}
 	
-	return pArrTexSolidDepth->GetTexture();
+	return pArrTexSolidDepth->GetArrayTexture();
 }
 
 void deoglShadowMapper::SetForeignSolidDepthArrayTexture( deoglArrayTexture *texture ){
@@ -882,7 +884,7 @@ deoglArrayTexture *deoglShadowMapper::GetTransparentDepthArrayTexture() const{
 		DETHROW( deeInvalidParam );
 	}
 	
-	return pArrTexTranspDepth->GetTexture();
+	return pArrTexTranspDepth->GetArrayTexture();
 }
 
 void deoglShadowMapper::SetForeignTransparentDepthArrayTexture( deoglArrayTexture *texture ){
@@ -900,7 +902,7 @@ deoglArrayTexture *deoglShadowMapper::GetTransparentColorArrayTexture() const{
 		DETHROW( deeInvalidParam );
 	}
 	
-	return pArrTexTranspColor->GetTexture();
+	return pArrTexTranspColor->GetArrayTexture();
 }
 
 void deoglShadowMapper::SetForeignTransparentColorArrayTexture( deoglArrayTexture *texture ){
@@ -976,10 +978,9 @@ void deoglShadowMapper::ActivateSolidArrayTexture( int size, int layerCount, boo
 	
 	// obtain solid depth texture if not existing already
 	if( ! pArrTexSolidDepth && ! pForeignArrTexSolidDepth ){
-		pArrTexSolidDepth = pRenderThread.GetTexture().GetRenderableArrayTexture()
-			.GetTextureWith( size, size, layerCount, withStencil ?
-				deoglPixelBuffer::epfDepthStencil : deoglPixelBuffer::epfDepth );
-		pUseArrTexSolidDepth = pArrTexSolidDepth->GetTexture();
+		pArrTexSolidDepth = pRenderThread.GetTexture().GetRenderableDepthArrayTexture()
+			.GetWith( size, size, layerCount, withStencil, false );
+		pUseArrTexSolidDepth = pArrTexSolidDepth->GetArrayTexture();
 	}
 	
 	// switch to the framebuffer required by this shadow map
@@ -1019,10 +1020,9 @@ void deoglShadowMapper::ActivateSolidArrayTextureLayer( int size, int layerCount
 	
 	// obtain solid depth texture if not existing already
 	if( ! pArrTexSolidDepth && ! pForeignArrTexSolidDepth ){
-		pArrTexSolidDepth = pRenderThread.GetTexture().GetRenderableArrayTexture()
-			.GetTextureWith( size, size, layerCount, withStencil ?
-				deoglPixelBuffer::epfDepthStencil : deoglPixelBuffer::epfDepth );
-		pUseArrTexSolidDepth = pArrTexSolidDepth->GetTexture();
+		pArrTexSolidDepth = pRenderThread.GetTexture().GetRenderableDepthArrayTexture()
+			.GetWith( size, size, layerCount, withStencil, false );
+		pUseArrTexSolidDepth = pArrTexSolidDepth->GetArrayTexture();
 	}
 	
 	// switch to the framebuffer required by this shadow map
@@ -1060,14 +1060,16 @@ void deoglShadowMapper::ActivateTransparentArrayTexture( int size, int layerCoun
 	
 	// obtain transparent depth texture if not existing already
 	if( ! pArrTexTranspDepth && ! pForeignArrTexTranspDepth ){
-		pArrTexTranspDepth = pRenderThread.GetTexture().GetRenderableArrayTexture().GetTextureWith( size, size, layerCount, deoglPixelBuffer::epfDepth );
-		pUseArrTexTranspDepth = pArrTexTranspDepth->GetTexture();
+		pArrTexTranspDepth = pRenderThread.GetTexture().GetRenderableDepthArrayTexture().
+			GetWith( size, size, layerCount, false, false );
+		pUseArrTexTranspDepth = pArrTexTranspDepth->GetArrayTexture();
 	}
 	
 	// obtain transparent color texture if not existing already
 	if( ! pArrTexTranspColor && ! pForeignArrTexTranspColor ){
-		pArrTexTranspColor = pRenderThread.GetTexture().GetRenderableArrayTexture().GetTextureWith( size, size, layerCount, deoglPixelBuffer::epfByte4 );
-		pUseArrTexTranspColor = pArrTexTranspColor->GetTexture();
+		pArrTexTranspColor = pRenderThread.GetTexture().GetRenderableColorArrayTexture().
+			GetWith( size, size, layerCount, 4, false );
+		pUseArrTexTranspColor = pArrTexTranspColor->GetArrayTexture();
 	}
 	
 	// switch to the framebuffer required by this shadow map

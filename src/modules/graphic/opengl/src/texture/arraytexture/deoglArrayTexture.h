@@ -106,7 +106,7 @@ public:
 	void SetFBOFormatSNorm( int channels, int bpp );
 	
 	/** Set depth texture format suitable for attaching as FBO render target. */
-	void SetDepthFormat( bool packedStencil );
+	void SetDepthFormat( bool packedStencil, bool useFloat );
 	
 	/** Set texture format by number from the list of mapping texture formats to use. */
 	void SetFormatMappingByNumber( deoglCapsFmtSupport::eUseTextureFormats formatNumber );

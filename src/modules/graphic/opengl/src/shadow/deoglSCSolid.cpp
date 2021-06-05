@@ -28,6 +28,9 @@
 #include "../configuration/deoglConfiguration.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTTexture.h"
+#include "../texture/arraytexture/deoglArrayTexture.h"
+#include "../texture/arraytexture/deoglRenderableDepthArrayTexture.h"
+#include "../texture/arraytexture/deoglRenderableDepthArrayTextureManager.h"
 #include "../texture/cubemap/deoglCubeMap.h"
 #include "../texture/cubemap/deoglRenderableDepthCubeMap.h"
 #include "../texture/cubemap/deoglRenderableDepthCubeMapManager.h"
@@ -52,11 +55,13 @@ pRenderThread( renderThread ),
 
 pStaticMap( NULL ),
 pStaticCubeMap( NULL ),
+pStaticArrayMap( NULL ),
 pLastUseStatic( 0 ),
 pHasStatic( false ),
 
 pDynamicMap( NULL ),
 pDynamicCubeMap( NULL ),
+pDynamicArrayMap( NULL ),
 
 pPlanStaticSize( 16 ),
 pPlanDynamicSize( 16 ),
@@ -134,6 +139,33 @@ deoglCubeMap *deoglSCSolid::ObtainStaticCubeMapWithSize( int size ){
 	return pStaticCubeMap;
 }
 
+deoglArrayTexture *deoglSCSolid::ObtainStaticArrayMapWithSize( int size, int layers, bool useFloat ){
+	if( size < 1 || layers < 1 ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	if( pStaticArrayMap ){
+		if( pStaticArrayMap->GetWidth() == size && pStaticArrayMap->GetLayerCount() == layers
+		&& pStaticArrayMap->GetFormat()->GetIsDepthFloat() == useFloat ){
+			return pStaticArrayMap;
+		}
+		
+		if( pStaticArrayMap ){
+			delete pStaticArrayMap;
+			pStaticArrayMap = NULL;
+		}
+	}
+	
+	pStaticArrayMap = new deoglArrayTexture( pRenderThread );
+	pStaticArrayMap->SetDepthFormat( false, useFloat );
+	pStaticArrayMap->SetSize( size, size, layers );
+	pStaticArrayMap->CreateTexture();
+	pHasStatic = true;
+	pLastUseStatic = 0;
+	
+	return pStaticArrayMap;
+}
+
 void deoglSCSolid::DropStatic(){
 	if( pStaticMap ){
 		delete pStaticMap;
@@ -142,6 +174,10 @@ void deoglSCSolid::DropStatic(){
 	if( pStaticCubeMap ){
 		delete pStaticCubeMap;
 		pStaticCubeMap = NULL;
+	}
+	if( pStaticArrayMap ){
+		delete pStaticArrayMap;
+		pStaticArrayMap = NULL;
 	}
 	
 	pHasStatic = false;
@@ -196,6 +232,26 @@ deoglRenderableDepthCubeMap *deoglSCSolid::ObtainDynamicCubeMapWithSize( int siz
 	return pDynamicCubeMap;
 }
 
+deoglRenderableDepthArrayTexture *deoglSCSolid::ObtainDynamicArrayMapWithSize(
+int size, int layers, bool useFloat ){
+	if( size < 1 || layers < 1 ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	if( pDynamicArrayMap ){
+		if( pDynamicArrayMap->GetWidth() == size && pDynamicArrayMap->GetLayerCount() == layers
+		&& pDynamicArrayMap->GetUseFloat() == useFloat ){
+			return pDynamicArrayMap;
+		}
+		DropDynamic();
+	}
+	
+	pDynamicArrayMap = pRenderThread.GetTexture().GetRenderableDepthArrayTexture()
+		.GetWith( size, size, layers, false, useFloat );
+	
+	return pDynamicArrayMap;
+}
+
 void deoglSCSolid::DropDynamic(){
 	if( pDynamicMap ){
 		pDynamicMap->SetInUse( false );
@@ -204,6 +260,10 @@ void deoglSCSolid::DropDynamic(){
 	if( pDynamicCubeMap ){
 		pDynamicCubeMap->SetInUse( false );
 		pDynamicCubeMap = NULL;
+	}
+	if( pDynamicArrayMap ){
+		pDynamicArrayMap->SetInUse( false );
+		pDynamicArrayMap = NULL;
 	}
 }
 

@@ -93,8 +93,8 @@
 #include "../../sky/deoglRSkyInstance.h"
 #include "../../sky/deoglRSkyInstanceLayer.h"
 #include "../../texture/arraytexture/deoglArrayTexture.h"
-#include "../../texture/arraytexture/deoglRenderableArrayTexture.h"
-#include "../../texture/arraytexture/deoglRenderableArrayTextureManager.h"
+#include "../../texture/arraytexture/deoglRenderableDepthArrayTexture.h"
+#include "../../texture/arraytexture/deoglRenderableDepthArrayTextureManager.h"
 #include "../../texture/cubemap/deoglCubeMap.h"
 #include "../../texture/cubemap/deoglRenderableDepthCubeMap.h"
 #include "../../texture/deoglTextureStageManager.h"
@@ -479,7 +479,7 @@ const deoglRenderPlanMasked *mask, deoglRenderPlanSkyLight &planSkyLight ){
 	
 	target = lightShader->GetTextureTarget( deoglLightShader::ettShadow1SolidDepth );
 	if( target != -1 ){
-		tsmgr.EnableArrayTexture( target, *pSolidShadowMap->GetTexture(), GetSamplerShadowClampLinear() );
+		tsmgr.EnableArrayTexture( target, *pSolidShadowMap->GetArrayTexture(), GetSamplerShadowClampLinear() );
 	}
 	
 	target = lightShader->GetTextureTarget( deoglLightShader::ettNoise );
@@ -489,7 +489,7 @@ const deoglRenderPlanMasked *mask, deoglRenderPlanSkyLight &planSkyLight ){
 	
 	target = lightShader->GetTextureTarget( deoglLightShader::ettLightDepth1 );
 	if( target != -1 ){
-		tsmgr.EnableArrayTexture( target, *pSolidShadowMap->GetTexture(), GetSamplerClampLinear() );
+		tsmgr.EnableArrayTexture( target, *pSolidShadowMap->GetArrayTexture(), GetSamplerClampLinear() );
 	}
 	
 	// set the ao texture
@@ -528,7 +528,7 @@ const deoglRenderPlanMasked *mask, deoglRenderPlanSkyLight &planSkyLight ){
 				
 				int target = lightShader->GetTextureTarget( deoglLightShader::ettShadow1SolidDepth );
 				if( target != -1 ){
-					tsmgr.EnableArrayTexture( target, *pSolidShadowMap->GetTexture(), GetSamplerShadowClampLinear() );
+					tsmgr.EnableArrayTexture( target, *pSolidShadowMap->GetArrayTexture(), GetSamplerShadowClampLinear() );
 				}
 				
 				target = lightShader->GetTextureTarget( deoglLightShader::ettNoise );
@@ -538,7 +538,7 @@ const deoglRenderPlanMasked *mask, deoglRenderPlanSkyLight &planSkyLight ){
 				
 				target = lightShader->GetTextureTarget( deoglLightShader::ettLightDepth1 );
 				if( target != -1 ){
-					tsmgr.EnableArrayTexture( target, *pSolidShadowMap->GetTexture(), GetSamplerClampLinear() );
+					tsmgr.EnableArrayTexture( target, *pSolidShadowMap->GetArrayTexture(), GetSamplerClampLinear() );
 				}
 				
 				target = lightShader->GetTextureTarget( deoglLightShader::ettGIShadowMap );
@@ -675,12 +675,12 @@ deoglRenderPlanSkyLight &planSkyLight, deoglShadowMapper &shadowMapper ){
 		pSolidShadowMap = NULL;
 	}
 	if( ! pSolidShadowMap ){
-		pSolidShadowMap = renderThread.GetTexture().GetRenderableArrayTexture().GetTextureWith(
-			shadowMapSize, shadowMapSize, layerCount, deoglPixelBuffer::epfDepthStencil );
+		pSolidShadowMap = renderThread.GetTexture().GetRenderableDepthArrayTexture()
+			.GetWith( shadowMapSize, shadowMapSize, layerCount, true, false );
 	}
 	
 	// clear shadow map
-	shadowMapper.SetForeignSolidDepthArrayTexture( pSolidShadowMap->GetTexture() );
+	shadowMapper.SetForeignSolidDepthArrayTexture( pSolidShadowMap->GetArrayTexture() );
 	
 #ifdef SKY_SHADOW_LAYERED_RENDERING
 	if( bugClearEntireArrTex ){
@@ -1019,7 +1019,8 @@ deoglRenderPlanSkyLight &planSkyLight, deoglShadowMapper &shadowMapper ){
 	}
 	
 	if( renderThread.GetConfiguration().GetDebugSnapshot() == edbgsnapLightSkyShadowMap ){
-		renderThread.GetDebug().GetDebugSaveTexture().SaveDepthArrayTexture( *( pSolidShadowMap->GetTexture() ), "sky_shadow", true );
+		renderThread.GetDebug().GetDebugSaveTexture().SaveDepthArrayTexture(
+			*( pSolidShadowMap->GetArrayTexture() ), "sky_shadow", true );
 		renderThread.GetConfiguration().SetDebugSnapshot( 0 );
 	}
 	
