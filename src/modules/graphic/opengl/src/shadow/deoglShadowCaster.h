@@ -62,20 +62,17 @@ private:
 	deoglSCTransparent pTransparent;
 	deoglSCAmbient pAmbient;
 	
-	decVector pShadowOrigin;
 	eShadowTypes pShadowType;
 	
 	float pStaticNear;
 	float pStaticFar;
 	float pStaticScale;
 	float pStaticOffset;
-	float pStaticCutOff;
 	
 	float pDynamicNear;
 	float pDynamicFar;
 	float pDynamicScale;
 	float pDynamicOffset;
-	float pDynamicCutOff;
 	
 	
 	
@@ -123,12 +120,6 @@ public:
 	
 	
 	
-	/** Shadow origin for 180-point lights. */
-	inline const decVector &GetShadowOrigin() const{ return pShadowOrigin; }
-	
-	/** Set shadow orign for 180point lights. */
-	void SetShadowOrigin( const decVector &origin );
-	
 	/** Shadow type. */
 	inline eShadowTypes GetShadowType() const{ return pShadowType; }
 	
@@ -152,12 +143,6 @@ public:
 	/** Set static shadows parameters. */
 	void SetStaticParams( float near, float far );
 	
-	/** Set cut-off for static shadows of 180-point lights. */
-	inline float GetStaticCutOff() const{ return pStaticCutOff; }
-	
-	/** Set cut-off for static shadows of 180-point lights. */
-	void SetStaticCutOff( float cutoff );
-	
 	
 	
 	/** Near distance for dynamic shadows. */
@@ -174,12 +159,6 @@ public:
 	
 	/** Set dynamic shadows parameters. */
 	void SetDynamicParams( float near, float far );
-	
-	/** Set cut-off for dynamic shadows of 180-point lights. */
-	inline float GetDynamicCutOff() const{ return pDynamicCutOff; }
-	
-	/** Set cut-off for dynamic shadows of 180-point lights. */
-	void SetDynamicCutOff( float cutoff );
 	/*@}*/
 };
 

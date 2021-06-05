@@ -51,13 +51,11 @@ pStaticNear( 0.01f ),
 pStaticFar( 10.0f ),
 pStaticScale( 2.887585e-2f ),
 pStaticOffset( 2.887585e-4f ),
-pStaticCutOff( -0.02f ),
 
 pDynamicNear( 0.01f ),
 pDynamicFar( 10.0f ),
 pDynamicScale( 2.887585e-2f ),
-pDynamicOffset( 2.887585e-4f ),
-pDynamicCutOff( -0.02 ){
+pDynamicOffset( 2.887585e-4f ){
 }
 
 deoglShadowCaster::~deoglShadowCaster(){
@@ -94,10 +92,6 @@ void deoglShadowCaster::DropDynamic(){
 
 
 
-void deoglShadowCaster::SetShadowOrigin( const decVector &origin ){
-	pShadowOrigin = origin;
-}
-
 void deoglShadowCaster::SetShadowType( eShadowTypes shadowType ){
 	pShadowType = shadowType;
 }
@@ -110,18 +104,10 @@ void deoglShadowCaster::SetStaticParams( float near, float far ){
 	pStaticOffset = -pStaticNear * pStaticScale;
 }
 
-void deoglShadowCaster::SetStaticCutOff( float cutoff ){
-	pStaticCutOff = cutoff;
-}
-
 void deoglShadowCaster::SetDynamicParams( float near, float far ){
 	pDynamicNear = near;
 	pDynamicFar = far;
 	//pDynamicScale = 1.0f / ( sqrtf( pDynamicFar * pDynamicFar * 3.0f ) - pDynamicNear );
 	pDynamicScale = 1.0f / ( pDynamicFar - pDynamicNear );
 	pDynamicOffset = -pDynamicNear * pDynamicScale;
-}
-
-void deoglShadowCaster::SetDynamicCutOff( float cutoff ){
-	pDynamicCutOff = cutoff;
 }

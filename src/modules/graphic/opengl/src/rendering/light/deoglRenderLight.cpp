@@ -42,7 +42,6 @@
 #include "../../framebuffer/deoglFramebuffer.h"
 #include "../../gi/deoglGIState.h"
 #include "../../light/deoglRLight.h"
-#include "../../light/probes/deoglLightProbeTexture.h"
 #include "../../light/shader/deoglLightShader.h"
 #include "../../renderthread/deoglRenderThread.h"
 #include "../../renderthread/deoglRTDebug.h"
@@ -151,7 +150,6 @@ pShadowCubePB( NULL ),
 pOccMapPB( NULL ),
 pRenderTask( NULL ),
 pAddToRenderTask( NULL ),
-pLightProbesTexture( NULL ),
 
 pDebugInfoSolid( NULL ),
 pDebugInfoSolidCopyDepth( NULL ),
@@ -179,7 +177,6 @@ pDebugInfoTransparentSSSSS( NULL )
 		
 		pRenderTask = new deoglRenderTask( renderThread );
 		pAddToRenderTask = new deoglAddToRenderTask( renderThread, *pRenderTask );
-		pLightProbesTexture = new deoglLightProbeTexture( renderThread );
 		
 		pRenderLightSky = new deoglRenderLightSky( renderThread );
 		pRenderLightSpot = new deoglRenderLightSpot( renderThread, renderers );
@@ -776,9 +773,6 @@ void deoglRenderLight::pCleanUp(){
 		delete pRenderLightSky;
 	}
 	
-	if( pLightProbesTexture ){
-		delete pLightProbesTexture;
-	}
 	if( pAddToRenderTask ){
 		delete pAddToRenderTask;
 	}

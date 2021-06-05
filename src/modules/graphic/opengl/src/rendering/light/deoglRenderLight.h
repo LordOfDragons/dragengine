@@ -25,7 +25,6 @@
 #include "deoglRenderLightBase.h"
 
 class deoglAddToRenderTask;
-class deoglLightProbeTexture;
 class deoglRenderLightParticles;
 class deoglRenderLightPoint;
 class deoglRenderLightSky;
@@ -66,7 +65,6 @@ private:
 	deoglSPBlockUBO *pOccMapPB;
 	deoglRenderTask *pRenderTask;
 	deoglAddToRenderTask *pAddToRenderTask;
-	deoglLightProbeTexture *pLightProbesTexture;
 	
 	deoglDebugInformation *pDebugInfoSolid;
 	deoglDebugInformation *pDebugInfoSolidCopyDepth;
@@ -130,9 +128,6 @@ public:
 	
 	/** Add to render task. */
 	inline deoglAddToRenderTask &GetAddToRenderTask() const{ return *pAddToRenderTask; }
-	
-	/** Light probes texture. */
-	inline deoglLightProbeTexture &GetLightProbesTexture() const{ return *pLightProbesTexture; }
 	
 	
 	

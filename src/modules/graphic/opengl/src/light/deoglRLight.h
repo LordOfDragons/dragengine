@@ -489,9 +489,6 @@ public:
 	/** Set static and dynamic shadows dirty. */
 	void SetDirtyShadows();
 	
-	/** Set shadow parameters. */
-	void SetShadowParameters( const decVector &shadowOrigin, float shadowGap );
-	
 	/** Shadow caster requires neeed future preparing. */
 	void ShadowCasterRequiresPrepare();
 	

@@ -50,7 +50,6 @@
 #include "../../devmode/deoglDeveloperMode.h"
 #include "../../envmap/deoglEnvironmentMap.h"
 #include "../../light/deoglRLight.h"
-#include "../../light/probes/deoglLightProbeTexture.h"
 #include "../../model/deoglModelLOD.h"
 #include "../../model/deoglRModel.h"
 #include "../../occlusiontest/deoglOcclusionTest.h"

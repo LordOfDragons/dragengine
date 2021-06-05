@@ -602,12 +602,6 @@ void deoglRLight::SetDirtyShadows(){
 	pDirtyDynamicShadows = true;
 }
 
-void deoglRLight::SetShadowParameters( const decVector &shadowOrigin, float shadowGap ){
-	pShadowCaster->SetShadowOrigin( shadowOrigin );
-	pShadowCaster->SetStaticCutOff( -shadowGap );
-	pShadowCaster->SetDynamicCutOff( -shadowGap );
-}
-
 void deoglRLight::ShadowCasterRequiresPrepare(){
 	pRequiresPrepareForRender();
 }
