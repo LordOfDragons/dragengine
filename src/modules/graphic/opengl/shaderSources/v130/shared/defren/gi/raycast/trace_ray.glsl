@@ -117,17 +117,6 @@ float giRayCastBvhNodeHit( in vec3 minExtend, in vec3 maxExtend, in vec3 rayOrig
 	return min( t.x, t.y ) > t0 ? t0 : giRayCastNoHitDistance;
 }
 
-bool giRayCastBvhNodeHitAny( in vec3 minExtend, in vec3 maxExtend, in vec3 rayOrigin, in vec3 invRayDirection ){
-	vec3 tbottom = ( minExtend - rayOrigin ) * invRayDirection;
-	vec3 ttop = ( maxExtend - rayOrigin ) * invRayDirection;
-	vec3 tmin = min( ttop, tbottom );
-	vec3 tmax = max( ttop, tbottom );
-	vec2 t = max( tmin.xx, tmin.yz );
-	float t0 = max( max( t.x, t.y ), 0.0 );
-	t = min( tmax.xx, tmax.yz );
-	return min( t.x, t.y ) > t0;
-}
-
 
 // Calculate texture coordinates of hit face.
 #ifndef GI_RAYCAST_DISTANCE_ONLY
@@ -250,7 +239,7 @@ in float distanceLimit, out GIRayCastResult result ){
 // - indices.w = root face index
 // 
 // Returns true if any hit is found otherwise false.
-bool giRayCastTraceMeshAny( in ivec4 indices, in vec3 rayOrigin, in vec3 rayDirection ){
+bool giRayCastTraceMeshAny( in ivec4 indices, in vec3 rayOrigin, in vec3 rayDirection, in float distanceLimit ){
 	#define rootNode indices.x
 	#define rootMaterial indices.y
 	#define rootVertex indices.z
@@ -268,7 +257,7 @@ bool giRayCastTraceMeshAny( in ivec4 indices, in vec3 rayOrigin, in vec3 rayDire
 		vec3 minExtend = texelFetch( tboGIRayCastNodeBox, rootNode * 2 ).xyz;
 		vec3 maxExtend = texelFetch( tboGIRayCastNodeBox, rootNode * 2 + 1 ).xyz;
 	#endif
-	if( ! giRayCastBvhNodeHitAny( minExtend, maxExtend, rayOrigin, invRayDirection ) ){
+	if( giRayCastBvhNodeHit( minExtend, maxExtend, rayOrigin, invRayDirection ) >= distanceLimit ){
 		return false;
 	}
 	}
@@ -399,7 +388,8 @@ in float distanceLimit, out GIRayCastResult result ){
 // Perform ray cast against instance BVH starting at absolute strided index.
 // 
 // Returns true if any hit is found otherwise false.
-bool giRayCastTraceInstanceAny( in int rootNode, in vec3 rayOrigin, in vec3 rayDirection ){
+bool giRayCastTraceInstanceAny( in int rootNode, in vec3 rayOrigin, in vec3 rayDirection,
+in float distanceLimit ){
 	vec3 invRayDirection = vec3( 1.0 ) / rayDirection;
 	
 	int stack[ 13 ];
