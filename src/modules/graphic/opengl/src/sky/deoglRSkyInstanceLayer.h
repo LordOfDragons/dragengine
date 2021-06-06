@@ -22,6 +22,7 @@
 #ifndef _DEOGLRSKYINSTANCELAYER_H_
 #define _DEOGLRSKYINSTANCELAYER_H_
 
+#include <dragengine/common/collection/decPointerList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/resources/sky/deSkyLayer.h>
 
@@ -32,6 +33,9 @@ class deoglRSkyInstance;
 class deoglSPBlockUBO;
 class deoglSkyLayerTracker;
 class deoglShadowCaster;
+class deoglSkyLayerGIState;
+class deoglGIState;
+class deoglRComponent;
 
 
 
@@ -54,8 +58,11 @@ public:
 		/** No shadow casting. */
 		estGIRayNoShadow,
 		
-		/** Solid shadow. */
-		estGIRaySolid,
+		/** Solid shadow using one texture. */
+		estGIRaySolid1,
+		
+		/** Solid shadow using two textures. */
+		estGIRaySolid2,
 		
 		/** Number of shaders. */
 		EST_COUNT
@@ -89,6 +96,9 @@ private:
 	deoglSPBlockUBO *pParamBlockInstance;
 	
 	deoglShadowCaster *pShadowCaster;
+	
+	decPointerList pGIStates;
+	
 	
 	
 	
@@ -175,6 +185,26 @@ public:
 	
 	/** Shadow caster. */
 	inline deoglShadowCaster &GetShadowCaster() const{ return *pShadowCaster; }
+	
+	/** Notify skies render static component changed requiring updates. */
+	void NotifyUpdateStaticComponent( deoglRComponent *component );
+	
+	
+	
+	/** Count of GI States. */
+	int GetGIStateCount() const;
+	
+	/** GI State or NULL if not found. */
+	deoglSkyLayerGIState *GetGIState( const deoglGIState *giState ) const;
+	
+	/** Add GI State if absent. */
+	deoglSkyLayerGIState *AddGIState( const deoglGIState *giState );
+	
+	/** Remove GI State if present. */
+	void RemoveGIState( const deoglGIState *giState );
+	
+	/** Remove all GI States. */
+	void RemoveAllGIStates();
 	/*@}*/
 	
 	

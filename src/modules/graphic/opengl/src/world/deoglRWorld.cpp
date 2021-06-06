@@ -31,6 +31,7 @@
 #include "../debugdrawer/deoglRDebugDrawer.h"
 #include "../envmap/deoglEnvironmentMap.h"
 #include "../envmap/deoglREnvMapProbe.h"
+#include "../gi/deoglGIState.h"
 #include "../light/deoglRLight.h"
 #include "../particle/deoglRParticleEmitterInstance.h"
 #include "../propfield/deoglRPropField.h"
@@ -1126,6 +1127,14 @@ void deoglRWorld::RemoveRemovalMarkedSkies(){
 	}
 }
 
+void deoglRWorld::SkiesNotifyUpdateStaticComponent( deoglRComponent *component ){
+	int count = pSkies.GetCount();
+	int i;
+	for( i=0; i<count; i++ ){
+		( ( deoglRSkyInstance* )pSkies.GetAt( i ) )->NotifyUpdateStaticComponent( component );
+	}
+}
+
 
 
 // DebugDrawers
@@ -1188,6 +1197,69 @@ void deoglRWorld::RemoveRemovalMarkedDebugDrawers(){
 		i--;
 		count--;
 	}
+}
+
+
+
+// GI States
+//////////////
+
+int deoglRWorld::GetGIStateCount() const{
+	return pGIStates.GetCount();
+}
+
+const deoglGIState *deoglRWorld::GetGIStateAt( int index ) const{
+	return ( const deoglGIState * )pGIStates.GetAt( index );
+}
+
+const deoglGIState *deoglRWorld::ClosestGIState( const decDVector &position ) const{
+	const int count = pGIStates.GetCount();
+	const deoglGIState *bestGIState = NULL;
+	double bestDistance = 0.0;
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		const deoglGIState * const giState = ( const deoglGIState * )pGIStates.GetAt( i );
+		const double distance = ( position - giState->GetPosition() ).Length();
+		if( ! bestGIState || distance < bestDistance ){
+			bestGIState = giState;
+			bestDistance = distance;
+		}
+	}
+	
+	return bestGIState;
+}
+
+void deoglRWorld::AddGIState( const deoglGIState *giState ){
+	pGIStates.AddIfAbsent( ( void* )giState );
+}
+
+void deoglRWorld::RemoveGIState( const deoglGIState *giState ){
+	if( ! pGIStates.Has( ( void* )giState ) ){
+		return;
+	}
+	
+	const int skyCount = pSkies.GetCount();
+	int i;
+	for( i=0; i<skyCount; i++ ){
+		( ( deoglRSkyInstance* )pSkies.GetAt( i ) )->DropGIState( giState );
+	}
+	
+	pGIStates.RemoveIfPresent( ( void* )giState );
+}
+
+void deoglRWorld::RemoveAllGIStates(){
+	if( pGIStates.GetCount() == 0 ){
+		return;
+	}
+	
+	const int skyCount = pSkies.GetCount();
+	int i;
+	for( i=0; i<skyCount; i++ ){
+		( ( deoglRSkyInstance* )pSkies.GetAt( i ) )->DropAllGIStates();
+	}
+	
+	pGIStates.RemoveAll();
 }
 
 

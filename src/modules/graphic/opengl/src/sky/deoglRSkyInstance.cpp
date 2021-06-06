@@ -92,6 +92,8 @@ void deoglRSkyInstance::SetParentWorld( deoglRWorld *world ){
 		return;
 	}
 	
+	DropAllGIStates();
+	
 	pParentWorld = world;
 	
 	pSkyNeedsUpdate = true;
@@ -264,10 +266,31 @@ void deoglRSkyInstance::NotifySkyChanged(){
 	pSkyNeedsUpdate = false;
 }
 
+void deoglRSkyInstance::DropGIState( const deoglGIState *giState ){
+	int i;
+	for( i=0; i<pLayerCount; i++ ){
+		pLayers[ i ]->RemoveGIState( giState );
+	}
+}
+
+void deoglRSkyInstance::DropAllGIStates(){
+	int i;
+	for( i=0; i<pLayerCount; i++ ){
+		pLayers[ i ]->RemoveAllGIStates();
+	}
+}
+
 
 
 void deoglRSkyInstance::PrepareQuickDispose(){
 	pParentWorld = NULL;
+}
+
+void deoglRSkyInstance::NotifyUpdateStaticComponent( deoglRComponent *component ){
+	int i;
+	for( i=0; i<pLayerCount; i++ ){
+		pLayers[ i ]->NotifyUpdateStaticComponent( component );
+	}
 }
 
 

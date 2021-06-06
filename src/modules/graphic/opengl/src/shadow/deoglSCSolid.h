@@ -73,7 +73,7 @@ public:
 	inline deoglTexture *GetStaticMap() const{ return pStaticMap; }
 	
 	/** Request static shadow map with size if absent. */
-	deoglTexture *ObtainStaticMapWithSize( int size, bool useFloat );
+	deoglTexture *ObtainStaticMapWithSize( int size, bool withStencil, bool useFloat );
 	
 	/** Static shadow cube map if present or NULL otherwise. */
 	inline deoglCubeMap *GetStaticCubeMap() const{ return pStaticCubeMap; }
@@ -105,7 +105,7 @@ public:
 	inline deoglRenderableDepthTexture *GetDynamicMap() const{ return pDynamicMap; }
 	
 	/** Obtain dynamic shadow map with size if absent. */
-	deoglRenderableDepthTexture *ObtainDynamicMapWithSize( int size, bool useFloat );
+	deoglRenderableDepthTexture *ObtainDynamicMapWithSize( int size, bool withStencil, bool useFloat );
 	
 	/** Dynamic shadow cube map if present or NULL otherwise. */
 	inline deoglRenderableDepthCubeMap *GetDynamicCubeMap() const{ return pDynamicCubeMap; }

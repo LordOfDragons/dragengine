@@ -139,9 +139,6 @@ precision highp int;
 #ifdef TEXTURE_NOISE
 	uniform lowp sampler2D texNoise;
 #endif
-#ifdef GI_RAY
-	uniform HIGHP sampler2DShadow texGIShadowMap;
-#endif
 
 #ifdef TEXTURE_COLOR
 	uniform lowp sampler2D texColor;
@@ -929,9 +926,9 @@ void main( void ){
 					//      using the view shadow map
 // 					vec4 projPos = pGICameraProjection * vec4( position, 1.0 );
 // 					if( any( greaterThan( abs( projPos.xyz ), vec3( projPos.w ) ) ) ){
-						//shadow = min( shadow, SHATEX( texGIShadowMap, ( pGIShadowMatrix * vec4( position, 1.0 ) ).stp ) );
-						shadow = min( shadow, evaluateShadow2D( texGIShadowMap, pGIShadowParams,
-							ES2D( pGIShadowMatrix * vec4( position, 1.0 ) ) ) );
+						//shadow = min( shadow, SHATEX( texShadow1SolidDepth, ( pGIShadowMatrix * vec4( position, 1.0 ) ).stp ) );
+						vec4 gishapos = pGIShadowMatrix * vec4( position, 1.0 );
+						shadow = min( shadow, evaluateShadow2D( texShadow1SolidDepth, pGIShadowParams, ES2D( gishapos ) ) );
 						
 						// prevent the test depth from reaching 0 or below. if this happens the test
 						// result incorrectly considers the fragment not in shadows even if it is.
@@ -948,6 +945,8 @@ void main( void ){
 			#ifdef TEXTURE_SHADOW2_SOLID
 				#ifdef SMA2_CUBE
 					shadow = min( shadow, evaluateShadowCube( texShadow2SolidDepth, pShadow2Solid, shapos2 ) );
+				#elif defined GI_RAY && defined SKY_LIGHT
+					shadow = min( shadow, evaluateShadow2D( texShadow2SolidDepth, pGIShadowParams, ES2D( gishapos ) ) );
 				#else
 					shadow = min( shadow, evaluateShadow2D( texShadow2SolidDepth, pShadow2Solid, ES2D( shapos2 ) ) );
 				#endif

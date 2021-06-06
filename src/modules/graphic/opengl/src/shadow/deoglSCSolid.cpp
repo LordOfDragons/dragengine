@@ -77,13 +77,15 @@ deoglSCSolid::~deoglSCSolid(){
 // Management
 ///////////////
 
-deoglTexture *deoglSCSolid::ObtainStaticMapWithSize( int size, bool useFloat ){
+deoglTexture *deoglSCSolid::ObtainStaticMapWithSize( int size, bool withStencil, bool useFloat ){
 	if( size < 1 ){
 		DETHROW( deeInvalidParam );
 	}
 	
 	if( pStaticMap ){
-		if( pStaticMap->GetWidth() == size && pStaticMap->GetFormat()->GetIsDepthFloat() == useFloat ){
+		if( pStaticMap->GetWidth() == size
+		&& pStaticMap->GetFormat()->GetIsStencil() == withStencil
+		&& pStaticMap->GetFormat()->GetIsDepthFloat() == useFloat ){
 			return pStaticMap;
 		}
 		
@@ -94,7 +96,7 @@ deoglTexture *deoglSCSolid::ObtainStaticMapWithSize( int size, bool useFloat ){
 	}
 	
 	pStaticMap = new deoglTexture( pRenderThread );
-	pStaticMap->SetDepthFormat( false, useFloat );
+	pStaticMap->SetDepthFormat( withStencil, useFloat );
 	pStaticMap->SetSize( size, size );
 	pStaticMap->CreateTexture();
 	pHasStatic = true;
@@ -193,20 +195,22 @@ void deoglSCSolid::ResetLastUseStatic(){
 
 
 
-deoglRenderableDepthTexture *deoglSCSolid::ObtainDynamicMapWithSize( int size, bool useFloat ){
+deoglRenderableDepthTexture *deoglSCSolid::ObtainDynamicMapWithSize( int size, bool withStencil, bool useFloat ){
 	if( size < 1 ){
 		DETHROW( deeInvalidParam );
 	}
 	
 	if( pDynamicMap ){
-		if( pDynamicMap->GetWidth() == size && pDynamicMap->GetUseFloat() == useFloat ){
+		if( pDynamicMap->GetWidth() == size
+		&& pDynamicMap->GetWithStencil() == withStencil
+		&& pDynamicMap->GetUseFloat() == useFloat ){
 			return pDynamicMap;
 		}
 		DropDynamic();
 	}
 	
 	pDynamicMap = pRenderThread.GetTexture().GetRenderableDepthTexture()
-		.GetTextureWith( size, size, false, useFloat );
+		.GetTextureWith( size, size, withStencil, useFloat );
 	
 	return pDynamicMap;
 }

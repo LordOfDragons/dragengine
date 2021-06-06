@@ -209,6 +209,10 @@ void deoglRComponent::SetParentWorld( deoglRWorld *parentWorld ){
 		return;
 	}
 	
+	if( pParentWorld && /*pRenderStatic*/ pMovementHint == deComponent::emhStationary && pRenderMode == ermStatic ){
+		NotifySkiesUpdateStatic();
+	}
+	
 	InvalidateRenderEnvMap();
 	pSkinRendered.DropDelayedDeletionObjects();
 	
@@ -227,6 +231,8 @@ void deoglRComponent::SetParentWorld( deoglRWorld *parentWorld ){
 	pDirtyRenderEnvMap = true;
 	pFirstRender = true;
 	NotifyParentWorldChanged();
+	
+	// no NotifySkiesUpdateStatic on entering worls since we start out dynamic
 	
 	pRequiresPrepareForRender();
 }
@@ -248,8 +254,12 @@ void deoglRComponent::UpdateOctreeNode(){
 	}
 	
 	NotifyLightsDirtyLightVolume();
-	
 	pRemoveFromAllLights();
+	
+	// NotifySkiesUpdateStatic(); // called after ResetRenderStatic() so not required
+	if( pMovementHint == deComponent::emhStationary && pRenderMode == ermStatic ){
+		NotifySkiesUpdateStatic();
+	}
 	
 	// insert into parent world octree
 	if( pVisible && pModel ){
@@ -282,6 +292,10 @@ void deoglRComponent::SetMovementHint( deComponent::eMovementHints hint ){
 	
 	pMovementHint = hint;
 	NotifyMovementHintChanged();
+	
+	if( pRenderMode == ermStatic ){
+		NotifySkiesUpdateStatic();
+	}
 }
 
 void deoglRComponent::SetLayerMask( const decLayerMask &layerMask ){
@@ -296,6 +310,10 @@ void deoglRComponent::SetLayerMask( const decLayerMask &layerMask ){
 	int i, count = list.GetCount();
 	for( i=0; i<count; i++ ){
 		list.GetAt( i )->TestComponent( this );
+	}
+	
+	if( /*pRenderStatic*/ pMovementHint == deComponent::emhStationary && pRenderMode == ermStatic ){
+		NotifySkiesUpdateStatic();
 	}
 	
 	NotifyLayerMaskChanged();
@@ -921,6 +939,10 @@ void deoglRComponent::SetRenderMode( eRenderModes renderMode ){
 	pRenderMode = renderMode;
 	pDirtyLODVBOs = true;
 	pRequiresPrepareForRender();
+	
+	if( pMovementHint == deComponent::emhStationary ){
+		NotifySkiesUpdateStatic();
+	}
 }
 
 
@@ -945,6 +967,7 @@ void deoglRComponent::SetRenderStatic( bool isStatic ){
 	}
 	
 	NotifyRenderStaticChanged();
+// 	NotifySkiesUpdateStatic();
 }
 
 void deoglRComponent::ResetRenderStatic(){
@@ -1567,6 +1590,12 @@ void deoglRComponent::NotifyLightsDirtyLightVolume(){
 	
 	for( i=0; i<lightCount; i++ ){
 		pLightList.GetAt( i )->SetLightVolumeDirty();
+	}
+}
+
+void deoglRComponent::NotifySkiesUpdateStatic(){
+	if( pParentWorld && ! pFirstRender ){
+		pParentWorld->SkiesNotifyUpdateStaticComponent( this );
 	}
 }
 

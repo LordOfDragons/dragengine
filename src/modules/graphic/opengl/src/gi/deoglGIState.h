@@ -74,6 +74,8 @@ public:
 private:
 	deoglRenderThread &pRenderThread;
 	
+	decVector pSize;
+	
 	decVector pProbeSpacing;
 	decVector pProbeSpacingInv;
 	decPoint3 pProbeCount;
@@ -148,7 +150,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create global illumination state. */
-	deoglGIState( deoglRenderThread &renderThread );
+	deoglGIState( deoglRenderThread &renderThread, const decVector &size );
 	
 	/** Clean up global illumination state. */
 	~deoglGIState();
@@ -156,10 +158,16 @@ public:
 	
 	
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Render thread. */
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
+	
+	/** Size of GI state. */
+	inline const decVector &GetSize() const{ return pSize; }
+	
+	/** Set size of GI state invalidating certain volumes and probes. */
+	void SetSize( const decVector &size );
 	
 	/** Probe spacing. */
 	inline const decVector &GetProbeSpacing() const{ return pProbeSpacing; }

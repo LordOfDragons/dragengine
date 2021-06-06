@@ -69,7 +69,6 @@ static const char *vTextureTargetNames[ deoglLightShader::ETT_COUNT ] = {
 	"texLightDepth1", // ettLightDepth1
 	"texLightDepth2", // ettLightDepth2
 	"texPosition", // ettPosition
-	"texGIShadowMap", // ettGIShadowMap
 	"texOTOcclusion", // ettOTOcclusion
 	"texOTDistance" // ettOTDistance
 };
@@ -804,10 +803,6 @@ void deoglLightShader::UpdateTextureTargets(){
 		if( pConfig.GetTextureShadow2Solid() ){
 			pTextureTargets[ ettLightDepth2 ] = textureUnitNumber++;
 		}
-	}
-	
-	if( pConfig.GetLightMode() == deoglLightShaderConfig::elmSky ){
-		pTextureTargets[ ettGIShadowMap ] = textureUnitNumber++;
 	}
 	
 	if( pConfig.GetLightMode() == deoglLightShaderConfig::elmSky ){

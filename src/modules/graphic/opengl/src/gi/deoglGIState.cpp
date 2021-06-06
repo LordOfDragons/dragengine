@@ -51,8 +51,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglGIState::deoglGIState( deoglRenderThread &renderThread ) :
+deoglGIState::deoglGIState( deoglRenderThread &renderThread, const decVector &size ) :
 pRenderThread( renderThread ),
+
+pSize( size ),
 
 pProbeSpacing( 1.0f, 1.0f, 1.0f ),
 // pProbeSpacing( 0.5f, 0.5f, 0.5f ),
@@ -67,7 +69,8 @@ pStrideProbeCount( pProbeCount.x * pProbeCount.z ),
 pRealProbeCount( pStrideProbeCount * pProbeCount.y ),
 
 pMaxDetectionRange( 50.0f ),
-pDetectionBox( pFieldSize * 0.5f + decVector( pMaxDetectionRange, pMaxDetectionRange, pMaxDetectionRange ) ),
+// pDetectionBox( pFieldSize * 0.5f + decVector( pMaxDetectionRange, pMaxDetectionRange, pMaxDetectionRange ) ),
+pDetectionBox( size * 0.5f + decVector( pMaxDetectionRange, pMaxDetectionRange, pMaxDetectionRange ) ),
 
 pIrradianceMapSize( 8 ),
 pDistanceMapSize( 16 ),
@@ -148,6 +151,18 @@ deoglGIState::~deoglGIState(){
 
 // Management
 ///////////////
+
+void deoglGIState::SetSize( const decVector &size ){
+	if( size.IsEqualTo( pSize ) ){
+		return;
+	}
+	
+	pSize = size;
+	
+	// TODO adjust pDetectionBox
+	// TODO resize largest two volumes and invalidate all probes
+	// NOTE smallest two volumes stay intact
+}
 
 void deoglGIState::FindContent( deoglRWorld &world ){
 	deoglDCollisionBox colbox( pPosition, pDetectionBox );

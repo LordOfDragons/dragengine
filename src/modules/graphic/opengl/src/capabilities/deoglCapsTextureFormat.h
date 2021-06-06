@@ -31,7 +31,7 @@ class decUnicodeString;
 
 
 /**
- * \brief OpenGL capabilities texture tormat.
+ * OpenGL capabilities texture tormat.
  */
 class deoglCapsTextureFormat{
 private:
@@ -41,6 +41,7 @@ private:
 	const int pBitsPerPixel;
 	const bool pIsDepth;
 	const bool pIsDepthFloat;
+	const bool pIsStencil;
 	const bool pIsCompressed;
 	const decString pName;
 	
@@ -49,12 +50,12 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create capabilities texture format. */
+	/** Create capabilities texture format. */
 	deoglCapsTextureFormat( GLint format, GLenum pixelFormat, GLenum pixelType,
-		int bitsPerPixel, bool isDepth, bool isDepthFloat, bool isCompressed,
-		const char *name );
+		int bitsPerPixel, bool isDepth, bool isDepthFloat, bool isStencil,
+		bool isCompressed, const char *name );
 	
-	/** \brief Clean up capabilities texture format. */
+	/** Clean up capabilities texture format. */
 	~deoglCapsTextureFormat();
 	/*@}*/
 	
@@ -62,31 +63,34 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Format. */
+	/** Format. */
 	inline GLint GetFormat() const{ return pFormat; }
 	
-	/** \brief Pixel format. */
+	/** Pixel format. */
 	inline GLenum GetPixelFormat() const{ return pPixelFormat; }
 	
-	/** \brief Pixel type. */
+	/** Pixel type. */
 	inline GLenum GetPixelType() const{ return pPixelType; }
 	
-	/** \brief Bits per pixel. */
+	/** Bits per pixel. */
 	inline int GetBitsPerPixel() const{ return pBitsPerPixel; }
 	
-	/** \brief Format is a depth/stencil format. */
+	/** Format is a depth/stencil format. */
 	inline bool GetIsDepth() const{ return pIsDepth; }
 	
-	/** \brief Format is a float depth/stencil format. */
+	/** Format is a float depth/stencil format. */
 	inline bool GetIsDepthFloat() const{ return pIsDepthFloat; }
 	
-	/** \brief Format is a compressed format. */
+	/** Format is a stencil format. */
+	inline bool GetIsStencil() const{ return pIsStencil; }
+	
+	/** Format is a compressed format. */
 	inline bool GetIsCompressed() const{ return pIsCompressed; }
 	
-	/** \brief Name. */
+	/** Name. */
 	inline const decString &GetName() const{ return pName; }
 	
-	/** \brief Print format to buffer. */
+	/** Print format to buffer. */
 	void WriteToString( decUnicodeString &buffer ) const;
 	/*@}*/
 };

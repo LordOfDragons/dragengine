@@ -103,7 +103,7 @@ void deoglRPTSkyLightGIFindContent::Run(){
 		
 		// splits are not used for GI shadows but the minimum size restriction is.
 		// to avoid creating another method the AddSplit method is used for this
-		const float splitSizeLimitPixels = 1.0f;
+		const float splitSizeLimitPixels = 0.5f; //1.0f; // smaller to avoid problems
 		const int shadowMapSize = 1024;
 		
 		const decVector boxSize( boxMaxExtend - boxMinExtend );

@@ -55,6 +55,13 @@ public:
 		estStaticAndDynamic
 	};
 	
+	/** Shadow layers. */
+	struct sShadowLayer{
+		float layerBorder;
+		decVector scale;
+		decMatrix matrix;
+	};
+	
 	
 	
 private:
@@ -73,6 +80,9 @@ private:
 	float pDynamicFar;
 	float pDynamicScale;
 	float pDynamicOffset;
+	
+	sShadowLayer *pShadowLayers;
+	int pShadowLayerCount;
 	
 	
 	
@@ -159,6 +169,18 @@ public:
 	
 	/** Set dynamic shadows parameters. */
 	void SetDynamicParams( float near, float far );
+	
+	
+	
+	/** Shadow layer count. */
+	inline int GetShadowLayerCount() const{ return pShadowLayerCount; }
+	
+	/** Set shadow layer count. Clears shadow layer parameters if count changed. */
+	void SetShadowLayerCount( int count );
+	
+	/** Shadow layer at index. */
+	sShadowLayer &GetShadowLayerAt( int index );
+	const sShadowLayer &GetShadowLayerAt( int index ) const;
 	/*@}*/
 };
 

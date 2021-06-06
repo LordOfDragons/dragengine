@@ -213,6 +213,7 @@ public:
 
 deoglRenderPlan::~deoglRenderPlan(){
 	CleanUp();
+	SetWorld( NULL );
 	
 	int i, count;
 	
@@ -289,10 +290,18 @@ void deoglRenderPlan::SetWorld( deoglRWorld *world ){
 		return;
 	}
 	
+	if( pWorld && pGIState ){
+		pWorld->RemoveGIState( pGIState );
+	}
+	
 	pWorld = world;
 	
 	if( pGIState ){
 		pGIState->Invalidate();
+		
+		if( world ){
+			world->AddGIState( pGIState );
+		}
 	}
 	
 	if( pHTView ){
@@ -541,7 +550,8 @@ void deoglRenderPlan::pPlanSky(){
 		if( ! instance->GetRSky() ){
 			continue;
 		}
-		if( pUseLayerMask && instance->GetLayerMask().IsNotEmpty() && pLayerMask.MatchesNot( instance->GetLayerMask() ) ){
+		if( pUseLayerMask && instance->GetLayerMask().IsNotEmpty()
+		&& pLayerMask.MatchesNot( instance->GetLayerMask() ) ){
 			continue;
 		}
 		
@@ -746,8 +756,22 @@ void deoglRenderPlan::pPlanGI(){
 		return;
 	}
 	
-	if( ! pGIState ){
-		pGIState = new deoglGIState( pRenderThread );
+	// GI state uses probes of 32x8x32 grid size. this is a default ratio of 4 times as width
+	// than high. we use the view distance as the width and thus 1/4 as the height. for a view
+	// distance of 500m this would yield a height of 125m. for most games this is enough.
+	// the camera parameters like field of view are not used. if probes fall outside the
+	// camera the closest GI probe is used. at the far end of the view this is good enough
+	const decVector size( pCameraViewDistance, pCameraViewDistance / 4.0f, pCameraViewDistance );
+	
+	if( pGIState ){
+		pGIState->SetSize( size );
+		
+	}else{
+		pGIState = new deoglGIState( pRenderThread, size );
+		
+		if( pWorld ){
+			pWorld->AddGIState( pGIState );
+		}
 	}
 #endif
 }

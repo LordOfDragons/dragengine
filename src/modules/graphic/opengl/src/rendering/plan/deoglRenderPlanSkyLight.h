@@ -87,8 +87,11 @@ private:
 // 	decVector pGIBoxMinExtend;
 // 	decVector pGIBoxMaxExtend;
 	sShadowLayer pGIShadowLayer;
-	deoglRenderTask pGIRenderTask;
-	deoglAddToRenderTask pGIRenderTaskAdd;
+	bool pGIShadowUpdateStatic;
+	deoglRenderTask pGIRenderTaskStatic;
+	deoglRenderTask pGIRenderTaskDynamic;
+	deoglAddToRenderTask pGIRenderTaskAddStatic;
+	deoglAddToRenderTask pGIRenderTaskAddDynamic;
 	
 	deoglRPTSkyLightFindContent *pTaskFindContent;
 	deoglRPTSkyLightBuildRT *pTaskBuildRT1;
@@ -184,13 +187,22 @@ public:
 	inline sShadowLayer &GetGIShadowLayer(){ return pGIShadowLayer; }
 	inline const sShadowLayer &GetGIShadowLayer() const{ return pGIShadowLayer; }
 	
+	/** Update static GI shadow map. */
+	inline bool GetGIShadowUpdateStatic() const{ return pGIShadowUpdateStatic; }
+	
 	/** GI render task. */
-	inline deoglRenderTask &GetGIRenderTask(){ return pGIRenderTask; }
-	inline const deoglRenderTask &GetGIRenderTask() const{ return pGIRenderTask; }
+	inline deoglRenderTask &GetGIRenderTaskStatic(){ return pGIRenderTaskStatic; }
+	inline const deoglRenderTask &GetGIRenderTaskStatic() const{ return pGIRenderTaskStatic; }
+	
+	inline deoglRenderTask &GetGIRenderTaskDynamic(){ return pGIRenderTaskDynamic; }
+	inline const deoglRenderTask &GetGIRenderTaskDynamic() const{ return pGIRenderTaskDynamic; }
 	
 	/** GI add to render task. */
-	inline deoglAddToRenderTask &GetGIRenderTaskAdd(){ return pGIRenderTaskAdd; }
-	inline const deoglAddToRenderTask &GetGIRenderTaskAdd() const{ return pGIRenderTaskAdd; }
+	inline deoglAddToRenderTask &GetGIRenderTaskAddStatic(){ return pGIRenderTaskAddStatic; }
+	inline const deoglAddToRenderTask &GetGIRenderTaskAddStatic() const{ return pGIRenderTaskAddStatic; }
+	
+	inline deoglAddToRenderTask &GetGIRenderTaskAddDynamic(){ return pGIRenderTaskAddDynamic; }
+	inline const deoglAddToRenderTask &GetGIRenderTaskAddDynamic() const{ return pGIRenderTaskAddDynamic; }
 	
 	
 	

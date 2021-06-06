@@ -67,6 +67,12 @@ public:
 	/** Finished semaphore. */
 	inline deSemaphore &GetSemaphore(){ return pSemaphore; }
 	/*@}*/
+	
+	
+	
+private:
+	void pUpdateStaticRT();
+	void pUpdateDynamicRT();
 };
 
 #endif

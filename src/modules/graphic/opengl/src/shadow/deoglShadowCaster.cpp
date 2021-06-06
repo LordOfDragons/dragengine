@@ -55,10 +55,16 @@ pStaticOffset( 2.887585e-4f ),
 pDynamicNear( 0.01f ),
 pDynamicFar( 10.0f ),
 pDynamicScale( 2.887585e-2f ),
-pDynamicOffset( 2.887585e-4f ){
+pDynamicOffset( 2.887585e-4f ),
+
+pShadowLayers( NULL ),
+pShadowLayerCount( 0 ){
 }
 
 deoglShadowCaster::~deoglShadowCaster(){
+	if( pShadowLayers ){
+		delete [] pShadowLayers;
+	}
 }
 
 
@@ -110,4 +116,39 @@ void deoglShadowCaster::SetDynamicParams( float near, float far ){
 	//pDynamicScale = 1.0f / ( sqrtf( pDynamicFar * pDynamicFar * 3.0f ) - pDynamicNear );
 	pDynamicScale = 1.0f / ( pDynamicFar - pDynamicNear );
 	pDynamicOffset = -pDynamicNear * pDynamicScale;
+}
+
+void deoglShadowCaster::SetShadowLayerCount( int count ){
+	if( count < 0 ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	if( count == pShadowLayerCount ){
+		return;
+	}
+	
+	if( pShadowLayers ){
+		delete [] pShadowLayers;
+		pShadowLayers = NULL;
+		pShadowLayerCount = 0;
+	}
+	
+	if( count > 0 ){
+		pShadowLayers = new sShadowLayer[ count ];
+		pShadowLayerCount = count;
+	}
+}
+
+const deoglShadowCaster::sShadowLayer &deoglShadowCaster::GetShadowLayerAt( int index ) const{
+	if( index < 0 || index >= pShadowLayerCount ){
+		DETHROW( deeInvalidParam );
+	}
+	return pShadowLayers[ index ];
+}
+
+deoglShadowCaster::sShadowLayer &deoglShadowCaster::GetShadowLayerAt( int index ){
+	if( index < 0 || index >= pShadowLayerCount ){
+		DETHROW( deeInvalidParam );
+	}
+	return pShadowLayers[ index ];
 }

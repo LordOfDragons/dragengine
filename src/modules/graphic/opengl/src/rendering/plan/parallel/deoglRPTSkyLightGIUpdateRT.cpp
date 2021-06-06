@@ -81,13 +81,7 @@ void deoglRPTSkyLightGIUpdateRT::Run(){
 		INIT_SPECIAL_TIMING
 		decTimer timer;
 		
-		deoglAddToRenderTask &addToRenderTask = pPlan.GetGIRenderTaskAdd();
 		deoglCollideList &collideList = pPlan.GetGICollideList();
-		
-		pPlan.GetGIRenderTask().Clear();
-		
-		addToRenderTask.SetSolid( true );
-		addToRenderTask.SetNoShadowNone( true );
 		
 		// components. we can use here the sky light way of choosing LOD levels. but GI shadows
 		// are typically broader than sky shadows and thus are more expensive to render. for
@@ -97,16 +91,12 @@ void deoglRPTSkyLightGIUpdateRT::Run(){
 		deoglLODCalculator lodCalculator;
 		lodCalculator.SetComponentLODMax( collideList );
 		
-		addToRenderTask.SetSkinShaderType( deoglSkinTexture::estComponentShadowOrthogonal );
-		addToRenderTask.AddComponents( collideList );
+		// update required render tasks
+		if( pPlan.GetGIShadowUpdateStatic() ){
+			pUpdateStaticRT();
+		}
 		
-		// prop fields
-		addToRenderTask.SetSkinShaderType( deoglSkinTexture::estPropFieldShadowOrthogonal );
-		addToRenderTask.AddPropFields( collideList, false );
-		
-		// height terrain
-		addToRenderTask.SetSkinShaderType( deoglSkinTexture::estHeightMapShadowOrthogonal );
-		addToRenderTask.AddHeightTerrains( collideList, true );
+		pUpdateDynamicRT();
 		
 		pElapsedTime = timer.GetElapsedTime();
 		SPECIAL_TIMER_PRINT("UpdateRenderTask")
@@ -126,4 +116,59 @@ void deoglRPTSkyLightGIUpdateRT::Finished(){
 
 decString deoglRPTSkyLightGIUpdateRT::GetDebugName() const{
 	return "RPTSkyLightGIUpdateRT";
+}
+
+
+
+// Private Functions
+//////////////////////
+
+void deoglRPTSkyLightGIUpdateRT::pUpdateStaticRT(){
+	deoglAddToRenderTask &addToRenderTask = pPlan.GetGIRenderTaskAddStatic();
+	deoglCollideList &collideList = pPlan.GetGICollideList();
+	int i;
+	
+	pPlan.GetGIRenderTaskStatic().Clear();
+	
+	addToRenderTask.SetSolid( true );
+	addToRenderTask.SetNoShadowNone( true );
+	
+	// components
+	addToRenderTask.SetSkinShaderType( deoglSkinTexture::estComponentShadowOrthogonal );
+	const int componentCount = collideList.GetComponentCount();
+	for( i=0; i<componentCount; i++ ){
+		deoglCollideListComponent &component = *collideList.GetComponentAt( i );
+		if( component.GetComponent()->GetRenderStatic() ){
+			addToRenderTask.AddComponent( component );
+		}
+	}
+	
+	// height terrain
+	addToRenderTask.SetSkinShaderType( deoglSkinTexture::estHeightMapShadowOrthogonal );
+	addToRenderTask.AddHeightTerrains( collideList, true );
+}
+
+void deoglRPTSkyLightGIUpdateRT::pUpdateDynamicRT(){
+	deoglAddToRenderTask &addToRenderTask = pPlan.GetGIRenderTaskAddDynamic();
+	deoglCollideList &collideList = pPlan.GetGICollideList();
+	int i;
+	
+	pPlan.GetGIRenderTaskDynamic().Clear();
+	
+	addToRenderTask.SetSolid( true );
+	addToRenderTask.SetNoShadowNone( true );
+	
+	// components
+	addToRenderTask.SetSkinShaderType( deoglSkinTexture::estComponentShadowOrthogonal );
+	const int componentCount = collideList.GetComponentCount();
+	for( i=0; i<componentCount; i++ ){
+		deoglCollideListComponent &component = *collideList.GetComponentAt( i );
+		if( ! component.GetComponent()->GetRenderStatic() ){
+			addToRenderTask.AddComponent( component );
+		}
+	}
+	
+	// prop fields
+	addToRenderTask.SetSkinShaderType( deoglSkinTexture::estPropFieldShadowOrthogonal );
+	addToRenderTask.AddPropFields( collideList, false );
 }

@@ -652,6 +652,9 @@ public:
 	
 	/** Notify all lights that their light volume has to be updated. */
 	void NotifyLightsDirtyLightVolume();
+	
+	/** Notify skies about changes potentially requiring an update. */
+	void NotifySkiesUpdateStatic();
 	/*@}*/
 	
 	

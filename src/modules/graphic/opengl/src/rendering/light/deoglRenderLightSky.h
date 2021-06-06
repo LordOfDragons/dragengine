@@ -27,7 +27,6 @@
 class deoglCollideList;
 class deoglLightShader;
 class deoglRenderableDepthArrayTexture;
-class deoglRenderableDepthTexture;
 class deoglRenderPlan;
 class deoglRLight;
 class deoglRSkyLayer;
@@ -36,7 +35,7 @@ class deoglShaderProgram;
 class deoglShadowMapper;
 class deoglRSkyInstanceLayer;
 class deoglRenderPlanSkyLight;
-
+class deoglSkyLayerGIState;
 
 
 /**
@@ -49,7 +48,6 @@ private:
 	deoglShaderProgram *pShaderClearDepth;
 	
 	deoglRenderableDepthArrayTexture *pSolidShadowMap;
-	deoglRenderableDepthTexture *pSolidGIShadowMap;
 	
 	
 	
@@ -94,28 +92,28 @@ public:
 	void RenderAO( deoglRenderPlan &plan );
 	
 	/** Render sky light. */
-	void RenderLight( deoglRenderPlan &plan, bool solid, const deoglRenderPlanMasked *mask,
-		deoglRenderPlanSkyLight &planSkyLight );
+	void RenderLight( deoglRenderPlanSkyLight &plan, bool solid, const deoglRenderPlanMasked *mask );
 	
 	/** Render shadows maps. */
-	void RenderShadows( deoglRenderPlan &plan, bool solid, const deoglRenderPlanMasked *mask,
-		deoglRenderPlanSkyLight &planSkyLight );
+	void RenderShadows( deoglRenderPlanSkyLight &plan, bool solid, const deoglRenderPlanMasked *mask );
 	
 	/** Render shadow map. */
-	void RenderShadowMap( deoglRenderPlan &plan, deoglRenderPlanSkyLight &planSkyLight,
-		deoglShadowMapper &shadowMapper );
+	void RenderShadowMap( deoglRenderPlanSkyLight &plan, deoglShadowMapper &shadowMapper );
+	
+	/** Render GI shadows. */
+	void RenderGIShadows( deoglRenderPlanSkyLight &plan, deoglShadowMapper &shadowMapper );
 	
 	/** Render GI shadow map. */
-	void RenderGIShadowMap( deoglRenderPlan &plan, deoglRenderPlanSkyLight &planSkyLight,
-		deoglShadowMapper &shadowMapper );
+	void RenderGIShadowMap( deoglShadowMapper &shadowMapper, deoglRenderTask &renderTask,
+		int shadowMapSize, bool clearBackFaceFragments );
 	
 	/** Update light shader parameter block. */
 	void UpdateLightParamBlock( deoglLightShader &lightShader, deoglSPBlockUBO &paramBlock,
-		deoglRenderPlan &plan, deoglRenderPlanSkyLight &planSkyLight );
+		deoglRenderPlanSkyLight &plan );
 	
 	/** Updates instance shader parameter block. */
 	void UpdateInstanceParamBlock( deoglLightShader &lightShader, deoglSPBlockUBO &paramBlock,
-		deoglRenderPlan &plan, deoglRenderPlanSkyLight &planSkyLight, int shadowMapSize, int passCount );
+		deoglRenderPlanSkyLight &plan, int shadowMapSize, int passCount );
 	
 	
 	

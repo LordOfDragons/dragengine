@@ -506,7 +506,8 @@ int bitsPerPixel, int flags, const char *name ){
 	
 	if( errorCode == GL_NO_ERROR ){
 		pFoundTex2DFormats.AddFormat( format, pixelFormat, pixelType, bitsPerPixel,
-			HAS_FLAG_DEPTH( flags ), HAS_FLAG_DEPTH_FLOAT( flags ), HAS_FLAG_COMPRESSED( flags ), name );
+			HAS_FLAG_DEPTH( flags ), HAS_FLAG_DEPTH_FLOAT( flags ), HAS_FLAG_STENCIL( flags ),
+			HAS_FLAG_COMPRESSED( flags ), name );
 	}
 		
 	return errorCode == GL_NO_ERROR;
@@ -557,7 +558,8 @@ int bitsPerPixel, int flags, const char *name ){
 	
 	if( errorCode == GL_NO_ERROR ){
 		pFoundTexCubeFormats.AddFormat( format, pixelFormat, pixelType, bitsPerPixel,
-			HAS_FLAG_DEPTH( flags ), HAS_FLAG_DEPTH_FLOAT( flags ), HAS_FLAG_COMPRESSED( flags ), name );
+			HAS_FLAG_DEPTH( flags ), HAS_FLAG_DEPTH_FLOAT( flags ), HAS_FLAG_STENCIL( flags ),
+			HAS_FLAG_COMPRESSED( flags ), name );
 	}
 	
 	return errorCode == GL_NO_ERROR;
@@ -607,7 +609,8 @@ int bitsPerPixel, int flags, const char *name ){
 	
 	if( errorCode == GL_NO_ERROR ){
 		pFoundArrTexFormats.AddFormat( format, pixelFormat, pixelType, bitsPerPixel,
-			HAS_FLAG_DEPTH( flags ), HAS_FLAG_DEPTH_FLOAT( flags ), HAS_FLAG_COMPRESSED( flags ), name );
+			HAS_FLAG_DEPTH( flags ), HAS_FLAG_DEPTH_FLOAT( flags ), HAS_FLAG_STENCIL( flags ),
+			HAS_FLAG_COMPRESSED( flags ), name );
 	}
 	
 	return errorCode == GL_NO_ERROR;
@@ -695,7 +698,8 @@ int bitsPerPixel, int flags, const char *name, int what ){
 			if( errorCode == GL_FRAMEBUFFER_COMPLETE ){
 				errorCode = GL_NO_ERROR;
 				pFoundFBOTex2DFormats.AddFormat( format, pixelFormat, pixelType, bitsPerPixel,
-					HAS_FLAG_DEPTH( flags ), HAS_FLAG_DEPTH_FLOAT( flags ), HAS_FLAG_COMPRESSED( flags ), name );
+					HAS_FLAG_DEPTH( flags ), HAS_FLAG_DEPTH_FLOAT( flags ),
+					HAS_FLAG_STENCIL( flags ), HAS_FLAG_COMPRESSED( flags ), name );
 			}
 		}
 		
@@ -799,7 +803,8 @@ GLenum pixelType, int bitsPerPixel, int flags, const char *name, int what ){
 			if( errorCode == GL_FRAMEBUFFER_COMPLETE ){
 				errorCode = GL_NO_ERROR;
 				pFoundFBOTexCubeFormats.AddFormat( format, pixelFormat, pixelType, bitsPerPixel,
-					HAS_FLAG_DEPTH( flags ), HAS_FLAG_DEPTH_FLOAT( flags ), HAS_FLAG_COMPRESSED( flags ), name );
+					HAS_FLAG_DEPTH( flags ), HAS_FLAG_DEPTH_FLOAT( flags ),
+					HAS_FLAG_STENCIL( flags ), HAS_FLAG_COMPRESSED( flags ), name );
 			}
 		}
 		
@@ -897,7 +902,8 @@ GLenum pixelType, int bitsPerPixel, int flags, const char *name, int what ){
 			if( errorCode == GL_FRAMEBUFFER_COMPLETE ){
 				errorCode = GL_NO_ERROR;
 				pFoundFBOArrTexFormats.AddFormat( format, pixelFormat, pixelType, bitsPerPixel,
-					HAS_FLAG_DEPTH( flags ), HAS_FLAG_DEPTH_FLOAT( flags ), HAS_FLAG_COMPRESSED( flags ), name );
+					HAS_FLAG_DEPTH( flags ), HAS_FLAG_DEPTH_FLOAT( flags ),
+					HAS_FLAG_STENCIL( flags ), HAS_FLAG_COMPRESSED( flags ), name );
 			}
 		}
 		
@@ -992,8 +998,9 @@ int flags, const char *name, int what ){
 			errorCode = pglCheckFramebufferStatus( GL_FRAMEBUFFER );
 			if( errorCode == GL_FRAMEBUFFER_COMPLETE ){
 				errorCode = GL_NO_ERROR;
-				pFoundRenBufFormats.AddFormat( format, 0, 0, bitsPerPixel, HAS_FLAG_DEPTH( flags ),
-					HAS_FLAG_DEPTH_FLOAT( flags ), HAS_FLAG_COMPRESSED( flags ), name );
+				pFoundRenBufFormats.AddFormat( format, 0, 0, bitsPerPixel,
+					HAS_FLAG_DEPTH( flags ), HAS_FLAG_DEPTH_FLOAT( flags ),
+					HAS_FLAG_STENCIL( flags ), HAS_FLAG_COMPRESSED( flags ), name );
 			}
 		}
 		

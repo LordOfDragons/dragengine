@@ -29,6 +29,7 @@
 #include "deoglRSkyInstanceLayer.h"
 #include "deoglRSkyControllerTarget.h"
 #include "deoglSkyLayerTracker.h"
+#include "deoglSkyLayerGIState.h"
 #include "../configuration/deoglConfiguration.h"
 #include "../light/shader/deoglLightShader.h"
 #include "../light/shader/deoglLightShaderManager.h"
@@ -117,6 +118,8 @@ public:
 };
 
 deoglRSkyInstanceLayer::~deoglRSkyInstanceLayer(){
+	RemoveAllGIStates();
+	
 	if( pTrackerEnvMap ){
 		delete pTrackerEnvMap;
 	}
@@ -221,7 +224,8 @@ bool deoglRSkyInstanceLayer::GetShaderConfigFor( int shaderType, deoglLightShade
 	
 	switch( shaderType ){
 	case estGIRayNoShadow:
-	case estGIRaySolid:
+	case estGIRaySolid1:
+	case estGIRaySolid2:
 		config.SetMaterialNormalModeDec( deoglLightShaderConfig::emnmFloat );
 		// regular sky shadow casting uses PCF 9-Tap mode. for GI shadow map resollution
 		// is rather low and rays spread by a large angle. for this reason 1-Tap mode is
@@ -264,9 +268,15 @@ bool deoglRSkyInstanceLayer::GetShaderConfigFor( int shaderType, deoglLightShade
 		config.SetAmbientLighting( false );
 		break;
 		
-	case estGIRaySolid:
+	case estGIRaySolid1:
 		config.SetAmbientLighting( false );
 		config.SetTextureShadow1Solid( true );
+		break;
+		
+	case estGIRaySolid2:
+		config.SetAmbientLighting( false );
+		config.SetTextureShadow1Solid( true );
+		config.SetTextureShadow2Solid( true );
 		break;
 	}
 	
@@ -315,6 +325,66 @@ deoglSPBlockUBO *deoglRSkyInstanceLayer::GetInstanceParameterBlock(){
 	}
 	
 	return pParamBlockInstance;
+}
+
+void deoglRSkyInstanceLayer::NotifyUpdateStaticComponent( deoglRComponent *component ){
+	const int count = pGIStates.GetCount();
+	int i;
+	for( i=0; i<count; i++ ){
+		( ( deoglSkyLayerGIState* )pGIStates.GetAt( i ) )->NotifyUpdateStaticComponent( component );
+	}
+}
+
+
+
+int deoglRSkyInstanceLayer::GetGIStateCount() const{
+	return pGIStates.GetCount();
+}
+
+deoglSkyLayerGIState *deoglRSkyInstanceLayer::GetGIState( const deoglGIState *giState ) const{
+	const int count = pGIStates.GetCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		deoglSkyLayerGIState * const slgs = ( deoglSkyLayerGIState* )pGIStates.GetAt( i );
+		if( slgs->GetGIState() == giState ){
+			return slgs;
+		}
+	}
+	
+	return NULL;
+}
+
+deoglSkyLayerGIState *deoglRSkyInstanceLayer::AddGIState( const deoglGIState *giState ){
+	deoglSkyLayerGIState *slgs = GetGIState( giState );
+	if( slgs ){
+		return slgs;
+	}
+	
+	slgs = new deoglSkyLayerGIState( *this, giState );
+	pGIStates.Add( slgs );
+	return slgs;
+}
+
+void deoglRSkyInstanceLayer::RemoveGIState( const deoglGIState *giState ){
+	const int count = pGIStates.GetCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		deoglSkyLayerGIState * const slgs = ( deoglSkyLayerGIState* )pGIStates.GetAt( i );
+		if( slgs->GetGIState() == giState ){
+			delete slgs;
+			pGIStates.RemoveFrom( i );
+			return;
+		}
+	}
+}
+
+void deoglRSkyInstanceLayer::RemoveAllGIStates(){
+	int count = pGIStates.GetCount();
+	while( count > 0 ){
+		delete ( deoglSkyLayerGIState* )pGIStates.GetAt( --count );
+	}
 }
 
 

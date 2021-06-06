@@ -1171,7 +1171,7 @@ bool refilterShadow ){
 			// shape of the object as well as possible thus the shadow error is small. on a distance where the
 			// rendered lod level can differ from the static shadow casting lod level this is hard to spot anyways
 			shadowMapper.SetForeignSolidDepthTexture( scsolid.ObtainStaticMapWithSize(
-				staticShadowMapSize, defren.GetUseInverseDepth() ) );
+				staticShadowMapSize, false, defren.GetUseInverseDepth() ) );
 			
 			if( transparentStaticShadow ){
 				shadowMapper.SetForeignTransparentDepthTexture( sctransp.
@@ -1305,7 +1305,7 @@ bool refilterShadow ){
 			// dynamicShadowMapSize maps to scsolid.GetPlanTransparentSize() for this case
 			
 			shadowMapper.SetForeignSolidDepthTexture( scsolid.ObtainDynamicMapWithSize(
-				dynamicShadowMapSize, defren.GetUseInverseDepth() )->GetTexture() );
+				dynamicShadowMapSize, false, defren.GetUseInverseDepth() )->GetTexture() );
 			
 			if( transparentDynamicShadow ){
 				shadowMapper.SetForeignTransparentDepthTexture( sctransp.ObtainDynamicShadowMapWithSize(

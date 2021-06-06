@@ -27,6 +27,7 @@
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decPointerSet.h>
 #include <dragengine/common/collection/decPointerLinkedList.h>
 
 class deoglEnvironmentMapList;
@@ -46,6 +47,7 @@ class deoglWorldOctree;
 class deoglWorldOctreeVisitor;
 class deoglEnvironmentMap;
 class deoglRenderPlanMasked;
+class deoglGIState;
 
 
 
@@ -92,6 +94,8 @@ private:
 	int pEnvMapUpdateCount;
 	deoglRenderPlan *pEnvMapRenderPlan;
 	bool pDirtyEnvMapLayout;
+	
+	decPointerSet pGIStates;
 	
 	deoglWorldOctree *pOctree;
 	
@@ -444,6 +448,9 @@ public:
 	
 	/** Remove skys marked for removal. */
 	void RemoveRemovalMarkedSkies();
+	
+	/** Notify skies render static component changed requiring updates. */
+	void SkiesNotifyUpdateStaticComponent( deoglRComponent *component );
 	/*@}*/
 	
 	
@@ -467,6 +474,29 @@ public:
 	
 	/** Remove debug drawers marked for removal. */
 	void RemoveRemovalMarkedDebugDrawers();
+	/*@}*/
+	
+	
+	
+	/** \name GI States */
+	/*@{*/
+	/** Count of GI States. */
+	int GetGIStateCount() const;
+	
+	/** GI State at index. */
+	const deoglGIState *GetGIStateAt( int index ) const;
+	
+	/** GI State closest to position. */
+	const deoglGIState *ClosestGIState( const decDVector &position ) const;
+	
+	/** Add GI State if absent. */
+	void AddGIState( const deoglGIState *giState );
+	
+	/** Remove GI State if present. */
+	void RemoveGIState( const deoglGIState *giState );
+	
+	/** Remove all GI states. */
+	void RemoveAllGIStates();
 	/*@}*/
 	
 	

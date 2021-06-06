@@ -64,7 +64,6 @@ public:
 		ettLightDepth1,
 		ettLightDepth2,
 		ettPosition,
-		ettGIShadowMap,
 		ettOTOcclusion,
 		ettOTDistance,
 		ETT_COUNT

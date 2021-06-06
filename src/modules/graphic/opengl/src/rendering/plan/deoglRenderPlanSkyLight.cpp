@@ -45,8 +45,10 @@
 #include "../../renderthread/deoglRenderThread.h"
 #include "../../renderthread/deoglRTRenderers.h"
 #include "../../renderthread/deoglRTLogger.h"
+#include "../../shadow/deoglShadowCaster.h"
 #include "../../sky/deoglRSkyInstance.h"
 #include "../../sky/deoglRSkyInstanceLayer.h"
+#include "../../sky/deoglSkyLayerGIState.h"
 #include "../../utils/collision/deoglCollisionBox.h"
 #include "../../world/deoglRWorld.h"
 
@@ -71,8 +73,11 @@ pPlanned( false ),
 pUseLight( true ),
 pUseShadow( false ),
 pShadowLayerCount( 0 ),
-pGIRenderTask( plan.GetRenderThread() ),
-pGIRenderTaskAdd( plan.GetRenderThread(), pGIRenderTask ),
+pGIShadowUpdateStatic( true ),
+pGIRenderTaskStatic( plan.GetRenderThread() ),
+pGIRenderTaskDynamic( plan.GetRenderThread() ),
+pGIRenderTaskAddStatic( plan.GetRenderThread(), pGIRenderTaskStatic ),
+pGIRenderTaskAddDynamic( plan.GetRenderThread(), pGIRenderTaskDynamic ),
 pTaskFindContent( NULL ),
 pTaskBuildRT1( NULL ),
 pTaskBuildRT2( NULL ),
@@ -146,7 +151,9 @@ const deoglRenderPlanSkyLight::sShadowLayer &deoglRenderPlanSkyLight::GetShadowL
 
 
 void deoglRenderPlanSkyLight::Clear(){
-	pGIRenderTask.Clear();
+	pGIShadowUpdateStatic = false;
+	pGIRenderTaskStatic.Clear();
+	pGIRenderTaskDynamic.Clear();
 	pGICollideList.Clear();
 	
 	int i;
@@ -284,7 +291,10 @@ void deoglRenderPlanSkyLight::WaitFinishedGIUpdateRT(){
 	
 	// this call does modify a shader parameter block and can thus not be parallel
 		decTimer timer;
-	pGIRenderTask.PrepareForRender();
+	if( pGIShadowUpdateStatic ){
+		pGIRenderTaskStatic.PrepareForRender();
+	}
+	pGIRenderTaskDynamic.PrepareForRender();
 	
 // 	pPlan.GetRenderThread().GetLogger().LogInfoFormat(
 // 		"GIUpdateRenderTask: build=%dys prepare=%dys: shaders=%d textures=%d vaos=%d instances=%d subinstances=%d",
@@ -344,7 +354,8 @@ void deoglRenderPlanSkyLight::CleanUp(){
 	pSLCollideList2.Clear();
 	pGICollideList.Clear();
 	pCollideList.Clear();
-	pGIRenderTask.Clear();
+	pGIRenderTaskStatic.Clear();
+	pGIRenderTaskDynamic.Clear();
 	pUseLight = false;
 	pUseShadow = false;
 	SetOcclusionTest( NULL );
@@ -660,4 +671,27 @@ void deoglRenderPlanSkyLight::pGICalcShadowLayerParams(){
 	
 	pGIShadowLayer.minExtend = enclosingBox.GetCenter() - enclosingBox.GetHalfSize();
 	pGIShadowLayer.maxExtend = enclosingBox.GetCenter() + enclosingBox.GetHalfSize();
+	
+	deoglSkyLayerGIState * const slgs = pLayer->GetGIState( giState );
+	if( slgs ){
+		slgs->Update();
+		pGIShadowUpdateStatic = slgs->GetDirtyStaticShadow();
+		slgs->ClearDirtyStaticShadow();
+		
+		deoglSCSolid &scsolid = slgs->GetShadowCaster().GetSolid();
+		const int shadowMapSize = 1024;
+		
+		if( scsolid.GetStaticMap() ){
+			if( scsolid.GetStaticMap()->GetWidth() != shadowMapSize ){
+				scsolid.DropStatic();
+				pGIShadowUpdateStatic = true;
+			}
+			
+		}else{
+			pGIShadowUpdateStatic = true;
+		}
+		
+	}else{
+		pGIShadowUpdateStatic = true;
+	}
 }
