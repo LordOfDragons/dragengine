@@ -74,7 +74,6 @@ void deoglSkyLayerGIState::Update(){
 	if( ( pGIState->GetPosition() - pPosition ).Length() >= pPositionThreshold ){
 		pPosition = pGIState->GetPosition();
 		pDirtyStaticShadow = true;
-			pLayer.GetInstance().GetRenderThread().GetLogger().LogInfoFormat("Update: Position Changed: %p", &pLayer);
 	}
 	
 	pDirtyStaticShadow |= pTracker.UpdateOrientation( pLayer.GetMatrix().ToQuaternion() );
@@ -86,14 +85,11 @@ void deoglSkyLayerGIState::ClearDirtyStaticShadow(){
 }
 
 void deoglSkyLayerGIState::NotifyUpdateStaticComponent( deoglRComponent* ){
-	// TODO if the component is too small do mark dirty
+	// TODO if the component is too small do not mark dirty
 	
 	// we could do things complicated here to dirty static shadow maps only in the most
 	// necessary case. instead we dirty in all cases. this does dirty in some situations
 	// where we could avoid it but these situations are few and far in between
-		if( ! pDirtyStaticShadow ){
-			pLayer.GetInstance().GetRenderThread().GetLogger().LogInfoFormat("NotifyUpdateStaticComponent: %p", &pLayer);
-		}
 	pDirtyStaticShadow = true;
 }
 
