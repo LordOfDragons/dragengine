@@ -750,7 +750,6 @@ void deoglRenderPlan::pWaitFinishedFindContent(){
 }
 
 void deoglRenderPlan::pPlanGI(){
-#ifdef GI_ENABLE
 	if( pUseConstGIState || ! pUseGIState
 	|| pRenderThread.GetConfiguration().GetGIQuality() == deoglConfiguration::egiqOff ){
 		return;
@@ -773,7 +772,6 @@ void deoglRenderPlan::pPlanGI(){
 			pWorld->AddGIState( pGIState );
 		}
 	}
-#endif
 }
 
 void deoglRenderPlan::pUpdateGI(){

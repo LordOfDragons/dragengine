@@ -30,7 +30,6 @@
 class deoglRenderThread;
 class deoglROcclusionMesh;
 
-// #define GI_ENABLE 1
 #define GI_USE_RAY_CACHE 1
 
 // #define GI_RENDERDOC_DEBUG 1
