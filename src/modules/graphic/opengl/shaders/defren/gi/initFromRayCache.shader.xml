@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='ISO-8859-1'?>
 <shader>
-	<name>DefRen GI Copy Ray Cache</name>
+	<name>DefRen GI Init From Ray Cache</name>
 	
 	<version>130</version>
 	
@@ -9,8 +9,6 @@
 	<texture name='texDiffuse' target='2'/>
 	<texture name='texReflectivity' target='3'/>
 	<texture name='texLight' target='4'/>
-	
-	<parameter name='pLayer'/>
 	
 	<uniformBlock name='GIParameters' target='1'/>
 	<uniformBlock name='GIProbeIndices' target='2'/>
@@ -25,7 +23,6 @@
 	<output name='outReflectivity' target='3'/>
 	<output name='outLight' target='4'/>
 	
-	<sourceCode unit='vertex'>v130/vertex/defren/gi/copyRayCache.glsl</sourceCode>
-	<sourceCode unit='geometry'>v130/geometry/defren/gi/copyRayCache.glsl</sourceCode>
-	<sourceCode unit='fragment'>v130/fragment/defren/gi/copyRayCache.glsl</sourceCode>
+	<sourceCode unit='vertex'>v130/vertex/defren/gi/initFromRayCache.glsl</sourceCode>
+	<sourceCode unit='fragment'>v130/fragment/defren/gi/initFromRayCache.glsl</sourceCode>
 </shader>

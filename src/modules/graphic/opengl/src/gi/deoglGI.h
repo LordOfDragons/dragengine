@@ -72,7 +72,8 @@ public:
 		eupMaterialMapSize, // int
 		eupIrradianceGamma, // float
 		eupInvIrradianceGamma, // float
-		eupSelfShadowBias // float
+		eupSelfShadowBias, // float
+		eupCascade // int
 	};
 	
 	

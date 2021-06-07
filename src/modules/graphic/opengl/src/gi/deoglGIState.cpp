@@ -51,10 +51,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglGIState::deoglGIState( deoglRenderThread &renderThread, const decVector &size ) :
+deoglGIState::deoglGIState( deoglRenderThread &renderThread, const decVector &size, int cascadeCount ) :
 pRenderThread( renderThread ),
 
 pSize( size ),
+pCascadeCount( cascadeCount ),
 
 pProbeSpacing( 1.0f, 1.0f, 1.0f ),
 // pProbeSpacing( 0.5f, 0.5f, 0.5f ),
@@ -126,7 +127,7 @@ pVBOProbeExtendsData( NULL ),
 pProbesExtendsChanged( false ),
 
 pInstances( *this ),
-pRayCache( renderThread, 64, pRealProbeCount )
+pRayCache( renderThread, 64, pRealProbeCount, cascadeCount )
 {
 	try{
 		pInitProbes();
@@ -152,6 +153,7 @@ deoglGIState::~deoglGIState(){
 // Management
 ///////////////
 
+/*
 void deoglGIState::SetSize( const decVector &size ){
 	if( size.IsEqualTo( pSize ) ){
 		return;
@@ -163,6 +165,7 @@ void deoglGIState::SetSize( const decVector &size ){
 	// TODO resize largest two volumes and invalidate all probes
 	// NOTE smallest two volumes stay intact
 }
+*/
 
 void deoglGIState::FindContent( deoglRWorld &world ){
 	deoglDCollisionBox colbox( pPosition, pDetectionBox );
@@ -1223,6 +1226,7 @@ void deoglGIState::pPrepareUBOParameters( int probeCount ) const{
 		ubo.SetParameterDataFloat( deoglGI::eupIrradianceGamma, pIrradianceGamma );
 		ubo.SetParameterDataFloat( deoglGI::eupInvIrradianceGamma, 1.0f / pIrradianceGamma );
 		ubo.SetParameterDataFloat( deoglGI::eupSelfShadowBias, CalcUBOSelfShadowBias() );
+		ubo.SetParameterDataInt( deoglGI::eupCascade, 0 );
 		
 		// material
 		/*

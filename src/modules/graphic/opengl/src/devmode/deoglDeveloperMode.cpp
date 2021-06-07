@@ -529,6 +529,9 @@ void deoglDeveloperMode::pCmdHelp( const decUnicodeArgumentList &command, decUni
 	answer.AppendFromUTF8( "dm_show_debug_info [1|0] => Show debug information and enable timing measurements.\n" );
 	answer.AppendFromUTF8( "dm_debug_info_sync [1|0] => Call glFinish before each debug timing measurement for true GPU time measuring.\n" );
 	answer.AppendFromUTF8( "dm_debug_info_details [list|+name...|-name...] => Debug info details to show.\n" );
+	answer.AppendFromUTF8( "dm_gi_show_probes [1|0] => Display GI probes.\n" );
+	answer.AppendFromUTF8( "dm_gi_show_probe_offsets [1|0] => Display GI probe offsets.\n" );
+	answer.AppendFromUTF8( "dm_gi_show_probe_update [1|0] => Display GI probe update information.\n" );
 }
 
 void deoglDeveloperMode::pCmdEnable( const decUnicodeArgumentList &command, decUnicodeString &answer ){

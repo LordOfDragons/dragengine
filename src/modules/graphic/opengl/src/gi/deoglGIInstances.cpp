@@ -239,6 +239,8 @@ void deoglGIInstances::ClearAllChanged(){
 	}
 }
 
+// #define DO_LOG_ADD_REMOVE 1
+
 void deoglGIInstances::AddComponents( deoglCollideList &list ){
 	const int count = list.GetComponentCount();
 	int i;
@@ -255,28 +257,34 @@ void deoglGIInstances::AddComponents( deoglCollideList &list ){
 		const bool isStatic = IsComponentStatic( component );
 		NextFreeSlot().SetComponent( &component, ! isStatic );
 		if( isStatic ){
-// 				pGIState.GetRenderThread().GetLogger().LogInfoFormat("GIInstances.AddComponent: %s",
-// 					component.GetModel()->GetFilename().GetString());
+			#ifdef DO_LOG_ADD_REMOVE
+				pGIState.GetRenderThread().GetLogger().LogInfoFormat("GIInstances.AddComponent: %s",
+					component.GetModel()->GetFilename().GetString());
+			#endif
 			pGIState.InvalidateArea( component.GetMinimumExtend(), component.GetMaximumExtend() );
 			
 		}else{
-// 				pGIState.GetRenderThread().GetLogger().LogInfoFormat("GIInstances.AddComponent: %s",
-// 					component.GetModel()->GetFilename().GetString());
+			#ifdef DO_LOG_ADD_REMOVE
+				pGIState.GetRenderThread().GetLogger().LogInfoFormat("GIInstances.AddComponent: %s",
+					component.GetModel()->GetFilename().GetString());
+			#endif
 			pGIState.TouchDynamicArea( component.GetMinimumExtend(), component.GetMaximumExtend() );
 		}
 		
-// 		{ // debug
-// 			int j, index = -1;
-// 			for( j=0; j<pInstances.GetCount(); j++ ){
-// 				if( ( ( deoglGIInstance* )pInstances.GetAt( j ) )->GetComponent() == &component ){
-// 					index = j;
-// 					break;
-// 				}
-// 			}
-// 			const decDVector p( component.GetMatrix().GetPosition() );
-// 			pRenderThread.GetLogger().LogInfoFormat( "GIInstances: AddComponent: %d (%g,%g,%g) component=%s [%d]",
-// 				index, p.x, p.y, p.z, component.GetModel() ? component.GetModel()->GetFilename().GetString() : "-", isStatic );
-// 		}
+		#ifdef DO_LOG_ADD_REMOVE
+			{
+			int j, index = -1;
+			for( j=0; j<pInstances.GetCount(); j++ ){
+				if( ( ( deoglGIInstance* )pInstances.GetAt( j ) )->GetComponent() == &component ){
+					index = j;
+					break;
+				}
+			}
+			const decDVector p( component.GetMatrix().GetPosition() );
+			pGIState.GetRenderThread().GetLogger().LogInfoFormat( "GIInstances: AddComponent: %d (%g,%g,%g) component=%s [%d]",
+				index, p.x, p.y, p.z, component.GetModel() ? component.GetModel()->GetFilename().GetString() : "-", isStatic );
+			}
+		#endif
 	}
 }
 
@@ -297,7 +305,9 @@ void deoglGIInstances::RemoveComponents( deoglCollideList &list ){
 					pGIState.TouchDynamicArea( instance.GetMinimumExtend(), instance.GetMaximumExtend() );
 					
 				}else{
-// 						pGIState.GetRenderThread().GetLogger().LogInfoFormat("GIInstances.RemoveComponents: LeftWorld %d", i);
+					#ifdef DO_LOG_ADD_REMOVE
+						pGIState.GetRenderThread().GetLogger().LogInfoFormat("GIInstances.RemoveComponents: LeftWorld %d", i);
+					#endif
 					pGIState.InvalidateArea( instance.GetMinimumExtend(), instance.GetMaximumExtend() );
 				}
 			}
@@ -308,12 +318,14 @@ void deoglGIInstances::RemoveComponents( deoglCollideList &list ){
 			continue;
 		}
 		
-// 		{ // debug
-// 			const decDVector p( instance.GetComponent()->GetMatrix().GetPosition() );
-// 			pRenderThread.GetLogger().LogInfoFormat( "GIInstances: RemoveComponent: %d (%g,%g,%g) component=%s",
-// 				i, p.x, p.y, p.z, instance.GetComponent()->GetModel()
-// 					? instance.GetComponent()->GetModel()->GetFilename().GetString() : "-" );
-// 		}
+		#ifdef DO_LOG_ADD_REMOVE
+			{
+			const decDVector p( instance.GetComponent()->GetMatrix().GetPosition() );
+			pGIState.GetRenderThread().GetLogger().LogInfoFormat( "GIInstances: RemoveComponent: %d (%g,%g,%g) component=%s",
+				i, p.x, p.y, p.z, instance.GetComponent()->GetModel()
+					? instance.GetComponent()->GetModel()->GetFilename().GetString() : "-" );
+			}
+		#endif
 		
 		// either GI field moved and component is no longer inside the GI field or the component
 		// moved out of the GI field. if GI field moved no invalidating is required. if component

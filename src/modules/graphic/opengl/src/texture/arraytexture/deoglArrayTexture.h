@@ -51,9 +51,7 @@ public:
 	GLuint pTexture;
 	const deoglCapsTextureFormat *pFormat;
 	
-	int pWidth;
-	int pHeight;
-	int pLayerCount;
+	decPoint3 pSize;
 	bool pMipMapped;
 	int pMipMapLevelCount;
 	int pRealMipMapLevelCount;
@@ -76,13 +74,17 @@ public:
 	/** Retrieves the texture handle. */
 	inline GLuint GetTexture() const{ return pTexture; }
 	
+	/** Size. */
+	inline const decPoint3 &GetSize() const{ return pSize; }
+	
 	/** Retrieves the width in pixels. */
-	inline int GetWidth() const{ return pWidth; }
+	inline int GetWidth() const{ return pSize.x; }
 	/** Retrieves the height in pixels. */
-	inline int GetHeight() const{ return pHeight; }
+	inline int GetHeight() const{ return pSize.y; }
 	/** Retrieves the number of layers. */
-	inline int GetLayerCount() const{ return pLayerCount; }
+	inline int GetLayerCount() const{ return pSize.z; }
 	/** Sets the size of the texture destroying the old texture if present. */
+	void SetSize( const decPoint3 &size );
 	void SetSize( int width, int height, int layerCount );
 	/** Retrieves the texture format. */
 	inline const deoglCapsTextureFormat *GetFormat() const{ return pFormat; }

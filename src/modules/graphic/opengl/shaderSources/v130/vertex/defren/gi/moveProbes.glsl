@@ -11,8 +11,14 @@ precision highp int;
 #endif
 
 
-uniform sampler2D texPosition;
-uniform sampler2D texNormal;
+#ifdef WITH_RAY_CACHE
+	uniform sampler2DArray texPosition;
+	uniform sampler2DArray texNormal;
+#else
+	uniform sampler2D texPosition;
+	uniform sampler2D texNormal;
+#endif
+
 uniform usampler2D texState; // dynamic state from previous dynamicState.glsl run
 
 
@@ -61,7 +67,11 @@ void fragmentCode( in ivec3 probeCoord, in ivec2 texCoord ){
 	vec3 closestBackOffset = vec3( 10000.0 ); // very large to force disable if no good hit found
 	
 	for( i=0; i<pGIRaysPerProbe; i++ ){
-		ivec2 rayTC = rayOffset + ivec2( i, 0 );
+		#ifdef WITH_RAY_CACHE
+			ivec3 rayTC = ivec3( rayOffset + ivec2( i, 0 ), pGICascade );
+		#else
+			ivec2 rayTC = rayOffset + ivec2( i, 0 );
+		#endif
 		
 		#ifdef WITH_RAY_CACHE
 			float rayDistance = texelFetch( texPosition, rayTC, 0 ).r;

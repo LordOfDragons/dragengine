@@ -8,8 +8,6 @@
 	<texture name='texNormal' target='1'/>
 	<texture name='texState' target='2'/>
 	
-	<parameter name='pCascade'/>
-	
 	<uniformBlock name='GIParameters' target='1'/>
 	<uniformBlock name='GIProbeIndices' target='2'/>
 	<uniformBlock name='GIProbePositions' target='3'/>

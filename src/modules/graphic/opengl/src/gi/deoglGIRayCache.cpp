@@ -38,11 +38,13 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglGIRayCache::deoglGIRayCache( deoglRenderThread &renderThread, int raysPerProbe, int probeCount ) :
+deoglGIRayCache::deoglGIRayCache( deoglRenderThread &renderThread,
+	int raysPerProbe, int probeCount, int layerCount ) :
 pRenderThread( renderThread  ),
 pRaysPerProbe( raysPerProbe ),
 pProbesPerLine( 8 ),
 pProbeCount( probeCount ),
+pLayerCount( layerCount ),
 pRayMapScale( 1.0f, 1.0f ),
 pTexDistance( renderThread ),
 pTexNormal( renderThread ),
@@ -51,7 +53,7 @@ pTexReflectivity( renderThread ),
 pTexLight( renderThread ),
 pFBOResult( renderThread, false )
 {
-	if( raysPerProbe < 16 || probeCount < 64 ){
+	if( raysPerProbe < 16 || probeCount < 64 || layerCount < 1 ){
 		DETHROW( deeInvalidParam );
 	}
 	
@@ -99,6 +101,19 @@ void deoglGIRayCache::SetProbeCount( int count ){
 	pCreateFBO();
 }
 
+void deoglGIRayCache::SetLayerCount( int count ){
+	if( count == pLayerCount ){
+		return;
+	}
+	if( count < 1 ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	pLayerCount = count;
+	
+	pCreateFBO();
+}
+
 
 
 // Private Functions
@@ -136,31 +151,31 @@ void deoglGIRayCache::pCreateFBO(){
 		if( ! pTexDistance.GetTexture() ){
 			pTexDistance.SetFBOFormat( 1, true );
 		}
-		pTexDistance.SetSize( width, height );
+		pTexDistance.SetSize( width, height, pLayerCount );
 		pTexDistance.CreateTexture();
 		
 		if( ! pTexNormal.GetTexture() ){
 			pTexNormal.SetFBOFormatSNorm( 3, 8 );
 		}
-		pTexNormal.SetSize( width, height );
+		pTexNormal.SetSize( width, height, pLayerCount );
 		pTexNormal.CreateTexture();
 		
 		if( ! pTexDiffuse.GetTexture() ){
 			pTexDiffuse.SetFBOFormat( 3, false );
 		}
-		pTexDiffuse.SetSize( width, height );
+		pTexDiffuse.SetSize( width, height, pLayerCount );
 		pTexDiffuse.CreateTexture();
 		
 		if( ! pTexReflectivity.GetTexture() ){
 			pTexReflectivity.SetFBOFormat( 4, false );
 		}
-		pTexReflectivity.SetSize( width, height );
+		pTexReflectivity.SetSize( width, height, pLayerCount );
 		pTexReflectivity.CreateTexture();
 		
 		if( ! pTexLight.GetTexture() ){
 			pTexLight.SetFBOFormat( 3, true );
 		}
-		pTexLight.SetSize( width, height );
+		pTexLight.SetSize( width, height, pLayerCount );
 		pTexLight.CreateTexture();
 	#endif
 	
@@ -168,11 +183,11 @@ void deoglGIRayCache::pCreateFBO(){
 	#ifdef GI_USE_RAY_CACHE
 		pRenderThread.GetFramebuffer().Activate( &pFBOResult );
 		
-		pFBOResult.AttachColorTexture( 0, &pTexDistance );
-		pFBOResult.AttachColorTexture( 1, &pTexNormal );
-		pFBOResult.AttachColorTexture( 2, &pTexDiffuse );
-		pFBOResult.AttachColorTexture( 3, &pTexReflectivity );
-		pFBOResult.AttachColorTexture( 4, &pTexLight );
+		pFBOResult.AttachColorArrayTexture( 0, &pTexDistance );
+		pFBOResult.AttachColorArrayTexture( 1, &pTexNormal );
+		pFBOResult.AttachColorArrayTexture( 2, &pTexDiffuse );
+		pFBOResult.AttachColorArrayTexture( 3, &pTexReflectivity );
+		pFBOResult.AttachColorArrayTexture( 4, &pTexLight );
 		OGL_CHECK( pRenderThread, pglDrawBuffers( 5, buffers ) );
 		OGL_CHECK( pRenderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
 		pFBOResult.Verify();

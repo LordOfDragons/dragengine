@@ -755,18 +755,16 @@ void deoglRenderPlan::pPlanGI(){
 		return;
 	}
 	
-	// GI state uses probes of 32x8x32 grid size. this is a default ratio of 4 times as width
-	// than high. we use the view distance as the width and thus 1/4 as the height. for a view
-	// distance of 500m this would yield a height of 125m. for most games this is enough.
-	// the camera parameters like field of view are not used. if probes fall outside the
-	// camera the closest GI probe is used. at the far end of the view this is good enough
-	const decVector size( pCameraViewDistance, pCameraViewDistance / 4.0f, pCameraViewDistance );
-	
-	if( pGIState ){
-		pGIState->SetSize( size );
+	if( ! pGIState ){
+		// GI state uses probes of 32x8x32 grid size. this is a default ratio of 4 times as width
+		// than high. we use the view distance as the width and thus 1/4 as the height. for a view
+		// distance of 500m this would yield a height of 125m. for most games this is enough.
+		// the camera parameters like field of view are not used. if probes fall outside the
+		// camera the closest GI probe is used. at the far end of the view this is good enough
+		const float length = pCameraViewDistance * 2.0f;
+		const decVector size( length, length / 4.0f, length );
 		
-	}else{
-		pGIState = new deoglGIState( pRenderThread, size );
+		pGIState = new deoglGIState( pRenderThread, size, 4 );
 		
 		if( pWorld ){
 			pWorld->AddGIState( pGIState );

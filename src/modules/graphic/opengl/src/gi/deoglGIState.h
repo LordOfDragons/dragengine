@@ -75,6 +75,7 @@ private:
 	deoglRenderThread &pRenderThread;
 	
 	decVector pSize;
+	int pCascadeCount;
 	
 	decVector pProbeSpacing;
 	decVector pProbeSpacingInv;
@@ -150,7 +151,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create global illumination state. */
-	deoglGIState( deoglRenderThread &renderThread, const decVector &size );
+	deoglGIState( deoglRenderThread &renderThread, const decVector &size, int cascadeCount );
 	
 	/** Clean up global illumination state. */
 	~deoglGIState();
@@ -167,7 +168,10 @@ public:
 	inline const decVector &GetSize() const{ return pSize; }
 	
 	/** Set size of GI state invalidating certain volumes and probes. */
-	void SetSize( const decVector &size );
+// 	void SetSize( const decVector &size );
+	
+	/** Cascade count. */
+	inline int GetCascadeCount() const{ return pCascadeCount; }
 	
 	/** Probe spacing. */
 	inline const decVector &GetProbeSpacing() const{ return pProbeSpacing; }

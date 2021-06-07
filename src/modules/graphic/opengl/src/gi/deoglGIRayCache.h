@@ -23,7 +23,7 @@
 #define _DEOGLGIRAYCACHE_H_
 
 #include "../framebuffer/deoglFramebuffer.h"
-#include "../texture/texture2d/deoglTexture.h"
+#include "../texture/arraytexture/deoglArrayTexture.h"
 
 class deoglRenderThread;
 
@@ -38,13 +38,14 @@ private:
 	int pRaysPerProbe;
 	int pProbesPerLine;
 	int pProbeCount;
+	int pLayerCount;
 	decVector2 pRayMapScale;
 	
-	deoglTexture pTexDistance;
-	deoglTexture pTexNormal;
-	deoglTexture pTexDiffuse;
-	deoglTexture pTexReflectivity;
-	deoglTexture pTexLight;
+	deoglArrayTexture pTexDistance;
+	deoglArrayTexture pTexNormal;
+	deoglArrayTexture pTexDiffuse;
+	deoglArrayTexture pTexReflectivity;
+	deoglArrayTexture pTexLight;
 	deoglFramebuffer pFBOResult;
 	
 	
@@ -53,7 +54,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create global illumination ray tracing. */
-	deoglGIRayCache( deoglRenderThread &renderThread, int raysPerProbe, int probeCount );
+	deoglGIRayCache( deoglRenderThread &renderThread, int raysPerProbe, int probeCount, int layerCount );
 	
 	/** Clean up global illumination ray tracing. */
 	~deoglGIRayCache();
@@ -81,30 +82,36 @@ public:
 	/** Set probe count. FBO and textures are valid only after this call. */
 	void SetProbeCount( int count );
 	
+	/** Layer count. */
+	inline int GetLayerCount() const{ return pLayerCount; }
+	
+	/** Set layer count. FBO and textures are valid only after this call. */
+	void SetLayerCount( int count );
+	
 	/** Ray map scale. */
 	inline const decVector2 &GetRayMapScale() const{ return pRayMapScale; }
 	
 	
 	
 	/** Distance texture. */
-	inline deoglTexture &GetTextureDistance(){ return pTexDistance; }
-	inline const deoglTexture &GetTextureDistance() const{ return pTexDistance; }
+	inline deoglArrayTexture &GetTextureDistance(){ return pTexDistance; }
+	inline const deoglArrayTexture &GetTextureDistance() const{ return pTexDistance; }
 	
 	/** Normal texture. */
-	inline deoglTexture &GetTextureNormal(){ return pTexNormal; }
-	inline const deoglTexture &GetTextureNormal() const{ return pTexNormal; }
+	inline deoglArrayTexture &GetTextureNormal(){ return pTexNormal; }
+	inline const deoglArrayTexture &GetTextureNormal() const{ return pTexNormal; }
 	
 	/** Diffuse/TintMask texture. */
-	inline deoglTexture &GetTextureDiffuse(){ return pTexDiffuse; }
-	inline const deoglTexture &GetTextureDiffuse() const{ return pTexDiffuse; }
+	inline deoglArrayTexture &GetTextureDiffuse(){ return pTexDiffuse; }
+	inline const deoglArrayTexture &GetTextureDiffuse() const{ return pTexDiffuse; }
 	
 	/** Reflectivity/Roughness texture. */
-	inline deoglTexture &GetTextureReflectivity(){ return pTexReflectivity; }
-	inline const deoglTexture &GetTextureReflectivity() const{ return pTexReflectivity; }
+	inline deoglArrayTexture &GetTextureReflectivity(){ return pTexReflectivity; }
+	inline const deoglArrayTexture &GetTextureReflectivity() const{ return pTexReflectivity; }
 	
 	/** Light texture. */
-	inline deoglTexture &GetTextureLight(){ return pTexLight; }
-	inline const deoglTexture &GetTextureLight() const{ return pTexLight; }
+	inline deoglArrayTexture &GetTextureLight(){ return pTexLight; }
+	inline const deoglArrayTexture &GetTextureLight() const{ return pTexLight; }
 	
 	/** Result FBO. */
 	inline deoglFramebuffer &GetFBOResult(){ return pFBOResult; }

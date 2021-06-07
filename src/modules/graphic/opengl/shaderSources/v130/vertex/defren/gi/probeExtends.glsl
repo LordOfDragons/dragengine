@@ -5,7 +5,7 @@ precision highp int;
 #include "v130/shared/defren/gi/ubo_gi.glsl"
 #include "v130/shared/defren/gi/trace_probe.glsl"
 
-uniform mediump sampler2D texDistance;
+uniform mediump sampler2DArray texDistance;
 
 out vec3 fbMinExtend;
 out vec3 fbMaxExtend;
@@ -15,12 +15,16 @@ void main( void ){
 	fbMinExtend = pGIFieldSize;
 	fbMaxExtend = -pGIFieldSize;
 	
-	ivec2 rayTC = ivec2( ( gl_InstanceID % pGIProbesPerLine ) * pGIRaysPerProbe, gl_InstanceID / pGIProbesPerLine );
+	ivec3 rayTC = ivec3( ( gl_InstanceID % pGIProbesPerLine ) * pGIRaysPerProbe,
+		gl_InstanceID / pGIProbesPerLine, pGICascade );
+	
 	vec3 probePosition = pGIProbePosition[ gl_InstanceID ].xyz;
 	int i;
 	
 	for( i=0; i<pGIRaysPerProbe; i++ ){
-		vec3 position = probePosition + pGIRayDirection[ i ] * texelFetch( texDistance, rayTC + ivec2( i, 0 ), 0 ).r;
+		vec3 position = probePosition + pGIRayDirection[ i ]
+			* texelFetch( texDistance, rayTC + ivec3( i, 0, 0 ), 0 ).r;
+		
 		fbMinExtend = min( fbMinExtend, position );
 		fbMaxExtend = max( fbMaxExtend, position );
 	}

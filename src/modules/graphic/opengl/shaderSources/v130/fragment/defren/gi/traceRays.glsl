@@ -154,7 +154,7 @@ void main( void ){
 		
 	#else
 		#ifdef GI_USE_RAY_CACHE
-			float distLimit = giRayCastCacheDistance( instanceID, rayIndex );
+			float distLimit = giRayCastCacheDistance( instanceID, rayIndex, pGICascade );
 		#else
 			float distLimit = giRayCastNoHitDistance;
 		#endif

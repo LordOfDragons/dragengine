@@ -138,7 +138,7 @@ pShaderResizeMaterials( NULL ),
 pShaderTraceRays( NULL ),
 pShaderTraceRaysCache( NULL ),
 pShaderCopyRayCache( NULL ),
-pShaderCopyRayCacheRev( NULL ),
+pShaderInitFromRayCache( NULL ),
 pShaderUpdateProbeIrradiance( NULL ),
 pShaderUpdateProbeDistance( NULL ),
 pShaderClearProbeIrradiance( NULL ),
@@ -192,11 +192,10 @@ pDebugInfoGIRenderLightGIRay( NULL )
 		pShaderTraceRaysCache = shaderManager.GetProgramWith( sources, defines );
 		
 		sources = shaderManager.GetSourcesNamed( "DefRen GI Copy Ray Cache" );
-		defines.AddDefine( "FROM_TRACE_TO_CACHE", true );
 		pShaderCopyRayCache = shaderManager.GetProgramWith( sources, defines );
 		
-		defines.RemoveDefine( "FROM_TRACE_TO_CACHE" );
-		pShaderCopyRayCacheRev = shaderManager.GetProgramWith( sources, defines );
+		sources = shaderManager.GetSourcesNamed( "DefRen GI Init From Ray Cache" );
+		pShaderInitFromRayCache = shaderManager.GetProgramWith( sources, defines );
 		
 		// clear probes
 		sources = shaderManager.GetSourcesNamed( "DefRen GI Clear Probes" );
@@ -345,11 +344,11 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 		
 		OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
 		
-		// init ray textures with cached rays
+		// copy traced rays to cache
 		deoglGIRayCache &rayCache = giState->GetRayCache();
 		renderThread.GetFramebuffer().Activate( &rayCache.GetFBOResult() );
 		
-		const decPoint &copySize = rayCache.GetTextureDistance().GetSize();
+		const decPoint3 &copySize = rayCache.GetTextureDistance().GetSize();
 		OGL_CHECK( renderThread, glViewport( 0, 0, copySize.x, copySize.y ) );
 		OGL_CHECK( renderThread, glScissor( 0, 0, copySize.x, copySize.y ) );
 		
@@ -393,15 +392,15 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 	pClearTraceRays();
 	
 	#ifdef GI_USE_RAY_CACHE
-		renderThread.GetShader().ActivateShader( pShaderCopyRayCacheRev );
+		renderThread.GetShader().ActivateShader( pShaderInitFromRayCache );
 		pActivateGIUBOs();
 		
 		deoglGIRayCache &rayCache = giState->GetRayCache();
-		tsmgr.EnableTexture( 0, rayCache.GetTextureDistance(), GetSamplerClampNearest() );
-		tsmgr.EnableTexture( 1, rayCache.GetTextureNormal(), GetSamplerClampNearest() );
-		tsmgr.EnableTexture( 2, rayCache.GetTextureDiffuse(), GetSamplerClampNearest() );
-		tsmgr.EnableTexture( 3, rayCache.GetTextureReflectivity(), GetSamplerClampNearest() );
-		tsmgr.EnableTexture( 4, rayCache.GetTextureLight(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 0, rayCache.GetTextureDistance(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 1, rayCache.GetTextureNormal(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 2, rayCache.GetTextureDiffuse(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 3, rayCache.GetTextureReflectivity(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 4, rayCache.GetTextureLight(), GetSamplerClampNearest() );
 		tsmgr.DisableStagesAbove( 4 );
 		
 		OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
@@ -412,7 +411,7 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 	pInitTraceTextures();
 	
 	#ifdef GI_USE_RAY_CACHE
-		tsmgr.EnableTexture( 12, rayCache.GetTextureDistance(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 12, rayCache.GetTextureDistance(), GetSamplerClampNearest() );
 	#endif
 	
 	#ifdef GI_RENDERDOC_DEBUG
@@ -785,19 +784,19 @@ void deoglRenderGI::MoveProbes( deoglRenderPlan &plan ){
 	// calculate new offset and state
 	renderThread.GetFramebuffer().Activate( &giState->GetFBOProbeOffset() );
 	
+	renderThread.GetShader().ActivateShader( pShaderMoveProbes );
+	pActivateGIUBOs();
+	
 	if( renderThread.GetChoices().GetGIMoveUsingCache() ){
 		const deoglGIRayCache &rayCache = giState->GetRayCache();
-		tsmgr.EnableTexture( 0, rayCache.GetTextureDistance(), GetSamplerClampNearest() );
-		tsmgr.EnableTexture( 1, rayCache.GetTextureNormal(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 0, rayCache.GetTextureDistance(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 1, rayCache.GetTextureNormal(), GetSamplerClampNearest() );
 		
 	}else{
 		tsmgr.EnableTexture( 0, traceRays.GetTexturePosition(), GetSamplerClampNearest() );
 		tsmgr.EnableTexture( 1, traceRays.GetTextureNormal(), GetSamplerClampNearest() );
 	}
 	tsmgr.EnableTexture( 2, giState->GetTextureProbeState(), GetSamplerClampNearest() );
-	
-	renderThread.GetShader().ActivateShader( pShaderMoveProbes );
-	pActivateGIUBOs();
 	
 	OGL_CHECK( renderThread, pglBindBufferBase( GL_TRANSFORM_FEEDBACK_BUFFER, 0, giState->GetVBOProbeOffsets() ) );
 	OGL_CHECK( renderThread, pglBeginTransformFeedback( GL_POINTS ) );
@@ -844,7 +843,7 @@ void deoglRenderGI::ProbeExtends( deoglRenderPlan &plan ){
 	renderThread.GetFramebuffer().Activate( &giState->GetFBOProbeOffset() ); // unimportant since not written to
 	
 	#ifdef GI_USE_RAY_CACHE
-		tsmgr.EnableTexture( 0, giState->GetRayCache().GetTextureDistance(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 0, giState->GetRayCache().GetTextureDistance(), GetSamplerClampNearest() );
 	#else
 		tsmgr.EnableTexture( 0, gi.GetTraceRays().GetTexturePosition(), GetSamplerClampNearest() );
 	#endif
@@ -1159,8 +1158,8 @@ void deoglRenderGI::pCleanUp(){
 	if( pShaderCopyRayCache ){
 		pShaderCopyRayCache->RemoveUsage();
 	}
-	if( pShaderCopyRayCacheRev ){
-		pShaderCopyRayCacheRev->RemoveUsage();
+	if( pShaderInitFromRayCache ){
+		pShaderInitFromRayCache->RemoveUsage();
 	}
 	if( pShaderUpdateProbeIrradiance ){
 		pShaderUpdateProbeIrradiance->RemoveUsage();
