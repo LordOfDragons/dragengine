@@ -29,7 +29,7 @@
 #include <dragengine/common/collection/decPointerList.h>
 #include <dragengine/common/math/decMath.h>
 
-class deoglRenderThread;
+class deoglGIInstances;
 class deoglRComponent;
 class deoglGIBVHLocal;
 class deoglGIBVHDynamic;
@@ -58,11 +58,13 @@ private:
 		virtual void TexturesChanged( deoglRComponent &component );
 		virtual void RenderStaticChanged( deoglRComponent &component );
 		virtual void MovementHintChanged( deoglRComponent &component );
+		void RemoveInstance();
+		void ChangeInstance();
 	};
 	
 	
 	
-	deoglRenderThread &pRenderThread;
+	deoglGIInstances &pInstances;
 	
 	deoglRComponent *pComponent;
 	deoglRComponent *pOcclusionMesh;
@@ -97,7 +99,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create global illumination instance. */
-	deoglGIInstance( deoglRenderThread &renderThread );
+	deoglGIInstance( deoglGIInstances &instances );
 	
 	/** Clean up global illumination instance. */
 	virtual ~deoglGIInstance();
@@ -107,6 +109,9 @@ public:
 	
 	/** \name Management */
 	/*@{*/
+	/** Owner instances. */
+	inline deoglGIInstances &GetInstances() const{ return pInstances; }
+	
 	/** Component or NULL. */
 	inline deoglRComponent *GetComponent() const{ return pComponent; }
 	

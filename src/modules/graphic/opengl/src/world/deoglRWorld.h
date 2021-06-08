@@ -500,6 +500,12 @@ public:
 	
 	/** Remove all GI states. */
 	void RemoveAllGIStates();
+	
+	/** Notify GI states component entered world. */
+	void GIStatesNotifyComponentEnteredWorld( deoglRComponent *component );
+	
+	/** Notify GI states component changed layer mask. */
+	void GIStatesNotifyComponentChangedLayerMask( deoglRComponent *component );
 	/*@}*/
 	
 	

@@ -172,7 +172,7 @@ public:
 	void SortComponentsByDistance( const decVector &pos, const decVector &view );
 	
 	/** Mark components. */
-	void MarkComponents( bool marked );
+	void MarkComponents( bool marked ) const;
 	
 	/** Log components. */
 	void LogComponents() const;

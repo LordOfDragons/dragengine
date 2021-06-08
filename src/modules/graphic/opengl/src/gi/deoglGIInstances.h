@@ -23,6 +23,7 @@
 #define _DEOGLGIINSTANCES_H_
 
 #include <dragengine/deObjectReference.h>
+#include <dragengine/common/collection/decPointerList.h>
 #include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/common/math/decMath.h>
 
@@ -41,7 +42,7 @@ class deoglRenderThread;
  */
 class deoglGIInstances{
 public:
-	struct sDynamicBox{
+	struct sBox{
 		decVector minExtend;
 		decVector maxExtend;
 	};
@@ -52,10 +53,13 @@ private:
 	deoglGIState &pGIState;
 	
 	decObjectList pInstances;
+	decPointerList pEmptyInstances;
 	
-	sDynamicBox *pDynamicBoxes;
+	sBox *pDynamicBoxes;
 	int pDynamicBoxCount;
 	int pDynamicBoxSize;
+	
+	decPointerList pChangedInstances;
 	
 	
 	
@@ -78,13 +82,15 @@ public:
 	
 	/** Classify content. */
 	static bool IsComponentStatic( const deoglRComponent &component );
-	static bool IsOcclusionMeshStatic( const deoglRComponent &component );
 	
 	/** Count of available instance slots. */
 	inline int GetInstanceCount() const{ return pInstances.GetCount(); }
 	
 	/** Instance at slot. */
 	deoglGIInstance &GetInstanceAt( int slot ) const;
+	
+	/** Instance with component or NULL. */
+	deoglGIInstance *GetInstanceWithComponent( deoglRComponent *component ) const;
 	
 	/** Add instance slot. */
 	deoglGIInstance &AddInstance();
@@ -95,7 +101,7 @@ public:
 	
 	
 	/** Dynamic boxes list. */
-	inline const sDynamicBox * const GetDynamicBoxes() const{ return pDynamicBoxes; }
+	inline const sBox * const GetDynamicBoxes() const{ return pDynamicBoxes; }
 	
 	/** Count of dynamic boxes. */
 	inline int GetDynamicBoxCount() const{ return pDynamicBoxCount; }
@@ -114,32 +120,31 @@ public:
 	/** Clear without triggering effects. */
 	void Clear();
 	
-	/** One or more static instances have changed. */
-	void AnyChanged() const;
+	/** Apply changes. */
+	void ApplyChanges();
 	
-	/** Clear changed flag of all instances. */
-	void ClearAllChanged();
+	/** Add component. */
+	void AddComponent( deoglRComponent *component, bool invalidate );
 	
-	/** Add components if not present */
-	void AddComponents( deoglCollideList &list );
+	/** Add components. */
+	void AddComponents( const deoglCollideList &list, bool invalidate );
 	
-	/** Remove components if present */
-	void RemoveComponents( deoglCollideList &list );
+	/** Remove component. */
+	void RemoveComponent( deoglRComponent *component );
 	
-	/** Add occlusion meshes if not present already. Returns true if static occlusion meshes have been added. */
-	bool AddOcclusionMeshes( deoglCollideList &list );
-	
-	/** Remove occlusion meshes if present. Returns true if static occlusion meshes have been removed. */
-	bool RemoveOcclusionMeshes( deoglCollideList &list );
-	
-	/** Mark instances. */
-	void MarkAll( bool marked );
+	/** Remove components. */
+	void RemoveComponents( const deoglCollideList &list );
 	
 	/** Mark components. */
 	void MarkComponents( bool marked );
 	
-	/** Mark occlusion meshes. */
-	void MarkOcclusionMeshes( bool marked );
+	
+	
+	/** Remove instance. */
+	void RemoveInstance( deoglGIInstance &instance );
+	
+	/** Instance changed. */
+	void InstanceChanged( deoglGIInstance &instance );
 	
 	
 	

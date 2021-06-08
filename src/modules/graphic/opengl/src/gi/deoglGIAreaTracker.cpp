@@ -133,15 +133,6 @@ void deoglGIAreaTracker::Update(){
 	pBoxKeep.minExtend = pBoxOld.minExtend.Largest( pBoxNew.minExtend );
 	pBoxKeep.maxExtend = pBoxOld.maxExtend.Smallest( pBoxNew.maxExtend );
 	
-	pWorld->GetRenderThread().GetLogger().LogInfoFormat(
-		"GIAreaTracker.Update: old=(%g,%g,%g)-(%g,%g,%g) new=(%g,%g,%g)-(%g,%g,%g) keep=(%g,%g,%g)-(%g,%g,%g) valid=%d",
-		pBoxOld.minExtend.x, pBoxOld.minExtend.y, pBoxOld.minExtend.z,
-		pBoxOld.maxExtend.x, pBoxOld.maxExtend.y, pBoxOld.maxExtend.z,
-		pBoxNew.minExtend.x, pBoxNew.minExtend.y, pBoxNew.minExtend.z,
-		pBoxNew.maxExtend.x, pBoxNew.maxExtend.y, pBoxNew.maxExtend.z,
-		pBoxKeep.minExtend.x, pBoxKeep.minExtend.y, pBoxKeep.minExtend.z,
-		pBoxKeep.maxExtend.x, pBoxKeep.maxExtend.y, pBoxKeep.maxExtend.z, pValid);
-	
 	// visit world
 	if( pValid && pBoxKeep.minExtend < pBoxKeep.maxExtend ){
 		// box to visit is box enclosing old and new area
@@ -172,6 +163,28 @@ bool deoglGIAreaTracker::HasNotChanged() const{
 	return pEntering.GetComponentCount() == 0 && pLeaving.GetComponentCount() == 0 && ! pAllLeaving;
 }
 
+void deoglGIAreaTracker::ClearChanges(){
+	pEntering.Clear();
+	pLeaving.Clear();
+	pAllLeaving = false;
+}
+
+bool deoglGIAreaTracker::RejectComponent( const deoglRComponent &component ) const{
+	if( component.GetLayerMask().IsNotEmpty() && pLayerMask.MatchesNot( component.GetLayerMask() ) ){
+		return true;
+	}
+	
+	if( ! component.GetModel() || component.GetLODCount() == 0 ){
+		return true;
+	}
+	
+	const deoglRModel::sExtends &extends = component.GetModel()->GetExtends();
+	if( ( extends.maximum - extends.minimum ) < decVector( 0.5f, 0.5f, 0.5f ) ){
+		return true; // skip small models to improve performance
+	}
+	
+	return false;
+}
 
 
 
@@ -246,7 +259,7 @@ void deoglGIAreaTracker::pVisitComponents( const deoglWorldOctree &node ){
 		if( cmin >= pBoxKeep.minExtend && cmax <= pBoxKeep.maxExtend ){
 			continue;
 		}
-		if( pRejectComponent( component ) ){
+		if( RejectComponent( component ) ){
 			continue;
 		}
 		
@@ -309,29 +322,10 @@ void deoglGIAreaTracker::pVisitComponentsNewOnly( const deoglWorldOctree &node )
 		|| component.GetMinimumExtend() >= pBoxNew.maxExtend ){
 			continue;
 		}
-		if( pRejectComponent( component ) ){
+		if( RejectComponent( component ) ){
 			continue;
 		}
 		
 		pEntering.AddComponent( addComponent );
 	}
-}
-
-
-
-bool deoglGIAreaTracker::pRejectComponent( const deoglRComponent &component ) const{
-	if( component.GetLayerMask().IsNotEmpty() && pLayerMask.MatchesNot( component.GetLayerMask() ) ){
-		return true;
-	}
-	
-	if( ! component.GetModel() || component.GetLODCount() == 0 ){
-		return true;
-	}
-	
-	const deoglRModel::sExtends &extends = component.GetModel()->GetExtends();
-	if( ( extends.maximum - extends.minimum ) < decVector( 0.5f, 0.5f, 0.5f ) ){
-		return true; // skip small models to improve performance
-	}
-	
-	return false;
 }

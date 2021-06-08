@@ -619,6 +619,7 @@ void deoglRWorld::AddComponent( deoglRComponent *component ){
 	
 	component->SetParentWorld( this );
 	AddPrepareForRenderComponent( component );
+	GIStatesNotifyComponentEnteredWorld( component );
 }
 
 void deoglRWorld::RemoveComponent( deoglRComponent *component ){
@@ -1260,6 +1261,22 @@ void deoglRWorld::RemoveAllGIStates(){
 	}
 	
 	pGIStates.RemoveAll();
+}
+
+void deoglRWorld::GIStatesNotifyComponentEnteredWorld( deoglRComponent *component ){
+	const int count = pGIStates.GetCount();
+	int i;
+	for( i=0; i<count; i++ ){
+		( ( deoglGIState* )pGIStates.GetAt( i ) )->ComponentEnteredWorld( component );
+	}
+}
+
+void deoglRWorld::GIStatesNotifyComponentChangedLayerMask( deoglRComponent *component ){
+	const int count = pGIStates.GetCount();
+	int i;
+	for( i=0; i<count; i++ ){
+		( ( deoglGIState* )pGIStates.GetAt( i ) )->ComponentChangedLayerMask( component );
+	}
 }
 
 

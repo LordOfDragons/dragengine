@@ -56,6 +56,7 @@ pRenderThread( renderThread ),
 
 pSize( size ),
 pCascadeCount( cascadeCount ),
+pWorld( NULL ),
 
 pProbeSpacing( 1.0f, 1.0f, 1.0f ),
 // pProbeSpacing( 0.5f, 0.5f, 0.5f ),
@@ -155,56 +156,25 @@ deoglGIState::~deoglGIState(){
 // Management
 ///////////////
 
-/*
-void deoglGIState::SetSize( const decVector &size ){
-	if( size.IsEqualTo( pSize ) ){
+void deoglGIState::SetWorld( deoglRWorld *world ){
+	if( world == pWorld ){
 		return;
 	}
 	
-	pSize = size;
-	
-	// TODO adjust pDetectionBox
-	// TODO resize largest two volumes and invalidate all probes
-	// NOTE smallest two volumes stay intact
-}
-*/
-
-void deoglGIState::FindContentOld( deoglRWorld &world ){
-	deoglDCollisionBox colbox( pPosition, pDetectionBox );
-	pCollideList.Clear();
-	pCollideList.AddComponentsColliding( world.GetOctree(), &colbox );
+	pWorld = world;
+	pAreaTracker.SetWorld( world );
+	Invalidate();
 }
 
-void deoglGIState::FindContent( deoglRWorld &world, const decLayerMask &layerMask ){
-	pAreaTracker.SetWorld( &world );
-	pAreaTracker.SetLayerMask( layerMask );
-	pAreaTracker.SetPosition( pPosition );
-	pAreaTracker.Update();
-}
-
-void deoglGIState::FilterComponents(){
-	const int count = pCollideList.GetComponentCount();
-	int i;
-	
-	pCollideListFiltered.Clear();
-	
-	for( i=0; i<count; i++ ){
-		deoglRComponent * const component = pCollideList.GetComponentAt( i )->GetComponent();
-		
-		if( ! component->GetModel() || component->GetLODCount() == 0 ){
-			continue;
-		}
-		
-		const deoglRModel::sExtends &extends = component->GetModel()->GetExtends();
-		if( ( extends.maximum - extends.minimum ) < decVector( 0.5f, 0.5f, 0.5f ) ){
-			continue; // skip small models to improve performance
-		}
-		
-		pCollideListFiltered.AddComponent( component );
+void deoglGIState::SetLayerMask( const decLayerMask &layerMask ){
+	if( layerMask == pLayerMask ){
+		return;
 	}
+	
+	pLayerMask = layerMask;
+	pAreaTracker.SetLayerMask( layerMask );
+	Invalidate();
 }
-
-
 
 decPoint3 deoglGIState::ProbeIndex2GridCoord( int index ) const{
 	decPoint3 coord;
@@ -309,8 +279,7 @@ void deoglGIState::PrepareUBOClearProbes() const{
 #define SPECIAL_TIMER_PRINT(w)
 #endif
 
-void deoglGIState::Update( deoglRWorld &world, const decDVector &cameraPosition,
-const decLayerMask &layerMask, const deoglDCollisionFrustum &frustum ){
+void deoglGIState::Update( const decDVector &cameraPosition, const deoglDCollisionFrustum &frustum ){
 // 		pRenderThread.GetLogger().LogInfoFormat( "Update GIState %p (%g,%g,%g)",
 // 			this, cameraPosition.x, cameraPosition.y, cameraPosition.z );
 	INIT_SPECIAL_TIMING
@@ -333,14 +302,7 @@ const decLayerMask &layerMask, const deoglDCollisionFrustum &frustum ){
 	pUpdatePosition( cameraPosition );
 	SPECIAL_TIMER_PRINT("UpdatePosition")
 	
-	// find content to track. only static and dynamic content is tracked
-	FindContentOld( world );
-	SPECIAL_TIMER_PRINT("FindContentOld")
-	
-	FilterComponents();
-	SPECIAL_TIMER_PRINT("FilterContent")
-	
-	FindContent( world, layerMask );
+	pFindContent();
 	SPECIAL_TIMER_PRINT("FindContent")
 	
 	// track changes in static instances has to be done first
@@ -356,10 +318,6 @@ const decLayerMask &layerMask, const deoglDCollisionFrustum &frustum ){
 		pPrepareRayCacheProbes();
 	#endif
 	SPECIAL_TIMER_PRINT("PrepareRayCacheProbes")
-	
-	// synchronize all tracked instances using new position
-	pSyncTrackedInstances();
-	SPECIAL_TIMER_PRINT("SyncTrackedInstances")
 }
 
 void deoglGIState::PrepareUBOState() const{
@@ -456,7 +414,6 @@ void deoglGIState::PrepareUBOStateRayCache() const{
 
 void deoglGIState::Invalidate(){
 	pInstances.Clear();
-	pAreaTracker.SetWorld( NULL );
 	
 	uint16_t i;
 	for( i=0; i<pRealProbeCount; i++ ){
@@ -565,9 +522,10 @@ void deoglGIState::InvalidateArea( const decDVector &minExtend, const decDVector
 	int i;
 	for( i=0; i<pRealProbeCount; i++ ){
 		sProbe &probe = pProbes[ i ];
-		if( ( probe.flags & epfRayCacheValid ) == epfRayCacheValid
-		&& deoglCollisionDetection::AABoxHitsAABox( probe.minExtend, probe.maxExtend, lminExtend, lmaxExtend ) ){
-			probe.flags &= ~( epfRayCacheValid | epfDisabled | epfDynamicDisable );
+		if( probe.maxExtend > lminExtend && probe.minExtend < lmaxExtend ){
+			probe.flags &= ~( epfDisabled | epfNearGeometry | epfRayCacheValid | epfDynamicDisable );
+			probe.offset.SetZero();
+			probe.countOffsetMoved = 0;
 // 				debugText.AppendFormat( " %d,", i );
 		}
 	}
@@ -587,7 +545,7 @@ void deoglGIState::TouchDynamicArea( const decDVector &minExtend, const decDVect
 		for( i.z=from.z; i.z<=to.z; i.z++ ){
 			for( i.x=from.x; i.x<=to.x; i.x++ ){
 				sProbe &probe = pProbes[ GridCoord2ProbeIndex( ShiftedGrid2LocalGrid( i ) ) ];
-				if( probe.position >= lminExtend && probe.position <= lmaxExtend ){
+				if( probe.position > lminExtend && probe.position < lmaxExtend ){
 					probe.flags &= ~epfDynamicDisable;
 				}
 			}
@@ -601,6 +559,29 @@ void deoglGIState::ValidatedRayCaches(){
 		pProbes[ pRayCacheProbes[ i ] ].flags |= epfRayCacheValid;
 	}
 	pProbesExtendsChanged = true;
+}
+
+void deoglGIState::ComponentEnteredWorld( deoglRComponent *component ){
+	if( pAreaTracker.RejectComponent( *component ) ){
+		return;
+	}
+	
+	// components entering game world can be anywhere and thus need to invalidate probes
+	pInstances.AddComponent( component, true );
+}
+
+void deoglGIState::ComponentChangedLayerMask( deoglRComponent *component ){
+	if( pAreaTracker.RejectComponent( *component ) ){
+		return;
+	}
+	
+	// this is unfortunately required and not cheap. but this happens rarely
+	if( pInstances.GetInstanceWithComponent( component ) ){
+		return;
+	}
+	
+	// components changing layer mask can be anywhere and thus need to invalidate probes
+	pInstances.AddComponent( component, true );
 }
 
 
@@ -675,6 +656,11 @@ void deoglGIState::pInvalidateAllRayCaches(){
 	}
 }
 
+void deoglGIState::pFindContent(){
+	pAreaTracker.SetPosition( pPosition );
+	pAreaTracker.Update();
+}
+
 void deoglGIState::pTrackInstanceChanges(){
 	/*{
 		const int count = pCollideListFiltered.GetComponentCount();
@@ -690,19 +676,25 @@ void deoglGIState::pTrackInstanceChanges(){
 		}
 	}*/
 	
-	pInstances.AnyChanged();
-	pInstances.RemoveComponents( pCollideListFiltered );
-	pInstances.AddComponents( pCollideListFiltered );
+	if( pAreaTracker.GetAllLeaving() ){
+		pInstances.Clear();
+		
+	}else{
+		pInstances.ApplyChanges();
+	}
+	
+	pInstances.RemoveComponents( pAreaTracker.GetLeaving() );
+	
+	// entering contains only components entering the GI area due to the GI area moving.
+	// for these components we do not need to invalidate the probes since all rotated
+	// out probes have been already invalidated. if all leaving flag is set then all
+	// probes are invalidated too so we also do not need to invalidate here
+	pInstances.AddComponents( pAreaTracker.GetEntering(), false );
+	
+	pAreaTracker.ClearChanges();
 	
 // 	pRenderThread.GetLogger().LogInfo( "pTrackInstanceChanges" );
 // 	pInstances.DebugPrint();
-}
-
-void deoglGIState::pSyncTrackedInstances(){
-	pInstances.RemoveComponents( pCollideListFiltered );
-	pInstances.AddComponents( pCollideListFiltered );
-	
-	pInstances.ClearAllChanged();
 }
 
 void deoglGIState::pUpdatePosition( const decDVector &position ){

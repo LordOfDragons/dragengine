@@ -77,6 +77,8 @@ private:
 	
 	decVector pSize;
 	int pCascadeCount;
+	deoglRWorld *pWorld;
+	decLayerMask pLayerMask;
 	
 	decVector pProbeSpacing;
 	decVector pProbeSpacingInv;
@@ -92,8 +94,6 @@ private:
 	float pMaxDetectionRange;
 	decVector pDetectionBox;
 	deoglGIAreaTracker pAreaTracker;
-	deoglCollideList pCollideList;
-	deoglCollideList pCollideListFiltered;
 	
 	int pIrradianceMapSize;
 	int pDistanceMapSize;
@@ -169,6 +169,18 @@ public:
 	/** Size of GI state. */
 	inline const decVector &GetSize() const{ return pSize; }
 	
+	/** World. */
+	inline deoglRWorld *GetWorld() const{ return pWorld; }
+	
+	/** Set world. */
+	void SetWorld( deoglRWorld *world );
+	
+	/** Layer mask. */
+	inline const decLayerMask &GetLayerMask() const{ return pLayerMask; }
+	
+	/** Set layer mask. Invalidates all if changed. */
+	void SetLayerMask( const decLayerMask &layerMask );
+	
 	/** Set size of GI state invalidating certain volumes and probes. */
 // 	void SetSize( const decVector &size );
 	
@@ -213,13 +225,6 @@ public:
 	
 	/** Detection box. */
 	inline const decVector &GetDetectionBox() const{ return pDetectionBox; }
-	
-	/** Find content affecting GI state. */
-	void FindContentOld( deoglRWorld &world );
-	void FindContent( deoglRWorld &world, const decLayerMask &layerMask );
-	
-	/** Filter components into filtered collide list. */
-	void FilterComponents();
 	
 	
 	
@@ -335,8 +340,7 @@ public:
 	inline GLuint GetVBOProbeExtends() const{ return pVBOProbeExtends; }
 	
 	/** Update. */
-	void Update( deoglRWorld &world, const decDVector &cameraPosition,
-		const decLayerMask &layerMask, const deoglDCollisionFrustum &frustum );
+	void Update( const decDVector &cameraPosition, const deoglDCollisionFrustum &frustum );
 	
 	/** Prepare UBO state. */
 	void PrepareUBOState() const;
@@ -365,6 +369,12 @@ public:
 	/** Validate ray caches marked for update. */
 	void ValidatedRayCaches();
 	
+	/** Notification component entered world. */
+	void ComponentEnteredWorld( deoglRComponent *component );
+	
+	/** Notification component changed layer mask. */
+	void ComponentChangedLayerMask( deoglRComponent *component );
+	
 	
 	
 	/** Instances. */
@@ -383,8 +393,8 @@ private:
 	void pInitProbes();
 	void pInitUBOClearProbes();
 	void pInvalidateAllRayCaches();
+	void pFindContent();
 	void pTrackInstanceChanges();
-	void pSyncTrackedInstances();
 	void pUpdatePosition( const decDVector &position );
 	void pPrepareTraceProbes( const deoglDCollisionFrustum &frustum );
 	void pFindProbesToUpdate( const deoglDCollisionFrustum &frustum );

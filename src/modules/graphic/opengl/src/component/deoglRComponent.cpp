@@ -316,6 +316,10 @@ void deoglRComponent::SetLayerMask( const decLayerMask &layerMask ){
 		NotifySkiesUpdateStatic();
 	}
 	
+	if( pParentWorld ){
+		pParentWorld->GIStatesNotifyComponentChangedLayerMask( this );
+	}
+	
 	NotifyLayerMaskChanged();
 }
 

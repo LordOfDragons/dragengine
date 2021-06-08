@@ -33,7 +33,6 @@
 #include "../component/deoglRComponentLOD.h"
 #include "../model/deoglRModel.h"
 #include "../model/deoglModelLOD.h"
-#include "../occlusiontest/mesh/deoglROcclusionMesh.h"
 #include "../renderthread/deoglRTLogger.h"
 
 #include <dragengine/common/exceptions.h>
@@ -70,36 +69,45 @@ bool deoglGIInstances::IsComponentStatic( const deoglRComponent &component ){
 		&& component.GetLODAt( -1 ).GetModelLODRef().GetWeightsCount() == 0;
 }
 
-bool deoglGIInstances::IsOcclusionMeshStatic( const deoglRComponent &component ){
-	return component.GetRenderStatic()
-		&& component.GetMovementHint() == deComponent::emhStationary
-		&& ! component.GetDynamicOcclusionMesh();
-}
-
 deoglGIInstance &deoglGIInstances::GetInstanceAt( int slot ) const{
 	return *( ( deoglGIInstance* )pInstances.GetAt( slot ) );
 }
 
+deoglGIInstance *deoglGIInstances::GetInstanceWithComponent( deoglRComponent *component ) const{
+	if( ! component ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	const int count = pInstances.GetCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		deoglGIInstance * const instance = ( deoglGIInstance* )pInstances.GetAt( i );
+		if( instance->GetComponent() == component ){
+			return instance;
+		}
+	}
+	
+	return NULL;
+}
+
 deoglGIInstance &deoglGIInstances::AddInstance(){
 	deObjectReference ref;
-	ref.TakeOver( new deoglGIInstance( pGIState.GetRenderThread() ) );
+	ref.TakeOver( new deoglGIInstance( *this ) );
 	pInstances.Add( ref );
 	
 	return ( deoglGIInstance& )( deObject& )ref;
 }
 
 deoglGIInstance &deoglGIInstances::NextFreeSlot(){
-	const int count = pInstances.GetCount();
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		deoglGIInstance &instance = *( ( deoglGIInstance* )pInstances.GetAt( i ) );
-		if( instance.Empty() ){
-			return instance;
-		}
+	if( pEmptyInstances.GetCount() == 0 ){
+		return AddInstance();
 	}
 	
-	return AddInstance();
+	const int index = pEmptyInstances.GetCount() - 1;
+	deoglGIInstance * const instance = ( deoglGIInstance* )pEmptyInstances.GetAt( index );
+	pEmptyInstances.RemoveFrom( index );
+	return *instance;
 }
 
 
@@ -119,16 +127,16 @@ void deoglGIInstances::UpdateDynamicBoxes( const decDVector &offset, const decVe
 		
 		if( pDynamicBoxCount == pDynamicBoxSize ){
 			const int newSize = pDynamicBoxCount * 3 / 2 + 1;
-			sDynamicBox * const newArray = new sDynamicBox[ newSize ];
+			         sBox * const newArray = new sBox[ newSize ];
 			if( pDynamicBoxes ){
-				memcpy( newArray, pDynamicBoxes, sizeof( sDynamicBox ) * pDynamicBoxCount );
+				memcpy( newArray, pDynamicBoxes, sizeof( sBox ) * pDynamicBoxCount );
 				delete [] pDynamicBoxes;
 			}
 			pDynamicBoxes = newArray;
 			pDynamicBoxSize = newSize;
 		}
 		
-		sDynamicBox &box = pDynamicBoxes[ pDynamicBoxCount++ ];
+		      sBox &box = pDynamicBoxes[ pDynamicBoxCount++ ];
 		box.minExtend = ( instance.GetMinimumExtend() + offset ).ToVector() - halfEnlarge;
 		box.maxExtend = ( instance.GetMaximumExtend() + offset ).ToVector() + halfEnlarge;
 	}
@@ -157,22 +165,28 @@ int deoglGIInstances::CountDynamicBoxesContaining( const decVector &point ) cons
 
 
 void deoglGIInstances::Clear(){
+	pEmptyInstances.RemoveAll();
+	
 	const int count = pInstances.GetCount();
 	int i;
 	for( i=0; i<count; i++ ){
-		( ( deoglGIInstance* )pInstances.GetAt( i ) )->Clear();
+		deoglGIInstance * const instance = ( deoglGIInstance* )pInstances.GetAt( i );
+		instance->Clear();
+		pEmptyInstances.Add( instance );
 	}
+	
+	pChangedInstances.RemoveAll();
 }
 
-void deoglGIInstances::AnyChanged() const{
-	const int count = pInstances.GetCount();
-	int i;
+void deoglGIInstances::ApplyChanges(){
+	const int count = pChangedInstances.GetCount();
+	if( count == 0 ){
+		return;
+	}
 	
+	int i;
 	for( i=0; i<count; i++ ){
-		deoglGIInstance &instance = *( ( deoglGIInstance* )pInstances.GetAt( i ) );
-		if( ! instance.GetChanged() ){
-			continue;
-		}
+		deoglGIInstance &instance = *( ( deoglGIInstance* )pChangedInstances.GetAt( i ) );
 		
 		bool invalidate = ! instance.GetDynamic();
 		
@@ -183,9 +197,6 @@ void deoglGIInstances::AnyChanged() const{
 			
 			if( instance.GetComponent() ){
 				instance.SetDynamic( ! IsComponentStatic( *instance.GetComponent() ) );
-				
-			}else if( instance.GetOcclusionMesh() ){
-				instance.SetDynamic( ! IsOcclusionMeshStatic( *instance.GetOcclusionMesh() ) );
 				
 			}else{
 				instance.SetDynamic( false );
@@ -227,68 +238,77 @@ void deoglGIInstances::AnyChanged() const{
 				}
 			}
 		}
+		
+		instance.SetChanged( false );
 	}
-}
-
-void deoglGIInstances::ClearAllChanged(){
-	const int count = pInstances.GetCount();
-	int i;
 	
-	for( i=0; i<count; i++ ){
-		( ( deoglGIInstance* )pInstances.GetAt( i ) )->SetChanged( false );
-	}
+	pChangedInstances.RemoveAll();
 }
 
 // #define DO_LOG_ADD_REMOVE 1
 
-void deoglGIInstances::AddComponents( deoglCollideList &list ){
-	const int count = list.GetComponentCount();
-	int i;
+void deoglGIInstances::AddComponent( deoglRComponent *component, bool invalidate ){
+	const bool isStatic = IsComponentStatic( *component );
+	NextFreeSlot().SetComponent( component, ! isStatic );
 	
-	list.MarkComponents( true );
-	MarkComponents( false );
-	
-	for( i=0; i<count; i++ ){
-		deoglRComponent &component = *list.GetComponentAt( i )->GetComponent();
-		if( ! component.GetMarked() ){
-			continue;
-		}
-		
-		const bool isStatic = IsComponentStatic( component );
-		NextFreeSlot().SetComponent( &component, ! isStatic );
+	if( invalidate ){
 		if( isStatic ){
 			#ifdef DO_LOG_ADD_REMOVE
 				pGIState.GetRenderThread().GetLogger().LogInfoFormat("GIInstances.AddComponent: %s",
-					component.GetModel()->GetFilename().GetString());
+					component->GetModel()->GetFilename().GetString());
 			#endif
-			pGIState.InvalidateArea( component.GetMinimumExtend(), component.GetMaximumExtend() );
+			pGIState.InvalidateArea( component->GetMinimumExtend(), component->GetMaximumExtend() );
+				// WARNING InvalidateArea becomes expensive if called multiple times.
+				//         unfortunately we can not collect all boxes into an enclosing box
+				//         since then moving diagonally can invalidate lots of probes inside
+				//         the area which should not be touched. not sure how to solve this.
+				//         maybe a small octree for probe extends?
 			
 		}else{
 			#ifdef DO_LOG_ADD_REMOVE
 				pGIState.GetRenderThread().GetLogger().LogInfoFormat("GIInstances.AddComponent: %s",
-					component.GetModel()->GetFilename().GetString());
+					component->GetModel()->GetFilename().GetString());
 			#endif
-			pGIState.TouchDynamicArea( component.GetMinimumExtend(), component.GetMaximumExtend() );
+			pGIState.TouchDynamicArea( component->GetMinimumExtend(), component->GetMaximumExtend() );
 		}
-		
-		#ifdef DO_LOG_ADD_REMOVE
-			{
-			int j, index = -1;
-			for( j=0; j<pInstances.GetCount(); j++ ){
-				if( ( ( deoglGIInstance* )pInstances.GetAt( j ) )->GetComponent() == &component ){
-					index = j;
-					break;
-				}
+	}
+	
+	#ifdef DO_LOG_ADD_REMOVE
+		{
+		int j, index = -1;
+		for( j=0; j<pInstances.GetCount(); j++ ){
+			if( ( ( deoglGIInstance* )pInstances.GetAt( j ) )->GetComponent() == component ){
+				index = j;
+				break;
 			}
-			const decDVector p( component.GetMatrix().GetPosition() );
-			pGIState.GetRenderThread().GetLogger().LogInfoFormat( "GIInstances: AddComponent: %d (%g,%g,%g) component=%s [%d]",
-				index, p.x, p.y, p.z, component.GetModel() ? component.GetModel()->GetFilename().GetString() : "-", isStatic );
-			}
-		#endif
+		}
+		const decDVector p( component->GetMatrix().GetPosition() );
+		pGIState.GetRenderThread().GetLogger().LogInfoFormat( "GIInstances: AddComponent: %d (%g,%g,%g) component=%s [%d]",
+			index, p.x, p.y, p.z, component->GetModel() ? component->GetModel()->GetFilename().GetString() : "-", isStatic );
+		}
+	#endif
+}
+
+void deoglGIInstances::AddComponents( const deoglCollideList &list, bool invalidate ){
+	const int count = list.GetComponentCount();
+	int i;
+	for( i=0; i<count; i++ ){
+		AddComponent( list.GetComponentAt( i )->GetComponent(), invalidate );
 	}
 }
 
-void deoglGIInstances::RemoveComponents( deoglCollideList &list ){
+void deoglGIInstances::RemoveComponent( deoglRComponent *component ){
+	deoglGIInstance * const instance = GetInstanceWithComponent( component );
+	if( instance ){
+		RemoveInstance( *instance );
+	}
+}
+
+void deoglGIInstances::RemoveComponents( const deoglCollideList &list ){
+	if( list.GetComponentCount() == 0 ){
+		return;
+	}
+	
 	const int count = pInstances.GetCount();
 	int i;
 	
@@ -297,129 +317,30 @@ void deoglGIInstances::RemoveComponents( deoglCollideList &list ){
 	
 	for( i=0; i<count; i++ ){
 		deoglGIInstance &instance = *( ( deoglGIInstance* )pInstances.GetAt( i ) );
-		if( ! instance.GetComponent() ){
-			if( instance.GetChanged() ){
-				// component has been removed from game world
-				instance.SetChanged( false );
-				if( instance.GetDynamic() ){
-					pGIState.TouchDynamicArea( instance.GetMinimumExtend(), instance.GetMaximumExtend() );
-					
-				}else{
-					#ifdef DO_LOG_ADD_REMOVE
-						pGIState.GetRenderThread().GetLogger().LogInfoFormat("GIInstances.RemoveComponents: LeftWorld %d", i);
-					#endif
-					pGIState.InvalidateArea( instance.GetMinimumExtend(), instance.GetMaximumExtend() );
+		
+		if( instance.GetComponent() ){
+			if( instance.GetComponent()->GetMarked() ){
+				continue;
+			}
+			
+			#ifdef DO_LOG_ADD_REMOVE
+				{
+				const decDVector p( instance.GetComponent()->GetMatrix().GetPosition() );
+				pGIState.GetRenderThread().GetLogger().LogInfoFormat( "GIInstances.RemoveComponents: %d (%g,%g,%g) component=%s",
+					i, p.x, p.y, p.z, instance.GetComponent()->GetModel()
+						? instance.GetComponent()->GetModel()->GetFilename().GetString() : "-" );
 				}
-			}
+			#endif
+			
+			// GI field moved and component is no longer inside the GI field.
+			// no invalidating is required
+			
+		}else{
 			continue;
-		}
-		
-		if( ! instance.GetComponent()->GetMarked() ){
-			continue;
-		}
-		
-		#ifdef DO_LOG_ADD_REMOVE
-			{
-			const decDVector p( instance.GetComponent()->GetMatrix().GetPosition() );
-			pGIState.GetRenderThread().GetLogger().LogInfoFormat( "GIInstances: RemoveComponent: %d (%g,%g,%g) component=%s",
-				i, p.x, p.y, p.z, instance.GetComponent()->GetModel()
-					? instance.GetComponent()->GetModel()->GetFilename().GetString() : "-" );
-			}
-		#endif
-		
-		// either GI field moved and component is no longer inside the GI field or the component
-		// moved out of the GI field. if GI field moved no invalidating is required. if component
-		// moved invalidating is required
-		if( instance.GetChanged() ){
-			if( instance.GetDynamic() ){
-				pGIState.TouchDynamicArea( instance.GetMinimumExtend(), instance.GetMaximumExtend() );
-				
-			}else{
-// 				pGIState.GetRenderThread().GetLogger().LogInfoFormat("GIInstances.AnyChanged: LeftField %s",
-// 					instance.GetComponent()->GetModel()->GetFilename().GetString());
-				pGIState.InvalidateArea( instance.GetMinimumExtend(), instance.GetMaximumExtend() );
-			}
 		}
 		
 		instance.Clear();
-	}
-}
-
-bool deoglGIInstances::AddOcclusionMeshes( deoglCollideList &list ){
-	const int count = list.GetComponentCount();
-	bool anyAdded = false;
-	int i;
-	
-	list.MarkComponents( true );
-	MarkOcclusionMeshes( false );
-	
-	for( i=0; i<count; i++ ){
-		deoglRComponent &component = *list.GetComponentAt( i )->GetComponent();
-		if( component.GetMarked() ){
-			const bool isStatic = IsOcclusionMeshStatic( component );
-			NextFreeSlot().SetOcclusionMesh( &component, ! isStatic );
-			if( isStatic ){
-				anyAdded = true;
-			}
-			
-// 			{ // debug
-// 				int j, index = -1;
-// 				for( j=0; j<pInstances.GetCount(); j++ ){
-// 					if( ( ( deoglGIInstance* )pInstances.GetAt( j ) )->GetOcclusionMesh() == &component ){
-// 						index = j;
-// 						break;
-// 					}
-// 				}
-// 				const decDVector p( component.GetMatrix().GetPosition() );
-// 				pRenderThread.GetLogger().LogInfoFormat( "GIInstances: AddOcclusionMesh: %d (%g,%g,%g) occmesh=%s",
-// 					index, p.x, p.y, p.z, component.GetOcclusionMesh() ? component.GetOcclusionMesh()->GetFilename().GetString() : "-" );
-// 			}
-		}
-	}
-	
-	return anyAdded;
-}
-
-bool deoglGIInstances::RemoveOcclusionMeshes( deoglCollideList &list ){
-	const int count = pInstances.GetCount();
-	bool anyRemoved = false;
-	int i;
-	
-	MarkOcclusionMeshes( true );
-	list.MarkComponents( false );
-	
-	for( i=0; i<count; i++ ){
-		deoglGIInstance &instance = *( ( deoglGIInstance* )pInstances.GetAt( i ) );
-		if( instance.GetOcclusionMesh() && instance.GetOcclusionMesh()->GetMarked() ){
-// 			{ // debug
-// 				const decDVector p( instance.GetOcclusionMesh()->GetMatrix().GetPosition() );
-// 				pRenderThread.GetLogger().LogInfoFormat( "GIInstances: RemoveOcclusionMesh: %d (%g,%g,%g) occmesh=%s",
-// 					i, p.x, p.y, p.z, instance.GetOcclusionMesh()->GetOcclusionMesh()
-// 						? instance.GetOcclusionMesh()->GetOcclusionMesh()->GetFilename().GetString() : "-" );
-// 			}
-			
-			instance.Clear();
-			if( ! instance.GetDynamic() ){
-				anyRemoved = true;
-			}
-		}
-	}
-	
-	return anyRemoved;
-}
-
-void deoglGIInstances::MarkAll( bool marked ){
-	const int count = pInstances.GetCount();
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		deoglGIInstance &instance = *( ( deoglGIInstance* )pInstances.GetAt( i ) );
-		if( instance.GetComponent() ){
-			instance.GetComponent()->SetMarked( marked );
-			
-		}else if( instance.GetOcclusionMesh() ){
-			instance.GetOcclusionMesh()->SetMarked( marked );
-		}
+		pEmptyInstances.Add( &instance );
 	}
 }
 
@@ -435,16 +356,25 @@ void deoglGIInstances::MarkComponents( bool marked ){
 	}
 }
 
-void deoglGIInstances::MarkOcclusionMeshes( bool marked ){
-	const int count = pInstances.GetCount();
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		deoglGIInstance &instance = *( ( deoglGIInstance* )pInstances.GetAt( i ) );
-		if( instance.GetOcclusionMesh() ){
-			instance.GetOcclusionMesh()->SetMarked( marked );
-		}
+
+
+void deoglGIInstances::RemoveInstance( deoglGIInstance &instance ){
+	if( instance.GetDynamic() ){
+		pGIState.TouchDynamicArea( instance.GetMinimumExtend(), instance.GetMaximumExtend() );
+		
+	}else{
+		#ifdef DO_LOG_ADD_REMOVE
+			pGIState.GetRenderThread().GetLogger().LogInfoFormat("GIInstances.RemoveInstance: %p", &instance);
+		#endif
+		pGIState.InvalidateArea( instance.GetMinimumExtend(), instance.GetMaximumExtend() );
 	}
+	
+	instance.Clear();
+	pEmptyInstances.Add( &instance );
+}
+
+void deoglGIInstances::InstanceChanged( deoglGIInstance &instance ){
+	pChangedInstances.Add( &instance );
 }
 
 
@@ -460,13 +390,6 @@ void deoglGIInstances::DebugPrint(){
 				logger.LogInfoFormat( "%d: component (%g,%g,%g) %s",
 					i, p.x, p.y, p.z, instance.GetComponent()->GetModel()
 						? instance.GetComponent()->GetModel()->GetFilename().GetString() : "-" );
-				
-		}else if( instance.GetOcclusionMesh() ){
-			const decDVector p( instance.GetOcclusionMesh()->GetMatrix().GetPosition() );
-				logger.LogInfoFormat( "%d: occlusion mesh (%g,%g,%g) %s",
-					i, p.x, p.y, p.z, instance.GetOcclusionMesh()->GetOcclusionMesh()
-						? instance.GetOcclusionMesh()->GetOcclusionMesh()->GetFilename().GetString() : "-" );
-
 		}
 	}
 }

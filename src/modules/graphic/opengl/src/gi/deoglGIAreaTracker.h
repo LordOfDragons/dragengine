@@ -119,6 +119,12 @@ public:
 	
 	/** Entering and leaving list are empty and all leaving flag is cleared. */
 	bool HasNotChanged() const;
+	
+	/** Clear lists and all leaving flag. */
+	void ClearChanges();
+	
+	/** Reject component. */
+	bool RejectComponent( const deoglRComponent &component ) const;
 	/*@}*/
 	
 	
@@ -131,8 +137,6 @@ private:
 	void pVisitNodeCollidingNewOnly( const deoglWorldOctree &node );
 	void pVisitNodeNewOnly( const deoglWorldOctree &node );
 	void pVisitComponentsNewOnly( const deoglWorldOctree &node );
-	
-	bool pRejectComponent( const deoglRComponent &component ) const;
 };
 
 #endif

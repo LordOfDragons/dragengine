@@ -396,7 +396,7 @@ void deoglCollideList::SortComponentsByDistance( const decVector &pos, const dec
 	}
 }
 
-void deoglCollideList::MarkComponents( bool marked ){
+void deoglCollideList::MarkComponents( bool marked ) const{
 	int i;
 	for( i=0; i<pComponentCount; i++ ){
 		pComponents[ i ]->GetComponent()->SetMarked( marked );
