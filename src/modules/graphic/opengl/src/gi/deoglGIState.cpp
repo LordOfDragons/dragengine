@@ -304,6 +304,10 @@ void deoglGIState::Update( const decDVector &cameraPosition, const deoglDCollisi
 	
 	pFindContent();
 	SPECIAL_TIMER_PRINT("FindContent")
+// 		if(pAreaTracker.HasChanged()){
+// 			pRenderThread.GetLogger().LogInfoFormat("GIState.FindContent: enter=%d leave=%d allLeaving=%d",
+// 				pAreaTracker.GetEntering().GetComponentCount(), pAreaTracker.GetLeaving().GetComponentCount(), pAreaTracker.GetAllLeaving());
+// 		}
 	
 	// track changes in static instances has to be done first
 	pTrackInstanceChanges();
