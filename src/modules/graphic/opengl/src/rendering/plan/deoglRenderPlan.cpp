@@ -778,7 +778,7 @@ void deoglRenderPlan::pUpdateGI(){
 		return;
 	}
 	
-	giState->Update( *pWorld, pCameraPosition, *pUseFrustum );
+	giState->Update( *pWorld, pCameraPosition, pUseLayerMask ? pLayerMask : ~decLayerMask(), *pUseFrustum );
 	pRenderThread.GetRenderers().GetCanvas().SampleDebugInfoPlanPrepareGIUpdate( *this );
 }
 

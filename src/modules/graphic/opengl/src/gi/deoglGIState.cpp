@@ -138,6 +138,8 @@ pRayCache( renderThread, 64, pRealProbeCount, cascadeCount )
 		pRayCacheProbes = new uint16_t[ GI_MAX_PROBE_COUNT ];
 		#endif
 		
+		pAreaTracker.SetHalfExtends( pDetectionBox );
+		
 	}catch( const deException & ){
 		pCleanUp();
 		throw;
@@ -167,27 +169,17 @@ void deoglGIState::SetSize( const decVector &size ){
 }
 */
 
-void deoglGIState::FindContent( deoglRWorld &world ){
+void deoglGIState::FindContentOld( deoglRWorld &world ){
 	deoglDCollisionBox colbox( pPosition, pDetectionBox );
 	pCollideList.Clear();
 	pCollideList.AddComponentsColliding( world.GetOctree(), &colbox );
 }
 
-void deoglGIState::FilterOcclusionMeshes(){
-	const int count = pCollideList.GetComponentCount();
-	int i;
-	
-	pCollideListFiltered.Clear();
-	
-	for( i=0; i<count; i++ ){
-		deoglRComponent * const component = pCollideList.GetComponentAt( i )->GetComponent();
-		
-		if( ! component->GetOcclusionMesh() ){
-			continue;
-		}
-		
-		pCollideListFiltered.AddComponent( component );
-	}
+void deoglGIState::FindContent( deoglRWorld &world, const decLayerMask &layerMask ){
+	pAreaTracker.SetWorld( &world );
+	pAreaTracker.SetLayerMask( layerMask );
+	pAreaTracker.SetPosition( pPosition );
+	pAreaTracker.Update();
 }
 
 void deoglGIState::FilterComponents(){
@@ -318,7 +310,7 @@ void deoglGIState::PrepareUBOClearProbes() const{
 #endif
 
 void deoglGIState::Update( deoglRWorld &world, const decDVector &cameraPosition,
-const deoglDCollisionFrustum &frustum ){
+const decLayerMask &layerMask, const deoglDCollisionFrustum &frustum ){
 // 		pRenderThread.GetLogger().LogInfoFormat( "Update GIState %p (%g,%g,%g)",
 // 			this, cameraPosition.x, cameraPosition.y, cameraPosition.z );
 	INIT_SPECIAL_TIMING
@@ -337,12 +329,19 @@ const deoglDCollisionFrustum &frustum ){
 	// monitor configuration changes
 	pRenderThread.GetGI().GetTraceRays().UpdateFromConfig();
 	
+	// update position
+	pUpdatePosition( cameraPosition );
+	SPECIAL_TIMER_PRINT("UpdatePosition")
+	
 	// find content to track. only static and dynamic content is tracked
-	FindContent( world );
-	SPECIAL_TIMER_PRINT("FindContent")
+	FindContentOld( world );
+	SPECIAL_TIMER_PRINT("FindContentOld")
 	
 	FilterComponents();
 	SPECIAL_TIMER_PRINT("FilterContent")
+	
+	FindContent( world, layerMask );
+	SPECIAL_TIMER_PRINT("FindContent")
 	
 	// track changes in static instances has to be done first
 	pTrackInstanceChanges();
@@ -350,8 +349,6 @@ const deoglDCollisionFrustum &frustum ){
 	
 	// prepare probes for tracing
 	pUpdateProbeCount = 0;
-	pUpdatePosition( cameraPosition );
-	SPECIAL_TIMER_PRINT("UpdatePosition")
 	pPrepareTraceProbes( frustum );
 	SPECIAL_TIMER_PRINT("PrepareTraceProbes")
 	
@@ -459,6 +456,7 @@ void deoglGIState::PrepareUBOStateRayCache() const{
 
 void deoglGIState::Invalidate(){
 	pInstances.Clear();
+	pAreaTracker.SetWorld( NULL );
 	
 	uint16_t i;
 	for( i=0; i<pRealProbeCount; i++ ){

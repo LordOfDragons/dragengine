@@ -120,6 +120,9 @@ public:
 	
 	/** \name Management */
 	/*@{*/
+	/** Render thread. */
+	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
+	
 	/** Requires prepare for render. */
 	void RequiresPrepareForRender();
 	

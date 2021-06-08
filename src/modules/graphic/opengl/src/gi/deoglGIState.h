@@ -24,6 +24,7 @@
 
 #include "deoglGIRayCache.h"
 #include "deoglGIInstances.h"
+#include "deoglGIAreaTracker.h"
 #include "../collidelist/deoglCollideList.h"
 #include "../framebuffer/deoglFramebuffer.h"
 #include "../texture/texture2d/deoglTexture.h"
@@ -90,6 +91,7 @@ private:
 	
 	float pMaxDetectionRange;
 	decVector pDetectionBox;
+	deoglGIAreaTracker pAreaTracker;
 	deoglCollideList pCollideList;
 	deoglCollideList pCollideListFiltered;
 	
@@ -212,18 +214,9 @@ public:
 	/** Detection box. */
 	inline const decVector &GetDetectionBox() const{ return pDetectionBox; }
 	
-	/** Collide list. */
-	inline deoglCollideList &GetCollideList(){ return pCollideList; }
-	inline const deoglCollideList &GetCollideList() const{ return pCollideList; }
-	
-	/** Filtered collide list. */
-	inline const deoglCollideList &GetCollideListFiltered() const{ return pCollideListFiltered; }
-	
 	/** Find content affecting GI state. */
-	void FindContent( deoglRWorld &world );
-	
-	/** Filter occlusion meshes into filtered collide list. */
-	void FilterOcclusionMeshes();
+	void FindContentOld( deoglRWorld &world );
+	void FindContent( deoglRWorld &world, const decLayerMask &layerMask );
 	
 	/** Filter components into filtered collide list. */
 	void FilterComponents();
@@ -343,7 +336,7 @@ public:
 	
 	/** Update. */
 	void Update( deoglRWorld &world, const decDVector &cameraPosition,
-		const deoglDCollisionFrustum &frustum );
+		const decLayerMask &layerMask, const deoglDCollisionFrustum &frustum );
 	
 	/** Prepare UBO state. */
 	void PrepareUBOState() const;
