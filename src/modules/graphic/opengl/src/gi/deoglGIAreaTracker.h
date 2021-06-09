@@ -49,6 +49,8 @@ private:
 	deoglRWorld *pWorld;
 	decDVector pHalfExtends;
 	decLayerMask pLayerMask;
+	double pUpdateThreshold;
+	
 	decDVector pLastUpdatePosition;
 	decDVector pPosition;
 	bool pValid;
@@ -88,6 +90,14 @@ public:
 	
 	/** Set layer mask. */
 	void SetLayerMask( const decLayerMask &layerMask );
+	
+	/** Position distance threshold before updating tracking. */
+	inline double GetUpdateThreshold() const{ return pUpdateThreshold; }
+	
+	/** Set position distance threshold before updating tracking. */
+	void SetUpdateThreshold( double threshold );
+	
+	
 	
 	/** Position tracking is valid for. */
 	inline const decDVector &GetPosition() const{ return pPosition; }

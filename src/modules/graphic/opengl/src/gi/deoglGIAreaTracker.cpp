@@ -59,6 +59,7 @@
 deoglGIAreaTracker::deoglGIAreaTracker() :
 pAllLeaving( false ),
 pWorld( NULL ),
+pUpdateThreshold( 1.0 ),
 pValid( false ){
 }
 
@@ -101,8 +102,12 @@ void deoglGIAreaTracker::SetLayerMask( const decLayerMask &layerMask ){
 	pValid = false;
 }
 
+void deoglGIAreaTracker::SetUpdateThreshold( double threshold ){
+	pUpdateThreshold = threshold;
+}
+
 void deoglGIAreaTracker::SetPosition( const decDVector &position ){
-	if( pValid && position.IsEqualTo( pPosition ) ){
+	if( pValid && position.IsEqualTo( pPosition, pUpdateThreshold ) ){
 		return;
 	}
 	
@@ -125,7 +130,7 @@ void deoglGIAreaTracker::Update(){
 		return;
 	}
 	
-	// if positions are equal do nothing. this should not happen. just in case check
+	// if position did not change do nothing
 	if( pValid && pPosition.IsEqualTo( pLastUpdatePosition ) ){
 		return;
 	}

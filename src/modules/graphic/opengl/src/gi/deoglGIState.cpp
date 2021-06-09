@@ -141,6 +141,33 @@ pRayCache( renderThread, 64, pRealProbeCount, cascadeCount )
 		
 		pAreaTracker.SetHalfExtends( pDetectionBox );
 		
+		// update threshold defines the distance in meters before tracking is updated.
+		// the GI State position is used to update the tracking position. this position
+		// is updated step-wise matching the smallest cascade which is usually around
+		// 1m spacing.
+		// 
+		// there are different possibilities how the threshold can be set.
+		// 
+		// one is to use the largest cascade probe spacing. for a 500m view distance
+		// camera this is a GI State size of 1km. with 32 probes this a threshold of 32m.
+		// with this threshold the cost for updating thet tracking stays in acceptable
+		// boundaries of 1-2ms but the cost for updating the instances tracking can go
+		// up to 10ms.
+		// 
+		// using a threshold of 10m instead keeps the cost for updating the instances
+		// tracking below 1.5ms most of the time.
+		// 
+		// in general costs for finding content using area tracking is around 1-2ms
+		// with most thresholds. hence each update run does cost 1ms for finding the
+		// content. but the cost for updating the instances tracking increases quickly.
+		// for this reason 8m is used to get a middle ground between updating not too
+		// often (with a running player this is around 2s between updates) and keeping
+		// the costs for updating instances tracking reasonable
+		// 
+		// all these measurements have been done for a city scene with roughly 12k
+		// objects inside the tracking area
+		pAreaTracker.SetUpdateThreshold( 8.0 );
+		
 	}catch( const deException & ){
 		pCleanUp();
 		throw;
