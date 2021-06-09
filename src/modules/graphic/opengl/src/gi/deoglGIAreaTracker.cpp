@@ -82,6 +82,13 @@ void deoglGIAreaTracker::SetHalfExtends( const decDVector &halfExtends ){
 	}
 	
 	pHalfExtends = halfExtends;
+	
+	pBoxLastUpdate.minExtend = pLastUpdatePosition - pHalfExtends;
+	pBoxLastUpdate.maxExtend = pLastUpdatePosition + pHalfExtends;
+	
+	pBox.minExtend = pPosition - pHalfExtends;
+	pBox.maxExtend = pPosition + pHalfExtends;
+	
 	pValid = false;
 }
 
@@ -100,6 +107,9 @@ void deoglGIAreaTracker::SetPosition( const decDVector &position ){
 	}
 	
 	pPosition = position;
+	
+	pBox.minExtend = pPosition - pHalfExtends;
+	pBox.maxExtend = pPosition + pHalfExtends;
 }
 
 void deoglGIAreaTracker::Update(){
@@ -120,36 +130,30 @@ void deoglGIAreaTracker::Update(){
 		return;
 	}
 	
-	// calculate old and new area boxes
-	pBoxOld.minExtend = pLastUpdatePosition - pHalfExtends;
-	pBoxOld.maxExtend = pLastUpdatePosition + pHalfExtends;
-	
-	pBoxNew.minExtend = pPosition - pHalfExtends;
-	pBoxNew.maxExtend = pPosition + pHalfExtends;
-	
 	// calculate union box of old and new box. if the boxes are disjoint the max extend
 	// of the union box will be equal to or less than the min extend. no extra work is
 	// required since this invalid box will never match anything as it should
-	pBoxKeep.minExtend = pBoxOld.minExtend.Largest( pBoxNew.minExtend );
-	pBoxKeep.maxExtend = pBoxOld.maxExtend.Smallest( pBoxNew.maxExtend );
+	pBoxKeep.minExtend = pBoxLastUpdate.minExtend.Largest( pBox.minExtend );
+	pBoxKeep.maxExtend = pBoxLastUpdate.maxExtend.Smallest( pBox.maxExtend );
 	
 	// visit world
 	if( pValid && pBoxKeep.minExtend < pBoxKeep.maxExtend ){
 		// box to visit is box enclosing old and new area
-		pBoxVisit.minExtend = pBoxOld.minExtend.Smallest( pBoxNew.minExtend );
-		pBoxVisit.maxExtend = pBoxOld.maxExtend.Largest( pBoxNew.maxExtend );
+		pBoxVisit.minExtend = pBoxLastUpdate.minExtend.Smallest( pBox.minExtend );
+		pBoxVisit.maxExtend = pBoxLastUpdate.maxExtend.Largest( pBox.maxExtend );
 		pVisitNodeColliding( pWorld->GetOctree() );
 		
 	}else{
 		// areas are disjoint or tracking has been invalidated. visit new area and mark all
 		// instances leaving. faster than visiting both areas and mark all old ones leaving
 		pAllLeaving = true;
-		pBoxVisit = pBoxNew;
+		pBoxVisit = pBox;
 		pVisitNodeCollidingNewOnly( pWorld->GetOctree() );
 	}
 	
 	// tracking is now valid
 	pLastUpdatePosition = pPosition;
+	pBoxLastUpdate = pBox;
 	pValid = true;
 }
 
@@ -184,6 +188,11 @@ bool deoglGIAreaTracker::RejectComponent( const deoglRComponent &component ) con
 	}
 	
 	return false;
+}
+
+bool deoglGIAreaTracker::ComponentTouches( const deoglRComponent &component ) const{
+	return pValid && component.GetMaximumExtend() > pBox.minExtend
+		&& component.GetMinimumExtend() < pBox.maxExtend;
 }
 
 
@@ -263,8 +272,8 @@ void deoglGIAreaTracker::pVisitComponents( const deoglWorldOctree &node ){
 			continue;
 		}
 		
-		const bool touchNew = cmax > pBoxNew.minExtend && cmin < pBoxNew.maxExtend;
-		const bool touchOld = cmax > pBoxOld.minExtend && cmin < pBoxOld.maxExtend;
+		const bool touchNew = cmax > pBox.minExtend && cmin < pBox.maxExtend;
+		const bool touchOld = cmax > pBoxLastUpdate.minExtend && cmin < pBoxLastUpdate.maxExtend;
 		
 		if( touchNew && ! touchOld ){
 			pEntering.AddComponent( addComponent );
@@ -280,7 +289,7 @@ void deoglGIAreaTracker::pVisitComponents( const deoglWorldOctree &node ){
 void deoglGIAreaTracker::pVisitNodeCollidingNewOnly( const deoglWorldOctree &node ){
 	const int result = deoglDCollisionDetection::AABoxIntersectsAABox(
 		node.GetCenter() - node.GetHalfSize(), node.GetCenter() + node.GetHalfSize(),
-		pBoxNew.minExtend, pBoxNew.maxExtend );
+		pBox.minExtend, pBox.maxExtend );
 	
 	if( result == deoglDCollisionDetection::eirInside ){
 		pVisitNodeNewOnly( node );
@@ -318,8 +327,10 @@ void deoglGIAreaTracker::pVisitComponentsNewOnly( const deoglWorldOctree &node )
 		deoglRComponent * const addComponent = node.GetComponentAt( i );
 		const deoglRComponent &component = *addComponent;
 		
-		if( component.GetMaximumExtend() <= pBoxNew.minExtend
-		|| component.GetMinimumExtend() >= pBoxNew.maxExtend ){
+		const decDVector &cmin = component.GetMinimumExtend();
+		const decDVector &cmax = component.GetMaximumExtend();
+		
+		if( ! ( cmax > pBox.minExtend && cmin < pBox.maxExtend ) ){
 			continue;
 		}
 		if( RejectComponent( component ) ){

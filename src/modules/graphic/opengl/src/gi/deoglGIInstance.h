@@ -67,7 +67,6 @@ private:
 	deoglGIInstances &pInstances;
 	
 	deoglRComponent *pComponent;
-	deoglRComponent *pOcclusionMesh;
 	deObjectReference pComponentListener;
 	
 	decDVector pMinExtend;
@@ -117,12 +116,6 @@ public:
 	
 	/** Set component or NULL. */
 	void SetComponent( deoglRComponent *component, bool dynamic );
-	
-	/** Occlusion mesh or NULL. */
-	inline deoglRComponent *GetOcclusionMesh() const{ return pOcclusionMesh; }
-	
-	/** Set occlusion mesh or NULL. */
-	void SetOcclusionMesh( deoglRComponent *occlusionMesh, bool dynamic );
 	
 	
 	

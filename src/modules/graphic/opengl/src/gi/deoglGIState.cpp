@@ -566,16 +566,19 @@ void deoglGIState::ValidatedRayCaches(){
 }
 
 void deoglGIState::ComponentEnteredWorld( deoglRComponent *component ){
-	if( pAreaTracker.RejectComponent( *component ) ){
+	if( ! pAreaTracker.ComponentTouches( *component ) || pAreaTracker.RejectComponent( *component ) ){
 		return;
 	}
 	
 	// components entering game world can be anywhere and thus need to invalidate probes
+// 		const decDVector p( component->GetMatrix().GetPosition() );
+// 		pRenderThread.GetLogger().LogInfoFormat( "ComponentEnteredWorld: (%g,%g,%g) %s", p.x, p.y, p.z,
+// 			component->GetModel()->GetFilename().GetString());
 	pInstances.AddComponent( component, true );
 }
 
 void deoglGIState::ComponentChangedLayerMask( deoglRComponent *component ){
-	if( pAreaTracker.RejectComponent( *component ) ){
+	if( ! pAreaTracker.ComponentTouches( *component ) || pAreaTracker.RejectComponent( *component ) ){
 		return;
 	}
 	
@@ -585,6 +588,9 @@ void deoglGIState::ComponentChangedLayerMask( deoglRComponent *component ){
 	}
 	
 	// components changing layer mask can be anywhere and thus need to invalidate probes
+// 		const decDVector p( component->GetMatrix().GetPosition() );
+// 		pRenderThread.GetLogger().LogInfoFormat( "ComponentChangedLayerMask: (%g,%g,%g) %s", p.x, p.y, p.z,
+// 			component->GetModel()->GetFilename().GetString());
 	pInstances.AddComponent( component, true );
 }
 

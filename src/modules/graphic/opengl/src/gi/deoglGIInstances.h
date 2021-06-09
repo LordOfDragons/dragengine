@@ -24,6 +24,7 @@
 
 #include <dragengine/deObjectReference.h>
 #include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/collection/decPointerDictionaryExt.h>
 #include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/common/math/decMath.h>
 
@@ -54,6 +55,7 @@ private:
 	
 	decObjectList pInstances;
 	decPointerList pEmptyInstances;
+	decPointerDictionaryExt pElementInstanceMap;
 	
 	sBox *pDynamicBoxes;
 	int pDynamicBoxCount;
@@ -97,6 +99,14 @@ public:
 	
 	/** First free instance slot creating a new one if all slots are occupied. */
 	deoglGIInstance &NextFreeSlot();
+	
+	/** Register instance element. */
+	void RegisterElement( deoglRComponent *component, deoglGIInstance *instance );
+	void RegisterElement( void *element, unsigned int hash, deoglGIInstance *instance );
+	
+	/** Unregister instance element. */
+	void UnregisterElement( deoglRComponent *component );
+	void UnregisterElement( void *element, unsigned int hash );
 	
 	
 	

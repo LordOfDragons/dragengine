@@ -53,8 +53,8 @@ private:
 	decDVector pPosition;
 	bool pValid;
 	
-	sBox pBoxOld;
-	sBox pBoxNew;
+	sBox pBoxLastUpdate;
+	sBox pBox;
 	sBox pBoxKeep;
 	sBox pBoxVisit;
 	
@@ -125,6 +125,9 @@ public:
 	
 	/** Reject component. */
 	bool RejectComponent( const deoglRComponent &component ) const;
+	
+	/** Component touches current box. */
+	bool ComponentTouches( const deoglRComponent &component ) const;
 	/*@}*/
 	
 	

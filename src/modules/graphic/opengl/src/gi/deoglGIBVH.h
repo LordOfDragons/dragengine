@@ -281,18 +281,6 @@ public:
 	/** Add component. */
 	void AddComponent( deoglRenderPlan &plan, const decMatrix &matrix, deoglGIInstance &instance );
 	
-	/** Add occlusion meshes. */
-	void AddOcclusionMeshes( deoglRenderPlan &plan, const decDVector &position, const deoglGIInstances &instances );
-	
-	/** Add occlusion meshes. */
-	void AddOcclusionMeshes( deoglRenderPlan &plan, const decDVector &position, const deoglGIInstances &instances, bool dynamic );
-	
-	/** Add occlusion meshes. */
-	void AddOcclusionMeshes( deoglRenderPlan &plan, const decDVector &position, const deoglCollideList &list );
-	
-	/** Add occlusion mesh. */
-	void AddOcclusionMesh( deoglRenderPlan &plan, const decMatrix &matrix, deoglRComponent &component );
-	
 	/** Build BVH. */
 	void BuildBVH();
 	
@@ -314,7 +302,6 @@ private:
 		deoglSkinState *skinState, deoglRDynamicSkin *dynamicSkin,
 		deoglTexUnitsConfig *tuc, const decTexMatrix2 &texCoordMatrix );
 	
-	void pAddBVH( const deoglBVH &bvh );
 // 	void pUpdateLocalBVHNodeExtends( const deoglGIBVHLocal &localBVH, const oglVector *positions,
 // 		const deoglBVHNode &node, deoglBVHNode &target );
 	void pEnsureRecalcNodeSize( int size );

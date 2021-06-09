@@ -72,7 +72,7 @@ void deoglGIInstance::cComponentListener::BoundariesChanged( deoglRComponent& ){
 }
 
 void deoglGIInstance::cComponentListener::OcclusionMeshChanged( deoglRComponent& ){
-	ChangeInstance();
+// 	ChangeInstance();
 }
 
 void deoglGIInstance::cComponentListener::TexturesChanged( deoglRComponent& ){
@@ -116,7 +116,6 @@ void deoglGIInstance::cComponentListener::ChangeInstance(){
 deoglGIInstance::deoglGIInstance( deoglGIInstances &instances ) :
 pInstances( instances ),
 pComponent( NULL ),
-pOcclusionMesh( NULL ),
 pGIBVHLocal( NULL ),
 pGIBVHDynamic( NULL ),
 pIndexNodes( 0 ),
@@ -205,30 +204,8 @@ void deoglGIInstance::SetComponent( deoglRComponent *component, bool dynamic ){
 	
 	pInitParameters();
 	pDirtyTUCs = true;
-}
-
-void deoglGIInstance::SetOcclusionMesh( deoglRComponent *occlusionMesh, bool dynamic ){
-	if( occlusionMesh == pOcclusionMesh ){
-		return;
-	}
 	
-	Clear();
-	
-	pOcclusionMesh = occlusionMesh;
-	pDynamic = dynamic;
-	pChanged = false;
-	pMoved = false;
-	pRecheckDynamic = false;
-	
-	pMinExtend = occlusionMesh->GetMinimumExtend();
-	pMaxExtend = occlusionMesh->GetMaximumExtend();
-	
-	if( occlusionMesh ){
-		if( ! pComponentListener ){
-			pComponentListener.TakeOver( new cComponentListener( *this ) );
-		}
-		occlusionMesh->AddListener( ( deoglComponentListener* )( deObject* )pComponentListener );
-	}
+	pInstances.RegisterElement( component, this );
 }
 
 void deoglGIInstance::SetExtends( const decDVector &minExtend, const decDVector &maxExtend ){
@@ -283,6 +260,8 @@ void deoglGIInstance::Clear(){
 	pRecheckDynamic = false;
 	
 	if( pComponent ){
+		pInstances.UnregisterElement( pComponent );
+		
 		deoglRComponentLOD &lod = pComponent->GetLODAt( -1 );
 		
 		const deoglModelLOD * const modelLOD = lod.GetModelLOD();
@@ -300,11 +279,6 @@ void deoglGIInstance::Clear(){
 		
 		pComponent->RemoveListener( ( deoglComponentListener* )( deObject* )pComponentListener );
 		pComponent = NULL;
-	}
-	
-	if( pOcclusionMesh ){
-		pOcclusionMesh->RemoveListener( ( deoglComponentListener* )( deObject* )pComponentListener );
-		pOcclusionMesh = NULL;
 	}
 }
 

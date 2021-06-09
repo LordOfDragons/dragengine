@@ -74,6 +74,7 @@ deoglGIInstance &deoglGIInstances::GetInstanceAt( int slot ) const{
 }
 
 deoglGIInstance *deoglGIInstances::GetInstanceWithComponent( deoglRComponent *component ) const{
+#if 0
 	if( ! component ){
 		DETHROW( deeInvalidParam );
 	}
@@ -89,6 +90,15 @@ deoglGIInstance *deoglGIInstances::GetInstanceWithComponent( deoglRComponent *co
 	}
 	
 	return NULL;
+#endif
+	
+	void *instance;
+	if( pElementInstanceMap.GetAt( component, component->GetUniqueKey(), &instance ) ){
+		return ( deoglGIInstance* )instance;
+		
+	}else{
+		return NULL;
+	}
 }
 
 deoglGIInstance &deoglGIInstances::AddInstance(){
@@ -108,6 +118,22 @@ deoglGIInstance &deoglGIInstances::NextFreeSlot(){
 	deoglGIInstance * const instance = ( deoglGIInstance* )pEmptyInstances.GetAt( index );
 	pEmptyInstances.RemoveFrom( index );
 	return *instance;
+}
+
+void deoglGIInstances::RegisterElement( deoglRComponent *component, deoglGIInstance *instance ){
+	RegisterElement( component, component->GetUniqueKey(), instance );
+}
+
+void deoglGIInstances::RegisterElement( void *element, unsigned int hash, deoglGIInstance *instance ){
+	pElementInstanceMap.SetAt( element, hash, instance );
+}
+
+void deoglGIInstances::UnregisterElement( deoglRComponent *component ){
+	UnregisterElement( component, component->GetUniqueKey() );
+}
+
+void deoglGIInstances::UnregisterElement( void *element, unsigned int hash ){
+	pElementInstanceMap.Remove( element, hash );
 }
 
 
@@ -176,6 +202,7 @@ void deoglGIInstances::Clear(){
 	}
 	
 	pChangedInstances.RemoveAll();
+	pElementInstanceMap.RemoveAll();
 }
 
 void deoglGIInstances::ApplyChanges(){
@@ -254,8 +281,8 @@ void deoglGIInstances::AddComponent( deoglRComponent *component, bool invalidate
 	if( invalidate ){
 		if( isStatic ){
 			#ifdef DO_LOG_ADD_REMOVE
-				pGIState.GetRenderThread().GetLogger().LogInfoFormat("GIInstances.AddComponent: %s",
-					component->GetModel()->GetFilename().GetString());
+// 				pGIState.GetRenderThread().GetLogger().LogInfoFormat("GIInstances.AddComponent: %s",
+// 					component->GetModel()->GetFilename().GetString());
 			#endif
 			pGIState.InvalidateArea( component->GetMinimumExtend(), component->GetMaximumExtend() );
 				// WARNING InvalidateArea becomes expensive if called multiple times.
@@ -266,8 +293,8 @@ void deoglGIInstances::AddComponent( deoglRComponent *component, bool invalidate
 			
 		}else{
 			#ifdef DO_LOG_ADD_REMOVE
-				pGIState.GetRenderThread().GetLogger().LogInfoFormat("GIInstances.AddComponent: %s",
-					component->GetModel()->GetFilename().GetString());
+// 				pGIState.GetRenderThread().GetLogger().LogInfoFormat("GIInstances.AddComponent: %s",
+// 					component->GetModel()->GetFilename().GetString());
 			#endif
 			pGIState.TouchDynamicArea( component->GetMinimumExtend(), component->GetMaximumExtend() );
 		}
@@ -283,8 +310,8 @@ void deoglGIInstances::AddComponent( deoglRComponent *component, bool invalidate
 			}
 		}
 		const decDVector p( component->GetMatrix().GetPosition() );
-		pGIState.GetRenderThread().GetLogger().LogInfoFormat( "GIInstances: AddComponent: %d (%g,%g,%g) component=%s [%d]",
-			index, p.x, p.y, p.z, component->GetModel() ? component->GetModel()->GetFilename().GetString() : "-", isStatic );
+		pGIState.GetRenderThread().GetLogger().LogInfoFormat( "GIInstances: AddComponent: %d (%g,%g,%g) component=%s [%d] invalidate=%d",
+			index, p.x, p.y, p.z, component->GetModel() ? component->GetModel()->GetFilename().GetString() : "-", isStatic, invalidate );
 		}
 	#endif
 }
@@ -305,6 +332,31 @@ void deoglGIInstances::RemoveComponent( deoglRComponent *component ){
 }
 
 void deoglGIInstances::RemoveComponents( const deoglCollideList &list ){
+	const int count = list.GetComponentCount();
+	int i;
+	for( i=0; i<count; i++ ){
+		deoglGIInstance * const instance = GetInstanceWithComponent( list.GetComponentAt( i )->GetComponent() );
+		if( ! instance ){
+			continue;
+		}
+		
+		#ifdef DO_LOG_ADD_REMOVE
+			{
+			const decDVector p( instance->GetComponent()->GetMatrix().GetPosition() );
+			pGIState.GetRenderThread().GetLogger().LogInfoFormat( "GIInstances.RemoveComponents: %d (%g,%g,%g) component=%s",
+				i, p.x, p.y, p.z, instance->GetComponent()->GetModel()
+					? instance->GetComponent()->GetModel()->GetFilename().GetString() : "-" );
+			}
+		#endif
+		
+		// GI field moved and component is no longer inside the GI field.
+		// no invalidating is required
+		
+		instance->Clear();
+		pEmptyInstances.Add( instance );
+	}
+	
+#if 0
 	if( list.GetComponentCount() == 0 ){
 		return;
 	}
@@ -342,6 +394,7 @@ void deoglGIInstances::RemoveComponents( const deoglCollideList &list ){
 		instance.Clear();
 		pEmptyInstances.Add( &instance );
 	}
+#endif
 }
 
 void deoglGIInstances::MarkComponents( bool marked ){
