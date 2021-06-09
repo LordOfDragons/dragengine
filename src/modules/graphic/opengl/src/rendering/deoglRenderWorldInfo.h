@@ -45,6 +45,8 @@ public:
 	deoglDebugInformation *infoToneMapping;
 	deoglDebugInformation *infoDebugDrawers;
 	deoglDebugInformation *infoPostProcessing;
+	deoglDebugInformation *infoDeveloperMode;
+	deoglDebugInformation *infoDeveloperModeTemp;
 	
 	deoglDebugInformation *infoSolidGeometryDetails;
 	deoglDebugInformation *infoSolidGeometryDepthTask;

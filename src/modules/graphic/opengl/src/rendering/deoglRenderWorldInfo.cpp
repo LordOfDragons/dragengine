@@ -56,6 +56,8 @@ infoTransparent( NULL ),
 infoToneMapping( NULL ),
 infoDebugDrawers( NULL ),
 infoPostProcessing( NULL ),
+infoDeveloperMode( NULL ),
+infoDeveloperModeTemp( NULL ),
 
 infoSolidGeometryDetails( NULL ),
 infoSolidGeometryDepthTask( NULL ),
@@ -84,6 +86,7 @@ infoTransparentVolumetric( NULL )
 	const decColor colorBg( 0.0f, 0.0f, 0.25f, 0.75f );
 	const decColor colorBgSub( 0.05f, 0.05f, 0.05f, 0.75f );
 	//const decColor colorBgSub2( 0.1f, 0.1f, 0.1f, 0.75f );
+	const decColor colorBgSpecial( 0.05f, 0.025f, 0.05f, 0.75f );
 	
 	try{
 		infoWorld = new deoglDebugInformation( "World", colorText, colorBg );
@@ -120,6 +123,11 @@ infoTransparentVolumetric( NULL )
 		
 		infoPostProcessing = new deoglDebugInformation( "Post Processing", colorText, colorBgSub );
 		infoWorld->GetChildren().Add( infoPostProcessing );
+		
+		infoDeveloperMode = new deoglDebugInformation( "Developer Mode", colorText, colorBgSpecial );
+		infoWorld->GetChildren().Add( infoDeveloperMode );
+		
+		infoDeveloperModeTemp = new deoglDebugInformation( "", colorText, colorBgSpecial );
 		
 		
 		
@@ -215,6 +223,7 @@ void deoglRenderWorldInfo::ClearAll(){
 	infoToneMapping->Clear();
 	infoDebugDrawers->Clear();
 	infoPostProcessing->Clear();
+	//infoDeveloperMode, infoDeveloperModeTemp => special
 	
 	infoSolidGeometryDepthTask->Clear();
 	infoSolidGeometryDepthRender->Clear();
@@ -302,6 +311,12 @@ void deoglRenderWorldInfo::pCleanUp(){
 	}
 	if( infoPostProcessing ){
 		infoPostProcessing->FreeReference();
+	}
+	if( infoDeveloperMode ){
+		infoDeveloperMode->FreeReference();
+	}
+	if( infoDeveloperModeTemp ){
+		infoDeveloperModeTemp->FreeReference();
 	}
 	
 	if( infoSolidGeometryDetails ){
