@@ -15,5 +15,6 @@
 	<output name='outValue' target='0'/>
 	
 	<sourceCode unit='vertex'>v130/vertex/defren/gi/clearProbes.glsl</sourceCode>
+	<sourceCode unit='geometry'>v130/geometry/defren/gi/clearProbes.glsl</sourceCode>
 	<sourceCode unit='fragment'>v130/fragment/defren/gi/clearProbes.glsl</sourceCode>
 </shader>

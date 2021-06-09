@@ -30,7 +30,7 @@ ivec3 giGridShiftToLocal( in ivec3 shifted ){
 void main( void ){
 	ivec3 probeCoord = giIndexToCoord( gl_InstanceID );
 	vProbeCoord = giGridShiftToLocal( probeCoord );
-	vProbePosition = pGIGridProbeSpacing * vec3( probeCoord ) + gipoProbeOffset( vProbeCoord );
+	vProbePosition = pGIGridProbeSpacing * vec3( probeCoord ) + gipoProbeOffset( vProbeCoord, 0 ); // TODO 0=cascade
 	vTexCoord = inPosition;
 	
 	vec3 center = pMatrixMV * vec4( vProbePosition, 1.0 );

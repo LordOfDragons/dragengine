@@ -38,8 +38,8 @@ precision highp int;
 	uniform lowp sampler2D texAOSolidity;
 #endif
 
-uniform lowp sampler2D texGIIrradiance;
-uniform HIGHP sampler2D texGIDistance;
+uniform lowp sampler2DArray texGIIrradiance;
+uniform HIGHP sampler2DArray texGIDistance;
 
 
 // includes to come after defining fixed position samplers
@@ -94,7 +94,7 @@ ivec3 giGridShiftToLocal( in ivec3 shifted ){
 }
 
 // calculate illumination to apply to fragment
-vec3 giIlluminate( in vec3 position, in vec3 normal, in vec3 bendNormal ){
+vec3 giIlluminate( in vec3 position, in vec3 normal, in vec3 bendNormal, in int cascade ){
 	// in the paper this calculation looks like this:
 	//   BiasVector = (n * 0.2 + wo * 0.8 ) * ( 0.75 * minDistanceBetweenProbes ) * TurnableShadowBias
 	// whereas n is the normal and wo the direction from fragment to camera.
@@ -128,7 +128,7 @@ vec3 giIlluminate( in vec3 position, in vec3 normal, in vec3 bendNormal ){
 		probeCoord = giGridShiftToLocal( probeCoord );
 		
 		// ignore disabled probes. probes are disabled if >25% of cached rays hit backfaces
-		vec4 offsetFlags = gipoProbeOffsetFlags( probeCoord );
+		vec4 offsetFlags = gipoProbeOffsetFlags( probeCoord, cascade );
 		if( ( uint( offsetFlags.w ) & gipfDisabled ) == gipfDisabled ){
 			continue;
 		}
@@ -140,8 +140,8 @@ vec3 giIlluminate( in vec3 position, in vec3 normal, in vec3 bendNormal ){
 		vec3 probeToPoint = position + offsetPosition - probePosition;
 		float distToProbe = length( probeToPoint );
 		
-		vec2 texCoord = giTCFromDirection( probeToPoint / distToProbe,
-			probeCoord, pGIDistanceMapScale, pGIDistanceMapSize );
+		vec3 texCoord = vec3( giTCFromDirection( probeToPoint / distToProbe,
+			probeCoord, pGIDistanceMapScale, pGIDistanceMapSize ), cascade );
 		
 		vec2 visibility = texture( texGIDistance, texCoord ).ra; // RG16 in opengl has RRRG as swizzle
 		
@@ -193,7 +193,7 @@ vec3 giIlluminate( in vec3 position, in vec3 normal, in vec3 bendNormal ){
 		weight *= trilinear.x * trilinear.y * trilinear.z;
 		
 		// sample irradiance
-		texCoord = giTCFromDirection( bendNormal, probeCoord, pGIIrradianceMapScale, pGIIrradianceMapSize );
+		texCoord.xy = giTCFromDirection( bendNormal, probeCoord, pGIIrradianceMapScale, pGIIrradianceMapSize );
 		vec3 probeIrradiance = texture( texGIIrradiance, texCoord ).rgb;
 		
 		// from source code. using some kind of gamma=2 curve (basically an sqrt) to
@@ -228,6 +228,12 @@ vec3 giIlluminate( in vec3 position, in vec3 normal, in vec3 bendNormal ){
 	// final result
 	return sumIrradiance;
 }
+
+vec3 giIlluminate( in vec3 position, in vec3 normal, in vec3 bendNormal ){
+	// TODO multi-cascade support
+	return giIlluminate( position, normal, bendNormal, 0 );
+}
+
 
 
 // Main Function

@@ -8,8 +8,6 @@
 	<texture name='texNormal' target='1'/>
 	<texture name='texLight' target='2'/>
 	
-	<parameter name='pCascade'/>
-	
 	<uniformBlock name='GIParameters' target='1'/>
 	<uniformBlock name='GIProbeIndices' target='2'/>
 	<uniformBlock name='GIProbePositions' target='3'/>
@@ -20,5 +18,6 @@
 	<output name='outValue' target='0'/>
 	
 	<sourceCode unit='vertex'>v130/vertex/defren/gi/updateProbes.glsl</sourceCode>
+	<sourceCode unit='geometry'>v130/geometry/defren/gi/updateProbes.glsl</sourceCode>
 	<sourceCode unit='fragment'>v130/fragment/defren/gi/updateProbes.glsl</sourceCode>
 </shader>

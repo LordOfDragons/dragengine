@@ -33,7 +33,7 @@ void main( void ){
 		
 	}else{
 		vColor = vec3( 1.0, 0.0, 0.0 );
-		probePosition += gipoProbeOffset( giGridShiftToLocal( probeCoord ) );
+		probePosition += gipoProbeOffset( giGridShiftToLocal( probeCoord ), 0 ); // TODO 0=cascade
 	}
 	
 	gl_Position = pMatrixMVP * vec4( probePosition, 1.0 );

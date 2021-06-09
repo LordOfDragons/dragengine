@@ -11,8 +11,7 @@ precision highp int;
 
 uniform mat4x3 pMatrixNormal;
 
-uniform lowp sampler2D texGIIrradiance;
-uniform HIGHP sampler2D texGIDistance;
+uniform lowp sampler2DArray texGIIrradiance;
 
 flat in ivec3 vProbeCoord;
 flat in vec3 vProbePosition;
@@ -40,7 +39,7 @@ void main( void ){
 		const float pi = 3.1415926538;
 		float angle = 0.5 - atan( vTexCoord.x, -vTexCoord.y ) / ( pi * 2.0 );
 		
-		uint flags = gipoProbeFlags( vProbeCoord );
+		uint flags = gipoProbeFlags( vProbeCoord, 0 ); // TODO 0=cascade
 		
 		if( angle < 0.35 || angle > 0.65 ){
 			const vec3 colorEnabled = vec3( 0, 1, 0 );
@@ -58,8 +57,8 @@ void main( void ){
 		direction.z = -direction.z; // make Z point away from camera
 		direction = vec3( direction * pMatrixNormal ); // inverse order does transpose();
 		
-		vec2 texCoord = giTCFromDirection( normalize( direction ),
-			vProbeCoord, pGIIrradianceMapScale, pGIIrradianceMapSize );
+		vec3 texCoord = vec3( giTCFromDirection( normalize( direction ),
+			vProbeCoord, pGIIrradianceMapScale, pGIIrradianceMapSize ), 0 ); // TODO 0=cascde
 		vec3 irradiance = texture( texGIIrradiance, texCoord ).rgb;
 		irradiance = pow( irradiance, vec3( pGIIrradianceGamma ) );
 		irradiance /= vec3( 4.0 ); // squash HDRR a bit

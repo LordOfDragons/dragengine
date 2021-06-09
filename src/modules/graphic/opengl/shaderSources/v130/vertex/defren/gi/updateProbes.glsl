@@ -6,10 +6,10 @@ precision highp int;
 
 in vec3 inPosition;
 
-flat out ivec2 vRayOffset;
-flat out ivec2 vOffset;
-out float vBlendFactor;
-flat out vec3 vProbePosition;
+out ivec2 vGSRayOffset;
+out ivec2 vGSOffset;
+out float vGSBlendFactor;
+out vec3 vGSProbePosition;
 
 
 // NOTE findMSB exists since GLSL 4.0
@@ -46,10 +46,10 @@ ivec3 probeIndexToGridCoord( in int index ){
 void main( void ){
 	int flags = int( pGIProbePosition[ gl_InstanceID ].w );
 	
-	vRayOffset.x = ( gl_InstanceID % pGIProbesPerLine ) * pGIRaysPerProbe;
-	vRayOffset.y = gl_InstanceID / pGIProbesPerLine;
-	vBlendFactor = ( flags & 1 ) == 1 ? pGIBlendUpdateProbe : 1.0;
-	vProbePosition = pGIProbePosition[ gl_InstanceID ].xyz;
+	vGSRayOffset.x = ( gl_InstanceID % pGIProbesPerLine ) * pGIRaysPerProbe;
+	vGSRayOffset.y = gl_InstanceID / pGIProbesPerLine;
+	vGSBlendFactor = ( flags & 1 ) == 1 ? pGIBlendUpdateProbe : 1.0;
+	vGSProbePosition = pGIProbePosition[ gl_InstanceID ].xyz;
 	
 	int probeIndex = pGIProbeIndex[ gl_InstanceID >> 2 ][ gl_InstanceID & 3 ]; // 4 IDs per array entry
 	ivec3 probeGrid = probeIndexToGridCoord( probeIndex );
@@ -63,11 +63,11 @@ void main( void ){
 		#define mapProbeScale pGIDistanceMapScale
 	#endif
 	int groupOffset = pGIGridProbeCount.x * probeGrid.y + probeGrid.x;
-	vOffset.x = groupOffset * mapProbeSizeBorder + 1;
-	vOffset.y = probeGrid.z * mapProbeSizeBorder + 1;
+	vGSOffset.x = groupOffset * mapProbeSizeBorder + 1;
+	vGSOffset.y = probeGrid.z * mapProbeSizeBorder + 1;
 	
 	vec2 realSize = vec2( mapProbeSizeBorder ) * mapProbeScale;
-	vec2 realOffset = vec2( vOffset ) * mapProbeScale * vec2( 2.0 ) + realSize + vec2( -1.0 );
+	vec2 realOffset = vec2( vGSOffset ) * mapProbeScale * vec2( 2.0 ) + realSize + vec2( -1.0 );
 	
 	gl_Position = vec4( vec3( inPosition.xy * realSize + realOffset, 0.0 ), 1.0 );
 }

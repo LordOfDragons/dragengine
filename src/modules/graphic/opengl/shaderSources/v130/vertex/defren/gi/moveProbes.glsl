@@ -22,7 +22,7 @@ precision highp int;
 uniform usampler2D texState; // dynamic state from previous dynamicState.glsl run
 
 
-flat out vec4 fbOffset; // offset(xyz), flags(w)
+out vec4 vGSOffset; // offset(xyz), flags(w)
 
 
 ivec3 probeIndexToGridCoord( in int index ){
@@ -48,13 +48,13 @@ void fragmentCode( in ivec3 probeCoord, in ivec2 texCoord ){
 	float countOffsets = 0.0;
 	int i;
 	
-	fbOffset = vec4( 0.0 );
+	vGSOffset = vec4( 0.0 );
 	
 	// position used for ray tracing contains the previous update probe offset.
 	// the previous offset has to be added to the new offset for it to be correct.
 	// probeCoord is local. we need it though shifted
 	vec3 gridPosition = pGIGridProbeSpacing * vec3( giGridLocalToShift( probeCoord ) ) + pGIGridOrigin;
-	vec3 prefbOffset = probePosition - gridPosition;
+	vec3 prevGSOffset = probePosition - gridPosition;
 	
 	// max offset test scaling factor
 	vec3 moveMaxOffsetFactor = vec3( 1.0 ) / pGIMoveMaxOffset;
@@ -101,7 +101,7 @@ void fragmentCode( in ivec3 probeCoord, in ivec2 texCoord ){
 				
 			}else if( rayDistance < 0.001 ){
 				// at surface. move along normal
-				fbOffset.xyz += hitNormal * pGIMoveMinDistToSurface;
+				vGSOffset.xyz += hitNormal * pGIMoveMinDistToSurface;
 				
 			}else{
 				// move back on ray until pGIMoveMinDistToSurface distance
@@ -109,7 +109,7 @@ void fragmentCode( in ivec3 probeCoord, in ivec2 texCoord ){
 				// offset = normalize(rayDirection) * (rayLength - pGIMoveMinDistToSurface)
 				// offset = rayDirection / rayLength * (rayLength - pGIMoveMinDistToSurface)
 				// offset = rayDirection * ((rayLength - pGIMoveMinDistToSurface) / rayLength)
-				fbOffset.xyz += rayDirection * ( 1.0 - pGIMoveMinDistToSurface / rayDistance );
+				vGSOffset.xyz += rayDirection * ( 1.0 - pGIMoveMinDistToSurface / rayDistance );
 			}
 			
 		}else{
@@ -118,7 +118,7 @@ void fragmentCode( in ivec3 probeCoord, in ivec2 texCoord ){
 			if( rayDistance < closestBackDistance ){
 				vec3 direction = rayDirection + hitNormal * pGIMoveMinDistToSurface;
 				
-				if( length( ( prefbOffset + direction ) * moveMaxOffsetFactor ) < 1.0 ){
+				if( length( ( prevGSOffset + direction ) * moveMaxOffsetFactor ) < 1.0 ){
 					// consider backface ray only if not leaving allowed area
 					closestBackOffset = direction;
 					closestBackDistance = rayDistance;
@@ -135,24 +135,24 @@ void fragmentCode( in ivec3 probeCoord, in ivec2 texCoord ){
 		// closest backface found and more than 25% of hits are backface hits. as a first step
 		// we want to move to the other side of the face to end up at a minimum distance from
 		// the surface. if this is not possible do not move and disable the probe
-		fbOffset.xyz = closestBackOffset;
+		vGSOffset.xyz = closestBackOffset;
 		
 	}else if( countOffsets > 0.5 ){
 		// front faces are hit
-		fbOffset.xyz /= countOffsets;
+		vGSOffset.xyz /= countOffsets;
 		
 		// averaging the offsets has the tendency to shorten the offset if multiple
 		// rays contribute. reduce this effect by enlaring the offset with larger
 		// counts. a base scaling is always applied to reduce the chance of moving
 		// the probe again in the future
-		//fbOffset.xyz *= 1.0 + 0.05 * ( countOffsets - 1 );
-		fbOffset.xyz *= 1.0 + 0.05 * countOffsets;
+		//vGSOffset.xyz *= 1.0 + 0.05 * ( countOffsets - 1 );
+		vGSOffset.xyz *= 1.0 + 0.05 * countOffsets;
 	}
 	
 	// position used for ray tracing contains the previous update probe offset.
 	// the previous offset has to be added to the new offset for it to be correct.
 	// probeCoord is local. we need it though shifted
-	fbOffset.xyz += prefbOffset;
+	vGSOffset.xyz += prevGSOffset;
 	
 	uint flags = uint( pGIProbePosition[ gl_InstanceID ].w );
 	flags &= ~( gipfDisabled | gipfDynamicDisable );
@@ -171,21 +171,21 @@ void fragmentCode( in ivec3 probeCoord, in ivec2 texCoord ){
 	
 	// if frontfaces are hit clamp offset to maximum radius around grid position.
 	// if backfaces are hit do not move if outside maximum radius
-	vec3 gridOffset = fbOffset.xyz * moveMaxOffsetFactor;
+	vec3 gridOffset = vGSOffset.xyz * moveMaxOffsetFactor;
 	float gridOffsetLen = length( gridOffset );
 	
 	if( gridOffsetLen > 1.0 ){
 		if( assumeInGeometry ){
 			// offset due to backface hit would move outside allowed range. do not move and
 			// disable the probe. this also prevents future processing of the probe
-			fbOffset.xyz = prefbOffset;
+			vGSOffset.xyz = prevGSOffset;
 			flags |= gipfDisabled;
 			
 		}else{
 			// offset due to frontface hit would move outside allowed range.
 			// clamp the offset to the allowed range.
 			if( gridOffsetLen > 0.001 ){
-				fbOffset.xyz *= min( gridOffsetLen, 1.0 ) / gridOffsetLen;
+				vGSOffset.xyz *= min( gridOffsetLen, 1.0 ) / gridOffsetLen;
 			}
 		}
 	}
@@ -196,10 +196,10 @@ void fragmentCode( in ivec3 probeCoord, in ivec2 texCoord ){
 	}
 	
 	// write out flags
-	fbOffset.w = float( flags );
+	vGSOffset.w = float( flags );
 	
 	// debug
-// 	fbOffset.xyz = vec4( 0.0, 0.0, 0.0, pGIProbePosition[ gl_InstanceID ].w );
+// 	vGSOffset.xyz = vec4( 0.0, 0.0, 0.0, pGIProbePosition[ gl_InstanceID ].w );
 }
 
 void main( void ){

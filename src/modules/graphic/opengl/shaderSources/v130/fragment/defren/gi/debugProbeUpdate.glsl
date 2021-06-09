@@ -64,7 +64,7 @@ void main( void ){
 	probeCoord = giGridShiftToLocal( probeCoord );
 	int index = giCoordToIndex( probeCoord );
 	
-	uint flags = gipoProbeFlags( probeCoord );
+	uint flags = gipoProbeFlags( probeCoord, 0 ); // TODO 0=cascade
 	bool disabled = ( flags & gipfDisabled ) == gipfDisabled;
 	bool nearGeometry = ( flags & gipfNearGeometry ) == gipfNearGeometry;
 	bool updated = false;

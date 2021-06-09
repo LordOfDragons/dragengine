@@ -3,10 +3,7 @@ precision highp int;
 
 #include "v130/shared/ubo_defines.glsl"
 #include "v130/shared/defren/gi/ubo_gi.glsl"
-
-UBOLAYOUT uniform GIClearParameters{
-	uvec4 pGIClearProbes[ GI_CLEAR_PROBES_COUNT ];
-};
+#include "v130/shared/defren/gi/ubo_clear.glsl"
 
 out vec4 outValue;
 

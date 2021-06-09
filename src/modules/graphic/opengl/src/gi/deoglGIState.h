@@ -27,6 +27,7 @@
 #include "deoglGIAreaTracker.h"
 #include "../collidelist/deoglCollideList.h"
 #include "../framebuffer/deoglFramebuffer.h"
+#include "../texture/arraytexture/deoglArrayTexture.h"
 #include "../texture/texture2d/deoglTexture.h"
 
 #include <dragengine/common/math/decMath.h>
@@ -116,6 +117,7 @@ private:
 	decPoint pSampleImageSize;
 	decPoint3 pGridCoordShift;
 	
+	int pActiveCascade;
 	uint16_t *pAgedProbes;
 	uint16_t *pUpdateProbes;
 	int pUpdateProbeCount;
@@ -127,9 +129,9 @@ private:
 	bool pHasClearProbes;
 	deObjectReference pUBOClearProbes;
 	
-	deoglTexture pTexProbeIrradiance;
-	deoglTexture pTexProbeDistance;
-	deoglTexture pTexProbeOffset;
+	deoglArrayTexture pTexProbeIrradiance;
+	deoglArrayTexture pTexProbeDistance;
+	deoglArrayTexture pTexProbeOffset;
 	deoglTexture pTexProbeState;
 	deoglFramebuffer pFBOProbeIrradiance;
 	deoglFramebuffer pFBOProbeDistance;
@@ -306,16 +308,16 @@ public:
 	
 	
 	/** Irradiance probe texture. */
-	inline deoglTexture &GetTextureProbeIrradiance(){ return pTexProbeIrradiance; }
-	inline const deoglTexture &GetTextureProbeIrradiance() const{ return pTexProbeIrradiance; }
+	inline deoglArrayTexture &GetTextureProbeIrradiance(){ return pTexProbeIrradiance; }
+	inline const deoglArrayTexture &GetTextureProbeIrradiance() const{ return pTexProbeIrradiance; }
 	
 	/** Distance probe texture. */
-	inline deoglTexture &GetTextureProbeDistance(){ return pTexProbeDistance; }
-	inline const deoglTexture &GetTextureProbeDistance() const{ return pTexProbeDistance; }
+	inline deoglArrayTexture &GetTextureProbeDistance(){ return pTexProbeDistance; }
+	inline const deoglArrayTexture &GetTextureProbeDistance() const{ return pTexProbeDistance; }
 	
 	/** Probe offset texture. */
-	inline deoglTexture &GetTextureProbeOffset(){ return pTexProbeOffset; }
-	inline const deoglTexture &GetTextureProbeOffset() const{ return pTexProbeOffset; }
+	inline deoglArrayTexture &GetTextureProbeOffset(){ return pTexProbeOffset; }
+	inline const deoglArrayTexture &GetTextureProbeOffset() const{ return pTexProbeOffset; }
 	
 	/** Probe state texture. */
 	inline deoglTexture &GetTextureProbeState(){ return pTexProbeState; }

@@ -840,7 +840,7 @@ void deoglRenderGI::ProbeExtends( deoglRenderPlan &plan ){
 	renderThread.GetShader().ActivateShader( pShaderProbeExtends );
 	pActivateGIUBOs();
 	
-	renderThread.GetFramebuffer().Activate( &giState->GetFBOProbeOffset() ); // unimportant since not written to
+	renderThread.GetFramebuffer().Activate( &giState->GetFBOProbeState() ); // unimportant since not written to
 	
 	#ifdef GI_USE_RAY_CACHE
 		tsmgr.EnableArrayTexture( 0, giState->GetRayCache().GetTextureDistance(), GetSamplerClampNearest() );
@@ -898,9 +898,9 @@ void deoglRenderGI::RenderLight( deoglRenderPlan &plan, bool solid ){
 	renderThread.GetRenderers().GetLight().GetLightPB()->Activate();
 	GetUBORenderLight().Activate();
 	
-	tsmgr.EnableTexture( 6, giState->GetTextureProbeIrradiance(), GetSamplerClampLinear() );
-	tsmgr.EnableTexture( 7, giState->GetTextureProbeDistance(), GetSamplerClampLinear() );
-	tsmgr.EnableTexture( 8, giState->GetTextureProbeOffset(), GetSamplerClampNearest() );
+	tsmgr.EnableArrayTexture( 6, giState->GetTextureProbeIrradiance(), GetSamplerClampLinear() );
+	tsmgr.EnableArrayTexture( 7, giState->GetTextureProbeDistance(), GetSamplerClampLinear() );
+	tsmgr.EnableArrayTexture( 8, giState->GetTextureProbeOffset(), GetSamplerClampNearest() );
 	tsmgr.DisableStagesAbove( 8 );
 	
 	defren.RenderFSQuadVAO();
@@ -935,9 +935,9 @@ void deoglRenderGI::RenderLightGIRay( deoglRenderPlan &plan ){
 	renderThread.GetRenderers().GetLight().GetLightPB()->Activate();
 	GetUBORenderLight().Activate();
 	
-	tsmgr.EnableTexture( 6, giStateRender->GetTextureProbeIrradiance(), GetSamplerClampLinear() );
-	tsmgr.EnableTexture( 7, giStateRender->GetTextureProbeDistance(), GetSamplerClampLinear() );
-	tsmgr.EnableTexture( 8, giStateRender->GetTextureProbeOffset(), GetSamplerClampNearest() );
+	tsmgr.EnableArrayTexture( 6, giStateRender->GetTextureProbeIrradiance(), GetSamplerClampLinear() );
+	tsmgr.EnableArrayTexture( 7, giStateRender->GetTextureProbeDistance(), GetSamplerClampLinear() );
+	tsmgr.EnableArrayTexture( 8, giStateRender->GetTextureProbeOffset(), GetSamplerClampNearest() );
 	tsmgr.DisableStagesAbove( 8 );
 	
 	defren.RenderFSQuadVAO();
@@ -989,9 +989,9 @@ void deoglRenderGI::RenderDebugOverlay( deoglRenderPlan &plan ){
 		
 		pActivateGIUBOs();
 		
-		tsmgr.EnableTexture( 0, giState->GetTextureProbeIrradiance(), GetSamplerClampLinear() );
-		tsmgr.EnableTexture( 1, giState->GetTextureProbeDistance(), GetSamplerClampLinear() );
-		tsmgr.EnableTexture( 2, giState->GetTextureProbeOffset(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 0, giState->GetTextureProbeIrradiance(), GetSamplerClampLinear() );
+		tsmgr.EnableArrayTexture( 1, giState->GetTextureProbeDistance(), GetSamplerClampLinear() );
+		tsmgr.EnableArrayTexture( 2, giState->GetTextureProbeOffset(), GetSamplerClampNearest() );
 		tsmgr.DisableStagesAbove( 2 );
 		
 		OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
@@ -1016,7 +1016,7 @@ void deoglRenderGI::RenderDebugOverlay( deoglRenderPlan &plan ){
 		
 		pActivateGIUBOs();
 		
-		tsmgr.EnableTexture( 0, giState->GetTextureProbeOffset(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 0, giState->GetTextureProbeOffset(), GetSamplerClampNearest() );
 		tsmgr.DisableStagesAbove( 0 );
 		
 		//OGL_CHECK( renderThread, glDepthMask( GL_TRUE ) );
@@ -1077,7 +1077,7 @@ void deoglRenderGI::RenderDebugOverlay( deoglRenderPlan &plan ){
 
 		pActivateGIUBOs();
 		
-		tsmgr.EnableTexture( 0, giState->GetTextureProbeOffset(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 0, giState->GetTextureProbeOffset(), GetSamplerClampNearest() );
 		tsmgr.DisableStagesAbove( 0 );
 		
 		OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
