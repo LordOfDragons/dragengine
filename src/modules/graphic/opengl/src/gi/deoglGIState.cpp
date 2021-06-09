@@ -165,7 +165,8 @@ pRayCache( renderThread, 64, pRealProbeCount, cascadeCount )
 		// the costs for updating instances tracking reasonable
 		// 
 		// all these measurements have been done for a city scene with roughly 12k
-		// objects inside the tracking area
+		// objects inside the tracking area and a camera view distance of 250m
+		// (hence GI tracking area size of 500m)
 		pAreaTracker.SetUpdateThreshold( 8.0 );
 		
 	}catch( const deException & ){
