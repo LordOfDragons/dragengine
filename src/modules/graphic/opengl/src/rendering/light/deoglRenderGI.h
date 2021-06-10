@@ -57,7 +57,8 @@ private:
 	deoglShaderProgram *pShaderDebugProbe;
 	deoglShaderProgram *pShaderDebugProbeFlags;
 	deoglShaderProgram *pShaderDebugProbeOffset;
-	deoglShaderProgram *pShaderDebugProbeUpdate;
+	deoglShaderProgram *pShaderDebugProbeUpdatePass1;
+	deoglShaderProgram *pShaderDebugProbeUpdatePass2;
 	
 	deObjectReference pUBORenderLight;
 	deObjectReference pUBORenderLightSSS;

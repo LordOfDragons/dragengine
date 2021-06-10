@@ -1152,6 +1152,8 @@ void deoglRenderDevMode::RenderRenderPlanDebugInfo( deoglRenderPlan &plan, const
 	int maxWidth = 0;
 	decString text;
 	
+	renderDebug.BeginRenderText();
+	
 	/*
 	"View:    O %5i       | T %7i       | L %3d       | E %3d"
 	"CullPS:  O %5i(%3d%%) | T %7i(%3d%%) | L %3d(%3d%%) | S %4d"
@@ -1167,7 +1169,7 @@ void deoglRenderDevMode::RenderRenderPlanDebugInfo( deoglRenderPlan &plan, const
 	const int viewEnvMaps = debug.GetViewEnvMaps();
 	
 	text.Format( "View:    O %5i       | T %7i       | L %3d       | E %3d", viewObjects, viewTriangles, viewLights, viewEnvMaps );
-	renderDebug.RenderText( plan, text.GetString(), position.x, y, color1 );
+	renderDebug.AddRenderText( plan, text.GetString(), position.x, y, color1 );
 	size.y += fontHeight;
 	y += fontHeight;
 	
@@ -1192,7 +1194,7 @@ void deoglRenderDevMode::RenderRenderPlanDebugInfo( deoglRenderPlan &plan, const
 	text.Format( "CullPS:  O %5i(%3d%%) | T %7i(%3d%%) | L %3d(%3d%%)", cullPSObjects,
 		( int )cullPSObjectsRatio, cullPSTriangles, ( int )cullPSTrianglesRatio, cullPSLights,
 		( int )cullPSLightsRatio );
-	renderDebug.RenderText( plan, text.GetString(), position.x, y, color1 );
+	renderDebug.AddRenderText( plan, text.GetString(), position.x, y, color1 );
 	size.y += fontHeight;
 	y += fontHeight;
 	
@@ -1209,7 +1211,7 @@ void deoglRenderDevMode::RenderRenderPlanDebugInfo( deoglRenderPlan &plan, const
 		( int )( occmapRenderTime * 1000.0f ), ( int )( occmapRenderTime * 10000.0f ) % 10,
 		( int )( occTestTime * 1000.0f ), ( int )( occTestTime * 10000.0f ) % 10,
 		( int )( occTotalTime * 1000.0f ), ( int )( occTotalTime * 10000.0f ) % 10 );
-	renderDebug.RenderText( plan, text.GetString(), position.x, y, color1 );
+	renderDebug.AddRenderText( plan, text.GetString(), position.x, y, color1 );
 	size.y += fontHeight;
 	y += fontHeight;
 	
@@ -1231,7 +1233,7 @@ void deoglRenderDevMode::RenderRenderPlanDebugInfo( deoglRenderPlan &plan, const
 	}
 	
 	text.Format( "LOD:     O       (   ) | T %7i(%3d%%)", lodTriangles, ( int )lodTrianglesRatio );
-	renderDebug.RenderText( plan, text.GetString(), position.x, y, color1 );
+	renderDebug.AddRenderText( plan, text.GetString(), position.x, y, color1 );
 	size.y += fontHeight;
 	y += fontHeight;
 	
@@ -1248,9 +1250,11 @@ void deoglRenderDevMode::RenderRenderPlanDebugInfo( deoglRenderPlan &plan, const
 	text.Format( "Render:  O %5i(%3d%%) | T %7i(%3d%%) | L %3d(%3d%%) | E %3d | P %2d", renderObjects,
 		( int )renderObjectsRatio, renderTriangles, ( int )renderTrianglesRatio, renderLights,
 		( int )renderLightsRatio, ( int )renderEnvMaps, renderPasses );
-	renderDebug.RenderText( plan, text.GetString(), position.x, y, color1 );
+	renderDebug.AddRenderText( plan, text.GetString(), position.x, y, color1 );
 	size.y += fontHeight;
 	y += fontHeight;
+	
+	renderDebug.EndRenderText();
 	
 	// finished
 	size.x = maxWidth;
@@ -1318,10 +1322,12 @@ void deoglRenderDevMode::RenderMemoryInfo( deoglRenderPlan &plan, const decPoint
 	//textureDepthGPUCompressed /= 1000000;
 	//textureDepthGPUUncompressed /= 1000000;
 	
+	renderDebug.BeginRenderText();
+	
 	text.Format( fmtTex2D, textureCount, textureGPU, textureGPUCompressed, ( int )textureRatioCompressed,
 		textureGPUUncompressed, textureColorCount, textureColorGPU, textureColorGPUCompressed,
 		( int )textureColorRatioCompressed, textureColorGPUUncompressed, textureDepthCount, textureDepthGPU );
-	renderDebug.RenderText( plan, text.GetString(), position.x, y, color1 );
+	renderDebug.AddRenderText( plan, text.GetString(), position.x, y, color1 );
 	size.y += fontHeight;
 	y += fontHeight;
 	
@@ -1372,7 +1378,7 @@ void deoglRenderDevMode::RenderMemoryInfo( deoglRenderPlan &plan, const decPoint
 	text.Format( fmtTexArr, textureArrayCount, textureArrayGPU, textureArrayGPUCompressed, ( int )textureArrayRatioCompressed,
 		textureArrayGPUUncompressed, textureArrayColorCount, textureArrayColorGPU, textureArrayColorGPUCompressed,
 		( int )textureArrayColorRatioCompressed, textureArrayColorGPUUncompressed, textureArrayDepthCount, textureArrayDepthGPU );
-	renderDebug.RenderText( plan, text.GetString(), position.x, y, color1 );
+	renderDebug.AddRenderText( plan, text.GetString(), position.x, y, color1 );
 	size.y += fontHeight;
 	y += fontHeight;
 	
@@ -1423,7 +1429,7 @@ void deoglRenderDevMode::RenderMemoryInfo( deoglRenderPlan &plan, const decPoint
 	text.Format( fmtCube, cubemapCount, cubemapGPU, cubemapGPUCompressed, ( int )cubemapRatioCompressed, cubemapGPUUncompressed,
 		cubemapColorCount, cubemapColorGPU, cubemapColorGPUCompressed, ( int )cubemapColorRatioCompressed, cubemapColorGPUUncompressed,
 		cubemapDepthCount, cubemapDepthGPU );
-	renderDebug.RenderText( plan, text.GetString(), position.x, y, color1 );
+	renderDebug.AddRenderText( plan, text.GetString(), position.x, y, color1 );
 	size.y += fontHeight;
 	y += fontHeight;
 	
@@ -1442,7 +1448,7 @@ void deoglRenderDevMode::RenderMemoryInfo( deoglRenderPlan &plan, const decPoint
 	
 	text.Format( fmtRenBuf, renderbufferCount, renderbufferGPU, renderbufferColorCount, renderbufferColorGPU,
 		renderbufferDepthCount, renderbufferDepthGPU );
-	renderDebug.RenderText( plan, text.GetString(), position.x, y, color1 );
+	renderDebug.AddRenderText( plan, text.GetString(), position.x, y, color1 );
 	size.y += fontHeight;
 	y += fontHeight;
 	
@@ -1466,7 +1472,7 @@ void deoglRenderDevMode::RenderMemoryInfo( deoglRenderPlan &plan, const decPoint
 	skinGPUUncompressed /= 1000000;
 	
 	text.Format( fmtSkin, skinCount, skinGPU, skinGPUCompressed, ( int )percentageCompressed, skinGPUUncompressed );
-	renderDebug.RenderText( plan, text.GetString(), position.x, y, color1 );
+	renderDebug.AddRenderText( plan, text.GetString(), position.x, y, color1 );
 	size.y += fontHeight;
 	y += fontHeight;
 	
@@ -1488,7 +1494,7 @@ void deoglRenderDevMode::RenderMemoryInfo( deoglRenderPlan &plan, const decPoint
 	text.Format( fmtRender, renderable2DColorCount, renderable2DColorGPU, renderable2DDepthCount,
 		renderable2DDepthGPU, renderableArrayColorCount, renderableArrayColorGPU,
 		renderableArrayDepthCount, renderableArrayDepthGPU );
-	renderDebug.RenderText( plan, text.GetString(), position.x, y, color1 );
+	renderDebug.AddRenderText( plan, text.GetString(), position.x, y, color1 );
 	size.y += fontHeight;
 	y += fontHeight;
 	
@@ -1504,7 +1510,7 @@ void deoglRenderDevMode::RenderMemoryInfo( deoglRenderPlan &plan, const decPoint
 	unsigned int vboTBOGPU = consumptionVBO.GetTBOGPU() / 1000000;
 	
 	text.Format( fmtVBO, vboCount, vboGPU, vboSharedCount, vboSharedGPU, vboIBOCount, vboIBOGPU, vboTBOCount, vboTBOGPU );
-	renderDebug.RenderText( plan, text.GetString(), position.x, y, color1 );
+	renderDebug.AddRenderText( plan, text.GetString(), position.x, y, color1 );
 	size.y += fontHeight;
 	y += fontHeight;
 	
@@ -1515,7 +1521,7 @@ void deoglRenderDevMode::RenderMemoryInfo( deoglRenderPlan &plan, const decPoint
 	int defrenGPURenBuf = defren.GetMemoryUsageGPURenderbuffer() / 1000000;
 	
 	text.Format( fmtDefRen, defrenGPU, defrenGPUTexture, defrenGPURenBuf );
-	renderDebug.RenderText( plan, text.GetString(), position.x, y, color1 );
+	renderDebug.AddRenderText( plan, text.GetString(), position.x, y, color1 );
 	size.y += fontHeight;
 	y += fontHeight;
 	
@@ -1530,10 +1536,11 @@ void deoglRenderDevMode::RenderMemoryInfo( deoglRenderPlan &plan, const decPoint
 	totalGPU /= 1000000;
 	
 	text.Format( "Total %4dM", totalGPU );
-	renderDebug.RenderText( plan, text.GetString(), position.x, y, color1 );
+	renderDebug.AddRenderText( plan, text.GetString(), position.x, y, color1 );
 	size.y += fontHeight;
 	y += fontHeight;
 	
+	renderDebug.EndRenderText();
 	
 	size.x = maxWidth;
 }
@@ -1553,6 +1560,7 @@ const decPoint &position, decPoint &size ){
 	LayoutDebugInformation( plan, decPoint(), size, list, 0, maxWidth, true );
 	
 	deoglRenderDebug &renderDebug = GetRenderThread().GetRenderers().GetDebug();
+	renderDebug.BeginRenderRectangle();
 	renderDebug.BeginRenderText();
 	
 	int i;
@@ -1563,6 +1571,7 @@ const decPoint &position, decPoint &size ){
 		}
 	}
 	
+	renderDebug.EndRenderRectangle();
 	renderDebug.EndRenderText();
 }
 
@@ -1735,7 +1744,7 @@ const decPoint &parentPosition, const deoglDebugInformation &debugInformation ){
 	// render text
 	const decPoint position( parentPosition + debugInformation.GetRenderPosition() );
 	
-	renderDebug.RenderRectangle( plan, position.x, position.y,
+	renderDebug.AddRenderRectangle( plan, position.x, position.y,
 		position.x + debugInformation.GetRenderSize().x, position.y + fontHeight,
 		debugInformation.GetColorBackground() );
 	

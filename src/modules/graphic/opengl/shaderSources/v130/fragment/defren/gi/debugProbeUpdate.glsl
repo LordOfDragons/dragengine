@@ -16,9 +16,15 @@ uniform vec4 pPlaneTop;
 uniform vec4 pPlaneBottom;
 uniform vec4 pPlaneNear;
 
-in vec2 vTC;
+#ifdef PASS2
+	flat in ivec3 vProbeCoord;
+	
+#else
+	in vec2 vTC;
+#endif
 
 out vec3 outColor;
+
 
 ivec3 giGridShiftToLocal( in ivec3 shifted ){
 	return ( shifted + pGIGridCoordShift ) % pGIGridProbeCount;
@@ -32,27 +38,32 @@ int giCoordToIndex( in ivec3 coord ){
 void main( void ){
 	outColor = vec3( 0.0 );
 	
-	ivec2 tc = ivec2( vTC );
-	ivec3 probeCoord;
-	
-	int probeStride = pParams.x + pParams.y;
-	if( tc.y % probeStride >= pParams.x ){
-		return;  // inside spacing
-	}
-	probeCoord.z = tc.y / probeStride;
-	
-	int groupSize = pParams.x * pGIGridProbeCount.z + pParams.y * ( pGIGridProbeCount.z - 1 );
-	int groupStride = groupSize + pParams.z;
-	if( tc.x % groupStride >= groupSize ){
-		return;  // inside spacing
-	}
-	probeCoord.y = tc.x / groupStride;
-	tc.x = tc.x % groupStride;
-	
-	if( tc.x % probeStride >= pParams.x ){
-		return; // inside spacing
-	}
-	probeCoord.x = tc.x / probeStride;
+	#ifdef PASS2
+		ivec3 probeCoord = vProbeCoord;
+		
+	#else
+		ivec2 tc = ivec2( vTC );
+		ivec3 probeCoord;
+		
+		int probeStride = pParams.x + pParams.y;
+		if( tc.y % probeStride >= pParams.x ){
+			return;  // inside spacing
+		}
+		probeCoord.z = tc.y / probeStride;
+		
+		int groupSize = pParams.x * pGIGridProbeCount.z + pParams.y * ( pGIGridProbeCount.z - 1 );
+		int groupStride = groupSize + pParams.z;
+		if( tc.x % groupStride >= groupSize ){
+			return;  // inside spacing
+		}
+		probeCoord.y = tc.x / groupStride;
+		tc.x = tc.x % groupStride;
+		
+		if( tc.x % probeStride >= pParams.x ){
+			return; // inside spacing
+		}
+		probeCoord.x = tc.x / probeStride;
+	#endif
 	
 	vec3 gridPosition = pGIGridProbeSpacing * vec3( probeCoord ) + pGIGridOrigin;
 	bool insideView = ( dot( pPlaneNear.xyz, gridPosition ) >= pPlaneNear.w )
@@ -67,8 +78,14 @@ void main( void ){
 	uint flags = gipoProbeFlags( probeCoord, 0 ); // TODO 0=cascade
 	bool disabled = ( flags & gipfDisabled ) == gipfDisabled;
 	bool nearGeometry = ( flags & gipfNearGeometry ) == gipfNearGeometry;
-	bool updated = false;
 	
+	#ifdef PASS2
+	bool updated = true;
+	#else
+	bool updated = false;
+	#endif
+	
+	/*
 	int i;
 	for( i=0; i<pGIProbeCount; i++ ){
 		if( pGIProbeIndex[ i / 4 ][ i % 4 ] == index ){
@@ -76,6 +93,7 @@ void main( void ){
 			break;
 		}
 	}
+	*/
 	
 	if( disabled ){
 		outColor = mix( vec3( 0.5 ), vec3( 1 ), bvec3( insideView ) );

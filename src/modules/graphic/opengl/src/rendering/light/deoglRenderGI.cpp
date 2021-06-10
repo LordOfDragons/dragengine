@@ -150,7 +150,8 @@ pShaderLight( NULL ),
 pShaderLightGIRay( NULL ),
 pShaderDebugProbe( NULL ),
 pShaderDebugProbeOffset( NULL ),
-pShaderDebugProbeUpdate( NULL ),
+pShaderDebugProbeUpdatePass1( NULL ),
+pShaderDebugProbeUpdatePass2( NULL ),
 
 pRenderTask( NULL ),
 pAddToRenderTask( NULL ),
@@ -241,7 +242,11 @@ pDebugInfoGIRenderLightGIRay( NULL )
 		pShaderDebugProbeOffset = shaderManager.GetProgramWith( sources, defines );
 		
 		sources = shaderManager.GetSourcesNamed( "DefRen GI Debug Probe Update" );
-		pShaderDebugProbeUpdate = shaderManager.GetProgramWith( sources, defines );
+		pShaderDebugProbeUpdatePass1 = shaderManager.GetProgramWith( sources, defines );
+		
+		defines.AddDefine( "PASS2", true );
+		pShaderDebugProbeUpdatePass2 = shaderManager.GetProgramWith( sources, defines );
+		defines.RemoveDefine( "PASS2" );
 		
 		// render light
 		defines.RemoveAllDefines();
@@ -1029,9 +1034,6 @@ void deoglRenderGI::RenderDebugOverlay( deoglRenderPlan &plan ){
 	if( devmode.GetGIShowProbeUpdate() ){
 		OGL_CHECK( renderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) );
 		
-		deoglShaderCompiled &shader2 = *pShaderDebugProbeUpdate->GetCompiled();
-		shader2.Activate();
-		
 		const decPoint3 &count = giState->GetProbeCount();
 		const int probeSize = 2;
 		const int probeSpacing = 1;
@@ -1045,12 +1047,27 @@ void deoglRenderGI::RenderDebugOverlay( deoglRenderPlan &plan ){
 		const decVector2 scale( 1.0f / ( float )plan.GetViewportWidth(), 1.0f / ( float )plan.GetViewportHeight() );
 		const decVector2 offset( scale.x * size.x - 1.0f, scale.y * size.y - 1.0f );
 		
-		shader2.SetParameterFloat( 0, scale.x * size.x, scale.y * size.y,
+		tsmgr.EnableArrayTexture( 0, giState->GetTextureProbeOffset(), GetSamplerClampNearest() );
+		tsmgr.DisableStagesAbove( 0 );
+		
+		OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
+		OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
+		OGL_CHECK( renderThread, glDepthFunc( GL_ALWAYS ) );
+		OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
+		OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
+		
+		OGL_CHECK( renderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) );
+		
+		// pass 1
+		deoglShaderCompiled &shader2a = *pShaderDebugProbeUpdatePass1->GetCompiled();
+		shader2a.Activate();
+		
+		shader2a.SetParameterFloat( 0, scale.x * size.x, scale.y * size.y,
 			scale.x * position.x * 2.0f + offset.x, scale.y * position.y * 2.0f + offset.y );
-		shader2.SetParameterFloat( 1, ( float )size.x * 0.5f, ( float )size.y * -0.5f,
+		shader2a.SetParameterFloat( 1, ( float )size.x * 0.5f, ( float )size.y * -0.5f,
 			( float )size.x * 0.5, ( float )size.y * 0.5f );
-		shader2.SetParameterPoint3( 2, giState->GetProbeCount() - giState->GetGridCoordShift() );
-		shader2.SetParameterInt( 3, probeSize, probeSpacing, groupSpacing );
+		shader2a.SetParameterPoint3( 2, giState->GetProbeCount() - giState->GetGridCoordShift() );
+		shader2a.SetParameterInt( 3, probeSize, probeSpacing, groupSpacing );
 		
 		const deoglDCollisionFrustum &frustum = *plan.GetUseFrustum();
 		
@@ -1069,30 +1086,35 @@ void deoglRenderGI::RenderDebugOverlay( deoglRenderPlan &plan ){
 		const float fdbottom = frustum.GetBottomDistance() - fnbottom * fmove - fpshift;
 		const float fdnear = frustum.GetNearDistance() - fnnear * fmove - fpshift;
 		
-		shader2.SetParameterFloat( 4, ( float )fnleft.x, ( float )fnleft.y, ( float )fnleft.z, ( float )fdleft );
-		shader2.SetParameterFloat( 5, ( float )fnright.x, ( float )fnright.y, ( float )fnright.z, ( float )fdright );
-		shader2.SetParameterFloat( 6, ( float )fntop.x, ( float )fntop.y, ( float )fntop.z, ( float )fdtop );
-		shader2.SetParameterFloat( 7, ( float )fnbottom.x, ( float )fnbottom.y, ( float )fnbottom.z, ( float )fdbottom );
-		shader2.SetParameterFloat( 8, ( float )fnnear.x, ( float )fnnear.y, ( float )fnnear.z, ( float )fdnear );
+		shader2a.SetParameterFloat( 4, ( float )fnleft.x, ( float )fnleft.y, ( float )fnleft.z, ( float )fdleft );
+		shader2a.SetParameterFloat( 5, ( float )fnright.x, ( float )fnright.y, ( float )fnright.z, ( float )fdright );
+		shader2a.SetParameterFloat( 6, ( float )fntop.x, ( float )fntop.y, ( float )fntop.z, ( float )fdtop );
+		shader2a.SetParameterFloat( 7, ( float )fnbottom.x, ( float )fnbottom.y, ( float )fnbottom.z, ( float )fdbottom );
+		shader2a.SetParameterFloat( 8, ( float )fnnear.x, ( float )fnnear.y, ( float )fnnear.z, ( float )fdnear );
 
 		pActivateGIUBOs();
 		
-		tsmgr.EnableArrayTexture( 0, giState->GetTextureProbeOffset(), GetSamplerClampNearest() );
-		tsmgr.DisableStagesAbove( 0 );
+		OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
 		
-		OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
-		OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
-		OGL_CHECK( renderThread, glDepthFunc( GL_ALWAYS ) );
-		OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
-		OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
+		// pass 2
+		deoglShaderCompiled &shader2b = *pShaderDebugProbeUpdatePass2->GetCompiled();
+		shader2b.Activate();
 		
-		defren.RenderFSQuadVAO();
+		shader2b.SetParameterFloat( 0, scale.x * 2.0f, scale.y * 2.0f,
+			scale.x * 2.0f * position.x - 1.0f, scale.y * 2.0f * position.y - 1.0f );
+		shader2b.SetParameterFloat( 1, ( float )size.x * 0.5f, ( float )size.y * -0.5f,
+			( float )size.x * 0.5, ( float )size.y * 0.5f );
+		shader2b.SetParameterPoint3( 2, giState->GetProbeCount() - giState->GetGridCoordShift() );
+		shader2b.SetParameterInt( 3, probeSize, probeSpacing, groupSpacing );
+		
+		pActivateGIUBOs();
+		OGL_CHECK( renderThread, pglDrawArraysInstanced( GL_TRIANGLE_FAN, 0, 4, giState->GetUpdateProbeCount() ) );
 	}
 	
 	
 	// clean up
 	pglBindVertexArray( 0 );
-	tsmgr.DisableStage( 0 );
+	tsmgr.DisableAllStages();
 }
 
 
@@ -1131,8 +1153,11 @@ void deoglRenderGI::pCleanUp(){
 		delete pRenderTask;
 	}
 	
-	if( pShaderDebugProbeUpdate ){
-		pShaderDebugProbeUpdate->RemoveUsage();
+	if( pShaderDebugProbeUpdatePass1 ){
+		pShaderDebugProbeUpdatePass1->RemoveUsage();
+	}
+	if( pShaderDebugProbeUpdatePass2 ){
+		pShaderDebugProbeUpdatePass2->RemoveUsage();
 	}
 	if( pShaderDebugProbeOffset ){
 		pShaderDebugProbeOffset->RemoveUsage();

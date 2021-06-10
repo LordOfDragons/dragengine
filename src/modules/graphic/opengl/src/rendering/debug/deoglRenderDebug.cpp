@@ -115,7 +115,10 @@ pShaderRectangle( NULL ),
 pDebugFont( NULL ),
 
 pTBORenderText1( NULL ),
-pTBORenderText2( NULL )
+pTBORenderText2( NULL ),
+
+pTBORenderRectangle1( NULL ),
+pTBORenderRectangle2( NULL )
 {
 	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
 	const deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
@@ -160,8 +163,6 @@ pTBORenderText2( NULL )
 		pShaderRenderText = shaderManager.GetProgramWith( sources, defines );
 		
 		sources = shaderManager.GetSourcesNamed( "Debug Rectangle" );
-		defines.AddDefine( "NO_TCTRANSFORM", "1" );
-		defines.AddDefine( "NO_TEXCOORD", "1" );
 		pShaderRectangle = shaderManager.GetProgramWith( sources, defines );
 		
 		
@@ -171,9 +172,12 @@ pTBORenderText2( NULL )
 		
 		
 		
-		// create render text TBOs
+		// TBOs
 		pTBORenderText1 = new deoglDynamicTBOFloat32( renderThread, 4 );
 		pTBORenderText2 = new deoglDynamicTBOFloat8( renderThread, 4 );
+		
+		pTBORenderRectangle1 = new deoglDynamicTBOFloat32( renderThread, 4 );
+		pTBORenderRectangle2 = new deoglDynamicTBOFloat8( renderThread, 4 );
 		
 	}catch( const deException & ){
 		pCleanUp();
@@ -413,85 +417,6 @@ void deoglRenderDebug::RenderComponentBox( sRenderParameters &params, deoglRComp
 	pglBindVertexArray( 0 );
 }
 
-void deoglRenderDebug::RenderText( deoglRenderPlan &plan, const char *text, int x, int y, const decColor &color ){
-	if( ! text ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	deoglRenderThread &renderThread = GetRenderThread();
-	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
-	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
-	const deoglDebugFont::sGlyph * const glyphs = pDebugFont->GetGlyphs();
-	float texCoordWidth, texCoordHeight, quadWidth, quadHeight;
-	int curx, x1, y1, x2, y2, cw, adv;
-	const float fontScale = 1.0f;
-	decUTF8Decoder utf8Decoder;
-	int character, len;
-	
-	const float scalePosition1X = 1.0f / ( float )plan.GetViewportWidth();
-	const float scalePosition1Y = -1.0f / ( float )plan.GetViewportHeight();
-	const float scalePosition2X = 2.0f / ( float )plan.GetViewportWidth();
-	const float scalePosition2Y = -2.0f / ( float )plan.GetViewportHeight();
-	const float offsetPositionX = scalePosition2X * 0.375f - 1.0f;
-	const float offsetPositionY = scalePosition2Y * 0.375f + 1.0f;
-	
-	// set texture
-	tsmgr.EnableTexture( 0, *pDebugFont->GetTexture(), GetSamplerClampNearest() );
-	
-	// set shader
-	renderThread.GetShader().ActivateShader( pShaderOutTex );
-	deoglShaderCompiled &shader = *pShaderOutTex->GetCompiled();
-	
-	shader.SetParameterFloat( spotColor, color.r, color.g, color.b, color.a );
-	shader.SetParameterFloat( spotGamma, 1.0f, 1.0f, 1.0f, 1.0f );
-	
-	// render text
-	curx = x;
-	
-	utf8Decoder.SetString( text );
-	len = strlen( text );
-	if( len > utf8Decoder.GetLength() ){
-		len = utf8Decoder.GetLength();
-	}
-	
-	while( utf8Decoder.GetPosition() < len ){
-		character = utf8Decoder.DecodeNextCharacter();
-		if( character < 0 || character > 255 ){
-			continue; // temp hack: not working for unicode
-		}
-		
-		const deoglDebugFont::sGlyph &glyph = glyphs[ character ];
-		
-		// calculate positions
-		x1 = curx;
-		y1 = y;
-		cw = ( int )( ( float )glyph.width * fontScale );
-		x2 = x1 + cw;
-		y2 = y1 + ( int )( ( float )glyph.height * fontScale );
-		adv = ( int )( ( float )glyph.advance * fontScale );
-		
-		quadWidth = ( float )( x2 - x1 );
-		quadHeight = ( float )( y2 - y1 );
-		texCoordWidth = glyph.x2 - glyph.x1;
-		texCoordHeight = glyph.y2 - glyph.y1;
-		
-		// render char
-		shader.SetParameterFloat( spotPosTransform,
-			scalePosition1X * quadWidth, scalePosition1Y * quadHeight,
-			scalePosition2X * ( ( float )( x1 ) + quadWidth * 0.5f ) + offsetPositionX,
-			scalePosition2Y * ( ( float )( y1 ) + quadHeight * 0.5f ) + offsetPositionY );
-		shader.SetParameterFloat( spotTCTransform,
-			texCoordWidth * 0.5f, texCoordHeight * 0.5f, glyph.x1 + texCoordWidth * 0.5f, glyph.y1 + texCoordHeight * 0.5f );
-		
-		defren.RenderFSQuadVAO();
-		
-		// next round
-		curx += adv;
-	}
-	
-	tsmgr.DisableStage( 0 );
-}
-
 void deoglRenderDebug::BeginRenderText(){
 	pTBORenderText1->Clear();
 	pTBORenderText2->Clear();
@@ -570,6 +495,7 @@ void deoglRenderDebug::EndRenderText(){
 	tsmgr.EnableTexture( 0, *pDebugFont->GetTexture(), GetSamplerClampNearest() );
 	tsmgr.EnableTBO( 1, pTBORenderText1->GetTBO(), GetSamplerClampNearest() );
 	tsmgr.EnableTBO( 2, pTBORenderText2->GetTBO(), GetSamplerClampNearest() );
+	tsmgr.DisableStagesAbove( 2 );
 	
 	renderThread.GetShader().ActivateShader( pShaderRenderText );
 	
@@ -578,14 +504,18 @@ void deoglRenderDebug::EndRenderText(){
 		GL_TRIANGLE_FAN, 0, 4, pTBORenderText2->GetPixelCount() ) );
 	
 	OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
-	tsmgr.DisableStage( 0 );
+	tsmgr.DisableAllStages();
 }
 
 
 
-void deoglRenderDebug::RenderRectangle( deoglRenderPlan &plan, int x1, int y1, int x2, int y2, const decColor &color ){
-	deoglRenderThread &renderThread = GetRenderThread();
-	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
+void deoglRenderDebug::BeginRenderRectangle(){
+	pTBORenderRectangle1->Clear();
+	pTBORenderRectangle2->Clear();
+}
+
+void deoglRenderDebug::AddRenderRectangle( deoglRenderPlan &plan,
+int x1, int y1, int x2, int y2, const decColor &color ){
 	const float scalePosition1X = 1.0f / ( float )plan.GetViewportWidth();
 	const float scalePosition1Y = -1.0f / ( float )plan.GetViewportHeight();
 	const float scalePosition2X = 2.0f / ( float )plan.GetViewportWidth();
@@ -593,17 +523,38 @@ void deoglRenderDebug::RenderRectangle( deoglRenderPlan &plan, int x1, int y1, i
 	const float offsetPositionX = scalePosition2X * 0.375f - 1.0f;
 	const float offsetPositionY = scalePosition2Y * 0.375f + 1.0f;
 	
-	renderThread.GetShader().ActivateShader( pShaderRectangle );
-	deoglShaderCompiled &shader = *pShaderRectangle->GetCompiled();
-	
-	shader.SetParameterFloat( sprectPosTransform,
-		scalePosition1X * ( float )( x2 - x1 ), scalePosition1Y * ( float )( y2 - y1 ),
+	// add to TBO
+	pTBORenderRectangle1->AddVec4( scalePosition1X * ( float )( x2 - x1 ), scalePosition1Y * ( float )( y2 - y1 ),
 		scalePosition2X * ( ( float )( x1 + x2 ) * 0.5f ) + offsetPositionX,
 		scalePosition2Y * ( ( float )( y1 + y2 ) * 0.5f ) + offsetPositionY );
 	
-	shader.SetParameterFloat( sprectColor, color.r, color.g, color.b, color.a );
+	pTBORenderRectangle2->AddVec4( color );
+}
+
+void deoglRenderDebug::EndRenderRectangle(){
+	if( pTBORenderRectangle1->GetDataCount() == 0 ){
+		return;
+	}
 	
-	defren.RenderFSQuadVAO();
+	pTBORenderRectangle1->Update();
+	pTBORenderRectangle2->Update();
+	
+	deoglRenderThread &renderThread = GetRenderThread();
+	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
+	
+	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
+	tsmgr.EnableTBO( 0, pTBORenderRectangle1->GetTBO(), GetSamplerClampNearest() );
+	tsmgr.EnableTBO( 1, pTBORenderRectangle2->GetTBO(), GetSamplerClampNearest() );
+	tsmgr.DisableStagesAbove( 1 );
+	
+	renderThread.GetShader().ActivateShader( pShaderRectangle );
+	
+	OGL_CHECK( renderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) );
+	OGL_CHECK( renderThread, pglDrawArraysInstanced(
+		GL_TRIANGLE_FAN, 0, 4, pTBORenderRectangle2->GetPixelCount() ) );
+	
+	OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
+	tsmgr.DisableAllStages();
 }
 
 
@@ -612,6 +563,12 @@ void deoglRenderDebug::RenderRectangle( deoglRenderPlan &plan, int x1, int y1, i
 //////////////////////
 
 void deoglRenderDebug::pCleanUp(){
+	if( pTBORenderRectangle2 ){
+		pTBORenderRectangle2->FreeReference();
+	}
+	if( pTBORenderRectangle1 ){
+		pTBORenderRectangle1->FreeReference();
+	}
 	if( pTBORenderText2 ){
 		pTBORenderText2->FreeReference();
 	}

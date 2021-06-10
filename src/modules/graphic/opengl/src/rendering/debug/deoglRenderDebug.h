@@ -64,6 +64,9 @@ private:
 	deoglDynamicTBOFloat32 *pTBORenderText1;
 	deoglDynamicTBOFloat8 *pTBORenderText2;
 	
+	deoglDynamicTBOFloat32 *pTBORenderRectangle1;
+	deoglDynamicTBOFloat8 *pTBORenderRectangle2;
+	
 	
 	
 public:
@@ -104,20 +107,25 @@ public:
 	
 	
 	
-	/** Render text using the debug font. */
-	void RenderText( deoglRenderPlan &plan, const char *text, int x, int y, const decColor &color );
-	
 	/** Begin render text. */
 	void BeginRenderText();
 	
-	/** Add rendered text to VBO. */
+	/** Add rendered text to TBO. */
 	void AddRenderText( deoglRenderPlan &plan, const char *text, int x, int y, const decColor &color );
 	
 	/** Finish render text. */
 	void EndRenderText();
 	
-	/** Render filled rectangle. */
-	void RenderRectangle( deoglRenderPlan &plan, int x1, int y1, int x2, int y2, const decColor &color );
+	
+	
+	/** Begin render filled rectangle. */
+	void BeginRenderRectangle();
+	
+	/** Add rendered filled rectangle to TBO. */
+	void AddRenderRectangle( deoglRenderPlan &plan, int x1, int y1, int x2, int y2, const decColor &color );
+	
+	/** Finish render filled rectangle. */
+	void EndRenderRectangle();
 	/*@}*/
 	
 	
