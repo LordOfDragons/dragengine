@@ -64,8 +64,6 @@ deoglPlanVisitorCullElements::deoglPlanVisitorCullElements( deoglRenderPlan *pla
 	pCullDynamicComponents = false;
 	
 	pCullLayerMask = false;
-	
-	SetVisitAll( true );
 }
 
 
@@ -191,46 +189,61 @@ void deoglPlanVisitorCullElements::SetLayerMask( const decLayerMask &layerMask )
 
 
 
-void deoglPlanVisitorCullElements::VisitWorldOctree( deoglWorldOctree &octree ){
+void deoglPlanVisitorCullElements::VisitWorldOctree( const deoglWorldOctree &octree ){
 	if( ! pFrustum ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	//octree.VisitNodesColliding( this, pFrustumMinExtend, pFrustumMaxExtend );
-	octree.VisitNodesCollidingVolume( this, pFrustum );
+	pVisitNode( octree, true );
 }
 
 
 
-// Visiting
-/////////////
+// Private Functions
+//////////////////////
 
-void deoglPlanVisitorCullElements::VisitNode( deoglDOctree *node, int intersection ){
-	bool cullWithVolume = ( intersection != deoglDCollisionDetection::eirInside );
-	const deoglWorldOctree &sonode = *( ( deoglWorldOctree* )node );
+void deoglPlanVisitorCullElements::pVisitNode( const deoglWorldOctree &node, bool intersect ){
+	pVisitComponents( node, intersect );
+	pVisitBillboards( node, intersect );
+	pVisitLights( node, intersect );
+	pVisitParticleEmitters( node, intersect );
+	
+	int i;
+	for( i=0; i<8; i++ ){
+		const deoglWorldOctree * const child = ( const deoglWorldOctree* ) node.GetNodeAt( i );
+		if( ! child ){
+			continue;
+		}
+		
+		if( ! intersect ){
+			pVisitNode( *child, false );
+			
+		}else{
+			switch( pFrustum->BoxIntersect( child->GetCenter(), child->GetHalfSize() ) ){
+			case deoglDCollisionFrustum::eitInside:
+				pVisitNode( *child, false );
+				break;
+				
+			case deoglDCollisionFrustum::eitIntersect:
+				pVisitNode( *child, true );
+				break;
+				
+			case deoglDCollisionFrustum::eitOutside:
+				break;
+			}
+		}
+	}
+}
+
+void deoglPlanVisitorCullElements::pVisitComponents( const deoglWorldOctree &node, bool intersect ){
 	deoglOcclusionTest &occlusionTest = *pPlan->GetOcclusionTest();
 	const decDVector &cameraPosition = pPlan->GetCameraPosition();
 	deoglCollideList &collideList = pPlan->GetCollideList();
-	deoglDCollisionBox box;
-	int i, count;
-	
-	// test node against frustum
-	/*
-	box.SetCenter( node->GetCenter() );
-	box.SetHalfSize( node->GetHalfSize() );
-	if( ! pFrustum->BoxHitsFrustum( &box ) ){
-		return;
-	}
-	intersection = deoglDCollisionDetection::eirPartial;
-	cullWithVolume = true;
-	*/
-	
-	
-	// visit components
-	count = sonode.GetComponentCount();
+	const int count = node.GetComponentCount();
+	int i;
 	
 	for( i=0; i<count; i++ ){
-		deoglRComponent * const addComponent = sonode.GetComponentAt( i );
+		deoglRComponent * const addComponent = node.GetComponentAt( i );
 		const deoglRComponent &component = *addComponent;
 		
 		const decDVector &minExtend = component.GetMinimumExtend();
@@ -244,21 +257,18 @@ void deoglPlanVisitorCullElements::VisitNode( deoglDOctree *node, int intersecti
 		}
 		
 		// cull using cull volume if required
-		if( cullWithVolume ){
+		if( intersect ){
 			// possible optmizations:
 			// - check against pFrustum*Extend before checking against the frustum volume
 			// - depending on the size of the object use a sphere instead of a box
 			// - maybe use the sphere for the test against the pFrustum*Extend ?
-			
-			box.SetFromExtends( minExtend, maxExtend );
-			
-			if( ! pFrustum->BoxHitsFrustum( &box ) ){
+			if( ! pFrustum->BoxHitsExtend( minExtend, maxExtend ) ){
 				continue;
 			}
 		}
 		
 		// cull using too small filter
-		const decDVector center = ( minExtend + maxExtend ) * 0.5;
+		const decDVector center( ( minExtend + maxExtend ) * 0.5 );
 		const float radius = ( float )( ( maxExtend - minExtend ).Length() * 0.5 );
 		const float componentDistance = ( float )( ( center - cameraPosition ) * pCameraView ) - radius;
 		
@@ -275,13 +285,16 @@ void deoglPlanVisitorCullElements::VisitNode( deoglDOctree *node, int intersecti
 		// add component and add occlusion test input
 		collideList.AddComponent( addComponent )->StartOcclusionTest( occlusionTest, cameraPosition );
 	}
-	
-	
-	// visit billboards
-	count = sonode.GetBillboardList().GetCount();
+}
+
+void deoglPlanVisitorCullElements::pVisitBillboards( const deoglWorldOctree &node, bool intersect ){
+	const decDVector &cameraPosition = pPlan->GetCameraPosition();
+	deoglCollideList &collideList = pPlan->GetCollideList();
+	const int count = node.GetBillboardList().GetCount();
+	int i;
 	
 	for( i=0; i<count; i++ ){
-		deoglRBillboard * const addBillboard = sonode.GetBillboardList().GetAt( i );
+		deoglRBillboard * const addBillboard = node.GetBillboardList().GetAt( i );
 		const deoglRBillboard &billboard = *addBillboard;
 		
 		// cull using layer mask if required. billboards with empty layer mask never match
@@ -295,15 +308,12 @@ void deoglPlanVisitorCullElements::VisitNode( deoglDOctree *node, int intersecti
 		const decDVector &minExtend = billboard.GetMinimumExtend();
 		const decDVector &maxExtend = billboard.GetMaximumExtend();
 		
-		if( cullWithVolume ){
+		if( intersect ){
 			// possible optmizations:
 			// - check against pFrustum*Extend before checking against the frustum volume
 			// - depending on the size of the object use a sphere instead of a box
 			// - maybe use the sphere for the test against the pFrustum*Extend ?
-			
-			box.SetFromExtends( minExtend, maxExtend );
-			
-			if( ! pFrustum->BoxHitsFrustum( &box ) ){
+			if( ! pFrustum->BoxHitsExtend( minExtend, maxExtend ) ){
 				continue;
 			}
 		}
@@ -320,75 +330,52 @@ void deoglPlanVisitorCullElements::VisitNode( deoglDOctree *node, int intersecti
 		// add billboard
 		collideList.AddBillboard( addBillboard );
 	}
+}
+
+void deoglPlanVisitorCullElements::pVisitLights( const deoglWorldOctree &node, bool intersect ){
+	deoglOcclusionTest &occlusionTest = *pPlan->GetOcclusionTest();
+	const decDVector &cameraPosition = pPlan->GetCameraPosition();
+	deoglCollideList &collideList = pPlan->GetCollideList();
+	const int count = node.GetLightCount();
+	int i;
 	
-	
-	// visit lights
-	count = sonode.GetLightCount();
-	
-	if( intersection == deoglDCollisionDetection::eirInside ){
-		for( i=0; i<count; i++ ){
-			deoglRLight * const addLight = sonode.GetLightAt( i );
-			const deoglRLight &light = *addLight;
-			
-			if( pCullLayerMask && light.GetLayerMask().IsNotEmpty()
-			&& pLayerMask.MatchesNot( light.GetLayerMask() ) ){
-				continue;
-			}
-			
-			collideList.AddLight( addLight )->StartOcclusionTest( occlusionTest, cameraPosition );
+	for( i=0; i<count; i++ ){
+		deoglRLight * const addLight = node.GetLightAt( i );
+		const deoglRLight &light = *addLight;
+		
+		if( pCullLayerMask && light.GetLayerMask().IsNotEmpty()
+		&& pLayerMask.MatchesNot( light.GetLayerMask() ) ){
+			continue;
 		}
 		
-	}else{
-		for( i=0; i<count; i++ ){
-			deoglRLight * const addLight = sonode.GetLightAt( i );
-			const deoglRLight &light = *addLight;
-			
-			if( pCullLayerMask && light.GetLayerMask().IsNotEmpty()
-			&& pLayerMask.MatchesNot( light.GetLayerMask() ) ){
-				continue;
-			}
-			
-			if( ! light.GetCollisionVolume()->VolumeHitsVolume( pFrustum ) ){
-				continue;
-			}
-			
-			collideList.AddLight( addLight )->StartOcclusionTest( occlusionTest, cameraPosition );
+		if( intersect && ! light.GetCollisionVolume()->FrustumHitsVolume( pFrustum ) ){
+			continue;
 		}
+		
+		collideList.AddLight( addLight )->StartOcclusionTest( occlusionTest, cameraPosition );
 	}
-	
-	
-	// visit particle emitters
-	const deoglParticleEmitterInstanceList &nodeParticleEmitterInstanceList = sonode.GetParticleEmittersList();
+}
+
+void deoglPlanVisitorCullElements::pVisitParticleEmitters( const deoglWorldOctree &node, bool intersect ){
+	const deoglParticleEmitterInstanceList &nodeParticleEmitterInstanceList = node.GetParticleEmittersList();
+	deoglCollideList &collideList = pPlan->GetCollideList();
 	deoglParticleEmitterInstanceList &clistParticleEmitterInstanceList = collideList.GetParticleEmitterList();
-	count = nodeParticleEmitterInstanceList.GetCount();
+	const int count = nodeParticleEmitterInstanceList.GetCount();
+	int i;
 	
-	if( intersection == deoglDCollisionDetection::eirInside ){
-		for( i=0; i<count; i++ ){
-			deoglRParticleEmitterInstance * const addInstance = nodeParticleEmitterInstanceList.GetAt( i );
-			const deoglRParticleEmitterInstance &instance = *addInstance;
+	for( i=0; i<count; i++ ){
+		deoglRParticleEmitterInstance * const addInstance = nodeParticleEmitterInstanceList.GetAt( i );
+		const deoglRParticleEmitterInstance &instance = *addInstance;
 		
-			if( pCullLayerMask && instance.GetLayerMask().IsNotEmpty()
-			&& pLayerMask.MatchesNot( instance.GetLayerMask() ) ){
-				continue;
-			}
-			
-			clistParticleEmitterInstanceList.Add( addInstance );
+		if( pCullLayerMask && instance.GetLayerMask().IsNotEmpty()
+		&& pLayerMask.MatchesNot( instance.GetLayerMask() ) ){
+			continue;
 		}
 		
-	}else{
-		for( i=0; i<count; i++ ){
-			deoglRParticleEmitterInstance * const addInstance = nodeParticleEmitterInstanceList.GetAt( i );
-			const deoglRParticleEmitterInstance &instance = *addInstance;
-			
-			if( pCullLayerMask && instance.GetLayerMask().IsNotEmpty()
-			&& pLayerMask.MatchesNot( instance.GetLayerMask() ) ){
-				continue;
-			}
-			
-			box.SetFromExtends( instance.GetMinExtend(), instance.GetMaxExtend() );
-			if( pFrustum->BoxHitsFrustum( &box ) ){
-				clistParticleEmitterInstanceList.Add( addInstance );
-			}
+		if( intersect && ! pFrustum->BoxHitsExtend( instance.GetMinExtend(), instance.GetMaxExtend() ) ){
+			continue;
 		}
+		
+		clistParticleEmitterInstanceList.Add( addInstance );
 	}
 }

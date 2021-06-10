@@ -26,8 +26,6 @@
 #include <dragengine/common/utils/decLayerMask.h>
 #include <dragengine/common/string/decString.h>
 
-#include "../../world/deoglDefaultWorldOctreeVisitor.h"
-
 class deoglDCollisionFrustum;
 class deoglRenderPlan;
 class deoglWorldOctree;
@@ -54,7 +52,7 @@ class deoglWorldOctree;
  * @par Dynamic Elements
  * Cull dynamic components if enabled. Use SetCullDynamicComponents to enable or disable this filter.
  */
-class deoglPlanVisitorCullElements : public deoglDefaultWorldOctreeVisitor{
+class deoglPlanVisitorCullElements{
 private:
 	deoglRenderPlan *pPlan;
 	
@@ -125,14 +123,17 @@ public:
 	void SetLayerMask( const decLayerMask &layerMask );
 	
 	/** Visit a world octree using this visitor. */
-	void VisitWorldOctree( deoglWorldOctree &octree );
+	void VisitWorldOctree( const deoglWorldOctree &octree );
 	/*@}*/
 	
-	/** @name Visiting */
-	/*@{*/
-	/** Visits an octree node. The default implementation is to visit all world elements stored in the node. */
-	virtual void VisitNode( deoglDOctree *node, int intersection );
-	/*@}*/
+	
+	
+private:
+	void pVisitNode( const deoglWorldOctree &node, bool intersect );
+	void pVisitComponents( const deoglWorldOctree &node, bool intersect );
+	void pVisitBillboards( const deoglWorldOctree &node, bool intersect );
+	void pVisitLights( const deoglWorldOctree &node, bool intersect );
+	void pVisitParticleEmitters( const deoglWorldOctree &node, bool intersect );
 };
 
 #endif

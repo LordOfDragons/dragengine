@@ -96,9 +96,10 @@ void deoglRPTFindContent::Run(){
 		visitor.VisitWorldOctree( world.GetOctree() );
 		SPECIAL_TIMER_PRINT("Octree")
 		
+		// NOTE there is no code anymore requiring components to be sorted. spare ourself the time
 		//collideList.SortLinear( world->GetSectorSize(), pCameraSector, pCameraPosition, pCameraInverseMatrix.TransformView() );
-		collideList.SortComponentsByModels();
-		SPECIAL_TIMER_PRINT("Sort Components")
+		//collideList.SortComponentsByModels();
+		//SPECIAL_TIMER_PRINT("Sort Components")
 		
 		const int lightCount = collideList.GetLightCount();
 		for( i=0; i<lightCount; i++ ){

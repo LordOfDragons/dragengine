@@ -163,9 +163,9 @@ deoglRSkyInstanceLayer &skyLayer, float backtrack ){
 	pAxisX = pVolumeShadowBox.GetAxisX().ToVector();
 	pAxisY = pVolumeShadowBox.GetAxisY().ToVector();
 	pAxisZ = pVolumeShadowBox.GetAxisZ().ToVector();
-	pAbsAxisX.Set( fabsf( pAxisX.x ), fabsf( pAxisX.y ), fabsf( pAxisX.z ) );
-	pAbsAxisY.Set( fabsf( pAxisY.x ), fabsf( pAxisY.y ), fabsf( pAxisY.z ) );
-	pAbsAxisZ.Set( fabsf( pAxisZ.x ), fabsf( pAxisZ.y ), fabsf( pAxisZ.z ) );
+	pAbsAxisX = pAxisX.Absolute();
+	pAbsAxisY = pAxisY.Absolute();
+	pAbsAxisZ = pAxisZ.Absolute();
 	
 	volumeFrustum.SetFrustum( plan.GetCameraMatrix() * plan.GetFrustumMatrix() );
 	
@@ -297,9 +297,9 @@ const decVector &detectionBox, deoglRSkyInstanceLayer &skyLayer, float backtrack
 	pAxisX = pVolumeShadowBox.GetAxisX().ToVector();
 	pAxisY = pVolumeShadowBox.GetAxisY().ToVector();
 	pAxisZ = pVolumeShadowBox.GetAxisZ().ToVector();
-	pAbsAxisX.Set( fabsf( pAxisX.x ), fabsf( pAxisX.y ), fabsf( pAxisX.z ) );
-	pAbsAxisY.Set( fabsf( pAxisY.x ), fabsf( pAxisY.y ), fabsf( pAxisY.z ) );
-	pAbsAxisZ.Set( fabsf( pAxisZ.x ), fabsf( pAxisZ.y ), fabsf( pAxisZ.z ) );
+	pAbsAxisX = pAxisX.Absolute();
+	pAbsAxisY = pAxisY.Absolute();
+	pAbsAxisZ = pAxisZ.Absolute();
 	
 #if 0
 	pShaftFar = pFrustumBoxMaxExtend.z;

@@ -65,6 +65,9 @@ private:
 	decDVector pNormalLeft, pNormalRight;
 	decDVector pNormalTop, pNormalBottom;
 	decDVector pNormalNear, pNormalFar;
+	decDVector pAbsNormalLeft, pAbsNormalRight;
+	decDVector pAbsNormalTop, pAbsNormalBottom;
+	decDVector pAbsNormalNear, pAbsNormalFar;
 	double pDistLeft, pDistRight;
 	double pDistTop, pDistBottom;
 	double pDistNear, pDistFar;
@@ -135,6 +138,19 @@ public:
 	bool CapsuleHitsFrustum(deoglDCollisionCapsule *capsule);
 	/** Determines if the given box hits this frustum. */
 	bool BoxHitsFrustum(deoglDCollisionBox *box);
+	
+	/** Box frustum hit test. */
+	bool BoxHits( const decDVector &center, const decDVector &halfExtend ) const;
+	bool BoxHitsExtend( const decDVector &minExtend, const decDVector &maxExtend ) const;
+	
+	/**
+	 * Box frustum intersection test.
+	 * 
+	 * \note For performance reasons the intersection test is conservating. eitIntersect
+	 *       can be reported although precisely the box is outside for example at corners
+	 */
+	eIntersectType BoxIntersect( const decDVector &center, const decDVector &halfExtend ) const;
+	
 	/**
 	 * Determines if the given triangle hits this frustum.
 	 * @warning Not implemented yet and always returns false.
