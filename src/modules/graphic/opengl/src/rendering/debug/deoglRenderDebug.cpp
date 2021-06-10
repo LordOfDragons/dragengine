@@ -47,7 +47,10 @@
 #include "../../texture/cubemap/deoglCubeMap.h"
 #include "../../texture/deoglTextureStageManager.h"
 #include "../../texture/texture2d/deoglTexture.h"
+#include "../../tbo/deoglDynamicTBOFloat32.h"
+#include "../../tbo/deoglDynamicTBOFloat8.h"
 #include "../../utils/collision/deoglDCollisionBox.h"
+#include "../../vao/deoglVAO.h"
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/string/unicode/decUTF8Decoder.h>
@@ -110,11 +113,9 @@ pShaderRenderText( NULL ),
 pShaderRectangle( NULL ),
 
 pDebugFont( NULL ),
-pVBORenderTextData( NULL ),
-pVBORenderTextDataCount( 0 ),
-pVBORenderTextDataSize( 0 ),
-pVBORenderText( 0 ),
-pVAORenderText( 0 )
+
+pTBORenderText1( NULL ),
+pTBORenderText2( NULL )
 {
 	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
 	const deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
@@ -168,35 +169,11 @@ pVAORenderText( 0 )
 		// create debug font
 		pDebugFont = new deoglDebugFont( renderThread );
 		
-		// create render text vbo and vao
-		OGL_CHECK( renderThread, pglGenBuffers( 1, &pVBORenderText ) );
-		if( ! pVBORenderText ){
-			DETHROW( deeOutOfMemory );
-		}
 		
-		OGL_CHECK( renderThread, pglGenVertexArrays( 1, &pVAORenderText ) );
-		if( ! pVAORenderText ){
-			DETHROW( deeOutOfMemory );
-		}
 		
-		OGL_CHECK( renderThread, pglBindVertexArray( pVAORenderText ) );
-		
-		OGL_CHECK( renderThread, pglBindBuffer( GL_ARRAY_BUFFER, pVBORenderText ) );
-		
-		OGL_CHECK( renderThread, pglEnableVertexAttribArray( 0 ) ); // position
-		OGL_CHECK( renderThread, pglVertexAttribPointer( 0, 2, GL_FLOAT, GL_FALSE,
-			sizeof( GLfloat ) * 8, ( const GLvoid * )( sizeof( GLfloat ) * 0 ) ) );
-		
-		OGL_CHECK( renderThread, pglEnableVertexAttribArray( 1 ) ); // texcoord
-		OGL_CHECK( renderThread, pglVertexAttribPointer( 1, 2, GL_FLOAT, GL_FALSE,
-			sizeof( GLfloat ) * 8, ( const GLvoid * )( sizeof( GLfloat ) * 2 ) ) );
-		
-		OGL_CHECK( renderThread, pglEnableVertexAttribArray( 2 ) ); // color
-		OGL_CHECK( renderThread, pglVertexAttribPointer( 2, 4, GL_FLOAT, GL_FALSE,
-			sizeof( GLfloat ) * 8, ( const GLvoid * )( sizeof( GLfloat ) * 4 ) ) );
-		
-		OGL_CHECK( renderThread, pglBindBuffer( GL_ARRAY_BUFFER, 0 ) );
-		OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
+		// create render text TBOs
+		pTBORenderText1 = new deoglDynamicTBOFloat32( renderThread, 4 );
+		pTBORenderText2 = new deoglDynamicTBOFloat8( renderThread, 4 );
 		
 	}catch( const deException & ){
 		pCleanUp();
@@ -516,7 +493,8 @@ void deoglRenderDebug::RenderText( deoglRenderPlan &plan, const char *text, int 
 }
 
 void deoglRenderDebug::BeginRenderText(){
-	pVBORenderTextDataCount = 0;
+	pTBORenderText1->Clear();
+	pTBORenderText2->Clear();
 }
 
 void deoglRenderDebug::AddRenderText( deoglRenderPlan &plan, const char *text, int x, int y, const decColor &color ){
@@ -562,57 +540,15 @@ void deoglRenderDebug::AddRenderText( deoglRenderPlan &plan, const char *text, i
 		const float texCoordWidth = glyph.x2 - glyph.x1;
 		const float texCoordHeight = glyph.y2 - glyph.y1;
 		
-		// add to VBO data
-		if( pVBORenderTextDataCount + 6 > pVBORenderTextDataSize ){
-			const int newSize = pVBORenderTextDataCount * 3 / 2 + 6;
-			sVBODataGlyph * const newArray = new sVBODataGlyph[ newSize ];
-			if( pVBORenderTextData ){
-				memcpy( newArray, pVBORenderTextData, sizeof( sVBODataGlyph ) * pVBORenderTextDataCount );
-				delete [] pVBORenderTextData;
-			}
-			pVBORenderTextData = newArray;
-			pVBORenderTextDataSize = newSize;
-		}
-		
-		// position = inPosition * pPosTransform.xy + pPosTransform.zw
-		// texCoord = inPosition * pTCTransform.xy + pTCTransform.zw
-		const float posTransform[ 4 ] = { scalePosition1X * quadWidth, scalePosition1Y * quadHeight,
+		// add to TBO
+		pTBORenderText1->AddVec4( scalePosition1X * quadWidth, scalePosition1Y * quadHeight,
 			scalePosition2X * ( ( float )( x1 ) + quadWidth * 0.5f ) + offsetPositionX,
-			scalePosition2Y * ( ( float )( y1 ) + quadHeight * 0.5f ) + offsetPositionY };
+			scalePosition2Y * ( ( float )( y1 ) + quadHeight * 0.5f ) + offsetPositionY );
 		
-		const float tcTransform[ 4 ] = { texCoordWidth * 0.5f, texCoordHeight * 0.5f,
-			glyph.x1 + texCoordWidth * 0.5f, glyph.y1 + texCoordHeight * 0.5f };
+		pTBORenderText1->AddVec4( texCoordWidth * 0.5f, texCoordHeight * 0.5f,
+			glyph.x1 + texCoordWidth * 0.5f, glyph.y1 + texCoordHeight * 0.5f );
 		
-		sVBODataGlyph &p1 = pVBORenderTextData[ pVBORenderTextDataCount++ ];
-		p1.position.x = -posTransform[ 0 ] + posTransform[ 2 ];
-		p1.position.y = -posTransform[ 1 ] + posTransform[ 3 ];
-		p1.texCoord.x = -tcTransform[ 0 ] + tcTransform[ 2 ];
-		p1.texCoord.y = -tcTransform[ 1 ] + tcTransform[ 3 ];
-		p1.color = color;
-		
-		sVBODataGlyph &p2 = pVBORenderTextData[ pVBORenderTextDataCount++ ];
-		p2.position.x = posTransform[ 0 ] + posTransform[ 2 ];
-		p2.position.y = -posTransform[ 1 ] + posTransform[ 3 ];
-		p2.texCoord.x = tcTransform[ 0 ] + tcTransform[ 2 ];
-		p2.texCoord.y = -tcTransform[ 1 ] + tcTransform[ 3 ];
-		p2.color = color;
-		
-		sVBODataGlyph &p3 = pVBORenderTextData[ pVBORenderTextDataCount++ ];
-		p3.position.x = -posTransform[ 0 ] + posTransform[ 2 ];
-		p3.position.y = posTransform[ 1 ] + posTransform[ 3 ];
-		p3.texCoord.x = -tcTransform[ 0 ] + tcTransform[ 2 ];
-		p3.texCoord.y = tcTransform[ 1 ] + tcTransform[ 3 ];
-		p3.color = color;
-		
-		pVBORenderTextData[ pVBORenderTextDataCount++ ] = p3;
-		pVBORenderTextData[ pVBORenderTextDataCount++ ] = p2;
-		
-		sVBODataGlyph &p4 = pVBORenderTextData[ pVBORenderTextDataCount++ ];
-		p4.position.x = posTransform[ 0 ] + posTransform[ 2 ];
-		p4.position.y = posTransform[ 1 ] + posTransform[ 3 ];
-		p4.texCoord.x = tcTransform[ 0 ] + tcTransform[ 2 ];
-		p4.texCoord.y = tcTransform[ 1 ] + tcTransform[ 3 ];
-		p4.color = color;
+		pTBORenderText2->AddVec4( color );
 		
 		// next round
 		curx += adv;
@@ -620,29 +556,29 @@ void deoglRenderDebug::AddRenderText( deoglRenderPlan &plan, const char *text, i
 }
 
 void deoglRenderDebug::EndRenderText(){
-	if( pVBORenderTextDataCount == 0 ){
+	if( pTBORenderText1->GetDataCount() == 0 ){
 		return;
 	}
 	
-	deoglRenderThread &renderThread = GetRenderThread();
+	pTBORenderText1->Update();
+	pTBORenderText2->Update();
 	
-	OGL_CHECK( renderThread, pglBindBuffer( GL_ARRAY_BUFFER, pVBORenderText ) );
-	OGL_CHECK( renderThread, pglBufferData( GL_ARRAY_BUFFER,
-		sizeof( sVBODataGlyph ) * pVBORenderTextDataCount, NULL, GL_STREAM_DRAW ) );
-	OGL_CHECK( renderThread, pglBufferData( GL_ARRAY_BUFFER,
-		sizeof( sVBODataGlyph ) * pVBORenderTextDataCount, pVBORenderTextData, GL_STREAM_DRAW ) );
+	deoglRenderThread &renderThread = GetRenderThread();
+	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	tsmgr.EnableTexture( 0, *pDebugFont->GetTexture(), GetSamplerClampNearest() );
+	tsmgr.EnableTBO( 1, pTBORenderText1->GetTBO(), GetSamplerClampNearest() );
+	tsmgr.EnableTBO( 2, pTBORenderText2->GetTBO(), GetSamplerClampNearest() );
 	
 	renderThread.GetShader().ActivateShader( pShaderRenderText );
 	
-	OGL_CHECK( renderThread, pglBindVertexArray( pVAORenderText ) );
-	OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLES, 0, pVBORenderTextDataCount ) );
-	OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
+	OGL_CHECK( renderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) );
+	OGL_CHECK( renderThread, pglDrawArraysInstanced(
+		GL_TRIANGLE_FAN, 0, 4, pTBORenderText2->GetPixelCount() ) );
 	
+	OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
 	tsmgr.DisableStage( 0 );
-	pVBORenderTextDataCount = 0;
 }
 
 
@@ -676,14 +612,11 @@ void deoglRenderDebug::RenderRectangle( deoglRenderPlan &plan, int x1, int y1, i
 //////////////////////
 
 void deoglRenderDebug::pCleanUp(){
-	if( pVAORenderText ){
-		pglDeleteVertexArrays( 1, &pVAORenderText );
+	if( pTBORenderText2 ){
+		pTBORenderText2->FreeReference();
 	}
-	if( pVBORenderText ){
-		pglDeleteBuffers( 1, &pVBORenderText );
-	}
-	if( pVBORenderTextData ){
-		delete [] pVBORenderTextData;
+	if( pTBORenderText1 ){
+		pTBORenderText1->FreeReference();
 	}
 	if( pDebugFont ){
 		delete pDebugFont;

@@ -31,6 +31,8 @@ class deoglRenderPlan;
 class deoglShaderProgram;
 class deoglTexture;
 class deoglDebugFont;
+class deoglDynamicTBOFloat32;
+class deoglDynamicTBOFloat8;
 
 
 
@@ -59,11 +61,8 @@ private:
 	
 	deoglDebugFont *pDebugFont;
 	
-	sVBODataGlyph *pVBORenderTextData;
-	int pVBORenderTextDataCount;
-	int pVBORenderTextDataSize;
-	GLuint pVBORenderText;
-	GLuint pVAORenderText;
+	deoglDynamicTBOFloat32 *pTBORenderText1;
+	deoglDynamicTBOFloat8 *pTBORenderText2;
 	
 	
 	

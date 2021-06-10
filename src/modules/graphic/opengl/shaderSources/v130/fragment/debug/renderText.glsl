@@ -3,7 +3,7 @@ precision highp int;
 
 uniform mediump sampler2D texTexture;
 
-in vec4 vColor;
+flat in vec4 vColor;
 in vec2 vTexCoord;
 
 out vec4 outColor;

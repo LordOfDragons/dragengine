@@ -5,10 +5,10 @@
 	<version>150</version>
 	
 	<texture name='texTexture' target='0'/>
+	<texture name='texData1' target='1'/>
+	<texture name='texData2' target='2'/>
 	
 	<attribute name='inPosition' target='0'/>
-	<attribute name='inTexCoord' target='1'/>
-	<attribute name='inColor' target='2'/>
 	
 	<output name='outColor' target='0'/>
 	
