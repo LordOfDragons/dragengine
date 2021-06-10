@@ -106,9 +106,15 @@ pShaderOutTex( NULL ),
 pShaderOutTexLayer( NULL ),
 pShaderOutArrTex( NULL ),
 
+pShaderRenderText( NULL ),
 pShaderRectangle( NULL ),
 
-pDebugFont( NULL )
+pDebugFont( NULL ),
+pVBORenderTextData( NULL ),
+pVBORenderTextDataCount( 0 ),
+pVBORenderTextDataSize( 0 ),
+pVBORenderText( 0 ),
+pVAORenderText( 0 )
 {
 	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
 	const deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
@@ -149,6 +155,9 @@ pDebugFont( NULL )
 		
 		
 		
+		sources = shaderManager.GetSourcesNamed( "Debug Render Text" );
+		pShaderRenderText = shaderManager.GetProgramWith( sources, defines );
+		
 		sources = shaderManager.GetSourcesNamed( "Debug Rectangle" );
 		defines.AddDefine( "NO_TCTRANSFORM", "1" );
 		defines.AddDefine( "NO_TEXCOORD", "1" );
@@ -158,6 +167,36 @@ pDebugFont( NULL )
 		
 		// create debug font
 		pDebugFont = new deoglDebugFont( renderThread );
+		
+		// create render text vbo and vao
+		OGL_CHECK( renderThread, pglGenBuffers( 1, &pVBORenderText ) );
+		if( ! pVBORenderText ){
+			DETHROW( deeOutOfMemory );
+		}
+		
+		OGL_CHECK( renderThread, pglGenVertexArrays( 1, &pVAORenderText ) );
+		if( ! pVAORenderText ){
+			DETHROW( deeOutOfMemory );
+		}
+		
+		OGL_CHECK( renderThread, pglBindVertexArray( pVAORenderText ) );
+		
+		OGL_CHECK( renderThread, pglBindBuffer( GL_ARRAY_BUFFER, pVBORenderText ) );
+		
+		OGL_CHECK( renderThread, pglEnableVertexAttribArray( 0 ) ); // position
+		OGL_CHECK( renderThread, pglVertexAttribPointer( 0, 2, GL_FLOAT, GL_FALSE,
+			sizeof( GLfloat ) * 8, ( const GLvoid * )( sizeof( GLfloat ) * 0 ) ) );
+		
+		OGL_CHECK( renderThread, pglEnableVertexAttribArray( 1 ) ); // texcoord
+		OGL_CHECK( renderThread, pglVertexAttribPointer( 1, 2, GL_FLOAT, GL_FALSE,
+			sizeof( GLfloat ) * 8, ( const GLvoid * )( sizeof( GLfloat ) * 2 ) ) );
+		
+		OGL_CHECK( renderThread, pglEnableVertexAttribArray( 2 ) ); // color
+		OGL_CHECK( renderThread, pglVertexAttribPointer( 2, 4, GL_FLOAT, GL_FALSE,
+			sizeof( GLfloat ) * 8, ( const GLvoid * )( sizeof( GLfloat ) * 4 ) ) );
+		
+		OGL_CHECK( renderThread, pglBindBuffer( GL_ARRAY_BUFFER, 0 ) );
+		OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
 		
 	}catch( const deException & ){
 		pCleanUp();
@@ -476,6 +515,136 @@ void deoglRenderDebug::RenderText( deoglRenderPlan &plan, const char *text, int 
 	tsmgr.DisableStage( 0 );
 }
 
+void deoglRenderDebug::BeginRenderText(){
+	pVBORenderTextDataCount = 0;
+}
+
+void deoglRenderDebug::AddRenderText( deoglRenderPlan &plan, const char *text, int x, int y, const decColor &color ){
+	if( ! text ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	const deoglDebugFont::sGlyph * const glyphs = pDebugFont->GetGlyphs();
+	const float fontScale = 1.0f;
+	
+	const float scalePosition1X = 1.0f / ( float )plan.GetViewportWidth();
+	const float scalePosition1Y = -1.0f / ( float )plan.GetViewportHeight();
+	const float scalePosition2X = 2.0f / ( float )plan.GetViewportWidth();
+	const float scalePosition2Y = -2.0f / ( float )plan.GetViewportHeight();
+	const float offsetPositionX = scalePosition2X * 0.375f - 1.0f;
+	const float offsetPositionY = scalePosition2Y * 0.375f + 1.0f;
+	
+	// render text
+	int curx = x;
+	
+	decUTF8Decoder utf8Decoder;
+	utf8Decoder.SetString( text );
+	const int len = decMath::min( strlen( text ), utf8Decoder.GetLength() );
+	
+	while( utf8Decoder.GetPosition() < len ){
+		const int character = utf8Decoder.DecodeNextCharacter();
+		if( character < 0 || character > 255 ){
+			continue; // temp hack: not working for unicode
+		}
+		
+		const deoglDebugFont::sGlyph &glyph = glyphs[ character ];
+		
+		// calculate positions
+		const int x1 = curx;
+		const int y1 = y;
+		const int cw = ( int )( ( float )glyph.width * fontScale );
+		const int x2 = x1 + cw;
+		const int y2 = y1 + ( int )( ( float )glyph.height * fontScale );
+		const int adv = ( int )( ( float )glyph.advance * fontScale );
+		
+		const float quadWidth = ( float )( x2 - x1 );
+		const float quadHeight = ( float )( y2 - y1 );
+		const float texCoordWidth = glyph.x2 - glyph.x1;
+		const float texCoordHeight = glyph.y2 - glyph.y1;
+		
+		// add to VBO data
+		if( pVBORenderTextDataCount + 6 > pVBORenderTextDataSize ){
+			const int newSize = pVBORenderTextDataCount * 3 / 2 + 6;
+			sVBODataGlyph * const newArray = new sVBODataGlyph[ newSize ];
+			if( pVBORenderTextData ){
+				memcpy( newArray, pVBORenderTextData, sizeof( sVBODataGlyph ) * pVBORenderTextDataCount );
+				delete [] pVBORenderTextData;
+			}
+			pVBORenderTextData = newArray;
+			pVBORenderTextDataSize = newSize;
+		}
+		
+		// position = inPosition * pPosTransform.xy + pPosTransform.zw
+		// texCoord = inPosition * pTCTransform.xy + pTCTransform.zw
+		const float posTransform[ 4 ] = { scalePosition1X * quadWidth, scalePosition1Y * quadHeight,
+			scalePosition2X * ( ( float )( x1 ) + quadWidth * 0.5f ) + offsetPositionX,
+			scalePosition2Y * ( ( float )( y1 ) + quadHeight * 0.5f ) + offsetPositionY };
+		
+		const float tcTransform[ 4 ] = { texCoordWidth * 0.5f, texCoordHeight * 0.5f,
+			glyph.x1 + texCoordWidth * 0.5f, glyph.y1 + texCoordHeight * 0.5f };
+		
+		sVBODataGlyph &p1 = pVBORenderTextData[ pVBORenderTextDataCount++ ];
+		p1.position.x = -posTransform[ 0 ] + posTransform[ 2 ];
+		p1.position.y = -posTransform[ 1 ] + posTransform[ 3 ];
+		p1.texCoord.x = -tcTransform[ 0 ] + tcTransform[ 2 ];
+		p1.texCoord.y = -tcTransform[ 1 ] + tcTransform[ 3 ];
+		p1.color = color;
+		
+		sVBODataGlyph &p2 = pVBORenderTextData[ pVBORenderTextDataCount++ ];
+		p2.position.x = posTransform[ 0 ] + posTransform[ 2 ];
+		p2.position.y = -posTransform[ 1 ] + posTransform[ 3 ];
+		p2.texCoord.x = tcTransform[ 0 ] + tcTransform[ 2 ];
+		p2.texCoord.y = -tcTransform[ 1 ] + tcTransform[ 3 ];
+		p2.color = color;
+		
+		sVBODataGlyph &p3 = pVBORenderTextData[ pVBORenderTextDataCount++ ];
+		p3.position.x = -posTransform[ 0 ] + posTransform[ 2 ];
+		p3.position.y = posTransform[ 1 ] + posTransform[ 3 ];
+		p3.texCoord.x = -tcTransform[ 0 ] + tcTransform[ 2 ];
+		p3.texCoord.y = tcTransform[ 1 ] + tcTransform[ 3 ];
+		p3.color = color;
+		
+		pVBORenderTextData[ pVBORenderTextDataCount++ ] = p3;
+		pVBORenderTextData[ pVBORenderTextDataCount++ ] = p2;
+		
+		sVBODataGlyph &p4 = pVBORenderTextData[ pVBORenderTextDataCount++ ];
+		p4.position.x = posTransform[ 0 ] + posTransform[ 2 ];
+		p4.position.y = posTransform[ 1 ] + posTransform[ 3 ];
+		p4.texCoord.x = tcTransform[ 0 ] + tcTransform[ 2 ];
+		p4.texCoord.y = tcTransform[ 1 ] + tcTransform[ 3 ];
+		p4.color = color;
+		
+		// next round
+		curx += adv;
+	}
+}
+
+void deoglRenderDebug::EndRenderText(){
+	if( pVBORenderTextDataCount == 0 ){
+		return;
+	}
+	
+	deoglRenderThread &renderThread = GetRenderThread();
+	
+	OGL_CHECK( renderThread, pglBindBuffer( GL_ARRAY_BUFFER, pVBORenderText ) );
+	OGL_CHECK( renderThread, pglBufferData( GL_ARRAY_BUFFER,
+		sizeof( sVBODataGlyph ) * pVBORenderTextDataCount, NULL, GL_STREAM_DRAW ) );
+	OGL_CHECK( renderThread, pglBufferData( GL_ARRAY_BUFFER,
+		sizeof( sVBODataGlyph ) * pVBORenderTextDataCount, pVBORenderTextData, GL_STREAM_DRAW ) );
+	
+	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
+	tsmgr.EnableTexture( 0, *pDebugFont->GetTexture(), GetSamplerClampNearest() );
+	
+	renderThread.GetShader().ActivateShader( pShaderRenderText );
+	
+	OGL_CHECK( renderThread, pglBindVertexArray( pVAORenderText ) );
+	OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLES, 0, pVBORenderTextDataCount ) );
+	OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
+	
+	tsmgr.DisableStage( 0 );
+	pVBORenderTextDataCount = 0;
+}
+
 
 
 void deoglRenderDebug::RenderRectangle( deoglRenderPlan &plan, int x1, int y1, int x2, int y2, const decColor &color ){
@@ -507,6 +676,15 @@ void deoglRenderDebug::RenderRectangle( deoglRenderPlan &plan, int x1, int y1, i
 //////////////////////
 
 void deoglRenderDebug::pCleanUp(){
+	if( pVAORenderText ){
+		pglDeleteVertexArrays( 1, &pVAORenderText );
+	}
+	if( pVBORenderText ){
+		pglDeleteBuffers( 1, &pVBORenderText );
+	}
+	if( pVBORenderTextData ){
+		delete [] pVBORenderTextData;
+	}
 	if( pDebugFont ){
 		delete pDebugFont;
 	}
@@ -531,5 +709,8 @@ void deoglRenderDebug::pCleanUp(){
 	}
 	if( pShaderOutArrTex ){
 		pShaderOutArrTex->RemoveUsage();
+	}
+	if( pShaderRenderText ){
+		pShaderRenderText->RemoveUsage();
 	}
 }

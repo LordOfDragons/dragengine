@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shader>
+	<name>Debug Render Text</name>
+	
+	<version>150</version>
+	
+	<texture name='texTexture' target='0'/>
+	
+	<attribute name='inPosition' target='0'/>
+	<attribute name='inTexCoord' target='1'/>
+	<attribute name='inColor' target='2'/>
+	
+	<output name='outColor' target='0'/>
+	
+	<sourceCode unit='vertex'>v130/vertex/debug/renderText.glsl</sourceCode>
+	<sourceCode unit='fragment'>v130/fragment/debug/renderText.glsl</sourceCode>
+</shader>

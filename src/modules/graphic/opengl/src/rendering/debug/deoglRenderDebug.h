@@ -35,10 +35,16 @@ class deoglDebugFont;
 
 
 /**
- * \brief Debug rendering helper.
+ * Debug rendering helper.
  */
 class deoglRenderDebug : public deoglRenderBase{
 private:
+	struct sVBODataGlyph{
+		decVector2 position;
+		decVector2 texCoord;
+		decColor color;
+	};
+	
 	deoglShaderProgram *pShaderXRay;
 	deoglShaderProgram *pShaderSolid;
 	
@@ -48,19 +54,26 @@ private:
 	deoglShaderProgram *pShaderOutTexLayer;
 	deoglShaderProgram *pShaderOutArrTex;
 	
+	deoglShaderProgram *pShaderRenderText;
 	deoglShaderProgram *pShaderRectangle;
 	
 	deoglDebugFont *pDebugFont;
+	
+	sVBODataGlyph *pVBORenderTextData;
+	int pVBORenderTextDataCount;
+	int pVBORenderTextDataSize;
+	GLuint pVBORenderText;
+	GLuint pVAORenderText;
 	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create renderer. */
+	/** Create renderer. */
 	deoglRenderDebug( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up renderer. */
+	/** Clean up renderer. */
 	virtual ~deoglRenderDebug();
 	/*@}*/
 	
@@ -68,34 +81,43 @@ public:
 	
 	/** \name Rendering */
 	/*@{*/
-	/** \brief Debug font. */
+	/** Debug font. */
 	inline deoglDebugFont &GetDebugFont() const{ return *pDebugFont; }
 	
 	
 	
-	/** \brief Display texture. */
+	/** Display texture. */
 	void DisplayTexture( deoglRenderPlan &plan, deoglTexture *texture, bool gammaCorrect );
 	
-	/** \brief Display texture level. */
+	/** Display texture level. */
 	void DisplayTextureLevel( deoglRenderPlan &plan, deoglTexture *texture, int level, bool gammaCorrect );
 	
-	/** \brief Display array texture layer. */
+	/** Display array texture layer. */
 	void DisplayArrayTextureLayer( deoglRenderPlan &plan, deoglArrayTexture *texture, int layer, bool gammaCorrect );
 	
 	
 	
-	/** \brief Render component static information as colored boxes. */
+	/** Render component static information as colored boxes. */
 	void RenderComponentsStatic( sRenderParameters &params );
 	
-	/** \brief Render component using a colored box using the component extends. */
+	/** Render component using a colored box using the component extends. */
 	void RenderComponentBox( sRenderParameters &params, deoglRComponent &component, const decColor &color );
 	
 	
 	
-	/** \brief Render text using the debug font. */
+	/** Render text using the debug font. */
 	void RenderText( deoglRenderPlan &plan, const char *text, int x, int y, const decColor &color );
 	
-	/** \brief Render filled rectangle. */
+	/** Begin render text. */
+	void BeginRenderText();
+	
+	/** Add rendered text to VBO. */
+	void AddRenderText( deoglRenderPlan &plan, const char *text, int x, int y, const decColor &color );
+	
+	/** Finish render text. */
+	void EndRenderText();
+	
+	/** Render filled rectangle. */
 	void RenderRectangle( deoglRenderPlan &plan, int x1, int y1, int x2, int y2, const decColor &color );
 	/*@}*/
 	

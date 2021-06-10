@@ -1552,6 +1552,9 @@ const decPoint &position, decPoint &size ){
 	
 	LayoutDebugInformation( plan, decPoint(), size, list, 0, maxWidth, true );
 	
+	deoglRenderDebug &renderDebug = GetRenderThread().GetRenderers().GetDebug();
+	renderDebug.BeginRenderText();
+	
 	int i;
 	for( i=0; i<count; i++ ){
 		const deoglDebugInformation &debugInformation = *list.GetAt( i );
@@ -1559,6 +1562,8 @@ const decPoint &position, decPoint &size ){
 			RenderDebugInformation( plan, position, debugInformation );
 		}
 	}
+	
+	renderDebug.EndRenderText();
 }
 
 void deoglRenderDevMode::LayoutDebugInformation( deoglRenderPlan &plan,
@@ -1734,7 +1739,9 @@ const decPoint &parentPosition, const deoglDebugInformation &debugInformation ){
 		position.x + debugInformation.GetRenderSize().x, position.y + fontHeight,
 		debugInformation.GetColorBackground() );
 	
-	renderDebug.RenderText( plan, debugInformation.GetRenderText(),
+// 	renderDebug.RenderText( plan, debugInformation.GetRenderText(),
+// 		position.x, position.y, debugInformation.GetColorText() );
+	renderDebug.AddRenderText( plan, debugInformation.GetRenderText(),
 		position.x, position.y, debugInformation.GetColorText() );
 	
 	// render children
