@@ -214,8 +214,8 @@ void deoglGIAreaTracker::pVisitNodeColliding( const deoglWorldOctree &node ){
 	// - touches inside new: add to entering list
 	// - touches inside old: add to leaving list
 	
-	const decDVector nodeMinExtend( node.GetCenter() - node.GetHalfSize() );
-	const decDVector nodeMaxExtend( node.GetCenter() + node.GetHalfSize() );
+	const decDVector &nodeMinExtend = node.GetMinimumExtend();
+	const decDVector &nodeMaxExtend = node.GetMaximumExtend();
 	
 	if( nodeMinExtend >= pBoxKeep.minExtend && nodeMaxExtend <= pBoxKeep.maxExtend ){
 		return;
@@ -241,10 +241,7 @@ void deoglGIAreaTracker::pVisitNodeColliding( const deoglWorldOctree &node ){
 }
 
 void deoglGIAreaTracker::pVisitNode( const deoglWorldOctree &node ){
-	const decDVector nodeMinExtend( node.GetCenter() - node.GetHalfSize() );
-	const decDVector nodeMaxExtend( node.GetCenter() + node.GetHalfSize() );
-	
-	if( nodeMinExtend >= pBoxKeep.minExtend && nodeMaxExtend <= pBoxKeep.maxExtend ){
+	if( node.GetMinimumExtend() >= pBoxKeep.minExtend && node.GetMaximumExtend() <= pBoxKeep.maxExtend ){
 		return;
 	}
 	
@@ -293,8 +290,7 @@ void deoglGIAreaTracker::pVisitComponents( const deoglWorldOctree &node ){
 
 void deoglGIAreaTracker::pVisitNodeCollidingNewOnly( const deoglWorldOctree &node ){
 	const int result = deoglDCollisionDetection::AABoxIntersectsAABox(
-		node.GetCenter() - node.GetHalfSize(), node.GetCenter() + node.GetHalfSize(),
-		pBox.minExtend, pBox.maxExtend );
+		node.GetMinimumExtend(), node.GetMaximumExtend(), pBox.minExtend, pBox.maxExtend );
 	
 	if( result == deoglDCollisionDetection::eirInside ){
 		pVisitNodeNewOnly( node );

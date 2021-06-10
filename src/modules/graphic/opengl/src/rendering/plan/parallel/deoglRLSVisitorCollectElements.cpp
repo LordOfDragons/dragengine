@@ -497,7 +497,7 @@ void deoglRLSVisitorCollectElements::VisitPropFields( const deoglRWorld &world )
 
 void deoglRLSVisitorCollectElements::VisitNode( deoglDOctree *node, int ){
 	// check if the node is fully inside or outside to speed up checks if possible
-	if( ! TestAxisAlignedBox( node->GetCenter() - node->GetHalfSize(), node->GetCenter() + node->GetHalfSize() ) ){
+	if( ! TestAxisAlignedBox( node->GetMinimumExtend(), node->GetMaximumExtend() ) ){
 		return; // axis aligned box of node is outside the boundary box. ignore all contained elements
 	}
 	

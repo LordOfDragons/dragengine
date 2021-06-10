@@ -68,7 +68,7 @@ deoglWorldOctree::~deoglWorldOctree(){
 ///////////////
 
 deoglDOctree *deoglWorldOctree::CreateOctree( int octant ) const{
-	decDVector halfSize = GetHalfSize() * 0.5;
+	const decDVector halfSize( GetHalfSize() * 0.5 );
 	const decDVector &center = GetCenter();
 	decDVector nc;
 	

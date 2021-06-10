@@ -37,13 +37,17 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-deoglDOctree::deoglDOctree( const decDVector &center, const decDVector &halfSize ){
+deoglDOctree::deoglDOctree( const decDVector &center, const decDVector &halfSize ) :
+pCenter( center ),
+pHalfSize( halfSize ),
+pMinExtend( center - halfSize ),
+pMaxExtend( center + halfSize ),
+pParent( NULL )
+{
 	int i;
-	
-	for( i=0; i<8; i++ ) pNodes[ i ] = NULL;
-	pCenter = center;
-	pHalfSize = halfSize;
-	pParent = NULL;
+	for( i=0; i<8; i++ ){
+		pNodes[ i ] = NULL;
+	}
 }
 
 deoglDOctree::~deoglDOctree(){
@@ -129,8 +133,7 @@ int deoglDOctree::FindOctantAtBox( const decDVector &boxCenter, const decDVector
 }
 
 bool deoglDOctree::ContainsBox( const decDVector &boxCenter, const decDVector &boxHalfSize ) const{
-	return ( boxCenter - boxHalfSize ) >= ( pCenter - pHalfSize )
-		&& ( boxCenter + boxHalfSize ) < ( pCenter + pHalfSize );
+	return ( boxCenter - boxHalfSize ) >= pMinExtend && ( boxCenter + boxHalfSize ) < pMaxExtend;
 }
 
 deoglDOctree *deoglDOctree::FindNodeAtPoint( const decDVector &point ) const{
@@ -157,7 +160,7 @@ int deoglDOctree::FindOctantAtPoint( const decDVector &point ) const{
 }
 
 bool deoglDOctree::ContainsPoint( const decDVector &point ) const{
-	return point >= ( pCenter - pHalfSize ) &&  point < ( pCenter + pHalfSize );
+	return point >= pMinExtend &&  point < pMaxExtend;
 }
 
 
@@ -220,7 +223,7 @@ void deoglDOctree::VisitNodesColliding( deoglDOctreeVisitor *visitor, const decD
 	if( ! visitor ) DETHROW( deeInvalidParam );
 	int i, result;
 	
-	result = deoglDCollisionDetection::AABoxIntersectsAABox( pCenter - pHalfSize, pCenter + pHalfSize, boxMinExtend, boxMaxExtend );
+	result = deoglDCollisionDetection::AABoxIntersectsAABox( pMinExtend, pMaxExtend, boxMinExtend, boxMaxExtend );
 	
 	if( result == deoglDCollisionDetection::eirOutside ) return;
 	

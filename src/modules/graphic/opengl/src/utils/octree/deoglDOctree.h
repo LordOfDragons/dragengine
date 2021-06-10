@@ -95,12 +95,14 @@ public:
 	
 private:
 	deoglDOctree *pNodes[ 8 ];
-	decDVector pCenter;
-	decDVector pHalfSize;
+	const decDVector pCenter;
+	const decDVector pHalfSize;
+	const decDVector pMinExtend;
+	const decDVector pMaxExtend;
 	deoglDOctree *pParent;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new generic octree object. */
 	deoglDOctree( const decDVector &center, const decDVector &halfSize );
@@ -108,7 +110,7 @@ public:
 	virtual ~deoglDOctree();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the parent of the octree or NULL if a root octree. */
 	inline deoglDOctree *GetParent() const{ return pParent; }
@@ -118,6 +120,13 @@ public:
 	inline const decDVector &GetCenter() const{ return pCenter; }
 	/** Retrieves the half size of the octree. */
 	inline const decDVector &GetHalfSize() const{ return pHalfSize; }
+	
+	/** Minimum extend. */
+	inline const decDVector &GetMinimumExtend() const{ return pMinExtend; }
+	
+	/** Maximum extend. */
+	inline const decDVector &GetMaximumExtend() const{ return pMaxExtend; }
+	
 	/**
 	 * Retrieves one of the 8 child nodes. This is NULL if there
 	 * exists no such node yet. You can use either an index from 0

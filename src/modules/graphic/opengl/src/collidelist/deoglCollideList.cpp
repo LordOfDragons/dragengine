@@ -53,7 +53,6 @@
 #include "../utils/collision/deoglDCollisionBox.h"
 #include "../utils/collision/deoglDCollisionSphere.h"
 #include "../utils/collision/deoglDCollisionFrustum.h"
-#include "../utils/octree/deoglDefaultDOctree.h"
 
 #include <dragengine/common/exceptions.h>
 
