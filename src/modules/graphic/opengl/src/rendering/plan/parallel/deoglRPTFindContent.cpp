@@ -23,8 +23,8 @@
 #include <string.h>
 
 #include "deoglRPTFindContent.h"
+#include "deoglRPVisitorFindContent.h"
 #include "../deoglRenderPlan.h"
-#include "../deoglPlanVisitorCullElements.h"
 #include "../../../deGraphicOpenGl.h"
 #include "../../../collidelist/deoglCollideListComponent.h"
 #include "../../../collidelist/deoglCollideListLight.h"
@@ -81,12 +81,13 @@ void deoglRPTFindContent::Run(){
 	try{
 		INIT_SPECIAL_TIMING
 		
-		deoglPlanVisitorCullElements &visitor = *pPlan.GetVisitorCullElements();
 		deoglDCollisionFrustum * const frustum = pPlan.GetUseFrustum();
 		deoglCollideList &collideList = pPlan.GetCollideList();
 		deoglRWorld &world = *pPlan.GetWorld();
 		int i;
 		
+		// visit for content
+		deoglRPVisitorFindContent visitor( pPlan );
 		visitor.Init( frustum );
 		visitor.SetCullPixelSize( 1.0f );
 		visitor.SetCullDynamicComponents( pPlan.GetIgnoreDynamicComponents() );

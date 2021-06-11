@@ -47,6 +47,7 @@
 #include "../../component/deoglRComponent.h"
 #include "../../component/deoglRComponentLOD.h"
 #include "../../component/deoglRComponentTexture.h"
+#include "../../component/deoglComponentList.h"
 #include "../../configuration/deoglConfiguration.h"
 #include "../../decal/deoglRDecal.h"
 #include "../../envmap/deoglEnvironmentMap.h"
@@ -713,17 +714,28 @@ deoglRenderTaskTexture *taskTexture ){
 		return;
 	}
 	
-	const int singleFaceCount = occlusionMesh->GetSingleSidedFaceCount();
-	const int doubleFaceCount = occlusionMesh->GetDoubleSidedFaceCount();
-	if( singleFaceCount == 0 && doubleFaceCount == 0 ){
+	if( occlusionMesh->GetSingleSidedFaceCount() > 0 ){
+		AddOcclusionMeshFaces( component, false, taskTexture, clcomponent.GetSpecialFlags() );
+	}
+	if( occlusionMesh->GetDoubleSidedFaceCount() > 0 ){
+		AddOcclusionMeshFaces( component, true, taskTexture, clcomponent.GetSpecialFlags() );
+	}
+}
+
+void deoglAddToRenderTask::AddOcclusionMesh( deoglRComponent &component, deoglRenderTaskTexture *taskTexture ){
+	const deoglROcclusionMesh * const occlusionMesh = component.GetOcclusionMesh();
+	if( ! occlusionMesh ){
+		return;
+	}
+	if( pNoRendered && component.GetSkinRendered().GetTexturedCount() > 0 ){
 		return;
 	}
 	
-	if( singleFaceCount > 0 ){
-		AddOcclusionMeshFaces( component, false, taskTexture, clcomponent.GetSpecialFlags() );
+	if( occlusionMesh->GetSingleSidedFaceCount() > 0 ){
+		AddOcclusionMeshFaces( component, false, taskTexture, 0 );
 	}
-	if( doubleFaceCount > 0 ){
-		AddOcclusionMeshFaces( component, true, taskTexture, clcomponent.GetSpecialFlags() );
+	if( occlusionMesh->GetDoubleSidedFaceCount() > 0 ){
+		AddOcclusionMeshFaces( component, true, taskTexture, 0 );
 	}
 }
 
@@ -742,6 +754,24 @@ void deoglAddToRenderTask::AddOcclusionMeshes( const deoglCollideList &clist ){
 	int i;
 	for( i=0; i<count; i++ ){
 		AddOcclusionMesh( *clist.GetComponentAt( i ), rttexture );
+	}
+}
+
+void deoglAddToRenderTask::AddOcclusionMeshes( const deoglComponentList &list ){
+	deoglRenderTaskTexture *rttexture = NULL;
+	
+	if( pRenderTask.GetShaderCount() == 0 ){
+		rttexture = pRenderTask.AddShader( pEnforceShader )->AddTexture(
+			pRenderThread.GetShader().GetTexUnitsConfigList().GetEmptyNoUsage()->GetRTSTexture() );
+		
+	}else{
+		rttexture = pRenderTask.GetShaderAt( 0 )->GetTextureAt( 0 );
+	}
+	
+	const int count = list.GetCount();
+	int i;
+	for( i=0; i<count; i++ ){
+		AddOcclusionMesh( *list.GetAt( i ), rttexture );
 	}
 }
 

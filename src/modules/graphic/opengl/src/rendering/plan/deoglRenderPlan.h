@@ -24,6 +24,7 @@
 
 #include "deoglRenderPlanTasks.h"
 #include "../../collidelist/deoglCollideList.h"
+#include "../../component/deoglComponentList.h"
 #include "../../envmap/deoglEnvMapFader.h"
 #include "../../utils/collision/deoglDCollisionFrustum.h"
 
@@ -44,7 +45,6 @@ class deoglOcclusionMap;
 class deoglOcclusionTest;
 class deoglGIState;
 class deoglRenderPlanEnvMap;
-class deoglPlanVisitorCullElements;
 class deoglRenderPlanDebug;
 class deoglRenderPlanLight;
 class deoglRenderPlanMasked;
@@ -128,7 +128,7 @@ private:
 	bool pDirtyProjMat;
 	
 	deoglCollideList pCollideList;
-	deoglPlanVisitorCullElements *pVisitorCullElements;
+	deoglComponentList pComponentsOccMap;
 	
 	bool pNoRenderedOccMesh;
 	bool pFlipCulling;
@@ -492,8 +492,8 @@ public:
 	/** Collider list. */
 	inline deoglCollideList &GetCollideList(){ return pCollideList; }
 	
-	/** For internal use. */
-	inline deoglPlanVisitorCullElements *GetVisitorCullElements() const{ return pVisitorCullElements; }
+	/** Occlusion map component list. */
+	inline deoglComponentList &GetComponentsOccMap(){ return pComponentsOccMap; }
 	
 	
 	

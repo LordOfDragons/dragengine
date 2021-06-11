@@ -634,8 +634,8 @@ void deoglRenderDevMode::RenderLightInfos( deoglRenderPlan &plan ){
 		decDMatrix matrixMVP;
 		
 		if( light.GetLightType() == deLight::eltSpot ){
-			const deoglComponentList &listStatic = light.GetStaticComponentList();
-			const deoglComponentList &listDynamic = light.GetDynamicComponentList();
+			const deoglComponentSet &listStatic = light.GetStaticComponentList();
+			const deoglComponentSet &listDynamic = light.GetDynamicComponentList();
 			const float cutOffDist = light.GetRange();
 			int i, count;
 			

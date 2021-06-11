@@ -32,6 +32,7 @@ class deoglCollideListComponent;
 class deoglCollideListHTSector;
 class deoglCollideListPropField;
 class deoglCollideListPropFieldType;
+class deoglComponentList;
 class deoglCubeMap;
 class deoglHTViewSector;
 class deoglParticleEmitterInstanceList;
@@ -113,6 +114,9 @@ public:
 	
 	/** \name Management */
 	/*@{*/
+	/** Render task. */
+	inline deoglRenderTask &GetRenderTask() const{ return pRenderTask; }
+	
 	/** Shader type to be used for skin shaders. */
 	inline deoglSkinTexture::eShaderTypes GetSkinShaderType() const{ return pSkinShaderType; }
 	
@@ -285,8 +289,13 @@ public:
 	void AddOcclusionMesh( const deoglCollideListComponent &clcomponent,
 		deoglRenderTaskTexture *taskTexture );
 	
+	void AddOcclusionMesh( deoglRComponent &component, deoglRenderTaskTexture *taskTexture );
+	
 	/** Add occlusion meshes for all components in a collide list. */
 	void AddOcclusionMeshes( const deoglCollideList &clist );
+	
+	/** Add occlusion meshes for all components from list. */
+	void AddOcclusionMeshes( const deoglComponentList &list );
 	
 	/** Add a continuous run of faces of an occlusion mesh. */
 	void AddOcclusionMeshFaces( const deoglRComponent &component, bool doubleSided,

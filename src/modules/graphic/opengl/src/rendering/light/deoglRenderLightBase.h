@@ -25,7 +25,7 @@
 #include "../deoglRenderBase.h"
 #include "../../collidelist/deoglCollideList.h"
 
-class deoglComponentList;
+class deoglComponentSet;
 class deoglRenderPlan;
 class deoglGIState;
 
@@ -59,7 +59,7 @@ public:
 	inline const deoglCollideList &GetCollideList() const{ return pColList; }
 	
 	/** \brief Populate collider list with components from a component list. */
-	void AddComponentsToColliderList( const deoglComponentList &list );
+	void AddComponentsToColliderList( const deoglComponentSet &list );
 	
 	/** \brief Transform color by matrix. */
 	decColor TransformColor( const decMatrix &matrix, const decColor &color ) const;

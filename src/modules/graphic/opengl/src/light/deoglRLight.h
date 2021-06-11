@@ -22,7 +22,7 @@
 #ifndef _DEOGLRLIGHT_H_
 #define _DEOGLRLIGHT_H_
 
-#include "../component/deoglComponentList.h"
+#include "../component/deoglComponentSet.h"
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/collection/decObjectSet.h>
@@ -165,8 +165,8 @@ public:
 	bool pDirtyStaticShadows;
 	bool pDirtyDynamicShadows;
 	
-	deoglComponentList pStaticComponentList;
-	deoglComponentList pDynamicComponentList;
+	deoglComponentSet pStaticComponentList;
+	deoglComponentSet pDynamicComponentList;
 	deoglCollideList *pStaticCollideList;
 	deoglCollideList *pDynamicCollideList;
 	bool pDirtyCollideLists;
@@ -445,12 +445,12 @@ public:
 	
 	
 	/** Static component list. */
-	inline deoglComponentList &GetStaticComponentList(){ return pStaticComponentList; }
-	inline const deoglComponentList &GetStaticComponentList() const{ return pStaticComponentList; }
+	inline deoglComponentSet &GetStaticComponentList(){ return pStaticComponentList; }
+	inline const deoglComponentSet &GetStaticComponentList() const{ return pStaticComponentList; }
 	
 	/** Dynamic component list. */
-	inline deoglComponentList &GetDynamicComponentList(){ return pDynamicComponentList; }
-	inline const deoglComponentList &GetDynamicComponentList() const{ return pDynamicComponentList; }
+	inline deoglComponentSet &GetDynamicComponentList(){ return pDynamicComponentList; }
+	inline const deoglComponentSet &GetDynamicComponentList() const{ return pDynamicComponentList; }
 	
 	/**
 	 * Static collide list.

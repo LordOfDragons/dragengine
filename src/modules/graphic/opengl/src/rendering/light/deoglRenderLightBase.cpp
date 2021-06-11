@@ -30,7 +30,7 @@
 #include "../plan/deoglRenderPlan.h"
 #include "../../capabilities/deoglCapabilities.h"
 #include "../../collidelist/deoglCollideListComponent.h"
-#include "../../component/deoglComponentList.h"
+#include "../../component/deoglComponentSet.h"
 #include "../../component/deoglRComponent.h"
 #include "../../configuration/deoglConfiguration.h"
 #include "../../devmode/deoglDeveloperMode.h"
@@ -73,7 +73,7 @@ deoglRenderLightBase::~deoglRenderLightBase(){
 // Management
 ///////////////
 
-void deoglRenderLightBase::AddComponentsToColliderList( const deoglComponentList &list ){
+void deoglRenderLightBase::AddComponentsToColliderList( const deoglComponentSet &list ){
 	const int count = list.GetCount();
 	int i;
 	

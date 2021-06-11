@@ -23,7 +23,7 @@
 #define _DEOGLSKYLAYERTGISTATE_H_
 
 #include "deoglSkyLayerTracker.h"
-#include "../component/deoglComponentList.h"
+#include "../component/deoglComponentSet.h"
 
 class deoglRSkyInstanceLayer;
 class deoglGIState;

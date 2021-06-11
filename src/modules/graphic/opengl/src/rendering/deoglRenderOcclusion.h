@@ -38,6 +38,7 @@ class deoglRSkyInstanceLayer;
 class deoglRSkyLayer;
 class deoglShaderProgram;
 class deoglSPBlockUBO;
+class deoglRenderTaskSharedShader;
 
 
 /**
@@ -86,8 +87,13 @@ public:
 	/** Render occlusion tests. */
 	void RenderTestsSkyLayer( deoglRenderPlan &plan, deoglRenderPlanSkyLight &planSkyLigh );
 	
+	/** Shader to use for occlusion map rendering. */
+	deoglRenderTaskSharedShader *GetRenderOcclusionMapRTS(
+		const deoglRenderPlanMasked *mask, bool perspective ) const;
+	
 	/** Render occlusion meshes into the occlusion map. */
 	void RenderOcclusionMap( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask );
+	void RenderOcclusionMap( deoglRenderPlan &plan, deoglRenderTask &renderTask );
 	
 	/** Render occlusion tests. */
 	void RenderOcclusionTests( deoglOcclusionTest &occlusionTest, deoglOcclusionMap &occlusionMap,

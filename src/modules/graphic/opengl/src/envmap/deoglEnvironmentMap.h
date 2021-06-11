@@ -29,7 +29,7 @@
 #include <dragengine/common/string/decString.h>
 
 #include "../billboard/deoglBillboardList.h"
-#include "../component/deoglComponentList.h"
+#include "../component/deoglComponentSet.h"
 #include "../particle/deoglParticleEmitterInstanceList.h"
 #include "../rendering/plan/deoglRenderPlanList.h"
 
@@ -92,7 +92,7 @@ private:
 	bool pDestroyIfUnused;
 	
 	deoglBillboardList pBillboardList;
-	deoglComponentList pComponentList;
+	deoglComponentSet pComponentList;
 	deoglParticleEmitterInstanceList pParticleEmitterInstanceList;
 	deoglRenderPlanList pRenderPlanList;
 	
@@ -208,8 +208,8 @@ public:
 	inline bool GetReady() const{ return pReady; }
 	
 	/** Retrieves the component list. */
-	inline deoglComponentList &GetComponentList(){ return pComponentList; }
-	inline const deoglComponentList &GetComponentList() const{ return pComponentList; }
+	inline deoglComponentSet &GetComponentList(){ return pComponentList; }
+	inline const deoglComponentSet &GetComponentList() const{ return pComponentList; }
 	
 	/** \brief Billboard list. */
 	inline deoglBillboardList &GetBillboardList(){ return pBillboardList; }

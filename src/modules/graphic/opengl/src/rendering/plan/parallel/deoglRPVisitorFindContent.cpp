@@ -22,48 +22,40 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "deoglPlanVisitorCullElements.h"
-#include "deoglRenderPlan.h"
-#include "../../collidelist/deoglCollideList.h"
-#include "../../collidelist/deoglCollideListComponent.h"
-#include "../../collidelist/deoglCollideListLight.h"
-#include "../../billboard/deoglRBillboard.h"
-#include "../../component/deoglRComponent.h"
-#include "../../light/deoglRLight.h"
-#include "../../occlusiontest/deoglOcclusionTest.h"
-#include "../../particle/deoglRParticleEmitterInstance.h"
-#include "../../world/deoglWorldOctree.h"
-#include "../../utils/collision/deoglDCollisionVolume.h"
-#include "../../utils/collision/deoglDCollisionSphere.h"
-#include "../../utils/collision/deoglDCollisionBox.h"
-#include "../../utils/collision/deoglDCollisionDetection.h"
+#include "deoglRPVisitorFindContent.h"
+#include "../deoglRenderPlan.h"
+#include "../../../collidelist/deoglCollideList.h"
+#include "../../../collidelist/deoglCollideListComponent.h"
+#include "../../../collidelist/deoglCollideListLight.h"
+#include "../../../billboard/deoglRBillboard.h"
+#include "../../../component/deoglRComponent.h"
+#include "../../../light/deoglRLight.h"
+#include "../../../occlusiontest/deoglOcclusionTest.h"
+#include "../../../particle/deoglRParticleEmitterInstance.h"
+#include "../../../world/deoglWorldOctree.h"
+#include "../../../utils/collision/deoglDCollisionVolume.h"
+#include "../../../utils/collision/deoglDCollisionSphere.h"
+#include "../../../utils/collision/deoglDCollisionBox.h"
+#include "../../../utils/collision/deoglDCollisionDetection.h"
 
 
 #include <dragengine/common/exceptions.h>
 
 
 
-// Class deoglPlanVisitorCullElements
+// Class deoglRPVisitorFindContent
 ///////////////////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
 
-deoglPlanVisitorCullElements::deoglPlanVisitorCullElements( deoglRenderPlan *plan ){
-	if( ! plan ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	pPlan = plan;
-	
-	pFrustum = NULL;
-	
-	pCullPixelSize = 1.0f;
-	pErrorScaling = 1.0f;
-	
-	pCullDynamicComponents = false;
-	
-	pCullLayerMask = false;
+deoglRPVisitorFindContent::deoglRPVisitorFindContent( deoglRenderPlan &plan ) :
+pPlan( plan ),
+pFrustum( NULL ),
+pCullPixelSize( 1.0f ),
+pErrorScaling( 1.0f ),
+pCullDynamicComponents( false ),
+pCullLayerMask( false ){
 }
 
 
@@ -71,13 +63,13 @@ deoglPlanVisitorCullElements::deoglPlanVisitorCullElements( deoglRenderPlan *pla
 // Management
 ///////////////
 
-void deoglPlanVisitorCullElements::Init( deoglDCollisionFrustum *frustum ){
+void deoglRPVisitorFindContent::Init( deoglDCollisionFrustum *frustum ){
 	if( ! frustum ){
 		DETHROW( deeInvalidParam );
 	}
 	
 	pFrustum = frustum;
-	pCameraView = pPlan->GetInverseCameraMatrix().TransformView();
+	pCameraView = pPlan.GetInverseCameraMatrix().TransformView();
 	
 	CalculateFrustumBoundaryBox();
 	CalculateErrorScaling();
@@ -85,20 +77,20 @@ void deoglPlanVisitorCullElements::Init( deoglDCollisionFrustum *frustum ){
 
 
 
-void deoglPlanVisitorCullElements::SetFrustumExtends( const decDVector &minExtend, const decDVector &maxExtend ){
+void deoglRPVisitorFindContent::SetFrustumExtends( const decDVector &minExtend, const decDVector &maxExtend ){
 	pFrustumMinExtend = minExtend;
 	pFrustumMaxExtend = maxExtend;
 }
 
-void deoglPlanVisitorCullElements::CalculateFrustumBoundaryBox(){
+void deoglRPVisitorFindContent::CalculateFrustumBoundaryBox(){
 	// calculate the corner points of the frustum in light space. only the far points and the origin
 	// are transformed. correctly the near points would have to be transformed and processed too but
 	// they are usually so close to the origin that processing them is a waste of time not yielding
 	// any better results than using just the origin
-	const decDMatrix &matrix = pPlan->GetInverseCameraMatrix();
-	const double fov = ( double )pPlan->GetCameraFov();
-	const double fovRatio = ( double )pPlan->GetCameraFovRatio();
-	const double zfar = ( double )pPlan->GetCameraViewDistance();
+	const decDMatrix &matrix = pPlan.GetInverseCameraMatrix();
+	const double fov = ( double )pPlan.GetCameraFov();
+	const double fovRatio = ( double )pPlan.GetCameraFovRatio();
+	const double zfar = ( double )pPlan.GetCameraViewDistance();
 	const double xfar = tan( fov * 0.5 ) * zfar; // * znear, dropped since we calc x'=z'*(xnear/znear)
 	const double yfar = tan( fov * 0.5 * fovRatio ) * zfar; // * znear, dropped since we calc y'=z'*(ynear/znear)
 	decDVector points[ 4 ];
@@ -110,7 +102,7 @@ void deoglPlanVisitorCullElements::CalculateFrustumBoundaryBox(){
 	matrix.Transform( points[ 3 ], -xfar, -yfar, zfar );
 	
 	// determine the box surrounding the entire frustum
-	pFrustumMinExtend = pPlan->GetCameraPosition();
+	pFrustumMinExtend = pPlan.GetCameraPosition();
 	pFrustumMaxExtend = pFrustumMinExtend;
 	
 	for( i=0; i<4; i++ ){
@@ -139,7 +131,7 @@ void deoglPlanVisitorCullElements::CalculateFrustumBoundaryBox(){
 
 
 
-void deoglPlanVisitorCullElements::SetCullPixelSize( float cullPixelSize ){
+void deoglRPVisitorFindContent::SetCullPixelSize( float cullPixelSize ){
 	if( cullPixelSize < 0.1f ){
 		pCullPixelSize = 0.1f;
 		
@@ -148,7 +140,7 @@ void deoglPlanVisitorCullElements::SetCullPixelSize( float cullPixelSize ){
 	}
 }
 
-void deoglPlanVisitorCullElements::SetErrorScaling( float errorScaling ){
+void deoglRPVisitorFindContent::SetErrorScaling( float errorScaling ){
 	if( errorScaling < 0.0f ){
 		pErrorScaling = 0.0f;
 		
@@ -157,11 +149,11 @@ void deoglPlanVisitorCullElements::SetErrorScaling( float errorScaling ){
 	}
 }
 
-void deoglPlanVisitorCullElements::CalculateErrorScaling(){
-	const float fov = pPlan->GetCameraFov();
-	const float fovRatio = pPlan->GetCameraFovRatio();
-	const float scalingX = ( float )pPlan->GetViewportWidth() * 0.5f / pCullPixelSize / tanf( fov * 0.5f );
-	const float scalingY = ( float )pPlan->GetViewportHeight() * 0.5f / pCullPixelSize / tanf( fov * fovRatio * 0.5f );
+void deoglRPVisitorFindContent::CalculateErrorScaling(){
+	const float fov = pPlan.GetCameraFov();
+	const float fovRatio = pPlan.GetCameraFovRatio();
+	const float scalingX = ( float )pPlan.GetViewportWidth() * 0.5f / pCullPixelSize / tanf( fov * 0.5f );
+	const float scalingY = ( float )pPlan.GetViewportHeight() * 0.5f / pCullPixelSize / tanf( fov * fovRatio * 0.5f );
 	
 	if( scalingX > scalingY ){
 		pErrorScaling = scalingX;
@@ -173,23 +165,23 @@ void deoglPlanVisitorCullElements::CalculateErrorScaling(){
 
 
 
-void deoglPlanVisitorCullElements::SetCullDynamicComponents( bool cullDynamicComponents ){
+void deoglRPVisitorFindContent::SetCullDynamicComponents( bool cullDynamicComponents ){
 	pCullDynamicComponents = cullDynamicComponents;
 }
 
 
 
-void deoglPlanVisitorCullElements::SetCullLayerMask( bool cull ){
+void deoglRPVisitorFindContent::SetCullLayerMask( bool cull ){
 	pCullLayerMask = cull;
 }
 
-void deoglPlanVisitorCullElements::SetLayerMask( const decLayerMask &layerMask ){
+void deoglRPVisitorFindContent::SetLayerMask( const decLayerMask &layerMask ){
 	pLayerMask = layerMask;
 }
 
 
 
-void deoglPlanVisitorCullElements::VisitWorldOctree( const deoglWorldOctree &octree ){
+void deoglRPVisitorFindContent::VisitWorldOctree( const deoglWorldOctree &octree ){
 	if( ! pFrustum ){
 		DETHROW( deeInvalidParam );
 	}
@@ -202,7 +194,7 @@ void deoglPlanVisitorCullElements::VisitWorldOctree( const deoglWorldOctree &oct
 // Private Functions
 //////////////////////
 
-void deoglPlanVisitorCullElements::pVisitNode( const deoglWorldOctree &node, bool intersect ){
+void deoglRPVisitorFindContent::pVisitNode( const deoglWorldOctree &node, bool intersect ){
 	pVisitComponents( node, intersect );
 	pVisitBillboards( node, intersect );
 	pVisitLights( node, intersect );
@@ -235,10 +227,11 @@ void deoglPlanVisitorCullElements::pVisitNode( const deoglWorldOctree &node, boo
 	}
 }
 
-void deoglPlanVisitorCullElements::pVisitComponents( const deoglWorldOctree &node, bool intersect ){
-	deoglOcclusionTest &occlusionTest = *pPlan->GetOcclusionTest();
-	const decDVector &cameraPosition = pPlan->GetCameraPosition();
-	deoglCollideList &collideList = pPlan->GetCollideList();
+void deoglRPVisitorFindContent::pVisitComponents( const deoglWorldOctree &node, bool intersect ){
+	deoglOcclusionTest &occlusionTest = *pPlan.GetOcclusionTest();
+	const decDVector &cameraPosition = pPlan.GetCameraPosition();
+	deoglComponentList &componentsOccMap = pPlan.GetComponentsOccMap();
+	deoglCollideList &collideList = pPlan.GetCollideList();
 	const int count = node.GetComponentCount();
 	int i;
 	
@@ -284,12 +277,17 @@ void deoglPlanVisitorCullElements::pVisitComponents( const deoglWorldOctree &nod
 		
 		// add component and add occlusion test input
 		collideList.AddComponent( addComponent )->StartOcclusionTest( occlusionTest, cameraPosition );
+		
+		// add to occlusion map if required
+		if( addComponent->GetOcclusionMesh() ){
+			componentsOccMap.Add( addComponent );
+		}
 	}
 }
 
-void deoglPlanVisitorCullElements::pVisitBillboards( const deoglWorldOctree &node, bool intersect ){
-	const decDVector &cameraPosition = pPlan->GetCameraPosition();
-	deoglCollideList &collideList = pPlan->GetCollideList();
+void deoglRPVisitorFindContent::pVisitBillboards( const deoglWorldOctree &node, bool intersect ){
+	const decDVector &cameraPosition = pPlan.GetCameraPosition();
+	deoglCollideList &collideList = pPlan.GetCollideList();
 	const int count = node.GetBillboardList().GetCount();
 	int i;
 	
@@ -332,10 +330,10 @@ void deoglPlanVisitorCullElements::pVisitBillboards( const deoglWorldOctree &nod
 	}
 }
 
-void deoglPlanVisitorCullElements::pVisitLights( const deoglWorldOctree &node, bool intersect ){
-	deoglOcclusionTest &occlusionTest = *pPlan->GetOcclusionTest();
-	const decDVector &cameraPosition = pPlan->GetCameraPosition();
-	deoglCollideList &collideList = pPlan->GetCollideList();
+void deoglRPVisitorFindContent::pVisitLights( const deoglWorldOctree &node, bool intersect ){
+	deoglOcclusionTest &occlusionTest = *pPlan.GetOcclusionTest();
+	const decDVector &cameraPosition = pPlan.GetCameraPosition();
+	deoglCollideList &collideList = pPlan.GetCollideList();
 	const int count = node.GetLightCount();
 	int i;
 	
@@ -356,9 +354,9 @@ void deoglPlanVisitorCullElements::pVisitLights( const deoglWorldOctree &node, b
 	}
 }
 
-void deoglPlanVisitorCullElements::pVisitParticleEmitters( const deoglWorldOctree &node, bool intersect ){
+void deoglRPVisitorFindContent::pVisitParticleEmitters( const deoglWorldOctree &node, bool intersect ){
 	const deoglParticleEmitterInstanceList &nodeParticleEmitterInstanceList = node.GetParticleEmittersList();
-	deoglCollideList &collideList = pPlan->GetCollideList();
+	deoglCollideList &collideList = pPlan.GetCollideList();
 	deoglParticleEmitterInstanceList &clistParticleEmitterInstanceList = collideList.GetParticleEmitterList();
 	const int count = nodeParticleEmitterInstanceList.GetCount();
 	int i;

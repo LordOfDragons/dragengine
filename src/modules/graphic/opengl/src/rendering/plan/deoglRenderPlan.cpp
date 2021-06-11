@@ -27,7 +27,6 @@
 #include "deoglRenderPlanLight.h"
 #include "deoglRenderPlanSkyLight.h"
 #include "deoglRenderPlanMasked.h"
-#include "deoglPlanVisitorCullElements.h"
 #include "deoglRenderPlanEnvMap.h"
 #include "parallel/deoglRPTFindContent.h"
 #include "../deoglRenderOcclusion.h"
@@ -154,8 +153,6 @@ pTaskFindContent( NULL )
 	
 	pDirtyProjMat = true;
 	
-	pVisitorCullElements = new deoglPlanVisitorCullElements( this );
-	
 	pNoRenderedOccMesh = false;
 	pFlipCulling = false;
 	
@@ -252,10 +249,6 @@ deoglRenderPlan::~deoglRenderPlan(){
 	
 	if( pDebug ){
 		delete pDebug;
-	}
-	
-	if( pVisitorCullElements ){
-		delete pVisitorCullElements;
 	}
 	
 	pDirectEnvMapFader.DropAll();
@@ -1382,6 +1375,7 @@ void deoglRenderPlan::CleanUp(){
 	RemoveAllLights();
 	pDropLightsDynamic();
 	pCollideList.Clear();
+	pComponentsOccMap.RemoveAll();
 	SetOcclusionTest( NULL );
 	SetOcclusionMap( NULL );
 }
