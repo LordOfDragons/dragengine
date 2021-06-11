@@ -81,15 +81,14 @@ void deoglRPTSkyLightGIUpdateRT::Run(){
 		INIT_SPECIAL_TIMING
 		decTimer timer;
 		
-		deoglCollideList &collideList = pPlan.GetGICollideList();
-		
 		// components. we can use here the sky light way of choosing LOD levels. but GI shadows
 		// are typically broader than sky shadows and thus are more expensive to render. for
 		// this reason it is better to use the highest LOD level available. this is acceptable
 		// since GI shadow maps are not high resolution and GI rays do not need high resolution
 		// shadow maps to work good enough
-		deoglLODCalculator lodCalculator;
-		lodCalculator.SetComponentLODMax( collideList );
+// 		deoglLODCalculator lodCalculator;
+// 		lodCalculator.SetComponentLODMax( pPlan.GetGICollideList() );
+		// ^== done inside update RT calls
 		
 		// update required render tasks
 		if( pPlan.GetGIShadowUpdateStatic() ){
@@ -139,6 +138,7 @@ void deoglRPTSkyLightGIUpdateRT::pUpdateStaticRT(){
 	for( i=0; i<componentCount; i++ ){
 		deoglCollideListComponent &component = *collideList.GetComponentAt( i );
 		if( component.GetComponent()->GetRenderStatic() ){
+			component.SetLODLevelMax();
 			addToRenderTask.AddComponent( component );
 		}
 	}
@@ -164,6 +164,7 @@ void deoglRPTSkyLightGIUpdateRT::pUpdateDynamicRT(){
 	for( i=0; i<componentCount; i++ ){
 		deoglCollideListComponent &component = *collideList.GetComponentAt( i );
 		if( ! component.GetComponent()->GetRenderStatic() ){
+			component.SetLODLevelMax();
 			addToRenderTask.AddComponent( component );
 		}
 	}

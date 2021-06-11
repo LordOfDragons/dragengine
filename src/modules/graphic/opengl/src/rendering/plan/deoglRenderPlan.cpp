@@ -421,8 +421,9 @@ void deoglRenderPlan::pBarePrepareRender( const deoglRenderPlanMasked *mask ){
 	
 	// update lod for visible elements
 	pPlanLODLevels();
+	SPECIAL_TIMER_PRINT("PlanLODLevels")
 	pUpdateHTViewRTSInstances();
-	SPECIAL_TIMER_PRINT("Plan2")
+	SPECIAL_TIMER_PRINT("UpdateHTViewRTSInstances")
 	
 	// prepare particles for rendering
 	const deoglParticleEmitterInstanceList &particleEmitterList = pCollideList.GetParticleEmitterList();
@@ -1172,11 +1173,14 @@ void deoglRenderPlan::pFinishOcclusionTests( const deoglRenderPlanMasked *mask )
 	if( pRenderThread.GetConfiguration().GetDebugNoCulling() ){
 		return;
 	}
+	INIT_SPECIAL_TIMING
 	
 	// occlusion tests have been rendered in pRenderOcclusionTests to avoid stalling
 	if( pOcclusionTest->GetInputDataCount() > 0 ){
 		pOcclusionTest->UpdateResults();
+		SPECIAL_TIMER_PRINT("> UpdateResults")
 		pCollideList.RemoveCulledElements();
+		SPECIAL_TIMER_PRINT("> RemoveCulledElements")
 	}
 	
 	pDebugVisibleCulled();

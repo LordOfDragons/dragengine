@@ -149,7 +149,6 @@ pDebugInfoPlanPrepareSkyLightGIFindContent( NULL ),
 pDebugInfoPlanPrepareSkyLightGIUpdateRenderTask( NULL ),
 pDebugInfoPlanPrepareWorld( NULL ),
 pDebugInfoPlanPrepareGIUpdate( NULL ),
-pDebugInfoPlanPrepareGITraceRays( NULL ),
 pDebugInfoPlanPrepareCulling( NULL ),
 pDebugInfoPlanPrepareEnvMaps( NULL ),
 pDebugInfoPlanPreparePrepareContent( NULL ),
@@ -186,7 +185,9 @@ pDebugInfoPlanPrepareFinish( NULL )
 		const decColor colorBg( 0.0f, 0.0f, 0.25f, 0.75f );
 		const decColor colorBgSub( 0.05f, 0.05f, 0.05f, 0.75f );
 		const decColor colorBgSub2( 0.1f, 0.1f, 0.1f, 0.75f );
-		const decColor colorBgParallel( 0.05f, 0.025f, 0.05f, 0.75f );
+		const decColor colorBgParallel1( 0.05f, 0.025f, 0.05f, 0.75f );
+		const decColor colorBgParallel2( 0.025f, 0.05f, 0.05f, 0.75f );
+		const decColor colorBgParallel3( 0.05f, 0.05f, 0.025f, 0.75f );
 		
 		pDebugInfoCanvas = new deoglDebugInformation( "Canvas", colorText, colorBg );
 		
@@ -218,32 +219,29 @@ pDebugInfoPlanPrepareFinish( NULL )
 		pDebugInfoPlanPrepareEarlyWorld = new deoglDebugInformation( "Early World", colorText, colorBgSub );
 		pDebugInfoPlanPrepare->GetChildren().Add( pDebugInfoPlanPrepareEarlyWorld );
 		
-		pDebugInfoPlanPrepareFindContent = new deoglDebugInformation( "Find Content", colorText, colorBgParallel );
+		pDebugInfoPlanPrepareFindContent = new deoglDebugInformation( "Find Content", colorText, colorBgParallel1 );
 		pDebugInfoPlanPrepare->GetChildren().Add( pDebugInfoPlanPrepareFindContent );
 		
-		pDebugInfoPlanPrepareBuildRTs = new deoglDebugInformation( "Build RTs", colorText, colorBgParallel );
+		pDebugInfoPlanPrepareBuildRTs = new deoglDebugInformation( "Build RTs", colorText, colorBgParallel3 );
 		pDebugInfoPlanPrepare->GetChildren().Add( pDebugInfoPlanPrepareBuildRTs );
 		
-		pDebugInfoPlanPrepareSkyLightFindContent = new deoglDebugInformation( "SL Find Content", colorText, colorBgParallel );
+		pDebugInfoPlanPrepareSkyLightFindContent = new deoglDebugInformation( "SL Find Content", colorText, colorBgParallel2 );
 		pDebugInfoPlanPrepare->GetChildren().Add( pDebugInfoPlanPrepareSkyLightFindContent );
 		
-		pDebugInfoPlanPrepareSkyLightBuildRT = new deoglDebugInformation( "SL Build RT", colorText, colorBgParallel );
+		pDebugInfoPlanPrepareSkyLightBuildRT = new deoglDebugInformation( "SL Build RT", colorText, colorBgParallel3 );
 		pDebugInfoPlanPrepare->GetChildren().Add( pDebugInfoPlanPrepareSkyLightBuildRT );
 		
-		pDebugInfoPlanPrepareSkyLightGIFindContent = new deoglDebugInformation( "SL GI Find Content", colorText, colorBgParallel );
+		pDebugInfoPlanPrepareSkyLightGIFindContent = new deoglDebugInformation( "SL GI Find Content", colorText, colorBgParallel2 );
 		pDebugInfoPlanPrepare->GetChildren().Add( pDebugInfoPlanPrepareSkyLightGIFindContent );
 		
-		pDebugInfoPlanPrepareSkyLightGIUpdateRenderTask = new deoglDebugInformation( "SL GI Update RT", colorText, colorBgParallel );
+		pDebugInfoPlanPrepareSkyLightGIUpdateRenderTask = new deoglDebugInformation( "SL GI Update RT", colorText, colorBgParallel3 );
 		pDebugInfoPlanPrepare->GetChildren().Add( pDebugInfoPlanPrepareSkyLightGIUpdateRenderTask );
 		
-		pDebugInfoPlanPrepareWorld = new deoglDebugInformation( "World", colorText, colorBgParallel );
+		pDebugInfoPlanPrepareWorld = new deoglDebugInformation( "World", colorText, colorBgParallel1 );
 		pDebugInfoPlanPrepare->GetChildren().Add( pDebugInfoPlanPrepareWorld );
 		
-		pDebugInfoPlanPrepareGIUpdate = new deoglDebugInformation( "GI Update", colorText, colorBgParallel );
+		pDebugInfoPlanPrepareGIUpdate = new deoglDebugInformation( "GI Update", colorText, colorBgParallel1 );
 		pDebugInfoPlanPrepare->GetChildren().Add( pDebugInfoPlanPrepareGIUpdate );
-		
-		pDebugInfoPlanPrepareGITraceRays = new deoglDebugInformation( "GI Trace Rays", colorText, colorBgParallel );
-		pDebugInfoPlanPrepare->GetChildren().Add( pDebugInfoPlanPrepareGITraceRays );
 		
 		pDebugInfoPlanPrepareCulling = new deoglDebugInformation( "Culling", colorText, colorBgSub );
 		pDebugInfoPlanPrepare->GetChildren().Add( pDebugInfoPlanPrepareCulling );
@@ -881,7 +879,6 @@ void deoglRenderCanvas::ClearAllDebugInfoPlanPrepare( deoglRenderPlan &plan ){
 	pDebugInfoPlanPrepareBuildRTs->Clear();
 	pDebugInfoPlanPrepareSkyLightFindContent->Clear();
 	pDebugInfoPlanPrepareSkyLightBuildRT->Clear();
-	pDebugInfoPlanPrepareGITraceRays->Clear();
 	pDebugInfoPlanPrepareSkyLightGIFindContent->Clear();
 	pDebugInfoPlanPrepareSkyLightGIUpdateRenderTask->Clear();
 	pDebugInfoPlanPrepareWorld->Clear();
@@ -965,13 +962,6 @@ void deoglRenderCanvas::SampleDebugInfoPlanPrepareGIUpdate( deoglRenderPlan &pla
 		return;
 	}
 	DebugTimer2Sample( plan, *pDebugInfoPlanPrepareGIUpdate, true );
-}
-
-void deoglRenderCanvas::SampleDebugInfoPlanPrepareGITraceRays( deoglRenderPlan &plan ){
-	if( ! plan.GetDebugTiming() || ! pDebugInfoPlanPrepare->GetVisible() ){
-		return;
-	}
-	DebugTimer2Sample( plan, *pDebugInfoPlanPrepareGITraceRays, true );
 }
 
 void deoglRenderCanvas::SampleDebugInfoPlanPrepareCulling( deoglRenderPlan &plan ){
