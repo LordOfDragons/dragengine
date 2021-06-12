@@ -92,7 +92,7 @@
 #include "../../sky/deoglRSkyLayer.h"
 #include "../../sky/deoglRSkyInstance.h"
 #include "../../sky/deoglRSkyInstanceLayer.h"
-#include "../../sky/deoglSkyLayerGIState.h"
+#include "../../sky/deoglSkyLayerGICascade.h"
 #include "../../texture/arraytexture/deoglArrayTexture.h"
 #include "../../texture/arraytexture/deoglRenderableDepthArrayTexture.h"
 #include "../../texture/arraytexture/deoglRenderableDepthArrayTextureManager.h"
@@ -509,8 +509,8 @@ const deoglRenderPlanMasked *mask ){
 	if( ! mask && solid ){
 		deoglGIState * const giState = plan.GetPlan().GetUpdateGIState();
 		if( giState ){
-			const deoglSkyLayerGIState * const slgs = plan.GetLayer()->GetGIState( giState );
-			const deoglSCSolid * const scsolid = slgs ? &slgs->GetShadowCaster().GetSolid() : NULL;
+			const deoglSkyLayerGICascade * const slgc = plan.GetLayer()->GetGICascade( giState->GetSkyShadowCascade() );
+			const deoglSCSolid * const scsolid = slgc ? &slgc->GetShadowCaster().GetSolid() : NULL;
 			
 			RestoreFBOGITraceRays( *giState );
 			
@@ -1065,6 +1065,11 @@ deoglShadowMapper &shadowMapper ){
 	DebugTimer4Reset( plan.GetPlan(), true );
 	plan.WaitFinishedGIUpdateRT();
 	
+	deoglSkyLayerGICascade * const slgc = plan.GetLayer()->GetGICascade( giState->GetSkyShadowCascade() );
+	if( ! slgc ){
+		return;
+	}
+	
 	// shadow layer
 	const decMatrix matLig( decMatrix::CreateRotation( 0.0f, PI, 0.0f ) * plan.GetLayer()->GetMatrix() );
 	
@@ -1072,15 +1077,13 @@ deoglShadowMapper &shadowMapper ){
 	
 	const decDVector &worldRefPos = plan.GetPlan().GetWorld()->GetReferencePosition();
 	const decVector position( ( sl.minExtend + sl.maxExtend ) * 0.5f );
-	sl.position = ( giState->GetPosition() - worldRefPos ).ToVector() + ( matLig * position );
+	sl.position = ( slgc->GetPosition() - worldRefPos ).ToVector() + ( matLig * position );
 	sl.scale.x = 1.0f / ( sl.maxExtend.x - sl.minExtend.x );
 	sl.scale.y = 1.0f / ( sl.maxExtend.y - sl.minExtend.y );
 	sl.scale.z = 1.0f / ( sl.maxExtend.z - sl.minExtend.z );
 	
 	// prepare what is used by both
-	deoglSkyLayerGIState &slgs = *plan.GetLayer()->AddGIState( giState );
-	
-	deoglShadowCaster &shadowCaster = slgs.GetShadowCaster();
+	deoglShadowCaster &shadowCaster = slgc->GetShadowCaster();
 	deoglSCSolid &scsolid = shadowCaster.GetSolid();
 	
 	shadowCaster.SetShadowLayerCount( 1 );

@@ -33,8 +33,9 @@ class deoglRSkyInstance;
 class deoglSPBlockUBO;
 class deoglSkyLayerTracker;
 class deoglShadowCaster;
-class deoglSkyLayerGIState;
+class deoglSkyLayerGICascade;
 class deoglGIState;
+class deoglGICascade;
 class deoglRComponent;
 
 
@@ -97,7 +98,7 @@ private:
 	
 	deoglShadowCaster *pShadowCaster;
 	
-	decPointerList pGIStates;
+	decPointerList pGICascades;
 	
 	
 	
@@ -191,20 +192,23 @@ public:
 	
 	
 	
-	/** Count of GI States. */
-	int GetGIStateCount() const;
+	/** Count of GI cascades. */
+	int GetGICascadeCount() const;
 	
-	/** GI State or NULL if not found. */
-	deoglSkyLayerGIState *GetGIState( const deoglGIState *giState ) const;
+	/** GI Cascade or NULL if not found. */
+	deoglSkyLayerGICascade *GetGICascade( const deoglGICascade &cascade ) const;
 	
-	/** Add GI State if absent. */
-	deoglSkyLayerGIState *AddGIState( const deoglGIState *giState );
+	/** Add GI Cascade if absent. */
+	deoglSkyLayerGICascade *AddGICascade( const deoglGICascade &cascade );
 	
-	/** Remove GI State if present. */
-	void RemoveGIState( const deoglGIState *giState );
+	/** Remove GI Cascade if present. */
+	void RemoveGICascade( const deoglGICascade &cascade );
 	
-	/** Remove all GI States. */
-	void RemoveAllGIStates();
+	/** Remove all GI Cascades for GI State if present. */
+	void RemoveAllGICascades( const deoglGIState &state );
+	
+	/** Remove all GI Cascades. */
+	void RemoveAllGICascades();
 	/*@}*/
 	
 	

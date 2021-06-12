@@ -604,7 +604,7 @@ public:
 	
 	
 	/** Global illumination state or NULL. */
-	inline deoglGIState *GetGIState() const{ return pGIState; }
+	inline deoglGIState *GetGICascade() const{ return pGIState; }
 	
 	/** GI state to update or NULL. */
 	deoglGIState *GetUpdateGIState() const;

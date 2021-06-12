@@ -32,6 +32,7 @@
 #include "../envmap/deoglEnvironmentMap.h"
 #include "../envmap/deoglREnvMapProbe.h"
 #include "../gi/deoglGIState.h"
+#include "../gi/deoglGICascade.h"
 #include "../light/deoglRLight.h"
 #include "../particle/deoglRParticleEmitterInstance.h"
 #include "../propfield/deoglRPropField.h"
@@ -1205,11 +1206,11 @@ void deoglRWorld::RemoveRemovalMarkedDebugDrawers(){
 // GI States
 //////////////
 
-int deoglRWorld::GetGIStateCount() const{
+int deoglRWorld::GetGICascadeCount() const{
 	return pGIStates.GetCount();
 }
 
-const deoglGIState *deoglRWorld::GetGIStateAt( int index ) const{
+const deoglGIState *deoglRWorld::GetGICascadeAt( int index ) const{
 	return ( const deoglGIState * )pGIStates.GetAt( index );
 }
 
@@ -1217,11 +1218,17 @@ const deoglGIState *deoglRWorld::ClosestGIState( const decDVector &position ) co
 	const int count = pGIStates.GetCount();
 	const deoglGIState *bestGIState = NULL;
 	double bestDistance = 0.0;
-	int i;
+	int i, j;
 	
 	for( i=0; i<count; i++ ){
 		const deoglGIState * const giState = ( const deoglGIState * )pGIStates.GetAt( i );
-		const double distance = ( position - giState->GetPosition() ).Length();
+		const int cascadeCount = giState->GetCascadeCount();
+		
+		double distance = ( position - giState->GetCascadeAt( 0 ).GetPosition() ).Length();
+		for( j=1; j<cascadeCount; j++ ){
+			distance = decMath::min( distance, ( position - giState->GetCascadeAt( j ).GetPosition() ).Length() );
+		}
+		
 		if( ! bestGIState || distance < bestDistance ){
 			bestGIState = giState;
 			bestDistance = distance;
@@ -1231,11 +1238,11 @@ const deoglGIState *deoglRWorld::ClosestGIState( const decDVector &position ) co
 	return bestGIState;
 }
 
-void deoglRWorld::AddGIState( const deoglGIState *giState ){
+void deoglRWorld::AddGICascade( const deoglGIState *giState ){
 	pGIStates.AddIfAbsent( ( void* )giState );
 }
 
-void deoglRWorld::RemoveGIState( const deoglGIState *giState ){
+void deoglRWorld::RemoveGICascade( const deoglGIState *giState ){
 	if( ! pGIStates.Has( ( void* )giState ) ){
 		return;
 	}
@@ -1249,7 +1256,7 @@ void deoglRWorld::RemoveGIState( const deoglGIState *giState ){
 	pGIStates.RemoveIfPresent( ( void* )giState );
 }
 
-void deoglRWorld::RemoveAllGIStates(){
+void deoglRWorld::RemoveAllGICascades(){
 	if( pGIStates.GetCount() == 0 ){
 		return;
 	}

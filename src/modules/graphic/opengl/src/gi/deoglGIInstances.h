@@ -80,7 +80,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** GI state. */
-	inline deoglGIState &GetGIState() const{ return pGIState; }
+	inline deoglGIState &GetGICascade() const{ return pGIState; }
 	
 	/** Classify content. */
 	static bool IsComponentStatic( const deoglRComponent &component );

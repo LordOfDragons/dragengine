@@ -41,6 +41,7 @@
 #include "../../devmode/deoglDeveloperMode.h"
 #include "../../framebuffer/deoglFramebuffer.h"
 #include "../../gi/deoglGIState.h"
+#include "../../gi/deoglGICascade.h"
 #include "../../light/deoglRLight.h"
 #include "../../light/shader/deoglLightShader.h"
 #include "../../renderthread/deoglRenderThread.h"
@@ -687,7 +688,7 @@ void deoglRenderLight::PrepareRenderParamBlockLight( deoglRenderPlan &plan ){
 		// global illumination
 		const deoglGIState * const giState = plan.GetRenderGIState();
 		if( giState ){
-			const decDMatrix matrix( decDMatrix::CreateTranslation( giState->GetPosition() )
+			const decDMatrix matrix( decDMatrix::CreateTranslation( giState->GetActiveCascade().GetPosition() )
 				* plan.GetCameraMatrix() );
 			
 			pLightPB->SetParameterDataMat4x3( deoglLightShader::erutGIRayMatrix, matrix );

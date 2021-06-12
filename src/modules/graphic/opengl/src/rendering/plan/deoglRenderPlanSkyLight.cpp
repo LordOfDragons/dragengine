@@ -36,6 +36,7 @@
 #include "../../debug/debugSnapshot.h"
 #include "../../debug/deoglDebugInformation.h"
 #include "../../gi/deoglGIState.h"
+#include "../../gi/deoglGICascade.h"
 #include "../../model/deoglRModel.h"
 #include "../../occlusiontest/deoglOcclusionTest.h"
 #include "../../occlusiontest/deoglOcclusionTestPool.h"
@@ -48,7 +49,7 @@
 #include "../../shadow/deoglShadowCaster.h"
 #include "../../sky/deoglRSkyInstance.h"
 #include "../../sky/deoglRSkyInstanceLayer.h"
-#include "../../sky/deoglSkyLayerGIState.h"
+#include "../../sky/deoglSkyLayerGICascade.h"
 #include "../../utils/collision/deoglCollisionBox.h"
 #include "../../world/deoglRWorld.h"
 
@@ -195,10 +196,7 @@ void deoglRenderPlanSkyLight::Plan(){
 	}
 	
 	pCalcShadowLayerParams();
-	
-	if( pPlan.GetUpdateGIState() ){
-		pGICalcShadowLayerParams();
-	}
+	pGICalcShadowLayerParams();
 }
 
 void deoglRenderPlanSkyLight::StartFindContent(){
@@ -650,10 +648,12 @@ void deoglRenderPlanSkyLight::pWaitFinishedGIFindContent(){
 }
 
 void deoglRenderPlanSkyLight::pGICalcShadowLayerParams(){
-	const deoglGIState * const giState = pPlan.GetRenderGIState();
+	const deoglGIState * const giState = pPlan.GetUpdateGIState();
 	if( ! giState ){
 		return;
 	}
+	
+	const deoglGICascade &cascade = giState->GetSkyShadowCascade();
 	
 	const deoglConfiguration &config = pPlan.GetRenderThread().GetConfiguration();
 	const decMatrix matLig( decMatrix::CreateRotation( 0.0f, PI, 0.0f ) * pLayer->GetMatrix() );
@@ -664,30 +664,24 @@ void deoglRenderPlanSkyLight::pGICalcShadowLayerParams(){
 	pGIShadowLayer.zscale = config.GetDistShadowScale();
 	pGIShadowLayer.zoffset = config.GetDistShadowBias();
 	
-	deoglCollisionBox colBoxGI( decVector(), giState->GetDetectionBox(), matLig.Invert().ToQuaternion() );
-	
+	deoglCollisionBox colBoxGI( decVector(), cascade.GetDetectionBox(), matLig.Invert().ToQuaternion() );
 	deoglCollisionBox enclosingBox;
 	colBoxGI.GetEnclosingBox( &enclosingBox );
 	
 	pGIShadowLayer.minExtend = enclosingBox.GetCenter() - enclosingBox.GetHalfSize();
 	pGIShadowLayer.maxExtend = enclosingBox.GetCenter() + enclosingBox.GetHalfSize();
 	
-	deoglSkyLayerGIState * const slgs = pLayer->GetGIState( giState );
-	if( slgs ){
-		slgs->Update();
-		pGIShadowUpdateStatic = slgs->GetDirtyStaticShadow();
-		slgs->ClearDirtyStaticShadow();
-		
-		deoglSCSolid &scsolid = slgs->GetShadowCaster().GetSolid();
-		const int shadowMapSize = 1024;
-		
-		if( scsolid.GetStaticMap() ){
-			if( scsolid.GetStaticMap()->GetWidth() != shadowMapSize ){
-				scsolid.DropStatic();
-				pGIShadowUpdateStatic = true;
-			}
-			
-		}else{
+	deoglSkyLayerGICascade &slgs = *pLayer->AddGICascade( cascade );
+	slgs.Update();
+	pGIShadowUpdateStatic = slgs.GetDirtyStaticShadow();
+	slgs.ClearDirtyStaticShadow();
+	
+	deoglSCSolid &scsolid = slgs.GetShadowCaster().GetSolid();
+	const int shadowMapSize = 1024;
+	
+	if( scsolid.GetStaticMap() ){
+		if( scsolid.GetStaticMap()->GetWidth() != shadowMapSize ){
+			scsolid.DropStatic();
 			pGIShadowUpdateStatic = true;
 		}
 		

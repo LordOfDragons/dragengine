@@ -284,7 +284,7 @@ void deoglRenderPlan::SetWorld( deoglRWorld *world ){
 	}
 	
 	if( pWorld && pGIState ){
-		pWorld->RemoveGIState( pGIState );
+		pWorld->RemoveGICascade( pGIState );
 	}
 	
 	pWorld = world;
@@ -293,7 +293,7 @@ void deoglRenderPlan::SetWorld( deoglRWorld *world ){
 		pGIState->Invalidate();
 		
 		if( world ){
-			world->AddGIState( pGIState );
+			world->AddGICascade( pGIState );
 		}
 	}
 	
@@ -758,10 +758,10 @@ void deoglRenderPlan::pPlanGI(){
 		const float length = pCameraViewDistance * 2.0f;
 		const decVector size( length, length / 4.0f, length );
 		
-		pGIState = new deoglGIState( pRenderThread, size, 4 );
+		pGIState = new deoglGIState( pRenderThread, size );
 		
 		if( pWorld ){
-			pWorld->AddGIState( pGIState );
+			pWorld->AddGICascade( pGIState );
 		}
 	}
 }

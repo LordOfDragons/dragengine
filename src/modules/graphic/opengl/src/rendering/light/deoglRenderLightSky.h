@@ -35,7 +35,7 @@ class deoglShaderProgram;
 class deoglShadowMapper;
 class deoglRSkyInstanceLayer;
 class deoglRenderPlanSkyLight;
-class deoglSkyLayerGIState;
+class deoglSkyLayerGICascade;
 
 
 /**

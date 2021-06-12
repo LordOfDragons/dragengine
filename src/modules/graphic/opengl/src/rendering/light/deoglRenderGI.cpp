@@ -46,6 +46,7 @@
 #include "../../framebuffer/deoglFramebufferManager.h"
 #include "../../gi/deoglGI.h"
 #include "../../gi/deoglGIBVH.h"
+#include "../../gi/deoglGICascade.h"
 #include "../../gi/deoglGITraceRays.h"
 #include "../../gi/deoglGIState.h"
 #include "../../gi/deoglGIMaterials.h"
@@ -326,13 +327,14 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 	
 	// if any ray caches are invalid update them
 	#ifdef GI_USE_RAY_CACHE
-	if( giState->GetRayCacheProbeCount() > 0 ){
+	const deoglGICascade &cascade = giState->GetActiveCascade();
+	if( cascade.GetRayCacheProbeCount() > 0 ){
 		pRenderTask->Clear();
 		pAddToRenderTask->Reset();
 		
 		bvh.Clear();
 			decTimer timer1;
-		bvh.AddComponents( plan, giState->GetPosition(), giState->GetInstances(), false );
+		bvh.AddComponents( plan, cascade.GetPosition(), giState->GetInstances(), false );
 // 			renderThread.GetLogger().LogInfoFormat("Cache BVH Add Components: %d", (int)(timer1.GetElapsedTime() * 1e6f));
 		bvh.BuildBVH();
 // 			renderThread.GetLogger().LogInfoFormat("Cache BVH Build: %d", (int)(timer1.GetElapsedTime() * 1e6f));
@@ -368,7 +370,7 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 		tsmgr.EnableTexture( 4, traceRays.GetTextureLight(), GetSamplerClampNearest() );
 		tsmgr.DisableStagesAbove( 4 );
 		
-		OGL_CHECK( renderThread, pglDrawArraysInstanced( GL_TRIANGLE_FAN, 0, 4, giState->GetRayCacheProbeCount() ) );
+		OGL_CHECK( renderThread, pglDrawArraysInstanced( GL_TRIANGLE_FAN, 0, 4, cascade.GetRayCacheProbeCount() ) );
 		
 		giState->ValidatedRayCaches(); // comment out for performance test
 	}
@@ -381,9 +383,9 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 	bvh.Clear();
 		decTimer timer2;
 	#ifdef GI_USE_RAY_CACHE
-		bvh.AddComponents( plan, giState->GetPosition(), giState->GetInstances(), true );
+		bvh.AddComponents( plan, cascade.GetPosition(), giState->GetInstances(), true );
 	#else
-		bvh.AddComponents( plan, giState->GetPosition(), giState->GetInstances() );
+		bvh.AddComponents( plan, cascade.GetPosition(), giState->GetInstances() );
 	#endif
 // 		renderThread.GetLogger().LogInfoFormat("Frame BVH Add Components: %d", (int)(timer2.GetElapsedTime() * 1e6f));
 	bvh.BuildBVH();
@@ -444,22 +446,22 @@ void deoglRenderGI::PrepareUBORenderLight( deoglRenderPlan &plan ){
 	}
 	
 	deoglSPBlockUBO &ubo = ( deoglSPBlockUBO& )( deObject& )pUBORenderLight;
+	const deoglGICascade &cascade = giState->GetActiveCascade();
 	
 	ubo.MapBuffer();
 	try{
 		const decDMatrix matrix( plan.GetInverseCameraMatrix()
-			* decDMatrix::CreateTranslation( -( giState->GetPosition() + giState->GetFieldOrigin() ) ) );
+			* decDMatrix::CreateTranslation( -( cascade.GetPosition() + cascade.GetFieldOrigin() ) ) );
 		
 		ubo.SetParameterDataMat4x3( euprlMatrix, matrix );
 		ubo.SetParameterDataMat3x3( euprlMatrixNormal, matrix.GetRotationMatrix().QuickInvert() );
 		
 		ubo.SetParameterDataIVec3( euprlProbeCount, giState->GetProbeCount() );
 		ubo.SetParameterDataIVec3( euprlProbeClamp, giState->GetGridCoordClamp() );
-		ubo.SetParameterDataVec3( euprlProbeSpacing, giState->GetProbeSpacing() );
-		ubo.SetParameterDataVec3( euprlProbeSpacingInv, giState->GetProbeSpacingInverse() );
-		ubo.SetParameterDataVec3( euprlPositionClamp, giState->GetPositionClamp() );
-		ubo.SetParameterDataIVec3( euprlGridCoordShift,
-			giState->GetProbeCount() - giState->GetGridCoordShift() );
+		ubo.SetParameterDataVec3( euprlProbeSpacing, cascade.GetProbeSpacing() );
+		ubo.SetParameterDataVec3( euprlProbeSpacingInv, cascade.GetProbeSpacingInverse() );
+		ubo.SetParameterDataVec3( euprlPositionClamp, cascade.GetPositionClamp() );
+		ubo.SetParameterDataIVec3( euprlGridCoordShift, giState->GetProbeCount() - cascade.GetGridCoordShift() );
 		
 		ubo.SetParameterDataInt( euprlOcclusionMapSize, giState->GetIrradianceMapSize() );
 		ubo.SetParameterDataVec2( euprlOcclusionMapScale, giState->GetIrradianceMapScale() );
@@ -468,7 +470,7 @@ void deoglRenderGI::PrepareUBORenderLight( deoglRenderPlan &plan ){
 		ubo.SetParameterDataFloat( euprlNormalBias, giState->GetNormalBias() );
 		ubo.SetParameterDataFloat( euprlEnergyPreservation, giState->GetEnergyPreservation() );
 		ubo.SetParameterDataFloat( euprlIrradianceGamma, giState->GetIrradianceGamma() );
-		ubo.SetParameterDataFloat( euprlSelfShadowBias, giState->CalcUBOSelfShadowBias() );
+		ubo.SetParameterDataFloat( euprlSelfShadowBias, cascade.CalcUBOSelfShadowBias() );
 		
 	}catch( const deException & ){
 		ubo.UnmapBuffer();
@@ -610,7 +612,8 @@ void deoglRenderGI::ClearProbes( deoglRenderPlan &plan ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	if( ! giState->HasClearProbes() ){
+	deoglGICascade &cascade = giState->GetActiveCascade();
+	if( ! cascade.HasClearProbes() ){
 		return;
 	}
 	
@@ -659,7 +662,7 @@ void deoglRenderGI::ClearProbes( deoglRenderPlan &plan ){
 	OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
 	
 	// clean up
-	giState->ClearClearProbes();
+	cascade.ClearClearProbes();
 	
 	OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
 	
@@ -676,7 +679,9 @@ void deoglRenderGI::UpdateProbes( deoglRenderPlan &plan ){
 	if( ! giState ){
 		DETHROW( deeInvalidParam );
 	}
-	if( giState->GetUpdateProbeCount() == 0 ){
+	
+	const deoglGICascade &cascade = giState->GetActiveCascade();
+	if( cascade.GetUpdateProbeCount() == 0 ){
 		return;
 	}
 	
@@ -716,7 +721,7 @@ void deoglRenderGI::UpdateProbes( deoglRenderPlan &plan ){
 	renderThread.GetShader().ActivateShader( pShaderUpdateProbeIrradiance );
 	pActivateGIUBOs();
 	
-	OGL_CHECK( renderThread, pglDrawArraysInstanced( GL_TRIANGLE_FAN, 0, 4, giState->GetUpdateProbeCount() ) );
+	OGL_CHECK( renderThread, pglDrawArraysInstanced( GL_TRIANGLE_FAN, 0, 4, cascade.GetUpdateProbeCount() ) );
 	
 	// update probes: distance map
 	renderThread.GetFramebuffer().Activate( &giState->GetFBOProbeDistance() );
@@ -727,7 +732,7 @@ void deoglRenderGI::UpdateProbes( deoglRenderPlan &plan ){
 	renderThread.GetShader().ActivateShader( pShaderUpdateProbeDistance );
 	pActivateGIUBOs();
 	
-	OGL_CHECK( renderThread, pglDrawArraysInstanced( GL_TRIANGLE_FAN, 0, 4, giState->GetUpdateProbeCount() ) );
+	OGL_CHECK( renderThread, pglDrawArraysInstanced( GL_TRIANGLE_FAN, 0, 4, cascade.GetUpdateProbeCount() ) );
 	
 	// clean up
 	OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
@@ -743,7 +748,12 @@ void deoglRenderGI::UpdateProbes( deoglRenderPlan &plan ){
 
 void deoglRenderGI::MoveProbes( deoglRenderPlan &plan ){
 	deoglGIState * const giState = plan.GetUpdateGIState();
-	if( ! giState || giState->GetUpdateProbeCount() == 0 ){
+	if( ! giState ){
+		return;
+	}
+	
+	const deoglGICascade &cascade = giState->GetActiveCascade();
+	if( cascade.GetUpdateProbeCount() == 0 ){
 		return;
 	}
 	
@@ -783,7 +793,7 @@ void deoglRenderGI::MoveProbes( deoglRenderPlan &plan ){
 	renderThread.GetShader().ActivateShader( pShaderDynamicState );
 	pActivateGIUBOs();
 	
-	OGL_CHECK( renderThread, pglDrawArraysInstanced( GL_POINTS, 0, 1, giState->GetUpdateProbeCount() ) );
+	OGL_CHECK( renderThread, pglDrawArraysInstanced( GL_POINTS, 0, 1, cascade.GetUpdateProbeCount() ) );
 	
 	
 	// calculate new offset and state
@@ -805,7 +815,7 @@ void deoglRenderGI::MoveProbes( deoglRenderPlan &plan ){
 	
 	OGL_CHECK( renderThread, pglBindBufferBase( GL_TRANSFORM_FEEDBACK_BUFFER, 0, giState->GetVBOProbeOffsets() ) );
 	OGL_CHECK( renderThread, pglBeginTransformFeedback( GL_POINTS ) );
-	OGL_CHECK( renderThread, pglDrawArraysInstanced( GL_POINTS, 0, 1, giState->GetUpdateProbeCount() ) );
+	OGL_CHECK( renderThread, pglDrawArraysInstanced( GL_POINTS, 0, 1, cascade.GetUpdateProbeCount() ) );
 	OGL_CHECK( renderThread, pglEndTransformFeedback() );
 	
 	giState->ProbesMoved(); // tell state probes moved so it can read it later without stalling
@@ -830,7 +840,12 @@ void deoglRenderGI::MoveProbes( deoglRenderPlan &plan ){
 
 void deoglRenderGI::ProbeExtends( deoglRenderPlan &plan ){
 	deoglGIState * const giState = plan.GetUpdateGIState();
-	if( ! giState || giState->GetRayCacheProbeCount() == 0 ){
+	if( ! giState ){
+		return;
+	}
+	
+	const deoglGICascade &cascade = giState->GetActiveCascade();
+	if( cascade.GetRayCacheProbeCount() == 0 ){
 		return;
 	}
 	
@@ -861,7 +876,7 @@ void deoglRenderGI::ProbeExtends( deoglRenderPlan &plan ){
 	OGL_CHECK( renderThread, pglBindBufferBase( GL_TRANSFORM_FEEDBACK_BUFFER, 0, giState->GetVBOProbeExtends() ) );
 	OGL_CHECK( renderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) ); // unimportant since not used
 	OGL_CHECK( renderThread, pglBeginTransformFeedback( GL_POINTS ) );
-	OGL_CHECK( renderThread, pglDrawArraysInstanced( GL_POINTS, 0, 1, giState->GetRayCacheProbeCount() ) );
+	OGL_CHECK( renderThread, pglDrawArraysInstanced( GL_POINTS, 0, 1, cascade.GetRayCacheProbeCount() ) );
 	OGL_CHECK( renderThread, pglEndTransformFeedback() );
 	OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
 	OGL_CHECK( renderThread, glDisable( GL_RASTERIZER_DISCARD ) );
@@ -968,9 +983,11 @@ void deoglRenderGI::RenderDebugOverlay( deoglRenderPlan &plan ){
 		return;
 	}
 	
+	const deoglGICascade &cascade = giState->GetCascadeAt( 0 ); // not active to keep it stable
+	
 	const decPoint3 &probeCount = giState->GetProbeCount();
-	const decDMatrix matrixC( decDMatrix::CreateTranslation( giState->GetPosition()
-		+ decDVector( giState->GetFieldOrigin() ) ) * plan.GetCameraMatrix() );
+	const decDMatrix matrixC( decDMatrix::CreateTranslation( cascade.GetPosition()
+		+ decDVector( cascade.GetFieldOrigin() ) ) * plan.GetCameraMatrix() );
 	const decMatrix &matrixP = plan.GetProjectionMatrix();
 	const decDMatrix matrixCP( matrixC * decDMatrix( matrixP ) );
 	const decDMatrix matrixNormal( matrixC.GetRotationMatrix() ); // transposed to simplify shader
@@ -990,7 +1007,7 @@ void deoglRenderGI::RenderDebugOverlay( deoglRenderPlan &plan ){
 		shaderProbe.SetParameterDMatrix4x3( spdpMatrixMV, matrixC );
 		shaderProbe.SetParameterDMatrix4x4( spdpMatrixMVP, matrixCP );
 		shaderProbe.SetParameterDMatrix4x4( spdpMatrixP, matrixP );
-		shaderProbe.SetParameterPoint3( spdpGIGridCoordShift, giState->GetProbeCount() - giState->GetGridCoordShift() );
+		shaderProbe.SetParameterPoint3( spdpGIGridCoordShift, giState->GetProbeCount() - cascade.GetGridCoordShift() );
 		
 		pActivateGIUBOs();
 		
@@ -1017,7 +1034,7 @@ void deoglRenderGI::RenderDebugOverlay( deoglRenderPlan &plan ){
 		deoglShaderCompiled &shaderOffset = *pShaderDebugProbeOffset->GetCompiled();
 		shaderOffset.Activate();
 		shaderOffset.SetParameterDMatrix4x4( spdpoMatrixMVP, matrixCP );
-		shaderOffset.SetParameterPoint3( spdpoGIGridCoordShift, giState->GetProbeCount() - giState->GetGridCoordShift() );
+		shaderOffset.SetParameterPoint3( spdpoGIGridCoordShift, giState->GetProbeCount() - cascade.GetGridCoordShift() );
 		
 		pActivateGIUBOs();
 		
@@ -1066,7 +1083,7 @@ void deoglRenderGI::RenderDebugOverlay( deoglRenderPlan &plan ){
 			scale.x * position.x * 2.0f + offset.x, scale.y * position.y * 2.0f + offset.y );
 		shader2a.SetParameterFloat( 1, ( float )size.x * 0.5f, ( float )size.y * -0.5f,
 			( float )size.x * 0.5, ( float )size.y * 0.5f );
-		shader2a.SetParameterPoint3( 2, giState->GetProbeCount() - giState->GetGridCoordShift() );
+		shader2a.SetParameterPoint3( 2, giState->GetProbeCount() - cascade.GetGridCoordShift() );
 		shader2a.SetParameterInt( 3, probeSize, probeSpacing, groupSpacing );
 		
 		const deoglDCollisionFrustum &frustum = *plan.GetUseFrustum();
@@ -1077,8 +1094,8 @@ void deoglRenderGI::RenderDebugOverlay( deoglRenderPlan &plan ){
 		const decDVector &fnbottom = frustum.GetBottomNormal();
 		const decDVector &fnnear = frustum.GetNearNormal();
 		
-		const double fpshift = 0.5 * giState->GetProbeSpacing().Length();
-		const decDVector &fmove = giState->GetPosition();
+		const double fpshift = 0.5 * cascade.GetProbeSpacing().Length();
+		const decDVector &fmove = cascade.GetPosition();
 		
 		const double fdleft = frustum.GetLeftDistance() - fnleft * fmove - fpshift;
 		const float fdtop = frustum.GetTopDistance() - fntop * fmove - fpshift;
@@ -1104,11 +1121,11 @@ void deoglRenderGI::RenderDebugOverlay( deoglRenderPlan &plan ){
 			scale.x * 2.0f * position.x - 1.0f, scale.y * 2.0f * position.y - 1.0f );
 		shader2b.SetParameterFloat( 1, ( float )size.x * 0.5f, ( float )size.y * -0.5f,
 			( float )size.x * 0.5, ( float )size.y * 0.5f );
-		shader2b.SetParameterPoint3( 2, giState->GetProbeCount() - giState->GetGridCoordShift() );
+		shader2b.SetParameterPoint3( 2, giState->GetProbeCount() - cascade.GetGridCoordShift() );
 		shader2b.SetParameterInt( 3, probeSize, probeSpacing, groupSpacing );
 		
 		pActivateGIUBOs();
-		OGL_CHECK( renderThread, pglDrawArraysInstanced( GL_TRIANGLE_FAN, 0, 4, giState->GetUpdateProbeCount() ) );
+		OGL_CHECK( renderThread, pglDrawArraysInstanced( GL_TRIANGLE_FAN, 0, 4, cascade.GetUpdateProbeCount() ) );
 	}
 	
 	

@@ -32,10 +32,13 @@
 #include "../../../component/deoglRComponent.h"
 #include "../../../envmap/deoglEnvironmentMap.h"
 #include "../../../gi/deoglGIState.h"
+#include "../../../gi/deoglGICascade.h"
 #include "../../../rendering/task/persistent/deoglPersistentRenderTask.h"
 #include "../../../rendering/task/persistent/deoglPersistentRenderTaskOwner.h"
 #include "../../../renderthread/deoglRenderThread.h"
 #include "../../../renderthread/deoglRTLogger.h"
+#include "../../../sky/deoglRSkyInstanceLayer.h"
+#include "../../../sky/deoglSkyLayerGICascade.h"
 #include "../../../utils/collision/deoglDCollisionSphere.h"
 #include "../../../world/deoglRWorld.h"
 
@@ -86,15 +89,23 @@ void deoglRPTSkyLightGIFindContent::Run(){
 		// collect elements. we have to calculate the gi position ourself since the real
 		// position update happens in parallel. the detection box though is static so
 		// we do not have to calculate it on our own
-		const deoglGIState &giState = *plan.GetRenderGIState();
+		const deoglGIState * const giState = plan.GetUpdateGIState();
+		if( ! giState ){
+			DETHROW( deeInvalidParam );
+		}
 		
-		const decDVector position( giState.WorldClosestGrid( plan.GetCameraPosition() ) );
+		const deoglGICascade &cascade = giState->GetSkyShadowCascade();
+		const deoglSkyLayerGICascade * const slgc = pPlan.GetLayer()->GetGICascade( cascade );
+		if( ! slgc ){
+			DETHROW( deeInvalidParam );
+		}
+		
 // 		deoglDCollisionFrustum * const frustum = plan.GetUseFrustum();
 		deoglCollideList &collideList = pPlan.GetGICollideList();
 		deoglRWorld &world = *plan.GetWorld();
 		
 		deoglRLSVisitorCollectElements collectElements( collideList );
-		collectElements.InitFromGIBox( position, giState.GetDetectionBox(), *pPlan.GetLayer(), 2000.0f );
+		collectElements.InitFromGIBox( slgc->GetPosition(), cascade.GetDetectionBox(), *pPlan.GetLayer(), 2000.0f );
 		collectElements.SetCullLayerMask( plan.GetUseLayerMask() );
 		collectElements.SetLayerMask( plan.GetLayerMask() );
 		

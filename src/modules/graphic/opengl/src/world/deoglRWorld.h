@@ -484,22 +484,22 @@ public:
 	/** \name GI States */
 	/*@{*/
 	/** Count of GI States. */
-	int GetGIStateCount() const;
+	int GetGICascadeCount() const;
 	
 	/** GI State at index. */
-	const deoglGIState *GetGIStateAt( int index ) const;
+	const deoglGIState *GetGICascadeAt( int index ) const;
 	
 	/** GI State closest to position. */
 	const deoglGIState *ClosestGIState( const decDVector &position ) const;
 	
 	/** Add GI State if absent. */
-	void AddGIState( const deoglGIState *giState );
+	void AddGICascade( const deoglGIState *giState );
 	
 	/** Remove GI State if present. */
-	void RemoveGIState( const deoglGIState *giState );
+	void RemoveGICascade( const deoglGIState *giState );
 	
 	/** Remove all GI states. */
-	void RemoveAllGIStates();
+	void RemoveAllGICascades();
 	
 	/** Notify GI states component entered world. */
 	void GIStatesNotifyComponentEnteredWorld( deoglRComponent *component );

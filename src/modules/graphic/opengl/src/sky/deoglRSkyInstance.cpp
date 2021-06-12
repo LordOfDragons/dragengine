@@ -269,14 +269,14 @@ void deoglRSkyInstance::NotifySkyChanged(){
 void deoglRSkyInstance::DropGIState( const deoglGIState *giState ){
 	int i;
 	for( i=0; i<pLayerCount; i++ ){
-		pLayers[ i ]->RemoveGIState( giState );
+		pLayers[ i ]->RemoveAllGICascades( *giState );
 	}
 }
 
 void deoglRSkyInstance::DropAllGIStates(){
 	int i;
 	for( i=0; i<pLayerCount; i++ ){
-		pLayers[ i ]->RemoveAllGIStates();
+		pLayers[ i ]->RemoveAllGICascades();
 	}
 }
 

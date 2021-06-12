@@ -33,6 +33,7 @@
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/utils/decTimer.h>
 
+class deoglGICascade;
 class deoglRenderThread;
 class deoglRComponent;
 class deoglRWorld;
@@ -46,54 +47,18 @@ class deoglDCollisionFrustum;
  * Stores the state of global illumination. Typically every camera owns one state.
  */
 class deoglGIState{
-public:
-	/** Probe flags. */
-	enum eProbeFlags{
-		epfSmoothUpdate = 0x1,
-		epfDisabled = 0x2,
-		epfNearGeometry = 0x4,
-		epfValid = 0x8, //<! Probe has been updated at least once
-		epfRayCacheValid = 0x10, //<! Ray-Tracing ray cache is valid
-		epfInsideView = 0x20,
-		epfDynamicDisable = 0x40
-	};
-	
-	/** Probe parameters. */
-	struct sProbe{
-		decPoint3 coord; //<! Grid coordinates
-		decPoint3 shiftedCoord;
-		decVector position;
-		decVector offset;
-		decVector minExtend;
-		decVector maxExtend;
-		uint16_t index; //<! Grid index
-		uint8_t flags;
-		uint8_t countOffsetMoved;
-	};
-	
-	
-	
 private:
 	deoglRenderThread &pRenderThread;
 	
 	decVector pSize;
-	int pCascadeCount;
 	deoglRWorld *pWorld;
 	decLayerMask pLayerMask;
 	
-	decVector pProbeSpacing;
-	decVector pProbeSpacingInv;
 	decPoint3 pProbeCount;
 	decPoint3 pGridCoordClamp;
-	decVector pFieldSize;
-	decVector pFieldOrigin;
-	decVector pPositionClamp;
-	decVector pDynamicHalfEnlarge;
 	int pStrideProbeCount;
 	int pRealProbeCount;
 	
-	float pMaxDetectionRange;
-	decVector pDetectionBox;
 	deoglGIAreaTracker pAreaTracker;
 	
 	int pIrradianceMapSize;
@@ -111,22 +76,12 @@ private:
 	decVector2 pIrradianceMapScale;
 	decVector2 pDistanceMapScale;
 	
-	decDVector pPosition;
-	decDVector pLastRefPosition;
-	sProbe *pProbes;
-	decPoint pSampleImageSize;
-	decPoint3 pGridCoordShift;
-	
+	deoglGICascade **pCascades;
+	int pCascadeCount;
 	int pActiveCascade;
-	uint16_t *pAgedProbes;
-	uint16_t *pUpdateProbes;
-	int pUpdateProbeCount;
-	uint16_t *pRayCacheProbes;
-	int pRayCacheProbeCount;
 	
-	uint32_t *pClearProbes;
-	int pClearProbeCount;
-	bool pHasClearProbes;
+	decPoint pSampleImageSize;
+	
 	deObjectReference pUBOClearProbes;
 	
 	deoglArrayTexture pTexProbeIrradiance;
@@ -155,7 +110,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create global illumination state. */
-	deoglGIState( deoglRenderThread &renderThread, const decVector &size, int cascadeCount );
+	deoglGIState( deoglRenderThread &renderThread, const decVector &size );
 	
 	/** Clean up global illumination state. */
 	~deoglGIState();
@@ -186,75 +141,36 @@ public:
 	/** Set size of GI state invalidating certain volumes and probes. */
 // 	void SetSize( const decVector &size );
 	
-	/** Cascade count. */
-	inline int GetCascadeCount() const{ return pCascadeCount; }
-	
-	/** Probe spacing. */
-	inline const decVector &GetProbeSpacing() const{ return pProbeSpacing; }
-	
-	/** Probe spacing inverse. */
-	inline const decVector &GetProbeSpacingInverse() const{ return pProbeSpacingInv; }
-	
 	/** Probe count. */
 	inline const decPoint3 &GetProbeCount() const{ return pProbeCount; }
 	
 	/** Grid coord clamp. */
 	inline const decPoint3 &GetGridCoordClamp() const{ return pGridCoordClamp; }
 	
-	/** Probe field origin. */
-	inline const decVector &GetFieldOrigin() const{ return pFieldOrigin; }
+	/** Probe stride. */
+	inline int GetStrideProbeCount() const{ return pStrideProbeCount; }
 	
-	/** Size of probe field. */
-	inline const decVector &GetFieldSize() const{ return pFieldSize; }
+	/** Real probe count. */
+	inline int GetRealProbeCount() const{ return pRealProbeCount; }
 	
-	/** Position clamp. */
-	inline const decVector &GetPositionClamp() const{ return pPositionClamp; }
 	
-	/** Position. */
-	inline const decDVector &GetPosition() const{ return pPosition; }
+	
+	/** Cascade count. */
+	inline int GetCascadeCount() const{ return pCascadeCount; }
+	
+	/** Cascade at index. */
+	deoglGICascade &GetCascadeAt( int index ) const;
+	
+	/** Activate cascade. */
+	deoglGICascade &GetActiveCascade() const;
+	
+	/** Cascade to use for sky shadow casting based on the active cascade. */
+	deoglGICascade &GetSkyShadowCascade() const;
+	
+	
 	
 	/** Size of sample image. */
 	inline const decPoint &GetSampleImageSize() const{ return pSampleImageSize; }
-	
-	/**
-	 * Grid coordinate shift (wrapping around).
-	 * 
-	 * Shift is in the range from 0 to probeCount-1.
-	 */
-	inline const decPoint3 &GetGridCoordShift() const{ return pGridCoordShift; }
-	
-	
-	
-	/** Detection box. */
-	inline const decVector &GetDetectionBox() const{ return pDetectionBox; }
-	
-	
-	
-	/** Grid coordinates for probe index. */
-	decPoint3 ProbeIndex2GridCoord( int index ) const;
-	
-	/** Probe index for grid coordinates. */
-	int GridCoord2ProbeIndex( const decPoint3 &coord ) const;
-	
-	/** Probe index for grid coordinates. */
-	decVector Grid2Local( const decPoint3 &coord ) const;
-	
-	
-	
-	/** Grid coordinates closest to world position unclamped. */
-	decPoint3 World2Grid( const decDVector &position ) const;
-	
-	/** World position closest to grid. */
-	decDVector Grid2World( const decPoint3 &grid ) const;
-	
-	/** World coordinate of closest grid location. */
-	decDVector WorldClosestGrid( const decDVector &position ) const;
-	
-	/** Local grid coordinates to shifted grid coordinates. */
-	decPoint3 LocalGrid2ShiftedGrid( const decPoint3 &coord ) const;
-	
-	/** Shifted grid coordinates to local grid coordinates. */
-	decPoint3 ShiftedGrid2LocalGrid( const decPoint3 &coord ) const;
 	
 	
 	
@@ -270,6 +186,12 @@ public:
 	/** Distance map scale. */
 	inline const decVector2 &GetDistanceMapScale() const{ return pDistanceMapScale; }
 	
+	/** Depth sharpness. */
+	inline float GetDepthSharpness() const{ return pDepthSharpness; }
+	
+	/** Hysteresis. */
+	inline float GetHysteresis() const{ return pHysteresis; }
+	
 	/** Normal bias. */
 	inline float GetNormalBias() const{ return pNormalBias; }
 	
@@ -282,22 +204,7 @@ public:
 	/** Self shadow bias. */
 	inline float GetSelfShadowBias() const{ return pSelfShadowBias; }
 	
-	/** Calculate UBO self shadow bias value. */
-	float CalcUBOSelfShadowBias() const;
 	
-	/** Count of probes to update. */
-	inline int GetUpdateProbeCount() const{ return pUpdateProbeCount; }
-	
-	/** Count of probes to ray cache update. */
-	inline int GetRayCacheProbeCount() const{ return pRayCacheProbeCount; }
-	
-	
-	
-	/** Clear clear probes. */
-	void ClearClearProbes();
-	
-	/** Has clear probes. */
-	inline bool HasClearProbes() const{ return pHasClearProbes; }
 	
 	/** Clear probes UBO. */
 	inline deoglSPBlockUBO &GetUBOClearProbes() const{ return ( deoglSPBlockUBO& )( deObject& )pUBOClearProbes; }
@@ -356,12 +263,6 @@ public:
 	/** Probe moved. */
 	void ProbesMoved();
 	
-	/** Update probe offsets from probe offset shader result. */
-	void UpdateProbeOffsetFromShader();
-	
-	/** Update probe extends from probe extends shader result. */
-	void UpdateProbeExtendsFromShader();
-	
 	/** Invalidate area. */
 	void InvalidateArea( const decDVector &minExtend, const decDVector &maxExtend );
 	
@@ -392,20 +293,19 @@ public:
 	
 private:
 	void pCleanUp();
-	void pInitProbes();
+	void pInitCascades();
 	void pInitUBOClearProbes();
 	void pInvalidateAllRayCaches();
-	void pFindContent();
+	void pFindContent( const decDVector &position );
 	void pTrackInstanceChanges();
-	void pUpdatePosition( const decDVector &position );
-	void pPrepareTraceProbes( const deoglDCollisionFrustum &frustum );
-	void pFindProbesToUpdate( const deoglDCollisionFrustum &frustum );
-	void pAddUpdateProbes( uint8_t mask, uint8_t flags, int &lastIndex,
-		int &remainingMatchCount, int maxUpdateCount );
-	void pPrepareRayCacheProbes();
+	void pUpdateProbeOffsetFromShader( deoglGICascade &cascade );
+	void pUpdateProbeExtendsFromShader( deoglGICascade &cascade );
+	void pActivateNextCascade();
+	void pPrepareTraceProbes( deoglGICascade &cascade, const deoglDCollisionFrustum &frustum );
+	void pFindProbesToUpdate( deoglGICascade &cascade, const deoglDCollisionFrustum &frustum );
+	void pPrepareRayCacheProbes( deoglGICascade &cascade );
 	void pPrepareProbeTexturesAndFBO();
 	void pPrepareProbeVBO();
-	void pPrepareUBOParameters( int probeCount ) const;
 	void pPrepareUBORayDirections() const;
 };
 

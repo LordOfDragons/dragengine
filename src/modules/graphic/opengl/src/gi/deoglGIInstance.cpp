@@ -61,7 +61,7 @@ void deoglGIInstance::cComponentListener::ParentWorldChanged( deoglRComponent& )
 
 void deoglGIInstance::cComponentListener::LayerMaskChanged( deoglRComponent &component ){
 	if( component.GetLayerMask().IsNotEmpty()
-	&& pInstance.GetInstances().GetGIState().GetLayerMask().MatchesNot( component.GetLayerMask() ) ){
+	&& pInstance.GetInstances().GetGICascade().GetLayerMask().MatchesNot( component.GetLayerMask() ) ){
 		RemoveInstance();
 	}
 }
@@ -130,7 +130,7 @@ pChanged( false ),
 pMoved( false ),
 pRecheckDynamic( false )
 {
-	deoglRenderThread &renderThread = instances.GetGIState().GetRenderThread();
+	deoglRenderThread &renderThread = instances.GetGICascade().GetRenderThread();
 	
 	try{
 		pTBOMaterial = new deoglDynamicTBOUInt32( renderThread, 4 );
@@ -322,7 +322,7 @@ void deoglGIInstance::SetDirtyTUCs( bool dirty ){
 
 deoglDynamicTBOBlock *deoglGIInstance::GetBlockMaterial(){
 	if( ! pBlockMaterial ){
-		pBlockMaterial.TakeOver( pInstances.GetGIState().GetRenderThread().GetGI().GetBVH()
+		pBlockMaterial.TakeOver( pInstances.GetGICascade().GetRenderThread().GetGI().GetBVH()
 			.GetSharedTBOMaterial()->AddBlock( pTBOMaterial, pTBOMaterial2 ) );
 	}
 	return ( deoglDynamicTBOBlock* )( deObject* )pBlockMaterial;

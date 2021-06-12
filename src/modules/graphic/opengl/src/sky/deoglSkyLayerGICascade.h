@@ -19,26 +19,26 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef _DEOGLSKYLAYERTGISTATE_H_
-#define _DEOGLSKYLAYERTGISTATE_H_
+#ifndef _DEOGLSKYLAYERTGICASCADE_H_
+#define _DEOGLSKYLAYERTGICASCADE_H_
 
 #include "deoglSkyLayerTracker.h"
 #include "../component/deoglComponentSet.h"
 
 class deoglRSkyInstanceLayer;
-class deoglGIState;
+class deoglGICascade;
 class deoglShadowCaster;
 class deoglRComponent;
 
 
 
 /**
- * Sky instance layer GI State related data.
+ * Sky instance layer GI Cascade related data.
  */
-class deoglSkyLayerGIState{
+class deoglSkyLayerGICascade{
 private:
 	deoglRSkyInstanceLayer &pLayer;
-	const deoglGIState *pGIState;
+	const deoglGICascade &pGICascade;
 	deoglSkyLayerTracker pTracker;
 	decDVector pPosition;
 	double pPositionThreshold;
@@ -50,11 +50,11 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Create sky layer GI State. */
-	deoglSkyLayerGIState( deoglRSkyInstanceLayer &layer, const deoglGIState *giState );
+	/** Create sky layer GI Cascade. */
+	deoglSkyLayerGICascade( deoglRSkyInstanceLayer &layer, const deoglGICascade &cascade );
 	
-	/** Clean up sky layer GI State. */
-	~deoglSkyLayerGIState();
+	/** Clean up sky layer GI Cascade. */
+	~deoglSkyLayerGICascade();
 	/*@}*/
 	
 	
@@ -64,8 +64,8 @@ public:
 	/** Sky instance layer. */
 	inline deoglRSkyInstanceLayer &GetLayer() const{ return pLayer; }
 	
-	/** GI State. */
-	inline const deoglGIState *GetGIState() const{ return pGIState; }
+	/** GI Cascade. */
+	inline const deoglGICascade &GetGICascade() const{ return pGICascade; }
 	
 	/** Tracker. */
 	inline deoglSkyLayerTracker &GetTracker(){ return pTracker; }

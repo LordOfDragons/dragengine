@@ -25,10 +25,11 @@
 
 #include "deoglRSkyInstance.h"
 #include "deoglRSkyInstanceLayer.h"
-#include "deoglSkyLayerGIState.h"
+#include "deoglSkyLayerGICascade.h"
 #include "../delayedoperation/deoglDelayedDeletion.h"
 #include "../delayedoperation/deoglDelayedOperations.h"
-#include "../gi/deoglGIState.h"
+#include "../gi/deoglGICascade.h"
+#include "../gi/deoglGICascade.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTLogger.h"
 #include "../shadow/deoglShadowCaster.h"
@@ -37,22 +38,22 @@
 
 
 
-// Class deoglSkyLayerGIState
+// Class deoglSkyLayerGICascade
 ///////////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
 
-deoglSkyLayerGIState::deoglSkyLayerGIState( deoglRSkyInstanceLayer &layer, const deoglGIState *giState ) :
+deoglSkyLayerGICascade::deoglSkyLayerGICascade( deoglRSkyInstanceLayer &layer, const deoglGICascade &cascade ) :
 pLayer( layer ),
-pGIState( giState ),
+pGICascade( cascade ),
+pPosition( cascade.GetPosition() ),
 pPositionThreshold( 5.0 ),
 pShadowCaster( NULL ),
 pDirtyStaticShadow( true )
 {
 	try{
 		pTracker.SetThresholdOrientation( deoglSkyLayerTracker::THRESHOLD_ONE_DEGREE_ORIENTATION * 5.0f );
-		
 		pShadowCaster = new deoglShadowCaster( layer.GetInstance().GetRenderThread() );
 		
 	}catch( const deException & ){
@@ -61,7 +62,7 @@ pDirtyStaticShadow( true )
 	}
 }
 
-deoglSkyLayerGIState::~deoglSkyLayerGIState(){
+deoglSkyLayerGICascade::~deoglSkyLayerGICascade(){
 	pCleanUp();
 }
 
@@ -70,9 +71,9 @@ deoglSkyLayerGIState::~deoglSkyLayerGIState(){
 // Management
 ///////////////
 
-void deoglSkyLayerGIState::Update(){
-	if( ( pGIState->GetPosition() - pPosition ).Length() >= pPositionThreshold ){
-		pPosition = pGIState->GetPosition();
+void deoglSkyLayerGICascade::Update(){
+	if( ( pGICascade.GetPosition() - pPosition ).Length() >= pPositionThreshold ){
+		pPosition = pGICascade.GetPosition();
 		pDirtyStaticShadow = true;
 	}
 	
@@ -80,11 +81,11 @@ void deoglSkyLayerGIState::Update(){
 	pDirtyStaticShadow |= pTracker.UpdateLightOrientation( pLayer.GetLightOrientation() );
 }
 
-void deoglSkyLayerGIState::ClearDirtyStaticShadow(){
+void deoglSkyLayerGICascade::ClearDirtyStaticShadow(){
 	pDirtyStaticShadow = false;
 }
 
-void deoglSkyLayerGIState::NotifyUpdateStaticComponent( deoglRComponent* ){
+void deoglSkyLayerGICascade::NotifyUpdateStaticComponent( deoglRComponent* ){
 	// TODO if the component is too small do not mark dirty
 	
 	// we could do things complicated here to dirty static shadow maps only in the most
@@ -98,14 +99,14 @@ void deoglSkyLayerGIState::NotifyUpdateStaticComponent( deoglRComponent* ){
 // Private Functions
 //////////////////////
 
-class deoglSkyLayerGIStateDeletion : public deoglDelayedDeletion{
+class deoglSkyLayerGICascadeDeletion : public deoglDelayedDeletion{
 public:
 	deoglShadowCaster *shadowCaster;
 	
-	deoglSkyLayerGIStateDeletion() : shadowCaster( NULL ){
+	deoglSkyLayerGICascadeDeletion() : shadowCaster( NULL ){
 	}
 	
-	virtual ~deoglSkyLayerGIStateDeletion(){
+	virtual ~deoglSkyLayerGICascadeDeletion(){
 	}
 	
 	virtual void DeleteObjects( deoglRenderThread& ){
@@ -115,12 +116,12 @@ public:
 	}
 };
 
-void deoglSkyLayerGIState::pCleanUp(){
+void deoglSkyLayerGICascade::pCleanUp(){
 	// delayed deletion of opengl containing objects
-	deoglSkyLayerGIStateDeletion *delayedDeletion = NULL;
+	deoglSkyLayerGICascadeDeletion *delayedDeletion = NULL;
 	
 	try{
-		delayedDeletion = new deoglSkyLayerGIStateDeletion;
+		delayedDeletion = new deoglSkyLayerGICascadeDeletion;
 		delayedDeletion->shadowCaster = pShadowCaster;
 		pLayer.GetInstance().GetRenderThread().GetDelayedOperations().AddDeletion( delayedDeletion );
 		
