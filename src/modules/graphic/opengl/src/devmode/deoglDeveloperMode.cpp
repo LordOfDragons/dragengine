@@ -476,6 +476,10 @@ bool deoglDeveloperMode::ExecuteCommand( const decUnicodeArgumentList &command, 
 			}else if( command.MatchesArgumentAt( 0, "dm_gi_show_probe_update" ) ){
 				pCmdGIShowProbeUpdate( command, answer );
 				result = true;
+				
+			}else if( command.MatchesArgumentAt( 0, "dm_gi_show_cascade" ) ){
+				pCmdGIShowCascade( command, answer );
+				result = true;
 			}
 		}
 		
@@ -532,6 +536,7 @@ void deoglDeveloperMode::pCmdHelp( const decUnicodeArgumentList &command, decUni
 	answer.AppendFromUTF8( "dm_gi_show_probes [1|0] => Display GI probes.\n" );
 	answer.AppendFromUTF8( "dm_gi_show_probe_offsets [1|0] => Display GI probe offsets.\n" );
 	answer.AppendFromUTF8( "dm_gi_show_probe_update [1|0] => Display GI probe update information.\n" );
+	answer.AppendFromUTF8( "dm_gi_show_cascade [0..maxCascaded] => GI Cascade to show.\n" );
 }
 
 void deoglDeveloperMode::pCmdEnable( const decUnicodeArgumentList &command, decUnicodeString &answer ){
@@ -1333,6 +1338,10 @@ void deoglDeveloperMode::pCmdGIShowProbeUpdate( const decUnicodeArgumentList &co
 	pBaseCmdBool( command, answer, pGIShowProbeUpdate, "dm_gi_show_probe_update" );
 }
 
+void deoglDeveloperMode::pCmdGIShowCascade( const decUnicodeArgumentList &command, decUnicodeString &answer ){
+	pBaseCmdInt( command, answer, pGIShowCascade, "dm_gi_show_cascade" );
+}
+
 
 bool deoglDeveloperMode::pBaseCmdBool( const decUnicodeArgumentList &command,
 decUnicodeString &answer, bool &variable, const char *commandName ){
@@ -1345,6 +1354,21 @@ decUnicodeString &answer, bool &variable, const char *commandName ){
 	
 	decString text;
 	text.Format( "%s = %s\n", commandName, variable ? "true" : "false" );
+	answer.AppendFromUTF8( text );
+	
+	return variable != oldValue;
+}
+
+bool deoglDeveloperMode::pBaseCmdInt( const decUnicodeArgumentList &command,
+decUnicodeString &answer, int &variable, const char *commandName ){
+	const int oldValue = variable;
+	
+	if( command.GetArgumentCount() == 2 ){
+		variable = command.GetArgumentAt( 1 )->ToInt();
+	}
+	
+	decString text;
+	text.Format( "%s = %d\n", commandName, variable );
 	answer.AppendFromUTF8( text );
 	
 	return variable != oldValue;

@@ -390,7 +390,7 @@ void deoglGIState::pInitCascades(){
 	const decVector largestSpacing( pSize.x / ( float )pGridCoordClamp.x,
 		pSize.y / ( float )pGridCoordClamp.y, pSize.z / ( float )pGridCoordClamp.z );
 	const float scaleFactor2nd = 2.0f;
-	const float scaleFactor3rd = 0.25f;
+	const float scaleFactor3rd = 1.0f / 3.0f;
 	
 	pCascades[ 0 ] = new deoglGICascade( *this, 0, smallestSpacing );
 	pCascadeCount = 1;
@@ -398,11 +398,24 @@ void deoglGIState::pInitCascades(){
 	pCascades[ 1 ] = new deoglGICascade( *this, 1, smallestSpacing * scaleFactor2nd );
 	pCascadeCount = 2;
 	
-	pCascades[ 2 ] = new deoglGICascade( *this, 2, largestSpacing * scaleFactor3rd );
+	pCascades[ 2 ] = new deoglGICascade( *this, 2,
+		( smallestSpacing * scaleFactor2nd ).Mix( largestSpacing, scaleFactor3rd ) );
 	pCascadeCount = 3;
 	
 	pCascades[ 3 ] = new deoglGICascade( *this, 3, largestSpacing );
 	pCascadeCount = 4;
+	
+	// debug
+	deoglRTLogger &logger = pRenderThread.GetLogger();
+	logger.LogInfo( "GI Cascades:" );
+	int i;
+	for( i=0; i<pCascadeCount; i++ ){
+		const decVector &size = pCascades[ i ]->GetFieldSize();
+		const decVector &spacing = pCascades[ i ]->GetProbeSpacing();
+		const decVector &detbox = pCascades[ i ]->GetDetectionBox();
+		logger.LogInfoFormat( "- %d: size=(%g,%g,%g) spacing=(%g,%g,%g) detbox=(%g,%g,%g)", i,
+			size.x, size.y, size.z, spacing.x, spacing.y, spacing.z, detbox.x, detbox.y, detbox.z );
+	}
 }
 
 void deoglGIState::pInitUBOClearProbes(){

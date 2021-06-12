@@ -983,7 +983,7 @@ void deoglRenderGI::RenderDebugOverlay( deoglRenderPlan &plan ){
 		return;
 	}
 	
-	const deoglGICascade &cascade = giState->GetCascadeAt( 0 ); // not active to keep it stable
+	const deoglGICascade &cascade = giState->GetCascadeAt( devmode.GetGIShowCascade() );
 	
 	const decPoint3 &probeCount = giState->GetProbeCount();
 	const decDMatrix matrixC( decDMatrix::CreateTranslation( cascade.GetPosition()

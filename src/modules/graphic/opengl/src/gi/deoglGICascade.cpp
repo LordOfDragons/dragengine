@@ -275,9 +275,9 @@ void deoglGICascade::UpdatePosition( const decDVector &position ){
 	// excessive updates if the position oscillates around grid boundaries. this can
 	// happen with player cameras affected by view bobbing
 	const decDVector refPosDiff( ( position - pLastRefPosition ).Absolute() );
-	const bool refPosKeepX = refPosDiff.x < pProbeSpacing.x * 0.8;
-	const bool refPosKeepY = refPosDiff.y < pProbeSpacing.y * 0.8;
-	const bool refPosKeepZ = refPosDiff.z < pProbeSpacing.z * 0.8;
+	const bool refPosKeepX = refPosDiff.x < ( double )pProbeSpacing.x * 0.8;
+	const bool refPosKeepY = refPosDiff.y < ( double )pProbeSpacing.y * 0.8;
+	const bool refPosKeepZ = refPosDiff.z < ( double )pProbeSpacing.z * 0.8;
 	
 	if( refPosKeepX && refPosKeepY && refPosKeepZ ){
 		return;
@@ -325,7 +325,16 @@ void deoglGICascade::UpdatePosition( const decDVector &position ){
 	
 	// set the new tracing position
 	pPosition = closestPosition;
-	pLastRefPosition = position;
+	
+	if( ! refPosKeepX ){
+		pLastRefPosition.x = position.x;
+	}
+	if( ! refPosKeepY ){
+		pLastRefPosition.y = position.y;
+	}
+	if( ! refPosKeepZ ){
+		pLastRefPosition.z = position.z;
+	}
 	
 	// update shift
 	pGridCoordShift -= gridOffset;
