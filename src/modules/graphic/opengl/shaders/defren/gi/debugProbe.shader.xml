@@ -18,6 +18,7 @@
 	<parameter name='pMatrixMVP'/> <!-- 2 -->
 	<parameter name='pMatrixP'/> <!-- 3 -->
 	<parameter name='pGIGridCoordShift'/> <!-- 4 -->
+	<parameter name='pGIDebugCascade'/> <!-- 5 -->
 	
 	<attribute name='inPosition' target='0'/>
 	

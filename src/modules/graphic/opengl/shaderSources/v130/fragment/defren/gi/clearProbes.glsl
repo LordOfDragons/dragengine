@@ -50,6 +50,6 @@ void main( void ){
 	#ifdef MAP_IRRADIANCE
 		outValue = vec4( 0, 0, 0, 1 );
 	#else
-		outValue = vec4( 4, 16, 0, 1 );
+		outValue = vec4( pGIMaxProbeDistance, pGIMaxProbeDistance * pGIMaxProbeDistance, 0, 1 );
 	#endif
 }

@@ -9,6 +9,7 @@ precision highp int;
 #include "v130/shared/defren/gi/probe_flags.glsl"
 
 uniform ivec3 pGIGridCoordShift; // grid coordinate shift (wrapping around)
+uniform int pGIDebugCascade;
 uniform ivec3 pParams; // probeSize, spaceSize, groupSpaceSize
 uniform vec4 pPlaneLeft;
 uniform vec4 pPlaneRight;
@@ -75,7 +76,7 @@ void main( void ){
 	probeCoord = giGridShiftToLocal( probeCoord );
 	int index = giCoordToIndex( probeCoord );
 	
-	uint flags = gipoProbeFlags( probeCoord, 0 ); // TODO 0=cascade
+	uint flags = gipoProbeFlags( probeCoord, pGIDebugCascade );
 	bool disabled = ( flags & gipfDisabled ) == gipfDisabled;
 	bool nearGeometry = ( flags & gipfNearGeometry ) == gipfNearGeometry;
 	

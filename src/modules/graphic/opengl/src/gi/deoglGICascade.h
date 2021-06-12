@@ -140,6 +140,9 @@ public:
 	/** Detection box. */
 	inline const decVector &GetDetectionBox() const{ return pDetectionBox; }
 	
+	/** Max probe distance. */
+	inline float GetMaxProbeDistance() const{ return pMaxProbeDistance; }
+	
 	
 	
 	/** Grid coordinates for probe index. */

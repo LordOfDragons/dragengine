@@ -54,7 +54,7 @@ void fragmentCode( in ivec3 probeCoord, in ivec2 texCoord ){
 	// the previous offset has to be added to the new offset for it to be correct.
 	// probeCoord is local. we need it though shifted
 	vec3 gridPosition = pGIGridProbeSpacing * vec3( giGridLocalToShift( probeCoord ) ) + pGIGridOrigin;
-	vec3 prevGSOffset = probePosition - gridPosition;
+	vec3 prevOffset = probePosition - gridPosition;
 	
 	// max offset test scaling factor
 	vec3 moveMaxOffsetFactor = vec3( 1.0 ) / pGIMoveMaxOffset;
@@ -118,7 +118,7 @@ void fragmentCode( in ivec3 probeCoord, in ivec2 texCoord ){
 			if( rayDistance < closestBackDistance ){
 				vec3 direction = rayDirection + hitNormal * pGIMoveMinDistToSurface;
 				
-				if( length( ( prevGSOffset + direction ) * moveMaxOffsetFactor ) < 1.0 ){
+				if( length( ( prevOffset + direction ) * moveMaxOffsetFactor ) < 1.0 ){
 					// consider backface ray only if not leaving allowed area
 					closestBackOffset = direction;
 					closestBackDistance = rayDistance;
@@ -152,7 +152,7 @@ void fragmentCode( in ivec3 probeCoord, in ivec2 texCoord ){
 	// position used for ray tracing contains the previous update probe offset.
 	// the previous offset has to be added to the new offset for it to be correct.
 	// probeCoord is local. we need it though shifted
-	vGSOffset.xyz += prevGSOffset;
+	vGSOffset.xyz += prevOffset;
 	
 	uint flags = uint( pGIProbePosition[ gl_InstanceID ].w );
 	flags &= ~( gipfDisabled | gipfDynamicDisable );
@@ -178,7 +178,7 @@ void fragmentCode( in ivec3 probeCoord, in ivec2 texCoord ){
 		if( assumeInGeometry ){
 			// offset due to backface hit would move outside allowed range. do not move and
 			// disable the probe. this also prevents future processing of the probe
-			vGSOffset.xyz = prevGSOffset;
+			vGSOffset.xyz = prevOffset;
 			flags |= gipfDisabled;
 			
 		}else{

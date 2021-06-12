@@ -471,17 +471,15 @@ void deoglGICascade::FindProbesToUpdate( const deoglDCollisionFrustum &frustum )
 	}
 	
 	// add probes by priority:
-	// - invalid probes inside view. expensive updates. at most 1/2 count
-	// - invalid probes outside view. expensive updates. at most 1/2 count
-	// - valid requiring cache update probes inside view. expensive updates. at most 1/2 count
-	// - valid requiring cache update probes outside view. expensive updates. at most 1/2 count
-	// - valid requiring dynamic update probes inside view. cheap updates. at most 80% count
-	// - valid requiring dynamic update probes outside view. cheap updates. fill up to max count
 	const int mask = epfValid | epfInsideView | epfDisabled | epfDynamicDisable | epfRayCacheValid;
 	int last = realProbeCount;
 	
-	const int maxUpdateCountExpensive = maxUpdateCount / 2;
-	int maxUpdateCountExpensiveOutside = maxUpdateCountExpensive / 5; // 20%
+	// - invalid probes inside view. expensive updates. at most 50% count
+	// - invalid probes outside view. expensive updates. at most 50% count
+	// - valid requiring cache update probes inside view. expensive updates. at most 50% count
+	// - valid requiring cache update probes outside view. expensive updates. at most 50% count
+	const int maxUpdateCountExpensive = maxUpdateCount * 0.5f; // 50%
+	int maxUpdateCountExpensiveOutside = maxUpdateCountExpensive * 0.2f; // 20%
 	int maxUpdateCountExpensiveInside = maxUpdateCountExpensive - maxUpdateCountExpensiveOutside; // 80%
 	
 	pAddUpdateProbes( mask, epfInsideView, last, maxUpdateCountExpensiveInside, maxUpdateCount );
@@ -490,15 +488,24 @@ void deoglGICascade::FindProbesToUpdate( const deoglDCollisionFrustum &frustum )
 	pAddUpdateProbes( mask, 0, last, maxUpdateCountExpensiveOutside, maxUpdateCount );
 	pAddUpdateProbes( mask, epfValid, last, maxUpdateCountExpensiveOutside, maxUpdateCount );
 	
+	// - valid requiring dynamic update probes inside view. cheap updates. at most 80% count
+	// - valid requiring dynamic update probes outside view. cheap updates. fill up to max count
 	const int maxUpdateCountCheap = maxUpdateCount - pUpdateProbeCount;
-	int maxUpdateCountCheapOutside = maxUpdateCountCheap / 5; // 20%
+	int maxUpdateCountCheapOutside = maxUpdateCountCheap * 0.2f; // 20%
 	int maxUpdateCountCheapInside = maxUpdateCountCheap - maxUpdateCountCheapOutside; // 80%
 	
 	pAddUpdateProbes( mask, epfValid | epfInsideView | epfRayCacheValid, last, maxUpdateCountCheapInside, maxUpdateCount );
 	
-	maxUpdateCountCheapOutside = maxUpdateCount - pUpdateProbeCount;
+	int fillUpCount = maxUpdateCount - pUpdateProbeCount;
+	pAddUpdateProbes( mask, epfValid | epfRayCacheValid, last, fillUpCount, maxUpdateCount );
 	
-	pAddUpdateProbes( mask, epfValid | epfRayCacheValid, last, maxUpdateCountCheapOutside, maxUpdateCount );
+	// if there are still slots free fill up with expensive updates inside view
+	pAddUpdateProbes( mask, epfInsideView, last, fillUpCount, maxUpdateCount );
+	pAddUpdateProbes( mask, epfValid | epfInsideView, last, fillUpCount, maxUpdateCount );
+	
+	// if there are still slots free fill up with expensive updates outside view
+	pAddUpdateProbes( mask, 0, last, fillUpCount, maxUpdateCount );
+	pAddUpdateProbes( mask, epfValid, last, fillUpCount, maxUpdateCount );
 	
 	// finish the aged probe list to make it valid again
 	for( i=0; i<pUpdateProbeCount; i++ ){
@@ -761,6 +768,8 @@ void deoglGICascade::pInitProbes(){
 		probe.minExtend = -pFieldSize;
 		probe.maxExtend = pFieldSize;
 		probe.coord = ProbeIndex2GridCoord( i );
+		probe.shiftedCoord = LocalGrid2ShiftedGrid( probe.coord );
+		probe.position = Grid2Local( probe.shiftedCoord );
 		
 		pAgedProbes[ i ] = i;
 	}

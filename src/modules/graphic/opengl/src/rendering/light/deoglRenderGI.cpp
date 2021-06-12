@@ -116,12 +116,27 @@ enum eSPDebugProbe{
 	spdpMatrixMV,
 	spdpMatrixMVP,
 	spdpMatrixP,
-	spdpGIGridCoordShift
+	spdpGIGridCoordShift,
+	spdpGIDebugCascade
 };
 
 enum eSPDebugProbeOffset{
 	spdpoMatrixMVP,
-	spdpoGIGridCoordShift
+	spdpoGIGridCoordShift,
+	spdpoGIDebugCascade
+};
+
+enum eSPDebugProbeUpdate{
+	spdpuPosTransform,
+	spdpuTCTransform,
+	spdpuGIGridCoordShift,
+	spdpuGIDebugCascade,
+	spdpuParams,
+	spdpuPlaneLeft,
+	spdpuPlaneRight,
+	spdpuPlaneTop,
+	spdpuPlaneBottom,
+	spdpuPlaneNear
 };
 
 
@@ -1008,6 +1023,7 @@ void deoglRenderGI::RenderDebugOverlay( deoglRenderPlan &plan ){
 		shaderProbe.SetParameterDMatrix4x4( spdpMatrixMVP, matrixCP );
 		shaderProbe.SetParameterDMatrix4x4( spdpMatrixP, matrixP );
 		shaderProbe.SetParameterPoint3( spdpGIGridCoordShift, giState->GetProbeCount() - cascade.GetGridCoordShift() );
+		shaderProbe.SetParameterInt( spdpGIDebugCascade, cascade.GetIndex() );
 		
 		pActivateGIUBOs();
 		
@@ -1035,6 +1051,7 @@ void deoglRenderGI::RenderDebugOverlay( deoglRenderPlan &plan ){
 		shaderOffset.Activate();
 		shaderOffset.SetParameterDMatrix4x4( spdpoMatrixMVP, matrixCP );
 		shaderOffset.SetParameterPoint3( spdpoGIGridCoordShift, giState->GetProbeCount() - cascade.GetGridCoordShift() );
+		shaderOffset.SetParameterInt( spdpoGIDebugCascade, cascade.GetIndex() );
 		
 		pActivateGIUBOs();
 		
@@ -1079,12 +1096,14 @@ void deoglRenderGI::RenderDebugOverlay( deoglRenderPlan &plan ){
 		deoglShaderCompiled &shader2a = *pShaderDebugProbeUpdatePass1->GetCompiled();
 		shader2a.Activate();
 		
-		shader2a.SetParameterFloat( 0, scale.x * size.x, scale.y * size.y,
+		shader2a.SetParameterFloat( spdpuPosTransform, scale.x * size.x, scale.y * size.y,
 			scale.x * position.x * 2.0f + offset.x, scale.y * position.y * 2.0f + offset.y );
-		shader2a.SetParameterFloat( 1, ( float )size.x * 0.5f, ( float )size.y * -0.5f,
+		shader2a.SetParameterFloat( spdpuTCTransform, ( float )size.x * 0.5f, ( float )size.y * -0.5f,
 			( float )size.x * 0.5, ( float )size.y * 0.5f );
-		shader2a.SetParameterPoint3( 2, giState->GetProbeCount() - cascade.GetGridCoordShift() );
-		shader2a.SetParameterInt( 3, probeSize, probeSpacing, groupSpacing );
+		shader2a.SetParameterPoint3( spdpuGIGridCoordShift,
+			giState->GetProbeCount() - cascade.GetGridCoordShift() );
+		shader2a.SetParameterInt( spdpuGIDebugCascade, cascade.GetIndex() );
+		shader2a.SetParameterInt( spdpuParams, probeSize, probeSpacing, groupSpacing );
 		
 		const deoglDCollisionFrustum &frustum = *plan.GetUseFrustum();
 		
@@ -1103,12 +1122,17 @@ void deoglRenderGI::RenderDebugOverlay( deoglRenderPlan &plan ){
 		const float fdbottom = frustum.GetBottomDistance() - fnbottom * fmove - fpshift;
 		const float fdnear = frustum.GetNearDistance() - fnnear * fmove - fpshift;
 		
-		shader2a.SetParameterFloat( 4, ( float )fnleft.x, ( float )fnleft.y, ( float )fnleft.z, ( float )fdleft );
-		shader2a.SetParameterFloat( 5, ( float )fnright.x, ( float )fnright.y, ( float )fnright.z, ( float )fdright );
-		shader2a.SetParameterFloat( 6, ( float )fntop.x, ( float )fntop.y, ( float )fntop.z, ( float )fdtop );
-		shader2a.SetParameterFloat( 7, ( float )fnbottom.x, ( float )fnbottom.y, ( float )fnbottom.z, ( float )fdbottom );
-		shader2a.SetParameterFloat( 8, ( float )fnnear.x, ( float )fnnear.y, ( float )fnnear.z, ( float )fdnear );
-
+		shader2a.SetParameterFloat( spdpuPlaneLeft,
+			( float )fnleft.x, ( float )fnleft.y, ( float )fnleft.z, ( float )fdleft );
+		shader2a.SetParameterFloat( spdpuPlaneRight,
+			( float )fnright.x, ( float )fnright.y, ( float )fnright.z, ( float )fdright );
+		shader2a.SetParameterFloat( spdpuPlaneTop,
+			( float )fntop.x, ( float )fntop.y, ( float )fntop.z, ( float )fdtop );
+		shader2a.SetParameterFloat( spdpuPlaneBottom,
+			( float )fnbottom.x, ( float )fnbottom.y, ( float )fnbottom.z, ( float )fdbottom );
+		shader2a.SetParameterFloat( spdpuPlaneNear,
+			( float )fnnear.x, ( float )fnnear.y, ( float )fnnear.z, ( float )fdnear );
+		
 		pActivateGIUBOs();
 		
 		OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
@@ -1117,12 +1141,13 @@ void deoglRenderGI::RenderDebugOverlay( deoglRenderPlan &plan ){
 		deoglShaderCompiled &shader2b = *pShaderDebugProbeUpdatePass2->GetCompiled();
 		shader2b.Activate();
 		
-		shader2b.SetParameterFloat( 0, scale.x * 2.0f, scale.y * 2.0f,
+		shader2b.SetParameterFloat( spdpuPosTransform, scale.x * 2.0f, scale.y * 2.0f,
 			scale.x * 2.0f * position.x - 1.0f, scale.y * 2.0f * position.y - 1.0f );
-		shader2b.SetParameterFloat( 1, ( float )size.x * 0.5f, ( float )size.y * -0.5f,
+		shader2b.SetParameterFloat( spdpuTCTransform, ( float )size.x * 0.5f, ( float )size.y * -0.5f,
 			( float )size.x * 0.5, ( float )size.y * 0.5f );
-		shader2b.SetParameterPoint3( 2, giState->GetProbeCount() - cascade.GetGridCoordShift() );
-		shader2b.SetParameterInt( 3, probeSize, probeSpacing, groupSpacing );
+		shader2b.SetParameterPoint3( spdpuGIGridCoordShift, giState->GetProbeCount() - cascade.GetGridCoordShift() );
+		shader2b.SetParameterInt( spdpuGIDebugCascade, cascade.GetIndex() );
+		shader2b.SetParameterInt( spdpuParams, probeSize, probeSpacing, groupSpacing );
 		
 		pActivateGIUBOs();
 		OGL_CHECK( renderThread, pglDrawArraysInstanced( GL_TRIANGLE_FAN, 0, 4, cascade.GetUpdateProbeCount() ) );

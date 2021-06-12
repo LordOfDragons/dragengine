@@ -10,6 +10,7 @@ precision highp int;
 uniform mat4x3 pMatrixMV;
 uniform mat4 pMatrixP;
 uniform ivec3 pGIGridCoordShift; // grid coordinate shift (wrapping around)
+uniform int pGIDebugCascade;
 
 in vec2 inPosition;
 
@@ -30,7 +31,7 @@ ivec3 giGridShiftToLocal( in ivec3 shifted ){
 void main( void ){
 	ivec3 probeCoord = giIndexToCoord( gl_InstanceID );
 	vProbeCoord = giGridShiftToLocal( probeCoord );
-	vProbePosition = pGIGridProbeSpacing * vec3( probeCoord ) + gipoProbeOffset( vProbeCoord, 0 ); // TODO 0=cascade
+	vProbePosition = pGIGridProbeSpacing * vec3( probeCoord ) + gipoProbeOffset( vProbeCoord, pGIDebugCascade );
 	vTexCoord = inPosition;
 	
 	vec3 center = pMatrixMV * vec4( vProbePosition, 1.0 );

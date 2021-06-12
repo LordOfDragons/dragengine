@@ -10,6 +10,7 @@ precision highp int;
 #include "v130/shared/defren/gi/probe_flags.glsl"
 
 uniform mat4x3 pMatrixNormal;
+uniform int pGIDebugCascade;
 
 uniform lowp sampler2DArray texGIIrradiance;
 
@@ -39,7 +40,7 @@ void main( void ){
 		const float pi = 3.1415926538;
 		float angle = 0.5 - atan( vTexCoord.x, -vTexCoord.y ) / ( pi * 2.0 );
 		
-		uint flags = gipoProbeFlags( vProbeCoord, 0 ); // TODO 0=cascade
+		uint flags = gipoProbeFlags( vProbeCoord, pGIDebugCascade );
 		
 		if( angle < 0.35 || angle > 0.65 ){
 			const vec3 colorEnabled = vec3( 0, 1, 0 );
@@ -58,7 +59,7 @@ void main( void ){
 		direction = vec3( direction * pMatrixNormal ); // inverse order does transpose();
 		
 		vec3 texCoord = vec3( giTCFromDirection( normalize( direction ),
-			vProbeCoord, pGIIrradianceMapScale, pGIIrradianceMapSize ), 0 ); // TODO 0=cascde
+			vProbeCoord, pGIIrradianceMapScale, pGIIrradianceMapSize ), pGIDebugCascade );
 		vec3 irradiance = texture( texGIIrradiance, texCoord ).rgb;
 		irradiance = pow( irradiance, vec3( pGIIrradianceGamma ) );
 		irradiance /= vec3( 4.0 ); // squash HDRR a bit

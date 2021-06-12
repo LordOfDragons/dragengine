@@ -242,7 +242,7 @@ void deoglGIState::Update( const decDVector &cameraPosition, const deoglDCollisi
 	deoglGICascade &cascade = GetActiveCascade();
 	cascade.UpdatePosition( cameraPosition );
 		// HACK temporary since we need to highest cascade for shadow casting
-		pCascades[ pCascadeCount - 1 ]->UpdatePosition( cameraPosition );
+		if(pActiveCascade != pCascadeCount-1) pCascades[ pCascadeCount - 1 ]->UpdatePosition( cameraPosition );
 		// HACK temporary since we need to highest cascade for shadow casting
 	SPECIAL_TIMER_PRINT("UpdatePosition")
 	
@@ -624,7 +624,9 @@ void deoglGIState::pPrepareProbeTexturesAndFBO(){
 		OGL_CHECK( pRenderThread, pglClearBufferfv( GL_COLOR, 0, &clearIrradiance[ 0 ] ) );
 		
 		pRenderThread.GetFramebuffer().Activate( &pFBOProbeDistance );
-		const GLfloat clearDistance[ 4 ] = { 4.0f, 4.0f, 4.0f, 16.0f };
+		const GLfloat maxProbeDistance = pCascades[ pCascadeCount - 1]->GetMaxProbeDistance();
+		const GLfloat clearDistance[ 4 ] = { maxProbeDistance, maxProbeDistance,
+			maxProbeDistance, maxProbeDistance * maxProbeDistance };
 		OGL_CHECK( pRenderThread, pglClearBufferfv( GL_COLOR, 0, &clearDistance[ 0 ] ) );
 		
 		pRenderThread.GetFramebuffer().Activate( &pFBOProbeOffset );

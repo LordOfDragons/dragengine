@@ -9,6 +9,7 @@ precision highp int;
 
 uniform mat4 pMatrixMVP;
 uniform ivec3 pGIGridCoordShift; // grid coordinate shift (wrapping around)
+uniform int pGIDebugCascade;
 
 in vec2 inPosition;
 
@@ -33,7 +34,7 @@ void main( void ){
 		
 	}else{
 		vColor = vec3( 1.0, 0.0, 0.0 );
-		probePosition += gipoProbeOffset( giGridShiftToLocal( probeCoord ), 0 ); // TODO 0=cascade
+		probePosition += gipoProbeOffset( giGridShiftToLocal( probeCoord ), pGIDebugCascade );
 	}
 	
 	gl_Position = pMatrixMVP * vec4( probePosition, 1.0 );
