@@ -71,6 +71,7 @@ private:
 	decVector pFieldOrigin;
 	decVector pPositionClamp;
 	decVector pDynamicHalfEnlarge;
+	bool pFillUpUpdatesWithExpensiveProbes;
 	
 	float pMaxDetectionRange;
 	decVector pDetectionBox;
@@ -142,6 +143,12 @@ public:
 	
 	/** Max probe distance. */
 	inline float GetMaxProbeDistance() const{ return pMaxProbeDistance; }
+	
+	/** Fill up update slots with expensive probes on large position changes. */
+	inline bool GetFillUpUpdatesWithExpensiveProbes() const{ return pFillUpUpdatesWithExpensiveProbes; }
+	
+	/** Fill up update slots with expensive probes on large position changes. */
+	void SetFillUpUpdatesWithExpensiveProbes( bool fillUp );
 	
 	
 	

@@ -33,6 +33,7 @@
 #include "../component/deoglRComponentLOD.h"
 #include "../model/deoglModelLOD.h"
 #include "../renderthread/deoglRenderThread.h"
+#include "../renderthread/deoglRTLogger.h"
 #include "../texture/texunitsconfig/deoglTexUnitsConfig.h"
 #include "../tbo/deoglDynamicTBOBlock.h"
 #include "../tbo/deoglDynamicTBOFloat16.h"
@@ -61,7 +62,7 @@ void deoglGIInstance::cComponentListener::ParentWorldChanged( deoglRComponent& )
 
 void deoglGIInstance::cComponentListener::LayerMaskChanged( deoglRComponent &component ){
 	if( component.GetLayerMask().IsNotEmpty()
-	&& pInstance.GetInstances().GetGICascade().GetLayerMask().MatchesNot( component.GetLayerMask() ) ){
+	&& pInstance.GetInstances().GetGIState().GetLayerMask().MatchesNot( component.GetLayerMask() ) ){
 		RemoveInstance();
 	}
 }
@@ -75,7 +76,10 @@ void deoglGIInstance::cComponentListener::OcclusionMeshChanged( deoglRComponent&
 // 	ChangeInstance();
 }
 
+// #include "../model/deoglRModel.h"
 void deoglGIInstance::cComponentListener::TexturesChanged( deoglRComponent& ){
+// 		pInstance.GetInstances().GetGIState().GetRenderThread().GetLogger().LogInfoFormat(
+// 			"GIInstance TexturesChanged %s\n", c.GetModel()->GetFilename().GetString());
 	ChangeInstance();
 	pInstance.SetRecheckDynamic( true );
 	pInstance.SetDirtyTUCs( true );
@@ -130,7 +134,7 @@ pChanged( false ),
 pMoved( false ),
 pRecheckDynamic( false )
 {
-	deoglRenderThread &renderThread = instances.GetGICascade().GetRenderThread();
+	deoglRenderThread &renderThread = instances.GetGIState().GetRenderThread();
 	
 	try{
 		pTBOMaterial = new deoglDynamicTBOUInt32( renderThread, 4 );
@@ -322,7 +326,7 @@ void deoglGIInstance::SetDirtyTUCs( bool dirty ){
 
 deoglDynamicTBOBlock *deoglGIInstance::GetBlockMaterial(){
 	if( ! pBlockMaterial ){
-		pBlockMaterial.TakeOver( pInstances.GetGICascade().GetRenderThread().GetGI().GetBVH()
+		pBlockMaterial.TakeOver( pInstances.GetGIState().GetRenderThread().GetGI().GetBVH()
 			.GetSharedTBOMaterial()->AddBlock( pTBOMaterial, pTBOMaterial2 ) );
 	}
 	return ( deoglDynamicTBOBlock* )( deObject* )pBlockMaterial;

@@ -309,6 +309,8 @@ void deoglGIState::ProbesMoved(){
 }
 
 void deoglGIState::InvalidateArea( const decDVector &minExtend, const decDVector &maxExtend ){
+// 		pRenderThread.GetLogger().LogInfoFormat("InvalidateArea (%g,%g,%g) (%g,%g,%g)",
+// 			minExtend.x, minExtend.y, minExtend.z, maxExtend.x, maxExtend.y, maxExtend.z);
 	int i;
 	for( i=0; i<pCascadeCount; i++ ){
 		pCascades[ i ]->InvalidateArea( minExtend, maxExtend );
@@ -393,16 +395,20 @@ void deoglGIState::pInitCascades(){
 	const float scaleFactor3rd = 1.0f / 3.0f;
 	
 	pCascades[ 0 ] = new deoglGICascade( *this, 0, smallestSpacing );
+	pCascades[ 0 ]->SetFillUpUpdatesWithExpensiveProbes( true );
 	pCascadeCount = 1;
 	
 	pCascades[ 1 ] = new deoglGICascade( *this, 1, smallestSpacing * scaleFactor2nd );
+	pCascades[ 1 ]->SetFillUpUpdatesWithExpensiveProbes( true );
 	pCascadeCount = 2;
 	
 	pCascades[ 2 ] = new deoglGICascade( *this, 2,
 		( smallestSpacing * scaleFactor2nd ).Mix( largestSpacing, scaleFactor3rd ) );
+	pCascades[ 2 ]->SetFillUpUpdatesWithExpensiveProbes( true );
 	pCascadeCount = 3;
 	
 	pCascades[ 3 ] = new deoglGICascade( *this, 3, largestSpacing );
+	pCascades[ 3 ]->SetFillUpUpdatesWithExpensiveProbes( true );
 	pCascadeCount = 4;
 	
 	// debug

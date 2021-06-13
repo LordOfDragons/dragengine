@@ -30,6 +30,7 @@
 #include "../capabilities/deoglCapabilities.h"
 #include "../configuration/deoglConfiguration.h"
 #include "../renderthread/deoglRenderThread.h"
+#include "../renderthread/deoglRTLogger.h"
 #include "../shaders/paramblock/deoglSPBlockUBO.h"
 #include "../utils/collision/deoglDCollisionFrustum.h"
 
@@ -52,6 +53,7 @@ pFieldSize( probeSpacing.Multiply( decVector( giState.GetGridCoordClamp() ) ) ),
 pFieldOrigin( pFieldSize * -0.5f ),
 pPositionClamp( pFieldSize ),
 pDynamicHalfEnlarge( probeSpacing * 1.9f * 0.5f ), // enlarge = spacing * (1 + 0.45 * 2)
+pFillUpUpdatesWithExpensiveProbes( false ),
 
 pMaxDetectionRange( 50.0f ),
 pDetectionBox( pFieldSize * 0.5f + decVector( pMaxDetectionRange, pMaxDetectionRange, pMaxDetectionRange ) ),
@@ -95,6 +97,10 @@ deoglGICascade::~deoglGICascade(){
 
 // Management
 ///////////////
+
+void deoglGICascade::SetFillUpUpdatesWithExpensiveProbes( bool fillUp ){
+	pFillUpUpdatesWithExpensiveProbes = fillUp;
+}
 
 decPoint3 deoglGICascade::ProbeIndex2GridCoord( int index ) const{
 	decPoint3 coord;
@@ -213,6 +219,10 @@ void deoglGICascade::InvalidateArea( const decDVector &minExtend, const decDVect
 	for( i=0; i<count; i++ ){
 		sProbe &probe = pProbes[ i ];
 		if( probe.maxExtend > lminExtend && probe.minExtend < lmaxExtend ){
+// 				pGIState.GetRenderThread().GetLogger().LogInfoFormat("Cascade(%d) InvalidateArea Probe(%d,%d,%d) (%g,%g,%g) (%g,%g,%g)",
+// 					pIndex, probe.shiftedCoord.x, probe.shiftedCoord.y, probe.shiftedCoord.z,
+// 					probe.minExtend.x, probe.minExtend.y, probe.minExtend.z,
+// 					probe.maxExtend.x, probe.maxExtend.y, probe.maxExtend.z);
 			probe.flags &= ~( epfDisabled | epfNearGeometry | epfRayCacheValid | epfDynamicDisable );
 			probe.offset.SetZero();
 			probe.countOffsetMoved = 0;
@@ -470,14 +480,12 @@ void deoglGICascade::FindProbesToUpdate( const deoglDCollisionFrustum &frustum )
 		}
 	}
 	
-	// add probes by priority:
+	// add probes by priority
 	const int mask = epfValid | epfInsideView | epfDisabled | epfDynamicDisable | epfRayCacheValid;
 	int last = realProbeCount;
 	
 	// - invalid probes inside view. expensive updates. at most 50% count
-	// - invalid probes outside view. expensive updates. at most 50% count
 	// - valid requiring cache update probes inside view. expensive updates. at most 50% count
-	// - valid requiring cache update probes outside view. expensive updates. at most 50% count
 	const int maxUpdateCountExpensive = maxUpdateCount * 0.5f; // 50%
 	int maxUpdateCountExpensiveOutside = maxUpdateCountExpensive * 0.2f; // 20%
 	int maxUpdateCountExpensiveInside = maxUpdateCountExpensive - maxUpdateCountExpensiveOutside; // 80%
@@ -485,27 +493,40 @@ void deoglGICascade::FindProbesToUpdate( const deoglDCollisionFrustum &frustum )
 	pAddUpdateProbes( mask, epfInsideView, last, maxUpdateCountExpensiveInside, maxUpdateCount );
 	pAddUpdateProbes( mask, epfValid | epfInsideView, last, maxUpdateCountExpensiveInside, maxUpdateCount );
 	
+	// - invalid probes outside view. expensive updates. at most 50% count
+	// - valid requiring cache update probes outside view. expensive updates. at most 50% count
 	pAddUpdateProbes( mask, 0, last, maxUpdateCountExpensiveOutside, maxUpdateCount );
 	pAddUpdateProbes( mask, epfValid, last, maxUpdateCountExpensiveOutside, maxUpdateCount );
 	
 	// - valid requiring dynamic update probes inside view. cheap updates. at most 80% count
-	// - valid requiring dynamic update probes outside view. cheap updates. fill up to max count
 	const int maxUpdateCountCheap = maxUpdateCount - pUpdateProbeCount;
 	int maxUpdateCountCheapOutside = maxUpdateCountCheap * 0.2f; // 20%
 	int maxUpdateCountCheapInside = maxUpdateCountCheap - maxUpdateCountCheapOutside; // 80%
 	
 	pAddUpdateProbes( mask, epfValid | epfInsideView | epfRayCacheValid, last, maxUpdateCountCheapInside, maxUpdateCount );
 	
+	// - valid requiring dynamic update probes outside view. cheap updates. fill up to max count
 	int fillUpCount = maxUpdateCount - pUpdateProbeCount;
 	pAddUpdateProbes( mask, epfValid | epfRayCacheValid, last, fillUpCount, maxUpdateCount );
 	
-	// if there are still slots free fill up with expensive updates inside view
-	pAddUpdateProbes( mask, epfInsideView, last, fillUpCount, maxUpdateCount );
-	pAddUpdateProbes( mask, epfValid | epfInsideView, last, fillUpCount, maxUpdateCount );
-	
-	// if there are still slots free fill up with expensive updates outside view
-	pAddUpdateProbes( mask, 0, last, fillUpCount, maxUpdateCount );
-	pAddUpdateProbes( mask, epfValid, last, fillUpCount, maxUpdateCount );
+	// if not all update slots are used fill up with expensive updates if important enough.
+	// this situation happens usually only if the cascade teleported to a new location where
+	// there are many expensive probes and next to no cheap probes. in this situation filling
+	// up with expensive probes potentially causes a 1-2 frame short hickup but prevents bad
+	// lighting results.
+	// 
+	// enabling this can be adjusted on a per cascade basis. for large cascades doing this
+	// helps to ensure smaller cascades can fall back to some kind of lighting. for small
+	// cascades this can be disabled to speed up by using large cascade results
+	if( pFillUpUpdatesWithExpensiveProbes ){
+		// - invalid probes. expensive updates but important since it avoids lighting gaps
+		const int maskGrouped = epfValid | epfDisabled | epfDynamicDisable | epfRayCacheValid;
+		
+		pAddUpdateProbes( maskGrouped, 0, last, fillUpCount, maxUpdateCount );
+		
+		// - valid requiring cache update probes. expensive updates but not important enough
+// 		pAddUpdateProbes( maskGrouped, epfValid, last, fillUpCount, maxUpdateCount );
+	}
 	
 	// finish the aged probe list to make it valid again
 	for( i=0; i<pUpdateProbeCount; i++ ){
