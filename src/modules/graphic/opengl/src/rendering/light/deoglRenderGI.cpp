@@ -248,7 +248,11 @@ pDebugInfoGIRenderLightGIRay( NULL )
 		
 		// probe extends
 		sources = shaderManager.GetSourcesNamed( "DefRen GI Probe Extends" );
+		if( renderThread.GetChoices().GetGIMoveUsingCache() ){
+			defines.AddDefine( "WITH_RAY_CACHE", true );
+		}
 		pShaderProbeExtends = shaderManager.GetProgramWith( sources, defines );
+		defines.RemoveDefine( "WITH_RAY_CACHE" );
 		
 		// debug
 		sources = shaderManager.GetSourcesNamed( "DefRen GI Debug Probe" );
