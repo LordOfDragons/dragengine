@@ -64,6 +64,8 @@ pMaxProbeDistance( probeSpacing.Length() * 1.5f ),
 
 pProbes( NULL ),
 pAgedProbes( NULL ),
+pHasInvalidProbes( true ),
+pHasRayCacheInvalidProbes( true ),
 
 pClearProbes( NULL ),
 pClearProbeCount( giState.GetRealProbeCount() / 32 ),
@@ -202,6 +204,9 @@ void deoglGICascade::Invalidate(){
 		probe.maxExtend = pFieldSize;
 	}
 	
+	pHasInvalidProbes = true;
+	pHasRayCacheInvalidProbes = true;
+	
 	ClearClearProbes();
 }
 
@@ -227,6 +232,7 @@ void deoglGICascade::InvalidateArea( const decDVector &minExtend, const decDVect
 			probe.offset.SetZero();
 			probe.countOffsetMoved = 0;
 // 				debugText.AppendFormat( " %d,", i );
+			pHasRayCacheInvalidProbes = true;
 		}
 	}
 		
@@ -271,6 +277,8 @@ void deoglGICascade::InvalidateAllRayCaches(){
 	for( i=0; i<count; i++ ){
 		pProbes[ i ].flags &= ~( epfRayCacheValid | epfDisabled | epfDynamicDisable );
 	}
+	
+	pHasRayCacheInvalidProbes = true;
 }
 
 void deoglGICascade::UpdatePosition( const decDVector &position ){
@@ -328,6 +336,9 @@ void deoglGICascade::UpdatePosition( const decDVector &position ){
 		probe.countOffsetMoved = 0;
 		probe.minExtend = -pFieldSize;
 		probe.maxExtend = pFieldSize;
+		
+		pHasInvalidProbes = true;
+		pHasRayCacheInvalidProbes = true;
 		
 		pClearProbes[ i / 32 ] |= ( uint32_t )1 << ( i % 32 );
 		pHasClearProbes = true;
@@ -725,10 +736,16 @@ void deoglGICascade::UpdateProbeOffsetFromShader( const float *data ){
 				// update offset only if it moved far enough to justify an expensive update
 				probe.offset = offset;
 				probe.flags &= ~( epfRayCacheValid | epfDynamicDisable );
+				pHasRayCacheInvalidProbes = true;
 			}
 		}
 // 			pRenderThread.GetLogger().LogInfoFormat("UpdateProbeOffsetFromTexture: RayCacheInvalidate %d", pUpdateProbes[i]);
 	}
+	
+	// update all has probe flags. this is done here and nowhere else since this method is
+	// called if one or more probes are updated. only in this situation these flags can
+	// potentially change and have to be updated
+	pUpdateHasProbeFlags();
 }
 
 void deoglGICascade::UpdateProbeExtendsFromShader( const float *data ){
@@ -794,6 +811,9 @@ void deoglGICascade::pInitProbes(){
 		
 		pAgedProbes[ i ] = i;
 	}
+	
+	pHasInvalidProbes = true;
+	pHasRayCacheInvalidProbes = true;
 }
 
 void deoglGICascade::pAddUpdateProbes( uint8_t mask, uint8_t flags, int &lastIndex,
@@ -865,4 +885,26 @@ void deoglGICascade::pUpdateUBOProbeIndices( deoglSPBlockUBO &ubo, const uint16_
 		throw;
 	}
 	ubo.UnmapBuffer();
+}
+
+void deoglGICascade::pUpdateHasProbeFlags(){
+	const int count = pGIState.GetRealProbeCount();
+	int i;
+	
+	pHasInvalidProbes = false;
+	pHasRayCacheInvalidProbes = false;
+	
+	for( i=0; i<count; i++ ){
+		if( ( pProbes[ i ].flags & epfValid ) != epfValid ){
+			pHasInvalidProbes = true;
+			break;
+		}
+	}
+	
+	for( i=0; i<count; i++ ){
+		if( ( pProbes[ i ].flags & epfRayCacheValid ) != epfRayCacheValid ){
+			pHasRayCacheInvalidProbes = true;
+			break;
+		}
+	}
 }

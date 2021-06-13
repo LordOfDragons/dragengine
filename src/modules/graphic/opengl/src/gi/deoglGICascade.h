@@ -84,6 +84,8 @@ private:
 	
 	sProbe *pProbes;
 	uint16_t *pAgedProbes;
+	bool pHasInvalidProbes;
+	bool pHasRayCacheInvalidProbes;;
 	
 	uint32_t *pClearProbes;
 	int pClearProbeCount;
@@ -180,6 +182,14 @@ public:
 	
 	
 	
+	/** Probes with epfValid cleared are present. */
+	inline bool HasInvalidProbes() const{ return pHasInvalidProbes; }
+	
+	/** Probes with epfValid set but epfRayCacheValid cleared are present. */
+	inline bool HasRayCacheInvalidProbes() const{ return pHasRayCacheInvalidProbes; }
+	
+	
+	
 	/** Clear clear probes. */
 	void ClearClearProbes();
 	
@@ -259,6 +269,7 @@ private:
 		int &remainingMatchCount, int maxUpdateCount );
 	void pUpdateUBOProbePosition( deoglSPBlockUBO &ubo, const uint16_t *indices, int count ) const;
 	void pUpdateUBOProbeIndices( deoglSPBlockUBO &ubo, const uint16_t *indices, int count ) const;
+	void pUpdateHasProbeFlags();
 };
 
 #endif
