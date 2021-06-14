@@ -614,7 +614,6 @@ void deoglEnvironmentMap::RenderEnvCubeMap( deoglRenderPlan &parentPlan ){
 	// takes place resulting in segfaults
 // 	deoglFramebuffer * const oldfbo = pRenderThread.GetFramebuffer().GetActive();
 	deoglRenderPlan &plan = *pWorld->GetEnvMapRenderPlan();
-	deoglFramebuffer *fbo = NULL;
 	decDMatrix matrixCamera;
 	int cmf;
 	
@@ -682,17 +681,17 @@ void deoglEnvironmentMap::RenderEnvCubeMap( deoglRenderPlan &parentPlan ){
 		// because various rendering parts use shared framebuffer too. if the same framebuffer
 		// is selected it is used at the same time by the environment map rendering and other
 		// rendering. this can lead to problems
-		fbo = pRenderThread.GetFramebuffer().GetEnvMap();
-		pRenderThread.GetFramebuffer().Activate( fbo );
+		deoglFramebuffer &fbo = pRenderThread.GetFramebuffer().GetEnvMap();
+		pRenderThread.GetFramebuffer().Activate( &fbo );
 		
-		fbo->DetachAllImages();
+		fbo.DetachAllImages();
 		
 		const GLfloat clearColor[ 4 ] = { 0.0f, 0.0f, 0.0f, 1.0f };
 		int j;
 		
 		for( j=0; j<6; j++ ){
-			fbo->AttachColorCubeMapFace( 0, pEnvMap, vCubeFaces[ j ] );
-			fbo->Verify();
+			fbo.AttachColorCubeMapFace( 0, pEnvMap, vCubeFaces[ j ] );
+			fbo.Verify();
 			OGL_CHECK( pRenderThread, pglClearBufferfv( GL_COLOR, 0, &clearColor[ 0 ] ) );
 		}
 		
@@ -707,16 +706,16 @@ void deoglEnvironmentMap::RenderEnvCubeMap( deoglRenderPlan &parentPlan ){
 	}
 	
 	try{
-		fbo = pRenderThread.GetFramebuffer().GetEnvMap();
-		pRenderThread.GetFramebuffer().Activate( fbo );
+		deoglFramebuffer &fbo = pRenderThread.GetFramebuffer().GetEnvMap();
+		pRenderThread.GetFramebuffer().Activate( &fbo );
 		
-		fbo->DetachAllImages();
+		fbo.DetachAllImages();
 		
 		const GLenum buffers[ 1 ] = { GL_COLOR_ATTACHMENT0 };
 		OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
 		OGL_CHECK( pRenderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
 		
-		plan.SetFBOTarget( fbo );
+		plan.SetFBOTarget( &fbo );
 		plan.SetUpsideDown( false );
 		
 		timer.Reset();
@@ -754,10 +753,10 @@ void deoglEnvironmentMap::RenderEnvCubeMap( deoglRenderPlan &parentPlan ){
 			
 			defren.Resize( pSize, pSize );
 			
-			pRenderThread.GetFramebuffer().Activate( fbo );
+			pRenderThread.GetFramebuffer().Activate( &fbo );
 			//fbo->AttachDepthCubeMap( pEnvMapDepth, vCubeFaces[ cmf ] );
-			fbo->AttachColorCubeMapFace( 0, pEnvMap, vCubeFaces[ cmf ] );
-			fbo->Verify();
+			fbo.AttachColorCubeMapFace( 0, pEnvMap, vCubeFaces[ cmf ] );
+			fbo.Verify();
 			
 			plan.Render();
 			pRenderThread.GetRenderers().GetWorld().RenderFinalizeFBO( plan );

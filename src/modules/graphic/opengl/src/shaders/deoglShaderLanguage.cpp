@@ -312,6 +312,7 @@ deoglShaderCompiled *deoglShaderLanguage::CompileShader( deoglShaderProgram &pro
 	const deoglShaderBindingList &outputList = sources.GetOutputList();
 	const decStringList &parameterList = sources.GetParameterList();
 	const decStringList &feedbackList = sources.GetFeedbackList();
+	const bool feedbackInterleaved = sources.GetFeedbackInterleaved();
 	GLuint handleShader = 0;
 	GLuint handleC = 0;
 	GLuint handleTCP = 0;
@@ -655,7 +656,8 @@ deoglShaderCompiled *deoglShaderLanguage::CompileShader( deoglShaderProgram &pro
 					varnames[ i ] = feedbackList.GetAt( i ).GetString();
 				}
 				
-				OGL_CHECK( pRenderThread, pglTransformFeedbackVaryings( handleShader, count, varnames, GL_INTERLEAVED_ATTRIBS ) );
+				OGL_CHECK( pRenderThread, pglTransformFeedbackVaryings( handleShader, count, varnames,
+					feedbackInterleaved ? GL_INTERLEAVED_ATTRIBS : GL_SEPARATE_ATTRIBS ) );
 				
 				delete [] varnames;
 			}
@@ -794,7 +796,8 @@ deoglShaderCompiled *deoglShaderLanguage::CompileShader( deoglShaderProgram &pro
 					}
 				}
 				
-				OGL_CHECK( pRenderThread, pglTransformFeedbackVaryingsNV( handleShader, count, locations, GL_INTERLEAVED_ATTRIBS ) );
+				OGL_CHECK( pRenderThread, pglTransformFeedbackVaryingsNV( handleShader, count, locations,
+					feedbackInterleaved ? GL_INTERLEAVED_ATTRIBS : GL_SEPARATE_ATTRIBS ) );
 				
 				delete [] locations;
 			}

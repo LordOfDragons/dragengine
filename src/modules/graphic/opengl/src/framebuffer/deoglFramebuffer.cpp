@@ -140,7 +140,7 @@ void deoglFramebuffer::DecreaseUsageCount(){
 
 
 
-void deoglFramebuffer::SetAsCurrent(){
+void deoglFramebuffer::SetAsCurrent() const{
 	// if primary, pFBO is 0 which is what we need
 	OGL_CHECK( pRenderThread, pglBindFramebuffer( GL_FRAMEBUFFER, pFBO ) );
 }
@@ -418,12 +418,33 @@ deoglArrayTexture *texture, int layer, int level ){
 	}
 }
 
+void deoglFramebuffer::AttachColorRenderbuffer( int index, const deoglRenderbuffer &renderbuffer ){
+	if( pPrimary || index < 0 || index >= FBO_MAX_ATTACHMENT_COUNT ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	const GLuint image = renderbuffer.GetRenderbuffer();
+	
+	if( pAttColor[ index ].DoesNotMatch( image, eatRenderbuffer ) ){
+		DetachColorImage( index );
+		
+		OGL_CHECK( pRenderThread, pglFramebufferRenderbuffer( GL_FRAMEBUFFER,
+			GL_COLOR_ATTACHMENT0 + index, GL_RENDERBUFFER, image ) );
+		
+		pAttColor[ index ].Set( image, eatRenderbuffer );
+	}
+}
+
 void deoglFramebuffer::DetachColorImage( int index ){
 	if( pAttColor[ index ].type == eatNone ){
 		return;
 	}
 	
-	if( pglFramebufferTexture
+	if( pAttDepth.type == eatRenderbuffer ){
+		OGL_CHECK( pRenderThread, pglFramebufferRenderbuffer( GL_FRAMEBUFFER,
+			GL_COLOR_ATTACHMENT0 + index, GL_RENDERBUFFER, 0 ) );
+		
+	}else if( pglFramebufferTexture
 	&& pRenderThread.GetCapabilities().GetFramebufferTextureSingle().Working() ){
 		OGL_CHECK( pRenderThread, pglFramebufferTexture( GL_FRAMEBUFFER,
 			GL_COLOR_ATTACHMENT0 + index, 0, 0 ) );
@@ -439,7 +460,11 @@ void deoglFramebuffer::DetachColorImage( int index ){
 void deoglFramebuffer::DetachColorImages( int startIndex ){
 	while( startIndex < FBO_MAX_ATTACHMENT_COUNT ){
 		if( pAttColor[ startIndex ].type != eatNone ){
-			if( pglFramebufferTexture
+			if( pAttDepth.type == eatRenderbuffer ){
+				OGL_CHECK( pRenderThread, pglFramebufferRenderbuffer( GL_FRAMEBUFFER,
+					GL_COLOR_ATTACHMENT0 + startIndex, GL_RENDERBUFFER, 0 ) );
+				
+			}else if( pglFramebufferTexture
 			&& pRenderThread.GetCapabilities().GetFramebufferTextureSingle().Working() ){
 				OGL_CHECK( pRenderThread, pglFramebufferTexture( GL_FRAMEBUFFER,
 					GL_COLOR_ATTACHMENT0 + startIndex, 0, 0 ) );

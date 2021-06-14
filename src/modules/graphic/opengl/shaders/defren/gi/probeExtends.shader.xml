@@ -15,5 +15,5 @@
 	<feedback name='fbMaxExtend'/>
 	
 	<sourceCode unit='vertex'>v130/vertex/defren/gi/probeExtends.glsl</sourceCode>
-	<sourceCode unit='fragment'>v130/fragment/defren/gi/probeExtends.glsl</sourceCode>
+	<sourceCode unit='fragment'>v130/fragment/generic/empty.glsl</sourceCode>
 </shader>

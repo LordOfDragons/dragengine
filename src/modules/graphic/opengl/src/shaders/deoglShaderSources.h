@@ -62,6 +62,7 @@ private:
 	deoglShaderBindingList pShaderStorageBlockList;
 	decStringList pParameterList;
 	decStringList pFeedbackList;
+	bool pFeedbackInterleaved;
 	
 public:
 	/** @name Constructors and Destructors */
@@ -110,6 +111,12 @@ public:
 	/** Retrieves the feedback list. */
 	inline decStringList &GetFeedbackList(){ return pFeedbackList; }
 	inline const decStringList &GetFeedbackList() const{ return pFeedbackList; }
+	
+	/** Interleaved feedback mode if true, separated if false. */
+	inline bool GetFeedbackInterleaved() const{ return pFeedbackInterleaved; }
+	
+	/** Set interleaved feedback mode if true, separated if false. */
+	void SetFeedbackInterleaved( bool interleaved );
 	
 	/** Path to compute unit source code file or empty string. */
 	inline const decString &GetPathComputeSourceCode() const{ return pPathSCCompute; }

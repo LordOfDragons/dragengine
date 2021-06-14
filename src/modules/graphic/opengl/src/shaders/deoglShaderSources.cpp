@@ -51,10 +51,13 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglShaderSources::deoglShaderSources(){
+deoglShaderSources::deoglShaderSources() :
+pFeedbackInterleaved( true ){
 }
 
-deoglShaderSources::deoglShaderSources( deLogger &logger, decBaseFileReader &reader ){
+deoglShaderSources::deoglShaderSources( deLogger &logger, decBaseFileReader &reader ) :
+pFeedbackInterleaved( true )
+{
 	pVersion = "120";
 	pFilename = reader.GetFilename();
 	
@@ -83,6 +86,10 @@ deoglShaderSources::~deoglShaderSources(){
 
 void deoglShaderSources::SetVersion( const char *version ){
 	pVersion = version;
+}
+
+void deoglShaderSources::SetFeedbackInterleaved( bool interleaved ){
+	pFeedbackInterleaved = interleaved;
 }
 
 void deoglShaderSources::SetPathComputeSourceCode( const char *path ){
@@ -300,6 +307,12 @@ void deoglShaderSources::pParseShader( deLogger &logger, const decXmlElementTag 
 			}
 			
 			pFeedbackList.Add( attribute->GetValue() );
+			
+		}else if( strcmp( tag->GetName(), "feedbackInterleaved" ) == 0 ){
+			const decXmlCharacterData * const cdata = tag->GetFirstData();
+			if( cdata ){
+				pFeedbackInterleaved = cdata->GetData() == "true";
+			}
 			
 		}else if( strcmp( tag->GetName(), "sourceCode" ) == 0 ){
 			const decXmlAttValue *attribute = pFindAttribute( *tag, "unit" );
