@@ -65,6 +65,7 @@ private:
 	deoglGIState &pGIState;
 	const int pIndex;
 	
+	decVector pOffset;
 	decVector pProbeSpacing;
 	decVector pProbeSpacingInv;
 	decVector pFieldSize;
@@ -84,8 +85,8 @@ private:
 	
 	sProbe *pProbes;
 	uint16_t *pAgedProbes;
-	bool pHasInvalidProbes;
-	bool pHasRayCacheInvalidProbes;;
+	bool pHasInvalidProbesInsideView;
+	bool pRequiresFullUpdateInsideView;
 	
 	uint32_t *pClearProbes;
 	int pClearProbeCount;
@@ -103,7 +104,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create global illumination cascade. */
-	deoglGICascade( deoglGIState &giState, int index, const decVector &probeSpacing );
+	deoglGICascade( deoglGIState &giState, int index, const decVector &probeSpacing,
+		const decVector &offset );
 	
 	/** Clean up global illumination cascade. */
 	~deoglGICascade();
@@ -114,10 +116,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** GI State. */
-	inline deoglGIState &GetGICascade() const{ return pGIState; }
+	inline deoglGIState &GetGIState() const{ return pGIState; }
 	
 	/** Cascade index. */
 	inline int GetIndex() const{ return pIndex; }
+	
+	/** Offset. */
+	inline const decVector &GetOffset() const{ return pOffset; }
 	
 	/** Probe spacing. */
 	inline const decVector &GetProbeSpacing() const{ return pProbeSpacing; }
@@ -182,11 +187,14 @@ public:
 	
 	
 	
-	/** Probes with epfValid cleared are present. */
-	inline bool HasInvalidProbes() const{ return pHasInvalidProbes; }
+	/** Probes inside view with epfValid cleared are present. */
+	inline bool HasInvalidProbesInsideView() const{ return pHasInvalidProbesInsideView; }
 	
-	/** Probes with epfValid set but epfRayCacheValid cleared are present. */
-	inline bool HasRayCacheInvalidProbes() const{ return pHasRayCacheInvalidProbes; }
+	/** Cascade requires full update of all inside view probes. */
+	inline bool GetRequiresFullUpdateInsideView() const{ return pRequiresFullUpdateInsideView; }
+	
+	/** Set if cascade requires full update of all inside view probes. */
+	void SetRequiresFullUpdateInsideView( bool requiresUpdate );
 	
 	
 	
@@ -265,6 +273,8 @@ public:
 private:
 	void pCleanUp();
 	void pInitProbes();
+	void pFindProbesToUpdateFullUpdateInsideView();
+	void pFindProbesToUpdateRegular();
 	void pAddUpdateProbes( uint8_t mask, uint8_t flags, int &lastIndex,
 		int &remainingMatchCount, int maxUpdateCount );
 	void pUpdateUBOProbePosition( deoglSPBlockUBO &ubo, const uint16_t *indices, int count ) const;

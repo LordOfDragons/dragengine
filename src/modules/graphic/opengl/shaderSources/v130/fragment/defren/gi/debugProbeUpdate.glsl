@@ -4,11 +4,8 @@ precision highp int;
 #endif
 
 #include "v130/shared/ubo_defines.glsl"
-#include "v130/shared/defren/gi/ubo_gi.glsl"
-#include "v130/shared/defren/gi/probe_offset.glsl"
-#include "v130/shared/defren/gi/probe_flags.glsl"
+#include "v130/shared/defren/light/ubo_gi.glsl"
 
-uniform ivec3 pGIGridCoordShift; // grid coordinate shift (wrapping around)
 uniform int pGIDebugCascade;
 uniform ivec3 pParams; // probeSize, spaceSize, groupSpaceSize
 uniform vec4 pPlaneLeft;
@@ -16,6 +13,10 @@ uniform vec4 pPlaneRight;
 uniform vec4 pPlaneTop;
 uniform vec4 pPlaneBottom;
 uniform vec4 pPlaneNear;
+
+#define pGIGridProbeCount pGIParams[pGIDebugCascade].probeCount
+#include "v130/shared/defren/gi/probe_offset.glsl"
+#include "v130/shared/defren/gi/probe_flags.glsl"
 
 #ifdef PASS2
 	flat in ivec3 vProbeCoord;
@@ -28,11 +29,12 @@ out vec3 outColor;
 
 
 ivec3 giGridShiftToLocal( in ivec3 shifted ){
-	return ( shifted + pGIGridCoordShift ) % pGIGridProbeCount;
+	return ( shifted + pGIParams[pGIDebugCascade].gridCoordShift ) % pGIParams[pGIDebugCascade].probeCount;
 }
 
 int giCoordToIndex( in ivec3 coord ){
-	return pGIGridProbeCount.x * pGIGridProbeCount.z * coord.y + pGIGridProbeCount.x * coord.z + coord.x;
+	return pGIParams[pGIDebugCascade].probeCount.x * pGIParams[pGIDebugCascade].probeCount.z * coord.y
+		+ pGIParams[pGIDebugCascade].probeCount.x * coord.z + coord.x;
 }
 
 
@@ -52,7 +54,8 @@ void main( void ){
 		}
 		probeCoord.z = tc.y / probeStride;
 		
-		int groupSize = pParams.x * pGIGridProbeCount.z + pParams.y * ( pGIGridProbeCount.z - 1 );
+		int groupSize = pParams.x * pGIParams[pGIDebugCascade].probeCount.z
+			+ pParams.y * ( pGIParams[pGIDebugCascade].probeCount.z - 1 );
 		int groupStride = groupSize + pParams.z;
 		if( tc.x % groupStride >= groupSize ){
 			return;  // inside spacing
@@ -66,7 +69,8 @@ void main( void ){
 		probeCoord.x = tc.x / probeStride;
 	#endif
 	
-	vec3 gridPosition = pGIGridProbeSpacing * vec3( probeCoord ) + pGIGridOrigin;
+	vec3 gridPosition = pGIParams[pGIDebugCascade].probeSpacing * vec3( probeCoord )
+		+ pGIParams[pGIDebugCascade].gridOrigin;
 	bool insideView = ( dot( pPlaneNear.xyz, gridPosition ) >= pPlaneNear.w )
 		&& ( dot( pPlaneLeft.xyz, gridPosition ) >= pPlaneLeft.w )
 		&& ( dot( pPlaneRight.xyz, gridPosition ) >= pPlaneRight.w )
@@ -85,16 +89,6 @@ void main( void ){
 	#else
 	bool updated = false;
 	#endif
-	
-	/*
-	int i;
-	for( i=0; i<pGIProbeCount; i++ ){
-		if( pGIProbeIndex[ i / 4 ][ i % 4 ] == index ){
-			updated = true;
-			break;
-		}
-	}
-	*/
 	
 	if( disabled ){
 		outColor = mix( vec3( 0.5 ), vec3( 1 ), bvec3( insideView ) );

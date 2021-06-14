@@ -801,6 +801,10 @@ void deoglShaderParameterBlock::SetParameterDataIVec2( int p, int e, int v1, int
 void deoglShaderParameterBlock::SetParameterDataIVec3( int p, int e, int v1, int v2, int v3 ){
 	fSet( pDataInt( pParamInt( p, 3 ), e ), v1, v2, v3 );
 }
+void deoglShaderParameterBlock::SetParameterDataIVec3( int p, int e, const decPoint3 &v ){
+	fSet( pDataInt( pParamInt( p, 3 ), e ), v.x, v.y, v.z );
+}
+
 void deoglShaderParameterBlock::SetParameterDataIVec4( int p, int e, int v1, int v2, int v3, int v4 ){
 	fSet( pDataInt( pParamInt( p, 4 ), e ), v1, v2, v3, v4 );
 }

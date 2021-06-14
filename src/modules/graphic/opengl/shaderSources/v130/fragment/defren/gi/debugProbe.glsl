@@ -4,13 +4,15 @@ precision highp int;
 #endif
 
 #include "v130/shared/ubo_defines.glsl"
-#include "v130/shared/defren/gi/ubo_gi.glsl"
 #include "v130/shared/octahedral.glsl"
-#include "v130/shared/defren/gi/probe_offset.glsl"
-#include "v130/shared/defren/gi/probe_flags.glsl"
+#include "v130/shared/defren/light/ubo_gi.glsl"
 
 uniform mat4x3 pMatrixNormal;
 uniform int pGIDebugCascade;
+
+#define pGIGridProbeCount pGIParams[pGIDebugCascade].probeCount
+#include "v130/shared/defren/gi/probe_offset.glsl"
+#include "v130/shared/defren/gi/probe_flags.glsl"
 
 uniform lowp sampler2DArray texGIIrradiance;
 
@@ -26,7 +28,8 @@ vec2 giTCFromDirection( in vec3 dir, in ivec3 probeCoord, in vec2 mapScale, in i
 	tc = ( tc + vec2( 1.0 ) ) * 0.5; // range [0..1]
 	tc *= vec2( mapSize ); // range [0..mapSize] (left border of left pixel to right border of right pixel)
 	tc += vec2( 2 ); // offset by full map border and probe map border
-	tc += vec2( pGIGridProbeCount.x * probeCoord.y + probeCoord.x, probeCoord.z ) * vec2( mapSize + 2 );
+	tc += vec2( pGIParams[pGIDebugCascade].probeCount.x * probeCoord.y
+		+ probeCoord.x, probeCoord.z ) * vec2( mapSize + 2 );
 	return tc * mapScale;
 }
 
@@ -58,10 +61,11 @@ void main( void ){
 		direction.z = -direction.z; // make Z point away from camera
 		direction = vec3( direction * pMatrixNormal ); // inverse order does transpose();
 		
-		vec3 texCoord = vec3( giTCFromDirection( normalize( direction ),
-			vProbeCoord, pGIIrradianceMapScale, pGIIrradianceMapSize ), pGIDebugCascade );
+		vec3 texCoord = vec3( giTCFromDirection( normalize( direction ), vProbeCoord,
+			pGIParams[pGIDebugCascade].irradianceMapScale,
+			pGIParams[pGIDebugCascade].irradianceMapSize ), pGIDebugCascade );
 		vec3 irradiance = texture( texGIIrradiance, texCoord ).rgb;
-		irradiance = pow( irradiance, vec3( pGIIrradianceGamma ) );
+		irradiance = pow( irradiance, vec3( pGIParams[pGIDebugCascade].irradianceGamma ) );
 		irradiance /= vec3( 4.0 ); // squash HDRR a bit
 		outColor = irradiance;
 	}

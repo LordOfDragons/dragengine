@@ -3,10 +3,12 @@ uniform vec4 pTCTransform;
 
 #ifdef PASS2
 	#include "v130/shared/ubo_defines.glsl"
-	#include "v130/shared/defren/gi/ubo_gi.glsl"
+	#include "v130/shared/defren/gi/constants.glsl"
 	#include "v130/shared/defren/gi/trace_probe.glsl"
-
+	#include "v130/shared/defren/light/ubo_gi.glsl"
+	
 	uniform ivec3 pParams; // probeSize, spaceSize, groupSpaceSize
+	uniform int pGIDebugCascade;
 #endif
 
 in vec2 inPosition;
@@ -20,12 +22,14 @@ in vec2 inPosition;
 
 #ifdef PASS2
 ivec3 probeIndexToGridCoord( in int index ){
-	return ivec3( index % pGIGridProbeCount.x, index / ( pGIGridProbeCount.x * pGIGridProbeCount.z ),
-		( index % ( pGIGridProbeCount.x * pGIGridProbeCount.z ) ) / pGIGridProbeCount.x );
+	return ivec3( index % pGIParams[pGIDebugCascade].probeCount.x,
+		index / ( pGIParams[pGIDebugCascade].probeCount.x * pGIParams[pGIDebugCascade].probeCount.z ),
+		( index % ( pGIParams[pGIDebugCascade].probeCount.x * pGIParams[pGIDebugCascade].probeCount.z ) )
+			/ pGIParams[pGIDebugCascade].probeCount.x );
 }
 
 ivec3 giGridLocalToShift( in ivec3 local ){
-	return ( local + pGIGridCoordUnshift ) % pGIGridProbeCount;
+	return ( local + pGIParams[pGIDebugCascade].gridCoordUnshift ) % pGIParams[pGIDebugCascade].probeCount;
 }
 #endif
 
@@ -35,11 +39,12 @@ void main( void ){
 		vProbeCoord = giGridLocalToShift( probeIndexToGridCoord( probeIndex ) );
 		
 		const int probeStride = pParams.x + pParams.y;
-		const int groupSize = pParams.x * pGIGridProbeCount.z + pParams.y * ( pGIGridProbeCount.z - 1 );
+		const int groupSize = pParams.x * pGIParams[pGIDebugCascade].probeCount.z
+			+ pParams.y * ( pGIParams[pGIDebugCascade].probeCount.z - 1 );
 		const int groupStride = groupSize + pParams.z;
 		
 		vec2 tc = vec2( groupStride * vProbeCoord.y + probeStride * vProbeCoord.x,
-			probeStride * ( ( pGIGridProbeCount.z - 1 ) - vProbeCoord.z ) );
+			probeStride * ( ( pGIParams[pGIDebugCascade].probeCount.z - 1 ) - vProbeCoord.z ) );
 			// ^= z coordinate starts at the bottom (-z axis) but y starts at the top.
 			//    for this reason z coordinate has to be flipped
 		

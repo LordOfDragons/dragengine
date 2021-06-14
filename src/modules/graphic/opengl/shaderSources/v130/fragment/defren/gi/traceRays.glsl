@@ -3,6 +3,7 @@ precision highp int;
 
 #include "v130/shared/ubo_defines.glsl"
 #include "v130/shared/defren/gi/ubo_gi.glsl"
+#include "v130/shared/defren/gi/trace_probe.glsl"
 
 #include "v130/shared/octahedral.glsl"
 

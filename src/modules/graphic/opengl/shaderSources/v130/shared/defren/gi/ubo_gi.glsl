@@ -1,5 +1,4 @@
-#define GI_MAX_COUNT_PROBE_POSITIONS 2048
-#define GI_MAX_COUNT_RAY_DIRECTIONS 256
+#include "v130/shared/defren/gi/constants.glsl"
 
 UBOLAYOUT uniform GIParameters{
 	vec2 pGISampleImageScale;
@@ -37,10 +36,6 @@ UBOLAYOUT uniform GIParameters{
 	float pGIInvIrradianceGamma;
 	float pGISelfShadowBias;
 	int pGICascade;
-};
-
-UBOLAYOUT uniform GIProbeIndices{
-	ivec4 pGIProbeIndex[ GI_MAX_COUNT_PROBE_POSITIONS / 4 ]; // 4 indices per element
 };
 
 UBOLAYOUT uniform GIProbePositions{

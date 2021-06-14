@@ -4,13 +4,14 @@ precision highp int;
 #endif
 
 #include "v130/shared/ubo_defines.glsl"
-#include "v130/shared/defren/gi/ubo_gi.glsl"
-#include "v130/shared/defren/gi/probe_offset.glsl"
+#include "v130/shared/defren/light/ubo_gi.glsl"
 
 uniform mat4x3 pMatrixMV;
 uniform mat4 pMatrixP;
-uniform ivec3 pGIGridCoordShift; // grid coordinate shift (wrapping around)
 uniform int pGIDebugCascade;
+
+#define pGIGridProbeCount pGIParams[pGIDebugCascade].probeCount
+#include "v130/shared/defren/gi/probe_offset.glsl"
 
 in vec2 inPosition;
 
@@ -20,18 +21,20 @@ out vec2 vTexCoord;
 flat out float vRimThickness;
 
 ivec3 giIndexToCoord( in int index ){
-	int stride = pGIGridProbeCount.x * pGIGridProbeCount.z;
-	return ivec3( index % pGIGridProbeCount.x, index / stride, ( index % stride ) / pGIGridProbeCount.x );
+	int stride = pGIParams[pGIDebugCascade].probeCount.x * pGIParams[pGIDebugCascade].probeCount.z;
+	return ivec3( index % pGIParams[pGIDebugCascade].probeCount.x,
+		index / stride, ( index % stride ) / pGIParams[pGIDebugCascade].probeCount.x );
 }
 
 ivec3 giGridShiftToLocal( in ivec3 shifted ){
-	return ( shifted + pGIGridCoordShift ) % pGIGridProbeCount;
+	return ( shifted + pGIParams[pGIDebugCascade].gridCoordShift ) % pGIParams[pGIDebugCascade].probeCount;
 }
 
 void main( void ){
 	ivec3 probeCoord = giIndexToCoord( gl_InstanceID );
 	vProbeCoord = giGridShiftToLocal( probeCoord );
-	vProbePosition = pGIGridProbeSpacing * vec3( probeCoord ) + gipoProbeOffset( vProbeCoord, pGIDebugCascade );
+	vProbePosition = pGIParams[pGIDebugCascade].probeSpacing * vec3( probeCoord )
+		+ gipoProbeOffset( vProbeCoord, pGIDebugCascade );
 	vTexCoord = inPosition;
 	
 	vec3 center = pMatrixMV * vec4( vProbePosition, 1.0 );

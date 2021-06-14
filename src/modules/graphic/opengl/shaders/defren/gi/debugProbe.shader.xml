@@ -9,16 +9,12 @@
 	<texture name='texGIProbeOffset' target='2'/>
 	
 	<uniformBlock name='GIParameters' target='1'/>
-	<uniformBlock name='GIProbeIndices' target='2'/>
-	<uniformBlock name='GIProbePositions' target='3'/>
-	<uniformBlock name='GIRayDirections' target='4'/>
 	
 	<parameter name='pMatrixNormal'/> <!-- 0 -->
 	<parameter name='pMatrixMV'/> <!-- 1 -->
 	<parameter name='pMatrixMVP'/> <!-- 2 -->
 	<parameter name='pMatrixP'/> <!-- 3 -->
-	<parameter name='pGIGridCoordShift'/> <!-- 4 -->
-	<parameter name='pGIDebugCascade'/> <!-- 5 -->
+	<parameter name='pGIDebugCascade'/> <!-- 4 -->
 	
 	<attribute name='inPosition' target='0'/>
 	

@@ -531,10 +531,7 @@ void deoglRenderThread::Run(){
 				const float elapsed = pTimerRender.GetElapsedTime();
 				pTimeHistoryRender.Add( elapsed );
 				//pLogger->LogInfo( decString("TimeHistory Render: ") + pTimeHistoryRender.DebugPrint() );
-				/*
-				pLogger->LogInfoFormat( "RenderThread Elapsed %dms (FPS %d)",
-					( int )( elapsed * 1000.0f ), ( int )( 1.0f / decMath::max( elapsed, 0.001f ) ) );
-				*/
+// 				pLogger->LogInfoFormat( "RenderThread Elapsed %.1fms (FPS %.1f)", elapsed * 1000.0f, 1.0f / decMath::max( elapsed, 0.001f ) );
 				
 				pLimitFrameRate( elapsed );
 				pThreadFailure = false;

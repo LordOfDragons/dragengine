@@ -41,6 +41,9 @@ class deoglSPBlockUBO;
 class deoglDCollisionFrustum;
 
 
+#define GI_MAX_CASCADES 5
+
+
 /**
  * Global illumination state.
  * 
@@ -79,6 +82,10 @@ private:
 	deoglGICascade **pCascades;
 	int pCascadeCount;
 	int pActiveCascade;
+	
+	int *pCascaceUpdateCycle;
+	int pCascaceUpdateCycleCount;
+	int pCascaceUpdateCycleIndex;
 	
 	decPoint pSampleImageSize;
 	
@@ -294,6 +301,7 @@ public:
 private:
 	void pCleanUp();
 	void pInitCascades();
+	void pInitCascadeUpdateCycle();
 	void pInitUBOClearProbes();
 	void pInvalidateAllRayCaches();
 	void pFindContent( const decDVector &position );

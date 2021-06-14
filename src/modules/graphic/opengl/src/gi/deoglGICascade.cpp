@@ -43,10 +43,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglGICascade::deoglGICascade( deoglGIState &giState, int index, const decVector &probeSpacing ) :
+deoglGICascade::deoglGICascade( deoglGIState &giState, int index,
+	const decVector &probeSpacing, const decVector &offset ) :
 pGIState( giState ),
 pIndex( index ),
 
+pOffset( offset ),
 pProbeSpacing( probeSpacing ),
 pProbeSpacingInv( 1.0f / probeSpacing.x, 1.0f / probeSpacing.y, 1.0f / probeSpacing.z ),
 pFieldSize( probeSpacing.Multiply( decVector( giState.GetGridCoordClamp() ) ) ),
@@ -62,10 +64,13 @@ pDetectionBox( pFieldSize * 0.5f + decVector( pMaxDetectionRange, pMaxDetectionR
 // the length of the diagonal across cells
 pMaxProbeDistance( probeSpacing.Length() * 1.5f ),
 
+pPosition( offset ),
+pLastRefPosition( offset ),
+
 pProbes( NULL ),
 pAgedProbes( NULL ),
-pHasInvalidProbes( true ),
-pHasRayCacheInvalidProbes( true ),
+pHasInvalidProbesInsideView( true ),
+pRequiresFullUpdateInsideView( true ),
 
 pClearProbes( NULL ),
 pClearProbeCount( giState.GetRealProbeCount() / 32 ),
@@ -130,22 +135,23 @@ decDVector deoglGICascade::Grid2World( const decPoint3 &grid ) const{
 }
 
 decDVector deoglGICascade::WorldClosestGrid( const decDVector &position ) const{
-	decDVector result( ( double )pProbeSpacing.x * floor( position.x * ( double )pProbeSpacingInv.x ),
-		( double )pProbeSpacing.y * floor( position.y * ( double )pProbeSpacingInv.y ),
-		( double )pProbeSpacing.z * floor( position.z * ( double )pProbeSpacingInv.z ) );
+	const decDVector pos( position - pOffset );
+	decDVector result( ( double )pProbeSpacing.x * floor( pos.x * ( double )pProbeSpacingInv.x ),
+		( double )pProbeSpacing.y * floor( pos.y * ( double )pProbeSpacingInv.y ),
+		( double )pProbeSpacing.z * floor( pos.z * ( double )pProbeSpacingInv.z ) );
 	
 	const decDVector halfGrid( decDVector( pProbeSpacing ) * 0.5 );
-	if( position.x - result.x >= halfGrid.x ){
+	if( pos.x - result.x >= halfGrid.x ){
 		result.x += ( double )pProbeSpacing.x;
 	}
-	if( position.y - result.y >= halfGrid.y ){
+	if( pos.y - result.y >= halfGrid.y ){
 		result.y += ( double )pProbeSpacing.y;
 	}
-	if( position.z - result.z >= halfGrid.z ){
+	if( pos.z - result.z >= halfGrid.z ){
 		result.z += ( double )pProbeSpacing.z;
 	}
 	
-	return result;
+	return result + pOffset;
 }
 
 decPoint3 deoglGICascade::LocalGrid2ShiftedGrid( const decPoint3 &coord ) const{
@@ -162,6 +168,12 @@ decPoint3 deoglGICascade::ShiftedGrid2LocalGrid( const decPoint3 &coord ) const{
 	local.y %= pGIState.GetProbeCount().y;
 	local.z %= pGIState.GetProbeCount().z;
 	return local;
+}
+
+
+
+void deoglGICascade::SetRequiresFullUpdateInsideView( bool requiresUpdate ){
+	pRequiresFullUpdateInsideView = requiresUpdate;
 }
 
 
@@ -204,8 +216,7 @@ void deoglGICascade::Invalidate(){
 		probe.maxExtend = pFieldSize;
 	}
 	
-	pHasInvalidProbes = true;
-	pHasRayCacheInvalidProbes = true;
+// 	pHasInvalidProbesInsideView = true;
 	
 	ClearClearProbes();
 }
@@ -232,7 +243,6 @@ void deoglGICascade::InvalidateArea( const decDVector &minExtend, const decDVect
 			probe.offset.SetZero();
 			probe.countOffsetMoved = 0;
 // 				debugText.AppendFormat( " %d,", i );
-			pHasRayCacheInvalidProbes = true;
 		}
 	}
 		
@@ -277,8 +287,6 @@ void deoglGICascade::InvalidateAllRayCaches(){
 	for( i=0; i<count; i++ ){
 		pProbes[ i ].flags &= ~( epfRayCacheValid | epfDisabled | epfDynamicDisable );
 	}
-	
-	pHasRayCacheInvalidProbes = true;
 }
 
 void deoglGICascade::UpdatePosition( const decDVector &position ){
@@ -337,8 +345,7 @@ void deoglGICascade::UpdatePosition( const decDVector &position ){
 		probe.minExtend = -pFieldSize;
 		probe.maxExtend = pFieldSize;
 		
-		pHasInvalidProbes = true;
-		pHasRayCacheInvalidProbes = true;
+// 		pHasInvalidProbesInsideView = true;
 		
 		pClearProbes[ i / 32 ] |= ( uint32_t )1 << ( i % 32 );
 		pHasClearProbes = true;
@@ -376,66 +383,6 @@ void deoglGICascade::UpdatePosition( const decDVector &position ){
 }
 
 void deoglGICascade::FindProbesToUpdate( const deoglDCollisionFrustum &frustum ){
-	const int maxUpdateCount = pGIState.GetRenderThread().GetGI().GetTraceRays().GetProbeCount();
-	int i;
-	
-	pUpdateProbeCount = 0;
-	
-	// performance notes:
-	// 
-	// using 32*8*32 grid this yields a total of 8192 probes. inside view covers roughly 1/5
-	// probes (view single face 1/6, view entire quart 1/4 and thus somewhere in the middle).
-	// hence inside probes count is roughly 1600.
-	// 
-	// for non-RTX/compute supporting hardware this giUpdateSpeed mapping can be used:
-	// veryHigh(2048), high(1024), medium(512), low(256), veryLow(128).
-	// 
-	// using veryHigh(2048) this can update roughly 400 probes outside view and 1600 probes
-	// inside view (20%/80% ratio). this setting allows to update visible probes every frame
-	// update (or every 2 using multi-volume). this refreshes 20 times per second.
-	// 
-	// using high(1024) this can update roughly 200 probes outside view and 800 probes inside
-	// view. this setting allows to update visible probes every 2 frame updates (or every 4
-	// using multi-volume). on 40 FPS this is 0.1s (or 0.2s on 20 FPS). this refreshes
-	// 10 times per second.
-	// 
-	// using medium(512) this can update roughly 100 probes outside view and 400 probes inside
-	// view. this setting allows to update visible probes every 4 frame updates (or every 8
-	// using multi-volume). on 40 FPS this is 0.2s (or 0.4s on 20 FPS). this refreshes 5 times
-	// per second. for medium update speed this is rather okay.
-	// 
-	// using low(256) this can update roughly 50 probes outside view and 200 probes inside
-	// view. this setting allows to update visible probes every 8 frame updates (or every 16
-	// using multi-volume). on 40 FPS this is 0.4s (or 0.8s on 20 FPS). this refreshes 2.5 times
-	// per second. for low update speed the delay becomes already noticeable if frame rate drops.
-	// still 0.5ms to get full screen update is still okay.
-	// 
-	// using veryLow(128) this can update roughly 25 probes outside view and 100 probes inside
-	// view. this setting allows to update visible probes every 16 frame updates (or every 32
-	// using multi-volume). on 40 FPS this is 0.8s (or 1.6s on 20 FPS). this refreshes 1.25
-	// times per second. for veryLow update speed the delay is noticeable on good FPS and more
-	// noticeable on bad FPS. still this is acceptable for certain games especially if
-	// performance is improved with it.
-	// 
-	// using smaller grid this can be speed up but requires more distribution across volumes.
-	// using fewer volumes helps in general.
-	// 
-	// now about the expensive/cheap probe update ratio. using medium update speed of 512
-	// probes this can be 256 maximum (factor 2) or 128 maxiimum (factor 4). using factor
-	// 2 doubles the inside view probe refresh time after teleporting and thus requires
-	// 0.4s on 40 FPS (or 0.8s on 20 FPS). using factor 4 this quadruples the time hence
-	// 0.8s on 40 FPS (or 1.6s on 20 FPS). this delay is certainly noticeable.
-	// 
-	// now expensive probes depends on the game content. with good LODing and not too many
-	// objects on screen it should be possible to even update using a ratio of 1. now while
-	// moving this invalidates roughly 256 probes per shift. at worst this is 768 if 3 planes
-	// shift at the same time. this is though unlikely. it is enough to assume one plane
-	// updates per frame. using a factor of 2 would allow to update all invalidated probes
-	// at once in the medium scenario without adding a delay. this seems thus a good middle
-	// ground.
-	
-	
-	
 	// classify probes into inside view and outside view. for this we test the probe position
 	// against the frustum planes. this classifies though probes at the broder of the frustum
 	// as outside if their position is outside but their extends protrude into the frustum.
@@ -475,6 +422,7 @@ void deoglGICascade::FindProbesToUpdate( const deoglDCollisionFrustum &frustum )
 		- frustum.GetNearNormal() * pPosition ) - frustumPlaneShift;
 	
 	const int realProbeCount = pGIState.GetRealProbeCount();
+	int i;
 	for( i=0; i<realProbeCount; i++ ){
 		sProbe &probe = pProbes[ i ];
 		
@@ -491,70 +439,20 @@ void deoglGICascade::FindProbesToUpdate( const deoglDCollisionFrustum &frustum )
 		}
 	}
 	
-	// add probes by priority
-	const int mask = epfValid | epfInsideView | epfDisabled | epfDynamicDisable | epfRayCacheValid;
-	int last = realProbeCount;
+	pUpdateProbeCount = 0;
 	
-	// - invalid probes inside view. expensive updates. at most 50% count
-	// - valid requiring cache update probes inside view. expensive updates. at most 50% count
-	const int maxUpdateCountExpensive = maxUpdateCount * 0.5f; // 50%
-	int maxUpdateCountExpensiveOutside = maxUpdateCountExpensive * 0.2f; // 20%
-	int maxUpdateCountExpensiveInside = maxUpdateCountExpensive - maxUpdateCountExpensiveOutside; // 80%
-	
-	pAddUpdateProbes( mask, epfInsideView, last, maxUpdateCountExpensiveInside, maxUpdateCount );
-	pAddUpdateProbes( mask, epfValid | epfInsideView, last, maxUpdateCountExpensiveInside, maxUpdateCount );
-	
-	// - invalid probes outside view. expensive updates. at most 50% count
-	// - valid requiring cache update probes outside view. expensive updates. at most 50% count
-	pAddUpdateProbes( mask, 0, last, maxUpdateCountExpensiveOutside, maxUpdateCount );
-	pAddUpdateProbes( mask, epfValid, last, maxUpdateCountExpensiveOutside, maxUpdateCount );
-	
-	// - valid requiring dynamic update probes inside view. cheap updates. at most 80% count
-	const int maxUpdateCountCheap = maxUpdateCount - pUpdateProbeCount;
-	int maxUpdateCountCheapOutside = maxUpdateCountCheap * 0.2f; // 20%
-	int maxUpdateCountCheapInside = maxUpdateCountCheap - maxUpdateCountCheapOutside; // 80%
-	
-	pAddUpdateProbes( mask, epfValid | epfInsideView | epfRayCacheValid, last, maxUpdateCountCheapInside, maxUpdateCount );
-	
-	// - valid requiring dynamic update probes outside view. cheap updates. fill up to max count
-	int fillUpCount = maxUpdateCount - pUpdateProbeCount;
-	pAddUpdateProbes( mask, epfValid | epfRayCacheValid, last, fillUpCount, maxUpdateCount );
-	
-	// if not all update slots are used fill up with expensive updates if important enough.
-	// this situation happens usually only if the cascade teleported to a new location where
-	// there are many expensive probes and next to no cheap probes. in this situation filling
-	// up with expensive probes potentially causes a 1-2 frame short hickup but prevents bad
-	// lighting results.
-	// 
-	// enabling this can be adjusted on a per cascade basis. for large cascades doing this
-	// helps to ensure smaller cascades can fall back to some kind of lighting. for small
-	// cascades this can be disabled to speed up by using large cascade results
-	if( pFillUpUpdatesWithExpensiveProbes ){
-		// - invalid probes. expensive updates but important since it avoids lighting gaps
-		const int maskGrouped = epfValid | epfDisabled | epfDynamicDisable | epfRayCacheValid;
+	if( pRequiresFullUpdateInsideView ){
+		pFindProbesToUpdateFullUpdateInsideView();
+		pRequiresFullUpdateInsideView = false;
 		
-		pAddUpdateProbes( maskGrouped, 0, last, fillUpCount, maxUpdateCount );
-		
-		// - valid requiring cache update probes. expensive updates but not important enough
-// 		pAddUpdateProbes( maskGrouped, epfValid, last, fillUpCount, maxUpdateCount );
-	}
-	
-	// finish the aged probe list to make it valid again
-	for( i=0; i<pUpdateProbeCount; i++ ){
-		pAgedProbes[ last++ ] = pUpdateProbes[ i ];
+	}else{
+		pFindProbesToUpdateRegular();
 	}
 	
 	// update states of probes to update. has to be done after adding the probes to avoid
 	// changing flags to affect the filtering
-		int specialCountExpensive = 0, specialCountCheap = 0;
-	
 	for( i=0; i<pUpdateProbeCount; i++ ){
 		sProbe &probe = pProbes[ pUpdateProbes[ i ] ];
-			if( ( probe.flags & epfRayCacheValid ) == epfRayCacheValid ){
-				specialCountCheap++;
-			}else{
-				specialCountExpensive++;
-			}
 		
 		if( ( probe.flags & epfValid ) == epfValid ){
 			probe.flags |= epfSmoothUpdate;
@@ -736,7 +634,6 @@ void deoglGICascade::UpdateProbeOffsetFromShader( const float *data ){
 				// update offset only if it moved far enough to justify an expensive update
 				probe.offset = offset;
 				probe.flags &= ~( epfRayCacheValid | epfDynamicDisable );
-				pHasRayCacheInvalidProbes = true;
 			}
 		}
 // 			pRenderThread.GetLogger().LogInfoFormat("UpdateProbeOffsetFromTexture: RayCacheInvalidate %d", pUpdateProbes[i]);
@@ -745,7 +642,7 @@ void deoglGICascade::UpdateProbeOffsetFromShader( const float *data ){
 	// update all has probe flags. this is done here and nowhere else since this method is
 	// called if one or more probes are updated. only in this situation these flags can
 	// potentially change and have to be updated
-	pUpdateHasProbeFlags();
+// 	pUpdateHasProbeFlags();
 }
 
 void deoglGICascade::UpdateProbeExtendsFromShader( const float *data ){
@@ -812,8 +709,135 @@ void deoglGICascade::pInitProbes(){
 		pAgedProbes[ i ] = i;
 	}
 	
-	pHasInvalidProbes = true;
-	pHasRayCacheInvalidProbes = true;
+// 	pHasInvalidProbesInsideView = true;
+}
+
+void deoglGICascade::pFindProbesToUpdateFullUpdateInsideView(){
+	// update all inside probes regardless of update count selected by the user
+	const int realProbeCount = pGIState.GetRealProbeCount();
+	const int maxUpdateCount = GI_MAX_PROBE_COUNT;
+	int last = realProbeCount;
+	
+	int fillUpCount = maxUpdateCount;
+	pAddUpdateProbes( epfInsideView, epfInsideView, last, fillUpCount, maxUpdateCount );
+	
+	// finish the aged probe list to make it valid again
+	int i;
+	for( i=0; i<pUpdateProbeCount; i++ ){
+		pAgedProbes[ last++ ] = pUpdateProbes[ i ];
+	}
+}
+
+void deoglGICascade::pFindProbesToUpdateRegular(){
+	// performance notes:
+	// 
+	// using 32*8*32 grid this yields a total of 8192 probes. inside view covers roughly 1/5
+	// probes (view single face 1/6, view entire quart 1/4 and thus somewhere in the middle).
+	// hence inside probes count is roughly 1600.
+	// 
+	// for non-RTX/compute supporting hardware this giUpdateSpeed mapping can be used:
+	// veryHigh(2048), high(1024), medium(512), low(256), veryLow(128).
+	// 
+	// using veryHigh(2048) this can update roughly 400 probes outside view and 1600 probes
+	// inside view (20%/80% ratio). this setting allows to update visible probes every frame
+	// update (or every 2 using multi-volume). this refreshes 20 times per second.
+	// 
+	// using high(1024) this can update roughly 200 probes outside view and 800 probes inside
+	// view. this setting allows to update visible probes every 2 frame updates (or every 4
+	// using multi-volume). on 40 FPS this is 0.1s (or 0.2s on 20 FPS). this refreshes
+	// 10 times per second.
+	// 
+	// using medium(512) this can update roughly 100 probes outside view and 400 probes inside
+	// view. this setting allows to update visible probes every 4 frame updates (or every 8
+	// using multi-volume). on 40 FPS this is 0.2s (or 0.4s on 20 FPS). this refreshes 5 times
+	// per second. for medium update speed this is rather okay.
+	// 
+	// using low(256) this can update roughly 50 probes outside view and 200 probes inside
+	// view. this setting allows to update visible probes every 8 frame updates (or every 16
+	// using multi-volume). on 40 FPS this is 0.4s (or 0.8s on 20 FPS). this refreshes 2.5 times
+	// per second. for low update speed the delay becomes already noticeable if frame rate drops.
+	// still 0.5ms to get full screen update is still okay.
+	// 
+	// using veryLow(128) this can update roughly 25 probes outside view and 100 probes inside
+	// view. this setting allows to update visible probes every 16 frame updates (or every 32
+	// using multi-volume). on 40 FPS this is 0.8s (or 1.6s on 20 FPS). this refreshes 1.25
+	// times per second. for veryLow update speed the delay is noticeable on good FPS and more
+	// noticeable on bad FPS. still this is acceptable for certain games especially if
+	// performance is improved with it.
+	// 
+	// using smaller grid this can be speed up but requires more distribution across volumes.
+	// using fewer volumes helps in general.
+	// 
+	// now about the expensive/cheap probe update ratio. using medium update speed of 512
+	// probes this can be 256 maximum (factor 2) or 128 maxiimum (factor 4). using factor
+	// 2 doubles the inside view probe refresh time after teleporting and thus requires
+	// 0.4s on 40 FPS (or 0.8s on 20 FPS). using factor 4 this quadruples the time hence
+	// 0.8s on 40 FPS (or 1.6s on 20 FPS). this delay is certainly noticeable.
+	// 
+	// now expensive probes depends on the game content. with good LODing and not too many
+	// objects on screen it should be possible to even update using a ratio of 1. now while
+	// moving this invalidates roughly 256 probes per shift. at worst this is 768 if 3 planes
+	// shift at the same time. this is though unlikely. it is enough to assume one plane
+	// updates per frame. using a factor of 2 would allow to update all invalidated probes
+	// at once in the medium scenario without adding a delay. this seems thus a good middle
+	// ground.
+	
+	const int maxUpdateCount = pGIState.GetRenderThread().GetGI().GetTraceRays().GetProbeCount();
+	const int realProbeCount = pGIState.GetRealProbeCount();
+	
+	// add probes by priority
+	const int mask = epfValid | epfInsideView | epfDisabled | epfDynamicDisable | epfRayCacheValid;
+	int last = realProbeCount;
+	
+	// - invalid probes inside view. expensive updates. at most 50% count
+	// - valid requiring cache update probes inside view. expensive updates. at most 50% count
+	const int maxUpdateCountExpensive = maxUpdateCount * 0.5f; // 50%
+	int maxUpdateCountExpensiveOutside = maxUpdateCountExpensive * 0.2f; // 20%
+	int maxUpdateCountExpensiveInside = maxUpdateCountExpensive - maxUpdateCountExpensiveOutside; // 80%
+	
+	pAddUpdateProbes( mask, epfInsideView, last, maxUpdateCountExpensiveInside, maxUpdateCount );
+	pAddUpdateProbes( mask, epfValid | epfInsideView, last, maxUpdateCountExpensiveInside, maxUpdateCount );
+	
+	// - invalid probes outside view. expensive updates. at most 50% count
+	// - valid requiring cache update probes outside view. expensive updates. at most 50% count
+	pAddUpdateProbes( mask, 0, last, maxUpdateCountExpensiveOutside, maxUpdateCount );
+	pAddUpdateProbes( mask, epfValid, last, maxUpdateCountExpensiveOutside, maxUpdateCount );
+	
+	// - valid requiring dynamic update probes inside view. cheap updates. at most 80% count
+	const int maxUpdateCountCheap = maxUpdateCount - pUpdateProbeCount;
+	int maxUpdateCountCheapOutside = maxUpdateCountCheap * 0.2f; // 20%
+	int maxUpdateCountCheapInside = maxUpdateCountCheap - maxUpdateCountCheapOutside; // 80%
+	
+	pAddUpdateProbes( mask, epfValid | epfInsideView | epfRayCacheValid, last, maxUpdateCountCheapInside, maxUpdateCount );
+	
+	// - valid requiring dynamic update probes outside view. cheap updates. fill up to max count
+	int fillUpCount = maxUpdateCount - pUpdateProbeCount;
+	pAddUpdateProbes( mask, epfValid | epfRayCacheValid, last, fillUpCount, maxUpdateCount );
+	
+	// if not all update slots are used fill up with expensive updates if important enough.
+	// this situation happens usually only if the cascade teleported to a new location where
+	// there are many expensive probes and next to no cheap probes. in this situation filling
+	// up with expensive probes potentially causes a 1-2 frame short hickup but prevents bad
+	// lighting results.
+	// 
+	// enabling this can be adjusted on a per cascade basis. for large cascades doing this
+	// helps to ensure smaller cascades can fall back to some kind of lighting. for small
+	// cascades this can be disabled to speed up by using large cascade results
+	if( pFillUpUpdatesWithExpensiveProbes ){
+		// - invalid probes. expensive updates but important since it avoids lighting gaps
+		const int maskGrouped = epfValid | epfDisabled | epfDynamicDisable | epfRayCacheValid;
+		
+		pAddUpdateProbes( maskGrouped, 0, last, fillUpCount, maxUpdateCount );
+		
+		// - valid requiring cache update probes. expensive updates but not important enough
+// 		pAddUpdateProbes( maskGrouped, epfValid, last, fillUpCount, maxUpdateCount );
+	}
+	
+	// finish the aged probe list to make it valid again
+	int i;
+	for( i=0; i<pUpdateProbeCount; i++ ){
+		pAgedProbes[ last++ ] = pUpdateProbes[ i ];
+	}
 }
 
 void deoglGICascade::pAddUpdateProbes( uint8_t mask, uint8_t flags, int &lastIndex,
@@ -891,19 +915,11 @@ void deoglGICascade::pUpdateHasProbeFlags(){
 	const int count = pGIState.GetRealProbeCount();
 	int i;
 	
-	pHasInvalidProbes = false;
-	pHasRayCacheInvalidProbes = false;
+	pHasInvalidProbesInsideView = false;
 	
 	for( i=0; i<count; i++ ){
 		if( ( pProbes[ i ].flags & epfValid ) != epfValid ){
-			pHasInvalidProbes = true;
-			break;
-		}
-	}
-	
-	for( i=0; i<count; i++ ){
-		if( ( pProbes[ i ].flags & epfRayCacheValid ) != epfRayCacheValid ){
-			pHasRayCacheInvalidProbes = true;
+			pHasInvalidProbesInsideView = true;
 			break;
 		}
 	}

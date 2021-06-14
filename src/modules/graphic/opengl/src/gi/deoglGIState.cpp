@@ -87,6 +87,10 @@ pCascades( NULL ),
 pCascadeCount( 0 ),
 pActiveCascade( 0 ),
 
+pCascaceUpdateCycle( NULL ),
+pCascaceUpdateCycleCount( 0 ),
+pCascaceUpdateCycleIndex( 0 ),
+
 pTexProbeIrradiance( renderThread ),
 pTexProbeDistance( renderThread ),
 pTexProbeOffset( renderThread ),
@@ -109,6 +113,7 @@ pRayCache( renderThread, 64, pRealProbeCount, 4 )
 {
 	try{
 		pInitCascades();
+		pInitCascadeUpdateCycle();
 		pInitUBOClearProbes();
 		
 		#ifdef GI_USE_RAY_CACHE
@@ -168,6 +173,12 @@ void deoglGIState::SetWorld( deoglRWorld *world ){
 	pWorld = world;
 	pAreaTracker.SetWorld( world );
 	Invalidate();
+	
+	// in addition set all cascades to required full update of inside view probes
+	int i;
+	for( i=0; i<pCascadeCount; i++ ){
+		pCascades[ i ]->SetRequiresFullUpdateInsideView( true );
+	}
 }
 
 void deoglGIState::SetLayerMask( const decLayerMask &layerMask ){
@@ -242,7 +253,7 @@ void deoglGIState::Update( const decDVector &cameraPosition, const deoglDCollisi
 	deoglGICascade &cascade = GetActiveCascade();
 	cascade.UpdatePosition( cameraPosition );
 		// HACK temporary since we need to highest cascade for shadow casting
-		if(pActiveCascade != pCascadeCount-1) pCascades[ pCascadeCount - 1 ]->UpdatePosition( cameraPosition );
+// 		if(pActiveCascade != pCascadeCount-1) pCascades[ pCascadeCount - 1 ]->UpdatePosition( cameraPosition );
 		// HACK temporary since we need to highest cascade for shadow casting
 	SPECIAL_TIMER_PRINT("UpdatePosition")
 	
@@ -383,6 +394,9 @@ void deoglGIState::pCleanUp(){
 			delete pCascades[ i ];
 		}
 	}
+	if( pCascaceUpdateCycle ){
+		delete [] pCascaceUpdateCycle;
+	}
 }
 
 void deoglGIState::pInitCascades(){
@@ -392,22 +406,24 @@ void deoglGIState::pInitCascades(){
 	const decVector largestSpacing( pSize.x / ( float )pGridCoordClamp.x,
 		pSize.y / ( float )pGridCoordClamp.y, pSize.z / ( float )pGridCoordClamp.z );
 	const float scaleFactor2nd = 2.0f;
+	const float offsetFactor2nd = 0.0f; // 0.25f; <= when using 5th cascade offset by 0.5
 	const float scaleFactor3rd = 1.0f / 3.0f;
 	
-	pCascades[ 0 ] = new deoglGICascade( *this, 0, smallestSpacing );
+	pCascades[ 0 ] = new deoglGICascade( *this, 0, smallestSpacing, decVector() );
 	pCascades[ 0 ]->SetFillUpUpdatesWithExpensiveProbes( true );
 	pCascadeCount = 1;
 	
-	pCascades[ 1 ] = new deoglGICascade( *this, 1, smallestSpacing * scaleFactor2nd );
+	pCascades[ 1 ] = new deoglGICascade( *this, 1, smallestSpacing * scaleFactor2nd,
+		smallestSpacing * offsetFactor2nd );
 	pCascades[ 1 ]->SetFillUpUpdatesWithExpensiveProbes( true );
 	pCascadeCount = 2;
 	
-	pCascades[ 2 ] = new deoglGICascade( *this, 2,
-		( smallestSpacing * scaleFactor2nd ).Mix( largestSpacing, scaleFactor3rd ) );
+	pCascades[ 2 ] = new deoglGICascade( *this, 2, ( smallestSpacing * scaleFactor2nd ).
+		Mix( largestSpacing, scaleFactor3rd ), decVector() );
 	pCascades[ 2 ]->SetFillUpUpdatesWithExpensiveProbes( true );
 	pCascadeCount = 3;
 	
-	pCascades[ 3 ] = new deoglGICascade( *this, 3, largestSpacing );
+	pCascades[ 3 ] = new deoglGICascade( *this, 3, largestSpacing, decVector() );
 	pCascades[ 3 ]->SetFillUpUpdatesWithExpensiveProbes( true );
 	pCascadeCount = 4;
 	
@@ -422,6 +438,31 @@ void deoglGIState::pInitCascades(){
 		logger.LogInfoFormat( "- %d: size=(%g,%g,%g) spacing=(%g,%g,%g) detbox=(%g,%g,%g)", i,
 			size.x, size.y, size.z, spacing.x, spacing.y, spacing.z, detbox.x, detbox.y, detbox.z );
 	}
+}
+
+void deoglGIState::pInitCascadeUpdateCycle(){
+	// normal processing of cascades. update the cascades using this pattern: 0, 1, 2, 0, 1, 3.
+	// this pattern ensures the smallest two cascades are updated more frequently than the
+	// largest two cascades.
+	// 
+	// an alternative pattern would be: 0, 1, 0, 2, 0, 1, 0, 3. this pattern updates the
+	// cascades faster the smaller it is.
+	// 
+	// another possible pattern is: 0, 1, 2, 3. this pattern updates all cascades equally fast
+	// 
+	// another possible pattern is: 0, 1, 0, 2, 0, 3. this pattern updates the smallest cascade
+	// fast and the other patterns equally slower. this ensures all cascades but the smallest
+	// update on equal speed with the smallest cascade updating faster. this puts emphasis on
+	// the area around the camera while keeping larger cascades at equal pacing
+	
+	pCascaceUpdateCycle = new int[ 6 ];
+	pCascaceUpdateCycle[ 0 ] = 0;
+	pCascaceUpdateCycle[ 1 ] = 1;
+	pCascaceUpdateCycle[ 2 ] = 2;
+	pCascaceUpdateCycle[ 3 ] = 0;
+	pCascaceUpdateCycle[ 4 ] = 1;
+	pCascaceUpdateCycle[ 5 ] = 3;
+	pCascaceUpdateCycleCount = 6;
 }
 
 void deoglGIState::pInitUBOClearProbes(){
@@ -517,7 +558,19 @@ void deoglGIState::pUpdateProbeExtendsFromShader( deoglGICascade &cascade ){
 }
 
 void deoglGIState::pActivateNextCascade(){
-	pActiveCascade = 0;
+	// update first all cascades requiring full update of all probes inside view. do this
+	// starting at the largest cascade going down to the smallest to ensure valid lighting
+	// results to be present as quickly as possible
+	for( pActiveCascade=pCascadeCount-1; pActiveCascade>=0; pActiveCascade-- ){
+		if( pCascades[ pActiveCascade ]->GetRequiresFullUpdateInsideView() ){
+			return;
+		}
+	}
+	
+	pActiveCascade = pCascaceUpdateCycle[ pCascaceUpdateCycleIndex++ ];
+	if( pCascaceUpdateCycleIndex >= pCascaceUpdateCycleCount ){
+		pCascaceUpdateCycleIndex = 0;
+	}
 }
 
 void deoglGIState::pPrepareTraceProbes( deoglGICascade &cascade, const deoglDCollisionFrustum &frustum ){

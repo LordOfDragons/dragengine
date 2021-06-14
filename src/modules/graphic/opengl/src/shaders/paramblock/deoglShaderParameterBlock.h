@@ -323,6 +323,7 @@ public:
 	void SetParameterDataIVec2( int parameter, int element, int value1, int value2 );
 	void SetParameterDataIVec3( int parameter, int element,
 		int value1, int value2, int value3 );
+	void SetParameterDataIVec3( int parameter, int element, const decPoint3 &value );
 	void SetParameterDataIVec4( int parameter, int element,
 		int value1, int value2, int value3, int value4 );
 	

@@ -118,7 +118,6 @@ int deoglGITraceRays::ConfigProbeCount( const deoglConfiguration &config ){
 void deoglGITraceRays::UpdateFromConfig(){
 	const int raysPerProbe = ConfigRaysPerProbe( pRenderThread.GetConfiguration() );
 	const int probeCount = ConfigProbeCount( pRenderThread.GetConfiguration() );
-	
 	if( raysPerProbe == pRaysPerProbe && probeCount == pProbeCount ){
 		return;
 	}
@@ -152,7 +151,9 @@ void deoglGITraceRays::pCreateFBORay(){
 		GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3, GL_COLOR_ATTACHMENT4 };
 	
 	const int width = pProbesPerLine * pRaysPerProbe;
-	const int height = pProbeCount / pProbesPerLine;
+	const int height = GI_MAX_PROBE_COUNT / pProbesPerLine;
+		// ^== can not use pProbeCount since GI cascades are allowed to temporarily use the
+		//     maximum update probe count no matter what config option is set
 	
 	pTexPosition.SetFBOFormat( 4, true );
 	pTexPosition.SetSize( width, height );

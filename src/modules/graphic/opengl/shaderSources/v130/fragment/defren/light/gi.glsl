@@ -43,7 +43,7 @@ uniform HIGHP sampler2DArray texGIDistance;
 
 
 // includes to come after defining fixed position samplers
-#define pGIGridProbeCount pGIProbeCount
+#define pGIGridProbeCount pGIParams[0].probeCount
 #include "v130/shared/defren/gi/probe_offset.glsl"
 
 
@@ -83,14 +83,14 @@ vec2 giTCFromDirection( in vec3 dir, in ivec3 probeCoord, in vec2 mapScale, in i
 	tc = ( tc + vec2( 1.0 ) ) * 0.5; // range [0..1]
 	tc *= vec2( mapSize ); // range [0..mapSize] (left border of left pixel to right border of right pixel)
 	tc += vec2( 2 ); // offset by full map border and probe map border
-	tc += vec2( pGIProbeCount.x * probeCoord.y + probeCoord.x, probeCoord.z ) * vec2( mapSize + 2 );
+	tc += vec2( pGIParams[0].probeCount.x * probeCoord.y + probeCoord.x, probeCoord.z ) * vec2( mapSize + 2 );
 	return tc * mapScale;
 }
 
 // shifted grid coordinates to local grid coordinates. the pGIGridCoordShift value
 // contains "probeCount - shift" to reduce the calculation
-ivec3 giGridShiftToLocal( in ivec3 shifted ){
-	return ( shifted + pGIGridCoordShift ) % pGIProbeCount;
+ivec3 giGridShiftToLocal( in ivec3 shifted, in int cascade ){
+	return ( shifted + pGIParams[cascade].gridCoordShift ) % pGIParams[0].probeCount;
 }
 
 // calculate illumination to apply to fragment
@@ -102,30 +102,33 @@ vec3 giIlluminate( in vec3 position, in vec3 normal, in vec3 bendNormal, in int 
 	// we need the offset in GI space so the pGIMatrixNormal is used to transform it. since
 	// position is the vector from camera to fragment w0 is the negation of the normalized
 	// position. furthermore the GI state sets pGISelfShadowBias is set to 0.75 * selfShadowBias.
-	vec3 offsetPosition = mix( bendNormal, -normalize( position ), vec3( pGINormalBias ) ) * pGISelfShadowBias;
-	offsetPosition = offsetPosition * pGIMatrixNormal; // reverse order does transpose()
+	vec3 offsetPosition = mix( bendNormal, -normalize( position ),
+		vec3( pGIParams[cascade].normalBias ) ) * pGIParams[cascade].selfShadowBias;
+	offsetPosition = offsetPosition * pGIParams[cascade].matrixNormal; // reverse order does transpose()
 	
-	normal = normalize( normal * pGIMatrixNormal ); // reverse order does transpose()
-	bendNormal = normalize( bendNormal * pGIMatrixNormal ); // reverse order does transpose()
-	position = vec3( pGIMatrix * vec4( position, 1.0 ) );
+	normal = normalize( normal * pGIParams[cascade].matrixNormal ); // reverse order does transpose()
+	bendNormal = normalize( bendNormal * pGIParams[cascade].matrixNormal ); // reverse order does transpose()
+	position = vec3( pGIParams[cascade].matrix * vec4( position, 1.0 ) );
 	
-	ivec3 baseCoord = clamp( ivec3( ( position + offsetPosition ) * pGIProbeSpacingInv ), ivec3( 0 ), pGIProbeClamp );
-	vec3 basePosition = pGIProbeSpacing * vec3( baseCoord );
+	ivec3 baseCoord = clamp( ivec3( ( position + offsetPosition )
+		* pGIParams[cascade].probeSpacingInv ), ivec3( 0 ), pGIParams[cascade].probeClamp );
+	vec3 basePosition = pGIParams[cascade].probeSpacing * vec3( baseCoord );
 	
 	vec3 sumIrradiance = vec3( 0.0 );
 	float sumWeight = 0.0;
 	
-	vec3 alpha = clamp( pGIProbeSpacingInv * ( position + offsetPosition - basePosition ), vec3( 0.0 ), vec3( 1.0 ) ); // paper
+	vec3 alpha = clamp( pGIParams[cascade].probeSpacingInv
+		* ( position + offsetPosition - basePosition ), vec3( 0.0 ), vec3( 1.0 ) ); // paper
 	
 	// iterate over adjacent probe cage
 	int i;
 	for( i=0; i<8; i++ ){
 		// offset = 0 or 1 along each axis
 		ivec3 offset = ivec3( i, i >> 1, i >> 2 ) & ivec3( 1 );
-		ivec3 probeCoord = clamp( baseCoord + offset, ivec3( 0 ), pGIProbeClamp );
-		vec3 probePosition = pGIProbeSpacing * vec3( probeCoord );
+		ivec3 probeCoord = clamp( baseCoord + offset, ivec3( 0 ), pGIParams[cascade].probeClamp );
+		vec3 probePosition = pGIParams[cascade].probeSpacing * vec3( probeCoord );
 		
-		probeCoord = giGridShiftToLocal( probeCoord );
+		probeCoord = giGridShiftToLocal( probeCoord, cascade );
 		
 		// ignore disabled probes. probes are disabled if >25% of cached rays hit backfaces
 		vec4 offsetFlags = gipoProbeOffsetFlags( probeCoord, cascade );
@@ -140,8 +143,8 @@ vec3 giIlluminate( in vec3 position, in vec3 normal, in vec3 bendNormal, in int 
 		vec3 probeToPoint = position + offsetPosition - probePosition;
 		float distToProbe = length( probeToPoint );
 		
-		vec3 texCoord = vec3( giTCFromDirection( probeToPoint / distToProbe,
-			probeCoord, pGIDistanceMapScale, pGIDistanceMapSize ), cascade );
+		vec3 texCoord = vec3( giTCFromDirection( probeToPoint / distToProbe, probeCoord,
+			pGIParams[cascade].distanceMapScale, pGIParams[cascade].distanceMapSize ), cascade );
 		
 		vec2 visibility = texture( texGIDistance, texCoord ).ra; // RG16 in opengl has RRRG as swizzle
 		
@@ -193,12 +196,13 @@ vec3 giIlluminate( in vec3 position, in vec3 normal, in vec3 bendNormal, in int 
 		weight *= trilinear.x * trilinear.y * trilinear.z;
 		
 		// sample irradiance
-		texCoord.xy = giTCFromDirection( bendNormal, probeCoord, pGIIrradianceMapScale, pGIIrradianceMapSize );
+		texCoord.xy = giTCFromDirection( bendNormal, probeCoord,
+			pGIParams[cascade].irradianceMapScale, pGIParams[cascade].irradianceMapSize );
 		vec3 probeIrradiance = texture( texGIIrradiance, texCoord ).rgb;
 		
 		// from source code. using some kind of gamma=2 curve (basically an sqrt) to
 		// approximate sRGB blending. should help somehow with trilinear?
-		probeIrradiance = pow( probeIrradiance, vec3( pGIIrradianceGamma * 0.5 ) );
+		probeIrradiance = pow( probeIrradiance, vec3( pGIParams[cascade].irradianceGamma * 0.5 ) );
 		
 		sumIrradiance += probeIrradiance * weight;
 		sumWeight += weight;
@@ -223,7 +227,8 @@ vec3 giIlluminate( in vec3 position, in vec3 normal, in vec3 bendNormal, in int 
 	// non-irradiated over a short distance.
 	// 
 	// this can be later on improved by using probe cascades
-	sumIrradiance *= 1.0 - min( length( position - clamp( position, vec3( 0.0 ), pGIPositionClamp ) ) / 2.0, 1.0 );
+	sumIrradiance *= 1.0 - min( length( position - clamp( position, vec3( 0.0 ),
+		pGIParams[cascade].positionClamp ) ) / 2.0, 1.0 );
 	
 	// final result
 	return sumIrradiance;

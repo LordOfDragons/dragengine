@@ -99,12 +99,13 @@ enum eUBORenderLightParameters{
 	euprlProbeSpacingInv,
 	euprlNormalBias,
 	euprlPositionClamp,
-	euprlEnergyPreservation,
 	euprlOcclusionMapScale,
 	euprlDistanceMapScale,
 	euprlGridCoordShift,
 	euprlIrradianceGamma,
-	euprlSelfShadowBias
+	euprlSelfShadowBias,
+	euprlGridOrigin,
+	euprlGridCoordUnshift
 };
 
 enum eSPMaterial{
@@ -116,20 +117,17 @@ enum eSPDebugProbe{
 	spdpMatrixMV,
 	spdpMatrixMVP,
 	spdpMatrixP,
-	spdpGIGridCoordShift,
 	spdpGIDebugCascade
 };
 
 enum eSPDebugProbeOffset{
 	spdpoMatrixMVP,
-	spdpoGIGridCoordShift,
 	spdpoGIDebugCascade
 };
 
 enum eSPDebugProbeUpdate{
 	spdpuPosTransform,
 	spdpuTCTransform,
-	spdpuGIGridCoordShift,
 	spdpuGIDebugCascade,
 	spdpuParams,
 	spdpuPlaneLeft,
@@ -464,32 +462,38 @@ void deoglRenderGI::PrepareUBORenderLight( deoglRenderPlan &plan ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	deoglSPBlockUBO &ubo = ( deoglSPBlockUBO& )( deObject& )pUBORenderLight;
-	const deoglGICascade &cascade = giState->GetActiveCascade();
+	const int count = giState->GetCascadeCount();
+	int i;
 	
+	deoglSPBlockUBO &ubo = GetUBORenderLight();
 	ubo.MapBuffer();
 	try{
-		const decDMatrix matrix( plan.GetInverseCameraMatrix()
-			* decDMatrix::CreateTranslation( -( cascade.GetPosition() + cascade.GetFieldOrigin() ) ) );
-		
-		ubo.SetParameterDataMat4x3( euprlMatrix, matrix );
-		ubo.SetParameterDataMat3x3( euprlMatrixNormal, matrix.GetRotationMatrix().QuickInvert() );
-		
-		ubo.SetParameterDataIVec3( euprlProbeCount, giState->GetProbeCount() );
-		ubo.SetParameterDataIVec3( euprlProbeClamp, giState->GetGridCoordClamp() );
-		ubo.SetParameterDataVec3( euprlProbeSpacing, cascade.GetProbeSpacing() );
-		ubo.SetParameterDataVec3( euprlProbeSpacingInv, cascade.GetProbeSpacingInverse() );
-		ubo.SetParameterDataVec3( euprlPositionClamp, cascade.GetPositionClamp() );
-		ubo.SetParameterDataIVec3( euprlGridCoordShift, giState->GetProbeCount() - cascade.GetGridCoordShift() );
-		
-		ubo.SetParameterDataInt( euprlOcclusionMapSize, giState->GetIrradianceMapSize() );
-		ubo.SetParameterDataVec2( euprlOcclusionMapScale, giState->GetIrradianceMapScale() );
-		ubo.SetParameterDataInt( euprlDistanceMapSize, giState->GetDistanceMapSize() );
-		ubo.SetParameterDataVec2( euprlDistanceMapScale, giState->GetDistanceMapScale() );
-		ubo.SetParameterDataFloat( euprlNormalBias, giState->GetNormalBias() );
-		ubo.SetParameterDataFloat( euprlEnergyPreservation, giState->GetEnergyPreservation() );
-		ubo.SetParameterDataFloat( euprlIrradianceGamma, giState->GetIrradianceGamma() );
-		ubo.SetParameterDataFloat( euprlSelfShadowBias, cascade.CalcUBOSelfShadowBias() );
+		for( i=0; i<count; i++ ){
+			const deoglGICascade &cascade = giState->GetCascadeAt( i );
+			
+			const decDVector position( cascade.GetPosition() + cascade.GetFieldOrigin() );
+			const decDMatrix matrix( plan.GetInverseCameraMatrix() * decDMatrix::CreateTranslation( -position ) );
+			
+			ubo.SetParameterDataMat4x3( euprlMatrix, i, matrix );
+			ubo.SetParameterDataMat3x3( euprlMatrixNormal, i, matrix.GetRotationMatrix().QuickInvert() );
+			
+			ubo.SetParameterDataIVec3( euprlProbeCount, i, giState->GetProbeCount() );
+			ubo.SetParameterDataIVec3( euprlProbeClamp, i, giState->GetGridCoordClamp() );
+			ubo.SetParameterDataVec3( euprlProbeSpacing, i, cascade.GetProbeSpacing() );
+			ubo.SetParameterDataVec3( euprlProbeSpacingInv, i, cascade.GetProbeSpacingInverse() );
+			ubo.SetParameterDataVec3( euprlPositionClamp, i, cascade.GetPositionClamp() );
+			ubo.SetParameterDataIVec3( euprlGridCoordShift, i, giState->GetProbeCount() - cascade.GetGridCoordShift() );
+			
+			ubo.SetParameterDataInt( euprlOcclusionMapSize, i, giState->GetIrradianceMapSize() );
+			ubo.SetParameterDataVec2( euprlOcclusionMapScale, i, giState->GetIrradianceMapScale() );
+			ubo.SetParameterDataInt( euprlDistanceMapSize, i, giState->GetDistanceMapSize() );
+			ubo.SetParameterDataVec2( euprlDistanceMapScale, i, giState->GetDistanceMapScale() );
+			ubo.SetParameterDataFloat( euprlNormalBias, i, giState->GetNormalBias() );
+			ubo.SetParameterDataFloat( euprlIrradianceGamma, i, giState->GetIrradianceGamma() );
+			ubo.SetParameterDataFloat( euprlSelfShadowBias, i, cascade.CalcUBOSelfShadowBias() );
+			ubo.SetParameterDataVec3( euprlGridOrigin, i, cascade.GetFieldOrigin() );
+			ubo.SetParameterDataIVec3( euprlGridCoordUnshift, i, cascade.GetGridCoordShift() );
+		}
 		
 	}catch( const deException & ){
 		ubo.UnmapBuffer();
@@ -1026,10 +1030,9 @@ void deoglRenderGI::RenderDebugOverlay( deoglRenderPlan &plan ){
 		shaderProbe.SetParameterDMatrix4x3( spdpMatrixMV, matrixC );
 		shaderProbe.SetParameterDMatrix4x4( spdpMatrixMVP, matrixCP );
 		shaderProbe.SetParameterDMatrix4x4( spdpMatrixP, matrixP );
-		shaderProbe.SetParameterPoint3( spdpGIGridCoordShift, giState->GetProbeCount() - cascade.GetGridCoordShift() );
 		shaderProbe.SetParameterInt( spdpGIDebugCascade, cascade.GetIndex() );
 		
-		pActivateGIUBOs();
+		GetUBORenderLight().Activate();
 		
 		tsmgr.EnableArrayTexture( 0, giState->GetTextureProbeIrradiance(), GetSamplerClampLinear() );
 		tsmgr.EnableArrayTexture( 1, giState->GetTextureProbeDistance(), GetSamplerClampLinear() );
@@ -1054,10 +1057,9 @@ void deoglRenderGI::RenderDebugOverlay( deoglRenderPlan &plan ){
 		deoglShaderCompiled &shaderOffset = *pShaderDebugProbeOffset->GetCompiled();
 		shaderOffset.Activate();
 		shaderOffset.SetParameterDMatrix4x4( spdpoMatrixMVP, matrixCP );
-		shaderOffset.SetParameterPoint3( spdpoGIGridCoordShift, giState->GetProbeCount() - cascade.GetGridCoordShift() );
 		shaderOffset.SetParameterInt( spdpoGIDebugCascade, cascade.GetIndex() );
 		
-		pActivateGIUBOs();
+		GetUBORenderLight().Activate();
 		
 		tsmgr.EnableArrayTexture( 0, giState->GetTextureProbeOffset(), GetSamplerClampNearest() );
 		tsmgr.DisableStagesAbove( 0 );
@@ -1104,8 +1106,6 @@ void deoglRenderGI::RenderDebugOverlay( deoglRenderPlan &plan ){
 			scale.x * position.x * 2.0f + offset.x, scale.y * position.y * 2.0f + offset.y );
 		shader2a.SetParameterFloat( spdpuTCTransform, ( float )size.x * 0.5f, ( float )size.y * -0.5f,
 			( float )size.x * 0.5, ( float )size.y * 0.5f );
-		shader2a.SetParameterPoint3( spdpuGIGridCoordShift,
-			giState->GetProbeCount() - cascade.GetGridCoordShift() );
 		shader2a.SetParameterInt( spdpuGIDebugCascade, cascade.GetIndex() );
 		shader2a.SetParameterInt( spdpuParams, probeSize, probeSpacing, groupSpacing );
 		
@@ -1137,24 +1137,26 @@ void deoglRenderGI::RenderDebugOverlay( deoglRenderPlan &plan ){
 		shader2a.SetParameterFloat( spdpuPlaneNear,
 			( float )fnnear.x, ( float )fnnear.y, ( float )fnnear.z, ( float )fdnear );
 		
-		pActivateGIUBOs();
+		GetUBORenderLight().Activate();
 		
 		OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
 		
 		// pass 2
-		deoglShaderCompiled &shader2b = *pShaderDebugProbeUpdatePass2->GetCompiled();
-		shader2b.Activate();
-		
-		shader2b.SetParameterFloat( spdpuPosTransform, scale.x * 2.0f, scale.y * 2.0f,
-			scale.x * 2.0f * position.x - 1.0f, scale.y * 2.0f * position.y - 1.0f );
-		shader2b.SetParameterFloat( spdpuTCTransform, ( float )size.x * 0.5f, ( float )size.y * -0.5f,
-			( float )size.x * 0.5, ( float )size.y * 0.5f );
-		shader2b.SetParameterPoint3( spdpuGIGridCoordShift, giState->GetProbeCount() - cascade.GetGridCoordShift() );
-		shader2b.SetParameterInt( spdpuGIDebugCascade, cascade.GetIndex() );
-		shader2b.SetParameterInt( spdpuParams, probeSize, probeSpacing, groupSpacing );
-		
-		pActivateGIUBOs();
-		OGL_CHECK( renderThread, pglDrawArraysInstanced( GL_TRIANGLE_FAN, 0, 4, cascade.GetUpdateProbeCount() ) );
+		if( giState->GetActiveCascade().GetIndex() == cascade.GetIndex() ){
+			deoglShaderCompiled &shader2b = *pShaderDebugProbeUpdatePass2->GetCompiled();
+			shader2b.Activate();
+			
+			shader2b.SetParameterFloat( spdpuPosTransform, scale.x * 2.0f, scale.y * 2.0f,
+				scale.x * 2.0f * position.x - 1.0f, scale.y * 2.0f * position.y - 1.0f );
+			shader2b.SetParameterFloat( spdpuTCTransform, ( float )size.x * 0.5f, ( float )size.y * -0.5f,
+				( float )size.x * 0.5, ( float )size.y * 0.5f );
+			shader2b.SetParameterInt( spdpuGIDebugCascade, cascade.GetIndex() );
+			shader2b.SetParameterInt( spdpuParams, probeSize, probeSpacing, groupSpacing );
+			
+			GetUBORenderLight().Activate();
+			GetRenderThread().GetGI().GetUBOProbeIndex().Activate();
+			OGL_CHECK( renderThread, pglDrawArraysInstanced( GL_TRIANGLE_FAN, 0, 4, cascade.GetUpdateProbeCount() ) );
+		}
 	}
 	
 	
@@ -1286,7 +1288,8 @@ void deoglRenderGI::pCreateUBORenderLight(){
 	deoglSPBlockUBO &ubo = GetUBORenderLight();
 	
 	ubo.SetRowMajor( ! renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Broken() );
-	ubo.SetParameterCount( euprlSelfShadowBias + 1 );
+	ubo.SetParameterCount( euprlGridCoordUnshift + 1 );
+	ubo.SetElementCount( GI_MAX_CASCADES );
 	
 	ubo.GetParameterAt( euprlMatrix ).SetAll( deoglSPBParameter::evtFloat, 4, 3, 1 ); // mat4x3
 	ubo.GetParameterAt( euprlMatrixNormal ).SetAll( deoglSPBParameter::evtFloat, 3, 3, 1 ); // mat3
@@ -1300,10 +1303,11 @@ void deoglRenderGI::pCreateUBORenderLight(){
 	ubo.GetParameterAt( euprlNormalBias ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 1 ); // float
 	ubo.GetParameterAt( euprlOcclusionMapScale ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
 	ubo.GetParameterAt( euprlDistanceMapScale ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
-	ubo.GetParameterAt( euprlEnergyPreservation ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 1 ); // float
 	ubo.GetParameterAt( euprlGridCoordShift ).SetAll( deoglSPBParameter::evtInt, 3, 1, 1 ); // ivec3
 	ubo.GetParameterAt( euprlIrradianceGamma ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 1 ); // float
 	ubo.GetParameterAt( euprlSelfShadowBias ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 1 ); // float
+	ubo.GetParameterAt( euprlGridOrigin ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 ); // vec3
+	ubo.GetParameterAt( euprlGridCoordUnshift ).SetAll( deoglSPBParameter::evtInt, 3, 1, 1 ); // ivec3
 	
 	ubo.MapToStd140();
 	ubo.SetBindingPoint( 1 );
