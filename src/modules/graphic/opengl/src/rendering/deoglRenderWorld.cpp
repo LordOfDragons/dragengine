@@ -354,6 +354,13 @@ DEBUG_RESET_TIMER
 			OGL_CHECK( renderThread, glViewport( 0, 0, defren.GetWidth(), defren.GetHeight() ) );
 			OGL_CHECK( renderThread, glScissor( 0, 0, defren.GetWidth(), defren.GetHeight() ) );
 			DebugTimer2Sample( plan, *pDebugInfo.infoGITraceRays, true );
+			
+			// calculate probe offset and extends. done here to avoid stalling since the results
+			// are read during the next frame update. for offsets the result is also used later
+			// on to update offset texture when not used anymore. this has no stalling problem
+			// since the rendering happens sequentially on the GPU
+			renderGI.ProbeOffset( plan );
+			renderGI.ProbeExtends( plan );
 		}
 	}
 	

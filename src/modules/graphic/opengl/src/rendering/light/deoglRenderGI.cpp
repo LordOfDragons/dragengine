@@ -159,6 +159,7 @@ pShaderClearProbeIrradiance( NULL ),
 pShaderClearProbeDistance( NULL ),
 pShaderMoveProbes( NULL ),
 pShaderDynamicState( NULL ),
+pShaderProbeOffset( NULL ),
 pShaderProbeExtends( NULL ),
 pShaderLight( NULL ),
 pShaderLightGIRay( NULL ),
@@ -243,6 +244,14 @@ pDebugInfoGIRenderLightGIRay( NULL )
 		// dynamic state
 		sources = shaderManager.GetSourcesNamed( "DefRen GI Dynamic State" );
 		pShaderDynamicState = shaderManager.GetProgramWith( sources, defines );
+		
+		// probe offset
+		sources = shaderManager.GetSourcesNamed( "DefRen GI Probe Offset" );
+		if( renderThread.GetChoices().GetGIMoveUsingCache() ){
+			defines.AddDefine( "WITH_RAY_CACHE", true );
+		}
+		pShaderProbeOffset = shaderManager.GetProgramWith( sources, defines );
+		defines.RemoveDefine( "WITH_RAY_CACHE" );
 		
 		// probe extends
 		sources = shaderManager.GetSourcesNamed( "DefRen GI Probe Extends" );
@@ -781,6 +790,64 @@ void deoglRenderGI::MoveProbes( deoglRenderPlan &plan ){
 	}
 	
 	deoglRenderThread &renderThread = GetRenderThread();
+	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
+	
+	if( pDebugInfoGI->GetVisible() ){
+		DebugTimer1Reset( plan, true );
+	}
+	
+	// shared
+	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
+	OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
+	OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
+	OGL_CHECK( renderThread, glDepthFunc( GL_ALWAYS ) );
+	OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
+	OGL_CHECK( renderThread, glDisable( GL_STENCIL_TEST ) );
+	OGL_CHECK( renderThread, glDisable( GL_SCISSOR_TEST ) );
+	OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
+	
+	OGL_CHECK( renderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) );
+	
+	OGL_CHECK( renderThread, glViewport( 0, 0, giState->GetTextureProbeOffset().GetWidth(),
+		giState->GetTextureProbeOffset().GetHeight() ) );
+	
+	// update offset texture with calculated offset and state
+	renderThread.GetFramebuffer().Activate( &giState->GetFBOProbeOffset() );
+	
+	renderThread.GetShader().ActivateShader( pShaderMoveProbes );
+	pActivateGIUBOs();
+	OGL_CHECK( renderThread, pglBindBufferBase( GL_UNIFORM_BUFFER, 5, giState->GetVBOProbeOffsetsTransition() ) );
+	
+	OGL_CHECK( renderThread, pglDrawArraysInstanced( GL_POINTS, 0, 1, cascade.GetUpdateProbeCount() ) );
+	
+	giState->ProbesMoved(); // tell state probes moved so it can read it later without stalling
+	
+	// clean up
+	defren.ActivatePostProcessFBO( true );
+	OGL_CHECK( renderThread, glViewport( 0, 0, defren.GetWidth(), defren.GetHeight() ) );
+	OGL_CHECK( renderThread, glScissor( 0, 0, defren.GetWidth(), defren.GetHeight() ) );
+	OGL_CHECK( renderThread, glEnable( GL_SCISSOR_TEST ) );
+	
+	if( pDebugInfoGI->GetVisible() ){
+		if( renderThread.GetDebug().GetDeveloperMode().GetDebugInfoSync() ){
+			glFinish();
+		}
+		DebugTimer1Sample( plan, *pDebugInfoGIMoveProbes, true );
+	}
+}
+
+void deoglRenderGI::ProbeOffset( deoglRenderPlan &plan ){
+	deoglGIState * const giState = plan.GetUpdateGIState();
+	if( ! giState ){
+		return;
+	}
+	
+	const deoglGICascade &cascade = giState->GetActiveCascade();
+	if( cascade.GetUpdateProbeCount() == 0 ){
+		return;
+	}
+	
+	deoglRenderThread &renderThread = GetRenderThread();
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	
@@ -819,10 +886,17 @@ void deoglRenderGI::MoveProbes( deoglRenderPlan &plan ){
 	OGL_CHECK( renderThread, pglDrawArraysInstanced( GL_POINTS, 0, 1, cascade.GetUpdateProbeCount() ) );
 	
 	
-	// calculate new offset and state
-	renderThread.GetFramebuffer().Activate( &giState->GetFBOProbeOffset() );
+	// calculate new offset and state. it looks strange what two VBO are written to with the
+	// exact same content. this is due to a strange performance observation. if the VBO is
+	// written here and then readf back during the next frame update no stalling happens.
+	// if the same VBO is used for input to the move probe shader later on (a read-only use)
+	// then the readback stalls horribly again although only an additional read happened in
+	// a shader. by using two VBO written with the same result one is left untouched for the
+	// next frame update read back to avoid stalling while the other is used to move the
+	// probes later on where it does not hurt the read back. GPU performance can be funny
+	renderThread.GetFramebuffer().ActivateDummy();
 	
-	renderThread.GetShader().ActivateShader( pShaderMoveProbes );
+	renderThread.GetShader().ActivateShader( pShaderProbeOffset );
 	pActivateGIUBOs();
 	
 	if( renderThread.GetChoices().GetGIMoveUsingCache() ){
@@ -836,12 +910,13 @@ void deoglRenderGI::MoveProbes( deoglRenderPlan &plan ){
 	}
 	tsmgr.EnableTexture( 2, giState->GetTextureProbeState(), GetSamplerClampNearest() );
 	
+	OGL_CHECK( renderThread, glEnable( GL_RASTERIZER_DISCARD ) );
 	OGL_CHECK( renderThread, pglBindBufferBase( GL_TRANSFORM_FEEDBACK_BUFFER, 0, giState->GetVBOProbeOffsets() ) );
+	OGL_CHECK( renderThread, pglBindBufferBase( GL_TRANSFORM_FEEDBACK_BUFFER, 1, giState->GetVBOProbeOffsetsTransition() ) );
 	OGL_CHECK( renderThread, pglBeginTransformFeedback( GL_POINTS ) );
 	OGL_CHECK( renderThread, pglDrawArraysInstanced( GL_POINTS, 0, 1, cascade.GetUpdateProbeCount() ) );
 	OGL_CHECK( renderThread, pglEndTransformFeedback() );
-	
-	giState->ProbesMoved(); // tell state probes moved so it can read it later without stalling
+	OGL_CHECK( renderThread, glDisable( GL_RASTERIZER_DISCARD ) );
 	
 	
 	// clean up
@@ -883,7 +958,7 @@ void deoglRenderGI::ProbeExtends( deoglRenderPlan &plan ){
 	renderThread.GetShader().ActivateShader( pShaderProbeExtends );
 	pActivateGIUBOs();
 	
-	renderThread.GetFramebuffer().Activate( &giState->GetFBOProbeState() ); // unimportant since not written to
+	renderThread.GetFramebuffer().ActivateDummy();
 	
 	#ifdef GI_USE_RAY_CACHE
 		tsmgr.EnableArrayTexture( 0, giState->GetRayCache().GetTextureDistance(), GetSamplerClampNearest() );
@@ -1245,6 +1320,9 @@ void deoglRenderGI::pCleanUp(){
 	}
 	if( pShaderDynamicState ){
 		pShaderDynamicState->RemoveUsage();
+	}
+	if( pShaderProbeOffset ){
+		pShaderProbeOffset->RemoveUsage();
 	}
 	if( pShaderProbeExtends ){
 		pShaderProbeExtends->RemoveUsage();

@@ -51,6 +51,7 @@ private:
 	deoglShaderProgram *pShaderClearProbeDistance;
 	deoglShaderProgram *pShaderMoveProbes;
 	deoglShaderProgram *pShaderDynamicState;
+	deoglShaderProgram *pShaderProbeOffset;
 	deoglShaderProgram *pShaderProbeExtends;
 	deoglShaderProgram *pShaderLight;
 	deoglShaderProgram *pShaderLightGIRay;
@@ -125,6 +126,9 @@ public:
 	
 	/** Move probes. */
 	void MoveProbes( deoglRenderPlan &plan );
+	
+	/** Probe offset. */
+	void ProbeOffset( deoglRenderPlan &plan );
 	
 	/** Probe extends. */
 	void ProbeExtends( deoglRenderPlan &plan );

@@ -101,6 +101,7 @@ private:
 	deoglFramebuffer pFBOProbeState;
 	bool pClearMaps;
 	GLuint pVBOProbeOffsets;
+	GLuint pVBOProbeOffsetsTransition;
 	GLfloat *pVBOProbeOffsetsData;
 	bool pProbesHaveMoved;
 	
@@ -251,6 +252,9 @@ public:
 	
 	/** Probe offset feedback VBO. */
 	inline GLuint GetVBOProbeOffsets() const{ return pVBOProbeOffsets; }
+	
+	/** Transition probe offset feedback VBO. */
+	inline GLuint GetVBOProbeOffsetsTransition() const{ return pVBOProbeOffsetsTransition; }
 	
 	/** Probe extends feedback VBO. */
 	inline GLuint GetVBOProbeExtends() const{ return pVBOProbeExtends; }

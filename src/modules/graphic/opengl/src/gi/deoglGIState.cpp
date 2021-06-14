@@ -101,6 +101,7 @@ pFBOProbeOffset( renderThread, false ),
 pFBOProbeState( renderThread, false ),
 pClearMaps( true ),
 pVBOProbeOffsets( 0 ),
+pVBOProbeOffsetsTransition( 0 ),
 pVBOProbeOffsetsData( NULL ),
 pProbesHaveMoved( false ),
 
@@ -377,6 +378,9 @@ void deoglGIState::pCleanUp(){
 	}
 	if( pVBOProbeOffsets ){
 		pglDeleteBuffers( 1, &pVBOProbeOffsets );
+	}
+	if( pVBOProbeOffsetsTransition ){
+		pglDeleteBuffers( 1, &pVBOProbeOffsetsTransition );
 	}
 	if( pVBOProbeExtendsData ){
 		delete [] pVBOProbeExtendsData;
@@ -727,6 +731,16 @@ void deoglGIState::pPrepareProbeVBO(){
 	OGL_CHECK( pRenderThread, pglBindBuffer( GL_ARRAY_BUFFER, pVBOProbeOffsets ) );
 	OGL_CHECK( pRenderThread, pglBufferData( GL_ARRAY_BUFFER,
 		GI_MAX_PROBE_COUNT * 4 * sizeof( GLfloat ), NULL, GL_STREAM_READ ) );
+	
+	// transition VBO probe offset
+	OGL_CHECK( pRenderThread, pglGenBuffers( 1, &pVBOProbeOffsetsTransition ) );
+	if( ! pVBOProbeOffsetsTransition ){
+		DETHROW( deeOutOfMemory );
+	}
+	
+	OGL_CHECK( pRenderThread, pglBindBuffer( GL_ARRAY_BUFFER, pVBOProbeOffsetsTransition ) );
+	OGL_CHECK( pRenderThread, pglBufferData( GL_ARRAY_BUFFER,
+		GI_MAX_PROBE_COUNT * 4 * sizeof( GLfloat ), NULL, GL_STREAM_DRAW ) );
 	
 	// VBO probe extends
 	OGL_CHECK( pRenderThread, pglGenBuffers( 1, &pVBOProbeExtends ) );
