@@ -216,7 +216,7 @@ void deoglGICascade::Invalidate(){
 		probe.maxExtend = pFieldSize;
 	}
 	
-// 	pHasInvalidProbesInsideView = true;
+	pHasInvalidProbesInsideView = true;
 	
 	ClearClearProbes();
 }
@@ -289,6 +289,18 @@ void deoglGICascade::InvalidateAllRayCaches(){
 	}
 }
 
+
+
+// #define DO_SPECIAL_TIMING 1
+#ifdef DO_SPECIAL_TIMING
+#include <dragengine/common/utils/decTimer.h>
+#define INIT_SPECIAL_TIMING decTimer sttimer;
+#define SPECIAL_TIMER_PRINT(w) pGIState.GetRenderThread().GetLogger().LogInfoFormat("GICascade." w "=%dys", (int)(sttimer.GetElapsedTime()*1e6f));
+#else
+#define INIT_SPECIAL_TIMING
+#define SPECIAL_TIMER_PRINT(w)
+#endif
+
 void deoglGICascade::UpdatePosition( const decDVector &position ){
 	// find world position closest to the next grid position. if the position is
 	// the same no updating is required
@@ -345,7 +357,7 @@ void deoglGICascade::UpdatePosition( const decDVector &position ){
 		probe.minExtend = -pFieldSize;
 		probe.maxExtend = pFieldSize;
 		
-// 		pHasInvalidProbesInsideView = true;
+		pHasInvalidProbesInsideView = true;
 		
 		pClearProbes[ i / 32 ] |= ( uint32_t )1 << ( i % 32 );
 		pHasClearProbes = true;
@@ -606,6 +618,7 @@ void deoglGICascade::UpdateUBOProbePositionRayCache( deoglSPBlockUBO &ubo ) cons
 }
 
 void deoglGICascade::UpdateProbeOffsetFromShader( const float *data ){
+	INIT_SPECIAL_TIMING
 	int i;
 	for( i=0; i<pUpdateProbeCount; i++, data+=4 ){
 		sProbe &probe = pProbes[ pUpdateProbes[ i ] ];
@@ -638,20 +651,24 @@ void deoglGICascade::UpdateProbeOffsetFromShader( const float *data ){
 		}
 // 			pRenderThread.GetLogger().LogInfoFormat("UpdateProbeOffsetFromTexture: RayCacheInvalidate %d", pUpdateProbes[i]);
 	}
+	SPECIAL_TIMER_PRINT("UpdateProbeOffsetFromShader: > > Offsets")
 	
 	// update all has probe flags. this is done here and nowhere else since this method is
 	// called if one or more probes are updated. only in this situation these flags can
 	// potentially change and have to be updated
-// 	pUpdateHasProbeFlags();
+	pUpdateHasProbeFlags();
+	SPECIAL_TIMER_PRINT("UpdateProbeOffsetFromShader: > > Flags")
 }
 
 void deoglGICascade::UpdateProbeExtendsFromShader( const float *data ){
+	INIT_SPECIAL_TIMING
 	int i;
 	for( i=0; i<pRayCacheProbeCount; i++, data+=6 ){
 		sProbe &probe = pProbes[ pRayCacheProbes[ i ] ];
 		probe.minExtend.Set( data[ 0 ], data[ 1 ], data[ 2 ] );
 		probe.maxExtend.Set( data[ 3 ], data[ 4 ], data[ 5 ] );
 	}
+	SPECIAL_TIMER_PRINT("UpdateProbeExtendsFromShader: > > Extends")
 	
 	/*
 	printf( "Results:" );
@@ -709,7 +726,7 @@ void deoglGICascade::pInitProbes(){
 		pAgedProbes[ i ] = i;
 	}
 	
-// 	pHasInvalidProbesInsideView = true;
+	pHasInvalidProbesInsideView = true;
 }
 
 void deoglGICascade::pFindProbesToUpdateFullUpdateInsideView(){
@@ -789,13 +806,19 @@ void deoglGICascade::pFindProbesToUpdateRegular(){
 	const int mask = epfValid | epfInsideView | epfDisabled | epfDynamicDisable | epfRayCacheValid;
 	int last = realProbeCount;
 	
+	// invalid probes inside view. expensive updates but cause incomplete lighting.
+	// add all such probes ignoring config settings up to the maximum supported count
+	int maxUpdateCountExpensiveInside = GI_MAX_PROBE_COUNT;
+	pAddUpdateProbes( mask, epfInsideView, last, maxUpdateCountExpensiveInside, GI_MAX_PROBE_COUNT );
+	
 	// - invalid probes inside view. expensive updates. at most 50% count
 	// - valid requiring cache update probes inside view. expensive updates. at most 50% count
 	const int maxUpdateCountExpensive = maxUpdateCount * 0.5f; // 50%
 	int maxUpdateCountExpensiveOutside = maxUpdateCountExpensive * 0.2f; // 20%
-	int maxUpdateCountExpensiveInside = maxUpdateCountExpensive - maxUpdateCountExpensiveOutside; // 80%
+	maxUpdateCountExpensiveInside = maxUpdateCountExpensive - maxUpdateCountExpensiveOutside // 80%
+		- pUpdateProbeCount; // minus already used count
 	
-	pAddUpdateProbes( mask, epfInsideView, last, maxUpdateCountExpensiveInside, maxUpdateCount );
+// 	pAddUpdateProbes( mask, epfInsideView, last, maxUpdateCountExpensiveInside, maxUpdateCount );
 	pAddUpdateProbes( mask, epfValid | epfInsideView, last, maxUpdateCountExpensiveInside, maxUpdateCount );
 	
 	// - invalid probes outside view. expensive updates. at most 50% count
@@ -842,7 +865,7 @@ void deoglGICascade::pFindProbesToUpdateRegular(){
 
 void deoglGICascade::pAddUpdateProbes( uint8_t mask, uint8_t flags, int &lastIndex,
 int &remainingMatchCount, int maxUpdateCount ){
-	if( remainingMatchCount == 0 || pUpdateProbeCount >= maxUpdateCount ){
+	if( remainingMatchCount <= 0 || pUpdateProbeCount >= maxUpdateCount ){
 		return;
 	}
 	
@@ -918,7 +941,7 @@ void deoglGICascade::pUpdateHasProbeFlags(){
 	pHasInvalidProbesInsideView = false;
 	
 	for( i=0; i<count; i++ ){
-		if( ( pProbes[ i ].flags & epfValid ) != epfValid ){
+		if( ( pProbes[ i ].flags & ( epfValid | epfInsideView ) ) == epfInsideView ){
 			pHasInvalidProbesInsideView = true;
 			break;
 		}

@@ -228,7 +228,7 @@ void deoglGIState::PrepareUBOClearProbes() const{
 #ifdef DO_SPECIAL_TIMING
 #include <dragengine/common/utils/decTimer.h>
 #define INIT_SPECIAL_TIMING decTimer sttimer;
-#define SPECIAL_TIMER_PRINT(w) pRenderThread.GetLogger().LogInfoFormat("GIState.Update: " w "=%dys", (int)(sttimer.GetElapsedTime()*1e6f));
+#define SPECIAL_TIMER_PRINT(w) pRenderThread.GetLogger().LogInfoFormat("GIState." w "=%dys", (int)(sttimer.GetElapsedTime()*1e6f));
 #else
 #define INIT_SPECIAL_TIMING
 #define SPECIAL_TIMER_PRINT(w)
@@ -237,12 +237,12 @@ void deoglGIState::PrepareUBOClearProbes() const{
 void deoglGIState::Update( const decDVector &cameraPosition, const deoglDCollisionFrustum &frustum ){
 // 		pRenderThread.GetLogger().LogInfoFormat( "Update GIState %p (%g,%g,%g)",
 // 			this, cameraPosition.x, cameraPosition.y, cameraPosition.z );
-	INIT_SPECIAL_TIMING
 	
 	// updates from last frame
 	pUpdateProbeOffsetFromShader( GetActiveCascade() );
 	pUpdateProbeExtendsFromShader( GetActiveCascade() );
 	
+	INIT_SPECIAL_TIMING
 	// monitor configuration changes
 	pRenderThread.GetGI().GetTraceRays().UpdateFromConfig();
 	
@@ -252,13 +252,10 @@ void deoglGIState::Update( const decDVector &cameraPosition, const deoglDCollisi
 	// update position
 	deoglGICascade &cascade = GetActiveCascade();
 	cascade.UpdatePosition( cameraPosition );
-		// HACK temporary since we need to highest cascade for shadow casting
-// 		if(pActiveCascade != pCascadeCount-1) pCascades[ pCascadeCount - 1 ]->UpdatePosition( cameraPosition );
-		// HACK temporary since we need to highest cascade for shadow casting
-	SPECIAL_TIMER_PRINT("UpdatePosition")
+	SPECIAL_TIMER_PRINT("Update: UpdatePosition")
 	
 	pFindContent( cameraPosition );
-	SPECIAL_TIMER_PRINT("FindContent")
+	SPECIAL_TIMER_PRINT("Update: FindContent")
 // 		if(pAreaTracker.HasChanged()){
 // 			pRenderThread.GetLogger().LogInfoFormat("GIState.FindContent: enter=%d leave=%d allLeaving=%d",
 // 				pAreaTracker.GetEntering().GetComponentCount(), pAreaTracker.GetLeaving().GetComponentCount(), pAreaTracker.GetAllLeaving());
@@ -266,16 +263,16 @@ void deoglGIState::Update( const decDVector &cameraPosition, const deoglDCollisi
 	
 	// track changes in static instances has to be done first
 	pTrackInstanceChanges();
-	SPECIAL_TIMER_PRINT("TrackInstanceChanges")
+	SPECIAL_TIMER_PRINT("Update: TrackInstanceChanges")
 	
 	// prepare probes for tracing
 	pPrepareTraceProbes( cascade, frustum );
-	SPECIAL_TIMER_PRINT("PrepareTraceProbes")
+	SPECIAL_TIMER_PRINT("Update: PrepareTraceProbes")
 	
 	#ifdef GI_USE_RAY_CACHE
 	pPrepareRayCacheProbes( cascade );
 	#endif
-	SPECIAL_TIMER_PRINT("PrepareRayCacheProbes")
+	SPECIAL_TIMER_PRINT("Update: PrepareRayCacheProbes")
 }
 
 void deoglGIState::PrepareUBOState() const{
@@ -535,9 +532,10 @@ void deoglGIState::pUpdateProbeOffsetFromShader( deoglGICascade &cascade ){
 	OGL_CHECK( pRenderThread, pglGetBufferSubData( GL_ARRAY_BUFFER,
 		0, cascade.GetUpdateProbeCount() * 4 * sizeof( GLfloat ), pVBOProbeOffsetsData ) );
 	OGL_CHECK( pRenderThread, pglBindBuffer( GL_ARRAY_BUFFER, 0 ) );
+	SPECIAL_TIMER_PRINT("UpdateProbeOffsetFromShader: > GetVBOData")
 	
 	cascade.UpdateProbeOffsetFromShader( pVBOProbeOffsetsData );
-	SPECIAL_TIMER_PRINT(">UpdateProbeOffsetFromTexture")
+	SPECIAL_TIMER_PRINT("UpdateProbeOffsetFromShader: > UpdateCascade")
 }
 
 void deoglGIState::pUpdateProbeExtendsFromShader( deoglGICascade &cascade ){
@@ -552,9 +550,10 @@ void deoglGIState::pUpdateProbeExtendsFromShader( deoglGICascade &cascade ){
 	OGL_CHECK( pRenderThread, pglGetBufferSubData( GL_ARRAY_BUFFER,
 		0, cascade.GetRayCacheProbeCount() * 6 * sizeof( GLfloat ), pVBOProbeExtendsData ) );
 	OGL_CHECK( pRenderThread, pglBindBuffer( GL_ARRAY_BUFFER, 0 ) );
+	SPECIAL_TIMER_PRINT("UpdateProbeExtendsFromShader: > GetVBOData")
 	
 	cascade.UpdateProbeExtendsFromShader( pVBOProbeExtendsData );
-	SPECIAL_TIMER_PRINT(">UpdateProbeExtendsFromVBO")
+	SPECIAL_TIMER_PRINT("UpdateProbeExtendsFromShader: > UpdateCascade")
 }
 
 void deoglGIState::pActivateNextCascade(){
@@ -563,22 +562,35 @@ void deoglGIState::pActivateNextCascade(){
 	// results to be present as quickly as possible
 	for( pActiveCascade=pCascadeCount-1; pActiveCascade>=0; pActiveCascade-- ){
 		if( pCascades[ pActiveCascade ]->GetRequiresFullUpdateInsideView() ){
+// 			pRenderThread.GetLogger().LogInfoFormat( "GIState: next cascade %d (requires full update inside view)", pActiveCascade );
 			return;
 		}
 	}
 	
+	// update second all cascaded with invalid probes inside view. do this starting at the
+	// largest cascade going down to the smallest to ensure valid lighting results to be
+	// present as quickly as possible
+	for( pActiveCascade=pCascadeCount-1; pActiveCascade>=0; pActiveCascade-- ){
+		if( pCascades[ pActiveCascade ]->HasInvalidProbesInsideView() ){
+// 			pRenderThread.GetLogger().LogInfoFormat( "GIState: next cascade %d (has invalid probes inside view)", pActiveCascade );
+			return;
+		}
+	}
+	
+	// regular update of cascades using cascade cycle
 	pActiveCascade = pCascaceUpdateCycle[ pCascaceUpdateCycleIndex++ ];
 	if( pCascaceUpdateCycleIndex >= pCascaceUpdateCycleCount ){
 		pCascaceUpdateCycleIndex = 0;
 	}
+// 	pRenderThread.GetLogger().LogInfoFormat( "GIState: next cascade %d (cycle)", pActiveCascade );
 }
 
 void deoglGIState::pPrepareTraceProbes( deoglGICascade &cascade, const deoglDCollisionFrustum &frustum ){
 	INIT_SPECIAL_TIMING
 	pFindProbesToUpdate( cascade, frustum );
-	SPECIAL_TIMER_PRINT(">FindProbesToUpdate")
+	SPECIAL_TIMER_PRINT("Update: > FindProbesToUpdate")
 	pPrepareProbeTexturesAndFBO();
-	SPECIAL_TIMER_PRINT(">PrepareProbeTexturesAndFBO")
+	SPECIAL_TIMER_PRINT("Update: > PrepareProbeTexturesAndFBO")
 }
 
 void deoglGIState::pFindProbesToUpdate( deoglGICascade &cascade, const deoglDCollisionFrustum &frustum ){
