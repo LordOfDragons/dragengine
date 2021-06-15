@@ -93,8 +93,8 @@ ivec3 giGridShiftToLocal( in ivec3 shifted, in int cascade ){
 	return ( shifted + pGIParams[cascade].gridCoordShift ) % pGIParams[0].probeCount;
 }
 
-// calculate illumination to apply to fragment
-vec3 giIlluminate( in vec3 position, in vec3 normal, in vec3 bendNormal, in int cascade ){
+// calculate illumination to apply to fragment. returns summed irradiance as RGB and summed weight as A
+vec4 giIlluminate( in vec3 position, in vec3 normal, in vec3 bendNormal, in int cascade ){
 	// in the paper this calculation looks like this:
 	//   BiasVector = (n * 0.2 + wo * 0.8 ) * ( 0.75 * minDistanceBetweenProbes ) * TurnableShadowBias
 	// whereas n is the normal and wo the direction from fragment to camera.
@@ -110,8 +110,27 @@ vec3 giIlluminate( in vec3 position, in vec3 normal, in vec3 bendNormal, in int 
 	bendNormal = normalize( bendNormal * pGIParams[cascade].matrixNormal ); // reverse order does transpose()
 	position = vec3( pGIParams[cascade].matrix * vec4( position, 1.0 ) );
 	
-	ivec3 baseCoord = clamp( ivec3( ( position + offsetPosition )
-		* pGIParams[cascade].probeSpacingInv ), ivec3( 0 ), pGIParams[cascade].probeClamp );
+	// outside the grid of probes the irradiance is not known. the clamping above extends the
+	// outer most probe result. the blend factor below fades out into non-irradiated over a
+	// short distance. if 0 avoid calculating the cascade at all
+// 	float cascadeBlend = 1.0 - min( length( position - clamp( position, vec3( 0.0 ),
+// 		pGIParams[cascade].positionClamp ) ) / 2.0, 1.0 );
+	vec3 gridCoord = ( position + offsetPosition ) * pGIParams[cascade].probeSpacingInv;
+	
+	float cascadeBlend = 1.0;
+	
+	if( cascade < pGIHighestCascade ){
+		vec3 borderBlend = clamp( gridCoord, vec3( 0.0 ), vec3( 1.0 ) )
+			* clamp( vec3( pGIParams[cascade].probeClamp ) - gridCoord, vec3( 0.0 ), vec3( 1.0 ) );
+		cascadeBlend = borderBlend.x * borderBlend.y * borderBlend.z;
+		
+		if( cascadeBlend <= 0.0 ){
+			return vec4( 0.0 );
+		}
+	}
+	
+	// cascade does contribute
+	ivec3 baseCoord = clamp( ivec3( gridCoord ), ivec3( 0 ), pGIParams[cascade].probeClamp );
 	vec3 basePosition = pGIParams[cascade].probeSpacing * vec3( baseCoord );
 	
 	vec3 sumIrradiance = vec3( 0.0 );
@@ -178,6 +197,7 @@ vec3 giIlluminate( in vec3 position, in vec3 normal, in vec3 bendNormal, in int 
 			chebyshevWeight = distToProbe - meanDist;
 			chebyshevWeight = variance / ( variance + chebyshevWeight * chebyshevWeight );
 			chebyshevWeight = max( chebyshevWeight * chebyshevWeight * chebyshevWeight, 0.05 );
+				// ^== the 0.05 threshold avoids all probes going to 0 having no influence
 		}
 		
 		weight *= chebyshevWeight;
@@ -208,35 +228,58 @@ vec3 giIlluminate( in vec3 position, in vec3 normal, in vec3 bendNormal, in int 
 		sumWeight += weight;
 	}
 	
+// 	return vec4( sumIrradiance, sumWeight ) * vec4( cascadeBlend );
+	
 	// normalize
-	if( sumWeight > 0.001 ){
-		sumIrradiance /= sumWeight;
+	if( sumWeight == 0.0 ){
+		return vec4( 0.0 );
 	}
 	
+	sumIrradiance /= sumWeight;
+	
+	// final result
+// 	cascadeBlend *= min( sumWeight / 0.1, 1.0 );
+		// ^== the idea here had been to allow the next higher cascade to fill in the blanks
+		//     if this cascade has no good probe because they are covered up or in geometry.
+		//     using sumWeight itself produces visible artifacts without helping much.
+		//     the linear step version does not show the artifacts but does not produce
+		//     any measurable improvements. this does not really help
+	
+	return vec4( sumIrradiance, cascadeBlend );
+}
+
+vec3 giIlluminate( in vec3 position, in vec3 normal, in vec3 bendNormal ){
+	vec4 sumIrradiance = vec4( 0.0 );
+	int i;
+	
+	for( i=0; i<=pGIHighestCascade; i++ ){
+		vec4 cascadeIlluminance = giIlluminate( position, normal, bendNormal, i );
+		sumIrradiance += cascadeIlluminance * vec4( vec3( cascadeIlluminance.a ), 1.0 );
+		
+		// if enough coverage has been accumulated we can stop
+		if( sumIrradiance.a >= 1.0 ){
+			break;
+		}
+	}
+	
+	// normalize
+	if( sumIrradiance.a == 0.0 ){
+		return vec3( 0.0 );
+	}
+	
+	sumIrradiance.rgb /= sumIrradiance.a;
+	
 	// from source code. convert back to linear irradiance (aka square root it)
-	sumIrradiance *= sumIrradiance;
+	sumIrradiance.rgb *= sumIrradiance.rgb;
 	
 	// from source code: "was factored out of probes". no idea what this means.
 	// if I leave this uncommented the irradiance in the scene keeps on increading
 	// until all blows out
 // 	const float pi = 3.1415926538;
-// 	sumIrradiance *= 2.0 * pi;
-	
-	// outside the grid of probes the irradiance is not known. the clamping above
-	// extends the outer most probe result. the blend factor below fades out into
-	// non-irradiated over a short distance.
-	// 
-	// this can be later on improved by using probe cascades
-	sumIrradiance *= 1.0 - min( length( position - clamp( position, vec3( 0.0 ),
-		pGIParams[cascade].positionClamp ) ) / 2.0, 1.0 );
+// 	sumIrradiance.rgb *= 2.0 * pi;
 	
 	// final result
-	return sumIrradiance;
-}
-
-vec3 giIlluminate( in vec3 position, in vec3 normal, in vec3 bendNormal ){
-	// TODO multi-cascade support
-	return giIlluminate( position, normal, bendNormal, 0 );
+	return sumIrradiance.rgb;
 }
 
 

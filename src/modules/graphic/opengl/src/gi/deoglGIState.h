@@ -70,7 +70,6 @@ private:
 	float pDepthSharpness;
 	float pHysteresis;
 	float pNormalBias;
-	float pEnergyPreservation;
 	float pIrradianceGamma;
 	float pSelfShadowBias;
 	
@@ -202,9 +201,6 @@ public:
 	
 	/** Normal bias. */
 	inline float GetNormalBias() const{ return pNormalBias; }
-	
-	/** Energy preservation. */
-	inline float GetEnergyPreservation() const{ return pEnergyPreservation; }
 	
 	/** Irradiance gamma. */
 	inline float GetIrradianceGamma() const{ return pIrradianceGamma; }

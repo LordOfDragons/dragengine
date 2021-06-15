@@ -687,6 +687,7 @@ void deoglRenderLight::PrepareRenderParamBlockLight( deoglRenderPlan &plan ){
 		// global illumination
 		const deoglGIState * const giState = plan.GetRenderGIState();
 		if( giState ){
+			// ray
 			const decDMatrix matrix( decDMatrix::CreateTranslation( giState->GetActiveCascade().GetPosition() )
 				* plan.GetCameraMatrix() );
 			
@@ -695,6 +696,9 @@ void deoglRenderLight::PrepareRenderParamBlockLight( deoglRenderPlan &plan ){
 				matrix.GetRotationMatrix().QuickInvert() );
 			pLightPB->SetParameterDataMat4x4( deoglLightShader::erutGICameraProjection,
 				plan.GetProjectionMatrix() );
+			
+			// general
+			pLightPB->SetParameterDataInt( deoglLightShader::erutGIHighestCascade, giState->GetCascadeCount() - 1 );
 		}
 		
 	}catch( const deException & ){

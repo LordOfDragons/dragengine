@@ -69,7 +69,6 @@ pDistanceMapSize( 16 ),
 pDepthSharpness( 50.0f ),
 pHysteresis( 0.9f ), // 0.98 (paper)
 pNormalBias( 0.25f ), // 0.25 or 0.2 in examples
-pEnergyPreservation( 0.85f ),
 pIrradianceGamma( 5.0f ),
 pSelfShadowBias( 0.35f ), // higher when variance is higher (lower ray count)
 	// paper 0.3*0.75. sdk examples 0.4, 0.1 or even 4.0 (pre-scaled by spacing).

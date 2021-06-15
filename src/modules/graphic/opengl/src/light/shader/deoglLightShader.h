@@ -81,6 +81,9 @@ public:
 		erutGIRayMatrixNormal,
 		erutGICameraProjection,
 		
+		// global illumination
+		erutGIHighestCascade,
+		
 		ERUT_COUNT
 	};
 	

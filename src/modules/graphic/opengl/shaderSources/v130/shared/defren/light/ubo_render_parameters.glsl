@@ -8,4 +8,7 @@ UBOLAYOUT uniform RenderParameters{
 	mat4x3 pGIRayMatrix; // transform from GI space to camera space
 	mat3 pGIRayMatrixNormal; // transform from GI space to camera space (requires transpose)
 	mat4 pGICameraProjection;
+	
+	// global illumination
+	int pGIHighestCascade; // index of highest cascade
 };

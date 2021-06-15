@@ -241,6 +241,7 @@ pDebugInfoDetails( 0 ),
 pGIShowProbes( false ),
 pGIShowProbeOffsets( false ),
 pGIShowProbeUpdate( false ),
+pGIShowCascade( 0 ),
 
 pTextureDebugImage( NULL ),
 pFBODebugImage( NULL ),

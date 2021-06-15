@@ -50,6 +50,7 @@ void main( void ){
 	vec3 probePosition = pGIProbePosition[ gl_InstanceID ].xyz;
 	
 	float closestFrontfaceDistance = 10000.0;
+	float frontfaceCount = 0.0;
 	float backfaceCount = 0.0;
 	float countOffsets = 0.0;
 	int i;
@@ -100,6 +101,7 @@ void main( void ){
 		float distToSurface = dot( hitNormal, rayDirection );
 		
 		if( distToSurface < 0.0 ){
+			frontfaceCount += 1.0;
 			closestFrontfaceDistance = min( closestFrontfaceDistance, rayDistance );
 			
 			if( rayDistance >= pGIMoveMinDistToSurface ){
@@ -122,7 +124,17 @@ void main( void ){
 			backfaceCount += 1.0;
 			
 			if( rayDistance < closestBackDistance ){
-				vec3 direction = rayDirection + hitNormal * pGIMoveMinDistToSurface;
+				// the first version moves quite a distance to the other side of the face.
+				// especially with highest cascades this can result in probes not moving
+				// to the front side because they end up outside the allowed range. by using
+				// a small distance in front of the face allows these probes to move.
+				// the next update step will push the probe as far away as possible.
+				// 
+				// an alternative approach would be to calculate the amount of distance the
+				// probe can move to the front side to stay inside the allowed range and then
+				// to use the smaller value of this distance and pGIMoveMinDistToSurface
+				//vec3 direction = rayDirection + hitNormal * pGIMoveMinDistToSurface;
+				vec3 direction = rayDirection + hitNormal * 0.05; //0.01;
 				
 				if( length( ( prevOffset + direction ) * moveMaxOffsetFactor ) < 1.0 ){
 					// consider backface ray only if not leaving allowed area
@@ -137,7 +149,24 @@ void main( void ){
 	
 	bool assumeInGeometry = backfaceCount / float( pGIRaysPerProbe ) > 0.25;
 	
-	if( assumeInGeometry ){
+	// here we deviate from the paper. the problem happens with closed indoor scenes like
+	// hallway and room driven scenes. in this situation especially for higher cascades
+	// the probes can score less than 25% hits outside but near geometry for example around
+	// corners. the main problem here is that many rays miss geometry at all.
+	// 
+	// we though do not want to turn assumeInGeometry on for situations where there are many
+	// misses and little backface hits to avoid problems with probes in an ouitside scene
+	// over a flat plane.
+	// 
+	// we use another bool flag to determine if we want to use front or back face offsets
+	// using a modified condition. assumeInGeometry is the first condition and works as in
+	// the regular case. as a second condition we use backface offset also at least one
+	// backface is hit and the front face count is less than 5%. this is similar to saying
+	// we have a large miss count
+	bool useBackfaceOffsets = assumeInGeometry
+		|| ( backfaceCount > 0.5 && frontfaceCount / float( pGIRaysPerProbe ) < 0.05 );
+	
+	if( useBackfaceOffsets ){
 		// closest backface found and more than 25% of hits are backface hits. as a first step
 		// we want to move to the other side of the face to end up at a minimum distance from
 		// the surface. if this is not possible do not move and disable the probe
@@ -177,17 +206,26 @@ void main( void ){
 	
 	// if frontfaces are hit clamp offset to maximum radius around grid position.
 	// if backfaces are hit do not move if outside maximum radius
+	// 
+	// the original implementation uses a sphere range around the grid center. this though
+	// causes probes not to move into hallways for higher cascades. this happens only with
+	// box range which better uses the offset range available
+	// 
+	// as final change the calculation use depends on which offset is used. for frontface
+	// offsets the sphere solution is better. for backface offset the box one
 	vec3 gridOffset = fbOffset.xyz * moveMaxOffsetFactor;
-	float gridOffsetLen = length( gridOffset );
 	
-	if( gridOffsetLen > 1.0 ){
-		if( assumeInGeometry ){
+	if( useBackfaceOffsets ){
+		if( any( greaterThan( abs( gridOffset ), vec3( 1.0 ) ) ) ){
 			// offset due to backface hit would move outside allowed range. do not move and
 			// disable the probe. this also prevents future processing of the probe
 			fbOffset.xyz = prevOffset;
 			flags |= gipfDisabled;
-			
-		}else{
+		}
+		
+	}else{
+		float gridOffsetLen = length( gridOffset );
+		if( gridOffsetLen > 1.0 ){
 			// offset due to frontface hit would move outside allowed range.
 			// clamp the offset to the allowed range.
 			if( gridOffsetLen > 0.001 ){

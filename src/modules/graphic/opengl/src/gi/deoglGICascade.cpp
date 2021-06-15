@@ -587,7 +587,7 @@ void deoglGICascade::UpdateUBOParameters( deoglSPBlockUBO &ubo, int probeCount )
 		// 25% of the smallest spacing. this is rather random value with the aim to
 		// increase the visible surface captured by probes but without approaching the
 		// maximum offset too much.
-		ubo.SetParameterDataVec3( deoglGI::eupMoveMaxOffset, pProbeSpacing * 0.45f );
+		ubo.SetParameterDataVec3( deoglGI::eupMoveMaxOffset, pProbeSpacing * 0.49f /*0.45f*/ );
 		ubo.SetParameterDataFloat( deoglGI::eupMoveMinDistToSurface,
 			decMath::min( pProbeSpacing.x, pProbeSpacing.y, pProbeSpacing.z ) * 0.25f );
 		

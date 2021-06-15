@@ -1089,6 +1089,7 @@ void deoglRenderGI::RenderDebugOverlay( deoglRenderPlan &plan ){
 	const decMatrix &matrixP = plan.GetProjectionMatrix();
 	const decDMatrix matrixCP( matrixC * decDMatrix( matrixP ) );
 	const decDMatrix matrixNormal( matrixC.GetRotationMatrix() ); // transposed to simplify shader
+	const bool xray = false;
 	
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
@@ -1116,7 +1117,11 @@ void deoglRenderGI::RenderDebugOverlay( deoglRenderPlan &plan ){
 		
 		OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
 		OGL_CHECK( renderThread, glDepthMask( GL_TRUE ) );
-		OGL_CHECK( renderThread, glEnable( GL_DEPTH_TEST ) );
+		if( xray ){
+			OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
+		}else{
+			OGL_CHECK( renderThread, glEnable( GL_DEPTH_TEST ) );
+		}
 		OGL_CHECK( renderThread, glDepthFunc( defren.GetDepthCompareFuncRegular() ) );
 		OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
 		OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
@@ -1140,7 +1145,11 @@ void deoglRenderGI::RenderDebugOverlay( deoglRenderPlan &plan ){
 		tsmgr.DisableStagesAbove( 0 );
 		
 		//OGL_CHECK( renderThread, glDepthMask( GL_TRUE ) );
-		OGL_CHECK( renderThread, glEnable( GL_DEPTH_TEST ) );
+		if( xray ){
+			OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
+		}else{
+			OGL_CHECK( renderThread, glEnable( GL_DEPTH_TEST ) );
+		}
 		
 		OGL_CHECK( renderThread, pglDrawArraysInstanced( GL_LINES, 0, 2, probeCount.x * probeCount.y * probeCount.z ) );
 	}
