@@ -36,6 +36,8 @@ UBOLAYOUT uniform GIParameters{
 	float pGIInvIrradianceGamma;
 	float pGISelfShadowBias;
 	int pGICascade;
+	
+	vec3 pGIDetectionBox;
 };
 
 UBOLAYOUT uniform GIProbePositions{

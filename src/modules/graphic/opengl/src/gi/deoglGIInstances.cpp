@@ -237,7 +237,7 @@ void deoglGIInstances::ApplyChanges(){
 		}
 		
 		if( invalidate ){
-// 				pGIState.GetRenderThread().GetLogger().LogInfoFormat("GIInstances.AnyChanged: %s",
+// 				pGIState.GetRenderThread().GetLogger().LogInfoFormat("GIInstances.ApplyChanges: %s",
 // 					instance.GetComponent()?instance.GetComponent()->GetModel()->GetFilename().GetString():"-");
 			pGIState.InvalidateArea( instance.GetMinimumExtend(), instance.GetMaximumExtend() );
 		}

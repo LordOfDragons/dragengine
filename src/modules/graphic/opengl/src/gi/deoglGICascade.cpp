@@ -55,6 +55,7 @@ pFieldSize( probeSpacing.Multiply( decVector( giState.GetGridCoordClamp() ) ) ),
 pFieldOrigin( pFieldSize * -0.5f ),
 pPositionClamp( pFieldSize ),
 pDynamicHalfEnlarge( probeSpacing * 1.9f * 0.5f ), // enlarge = spacing * (1 + 0.45 * 2)
+pStaticHalfEnlarge( 0.05f, 0.05f, 0.05f ),
 pFillUpUpdatesWithExpensiveProbes( false ),
 
 pMaxDetectionRange( 50.0f ),
@@ -212,8 +213,8 @@ void deoglGICascade::Invalidate(){
 		probe.flags = 0;
 		probe.offset.SetZero();
 		probe.countOffsetMoved = 0;
-		probe.minExtend = -pFieldSize;
-		probe.maxExtend = pFieldSize;
+		probe.minExtend = -pDetectionBox;
+		probe.maxExtend = pDetectionBox;
 	}
 	
 	pHasInvalidProbesInsideView = true;
@@ -222,8 +223,8 @@ void deoglGICascade::Invalidate(){
 }
 
 void deoglGICascade::InvalidateArea( const decDVector &minExtend, const decDVector &maxExtend ){
-	const decVector lminExtend( minExtend - pPosition );
-	const decVector lmaxExtend( maxExtend - pPosition );
+	const decVector lminExtend( minExtend - pPosition - pStaticHalfEnlarge );
+	const decVector lmaxExtend( maxExtend - pPosition + pStaticHalfEnlarge );
 	if( ! ( lmaxExtend > -pDetectionBox && lminExtend < pDetectionBox ) ){
 		return;
 	}
@@ -333,6 +334,7 @@ void deoglGICascade::UpdatePosition( const decDVector &position ){
 	}
 	
 	// invalidate probes shifted out
+	// NOTE extends offset moves in the opposite direction
 	const decVector extendsOffset( closestPosition - pPosition );
 	const decPoint3 gridOffset( extendsOffset.Multiply( pProbeSpacingInv ).Round() );
 	const int realProbeCount = pGIState.GetRealProbeCount();
@@ -342,11 +344,11 @@ void deoglGICascade::UpdatePosition( const decDVector &position ){
 	for( i=0; i<realProbeCount; i++ ){
 		sProbe &probe = pProbes[ i ];
 		
-		const decPoint3 coord( LocalGrid2ShiftedGrid( probe.coord ) - gridOffset );
+		const decPoint3 coord( probe.shiftedCoord - gridOffset );
 		if( coord >= decPoint3() && coord < probeCount ){
 			// probe is still valid
-			probe.minExtend += extendsOffset;
-			probe.maxExtend += extendsOffset;
+			probe.minExtend -= extendsOffset;
+			probe.maxExtend -= extendsOffset;
 			continue;
 		}
 		
@@ -354,8 +356,8 @@ void deoglGICascade::UpdatePosition( const decDVector &position ){
 		probe.flags = 0;
 		probe.offset.SetZero();
 		probe.countOffsetMoved = 0;
-		probe.minExtend = -pFieldSize;
-		probe.maxExtend = pFieldSize;
+		probe.minExtend = -pDetectionBox;
+		probe.maxExtend = pDetectionBox;
 		
 		pHasInvalidProbesInsideView = true;
 		
@@ -568,6 +570,7 @@ void deoglGICascade::UpdateUBOParameters( deoglSPBlockUBO &ubo, int probeCount )
 		ubo.SetParameterDataFloat( deoglGI::eupInvIrradianceGamma, 1.0f / pGIState.GetIrradianceGamma() );
 		ubo.SetParameterDataFloat( deoglGI::eupSelfShadowBias, CalcUBOSelfShadowBias() );
 		ubo.SetParameterDataInt( deoglGI::eupCascade, pIndex );
+		ubo.SetParameterDataVec3( deoglGI::eupDetectionBox, pDetectionBox );
 		
 		// material
 		/*
@@ -671,13 +674,16 @@ void deoglGICascade::UpdateProbeExtendsFromShader( const float *data ){
 	SPECIAL_TIMER_PRINT("UpdateProbeExtendsFromShader: > > Extends")
 	
 	/*
-	printf( "Results:" );
+	deoglRTLogger &l = pGIState.GetRenderThread().GetLogger();
+	l.LogInfo("UpdateProbeExtendsFromShader:");
 	for( i=0; i<pRayCacheProbeCount; i++ ){
-		printf("%d (%g,%g,%g)(%g,%g,%g)  ", i,
+		sProbe &probe = pProbes[ pRayCacheProbes[ i ] ];
+		l.LogInfoFormat("- %d(%d,%d,%d) (%g,%g,%g) (%g,%g,%g)(%g,%g,%g)", probe.index,
+			probe.shiftedCoord.x, probe.shiftedCoord.y, probe.shiftedCoord.z,
+			probe.position.x, probe.position.y, probe.position.z,
 			probe.minExtend.x, probe.minExtend.y, probe.minExtend.z,
 			probe.maxExtend.x, probe.maxExtend.y, probe.maxExtend.z);
 	}
-	printf("\n");
 	*/
 }
 
@@ -717,8 +723,8 @@ void deoglGICascade::pInitProbes(){
 		probe.flags = 0;
 		probe.offset.SetZero();
 		probe.countOffsetMoved = 0;
-		probe.minExtend = -pFieldSize;
-		probe.maxExtend = pFieldSize;
+		probe.minExtend = -pDetectionBox;
+		probe.maxExtend = pDetectionBox;
 		probe.coord = ProbeIndex2GridCoord( i );
 		probe.shiftedCoord = LocalGrid2ShiftedGrid( probe.coord );
 		probe.position = Grid2Local( probe.shiftedCoord );

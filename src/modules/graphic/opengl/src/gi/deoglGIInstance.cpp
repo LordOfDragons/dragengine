@@ -32,6 +32,7 @@
 #include "../component/deoglRComponent.h"
 #include "../component/deoglRComponentLOD.h"
 #include "../model/deoglModelLOD.h"
+#include "../model/deoglRModel.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTLogger.h"
 #include "../texture/texunitsconfig/deoglTexUnitsConfig.h"
@@ -68,6 +69,8 @@ void deoglGIInstance::cComponentListener::LayerMaskChanged( deoglRComponent &com
 }
 
 void deoglGIInstance::cComponentListener::BoundariesChanged( deoglRComponent& ){
+// 		pInstance.GetInstances().GetGIState().GetRenderThread().GetLogger().LogInfoFormat(
+// 			"GIInstance BoundariesChanged %s (dynamic %d)\n", c.GetModel()->GetFilename().GetString(), pInstance.GetDynamic());
 	ChangeInstance();
 	pInstance.SetMoved( true );
 }
@@ -76,7 +79,6 @@ void deoglGIInstance::cComponentListener::OcclusionMeshChanged( deoglRComponent&
 // 	ChangeInstance();
 }
 
-// #include "../model/deoglRModel.h"
 void deoglGIInstance::cComponentListener::TexturesChanged( deoglRComponent& ){
 // 		pInstance.GetInstances().GetGIState().GetRenderThread().GetLogger().LogInfoFormat(
 // 			"GIInstance TexturesChanged %s\n", c.GetModel()->GetFilename().GetString());
@@ -86,6 +88,8 @@ void deoglGIInstance::cComponentListener::TexturesChanged( deoglRComponent& ){
 }
 
 void deoglGIInstance::cComponentListener::RenderStaticChanged( deoglRComponent& ){
+// 		pInstance.GetInstances().GetGIState().GetRenderThread().GetLogger().LogInfoFormat(
+// 			"GIInstance RenderStaticChanged %s (dynamic %d)\n", c.GetModel()->GetFilename().GetString(), pInstance.GetDynamic());
 	ChangeInstance();
 	pInstance.SetRecheckDynamic( true );
 }

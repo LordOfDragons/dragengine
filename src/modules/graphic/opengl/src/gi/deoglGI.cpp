@@ -79,7 +79,7 @@ void deoglGI::pCreateUBOParameter(){
 	// memory consumption:
 	// - 10 vec4 blocks = 40 components = 160 bytes
 	ubo.SetRowMajor( pRenderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working() );
-	ubo.SetParameterCount( eupCascade + 1 );
+	ubo.SetParameterCount( eupDetectionBox + 1 );
 	ubo.GetParameterAt( eupSampleImageScale ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2
 	ubo.GetParameterAt( eupProbeCount ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // int
 	ubo.GetParameterAt( eupRaysPerProbe ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // int
@@ -106,6 +106,7 @@ void deoglGI::pCreateUBOParameter(){
 	ubo.GetParameterAt( eupInvIrradianceGamma ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 1 ); // float
 	ubo.GetParameterAt( eupSelfShadowBias ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 1 ); // float
 	ubo.GetParameterAt( eupCascade ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // int
+	ubo.GetParameterAt( eupDetectionBox ).SetAll( deoglSPBParameter::evtFloat, 3, 1, 1 ); // vec3
 	ubo.MapToStd140();
 	ubo.SetBindingPoint( 1 );
 }

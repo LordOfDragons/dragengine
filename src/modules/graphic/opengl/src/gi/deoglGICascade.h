@@ -72,6 +72,7 @@ private:
 	decVector pFieldOrigin;
 	decVector pPositionClamp;
 	decVector pDynamicHalfEnlarge;
+	decVector pStaticHalfEnlarge;
 	bool pFillUpUpdatesWithExpensiveProbes;
 	
 	float pMaxDetectionRange;

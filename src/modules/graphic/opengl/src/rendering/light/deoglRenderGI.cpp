@@ -972,7 +972,7 @@ void deoglRenderGI::ProbeExtends( deoglRenderPlan &plan ){
 	
 	OGL_CHECK( renderThread, glEnable( GL_RASTERIZER_DISCARD ) );
 	OGL_CHECK( renderThread, pglBindBufferBase( GL_TRANSFORM_FEEDBACK_BUFFER, 0, giState->GetVBOProbeExtends() ) );
-	OGL_CHECK( renderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) ); // unimportant since not used
+	OGL_CHECK( renderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) );
 	OGL_CHECK( renderThread, pglBeginTransformFeedback( GL_POINTS ) );
 	OGL_CHECK( renderThread, pglDrawArraysInstanced( GL_POINTS, 0, 1, cascade.GetRayCacheProbeCount() ) );
 	OGL_CHECK( renderThread, pglEndTransformFeedback() );

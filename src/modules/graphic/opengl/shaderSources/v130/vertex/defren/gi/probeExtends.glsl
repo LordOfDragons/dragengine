@@ -20,8 +20,8 @@ out vec3 fbMaxExtend;
 
 void main( void ){
 	gl_Position = vec4( 2, 2, 2, 1 ); // keep broken compilers happy
-	fbMinExtend = pGIFieldSize;
-	fbMaxExtend = -pGIFieldSize;
+	fbMinExtend = pGIDetectionBox;
+	fbMaxExtend = -pGIDetectionBox;
 	
 	#ifdef WITH_RAY_CACHE
 		ivec2 rayOffset = giRayCastCacheFirstTCFromProbeIndex( giTraceProbeProbeIndex( gl_InstanceID ) );
@@ -35,27 +35,15 @@ void main( void ){
 	for( i=0; i<pGIRaysPerProbe; i++ ){
 		#ifdef WITH_RAY_CACHE
 			ivec3 rayTC = ivec3( rayOffset + ivec2( i, 0 ), pGICascade );
+			vec3 position = probePosition + pGIRayDirection[ i ] * texelFetch( texPosition, rayTC, 0 ).r;
 		#else
-			ivec2 rayTC = rayOffset + ivec2( i, 0 );
-		#endif
-		
-		#ifdef WITH_RAY_CACHE
-			float rayDistance = texelFetch( texPosition, rayTC, 0 ).r;
-		#else
-			vec4 rayPosition = texelFetch( texPosition, rayTC, 0 ); // position, distance
-			float rayDistance = rayPosition.w;
-		#endif
-		
-		#ifdef WITH_RAY_CACHE
-			vec3 position = probePosition + pGIRayDirection[ i ] * rayDistance;
-		#else
-			vec3 position = rayPosition.xyz;
+			vec3 position = texelFetch( texPosition, rayOffset + ivec2( i, 0 ), 0 ).xyz;
 		#endif
 		
 		fbMinExtend = min( fbMinExtend, position );
 		fbMaxExtend = max( fbMaxExtend, position );
 	}
 	
-	fbMinExtend = max( fbMinExtend, -pGIFieldSize );
-	fbMaxExtend = min( fbMaxExtend, pGIFieldSize );
+	fbMinExtend = max( fbMinExtend, -pGIDetectionBox );
+	fbMaxExtend = min( fbMaxExtend, pGIDetectionBox );
 }

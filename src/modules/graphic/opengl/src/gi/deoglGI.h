@@ -73,7 +73,8 @@ public:
 		eupIrradianceGamma, // float
 		eupInvIrradianceGamma, // float
 		eupSelfShadowBias, // float
-		eupCascade // int
+		eupCascade, // int
+		eupDetectionBox // vec3
 	};
 	
 	
