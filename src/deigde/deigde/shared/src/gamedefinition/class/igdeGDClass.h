@@ -220,6 +220,9 @@ public:
 	/** \brief Component texture replacements. */
 	inline igdeGDCCTextureList &GetComponentTextures(){ return pComponentTextures; }
 	inline const igdeGDCCTextureList &GetComponentTextures() const{ return pComponentTextures; }
+	
+	/** \brief Build flattened component texture replacements list. */
+	void GetDeepComponentTextures( igdeGDCCTextureList &list ) const;
 	/*@}*/
 	
 	

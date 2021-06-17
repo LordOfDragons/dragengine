@@ -22,10 +22,10 @@
 #ifndef _GDEVAOSNAPPOINT_H_
 #define _GDEVAOSNAPPOINT_H_
 
-#include <dragengine/deObject.h>
+#include "gdeVAOSubObject.h"
+
 #include <dragengine/resources/debug/deDebugDrawerReference.h>
 
-class gdeViewActiveObject;
 class gdeOCSnapPoint;
 class igdeWDebugDrawerShape;
 class igdeWCoordSysArrows;
@@ -35,10 +35,8 @@ class igdeWCoordSysArrows;
 /**
  * \brief Game definition active object snap point for edit view.
  */
-class gdeVAOSnapPoint : public deObject{
+class gdeVAOSnapPoint : public gdeVAOSubObject{
 private:
-	gdeViewActiveObject &pView;
-	
 	gdeOCSnapPoint *pOCSnapPoint;
 	
 	deDebugDrawerReference pDebugDrawer;
@@ -52,7 +50,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create active object snap point. */
-	gdeVAOSnapPoint( gdeViewActiveObject &view, gdeOCSnapPoint *ocsnapPoint );
+	gdeVAOSnapPoint( gdeViewActiveObject &view, const gdeObjectClass &objectClass,
+		const decString &propertyPrefix, gdeOCSnapPoint *ocsnapPoint );
 	
 protected:
 	/**

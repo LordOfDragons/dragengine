@@ -22,13 +22,12 @@
 #ifndef _GDEVAOCOMPONENT_H_
 #define _GDEVAOCOMPONENT_H_
 
-#include <dragengine/deObject.h>
-#include <dragengine/common/math/decMath.h>
+#include "gdeVAOSubObject.h"
+
 #include <dragengine/resources/component/deComponentReference.h>
 #include <dragengine/resources/collider/deColliderReference.h>
 #include <dragengine/resources/animator/deAnimatorInstanceReference.h>
 
-class gdeViewActiveObject;
 class gdeOCComponent;
 class gdeOCComponentTexture;
 
@@ -39,10 +38,8 @@ class deComponentTexture;
 /**
  * \brief Game definition active object component for edit view.
  */
-class gdeVAOComponent : public deObject{
+class gdeVAOComponent : public gdeVAOSubObject{
 private:
-	gdeViewActiveObject &pView;
-	
 	gdeOCComponent *pOCComponent;
 	
 	deColliderReference pCollider;
@@ -56,7 +53,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create active object component. */
-	gdeVAOComponent( gdeViewActiveObject &view, gdeOCComponent *occomponent );
+	gdeVAOComponent( gdeViewActiveObject &view, const gdeObjectClass &objectClass,
+		const decString &propertyPrefix, gdeOCComponent *occomponent );
 	
 protected:
 	/**
@@ -86,16 +84,16 @@ public:
 	void Update( float elapsed );
 	
 	/** \brief Rebuild resources. */
-	void RebuildResources();
+	virtual void RebuildResources();
 	
 	/** \brief Update texture. */
 	void UpdateTexture( gdeOCComponentTexture *texture );
 	
 	/** \brief Selected object changed. */
-	void SelectedObjectChanged();
+	virtual void SelectedObjectChanged();
 	
 	/** \brief Extends. */
-	void GetExtends( decVector &minExtend, decVector &maxExtend ) const;
+	virtual void GetExtends( decVector &minExtend, decVector &maxExtend ) const;
 	/*@}*/
 	
 	

@@ -22,10 +22,9 @@
 #ifndef _GDEVAOCAMERA_H_
 #define _GDEVAOCAMERA_H_
 
-#include <dragengine/deObject.h>
+#include "gdeVAOSubObject.h"
 #include <dragengine/resources/debug/deDebugDrawerReference.h>
 
-class gdeViewActiveObject;
 class gdeOCCamera;
 class igdeWDebugDrawerShape;
 class igdeWCoordSysArrows;
@@ -35,10 +34,8 @@ class igdeWCoordSysArrows;
 /**
  * \brief Game definition active object camera for edit view.
  */
-class gdeVAOCamera : public deObject{
+class gdeVAOCamera : public gdeVAOSubObject{
 private:
-	gdeViewActiveObject &pView;
-	
 	gdeOCCamera *pOCCamera;
 	
 	deDebugDrawerReference pDebugDrawer;
@@ -51,7 +48,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create active object camera. */
-	gdeVAOCamera( gdeViewActiveObject &view, gdeOCCamera *occamera );
+	gdeVAOCamera( gdeViewActiveObject &view, const gdeObjectClass &objectClass,
+		const decString &propertyPrefix, gdeOCCamera *occamera );
 	
 protected:
 	/**

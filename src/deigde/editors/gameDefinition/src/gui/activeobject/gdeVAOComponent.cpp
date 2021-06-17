@@ -29,6 +29,7 @@
 #include "../gdeWindowMain.h"
 #include "../../gdEditor.h"
 #include "../../gamedef/gdeGameDefinition.h"
+#include "../../gamedef/objectClass/gdeObjectClass.h"
 #include "../../gamedef/objectClass/component/gdeOCComponent.h"
 #include "../../gamedef/objectClass/component/gdeOCComponentTexture.h"
 
@@ -95,8 +96,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeVAOComponent::gdeVAOComponent( gdeViewActiveObject &view, gdeOCComponent *occomponent ) :
-pView( view ),
+gdeVAOComponent::gdeVAOComponent( gdeViewActiveObject &view, const gdeObjectClass &objectClass,
+	const decString &propertyPrefix, gdeOCComponent *occomponent ) :
+gdeVAOSubObject( view, objectClass, propertyPrefix ),
 pOCComponent( occomponent ),
 pPlayback( false )
 {
@@ -216,11 +218,13 @@ void gdeVAOComponent::pCreateComponent(){
 	deVirtualFileSystem * const vfs = pView.GetGameDefinition()->GetPreviewVFS();
 	igdeEnvironment &environment = pView.GetWindowMain().GetEnvironment();
 	const deEngine &engine = *pView.GetGameDefinition()->GetEngine();
+	decString path;
 	
 	// model
-	if( ! pOCComponent->GetModelPath().IsEmpty() ){
+	path = PropertyString( pOCComponent->GetPropertyName( gdeOCComponent::epModel ), pOCComponent->GetModelPath() );
+	if( ! path.IsEmpty() ){
 		try{
-			model.TakeOver( engine.GetModelManager()->LoadModel( vfs, pOCComponent->GetModelPath(), "/" ) );
+			model.TakeOver( engine.GetModelManager()->LoadModel( vfs, path, "/" ) );
 			
 		}catch( const deException &e ){
 			environment.GetLogger()->LogException( LOGSOURCE, e );
@@ -228,9 +232,10 @@ void gdeVAOComponent::pCreateComponent(){
 	}
 	
 	// skin
-	if( ! pOCComponent->GetSkinPath().IsEmpty() ){
+	path = PropertyString( pOCComponent->GetPropertyName( gdeOCComponent::epSkin ), pOCComponent->GetSkinPath() );
+	if( ! path.IsEmpty() ){
 		try{
-			skin.TakeOver( engine.GetSkinManager()->LoadSkin( vfs, pOCComponent->GetSkinPath(), "/" ) );
+			skin.TakeOver( engine.GetSkinManager()->LoadSkin( vfs, path, "/" ) );
 			
 		}catch( const deException &e ){
 			skin = environment.GetErrorSkin();
@@ -238,9 +243,10 @@ void gdeVAOComponent::pCreateComponent(){
 	}
 	
 	// rig
-	if( ! pOCComponent->GetRigPath().IsEmpty() ){
+	path = PropertyString( pOCComponent->GetPropertyName( gdeOCComponent::epRig ), pOCComponent->GetRigPath() );
+	if( ! path.IsEmpty() ){
 		try{
-			rig.TakeOver( engine.GetRigManager()->LoadRig( vfs, pOCComponent->GetRigPath(), "/" ) );
+			rig.TakeOver( engine.GetRigManager()->LoadRig( vfs, path, "/" ) );
 			
 		}catch( const deException &e ){
 			environment.GetLogger()->LogException( LOGSOURCE, e );
@@ -248,10 +254,10 @@ void gdeVAOComponent::pCreateComponent(){
 	}
 	
 	// occlusion mesh
-	if( ! pOCComponent->GetOcclusionMeshPath().IsEmpty() ){
+	path = PropertyString( pOCComponent->GetPropertyName( gdeOCComponent::epOcclusionMesh ), pOCComponent->GetOcclusionMeshPath() );
+	if( ! path.IsEmpty() ){
 		try{
-			occlusionMesh.TakeOver( engine.GetOcclusionMeshManager()->LoadOcclusionMesh(
-				vfs, pOCComponent->GetOcclusionMeshPath(), "/" ) );
+			occlusionMesh.TakeOver( engine.GetOcclusionMeshManager()->LoadOcclusionMesh( vfs, path, "/" ) );
 			
 		}catch( const deException &e ){
 			environment.GetLogger()->LogException( LOGSOURCE, e );
@@ -259,10 +265,10 @@ void gdeVAOComponent::pCreateComponent(){
 	}
 	
 	// audio model
-	if( ! pOCComponent->GetAudioModelPath().IsEmpty() ){
+	path = PropertyString( pOCComponent->GetPropertyName( gdeOCComponent::epAudioModel ), pOCComponent->GetAudioModelPath() );
+	if( ! path.IsEmpty() ){
 		try{
-			audioModel.TakeOver( engine.GetModelManager()->LoadModel(
-				vfs, pOCComponent->GetAudioModelPath(), "/" ) );
+			audioModel.TakeOver( engine.GetModelManager()->LoadModel( vfs, path, "/" ) );
 			
 		}catch( const deException &e ){
 			environment.GetLogger()->LogException( LOGSOURCE, e );
@@ -303,7 +309,10 @@ void gdeVAOComponent::pCreateComponentTextures(){
 	
 	for( i=0; i<textureCount; i++ ){
 		const decString &textureName = model.GetTextureAt( i )->GetName();
-		pUpdateComponentTexture( pOCComponent->GetTextures().GetNamed( textureName ),
+		const gdeOCComponentTexture * const componentTexture = pOCComponent->GetTextures().GetNamed( textureName );
+		const gdeOCComponentTexture * const objectClassTexture = pView.GetObjectClass()->GetTextures().GetNamed( textureName );
+		
+		pUpdateComponentTexture( objectClassTexture ? objectClassTexture : componentTexture,
 			pComponent->GetTextureAt( i ), i );
 	}
 }

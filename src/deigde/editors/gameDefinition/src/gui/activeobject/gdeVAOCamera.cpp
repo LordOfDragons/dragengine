@@ -51,8 +51,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeVAOCamera::gdeVAOCamera( gdeViewActiveObject &view, gdeOCCamera *occamera ) :
-pView( view ),
+gdeVAOCamera::gdeVAOCamera( gdeViewActiveObject &view, const gdeObjectClass &objectClass,
+	const decString &propertyPrefix, gdeOCCamera *occamera ) :
+gdeVAOSubObject( view, objectClass, propertyPrefix ),
 pOCCamera( occamera ),
 pDDSCenter( NULL ),
 pDDSCoordSystem( NULL )

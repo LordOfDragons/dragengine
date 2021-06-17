@@ -35,6 +35,7 @@
 #include "../../../gamedef/category/gdeCategory.h"
 #include "../../../gamedef/filepattern/gdeFilePattern.h"
 #include "../../../gamedef/objectClass/gdeObjectClass.h"
+#include "../../../gamedef/objectClass/component/gdeOCComponentTexture.h"
 #include "../../../gamedef/objectClass/inherit/gdeOCInherit.h"
 #include "../../../gamedef/property/gdeProperty.h"
 #include "../../../undosys/objectClass/gdeUOCSetName.h"
@@ -87,11 +88,20 @@
 #include "../../../undosys/objectClass/inherit/gdeUOCRemoveAllInherits.h"
 #include "../../../undosys/objectClass/inherit/gdeUOCInheritSetName.h"
 #include "../../../undosys/objectClass/inherit/gdeUOCInheritSetPropertyPrefix.h"
+#include "../../../undosys/objectClass/texture/gdeUOCAddTexture.h"
+#include "../../../undosys/objectClass/texture/gdeUOCRemoveTexture.h"
+#include "../../../undosys/objectClass/texture/gdeUOCTextureSetColorTint.h"
+#include "../../../undosys/objectClass/texture/gdeUOCTextureSetName.h"
+#include "../../../undosys/objectClass/texture/gdeUOCTextureSetOffset.h"
+#include "../../../undosys/objectClass/texture/gdeUOCTextureSetPathSkin.h"
+#include "../../../undosys/objectClass/texture/gdeUOCTextureSetRotation.h"
+#include "../../../undosys/objectClass/texture/gdeUOCTextureSetScale.h"
 
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/igdeCheckBox.h>
 #include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeColorBox.h>
 #include <deigde/gui/igdeIconListBox.h>
 #include <deigde/gui/igdeListBox.h>
 #include <deigde/gui/igdeTextArea.h>
@@ -101,8 +111,11 @@
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/composed/igdeEditPath.h>
 #include <deigde/gui/composed/igdeEditPathListener.h>
+#include <deigde/gui/composed/igdeEditVector2.h>
+#include <deigde/gui/composed/igdeEditVector2Listener.h>
 #include <deigde/gui/event/igdeActionContextMenu.h>
 #include <deigde/gui/event/igdeComboBoxListener.h>
+#include <deigde/gui/event/igdeColorBoxListener.h>
 #include <deigde/gui/event/igdeListBoxListener.h>
 #include <deigde/gui/event/igdeIconListBoxListener.h>
 #include <deigde/gui/event/igdeTextAreaListener.h>
@@ -786,6 +799,256 @@ public:
 	}
 };
 
+
+// textures
+
+class cBaseComboBoxTextureListener : public cBaseComboBoxListener{
+public:
+	cBaseComboBoxTextureListener( gdeWPSObjectClass &panel ) : cBaseComboBoxListener( panel ){ }
+	
+	igdeUndo *OnChanged( igdeComboBox &comboBox, gdeObjectClass *objectClass ){
+		gdeOCComponentTexture * const texture = pPanel.GetTexture();
+		return texture ? OnChangedTexture( comboBox, objectClass, texture ) : NULL;
+	}
+	
+	virtual igdeUndo *OnChangedTexture( igdeComboBox &comboBox, gdeObjectClass *objectClass,
+		gdeOCComponentTexture *texture ) = 0;
+};
+
+class cBaseActionTexture : public cBaseAction{
+public:
+	cBaseActionTexture( gdeWPSObjectClass &panel, const char *text, igdeIcon *icon, const char *description ) :
+		cBaseAction( panel, text, icon, description ){ }
+	
+	virtual igdeUndo *OnActionObjectClass( gdeObjectClass *objectClass ){
+		gdeOCComponentTexture * const texture = pPanel.GetTexture();
+		return texture ? OnActionTexture( objectClass, texture ) : NULL;
+	}
+	
+	virtual igdeUndo *OnActionTexture( gdeObjectClass *objectClass, gdeOCComponentTexture *texture ) = 0;
+	
+	virtual void Update(){
+		SetEnabled( pPanel.GetTexture() );
+	}
+};
+
+class cBaseTextFieldTextureListener : public cBaseTextFieldListener{
+public:
+	cBaseTextFieldTextureListener( gdeWPSObjectClass &panel ) : cBaseTextFieldListener( panel ){ }
+	
+	virtual igdeUndo *OnChanged( igdeTextField &textField, gdeObjectClass *objectClass ){
+		gdeOCComponentTexture * const texture = pPanel.GetTexture();
+		return texture ? OnChangedTexture( textField, objectClass, texture ) : NULL;
+	}
+	
+	virtual igdeUndo *OnChangedTexture( igdeTextField &textField, gdeObjectClass *objectClass,
+		gdeOCComponentTexture *texture ) = 0;
+};
+
+class cBaseEditVector2TextureListener : public igdeEditVector2Listener{
+protected:
+	gdeWPSObjectClass &pPanel;
+	
+public:
+	cBaseEditVector2TextureListener( gdeWPSObjectClass &panel ) : pPanel( panel ){ }
+	
+	virtual void OnVector2Changed( igdeEditVector2 *editVector2 ){
+		gdeOCComponentTexture * const texture = pPanel.GetTexture();
+		if( ! texture ){
+			return;
+		}
+		
+		igdeUndoReference undo;
+		undo.TakeOver( OnChangedTexture( editVector2->GetVector2(), pPanel.GetObjectClass(), texture ) );
+		if( undo ){
+			pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
+		}
+	}
+	
+	virtual igdeUndo *OnChangedTexture( const decVector2 &vector, gdeObjectClass *objectClass,
+		gdeOCComponentTexture *texture ) = 0;
+};
+
+
+class cComboTextures : public cBaseComboBoxListener{
+public:
+	cComboTextures( gdeWPSObjectClass &panel ) : cBaseComboBoxListener( panel ){ }
+	
+	virtual igdeUndo *OnChanged( igdeComboBox &comboBox, gdeObjectClass *objectClass ){
+		const igdeListItem * const selection = comboBox.GetSelectedItem();
+		objectClass->SetActiveTexture( selection ? ( gdeOCComponentTexture* )selection->GetData() : NULL );
+		pPanel.GetGameDefinition()->NotifyOCActiveTextureChanged( objectClass );
+		return NULL;
+	}
+};
+
+class cActionTextureAdd : public cBaseAction{
+	const decString pTextureName;
+	
+public:
+	cActionTextureAdd( gdeWPSObjectClass &panel ) : cBaseAction( panel, "Add...",
+		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ), "Add texture" ){ }
+	
+	cActionTextureAdd( gdeWPSObjectClass &panel, const decString &textureName ) :
+		cBaseAction( panel, textureName, NULL, "Add texture" ), pTextureName( textureName ){ }
+	
+	virtual igdeUndo *OnActionObjectClass( gdeObjectClass *objectClass ){
+		decString name( pTextureName );
+		
+		if( name.IsEmpty() ){
+			name = "Texture";
+			
+			while( true ){
+				if( ! igdeCommonDialogs::GetString( pPanel.GetParentWindow(), "Add Texture", "Name:", name ) ){
+					return NULL;
+				}
+				
+				if( objectClass->GetTextures().HasNamed( name ) ){
+					igdeCommonDialogs::Error( pPanel.GetParentWindow(), "Add Texture", "A texture with this name exists already." );
+					
+				}else{
+					break;
+				}
+			}
+		}
+		
+		deObjectReference texture;
+		texture.TakeOver( new gdeOCComponentTexture( name ) );
+		
+		igdeUndoReference undo;
+		undo.TakeOver( new gdeUOCAddTexture( objectClass, ( gdeOCComponentTexture* )( deObject* )texture ) );
+		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
+		
+		objectClass->SetActiveTexture( ( gdeOCComponentTexture* )( deObject* )texture );
+		pPanel.GetGameDefinition()->NotifyOCActiveTextureChanged( objectClass );
+		return NULL;
+	}
+	
+	virtual void Update(){
+		const gdeObjectClass * const objectClass = pPanel.GetObjectClass();
+		SetEnabled( objectClass && ( pTextureName.IsEmpty() || ! objectClass->GetTextures().HasNamed( pTextureName ) ) );
+	}
+};
+
+class cActionTextureRemove : public cBaseActionTexture{
+public:
+	cActionTextureRemove( gdeWPSObjectClass &panel ) : cBaseActionTexture( panel, "Remove",
+		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiMinus ), "Remove selected texture" ){ }
+	
+	virtual igdeUndo *OnActionTexture( gdeObjectClass *objectClass, gdeOCComponentTexture *texture ){
+		return new gdeUOCRemoveTexture( objectClass, texture );
+	}
+};
+
+class cActionTexturesMenu : public igdeActionContextMenu{
+	gdeWPSObjectClass &pPanel;
+	
+public:
+	cActionTexturesMenu( gdeWPSObjectClass &panel ) : igdeActionContextMenu( "",
+		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiSmallDown ),
+		"Textures menu" ), pPanel( panel ){ }
+	
+	virtual void AddContextMenuEntries( igdeMenuCascade &contextMenu ){
+		igdeEnvironment &env = contextMenu.GetEnvironment();
+		igdeUIHelper &helper = env.GetUIHelper();
+		
+		helper.MenuCommand( contextMenu, pPanel.GetActionTextureAdd() );
+		helper.MenuCommand( contextMenu, pPanel.GetActionTextureRemove() );
+	}
+};
+
+class cTextTextureEditName : public cBaseTextFieldTextureListener{
+public:
+	cTextTextureEditName( gdeWPSObjectClass &panel ) : cBaseTextFieldTextureListener( panel ){ }
+	
+	virtual igdeUndo *OnChangedTexture( igdeTextField &textField, gdeObjectClass *objectClass, gdeOCComponentTexture *texture ){
+		if( texture->GetName() == textField.GetText() ){
+			return NULL;
+		}
+		
+		if( objectClass->GetTextures().HasNamed( textField.GetText() ) ){
+			igdeCommonDialogs::Information( pPanel.GetParentWindow(), "Rename texture", "A texture with this name exists already." );
+			textField.SetText( texture->GetName() );
+			return NULL;
+		}
+		
+		return new gdeUOCTextureSetName( objectClass, texture, textField.GetText() );
+	}
+};
+
+class cEditTextureEditPathSkin : public igdeEditPathListener{
+	gdeWPSObjectClass &pPanel;
+	
+public:
+	cEditTextureEditPathSkin( gdeWPSObjectClass &panel ) : pPanel( panel ){ }
+	
+	virtual void OnEditPathChanged( igdeEditPath *editPath ){
+		gdeOCComponentTexture * const texture = pPanel.GetTexture();
+		if( ! texture || texture->GetPathSkin() == editPath->GetPath() ){
+			return;
+		}
+		
+		igdeUndoReference undo;
+		undo.TakeOver( new gdeUOCTextureSetPathSkin( pPanel.GetObjectClass(), texture, editPath->GetPath() ) );
+		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
+	}
+};
+
+class cEditTextureEditOffset : public cBaseEditVector2TextureListener{
+public:
+	cEditTextureEditOffset( gdeWPSObjectClass &panel ) : cBaseEditVector2TextureListener( panel ){ }
+	
+	virtual igdeUndo *OnChangedTexture( const decVector2 &vector, gdeObjectClass *objectClass, gdeOCComponentTexture *texture ){
+		if( texture->GetOffset().IsEqualTo( vector ) ){
+			return NULL;
+		}
+		return new gdeUOCTextureSetOffset( objectClass, texture, vector );
+	}
+};
+
+class cTextTextureEditRotation : public cBaseTextFieldTextureListener{
+public:
+	cTextTextureEditRotation( gdeWPSObjectClass &panel ) : cBaseTextFieldTextureListener( panel ){ }
+	
+	virtual igdeUndo *OnChangedTexture( igdeTextField &textField, gdeObjectClass *objectClass, gdeOCComponentTexture *texture ){
+		const float value = textField.GetFloat();
+		if( fabsf( texture->GetRotation() - value ) < FLOAT_SAFE_EPSILON ){
+			return NULL;
+		}
+		return new gdeUOCTextureSetRotation( objectClass, texture, value );
+	}
+};
+
+class cEditTextureEditScale : public cBaseEditVector2TextureListener{
+public:
+	cEditTextureEditScale( gdeWPSObjectClass &panel ) : cBaseEditVector2TextureListener( panel ){ }
+	
+	virtual igdeUndo *OnChangedTexture( const decVector2 &vector, gdeObjectClass *objectClass, gdeOCComponentTexture *texture ){
+		if( texture->GetScale().IsEqualTo( vector ) ){
+			return NULL;
+		}
+		return new gdeUOCTextureSetScale( objectClass, texture, vector );
+	}
+};
+
+class cColorTextureTint : public igdeColorBoxListener{
+	gdeWPSObjectClass &pPanel;
+	
+public:
+	cColorTextureTint( gdeWPSObjectClass &panel ) : pPanel( panel ){ }
+	
+	virtual void OnColorChanged( igdeColorBox *colorBox ){
+		gdeOCComponentTexture * const texture = pPanel.GetTexture();
+		if( ! texture || texture->GetColorTint().IsEqualTo( colorBox->GetColor() ) ){
+			return;
+		}
+		
+		igdeUndoReference undo;
+		undo.TakeOver( new gdeUOCTextureSetColorTint( pPanel.GetObjectClass(), texture, colorBox->GetColor() ) );
+		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
+	}
+};
+
 }
 
 
@@ -821,6 +1084,10 @@ pGameDefinition( NULL )
 	pActionPropertyValueRemove.TakeOver( new cActionPropertyValueRemove( *this ) );
 	pActionPropertyValueClear.TakeOver( new cActionPropertyValueClear( *this ) );
 	pActionPropertyValuesFromSubObjects.TakeOver( new cActionPropertyValuesFromSubObjects( *this ) );
+	
+	pActionTexturesMenu.TakeOver( new cActionTexturesMenu( *this ) );
+	pActionTextureAdd.TakeOver( new cActionTextureAdd( *this ) );
+	pActionTextureRemove.TakeOver( new cActionTextureRemove( *this ) );
 	
 	
 	// object class
@@ -910,6 +1177,29 @@ pGameDefinition( NULL )
 	helper.GroupBoxFlow( content, groupBox, "Partial Hide Tags:", false, true );
 	pListPartialHideTags.TakeOver( new cListPartialHideTags( *this, helper ) );
 	groupBox->AddChild( pListPartialHideTags );
+	
+	
+	// textures
+	helper.GroupBox( content, groupBox, "Textures:" );
+	
+	helper.FormLineStretchFirst( groupBox, "Texture:", "Texture to edit", frameLine );
+	helper.ComboBox( frameLine, "Texture to edit", pCBTextures, new cComboTextures( *this ) );
+	pCBTextures->SetDefaultSorter();
+	helper.Button( frameLine, pBtnTextures, pActionTexturesMenu );
+	pActionTexturesMenu->SetWidget( pBtnTextures );
+	
+	helper.EditString( groupBox, "Name:", "Name of texture", pTextureEditName, new cTextTextureEditName( *this ) );
+	helper.EditPath( groupBox, "Skin:", "Path to skin file to use",
+		igdeEnvironment::efpltSkin, pTextureEditPathSkin, new cEditTextureEditPathSkin( *this ) );
+	helper.EditVector2( groupBox, "Offset:", "Texture coordinate offset",
+		pTextureEditOffset, new cEditTextureEditOffset( *this ) );
+	helper.EditFloat( groupBox, "Rotation:",
+		"Texture coordinate rotation around texture center in degrees",
+		pTextureEditRotation, new cTextTextureEditRotation( *this ) );
+	helper.EditVector2( groupBox, "Scale:", "Texture coordinate scaling",
+		pTextureEditScale, new cEditTextureEditScale( *this ) );
+	helper.ColorBox( groupBox, "Tint:", "Texture tint color",
+		pTextureClrTint, new cColorTextureTint( *this ) );
 }
 
 gdeWPSObjectClass::~gdeWPSObjectClass(){
@@ -1001,6 +1291,11 @@ const decString &gdeWPSObjectClass::GetPropertyKey() const{
 const char *gdeWPSObjectClass::GetPropertyValue() const{
 	const igdeListItem * const selection = pListPropertyValues->GetSelectedItem();
 	return selection ? selection->GetText().GetString() : NULL;
+}
+
+gdeOCComponentTexture *gdeWPSObjectClass::GetTexture() const{
+	gdeObjectClass * const objectClass = GetObjectClass();
+	return objectClass ? objectClass->GetActiveTexture() : NULL;
 }
 
 
@@ -1123,6 +1418,7 @@ void gdeWPSObjectClass::UpdateObjectClass(){
 	UpdateInherits();
 	UpdateHideTags();
 	UpdatePartialHideTags();
+	UpdateTextureList();
 }
 
 void gdeWPSObjectClass::UpdateProperties(){
@@ -1245,6 +1541,62 @@ void gdeWPSObjectClass::UpdateHideTags(){
 
 void gdeWPSObjectClass::UpdatePartialHideTags(){
 	( ( gdeWPTagList& )( igdeWidget& )pListPartialHideTags ).UpdateList();
+}
+
+void gdeWPSObjectClass::UpdateTextureList(){
+	const gdeObjectClass * const objectClass = GetObjectClass();
+	
+	pCBTextures->RemoveAllItems();
+	
+	if( objectClass ){
+		const gdeOCComponentTextureList &textures = objectClass->GetTextures();
+		const int count = textures.GetCount();
+		int i;
+		
+		for( i=0; i<count; i++ ){
+			gdeOCComponentTexture * const texture = textures.GetAt( i );
+			pCBTextures->AddItem( texture->GetName(), NULL, texture );
+		}
+	}
+	
+	pCBTextures->SortItems();
+	
+	SelectActiveTexture();
+	UpdateTexture();
+}
+
+void gdeWPSObjectClass::SelectActiveTexture(){
+	pCBTextures->SetSelectionWithData( GetTexture() );
+}
+
+void gdeWPSObjectClass::UpdateTexture(){
+	const gdeOCComponentTexture * const texture = GetTexture();
+	
+	if( texture ){
+		pTextureEditName->SetText( texture->GetName() );
+		pTextureEditPathSkin->SetPath( texture->GetPathSkin() );
+		pTextureEditOffset->SetVector2( texture->GetOffset() );
+		pTextureEditRotation->SetFloat( texture->GetRotation() );
+		pTextureEditScale->SetVector2( texture->GetScale() );
+		pTextureClrTint->SetColor( texture->GetColorTint() );
+		
+	}else{
+		pTextureEditName->ClearText();
+		pTextureEditPathSkin->ClearPath();
+		pTextureEditOffset->SetVector2(decVector2() );
+		pTextureEditRotation->ClearText();
+		pTextureEditScale->SetVector2(decVector2() );
+		pTextureClrTint->SetColor( decColor( 1.0f, 1.0f, 1.0f ) );
+	}
+	
+	const bool enabled = texture;
+	
+	pTextureEditName->SetEnabled( enabled );
+	pTextureEditPathSkin->SetEnabled( enabled );
+	pTextureEditOffset->SetEnabled( enabled );
+	pTextureEditRotation->SetEnabled( enabled );
+	pTextureEditScale->SetEnabled( enabled );
+	pTextureClrTint->SetEnabled( enabled );
 }
 
 

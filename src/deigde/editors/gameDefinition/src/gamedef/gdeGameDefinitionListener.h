@@ -50,16 +50,16 @@ class gdeSkyController;
 
 
 /**
- * \brief Game definition listener.
+ * Game definition listener.
  */
 class gdeGameDefinitionListener : public deObject{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create listener. */
+	/** Create listener. */
 	gdeGameDefinitionListener();
 	
-	/** \brief Clean up listener. */
+	/** Clean up listener. */
 	virtual ~gdeGameDefinitionListener();
 	/*@}*/
 	
@@ -67,96 +67,96 @@ public:
 	
 	/** \name Notifications */
 	/*@{*/
-	/** \brief Changed or saved state changed. */
+	/** Changed or saved state changed. */
 	virtual void StateChanged( gdeGameDefinition *gameDefinition );
 	
-	/** \brief Undo system changed. */
+	/** Undo system changed. */
 	virtual void UndoChanged( gdeGameDefinition *gameDefinition );
 	
-	/** \brief View properties changed. */
+	/** View properties changed. */
 	virtual void ViewChanged( gdeGameDefinition *gameDefinition );
 	
-	/** \brief Game definition changed. */
+	/** Game definition changed. */
 	virtual void GameDefinitionChanged( gdeGameDefinition *gameDefinition );
 	
-	/** \brief Base path changed. */
+	/** Base path changed. */
 	virtual void BasePathChanged( gdeGameDefinition *gameDefinition );
 	
-	/** \brief Base game definitions changed. */
+	/** Base game definitions changed. */
 	virtual void BaseGameDefinitionsChanged( gdeGameDefinition *gameDefinition );
 	
-	/** \brief Sky changed. */
+	/** Sky changed. */
 	virtual void SkyChanged( gdeGameDefinition *gameDefinition );
 	
-	/** \brief Environment object changed. */
+	/** Environment object changed. */
 	virtual void EnvObjectChanged( gdeGameDefinition *gameDefinition );
 	
-	/** \brief Camera changed. */
+	/** Camera changed. */
 	virtual void CameraChanged( gdeGameDefinition *gameDefinition );
 	
-	/** \brief Selected object changed. */
+	/** Selected object changed. */
 	virtual void SelectedObjectChanged( gdeGameDefinition *gameDefinition );
 	
 	
 	
-	/** \brief World properties changed. */
+	/** World properties changed. */
 	virtual void WorldPropertiesChanged( gdeGameDefinition *gameDefinition );
 	
-	/** \brief World changed. */
+	/** World changed. */
 	virtual void WorldPropertyChanged( gdeGameDefinition *gameDefinition,
 		gdeProperty *property );
 	
-	/** \brief World name changed. */
+	/** World name changed. */
 	virtual void WorldPropertyNameChanged( gdeGameDefinition *gameDefinition,
 		gdeProperty *property );
 	
 	
 	
-	/** \brief Decal properties changed. */
+	/** Decal properties changed. */
 	virtual void DecalPropertiesChanged( gdeGameDefinition *gameDefinition );
 	
-	/** \brief Decal changed. */
+	/** Decal changed. */
 	virtual void DecalPropertyChanged( gdeGameDefinition *gameDefinition,
 		gdeProperty *property );
 	
-	/** \brief Decal name changed. */
+	/** Decal name changed. */
 	virtual void DecalPropertyNameChanged( gdeGameDefinition *gameDefinition,
 		gdeProperty *property );
 	
 	
 	
-	/** \brief Auto find path object classes changed. */
+	/** Auto find path object classes changed. */
 	virtual void AutoFindPathObjectClassesChanged( gdeGameDefinition *gameDefinition );
 	
-	/** \brief Auto find path skins changed. */
+	/** Auto find path skins changed. */
 	virtual void AutoFindPathSkinsChanged( gdeGameDefinition *gameDefinition );
 	
-	/** \brief Auto find path skies changed. */
+	/** Auto find path skies changed. */
 	virtual void AutoFindPathSkiesChanged( gdeGameDefinition *gameDefinition );
 	
 	
 	
-	/** \brief Object class categories changed. */
+	/** Object class categories changed. */
 	virtual void ObjectClassCategoriesChanged( gdeGameDefinition *gameDefinition );
 	
-	/** \brief Skin categories changed. */
+	/** Skin categories changed. */
 	virtual void SkinCategoriesChanged( gdeGameDefinition *gameDefinition );
 	
-	/** \brief Sky categories changed. */
+	/** Sky categories changed. */
 	virtual void SkyCategoriesChanged( gdeGameDefinition *gameDefinition );
 	
-	/** \brief Particle emitter categories changed. */
+	/** Particle emitter categories changed. */
 	virtual void ParticleEmitterCategoriesChanged( gdeGameDefinition *gameDefinition );
 	
-	/** \brief Active category changed. */
+	/** Active category changed. */
 	virtual void ActiveCategoryChanged( gdeGameDefinition *gameDefinition );
 	
 	
 	
-	/** \brief Object class used tags changed. */
+	/** Object class used tags changed. */
 	virtual void ObjectClassUsedTagsChanged( gdeGameDefinition *gameDefinition );
 	
-	/** \brief Defined and used identifiers changed. */
+	/** Defined and used identifiers changed. */
 	virtual void DefinedUsedIDsChanged( gdeGameDefinition *gameDefinition );
 	
 	
@@ -164,245 +164,257 @@ public:
 	/** Object class count or order changed. */
 	virtual void ObjectClassStructureChanged( gdeGameDefinition *gameDefinition );
 	
-	/** \brief Object class changed. */
+	/** Object class changed. */
 	virtual void ObjectClassChanged( gdeGameDefinition *gameDefinition,
 		gdeObjectClass *objectClass );
 	
-	/** \brief Object class name changed. */
+	/** Object class name changed. */
 	virtual void ObjectClassNameChanged( gdeGameDefinition *gameDefinition,
 		gdeObjectClass *objectClass );
 	
-	/** \brief Object property changed. */
+	/** Object property changed. */
 	virtual void OCPropertyChanged( gdeGameDefinition *gameDefinition,
 		gdeObjectClass *objectClass, gdeProperty *property );
 	
-	/** \brief Object property name changed. */
+	/** Object property name changed. */
 	virtual void OCPropertyNameChanged( gdeGameDefinition *gameDefinition,
 		gdeObjectClass *objectClass, gdeProperty *property );
 	
-	/** \brief Object properties changed. */
+	/** Object properties changed. */
 	virtual void OCPropertiesChanged( gdeGameDefinition *gameDefinition,
 		gdeObjectClass *objectClass );
 	
-	/** \brief Object property values changed. */
+	/** Object property values changed. */
 	virtual void OCPropertyValuesChanged( gdeGameDefinition *gameDefinition,
 		gdeObjectClass *objectClass );
 	
-	/** \brief Object texture property changed. */
+	/** Object texture property changed. */
 	virtual void OCTexturePropertyChanged( gdeGameDefinition *gameDefinition,
 		gdeObjectClass *objectClass, gdeProperty *property );
 	
-	/** \brief Object texture property name changed. */
+	/** Object texture property name changed. */
 	virtual void OCTexturePropertyNameChanged( gdeGameDefinition *gameDefinition,
 		gdeObjectClass *objectClass, gdeProperty *property );
 	
-	/** \brief Object texture properties changed. */
+	/** Object texture properties changed. */
 	virtual void OCTexturePropertiesChanged( gdeGameDefinition *gameDefinition,
 		gdeObjectClass *objectClass );
 	
-	/** \brief Object inherit changed. */
+	/** Object inherit changed. */
 	virtual void OCInheritChanged( gdeGameDefinition *gameDefinition,
 		gdeObjectClass *objectClass, gdeOCInherit *inherit );
 	
-	/** \brief Object inherit structure changed. */
+	/** Object inherit structure changed. */
 	virtual void OCInheritsChanged( gdeGameDefinition *gameDefinition,
 		gdeObjectClass *objectClass );
 	
-	/** \brief Object class billboards changed. */
+	/** Object class billboards changed. */
 	virtual void OCBillboardsChanged( gdeGameDefinition *gameDefinition,
 		gdeObjectClass *objectClass );
 	
-	/** \brief Object class billboard changed. */
+	/** Object class billboard changed. */
 	virtual void OCBillboardChanged( gdeGameDefinition *gameDefinition,
 		gdeObjectClass *objectClass, gdeOCBillboard *billboard );
 	
-	/** \brief Object class cameras changed. */
+	/** Object class cameras changed. */
 	virtual void OCCamerasChanged( gdeGameDefinition *gameDefinition,
 		gdeObjectClass *objectClass );
 	
-	/** \brief Object class camera changed. */
+	/** Object class camera changed. */
 	virtual void OCCameraChanged( gdeGameDefinition *gameDefinition,
 		gdeObjectClass *objectClass, gdeOCCamera *camera );
 	
-	/** \brief Object class components changed. */
+	/** Object class components changed. */
 	virtual void OCComponentsChanged( gdeGameDefinition *gameDefinition,
 		gdeObjectClass *objectClass );
 	
-	/** \brief Object class component changed. */
+	/** Object class component changed. */
 	virtual void OCComponentChanged( gdeGameDefinition *gameDefinition,
 		gdeObjectClass *objectClass, gdeOCComponent *component );
 	
-	/** \brief Object class component active texture changed. */
+	/** Object class component active texture changed. */
 	virtual void OCComponentActiveTextureChanged( gdeGameDefinition *gameDefinition,
 		gdeObjectClass *objectClass, gdeOCComponent *component );
 	
-	/** \brief Object class component texture changed. */
+	/** Object class component texture changed. */
 	virtual void OCComponentTextureChanged( gdeGameDefinition *gameDefinition,
 		gdeObjectClass *objectClass, gdeOCComponent *component,
 		gdeOCComponentTexture *texture );
 	
-	/** \brief Object class component texture name changed. */
+	/** Object class component texture name changed. */
 	virtual void OCComponentTextureNameChanged( gdeGameDefinition *gameDefinition,
 		gdeObjectClass *objectClass, gdeOCComponent *component,
 		gdeOCComponentTexture *texture );
 	
-	/** \brief Object class component texture properties changed. */
+	/** Object class component texture properties changed. */
 	virtual void OCComponentTexturePropertiesChanged( gdeGameDefinition *gameDefinition,
 		gdeObjectClass *objectClass, gdeOCComponent *component,
 		gdeOCComponentTexture *texture );
 	
-	/** \brief Object class environment map probes changed. */
+	/** Object class environment map probes changed. */
 	virtual void OCEnvMapProbesChanged( gdeGameDefinition *gameDefinition,
 		gdeObjectClass *objectClass );
 	
-	/** \brief Object class environment map probe changed. */
+	/** Object class environment map probe changed. */
 	virtual void OCEnvMapProbeChanged( gdeGameDefinition *gameDefinition,
 		gdeObjectClass *objectClass, gdeOCEnvMapProbe *envMapProbe );
 	
-	/** \brief Object class lights changed. */
+	/** Object class lights changed. */
 	virtual void OCLightsChanged( gdeGameDefinition *gameDefinition,
 		gdeObjectClass *objectClass );
 	
-	/** \brief Object class light changed. */
+	/** Object class light changed. */
 	virtual void OCLightChanged( gdeGameDefinition *gameDefinition,
 		gdeObjectClass *objectClass, gdeOCLight *light );
 	
-	/** \brief Object class navigation blockers changed. */
+	/** Object class navigation blockers changed. */
 	virtual void OCNavigationBlockersChanged( gdeGameDefinition *gameDefinition,
 		gdeObjectClass *objectClass );
 	
-	/** \brief Object class navigation blocker changed. */
+	/** Object class navigation blocker changed. */
 	virtual void OCNavigationBlockerChanged( gdeGameDefinition *gameDefinition,
 		gdeObjectClass *objectClass, gdeOCNavigationBlocker *navblocker );
 	
-	/** \brief Object class navigation spaces changed. */
+	/** Object class navigation spaces changed. */
 	virtual void OCNavigationSpacesChanged( gdeGameDefinition *gameDefinition,
 		gdeObjectClass *objectClass );
 	
-	/** \brief Object class navigation space changed. */
+	/** Object class navigation space changed. */
 	virtual void OCNavigationSpaceChanged( gdeGameDefinition *gameDefinition,
 		gdeObjectClass *objectClass, gdeOCNavigationSpace *navspace );
 	
-	/** \brief Object class particle emitters changed. */
+	/** Object class particle emitters changed. */
 	virtual void OCParticleEmittersChanged( gdeGameDefinition *gameDefinition,
 		gdeObjectClass *objectClass );
 	
-	/** \brief Object class particle emitter changed. */
+	/** Object class particle emitter changed. */
 	virtual void OCParticleEmitterChanged( gdeGameDefinition *gameDefinition,
 		gdeObjectClass *objectClass, gdeOCParticleEmitter *emitter );
 	
-	/** \brief Object class force fields changed. */
+	/** Object class force fields changed. */
 	virtual void OCForceFieldsChanged( gdeGameDefinition *gameDefinition,
 		gdeObjectClass *objectClass );
 	
-	/** \brief Object class force field changed. */
+	/** Object class force field changed. */
 	virtual void OCForceFieldChanged( gdeGameDefinition *gameDefinition,
 		gdeObjectClass *objectClass, gdeOCForceField *field );
 	
-	/** \brief Object class snap points changed. */
+	/** Object class snap points changed. */
 	virtual void OCSnapPointsChanged( gdeGameDefinition *gameDefinition,
 		gdeObjectClass *objectClass );
 	
-	/** \brief Object class snap point changed. */
+	/** Object class snap point changed. */
 	virtual void OCSnapPointChanged( gdeGameDefinition *gameDefinition,
 		gdeObjectClass *objectClass, gdeOCSnapPoint *snappoint );
 	
-	/** \brief Object class snap point name changed. */
+	/** Object class snap point name changed. */
 	virtual void OCSnapPointNameChanged( gdeGameDefinition *gameDefinition,
 		gdeObjectClass *objectClass, gdeOCSnapPoint *snappoint );
 	
-	/** \brief Object class speakers changed. */
+	/** Object class speakers changed. */
 	virtual void OCSpeakersChanged( gdeGameDefinition *gameDefinition,
 		gdeObjectClass *objectClass );
 	
-	/** \brief Object class speaker changed. */
+	/** Object class speaker changed. */
 	virtual void OCSpeakerChanged( gdeGameDefinition *gameDefinition,
 		gdeObjectClass *objectClass, gdeOCSpeaker *speaker );
 	
-	/** \brief Active object class changed. */
+	/** Object class textures changed. */
+	virtual void OCTexturesChanged( gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass );
+	
+	/** Object class tzexture changed. */
+	virtual void OCTextureChanged( gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass, gdeOCComponentTexture *texture );
+	
+	/** Object class active texture changed. */
+	virtual void OCActiveTextureChanged( gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass );
+	
+	/** Active object class changed. */
 	virtual void ActiveObjectClassChanged( gdeGameDefinition *gameDefinition );
 	
-	/** \brief Active object class billboard changed. */
+	/** Active object class billboard changed. */
 	virtual void ActiveOCBillboardChanged( gdeGameDefinition *gameDefinition );
 	
-	/** \brief Active object class camera changed. */
+	/** Active object class camera changed. */
 	virtual void ActiveOCCameraChanged( gdeGameDefinition *gameDefinition );
 	
-	/** \brief Active object class component changed. */
+	/** Active object class component changed. */
 	virtual void ActiveOCComponentChanged( gdeGameDefinition *gameDefinition );
 	
-	/** \brief Active object class environment map probe changed. */
+	/** Active object class environment map probe changed. */
 	virtual void ActiveOCEnvMapProbeChanged( gdeGameDefinition *gameDefinition );
 	
-	/** \brief Active object class light changed. */
+	/** Active object class light changed. */
 	virtual void ActiveOCLightChanged( gdeGameDefinition *gameDefinition );
 	
-	/** \brief Active object class navigation blocker changed. */
+	/** Active object class navigation blocker changed. */
 	virtual void ActiveOCNavigationBlockerChanged( gdeGameDefinition *gameDefinition );
 	
-	/** \brief Active object class navigation space changed. */
+	/** Active object class navigation space changed. */
 	virtual void ActiveOCNavigationSpaceChanged( gdeGameDefinition *gameDefinition );
 	
-	/** \brief Active object class particle emitter changed. */
+	/** Active object class particle emitter changed. */
 	virtual void ActiveOCParticleEmitterChanged( gdeGameDefinition *gameDefinition );
 	
-	/** \brief Active object class force field changed. */
+	/** Active object class force field changed. */
 	virtual void ActiveOCForceFieldChanged( gdeGameDefinition *gameDefinition );
 	
-	/** \brief Active object class snap point changed. */
+	/** Active object class snap point changed. */
 	virtual void ActiveOCSnapPointChanged( gdeGameDefinition *gameDefinition );
 	
-	/** \brief Active object class speaker changed. */
+	/** Active object class speaker changed. */
 	virtual void ActiveOCSpeakerChanged( gdeGameDefinition *gameDefinition );
 	
 	
 	
-	/** \brief Particle emitter count or order changed. */
+	/** Particle emitter count or order changed. */
 	virtual void ParticleEmitterStructureChanged( gdeGameDefinition *gameDefinition );
 	
-	/** \brief Particle emitter changed. */
+	/** Particle emitter changed. */
 	virtual void ParticleEmitterChanged( gdeGameDefinition *gameDefinition,
 		gdeParticleEmitter *particleEmitter );
 	
-	/** \brief Particle emitter name changed. */
+	/** Particle emitter name changed. */
 	virtual void ParticleEmitterNameChanged( gdeGameDefinition *gameDefinition,
 		gdeParticleEmitter *particleEmitter );
 	
-	/** \brief Active particle emitter changed. */
+	/** Active particle emitter changed. */
 	virtual void ActiveParticleEmitterChanged( gdeGameDefinition *gameDefinition );
 	
 	
 	
-	/** \brief Skin count or order changed. */
+	/** Skin count or order changed. */
 	virtual void SkinStructureChanged( gdeGameDefinition *gameDefinition );
 	
-	/** \brief Skin changed. */
+	/** Skin changed. */
 	virtual void SkinChanged( gdeGameDefinition *gameDefinition, gdeSkin *skin );
 	
-	/** \brief Skin name changed. */
+	/** Skin name changed. */
 	virtual void SkinNameChanged( gdeGameDefinition *gameDefinition, gdeSkin *skin );
 	
-	/** \brief Active skin changed. */
+	/** Active skin changed. */
 	virtual void ActiveSkinChanged( gdeGameDefinition *gameDefinition );
 	
 	
 	
-	/** \brief Sky count or order changed. */
+	/** Sky count or order changed. */
 	virtual void SkyStructureChanged( gdeGameDefinition *gameDefinition );
 	
-	/** \brief Sky changed. */
+	/** Sky changed. */
 	virtual void SkyChanged( gdeGameDefinition *gameDefinition, gdeSky *sky );
 	
-	/** \brief Sky name changed. */
+	/** Sky name changed. */
 	virtual void SkyNameChanged( gdeGameDefinition *gameDefinition, gdeSky *sky );
 	
-	/** \brief Active sky changed. */
+	/** Active sky changed. */
 	virtual void ActiveSkyChanged( gdeGameDefinition *gameDefinition );
 	
-	/** \brief Sky controller count or order changed. */
+	/** Sky controller count or order changed. */
 	virtual void SkyControllerStructureChanged( gdeGameDefinition *gameDefinition, gdeSky *sky );
 	
-	/** \brief Sky changed. */
+	/** Sky changed. */
 	virtual void SkyControllerChanged( gdeGameDefinition *gameDefinition,
 		gdeSky *sky, gdeSkyController *controller );
 	/*@}*/

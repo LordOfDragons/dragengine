@@ -54,8 +54,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeVAOEnvMapProbe::gdeVAOEnvMapProbe( gdeViewActiveObject &view, gdeOCEnvMapProbe *ocenvMapProbe ) :
-pView( view ),
+gdeVAOEnvMapProbe::gdeVAOEnvMapProbe( gdeViewActiveObject &view, const gdeObjectClass &objectClass,
+	const decString &propertyPrefix, gdeOCEnvMapProbe *ocenvMapProbe ) :
+gdeVAOSubObject( view, objectClass, propertyPrefix ),
 pOCEnvMapProbe( ocenvMapProbe ),
 pDDSCenter( NULL ),
 pDDSReflection( NULL ),

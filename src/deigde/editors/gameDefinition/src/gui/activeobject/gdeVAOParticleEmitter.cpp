@@ -63,8 +63,9 @@
 ////////////////////////////
 
 gdeVAOParticleEmitter::gdeVAOParticleEmitter( gdeViewActiveObject &view,
-gdeOCParticleEmitter *ocemitter ) :
-pView( view ),
+	const gdeObjectClass &objectClass, const decString &propertyPrefix,
+	gdeOCParticleEmitter *ocemitter ) :
+gdeVAOSubObject( view, objectClass, propertyPrefix ),
 pOCParticleEmitter( ocemitter ),
 pDDSCenter( NULL ),
 pDDSCoordSystem( NULL )
@@ -119,9 +120,10 @@ void gdeVAOParticleEmitter::AttachResources(){
 		return;
 	}
 	
-	const decVector &position = pOCParticleEmitter->GetPosition();
-	const decQuaternion orientation( decQuaternion::CreateFromEuler(
-		pOCParticleEmitter->GetRotation() * DEG2RAD ) );
+	const decVector position( PropertyVector( pOCParticleEmitter->GetPropertyName(
+		gdeOCParticleEmitter::epAttachPosition ), pOCParticleEmitter->GetPosition() ) );
+	const decQuaternion orientation( PropertyQuaternion( pOCParticleEmitter->GetPropertyName(
+		gdeOCParticleEmitter::epAttachRotation ), pOCParticleEmitter->GetRotation() ) );
 	
 	deColliderAttachment *attachment = NULL;
 	try{
@@ -225,13 +227,14 @@ void gdeVAOParticleEmitter::pCreateDebugDrawer(){
 }
 
 void gdeVAOParticleEmitter::pCreateParticleEmitter(){
-	if( pOCParticleEmitter->GetPath().IsEmpty() ){
+	decString path( PropertyString( pOCParticleEmitter->GetPropertyName(
+		gdeOCParticleEmitter::epPath ), pOCParticleEmitter->GetPath() ) );
+	if( path.IsEmpty() ){
 		return;
 	}
 	
 	// load particle emitter
 	deVirtualFileSystem * const vfs = pView.GetGameDefinition()->GetPreviewVFS();
-	const decPath path( decPath::CreatePathUnix( pOCParticleEmitter->GetPath() ) );
 	igdeEnvironment &environment = pView.GetWindowMain().GetEnvironment();
 	igdeLoadParticleEmitter loader( environment, environment.GetLogger(), "gdeVAOParticleEmitter" );
 	const deEngine &engine = *pView.GetGameDefinition()->GetEngine();
@@ -239,8 +242,8 @@ void gdeVAOParticleEmitter::pCreateParticleEmitter(){
 	
 	try{
 		pEmitter.TakeOver( engine.GetParticleEmitterManager()->CreateParticleEmitter() );
-		reader.TakeOver( vfs->OpenFileForReading( path ) );
-		loader.Load( pOCParticleEmitter->GetPath(), pEmitter, reader );
+		reader.TakeOver( vfs->OpenFileForReading( decPath::CreatePathUnix( path ) ) );
+		loader.Load( path, pEmitter, reader );
 		
 	}catch( const deException &e ){
 		pEmitter = NULL;

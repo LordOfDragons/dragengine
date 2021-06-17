@@ -24,6 +24,7 @@
 
 #include <deigde/gui/igdeButtonReference.h>
 #include <deigde/gui/igdeCheckBoxReference.h>
+#include <deigde/gui/igdeColorBoxReference.h>
 #include <deigde/gui/igdeComboBoxReference.h>
 #include <deigde/gui/igdeComboBoxFilterReference.h>
 #include <deigde/gui/igdeListBoxReference.h>
@@ -32,6 +33,7 @@
 #include <deigde/gui/igdeTextFieldReference.h>
 #include <deigde/gui/igdeWidgetReference.h>
 #include <deigde/gui/composed/igdeEditPathReference.h>
+#include <deigde/gui/composed/igdeEditVector2Reference.h>
 #include <deigde/gui/event/igdeActionReference.h>
 #include <deigde/gui/event/igdeActionContextMenuReference.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
@@ -40,11 +42,11 @@ class gdeFilePattern;
 class gdeGameDefinition;
 class gdeObjectClass;
 class gdeProperty;
+class gdeOCComponentTexture;
 class gdeOCInherit;
 class gdeCategoryList;
 class gdeWindowProperties;
 class gdeWPSObjectClassListener;
-
 
 
 /**
@@ -64,6 +66,9 @@ private:
 	igdeActionReference pActionPropertyValueRemove;
 	igdeActionReference pActionPropertyValueClear;
 	igdeActionReference pActionPropertyValuesFromSubObjects;
+	igdeActionContextMenuReference pActionTexturesMenu;
+	igdeActionReference pActionTextureAdd;
+	igdeActionReference pActionTextureRemove;
 	
 	igdeTextFieldReference pEditName;
 	igdeTextAreaReference pEditDescription;
@@ -90,6 +95,15 @@ private:
 	igdeButtonReference pBtnJumpToInheritClass;
 	igdeTextFieldReference pInheritEditPropertyPrefix;
 	igdeButtonReference pBtnInheritPropertyPrefixReset;
+	
+	igdeComboBoxReference pCBTextures;
+	igdeButtonReference pBtnTextures;
+	igdeTextFieldReference pTextureEditName;
+	igdeEditPathReference pTextureEditPathSkin;
+	igdeEditVector2Reference pTextureEditOffset;
+	igdeTextFieldReference pTextureEditRotation;
+	igdeEditVector2Reference pTextureEditScale;
+	igdeColorBoxReference pTextureClrTint;
 	
 	
 	
@@ -138,6 +152,9 @@ public:
 	/** \brief Active property value (in list box). */
 	const char *GetPropertyValue() const;
 	
+	/** \brief Active object class texture or \em NULL if not set. */
+	gdeOCComponentTexture *GetTexture() const;
+	
 	
 	
 	/** \brief Actions. */
@@ -148,6 +165,9 @@ public:
 	inline igdeAction *GetActionPropertyValueRemove() const{ return pActionPropertyValueRemove; }
 	inline igdeAction *GetActionPropertyValueClear() const{ return pActionPropertyValueClear; }
 	inline igdeAction *GetActionPropertyValuesFromSubObjects() const{ return pActionPropertyValuesFromSubObjects; }
+	inline igdeActionContextMenu *GetActionTexturesMenu() const{ return pActionTexturesMenu; }
+	inline igdeAction *GetActionTextureAdd() const{ return pActionTextureAdd; }
+	inline igdeAction *GetActionTextureRemove() const{ return pActionTextureRemove; }
 	
 	
 	
@@ -200,6 +220,15 @@ public:
 	
 	/** \brief Update partial hide tags. */
 	void UpdatePartialHideTags();
+	
+	/** \brief Update component texture list. */
+	void UpdateTextureList();
+	
+	/** \brief Select active texture. */
+	void SelectActiveTexture();
+	
+	/** \brief Update component texture. */
+	void UpdateTexture();
 	/*@}*/
 	
 	

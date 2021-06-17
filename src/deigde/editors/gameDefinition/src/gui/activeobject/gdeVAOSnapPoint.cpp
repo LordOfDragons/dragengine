@@ -51,8 +51,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeVAOSnapPoint::gdeVAOSnapPoint( gdeViewActiveObject &view, gdeOCSnapPoint *ocsnapPoint ) :
-pView( view ),
+gdeVAOSnapPoint::gdeVAOSnapPoint( gdeViewActiveObject &view, const gdeObjectClass &objectClass,
+	const decString &propertyPrefix, gdeOCSnapPoint *ocsnapPoint ) :
+gdeVAOSubObject( view, objectClass, propertyPrefix ),
 pOCSnapPoint( ocsnapPoint ),
 pDDSCenter( NULL ),
 pDDSCoordSystem( NULL ),

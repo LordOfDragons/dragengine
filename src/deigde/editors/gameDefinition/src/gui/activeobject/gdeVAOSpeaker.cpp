@@ -51,8 +51,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeVAOSpeaker::gdeVAOSpeaker( gdeViewActiveObject &view, gdeOCSpeaker *ocspeaker ) :
-pView( view ),
+gdeVAOSpeaker::gdeVAOSpeaker( gdeViewActiveObject &view, const gdeObjectClass &objectClass,
+	const decString &propertyPrefix, gdeOCSpeaker *ocspeaker ) :
+gdeVAOSubObject( view, objectClass, propertyPrefix ),
 pOCSpeaker( ocspeaker ),
 pDDSCenter( NULL ),
 pDDSCoordSystem( NULL )
@@ -141,9 +142,10 @@ void gdeVAOSpeaker::pCreateDebugDrawer(){
 }
 
 void gdeVAOSpeaker::pUpdateDDShapes(){
-	const decVector &position = pOCSpeaker->GetPosition();
-	const decQuaternion orientation( decQuaternion::CreateFromEuler(
-		pOCSpeaker->GetRotation() * DEG2RAD ) );
+	const decVector position( PropertyVector( pOCSpeaker->GetPropertyName(
+		gdeOCSpeaker::epAttachPosition ), pOCSpeaker->GetPosition() ) );
+	const decQuaternion orientation( PropertyQuaternion( pOCSpeaker->GetPropertyName(
+		gdeOCSpeaker::epAttachRotation ), pOCSpeaker->GetRotation() ) );
 	
 	pDDSCenter->SetPosition( position );
 	pDDSCenter->SetOrientation( orientation );

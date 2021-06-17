@@ -29,6 +29,7 @@
 #include "igdeGDCamera.h"
 #include "billboard/igdeGDCBillboard.h"
 #include "component/igdeGDCComponent.h"
+#include "component/igdeGDCCTexture.h"
 #include "snappoint/igdeGDCSnapPoint.h"
 #include "particleemitter/igdeGDCParticleEmitter.h"
 #include "forcefield/igdeGDCForceField.h"
@@ -253,6 +254,25 @@ void igdeGDClass::SetPreviewImage( deImage *image ){
 
 void igdeGDClass::SetPathEClass( const decString &pathEClass ){
 	pPathEClass = pathEClass;
+}
+
+void igdeGDClass::GetDeepComponentTextures( igdeGDCCTextureList &list ) const{
+	const int textureCount = pComponentTextures.GetCount();
+	int i;
+	for( i=0; i<textureCount; i++ ){
+		igdeGDCCTexture * const texture = pComponentTextures.GetAt( i );
+		if( ! list.HasNamed( texture->GetName() ) ){
+			list.Add( texture );
+		}
+	}
+	
+	const int inheritCount = pInheritClasses.GetCount();
+	for( i=0; i<inheritCount; i++ ){
+		const igdeGDClassInherit &inherit = *( ( igdeGDClassInherit* )pInheritClasses.GetAt( i ) );
+		if( inherit.GetClass() ){
+			inherit.GetClass()->GetDeepComponentTextures( list );
+		}
+	}
 }
 
 

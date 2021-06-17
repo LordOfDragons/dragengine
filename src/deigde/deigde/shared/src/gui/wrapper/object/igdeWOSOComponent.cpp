@@ -30,6 +30,7 @@
 #include "../../../environment/igdeEnvironment.h"
 #include "../../../gamedefinition/igdeGameDefinition.h"
 #include "../../../gamedefinition/class/igdeGDClass.h"
+#include "../../../gamedefinition/class/igdeGDClassInherit.h"
 #include "../../../gamedefinition/class/component/igdeGDCComponent.h"
 #include "../../../gamedefinition/class/component/igdeGDCCTexture.h"
 #include "../../../gameproject/igdeGameProject.h"
@@ -534,9 +535,11 @@ void igdeWOSOComponent::pLoadResources(){
 	
 	const igdeGDClass * const gdclass = GetWrapper().GetGDClass();
 	if( gdclass ){
-		textureCount = gdclass->GetComponentTextures().GetCount();
+		igdeGDCCTextureList textures;
+		gdclass->GetDeepComponentTextures( textures );
+		textureCount = textures.GetCount();
 		for( i=0; i<textureCount; i++ ){
-			const igdeGDCCTexture &gdctexture = *gdclass->GetComponentTextures().GetAt( i );
+			const igdeGDCCTexture &gdctexture = *textures.GetAt( i );
 			if( ! gdctexture.GetPathSkin().IsEmpty() ){
 				rl.LoadTextureSkin( gdctexture.GetPathSkin() );
 			}
@@ -793,12 +796,17 @@ void igdeWOSOComponent::pUpdateTextures(){
 	deEngine &engine = GetEngine();
 	int i;
 	
+	igdeGDCCTextureList textures;
+	if( gdclass ){
+		gdclass->GetDeepComponentTextures( textures );
+	}
+	
 	for( i=0; i<textureCount; i++ ){
 		deComponentTexture &componentTexture = pComponent->GetTextureAt( i );
 		const decString &name = model.GetTextureAt( i )->GetName();
-		const igdeGDCCTexture *gdctexture = pGDComponent.GetTextureList().GetNamed( name );
-		if( ! gdctexture && gdclass ){
-			gdctexture = gdclass->GetComponentTextures().GetNamed( name );
+		const igdeGDCCTexture *gdctexture = textures.GetNamed( name );
+		if( ! gdctexture ){
+			gdctexture = pGDComponent.GetTextureList().GetNamed( name );
 		}
 		
 		deDynamicSkinReference gdctDynamicSkin;

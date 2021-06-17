@@ -49,9 +49,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeVAONavBlocker::gdeVAONavBlocker( gdeViewActiveObject &view,
-gdeOCNavigationBlocker *ocnavblocker ) :
-pView( view ),
+gdeVAONavBlocker::gdeVAONavBlocker( gdeViewActiveObject &view, const gdeObjectClass &objectClass,
+	const decString &propertyPrefix, gdeOCNavigationBlocker *ocnavblocker ) :
+gdeVAOSubObject( view, objectClass, propertyPrefix ),
 pOCNavBlocker( ocnavblocker ),
 pDDSBlocker( NULL )
 {
@@ -147,9 +147,10 @@ void gdeVAONavBlocker::pBuildDDSBlocker(){
 	
 	pDDSBlocker->SetEdgeColor( decColor( config.GetColorNavigationBlocker(), 1.0f ) );
 	pDDSBlocker->SetFillColor( config.GetColorNavigationBlocker() );
-	pDDSBlocker->SetPosition( pOCNavBlocker->GetPosition() );
-	pDDSBlocker->SetOrientation( decQuaternion::CreateFromEuler(
-		pOCNavBlocker->GetRotation() * DEG2RAD ) );
+	pDDSBlocker->SetPosition( PropertyVector( pOCNavBlocker->GetPropertyName(
+		gdeOCNavigationBlocker::epAttachPosition ), pOCNavBlocker->GetPosition() ) );
+	pDDSBlocker->SetOrientation( PropertyQuaternion( pOCNavBlocker->GetPropertyName(
+		gdeOCNavigationBlocker::epAttachRotation ), pOCNavBlocker->GetRotation() ) );
 	pDDSBlocker->AddShapes( blockerShape );
 }
 

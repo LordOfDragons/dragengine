@@ -22,11 +22,11 @@
 #ifndef _GDEVAOFORCEFIELD_H_
 #define _GDEVAOFORCEFIELD_H_
 
-#include <dragengine/deObject.h>
+#include "gdeVAOSubObject.h"
+
 #include <dragengine/resources/debug/deDebugDrawerReference.h>
 #include <dragengine/resources/forcefield/deForceFieldReference.h>
 
-class gdeViewActiveObject;
 class gdeOCForceField;
 class igdeWDebugDrawerShape;
 class igdeWCoordSysArrows;
@@ -35,10 +35,8 @@ class igdeWCoordSysArrows;
 /**
  * \brief Game definition active object force field for edit view.
  */
-class gdeVAOForceField : public deObject{
+class gdeVAOForceField : public gdeVAOSubObject{
 private:
-	gdeViewActiveObject &pView;
-	
 	gdeOCForceField *pOCForceField;
 	
 	deForceFieldReference pForceField;
@@ -53,7 +51,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create active object forceField. */
-	gdeVAOForceField( gdeViewActiveObject &view, gdeOCForceField *ocfield );
+	gdeVAOForceField( gdeViewActiveObject &view, const gdeObjectClass &objectClass,
+		const decString &propertyPrefix, gdeOCForceField *ocfield );
 	
 protected:
 	/**

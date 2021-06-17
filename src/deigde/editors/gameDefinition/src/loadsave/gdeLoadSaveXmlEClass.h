@@ -33,6 +33,7 @@ class gdeGameDefinition;
 class gdeObjectClass;
 class gdeLoadSaveSystem;
 class gdeOCComponentTexture;
+class gdeOCComponentTextureList;
 
 class decBaseFileReader;
 class decBaseFileWriter;
@@ -76,7 +77,8 @@ public:
 	gdeObjectClass *LoadXmlEClass( decBaseFileReader &reader );
 	
 	/** \brief Save object class as xml element class file. */
-	void SaveXmlEClass( const gdeObjectClass &objectClass, decBaseFileWriter &writer );
+	void SaveXmlEClass( const gdeGameDefinition &gameDefinition,
+		const gdeObjectClass &objectClass, decBaseFileWriter &writer );
 	/*@}*/
 	
 	
@@ -84,7 +86,11 @@ public:
 private:
 	gdeObjectClass *pReadElementClass( const decXmlElementTag &root );
 	
-	void pWriteElementClass( decXmlWriter &writer, const gdeObjectClass &objectClass );
+	void pWriteElementClass( decXmlWriter &writer, const gdeGameDefinition &gameDefinition,
+		const gdeObjectClass &objectClass );
+	
+	void pCollectTextures( const gdeGameDefinition &gameDefinition,
+		const gdeObjectClass &objectClass, gdeOCComponentTextureList &list );
 	
 	void pWritePropertyValue( decXmlWriter &writer, const gdeObjectClass &objectClass,
 		bool isMapEntry, const char *name, const decString &value );

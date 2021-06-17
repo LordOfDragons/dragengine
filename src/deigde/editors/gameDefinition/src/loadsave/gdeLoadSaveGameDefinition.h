@@ -116,6 +116,7 @@ private:
 	void pReadObjectClassSpeaker( const decXmlElementTag &root, gdeObjectClass &objectClass );
 	void pReadObjectClassNavigationSpace( const decXmlElementTag &root, gdeObjectClass &objectClass );
 	void pReadObjectClassNavigationBlocker( const decXmlElementTag &root, gdeObjectClass &objectClass );
+	void pReadObjectClassTexture( const decXmlElementTag &root, gdeObjectClass &objectClass );
 	void pReadCustomFilePatternList( const decXmlElementTag &root, gdeFilePatternList &list );
 	void pReadParticleEmitter( const decXmlElementTag &root, gdeGameDefinition &gameDefinition );
 	void pReadSkin( const decXmlElementTag &root, gdeGameDefinition &gameDefinition );
@@ -140,6 +141,7 @@ private:
 	void pWriteObjectClassSpeaker( decXmlWriter &writer, const gdeOCSpeaker &speaker );
 	void pWriteObjectClassNavSpace( decXmlWriter &writer, const gdeOCNavigationSpace &navspace );
 	void pWriteObjectClassNavBlocker( decXmlWriter &writer, const gdeOCNavigationBlocker &navblocker );
+	void pWriteObjectClassTexture( decXmlWriter &writer, const gdeOCComponentTexture &texture );
 	void pWriteLink( decXmlWriter &writer, const decString &link, const char *tagName, const char *target );
 	void pWriteTags( decXmlWriter &writer, const decStringSet &tags, const char *tagName );
 	void pWriteSkin( decXmlWriter &writer, const gdeGameDefinition &gameDefinition, const gdeSkin &skin );

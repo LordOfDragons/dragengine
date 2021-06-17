@@ -22,11 +22,11 @@
 #ifndef _GDEVAOLIGHT_H_
 #define _GDEVAOLIGHT_H_
 
-#include <dragengine/deObject.h>
+#include "gdeVAOSubObject.h"
+
 #include <dragengine/resources/debug/deDebugDrawerReference.h>
 #include <dragengine/resources/light/deLightReference.h>
 
-class gdeViewActiveObject;
 class gdeOCLight;
 class igdeWDebugDrawerShape;
 class igdeWCoordSysArrows;
@@ -40,10 +40,8 @@ class deComponent;
  * 
  * \todo Use DebugDrawerShape to visualize light cone.
  */
-class gdeVAOLight : public deObject{
+class gdeVAOLight : public gdeVAOSubObject{
 private:
-	gdeViewActiveObject &pView;
-	
 	gdeOCLight *pOCLight;
 	
 	deLightReference pLight;
@@ -58,7 +56,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create active object light. */
-	gdeVAOLight( gdeViewActiveObject &view, gdeOCLight *oclight );
+	gdeVAOLight( gdeViewActiveObject &view, const gdeObjectClass &objectClass,
+		const decString &propertyPrefix, gdeOCLight *oclight );
 	
 protected:
 	/**

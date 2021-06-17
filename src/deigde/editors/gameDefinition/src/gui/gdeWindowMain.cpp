@@ -436,10 +436,14 @@ public:
 		deInputEvent::esmControl, deInputEvent::ekcN, deInputEvent::ekcN ){}
 	
 	virtual void OnAction(){
-		if( igdeCommonDialogs::Question( &pWindow, igdeCommonDialogs::ebsYesNo, "New Game Definition",
-		"Creating a new game definition discarding the current one is that ok?" ) == igdeCommonDialogs::ebYes ){
-			pWindow.CreateNewGameDefinition();
+		const gdeGameDefinition * const gamedef = pWindow.GetActiveGameDefinition();
+		if( gamedef && gamedef->GetChanged() ){
+			if( igdeCommonDialogs::Question( &pWindow, igdeCommonDialogs::ebsYesNo, "New Game Definition",
+			"Creating a new game definition discards changes in the current one. Is that ok?" ) != igdeCommonDialogs::ebYes ){
+				return;
+			}
 		}
+		pWindow.CreateNewGameDefinition();
 	}
 };
 
@@ -450,6 +454,14 @@ public:
 		window.GetEnvironment().GetStockIcon( igdeEnvironment::esiOpen ), "Opens game definition from file" ){}
 	
 	virtual void OnAction(){
+		const gdeGameDefinition * const gamedef = pWindow.GetActiveGameDefinition();
+		if( gamedef && gamedef->GetChanged() ){
+			if( igdeCommonDialogs::Question( &pWindow, igdeCommonDialogs::ebsYesNo, "Open Game Definition",
+			"Loading game definition discards changes in the current one. Is that ok?" ) != igdeCommonDialogs::ebYes ){
+				return;
+			}
+		}
+		
 		decString filename( pWindow.GetLastPathGameDef() );
 		if( filename.IsEmpty() ){
 			const igdeGameProject &gameProject = *pWindow.GetEnvironment().GetGameProject();
@@ -485,6 +497,14 @@ public:
 		deInputEvent::esmControl, deInputEvent::ekcO, deInputEvent::ekcO ){}
 	
 	virtual void OnAction(){
+		const gdeGameDefinition * const gamedef = pWindow.GetActiveGameDefinition();
+		if( gamedef && gamedef->GetChanged() ){
+			if( igdeCommonDialogs::Question( &pWindow, igdeCommonDialogs::ebsYesNo, "Open Project Game Definition",
+			"Loading project game definition discards changes in the current one. Is that ok?" ) != igdeCommonDialogs::ebYes ){
+				return;
+			}
+		}
+		
 		pWindow.LoadGameProject( false );
 	}
 };

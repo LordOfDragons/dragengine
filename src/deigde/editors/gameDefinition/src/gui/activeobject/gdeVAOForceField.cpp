@@ -58,8 +58,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeVAOForceField::gdeVAOForceField( gdeViewActiveObject &view, gdeOCForceField *ocfield ) :
-pView( view ),
+gdeVAOForceField::gdeVAOForceField( gdeViewActiveObject &view, const gdeObjectClass &objectClass,
+	const decString &propertyPrefix, gdeOCForceField *ocfield ) :
+gdeVAOSubObject( view, objectClass, propertyPrefix ),
 pOCForceField( ocfield ),
 pDDSCenter( NULL ),
 pDDSCoordSystem( NULL )

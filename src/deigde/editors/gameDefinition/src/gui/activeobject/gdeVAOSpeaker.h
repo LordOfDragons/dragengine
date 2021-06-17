@@ -22,10 +22,10 @@
 #ifndef _GDEVAOSPEAKER_H_
 #define _GDEVAOSPEAKER_H_
 
-#include <dragengine/deObject.h>
+#include "gdeVAOSubObject.h"
+
 #include <dragengine/resources/debug/deDebugDrawerReference.h>
 
-class gdeViewActiveObject;
 class gdeOCSpeaker;
 class igdeWDebugDrawerShape;
 class igdeWCoordSysArrows;
@@ -35,10 +35,8 @@ class igdeWCoordSysArrows;
 /**
  * \brief Game definition active object speaker for edit view.
  */
-class gdeVAOSpeaker : public deObject{
+class gdeVAOSpeaker : public gdeVAOSubObject{
 private:
-	gdeViewActiveObject &pView;
-	
 	gdeOCSpeaker *pOCSpeaker;
 	
 	deDebugDrawerReference pDebugDrawer;
@@ -51,7 +49,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create active object speaker. */
-	gdeVAOSpeaker( gdeViewActiveObject &view, gdeOCSpeaker *ocspeaker );
+	gdeVAOSpeaker( gdeViewActiveObject &view, const gdeObjectClass &objectClass,
+		const decString &propertyPrefix, gdeOCSpeaker *ocspeaker );
 	
 protected:
 	/**
