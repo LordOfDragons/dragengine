@@ -728,6 +728,7 @@ bool deoglSkinTexture::GetShaderConfigFor( eShaderTypes shaderType, deoglSkinSha
 	config.SetParticleMode( shaderConfigInfo.particleMode );
 	config.SetLuminanceOnly( luminanceOnly );
 	config.SetGIMaterial( giMaterial );
+	config.SetBillboard( shaderConfigInfo.billboard );
 	
 	config.SetMaterialNormalModeEnc( deoglSkinShaderConfig::emnmFloat );
 	config.SetDecodeInDepth( defren.GetUseEncodedDepth() );
@@ -749,7 +750,6 @@ bool deoglSkinTexture::GetShaderConfigFor( eShaderTypes shaderType, deoglSkinSha
 		config.SetMaterialNormalModeDec( deoglSkinShaderConfig::emnmIntBasic );
 		config.SetDepthTestMode( shaderConfigInfo.depthTestMode );
 		config.SetAmbientLightProbe( isParticle && ! realTranspParticle );
-		config.SetBillboard( shaderConfigInfo.billboard );
 		//config.SetSkinReflections( hasChanTex[ deoglSkinChannel::ectEnvironmentMap ] || ! pSolid || isParticle );
 		
 		if( giMaterial ){
@@ -938,7 +938,6 @@ bool deoglSkinTexture::GetShaderConfigFor( eShaderTypes shaderType, deoglSkinSha
 		}else{
 			config.SetDepthTestMode( shaderConfigInfo.depthTestMode );
 		}
-		config.SetBillboard( shaderConfigInfo.billboard );
 		
 		//config.SetTextureColorTransparency( pSolid && pHasHoles && hasChanTex[ deoglSkinChannel::ectColor ] );
 		config.SetTextureSolidity( pSolid && pHasHoles && hasChanTex[ deoglSkinChannel::ectSolidity ] );
