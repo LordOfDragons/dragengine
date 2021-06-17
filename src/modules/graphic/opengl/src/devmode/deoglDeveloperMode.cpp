@@ -254,6 +254,9 @@ pDebugImageUsed( false )
 	pDebugInfoDetails = edimModule;
 	*/
 	#endif
+// 	pEnabled = true;
+// 	pShowDebugInfo = true;
+// 	pDebugInfoDetails = edimPlanPrepare | edimWorld | edimSolidGeometry | edimTransparency | edimLight | edimLightSky | edimLightPoint | edimLightSpot | edimGI;
 }
 
 deoglDeveloperMode::~deoglDeveloperMode(){

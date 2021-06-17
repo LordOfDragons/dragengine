@@ -182,7 +182,6 @@ bool deoglGIAreaTracker::RejectComponent( const deoglRComponent &component ) con
 	if( component.GetLayerMask().IsNotEmpty() && pLayerMask.MatchesNot( component.GetLayerMask() ) ){
 		return true;
 	}
-	
 	if( ! component.GetModel() || component.GetLODCount() == 0 ){
 		return true;
 	}

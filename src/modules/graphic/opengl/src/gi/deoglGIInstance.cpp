@@ -95,6 +95,8 @@ void deoglGIInstance::cComponentListener::RenderStaticChanged( deoglRComponent& 
 }
 
 void deoglGIInstance::cComponentListener::MovementHintChanged( deoglRComponent& ){
+// 		pInstance.GetInstances().GetGIState().GetRenderThread().GetLogger().LogInfoFormat(
+// 			"GIInstance MovementHintChanged %s (dynamic %d)\n", c.GetModel()->GetFilename().GetString(), pInstance.GetDynamic());
 	ChangeInstance();
 	pInstance.SetRecheckDynamic( true );
 }

@@ -319,6 +319,10 @@ void deoglGIState::ProbesMoved(){
 void deoglGIState::InvalidateArea( const decDVector &minExtend, const decDVector &maxExtend ){
 // 		pRenderThread.GetLogger().LogInfoFormat("InvalidateArea (%g,%g,%g) (%g,%g,%g)",
 // 			minExtend.x, minExtend.y, minExtend.z, maxExtend.x, maxExtend.y, maxExtend.z);
+	if( ! ( maxExtend > minExtend ) ){
+		return;
+	}
+	
 	int i;
 	for( i=0; i<pCascadeCount; i++ ){
 		pCascades[ i ]->InvalidateArea( minExtend, maxExtend );
@@ -326,6 +330,12 @@ void deoglGIState::InvalidateArea( const decDVector &minExtend, const decDVector
 }
 
 void deoglGIState::TouchDynamicArea( const decDVector &minExtend, const decDVector &maxExtend ){
+// 		pRenderThread.GetLogger().LogInfoFormat("TouchDynamicArea (%g,%g,%g) (%g,%g,%g)",
+// 			minExtend.x, minExtend.y, minExtend.z, maxExtend.x, maxExtend.y, maxExtend.z);
+	if( ! ( maxExtend > minExtend ) ){
+		return;
+	}
+	
 	int i;
 	for( i=0; i<pCascadeCount; i++ ){
 		pCascades[ i ]->TouchDynamicArea( minExtend, maxExtend );
