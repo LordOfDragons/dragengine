@@ -982,6 +982,12 @@ void igdeWOSOComponent::pUpdateOutlineComponent(){
 	pOutlineComponent->SetRig( pComponent->GetRig() );
 	pOutlineComponent->SetDynamicSkin( GetWrapper().GetOutlineDynamicSkin() );
 	
+	// there are two possible solutions here. either we use the movement hint from the component
+	// or we use dynamic movement hint. using the dynamic movement avoids triggering updates
+	// of static caches in graphic modules which makes the editor more fluid
+// 	pOutlineComponent->SetHintMovement( pComponent->GetHintMovement() );
+	pOutlineComponent->SetHintMovement( deComponent::emhDynamic );
+	
 	const int textureCount = pComponent->GetTextureCount();
 	int i;
 	for( i=0; i<textureCount; i++ ){
