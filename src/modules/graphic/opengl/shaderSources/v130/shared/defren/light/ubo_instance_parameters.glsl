@@ -12,6 +12,7 @@ UBOLAYOUT uniform InstanceParameters{
 		vec3 pLightView;
 		//vec3 pLightUp; // not used
 		//vec3 pLightRight; // not used
+		float pDepthCompare; // 0=disable, 1=greater, -1=less
 		
 		mat4 pShadowMatrix1;
 		mat4 pShadowMatrix2;

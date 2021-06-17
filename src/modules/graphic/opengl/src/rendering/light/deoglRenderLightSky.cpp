@@ -1389,6 +1389,11 @@ deoglSPBlockUBO &paramBlock, deoglRenderPlanSkyLight &plan, int shadowMapSize, i
 			paramBlock.SetParameterDataMat4x4( target, matrix[ 3 ] );
 		}
 		
+		target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutDepthCompare );
+		if( target != -1 ){
+			paramBlock.SetParameterDataFloat( target, 0.0f );
+		}
+		
 		target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutLayerBorder );
 		if( target != -1 ){
 			paramBlock.SetParameterDataVec4( target, layerBorder[ 0 ], layerBorder[ 1 ],

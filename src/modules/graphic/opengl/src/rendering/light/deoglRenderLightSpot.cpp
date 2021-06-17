@@ -805,9 +805,9 @@ const deoglRenderPlanMasked *mask, deoglCollideListLight &cllight ){
 		SetCullMode( ! plan.GetFlipCulling() );
 		
 	}else{ // cull back faces, depth test
-		// depth testing is not working in opengl if the depth texture is also used as input texture
-		// even if no writing to it is possible.
-		OGL_CHECK( renderThread, glEnable( GL_DEPTH_TEST ) );
+		// opengl can not handle depth depth if depth texture is also assigned for sampling
+		// even if not written to. use shader depth compare instead
+		//OGL_CHECK( renderThread, glEnable( GL_DEPTH_TEST ) );
 		SetCullMode( plan.GetFlipCulling() );
 	}
 	
@@ -882,7 +882,7 @@ const deoglRenderPlanMasked *mask, deoglCollideListLight &cllight ){
 	shadowDepthMaps.shadow2TranspColor = texTranspColor2;
 	shadowDepthMaps.shadow1Ambient = texAmbient1;
 	shadowDepthMaps.shadow2Ambient = texAmbient2;
-	UpdateInstanceParamBlock( *lightShader, *spbInstance, plan, light, shadowDepthMaps, matrixLP );
+	UpdateInstanceParamBlock( *lightShader, *spbInstance, plan, cllight, shadowDepthMaps, matrixLP );
 	
 	GetRenderThread().GetRenderers().GetLight().GetLightPB()->Activate();
 	spbLight->Activate();
@@ -1745,8 +1745,9 @@ deoglSPBlockUBO &paramBlock, deoglRenderPlan &plan, deoglRLight &light ){
 }
 
 void deoglRenderLightSpot::UpdateInstanceParamBlock( deoglLightShader &lightShader,
-deoglSPBlockUBO &paramBlock, deoglRenderPlan &plan, deoglRLight &light,
+deoglSPBlockUBO &paramBlock, deoglRenderPlan &plan, const deoglCollideListLight &cllight,
 sShadowDepthMaps &shadowDepthMaps, const decDMatrix &matrixLP ){
+	deoglRLight &light = *cllight.GetLight();
 	float pixelSize, noiseScale;
 	int target;
 	
@@ -1797,6 +1798,12 @@ sShadowDepthMaps &shadowDepthMaps, const decDMatrix &matrixLP ){
 		target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutLightView );
 		if( target != -1 ){
 			paramBlock.SetParameterDataVec3( target, lview );
+		}
+		
+		target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutDepthCompare );
+		if( target != -1 ){
+			paramBlock.SetParameterDataFloat( target, cllight.GetCameraInside() ? 0.0f
+				: ( GetRenderThread().GetDeferredRendering().GetDepthCompareFuncRegular() == GL_LEQUAL ? 1.0f : -1.0f ) );
 		}
 		
 		target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutShadowMatrix1 );

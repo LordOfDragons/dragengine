@@ -82,6 +82,7 @@ static const char *vInstanceUniformTargetNames[ deoglLightShader::EIUT_COUNT ] =
 	
 	"pLightPosition", // eiutLightPosition
 	"pLightView", // eiutLightView
+	"pDepthCompare", // eiutDepthCompare
 	
 	"pShadowMatrix", // eiutShadowMatrix
 	"pShadowMatrix2", // eiutShadowMatrix2
@@ -134,6 +135,7 @@ static const sSPBParameterDefinition vInstanceSPBParamDefs[ deoglLightShader::EI
 	
 	{ deoglSPBParameter::evtFloat, 3, 1 }, // pLightPosition ( vec3 )
 	{ deoglSPBParameter::evtFloat, 3, 1 }, // pLightView ( vec3 )
+	{ deoglSPBParameter::evtFloat, 1, 1 }, // pDepthCompare ( float )
 	
 	{ deoglSPBParameter::evtFloat, 4, 4 }, // pShadowMatrix ( mat4 )
 	{ deoglSPBParameter::evtFloat, 4, 4 }, // pShadowMatrix2 ( mat4 )
@@ -845,6 +847,7 @@ void deoglLightShader::UpdateUniformTargets(){
 	}else{
 		pInstanceUniformTargets[ eiutLightPosition ] = pUsedInstanceUniformTargetCount++;
 		pInstanceUniformTargets[ eiutLightView ] = pUsedInstanceUniformTargetCount++;
+		pInstanceUniformTargets[ eiutDepthCompare ] = pUsedInstanceUniformTargetCount++;
 		
 		pInstanceUniformTargets[ eiutShadowMatrix1 ] = pUsedInstanceUniformTargetCount++;
 		pInstanceUniformTargets[ eiutShadowMatrix2 ] = pUsedInstanceUniformTargetCount++;

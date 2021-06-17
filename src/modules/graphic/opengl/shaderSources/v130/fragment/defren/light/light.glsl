@@ -682,6 +682,11 @@ void main( void ){
 		#else
 			float depth = texelFetch( texDepth, tc, 0 ).r;
 		#endif
+		
+		if( gl_FragCoord.z * pDepthCompare > depth * pDepthCompare ){
+			discard;
+		}
+		
 		vec3 position = vec3( depth );
 		position.z = pPosTransform.x / ( pPosTransform.y - position.z );
 		#ifdef FULLSCREENQUAD

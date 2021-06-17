@@ -870,11 +870,6 @@ const deoglRenderPlanMasked *mask, deoglCollideListLight &cllight ){
 		}else{
 			DebugTimer2SampleCount( plan, *pDebugInfoTransparentShadow, 1, true );
 		}
-		
-// 	}else{
-// 		// DEBUG DEBUG this should NOT be needed
-// 		RestoreFBO( plan );
-// 		// DEBUG DEBUG this should NOT be needed
 	}
 	
 	if( ! mask && solid ){
@@ -895,8 +890,9 @@ DEBUG_RESET_TIMER
 		SetCullMode( ! plan.GetFlipCulling() );
 		
 	}else{ // cull back faces, depth test
-		OGL_CHECK( renderThread, glEnable( GL_DEPTH_TEST ) );
-		OGL_CHECK( renderThread, glDepthFunc( GL_LEQUAL ) ); // point light uses linear depth
+		// opengl can not handle depth depth if depth texture is also assigned for sampling
+		// even if not written to. use shader depth compare instead
+		//OGL_CHECK( renderThread, glEnable( GL_DEPTH_TEST ) );
 		SetCullMode( plan.GetFlipCulling() );
 	}
 	
@@ -971,7 +967,7 @@ DEBUG_RESET_TIMER
 	shadowDepthMaps.shadow2TranspColor = texTranspColor2;
 	shadowDepthMaps.shadow1Ambient = texAmbient1;
 	shadowDepthMaps.shadow2Ambient = texAmbient2;
-	UpdateInstanceParamBlock( *lightShader, *spbInstance, plan, light, shadowDepthMaps );
+	UpdateInstanceParamBlock( *lightShader, *spbInstance, plan, cllight, shadowDepthMaps );
 	
 	GetRenderThread().GetRenderers().GetLight().GetLightPB()->Activate();
 	spbLight->Activate();
@@ -1306,6 +1302,10 @@ DEBUG_PRINT_TIMER( "Shadow Static" );
 		
 		light.ShadowCasterRequiresPrepare();
 	}
+// 		renderThread.GetLogger().LogInfoFormat("PointLight: shadow=%d static=%d dynamic=%d ubb=%d lvcb=%p",
+// 			shadowType, light.GetStaticCollideList()->GetComponentCount(),
+// 			light.GetDynamicCollideList()->GetComponentCount(), updateBoxBoundary,
+// 			light.GetLightVolumeCropBox());
 	
 	// dynamic shadow map with transparency if required
 	if( shadowType == deoglShadowCaster::estDynamicOnly
@@ -1412,9 +1412,6 @@ DEBUG_RESET_TIMER
 		CalculateBoxBoundary( light );
 DEBUG_PRINT_TIMER( "Boundary Box" );
 	}
-	
-	// activate stencil as we had to disable it for rendering the shadow maps
-	OGL_CHECK( renderThread, glEnable( GL_STENCIL_TEST ) );
 }
 
 
@@ -2070,8 +2067,9 @@ deoglRenderPlan &plan, deoglRLight &light ){
 }
 
 void deoglRenderLightPoint::UpdateInstanceParamBlock( deoglLightShader &lightShader,
-deoglSPBlockUBO &paramBlock, deoglRenderPlan &plan, deoglRLight &light,
+deoglSPBlockUBO &paramBlock, deoglRenderPlan &plan, deoglCollideListLight &cllight,
 sShadowDepthMaps &shadowDepthMaps ){
+	deoglRLight &light = *cllight.GetLight();
 	float noiseScale;
 	int target;
 	
@@ -2105,6 +2103,12 @@ sShadowDepthMaps &shadowDepthMaps ){
 		target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutLightPosition );
 		if( target != -1 ){
 			paramBlock.SetParameterDataVec3( target, matrixMV.GetPosition() );
+		}
+		
+		target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutDepthCompare );
+		if( target != -1 ){
+			paramBlock.SetParameterDataFloat( target, cllight.GetCameraInside() ? 0.0f
+				: ( GetRenderThread().GetDeferredRendering().GetDepthCompareFuncRegular() == GL_LEQUAL ? 1.0f : -1.0f ) );
 		}
 		
 		target = lightShader.GetInstanceUniformTarget( deoglLightShader::eiutShadowMatrix1 );

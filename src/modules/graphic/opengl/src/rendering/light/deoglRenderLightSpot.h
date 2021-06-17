@@ -141,8 +141,8 @@ public:
 	
 	/** \brief Update instance shader parameter block. */
 	void UpdateInstanceParamBlock( deoglLightShader &lightShader, deoglSPBlockUBO &paramBlock,
-		deoglRenderPlan &plan, deoglRLight &light, sShadowDepthMaps &shadowDepthmaps,
-		const decDMatrix &matrixLP );
+		deoglRenderPlan &plan, const deoglCollideListLight &cllight,
+		sShadowDepthMaps &shadowDepthmaps, const decDMatrix &matrixLP );
 	
 	
 	
