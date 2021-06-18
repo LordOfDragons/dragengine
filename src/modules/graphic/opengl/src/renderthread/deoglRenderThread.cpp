@@ -499,6 +499,7 @@ void deoglRenderThread::Run(){
 	DEBUG_SYNC_RT_PASS("out")
 	
 	// render loop
+	pTimerFrameUpdate.Reset();
 	while( true ){
 		// wait for entering synchronize
 		DEBUG_SYNC_RT_WAIT("in")
@@ -521,6 +522,8 @@ void deoglRenderThread::Run(){
 			
 		// render a single frame if ready
 		}else if( pThreadState == etsRendering ){
+			float elapsedRender = 0.0f;
+			
 			try{
 				pTimerRender.Reset();
 				
@@ -528,12 +531,12 @@ void deoglRenderThread::Run(){
 				pThreadFailure = false;
 				DEBUG_SYNC_RT_FAILURE
 				
-				const float elapsed = pTimerRender.GetElapsedTime();
-				pTimeHistoryRender.Add( elapsed );
+				elapsedRender = pTimerRender.GetElapsedTime();
+				pTimeHistoryRender.Add( elapsedRender );
 				//pLogger->LogInfo( decString("TimeHistory Render: ") + pTimeHistoryRender.DebugPrint() );
 // 				pLogger->LogInfoFormat( "RenderThread Elapsed %.1fms (FPS %.1f)", elapsed * 1000.0f, 1.0f / decMath::max( elapsed, 0.001f ) );
 				
-				pLimitFrameRate( elapsed );
+				pLimitFrameRate( elapsedRender );
 				pThreadFailure = false;
 				DEBUG_SYNC_RT_FAILURE
 				
@@ -543,6 +546,14 @@ void deoglRenderThread::Run(){
 				pThreadFailure = true;
 				DEBUG_SYNC_RT_FAILURE
 			}
+			
+			pTimerFrameUpdate.GetElapsedTime();
+			/*
+			const float elapsedFrameUpdate = pTimerFrameUpdate.GetElapsedTime();
+			pLogger->LogInfoFormat( "RenderThread render=%.1fms frameUpdate=%.1fms fps=%.1f",
+				elapsedRender * 1000.0f, elapsedFrameUpdate * 1000.0f,
+				1.0f / decMath::max( elapsedFrameUpdate, 0.001f ) );
+			*/
 			
 		#ifdef ANDROID
 		}else if( pThreadState == etsWindowTerminate ){

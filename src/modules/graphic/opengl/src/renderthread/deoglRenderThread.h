@@ -138,6 +138,7 @@ private:
 	deoglTimeHistory pTimeHistoryRender;
 	decTimer pTimerMain;
 	decTimer pTimerRender;
+	decTimer pTimerFrameUpdate;
 	float pEstimatedRenderTime;
 	float pAccumulatedMainTime;
 	float pFrameTimeLimit;
