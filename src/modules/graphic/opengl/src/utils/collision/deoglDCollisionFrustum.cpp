@@ -41,24 +41,24 @@
 //////////////////////////////
 
 deoglDCollisionFrustum::deoglDCollisionFrustum(){
-	pNormalLeft.Set( 1.0, 0.0, 0.0 );
-	pNormalRight.Set( -1.0, 0.0, 0.0 );
-	pNormalTop.Set( 0.0, -1.0, 0.0 );
-	pNormalBottom.Set( 0.0, 1.0, 0.0 );
-	pNormalNear.Set( 0.0, 0.0, 1.0 );
-	pNormalFar.Set( 0.0, 0.0, -1.0 );
-	pAbsNormalLeft.Set( 1.0, 0.0, 0.0 );
-	pAbsNormalRight.Set( 1.0, 0.0, 0.0 );
-	pAbsNormalTop.Set( 0.0, 1.0, 0.0 );
-	pAbsNormalBottom.Set( 0.0, 1.0, 0.0 );
-	pAbsNormalNear.Set( 0.0, 0.0, 1.0 );
-	pAbsNormalFar.Set( 0.0, 0.0, 1.0 );
-	pDistLeft = 0.0;
-	pDistRight = 0.0;
-	pDistTop = 0.0;
-	pDistBottom = 0.0;
-	pDistNear = 0.0;
-	pDistFar = 0.0;
+	pPlane[ epLeft ].normal.Set( 1.0, 0.0, 0.0 );
+	pPlane[ epRight ].normal.Set( -1.0, 0.0, 0.0 );
+	pPlane[ epTop ].normal.Set( 0.0, -1.0, 0.0 );
+	pPlane[ epBottom ].normal.Set( 0.0, 1.0, 0.0 );
+	pPlane[ epNear ].normal.Set( 0.0, 0.0, 1.0 );
+	pPlane[ epFar ].normal.Set( 0.0, 0.0, -1.0 );
+	pPlane[ epLeft ].absNormal.Set( 1.0, 0.0, 0.0 );
+	pPlane[ epRight ].absNormal.Set( 1.0, 0.0, 0.0 );
+	pPlane[ epTop ].absNormal.Set( 0.0, 1.0, 0.0 );
+	pPlane[ epBottom ].absNormal.Set( 0.0, 1.0, 0.0 );
+	pPlane[ epNear ].absNormal.Set( 0.0, 0.0, 1.0 );
+	pPlane[ epFar ].absNormal.Set( 0.0, 0.0, 1.0 );
+	pPlane[ epLeft ].distance = 0.0;
+	pPlane[ epRight ].distance = 0.0;
+	pPlane[ epTop ].distance = 0.0;
+	pPlane[ epBottom ].distance = 0.0;
+	pPlane[ epNear ].distance = 0.0;
+	pPlane[ epFar ].distance = 0.0;
 }
 
 deoglDCollisionFrustum::~deoglDCollisionFrustum(){
@@ -187,43 +187,24 @@ void deoglDCollisionFrustum::GetEnclosingBox( deoglDCollisionBox *box ){
 //////////////////////////
 
 bool deoglDCollisionFrustum::IsPointInside( const decDVector &point ){
-	return ( pNormalLeft * point >= pDistLeft ) && ( pNormalTop * point >= pDistTop )
-		&& ( pNormalRight * point >= pDistRight ) && ( pNormalBottom * point >= pDistBottom )
-		&& ( pNormalNear * point >= pDistNear ) && ( pNormalFar * point >= pDistFar );
+	int i;
+	for( i=0; i<6; i++ ){
+		if( pPlane[ i ].normal * point < pPlane[ i ].distance ){
+			return false;
+		}
+	}
+	return true;
 }
 
 decDVector deoglDCollisionFrustum::ClosestPointTo( const decDVector &point ){
-	decDVector result = point;
-	double dot;
+	decDVector result( point );
+	int i;
 	
-	dot = pNormalLeft * result - pDistLeft;
-	if( dot < 0.0 ){
-		result -= pNormalLeft * dot;
-	}
-	
-	dot = pNormalTop * result - pDistTop;
-	if( dot < 0.0 ){
-		result -= pNormalTop * dot;
-	}
-	
-	dot = pNormalRight * result - pDistRight;
-	if( dot < 0.0 ){
-		result -= pNormalRight * dot;
-	}
-	
-	dot = pNormalBottom * result - pDistBottom;
-	if( dot < 0.0 ){
-		result -= pNormalBottom * dot;
-	}
-	
-	dot = pNormalNear * result - pDistNear;
-	if( dot < 0.0 ){
-		result -= pNormalNear * dot;
-	}
-	
-	dot = pNormalFar * result - pDistFar;
-	if( dot < 0.0 ){
-		result -= pNormalFar * dot;
+	for( i=0; i<6; i++ ){
+		const double dot = pPlane[ i ].normal * result - pPlane[ i ].distance;
+		if( dot < 0.0 ){
+			result -= pPlane[ i ].normal * dot;
+		}
 	}
 	
 	return result;
@@ -263,124 +244,66 @@ bool deoglDCollisionFrustum::CapsuleHitsFrustum(deoglDCollisionCapsule *capsule)
 }
 
 bool deoglDCollisionFrustum::BoxHitsFrustum(deoglDCollisionBox *box){
-	return BoxHits( box->GetCenter(), box->GetHalfSize() );
+	return BoxHits( box->GetCenter() - box->GetHalfSize(), box->GetCenter() + box->GetHalfSize() );
 }
 
-bool deoglDCollisionFrustum::BoxHits( const decDVector &center, const decDVector &halfExtend ) const{
-	double extend, distance;
+bool deoglDCollisionFrustum::BoxHits( const decDVector &minExtend, const decDVector &maxExtend ) const{
+	int i;
 	
-	// near plane
-	extend = halfExtend.x * pAbsNormalNear.x + halfExtend.y * pAbsNormalNear.y + halfExtend.z * pAbsNormalNear.z;
-	distance = pDistNear - center * pNormalNear;
-	if( distance > extend ){
-		return false;
-	}
-	
-	// far plane
-	extend = halfExtend.x * pAbsNormalFar.x + halfExtend.y * pAbsNormalFar.y + halfExtend.z * pAbsNormalFar.z;
-	distance = pDistFar - center * pNormalFar;
-	if( distance > extend ){
-		return false;
-	}
-	
-	// left plane
-	extend = halfExtend.x * pAbsNormalLeft.x + halfExtend.y * pAbsNormalLeft.y + halfExtend.z * pAbsNormalLeft.z;
-	distance = pDistLeft - center * pNormalLeft;
-	if( distance > extend ){
-		return false;
-	}
-	
-	// right plane
-	extend = halfExtend.x * pAbsNormalRight.x + halfExtend.y * pAbsNormalRight.y + halfExtend.z * pAbsNormalRight.z;
-	distance = pDistRight - center * pNormalRight;
-	if( distance > extend ){
-		return false;
-	}
-	
-	// top plane
-	extend = halfExtend.x * pAbsNormalTop.x + halfExtend.y * pAbsNormalTop.y + halfExtend.z * pAbsNormalTop.z;
-	distance = pDistTop - center * pNormalTop;
-	if( distance > extend ){
-		return false;
-	}
-	
-	// bottom plane
-	extend = halfExtend.x * pAbsNormalBottom.x + halfExtend.y * pAbsNormalBottom.y + halfExtend.z * pAbsNormalBottom.z;
-	distance = pDistBottom - center * pNormalBottom;
-	if( distance > extend ){
-		return false;
-	}
+	for( i=0; i<6; i++ ){ 
+		const decDVector vp(
+			pPlane[ i ].normal.x > 0.0 ? maxExtend.x : minExtend.x,
+			pPlane[ i ].normal.y > 0.0 ? maxExtend.y : minExtend.y,
+			pPlane[ i ].normal.z > 0.0 ? maxExtend.z : minExtend.z );
+		
+		if( pPlane[ i ].normal * vp < pPlane[ i ].distance ){
+			return false;
+		}
+	} 
 	
 	return true;
 }
 
-bool deoglDCollisionFrustum::BoxHitsExtend( const decDVector &minExtend, const decDVector &maxExtend ) const{
-	return BoxHits( ( minExtend + maxExtend ) * 0.5, ( maxExtend - minExtend ) * 0.5 );
-}
-
 deoglDCollisionFrustum::eIntersectType deoglDCollisionFrustum::BoxIntersect(
-const decDVector &center, const decDVector &halfExtend ) const{
+const decDVector &minExtend, const decDVector &maxExtend ) const{
 	eIntersectType intersect = eitInside;
-	double extend, distance;
+	decDVector vn, vp;
+	int i;
 	
-	// near plane
-	extend = halfExtend.x * pAbsNormalNear.x + halfExtend.y * pAbsNormalNear.y + halfExtend.z * pAbsNormalNear.z;
-	distance = pDistNear - center * pNormalNear;
-	if( distance > extend ){
-		return eitOutside;
+	for( i=0; i<6; i++ ){
+		if( pPlane[ i ].normal.x > 0.0 ){
+			vn.x = minExtend.x;
+			vp.x = maxExtend.x;
+			
+		}else{
+			vn.x = maxExtend.x;
+			vp.x = minExtend.x;
+		}
 		
-	}else if( distance > -extend ){
-		intersect = eitIntersect;
-	}
-	
-	// far plane
-	extend = halfExtend.x * pAbsNormalFar.x + halfExtend.y * pAbsNormalFar.y + halfExtend.z * pAbsNormalFar.z;
-	distance = pDistFar - center * pNormalFar;
-	if( distance > extend ){
-		return eitOutside;
+		if( pPlane[ i ].normal.y > 0.0 ){
+			vn.y = minExtend.y;
+			vp.y = maxExtend.y;
+			
+		}else{ 
+			vn.y = maxExtend.y;
+			vp.y = minExtend.y;
+		}
 		
-	}else if( distance > -extend ){
-		intersect = eitIntersect;
-	}
-	
-	// left plane
-	extend = halfExtend.x * pAbsNormalLeft.x + halfExtend.y * pAbsNormalLeft.y + halfExtend.z * pAbsNormalLeft.z;
-	distance = pDistLeft - center * pNormalLeft;
-	if( distance > extend ){
-		return eitOutside;
+		if( pPlane[ i ].normal.z > 0.0 ){
+			vn.z = minExtend.z;
+			vp.z = maxExtend.z;
+			
+		}else{
+			vn.z = maxExtend.z;
+			vp.z = minExtend.z;
+		}
 		
-	}else if( distance > -extend ){
-		intersect = eitIntersect;
-	}
-	
-	// right plane
-	extend = halfExtend.x * pAbsNormalRight.x + halfExtend.y * pAbsNormalRight.y + halfExtend.z * pAbsNormalRight.z;
-	distance = pDistRight - center * pNormalRight;
-	if( distance > extend ){
-		return eitOutside;
-		
-	}else if( distance > -extend ){
-		intersect = eitIntersect;
-	}
-	
-	// top plane
-	extend = halfExtend.x * pAbsNormalTop.x + halfExtend.y * pAbsNormalTop.y + halfExtend.z * pAbsNormalTop.z;
-	distance = pDistTop - center * pNormalTop;
-	if( distance > extend ){
-		return eitOutside;
-		
-	}else if( distance > -extend ){
-		intersect = eitIntersect;
-	}
-	
-	// bottom plane
-	extend = halfExtend.x * pAbsNormalBottom.x + halfExtend.y * pAbsNormalBottom.y + halfExtend.z * pAbsNormalBottom.z;
-	distance = pDistBottom - center * pNormalBottom;
-	if( distance > extend ){
-		return eitOutside;
-		
-	}else if( distance > -extend ){
-		intersect = eitIntersect;
+		if( pPlane[ i ].normal * vp < pPlane[ i ].distance ){
+			return eitOutside;
+			
+		}else if( pPlane[ i ].normal * vn < pPlane[ i ].distance ){
+			intersect = eitIntersect;
+		}
 	}
 	
 	return intersect;
@@ -396,34 +319,34 @@ bool deoglDCollisionFrustum::OrientedBoxHitsFrustum( deoglDCollisionOrientedBox 
 	decDVector boxSize = box->GetHalfSize();
 	double nearDot, farDot;
 	// near plane (wrong)
-	nearDot = boxSize.x * fabs(pNormalNear.x) +
-		boxSize.y * fabs(pNormalNear.y) + boxSize.z * fabs(pNormalNear.z);
-	farDot = boxCenter * pNormalNear + pDistNear;
+	nearDot = boxSize.x * fabs(pPlane[ epNear ].normal.x) +
+		boxSize.y * fabs(pPlane[ epNear ].normal.y) + boxSize.z * fabs(pPlane[ epNear ].normal.z);
+	farDot = boxCenter * pPlane[ epNear ].normal + pPlane[ epNear ].distance;
 	if( nearDot + farDot < 0 ) return false;
 	// far plane (ok)
-	nearDot = boxSize.x * fabs(pNormalFar.x) +
-		boxSize.y * fabs(pNormalFar.y) + boxSize.z * fabs(pNormalFar.z);
-	farDot = boxCenter * pNormalFar + pDistFar;
+	nearDot = boxSize.x * fabs(pPlane[ epFar ].normal.x) +
+		boxSize.y * fabs(pPlane[ epFar ].normal.y) + boxSize.z * fabs(pPlane[ epFar ].normal.z);
+	farDot = boxCenter * pPlane[ epFar ].normal + pPlane[ epFar ].distance;
 	if( nearDot + farDot < 0 ) return false;
 	// left plane (wrong)
-	nearDot = boxSize.x * fabs(pNormalLeft.x) +
-		boxSize.y * fabs(pNormalLeft.y) + boxSize.z * fabs(pNormalLeft.z);
-	farDot = boxCenter * pNormalLeft + pDistLeft;
+	nearDot = boxSize.x * fabs(pPlane[ epLeft ].normal.x) +
+		boxSize.y * fabs(pPlane[ epLeft ].normal.y) + boxSize.z * fabs(pPlane[ epLeft ].normal.z);
+	farDot = boxCenter * pPlane[ epLeft ].normal + pPlane[ epLeft ].distance;
 	if( nearDot + farDot < 0 ) return false;
 	// right plane (wrong)
-	nearDot = boxSize.x * fabs(pNormalRight.x) +
-		boxSize.y * fabs(pNormalRight.y) + boxSize.z * fabs(pNormalRight.z);
-	farDot = boxCenter * pNormalRight + pDistRight;
+	nearDot = boxSize.x * fabs(pPlane[ epRight ].normal.x) +
+		boxSize.y * fabs(pPlane[ epRight ].normal.y) + boxSize.z * fabs(pPlane[ epRight ].normal.z);
+	farDot = boxCenter * pPlane[ epRight ].normal + pPlane[ epRight ].distance;
 	if( nearDot + farDot < 0 ) return false;
 	// top plane (wrong)
-	nearDot = boxSize.x * fabs(pNormalTop.x) +
-		boxSize.y * fabs(pNormalTop.y) + boxSize.z * fabs(pNormalTop.z);
-	farDot = boxCenter * pNormalTop + pDistTop;
+	nearDot = boxSize.x * fabs(pPlane[ epTop ].normal.x) +
+		boxSize.y * fabs(pPlane[ epTop ].normal.y) + boxSize.z * fabs(pPlane[ epTop ].normal.z);
+	farDot = boxCenter * pPlane[ epTop ].normal + pPlane[ epTop ].distance;
 	if( nearDot + farDot < 0 ) return false;
 	// bottom plane (wrong)
-	nearDot = boxSize.x * fabs(pNormalBottom.x) +
-		boxSize.y * fabs(pNormalBottom.y) + boxSize.z * fabs(pNormalBottom.z);
-	farDot = boxCenter * pNormalBottom + pDistBottom;
+	nearDot = boxSize.x * fabs(pPlane[ epBottom ].normal.x) +
+		boxSize.y * fabs(pPlane[ epBottom ].normal.y) + boxSize.z * fabs(pPlane[ epBottom ].normal.z);
+	farDot = boxCenter * pPlane[ epBottom ].normal + pPlane[ epBottom ].distance;
 	if( nearDot + farDot < 0 ) return false;
 	// good
 	return true;
@@ -466,141 +389,141 @@ double deoglDCollisionFrustum::FrustumMoveHitsFrustum( deoglDCollisionFrustum *f
 ///////////////
 
 void deoglDCollisionFrustum::SetLeftPlane(const decDVector &normal, double dist){
-	pNormalLeft = normal;
-	pAbsNormalLeft = normal.Absolute();
-	pDistLeft = dist;
+	pPlane[ epLeft ].normal = normal;
+	pPlane[ epLeft ].absNormal = normal.Absolute();
+	pPlane[ epLeft ].distance = dist;
 }
 
 void deoglDCollisionFrustum::SetRightPlane(const decDVector &normal, double dist){
-	pNormalRight = normal;
-	pAbsNormalRight = normal.Absolute();
-	pDistRight = dist;
+	pPlane[ epRight ].normal = normal;
+	pPlane[ epRight ].absNormal = normal.Absolute();
+	pPlane[ epRight ].distance = dist;
 }
 
 void deoglDCollisionFrustum::SetTopPlane(const decDVector &normal, double dist){
-	pNormalTop = normal;
-	pAbsNormalTop = normal.Absolute();
-	pDistTop = dist;
+	pPlane[ epTop ].normal = normal;
+	pPlane[ epTop ].absNormal = normal.Absolute();
+	pPlane[ epTop ].distance = dist;
 }
 
 void deoglDCollisionFrustum::SetBottomPlane(const decDVector &normal, double dist){
-	pNormalBottom = normal;
-	pAbsNormalBottom = normal.Absolute();
-	pDistBottom = dist;
+	pPlane[ epBottom ].normal = normal;
+	pPlane[ epBottom ].absNormal = normal.Absolute();
+	pPlane[ epBottom ].distance = dist;
 }
 
 void deoglDCollisionFrustum::SetNearPlane(const decDVector &normal, double dist){
-	pNormalNear = normal;
-	pAbsNormalNear = normal.Absolute();
-	pDistNear = dist;
+	pPlane[ epNear ].normal = normal;
+	pPlane[ epNear ].absNormal = normal.Absolute();
+	pPlane[ epNear ].distance = dist;
 }
 
 void deoglDCollisionFrustum::SetFarPlane(const decDVector &normal, double dist){
-	pNormalFar = normal;
-	pAbsNormalFar = normal.Absolute();
-	pDistFar = dist;
+	pPlane[ epFar ].normal = normal;
+	pPlane[ epFar ].absNormal = normal.Absolute();
+	pPlane[ epFar ].distance = dist;
 }
 
 void deoglDCollisionFrustum::SetFrustum(const decDMatrix &mat){
 	double len;
 	// left clipping plane
-	pNormalLeft.Set( mat.a41 + mat.a11, mat.a42 + mat.a12, mat.a43 + mat.a13 );
-	len = pNormalLeft.Length();
-	pNormalLeft /= len;
-	pAbsNormalLeft = pNormalLeft.Absolute();
-	pDistLeft = -( mat.a44 + mat.a14 ) / len;
+	pPlane[ epLeft ].normal.Set( mat.a41 + mat.a11, mat.a42 + mat.a12, mat.a43 + mat.a13 );
+	len = pPlane[ epLeft ].normal.Length();
+	pPlane[ epLeft ].normal /= len;
+	pPlane[ epLeft ].absNormal = pPlane[ epLeft ].normal.Absolute();
+	pPlane[ epLeft ].distance = -( mat.a44 + mat.a14 ) / len;
 	// right clipping plane
-	pNormalRight.Set( mat.a41 - mat.a11, mat.a42 - mat.a12, mat.a43 - mat.a13 );
-	len = pNormalRight.Length();
-	pNormalRight /= len;
-	pAbsNormalRight = pNormalRight.Absolute();
-	pDistRight = -( mat.a44 - mat.a14 ) / len;
+	pPlane[ epRight ].normal.Set( mat.a41 - mat.a11, mat.a42 - mat.a12, mat.a43 - mat.a13 );
+	len = pPlane[ epRight ].normal.Length();
+	pPlane[ epRight ].normal /= len;
+	pPlane[ epRight ].absNormal = pPlane[ epRight ].normal.Absolute();
+	pPlane[ epRight ].distance = -( mat.a44 - mat.a14 ) / len;
 	// top clipping plane
-	pNormalTop.Set( mat.a41 - mat.a21, mat.a42 - mat.a22, mat.a43 - mat.a23 );
-	len = pNormalTop.Length();
-	pNormalTop /= len;
-	pAbsNormalTop = pNormalTop.Absolute();
-	pDistTop = -( mat.a44 - mat.a24 ) / len;
+	pPlane[ epTop ].normal.Set( mat.a41 - mat.a21, mat.a42 - mat.a22, mat.a43 - mat.a23 );
+	len = pPlane[ epTop ].normal.Length();
+	pPlane[ epTop ].normal /= len;
+	pPlane[ epTop ].absNormal = pPlane[ epTop ].normal.Absolute();
+	pPlane[ epTop ].distance = -( mat.a44 - mat.a24 ) / len;
 	// bottom clipping plane
-	pNormalBottom.Set( mat.a41 + mat.a21, mat.a42 + mat.a22, mat.a43 + mat.a23 );
-	len = pNormalBottom.Length();
-	pNormalBottom /= len;
-	pAbsNormalBottom = pNormalBottom.Absolute();
-	pDistBottom = -( mat.a44 + mat.a24 ) / len;
+	pPlane[ epBottom ].normal.Set( mat.a41 + mat.a21, mat.a42 + mat.a22, mat.a43 + mat.a23 );
+	len = pPlane[ epBottom ].normal.Length();
+	pPlane[ epBottom ].normal /= len;
+	pPlane[ epBottom ].absNormal = pPlane[ epBottom ].normal.Absolute();
+	pPlane[ epBottom ].distance = -( mat.a44 + mat.a24 ) / len;
 	// near clipping plane
-	pNormalNear.Set( mat.a41 + mat.a31, mat.a42 + mat.a32, mat.a43 + mat.a33 );
-	len = pNormalNear.Length();
-	pNormalNear /= len;
-	pAbsNormalNear = pNormalNear.Absolute();
-	pDistNear = -( mat.a44 + mat.a34 ) / len;
+	pPlane[ epNear ].normal.Set( mat.a41 + mat.a31, mat.a42 + mat.a32, mat.a43 + mat.a33 );
+	len = pPlane[ epNear ].normal.Length();
+	pPlane[ epNear ].normal /= len;
+	pPlane[ epNear ].absNormal = pPlane[ epNear ].normal.Absolute();
+	pPlane[ epNear ].distance = -( mat.a44 + mat.a34 ) / len;
 	// far clipping plane
-	pNormalFar.Set( mat.a41 - mat.a31, mat.a42 - mat.a32, mat.a43 - mat.a33 );
-	len = pNormalFar.Length();
-	pNormalFar /= len;
-	pAbsNormalFar = pNormalFar.Absolute();
-	pDistFar = -( mat.a44 - mat.a34 ) / len;
+	pPlane[ epFar ].normal.Set( mat.a41 - mat.a31, mat.a42 - mat.a32, mat.a43 - mat.a33 );
+	len = pPlane[ epFar ].normal.Length();
+	pPlane[ epFar ].normal /= len;
+	pPlane[ epFar ].absNormal = pPlane[ epFar ].normal.Absolute();
+	pPlane[ epFar ].distance = -( mat.a44 - mat.a34 ) / len;
 }
 
 void deoglDCollisionFrustum::SetFrustum(const decDVector &origin, const decDVector &r1, const decDVector &r2, const decDVector &r3, const decDVector &r4, double nearDist){
-	pNormalTop = ( r1 - origin ) % ( r1 - r2 );
-	pNormalTop.Normalize();
-	pAbsNormalTop = pNormalTop.Absolute();
-	pDistTop = pNormalTop * origin;
+	pPlane[ epTop ].normal = ( r1 - origin ) % ( r1 - r2 );
+	pPlane[ epTop ].normal.Normalize();
+	pPlane[ epTop ].absNormal = pPlane[ epTop ].normal.Absolute();
+	pPlane[ epTop ].distance = pPlane[ epTop ].normal * origin;
 	
-	pNormalRight = ( r2 - origin ) % ( r2 - r3 );
-	pNormalRight.Normalize();
-	pAbsNormalRight = pNormalRight.Absolute();
-	pDistRight = pNormalRight * origin;
+	pPlane[ epRight ].normal = ( r2 - origin ) % ( r2 - r3 );
+	pPlane[ epRight ].normal.Normalize();
+	pPlane[ epRight ].absNormal = pPlane[ epRight ].normal.Absolute();
+	pPlane[ epRight ].distance = pPlane[ epRight ].normal * origin;
 	
-	pNormalBottom = ( r3 - origin ) % ( r3 - r4 );
-	pNormalBottom.Normalize();
-	pAbsNormalBottom = pNormalBottom.Absolute();
-	pDistBottom = pNormalBottom * origin;
+	pPlane[ epBottom ].normal = ( r3 - origin ) % ( r3 - r4 );
+	pPlane[ epBottom ].normal.Normalize();
+	pPlane[ epBottom ].absNormal = pPlane[ epBottom ].normal.Absolute();
+	pPlane[ epBottom ].distance = pPlane[ epBottom ].normal * origin;
 	
-	pNormalLeft = ( r4 - origin ) % ( r4 - r1 );
-	pNormalLeft.Normalize();
-	pAbsNormalLeft = pNormalLeft.Absolute();
-	pDistLeft = pNormalLeft * origin;
+	pPlane[ epLeft ].normal = ( r4 - origin ) % ( r4 - r1 );
+	pPlane[ epLeft ].normal.Normalize();
+	pPlane[ epLeft ].absNormal = pPlane[ epLeft ].normal.Absolute();
+	pPlane[ epLeft ].distance = pPlane[ epLeft ].normal * origin;
 	
-	pNormalFar = ( r2 - r1 ) % ( r3 - r2 );
-	pNormalFar.Normalize();
-	pAbsNormalFar = pNormalFar.Absolute();
-	pDistFar = pNormalFar * r2;
+	pPlane[ epFar ].normal = ( r2 - r1 ) % ( r3 - r2 );
+	pPlane[ epFar ].normal.Normalize();
+	pPlane[ epFar ].absNormal = pPlane[ epFar ].normal.Absolute();
+	pPlane[ epFar ].distance = pPlane[ epFar ].normal * r2;
 	
-	pNormalNear = -pNormalFar;
-	pAbsNormalNear = pNormalNear.Absolute();
-	pDistNear = pNormalNear * origin + nearDist;
+	pPlane[ epNear ].normal = -pPlane[ epFar ].normal;
+	pPlane[ epNear ].absNormal = pPlane[ epNear ].normal.Absolute();
+	pPlane[ epNear ].distance = pPlane[ epNear ].normal * origin + nearDist;
 }
 
 void deoglDCollisionFrustum::SetFrustumBox(const decDVector &r1, const decDVector &r2, const decDVector &r3, const decDVector &r4, double dist){
-	pNormalTop = r3 - r2;
-	pNormalTop.Normalize();
-	pAbsNormalTop = pNormalTop.Absolute();
-	pDistTop = pNormalTop * r2;
+	pPlane[ epTop ].normal = r3 - r2;
+	pPlane[ epTop ].normal.Normalize();
+	pPlane[ epTop ].absNormal = pPlane[ epTop ].normal.Absolute();
+	pPlane[ epTop ].distance = pPlane[ epTop ].normal * r2;
 	
-	pNormalRight = r4 - r3;
-	pNormalRight.Normalize();
-	pAbsNormalRight = pNormalRight.Absolute();
-	pDistRight = pNormalRight * r3;
+	pPlane[ epRight ].normal = r4 - r3;
+	pPlane[ epRight ].normal.Normalize();
+	pPlane[ epRight ].absNormal = pPlane[ epRight ].normal.Absolute();
+	pPlane[ epRight ].distance = pPlane[ epRight ].normal * r3;
 	
-	pNormalBottom = r1 - r4;
-	pNormalBottom.Normalize();
-	pAbsNormalBottom = pNormalBottom.Absolute();
-	pDistBottom = pNormalBottom * r4;
+	pPlane[ epBottom ].normal = r1 - r4;
+	pPlane[ epBottom ].normal.Normalize();
+	pPlane[ epBottom ].absNormal = pPlane[ epBottom ].normal.Absolute();
+	pPlane[ epBottom ].distance = pPlane[ epBottom ].normal * r4;
 	
-	pNormalLeft = r2 - r1;
-	pNormalLeft.Normalize();
-	pAbsNormalLeft = pNormalLeft.Absolute();
-	pDistLeft = pNormalLeft * r1;
+	pPlane[ epLeft ].normal = r2 - r1;
+	pPlane[ epLeft ].normal.Normalize();
+	pPlane[ epLeft ].absNormal = pPlane[ epLeft ].normal.Absolute();
+	pPlane[ epLeft ].distance = pPlane[ epLeft ].normal * r1;
 	
-	pNormalNear = ( r3 - r2 ) % ( r2 - r1 );
-	pNormalNear.Normalize();
-	pAbsNormalNear = pNormalNear.Absolute();
-	pDistNear = pNormalNear * ( r1 - pNormalNear * dist );
+	pPlane[ epNear ].normal = ( r3 - r2 ) % ( r2 - r1 );
+	pPlane[ epNear ].normal.Normalize();
+	pPlane[ epNear ].absNormal = pPlane[ epNear ].normal.Absolute();
+	pPlane[ epNear ].distance = pPlane[ epNear ].normal * ( r1 - pPlane[ epNear ].normal * dist );
 	
-	pNormalFar = -pNormalNear;
-	pAbsNormalFar = pNormalFar.Absolute();
-	pDistFar = pNormalFar * ( r1 + pNormalNear * dist );
+	pPlane[ epFar ].normal = -pPlane[ epNear ].normal;
+	pPlane[ epFar ].absNormal = pPlane[ epFar ].normal.Absolute();
+	pPlane[ epFar ].distance = pPlane[ epFar ].normal * ( r1 + pPlane[ epNear ].normal * dist );
 }
 
 
@@ -614,27 +537,27 @@ deoglDCollisionFrustum::eIntersectType deoglDCollisionFrustum::IntersectSphere( 
 	double dist;
 	eIntersectType result = eitInside;
 	
-	dist = pNormalLeft * center - pDistLeft;
+	dist = pPlane[ epLeft ].normal * center - pPlane[ epLeft ].distance;
 	if( dist < -radius ) return eitOutside;
 	if( fabs(dist) < radius ) result = eitIntersect;
 	
-	dist = pNormalRight * center - pDistRight;
+	dist = pPlane[ epRight ].normal * center - pPlane[ epRight ].distance;
 	if( dist < -radius ) return eitOutside;
 	if( fabs(dist) < radius ) result = eitIntersect;
 	
-	dist = pNormalTop * center - pDistTop;
+	dist = pPlane[ epTop ].normal * center - pPlane[ epTop ].distance;
 	if( dist < -radius ) return eitOutside;
 	if( fabs(dist) < radius ) result = eitIntersect;
 	
-	dist = pNormalBottom * center - pDistBottom;
+	dist = pPlane[ epBottom ].normal * center - pPlane[ epBottom ].distance;
 	if( dist < -radius ) return eitOutside;
 	if( fabs(dist) < radius ) result = eitIntersect;
 	
-	dist = pNormalNear * center - pDistNear;
+	dist = pPlane[ epNear ].normal * center - pPlane[ epNear ].distance;
 	if( dist < -radius ) return eitOutside;
 	if( fabs(dist) < radius ) result = eitIntersect;
 	
-	dist = pNormalFar * center - pDistFar;
+	dist = pPlane[ epFar ].normal * center - pPlane[ epFar ].distance;
 	if( dist < -radius ) return eitOutside;
 	if( fabs(dist) < radius ) result = eitIntersect;
 	

@@ -240,7 +240,7 @@ public:
 	
 	
 private:
-	deoglWorldOctree *pGetNodeFor( const decDVector &center, const decDVector &halfSize, int maxDepth );
+	deoglWorldOctree *pGetNodeFor( const decDVector &minExtend, const decDVector &maxExtend, int maxDepth );
 	deoglWorldOctree *pGetNodeFor( const decDVector &position, int maxDepth );
 };
 

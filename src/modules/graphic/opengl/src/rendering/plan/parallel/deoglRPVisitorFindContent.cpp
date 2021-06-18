@@ -211,7 +211,7 @@ void deoglRPVisitorFindContent::pVisitNode( const deoglWorldOctree &node, bool i
 			pVisitNode( *child, false );
 			
 		}else{
-			switch( pFrustum->BoxIntersect( child->GetCenter(), child->GetHalfSize() ) ){
+			switch( pFrustum->BoxIntersect( child->GetMinimumExtend(), child->GetMaximumExtend() ) ){
 			case deoglDCollisionFrustum::eitInside:
 				pVisitNode( *child, false );
 				break;
@@ -255,7 +255,7 @@ void deoglRPVisitorFindContent::pVisitComponents( const deoglWorldOctree &node, 
 			// - check against pFrustum*Extend before checking against the frustum volume
 			// - depending on the size of the object use a sphere instead of a box
 			// - maybe use the sphere for the test against the pFrustum*Extend ?
-			if( ! pFrustum->BoxHitsExtend( minExtend, maxExtend ) ){
+			if( ! pFrustum->BoxHits( minExtend, maxExtend ) ){
 				continue;
 			}
 		}
@@ -311,7 +311,7 @@ void deoglRPVisitorFindContent::pVisitBillboards( const deoglWorldOctree &node, 
 			// - check against pFrustum*Extend before checking against the frustum volume
 			// - depending on the size of the object use a sphere instead of a box
 			// - maybe use the sphere for the test against the pFrustum*Extend ?
-			if( ! pFrustum->BoxHitsExtend( minExtend, maxExtend ) ){
+			if( ! pFrustum->BoxHits( minExtend, maxExtend ) ){
 				continue;
 			}
 		}
@@ -370,7 +370,7 @@ void deoglRPVisitorFindContent::pVisitParticleEmitters( const deoglWorldOctree &
 			continue;
 		}
 		
-		if( intersect && ! pFrustum->BoxHitsExtend( instance.GetMinExtend(), instance.GetMaxExtend() ) ){
+		if( intersect && ! pFrustum->BoxHits( instance.GetMinExtend(), instance.GetMaxExtend() ) ){
 			continue;
 		}
 		

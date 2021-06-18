@@ -203,11 +203,14 @@ void deoglRLight::SetOctreeNode( deoglWorldOctree *octreeNode ){
 }
 
 void deoglRLight::UpdateOctreeNode(){
+	// WARNING called from main thread during synchronization
+	
 	if( ! pParentWorld ){
 		return;
 	}
 	
 	if( pActive ){
+		pUpdateExtends(); // required or we might end up in the wrong octree
 		pParentWorld->GetOctree().InsertLightIntoTree( this, 8 );
 		
 	}else{
