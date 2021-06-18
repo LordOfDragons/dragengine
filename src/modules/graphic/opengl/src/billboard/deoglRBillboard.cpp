@@ -178,7 +178,7 @@ void deoglRBillboard::UpdateOctreeNode(){
 	
 	// insert into parent world octree
 	if( pVisible ){
-		pParentWorld->GetOctree().InsertBillboardIntoTree( this, 8 );
+		pParentWorld->GetOctree().InsertBillboardIntoTree( this );
 		
 	}else{
 		if( pOctreeNode ){

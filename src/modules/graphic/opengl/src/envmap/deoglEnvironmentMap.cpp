@@ -198,7 +198,7 @@ void deoglEnvironmentMap::SetPosition( const decDVector &position ){
 void deoglEnvironmentMap::UpdateOctreePosition(){
 	if( pDirtyOctreeNode ){
 		if( ! pSkyOnly && pWorld ){
-			pWorld->GetOctree().InsertEnvMapIntoTree( this, 8 );
+			pWorld->GetOctree().InsertEnvMapIntoTree( this );
 		}
 		
 		pDirtyOctreeNode = false;

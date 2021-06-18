@@ -103,6 +103,8 @@ pNextObjectID( 1 ) // 0 is reserved for invalid or undefined IDs
 	pSky = NULL;
 	pEngMicrophone = NULL;
 	
+	pSize.Set( 1000.0, 1000.0, 1000.0 );
+	pGravity.Set( 0.0f, -9.81f, 0.0f );
 	pHeightTerrain = NULL;
 	pWeather = NULL;
 	
@@ -130,8 +132,8 @@ pNextObjectID( 1 ) // 0 is reserved for invalid or undefined IDs
 		
 		// create world
 		pDEWorld = engine->GetWorldManager()->CreateWorld();
-		//pDEWorld->SetSectorSize( DEPRECATDSize );
-		pDEWorld->SetGravity( decVector( 0.0f, -9.81f, 0.0f ) );
+		pDEWorld->SetSize( pSize );
+		pDEWorld->SetGravity( pGravity );
 		pDEWorld->SetDisableLights( pFullBright );
 		pUpdateAmbientLight();
 		
@@ -506,12 +508,29 @@ void meWorld::RemoveAllNavSpaces(){
 // World Parameters
 /////////////////////
 
-const decVector &meWorld::GetGravity() const{
-	return pDEWorld->GetGravity();
+void meWorld::SetSize( const decDVector &size ){
+	if( ! ( size > decDVector( 1.0, 1.0, 1.0 ) ) ){
+		DETHROW( deeInvalidParam );
+	}
+	if( size.IsEqualTo( pSize ) ){
+		return;
+	}
+	
+	pSize = size;
+	pDEWorld->SetSize( size );
+	
+	NotifyWorldParametersChanged();
 }
 
 void meWorld::SetGravity( const decVector &gravity ){
+	if( gravity.IsEqualTo( pGravity ) ){
+		return;
+	}
+	
+	pGravity = gravity;
 	pDEWorld->SetGravity( gravity );
+	
+	NotifyWorldParametersChanged();
 }
 
 void meWorld::SetFullBright( bool fullBright ){
@@ -832,6 +851,15 @@ void meWorld::RemoveAllNotifiers(){
 }
 
 
+
+void meWorld::NotifyWorldParametersChanged(){
+	int i;
+	for( i=0; i<pNotifierCount; i++ ){
+		pNotifiers[ i ]->WorldParametersChanged( this );
+	}
+	
+	SetChanged( true );
+}
 
 void meWorld::NotifySkyChanged(){
 	int n;

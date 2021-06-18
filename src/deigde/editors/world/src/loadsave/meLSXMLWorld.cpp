@@ -146,12 +146,8 @@ void meLSXMLWorld::pWriteWorld( decXmlWriter &writer, const meWorld &world ){
 	
 	writer.WriteOpeningTag( "world" );
 	
-	const decVector &gravity = world.GetGravity();
-	writer.WriteOpeningTagStart( "gravity" );
-	writer.WriteAttributeFloat( "x", gravity.x );
-	writer.WriteAttributeFloat( "y", gravity.y );
-	writer.WriteAttributeFloat( "z", gravity.z );
-	writer.WriteOpeningTagEnd( true );
+	WriteDVector( writer, "size", world.GetSize() );
+	WriteVector( writer, "gravity", world.GetGravity() );
 	
 	pWriteProperties( writer, world.GetProperties() );
 	

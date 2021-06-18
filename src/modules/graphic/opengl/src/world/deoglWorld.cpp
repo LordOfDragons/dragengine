@@ -81,6 +81,7 @@ pHeightTerrain( NULL ),
 
 pSharedVideoPlayerList( NULL ),
 
+pDirtySize( false ),
 pDirtySkies( true ),
 pDirtyBillboards( true ),
 pDirtyComponents( true ),
@@ -98,7 +99,7 @@ pDirtySky( true ),
 pSyncing( false )
 {
 	try{
-		pRWorld = new deoglRWorld( ogl.GetRenderThread(), world.GetSize() * 0.5 );
+		pRWorld = new deoglRWorld( ogl.GetRenderThread(), world.GetSize() );
 		
 		pSharedVideoPlayerList = new deoglSharedVideoPlayerList( ogl );
 		
@@ -266,6 +267,11 @@ void deoglWorld::SyncToRender(){
 	
 	DEBUG_RESET_TIMERS;
 	try{
+		if( pDirtySize ){
+			pDirtySize = false;
+			pRWorld->SetSize( pWorld.GetSize() );
+		}
+		
 		// should be done better. these situations only require a prepare for render:
 		// - Update called (hence always in regular games)
 		// - Content requires an update (TODO)
@@ -354,6 +360,10 @@ void deoglWorld::RemoveSyncBillboard( deoglBillboard *billboard ){
 
 // Notifications
 //////////////////
+
+void deoglWorld::SizeChanged(){
+	pDirtySize = true;
+}
 
 void deoglWorld::HeightTerrainChanged(){
 	if( pWorld.GetHeightTerrain() ){

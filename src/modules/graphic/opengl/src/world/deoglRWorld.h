@@ -58,6 +58,8 @@ class deoglRWorld : public deObject{
 private:
 	deoglRenderThread &pRenderThread;
 	
+	decDVector pSize;
+	
 	bool pDirtyPrepareForRenderEarly;
 	bool pDirtyPrepareForRender;
 	
@@ -110,7 +112,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render world. */
-	deoglRWorld( deoglRenderThread &renderThread, const decDVector &octreeSize );
+	deoglRWorld( deoglRenderThread &renderThread, const decDVector &size );
 	
 	/** Clean up render camera. */
 	virtual ~deoglRWorld();
@@ -122,6 +124,12 @@ public:
 	/*@{*/
 	/** Render thread. */
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
+	
+	/** Size. */
+	inline const decDVector &GetSize() const{ return pSize; }
+	
+	/** Set size. */
+	void SetSize( const decDVector &size );
 	
 	/** Requires prepare for render. */
 	void RequiresPrepareForRender();
@@ -513,6 +521,8 @@ public:
 private:
 	void pCleanUp();
 	
+	decDVector pSanitizeOctreeSize( const decDVector &size ) const;
+	int pCalcOctreeInsertDepth( const decDVector &size ) const;
 	void pReorderSkies();
 	void pCreateSkyEnvMap();
 	void pFreeSkyEnvMap();

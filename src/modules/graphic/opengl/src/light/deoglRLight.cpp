@@ -211,7 +211,7 @@ void deoglRLight::UpdateOctreeNode(){
 	
 	if( pActive ){
 		pUpdateExtends(); // required or we might end up in the wrong octree
-		pParentWorld->GetOctree().InsertLightIntoTree( this, 8 );
+		pParentWorld->GetOctree().InsertLightIntoTree( this );
 		
 	}else{
 		if( pOctreeNode ){

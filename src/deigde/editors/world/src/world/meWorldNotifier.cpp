@@ -37,6 +37,9 @@ meWorldNotifier::~meWorldNotifier(){ }
 // Notifications
 //////////////////
 
+void meWorldNotifier::WorldParametersChanged( meWorld* ){
+}
+
 void meWorldNotifier::SkyChanged( meWorld* ){
 }
 

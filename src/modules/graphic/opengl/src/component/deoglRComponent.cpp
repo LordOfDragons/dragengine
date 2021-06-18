@@ -263,7 +263,7 @@ void deoglRComponent::UpdateOctreeNode(){
 	
 	// insert into parent world octree
 	if( pVisible && pModel ){
-		pParentWorld->GetOctree().InsertComponentIntoTree( this, 8 );
+		pParentWorld->GetOctree().InsertComponentIntoTree( this );
 		
 		// visit the world for touching lights
 // 			decTimer timer;

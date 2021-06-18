@@ -30,6 +30,8 @@
 #include "../../world/meCamera.h"
 #include "../../world/idgroup/meIDGroup.h"
 #include "../../world/idgroup/meIDGroupList.h"
+#include "../../undosys/properties/world/meUWorldSetSize.h"
+#include "../../undosys/properties/world/meUWorldSetGravity.h"
 #include "../../undosys/properties/world/property/meUWorldAddProperty.h"
 #include "../../undosys/properties/world/property/meUWorldRemoveProperty.h"
 #include "../../undosys/properties/world/property/meUWorldSetProperty.h"
@@ -252,6 +254,25 @@ public:
 	}
 };
 
+
+class cEditSize : public cBaseEditDVectorListener{
+public:
+	cEditSize( meWPWorld &panel ) : cBaseEditDVectorListener( panel ){}
+	
+	virtual igdeUndo * OnChanged( const decDVector &vector, meWorld *world ){
+		return ! world->GetSize().IsEqualTo( vector ) ? new meUWorldSetSize( world, vector ) : NULL;
+	}
+};
+
+
+class cEditGravity : public cBaseEditVectorListener{
+public:
+	cEditGravity( meWPWorld &panel ) : cBaseEditVectorListener( panel ){}
+	
+	virtual igdeUndo * OnChanged( const decVector &vector, meWorld *world ){
+		return ! world->GetGravity().IsEqualTo( vector ) ? new meUWorldSetGravity( world, vector ) : NULL;
+	}
+};
 
 class cEditPFTStartPosition : public cBaseEditDVectorListener{
 public:
@@ -543,6 +564,15 @@ pWorld( NULL )
 	AddChild( content );
 	
 	
+	// parameters
+	helper.GroupBox( content, groupBox, "World Parameters:" );
+	
+	helper.EditDVector( groupBox, "Size", "Size of world in meters where modules can expect content",
+		8, 0, pEditSize, new cEditSize( *this ) );
+	
+	helper.EditVector( groupBox, "Gravity", "World gravity", pEditGravity, new cEditGravity( *this ) );
+	
+	
 	// properties
 	helper.GroupBoxFlow( content, groupBox, "World Properties:", false, false );
 	
@@ -641,9 +671,26 @@ void meWPWorld::SetWorld( meWorld *world ){
 
 
 void meWPWorld::UpdateWorld(){
+	UpdateWorldParameters();
+	UpdatePathFindTestTypeList();
 	UpdatePathFindTest();
 	UpdatePropertyKeys();
 	UpdateProperties();
+}
+
+void meWPWorld::UpdateWorldParameters(){
+	if( pWorld ){
+		pEditSize->SetDVector( pWorld->GetSize() );
+		pEditGravity->SetVector( pWorld->GetGravity() );
+		
+	}else{
+		pEditSize->SetDVector( decDVector( 1000.0, 1000.0, 1000.0 ) );
+		pEditGravity->SetVector( decDVector( 0.0f, -9.81f, 0.0f ) );
+	}
+	
+	const bool enabled = pWorld;
+	pEditSize->SetEnabled( enabled );
+	pEditGravity->SetEnabled( enabled );
 }
 
 void meWPWorld::UpdatePathFindTest(){

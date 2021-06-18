@@ -89,7 +89,7 @@ void deoglRLumimeter::SetOctreeNode( deoglWorldOctree *octreeNode ){
 
 void deoglRLumimeter::UpdateOctreeNode(){
 	if( pParentWorld ){
-		pParentWorld->GetOctree().InsertLumimeterIntoTree( this, 8 );
+		pParentWorld->GetOctree().InsertLumimeterIntoTree( this );
 	}
 }
 

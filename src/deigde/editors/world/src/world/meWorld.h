@@ -100,48 +100,48 @@ class deLogger;
  */
 class meWorld : public igdeEditableEntity{
 public:
-	/** \brief Layer masks for colliders. */
+	/** Layer masks for colliders. */
 	enum eColliderLayerMasks{
-		/** \brief Editing. */
+		/** Editing. */
 		eclmEditing,
 		
-		/** \brief Prop fields. */
+		/** Prop fields. */
 		eclmPropFields,
 		
-		/** \brief Height terrains. */
+		/** Height terrains. */
 		eclmHeightTerrains,
 		
-		/** \brief Objects. */
+		/** Objects. */
 		eclmObjects,
 		
-		/** \brief Decals. */
+		/** Decals. */
 		eclmDecals,
 		
-		/** \brief Wind. */
+		/** Wind. */
 		      eclmForceField,
 		
-		/** \brief AI. */
+		/** AI. */
 		eclmAI,
 		
-		/** \brief Object Shape. */
+		/** Object Shape. */
 		eclmObjectShape,
 		
-		/** \brief Snap point. */
+		/** Snap point. */
 		eclmSnapPoint,
 		
-		/** \brief Particles. */
+		/** Particles. */
 		eclmParticles
 	};
 	
-	/** \brief Layer masks. */
+	/** Layer masks. */
 	enum eLayerMasks {
-		/** \brief Camera view. */
+		/** Camera view. */
 		elmCamera,
 		
-		/** \brief Environment map probes. */
+		/** Environment map probes. */
 		elmEnvMapProbes,
 		
-		/** \brief Audio. */
+		/** Audio. */
 		elmAudio
 	};
 	
@@ -154,6 +154,8 @@ private:
 	deForceField *pEngForceField;
 	float pFFDir;
 	
+	decDVector pSize;
+	decVector pGravity;
 	meHeightTerrain *pHeightTerrain;
 	
 	meObjectList pObjects;
@@ -217,7 +219,7 @@ public:
 	inline deWorld *GetEngineWorld() const{ return pDEWorld; }
 	/** Retrieves the sky wrapper. */
 	inline igdeWSky *GetSky() const{ return pSky; }
-	/** \brief Retrieves the microphone. */
+	/** Retrieves the microphone. */
 	inline deMicrophone *GetMicrophone() const{ return pEngMicrophone; }
 	
 	/** Retrieves the height terrain. */
@@ -233,19 +235,19 @@ public:
 	inline igdeTriggerExpressionParser &GetTriggerExpressionParser(){ return pTriggerExpressionParser; }
 	inline const igdeTriggerExpressionParser &GetTriggerExpressionParser() const{ return pTriggerExpressionParser; }
 	
-	/** \brief Identifier group list. */
+	/** Identifier group list. */
 	inline meIDGroupList &GetIDGroupList(){ return pIDGroupList; }
 	inline const meIDGroupList &GetIDGroupList() const{ return pIDGroupList; }
 	
 	
 	
-	/** \brief Next object ID. */
+	/** Next object ID. */
 	inline const decUniqueID &GetNextObjectID() const { return pNextObjectID; }
 	
-	/** \brief Set next object ID. */
+	/** Set next object ID. */
 	void SetNextObjectID( const decUniqueID &id );
 	
-	/** \brief Next object ID and increment. */
+	/** Next object ID and increment. */
 	decUniqueID NextObjectID();
 	
 	
@@ -276,7 +278,7 @@ public:
 	/** Sets if a world dependency has changed. */
 	void SetDepChanged( bool changed );
 	
-	/** \brief World changed or world dependency changed. */
+	/** World changed or world dependency changed. */
 	inline bool GetAnyChanged() const{ return GetChanged() || pDepChanged; }
 	
 	/** Checks the changed state of all sectors adjusting the world changed state. */
@@ -289,13 +291,13 @@ public:
 	/** Clears vegetation. */
 	void ClearVegetation();
 	
-	/** \brief Element mode changed. */
+	/** Element mode changed. */
 	void ElementModeChanged();
 	
-	/** \brief Element visibility changed. */
+	/** Element visibility changed. */
 	void ElementVisibilityChanged();
 	
-	/** \brief Clear scaling of non-scaled elements. */
+	/** Clear scaling of non-scaled elements. */
 	void ClearScalingOfNonScaledElements();
 	
 	/** Retrieves the editing object shape list. */
@@ -307,25 +309,25 @@ public:
 	
 	/** \name Objects */
 	/*@{*/
-	/** \brief List of objects. */
+	/** List of objects. */
 	inline const meObjectList &GetObjects() const{ return pObjects; }
 	
-	/** \brief Add object. */
+	/** Add object. */
 	void AddObject( meObject *object );
 	
-	/** \brief Remove object. */
+	/** Remove object. */
 	void RemoveObject( meObject *object );
 	
-	/** \brief Remove all objects. */
+	/** Remove all objects. */
 	void RemoveAllObjects();
 	
-	/** \brief Reassin object identifiers. */
+	/** Reassin object identifiers. */
 	void ReassignObjectIDs();
 	
-	/** \brief Object by ID or \em NULL if absent. */
+	/** Object by ID or \em NULL if absent. */
 	meObject *GetObjectWithID( const decUniqueID &id ) const;
 	
-	/** \brief Object by ID in hex format or \em NULL if absent. */
+	/** Object by ID in hex format or \em NULL if absent. */
 	meObject *GetObjectWithID( const char *hexID ) const;
 	/*@}*/
 	
@@ -333,16 +335,16 @@ public:
 	
 	/** \name Decals */
 	/*@{*/
-	/** \brief List of decals. */
+	/** List of decals. */
 	inline const meDecalList &GetDecals() const{ return pDecals; }
 	
-	/** \brief Add decal. */
+	/** Add decal. */
 	void AddDecal( meDecal *decal );
 	
-	/** \brief Remove decal. */
+	/** Remove decal. */
 	void RemoveDecal( meDecal *decal );
 	
-	/** \brief Remove all decals. */
+	/** Remove all decals. */
 	void RemoveAllDecals();
 	/*@}*/
 	
@@ -350,16 +352,16 @@ public:
 	
 	/** \name Navigation Spaces */
 	/*@{*/
-	/** \brief List of navigation spaces. */
+	/** List of navigation spaces. */
 	inline const meNavigationSpaceList &GetNavSpaces() const{ return pNavSpaces; }
 	
-	/** \brief Add navigation space. */
+	/** Add navigation space. */
 	void AddNavSpace( meNavigationSpace *navspace );
 	
-	/** \brief Remove navigation space. */
+	/** Remove navigation space. */
 	void RemoveNavSpace( meNavigationSpace *navspace );
 	
-	/** \brief Remove all navigation spaces. */
+	/** Remove all navigation spaces. */
 	void RemoveAllNavSpaces();
 	/*@}*/
 	
@@ -367,10 +369,19 @@ public:
 	
 	/** @name World Parameters */
 	/*@{*/
-	/** Retrieves the world gravity vector. */
-	const decVector &GetGravity() const;
-	/** Sets the world gravity vector. */
+	
+	/** Size of world in meters. */
+	inline const decDVector &GetSize() const{ return pSize; }
+	
+	/** Set size of world in meters. */
+	void SetSize( const decDVector &size );
+	
+	/** World gravity. */
+	inline const decVector &GetGravity() const{ return pGravity; }
+	
+	/** Set world gravity. */
 	void SetGravity( const decVector &gravity );
+	
 	/** Determines if the world is rendered in full bright mode. */
 	inline bool GetFullBright() const{ return pFullBright; }
 	/** Sets if the world is rendered in full bright mode. */
@@ -381,25 +392,25 @@ public:
 	
 	/** \name Properties */
 	/*@{*/
-	/** \brief Properties. */
+	/** Properties. */
 	inline const decStringDictionary &GetProperties() const{ return pProperties; }
 	
-	/** \brief Set property. */
+	/** Set property. */
 	void SetProperty( const char *key, const char *value );
 	
-	/** \brief Set properties. */
+	/** Set properties. */
 	void SetProperties( const decStringDictionary &properties );
 	
-	/** \brief Remove property if present. */
+	/** Remove property if present. */
 	void RemoveProperty( const char *key );
 	
-	/** \brief Removes all properties. */
+	/** Removes all properties. */
 	void RemoveAllProperties();
 	
-	/** \brief Active property. */
+	/** Active property. */
 	inline const decString &GetActiveProperty() const{ return pActiveProperty; }
 	
-	/** \brief Set active property. */
+	/** Set active property. */
 	void SetActiveProperty( const char *property );
 	/*@}*/
 	
@@ -445,18 +456,18 @@ public:
 	/*@{*/
 	/** Retrieves the path find test. */
 	inline mePathFindTest *GetPathFindTest() const{ return pPathFindTest; }
-	/** \brief Retrieves the last path used for loading/saving navigation test files. */
+	/** Retrieves the last path used for loading/saving navigation test files. */
 	inline const decString &GetPathNavTest() const{ return pPathNavTest; }
-	/** \brief Sets the last path used for loading/saving navigation test files. */
+	/** Sets the last path used for loading/saving navigation test files. */
 	void SetPathNavTest( const char *path );
 	/*@}*/
 	
-	/** \brief Activate microphone. */
+	/** Activate microphone. */
 	void ActivateMicrophone();
 	
 	void UpdateDEWorld( float elapsed );
 	
-	/** \brief Game definition. */
+	/** Game definition. */
 	void GameDefChanged();
 	
 	/** @name Notifiers */
@@ -475,6 +486,9 @@ public:
 	void RemoveNotifier( meWorldNotifier *notifier );
 	/** Removes all notifiers. */
 	void RemoveAllNotifiers();
+	
+	/** Notify world parameters changed. */
+	void NotifyWorldParametersChanged();
 	
 	/** Notifies all that the sky changed. */
 	void NotifySkyChanged();
@@ -503,10 +517,10 @@ public:
 	/** Notifies all that the class (partial) hide tags changed. */
 	void NotifyClassHideTagsChanged();
 	
-	/** \brief Notify all world changed properties. */
+	/** Notify all world changed properties. */
 	void NotifyPropertiesChanged();
 	
-	/** \brief Notify all world active property changed. */
+	/** Notify all world active property changed. */
 	void NotifyActivePropertyChanged();
 	
 	/** Notifies all that a height terrain sector state ( changed, saved, filename ) changed. */
@@ -528,28 +542,28 @@ public:
 	/** Notifies all that a height terrain sector texture mask changed. */
 	void NotifyHTSTextureMaskChanged( meHeightTerrainSector *sector, meHeightTerrainTexture *texture );
 	
-	/** \brief Notify listener height terrain navigation space count changed. */
+	/** Notify listener height terrain navigation space count changed. */
 	void NotifyHTNavSpaceCountChanged();
 	
-	/** \brief Notify listeners height terrain active navigation space changed. */
+	/** Notify listeners height terrain active navigation space changed. */
 	void NotifyHTActiveNavSpaceChanged();
 	
-	/** \brief Notify listeners height terrain navigation space changed. */
+	/** Notify listeners height terrain navigation space changed. */
 	void NotifyHTNavSpaceChanged( meHeightTerrainNavSpace *navspace );
 	
-	/** \brief Height terrain navigation space type count changed. */
+	/** Height terrain navigation space type count changed. */
 	void NotifyHTNavSpaceTypeCountChanged( meHeightTerrainNavSpace *navspace );
 	
-	/** \brief Height terrain navigation space active type changed. */
+	/** Height terrain navigation space active type changed. */
 	void NotifyHTNavSpaceActiveTypeChanged( meHeightTerrainNavSpace *navspace );
 	
-	/** \brief Notify listeners height terrain navigation space type changed. */
+	/** Notify listeners height terrain navigation space type changed. */
 	void NotifyHTNavSpaceTypeChanged( meHeightTerrainNavSpace *navspace, meHeightTerrainNavSpaceType *type );
 	
-	/** \brief Notify listeners height terrain navigation space faces changed. */
+	/** Notify listeners height terrain navigation space faces changed. */
 	void NotifyHTNavSpaceFacesChanged( meHeightTerrainNavSpace *navspace );
 	
-	/** \brief Height terrain selected navigation space points changed. */
+	/** Height terrain selected navigation space points changed. */
 	void NotifyHTNavSpaceSelectedPointsChanged();
 	
 	/** Notifies all that a height terrain sector prop field count changed. */

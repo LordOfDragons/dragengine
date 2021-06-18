@@ -40,7 +40,7 @@ class mePathFindTestType;
 
 
 /**
- * \brief Property window displaying the properties of the world.
+ * Property window displaying the properties of the world.
  */
 class meWPWorld : public igdeContainerScroll{
 private:
@@ -54,6 +54,9 @@ private:
 	
 	
 	igdeWidgetReference pEditProperties;
+	
+	igdeEditDVectorReference pEditSize;
+	igdeEditVectorReference pEditGravity;
 	
 	igdeEditDVectorReference pEditPFTStartPosition;
 	igdeButtonReference pBtnPFTStartPosFromCamera;
@@ -75,11 +78,11 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create panel. */
+	/** Create panel. */
 	meWPWorld( meWindowProperties &windowProperties );
 	
 protected:
-	/** \brief Clean up . */
+	/** Clean up . */
 	virtual ~meWPWorld();
 	
 	
@@ -87,53 +90,56 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Properties window. */
+	/** Properties window. */
 	inline meWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
-	/** \brief World. */
+	/** World. */
 	inline meWorld *GetWorld() const{ return pWorld; }
 	
-	/** \brief Set world. */
+	/** Set world. */
 	void SetWorld( meWorld *world );
 	
-	/** \brief Update world. */
+	/** Update world. */
 	void UpdateWorld();
 	
-	/** \brief Update path find test. */
+	/** Update world parameters. */
+	void UpdateWorldParameters();
+	
+	/** Update path find test. */
 	void UpdatePathFindTest();
 	
-	/** \brief Active path find test type or NULL if there is none. */
+	/** Active path find test type or NULL if there is none. */
 	mePathFindTestType *GetActivePathFindTestType() const;
 	
-	/** \brief Update path find test type list. */
+	/** Update path find test type list. */
 	void UpdatePathFindTestTypeList();
 	
-	/** \brief Update path find test type. */
+	/** Update path find test type. */
 	void UpdatePathFindTestType();
 	
 	
 	
-	/** \brief Active property or an empty string if there is none. */
+	/** Active property or an empty string if there is none. */
 	const decString &GetActiveProperty() const;
 	
-	/** \brief Select active property. */
+	/** Select active property. */
 	void SelectActiveProperty();
 	
-	/** \brief Update property keys. */
+	/** Update property keys. */
 	void UpdatePropertyKeys();
 	
-	/** \brief Update properties. */
+	/** Update properties. */
 	void UpdateProperties();
 	
-	/** \brief Update identifier list. */
+	/** Update identifier list. */
 	void UpdateIdentifierLists();
 	
-	/** \brief Select PFType. */
+	/** Select PFType. */
 	void SelectPFType( mePathFindTestType *type );
 	
 	
 	
-	/** \brief Game project game definition changed. */
+	/** Game project game definition changed. */
 	void OnGameDefinitionChanged();
 	
 	

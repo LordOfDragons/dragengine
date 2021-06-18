@@ -55,8 +55,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglRWorld::deoglRWorld( deoglRenderThread &renderThread, const decDVector &octreeSize ) :
+deoglRWorld::deoglRWorld( deoglRenderThread &renderThread, const decDVector &size ) :
 pRenderThread( renderThread ),
+
+pSize( size ),
 
 pDirtyPrepareForRenderEarly( true ),
 pDirtyPrepareForRender( true ),
@@ -86,7 +88,13 @@ pDirtyEnvMapLayout( false ),
 pOctree( NULL )
 {
 	try{
-		pOctree = new deoglWorldOctree( decDVector(), octreeSize );
+		const decDVector octreeSize( pSanitizeOctreeSize( size ) );
+		const int insertDepth = pCalcOctreeInsertDepth( octreeSize );
+		
+		renderThread.GetLogger().LogInfoFormat( "World: size=(%g,%g,%g) octree=(%g,%g,%g) insdepth=%d",
+			size.x, size.y, size.z, octreeSize.x, octreeSize.y, octreeSize.z, insertDepth );
+		
+		pOctree = new deoglWorldOctree( decDVector(), octreeSize * 0.5, insertDepth );
 		
 		pEnvMapRenderPlan = new deoglRenderPlan( renderThread );
 		pEnvMapRenderPlan->SetWorld( this );
@@ -110,6 +118,58 @@ deoglRWorld::~deoglRWorld(){
 
 // Management
 ///////////////
+
+void deoglRWorld::SetSize( const decDVector &size ){
+	if( size.IsEqualTo( pSize ) ){
+		return;
+	}
+	
+	pSize = size;
+	
+	const decDVector octreeSize( pSanitizeOctreeSize( size ) );
+	const int insertDepth = pCalcOctreeInsertDepth( octreeSize );
+	int i, count;
+	
+	pRenderThread.GetLogger().LogInfoFormat( "World.SetSize: size=(%g,%g,%g) octree=(%g,%g,%g) insdepth=%d",
+		size.x, size.y, size.z, octreeSize.x, octreeSize.y, octreeSize.z, insertDepth );
+	
+	pOctree->ClearTree( true ); // required since deoglWorldOctree does not do it
+	delete pOctree;
+	pOctree = NULL;
+	
+	pOctree = new deoglWorldOctree( decDVector(), octreeSize * 0.5, insertDepth );
+	
+	deoglRBillboard *billboard = pRootBillboard;
+	while( billboard ){
+		billboard->UpdateOctreeNode();
+		billboard = billboard->GetLLWorldNext();
+	}
+	
+	deoglRComponent *component = pRootComponent;
+	while( component ){
+		component->UpdateOctreeNode();
+		component = component->GetLLWorldNext();
+	}
+	
+	for( i=0; i<pEnvMapUpdateCount; i++ ){
+		( ( deoglREnvMapProbe* )pEnvMapProbes.GetAt( i ) )->GetEnvironmentMap()->UpdateOctreePosition();
+	}
+	
+	count = pLights.GetCount();
+	for( i=0; i<count; i++ ){
+		( ( deoglRLight* )pLights.GetAt( i ) )->UpdateOctreeNode();
+	}
+	
+	count = pParticleEmitterInstances.GetCount();
+	for( i=0; i<count; i++ ){
+		( ( deoglRParticleEmitterInstance* )pParticleEmitterInstances.GetAt( i ) )->UpdateOctreeNode();
+	}
+	
+	count = pLumimeters.GetCount();
+	for( i=0; i<count; i++ ){
+		( ( deoglRLumimeter* )pLumimeters.GetAt( i ) )->UpdateOctreeNode();
+	}
+}
 
 void deoglRWorld::RequiresPrepareForRender(){
 	pDirtyPrepareForRenderEarly = true;
@@ -1374,6 +1434,28 @@ void deoglRWorld::pCleanUp(){
 }
 
 
+
+decDVector deoglRWorld::pSanitizeOctreeSize( const decDVector &size ) const{
+	// ensure octree size along each axis does not deverge from the other axes too much.
+	// this is especially required for the height. developers can set the world size
+	// broad but not very tall which is allows but not so good for octrees. they work
+	// best with square size. if the nodes are too squashed they can not contain objects
+	// that well causing those objects to bubble up into larger nodes. a ratio of 1:2 is
+	// good enough but below can be problematic
+	const double largest = decMath::max( size.x, size.y, size.z );
+	const double smallest = largest * 0.5;
+	return size.Largest( decDVector( smallest, smallest, smallest ) );
+}
+
+int deoglRWorld::pCalcOctreeInsertDepth( const decDVector &size ) const{
+	// for a world size of 1km a depth of 8 seems adequate. in this configuration
+	// the smallest node has a size of rougly 4m (more precisely 3.90625). this is
+	// used as base configuration. for every power of two larger the insertion depth
+	// is increased by one. this can be done using a logarithm calculation. the log2
+	// of 1000 is roughly 9.96 . hence ceil(log2(max(size)))-2 is reasonable but not
+	// less than 4
+	return decMath::max( ( int )ceilf( log2( decMath::max( size.x, size.y, size.z ) ) ) - 2, 4 );
+}
 
 void deoglRWorld::pReorderSkies(){
 	const int count = pSkies.GetCount();

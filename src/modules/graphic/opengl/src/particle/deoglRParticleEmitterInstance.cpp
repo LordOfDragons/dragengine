@@ -212,7 +212,7 @@ void deoglRParticleEmitterInstance::SetOctreeNode( deoglWorldOctree *node ){
 void deoglRParticleEmitterInstance::UpdateOctreeNode(){
 	if( pParentWorld ){
 		//if( pParticleEmitter->GetVisible() ){
-			pParentWorld->GetOctree().InsertParticleEmitterIntoTree( this, 8 );
+			pParentWorld->GetOctree().InsertParticleEmitterIntoTree( this );
 			
 		/*}else{
 			if( pOctreeNode ){

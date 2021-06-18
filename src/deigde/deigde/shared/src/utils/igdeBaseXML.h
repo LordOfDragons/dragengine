@@ -116,6 +116,9 @@ protected:
 	 */
 	decString ReadMultilineString( const decXmlElementTag &tag );
 	
+	/** \brief Read double vector. */
+	void ReadDVector( const decXmlElementTag &tag, decDVector &vector );
+	
 	/** \brief Read vector. */
 	void ReadVector( const decXmlElementTag &tag, decVector &vector );
 	
@@ -147,6 +150,9 @@ protected:
 	
 	/** \brief Write multi-line string. */
 	void WriteTextMultilineString( decXmlWriter &writer, const char *string );
+	
+	/** \brief Write double vector. */
+	void WriteDVector( decXmlWriter &writer, const char *name, const decDVector &vector );
 	
 	/** \brief Write vector. */
 	void WriteVector( decXmlWriter &writer, const char *name, const decVector &vector );

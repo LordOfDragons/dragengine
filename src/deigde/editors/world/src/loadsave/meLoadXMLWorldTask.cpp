@@ -166,7 +166,11 @@ bool meLoadXMLWorldTask::Step(){
 			continue;
 		}
 		
-		if( tag->GetName() == "gravity" ){
+		if( tag->GetName() == "size" ){
+			pWorld->SetSize( decDVector( GetAttributeDouble( *tag, "x" ),
+				GetAttributeDouble( *tag, "y" ), GetAttributeDouble( *tag, "z" ) ) );
+			
+		}else if( tag->GetName() == "gravity" ){
 			pWorld->SetGravity( decVector( GetAttributeFloat( *tag, "x" ),
 				GetAttributeFloat( *tag, "y" ), GetAttributeFloat( *tag, "z" ) ) );
 			
