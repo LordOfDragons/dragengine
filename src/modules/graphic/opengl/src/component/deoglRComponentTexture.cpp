@@ -509,11 +509,11 @@ void deoglRComponentTexture::PrepareParamBlocks(){
 			for( i=0; i<count; i++ ){
 				deoglModelLOD &modelLod = model.GetLODAt( i );
 				deoglSharedSPBRTIGroupList &list = modelLod.GetSharedSPBRTIGroupListAt( pIndex );
-				deoglSharedSPBRTIGroup *group = list.GetWith( spb );
+				group.TakeOver( list.GetWith( spb ) );
 				
 				if( ! group ){
-					group = list.AddWith( spb );
-					group->GetRTSInstance()->SetSubInstanceSPB( &spb );
+					group.TakeOver( list.AddWith( spb ) );
+					( ( deoglSharedSPBRTIGroup& )( deObject& )group ).GetRTSInstance()->SetSubInstanceSPB( &spb );
 				}
 				
 				pSharedSPBRTIGroup.Add( group );
@@ -530,11 +530,11 @@ void deoglRComponentTexture::PrepareParamBlocks(){
 					
 					deoglModelLOD &modelLod = model.GetLODAt( i );
 					deoglSharedSPBRTIGroupList &list = modelLod.GetSharedSPBRTIGroupListAt( pIndex );
-					deoglSharedSPBRTIGroup *group = list.GetWith( spb, combineCount );
+					group.TakeOver( list.GetWith( spb, combineCount ) );
 					
 					if( ! group ){
-						group = list.AddWith( spb, combineCount );
-						group->GetRTSInstance()->SetSubInstanceSPB( &spb );
+						group.TakeOver( list.AddWith( spb, combineCount ) );
+						( ( deoglSharedSPBRTIGroup& )( deObject& )group ).GetRTSInstance()->SetSubInstanceSPB( &spb );
 					}
 					
 					pSharedSPBRTIGroupShadow.Add( group );

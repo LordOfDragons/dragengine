@@ -403,6 +403,7 @@ void deoglGIState::pCleanUp(){
 		for( i=0; i<pCascadeCount; i++ ){
 			delete pCascades[ i ];
 		}
+		delete [] pCascades;
 	}
 	if( pCascaceUpdateCycle ){
 		delete [] pCascaceUpdateCycle;

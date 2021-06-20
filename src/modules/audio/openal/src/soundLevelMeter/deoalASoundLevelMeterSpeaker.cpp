@@ -68,6 +68,9 @@ deoalASoundLevelMeterSpeaker::~deoalASoundLevelMeterSpeaker(){
 	if( pEnvProbe ){
 		delete pEnvProbe;
 	}
+	if( pListener ){
+		delete pListener;
+	}
 }
 
 

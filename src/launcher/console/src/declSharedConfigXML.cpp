@@ -368,8 +368,6 @@ void declSharedConfigXML::pReadProfileModule( const decXmlElementTag &root, decl
 	
 	try{
 		module = new declGPModule;
-		if( ! module ) DETHROW( deeOutOfMemory );
-		
 		module->SetName( moduleName );
 		
 		for( e=0; e<elementCount; e++ ){
