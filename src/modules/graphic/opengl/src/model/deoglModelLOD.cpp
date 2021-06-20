@@ -758,8 +758,16 @@ void deoglModelLOD::PrepareGILocalBVH(){
 	}
 	
 	deoglBVH::sBuildPrimitive *primitives = NULL;
+	bool disable = false;
 	
-	if( pFaceCount > 0 ){
+	if( pFaceCount > 10000 ){
+		pModel.GetRenderThread().GetLogger().LogWarnFormat(
+			"Model(%s,%i): Very high face count (%d). Disable model to not slow down global illumination.",
+			pModel.GetFilename().GetString(), pLODIndex, pFaceCount );
+		disable = true;
+	}
+	
+	if( pFaceCount > 0 && ! disable ){
 		primitives = new deoglBVH::sBuildPrimitive[ pFaceCount ];
 		int i;
 		
