@@ -43,12 +43,11 @@ pin Dragengine.Utils
  * \code{.ds}
  * class MyElement extends BehaviorElementClass
  *    public func new()
- *       ECBehaviorComponent.new(this)
- *       ECBehaviorDynamicSkin.new(this)
+ *       var ECBehaviorComponent component = ECBehaviorComponent.new(this)
+ *       ECBehaviorDynamicSkin.new(this, component)
  *       
- *       ECBehaviorComponent.new(this, "subComponent")
- *       var ECBehaviorDynamicSkin dynamicSkin = ECBehaviorDynamicSkin.new(this, "subDynamicSkin")
- *       dynamicSkin.setComponentID("subComponent")
+ *       var ECBehaviorComponent subComponent = ECBehaviorComponent.new(this, "subComponent")
+ *       ECBehaviorDynamicSkin.new(this, subComponent)
  *    end
  * end
  * \endcode
