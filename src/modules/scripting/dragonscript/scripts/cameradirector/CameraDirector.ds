@@ -80,7 +80,7 @@ class CameraDirector
 	public func new()
 		this.pFov = fovFirstPerson
 		this.pExposure = 1
-		this.pLowestIntensity = 10
+		this.pLowestIntensity = 1
 		this.pHighestIntensity = 20
 		this.pAdaptionTime = 0.1
 		this.pViewDistance = 200
