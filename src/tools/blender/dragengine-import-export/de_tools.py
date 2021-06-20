@@ -261,13 +261,28 @@ class VIEW3D_PT_Dragengine(bpy.types.Panel):
 		col = layout.column(align=True)
 		row = col.row(align=True)
 		row.operator(operator="dragengine.shapropfromtex", text="Shape Prop from Tex")
-	
+		
+		# export
+		layout.row(align=True).label(text="Export:")
+		col = layout.column(align=True)
+		row = col.row(align=True)
+		row.operator(operator="dragengine.export_model", text="Model")
+		row.operator(operator="dragengine.export_rig", text="Rig")
+		row.operator(operator="dragengine.export_occmesh", text="OccMesh")
+		row.operator(operator="dragengine.export_navspace", text="NavMesh")
+		
 	def drawArmatureTools(self, object):
 		layout = self.layout
 		row = layout.row(align=True)
 		row.operator(operator="dragengine.mirroranimation", text="Mirror Animation")
 		row = layout.row(align=True)
 		row.operator(operator="dragengine.fixactiongroups", text="Fix Action Groups")
+		
+		# export
+		layout.row(align=True).label(text="Export:")
+		col = layout.column(align=True)
+		row = col.row(align=True)
+		row.operator(operator="dragengine.export_animation", text="Animation")
 	
 	def drawCommonTools(self, context):
 		layout = self.layout
@@ -275,6 +290,7 @@ class VIEW3D_PT_Dragengine(bpy.types.Panel):
 		col = layout.column(align=True)
 		row = col.row(align=True)
 		row.operator(operator="dragengine.eclassproperty", text="Property Text")
+
 registerClass(VIEW3D_PT_Dragengine)
 
 
