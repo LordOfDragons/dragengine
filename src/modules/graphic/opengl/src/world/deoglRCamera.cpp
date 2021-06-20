@@ -100,6 +100,8 @@ void deoglRCamera::SetParentWorld( deoglRWorld *parentWorld ){
 		return;
 	}
 	
+	pPlan->SetWorld( NULL ); // has to come first since SetWorld accesses previous world
+	
 	if( pParentWorld ){
 		pParentWorld->FreeReference();
 	}
@@ -108,11 +110,9 @@ void deoglRCamera::SetParentWorld( deoglRWorld *parentWorld ){
 	
 	if( parentWorld ){
 		parentWorld->AddReference();
-		pPlan->SetWorld( parentWorld );
-		
-	}else{
-		pPlan->SetWorld( NULL );
 	}
+	
+	pPlan->SetWorld( parentWorld );
 }
 
 

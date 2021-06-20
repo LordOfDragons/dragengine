@@ -262,6 +262,16 @@ void deoglRWorld::EarlyPrepareForRender( deoglRenderPlan &plan ){
 		iterLight = iterLight->GetNext();
 	}
 	SPECIAL_TIMER_PRINT_EARLY("Lights")
+	
+	// remove environment map probes marked for removal by deoglWorld. this call can not
+	// be done during deoglWorld::SyncToRender since deleting the environment map probe
+	// also removes deoglEnvironmentMap which are interwoved with deoglRWorld in a tricky
+	// way. thus they are removed here where it is safe to delete opengl objects
+	// 
+	// this call has to be done during EarlyPrepareForRender and not during PrepareForRender
+	// since this call modifies the environment map list. Parallel tasks using the environment
+	// map list run in parallel to PrepareForRender which can cause segfaults or exceptions
+	RemoveRemovalMarkedEnvMapProbes();
 }
 
 void deoglRWorld::PrepareForRender( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask ){
@@ -272,12 +282,6 @@ void deoglRWorld::PrepareForRender( deoglRenderPlan &plan, const deoglRenderPlan
 	
 	INIT_SPECIAL_TIMING
 	int i, count;
-	
-	// remove environment map probes marked for removal by deoglWorld. this call can not be done during
-	// deoglWorld::SyncToRender since deleting the environment map probe also removes deoglEnvironmentMap
-	// which are interwoved with deoglRWorld in a tricky way. thus they are removed here where it is
-	// safe to delete opengl objects
-	RemoveRemovalMarkedEnvMapProbes();
 	
 	// notify environment map layout changed and update render environment maps if required
 	if( pDirtyEnvMapLayout ){
