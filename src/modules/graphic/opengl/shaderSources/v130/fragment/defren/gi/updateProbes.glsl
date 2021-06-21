@@ -233,7 +233,7 @@ void main( void ){
 			// determine blend factor to use. if the difference between the old and new
 			// irradiance is large switch to blend factor of 1 otherwise use the regular one
 			vec3 lastIrradiance = pow( texelFetch( texCopyProbe, tc, 0 ).xyz, vec3( pGIIrradianceGamma ) );
-			vec3 diffIrradiance = abs( outValue.rgb / max( lastIrradiance, vec3( 0.001 ) ) );
+			vec3 diffIrradiance = abs( outValue.rgb / max( lastIrradiance, vec3( 0.001 ) ) - 1.0 );
 			if( max( max( diffIrradiance.x, diffIrradiance.y ), diffIrradiance.z ) > 0.25 ){ // paper probeChangeRatio = 0.25
 				outValue.a = min( outValue.a + 0.75, 1.0 ); // blend faster
 			}
