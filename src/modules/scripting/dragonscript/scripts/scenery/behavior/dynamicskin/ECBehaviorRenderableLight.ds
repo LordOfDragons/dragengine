@@ -160,6 +160,8 @@ class ECBehaviorRenderableLight extends DefaultECBehavior
 			this.pScaleIntensity = this.pECBehavior.getScaleIntensity().getValue( stub )
 			this.pScaleColor = this.pECBehavior.getScaleColor().getColor( stub, \
 				this.getElement().getClass().getCodecPropertyString() )
+			
+			this.updateRenderables()
 		end
 		
 		
