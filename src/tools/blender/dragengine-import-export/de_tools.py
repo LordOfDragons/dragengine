@@ -53,8 +53,8 @@ class OBJECT_OT_DEToolSeamToSharp(bpy.types.Operator):
 	bl_options = { 'REGISTER', 'UNDO' }
 	__doc__ = """Set sharp edges from seams"""
 	
-	selected = bpy.props.BoolProperty(name="Selected Edges", description="Apply only to selected edges", default=True)
-	visible = bpy.props.BoolProperty(name="Visible Edges", description="Apply only to visible edges", default=True)
+	selected: bpy.props.BoolProperty(name="Selected Edges", description="Apply only to selected edges", default=True)
+	visible: bpy.props.BoolProperty(name="Visible Edges", description="Apply only to visible edges", default=True)
 	
 	@classmethod
 	def poll(cls, context):
@@ -166,9 +166,9 @@ class MATERIAL_UL_matslots_example(bpy.types.UIList):
 ###############
 
 class TypeDETOptions(bpy.types.PropertyGroup):
-	collapseVerticesTargets = bpy.props.CollectionProperty(type=TypeDETVertex)
-	projectUVCurrent = bpy.props.PointerProperty(type=TypeDETProjectUVTemplate)
-	projectUVTemplates = bpy.props.CollectionProperty(type=TypeDETProjectUVTemplate)
+	collapseVerticesTargets: bpy.props.CollectionProperty(type=TypeDETVertex)
+	projectUVCurrent: bpy.props.PointerProperty(type=TypeDETProjectUVTemplate)
+	projectUVTemplates: bpy.props.CollectionProperty(type=TypeDETProjectUVTemplate)
 registerClass(TypeDETOptions)
 
 class VIEW3D_PT_Dragengine(bpy.types.Panel):
@@ -369,8 +369,8 @@ class OBJECT_PT_DragengineScene(bpy.types.Panel):
 registerClass(OBJECT_PT_DragengineScene)
 
 class TypeDEMoveSet(bpy.types.PropertyGroup):
-	filters = bpy.props.CollectionProperty(type=bpy.types.PropertyGroup)
-	index = bpy.props.IntProperty(name="Index", description="Index", default=-1, min=-1 )
+	filters: bpy.props.CollectionProperty(type=bpy.types.PropertyGroup)
+	index: bpy.props.IntProperty(name="Index", description="Index", default=-1, min=-1 )
 registerClass(TypeDEMoveSet)
 
 bpy.types.Scene.dragengine_movesets = bpy.props.CollectionProperty(type=TypeDEMoveSet)
@@ -698,10 +698,10 @@ registerClass(OBJECT_PT_DragengineMaterial)
 ###########################
 
 class TypeDEVertexGroupNavType(bpy.types.PropertyGroup):
-	group = bpy.props.StringProperty(
+	group: bpy.props.StringProperty(
 		name="Group", description="Group name", default='')
 	
-	navtype = bpy.props.IntProperty(
+	navtype: bpy.props.IntProperty(
 		name="Navigation Type", description="Navigation type to use for members of the vertex group",
 		default=0, min=0, soft_min=0, soft_max=10, max=65535)
 registerClass(TypeDEVertexGroupNavType)
@@ -1023,9 +1023,9 @@ registerClass(INFO_HT_DragengineProgress)
 """
 
 class TypeDragengineProgress(bpy.types.PropertyGroup):
-	percentage = bpy.props.FloatProperty(name="Percentage", description="Percentage to display", default=0.0)
-	infoText = bpy.props.StringProperty(name="Info Text", description="Information text to display", default="")
-	visible = bpy.props.BoolProperty(name="Visible", description="Determines if the progress panel is visible", default=False)
+	percentage: bpy.props.FloatProperty(name="Percentage", description="Percentage to display", default=0.0)
+	infoText: bpy.props.StringProperty(name="Info Text", description="Information text to display", default="")
+	visible: bpy.props.BoolProperty(name="Visible", description="Determines if the progress panel is visible", default=False)
 registerClass(TypeDragengineProgress)
 
 class INFO_HT_DragengineProgress(bpy.types.Header):

@@ -46,8 +46,8 @@ class OBJECT_OT_ExportModel(bpy.types.Operator, ExportHelper):
 	bl_label = "Model (.demodel)"
 	__doc__ = """Export as Drag[en]gine Model Resource"""
 	filename_ext = ".demodel"
-	filter_glob = bpy.props.StringProperty(default="*.demodel", options={ 'HIDDEN' })
-	debug_level = bpy.props.EnumProperty(items = (
+	filter_glob: bpy.props.StringProperty(default="*.demodel", options={ 'HIDDEN' })
+	debug_level: bpy.props.EnumProperty(items = (
 		('0', "None", "Output no debug messages."),
 		('1', "Basic", "Output basic amount of debug messages."),
 		('2', "Verbose", "Output lots of debug messages."),

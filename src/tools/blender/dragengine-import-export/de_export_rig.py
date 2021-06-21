@@ -46,8 +46,8 @@ class OBJECT_OT_ExportRig( bpy.types.Operator, ExportHelper ):
 	bl_label = "Rig (.derig)"
 	__doc__ = """Export as Drag[en]gine Rig Resource"""
 	filename_ext = ".derig"
-	filter_glob = bpy.props.StringProperty( default="*.derig", options={ 'HIDDEN' } )
-	debug_level = bpy.props.EnumProperty( items = (
+	filter_glob: bpy.props.StringProperty( default="*.derig", options={ 'HIDDEN' } )
+	debug_level: bpy.props.EnumProperty( items = (
 		( '0', "None", "Output no debug messages." ),
 		( '1', "Basic", "Output basic amount of debug messages." ),
 		( '2', "Verbose", "Output lots of debug messages." ),
