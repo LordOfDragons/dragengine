@@ -94,10 +94,12 @@ pTexProbeIrradiance( renderThread ),
 pTexProbeDistance( renderThread ),
 pTexProbeOffset( renderThread ),
 pTexProbeState( renderThread ),
+pTexCopyProbeIrradiance( renderThread ),
 pFBOProbeIrradiance( renderThread, false ),
 pFBOProbeDistance( renderThread, false ),
 pFBOProbeOffset( renderThread, false ),
 pFBOProbeState( renderThread, false ),
+pFBOCopyProbeIrradiance( renderThread, false ),
 pClearMaps( true ),
 pVBOProbeOffsets( 0 ),
 pVBOProbeOffsetsTransition( 0 ),
@@ -698,6 +700,22 @@ void deoglGIState::pPrepareProbeTexturesAndFBO(){
 		OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
 		OGL_CHECK( pRenderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
 		pFBOProbeState.Verify();
+	}
+	
+	if( ! pTexCopyProbeIrradiance.GetTexture() ){
+		const int width = ( pSizeTexIrradiance + 2 ) * pProbeCount.x * pProbeCount.y + 2;
+		const int height = ( pSizeTexIrradiance + 2 ) * pProbeCount.z + 2;
+		
+		pTexCopyProbeIrradiance.SetFBOFormat( 3, true );
+		pTexCopyProbeIrradiance.SetSize( width, height );
+		pTexCopyProbeIrradiance.CreateTexture();
+		
+		pRenderThread.GetFramebuffer().Activate( &pFBOCopyProbeIrradiance );
+		pFBOCopyProbeIrradiance.DetachAllImages();
+		pFBOCopyProbeIrradiance.AttachColorTexture( 0, &pTexCopyProbeIrradiance );
+		OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
+		OGL_CHECK( pRenderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
+		pFBOCopyProbeIrradiance.Verify();
 	}
 	
 	if( pClearMaps ){

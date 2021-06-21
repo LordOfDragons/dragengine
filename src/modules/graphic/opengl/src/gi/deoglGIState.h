@@ -94,10 +94,12 @@ private:
 	deoglArrayTexture pTexProbeDistance;
 	deoglArrayTexture pTexProbeOffset;
 	deoglTexture pTexProbeState;
+	deoglTexture pTexCopyProbeIrradiance;
 	deoglFramebuffer pFBOProbeIrradiance;
 	deoglFramebuffer pFBOProbeDistance;
 	deoglFramebuffer pFBOProbeOffset;
 	deoglFramebuffer pFBOProbeState;
+	deoglFramebuffer pFBOCopyProbeIrradiance;
 	bool pClearMaps;
 	GLuint pVBOProbeOffsets;
 	GLuint pVBOProbeOffsetsTransition;
@@ -234,6 +236,10 @@ public:
 	inline deoglTexture &GetTextureProbeState(){ return pTexProbeState; }
 	inline const deoglTexture &GetTextureProbeState() const{ return pTexProbeState; }
 	
+	/** Copy irradiance probe texture. */
+	inline deoglTexture &GetTextureCopyProbeIrradiance(){ return pTexCopyProbeIrradiance; }
+	inline const deoglTexture &GetTextureCopyProbeIrradiance() const{ return pTexCopyProbeIrradiance; }
+	
 	/** Probe fbo irradiance. */
 	inline deoglFramebuffer &GetFBOProbeIrradiance(){ return pFBOProbeIrradiance; }
 	
@@ -245,6 +251,9 @@ public:
 	
 	/** Probe state fbo. */
 	inline deoglFramebuffer &GetFBOProbeState(){ return pFBOProbeState; }
+	
+	/** Copy probe fbo irradiance. */
+	inline deoglFramebuffer &GetFBOCopyProbeIrradiance(){ return pFBOCopyProbeIrradiance; }
 	
 	/** Probe offset feedback VBO. */
 	inline GLuint GetVBOProbeOffsets() const{ return pVBOProbeOffsets; }

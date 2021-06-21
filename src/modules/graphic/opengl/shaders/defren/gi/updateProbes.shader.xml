@@ -7,6 +7,7 @@
 	<texture name='texPosition' target='0'/>
 	<texture name='texNormal' target='1'/>
 	<texture name='texLight' target='2'/>
+	<texture name='texCopyProbe' target='3'/>
 	
 	<uniformBlock name='GIParameters' target='1'/>
 	<uniformBlock name='GIProbeIndices' target='2'/>

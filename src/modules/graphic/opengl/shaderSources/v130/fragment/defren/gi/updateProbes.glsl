@@ -9,6 +9,7 @@ precision highp int;
 uniform sampler2D texPosition;
 uniform sampler2D texNormal;
 uniform sampler2D texLight;
+uniform sampler2D texCopyProbe;
 
 
 flat in ivec2 vRayOffset;
@@ -228,6 +229,20 @@ void main( void ){
 // 			sumWeight *= 0.5;
 			
 			outValue.rgb *= sumWeight;
+			
+			// determine blend factor to use. if the difference between the old and new
+			// irradiance is large switch to blend factor of 1 otherwise use the regular one
+			vec3 lastIrradiance = pow( texelFetch( texCopyProbe, tc, 0 ).xyz, vec3( pGIIrradianceGamma ) );
+			vec3 diffIrradiance = abs( outValue.rgb / max( lastIrradiance, vec3( 0.001 ) ) );
+			if( max( max( diffIrradiance.x, diffIrradiance.y ), diffIrradiance.z ) > 0.25 ){ // paper probeChangeRatio = 0.25
+				outValue.a = min( outValue.a + 0.75, 1.0 ); // blend faster
+			}
+			
+			// in the paper the maximum change is clamped
+// 			diffIrradiance = abs( outValue.rgb - lastIrradiance );
+// 			if( length( outValue.rgb - lastIrradiance ) > 0.1 ){ // probeBrightnessThreshold
+// 				outValue.rgb = mix( lastIrradiance, outValue.rgb, vec3( 0.25 ) );
+// 			}
 			
 			// not sure what this does to the end result. mentioned in the source code
 			outValue.rgb = pow( outValue.rgb, vec3( pGIInvIrradianceGamma ) );

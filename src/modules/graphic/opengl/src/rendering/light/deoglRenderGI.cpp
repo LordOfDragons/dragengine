@@ -153,6 +153,7 @@ pShaderTraceRays( NULL ),
 pShaderTraceRaysCache( NULL ),
 pShaderCopyRayCache( NULL ),
 pShaderInitFromRayCache( NULL ),
+pShaderCopyProbeIrradiance( NULL ),
 pShaderUpdateProbeIrradiance( NULL ),
 pShaderUpdateProbeDistance( NULL ),
 pShaderClearProbeIrradiance( NULL ),
@@ -222,6 +223,12 @@ pDebugInfoGIRenderLightGIRay( NULL )
 		defines.AddDefine( "MAP_DISTANCE", true );
 		pShaderClearProbeDistance = shaderManager.GetProgramWith( sources, defines );
 		defines.RemoveDefine( "MAP_DISTANCE" );
+		
+		// copy probes
+		sources = shaderManager.GetSourcesNamed( "DefRen GI Copy Probes" );
+		defines.AddDefine( "MAP_IRRADIANCE", true );
+		pShaderCopyProbeIrradiance = shaderManager.GetProgramWith( sources, defines );
+		defines.RemoveDefine( "MAP_IRRADIANCE" );
 		
 		// update probes
 		sources = shaderManager.GetSourcesNamed( "DefRen GI Update Probes" );
@@ -734,17 +741,35 @@ void deoglRenderGI::UpdateProbes( deoglRenderPlan &plan ){
 	OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
 	OGL_CHECK( renderThread, glDisable( GL_STENCIL_TEST ) );
 	OGL_CHECK( renderThread, glDisable( GL_SCISSOR_TEST ) );
-	OGL_CHECK( renderThread, glEnable( GL_BLEND ) );
-	OGL_CHECK( renderThread, glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA ) );
 	
 	OGL_CHECK( renderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) );
 	
+	
+	// copy probes: irradiance map
+	tsmgr.DisableAllStages();
+	tsmgr.EnableArrayTexture( 0, giState->GetTextureProbeIrradiance(), GetSamplerClampNearest() );
+	
+	renderThread.GetFramebuffer().Activate( &giState->GetFBOCopyProbeIrradiance() );
+	
+	OGL_CHECK( renderThread, glViewport( 0, 0, giState->GetTextureProbeIrradiance().GetWidth(),
+		giState->GetTextureProbeIrradiance().GetHeight() ) );
+	
+	renderThread.GetShader().ActivateShader( pShaderCopyProbeIrradiance );
+	pActivateGIUBOs();
+	
+	OGL_CHECK( renderThread, pglDrawArraysInstanced( GL_TRIANGLE_FAN, 0, 4, cascade.GetUpdateProbeCount() ) );
+	
+	
+	// update probes: irradiance map
+	OGL_CHECK( renderThread, glEnable( GL_BLEND ) );
+	OGL_CHECK( renderThread, glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA ) );
+	
+	tsmgr.DisableAllStages();
 	tsmgr.EnableTexture( 0, traceRays.GetTexturePosition(), GetSamplerClampNearest() );
 	tsmgr.EnableTexture( 1, traceRays.GetTextureNormal(), GetSamplerClampNearest() );
 	tsmgr.EnableTexture( 2, traceRays.GetTextureLight(), GetSamplerClampNearest() );
-	tsmgr.DisableStagesAbove( 2 );
+	tsmgr.EnableTexture( 3, giState->GetTextureCopyProbeIrradiance(), GetSamplerClampNearest() );
 	
-	// update probes: irradiance map
 	renderThread.GetFramebuffer().Activate( &giState->GetFBOProbeIrradiance() );
 	
 	OGL_CHECK( renderThread, glViewport( 0, 0, giState->GetTextureProbeIrradiance().GetWidth(),
@@ -765,6 +790,7 @@ void deoglRenderGI::UpdateProbes( deoglRenderPlan &plan ){
 	pActivateGIUBOs();
 	
 	OGL_CHECK( renderThread, pglDrawArraysInstanced( GL_TRIANGLE_FAN, 0, 4, cascade.GetUpdateProbeCount() ) );
+	
 	
 	// clean up
 	OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
@@ -1317,6 +1343,9 @@ void deoglRenderGI::pCleanUp(){
 	}
 	if( pShaderInitFromRayCache ){
 		pShaderInitFromRayCache->RemoveUsage();
+	}
+	if( pShaderCopyProbeIrradiance ){
+		pShaderCopyProbeIrradiance->RemoveUsage();
 	}
 	if( pShaderUpdateProbeIrradiance ){
 		pShaderUpdateProbeIrradiance->RemoveUsage();
