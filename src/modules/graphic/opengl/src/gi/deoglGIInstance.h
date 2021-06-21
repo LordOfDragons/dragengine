@@ -59,7 +59,7 @@ private:
 		virtual void RenderStaticChanged( deoglRComponent &component );
 		virtual void MovementHintChanged( deoglRComponent &component );
 		void RemoveInstance();
-		void ChangeInstance();
+		void ChangeInstance( bool hard );
 	};
 	
 	
@@ -89,6 +89,7 @@ private:
 	
 	bool pDynamic;
 	bool pChanged;
+	bool pHardChanged;
 	bool pMoved;
 	bool pRecheckDynamic;
 	
@@ -170,6 +171,15 @@ public:
 	
 	/** Set instance changed in a way ray cast results are invalidated. */
 	void SetChanged( bool changed );
+	
+	/** Instance changed in a way disabled probes have to be updated too. */
+	inline bool GetHardChanged() const{ return pHardChanged; }
+	
+	/** Set instance changed in a way disabled probes have to be updated too. */
+	void SetHardChanged( bool changed );
+	
+	/** Clear changed flags. */
+	void ClearChanged();
 	
 	/** Instance moved. */
 	inline bool GetMoved() const{ return pMoved; }

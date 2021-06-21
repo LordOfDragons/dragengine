@@ -231,6 +231,13 @@ void deoglGIInstances::ApplyChanges(){
 			
 			invalidate |= instance.GetDynamic() != dynamic;
 			
+			// we do not invalidate hard if the dynamic flag changes. this is because something
+			// like switching a texture temporarily switches render static flag off which in
+			// turn cause IsComponentStatic to return false. this would cause a simple texture
+			// switch to invalidate hard all disabled probes. to get good results we have to
+			// not wake up disabled probes whenevr possible even if we run the risk of missing
+			// a potential chance for disabled probes to wake up
+			
 			if( invalidate ){
 				pGIState.TouchDynamicArea( instance.GetMinimumExtend(), instance.GetMaximumExtend() );
 			}
@@ -239,7 +246,8 @@ void deoglGIInstances::ApplyChanges(){
 		if( invalidate ){
 // 				pGIState.GetRenderThread().GetLogger().LogInfoFormat("GIInstances.ApplyChanges: %s",
 // 					instance.GetComponent()?instance.GetComponent()->GetModel()->GetFilename().GetString():"-");
-			pGIState.InvalidateArea( instance.GetMinimumExtend(), instance.GetMaximumExtend() );
+			pGIState.InvalidateArea( instance.GetMinimumExtend(),
+				instance.GetMaximumExtend(), instance.GetHardChanged() );
 		}
 		
 		if( instance.GetMoved() ){
@@ -261,12 +269,12 @@ void deoglGIInstances::ApplyChanges(){
 				if( invalidate ){
 // 						pGIState.GetRenderThread().GetLogger().LogInfoFormat("GIInstances.AnyChanged: Moved %s",
 // 							instance.GetComponent()?instance.GetComponent()->GetModel()->GetFilename().GetString():"-");
-					pGIState.InvalidateArea( minExtend, maxExtend );
+					pGIState.InvalidateArea( minExtend, maxExtend, true );
 				}
 			}
 		}
 		
-		instance.SetChanged( false );
+		instance.ClearChanged();
 	}
 	
 	pChangedInstances.RemoveAll();
@@ -284,7 +292,7 @@ void deoglGIInstances::AddComponent( deoglRComponent *component, bool invalidate
 // 				pGIState.GetRenderThread().GetLogger().LogInfoFormat("GIInstances.AddComponent: %s",
 // 					component->GetModel()->GetFilename().GetString());
 			#endif
-			pGIState.InvalidateArea( component->GetMinimumExtend(), component->GetMaximumExtend() );
+			pGIState.InvalidateArea( component->GetMinimumExtend(), component->GetMaximumExtend(), true );
 				// WARNING InvalidateArea becomes expensive if called multiple times.
 				//         unfortunately we can not collect all boxes into an enclosing box
 				//         since then moving diagonally can invalidate lots of probes inside
@@ -419,7 +427,7 @@ void deoglGIInstances::RemoveInstance( deoglGIInstance &instance ){
 		#ifdef DO_LOG_ADD_REMOVE
 			pGIState.GetRenderThread().GetLogger().LogInfoFormat("GIInstances.RemoveInstance: %p", &instance);
 		#endif
-		pGIState.InvalidateArea( instance.GetMinimumExtend(), instance.GetMaximumExtend() );
+		pGIState.InvalidateArea( instance.GetMinimumExtend(), instance.GetMaximumExtend(), true );
 	}
 	
 	instance.Clear();

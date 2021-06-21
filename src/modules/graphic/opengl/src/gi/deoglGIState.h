@@ -280,7 +280,7 @@ public:
 	void ProbesMoved();
 	
 	/** Invalidate area. */
-	void InvalidateArea( const decDVector &minExtend, const decDVector &maxExtend );
+	void InvalidateArea( const decDVector &minExtend, const decDVector &maxExtend, bool hard );
 	
 	/** Dynamic area count increment. */
 	void TouchDynamicArea( const decDVector &minExtend, const decDVector &maxExtend );

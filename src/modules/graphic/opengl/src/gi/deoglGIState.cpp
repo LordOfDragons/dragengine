@@ -318,8 +318,8 @@ void deoglGIState::ProbesMoved(){
 	pProbesHaveMoved = true;
 }
 
-void deoglGIState::InvalidateArea( const decDVector &minExtend, const decDVector &maxExtend ){
-// 		pRenderThread.GetLogger().LogInfoFormat("InvalidateArea (%g,%g,%g) (%g,%g,%g)",
+void deoglGIState::InvalidateArea( const decDVector &minExtend, const decDVector &maxExtend, bool hard ){
+// 		pRenderThread.GetLogger().LogInfoFormat("InvalidateArea %s (%g,%g,%g) (%g,%g,%g)", hard ? "hard" : "soft",
 // 			minExtend.x, minExtend.y, minExtend.z, maxExtend.x, maxExtend.y, maxExtend.z);
 	if( ! ( maxExtend > minExtend ) ){
 		return;
@@ -327,7 +327,7 @@ void deoglGIState::InvalidateArea( const decDVector &minExtend, const decDVector
 	
 	int i;
 	for( i=0; i<pCascadeCount; i++ ){
-		pCascades[ i ]->InvalidateArea( minExtend, maxExtend );
+		pCascades[ i ]->InvalidateArea( minExtend, maxExtend, hard );
 	}
 }
 

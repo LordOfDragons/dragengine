@@ -222,20 +222,23 @@ void deoglGICascade::Invalidate(){
 	ClearClearProbes();
 }
 
-void deoglGICascade::InvalidateArea( const decDVector &minExtend, const decDVector &maxExtend ){
+void deoglGICascade::InvalidateArea( const decDVector &minExtend, const decDVector &maxExtend, bool hard ){
 	const decVector lminExtend( minExtend - pPosition - pStaticHalfEnlarge );
 	const decVector lmaxExtend( maxExtend - pPosition + pStaticHalfEnlarge );
 	if( ! ( lmaxExtend > -pDetectionBox && lminExtend < pDetectionBox ) ){
 		return;
 	}
 	
+	const int flagMask = hard ? 0 : epfDisabled;
+	const int flagFilter = 0;
 	const int count = pGIState.GetRealProbeCount();
 	int i;
 // 		decString debugText( "InvalidateArea: (%g,%g,%g) (%g,%g,%g);" );
 	
 	for( i=0; i<count; i++ ){
 		sProbe &probe = pProbes[ i ];
-		if( probe.maxExtend > lminExtend && probe.minExtend < lmaxExtend ){
+		if( ( probe.flags & flagMask ) == flagFilter
+		&& probe.maxExtend > lminExtend && probe.minExtend < lmaxExtend ){
 // 				pGIState.GetRenderThread().GetLogger().LogInfoFormat("Cascade(%d) InvalidateArea Probe(%d,%d,%d) (%g,%g,%g) (%g,%g,%g)",
 // 					pIndex, probe.shiftedCoord.x, probe.shiftedCoord.y, probe.shiftedCoord.z,
 // 					probe.minExtend.x, probe.minExtend.y, probe.minExtend.z,

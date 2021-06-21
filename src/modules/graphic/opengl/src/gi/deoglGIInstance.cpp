@@ -71,7 +71,7 @@ void deoglGIInstance::cComponentListener::LayerMaskChanged( deoglRComponent &com
 void deoglGIInstance::cComponentListener::BoundariesChanged( deoglRComponent& ){
 // 		pInstance.GetInstances().GetGIState().GetRenderThread().GetLogger().LogInfoFormat(
 // 			"GIInstance BoundariesChanged %s (dynamic %d)\n", c.GetModel()->GetFilename().GetString(), pInstance.GetDynamic());
-	ChangeInstance();
+	ChangeInstance( true );
 	pInstance.SetMoved( true );
 }
 
@@ -82,7 +82,7 @@ void deoglGIInstance::cComponentListener::OcclusionMeshChanged( deoglRComponent&
 void deoglGIInstance::cComponentListener::TexturesChanged( deoglRComponent& ){
 // 		pInstance.GetInstances().GetGIState().GetRenderThread().GetLogger().LogInfoFormat(
 // 			"GIInstance TexturesChanged %s\n", c.GetModel()->GetFilename().GetString());
-	ChangeInstance();
+	ChangeInstance( false );
 	pInstance.SetRecheckDynamic( true );
 	pInstance.SetDirtyTUCs( true );
 }
@@ -90,14 +90,14 @@ void deoglGIInstance::cComponentListener::TexturesChanged( deoglRComponent& ){
 void deoglGIInstance::cComponentListener::RenderStaticChanged( deoglRComponent& ){
 // 		pInstance.GetInstances().GetGIState().GetRenderThread().GetLogger().LogInfoFormat(
 // 			"GIInstance RenderStaticChanged %s (dynamic %d)\n", c.GetModel()->GetFilename().GetString(), pInstance.GetDynamic());
-	ChangeInstance();
+	ChangeInstance( false ); // required?
 	pInstance.SetRecheckDynamic( true );
 }
 
 void deoglGIInstance::cComponentListener::MovementHintChanged( deoglRComponent& ){
 // 		pInstance.GetInstances().GetGIState().GetRenderThread().GetLogger().LogInfoFormat(
 // 			"GIInstance MovementHintChanged %s (dynamic %d)\n", c.GetModel()->GetFilename().GetString(), pInstance.GetDynamic());
-	ChangeInstance();
+	ChangeInstance( false );
 	pInstance.SetRecheckDynamic( true );
 }
 
@@ -107,7 +107,10 @@ void deoglGIInstance::cComponentListener::RemoveInstance(){
 	}
 }
 
-void deoglGIInstance::cComponentListener::ChangeInstance(){
+void deoglGIInstance::cComponentListener::ChangeInstance( bool hard ){
+	if( hard ){
+		pInstance.SetHardChanged( true );
+	}
 	if( ! pInstance.GetChanged() ){
 		pInstance.GetInstances().InstanceChanged( pInstance );
 	}
@@ -137,6 +140,7 @@ pTBOMaterial( NULL ),
 pTBOMaterial2( NULL ),
 pDynamic( false ),
 pChanged( false ),
+pHardChanged( false ),
 pMoved( false ),
 pRecheckDynamic( false )
 {
@@ -171,6 +175,7 @@ void deoglGIInstance::SetComponent( deoglRComponent *component, bool dynamic ){
 	pComponent = component;
 	pDynamic = dynamic;
 	pChanged = false;
+	pHardChanged = false;
 	pMoved = false;
 	pRecheckDynamic = false;
 	
@@ -241,6 +246,15 @@ void deoglGIInstance::SetDynamic( bool dynamic ){
 
 void deoglGIInstance::SetChanged( bool changed ){
 	pChanged = changed;
+}
+
+void deoglGIInstance::SetHardChanged( bool changed ){
+	pHardChanged = changed;
+}
+
+void deoglGIInstance::ClearChanged(){
+	pChanged = false;
+	pHardChanged = false;
 }
 
 void deoglGIInstance::SetMoved( bool moved ){
