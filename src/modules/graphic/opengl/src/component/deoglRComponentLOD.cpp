@@ -58,6 +58,7 @@
 #include "../texture/texture2d/deoglTexture.h"
 #include "../texture/texunitsconfig/deoglTexUnitsConfig.h"
 #include "../texture/texunitsconfig/deoglTexUnitsConfigList.h"
+#include "../tbo/deoglDynamicTBOFloat32.h"
 #include "../vao/deoglVAO.h"
 #include "../vbo/deoglSharedVBOBlock.h"
 #include "../vbo/deoglSharedVBO.h"
@@ -697,8 +698,10 @@ void deoglRComponentLOD::PrepareGIDynamicBVH(){
 	
 	if( pDirtyGIBVHPositions ){
 		PreparePositions();
-		pGIBVHDynamic->UpdateVertices( pPositions, GetModelLODRef().GetPositionCount() );
-		pGIBVHDynamic->UpdateBVHExtends();
+		if( pGIBVHDynamic->GetTBOVertex()->GetDataCount() > 0 ){
+			pGIBVHDynamic->UpdateVertices( pPositions, GetModelLODRef().GetPositionCount() );
+			pGIBVHDynamic->UpdateBVHExtends();
+		}
 		pDirtyGIBVHPositions = false;
 	}
 }

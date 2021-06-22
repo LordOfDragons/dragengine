@@ -758,6 +758,7 @@ void deoglModelLOD::PrepareGILocalBVH(){
 	}
 	
 	deoglBVH::sBuildPrimitive *primitives = NULL;
+	int primitiveCount = 0;
 	bool disable = false;
 	
 	if( pFaceCount > 10000 ){
@@ -769,6 +770,7 @@ void deoglModelLOD::PrepareGILocalBVH(){
 	
 	if( pFaceCount > 0 && ! disable ){
 		primitives = new deoglBVH::sBuildPrimitive[ pFaceCount ];
+		primitiveCount = pFaceCount;
 		int i;
 		
 		for( i=0; i<pFaceCount; i++ ){
@@ -801,7 +803,7 @@ void deoglModelLOD::PrepareGILocalBVH(){
 		// be guaranteed (for example auto-decimation) then lower max depth can be better.
 		// occlusion meshes use 6 here
 		pGIBVHLocal = new deoglGIBVHLocal( pModel.GetRenderThread() );
-		pGIBVHLocal->BuildBVH( primitives, pFaceCount, 12 );
+		pGIBVHLocal->BuildBVH( primitives, primitiveCount, 12 );
 		
 		if( pGIBVHLocal->GetBVH().GetRootNode() ){
 			pGIBVHLocal->TBOAddVertices( pPositions, pPositionCount );
