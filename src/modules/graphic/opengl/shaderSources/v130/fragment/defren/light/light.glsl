@@ -683,9 +683,11 @@ void main( void ){
 			float depth = texelFetch( texDepth, tc, 0 ).r;
 		#endif
 		
-		if( gl_FragCoord.z * pDepthCompare > depth * pDepthCompare ){
-			discard;
-		}
+		#ifndef PARTICLE_LIGHT
+			if( gl_FragCoord.z * pDepthCompare > depth * pDepthCompare ){
+				discard;
+			}
+		#endif
 		
 		vec3 position = vec3( depth );
 		position.z = pPosTransform.x / ( pPosTransform.y - position.z );
