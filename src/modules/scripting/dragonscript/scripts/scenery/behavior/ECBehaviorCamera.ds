@@ -114,10 +114,12 @@ class ECBehaviorCamera extends DefaultECBehavior
 			camera.setFovRatio( this.pECBehavior.getFovRatio().getValue( stub ) )
 			camera.setImageDistance( this.pECBehavior.getImageDistance().getValue( stub ) )
 			camera.setViewDistance( this.pECBehavior.getViewDistance().getValue( stub ) )
+			camera.setEnableHDRR( this.pECBehavior.getEnableHDRR().getValue( stub ) )
 			camera.setExposure( this.pECBehavior.getExposure().getValue( stub ) )
 			camera.setLowestIntensity( this.pECBehavior.getLowestIntensity().getValue( stub ) )
 			camera.setHighestIntensity( this.pECBehavior.getHighestIntensity().getValue( stub ) )
 			camera.setAdaptionTime( this.pECBehavior.getAdaptionTime().getValue( stub ) )
+			camera.setEnableGI( this.pECBehavior.getEnableGI().getValue( stub ) )
 			camera.setLayerMask( this.pECBehavior.getLayerMask() )
 			return camera
 		end
@@ -169,10 +171,12 @@ class ECBehaviorCamera extends DefaultECBehavior
 	private var ECPFloat pFovRatio
 	private var ECPFloat pImageDistance
 	private var ECPFloat pViewDistance
+	private var ECPBoolean pEnableHDRR
 	private var ECPFloat pExposure
 	private var ECPFloat pLowestIntensity
 	private var ECPFloat pHighestIntensity
 	private var ECPFloat pAdaptionTime
+	private var ECPBoolean pEnableGI
 	private var LayerMask pLayerMask
 	
 	
@@ -209,6 +213,9 @@ class ECBehaviorCamera extends DefaultECBehavior
 		this.pViewDistance = ECPFloat.new( prefix + ".viewDistance", 200, 0.01 )
 		eclass.addProperty( this.pViewDistance )
 		
+		this.pEnableHDRR = ECPBoolean.new( prefix + ".enableHDRR", true )
+		eclass.addProperty( this.pEnableHDRR )
+		
 		this.pExposure = ECPFloat.new( prefix + ".exposure", 1, 0 )
 		eclass.addProperty( this.pExposure )
 		
@@ -220,6 +227,9 @@ class ECBehaviorCamera extends DefaultECBehavior
 		
 		this.pAdaptionTime = ECPFloat.new( prefix + ".adaptionTime", 0.1, 0 )
 		eclass.addProperty( this.pAdaptionTime )
+		
+		this.pEnableGI = ECPBoolean.new( prefix + ".enableGI", false )
+		eclass.addProperty( this.pEnableGI )
 		
 		eclass.addBehavior( this )
 	end
@@ -262,6 +272,11 @@ class ECBehaviorCamera extends DefaultECBehavior
 		return this.pViewDistance
 	end
 	
+	/** \brief Enable high definition range rendering (HDRR) if supported. */
+	public func ECPBoolean getEnableHDRR()
+		return this.pEnableHDRR
+	end
+	
 	/** \brief Exposure. */
 	public func ECPFloat getExposure()
 		return this.pExposure
@@ -280,6 +295,11 @@ class ECBehaviorCamera extends DefaultECBehavior
 	/** \brief Adaption time of the eye in seconds. */
 	public func ECPFloat getAdaptionTime()
 		return this.pAdaptionTime
+	end
+	
+	/** \brief Enable global illumination (GI) if supported. */
+	public func ECPBoolean getEnableGI()
+		return this.pEnableGI
 	end
 	
 	/** \brief Layer mask. */

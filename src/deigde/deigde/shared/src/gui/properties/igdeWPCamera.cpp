@@ -25,6 +25,7 @@
 #include "igdeWPCamera.h"
 #include "../igdeCamera.h"
 #include "../igdeUIHelper.h"
+#include "../igdeCheckBox.h"
 #include "../igdeTextField.h"
 #include "../igdeContainerReference.h"
 #include "../composed/igdeEditVector.h"
@@ -77,6 +78,23 @@ public:
 	}
 	
 	virtual void OnChanged( igdeTextField *textField, igdeCamera &camera ) = 0;
+};
+
+class cBaseAction : public igdeAction{
+protected:
+	igdeWPCamera &pPanel;
+	
+public:
+	cBaseAction( igdeWPCamera &panel, const char *text, const char *description = "" ) :
+		igdeAction( text, description ), pPanel( panel ){ }
+	
+	virtual void OnAction(){
+		if( pPanel.GetCamera() ){
+			OnActionCamera( *pPanel.GetCamera() );
+		}
+	}
+	
+	virtual void OnActionCamera( igdeCamera &camera ) = 0;
 };
 
 
@@ -244,6 +262,28 @@ public:
 	}
 };
 
+class cCheckEnableHDRR : public cBaseAction{
+public:
+	cCheckEnableHDRR( igdeWPCamera &panel ) : cBaseAction( panel, "Enable HDRR",
+		"Enable high definition range rendering (HDRR) if supported" ){ }
+	
+	virtual void OnActionCamera( igdeCamera &camera ){
+		camera.SetEnableHDRR( ! camera.GetEnableHDRR() );
+		pPanel.OnAction();
+	}
+};
+
+class cCheckEnableGI : public cBaseAction{
+public:
+	cCheckEnableGI( igdeWPCamera &panel ) : cBaseAction( panel, "Enable GI",
+		"Enable global illumination (GI) if supported" ){ }
+	
+	virtual void OnActionCamera( igdeCamera &camera ){
+		camera.SetEnableGI( ! camera.GetEnableGI() );
+		pPanel.OnAction();
+	}
+};
+
 }
 
 
@@ -303,6 +343,8 @@ void igdeWPCamera::UpdateCamera(){
 		pEditAdaptTime->SetFloat( pCamera->GetAdaptionTime() );
 		pEditLowInt->SetFloat( pCamera->GetLowestIntensity() );
 		pEditHiInt->SetFloat( pCamera->GetHighestIntensity() );
+		pChkEnableHDRR->SetChecked( pCamera->GetEnableHDRR() );
+		pChkEnableGI->SetChecked( pCamera->GetEnableGI() );
 		
 	}else{
 		pEditPosition->SetVector( decVector() );
@@ -316,6 +358,8 @@ void igdeWPCamera::UpdateCamera(){
 		pEditAdaptTime->ClearText();
 		pEditLowInt->ClearText();
 		pEditHiInt->ClearText();
+		pChkEnableHDRR->SetChecked( true );
+		pChkEnableGI->SetChecked( false );
 	}
 	
 	const bool enabled = pCamera != NULL;
@@ -331,6 +375,8 @@ void igdeWPCamera::UpdateCamera(){
 	pEditAdaptTime->SetEnabled( enabled );
 	pEditLowInt->SetEnabled( enabled );
 	pEditHiInt->SetEnabled( enabled );
+	pChkEnableHDRR->SetEnabled( enabled );
+	pChkEnableGI->SetEnabled( enabled );
 }
 
 void igdeWPCamera::UpdateViewDirection(){
@@ -428,4 +474,7 @@ void igdeWPCamera::pCreateContent(){
 		new cTextLowIntensity( *this ) );
 	helper.EditFloat( frameLine, "Higher intensity to adapt to", pEditHiInt,
 		new cTextHighIntensity( *this ) );
+	
+	helper.CheckBox( form, pChkEnableHDRR, new cCheckEnableHDRR( *this ), true );
+	helper.CheckBox( form, pChkEnableGI, new cCheckEnableGI( *this ), true );
 }

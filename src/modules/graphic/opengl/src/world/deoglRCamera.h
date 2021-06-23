@@ -50,10 +50,13 @@ private:
 	float pElapsedToneMapAdaption;
 	bool pForceToneMapAdaption;
 	
+	bool pEnableHDRR;
 	float pExposure;
 	float pLowestIntensity;
 	float pHighestIntensity;
 	float pAdaptionTime;
+	
+	bool pEnableGI;
 	
 	deoglRenderPlan *pPlan;
 	
@@ -136,6 +139,12 @@ public:
 	
 	
 	
+	/** Enable HDRR. */
+	inline bool GetEnableHDRR() const{ return pEnableHDRR; }
+	
+	/** Set enable HDRR. */
+	void SetEnableHDRR( bool enable );
+	
 	/** Exposure. */
 	inline float GetExposure() const{ return pExposure; }
 	
@@ -159,6 +168,14 @@ public:
 	
 	/** Set adaption time of the eye in seconds. */
 	void SetAdaptionTime( float adaptionTime );
+	
+	
+	
+	/** Enable GI. */
+	inline bool GetEnableGI() const{ return pEnableGI; }
+	
+	/** Set enable GI. */
+	void SetEnableGI( bool enable );
 	
 	
 	

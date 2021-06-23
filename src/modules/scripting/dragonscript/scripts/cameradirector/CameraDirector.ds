@@ -73,6 +73,8 @@ class CameraDirector
 	private var float pAdaptionTime
 	private var float pViewDistance
 	private var LayerMask pLayerMask
+	private var bool pEnableHDRR
+	private var bool pEnableGI
 	
 	
 	
@@ -84,6 +86,8 @@ class CameraDirector
 		this.pHighestIntensity = 20
 		this.pAdaptionTime = 0.1
 		this.pViewDistance = 200
+		this.pEnableHDRR = true
+		this.pEnableGI = false
 		
 		// set layer mask. theoretically a camera needs only the default layer bit.
 		// light sources use by default both default and envmap layer bit. this would
@@ -136,6 +140,24 @@ class CameraDirector
 		this.pFov = fov
 	end
 	
+	
+	
+	/**
+	 * \brief Enable high definition range rendering (HDRR) if supported.
+	 * \version 1.5
+	 */
+	public func bool getEnableHDRR()
+		return this.pEnableHDRR
+	end
+	
+	/**
+	 * \brief Set to enable high definition range rendering (HDRR) if supported.
+	 * \version 1.5
+	 */
+	public func void setEnableHDRR( bool enable )
+		this.pEnableHDRR = enable
+	end
+	
 	/** \brief Exposure. */
 	public func float getExposure()
 		return this.pExposure
@@ -186,6 +208,26 @@ class CameraDirector
 		this.pViewDistance = distance
 	end
 	
+	
+	
+	/**
+	 * \brief Enable global illumination (GI) if supported.
+	 * \version 1.5
+	 */
+	public func bool getEnableGI()
+		return this.pEnableGI
+	end
+	
+	/**
+	 * \brief Set to enable global illumination (GI) if supported.
+	 * \version 1.5
+	 */
+	public func void setEnableGI( bool enable )
+		this.pEnableGI = enable
+	end
+	
+	
+	
 	/** \brief Layer mask. */
 	public func LayerMask getLayerMask()
 		return this.pLayerMask
@@ -204,10 +246,13 @@ class CameraDirector
 		this.pCamera.setFovRatio( 1.0 )
 		this.pCamera.setViewDistance( this.pViewDistance )
 		
+		this.pCamera.setEnableHDRR( this.pEnableHDRR )
 		this.pCamera.setExposure( this.pExposure )
 		this.pCamera.setLowestIntensity( this.pLowestIntensity )
 		this.pCamera.setHighestIntensity( this.pHighestIntensity )
 		this.pCamera.setAdaptionTime( this.pAdaptionTime )
+		
+		this.pCamera.setEnableGI( this.pEnableGI )
 		
 		this.pCamera.setLayerMask( this.pLayerMask )
 	end

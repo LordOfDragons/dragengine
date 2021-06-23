@@ -55,10 +55,13 @@ private:
 	float pImageDistance;
 	float pViewDistance;
 	
+	bool pEnableHDRR;
 	float pExposure;
 	float pLowestIntensity;
 	float pHighestIntensity;
 	float pAdaptionTime;
+	
+	bool pEnableGI;
 	
 	float pDistance;
 	
@@ -134,6 +137,14 @@ public:
 	/** \brief Set view distance. */
 	void SetViewDistance( float viewDistance );
 	
+	
+	
+	/** \brief Enable high definition range rendering (HDRR) if supported. */
+	inline bool GetEnableHDRR() const{ return pEnableHDRR; }
+	
+	/** \brief Set to enable high definition range rendering (HDRR) if supported. */
+	void SetEnableHDRR( bool enable );
+	
 	/** \brief Exposure. */
 	inline float GetExposure() const{ return pExposure; }
 	
@@ -163,6 +174,16 @@ public:
 	
 	/** \brief Set distance of camera to the center point along the view direction. */
 	void SetDistance( float distance );
+	
+	
+	
+	/** \brief Enable global illumination (GI) if supported. */
+	inline bool GetEnableGI() const{ return pEnableGI; }
+	
+	/** \brief Set to enable global illumination (GI) if supported. */
+	void SetEnableGI( bool enable );
+	
+	
 	
 	/** \brief View matrix. */
 	inline const decDMatrix &GetViewMatrix() const{ return pViewMatrix; }

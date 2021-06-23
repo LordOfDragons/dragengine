@@ -81,6 +81,23 @@ class Camera
 	public func void setViewDistance( float distance )
 	end
 	
+	
+	
+	/**
+	 * \brief Enable high definition range rendering (HDRR) if supported.
+	 * \version 1.5
+	 */
+	public func bool getEnableHDRR()
+		return true
+	end
+	
+	/**
+	 * \brief Set to enable high definition range rendering (HDRR) if supported.
+	 * \version 1.5
+	 */
+	public func void setEnableHDRR( bool enable )
+	end
+	
 	/** \brief Exposure. */
 	public func float getExposure()
 		return 0.0
@@ -123,6 +140,25 @@ class Camera
 	 */
 	public func void resetAdaptedIntensity()
 	end
+	
+	
+	
+	/**
+	 * \brief Enable global illumination (GI) if supported.
+	 * \version 1.5
+	 */
+	public func bool getEnableGI()
+		return false
+	end
+	
+	/**
+	 * \brief Set to enable global illumination (GI) if supported.
+	 * \version 1.5
+	 */
+	public func void setEnableGI( bool enable )
+	end
+	
+	
 	
 	/** \brief Layer mask for visibility masking. */
 	public func LayerMask getLayerMask()

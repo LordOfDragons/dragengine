@@ -177,6 +177,8 @@ void deoglCamera::SyncToRender(){
 	if( pDirtyPlanCamParams ){
 		pRCamera->GetPlan().SetCameraParameters( pCamera.GetFov(), pCamera.GetFovRatio(),
 			pCamera.GetImageDistance(), pCamera.GetViewDistance() );
+		pRCamera->SetEnableHDRR( pCamera.GetEnableHDRR() );
+		pRCamera->SetEnableGI( pCamera.GetEnableGI() );
 		pDirtyPlanCamParams = false;
 // 			pOgl.LogInfoFormat( "Camera.Sync plan cam params: %d ys", (int)(timer.GetElapsedTime() * 1e6f) );
 	}

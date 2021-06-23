@@ -1704,6 +1704,11 @@
 			<type>float</type>
 			<default>200</default>
 		</property>
+		<property name='enableHDRR'>
+			<description>Enable high definition range rendering (HDRR) if supported.</description>
+			<type>boolean</type>
+			<default>1</default>
+		</property>
 		<property name='exposure'>
 			<description>Exposure.</description>
 			<type>float</type>
@@ -1723,6 +1728,11 @@
 			<description>Adaption time of the eye in seconds.</description>
 			<type>float</type>
 			<default>0.1</default>
+		</property>
+		<property name='enableGI'>
+			<description>Enable global illumination (GI) if supported.</description>
+			<type>boolean</type>
+			<default>0</default>
 		</property>
 		<property name='position'>
 			<description>Position relative to behavior element to attach camera to.</description>

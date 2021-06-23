@@ -56,10 +56,13 @@ pTextureToneMapParams( NULL ),
 pElapsedToneMapAdaption( 0.0f ),
 pForceToneMapAdaption( true ),
 
+pEnableHDRR( true ),
 pExposure( 1.0f ),
 pLowestIntensity( 0.0f ),
 pHighestIntensity( 1.0f ),
 pAdaptionTime( 1.0f ),
+
+pEnableGI( false ),
 
 pPlan( NULL ),
 
@@ -150,6 +153,10 @@ void deoglRCamera::ResetElapsedToneMapAdaption(){
 
 
 
+void deoglRCamera::SetEnableHDRR( bool enable ){
+	pEnableHDRR = enable;
+}
+
 void deoglRCamera::SetExposure( float exposure ){
 	pExposure = decMath::max( exposure, 0.0f );
 }
@@ -164,6 +171,13 @@ void deoglRCamera::SetHighestIntensity( float highestIntensity ){
 
 void deoglRCamera::SetAdaptionTime( float adaptionTime ){
 	pAdaptionTime = decMath::max( adaptionTime, 0.0f );
+}
+
+
+
+void deoglRCamera::SetEnableGI( bool enable ){
+	pEnableGI = enable;
+	pPlan->SetUseGIState( enable );
 }
 
 

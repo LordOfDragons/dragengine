@@ -106,7 +106,7 @@
 
 deoglRenderPlan::deoglRenderPlan( deoglRenderThread &renderThread ) :
 pRenderThread( renderThread ),
-pUseGIState( true ),
+pUseGIState( false ),
 pUseConstGIState( NULL ),
 pSkyLightCount( 0 ),
 pOcclusionMap( NULL ),

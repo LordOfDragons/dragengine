@@ -1181,7 +1181,7 @@ void deScriptingDragonScript::pLoadBasicPackage(){
 		package->AddHostClass( pClsCCT = new deClassColliderCollisionTest( *this ) );
 		package->AddHostClass( pClsLig = new deClassLight( *this ) );
 		package->AddHostClass( pClsLoco = new deClassLocomotion( *this ) );
-		package->AddHostClass( pClsCam = new deClassCamera( engine, this ) );
+		package->AddHostClass( pClsCam = new deClassCamera( *this ) );
 		package->AddHostClass( pClsCanvas = new deClassCanvas( *this ) );
 		package->AddHostClass( pClsCanvasCView = new deClassCanvasCanvasView( *this ) );
 		package->AddHostClass( pClsCanvasImage = new deClassCanvasImage( *this ) );
