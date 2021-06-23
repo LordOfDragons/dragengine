@@ -526,7 +526,7 @@ void deoglRenderOcclusion::RenderTestsCamera( deoglRenderPlan &plan, const deogl
 	testMatrix.a31 = matrixCamera.a31 * zscale;
 	testMatrix.a32 = matrixCamera.a32 * zscale;
 	testMatrix.a33 = matrixCamera.a33 * zscale;
-	testMatrix.a34 = zoffset + occmapResolution * occmapBias;
+	testMatrix.a34 = zoffset; // no bias while sampling
 	
 	plan.SetOcclusionTestMatrix( testMatrix );
 	

@@ -25,6 +25,7 @@
 #include "deoglCollideListComponent.h"
 #include "../component/deoglRComponent.h"
 #include "../renderthread/deoglRenderThread.h"
+#include "../renderthread/deoglRTLogger.h"
 #include "../occlusiontest/deoglOcclusionTest.h"
 #include "../utils/deoglCubeHelper.h"
 
