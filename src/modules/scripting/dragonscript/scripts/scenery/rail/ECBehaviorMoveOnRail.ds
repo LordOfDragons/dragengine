@@ -340,8 +340,21 @@ class ECBehaviorMoveOnRail extends DefaultECBehavior
 		this.pTargetMoving = ECPString.new( prefix + "targetMoving", "" )
 		eclass.addProperty( this.pTargetMoving )
 		
-		collider.getCollider().collisionCategoryReplace( LayerMask.newWith( BaseGameApp.CollisionFilterBit.dynamic ) )
+		// ensure collider is kinematic
+		var ECComposeCollider ccollider = collider.getCollider()
+		ccollider.getPhysicsType().setEnumeration( CollisionResponse.kinematic )
+		ccollider.getLocalGravity().setVector( Vector.new() )
 		
+		ccollider.collisionCategoryReplace( LayerMask.newWith( BaseGameApp.CollisionFilterBit.dynamic ) )
+		
+		// ensure component is dynamic if present
+		if collider.getComponent() != null
+			var ECComposeComponent ccomponent = collider.getComponent().getComponent()
+			ccomponent.getHintMovement().setEnumeration( ComponentHintMovement.dynamic )
+			ccomponent.getRenderEnvMap().setValue( false )
+		end
+		
+		// add behavior to class
 		eclass.addBehavior( this )
 	end
 	
