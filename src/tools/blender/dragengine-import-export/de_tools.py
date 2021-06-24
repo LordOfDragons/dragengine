@@ -89,7 +89,8 @@ class OBJECT_OT_DEToolSelectNgon(bpy.types.Operator):
 	@classmethod
 	def poll(cls, context):
 		return context.active_object != None and context.active_object.type == 'MESH' \
-			and context.tool_settings.mesh_select_mode[2]
+			and context.tool_settings.mesh_select_mode[2] \
+			and bpy.context.mode == 'EDIT_MESH'
 	
 	def execute(self, context):
 		editmode = (bpy.context.mode == 'EDIT_MESH')
@@ -221,8 +222,6 @@ class VIEW3D_PT_Dragengine(bpy.types.Panel):
 		row = col.row(align=True)
 		row.operator(operator="dragengine.seamtosharp", text="Seam to Sharp")
 		row = col.row(align=True)
-		row.operator(operator="uv.seams_from_islands", text="Seams from Island")
-		row = col.row(align=True)
 		row.operator(operator="dragengine.selectngon", text="Select N-Gon")
 		row = col.row(align=True)
 		row.operator(operator="dragengine.mirror_vertices", text="Mirror Vertices")
@@ -341,6 +340,9 @@ class IMAGEEDITOR_PT_Dragengine(bpy.types.Panel):
 		row = layout.row(align=True)
 		row.operator(operator="dragengine.texturefill", text="Texture Fill")
 		row.operator(operator="dragengine.encblnor2denor", text="Convert Normal")
+		
+		row = layout.row(align=True)
+		row.operator(operator="uv.seams_from_islands", text="Seams from Island")
 registerClass(IMAGEEDITOR_PT_Dragengine)
 
 
