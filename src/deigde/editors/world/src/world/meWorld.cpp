@@ -341,6 +341,23 @@ void meWorld::ElementVisibilityChanged(){
 	pShowStateChanged();
 }
 
+void meWorld::EnableGIChanged(){
+	const bool enable = pGuiParams->GetEnableGI();
+	
+	pFreeRoamCamera->SetEnableGI( enable );
+	pPlayerCamera->SetEnableGI( enable );
+	
+	const int count = pObjects.GetCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		meObject &object = *pObjects.GetAt( i );
+		if( object.GetCamera() ){
+			object.GetCamera()->SetEnableGI( enable );
+		}
+	}
+}
+
 void meWorld::ClearScalingOfNonScaledElements(){
 	const decVector unitScale( 1.0f, 1.0f, 1.0f );
 	const int count = pObjects.GetCount();

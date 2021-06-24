@@ -155,6 +155,7 @@ private:
 	bool pShowOcclusionMeshesSelected;
 	bool pShowNavigationSpaces;
 	bool pShowNavigationSpacesSelected;
+	bool pEnableGI;
 	
 	igdeTagManager pTagsHideClass;
 	igdeTagManager pTagsPartialHideClass;
@@ -296,6 +297,14 @@ public:
 	
 	/** \brief Set if navigation spaces of selected objects are shown. */
 	void SetShowNavigationSpacesSelected( bool show );
+	
+	
+	
+	/** \brief Enable GI in cameras. */
+	inline bool GetEnableGI() const{ return pEnableGI; }
+	
+	/** \brief Set enable GI in cameras. */
+	void SetEnableGI( bool enable );
 	
 	
 	

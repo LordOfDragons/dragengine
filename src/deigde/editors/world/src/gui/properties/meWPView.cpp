@@ -320,8 +320,10 @@ public:
 	cActionCameraChanged( meWPView &panel ) : cBaseAction( panel, "", "" ){ }
 	
 	virtual void OnAction( meWorld &world ){
-		if( world.GetActiveCamera() ){
-			world.NotifyCameraChanged( world.GetActiveCamera() );
+		meCamera * const camera = world.GetActiveCamera();
+		if( camera ){
+			world.GetGuiParameters().SetEnableGI( camera->GetEnableGI() );
+			world.NotifyCameraChanged( camera );
 		}
 	}
 };
@@ -353,7 +355,7 @@ pWorld( NULL )
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainerReference content, groupBox, formLine;
+	igdeContainerReference content, groupBox, form, formLine;
 	
 	pListener = new meWPViewListener( *this );
 	
@@ -403,12 +405,15 @@ pWorld( NULL )
 	
 	
 	// camera
-	helper.GroupBox( content, groupBox, "Camera:" );
+	helper.GroupBoxFlow( content, groupBox, "Camera:" );
 	
-	helper.EditString( groupBox, "Active:", "Active camera", pEditActiveCamera, NULL );
+	form.TakeOver( new igdeContainerForm( env ) );
+	groupBox->AddChild( form );
+	
+	helper.EditString( form, "Active:", "Active camera", pEditActiveCamera, NULL );
 	pEditActiveCamera->SetEditable( false );
 	
-	helper.FormLine( groupBox, "", "", formLine );
+	helper.FormLine( form, "", "", formLine );
 	pActionCameraFreeRoaming.TakeOver( new cActionCameraFreeRoaming( *this ) );
 	helper.Button( formLine, pActionCameraFreeRoaming );
 	pActionCameraPlayer.TakeOver( new cActionCameraPlayer( *this ) );
@@ -416,15 +421,16 @@ pWorld( NULL )
 	pActionCameraObject.TakeOver( new cActionCameraObject( *this ) );
 	helper.Button( formLine, pActionCameraObject );
 	
-	helper.ComboBox( groupBox, "Object Camera:", "Object camera", pCBCameraObjects, NULL );
+	helper.ComboBox( form, "Object Camera:", "Object camera", pCBCameraObjects, NULL );
 	pCBCameraObjects->SetDefaultSorter();
+	
+	helper.WPCamera( groupBox, pWPCamera, new cActionCameraChanged( *this ),
+		"Camera Parameters:", false, false, true );
 	
 	
 	// property panels
 	helper.WPSky( content, pWPSky, new cActionSkyChanged( *this ),
 		"Sky:", false, true, true );
-	helper.WPCamera( content, pWPCamera, new cActionCameraChanged( *this ),
-		"Camera:", false, true, true );
 	helper.WPTriggerTable( content, pWPTriggerTable, new cActionTriggerTable( *this ),
 		"Trigger Table:", false, true, true );
 }

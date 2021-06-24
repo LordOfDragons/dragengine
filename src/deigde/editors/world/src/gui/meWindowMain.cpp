@@ -290,6 +290,7 @@ void meWindowMain::CreateNewWorld(){
 	
 	refWorld.TakeOver( new meWorld( &GetEnvironment() ) );
 	meWorld * const world = ( meWorld* )( deObject* )refWorld;
+	world->GetGuiParameters().SetEnableGI( true );
 	world->SetSaved( false );
 	world->SetChanged( false );
 	world->SetDepChanged( false );

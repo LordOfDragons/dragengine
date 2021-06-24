@@ -152,7 +152,6 @@ private:
 	deMicrophone *pEngMicrophone;
 	
 	deForceField *pEngForceField;
-	float pFFDir;
 	
 	decDVector pSize;
 	decVector pGravity;
@@ -296,6 +295,9 @@ public:
 	
 	/** Element visibility changed. */
 	void ElementVisibilityChanged();
+	
+	/** Enable GI changed. */
+	void EnableGIChanged();
 	
 	/** Clear scaling of non-scaled elements. */
 	void ClearScalingOfNonScaledElements();
