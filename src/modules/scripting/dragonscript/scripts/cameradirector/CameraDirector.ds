@@ -87,7 +87,7 @@ class CameraDirector
 		this.pAdaptionTime = 0.1
 		this.pViewDistance = 200
 		this.pEnableHDRR = true
-		this.pEnableGI = false
+		this.pEnableGI = Engine.getDefaultEnableGI()
 		
 		// set layer mask. theoretically a camera needs only the default layer bit.
 		// light sources use by default both default and envmap layer bit. this would

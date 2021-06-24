@@ -228,7 +228,7 @@ class ECBehaviorCamera extends DefaultECBehavior
 		this.pAdaptionTime = ECPFloat.new( prefix + ".adaptionTime", 0.1, 0 )
 		eclass.addProperty( this.pAdaptionTime )
 		
-		this.pEnableGI = ECPBoolean.new( prefix + ".enableGI", false )
+		this.pEnableGI = ECPBoolean.new( prefix + ".enableGI", Engine.getDefaultEnableGI() )
 		eclass.addProperty( this.pEnableGI )
 		
 		eclass.addBehavior( this )

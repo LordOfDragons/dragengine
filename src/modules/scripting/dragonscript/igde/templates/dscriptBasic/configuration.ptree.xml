@@ -54,4 +54,18 @@
 	<string path='pathSavedBindings'>/config/bindings.xml</string>
 	-->
 	
+	
+	<!--
+	Default value for EnableGI parameter in cameras. Camera, CameraDirector and
+	ECBehaviorCamera use this value as default value for the EnabledGI property.
+	
+	If true enables global illumination (GI) if supported.
+	
+	This parameter exists since version 1.5 . The default value is false to be
+	consistent with version prior to 1.5 . Since version 1.5 new created projects
+	have this value set to true. You have to set this value to true here to change
+	the default behavior of all cameras created without having to do it manually
+	-->
+	<boolean path='defaultEnableGI'>true</boolean>
+	
 </parameterTree>

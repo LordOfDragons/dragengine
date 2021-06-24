@@ -28,6 +28,7 @@
 #include <libdscript/exceptions.h>
 
 #include "deClassCamera.h"
+#include "../deClassEngine.h"
 #include "../effects/deClassEffect.h"
 #include "../math/deClassVector.h"
 #include "../math/deClassDVector.h"
@@ -70,6 +71,7 @@ void deClassCamera::nfNew::RunFunction( dsRunTime*, dsValue *myself ){
 	
 	// create camera
 	nd.camera = ds.GetGameEngine()->GetCameraManager()->CreateCamera();
+	nd.camera->SetEnableGI( ds.GetClassEngine()->GetDefaultEnableGI() );
 }
 
 // public func destructor()

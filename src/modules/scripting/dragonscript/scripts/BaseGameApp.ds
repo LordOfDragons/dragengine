@@ -403,6 +403,9 @@ class BaseGameApp extends Game
 		this.pPlayerControlledActor = ECBehaviorPlayerControllable.Tracker.new()
 		
 		this.loadConfiguration()
+		
+		Engine.setDefaultEnableGI(this.pConfiguration.getBoolAt("defaultEnableGI", false))
+		
 		this.initLanguages()
 		this.registerPersistencyFactories()
 		

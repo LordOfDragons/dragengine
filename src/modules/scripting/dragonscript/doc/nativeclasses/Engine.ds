@@ -72,5 +72,22 @@ fixed class Engine
 	public static func Dictionary getScriptModuleStats()
 		return null
 	end
+	
+	
+	
+	/**
+	 * \brief Default value for EnableGI parameter in cameras.
+	 * \version 1.5
+	 */
+	public static func bool getDefaultEnableGI()
+		return false
+	end
+	
+	/**
+	 * \brief Set default value for EnableGI parameter in cameras.
+	 * \version 1.5
+	 */
+	public static func void setDefaultEnableGI(bool enable)
+	end
 	/*@}*/
 end
