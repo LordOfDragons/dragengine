@@ -53,8 +53,6 @@ pShowOcclusionMeshesSelected( false ),
 pShowNavigationSpaces( false ),
 pShowNavigationSpacesSelected( false ),
 
-pEnableGI( false ),
-
 pHPDrawMode( ehpdmRaise ),
 pHPRadius( 2.5f ),
 pHPDrawStrength( 0.2f ),
@@ -230,15 +228,6 @@ void meWorldGuiParameters::SetShowNavigationSpacesSelected( bool show ){
 	
 	pShowNavigationSpacesSelected = show;
 	pWorld.ElementVisibilityChanged();
-}
-
-void meWorldGuiParameters::SetEnableGI( bool enable ){
-	if( enable == pEnableGI ){
-		return;
-	}
-	
-	pEnableGI = enable;
-	pWorld.EnableGIChanged();
 }
 
 

@@ -155,7 +155,7 @@ igdeGameDefinition *gameDefinition, igdeStepableTask **task ){
 	reader.TakeOver( pWndMain->GetEnvironment().GetFileSystemGame()->
 		OpenFileForReading( decPath::CreatePathUnix( filename ) ) );
 	
-	meWorld * const world = new meWorld( &pWndMain->GetEnvironment() );
+	meWorld * const world = new meWorld( *pWndMain, &pWndMain->GetEnvironment() );
 	world->SetFilePath( filename );
 	try{
 		*task = lsWorld->CreateLoadTask( world, reader );

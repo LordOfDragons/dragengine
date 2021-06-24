@@ -39,6 +39,8 @@
 #include "terrain/meHeightTerrainSector.h"
 #include "weather/meWeather.h"
 #include "objectshape/meObjectShape.h"
+#include "../configuration/meConfiguration.h"
+#include "../gui/meWindowMain.h"
 
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gamedefinition/igdeGameDefinition.h>
@@ -90,8 +92,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-meWorld::meWorld( igdeEnvironment *environment ) :
+meWorld::meWorld( meWindowMain &windowMain, igdeEnvironment *environment ) :
 igdeEditableEntity( environment ),
+pWindowMain( windowMain ),
 pNextObjectID( 1 ) // 0 is reserved for invalid or undefined IDs
 {
 	deEngine * const engine = GetEngine();
@@ -162,10 +165,12 @@ pNextObjectID( 1 ) // 0 is reserved for invalid or undefined IDs
 		// create cameras
 		pFreeRoamCamera = new meCamera( engine );
 		pFreeRoamCamera->SetName( "Free Roaming Camera" );
+		pFreeRoamCamera->SetEnableGI( windowMain.GetConfiguration().GetEnableGI() );
 		pFreeRoamCamera->SetWorld( this );
 		
 		pPlayerCamera = new meCamera( engine );
 		pPlayerCamera->SetName( "Player Camera" );
+		pPlayerCamera->SetEnableGI( windowMain.GetConfiguration().GetEnableGI() );
 		pPlayerCamera->SetWorld( this );
 		
 		pActiveCamera = pFreeRoamCamera;
@@ -342,7 +347,7 @@ void meWorld::ElementVisibilityChanged(){
 }
 
 void meWorld::EnableGIChanged(){
-	const bool enable = pGuiParams->GetEnableGI();
+	const bool enable = pWindowMain.GetConfiguration().GetEnableGI();
 	
 	pFreeRoamCamera->SetEnableGI( enable );
 	pPlayerCamera->SetEnableGI( enable );
@@ -884,6 +889,8 @@ void meWorld::NotifySkyChanged(){
 	for( n=0; n<pNotifierCount; n++ ){
 		pNotifiers[ n ]->SkyChanged( this );
 	}
+	
+	SetChanged( true ); // this is correct. sky information is saved as world-editor specific data
 }
 
 void meWorld::NotifyModeChanged(){

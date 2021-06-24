@@ -73,6 +73,7 @@ class meDecal;
 class meWeather;
 
 class meWorldGuiParameters;
+class meWindowMain;
 
 class igdeEnvironment;
 class igdeWSky;
@@ -118,7 +119,7 @@ public:
 		eclmDecals,
 		
 		/** Wind. */
-		      eclmForceField,
+		eclmForceField,
 		
 		/** AI. */
 		eclmAI,
@@ -146,6 +147,8 @@ public:
 	};
 	
 private:
+	meWindowMain &pWindowMain;
+	
 	deWorld *pDEWorld;
 	deColliderVolume *pEngColCollider;
 	igdeWSky *pSky;
@@ -202,7 +205,7 @@ public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new world object linked to the given engine. */
-	meWorld( igdeEnvironment *environment );
+	meWorld( meWindowMain &windowMain, igdeEnvironment *environment );
 	
 protected:
 	/** Cleans up the world object. */
@@ -214,6 +217,9 @@ protected:
 public:
 	/** @name Management */
 	/*@{*/
+	/** Main window. */
+	inline meWindowMain &GetWindowMain() const{ return pWindowMain; }
+	
 	/** Retrieves the engine side world resource. */
 	inline deWorld *GetEngineWorld() const{ return pDEWorld; }
 	/** Retrieves the sky wrapper. */

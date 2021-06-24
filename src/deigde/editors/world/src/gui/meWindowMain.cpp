@@ -288,9 +288,8 @@ void meWindowMain::SetWorld( meWorld *world ){
 void meWindowMain::CreateNewWorld(){
 	deObjectReference refWorld;
 	
-	refWorld.TakeOver( new meWorld( &GetEnvironment() ) );
+	refWorld.TakeOver( new meWorld( *this, &GetEnvironment() ) );
 	meWorld * const world = ( meWorld* )( deObject* )refWorld;
-	world->GetGuiParameters().SetEnableGI( true );
 	world->SetSaved( false );
 	world->SetChanged( false );
 	world->SetDepChanged( false );
@@ -317,6 +316,13 @@ void meWindowMain::LoadWorld( const char *filename ){
 	
 	GetRecentFiles().AddFile( filename );
 }
+
+void meWindowMain::ConfigEnableGIChanged(){
+	if( pWorld ){
+		pWorld->EnableGIChanged();
+	}
+}
+
 
 
 

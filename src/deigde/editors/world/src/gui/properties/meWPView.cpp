@@ -322,7 +322,7 @@ public:
 	virtual void OnAction( meWorld &world ){
 		meCamera * const camera = world.GetActiveCamera();
 		if( camera ){
-			world.GetGuiParameters().SetEnableGI( camera->GetEnableGI() );
+			pPanel.GetWindowProperties().GetWindowMain().GetConfiguration().SetEnableGI( camera->GetEnableGI() );
 			world.NotifyCameraChanged( camera );
 		}
 	}
@@ -429,8 +429,7 @@ pWorld( NULL )
 	
 	
 	// property panels
-	helper.WPSky( content, pWPSky, new cActionSkyChanged( *this ),
-		"Sky:", false, true, true );
+	helper.WPSky( content, pWPSky, new cActionSkyChanged( *this ), "Sky:", false, false, true );
 	helper.WPTriggerTable( content, pWPTriggerTable, new cActionTriggerTable( *this ),
 		"Trigger Table:", false, true, true );
 }

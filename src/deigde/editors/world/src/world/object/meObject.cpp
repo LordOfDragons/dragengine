@@ -34,6 +34,8 @@
 #include "../idgroup/meMapIDGroup.h"
 #include "../idgroup/meIDGroup.h"
 #include "../../collisions/meCLInvalidateDecals.h"
+#include "../../configuration/meConfiguration.h"
+#include "../../gui/meWindowMain.h"
 #include "../../utils/meHelpers.h"
 
 #include <deigde/gamedefinition/igdeGameDefinition.h>
@@ -2278,6 +2280,7 @@ void meObject::pUpdateCamera(){
 	if( pClassDef && pClassDef->GetHasCamera() ){
 		if( ! pCamera ){
 			pCamera = new meCamera( GetEnvironment()->GetEngineController()->GetEngine() );
+			pCamera->SetEnableGI( pWorld->GetWindowMain().GetConfiguration().GetEnableGI() );
 			pCamera->SetHostObject( this );
 			pCamera->SetWorld( pWorld );
 		}

@@ -64,7 +64,7 @@ public:
 	cTextPathSky( igdeWPSky &panel ) : pPanel( panel ){ }
 	
 	virtual void OnTextChanged( igdeTextField *textField ){
-		if( ! pPanel.GetSky() ){
+		if( ! pPanel.GetSky() || textField->GetText() == pPanel.GetSky()->GetPath() ){
 			return;
 		}
 		
@@ -90,6 +90,10 @@ public:
 		
 		decString sky( pTextField.GetText() );
 		if( ! igdeDialogBrowserSky::SelectSky( &pPanel, sky ) ){
+			return;
+		}
+		
+		if( sky == pPanel.GetSky()->GetPath() ){
 			return;
 		}
 		
@@ -120,6 +124,10 @@ public:
 			return;
 		}
 		
+		if( filename == pPanel.GetSky()->GetPath() ){
+			return;
+		}
+		
 		pPanel.GetSky()->SetPath( filename );
 		pPanel.UpdateSky();
 		pPanel.OnAction();
@@ -136,14 +144,16 @@ public:
 	pPanel( panel ), pIndex( index ){ }
 	
 	virtual void OnSliderTextValueChanging( igdeEditSliderText *sliderText ){
-		OnSliderTextValueChanged( sliderText );
-	}
-	
-	virtual void OnSliderTextValueChanged( igdeEditSliderText *sliderText ){
 		if( ! pPanel.GetSky() ){
 			return;
 		}
+		
 		pPanel.GetSky()->SetControllerValue( pIndex, sliderText->GetValue() );
+	}
+	
+	virtual void OnSliderTextValueChanged( igdeEditSliderText *sliderText ){
+		OnSliderTextValueChanging( sliderText );
+		pPanel.OnAction();
 	}
 };
 
