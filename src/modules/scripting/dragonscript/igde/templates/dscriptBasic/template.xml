@@ -38,6 +38,9 @@
 	<file>
 		<path>develop/Notes</path>
 	</file>
+	<file>
+		<path>configuration.ptree.xml</path>
+	</file>
 	
 	<!-- KDevelop project file for editing scripts. -->
 	<file>

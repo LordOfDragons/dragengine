@@ -23,8 +23,8 @@ class StartGame extends WindowGameWorld.Loader
 	 * \param window Game world window from BaseGameApp.
 	 * \param pathWorld Path to world file to load
 	 */
-	public func new( WindowGameWorld window, String pathWorld ) super( window )
-		setPathWorld( pathWorld )
+	public func new(WindowGameWorld window, String pathWorld) super(window)
+		setPathWorld(pathWorld)
 	end
 	
 	/**
@@ -44,21 +44,33 @@ class StartGame extends WindowGameWorld.Loader
 		// set properties and add texture replacements to alter the created actor. Calling
 		// createElement() creates the actor. The cast is required since spawn points require
 		// a BaseActor object instance.
-		var ElementClass eclass = app.getElementClassList().getNamed( "Actor" )
+		var ElementClass eclass = app.getElementClassList().getNamed("Actor")
 		var UniqueID id = app.getIDGenerator().nextID()
-		var BaseActor player = StubElement.new( eclass, id ).createElement() cast BaseActor
-		player.getAIAction().setAction( BAAFirstPerson.new() )
+		var BaseActor player = StubElement.new(eclass, id).createElement() cast BaseActor
+		player.getAIAction().setAction(BAAFirstPerson.new())
 		
 		// To spawn the actor find a suitable spawn point in the game world. For this code
 		// here to work you have to add a spawn point in your world named "player". Once
 		// you have obtained the spawn point calling spawn() takes care of the rest.
-		gameWorld.getSpawnPoints().getNamed( "player" ).spawn( gameWorld, player )
+		gameWorld.getSpawnPoints().getNamed("player").spawn(gameWorld, player)
 		
 		// To take control of the actor
 		player.getPlayerControllable().takeControl()
 		
-		// Set a camera directory placing the camera and microphone relative to the actor.
-		getWindow().setCameraDirector( PlayerControlledActorCameraDirector.new() )
+		// Assign camera director attaching the camera to the player controlled actor
+		// at eye level.
+		// 
+		// You can also set camera related parameters like enabling Global Illumination
+		// if supported by the Graphic Module. Parameters set to the camera director
+		// will be applied to all cameras the director takes control of so you do not
+		// have to do this by hand all the time.
+		// 
+		// Despite the name the camera director also directs microphone resource
+		var PlayerControlledActorCameraDirector director = PlayerControlledActorCameraDirector.new()
+		
+		director.setEnableGI(true)
+		
+		getWindow().setCameraDirector(director)
 		
 		// Do more start game tasks here.
 		
