@@ -74,6 +74,7 @@ pPlanned( false ),
 pUseLight( true ),
 pUseShadow( false ),
 pShadowLayerCount( 0 ),
+pGIShadowSize( 1024 ),
 pGIShadowUpdateStatic( true ),
 pGIRenderTaskStatic( plan.GetRenderThread() ),
 pGIRenderTaskDynamic( plan.GetRenderThread() ),
@@ -412,11 +413,11 @@ void deoglRenderPlanSkyLight::pDetermineShadowParameters(){
 }
 
 void deoglRenderPlanSkyLight::pCalcShadowLayerParams(){
-	const deoglConfiguration &config = pPlan.GetRenderThread().GetConfiguration();
-	const float smOffsetScale = config.GetDistShadowScale();
+// 	const deoglConfiguration &config = pPlan.GetRenderThread().GetConfiguration();
+// 	const float smOffsetScale = config.GetDistShadowScale();
 	//const float smOffsetBias = config.GetDistShadowBias() / ( float )( ( 1 << 24 ) - 1 ); // config.GetShadowMapOffsetBias();
 	//const float smOffsetBias = 0.001f; //config.GetDistShadowBias() / ( float )( ( 1 << 16 ) - 1 ); // config.GetShadowMapOffsetBias();
-	const float smOffsetBias = config.GetDistShadowBias();
+// 	const float smOffsetBias = config.GetDistShadowBias();
 	
 //	const deSkyLayer &engSkyLayer = *pLayer->GetLayer();
 	const decDMatrix &matCamInv = pPlan.GetInverseCameraMatrix();
@@ -495,20 +496,20 @@ void deoglRenderPlanSkyLight::pCalcShadowLayerParams(){
 	}
 	
 	//const float baseDistFactor = 1.0f / ( pShadowLayers[ 0 ].frustumFar - pShadowLayers[ 0 ].frustumNear );
-	pShadowLayers[ 0 ].zscale = smOffsetScale;
-	pShadowLayers[ 0 ].zoffset = smOffsetBias;
+	pShadowLayers[ 0 ].zscale = 1.0f; //smOffsetScale;
+	pShadowLayers[ 0 ].zoffset = 0.01f; // smOffsetBias;
 	
 	//const float distScale1 = baseDistFactor * ( pShadowLayers[ 1 ].frustumFar - pShadowLayers[ 1 ].frustumNear );
-	pShadowLayers[ 1 ].zscale = smOffsetScale;
-	pShadowLayers[ 1 ].zoffset = smOffsetBias;
+	pShadowLayers[ 1 ].zscale = 1.5f; //smOffsetScale;
+	pShadowLayers[ 1 ].zoffset = 0.01f; // smOffsetBias;
 	
 	//const float distScale2 = baseDistFactor * ( pShadowLayers[ 2 ].frustumFar - pShadowLayers[ 2 ].frustumNear );
-	pShadowLayers[ 2 ].zscale = smOffsetScale;
-	pShadowLayers[ 2 ].zoffset = smOffsetBias;
+	pShadowLayers[ 2 ].zscale = 2.0f; //smOffsetScale;
+	pShadowLayers[ 2 ].zoffset = 0.01f; // smOffsetBias;
 	
 	//const float distScale3 = baseDistFactor * ( pShadowLayers[ 3 ].frustumFar - pShadowLayers[ 3 ].frustumNear );
-	pShadowLayers[ 3 ].zscale = smOffsetScale;
-	pShadowLayers[ 3 ].zoffset = smOffsetBias;
+	pShadowLayers[ 3 ].zscale = 2.5f; //smOffsetScale;
+	pShadowLayers[ 3 ].zoffset = 0.01f; // smOffsetBias;
 	
 	/*
 	float / * lambda = 0.5f, * / N = ( float )layerCount;
@@ -658,6 +659,8 @@ void deoglRenderPlanSkyLight::pGICalcShadowLayerParams(){
 	const deoglConfiguration &config = pPlan.GetRenderThread().GetConfiguration();
 	const decMatrix matLig( decMatrix::CreateRotation( 0.0f, PI, 0.0f ) * pLayer->GetMatrix() );
 	
+	pGIShadowSize = 2048; // 1024
+	
 	pGIShadowLayer.frustumNear = 0.0f;
 	pGIShadowLayer.frustumFar = 1.0f;
 	pGIShadowLayer.layerBorder = 1.0f;
@@ -677,10 +680,9 @@ void deoglRenderPlanSkyLight::pGICalcShadowLayerParams(){
 	slgs.ClearDirtyStaticShadow();
 	
 	deoglSCSolid &scsolid = slgs.GetShadowCaster().GetSolid();
-	const int shadowMapSize = 1024;
 	
 	if( scsolid.GetStaticMap() ){
-		if( scsolid.GetStaticMap()->GetWidth() != shadowMapSize ){
+		if( scsolid.GetStaticMap()->GetWidth() != pGIShadowSize ){
 			scsolid.DropStatic();
 			pGIShadowUpdateStatic = true;
 		}

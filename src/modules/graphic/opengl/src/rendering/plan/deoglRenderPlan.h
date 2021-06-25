@@ -110,6 +110,7 @@ private:
 	bool pIgnoreDynamicComponents;
 	bool pRenderDebugPass;
 	bool pNoReflections;
+	bool pNoAmbientLight;
 	bool pUseGIState;
 	deoglGIState *pUseConstGIState;
 	
@@ -433,8 +434,14 @@ public:
 	/** No reflections are used. */
 	inline bool GetNoReflections() const{ return pNoReflections; }
 	
-	/** Set if no reflections are used. */
+	/** Set if no reflections is used. */
 	void SetNoReflections( bool noReflections );
+	
+	/** No ambient light are used. */
+	inline bool GetNoAmbientLight() const{ return pNoAmbientLight; }
+	
+	/** Set if no ambient light is used. */
+	void SetNoAmbientLight( bool noAmbientLight );
 	
 	/** Use GI state. */
 	inline bool GetUseGIState() const{ return pUseGIState; }
@@ -604,13 +611,16 @@ public:
 	
 	
 	/** Global illumination state or NULL. */
-	inline deoglGIState *GetGICascade() const{ return pGIState; }
+	inline deoglGIState *GetGIState() const{ return pGIState; }
 	
 	/** GI state to update or NULL. */
 	deoglGIState *GetUpdateGIState() const;
 	
 	/** GI state to render or NULL. */
 	deoglGIState *GetRenderGIState() const;
+	
+	/** Drop GI state if present. */
+	void DropGIState();
 	
 	
 	

@@ -204,16 +204,12 @@ deoglGICascade &deoglGIState::GetActiveCascade() const{
 	return *pCascades[ pActiveCascade ];
 }
 
+deoglGICascade & deoglGIState::GetLastCascade() const{
+	return *pCascades[ pLastFrameCascade ];
+}
+
 deoglGICascade & deoglGIState::GetSkyShadowCascade() const{
-	// what cascade to use depends on how GI shadow maps are handled. right now one shadow
-	// map is used for the entire GI state. for this reason the highest cascade position
-	// is used for tracking static changes.
-	// 
-	// another solution is to use two shadow maps. for the 3rd and 4th cascade use the 4th
-	// cascade. for the 1st and 2nd cascade use the 2nd cascade. this reduces the shadow
-	// maps to two but still allows to use the better matching one for each cascade
-	//return *pCascades[ pActiveCascade + ( 1 - ( pActiveCascade % 2 ) ) ];
-	return *pCascades[ pCascadeCount - 1 ];
+	return *pCascades[ GetActiveCascade().GetSkyShadowCascade() ];
 }
 
 
@@ -236,20 +232,49 @@ void deoglGIState::PrepareUBOClearProbes() const{
 #define SPECIAL_TIMER_PRINT(w)
 #endif
 
+void deoglGIState::ActivateNextCascade(){
+	// store cascade as last frame cascade
+	pLastFrameCascade = pActiveCascade;
+	
+	// update first all cascades requiring full update of all probes inside view. do this
+	// starting at the largest cascade going down to the smallest to ensure valid lighting
+	// results to be present as quickly as possible
+	for( pActiveCascade=pCascadeCount-1; pActiveCascade>=0; pActiveCascade-- ){
+		if( pCascades[ pActiveCascade ]->GetRequiresFullUpdateInsideView() ){
+// 			pRenderThread.GetLogger().LogInfoFormat( "GIState: next cascade %d (requires full update inside view)", pActiveCascade );
+			return;
+		}
+	}
+	
+	// update second all cascaded with invalid probes inside view. do this starting at the
+	// largest cascade going down to the smallest to ensure valid lighting results to be
+	// present as quickly as possible
+	for( pActiveCascade=pCascadeCount-1; pActiveCascade>=0; pActiveCascade-- ){
+		if( pCascades[ pActiveCascade ]->HasInvalidProbesInsideView() ){
+// 			pRenderThread.GetLogger().LogInfoFormat( "GIState: next cascade %d (has invalid probes inside view)", pActiveCascade );
+			return;
+		}
+	}
+	
+	// regular update of cascades using cascade cycle
+	pActiveCascade = pCascaceUpdateCycle[ pCascaceUpdateCycleIndex++ ];
+	if( pCascaceUpdateCycleIndex >= pCascaceUpdateCycleCount ){
+		pCascaceUpdateCycleIndex = 0;
+	}
+// 	pRenderThread.GetLogger().LogInfoFormat( "GIState: next cascade %d (cycle)", pActiveCascade );
+}
+
 void deoglGIState::Update( const decDVector &cameraPosition, const deoglDCollisionFrustum &frustum ){
 // 		pRenderThread.GetLogger().LogInfoFormat( "Update GIState %p (%g,%g,%g)",
 // 			this, cameraPosition.x, cameraPosition.y, cameraPosition.z );
 	
 	// updates from last frame
-	pUpdateProbeOffsetFromShader( GetActiveCascade() );
-	pUpdateProbeExtendsFromShader( GetActiveCascade() );
+	pUpdateProbeOffsetFromShader( GetLastCascade() );
+	pUpdateProbeExtendsFromShader( GetLastCascade() );
 	
 	INIT_SPECIAL_TIMING
 	// monitor configuration changes
 	pRenderThread.GetGI().GetTraceRays().UpdateFromConfig();
-	
-	// choose cascade to update this frame
-	pActivateNextCascade();
 	
 	// update position
 	deoglGICascade &cascade = GetActiveCascade();
@@ -440,6 +465,51 @@ void deoglGIState::pInitCascades(){
 	pCascades[ 3 ]->SetFillUpUpdatesWithExpensiveProbes( true );
 	pCascadeCount = 4;
 	
+	// what cascade to use depends on how GI shadow maps are handled.
+	// 
+	// 
+	// version 1
+	// ---------
+	// use the highest cascade for the entire GI state.
+	// 
+	// using this method reduces static shadow map updates to the minimum. the big problem
+	// though is the resolution.
+	// 
+	// for the default camera view distance of 250m and a shadow map size of 1024 the
+	// resolution is roughly 0.7m per pixel. this causes light to leak in causing the GI
+	// result to be falsified. with higher shadow map size this is improved but with
+	// larger camera view distance the problem comes back.
+	// 
+	// 
+	// version 2
+	// ---------
+	// use one shadow map for two cascades.
+	// 
+	// the first and second cascade are scaled by factor 2 so the second cascade can be
+	// used as shadow cascade for the first. the same is true for the other two cascaded.
+	// 
+	// using 1m probe spacing and 50m detection range the maximum AABB size of the second
+	// cascade is 161 (= (31/2)*2 + 50). this is constant no matter how large the camera
+	// view distance is. in the worst sky light orientation the shadow map area is of
+	// size 322. in typical situations this is 240. using the worst situation and a shadow
+	// map size of 1024 this results in a worst possible resolution of 0.31m or 0.23m for
+	// the less worse case. for a typical outer house wall size of 0.4m this is good enough.
+	// 
+	// by increasing the shadow map size the resolution can be improved to 0.16m (for 2048)
+	// and 0.08m (for 4096) for the worst case and 0.12m respectively 0.06m for the less
+	// worse situation.
+	// 
+	// for the two other cascades the resolution depends on the camera view distance and is
+	// as bad as in the first solution. but this is less of a problem since the larger
+	// cascades are filler cascades for large distance where errors are less problematic
+// 	pCascades[ 0 ]->SetSkyShadowCascade( 3 );
+// 	pCascades[ 1 ]->SetSkyShadowCascade( 3 );
+// 	pCascades[ 2 ]->SetSkyShadowCascade( 3 );
+// 	pCascades[ 3 ]->SetSkyShadowCascade( 3 );
+	
+	pCascades[ 0 ]->SetSkyShadowCascade( 1 );
+	pCascades[ 2 ]->SetSkyShadowCascade( 3 );
+	
 	// debug
 	deoglRTLogger &logger = pRenderThread.GetLogger();
 	logger.LogInfo( "GI Cascades:" );
@@ -476,6 +546,10 @@ void deoglGIState::pInitCascadeUpdateCycle(){
 	pCascaceUpdateCycle[ 4 ] = 1;
 	pCascaceUpdateCycle[ 5 ] = 3;
 	pCascaceUpdateCycleCount = 6;
+	
+	// debug
+// 	pCascaceUpdateCycle[ 0 ] = 0;
+// 	pCascaceUpdateCycleCount = 1;
 }
 
 void deoglGIState::pInitUBOClearProbes(){
@@ -570,35 +644,6 @@ void deoglGIState::pUpdateProbeExtendsFromShader( deoglGICascade &cascade ){
 	
 	cascade.UpdateProbeExtendsFromShader( pVBOProbeExtendsData );
 	SPECIAL_TIMER_PRINT("UpdateProbeExtendsFromShader: > UpdateCascade")
-}
-
-void deoglGIState::pActivateNextCascade(){
-	// update first all cascades requiring full update of all probes inside view. do this
-	// starting at the largest cascade going down to the smallest to ensure valid lighting
-	// results to be present as quickly as possible
-	for( pActiveCascade=pCascadeCount-1; pActiveCascade>=0; pActiveCascade-- ){
-		if( pCascades[ pActiveCascade ]->GetRequiresFullUpdateInsideView() ){
-// 			pRenderThread.GetLogger().LogInfoFormat( "GIState: next cascade %d (requires full update inside view)", pActiveCascade );
-			return;
-		}
-	}
-	
-	// update second all cascaded with invalid probes inside view. do this starting at the
-	// largest cascade going down to the smallest to ensure valid lighting results to be
-	// present as quickly as possible
-	for( pActiveCascade=pCascadeCount-1; pActiveCascade>=0; pActiveCascade-- ){
-		if( pCascades[ pActiveCascade ]->HasInvalidProbesInsideView() ){
-// 			pRenderThread.GetLogger().LogInfoFormat( "GIState: next cascade %d (has invalid probes inside view)", pActiveCascade );
-			return;
-		}
-	}
-	
-	// regular update of cascades using cascade cycle
-	pActiveCascade = pCascaceUpdateCycle[ pCascaceUpdateCycleIndex++ ];
-	if( pCascaceUpdateCycleIndex >= pCascaceUpdateCycleCount ){
-		pCascaceUpdateCycleIndex = 0;
-	}
-// 	pRenderThread.GetLogger().LogInfoFormat( "GIState: next cascade %d (cycle)", pActiveCascade );
 }
 
 void deoglGIState::pPrepareTraceProbes( deoglGICascade &cascade, const deoglDCollisionFrustum &frustum ){

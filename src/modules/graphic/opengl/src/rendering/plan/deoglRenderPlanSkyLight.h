@@ -86,6 +86,7 @@ private:
 	deoglCollideList pGICollideList;
 // 	decVector pGIBoxMinExtend;
 // 	decVector pGIBoxMaxExtend;
+	int pGIShadowSize;
 	sShadowLayer pGIShadowLayer;
 	bool pGIShadowUpdateStatic;
 	deoglRenderTask pGIRenderTaskStatic;
@@ -182,6 +183,9 @@ public:
 	
 	/** GI box max extend. */
 // 	inline const decVector &GetGIBoxMaxExtend() const{ return pGIBoxMaxExtend; }
+	
+	/** GI shadow size. */
+	inline int GetGIShadowSize() const{ return pGIShadowSize; }
 	
 	/** GI shadow layer. */
 	inline sShadowLayer &GetGIShadowLayer(){ return pGIShadowLayer; }

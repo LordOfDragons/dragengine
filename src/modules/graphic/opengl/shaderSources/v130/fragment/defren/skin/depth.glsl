@@ -163,13 +163,6 @@ vec3 finalEmissivityIntensity( in vec3 intensity ){
 //////////////////
 
 void main( void ){
-	// discard fragments beyond render range
-	#ifdef FADEOUT_RANGE
-		if( vFadeZ > pFadeRange.y ){
-			discard;
-		}
-	#endif
-	
 	// calculate depth if non-projective depth is used. this has to be done before any branching
 	// because derivatives become undefined otherwise.
 	#ifdef DEPTH_ORTHOGONAL
@@ -180,6 +173,13 @@ void main( void ){
 		float depth = length( vPosition ) * pDepthTransform.x + pDepthTransform.y;
 		vec2 depthDeriv = vec2( dFdx( depth ), dFdy( depth ) );
 		gl_FragDepth = depth;
+	#endif
+	
+	// discard fragments beyond render range
+	#ifdef FADEOUT_RANGE
+		if( vFadeZ > pFadeRange.y ){
+			discard;
+		}
 	#endif
 	
 	#ifdef DEPTH_OFFSET

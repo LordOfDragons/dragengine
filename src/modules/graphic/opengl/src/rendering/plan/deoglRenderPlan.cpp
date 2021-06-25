@@ -141,6 +141,7 @@ pTaskFindContent( NULL )
 	pIgnoreDynamicComponents = false;
 	pRenderDebugPass = true;
 	pNoReflections = false;
+	pNoAmbientLight = false;
 	
 	pUseLayerMask = false;
 	
@@ -764,6 +765,11 @@ void deoglRenderPlan::pPlanGI(){
 			pWorld->AddGICascade( pGIState );
 		}
 	}
+	
+	// activate next cascade to use for the upcoming pUpdateGI() call. it is important to do
+	// this here and not inside pUpdateGI() since deoglRenderPlanSkyLight needs to know the
+	// active cascade used for this frame update. and this happens before pUpdateGI() is called
+	pGIState->ActivateNextCascade();
 }
 
 void deoglRenderPlan::pUpdateGI(){
@@ -1551,6 +1557,10 @@ void deoglRenderPlan::SetNoReflections( bool noReflections ){
 	pNoReflections = noReflections;
 }
 
+void deoglRenderPlan::SetNoAmbientLight( bool noAmbientLight ){
+	pNoAmbientLight = noAmbientLight;
+}
+
 void deoglRenderPlan::SetUseGIState( bool useGIState ){
 	pUseGIState = useGIState;
 }
@@ -1713,6 +1723,29 @@ deoglGIState *deoglRenderPlan::GetRenderGIState() const{
 		
 	}else{
 		return pGIState;
+	}
+}
+
+void deoglRenderPlan::DropGIState(){
+	// WARNING called from main thread during synchronization
+	
+	if( ! pGIState ){
+		return;
+	}
+	
+	deoglRenderPlanDeletion *delayedDeletion = NULL;
+	
+	try{
+		delayedDeletion = new deoglRenderPlanDeletion;
+		delayedDeletion->giState = pGIState;
+		pGIState = NULL;
+		pRenderThread.GetDelayedOperations().AddDeletion( delayedDeletion );
+		
+	}catch( const deException &e ){
+		if( delayedDeletion ){
+			delete delayedDeletion;
+		}
+		pRenderThread.GetLogger().LogException( e );
 	}
 }
 

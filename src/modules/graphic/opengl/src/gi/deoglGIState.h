@@ -81,6 +81,7 @@ private:
 	deoglGICascade **pCascades;
 	int pCascadeCount;
 	int pActiveCascade;
+	int pLastFrameCascade;
 	
 	int *pCascaceUpdateCycle;
 	int pCascaceUpdateCycleCount;
@@ -173,6 +174,9 @@ public:
 	/** Activate cascade. */
 	deoglGICascade &GetActiveCascade() const;
 	
+	/** Last frame cascade. */
+	deoglGICascade &GetLastCascade() const;
+	
 	/** Cascade to use for sky shadow casting based on the active cascade. */
 	deoglGICascade &GetSkyShadowCascade() const;
 	
@@ -264,6 +268,9 @@ public:
 	/** Probe extends feedback VBO. */
 	inline GLuint GetVBOProbeExtends() const{ return pVBOProbeExtends; }
 	
+	/** Activate next cascade to use for upcoming Update() call. */
+	void ActivateNextCascade();
+	
 	/** Update. */
 	void Update( const decDVector &cameraPosition, const deoglDCollisionFrustum &frustum );
 	
@@ -317,7 +324,6 @@ private:
 	void pTrackInstanceChanges();
 	void pUpdateProbeOffsetFromShader( deoglGICascade &cascade );
 	void pUpdateProbeExtendsFromShader( deoglGICascade &cascade );
-	void pActivateNextCascade();
 	void pPrepareTraceProbes( deoglGICascade &cascade, const deoglDCollisionFrustum &frustum );
 	void pFindProbesToUpdate( deoglGICascade &cascade, const deoglDCollisionFrustum &frustum );
 	void pPrepareRayCacheProbes( deoglGICascade &cascade );

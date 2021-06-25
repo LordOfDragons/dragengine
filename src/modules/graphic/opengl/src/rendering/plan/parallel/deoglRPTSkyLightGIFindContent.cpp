@@ -115,7 +115,7 @@ void deoglRPTSkyLightGIFindContent::Run(){
 		// splits are not used for GI shadows but the minimum size restriction is.
 		// to avoid creating another method the AddSplit method is used for this
 		const float splitSizeLimitPixels = 0.5f; //1.0f; // smaller to avoid problems
-		const int shadowMapSize = 1024;
+		const int shadowMapSize = pPlan.GetGIShadowSize();
 		
 		const decVector boxSize( boxMaxExtend - boxMinExtend );
 		const float sizeThresholdX = ( boxSize.x / ( float )shadowMapSize ) * splitSizeLimitPixels;

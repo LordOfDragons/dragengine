@@ -57,6 +57,7 @@ pPositionClamp( pFieldSize ),
 pDynamicHalfEnlarge( probeSpacing * 1.9f * 0.5f ), // enlarge = spacing * (1 + 0.45 * 2)
 pStaticHalfEnlarge( 0.05f, 0.05f, 0.05f ),
 pFillUpUpdatesWithExpensiveProbes( false ),
+pSkyShadowCascade( index ),
 
 pMaxDetectionRange( 50.0f ),
 pDetectionBox( pFieldSize * 0.5f + decVector( pMaxDetectionRange, pMaxDetectionRange, pMaxDetectionRange ) ),
@@ -108,6 +109,10 @@ deoglGICascade::~deoglGICascade(){
 
 void deoglGICascade::SetFillUpUpdatesWithExpensiveProbes( bool fillUp ){
 	pFillUpUpdatesWithExpensiveProbes = fillUp;
+}
+
+void deoglGICascade::SetSkyShadowCascade( int cascade ){
+	pSkyShadowCascade = cascade;
 }
 
 decPoint3 deoglGICascade::ProbeIndex2GridCoord( int index ) const{

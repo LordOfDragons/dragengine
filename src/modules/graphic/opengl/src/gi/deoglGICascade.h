@@ -74,6 +74,7 @@ private:
 	decVector pDynamicHalfEnlarge;
 	decVector pStaticHalfEnlarge;
 	bool pFillUpUpdatesWithExpensiveProbes;
+	int pSkyShadowCascade;
 	
 	float pMaxDetectionRange;
 	decVector pDetectionBox;
@@ -157,6 +158,12 @@ public:
 	
 	/** Fill up update slots with expensive probes on large position changes. */
 	void SetFillUpUpdatesWithExpensiveProbes( bool fillUp );
+	
+	/** Index of cascade to use for sky shadow casting. */
+	inline int GetSkyShadowCascade() const{ return pSkyShadowCascade; }
+	
+	/** Set index of cascade to use for sky shadow casting. */
+	void SetSkyShadowCascade( int cascade );
 	
 	
 	

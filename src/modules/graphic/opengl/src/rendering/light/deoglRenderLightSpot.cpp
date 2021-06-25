@@ -1687,7 +1687,7 @@ deoglSPBlockUBO &paramBlock, deoglRenderPlan &plan, deoglRLight &light ){
 		
 		target = lightShader.GetLightUniformTarget( deoglLightShader::elutLightAmbientRatio );
 		if( target != -1 ){
-			if( hasGIState ){
+			if( hasGIState || plan.GetNoAmbientLight() ){
 				paramBlock.SetParameterDataFloat( target, 0.0f );
 				
 			}else{
@@ -1699,7 +1699,12 @@ deoglSPBlockUBO &paramBlock, deoglRenderPlan &plan, deoglRLight &light ){
 		
 		target = lightShader.GetLightUniformTarget( deoglLightShader::elutLightGIAmbientRatio );
 		if( target != -1 ){
-			paramBlock.SetParameterDataFloat( target, light.GetAmbientRatio() );
+			if( plan.GetNoAmbientLight() ){
+				paramBlock.SetParameterDataFloat( target, 0.0f );
+				
+			}else{
+				paramBlock.SetParameterDataFloat( target, light.GetAmbientRatio() );
+			}
 		}
 		
 		target = lightShader.GetLightUniformTarget( deoglLightShader::elutLightAttenuationCoefficient );
