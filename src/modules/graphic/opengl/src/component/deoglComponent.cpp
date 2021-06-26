@@ -210,6 +210,15 @@ void deoglComponent::SyncToRender(){
 	if( pDirtyRenderableMapping ){
 		pRComponent->UpdateRenderableMapping();
 		pDirtyRenderableMapping = false;
+		
+		// we have to do this here and not in DirtyRenderableMapping() because
+		// DirtyRenderableMapping() can be called between the UpdateRenderableMapping()
+		// call above and the NotifyTexturesChanged() call below. if this happens the
+		// pNotifyTexturesChanged flag will be cleared below while the
+		// pDirtyRenderableMapping is true. this causes pNotifyTexturesChanged to be
+		// not called the next time UpdateRenderableMapping() above is called. this in
+		// turn causes listeners to miss an update and working with old data
+		pNotifyTexturesChanged = true;
 	}
 	if( pDirtyLODErrorScaling ){
 		const decVector &scaling = pComponent.GetScaling();
@@ -317,23 +326,23 @@ void deoglComponent::SyncToRender(){
 	}
 	
 	if( pDirtyTextureUseSkin ){
-		pRComponent->UpdateTexturesUseSkin();
 		pDirtyTextureUseSkin = false;
+		pRComponent->UpdateTexturesUseSkin();
 	}
 	
 	pSyncTextureDynamicSkinRenderablesChanged(); // requires UpdateTexturesUseSkin()
 	
 	if( pDirtyStaticTexture ){
-		pRComponent->UpdateStaticTextures();
 		pDirtyStaticTexture = false;
+		pRComponent->UpdateStaticTextures();
 	}
 	if( pNotifyTexturesChanged ){
-		pRComponent->NotifyTexturesChanged();
 		pNotifyTexturesChanged = false;
+		pRComponent->NotifyTexturesChanged();
 	}
 	if( pNotifyTUCChanged ){
-		pRComponent->NotifyTUCChanged();
 		pNotifyTUCChanged = false;
+		pRComponent->NotifyTUCChanged();
 	}
 	
 	// decals
