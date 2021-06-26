@@ -26,6 +26,7 @@
 #include <dragengine/threading/deSemaphore.h>
 
 class deoglRenderPlanSkyLight;
+class deoglRComponent;
 
 
 /**
@@ -73,6 +74,7 @@ public:
 private:
 	void pUpdateStaticRT();
 	void pUpdateDynamicRT();
+	bool pIsComponentStatic( const deoglRComponent &component ) const;
 };
 
 #endif

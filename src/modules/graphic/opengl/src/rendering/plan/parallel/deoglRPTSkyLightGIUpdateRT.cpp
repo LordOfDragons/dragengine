@@ -137,7 +137,7 @@ void deoglRPTSkyLightGIUpdateRT::pUpdateStaticRT(){
 	const int componentCount = collideList.GetComponentCount();
 	for( i=0; i<componentCount; i++ ){
 		deoglCollideListComponent &component = *collideList.GetComponentAt( i );
-		if( component.GetComponent()->GetRenderStatic() ){
+		if( pIsComponentStatic( *component.GetComponent() ) ){
 			component.SetLODLevelMax();
 			addToRenderTask.AddComponent( component );
 		}
@@ -163,7 +163,7 @@ void deoglRPTSkyLightGIUpdateRT::pUpdateDynamicRT(){
 	const int componentCount = collideList.GetComponentCount();
 	for( i=0; i<componentCount; i++ ){
 		deoglCollideListComponent &component = *collideList.GetComponentAt( i );
-		if( ! component.GetComponent()->GetRenderStatic() ){
+		if( ! pIsComponentStatic( *component.GetComponent() ) ){
 			component.SetLODLevelMax();
 			addToRenderTask.AddComponent( component );
 		}
@@ -172,4 +172,16 @@ void deoglRPTSkyLightGIUpdateRT::pUpdateDynamicRT(){
 	// prop fields
 	addToRenderTask.SetSkinShaderType( deoglSkinTexture::estPropFieldShadowOrthogonal );
 	addToRenderTask.AddPropFields( collideList, false );
+}
+
+bool deoglRPTSkyLightGIUpdateRT::pIsComponentStatic( const deoglRComponent& component ) const{
+	// GetRenderStatic() is not working well since this can change frequently also for
+	// dynmic objects when resting for a couple of seconds. we want though to avoid
+	// updating static sky shadow maps as little as possible. for this reason we use
+	// here only the render mode
+	
+	//return component.GetRenderStatic();
+	
+	return component.GetMovementHint() == deComponent::emhStationary
+		&& component.GetRenderMode() == deoglRComponent::ermStatic;
 }

@@ -681,6 +681,11 @@ void deoglComponent::TextureChanged( int index, deComponentTexture &texture ){
 	pNotifyTUCChanged = true; // actually only if skin or dynamic skin change but not transform
 	pDirtySolid = true;
 	
+	if( pRComponent->GetMovementHint() == deComponent::emhStationary
+	&& pRComponent->GetRenderMode() == deoglRComponent::ermStatic ){
+		pRComponent->NotifySkiesUpdateStatic();
+	}
+	
 	pRequiresSync();
 }
 
