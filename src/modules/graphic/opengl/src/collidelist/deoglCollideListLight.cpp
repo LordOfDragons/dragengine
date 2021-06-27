@@ -75,6 +75,11 @@ void deoglCollideListLight::TestInside( const deoglRenderPlan &plan ){
 		DETHROW( deeInvalidParam );
 	}
 	
+	if( pCulled ){ // happens if affecting GI but not camera
+		pCameraInside = false;
+		return;
+	}
+	
 	const float safetyMargin = 0.01; // 1cm should be enough to be safe
 	const decDVector &cameraPosition = plan.GetCameraPosition();
 	const decDVector &minExtend = pLight->GetMinimumExtend();

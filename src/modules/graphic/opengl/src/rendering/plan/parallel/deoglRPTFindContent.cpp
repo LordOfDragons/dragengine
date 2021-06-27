@@ -31,6 +31,8 @@
 #include "../../../collidelist/deoglCollideListHTSector.h"
 #include "../../../collidelist/deoglCollideListHTSCluster.h"
 #include "../../../envmap/deoglEnvironmentMap.h"
+#include "../../../gi/deoglGIState.h"
+#include "../../../gi/deoglGICascade.h"
 #include "../../../renderthread/deoglRenderThread.h"
 #include "../../../renderthread/deoglRTLogger.h"
 #include "../../../terrain/heightmap/deoglHTViewSector.h"
@@ -93,6 +95,20 @@ void deoglRPTFindContent::Run(){
 		visitor.SetCullDynamicComponents( pPlan.GetIgnoreDynamicComponents() );
 		visitor.SetCullLayerMask( pPlan.GetUseLayerMask() );
 		visitor.SetLayerMask( pPlan.GetLayerMask() );
+		
+		const deoglGIState * const gistate = pPlan.GetUpdateGIState();
+		if( gistate ){
+			// correctly we would have to use here the cascade position but during this
+			// parallel task run at an unknown time the cascade position is updated.
+			// so instead we use the camera position which is the base for the cascade
+			// position update. this can cause a potential error at the boundary of the
+			// GI cascade but chances for this are slim. if really a problem half the
+			// probe spacing can be added to the extends
+			const deoglGICascade &cascade = gistate->GetActiveCascade();
+			const decDVector &position = pPlan.GetCameraPosition();
+			const decDVector halfExtend( cascade.GetDetectionBox() );
+			visitor.EnableGIBox( position - halfExtend, position + halfExtend );
+		}
 		
 		visitor.VisitWorldOctree( world.GetOctree() );
 		SPECIAL_TIMER_PRINT("Octree")

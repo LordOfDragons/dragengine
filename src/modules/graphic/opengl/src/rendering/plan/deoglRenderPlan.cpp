@@ -1178,7 +1178,18 @@ void deoglRenderPlan::pFinishOcclusionTests( const deoglRenderPlanMasked *mask )
 	if( pOcclusionTest->GetInputDataCount() > 0 ){
 		pOcclusionTest->UpdateResults();
 		SPECIAL_TIMER_PRINT("> UpdateResults")
-		pCollideList.RemoveCulledElements();
+		
+		if( GetUpdateGIState() ){
+			// we can not use RemoveCulledElements in this situation since lights outside
+			// the frustum have to be kept if inside GI cascade detection box. the light
+			// renderers will take care of not rendering a light for camera view content
+			// if the light is culled
+			pCollideList.RemoveCulledComponents();
+			pCollideList.RemoveCulledBillboards();
+			
+		}else{
+			pCollideList.RemoveCulledElements();
+		}
 		SPECIAL_TIMER_PRINT("> RemoveCulledElements")
 	}
 	

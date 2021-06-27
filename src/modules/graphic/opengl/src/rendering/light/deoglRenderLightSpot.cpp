@@ -532,6 +532,19 @@ void deoglRenderLightSpot::RenderLights( deoglRenderPlan &plan, bool solid, cons
 #include "../../debug/deoglDebugStateSnapshot.h"
 void deoglRenderLightSpot::RenderLight( deoglRenderPlan &plan, bool solid,
 const deoglRenderPlanMasked *mask, deoglCollideListLight &cllight ){
+	// determine what needs to be rendered
+	if( cllight.IsHiddenByOccQuery() ){
+		cllight.SetCulled( true );
+	}
+	
+	const bool lightGeometry = ! cllight.GetCulled();
+	deoglGIState * const giState = ! mask && solid ? plan.GetUpdateGIState() : NULL;
+	
+	if( ! lightGeometry && ! giState ){
+		return;
+	}
+	
+	// prepare for rendering
 	deoglRenderThread &renderThread = GetRenderThread();
 	deoglRLight &light = *cllight.GetLight();
 	deoglShadowCaster &shadowCaster = *light.GetShadowCaster();
@@ -638,12 +651,6 @@ const deoglRenderPlanMasked *mask, deoglCollideListLight &cllight ){
 	const decDMatrix matrixLP( defren.CreateProjectionDMatrix( 1, 1,
 		light.GetSpotAngle(), light.GetSpotRatio(), OGL_REN_LIG_ZNEAR,
 		light.GetRange() ) );
-	
-	// check if the light is hidden or not
-	if( cllight.IsHiddenByOccQuery() ){
-		cllight.SetCulled( true );
-		return;
-	}
 	
 	// render shadow map if required
 	if( useShadow ){
@@ -861,8 +868,6 @@ const deoglRenderPlanMasked *mask, deoglCollideListLight &cllight ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	renderThread.GetShader().ActivateShader( lightShader->GetShader() );
-	
 	// set program parameters
 	deoglSPBlockUBO * const spbInstance = light.GetInstanceParameterBlock();
 	deoglSPBlockUBO * const spbLight = light.GetLightParameterBlock();
@@ -884,54 +889,56 @@ const deoglRenderPlanMasked *mask, deoglCollideListLight &cllight ){
 	shadowDepthMaps.shadow2Ambient = texAmbient2;
 	UpdateInstanceParamBlock( *lightShader, *spbInstance, plan, cllight, shadowDepthMaps, matrixLP );
 	
-	GetRenderThread().GetRenderers().GetLight().GetLightPB()->Activate();
-	spbLight->Activate();
-	spbInstance->Activate();
-	
-	ActivateTextures( light, *lightShader, shadowDepthMaps );
-	
-	// render the light
-	pglBindVertexArray( light.GetLightVolume()->GetVAO() );
-	OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLES, 0, light.GetLightVolume()->GetPointCount() ) );
-	pglBindVertexArray( 0 );
-	
-	if( solid ){
-		DebugTimer2SampleCount( plan, *pDebugInfoSolidLight, 1, true );
+	// light geometry
+	if( lightGeometry ){
+		renderThread.GetShader().ActivateShader( lightShader->GetShader() );
 		
-	}else{
-		DebugTimer2SampleCount( plan, *pDebugInfoTransparentLight, 1, true );
+		GetRenderThread().GetRenderers().GetLight().GetLightPB()->Activate();
+		spbLight->Activate();
+		spbInstance->Activate();
+		
+		ActivateTextures( light, *lightShader, shadowDepthMaps );
+		
+		// render the light
+		pglBindVertexArray( light.GetLightVolume()->GetVAO() );
+		OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLES, 0, light.GetLightVolume()->GetPointCount() ) );
+		pglBindVertexArray( 0 );
+		
+		if( solid ){
+			DebugTimer2SampleCount( plan, *pDebugInfoSolidLight, 1, true );
+			
+		}else{
+			DebugTimer2SampleCount( plan, *pDebugInfoTransparentLight, 1, true );
+		}
 	}
 	
 	// GI rays
-	if( ! mask && solid ){
-		deoglGIState * const giState = plan.GetUpdateGIState();
-		if( giState ){
-			RestoreFBOGITraceRays( *giState );
-			
-			lightShader = NULL;
-			if( useShadow ){
-				if( texSolidDepth2 ){
-					lightShader = light.GetShaderFor( deoglRLight::estGIRaySolid2 );
-					
-				}else{
-					lightShader = light.GetShaderFor( deoglRLight::estGIRaySolid1 );
-				}
+	if( giState ){
+		RestoreFBOGITraceRays( *giState );
+		
+		lightShader = NULL;
+		if( useShadow ){
+			if( texSolidDepth2 ){
+				lightShader = light.GetShaderFor( deoglRLight::estGIRaySolid2 );
 				
 			}else{
-				lightShader = light.GetShaderFor( deoglRLight::estGIRayNoShadow );
+				lightShader = light.GetShaderFor( deoglRLight::estGIRaySolid1 );
 			}
 			
-			if( lightShader ){
-				renderThread.GetShader().ActivateShader( lightShader->GetShader() );
-				
-				GetRenderThread().GetRenderers().GetLight().GetLightPB()->Activate();
-				spbLight->Activate();
-				spbInstance->Activate();
-				
-				ActivateTextures( light, *lightShader, shadowDepthMaps );
-				
-				defren.RenderFSQuadVAO();
-			}
+		}else{
+			lightShader = light.GetShaderFor( deoglRLight::estGIRayNoShadow );
+		}
+		
+		if( lightShader ){
+			renderThread.GetShader().ActivateShader( lightShader->GetShader() );
+			
+			GetRenderThread().GetRenderers().GetLight().GetLightPB()->Activate();
+			spbLight->Activate();
+			spbInstance->Activate();
+			
+			ActivateTextures( light, *lightShader, shadowDepthMaps );
+			
+			defren.RenderFSQuadVAO();
 		}
 	}
 }

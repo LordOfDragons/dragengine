@@ -55,7 +55,8 @@ pFrustum( NULL ),
 pCullPixelSize( 1.0f ),
 pErrorScaling( 1.0f ),
 pCullDynamicComponents( false ),
-pCullLayerMask( false ){
+pCullLayerMask( false ),
+pWithGICascade( false ){
 }
 
 
@@ -76,11 +77,6 @@ void deoglRPVisitorFindContent::Init( deoglDCollisionFrustum *frustum ){
 }
 
 
-
-void deoglRPVisitorFindContent::SetFrustumExtends( const decDVector &minExtend, const decDVector &maxExtend ){
-	pFrustumMinExtend = minExtend;
-	pFrustumMaxExtend = maxExtend;
-}
 
 void deoglRPVisitorFindContent::CalculateFrustumBoundaryBox(){
 	// calculate the corner points of the frustum in light space. only the far points and the origin
@@ -181,6 +177,19 @@ void deoglRPVisitorFindContent::SetLayerMask( const decLayerMask &layerMask ){
 
 
 
+void deoglRPVisitorFindContent::EnableGIBox( const decDVector & minExtend, const decDVector & maxExtend ){
+	pWithGICascade = true;
+	pGICascadeMinExtend = minExtend;
+	pGICascadeMaxExtend = maxExtend;
+	pGICascadeBox.SetFromExtends( minExtend, maxExtend );
+}
+
+void deoglRPVisitorFindContent::DisableGIBox(){
+	pWithGICascade = false;
+}
+
+
+
 void deoglRPVisitorFindContent::VisitWorldOctree( const deoglWorldOctree &octree ){
 	if( ! pFrustum ){
 		DETHROW( deeInvalidParam );
@@ -209,20 +218,68 @@ void deoglRPVisitorFindContent::pVisitNode( const deoglWorldOctree &node, bool i
 		
 		if( ! intersect ){
 			pVisitNode( *child, false );
+			continue;
+		}
+		
+		const decDVector &childMin = child->GetMinimumExtend();
+		const decDVector &childMax = child->GetMaximumExtend();
+		switch( pFrustum->BoxIntersect( childMin, childMax ) ){
+		case deoglDCollisionFrustum::eitInside:
+			pVisitNode( *child, false );
+			break;
 			
-		}else{
-			switch( pFrustum->BoxIntersect( child->GetMinimumExtend(), child->GetMaximumExtend() ) ){
-			case deoglDCollisionFrustum::eitInside:
-				pVisitNode( *child, false );
-				break;
-				
-			case deoglDCollisionFrustum::eitIntersect:
-				pVisitNode( *child, true );
-				break;
-				
-			case deoglDCollisionFrustum::eitOutside:
-				break;
+		case deoglDCollisionFrustum::eitIntersect:
+			pVisitNode( *child, true );
+			break;
+			
+		case deoglDCollisionFrustum::eitOutside:
+			if( pWithGICascade ){
+				switch( deoglDCollisionDetection::AABoxIntersectsAABox(
+					pGICascadeMinExtend, pGICascadeMaxExtend, childMin, childMax ) ){
+				case deoglDCollisionDetection::eirInside:
+					pVisitNodeGICascade( *child, false );
+					break;
+					
+				case deoglDCollisionDetection::eirPartial:
+					pVisitNodeGICascade( *child, true );
+					break;
+					
+				case deoglDCollisionDetection::eirOutside:
+					break;
+				}
 			}
+			break;
+		}
+	}
+}
+
+void deoglRPVisitorFindContent::pVisitNodeGICascade( const deoglWorldOctree &node, bool intersect ){
+	pVisitLightsGICascade( node, intersect );
+	
+	int i;
+	for( i=0; i<8; i++ ){
+		const deoglWorldOctree * const child = ( const deoglWorldOctree* ) node.GetNodeAt( i );
+		if( ! child ){
+			continue;
+		}
+		
+		if( ! intersect ){
+			pVisitNodeGICascade( *child, false );
+			continue;
+		}
+		
+		switch( deoglDCollisionDetection::AABoxIntersectsAABox( pGICascadeMinExtend,
+			pGICascadeMaxExtend, child->GetMinimumExtend(), child->GetMaximumExtend() ) ){
+		case deoglDCollisionDetection::eirInside:
+			pVisitNodeGICascade( *child, false );
+			break;
+			
+		case deoglDCollisionDetection::eirPartial:
+			pVisitNodeGICascade( *child, true );
+			break;
+			
+		case deoglDCollisionDetection::eirOutside:
+			break;
 		}
 	}
 }
@@ -347,10 +404,35 @@ void deoglRPVisitorFindContent::pVisitLights( const deoglWorldOctree &node, bool
 		}
 		
 		if( intersect && ! light.GetCollisionVolume()->FrustumHitsVolume( pFrustum ) ){
+			if( pWithGICascade && light.GetCollisionVolume()->BoxHitsVolume( &pGICascadeBox ) ){
+				collideList.AddLight( addLight )->SetCulled( true );
+			}
 			continue;
 		}
 		
 		collideList.AddLight( addLight )->StartOcclusionTest( occlusionTest, cameraPosition );
+	}
+}
+
+void deoglRPVisitorFindContent::pVisitLightsGICascade( const deoglWorldOctree& node, bool intersect ){
+	deoglCollideList &collideList = pPlan.GetCollideList();
+	const int count = node.GetLightCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		deoglRLight * const addLight = node.GetLightAt( i );
+		const deoglRLight &light = *addLight;
+		
+		if( pCullLayerMask && light.GetLayerMask().IsNotEmpty()
+		&& pLayerMask.MatchesNot( light.GetLayerMask() ) ){
+			continue;
+		}
+		
+		if( intersect && ! light.GetCollisionVolume()->BoxHitsVolume( &pGICascadeBox ) ){
+			continue;
+		}
+		
+		collideList.AddLight( addLight )->SetCulled( true );
 	}
 }
 
