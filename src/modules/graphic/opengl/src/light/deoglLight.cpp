@@ -89,6 +89,7 @@ pRLight( NULL ),
 pSkinStateController( NULL ),
 pParentWorld( NULL ),
 pDynamicSkin( NULL ),
+pLightSkin( NULL ),
 pLightCanvas( NULL ),
 
 pAccumUpdate( 0.0f ),
@@ -530,6 +531,17 @@ void deoglLight::SourceChanged(){
 		pSkinStatePrepareRenderables = true;
 	}
 	
+	// light skin
+	deoglSkin * const lightSkin = pLight.GetLightSkin()
+		? ( deoglSkin* )pLight.GetLightSkin()->GetPeerGraphic() : NULL;
+	
+	if( lightSkin != pLightSkin ){
+		pLightSkin = lightSkin;
+		
+		pDirtySkinStateCalculatedProperties = true;
+	}
+	
+	// light canvas
 	deoglCanvasView * const lightCanvas = pLight.GetLightCanvas()
 		? ( deoglCanvasView* )pLight.GetLightCanvas()->GetPeerGraphic() : NULL;
 	
@@ -601,9 +613,8 @@ void deoglLight::pSyncSource(){
 	}
 	
 	// light skin
-	if( pLight.GetLightSkin() ){
-		deoglSkin * const skin = ( deoglSkin* )pLight.GetLightSkin()->GetPeerGraphic();
-		pRLight->SetLightSkin( skin->GetRSkin() );
+	if( pLightSkin ){
+		pRLight->SetLightSkin( pLightSkin->GetRSkin() );
 		
 		if( ! pSkinStateController ){
 			pSkinStateController = new deoglSkinStateController;

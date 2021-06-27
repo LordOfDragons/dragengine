@@ -34,6 +34,7 @@ class deoglSkinStateController;
 class deoglWorld;
 class deoglDynamicSkin;
 class deoglCanvasView;
+class deoglSkin;
 
 class deGraphicOpenGl;
 class deLight;
@@ -51,6 +52,7 @@ public:
 	deoglSkinStateController *pSkinStateController;
 	deoglWorld *pParentWorld;
 	deoglDynamicSkin *pDynamicSkin;
+	deoglSkin *pLightSkin;
 	deoglCanvasView *pLightCanvas;
 	
 	float pAccumUpdate;
