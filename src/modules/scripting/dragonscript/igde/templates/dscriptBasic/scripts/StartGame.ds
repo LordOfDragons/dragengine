@@ -68,8 +68,42 @@ class StartGame extends WindowGameWorld.Loader
 		// Despite the name the camera director also directs microphone resource
 		var PlayerControlledActorCameraDirector director = PlayerControlledActorCameraDirector.new()
 		
-		director.setEnableGI(true)
+		// Set the view distance of the camera. Everything beyond the view distance
+		// in meters is not rendered. The graphic module decides how to handle
+		// content beyond the view distance the best way possible
+		director.setViewDistance(300)
 		
+		// Set light adaption parameters. The graphic module automatically adjusts
+		// the scene intensity of the camera depending on the content seen by the
+		// camera. The intensity is adjusted inside the range defined below.
+		// 
+		// The Drag[en]gine uses scaled real-world intensities. These are example
+		// values for light source intensites:
+		// - Moon light of full moon: 0.01
+		// - Candle in a dark room: 0.1
+		// - Living room lit at night: 1
+		// - Bright lit office room: 2-4
+		// - Overcast day light: 10
+		// - Clear sky day light: 20
+		// 
+		// If the light conditions encountered in your game world do not cover all
+		// the range from very bright to pitch black you can narrow the range.
+		// 
+		// The default value is 1 for both intensites which disables dynamic
+		// intensity adjustment.
+		director.setLowestIntensity(1)
+		director.setHighestIntensity(20)
+		
+		// The adaption time indicates how fast the camera adjusts the intensity
+		// to match the scene intensity. The default value is 0.1 which adjusts
+		// very fast. For scenes with outdoor and indoor areas it is better to
+		// use slower adjustment. The human eye can fully adjust to darkness
+		// out of bright daylight between 20-30 minutes. This is a bit much for
+		// game situations so using something like 30-60 seconds is good for
+		// most situations. Lower values can be used to make this faster if required
+		director.setAdaptionTime(30)
+		
+		// Assign the camera director
 		getWindow().setCameraDirector(director)
 		
 		// Do more start game tasks here.
