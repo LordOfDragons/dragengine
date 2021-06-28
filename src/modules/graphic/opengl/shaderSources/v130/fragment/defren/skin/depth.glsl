@@ -99,6 +99,10 @@ NODE_FRAGMENT_SAMPLERS
 	#include "v130/shared/defren/skin/shared_spb_redirect.glsl"
 #endif
 
+#ifdef GS_RENDER_CASCADED
+	flat in int vLayer;
+#endif
+
 #include "v130/shared/defren/skin/shared_spb_texture_redirect.glsl"
 
 
@@ -190,7 +194,7 @@ void main( void ){
 			gl_FragDepth += length( depthDeriv ) * pDepthOffset.z + pDepthOffset.w;
 		}*/
 		#ifdef GS_RENDER_CASCADED
-			vec2 depthOffset = mix( pDepthOffset[ gl_Layer ].zw, pDepthOffset[ gl_Layer ].xy,
+			vec2 depthOffset = mix( pDepthOffset[ vLayer ].zw, pDepthOffset[ vLayer ].xy,
 				bvec2( gl_FrontFacing || pDoubleSided ) ); // mix( if-false, if-true, condition )
 		#else
 			vec2 depthOffset = mix( pDepthOffset.zw, pDepthOffset.xy, bvec2( gl_FrontFacing || pDoubleSided ) ); // mix( if-false, if-true, condition )

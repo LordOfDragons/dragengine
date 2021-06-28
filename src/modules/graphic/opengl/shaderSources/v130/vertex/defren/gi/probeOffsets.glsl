@@ -1,6 +1,7 @@
 precision highp float;
 precision highp int;
 
+#include "v130/shared/uniform_const.glsl"
 #include "v130/shared/ubo_defines.glsl"
 #include "v130/shared/defren/gi/ubo_gi.glsl"
 #include "v130/shared/defren/gi/probe_flags.glsl"
@@ -198,7 +199,7 @@ void main( void ){
 	// probe has no effect on it anymore no matter if by direct lighting nor ray lighting.
 	// offset can be at most 0.45 . so if both probes are have maximum offset but in opposite
 	// direction then this yields "1 + 0.45 + 0.45" times the spacing which is "spacing * 1.9"
-	const vec3 nearGeometryRange = pGIGridProbeSpacing + pGIMoveMaxOffset * 2.0;
+	UFCONST vec3 nearGeometryRange = pGIGridProbeSpacing + pGIMoveMaxOffset * 2.0;
 	
 	if( all( lessThanEqual( vec3( closestFrontfaceDistance ), nearGeometryRange ) ) && ! assumeInGeometry ) {
 		flags |= gipfNearGeometry;

@@ -1,6 +1,7 @@
 precision highp float;
 precision highp int;
 
+#include "v130/shared/uniform_const.glsl"
 #include "v130/shared/ubo_defines.glsl"
 #include "v130/shared/defren/gi/ubo_gi.glsl"
 #include "v130/shared/defren/gi/probe_flags.glsl"
@@ -21,7 +22,7 @@ ivec3 giGridLocalToShift( in ivec3 local ){
 }
 
 void main( void ){
-	const vec3 nearGeometryRange = pGIGridProbeSpacing + pGIMoveMaxOffset * 2.0;
+	UFCONST vec3 nearGeometryRange = pGIGridProbeSpacing + pGIMoveMaxOffset * 2.0;
 	ivec2 rayOffset = ivec2( ( vInstanceID % pGIProbesPerLine ) * pGIRaysPerProbe, vInstanceID / pGIProbesPerLine );
 	vec3 probePosition = pGIProbePosition[ vInstanceID ].xyz;
 	

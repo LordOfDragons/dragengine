@@ -39,7 +39,7 @@ const float baselog = log2( 3.0 ); // 1.5849625007211563
 
 
 
-const bvec3 vBoxCorner[ 8 ] = {
+const bvec3 vBoxCorner[ 8 ] = bvec3[ 8 ](
 	bvec3( false, false, false ), // point -x, -y, -z
 	bvec3( true,  false, false ), // point  x, -y, -z
 	bvec3( false, true,  false ), // point -x,  y, -z
@@ -48,7 +48,7 @@ const bvec3 vBoxCorner[ 8 ] = {
 	bvec3( true,  false, true  ), // point  x, -y,  z
 	bvec3( false, true,  true  ), // point -x,  y,  z
 	bvec3( true,  true,  true  )  // point  x,  y,  z
-};
+);
 
 // calculate screen space AABB projection. returns true if all points are in front of near plane
 bool calcScreenAABB( out vec3 minExtend, out vec3 maxExtend, in mat4 matrix,

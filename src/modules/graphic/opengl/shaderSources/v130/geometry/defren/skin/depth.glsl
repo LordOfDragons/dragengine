@@ -105,6 +105,8 @@
 	out float vFadeZ;
 #endif
 
+flat out int vLayer;
+
 #ifdef SHARED_SPB
 	flat out int vSPBIndex;
 #endif
@@ -173,6 +175,8 @@ void emitCorner( in int layer, in int corner, in vec4 position, in vec4 preTrans
 			vFadeZ = ( pMatrixV[ layer ] * position.z;
 		#endif
 	#endif
+	
+	vLayer = layer;
 	
 	gl_Layer = layer;
 	gl_PrimitiveID = gl_PrimitiveIDIn;

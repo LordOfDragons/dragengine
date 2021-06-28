@@ -2,6 +2,7 @@ uniform vec4 pPosTransform; // scaleX, scaleY, offsetX, offsetY
 uniform vec4 pTCTransform;
 
 #ifdef PASS2
+	#include "v130/shared/uniform_const.glsl"
 	#include "v130/shared/ubo_defines.glsl"
 	#include "v130/shared/defren/gi/constants.glsl"
 	#include "v130/shared/defren/gi/trace_probe.glsl"
@@ -38,17 +39,17 @@ void main( void ){
 		int probeIndex = giTraceProbeProbeIndex( gl_InstanceID );
 		vProbeCoord = giGridLocalToShift( probeIndexToGridCoord( probeIndex ) );
 		
-		const int probeStride = pParams.x + pParams.y;
-		const int groupSize = pParams.x * pGIParams[pGIDebugCascade].probeCount.z
+		UFCONST int probeStride = pParams.x + pParams.y;
+		UFCONST int groupSize = pParams.x * pGIParams[pGIDebugCascade].probeCount.z
 			+ pParams.y * ( pGIParams[pGIDebugCascade].probeCount.z - 1 );
-		const int groupStride = groupSize + pParams.z;
+		UFCONST int groupStride = groupSize + pParams.z;
 		
 		vec2 tc = vec2( groupStride * vProbeCoord.y + probeStride * vProbeCoord.x,
 			probeStride * ( ( pGIParams[pGIDebugCascade].probeCount.z - 1 ) - vProbeCoord.z ) );
 			// ^= z coordinate starts at the bottom (-z axis) but y starts at the top.
 			//    for this reason z coordinate has to be flipped
 		
-		const vec2 halfProbeStride = vec2( pParams.x * 0.5 );
+		UFCONST vec2 halfProbeStride = vec2( pParams.x * 0.5 );
 		
 		tc += inPosition * halfProbeStride + halfProbeStride;
 		

@@ -1,6 +1,7 @@
 precision highp float;
 precision highp int;
 
+#include "v130/shared/uniform_const.glsl"
 #include "v130/shared/ubo_defines.glsl"
 #include "v130/shared/defren/gi/ubo_gi.glsl"
 #include "v130/shared/defren/gi/trace_probe.glsl"
@@ -24,7 +25,7 @@ void main( void ){
 	
 	ivec2 texCoord = ivec2( pGIGridProbeCount.x * probeCoord.y + probeCoord.x, probeCoord.z );
 	
-	const vec2 scale = vec2( 1.0 ) / vec2( pGIGridProbeCount.x * pGIGridProbeCount.y, pGIGridProbeCount.z );
+	UFCONST vec2 scale = vec2( 1.0 ) / vec2( pGIGridProbeCount.x * pGIGridProbeCount.y, pGIGridProbeCount.z );
 	const vec2 offset = vec2( -1.0 );
 	vec2 realOffset = ( vec2( texCoord ) * vec2( 2.0 ) + vec2( 1.0 ) ) * scale + offset;
 	
