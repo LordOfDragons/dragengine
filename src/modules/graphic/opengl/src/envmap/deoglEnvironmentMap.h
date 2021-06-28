@@ -36,6 +36,7 @@
 class deoglRLight;
 class decConvexVolumeList;
 class deoglCubeMap;
+class deoglArrayTexture;
 class deoglLightVolume;
 class deoglRenderThread;
 class deoglRWorld;
@@ -45,9 +46,8 @@ class deoglWorldOctree;
 
 
 /**
- * @brief Environment Map.
- * Stores an environment map. Provides support for updating the environment map.
- * Individual world elements can be included or excluded.
+ * Environment Map. Provides support for updating the environment map. Individual world
+ * elements can be included or excluded.
  */
 class deoglEnvironmentMap : public deObject{
 private:
@@ -63,9 +63,11 @@ private:
 	bool pIsFloat;
 	
 	deoglCubeMap *pEnvMap;
-	deoglCubeMap *pEnvMapDepth;
+	deoglArrayTexture *pEnvMapPosition;
+	deoglArrayTexture *pEnvMapDiffuse;
+	deoglArrayTexture *pEnvMapNormal;
+	deoglArrayTexture *pEnvMapEmissive;
 	deoglTexture *pEnvMapEqui;
-	deoglTexture *pEnvMapEquiDepth;
 	int pMaxMipMapLevel;
 	
 	decLayerMask pLayerMask;
@@ -86,6 +88,7 @@ private:
 	bool pDirtyInit;
 	bool pDirtyOctreeNode;
 	bool pReady;
+	bool pMaterialReady;
 	int pNextUpdateFace;
 	
 	int pPlanUsageCount;
@@ -103,14 +106,11 @@ private:
 	decConvexVolumeList *pConvexVolumeList;
 	deoglLightVolume *pLightVolume;
 	bool pDirtyConvexVolumeList;
-	bool pDirtyCubeMapHardLimit;
-	bool pDirtyCubeMapSoftLimit;
-	deoglCubeMap *pCubeMapHardLimit;
-	deoglCubeMap *pCubeMapSoftLimit;
-	float pCubeMapLimitScale;
+	
+	
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new environment map. */
 	deoglEnvironmentMap( deoglRenderThread &renderThread );
@@ -118,7 +118,7 @@ public:
 	virtual ~deoglEnvironmentMap();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the parent world or NULL if there is none. */
 	deoglRWorld *GetWorld() const{ return pWorld; }
@@ -204,8 +204,11 @@ public:
 	/** Sets if the environment map is dirty. */
 	void SetDirty( bool dirty );
 	
-	/** Determines if the texture is ready for rendering. */
+	/** Texture is ready for rendering. */
 	inline bool GetReady() const{ return pReady; }
+	
+	/** Material textures are ready. */
+	inline bool GetMaterialReady() const{ return pMaterialReady; }
 	
 	/** Retrieves the component list. */
 	inline deoglComponentSet &GetComponentList(){ return pComponentList; }
@@ -251,14 +254,24 @@ public:
 	void Update( deoglRenderPlan &parentPlan );
 	/** Render an environment cube map. */
 	void RenderEnvCubeMap( deoglRenderPlan &parentPlan );
-	/** Retrieves the environment map or NULL if not existing. */
+	
+	/** Environment map or NULL. */
 	inline deoglCubeMap *GetEnvironmentMap() const{ return pEnvMap; }
-	/** Retrieves the environment depth map or NULL if not existing. */
-	inline deoglCubeMap *GetEnvironmentMapDepth() const{ return pEnvMapDepth; }
-	/** Retrieves the equi environment map or NULL if not existing. */
+	
+	/** Environment position map or NULL. */
+	inline deoglArrayTexture *GetEnvironmentMapPosition() const{ return pEnvMapPosition; }
+	
+	/** Environment diffuse map or NULL. */
+	inline deoglArrayTexture *GetEnvironmentMapDiffuse() const{ return pEnvMapDiffuse; }
+	
+	/** Environment normal map or NULL. */
+	inline deoglArrayTexture *GetEnvironmentMapNormal() const{ return pEnvMapNormal; }
+	
+	/** Environment GI map or NULL. */
+	inline deoglArrayTexture *GetEnvironmentMapEmissive() const{ return pEnvMapEmissive; }
+	
+	/** Equi environment map or NULL. */
 	inline deoglTexture *GetEquiEnvMap() const{ return pEnvMapEqui; }
-	/** Retrieves the equi environment depth map or NULL if not existing. */
-	inline deoglTexture *GetEquiEnvMapDepth() const{ return pEnvMapEquiDepth; }
 	
 	/** Retrieves the convex colume list. */
 	inline decConvexVolumeList *GetConvexVolumeList() const{ return pConvexVolumeList; }
@@ -266,16 +279,6 @@ public:
 	inline deoglLightVolume *GetLightVolume() const{ return pLightVolume; }
 	/** Update the convex volume list. */
 	void UpdateConvexVolumeList();
-	/** Prepare hard limit cube map. */
-	void PrepareCubeMapHardLimit();
-	/** Prepare soft limit cube map. */
-	void PrepareCubeMapSoftLimit();
-	/** Retrieves the hard limit cube map. */
-	inline deoglCubeMap *GetCubeMapHardLimit() const{ return pCubeMapHardLimit; }
-	/** Retrieves the soft limit cube map. */
-	inline deoglCubeMap *GetCubeMapSoftLimit() const{ return pCubeMapSoftLimit; }
-	/** Retrieves the cube map limit scale. */
-	inline float GetCubeMapLimitScale() const{ return pCubeMapLimitScale; }
 	
 	/** Sky changed. */
 	void SkyChanged();

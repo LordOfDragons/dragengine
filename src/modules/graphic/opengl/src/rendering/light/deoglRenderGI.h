@@ -111,6 +111,7 @@ public:
 	
 	/** Prepare render light UBO. */
 	void PrepareUBORenderLight( deoglRenderPlan &plan );
+	void PrepareUBORenderLight( const deoglGIState &giState, const decDVector &position );
 	
 	/** Render materials. */
 	void RenderMaterials( deoglRenderPlan &plan );

@@ -376,6 +376,14 @@ DEBUG_RESET_TIMER
 	DBG_ENTER("RenderDepthMinMaxMipMap")
 	renderers.GetReflection().RenderDepthMinMaxMipMap( plan );
 	DBG_EXIT("RenderDepthMinMaxMipMap")
+	
+	// NOTE actually this requires updated GI probes but this happens below during RenderLights().
+	//      this is though not that much of a trouble. it only causes environment maps to be
+	//      GI light one frame behind
+	DBG_ENTER("RenderGIEnvMaps")
+	renderers.GetReflection().RenderGIEnvMaps( plan );
+	DBG_EXIT("RenderGIEnvMaps")
+	
 	DBG_ENTER("RenderReflections")
 	renderers.GetReflection().RenderReflections( plan );
 	DBG_EXIT("RenderReflections")
@@ -411,6 +419,12 @@ DEBUG_RESET_TIMER
 			renderers.GetToneMap().LuminancePrepare( plan );
 // 			renderers.GetGeometryPass().RenderLuminanceOnly( plan );
 			DebugTimer2Sample( plan, *pDebugInfo.infoLuminancePrepare, true );
+		}
+		
+		if( ! mask ){
+			DBG_ENTER("EnvMapCopyMaterials")
+			renderers.GetReflection().CopyMaterial( plan, true );
+			DBG_EXIT("EnvMapCopyMaterials")
 		}
 		
 		DBG_ENTER("RenderLights")
@@ -873,7 +887,6 @@ void deoglRenderWorld::RenderAntiAliasingPass(){
 void deoglRenderWorld::RenderFinalizeFBO( deoglRenderPlan &plan ){
 DBG_ENTER("RenderFinalizeFBO")
 	deoglRenderThread &renderThread = GetRenderThread();
-	const bool copyDepth = plan.GetFBOTargetCopyDepth();
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	deoglShaderCompiled *shader;
@@ -897,36 +910,17 @@ DBG_ENTER("RenderFinalizeFBO")
 	sampler = &GetSamplerClampLinear();
 	
 	tsmgr.EnableTexture( 0, *defren.GetPostProcessTexture(), *sampler );
-	if( copyDepth ){
-		tsmgr.EnableTexture( 1, *defren.GetDepthTexture1(), *sampler );
-	}
 	
 	// set states
 	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
-	
-	if( copyDepth ){
-		OGL_CHECK( renderThread, glDepthMask( GL_TRUE ) );
-		OGL_CHECK( renderThread, glEnable( GL_DEPTH_TEST ) );
-		OGL_CHECK( renderThread, glDepthFunc( GL_ALWAYS ) );
-		
-	}else{
-		OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
-		OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
-	}
-	
+	OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
+	OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
 	OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
-	
 	OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
 	
 	// set program and parameters
-	if( copyDepth ){
-		renderThread.GetShader().ActivateShader( pShaderFinalize );
-		shader = pShaderFinalize->GetCompiled();
-		
-	}else{
-		renderThread.GetShader().ActivateShader( pShaderFinalize );
-		shader = pShaderFinalize->GetCompiled();
-	}
+	renderThread.GetShader().ActivateShader( pShaderFinalize );
+	shader = pShaderFinalize->GetCompiled();
 	
 	shader->SetParameterFloat( spfinPosTransform, 1.0f, 1.0f, 0.0f, 0.0f );
 	shader->SetParameterFloat( spfinGamma, 1.0f, 1.0f, 1.0f, 1.0f );

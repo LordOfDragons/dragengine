@@ -518,6 +518,47 @@ void deoglRenderGI::PrepareUBORenderLight( deoglRenderPlan &plan ){
 	ubo.UnmapBuffer();
 }
 
+void deoglRenderGI::PrepareUBORenderLight( const deoglGIState &giState, const decDVector &position ){
+	const int count = giState.GetCascadeCount();
+	int i;
+	
+	deoglSPBlockUBO &ubo = GetUBORenderLight();
+	ubo.MapBuffer();
+	try{
+		for( i=0; i<count; i++ ){
+			const deoglGICascade &cascade = giState.GetCascadeAt( i );
+			
+			const decDVector cascadePosition( cascade.GetPosition() + cascade.GetFieldOrigin() );
+			const decMatrix matrix( decMatrix::CreateTranslation( ( position - cascadePosition ).ToVector() ) );
+			
+			ubo.SetParameterDataMat4x3( euprlMatrix, i, matrix );
+			ubo.SetParameterDataMat3x3( euprlMatrixNormal, i, decMatrix() );
+			
+			ubo.SetParameterDataIVec3( euprlProbeCount, i, giState.GetProbeCount() );
+			ubo.SetParameterDataIVec3( euprlProbeClamp, i, giState.GetGridCoordClamp() );
+			ubo.SetParameterDataVec3( euprlProbeSpacing, i, cascade.GetProbeSpacing() );
+			ubo.SetParameterDataVec3( euprlProbeSpacingInv, i, cascade.GetProbeSpacingInverse() );
+			ubo.SetParameterDataVec3( euprlPositionClamp, i, cascade.GetPositionClamp() );
+			ubo.SetParameterDataIVec3( euprlGridCoordShift, i, giState.GetProbeCount() - cascade.GetGridCoordShift() );
+			
+			ubo.SetParameterDataInt( euprlOcclusionMapSize, i, giState.GetIrradianceMapSize() );
+			ubo.SetParameterDataVec2( euprlOcclusionMapScale, i, giState.GetIrradianceMapScale() );
+			ubo.SetParameterDataInt( euprlDistanceMapSize, i, giState.GetDistanceMapSize() );
+			ubo.SetParameterDataVec2( euprlDistanceMapScale, i, giState.GetDistanceMapScale() );
+			ubo.SetParameterDataFloat( euprlNormalBias, i, giState.GetNormalBias() );
+			ubo.SetParameterDataFloat( euprlIrradianceGamma, i, giState.GetIrradianceGamma() );
+			ubo.SetParameterDataFloat( euprlSelfShadowBias, i, cascade.CalcUBOSelfShadowBias() );
+			ubo.SetParameterDataVec3( euprlGridOrigin, i, cascade.GetFieldOrigin() );
+			ubo.SetParameterDataIVec3( euprlGridCoordUnshift, i, cascade.GetGridCoordShift() );
+		}
+		
+	}catch( const deException & ){
+		ubo.UnmapBuffer();
+		throw;
+	}
+	ubo.UnmapBuffer();
+}
+
 void deoglRenderGI::RenderMaterials( deoglRenderPlan &plan ){
 	deoglGIState * const giState = plan.GetUpdateGIState();
 	if( ! giState ){

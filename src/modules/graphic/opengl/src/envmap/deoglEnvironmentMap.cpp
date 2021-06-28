@@ -99,9 +99,11 @@ pRenderThread( renderThread )
 	pIsFloat = true;
 	
 	pEnvMap = NULL;
-	pEnvMapDepth = NULL;
+	pEnvMapPosition = NULL;
+	pEnvMapDiffuse = NULL;
+	pEnvMapNormal = NULL;
+	pEnvMapEmissive = NULL;
 	pEnvMapEqui = NULL;
-	pEnvMapEquiDepth = NULL;
 	pMaxMipMapLevel = 0;
 	
 	pLayerMask.SetBit( 1 );
@@ -117,6 +119,7 @@ pRenderThread( renderThread )
 	pDirtyInit = true;
 	pDirtyOctreeNode = true;
 	pReady = false;
+	pMaterialReady = false;
 	pNextUpdateFace = 0;
 	
 	pPlanUsageCount = 0;
@@ -129,23 +132,10 @@ pRenderThread( renderThread )
 	pConvexVolumeList = NULL;
 	pLightVolume = NULL;
 	pDirtyConvexVolumeList = true;
-	pDirtyCubeMapHardLimit = true;
-	pDirtyCubeMapSoftLimit = true;
-	pCubeMapHardLimit = NULL;
-	pCubeMapSoftLimit = NULL;
-	pCubeMapLimitScale = 1.0f;
 	
 	try{
 		pConvexVolumeList = new decConvexVolumeList;
 		pLightVolume = new deoglLightVolume( renderThread );
-		
-		pCubeMapHardLimit = new deoglCubeMap( renderThread );
-		pCubeMapHardLimit->SetSize( 128 );
-		pCubeMapHardLimit->SetFBODepth16Format();
-		
-		pCubeMapSoftLimit = new deoglCubeMap( renderThread );
-		pCubeMapSoftLimit->SetSize( 128 );
-		pCubeMapSoftLimit->SetFBODepth16Format();
 		
 	}catch( const deException & ){
 		pCleanUp();
@@ -337,8 +327,6 @@ void deoglEnvironmentMap::AddReflectionMaskBoxMatrix( const decDMatrix &matrix )
 void deoglEnvironmentMap::SetDirty( bool dirty ){
 	pDirty = dirty;
 	pDirtyConvexVolumeList = true;
-	pDirtyCubeMapHardLimit = true;
-	pDirtyCubeMapSoftLimit = true;
 	
 	if( dirty ){
 		pNextUpdateFace = 0;
@@ -368,42 +356,42 @@ void deoglEnvironmentMap::RemovePlanUsage(){
 class deoglEnvironmentMapDeletion : public deoglDelayedDeletion{
 public:
 	deoglCubeMap *envMap;
-	deoglCubeMap *envMapDepth;
+	deoglArrayTexture *envMapPosition;
+	deoglArrayTexture *envMapDiffuse;
+	deoglArrayTexture *envMapNormal;
+	deoglArrayTexture *envMapEmissive;
 	deoglTexture *envMapEqui;
-	deoglTexture *envMapEquiDepth;
-	deoglCubeMap *cubeMapHardLimit;
-	deoglCubeMap *cubeMapSoftLimit;
 	
 	deoglEnvironmentMapDeletion() :
 	envMap( NULL ),
-	envMapDepth( NULL ),
-	envMapEqui( NULL ),
-	envMapEquiDepth( NULL ),
-	cubeMapHardLimit( NULL ),
-	cubeMapSoftLimit( NULL ){
+	envMapPosition( NULL ),
+	envMapDiffuse( NULL ),
+	envMapNormal( NULL ),
+	envMapEmissive( NULL ),
+	envMapEqui( NULL ){
 	}
 	
 	virtual ~deoglEnvironmentMapDeletion(){
 	}
 	
-	virtual void DeleteObjects( deoglRenderThread &renderThread ){
-		if( cubeMapSoftLimit ){
-			delete cubeMapSoftLimit;
-		}
-		if( cubeMapHardLimit ){
-			delete cubeMapHardLimit;
-		}
+	virtual void DeleteObjects( deoglRenderThread& ){
 		if( envMapEqui ){
 			delete envMapEqui;
-		}
-		if( envMapEquiDepth ){
-			delete envMapEquiDepth;
 		}
 		if( envMap ){
 			delete envMap;
 		}
-		if( envMapDepth ){
-			delete envMapDepth;
+		if( envMapPosition ){
+			delete envMapPosition;
+		}
+		if( envMapDiffuse ){
+			delete envMapDiffuse;
+		}
+		if( envMapNormal ){
+			delete envMapNormal;
+		}
+		if( envMapEmissive ){
+			delete envMapEmissive;
 		}
 	}
 };
@@ -418,6 +406,7 @@ void deoglEnvironmentMap::Destroy(){
 	SetDirty( true );
 	pDirtyInit = true;
 	pReady = false;
+	pMaterialReady = false;
 	
 	// delayed deletion of opengl containing objects
 	deoglEnvironmentMapDeletion *delayedDeletion = NULL;
@@ -425,23 +414,23 @@ void deoglEnvironmentMap::Destroy(){
 	try{
 		delayedDeletion = new deoglEnvironmentMapDeletion;
 		
-		delayedDeletion->cubeMapSoftLimit = pCubeMapSoftLimit;
-		pCubeMapSoftLimit = NULL;
-		
-		delayedDeletion->cubeMapHardLimit = pCubeMapHardLimit;
-		pCubeMapHardLimit = NULL;
-		
 		delayedDeletion->envMapEqui = pEnvMapEqui;
 		pEnvMapEqui = NULL;
-		
-		delayedDeletion->envMapEquiDepth = pEnvMapEquiDepth;
-		pEnvMapEquiDepth = NULL;
 		
 		delayedDeletion->envMap = pEnvMap;
 		pEnvMap = NULL;
 		
-		delayedDeletion->envMapDepth = pEnvMapDepth;
-		pEnvMapDepth = NULL;
+		delayedDeletion->envMapPosition = pEnvMapPosition;
+		pEnvMapPosition = NULL;
+		
+		delayedDeletion->envMapDiffuse = pEnvMapDiffuse;
+		pEnvMapDiffuse = NULL;
+		
+		delayedDeletion->envMapNormal = pEnvMapNormal;
+		pEnvMapNormal = NULL;
+		
+		delayedDeletion->envMapEmissive = pEnvMapEmissive;
+		pEnvMapEmissive = NULL;
 		
 		pRenderThread.GetDelayedOperations().AddDeletion( delayedDeletion );
 		
@@ -482,6 +471,7 @@ void deoglEnvironmentMap::PrepareForRender(){
 		return;
 	}
 	
+	// create env map fully prepared
 	if( ! pEnvMap ){
 		pEnvMap = new deoglCubeMap( pRenderThread );
 		pEnvMap->SetFBOFormat( 4, pIsFloat ); // color + mask
@@ -492,14 +482,45 @@ void deoglEnvironmentMap::PrepareForRender(){
 	pEnvMap->SetSize( pSize );
 	pEnvMap->CreateCubeMap();
 	
-	/*
-	if( ! pEnvMapDepth ){
-		pEnvMapDepth = new deoglCubeMap( pRenderThread );
-		pEnvMapDepth->SetDepthFormat();
+	deoglFramebuffer &fbo = pRenderThread.GetFramebuffer().GetEnvMap();
+	const GLfloat clearColor[ 4 ] = { 0.0f, 0.0f, 0.0f, 1.0f };
+	
+	pRenderThread.GetFramebuffer().Activate( &fbo );
+	fbo.DetachAllImages();
+	fbo.AttachColorCubeMap( 0, pEnvMap );
+	fbo.Verify();
+	OGL_CHECK( pRenderThread, pglClearBufferfv( GL_COLOR, 0, &clearColor[ 0 ] ) );
+	
+	pEnvMap->CreateMipMaps();
+	
+	// create material env maps
+	if( ! pEnvMapPosition ){
+		pEnvMapPosition = new deoglArrayTexture( pRenderThread );
+		pEnvMapPosition->SetFBOFormat( 3, true );
 	}
-	pEnvMapDepth->SetSize( pSize );
-	pEnvMapDepth->CreateCubeMap();
-	*/
+	pEnvMapPosition->SetSize( pSize, pSize, 6 );
+	pEnvMapPosition->CreateTexture();
+	
+	if( ! pEnvMapDiffuse ){
+		pEnvMapDiffuse = new deoglArrayTexture( pRenderThread );
+		pEnvMapDiffuse->SetFBOFormat( 3, false );
+	}
+	pEnvMapDiffuse->SetSize( pSize, pSize, 6 );
+	pEnvMapDiffuse->CreateTexture();
+	
+	if( ! pEnvMapNormal ){
+		pEnvMapNormal = new deoglArrayTexture( pRenderThread );
+		pEnvMapNormal->SetFBOFormat( 3, false );
+	}
+	pEnvMapNormal->SetSize( pSize, pSize, 6 );
+	pEnvMapNormal->CreateTexture();
+	
+	if( ! pEnvMapEmissive ){
+		pEnvMapEmissive = new deoglArrayTexture( pRenderThread );
+		pEnvMapEmissive->SetFormat( pEnvMap->GetFormat() );
+	}
+	pEnvMapEmissive->SetSize( pSize, pSize, 6 );
+	pEnvMapEmissive->CreateTexture();
 	
 	// WARNING
 	// initing the color produces hick-ups sometimes that are ugly. this is most probably due to the automatic
@@ -526,15 +547,6 @@ void deoglEnvironmentMap::PrepareForRender(){
 	//	deoglPixelBuffer pbEquiMap( deoglPixelBuffer::epfFloat4, pEnvMapEqui->GetWidth(), pEnvMapEqui->GetHeight(), 1 );
 	//	pbEquiMap.SetToFloatColor( 0.0f, 0.0f, 0.0f, 1.0f );
 	//	pEnvMapEqui->SetPixels( pbEquiMap );
-		
-		/*
-		if( ! pEnvMapEquiDepth ){
-			pEnvMapEquiDepth = new deoglTexture( pRenderThread );
-			pEnvMapEquiDepth->SetDepthFormat( false );
-		}
-		pEnvMapEquiDepth->SetSize( pSize * 4, pSize * 2 );
-		pEnvMapEquiDepth->CreateTexture();
-		*/
 	}
 	
 	pDirtyInit = false;
@@ -543,13 +555,7 @@ void deoglEnvironmentMap::PrepareForRender(){
 }
 
 void deoglEnvironmentMap::Update( deoglRenderPlan &parentPlan ){
-	if( ! pDirty ){
-		return;
-	}
-	if( ! pWorld ){
-		return;
-	}
-	if( pWorld->GetEnvMapUpdateCount() == 0 ){
+	if( ! pDirty || ! pWorld || pWorld->GetEnvMapUpdateCount() == 0 ){
 		return;
 	}
 	
@@ -563,38 +569,32 @@ void deoglEnvironmentMap::Update( deoglRenderPlan &parentPlan ){
 		}
 		
 		pEnvMap->CreateCubeMap();
-		//pEnvMapDepth->CreateCubeMap();
+		pEnvMapPosition->DestroyTexture();
+		pEnvMapDiffuse->DestroyTexture();
+		pEnvMapNormal->DestroyTexture();
+		pEnvMapEmissive->DestroyTexture();
 		// TODO we need now a layer mask to select what sky instances are rendered into the
 		//      the env map. the default here chooses all but if somebody uses layer masking
 		//      this is potentially wrong.
 		//      
 		//      find a solution for this
 		//      
+		
 		pRenderThread.GetRenderers().GetSky().RenderSkyIntoEnvMap( *pWorld, decLayerMask(), *this );
+		
+		// copy to equi-rect if required
 		if( pRenderThread.GetRenderers().GetReflection().GetUseEquiEnvMap() ){
 			pRenderThread.GetRenderers().GetReflection().ConvertCubeMap2EquiMap( *pEnvMap, pEnvMapEqui );
-			// TODO same for depth
-		}
-		/*
-		decString text;
-		int i;
-		
-		text.Format( "envmap_%p_X%.2f_Y%.2f_Z%.2f_cubemap", this, pPosition.x, pPosition.y, pPosition.z );
-		int textLen = text.GetLength();
-		for( i=0; i<textLen; i++ ) if( text.GetAt( i ) == '.' ) text.SetAt( i, 'p' );
-		pRenderThread.GetDebug().GetDebugSaveTexture().SaveCubeMap( *pEnvMap, text.GetString(), false, 0, false );
-		
-		text.Format( "envmap_%p_X%.2f_Y%.2f_Z%.2f_equimap", this, pPosition.x, pPosition.y, pPosition.z );
-		textLen = text.GetLength();
-		for( i=0; i<textLen; i++ ) if( text.GetAt( i ) == '.' ) text.SetAt( i, 'p' );
-		pRenderThread.GetDebug().GetDebugSaveTexture().SaveTexture( *pEnvMapEqui, text.GetString(), false );
-		*/
-		if( pRenderThread.GetRenderers().GetReflection().GetUseEquiEnvMap() ){
+			
+			// destroy cube map textures
 			pEnvMap->DestroyCubeMap();
-			//pEnvMapDepth->DestroyCubeMap();
+			
+		}else{
+			pEnvMap->CreateMipMaps();
 		}
 		
 		pReady = true;
+		pMaterialReady = false;
 		
 	}else{
 		if( pRenderThread.GetConfiguration().GetDebugPrintSkyUpdate() ){
@@ -635,8 +635,10 @@ void deoglEnvironmentMap::RenderEnvCubeMap( deoglRenderPlan &parentPlan ){
 	
 	// use the parent plan gi state but without modifying it. allows to use GI with
 	// no extra cost and witout messing up parent GI state
-	plan.SetUseConstGIState( parentPlan.GetRenderGIState() );
+	plan.SetUseConstGIState( NULL );//parentPlan.GetRenderGIState() );
 	plan.SetUseGIState( plan.GetUseConstGIState() != NULL );
+	
+	plan.SetNoAmbientLight( true );
 	
 	// TODO we need to find a way to figure out what adapted intensity to use here.
 	//      in the case of regular rendering the lower camera intensity is used which
@@ -665,7 +667,12 @@ void deoglEnvironmentMap::RenderEnvCubeMap( deoglRenderPlan &parentPlan ){
 	cmf = pNextUpdateFace;
 	
 	pEnvMap->CreateCubeMap();
-	//pEnvMapDepth->CreateCubeMap();
+	pEnvMapPosition->CreateTexture();
+	pEnvMapDiffuse->CreateTexture();
+	pEnvMapNormal->CreateTexture();
+	pEnvMapEmissive->CreateTexture();
+	
+	deoglFramebuffer * const oldfbo = pRenderThread.GetFramebuffer().GetActive();
 	
 	if( cmf == 0 ){
 		// initial clear and mip maps creation. this is required or else it won't work.
@@ -673,8 +680,6 @@ void deoglEnvironmentMap::RenderEnvCubeMap( deoglRenderPlan &parentPlan ){
 		// environment map has finished rendering. but for the time being this init
 		// is done. cleared to black for the time being. would be better to clear to
 		// the average ambient lighting at the envmap location once known
-		deoglFramebuffer * const oldfbo = pRenderThread.GetFramebuffer().GetActive();
-		
 		OGL_CHECK( pRenderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
 		
 		// we can not use a shared framebuffer here from GetManager().GetFBOWithResolution()
@@ -682,47 +687,65 @@ void deoglEnvironmentMap::RenderEnvCubeMap( deoglRenderPlan &parentPlan ){
 		// is selected it is used at the same time by the environment map rendering and other
 		// rendering. this can lead to problems
 		deoglFramebuffer &fbo = pRenderThread.GetFramebuffer().GetEnvMap();
-		pRenderThread.GetFramebuffer().Activate( &fbo );
-		
-		fbo.DetachAllImages();
-		
 		const GLfloat clearColor[ 4 ] = { 0.0f, 0.0f, 0.0f, 1.0f };
-		int j;
 		
-		for( j=0; j<6; j++ ){
-			fbo.AttachColorCubeMapFace( 0, pEnvMap, vCubeFaces[ j ] );
-			fbo.Verify();
-			OGL_CHECK( pRenderThread, pglClearBufferfv( GL_COLOR, 0, &clearColor[ 0 ] ) );
-		}
+		pRenderThread.GetFramebuffer().Activate( &fbo );
+		fbo.DetachAllImages();
+		fbo.AttachColorArrayTexture( 0, pEnvMapEmissive );
+		fbo.Verify();
+		OGL_CHECK( pRenderThread, pglClearBufferfv( GL_COLOR, 0, &clearColor[ 0 ] ) );
+		
+		deoglFramebuffer &fboMaterial = pRenderThread.GetFramebuffer().GetEnvMapMaterial();
+		const GLfloat clearPosition[ 4 ] = { 0.0f, 0.0f, 0.0f, 0.0f };
+		const GLfloat clearDiffuse[ 4 ] = { 0.0f, 0.0f, 0.0f, 0.0f };
+		const GLfloat clearNormal[ 4 ] = { 0.0f, 0.0f, 0.0f, 0.0f };
+		
+		pRenderThread.GetFramebuffer().Activate( &fboMaterial );
+		fboMaterial.DetachAllImages();
+		fboMaterial.AttachColorArrayTexture( 0, pEnvMapPosition );
+		fboMaterial.AttachColorArrayTexture( 1, pEnvMapDiffuse );
+		fboMaterial.AttachColorArrayTexture( 2, pEnvMapNormal );
+		fboMaterial.Verify();
+		
+		OGL_CHECK( pRenderThread, pglClearBufferfv( GL_COLOR, 0, &clearPosition[ 0 ] ) );
+		OGL_CHECK( pRenderThread, pglClearBufferfv( GL_COLOR, 1, &clearDiffuse[ 0 ] ) );
+		OGL_CHECK( pRenderThread, pglClearBufferfv( GL_COLOR, 2, &clearNormal[ 0 ] ) );
 		
 		pRenderThread.GetFramebuffer().Activate( oldfbo );
-		/* only required with shared framebuffer
-		if( fbo ){
-			fbo->DecreaseUsageCount();
-		}
-		*/
 		
-		pEnvMap->CreateMipMaps();
+		pMaterialReady = false;
 	}
 	
 	try{
+		// prepare material fbo
+		deoglFramebuffer &fboMaterial = pRenderThread.GetFramebuffer().GetEnvMapMaterial();
+		const GLenum buffers[ 3 ] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
+		
+		pRenderThread.GetFramebuffer().Activate( &fboMaterial );
+		fboMaterial.DetachAllImages();
+		OGL_CHECK( pRenderThread, pglDrawBuffers( 3, buffers ) );
+		OGL_CHECK( pRenderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
+		
+		plan.SetFBOMaterial( &fboMaterial );
+		
+		// prepare fbo
 		deoglFramebuffer &fbo = pRenderThread.GetFramebuffer().GetEnvMap();
+		
 		pRenderThread.GetFramebuffer().Activate( &fbo );
-		
 		fbo.DetachAllImages();
-		
-		const GLenum buffers[ 1 ] = { GL_COLOR_ATTACHMENT0 };
 		OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
 		OGL_CHECK( pRenderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
 		
 		plan.SetFBOTarget( &fbo );
 		plan.SetUpsideDown( false );
 		
+		// render
 		timer.Reset();
 		
 		//for( cmf=0; cmf<6; cmf++ ){
 			deoglCubeMap::CreateMatrixForFace( matrixCamera, pPosition, vCubeFaces[ cmf ] );
 			plan.SetCameraMatrix( matrixCamera );
+			plan.SetFBOMaterialMatrix( plan.GetInverseCameraMatrix() * decDMatrix::CreateTranslation( -pPosition ) );
 			
 			plan.PrepareRender( NULL );
 			// ^-- this can cause ourself to be marked for deletion. due to the render plan
@@ -740,12 +763,8 @@ void deoglEnvironmentMap::RenderEnvCubeMap( deoglRenderPlan &parentPlan ){
 			//     NULL as indicator for a removed env-map is a workaround
 			if( ! pEnvMap ){
 				pRenderThread.GetFramebuffer().Activate( NULL );
-				/* only required with shared framebuffer
-				if( fbo ){
-					fbo->DecreaseUsageCount();
-				}
-				*/
 				plan.SetFBOTarget( NULL );
+				plan.SetFBOMaterial( NULL );
 				pNextUpdateFace = 6;
 				pDirty = false;
 				return;
@@ -753,9 +772,14 @@ void deoglEnvironmentMap::RenderEnvCubeMap( deoglRenderPlan &parentPlan ){
 			
 			defren.Resize( pSize, pSize );
 			
+			pRenderThread.GetFramebuffer().Activate( &fboMaterial );
+			fboMaterial.AttachColorArrayTextureLayer( 0, pEnvMapPosition, cmf );
+			fboMaterial.AttachColorArrayTextureLayer( 1, pEnvMapDiffuse, cmf );
+			fboMaterial.AttachColorArrayTextureLayer( 2, pEnvMapNormal, cmf );
+			fboMaterial.Verify();
+			
 			pRenderThread.GetFramebuffer().Activate( &fbo );
-			//fbo->AttachDepthCubeMap( pEnvMapDepth, vCubeFaces[ cmf ] );
-			fbo.AttachColorCubeMapFace( 0, pEnvMap, vCubeFaces[ cmf ] );
+			fbo.AttachColorArrayTextureLayer( 0, pEnvMapEmissive, cmf );
 			fbo.Verify();
 			
 			plan.Render();
@@ -766,67 +790,23 @@ void deoglEnvironmentMap::RenderEnvCubeMap( deoglRenderPlan &parentPlan ){
 		//}
 		
 		plan.SetFBOTarget( NULL );
+		plan.SetFBOMaterial( NULL );
 		
-// 		pRenderThread.GetFramebuffer().Activate( oldfbo );
-		pRenderThread.GetFramebuffer().Activate( NULL );
-		/* only required with shared framebuffer
-		if( fbo ){
-			fbo->DecreaseUsageCount();
-		}
-		*/
+		pRenderThread.GetFramebuffer().Activate( oldfbo );
 		
 		pNextUpdateFace++;
 		if( pNextUpdateFace == 6 ){
-			/*
-			decString text;
-			text.Format( "envmap_%p", this );
-			pRenderThread.GetDebug().GetDebugSaveTexture().SaveCubeMap( *pEnvMap, text.GetString(), false, false );
-			*/
+			pRenderThread.GetRenderers().GetReflection().CopyEnvMap( *pEnvMapEmissive, *pEnvMap );
 			pEnvMap->CreateMipMaps();
 			
 			if( pRenderThread.GetRenderers().GetReflection().GetUseEquiEnvMap() ){
 				pRenderThread.GetRenderers().GetReflection().ConvertCubeMap2EquiMap( *pEnvMap, pEnvMapEqui );
-				// TODO same for depth
-			}
-			if( false ){
-				deoglDebugSaveTexture &dst = pRenderThread.GetDebug().GetDebugSaveTexture();
-				decString text;
-				int i;
 				
-				if( pEnvMap ){
-					text.Format( "envmap_X%.2f_Y%.2f_Z%.2f_cubemap", pPosition.x, pPosition.y, pPosition.z );
-					int textLen = text.GetLength();
-					for( i=0; i<textLen; i++ ) if( text.GetAt( i ) == '.' ) text.SetAt( i, 'p' );
-					dst.SaveCubeMapConversion( *pEnvMap, text.GetString(), false,
-						deoglDebugSaveTexture::ecColorLinearToneMapsRGB );
-				}
-				if( pEnvMapDepth ){
-					text.Format( "envmap_X%.2f_Y%.2f_Z%.2f_cubemap_depth", pPosition.x, pPosition.y, pPosition.z );
-					int textLen = text.GetLength();
-					for( i=0; i<textLen; i++ ) if( text.GetAt( i ) == '.' ) text.SetAt( i, 'p' );
-					dst.SaveCubeMapConversion( *pEnvMapDepth, text.GetString(), false,
-						deoglDebugSaveTexture::ecDepthBuffer );
-				}
-				
-				if( pEnvMapEqui ){
-					text.Format( "envmap_X%.2f_Y%.2f_Z%.2f_equimap", pPosition.x, pPosition.y, pPosition.z );
-					int textLen = text.GetLength();
-					for( i=0; i<textLen; i++ ) if( text.GetAt( i ) == '.' ) text.SetAt( i, 'p' );
-					dst.SaveTextureConversion( *pEnvMapEqui, text.GetString(),
-						deoglDebugSaveTexture::ecColorLinearToneMapsRGB );
-				}
-				if( pEnvMapEquiDepth ){
-					text.Format( "envmap_X%.2f_Y%.2f_Z%.2f_equimap_depth", pPosition.x, pPosition.y, pPosition.z );
-					int textLen = text.GetLength();
-					for( i=0; i<textLen; i++ ) if( text.GetAt( i ) == '.' ) text.SetAt( i, 'p' );
-					dst.SaveTextureConversion( *pEnvMapEquiDepth, text.GetString(),
-						deoglDebugSaveTexture::ecDepthBuffer );
-				}
-			}
-			
-			if( pRenderThread.GetRenderers().GetReflection().GetUseEquiEnvMap() ){
 				pEnvMap->DestroyCubeMap();
-				//pEnvMapDepth->DestroyCubeMap();
+				pEnvMapPosition->DestroyTexture();
+				pEnvMapDiffuse->DestroyTexture();
+				pEnvMapNormal->DestroyTexture();
+				pEnvMapEmissive->DestroyTexture();
 			}
 			
 			if( pSlotIndex != -1 ){
@@ -834,6 +814,7 @@ void deoglEnvironmentMap::RenderEnvCubeMap( deoglRenderPlan &parentPlan ){
 			}
 			
 			pReady = true;
+			pMaterialReady = true;
 		}
 		
 		renderTime[ 6 ] = ( int )( timer.GetElapsedTime() * 1000000.0 );
@@ -845,24 +826,9 @@ void deoglEnvironmentMap::RenderEnvCubeMap( deoglRenderPlan &parentPlan ){
 				renderTime[ 4 ], renderTime[ 5 ], renderTime[ 6 ], renderTime[ 7 ] );
 		}
 		
-		/*
-		if( pEnvMap ){
-			decString filename;
-			filename.Format( "envmap/render-%g-%g-%g_%d", pPosition.x, pPosition.y, pPosition.z, pNextUpdateFace );
-			pRenderThread.GetDebug().GetDebugSaveTexture().SaveCubeMapConversion(
-				*pEnvMap, filename, true, deoglDebugSaveTexture::ecColorLinearToneMapsRGB );
-		}
-		*/
-		
 	}catch( const deException &e ){
 		pRenderThread.GetLogger().LogException( e );
-// 		pRenderThread.GetFramebuffer().Activate( oldfbo );
-		pRenderThread.GetFramebuffer().Activate( NULL );
-		/* only required with shared framebuffer
-		if( fbo ){
-			fbo->DecreaseUsageCount();
-		}
-		*/
+		pRenderThread.GetFramebuffer().Activate( oldfbo );
 		throw;
 	}
 	
@@ -949,60 +915,11 @@ void deoglEnvironmentMap::UpdateConvexVolumeList(){
 	
 	pLightVolume->CreateFrom( *pConvexVolumeList );
 	
-	pCubeMapLimitScale = maxSize;
-	pDirtyCubeMapHardLimit = true;
-	pDirtyCubeMapSoftLimit = true;
-	
 	pDirtyConvexVolumeList = false;
 	if( pRenderThread.GetConfiguration().GetDebugPrintSkyUpdate() ){
 		pRenderThread.GetLogger().LogInfoFormat( "UpdateConvexVolumeList (%g,%g,%g): %iys\n",
 			pPosition.x, pPosition.y, pPosition.z, ( int )( timer.GetElapsedTime() * 1000000.0 ) );
 	}
-}
-
-void deoglEnvironmentMap::PrepareCubeMapHardLimit(){
-	if( ! pDirtyCubeMapHardLimit ){
-		return;
-	}
-	
-	deoglCollideList collideList;
-	deoglDCollisionBox colbox;
-	decTimer timer;
-	
-	timer.Reset();
-	
-	colbox.SetCenter( pPosition );
-	colbox.SetHalfSize( decDVector( ( double )pCubeMapLimitScale, ( double )pCubeMapLimitScale, ( double )pCubeMapLimitScale ) );
-	collideList.AddComponentsColliding( pWorld->GetOctree(), &colbox );
-	
-	pCubeMapHardLimit->CreateCubeMap();
-	
-	pRenderThread.GetRenderers().GetOcclusion().RenderOcclusionCubeMap( collideList, pCubeMapHardLimit, pPosition, 0.01f, pCubeMapLimitScale );
-	
-	pRenderThread.GetLogger().LogInfoFormat( "PrepareCubeMapHardLimit (%g,%g,%g): %iys\n",
-		pPosition.x, pPosition.y, pPosition.z, ( int )( timer.GetElapsedTime() * 1000000.0 ) );
-	if( false ){
-		decString filename;
-		filename.Format( "envmap_limit_hard_X%.2f_Y%.2f_Z%.2f", pPosition.x, pPosition.y, pPosition.z );
-		const int filenameLen = filename.GetLength();
-		int i;
-		for( i=0; i<filenameLen; i++ ){
-			if( filename.GetAt( i ) == '.' ){
-				filename.SetAt( i, ',' );
-			}
-		}
-		pRenderThread.GetDebug().GetDebugSaveTexture().SaveDepthCubeMap( *pCubeMapHardLimit, filename.GetString(), true );
-	}
-	
-	pDirtyCubeMapHardLimit = false;
-}
-
-void deoglEnvironmentMap::PrepareCubeMapSoftLimit(){
-	if( ! pDirtyCubeMapSoftLimit ){
-		return;
-	}
-	
-	pDirtyCubeMapSoftLimit = false;
 }
 
 
@@ -1011,7 +928,7 @@ void deoglEnvironmentMap::SkyChanged(){
 	SetDirty( true );
 }
 
-void deoglEnvironmentMap::LightChanged( deoglRLight *light ){
+void deoglEnvironmentMap::LightChanged( deoglRLight* ){
 	SetDirty( true );
 }
 

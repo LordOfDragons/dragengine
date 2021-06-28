@@ -44,7 +44,8 @@ pActive( NULL ),
 pPrimary( renderThread, true ),
 pDummyRenderBuffer( renderThread ),
 pDummy( renderThread, false ),
-pEnvMap( renderThread, false )
+pEnvMap( renderThread, false ),
+pEnvMapMaterial( renderThread, false )
 {
 	try{
 		// empty framebuffer

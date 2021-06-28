@@ -118,7 +118,8 @@ private:
 	decLayerMask pLayerMask;
 	
 	deoglFramebuffer *pFBOTarget;
-	bool pFBOTargetCopyDepth;
+	deoglFramebuffer *pFBOMaterial;
+	decMatrix pFBOMaterialMatrix;
 	
 	deoglDCollisionFrustum pCustomFrustum;
 	bool pUseCustomFrustum;
@@ -285,10 +286,10 @@ public:
 	
 	
 	
-	/** Camera or \em NULL. */
+	/** Camera or NULL. */
 	inline deoglRCamera *GetCamera() const{ return pCamera; }
 	
-	/** Set camera or \em NULL. */
+	/** Set camera or NULL. */
 	void SetCamera( deoglRCamera *camera );
 	
 	/** Camera matrix. */
@@ -378,17 +379,23 @@ public:
 	
 	
 	
-	/** Target framebuffer object or \em NULL to use the one of the active graphics context. */
+	/** Target framebuffer object or NULL to use the one of the active graphics context. */
 	inline deoglFramebuffer *GetFBOTarget() const{ return pFBOTarget; }
 	
-	/** Set target framebuffer object or \em NULL to use the one of the active graphics context. */
+	/** Set target framebuffer object or NULL to use the one of the active graphics context. */
 	void SetFBOTarget( deoglFramebuffer *fbo );
 	
-	/** Depth is copied to the target framebuffer object if not \em NULL. */
-	inline bool GetFBOTargetCopyDepth() const{ return pFBOTargetCopyDepth; }
+	/** Material framebuffer object or NULL. */
+	inline deoglFramebuffer *GetFBOMaterial() const{ return pFBOMaterial; }
 	
-	/** Set if depth is copied to the target framebuffer object if not \em NULL. */
-	void SetFBOTargetCopyDepth( bool copyDepth );
+	/** Set material framebuffer object or NULL. */
+	void SetFBOMaterial( deoglFramebuffer *fbo );
+	
+	/** Material framebuffer matrix. */
+	inline const decMatrix &GetFBOMaterialMatrix() const{ return pFBOMaterialMatrix; }
+	
+	/** Set material framebuffer matrix. */
+	void SetFBOMaterialMatrix( const decMatrix &matrix );
 	
 	
 	
@@ -629,7 +636,7 @@ public:
 	
 	
 	
-	/** Debug object or \em NULL if not existing. */
+	/** Debug object or NULL if not existing. */
 	inline deoglRenderPlanDebug *GetDebug() const{ return pDebug; }
 	
 	/** Debug timing information is printed. */

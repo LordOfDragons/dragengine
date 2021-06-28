@@ -306,12 +306,6 @@ void deoglRenderSky::RenderSky( deoglRenderPlan &plan ){
 	bool first = true;
 	int i, j;
 	
-	if( renderThread.GetConfiguration().GetDebugSnapshot() == 2 && plan.GetWorld()->GetSkyEnvironmentMap() ){
-		renderThread.GetDebug().GetDebugSaveTexture().SaveCubeMap(
-			*plan.GetWorld()->GetSkyEnvironmentMap()->GetEnvironmentMap(), "environment_cubemap", false );
-		renderThread.GetConfiguration().SetDebugSnapshot( 0 );
-	}
-	
 	OGL_CHECK( renderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) );
 	DEBUG_PRINT_TIMER( "RenderSky: bind vao" );
 	

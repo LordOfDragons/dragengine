@@ -48,6 +48,7 @@ private:
 	deoglFramebuffer pDummy;
 	
 	deoglFramebuffer pEnvMap;
+	deoglFramebuffer pEnvMapMaterial;
 	
 	
 	
@@ -88,6 +89,10 @@ public:
 	/** Environment map framebuffer. */
 	inline deoglFramebuffer &GetEnvMap(){ return pEnvMap; }
 	inline const deoglFramebuffer &GetEnvMap() const{ return pEnvMap; }
+	
+	/** Environment material map framebuffer. */
+	inline deoglFramebuffer &GetEnvMapMaterial(){ return pEnvMapMaterial; }
+	inline const deoglFramebuffer &GetEnvMapMaterial() const{ return pEnvMapMaterial; }
 	/*@}*/
 	
 private:

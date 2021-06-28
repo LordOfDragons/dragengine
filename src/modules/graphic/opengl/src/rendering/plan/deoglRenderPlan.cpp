@@ -148,7 +148,7 @@ pTaskFindContent( NULL )
 	pUseCustomFrustum = false;
 	
 	pFBOTarget = NULL;
-	pFBOTargetCopyDepth = false;
+	pFBOMaterial = NULL;
 	
 	pHTView = NULL;
 	
@@ -1531,8 +1531,12 @@ void deoglRenderPlan::SetFBOTarget( deoglFramebuffer *fbo ){
 	pFBOTarget = fbo;
 }
 
-void deoglRenderPlan::SetFBOTargetCopyDepth( bool copyDepth ){
-	pFBOTargetCopyDepth = copyDepth;
+void deoglRenderPlan::SetFBOMaterial( deoglFramebuffer *fbo ){
+	pFBOMaterial = fbo;
+}
+
+void deoglRenderPlan::SetFBOMaterialMatrix( const decMatrix &matrix ){
+	pFBOMaterialMatrix = matrix;
 }
 
 

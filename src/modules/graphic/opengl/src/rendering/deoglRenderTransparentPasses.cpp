@@ -292,6 +292,10 @@ DBG_ENTER_PARAM("RenderTransparentPasses", "%p", mask)
 			// render the transparent layer
 			RenderTransparentGeometryPass( plan, mask );
 			
+			if( ! mask ){
+				renderThread.GetRenderers().GetReflection().CopyMaterial( plan, false );
+			}
+			
 			if( ! plan.GetDisableLights() ){
 				renderThread.GetRenderers().GetLight().RenderLights( plan, false, mask );
 				DebugTimer1Sample( plan, *renworld.GetDebugInfo().infoTransparentLights, true );
