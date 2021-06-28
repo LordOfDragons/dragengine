@@ -6,6 +6,7 @@
 	<version>150</version>
 	
 	<texture name='texColor' target='0'/>
+	<texture name='texMask' target='1'/>
 	
 	<parameter name='pTransform'/> <!-- 0 -->
 	<parameter name='pTCTransform'/> <!-- 1 -->
@@ -14,6 +15,7 @@
 	<parameter name='pGamma'/> <!-- 4 -->
 	<parameter name='pClipRect'/> <!-- 5 -->
 	<parameter name='pTCClamp'/> <!-- 6 -->
+	<parameter name='pTCTransformMask'/> <!-- 7 -->
 	
 	<attribute name='inPosition' target='0'/>
 	

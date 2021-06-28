@@ -13,10 +13,16 @@ envLibrary = parent_env.Clone()
 buildStaticLinking = True
 
 # parameters
+#oalversion = '1.19.1'
+oalversion = '1.20.0'
+
+if envLibrary['OSWindows']:
+	oalversion = '1.19.1'
+
 if envLibrary['platform_android'] != 'no' and False:
 	srcdir = 'android-libopenalsoft-1.0.0'
 else:
-	srcdir = 'openal-soft-1.19.1'
+	srcdir = 'openal-soft-{}'.format(oalversion)
 
 if envLibrary['OSWindows']:
 	libFileName = 'bin/OpenAL32.dll'
@@ -195,7 +201,7 @@ if envLibrary['OSWindows']:
 	
 elif envLibrary['OSBeOS']:
 	# BeOS requires some additional patches
-	globFiles(envLibrary, 'patches_beos', '*.patch', patches, recursive=False)
+	globFiles(envLibrary, os.path.join('patches_beos', oalversion), '*.patch', patches, recursive=False)
 	envLibrary.Append(PATCHES = [envLibrary.File(x) for x in sorted(patches)])
 	library = envLibrary.Command(targets, '{}.tar.bz2'.format(srcdir),
 		envLibrary.Action(openalBuild, 'Build OpenAL'))
@@ -206,7 +212,7 @@ else:
 	# 
 	# android is also compiled using the same source but has some peculiarities handled
 	# directly in the openalBuild function
-	globFiles(envLibrary, 'patches', '*.patch', patches, recursive=False)
+	globFiles(envLibrary, os.path.join('patches', oalversion), '*.patch', patches, recursive=False)
 	envLibrary.Append(PATCHES = [envLibrary.File(x) for x in sorted(patches)])
 	library = envLibrary.Command(targets, '{}.tar.bz2'.format(srcdir),
 		envLibrary.Action(openalBuild, 'Build OpenAL'))

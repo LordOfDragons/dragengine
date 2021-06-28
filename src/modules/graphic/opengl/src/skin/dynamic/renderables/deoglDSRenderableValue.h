@@ -36,6 +36,7 @@ class deoglDSRenderableValue : public deoglDSRenderable{
 public:
 	const deDSRenderableValue &pRenderableValue;
 	deoglRDSRenderableValue *pRRenderableValue;
+	float pValue;
 	bool pDirty;
 	
 public:

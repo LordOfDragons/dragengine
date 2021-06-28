@@ -22,7 +22,7 @@
 #ifndef _IGDEIGDEREALAPPLICATION_H_
 #define _IGDEIGDEREALAPPLICATION_H_
 
-#include "environment/igdeEnvironmentIGDE.h"
+#include "../environment/igdeEnvironmentIGDE.h"
 
 #include <deigde/gui/igdeApplication.h>
 #include <deigde/gui/igdeWidgetReference.h>

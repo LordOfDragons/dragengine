@@ -49,6 +49,7 @@ private:
 	deoglHeightTerrain *pHeightTerrain;
 	deoglSharedVideoPlayerList *pSharedVideoPlayerList;
 	
+	bool pDirtySize;
 	bool pDirtySkies;
 	bool pDirtyBillboards;
 	bool pDirtyComponents;
@@ -126,6 +127,9 @@ public:
 	
 	/** @name Notifications */
 	/*@{*/
+	/** Size changed. */
+	virtual void SizeChanged();
+	
 	/** Height Terrain has changed. */
 	virtual void HeightTerrainChanged();
 	/** Global lighting parameters have changed. */

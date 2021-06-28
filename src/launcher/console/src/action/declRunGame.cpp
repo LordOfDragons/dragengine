@@ -206,6 +206,7 @@ bool declRunGame::ParseArguments(){
 			
 			if( argumentCount - argumentIndex > 0 ){
 				pGameDefFile = argumentList.GetArgumentAt( argumentIndex )->ToUTF8();
+				break;
 				
 			}else{
 				logger.LogError( LOGSOURCE, "Missing game definition filename after --file" );
@@ -260,6 +261,7 @@ bool declRunGame::ParseArguments(){
 						
 						if( argumentCount - argumentIndex > 0 ){
 							pGameDefFile = argumentList.GetArgumentAt( argumentIndex )->ToUTF8();
+							break;
 							
 						}else{
 							logger.LogError( LOGSOURCE, "Missing game definition filename after -f" );
@@ -295,6 +297,10 @@ bool declRunGame::ParseArguments(){
 					logger.LogErrorFormat( LOGSOURCE, "Unknown option -%c", ( char )option );
 					return false;
 				}
+			}
+			
+			if( o < optionLen ){
+				break;
 			}
 			
 		}else{

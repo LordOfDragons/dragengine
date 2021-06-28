@@ -34,13 +34,14 @@
 #include "../navigation/layer/dedaiLayer.h"
 #include "../devmode/dedaiDeveloperMode.h"
 
+#include <dragengine/deEngine.h>
+#include <dragengine/deObjectReference.h>
+#include <dragengine/common/exceptions.h>
 #include <dragengine/resources/navigation/navigator/deNavigator.h>
 #include <dragengine/resources/navigation/space/deNavigationSpace.h>
 #include <dragengine/resources/navigation/blocker/deNavigationBlocker.h>
 #include <dragengine/resources/terrain/heightmap/deHeightTerrain.h>
 #include <dragengine/resources/world/deWorld.h>
-#include <dragengine/deEngine.h>
-#include <dragengine/common/exceptions.h>
 
 
 
@@ -103,19 +104,10 @@ dedaiLayer *dedaiWorld::GetLayer( int layer ){
 		}
 	}
 	
-	dedaiLayer *newLayer = NULL;
-	try{
-		newLayer = new dedaiLayer( *this, layer );
-		pLayers.Add( newLayer );
-		
-	}catch( const deException & ){
-		if( newLayer ){
-			newLayer->FreeReference();
-		}
-		throw;
-	}
-	
-	return newLayer;
+	deObjectReference newLayer;
+	newLayer.TakeOver( new dedaiLayer( *this, layer ) );
+	pLayers.Add( newLayer );
+	return ( dedaiLayer* )( deObject* )newLayer; // pLayers keeps reference
 }
 
 

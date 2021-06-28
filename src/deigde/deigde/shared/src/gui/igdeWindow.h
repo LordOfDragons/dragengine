@@ -124,6 +124,9 @@ public:
 	
 	/** \brief Close window bypassing CloseWindow(). */
 	virtual void Close();
+	
+	/** \brief Parent window. */
+	virtual igdeWindow *GetParentWindow();
 	/*@}*/
 	
 	

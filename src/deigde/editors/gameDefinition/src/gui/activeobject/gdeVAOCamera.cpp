@@ -51,10 +51,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeVAOCamera::gdeVAOCamera( gdeViewActiveObject &view, gdeOCCamera *occamera ) :
-pView( view ),
+gdeVAOCamera::gdeVAOCamera( gdeViewActiveObject &view, const gdeObjectClass &objectClass,
+	const decString &propertyPrefix, gdeOCCamera *occamera ) :
+gdeVAOSubObject( view, objectClass, propertyPrefix ),
 pOCCamera( occamera ),
-pDebugDrawer( NULL ),
 pDDSCenter( NULL ),
 pDDSCoordSystem( NULL )
 {
@@ -111,7 +111,7 @@ void gdeVAOCamera::pCleanUp(){
 	}
 	if( pDebugDrawer ){
 		pView.GetGameDefinition()->GetWorld()->RemoveDebugDrawer( pDebugDrawer );
-		pDebugDrawer->FreeReference();
+		pDebugDrawer = NULL;
 	}
 	
 	if( pOCCamera ){
@@ -125,7 +125,7 @@ void gdeVAOCamera::pCreateDebugDrawer(){
 	const deEngine &engine = *pView.GetGameDefinition()->GetEngine();
 	
 	// create debug drawer
-	pDebugDrawer = engine.GetDebugDrawerManager()->CreateDebugDrawer();
+	pDebugDrawer.TakeOver( engine.GetDebugDrawerManager()->CreateDebugDrawer() );
 	pDebugDrawer->SetXRay( true );
 	pView.GetGameDefinition()->GetWorld()->AddDebugDrawer( pDebugDrawer );
 	

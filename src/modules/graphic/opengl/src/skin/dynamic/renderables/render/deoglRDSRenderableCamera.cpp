@@ -70,24 +70,16 @@ void deoglRDSRenderableCamera::SetCamera( deoglRCamera *camera ){
 	if( camera ){
 		camera->AddReference();
 	}
-	
-	GetDynamicSkin().TextureConfigurationChanged();
 }
 
-void deoglRDSRenderableCamera::PrepareForRender(){
-	if( ! pCamera ){
-		return;
+void deoglRDSRenderableCamera::PrepareForRender( const deoglRenderPlanMasked *renderPlanMask ){
+	if( pCamera ){
+		pCamera->GetPlan().PrepareRender( renderPlanMask );
 	}
-	
-	pCamera->GetPlan().PrepareRender();
 }
 
-deoglRenderPlan *deoglRDSRenderableCamera::GetRenderPlan(){
-	if( ! pCamera ){
-		return NULL;
-	}
-	
-	return &pCamera->GetPlan();
+deoglRenderPlan *deoglRDSRenderableCamera::GetRenderPlan() const{
+	return pCamera ? &pCamera->GetPlan() : NULL;
 }
 
 

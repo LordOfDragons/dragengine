@@ -22,32 +22,29 @@
 #ifndef _GDEVAOPARTICLEEMITTER_H_
 #define _GDEVAOPARTICLEEMITTER_H_
 
-#include <dragengine/deObject.h>
+#include "gdeVAOSubObject.h"
 
-class gdeViewActiveObject;
+#include <dragengine/resources/debug/deDebugDrawerReference.h>
+#include <dragengine/resources/particle/deParticleEmitterReference.h>
+#include <dragengine/resources/particle/deParticleEmitterInstanceReference.h>
+
 class gdeOCParticleEmitter;
 class igdeWDebugDrawerShape;
 class igdeWCoordSysArrows;
-
-class deDebugDrawer;
-class deParticleEmitter;
-class deParticleEmitterInstance;
 
 
 
 /**
  * \brief Game definition active object particleEmitter for edit view.
  */
-class gdeVAOParticleEmitter : public deObject{
+class gdeVAOParticleEmitter : public gdeVAOSubObject{
 private:
-	gdeViewActiveObject &pView;
-	
 	gdeOCParticleEmitter *pOCParticleEmitter;
 	
-	deParticleEmitter *pEmitter;
-	deParticleEmitterInstance *pInstance;
+	deParticleEmitterReference pEmitter;
+	deParticleEmitterInstanceReference pInstance;
 	
-	deDebugDrawer *pDebugDrawer;
+	deDebugDrawerReference pDebugDrawer;
 	igdeWDebugDrawerShape *pDDSCenter;
 	igdeWCoordSysArrows *pDDSCoordSystem;
 	
@@ -57,7 +54,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create active object particleEmitter. */
-	gdeVAOParticleEmitter( gdeViewActiveObject &view, gdeOCParticleEmitter *ocemitter );
+	gdeVAOParticleEmitter( gdeViewActiveObject &view, const gdeObjectClass &objectClass,
+		const decString &propertyPrefix, gdeOCParticleEmitter *ocemitter );
 	
 protected:
 	/**

@@ -22,6 +22,8 @@
 #ifndef _DEOGLCOMPONENTCOMPONENT_H_
 #define _DEOGLCOMPONENTCOMPONENT_H_
 
+#include "../skin/dynamic/deoglDynamicSkinListener.h"
+
 class deoglComponent;
 class deoglDynamicSkin;
 class deoglRComponentTexture;
@@ -32,9 +34,9 @@ class deComponentTexture;
 
 
 /**
- * \brief Component texture.
+ * Component texture.
  */
-class deoglComponentTexture{
+class deoglComponentTexture : public deoglDynamicSkinListener{
 private:
 	deoglComponent &pComponent;
 	const int pIndex;
@@ -46,14 +48,15 @@ private:
 	deoglDynamicSkin *pDynamicSkin;
 	
 	bool pDirtyTexture;
+	bool pDynamicSkinRenderablesChanged;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create component texture. */
+	/** Create component texture. */
 	deoglComponentTexture( deoglComponent &component, int index );
 	
-	/** \brief Clean up component texture. */
+	/** Clean up component texture. */
 	~deoglComponentTexture();
 	/*@}*/
 	
@@ -61,50 +64,57 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Parent component. */
+	/** Parent component. */
 	inline deoglComponent &GetComponent() const{ return pComponent; }
 	
-	/** \brief Texture index. */
+	/** Texture index. */
 	inline int GetIndex() const{ return pIndex; }
 	
 	
 	
-	/** \brief Skin state controller. */
+	/** Skin state controller. */
 	inline deoglSkinStateController *GetSkinStateController() const{ return pSkinStateController; }
 	
-	/** \brief Dynamic skin. */
+	/** Dynamic skin. */
 	inline deoglDynamicSkin *GetDynamicSkin() const{ return pDynamicSkin; }
 	
-	/** \brief Render component texture. */
+	/** Render component texture. */
 	inline deoglRComponentTexture *GetRTexture() const{ return pRTexture; }
 	
-	/** \brief Update render thread counterpart if required. */
+	/** Update render thread counterpart if required. */
 	void SyncToRender();
 	
+	inline bool GetDynamicSkinRenderablesChanged() const{ return pDynamicSkinRenderablesChanged; }
+	void SetDynamicSkinRenderablesChanged( bool changed );
 	
 	
-	/** \brief Init skin state. */
+	
+	/** Init skin state. */
 	void InitSkinState();
 	
-	/** \brief Advance time. */
+	/** Advance time. */
 	void AdvanceTime( float timeStep );
 	
-	/** \brief Prepare skin state renderables if dirty. */
-	void PrepareSkinStateRenderables();
-	
-	/** \brief Clear skin state controller. */
+	/** Clear skin state controller. */
 	void ClearSkinStateController();
+	/*@}*/
+	
+	
+	
+	/** \name Dynamic skin listener */
+	/*@{*/
+	virtual void DynamicSkinDestroyed();
+	virtual void DynamicSkinRenderablesChanged();
+	virtual void DynamicSkinRenderableChanged( deoglDSRenderable &renderable );
+	virtual void DynamicSkinRenderableRequiresSync( deoglDSRenderable &renderable );
 	/*@}*/
 	
 	
 	
 	/** \name Notifications */
 	/*@{*/
-	/** \brief Texture changed. */
+	/** Texture changed. */
 	void TextureChanged( const deComponentTexture &texture );
-	
-	/** \brief Drop dynamic skin because it is about to be deleted. */
-	void DropDynamicSkin();
 	/*@}*/
 	
 private:

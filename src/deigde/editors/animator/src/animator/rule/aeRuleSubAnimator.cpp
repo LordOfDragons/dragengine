@@ -34,6 +34,7 @@
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
+#include <dragengine/common/file/decPath.h>
 #include <dragengine/common/curve/decCurveBezierPoint.h>
 #include <dragengine/logger/deLogger.h>
 #include <dragengine/resources/animator/deAnimator.h>
@@ -146,7 +147,8 @@ void aeRuleSubAnimator::LoadSubAnimator(){
 		
 		try{
 			// load from file
-			animator = parentAnimator->GetWindowMain().GetLoadSaveSystem().LoadAnimator( pPathSubAnimator );
+			animator = parentAnimator->GetWindowMain().GetLoadSaveSystem().LoadAnimator(
+				decPath::AbsolutePathUnix( pPathSubAnimator, parentAnimator->GetDirectoryPath() ).GetPathUnix() );
 			
 			controllerCount = animator->GetControllers().GetCount();
 			linkCount = animator->GetLinks().GetCount();

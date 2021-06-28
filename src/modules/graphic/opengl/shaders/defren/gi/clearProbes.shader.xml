@@ -1,0 +1,20 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shader>
+	<name>DefRen GI Clear Probes</name>
+	
+	<version>130</version>
+	
+	<uniformBlock name='GIClearParameters' target='0'/>
+	<uniformBlock name='GIParameters' target='1'/>
+	<uniformBlock name='GIProbeIndices' target='2'/>
+	<uniformBlock name='GIProbePositions' target='3'/>
+	<uniformBlock name='GIRayDirections' target='4'/>
+	
+	<attribute name='inPosition' target='0'/>
+	
+	<output name='outValue' target='0'/>
+	
+	<sourceCode unit='vertex'>v130/vertex/defren/gi/clearProbes.glsl</sourceCode>
+	<sourceCode unit='geometry'>v130/geometry/defren/gi/clearProbes.glsl</sourceCode>
+	<sourceCode unit='fragment'>v130/fragment/defren/gi/clearProbes.glsl</sourceCode>
+</shader>

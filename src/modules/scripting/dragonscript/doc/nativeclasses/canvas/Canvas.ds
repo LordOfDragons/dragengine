@@ -100,6 +100,25 @@ class Canvas
 	public func void setBlendMode( CanvasBlendMode blendMode )
 	end
 	
+	/**
+	 * \brief Mask canvas or null.
+	 * \version 1.5
+	 * 
+	 * Mask canvas content is converted to grayscale.
+	 */
+	public func Canvas getMask()
+		return null
+	end
+	
+	/**
+	 * \brief Set mask canvas or null.
+	 * \version 1.5
+	 * 
+	 * Mask canvas content is converted to grayscale.
+	 */
+	public func void setMask( Canvas mask )
+	end
+	
 	
 	
 	/**

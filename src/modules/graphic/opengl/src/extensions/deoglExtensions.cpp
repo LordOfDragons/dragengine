@@ -134,7 +134,9 @@ static const char * const vExtensionNames[ deoglExtensions::EXT_COUNT ] = {
 	"GL_ARB_viewport_array",
 	"GL_ARB_clip_control",
 	"GL_ARB_shader_storage_buffer_object",
+	"GL_ARB_program_interface_query",
 	"GL_ARB_shader_image_load_store",
+	"GL_ARB_compute_shader",
 	
 	"GL_EXT_bindable_uniform",
 	"GL_EXT_blend_equation_separate",
@@ -167,7 +169,7 @@ static const char * const vExtensionNames[ deoglExtensions::EXT_COUNT ] = {
 	"GL_NV_transform_feedback2",
 	"GL_NV_transform_feedback3",
 	
-	"GL_KHR_debug",
+	"GL_KHR_debug"
 };
 
 
@@ -277,8 +279,18 @@ void deoglExtensions::DisableExtension( eExtensions extension ){
 	pDisableExtension[ extension ] = true;
 	
 	switch( extension ){
+	case ext_ARB_compute_shader:
+		pglDispatchCompute = NULL;
+		pglDispatchComputeIndirect = NULL;
+		break;
+		
 	case ext_ARB_shader_storage_buffer_object:
 		pglShaderStorageBlockBinding = NULL;
+		break;
+		
+	case ext_ARB_program_interface_query:
+		pglGetProgramInterfaceiv = NULL;
+		pglGetProgramResourceIndex = NULL;
 		break;
 		
 	case ext_ARB_uniform_buffer_object:
@@ -672,6 +684,11 @@ void deoglExtensions::pFetchRequiredFunctions(){
 	pGetRequiredFunction( (void**)&pglEndQuery, "glEndQuery" );
 	pGetRequiredFunction( (void**)&pglGetQueryObjectuiv, "glGetQueryObjectuiv" );
 	
+	// opengl version 2.0
+	pGetRequiredFunction( (void**)&pglStencilOpSeparate, "glStencilOpSeparate" );
+	pGetRequiredFunction( (void**)&pglStencilFuncSeparate, "glStencilFuncSeparate" );
+	pGetRequiredFunction( (void**)&pglStencilMaskSeparate, "glStencilMaskSeparate" );
+	
 	// GL_ARB_vertex_program . opengl version 2.0
 	pGetRequiredFunction( (void**)&pglVertexAttribPointer, "glVertexAttribPointer" );
 	pGetRequiredFunction( (void**)&pglEnableVertexAttribArray, "glEnableVertexAttribArray" );
@@ -770,6 +787,12 @@ void deoglExtensions::pFetchRequiredFunctions(){
 	pGetRequiredFunction( (void**)&pglGetActiveUniformBlockiv, "glGetActiveUniformBlockiv" );
 	pGetRequiredFunction( (void**)&pglGetActiveUniformBlockName, "glGetActiveUniformBlockName" );
 	pGetRequiredFunction( (void**)&pglUniformBlockBinding, "glUniformBlockBinding" );
+	
+	// OpenGL 3.2 core stuff
+	pGetRequiredFunction( (void**)&pglFenceSync, "glFenceSync" );
+	pGetRequiredFunction( (void**)&pglDeleteSync, "glDeleteSync" );
+	pGetRequiredFunction( (void**)&pglClientWaitSync, "glClientWaitSync" );
+	pGetRequiredFunction( (void**)&pglWaitSync, "glWaitSync" );
 	
 	// GL_ARB_timer_query : opengl version 3.3
 	pGetRequiredFunction( (void**)&pglQueryCounter, "glQueryCounter" );
@@ -920,15 +943,39 @@ void deoglExtensions::pFetchOptionalFunctions(){
 	}
 	
 	// GL_ARB_shader_storage_buffer_object : opengl version 4.3
-	if( pGLVersion >= evgl4p3 || pGLESVersion >= evgles3p1 ){
-		pHasExtension[ ext_ARB_shader_storage_buffer_object ] = ! pDisableExtension[ ext_ARB_shader_storage_buffer_object ];
-	}
+	pHasExtension[ ext_ARB_shader_storage_buffer_object ] &= ! pDisableExtension[ ext_ARB_shader_storage_buffer_object ];
 	if( pHasExtension[ ext_ARB_shader_storage_buffer_object ] ){
 		#ifdef ANDROID
 		pglShaderStorageBlockBinding = eglShaderStorageBlockBinding;
 		#else
 		pGetOptionalFunction( (void**)&pglShaderStorageBlockBinding,
 			"glShaderStorageBlockBinding", ext_ARB_shader_storage_buffer_object );
+		#endif
+	}
+	
+	// GL_ARB_program_interface_query : opengl version 4.3
+	pHasExtension[ ext_ARB_program_interface_query ] &= ! pDisableExtension[ ext_ARB_program_interface_query ];
+	if( pHasExtension[ ext_ARB_program_interface_query ] ){
+		#ifdef ANDROID
+		pglGetProgramInterfaceiv = eglGetProgramInterfaceiv;
+		pglGetProgramResourceIndex = eglGetProgramResourceIndex;
+		#else
+		pGetOptionalFunction( (void**)&pglGetProgramInterfaceiv,
+			"glGetProgramInterfaceiv", ext_ARB_program_interface_query );
+		pGetOptionalFunction( (void**)&pglGetProgramResourceIndex,
+			"glGetProgramResourceIndex", ext_ARB_program_interface_query );
+		#endif
+	}
+	
+	// GL_ARB_compute_shader : opengl version 4.3
+	pHasExtension[ ext_ARB_compute_shader ] &= ! pDisableExtension[ ext_ARB_compute_shader ];
+	if( pHasExtension[ ext_ARB_compute_shader ] ){
+		#ifdef ANDROID
+		pglDispatchCompute = eglDispatchCompute;
+		pglDispatchComputeIndirect = eglDispatchComputeIndirect;
+		#else
+		pGetOptionalFunction( (void**)&pglDispatchCompute, "glDispatchCompute", ext_ARB_compute_shader );
+		pGetOptionalFunction( (void**)&pglDispatchComputeIndirect, "glDispatchComputeIndirect", ext_ARB_compute_shader );
 		#endif
 	}
 	

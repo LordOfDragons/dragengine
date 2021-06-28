@@ -514,6 +514,8 @@ class Desktop extends Container
 		super.addWidget( widget, settings )
 		
 		if ( widget cast Window ).getWindowState() == Window.WindowState.maximized
+			// TODO this is duplicate code. move this code and the one from updateMaximizedWindowSizes()
+			//      into Window class. then also store the restored position
 			widget.setPosition( Point.new() )
 			widget.setSize( this.getSize() )
 		end
@@ -1098,11 +1100,24 @@ class Desktop extends Container
 				if this.pDragWindow.getDecoration().areaHitBy( this.pMouseLocation ) == Decoration.Area.maximize
 					this.pDragWindow.getDecoration().setButtonState( Decoration.Button.maximize, true, false )
 					
-					BaseGameApp.getApp().getConsole().addMessage( "[DESKTOP] Maximize window: " + this.pDragWindow.className() + "\n" )
 					if this.pDragWindow.getCanReorder()
 						this.pDragWindow.moveToTop()
 					end
 					this.pDragWindow.grabFocus()
+					
+					if this.pDragWindow.getCanMaximize()
+						/*
+						// TODO not working correctly right now
+						
+						select this.pDragWindow.getWindowState()
+						case Window.WindowState.maximized
+							this.pDragWindow.setWindowState( Window.WindowState.normal )
+							
+						case Window.WindowState.normal
+							this.pDragWindow.setWindowState( Window.WindowState.maximized )
+						end
+						*/
+					end
 					
 				else
 					this.pDragWindow.getDecoration().setButtonState( Decoration.Button.maximize, false, false )
@@ -1112,7 +1127,7 @@ class Desktop extends Container
 				if this.pDragWindow.getDecoration().areaHitBy( this.pMouseLocation ) == Decoration.Area.minimize
 					this.pDragWindow.getDecoration().setButtonState( Decoration.Button.minimize, true, false )
 					
-					BaseGameApp.getApp().getConsole().addMessage( "[DESKTOP] Minimize window: " + this.pDragWindow.className() + "\n" )
+					//BaseGameApp.getApp().getConsole().addMessage( "[DESKTOP] Minimize window: " + this.pDragWindow.className() + "\n" )
 					if this.pDragWindow.getCanReorder()
 						this.pDragWindow.moveToTop()
 					end
@@ -1367,6 +1382,9 @@ class Desktop extends Container
 		var Point size = this.getSize()
 		this.forEachWidget( block Window each
 			if each.getWindowState() == Window.WindowState.maximized
+				// TODO we need a way to figure out the maximized area. the decoration boundary
+				//      size has to be ignored for this but the title bar has to be visible.
+				//      we need to store this somehow in the decoration
 				each.setPosition( Point.new() )
 				each.setSize( size )
 			end

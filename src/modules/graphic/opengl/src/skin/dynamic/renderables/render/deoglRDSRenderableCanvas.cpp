@@ -72,13 +72,11 @@ void deoglRDSRenderableCanvas::SetCanvas( deoglRCanvasView *canvas ){
 	if( canvas ){
 		canvas->AddReference();
 	}
-	
-	GetDynamicSkin().TextureConfigurationChanged();
 }
 
-void deoglRDSRenderableCanvas::PrepareForRender(){
+void deoglRDSRenderableCanvas::PrepareForRender( const deoglRenderPlanMasked *renderPlanMask ){
 	if( pCanvas ){
-		pCanvas->PrepareRenderTarget();
+		pCanvas->PrepareRenderTarget( renderPlanMask );
 	}
 }
 

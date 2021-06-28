@@ -55,7 +55,7 @@ public:
 	void SetValue( float value );
 	
 	/** \brief Prepare for render. */
-	virtual void PrepareForRender();
+	virtual void PrepareForRender( const deoglRenderPlanMasked *renderPlanMask );
 	
 	/**
 	 * \brief Get value if support or default value.

@@ -10,9 +10,15 @@ uniform vec4 pTCClamp; // left, top, right, bottom
 #ifdef WITH_TEXTURE
 uniform lowp sampler2D texColor;
 #endif
+#ifdef WITH_MASK
+uniform lowp sampler2D texMask;
+#endif
 
 #ifdef WITH_TEXTURE
 in vec2 vTexCoord;
+#endif
+#ifdef WITH_MASK
+in vec2 vTexCoordMask;
 #endif
 
 out vec4 outColor;
@@ -28,5 +34,10 @@ void main( void ){
 	outColor = pColorTransform * pow( texture( texColor, clamp( vTexCoord, pTCClamp.xy, pTCClamp.zw ) ), pGamma ) + pColorTransform2;
 	#else
 	outColor = vec4( pColorTransform[0][0], pColorTransform[1][1], pColorTransform[2][2], pColorTransform[3][3] ) + pColorTransform2;
+	#endif
+	
+	// mask
+	#ifdef WITH_MASK
+	outColor.a *= texture( texMask, vTexCoordMask ).r;
 	#endif
 }

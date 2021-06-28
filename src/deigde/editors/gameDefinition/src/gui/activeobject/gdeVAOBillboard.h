@@ -22,12 +22,10 @@
 #ifndef _GDEVAOBILLBOARD_H_
 #define _GDEVAOBILLBOARD_H_
 
-#include <dragengine/deObject.h>
-#include <dragengine/common/math/decMath.h>
+#include "gdeVAOSubObject.h"
 #include <dragengine/resources/billboard/deBillboardReference.h>
 #include <dragengine/resources/collider/deColliderReference.h>
 
-class gdeViewActiveObject;
 class gdeOCBillboard;
 
 
@@ -35,10 +33,8 @@ class gdeOCBillboard;
 /**
  * \brief Active object view object class billboard.
  */
-class gdeVAOBillboard : public deObject{
+class gdeVAOBillboard : public gdeVAOSubObject{
 private:
-	gdeViewActiveObject &pView;
-	
 	gdeOCBillboard *pOCBillboard;
 	
 	deBillboardReference pBillboard;
@@ -49,7 +45,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create active object component. */
-	gdeVAOBillboard( gdeViewActiveObject &view, gdeOCBillboard *ocbillboard );
+	gdeVAOBillboard( gdeViewActiveObject &view, const gdeObjectClass &objectClass,
+		const decString &propertyPrefix, gdeOCBillboard *ocbillboard );
 	
 protected:
 	/**

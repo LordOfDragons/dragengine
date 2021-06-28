@@ -107,10 +107,16 @@ public:
 	
 	
 	/** \brief Activate parameter block. */
-	virtual void Activate() = 0;
+	virtual void Activate() const = 0;
+	
+	/** \brief Activate buffer overriding binding point. */
+	virtual void Activate( int bindingPoint ) const = 0;
 	
 	/** \brief Deactivate parameter block. */
-	virtual void Deactivate() = 0;
+	virtual void Deactivate() const = 0;
+	
+	/** \brief Deactivate buffer overriding binding point. */
+	virtual void Deactivate( int bindingPoint ) const = 0;
 	
 	
 	
@@ -187,8 +193,16 @@ public:
 	/** \brief Set data for int type parameter. */
 	void SetParameterDataInt( int parameter, int value );
 	void SetParameterDataIVec2( int parameter, int value1, int value2 );
+	void SetParameterDataIVec2( int parameter, const decPoint &point );
 	void SetParameterDataIVec3( int parameter, int value1, int value2, int value3 );
+	void SetParameterDataIVec3( int parameter, const decPoint3 &value );
 	void SetParameterDataIVec4( int parameter, int value1, int value2, int value3, int value4 );
+	
+	/** \brief Set data for int type parameter. */
+	void SetParameterDataUInt( int parameter, unsigned int value );
+	void SetParameterDataUVec2( int parameter, unsigned int value1, unsigned int value2 );
+	void SetParameterDataUVec3( int parameter, unsigned int value1, unsigned int value2, unsigned int value3 );
+	void SetParameterDataUVec4( int parameter, unsigned int value1, unsigned int value2, unsigned int value3, unsigned int value4 );
 	
 	/** \brief Set data for bool type parameter. */
 	void SetParameterDataBool( int parameter, bool value );
@@ -247,6 +261,15 @@ public:
 		int value1, int value2, int value3, int value4 );
 	void SetParameterDataArrayInt( int parameter, int *values, int count );
 	
+	/** \brief Set data for an array int type parameter. */
+	void SetParameterDataArrayUInt( int parameter, int index, unsigned int value );
+	void SetParameterDataArrayUVec2( int parameter, int index, unsigned int value1, unsigned int value2 );
+	void SetParameterDataArrayUVec3( int parameter, int index,
+		unsigned int value1, unsigned int value2, unsigned int value3 );
+	void SetParameterDataArrayUVec4( int parameter, int index,
+		unsigned int value1, unsigned int value2, unsigned int value3, unsigned int value4 );
+	void SetParameterDataArrayUInt( int parameter, unsigned int *values, int count );
+	
 	/** \brief Set data for a array bool type parameter. */
 	void SetParameterDataArrayBool( int parameter, int index, bool value );
 	void SetParameterDataArrayBVec2( int parameter, int index, bool value1, bool value2 );
@@ -300,8 +323,17 @@ public:
 	void SetParameterDataIVec2( int parameter, int element, int value1, int value2 );
 	void SetParameterDataIVec3( int parameter, int element,
 		int value1, int value2, int value3 );
+	void SetParameterDataIVec3( int parameter, int element, const decPoint3 &value );
 	void SetParameterDataIVec4( int parameter, int element,
 		int value1, int value2, int value3, int value4 );
+	
+	/** \brief Set data for int type parameter. */
+	void SetParameterDataUInt( int parameter, int element, unsigned int value );
+	void SetParameterDataUVec2( int parameter, int element, unsigned int value1, unsigned int value2 );
+	void SetParameterDataUVec3( int parameter, int element,
+		unsigned int value1, unsigned int value2, unsigned int value3 );
+	void SetParameterDataUVec4( int parameter, int element,
+		unsigned int value1, unsigned int value2, unsigned int value3, unsigned int value4 );
 	
 	/** \brief Set data for bool type parameter. */
 	void SetParameterDataBool( int parameter, int element, bool value );
@@ -388,6 +420,16 @@ public:
 	void SetParameterDataArrayIVec4( int parameter, int element, int index,
 		int value1, int value2, int value3, int value4 );
 	void SetParameterDataArrayInt( int parameter, int element, int *values, int count );
+	
+	/** \brief Set data for an array int type parameter. */
+	void SetParameterDataArrayUInt( int parameter, int element, int index, unsigned int value );
+	void SetParameterDataArrayUVec2( int parameter, int element, int index,
+		unsigned int value1, unsigned int value2 );
+	void SetParameterDataArrayUVec3( int parameter, int element, int index,
+		unsigned int value1, unsigned int value2, unsigned int value3 );
+	void SetParameterDataArrayUVec4( int parameter, int element, int index,
+		unsigned int value1, unsigned int value2, unsigned int value3, unsigned int value4 );
+	void SetParameterDataArrayUInt( int parameter, int element, unsigned int *values, int count );
 	
 	/** \brief Set data for a array bool type parameter. */
 	void SetParameterDataArrayBool( int parameter, int element, int index, bool value );

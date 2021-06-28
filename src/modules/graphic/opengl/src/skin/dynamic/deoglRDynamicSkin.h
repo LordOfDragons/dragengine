@@ -31,58 +31,52 @@ class deoglRenderThread;
 
 
 /**
- * \brief Render dynamic skin.
+ * Render dynamic skin.
  */
 class deoglRDynamicSkin : public deObject{
 private:
 	deoglRenderThread &pRenderThread;
 	
 	decObjectList pRenderables;
-	int pUpdateNumber;
+	
+	
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create render dynamic skin. */
+	/** Create render dynamic skin. */
 	deoglRDynamicSkin( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up render dynamic skin. */
+protected:
+	/** Clean up render dynamic skin. */
 	virtual ~deoglRDynamicSkin();
 	/*@}*/
 	
-	/** @name Management */
+	
+	
+public:
+	/** \name Management */
 	/*@{*/
-	/** \brief Render thread. */
+	/** Render thread. */
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
-	/** \brief Number of renderables. */
+	/** Number of renderables. */
 	int GetRenderableCount() const;
 	
-	/** \brief Renderable at index. */
+	/** Renderable at index. */
 	deoglRDSRenderable *GetRenderableAt( int index ) const;
 	
-	/** \brief Named renderable or \em NULL if absent. */
+	/** Named renderable or \em NULL if absent. */
 	deoglRDSRenderable *GetRenderableNamed( const char *name ) const;
 	
-	/** \brief Index of named renderable or -1 if absent. */
+	/** Index of named renderable or -1 if absent. */
 	int IndexOfRenderableNamed( const char *name ) const;
 	
-	/** \brief Remove all renderables. */
+	/** Remove all renderables. */
 	void RemoveAllRenderables();
 	
-	/** \brief Add renderable. */
+	/** Add renderable. */
 	void AddRenderable( deoglRDSRenderable *renderable );
-	
-	/**
-	 * \brief Texture configuration changed.
-	 * \details Increments the update number for users to know they need to update their
-	 *          texture unit configurations and potentially shaders. This is to be called
-	 *          only by deoglRDSRenderable subclasses.
-	 */
-	void TextureConfigurationChanged();
-	
-	/** \brief Update the dynamic skin if required. Returns the current update number. */
-	int Update();
 	/*@}*/
 };
 

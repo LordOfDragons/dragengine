@@ -176,16 +176,12 @@ void deoglDecalMeshBuilder::CutTriangle( const decVector &v1, const decVector &v
 
 // #include <dragengine/common/utils/decTimer.h>
 void deoglDecalMeshBuilder::BuildMeshForComponent( const deoglRComponent &oglComponent ){
-	if( ! oglComponent.GetModel() ){
-		DETHROW( deeInvalidParam );
-	}
-	
 	// prepare
 	RemoveAllFaces();
 	RemoveAllPoints();
 	if( true ){
 		// octree version
-		const deoglRModel &oglModel = *oglComponent.GetModel();
+		const deoglRModel &oglModel = oglComponent.GetModelRef();
 		deoglModelLOD &oglModelLOD = oglModel.GetLODAt( 0 );
 		oglModelLOD.PrepareOctree();
 		
@@ -312,7 +308,7 @@ void deoglDecalMeshBuilder::BuildMeshForComponent( const deoglRComponent &oglCom
 // 		printf( "Convert: %.2f\n", timer.GetElapsedTime() * 1e3f );
 		
 	}else{
-		const deoglRModel &oglModel = *oglComponent.GetModel();
+		const deoglRModel &oglModel = oglComponent.GetModelRef();
 		const deoglModelLOD &oglModelLOD = oglModel.GetLODAt( 0 );
 		const oglModelPosition * const modelPositions = oglModelLOD.GetPositions();
 		const oglModelVertex * const modelVertices = oglModelLOD.GetVertices();

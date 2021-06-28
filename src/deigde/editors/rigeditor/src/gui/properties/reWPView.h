@@ -28,6 +28,7 @@
 #include <deigde/gui/igdeSliderReference.h>
 #include <deigde/gui/composed/igdeEditPathReference.h>
 #include <deigde/gui/composed/igdeEditSliderTextReference.h>
+#include <deigde/gui/composed/igdeEditDVectorReference.h>
 #include <deigde/gui/composed/igdeEditVectorReference.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 #include <deigde/gui/properties/igdeWPSkyReference.h>
@@ -75,7 +76,7 @@ private:
 	igdeTextFieldReference pEditGridSize;
 	igdeTextFieldReference pEditSensitivity;
 	
-	igdeEditVectorReference pEditCamPosition;
+	igdeEditDVectorReference pEditCamPosition;
 	igdeEditVectorReference pEditCamRotation;
 	igdeEditVectorReference pEditCamViewDir;
 	igdeTextFieldReference pEditCamFov;

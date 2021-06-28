@@ -86,6 +86,7 @@ private:
 	bool pLinkShader( GLuint handle );
 	
 	void pOutputShaderToFile( const char *file );
+	void pLogFailedShaderSources();
 	void pPrintErrorLog();
 };
 

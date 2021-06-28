@@ -41,7 +41,7 @@
 ////////////////////////////
 
 deoglDSRenderableVideoFrame::deoglDSRenderableVideoFrame( deoglDynamicSkin &dynamicSkin,
-const deDSRenderableVideoFrame &renderable ) :
+	const deDSRenderableVideoFrame &renderable ) :
 deoglDSRenderable( dynamicSkin, renderable ),
 pRenderableVideoFrame( renderable ),
 pRRenderableVideoFrame( NULL ),
@@ -50,6 +50,11 @@ pDirty( true )
 {
 	try{
 		pRRenderableVideoFrame = new deoglRDSRenderableVideoFrame( *dynamicSkin.GetRDynamicSkin() );
+		
+		if( renderable.GetVideoPlayer() ){
+			pVideoPlayer = ( deoglVideoPlayer* )renderable.GetVideoPlayer()->GetPeerGraphic();
+			pVideoPlayer->GetNotifyRenderables().Add( this );
+		}
 		
 	}catch( const deException & ){
 		pCleanUp();
@@ -71,19 +76,28 @@ deoglRDSRenderable *deoglDSRenderableVideoFrame::GetRRenderable() const{
 }
 
 void deoglDSRenderableVideoFrame::RenderableChanged(){
-	if( pVideoPlayer ){
-		pVideoPlayer->GetNotifyRenderables().Remove( this );
-	}
+	deoglVideoPlayer * const videoPlayer = pRenderableVideoFrame.GetVideoPlayer()
+		? ( deoglVideoPlayer* )pRenderableVideoFrame.GetVideoPlayer()->GetPeerGraphic() : NULL;
 	
-	if( pRenderableVideoFrame.GetVideoPlayer() ){
-		pVideoPlayer = ( deoglVideoPlayer* )pRenderableVideoFrame.GetVideoPlayer()->GetPeerGraphic();
-		pVideoPlayer->GetNotifyRenderables().Add( this );
+	if( videoPlayer != pVideoPlayer ){
+		if( pVideoPlayer ){
+			pVideoPlayer->GetNotifyRenderables().Remove( this );
+		}
 		
-	}else{
-		pVideoPlayer = NULL;
+		pVideoPlayer = videoPlayer;
+		
+		if( videoPlayer ){
+			videoPlayer->GetNotifyRenderables().Add( this );
+		}
+		
+		pDirty = true;
+		
+		pDynamicSkin.NotifyRenderableChanged( *this );
 	}
 	
-	pDirty = true;
+	if( pRenderableVideoFrame.GetName() != pRRenderableVideoFrame->GetName() ){
+		pDynamicSkin.NotifyRenderablesChanged();
+	}
 }
 
 void deoglDSRenderableVideoFrame::SyncToRender(){
@@ -106,7 +120,7 @@ void deoglDSRenderableVideoFrame::SyncToRender(){
 }
 
 void deoglDSRenderableVideoFrame::VideoPlayerRequiresSync(){
-	pDynamicSkin.RenderableRequiresSync();
+	pDynamicSkin.NotifyRenderableRequiresSync( *this );
 }
 
 void deoglDSRenderableVideoFrame::DropVideoPlayer(){

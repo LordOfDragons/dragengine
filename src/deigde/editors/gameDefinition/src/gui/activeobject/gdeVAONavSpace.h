@@ -22,12 +22,12 @@
 #ifndef _GDEVAONAVSPACE_H_
 #define _GDEVAONAVSPACE_H_
 
-#include <dragengine/deObject.h>
+#include "gdeVAOSubObject.h"
 
-class gdeViewActiveObject;
+#include <dragengine/resources/debug/deDebugDrawerReference.h>
+
 class gdeOCNavigationSpace;
 
-class deDebugDrawer;
 class igdeWDebugDrawerShape;
 
 
@@ -35,14 +35,12 @@ class igdeWDebugDrawerShape;
 /**
  * \brief Active object view object class navigation space.
  */
-class gdeVAONavSpace : public deObject{
+class gdeVAONavSpace : public gdeVAOSubObject{
 private:
-	gdeViewActiveObject &pView;
-	
 	gdeOCNavigationSpace *pOCNavSpace;
 	
-	deDebugDrawer *pDDSpace;
-	deDebugDrawer *pDDBlocker;
+	deDebugDrawerReference pDDSpace;
+	deDebugDrawerReference pDDBlocker;
 	igdeWDebugDrawerShape *pDDSSpace;
 	igdeWDebugDrawerShape *pDDSBlocker;
 	
@@ -52,7 +50,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create active object component. */
-	gdeVAONavSpace( gdeViewActiveObject &view, gdeOCNavigationSpace *occomponent );
+	gdeVAONavSpace( gdeViewActiveObject &view, const gdeObjectClass &objectClass,
+		const decString &propertyPrefix, gdeOCNavigationSpace *occomponent );
 	
 protected:
 	/**

@@ -95,6 +95,17 @@ deoglPixelBuffer *deoglPixelBufferMipMap::GetPixelBuffer( int level ) const{
 	return pPixelBuffers[ level ];
 }
 
+void deoglPixelBufferMipMap::ReducePixelBufferCount( int reduceByCount ){
+	if( reduceByCount < 0 ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	const int targetCount = decMath::max( pPixelBufferCount - reduceByCount, 0 );
+	while( pPixelBufferCount > targetCount ){
+		delete pPixelBuffers[ --pPixelBufferCount ];
+	}
+}
+
 
 
 void deoglPixelBufferMipMap::CreateMipMaps(){
@@ -412,6 +423,206 @@ void deoglPixelBufferMipMap::CreateMipMapsMax( bool maskRed, bool maskGreen, boo
 								dp[3] = sp3[3];
 							}
 							if( sp4[3] > dp[3] ){
+								dp[3] = sp4[3];
+							}
+						}
+					}
+					
+					sourcePointer += sourceStride;
+					destinationPointer += destinationStride;
+				}
+			}
+		}
+	}
+}
+
+void deoglPixelBufferMipMap::CreateMipMapsMin(){
+	CreateMipMapsMin( true, true, true, true );
+}
+
+void deoglPixelBufferMipMap::CreateMipMapsMin( bool maskRed, bool maskGreen, bool maskBlue, bool maskAlpha ){
+	if( pPixelBufferCount < 2 ){
+		return;
+	}
+	
+	const deoglPixelBuffer &basePixelBuffer = *pPixelBuffers[ 0 ];
+	int componentCount;
+	int sourceOffset1;
+	int sourceOffset2;
+	int sourceOffset3;
+	bool floatData;
+	int i, x, y, z;
+	
+	pGetTypeParams( basePixelBuffer.GetFormat(), componentCount, floatData );
+	
+	if( componentCount < 1 ){
+		maskRed = false;
+	}
+	if( componentCount < 2 ){
+		maskGreen = false;
+	}
+	if( componentCount < 3 ){
+		maskBlue = false;
+	}
+	if( componentCount < 4 ){
+		maskAlpha = false;
+	}
+	
+	for( i=1; i<pPixelBufferCount; i++ ){
+		const deoglPixelBuffer &sourcePixelBuffer = *pPixelBuffers[ i - 1 ];
+		deoglPixelBuffer &destinationPixelBuffer = *pPixelBuffers[ i ];
+		const int destinationStride = destinationPixelBuffer.GetWidth() * componentCount;
+		const int sourceStride = 2 * sourcePixelBuffer.GetWidth() * componentCount;
+		const int sourceScale = 2 * componentCount;
+		const int depth = destinationPixelBuffer.GetDepth();
+		const int height = destinationPixelBuffer.GetHeight();
+		const int width = destinationPixelBuffer.GetWidth();
+		
+		// calculate source offsets. this is a trick used to deal with the problematic situation for the
+		// second highest mip map level which can be 2x1 or 1x2 instead of 2x2. in this situation wrong
+		// pixels can be read leading to crashes in the worst case. if the width of the source pixel
+		// buffer is 1 in any direction the respective offset is reduced to 0 preventing the problem.
+		// in all other cases the offsets are set to the required values for down sampling
+		sourceOffset1 = 0;
+		sourceOffset2 = 0;
+		sourceOffset3 = 0;
+		
+		if( sourcePixelBuffer.GetWidth() > 1 ){
+			sourceOffset1 += componentCount;
+			sourceOffset3 += componentCount;
+		}
+		if( sourcePixelBuffer.GetHeight() > 1 ){
+			sourceOffset2 += sourcePixelBuffer.GetWidth() * componentCount;
+			sourceOffset3 += sourcePixelBuffer.GetWidth() * componentCount;
+		}
+		
+		// process mip map level
+		if( floatData ){
+			GLfloat *destinationPointer = ( GLfloat* )destinationPixelBuffer.GetPointer();
+			const GLfloat *sourcePointer = ( const GLfloat * )sourcePixelBuffer.GetPointer();
+			
+			for( z=0; z<depth; z++ ){
+				for( y=0; y<height; y++ ){
+					for( x=0; x<width; x++ ){
+						const GLfloat * const sp1 = sourcePointer + ( x * sourceScale );
+						const GLfloat * const sp2 = sp1 + sourceOffset1;
+						const GLfloat * const sp3 = sp1 + sourceOffset2;
+						const GLfloat * const sp4 = sp1 + sourceOffset3;
+						GLfloat * const dp = destinationPointer + x * componentCount;
+						
+						if( maskRed ){
+							dp[0] = sp1[0];
+							if( sp2[0] < dp[0] ){
+								dp[0] = sp2[0];
+							}
+							if( sp3[0] < dp[0] ){
+								dp[0] = sp3[0];
+							}
+							if( sp4[0] < dp[0] ){
+								dp[0] = sp4[0];
+							}
+						}
+						if( maskGreen ){
+							dp[1] = sp1[1];
+							if( sp2[1] < dp[1] ){
+								dp[1] = sp2[1];
+							}
+							if( sp3[1] < dp[1] ){
+								dp[1] = sp3[1];
+							}
+							if( sp4[1] < dp[1] ){
+								dp[1] = sp4[1];
+							}
+						}
+						if( maskBlue ){
+							dp[2] = sp1[2];
+							if( sp2[2] < dp[2] ){
+								dp[2] = sp2[2];
+							}
+							if( sp3[2] < dp[2] ){
+								dp[2] = sp3[2];
+							}
+							if( sp4[2] < dp[2] ){
+								dp[2] = sp4[2];
+							}
+						}
+						if( maskAlpha ){
+							dp[3] = sp1[3];
+							if( sp2[3] < dp[3] ){
+								dp[3] = sp2[3];
+							}
+							if( sp3[3] < dp[3] ){
+								dp[3] = sp3[3];
+							}
+							if( sp4[3] < dp[3] ){
+								dp[3] = sp4[3];
+							}
+						}
+					}
+					
+					sourcePointer += sourceStride;
+					destinationPointer += destinationStride;
+				}
+			}
+			
+		}else{
+			GLubyte *destinationPointer = ( GLubyte* )destinationPixelBuffer.GetPointer();
+			const GLubyte *sourcePointer = ( const GLubyte * )sourcePixelBuffer.GetPointer();
+			
+			for( z=0; z<depth; z++ ){
+				for( y=0; y<height; y++ ){
+					for( x=0; x<width; x++ ){
+						const GLubyte * const sp1 = sourcePointer + ( x * sourceScale );
+						const GLubyte * const sp2 = sp1 + sourceOffset1;
+						const GLubyte * const sp3 = sp1 + sourceOffset2;
+						const GLubyte * const sp4 = sp1 + sourceOffset3;
+						GLubyte * const dp = destinationPointer + x * componentCount;
+						
+						if( maskRed ){
+							dp[0] = sp1[0];
+							if( sp2[0] < dp[0] ){
+								dp[0] = sp2[0];
+							}
+							if( sp3[0] < dp[0] ){
+								dp[0] = sp3[0];
+							}
+							if( sp4[0] < dp[0] ){
+								dp[0] = sp4[0];
+							}
+						}
+						if( maskGreen ){
+							dp[1] = sp1[1];
+							if( sp2[1] < dp[1] ){
+								dp[1] = sp2[1];
+							}
+							if( sp3[1] < dp[1] ){
+								dp[1] = sp3[1];
+							}
+							if( sp4[1] < dp[1] ){
+								dp[1] = sp4[1];
+							}
+						}
+						if( maskBlue ){
+							dp[2] = sp1[2];
+							if( sp2[2] < dp[2] ){
+								dp[2] = sp2[2];
+							}
+							if( sp3[2] < dp[2] ){
+								dp[2] = sp3[2];
+							}
+							if( sp4[2] < dp[2] ){
+								dp[2] = sp4[2];
+							}
+						}
+						if( maskAlpha ){
+							dp[3] = sp1[3];
+							if( sp2[3] < dp[3] ){
+								dp[3] = sp2[3];
+							}
+							if( sp3[3] < dp[3] ){
+								dp[3] = sp3[3];
+							}
+							if( sp4[3] < dp[3] ){
 								dp[3] = sp4[3];
 							}
 						}

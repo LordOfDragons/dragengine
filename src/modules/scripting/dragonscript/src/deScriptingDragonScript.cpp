@@ -687,6 +687,9 @@ void deScriptingDragonScript::ShutDown(){
 		// forget about the game class
 		pClsGameObj = NULL;
 		
+		// delete values pending registered to be deleted later
+		DeleteValuesDeleteLater();
+		
 		// delete collision info
 		if( pColInfo ){
 			pColInfo->FreeReference();
@@ -1114,7 +1117,7 @@ void deScriptingDragonScript::pLoadBasicPackage(){
 		package->AddHostClass( pClsRN = new deClassResourceListener( engine, this ) );
 		
 		package->AddHostClass( pClsGame = new deClassGame( *this ) );
-		package->AddHostClass( pClsEngine = new deClassEngine( engine, this ) );
+		package->AddHostClass( pClsEngine = new deClassEngine( *this ) );
 		package->AddHostClass( pClsMath = new deClassMath( this ) );
 		package->AddHostClass( pClsModPar = new deClassModuleParameter( engine, this ) );
 		package->AddHostClass( pClsScrSys = new deClassScriptSystem( *this ) );
@@ -1178,7 +1181,7 @@ void deScriptingDragonScript::pLoadBasicPackage(){
 		package->AddHostClass( pClsCCT = new deClassColliderCollisionTest( *this ) );
 		package->AddHostClass( pClsLig = new deClassLight( *this ) );
 		package->AddHostClass( pClsLoco = new deClassLocomotion( *this ) );
-		package->AddHostClass( pClsCam = new deClassCamera( engine, this ) );
+		package->AddHostClass( pClsCam = new deClassCamera( *this ) );
 		package->AddHostClass( pClsCanvas = new deClassCanvas( *this ) );
 		package->AddHostClass( pClsCanvasCView = new deClassCanvasCanvasView( *this ) );
 		package->AddHostClass( pClsCanvasImage = new deClassCanvasImage( *this ) );

@@ -212,7 +212,7 @@ void deoglRParticleEmitterInstance::SetOctreeNode( deoglWorldOctree *node ){
 void deoglRParticleEmitterInstance::UpdateOctreeNode(){
 	if( pParentWorld ){
 		//if( pParticleEmitter->GetVisible() ){
-			pParentWorld->GetOctree().InsertParticleEmitterIntoTree( this, 8 );
+			pParentWorld->GetOctree().InsertParticleEmitterIntoTree( this );
 			
 		/*}else{
 			if( pOctreeNode ){
@@ -579,6 +579,8 @@ void deoglRParticleEmitterInstance::UpdateParticlesVBO(){
 		OGL_CHECK( pRenderThread, pglBindBuffer( GL_ELEMENT_ARRAY_BUFFER, pIBO ) );
 		
 		OGL_CHECK( pRenderThread, pglBindVertexArray( 0 ) );
+		
+		pVAO->EnsureRTSVAO();
 	}
 	
 	OGL_CHECK( pRenderThread, pglBindBuffer( GL_ARRAY_BUFFER, 0 ) );

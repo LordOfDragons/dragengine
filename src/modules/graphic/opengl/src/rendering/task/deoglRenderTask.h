@@ -30,22 +30,24 @@
 
 class deoglQuickSorter;
 class deoglRenderTaskInstance;
-class deoglRenderTaskInstanceGroup;
 class deoglRenderTaskShader;
 class deoglRenderTaskTexture;
 class deoglRenderTaskVAO;
+class deoglRenderTaskSharedShader;
+class deoglRenderTaskSharedInstance;
+class deoglRenderTaskSharedTexture;
+class deoglRenderTaskSharedVAO;
+class deoglRenderTaskConfigTexture;
 class deoglRenderThread;
 class deoglRTLogger;
-class deoglShaderProgram;
 class deoglSPBlockSSBO;
 class deoglSPBlockUBO;
 class deoglSPBlockUBO;
 class deoglTexUnitsConfig;
-class deoglVAO;
 
 
 /**
- * \brief Render Task.
+ * Render Task.
  *
  * Stores a list of render steps to be carried out. Each step contains the combination of shader,
  * texture and vao required. The render task is usually not used directly for rendering. Instead
@@ -54,45 +56,52 @@ class deoglVAO;
  */
 class deoglRenderTask{
 private:
+	struct sConfigTexture{
+		const deoglRenderTaskSharedShader *shader;
+		const deoglRenderTaskSharedTexture *texture;
+		const deoglRenderTaskSharedVAO *vao;
+		const deoglRenderTaskSharedInstance *instance;
+		deoglRenderTaskShader *rtshader;
+		deoglRenderTaskTexture *rttexture;
+		deoglRenderTaskVAO *rtvao;
+		deoglRenderTaskInstance *rtinstance;
+// 		int shaderIndex;
+// 		int textureIndex;
+// 		int vaoIndex;
+// 		int instanceIndex;
+		int groupIndex;
+		int specialFlags;
+	};
+	
+	deoglRenderThread &pRenderThread;
+	
 	deoglSPBlockUBO *pRenderParamBlock;
 	GLuint pTBOInstances;
 	deoglShaderParameterBlockList pSPBInstances;
 	int pSPBInstanceMaxEntries;
 	bool pUseSPBInstanceFlags;
 	unsigned int pTrackingNumber;
-	decPointerList pListShaders;
+	bool pForceDoubleSided;
+	
+	decPointerList pShaders;
 	int pShaderCount;
+	deoglRenderTaskShader **pHasShader;
+	int pHasShaderCount;
+	int pHasShaderSize;
 	
-	deoglRenderTaskTexture *pRootTexturePool;
-	deoglRenderTaskTexture *pTailTexturePool;
-	deoglRenderTaskTexture *pNextTexturePool;
-	int pTexturePoolCount;
-	
-	deoglRenderTaskVAO *pRootVAOPool;
-	deoglRenderTaskVAO *pTailVAOPool;
-	deoglRenderTaskVAO *pNextVAOPool;
-	int pVAOPoolCount;
-	
-	deoglRenderTaskInstance *pRootInstancePool;
-	deoglRenderTaskInstance *pTailInstancePool;
-	deoglRenderTaskInstance *pNextInstancePool;
-	int pInstancePoolCount;
-	
-	static unsigned int pUpdateTracking;
-	
-	decPointerList pListTUCs;
-	decPointerList pListVAOs;
-	decPointerList pListInstanceGroup;
+	sConfigTexture *pConfigTextures;
+	int pConfigTextureCount;
+	int pConfigTextureSize;
 	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create render task. */
-	deoglRenderTask();
+	/** Create render task. */
+	deoglRenderTask( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up render task. */
+	/** Clean up render task. */
 	~deoglRenderTask();
 	/*@}*/
 	
@@ -100,118 +109,99 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Clear render task. */
+	/** Render thread. */
+	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
+	
+	/** Clear render task. */
 	void Clear();
 	
-	/** \brief Prepare task to be used for rendering. */
-	void PrepareForRender( deoglRenderThread &renderThread );
+	/** Prepare task to be used for rendering. */
+	void PrepareForRender();
 	
-	/** \brief Sort instances by distance. */
+	/** Sort instances by distance. */
 	void SortInstancesByDistance( deoglQuickSorter &sorter,
 		const decDVector &position, const decDVector &direction );
 	
-	/** \brief Render parameter shader parameter block or \em NULL. */
+	/** Render parameter shader parameter block or NULL. */
 	inline deoglSPBlockUBO *GetRenderParamBlock() const{ return pRenderParamBlock; }
 	
-	/** \brief Set render parameter shader parameter block or \em NULL to use none. */
+	/** Set render parameter shader parameter block or NULL to use none. */
 	void SetRenderParamBlock( deoglSPBlockUBO *paramBlock );
 	
-	/** \brief Instances texture buffer object or \em NULL. */
+	/** Instances texture buffer object or NULL. */
 	inline GLuint GetTBOInstances() const{ return pTBOInstances; }
 	
-	/** \brief Set instances texture buffer object or \em NULL to use none. */
+	/** Set instances texture buffer object or NULL to use none. */
 	void SetTBOInstances( GLuint tbo );
 	
-	/** \brief Use SPB instance flags. */
+	/** Use SPB instance flags. */
 	inline bool GetUseSPBInstanceFlags() const{ return pUseSPBInstanceFlags; }
 	
-	/** \brief Set use instance flags. */
+	/** Set use instance flags. */
 	void SetUseSPBInstanceFlags( bool useFlags );
 	
+	/** Force double sided rendering. */
+	inline bool GetForceDoubleSided() const{ return pForceDoubleSided; }
 	
-	
-	/** \brief Tracking number. */
-	inline unsigned int GetTrackingNumber() const{ return pTrackingNumber; }
-	
-	/** \brief Advance update tracking returning new value. */
-	static unsigned int UpdateTracking();
+	/** Set force double sided rendering. */
+	void SetForceDoubleSided( bool forceDoubleSided );
 	
 	
 	
-	/** \brief Number of shaders. */
+	/** Number of shaders. */
 	inline int GetShaderCount() const{ return pShaderCount; }
 	
-	/** \brief Shader at index. */
+	/** Shader at index. */
 	deoglRenderTaskShader *GetShaderAt( int index ) const;
 	
-	/** \brief Add shader. */
-	deoglRenderTaskShader *AddShader( deoglShaderProgram *shader );
-	
-	/** \brief Remove all shaders. */
-	void RemoveAllShaders();
+	/** Add shader. */
+	deoglRenderTaskShader *AddShader( const deoglRenderTaskSharedShader *shader );
+	deoglRenderTaskShader *AddShaderDirect( const deoglRenderTaskSharedShader *shader );
 	
 	
 	
-	/** \brief Render task texture from pool. */
-	deoglRenderTaskTexture *TextureFromPool();
+	/** Add configuration texture. */
+	void AddConfigTexture( const deoglRenderTaskConfigTexture &texture, int specialFlags );
 	
-	/** \brief Render task vao from pool. */
-	deoglRenderTaskVAO *VAOFromPool();
+	/** Remove all configuration textures. */
+	void RemoveAllConfigTextures();
 	
-	/** \brief Render task instance from pool. */
-	deoglRenderTaskInstance *InstanceFromPool();
+	/** Apply configuration textures. */
+	void ApplyConfigTextures();
 	
 	
 	
-	/** \brief Number of points in all steps. */
+	/** Number of points in all steps. */
 	int GetTotalPointCount() const;
 	
-	/** \brief Add texture units configuration. */
-	void AddTUC( deoglTexUnitsConfig *tuc );
+	/** Total amount of textures in this shader. */
+	int GetTotalTextureCount() const;
 	
-	/** \brfief Add vao. */
-	void AddVAO( deoglVAO *vao );
+	/** Total amount of vaos in this shader. */
+	int GetTotalVAOCount() const;
 	
-	/** \brfief Add instance group. */
-	void AddInstanceGroup( deoglRenderTaskInstanceGroup *group );
+	/** Total amount of instances in this shader. */
+	int GetTotalInstanceCount() const;
+	
+	/** Total amount of subinstances in this shader. */
+	int GetTotalSubInstanceCount() const;
 	/*@}*/
 	
 	
 	
 	/** \name Debug */
 	/*@{*/
-	/** \brief Debug print. */
+	/** Debug print. */
 	void DebugPrint( deoglRTLogger &rtlogger );
-	
-	/** \brief Size of render task texture pool. */
-	inline int GetSizeTexturePool() const{ return pTexturePoolCount; }
-	
-	/** \brief Count number of used entries from render task texture pool. */
-	int CountUsedTexturePool() const;
-	
-	/** \brief Size of render task vao pool. */
-	inline int GetSizeVAOPool() const{ return pVAOPoolCount; }
-	
-	/** \brief Count number of used entries from render task vao pool. */
-	int CountUsedVAOPool() const;
-	
-	/** \brief Size of render task instance pool. */
-	inline int GetSizeInstancePool() const{ return pInstancePoolCount; }
-	
-	/** \brief Count number of used entries from render task instance pool. */
-	int CountUsedInstancePool() const;
-	
-	/** \brief Debug output pool statistics. */
-	void DebugPrintPoolStats( deoglRTLogger &rtlogger );
 	/*@}*/
 	
 	
 	
 private:
-	void pCalcSPBInstancesMaxEntries( deoglRenderThread &renderThread );
-	void pAssignSPBInstances( deoglRenderThread &renderThread );
+	void pCalcSPBInstancesMaxEntries();
+	void pAssignSPBInstances();
 	void pUpdateSPBInstances();
-	void pCreateSPBInstanceParamBlock( deoglRenderThread &renderThread );
+	void pCreateSPBInstanceParamBlock();
 };
 
 #endif

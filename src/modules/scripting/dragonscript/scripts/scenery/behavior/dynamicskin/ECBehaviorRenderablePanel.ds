@@ -251,8 +251,8 @@ class ECBehaviorRenderablePanel extends DefaultECBehavior
 	 * of type ECBehaviorComponent.
 	 */
 	static public func ECBehaviorRenderablePanel getBehaviorIn( BehaviorElementClass eclass )
-		return eclass.findBehavior( block ECBehavior each
-			return each castable ECBehaviorRenderablePanel
+		return eclass.findBehavior( block ECBehaviorRenderablePanel each
+			return true
 		end ) cast ECBehaviorRenderablePanel
 	end
 	
@@ -264,8 +264,7 @@ class ECBehaviorRenderablePanel extends DefaultECBehavior
 	 */
 	static public func ECBehaviorRenderablePanel getBehaviorIn( BehaviorElementClass eclass, String id )
 		return eclass.findBehavior( block ECBehaviorRenderablePanel each
-			return each castable ECBehaviorRenderablePanel and \
-				( each cast ECBehaviorRenderablePanel ).getID().equals( id )
+			return each.getID().equals( id )
 		end ) cast ECBehaviorRenderablePanel
 	end
 	
@@ -276,13 +275,9 @@ class ECBehaviorRenderablePanel extends DefaultECBehavior
 	 * been created in the element.
 	 */
 	static public func Array getAllBehaviorsIn( BehaviorElementClass eclass )
-		var Array list = Array.new()
-		eclass.forEachBehavior( block ECBehavior each
-			if each castable ECBehaviorRenderablePanel
-				list.add( each )
-			end
+		return eclass.collectBehaviors( block ECBehaviorRenderablePanel each
+			return true
 		end )
-		return list
 	end
 	
 	
@@ -295,8 +290,8 @@ class ECBehaviorRenderablePanel extends DefaultECBehavior
 	 * the first instance.
 	 */
 	static public func Instance getInstanceIn( BehaviorElement element )
-		return element.findInstance( block ECBehaviorInstance each
-			return each castable Instance
+		return element.findInstance( block Instance each
+			return true
 		end ) cast Instance
 	end
 	
@@ -307,9 +302,8 @@ class ECBehaviorRenderablePanel extends DefaultECBehavior
 	 * of type ECBehaviorRenderablePanel.Instance with specific identifier.
 	 */
 	static public func Instance getInstanceIn( BehaviorElement element, String id )
-		return element.findInstance( block ECBehaviorInstance each
-			return each castable Instance and \
-				( each cast Instance ).getECBehavior().getID().equals( id )
+		return element.findInstance( block Instance each
+			return each.getECBehavior().getID().equals( id )
 		end ) cast Instance
 	end
 	
@@ -320,13 +314,9 @@ class ECBehaviorRenderablePanel extends DefaultECBehavior
 	 * been created in the element.
 	 */
 	static public func Array getAllInstancesIn( BehaviorElement element )
-		var Array list = Array.new()
-		element.forEachInstance( block ECBehaviorInstance each
-			if each castable Instance
-				list.add( each )
-			end
+		return element.collectInstances( block Instance each
+			return true
 		end )
-		return list
 	end
 	
 	

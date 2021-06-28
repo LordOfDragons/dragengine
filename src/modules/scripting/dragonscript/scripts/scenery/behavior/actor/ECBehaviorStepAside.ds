@@ -270,10 +270,8 @@ class ECBehaviorStepAside extends DefaultECBehavior
 			
 			var StepAside stepAside = StepAside.new( element, position, direction, speed )
 			
-			element.forEachInstance( block ECBehaviorInstance each
-				if each castable ECBehaviorAvoidedByActor.Instance
-					this.stepAsideAvoidedByActor( each cast ECBehaviorAvoidedByActor.Instance, stepAside )
-				end
+			element.forEachInstance( block ECBehaviorAvoidedByActor.Instance each
+				this.stepAsideAvoidedByActor( each, stepAside )
 			end )
 			
 			if stepAside.getLeft() > 0.01 or stepAside.getRight() > 0.01
@@ -498,8 +496,8 @@ class ECBehaviorStepAside extends DefaultECBehavior
 	 * of type ECBehaviorStepAside.
 	 */
 	static public func ECBehaviorStepAside getBehaviorIn( BehaviorElementClass eclass )
-		return eclass.findBehavior( block ECBehavior each
-			return each castable ECBehaviorStepAside
+		return eclass.findBehavior( block ECBehaviorStepAside each
+			return true
 		end ) cast ECBehaviorStepAside
 	end
 	
@@ -510,8 +508,8 @@ class ECBehaviorStepAside extends DefaultECBehavior
 	 * of type ECBehaviorStepAside.Instance .
 	 */
 	static public func Instance getInstanceIn( BehaviorElement element )
-		return element.findInstance( block ECBehaviorInstance each
-			return each castable Instance
+		return element.findInstance( block Instance each
+			return true
 		end ) cast Instance
 	end
 	

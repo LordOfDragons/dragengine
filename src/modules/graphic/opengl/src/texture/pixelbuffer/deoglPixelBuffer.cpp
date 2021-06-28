@@ -456,7 +456,7 @@ void deoglPixelBuffer::SetToFloatColor( float red, float green, float blue, floa
 			pixels[ i ].a = galpha;
 		}
 		
-	}else if( pFormat == epfFloat1 ){
+	}else if( pFormat == epfFloat1 || pFormat == epfDepth ){
 		sFloat1 * const pixels = ( sFloat1* )pPixels;
 		const GLfloat gred = ( GLfloat )red;
 		

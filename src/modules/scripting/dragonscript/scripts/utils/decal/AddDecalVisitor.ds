@@ -56,10 +56,8 @@ class AddDecalVisitor extends ElementVisitor
 	 * Uses all ECBehaviorComponent instances to create decal for.
 	 */
 	public func void visitBehaviorElement( BehaviorElement element )
-		element.forEachInstance( block ECBehaviorInstance each
-			if each castable ECBehaviorComponent.Instance
-				this.createDecalFor( each cast ECBehaviorComponent.Instance )
-			end
+		element.forEachInstance( block ECBehaviorComponent.Instance each
+			this.createDecalFor( each )
 		end )
 	end
 	

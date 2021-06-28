@@ -59,6 +59,7 @@ pDirtySkin( true ),
 pDirtyDynamicSkin( true ),
 pDirtyVisibility( true ),
 pDirtyParamBlocks( false ),
+pDirtyRenderableMapping( true ),
 
 pDynamicSkinRequiresSync( true ),
 
@@ -103,6 +104,11 @@ void deoglDecal::SyncToRender(){
 	pSyncSkin();
 	pSyncDynamicSkin();
 	
+	if( pDirtyRenderableMapping ){
+		pRDecal->UpdateRenderableMapping();
+		pDirtyRenderableMapping = false;
+	}
+	
 	if( pDirtyVBO ){
 		pRDecal->SetDirtyVBO();
 		pDirtyVBO = false;
@@ -122,13 +128,28 @@ void deoglDecal::SetParentComponent( deoglComponent *component ){
 
 
 
-void deoglDecal::DynamicSkinRequiresSync(){
+// Dynamic skin listener
+//////////////////////////
+
+void deoglDecal::DynamicSkinDestroyed(){
+	pDynamicSkin = NULL;
+}
+
+void deoglDecal::DynamicSkinRenderablesChanged(){
 	pDynamicSkinRequiresSync = true;
+	pDirtyRenderableMapping = true;
 	pRequiresSync();
 }
 
-void deoglDecal::DropDynamicSkin(){
-	pDynamicSkin = NULL;
+void deoglDecal::DynamicSkinRenderableChanged( deoglDSRenderable& ){
+	pDynamicSkinRequiresSync = true;
+	pDirtyRenderableMapping = true;
+	pRequiresSync();
+}
+
+void deoglDecal::DynamicSkinRenderableRequiresSync( deoglDSRenderable& ){
+	pDynamicSkinRequiresSync = true;
+	pRequiresSync();
 }
 
 
@@ -152,24 +173,26 @@ void deoglDecal::TransformChanged(){
 
 void deoglDecal::SkinChanged(){
 	pDirtySkin  = true;
+	pDirtyRenderableMapping = true;
 	
 	pRequiresSync();
 }
 
 void deoglDecal::DynamicSkinChanged(){
 	if( pDynamicSkin ){
-		pDynamicSkin->GetNotifyDecals().Remove( this );
+		pDynamicSkin->RemoveListener( this );
 	}
 	
 	if( pDecal.GetDynamicSkin() ){
 		pDynamicSkin = ( deoglDynamicSkin* )pDecal.GetDynamicSkin()->GetPeerGraphic();
-		pDynamicSkin->GetNotifyDecals().Add( this );
+		pDynamicSkin->AddListener( this );
 		
 	}else{
 		pDynamicSkin = NULL;
 	}
 	
 	pDirtyDynamicSkin = true;
+	pDirtyRenderableMapping = true;
 	pDynamicSkinRequiresSync = true;
 	
 	pRequiresSync();
@@ -192,7 +215,7 @@ void deoglDecal::pCleanUp(){
 	}
 	
 	if( pDynamicSkin ){
-		pDynamicSkin->GetNotifyDecals().Remove( this );
+		pDynamicSkin->RemoveListener( this );
 	}
 }
 

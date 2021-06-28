@@ -58,6 +58,29 @@ pRenderThread( renderThread ){
 	
 	// render real transparent particles
 	pRealTransparentParticles = false;
+	
+	// GI move using probes using ray cache instead of all rays
+	pGIMoveUsingCache = true;
+	
+	// transform component vertices on the GPU
+	#ifdef OS_ANDROID
+		// NOTE android OpenGL ES 3.0 does not support texture buffer objects (TBO). as a replacement
+		//      another input VBO can be used (uniform buffers are too small). this requires only
+		//      changing the generation of TBO to be a generation of VBO data instead and changing
+		//      the shader to use VBO input instead of TBO sampling. the VBO requires indexing to
+		//      get the right weights. we use already an index in the model VBO to sample the right
+		//      TBO texel. this indexing though is relative to the vertex but the model VBO is indexed
+		//      relative to face points. this is a problem since it would require storing weight
+		//      matrices per point not per vertex. if this is done it requires a copy of weight data
+		//      to the VBO which would allow to reduce the resolution to 16-bit. all in all tricky
+		//      
+		//      the TBO uses GL_RGBA32F to allow copy the weight matrices right into the texture
+		//      without additional conversion. the same is possible for VBOs.
+		pGPUTransformVertices = egputvNone;
+		
+	#else
+		pGPUTransformVertices = egputvApproximate;
+	#endif
 }
 
 deoglRTChoices::~deoglRTChoices(){

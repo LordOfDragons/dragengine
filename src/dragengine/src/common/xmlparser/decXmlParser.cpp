@@ -53,7 +53,7 @@
 decXmlParser::decXmlParser( deLogger *logger ){
 	if( ! logger ) DETHROW( deeInvalidParam );
 	
-	pLogger = NULL;
+	pLogger = logger;
 	pLine = 1;
 	pPos = 1;
 	pToken = NULL;
@@ -74,19 +74,11 @@ decXmlParser::decXmlParser( deLogger *logger ){
 		if( pToken ) delete [] pToken;
 		throw;
 	}
-	
-	pLogger = logger;
-	logger->AddReference();
 }
 
 decXmlParser::~decXmlParser(){
 	if( pCleanString ) delete [] pCleanString;
 	if( pToken ) delete [] pToken;
-	
-	if( pFile ){
-		pFile->FreeReference();
-	}
-	if( pLogger ) pLogger->FreeReference();
 }
 
 
@@ -126,7 +118,6 @@ void decXmlParser::UnexpectedToken( int line, int pos, const char *token ){
 void decXmlParser::PrepareParse( decBaseFileReader *file ){
 	if( ! file ) DETHROW( deeInvalidParam );
 	pFile = file;
-	file->AddReference();
 	pFilePos = file->GetPosition();
 	pFileLen = file->GetLength();
 	ClearToken();

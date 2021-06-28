@@ -48,6 +48,7 @@ public:
 	static const int edimLightPoint = 0x100;
 	static const int edimLightSpot = 0x200;
 	static const int edimFrameLimiter = 0x400;
+	static const int edimGI = 0x800;
 	
 	
 	
@@ -88,6 +89,11 @@ private:
 	bool pShowDebugInfo;
 	bool pDebugInfoSync;
 	int pDebugInfoDetails;
+	
+	bool pGIShowProbes;
+	bool pGIShowProbeOffsets;
+	bool pGIShowProbeUpdate;
+	int pGIShowCascade;
 	
 	deoglTexture *pTextureDebugImage;
 	deoglFramebuffer *pFBODebugImage;
@@ -173,6 +179,13 @@ public:
 	
 	
 	
+	inline bool GetGIShowProbes() const{ return pGIShowProbes; }
+	inline bool GetGIShowProbeOffsets() const{ return pGIShowProbeOffsets; }
+	inline bool GetGIShowProbeUpdate() const{ return pGIShowProbeUpdate; }
+	inline int GetGIShowCascade() const{ return pGIShowCascade; }
+	
+	
+	
 	/** Retrieves the debug image texture or NULL if not existing. */
 	inline deoglTexture *GetTextureDebugImage() const{ return pTextureDebugImage; }
 	/**
@@ -242,6 +255,16 @@ private:
 	void pCmdShowDebugInfo( const decUnicodeArgumentList &command, decUnicodeString &answer );
 	void pCmdDebugInfoSync( const decUnicodeArgumentList &command, decUnicodeString &answer );
 	void pCmdDebugInfoDetails( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	
+	void pCmdGIShowProbes( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	void pCmdGIShowProbeOffsets( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	void pCmdGIShowProbeUpdate( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	void pCmdGIShowCascade( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	
+	bool pBaseCmdBool( const decUnicodeArgumentList &command, decUnicodeString &answer,
+		bool &variable, const char *commandName );
+	bool pBaseCmdInt( const decUnicodeArgumentList &command, decUnicodeString &answer,
+		int &variable, const char *commandName );
 };
 
 #endif

@@ -95,6 +95,8 @@ static sUseTextureFormat ST_UseTextureFormats[ deoglCapsFmtSupport::UseTextureFo
 	{ deoglCapsFmtSupport::eutfR8UI, "R 8 Unsigned Integral" },
 	{ deoglCapsFmtSupport::eutfR16I, "R 16 Integral" },
 	{ deoglCapsFmtSupport::eutfR16UI, "R 16 Unsigned Integral" },
+	{ deoglCapsFmtSupport::eutfR8_S, "R 8 SNorm" },
+	{ deoglCapsFmtSupport::eutfR16_S, "R 16 SNorm" },
 	
 	{ deoglCapsFmtSupport::eutfRG8, "RG 8" },
 	{ deoglCapsFmtSupport::eutfRG16, "RG 16" },
@@ -105,6 +107,8 @@ static sUseTextureFormat ST_UseTextureFormats[ deoglCapsFmtSupport::UseTextureFo
 	{ deoglCapsFmtSupport::eutfRG8UI, "RG 8 Unsigned Integral" },
 	{ deoglCapsFmtSupport::eutfRG16I, "RG 16 Integral" },
 	{ deoglCapsFmtSupport::eutfRG16UI, "RG 16 Unsigned Integral" },
+	{ deoglCapsFmtSupport::eutfRG8_S, "RG 8 SNorm" },
+	{ deoglCapsFmtSupport::eutfRG16_S, "RG 16 SNorm" },
 	
 	{ deoglCapsFmtSupport::eutfR3G3B2, "RGB 3-3-2" },
 	{ deoglCapsFmtSupport::eutfRGB4, "RGB 4" },
@@ -119,6 +123,8 @@ static sUseTextureFormat ST_UseTextureFormats[ deoglCapsFmtSupport::UseTextureFo
 	{ deoglCapsFmtSupport::eutfRGB8UI, "RGB 8 Unsigned Integral" },
 	{ deoglCapsFmtSupport::eutfRGB16I, "RGB 16 Integral" },
 	{ deoglCapsFmtSupport::eutfRGB16UI, "RGB 16 Unsigned Integral" },
+	{ deoglCapsFmtSupport::eutfRGB8_S, "RGB 8 SNorm" },
+	{ deoglCapsFmtSupport::eutfRGB16_S, "RGB 16 SNorm" },
 	
 	{ deoglCapsFmtSupport::eutfRGBA2, "RGBA 2" },
 	{ deoglCapsFmtSupport::eutfRGBA4, "RGBA 4" },
@@ -133,6 +139,8 @@ static sUseTextureFormat ST_UseTextureFormats[ deoglCapsFmtSupport::UseTextureFo
 	{ deoglCapsFmtSupport::eutfRGBA8UI, "RGBA 8 Unsigned Integral" },
 	{ deoglCapsFmtSupport::eutfRGBA16I, "RGBA 16 Integral" },
 	{ deoglCapsFmtSupport::eutfRGBA16UI, "RGBA 16 Unsigned Integral" },
+	{ deoglCapsFmtSupport::eutfRGBA8_S, "RGBA 8 SNorm" },
+	{ deoglCapsFmtSupport::eutfRGBA16_S, "RGBA 16 SNorm" },
 	
 	{ deoglCapsFmtSupport::eutfDepth, "Depth" },
 	{ deoglCapsFmtSupport::eutfDepth_Stencil, "Packed Depth/Stencil" },
@@ -230,6 +238,11 @@ pShowDebugInfo( false ),
 pDebugInfoSync( false ),
 pDebugInfoDetails( 0 ),
 
+pGIShowProbes( false ),
+pGIShowProbeOffsets( false ),
+pGIShowProbeUpdate( false ),
+pGIShowCascade( 0 ),
+
 pTextureDebugImage( NULL ),
 pFBODebugImage( NULL ),
 pDebugImageUsed( false )
@@ -241,6 +254,9 @@ pDebugImageUsed( false )
 	pDebugInfoDetails = edimModule;
 	*/
 	#endif
+// 	pEnabled = true;
+// 	pShowDebugInfo = true;
+// 	pDebugInfoDetails = edimPlanPrepare | edimWorld | edimSolidGeometry | edimTransparency | edimLight | edimLightSky | edimLightPoint | edimLightSpot | edimGI;
 }
 
 deoglDeveloperMode::~deoglDeveloperMode(){
@@ -452,6 +468,22 @@ bool deoglDeveloperMode::ExecuteCommand( const decUnicodeArgumentList &command, 
 			}else if( command.MatchesArgumentAt( 0, "dm_debug_info_details" ) ){
 				pCmdDebugInfoDetails( command, answer );
 				result = true;
+				
+			}else if( command.MatchesArgumentAt( 0, "dm_gi_show_probes" ) ){
+				pCmdGIShowProbes( command, answer );
+				result = true;
+				
+			}else if( command.MatchesArgumentAt( 0, "dm_gi_show_probe_offsets" ) ){
+				pCmdGIShowProbeOffsets( command, answer );
+				result = true;
+				
+			}else if( command.MatchesArgumentAt( 0, "dm_gi_show_probe_update" ) ){
+				pCmdGIShowProbeUpdate( command, answer );
+				result = true;
+				
+			}else if( command.MatchesArgumentAt( 0, "dm_gi_show_cascade" ) ){
+				pCmdGIShowCascade( command, answer );
+				result = true;
 			}
 		}
 		
@@ -505,6 +537,10 @@ void deoglDeveloperMode::pCmdHelp( const decUnicodeArgumentList &command, decUni
 	answer.AppendFromUTF8( "dm_show_debug_info [1|0] => Show debug information and enable timing measurements.\n" );
 	answer.AppendFromUTF8( "dm_debug_info_sync [1|0] => Call glFinish before each debug timing measurement for true GPU time measuring.\n" );
 	answer.AppendFromUTF8( "dm_debug_info_details [list|+name...|-name...] => Debug info details to show.\n" );
+	answer.AppendFromUTF8( "dm_gi_show_probes [1|0] => Display GI probes.\n" );
+	answer.AppendFromUTF8( "dm_gi_show_probe_offsets [1|0] => Display GI probe offsets.\n" );
+	answer.AppendFromUTF8( "dm_gi_show_probe_update [1|0] => Display GI probe update information.\n" );
+	answer.AppendFromUTF8( "dm_gi_show_cascade [0..maxCascaded] => GI Cascade to show.\n" );
 }
 
 void deoglDeveloperMode::pCmdEnable( const decUnicodeArgumentList &command, decUnicodeString &answer ){
@@ -547,23 +583,11 @@ void deoglDeveloperMode::pCmdShowComponentLodLevels( const decUnicodeArgumentLis
 
 
 void deoglDeveloperMode::pCmdShowHeightTerrain( const decUnicodeArgumentList &command, decUnicodeString &answer ){
-	if( command.GetArgumentCount() == 2 ){
-		pShowHeightTerrain = command.GetArgumentAt( 1 )->ToInt() != 0;
-	}
-	
-	decString text;
-	text.Format( "dm_height_terrain = %i\n", pShowHeightTerrain ? 1 : 0 );
-	answer.AppendFromUTF8( text.GetString() );
+	pBaseCmdBool( command, answer, pShowHeightTerrain, "dm_height_terrain" );
 }
 
 void deoglDeveloperMode::pCmdShowPropFieldBox( const decUnicodeArgumentList &command, decUnicodeString &answer ){
-	if( command.GetArgumentCount() == 2 ){
-		pShowPropFieldBox = command.GetArgumentAt( 1 )->ToInt() != 0;
-	}
-	
-	decString text;
-	text.Format( "dm_show_propfield_box = %i\n", pShowPropFieldBox ? 1 : 0 );
-	answer.AppendFromUTF8( text.GetString() );
+	pBaseCmdBool( command, answer, pShowPropFieldBox, "dm_show_propfield_box" );
 }
 
 void deoglDeveloperMode::pCmdShowPropFieldClusters( const decUnicodeArgumentList &command, decUnicodeString &answer ){
@@ -991,43 +1015,19 @@ void deoglDeveloperMode::pCmdDebugSnapshot( const decUnicodeArgumentList &comman
 }
 
 void deoglDeveloperMode::pCmdShowLightFullBox( const decUnicodeArgumentList &command, decUnicodeString &answer ){
-	if( command.GetArgumentCount() == 2 ){
-		pShowLightFullBox = command.GetArgumentAt( 1 )->ToInt() != 0;
-	}
-	
-	decString text;
-	text.Format( "dm_show_light_full_box = %i\n", pShowLightFullBox ? 1 : 0 );
-	answer.AppendFromUTF8( text.GetString() );
+	pBaseCmdBool( command, answer, pShowLightFullBox, "dm_show_light_full_box" );
 }
 
 void deoglDeveloperMode::pCmdShowLightBox( const decUnicodeArgumentList &command, decUnicodeString &answer ){
-	if( command.GetArgumentCount() == 2 ){
-		pShowLightBox = command.GetArgumentAt( 1 )->ToInt() != 0;
-	}
-	
-	decString text;
-	text.Format( "dm_show_light_box = %i\n", pShowLightBox ? 1 : 0 );
-	answer.AppendFromUTF8( text.GetString() );
+	pBaseCmdBool( command, answer, pShowLightBox, "dm_show_light_box" );
 }
 
 void deoglDeveloperMode::pCmdShowLightVolume( const decUnicodeArgumentList &command, decUnicodeString &answer ){
-	if( command.GetArgumentCount() == 2 ){
-		pShowLightVolume = command.GetArgumentAt( 1 )->ToInt() != 0;
-	}
-	
-	decString text;
-	text.Format( "dm_show_light_volume = %i\n", pShowLightVolume ? 1 : 0 );
-	answer.AppendFromUTF8( text.GetString() );
+	pBaseCmdBool( command, answer, pShowLightVolume, "dm_show_light_volume" );
 }
 
 void deoglDeveloperMode::pCmdShowLightRooms( const decUnicodeArgumentList &command, decUnicodeString &answer ){
-	if( command.GetArgumentCount() == 2 ){
-		pShowLightRooms = command.GetArgumentAt( 1 )->ToInt() != 0;
-	}
-	
-	decString text;
-	text.Format( "dm_show_light_rooms = %i\n", pShowLightRooms ? 1 : 0 );
-	answer.AppendFromUTF8( text.GetString() );
+	pBaseCmdBool( command, answer, pShowLightRooms, "dm_show_light_rooms" );
 }
 
 void deoglDeveloperMode::pCmdShowLightVisualInfo( const decUnicodeArgumentList &command, decUnicodeString &answer ){
@@ -1041,43 +1041,19 @@ void deoglDeveloperMode::pCmdShowLightVisualInfo( const decUnicodeArgumentList &
 }
 
 void deoglDeveloperMode::pCmdShowTranspLayerCount( const decUnicodeArgumentList &command, decUnicodeString &answer ){
-	if( command.GetArgumentCount() == 2 ){
-		pShowTranspLevelCount = command.GetArgumentAt( 1 )->ToInt() != 0;
-	}
-	
-	decString text;
-	text.Format( "dm_show_transp_layer_count = %i\n", pShowTranspLevelCount ? 1 : 0 );
-	answer.AppendFromUTF8( text.GetString() );
+	pBaseCmdBool( command, answer, pShowTranspLevelCount, "dm_show_transp_layer_count" );
 }
 
 void deoglDeveloperMode::pCmdHighlightTransparentObjects( const decUnicodeArgumentList &command, decUnicodeString &answer ){
-	if( command.GetArgumentCount() == 2 ){
-		pHighlightTransparentObjects = command.GetArgumentAt( 1 )->ToInt() != 0;
-	}
-	
-	decString text;
-	text.Format( "dm_highlight_transparent_objects = %i\n", pHighlightTransparentObjects ? 1 : 0 );
-	answer.AppendFromUTF8( text.GetString() );
+	pBaseCmdBool( command, answer, pHighlightTransparentObjects, "dm_highlight_transparent_objects" );
 }
 
 void deoglDeveloperMode::pCmdDebugRenderPlan( const decUnicodeArgumentList &command, decUnicodeString &answer ){
-	if( command.GetArgumentCount() == 2 ){
-		pDebugRenderPlan = command.GetArgumentAt( 1 )->ToInt() != 0;
-	}
-	
-	decString text;
-	text.Format( "dm_debug_renderplan = %i\n", pDebugRenderPlan ? 1 : 0 );
-	answer.AppendFromUTF8( text.GetString() );
+	pBaseCmdBool( command, answer, pDebugRenderPlan, "dm_debug_renderplan" );
 }
 
 void deoglDeveloperMode::pCmdShowMemoryInfo( const decUnicodeArgumentList &command, decUnicodeString &answer ){
-	if( command.GetArgumentCount() == 2 ){
-		pShowMemoryInfo = command.GetArgumentAt( 1 )->ToInt() != 0;
-	}
-	
-	decString text;
-	text.Format( "dm_show_memory_info = %i\n", pShowMemoryInfo ? 1 : 0 );
-	answer.AppendFromUTF8( text.GetString() );
+	pBaseCmdBool( command, answer, pShowMemoryInfo, "dm_show_memory_info" );
 }
 
 
@@ -1095,35 +1071,17 @@ void deoglDeveloperMode::pCmdShowOccMapLevel( const decUnicodeArgumentList &comm
 
 
 void deoglDeveloperMode::pCmdShowEnvMaps( const decUnicodeArgumentList &command, decUnicodeString &answer ){
-	if( command.GetArgumentCount() == 2 ){
-		pShowEnvMaps = command.GetArgumentAt( 1 )->ToInt() != 0;
-	}
-	
-	decString text;
-	text.Format( "dm_show_envmaps = %i\n", pShowEnvMaps ? 1 : 0 );
-	answer.AppendFromUTF8( text.GetString() );
+	pBaseCmdBool( command, answer, pShowEnvMaps, "dm_show_envmaps" );
 }
 
 void deoglDeveloperMode::pCmdShowEnvMapHull( const decUnicodeArgumentList &command, decUnicodeString &answer ){
-	if( command.GetArgumentCount() == 2 ){
-		pShowEnvMapHull = command.GetArgumentAt( 1 )->ToInt() != 0;
-	}
-	
-	decString text;
-	text.Format( "dm_show_envmap_hull = %i\n", pShowEnvMapHull ? 1 : 0 );
-	answer.AppendFromUTF8( text.GetString() );
+	pBaseCmdBool( command, answer, pShowEnvMapHull, "dm_show_envmap_hull" );
 }
 
 
 
 void deoglDeveloperMode::pCmdShowSSAO( const decUnicodeArgumentList &command, decUnicodeString &answer ){
-	if( command.GetArgumentCount() == 2 ){
-		pShowSSAO = command.GetArgumentAt( 1 )->ToInt() != 0;
-	}
-	
-	decString text;
-	text.Format( "dm_show_ssao = %i\n", pShowSSAO ? 1 : 0 );
-	answer.AppendFromUTF8( text.GetString() );
+	pBaseCmdBool( command, answer, pShowSSAO, "dm_show_ssao" );
 }
 
 
@@ -1219,13 +1177,7 @@ void deoglDeveloperMode::pCmdTestGenerateShader( const decUnicodeArgumentList &c
 
 
 void deoglDeveloperMode::pCmdDebugEnableLightDepthStencil( const decUnicodeArgumentList &command, decUnicodeString &answer ){
-	if( command.GetArgumentCount() == 2 ){
-		pDebugEnableLightDepthStencil = command.GetArgumentAt( 1 )->ToInt() != 0;
-	}
-	
-	decString text;
-	text.Format( "dm_debug_enable_light_depth_stencil = %i\n", pDebugEnableLightDepthStencil ? 1 : 0 );
-	answer.AppendFromUTF8( text.GetString() );
+	pBaseCmdBool( command, answer, pDebugEnableLightDepthStencil, "dm_debug_enable_light_depth_stencil" );
 }
 
 
@@ -1238,25 +1190,15 @@ void deoglDeveloperMode::pCmdTests( const decUnicodeArgumentList &command, decUn
 
 
 void deoglDeveloperMode::pCmdShowDebugInfo( const decUnicodeArgumentList &command, decUnicodeString &answer ){
-	if( command.GetArgumentCount() == 2 ){
-		pShowDebugInfo = command.GetArgumentAt( 1 )->ToInt() != 0;
+	if( pBaseCmdBool( command, answer, pShowDebugInfo, "dm_show_debug_info" ) ){
 		pRenderThread.DevModeDebugInfoChanged();
 	}
-	
-	decString text;
-	text.Format( "dm_show_debug_info = %i\n", pShowDebugInfo ? 1 : 0 );
-	answer.AppendFromUTF8( text.GetString() );
 }
 
 void deoglDeveloperMode::pCmdDebugInfoSync( const decUnicodeArgumentList &command, decUnicodeString &answer ){
-	if( command.GetArgumentCount() == 2 ){
-		pDebugInfoSync = command.GetArgumentAt( 1 )->ToInt() != 0;
+	if( pBaseCmdBool( command, answer, pDebugInfoSync, "dm_debug_info_sync" ) ){
 		pRenderThread.DevModeDebugInfoChanged();
 	}
-	
-	decString text;
-	text.Format( "dm_debug_info_sync = %i\n", pDebugInfoSync ? 1 : 0 );
-	answer.AppendFromUTF8( text.GetString() );
 }
 
 void deoglDeveloperMode::pCmdDebugInfoDetails( const decUnicodeArgumentList &command, decUnicodeString &answer ){
@@ -1316,10 +1258,13 @@ void deoglDeveloperMode::pCmdDebugInfoDetails( const decUnicodeArgumentList &com
 			}else if( detail == "frameLimiter" || detail == "fl" ){
 				value = edimFrameLimiter;
 				
+			}else if( detail == "gi" ){
+				value = edimGI;
+				
 			}else if( detail == "all" ){ // temporary
 				value = edimModule | edimPlanPrepare | edimCanvas | edimWorld | edimSolidGeometry
 					| edimTransparency | edimLight | edimLightSky | edimLightPoint | edimLightSpot
-					| edimFrameLimiter;
+					| edimFrameLimiter | edimGI;
 				
 			}else{
 				decString text;
@@ -1379,5 +1324,56 @@ void deoglDeveloperMode::pCmdDebugInfoDetails( const decUnicodeArgumentList &com
 	if( ( pDebugInfoDetails & edimFrameLimiter ) == edimFrameLimiter ){
 		answer.AppendFromUTF8( " frameLimiter" );
 	}
+	if( ( pDebugInfoDetails & edimGI ) == edimGI ){
+		answer.AppendFromUTF8( " gi" );
+	}
 	answer.AppendCharacter( '\n' );
+}
+
+void deoglDeveloperMode::pCmdGIShowProbes( const decUnicodeArgumentList &command, decUnicodeString &answer ){
+	pBaseCmdBool( command, answer, pGIShowProbes, "dm_gi_show_probes" );
+}
+
+void deoglDeveloperMode::pCmdGIShowProbeOffsets( const decUnicodeArgumentList &command, decUnicodeString &answer ){
+	pBaseCmdBool( command, answer, pGIShowProbeOffsets, "dm_gi_show_probe_offsets" );
+}
+
+void deoglDeveloperMode::pCmdGIShowProbeUpdate( const decUnicodeArgumentList &command, decUnicodeString &answer ){
+	pBaseCmdBool( command, answer, pGIShowProbeUpdate, "dm_gi_show_probe_update" );
+}
+
+void deoglDeveloperMode::pCmdGIShowCascade( const decUnicodeArgumentList &command, decUnicodeString &answer ){
+	pBaseCmdInt( command, answer, pGIShowCascade, "dm_gi_show_cascade" );
+}
+
+
+bool deoglDeveloperMode::pBaseCmdBool( const decUnicodeArgumentList &command,
+decUnicodeString &answer, bool &variable, const char *commandName ){
+	const bool oldValue = variable;
+	
+	if( command.GetArgumentCount() == 2 ){
+		const decString value( command.GetArgumentAt( 1 )->GetLower().ToUTF8() );
+		variable = value == "1" || value == "yes" || value == "true" || value == "on";
+	}
+	
+	decString text;
+	text.Format( "%s = %s\n", commandName, variable ? "true" : "false" );
+	answer.AppendFromUTF8( text );
+	
+	return variable != oldValue;
+}
+
+bool deoglDeveloperMode::pBaseCmdInt( const decUnicodeArgumentList &command,
+decUnicodeString &answer, int &variable, const char *commandName ){
+	const int oldValue = variable;
+	
+	if( command.GetArgumentCount() == 2 ){
+		variable = command.GetArgumentAt( 1 )->ToInt();
+	}
+	
+	decString text;
+	text.Format( "%s = %d\n", commandName, variable );
+	answer.AppendFromUTF8( text );
+	
+	return variable != oldValue;
 }

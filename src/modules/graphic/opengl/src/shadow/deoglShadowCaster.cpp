@@ -51,17 +51,20 @@ pStaticNear( 0.01f ),
 pStaticFar( 10.0f ),
 pStaticScale( 2.887585e-2f ),
 pStaticOffset( 2.887585e-4f ),
-pStaticCutOff( -0.02f ),
 
 pDynamicNear( 0.01f ),
 pDynamicFar( 10.0f ),
 pDynamicScale( 2.887585e-2f ),
 pDynamicOffset( 2.887585e-4f ),
-pDynamicCutOff( -0.02 )
-{
+
+pShadowLayers( NULL ),
+pShadowLayerCount( 0 ){
 }
 
 deoglShadowCaster::~deoglShadowCaster(){
+	if( pShadowLayers ){
+		delete [] pShadowLayers;
+	}
 }
 
 
@@ -73,6 +76,10 @@ void deoglShadowCaster::Update(){
 	pSolid.Update();
 	pTransparent.Update();
 	pAmbient.Update();
+}
+
+bool deoglShadowCaster::RequiresUpdate() const{
+	return pSolid.RequiresUpdate() || pTransparent.RequiresUpdate() || pAmbient.RequiresUpdate();
 }
 
 
@@ -91,10 +98,6 @@ void deoglShadowCaster::DropDynamic(){
 
 
 
-void deoglShadowCaster::SetShadowOrigin( const decVector &origin ){
-	pShadowOrigin = origin;
-}
-
 void deoglShadowCaster::SetShadowType( eShadowTypes shadowType ){
 	pShadowType = shadowType;
 }
@@ -107,10 +110,6 @@ void deoglShadowCaster::SetStaticParams( float near, float far ){
 	pStaticOffset = -pStaticNear * pStaticScale;
 }
 
-void deoglShadowCaster::SetStaticCutOff( float cutoff ){
-	pStaticCutOff = cutoff;
-}
-
 void deoglShadowCaster::SetDynamicParams( float near, float far ){
 	pDynamicNear = near;
 	pDynamicFar = far;
@@ -119,6 +118,37 @@ void deoglShadowCaster::SetDynamicParams( float near, float far ){
 	pDynamicOffset = -pDynamicNear * pDynamicScale;
 }
 
-void deoglShadowCaster::SetDynamicCutOff( float cutoff ){
-	pDynamicCutOff = cutoff;
+void deoglShadowCaster::SetShadowLayerCount( int count ){
+	if( count < 0 ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	if( count == pShadowLayerCount ){
+		return;
+	}
+	
+	if( pShadowLayers ){
+		delete [] pShadowLayers;
+		pShadowLayers = NULL;
+		pShadowLayerCount = 0;
+	}
+	
+	if( count > 0 ){
+		pShadowLayers = new sShadowLayer[ count ];
+		pShadowLayerCount = count;
+	}
+}
+
+const deoglShadowCaster::sShadowLayer &deoglShadowCaster::GetShadowLayerAt( int index ) const{
+	if( index < 0 || index >= pShadowLayerCount ){
+		DETHROW( deeInvalidParam );
+	}
+	return pShadowLayers[ index ];
+}
+
+deoglShadowCaster::sShadowLayer &deoglShadowCaster::GetShadowLayerAt( int index ){
+	if( index < 0 || index >= pShadowLayerCount ){
+		DETHROW( deeInvalidParam );
+	}
+	return pShadowLayers[ index ];
 }

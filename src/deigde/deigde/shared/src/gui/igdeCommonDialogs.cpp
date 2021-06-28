@@ -25,10 +25,19 @@
 
 #include "igdeCommonDialogs.h"
 #include "igdeWidget.h"
+#include "igdeContainer.h"
+#include "igdeContainerReference.h"
+#include "igdeComboBoxFilter.h"
+#include "igdeComboBoxFilterReference.h"
+#include "igdeComboBoxFilterReference.h"
+#include "igdeUIHelper.h"
+#include "dialog/igdeDialog.h"
+#include "dialog/igdeDialogReference.h"
 #include "dialog/igdeDialogMultilineValue.h"
 #include "dialog/igdeDialogMultilineValueReference.h"
 #include "filedialog/igdeFilePattern.h"
 #include "filedialog/igdeFilePatternList.h"
+#include "layout/igdeContainerFlow.h"
 #include "native/toolkit.h"
 
 #include <dragengine/common/exceptions.h>
@@ -201,6 +210,45 @@ const char *text, decString &value ){
 	dialog->SetValue( value );
 	if( dialog->Run( owner ) ){
 		value = dialog->GetValue();
+		return true;
+		
+	}else{
+		return false;
+	}
+}
+
+bool igdeCommonDialogs::GetString( igdeWidget *owner, const char *title,
+const char *text, decString &value, const decStringList &proposals ){
+	if( ! owner ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	igdeEnvironment &environment = owner->GetEnvironment();
+	igdeUIHelper &helper = environment.GetUIHelper();
+	igdeDialogReference dialog;
+	dialog.TakeOver( new igdeDialog( environment, title ) );
+	
+	igdeContainerReference content;
+	content.TakeOver( new igdeContainerFlow( environment, igdeContainerFlow::eaY, igdeContainerFlow::esLast, 10 ) );
+	
+	igdeComboBoxFilterReference comboBox;
+	helper.Label( content, text );
+	helper.ComboBoxFilter( content, 50, 10, true, "Enter value or select from list", comboBox, NULL );
+	const int count = proposals.GetCount();
+	int i;
+	for( i=0; i<count; i++ ){
+		comboBox->AddItem( proposals.GetAt( i ) );
+	}
+	comboBox->StoreFilterItems();
+	comboBox->SetText( value );
+	
+	igdeContainerReference buttonBar;
+	dialog->CreateButtonBar( buttonBar, "Accept", "Discard" );
+	
+	dialog->AddContent( content, buttonBar );
+	
+	if( dialog->Run( owner ) ){
+		value = comboBox->GetText();
 		return true;
 		
 	}else{

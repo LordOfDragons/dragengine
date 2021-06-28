@@ -131,10 +131,9 @@ void meObjectTexture::LoadSkin(){
 	deSkin *engSkin = NULL;
 	
 	if( ! pSkinPath.IsEmpty() ){
-		deSkinManager &skinMgr = *pEnvironment->GetEngineController()->GetEngine()->GetSkinManager();
-		
 		try{
-			engSkin = skinMgr.LoadSkin( pSkinPath.GetString(), "/" );
+			engSkin = pEnvironment->GetEngineController()->GetEngine()->
+				GetSkinManager()->LoadSkin( pSkinPath.GetString(), "/" );
 			
 		}catch( const deException & ){
 			engSkin = pEnvironment->GetErrorSkin();

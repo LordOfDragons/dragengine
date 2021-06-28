@@ -48,6 +48,7 @@ pBlendMode( ebmBlend ),
 
 pPeerGraphic( NULL ),
 
+pParentMask( NULL ),
 pParentView( NULL ),
 pLLViewPrev( NULL ),
 pLLViewNext( NULL ){
@@ -154,6 +155,30 @@ void deCanvas::SetBlendMode( eBlendModes blendMode ){
 	}
 }
 
+void deCanvas::SetMask( deCanvas *mask ){
+	if( pMask == mask ){
+		return;
+	}
+	
+	if( mask && ( mask->GetParentMask() || mask->GetParentView() ) ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	if( pMask ){
+		pMask->pParentMask = NULL;
+	}
+	
+	pMask = mask;
+	
+	if( mask ){
+		mask->pParentMask = this;
+	}
+	
+	if( pPeerGraphic ){
+		pPeerGraphic->MaskChanged();
+	}
+}
+
 
 
 void deCanvas::NotifyContentChanged(){
@@ -191,6 +216,10 @@ void deCanvas::Visit( deCanvasVisitor &visitor ){
 
 // Linked List
 ////////////////
+
+void deCanvas::SetParentMask( deCanvas *canvas ){
+	pParentMask = canvas;
+}
 
 void deCanvas::SetParentView( deCanvasView *view ){
 	pParentView = view;

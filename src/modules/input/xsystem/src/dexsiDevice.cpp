@@ -134,6 +134,9 @@ pDirtyAxesValues( false )
 // https://www.kernel.org/doc/Documentation/input/joystick-api.txt
 
 dexsiDevice::~dexsiDevice(){
+	if( pX11KeyCodeMap ){
+		delete [] pX11KeyCodeMap;
+	}
 }
 
 

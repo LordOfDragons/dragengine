@@ -68,6 +68,10 @@ lpeLoadSaveSystem::lpeLoadSaveSystem( lpeWindowMain *windowMain ){
 
 lpeLoadSaveSystem::~lpeLoadSaveSystem(){
 	RemoveAllLSLangPacks();
+	
+	if( pLSLangPacks ){
+		delete [] pLSLangPacks;
+	}
 }
 
 

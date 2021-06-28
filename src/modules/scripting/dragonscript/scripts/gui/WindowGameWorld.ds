@@ -156,7 +156,7 @@ class WindowGameWorld extends Window
 		
 		this.pCamera = Camera.new()
 		this.pCamera.setFov( 80 )
-		this.pCamera.setLowestIntensity( 10 )
+		this.pCamera.setLowestIntensity( 1 )
 		this.pCamera.setHighestIntensity( 20 )
 		
 		this.pMicrophone = Microphone.new()

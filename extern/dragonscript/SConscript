@@ -11,7 +11,7 @@ envLibrary = parent_env.Clone()
 
 # parameters
 distVersionMajor = 1
-distVersionMinor = 2
+distVersionMinor = 3
 srcdir = 'dragonscript-{}.{}'.format(distVersionMajor, distVersionMinor)
 
 if envLibrary[ 'OSWindows' ]:

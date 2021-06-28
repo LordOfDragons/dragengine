@@ -34,8 +34,9 @@
 #include "../world/terrain/meHeightTerrain.h"
 #include "../world/terrain/meHeightTerrainSector.h"
 
-#include <deigde/gamedefinition/igdeGameDefinition.h>
 #include <deigde/environment/igdeEnvironment.h>
+#include <deigde/gamedefinition/igdeGameDefinition.h>
+#include <deigde/gui/wrapper/igdeWSky.h>
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
@@ -49,6 +50,8 @@
 #include <dragengine/common/xmlparser/decXmlElementTag.h>
 #include <dragengine/common/xmlparser/decXmlParser.h>
 #include <dragengine/common/xmlparser/decXmlVisitor.h>
+#include <dragengine/resources/sky/deSky.h>
+#include <dragengine/resources/sky/deSkyController.h>
 
 
 
@@ -166,7 +169,14 @@ bool meLoadXMLWorldTask::Step(){
 			continue;
 		}
 		
-		if( tag->GetName() == "gravity" ){
+		if( tag->GetName() == "worldEditor" ){
+			pLoadWorldEditor( *tag );
+			
+		}else if( tag->GetName() == "size" ){
+			pWorld->SetSize( decDVector( GetAttributeDouble( *tag, "x" ),
+				GetAttributeDouble( *tag, "y" ), GetAttributeDouble( *tag, "z" ) ) );
+			
+		}else if( tag->GetName() == "gravity" ){
 			pWorld->SetGravity( decVector( GetAttributeFloat( *tag, "x" ),
 				GetAttributeFloat( *tag, "y" ), GetAttributeFloat( *tag, "z" ) ) );
 			
@@ -254,6 +264,39 @@ void meLoadXMLWorldTask::pCleanUp(){
 }
 
 
+
+void meLoadXMLWorldTask::pLoadWorldEditor( const decXmlElementTag &root ){
+	int i;
+	for( i=0; i<root.GetElementCount(); i++ ){
+		const decXmlElementTag * const tag = root.GetElementIfTag( i );
+		if( ! tag ){
+			continue;
+		}
+		
+		const decString &tagName = tag->GetName();
+		if( tagName == "skyPath" ){
+			pWorld->GetSky()->SetPath( GetCDataString( *tag ) );
+			
+		}else if( tagName == "skyController" ){
+			const decString &name = GetAttributeString( *tag, "name" );
+			if( ! pWorld->GetSky()->GetSky() ){
+				continue;
+			}
+			
+			const int index = pWorld->GetSky()->GetSky()->IndexOfControllerNamed( name );
+			if( index == -1 ){
+				continue;
+			}
+			
+			pWorld->GetSky()->SetControllerValue( index, GetCDataFloat( *tag ) );
+			
+		}else{
+			pLSSys->GetWindowMain()->GetLogger()->LogWarnFormat( LOGSOURCE,
+				"world.worldEditor(%i:%i): Unknown Tag %s, ignoring",
+				tag->GetLineNumber(), tag->GetPositionNumber(), tagName.GetString() );
+		}
+	}
+}
 
 void meLoadXMLWorldTask::pLoadObject( const decXmlElementTag &root, meObject &object ){
 	const char *name;

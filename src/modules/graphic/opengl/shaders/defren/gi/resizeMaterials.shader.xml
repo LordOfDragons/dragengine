@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shader>
+	<name>DefRen GI Resize Materials</name>
+	
+	<version>130</version>
+	
+	<texture name='texDiffuse' target='0'/>
+	<texture name='texReflectivity' target='1'/>
+	<texture name='texEmissivity' target='2'/>
+	
+	<parameter name='pParameters'/>
+	
+	<attribute name='inPosition' target='0'/>
+	
+	<output name='outDiffuse' target='0'/>
+	<output name='outReflectivity' target='1'/>
+	<output name='outEmissivity' target='2'/>
+	
+	<sourceCode unit='vertex'>v130/vertex/defren/gi/resizeMaterials.glsl</sourceCode>
+	<sourceCode unit='fragment'>v130/fragment/defren/gi/resizeMaterials.glsl</sourceCode>
+</shader>

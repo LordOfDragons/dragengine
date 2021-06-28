@@ -34,29 +34,29 @@ class StackLayout implements Layout
 	/** \brief Aspect ratio behavior. */
 	enum AspectRatio
 		/**
-		* \brief No aspect ratio protection.
-		* 
-		* Widgets can turn out stretched loosing their aspect ratio.
-		*/
+		 * \brief No aspect ratio protection.
+		 * 
+		 * Widgets can turn out stretched loosing their aspect ratio.
+		 */
 		stretch
 		
 		/**
-		* \brief Protect aspect ratio fitting widget into available space.
-		* 
-		* Widgets are guaranteed to keep their aspect ratio. The size and position
-		* is corrected in a way the widget fits entirely inside the container. This
-		* ensures widgets are not clipped and are fully visible but potentially
-		* introduces empty borders.
-		*/
+		 * \brief Protect aspect ratio fitting widget into available space.
+		 * 
+		 * Widgets are guaranteed to keep their aspect ratio. The size and position
+		 * is corrected in a way the widget fits entirely inside the container. This
+		 * ensures widgets are not clipped and are fully visible but potentially
+		 * introduces empty borders.
+		 */
 		fit
 		
 		/**
-		* \brief Protect aspect ratio clipping widget to fill available space.
-		* 
-		* Widgets are guaranteed to keep their aspect ratio. The size and position
-		* is corrected in a way the widget entirely fills the container. This ensures
-		* no empty borders exist around widgets widgets but potentially clips widgets.
-		*/
+		 * \brief Protect aspect ratio clipping widget to fill available space.
+		 * 
+		 * Widgets are guaranteed to keep their aspect ratio. The size and position
+		 * is corrected in a way the widget entirely fills the container. This ensures
+		 * no empty borders exist around widgets widgets but potentially clips widgets.
+		 */
 		clip
 	end
 	

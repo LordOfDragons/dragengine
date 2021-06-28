@@ -58,12 +58,8 @@ class SimpleElementOnRailClass extends SimpleElementClass
 	/** \brief Create element class. */
 	public func new( String className, Loaders loaders, TSTriggerTable triggerTable ) \
 	super( className, loaders )
-		this.getComponent().getComponent().getRenderEnvMap().setValue( false )
-		
 		this.pCanTrigger = ECPBoolean.new( "canTrigger", false )
 		this.addProperty( this.pCanTrigger )
-		
-		this.getCollider().getCollider().collisionCategoryReplace( LayerMask.newWith( BaseGameApp.CollisionFilterBit.dynamic ) )
 		
 		this.pMoveOnRail = ECBehaviorMoveOnRail.new( this, this.getCollider(), triggerTable )
 	end

@@ -32,6 +32,8 @@
 #include "../model/deoglModelLOD.h"
 #include "../model/deoglRModel.h"
 #include "../model/face/deoglModelFace.h"
+#include "../rendering/task/shared/deoglRenderTaskSharedPool.h"
+#include "../rendering/task/shared/deoglRenderTaskSharedInstance.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTBufferObject.h"
 #include "../renderthread/deoglRTChoices.h"
@@ -39,6 +41,7 @@
 #include "../renderthread/deoglRTLogger.h"
 #include "../renderthread/deoglRTShader.h"
 #include "../shaders/paramblock/deoglSPBlockUBO.h"
+#include "../shaders/paramblock/shared/deoglSharedSPB.h"
 #include "../shaders/paramblock/shared/deoglSharedSPBElement.h"
 #include "../shaders/paramblock/shared/deoglSharedSPBListUBO.h"
 #include "../skin/channel/deoglSkinChannel.h"
@@ -84,7 +87,9 @@ pComponentMarkedRemove( false ),
 
 pSharedSPBElement( NULL ),
 
-pDirtySharedSPBElement( true )
+pRTSInstance( NULL ),
+pDirtySharedSPBElement( true ),
+pDirtyTUCs( true )
 {
 	pSkin = NULL;
 	pDynamicSkin = NULL;
@@ -96,28 +101,17 @@ pDirtySharedSPBElement( true )
 	pUseDynamicSkin = NULL;
 	pUseSkinState = NULL;
 	
+	pDirtyPrepareSkinStateRenderables = true;
+	
 	pVBOBlock = NULL;
 	pPointCount = 0;
 	
 	pDirtyUseTexture = true;
-	pDirtyRenderables = true;
 	pDirtyVBO = true;
-	
-	pParamBlockGeometry = NULL;
-	pParamBlockEnvMap = NULL;
 	
 	pTUCGeometry = NULL;
 	pTUCShadow = NULL;
 	pTUCEnvMap = NULL;
-	
-	pValidParamBlockGeometry = false;
-	pValidParamBlockEnvMap = false;
-	pDirtyParamBlockGeometry = true;
-	pDirtyParamBlockEnvMap = true;
-	
-	pDirtyTUCGeometry = true;
-	pDirtyTUCShadow = true;
-	pDirtyTUCEnvMap = true;
 	LEAK_CHECK_CREATE( renderThread, Decal );
 }
 
@@ -125,8 +119,6 @@ class deoglRDecalDeletion : public deoglDelayedDeletion{
 public:
 	deoglSkinState *skinState;
 	deoglSharedVBOBlock *vboBlock;
-	deoglSPBlockUBO *paramBlockGeometry;
-	deoglSPBlockUBO *paramBlockEnvMap;
 	deoglTexUnitsConfig *tucGeometry;
 	deoglTexUnitsConfig *tucShadow;
 	deoglTexUnitsConfig *tucEnvMap;
@@ -134,8 +126,6 @@ public:
 	deoglRDecalDeletion() :
 	skinState( NULL ),
 	vboBlock( NULL ),
-	paramBlockGeometry( NULL ),
-	paramBlockEnvMap( NULL ),
 	tucGeometry( NULL ),
 	tucShadow( NULL ),
 	tucEnvMap( NULL ){
@@ -144,7 +134,7 @@ public:
 	virtual ~deoglRDecalDeletion(){
 	}
 	
-	virtual void DeleteObjects( deoglRenderThread &renderThread ){
+	virtual void DeleteObjects( deoglRenderThread& ){
 		if( vboBlock ){
 			vboBlock->GetVBO()->RemoveBlock( vboBlock );
 			vboBlock->FreeReference();
@@ -157,12 +147,6 @@ public:
 		}
 		if( tucEnvMap ){
 			tucEnvMap->RemoveUsage();
-		}
-		if( paramBlockGeometry ){
-			paramBlockGeometry->FreeReference();
-		}
-		if( paramBlockEnvMap ){
-			paramBlockEnvMap->FreeReference();
 		}
 		if( skinState ){
 			delete skinState;
@@ -180,6 +164,9 @@ deoglRDecal::~deoglRDecal(){
 		pSkin->FreeReference();
 	}
 	
+	if( pRTSInstance ){
+		pRTSInstance->ReturnToPool();
+	}
 	if( pSharedSPBElement ){
 		pSharedSPBElement->FreeReference();
 	}
@@ -195,8 +182,6 @@ deoglRDecal::~deoglRDecal(){
 	
 	try{
 		delayedDeletion = new deoglRDecalDeletion;
-		delayedDeletion->paramBlockEnvMap = pParamBlockEnvMap;
-		delayedDeletion->paramBlockGeometry = pParamBlockGeometry;
 		delayedDeletion->skinState = pSkinState;
 		delayedDeletion->tucEnvMap = pTUCEnvMap;
 		delayedDeletion->tucGeometry = pTUCGeometry;
@@ -241,54 +226,35 @@ void deoglRDecal::SetVisible( bool visible ){
 
 
 void deoglRDecal::UpdateSkin( float elapsed ){
-	if( pSkinState ){
-		pSkinState->AdvanceTime( elapsed );
-		
-		if( pUseSkinTexture ){
-			if( pUseSkinTexture->GetDynamicChannels() ){
-				MarkParamBlocksDirty();
-				MarkTUCsDirty();
-				
-			}else if( pUseSkinTexture->GetCalculatedProperties() ){
-				MarkParamBlocksDirty();
-			}
-		}
-	}
-}
-
-void deoglRDecal::UpdateVBO(){
-	if( ! pDirtyVBO ){
-		return;
-	}
-	
-	if( pVBOBlock ){
-		pVBOBlock->GetVBO()->RemoveBlock( pVBOBlock );
-		pVBOBlock->FreeReference();
-		pVBOBlock = NULL;
-	}
-	
-	if( pParentComponent ){
-		pCreateMeshComponent();
-	}
-	
-	pDirtyVBO = false;
-}
-
-void deoglRDecal::SetDirtyVBO(){
-	pDirtyVBO = true;
-}
-
-void deoglRDecal::UpdateRenderables( deoglRenderPlan &plan ){
 	if( ! pSkinState ){
 		return;
 	}
 	
-	// update renderables. this is required here as this call sets up properly the
-	// skin state if not done already
-	pUpdateRenderables();
+	pSkinState->AdvanceTime( elapsed );
 	
-	// make sure all textures are updated and create the render info if required
-	pSkinState->PrepareRenderables( pUseSkin, pUseDynamicSkin );
+	if( ! pUseSkinTexture ){
+		return;
+	}
+	
+	if( pUseSkinTexture->GetDynamicChannels() ){
+		MarkParamBlocksDirty();
+		MarkTUCsDirty();
+		
+	}else if( pUseSkinTexture->GetCalculatedProperties() ){
+		MarkParamBlocksDirty();
+	}
+}
+
+void deoglRDecal::SetDirtyVBO(){
+	if( pDirtyVBO ){
+		return;
+	}
+	
+	pDirtyVBO = true;
+	
+	if( pParentComponent ){
+		pParentComponent->DecalRequiresPrepareForRender();
+	}
 }
 
 
@@ -317,6 +283,8 @@ void deoglRDecal::SetSkin( deoglRSkin *skin ){
 	if( pSkinState ){
 		pSkinState->InitCalculatedProperties();
 	}
+	
+	pRequiresPrepareForRender();
 }
 
 void deoglRDecal::SetDynamicSkin( deoglRDynamicSkin *dynamicSkin ){
@@ -340,6 +308,8 @@ void deoglRDecal::SetDynamicSkin( deoglRDynamicSkin *dynamicSkin ){
 	MarkTUCsDirty();
 	
 	UpdateSkinState();
+	
+	pRequiresPrepareForRender();
 }
 
 void deoglRDecal::SetSkinState( deoglSkinState *skinState ){
@@ -372,14 +342,303 @@ void deoglRDecal::SetSkinState( deoglSkinState *skinState ){
 	pSkinState = skinState;
 	
 	pDirtyUseTexture = true;
+	pDirtyPrepareSkinStateRenderables = true;
 	
 	InvalidateParamBlocks();
 	MarkTUCsDirty();
 	
 	UpdateSkinState();
+	
+	pRequiresPrepareForRender();
 }
 
-void deoglRDecal::UpdateUseSkin(){
+void deoglRDecal::UpdateSkinState(){
+	// NOTE this is called from the main thread during synchronization
+	
+	bool changed = false;
+	
+	if( pSkin && ( pDynamicSkin || ( pParentComponent && pParentComponent->GetDynamicSkin() ) ) ){
+		if( ! pSkinState ){
+			pSkinState = new deoglSkinState( pRenderThread, *this );
+			changed = true;
+		}
+		
+	}else{
+		if( pSkinState ){
+			SetSkinState( NULL );
+			changed = true;
+		}
+	}
+	
+	if( changed ){
+		pDirtyUseTexture = true;
+		DirtyPrepareSkinStateRenderables();
+		
+		InvalidateParamBlocks();
+		MarkTUCsDirty();
+		
+		pRequiresPrepareForRender();
+	}
+}
+
+
+
+void deoglRDecal::DirtyPrepareSkinStateRenderables(){
+	pDirtyPrepareSkinStateRenderables = true;
+	pDirtyUseTexture = true;
+	
+	pRequiresPrepareForRender();
+}
+
+
+
+void deoglRDecal::SetParentComponent( deoglRComponent *component ){
+	// NOTE this is called from the main thread during synchronization
+	if( component == pParentComponent ){
+		return;
+	}
+	
+	pParentComponent = component;
+	SetDirtyVBO();
+	
+	SetSkinState( NULL ); // required since UpdateSkinState can not figure out dynamic skin changed
+	UpdateSkinState();
+}
+
+void deoglRDecal::SetComponentMarkedRemove( bool marked ){
+	pComponentMarkedRemove = marked;
+}
+
+
+
+deoglTexUnitsConfig *deoglRDecal::GetTUCForShaderType( deoglSkinTexture::eShaderTypes shaderType ) const{
+	switch( shaderType ){
+	case deoglSkinTexture::estDecalGeometry:
+		return GetTUCGeometry();
+		
+	case deoglSkinTexture::estDecalEnvMap:
+		return GetTUCEnvMap();
+		
+	default:
+		DETHROW( deeInvalidParam );
+	}
+}
+
+deoglTexUnitsConfig *deoglRDecal::BareGetTUCFor( deoglSkinTexture::eShaderTypes shaderType ) const{
+	if( ! pUseSkinTexture ){
+		return NULL;
+	}
+	
+	deoglTexUnitConfig units[ deoglSkinShader::ETT_COUNT ];
+	deoglEnvironmentMap *envmapSky = NULL;
+	deoglTexUnitsConfig *tuc = NULL;
+	
+	if( pParentComponent ){
+		envmapSky = pParentComponent->GetParentWorld()->GetSkyEnvironmentMap();
+	}
+	
+	deoglSkinShader &skinShader = *pUseSkinTexture->GetShaderFor( shaderType );
+	
+	if( skinShader.GetUsedTextureTargetCount() > 0 ){
+		skinShader.SetTUCCommon( &units[ 0 ], *pUseSkinTexture, pUseSkinState, pUseDynamicSkin );
+		skinShader.SetTUCPerObjectEnvMap( &units[ 0 ], envmapSky,
+			pParentComponent->GetRenderEnvMap(), pParentComponent->GetRenderEnvMapFade() );
+		tuc = pRenderThread.GetShader().GetTexUnitsConfigList().GetWith(
+			&units[ 0 ], skinShader.GetUsedTextureTargetCount(),
+			pUseSkinTexture->GetSharedSPBElement()->GetSPB().GetParameterBlock() );
+	}
+	
+	if( ! tuc ){
+		tuc = pRenderThread.GetShader().GetTexUnitsConfigList().GetWith( NULL, 0,
+			pUseSkinTexture->GetSharedSPBElement()->GetSPB().GetParameterBlock() );
+	}
+	tuc->EnsureRTSTexture();
+	
+	return tuc;
+}
+
+void deoglRDecal::InvalidateParamBlocks(){
+	MarkParamBlocksDirty();
+}
+
+void deoglRDecal::MarkParamBlocksDirty(){
+	pDirtySharedSPBElement = true;
+	pRequiresPrepareForRender();
+}
+
+void deoglRDecal::MarkTUCsDirty(){
+	pDirtyTUCs = true;
+	pRequiresPrepareForRender();
+}
+
+
+
+void deoglRDecal::PrepareForRender( deoglRenderPlan&, const deoglRenderPlanMasked *mask ){
+	pUpdateUseSkin();
+	pPrepareVBO();
+	pPrepareParamBlocks();
+	pPrepareTUCs();
+	pPrepareSkinStateRenderables( mask );
+}
+
+void deoglRDecal::PrepareQuickDispose(){
+	pParentComponent = NULL;
+}
+
+void deoglRDecal::DynamicSkinRenderablesChanged(){
+	if( ! pDynamicSkin || ! pSkin || ! pSkin->GetHasRenderables() ){
+		return;
+	}
+	
+	MarkParamBlocksDirty();
+	MarkTUCsDirty();
+}
+
+void deoglRDecal::UpdateRenderableMapping(){
+	if( ! pSkinState ){
+		return;
+	}
+	
+	// udpate mappings of dynamic skin of component itself
+	pSkinState->RemoveAllRenderables();
+	if( pSkin && pDynamicSkin ){
+		pSkinState->AddRenderables( *pSkin, *pDynamicSkin );
+	}
+	
+	pDirtyUseTexture = true;
+	
+	InvalidateParamBlocks();
+	MarkTUCsDirty();
+	
+	pRequiresPrepareForRender();
+}
+
+
+
+
+// Private Functions
+//////////////////////
+
+// #include <dragengine/common/utils/decTimer.h>
+void deoglRDecal::pCreateMeshComponent(){
+	if( pVBOBlock ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	if( ! pParentComponent->GetModel() ){
+		return;
+	}
+	
+	decTimer timer;
+	deoglDecalMeshBuilder meshBuilder( pRenderThread );
+	meshBuilder.Init( *this, pSize.z );
+	meshBuilder.BuildMeshForComponent( *pParentComponent );
+// 	pRenderThread.GetLogger().LogInfoFormat( "deoglDecalMeshBuilder: decal=%p(%f,%f,%f) build=%.3fms",
+// 		this, pPosition.x, pPosition.y, pPosition.z, timer.GetElapsedTime()*1e3f );
+// 	meshBuilder.Debug();
+	
+	const int faceCount = meshBuilder.GetFaceCount();
+	pPointCount = faceCount * 3;
+	if( pPointCount == 0 ){
+		return;
+	}
+	
+	// copy mesh and project uvs
+	deoglSharedVBOList &svbolist = pRenderThread.GetBufferObject()
+		.GetSharedVBOListForType( deoglRTBufferObject::esvbolStaticModel );
+	
+	if( pPointCount > svbolist.GetMaxPointCount() ){
+		pRenderThread.GetLogger().LogInfoFormat(
+			"Decal: Too many points (%i) to fit into shared VBOs. "
+			"Using over-sized VBO (performance not optimal).", pPointCount );
+	}
+	
+	pVBOBlock = svbolist.AddData( pPointCount );
+	pVBOBlock->GetVBO()->GetVAO()->EnsureRTSVAO();
+	
+	// get decal matrix and projection axis
+	const decMatrix decalMatrix( decMatrix::CreateWorld( pPosition, pOrientation ) );
+	const decMatrix inverseDecalMatrix( decalMatrix.Invert() );
+	
+	/*
+	// get texture coordinates
+	const decVector2 tcs[ 4 ] = { { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f } };
+	
+	// calculate vertices
+	decVector halfSize( pSize * 0.5f );
+	const decVector vertices[ 4 ] = {
+		decalMatrix * decVector(  halfSize.x,  halfSize.y, 0.0f ),
+		decalMatrix * decVector( -halfSize.x,  halfSize.y, 0.0f ),
+		decalMatrix * decVector( -halfSize.x, -halfSize.y, 0.0f ),
+		decalMatrix * decVector(  halfSize.x, -halfSize.y, 0.0f ) };
+	
+	// calculate decal normal and tangent
+	const decVector edges[ 2 ] = { vertices[ 1 ] - vertices[ 0 ], vertices[ 2 ] - vertices[ 1 ] };
+	const float d1v = tcs[ 1 ].y - tcs[ 0 ].y;
+	const float d2v = tcs[ 2 ].y - tcs[ 0 ].y;
+	
+	const decVector decalTangent( decVector(
+		edges[ 0 ].x * d2v - edges[ 1 ].x * d1v,
+		edges[ 0 ].y * d2v - edges[ 1 ].y * d1v,
+		edges[ 0 ].z * d2v - edges[ 1 ].z * d1v ).Normalized() );
+	*/
+	const decVector decalTangent( -decalMatrix.TransformRight().Normalized() );
+	
+	// write data
+	deoglVBOWriterModel writerVBO( pRenderThread );
+	
+	writerVBO.Reset( pVBOBlock );
+	
+	const float invHalfSizeX = 1.0f / pSize.x;
+	const float intHalfSizeY = 1.0f / pSize.y;
+	int i;
+	
+	for( i=0; i<faceCount; i++ ){
+		const deoglDecalMeshBuilderFace &face = *meshBuilder.GetFaceAt( i );
+		const decVector &normal = face.GetFaceNormal();
+		const decVector &vertex1 = meshBuilder.GetPointAt( face.GetPoint3() );
+		const decVector &vertex2 = meshBuilder.GetPointAt( face.GetPoint2() );
+		const decVector &vertex3 = meshBuilder.GetPointAt( face.GetPoint1() );
+		
+		const decVector backProject1( inverseDecalMatrix * vertex1 );
+		writerVBO.WritePoint( vertex1, normal, decalTangent, false,
+			decVector2( 0.5f - backProject1.x * invHalfSizeX, 0.5f - backProject1.y * intHalfSizeY ),
+			normal );
+		
+		const decVector backProject2( inverseDecalMatrix * vertex2 );
+		writerVBO.WritePoint( vertex2, normal, decalTangent, false,
+			decVector2( 0.5f - backProject2.x * invHalfSizeX, 0.5f - backProject2.y * intHalfSizeY ),
+			normal );
+		
+		const decVector backProject3( inverseDecalMatrix * vertex3 );
+		writerVBO.WritePoint( vertex3, normal, decalTangent, false,
+			decVector2( 0.5f - backProject3.x * invHalfSizeX, 0.5f - backProject3.y * intHalfSizeY ),
+			normal );
+	}
+// 	pRenderThread.GetLogger().LogInfoFormat( "deoglDecalMeshBuilder: decal=%p(%f,%f,%f) vbo=%.3fms",
+// 		this, pPosition.x, pPosition.y, pPosition.z, timer.GetElapsedTime()*1e3f );
+}
+
+void deoglRDecal::pPrepareVBO(){
+	if( ! pDirtyVBO ){
+		return;
+	}
+	
+	if( pVBOBlock ){
+		pVBOBlock->GetVBO()->RemoveBlock( pVBOBlock );
+		pVBOBlock->FreeReference();
+		pVBOBlock = NULL;
+	}
+	
+	if( pParentComponent ){
+		pCreateMeshComponent();
+		pUpdateRTSInstance();
+	}
+	
+	pDirtyVBO = false;
+}
+
+void deoglRDecal::pUpdateUseSkin(){
 	if( ! pDirtyUseTexture ){
 		return;
 	}
@@ -424,115 +683,59 @@ void deoglRDecal::UpdateUseSkin(){
 	pDirtyUseTexture = false;
 }
 
-void deoglRDecal::UpdateSkinState(){
-	// NOTE this is called from the main thread during synchronization
-	
-	bool changed = false;
-	
-	if( pSkin && ( pDynamicSkin || ( pParentComponent && pParentComponent->GetDynamicSkin() ) ) ){
-		if( ! pSkinState ){
-			pSkinState = new deoglSkinState( pRenderThread, *this );
-			changed = true;
-		}
-		
-	}else{
-		if( pSkinState ){
-			SetSkinState( NULL );
-			changed = true;
-		}
-	}
-	
-	if( changed ){
-		pDirtyUseTexture = true;
-		pDirtyRenderables = true;
-		
-		InvalidateParamBlocks();
-		MarkTUCsDirty();
-	}
-}
-
-
-
-void deoglRDecal::SetParentComponent( deoglRComponent *component ){
-	// NOTE this is called from the main thread during synchronization
-	if( component == pParentComponent ){
+void deoglRDecal::pPrepareTUCs(){
+	if( ! pDirtyTUCs ){
 		return;
 	}
 	
-	pParentComponent = component;
-	SetDirtyVBO();
-	
-	SetSkinState( NULL ); // required since UpdateSkinState can not figure out dynamic skin changed
-	UpdateSkinState();
-}
-
-void deoglRDecal::SetComponentMarkedRemove( bool marked ){
-	pComponentMarkedRemove = marked;
-}
-
-
-
-deoglSPBlockUBO *deoglRDecal::GetParamBlockFor( deoglSkinTexture::eShaderTypes shaderType ){
-	switch( shaderType ){
-	case deoglSkinTexture::estDecalGeometry:
-		return GetParamBlockGeometry();
-		
-	case deoglSkinTexture::estDecalEnvMap:
-		return GetParamBlockEnvMap();
-		
-	default:
-		DETHROW( deeInvalidParam );
+	// geometry
+	if( pTUCGeometry ){
+		pTUCGeometry->RemoveUsage();
+		pTUCGeometry = NULL;
 	}
-}
-
-deoglSPBlockUBO *deoglRDecal::GetParamBlockGeometry(){
-	if( ! pValidParamBlockGeometry ){
-		if( pParamBlockGeometry ){
-			pParamBlockGeometry->FreeReference();
-			pParamBlockGeometry = NULL;
-		}
+	pTUCGeometry = BareGetTUCFor( deoglSkinTexture::estDecalGeometry );
+	
+	// shadow
+	if( pTUCShadow ){
+		pTUCShadow->RemoveUsage();
+		pTUCShadow = NULL;
+	}
+	pTUCShadow = BareGetTUCFor( deoglSkinTexture::estComponentShadowProjection );
+	
+	// envmap
+	if( pTUCEnvMap ){
+		pTUCEnvMap->RemoveUsage();
+		pTUCEnvMap = NULL;
+	}
+	
+	if( pUseSkinTexture ){
+		deoglTexUnitConfig unit[ 8 ];
 		
-		if( pUseSkinTexture ){
-			deoglSkinShader &skinShader = *pUseSkinTexture->GetShaderFor( deoglSkinTexture::estDecalGeometry );
+		if( pUseSkinTexture->GetVariationU() || pUseSkinTexture->GetVariationV() ){
+			unit[ 0 ].EnableArrayTextureFromChannel( pRenderThread, *pUseSkinTexture, deoglSkinChannel::ectColor,
+				NULL, NULL, pRenderThread.GetDefaultTextures().GetColorArray() );
 			
-			if( deoglSkinShader::USE_SHARED_SPB ){
-				pParamBlockGeometry = new deoglSPBlockUBO(
-					*pRenderThread.GetBufferObject().GetLayoutSkinInstanceUBO() );
-				
-			}else{
-				pParamBlockGeometry = skinShader.CreateSPBInstParam();
-			}
+			unit[ 1 ].EnableArrayTextureFromChannel( pRenderThread, *pUseSkinTexture, deoglSkinChannel::ectEmissivity,
+				NULL, NULL, pRenderThread.GetDefaultTextures().GetEmissivityArray() );
+			
+		}else{
+			unit[ 0 ].EnableTextureFromChannel( pRenderThread, *pUseSkinTexture, deoglSkinChannel::ectColor,
+				NULL, NULL, pRenderThread.GetDefaultTextures().GetColor() );
+			
+			unit[ 1 ].EnableTextureFromChannel( pRenderThread, *pUseSkinTexture, deoglSkinChannel::ectEmissivity,
+				NULL, NULL, pRenderThread.GetDefaultTextures().GetEmissivity() );
 		}
 		
-		pValidParamBlockGeometry = true;
-		pDirtyParamBlockGeometry = true;
+		pTUCEnvMap = pRenderThread.GetShader().GetTexUnitsConfigList().GetWith( &unit[ 0 ], 2,
+			pUseSkinTexture->GetSharedSPBElement()->GetSPB().GetParameterBlock() );
+		pTUCEnvMap->EnsureRTSTexture();
 	}
 	
-	if( pDirtyParamBlockGeometry ){
-		if( pParamBlockGeometry ){
-			pParamBlockGeometry->MapBuffer();
-			try{
-				UpdateInstanceParamBlock( *pParamBlockGeometry, 0,
-					*pUseSkinTexture->GetShaderFor( deoglSkinTexture::estDecalGeometry ) );
-				
-			}catch( const deException & ){
-				pParamBlockGeometry->UnmapBuffer();
-				throw;
-			}
-			pParamBlockGeometry->UnmapBuffer();
-		}
-		
-		pDirtyParamBlockGeometry = false;
-	}
-	
-	return pParamBlockGeometry;
+	// finished
+	pDirtyTUCs = false;
 }
 
-deoglSPBlockUBO *deoglRDecal::GetParamBlockEnvMap(){
-	return NULL;
-}
-
-deoglSharedSPBElement *deoglRDecal::GetSharedSPBElement(){
+void deoglRDecal::pPrepareParamBlocks(){
 	if( ! pSharedSPBElement ){
 		if( pRenderThread.GetChoices().GetSharedSPBUseSSBO() ){
 			pSharedSPBElement = pRenderThread.GetBufferObject().GetSharedSPBList(
@@ -542,6 +745,10 @@ deoglSharedSPBElement *deoglRDecal::GetSharedSPBElement(){
 			pSharedSPBElement = pRenderThread.GetBufferObject().GetSharedSPBList(
 				deoglRTBufferObject::esspblSkinInstanceUBO ).AddElement();
 		}
+		
+		pRTSInstance = pRenderThread.GetRenderTaskSharedPool().GetInstance();
+		pRTSInstance->SetSubInstanceSPB( &pSharedSPBElement->GetSPB() );
+		pUpdateRTSInstance();
 	}
 	
 	if( pDirtySharedSPBElement ){
@@ -554,7 +761,7 @@ deoglSharedSPBElement *deoglRDecal::GetSharedSPBElement(){
 			// update parameter block area belonging to this element
 			deoglShaderParameterBlock &paramBlock = pSharedSPBElement->MapBuffer();
 			try{
-				UpdateInstanceParamBlock( paramBlock, pSharedSPBElement->GetIndex(), skinShader );
+				pUpdateInstanceParamBlock( paramBlock, pSharedSPBElement->GetIndex(), skinShader );
 				
 			}catch( const deException & ){
 				paramBlock.UnmapBuffer();
@@ -565,138 +772,33 @@ deoglSharedSPBElement *deoglRDecal::GetSharedSPBElement(){
 		
 		pDirtySharedSPBElement = false;
 	}
-	
-	return pSharedSPBElement;
 }
 
-deoglTexUnitsConfig *deoglRDecal::GetTUCForShaderType( deoglSkinTexture::eShaderTypes shaderType ){
-	switch( shaderType ){
-	case deoglSkinTexture::estDecalGeometry:
-		return GetTUCGeometry();
-		
-	case deoglSkinTexture::estDecalEnvMap:
-		return GetTUCEnvMap();
-		
-	default:
-		DETHROW( deeInvalidParam );
+void deoglRDecal::pPrepareSkinStateRenderables( const deoglRenderPlanMasked *renderPlanMask ){
+	if( ! pDirtyPrepareSkinStateRenderables ){
+		return;
+	}
+	
+	pDirtyPrepareSkinStateRenderables = false;
+	
+	if( pSkinState ){
+		pSkinState->PrepareRenderables( pSkin, pDynamicSkin, renderPlanMask );
 	}
 }
 
-deoglTexUnitsConfig *deoglRDecal::GetTUCGeometry(){
-	if( pDirtyTUCGeometry ){
-		if( pTUCGeometry ){
-			pTUCGeometry->RemoveUsage();
-			pTUCGeometry = NULL;
-		}
-		
-		pTUCGeometry = BareGetTUCFor( deoglSkinTexture::estDecalGeometry );
-		
-		pDirtyTUCGeometry = false;
+void deoglRDecal::pUpdateRTSInstance(){
+	if( ! pRTSInstance || ! pVBOBlock ){
+		return;
 	}
 	
-	return pTUCGeometry;
-}
-
-deoglTexUnitsConfig *deoglRDecal::GetTUCShadow(){
-	if( pDirtyTUCShadow ){
-		if( pTUCShadow ){
-			pTUCShadow->RemoveUsage();
-			pTUCShadow = NULL;
-		}
-		
-		pTUCShadow = BareGetTUCFor( deoglSkinTexture::estComponentShadowProjection );
-		
-		pDirtyTUCShadow = false;
-	}
+	pRTSInstance->SetFirstPoint( pVBOBlock->GetOffset() );
+	pRTSInstance->SetPointCount( pPointCount );
+	pRTSInstance->SetDoubleSided( true );
 	
-	return pTUCShadow;
 }
 
-deoglTexUnitsConfig *deoglRDecal::GetTUCEnvMap(){
-	if( pDirtyTUCEnvMap ){
-		UpdateUseSkin();
-		
-		if( pTUCEnvMap ){
-			pTUCEnvMap->RemoveUsage();
-			pTUCEnvMap = NULL;
-		}
-		
-		if( pUseSkinTexture ){
-			deoglTexUnitConfig unit[ 8 ];
-			
-			if( pUseSkinTexture->GetVariationU() || pUseSkinTexture->GetVariationV() ){
-				unit[ 0 ].EnableArrayTextureFromChannel( pRenderThread, *pUseSkinTexture, deoglSkinChannel::ectColor,
-					NULL, NULL, pRenderThread.GetDefaultTextures().GetColorArray() );
-				
-				unit[ 1 ].EnableArrayTextureFromChannel( pRenderThread, *pUseSkinTexture, deoglSkinChannel::ectEmissivity,
-					NULL, NULL, pRenderThread.GetDefaultTextures().GetEmissivityArray() );
-				
-			}else{
-				unit[ 0 ].EnableTextureFromChannel( pRenderThread, *pUseSkinTexture, deoglSkinChannel::ectColor,
-					NULL, NULL, pRenderThread.GetDefaultTextures().GetColor() );
-				
-				unit[ 1 ].EnableTextureFromChannel( pRenderThread, *pUseSkinTexture, deoglSkinChannel::ectEmissivity,
-					NULL, NULL, pRenderThread.GetDefaultTextures().GetEmissivity() );
-			}
-			
-			pTUCEnvMap = pRenderThread.GetShader().GetTexUnitsConfigList().GetWith( &unit[ 0 ], 2 );
-		}
-		
-		pDirtyTUCEnvMap = false;
-	}
-	
-	return pTUCEnvMap;
-}
-
-deoglTexUnitsConfig *deoglRDecal::BareGetTUCFor( deoglSkinTexture::eShaderTypes shaderType ){
-	deoglTexUnitsConfig *tuc = NULL;
-	
-	UpdateUseSkin();
-	
-	if( pUseSkinTexture ){
-		deoglTexUnitConfig units[ deoglSkinShader::ETT_COUNT ];
-		deoglEnvironmentMap *envmapSky = NULL;
-		
-		if( pParentComponent ){
-			envmapSky = pParentComponent->GetParentWorld()->GetSkyEnvironmentMap();
-		}
-		
-		deoglSkinShader &skinShader = *pUseSkinTexture->GetShaderFor( shaderType );
-		
-		if( skinShader.GetUsedTextureTargetCount() > 0 ){
-			skinShader.SetTUCCommon( &units[ 0 ], *pUseSkinTexture, pUseSkinState, pUseDynamicSkin );
-			skinShader.SetTUCPerObjectEnvMap( &units[ 0 ], envmapSky,
-				pParentComponent->GetRenderEnvMap(), pParentComponent->GetRenderEnvMapFade() );
-			tuc = pRenderThread.GetShader().GetTexUnitsConfigList().GetWith(
-				&units[ 0 ], skinShader.GetUsedTextureTargetCount() );
-		}
-	}
-	
-	return tuc;
-}
-
-void deoglRDecal::InvalidateParamBlocks(){
-	pValidParamBlockGeometry = false;
-	pValidParamBlockEnvMap = false;
-	
-	MarkParamBlocksDirty();
-}
-
-void deoglRDecal::MarkParamBlocksDirty(){
-	pDirtyParamBlockGeometry = true;
-	pDirtyParamBlockEnvMap = true;
-	pDirtySharedSPBElement = true;
-}
-
-void deoglRDecal::MarkTUCsDirty(){
-	pDirtyTUCGeometry = true;
-	pDirtyTUCShadow = true;
-	pDirtyTUCEnvMap = true;
-}
-
-void deoglRDecal::UpdateInstanceParamBlock( deoglShaderParameterBlock &paramBlock,
+void deoglRDecal::pUpdateInstanceParamBlock( deoglShaderParameterBlock &paramBlock,
 int element, deoglSkinShader &skinShader ){
-	UpdateUseSkin();
 	if( ! pUseSkinTexture ){
 		return;
 	}
@@ -763,144 +865,15 @@ int element, deoglSkinShader &skinShader ){
 		}
 	}
 	
+	skinShader.SetTexParamsInInstParamSPB( paramBlock, element, *pUseSkinTexture );
+	
 	// per texture dynamic texture properties
 	skinShader.SetDynTexParamsInInstParamSPB( paramBlock, element,
 		*pUseSkinTexture, pUseSkinState, pUseDynamicSkin );
 }
 
-
-
-void deoglRDecal::PrepareQuickDispose(){
-	pParentComponent = NULL;
-}
-
-
-
-// Private Functions
-//////////////////////
-
-void deoglRDecal::pUpdateRenderables(){
-	// NOTE only called if pSkinState is not NULL
-	
-	// check if dynamic skin internal state changed
-	deoglRDynamicSkin &dynamicSkin = *( pDynamicSkin ? pDynamicSkin : pParentComponent->GetDynamicSkin() );
-	const int updateNumber = dynamicSkin.Update();
-	if( updateNumber != pSkinState->GetUpdateNumber() ){
-		pSkinState->SetUpdateNumber( updateNumber );
-		pDirtyRenderables = true;
+void deoglRDecal::pRequiresPrepareForRender(){
+	if( pParentComponent ){
+		pParentComponent->DecalRequiresPrepareForRender();
 	}
-	
-	// update renderable mappings in the dynamic skins
-	if( pDirtyRenderables ){
-		pSkinState->RemoveAllRenderables();
-		if( pUseSkin && pUseDynamicSkin ){
-			pSkinState->AddRenderables( *pUseSkin, *pUseDynamicSkin );
-		}
-		
-		pDirtyUseTexture = true;
-		
-		InvalidateParamBlocks();
-		MarkTUCsDirty();
-		
-		pDirtyRenderables = false;
-	}
-}
-
-// #include <dragengine/common/utils/decTimer.h>
-void deoglRDecal::pCreateMeshComponent(){
-	if( pVBOBlock ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	if( ! pParentComponent->GetModel() ){
-		return;
-	}
-	
-	decTimer timer;
-	deoglDecalMeshBuilder meshBuilder( pRenderThread );
-	meshBuilder.Init( *this, pSize.z );
-	meshBuilder.BuildMeshForComponent( *pParentComponent );
-// 	pRenderThread.GetLogger().LogInfoFormat( "deoglDecalMeshBuilder: decal=%p(%f,%f,%f) build=%.3fms",
-// 		this, pPosition.x, pPosition.y, pPosition.z, timer.GetElapsedTime()*1e3f );
-// 	meshBuilder.Debug();
-	
-	const int faceCount = meshBuilder.GetFaceCount();
-	pPointCount = faceCount * 3;
-	if( pPointCount == 0 ){
-		return;
-	}
-	
-	// copy mesh and project uvs
-	deoglSharedVBOList &svbolist = pRenderThread.GetBufferObject()
-		.GetSharedVBOListForType( deoglRTBufferObject::esvbolStaticModel );
-	
-	if( pPointCount > svbolist.GetMaxPointCount() ){
-		pRenderThread.GetLogger().LogInfoFormat(
-			"Decal: Too many points (%i) to fit into shared VBOs. "
-			"Using over-sized VBO (performance not optimal).", pPointCount );
-	}
-	
-	pVBOBlock = svbolist.AddData( pPointCount );
-	
-	// get decal matrix and projection axis
-	const decMatrix decalMatrix( decMatrix::CreateWorld( pPosition, pOrientation ) );
-	const decMatrix inverseDecalMatrix( decalMatrix.Invert() );
-	
-	/*
-	// get texture coordinates
-	const decVector2 tcs[ 4 ] = { { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f } };
-	
-	// calculate vertices
-	decVector halfSize( pSize * 0.5f );
-	const decVector vertices[ 4 ] = {
-		decalMatrix * decVector(  halfSize.x,  halfSize.y, 0.0f ),
-		decalMatrix * decVector( -halfSize.x,  halfSize.y, 0.0f ),
-		decalMatrix * decVector( -halfSize.x, -halfSize.y, 0.0f ),
-		decalMatrix * decVector(  halfSize.x, -halfSize.y, 0.0f ) };
-	
-	// calculate decal normal and tangent
-	const decVector edges[ 2 ] = { vertices[ 1 ] - vertices[ 0 ], vertices[ 2 ] - vertices[ 1 ] };
-	const float d1v = tcs[ 1 ].y - tcs[ 0 ].y;
-	const float d2v = tcs[ 2 ].y - tcs[ 0 ].y;
-	
-	const decVector decalTangent( decVector(
-		edges[ 0 ].x * d2v - edges[ 1 ].x * d1v,
-		edges[ 0 ].y * d2v - edges[ 1 ].y * d1v,
-		edges[ 0 ].z * d2v - edges[ 1 ].z * d1v ).Normalized() );
-	*/
-	const decVector decalTangent( -decalMatrix.TransformRight().Normalized() );
-	
-	// write data
-	deoglVBOWriterModel writerVBO( pRenderThread );
-	
-	writerVBO.Reset( pVBOBlock );
-	
-	const float invHalfSizeX = 1.0f / pSize.x;
-	const float intHalfSizeY = 1.0f / pSize.y;
-	int i;
-	
-	for( i=0; i<faceCount; i++ ){
-		const deoglDecalMeshBuilderFace &face = *meshBuilder.GetFaceAt( i );
-		const decVector &normal = face.GetFaceNormal();
-		const decVector &vertex1 = meshBuilder.GetPointAt( face.GetPoint3() );
-		const decVector &vertex2 = meshBuilder.GetPointAt( face.GetPoint2() );
-		const decVector &vertex3 = meshBuilder.GetPointAt( face.GetPoint1() );
-		
-		const decVector backProject1( inverseDecalMatrix * vertex1 );
-		writerVBO.WritePoint( vertex1, normal, decalTangent, false,
-			decVector2( 0.5f - backProject1.x * invHalfSizeX, 0.5f - backProject1.y * intHalfSizeY ),
-			normal );
-		
-		const decVector backProject2( inverseDecalMatrix * vertex2 );
-		writerVBO.WritePoint( vertex2, normal, decalTangent, false,
-			decVector2( 0.5f - backProject2.x * invHalfSizeX, 0.5f - backProject2.y * intHalfSizeY ),
-			normal );
-		
-		const decVector backProject3( inverseDecalMatrix * vertex3 );
-		writerVBO.WritePoint( vertex3, normal, decalTangent, false,
-			decVector2( 0.5f - backProject3.x * invHalfSizeX, 0.5f - backProject3.y * intHalfSizeY ),
-			normal );
-	}
-// 	pRenderThread.GetLogger().LogInfoFormat( "deoglDecalMeshBuilder: decal=%p(%f,%f,%f) vbo=%.3fms",
-// 		this, pPosition.x, pPosition.y, pPosition.z, timer.GetElapsedTime()*1e3f );
 }

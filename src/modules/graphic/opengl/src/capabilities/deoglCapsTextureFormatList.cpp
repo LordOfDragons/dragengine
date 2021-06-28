@@ -77,7 +77,7 @@ const deoglCapsTextureFormat *deoglCapsTextureFormatList::GetFormatWith( GLint f
 }
 
 void deoglCapsTextureFormatList::AddFormat( GLint format, GLenum pixelFormat, GLenum pixelType,
-int bitsPerPixel, bool isDepth, bool isDepthFloat, bool isCompressed, const char *name ){
+int bitsPerPixel, bool isDepth, bool isDepthFloat, bool isStencil, bool isCompressed, const char *name ){
 	if( pFormatCount == pFormatSize ){
 		const int newSize = pFormatSize * 3 / 2 + 1;
 		deoglCapsTextureFormat ** const newArray = new deoglCapsTextureFormat*[ newSize ];
@@ -92,6 +92,6 @@ int bitsPerPixel, bool isDepth, bool isDepthFloat, bool isCompressed, const char
 	}
 	
 	pFormats[ pFormatCount ] = new deoglCapsTextureFormat( format, pixelFormat, pixelType,
-		bitsPerPixel, isDepth, isDepthFloat, isCompressed, name );
+		bitsPerPixel, isDepth, isDepthFloat, isStencil, isCompressed, name );
 	pFormatCount++;
 }

@@ -42,6 +42,7 @@ public:
 		euscpVertexDepth,
 		euscpVertexParticle,
 		euscpVertexPassThrough,
+		euscpVertexGIMaterialMap,
 		
 		euscpGeometryGeometry,
 		euscpGeometryDepth,
@@ -56,6 +57,7 @@ public:
 		
 		euscpFragmentGeometry,
 		euscpFragmentDepth,
+		euscpFragmentGIMaterialMap,
 		
 		EUSCP_COUNT
 	};

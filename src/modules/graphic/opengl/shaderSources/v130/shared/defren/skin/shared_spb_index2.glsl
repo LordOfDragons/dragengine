@@ -20,14 +20,14 @@
 
 #ifdef SHARED_SPB
 	int spbIndex;
-	#ifdef GS_RENDER_CUBE
+	#if defined GS_RENDER_CUBE || defined GS_RENDER_CASCADED
 	int spbFlags;
 	#endif
 	
 	{ // scoping to drop temporary variables freeing registers
 	int _spbIndexIndex = pSPBInstanceIndexBase + gl_InstanceID;
 	
-	#ifdef GS_RENDER_CUBE
+	#if defined GS_RENDER_CUBE || defined GS_RENDER_CASCADED
 		ivec2 _spbIndexCoord = ivec2( _spbIndexIndex / 2, ( _spbIndexIndex % 2 ) * 2 );
 		//int spbIndex = pSPBInstanceIndex[ _spbIndexCoord.x ][ _spbIndexCoord.y ];
 		//int spbFlags = pSPBInstanceIndex[ _spbIndexCoord.x ][ _spbIndexCoord.y + 1 ];
@@ -44,7 +44,7 @@
 	
 #else
 	#define spbIndex 0
-	#ifdef GS_RENDER_CUBE
+	#if defined GS_RENDER_CUBE || defined GS_RENDER_CASCADED
 		#define spbFlags 0
 	#endif
 #endif

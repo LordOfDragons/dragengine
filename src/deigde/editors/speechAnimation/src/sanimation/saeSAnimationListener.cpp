@@ -40,45 +40,48 @@ saeSAnimationListener::~saeSAnimationListener(){
 // Notifications
 //////////////////
 
-void saeSAnimationListener::StateChanged( saeSAnimation *sanimation ){
+void saeSAnimationListener::StateChanged( saeSAnimation* ){
 }
 
-void saeSAnimationListener::UndoChanged( saeSAnimation *sanimation ){
+void saeSAnimationListener::UndoChanged( saeSAnimation* ){
 }
 
-void saeSAnimationListener::ViewChanged( saeSAnimation *sanimation ){
+void saeSAnimationListener::ViewChanged( saeSAnimation* ){
 }
 
-void saeSAnimationListener::SAnimationChanged( saeSAnimation *sanimation ){
+void saeSAnimationListener::SAnimationChanged( saeSAnimation* ){
 }
 
-void saeSAnimationListener::ModelChanged( saeSAnimation *sanimation ){
+void saeSAnimationListener::ModelChanged( saeSAnimation* ){
 }
 
-void saeSAnimationListener::SkyChanged( saeSAnimation *sanimation ){
+void saeSAnimationListener::SkyChanged( saeSAnimation* ){
 }
 
-void saeSAnimationListener::CameraChanged( saeSAnimation *sanimation ){
-}
-
-
-
-void saeSAnimationListener::PhonemeStructureChanged( saeSAnimation *sanimation ){
-}
-
-void saeSAnimationListener::ActivePhonemeChanged( saeSAnimation *sanimation ){
-}
-
-void saeSAnimationListener::PhonemeChanged( saeSAnimation *sanimation, saePhoneme *phoneme ){
+void saeSAnimationListener::CameraChanged( saeSAnimation* ){
 }
 
 
 
-void saeSAnimationListener::WordStructureChanged( saeSAnimation *sanimation ){
+void saeSAnimationListener::PhonemeStructureChanged( saeSAnimation* ){
 }
 
-void saeSAnimationListener::ActiveWordChanged( saeSAnimation *sanimation ){
+void saeSAnimationListener::ActivePhonemeChanged( saeSAnimation* ){
 }
 
-void saeSAnimationListener::WordChanged( saeSAnimation *sanimation, saeWord *word ){
+void saeSAnimationListener::PhonemeChanged( saeSAnimation*, saePhoneme* ){
+}
+
+
+
+void saeSAnimationListener::WordStructureChanged( saeSAnimation* ){
+}
+
+void saeSAnimationListener::WordNameChanged( saeSAnimation*, saeWord* ){
+}
+
+void saeSAnimationListener::ActiveWordChanged( saeSAnimation* ){
+}
+
+void saeSAnimationListener::WordChanged( saeSAnimation*, saeWord* ){
 }

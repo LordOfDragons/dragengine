@@ -396,8 +396,8 @@ class ECBehaviorInventory extends DefaultECBehavior
 	 * of type ECBehaviorComponent.
 	 */
 	static public func ECBehaviorInventory getBehaviorIn( BehaviorElementClass eclass )
-		return eclass.findBehavior( block ECBehavior each
-			return each castable ECBehaviorInventory
+		return eclass.findBehavior( block ECBehaviorInventory each
+			return true
 		end ) cast ECBehaviorInventory
 	end
 	
@@ -409,8 +409,7 @@ class ECBehaviorInventory extends DefaultECBehavior
 	 */
 	static public func ECBehaviorInventory getBehaviorIn( BehaviorElementClass eclass, String id )
 		return eclass.findBehavior( block ECBehaviorInventory each
-			return each castable ECBehaviorInventory and \
-				( each cast ECBehaviorInventory ).getID().equals( id )
+			return each.getID().equals( id )
 		end ) cast ECBehaviorInventory
 	end
 	
@@ -421,13 +420,9 @@ class ECBehaviorInventory extends DefaultECBehavior
 	 * been created in the element.
 	 */
 	static public func Array getAllBehaviorsIn( BehaviorElementClass eclass )
-		var Array list = Array.new()
-		eclass.forEachBehavior( block ECBehavior each
-			if each castable ECBehaviorInventory
-				list.add( each )
-			end
+		return eclass.collectBehaviors( block ECBehaviorInventory each
+			return true
 		end )
-		return list
 	end
 	
 	
@@ -440,8 +435,8 @@ class ECBehaviorInventory extends DefaultECBehavior
 	 * the first instance.
 	 */
 	static public func Instance getInstanceIn( BehaviorElement element )
-		return element.findInstance( block ECBehaviorInstance each
-			return each castable Instance
+		return element.findInstance( block Instance each
+			return true
 		end ) cast Instance
 	end
 	
@@ -452,9 +447,8 @@ class ECBehaviorInventory extends DefaultECBehavior
 	 * of type ECBehaviorInventory.Instance with specific identifier.
 	 */
 	static public func Instance getInstanceIn( BehaviorElement element, String id )
-		return element.findInstance( block ECBehaviorInstance each
-			return each castable Instance and \
-				( each cast Instance ).getECBehavior().getID().equals( id )
+		return element.findInstance( block Instance each
+			return each.getECBehavior().getID().equals( id )
 		end ) cast Instance
 	end
 	
@@ -465,13 +459,9 @@ class ECBehaviorInventory extends DefaultECBehavior
 	 * been created in the element.
 	 */
 	static public func Array getAllInstancesIn( BehaviorElement element )
-		var Array list = Array.new()
-		element.forEachInstance( block ECBehaviorInstance each
-			if each castable Instance
-				list.add( each )
-			end
+		return element.collectInstances( block Instance each
+			return true
 		end )
-		return list
 	end
 	
 	

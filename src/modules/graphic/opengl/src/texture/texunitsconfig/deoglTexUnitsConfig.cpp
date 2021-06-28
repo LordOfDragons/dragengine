@@ -28,16 +28,21 @@
 #include "../deoglTextureStageManager.h"
 #include "../cubemap/deoglCubeMap.h"
 #include "../texture2d/deoglTexture.h"
+#include "../../gi/deoglGI.h"
+#include "../../gi/deoglGIMaterials.h"
 #include "../../rendering/defren/deoglDeferredRendering.h"
 #include "../../rendering/plan/deoglRenderPlan.h"
 #include "../../rendering/deoglRenderReflection.h"
 #include "../../configuration/deoglConfiguration.h"
 #include "../../envmap/deoglEnvironmentMap.h"
+#include "../../rendering/task/shared/deoglRenderTaskSharedPool.h"
+#include "../../rendering/task/shared/deoglRenderTaskSharedTexture.h"
 #include "../../renderthread/deoglRenderThread.h"
 #include "../../renderthread/deoglRTRenderers.h"
 #include "../../renderthread/deoglRTTexture.h"
 #include "../../renderthread/deoglRTShader.h"
 #include "../../renderthread/deoglRTDefaultTextures.h"
+#include "../../renderthread/deoglRTUniqueKey.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -53,18 +58,28 @@ deoglTexUnitsConfig::deoglTexUnitsConfig( deoglRenderThread &renderThread ) :
 pRenderThread( renderThread ),
 pUnits( NULL ),
 pUnitCount( 0 ),
-pRenderTaskTrackingNumber( 0 ),
-pRenderTaskTUCIndex( 0 ),
+pParamBlock( NULL ),
+pMaterialIndex( -1 ),
+pMaterialUsageCount( 0 ),
 pUsageCount( 1 ),
-pHashCode( 0 ),
+pUnitsHashCode( 0 ),
+pUniqueKey( renderThread.GetUniqueKey().Get() ),
+pRTSTexture( NULL ),
 pLLPrev( NULL ),
 pLLNext( NULL ){
 }
 
 deoglTexUnitsConfig::~deoglTexUnitsConfig(){
+	if( pRTSTexture ){
+		pRenderThread.GetRenderTaskSharedPool().ReturnTexture( pRTSTexture );
+	}
+	
 	if( pUnits ){
 		delete [] pUnits;
 	}
+	
+	pRenderThread.GetUniqueKey().Return( pUniqueKey );
+	
 }
 
 
@@ -106,9 +121,13 @@ void deoglTexUnitsConfig::SetUnits( const deoglTexUnitConfig *units, int unitCou
 	}
 }
 
+void deoglTexUnitsConfig::SetParameterBlock( deoglShaderParameterBlock *paramBlock ){
+	pParamBlock = paramBlock;
+}
 
 
-void deoglTexUnitsConfig::Apply(){
+
+void deoglTexUnitsConfig::Apply() const{
 	//deoglTextureStageManager &tsmgr = pRenderThread.GetTexture().GetStages();
 	//tsmgr.DisableStagesAbove( pUnitCount - 1 );
 	
@@ -120,18 +139,25 @@ void deoglTexUnitsConfig::Apply(){
 
 
 
-void deoglTexUnitsConfig::SetRenderTaskTrackingNumber( unsigned int trackingNumber ){
-	pRenderTaskTrackingNumber = trackingNumber;
+void deoglTexUnitsConfig::SetMaterialIndex( int index ){
+	pMaterialIndex = index;
 }
 
-void deoglTexUnitsConfig::SetRenderTaskTUCIndex( int tucIndex ){
-	pRenderTaskTUCIndex = tucIndex;
+void deoglTexUnitsConfig::AddMaterialUsage(){
+	pMaterialUsageCount++;
+}
+
+void deoglTexUnitsConfig::RemoveMaterialUsage(){
+	if( pMaterialUsageCount == 0 ){
+		DETHROW( deeInvalidParam );
+	}
+	pMaterialUsageCount--;
 }
 
 
 
 bool deoglTexUnitsConfig::Equals( const deoglTexUnitsConfig &tuc ) const{
-	if( pHashCode != tuc.pHashCode || pUnitCount != tuc.pUnitCount ){
+	if( pUnitsHashCode != tuc.pUnitsHashCode || pUnitCount != tuc.pUnitCount ){
 		return false;
 	}
 	
@@ -146,17 +172,17 @@ bool deoglTexUnitsConfig::Equals( const deoglTexUnitsConfig &tuc ) const{
 	return true;
 }
 
-bool deoglTexUnitsConfig::Equals( const deoglTexUnitConfig *units, int unitCount ) const{
+bool deoglTexUnitsConfig::Equals( const deoglTexUnitConfig *units, int unitCount,
+deoglShaderParameterBlock *paramBlock ) const{
 	if( unitCount < 0 || ( unitCount > 0 && ! units ) ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	if( pUnitCount != unitCount ){
+	if( pUnitCount != unitCount || pParamBlock != paramBlock ){
 		return false;
 	}
 	
 	int i;
-	
 	for( i=0; i<pUnitCount; i++ ){
 		if( ! pUnits[ i ].Equals( units[ i ] ) ){
 			return false;
@@ -175,16 +201,23 @@ void deoglTexUnitsConfig::AddUsage(){
 void deoglTexUnitsConfig::RemoveUsage(){
 	pUsageCount--;
 	
-	if( pUsageCount == 0 ){
-		pRenderThread.GetShader().GetTexUnitsConfigList().Remove( this );
+	if( pUsageCount > 0 ){
+		return;
 	}
+	
+	if( pRTSTexture ){
+		pRenderThread.GetRenderTaskSharedPool().ReturnTexture( pRTSTexture );
+		pRTSTexture = NULL;
+	}
+	
+	pRenderThread.GetShader().GetTexUnitsConfigList().Remove( this );
 }
 
-void deoglTexUnitsConfig::CalcHashCode(){
-	pHashCode = CalcHashCodeForUnits( pUnits, pUnitCount );
+void deoglTexUnitsConfig::CalcUnitsHashCode(){
+	pUnitsHashCode = CalcUnitsHashCodeForUnits( pUnits, pUnitCount );
 }
 
-unsigned int deoglTexUnitsConfig::CalcHashCodeForUnits( const deoglTexUnitConfig *units, int unitCount ){
+unsigned int deoglTexUnitsConfig::CalcUnitsHashCodeForUnits( const deoglTexUnitConfig *units, int unitCount ){
 	if( unitCount < 0 || ( unitCount > 0 && ! units ) ){
 		DETHROW( deeInvalidParam );
 	}
@@ -200,13 +233,16 @@ unsigned int deoglTexUnitsConfig::CalcHashCodeForUnits( const deoglTexUnitConfig
 	
 	for( i=0; i<unitCount; i++ ){
 		if( units[ i ].GetTexture() ){
-			hashCode += ( unsigned int )deoglTexUnitConfig::EST_BASE_GLNAME + ( unsigned int )units[ i ].GetTexture()->GetTexture();
+			hashCode += ( unsigned int )deoglTexUnitConfig::EST_BASE_GLNAME
+				+ ( unsigned int )units[ i ].GetTexture()->GetTexture();
 			
 		}else if( units[ i ].GetCubeMap() ){
-			hashCode += ( unsigned int )deoglTexUnitConfig::EST_BASE_GLNAME + ( unsigned int )units[ i ].GetCubeMap()->GetTexture();
+			hashCode += ( unsigned int )deoglTexUnitConfig::EST_BASE_GLNAME
+				+ ( unsigned int )units[ i ].GetCubeMap()->GetTexture();
 			
 		}else if( units[ i ].GetTBO() ){
-			hashCode += ( unsigned int )deoglTexUnitConfig::EST_BASE_GLNAME + ( unsigned int )units[ i ].GetTBO();
+			hashCode += ( unsigned int )deoglTexUnitConfig::EST_BASE_GLNAME
+				+ ( unsigned int )units[ i ].GetTBO();
 			
 		}else{
 			hashCode += ( unsigned int )units[ i ].GetSpecial();
@@ -234,6 +270,17 @@ unsigned int deoglTexUnitsConfig::CalcHashCodeForUnits( const deoglTexUnitConfig
 		}
 	}
 	*/
+}
+
+
+
+void deoglTexUnitsConfig::EnsureRTSTexture(){
+	if( pRTSTexture ){
+		return;
+	}
+	
+	pRTSTexture = pRenderThread.GetRenderTaskSharedPool().GetTexture();
+	pRTSTexture->SetTUC( this );
 }
 
 

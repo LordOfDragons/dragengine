@@ -39,6 +39,8 @@
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decPath.h>
+#include <dragengine/common/file/decBaseFileReaderReference.h>
+#include <dragengine/common/file/decBaseFileWriterReference.h>
 #include <dragengine/common/file/decDiskFileReader.h>
 #include <dragengine/common/file/decDiskFileWriter.h>
 #include <dragengine/filesystem/dePatternList.h>
@@ -75,21 +77,15 @@ gdeGameDefinition *gdeLoadSaveSystem::LoadGameDefinition( const char *filename )
 		DETHROW( deeInvalidParam );
 	}
 	
-	decBaseFileReader *fileReader = NULL;
+	decBaseFileReaderReference fileReader;
 	gdeGameDefinition *gameDefinition = NULL;
 	
 	try{
-		fileReader = new decDiskFileReader( filename );
-		
+		fileReader.TakeOver( new decDiskFileReader( filename ) );
 		gameDefinition = new gdeGameDefinition( &pWindowMain.GetEnvironment() );
-		
-		pLSGameDef.LoadGameDefinition( *gameDefinition, *fileReader );
-		fileReader->FreeReference();
+		pLSGameDef.LoadGameDefinition( *gameDefinition, fileReader );
 		
 	}catch( const deException & ){
-		if( fileReader ){
-			fileReader->FreeReference();
-		}
 		if( gameDefinition ){
 			gameDefinition->FreeReference();
 		}
@@ -146,25 +142,11 @@ gdeObjectClass *gdeLoadSaveSystem::LoadXmlEClass( const char *filename ){
 	return objectClass;
 }
 
-void gdeLoadSaveSystem::SaveXmlEClass( const gdeObjectClass &objectClass, const char *filename ){
-	if( ! filename ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	decBaseFileWriter *fileWriter = NULL;
-	
-	try{
-		fileWriter = new decDiskFileWriter( filename, false );
-		pLSXmlEClass.SaveXmlEClass( objectClass, *fileWriter );
-		
-		fileWriter->FreeReference();
-		
-	}catch( const deException & ){
-		if( fileWriter ){
-			fileWriter->FreeReference();
-		}
-		throw;
-	}
+void gdeLoadSaveSystem::SaveXmlEClass( const gdeGameDefinition &gameDefinition,
+const gdeObjectClass &objectClass, const char *filename ){
+	decBaseFileWriterReference fileWriter;
+	fileWriter.TakeOver( new decDiskFileWriter( filename, false ) );
+	pLSXmlEClass.SaveXmlEClass( gameDefinition, objectClass, fileWriter );
 }
 
 

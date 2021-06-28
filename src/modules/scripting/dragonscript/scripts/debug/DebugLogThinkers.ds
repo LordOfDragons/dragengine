@@ -1,0 +1,163 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Debugging
+
+pin Dragengine.Preloading
+pin Dragengine.Scenery
+pin Dragengine.Utils
+
+
+/**
+ * \brief Debug log thinking elements.
+ * 
+ * Prints all thinkers registered in a GameWorld instance. For each thinker of type
+ * BehaviorElement also prints all behavior instances with requiresThinking() returning true.
+ * 
+ * This debug class can be used to find potential performance problems by locating elements
+ * and behaviors in a game world that are thinking although they should be doing nothing instead.
+ */
+class DebugLogThinkers
+	/**
+	 * \brief Visitor printing thinkers.
+	 * 
+	 * Supports printing behaviors on BehaviorElement.
+	 */
+	public class LogThinkerVisitor extends ElementVisitor
+		private var WeakReference pOwner
+		
+		/**
+		 * \brief Create visitor.
+		 */
+		public func new( DebugLogThinkers owner )
+			this.pOwner = WeakReference.new( owner )
+		end
+		
+		/**
+		 * \brief Owner.
+		 */
+		public func DebugLogThinkers getOwner()
+			return this.pOwner.get() cast DebugLogThinkers
+		end
+		
+		/**
+		 * Log element and all behaviors returning true for requiresThinking.
+		 */
+		public func void visitBehaviorElement( BehaviorElement element )
+			super.visitBehaviorElement( element )
+			
+			element.forEachInstance( block ECBehaviorInstance each
+				if each.requiresThink()
+					if each castable DefaultECBehavior
+						var DefaultECBehavior behavior = each cast DefaultECBehavior
+						this.getOwner().getConsole().addMessage( "{}  - {}: id({}) index({})" \
+							.format( Array.newWith( this.getOwner().getLogPrefix(), \
+								behavior.getID(), behavior.getInstanceIndex() ) ) )
+						
+					else
+						this.getOwner().getConsole().addMessage( "{}  - {}".format( \
+							Array.newWith( this.getOwner().getLogPrefix(), each.className() ) ) )
+							
+					end
+				end
+			end )
+		end
+		
+		/**
+		 * Log element.
+		 */
+		public func void visitElement( Element element )
+			this.getOwner().getConsole().addMessage( "{}- {}: id({}) position({})".format( \
+				Array.newWith( this.getOwner().getLogPrefix(), element.getClass().getClassname(), \
+					element.getID(), element.getPosition() ) ) )
+		end
+	end
+	
+	
+	
+	private var Console pConsole
+	private var String pLogPrefix
+	private var ElementVisitor pVisitor
+	
+	
+	
+	/** \brief Create debug instance using BaseGameApp. */
+	public func new() this( BaseGameApp.getApp().getConsole() )
+	end
+	
+	/** \brief Create debug instance. */
+	public func new( Console console )
+		this.pConsole = console
+		this.pLogPrefix = ""
+		this.pVisitor = LogThinkerVisitor.new( this )
+	end
+	
+	
+	
+	/** \brief Console to use. */
+	public func Console getConsole()
+		return this.pConsole
+	end
+	
+	/** \brief Set console to use. */
+	public func void setConsole( Console console )
+		this.pConsole = console
+	end
+	
+	/** \brief Prefix prepended to logs written. */
+	public func String getLogPrefix()
+		return this.pLogPrefix
+	end
+	
+	/** \brief Set prefix prepended to logs written. */
+	public func void setLogPrefix( String prefix )
+		this.pLogPrefix = prefix
+	end
+	
+	/** \brief Visitor to apply to thinkers. */
+	public func ElementVisitor getVisitor()
+		return this.pVisitor
+	end
+	
+	/** \brief Set visitor to apply to thinkers. */
+	public func void setVisitor( ElementVisitor visitor )
+		this.pVisitor = visitor
+	end
+	
+	
+	
+	/** \brief Print thinking elements and behaviors in game world. */
+	public func void logThinkers( GameWorld gameWorld )
+		gameWorld.forEachThinker( block Element each
+			this.logThinker( each )
+		end )
+	end
+	
+	/**
+	 * \brief Print thinker.
+	 * 
+	 * Applies visitor to thinker.
+	 */
+	public func void logThinker( Element element )
+		element.visit( this.pVisitor )
+	end
+end

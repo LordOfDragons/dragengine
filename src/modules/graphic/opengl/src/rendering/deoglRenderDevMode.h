@@ -77,7 +77,7 @@ public:
 	/** Renders light infos. */
 	void RenderLightInfos( deoglRenderPlan &plan );
 	
-	/** \brief Render environment map information. */
+	/** Render environment map information. */
 	void RenderEnvMapInfo( deoglRenderPlan &plan );
 	
 	/** Display overlay information stacked from top to bottom. */
@@ -95,19 +95,22 @@ public:
 	
 	
 	
-	/** \brief Show visible debug information. */
+	/** Show visible debug information. */
 	void RenderDebugInformation( deoglRenderPlan &plan, const decPoint &position, decPoint &size );
 	
-	/** \brief Layout visible debug information for rendering. */
+	/** Layout visible debug information for rendering. */
 	void LayoutDebugInformation( deoglRenderPlan &plan, const decPoint &position, decPoint &size,
 		const deoglDebugInformationList &list, int minWidth, int maxWidth, bool alignSidewards );
 	
-	/** \brief Layout visible debug information for rendering. */
+	void ChildMaxNameLen( const deoglDebugInformationList &list, int &maxNameWidth,
+		bool &siblingsHaveElapsedTime, bool &siblingsHaveCounter ) const;
+	
+	/** Layout visible debug information for rendering. */
 	void LayoutDebugInformation( deoglRenderPlan &plan, int maxNameWidth,
 		deoglDebugInformation &debugInformation, int minWidth, int maxWidth,
 		bool siblingsHaveElapsedTime, bool siblingsHaveCounter );
 	
-	/** \brief Show visible debug information. */
+	/** Show visible debug information. */
 	void RenderDebugInformation( deoglRenderPlan &plan, const decPoint &parentPosition,
 		const deoglDebugInformation &debugInformation );
 	/*@}*/

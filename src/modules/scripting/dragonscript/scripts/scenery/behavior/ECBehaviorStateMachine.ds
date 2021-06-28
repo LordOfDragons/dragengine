@@ -469,8 +469,8 @@ class ECBehaviorStateMachine extends DefaultECBehavior
 	 * of type ECBehaviorCollider.
 	 */
 	static public func ECBehaviorStateMachine getBehaviorIn( BehaviorElementClass eclass )
-		return eclass.findBehavior( block ECBehavior each
-			return each castable ECBehaviorStateMachine
+		return eclass.findBehavior( block ECBehaviorStateMachine each
+			return true
 		end ) cast ECBehaviorStateMachine
 	end
 	
@@ -482,8 +482,7 @@ class ECBehaviorStateMachine extends DefaultECBehavior
 	 */
 	static public func ECBehaviorStateMachine getBehaviorIn( BehaviorElementClass eclass, String id )
 		return eclass.findBehavior( block ECBehaviorStateMachine each
-			return each castable ECBehaviorStateMachine and \
-				( each cast ECBehaviorStateMachine ).getID().equals( id )
+			return each.getID().equals( id )
 		end ) cast ECBehaviorStateMachine
 	end
 	
@@ -494,13 +493,9 @@ class ECBehaviorStateMachine extends DefaultECBehavior
 	 * been created in the element.
 	 */
 	static public func Array getAllBehaviorsIn( BehaviorElementClass eclass )
-		var Array list = Array.new()
-		eclass.forEachBehavior( block ECBehavior each
-			if each castable ECBehaviorStateMachine
-				list.add( each )
-			end
+		return eclass.collectBehaviors( block ECBehaviorStateMachine each
+			return true
 		end )
-		return list
 	end
 	
 	
@@ -513,8 +508,8 @@ class ECBehaviorStateMachine extends DefaultECBehavior
 	 * the first instance.
 	 */
 	static public func Instance getInstanceIn( BehaviorElement element )
-		return element.findInstance( block ECBehaviorInstance each
-			return each castable Instance
+		return element.findInstance( block Instance each
+			return true
 		end ) cast Instance
 	end
 	
@@ -525,9 +520,8 @@ class ECBehaviorStateMachine extends DefaultECBehavior
 	 * of type ECBehaviorStateMachine.Instance with specific identifier.
 	 */
 	static public func Instance getInstanceIn( BehaviorElement element, String id )
-		return element.findInstance( block ECBehaviorInstance each
-			return each castable Instance and \
-				( each cast Instance ).getECBehavior().getID().equals( id )
+		return element.findInstance( block Instance each
+			return each.getECBehavior().getID().equals( id )
 		end ) cast Instance
 	end
 	
@@ -538,13 +532,9 @@ class ECBehaviorStateMachine extends DefaultECBehavior
 	 * been created in the element.
 	 */
 	static public func Array getAllInstancesIn( BehaviorElement element )
-		var Array list = Array.new()
-		element.forEachInstance( block ECBehaviorInstance each
-			if each castable Instance
-				list.add( each )
-			end
+		return element.collectInstances( block Instance each
+			return true
 		end )
-		return list
 	end
 	
 	

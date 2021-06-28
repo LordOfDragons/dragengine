@@ -77,6 +77,8 @@
 #include "parameters/defren/deoglPTranspLayerLimit.h"
 #include "parameters/defren/deoglPAsyncRenderSkipSyncTimeRatio.h"
 #include "parameters/defren/deoglPFrameRateLimit.h"
+#include "parameters/gi/deoglPGIQuality.h"
+#include "parameters/gi/deoglPGIUpdateSpeed.h"
 #include "parameters/light/deoglPLightCutOffIntensity.h"
 #include "parameters/lod/deoglPLODMaxErrorPerLevel.h"
 #include "parameters/lod/deoglPLODMaxPixelError.h"
@@ -109,8 +111,6 @@
 #include "particle/deoglParticleEmitterInstance.h"
 
 #include "propfield/deoglPropField.h"
-
-#include "rendering/cache/deoglRenderCache.h"
 
 #include "window/deoglRenderWindow.h"
 
@@ -300,8 +300,9 @@ void deGraphicOpenGl::TerminateAppWindow(){
 // Frame Management
 /////////////////////
 
-// #include <dragengine/common/utils/decTimer.h>
+// static decTimer timerInBetween;
 void deGraphicOpenGl::RenderWindows(){
+// 		LogInfoFormat( "RenderWindows: InBetween = %d ys", (int)(timerInBetween.GetElapsedTime() * 1e6f) );
 // 	decTimer timer;
 	// wait for rendering to finish. if done asynchronously uses time history to judge if
 	// rendering is finished soon enough to wait for this event or to skip synchronization
@@ -347,6 +348,7 @@ void deGraphicOpenGl::RenderWindows(){
 	pRenderThread->Synchronize();
 // 	LogInfoFormat( "RenderWindows() %d", __LINE__ );
 // 		LogInfoFormat( "RenderWindows: RenderThread.Sync = %d ys", (int)(timer.GetElapsedTime() * 1e6f) );
+// 		timerInBetween.Reset();
 #ifdef OS_ANDROID
 	pRenderThread->DebugMemoryUsage( "deGraphicOpenGl::RenderWindows EXIT" );
 #endif
@@ -608,6 +610,9 @@ void deGraphicOpenGl::pCreateParameters() {
 	pParameters.AddParameter( new deoglPSSAORadiusLimit( *this ) );
 	pParameters.AddParameter( new deoglPSSAOMipMapBase( *this ) );
 	pParameters.AddParameter( new deoglPSSAOTurnCount( *this ) );
+	
+	pParameters.AddParameter( new deoglPGIQuality( *this ) );
+	pParameters.AddParameter( new deoglPGIUpdateSpeed( *this ) );
 	
 	pParameters.AddParameter( new deoglPLightCutOffIntensity( *this ) );
 	pParameters.AddParameter( new deoglPShadowMapSize( *this ) );

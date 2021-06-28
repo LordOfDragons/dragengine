@@ -19,59 +19,72 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-// include only once
 #ifndef _DEOGLCOLLIDELISTHTSECTOR_H_
 #define _DEOGLCOLLIDELISTHTSECTOR_H_
 
-// includes
+#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/math/decMath.h>
 
-// predefinitions
 class deoglHTViewSector;
-
+class deoglOcclusionTest;
+class deoglCollideListHTSCluster;
 
 
 /**
- * @brief Collide List Height Terrain Sector.
- *
  * Collide List Height Terrain Sector.
  */
 class deoglCollideListHTSector{
 private:
 	deoglHTViewSector *pSector;
 	
-	int *pClusters;
+	decPointerList pClusters;
 	int pClusterCount;
-	int pClusterSize;
+	
+	
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Creates a new sector. */
+	/** Create height terrain sector. */
 	deoglCollideListHTSector();
-	/** Cleans up the sector. */
+	
+	/** Clean up height terrain sector. */
 	~deoglCollideListHTSector();
 	/*@}*/
 	
-	/** @name Management */
+	
+	
+	/** \name Management */
 	/*@{*/
-	/** Clears the sector. */
+	/** Clear sector. */
 	void Clear();
 	
-	/** Retrieves the sector. */
+	/** Start occlusion test. */
+	void StartOcclusionTest( deoglOcclusionTest &occlusionTest, const decDVector &referencePosition );
+	
+	
+	
+	/** Sector. */
 	inline deoglHTViewSector *GetSector() const{ return pSector; }
-	/** Sets the sector. */
+	
+	/** Set sector. */
 	void SetSector( deoglHTViewSector *sector );
 	
-	/** Retrieves the number of clusters. */
+	/** Count of clusters. */
 	inline int GetClusterCount() const{ return pClusterCount; }
-	/** Retrieves the cluster at the given position. */
-	int GetClusterAt( int index ) const;
-	/** Adds a cluster. */
-	void AddCluster( int cluster );
-	/** Removes all clusters. */
+	
+	/** Cluster at index. */
+	deoglCollideListHTSCluster &GetClusterAt( int index ) const;
+	
+	/** Add cluster. */
+	deoglCollideListHTSCluster *AddCluster( const decPoint &coordinates );
+	
+	/** Remove all clusters. */
 	void RemoveAllClusters();
+	
+	/** Remove culled clusters. */
+	void RemoveCulledClusters();
 	/*@}*/
 };
 
-// end of include only once
 #endif

@@ -1909,6 +1909,37 @@ void gdeGameDefinition::NotifyOCSpeakerChanged( gdeObjectClass *objectClass, gde
 	SetChanged( true );
 }
 
+void gdeGameDefinition::NotifyOCTexturesChanged( gdeObjectClass *objectClass ){
+	const int listenerCount = pListeners.GetCount();
+	int i;
+	
+	for( i=0; i<listenerCount; i++ ){
+		( ( gdeGameDefinitionListener* )pListeners.GetAt( i ) )->OCTexturesChanged( this, objectClass );
+	}
+	
+	SetChanged( true );
+}
+
+void gdeGameDefinition::NotifyOCTextureChanged( gdeObjectClass *objectClass, gdeOCComponentTexture *texture ){
+	const int listenerCount = pListeners.GetCount();
+	int i;
+	
+	for( i=0; i<listenerCount; i++ ){
+		( ( gdeGameDefinitionListener* )pListeners.GetAt( i ) )->OCTextureChanged( this, objectClass, texture );
+	}
+	
+	SetChanged( true );
+}
+
+void gdeGameDefinition::NotifyOCActiveTextureChanged( gdeObjectClass *objectClass ){
+	const int listenerCount = pListeners.GetCount();
+	int i;
+	
+	for( i=0; i<listenerCount; i++ ){
+		( ( gdeGameDefinitionListener* )pListeners.GetAt( i ) )->OCActiveTextureChanged( this, objectClass );
+	}
+}
+
 void gdeGameDefinition::NotifyActiveObjectClassChanged(){
 	const int listenerCount = pListeners.GetCount();
 	int i;

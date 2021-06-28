@@ -55,7 +55,7 @@ public:
 	void SetColor( const decColor &color );
 	
 	/** \brief Prepare for render. */
-	virtual void PrepareForRender();
+	virtual void PrepareForRender( const deoglRenderPlanMasked *renderPlanMask );
 	
 	/**
 	 * \brief Get color if support or default color.

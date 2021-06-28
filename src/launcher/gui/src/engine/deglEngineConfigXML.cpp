@@ -102,7 +102,7 @@ void deglEngineConfigXML::pWriteConfig( decXmlWriter &writer, const deglLauncher
 	pWriteProfiles( writer, launcher );
 	
 	if( gameManager.GetActiveProfile() ){
-		writer.WriteDataTagString( "activeProfile", gameManager.GetActiveProfile()->GetName().GetString() );
+		writer.WriteDataTagString( "activeProfile", gameManager.GetActiveProfile()->GetName() );
 	}
 	
 	writer.WriteClosingTag( "launcherConfig", true );

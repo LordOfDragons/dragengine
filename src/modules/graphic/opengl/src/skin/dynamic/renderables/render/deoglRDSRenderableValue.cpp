@@ -101,18 +101,16 @@ void deoglRDSRenderableValue::SetValue( float value ){
 	
 	pValue = value;
 	pDirty = true;
-	
-	GetDynamicSkin().TextureConfigurationChanged();
 }
 
-void deoglRDSRenderableValue::PrepareForRender(){
+void deoglRDSRenderableValue::PrepareForRender( const deoglRenderPlanMasked * ){
 }
 
-float deoglRDSRenderableValue::GetRenderValue( float defaultValue ){
+float deoglRDSRenderableValue::GetRenderValue( float ){
 	return pValue;
 }
 
-decColor deoglRDSRenderableValue::GetRenderColor( const decColor &defaultColor ){
+decColor deoglRDSRenderableValue::GetRenderColor( const decColor & ){
 	return decColor( pValue, pValue, pValue, 1.0f );
 }
 

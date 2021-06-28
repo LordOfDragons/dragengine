@@ -25,12 +25,11 @@
 class deoglRenderThread;
 class deoglTexUnitConfig;
 class deoglTexUnitsConfig;
-
+class deoglShaderParameterBlock;
 
 
 /**
- * @brief Texture Units Configuration List.
- * Manages texture units configurations.
+ * Texture Units Configuration List.
  */
 class deoglTexUnitsConfigList{
 private:
@@ -42,37 +41,45 @@ private:
 	
 	deoglTexUnitsConfig *pTUCEmpty;
 	
+	
+	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Creates a new manager. */
+	/** Create list. */
 	deoglTexUnitsConfigList( deoglRenderThread &renderThread );
-	/** Cleans up the manager. */
+	
+	/** Clean up list. */
 	~deoglTexUnitsConfigList();
 	/*@}*/
 	
-	/** @name Management */
+	
+	
+	/** \name Management */
 	/*@{*/
-	/** \brief Render thread. */
+	/** Render thread. */
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
-	/** Retrieves the texture units configuration count. */
+	/** Count of texture units configurations. */
 	inline int GetCount() const{ return pTUCCount; }
-	/** Retrieves the root texture units configuration. */
+	
+	/** Root texture units configuration. */
 	inline deoglTexUnitsConfig *GetRoot() const{ return pRootTUC; }
 	
 	/**
-	 * Retrieves a configuration with the given parameters. Creates the definition if not existing yet.
-	 * This adds a usage to the texture units configuration. To remove a usage use the RemoveUsage
-	 * function on the returned object.
+	 * Texture units configuration matching parameters. Create texture units configuration
+	 * if absent. Adds usage to texture units configuration. To remove a usage use RemoveUsage.
 	 */
-	deoglTexUnitsConfig *GetWith( const deoglTexUnitConfig *units, int unitCount );
-	/** Retrieves the empty texture units configuration. */
-	deoglTexUnitsConfig *GetEmpty();
-	/** Retrieves the empty texture units configuration without adding a usage. */
-	deoglTexUnitsConfig *GetEmptyNoUsage();
+	deoglTexUnitsConfig *GetWith( const deoglTexUnitConfig *units,
+		int unitCount, deoglShaderParameterBlock *paramBlock );
 	
-	/** Removes a configuration. This is for deoglTexUnitsConfig only. Do not call directly yourself. */
+	/** Empty texture units configuration. */
+	deoglTexUnitsConfig *GetEmpty();
+	
+	/** Empty texture units configuration without adding usage. */
+	deoglTexUnitsConfig *GetEmptyNoUsage() const;
+	
+	/** Remove texture units configuration. For use by deoglTexUnitsConfig only. */
 	void Remove( deoglTexUnitsConfig *config );
 	/*@}*/
 };

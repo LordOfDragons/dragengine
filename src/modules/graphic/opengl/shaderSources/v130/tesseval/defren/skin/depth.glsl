@@ -56,7 +56,7 @@ layout( triangles, equal_spacing, ccw ) in;
 // Outputs
 ////////////
 
-#ifdef GS_RENDER_CUBE
+#if defined GS_RENDER_CUBE || defined GS_RENDER_CASCADED
 	#ifdef REQUIRES_TEX_COLOR
 		out vec2 vGSTCColor;
 		#define vTCColor vGSTCColor

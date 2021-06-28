@@ -19,14 +19,11 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-// include only once
 #ifndef _DECLASSCAMERA_H_
 #define _DECLASSCAMERA_H_
 
-// includes
 #include <libdscript/libdscript.h>
 
-// predefinitions
 class deEngine;
 class deCamera;
 class deClassVector;
@@ -36,46 +33,58 @@ class deScriptingDragonScript;
 
 
 
-// camera script class
+/**
+ * Camera script class
+ */
 class deClassCamera : public dsClass{
 private:
-	deEngine *pGameEngine;
-	deScriptingDragonScript *pScrMgr;
+	deScriptingDragonScript &pDS;
 	
-	deClassEffect *pClsEff;
-	deClassVector *pClsVec;
-	deClassDVector *pClsDVec;
+	
 	
 public:
-	// constructor
-	deClassCamera( deEngine *gameEngine, deScriptingDragonScript *scrMgr );
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** \brief Create script class. */
+	deClassCamera( deScriptingDragonScript &ds );
+	
+	/** \brief Clean up script class. */
 	~deClassCamera();
+	/*@}*/
 	
-	// internal functions
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Create class members. */
 	void CreateClassMembers( dsEngine *engine );
-	deCamera *GetCamera( dsRealObject *myself ) const;
-	void PushCamera( dsRunTime *rt, deCamera *camera );
-	inline deEngine *GetGameEngine() const{ return pGameEngine; }
-	inline deScriptingDragonScript *GetScriptModule() const{ return pScrMgr; }
 	
-	inline deClassEffect *GetClassEffect() const{ return pClsEff; }
-	inline deClassVector *GetClassVector() const{ return pClsVec; }
-	inline deClassDVector *GetClassDVector() const{ return pClsDVec; }
+	/** \brief Scripting module. */
+	inline deScriptingDragonScript &GetDS() const{ return pDS; }
+	
+	/** Get camera from real object. */
+	deCamera *GetCamera( dsRealObject *myself ) const;
+	
+	/** Push camera to real object. */
+	void PushCamera( dsRunTime *rt, deCamera *camera );
+	/*@}*/
+	
+	
 	
 private:
 	struct sInitData{
-		dsClass *clsCam;
+		dsClass *clsCamera;
 		
 		dsClass *clsVoid;
-		dsClass *clsInt;
-		dsClass *clsFlt;
-		dsClass *clsBool;
-		dsClass *clsObj;
+		dsClass *clsInteger;
+		dsClass *clsFloat;
+		dsClass *clsBoolean;
+		dsClass *clsObject;
 		
-		dsClass *clsDVec;
-		dsClass *clsVec;
-		dsClass *clsQuat;
-		dsClass *clsEff;
+		dsClass *clsDVector;
+		dsClass *clsVector;
+		dsClass *clsQuaternion;
+		dsClass *clsEffect;
 		dsClass *clsPoint;
 		dsClass *clsLayerMask;
 		dsClass *clsWorld;
@@ -101,6 +110,9 @@ private:
 	DEF_NATFUNC( nfSetImageDistance );
 	DEF_NATFUNC( nfGetViewDistance );
 	DEF_NATFUNC( nfSetViewDistance );
+	
+	DEF_NATFUNC( nfGetEnableHDRR );
+	DEF_NATFUNC( nfSetEnableHDRR );
 	DEF_NATFUNC( nfGetExposure );
 	DEF_NATFUNC( nfSetExposure );
 	DEF_NATFUNC( nfGetLowestIntensity );
@@ -110,6 +122,9 @@ private:
 	DEF_NATFUNC( nfGetAdaptionTime );
 	DEF_NATFUNC( nfSetAdaptionTime );
 	DEF_NATFUNC( nfResetAdaptedIntensity );
+	
+	DEF_NATFUNC( nfGetEnableGI );
+	DEF_NATFUNC( nfSetEnableGI );
 	
 	DEF_NATFUNC( nfProject );
 	DEF_NATFUNC( nfBackProject );
@@ -130,5 +145,4 @@ private:
 #undef DEF_NATFUNC
 };
 
-// end of include only once
 #endif

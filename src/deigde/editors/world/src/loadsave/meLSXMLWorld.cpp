@@ -38,6 +38,7 @@
 
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gamedefinition/igdeGameDefinition.h>
+#include <deigde/gui/wrapper/igdeWSky.h>
 
 #include <dragengine/deEngine.h>
 #include <dragengine/logger/deLogger.h>
@@ -51,6 +52,7 @@
 #include <dragengine/common/xmlparser/decXmlAttValue.h>
 #include <dragengine/common/xmlparser/decXmlVisitor.h>
 #include <dragengine/common/xmlparser/decXmlWriter.h>
+#include <dragengine/resources/sky/deSkyController.h>
 
 
 
@@ -146,12 +148,10 @@ void meLSXMLWorld::pWriteWorld( decXmlWriter &writer, const meWorld &world ){
 	
 	writer.WriteOpeningTag( "world" );
 	
-	const decVector &gravity = world.GetGravity();
-	writer.WriteOpeningTagStart( "gravity" );
-	writer.WriteAttributeFloat( "x", gravity.x );
-	writer.WriteAttributeFloat( "y", gravity.y );
-	writer.WriteAttributeFloat( "z", gravity.z );
-	writer.WriteOpeningTagEnd( true );
+	WriteDVector( writer, "size", world.GetSize() );
+	WriteVector( writer, "gravity", world.GetGravity() );
+	
+	pWriteWorldEditor( writer, world );
 	
 	pWriteProperties( writer, world.GetProperties() );
 	
@@ -190,6 +190,25 @@ void meLSXMLWorld::pWriteWorld( decXmlWriter &writer, const meWorld &world ){
 	}
 	
 	writer.WriteClosingTag( "world" );
+}
+
+void meLSXMLWorld::pWriteWorldEditor( decXmlWriter &writer, const meWorld &world ){
+	writer.WriteOpeningTag( "worldEditor" );
+	
+	const igdeWSky &sky = *world.GetSky();
+	writer.WriteDataTagString( "skyPath", sky.GetPath() );
+	const int skyControllerCount = sky.GetControllerCount();
+	int i;
+	for( i=0; i<skyControllerCount; i++ ){
+		const deSkyController &controller = sky.GetControllerAt( i );
+		writer.WriteOpeningTagStart( "skyController", false );
+		writer.WriteAttributeString( "name", controller.GetName() );
+		writer.WriteOpeningTagEnd( false, false );
+		writer.WriteTextFloat( controller.GetCurrentValue() );
+		writer.WriteClosingTag( "skyController", false );
+	}
+	
+	writer.WriteClosingTag( "worldEditor" );
 }
 
 void meLSXMLWorld::pWriteObject( decXmlWriter &writer, const meObject &object ){

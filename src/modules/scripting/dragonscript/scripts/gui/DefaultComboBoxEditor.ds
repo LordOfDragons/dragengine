@@ -115,6 +115,7 @@ class DefaultComboBoxEditor extends TextField implements ComboBoxEditor
 	 */
 	public func void startEditing()
 		// selection not implemented yet on TextField
+		this.setCursorPosition( this.getModel().getText().getLength() )
 		this.grabFocus()
 	end
 	

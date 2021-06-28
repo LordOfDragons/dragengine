@@ -56,7 +56,7 @@ const float deoglSkyLayerTracker::THRESHOLD_ONE_DEGREE_ORIENTATION = 7.615902e-5
 ////////////////////////////
 
 deoglSkyLayerTracker::deoglSkyLayerTracker() :
-	pThresholdOrientation( 0.0f ),
+pThresholdOrientation( 0.0f ),
 pThresholdIntensity( 0.0f ),
 pThresholdTransparency( 0.0f ),
 pThresholdColor( 0.0f ),

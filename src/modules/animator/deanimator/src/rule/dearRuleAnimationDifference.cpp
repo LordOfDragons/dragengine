@@ -94,6 +94,12 @@ pEnableSize( rule.GetEnableSize() )
 
 dearRuleAnimationDifference::~dearRuleAnimationDifference(){
 //	if( pAnimStates ) delete [] pAnimStates;
+	if( pMove1 ){
+		pMove1->FreeReference();
+	}
+	if( pMove2 ){
+		pMove2->FreeReference();
+	}
 }
 	
 

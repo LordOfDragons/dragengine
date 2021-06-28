@@ -26,10 +26,11 @@
 #include "deoglComponentTestForTouch.h"
 
 #include "../light/deoglRLight.h"
+#include "../utils/collision/deoglDCollisionDetection.h"
 #include "../world/deoglWorldOctree.h"
 
 #include <dragengine/common/exceptions.h>
-#include "../utils/collision/deoglDCollisionDetection.h"
+#include <dragengine/common/utils/decTimer.h>
 
 
 
@@ -51,11 +52,24 @@ deoglComponentTestForTouch::~deoglComponentTestForTouch(){
 // Visiting
 /////////////
 
+// extern int hackCSSpecialCount;
+// extern float hackCSSpecialTime;
+
 void deoglComponentTestForTouch::VisitNode( deoglDOctree *node, int intersection ){
 	const deoglWorldOctree &soNode = *( ( deoglWorldOctree* )node );
-	int l, lightCount = soNode.GetLightCount();
+	const decDVector &compMinExt = pComponent->GetMinimumExtend();
+	const decDVector &compMaxExt = pComponent->GetMaximumExtend();
+	const int count = soNode.GetLightCount();
+	int i;
 	
-	for( l=0; l<lightCount; l++ ){
-		soNode.GetLightAt( l )->TestComponent( pComponent );
+	for( i=0; i<count; i++ ){
+// 			decTimer timer;
+		deoglRLight &light = *soNode.GetLightAt( i );
+		
+		if( light.GetFullMinExtend() < compMaxExt && light.GetFullMaxExtend() > compMinExt ){
+			light.TestComponent( pComponent );
+		}
+// 			hackCSSpecialCount++;
+// 			hackCSSpecialTime += timer.GetElapsedTime();
 	}
 }

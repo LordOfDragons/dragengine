@@ -345,10 +345,13 @@ public:
 		deInputEvent::ekcN, deInputEvent::ekcN ){}
 	
 	virtual void OnAction(){
-		if( igdeCommonDialogs::Question( &pWindow, igdeCommonDialogs::ebsYesNo, "New Rig",
-		"Creating new Speech Animation discards the current one. Is that ok?" ) == igdeCommonDialogs::ebYes ){
-			pWindow.CreateNewSAnimation();
+		if( pWindow.GetSAnimation() && pWindow.GetSAnimation()->GetChanged()
+		&& igdeCommonDialogs::Question( &pWindow, igdeCommonDialogs::ebsYesNo, "New Speech Animation",
+		"Speech animated changed. Creating new Speech Animation discards the current one. Is that ok?" )
+		!= igdeCommonDialogs::ebYes ){
+			return;
 		}
+		pWindow.CreateNewSAnimation();
 	}
 };
 
@@ -360,6 +363,13 @@ public:
 		deInputEvent::ekcO, deInputEvent::ekcO ){}
 	
 	virtual void OnAction(){
+		if( pWindow.GetSAnimation() && pWindow.GetSAnimation()->GetChanged()
+		&& igdeCommonDialogs::Question( &pWindow, igdeCommonDialogs::ebsYesNo, "Open Speech Animation",
+		"Speech animated changed. Open Speech Animation discards the current one. Is that ok?" )
+		!= igdeCommonDialogs::ebYes ){
+			return;
+		}
+		
 		decString filename( pWindow.GetSAnimation()->GetFilePath() );
 		if( ! igdeCommonDialogs::GetFileOpen( &pWindow, "Open Speech Animation",
 		*pWindow.GetEnvironment().GetFileSystemGame(),

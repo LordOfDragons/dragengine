@@ -200,6 +200,18 @@ deoglDebugInformation &debugInfo, int count, bool waitGPU ){
 	pDebugTimerSampleCount( pDebugTimer[ 3 ], plan, debugInfo, count, waitGPU );
 }
 
+void deoglRenderBase::DebugTimerIncrement( const deoglRenderPlan &plan,
+deoglDebugInformation &debugInfo, float elapsed, int count ){
+	if( ! plan.GetDebugTiming() || ! debugInfo.GetVisible() ){
+		return;
+	}
+	
+	debugInfo.IncrementElapsedTime( elapsed );
+	if( count > 0 ){
+		debugInfo.IncrementCounter( count );
+	}
+}
+
 
 
 void deoglRenderBase::AddTopLevelDebugInfo(){

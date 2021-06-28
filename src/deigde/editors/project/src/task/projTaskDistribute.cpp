@@ -158,36 +158,42 @@ projTaskDistribute::~projTaskDistribute(){
 ///////////////
 
 bool projTaskDistribute::Step(){
-	switch( pState ){
-	case esInitial:
-		pBuildExcludeBaseGameDefPath();
-		pExcludePatterns = pProfile.GetExcludePatterns();
-		pVFS = pWindowMain.GetEnvironment().GetFileSystemGame();
-		pCreateDelgaWriter();
-		pScanDirectory( decPath::CreatePathUnix( "/" ) );
-		
-		pState = esProcessFiles;
-		return true;
-		
-	case esProcessFiles:
-		pProcessFiles();
-		if( pStackDirectories.GetCount() > 0 ){
+	try{
+		switch( pState ){
+		case esInitial:
+			pBuildExcludeBaseGameDefPath();
+			pExcludePatterns = pProfile.GetExcludePatterns();
+			pVFS = pWindowMain.GetEnvironment().GetFileSystemGame();
+			pCreateDelgaWriter();
+			pScanDirectory( decPath::CreatePathUnix( "/" ) );
+			
+			pState = esProcessFiles;
 			return true;
+			
+		case esProcessFiles:
+			pProcessFiles();
+			if( pStackDirectories.GetCount() > 0 ){
+				return true;
+			}
+			
+			// all files processed
+			pUsedFileExtensions += pProfile.GetRequiredExtensions();
+			
+			pWriteGameXml();
+			pCloseDelgaWriter();
+			pState = esFinished;
+			SetMessage( "Finished" );
+			
+			return true;
+			
+		case esFinished:
+		default:
+			return false;
 		}
 		
-		// all files processed
-		pUsedFileExtensions += pProfile.GetRequiredExtensions();
-		
-		pWriteGameXml();
-		pCloseDelgaWriter();
+	}catch( const deException &e ){
 		pState = esFinished;
-		SetMessage( "Finished" );
-		
-		return true;
-		
-	case esFinished:
-	default:
-		return false;
+		throw;
 	}
 }
 

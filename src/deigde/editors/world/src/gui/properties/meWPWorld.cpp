@@ -30,6 +30,8 @@
 #include "../../world/meCamera.h"
 #include "../../world/idgroup/meIDGroup.h"
 #include "../../world/idgroup/meIDGroupList.h"
+#include "../../undosys/properties/world/meUWorldSetSize.h"
+#include "../../undosys/properties/world/meUWorldSetGravity.h"
 #include "../../undosys/properties/world/property/meUWorldAddProperty.h"
 #include "../../undosys/properties/world/property/meUWorldRemoveProperty.h"
 #include "../../undosys/properties/world/property/meUWorldSetProperty.h"
@@ -46,6 +48,8 @@
 #include <deigde/gui/igdeContainerReference.h>
 #include <deigde/gui/igdeComboBox.h>
 #include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/composed/igdeEditDVector.h>
+#include <deigde/gui/composed/igdeEditDVectorListener.h>
 #include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/composed/igdeEditVectorListener.h>
 #include <deigde/gui/event/igdeComboBoxListener.h>
@@ -168,6 +172,29 @@ public:
 	virtual igdeUndo *OnChanged( const decVector &vector, meWorld *world ) = 0;
 };
 
+class cBaseEditDVectorListener : public igdeEditDVectorListener{
+protected:
+	meWPWorld &pPanel;
+	
+public:
+	cBaseEditDVectorListener( meWPWorld &panel ) : pPanel( panel ){ }
+	
+	virtual void OnDVectorChanged( igdeEditDVector *editDVector ){
+		meWorld * const world = pPanel.GetWorld();
+		if( ! world ){
+			return;
+		}
+		
+		igdeUndoReference undo;
+		undo.TakeOver( OnChanged( editDVector->GetDVector(), world ) );
+		if( undo ){
+			world->GetUndoSystem()->Add( undo );
+		}
+	}
+	
+	virtual igdeUndo *OnChanged( const decDVector &vector, meWorld *world ) = 0;
+};
+
 
 class cEditWorldProperties : public meWPPropertyList {
 	meWPWorld &pPanel;
@@ -228,11 +255,30 @@ public:
 };
 
 
-class cEditPFTStartPosition : public cBaseEditVectorListener{
+class cEditSize : public cBaseEditDVectorListener{
 public:
-	cEditPFTStartPosition( meWPWorld &panel ) : cBaseEditVectorListener( panel ){}
+	cEditSize( meWPWorld &panel ) : cBaseEditDVectorListener( panel ){}
+	
+	virtual igdeUndo * OnChanged( const decDVector &vector, meWorld *world ){
+		return ! world->GetSize().IsEqualTo( vector ) ? new meUWorldSetSize( world, vector ) : NULL;
+	}
+};
+
+
+class cEditGravity : public cBaseEditVectorListener{
+public:
+	cEditGravity( meWPWorld &panel ) : cBaseEditVectorListener( panel ){}
 	
 	virtual igdeUndo * OnChanged( const decVector &vector, meWorld *world ){
+		return ! world->GetGravity().IsEqualTo( vector ) ? new meUWorldSetGravity( world, vector ) : NULL;
+	}
+};
+
+class cEditPFTStartPosition : public cBaseEditDVectorListener{
+public:
+	cEditPFTStartPosition( meWPWorld &panel ) : cBaseEditDVectorListener( panel ){}
+	
+	virtual igdeUndo * OnChanged( const decDVector &vector, meWorld *world ){
 		world->GetPathFindTest()->SetStartPosition( vector );
 		return NULL;
 	}
@@ -249,11 +295,11 @@ public:
 	}
 };
 
-class cEditPFTGoalPosition : public cBaseEditVectorListener{
+class cEditPFTGoalPosition : public cBaseEditDVectorListener{
 public:
-	cEditPFTGoalPosition( meWPWorld &panel ) : cBaseEditVectorListener( panel ){}
+	cEditPFTGoalPosition( meWPWorld &panel ) : cBaseEditDVectorListener( panel ){}
 	
-	virtual igdeUndo * OnChanged( const decVector &vector, meWorld *world ){
+	virtual igdeUndo * OnChanged( const decDVector &vector, meWorld *world ){
 		world->GetPathFindTest()->SetGoalPosition( vector );
 		return NULL;
 	}
@@ -518,6 +564,15 @@ pWorld( NULL )
 	AddChild( content );
 	
 	
+	// parameters
+	helper.GroupBox( content, groupBox, "World Parameters:" );
+	
+	helper.EditDVector( groupBox, "Size", "Size of world in meters where modules can expect content",
+		8, 0, pEditSize, new cEditSize( *this ) );
+	
+	helper.EditVector( groupBox, "Gravity", "World gravity", pEditGravity, new cEditGravity( *this ) );
+	
+	
 	// properties
 	helper.GroupBoxFlow( content, groupBox, "World Properties:", false, false );
 	
@@ -529,12 +584,12 @@ pWorld( NULL )
 	helper.GroupBox( content, groupBox, "Path Find Test:", true );
 	
 	helper.FormLineStretchFirst( groupBox, "Start Position:", "Start position of the test path", formLine );
-	helper.EditVector( formLine, "Start position of the test path",
+	helper.EditDVector( formLine, "Start position of the test path",
 		pEditPFTStartPosition, new cEditPFTStartPosition( *this ) );
 	helper.Button( formLine, pBtnPFTStartPosFromCamera, new cActionPFTStartPosFromCamera( *this ), true );
 	
 	helper.FormLineStretchFirst( groupBox, "Goal Position:", "Goal position of the test path", formLine );
-	helper.EditVector( formLine, "Goal position of the test path",
+	helper.EditDVector( formLine, "Goal position of the test path",
 		pEditPFTGoalPosition, new cEditPFTGoalPosition( *this ) );
 	helper.Button( formLine, pBtnPFTGoalPosFromCamera, new cActionPFTGoalPosFromCamera( *this ), true );
 	
@@ -616,24 +671,41 @@ void meWPWorld::SetWorld( meWorld *world ){
 
 
 void meWPWorld::UpdateWorld(){
+	UpdateWorldParameters();
+	UpdatePathFindTestTypeList();
 	UpdatePathFindTest();
 	UpdatePropertyKeys();
 	UpdateProperties();
 }
 
+void meWPWorld::UpdateWorldParameters(){
+	if( pWorld ){
+		pEditSize->SetDVector( pWorld->GetSize() );
+		pEditGravity->SetVector( pWorld->GetGravity() );
+		
+	}else{
+		pEditSize->SetDVector( decDVector( 1000.0, 1000.0, 1000.0 ) );
+		pEditGravity->SetVector( decDVector( 0.0f, -9.81f, 0.0f ) );
+	}
+	
+	const bool enabled = pWorld;
+	pEditSize->SetEnabled( enabled );
+	pEditGravity->SetEnabled( enabled );
+}
+
 void meWPWorld::UpdatePathFindTest(){
 	if( pWorld ){
 		const mePathFindTest &pft = *pWorld->GetPathFindTest();
-		pEditPFTStartPosition->SetVector( pft.GetStartPosition() );
-		pEditPFTGoalPosition->SetVector( pft.GetGoalPosition() );
+		pEditPFTStartPosition->SetDVector( pft.GetStartPosition() );
+		pEditPFTGoalPosition->SetDVector( pft.GetGoalPosition() );
 		pEditPFTLayer->SetInteger( pft.GetLayer() );
 		pCBPFTSpaceType->SetSelectionWithData( ( void* )( intptr_t )pft.GetSpaceType() );
 		pEditPFTBlockingCost->SetInteger( pft.GetBlockingCost() );
 		pChkPFTShowPath->SetChecked( pft.GetShowPath() );
 		
 	}else{
-		pEditPFTStartPosition->SetVector( decVector() );
-		pEditPFTGoalPosition->SetVector( decVector() );
+		pEditPFTStartPosition->SetDVector( decDVector() );
+		pEditPFTGoalPosition->SetDVector( decDVector() );
 		pEditPFTLayer->ClearText();
 		pCBPFTSpaceType->SetSelectionWithData( ( void* )( intptr_t )deNavigationSpace::estMesh );
 		pEditPFTBlockingCost->ClearText();

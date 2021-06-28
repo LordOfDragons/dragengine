@@ -1,0 +1,177 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui
+
+pin Dragengine.Gui.Events
+
+
+/**
+ * \brief Run action if widget is clicked without moving mouse.
+ * 
+ * Useful for situations where an action should be triggered if a widget is clicked upon
+ * which does not provide this kind of interaction. This listener does not capture the
+ * mouse like for example Button does. This allows other mouse listeners to apply to the
+ * widget while this listener tracks the press and release button action. While the button
+ * is pressed the mouse movement relative to the parent desktop is tracked. If the mouse
+ * moves outside a given range the tracking is interrupted. Once the button is released
+ * the action is triggered but tracking has not been interrupted.
+ */
+abstract class ClickedActionListener extends DefaultMouseListener
+	/** \brief Mouse button to track. */
+	private var int pButton
+	
+	/** \brief Range in pixels mouse is allowed to moved for action to fire. */
+	private var int pRange
+	
+	/** \brief Mouse position at button press time or null if not tracked. */
+	private var Point pPosition
+	
+	
+	
+	/**
+	 * \brief Create mouse listener tracking left mouse button and range of 5 pixels.
+	 */
+	public func new() this( InputEventMouseButton.left, 5 )
+	end
+	
+	/**
+	 * \brief Create mouse listener.
+	 * \param trackButton Value from InputEventMouseButton or custom.
+	 * \param range Range in pixels the mouse is allowed to move to fire the action.
+	 * \throws EInvalidParam range is less than 0.
+	 */
+	public func new( int trackButton, int range )
+		if range < 0
+			throw EInvalidParam.new( "range < 0" )
+		end
+		
+		this.pButton = trackButton
+		this.pRange = range
+	end
+	
+	
+	
+	/** \brief Mouse button to track. */
+	public func int getButton()
+		return this.pButton
+	end
+	
+	/** \brief Range in pixels the mouse is allowed to move to fire the action. */
+	public func int getRange()
+		return this.pRange
+	end
+	
+	/** \brief Mouse position at button press time or null if not tracked. */
+	public func Point getPosition()
+		return this.pPosition
+	end
+	
+	/** \brief Set mouse position at button press time or null if not tracked. */
+	protected func void setPosition( Point position )
+		this.pPosition = position
+	end
+	
+	
+	
+	/**
+	 * \brief Mouse button pressed.
+	 * 
+	 * Starts tracking if button matches the track button
+	 */
+	public func void onButtonPress( MouseEvent event )
+		if event.getButton() != this.pButton
+			return
+		end
+		
+		var Point position = this.getEventPosition( event )
+		if position == null
+			return
+		end
+		
+		this.pPosition = position
+	end
+	
+	/**
+	 * \brief Mouse moved.
+	 * 
+	 * Check track position and disable tracking if moved outside range.
+	 */
+	public func void onMouseMove( MouseEvent event )
+		if this.pPosition == null
+			return
+		end
+		
+		var Point position = this.getEventPosition( event )
+		if position == null
+			return
+		end
+		
+		if not ( position - this.pPosition ).isAtMost( this.pRange )
+			this.pPosition = null
+		end
+	end
+	
+	/**
+	 * \brief Mouse button release.
+	 * 
+	 * If button matches tracking button and tracking is active perform action.
+	 */
+	public func void onButtonRelease( MouseEvent event )
+		if this.pPosition == null or event.getButton() != this.pButton
+			return
+		end
+		
+		this.pPosition = null
+		this.onAction()
+	end
+	
+	
+	
+	/**
+	 * \brief Action to perform.
+	 */
+	abstract public func void onAction()
+	
+	
+	
+	/**
+	 * \brief Get event position in desktop or widget coordinates.
+	 * \returns Event position or null if source is not a widget.
+	 */
+	protected func Point getEventPosition( MouseEvent event )
+		var Object source = event.getSource()
+		if source == null or not source castable Widget
+			return null
+		end
+		
+		var Widget widget = source cast Widget
+		var Desktop desktop = widget.getDesktop()
+		var Point position = event.getPosition()
+		
+		if desktop != null
+			position = widget.getDesktopPosition() + position
+		end
+		
+		return position
+	end
+end

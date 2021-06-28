@@ -17,33 +17,30 @@ out vec3 vParticleLightPosition;
 out vec3 vParticleLightColor;
 out float vParticleLightRange;
 
-void main( void ){
-	// this is the same for all points
-	vParticleLightPosition = vec3( gl_in[ 0 ].gl_Position );
+
+void emitCorner( in vec3 position ){
+	vParticleLightPosition = gl_in[ 0 ].gl_Position.xyz;
 	vParticleLightColor = vGSParticleLightColor[ 0 ];
 	vParticleLightRange = vGSParticleLightRange[ 0 ];
 	
-	gl_PrimitiveID = gl_PrimitiveIDIn;
+	vLightVolumePos = position;
+	
+	gl_Position = pMatrixMVP * vec4( position, 1.0 );
+	
 	gl_Layer = 0;
+	gl_PrimitiveID = gl_PrimitiveIDIn;
 	
-	// generate billboard
-	vLightVolumePos = vParticleLightPosition;
-	vLightVolumePos.xy -= vec2( vGSParticleLightRange[ 0 ] );
-	gl_Position = pMatrixMVP * vec4( vLightVolumePos, 1.0 );
 	EmitVertex();
+}
+
+void main( void ){
+	vec3 position = gl_in[ 0 ].gl_Position.xyz;
+	vec3 range = vec3( vGSParticleLightRange[ 0 ], -vGSParticleLightRange[ 0 ], 0.0 );
 	
-	vLightVolumePos.y = vParticleLightPosition.y + vGSParticleLightRange[ 0 ];
-	gl_Position = pMatrixMVP * vec4( vLightVolumePos, 1.0 );
-	EmitVertex();
-	
-	vLightVolumePos.x = vParticleLightPosition.x + vGSParticleLightRange[ 0 ];
-	vLightVolumePos.y = vParticleLightPosition.y - vGSParticleLightRange[ 0 ];
-	gl_Position = pMatrixMVP * vec4( vLightVolumePos, 1.0 );
-	EmitVertex();
-	
-	vLightVolumePos.y = vParticleLightPosition.y + vGSParticleLightRange[ 0 ];
-	gl_Position = pMatrixMVP * vec4( vLightVolumePos, 1.0 );
-	EmitVertex();
+	emitCorner( position + range.yyz ); // -range, -range
+	emitCorner( position + range.yxz ); // -range, +range
+	emitCorner( position + range.xyz ); // +range, -range
+	emitCorner( position + range.xxz ); // +range, +range
 	
 	EndPrimitive();
 }

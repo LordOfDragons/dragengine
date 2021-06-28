@@ -204,9 +204,9 @@ void ceWPASnippet::UpdateFileList(){
 		}
 		
 		pCBFile->SortItems();
+		pCBFile->StoreFilterItems();
 	}
 	
-	pCBFile->StoreFilterItems();
 	pCBFile->SetText( selection );
 }
 
@@ -226,8 +226,8 @@ void ceWPASnippet::UpdateTopicList(){
 		}
 		
 		pCBTopic->SortItems();
+		pCBTopic->StoreFilterItems();
 	}
 	
-	pCBTopic->StoreFilterItems();
 	pCBTopic->SetText( selection );
 }

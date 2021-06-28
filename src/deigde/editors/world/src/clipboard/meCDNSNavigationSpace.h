@@ -20,7 +20,7 @@
  */
 
 #ifndef _MECDNSNAVSPACE_H_
-#define _MECDNVNAVSPACE_H_
+#define _MECDNSNAVSPACE_H_
 
 #include <dragengine/common/math/decMath.h>
 

@@ -45,6 +45,7 @@
 #include <deigde/gui/igdeTextArea.h>
 #include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/igdeComboBoxFilter.h>
+#include <deigde/gui/igdeWindow.h>
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/composed/igdeEditPath.h>
 #include <deigde/gui/composed/igdeEditPathListener.h>
@@ -81,7 +82,7 @@ public:
 		}
 		
 		if( pPanel.GetGameDefinition()->GetParticleEmitters().HasWithPath( editPath->GetPath() ) ){
-			igdeCommonDialogs::Information( &pPanel, "Change particle emitter path",
+			igdeCommonDialogs::Information( pPanel.GetParentWindow(), "Change particle emitter path",
 				"A particle emitter with this path exists already." );
 			editPath->SetPath( particleEmitter->GetPath() );
 			return;

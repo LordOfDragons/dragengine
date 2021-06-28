@@ -1,7 +1,7 @@
 /* 
  * Drag[en]gine OpenGL Graphic Module
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * Copyright (C) 2021, Roland Plüss (roland@rptd.ch)
  * 
  * This program is free software; you can redistribute it and/or 
  * modify it under the terms of the GNU General Public License 
@@ -27,6 +27,7 @@
 #include "../memory/deoglMemoryManager.h"
 #include "../texture/deoglTextureStageManager.h"
 #include "../renderthread/deoglRenderThread.h"
+#include "../renderthread/deoglRTLogger.h"
 #include "../renderthread/deoglRTTexture.h"
 
 #include <dragengine/common/exceptions.h>
@@ -39,32 +40,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglDynamicTBO::deoglDynamicTBO( deoglRenderThread &renderThread ) :
-pRenderThread( renderThread )
+deoglDynamicTBO::deoglDynamicTBO( deoglRenderThread &renderThread, int componentCount, int dataTypeSize ) :
+pRenderThread( renderThread ),
+pComponentCount( componentCount ),
+pDataTypeSize( dataTypeSize ),
+pVBO( 0 ),
+pTBO( 0 ),
+pData( NULL ),
+pDataSize( 0 ),
+pDataCount( 0 ),
+pMemoryGPU( 0 )
 {
-	deoglMemoryConsumptionVBO &consumption = renderThread.GetMemoryManager().GetConsumption().GetVBO();
-	
-	pVBO = 0;
-	pTBO = 0;
-	
-	pDataFloat = NULL;
-	pDataSize = 0;
-	pDataCount = 0;
-	
-	pMemoryGPU = 0;
-	
-	try{
-		OGL_CHECK( pRenderThread, pglGenBuffers( 1, &pVBO ) );
-		if( ! pVBO ){
-			DETHROW( deeOutOfMemory );
-		}
-		
-		consumption.IncrementCount();
-		consumption.IncrementTBOCount();
-		
-	}catch( const deException & ){
-		pCleanUp();
-		throw;
+	if( componentCount < 1 || componentCount > 4 || dataTypeSize < 1 || dataTypeSize > 4 ){
+		DETHROW( deeInvalidParam );
 	}
 }
 
@@ -77,123 +65,123 @@ deoglDynamicTBO::~deoglDynamicTBO(){
 // Management
 ///////////////
 
+void deoglDynamicTBO::IncreaseDataCount( int byAmount ){
+	if( byAmount < 0 ){
+		DETHROW( deeInvalidParam );
+	}
+	if( byAmount == 0 ){
+		return;
+	}
+	
+	pEnlarge( byAmount );
+	pDataCount += byAmount;
+}
+
+void deoglDynamicTBO::SetDataCount( int count ){
+	if( count < 0 ){
+		DETHROW( deeInvalidParam );
+	}
+	if( count > pDataCount ){
+		pEnlarge( count - pDataCount );
+	}
+	pDataCount = count;
+}
+
+int deoglDynamicTBO::GetPixelCount() const{
+	int count = pDataCount / pComponentCount;
+	if( pDataCount % pComponentCount != 0 ){
+		count++;
+	}
+	return count;
+}
+
+void deoglDynamicTBO::IncreasePixelCount( int byAmount ){
+	IncreaseDataCount( byAmount * pComponentCount );
+}
+
+void deoglDynamicTBO::SetPixelCount( int count ){
+	SetDataCount( count * pComponentCount );
+}
+
+int deoglDynamicTBO::GetPixelOffset( int pixel ) const{
+	if( pixel < 0 ){
+		DETHROW( deeInvalidParam );
+	}
+	return pixel * pComponentCount;
+}
+
 void deoglDynamicTBO::Clear(){
 	pDataCount = 0;
 }
 
-void deoglDynamicTBO::AddBool( bool value ){
-	if( value ){
-		AddFloat( 1.0f );
-		
-	}else{
-		AddFloat( 0.0f );
+void deoglDynamicTBO::AddTBO( const deoglDynamicTBO &tbo ){
+	if( tbo.pDataTypeSize != pDataTypeSize ){
+		DETHROW( deeInvalidParam );
 	}
+	if( tbo.pDataCount == 0 ){
+		return;
+	}
+	
+	pEnlarge( tbo.pDataCount );
+	memcpy( pData + pDataCount * pDataTypeSize, tbo.pData, tbo.pDataCount * tbo.pDataTypeSize );
+	pDataCount += tbo.pDataCount;
 }
 
-void deoglDynamicTBO::AddFloat( float value ){
-	pEnlarge( 1 );
-	*pDataFloat++ = value;
-}
-
-void deoglDynamicTBO::AddVec2( float value1, float value2 ){
-	pEnlarge( 2 );
-	*pDataFloat++ = value1;
-	*pDataFloat++ = value2;
-}
-
-void deoglDynamicTBO::AddVec2( const decVector2 &value ){
-	pEnlarge( 2 );
-	*pDataFloat++ = value.x;
-	*pDataFloat++ = value.y;
-}
-
-void deoglDynamicTBO::AddVec3( float value1, float value2, float value3 ){
-	pEnlarge( 3 );
-	*pDataFloat++ = value1;
-	*pDataFloat++ = value2;
-	*pDataFloat++ = value3;
-}
-
-void deoglDynamicTBO::AddVec3( const decVector &value ){
-	pEnlarge( 3 );
-	*pDataFloat++ = value.x;
-	*pDataFloat++ = value.y;
-	*pDataFloat++ = value.z;
-}
-
-void deoglDynamicTBO::AddVec4( float value1, float value2, float value3, float value4 ){
-	pEnlarge( 4 );
-	*pDataFloat++ = value1;
-	*pDataFloat++ = value2;
-	*pDataFloat++ = value3;
-	*pDataFloat++ = value4;
-}
-
-void deoglDynamicTBO::AddVec4( const decVector4 &value ){
-	pEnlarge( 4 );
-	*pDataFloat++ = value.x;
-	*pDataFloat++ = value.y;
-	*pDataFloat++ = value.z;
-	*pDataFloat++ = value.w;
-}
-
-void deoglDynamicTBO::AddMat4x3( const decMatrix &value ){
-	pEnlarge( 12 );
-	*pDataFloat++ = value.a11; *pDataFloat++ = value.a21; *pDataFloat++ = value.a31;
-	*pDataFloat++ = value.a12; *pDataFloat++ = value.a22; *pDataFloat++ = value.a32;
-	*pDataFloat++ = value.a13; *pDataFloat++ = value.a23; *pDataFloat++ = value.a33;
-	*pDataFloat++ = value.a14; *pDataFloat++ = value.a24; *pDataFloat++ = value.a34;
-}
-
-void deoglDynamicTBO::AddMat3x3( const decMatrix &value ){
-	pEnlarge( 9 );
-	*pDataFloat++ = value.a11; *pDataFloat++ = value.a21; *pDataFloat++ = value.a31;
-	*pDataFloat++ = value.a12; *pDataFloat++ = value.a22; *pDataFloat++ = value.a32;
-	*pDataFloat++ = value.a13; *pDataFloat++ = value.a23; *pDataFloat++ = value.a33;
-}
-
-void deoglDynamicTBO::AddMat3x2( const decMatrix &value ){
-	pEnlarge( 6 );
-	*pDataFloat++ = value.a11; *pDataFloat++ = value.a21;
-	*pDataFloat++ = value.a12; *pDataFloat++ = value.a22;
-	*pDataFloat++ = value.a13; *pDataFloat++ = value.a23;
+void deoglDynamicTBO::SetTBO( int offset, const deoglDynamicTBO &tbo ){
+	if( tbo.pDataTypeSize != pDataTypeSize ){
+		DETHROW( deeInvalidParam );
+	}
+	if( tbo.pDataCount == 0 ){
+		return;
+	}
+	if( offset < 0 || offset + tbo.pDataCount - 1 >= pDataCount ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	memcpy( pData + offset * pDataTypeSize, tbo.pData, tbo.pDataCount * tbo.pDataTypeSize );
 }
 
 void deoglDynamicTBO::Update(){
-	if( pDataCount > 0 ){
-		deoglMemoryConsumptionVBO &consumption = pRenderThread.GetMemoryManager().GetConsumption().GetVBO();
-		
-		while( ( pDataCount & 0x3 ) > 0 ){
-			AddFloat( 0.0f ); // pad up to size of 4
-		}
-		
-		consumption.DecrementTBOGPU( pMemoryGPU );
-		consumption.DecrementGPU( pMemoryGPU );
-		
-		OGL_CHECK( pRenderThread, pglBindBuffer( GL_TEXTURE_BUFFER, pVBO ) );
-		OGL_CHECK( pRenderThread, pglBufferData( GL_TEXTURE_BUFFER, sizeof( GLfloat ) * pDataCount, NULL, GL_STREAM_DRAW ) );
-		OGL_CHECK( pRenderThread, pglBufferData( GL_TEXTURE_BUFFER, sizeof( GLfloat ) * pDataCount, pDataFloat, GL_STREAM_DRAW ) );
-		
-		if( ! pTBO ){
-			deoglTextureStageManager &tsmgr = pRenderThread.GetTexture().GetStages();
-			
-			OGL_CHECK( pRenderThread, pglGenBuffers( 1, &pTBO ) );
-			if( ! pTBO ){
-				DETHROW( deeOutOfMemory );
-			}
-			
-			tsmgr.EnableBareTBO( 0, pTBO );
-			OGL_CHECK( pRenderThread, pglTexBuffer( GL_TEXTURE_BUFFER, GL_RGBA16F, pVBO ) );
-			tsmgr.DisableStage( 0 );
-		}
-		
-		OGL_CHECK( pRenderThread, pglBindBuffer( GL_TEXTURE_BUFFER, 0 ) );
-		
-		pMemoryGPU = sizeof( GLfloat ) * pDataCount;
-		
-		consumption.IncrementTBOGPU( pMemoryGPU );
-		consumption.IncrementGPU( pMemoryGPU );
+	if( pDataCount == 0 ){
+		return;
 	}
+	
+	pEnsurePadding();
+	pEnsureVBO();
+	
+	OGL_CHECK( pRenderThread, pglBindBuffer( GL_TEXTURE_BUFFER, pVBO ) );
+	
+	const int size = pDataCount * pDataTypeSize;
+	OGL_CHECK( pRenderThread, pglBufferData( GL_TEXTURE_BUFFER, size, NULL, GL_STREAM_DRAW ) );
+	OGL_CHECK( pRenderThread, pglBufferData( GL_TEXTURE_BUFFER, size, pData, GL_STREAM_DRAW ) );
+	
+	pEnsureTBO();
+	
+	OGL_CHECK( pRenderThread, pglBindBuffer( GL_TEXTURE_BUFFER, 0 ) );
+}
+
+void deoglDynamicTBO::Update( int offset, int count ){
+	if( count == 0 ){
+		return;
+	}
+	
+	pEnsurePadding();
+	
+	if( offset < 0 || count < 0 || offset + count > GetPixelCount() ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	pEnsureVBO();
+	
+	OGL_CHECK( pRenderThread, pglBindBuffer( GL_TEXTURE_BUFFER, pVBO ) );
+	
+	const int byteOffset = offset * pComponentCount * pDataTypeSize;
+	OGL_CHECK( pRenderThread, pglBufferSubData( GL_TEXTURE_BUFFER, byteOffset,
+		count * pComponentCount * pDataTypeSize, pData + byteOffset ) );
+	
+	pEnsureTBO();
+	
+	OGL_CHECK( pRenderThread, pglBindBuffer( GL_TEXTURE_BUFFER, 0 ) );
 }
 
 
@@ -202,32 +190,82 @@ void deoglDynamicTBO::Update(){
 //////////////////////
 
 void deoglDynamicTBO::pCleanUp(){
-	deoglMemoryConsumptionVBO &consumption = pRenderThread.GetMemoryManager().GetConsumption().GetVBO();
-	
-	consumption.DecrementTBOGPU( pMemoryGPU );
-	consumption.DecrementTBOCount();
-	consumption.DecrementGPU( pMemoryGPU );
-	consumption.DecrementCount();
-	
 	if( pTBO ){
-		pglDeleteBuffers( 1, &pTBO );
+		glDeleteTextures( 1, &pTBO );
 	}
+	
 	if( pVBO ){
+		deoglMemoryConsumptionVBO &consumption = pRenderThread.GetMemoryManager().GetConsumption().GetVBO();
+		consumption.DecrementTBOGPU( pMemoryGPU );
+		consumption.DecrementTBOCount();
+		consumption.DecrementGPU( pMemoryGPU );
+		consumption.DecrementCount();
+		
 		pglDeleteBuffers( 1, &pVBO );
+	}
+	
+	if( pData ){
+		delete [] pData;
 	}
 }
 
 void deoglDynamicTBO::pEnlarge( int count ){
-	if( pDataCount + count >= pDataSize ){
-		const int newSize = pDataCount + count + 50;
-		float * const newArray = new float[ newSize ];
-		
-		if( pDataFloat ){
-			memcpy( newArray, pDataFloat, sizeof( float ) * pDataCount );
-			delete [] pDataFloat;
+	if( pDataCount + count <= pDataSize ){
+		return;
+	}
+	
+	const int newSize = ( pDataCount + count ) * 3 / 2 + 1;
+	uint8_t * const newArray = new uint8_t[ newSize * pDataTypeSize ];
+	
+	if( pData ){
+		memcpy( newArray, pData, pDataCount * pDataTypeSize );
+		delete [] pData;
+	}
+	
+	pData = newArray;
+	pDataSize = newSize;
+}
+
+void deoglDynamicTBO::pEnsureVBO(){
+	deoglMemoryConsumptionVBO &consumption = pRenderThread.GetMemoryManager().GetConsumption().GetVBO();
+	
+	if( ! pVBO ){
+		OGL_CHECK( pRenderThread, pglGenBuffers( 1, &pVBO ) );
+		if( ! pVBO ){
+			DETHROW( deeOutOfMemory );
 		}
 		
-		pDataFloat = newArray;
-		pDataSize = newSize;
+		consumption.IncrementCount();
+		consumption.IncrementTBOCount();
+	}
+	
+	int incrMemoryGPU = -pMemoryGPU;
+	pMemoryGPU = pDataCount * pDataTypeSize;
+	incrMemoryGPU += pMemoryGPU;
+	
+	consumption.IncrementTBOGPU( incrMemoryGPU );
+	consumption.IncrementGPU( incrMemoryGPU );
+}
+
+void deoglDynamicTBO::pEnsureTBO(){
+	if( pTBO ){
+		return;
+	}
+	
+	OGL_CHECK( pRenderThread, glGenTextures( 1, &pTBO ) );
+	if( ! pTBO ){
+		DETHROW( deeOutOfMemory );
+	}
+	
+	deoglTextureStageManager &tsmgr = pRenderThread.GetTexture().GetStages();
+	tsmgr.EnableBareTBO( 0, pTBO );
+	OGL_CHECK( pRenderThread, pglTexBuffer( GL_TEXTURE_BUFFER, GetTBOFormat(), pVBO ) );
+	tsmgr.DisableStage( 0 );
+}
+
+void deoglDynamicTBO::pEnsurePadding(){
+	const int remainder = pDataCount % pComponentCount;
+	if( remainder > 0 ){
+		pEnlarge( pComponentCount - remainder );
 	}
 }

@@ -50,6 +50,7 @@
 #include <deigde/gui/igdeTextArea.h>
 #include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/igdeComboBoxFilter.h>
+#include <deigde/gui/igdeWindow.h>
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/composed/igdeEditPath.h>
 #include <deigde/gui/composed/igdeEditPathListener.h>
@@ -88,7 +89,7 @@ public:
 		}
 		
 		if( pPanel.GetGameDefinition()->GetSkies().HasWithPath( editPath->GetPath() ) ){
-			igdeCommonDialogs::Information( &pPanel, "Change sky emitter path",
+			igdeCommonDialogs::Information( pPanel.GetParentWindow(), "Change sky emitter path",
 				"A sky emitter with this path exists already." );
 			editPath->SetPath( sky->GetPath() );
 			return;
@@ -154,9 +155,9 @@ public:
 		const gdeSkyControllerList &list = sky->GetControllers();
 		decString name( "Controller" );
 		
-		while( igdeCommonDialogs::GetString( &pPanel, "Add Controller", "Name:", name ) ){
+		while( igdeCommonDialogs::GetString( pPanel.GetParentWindow(), "Add Controller", "Name:", name ) ){
 			if( list.HasNamed( name ) ){
-				igdeCommonDialogs::Information( &pPanel, "Add Controller", "Controller exists already." );
+				igdeCommonDialogs::Information( pPanel.GetParentWindow(), "Add Controller", "Controller exists already." );
 				continue;
 			}
 			
@@ -241,7 +242,7 @@ public:
 		}
 		
 		if( pPanel.GetSky()->GetControllers().HasNamed( textField->GetText() ) ){
-			igdeCommonDialogs::Information( &pPanel, "Rename controller",
+			igdeCommonDialogs::Information( pPanel.GetParentWindow(), "Rename controller",
 				"A controller with this name exists already." );
 			textField->SetText( controller->GetName() );
 			return;

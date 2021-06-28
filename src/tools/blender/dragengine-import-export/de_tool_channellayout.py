@@ -37,7 +37,7 @@ class OBJECT_OT_DEToolSortActionChannels( bpy.types.Operator ):
 	bl_options = { 'REGISTER', 'UNDO' }
 	__doc__ = """Sort Action Channels"""
 	
-	#digits = bpy.props.IntProperty( name="Digits", description="Digits to round to", soft_min=0, soft_max=5, default=5 )
+	#digits: bpy.props.IntProperty( name="Digits", description="Digits to round to", soft_min=0, soft_max=5, default=5 )
 	
 	@classmethod
 	def poll( cls, context ):

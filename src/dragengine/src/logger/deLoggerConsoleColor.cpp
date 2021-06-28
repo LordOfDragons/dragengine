@@ -28,6 +28,8 @@
 
 #include "deLoggerConsoleColor.h"
 #include "../common/exceptions.h"
+#include "../common/utils/decDateTime.h"
+#include "../threading/deMutexGuard.h"
 
 #ifdef ANDROID
 #include <android/log.h>
@@ -140,11 +142,8 @@ deLoggerConsoleColor::~deLoggerConsoleColor(){
 ///////////////
 
 deLoggerConsoleColor::eTextAttributes deLoggerConsoleColor::GetInfoAttribute(){
-	eTextAttributes attribute;
-	pMutex.Lock();
-	attribute = pInfoAttribute;
-	pMutex.Unlock();
-	return attribute;
+	const deMutexGuard lock( pMutex );
+	return pInfoAttribute;
 }
 
 void deLoggerConsoleColor::SetInfoAttribute( eTextAttributes attribute ){
@@ -152,17 +151,13 @@ void deLoggerConsoleColor::SetInfoAttribute( eTextAttributes attribute ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	pMutex.Lock();
+	const deMutexGuard lock( pMutex );
 	pInfoAttribute = attribute;
-	pMutex.Unlock();
 }
 
 deLoggerConsoleColor::eTextColors deLoggerConsoleColor::GetInfoColorForeground(){
-	eTextColors color;
-	pMutex.Lock();
-	color = pInfoColorForeground;
-	pMutex.Unlock();
-	return color;
+	const deMutexGuard lock( pMutex );
+	return pInfoColorForeground;
 }
 
 void deLoggerConsoleColor::SetInfoColorForeground( eTextColors color ){
@@ -170,17 +165,13 @@ void deLoggerConsoleColor::SetInfoColorForeground( eTextColors color ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	pMutex.Lock();
+	const deMutexGuard lock( pMutex );
 	pInfoColorForeground = color;
-	pMutex.Unlock();
 }
 
 deLoggerConsoleColor::eTextColors deLoggerConsoleColor::GetInfoColorBackground(){
-	eTextColors color;
-	pMutex.Lock();
-	color = pInfoColorBackground;
-	pMutex.Unlock();
-	return color;
+	const deMutexGuard lock( pMutex );
+	return pInfoColorBackground;
 }
 
 void deLoggerConsoleColor::SetInfoColorBackground( eTextColors color ){
@@ -188,19 +179,15 @@ void deLoggerConsoleColor::SetInfoColorBackground( eTextColors color ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	pMutex.Lock();
+	const deMutexGuard lock( pMutex );
 	pInfoColorBackground = color;
-	pMutex.Unlock();
 }
 
 
 
 deLoggerConsoleColor::eTextAttributes deLoggerConsoleColor::GetWarnAttribute(){
-	eTextAttributes attribute;
-	pMutex.Lock();
-	attribute = pWarnAttribute;
-	pMutex.Unlock();
-	return attribute;
+	const deMutexGuard lock( pMutex );
+	return pWarnAttribute;
 }
 
 void deLoggerConsoleColor::SetWarnAttribute( eTextAttributes attribute ){
@@ -208,17 +195,13 @@ void deLoggerConsoleColor::SetWarnAttribute( eTextAttributes attribute ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	pMutex.Lock();
+	const deMutexGuard lock( pMutex );
 	pWarnAttribute = attribute;
-	pMutex.Unlock();
 }
 
 deLoggerConsoleColor::eTextColors deLoggerConsoleColor::GetWarnColorForeground(){
-	eTextColors color;
-	pMutex.Lock();
-	color = pWarnColorForeground;
-	pMutex.Unlock();
-	return color;
+	const deMutexGuard lock( pMutex );
+	return pWarnColorForeground;
 }
 
 void deLoggerConsoleColor::SetWarnColorForeground( eTextColors color ){
@@ -226,17 +209,13 @@ void deLoggerConsoleColor::SetWarnColorForeground( eTextColors color ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	pMutex.Lock();
+	const deMutexGuard lock( pMutex );
 	pWarnColorForeground = color;
-	pMutex.Unlock();
 }
 
 deLoggerConsoleColor::eTextColors deLoggerConsoleColor::GetWarnColorBackground(){
-	eTextColors color;
-	pMutex.Lock();
-	color = pWarnColorBackground;
-	pMutex.Unlock();
-	return color;
+	const deMutexGuard lock( pMutex );
+	return pWarnColorBackground;
 }
 
 void deLoggerConsoleColor::SetWarnColorBackground( eTextColors color ){
@@ -244,19 +223,15 @@ void deLoggerConsoleColor::SetWarnColorBackground( eTextColors color ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	pMutex.Lock();
+	const deMutexGuard lock( pMutex );
 	pWarnColorBackground = color;
-	pMutex.Unlock();
 }
 
 
 
 deLoggerConsoleColor::eTextAttributes deLoggerConsoleColor::GetErrorAttribute(){
-	eTextAttributes attribute;
-	pMutex.Lock();
-	attribute = pErrorAttribute;
-	pMutex.Unlock();
-	return attribute;
+	const deMutexGuard lock( pMutex );
+	return pErrorAttribute;
 }
 
 void deLoggerConsoleColor::SetErrorAttribute( eTextAttributes attribute ){
@@ -264,17 +239,13 @@ void deLoggerConsoleColor::SetErrorAttribute( eTextAttributes attribute ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	pMutex.Lock();
+	const deMutexGuard lock( pMutex );
 	pErrorAttribute = attribute;
-	pMutex.Unlock();
 }
 
 deLoggerConsoleColor::eTextColors deLoggerConsoleColor::GetErrorColorForeground(){
-	eTextColors color;
-	pMutex.Lock();
-	color = pErrorColorForeground;
-	pMutex.Unlock();
-	return color;
+	const deMutexGuard lock( pMutex );
+	return pErrorColorForeground;
 }
 
 void deLoggerConsoleColor::SetErrorColorForeground( eTextColors color ){
@@ -282,17 +253,13 @@ void deLoggerConsoleColor::SetErrorColorForeground( eTextColors color ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	pMutex.Lock();
+	const deMutexGuard lock( pMutex );
 	pErrorColorForeground = color;
-	pMutex.Unlock();
 }
 
 deLoggerConsoleColor::eTextColors deLoggerConsoleColor::GetErrorColorBackground(){
-	eTextColors color;
-	pMutex.Lock();
-	color = pErrorColorBackground;
-	pMutex.Unlock();
-	return color;
+	const deMutexGuard lock( pMutex );
+	return pErrorColorBackground;
 }
 
 void deLoggerConsoleColor::SetErrorColorBackground( eTextColors color ){
@@ -300,86 +267,22 @@ void deLoggerConsoleColor::SetErrorColorBackground( eTextColors color ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	pMutex.Lock();
+	const deMutexGuard lock( pMutex );
 	pErrorColorBackground = color;
-	pMutex.Unlock();
 }
 
 
 
 void deLoggerConsoleColor::LogInfo( const char *source, const char *message ){
-	if( ! source || ! message ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	pMutex.Lock();
-	
-	try{
-		const int len = strlen( message );
-		
-		if( len > 0 && message[ len - 1 ] == '\n' ){
-			pPrintMessage( source, message, pInfoAttribute, pInfoColorForeground, pInfoColorBackground, 0 );
-			
-		}else{
-			pPrintMessage( source, message, pInfoAttribute, pInfoColorForeground, pInfoColorBackground, '\n' );
-		}
-		
-		pMutex.Unlock();
-		
-	}catch( const deException & ){
-		pMutex.Unlock();
-		throw;
-	}
+	LogMessage( source, message, pInfoAttribute, pInfoColorForeground, pInfoColorBackground );
 }
 
 void deLoggerConsoleColor::LogWarn( const char *source, const char *message ){
-	if( ! source || ! message ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	pMutex.Lock();
-	
-	try{
-		const int len = strlen( message );
-		
-		if( len > 0 && message[ len - 1 ] == '\n' ){
-			pPrintMessage( source, message, pWarnAttribute, pWarnColorForeground, pWarnColorBackground, 0 );
-			
-		}else{
-			pPrintMessage( source, message, pWarnAttribute, pWarnColorForeground, pWarnColorBackground, '\n' );
-		}
-		
-		pMutex.Unlock();
-		
-	}catch( const deException & ){
-		pMutex.Unlock();
-		throw;
-	}
+	LogMessage( source, message, pWarnAttribute, pWarnColorForeground, pWarnColorBackground );
 }
 
 void deLoggerConsoleColor::LogError( const char *source, const char *message ){
-	if( ! source || ! message ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	pMutex.Lock();
-	
-	try{
-		const int len = strlen( message );
-		
-		if( len > 0 && message[ len - 1 ] == '\n' ){
-			pPrintMessage( source, message, pErrorAttribute, pErrorColorForeground, pErrorColorBackground, 0 );
-			
-		}else{
-			pPrintMessage( source, message, pErrorAttribute, pErrorColorForeground, pErrorColorBackground, '\n' );
-		}
-		
-		pMutex.Unlock();
-		
-	}catch( const deException & ){
-		pMutex.Unlock();
-		throw;
-	}
+	LogMessage( source, message, pErrorAttribute, pErrorColorForeground, pErrorColorBackground );
 }
 
 
@@ -390,14 +293,31 @@ void deLoggerConsoleColor::LogError( const char *source, const char *message ){
 void deLoggerConsoleColor::pPrintMessage( const char *source, const char *message,
 eTextAttributes attribute, eTextColors colorForeground, eTextColors colorBackground,
 char lineEnd ) const {
+	if( ! source || ! message ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	const decDateTime timestamp;
+	
 	//if( attribute == etaDefault && colorForeground == etcWhite && colorBackground == etcBlack ){
 	if( attribute == etaDefault && colorForeground == etcDefault && colorBackground == etcDefault ){
-		printf( "[%s] %s%c", source, message, lineEnd );
+		printf( "[%s] [%4d-%02d-%02d %02d:%02d:%02d] %s%c", source,
+			timestamp.GetYear(), timestamp.GetMonth(), timestamp.GetDay(),
+			timestamp.GetHour(), timestamp.GetMinute(), timestamp.GetSecond(), message, lineEnd );
 		
 	}else{
-		printf( "\033[%d;%d;%dm[%s] %s\33[0;0;0m%c", attribute,
-			vColorTableForeground[ colorForeground ],
-			vColorTableBackground[ colorBackground ],
-			source, message, lineEnd );
+		printf( "\033[%d;%d;%dm[%s] [%4d-%02d-%02d %02d:%02d:%02d] %s\33[0;0;0m%c", attribute,
+			vColorTableForeground[ colorForeground ], vColorTableBackground[ colorBackground ],
+			source, timestamp.GetYear(), timestamp.GetMonth(), timestamp.GetDay(),
+			timestamp.GetHour(), timestamp.GetMinute(), timestamp.GetSecond(), message, lineEnd );
 	}
+}
+
+void deLoggerConsoleColor::LogMessage( const char *source, const char *message,
+eTextAttributes attribute, eTextColors colorForeground, eTextColors colorBackground ){
+	const int len = strlen( message );
+	const deMutexGuard lock( pMutex );
+	
+	pPrintMessage( source, message, attribute, colorForeground, colorBackground,
+		( len == 0 || message[ len - 1 ] != '\n' ) ? '\n' : 0 );
 }

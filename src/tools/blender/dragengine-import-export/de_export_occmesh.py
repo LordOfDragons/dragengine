@@ -45,8 +45,8 @@ class OBJECT_OT_ExportOcclusionMesh( bpy.types.Operator, ExportHelper ):
 	bl_label = "Occlusion Mesh (.deoccmesh)"
 	__doc__ = """Export as Drag[en]gine Occlusion Mesh Resource"""
 	filename_ext = ".deoccmesh"
-	filter_glob = bpy.props.StringProperty( default="*.deoccmesh", options={ 'HIDDEN' } )
-	debug_level = bpy.props.EnumProperty( items = (
+	filter_glob: bpy.props.StringProperty( default="*.deoccmesh", options={ 'HIDDEN' } )
+	debug_level: bpy.props.EnumProperty( items = (
 		( '0', "None", "Output no debug messages." ),
 		( '1', "Basic", "Output basic amount of debug messages." ),
 		( '2', "Verbose", "Output lots of debug messages." ),

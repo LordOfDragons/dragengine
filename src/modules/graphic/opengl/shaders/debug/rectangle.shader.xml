@@ -1,17 +1,16 @@
 <?xml version='1.0' encoding='ISO-8859-1'?>
-<!DOCTYPE shader SYSTEM "DEOpenGLShader.dtd">
 <shader>
 	<name>Debug Rectangle</name>
 	
 	<version>150</version>
 	
-	<parameter name="pPosTransform"/>
-	<parameter name="pColor"/>
+	<texture name='texData1' target='0'/>
+	<texture name='texData2' target='1'/>
 	
 	<attribute name="inPosition" target="0"/>
 	
 	<output name="outColor" target="0"/>
 	
-	<sourceCode unit="vertex">v130/vertex/generic/screenspace.glsl</sourceCode>
-	<sourceCode unit="fragment">v130/fragment/generic/color.glsl</sourceCode>
+	<sourceCode unit="vertex">v130/vertex/debug/rectangle.glsl</sourceCode>
+	<sourceCode unit="fragment">v130/fragment/debug/rectangle.glsl</sourceCode>
 </shader>

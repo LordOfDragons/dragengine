@@ -100,14 +100,12 @@ void deoglRDSRenderableColor::SetColor( const decColor &color ){
 	
 	pColor = color;
 	pDirty = true;
-	
-	GetDynamicSkin().TextureConfigurationChanged();
 }
 
-void deoglRDSRenderableColor::PrepareForRender(){
+void deoglRDSRenderableColor::PrepareForRender( const deoglRenderPlanMasked * ){
 }
 
-decColor deoglRDSRenderableColor::GetRenderColor( const decColor &defaultColor ){
+decColor deoglRDSRenderableColor::GetRenderColor( const decColor & ){
 	return pColor;
 }
 

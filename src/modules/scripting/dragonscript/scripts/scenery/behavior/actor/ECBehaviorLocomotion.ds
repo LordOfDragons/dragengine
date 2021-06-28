@@ -433,8 +433,8 @@ class ECBehaviorLocomotion extends DefaultECBehavior
 	 * of type ECBehaviorLocomotion.
 	 */
 	static public func ECBehaviorLocomotion getBehaviorIn( BehaviorElementClass eclass )
-		return eclass.findBehavior( block ECBehavior each
-			return each castable ECBehaviorLocomotion
+		return eclass.findBehavior( block ECBehaviorLocomotion each
+			return true
 		end ) cast ECBehaviorLocomotion
 	end
 	
@@ -445,8 +445,8 @@ class ECBehaviorLocomotion extends DefaultECBehavior
 	 * of type ECBehaviorLocomotion.Instance .
 	 */
 	static public func Instance getInstanceIn( BehaviorElement element )
-		return element.findInstance( block ECBehaviorInstance each
-			return each castable Instance
+		return element.findInstance( block Instance each
+			return true
 		end ) cast Instance
 	end
 	

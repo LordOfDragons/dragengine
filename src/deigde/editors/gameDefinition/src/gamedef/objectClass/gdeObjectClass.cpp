@@ -28,6 +28,7 @@
 #include "billboard/gdeOCBillboard.h"
 #include "camera/gdeOCCamera.h"
 #include "component/gdeOCComponent.h"
+#include "component/gdeOCComponentTexture.h"
 #include "envmapprobe/gdeOCEnvMapProbe.h"
 #include "inherit/gdeOCInherit.h"
 #include "light/gdeOCLight.h"
@@ -161,6 +162,12 @@ pCanInstantiate( objectClass.pCanInstantiate )
 		for( i=0; i<count; i++ ){
 			objRef.TakeOver( new gdeOCSpeaker( *objectClass.pSpeakers.GetAt( i ) ) );
 			pSpeakers.Add( ( gdeOCSpeaker* )( deObject* )objRef );
+		}
+		
+		count = objectClass.pTextures.GetCount();
+		for( i=0; i<count; i++ ){
+			objRef.TakeOver( new gdeOCComponentTexture( *objectClass.pTextures.GetAt( i ) ) );
+			pTextures.Add( ( gdeOCComponentTexture* )( deObject* )objRef );
 		}
 		
 	}catch( const deException & ){
@@ -489,6 +496,24 @@ void gdeObjectClass::NotifySpeakersChanged(){
 void gdeObjectClass::NotifySpeakerChanged( gdeOCSpeaker *speaker ){
 	if( pGameDefinition ){
 		pGameDefinition->NotifyOCSpeakerChanged( this, speaker );
+	}
+}
+
+
+
+void gdeObjectClass::SetActiveTexture( gdeOCComponentTexture *texture ){
+	pActiveTexture = texture;
+}
+
+void gdeObjectClass::NotifyTexturesChanged(){
+	if( pGameDefinition ){
+		pGameDefinition->NotifyOCTexturesChanged( this );
+	}
+}
+
+void gdeObjectClass::NotifyTextureChanged( gdeOCComponentTexture *texture ){
+	if( pGameDefinition ){
+		pGameDefinition->NotifyOCTextureChanged( this, texture );
 	}
 }
 

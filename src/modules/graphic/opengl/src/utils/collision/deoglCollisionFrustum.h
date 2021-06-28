@@ -180,12 +180,12 @@ public:
 	
 	/** @name Collision Routines */
 	/*@{*/
-	inline decVector GetLeftNormal() const{ return pNormalLeft; }
-	inline decVector GetRightNormal() const{ return pNormalRight; }
-	inline decVector GetTopNormal() const{ return pNormalTop; }
-	inline decVector GetBottomNormal() const{ return pNormalBottom; }
-	inline decVector GetNearNormal() const{ return pNormalNear; }
-	inline decVector GetFarNormal() const{ return pNormalFar; }
+	inline const decVector &GetLeftNormal() const{ return pNormalLeft; }
+	inline const decVector &GetRightNormal() const{ return pNormalRight; }
+	inline const decVector &GetTopNormal() const{ return pNormalTop; }
+	inline const decVector &GetBottomNormal() const{ return pNormalBottom; }
+	inline const decVector &GetNearNormal() const{ return pNormalNear; }
+	inline const decVector &GetFarNormal() const{ return pNormalFar; }
 	inline float GetLeftDistance() const{ return pDistLeft; }
 	inline float GetRightDistance() const{ return pDistRight; }
 	inline float GetTopDistance() const{ return pDistTop; }
@@ -199,7 +199,7 @@ public:
 	void SetNearPlane(const decVector &normal, float dist);
 	void SetFarPlane(const decVector &normal, float dist);
 	/** Sets the frustm from the given projection matrix. */
-	void SetFrustum(const decDMatrix &mat);
+	void SetFrustum(const decMatrix &mat);
 	/**
 	 * Sets the frustum from the given parameters.
 	 * @param origin Pinacle of the uncapped frustum.

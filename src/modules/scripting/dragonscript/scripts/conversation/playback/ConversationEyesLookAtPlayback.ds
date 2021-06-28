@@ -239,6 +239,7 @@ class CharacterEyesLookAtPlayback extends ConversationLookAtPlayback
 	
 	/** \brief Update actor look-at. */
 	public func void updateActorLookAt( ConversationActor actor, float blendFactor )
+		this.pRequiresApply = false
 		if this.pControllerHorizontal == null and this.pControllerVertical == null
 			return
 		end
@@ -308,11 +309,8 @@ class CharacterEyesLookAtPlayback extends ConversationLookAtPlayback
 	 * Called after update() to apply animation. Can do nothing if no change has been done.
 	 */
 	public func void applyAnimation()
-		if not this.pRequiresApply
-			return
+		if this.pRequiresApply
+			this.pAnimatorInstance.apply()
 		end
-		
-		this.pRequiresApply = false
-		this.pAnimatorInstance.apply()
 	end
 end

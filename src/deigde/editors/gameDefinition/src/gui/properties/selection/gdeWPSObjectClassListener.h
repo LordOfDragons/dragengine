@@ -116,6 +116,18 @@ public:
 	/** \brief Object class inherit changed. */
 	virtual void OCInheritChanged( gdeGameDefinition *gameDefinition,
 		gdeObjectClass *objectClass, gdeOCInherit *inherit );
+	
+	/** Object class textures changed. */
+	virtual void OCTexturesChanged( gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass );
+	
+	/** Object class tzexture changed. */
+	virtual void OCTextureChanged( gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass, gdeOCComponentTexture *texture );
+	
+	/** Object class active texture changed. */
+	virtual void OCActiveTextureChanged( gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass );
 	/*@}*/
 };
 

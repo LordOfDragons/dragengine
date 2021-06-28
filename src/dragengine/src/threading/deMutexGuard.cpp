@@ -38,6 +38,13 @@ pLocked( false )
 	Lock();
 }
 
+deMutexGuard::deMutexGuard( const deMutexGuard &guard ) :
+pMutex( guard.pMutex ),
+pLocked( false )
+{
+	DETHROW( deeInvalidAction );
+}
+
 deMutexGuard::~deMutexGuard(){
 	if( pLocked ){
 		Unlock();

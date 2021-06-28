@@ -40,29 +40,20 @@
 ////////////////////////////
 
 deoglRenderTaskInstance::deoglRenderTaskInstance() :
-pParamBlock( NULL ),
-pParamBlockSpecial( NULL ),
+pInstance( NULL ),
 
-pFirstPoint( 0 ),
-pPointCount( 0 ),
-pFirstIndex( 0 ),
-pIndexCount( 0 ),
+pSubInstances( NULL ),
 pSubInstanceCount( 0 ),
-pSubInstanceSPB( NULL ),
-pGroup( NULL ),
-pDoubleSided( false ),
-pPrimitiveType( GL_TRIANGLES ),
-pTessPatchVertexCount( 3 ),
+pSubInstanceSize( 0 ),
 
 pSIIndexInstanceSPB( NULL ),
-pSIIndexInstanceFirst( 0 ),
-
-pNextInstance( NULL ),
-
-pLLNext( NULL ){
+pSIIndexInstanceFirst( 0 ){
 }
 
 deoglRenderTaskInstance::~deoglRenderTaskInstance(){
+	if( pSubInstances ){
+		delete [] pSubInstances;
+	}
 }
 
 
@@ -70,64 +61,34 @@ deoglRenderTaskInstance::~deoglRenderTaskInstance(){
 // Management
 ///////////////
 
-void deoglRenderTaskInstance::SetParameterBlock( deoglShaderParameterBlock *block ){
-	pParamBlock = block;
-}
-
-void deoglRenderTaskInstance::SetParameterBlockSpecial( deoglShaderParameterBlock *block ){
-	pParamBlockSpecial = block;
-}
-
-void deoglRenderTaskInstance::SetFirstPoint( int firstPoint ){
-	pFirstPoint = firstPoint;
-}
-
-void deoglRenderTaskInstance::SetPointCount( int pointCount ){
-	pPointCount = pointCount;
-}
-
-void deoglRenderTaskInstance::SetFirstIndex( int firstIndex ){
-	pFirstIndex = firstIndex;
-}
-
-void deoglRenderTaskInstance::SetIndexCount( int indexCount ){
-	pIndexCount = indexCount;
-}
-
-void deoglRenderTaskInstance::SetSubInstanceCount( int subInstanceCount ){
-	pSubInstanceCount = subInstanceCount;
-}
-
-void deoglRenderTaskInstance::SetSubInstanceSPB( deoglSharedSPB *spb ){
-	pSubInstanceSPB = spb;
-}
-
-void deoglRenderTaskInstance::SetGroup( deoglRenderTaskInstanceGroup *group ){
-	pGroup = group;
-}
-
-void deoglRenderTaskInstance::SetDoubleSided( bool doubleSided ){
-	pDoubleSided = doubleSided;
-}
-
-void deoglRenderTaskInstance::SetPrimitiveType( GLenum primitiveType ){
-	pPrimitiveType = primitiveType;
-}
-
-void deoglRenderTaskInstance::SetTessPatchVertexCount( int count ){
-	pTessPatchVertexCount = count;
-}
-
-void deoglRenderTaskInstance::SetNextInstance( deoglRenderTaskInstance *instance ){
-	pNextInstance = instance;
+void deoglRenderTaskInstance::SetInstance( const deoglRenderTaskSharedInstance *instance ){
+	pInstance = instance;
 }
 
 
+
+const deoglRenderTaskInstance::sSubInstance & deoglRenderTaskInstance::GetSubInstanceAt( int index ) const{
+	if( index < 0 || index >= pSubInstanceCount ){
+		DETHROW( deeInvalidParam );
+	}
+	return pSubInstances[ index ];
+}
 
 void deoglRenderTaskInstance::AddSubInstance( int indexInstance, int flags ){
-	pSIIndexInstance.Add( indexInstance );
-	pSIFlags.Add( flags );
-	pSubInstanceCount++;
+	if( pSubInstanceCount == pSubInstanceSize ){
+		const int newSize = pSubInstanceCount * 3 / 2 + 1;
+		sSubInstance * const newArray = new sSubInstance[ newSize ];
+		if( pSubInstances ){
+			memcpy( newArray, pSubInstances, sizeof( sSubInstance ) * pSubInstanceCount );
+			delete [] pSubInstances;
+		}
+		pSubInstances = newArray;
+		pSubInstanceSize = newSize;
+	}
+	
+	sSubInstance &subInstance = pSubInstances[ pSubInstanceCount++ ];
+	subInstance.instance = indexInstance;
+	subInstance.flags = flags;
 }
 
 void deoglRenderTaskInstance::SetSIIndexInstanceParam( deoglShaderParameterBlock *paramBlock,
@@ -141,7 +102,6 @@ void deoglRenderTaskInstance::WriteSIIndexInstanceInt( bool useFlags ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	const int count = pSIIndexInstance.GetCount();
 	int i;
 	
 	if( useFlags ){
@@ -149,27 +109,25 @@ void deoglRenderTaskInstance::WriteSIIndexInstanceInt( bool useFlags ){
 			GLuint index;
 			GLuint flags;
 		};
-		sIndexFlags * const data = ( sIndexFlags* )pSIIndexInstanceSPB->GetMappedBuffer()
-			+ pSIIndexInstanceFirst;
-		for( i=0; i<count; i++ ){
-			data[ i ].index = ( GLuint )pSIIndexInstance.GetAt( i );
-			data[ i ].flags = ( GLuint )pSIFlags.GetAt( i );
+		sIndexFlags * const data = ( sIndexFlags* )pSIIndexInstanceSPB->GetMappedBuffer() + pSIIndexInstanceFirst;
+		for( i=0; i<pSubInstanceCount; i++ ){
+			const sSubInstance &subInstance = pSubInstances[ i ];
+			data[ i ].index = ( GLuint )subInstance.instance;
+			data[ i ].flags = ( GLuint )subInstance.flags;
 		}
 		
 	}else{
 		struct sIndex{
 			GLuint index;
 		};
-		sIndex * const data = ( sIndex* )pSIIndexInstanceSPB->GetMappedBuffer()
-			+ pSIIndexInstanceFirst;
-		for( i=0; i<count; i++ ){
-			data[ i ].index = ( GLuint )pSIIndexInstance.GetAt( i );
+		sIndex * const data = ( sIndex* )pSIIndexInstanceSPB->GetMappedBuffer() + pSIIndexInstanceFirst;
+		for( i=0; i<pSubInstanceCount; i++ ){
+			data[ i ].index = ( GLuint )pSubInstances[ i ].instance;
 		}
 	}
 }
 
 void deoglRenderTaskInstance::WriteSIIndexInstanceShort( bool useFlags ){
-	const int count = pSIIndexInstance.GetCount();
 	int i;
 	
 	if( useFlags ){
@@ -177,53 +135,29 @@ void deoglRenderTaskInstance::WriteSIIndexInstanceShort( bool useFlags ){
 			GLushort index;
 			GLushort flags;
 		};
-		sIndexFlags * const data = ( sIndexFlags* )pSIIndexInstanceSPB->GetMappedBuffer()
-			+ pSIIndexInstanceFirst;
-		for( i=0; i<count; i++ ){
-			data[ i ].index = ( GLushort )pSIIndexInstance.GetAt( i );
-			data[ i ].flags = ( GLushort )pSIFlags.GetAt( i );
+		sIndexFlags * const data = ( sIndexFlags* )pSIIndexInstanceSPB->GetMappedBuffer() + pSIIndexInstanceFirst;
+		for( i=0; i<pSubInstanceCount; i++ ){
+			const sSubInstance &subInstance = pSubInstances[ i ];
+			data[ i ].index = ( GLushort )subInstance.instance;
+			data[ i ].flags = ( GLushort )subInstance.flags;
 		}
 		
 	}else{
 		struct sIndex{
 			GLuint index;
 		};
-		sIndex * const data = ( sIndex* )pSIIndexInstanceSPB->GetMappedBuffer()
-			+ pSIIndexInstanceFirst;
-		for( i=0; i<count; i++ ){
-			data[ i ].index = ( GLushort )pSIIndexInstance.GetAt( i );
+		sIndex * const data = ( sIndex* )pSIIndexInstanceSPB->GetMappedBuffer() + pSIIndexInstanceFirst;
+		for( i=0; i<pSubInstanceCount; i++ ){
+			data[ i ].index = ( GLushort )pSubInstances[ i ].instance;
 		}
 	}
 }
 
 
 
-void deoglRenderTaskInstance::Clear(){
-	pParamBlock = NULL;
-	pParamBlockSpecial = NULL;
-	
-	pFirstPoint = 0;
-	pPointCount = 0;
-	pFirstIndex = 0;
-	pIndexCount = 0;
+void deoglRenderTaskInstance::Reset(){
+	pInstance = NULL;
 	pSubInstanceCount = 0;
-	pSubInstanceSPB = NULL;
-	pGroup = NULL;
-	pDoubleSided = false;
-	pPrimitiveType = GL_TRIANGLES;
-	pTessPatchVertexCount = 3;
-	
-	pSIIndexInstance.RemoveAll();
-	pSIFlags.RemoveAll();
 	pSIIndexInstanceSPB = NULL;
 	pSIIndexInstanceFirst = 0;
-}
-
-
-
-// Linked List
-////////////////
-
-void deoglRenderTaskInstance::SetLLNext( deoglRenderTaskInstance *instance ){
-	pLLNext = instance;
 }

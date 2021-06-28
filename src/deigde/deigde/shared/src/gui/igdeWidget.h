@@ -33,6 +33,7 @@ class igdeContainer;
 class igdeEngineController;
 class igdeGameDefinition;
 class igdeGameProject;
+class igdeWindow;
 
 class deEngine;
 class deLogger;
@@ -134,6 +135,9 @@ public:
 	
 	/** \brief Convert widget position to screen position. */
 	virtual decPoint WidgetToScreen( const decPoint &position ) const;
+	
+	/** \brief Parent window. */
+	virtual igdeWindow *GetParentWindow();
 	/*@}*/
 	
 	

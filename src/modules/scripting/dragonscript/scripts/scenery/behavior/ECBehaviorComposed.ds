@@ -382,8 +382,8 @@ class ECBehaviorComposed extends DefaultECBehavior
 	 * of type ECBehaviorCollider.
 	 */
 	static public func ECBehaviorComposed getBehaviorIn( BehaviorElementClass eclass )
-		return eclass.findBehavior( block ECBehavior each
-			return each castable ECBehaviorComposed
+		return eclass.findBehavior( block ECBehaviorComposed each
+			return true
 		end ) cast ECBehaviorComposed
 	end
 	
@@ -395,8 +395,7 @@ class ECBehaviorComposed extends DefaultECBehavior
 	 */
 	static public func ECBehaviorComposed getBehaviorIn( BehaviorElementClass eclass, String id )
 		return eclass.findBehavior( block ECBehaviorComposed each
-			return each castable ECBehaviorComposed and \
-				( each cast ECBehaviorComposed ).getID().equals( id )
+			return each.getID().equals( id )
 		end ) cast ECBehaviorComposed
 	end
 	
@@ -407,13 +406,9 @@ class ECBehaviorComposed extends DefaultECBehavior
 	 * been created in the element.
 	 */
 	static public func Array getAllBehaviorsIn( BehaviorElementClass eclass )
-		var Array list = Array.new()
-		eclass.forEachBehavior( block ECBehavior each
-			if each castable ECBehaviorComposed
-				list.add( each )
-			end
+		return eclass.collectBehaviors( block ECBehaviorComposed each
+			return true
 		end )
-		return list
 	end
 	
 	
@@ -426,8 +421,8 @@ class ECBehaviorComposed extends DefaultECBehavior
 	 * the first instance.
 	 */
 	static public func Instance getInstanceIn( BehaviorElement element )
-		return element.findInstance( block ECBehaviorInstance each
-			return each castable Instance
+		return element.findInstance( block Instance each
+			return true
 		end ) cast Instance
 	end
 	
@@ -438,9 +433,8 @@ class ECBehaviorComposed extends DefaultECBehavior
 	 * of type ECBehaviorComposed.Instance with specific identifier.
 	 */
 	static public func Instance getInstanceIn( BehaviorElement element, String id )
-		return element.findInstance( block ECBehaviorInstance each
-			return each castable Instance and \
-				( each cast Instance ).getECBehavior().getID().equals( id )
+		return element.findInstance( block Instance each
+			return each.getECBehavior().getID().equals( id )
 		end ) cast Instance
 	end
 	
@@ -451,13 +445,9 @@ class ECBehaviorComposed extends DefaultECBehavior
 	 * been created in the element.
 	 */
 	static public func Array getAllInstancesIn( BehaviorElement element )
-		var Array list = Array.new()
-		element.forEachInstance( block ECBehaviorInstance each
-			if each castable Instance
-				list.add( each )
-			end
+		return element.collectInstances( block Instance each
+			return true
 		end )
-		return list
 	end
 	
 	

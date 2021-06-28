@@ -39,34 +39,39 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeCamera::igdeCamera( deEngine *engine ){
+igdeCamera::igdeCamera( deEngine *engine ) :
+pEngine( engine ),
+
+pFov( 90.0f ),
+pFovRatio( 1.0f ),
+pImageDistance( 0.01f ),
+pViewDistance( 500.0f ),
+
+pEnableHDRR( true ),
+pExposure( 1.0f ),
+pLowestIntensity( 1.0f ),
+pHighestIntensity( 20.0f ),
+pAdaptionTime( 1.0f ),
+
+pEnableGI( false ),
+
+pDistance( 0.0f )
+{
 	if( ! engine ){
 		DETHROW( deeInvalidParam );
 	}
-	
-	pEngine = engine;
-	
-	pFov = 90.0f;
-	pFovRatio = 1.0f;
-	pImageDistance = 0.01f;
-	pViewDistance = 500.0f;
-	
-	pExposure = 1.0f;
-	pLowestIntensity = 1.0f;
-	pHighestIntensity = 20.0f;
-	pAdaptionTime = 1.0f;
-	
-	pDistance = 0.0f;
 	
 	pEngCamera.TakeOver( engine->GetCameraManager()->CreateCamera() );
 	pEngCamera->SetFov( pFov * DEG2RAD );
 	pEngCamera->SetFovRatio( pFovRatio );
 	pEngCamera->SetImageDistance( pImageDistance );
 	pEngCamera->SetViewDistance( pViewDistance );
+	pEngCamera->SetEnableHDRR( pEnableHDRR );
 	pEngCamera->SetExposure( pExposure );
 	pEngCamera->SetLowestIntensity( pLowestIntensity );
 	pEngCamera->SetHighestIntensity( pHighestIntensity );
 	pEngCamera->SetAdaptionTime( pAdaptionTime );
+	pEngCamera->SetEnableGI( pEnableGI );
 	
 	SetName( "Camera" );
 }
@@ -103,128 +108,163 @@ void igdeCamera::SetName( const char *name ){
 }
 
 void igdeCamera::SetPosition( const decDVector &position ){
-	if( ! position.IsEqualTo( pPosition ) ){
-		pPosition = position;
-		
-		pUpdateViewMatrix();
-		pUpdateCameraPosition();
-		
-		GeometryChanged();
+	if( position.IsEqualTo( pPosition ) ){
+		return;
 	}
+	
+	pPosition = position;
+	
+	pUpdateViewMatrix();
+	pUpdateCameraPosition();
+	
+	GeometryChanged();
 }
 
 void igdeCamera::SetOrientation( const decVector &orientation ){
-	if( ! orientation.IsEqualTo( pOrientation ) ){
-		pOrientation = orientation;
-		
-		pUpdateViewMatrix();
-		pUpdateCameraPosition();
-		
-		GeometryChanged();
+	if( orientation.IsEqualTo( pOrientation ) ){
+		return;
 	}
+	
+	pOrientation = orientation;
+	
+	pUpdateViewMatrix();
+	pUpdateCameraPosition();
+	
+	GeometryChanged();
 }	
 
 void igdeCamera::SetFov( float fov ){
-	if( fabs( fov - pFov ) > 1e-5 ){
-		pFov = fov;
-		
-		pEngCamera->SetFov( pFov * DEG2RAD );
-		
-		GeometryChanged();
+	if( fabs( fov - pFov ) <= FLOAT_SAFE_EPSILON ){
+		return;
 	}
+	
+	pFov = fov;
+	
+	pEngCamera->SetFov( pFov * DEG2RAD );
+	
+	GeometryChanged();
 }
 
 void igdeCamera::SetFovRatio( float fovRatio ){
-	if( fabs( fovRatio - pFovRatio ) > 1e-5 ){
-		pFovRatio = fovRatio;
-		
-		pEngCamera->SetFovRatio( pFovRatio );
-		
-		GeometryChanged();
+	if( fabs( fovRatio - pFovRatio ) <= FLOAT_SAFE_EPSILON ){
+		return;
 	}
+	
+	pFovRatio = fovRatio;
+	
+	pEngCamera->SetFovRatio( pFovRatio );
+	
+	GeometryChanged();
 }
 
 void igdeCamera::SetImageDistance( float imageDistance ){
-	if( fabs( imageDistance - pImageDistance ) > 1e-5 ){
-		pImageDistance = imageDistance;
-		
-		pEngCamera->SetImageDistance( imageDistance );
-		
-		GeometryChanged();
+	if( fabs( imageDistance - pImageDistance ) <= FLOAT_SAFE_EPSILON ){
+		return;
 	}
+	
+	pImageDistance = imageDistance;
+	
+	pEngCamera->SetImageDistance( imageDistance );
+	
+	GeometryChanged();
 }
 
 void igdeCamera::SetViewDistance( float viewDistance ){
-	if( fabs( viewDistance - pViewDistance ) > 1e-5 ){
-		pViewDistance = viewDistance;
-		
-		pEngCamera->SetViewDistance( viewDistance );
-		
-		GeometryChanged();
+	if( fabs( viewDistance - pViewDistance ) <= FLOAT_SAFE_EPSILON ){
+		return;
 	}
+	
+	pViewDistance = viewDistance;
+	
+	pEngCamera->SetViewDistance( viewDistance );
+	
+	GeometryChanged();
+}
+
+void igdeCamera::SetEnableHDRR( bool enable ){
+	if( enable == pEnableHDRR ){
+		return;
+	}
+	
+	pEnableHDRR = enable;
+	pEngCamera->SetEnableHDRR( enable );
+	
+	AdaptionChanged();
 }
 
 void igdeCamera::SetExposure( float exposure ){
-	if( exposure < 0.0f ) exposure = 0.0f;
-	
-	if( fabs( exposure - pExposure ) > 1e-4 ){
-		pExposure = exposure;
-		
-		pEngCamera->SetExposure( exposure );
-		
-		AdaptionChanged();
+	exposure = decMath::max( exposure, 0.0f );
+	if( fabs( exposure - pExposure ) <= FLOAT_SAFE_EPSILON ){
+		return;
 	}
+	
+	pExposure = exposure;
+	pEngCamera->SetExposure( exposure );
+	
+	AdaptionChanged();
 }
 
 void igdeCamera::SetLowestIntensity( float lowestIntensity ){
-	if( lowestIntensity < 0.0f ) lowestIntensity = 0.0f;
-	
-	if( fabs( lowestIntensity - pLowestIntensity ) > 1e-4 ){
-		pLowestIntensity = lowestIntensity;
-		
-		pEngCamera->SetLowestIntensity( lowestIntensity );
-		
-		AdaptionChanged();
+	lowestIntensity = decMath::max( lowestIntensity, 0.0f );
+	if( fabs( lowestIntensity - pLowestIntensity ) <= FLOAT_SAFE_EPSILON ){
+		return;
 	}
+	
+	pLowestIntensity = lowestIntensity;
+	pEngCamera->SetLowestIntensity( lowestIntensity );
+	
+	AdaptionChanged();
 }
 
 void igdeCamera::SetHighestIntensity( float highestIntensity ){
-	if( highestIntensity < 0.0f ) highestIntensity = 0.0f;
-	
-	if( fabs( highestIntensity - pHighestIntensity ) > 1e-4 ){
-		pHighestIntensity = highestIntensity;
-		
-		pEngCamera->SetHighestIntensity( highestIntensity );
-		
-		AdaptionChanged();
+	highestIntensity = decMath::max( highestIntensity, 0.0f );
+	if( fabs( highestIntensity - pHighestIntensity ) <= FLOAT_SAFE_EPSILON ){
+		return;
 	}
+	
+	pHighestIntensity = highestIntensity;
+	pEngCamera->SetHighestIntensity( highestIntensity );
+	
+	AdaptionChanged();
 }
 
 void igdeCamera::SetAdaptionTime( float adaptionTime ){
-	if( adaptionTime < 0.0f ) adaptionTime = 0.0f;
-	
-	if( fabs( adaptionTime - pAdaptionTime ) > 1e-4 ){
-		pAdaptionTime = adaptionTime;
-		
-		pEngCamera->SetAdaptionTime( adaptionTime );
-		
-		AdaptionChanged();
+	adaptionTime = decMath::max( adaptionTime, 0.0f );
+	if( fabs( adaptionTime - pAdaptionTime ) <= FLOAT_SAFE_EPSILON ){
+		return;
 	}
+	
+	pAdaptionTime = adaptionTime;
+	pEngCamera->SetAdaptionTime( adaptionTime );
+	
+	AdaptionChanged();
+}
+
+
+
+void igdeCamera::SetEnableGI( bool enable ){
+	if( enable == pEnableGI ){
+		return;
+	}
+	
+	pEnableGI = enable;
+	pEngCamera->SetEnableGI( enable );
+	
+	AdaptionChanged();
 }
 
 
 
 void igdeCamera::SetDistance( float distance ){
-	if( distance < 0.0f ){
-		distance = 0.0f;
+	distance = decMath::max( distance, 0.01f );
+	if( fabs( distance - pDistance ) <= FLOAT_SAFE_EPSILON ){
+		return;
 	}
 	
-	if( fabs( distance - pDistance ) > 1e-5 ){
-		pDistance = distance;
-		
-		pUpdateViewMatrix();
-		pUpdateCameraPosition();
-	}
+	pDistance = distance;
+	
+	pUpdateViewMatrix();
+	pUpdateCameraPosition();
 }
 
 void igdeCamera::Reset(){

@@ -2279,6 +2279,7 @@ void ceWPView::UpdatePlaybackFileList(){
 		}
 		
 		pCBPlaybackFile->SortItems();
+		pCBPlaybackFile->StoreFilterItems();
 	}
 	
 	pCBPlaybackFile->SetSelectionWithData( selectedFile );
@@ -2306,6 +2307,7 @@ void ceWPView::UpdatePlaybackTopicList(){
 		}
 		
 		pCBPlaybackTopic->SortItems();
+		pCBPlaybackTopic->StoreFilterItems();
 	}
 	
 	pCBPlaybackTopic->SetSelectionWithData( selectedTopic );

@@ -40,29 +40,34 @@
 // Constructor, destructor
 ////////////////////////////
 
-deCamera::deCamera( deCameraManager *manager ) : deResource( manager ){
-	pFov = DEG2RAD * 90.0f;
-	pFovRatio = 1.0f;
-	pImageDistance = 0.01f;
-	pViewDistance = 200.0f;
-	pExposure = 1.0f;
-	pLowestIntensity = 1.0f;
-	pHighestIntensity = 1.0f;
-	pAdaptionTime = 0.1f;
-	
-	pEffects = NULL;
-	
+deCamera::deCamera( deCameraManager *manager ) :
+deResource( manager ),
+
+pFov( DEG2RAD * 90.0f ),
+pFovRatio( 1.0f ),
+pImageDistance( 0.01f ),
+pViewDistance( 200.0f ),
+
+pEnableHDRR( true ),
+pExposure( 1.0f ),
+pLowestIntensity( 1.0f ),
+pHighestIntensity( 1.0f ),
+pAdaptionTime( 0.1f ),
+
+pEnableGI( false ),
+
+pEffects( NULL ),
+
+pPeerGraphic( NULL ),
+
+pParentWorld( NULL ),
+pLLWorldPrev( NULL ),
+pLLWorldNext( NULL )
+{
 	pLayerMask.SetBit( 0 );
-	
-	pPeerGraphic = NULL;
-	
-	pParentWorld = NULL;
-	pLLWorldNext = NULL;
-	pLLWorldPrev = NULL;
 	
 	try{
 		pEffects = new deEffectChain;
-		if( ! pEffects ) DETHROW( deeOutOfMemory );
 		
 	}catch( const deException & ){
 		pCleanUp();
@@ -80,98 +85,170 @@ deCamera::~deCamera(){
 ///////////////
 
 void deCamera::SetPosition( const decDVector &position ){
-	if( ! position.IsEqualTo( pPosition ) ){
-		pPosition = position;
-		if( pPeerGraphic ) pPeerGraphic->PositionChanged();
+	if( position.IsEqualTo( pPosition ) ){
+		return;
+	}
+	
+	pPosition = position;
+	
+	if( pPeerGraphic ){
+		pPeerGraphic->PositionChanged();
 	}
 }
 
 void deCamera::SetOrientation( const decQuaternion &orientation ){
-	if( ! orientation.IsEqualTo( pOrientation ) ){
-		pOrientation = orientation;
-		if( pPeerGraphic ) pPeerGraphic->OrientationChanged();
+	if( orientation.IsEqualTo( pOrientation ) ){
+		return;
+	}
+	
+	pOrientation = orientation;
+	
+	if( pPeerGraphic ){
+		pPeerGraphic->OrientationChanged();
 	}
 }
 
 void deCamera::SetFov( float fov ){
-	if( fov < 0.0f ){
-		fov = 0.0f;
-		
-	}else if( fov >= PI ){
-		fov = PI;
+	fov = decMath::clamp( fov, 0.0f, PI );
+	
+	if( fabs( fov - pFov ) <= FLOAT_SAFE_EPSILON ){
+		return;
 	}
 	
-	if( fabs( fov - pFov ) > 1e-4 ){
-		pFov = fov;
-		if( pPeerGraphic ) pPeerGraphic->ParameterChanged();
+	pFov = fov;
+	
+	if( pPeerGraphic ){
+		pPeerGraphic->ParameterChanged();
 	}
 }
 
 void deCamera::SetFovRatio( float ratio ){
-	if( ratio < 0.0f ) ratio = 1.0f;
+	ratio = decMath::max( ratio, 0.01f );
 	
-	if( fabs( ratio - pFovRatio ) > 1e-4 ){
-		pFovRatio = ratio;
-		if( pPeerGraphic ) pPeerGraphic->ParameterChanged();
+	if( fabs( ratio - pFovRatio ) <= FLOAT_SAFE_EPSILON ){
+		return;
+	}
+	
+	pFovRatio = ratio;
+	
+	if( pPeerGraphic ){
+		pPeerGraphic->ParameterChanged();
 	}
 }
 
 void deCamera::SetImageDistance( float distance ){
-	if( distance < 1e-4f ) distance = 1e-4f;
+	distance = decMath::max( distance, 1e-4f );
 	
-	if( fabs( distance - pImageDistance ) > 1e-4 ){
-		pImageDistance = distance;
-		if( pPeerGraphic ) pPeerGraphic->ParameterChanged();
+	if( fabs( distance - pImageDistance ) <= FLOAT_SAFE_EPSILON ){
+		return;
+	}
+	
+	pImageDistance = distance;
+	
+	if( pPeerGraphic ){
+		pPeerGraphic->ParameterChanged();
 	}
 }
 
 void deCamera::SetViewDistance( float distance ){
-	if( distance < 1e-3f ) distance = 1e-3f;
+	distance = decMath::max( distance, 1e-3f );
 	
-	if( fabs( distance - pViewDistance ) > 1e-4 ){
-		pViewDistance = distance;
-		if( pPeerGraphic ) pPeerGraphic->ParameterChanged();
+	if( fabs( distance - pViewDistance ) <= FLOAT_SAFE_EPSILON ){
+		return;
+	}
+	
+	pViewDistance = distance;
+	
+	if( pPeerGraphic ){
+		pPeerGraphic->ParameterChanged();
+	}
+}
+
+
+
+void deCamera::SetEnableHDRR( bool enable ){
+	if( enable == pEnableHDRR ){
+		return;
+	}
+	
+	pEnableHDRR = enable;
+	
+	if( pPeerGraphic ){
+		pPeerGraphic->ParameterChanged();
 	}
 }
 
 void deCamera::SetExposure( float exposure ){
-	if( exposure < 0.0f ) exposure = 0.0f;
+	exposure = decMath::max( exposure, 0.0f );
 	
-	if( fabs( exposure - pExposure ) > 1e-4 ){
-		pExposure = exposure;
-		if( pPeerGraphic ) pPeerGraphic->AdaptionChanged();
+	if( fabs( exposure - pExposure ) <= FLOAT_SAFE_EPSILON ){
+		return;
+	}
+	
+	pExposure = exposure;
+	
+	if( pPeerGraphic ){
+		pPeerGraphic->AdaptionChanged();
 	}
 }
 
 void deCamera::SetLowestIntensity( float lowestIntensity ){
-	if( lowestIntensity < 0.0f ) lowestIntensity = 0.0f;
+	lowestIntensity = decMath::max( lowestIntensity, 0.0f );
 	
-	if( fabs( lowestIntensity - pLowestIntensity ) > 1e-4 ){
-		pLowestIntensity = lowestIntensity;
-		
-		if( pPeerGraphic ) pPeerGraphic->AdaptionChanged();
+	if( fabs( lowestIntensity - pLowestIntensity ) <= FLOAT_SAFE_EPSILON ){
+		return;
+	}
+	
+	pLowestIntensity = lowestIntensity;
+	
+	if( pPeerGraphic ){
+		pPeerGraphic->AdaptionChanged();
 	}
 }
 
 void deCamera::SetHighestIntensity( float highestIntensity ){
-	if( highestIntensity < 0.0f ) highestIntensity = 0.0f;
+	highestIntensity = decMath::max( highestIntensity, 0.0f );
 	
-	if( fabs( highestIntensity - pHighestIntensity ) > 1e-4 ){
-		pHighestIntensity = highestIntensity;
-		
-		if( pPeerGraphic ) pPeerGraphic->AdaptionChanged();
+	if( fabs( highestIntensity - pHighestIntensity ) <= FLOAT_SAFE_EPSILON ){
+		return;
+	}
+	
+	pHighestIntensity = highestIntensity;
+	
+	if( pPeerGraphic ){
+		pPeerGraphic->AdaptionChanged();
 	}
 }
 
 void deCamera::SetAdaptionTime( float adaptionTime ){
-	if( adaptionTime < 0.0f ) adaptionTime = 0.0f;
+	adaptionTime = decMath::max( adaptionTime, 0.0f );
 	
-	if( fabs( adaptionTime - pAdaptionTime ) > 1e-4 ){
-		pAdaptionTime = adaptionTime;
-		
-		if( pPeerGraphic ) pPeerGraphic->AdaptionChanged();
+	if( fabs( adaptionTime - pAdaptionTime ) <= FLOAT_SAFE_EPSILON ){
+		return;
+	}
+	
+	pAdaptionTime = adaptionTime;
+	
+	if( pPeerGraphic ){
+		pPeerGraphic->AdaptionChanged();
 	}
 }
+
+
+
+void deCamera::SetEnableGI( bool enable ){
+	if( enable == pEnableGI ){
+		return;
+	}
+	
+	pEnableGI = enable;
+	
+	if( pPeerGraphic ){
+		pPeerGraphic->ParameterChanged();
+	}
+}
+
+
 
 void deCamera::NotifyLayerMaskChanged(){
 	if( pPeerGraphic ){
@@ -201,18 +278,24 @@ deEffect *deCamera::GetEffectAt( int index ) const{
 void deCamera::AddEffect( deEffect *effect ){
 	pEffects->AddEffect( effect );
 	
-	if( pPeerGraphic ) pPeerGraphic->EffectAdded( pEffects->GetEffectCount() - 1, effect );
+	if( pPeerGraphic ){
+		pPeerGraphic->EffectAdded( pEffects->GetEffectCount() - 1, effect );
+	}
 }
 
 void deCamera::RemoveEffect( deEffect *effect ){
-	int index = pEffects->IndexOfEffect( effect );
-	if( index == -1 ) DETHROW( deeInvalidParam );
+	const int index = pEffects->IndexOfEffect( effect );
+	if( index == -1 ){
+		DETHROW( deeInvalidParam );
+	}
 	
 	effect->AddReference();
 	try{
 		pEffects->RemoveEffect( effect );
 		
-		if( pPeerGraphic ) pPeerGraphic->EffectRemoved( index, effect );
+		if( pPeerGraphic ){
+			pPeerGraphic->EffectRemoved( index, effect );
+		}
 		
 	}catch( const deException & ){
 		effect->FreeReference();
@@ -224,7 +307,9 @@ void deCamera::RemoveEffect( deEffect *effect ){
 void deCamera::RemoveAllEffects(){
 	pEffects->RemoveAllEffects();
 	
-	if( pPeerGraphic ) pPeerGraphic->AllEffectsRemoved();
+	if( pPeerGraphic ){
+		pPeerGraphic->AllEffectsRemoved();
+	}
 }
 
 
@@ -272,5 +357,7 @@ void deCamera::pCleanUp(){
 		pPeerGraphic = NULL;
 	}
 	
-	if( pEffects ) delete pEffects;
+	if( pEffects ){
+		delete pEffects;
+	}
 }

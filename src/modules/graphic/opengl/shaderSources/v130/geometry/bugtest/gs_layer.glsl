@@ -7,24 +7,27 @@ layout( triangle_strip, max_vertices=18 ) out;
 
 out vec3 vColor;
 
+
+void emitCorner( in int layer, in vec4 position, in vec3 color ){
+	vColor = color;
+	gl_Position = position;
+	gl_Layer = layer;
+	gl_PrimitiveID = gl_PrimitiveIDIn;
+	EmitVertex();
+}
+
 void main( void ){
 	int i;
 	
-	gl_PrimitiveID = gl_PrimitiveIDIn;
+	// according to opengl website gl_Layer has to be set for each emit vertex
+	// or else it becomes undefined. and since opengl requires all vertices to
+	// have the same layer this can cause problems
 	
 	for( i=0; i<6; i++ ){
-		vColor = vec3( float( 40 + 40 * i ) / 255.0 );
-		gl_Layer = i;
-		
-		gl_Position = gl_in[ 0 ].gl_Position;
-		EmitVertex();
-		
-		gl_Position = gl_in[ 1 ].gl_Position;
-		EmitVertex();
-		
-		gl_Position = gl_in[ 2 ].gl_Position;
-		EmitVertex();
-		
+		vec3 color = vec3( float( 40 + 40 * i ) / 255.0 );
+		emitCorner( i, gl_in[ 0 ].gl_Position, color );
+		emitCorner( i, gl_in[ 1 ].gl_Position, color );
+		emitCorner( i, gl_in[ 2 ].gl_Position, color );
 		EndPrimitive();
 	}
 }
@@ -42,21 +45,10 @@ layout( triangle_strip, max_vertices=3 ) out;
 out vec3 vColor;
 
 void main( void ){
-	gl_PrimitiveID = gl_PrimitiveIDIn;
-	vColor = vec3( float( 40 + 40 * gl_InvocationID ) / 255.0 );
-	
-	gl_Position = gl_in[ 0 ].gl_Position;
-	gl_Layer = gl_InvocationID;
-	EmitVertex();
-	
-	gl_Position = gl_in[ 1 ].gl_Position;
-	gl_Layer = gl_InvocationID;
-	EmitVertex();
-	
-	gl_Position = gl_in[ 2 ].gl_Position;
-	gl_Layer = gl_InvocationID;
-	EmitVertex();
-	
+	vec3 color = vec3( float( 40 + 40 * gl_InvocationID ) / 255.0 );
+	emitCorner( gl_InvocationID, gl_in[ 0 ].gl_Position, color );
+	emitCorner( gl_InvocationID, gl_in[ 1 ].gl_Position, color );
+	emitCorner( gl_InvocationID, gl_in[ 2 ].gl_Position, color );
 	EndPrimitive();
 }
 */

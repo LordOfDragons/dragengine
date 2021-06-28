@@ -127,7 +127,10 @@ class LoadWorld extends BaseXmlLoader
 		
 		try
 			root.forEachTag( block EasyXMLElement element, String tagName
-				if tagName.equals( "gravity" )
+				if tagName.equals( "size" )
+					world.getWorld().setSize( this.readDVector( element ) )
+					
+				elif tagName.equals( "gravity" )
 					world.getWorld().setGravity( this.readVector( element ) )
 					
 				elif tagName.equals( "nextObjectID" )

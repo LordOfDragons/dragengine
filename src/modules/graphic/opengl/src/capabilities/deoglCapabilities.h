@@ -42,7 +42,7 @@ class deoglFramebuffer;
 
 
 /**
- * \brief OpenGL capabilities.
+ * OpenGL capabilities.
  * 
  * Stores the capabilities of the hardware. The capabilities are tested during
  * start up time using opengl getter calls where possible or else trial-and-error
@@ -59,6 +59,7 @@ private:
 	
 	int pMaxDrawBuffers;
 	int pUBOMaxSize;
+	int pTBOMaxSize;
 	int pSSBOMaxSize;
 	int pSSBOMaxBlocksVertex;
 	int pSSBOMaxBlocksFragment;
@@ -81,10 +82,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create capabilities object. */
+	/** Create capabilities object. */
 	deoglCapabilities( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up capabilities object. */
+	/** Clean up capabilities object. */
 	~deoglCapabilities();
 	/*@}*/
 	
@@ -92,57 +93,52 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Render thread. */
+	/** Render thread. */
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
-	/** \brief Texture format support. */
+	/** Texture format support. */
 	inline const deoglCapsFmtSupport &GetFormats() const{ return pFormats; }
 	
 	
 	
 	/**
-	 * \brief Maximum number of draw buffers available by the hardware.
+	 * Maximum number of draw buffers available by the hardware.
 	 * 
 	 * OpenGL Spec requires a minimum value of \em 8.
 	 * OpenGL EM Spec requires a minimum value of \em 4.
 	 */
 	inline int GetMaxDrawBuffers() const{ return pMaxDrawBuffers; }
 	
-	/**
-	 * \brief Maximum size of UBOs.
-	 * 
-	 * OpenGL Spec requires a minimum value of \em 16384.
-	 */
+	/** Maximum size of UBOs. OpenGL Spec requires a minimum value of \em 16384. */
 	inline int GetUBOMaxSize() const{ return pUBOMaxSize; }
 	
-	/**
-	 * \brief Maximum size of SSBOs.
-	 * 
-	 * OpenGL Spec requires a minimum value of \em 16777216.
-	 */
+	/** Maximum size of TBOs. OpenGL Spec requires a minimum value of \em 128000. */
+	inline int GetTBOMaxSize() const{ return pTBOMaxSize; }
+	
+	/** Maximum size of SSBOs. OpenGL Spec requires a minimum value of \em 16777216. */
 	inline int GetSSBOMaxSize() const{ return pSSBOMaxSize; }
 	
-	/** \brief Maximum number of supported SSBO per vertex shader. */
+	/** Maximum number of supported SSBO per vertex shader. */
 	inline int GetSSBOMaxBlocksVertex() const{ return pSSBOMaxBlocksVertex; }
 	
-	/** \brief Maximum number of supported SSBO per fragment shader. */
+	/** Maximum number of supported SSBO per fragment shader. */
 	inline int GetSSBOMaxBlocksFragment() const{ return pSSBOMaxBlocksFragment; }
 	
-	/** \brief Maximum number of supported SSBO per geometry shader. */
+	/** Maximum number of supported SSBO per geometry shader. */
 	inline int GetSSBOMaxBlocksGeometry() const{ return pSSBOMaxBlocksGeometry; }
 	
-	/** \brief Uniform buffer offset alignment. */
+	/** Uniform buffer offset alignment. */
 	inline int GetUBOOffsetAlignment() const{ return pUBOOffsetAlignment; }
 	
 	/**
-	 * \brief Maximum number of vertices a geometry shader can emit.
+	 * Maximum number of vertices a geometry shader can emit.
 	 * 
 	 * OpenGL Spec requires a minimum value of \em 256.
 	 */
 	inline int GetGeometryShaderMaxVertices() const{ return pGeometryShaderMaxVertices; }
 	
 	/**
-	 * \brief Maximum number of components per invocation a geometry shader can emit.
+	 * Maximum number of components per invocation a geometry shader can emit.
 	 * 
 	 * OpenGL Spec requires a minimum value of \em 1024.
 	 */
@@ -150,41 +146,41 @@ public:
 	
 	
 	
-	/** \brief Array texture layer check. */
+	/** Array texture layer check. */
 	inline const deoglCapCheckATLUnbind &ATLUnbind() const{ return pATLUnbind; }
 	
-	/** \brief Indirect UBO matrix access check. */
+	/** Indirect UBO matrix access check. */
 	inline const deoglCapCheckUBOIndirectMatrixAccess &GetUBOIndirectMatrixAccess() const{
 		return pUBOIndirectMatrixAccess; }
 	
-	/** \brief Rasterizer discard. */
+	/** Rasterizer discard. */
 	inline const deoglCapCheckRasterizerDiscard &GetRasterizerDiscard() const{
 		return pRasterizerDiscard; }
 	
-	/** \brief Clear entire cube map. */
+	/** Clear entire cube map. */
 	inline const deoglCapCheckClearEntireCubeMap &GetClearEntireCubeMap() const{
 		return pClearEntireCubeMap; }
 	
-	/** \brief Cleare all layers in an array texture. */
+	/** Cleare all layers in an array texture. */
 	inline const deoglCapCheckClearEntireArrayTexture &GetClearEntireArrayTexture() const{
 		return pClearEntireArrayTexture; }
 	
-	/** \brief glLayer geometry shaders handling. */
+	/** glLayer geometry shaders handling. */
 	inline const deoglCapCheckGeometryShaderLayer &GetGeometryShaderLayer() const{
 		return pGeometryShaderLayer; }
 	
-	/** \brief UBO direct linking dead-loop. */
+	/** UBO direct linking dead-loop. */
 	inline const deoglCapCheckUBODirectLinkDeadloop &GetUBODirectLinkDeadloop() const{
 		return pUBODirectLinkDeadloop; }
 	
-	/** \brief Framebuffer texture single. */
+	/** Framebuffer texture single. */
 	inline const deoglCapCheckFramebufferTextureSingle &GetFramebufferTextureSingle() const{
 		return pFramebufferTextureSingle; }
 	
 	/** Tests the hardware for its capabilities. */
 	void DetectCapabilities();
 	
-	/** \brief Full-Screen Quad VAO for internal testing only. */
+	/** Full-Screen Quad VAO for internal testing only. */
 	inline GLuint GetFSQuadVAO() const{ return pFSQuadVAO; }
 	
 	/*@}*/

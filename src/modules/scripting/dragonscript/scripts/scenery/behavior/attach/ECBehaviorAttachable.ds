@@ -341,41 +341,10 @@ class ECBehaviorAttachable extends DefaultECBehavior
 	 * of type ECBehaviorComponent.
 	 */
 	static public func ECBehaviorAttachable getBehaviorIn( BehaviorElementClass eclass )
-		return eclass.findBehavior( block ECBehavior each
-			return each castable ECBehaviorAttachable
-		end ) cast ECBehaviorAttachable
-	end
-	
-	/**
-	 * \brief Get behavior with id in element class or \em null if absent.
-	 * 
-	 * Use this method to check if a particular BehaviorElementClass contains a behavior
-	 * of type ECBehaviorAttachable with specific identifier.
-	 */
-	static public func ECBehaviorAttachable getBehaviorIn( BehaviorElementClass eclass, String id )
 		return eclass.findBehavior( block ECBehaviorAttachable each
-			return each castable ECBehaviorAttachable and \
-				( each cast ECBehaviorAttachable ).getID().equals( id )
+			return true
 		end ) cast ECBehaviorAttachable
 	end
-	
-	/**
-	 * \brief Get list of all behaviors in element.
-	 * 
-	 * Returns list contains ECBehaviorAttachable behaviors in the order they have
-	 * been created in the element.
-	 */
-	static public func Array getAllBehaviorsIn( BehaviorElementClass eclass )
-		var Array list = Array.new()
-		eclass.forEachBehavior( block ECBehavior each
-			if each castable ECBehaviorAttachable
-				list.add( each )
-			end
-		end )
-		return list
-	end
-	
-	
 	
 	/**
 	 * \brief Get instance in element or \em null if absent.
@@ -385,38 +354,9 @@ class ECBehaviorAttachable extends DefaultECBehavior
 	 * the first instance.
 	 */
 	static public func Instance getInstanceIn( BehaviorElement element )
-		return element.findInstance( block ECBehaviorInstance each
-			return each castable Instance
+		return element.findInstance( block Instance each
+			return true
 		end ) cast Instance
-	end
-	
-	/**
-	 * \brief Get instance with id in element or \em null if absent.
-	 * 
-	 * Use this method to check if a particular BehaviorElement contains a behavior instance
-	 * of type ECBehaviorAttachable.Instance with specific identifier.
-	 */
-	static public func Instance getInstanceIn( BehaviorElement element, String id )
-		return element.findInstance( block ECBehaviorInstance each
-			return each castable Instance and \
-				( each cast Instance ).getECBehavior().getID().equals( id )
-		end ) cast Instance
-	end
-	
-	/**
-	 * \brief Get list of all instances in element.
-	 * 
-	 * Returns list contains ECBehaviorAttachable.Instance instances in the order they have
-	 * been created in the element.
-	 */
-	static public func Array getAllInstancesIn( BehaviorElement element )
-		var Array list = Array.new()
-		element.forEachInstance( block ECBehaviorInstance each
-			if each castable Instance
-				list.add( each )
-			end
-		end )
-		return list
 	end
 	
 	

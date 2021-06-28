@@ -299,7 +299,7 @@ void deoalASpeaker::PrepareProcessAudio(){
 	pCheckStillSourceOwner();
 	if( ! pSource ){
 		if( pPlayState == deSpeaker::epsPlaying ){
-			// there ware two ways to handle this.
+			// there are two ways to handle this.
 			// 
 			// the first way is the precise way by advancing the sample offset. this is accurate
 			// and ensures sound continues while not audible. this allows a player to drop in on

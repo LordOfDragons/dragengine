@@ -31,7 +31,7 @@
 
 
 /**
- * \brief Debug information for performance profiling.
+ * Debug information for performance profiling.
  * 
  * Stores an elapsed time in seconds and a counter value. A name is used to display
  * the information on screen. The font and background color can be set to help identify
@@ -69,10 +69,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create debug information. */
+	/** Create debug information. */
 	deoglDebugInformation( const char *name, const decColor &colorText, const decColor &colorBackground );
 	
-	/** \brief Clean up debug information. */
+	/** Clean up debug information. */
 	virtual ~deoglDebugInformation();
 	/*@}*/
 	
@@ -80,101 +80,104 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Name. */
+	/** Name. */
 	inline const decString &GetName() const{ return pName; }
 	
-	/** \brief Set name. */
+	/** Set name. */
 	void SetName( const char *name );
 	
-	/** \brief Text color. */
+	/** Text color. */
 	inline const decColor &GetColorText() const{ return pColorText; }
 	
-	/** \brief Set text color. */
+	/** Set text color. */
 	void SetColorText( const decColor &color );
 	
-	/** \brief Background color. */
+	/** Background color. */
 	inline const decColor &GetColorBackground() const{ return pColorBackground; }
 	
-	/** \brief Set background color. */
+	/** Set background color. */
 	void SetColorBackground( const decColor &color );
 	
-	/** \brief Clear elapsed time and counter. */
+	/** Clear elapsed time and counter. */
 	void Clear();
 	
-	/** \brief Visible. */
+	/** Visible. */
 	inline bool GetVisible() const{ return pVisible; }
 	
-	/** \brief Set if visible. */
+	/** Set if visible. */
 	void SetVisible( bool visible );
 	
-	/** \brief Children. */
+	/** Children. */
 	inline deoglDebugInformationList &GetChildren(){ return pChildren; }
 	inline const deoglDebugInformationList &GetChildren() const{ return pChildren; }
 	
 	
 	
-	/** \brief Elapsed time. */
+	/** Elapsed time. */
 	inline float GetElapsedTime() const{ return pElapsedTime; }
 	
-	/** \brief Set elapsed time. */
+	/** Set elapsed time. */
 	void SetElapsedTime( float time );
 	
-	/** \brief Increment elapsed time. */
+	/** Increment elapsed time. */
 	void IncrementElapsedTime( float time );
 	
-	/** \brief Clear elapsed time. */
+	/** Clear elapsed time. */
 	void ClearElapsedTime();
 	
-	/** \brief Has elapsed time. */
+	/** Has elapsed time. */
 	inline bool HasElapsedTime() const{ return pHasElapsedTime; }
 	
-	/** \brief Sliding elapsed time factor. */
+	/** Sliding elapsed time factor. */
 	inline float GetSlidingElapsedTimeFactor() const{ return pSlidingElapsedTimeFactor; }
 	
-	/** \brief Set sliding elapsed time factor. */
+	/** Set sliding elapsed time factor. */
 	void SetSlidingElapsedTimeFactor( float factor );
 	
 	
 	
-	/** \brief Counter. */
+	/** Counter. */
 	inline int GetCounter() const{ return pCounter; }
 	
-	/** \brief Set counter. */
+	/** Set counter. */
 	void SetCounter( int counter );
 	
-	/** \brief Increment counter by one. */
+	/** Increment counter by one. */
 	void IncrementCounter();
 	
-	/** \brief Increment counter. */
+	/** Increment counter. */
 	void IncrementCounter( int count );
 	
-	/** \brief Clear counter. */
+	/** Clear counter. */
 	void ClearCounter();
 	
-	/** \brief Has counter. */
+	/** Has counter. */
 	inline bool HasCounter() const{ return pHasCounter; }
+	
+	/** Copy results from another debug information. */
+	void CopyResults( const deoglDebugInformation &info );
 	/*@}*/
 	
 	
 	
 	/** \name Rendering for use by deoglRenderDevMode only. */
 	/*@{*/
-	/** \brief Render text. */
+	/** Render text. */
 	inline const decString &GetRenderText() const{ return pRenderText; }
 	
-	/** \brief Set render text. */
+	/** Set render text. */
 	void SetRenderText( const char *text );
 	
-	/** \brief Render size. */
+	/** Render size. */
 	inline const decPoint &GetRenderSize() const{ return pRenderSize; }
 	
-	/** \brief Set render size. */
+	/** Set render size. */
 	void SetRenderSize( const decPoint &size );
 	
-	/** \brief Render position. */
+	/** Render position. */
 	inline const decPoint &GetRenderPosition() const{ return pRenderPosition; }
 	
-	/** \brief Set render position. */
+	/** Set render position. */
 	void SetRenderPosition( const decPoint &position );
 	/*@}*/
 };

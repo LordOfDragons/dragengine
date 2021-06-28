@@ -31,6 +31,8 @@
 #include "../debugdrawer/deoglRDebugDrawer.h"
 #include "../envmap/deoglEnvironmentMap.h"
 #include "../envmap/deoglREnvMapProbe.h"
+#include "../gi/deoglGIState.h"
+#include "../gi/deoglGICascade.h"
 #include "../light/deoglRLight.h"
 #include "../particle/deoglRParticleEmitterInstance.h"
 #include "../propfield/deoglRPropField.h"
@@ -53,8 +55,13 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglRWorld::deoglRWorld( deoglRenderThread &renderThread, const decDVector &octreeSize ) :
+deoglRWorld::deoglRWorld( deoglRenderThread &renderThread, const decDVector &size ) :
 pRenderThread( renderThread ),
+
+pSize( size ),
+
+pDirtyPrepareForRenderEarly( true ),
+pDirtyPrepareForRender( true ),
 
 pDirtyNotifySkyChanged( false ),
 pDirtySkyOrder( false ),
@@ -81,7 +88,13 @@ pDirtyEnvMapLayout( false ),
 pOctree( NULL )
 {
 	try{
-		pOctree = new deoglWorldOctree( decDVector(), octreeSize );
+		const decDVector octreeSize( pSanitizeOctreeSize( size ) );
+		const int insertDepth = pCalcOctreeInsertDepth( octreeSize );
+		
+		renderThread.GetLogger().LogInfoFormat( "World: size=(%g,%g,%g) octree=(%g,%g,%g) insdepth=%d",
+			size.x, size.y, size.z, octreeSize.x, octreeSize.y, octreeSize.z, insertDepth );
+		
+		pOctree = new deoglWorldOctree( decDVector(), octreeSize * 0.5, insertDepth );
 		
 		pEnvMapRenderPlan = new deoglRenderPlan( renderThread );
 		pEnvMapRenderPlan->SetWorld( this );
@@ -105,6 +118,68 @@ deoglRWorld::~deoglRWorld(){
 
 // Management
 ///////////////
+
+void deoglRWorld::SetSize( const decDVector &size ){
+	if( size.IsEqualTo( pSize ) ){
+		return;
+	}
+	
+	pSize = size;
+	
+	const decDVector octreeSize( pSanitizeOctreeSize( size ) );
+	const int insertDepth = pCalcOctreeInsertDepth( octreeSize );
+	int i, count;
+	
+	pRenderThread.GetLogger().LogInfoFormat( "World.SetSize: size=(%g,%g,%g) octree=(%g,%g,%g) insdepth=%d",
+		size.x, size.y, size.z, octreeSize.x, octreeSize.y, octreeSize.z, insertDepth );
+	
+	pOctree->ClearTree( true ); // required since deoglWorldOctree does not do it
+	delete pOctree;
+	pOctree = NULL;
+	
+	pOctree = new deoglWorldOctree( decDVector(), octreeSize * 0.5, insertDepth );
+	
+	deoglRBillboard *billboard = pRootBillboard;
+	while( billboard ){
+		billboard->UpdateOctreeNode();
+		billboard = billboard->GetLLWorldNext();
+	}
+	
+	deoglRComponent *component = pRootComponent;
+	while( component ){
+		component->UpdateOctreeNode();
+		component = component->GetLLWorldNext();
+	}
+	
+	const decObjectList envMapProbes( pEnvMapProbes );
+	const int envMapProbeCount = envMapProbes.GetCount();
+	for( i=0; i<envMapProbeCount; i++ ){
+		deoglREnvMapProbe &probe = *( ( deoglREnvMapProbe* )envMapProbes.GetAt( i ) );
+		if( probe.GetEnvironmentMap() ){
+			probe.GetEnvironmentMap()->UpdateOctreePosition();
+		}
+	}
+	
+	count = pLights.GetCount();
+	for( i=0; i<count; i++ ){
+		( ( deoglRLight* )pLights.GetAt( i ) )->UpdateOctreeNode();
+	}
+	
+	count = pParticleEmitterInstances.GetCount();
+	for( i=0; i<count; i++ ){
+		( ( deoglRParticleEmitterInstance* )pParticleEmitterInstances.GetAt( i ) )->UpdateOctreeNode();
+	}
+	
+	count = pLumimeters.GetCount();
+	for( i=0; i<count; i++ ){
+		( ( deoglRLumimeter* )pLumimeters.GetAt( i ) )->UpdateOctreeNode();
+	}
+}
+
+void deoglRWorld::RequiresPrepareForRender(){
+	pDirtyPrepareForRenderEarly = true;
+	pDirtyPrepareForRender = true;
+}
 
 void deoglRWorld::MarkSkyOrderDirty(){
 	pDirtySkyOrder = true;
@@ -160,24 +235,62 @@ const decDVector &boxMaxExtend, deoglWorldOctreeVisitor &visitor ){
 
 
 
-void deoglRWorld::PrepareForRender(){
-	int i, count;
+// #define DO_SPECIAL_TIMING 1
+#ifdef DO_SPECIAL_TIMING
+#include <dragengine/common/utils/decTimer.h>
+#define INIT_SPECIAL_TIMING decTimer sttimer;
+#define SPECIAL_TIMER_PRINT_EARLY(w) if(plan.GetDebugTiming()) pRenderThread.GetLogger().LogInfoFormat("RWorld.EarlyPrepareForRender: " w "=%dys", (int)(sttimer.GetElapsedTime()*1e6f));
+#define SPECIAL_TIMER_PRINT(w) if(plan.GetDebugTiming()) pRenderThread.GetLogger().LogInfoFormat("RWorld.PrepareForRender: " w "=%dys", (int)(sttimer.GetElapsedTime()*1e6f));
+#else
+#define INIT_SPECIAL_TIMING (void)plan;
+#define SPECIAL_TIMER_PRINT_EARLY(w)
+#define SPECIAL_TIMER_PRINT(w)
+#endif
+
+void deoglRWorld::EarlyPrepareForRender( deoglRenderPlan &plan ){
+	if( ! pDirtyPrepareForRenderEarly ){
+		return;
+	}
+	pDirtyPrepareForRenderEarly = false;
 	
-	// remove environment map probes marked for removal by deoglWorld. this call can not be done during
-	// deoglWorld::SyncToRender since deleting the environment map probe also removes deoglEnvironmentMap
-	// which are interwoved with deoglRWorld in a tricky way. thus they are removed here where it is
-	// safe to delete opengl objects
+	INIT_SPECIAL_TIMING
+	
+	// ensure sky environment map exists. has to be done early since this calls AddEnvMap
+	// which can cause a data-race with deoglRPTFindContent and other code accessing
+	// deoglEnvironmentMap::GetSkyOnly(). anyways done only once at the beginning
+	pCreateSkyEnvMap();
+	
+	// early prepare lights
+	const decPointerLinkedList::cListEntry *iterLight = pListPrepareForRenderLights.GetRoot();
+	while( iterLight ){
+		( ( deoglRLight* )iterLight->GetOwner() )->EarlyPrepareForRender();
+		iterLight = iterLight->GetNext();
+	}
+	SPECIAL_TIMER_PRINT_EARLY("Lights")
+	
+	// remove environment map probes marked for removal by deoglWorld. this call can not
+	// be done during deoglWorld::SyncToRender since deleting the environment map probe
+	// also removes deoglEnvironmentMap which are interwoved with deoglRWorld in a tricky
+	// way. thus they are removed here where it is safe to delete opengl objects
+	// 
+	// this call has to be done during EarlyPrepareForRender and not during PrepareForRender
+	// since this call modifies the environment map list. Parallel tasks using the environment
+	// map list run in parallel to PrepareForRender which can cause segfaults or exceptions
 	RemoveRemovalMarkedEnvMapProbes();
+}
+
+void deoglRWorld::PrepareForRender( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask ){
+	if( ! pDirtyPrepareForRender ){
+		return;
+	}
+	pDirtyPrepareForRender = false;
+	
+	INIT_SPECIAL_TIMING
+	int i, count;
 	
 	// notify environment map layout changed and update render environment maps if required
 	if( pDirtyEnvMapLayout ){
 		pDirtyEnvMapLayout = false;
-		
-		deoglRComponent *component = pRootComponent;
-		while( component ){
-			component->UpdateRenderEnvMap();
-			component = component->GetLLWorldNext();
-		}
 		
 		deoglRBillboard *billboard = pRootBillboard;
 		while( billboard ){
@@ -190,6 +303,7 @@ void deoglRWorld::PrepareForRender(){
 			( ( deoglRParticleEmitterInstance* )pParticleEmitterInstances.GetAt( i ) )->UpdateRenderEnvMap();
 		}
 	}
+		SPECIAL_TIMER_PRINT("EnvMaps")
 	
 	// prepare sky
 	count = pSkies.GetCount();
@@ -202,24 +316,166 @@ void deoglRWorld::PrepareForRender(){
 		pDirtySkyOrder = false;
 	}
 	
-	pCreateSkyEnvMap();
 	pSkyEnvMap->PrepareForRender();
 	
 	if( pDirtyNotifySkyChanged ){
 		EnvMapsNotifySkyChanged();
 		pDirtyNotifySkyChanged = false;
 	}
+		SPECIAL_TIMER_PRINT("Sky")
+	
+	// prepare height terrain
+	if( pHeightTerrain ){
+		pHeightTerrain->PrepareForRender();
+	}
+	
+	// prepare components
+	decPointerLinkedList::cListEntry * const tailComponent = pListPrepareForRenderComponents.GetTail();
+	while( pListPrepareForRenderComponents.GetRoot() ){
+		decPointerLinkedList::cListEntry * const entry = pListPrepareForRenderComponents.GetRoot();
+		deoglRComponent &component = *( ( deoglRComponent* )entry->GetOwner() );
+		pListPrepareForRenderComponents.Remove( entry );
+		
+		if( component.GetParentWorld() ){ // sanity check
+			component.PrepareForRender( plan, mask ); // can potentially re-add the component
+		}
+		
+		if( entry == tailComponent ){
+			break; // processed last component. re-added component will come next
+		}
+	}
+		SPECIAL_TIMER_PRINT("Components")
+	
+	// prepare billboards
+	decPointerLinkedList::cListEntry * const tailBillboard = pListPrepareForRenderBillboards.GetTail();
+	while( pListPrepareForRenderBillboards.GetRoot() ){
+		decPointerLinkedList::cListEntry * const entry = pListPrepareForRenderBillboards.GetRoot();
+		deoglRBillboard &billboard = *( ( deoglRBillboard* )entry->GetOwner() );
+		pListPrepareForRenderBillboards.Remove( entry );
+		
+		if( billboard.GetParentWorld() ){ // sanity check
+			billboard.PrepareForRender( plan, mask ); // can potentially re-add the billboard
+		}
+		
+		if( entry == tailBillboard ){
+			break; // processed last billboard. re-added billboard will come next
+		}
+	}
+		SPECIAL_TIMER_PRINT("Billboards")
+	
+	// prepare lights
+	decPointerLinkedList::cListEntry * const tailLight = pListPrepareForRenderLights.GetTail();
+	while( pListPrepareForRenderLights.GetRoot() ){
+		decPointerLinkedList::cListEntry * const entry = pListPrepareForRenderLights.GetRoot();
+		deoglRLight &light = *( ( deoglRLight* )entry->GetOwner() );
+		pListPrepareForRenderLights.Remove( entry );
+		
+		if( light.GetParentWorld() ){ // sanity check
+			light.PrepareForRender( mask ); // can potentially re-add the light
+		}
+		
+		if( entry == tailLight ){
+			break; // processed last light. re-added light will come next
+		}
+	}
+		SPECIAL_TIMER_PRINT("Lights")
 	
 	// prepare prop fields
-	count = pPropFields.GetCount();
-	for( i=0; i<count; i++ ){
-		( ( deoglRPropField* )pPropFields.GetAt( i ) )->PrepareForRender();
+	decPointerLinkedList::cListEntry * const tailPropField = pListPrepareForRenderPropFields.GetTail();
+	while( pListPrepareForRenderPropFields.GetRoot() ){
+		decPointerLinkedList::cListEntry * const entry = pListPrepareForRenderPropFields.GetRoot();
+		deoglRPropField &propField = *( ( deoglRPropField* )entry->GetOwner() );
+		pListPrepareForRenderPropFields.Remove( entry );
+		
+		if( propField.GetParentWorld() ){ // sanity check
+			propField.PrepareForRender(); // can potentially re-add the prop field
+		}
+		
+		if( entry == tailPropField ){
+			break; // processed last prop field. re-added prop field will come next
+		}
 	}
+		SPECIAL_TIMER_PRINT("PropFields")
+	
+	
 	
 	// prepare debug drawers
 	count = pDebugDrawers.GetCount();
 	for( i=0; i<count; i++ ){
 		( ( deoglRDebugDrawer* )pDebugDrawers.GetAt( i ) )->UpdateVBO();
+	}
+		SPECIAL_TIMER_PRINT("DebugDrawers")
+}
+
+void deoglRWorld::AddPrepareForRenderComponent( deoglRComponent *component ){
+	if( ! component ){
+		DETHROW( deeInvalidParam );
+	}
+	if( ! component->GetLLPrepareForRenderWorld().GetList() ){
+		pListPrepareForRenderComponents.Add( &component->GetLLPrepareForRenderWorld() );
+	}
+}
+
+void deoglRWorld::RemovePrepareForRenderComponent( deoglRComponent *component ){
+	if( ! component ){
+		DETHROW( deeInvalidParam );
+	}
+	if( component->GetLLPrepareForRenderWorld().GetList() ){
+		pListPrepareForRenderComponents.Remove( &component->GetLLPrepareForRenderWorld() );
+	}
+}
+
+void deoglRWorld::AddPrepareForRenderBillboard( deoglRBillboard *billboard ){
+	if( ! billboard ){
+		DETHROW( deeInvalidParam );
+	}
+	if( ! billboard->GetLLPrepareForRenderWorld().GetList() ){
+		pListPrepareForRenderBillboards.Add( &billboard->GetLLPrepareForRenderWorld() );
+	}
+}
+
+void deoglRWorld::RemovePrepareForRenderBillboard( deoglRBillboard *billboard ){
+	if( ! billboard ){
+		DETHROW( deeInvalidParam );
+	}
+	if( billboard->GetLLPrepareForRenderWorld().GetList() ){
+		pListPrepareForRenderBillboards.Remove( &billboard->GetLLPrepareForRenderWorld() );
+	}
+}
+
+void deoglRWorld::AddPrepareForRenderLight( deoglRLight *light ){
+	if( ! light ){
+		DETHROW( deeInvalidParam );
+	}
+	if( ! light->GetLLPrepareForRenderWorld().GetList() ){
+		pListPrepareForRenderLights.Add( &light->GetLLPrepareForRenderWorld() );
+	}
+}
+
+void deoglRWorld::RemovePrepareForRenderLight( deoglRLight *light ){
+	if( ! light ){
+		DETHROW( deeInvalidParam );
+	}
+	if( light->GetLLPrepareForRenderWorld().GetList() ){
+		pListPrepareForRenderLights.Remove( &light->GetLLPrepareForRenderWorld() );
+	}
+}
+
+void deoglRWorld::AddPrepareForRenderPropField( deoglRPropField *propField ){
+	if( ! propField ){
+		DETHROW( deeInvalidParam );
+	}
+	if( ! propField->GetLLPrepareForRenderWorld().GetList() ){
+		pListPrepareForRenderPropFields.Add( &propField->GetLLPrepareForRenderWorld() );
+	}
+}
+
+void deoglRWorld::RemovePrepareForRenderPropField( deoglRPropField *propField ){
+	if( ! propField ){
+		DETHROW( deeInvalidParam );
+	}
+	if( propField->GetLLPrepareForRenderWorld().GetList() ){
+		pListPrepareForRenderPropFields.Remove( &propField->GetLLPrepareForRenderWorld() );
 	}
 }
 
@@ -432,6 +688,8 @@ void deoglRWorld::AddComponent( deoglRComponent *component ){
 	pComponentCount++;
 	
 	component->SetParentWorld( this );
+	AddPrepareForRenderComponent( component );
+	GIStatesNotifyComponentEnteredWorld( component );
 }
 
 void deoglRWorld::RemoveComponent( deoglRComponent *component ){
@@ -439,6 +697,7 @@ void deoglRWorld::RemoveComponent( deoglRComponent *component ){
 		DETHROW( deeInvalidParam );
 	}
 	
+	RemovePrepareForRenderComponent( component );
 	component->SetParentWorld( NULL );
 	component->SetWorldMarkedRemove( false );
 	
@@ -465,6 +724,7 @@ void deoglRWorld::RemoveAllComponents(){
 		deoglRComponent * const next = pRootComponent->GetLLWorldNext();
 		pRootComponent->SetLLWorldPrev( NULL ); // ensure root has no prev
 		
+		RemovePrepareForRenderComponent( pRootComponent );
 		pRootComponent->SetParentWorld( NULL );
 		pRootComponent->SetWorldMarkedRemove( false );
 		pComponentCount--;
@@ -513,6 +773,7 @@ void deoglRWorld::AddLight( deoglRLight *light ){
 	
 	pLights.Add( light );
 	light->SetParentWorld( this );
+	AddPrepareForRenderLight( light );
 }
 
 void deoglRWorld::RemoveLight( deoglRLight *light ){
@@ -521,6 +782,7 @@ void deoglRWorld::RemoveLight( deoglRLight *light ){
 		DETHROW( deeInvalidParam );
 	}
 	
+	RemovePrepareForRenderLight( light );
 	light->SetParentWorld( NULL );
 	pLights.RemoveFrom( index );
 }
@@ -530,7 +792,9 @@ void deoglRWorld::RemoveAllLights(){
 	int i;
 	
 	for( i=0; i<count; i++ ){
-		( ( deoglRLight* )pLights.GetAt( i ) )->SetParentWorld( NULL );
+		deoglRLight * const light = ( deoglRLight* )pLights.GetAt( i );
+		RemovePrepareForRenderLight( light );
+		light->SetParentWorld( NULL );
 	}
 	
 	pLights.RemoveAll();
@@ -567,6 +831,8 @@ deoglREnvMapProbe *deoglRWorld::GetEnvMapProbeAt( int index ) const{
 }
 
 void deoglRWorld::AddEnvMapProbe( deoglREnvMapProbe *envMapProbe ){
+	// NOTE Called during synchrinization by main thread.
+	
 	if( ! envMapProbe ){
 		DETHROW( deeInvalidParam );
 	}
@@ -580,6 +846,8 @@ void deoglRWorld::AddEnvMapProbe( deoglREnvMapProbe *envMapProbe ){
 }
 
 void deoglRWorld::RemoveEnvMapProbe( deoglREnvMapProbe *envMapProbe ){
+	// NOTE Called during synchrinization by main thread.
+	
 	const int index = pEnvMapProbes.IndexOf( envMapProbe );
 	if( index == -1 ){
 		DETHROW( deeInvalidParam );
@@ -801,6 +1069,7 @@ void deoglRWorld::AddBillboard( deoglRBillboard *billboard ){
 	pBillboardCount++;
 	
 	billboard->SetParentWorld( this );
+	AddPrepareForRenderBillboard( billboard );
 }
 
 void deoglRWorld::RemoveBillboard( deoglRBillboard *billboard ){
@@ -808,6 +1077,7 @@ void deoglRWorld::RemoveBillboard( deoglRBillboard *billboard ){
 		DETHROW( deeInvalidParam );
 	}
 	
+	RemovePrepareForRenderBillboard( billboard );
 	billboard->SetParentWorld( NULL );
 	billboard->SetWorldMarkedRemove( false );
 	
@@ -834,6 +1104,7 @@ void deoglRWorld::RemoveAllBillboards(){
 		deoglRBillboard * const next = pRootBillboard->GetLLWorldNext();
 		pRootBillboard->SetLLWorldPrev( NULL ); // ensure root has no prev
 		
+		RemovePrepareForRenderBillboard( pRootBillboard );
 		pRootBillboard->SetParentWorld( NULL );
 		pRootBillboard->SetWorldMarkedRemove( false );
 		pBillboardCount--;
@@ -927,6 +1198,14 @@ void deoglRWorld::RemoveRemovalMarkedSkies(){
 	}
 }
 
+void deoglRWorld::SkiesNotifyUpdateStaticComponent( deoglRComponent *component ){
+	int count = pSkies.GetCount();
+	int i;
+	for( i=0; i<count; i++ ){
+		( ( deoglRSkyInstance* )pSkies.GetAt( i ) )->NotifyUpdateStaticComponent( component );
+	}
+}
+
 
 
 // DebugDrawers
@@ -993,6 +1272,91 @@ void deoglRWorld::RemoveRemovalMarkedDebugDrawers(){
 
 
 
+// GI States
+//////////////
+
+int deoglRWorld::GetGICascadeCount() const{
+	return pGIStates.GetCount();
+}
+
+const deoglGIState *deoglRWorld::GetGICascadeAt( int index ) const{
+	return ( const deoglGIState * )pGIStates.GetAt( index );
+}
+
+const deoglGIState *deoglRWorld::ClosestGIState( const decDVector &position ) const{
+	const int count = pGIStates.GetCount();
+	const deoglGIState *bestGIState = NULL;
+	double bestDistance = 0.0;
+	int i, j;
+	
+	for( i=0; i<count; i++ ){
+		const deoglGIState * const giState = ( const deoglGIState * )pGIStates.GetAt( i );
+		const int cascadeCount = giState->GetCascadeCount();
+		
+		double distance = ( position - giState->GetCascadeAt( 0 ).GetPosition() ).Length();
+		for( j=1; j<cascadeCount; j++ ){
+			distance = decMath::min( distance, ( position - giState->GetCascadeAt( j ).GetPosition() ).Length() );
+		}
+		
+		if( ! bestGIState || distance < bestDistance ){
+			bestGIState = giState;
+			bestDistance = distance;
+		}
+	}
+	
+	return bestGIState;
+}
+
+void deoglRWorld::AddGICascade( const deoglGIState *giState ){
+	pGIStates.AddIfAbsent( ( void* )giState );
+}
+
+void deoglRWorld::RemoveGICascade( const deoglGIState *giState ){
+	if( ! pGIStates.Has( ( void* )giState ) ){
+		return;
+	}
+	
+	const int skyCount = pSkies.GetCount();
+	int i;
+	for( i=0; i<skyCount; i++ ){
+		( ( deoglRSkyInstance* )pSkies.GetAt( i ) )->DropGIState( giState );
+	}
+	
+	pGIStates.RemoveIfPresent( ( void* )giState );
+}
+
+void deoglRWorld::RemoveAllGICascades(){
+	if( pGIStates.GetCount() == 0 ){
+		return;
+	}
+	
+	const int skyCount = pSkies.GetCount();
+	int i;
+	for( i=0; i<skyCount; i++ ){
+		( ( deoglRSkyInstance* )pSkies.GetAt( i ) )->DropAllGIStates();
+	}
+	
+	pGIStates.RemoveAll();
+}
+
+void deoglRWorld::GIStatesNotifyComponentEnteredWorld( deoglRComponent *component ){
+	const int count = pGIStates.GetCount();
+	int i;
+	for( i=0; i<count; i++ ){
+		( ( deoglGIState* )pGIStates.GetAt( i ) )->ComponentEnteredWorld( component );
+	}
+}
+
+void deoglRWorld::GIStatesNotifyComponentChangedLayerMask( deoglRComponent *component ){
+	const int count = pGIStates.GetCount();
+	int i;
+	for( i=0; i<count; i++ ){
+		( ( deoglGIState* )pGIStates.GetAt( i ) )->ComponentChangedLayerMask( component );
+	}
+}
+
+
+
 // Private Functions
 //////////////////////
 
@@ -1014,18 +1378,21 @@ void deoglRWorld::pCleanUp(){
 	}
 	pParticleEmitterInstances.RemoveAll();
 	
+	pListPrepareForRenderPropFields.RemoveAll();
 	/*count = pPropFields.GetCount();
 	for( i=0; i<count; i++ ){
 		( ( deoglRPropField* )pPropFields.GetAt( i ) )->SetParentWorld( NULL );
 	}*/  // deoglRPropField has no special code in SetParentWorld or destructor
 	pPropFields.RemoveAll();
 	
+	pListPrepareForRenderLights.RemoveAll();
 	count = pLights.GetCount();
 	for( i=0; i<count; i++ ){
 		( ( deoglRLight* )pLights.GetAt( i ) )->PrepareQuickDispose();
 	}
 	pLights.RemoveAll();
 	
+	pListPrepareForRenderBillboards.RemoveAll();
 	while( pRootBillboard ){
 		deoglRBillboard * const next = pRootBillboard->GetLLWorldNext();
 		pRootBillboard->PrepareQuickDispose();
@@ -1033,6 +1400,7 @@ void deoglRWorld::pCleanUp(){
 		pRootBillboard = next;
 	}
 	
+	pListPrepareForRenderComponents.RemoveAll();
 	while( pRootComponent ){
 		deoglRComponent * const next = pRootComponent->GetLLWorldNext();
 		pRootComponent->PrepareQuickDispose();
@@ -1075,6 +1443,28 @@ void deoglRWorld::pCleanUp(){
 }
 
 
+
+decDVector deoglRWorld::pSanitizeOctreeSize( const decDVector &size ) const{
+	// ensure octree size along each axis does not deverge from the other axes too much.
+	// this is especially required for the height. developers can set the world size
+	// broad but not very tall which is allows but not so good for octrees. they work
+	// best with square size. if the nodes are too squashed they can not contain objects
+	// that well causing those objects to bubble up into larger nodes. a ratio of 1:2 is
+	// good enough but below can be problematic
+	const double largest = decMath::max( size.x, size.y, size.z );
+	const double smallest = largest * 0.5;
+	return size.Largest( decDVector( smallest, smallest, smallest ) );
+}
+
+int deoglRWorld::pCalcOctreeInsertDepth( const decDVector &size ) const{
+	// for a world size of 1km a depth of 8 seems adequate. in this configuration
+	// the smallest node has a size of rougly 4m (more precisely 3.90625). this is
+	// used as base configuration. for every power of two larger the insertion depth
+	// is increased by one. this can be done using a logarithm calculation. the log2
+	// of 1000 is roughly 9.96 . hence ceil(log2(max(size)))-2 is reasonable but not
+	// less than 4
+	return decMath::max( ( int )ceilf( log2( decMath::max( size.x, size.y, size.z ) ) ) - 2, 4 );
+}
 
 void deoglRWorld::pReorderSkies(){
 	const int count = pSkies.GetCount();

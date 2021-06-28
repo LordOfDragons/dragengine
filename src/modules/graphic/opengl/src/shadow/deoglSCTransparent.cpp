@@ -323,6 +323,10 @@ void deoglSCTransparent::Update(){
 	}
 }
 
+bool deoglSCTransparent::RequiresUpdate() const{
+	return pHasStatic;
+}
+
 void deoglSCTransparent::Clear(){
 	DropStatic();
 	DropDynamic();

@@ -48,6 +48,10 @@ meWPWorldListener::~meWPWorldListener(){
 // Notifications
 //////////////////
 
+void meWPWorldListener::WorldParametersChanged( meWorld* ){
+	pPanel.UpdateWorldParameters();
+}
+
 void meWPWorldListener::LightingChanged( meWorld* ){
 	pPanel.UpdateWorld();
 }

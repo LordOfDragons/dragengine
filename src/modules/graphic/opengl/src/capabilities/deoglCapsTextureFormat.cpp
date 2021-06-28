@@ -37,14 +37,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglCapsTextureFormat::deoglCapsTextureFormat( GLint format, GLenum pixelFormat, GLenum pixelType,
-int bitsPerPixel, bool isDepth, bool isDepthFloat, bool isCompressed, const char *name ) :
+deoglCapsTextureFormat::deoglCapsTextureFormat( GLint format, GLenum pixelFormat,
+	GLenum pixelType, int bitsPerPixel, bool isDepth, bool isDepthFloat, bool isStencil,
+	bool isCompressed, const char *name ) :
 pFormat( format ),
 pPixelFormat( pixelFormat ),
 pPixelType( pixelType ),
 pBitsPerPixel( bitsPerPixel ),
 pIsDepth( isDepth ),
 pIsDepthFloat( isDepthFloat ),
+pIsStencil( isStencil ),
 pIsCompressed( isCompressed ),
 pName( name ){
 }

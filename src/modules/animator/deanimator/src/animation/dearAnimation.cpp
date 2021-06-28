@@ -28,8 +28,10 @@
 #include "../deDEAnimator.h"
 
 #include <dragengine/deEngine.h>
+#include <dragengine/deObjectReference.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/resources/animation/deAnimation.h>
+#include <dragengine/resources/animation/deAnimationMove.h>
 
 
 
@@ -48,17 +50,10 @@ dearAnimation::dearAnimation( deDEAnimator *module, deAnimation *animation ){
 	
 	pAnimation = animation;
 	
-	try{
-		pCreateMoves();
-		
-	}catch( const deException & ){
-		pCleanUp();
-		throw;
-	}
+	pCreateMoves();
 }
 
 dearAnimation::~dearAnimation(){
-	pCleanUp();
 }
 
 
@@ -115,12 +110,6 @@ dearAnimationMove *dearAnimation::GetMoveNamed( const char *name ) const{
 // Private functions
 //////////////////////
 
-void dearAnimation::pCleanUp(){
-	pMoves.RemoveAll();
-}
-
-
-
 void dearAnimation::pCreateMoves(){
 	const int count = pAnimation->GetMoveCount();
 	if( count == 0 ){
@@ -129,8 +118,10 @@ void dearAnimation::pCreateMoves(){
 	
 	pMoves.RemoveAll();
 	
+	deObjectReference move;
 	int i;
 	for( i=0; i<count; i++ ){
-		pMoves.Add( new dearAnimationMove( *pAnimation->GetMove( i ) ) );
+		move.TakeOver( new dearAnimationMove( *pAnimation->GetMove( i ) ) );
+		pMoves.Add( move );
 	}
 }

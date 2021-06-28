@@ -133,9 +133,9 @@ class OBJECT_OT_DEToolLODInfo(bpy.types.Operator):
 	bl_options = { 'INTERNAL' }
 	__doc__ = """LOD Information"""
 	
-	calcMaxError = bpy.props.BoolProperty(name="Calc Max Error",
+	calcMaxError: bpy.props.BoolProperty(name="Calc Max Error",
 		description="Calculate maximum error", default=False)
-	calcAvgError = bpy.props.BoolProperty(name="Calc Avg Error",
+	calcAvgError: bpy.props.BoolProperty(name="Calc Avg Error",
 		description="Calculate average error", default=False)
 	
 	@classmethod

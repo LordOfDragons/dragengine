@@ -129,6 +129,8 @@ class ECBehaviorClearPath extends DefaultECBehavior
 			this.pLocomotion = null
 			this.pClearPathElement = null
 			
+			this.pEnabled = false // safety measure
+			
 			super.dispose()
 		end
 		
@@ -500,8 +502,8 @@ class ECBehaviorClearPath extends DefaultECBehavior
 	 * of type ECBehaviorClearPath.
 	 */
 	static public func ECBehaviorClearPath getBehaviorIn( BehaviorElementClass eclass )
-		return eclass.findBehavior( block ECBehavior each
-			return each castable ECBehaviorClearPath
+		return eclass.findBehavior( block ECBehaviorClearPath each
+			return true
 		end ) cast ECBehaviorClearPath
 	end
 	
@@ -512,8 +514,8 @@ class ECBehaviorClearPath extends DefaultECBehavior
 	 * of type ECBehaviorClearPath.Instance .
 	 */
 	static public func Instance getInstanceIn( BehaviorElement element )
-		return element.findInstance( block ECBehaviorInstance each
-			return each castable Instance
+		return element.findInstance( block Instance each
+			return true
 		end ) cast Instance
 	end
 	

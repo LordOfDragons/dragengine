@@ -157,16 +157,12 @@ void ceTarget::GetCoordinateSystem( cePlayback &playback, decMatrix &coordinateS
 	//coordinateSystem = decMatrix::CreateTranslation( pPosition )
 	//	* decMatrix::CreateRotation( pOrientation * DEG2RAD );
 	
-	if( ! pConversation ){
-		return;
-	}
-	
-	const ceConversationActorList &actorList = pConversation->GetActorList();
+	const ceConversationActorList &actorList = playback.GetConversation().GetActorList();
 	const ceConversationActor *actor = NULL;
 	
 	// coordinate system
 	if( ! pCoordSystem.IsEmpty() ){
-		const ceCoordSystem * const coordSystem = pConversation->GetCoordSystemList().GetWithIDOrAliasID( pCoordSystem );
+		const ceCoordSystem * const coordSystem = playback.GetConversation().GetCoordSystemList().GetWithIDOrAliasID( pCoordSystem );
 		if( coordSystem ){
 			coordinateSystem *= decMatrix::CreateRT( coordSystem->GetOrientation() * DEG2RAD, coordSystem->GetPosition() );
 		}

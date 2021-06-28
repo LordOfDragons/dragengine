@@ -398,7 +398,7 @@ class ECBehaviorComponent extends DefaultECBehavior
 	 * If \em model, \em skin, \em rig, \em occlusionMesh or \em audioModel are null the
 	 * respective path is not set.
 	 */
-	public  func void setCommonPath( String directory, String model, String skin, \
+	public  func void setAllPath( String directory, String model, String skin, \
 	String rig, String occlusionMesh, String audioModel )
 		this.setCommonPath( directory, model, skin, rig )
 		if occlusionMesh != null
@@ -464,8 +464,8 @@ class ECBehaviorComponent extends DefaultECBehavior
 	 * of type ECBehaviorCollider.
 	 */
 	static public func ECBehaviorComponent getBehaviorIn( BehaviorElementClass eclass )
-		return eclass.findBehavior( block ECBehavior each
-			return each castable ECBehaviorComponent
+		return eclass.findBehavior( block ECBehaviorComponent each
+			return true
 		end ) cast ECBehaviorComponent
 	end
 	
@@ -477,8 +477,7 @@ class ECBehaviorComponent extends DefaultECBehavior
 	 */
 	static public func ECBehaviorComponent getBehaviorIn( BehaviorElementClass eclass, String id )
 		return eclass.findBehavior( block ECBehaviorComponent each
-			return each castable ECBehaviorComponent and \
-				( each cast ECBehaviorComponent ).getID().equals( id )
+			return each.getID().equals( id )
 		end ) cast ECBehaviorComponent
 	end
 	
@@ -489,13 +488,9 @@ class ECBehaviorComponent extends DefaultECBehavior
 	 * been created in the element.
 	 */
 	static public func Array getAllBehaviorsIn( BehaviorElementClass eclass )
-		var Array list = Array.new()
-		eclass.forEachBehavior( block ECBehavior each
-			if each castable ECBehaviorComponent
-				list.add( each )
-			end
+		return eclass.collectBehaviors( block ECBehaviorComponent each
+			return true
 		end )
-		return list
 	end
 	
 	
@@ -508,8 +503,8 @@ class ECBehaviorComponent extends DefaultECBehavior
 	 * the first instance.
 	 */
 	static public func Instance getInstanceIn( BehaviorElement element )
-		return element.findInstance( block ECBehaviorInstance each
-			return each castable Instance
+		return element.findInstance( block Instance each
+			return true
 		end ) cast Instance
 	end
 	
@@ -520,9 +515,8 @@ class ECBehaviorComponent extends DefaultECBehavior
 	 * of type ECBehaviorComponent.Instance with specific identifier.
 	 */
 	static public func Instance getInstanceIn( BehaviorElement element, String id )
-		return element.findInstance( block ECBehaviorInstance each
-			return each castable Instance and \
-				( each cast Instance ).getECBehavior().getID().equals( id )
+		return element.findInstance( block Instance each
+			return each.getECBehavior().getID().equals( id )
 		end ) cast Instance
 	end
 	
@@ -533,13 +527,9 @@ class ECBehaviorComponent extends DefaultECBehavior
 	 * been created in the element.
 	 */
 	static public func Array getAllInstancesIn( BehaviorElement element )
-		var Array list = Array.new()
-		element.forEachInstance( block ECBehaviorInstance each
-			if each castable Instance
-				list.add( each )
-			end
+		return element.collectInstances( block Instance each
+			return true
 		end )
-		return list
 	end
 	
 	

@@ -26,6 +26,7 @@
 
 #include <deigde/gui/igdeComboBoxFilterReference.h>
 #include <deigde/gui/igdeTextAreaReference.h>
+#include <deigde/gui/igdeTextFieldReference.h>
 #include <deigde/gui/dialog/igdeDialog.h>
 
 class ceStripList;
@@ -51,6 +52,9 @@ private:
 	igdeComboBoxFilterReference pCBCameraShot2;
 	igdeComboBoxFilterReference pCBTarget1;
 	igdeComboBoxFilterReference pCBTarget2;
+	igdeTextFieldReference pEditDelayCameraShot;
+	igdeTextFieldReference pEditDelayActorSpeak;
+	igdeTextFieldReference pEditScaleActorSpeak;
 	
 	
 	
@@ -80,7 +84,7 @@ public:
 	void GenerateActions();
 	
 	/** \brief Words from text. */
-	void WordsFromText( ceStripList &wordList, const decUnicodeString &text );
+	void WordsFromText( ceStripList &wordList, const decUnicodeString &text, float scale );
 	
 	/**
 	 * \brief List of action snippet.

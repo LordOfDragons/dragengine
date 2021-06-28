@@ -72,7 +72,7 @@ deoglTexUnitConfig::~deoglTexUnitConfig(){
 // Management
 ///////////////
 
-void deoglTexUnitConfig::Apply( deoglRenderThread &renderThread, int stage ){
+void deoglTexUnitConfig::Apply( deoglRenderThread &renderThread, int stage ) const{
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	
 	if( pTexture ){

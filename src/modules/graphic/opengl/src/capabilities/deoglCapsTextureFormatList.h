@@ -64,7 +64,7 @@ public:
 	
 	/** \brief Add format. */
 	void AddFormat( GLint format, GLenum pixelFormat, GLenum pixelType, int bitsPerPixel,
-		bool isDepth, bool isDepthFloat, bool isCompressed, const char *name );
+		bool isDepth, bool isDepthFloat, bool isStencil, bool isCompressed, const char *name );
 	/*@}*/
 };
 

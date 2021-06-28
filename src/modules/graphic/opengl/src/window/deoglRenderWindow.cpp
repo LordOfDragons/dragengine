@@ -135,19 +135,23 @@ void deoglRenderWindow::IconChanged(){
 
 
 void deoglRenderWindow::SyncToRender(){
+// 		decTimer timer;
 	if( pDirtyFullScreen ){
 		pRRenderWindow->SetFullScreen( pRenderWindow.GetFullScreen() );
 		pDirtyFullScreen = false;
+// 			pOgl.LogInfoFormat( "RWindow.Sync full screen: %d ys", (int)(timer.GetElapsedTime() * 1e6f) );
 	}
 	
 	if( pDirtySize ){
 		pRRenderWindow->SetSize( pRenderWindow.GetWidth(), pRenderWindow.GetHeight() );
 		pDirtySize = false;
+// 			pOgl.LogInfoFormat( "RWindow.Sync size: %d ys", (int)(timer.GetElapsedTime() * 1e6f) );
 	}
 	
 	if( pDirtyWindowTitle ){
 		pRRenderWindow->SetTitle( pRenderWindow.GetTitle() );
 		pDirtyWindowTitle = false;
+// 			pOgl.LogInfoFormat( "RWindow.Sync title: %d ys", (int)(timer.GetElapsedTime() * 1e6f) );
 	}
 	
 	if( pDirtyIcon ){
@@ -174,6 +178,7 @@ void deoglRenderWindow::SyncToRender(){
 			pRRenderWindow->SetIcon( NULL );
 		}
 		pDirtyIcon = false;
+// 			pOgl.LogInfoFormat( "RWindow.Sync icon: %d ys", (int)(timer.GetElapsedTime() * 1e6f) );
 	}
 	
 	// if parameters changed set them to the window. this has to be done always
@@ -181,17 +186,20 @@ void deoglRenderWindow::SyncToRender(){
 		//pRRenderWindow->SetHostWindow( pRenderWindow.GetHostWindow() );
 		pRRenderWindow->SetPaint( pRenderWindow.GetPaint() );
 		pDirtyParams = false;
+// 			pOgl.LogInfoFormat( "RWindow.Sync set paint: %d ys", (int)(timer.GetElapsedTime() * 1e6f) );
 	}
 	
 	// sync canvas view only if painting is enabled. saves performance on invisible windows
 	if( pRenderWindow.GetPaint() ){
 		pCanvasView->SyncToRender();
 		pRRenderWindow->SetRCanvasView( pCanvasView->GetRCanvasView() );
+// 			pOgl.LogInfoFormat( "RWindow.Sync set rcanvasview: %d ys", (int)(timer.GetElapsedTime() * 1e6f) );
 	}
 	
 	// window size changed due to OS events
 	if( pRRenderWindow->GetNotifySizeChanged() ){
 		pRenderWindow.SetSize( pRRenderWindow->GetWidth(), pRRenderWindow->GetHeight() );
+// 			pOgl.LogInfoFormat( "RWindow.Sync notify size changed: %d ys", (int)(timer.GetElapsedTime() * 1e6f) );
 	}
 }
 

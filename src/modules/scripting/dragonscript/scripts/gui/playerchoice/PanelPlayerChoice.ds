@@ -87,10 +87,7 @@ class PanelPlayerChoice extends Panel implements ConversationPlaybackPlayerChoic
 		if action == null
 			throw EInvalidParam.new()
 		end
-		
-		var PanelPlayerChoiceEntry entry = PanelPlayerChoiceEntry.new( text, action )
-		entry.setMaximalWidth( this.getParent().getContainerWidth() )
-		this.pPanelEntries.addWidget( entry )
+		this.pPanelEntries.addWidget( this.createOptionWidget( text, image, action ) )
 	end
 	
 	
@@ -117,5 +114,19 @@ class PanelPlayerChoice extends Panel implements ConversationPlaybackPlayerChoic
 	 */
 	public func void endChoosing()
 		this.setVisible( false )
+	end
+	
+	
+	
+	/**
+	 * \brief Create option widget.
+	 * \version 1.5
+	 * 
+	 * Default implementation creates instance of PanelPlayerChoiceEntry.
+	 */
+	protected func Widget createOptionWidget( String text, Image image, ActionListener action )
+		var PanelPlayerChoiceEntry entry = PanelPlayerChoiceEntry.new( text, image, action )
+		entry.getLabel().setMaximalWidth( this.getParent().getContainerWidth() )
+		return entry
 	end
 end

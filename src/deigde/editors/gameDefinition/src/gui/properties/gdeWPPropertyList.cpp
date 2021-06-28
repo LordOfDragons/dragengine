@@ -42,6 +42,7 @@
 #include <deigde/gui/igdeSwitcher.h>
 #include <deigde/gui/igdeTextArea.h>
 #include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/igdeWindow.h>
 #include <deigde/gui/composed/igdeEditPropertyValue.h>
 #include <deigde/gui/composed/igdeEditPropertyValueListener.h>
 #include <deigde/gui/event/igdeAction.h>
@@ -125,9 +126,9 @@ public:
 		const gdePropertyList &list = *pPanel.GetPropertyList();
 		decString name( "Property" );
 		
-		while( igdeCommonDialogs::GetString( &pPanel, "Add Property", "Name:", name ) ){
+		while( igdeCommonDialogs::GetString( pPanel.GetParentWindow(), "Add Property", "Name:", name ) ){
 			if( list.HasNamed( name ) ){
-				igdeCommonDialogs::Error( &pPanel, "Add Property", "Name exists already." );
+				igdeCommonDialogs::Error( pPanel.GetParentWindow(), "Add Property", "Name exists already." );
 				continue;
 			}
 			
@@ -254,8 +255,8 @@ public:
 		decString name( clip->GetProperty()->GetName() );
 		
 		while( list.HasNamed( name ) ){
-			igdeCommonDialogs::Error( &pPanel, "Paste Property", "Name exists already." );
-			if( ! igdeCommonDialogs::GetString( &pPanel, "Paste Property", "Name:", name ) ){
+			igdeCommonDialogs::Error( pPanel.GetParentWindow(), "Paste Property", "Name exists already." );
+			if( ! igdeCommonDialogs::GetString( pPanel.GetParentWindow(), "Paste Property", "Name:", name ) ){
 				return;
 			}
 		}
@@ -389,7 +390,7 @@ public:
 		}
 		
 		if( pPanel.GetPropertyList()->HasNamed( name ) ){
-			igdeCommonDialogs::Error( &pPanel, "Rename property", "Name exists already." );
+			igdeCommonDialogs::Error( pPanel.GetParentWindow(), "Rename property", "Name exists already." );
 			textField->SetText( property->GetName() );
 			return NULL;
 		}
@@ -521,9 +522,9 @@ public:
 	virtual igdeUndo *OnActionUndo( gdeProperty *property ){
 		decString option( "Option" );
 		
-		while( igdeCommonDialogs::GetString( &pPanel, "Add Option", "Option:", option ) ){
+		while( igdeCommonDialogs::GetString( pPanel.GetParentWindow(), "Add Option", "Option:", option ) ){
 			if( property->GetOptions().Has( option ) ){
-				igdeCommonDialogs::Error( &pPanel, "Add Option", "Option exists already." );
+				igdeCommonDialogs::Error( pPanel.GetParentWindow(), "Add Option", "Option exists already." );
 				continue;
 			}
 			
@@ -615,7 +616,7 @@ public:
 		}
 		
 		decString name( "File Pattern" );
-		if( ! igdeCommonDialogs::GetString( &pPanel, "Add File Pattern", "Name:", name ) ){
+		if( ! igdeCommonDialogs::GetString( pPanel.GetParentWindow(), "Add File Pattern", "Name:", name ) ){
 			return;
 		}
 		
@@ -804,7 +805,7 @@ pClipboard( NULL )
 	
 	
 	// type specific parameters
-	helper.GroupBoxFlow( *this, group, "Parameters:" );
+	helper.GroupBoxFlow( *this, group, "Parameters:", false, true );
 	pSwiParameters.TakeOver( new igdeSwitcher( env ) );
 	group->AddChild( pSwiParameters );
 	

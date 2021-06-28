@@ -134,6 +134,10 @@ void igdeWindow::Close(){
 	}
 }
 
+igdeWindow *igdeWindow::GetParentWindow(){
+	return this;
+}
+
 
 
 // IGDE Internal Use Only

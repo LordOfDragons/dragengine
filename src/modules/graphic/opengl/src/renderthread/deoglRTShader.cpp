@@ -93,7 +93,7 @@ deoglTexSamplerConfig *deoglRTShader::GetTexSamplerConfig( const deoglRTShader::
 	return pTexSamplerConfigs[ type ];
 }
 
-void deoglRTShader::ActivateShader( deoglShaderProgram *shader ){
+void deoglRTShader::ActivateShader( const deoglShaderProgram *shader ){
 	if( shader == pCurShaderProg ){
 		return;
 	}

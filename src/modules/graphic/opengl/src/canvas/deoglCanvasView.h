@@ -28,7 +28,7 @@
 
 class deoglRCanvasView;
 class deCanvasView;
-
+class deoglCanvasViewListener;
 
 
 /**
@@ -42,8 +42,7 @@ private:
 	bool pDirtyPaint;
 	bool pResizeRenderTarget;
 	
-	decPointerSet pNotifyRenderables;
-	decPointerSet pNotifyCanvas;
+	decPointerSet pListeners;
 	bool pSyncRequestSend;
 	
 	
@@ -85,16 +84,23 @@ public:
 	 * \details Called if content is dirty.
 	 */
 	virtual void SyncContentToRender();
+	/*@}*/
 	
 	
 	
-	/** \brief Renderables to notify about dirty events. */
-	inline decPointerSet &GetNotifyRenderables(){ return pNotifyRenderables; }
-	inline const decPointerSet &GetNotifyRenderables() const{ return pNotifyRenderables; }
+	/** \name Listeners */
+	/*@{*/
+	/** Add a listener. */
+	void AddListener( deoglCanvasViewListener *listener );
 	
-	/** \brief Canvas views to notify about dirty events. */
-	inline decPointerSet &GetNotifyCanvas(){ return pNotifyCanvas; }
-	inline const decPointerSet &GetNotifyCanvas() const{ return pNotifyCanvas; }
+	/** Remove listener if existing. */
+	void RemoveListener( deoglCanvasViewListener *listener );
+	
+	/** Notify all canvas view has been destroyed. */
+	void NotifyDestroyed();
+	
+	/** Notify all canvas view requires sync. */
+	void NotifyRequiresSync();
 	/*@}*/
 	
 	

@@ -387,8 +387,8 @@ class ECBehaviorTouching extends DefaultECBehavior
 	 * of type ECBehaviorComponent.
 	 */
 	static public func ECBehaviorTouching getBehaviorIn( BehaviorElementClass eclass )
-		return eclass.findBehavior( block ECBehavior each
-			return each castable ECBehaviorTouching
+		return eclass.findBehavior( block ECBehaviorTouching each
+			return true
 		end ) cast ECBehaviorTouching
 	end
 	
@@ -400,8 +400,7 @@ class ECBehaviorTouching extends DefaultECBehavior
 	 */
 	static public func ECBehaviorTouching getBehaviorIn( BehaviorElementClass eclass, String id )
 		return eclass.findBehavior( block ECBehaviorTouching each
-			return each castable ECBehaviorTouching and \
-				( each cast ECBehaviorTouching ).getID().equals( id )
+			return each.getID().equals( id )
 		end ) cast ECBehaviorTouching
 	end
 	
@@ -412,13 +411,9 @@ class ECBehaviorTouching extends DefaultECBehavior
 	 * been created in the element.
 	 */
 	static public func Array getAllBehaviorsIn( BehaviorElementClass eclass )
-		var Array list = Array.new()
-		eclass.forEachBehavior( block ECBehavior each
-			if each castable ECBehaviorTouching
-				list.add( each )
-			end
+		return eclass.collectBehaviors( block ECBehaviorTouching each
+			return true
 		end )
-		return list
 	end
 	
 	
@@ -431,8 +426,8 @@ class ECBehaviorTouching extends DefaultECBehavior
 	 * the first instance.
 	 */
 	static public func Instance getInstanceIn( BehaviorElement element )
-		return element.findInstance( block ECBehaviorInstance each
-			return each castable Instance
+		return element.findInstance( block Instance each
+			return true
 		end ) cast Instance
 	end
 	
@@ -443,9 +438,8 @@ class ECBehaviorTouching extends DefaultECBehavior
 	 * of type ECBehaviorTouching.Instance with specific identifier.
 	 */
 	static public func Instance getInstanceIn( BehaviorElement element, String id )
-		return element.findInstance( block ECBehaviorInstance each
-			return each castable Instance and \
-				( each cast Instance ).getECBehavior().getID().equals( id )
+		return element.findInstance( block Instance each
+			return each.getECBehavior().getID().equals( id )
 		end ) cast Instance
 	end
 	
@@ -456,13 +450,9 @@ class ECBehaviorTouching extends DefaultECBehavior
 	 * been created in the element.
 	 */
 	static public func Array getAllInstancesIn( BehaviorElement element )
-		var Array list = Array.new()
-		element.forEachInstance( block ECBehaviorInstance each
-			if each castable Instance
-				list.add( each )
-			end
+		return element.collectInstances( block Instance each
+			return true
 		end )
-		return list
 	end
 	
 	

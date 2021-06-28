@@ -48,6 +48,8 @@ public:
 	 */
 	static void CalcFaceVisibility( const decDVector &boxMin,
 		const decDVector &boxMax, bool *result );
+	
+	static int CalcFaceVisibility( const decDVector &boxMin, const decDVector &boxMax );
 	/*@}*/
 };
 

@@ -600,8 +600,8 @@ class ECBehaviorPlayerInteractPrompt extends DefaultECBehavior
 	 * of type ECBehaviorPlayerInteractPrompt.
 	 */
 	static public func ECBehaviorPlayerInteractPrompt getBehaviorIn( BehaviorElementClass eclass )
-		return eclass.findBehavior( block ECBehavior each
-			return each castable ECBehaviorPlayerInteractPrompt
+		return eclass.findBehavior( block ECBehaviorPlayerInteractPrompt each
+			return true
 		end ) cast ECBehaviorPlayerInteractPrompt
 	end
 	
@@ -612,8 +612,8 @@ class ECBehaviorPlayerInteractPrompt extends DefaultECBehavior
 	 * of type ECBehaviorPlayerInteractPrompt.Instance .
 	 */
 	static public func Instance getInstanceIn( BehaviorElement element )
-		return element.findInstance( block ECBehaviorInstance each
-			return each castable Instance
+		return element.findInstance( block Instance each
+			return true
 		end ) cast Instance
 	end
 	

@@ -120,7 +120,7 @@ void deoglRenderTaskParticles::DebugPrint( deoglRTLogger &rtlogger ){
 	
 	rtlogger.LogInfoFormat( "RenderTaskParticle %p: particles=%d", this, pStepCount );
 	
-	deoglShaderProgram *shader = NULL;
+	const deoglShaderProgram *shader = NULL;
 	
 	for( i=0; i<pStepCount; i++ ){
 		const deoglRenderTaskParticlesStep &step = *pSteps[ i ];

@@ -170,35 +170,27 @@ class OptionBox extends ToggleButton
 		this.setLayout( BorderLayout.new( 5 ) )
 		
 		// optionbox with option mark
-		var Panel panel = Panel.new()
-		panel.setLayout( StackLayout.new() )
-		this.addWidget( panel, BorderLayout.Area.left )
-		
-		this.pPanelOptionBox = Panel.new()
-		this.pPanelOptionBox.setLayout( CentrizedBoxLayout.new( LayoutAxis.y ) )
-		panel.addWidget( this.pPanelOptionBox )
-		
-		this.pPanelSelected = Panel.new()
-		this.pPanelSelected.setLayout( CentrizedBoxLayout.new( LayoutAxis.y ) )
-		panel.addWidget( this.pPanelSelected )
+		this.addWidget( Panel.new( StackLayout.new(), block Panel p
+			this.pPanelOptionBox = Panel.new( CentrizedBoxLayout.new( LayoutAxis.y ) )
+			p.addWidget( this.pPanelOptionBox )
+			
+			this.pPanelSelected = Panel.new( CentrizedBoxLayout.new( LayoutAxis.y ) )
+			p.addWidget( this.pPanelSelected )
+		end ), BorderLayout.Area.left )
 		
 		// image and text
-		panel = Panel.new()
-		panel.setLayout( FlowLayout.new( LayoutAxis.x ) )
-		this.addWidget( panel, BorderLayout.Area.content )
-		
-		var DisplayImage widgetImage = DisplayImage.new()
-		widgetImage.setEnabled( enabled )
-		panel.addWidget( widgetImage )
-		widgetImage.setVisible( false )
-		this.setWidgetImage( widgetImage )
-		
-		var Label widgetText = Label.new( text, Label.middleLeft )
-		widgetText.setFont( this.getFont() )
-		widgetText.setTextColor( this.getTextColor() )
-		widgetText.setEnabled( enabled )
-		panel.addWidget( widgetText )
-		widgetText.setVisible( not text.empty() )
-		this.setWidgetText( widgetText )
+		this.addWidget( Panel.new( FlowLayout.new( LayoutAxis.x ), block Panel p
+			var DisplayImage widgetImage = DisplayImage.new( null, "Image." + this.getDesignerSelector() )
+			widgetImage.setEnabled( enabled )
+			p.addWidget( widgetImage )
+			widgetImage.setVisible( false )
+			this.setWidgetImage( widgetImage )
+			
+			var Label widgetText = Label.new( text, "Label." + this.getDesignerSelector() )
+			widgetText.setEnabled( enabled )
+			p.addWidget( widgetText )
+			widgetText.setVisible( not text.empty() )
+			this.setWidgetText( widgetText )
+		end ), BorderLayout.Area.content )
 	end
 end

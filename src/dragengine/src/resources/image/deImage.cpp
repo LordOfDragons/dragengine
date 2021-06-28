@@ -224,7 +224,7 @@ void deImage::NotifyImageDataChanged(){
 
 
 void deImage::RetainImageData(){
-	deMutex guard( pMutex );
+	const deMutexGuard guard( pMutex );
 	
 	if( pRetainImageData > 0 ){
 		pRetainImageData++;
@@ -280,7 +280,7 @@ void deImage::RetainImageData(){
 }
 
 void deImage::ReleaseImageData(){
-	deMutex guard( pMutex );
+	const deMutexGuard guard( pMutex );
 	
 	if( pRetainImageData == 0 ){
 		DETHROW( deeInvalidParam );
@@ -361,7 +361,7 @@ void deImage::FinalizeConstruction( int width, int height, int depth, int compon
 }
 
 void deImage::PeersRetainImageData(){
-	deMutex guard( pMutex );
+	const deMutexGuard guard( pMutex );
 	
 	if( GetAsynchron() ){
 		DETHROW( deeInvalidParam );

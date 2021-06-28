@@ -672,12 +672,25 @@ void debnConnection::SetIsRegistered( bool isRegistered ){
 void debnConnection::pCleanUp(){
 	if( pNetBasic ) pNetBasic->UnregisterConnection( this );
 	
-	if( pStateLinks ) delete pStateLinks;
-	if( pSocket ) pSocket->FreeReference();
-	if( pRemoteAddress ) delete pRemoteAddress;
+	if( pStateLinks ){
+		delete pStateLinks;
+	}
+	if( pModifiedStateLinks ){
+		delete pModifiedStateLinks;
+	}
+	if( pSocket ){
+		pSocket->FreeReference();
+	}
+	if( pRemoteAddress ){
+		delete pRemoteAddress;
+	}
 	
-	if( pReliableMessagesRecv ) delete pReliableMessagesRecv;
-	if( pReliableMessagesSend ) delete pReliableMessagesSend;
+	if( pReliableMessagesRecv ){
+		delete pReliableMessagesRecv;
+	}
+	if( pReliableMessagesSend ){
+		delete pReliableMessagesSend;
+	}
 }
 
 void debnConnection::pDisconnect(){

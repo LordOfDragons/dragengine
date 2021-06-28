@@ -181,7 +181,7 @@ deoglRenderTransparentPasses::~deoglRenderTransparentPasses(){
 
 
 
-void deoglRenderTransparentPasses::RenderTransparentPasses( deoglRenderPlan &plan, deoglRenderPlanMasked *mask ){
+void deoglRenderTransparentPasses::RenderTransparentPasses( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask ){
 DBG_ENTER_PARAM("RenderTransparentPasses", "%p", mask)
 	// to handle pixel correct transparency a depth peeling approach is used but different
 	// than the conventional depth peeling approach. in the conventional approach peeling
@@ -292,8 +292,12 @@ DBG_ENTER_PARAM("RenderTransparentPasses", "%p", mask)
 			// render the transparent layer
 			RenderTransparentGeometryPass( plan, mask );
 			
+			if( ! mask ){
+				renderThread.GetRenderers().GetReflection().CopyMaterial( plan, false );
+			}
+			
 			if( ! plan.GetDisableLights() ){
-				renderThread.GetRenderers().GetLight().RenderLights( plan, false );
+				renderThread.GetRenderers().GetLight().RenderLights( plan, false, mask );
 				DebugTimer1Sample( plan, *renworld.GetDebugInfo().infoTransparentLights, true );
 			}
 			
@@ -332,7 +336,7 @@ DBG_EXIT("RenderTransparentPasses")
 
 
 
-void deoglRenderTransparentPasses::RenderTransparentGeometryPass( deoglRenderPlan &plan, deoglRenderPlanMasked *mask ){
+void deoglRenderTransparentPasses::RenderTransparentGeometryPass( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask ){
 DBG_ENTER_PARAM("RenderTransparentGeometryPass", "%p", mask)
 	deoglRenderThread &renderThread = GetRenderThread();
 	deoglRenderGeometry &rengeom = renderThread.GetRenderers().GetGeometry();
@@ -625,7 +629,7 @@ DBG_ENTER_PARAM("RenderTransparentGeometryPass", "%p", mask)
 		addToRenderTask.AddParticles( collideList );
 	}
 	
-	renderTask.PrepareForRender( renderThread );
+	renderTask.PrepareForRender();
 	DebugTimer2Sample( plan, *renworld.GetDebugInfo().infoTransparentTask, true );
 	
 	rengeom.RenderTask( renderTask );
@@ -646,7 +650,7 @@ DBG_ENTER_PARAM("RenderTransparentGeometryPass", "%p", mask)
 	addToRenderTask.SetSkinShaderType( deoglSkinTexture::estOutlineGeometry );
 	addToRenderTask.AddComponents( collideList );
 	
-	renderTask.PrepareForRender( renderThread );
+	renderTask.PrepareForRender();
 	DebugTimer2Sample( plan, *renworld.GetDebugInfo().infoTransparentTask, true );
 	
 	if( renderTask.GetShaderCount() > 0 ){
@@ -679,7 +683,7 @@ DBG_EXIT("RenderTransparentGeometryPass")
 }
 
 void deoglRenderTransparentPasses::RenderTransparentLimitDepth(
-deoglRenderPlan &plan, deoglRenderPlanMasked *mask ){
+deoglRenderPlan &plan, const deoglRenderPlanMasked *mask ){
 DBG_ENTER_PARAM("RenderTransparentLimitDepth", "%p", mask)
 	deoglRenderThread &renderThread = GetRenderThread();
 	deoglRenderDepthPass &rendepth = renderThread.GetRenderers().GetDepthPass();
@@ -827,7 +831,7 @@ DBG_EXIT("RenderTransparentLimitDepth")
 
 
 void deoglRenderTransparentPasses::RenderVolumetricPass( deoglRenderPlan &plan,
-deoglRenderPlanMasked *mask, bool inbetween ){
+const deoglRenderPlanMasked *mask, bool inbetween ){
 	deoglRenderThread &renderThread = GetRenderThread();
 	if( renderThread.GetChoices().GetRealTransparentParticles() ){
 		return;

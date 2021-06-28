@@ -38,8 +38,8 @@ class deoglRenderReflection;
 class deoglRenderSky;
 class deoglRenderThread;
 class deoglRenderToneMap;
-class deoglRenderTranspCounting;
 class deoglRenderTransparentPasses;
+class deoglRenderTranspCounting;
 class deoglRenderWorld;
 
 

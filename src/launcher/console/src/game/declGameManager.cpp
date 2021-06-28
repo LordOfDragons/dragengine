@@ -211,7 +211,9 @@ void declGameManager::LoadGameFromDisk( const decString &path, declGameList &lis
 		decPath pathDelgaDir( absPath );
 		const decString delgaFilename( pathDelgaDir.GetLastComponent() );
 		pathDelgaDir.RemoveLastComponent();
-		delgaVfs->AddContainer( new deVFSDiskDirectory( pathDelgaDir ) );
+		deVFSContainerReference delgaDir;
+		delgaDir.TakeOver( new deVFSDiskDirectory( pathDelgaDir ) );
+		delgaVfs->AddContainer( delgaDir );
 		
 		deArchiveReference delgaArchive;
 		delgaArchive.TakeOver( amgr.OpenArchive( delgaVfs, delgaFilename, "/" ) );

@@ -25,6 +25,7 @@
 #include <deigde/gui/igdeListBoxReference.h>
 #include <deigde/gui/igdeSpinTextFieldReference.h>
 #include <deigde/gui/igdeTextFieldReference.h>
+#include <deigde/gui/composed/igdeEditDVectorReference.h>
 #include <deigde/gui/composed/igdeEditVectorReference.h>
 #include <deigde/gui/composed/igdeEditPathReference.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
@@ -48,7 +49,7 @@ private:
 	
 	igdeSpinTextFieldReference pSpinActive;
 	igdeTextFieldReference pEditSelCount;
-	igdeEditVectorReference pEditPositon;
+	igdeEditDVectorReference pEditPositon;
 	igdeEditVectorReference pEditOrientation;
 	igdeEditPathReference pEditPath;
 	igdeListBoxReference pListUsedCostTypes;

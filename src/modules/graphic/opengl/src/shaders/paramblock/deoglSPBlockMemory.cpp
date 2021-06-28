@@ -66,11 +66,19 @@ deoglSPBlockMemory::~deoglSPBlockMemory(){
 // Management
 ///////////////
 
-void deoglSPBlockMemory::Activate(){
+void deoglSPBlockMemory::Activate() const{
 	DETHROW( deeInvalidParam );
 }
 
-void deoglSPBlockMemory::Deactivate(){
+void deoglSPBlockMemory::Activate( int ) const{
+	DETHROW( deeInvalidParam );
+}
+
+void deoglSPBlockMemory::Deactivate() const{
+	DETHROW( deeInvalidParam );
+}
+
+void deoglSPBlockMemory::Deactivate( int ) const{
 	DETHROW( deeInvalidParam );
 }
 

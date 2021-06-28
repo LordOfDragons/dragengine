@@ -13,9 +13,7 @@ envLibrary = parent_env.Clone()
 buildStaticLinking = True
 
 # parameters
-srcdir = 'libjpeg-turbo-1.5.1'
-if envLibrary['OSWindows']:
-	srcdir = 'libjpeg-turbo-2.0.3'
+srcdir = 'libjpeg-turbo-2.0.3'
 
 libLinkVersion = '62'
 libLinkName = 'jpeg'
@@ -70,57 +68,37 @@ def jpegBuild( target, source, env ):
 	
 	script.append( 'cd "{}" || exit 1'.format( buildDir.Dir( srcdir ).abspath ) )
 	
-	if envLibrary['OSWindows']:
-		cmdline = []
-		cmdline.append('cmake')
-		cmdline.extend('-G"Unix Makefiles"')
-		cmdline.append('-DENABLE_SHARED=Off')
-		cmdline.append('-DENABLE_STATIC=On')
+	cmdline = []
+	cmdline.append('cmake')
+	cmdline.extend('-G"Unix Makefiles"')
+	cmdline.append('-DENABLE_SHARED=Off')
+	cmdline.append('-DENABLE_STATIC=On')
+	cmdline.append('-DWITH_TURBOJPEG=Off')
+	
+	if env['OSWindows']:
+		# libjpeg fails if system name is not this value
 		cmdline.append('-DCMAKE_SYSTEM_NAME=Windows')
-		cmdline.append('-DCMAKE_SYSTEM_PROCESSOR=AMD64')
-		#cmdline.append('-DWITH_SIMD=0')
-		cmdline.append('-DCMAKE_BUILD_TYPE=Release')
-		cmdline.append('-DCMAKE_INSTALL_PREFIX="{}"'.format(buildDir.abspath))
-		cmdline.append('.')
-		script.append('{} || exit 1'.format(' '.join(cmdline)))
-		
-		script.append( 'make install || exit 1' )
-		
-	else:
-		if env[ 'OSBeOS' ]:
-			script.append( 'libtoolize --force --copy --install' )
-			script.append( 'aclocal --force' )
-			script.append( 'autoconf --force' )
-			script.append( 'automake --add-missing --force' )
-		
-		cmdline = [ './configure --prefix="{}"'.format( buildDir.abspath ) ]
-		cmdline.append( '--enable-silent-rules' )
-		cmdline.append( '--without-turbojpeg' )
-		cmdline.append( '--without-java' )
-		
-		if buildStaticLinking:
-			cmdline.append( '--enable-shared=no' )
-			cmdline.append( '--enable-static=yes' )
-			cmdline.append( '--with-pic=yes' )
-		else:
-			cmdline.append( '--enable-shared=yes' )
-			cmdline.append( '--enable-static=no' )
-		
-		if env[ 'OSBeOS' ]:
-			cmdline.append( ' --without-simd' ) # otherwise fails to compile on 64-bit
-		
-		if 'CROSSCOMPILE_HOST' in env:
-			cmdline.append('--host={}'.format(env['CROSSCOMPILE_HOST']))
-		
-		script.append( '{} || exit 1'.format( ' '.join( cmdline ) ) )
-		
-		script.append( 'cd simd || exit 1' )
-		script.append( 'make jsimdcfg.inc libsimd.la || exit 1' )
-		script.append( 'cd ..' )
-		
-		script.append( 'make install-libLTLIBRARIES'
-			+ ' install-includeHEADERS'
-			+ ' install-nodist_includeHEADERS || exit 1' )
+	elif 'CROSSCOMPILE_HOST' in env:
+		cmdline.append('-DCMAKE_SYSTEM_NAME="{}"'.format(env['CROSSCOMPILE_HOST']))
+	
+	cmdline.append('-DCMAKE_SYSTEM_PROCESSOR=AMD64')
+	
+	#cmdline.append('-DWITH_SIMD=0')
+	if env['OSBeOS']:
+		pass
+		#cmdline.append('-DWITH_SIMD=0') # otherwise fails to compile on 64-bit
+	
+	cmdline.append('-DCMAKE_BUILD_TYPE=Release')
+	cmdline.append('-DCMAKE_INSTALL_PREFIX="{}"'.format(buildDir.abspath))
+	
+	# this is required otherwise depending on the platform the install
+	# directory is sometimes 'lib' and sometimes 'lib64' causing problems
+	cmdline.append('-DCMAKE_INSTALL_LIBDIR="{}"'.format(buildDir.Dir('lib').abspath))
+	
+	cmdline.append('.')
+	script.append('{} || exit 1'.format(' '.join(cmdline)))
+	
+	script.append( 'make install || exit 1' )
 	
 	if not env.RunIsolatedSystem(script):
 		raise Exception('Failed building libjpeg')

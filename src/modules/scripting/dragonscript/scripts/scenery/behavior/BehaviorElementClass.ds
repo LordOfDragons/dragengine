@@ -106,19 +106,48 @@ class BehaviorElementClass extends ElementClass
 		behavior.assignInstanceIndex( instanceIndex )
 	end
 	
-	/** \brief Visit behaviors with block with parameter ECBehavior. */
+	/**
+	 * \brief Visit behaviors with block.
+	 * 
+	 * Block is required to have one parameter of type ECBehavior or subclass thereof.
+	 * Block is called only for behaviors castable to block parameter type.
+	 */
 	public func void forEachBehavior( Block ablock )
-		this.pBehaviors.forEach( ablock )
+		this.pBehaviors.forEachCastable( ablock )
 	end
 	
 	/**
 	 * \brief Find behavior with block.
 	 * 
-	 * Block is required to have one parameter ECBehavior and returning true if the
-	 * right instance is found otherwise false.
+	 * Block is required to have one parameter ECBehavior or subclass thereof and returning
+	 * true if the right behavior is found otherwise false. Block is called only for
+	 * behaviors castable to block parameter type.
 	 */
 	public func ECBehavior findBehavior( Block ablock )
-		return this.pBehaviors.find( ablock ) cast ECBehavior
+		return this.pBehaviors.findCastable( ablock ) cast ECBehavior
+	end
+	
+	/**
+	 * \brief Collect behaviors with block into Array.
+	 * \version 1.5
+	 * 
+	 * Block is required to have one parameter ECBehavior or subclass thereof and returning
+	 * true if the right behavior is found otherwise false. Block is called only for
+	 * behaviors castable to block parameter type.
+	 */
+	public func Array collectBehaviors( Block ablock )
+		return this.pBehaviors.collectCastable( ablock )
+	end
+	
+	
+	
+	/**
+	 * \brief Visit behaviors with block.
+	 * 
+	 * Block is required to have one parameter of type ECBehavior. For use by BehaviorElement.
+	 */
+	public func void forEachBehaviorDirect( Block ablock )
+		this.pBehaviors.forEach( ablock )
 	end
 	
 	

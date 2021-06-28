@@ -11,6 +11,7 @@
 		<aliasIdentifier>%{GAME_ALIAS_ID}</aliasIdentifier>
 		<title>%{GAME_TITLE} - Development</title>
 		<gameDescription>Development</gameDescription>
+		<excludePattern>/scripts/testing</excludePattern>
 		<delgaPath>distribute/development.delga</delgaPath>
 	</profile>
 	<profile>
@@ -25,6 +26,22 @@
 		<title>%{GAME_TITLE}</title>
 		<gameDescription>%{GAME_DESCRIPTION}</gameDescription>
 		<excludePattern>/develop</excludePattern>
+		<excludePattern>/scripts/testing</excludePattern>
 		<delgaPath>distribute/%{DELGA_FILE_TITLE}.delga</delgaPath>
+	</profile>
+	<profile>
+		<name>Testing</name>
+		<description>Testing profile created by Template. Uses an alternate game object to run Unit/Feature tests on your game. See GameAppTesting.ds and ExampleTestSuite.ds to add tests.</description>
+		<scriptDirectory>/scripts</scriptDirectory>
+		<gameObject>GameAppTesting</gameObject>
+		<pathConfig>/config</pathConfig>
+		<pathCapture>/capture</pathCapture>
+		<identifier>%{GAME_ID}</identifier>
+		<aliasIdentifier>%{GAME_ALIAS_ID}</aliasIdentifier>
+		<title>%{GAME_TITLE}</title>
+		<gameDescription>%{GAME_DESCRIPTION}</gameDescription>
+		<excludePattern>/develop</excludePattern>
+		<windowSize x='800' y='400'/>
+		<delgaPath>distribute/%{DELGA_FILE_TITLE}_Testing.delga</delgaPath>
 	</profile>
 </project>

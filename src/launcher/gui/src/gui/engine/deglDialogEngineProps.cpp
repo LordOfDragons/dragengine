@@ -191,6 +191,7 @@ long deglDialogEngineProps::onCBProfilesChanged( FXObject *sender, FXSelector se
 	deglGameManager &gameManager = *pWindowMain->GetLauncher()->GetGameManager();
 	
 	gameManager.SetActiveProfile( ( deglGameProfile* )pCBActiveProfile->getItemData( pCBActiveProfile->getCurrentItem() ) );
+	pWindowMain->GetLauncher()->GetEngine()->SaveConfig();
 	
 	return 1;
 }

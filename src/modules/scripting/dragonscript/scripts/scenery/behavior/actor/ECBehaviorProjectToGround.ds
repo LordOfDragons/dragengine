@@ -663,8 +663,8 @@ class ECBehaviorProjectToGround extends DefaultECBehavior
 	 * of type ECBehaviorProjectToGround.
 	 */
 	static public func ECBehaviorProjectToGround getBehaviorIn( BehaviorElementClass eclass )
-		return eclass.findBehavior( block ECBehavior each
-			return each castable ECBehaviorProjectToGround
+		return eclass.findBehavior( block ECBehaviorProjectToGround each
+			return true
 		end ) cast ECBehaviorProjectToGround
 	end
 	
@@ -675,8 +675,8 @@ class ECBehaviorProjectToGround extends DefaultECBehavior
 	 * of type ECBehaviorProjectToGround.Instance .
 	 */
 	static public func Instance getInstanceIn( BehaviorElement element )
-		return element.findInstance( block ECBehaviorInstance each
-			return each castable Instance
+		return element.findInstance( block Instance each
+			return true
 		end ) cast Instance
 	end
 	

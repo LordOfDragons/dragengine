@@ -67,7 +67,7 @@ deWorld::deWorld( deWorldManager *manager ) :
 deResource( manager ),
 
 pHeightTerrain( NULL ),
-pSize( 1e5, 1e5, 1e5 ),
+pSize( 1000.0, 1000.0, 1000.0 ),
 
 pDisableLights( false ),
 

@@ -24,6 +24,7 @@
 #include <string.h>
 
 #include "deoglCanvasView.h"
+#include "deoglCanvasViewListener.h"
 #include "deoglCanvasCanvasView.h"
 #include "render/deoglRCanvasView.h"
 #include "../deGraphicOpenGl.h"
@@ -53,17 +54,9 @@ pSyncRequestSend( false ){
 
 deoglCanvasView::~deoglCanvasView(){
 	// notify owners we are about to be deleted. required since owners hold only a weak pointer
-	// to the dynamic skin and are notified only after switching to a new dynamic skin. in this
-	// case they can not use the old pointer to remove themselves from the dynamic skin
-	int i, count = pNotifyRenderables.GetCount();
-	for( i=0; i<count; i++ ){
-		( ( deoglDSRenderableCanvas* )pNotifyRenderables.GetAt( i ) )->DropCanvasView();
-	}
-	
-	count = pNotifyCanvas.GetCount();
-	for( i=0; i<count; i++ ){
-		( ( deoglCanvasCanvasView* )pNotifyCanvas.GetAt( i ) )->DropCanvasView();
-	}
+	// to the canvas view and are notified only after switching to a new canvas view. in this
+	// case they can not use the old pointer to remove themselves from the canvas view
+	NotifyDestroyed();
 }
 
 
@@ -131,6 +124,38 @@ void deoglCanvasView::SyncContentToRender(){
 	while( child ){
 		pRCanvasView->AddChild( ( ( deoglCanvas* )child->GetPeerGraphic() )->GetRCanvas() );
 		child = child->GetLLViewNext();
+	}
+}
+
+
+
+// Listeners
+//////////////
+
+void deoglCanvasView::AddListener( deoglCanvasViewListener *listener ){
+	if( ! listener ){
+		DETHROW( deeInvalidParam );
+	}
+	pListeners.Add( listener );
+}
+
+void deoglCanvasView::RemoveListener( deoglCanvasViewListener *listener ){
+	pListeners.RemoveIfPresent( listener );
+}
+
+void deoglCanvasView::NotifyDestroyed(){
+	const int count = pListeners.GetCount();
+	int i;
+	for( i=0; i<count; i++ ){
+		( ( deoglCanvasViewListener* )pListeners.GetAt( i ) )->CanvasViewDestroyed();
+	}
+}
+
+void deoglCanvasView::NotifyRequiresSync(){
+	const int count = pListeners.GetCount();
+	int i;
+	for( i=0; i<count; i++ ){
+		( ( deoglCanvasViewListener* )pListeners.GetAt( i ) )->CanvasViewRequiresSync();
 	}
 }
 
@@ -214,14 +239,5 @@ void deoglCanvasView::pRequiresSync(){
 	}
 	
 	pSyncRequestSend = true;
-	
-	int i, count = pNotifyRenderables.GetCount();
-	for( i=0; i<count; i++ ){
-		( ( deoglDSRenderableCanvas* )pNotifyRenderables.GetAt( i ) )->CanvasViewRequiresSync();
-	}
-	
-	count = pNotifyCanvas.GetCount();
-	for( i=0; i<count; i++ ){
-		( ( deoglCanvasCanvasView* )pNotifyCanvas.GetAt( i ) )->CanvasViewRequiresSync();
-	}
+	NotifyRequiresSync();
 }

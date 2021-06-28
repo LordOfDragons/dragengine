@@ -108,6 +108,8 @@ private:
 	DEF_NATFUNC( nfSetTransparency );
 	DEF_NATFUNC( nfGetBlendMode );
 	DEF_NATFUNC( nfSetBlendMode );
+	DEF_NATFUNC( nfGetMask );
+	DEF_NATFUNC( nfSetMask );
 	
 	DEF_NATFUNC( nfEquals );
 	DEF_NATFUNC( nfHashCode );

@@ -39,18 +39,25 @@
 ////////////////////////////
 
 deoglRTFramebuffer::deoglRTFramebuffer( deoglRenderThread &renderThread ) :
-pManager( NULL ),
-pPrimary( NULL ),
+pManager( renderThread ),
 pActive( NULL ),
-pEnvMap( NULL )
+pPrimary( renderThread, true ),
+pDummyRenderBuffer( renderThread ),
+pDummy( renderThread, false ),
+pEnvMap( renderThread, false ),
+pEnvMapMaterial( renderThread, false )
 {
 	try{
-		pManager = new deoglFramebufferManager( renderThread );
+		// empty framebuffer
+		pDummyRenderBuffer.SetSize( 1, 1 );
+		pDummyRenderBuffer.CreateBuffer();
+
+		pDummy.SetAsCurrent();
+		pDummy.AttachColorRenderbuffer( 0, pDummyRenderBuffer );
+		pPrimary.SetAsCurrent();
 		
-		pPrimary = new deoglFramebuffer( renderThread, true );
-		pActive = pPrimary;
-		
-		pEnvMap = new deoglFramebuffer( renderThread, false );
+		// primary framebuffer is the active one by default
+		pActive = &pPrimary;
 		
 	}catch( const deException & ){
 		pCleanUp();
@@ -69,7 +76,7 @@ deoglRTFramebuffer::~deoglRTFramebuffer(){
 
 void deoglRTFramebuffer::Activate( deoglFramebuffer *framebuffer ){
 	if( ! framebuffer ){
-		framebuffer = pPrimary;
+		framebuffer = &pPrimary;
 	}
 	
 	if( pActive == framebuffer ){
@@ -80,22 +87,15 @@ void deoglRTFramebuffer::Activate( deoglFramebuffer *framebuffer ){
 	pActive = framebuffer;
 }
 
+void deoglRTFramebuffer::ActivateDummy(){
+	Activate( &pDummy );
+}
+
 
 
 // Private Functions
 //////////////////////
 
 void deoglRTFramebuffer::pCleanUp(){
-	Activate( pPrimary );
-	
-	if( pManager ){
-		delete pManager;
-	}
-	
-	if( pEnvMap ){
-		delete pEnvMap;
-	}
-	if( pPrimary ){
-		delete pPrimary;
-	}
+	Activate( &pPrimary );
 }

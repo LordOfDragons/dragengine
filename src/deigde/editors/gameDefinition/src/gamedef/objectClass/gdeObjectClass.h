@@ -25,6 +25,7 @@
 #include "billboard/gdeOCBillboardList.h"
 #include "camera/gdeOCCameraList.h"
 #include "component/gdeOCComponentList.h"
+#include "component/gdeOCComponentTextureList.h"
 #include "envmapprobe/gdeOCEnvMapProbeList.h"
 #include "inherit/gdeOCInheritList.h"
 #include "light/gdeOCLightList.h"
@@ -37,6 +38,7 @@
 #include "../property/gdePropertyList.h"
 
 #include <dragengine/deObject.h>
+#include <dragengine/deObjectReference.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/decStringSet.h>
@@ -98,6 +100,9 @@ private:
 	gdeOCSpeakerList pSpeakers;
 	gdeOCNavigationBlockerList pNavigationBlockers;
 	gdeOCNavigationSpaceList pNavigationSpaces;
+	
+	gdeOCComponentTextureList pTextures;
+	deObjectReference pActiveTexture;
 	
 	
 	
@@ -366,6 +371,26 @@ public:
 	
 	/** \brief Notify listeners speaker changed. */
 	void NotifySpeakerChanged( gdeOCSpeaker *speaker );
+	
+	
+	
+	/** \brief List of textures. */
+	inline gdeOCComponentTextureList &GetTextures(){ return pTextures; }
+	inline const gdeOCComponentTextureList &GetTextures() const{ return pTextures; }
+	
+	/** \brief Active texture or \em NULL if none. */
+	inline gdeOCComponentTexture *GetActiveTexture() const{
+		return ( gdeOCComponentTexture* )( deObject* )pActiveTexture;
+	}
+	
+	/** \brief Set active texture or \em NULL if none. */
+	void SetActiveTexture( gdeOCComponentTexture *texture );
+	
+	/** \brief Notify listeners textures changed. */
+	void NotifyTexturesChanged();
+	
+	/** \brief Notify listeners texture changed. */
+	void NotifyTextureChanged( gdeOCComponentTexture *texture );
 	
 	
 	

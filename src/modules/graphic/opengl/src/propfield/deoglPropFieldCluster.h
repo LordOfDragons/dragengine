@@ -27,20 +27,20 @@
 #include "../deoglBasics.h"
 #include "../skin/deoglSkinTexture.h"
 
-class dePropFieldType;
 class deoglRPropFieldType;
 class deoglTexUnitsConfig;
+class deoglRenderTaskSharedInstance;
 
+class dePropFieldType;
 
 
 /**
- * @brief Prop Field Cluster.
- * Cluster in a prop field resource. Clusters are a cubic area containing a set
- * of prop field instances belonging to the same type.
+ * Cluster in a prop field resource. Clusters are a cubic area containing a set of
+ * prop field instances belonging to the same type.
  */
 class deoglPropFieldCluster{
 public:
-	/** \brief Instance. */
+	/** Instance. */
 	struct sInstance{
 		int instance;
 		float rotation[ 9 ];
@@ -48,6 +48,8 @@ public:
 		float scaling;
 		int bstate;
 	};
+	
+	
 	
 private:
 	deoglRPropFieldType &pPropFieldType;
@@ -67,10 +69,7 @@ private:
 	deoglTexUnitsConfig *pTUCShadow;
 	deoglTexUnitsConfig *pTUCEnvMap;
 	
-	bool pDirtyTUCDepth;
-	bool pDirtyTUCGeometry;
-	bool pDirtyTUCShadow;
-	bool pDirtyTUCEnvMap;
+	bool pDirtyTUCs;
 	bool pDirtyBendStates;
 	
 	GLuint pTBOInstances;
@@ -78,81 +77,134 @@ private:
 	GLuint pVBOInstances;
 	GLuint pVBOBendStates;
 	
+	deoglRenderTaskSharedInstance *pRTSInstance;
+	bool pDirtyRTSInstance;
+	
+	
+	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Creates a new prop field cluster. */
+	/** Create new prop field cluster. */
 	deoglPropFieldCluster( deoglRPropFieldType &propFieldType );
-	/** Cleans up the prop field cluster. */
+	
+	/** Clean up prop field cluster. */
 	~deoglPropFieldCluster();
 	/*@}*/
 	
-	/** @name Management */
+	
+	
+	/** \name Management */
 	/*@{*/
-	/** \brief Prop field type. */
+	/** Prop field type. */
 	inline deoglRPropFieldType &GetPropFieldType() const{ return pPropFieldType; }
 	
-	/** Retrieves the minimum extend. */
+	
+	
+	/** Minimum extend. */
 	inline const decVector &GetMinimumExtend() const{ return pMinExtend; }
-	/** Retrieves the maximum extend. */
+	
+	/** Maximum extend. */
 	inline const decVector &GetMaximumExtend() const{ return pMaxExtend; }
-	/** Sets the extends. */
+	
+	/** Set extends. */
 	void SetExtends( const decVector &minExtend, const decVector &maxExtend );
 	
-	/** Retrieves the number of instances. */
+	
+	
+	/** Count of instances. */
 	inline int GetInstanceCount() const{ return pInstanceCount; }
-	/** Sets the number of instances. */
+	
+	/** Set number of instances. */
 	void SetInstanceCount( int count );
-	/** Retrieves the instances. */
+	
+	/** Instances. */
 	inline sInstance *GetInstances() const{ return pInstances; }
 	
-	/** Retrieves the instances TBO. */
+	/** Instances TBO. */
 	inline GLuint GetTBOInstances() const{ return pTBOInstances; }
-	/** Retrieves the bend states TBO. */
-	inline GLuint GetTBOBendStates() const{ return pTBOBendStates; }
-	/** Retrieves the instance VBO. */
-	inline GLuint GetVBOInstances() const{ return pVBOInstances; }
-	/** Retrieves the bend states VBO. */
-	inline GLuint GetVBOBendStates() const{ return pVBOBendStates; }
-	/** Update tbos if required. */
-	void UpdateTBOs();
-	/** Update tbo instances. */
-	void UpdateTBOInstances();
-	/** Update tbo bend states. */
-	void UpdateTBOBendStates();
 	
-	/** \brief Prepare bend state data. */
+	/** Bend states TBO. */
+	inline GLuint GetTBOBendStates() const{ return pTBOBendStates; }
+	
+	/** Instance VBO. */
+	inline GLuint GetVBOInstances() const{ return pVBOInstances; }
+	
+	/** Bend states VBO. */
+	inline GLuint GetVBOBendStates() const{ return pVBOBendStates; }
+	
+	
+	
+	/** Prepare for render. Called by deoglRWorld if registered previously. */
+	void PrepareForRender();
+	
+	/**
+	 * Prepare bend state data.
+	 * \warning Called during synchronization by main thread.
+	 */
 	void PrepareBendStateData( const dePropFieldType &type );
 	
-	/** Retrieves the texture units configuration for the given shader type. */
-	deoglTexUnitsConfig *GetTUCForShaderType( deoglSkinTexture::eShaderTypes shaderType );
+	/** Texture units configuration for the given shader type. */
+	deoglTexUnitsConfig *GetTUCForShaderType( deoglSkinTexture::eShaderTypes shaderType ) const;
+	
 	/**
-	 * Retrieves the texture units configuration for depth type shaders or NULL if empty.
-	 * This texture units configuration works for the shader types estComponentDepth, estComponentDepthClipPlane,
-	 * estComponentCounter and estComponentCounterClipPlane.
+	 * Texture units configuration for depth type shaders or NULL if empty.
+	 * Works for these shader types:
+	 * - estComponentDepth
+	 * - estComponentDepthClipPlane
+	 * - estComponentCounter
+	 * - estComponentCounterClipPlane
 	 */
-	deoglTexUnitsConfig *GetTUCDepth();
+	inline deoglTexUnitsConfig *GetTUCDepth() const{ return pTUCDepth; }
+	
 	/**
-	 * Retrieves the texture units configuration for geometry type shaders or NULL if empty.
-	 * This texture units configuration works for the shader type estComponentGeometry.
+	 * Texture units configuration for geometry type shaders or NULL if empty.
+	 * Works for these shader types:
+	 * - estComponentGeometry
 	 */
-	deoglTexUnitsConfig *GetTUCGeometry();
+	inline deoglTexUnitsConfig *GetTUCGeometry() const{ return pTUCGeometry; }
+	
 	/**
-	 * Retrieves the texture units configuration for shadow type shaders or NULL if empty.
-	 * This texture units configuration works for the shader types estComponentShadowProjection,
-	 * estComponentShadowOrthogonal and estComponentShadowDistance.
+	 * Texture units configuration for shadow type shaders or NULL if empty.
+	 * Workd for these shader types:
+	 * - estComponentShadowProjection
+	 * - estComponentShadowOrthogonal
+	 * - estComponentShadowOrthogonalCascaded
+	 * - estComponentShadowDistance
 	 */
-	deoglTexUnitsConfig *GetTUCShadow();
+	inline deoglTexUnitsConfig *GetTUCShadow() const{ return pTUCShadow; }
+	
 	/**
-	 * Retrieves the texture units configuration for the environment map shader or NULL if empty.
-	 * This texture units configuration works for the shader type estEnvMap.
+	 * Texture units configuration for the environment map shader or NULL if empty.
+	 * Works for these shader type:
+	 * - estEnvMap
 	 */
-	deoglTexUnitsConfig *GetTUCEnvMap();
+	inline deoglTexUnitsConfig *GetTUCEnvMap() const{ return pTUCEnvMap; }
+	
 	/** Obtain texture units configuration for a shader type. Bare call not to be used directly. */
 	deoglTexUnitsConfig *BareGetTUCFor( deoglSkinTexture::eShaderTypes shaderType ) const;
-	/** Marks texture units configurations dirty. */
+	
+	/** Mark texture units configurations dirty. */
 	void MarkTUCsDirty();
+	
+	/** Render task shared instance. */
+	inline deoglRenderTaskSharedInstance *GetRTSInstance() const{ return pRTSInstance; }
+	
+	/** Mark render task shared instance dirty. */
+	void DirtyRTSInstance();
 	/*@}*/
+	
+	
+	
+private:
+	void pPrepareTUCs();
+	
+	void pPrepareTBOs();
+	void pUpdateTBOInstances();
+	void pUpdateTBOBendStates();
+	
+	void pPrepareRTSInstance();
+	void pUpdateRTSInstances();
 };
 
 #endif

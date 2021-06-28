@@ -217,6 +217,7 @@ void igdeWOSOLight::UpdateLayerMasks(){
 		int layerMask = GetWrapper().GetRenderLayerMask();
 		layerMask |= GetWrapper().GetRenderEnvMapMask();
 		pLight->SetLayerMask( LayerMaskFromInt( layerMask ) );
+		pLight->SetLayerMaskShadow( pLight->GetLayerMask() );
 	}
 }
 

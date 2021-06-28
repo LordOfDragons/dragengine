@@ -26,11 +26,20 @@ class deoglRenderThread;
 
 
 /**
- * \brief Render thread choices.
+ * Render thread choices.
  * 
  * Stores choices so they can be easily retrieved by interested parties.
  */
 class deoglRTChoices{
+public:
+	enum eGPUTransformVertices{
+		egputvNone,
+		egputvAccurate,
+		egputvApproximate
+	};
+	
+	
+	
 private:
 	deoglRenderThread &pRenderThread;
 	
@@ -38,16 +47,18 @@ private:
 	bool pSharedSPBUseSSBO;
 	bool pGlobalSharedSPBLists;
 	bool pRealTransparentParticles;
+	eGPUTransformVertices pGPUTransformVertices;
+	bool pGIMoveUsingCache;
 	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create render thread choices. */
+	/** Create render thread choices. */
 	deoglRTChoices( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up render thread choices. */
+	/** Clean up render thread choices. */
 	~deoglRTChoices();
 	/*@}*/
 	
@@ -56,28 +67,30 @@ public:
 	/** \name Management */
 	/*@{*/
 	/**
-	 * \brief Use base vertex for shared VBOs.
+	 * Use base vertex for shared VBOs.
 	 * 
 	 * Requires gl*BaseVertex to be usable and rendering does not required pre-shifted points.
 	 */
 	inline bool GetSharedVBOUseBaseVertex() const{ return pSharedVBOUseBaseVertex; }
 	
 	/**
-	 * \brief Use SSBO for shared SPB.
+	 * Use SSBO for shared SPB.
 	 * 
 	 * Requires SSBO to be supported by hardware.
 	 */
 	inline bool GetSharedSPBUseSSBO() const{ return pSharedSPBUseSSBO; }
 	
-	/**
-	 * \brief Use global shared SPB lists.
-	 */
+	/** Use global shared SPB lists. */
 	inline bool GetGlobalSharedSPBLists() const{ return pGlobalSharedSPBLists; }
 	
-	/**
-	 * \brief Render real transparent particles.
-	 */
+	/** Render real transparent particles. */
 	inline bool GetRealTransparentParticles() const{ return pRealTransparentParticles; }
+	
+	/** Transform component vertices on the GPU. */
+	inline eGPUTransformVertices GetGPUTransformVertices() const{ return pGPUTransformVertices; }
+	
+	/** GI move probes using ray cache instead of all rays. */
+	inline bool GetGIMoveUsingCache() const{ return pGIMoveUsingCache; }
 	/*@}*/
 };
 

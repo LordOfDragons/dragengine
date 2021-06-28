@@ -11,11 +11,8 @@
 	#include "v130/shared/defren/skin/shared_spb_index.glsl"
 	#include "v130/shared/defren/skin/shared_spb_redirect.glsl"
 #endif
+#include "v130/shared/defren/skin/shared_spb_texture_redirect.glsl"
 #include "v130/shared/defren/skin/ubo_dynamic_parameters.glsl"
-
-#ifdef NODE_VERTEX_UNIFORMS
-NODE_VERTEX_UNIFORMS
-#endif
 
 
 
@@ -108,7 +105,7 @@ NODE_VERTEX_INPUTS
 		out float vTCSRenderCondition;
 	#endif
 	
-#elif defined GS_RENDER_CUBE
+#elif defined GS_RENDER_CUBE || defined GS_RENDER_CASCADED
 	out vec2 vGSTCColor;
 	#define vTCColor vGSTCColor
 	#ifdef TEXTURE_COLOR_TINT_MASK
@@ -166,7 +163,7 @@ NODE_VERTEX_INPUTS
 		flat out int vGSSPBIndex;
 		#define vSPBIndex vGSSPBIndex
 		
-		#ifdef GS_RENDER_CUBE
+		#if defined GS_RENDER_CUBE || defined GS_RENDER_CASCADED
 			flat out int vGSSPBFlags;
 		#endif
 	#endif
@@ -260,12 +257,16 @@ void main( void ){
 		vTCAO = tc; // * pTCTransformAO.xy + pTCTransformAO.zw;
 	#endif
 	
-	// transform position
+	// transform position and normal
 	vec3 position;
-	transformPosition( position, spbIndex );
-	
-	// normal calculation
-	transformNormal( spbIndex );
+	#ifdef REQUIRES_TRANSFORM_TRANSFER
+		sTransformTransfer transformTransfer;
+		transformPosition( position, spbIndex, transformTransfer );
+		transformNormal( spbIndex, transformTransfer );
+	#else
+		transformPosition( position, spbIndex );
+		transformNormal( spbIndex );
+	#endif
 	
 	// reflection directory for environment map reflections
 	#ifdef WITH_REFLECT_DIR
@@ -297,7 +298,7 @@ void main( void ){
 	
 	#ifdef SHARED_SPB
 		vSPBIndex = spbIndex;
-		#ifdef GS_RENDER_CUBE
+		#if defined GS_RENDER_CUBE || defined GS_RENDER_CASCADED
 			vGSSPBFlags = spbFlags;
 		#endif
 	#endif

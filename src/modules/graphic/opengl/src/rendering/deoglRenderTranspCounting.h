@@ -75,7 +75,7 @@ public:
 	 * Using last used Diffuse/Reflectivity buffer. Clears nothing. Invalidates buffer
 	 * since result is written to render plan.
 	 */
-	void CountTransparency( deoglRenderPlan &plan, deoglRenderPlanMasked *mask );
+	void CountTransparency( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask );
 	
 	/**
 	 * \brief Last found transparency count.

@@ -59,6 +59,8 @@ out vec3 outColor;
 const float roughnessToBlur = 3.14159265; // pi | 1.570796; // pi/2
 
 
+#include "v130/shared/normal.glsl"
+
 
 void calculateReflectionParameters( in ivec2 tc, in vec3 position,
 out vec3 reflectivity, out float roughness, out vec3 reflectDir ){
@@ -71,21 +73,6 @@ out vec3 reflectivity, out float roughness, out vec3 reflectDir ){
 // 		discard;
 // 	}
 	
-	// fetch normal
-	#ifdef MATERIAL_NORMAL_INTBASIC
-		vec3 normal = texelFetch( texNormal, tc, 0 ).rgb * vec3( 2.0 ) + vec3( -1.0 ); // IF USING FLOAT TEXTURE
-		//vec3 normal = texelFetch( texNormal, tc, 0 ).rgb * vec3( 1.9921569 ) + vec3( -0.9921722 ); // IF USING INT TEXTURE
-	#elif defined( MATERIAL_NORMAL_SPHEREMAP )
-		vec2 fenc = texelFetch( texNormal, tc, 0 ).rgb * vec2( 4.0 ) - vec2( 2.0 );
-		float f = dot( fenc, fenc );
-		float g = sqrt( 1.0 - f * 0.25 );
-		vec3 normal = vec3( fenc.xy * vec2( g ), f * 0.5 - 1.0 );
-	#else
-		vec3 normal = texelFetch( texNormal, tc, 0 ).rgb;
-	#endif
-	
-	normal = normalize( normal );
-	
 	// fetch reflectivity
 	reflectivity = texelFetch( texReflectivity, tc, 0 ).rgb;
 	
@@ -94,6 +81,7 @@ out vec3 reflectivity, out float roughness, out vec3 reflectDir ){
 	
 	// calculate fresnel reflection
 	vec3 fragmentDirection = normalize( position );
+	vec3 normal = normalize( normalLoadMaterial( texNormal, tc ) );
 	float reflectDot = min( abs( dot( -fragmentDirection, normal ) ), 1.0 );
 	reflectDir = reflect( fragmentDirection, normal );
 	
@@ -133,21 +121,6 @@ out vec3 reflectivity, out float roughness, out vec3 reflectDir ){
 
 void calculateBouncedReflectivity( in vec2 tc, in vec3 reflectDir,
 out vec3 reflectivity, out float roughness, out vec3 reflectDirBounced ){
-	// fetch normal
-	#ifdef MATERIAL_NORMAL_INTBASIC
-		vec3 normal = texture( texNormal, tc ).rgb * vec3( 2.0 ) + vec3( -1.0 ); // IF USING FLOAT TEXTURE
-		//vec3 normal = texture( texNormal, tc ).rgb * vec3( 1.9921569 ) + vec3( -0.9921722 ); // IF USING INT TEXTURE
-	#elif defined( MATERIAL_NORMAL_SPHEREMAP )
-		vec2 fenc = texture( texNormal, tc ).rgb * vec2( 4.0 ) - vec2( 2.0 );
-		float f = dot( fenc, fenc );
-		float g = sqrt( 1.0 - f * 0.25 );
-		vec3 normal = vec3( fenc.xy * vec2( g ), f * 0.5 - 1.0 );
-	#else
-		vec3 normal = texture( texNormal, tc ).rgb;
-	#endif
-	
-	normal = normalize( normal );
-	
 	// fetch reflectivity
 	reflectivity = texture( texReflectivity, tc ).rgb;
 	
@@ -158,6 +131,7 @@ out vec3 reflectivity, out float roughness, out vec3 reflectDirBounced ){
 	#define solidity aoSolidity.b
 	
 	// calculate fresnel reflection
+	vec3 normal = normalize( normalLoadMaterial( texNormal, tc ) );
 	float reflectDot = min( abs( dot( -reflectDir, normal ) ), 1.0 );
 	reflectDirBounced = reflect( reflectDir, normal );
 	

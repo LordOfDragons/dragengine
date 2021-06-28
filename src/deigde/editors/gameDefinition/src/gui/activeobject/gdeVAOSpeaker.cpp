@@ -51,10 +51,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeVAOSpeaker::gdeVAOSpeaker( gdeViewActiveObject &view, gdeOCSpeaker *ocspeaker ) :
-pView( view ),
+gdeVAOSpeaker::gdeVAOSpeaker( gdeViewActiveObject &view, const gdeObjectClass &objectClass,
+	const decString &propertyPrefix, gdeOCSpeaker *ocspeaker ) :
+gdeVAOSubObject( view, objectClass, propertyPrefix ),
 pOCSpeaker( ocspeaker ),
-pDebugDrawer( NULL ),
 pDDSCenter( NULL ),
 pDDSCoordSystem( NULL )
 {
@@ -111,7 +111,7 @@ void gdeVAOSpeaker::pCleanUp(){
 	}
 	if( pDebugDrawer ){
 		pView.GetGameDefinition()->GetWorld()->RemoveDebugDrawer( pDebugDrawer );
-		pDebugDrawer->FreeReference();
+		pDebugDrawer = NULL;
 	}
 	
 	if( pOCSpeaker ){
@@ -125,7 +125,7 @@ void gdeVAOSpeaker::pCreateDebugDrawer(){
 	const deEngine &engine = *pView.GetGameDefinition()->GetEngine();
 	
 	// create debug drawer
-	pDebugDrawer = engine.GetDebugDrawerManager()->CreateDebugDrawer();
+	pDebugDrawer.TakeOver( engine.GetDebugDrawerManager()->CreateDebugDrawer() );
 	pDebugDrawer->SetXRay( true );
 	pView.GetGameDefinition()->GetWorld()->AddDebugDrawer( pDebugDrawer );
 	
@@ -142,9 +142,10 @@ void gdeVAOSpeaker::pCreateDebugDrawer(){
 }
 
 void gdeVAOSpeaker::pUpdateDDShapes(){
-	const decVector &position = pOCSpeaker->GetPosition();
-	const decQuaternion orientation( decQuaternion::CreateFromEuler(
-		pOCSpeaker->GetRotation() * DEG2RAD ) );
+	const decVector position( PropertyVector( pOCSpeaker->GetPropertyName(
+		gdeOCSpeaker::epAttachPosition ), pOCSpeaker->GetPosition() ) );
+	const decQuaternion orientation( PropertyQuaternion( pOCSpeaker->GetPropertyName(
+		gdeOCSpeaker::epAttachRotation ), pOCSpeaker->GetRotation() ) );
 	
 	pDDSCenter->SetPosition( position );
 	pDDSCenter->SetOrientation( orientation );

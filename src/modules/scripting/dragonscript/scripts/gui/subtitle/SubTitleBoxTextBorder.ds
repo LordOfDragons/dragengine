@@ -214,6 +214,7 @@ class SubTitleBoxTextBorder extends Panel implements Persistable, SubTitleBoxTex
 			
 			this.addWidget( widgetText, BorderLayout.Area.content )
 			
+			this.setStateChangeNotifyChildren( true )
 			this.setDesignerSelector( "SubTitleBoxText" )
 		end )
 	end

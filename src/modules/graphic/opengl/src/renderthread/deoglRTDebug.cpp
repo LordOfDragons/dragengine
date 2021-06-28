@@ -245,10 +245,10 @@ void deoglRTDebug::pCleanUp(){
 	}
 	
 	if( pglDebugMessageCallback ){
-		pglDebugMessageCallback( ( GLDEBUGPROCARB )fDebugOutput, NULL );
+		pglDebugMessageCallback( NULL, NULL );
 		
 	}else if( pglDebugMessageCallbackAMD ){
-		pglDebugMessageCallbackAMD( ( GLDEBUGPROCAMD )fDebugOutputAMD, NULL );
+		pglDebugMessageCallbackAMD( NULL, NULL );
 	}
 }
 

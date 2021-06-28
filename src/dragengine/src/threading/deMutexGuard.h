@@ -49,6 +49,13 @@ public:
 	
 	
 	
+private:
+	// Protection against coding mistakes
+	deMutexGuard( const deMutexGuard &guard );
+	
+	
+	
+public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Guard holds the lock. */

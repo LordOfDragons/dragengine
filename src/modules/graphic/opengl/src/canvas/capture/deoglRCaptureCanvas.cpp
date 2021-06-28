@@ -177,7 +177,13 @@ void deoglRCaptureCanvas::CapturePending(){
 	deoglTexture *texture = NULL;
 	
 	if( pCanvasView ){
-		pCanvasView->PrepareRenderTarget();
+		pCanvasView->PrepareRenderTarget( NULL );
+			// TODO capturing can be a problem. if a render world view is contained and it is
+			//      not rendered yet it will be rendered. doing so using NULL as mask causes
+			//      a full blown rendering as if the camera is used in a render window.
+			//      this can cause problems. the main problem here is GI. we need a way to
+			//      make the GI use the closest nearby camera plan GI state as render only
+			//      GI state preventing any updating.
 		
 		deoglRenderTarget * const renderTarget = pCanvasView->GetRenderTarget();
 		if( renderTarget ){

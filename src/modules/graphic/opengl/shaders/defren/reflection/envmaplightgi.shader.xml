@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<!DOCTYPE shader SYSTEM 'DEOpenGLShader.dtd'>
+<shader>
+	<name>DefRen EnvMap Light GI</name>
+	
+	<version>150</version>
+	
+	<texture name='texPosition' target='0'/>
+	<texture name='texDiffuse' target='1'/>
+	<texture name='texNormal' target='2'/>
+	<texture name='texEmissive' target='3'/>
+	
+	<texture name='texGIIrradiance' target='4'/>
+	<texture name='texGIDistance' target='5'/>
+	<texture name='texGIProbeOffset' target='6'/>
+	
+	<parameter name='pGIHighestCascade'/> <!-- 0 -->
+	
+	<uniformBlock name='GIParameters' target='1'/>
+	
+	<attribute name='inPosition' target='0'/>
+	
+	<output name='outColor' target='0'/>
+	
+	<sourceCode unit='vertex'>v130/vertex/defren/reflection/envmaplightgi.glsl</sourceCode>
+	<sourceCode unit='geometry'>v130/geometry/defren/reflection/envmaplightgi.glsl</sourceCode>
+	<sourceCode unit='fragment'>v130/fragment/defren/reflection/envmaplightgi.glsl</sourceCode>
+</shader>

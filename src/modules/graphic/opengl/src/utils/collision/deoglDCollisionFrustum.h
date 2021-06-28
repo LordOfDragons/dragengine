@@ -61,13 +61,22 @@ public:
 		/** Is fully inside frustum */
 		eitInside = 1
 	};
+	
 private:
-	decDVector pNormalLeft, pNormalRight;
-	decDVector pNormalTop, pNormalBottom;
-	decDVector pNormalNear, pNormalFar;
-	double pDistLeft, pDistRight;
-	double pDistTop, pDistBottom;
-	double pDistNear, pDistFar;
+	struct sPlane{
+		decDVector normal;
+		decDVector absNormal;
+		double distance;
+	};
+	enum ePlane{
+		epLeft,
+		epRight,
+		epTop,
+		epBottom,
+		epNear,
+		epFar
+	};
+	sPlane pPlane[ 6 ];
 public:
 	/** @name Constructors and Destructors */
 	/*@{*/
@@ -135,6 +144,18 @@ public:
 	bool CapsuleHitsFrustum(deoglDCollisionCapsule *capsule);
 	/** Determines if the given box hits this frustum. */
 	bool BoxHitsFrustum(deoglDCollisionBox *box);
+	
+	/** Box frustum hit test. */
+	bool BoxHits( const decDVector &minExtend, const decDVector &maxExtend ) const;
+	
+	/**
+	 * Box frustum intersection test.
+	 * 
+	 * \note For performance reasons the intersection test is conservating. eitIntersect
+	 *       can be reported although precisely the box is outside for example at corners
+	 */
+	eIntersectType BoxIntersect( const decDVector &minExtend, const decDVector &maxExtend ) const;
+	
 	/**
 	 * Determines if the given triangle hits this frustum.
 	 * @warning Not implemented yet and always returns false.
@@ -180,18 +201,18 @@ public:
 	
 	/** @name Collision Routines */
 	/*@{*/
-	inline decDVector GetLeftNormal() const{ return pNormalLeft; }
-	inline decDVector GetRightNormal() const{ return pNormalRight; }
-	inline decDVector GetTopNormal() const{ return pNormalTop; }
-	inline decDVector GetBottomNormal() const{ return pNormalBottom; }
-	inline decDVector GetNearNormal() const{ return pNormalNear; }
-	inline decDVector GetFarNormal() const{ return pNormalFar; }
-	inline double GetLeftDistance() const{ return pDistLeft; }
-	inline double GetRightDistance() const{ return pDistRight; }
-	inline double GetTopDistance() const{ return pDistTop; }
-	inline double GetBottomDistance() const{ return pDistBottom; }
-	inline double GetNearDistance() const{ return pDistNear; }
-	inline double GetFarDistance() const{ return pDistFar; }
+	inline const decDVector &GetLeftNormal() const{ return pPlane[ epLeft ].normal; }
+	inline const decDVector &GetRightNormal() const{ return pPlane[ epRight ].normal; }
+	inline const decDVector &GetTopNormal() const{ return pPlane[ epTop ].normal; }
+	inline const decDVector &GetBottomNormal() const{ return pPlane[ epBottom ].normal; }
+	inline const decDVector &GetNearNormal() const{ return pPlane[ epNear ].normal; }
+	inline const decDVector &GetFarNormal() const{ return pPlane[ epFar ].normal; }
+	inline double GetLeftDistance() const{ return pPlane[ epLeft ].distance; }
+	inline double GetRightDistance() const{ return pPlane[ epRight ].distance; }
+	inline double GetTopDistance() const{ return pPlane[ epTop ].distance; }
+	inline double GetBottomDistance() const{ return pPlane[ epBottom ].distance; }
+	inline double GetNearDistance() const{ return pPlane[ epNear ].distance; }
+	inline double GetFarDistance() const{ return pPlane[ epFar ].distance; }
 	void SetLeftPlane(const decDVector &normal, double dist);
 	void SetRightPlane(const decDVector &normal, double dist);
 	void SetTopPlane(const decDVector &normal, double dist);

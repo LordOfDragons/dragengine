@@ -67,6 +67,9 @@ public:
 	
 	/** @name Notifications */
 	/*@{*/
+	/** World parameters changed. */
+	virtual void WorldParametersChanged( meWorld *world );
+	
 	/** Sky changed. */
 	virtual void SkyChanged( meWorld *world );
 	/** Element or workd mode changed. */

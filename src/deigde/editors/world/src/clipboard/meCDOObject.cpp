@@ -40,8 +40,8 @@
 meCDOObject::meCDOObject( const meObject &object ) :
 pClassname( object.GetClassName() ),
 pPosition( object.GetPosition() ),
-pSize( object.GetSize() ),
 pRotation( object.GetRotation() ),
+pScale( object.GetScaling() ),
 pProperties( object.GetProperties() ),
 pAttachToIndex( -1 )
 {
@@ -84,7 +84,7 @@ void meCDOObject::SetAttachToID( const char *id ){
 void meCDOObject::UpdateObject( meObject &object ) const{
 	object.SetClassName( pClassname );
 	object.SetPosition( pPosition );
-	object.SetSize( pSize );
+	object.SetScaling( pScale );
 	object.SetRotation( pRotation );
 	object.SetProperties( pProperties );
 	

@@ -1215,10 +1215,7 @@ void debpColliderRig::pUpdateBones(){
 	}
 	
 	DirtyBones();
-	
-	if( pColliderRig.GetAttachmentCount() > 0 ){
-		DirtyAttachments();
-	}
+	DirtyAttachments();
 	
 	UpdateDDSShape(); // debug if enabled
 	

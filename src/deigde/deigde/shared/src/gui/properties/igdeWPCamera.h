@@ -25,6 +25,7 @@
 #include <dragengine/common/math/decMath.h>
 
 #include "../igdeTextFieldReference.h"
+#include "../igdeCheckBoxReference.h"
 #include "../composed/igdeEditVectorReference.h"
 #include "../event/igdeActionListener.h"
 #include "../event/igdeActionReference.h"
@@ -63,6 +64,8 @@ private:
 	igdeTextFieldReference pEditLowInt;
 	igdeTextFieldReference pEditHiInt;
 	igdeTextFieldReference pEditAdaptTime;
+	igdeCheckBoxReference pChkEnableHDRR;
+	igdeCheckBoxReference pChkEnableGI;
 	
 	igdeActionReference pAction;
 	

@@ -46,6 +46,7 @@
 #include <deigde/gui/igdeTextArea.h>
 #include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/igdeCheckBox.h>
+#include <deigde/gui/igdeWindow.h>
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/event/igdeListBoxListener.h>
@@ -81,7 +82,7 @@ public:
 		
 		if( category->GetParent()
 		&& category->GetParent()->GetCategories().HasNamed( textField->GetText() ) ){
-			igdeCommonDialogs::Information( &pPanel, "Rename category",
+			igdeCommonDialogs::Information( pPanel.GetParentWindow(), "Rename category",
 				"A category with this name exists already." );
 			textField->SetText( category->GetName() );
 			return;

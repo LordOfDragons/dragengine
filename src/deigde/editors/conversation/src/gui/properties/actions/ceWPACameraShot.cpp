@@ -228,9 +228,9 @@ void ceWPACameraShot::UpdateCameraShotList(){
 		}
 		
 		pCBName->SortItems();
+		pCBName->StoreFilterItems();
 	}
 	
-	pCBName->StoreFilterItems();
 	pCBName->SetText( selection );
 }
 
@@ -256,10 +256,10 @@ void ceWPACameraShot::UpdateTargetList(){
 		
 		pCBCameraTarget->SortItems();
 		pCBLookAtTarget->SortItems();
+		
+		pCBCameraTarget->StoreFilterItems();
+		pCBLookAtTarget->StoreFilterItems();
 	}
-	
-	pCBCameraTarget->StoreFilterItems();
-	pCBLookAtTarget->StoreFilterItems();
 	
 	pCBCameraTarget->SetText( selectionCamera );
 	pCBLookAtTarget->SetText( selectionLookAt );

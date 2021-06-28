@@ -1,7 +1,7 @@
 /* 
  * Drag[en]gine OpenGL Graphic Module
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * Copyright (C) 2021, Roland Plüss (roland@rptd.ch)
  * 
  * This program is free software; you can redistribute it and/or 
  * modify it under the terms of the GNU General Public License 
@@ -22,30 +22,27 @@
 #ifndef _DEOGLCOMPONENTLIST_H_
 #define _DEOGLCOMPONENTLIST_H_
 
+#include <dragengine/common/collection/decPointerList.h>
+
 class deoglRComponent;
 
 
-
 /**
- * \brief Component list.
- * 
- * List of pointers to components. The ordering of the components in the list is
- * not defined and can change when components are removed. This allows to
- * remove elements with constant time requirements.
+ * Component pointer list.
  */
 class deoglComponentList{
 private:
-	deoglRComponent **pComponents;
-	int pComponentCount;
-	int pComponentSize;
+	decPointerList pComponents;
+	
+	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create component list. */
+	/** Create list. */
 	deoglComponentList();
 	
-	/** \brief Clean up component list. */
+	/** Clean up list. */
 	~deoglComponentList();
 	/*@}*/
 	
@@ -53,45 +50,24 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Number of components. */
-	inline int GetCount() const{ return pComponentCount; }
+	/** Count of components. */
+	int GetCount() const;
 	
-	/** \brief Index of the component or -1 if not in the list. */
+	/** Index of the component or -1 if absent. */
 	int IndexOfComponent( deoglRComponent *component ) const;
 	
-	/** \brief Component exists. */
-	bool Has( deoglRComponent *component ) const;
-	
-	/** \brief Component at the given index. */
+	/** Component at index. */
 	deoglRComponent *GetAt( int index ) const;
 	
-	/** \brief Add component. */
+	/** Add component. */
 	void Add( deoglRComponent *component );
 	
-	/** \brief Add component if missing in the list. Returns true if added. */
-	bool AddIfMissing( deoglRComponent *component );
-	
-	/** \brief Remove component. */
-	void Remove( deoglRComponent *component );
-	
-	/** \brief Remove component if existing in the list. Returns true if removed. */
-	bool RemoveIfExisting( deoglRComponent *component );
-	
-	/** \brief Remove component from the given index. */
+	/** Remove component from index. */
 	void RemoveFrom( int index );
 	
-	/** \brief Remove all components. */
+	/** Remove all components. */
 	void RemoveAll();
-	
-	/** \brief Mark all components. */
-	void MarkAll( bool mark );
-	
-	/** \brief Remove marked components. */
-	void RemoveAllMarked( bool mark );
 	/*@}*/
-	
-private:
-	void pAddComponent( deoglRComponent *component );
 };
 
 #endif

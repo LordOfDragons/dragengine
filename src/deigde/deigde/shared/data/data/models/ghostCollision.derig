@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<rig>
+	<!--
+	Using this rig turns a collider into a literal ghost. No collision will happen
+	but the collider can still be attached to other colliders as well as other colliders
+	attached to this collider.
+	-->
+</rig>

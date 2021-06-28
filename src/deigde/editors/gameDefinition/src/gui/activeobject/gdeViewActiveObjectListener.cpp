@@ -408,6 +408,43 @@ void gdeViewActiveObjectListener::ActiveSkinChanged( gdeGameDefinition *gameDefi
 
 
 
+void gdeViewActiveObjectListener::OCTextureChanged( gdeGameDefinition *gameDefinition,
+gdeObjectClass *objectClass, gdeOCComponentTexture* ){
+	OCTexturesChanged( gameDefinition, objectClass );
+}
+
+void gdeViewActiveObjectListener::OCTexturesChanged( gdeGameDefinition *gameDefinition,
+gdeObjectClass *objectClass ){
+	if( pGetSSOObjectClass( *gameDefinition ) != objectClass ){
+		return;
+	}
+	
+	pView.RebuildOCComponents();
+}
+
+
+
+void gdeViewActiveObjectListener::OCPropertyChanged( gdeGameDefinition *gameDefinition,
+gdeObjectClass *objectClass, gdeProperty* ){
+	OCPropertiesChanged( gameDefinition, objectClass );
+}
+
+void gdeViewActiveObjectListener::OCPropertiesChanged( gdeGameDefinition*, gdeObjectClass *objectClass ){
+	if( pView.GetObjectClass() != objectClass ){
+		return;
+	}
+	
+	pView.ClearResources();
+	pView.InitSelectedObject();
+}
+
+void gdeViewActiveObjectListener::OCPropertyValuesChanged( gdeGameDefinition *gameDefinition,
+gdeObjectClass *objectClass ){
+	OCPropertiesChanged( gameDefinition, objectClass );
+}
+
+
+
 // Private Functions
 //////////////////////
 

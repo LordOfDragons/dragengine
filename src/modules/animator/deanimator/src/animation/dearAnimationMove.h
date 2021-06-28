@@ -45,10 +45,15 @@ public:
 	/*@{*/
 	/** \brief Create a new animation move. */
 	dearAnimationMove( const deAnimationMove &move );
+	
+protected:
 	/** \brief Clean up the animation move. */
 	virtual ~dearAnimationMove();
 	/*@}*/
 	
+	
+	
+public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Retrieve the name. */

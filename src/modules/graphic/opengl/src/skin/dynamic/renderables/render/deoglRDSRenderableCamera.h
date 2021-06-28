@@ -55,13 +55,13 @@ public:
 	void SetCamera( deoglRCamera *camera );
 	
 	/** \brief Prepare for render. */
-	virtual void PrepareForRender();
+	virtual void PrepareForRender( const deoglRenderPlanMasked *renderPlanMask );
 	
 	/**
 	 * \brief Get render plan to use for rendering or \em NULL if not applicable.
 	 * \details Default implementation returns \em NULL.
 	 */
-	virtual deoglRenderPlan *GetRenderPlan();
+	virtual deoglRenderPlan *GetRenderPlan() const;
 	/*@}*/
 	
 private:

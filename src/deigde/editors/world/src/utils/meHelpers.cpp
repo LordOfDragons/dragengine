@@ -198,7 +198,13 @@ igdeGDProperty::ePathPatternTypes patternType, decStringList &names ){
 
 void meHelpers::CreateTexture( deObjectReference &texture, meObject *object, const char *textureName ){
 	const igdeGDCComponent * const gdcomponent = meHelpers::FindFirstComponent( object->GetGDClass() );
-	const igdeGDCCTexture * gdctexture = gdcomponent ? gdcomponent->GetTextureList().GetNamed( textureName ) : NULL;
+	const igdeGDCCTexture *gdctexture = NULL;
+	if( gdcomponent ){
+		gdctexture = gdcomponent->GetTextureList().GetNamed( textureName );
+	}
+	if( ! gdctexture && object->GetGDClass() ){
+		gdctexture = object->GetGDClass()->GetComponentTextures().GetNamed( textureName );
+	}
 	meHelpers::CreateTexture( texture, object, textureName, gdctexture );
 }
 

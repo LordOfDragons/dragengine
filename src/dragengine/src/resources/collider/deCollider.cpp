@@ -784,9 +784,14 @@ void deCollider::pCleanUp(){
 	RemoveAllCollisionTests();
 	
 	RemoveAllConstraints();
-	if( pConstraints ) delete [] pConstraints;
+	if( pConstraints ){
+		delete [] pConstraints;
+	}
 	
 	RemoveAllAttachments();
+	if( pAttachments ){
+		delete [] pAttachments;
+	}
 }
 
 int deCollider::pFindAttachment( deColliderAttachment *attachment ){

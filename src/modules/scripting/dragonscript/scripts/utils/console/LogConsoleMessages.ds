@@ -52,7 +52,7 @@ class LogConsoleMessages implements ConsoleListener
 	
 	/** \brief Message added to console. */
 	public func void messageAdded( Console console, ConsoleMessage message, bool removedTop )
-		Engine.log( this.pPrefix + "[" + message.getTimeStamp() + "] " + message.getMessage() + "\n" )
+		Engine.log( this.pPrefix + message.getMessage() + "\n" )
 	end
 	
 	/** \brief All messages removed from console. */

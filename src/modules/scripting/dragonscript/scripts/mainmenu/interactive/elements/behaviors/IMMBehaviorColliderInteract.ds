@@ -219,8 +219,8 @@ class IMMBehaviorColliderInteract extends DefaultECBehavior
 	 * of type IMMBehaviorColliderInteract.
 	 */
 	static public func IMMBehaviorColliderInteract getBehaviorIn( BehaviorElementClass eclass )
-		return eclass.findBehavior( block ECBehavior each
-			return each castable IMMBehaviorColliderInteract
+		return eclass.findBehavior( block IMMBehaviorColliderInteract each
+			return true
 		end ) cast IMMBehaviorColliderInteract
 	end
 	
@@ -231,8 +231,8 @@ class IMMBehaviorColliderInteract extends DefaultECBehavior
 	 * of type IMMBehaviorColliderInteract.Instance .
 	 */
 	static public func Instance getInstanceIn( BehaviorElement element )
-		return element.findInstance( block ECBehaviorInstance each
-			return each castable Instance
+		return element.findInstance( block Instance each
+			return true
 		end ) cast Instance
 	end
 	

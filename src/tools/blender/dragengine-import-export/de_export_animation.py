@@ -75,19 +75,19 @@ class OBJECT_OT_ExportAnimation( bpy.types.Operator, ExportHelper ):
 	bl_label = "Animations (.deanim)"
 	__doc__ = """Export as Drag[en]gine Animation Resource"""
 	filename_ext = ".deanim"
-	filter_glob = bpy.props.StringProperty( default="*.deanim", options={ 'HIDDEN' } )
-	debug_level = bpy.props.EnumProperty( items = (
+	filter_glob: bpy.props.StringProperty( default="*.deanim", options={ 'HIDDEN' } )
+	debug_level: bpy.props.EnumProperty( items = (
 		( '0', "None", "Output no debug messages." ),
 		( '1', "Basic", "Output basic amount of debug messages." ),
 		( '2', "Verbose", "Output lots of debug messages." ),
 		( '3', "Debug", "Output very large amount of debug messages." ),
 		), name = "Logging", description = "Choose amount of logging", default = '1' )
-	export_mode = bpy.props.EnumProperty( items = (
+	export_mode: bpy.props.EnumProperty( items = (
 		( '0', "Export All", "Export all moves. File is completely overwritten." ),
 		( '1', "Update Single", "Export single move. File is updated with exported move." ),
 		), name = "Export Mode", description = "Export mode", default = '0' )
-	#export_move = bpy.props.EnumProperty( items=exportActionList )
-	export_move = bpy.props.StringProperty( default="" )
+	#export_move: bpy.props.EnumProperty( items=exportActionList )
+	export_move: bpy.props.StringProperty( default="" )
 	
 	def __init__( self ):
 		self.mesh = None

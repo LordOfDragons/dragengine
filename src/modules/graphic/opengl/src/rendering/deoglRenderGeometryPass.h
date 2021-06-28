@@ -71,7 +71,7 @@ public:
 	 * - Light.RenderAO (if not No-Reflections)
 	 * Invalidates no attachments.
 	 */
-	void RenderSolidGeometryPass( deoglRenderPlan &plan, deoglRenderPlanMasked *mask );
+	void RenderSolidGeometryPass( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask );
 	
 	/**
 	 * \brief Render luminance only pass.
@@ -89,7 +89,7 @@ public:
 	void RenderDecals( deoglRenderPlan &plan );
 	
 	/** \brief Render volumetric pass. */
-	void RenderVolumetricPass( deoglRenderPlan &plan, deoglRenderPlanMasked *mask, bool inbetween );
+	void RenderVolumetricPass( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask, bool inbetween );
 	/*@}*/
 };
 

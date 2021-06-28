@@ -229,6 +229,30 @@ public:
 	
 	/** \brief Active skin changed. */
 	virtual void ActiveSkinChanged( gdeGameDefinition *gameDefinition );
+	
+	
+	
+	/** Object class textures changed. */
+	virtual void OCTexturesChanged( gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass );
+	
+	/** Object class tzexture changed. */
+	virtual void OCTextureChanged( gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass, gdeOCComponentTexture *texture );
+	
+	
+	
+	/** Object property changed. */
+	virtual void OCPropertyChanged( gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass, gdeProperty *property );
+	
+	/** Object properties changed. */
+	virtual void OCPropertiesChanged( gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass );
+	
+	/** Object property values changed. */
+	virtual void OCPropertyValuesChanged( gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass );
 	/*@}*/
 	
 	

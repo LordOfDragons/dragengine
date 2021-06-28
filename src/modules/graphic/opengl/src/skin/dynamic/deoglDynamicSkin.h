@@ -28,6 +28,7 @@
 
 class deoglDSRenderable;
 class deoglRDynamicSkin;
+class deoglDynamicSkinListener;
 
 class deGraphicOpenGl;
 class deDynamicSkin;
@@ -47,10 +48,7 @@ public:
 	decPointerList pRenderables;
 	bool pDirtyRenderables;
 	
-	decPointerSet pNotifyComponents;
-	decPointerSet pNotifyComponentTextures;
-	decPointerSet pNotifyBillboards;
-	decPointerSet pNotifyDecals;
+	decPointerSet pListeners;
 	
 	
 	
@@ -83,31 +81,33 @@ public:
 	/** \brief Renderable at index. */
 	deoglDSRenderable *GetRenderableAt( int index ) const;
 	
-	/** \brief Components to notify about dirty events. */
-	inline decPointerSet &GetNotifyComponents(){ return pNotifyComponents; }
-	inline const decPointerSet &GetNotifyComponents() const{ return pNotifyComponents; }
-	
-	/** \brief Component textures to notify about dirty events. */
-	inline decPointerSet &GetNotifyComponentTextures(){ return pNotifyComponentTextures; }
-	inline const decPointerSet &GetNotifyComponentTextures() const{ return pNotifyComponentTextures; }
-	
-	/** \brief Billboards to notify about dirty events. */
-	inline decPointerSet &GetNotifyBillboards(){ return pNotifyBillboards; }
-	inline const decPointerSet &GetNotifyBillboards() const{ return pNotifyBillboards; }
-	
-	/** \brief Decals to notify about dirty events. */
-	inline decPointerSet &GetNotifyDecals(){ return pNotifyDecals; }
-	inline const decPointerSet &GetNotifyDecals() const{ return pNotifyDecals; }
-	
 	
 	
 	/** \brief Update render thread counterpart if required. */
 	void SyncToRender();
+	/*@}*/
 	
 	
 	
-	/** \brief Renderable requires sync. */
-	void RenderableRequiresSync();
+	/** \name Listeners */
+	/*@{*/
+	/** Add a listener. */
+	void AddListener( deoglDynamicSkinListener *listener );
+	
+	/** Remove listener if existing. */
+	void RemoveListener( deoglDynamicSkinListener *listener );
+	
+	/** Notify all dynamic skin has been destroyed. */
+	void NotifyDestroyed();
+	
+	/** Notify all renderable structure changed. */
+	void NotifyRenderablesChanged();
+	
+	/** Notify all renderable changed. */
+	void NotifyRenderableChanged( deoglDSRenderable &renderable );
+	
+	/** Notify all renderable content requires sync. */
+	void NotifyRenderableRequiresSync( deoglDSRenderable &renderable );
 	/*@}*/
 	
 	
@@ -131,7 +131,6 @@ public:
 	
 private:
 	void pCleanUp();
-	void pRequiresSync();
 };
 
 #endif

@@ -384,6 +384,9 @@ void igdeXMLGameDefinition::pParseClass( const decXmlElementTag &root, igdeGameD
 		}else if( tagName == "partialHideTag" ){
 			gdClass->GetPartialHideTags().AddTag( GetCDataString( *tag ) );
 			
+		}else if( tagName == "texture" ){
+			pParseClassTexture( *tag, gdClass );
+			
 		}else{
 			LogWarnUnknownTag( root, *tag );
 		}
@@ -1682,6 +1685,67 @@ void igdeXMLGameDefinition::pParseClassNavigationBlocker( const decXmlElementTag
 		if( gdcNavBlocker ){
 			gdcNavBlocker->FreeReference();
 		}
+		throw;
+	}
+}
+
+void igdeXMLGameDefinition::pParseClassTexture( const decXmlElementTag &root, igdeGDClass &gdclass ){
+	const int elementCount = root.GetElementCount();
+	decStringDictionary properties;
+	igdeGDCCTexture *texture = NULL;
+	int i;
+	
+	try{
+		texture = new igdeGDCCTexture;
+		
+		texture->SetName( GetAttributeString( root, "name" ) );
+		if( gdclass.GetComponentTextures().HasNamed( texture->GetName() ) ){
+			LogWarnGenericProblemValue( root, texture->GetName().GetString(), "A texture with this name exists already." );
+		}
+		
+		for( i=0; i<elementCount; i++ ){
+			const decXmlElementTag * const tag = root.GetElementIfTag( i );
+			if( ! tag ){
+				continue;
+			}
+			
+			const decString &tagName = tag->GetName();
+			if( tagName == "skin" ){
+				texture->SetPathSkin( GetCDataString( *tag ) );
+				
+			}else if( tagName == "offset" ){
+				decVector2 offset;
+				ReadVector2( *tag, offset );
+				texture->SetOffset( offset );
+				
+			}else if( tagName == "scale" ){
+				decVector2 scale( 1.0f, 1.0f );
+				ReadVector2( *tag, scale );
+				texture->SetScale( scale );
+				
+			}else if( tagName == "rotate" ){
+				texture->SetRotation( GetCDataFloat( *tag ) * DEG2RAD );
+				
+			}else if( tagName == "tint" ){
+				decColor color;
+				ReadColor( *tag, color );
+				texture->SetColorTint( color );
+				
+			}else{
+				LogWarnUnknownTag( root, *tag );
+			}
+		}
+		
+		texture->SetProperties( properties );
+		
+		gdclass.GetComponentTextures().Add( texture );
+		texture->FreeReference();
+		
+	}catch( const deException & ){
+		if( texture ){
+			texture->FreeReference();
+		}
+		
 		throw;
 	}
 }

@@ -41,7 +41,8 @@ class meCDOObject{
 private:
 	decString pClassname;
 	decDVector pPosition;
-	decVector pSize, pRotation;
+	decVector pRotation;
+	decVector pScale;
 	decStringDictionary pProperties;
 	meObjectTextureList pTextures;
 	int pAttachToIndex;
@@ -69,11 +70,11 @@ public:
 	/** \brief Position. */
 	inline const decDVector &GetPosition() const{ return pPosition; }
 	
-	/** \brief Size. */
-	inline const decVector &GetSize() const{ return pSize; }
-	
 	/** \brief Rotation. */
 	inline const decVector &GetRotation() const{ return pRotation; }
+	
+	/** \brief Scale. */
+	inline const decVector &GetScale() const{ return pScale; }
 	
 	/** \brief Properties. */
 	inline const decStringDictionary &GetProperties() const{ return pProperties; }

@@ -134,6 +134,15 @@ decPoint igdeWidget::WidgetToScreen( const decPoint &position ) const{
 	return igdeNativeWidget::WidgetToScreen( *this, position );
 }
 
+igdeWindow *igdeWidget::GetParentWindow(){
+	if( pParent ){
+		return pParent->GetParentWindow();
+		
+	}else{
+		return NULL;
+	}
+}
+
 
 
 void igdeWidget::OnVisibleChanged(){

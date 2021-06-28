@@ -353,8 +353,8 @@ class ECBehaviorStashable extends DefaultECBehavior
 	 * of type ECBehaviorComponent.
 	 */
 	static public func ECBehaviorStashable getBehaviorIn( BehaviorElementClass eclass )
-		return eclass.findBehavior( block ECBehavior each
-			return each castable ECBehaviorStashable
+		return eclass.findBehavior( block ECBehaviorStashable each
+			return true
 		end ) cast ECBehaviorStashable
 	end
 	
@@ -366,8 +366,8 @@ class ECBehaviorStashable extends DefaultECBehavior
 	 * the first instance.
 	 */
 	static public func Instance getInstanceIn( BehaviorElement element )
-		return element.findInstance( block ECBehaviorInstance each
-			return each castable Instance
+		return element.findInstance( block Instance each
+			return true
 		end ) cast Instance
 	end
 	

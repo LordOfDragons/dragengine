@@ -30,6 +30,7 @@
 #include "../../../environment/igdeEnvironment.h"
 #include "../../../gamedefinition/igdeGameDefinition.h"
 #include "../../../gamedefinition/class/igdeGDClass.h"
+#include "../../../gamedefinition/class/igdeGDClassInherit.h"
 #include "../../../gamedefinition/class/component/igdeGDCComponent.h"
 #include "../../../gamedefinition/class/component/igdeGDCCTexture.h"
 #include "../../../gameproject/igdeGameProject.h"
@@ -364,8 +365,10 @@ void igdeWOSOComponent::UpdateCollisionFilter(){
 }
 
 void igdeWOSOComponent::UpdateGeometry(){
-	pCollider->SetPosition( GetWrapper().GetPosition() );
-	pCollider->SetOrientation( GetWrapper().GetOrientation() );
+	if( ! pAttachedToCollider ){
+		pCollider->SetPosition( GetWrapper().GetPosition() );
+		pCollider->SetOrientation( GetWrapper().GetOrientation() );
+	}
 	
 	if( pGDComponent.GetDoNotScale() ){
 		pCollider->SetScale( decVector( 1.0f, 1.0f, 1.0f ) );
@@ -375,10 +378,19 @@ void igdeWOSOComponent::UpdateGeometry(){
 	}
 	
 	if( pComponent ){
+		if( pGDComponent.GetDoNotScale() ){
+			pComponent->SetScaling( decVector( 1.0f, 1.0f, 1.0f ) );
+			
+		}else{
+			pComponent->SetScaling( GetWrapper().GetScaling() );
+		}
+	}
+	
+	/* if( pComponent ){
 		pComponent->SetPosition( pCollider->GetPosition() );
 		pComponent->SetOrientation( pCollider->GetOrientation() );
 		pComponent->SetScaling( pCollider->GetScale() );
-	}
+	} */
 }
 
 void igdeWOSOComponent::UpdateColliderResponseType(){
@@ -395,8 +407,8 @@ void igdeWOSOComponent::Update( float elapsed ){
 		return;
 	}
 	
-	pComponent->SetPosition( pCollider->GetPosition() );
-	pComponent->SetOrientation( pCollider->GetOrientation() );
+// 	pComponent->SetPosition( pCollider->GetPosition() );
+// 	pComponent->SetOrientation( pCollider->GetOrientation() );
 	
 	if( pAnimator ){
 		if( pPlaybackControllerIndex != -1 ){
@@ -411,8 +423,8 @@ void igdeWOSOComponent::ResetPhysics(){
 	// sync the component position and orientation to the collider and reset the animation state.
 	// for this the bone states are reset to the reference position and the animator applied.
 	if( pComponent ){
-		pComponent->SetPosition( pCollider->GetPosition() );
-		pComponent->SetOrientation( pCollider->GetOrientation() );
+// 		pComponent->SetPosition( pCollider->GetPosition() );
+// 		pComponent->SetOrientation( pCollider->GetOrientation() );
 		
 		const int boneCount = pComponent->GetBoneCount();
 		int i;
@@ -511,13 +523,26 @@ void igdeWOSOComponent::pLoadResources(){
 		rl.LoadAudioModel( pathAudioModel );
 	}
 	
-	const int textureCount = pGDComponent.GetTextureList().GetCount();
+	int textureCount = pGDComponent.GetTextureList().GetCount();
 	int i;
 	for( i=0; i<textureCount; i++ ){
 		const igdeGDCCTexture &gdctexture = *pGDComponent.GetTextureList().GetAt( i );
 		
 		if( ! gdctexture.GetPathSkin().IsEmpty() ){
 			rl.LoadTextureSkin( gdctexture.GetPathSkin() );
+		}
+	}
+	
+	const igdeGDClass * const gdclass = GetWrapper().GetGDClass();
+	if( gdclass ){
+		igdeGDCCTextureList textures;
+		gdclass->GetDeepComponentTextures( textures );
+		textureCount = textures.GetCount();
+		for( i=0; i<textureCount; i++ ){
+			const igdeGDCCTexture &gdctexture = *textures.GetAt( i );
+			if( ! gdctexture.GetPathSkin().IsEmpty() ){
+				rl.LoadTextureSkin( gdctexture.GetPathSkin() );
+			}
 		}
 	}
 	
@@ -645,7 +670,8 @@ void igdeWOSOComponent::pUpdateComponent(){
 	
 	// assign component back to the places it has been previously been removed from
 	if( modelChanged || skinChanged || rigChanged ){
-		( ( deColliderComponent& )( deCollider& )pCollider ).SetComponent( pComponent );
+		deColliderComponent &collider = ( deColliderComponent& )( deCollider& )pCollider;
+		collider.SetComponent( pComponent );
 		if( pAnimator ){
 			pAnimator->SetComponent( pComponent );
 		}
@@ -764,15 +790,24 @@ void igdeWOSOComponent::pUpdateTextures(){
 		return;
 	}
 	
+	const igdeGDClass * const gdclass = GetWrapper().GetGDClass();
 	const deModel &model = *pComponent->GetModel();
 	const int textureCount = model.GetTextureCount();
 	deEngine &engine = GetEngine();
 	int i;
 	
+	igdeGDCCTextureList textures;
+	if( gdclass ){
+		gdclass->GetDeepComponentTextures( textures );
+	}
+	
 	for( i=0; i<textureCount; i++ ){
 		deComponentTexture &componentTexture = pComponent->GetTextureAt( i );
-		igdeGDCCTexture * const gdctexture =
-			pGDComponent.GetTextureList().GetNamed( model.GetTextureAt( i )->GetName() );
+		const decString &name = model.GetTextureAt( i )->GetName();
+		const igdeGDCCTexture *gdctexture = textures.GetNamed( name );
+		if( ! gdctexture ){
+			gdctexture = pGDComponent.GetTextureList().GetNamed( name );
+		}
 		
 		deDynamicSkinReference gdctDynamicSkin;
 		deSkin *useSkin = NULL;
@@ -864,18 +899,18 @@ void igdeWOSOComponent::pDestroyComponent(){
 	
 	if( pAddedToWorld ){
 		GetWrapper().GetWorld()->RemoveComponent( pComponent );
+		pAddedToWorld = false;
 	}
 	
 	( ( deColliderComponent& )( deCollider& )pCollider ).SetComponent( NULL );
 	
 	pComponent = NULL;
-	pAddedToWorld = false;
 }
 
 void igdeWOSOComponent::AttachToCollider(){
 	DetachFromCollider();
 	
-	if( ! pComponent || pGDComponent.GetAttachTarget() ){
+	if( /*! pComponent ||*/ pGDComponent.GetAttachTarget() ){
 		return;
 	}
 	
@@ -884,7 +919,7 @@ void igdeWOSOComponent::AttachToCollider(){
 	deColliderAttachment *attachment = NULL;
 	
 	try{
-		attachment = new deColliderAttachment( pComponent );
+		attachment = new deColliderAttachment( /*pComponent*/ pCollider );
 		attachment->SetAttachType( deColliderAttachment::eatStatic );
 		attachment->SetPosition( GetVectorProperty(
 			pGDComponent.GetPropertyName( igdeGDCComponent::epAttachPosition ),
@@ -892,6 +927,7 @@ void igdeWOSOComponent::AttachToCollider(){
 		attachment->SetOrientation( GetRotationProperty(
 			pGDComponent.GetPropertyName( igdeGDCComponent::epAttachRotation ),
 			pGDComponent.GetOrientation() ) );
+		attachment->SetNoScaling( true );
 		
 		if( colliderComponent ){
 			if( ! pGDComponent.GetBoneName().IsEmpty() ){
@@ -934,7 +970,8 @@ bool igdeWOSOComponent::pIsVisible() const{
 		visible = partiallyVisible;
 	}
 	
-	return pCollider == GetWrapper().GetColliderComponent() && partiallyVisible;
+	//return pCollider == GetWrapper().GetColliderComponent() && partiallyVisible;
+	return GetWrapper().GetColliderComponent() && partiallyVisible;
 }
 
 void igdeWOSOComponent::pUpdateOutlineComponent(){
@@ -952,6 +989,12 @@ void igdeWOSOComponent::pUpdateOutlineComponent(){
 	pOutlineComponent.TakeOver( engine.GetComponentManager()->CreateComponent( pComponent->GetModel(), outlineSkin ) );
 	pOutlineComponent->SetRig( pComponent->GetRig() );
 	pOutlineComponent->SetDynamicSkin( GetWrapper().GetOutlineDynamicSkin() );
+	
+	// there are two possible solutions here. either we use the movement hint from the component
+	// or we use dynamic movement hint. using the dynamic movement avoids triggering updates
+	// of static caches in graphic modules which makes the editor more fluid
+// 	pOutlineComponent->SetHintMovement( pComponent->GetHintMovement() );
+	pOutlineComponent->SetHintMovement( deComponent::emhDynamic );
 	
 	const int textureCount = pComponent->GetTextureCount();
 	int i;

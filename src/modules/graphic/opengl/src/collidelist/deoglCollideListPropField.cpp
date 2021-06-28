@@ -39,22 +39,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglCollideListPropField::deoglCollideListPropField(){
-	pPropField = NULL;
-	
-	pTypes = NULL;
-	pTypeCount = 0;
-	pTypeSize = 0;
+deoglCollideListPropField::deoglCollideListPropField() :
+pPropField( NULL ),
+pTypeCount( 0 ){
 }
 
 deoglCollideListPropField::~deoglCollideListPropField(){
-	if( pTypes ){
-		while( pTypeSize > 0 ){
-			pTypeSize--;
-			delete pTypes[ pTypeSize ];
-		}
-		
-		delete  [] pTypes;
+	const int count = pTypes.GetCount();
+	int i;
+	for( i=0; i<count; i++ ){
+		delete ( deoglCollideListPropFieldType* )pTypes.GetAt( i );
 	}
 }
 
@@ -64,14 +58,27 @@ deoglCollideListPropField::~deoglCollideListPropField(){
 ///////////////
 
 void deoglCollideListPropField::Clear(){
+	RemoveAllTypes();
 	SetPropField( NULL );
 }
 
-bool deoglCollideListPropField::GetIsEmpty() const{
-	int t;
+void deoglCollideListPropField::StartOcclusionTest( deoglOcclusionTest &occlusionTest,
+const decDVector &referencePosition ){
+	if( ! pPropField ){
+		DETHROW( deeInvalidParam );
+	}
 	
-	for( t=0; t<pTypeCount; t++ ){
-		if( pTypes[ t ]->GetIsNotEmpty() ){
+	const decVector offset( pPropField->GetPosition() - referencePosition );
+	int i;
+	for( i=0; i<pTypeCount; i++ ){
+		( ( deoglCollideListPropFieldType* )pTypes.GetAt( i ) )->StartOcclusionTest( occlusionTest, offset );
+	}
+}
+
+bool deoglCollideListPropField::GetIsEmpty() const{
+	int i;
+	for( i=0; i<pTypeCount; i++ ){
+		if( ( ( deoglCollideListPropFieldType* )pTypes.GetAt( i ) )->GetIsNotEmpty() ){
 			return false;
 		}
 	}
@@ -80,38 +87,34 @@ bool deoglCollideListPropField::GetIsEmpty() const{
 }
 
 void deoglCollideListPropField::SetPropField( deoglRPropField *propField ){
+	RemoveAllTypes();
 	pPropField = propField;
-	
-	pTypeCount = 0;
-	
-	if( propField ){
-		int typeCount = propField->GetTypeCount();
-		
-		if( typeCount > pTypeSize ){
-			deoglCollideListPropFieldType **newArray = new deoglCollideListPropFieldType*[ typeCount ];
-			if( ! newArray ) DETHROW( deeOutOfMemory );
-			if( pTypes ){
-				memcpy( newArray, pTypes, sizeof( deoglCollideListPropFieldType* ) * pTypeSize );
-				delete [] pTypes;
-			}
-			pTypes = newArray;
-			while( pTypeSize < typeCount ){
-				pTypes[ pTypeSize ] = new deoglCollideListPropFieldType;
-				if( ! pTypes[ pTypeSize ] ) DETHROW( deeOutOfMemory );
-				pTypeSize++;
-			}
-		}
-		
-		while( pTypeCount < typeCount ){
-			pTypes[ pTypeCount++ ]->RemoveAllClusters();
-		}
-	}
 }
 
 
 
 deoglCollideListPropFieldType *deoglCollideListPropField::GetTypeAt( int index ) const{
-	if( index < 0 || index >= pTypeCount ) DETHROW( deeInvalidParam );
+	return ( ( deoglCollideListPropFieldType* )pTypes.GetAt( index ) );
+}
+
+deoglCollideListPropFieldType *deoglCollideListPropField::AddType( deoglRPropFieldType *type ){
+	deoglCollideListPropFieldType *cltype = NULL;
 	
-	return pTypes[ index ];
+	if( pTypeCount < pTypes.GetCount() ){
+		cltype = ( deoglCollideListPropFieldType* )pTypes.GetAt( pTypeCount );
+		
+	}else{
+		cltype = new deoglCollideListPropFieldType( *this );
+		pTypes.Add( cltype );
+	}
+	
+	cltype->SetType( type );
+	pTypeCount++;
+	return cltype;
+}
+
+void deoglCollideListPropField::RemoveAllTypes(){
+	while( pTypeCount > 0 ){
+		( ( deoglCollideListPropFieldType* )pTypes.GetAt( --pTypeCount ) )->Clear();
+	}
 }

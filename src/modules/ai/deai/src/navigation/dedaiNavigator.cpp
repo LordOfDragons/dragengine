@@ -620,6 +620,9 @@ int &hitAfterPoint, float &hitDistance ){
 void dedaiNavigator::pCleanUp(){
 	SetParentWorld( NULL );
 	
+	if( pTypeMappings ){
+		delete [] pTypeMappings;
+	}
 	if( pDebugDrawer ){
 		pDebugDrawer->FreeReference();
 	}

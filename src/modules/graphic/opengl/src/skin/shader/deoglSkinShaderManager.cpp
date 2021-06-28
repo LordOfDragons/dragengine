@@ -43,6 +43,7 @@ static const char *vUnitSourceCodePath[ deoglSkinShaderManager::EUSCP_COUNT ] = 
 	"v130/vertex/defren/skin/depth.glsl", // euscpVertexDepth
 	"v130/vertex/defren/skin/particle.glsl", // euscpVertexParticle
 	"v130/vertex/defren/skin/passthrough.glsl", // euscpVertexPassThrough
+	"v130/vertex/defren/gi/materialMap.glsl", // euscpGIMaterialMap
 	
 	"v130/geometry/defren/skin/geometry.glsl", // euscpGeometryGeometry
 	"v130/geometry/defren/skin/depth.glsl", // euscpGeometryDepth
@@ -56,7 +57,8 @@ static const char *vUnitSourceCodePath[ deoglSkinShaderManager::EUSCP_COUNT ] = 
 	"v130/tesseval/defren/skin/depth.glsl", // euscpTessEvalDepth
 	
 	"v130/fragment/defren/skin/geometry.glsl", // euscpFragmentGeometry
-	"v130/fragment/defren/skin/depth.glsl" // euscpFragmentDepth
+	"v130/fragment/defren/skin/depth.glsl", // euscpFragmentDepth
+	"v130/fragment/defren/gi/materialMap.glsl" // euscpGIMaterialMap
 };
 
 

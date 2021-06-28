@@ -229,6 +229,7 @@ public:
 		/**
 		 * Version 4.3 .
 		 * <li>ARB_shader_storage_buffer_object</li>
+		 * <li>ARB_program_interface_query</li>
 		 */
 		evgl4p3,
 		
@@ -314,7 +315,9 @@ public:
 		ext_ARB_viewport_array,
 		ext_ARB_clip_control,
 		ext_ARB_shader_storage_buffer_object,
+		ext_ARB_program_interface_query,
 		ext_ARB_shader_image_load_store,
+		ext_ARB_compute_shader,
 		
 		ext_EXT_bindable_uniform,
 		ext_EXT_blend_equation_separate,

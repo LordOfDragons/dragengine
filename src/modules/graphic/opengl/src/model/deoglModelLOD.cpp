@@ -33,12 +33,16 @@
 #include "texture/deoglModelTexture.h"
 #include "../deoglPreloader.h"
 #include "../configuration/deoglConfiguration.h"
+#include "../rendering/task/shared/deoglRenderTaskSharedInstance.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTBufferObject.h"
 #include "../renderthread/deoglRTLogger.h"
+#include "../renderthread/deoglRTChoices.h"
 #include "../shaders/paramblock/deoglSPBlockMemory.h"
+#include "../shaders/paramblock/shared/deoglSharedSPBRTIGroup.h"
 #include "../skin/shader/deoglSkinShader.h"
 #include "../utils/vcoptimizer/deoglVCOptimizer.h"
+#include "../vao/deoglVAO.h"
 #include "../vbo/deoglSharedVBOBlock.h"
 #include "../vbo/deoglSharedVBO.h"
 #include "../vbo/deoglSharedVBOList.h"
@@ -46,6 +50,9 @@
 #include "../vbo/deoglVBOAttribute.h"
 #include "../vbo/deoglVBOLayout.h"
 #include "../vbo/writer/deoglVBOWriterModel.h"
+#include "../gi/deoglGIBVHLocal.h"
+#include "../utils/bvh/deoglBVH.h"
+#include "../utils/bvh/deoglBVHNode.h"
 #include "../utils/collision/deoglCollisionDetection.h"
 
 #include <dragengine/common/exceptions.h>
@@ -74,7 +81,8 @@ deoglModelLOD::deoglModelLOD( deoglRModel &model, int lodIndex, const deModel &e
 pModel( model ),
 pLODIndex( lodIndex ),
 pIBO( 0 ),
-pIBOType( deoglVBOLayout::eitUnsignedShort )
+pIBOType( deoglVBOLayout::eitUnsignedShort ),
+pGIBVHLocal( NULL )
 {
 	pVBOBlock = NULL;
 	pVBOBlockPositionWeight = NULL;
@@ -89,7 +97,7 @@ pIBOType( deoglVBOLayout::eitUnsignedShort )
 	pTexCoordCount = 0;
 	
 	pTextures = NULL;
-	pTextureCount = engModel.GetTextureCount();
+	pTextureCount = 0;
 	
 	pNormals = NULL;
 	pNormalCount = 0;
@@ -158,7 +166,8 @@ deoglModelLOD::deoglModelLOD( deoglRModel &model, int lodIndex, decBaseFileReade
 pModel( model ),
 pLODIndex( lodIndex ),
 pIBO( 0 ),
-pIBOType( deoglVBOLayout::eitUnsignedShort )
+pIBOType( deoglVBOLayout::eitUnsignedShort ),
+pGIBVHLocal( NULL )
 {
 	pVBOBlock = NULL;
 	pVBOBlockPositionWeight = NULL;
@@ -222,9 +231,10 @@ deoglModelLOD::~deoglModelLOD(){
 // Management
 ///////////////
 
-deoglSharedVBOBlock *deoglModelLOD::GetVBOBlock(){
+
+void deoglModelLOD::PrepareVBOBlock(){
 	if( pVBOBlock ){
-		return pVBOBlock;
+		return;
 	}
 	
 	deoglRTBufferObject::eSharedVBOLists listType = deoglRTBufferObject::esvbolStaticModel;
@@ -247,94 +257,93 @@ deoglSharedVBOBlock *deoglModelLOD::GetVBOBlock(){
 	}
 	
 	pVBOBlock = svbolist.AddData( pVertexCount, pFaceCount * 3 );
+	pVBOBlock->GetVBO()->GetVAO()->EnsureRTSVAO();
 	
 	pWriteVBOData();
-	
-	return pVBOBlock;
 }
 
-deoglSharedVBOBlock *deoglModelLOD::GetVBOBlockPositionWeight(){
-	if( ! pVBOBlockPositionWeight ){
-		deoglRenderThread &renderThread = pModel.GetRenderThread();
-		deoglSharedVBOList &svbolist = renderThread.GetBufferObject().GetSharedVBOListForType(
-			deoglRTBufferObject::esvbolModelPositionWeightIndices );
-		
-		if( pPositionCount > svbolist.GetMaxPointCount() ){
-			renderThread.GetLogger().LogInfoFormat(
-				"Model(%s,%i): Too many points (%i) to fit into shared position weight VBO."
-				" Using over-sized VBO (performance not optimal).",
-				pModel.GetFilename().GetString(), pLODIndex, pPositionCount );
-		}
-		
-		pVBOBlockPositionWeight = svbolist.AddData( pPositionCount );
-		
-		pWriteVBODataPositionWeight();
+void deoglModelLOD::PrepareVBOBlockPositionWeight(){
+	if( pVBOBlockPositionWeight ){
+		return;
 	}
 	
-	return pVBOBlockPositionWeight;
+	deoglRenderThread &renderThread = pModel.GetRenderThread();
+	deoglSharedVBOList &svbolist = renderThread.GetBufferObject().GetSharedVBOListForType(
+		deoglRTBufferObject::esvbolModelPositionWeightIndices );
+	
+	if( pPositionCount > svbolist.GetMaxPointCount() ){
+		renderThread.GetLogger().LogInfoFormat(
+			"Model(%s,%i): Too many points (%i) to fit into shared position weight VBO."
+			" Using over-sized VBO (performance not optimal).",
+			pModel.GetFilename().GetString(), pLODIndex, pPositionCount );
+	}
+	
+	pVBOBlockPositionWeight = svbolist.AddData( pPositionCount );
+	
+	pWriteVBODataPositionWeight();
 }
 
-deoglSharedVBOBlock *deoglModelLOD::GetVBOBlockCalcNormalTangent(){
-	if( ! pVBOBlockCalcNormalTangent ){
-		deoglRenderThread &renderThread = pModel.GetRenderThread();
-		deoglSharedVBOList &svbolist = renderThread.GetBufferObject().GetSharedVBOListForType(
-			deoglRTBufferObject::esvbolModelCalcNormalTangent );
-		
-		if( pFaceCount > svbolist.GetMaxPointCount() ){
-			renderThread.GetLogger().LogInfoFormat(
-				"Model(%s,%i): Too many points (%i) to fit into shared calc normal tangent VBO."
-				" Using over-sized VBO (performance not optimal).",
-				pModel.GetFilename().GetString(), pLODIndex, pFaceCount );
-		}
-		
-		pVBOBlockCalcNormalTangent = svbolist.AddData( pFaceCount );
-		
-		pWriteVBODataCalcNormalTangent();
+void deoglModelLOD::PrepareVBOBlockCalcNormalTangent(){
+	if( pVBOBlockCalcNormalTangent ){
+		return;
 	}
 	
-	return pVBOBlockCalcNormalTangent;
+	deoglRenderThread &renderThread = pModel.GetRenderThread();
+	deoglSharedVBOList &svbolist = renderThread.GetBufferObject().GetSharedVBOListForType(
+		deoglRTBufferObject::esvbolModelCalcNormalTangent );
+	
+	if( pFaceCount > svbolist.GetMaxPointCount() ){
+		renderThread.GetLogger().LogInfoFormat(
+			"Model(%s,%i): Too many points (%i) to fit into shared calc normal tangent VBO."
+			" Using over-sized VBO (performance not optimal).",
+			pModel.GetFilename().GetString(), pLODIndex, pFaceCount );
+	}
+	
+	pVBOBlockCalcNormalTangent = svbolist.AddData( pFaceCount );
+	
+	pWriteVBODataCalcNormalTangent();
 }
 
-deoglSharedVBOBlock *deoglModelLOD::GetVBOBlockWriteSkinnedVBO(){
-	if( ! pVBOBlockWriteSkinnedVBO ){
-		deoglRenderThread &renderThread = pModel.GetRenderThread();
-		deoglSharedVBOList &svbolist = renderThread.GetBufferObject().GetSharedVBOListForType(
-			deoglRTBufferObject::esvbolModelWriteSkinnedVBO );
-		
-		if( pVertexCount > svbolist.GetMaxPointCount() ){
-			renderThread.GetLogger().LogInfoFormat(
-				"Model(%s,%i): Too many points (%i) to fit into shared write skinned vbo VBO."
-				" Using over-sized VBO (performance not optimal).",
-				pModel.GetFilename().GetString(), pLODIndex, pVertexCount );
-		}
-		
-		pVBOBlockWriteSkinnedVBO = svbolist.AddData( pVertexCount );
-		
-		pWriteVBODataWriteSkinnedVBO();
+void deoglModelLOD::PrepareVBOBlockWriteSkinnedVBO(){
+	if( pVBOBlockWriteSkinnedVBO ){
+		return;
 	}
 	
-	return pVBOBlockWriteSkinnedVBO;
+	deoglRenderThread &renderThread = pModel.GetRenderThread();
+	deoglSharedVBOList &svbolist = renderThread.GetBufferObject().GetSharedVBOListForType(
+		deoglRTBufferObject::esvbolModelWriteSkinnedVBO );
+	
+	if( pVertexCount > svbolist.GetMaxPointCount() ){
+		renderThread.GetLogger().LogInfoFormat(
+			"Model(%s,%i): Too many points (%i) to fit into shared write skinned vbo VBO."
+			" Using over-sized VBO (performance not optimal).",
+			pModel.GetFilename().GetString(), pLODIndex, pVertexCount );
+	}
+	
+	pVBOBlockWriteSkinnedVBO = svbolist.AddData( pVertexCount );
+	
+	pWriteVBODataWriteSkinnedVBO();
 }
 
-deoglSharedVBOBlock *deoglModelLOD::GetVBOBlockWithWeight(){
-	if( ! pVBOBlockWithWeight ){
-		deoglRenderThread &renderThread = pModel.GetRenderThread();
-		deoglSharedVBOList &svbolist = renderThread.GetBufferObject().GetSharedVBOListForType(
-			deoglRTBufferObject::esvbolStaticModelWeight );
-		
-		if( pVertexCount > svbolist.GetMaxPointCount() ){
-			renderThread.GetLogger().LogInfoFormat(
-				"Model(%s,%i): Too many points (%i) to fit into shared model with weight VBO."
-				" Using over-sized VBO (performance not optimal).",
-				pModel.GetFilename().GetString(), pLODIndex, pVertexCount );
-		}
-		
-		pVBOBlockWithWeight = svbolist.AddData( pVertexCount );
-		
-		pWriteVBODataWithWeight();
+void deoglModelLOD::PrepareVBOBlockWithWeight(){
+	if( pVBOBlockWithWeight ){
+		return;
 	}
 	
-	return pVBOBlockWithWeight;
+	deoglRenderThread &renderThread = pModel.GetRenderThread();
+	deoglSharedVBOList &svbolist = renderThread.GetBufferObject().GetSharedVBOListForType(
+		deoglRTBufferObject::esvbolStaticModelWeight );
+	
+	if( pVertexCount > svbolist.GetMaxPointCount() ){
+		renderThread.GetLogger().LogInfoFormat(
+			"Model(%s,%i): Too many points (%i) to fit into shared model with weight VBO."
+			" Using over-sized VBO (performance not optimal).",
+			pModel.GetFilename().GetString(), pLODIndex, pVertexCount );
+	}
+	
+	pVBOBlockWithWeight = svbolist.AddData( pVertexCount );
+	
+	pWriteVBODataWithWeight();
 }
 
 GLuint deoglModelLOD::GetIBO(){
@@ -392,18 +401,25 @@ GLuint deoglModelLOD::GetIBO(){
 
 
 
+deoglModelTexture &deoglModelLOD::GetTextureAt( int index ){
+	if( index < 0 || index >= pTextureCount ){
+		DETHROW( deeInvalidParam );
+	}
+	return *pTextures[ index ];
+}
+
 const deoglModelTexture &deoglModelLOD::GetTextureAt( int index ) const{
 	if( index < 0 || index >= pTextureCount ){
 		DETHROW( deeInvalidParam );
 	}
-	return pTextures[ index ];
+	return *pTextures[ index ];
 }
 
 deoglSharedSPBRTIGroupList &deoglModelLOD::GetSharedSPBRTIGroupListAt( int texture ) const{
 	if( texture < 0 || texture >= pTextureCount ){
 		DETHROW( deeInvalidParam );
 	}
-	return pTextures[ texture ].GetRTIGroups();
+	return pTextures[ texture ]->GetRTIGroups();
 }
 
 
@@ -551,17 +567,18 @@ void deoglModelLOD::LoadFromCache( decBaseFileReader &reader ){
 	
 	count = reader.ReadInt();
 	if( count > 0 ){
-		pTextures = new deoglModelTexture[ count ];
-		pTextureCount = count;
+		pTextures = new deoglModelTexture*[ count ];
 		
 		sCacheTexture cacheTextures;
-		for( i=0; i<count; i++ ){
+		for( pTextureCount=0; pTextureCount<count; pTextureCount++ ){
 			reader.Read( &cacheTextures, sizeof( sCacheTexture ) );
-			pTextures[ i ].SetFirstFace( cacheTextures.firstFace );
-			pTextures[ i ].SetFaceCount( cacheTextures.faceCount );
-			pTextures[ i ].SetDoubleSided( cacheTextures.doubleSided );
-			pTextures[ i ].SetDecal( cacheTextures.decal );
-			pTextures[ i ].SetDecalOffset( cacheTextures.decalOffset );
+			deoglModelTexture * const texture = new deoglModelTexture( pModel.GetRenderThread() );
+			texture->SetFirstFace( cacheTextures.firstFace );
+			texture->SetFaceCount( cacheTextures.faceCount );
+			texture->SetDoubleSided( cacheTextures.doubleSided );
+			texture->SetDecal( cacheTextures.decal );
+			texture->SetDecalOffset( cacheTextures.decalOffset );
+			pTextures[ pTextureCount ] = texture;
 		}
 	}
 	
@@ -659,11 +676,12 @@ void deoglModelLOD::SaveToCache( decBaseFileWriter &writer ){
 	
 	sCacheTexture cacheTextures;
 	for( i=0; i<pTextureCount; i++ ){
-		cacheTextures.firstFace = pTextures[ i ].GetFirstFace();
-		cacheTextures.faceCount = pTextures[ i ].GetFaceCount();
-		cacheTextures.doubleSided = pTextures[ i ].GetDoubleSided();
-		cacheTextures.decal = pTextures[ i ].GetDecal();
-		cacheTextures.decalOffset = pTextures[ i ].GetDecalOffset();
+		const deoglModelTexture &texture = *pTextures[ i ];
+		cacheTextures.firstFace = texture.GetFirstFace();
+		cacheTextures.faceCount = texture.GetFaceCount();
+		cacheTextures.doubleSided = texture.GetDoubleSided();
+		cacheTextures.decal = texture.GetDecal();
+		cacheTextures.decalOffset = texture.GetDecalOffset();
 		writer.Write( &cacheTextures, sizeof( sCacheTexture ) );
 	}
 	
@@ -734,10 +752,99 @@ void deoglModelLOD::SaveToCache( decBaseFileWriter &writer ){
 
 
 
+void deoglModelLOD::PrepareGILocalBVH(){
+	if( pGIBVHLocal ){
+		return;
+	}
+	
+	deoglBVH::sBuildPrimitive *primitives = NULL;
+	int primitiveCount = 0;
+	bool disable = false;
+	
+	if( pFaceCount > 10000 ){
+		pModel.GetRenderThread().GetLogger().LogWarnFormat(
+			"Model(%s,%i): Very high face count (%d). Disable model to not slow down global illumination.",
+			pModel.GetFilename().GetString(), pLODIndex, pFaceCount );
+		disable = true;
+	}
+	
+	if( pFaceCount > 0 && ! disable ){
+		primitives = new deoglBVH::sBuildPrimitive[ pFaceCount ];
+		primitiveCount = pFaceCount;
+		int i;
+		
+		for( i=0; i<pFaceCount; i++ ){
+			deoglBVH::sBuildPrimitive &primitive = primitives[ i ];
+			
+			/*
+			// this works only if octree has been prepare yet. but the octree does
+			// apply some enlaring we do not want to use here
+			primitive.minExtend = pFaces[ i ].GetMinExtend();
+			primitive.maxExtend = pFaces[ i ].GetMaxExtend();
+			primitive.center = pFaces[ i ].GetCenter();
+			*/
+			
+			const deoglModelFace &face = pFaces[ i ];
+			const oglModelPosition &v1 = pPositions[ pVertices[ face.GetVertex1() ].position ];
+			const oglModelPosition &v2 = pPositions[ pVertices[ face.GetVertex2() ].position ];
+			const oglModelPosition &v3 = pPositions[ pVertices[ face.GetVertex3() ].position ];
+			
+			primitive.minExtend = v1.position.Smallest( v2.position ).Smallest( v3.position );
+			primitive.maxExtend = v1.position.Largest( v2.position ).Largest( v3.position );
+			primitive.center = ( primitive.minExtend + primitive.maxExtend ) * 0.5f;
+		}
+	}
+	
+	try{
+		// models have variable face count. the highest lod level typically used for ray tracing
+		// should have low face count. if models are not optimized this can result in higher
+		// face counts which is bad for performance. in tests a max depth of 12 (more can not
+		// be used in shader ray tracing) seems to be the best solution. if low face count can
+		// be guaranteed (for example auto-decimation) then lower max depth can be better.
+		// occlusion meshes use 6 here
+		pGIBVHLocal = new deoglGIBVHLocal( pModel.GetRenderThread() );
+		pGIBVHLocal->BuildBVH( primitives, primitiveCount, 12 );
+		
+		if( pGIBVHLocal->GetBVH().GetRootNode() ){
+			pGIBVHLocal->TBOAddVertices( pPositions, pPositionCount );
+			pGIBVHLocal->TBOAddFaces( pFaces, pVertices, pTexCoords );
+			pGIBVHLocal->TBOAddBVH();
+		}
+		
+	}catch( const deException & ){
+		if( pGIBVHLocal ){
+			delete pGIBVHLocal;
+			pGIBVHLocal = NULL;
+		}
+		if( primitives ){
+			delete [] primitives;
+		}
+		throw;
+	}
+	
+	if( primitives ){
+		delete [] primitives;
+	}
+	
+	// check for suboptimal configurations and warn the developer
+	if( pFaceCount > 300 ){
+		pModel.GetRenderThread().GetLogger().LogInfoFormat(
+			"Model(%s,%i): High face count slows down global illumination (%d)."
+			" Consider adding highest LOD variation with less than 300 faces.",
+			pModel.GetFilename().GetString(), pLODIndex, pFaceCount );
+	}
+}
+
+
+
 // Private functions
 //////////////////////
 
 void deoglModelLOD::pCleanUp(){
+	if( pGIBVHLocal ){
+		delete pGIBVHLocal;
+	}
+	
 	if( pVBOBlockWithWeight ){
 		pVBOBlockWithWeight->GetVBO()->RemoveBlock( pVBOBlockWithWeight );
 		pVBOBlockWithWeight->FreeReference();
@@ -799,6 +906,9 @@ void deoglModelLOD::pCleanUp(){
 		delete [] pPositions;
 	}
 	if( pTextures ){
+		while( pTextureCount > 0 ){
+			delete pTextures[ --pTextureCount ];
+		}
 		delete [] pTextures;
 	}
 }
@@ -1064,18 +1174,20 @@ void deoglModelLOD::pBuildArrays( const deModel &engModel ){
 	}
 	
 	// add textures
-	pTextures = new deoglModelTexture[ pTextureCount ];
+	const int textureCount = engModel.GetTextureCount();;
+	pTextures = new deoglModelTexture*[ textureCount ];
 	
-	for( i=0; i<pTextureCount; i++ ){
-		const deModelTexture &in = *engModel.GetTextureAt( i );
-		deoglModelTexture &out = pTextures[ i ];
+	for( pTextureCount=0; pTextureCount<textureCount; pTextureCount++ ){
+		const deModelTexture &engTexture = *engModel.GetTextureAt( pTextureCount );
 		
-		out.SetDoubleSided( in.GetDoubleSided() );
-		out.SetDecal( in.GetDecal() );
-		out.SetDecalOffset( in.GetDecalOffset() );
+		deoglModelTexture * const texture = new deoglModelTexture( pModel.GetRenderThread() );
+		texture->SetDoubleSided( engTexture.GetDoubleSided() );
+		texture->SetDecal( engTexture.GetDecal() );
+		texture->SetDecalOffset( engTexture.GetDecalOffset() );
+		pTextures[ pTextureCount ] = texture;
 		
-		pDoubleSided |= in.GetDoubleSided();
-		pDecal |= in.GetDecal();
+		pDoubleSided |= engTexture.GetDoubleSided();
+		pDecal |= engTexture.GetDecal();
 	}
 	
 	// add texture coordinate sets and set the texture coordinate count
@@ -1126,7 +1238,7 @@ void deoglModelLOD::pBuildArrays( const deModel &engModel ){
 			pFaceCount = modelFaceCount;
 			
 			for( i=0; i<pTextureCount; i++ ){
-				deoglModelTexture &texture = pTextures[ i ];
+				deoglModelTexture &texture = *pTextures[ i ];
 				int texFaceCount = 0;
 				
 				texture.SetFirstFace( f );
@@ -1269,7 +1381,7 @@ void deoglModelLOD::pOptimizeVertexCache(){
 	
 	optimizer.SetGroupCount( pTextureCount );
 	for( i=0; i<pTextureCount; i++ ){
-		optimizer.SetGroupAt( i, pTextures[ i ].GetFirstFace(), pTextures[ i ].GetFaceCount() );
+		optimizer.SetGroupAt( i, pTextures[ i ]->GetFirstFace(), pTextures[ i ]->GetFaceCount() );
 	}
 	
 	optimizer.Optimize();

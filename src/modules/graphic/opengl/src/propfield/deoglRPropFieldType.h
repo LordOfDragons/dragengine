@@ -40,9 +40,8 @@ class deoglTexUnitsConfig;
 class dePropFieldType;
 
 
-
 /**
- * \brief Render prop field type.
+ * Render prop field type.
  */
 class deoglRPropFieldType : public deObject{
 private:
@@ -54,6 +53,7 @@ private:
 	deoglSkinTexture *pUseSkinTexture;
 	
 	decPointerList pClusters;
+	bool pClustersRequirePrepareForRender;
 	
 	decVector pMinExtend;
 	decVector pMaxExtend;
@@ -66,13 +66,15 @@ private:
 	
 	bool pDirtyModel;
 	
+	
+	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create prop field type. */
+	/** Create prop field type. */
 	deoglRPropFieldType( deoglRPropField &propField );
 	
-	/** \brief Clean up prop field type. */
+	/** Clean up prop field type. */
 	virtual ~deoglRPropFieldType();
 	/*@}*/
 	
@@ -80,106 +82,121 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Prop field. */
+	/** Prop field. */
 	inline deoglRPropField &GetPropField() const{ return pPropField; }
 	
 	
 	
-	/** \brief Model or \em NULL if not set. */
+	/** Model or NULL if not set. */
 	inline deoglRModel *GetModel() const{ return pModel; }
 	
-	/** \brief Set model or \em NULL if not set. */
+	/**
+	 * Set model or NULL if not set.
+	 * \warning Called during synchronization from main thread.
+	 */
 	void SetModel( deoglRModel *model );
 	
-	/** \brief Skin or \em NULL if not set. */
+	/** Skin or NULL if not set. */
 	inline deoglRSkin *GetSkin() const{ return pSkin; }
 	
-	/** \brief Set skin or \em NULL if not set. */
+	/**
+	 * Set skin or NULL if not set.
+	 * \warning Called during synchronization from main thread.
+	 */
 	void SetSkin( deoglRSkin *skin );
 	
-	/** \brief Skin texture to use or \em NULL if not valid. */
+	/** Skin texture to use or NULL if not valid. */
 	inline deoglSkinTexture *GetUseSkinTexture() const{ return pUseSkinTexture; }
 	
 	
 	
-	/** \brief Minimum extend. */
+	/** Minimum extend. */
 	inline const decVector &GetMinimumExtend() const{ return pMinExtend; }
 	
-	/** \brief Maximum extend. */
+	/** Maximum extend. */
 	inline const decVector &GetMaximumExtend() const{ return pMaxExtend; }
 	
-	/** \brief Bending factor. */
+	/** Bending factor. */
 	inline float GetBendFactor() const{ return pBendFactor; }
 	
 	
 	
-	/** \brief Rebuild instances. */
+	/**
+	 * Rebuild instances.
+	 * \warning Called during synchronization from main thread.
+	 */
 	void RebuildInstances( const dePropFieldType &type );
 	
-	/** \brief Add clusters with a point sieve. */
+	/** Add clusters with a point sieve. */
 	void AddClustersWithSieve( const dePropFieldType &type );
 	
-	/** \brief Add clusters with a cluster generator. */
+	/** Add clusters with a cluster generator. */
 	void AddClustersWithGenerator( const dePropFieldType &type );
 	
-	/** \brief Add clusters from a cluster generator. */
+	/** Add clusters from a cluster generator. */
 	void AddClustersFromGenerator(  const dePropFieldType &type, const deoglPFClusterGenerator &generator );
 	
 	
 	
-	/** \brief Prepare for rendering. */
+	/** Prepare for render. Called by deoglRWorld if registered previously. */
 	void PrepareForRender();
 	
-	/** \brief Update instances. */
+	/** Update instances. */
 	void UpdateInstances( const decDVector &cameraPosition, const decDMatrix &cameraMatrix );
 	
 	
 	
-	/** \brief Number of clusters. */
+	/** Number of clusters. */
 	int GetClusterCount() const;
 	
-	/** \brief Cluster at index. */
+	/** Cluster at index. */
 	deoglPropFieldCluster *GetClusterAt( int index ) const;
 	
-	/** \brief Add cluster. */
+	/** Add cluster. */
 	void AddCluster( deoglPropFieldCluster *cluster );
 	
-	/** \brief Remove all clusters. */
+	/** Remove all clusters. */
 	void RemoveAllClusters();
 	
+	/** Cluster requires prepare for render. */
+	void ClusterRequiresPrepareForRender();
 	
 	
-	/** \brief Prepare bend states. */
+	
+	/**
+	 * Prepare bend states.
+	 * \warning Called during synchronization from main thread.
+	 */
 	void PrepareBendStateData( const dePropFieldType &type );
 	
 	
 	
-	/** \brief Shader parameter block for a shader type. */
-	deoglSPBlockUBO *GetParamBlockFor( deoglSkinTexture::eShaderTypes shaderType );
+	/** Parameter block or NULL if there is no valid skin texture. */
+	inline deoglSPBlockUBO *GetParamBlock() const{ return pParamBlock; }
 	
-	/**
-	 * \brief Sarameter block or \em NULL if there is no valid skin texture.
-	 * \details This texture units configuration works for the shader types estComponent*.
-	 */
-	deoglSPBlockUBO *GetParamBlock();
-	
-	/** \brief Invalidate parameter blocks. */
+	/** Invalidate parameter blocks. */
 	void InvalidateParamBlocks();
 	
-	/** \brief Mark parameter blocks dirty. */
+	/** Mark parameter blocks dirty. */
 	void MarkParamBlocksDirty();
 	
-	/** \brief Marks texture units configurations dirty. */
+	/** Marks texture units configurations dirty. */
 	void MarkTUCsDirty();
 	
-	/** \brief Update instance parameter shader parameter block. */
+	/** Update instance parameter shader parameter block. */
 	void UpdateInstanceParamBlock( deoglSPBlockUBO &paramBlock, deoglSkinShader &skinShader );
 	
 	
 	
-	/** \brief World reference point changed. */
+	/** World reference point changed. */
 	void WorldReferencePointChanged();
 	/*@}*/
+	
+	
+	
+private:
+	void pPrepareModel();
+	void pPrepareParamBlock();
 };
 
 #endif

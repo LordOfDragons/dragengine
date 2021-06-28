@@ -44,6 +44,7 @@ deoglDSRenderableImage::deoglDSRenderableImage( deoglDynamicSkin &dynamicSkin, c
 deoglDSRenderable( dynamicSkin, renderable ),
 pRenderableImage( renderable ),
 pRRenderableImage( NULL ),
+pImage( NULL ),
 pDirty( true )
 {
 	try{
@@ -69,7 +70,19 @@ deoglRDSRenderable *deoglDSRenderableImage::GetRRenderable() const{
 }
 
 void deoglDSRenderableImage::RenderableChanged(){
-	pDirty = true;
+	deoglImage * const image = pRenderableImage.GetImage()
+		? ( deoglImage* )pRenderableImage.GetImage()->GetPeerGraphic() : NULL;
+	
+	if( image != pImage ){
+		pImage = image;
+		pDirty = true;
+		
+		pDynamicSkin.NotifyRenderableChanged( *this );
+	}
+	
+	if( pRenderableImage.GetName() != pRRenderableImage->GetName() ){
+		pDynamicSkin.NotifyRenderablesChanged();
+	}
 }
 
 void deoglDSRenderableImage::SyncToRender(){

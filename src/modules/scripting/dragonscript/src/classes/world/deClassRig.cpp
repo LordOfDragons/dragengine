@@ -474,7 +474,7 @@ void deClassRig::nfEquals::RunFunction( dsRunTime *rt, dsValue *myself ){
 	deClassRig * const clsRig = ( deClassRig* )GetOwnerClass();
 	dsValue * const obj = rt->GetValue( 0 );
 	
-	if( p_IsObjOfType( obj, clsRig ) ){
+	if( ! p_IsObjOfType( obj, clsRig ) ){
 		rt->PushBool( false );
 		
 	}else{

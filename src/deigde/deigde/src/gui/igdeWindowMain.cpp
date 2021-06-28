@@ -777,11 +777,10 @@ void igdeWindowMain::CreatePlaceholderGameProject(){
 }
 
 bool igdeWindowMain::LoadGameProject( const char *filename ){
-	GetLogger()->LogInfoFormat( LOGSOURCE, "Loading game project %s", filename );
-	
-	deObjectReference refProject;
+	GetLogger()->LogInfoFormat( LOGSOURCE, "Open game project %s", filename );
 	
 	try{
+		deObjectReference refProject;
 		refProject.TakeOver( pLoadSaveSystem->LoadGameProject( filename ) );
 		igdeGameProject * const project = ( igdeGameProject* )( deObject* )refProject;
 		
@@ -796,7 +795,20 @@ bool igdeWindowMain::LoadGameProject( const char *filename ){
 		return true;
 		
 	}catch( const deException &e ){
-		DisplayException( e );
+		GetLogger()->LogException( LOGSOURCE, e );
+		igdeCommonDialogs::ErrorFormat( this, "Open Game Project",
+			"Failed loading game project: %s", e.GetDescription().GetString() );
+		
+		const int index = pConfiguration.GetRecentProjectList().IndexOf( filename );
+		if( index != -1 ){
+			if( igdeCommonDialogs::Question( this, igdeCommonDialogs::ebsYesNo, "Open Game Project",
+			"Remove game project from recent file list?" ) == igdeCommonDialogs::ebYes ){
+				pConfiguration.GetRecentProjectList().RemoveFrom( index );
+				pConfiguration.SaveConfiguration();
+				UpdateRecentProjectMenu();
+			}
+		}
+		
 		return false;
 	}
 }
@@ -826,6 +838,7 @@ void igdeWindowMain::AddRecentGameProject( const char *filename ){
 	}else{
 		recentProjectList.Move( recentProjectIndex, 0 );
 	}
+	pConfiguration.SaveConfiguration();
 	
 	// update menu
 	UpdateRecentProjectMenu();

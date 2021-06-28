@@ -1,0 +1,71 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<parameterTree>
+	<!--
+	Main configuration file for application.
+	
+	Using a configuration parameter tree file is optional.
+	If the file is not present it is not loaded.
+	
+	If the configuration file is present and values exist matching properties defined
+	in this class the configuration file values take precendence. This allows to modify
+	the properties without having to change source files.
+	-->
+	
+	
+	<!--
+	Desktop gui theme path property.
+	
+	Set by default to BaseGameApp.DEFAULT_GUITHEME
+	-->
+	<!--
+	<string path='pathDesktopGuiTheme'>/shareddata/guithemes/modern/modern.guitheme.xml</string>
+	-->
+	
+	
+	<!--
+	Path to directory containing language packs.
+	
+	Default value is <null>. To support internationalization in your game set the
+	property to a valid path. Also set default language property if required.
+	-->
+	<!--
+	<null path='pathLanguagePacks'/>
+	-->
+	
+	
+	<!--
+	Name of default language pack to activate.
+	
+	Default value is "English". If no such language pack is found internationalization
+	is disabled. The language pack name is matched case sensitive.
+	-->
+	<!--
+	<string path='defaultLanguagePackName'>English</string>
+	-->
+	
+	
+	<!--
+	Binding save file path property.
+	
+	Default value is "/config/bindings.xml". Set this to the value of "Config Path"
+	in the game project if the value is different from "/config".
+	-->
+	<!--
+	<string path='pathSavedBindings'>/config/bindings.xml</string>
+	-->
+	
+	
+	<!--
+	Default value for EnableGI parameter in cameras. Camera, CameraDirector and
+	ECBehaviorCamera use this value as default value for the EnabledGI property.
+	
+	If true enables global illumination (GI) if supported.
+	
+	This parameter exists since version 1.5 . The default value is false to be
+	consistent with version prior to 1.5 . Since version 1.5 new created projects
+	have this value set to true. You have to set this value to true here to change
+	the default behavior of all cameras created without having to do it manually
+	-->
+	<boolean path='defaultEnableGI'>true</boolean>
+	
+</parameterTree>

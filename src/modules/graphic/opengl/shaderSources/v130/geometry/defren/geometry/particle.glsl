@@ -37,8 +37,8 @@ const vec2 tc2 = vec2( 0.0, 1.0 );
 const vec2 tc3 = vec2( 1.0, 0.0 );
 const vec2 tc4 = vec2( 1.0, 1.0 );
 
-void main( void ){
-	// this is the same for all points
+
+void emitCorner( in vec4 position, in vec2 tc ){
 	vNormal = particleNormal;
 	vTangent = particleTangent;
 	vBitangent = particleBitangent;
@@ -46,65 +46,43 @@ void main( void ){
 	vColor = vParticle1[ 0 ];
 	vEmissivity = vParticle0[ 0 ].y;
 	
-	gl_PrimitiveID = gl_PrimitiveIDIn;
-	gl_Layer = 0;
+	vTCDiffuse = tc;
+	vTCNormal = tc;
+	#ifdef HAS_MAP_EMISSIVE
+		vTCEmissive = tc;
+	#endif
+	vTCAO = tc;
+	#ifdef WITH_REFLECT_DIR
+		vReflectDir = position;
+	#endif
 	
+	gl_Position = pMatrixProj * position;
+	
+	gl_Layer = 0;
+	gl_PrimitiveID = gl_PrimitiveIDIn;
+	
+	EmitVertex();
+}
+
+void main( void ){
 	// generate billboard
-	mat2 rotmat = mat2( cos( vParticle0[ 0 ].z ), -sin( vParticle0[ 0 ].z ), sin( vParticle0[ 0 ].z ), cos( vParticle0[ 0 ].z ) );
+	mat2 rotmat = mat2(
+		cos( vParticle0[ 0 ].z ), -sin( vParticle0[ 0 ].z ),
+		sin( vParticle0[ 0 ].z ),  cos( vParticle0[ 0 ].z ) );
 	vec4 position = gl_in[ 0 ].gl_Position; // z and w stays the same for all vertices
 	vec2 size = vec2( vParticle0[ 0 ].x );
 	
 	position.xy += rotmat * ( bc1 * size );
-	gl_Position = pMatrixProj * position;
-	vTCDiffuse = tc1;
-	vTCNormal = tc1;
-#ifdef HAS_MAP_EMISSIVE
-	vTCEmissive = tc1;
-#endif
-	vTCAO = tc1;
-#ifdef WITH_REFLECT_DIR
-	vReflectDir = position;
-#endif
-	EmitVertex();
+	emitCorner( position, tc1 );
 	
 	position.xy = gl_in[ 0 ].gl_Position.xy + rotmat * ( bc2 * size );
-	gl_Position = pMatrixProj * position;
-	vTCDiffuse = tc2;
-	vTCNormal = tc2;
-#ifdef HAS_MAP_EMISSIVE
-	vTCEmissive = tc2;
-#endif
-	vTCAO = tc2;
-#ifdef WITH_REFLECT_DIR
-	vReflectDir = position;
-#endif
-	EmitVertex();
+	emitCorner( position, tc2 );
 	
 	position.xy = gl_in[ 0 ].gl_Position.xy + rotmat * ( bc3 * size );
-	gl_Position = pMatrixProj * position;
-	vTCDiffuse = tc3;
-	vTCNormal = tc3;
-#ifdef HAS_MAP_EMISSIVE
-	vTCEmissive = tc3;
-#endif
-	vTCAO = tc3;
-#ifdef WITH_REFLECT_DIR
-	vReflectDir = position;
-#endif
-	EmitVertex();
+	emitCorner( position, tc3 );
 	
 	position.xy = gl_in[ 0 ].gl_Position.xy + rotmat * ( bc4 * size );
-	gl_Position = pMatrixProj * position;
-	vTCDiffuse = tc4;
-	vTCNormal = tc4;
-#ifdef HAS_MAP_EMISSIVE
-	vTCEmissive = tc4;
-#endif
-	vTCAO = tc4;
-#ifdef WITH_REFLECT_DIR
-	vReflectDir = position;
-#endif
-	EmitVertex();
+	emitCorner( position, tc4 );
 	
 	EndPrimitive();
 }

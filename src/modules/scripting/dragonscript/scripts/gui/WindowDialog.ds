@@ -811,6 +811,71 @@ class WindowDialog extends WindowModal
 		return dialog
 	end
 	
+	/**
+	 * \brief Request text input from user with proposed values to choose from.
+	 * \version 1.5
+	 * 
+	 * Result send to listener is the text string entered by the user or null
+	 * if the dialog has been cancelled.
+	 * 
+	 * \param window Window to block while dialog window is shown.
+	 * \param title Title of the dialog window.
+	 * \param message Message to show above the input field.
+	 * \param image to show next to the message or \em null to show none.
+	 * \param initialText Initial text in the input field.
+	 * \param proposed Proposals for the user to input.
+	 * \param buttonAccept Button configuration for accept button or \em null to use "Accept".
+	 * \param buttonCancel Button configuration for cancel button or \em null to use "Cancel".
+	 * \param listener Listener to call closing message box.
+	 */
+	public static func WindowDialog inputPropose( Window window, String title, String message, \
+	Image image, String initialText, DefaultListModel proposed, ButtonConfiguration buttonAccept, \
+	ButtonConfiguration buttonCancel, ResultListener listener )
+		var WindowDialog dialog = WindowDialog.new( 0, 0, 400, 200 )
+		
+		dialog.runWhileBlockingLayout( block
+			//dialog.setMinDialogSize( Point.new( 180, 120 ) )
+			dialog.setGuiTheme( window.getGuiTheme() )
+			dialog.setLayout( BorderLayout.new() )
+			dialog.setCanResize( false )
+			dialog.setTitle( title )
+			dialog.setResult( null ) // result for closing window without button
+			dialog.setResultListener( listener )
+			
+			// message with input field
+			var TextModel modelText = DefaultTextModel.new( initialText )
+			
+			dialog.addWidget( Panel.new( CentrizedBoxLayout.new( LayoutAxis.y, 5 ), block Panel p
+				var Label label = Label.new( message, "Label.WindowDialog" )
+				label.setWordWrap( true )
+				p.addWidget( label )
+				
+				var ComboBox comboBox = ComboBox.new( proposed, DefaultComboBoxEditor.new( modelText, 20 ) )
+				( comboBox.getEditor() cast TextField ).setCursorPosition( modelText.getText().getLength() )
+				p.addWidget( comboBox )
+			end ), BorderLayout.Area.content )
+			
+			// image
+			if image != null
+				dialog.addWidget( Panel.new( CentrizedBoxLayout.new( LayoutAxis.y ), block Panel p
+					p.setDesignerSelector( "Panel.WindowDialogImage" )
+					p.addWidget( DisplayImage.new( image ) )
+				end ), BorderLayout.Area.left )
+			end
+			
+			// panel with accept and cancel button
+			var ObjectReference acceptWidget = ObjectReference.new()
+			dialog.addWidget( createButtonsAcceptCancel( buttonAccept, buttonCancel, \
+				CloseDialogTextModel.new( dialog, modelText ), \
+				CloseDialog.new( dialog, null ), acceptWidget ), BorderLayout.Area.bottom )
+			dialog.setAcceptWidget( acceptWidget.get() cast Widget )
+		end )
+		
+		// show dialog
+		dialog.show( window, true, WindowModal.Placement.window )
+		return dialog
+	end
+	
 	
 	
 	/**

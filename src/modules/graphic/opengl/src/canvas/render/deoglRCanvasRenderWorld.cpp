@@ -100,17 +100,20 @@ void deoglRCanvasRenderWorld::SetCamera( deoglRCamera *camera ){
 
 
 
-void deoglRCanvasRenderWorld::PrepareForRender(){
+void deoglRCanvasRenderWorld::PrepareForRender( const deoglRenderPlanMasked *renderPlanMask ){
 	if( ! pCamera || ! pCamera->GetParentWorld() ){
 		return;
 	}
+	
+	deoglRCanvas::PrepareForRender( renderPlanMask );
 	
 	if( pForceToneMapAdaption ){
 		pCamera->SetForceToneMapAdaption( true );
 		pForceToneMapAdaption = false;
 	}
 	
-	pCamera->GetParentWorld()->PrepareForRender();
+	// this is called during DrawCanvasRenderWorld
+	//pCamera->GetParentWorld()->PrepareForRender( pCamera->GetPlan() );
 }
 
 void deoglRCanvasRenderWorld::Render( const deoglRenderCanvasContext &context ){

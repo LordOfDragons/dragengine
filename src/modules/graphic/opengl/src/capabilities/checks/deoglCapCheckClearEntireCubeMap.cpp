@@ -164,8 +164,8 @@ void deoglCapCheckClearEntireCubeMap::Check( GLuint fbo ){
 	}
 	
 	// evaluate the results
-	//printf( "pTestBugClearEntireCubeMap: %g %g %g %g %g %g\n",
-	//	pixels[ 0 ], pixels[ 1 ], pixels[ 2 ], pixels[ 3 ], pixels[ 4 ], pixels[ 5 ] );
+// 	renderThread.GetLogger().LogInfoFormat( "pTestBugClearEntireCubeMap: %g %g %g %g %g %g\n",
+// 		pixels[ 0 ], pixels[ 1 ], pixels[ 2 ], pixels[ 3 ], pixels[ 4 ], pixels[ 5 ] );
 	for( i=0; i<6; i++ ){
 		if( fabsf( pixels[ i ] - 1.0f ) > 1e-3f ){
 			pWorking = false;

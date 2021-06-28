@@ -144,7 +144,10 @@ pDebugSnapshot( 0 ),
 
 pDisableCubeMapLinearFiltering( false ),
 
-pMaxSPBIndexCount( 10000 )
+pMaxSPBIndexCount( 10000 ),
+
+pGIQuality( egiqMedium ),
+pGIUpdateSpeed( egiusMedium )
 {
 	#ifdef OS_ANDROID
 	// android is too weak a platform right now to support advanced features out of the
@@ -965,5 +968,23 @@ void deoglConfiguration::SetMaxSPBIndexCount( int count ){
 	}
 	
 	pMaxSPBIndexCount = count;
+	pDirty = true;
+}
+
+void deoglConfiguration::SetGIQuality( eGIQuality quality ){
+	if( quality == pGIQuality ){
+		return;
+	}
+	
+	pGIQuality = quality;
+	pDirty = true;
+}
+
+void deoglConfiguration::SetGIUpdateSpeed( eGIUpdateSpeed updateSpeed ){
+	if( updateSpeed == pGIUpdateSpeed ){
+		return;
+	}
+	
+	pGIUpdateSpeed = updateSpeed;
 	pDirty = true;
 }

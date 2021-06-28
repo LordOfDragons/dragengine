@@ -66,6 +66,9 @@ public:
 	/** \brief Word count or order changed. */
 	virtual void WordStructureChanged( saeSAnimation *sanimation );
 	
+	/** \brief Word name changed. */
+	virtual void WordNameChanged( saeSAnimation *sanimation, saeWord *word );
+	
 	/** \brief Word changed. */
 	virtual void WordChanged( saeSAnimation *sanimation, saeWord *word );
 	

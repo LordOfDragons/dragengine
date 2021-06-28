@@ -36,7 +36,7 @@ class deModel;
 
 
 /**
- * \brief OpenGL Model Peer.
+ * OpenGL Model Peer.
  */
 class deoglRModel : public deObject{
 public:
@@ -75,10 +75,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create render model. */
+	/** Create render model. */
 	deoglRModel( deoglRenderThread &renderThread, const deModel &model );
 	
-	/** \brief Clean up render model. */
+	/** Clean up render model. */
 	virtual ~deoglRModel();
 	/*@}*/
 	
@@ -86,60 +86,60 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Render thread. */
+	/** Render thread. */
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
-	/** \brief Filename. */
+	/** Filename. */
 	inline const decString &GetFilename() const{ return pFilename; }
 	
-	/** \brief Extends. */
+	/** Extends. */
 	inline const sExtends &GetExtends() const{ return pExtends; }
 	
-	/** \brief Weightless extends. */
+	/** Weightless extends. */
 	inline const sExtends &GetWeightlessExtends() const{ return pWeightlessExtends; }
 	
-	/** \brief Has weightless extends. */
+	/** Has weightless extends. */
 	inline bool GetHasWeightlessExtends() const{ return pHasWeightlessExtends; }
 	
-	/** \brief Bone extends. */
+	/** Bone extends. */
 	inline const sExtends *GetBoneExtends() const{ return pBoneExtends; }
 	
-	/** \brief Number of bones. */
+	/** Number of bones. */
 	inline int GetBoneCount() const{ return pBoneCount; }
 	
-	/** \brief List of bone names. */
+	/** List of bone names. */
 	inline const decStringList &GetBoneNames() const{ return pBoneNames; }
 	
-	/** \brief List of texture names. */
+	/** List of texture names. */
 	inline const decStringList &GetTextureNames() const{ return pTextureNames; }
 	
 	
 	
-	/** \brief Number of lods. */
+	/** Number of lods. */
 	inline int GetLODCount() const{ return pLODCount; }
 	
-	/** \brief Lod at index. */
+	/** Lod at index. */
 	deoglModelLOD &GetLODAt( int index ) const;
 	
-	/** \brief Model has double sided textures. */
+	/** Model has double sided textures. */
 	inline bool GetDoubleSided() const{ return pDoubleSided; }
 	
-	/** \brief Prepare imposter billboard. */
+	/** Prepare imposter billboard. */
 	void PrepareImposterBillboard();
 	
-	/** \brief Imposter billboard or \em NULL if not existing. */
+	/** Imposter billboard or \em NULL if not existing. */
 	inline deoglImposterBillboard *GetImposterBillboard() const{ return pImposterBillboard; }
 	
-	/** \brief Shared shader parameter block list using UBO. */
+	/** Shared shader parameter block list using UBO. */
 	deoglSharedSPBListUBO &GetSharedSPBListUBO();
 	
-	/** \brief Prepare octrees if not existing. */
+	/** Prepare octrees if not existing. */
 	void PrepareOctrees();
 	
-	/** \brief Print debug information. */
+	/** Print debug information. */
 	void PrintDebugInfo();
 	
-	/** \brief Debug VCOptimize. */
+	/** Debug VCOptimize. */
 	void DebugVCOptimize();
 	/*@}*/
 	

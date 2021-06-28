@@ -243,6 +243,25 @@ decString igdeBaseXML::ReadMultilineString( const decXmlElementTag &tag ){
 	return string;
 }
 
+void igdeBaseXML::ReadDVector( const decXmlElementTag &tag, decDVector &vector ){
+	const decXmlAttValue *value;
+	
+	value = tag.FindAttribute( "x" );
+	if( value ){
+		vector.x = value->GetValue().ToDouble();
+	}
+	
+	value = tag.FindAttribute( "y" );
+	if( value ){
+		vector.y = value->GetValue().ToDouble();
+	}
+	
+	value = tag.FindAttribute( "z" );
+	if( value ){
+		vector.z = value->GetValue().ToDouble();
+	}
+}
+
 void igdeBaseXML::ReadVector( const decXmlElementTag &tag, decVector &vector ){
 	const decXmlAttValue *value;
 	
@@ -467,6 +486,14 @@ void igdeBaseXML::WriteTextMultilineString( decXmlWriter &writer, const char *st
 	if( begin < len ){
 		writer.WriteTextString( s.GetMiddle( begin ) );
 	}
+}
+
+void igdeBaseXML::WriteDVector( decXmlWriter &writer, const char *name, const decDVector &vector ){
+	writer.WriteOpeningTagStart( name );
+	writer.WriteAttributeDouble( "x", vector.x );
+	writer.WriteAttributeDouble( "y", vector.y );
+	writer.WriteAttributeDouble( "z", vector.z );
+	writer.WriteOpeningTagEnd( true );
 }
 
 void igdeBaseXML::WriteVector( decXmlWriter &writer, const char *name, const decVector &vector ){

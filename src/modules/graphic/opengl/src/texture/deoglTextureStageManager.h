@@ -137,16 +137,16 @@ public:
 	
 	
 	/** \brief Enable stage and bind texture setting texture properties. */
-	void EnableTexture( int stage, deoglTexture &texture, deoglTexSamplerConfig &samplerConfig );
+	void EnableTexture( int stage, const deoglTexture &texture, deoglTexSamplerConfig &samplerConfig );
 	
 	/** \brief Enable given stage and bind texture setting texture properties. */
-	void EnableTexture1D( int stage, deoglTexture1D &texture, deoglTexSamplerConfig &samplerConfig );
+	void EnableTexture1D( int stage, const deoglTexture1D &texture, deoglTexSamplerConfig &samplerConfig );
 	
 	/** \brief Enable stage and bind cube map setting texture properties. */
-	void EnableCubeMap( int stage, deoglCubeMap &cubemap, deoglTexSamplerConfig &samplerConfig );
+	void EnableCubeMap( int stage, const deoglCubeMap &cubemap, deoglTexSamplerConfig &samplerConfig );
 	
 	/** \brief Enable stage and bind array texture setting texture properties. */
-	void EnableArrayTexture( int stage, deoglArrayTexture &texture, deoglTexSamplerConfig &samplerConfig );
+	void EnableArrayTexture( int stage, const deoglArrayTexture &texture, deoglTexSamplerConfig &samplerConfig );
 	
 	/** \brief Enable given stage and bind texture buffer object. */
 	void EnableTBO( int stage, GLuint tbo, deoglTexSamplerConfig &samplerConfig );
@@ -158,8 +158,9 @@ public:
 	 *          is for some reason invalid the given default texture is used. Should this also
 	 *          fail the stage will be disabled.
 	 */
-	void EnableSkin( int stage, deoglRSkin &skin, int texture, deoglSkinChannel::eChannelTypes channel,
-		deoglTexture *defaultTexture, deoglTexSamplerConfig &samplerConfig );
+	void EnableSkin( int stage, const deoglRSkin &skin, int texture,
+		deoglSkinChannel::eChannelTypes channel, deoglTexture *defaultTexture,
+		deoglTexSamplerConfig &samplerConfig );
 	
 	
 	

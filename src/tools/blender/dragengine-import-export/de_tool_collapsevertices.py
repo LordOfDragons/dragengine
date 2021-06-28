@@ -32,7 +32,7 @@ from .de_porting import registerClass
 ##########################
 
 class TypeDETVertex( bpy.types.PropertyGroup ):
-	index = bpy.props.IntProperty( name="Index", description="Vertex index", default=0 )
+	index: bpy.props.IntProperty( name="Index", description="Vertex index", default=0 )
 registerClass(TypeDETVertex)
 
 class OBJECT_OT_ToolCollapseVerticesSetTargets( bpy.types.Operator ):

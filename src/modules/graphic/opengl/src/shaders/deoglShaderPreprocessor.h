@@ -27,6 +27,7 @@
 
 class deoglRenderThread;
 class deoglShaderPreprocessorSymbol;
+class deoglShaderSourceLocation;
 
 class deoglShaderDefines;
 class deoglShaderProgram;
@@ -37,7 +38,7 @@ class deoglShaderBindingList;
 
 
 /**
- * \brief GLSL shader preprocessor.
+ * GLSL shader preprocessor.
  *
  * Applies preprocessing to GLSL shaders. There are a couple of reasons why
  * the preprocessing is not done by the GPU driver:
@@ -107,10 +108,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create shader preprocessor. */
+	/** Create shader preprocessor. */
 	deoglShaderPreprocessor( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up shader preprocessor. */
+	/** Clean up shader preprocessor. */
 	~deoglShaderPreprocessor();
 	/*@}*/
 	
@@ -118,33 +119,36 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Clear. */
+	/** Clear. */
 	void Clear();
 	
-	/** \brief Log line map to renderthread logger. */
+	/** Log line map to renderthread logger. */
 	void LogSourceLocationMap();
+	
+	/** Resolve source location or NULL. */
+	const deoglShaderSourceLocation *ResolveSourceLocation( int line ) const;
 	/*@}*/
 	
 	
 	
 	/** \name Sources */
 	/*@{*/
-	/** \brief Sources. */
+	/** Sources. */
 	inline const char *GetSources() const{ return pSources; }
 	
-	/** \brief Sources length. */
+	/** Sources length. */
 	inline int GetSourcesLength() const{ return pSourcesLen; }
 	
-	/** \brief Append to sources. */
+	/** Append to sources. */
 	void SourcesAppend( const char *text, bool mapLines );
 	
-	/** \brief Append to sources. */
+	/** Append to sources. */
 	void SourcesAppend( const char *text, int length, bool mapLines );
 	
-	/** \brief Process source code. */
+	/** Process source code. */
 	void SourcesAppendProcessed( const char *sourceCode );
 	
-	/** \brief Process source code. */
+	/** Process source code. */
 	void SourcesAppendProcessed( const char *sourceCode, const char *inputFile,
 		bool resetState = false );
 	/*@}*/
@@ -153,28 +157,28 @@ public:
 	
 	/** \name Symbol Table */
 	/*@{*/
-	/** \brief Number of symbols. */
+	/** Number of symbols. */
 	int GetSymbolCount() const;
 	
-	/** \brief Named symbol is present. */
+	/** Named symbol is present. */
 	bool HasSymbolNamed( const char *name ) const;
 	
-	/** \brief Named symbol or \em NULL if absent. */
+	/** Named symbol or \em NULL if absent. */
 	deoglShaderPreprocessorSymbol *GetSymbolNamed( const char *name ) const;
 	
-	/** \brief Set symbol. */
+	/** Set symbol. */
 	void SetSymbol( deoglShaderPreprocessorSymbol *symbol );
 	
-	/** \brief Set symbol. */
+	/** Set symbol. */
 	void SetSymbol( const char *name, const char *value );
 	
-	/** \brief Clear symbol. */
+	/** Clear symbol. */
 	void ClearSymbol( const char *name );
 	
-	/** \brief Clear all symbols. */
+	/** Clear all symbols. */
 	void ClearAllSymbols();
 	
-	/** \brief Set symbols from defines. */
+	/** Set symbols from defines. */
 	void SetSymbolsFromDefines( const deoglShaderDefines &defines );
 	/*@}*/
 	

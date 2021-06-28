@@ -30,6 +30,7 @@ class deoglCubeMap;
 class deoglTexture;
 class deoglRDynamicSkin;
 class deoglRenderPlan;
+class deoglRenderPlanMasked;
 
 
 
@@ -65,7 +66,7 @@ public:
 	void SetName( const char *name );
 	
 	/** \brief Prepare for render. */
-	virtual void PrepareForRender() = 0;
+	virtual void PrepareForRender( const deoglRenderPlanMasked *renderPlanMask ) = 0;
 	
 	/**
 	 * \brief Get value if support or default value.
@@ -95,7 +96,7 @@ public:
 	 * \brief Get render plan to use for rendering or \em NULL if not applicable.
 	 * \details Default implementation returns \em NULL.
 	 */
-	virtual deoglRenderPlan *GetRenderPlan();
+	virtual deoglRenderPlan *GetRenderPlan() const;
 	/*@}*/
 };
 

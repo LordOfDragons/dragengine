@@ -53,8 +53,6 @@
 deoglTexture::deoglTexture( deoglRenderThread &renderThread ) :
 pRenderThread( renderThread ),
 pTexture( 0 ),
-pWidth( 0 ),
-pHeight( 0 ),
 pFormat( renderThread.GetCapabilities().GetFormats().GetUseTex2DFormatFor( deoglCapsFmtSupport::eutfRGB8 ) ),
 pMipMapLevelCount( 0 ),
 pRealMipMapLevelCount( 0 ),
@@ -74,17 +72,19 @@ deoglTexture::~deoglTexture(){
 ///////////////
 
 void deoglTexture::SetSize( int width, int height ){
-	if( width < 1 || height < 1){
+	SetSize( decPoint( width, height ) );
+}
+
+void deoglTexture::SetSize( const decPoint &size ){
+	if( ! ( size > decPoint() ) ){
 		DETHROW( deeInvalidParam );
 	}
-	
-	if( width == pWidth && height == pHeight ){
+	if( pSize == size ){
 		return;
 	}
 	
 	DestroyTexture();
-	pWidth = width;
-	pHeight = height;
+	pSize = size;
 }
 
 void deoglTexture::SetFormat( const deoglCapsTextureFormat *format ){
@@ -155,23 +155,21 @@ void deoglTexture::CreateTexture(){
 	tsmgr.EnableBareTexture( 0, *this );
 	
 	OGL_CHECK( pRenderThread, glTexImage2D( GL_TEXTURE_2D, 0, glformat,
-		pWidth, pHeight, 0, glpixelformat, glpixeltype, NULL ) );
+		pSize.x, pSize.y, 0, glpixelformat, glpixeltype, NULL ) );
 	
 	if( pMipMapped ){
 		int count = pMipMapLevelCount;
-		int height = pHeight;
-		int width = pWidth;
+		decPoint size( pSize );
 		int i;
 		
 		if( count == 0 ){
-			count = ( int )( floorf( log2f( ( height > width ) ? height : width ) ) );
+			count = ( int )( floorf( log2f( decMath::max( size.x, size.y ) ) ) );
 		}
 		
 		for( i=0; i<count; i++ ){
-			width = decMath::max( width >> 1, 1 );
-			height = decMath::max( height >> 1, 1 );
+			size = decPoint( size.x >> 1, size.y >> 1 ).Largest( decPoint( 1, 1 ) );
 			OGL_CHECK( pRenderThread, glTexImage2D( GL_TEXTURE_2D, i + 1,
-				glformat, width, height, 0, glpixelformat, glpixeltype, NULL ) );
+				glformat, size.x, size.y, 0, glpixelformat, glpixeltype, NULL ) );
 		}
 		
 		pRealMipMapLevelCount = count;
@@ -217,7 +215,7 @@ void deoglTexture::CreateTexture(){
 	if( pIsDepth ){
 		GLint depth;
 		OGL_CHECK( pRenderThread, glGetTexLevelParameteriv( GL_TEXTURE_2D, 0, GL_TEXTURE_DEPTH_SIZE, &depth ) );
-		printf( "a depth texture (%u) has been created with size (%i,%i) and depth %i\n", pTexture, pWidth, pHeight, depth );
+		printf( "a depth texture (%u) has been created with size (%i,%i) and depth %i\n", pTexture, pSize.x, pSize.y, depth );
 	}
 	*/
 	tsmgr.DisableStage( 0 );
@@ -475,8 +473,8 @@ void deoglTexture::GetLevelSize( int level, int &width, int &height ) const{
 	
 	int i;
 	
-	width = pWidth;
-	height = pHeight;
+	width = pSize.x;
+	height = pSize.y;
 	
 	for( i=0; i<level; i++ ){
 		width = decMath::max( width >> 1, 1 );
@@ -499,13 +497,13 @@ void deoglTexture::CreateMipMaps(){
 
 
 void deoglTexture::CopyFrom( const deoglTexture &texture, bool withMipMaps ){
-	CopyFrom( texture, withMipMaps, pWidth, pHeight, 0, 0, 0, 0 );
+	CopyFrom( texture, withMipMaps, pSize.x, pSize.y, 0, 0, 0, 0 );
 }
 
 void deoglTexture::CopyFrom( const deoglTexture &texture, bool withMipMaps,
 int width, int height, int srcX, int srcY, int destX, int destY ){
 	if( destX < 0 || destY < 0 || srcX < 0 || srcY < 0
-	|| destX + width > pWidth || destY + height > pHeight ){
+	|| destX + width > pSize.x || destY + height > pSize.y ){
 		DETHROW( deeInvalidParam );
 	}
 	
@@ -609,11 +607,11 @@ void deoglTexture::UpdateMemoryUsage(){
 		int baseSize, mipmappedSize;
 		double mipmapFactor = 1.0;
 		
-		baseSize = pWidth * pHeight;
+		baseSize = pSize.x * pSize.y;
 		
 		if( pMipMapped ){
-			int height = pHeight;
-			int width = pWidth;
+			int height = pSize.y;
+			int width = pSize.x;
 			int i;
 			
 			mipmappedSize = baseSize;
@@ -834,6 +832,24 @@ void deoglTexture::SetFBOFormat( int channels, bool useFloat ){
 	}
 }
 
+void deoglTexture::SetFBOFormatFloat32( int channels ){
+	if( channels == 1 ){
+		SetFormatFBOByNumber( deoglCapsFmtSupport::eutfR32F );
+		
+	}else if( channels == 2 ){
+		SetFormatFBOByNumber( deoglCapsFmtSupport::eutfRG32F );
+		
+	}else if( channels == 3 ){
+		SetFormatFBOByNumber( deoglCapsFmtSupport::eutfRGB32F );
+		
+	}else if( channels == 4 ){
+		SetFormatFBOByNumber( deoglCapsFmtSupport::eutfRGBA32F );
+		
+	}else{
+		DETHROW( deeInvalidParam );
+	}
+}
+
 void deoglTexture::SetFBOFormatIntegral( int channels, int bpp, bool useUnsigned ){
 	if( bpp == 8 ){
 		if( channels == 1 ){
@@ -910,6 +926,59 @@ void deoglTexture::SetFBOFormatIntegral( int channels, int bpp, bool useUnsigned
 		}
 		
 	}else{
+		DETHROW( deeInvalidParam );
+	}
+}
+
+void deoglTexture::SetFBOFormatSNorm( int channels, int bpp ){
+	switch( bpp ){
+	case 8:
+		switch( channels ){
+		case 1:
+			SetFormatFBOByNumber( deoglCapsFmtSupport::eutfR8_S );
+			break;
+			
+		case 2:
+			SetFormatFBOByNumber( deoglCapsFmtSupport::eutfRG8_S );
+			break;
+			
+		case 3:
+			SetFormatFBOByNumber( deoglCapsFmtSupport::eutfRGB8_S );
+			break;
+			
+		case 4:
+			SetFormatFBOByNumber( deoglCapsFmtSupport::eutfRGBA8_S );
+			break;
+			
+		default:
+			DETHROW( deeInvalidParam );
+		}
+		break;
+		
+	case 16:
+		switch( channels ){
+		case 1:
+			SetFormatFBOByNumber( deoglCapsFmtSupport::eutfR16_S );
+			break;
+			
+		case 2:
+			SetFormatFBOByNumber( deoglCapsFmtSupport::eutfRG16_S );
+			break;
+			
+		case 3:
+			SetFormatFBOByNumber( deoglCapsFmtSupport::eutfRGB16_S );
+			break;
+			
+		case 4:
+			SetFormatFBOByNumber( deoglCapsFmtSupport::eutfRGBA16_S );
+			break;
+			
+		default:
+			DETHROW( deeInvalidParam );
+		}
+		break;
+		
+	default:
 		DETHROW( deeInvalidParam );
 	}
 }

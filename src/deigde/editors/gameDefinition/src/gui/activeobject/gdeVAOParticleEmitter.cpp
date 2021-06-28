@@ -41,6 +41,7 @@
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/common/file/decBaseFileReader.h>
+#include <dragengine/common/file/decBaseFileReaderReference.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/logger/deLogger.h>
 #include <dragengine/resources/collider/deCollider.h>
@@ -62,12 +63,10 @@
 ////////////////////////////
 
 gdeVAOParticleEmitter::gdeVAOParticleEmitter( gdeViewActiveObject &view,
-gdeOCParticleEmitter *ocemitter ) :
-pView( view ),
+	const gdeObjectClass &objectClass, const decString &propertyPrefix,
+	gdeOCParticleEmitter *ocemitter ) :
+gdeVAOSubObject( view, objectClass, propertyPrefix ),
 pOCParticleEmitter( ocemitter ),
-pEmitter( NULL ),
-pInstance( NULL ),
-pDebugDrawer( NULL ),
 pDDSCenter( NULL ),
 pDDSCoordSystem( NULL )
 {
@@ -121,9 +120,10 @@ void gdeVAOParticleEmitter::AttachResources(){
 		return;
 	}
 	
-	const decVector &position = pOCParticleEmitter->GetPosition();
-	const decQuaternion orientation( decQuaternion::CreateFromEuler(
-		pOCParticleEmitter->GetRotation() * DEG2RAD ) );
+	const decVector position( PropertyVector( pOCParticleEmitter->GetPropertyName(
+		gdeOCParticleEmitter::epAttachPosition ), pOCParticleEmitter->GetPosition() ) );
+	const decQuaternion orientation( PropertyQuaternion( pOCParticleEmitter->GetPropertyName(
+		gdeOCParticleEmitter::epAttachRotation ), pOCParticleEmitter->GetRotation() ) );
 	
 	deColliderAttachment *attachment = NULL;
 	try{
@@ -196,7 +196,7 @@ void gdeVAOParticleEmitter::pCleanUp(){
 	}
 	if( pDebugDrawer ){
 		pView.GetGameDefinition()->GetWorld()->RemoveDebugDrawer( pDebugDrawer );
-		pDebugDrawer->FreeReference();
+		pDebugDrawer = NULL;
 	}
 	
 	if( pOCParticleEmitter ){
@@ -210,7 +210,7 @@ void gdeVAOParticleEmitter::pCreateDebugDrawer(){
 	const deEngine &engine = *pView.GetGameDefinition()->GetEngine();
 	
 	// create debug drawer
-	pDebugDrawer = engine.GetDebugDrawerManager()->CreateDebugDrawer();
+	pDebugDrawer.TakeOver( engine.GetDebugDrawerManager()->CreateDebugDrawer() );
 	pDebugDrawer->SetXRay( true );
 	pView.GetGameDefinition()->GetWorld()->AddDebugDrawer( pDebugDrawer );
 	
@@ -227,36 +227,32 @@ void gdeVAOParticleEmitter::pCreateDebugDrawer(){
 }
 
 void gdeVAOParticleEmitter::pCreateParticleEmitter(){
-	if( pOCParticleEmitter->GetPath().IsEmpty() ){
+	decString path( PropertyString( pOCParticleEmitter->GetPropertyName(
+		gdeOCParticleEmitter::epPath ), pOCParticleEmitter->GetPath() ) );
+	if( path.IsEmpty() ){
 		return;
 	}
 	
 	// load particle emitter
 	deVirtualFileSystem * const vfs = pView.GetGameDefinition()->GetPreviewVFS();
-	const decPath path( decPath::CreatePathUnix( pOCParticleEmitter->GetPath() ) );
 	igdeEnvironment &environment = pView.GetWindowMain().GetEnvironment();
 	igdeLoadParticleEmitter loader( environment, environment.GetLogger(), "gdeVAOParticleEmitter" );
 	const deEngine &engine = *pView.GetGameDefinition()->GetEngine();
-	decBaseFileReader *reader = NULL;
+	decBaseFileReaderReference reader;
 	
 	try{
-		pEmitter = engine.GetParticleEmitterManager()->CreateParticleEmitter();
-		reader = vfs->OpenFileForReading( path );
-		loader.Load( pOCParticleEmitter->GetPath(), *pEmitter, *reader );
-		reader->FreeReference();
-		reader = NULL;
+		pEmitter.TakeOver( engine.GetParticleEmitterManager()->CreateParticleEmitter() );
+		reader.TakeOver( vfs->OpenFileForReading( decPath::CreatePathUnix( path ) ) );
+		loader.Load( path, pEmitter, reader );
 		
 	}catch( const deException &e ){
-		if( pEmitter ){
-			pEmitter->FreeReference();
-			pEmitter = NULL;
-		}
+		pEmitter = NULL;
 		environment.GetLogger()->LogException( LOGSOURCE, e );
 		return;
 	}
 	
 	// create particle emitter instance
-	pInstance = engine.GetParticleEmitterInstanceManager()->CreateInstance();
+	pInstance.TakeOver( engine.GetParticleEmitterInstanceManager()->CreateInstance() );
 	pInstance->SetEmitter( pEmitter );
 	
 	decLayerMask collisionMask;
@@ -292,11 +288,7 @@ void gdeVAOParticleEmitter::pReleaseResources(){
 	
 	if( pInstance ){
 		world.RemoveParticleEmitter( pInstance );
-		pInstance->FreeReference();
 		pInstance = NULL;
 	}
-	if( pEmitter ){
-		pEmitter->FreeReference();
-		pEmitter = NULL;
-	}
+	pEmitter = NULL;
 }

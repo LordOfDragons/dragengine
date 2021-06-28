@@ -22,32 +22,30 @@
 #ifndef _DEOGLENVIRONMENTMAPLIST_H_
 #define _DEOGLENVIRONMENTMAPLIST_H_
 
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decPointerList.h>
 
 class deoglEnvironmentMap;
 
 
 
 /**
- * \brief Environment map list.
- * 
- * List of pointers to environment maps. The ordering of the environment map
- * in the list is not defined and can change when environment maps are removed.
- * This allows to remove elements with constant time requirements.
+ * List of pointers to environment maps. The ordering of the environment map in the list is
+ * not defined and can change when environment maps are removed. This allows to remove
+ * elements with constant time requirements.
  */
 class deoglEnvironmentMapList{
 private:
-	decObjectList pEnvMaps;
+	decPointerList pEnvMaps;
 	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create environment map list. */
+	/** Create environment map list. */
 	deoglEnvironmentMapList();
 	
-	/** \brief Clean up environment map list. */
+	/** Clean up environment map list. */
 	~deoglEnvironmentMapList();
 	/*@}*/
 	
@@ -55,40 +53,40 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Number of environment maps. */
+	/** Number of environment maps. */
 	int GetCount() const;
 	
-	/** \brief Index of environment map or -1 if absent. */
+	/** Index of environment map or -1 if absent. */
 	int IndexOf( deoglEnvironmentMap *envmap ) const;
 	
-	/** \brief Environment map is present. */
+	/** Environment map is present. */
 	bool Has( deoglEnvironmentMap *envmap ) const;
 	
-	/** \brief Environment map at index. */
+	/** Environment map at index. */
 	deoglEnvironmentMap *GetAt( int index ) const;
 	
-	/** \brief Add environment map. */
+	/** Add environment map. */
 	void Add( deoglEnvironmentMap *envmap );
 	
 	/**
-	 * \brief Add environment map if absent.
+	 * Add environment map if absent.
 	 * \returns true if added.
 	 */
 	bool AddIfMissing( deoglEnvironmentMap *envmap );
 	
-	/** \brief Remove environment map. */
+	/** Remove environment map. */
 	void Remove( deoglEnvironmentMap *envmap );
 	
 	/**
-	 * \brief Remove environment map if present.
+	 * Remove environment map if present.
 	 * \returns true if removed.
 	 */
 	bool RemoveIfExisting( deoglEnvironmentMap *envmap );
 	
-	/** \brief Remove environment map from the index. */
+	/** Remove environment map from the index. */
 	void RemoveFrom( int index );
 	
-	/** \brief Removes all environment maps. */
+	/** Removes all environment maps. */
 	void RemoveAll();
 	/*@}*/
 };

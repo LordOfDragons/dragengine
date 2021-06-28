@@ -54,6 +54,7 @@ pHostObject( NULL )
 	SetHighestIntensity( 20.0f );
 	
 	GetEngineCamera()->GetLayerMask().SetBit( meWorld::elmCamera );
+	GetEngineCamera()->GetLayerMask().SetBit( meWorld::elmEnvMapProbes );
 	GetEngineCamera()->NotifyLayerMaskChanged();
 }
 

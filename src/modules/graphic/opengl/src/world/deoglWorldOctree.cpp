@@ -46,8 +46,9 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-deoglWorldOctree::deoglWorldOctree( const decDVector &center, const decDVector &halfSize ) :
-deoglDOctree( center, halfSize ){
+deoglWorldOctree::deoglWorldOctree( const decDVector &center, const decDVector &halfSize, int insertDepth ) :
+deoglDOctree( center, halfSize ),
+pInsertDepth( insertDepth ){
 }
 
 deoglWorldOctree::~deoglWorldOctree(){
@@ -68,7 +69,7 @@ deoglWorldOctree::~deoglWorldOctree(){
 ///////////////
 
 deoglDOctree *deoglWorldOctree::CreateOctree( int octant ) const{
-	decDVector halfSize = GetHalfSize() * 0.5;
+	const decDVector halfSize( GetHalfSize() * 0.5 );
 	const decDVector &center = GetCenter();
 	decDVector nc;
 	
@@ -95,7 +96,7 @@ deoglDOctree *deoglWorldOctree::CreateOctree( int octant ) const{
 	}
 	
 	// create child node
-	return new deoglWorldOctree( nc, halfSize );
+	return new deoglWorldOctree( nc, halfSize, pInsertDepth - 1 );
 }
 
 void deoglWorldOctree::ClearNodeContent(){
@@ -179,44 +180,40 @@ void deoglWorldOctree::ClearParticleEmitters(){
 	}
 }
 
-void deoglWorldOctree::InsertBillboardIntoTree( deoglRBillboard *billboard, int maxDepth ){
-	if( ! billboard || maxDepth < 0 ){
+void deoglWorldOctree::InsertBillboardIntoTree( deoglRBillboard *billboard ){
+	if( ! billboard ){
 		DETHROW( deeInvalidParam );
 	}
 	
 	const decDVector &maxExtend = billboard->GetMaximumExtend();
 	const decDVector &minExtend = billboard->GetMinimumExtend();
-	const decDVector boxCenter( ( minExtend + maxExtend ) * 0.5 );
-	const decDVector boxHalfExtends( ( maxExtend - minExtend ) * 0.5 );
 	deoglWorldOctree *currentNode = billboard->GetOctreeNode();
 	
 	if( currentNode ){
-		if( ! currentNode->ContainsBox( boxCenter, boxHalfExtends ) ){
+		if( ! currentNode->ContainsBox( minExtend, maxExtend ) ){
 			currentNode->RemoveBillboard( billboard );
 			currentNode = NULL;
 		}
 	}
 	
 	if( ! currentNode ){
-		currentNode = pGetNodeFor( boxCenter, boxHalfExtends, maxDepth );
+		currentNode = pGetNodeFor( minExtend, maxExtend, pInsertDepth );
 		currentNode->AddBillboard( billboard );
 	}
 }
 
-void deoglWorldOctree::InsertComponentIntoTree( deoglRComponent *component, int maxDepth ){
-	if( ! component || maxDepth < 0 ) DETHROW( deeInvalidParam );
+void deoglWorldOctree::InsertComponentIntoTree( deoglRComponent *component ){
+	if( ! component ) DETHROW( deeInvalidParam );
 	
 	const decDVector &maxExtend = component->GetMaximumExtend();
 	const decDVector &minExtend = component->GetMinimumExtend();
-	decDVector boxCenter = ( minExtend + maxExtend ) * 0.5;
-	decDVector boxHalfExtends = ( maxExtend - minExtend ) * 0.5;
 	
 	deoglWorldOctree *currentNode = component->GetOctreeNode();
 	
 	// if the component is already in the octree relocate it if required
 	if( currentNode ){
 		// if the component is not in the same node as before relocate it
-		if( ! currentNode->ContainsBox( boxCenter, boxHalfExtends ) ){
+		if( ! currentNode->ContainsBox( minExtend, maxExtend ) ){
 			// remove from the current node
 			currentNode->RemoveComponent( component );
 			currentNode = NULL;
@@ -225,49 +222,49 @@ void deoglWorldOctree::InsertComponentIntoTree( deoglRComponent *component, int 
 	
 	// add component if not in the tree
 	if( ! currentNode ){
-		currentNode = pGetNodeFor( boxCenter, boxHalfExtends, maxDepth );
+		currentNode = pGetNodeFor( minExtend, maxExtend, pInsertDepth );
 		currentNode->AddComponent( component );
 	}
 }
 
-void deoglWorldOctree::InsertEnvMapIntoTree( deoglEnvironmentMap *envmap, int maxDepth ){
-	if( ! envmap || maxDepth < 0 ){
+void deoglWorldOctree::InsertEnvMapIntoTree( deoglEnvironmentMap *envmap ){
+	if( ! envmap ){
 		DETHROW( deeInvalidParam );
 	}
 	
 	const decDVector &boxCenter = envmap->GetPosition();
 	const decDVector boxHalfExtends = decDVector( 0.01f, 0.01f, 0.01f );
+	const decDVector minExtend( boxCenter - boxHalfExtends );
+	const decDVector maxExtend( boxCenter + boxHalfExtends );
 	deoglWorldOctree *currentNode = envmap->GetOctreeNode();
 	
 	if( currentNode ){
-		if( ! currentNode->ContainsBox( boxCenter, boxHalfExtends ) ){
+		if( ! currentNode->ContainsBox( minExtend, maxExtend ) ){
 			currentNode->RemoveEnvMap( envmap );
 			currentNode = NULL;
 		}
 	}
 	
 	if( ! currentNode ){
-		currentNode = pGetNodeFor( boxCenter, boxHalfExtends, maxDepth );
+		currentNode = pGetNodeFor( minExtend, maxExtend, pInsertDepth );
 		currentNode->AddEnvMap( envmap );
 	}
 }
 
-void deoglWorldOctree::InsertLightIntoTree( deoglRLight *light, int maxDepth ){
-	if( ! light || maxDepth < 0 ){
+void deoglWorldOctree::InsertLightIntoTree( deoglRLight *light ){
+	if( ! light ){
 		DETHROW( deeInvalidParam );
 	}
 	
 	const decDVector &maxExtend = light->GetMaximumExtend();
 	const decDVector &minExtend = light->GetMinimumExtend();
-	decDVector boxCenter = ( minExtend + maxExtend ) * 0.5;
-	decDVector boxHalfExtends = ( maxExtend - minExtend ) * 0.5;
 	
 	deoglWorldOctree *currentNode = light->GetOctreeNode();
 	
 	// if the light is already in the octree relocate it if required
 	if( currentNode ){
 		// if the light is not in the same node as before relocate it
-		if( ! currentNode->ContainsBox( boxCenter, boxHalfExtends ) ){
+		if( ! currentNode->ContainsBox( minExtend, maxExtend ) ){
 			// remove from the current node
 			currentNode->RemoveLight( light );
 			currentNode = NULL;
@@ -276,41 +273,39 @@ void deoglWorldOctree::InsertLightIntoTree( deoglRLight *light, int maxDepth ){
 	
 	// add light if not in the tree
 	if( ! currentNode ){
-		currentNode = pGetNodeFor( boxCenter, boxHalfExtends, maxDepth );
+		currentNode = pGetNodeFor( minExtend, maxExtend, pInsertDepth );
 		currentNode->AddLight( light );
 	}
 }
 
-void deoglWorldOctree::InsertParticleEmitterIntoTree( deoglRParticleEmitterInstance *instance, int maxDepth ){
-	if( ! instance || maxDepth < 0 ){
+void deoglWorldOctree::InsertParticleEmitterIntoTree( deoglRParticleEmitterInstance *instance ){
+	if( ! instance ){
 		DETHROW( deeInvalidParam );
 	}
 	
 	const decDVector &maxExtend = instance->GetMaxExtend();
 	const decDVector &minExtend = instance->GetMinExtend();
-	const decDVector boxCenter( ( minExtend + maxExtend ) * 0.5 );
-	const decDVector boxHalfExtends( ( maxExtend - minExtend ) * 0.5 );
 	deoglWorldOctree *currentNode = instance->GetOctreeNode();
 	
 	if( currentNode ){
-		if( ! currentNode->ContainsBox( boxCenter, boxHalfExtends ) ){
+		if( ! currentNode->ContainsBox( minExtend, maxExtend ) ){
 			currentNode->RemoveParticleEmitter( instance );
 			currentNode = NULL;
 		}
 	}
 	
 	if( ! currentNode ){
-		currentNode = pGetNodeFor( boxCenter, boxHalfExtends, maxDepth );
+		currentNode = pGetNodeFor( minExtend, maxExtend, pInsertDepth );
 		currentNode->AddParticleEmitter( instance );
 	}
 }
 
-deoglWorldOctree *deoglWorldOctree::InsertLumimeterIntoTree( deoglRLumimeter *lumimeter, int maxDepth ){
+deoglWorldOctree *deoglWorldOctree::InsertLumimeterIntoTree( deoglRLumimeter *lumimeter ){
 	if( ! lumimeter ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	deoglWorldOctree *node = pGetNodeFor( lumimeter->GetPosition(), maxDepth );
+	deoglWorldOctree *node = pGetNodeFor( lumimeter->GetPosition(), pInsertDepth );
 	node->AddLumimeter( lumimeter );
 	
 	return node;
@@ -601,14 +596,16 @@ void deoglWorldOctree::RemoveAllParticleEmitters(){
 // Private Functions
 //////////////////////
 
-deoglWorldOctree *deoglWorldOctree::pGetNodeFor( const decDVector &center, const decDVector &halfSize, int maxDepth ){
+deoglWorldOctree *deoglWorldOctree::pGetNodeFor( const decDVector &minExtend,
+const decDVector &maxExtend, int maxDepth ){
 	deoglDOctree *curNode = this;
-	deoglDOctree *nextNode;
 	int d;
 	
 	for( d=0; d<maxDepth; d++ ){
-		nextNode = curNode->GetNodeAtBox( center, halfSize );
-		if( ! nextNode ) break;
+		deoglDOctree * const nextNode = curNode->GetNodeAtBox( minExtend, maxExtend );
+		if( ! nextNode ){
+			break;
+		}
 		curNode = nextNode;
 	}
 	

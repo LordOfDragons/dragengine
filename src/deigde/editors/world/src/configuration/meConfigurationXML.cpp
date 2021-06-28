@@ -100,6 +100,7 @@ void meConfigurationXML::pWriteConfig( decXmlWriter &writer, const meConfigurati
 	writer.WriteDataTagFloat( "scaleStep", config.GetScaleStep() );
 	writer.WriteDataTagInt( "scaleSnap", config.GetScaleSnap() ? 1 : 0 );
 	writer.WriteDataTagFloat( "sensitivity", config.GetSensitivity() );
+	writer.WriteDataTagBool( "enableGI", config.GetEnableGI() );
 	config.GetWindowMain().GetRecentFiles().WriteToXml( writer );
 	
 	writer.WriteClosingTag( "worldEditor", true );
@@ -139,6 +140,9 @@ void meConfigurationXML::pReadConfig( const decXmlElementTag &root, meConfigurat
 			
 		}else if( tag->GetName() == "sensitivity" ){
 			config.SetSensitivity( GetCDataFloat( *tag ) );
+			
+		}else if( tag->GetName() == "enableGI" ){
+			config.SetEnableGI( GetCDataBool( *tag ) );
 			
 		}else if( tag->GetName() == "recentFiles" ){
 			config.GetWindowMain().GetRecentFiles().ReadFromXml( *tag );

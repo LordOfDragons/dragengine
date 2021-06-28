@@ -81,16 +81,18 @@ void saeWord::SetSAnimation( saeSAnimation *sanimation ){
 
 
 void saeWord::SetName( const char *name ){
-	if( ! name ) DETHROW( deeInvalidParam );
+	if( pName.Equals( name ) ){
+		return;
+	}
 	
-	if( ! pName.Equals( name ) ){
-		if( pSAnimation && pSAnimation->GetWordList().HasNamed( name ) ) DETHROW( deeInvalidParam );
-		
-		pName = name;
-		
-		if( pSAnimation ){
-			pSAnimation->NotifyWordChanged( this );
-		}
+	if( pSAnimation && pSAnimation->GetWordList().HasNamed( name ) ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	pName = name;
+	
+	if( pSAnimation ){
+		pSAnimation->NotifyWordNameChanged( this );
 	}
 }
 

@@ -173,11 +173,36 @@ void gdeWPSObjectClassListener::OCInheritsChanged( gdeGameDefinition*, gdeObject
 	pPanel.UpdatePropertyValueKeys();
 }
 
-void gdeWPSObjectClassListener::OCInheritChanged( gdeGameDefinition *, gdeObjectClass *objectClass, gdeOCInherit* ){
+void gdeWPSObjectClassListener::OCInheritChanged( gdeGameDefinition*, gdeObjectClass *objectClass, gdeOCInherit* ){
 	if( pPanel.GetObjectClass() != objectClass ){
 		return;
 	}
 	
 	pPanel.UpdateInherits();
 	pPanel.UpdatePropertyValueKeys();
+}
+
+void gdeWPSObjectClassListener::OCTexturesChanged( gdeGameDefinition*, gdeObjectClass *objectClass ){
+	if( pPanel.GetObjectClass() != objectClass ){
+		return;
+	}
+	
+	pPanel.UpdateTextureList();
+}
+
+void gdeWPSObjectClassListener::OCTextureChanged( gdeGameDefinition*, gdeObjectClass *objectClass, gdeOCComponentTexture *texture ){
+	if( pPanel.GetObjectClass() != objectClass || pPanel.GetTexture() != texture ){
+		return;
+	}
+	
+	pPanel.UpdateTexture();
+}
+
+void gdeWPSObjectClassListener::OCActiveTextureChanged( gdeGameDefinition*, gdeObjectClass *objectClass ){
+	if( pPanel.GetObjectClass() != objectClass ){
+		return;
+	}
+	
+	pPanel.SelectActiveTexture();
+	pPanel.UpdateTexture();
 }

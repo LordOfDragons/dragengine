@@ -142,7 +142,11 @@ void deoglRImage::PrepareForRender(){
 		// if the image is too small disable compression. otherwise the result
 		// can turn out smeared out. observed are problems at less than 5 pixel
 		// width or height. with 5 or more pixel no such problem is observed
-		const bool compressed = pWidth >= 5 && pHeight >= 5;
+		const bool compressed = false; //pWidth >= 5 && pHeight >= 5;
+		
+		// NOTE since this is usually called for images used in UI using compression typically
+		//      results in visible artifacts. since these places have no way to tell if using
+		//      compression is a problem default to not use compression
 		
 		if( pDepth == 1 ){
 			pTexture = new deoglTexture( pRenderThread );

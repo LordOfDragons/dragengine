@@ -51,6 +51,11 @@ pDirty( true )
 	try{
 		pRRenderableCamera = new deoglRDSRenderableCamera( *dynamicSkin.GetRDynamicSkin() );
 		
+		if( renderable.GetCamera() ){
+			pCamera = ( deoglCamera* )renderable.GetCamera()->GetPeerGraphic();
+			pCamera->GetNotifyRenderables().Add( this );
+		}
+		
 	}catch( const deException & ){
 		pCleanUp();
 		throw;
@@ -71,19 +76,28 @@ deoglRDSRenderable *deoglDSRenderableCamera::GetRRenderable() const{
 }
 
 void deoglDSRenderableCamera::RenderableChanged(){
-	if( pCamera ){
-		pCamera->GetNotifyRenderables().Remove( this );
-	}
+	deoglCamera * const camera = pRenderableCamera.GetCamera()
+		? ( deoglCamera* )pRenderableCamera.GetCamera()->GetPeerGraphic() : NULL;
 	
-	if( pRenderableCamera.GetCamera() ){
-		pCamera = ( deoglCamera* )pRenderableCamera.GetCamera()->GetPeerGraphic();
-		pCamera->GetNotifyRenderables().Add( this );
+	if( camera != pCamera ){
+		if( pCamera ){
+			pCamera->GetNotifyRenderables().Remove( this );
+		}
 		
-	}else{
-		pCamera = NULL;
+		pCamera = camera;
+		
+		if( camera ){
+			camera->GetNotifyRenderables().Add( this );
+		}
+		
+		pDirty = true;
+		
+		pDynamicSkin.NotifyRenderableChanged( *this );
 	}
 	
-	pDirty = true;
+	if( pRenderableCamera.GetName() != pRRenderableCamera->GetName() ){
+		pDynamicSkin.NotifyRenderablesChanged();
+	}
 }
 
 void deoglDSRenderableCamera::SyncToRender(){
@@ -106,7 +120,7 @@ void deoglDSRenderableCamera::SyncToRender(){
 }
 
 void deoglDSRenderableCamera::CameraRequiresSync(){
-	pDynamicSkin.RenderableRequiresSync();
+	pDynamicSkin.NotifyRenderableRequiresSync( *this );
 }
 
 void deoglDSRenderableCamera::DropCamera(){

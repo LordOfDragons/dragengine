@@ -51,14 +51,12 @@
 ////////////////////////////
 
 deoglArrayTexture::deoglArrayTexture( deoglRenderThread &renderThread ) :
-pRenderThread( renderThread )
+pRenderThread( renderThread ),
+pSize( 1, 1, 1 )
 {
 	pTexture = 0;
 	pFormat = renderThread.GetCapabilities().GetFormats().GetUseArrayTexFormatFor( deoglCapsFmtSupport::eutfRGB8 );
 	
-	pWidth = 1;
-	pHeight = 1;
-	pLayerCount = 1;
 	pMipMapLevelCount = 0;
 	pRealMipMapLevelCount = 0;
 	pMipMapped = false;
@@ -77,18 +75,21 @@ deoglArrayTexture::~deoglArrayTexture(){
 // Management
 ///////////////
 
-void deoglArrayTexture::SetSize( int width, int height, int layerCount ){
-	if( width < 1 || height < 1 || layerCount < 1 ){
+void deoglArrayTexture::SetSize( const decPoint3 &size ){
+	if( ! ( size >= decPoint3( 1, 1, 1 ) ) ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	if( width != pWidth || height != pHeight || layerCount != pLayerCount ){
-		DestroyTexture();
-		
-		pWidth = width;
-		pHeight = height;
-		pLayerCount = layerCount;
+	if( size == pSize ){
+		return;
 	}
+	
+	DestroyTexture();
+	pSize = size;
+}
+
+void deoglArrayTexture::SetSize( int width, int height, int layerCount ){
+	SetSize( decPoint3( width, height, layerCount ) );
 }
 
 void deoglArrayTexture::SetFormat( const deoglCapsTextureFormat *format ){
@@ -152,12 +153,13 @@ void deoglArrayTexture::CreateTexture(){
 	
 	tsmgr.EnableBareArrayTexture( 0, *this );
 	
-	OGL_CHECK( pRenderThread, pglTexImage3D( GL_TEXTURE_2D_ARRAY, 0, glformat, pWidth, pHeight, pLayerCount, 0, glpixelformat, glpixeltype, NULL ) );
+	OGL_CHECK( pRenderThread, pglTexImage3D( GL_TEXTURE_2D_ARRAY, 0, glformat,
+		pSize.x, pSize.y, pSize.z, 0, glpixelformat, glpixeltype, NULL ) );
 	
 	if( pMipMapped ){
 		int count = pMipMapLevelCount;
-		int height = pHeight;
-		int width = pWidth;
+		int height = pSize.y;
+		int width = pSize.x;
 		int i;
 		
 		if( count == 0 ){
@@ -175,7 +177,8 @@ void deoglArrayTexture::CreateTexture(){
 				height = 1;
 			}
 			
-			OGL_CHECK( pRenderThread, pglTexImage3D( GL_TEXTURE_2D_ARRAY, i + 1, glformat, width, height, pLayerCount, 0, glpixelformat, glpixeltype, NULL ) );
+			OGL_CHECK( pRenderThread, pglTexImage3D( GL_TEXTURE_2D_ARRAY, i + 1, glformat,
+				width, height, pSize.z, 0, glpixelformat, glpixeltype, NULL ) );
 		}
 		
 		pRealMipMapLevelCount = count;
@@ -244,9 +247,9 @@ void deoglArrayTexture::SetPixelsLevel( int level, const deoglPixelBuffer &pixel
 	int width, height;
 	GetLevelSize( level, width, height );
 	
-	if( pixelBuffer.GetWidth() != width || pixelBuffer.GetHeight() != height || pixelBuffer.GetDepth() != pLayerCount ){
+	if( pixelBuffer.GetWidth() != width || pixelBuffer.GetHeight() != height || pixelBuffer.GetDepth() != pSize.z ){
 		//pRenderThread.GetLogger().LogErrorFormat( "SetPixelsLevel(%d) mismatch: Image(%d %d %d) PixelBuffer(%d %d %d)",
-		//	level, width, height, pLayerCount, pixelBuffer.GetWidth(), pixelBuffer.GetHeight(), pixelBuffer.GetDepth() );
+		//	level, width, height, pSize.z, pixelBuffer.GetWidth(), pixelBuffer.GetHeight(), pixelBuffer.GetDepth() );
 		DETHROW( deeInvalidParam );
 	}
 	
@@ -259,12 +262,12 @@ void deoglArrayTexture::SetPixelsLevel( int level, const deoglPixelBuffer &pixel
 	
 	if( pixelBuffer.GetCompressed() ){
 		OGL_CHECK( pRenderThread, pglCompressedTexImage3D( GL_TEXTURE_2D_ARRAY, level, pFormat->GetFormat(),
-			width, height, pLayerCount, 0, pixelBuffer.GetImageSize(), ( const GLvoid * )pixelBuffer.GetPointer() ) );
+			width, height, pSize.z, 0, pixelBuffer.GetImageSize(), ( const GLvoid * )pixelBuffer.GetPointer() ) );
 		//OGL_CHECK( pRenderThread, pglCompressedTexSubImage3D( GL_TEXTURE_2D_ARRAY, level, 0, 0, width, height,
 		//	pFormat->GetFormat(), pixels.GetImageSize(), ( const GLvoid * )pixels.GetPointer() ) );
 		
 	}else{
-		OGL_CHECK( pRenderThread, pglTexSubImage3D( GL_TEXTURE_2D_ARRAY, level, 0, 0, 0, width, height, pLayerCount,
+		OGL_CHECK( pRenderThread, pglTexSubImage3D( GL_TEXTURE_2D_ARRAY, level, 0, 0, 0, width, height, pSize.z,
 			pixelBuffer.GetGLPixelFormat(), pixelBuffer.GetGLPixelType(), ( const GLvoid * )pixelBuffer.GetPointer() ) );
 	}
 	
@@ -281,7 +284,7 @@ void deoglArrayTexture::GetPixelsLevel( int level, deoglPixelBuffer &pixelBuffer
 	int width, height;
 	GetLevelSize( level, width, height );
 	
-	if( pixelBuffer.GetWidth() != width || pixelBuffer.GetHeight() != height || pixelBuffer.GetDepth() != pLayerCount ){
+	if( pixelBuffer.GetWidth() != width || pixelBuffer.GetHeight() != height || pixelBuffer.GetDepth() != pSize.z ){
 		DETHROW( deeInvalidParam );
 	}
 	if( ! pTexture ){
@@ -297,7 +300,7 @@ void deoglArrayTexture::GetPixelsLevel( int level, deoglPixelBuffer &pixelBuffer
 	case deoglPixelBuffer::epfByte1:
 	case deoglPixelBuffer::epfByte2:
 	case deoglPixelBuffer::epfByte3:{
-		deoglPixelBuffer tempPixBuf( deoglPixelBuffer::epfByte4, width, height, pLayerCount );
+		deoglPixelBuffer tempPixBuf( deoglPixelBuffer::epfByte4, width, height, pSize.z );
 		const int count = width * height;
 		int i, j;
 		
@@ -305,7 +308,7 @@ void deoglArrayTexture::GetPixelsLevel( int level, deoglPixelBuffer &pixelBuffer
 		
 		switch( pixelBuffer.GetFormat() ){
 		case deoglPixelBuffer::epfByte1:{
-			for( j=0; j<pLayerCount; j++ ){
+			for( j=0; j<pSize.z; j++ ){
 				deoglPixelBuffer::sByte1 *dataDest = pixelBuffer.GetPointerByte1() + count;
 				const deoglPixelBuffer::sByte4 *dataSrc = tempPixBuf.GetPointerByte4() + count;
 				for( i=0; i<count; i++ ){
@@ -315,7 +318,7 @@ void deoglArrayTexture::GetPixelsLevel( int level, deoglPixelBuffer &pixelBuffer
 			}return;
 			
 		case deoglPixelBuffer::epfByte2:{
-			for( j=0; j<pLayerCount; j++ ){
+			for( j=0; j<pSize.z; j++ ){
 				deoglPixelBuffer::sByte2 *dataDest = pixelBuffer.GetPointerByte2() + count;
 				const deoglPixelBuffer::sByte4 *dataSrc = tempPixBuf.GetPointerByte4() + count;
 				for( i=0; i<count; i++ ){
@@ -326,7 +329,7 @@ void deoglArrayTexture::GetPixelsLevel( int level, deoglPixelBuffer &pixelBuffer
 			}return;
 			
 		case deoglPixelBuffer::epfByte3:{
-			for( j=0; j<pLayerCount; j++ ){
+			for( j=0; j<pSize.z; j++ ){
 				deoglPixelBuffer::sByte3 *dataDest = pixelBuffer.GetPointerByte3() + count;
 				const deoglPixelBuffer::sByte4 *dataSrc = tempPixBuf.GetPointerByte4() + count;
 				for( i=0; i<count; i++ ){
@@ -345,7 +348,7 @@ void deoglArrayTexture::GetPixelsLevel( int level, deoglPixelBuffer &pixelBuffer
 	case deoglPixelBuffer::epfFloat1:
 	case deoglPixelBuffer::epfFloat2:
 	case deoglPixelBuffer::epfFloat3:{
-		deoglPixelBuffer tempPixBuf( deoglPixelBuffer::epfFloat4, width, height, pLayerCount );
+		deoglPixelBuffer tempPixBuf( deoglPixelBuffer::epfFloat4, width, height, pSize.z );
 		const int count = width * height;
 		int i, j;
 		
@@ -353,7 +356,7 @@ void deoglArrayTexture::GetPixelsLevel( int level, deoglPixelBuffer &pixelBuffer
 		
 		switch( pixelBuffer.GetFormat() ){
 		case deoglPixelBuffer::epfFloat1:{
-			for( j=0; j<pLayerCount; j++ ){
+			for( j=0; j<pSize.z; j++ ){
 				deoglPixelBuffer::sFloat1 *dataDest = pixelBuffer.GetPointerFloat1() + count;
 				const deoglPixelBuffer::sFloat4 *dataSrc = tempPixBuf.GetPointerFloat4() + count;
 				for( i=0; i<count; i++ ){
@@ -363,7 +366,7 @@ void deoglArrayTexture::GetPixelsLevel( int level, deoglPixelBuffer &pixelBuffer
 			}return;
 			
 		case deoglPixelBuffer::epfFloat2:{
-			for( j=0; j<pLayerCount; j++ ){
+			for( j=0; j<pSize.z; j++ ){
 				deoglPixelBuffer::sFloat2 *dataDest = pixelBuffer.GetPointerFloat2() + count;
 				const deoglPixelBuffer::sFloat4 *dataSrc = tempPixBuf.GetPointerFloat4() + count;
 				for( i=0; i<count; i++ ){
@@ -374,7 +377,7 @@ void deoglArrayTexture::GetPixelsLevel( int level, deoglPixelBuffer &pixelBuffer
 			}return;
 			
 		case deoglPixelBuffer::epfFloat3:{
-			for( j=0; j<pLayerCount; j++ ){
+			for( j=0; j<pSize.z; j++ ){
 				deoglPixelBuffer::sFloat3 *dataDest = pixelBuffer.GetPointerFloat3() + count;
 				const deoglPixelBuffer::sFloat4 *dataSrc = tempPixBuf.GetPointerFloat4() + count;
 				for( i=0; i<count; i++ ){
@@ -418,7 +421,7 @@ void deoglArrayTexture::GetPixelsLevel( int level, deoglPixelBuffer &pixelBuffer
 		
 		OGL_CHECK( pRenderThread, glPixelStorei( GL_PACK_ALIGNMENT, 1 ) );
 		
-		for( i=0; i<pLayerCount; i++ ){
+		for( i=0; i<pSize.z; i++ ){
 			if( pFormat->GetIsDepth() ){
 				fbo->AttachDepthArrayTextureLayerLevel( ( deoglArrayTexture* )this, i, level );
 			}else{
@@ -472,8 +475,8 @@ void deoglArrayTexture::GetLevelSize( int level, int &width, int &height ) const
 	
 	int i;
 	
-	width = pWidth;
-	height = pHeight;
+	width = pSize.x;
+	height = pSize.y;
 	
 	for( i=0; i<level; i++ ){
 		width >>= 1;
@@ -501,13 +504,13 @@ void deoglArrayTexture::CreateMipMaps(){
 
 
 void deoglArrayTexture::CopyFrom( const deoglArrayTexture &texture, bool withMipMaps, int srcLayer, int destLayer ){
-	CopyFrom( texture, withMipMaps, srcLayer, destLayer, pWidth, pHeight, 1, 0, 0, 0, 0 );
+	CopyFrom( texture, withMipMaps, srcLayer, destLayer, pSize.x, pSize.y, 1, 0, 0, 0, 0 );
 }
 
 void deoglArrayTexture::CopyFrom( const deoglArrayTexture &texture, bool withMipMaps, int srcLayer, int destLayer,
 int width, int height, int layerCount, int srcX, int srcY, int destX, int destY ){
 	if( destX < 0 || destY < 0 || srcX < 0 || srcY < 0 || srcLayer < 0 || destLayer < 0
-	|| destX + width > pWidth || destY + height > pHeight || destLayer + layerCount > pLayerCount ){
+	|| destX + width > pSize.x || destY + height > pSize.y || destLayer + layerCount > pSize.z ){
 		DETHROW( deeInvalidParam );
 	}
 	
@@ -527,7 +530,7 @@ int width, int height, int layerCount, int srcX, int srcY, int destX, int destY 
 		int i, mipMapLevelCount;
 		
 		if( destMipMapLevelCount == 0 ){
-			destMipMapLevelCount = ( int )( ceilf( log2f( ( pHeight > pWidth ) ? pHeight : pWidth ) ) ) + 1;
+			destMipMapLevelCount = ( int )( ceilf( log2f( ( pSize.y > pSize.x ) ? pSize.y : pSize.x ) ) ) + 1;
 		}
 		if( srcMipMapLevelCount == 0 ){
 			srcMipMapLevelCount = ( int )( ceilf( log2f( ( srcHeight > srcWidth ) ? srcHeight : srcWidth ) ) ) + 1;
@@ -577,7 +580,7 @@ int width, int height, int layerCount, int srcX, int srcY, int destX, int destY 
 }
 
 void deoglArrayTexture::CopyFrom( const deoglTexture &texture, bool withMipMaps, int destLayer ){
-	CopyFrom( texture, withMipMaps, destLayer, pWidth, pHeight, 0, 0, 0, 0 );
+	CopyFrom( texture, withMipMaps, destLayer, pSize.x, pSize.y, 0, 0, 0, 0 );
 }
 
 void deoglArrayTexture::CopyFrom( const deoglTexture &texture, bool withMipMaps, int destLayer,
@@ -585,7 +588,7 @@ int width, int height, int srcX, int srcY, int destX, int destY ){
 	//printf( "deoglArrayTexture.CopyFrom: tex=%u destLayer=%i width=%i height=%i srcX=%i srcY=%i destX=%i destY=%i\n", texture.GetTexture(), destLayer, width, height, srcX, srcY, destX, destY );
 	//printf( "TEX: width=%i height=%i\n", texture.GetWidth(), texture.GetHeight() );
 	if( destX < 0 || destY < 0 || srcX < 0 || srcY < 0 || destLayer < 0
-	|| destX + width > pWidth || destY + height > pHeight || destLayer >= pLayerCount ){
+	|| destX + width > pSize.x || destY + height > pSize.y || destLayer >= pSize.z ){
 		DETHROW( deeInvalidParam );
 	}
 	
@@ -604,7 +607,7 @@ int width, int height, int srcX, int srcY, int destX, int destY ){
 		int i, mipMapLevelCount;
 		
 		if( destMipMapLevelCount == 0 ){
-			destMipMapLevelCount = ( int )( ceilf( log2f( ( pHeight > pWidth ) ? pHeight : pWidth ) ) ) + 1;
+			destMipMapLevelCount = ( int )( ceilf( log2f( ( pSize.y > pSize.x ) ? pSize.y : pSize.x ) ) ) + 1;
 		}
 		if( srcMipMapLevelCount == 0 ){
 			srcMipMapLevelCount = ( int )( ceilf( log2f( ( srcHeight > srcWidth ) ? srcHeight : srcWidth ) ) ) + 1;
@@ -699,7 +702,7 @@ void deoglArrayTexture::UpdateMemoryUsage(){
 		const int bitsPerPixel = pFormat->GetBitsPerPixel();
 		int baseSize;
 		
-		baseSize = pWidth * pHeight * pLayerCount;
+		baseSize = pSize.x * pSize.y * pSize.z;
 		
 		baseSize *= bitsPerPixel >> 3;
 		if( ( bitsPerPixel & 0x7 ) > 0 ){
@@ -873,11 +876,172 @@ void deoglArrayTexture::SetFBOFormat( int channels, bool useFloat ){
 	}
 }
 
-void deoglArrayTexture::SetDepthFormat( bool packedStencil ){
-	if( packedStencil ){
-		SetFormatFBOByNumber( deoglCapsFmtSupport::eutfDepth_Stencil );
+void deoglArrayTexture::SetFBOFormatFloat32( int channels ){
+	if( channels == 1 ){
+		SetFormatFBOByNumber( deoglCapsFmtSupport::eutfR32F );
+		
+	}else if( channels == 2 ){
+		SetFormatFBOByNumber( deoglCapsFmtSupport::eutfRG32F );
+		
+	}else if( channels == 3 ){
+		SetFormatFBOByNumber( deoglCapsFmtSupport::eutfRGB32F );
+		
+	}else if( channels == 4 ){
+		SetFormatFBOByNumber( deoglCapsFmtSupport::eutfRGBA32F );
 		
 	}else{
-		SetFormatFBOByNumber( deoglCapsFmtSupport::eutfDepth );
+		DETHROW( deeInvalidParam );
+	}
+}
+
+void deoglArrayTexture::SetFBOFormatIntegral( int channels, int bpp, bool useUnsigned ){
+	if( bpp == 8 ){
+		if( channels == 1 ){
+			if( useUnsigned ){
+				SetFormatFBOByNumber( deoglCapsFmtSupport::eutfR8UI );
+				
+			}else{
+				SetFormatFBOByNumber( deoglCapsFmtSupport::eutfR8I );
+			}
+			
+		}else if( channels == 2 ){
+			if( useUnsigned ){
+				SetFormatFBOByNumber( deoglCapsFmtSupport::eutfRG8UI );
+				
+			}else{
+				SetFormatFBOByNumber( deoglCapsFmtSupport::eutfRG8I );
+			}
+			
+		}else if( channels == 3 ){
+			if( useUnsigned ){
+				SetFormatFBOByNumber( deoglCapsFmtSupport::eutfRGB8UI );
+				
+			}else{
+				SetFormatFBOByNumber( deoglCapsFmtSupport::eutfRGB8I );
+			}
+			
+		}else if( channels == 4 ){
+			if( useUnsigned ){
+				SetFormatFBOByNumber( deoglCapsFmtSupport::eutfRGBA8UI );
+				
+			}else{
+				SetFormatFBOByNumber( deoglCapsFmtSupport::eutfRGBA8I );
+			}
+			
+		}else{
+			DETHROW( deeInvalidParam );
+		}
+		
+	}else if( bpp == 16 ){
+		if( channels == 1 ){
+			if( useUnsigned ){
+				SetFormatFBOByNumber( deoglCapsFmtSupport::eutfR16UI );
+				
+			}else{
+				SetFormatFBOByNumber( deoglCapsFmtSupport::eutfR16I );
+			}
+			
+		}else if( channels == 2 ){
+			if( useUnsigned ){
+				SetFormatFBOByNumber( deoglCapsFmtSupport::eutfRG16UI );
+				
+			}else{
+				SetFormatFBOByNumber( deoglCapsFmtSupport::eutfRG16I );
+			}
+			
+		}else if( channels == 3 ){
+			if( useUnsigned ){
+				SetFormatFBOByNumber( deoglCapsFmtSupport::eutfRGB16UI );
+				
+			}else{
+				SetFormatFBOByNumber( deoglCapsFmtSupport::eutfRGB16I );
+			}
+			
+		}else if( channels == 4 ){
+			if( useUnsigned ){
+				SetFormatFBOByNumber( deoglCapsFmtSupport::eutfRGBA16UI );
+				
+			}else{
+				SetFormatFBOByNumber( deoglCapsFmtSupport::eutfRGBA16I );
+			}
+			
+		}else{
+			DETHROW( deeInvalidParam );
+		}
+		
+	}else{
+		DETHROW( deeInvalidParam );
+	}
+}
+
+void deoglArrayTexture::SetFBOFormatSNorm( int channels, int bpp ){
+	switch( bpp ){
+	case 8:
+		switch( channels ){
+		case 1:
+			SetFormatFBOByNumber( deoglCapsFmtSupport::eutfR8_S );
+			break;
+			
+		case 2:
+			SetFormatFBOByNumber( deoglCapsFmtSupport::eutfRG8_S );
+			break;
+			
+		case 3:
+			SetFormatFBOByNumber( deoglCapsFmtSupport::eutfRGB8_S );
+			break;
+			
+		case 4:
+			SetFormatFBOByNumber( deoglCapsFmtSupport::eutfRGBA8_S );
+			break;
+			
+		default:
+			DETHROW( deeInvalidParam );
+		}
+		break;
+		
+	case 16:
+		switch( channels ){
+		case 1:
+			SetFormatFBOByNumber( deoglCapsFmtSupport::eutfR16_S );
+			break;
+			
+		case 2:
+			SetFormatFBOByNumber( deoglCapsFmtSupport::eutfRG16_S );
+			break;
+			
+		case 3:
+			SetFormatFBOByNumber( deoglCapsFmtSupport::eutfRGB16_S );
+			break;
+			
+		case 4:
+			SetFormatFBOByNumber( deoglCapsFmtSupport::eutfRGBA16_S );
+			break;
+			
+		default:
+			DETHROW( deeInvalidParam );
+		}
+		break;
+		
+	default:
+		DETHROW( deeInvalidParam );
+	}
+}
+
+void deoglArrayTexture::SetDepthFormat( bool packedStencil, bool useFloat ){
+	if( packedStencil ){
+		if( useFloat ){
+			SetFormatFBOByNumber( deoglCapsFmtSupport::eutfDepthF_Stencil );
+			
+		}else{
+			SetFormatFBOByNumber( deoglCapsFmtSupport::eutfDepth_Stencil );
+		}
+		
+	}else{
+		if( useFloat ){
+			SetFormatFBOByNumber( deoglCapsFmtSupport::eutfDepthF );
+			
+		}else{
+			SetFormatFBOByNumber( deoglCapsFmtSupport::eutfDepth );
+		}
 	}
 }

@@ -25,6 +25,7 @@
 #include <deigde/gui/igdeTextFieldReference.h>
 #include <deigde/gui/igdeCheckBoxReference.h>
 #include <deigde/gui/igdeColorBoxReference.h>
+#include <deigde/gui/composed/igdeEditDVectorReference.h>
 #include <deigde/gui/composed/igdeEditVectorReference.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
@@ -41,7 +42,7 @@ private:
 	meWindowProperties &pWindowProperties;
 	
 	igdeCheckBoxReference pChkLMTrackCam;
-	igdeEditVectorReference pEditLMPos;
+	igdeEditDVectorReference pEditLMPos;
 	igdeEditVectorReference pEditLMDir;
 	igdeTextFieldReference pEditLMConeIA;
 	igdeTextFieldReference pEditLMConeOA;

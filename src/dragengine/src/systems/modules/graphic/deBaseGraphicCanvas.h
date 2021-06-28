@@ -64,6 +64,9 @@ public:
 	/** \brief Blend mode changed. */
 	virtual void BlendModeChanged();
 	
+	/** \brief Mask changed. */
+	virtual void MaskChanged();
+	
 	/** \brief Content changed. */
 	virtual void ContentChanged();
 	/*@}*/

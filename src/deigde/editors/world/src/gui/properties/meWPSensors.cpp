@@ -34,6 +34,8 @@
 #include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/igdeCheckBox.h>
 #include <deigde/gui/igdeColorBox.h>
+#include <deigde/gui/composed/igdeEditDVector.h>
+#include <deigde/gui/composed/igdeEditDVectorListener.h>
 #include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/composed/igdeEditVectorListener.h>
 #include <deigde/gui/event/igdeAction.h>
@@ -65,17 +67,17 @@ public:
 	}
 };
 
-class cEditLMPos : public igdeEditVectorListener{
+class cEditLMPos : public igdeEditDVectorListener{
 	meWPSensors &pPanel;
 	
 public:
 	cEditLMPos( meWPSensors &panel ) : pPanel( panel ){ }
 	
-	virtual void OnVectorChanged( igdeEditVector *editVector ){
+	virtual void OnDVectorChanged( igdeEditDVector *editDVector ){
 		meWorld * const world = pPanel.GetWindowProperties().GetWindowMain().GetWorld();
 		meLumimeter * const lumimeter = world ? world->GetLumimeter() : NULL;
 		if( lumimeter ){
-			lumimeter->SetPosition( editVector->GetVector() );
+			lumimeter->SetPosition( editDVector->GetDVector() );
 		}
 		
 	}
@@ -170,7 +172,7 @@ pWindowProperties( windowProperties )
 	helper.GroupBox( content, groupBox, "Lumimeter:" );
 	
 	helper.CheckBox( groupBox, pChkLMTrackCam, new cActionLMTrackCam( *this ), true );
-	helper.EditVector( groupBox, "Position:", "Position", pEditLMPos, new cEditLMPos( *this ) );
+	helper.EditDVector( groupBox, "Position:", "Position", pEditLMPos, new cEditLMPos( *this ) );
 	helper.EditVector( groupBox, "Direction:", "Direction", pEditLMDir, new cEditLMDir( *this ) );
 	helper.EditFloat( groupBox, "Inner Angle:", "Cone inner angle in degrees",
 		pEditLMConeIA, new cTextLMConeIA( *this ) );
@@ -204,7 +206,7 @@ void meWPSensors::UpdateLumimeter(){
 	
 	if( lumimeter ){
 		pChkLMTrackCam->SetChecked( lumimeter->GetTrackCamera() );
-		pEditLMPos->SetVector( lumimeter->GetPosition() );
+		pEditLMPos->SetDVector( lumimeter->GetPosition() );
 		pEditLMDir->SetVector( lumimeter->GetDirection() );
 		pEditLMConeIA->SetFloat( lumimeter->GetConeInnerAngle() );
 		pEditLMConeOA->SetFloat( lumimeter->GetConeOuterAngle() );
@@ -215,7 +217,7 @@ void meWPSensors::UpdateLumimeter(){
 		
 	}else{
 		pChkLMTrackCam->SetChecked( false );
-		pEditLMPos->SetVector( decVector() );
+		pEditLMPos->SetDVector( decDVector() );
 		pEditLMDir->SetVector( decVector() );
 		pEditLMConeIA->ClearText();
 		pEditLMConeOA->ClearText();

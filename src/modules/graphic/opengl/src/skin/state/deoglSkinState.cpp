@@ -162,10 +162,6 @@ void deoglSkinState::AdvanceTime( float timeStep ){
 	pTime += timeStep;
 }
 
-void deoglSkinState::SetUpdateNumber( int updateNumber ){
-	pUpdateNumber = updateNumber;
-}
-
 
 
 void deoglSkinState::DropDelayedDeletionObjects(){
@@ -208,7 +204,8 @@ void deoglSkinState::SetVideoPlayerAt( int index, deoglRVideoPlayer *videoPlayer
 
 
 
-void deoglSkinState::PrepareRenderables( deoglRSkin *skin, deoglRDynamicSkin *dynamicSkin ){
+void deoglSkinState::PrepareRenderables( deoglRSkin *skin, deoglRDynamicSkin *dynamicSkin,
+const deoglRenderPlanMasked *renderPlanMask ){
 	const int videoPlayerCount = pVideoPlayers.GetCount();
 	int i;
 	for( i=0; i< videoPlayerCount; i++ ){
@@ -225,12 +222,8 @@ void deoglSkinState::PrepareRenderables( deoglRSkin *skin, deoglRDynamicSkin *dy
 		const int hostIndex = skinStateRenderable.GetHostRenderable();
 		
 		if( hostIndex != -1 && dynamicSkin ){
-			dynamicSkin->GetRenderableAt( hostIndex )->PrepareForRender();
+			dynamicSkin->GetRenderableAt( hostIndex )->PrepareForRender( renderPlanMask );
 		}
-	}
-	
-	for( i=0; i<pCalculatedPropertyCount; i++ ){
-		pCalculatedProperties[ i ].Update( *this );
 	}
 }
 
@@ -360,6 +353,13 @@ void deoglSkinState::UpdateCalculatedPropertiesBones( const deComponent &compone
 	}
 }
 
+void deoglSkinState::UpdateCalculatedProperties(){
+	int i;
+	for( i=0; i<pCalculatedPropertyCount; i++ ){
+		pCalculatedProperties[ i ].Update( *this );
+	}
+}
+
 
 
 void deoglSkinState::SetVariationSeed( const decPoint &seed ){
@@ -375,6 +375,8 @@ void deoglSkinState::pSharedInit(){
 	pOwnerComponent = NULL;
 	pOwnerComponentTexture = 0;
 	pOwnerBillboard = NULL;
+	pOwnerDecal = NULL;
+	pOwnerLight = NULL;
 	
 	pTime = 0.0f;
 	
@@ -387,6 +389,4 @@ void deoglSkinState::pSharedInit(){
 	
 	pVariationSeed.x = ( int )( ( ( float )rand() / ( float )RAND_MAX ) * 100.0f );
 	pVariationSeed.y = ( int )( ( ( float )rand() / ( float )RAND_MAX ) * 100.0f );
-	
-	pUpdateNumber = 0;
 }

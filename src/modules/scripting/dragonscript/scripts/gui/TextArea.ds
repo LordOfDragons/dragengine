@@ -160,7 +160,7 @@ class TextArea extends TextWidget implements RangeModelListener
 		return count - 1
 	end
 	
-	/** Retrieves the line for a spefici cursor position. */
+	/** Retrieves the line for a specific cursor position. */
 	public func int getCursorLineFor( int pos )
 		if pos < 0 or pos > this.getModel().getText().getLength()
 			throw EInvalidParam.new()

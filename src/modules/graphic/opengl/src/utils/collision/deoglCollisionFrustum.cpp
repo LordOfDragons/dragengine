@@ -373,7 +373,7 @@ void deoglCollisionFrustum::SetFarPlane(const decVector &normal, float dist){
 	pDistFar = dist;
 }
 
-void deoglCollisionFrustum::SetFrustum(const decDMatrix &mat){
+void deoglCollisionFrustum::SetFrustum(const decMatrix &mat){
 	float len;
 	// left clipping plane
 	pNormalLeft.Set( mat.a41 + mat.a11, mat.a42 + mat.a12, mat.a43 + mat.a13 );
