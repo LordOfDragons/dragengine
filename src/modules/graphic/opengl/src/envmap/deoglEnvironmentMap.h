@@ -90,6 +90,7 @@ private:
 	bool pReady;
 	bool pMaterialReady;
 	int pNextUpdateFace;
+	int pLastGILightUpdate;
 	
 	int pPlanUsageCount;
 	bool pDestroyIfUnused;
@@ -209,6 +210,23 @@ public:
 	
 	/** Material textures are ready. */
 	inline bool GetMaterialReady() const{ return pMaterialReady; }
+	
+	/** Count of update cycles since the last time this envmap has been GI lit. */
+	inline int GetLastGILightUpdate() const{ return pLastGILightUpdate; }
+	
+	/** Count of update cycles since the last time this envmap has been GI lit is at maximum. */
+	int IsLastGILightUpdateAtMax() const;
+	
+	/** Increment count of update cycles since the last time this envmap has been GI lit. */
+	void IncLastGILightUpdate();
+	
+	/** Set count of update cycles since the last time this envmap has been GI lit to maximum. */
+	void SetMaxLastGILightUpdate();
+	
+	/** Set count of update cycles since the last time this envmap has been GI lit to 0. */
+	void ResetLastGILightUpdate();
+	
+	
 	
 	/** Retrieves the component list. */
 	inline deoglComponentSet &GetComponentList(){ return pComponentList; }

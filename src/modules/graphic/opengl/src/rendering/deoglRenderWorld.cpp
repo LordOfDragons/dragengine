@@ -377,16 +377,18 @@ DEBUG_RESET_TIMER
 	renderers.GetReflection().RenderDepthMinMaxMipMap( plan );
 	DBG_EXIT("RenderDepthMinMaxMipMap")
 	
-	// NOTE actually this requires updated GI probes but this happens below during RenderLights().
-	//      this is though not that much of a trouble. it only causes environment maps to be
-	//      GI light one frame behind
-	DBG_ENTER("RenderGIEnvMaps")
-	renderers.GetReflection().RenderGIEnvMaps( plan );
-	DBG_EXIT("RenderGIEnvMaps")
-	
-	DBG_ENTER("RenderReflections")
-	renderers.GetReflection().RenderReflections( plan );
-	DBG_EXIT("RenderReflections")
+	if( deoglSkinShader::REFLECTION_TEST_MODE == 1 ){
+		// NOTE actually this requires updated GI probes but this happens below during RenderLights().
+		//      this is though not that much of a trouble. it only causes environment maps to be
+		//      GI light one frame behind
+		DBG_ENTER("RenderGIEnvMaps")
+		renderers.GetReflection().RenderGIEnvMaps( plan );
+		DBG_EXIT("RenderGIEnvMaps")
+		
+		DBG_ENTER("RenderReflections")
+		renderers.GetReflection().RenderReflections( plan );
+		DBG_EXIT("RenderReflections")
+	}
 	if( debugMainPass ){
 		DebugTimer2Sample( plan, *pDebugInfo.infoReflection, true );
 	}
@@ -448,6 +450,12 @@ DEBUG_RESET_TIMER
 #endif
 	}
 	QUICK_DEBUG_END
+	
+	if( deoglSkinShader::REFLECTION_TEST_MODE != 1 ){
+		DBG_ENTER("RenderGIEnvMaps")
+		renderers.GetReflection().RenderGIEnvMaps( plan );
+		DBG_EXIT("RenderGIEnvMaps")
+	}
 	
 	DBG_ENTER("RenderReflectionScreenSpace")
 	renderers.GetReflection().RenderScreenSpace( plan );

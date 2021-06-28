@@ -2124,13 +2124,45 @@ void deoglRenderReflection::CopyMaterial( deoglRenderPlan &plan, bool solid ){
 }
 
 void deoglRenderReflection::RenderGIEnvMaps( deoglRenderPlan &plan ){
-	DEBUG_RESET_TIMERS;
+	if( plan.GetNoReflections() ){
+		return;
+	}
 	
 	const deoglGIState * const giState = plan.GetRenderGIState();
 	if( ! giState ){
 		return;
 	}
 	
+	DEBUG_RESET_TIMERS;
+	
+	// determine envmap to update. updating envmap takes around 350-400ys including rendering
+	// and mipmap generation. doing this 8 times per frame costs up to 3ms which is a lot.
+	// to reduce this cost only one envmap is updated per frame update. to ensure all envmaps
+	// are regularily updated and none missed a last update counter is used. each frame update
+	// the counter is incremented by one. then the envmap with the largest value is picked.
+	// upon rerendeing the envmap the counter is set to the maximum value to give it highest
+	// priority. envmaps with maximum priority are always updated.
+	deoglEnvironmentMap *lightEnvMap = NULL;
+	const int count = plan.GetEnvMapCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		deoglEnvironmentMap * const envmap = plan.GetEnvMapAt( i ).GetEnvMap();
+		if( ! envmap || ! envmap->GetReady() || ! envmap->GetMaterialReady() || envmap->GetSkyOnly() ){
+			continue;
+		}
+		
+		envmap->IncLastGILightUpdate();
+		if( envmap->IsLastGILightUpdateAtMax() ){
+			continue; // will be always updated
+		}
+		
+		if( ! lightEnvMap || envmap->GetLastGILightUpdate() > lightEnvMap->GetLastGILightUpdate() ){
+			lightEnvMap = envmap;
+		}
+	}
+	
+	// update envmap
 	deoglRenderThread &renderThread = GetRenderThread();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
@@ -2164,17 +2196,23 @@ void deoglRenderReflection::RenderGIEnvMaps( deoglRenderPlan &plan ){
 	
 	OGL_CHECK( renderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) );
 	
-	const int count = plan.GetEnvMapCount();
-	int i;
+// 	renderThread.GetLogger().LogInfoFormat( "RenderGIEnvMaps: %d envmaps", count );
 	for( i=0; i<count; i++ ){
 		deoglEnvironmentMap * const envmap = plan.GetEnvMapAt( i ).GetEnvMap();
 		if( ! envmap || ! envmap->GetReady() || ! envmap->GetMaterialReady() || envmap->GetSkyOnly() ){
 			continue;
 		}
 		
+		if( ! envmap->IsLastGILightUpdateAtMax() && envmap != lightEnvMap ){
+			continue;
+		}
+		
 		if( pUseEquiEnvMap ){
 			continue; // not supported
 		}
+		
+// 		renderThread.GetLogger().LogInfoFormat( "- LightEnvMap: %p (%g,%g,%g)", envmap,
+// 			envmap->GetPosition().x, envmap->GetPosition().y, envmap->GetPosition().z );
 		
 		fbo.AttachColorCubeMap( 0, envmap->GetEnvironmentMap() );
 		fbo.Verify();
@@ -2192,6 +2230,8 @@ void deoglRenderReflection::RenderGIEnvMaps( deoglRenderPlan &plan ){
 		defren.RenderFSQuadVAO();
 		
 		envmap->GetEnvironmentMap()->CreateMipMaps();
+		
+		envmap->ResetLastGILightUpdate();
 	}
 	
 	OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
@@ -2246,7 +2286,6 @@ void deoglRenderReflection::RenderScreenSpace( deoglRenderPlan &plan ){
 	
 	deoglRenderThread &renderThread = GetRenderThread();
 	const deoglConfiguration &config = renderThread.GetConfiguration();
-	
 	if( ! config.GetSSREnable() ){
 		return;
 	}

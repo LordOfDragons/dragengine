@@ -79,6 +79,8 @@ static const int vCubeFaces[] = {
 	deoglCubeMap::efPositiveZ, deoglCubeMap::efNegativeZ
 };
 
+#define MAX_LAST_GILIGHT_UPDATE 100
+
 
 
 // Class deoglEnvironmentMap
@@ -121,6 +123,7 @@ pRenderThread( renderThread )
 	pReady = false;
 	pMaterialReady = false;
 	pNextUpdateFace = 0;
+	pLastGILightUpdate = MAX_LAST_GILIGHT_UPDATE;
 	
 	pPlanUsageCount = 0;
 	pDestroyIfUnused = true;
@@ -333,6 +336,22 @@ void deoglEnvironmentMap::SetDirty( bool dirty ){
 	}
 }
 
+int deoglEnvironmentMap::IsLastGILightUpdateAtMax() const{
+	return pLastGILightUpdate == MAX_LAST_GILIGHT_UPDATE;
+}
+
+void deoglEnvironmentMap::IncLastGILightUpdate(){
+	pLastGILightUpdate = decMath::min( pLastGILightUpdate + 1, MAX_LAST_GILIGHT_UPDATE );
+}
+
+void deoglEnvironmentMap::SetMaxLastGILightUpdate(){
+	pLastGILightUpdate = MAX_LAST_GILIGHT_UPDATE;
+}
+
+void deoglEnvironmentMap::ResetLastGILightUpdate(){
+	pLastGILightUpdate = 0;
+}
+
 
 
 void deoglEnvironmentMap::AddPlanUsage(){
@@ -407,6 +426,7 @@ void deoglEnvironmentMap::Destroy(){
 	pDirtyInit = true;
 	pReady = false;
 	pMaterialReady = false;
+	pLastGILightUpdate = MAX_LAST_GILIGHT_UPDATE;
 	
 	// delayed deletion of opengl containing objects
 	deoglEnvironmentMapDeletion *delayedDeletion = NULL;
@@ -595,6 +615,7 @@ void deoglEnvironmentMap::Update( deoglRenderPlan &parentPlan ){
 		
 		pReady = true;
 		pMaterialReady = false;
+		pLastGILightUpdate = MAX_LAST_GILIGHT_UPDATE;
 		
 	}else{
 		if( pRenderThread.GetConfiguration().GetDebugPrintSkyUpdate() ){
@@ -714,6 +735,7 @@ void deoglEnvironmentMap::RenderEnvCubeMap( deoglRenderPlan &parentPlan ){
 		pRenderThread.GetFramebuffer().Activate( oldfbo );
 		
 		pMaterialReady = false;
+		pLastGILightUpdate = MAX_LAST_GILIGHT_UPDATE;
 	}
 	
 	try{
@@ -815,6 +837,7 @@ void deoglEnvironmentMap::RenderEnvCubeMap( deoglRenderPlan &parentPlan ){
 			
 			pReady = true;
 			pMaterialReady = true;
+			pLastGILightUpdate = MAX_LAST_GILIGHT_UPDATE;
 		}
 		
 		renderTime[ 6 ] = ( int )( timer.GetElapsedTime() * 1000000.0 );
