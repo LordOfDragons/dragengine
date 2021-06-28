@@ -223,9 +223,9 @@ void deoglCapabilities::DetectCapabilities(){
 		
 		pUBOIndirectMatrixAccess.Check( fbo );
 		pRasterizerDiscard.Check( fbo );
-		pClearEntireCubeMap.Check( fbo );
+// 		pClearEntireCubeMap.Check( fbo ); // nVidia fails this although working
 		pClearEntireArrayTexture.Check( fbo );
-		pGeometryShaderLayer.Check( fbo );
+// 		pGeometryShaderLayer.Check( fbo ); // nVidia fails this although working
 		pUBODirectLinkDeadloop.Check( fbo );
 		
 		#ifdef OS_ANDROID
