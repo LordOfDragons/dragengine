@@ -30,6 +30,7 @@
 
 class deoglDynamicTBO;
 class deoglDynamicTBOBlock;
+class deoglRTLogger;
 
 
 /**
@@ -80,7 +81,6 @@ public:
 	
 	/** Mark TBO dirty. */
 	void MarkDirty();
-	/*@}*/
 	
 	
 	
@@ -101,6 +101,11 @@ public:
 	 * is the last block the TBO is considered to always fit.
 	 */
 	int FirstMatchingBlock( deoglDynamicTBO *tbo );
+	
+	
+	
+	/** Debug print. */
+	void DebugPrint( deoglRTLogger &logger ) const;
 	/*@}*/
 	
 	

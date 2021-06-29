@@ -270,8 +270,15 @@ void deoglGIInstance::Clear(){
 	RemoveAllTUCs();
 	pDirtyTUCs = false;
 	
-	pGIBVHLocal = NULL;
-	pGIBVHDynamic = NULL;
+	if( pGIBVHLocal ){
+		pGIBVHLocal->RemoveBlockUsage();
+		pGIBVHLocal = NULL;
+	}
+	
+	if( pGIBVHDynamic ){
+		pGIBVHDynamic->RemoveBlockUsage();
+		pGIBVHDynamic = NULL;
+	}
 	
 	pIndexNodes = 0;
 	pIndexFaces = 0;
@@ -285,21 +292,6 @@ void deoglGIInstance::Clear(){
 	
 	if( pComponent ){
 		pInstances.UnregisterElement( pComponent );
-		
-		deoglRComponentLOD &lod = pComponent->GetLODAt( -1 );
-		
-		const deoglModelLOD * const modelLOD = lod.GetModelLOD();
-		if( modelLOD ){
-			deoglGIBVHLocal * const bvhLocal = modelLOD->GetGIBVHLocal();
-			if( bvhLocal ){
-				bvhLocal->RemoveBlockUsage();
-			}
-		}
-		
-		deoglGIBVHDynamic * const bvhDynamic = lod.GetGIBVHDynamic();
-		if( bvhDynamic ){
-			bvhDynamic->RemoveBlockUsage();
-		}
 		
 		pComponent->RemoveListener( ( deoglComponentListener* )( deObject* )pComponentListener );
 		pComponent = NULL;
