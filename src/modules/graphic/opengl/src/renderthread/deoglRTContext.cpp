@@ -802,21 +802,23 @@ void deoglRTContext::pCreateGLContext(){
 	if( pglXCreateContextAttribs ){
 		logger.LogInfo( "Creating OpenGL Context using new method" );
 		
+		int contextFlags = 0;
+		// contextFlags |= GLX_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB
+		
+		if( pRenderThread.GetConfiguration().GetDebugContext() ){
+			logger.LogInfo( "Enable debug context" );
+			contextFlags |= GLX_CONTEXT_DEBUG_BIT_ARB;
+		}
+		
 		int contextAttribs[] = {
 			GLX_CONTEXT_MAJOR_VERSION_ARB, 3,
 			GLX_CONTEXT_MINOR_VERSION_ARB, 3,
 			GLX_RENDER_TYPE, GLX_RGBA_TYPE,
 			GLX_CONTEXT_PROFILE_MASK_ARB, GLX_CONTEXT_CORE_PROFILE_BIT_ARB,
-			None, None, //GLX_CONTEXT_FLAGS_ARB, GLX_CONTEXT_DEBUG_BIT_ARB,
-			None, None, //GLX_CONTEXT_FLAGS_ARB, GLX_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB,
+			GLX_CONTEXT_FLAGS_ARB, contextFlags,
+			None, None,
 			None };
-		int contextAttribCount = 8;
-		
-		if( pRenderThread.GetConfiguration().GetDebugContext() ){
-			logger.LogInfo( "Creating debug context" );
-			contextAttribs[ contextAttribCount++ ] = GLX_CONTEXT_FLAGS_ARB;
-			contextAttribs[ contextAttribCount++ ] = GLX_CONTEXT_DEBUG_BIT_ARB;
-		}
+// 		int contextAttribCount = 10;
 		
 		pContext = pglXCreateContextAttribs( pDisplay, pBestFBConfig, NULL, True, contextAttribs );
 		
