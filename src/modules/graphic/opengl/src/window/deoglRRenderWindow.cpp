@@ -618,6 +618,9 @@ void deoglRRenderWindow::Render(){
 	// make window current in the render context
 	pRenderThread.GetContext().ActivateRRenderWindow( this );
 	
+	// silence driver warnings for deprecated stuff
+	glDisable( GL_DITHER );
+	
 	// prepare canvas
 	deoglRCanvas * const inputOverlayCanvas = pRenderThread.GetCanvasInputOverlay();
 	deoglRCanvas * const debugOverlayCanvas = pRenderThread.GetCanvasDebugOverlay();
