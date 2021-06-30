@@ -223,8 +223,8 @@ void deoalEnvironment::Update(){
 	pGainHigh = 1.0f;
 	
 	switch( aurealizationMode ){
-	case deoalConfiguration::eaDirectSound:
-	case deoalConfiguration::eaFull:
+	case deoalConfiguration::eamDirectSound:
+	case deoalConfiguration::eamFull:
 		pDirectPath( microphone, micPos );
 		break;
 		
@@ -248,7 +248,7 @@ void deoalEnvironment::Update(){
 	pReverbEchoTime = 0.25f;
 	
 	switch( aurealizationMode ){
-	case deoalConfiguration::eaFull:
+	case deoalConfiguration::eamFull:
 		pEnvReflection( microphone, micPos, micOrient );
 		break;
 		

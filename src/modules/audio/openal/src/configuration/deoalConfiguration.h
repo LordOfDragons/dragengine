@@ -27,36 +27,45 @@
 
 
 /**
- * \brief OpenAL Configuration.
+ * OpenAL Configuration.
  */
 class deoalConfiguration{
 public:
-	/** \brief Aurealization mode. */
+	/** Aurealization mode. */
 	enum eAurealizationModes{
 		/**
-		 * \brief Aurealization disabled.
+		 * Aurealization disabled.
 		 * 
 		 * Direct sound without any material based effects. This mode is enforced if APU has
 		 * no EFX support or EFX support has been disabled.
 		 */
-		eaDisabled,
+		eamDisabled,
 		
 		/**
-		 * \brief Direct sound aurealization only.
+		 * Direct sound aurealization only.
 		 * 
 		 * Direct sound effect based on materials are used. This includes muffling of sound
 		 * over different frquency bands. Uses single collision test along sound direction
 		 * from source to listener to calculate the result.
 		 */
-		eaDirectSound,
+		eamDirectSound,
 		
 		/**
-		 * \brief Full aurealization.
+		 * Full aurealization.
 		 * 
 		 * Enables all aurealization effects. Uses ray-tracing to calculate various parameters.
 		 * This is expensive depending on the hardware used.
 		 */
-		eaFull
+		eamFull
+	};
+	
+	/** Aurealization quality. */
+	enum eAurealizationQuality{
+		eaqVeryLow,
+		eaqLow,
+		eaqMedium,
+		eaqHigh,
+		eaqVeryHigh
 	};
 	
 	
@@ -69,6 +78,7 @@ private:
 	int pStreamBufSizeThreshold;
 	decStringSet pDisableExtensions;
 	eAurealizationModes pAurealizationMode;
+	eAurealizationQuality pAurealizationQuality;
 	
 	int pSoundTraceRayCount;
 	int pSoundTraceMaxBounceCount;
@@ -87,13 +97,13 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Creates configuration. */
+	/** Creates configuration. */
 	deoalConfiguration();
 	
-	/** \brief Creates copy of configuration. */
+	/** Creates copy of configuration. */
 	deoalConfiguration( const deoalConfiguration &config );
 	
-	/** \brief Clean up openal configuration. */
+	/** Clean up openal configuration. */
 	~deoalConfiguration();
 	/*@}*/
 	
@@ -101,100 +111,106 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Configuration changed. */
+	/** Configuration changed. */
 	inline bool GetDirty() const{ return pDirty; }
 	
-	/** \brief Set configuration changed. */
+	/** Set configuration changed. */
 	void SetDirty( bool dirty );
 	
 	
 	
-	/** \brief Device name or an empty string to use the default one. */
+	/** Device name or an empty string to use the default one. */
 	inline const decString &GetDeviceName() const{ return pDeviceName; }
 	
-	/** \brief Set device name or an empty string to use the default one. */
+	/** Set device name or an empty string to use the default one. */
 	void SetDeviceName( const char *deviceName );
 	
-	/** \brief Effects are enabled. */
+	/** Effects are enabled. */
 	inline bool GetEnableEFX() const{ return pEnableEFX; }
 	
-	/** \brief Set if effects are enabled. */
+	/** Set if effects are enabled. */
 	void SetEnableEFX( bool enable );
 	
-	/** \brief Buffer size threshold to stream sound samples. */
+	/** Buffer size threshold to stream sound samples. */
 	inline int GetStreamBufSizeThreshold() const{ return pStreamBufSizeThreshold; }
 	
-	/** \brief Set buffer size threshold to stream sound samples. */
+	/** Set buffer size threshold to stream sound samples. */
 	void SetStreamBufSizeThreshold( int threshold );
 	
-	/** \brief Disable extensions. */
+	/** Disable extensions. */
 	inline decStringSet &GetDisableExtensions(){ return pDisableExtensions; }
 	inline const decStringSet &GetDisableExtensions() const{ return pDisableExtensions; }
 	
-	/** \brief Aurealization mode */
+	/** Aurealization mode */
 	inline eAurealizationModes GetAurealizationMode() const{ return pAurealizationMode; }
 	
-	/** \brief Set aurealization mode. */
+	/** Set aurealization mode. */
 	void SetAurealizationMode( eAurealizationModes mode );
 	
+	/** Aurealization quality */
+	inline eAurealizationQuality GetAurealizationQuality() const{ return pAurealizationQuality; }
+	
+	/** Set aurealization quality. */
+	void SetAurealizationQuality( eAurealizationQuality quality );
 	
 	
-	/** \brief Number of sound tracing rays. */
+	
+	/** Number of sound tracing rays. */
 	inline int GetSoundTraceRayCount() const{ return pSoundTraceRayCount; }
 	
-	/** \brief Set number of sound tracing rays. */
+	/** Set number of sound tracing rays. */
 	void SetSoundTraceRayCount( int count );
 	
-	/** \brief Maximum number of bounces to use for sound tracing. */
+	/** Maximum number of bounces to use for sound tracing. */
 	inline int GetSoundTraceMaxBounceCount() const{ return pSoundTraceMaxBounceCount; }
 	
-	/** \brief Set maximum number of bounces to use for sound tracing. */
+	/** Set maximum number of bounces to use for sound tracing. */
 	void SetSoundTraceMaxBounceCount( int count );
 	
-	/** \brief Maximum number of transmission to use for sound tracing. */
+	/** Maximum number of transmission to use for sound tracing. */
 	inline int GetSoundTraceMaxTransmitCount() const{ return pSoundTraceMaxTransmitCount; }
 	
-	/** \brief Set maximum number of transmission to use for sound tracing. */
+	/** Set maximum number of transmission to use for sound tracing. */
 	void SetSoundTraceMaxTransmitCount( int count );
 	
-	/** \brief Number of estimate room rays. */
+	/** Number of estimate room rays. */
 	inline int GetEstimateRoomRayCount() const{ return pEstimateRoomRayCount; }
 	
-	/** \brief Set number of estimate room rays. */
+	/** Set number of estimate room rays. */
 	void SetEstimateRoomRayCount( int count );
 	
 	
 	
-	/** \brief EAX reverb filter reflection gain factor. */
+	/** EAX reverb filter reflection gain factor. */
 	inline float GetEAXReverbReflectionGainFactor() const{ return pEAXReverbReflectionGainFactor; }
 	
-	/** \brief Set EAX reverb filter reflection gain factor. */
+	/** Set EAX reverb filter reflection gain factor. */
 	void SetEAXReverbReflectionGainFactor( float factor );
 	
-	/** \brief EAX reverb filter late reverb gain factor. */
+	/** EAX reverb filter late reverb gain factor. */
 	inline float GetEAXReverbLateReverbGainFactor() const{ return pEAXReverbLateReverbGainFactor; }
 	
-	/** \brief Set EAX reverb filter late reverb gain factor. */
+	/** Set EAX reverb filter late reverb gain factor. */
 	void SetEAXReverbLateReverbGainFactor( float factor );
 	
 	
 	
-	/** \brief Frame rate limit for audio thread. */
+	/** Frame rate limit for audio thread. */
 	inline int GetFrameRateLimit() const{ return pFrameRateLimit; }
 	
-	/** \brief Set frame rate limit for audio thread. */
+	/** Set frame rate limit for audio thread. */
 	void SetFrameRateLimit( int frameRateLimit );
 	
-	/** \brief Ratio between game time and audio time required to skip synchronization. */
+	/** Ratio between game time and audio time required to skip synchronization. */
 	inline float GetAsyncAudioSkipSyncTimeRatio() const{ return pAsyncAudioSkipSyncTimeRatio; }
 	
-	/** \brief Set ratio between game time and audio time required to skip synchronization. */
+	/** Set ratio between game time and audio time required to skip synchronization. */
 	void SetAsyncAudioSkipSyncTimeRatio( float ratio );
 	
-	/** \brief Asynchronous audio. */
+	/** Asynchronous audio. */
 	inline bool GetAsyncAudio() const{ return pAsyncAudio; }
 	
-	/** \brief Set asynchronous audio. */
+	/** Set asynchronous audio. */
 	void SetAsyncAudio( bool asyncAudio );
 	/*@}*/
 	
@@ -202,7 +218,7 @@ public:
 	
 	/** \name Operator */
 	/*@{*/
-	/** \brief Copy configuration. */
+	/** Copy configuration. */
 	deoalConfiguration &operator=( const deoalConfiguration &config );
 	/*@}*/
 	
@@ -210,6 +226,7 @@ public:
 	
 private:
 	void pCleanUp();
+	void pApplyAurealizationProfile();
 };
 
 #endif
