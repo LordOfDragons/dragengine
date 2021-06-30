@@ -76,6 +76,7 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 		private var float pRollOff
 		private var DVector pOffset
 		private var String pType
+		private var Sound pLastRandomSound
 		
 		
 		/** \brief Create foot step event. */
@@ -108,6 +109,7 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 			this.pRange = DEMath.max( range, 0.0 )
 			this.pRollOff = DEMath.max( rollOff, 0.0 )
 			this.pOffset = offset
+			this.pLastRandomSound = null
 		end
 		
 		public func new( float time, String type ) this( time )
@@ -150,6 +152,7 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 				throw EInvalidParam.new()
 			end
 			this.pSounds = sounds
+			this.pLastRandomSound = null
 		end
 		
 		/** \brief Volume to use for created speakers. */
@@ -214,10 +217,28 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 		
 		/** \brief Random sound from the list of sounds to play or null if list is empty. */
 		public func Sound randomSound()
-			if this.pSounds.getCount() > 0
-				return this.pSounds.random() cast Sound
+			var int count = this.pSounds.getCount()
+			if count == 0
+				return null
 			end
-			return null
+			
+			var Sound sound
+			
+			if this.pLastRandomSound == null or count == 1
+				sound = this.pSounds.random() cast Sound
+				
+			else
+				var int i
+				for i = 0 to 3
+					sound = this.pSounds.random() cast Sound
+					if sound != this.pLastRandomSound
+						break
+					end
+				end
+			end
+			
+			this.pLastRandomSound = sound
+			return sound
 		end
 		
 		/** \brief Optional type string (by default null). */
