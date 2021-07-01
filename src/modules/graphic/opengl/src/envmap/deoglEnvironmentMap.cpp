@@ -795,12 +795,14 @@ void deoglEnvironmentMap::RenderEnvCubeMap( deoglRenderPlan &parentPlan ){
 			defren.Resize( pSize, pSize );
 			
 			pRenderThread.GetFramebuffer().Activate( &fboMaterial );
+			fboMaterial.DetachAllImages();
 			fboMaterial.AttachColorArrayTextureLayer( 0, pEnvMapPosition, cmf );
 			fboMaterial.AttachColorArrayTextureLayer( 1, pEnvMapDiffuse, cmf );
 			fboMaterial.AttachColorArrayTextureLayer( 2, pEnvMapNormal, cmf );
 			fboMaterial.Verify();
 			
 			pRenderThread.GetFramebuffer().Activate( &fbo );
+			fbo.DetachAllImages();
 			fbo.AttachColorArrayTextureLayer( 0, pEnvMapEmissive, cmf );
 			fbo.Verify();
 			

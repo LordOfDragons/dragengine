@@ -673,6 +673,7 @@ DEBUG_PRINT_TIMER( "ToneMap: Average" );
 	
 	oglCamera.ResetElapsedToneMapAdaption();
 	
+	pFBOToneMapParams->DetachAllImages();
 	pFBOToneMapParams->AttachColorTexture( 0, pTextureToneMapParams );
 	const GLenum buffers[ 1 ] = { GL_COLOR_ATTACHMENT0 };
 	OGL_CHECK( renderThread, pglDrawBuffers( 1, buffers ) );

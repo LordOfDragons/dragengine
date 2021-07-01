@@ -366,7 +366,7 @@ void deoglOcclusionTest::pUpdateTexturesFBO(){
 	}
 	
 	pRenderThread.GetFramebuffer().Activate( pFBOResult );
-	pFBOResult->DetachAllImages(); // important
+	pFBOResult->DetachAllImages();
 	
 	pFBOResult->AttachColorTexture( 0, pTextureResult );
 	

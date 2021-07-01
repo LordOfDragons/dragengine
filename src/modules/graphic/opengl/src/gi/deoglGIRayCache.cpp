@@ -183,6 +183,7 @@ void deoglGIRayCache::pCreateFBO(){
 	#ifdef GI_USE_RAY_CACHE
 		pRenderThread.GetFramebuffer().Activate( &pFBOResult );
 		
+		pFBOResult.DetachAllImages();
 		pFBOResult.AttachColorArrayTexture( 0, &pTexDistance );
 		pFBOResult.AttachColorArrayTexture( 1, &pTexNormal );
 		pFBOResult.AttachColorArrayTexture( 2, &pTexDiffuse );

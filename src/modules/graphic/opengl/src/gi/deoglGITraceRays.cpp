@@ -176,7 +176,7 @@ void deoglGITraceRays::pCreateFBORay(){
 	pTexLight.CreateTexture();
 	
 	pRenderThread.GetFramebuffer().Activate( &pFBOResult );
-	pFBOResult.DetachAllImages(); // important or reattach does nothing
+	pFBOResult.DetachAllImages();
 	pFBOResult.AttachColorTexture( 0, &pTexPosition );
 	pFBOResult.AttachColorTexture( 1, &pTexNormal );
 	pFBOResult.AttachColorTexture( 2, &pTexDiffuse );
@@ -187,14 +187,14 @@ void deoglGITraceRays::pCreateFBORay(){
 	pFBOResult.Verify();
 	
 	pRenderThread.GetFramebuffer().Activate( &pFBODistance );
-	pFBODistance.DetachAllImages(); // important or reattach does nothing
+	pFBODistance.DetachAllImages();
 	pFBODistance.AttachColorTexture( 0, &pTexPosition );
 	OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
 	OGL_CHECK( pRenderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
 	pFBODistance.Verify();
 	
 	pRenderThread.GetFramebuffer().Activate( &pFBOLight );
-	pFBOLight.DetachAllImages(); // important or reattach does nothing
+	pFBOLight.DetachAllImages();
 	pFBOLight.AttachColorTexture( 0, &pTexLight );
 	OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
 	OGL_CHECK( pRenderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );

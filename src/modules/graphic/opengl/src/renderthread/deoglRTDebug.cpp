@@ -49,7 +49,7 @@ GLsizei /*length*/, const GLchar *message, const void *userParam ){
 		return;
 	}
 	
-	bool stackTrace = true;
+	bool stackTrace = false; //true;
 	
 	const char *strSource;
 	switch( source ){
