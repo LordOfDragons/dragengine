@@ -504,23 +504,21 @@
 		</border>
 	</designer>
 	
+	<designer name='Panel.EMPSystem.Parameters' type='Widget'>
+		<borderSize parameter='normal.padding' left='5' top='2' right='5' bottom='2'/>
+	</designer>
+	
 	<designer name='Panel.EMPSystem.CycleValue' type='Widget'>
 		<canvasCreator parameter='normal.canvas' extend='framed/background.ccreator.xml'/>
 		<border parameter='normal.border' type='CanvasCreator'>
 			<canvasCreator parameter='canvasCreator' extend='framed/normal.ccreator.xml'/>
 			<borderSize parameter='size' left='0' top='2' right='0' bottom='2'/>
 		</border>
-		<borderSize parameter='normal.padding' left='2'/>
+		<borderSize parameter='normal.padding' left='2' right='2'/>
 		
 		<canvasCreator parameter='disabled.canvas' extend='framed/background-disabled.ccreator.xml'/>
 		<border parameter='disabled.border' type='CanvasCreator'>
 			<canvasCreator parameter='canvasCreator' extend='framed/disabled.ccreator.xml'/>
-			<borderSize parameter='size' left='0' top='2' right='0' bottom='2'/>
-		</border>
-		
-		<canvasCreator parameter='focused.canvas' extend='framed/background.ccreator.xml'/>
-		<border parameter='focused.border' type='CanvasCreator'>
-			<canvasCreator parameter='canvasCreator' extend='framed/focused.ccreator.xml'/>
 			<borderSize parameter='size' left='0' top='2' right='0' bottom='2'/>
 		</border>
 		

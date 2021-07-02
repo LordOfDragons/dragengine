@@ -403,7 +403,7 @@
 	    EditModuleParametersPanel
 	- 'Button.EditModuleParametersPanel.System'
 	    Button to switch to system panel
-	- 'Panel.EMPSystem'
+	- 'Panel.EMPSystem.Content'
 	    EMPSystem
 	- 'TextArea.EMPSystem.ParameterInfo'
 	    TextArea in EMPSystem showing parameter information
@@ -422,6 +422,33 @@
 	- 'Label.EMPSystem.CycleValue.Value'
 	    Value label in cycle value panel
 	-->
+	<designer name='Panel.EMPSystem.Content' type='Widget'>
+		<border parameter='normal.border' type='Bevel'>
+			<boolean parameter='raised'>false</boolean>
+			<color parameter='colorHighlight' r='1' g='1' b='1'/>
+			<color parameter='colorShadow' r='0.5' g='0.5' b='0.5'/>
+			<borderSize parameter='size' all='2'/>
+		</border>
+	</designer>
+	
+	<designer name='Panel.EMPSystem.Parameters' type='Widget'>
+		<borderSize parameter='normal.padding' left='5' top='2' right='5' bottom='2'/>
+	</designer>
+	
+	<designer name='Panel.EMPSystem.CycleValue' type='Widget'>
+		<canvasCreator parameter='normal.canvas' type='Rectangle'>
+			<color parameter='colorFill' r='0.9' g='0.9' b='0.9'/>
+		</canvasCreator>
+		<canvasCreator parameter='disabled.canvas' type='Rectangle'>
+			<color parameter='colorFill' r='0.7' g='0.7' b='0.7'/>
+		</canvasCreator>
+		<border parameter='normal.border' type='Bevel'>
+			<boolean parameter='raised'>false</boolean>
+			<color parameter='colorHighlight' r='1' g='1' b='1'/>
+			<color parameter='colorShadow' r='0.5' g='0.5' b='0.5'/>
+		</border>
+		<borderSize parameter='normal.padding' left='2' right='2'/>
+	</designer>
 	
 	
 	<!--
@@ -513,5 +540,39 @@
 		<canvasCreator parameter='normal.canvas' type='Rectangle'>
 			<color parameter='colorFill' r='1' g='1' b='1'/>
 		</canvasCreator>
+	</designer>
+	
+	
+	<!--
+	WindowSettings:
+	- "Window.Settings": Settings window
+	- "Panel.Settings.Sheets": Panel containing all settings panels
+	- "Panel.Settings.Buttons.Top": Top buttons panel
+	- "Panel.Settings.Buttons.Bottom": Bottom buttons panel
+	- "Panel.Settings.Buttons.Left": Left buttons panel
+	- "Panel.Settings.Buttons.Right": Right buttons panel
+	- "Panel.Settings.Buttons.Dialog": Dialog buttons panel at the bottom
+	- "Button.Settings.Sheet": Button to activate a sheet
+	- "Button.Settings.Save": Button to save and close window
+	- "Button.Settings.Reset": Button to reset current sheet
+	- "Button.Settings.Cancel": Button to discard changes and close window
+	-->
+	<designer name='Window.Settings' extendNamed='Window'>
+		<borderSize parameter='normal.padding' all='20'/>
+	</designer>
+	<designer name='Panel.Settings.Buttons.Top' type='Widget'>
+		<borderSize parameter='normal.padding' left='0' top='0' right='0' bottom='10'/>
+	</designer>
+	<designer name='Panel.Settings.Buttons.Bottom' type='Widget'>
+		<borderSize parameter='normal.padding' left='0' top='10' right='0' bottom='0'/>
+	</designer>
+	<designer name='Panel.Settings.Buttons.Left' type='Widget'>
+		<borderSize parameter='normal.padding' left='0' top='0' right='10' bottom='0'/>
+	</designer>
+	<designer name='Panel.Settings.Buttons.Right' type='Widget'>
+		<borderSize parameter='normal.padding' left='10' top='0' right='0' bottom='0'/>
+	</designer>
+	<designer name='Panel.Settings.Buttons.Dialog' type='Widget'>
+		<borderSize parameter='normal.padding' left='0' top='20' right='0' bottom='0'/>
 	</designer>
 </guiTheme>
