@@ -158,6 +158,28 @@ class EMPSystem extends Panel
 			end
 		end
 		
+		/** \brief Design parent on mouse enter, move and leave. */
+		class ForwardMouseEnterMoveLeave extends DefaultMouseListener
+			private var Widget pWidget
+			
+			/** \brief Create listener. */
+			public func new( Widget widget )
+				this.pWidget = widget
+			end
+			
+			public func void onMouseEnter( MouseEvent event )
+				this.pWidget.sendEvent( event )
+			end
+			
+			public func void onMouseMove( MouseEvent event )
+				this.pWidget.sendEvent( event )
+			end
+			
+			public func void onMouseLeave( MouseEvent event )
+				this.pWidget.sendEvent( event )
+			end
+		end
+		
 		/** \brief Selection entry with list model support. */
 		class SelectionEntry
 			private var String pValue
@@ -254,6 +276,7 @@ class EMPSystem extends Panel
 				this.pLabelValue.setDesignerSelector( "Label.EMPSystem.CycleValue.Value" )
 				this.pLabelValue.addMouseListener( SelectFromList.new( this ) )
 				this.pLabelValue.addMouseListener( ParentWheelActionListener.new() )
+				this.pLabelValue.addMouseListener( ForwardMouseEnterMoveLeave.new( this ) )
 				this.addWidget( this.pLabelValue, BorderLayout.Area.content )
 				
 				this.pButtonNext = Button.new( "", \
@@ -506,7 +529,7 @@ class EMPSystem extends Panel
 	protected func void createContent()
 		this.runWhileBlockingLayout( block
 			this.setLayout( BorderLayout.new( 5 ) )
-			this.setDesignerSelector( "Panel.EMPSystem" )
+			this.setDesignerSelector( "Panel.EMPSystem.Content" )
 			
 			this.pPanelParameters = Panel.new()
 			this.pPanelParameters.setLayout( FormLayout.new( true, 20, 2 ) )
