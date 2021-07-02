@@ -87,7 +87,7 @@ decString deoglPGIQuality::GetParameterValue(){
 		return "veryHigh";
 		
 	default:
-		return "medium";
+		return "high";
 	}
 }
 

@@ -146,7 +146,7 @@ pDisableCubeMapLinearFiltering( false ),
 
 pMaxSPBIndexCount( 10000 ),
 
-pGIQuality( egiqMedium ),
+pGIQuality( egiqHigh ),
 pGIUpdateSpeed( egiusMedium )
 {
 	#ifdef OS_ANDROID
