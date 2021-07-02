@@ -234,9 +234,10 @@ class BoxLayout implements Layout
 	 */
 	protected func Point getMinimumSizeFor( Container container, int width, int height )
 		var int count = container.getWidgetCount()
-		var Widget child
-		var Point childSize
+		var bool usePadding = false
 		var int w, cx = 0, cy = 0
+		var Point childSize
+		var Widget child
 		
 		select this.pAxis
 		case LayoutAxis.x, LayoutAxis.inverseX
@@ -252,6 +253,7 @@ class BoxLayout implements Layout
 					if childSize.getY() > cy
 						cy = childSize.getY()
 					end
+					usePadding = true
 				end
 				cx -= this.pGap // because we added one gap too much
 			end
@@ -269,11 +271,16 @@ class BoxLayout implements Layout
 					if childSize.getX() > cx
 						cx = childSize.getX()
 					end
+					usePadding = true
 				end
 				cy -= this.pGap // because we added one gap too much
 			end
 		end
 		
-		return Point.new().largest( cx, cy ) + container.getPadding().getSize()
+		var Point size = Point.new().largest( cx, cy )
+		if usePadding
+			size = size + container.getPadding().getSize()
+		end
+		return size
 	end
 end

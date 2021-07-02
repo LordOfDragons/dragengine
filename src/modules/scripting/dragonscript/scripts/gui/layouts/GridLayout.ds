@@ -379,7 +379,7 @@ class GridLayout implements Layout
 			end
 		end
 		
-		return Point.new( 1, 1 ).largest( minSize )
+		return Point.new().largest( minSize )
 	end
 	
 	/** \brief Required row count. */
@@ -457,9 +457,16 @@ class GridLayout implements Layout
 			rowCount = this.getRequiredRowCount( container )
 		end
 		
-		return Point.new( 1, 1 ).largest( \
+		var bool usePadding = container.findWidget( block Widget each
+			return each.getVisible()
+		end ) != null
+		
+		var Point size = Point.new().largest( \
 			cellSize.getX() * columnCount + this.pGap * DEMath.max( 0, columnCount - 1 ), \
-			cellSize.getY() * rowCount + this.pGap * DEMath.max( 0, rowCount - 1 ) ) \
-				+ container.getPadding().getSize()
+			cellSize.getY() * rowCount + this.pGap * DEMath.max( 0, rowCount - 1 ) )
+		if usePadding
+			size = size + container.getPadding().getSize()
+		end
+		return size
 	end
 end

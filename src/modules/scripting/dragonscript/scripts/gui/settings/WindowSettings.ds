@@ -36,7 +36,7 @@ pin Dragengine.Gui.Layouts
  * the button areas.
  * 
  * These designer selectors can be used to style the window and the content inside:
- * - "{Base}": Settings window
+ * - "Window.{Base}": Settings window
  * - "Panel.{Base}.Sheets": Panel containing all settings panels
  * - "Panel.{Base}.Buttons.Top": Top buttons panel
  * - "Panel.{Base}.Buttons.Bottom": Bottom buttons panel
