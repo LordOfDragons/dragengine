@@ -275,6 +275,18 @@ class Widget
 		this.pDesigner = null
 	end
 	
+	/**
+	 * \brief Safely dispose of widget.
+	 * 
+	 * If widget has parent removes the widget from the parent before calling dispose().
+	 */
+	public func void safeDispose()
+		if this.pParent != null
+			this.pParent.removeWidget( this )
+		end
+		this.dispose()
+	end
+	
 	
 	
 	/** Retrieves the parent of widget or null if there is none. */
