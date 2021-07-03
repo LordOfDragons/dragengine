@@ -51,7 +51,9 @@
 deoglRPTSkyLightGIUpdateRT::deoglRPTSkyLightGIUpdateRT( deoglRenderPlanSkyLight &plan ) :
 deParallelTask( &plan.GetPlan().GetRenderThread().GetOgl() ),
 pPlan( plan ),
-pElapsedTime( 0.0f ){
+pElapsedTime( 0.0f )
+{
+	SetMarkFinishedAfterRun( true );
 }
 
 deoglRPTSkyLightGIUpdateRT::~deoglRPTSkyLightGIUpdateRT(){
@@ -102,7 +104,7 @@ void deoglRPTSkyLightGIUpdateRT::Run(){
 		
 	}catch( const deException &e ){
 		pPlan.GetPlan().GetRenderThread().GetLogger().LogException( e );
-		pSemaphore.Wait();
+		pSemaphore.Signal();
 		throw;
 	}
 	

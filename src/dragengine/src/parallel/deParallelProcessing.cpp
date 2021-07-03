@@ -168,6 +168,10 @@ void deParallelProcessing::Pause(){
 					loadableModule.GetModule()->PauseParallelProcessingUpdate();
 				}
 			}
+			
+		// if no threads are running but there are pending tasks run one pending task
+		}else if( pProcessOneTaskDirect( true ) ){
+			i = 0; // we need another round
 		}
 	}
 }
@@ -311,7 +315,7 @@ void deParallelProcessing::AddTaskAsync( deParallelTask *task ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	deMutexGuard lock( pMutexTasks );
+	const deMutexGuard lock( pMutexTasks );
 	
 	pTasks.Add( task ); // strong reference held until task leaves parallel task system
 	
@@ -330,6 +334,11 @@ void deParallelProcessing::AddTaskAsync( deParallelTask *task ){
 	
 	if( ! pPaused ){
 		pSemaphoreNewTasks.Signal();
+		
+	}else{
+		// parallel processing is paused. we have to process the task now otherwise the caller
+		// potentially dead-locks if resuming depends on this task finishing
+		pEnsureRunTaskNow( task );
 	}
 }
 
@@ -886,10 +895,10 @@ void deParallelProcessing::pStopAllThreads(){
 
 
 
-void deParallelProcessing::pProcessOneTaskDirect( bool takeLowPriorityTasks ){
+bool deParallelProcessing::pProcessOneTaskDirect( bool takeLowPriorityTasks ){
 	deParallelTask * const task = NextPendingTask( takeLowPriorityTasks );
 	if( ! task ){
-		return;
+		return false;
 	}
 	
 	if( pOutputDebugMessages ){
@@ -920,6 +929,87 @@ void deParallelProcessing::pProcessOneTaskDirect( bool takeLowPriorityTasks ){
 	}
 	
 	AddFinishedTask( task );
+	return true;
+}
+
+void deParallelProcessing::pEnsureRunTaskNow( deParallelTask *task ){
+	bool deadLoopCheck = false;
+	
+	while( ! task->CanRun() ){
+		if( task->IsCancelled() ){
+			if( task->GetLowPriority() ){
+				pListPendingTasksLowPriority.RemoveFrom( pListPendingTasksLowPriority.IndexOf( task ) );
+				
+			}else{
+				pListPendingTasks.RemoveFrom( pListPendingTasks.IndexOf( task ) );
+			}
+			
+			if( task->GetMarkFinishedAfterRun() ){
+				task->SetFinished();
+			}
+			
+			pListFinishedTasks.Add( task );
+			return;
+		}
+		
+		if( task->CanRun() ){
+			if( pOutputDebugMessages ){
+				const decString debugName( task->GetDebugName() );
+				const decString debugDetails( task->GetDebugDetails() );
+				pEngine.GetLogger()->LogInfoFormat( LOGSOURCE, "pEnsureRunTaskNow [%s] %s",
+						debugName.GetString(), debugDetails.GetString() );
+			}
+			
+			try{
+				task->Run();
+				
+			}catch( const deException &exception ){
+				const decString debugName( task->GetDebugName() );
+				const decString debugDetails( task->GetDebugDetails() );
+				pEngine.GetLogger()->LogErrorFormat( LOGSOURCE, "pEnsureRunTaskNow Failed [%s] %s",
+					debugName.GetString(), debugDetails.GetString() );
+				pEngine.GetLogger()->LogException( LOGSOURCE, exception );
+				task->Cancel();  // tell task it failed
+			}
+			
+			// send the finished task back
+			if( pOutputDebugMessages ){
+				const decString debugName( task->GetDebugName() );
+				const decString debugDetails( task->GetDebugDetails() );
+				pEngine.GetLogger()->LogInfoFormat( LOGSOURCE, "pEnsureRunTaskNow Finished [%s] %s",
+						debugName.GetString(), debugDetails.GetString() );
+			}
+			
+			if( task->GetMarkFinishedAfterRun() ){
+				task->SetFinished();
+			}
+			pListFinishedTasks.Add( task );
+			return;
+		}
+		
+		const int count = task->GetDependsOnCount();
+		deParallelTask *deptask = NULL;
+		int i;
+		
+		for( i=0; i<count; i++ ){
+			deptask = task->GetDependsOnAt( i );
+			if( ! deptask->GetFinished() && ! deptask->IsCancelled() ){
+				break;
+			}
+			deptask = NULL;
+		}
+		
+		if( deptask ){
+			deadLoopCheck = false;
+			pEnsureRunTaskNow( deptask );
+			
+		}else if( deadLoopCheck ){
+			task->Cancel();
+			
+		}else{
+			deadLoopCheck = true;
+		}
+	}
 }
 
 

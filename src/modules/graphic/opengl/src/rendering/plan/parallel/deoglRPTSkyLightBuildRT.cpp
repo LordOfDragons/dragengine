@@ -56,7 +56,9 @@ pPlan( plan ),
 pTempCollideList( tempCollideList ),
 pFromLayer( fromLayer ),
 pToLayer( toLayer ),
-pElapsedTime( 0.0f ){
+pElapsedTime( 0.0f )
+{
+	SetMarkFinishedAfterRun( true );
 }
 
 deoglRPTSkyLightBuildRT::~deoglRPTSkyLightBuildRT(){
@@ -101,7 +103,7 @@ void deoglRPTSkyLightBuildRT::Run(){
 		
 	}catch( const deException &e ){
 		pPlan.GetPlan().GetRenderThread().GetLogger().LogException( e );
-		pSemaphore.Wait();
+		pSemaphore.Signal();
 		throw;
 	}
 	

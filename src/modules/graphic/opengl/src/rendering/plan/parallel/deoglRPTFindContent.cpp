@@ -53,7 +53,9 @@
 deoglRPTFindContent::deoglRPTFindContent( deoglRenderPlan &plan ) :
 deParallelTask( &plan.GetRenderThread().GetOgl() ),
 pPlan( plan ),
-pElapsedTime( 0.0f ){
+pElapsedTime( 0.0f )
+{
+	SetMarkFinishedAfterRun( true );
 }
 
 deoglRPTFindContent::~deoglRPTFindContent(){
@@ -175,7 +177,7 @@ void deoglRPTFindContent::Run(){
 		
 	}catch( const deException &e ){
 		pPlan.GetRenderThread().GetLogger().LogException( e );
-		pSemaphore.Wait();
+		pSemaphore.Signal();
 		throw;
 	}
 	
