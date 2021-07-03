@@ -145,10 +145,10 @@ void deOSWindows::ProcessEventLoop( bool sendToInputModule ){
 			GetEngine()->Quit();
 			break;
 			
-		//case WM_ACTIVATEAPP:
-			// message.wParam == TRUE
-			//break;
-		
+		case WM_ACTIVATEAPP:
+			SetAppActive( message.wParam == TRUE );
+			break;
+			
 		case WM_SIZE:
 			//const int windowWidth = LOWORD( message.lParam );
 			//const int windowHeight = HIWORD( message.wParam );
