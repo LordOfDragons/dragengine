@@ -289,16 +289,17 @@ void deWindowsInput::EventLoop( const MSG &message ){
 		pWindowHeight = HIWORD( message.wParam );
 		break;
 		
-// 	case WM_ACTIVATEAPP:
-// 		pIsListening = ( message.wParam == TRUE );
+	case WM_ACTIVATEAPP:
+		LogInfoFormat("deWindowsInput::EventLoop: WM_ACTIVATEAPP %d", message.wParam);
+		pIsListening = message.wParam == TRUE;
+		AppActivationChanged();
+		break;
+		
+// 	case WM_ACTIVATE:
+// 		pIsListening = LOWORD( message.wParam ) == TRUE;
 // 		AppActivationChanged();
 // 		break;
 		
-	case WM_ACTIVATE:
-		pIsListening = LOWORD( message.wParam ) == TRUE;
-		AppActivationChanged();
-		break;
-			
 	case WM_KEYDOWN:{
 		if( W32_KEY_PRESSED( message.lParam ) ){
 			break;

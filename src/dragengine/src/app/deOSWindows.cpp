@@ -145,9 +145,11 @@ void deOSWindows::ProcessEventLoop( bool sendToInputModule ){
 			GetEngine()->Quit();
 			break;
 			
-// 		case WM_ACTIVATEAPP:
-// 			SetAppActive( message.wParam == TRUE );
-// 			break;
+		case WM_ACTIVATEAPP:
+			LogInfoFormat("deOSWindows::ProcessEventLoop: WM_ACTIVATEAPP %d", message.wParam);
+			SetAppActive( message.wParam == TRUE );
+			DispatchMessage( &message );
+			break;
 			
 // 		case WM_ACTIVATE:
 // 			SetAppActive( LOWORD( message.wParam ) == TRUE );
@@ -165,7 +167,6 @@ void deOSWindows::ProcessEventLoop( bool sendToInputModule ){
 		default:
 			//TranslateMessage( &message );
 			DispatchMessage( &message );
-			
 		}
 		
 		if( sendToInputModule ){
