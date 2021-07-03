@@ -32,6 +32,7 @@
 #include "../common/exceptions.h"
 #include "../common/file/decPath.h"
 #include "../common/string/unicode/decUnicodeString.h"
+#include "../logger/deLogger.h"
 #include "../systems/deInputSystem.h"
 #include "../systems/modules/input/deBaseInputModule.h"
 
