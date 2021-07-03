@@ -516,16 +516,23 @@
 		</border>
 		<borderSize parameter='normal.padding' left='2' right='2'/>
 		
+		<!--
 		<canvasCreator parameter='disabled.canvas' extend='framed/background-disabled.ccreator.xml'/>
 		<border parameter='disabled.border' type='CanvasCreator'>
 			<canvasCreator parameter='canvasCreator' extend='framed/disabled.ccreator.xml'/>
 			<borderSize parameter='size' left='0' top='2' right='0' bottom='2'/>
 		</border>
+		-->
 		
 		<border parameter='hover.border' type='CanvasCreator'>
 			<canvasCreator parameter='canvasCreator' extend='framed/hover.ccreator.xml'/>
 			<borderSize parameter='size' left='0' top='2' right='0' bottom='2'/>
 		</border>
+	</designer>
+	
+	<designer name='Label.EMPSystem.CycleValue.Value' type='Label'>
+		<color parameter='normal.textColor' r='0' g='0' b='0'/>
+		<font parameter='normal.font' size='15'>fonts/sans15.defont</font>
 	</designer>
 	
 	

@@ -144,7 +144,7 @@ class EMPSystem extends Panel
 		end
 		
 		/** \brief Pick value from list action. */
-		class SelectFromList extends DefaultMouseListener
+		class SelectFromList extends ClickedActionListener
 			private var PVECycleValue pCycleValue
 			
 			/** \brief Create listener. */
@@ -152,8 +152,8 @@ class EMPSystem extends Panel
 				this.pCycleValue = cycleValue
 			end
 			
-			/** \brief Mouse button has been released. */
-			public func void onButtonRelease( MouseEvent event )
+			/** \brief User clicked on label. */
+			public func void onAction()
 				this.pCycleValue.selectFromList()
 			end
 		end
@@ -613,7 +613,7 @@ class EMPSystem extends Panel
 		var FocusShowInfo showInfo = FocusShowInfo.new( parameter, this )
 		widget.getButtonPrev().addFocusListener( showInfo )
 		widget.getButtonNext().addFocusListener( showInfo )
-		widget.getLabelValue().addFocusListener( showInfo )
+		widget.getLabelValue().addMouseListener( ClickShowInfo.new( parameter, this ) )
 		return widget
 	end
 	
@@ -623,7 +623,7 @@ class EMPSystem extends Panel
 		var FocusShowInfo showInfo = FocusShowInfo.new( parameter, this )
 		widget.getButtonPrev().addFocusListener( showInfo )
 		widget.getButtonNext().addFocusListener( showInfo )
-		widget.getLabelValue().addFocusListener( showInfo )
+		widget.getLabelValue().addMouseListener( ClickShowInfo.new( parameter, this ) )
 		return widget
 	end
 end
