@@ -30,6 +30,7 @@
 
 class deoglCollideList;
 class deoglRComponent;
+class deoglRDecal;
 class deoglGIInstance;
 class deoglGIState;
 class deoglRenderThread;
@@ -84,6 +85,7 @@ public:
 	
 	/** Classify content. */
 	static bool IsComponentStatic( const deoglRComponent &component );
+	static bool IsDecalStatic( const deoglRDecal &decal );
 	
 	/** Count of available instance slots. */
 	inline int GetInstanceCount() const{ return pInstances.GetCount(); }
@@ -94,6 +96,9 @@ public:
 	/** Instance with component or NULL. */
 	deoglGIInstance *GetInstanceWithComponent( deoglRComponent *component ) const;
 	
+	/** Instance with decal or NULL. */
+	deoglGIInstance *GetInstanceWithDecal( deoglRDecal *decal ) const;
+	
 	/** Add instance slot. */
 	deoglGIInstance &AddInstance();
 	
@@ -102,10 +107,12 @@ public:
 	
 	/** Register instance element. */
 	void RegisterElement( deoglRComponent *component, deoglGIInstance *instance );
+	void RegisterElement( deoglRDecal *decal, deoglGIInstance *instance );
 	void RegisterElement( void *element, unsigned int hash, deoglGIInstance *instance );
 	
 	/** Unregister instance element. */
 	void UnregisterElement( deoglRComponent *component );
+	void UnregisterElement( deoglRDecal *decal );
 	void UnregisterElement( void *element, unsigned int hash );
 	
 	
@@ -139,11 +146,23 @@ public:
 	/** Add components. */
 	void AddComponents( const deoglCollideList &list, bool invalidate );
 	
+	/** Add decal. */
+	void AddDecal( deoglRDecal *decal, bool invalidate );
+	
+	/** Add decals. */
+	void AddDecals( const deoglRComponent &component, bool invalidate );
+	
 	/** Remove component. */
 	void RemoveComponent( deoglRComponent *component );
 	
 	/** Remove components. */
 	void RemoveComponents( const deoglCollideList &list );
+	
+	/** Remove decal. */
+	void RemoveDecal( deoglRDecal *decal );
+	
+	/** Remove decals. */
+	void RemoveDecals( const deoglRComponent &component );
 	
 	/** Mark components. */
 	void MarkComponents( bool marked );
@@ -166,6 +185,7 @@ public:
 	
 private:
 	void pCleanUp();
+	void pInvalidateAddInstance( const deoglGIInstance &instance );
 };
 
 #endif

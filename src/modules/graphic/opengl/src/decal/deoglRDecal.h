@@ -26,8 +26,11 @@
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/common/collection/decObjectOrderedSet.h>
 #include <dragengine/common/collection/decPointerLinkedList.h>
 
+class deoglGIBVHLocal;
+class deoglGIBVHDynamic;
 class deoglRenderPlan;
 class deoglRComponent;
 class deoglRDynamicSkin;
@@ -44,6 +47,7 @@ class deoglTexUnitsConfig;
 class deoglVAO;
 class deoglRenderTaskSharedInstance;
 class deoglRenderPlanMasked;
+class deoglDecalListener;
 
 
 
@@ -90,6 +94,17 @@ public:
 	
 	bool pDirtySharedSPBElement;
 	bool pDirtyTUCs;
+	
+	deoglGIBVHLocal *pGIBVHLocal;
+	deoglGIBVHDynamic *pGIBVHDynamic;
+	bool pDirtyGIBVHLocal;
+	bool pDirtyGIBVHDynamic;
+	bool pStaticTexture;
+	
+	unsigned int pUniqueKey;
+	
+	decObjectOrderedSet pListeners;
+	int pListenerIndex;
 	
 	
 	
@@ -273,6 +288,51 @@ public:
 	
 	/** Prepare for quick disposal of decal. */
 	void PrepareQuickDispose();
+	
+	
+	
+	/** GI Local BVH or NULL. */
+	inline deoglGIBVHLocal *GetGIBVHLocal() const{ return pGIBVHLocal; }
+	
+	/** Prepare GI Local BVH if not build yet. */
+	void PrepareGILocalBVH();
+	
+	/** Set GI BVHs dirty. */
+	void SetDirtyGIBVH();
+	
+	/** Texture is static. */
+	inline bool GetStaticTexture() const{ return pStaticTexture; }
+	
+	/** Update static texture. */
+	void UpdateStaticTexture();
+	
+	
+	
+	/** Unique key for use with dictionaries. */
+	inline unsigned int GetUniqueKey() const{ return pUniqueKey; }
+	/*@}*/
+	
+	
+	
+	/** \name Listeners */
+	/*@{*/
+	/** Add a listener. */
+	void AddListener( deoglDecalListener *listener );
+	
+	/** Remove listener if existing. */
+	void RemoveListener( deoglDecalListener *listener );
+	
+	/** Notify all geometry changed. */
+	void NotifyGeometryChanged();
+	
+	/** Notify all decal has been destroyed. */
+	void NotifyDecalDestroyed();
+	
+	/** Notify all texture changed. */
+	void NotifyTextureChanged();
+	
+	/** Notify all TUC changed. */
+	void NotifyTUCChanged();
 	/*@}*/
 	
 	

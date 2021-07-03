@@ -23,6 +23,7 @@
 #define _DEOGLGIINSTANCE_H_
 
 #include "../component/deoglComponentListener.h"
+#include "../decal/deoglDecalListener.h"
 
 #include <dragengine/deObject.h>
 #include <dragengine/deObjectReference.h>
@@ -31,12 +32,14 @@
 
 class deoglGIInstances;
 class deoglRComponent;
+class deoglRDecal;
 class deoglGIBVHLocal;
 class deoglGIBVHDynamic;
 class deoglTexUnitsConfig;
 class deoglDynamicTBOBlock;
 class deoglDynamicTBOFloat16;
 class deoglDynamicTBOUInt32;
+class decLayerMask;
 
 
 /**
@@ -44,9 +47,22 @@ class deoglDynamicTBOUInt32;
  */
 class deoglGIInstance : public deObject{
 private:
-	class cComponentListener : public deoglComponentListener {
+	class cListenerLink{
+	public:
+		deoglGIInstance &instance;
+		
+		cListenerLink( deoglGIInstance &instance );
+		bool LayerMaskMatchesNot( const decLayerMask &layerMask ) const;
+		void RemoveInstance() const;
+		void ChangeInstance( bool hard ) const;
+		void Moved() const;
+		void TUCChanged() const;
+		void DynamicChanged() const;
+	};
+	
+	class cComponentListener : public deoglComponentListener{
 	private:
-		deoglGIInstance &pInstance;
+		const cListenerLink pLink;
 		
 	public:
 		cComponentListener( deoglGIInstance &instance );
@@ -58,8 +74,29 @@ private:
 		virtual void TexturesChanged( deoglRComponent &component );
 		virtual void RenderStaticChanged( deoglRComponent &component );
 		virtual void MovementHintChanged( deoglRComponent &component );
-		void RemoveInstance();
-		void ChangeInstance( bool hard );
+	};
+	
+	class cDecalListener : public deoglDecalListener{
+	private:
+		const cListenerLink pLink;
+		
+	public:
+		cDecalListener( deoglGIInstance &instance );
+		virtual void DecalDestroyed( deoglRDecal &decal );
+		virtual void GeometryChanged( deoglRDecal &decal );
+		virtual void TextureChanged( deoglRDecal &decal );
+		virtual void TUCChanged( deoglRDecal &decal );
+	};
+	
+	class cDecalComponentListener : public deoglComponentListener{
+	private:
+		const cListenerLink pLink;
+		
+	public:
+		cDecalComponentListener( deoglGIInstance &instance );
+		virtual void BoundariesChanged( deoglRComponent &component );
+		virtual void RenderStaticChanged( deoglRComponent &component );
+		virtual void MovementHintChanged( deoglRComponent &component );
 	};
 	
 	
@@ -68,6 +105,10 @@ private:
 	
 	deoglRComponent *pComponent;
 	deObjectReference pComponentListener;
+	
+	deoglRDecal *pDecal;
+	deObjectReference pDecalListener;
+	deObjectReference pDecalComponentListener;
 	
 	decDVector pMinExtend;
 	decDVector pMaxExtend;
@@ -118,6 +159,12 @@ public:
 	/** Set component or NULL. */
 	void SetComponent( deoglRComponent *component, bool dynamic );
 	
+	/** Decal or NULL. */
+	inline deoglRDecal *GetDecal() const{ return pDecal; }
+	
+	/** Set decal or NULL. */
+	void SetDecal( deoglRDecal *decal, bool dynamic );
+	
 	
 	
 	/** Tracked instance minimum extend in world space. */
@@ -128,6 +175,9 @@ public:
 	
 	/** Set tracked instance extends in world space. */
 	void SetExtends( const decDVector &minExtend, const decDVector &maxExtend );
+	
+	/** Set extends from local BVH points. */
+	void SetExtendsFromBVHLocal();
 	
 	
 	
@@ -194,7 +244,7 @@ public:
 	void SetRecheckDynamic( bool recheckDynamic );
 	
 	/** Slot is empty. */
-	inline bool Empty() const{ return pComponent == NULL; }
+	bool Empty() const;
 	
 	/** Slot is not empty. */
 	inline bool NotEmpty() const{ return ! Empty(); }
@@ -204,7 +254,7 @@ public:
 	
 	
 	
-	/** Count of TUCs. Has to match component texture count. */
+	/** Count of TUCs. Has to match instance texture count. */
 	int GetTUCCount() const;
 	
 	/** Get TUC at index. TUC can be NULL. */

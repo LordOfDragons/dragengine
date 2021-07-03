@@ -24,11 +24,14 @@
 #include <string.h>
 
 #include "deoglRDecal.h"
+#include "deoglDecalListener.h"
 #include "deoglDecalMeshBuilder.h"
 #include "deoglDecalMeshBuilderFace.h"
 #include "../component/deoglRComponent.h"
 #include "../envmap/deoglEnvironmentMap.h"
 #include "../extensions/deoglExtResult.h"
+#include "../gi/deoglGIBVHDynamic.h"
+#include "../gi/deoglGIBVHLocal.h"
 #include "../model/deoglModelLOD.h"
 #include "../model/deoglRModel.h"
 #include "../model/face/deoglModelFace.h"
@@ -40,6 +43,7 @@
 #include "../renderthread/deoglRTDefaultTextures.h"
 #include "../renderthread/deoglRTLogger.h"
 #include "../renderthread/deoglRTShader.h"
+#include "../renderthread/deoglRTUniqueKey.h"
 #include "../shaders/paramblock/deoglSPBlockUBO.h"
 #include "../shaders/paramblock/shared/deoglSharedSPB.h"
 #include "../shaders/paramblock/shared/deoglSharedSPBElement.h"
@@ -89,7 +93,15 @@ pSharedSPBElement( NULL ),
 
 pRTSInstance( NULL ),
 pDirtySharedSPBElement( true ),
-pDirtyTUCs( true )
+pDirtyTUCs( true ),
+
+pGIBVHLocal( NULL ),
+pGIBVHDynamic( NULL ),
+pDirtyGIBVHLocal( false ),
+pDirtyGIBVHDynamic( false ),
+pStaticTexture( true ),
+
+pListenerIndex( 0 )
 {
 	pSkin = NULL;
 	pDynamicSkin = NULL;
@@ -112,6 +124,8 @@ pDirtyTUCs( true )
 	pTUCGeometry = NULL;
 	pTUCShadow = NULL;
 	pTUCEnvMap = NULL;
+	
+	pUniqueKey = renderThread.GetUniqueKey().Get();
 	LEAK_CHECK_CREATE( renderThread, Decal );
 }
 
@@ -122,13 +136,18 @@ public:
 	deoglTexUnitsConfig *tucGeometry;
 	deoglTexUnitsConfig *tucShadow;
 	deoglTexUnitsConfig *tucEnvMap;
+	deoglGIBVHLocal *giBVHLocal;
+	deoglGIBVHDynamic *giBVHDynamic;
+	
 	
 	deoglRDecalDeletion() :
 	skinState( NULL ),
 	vboBlock( NULL ),
 	tucGeometry( NULL ),
 	tucShadow( NULL ),
-	tucEnvMap( NULL ){
+	tucEnvMap( NULL ),
+	giBVHLocal( NULL ),
+	giBVHDynamic( NULL ){
 	}
 	
 	virtual ~deoglRDecalDeletion(){
@@ -151,11 +170,20 @@ public:
 		if( skinState ){
 			delete skinState;
 		}
+		if( giBVHLocal ){
+			delete giBVHLocal;
+		}
+		if( giBVHDynamic ){
+			delete giBVHDynamic;
+		}
 	}
 };
 
 deoglRDecal::~deoglRDecal(){
 	LEAK_CHECK_FREE( pRenderThread, Decal );
+	
+	NotifyDecalDestroyed();
+	pListeners.RemoveAll();
 	
 	if( pDynamicSkin ){
 		pDynamicSkin->FreeReference();
@@ -163,7 +191,6 @@ deoglRDecal::~deoglRDecal(){
 	if( pSkin ){
 		pSkin->FreeReference();
 	}
-	
 	if( pRTSInstance ){
 		pRTSInstance->ReturnToPool();
 	}
@@ -177,6 +204,8 @@ deoglRDecal::~deoglRDecal(){
 		pSkinState->DropDelayedDeletionObjects();
 	}
 	
+	pRenderThread.GetUniqueKey().Return( pUniqueKey );
+	
 	// delayed deletion of opengl containing objects
 	deoglRDecalDeletion *delayedDeletion = NULL;
 	
@@ -187,6 +216,9 @@ deoglRDecal::~deoglRDecal(){
 		delayedDeletion->tucGeometry = pTUCGeometry;
 		delayedDeletion->tucShadow = pTUCShadow;
 		delayedDeletion->vboBlock = pVBOBlock;
+		delayedDeletion->giBVHLocal = pGIBVHLocal;
+		delayedDeletion->giBVHDynamic = pGIBVHDynamic;
+		
 		pRenderThread.GetDelayedOperations().AddDeletion( delayedDeletion );
 		
 	}catch( const deException &e ){
@@ -398,11 +430,18 @@ void deoglRDecal::SetParentComponent( deoglRComponent *component ){
 		return;
 	}
 	
+	if( pParentComponent ){
+		NotifyDecalDestroyed();
+	}
+	
 	pParentComponent = component;
 	SetDirtyVBO();
+	SetDirtyGIBVH();
 	
 	SetSkinState( NULL ); // required since UpdateSkinState can not figure out dynamic skin changed
 	UpdateSkinState();
+	
+// 	NotifyGeometryChanged(); // either removed from component (notify destroyed) or added (no listener)
 }
 
 void deoglRDecal::SetComponentMarkedRemove( bool marked ){
@@ -513,6 +552,211 @@ void deoglRDecal::UpdateRenderableMapping(){
 	pRequiresPrepareForRender();
 }
 
+
+
+void deoglRDecal::PrepareGILocalBVH(){
+	if( pGIBVHLocal && ! pDirtyGIBVHLocal ){
+		return;
+	}
+	
+	if( ! pParentComponent ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	deoglBVH::sBuildPrimitive *primitives = NULL;
+	int primitiveCount = 0;
+	bool disable = false;
+	
+	deoglDecalMeshBuilder meshBuilder( pRenderThread );
+	meshBuilder.Init( *this, pSize.z );
+	meshBuilder.BuildMeshForComponent( pParentComponent->GetLODAt( -1 ) );
+	
+	const int faceCount = meshBuilder.GetFaceCount();
+	if( faceCount > 10000 ){
+		pParentComponent->GetRenderThread().GetLogger().LogWarnFormat(
+			"Decal(%s): Very high face count (%d). Disable decal to not slow down global illumination.",
+			pParentComponent->GetModelRef().GetFilename().GetString(), faceCount );
+		disable = true;
+	}
+	
+	if( faceCount > 0 && ! disable ){
+		primitives = new deoglBVH::sBuildPrimitive[ faceCount ];
+		primitiveCount = faceCount;
+		int i;
+		
+		for( i=0; i<faceCount; i++ ){
+			const deoglDecalMeshBuilderFace &face = *meshBuilder.GetFaceAt( i );
+			const decVector &v1 = meshBuilder.GetPointAt( face.GetPoint3() );
+			const decVector &v2 = meshBuilder.GetPointAt( face.GetPoint2() );
+			const decVector &v3 = meshBuilder.GetPointAt( face.GetPoint1() );
+			
+			deoglBVH::sBuildPrimitive &primitive = primitives[ i ];
+			
+			primitive.minExtend = v1.Smallest( v2 ).Smallest( v3 );
+			primitive.maxExtend = v1.Largest( v2 ).Largest( v3 );
+			primitive.center = ( primitive.minExtend + primitive.maxExtend ) * 0.5f;
+		}
+	}
+	
+	pDirtyGIBVHLocal = false;
+	
+	try{
+		if( ! pGIBVHLocal ){
+			pGIBVHLocal = new deoglGIBVHLocal( pRenderThread );
+			
+		}else{
+			pGIBVHLocal->Clear();
+		}
+		pGIBVHLocal->BuildBVH( primitives, primitiveCount, 12 );
+		
+		if( pGIBVHLocal->GetBVH().GetRootNode() ){
+			const int pointCount = meshBuilder.GetPointCount();
+			int i;
+			
+			for( i=0; i<pointCount; i++ ){
+				pGIBVHLocal->TBOAddVertex( meshBuilder.GetPointAt( i ) );
+			}
+			
+			// get decal matrix and projection axis
+			const decMatrix decalMatrix( decMatrix::CreateWorld( pPosition, pOrientation ) );
+			const decMatrix inverseDecalMatrix( decalMatrix.QuickInvert() );
+			
+			const float invHalfSizeX = 1.0f / pSize.x;
+			const float intHalfSizeY = 1.0f / pSize.y;
+			
+			// write values
+			for( i=0; i<faceCount; i++ ){
+				const deoglDecalMeshBuilderFace &face = *meshBuilder.GetFaceAt( i );
+				
+				const decVector &v1 = meshBuilder.GetPointAt( face.GetPoint3() );
+				const decVector &v2 = meshBuilder.GetPointAt( face.GetPoint2() );
+				const decVector &v3 = meshBuilder.GetPointAt( face.GetPoint1() );
+				
+				const decVector backProject1( inverseDecalMatrix * v1 );
+				const decVector2 tc1( 0.5f - backProject1.x * invHalfSizeX, 0.5f - backProject1.y * intHalfSizeY );
+				
+				const decVector backProject2( inverseDecalMatrix * v2 );
+				const decVector2 tc2( 0.5f - backProject2.x * invHalfSizeX, 0.5f - backProject2.y * intHalfSizeY );
+				
+				const decVector backProject3( inverseDecalMatrix * v3 );
+				const decVector2 tc3( 0.5f - backProject3.x * invHalfSizeX, 0.5f - backProject3.y * intHalfSizeY );
+				
+				pGIBVHLocal->TBOAddFace( face.GetPoint1(), face.GetPoint2(), face.GetPoint3(), 0, tc1, tc2, tc3 );
+			}
+			
+			pGIBVHLocal->TBOAddBVH();
+		}
+		
+	}catch( const deException & ){
+		if( pGIBVHLocal ){
+			delete pGIBVHLocal;
+			pGIBVHLocal = NULL;
+		}
+		if( primitives ){
+			delete [] primitives;
+		}
+		throw;
+	}
+	
+	if( primitives ){
+		delete [] primitives;
+	}
+	
+	// check for suboptimal configurations and warn the developer
+	if( faceCount > 300 ){
+		pRenderThread.GetLogger().LogInfoFormat(
+			"Decal(%s): High face count slows down global illumination (%d)."
+			" Consider adding highest LOD variation with less than 300 faces.",
+			pParentComponent->GetModelRef().GetFilename().GetString(), faceCount );
+	}
+}
+
+void deoglRDecal::SetDirtyGIBVH(){
+	if( pDirtyGIBVHLocal && pDirtyGIBVHDynamic ){
+		return;
+	}
+	
+	pDirtyGIBVHLocal = true;
+	pDirtyGIBVHDynamic = true;
+	
+	if( pParentComponent ){
+		pParentComponent->DecalRequiresPrepareForRender();
+	}
+}
+
+void deoglRDecal::UpdateStaticTexture(){
+	pStaticTexture = true;
+	
+	if( ! pUseSkinState ){
+		return;
+	}
+	
+	if( pUseSkinState->GetVideoPlayerCount() > 0 || pUseSkinState->GetCalculatedPropertyCount() > 0 ){
+		pStaticTexture = false;
+	}
+}
+
+
+
+// Listeners
+//////////////
+
+void deoglRDecal::AddListener( deoglDecalListener *listener ){
+	if( ! listener ){
+		DETHROW( deeInvalidParam );
+	}
+	pListeners.Add( listener );
+}
+
+void deoglRDecal::RemoveListener( deoglDecalListener *listener ){
+	const int index = pListeners.IndexOf( listener );
+	if( index == -1 ){
+		return;
+	}
+	
+	pListeners.Remove( listener );
+	
+	if( pListenerIndex >= index ){
+		pListenerIndex--;
+	}
+}
+
+void deoglRDecal::NotifyGeometryChanged(){
+	pListenerIndex = 0;
+	while( pListenerIndex < pListeners.GetCount() ){
+		( ( deoglDecalListener* )pListeners.GetAt( pListenerIndex ) )->GeometryChanged( *this );
+		pListenerIndex++;
+	}
+}
+
+void deoglRDecal::NotifyDecalDestroyed(){
+	pListenerIndex = 0;
+	while( pListenerIndex < pListeners.GetCount() ){
+		( ( deoglDecalListener* )pListeners.GetAt( pListenerIndex ) )->DecalDestroyed( *this );
+		pListenerIndex++;
+	}
+}
+
+void deoglRDecal::NotifyTextureChanged(){
+	// TODO works in games but not in the editor since it changes textures after adding it
+	//      to the game world. maybe add a static timer like for render static?
+// 	pStaticTexture = false;
+	
+	pListenerIndex = 0;
+	while( pListenerIndex < pListeners.GetCount() ){
+		( ( deoglDecalListener* )pListeners.GetAt( pListenerIndex ) )->TextureChanged( *this );
+		pListenerIndex++;
+	}
+}
+
+
+void deoglRDecal::NotifyTUCChanged(){
+	pListenerIndex = 0;
+	while( pListenerIndex < pListeners.GetCount() ){
+		( ( deoglDecalListener* )pListeners.GetAt( pListenerIndex ) )->TUCChanged( *this );
+		pListenerIndex++;
+	}
+}
 
 
 

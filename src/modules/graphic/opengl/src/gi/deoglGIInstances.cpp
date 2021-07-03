@@ -31,6 +31,7 @@
 #include "../collidelist/deoglCollideListComponent.h"
 #include "../component/deoglRComponent.h"
 #include "../component/deoglRComponentLOD.h"
+#include "../decal/deoglRDecal.h"
 #include "../model/deoglRModel.h"
 #include "../model/deoglModelLOD.h"
 #include "../renderthread/deoglRTLogger.h"
@@ -69,6 +70,15 @@ bool deoglGIInstances::IsComponentStatic( const deoglRComponent &component ){
 		&& component.GetLODAt( -1 ).GetModelLODRef().GetWeightsCount() == 0;
 }
 
+bool deoglGIInstances::IsDecalStatic( const deoglRDecal &decal ){
+	if( decal.GetParentComponent() ){
+		return decal.GetStaticTexture() && IsComponentStatic( *decal.GetParentComponent() );
+		
+	}else{
+		return true;
+	}
+}
+
 deoglGIInstance &deoglGIInstances::GetInstanceAt( int slot ) const{
 	return *( ( deoglGIInstance* )pInstances.GetAt( slot ) );
 }
@@ -101,6 +111,16 @@ deoglGIInstance *deoglGIInstances::GetInstanceWithComponent( deoglRComponent *co
 	}
 }
 
+deoglGIInstance *deoglGIInstances::GetInstanceWithDecal( deoglRDecal *decal ) const{
+	void *instance;
+	if( pElementInstanceMap.GetAt( decal, decal->GetUniqueKey(), &instance ) ){
+		return ( deoglGIInstance* )instance;
+		
+	}else{
+		return NULL;
+	}
+}
+
 deoglGIInstance &deoglGIInstances::AddInstance(){
 	deObjectReference ref;
 	ref.TakeOver( new deoglGIInstance( *this ) );
@@ -124,12 +144,20 @@ void deoglGIInstances::RegisterElement( deoglRComponent *component, deoglGIInsta
 	RegisterElement( component, component->GetUniqueKey(), instance );
 }
 
+void deoglGIInstances::RegisterElement( deoglRDecal *decal, deoglGIInstance *instance ){
+	RegisterElement( decal, decal->GetUniqueKey(), instance );
+}
+
 void deoglGIInstances::RegisterElement( void *element, unsigned int hash, deoglGIInstance *instance ){
 	pElementInstanceMap.SetAt( element, hash, instance );
 }
 
 void deoglGIInstances::UnregisterElement( deoglRComponent *component ){
 	UnregisterElement( component, component->GetUniqueKey() );
+}
+
+void deoglGIInstances::UnregisterElement( deoglRDecal *decal ){
+	UnregisterElement( decal, decal->GetUniqueKey() );
 }
 
 void deoglGIInstances::UnregisterElement( void *element, unsigned int hash ){
@@ -225,6 +253,9 @@ void deoglGIInstances::ApplyChanges(){
 			if( instance.GetComponent() ){
 				instance.SetDynamic( ! IsComponentStatic( *instance.GetComponent() ) );
 				
+			}else if( instance.GetDecal() ){
+				instance.SetDynamic( ! IsDecalStatic( *instance.GetDecal() ) );
+				
 			}else{
 				instance.SetDynamic( false );
 			}
@@ -271,6 +302,25 @@ void deoglGIInstances::ApplyChanges(){
 // 							instance.GetComponent()?instance.GetComponent()->GetModel()->GetFilename().GetString():"-");
 					pGIState.InvalidateArea( minExtend, maxExtend, true );
 				}
+				
+			}else if( instance.GetDecal() ){
+				if( instance.GetDynamic() ){
+					pGIState.TouchDynamicArea( instance.GetMinimumExtend(), instance.GetMaximumExtend() );
+				}
+				
+				instance.SetExtendsFromBVHLocal();
+				const decDVector &minExtend = instance.GetMinimumExtend();
+				const decDVector &maxExtend = instance.GetMaximumExtend();
+				
+				if( instance.GetDynamic() ){
+					pGIState.TouchDynamicArea( minExtend, maxExtend );
+				}
+				
+				if( invalidate ){
+// 						pGIState.GetRenderThread().GetLogger().LogInfoFormat("GIInstances.AnyChanged: Moved %s",
+// 							instance.GetComponent()?instance.GetComponent()->GetModel()->GetFilename().GetString():"-");
+					pGIState.InvalidateArea( minExtend, maxExtend, true );
+				}
 			}
 		}
 		
@@ -283,29 +333,14 @@ void deoglGIInstances::ApplyChanges(){
 // #define DO_LOG_ADD_REMOVE 1
 
 void deoglGIInstances::AddComponent( deoglRComponent *component, bool invalidate ){
-	const bool isStatic = IsComponentStatic( *component );
-	NextFreeSlot().SetComponent( component, ! isStatic );
-	
+	deoglGIInstance &instance = NextFreeSlot();
+	instance.SetComponent( component, ! IsComponentStatic( *component ) );
 	if( invalidate ){
-		if( isStatic ){
-			#ifdef DO_LOG_ADD_REMOVE
-// 				pGIState.GetRenderThread().GetLogger().LogInfoFormat("GIInstances.AddComponent: %s",
-// 					component->GetModel()->GetFilename().GetString());
-			#endif
-			pGIState.InvalidateArea( component->GetMinimumExtend(), component->GetMaximumExtend(), true );
-				// WARNING InvalidateArea becomes expensive if called multiple times.
-				//         unfortunately we can not collect all boxes into an enclosing box
-				//         since then moving diagonally can invalidate lots of probes inside
-				//         the area which should not be touched. not sure how to solve this.
-				//         maybe a small octree for probe extends?
-			
-		}else{
-			#ifdef DO_LOG_ADD_REMOVE
-// 				pGIState.GetRenderThread().GetLogger().LogInfoFormat("GIInstances.AddComponent: %s",
-// 					component->GetModel()->GetFilename().GetString());
-			#endif
-			pGIState.TouchDynamicArea( component->GetMinimumExtend(), component->GetMaximumExtend() );
-		}
+		#ifdef DO_LOG_ADD_REMOVE
+// 			pGIState.GetRenderThread().GetLogger().LogInfoFormat("GIInstances.AddComponent: %s",
+// 				component->GetModel()->GetFilename().GetString());
+		#endif
+		pInvalidateAddInstance( instance );
 	}
 	
 	#ifdef DO_LOG_ADD_REMOVE
@@ -329,6 +364,22 @@ void deoglGIInstances::AddComponents( const deoglCollideList &list, bool invalid
 	int i;
 	for( i=0; i<count; i++ ){
 		AddComponent( list.GetComponentAt( i )->GetComponent(), invalidate );
+	}
+}
+
+void deoglGIInstances::AddDecal( deoglRDecal *decal, bool invalidate ){
+	deoglGIInstance &instance = NextFreeSlot();
+	instance.SetDecal( decal, ! IsDecalStatic( *decal ) );
+	if( invalidate ){
+		pInvalidateAddInstance( instance );
+	}
+}
+
+void deoglGIInstances::AddDecals( const deoglRComponent &component, bool invalidate ){
+	const int count = component.GetDecalCount();
+	int i;
+	for( i=0; i<count; i++ ){
+		AddDecal( component.GetDecalAt( i ), invalidate );
 	}
 }
 
@@ -405,6 +456,21 @@ void deoglGIInstances::RemoveComponents( const deoglCollideList &list ){
 #endif
 }
 
+void deoglGIInstances::RemoveDecal( deoglRDecal *decal ){
+	deoglGIInstance * const instance = GetInstanceWithDecal( decal );
+	if( instance ){
+		RemoveInstance( *instance );
+	}
+}
+
+void deoglGIInstances::RemoveDecals( const deoglRComponent &component ){
+	const int count = component.GetDecalCount();
+	int i;
+	for( i=0; i<count; i++ ){
+		RemoveDecal( component.GetDecalAt( i ) );
+	}
+}
+
 void deoglGIInstances::MarkComponents( bool marked ){
 	const int count = pInstances.GetCount();
 	int i;
@@ -451,6 +517,25 @@ void deoglGIInstances::DebugPrint(){
 				logger.LogInfoFormat( "%d: component (%g,%g,%g) %s",
 					i, p.x, p.y, p.z, instance.GetComponent()->GetModel()
 						? instance.GetComponent()->GetModel()->GetFilename().GetString() : "-" );
+				
+		}else if( instance.GetDecal() ){
+			if( instance.GetDecal()->GetParentComponent() ){
+				const deoglRComponent &c = *instance.GetDecal()->GetParentComponent();
+				int index;
+				for( index=0; index<c.GetDecalCount(); index++ ){
+					if( c.GetDecalAt( index ) == instance.GetDecal() ){
+						break;
+					}
+				}
+				if( index == c.GetDecalCount() ){
+					index = -1;
+				}
+				const decDVector p( c.GetMatrix().GetPosition() );
+					logger.LogInfoFormat( "%d: decal (%g,%g,%g)|%d %s", i, p.x, p.y, p.z, index,
+						c.GetModel() ? c.GetModel()->GetFilename().GetString() : "-" );
+			}else{
+				logger.LogInfoFormat( "%d: decal (no parent)", i );
+			}
 		}
 	}
 }
@@ -463,5 +548,19 @@ void deoglGIInstances::DebugPrint(){
 void deoglGIInstances::pCleanUp(){
 	if( pDynamicBoxes ){
 		delete [] pDynamicBoxes;
+	}
+}
+
+void deoglGIInstances::pInvalidateAddInstance( const deoglGIInstance &instance ){
+	if( instance.GetDynamic() ){
+		pGIState.TouchDynamicArea( instance.GetMinimumExtend(), instance.GetMaximumExtend() );
+	}else{
+		
+		pGIState.InvalidateArea( instance.GetMinimumExtend(), instance.GetMaximumExtend(), true );
+			// WARNING InvalidateArea becomes expensive if called multiple times.
+			//         unfortunately we can not collect all boxes into an enclosing box
+			//         since then moving diagonally can invalidate lots of probes inside
+			//         the area which should not be touched. not sure how to solve this.
+			//         maybe a small octree for probe extends?
 	}
 }

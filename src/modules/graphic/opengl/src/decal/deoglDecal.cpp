@@ -60,8 +60,12 @@ pDirtyDynamicSkin( true ),
 pDirtyVisibility( true ),
 pDirtyParamBlocks( false ),
 pDirtyRenderableMapping( true ),
+pDirtyStaticTexture( true ),
 
 pDynamicSkinRequiresSync( true ),
+
+pNotifyTextureChanged( false ),
+pNotifyTUCChanged( false ),
 
 pParentComponent( NULL )
 {
@@ -105,18 +109,42 @@ void deoglDecal::SyncToRender(){
 	pSyncDynamicSkin();
 	
 	if( pDirtyRenderableMapping ){
-		pRDecal->UpdateRenderableMapping();
 		pDirtyRenderableMapping = false;
+		pRDecal->UpdateRenderableMapping();
+		
+		// we have to do this here and not in DirtyRenderableMapping() because
+		// DirtyRenderableMapping() can be called between the UpdateRenderableMapping()
+		// call above and the NotifyTexturesChanged() call below. if this happens the
+		// pNotifyTexturesChanged flag will be cleared below while the
+		// pDirtyRenderableMapping is true. this causes pNotifyTexturesChanged to be
+		// not called the next time UpdateRenderableMapping() above is called. this in
+		// turn causes listeners to miss an update and working with old data
+		pNotifyTextureChanged = true;
 	}
 	
 	if( pDirtyVBO ){
-		pRDecal->SetDirtyVBO();
 		pDirtyVBO = false;
+		pRDecal->SetDirtyVBO();
+		pRDecal->SetDirtyGIBVH();
+		pRDecal->NotifyGeometryChanged();
 	}
 	
 	if( pDirtyParamBlocks ){
-		pRDecal->MarkParamBlocksDirty();
 		pDirtyParamBlocks = false;
+		pRDecal->MarkParamBlocksDirty();
+	}
+	
+	if( pDirtyStaticTexture ){
+		pDirtyStaticTexture = false;
+		pRDecal->UpdateStaticTexture();
+	}
+	if( pNotifyTextureChanged ){
+		pNotifyTextureChanged = false;
+		pRDecal->NotifyTextureChanged();
+	}
+	if( pNotifyTUCChanged ){
+		pNotifyTUCChanged = false;
+		pRDecal->NotifyTUCChanged();
 	}
 }
 
@@ -138,17 +166,25 @@ void deoglDecal::DynamicSkinDestroyed(){
 void deoglDecal::DynamicSkinRenderablesChanged(){
 	pDynamicSkinRequiresSync = true;
 	pDirtyRenderableMapping = true;
+	pDirtyStaticTexture = true;
+	pNotifyTextureChanged = true;
+	pNotifyTUCChanged = true;
 	pRequiresSync();
 }
 
 void deoglDecal::DynamicSkinRenderableChanged( deoglDSRenderable& ){
 	pDynamicSkinRequiresSync = true;
 	pDirtyRenderableMapping = true;
+	pDirtyStaticTexture = true;
+	pNotifyTextureChanged = true;
+	pNotifyTUCChanged = true;
 	pRequiresSync();
 }
 
 void deoglDecal::DynamicSkinRenderableRequiresSync( deoglDSRenderable& ){
 	pDynamicSkinRequiresSync = true;
+	pDirtyStaticTexture = true;
+	pNotifyTextureChanged = true;
 	pRequiresSync();
 }
 
@@ -174,6 +210,9 @@ void deoglDecal::TransformChanged(){
 void deoglDecal::SkinChanged(){
 	pDirtySkin  = true;
 	pDirtyRenderableMapping = true;
+	pDirtyStaticTexture = true;
+	pNotifyTextureChanged = true;
+	pNotifyTUCChanged = true;
 	
 	pRequiresSync();
 }
@@ -194,6 +233,9 @@ void deoglDecal::DynamicSkinChanged(){
 	pDirtyDynamicSkin = true;
 	pDirtyRenderableMapping = true;
 	pDynamicSkinRequiresSync = true;
+	pDirtyStaticTexture = true;
+	pNotifyTextureChanged = true;
+	pNotifyTUCChanged = true;
 	
 	pRequiresSync();
 }
