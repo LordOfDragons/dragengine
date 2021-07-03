@@ -1340,6 +1340,32 @@ void deoglShadowMapper::ActivateAmbientCubeMapFace( int size, int face ){
 
 
 
+int deoglShadowMapper::ShadowMapSize ( const deoglConfiguration &config ){
+	switch( config.GetShadowQuality() ){
+	case deoglConfiguration::esqVeryHigh:
+		return 4096;
+		
+	case deoglConfiguration::esqHigh:
+	default:
+		return 2048;
+		
+	case deoglConfiguration::esqMedium:
+		return 1024;
+		
+	case deoglConfiguration::esqLow:
+		return 512;
+		
+	case deoglConfiguration::esqVeryLow:
+		return 256;
+	}
+}
+
+int deoglShadowMapper::ShadowCubeSize( const deoglConfiguration& config ){
+	return ShadowMapSize( config );
+}
+
+
+
 // Private Functions
 //////////////////////
 

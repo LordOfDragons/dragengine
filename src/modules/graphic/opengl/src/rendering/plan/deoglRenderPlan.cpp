@@ -70,6 +70,7 @@
 #include "../../renderthread/deoglRTRenderers.h"
 #include "../../renderthread/deoglRTDefaultTextures.h"
 #include "../../renderthread/deoglRTTexture.h"
+#include "../../shadow/deoglShadowMapper.h"
 #include "../../shadow/deoglShadowCaster.h"
 #include "../../skin/deoglRSkin.h"
 #include "../../skin/deoglSkinTexture.h"
@@ -649,7 +650,7 @@ void deoglRenderPlan::pPlanShadowCasting(){
 	// to increase or decrease the shadow map size while keeping the rescaling behavior
 	// for different render viewport dimensions
 	//int unclampedSize = 0;
-	const int shadowMapSize = config.GetShadowMapSize();
+	const int shadowMapSize = deoglShadowMapper::ShadowMapSize( config );
 	int shiftSize = 0;
 	
 	if( pForceShadowMapSize > 0 ){

@@ -36,6 +36,7 @@ class deoglRenderableColorCubeMap;
 class deoglRenderableDepthCubeMap;
 class deoglRenderableColorArrayTexture;
 class deoglRenderableDepthArrayTexture;
+class deoglConfiguration;
 
 
 
@@ -282,6 +283,14 @@ public:
 	
 	/** Activate ambient cubemap face with size. */
 	void ActivateAmbientCubeMapFace( int size, int face );
+	
+	
+	
+	/** Shadow map size from configuration shadow quality. */
+	static int ShadowMapSize( const deoglConfiguration &config );
+	
+	/** Shadow cube size from configuration shadow quality. */
+	static int ShadowCubeSize( const deoglConfiguration &config );
 	/*@}*/
 	
 	

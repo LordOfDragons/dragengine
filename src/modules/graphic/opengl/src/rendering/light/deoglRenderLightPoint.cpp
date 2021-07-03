@@ -656,7 +656,7 @@ const deoglRenderPlanMasked *mask, deoglCollideListLight &cllight ){
 	deoglRenderPlanDebug * const planDebug = plan.GetDebug();
 	deoglSCSolid &scsolid = shadowCaster.GetSolid();
 	deoglShadowCaster::eShadowTypes shadowType = shadowCaster.GetShadowType();
-	bool useShadow = renderThread.GetConfiguration().GetDebugUseShadow();
+	bool useShadow = renderThread.GetConfiguration().GetShadowQuality() != deoglConfiguration::esqOff;
 	
 	// no shadows if the light wishes so
 	if( ! light.GetCastShadows() ){

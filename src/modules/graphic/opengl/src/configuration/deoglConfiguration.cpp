@@ -47,18 +47,16 @@ pLogLevel( ellInfo ),
 pMapFaceSplitThreshold( 5.0f ), // largest allowed face edge in meters
 pSkyBodyDensity( 1.0f ), // render 100% sky bodies
 pReducedLighting( false ),
-pDebugUseShadow( true ),
 pDebugShowCB( false ),
 pDebugWireframe( false ),
 pDebugUVSplitter( true ),
 pDebugPrintSkyUpdate( false ),
 pShowLightCB( false ),
 
-pShadowMapSize( 1024 ),
+pShadowQuality( esqHigh ),
 pShadowMapOffsetScale( 1.1f ),
 pShadowMapOffsetBias( 4.0f ),
 pShadowCubePCFSize( 1.0f ),
-pShadowCubeSize( 1024 ),
 pOcclusionReduction( 1 ),
 pUseShadowCubeEncodedDepth( false ),
 
@@ -163,6 +161,7 @@ pGIUpdateSpeed( egiusMedium )
 	// unimportant by the high pixel density. hardware scaler could be used but this
 	// would affect also 2D graphics. the default should only cut down on the heavy
 	// processing of 3D graphics while keeping 2D graphics crisp if possible
+	pShadowQuality = esqVeryLow;
 	pShadowMapSize = 256; //1024
 	pShadowCubeSize = 256; //1024
 	pOcclusionReduction = 2; //1
@@ -194,9 +193,6 @@ pGIUpdateSpeed( egiusMedium )
 	
 	// make sure retain image memory optimization is enabled since memory is scarce
 	pEnableRetainImageOptimization = true;
-	
-	// Testing
-	//pDebugUseShadow = false;
 	
 	// debug
 	pDebugContext = true;
@@ -244,14 +240,6 @@ void deoglConfiguration::SetUseReducedLighting( bool reduced ){
 		return;
 	}
 	pReducedLighting = reduced;
-	pDirty = true;
-}
-
-void deoglConfiguration::SetDebugUseShadow( bool shadow ){
-	if( shadow == pDebugUseShadow ){
-		return;
-	}
-	pDebugUseShadow = shadow;
 	pDirty = true;
 }
 
@@ -306,24 +294,12 @@ void deoglConfiguration::SetMapFaceSplitThreshold( float threshold ){
 
 
 
-void deoglConfiguration::SetShadowMapSize( int size ){
-	if( size == pShadowMapSize ){
+void deoglConfiguration::SetShadowQuality( eShadowQuality quality ){
+	if( quality == pShadowQuality ){
 		return;
 	}
 	
-	switch( size ){
-	case 256:
-	case 512:
-	case 1024:
-	case 2048:
-	case 4096:
-		break;
-		
-	default:
-		DETHROW( deeInvalidParam );
-	}
-	
-	pShadowMapSize = size;
+	pShadowQuality = quality;
 	pDirty = true;
 }
 
@@ -340,27 +316,6 @@ void deoglConfiguration::SetShadowMapOffsetBias( float bias ){
 		return;
 	}
 	pShadowMapOffsetBias = bias;
-	pDirty = true;
-}
-
-void deoglConfiguration::SetShadowCubeSize( int size ){
-	if( size == pShadowCubeSize ){
-		return;
-	}
-	
-	bool valid = false;
-	int i;
-	for( i=5; i<16; i++ ){
-		if( size == ( 2 << i ) ){
-			valid = true;
-			break;
-		}
-	}
-	if( ! valid ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	pShadowCubeSize = size;
 	pDirty = true;
 }
 

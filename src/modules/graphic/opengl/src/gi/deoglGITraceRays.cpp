@@ -77,6 +77,7 @@ int deoglGITraceRays::ConfigRaysPerProbe( const deoglConfiguration &config ){
 		return 256;
 		
 	case deoglConfiguration::egiqHigh:
+	default:
 		return 128;
 		
 	case deoglConfiguration::egiqMedium:
@@ -87,9 +88,6 @@ int deoglGITraceRays::ConfigRaysPerProbe( const deoglConfiguration &config ){
 		
 	case deoglConfiguration::egiqVeryLow:
 		return 16;
-		
-	default:
-		return 64;
 	}
 }
 
@@ -102,6 +100,7 @@ int deoglGITraceRays::ConfigProbeCount( const deoglConfiguration &config ){
 		return 1024;
 		
 	case deoglConfiguration::egiusMedium:
+	default:
 		return 512;
 		
 	case deoglConfiguration::egiusLow:
@@ -109,9 +108,6 @@ int deoglGITraceRays::ConfigProbeCount( const deoglConfiguration &config ){
 		
 	case deoglConfiguration::egiusVeryLow:
 		return 128;
-		
-	default:
-		return 512;
 	}
 }
 

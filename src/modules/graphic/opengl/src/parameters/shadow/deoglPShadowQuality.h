@@ -1,7 +1,7 @@
 /* 
  * Drag[en]gine OpenGL Graphic Module
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * Copyright (C) 2021, Roland Plüss (roland@rptd.ch)
  * 
  * This program is free software; you can redistribute it and/or 
  * modify it under the terms of the GNU General Public License 
@@ -19,34 +19,36 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef _DEOGLPSHADOWCUBESIZE_H_
-#define _DEOGLPSHADOWCUBESIZE_H_
+#ifndef _DEOGLPSHADOWQUALITY_H_
+#define _DEOGLPSHADOWQUALITY_H_
 
-#include "../deoglParameterInt.h"
-
+#include "../deoglParameter.h"
 
 
 /**
- * \brief Shadow Cube Size Parameter.
+ * Shadow quality parameter.
  */
-class deoglPShadowCubeSize : public deoglParameterInt{
+class deoglPShadowQuality : public deoglParameter{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Creates a new parameter. */
-	deoglPShadowCubeSize( deGraphicOpenGl &ogl );
-	/** Cleans up the parameter. */
-	virtual ~deoglPShadowCubeSize();
+	/** Create parameter. */
+	deoglPShadowQuality( deGraphicOpenGl &ogl );
+	
+	/** Clean up parameter. */
+	virtual ~deoglPShadowQuality();
 	/*@}*/
+	
+	
 	
 	/** \name Parameter Value */
 	/*@{*/
-	/** Retrieves the current value. */
-	virtual int GetParameterInt();
-	/** Sets the current value. */
-	virtual void SetParameterInt( int value );
+	/** Current value. */
+	virtual decString GetParameterValue();
+	
+	/** Set current value. */
+	virtual void SetParameterValue( const char *value );
 	/*@}*/
 };
 
-// end of include only once
 #endif

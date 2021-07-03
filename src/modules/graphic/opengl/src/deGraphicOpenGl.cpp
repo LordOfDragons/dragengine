@@ -63,7 +63,6 @@
 #include "parameters/debug/deoglPDebugContext.h"
 #include "parameters/debug/deoglPDebugNoCulling.h"
 #include "parameters/debug/deoglPDebugShowCB.h"
-#include "parameters/debug/deoglPDebugUseShadow.h"
 #include "parameters/debug/deoglPQuickDebug.h"
 #include "parameters/debug/deoglPShowLightCB.h"
 #include "parameters/debug/deoglPOcclusionReduction.h"
@@ -102,10 +101,9 @@
 #include "parameters/ssao/deoglPSSAOTapCount.h"
 #include "parameters/ssao/deoglPSSAOTurnCount.h"
 #include "parameters/shadow/deoglPShadowCubePCFSize.h"
-#include "parameters/shadow/deoglPShadowCubeSize.h"
+#include "parameters/shadow/deoglPShadowQuality.h"
 #include "parameters/shadow/deoglPShadowMapOffsetBias.h"
 #include "parameters/shadow/deoglPShadowMapOffsetScale.h"
-#include "parameters/shadow/deoglPShadowMapSize.h"
 
 #include "particle/deoglParticleEmitter.h"
 #include "particle/deoglParticleEmitterInstance.h"
@@ -615,10 +613,9 @@ void deGraphicOpenGl::pCreateParameters() {
 	pParameters.AddParameter( new deoglPGIUpdateSpeed( *this ) );
 	
 	pParameters.AddParameter( new deoglPLightCutOffIntensity( *this ) );
-	pParameters.AddParameter( new deoglPShadowMapSize( *this ) );
+	pParameters.AddParameter( new deoglPShadowQuality( *this ) );
 	pParameters.AddParameter( new deoglPShadowMapOffsetScale( *this ) );
 	pParameters.AddParameter( new deoglPShadowMapOffsetBias( *this ) );
-	pParameters.AddParameter( new deoglPShadowCubeSize( *this ) );
 	pParameters.AddParameter( new deoglPShadowCubePCFSize( *this ) );
 	
 	pParameters.AddParameter( new deoglPHDRRMaximumIntensity( *this ) );
@@ -631,7 +628,6 @@ void deGraphicOpenGl::pCreateParameters() {
 	pParameters.AddParameter( new deoglPDebugContext( *this ) );
 	pParameters.AddParameter( new deoglPDebugNoCulling( *this ) );
 	pParameters.AddParameter( new deoglPDebugShowCB( *this ) );
-	pParameters.AddParameter( new deoglPDebugUseShadow( *this ) );
 	pParameters.AddParameter( new deoglPOcclusionReduction( *this ) );
 	pParameters.AddParameter( new deoglPOccTestMode( *this ) );
 	pParameters.AddParameter( new deoglPQuickDebug( *this ) );
