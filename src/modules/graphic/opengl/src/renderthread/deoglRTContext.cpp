@@ -38,7 +38,9 @@
 #include <dragengine/common/exceptions.h>
 #include <dragengine/resources/canvas/deCanvasView.h>
 #include <dragengine/resources/rendering/deRenderWindow.h>
+#include <dragengine/systems/deInputSystem.h>
 #include <dragengine/systems/deScriptingSystem.h>
+#include <dragengine/systems/modules/input/deBaseInputModule.h>
 
 #if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 #include <dragengine/app/deOSUnix.h>
@@ -509,6 +511,20 @@ LRESULT deoglRTContext::ProcessWindowMessage( HWND hwnd, UINT message, WPARAM wP
 	case WM_ACTIVATEAPP:
 		// changing this value in the main thread is acceptable
 		pAppActivated = wParam == TRUE;
+		
+		// this situation is now annoying. the deOSWindow does not receive WM_ACTIVATEAPP
+		// only we do. this in turn means the windows input module will not receive this
+		// message either but it is required to get it. so we forward the message to
+		// the input module
+		{
+		MSG msg;
+		memset( &msg, 0, sizeof( msg ) );
+		msg.hwnd = hwnd;
+		msg.message = message;
+		msg.wParam = wParam;
+		msg.lParam = lParam;
+		pRenderThread.GetOgl().GetGameEngine()->GetInputSystem()->GetActiveModule()->EventLoop( msg );
+		}
 		return 0;
 		
 	case WM_ERASEBKGND:

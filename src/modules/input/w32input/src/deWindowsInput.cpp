@@ -290,7 +290,6 @@ void deWindowsInput::EventLoop( const MSG &message ){
 		break;
 		
 	case WM_ACTIVATEAPP:
-		LogInfoFormat("deWindowsInput::EventLoop: WM_ACTIVATEAPP %I64d", message.wParam);
 		pIsListening = message.wParam == TRUE;
 		AppActivationChanged();
 		break;

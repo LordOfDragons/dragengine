@@ -147,7 +147,6 @@ void deOSWindows::ProcessEventLoop( bool sendToInputModule ){
 			break;
 			
 		case WM_ACTIVATEAPP:
-			GetEngine()->GetLogger()->LogInfoFormat( "Dragengine", "deOSWindows::ProcessEventLoop: WM_ACTIVATEAPP %I64d", message.wParam);
 			SetAppActive( message.wParam == TRUE );
 			DispatchMessage( &message );
 			break;
