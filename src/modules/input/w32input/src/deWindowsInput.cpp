@@ -295,7 +295,7 @@ void deWindowsInput::EventLoop( const MSG &message ){
 // 		break;
 		
 	case WM_ACTIVATE:
-		pIsListening( LOWORD( message.wParam ) == TRUE );
+		pIsListening = LOWORD( message.wParam ) == TRUE;
 		AppActivationChanged();
 		break;
 			
