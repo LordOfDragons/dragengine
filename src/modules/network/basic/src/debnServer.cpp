@@ -146,7 +146,7 @@ bool debnServer::ListenOn( const char *address ){
 		useAddress = publicAddresses.GetAt( 0 );
 	}
 	
-// 	pNetBasic->LogInfoFormat( "Listening on %s", useAddress.GetString() );
+	pNetBasic->LogInfoFormat( "debnServer.ListenOn: Listening on %s", useAddress.GetString() );
 	
 	try{
 		pSocket = new debnSocket( pNetBasic );
