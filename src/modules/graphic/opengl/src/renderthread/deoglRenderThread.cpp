@@ -274,12 +274,12 @@ void deoglRenderThread::SetCanvasDebugOverlay( deoglRCanvas *canvas ){
 // #define DEBUG_SYNC 1
 
 #ifdef DEBUG_SYNC
-	#define DEBUG_SYNC_RT_FAILURE printf("RT(%i): set failure to %d\n", __LINE__, pThreadFailure);
-	#define DEBUG_SYNC_RT_WAIT(b) printf("RT(%i): wait on barrier %s\n", __LINE__, b);
-	#define DEBUG_SYNC_RT_PASS(b) printf("RT(%i): passed barrier %s\n", __LINE__, b);
-	#define DEBUG_SYNC_MT_STATE printf("MT(%i): state changed to %i\n", __LINE__, pThreadState);
-	#define DEBUG_SYNC_MT_WAIT(b) printf("MT(%i): wait on barrier %s\n", __LINE__, b);
-	#define DEBUG_SYNC_MT_PASS(b) printf("MT(%i): passed barrier %s\n", __LINE__, b);
+	#define DEBUG_SYNC_RT_FAILURE pOgl.LogInfoFormat("RT(%i): set failure to %d\n", __LINE__, pThreadFailure);
+	#define DEBUG_SYNC_RT_WAIT(b) pOgl.LogInfoFormat("RT(%i): wait on barrier %s\n", __LINE__, b);
+	#define DEBUG_SYNC_RT_PASS(b) pOgl.LogInfoFormat("RT(%i): passed barrier %s\n", __LINE__, b);
+	#define DEBUG_SYNC_MT_STATE pOgl.LogInfoFormat("MT(%i): state changed to %i\n", __LINE__, pThreadState);
+	#define DEBUG_SYNC_MT_WAIT(b) pOgl.LogInfoFormat("MT(%i): wait on barrier %s\n", __LINE__, b);
+	#define DEBUG_SYNC_MT_PASS(b) pOgl.LogInfoFormat("MT(%i): passed barrier %s\n", __LINE__, b);
 #else
 	#define DEBUG_SYNC_RT_FAILURE
 	#define DEBUG_SYNC_RT_WAIT(b)
