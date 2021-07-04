@@ -675,7 +675,7 @@ public:
 	deoglRenderPlanLight *GetLightAt( int index ) const;
 	
 	/** Plan light for the given light. If no plan light exists yet a new one is created. */
-	deoglRenderPlanLight *GetLightFor( deoglRLight *light );
+	deoglRenderPlanLight *GetLightFor( deoglCollideListLight *light );
 	
 	/** Remove all plan lights. */
 	void RemoveAllLights();
@@ -757,7 +757,7 @@ private:
 	void pDebugVisibleNoCull();
 	void pDebugVisibleCulled();
 	
-	int pIndexOfLightWith( deoglRLight *light ) const;
+	int pIndexOfLightWith( deoglCollideListLight *light ) const;
 	
 	void pCheckTransparency();
 	void pBuildRenderPlan();

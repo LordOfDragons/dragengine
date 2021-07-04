@@ -180,6 +180,12 @@ public:
 	/** Drop shadow cubemaps. */
 	void DropCubeMaps();
 	
+	/** Drop solid shadow cubemaps. */
+	void DropCubeMapsSolid();
+	
+	/** Drop transparent shadow cubemaps. */
+	void DropCubeMapsTransparent();
+	
 	/** Drop foreign shadow cubemaps. */
 	void DropForeignCubeMaps();
 	

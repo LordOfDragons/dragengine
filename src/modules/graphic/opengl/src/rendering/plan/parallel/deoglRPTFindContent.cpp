@@ -124,11 +124,6 @@ void deoglRPTFindContent::Run(){
 		for( i=0; i<lightCount; i++ ){
 			deoglCollideListLight &cllight = *collideList.GetLightAt( i );
 			cllight.TestInside( pPlan );
-			
-			// NOTE this call is not thread safe because it potentially causes changes to the
-			//      internal array. but this thread is the only one using this function call
-			//      so it is safe to do it here
-			pPlan.GetLightFor( cllight.GetLight() );
 		}
 		SPECIAL_TIMER_PRINT("Lights")
 		

@@ -31,6 +31,7 @@
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTFramebuffer.h"
 #include "../renderthread/deoglRTTexture.h"
+#include "../renderthread/deoglRTLogger.h"
 #include "../texture/arraytexture/deoglArrayTexture.h"
 #include "../texture/arraytexture/deoglRenderableColorArrayTexture.h"
 #include "../texture/arraytexture/deoglRenderableColorArrayTextureManager.h"
@@ -52,6 +53,19 @@
 
 #include <dragengine/common/exceptions.h>
 
+
+
+// #define DO_DEBUG_CALLS 1
+
+#ifdef DO_DEBUG_CALLS
+#define DBGCALL(m,t,f,u) pRenderThread.GetLogger().LogInfoFormat("ShadowMapper.%s: t=%p f=%p u=%p", m, t, f, u);
+#define DBGCALL2(m,t,f,u,p) pRenderThread.GetLogger().LogInfoFormat("ShadowMapper.%s: t=%p f=%p u=%p p=%p", m, t, f, u, p);
+#define DBGCALL3(m,f,u) pRenderThread.GetLogger().LogInfoFormat("ShadowMapper.%s: f=%p u=%p", m, f, u);
+#else
+#define DBGCALL(m,t,f,u)
+#define DBGCALL2(m,t,f,u,p)
+#define DBGCALL3(m,f,u)
+#endif
 
 
 // Class deoglShadowMapper
@@ -360,6 +374,7 @@ void deoglShadowMapper::SetForeignSolidDepthCubeMap( deoglCubeMap *cubemap ){
 	
 	pForeignCubeMapDepthSolid = cubemap;
 	pUseCubeMapDepthSolid = cubemap;
+	DBGCALL2("SetForeignSolidDepthCubeMap", pCubeMapDepthSolid, pForeignCubeMapDepthSolid, pUseCubeMapDepthSolid, cubemap)
 }
 
 deoglCubeMap *deoglShadowMapper::GetTransparentDepthCubeMap() const{
@@ -390,6 +405,7 @@ void deoglShadowMapper::SetForeignTransparentDepthCubeMap( deoglCubeMap *cubemap
 	
 	pForeignCubeMapDepthTransp = cubemap;
 	pUseCubeMapDepthTransp = cubemap;
+	DBGCALL2("SetForeignTransparentDepthCubeMap", pCubeMapDepthTransp, pForeignCubeMapDepthTransp, pUseCubeMapDepthTransp, cubemap)
 }
 
 deoglCubeMap *deoglShadowMapper::GetTransparentColorCubeMap() const{
@@ -408,9 +424,15 @@ void deoglShadowMapper::SetForeignTransparentColorCubeMap( deoglCubeMap *cubemap
 	
 	pForeignCubeMapColorTransp = cubemap;
 	pUseCubeMapColorTransp = cubemap;
+	DBGCALL2("SetForeignTransparentColorCubeMap", pCubeMapColorTransp, pForeignCubeMapColorTransp, pUseCubeMapColorTransp, cubemap)
 }
 
 void deoglShadowMapper::DropCubeMaps(){
+	DropCubeMapsSolid();
+	DropCubeMapsTransparent();
+}
+
+void deoglShadowMapper::DropCubeMapsSolid(){
 	if( pFBOCube ){
 		pFBOCube->DecreaseUsageCount();
 		pFBOCube = NULL;
@@ -426,6 +448,14 @@ void deoglShadowMapper::DropCubeMaps(){
 		pCubeMapEncodedDepthSolid->SetInUse( false );
 		pCubeMapEncodedDepthSolid = NULL;
 	}
+	DBGCALL("DropSolidCubeMaps", pCubeMapDepthSolid, pForeignCubeMapDepthSolid, pUseCubeMapDepthSolid)
+}
+
+void deoglShadowMapper::DropCubeMapsTransparent(){
+	if( pFBOCube ){
+		pFBOCube->DecreaseUsageCount();
+		pFBOCube = NULL;
+	}
 	
 	pUseCubeMapDepthTransp = NULL;
 	pForeignCubeMapDepthTransp = NULL;
@@ -437,6 +467,7 @@ void deoglShadowMapper::DropCubeMaps(){
 		pCubeMapEncodedDepthTransp->SetInUse( false );
 		pCubeMapEncodedDepthTransp = NULL;
 	}
+	DBGCALL("DropTransparentCubeMaps1", pUseCubeMapDepthTransp, pForeignCubeMapDepthTransp, pCubeMapEncodedDepthTransp)
 	
 	pUseCubeMapColorTransp = NULL;
 	pForeignCubeMapColorTransp = NULL;
@@ -444,6 +475,7 @@ void deoglShadowMapper::DropCubeMaps(){
 		pCubeMapColorTransp->SetInUse( false );
 		pCubeMapColorTransp = NULL;
 	}
+	DBGCALL("DropTransparentCubeMaps2", pUseCubeMapColorTransp, pForeignCubeMapColorTransp, pCubeMapColorTransp)
 }
 
 void deoglShadowMapper::DropForeignCubeMaps(){
@@ -451,16 +483,19 @@ void deoglShadowMapper::DropForeignCubeMaps(){
 		pForeignCubeMapDepthSolid = NULL;
 		pUseCubeMapDepthSolid = NULL;
 	}
+	DBGCALL3("DropForeignCubeMaps1", pForeignCubeMapDepthSolid, pUseCubeMapDepthSolid)
 	
 	if( pForeignCubeMapDepthTransp ){
 		pForeignCubeMapDepthTransp = NULL;
 		pUseCubeMapDepthTransp = NULL;
 	}
+	DBGCALL3("DropForeignCubeMaps2", pForeignCubeMapDepthTransp, pUseCubeMapDepthTransp)
 	
 	if( pForeignCubeMapColorTransp ){
 		pForeignCubeMapColorTransp = NULL;
 		pUseCubeMapColorTransp = NULL;
 	}
+	DBGCALL3("DropForeignCubeMaps3", pForeignCubeMapColorTransp, pUseCubeMapColorTransp)
 }
 
 void deoglShadowMapper::ActivateSolidCubeMap( int size ){
@@ -468,12 +503,13 @@ void deoglShadowMapper::ActivateSolidCubeMap( int size ){
 	
 	// if we can use depth cubemaps we can do things with only cubemaps
 	if( useDepthCubeMap ){
+		DBGCALL("ActivateSolidCubeMap", pCubeMapDepthSolid, pForeignCubeMapDepthSolid, pUseCubeMapDepthSolid)
 		// drop the cubemaps including the fbo if the size differs
 		if( pForeignCubeMapDepthSolid && pForeignCubeMapDepthSolid->GetSize() != size ){
-			DropCubeMaps();
+			DropCubeMapsSolid();
 		}
 		if( pCubeMapDepthSolid && pCubeMapDepthSolid->GetSize() != size ){
-			DropCubeMaps();
+			DropCubeMapsSolid();
 		}
 		
 		// obtain a framebuffer for this size if not existing already
@@ -503,13 +539,13 @@ void deoglShadowMapper::ActivateSolidCubeMap( int size ){
 	}else{
 		// drop the cubemaps and textures including the fbo if the size differs
 		if( pForeignCubeMapDepthSolid && pForeignCubeMapDepthSolid->GetSize() != size ){
-			DropCubeMaps();
+			DropCubeMapsSolid();
 		}
 		if( pForeignTexDepthSolid && pForeignTexDepthSolid->GetWidth() != size ){
 			DropTexturesSolid();
 		}
 		if( pCubeMapEncodedDepthSolid && pCubeMapEncodedDepthSolid->GetSize() != size ){
-			DropCubeMaps();
+			DropCubeMapsSolid();
 		}
 		if( pTextureDepthSolid && pTextureDepthSolid->GetWidth() != size ){
 			DropTexturesSolid();
@@ -555,12 +591,13 @@ void deoglShadowMapper::ActivateSolidCubeMapFace( int size, int face ){
 	
 	// if we can use depth cubemaps we can do things with only cubemaps
 	if( useDepthCubeMap ){
+		DBGCALL("ActivateSolidCubeMapFace", pCubeMapDepthSolid, pForeignCubeMapDepthSolid, pUseCubeMapDepthSolid)
 		// drop the cubemaps including the fbo if the size differs
 		if( pForeignCubeMapDepthSolid && pForeignCubeMapDepthSolid->GetSize() != size ){
-			DropCubeMaps();
+			DropCubeMapsSolid();
 		}
 		if( pCubeMapDepthSolid && pCubeMapDepthSolid->GetSize() != size ){
-			DropCubeMaps();
+			DropCubeMapsSolid();
 		}
 		
 		// obtain a framebuffer for this size if not existing already
@@ -590,13 +627,13 @@ void deoglShadowMapper::ActivateSolidCubeMapFace( int size, int face ){
 	}else{
 		// drop the cubemaps and textures including the fbo if the size differs
 		if( pForeignCubeMapDepthSolid && pForeignCubeMapDepthSolid->GetSize() != size ){
-			DropCubeMaps();
+			DropCubeMapsSolid();
 		}
 		if( pForeignTexDepthSolid && pForeignTexDepthSolid->GetWidth() != size ){
 			DropTexturesSolid();
 		}
 		if( pCubeMapEncodedDepthSolid && pCubeMapEncodedDepthSolid->GetSize() != size ){
-			DropCubeMaps();
+			DropCubeMapsSolid();
 		}
 		if( pTextureDepthSolid && pTextureDepthSolid->GetWidth() != size ){
 			DropTexturesSolid();
@@ -642,12 +679,13 @@ void deoglShadowMapper::ActivateTransparentCubeMap( int size ){
 	
 	// if we can use depth cubemaps we can do things with only cubemaps
 	if( useDepthCubeMap ){
+		DBGCALL("ActivateTransparentCubeMap", pCubeMapDepthTransp, pForeignCubeMapDepthTransp, pUseCubeMapDepthTransp)
 		// drop the cubemaps including the fbo if the size differs
 		if( pForeignCubeMapDepthTransp && pForeignCubeMapDepthTransp->GetSize() != size ){
-			DropCubeMaps();
+			DropCubeMapsTransparent();
 		}
 		if( pCubeMapDepthTransp && pCubeMapDepthTransp->GetSize() != size ){
-			DropCubeMaps();
+			DropCubeMapsTransparent();
 		}
 		
 		// obtain transparent depth cubemap if not existing already
@@ -684,13 +722,13 @@ void deoglShadowMapper::ActivateTransparentCubeMap( int size ){
 	}else{
 		// drop the cubemaps and textures including the fbo if the size differs
 		if( pForeignCubeMapDepthTransp && pForeignCubeMapDepthTransp->GetSize() != size ){
-			DropCubeMaps();
+			DropCubeMapsTransparent();
 		}
 		if( pForeignTexDepthSolid && pForeignTexDepthSolid->GetWidth() != size ){
 			DropTexturesTransparent();
 		}
 		if( pCubeMapEncodedDepthTransp && pCubeMapEncodedDepthTransp->GetSize() != size ){
-			DropCubeMaps();
+			DropCubeMapsTransparent();
 		}
 		if( pTextureDepthSolid && pTextureDepthSolid->GetWidth() != size ){
 			DropTexturesTransparent();
@@ -742,12 +780,13 @@ void deoglShadowMapper::ActivateTransparentCubeMapFace( int size, int face ){
 	
 	// if we can use depth cubemaps we can do things with only cubemaps
 	if( useDepthCubeMap ){
+		DBGCALL("ActivateTransparentCubeMapFace", pCubeMapDepthTransp, pForeignCubeMapDepthTransp, pUseCubeMapDepthTransp)
 		// drop the cubemaps including the fbo if the size differs
 		if( pForeignCubeMapDepthTransp && pForeignCubeMapDepthTransp->GetSize() != size ){
-			DropCubeMaps();
+			DropCubeMapsTransparent();
 		}
 		if( pCubeMapDepthTransp && pCubeMapDepthTransp->GetSize() != size ){
-			DropCubeMaps();
+			DropCubeMapsTransparent();
 		}
 		
 		// obtain transparent depth cubemap if not existing already
@@ -784,13 +823,13 @@ void deoglShadowMapper::ActivateTransparentCubeMapFace( int size, int face ){
 	}else{
 		// drop the cubemaps and textures including the fbo if the size differs
 		if( pForeignCubeMapDepthTransp && pForeignCubeMapDepthTransp->GetSize() != size ){
-			DropCubeMaps();
+			DropCubeMapsTransparent();
 		}
 		if( pForeignTexDepthSolid && pForeignTexDepthSolid->GetWidth() != size ){
 			DropTexturesTransparent();
 		}
 		if( pCubeMapEncodedDepthTransp && pCubeMapEncodedDepthTransp->GetSize() != size ){
-			DropCubeMaps();
+			DropCubeMapsTransparent();
 		}
 		if( pTextureDepthSolid && pTextureDepthSolid->GetWidth() != size ){
 			DropTexturesTransparent();
@@ -1243,6 +1282,7 @@ void deoglShadowMapper::SetForeignAmbientCubeMap( deoglCubeMap *cubemap ){
 	
 	pForeignCubeMapAmbient = cubemap;
 	pUseCubeMapAmbient = cubemap;
+	DBGCALL2("SetForeignAmbientCubeMap", pCubeMapAmbient, pForeignCubeMapAmbient, pUseCubeMapAmbient, cubemap)
 }
 
 void deoglShadowMapper::DropAmbientCubeMaps(){
@@ -1257,6 +1297,7 @@ void deoglShadowMapper::DropAmbientCubeMaps(){
 		pCubeMapAmbient->SetInUse( false );
 		pCubeMapAmbient = NULL;
 	}
+	DBGCALL("DropAmbientCubeMaps", pCubeMapAmbient, pForeignCubeMapAmbient, pUseCubeMapAmbient)
 }
 
 void deoglShadowMapper::DropForeignAmbientCubeMaps(){
@@ -1264,9 +1305,11 @@ void deoglShadowMapper::DropForeignAmbientCubeMaps(){
 		pForeignCubeMapAmbient = NULL;
 		pUseCubeMapAmbient = NULL;
 	}
+	DBGCALL3("DropForeignAmbientCubeMaps", pForeignCubeMapAmbient, pUseCubeMapAmbient)
 }
 
 void deoglShadowMapper::ActivateAmbientCubeMap( int size ){
+	DBGCALL("ActivateAmbientCubeMap", pCubeMapAmbient, pForeignCubeMapAmbient, pUseCubeMapAmbient)
 	// drop the cubemaps including the fbo if the size differs
 	if( pForeignCubeMapAmbient && pForeignCubeMapAmbient->GetSize() != size ){
 		DropAmbientCubeMaps();
@@ -1303,6 +1346,7 @@ void deoglShadowMapper::ActivateAmbientCubeMap( int size ){
 }
 
 void deoglShadowMapper::ActivateAmbientCubeMapFace( int size, int face ){
+	DBGCALL("ActivateAmbientCubeMapFace", pCubeMapAmbient, pForeignCubeMapAmbient, pUseCubeMapAmbient)
 	// drop the cubemaps including the fbo if the size differs
 	if( pForeignCubeMapAmbient && pForeignCubeMapAmbient->GetSize() != size ){
 		DropAmbientCubeMaps();
@@ -1361,7 +1405,23 @@ int deoglShadowMapper::ShadowMapSize ( const deoglConfiguration &config ){
 }
 
 int deoglShadowMapper::ShadowCubeSize( const deoglConfiguration& config ){
-	return ShadowMapSize( config );
+	switch( config.GetShadowQuality() ){
+	case deoglConfiguration::esqVeryHigh:
+		return 2048; //4096;
+		
+	case deoglConfiguration::esqHigh:
+	default:
+		return 2048;
+		
+	case deoglConfiguration::esqMedium:
+		return 1024;
+		
+	case deoglConfiguration::esqLow:
+		return 512;
+		
+	case deoglConfiguration::esqVeryLow:
+		return 256;
+	}
 }
 
 
