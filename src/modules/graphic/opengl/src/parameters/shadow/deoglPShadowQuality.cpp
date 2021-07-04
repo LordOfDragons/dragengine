@@ -53,7 +53,7 @@ deoglPShadowQuality::deoglPShadowQuality( deGraphicOpenGl &ogl ) : deoglParamete
 		{ "high", "High", "High quality. Prefer quality over performance." },
 		{ "veryHigh", "Very High", "Very high quality. For high-end GPU delivering best quality." }
 	};
-	AddSelectionEntries( entries, 5 );
+	AddSelectionEntries( entries, 6 );
 }
 
 deoglPShadowQuality::~deoglPShadowQuality(){
@@ -79,13 +79,11 @@ decString deoglPShadowQuality::GetParameterValue(){
 		return "medium";
 		
 	case deoglConfiguration::esqHigh:
+	default:
 		return "high";
 		
 	case deoglConfiguration::esqVeryHigh:
 		return "veryHigh";
-		
-	default:
-		return "high";
 	}
 }
 
