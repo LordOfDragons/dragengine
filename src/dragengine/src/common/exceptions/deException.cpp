@@ -45,6 +45,12 @@
 #define printf(...) __android_log_print(ANDROID_LOG_VERBOSE, "Dragengine", __VA_ARGS__);
 #endif
 
+#ifdef OS_W32
+#include "../../app/include_windows.h"
+#ifdef WITH_DBGHELP
+#include <dbghelp.h>
+#endif
+#endif
 
 
 // Definitions
@@ -221,38 +227,76 @@ void deException::pBuildBacktrace(){
 #endif
 
 #ifdef OS_W32
-/*
-	void *framepointers[ MAX_BACKTRACE_COUNT ];
-	const int fpcount = CaptureStackBackTrace( SKIP_SELF_TRACE_COUNT, MAX_BACKTRACE_COUNT, &framepointers, NULL );
-	if( fpcount == 0 ){
-		return;
+#ifdef WITH_DBGHELP
+	const HANDLE process = GetCurrentProcess();
+	const HANDLE thread = GetCurrentThread();
+	
+	CONTEXT context;
+	memset( &context, 0, sizeof( CONTEXT ) );
+	context.ContextFlags = CONTEXT_FULL;
+	RtlCaptureContext( &context );
+	
+	SymInitialize( process, NULL, TRUE );
+	
+	DWORD image;
+	STACKFRAME64 stackframe;
+	ZeroMemory( &stackframe, sizeof( STACKFRAME64 ) );
+	
+	#ifdef _M_IX86
+		image = IMAGE_FILE_MACHINE_I386;
+		stackframe.AddrPC.Offset = context.Eip;
+		stackframe.AddrPC.Mode = AddrModeFlat;
+		stackframe.AddrFrame.Offset = context.Ebp;
+		stackframe.AddrFrame.Mode = AddrModeFlat;
+		stackframe.AddrStack.Offset = context.Esp;
+		stackframe.AddrStack.Mode = AddrModeFlat;
+	#elif _M_X64
+		image = IMAGE_FILE_MACHINE_AMD64;
+		stackframe.AddrPC.Offset = context.Rip;
+		stackframe.AddrPC.Mode = AddrModeFlat;
+		stackframe.AddrFrame.Offset = context.Rsp;
+		stackframe.AddrFrame.Mode = AddrModeFlat;
+		stackframe.AddrStack.Offset = context.Rsp;
+		stackframe.AddrStack.Mode = AddrModeFlat;
+	#elif _M_IA64
+		image = IMAGE_FILE_MACHINE_IA64;
+		stackframe.AddrPC.Offset = context.StIIP;
+		stackframe.AddrPC.Mode = AddrModeFlat;
+		stackframe.AddrFrame.Offset = context.IntSp;
+		stackframe.AddrFrame.Mode = AddrModeFlat;
+		stackframe.AddrBStore.Offset = context.RsBSP;
+		stackframe.AddrBStore.Mode = AddrModeFlat;
+		stackframe.AddrStack.Offset = context.IntSp;
+		stackframe.AddrStack.Mode = AddrModeFlat;
+	#endif
+	
+	size_t i;
+	for( i=SKIP_SELF_TRACE_COUNT; i<MAX_BACKTRACE_COUNT; i++ ){
+		BOOL result = StackWalk64( image, process, thread, &stackframe, &context,
+			NULL, SymFunctionTableAccess64, SymGetModuleBase64, NULL );
+		if( ! result ){
+			break;
+		}
+		
+		char buffer[ sizeof( SYMBOL_INFO ) + MAX_SYM_NAME * sizeof( TCHAR ) ];
+		PSYMBOL_INFO symbol = ( PSYMBOL_INFO )buffer;
+		symbol->SizeOfStruct = sizeof( SYMBOL_INFO );
+		symbol->MaxNameLen = MAX_SYM_NAME;
+		
+		DWORD64 displacement = 0;
+		decString desymbol;
+		
+		if( SymFromAddr( process, stackframe.AddrPC.Offset, &displacement, symbol ) ){
+			desymbol.Format( "%s [%p]", symbol->Name, ( void* )stackframe.AddrPC.Offset );
+			
+		}else{
+			desymbol.Format( "?? [%p]", ( void* )stackframe.AddrPC.Offset );
+		}
+		
+		pBacktrace.Add( desymbol );
 	}
 	
-	DWORD64 dwDisplacement = 0;
-	
-	char buffer[ sizeof( SYMBOL_INFO ) + MAX_SYM_NAME * sizeof( TCHAR ) ];
-	PSYMBOL_INFO pSymbol = ( PSYMBOL_INFO )buffer;
-	
-	pSymbol->SizeOfStruct = sizeof( SYMBOL_INFO );
-	pSymbol->MaxNameLen = MAX_SYM_NAME;
-	
-	if( ! SymFromAddr( GetCurrentProcess(), SOME_ADDRESS, &dwDisplacement, pSymbol ) ){
-		return; // SymFromAddr failed
-	}
-	
-	
-	
-	
-	
-	
-	char ** const symbols = backtrace_symbols( framepointers, fpcount );
-	int i;
-	
-	for( i=0; i<fpcount; i++ ){
-		pBacktrace.Add( symbols[ i ] );
-	}
-	
-	free( symbols );
-	*/
+	SymCleanup( process );
+#endif
 #endif
 }

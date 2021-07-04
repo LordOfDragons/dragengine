@@ -18,6 +18,9 @@ elif envDragengine['OSPosix']:
 	
 elif envDragengine['OSWindows']:
 	libs = ['kernel32', 'user32', 'gdi32', 'winmm', 'wsock32', 'advapi32']
+	"""if envDragengine['with_debug']:
+		lib.append('dbghelp')
+		envDragengine.Append(CXXFLAGS = ['-DWITH_DBGHELP'])"""
 	
 else:
 	Exit('No supported OS found!')
