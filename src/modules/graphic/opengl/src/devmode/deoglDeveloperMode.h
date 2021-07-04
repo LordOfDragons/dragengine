@@ -33,7 +33,7 @@ class deoglFramebuffer;
 
 
 /**
- * \brief OpenGL developer mode..
+ * OpenGL developer mode..
  */
 class deoglDeveloperMode{
 public:
@@ -88,6 +88,7 @@ private:
 	
 	bool pShowDebugInfo;
 	bool pDebugInfoSync;
+	bool pDebugInfoLog;
 	int pDebugInfoDetails;
 	
 	bool pGIShowProbes;
@@ -154,7 +155,7 @@ public:
 	/** Retrieves the occlusion map level to show or -1 to disable. */
 	inline int GetShowOccMapLevel() const{ return pShowOccMapLevel; }
 	
-	/** \brief Environment maps are shown. */
+	/** Environment maps are shown. */
 	inline bool GetShowEnvMaps() const{ return pShowEnvMaps; }
 	
 	/** Determines if environment map hulls are shown. */
@@ -168,13 +169,16 @@ public:
 	
 	
 	
-	/** \brief Show debug information which also enables debug timing measurements. */
+	/** Show debug information which also enables debug timing measurements. */
 	inline bool GetShowDebugInfo() const{ return pShowDebugInfo; }
 	
-	/** \brief Call glFinish before each debug timing measurement for true GPU time measuring. */
+	/** Call glFinish before each debug timing measurement for true GPU time measuring. */
 	inline bool GetDebugInfoSync() const{ return pDebugInfoSync; }
 	
-	/** \brief Debug information details to show. */
+	/** Log debug timing measurement result per frame. */
+	inline bool GetDebugInfoLog() const{ return pDebugInfoLog; }
+	
+	/** Debug information details to show. */
 	inline int GetDebugInfoDetails() const{ return pDebugInfoDetails; }
 	
 	
@@ -254,6 +258,7 @@ private:
 	
 	void pCmdShowDebugInfo( const decUnicodeArgumentList &command, decUnicodeString &answer );
 	void pCmdDebugInfoSync( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	void pCmdDebugInfoLog( const decUnicodeArgumentList &command, decUnicodeString &answer );
 	void pCmdDebugInfoDetails( const decUnicodeArgumentList &command, decUnicodeString &answer );
 	
 	void pCmdGIShowProbes( const decUnicodeArgumentList &command, decUnicodeString &answer );

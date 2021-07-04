@@ -981,6 +981,9 @@ void deoglRenderThread::pInitThreadPhase4(){
 	pRenderers = new deoglRTRenderers( *this );
 	pDefaultTextures = new deoglRTDefaultTextures( *this );
 	
+	// initial notification. required for testing if devode config is hardcoded in constructor
+	DevModeDebugInfoChanged();
+	
 	// some final preparations. is this really required?
 	pTexture->GetStages().DisableAllStages();
 	
