@@ -94,6 +94,7 @@ void deoglRenderPlanLight::PlanShadowCasting(){
 	// transparent render passes) then they are forgotten. they are produced from the dynamic
 	// shadow maps by down sampling to save time
 	const deoglRLight &light = *pLight->GetLight();
+	const int minSize = 16;
 	
 	// solid static shadow map size
 	switch( light.GetLightType() ){
@@ -115,15 +116,15 @@ void deoglRenderPlanLight::PlanShadowCasting(){
 	
 	// reduce static shadow map size
 	if( pReductionFactor > 0 ){
-		pSolidShadowSizeStatic >>= pReductionFactor;
+		pSolidShadowSizeStatic = decMath::max( pSolidShadowSizeStatic >> pReductionFactor, minSize );
 	}
 	
 	// reduce size for dynamic shadow maps
-	pSolidShadowSizeDynamic = decMath::max( pSolidShadowSizeStatic >> 1, 16 );
+	pSolidShadowSizeDynamic = decMath::max( pSolidShadowSizeStatic >> 1, minSize );
 	
 	// reduce size for transparent shadow maps
-	pTranspShadowSizeStatic = decMath::max( pSolidShadowSizeStatic >> 1, 16 );
-	pTranspShadowSizeDynamic = decMath::max( pSolidShadowSizeDynamic >> 1, 16 );
+	pTranspShadowSizeStatic = decMath::max( pSolidShadowSizeStatic >> 1, minSize );
+	pTranspShadowSizeDynamic = decMath::max( pSolidShadowSizeDynamic >> 1, minSize );
 	
 	// temporary hack. calculating the static point shadow map at higher resolution
 	// is currently a problem and causes noticeable stutter. reducing the static
@@ -133,7 +134,7 @@ void deoglRenderPlanLight::PlanShadowCasting(){
 	case deLight::eltPoint:
 	case deLight::eltSemiPoint:
 	case deLight::eltAmbient:
-		sizeSolidStatic = decMath::max( pShadowCubeSize >> 1, 16 );
+		sizeSolidStatic = decMath::max( pShadowCubeSize >> 1, minSize );
 		break;
 		
 	default:
@@ -146,9 +147,9 @@ void deoglRenderPlanLight::PlanShadowCasting(){
 	pAmbientShadowSizeDynamic = pSolidShadowSizeDynamic;
 	
 	// transparency is reduced
-	pSolidShadowSizeTransp = decMath::max( pSolidShadowSizeDynamic >> 1 /*2*/, 16 );
-	pTranspShadowSizeTransp = decMath::max( pTranspShadowSizeDynamic >> 1 /*2*/, 16 );
-	pAmbientShadowSizeTransp = decMath::max( pAmbientShadowSizeDynamic >> 1 /*2*/, 16 );
+	pSolidShadowSizeTransp = decMath::max( pSolidShadowSizeDynamic >> 1 /*2*/, minSize );
+	pTranspShadowSizeTransp = decMath::max( pTranspShadowSizeDynamic >> 1 /*2*/, minSize );
+	pAmbientShadowSizeTransp = decMath::max( pAmbientShadowSizeDynamic >> 1 /*2*/, minSize );
 	
 	// log values used
 #if 0
