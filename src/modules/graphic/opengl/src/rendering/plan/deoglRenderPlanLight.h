@@ -24,29 +24,44 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class deoglRenderThread;
-class deoglRLight;
+class deoglRenderPlan;
+class deoglCollideListLight;
 
 
 
 /**
- * \brief Render plan light.
+ * Render plan light.
  */
 class deoglRenderPlanLight{
 private:
-	deoglRenderThread &pRenderThread;
+	deoglRenderPlan &pPlan;
+	deoglCollideListLight *pLight;
 	
-	deoglRLight *pLight;
+	decDVector pPosition;
+	float pDistance;
+	int pReductionFactor;
+	
+	int pSolidShadowSizeStatic;
+	int pSolidShadowSizeDynamic;
+	int pSolidShadowSizeTransp;
+	
+	int pTranspShadowSizeStatic;
+	int pTranspShadowSizeDynamic;
+	int pTranspShadowSizeTransp;
+	
+	int pAmbientShadowSizeStatic;
+	int pAmbientShadowSizeDynamic;
+	int pAmbientShadowSizeTransp;
 	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create render plan light. */
-	deoglRenderPlanLight( deoglRenderThread &renderThread );
+	/** Create render plan light. */
+	deoglRenderPlanLight( deoglRenderPlan &plan );
 	
-	/** \brief Clean up render plan light. */
+	/** Clean up render plan light. */
 	~deoglRenderPlanLight();
 	/*@}*/
 	
@@ -54,12 +69,61 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Light. */
-	inline deoglRLight *GetLight() const{ return pLight; }
+	/** Render plan. */
+	inline deoglRenderPlan &GetPlan() const{ return pPlan; }
 	
-	/** \brief Set light. */
-	void SetLight( deoglRLight *light );
+	/** Light. */
+	inline deoglCollideListLight *GetLight() const{ return pLight; }
+	
+	/** Set light. */
+	void SetLight( deoglCollideListLight *light );
+	
+	/** Light position in world space. */
+	inline const decDVector &GetPosition() const{ return pPosition; }
+	
+	/** Distance of light to camera. */
+	inline float GetDistance() const{ return pDistance; }
+	
+	/** Shadow map size reduction factor. */
+	inline int GetReductionFactor() const{ return pReductionFactor; }
+	
+	/** Init. */
+	void Init();
+	
+	/** Plan shadow casting. */
+	void PlanShadowCasting();
+	
+	/** Shadow size. */
+	inline int GetSolidShadowSizeStatic() const{ return pSolidShadowSizeStatic; }
+	inline int GetSolidShadowSizeDynamic() const{ return pSolidShadowSizeDynamic; }
+	inline int GetSolidShadowSizeTransp() const{ return pSolidShadowSizeTransp; }
+	
+	inline int GetTranspShadowSizeStatic() const{ return pTranspShadowSizeStatic; }
+	inline int GetTranspShadowSizeDynamic() const{ return pTranspShadowSizeDynamic; }
+	inline int GetTranspShadowSizeTransp() const{ return pTranspShadowSizeTransp; }
+	
+	inline int GetAmbientShadowSizeStatic() const{ return pAmbientShadowSizeStatic; }
+	inline int GetAmbientShadowSizeDynamic() const{ return pAmbientShadowSizeDynamic; }
+	inline int GetAmbientShadowSizeTransp() const{ return pAmbientShadowSizeTransp; }
+	
+	/** Set shadow size. */
+	void SetSolidShadowSizeStatic( int size );
+	void SetSolidShadowSizeDynamic( int size );
+	void SetSolidShadowSizeTransp( int size );
+	
+	void SetTranspShadowSizeStatic( int size );
+	void SetTranspShadowSizeDynamic( int size );
+	void SetTranspShadowSizeTransp( int size );
+	
+	void SetAmbientShadowSizeStatic( int size );
+	void SetAmbientShadowSizeDynamic( int size );
+	void SetAmbientShadowSizeTransp( int size );
 	/*@}*/
+	
+	
+	
+private:
+	void pCalcReductionFactor();
 };
 
 #endif

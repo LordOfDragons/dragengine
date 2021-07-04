@@ -964,6 +964,9 @@ void deoglRenderDevMode::RenderOverlayInfos( deoglRenderPlan &plan ){
 	
 	if( devMode.GetShowDebugInfo() ){
 		RenderDebugInformation( plan, position, size );
+		if( devMode.GetDebugInfoLog() ){
+			LogDebugInformation();
+		}
 		position.y += size.y + vgap;
 	}
 	
@@ -1573,6 +1576,48 @@ const decPoint &position, decPoint &size ){
 	
 	renderDebug.EndRenderRectangle();
 	renderDebug.EndRenderText();
+}
+
+void deoglRenderDevMode::LogDebugInformation(){
+	const deoglDebugInformationList &list = GetRenderThread().GetDebug().GetDebugInformationList();
+	const int count = list.GetCount();
+	if( count == 0 ){
+		return;
+	}
+	
+	deoglRTLogger &logger = GetRenderThread().GetLogger();
+	logger.LogInfo( "LogDebugInformation:" );
+	LogDebugInformation( list, decString() );
+}
+
+void deoglRenderDevMode::LogDebugInformation( const deoglDebugInformationList &list, const decString &prefix ){
+	deoglRTLogger &logger = GetRenderThread().GetLogger();
+	const int count = list.GetCount();
+	int i;
+	
+	const decString childPrefix( prefix + "  " );
+	for( i=0; i<count; i++ ){
+		const deoglDebugInformation &di = *list.GetAt( i );
+		if( ! di.GetVisible() ){
+			continue;
+		}
+		
+		if( di.HasElapsedTime() && di.HasCounter() ){
+			logger.LogInfoFormat( "%s- %s: %d.%01dms (%d)", prefix.GetString(), di.GetName().GetString(),
+				( int )( di.GetElapsedTimeAccum() * 1000.0f ), ( int )( di.GetElapsedTimeAccum() * 10000.0f ) % 10, di.GetCounter() );
+			
+		}else if( di.HasElapsedTime() ){
+			logger.LogInfoFormat( "%s- %s: %d.%01dms", prefix.GetString(), di.GetName().GetString(),
+				( int )( di.GetElapsedTimeAccum() * 1000.0f ), ( int )( di.GetElapsedTimeAccum() * 10000.0f ) % 10 );
+			
+		}else{
+			logger.LogInfoFormat( "%s- %s: -", prefix.GetString(), di.GetName().GetString() );
+		}
+		
+		if( di.GetChildren().GetCount() > 0 ){
+			LogDebugInformation( di.GetChildren(), childPrefix );
+		}
+	}
 }
 
 void deoglRenderDevMode::LayoutDebugInformation( deoglRenderPlan &plan,

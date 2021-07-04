@@ -1192,6 +1192,8 @@ bool refilterShadow ){
 				light.GetStaticCollideList(), NULL, staticShadowMapSize,
 				staticTranspShadowMapSize, transparentStaticShadow, false, solid );
 			
+			shadowMapper.DropForeignTextures();
+			
 			/*
 			decString text;
 			text.Format( "spot_shadow_solid_depth_%p", &light );

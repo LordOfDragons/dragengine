@@ -1334,28 +1334,18 @@ void deoglRenderPlan::PlanTransparency( int layerCount ){
 	//printf( "RenderPlan: Transparency Layer Count = %d\n", layerCount );
 	
 	// plan transparency handling for lights
-	if( pDisableLights ){
-		const int lightCount = pCollideList.GetLightCount();
+// 	if( pDisableLights ){ // what?
 		int i;
-		
-		for( i=0; i<lightCount; i++ ){
-			deoglRLight &light = *pCollideList.GetLightAt( i )->GetLight();
+		for( i=0; i<pLightCount; i++ ){
+			deoglRenderPlanLight &planLight = *pLights[ i ];
 			
-			deoglShadowCaster &scaster = *light.GetShadowCaster();
-			
-			deoglSCSolid &scsolid = scaster.GetSolid();
-			scsolid.SetPlanTransparentSize(
-				decMath::max( scsolid.GetPlanDynamicSize() >> 1 /*2*/, 16 ) );
-			
-			deoglSCTransparent &sctransparent = scaster.GetTransparent();
-			sctransparent.SetPlanTransparentSize(
-				decMath::max( sctransparent.GetPlanDynamicSize() >> 1 /*2*/, 16 ) );
-			
-			deoglSCAmbient &scambient = scaster.GetAmbient();
-			scambient.SetPlanTransparentSize(
-				decMath::max( scambient.GetPlanDynamicSize() >> 1 /*2*/, 16 ) );
+			// deprecated
+			deoglShadowCaster &scaster = *planLight.GetLight()->GetLight()->GetShadowCaster();
+			scaster.GetSolid().SetPlanTransparentSize( planLight.GetSolidShadowSizeTransp() );
+			scaster.GetTransparent().SetPlanTransparentSize( planLight.GetTranspShadowSizeTransp() );
+			scaster.GetAmbient().SetPlanTransparentSize( planLight.GetAmbientShadowSizeTransp() );
 		}
-	}
+// 	}
 }
 
 void deoglRenderPlan::Render(){
@@ -1811,17 +1801,18 @@ deoglRenderPlanLight *deoglRenderPlan::GetLightAt( int index ) const{
 	return pLights[ index ];
 }
 
-deoglRenderPlanLight *deoglRenderPlan::GetLightFor( deoglRLight *light ){
-	if( ! light ) DETHROW( deeInvalidParam );
+deoglRenderPlanLight *deoglRenderPlan::GetLightFor( deoglCollideListLight *light ){
+	if( ! light ){
+		DETHROW( deeInvalidParam );
+	}
 	
 	int index = pIndexOfLightWith( light );
 	if( index == -1 ){
 		if( pLightCount == pLightSize ){
-			int newSize = pLightSize * 3 / 2 + 1;
-			deoglRenderPlanLight **newArray = new deoglRenderPlanLight*[ newSize ];
-			if( ! newArray ) DETHROW( deeOutOfMemory );
+			const int newSize = pLightSize * 3 / 2 + 1;
+			deoglRenderPlanLight ** const newArray = new deoglRenderPlanLight*[ newSize ];
 			
-			memset( newArray, '\0', sizeof( deoglRenderPlanLight* ) * newSize );
+			memset( newArray, 0, sizeof( deoglRenderPlanLight* ) * newSize );
 			if( pLights ){
 				memcpy( newArray, pLights, sizeof( deoglRenderPlanLight* ) * pLightSize );
 				delete [] pLights;
@@ -1832,8 +1823,7 @@ deoglRenderPlanLight *deoglRenderPlan::GetLightFor( deoglRLight *light ){
 		}
 		
 		if( ! pLights[ pLightCount ] ){
-			pLights[ pLightCount ] = new deoglRenderPlanLight( pRenderThread );
-			if( ! pLights[ pLightCount ] ) DETHROW( deeOutOfMemory );
+			pLights[ pLightCount ] = new deoglRenderPlanLight( *this );
 		}
 		
 		index = pLightCount;
@@ -1949,7 +1939,7 @@ void deoglRenderPlan::RemoveAllMaskedPlans(){
 // Private Functions
 //////////////////////
 
-int deoglRenderPlan::pIndexOfLightWith( deoglRLight *light ) const{
+int deoglRenderPlan::pIndexOfLightWith( deoglCollideListLight *light ) const{
 	int i;
 	
 	for( i=0; i<pLightCount; i++ ){
@@ -2072,78 +2062,33 @@ void deoglRenderPlan::pBuildRenderPlan(){
 }
 
 void deoglRenderPlan::pBuildLightPlan(){
-	// plan light shadow map sizes.
-	// 
-	// the static shadow maps are used across multiple frames and uses the best resolution.
-	// if memory becomes low static shadow maps can be removed from memory and reduced in size.
-	// if reduced in size the shadow maps have to be dropped to force rebuilding them.
-	// 
-	// the dynamic shadow maps are used only during solid geometry rendering and forgotten
-	// right afterwards. for this the shadow mapper is used using a temporary texture reused
-	// for each light. these shadow maps can be of lower resolution since they exist only for
-	// one render pass
-	// 
-	// transparent shadow maps are used for transparent render passes only. these shadow maps
-	// work similar to static ones in that they are keep over multiple render passes (all
-	// transparent render passes) then they are forgotten. they are produced from the dynamic
-	// shadow maps by down sampling to save time
-	const int lightCount = pCollideList.GetLightCount();
+	const int count = pCollideList.GetLightCount();
 	int i;
 	
-	for( i=0; i<lightCount; i++ ){
-		deoglRLight &light = *pCollideList.GetLightAt( i )->GetLight();
-		int sizeTranspStatic, sizeTranspDynamic;
-		int sizeSolidStatic, sizeSolidDynamic;
+	RemoveAllLights(); // better safe than sorry
+	
+	for( i=0; i<count; i++ ){
+		// we have to add lights here. earlier is not possible since the elements in the
+		// collide list are potentially removed due to culling
+		deoglRenderPlanLight &planLight = *GetLightFor( pCollideList.GetLightAt( i ) ) ;
 		
-		switch( light.GetLightType() ){
-		case deLight::eltSpot:
-		case deLight::eltProjector:
-			sizeSolidStatic = pShadowMapSize;
-			break;
-			
-		case deLight::eltPoint:
-			sizeSolidStatic = pShadowCubeSize;// >> 1; // temporary reduced by 1
-			break;
-			
-		default:
-			DETHROW( deeInvalidParam );
-		}
+		planLight.Init();
+		planLight.PlanShadowCasting();
 		
-		sizeSolidDynamic = decMath::max( sizeSolidStatic >> 1, 16 );
-		
-		sizeTranspStatic = decMath::max( sizeSolidStatic >> 1, 16 );
-		sizeTranspDynamic = decMath::max( sizeSolidDynamic >> 1, 16 );
-		
-		// temporary hack. calculating the static point shadow map at higher resolution
-		// is currently a problem and causes noticeable stutter. reducing the static
-		// point shadow map size until this problem is fixed
-		/*
-		switch( light.GetLightType() ){
-		case deLight::eltPoint:
-		case deLight::eltSemiPoint:
-		case deLight::eltAmbient:
-			sizeSolidStatic = decMath::max( pShadowCubeSize >> 1, 16 );
-			break;
-			
-		default:
-			break;
-		}
-		*/
-		
-		// assign found values. ambient is same size as solid due to boundary box calculation
-		deoglShadowCaster &scaster = *light.GetShadowCaster();
+		// below deprecated
+		deoglShadowCaster &scaster = *planLight.GetLight()->GetLight()->GetShadowCaster();
 		
 		deoglSCSolid &scsolid = scaster.GetSolid();
-		scsolid.SetPlanStaticSize( sizeSolidStatic );
-		scsolid.SetPlanDynamicSize( sizeSolidDynamic );
+		scsolid.SetPlanStaticSize( planLight.GetSolidShadowSizeStatic() );
+		scsolid.SetPlanDynamicSize( planLight.GetSolidShadowSizeDynamic() );
 		
 		deoglSCTransparent &sctransparent = scaster.GetTransparent();
-		sctransparent.SetPlanStaticSize( sizeTranspStatic );
-		sctransparent.SetPlanDynamicSize( sizeTranspDynamic );
+		sctransparent.SetPlanStaticSize( planLight.GetTranspShadowSizeStatic() );
+		sctransparent.SetPlanDynamicSize( planLight.GetTranspShadowSizeDynamic() );
 		
 		deoglSCAmbient &scambient = scaster.GetAmbient();
-		scambient.SetPlanStaticSize( sizeSolidStatic );
-		scambient.SetPlanDynamicSize( sizeSolidDynamic );
+		scambient.SetPlanStaticSize( planLight.GetAmbientShadowSizeStatic() );
+		scambient.SetPlanDynamicSize( planLight.GetAmbientShadowSizeDynamic() );
 	}
 }
 

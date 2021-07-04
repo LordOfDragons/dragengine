@@ -28,6 +28,7 @@
 class deoglCubeMap;
 class deoglLightShader;
 class deoglRenderPlan;
+class deoglRenderPlanLight;
 class deoglRLight;
 class deoglSPBlockUBO;
 class deoglShaderProgram;
@@ -127,21 +128,20 @@ public:
 	/** \name Rendering */
 	/*@{*/
 	/** \brief Calculate box boundary for a point light. */
-	void CalculateBoxBoundary( deoglRLight &light );
+	void CalculateBoxBoundary( deoglRenderPlanLight &planLight );
 	
 	/** \brief Renders lights. */
 	void RenderLights( deoglRenderPlan &plan, bool solid, const deoglRenderPlanMasked *mask );
 	
 	/** \brief Render point light. */
-	void RenderLight( deoglRenderPlan &plan, bool solid, const deoglRenderPlanMasked *mask,
-		deoglCollideListLight &cllight );
+	void RenderLight( deoglRenderPlanLight &planLight, bool solid, const deoglRenderPlanMasked *mask );
 	
 	/** \brief Activate textures for lighting. */
-	void ActivateTextures( deoglRLight &light, deoglLightShader &shader,
+	void ActivateTextures( deoglRenderPlanLight &planLight, deoglLightShader &shader,
 		const sShadowDepthMaps &shadowDepthMaps );
 	
 	/** \brief Render shadows for a point light. */
-	void RenderShadows( deoglRenderPlan &plan, bool solid, deoglRLight &light,
+	void RenderShadows( deoglRenderPlanLight &planLight, bool solid,
 		const decDMatrix &matrixProjection, bool transparentStaticShadow,
 		bool transparentDynamicShadow, bool refilterShadow );
 	
@@ -149,23 +149,23 @@ public:
 	void ClearCubeMap( deoglShadowMapper &shadowMapper, int shadowMapSize );
 	
 	/** \brief Render shadow cube map. */
-	void RenderShadowMaps( deoglRenderPlan &plan, deoglRLight &light, const decDMatrix &matrixProjection,
+	void RenderShadowMaps( deoglRenderPlanLight &planLight, const decDMatrix &matrixProjection,
 		deoglShadowMapper &shadowMapper, const deoglCollideList *clist1, const deoglCollideList *clist2,
 		int solidShadowMapSize, int transpShadowMapSize, bool withTransparent, float shadowScale,
 		float shadowOffset, bool debugSolid );
 	
 	/** \brief Render ambient map. */
-	void RenderAmbientMap( deoglRenderPlan &plan, deoglRLight &light, const decDMatrix &matrixProjection,
+	void RenderAmbientMap( deoglRenderPlanLight &planLight, const decDMatrix &matrixProjection,
 		deoglShadowMapper &shadowMapper, const deoglCollideList *clist1, const deoglCollideList *clist2,
 		int ambientMapSize, float shadowScale, float shadowOffset );
 	
 	/** \brief Update light shader parameter block. */
 	void UpdateLightParamBlock( deoglLightShader &lightShader, deoglSPBlockUBO &paramBlock,
-		deoglRenderPlan &plan, deoglRLight &light );
+		deoglRenderPlanLight &planLight );
 	
 	/** \brief Update instance shader parameter block. */
 	void UpdateInstanceParamBlock( deoglLightShader &lightShader, deoglSPBlockUBO &paramBlock,
-		deoglRenderPlan &plan, deoglCollideListLight &cllight, sShadowDepthMaps &shadowDepthMaps );
+		deoglRenderPlanLight &planLight, sShadowDepthMaps &shadowDepthMaps );
 	
 	
 	
