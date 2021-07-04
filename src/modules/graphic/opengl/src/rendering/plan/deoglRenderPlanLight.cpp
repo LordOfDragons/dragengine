@@ -145,6 +145,11 @@ void deoglRenderPlanLight::PlanShadowCasting(){
 	pAmbientShadowSizeStatic = pSolidShadowSizeStatic;
 	pAmbientShadowSizeDynamic = pSolidShadowSizeDynamic;
 	
+	// transparency is reduced
+	pSolidShadowSizeTransp = decMath::max( pSolidShadowSizeDynamic >> 1 /*2*/, 16 );
+	pTranspShadowSizeTransp = decMath::max( pTranspShadowSizeDynamic >> 1 /*2*/, 16 );
+	pAmbientShadowSizeTransp = decMath::max( pAmbientShadowSizeDynamic >> 1 /*2*/, 16 );
+	
 	// log values used
 #if 0
 	static const char * const lightTypeNames[] = { "point", "spot", "projector" };

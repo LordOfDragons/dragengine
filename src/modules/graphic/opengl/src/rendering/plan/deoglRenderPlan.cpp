@@ -1334,38 +1334,18 @@ void deoglRenderPlan::PlanTransparency( int layerCount ){
 	//printf( "RenderPlan: Transparency Layer Count = %d\n", layerCount );
 	
 	// plan transparency handling for lights
-	if( pDisableLights ){
+// 	if( pDisableLights ){ // what?
 		int i;
 		for( i=0; i<pLightCount; i++ ){
 			deoglRenderPlanLight &planLight = *pLights[ i ];
-			deoglRLight &light = *planLight.GetLight()->GetLight();
-			
-			planLight.SetSolidShadowSizeTransp( decMath::max(
-				planLight.GetSolidShadowSizeDynamic() >> 1 /*2*/, 16 ) );
-			
-			planLight.SetTranspShadowSizeTransp( decMath::max(
-				planLight.GetTranspShadowSizeDynamic() >> 1 /*2*/, 16 ) );
-			
-			planLight.SetAmbientShadowSizeTransp( decMath::max(
-				planLight.GetAmbientShadowSizeDynamic() >> 1 /*2*/, 16 ));
-			
 			
 			// deprecated
-			deoglShadowCaster &scaster = *light.GetShadowCaster();
-			
-			deoglSCSolid &scsolid = scaster.GetSolid();
-			scsolid.SetPlanTransparentSize(
-				decMath::max( scsolid.GetPlanDynamicSize() >> 1 /*2*/, 16 ) );
-			
-			deoglSCTransparent &sctransparent = scaster.GetTransparent();
-			sctransparent.SetPlanTransparentSize(
-				decMath::max( sctransparent.GetPlanDynamicSize() >> 1 /*2*/, 16 ) );
-			
-			deoglSCAmbient &scambient = scaster.GetAmbient();
-			scambient.SetPlanTransparentSize(
-				decMath::max( scambient.GetPlanDynamicSize() >> 1 /*2*/, 16 ) );
+			deoglShadowCaster &scaster = *planLight.GetLight()->GetLight()->GetShadowCaster();
+			scaster.GetSolid().SetPlanTransparentSize( planLight.GetSolidShadowSizeTransp() );
+			scaster.GetTransparent().SetPlanTransparentSize( planLight.GetTranspShadowSizeTransp() );
+			scaster.GetAmbient().SetPlanTransparentSize( planLight.GetAmbientShadowSizeTransp() );
 		}
-	}
+// 	}
 }
 
 void deoglRenderPlan::Render(){
