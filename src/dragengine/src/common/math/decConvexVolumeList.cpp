@@ -656,13 +656,20 @@ int decConvexVolumeList::pSplitByPlane( int volume, const decVector &splitNormal
 			if( ! faceCutFront->IsTooSmall( *volumeFront ) ){
 				faceCutFront->SortVertices( *volumeFront );
 				volumeFront->AddFace( faceCutFront );
+				
+			}else{
+				delete faceCutFront;
 			}
 			faceCutFront = NULL;
 		}
+		
 		if( faceCutBack ){
 			if( ! faceCutBack->IsTooSmall( *volumeBack ) ){
 				faceCutBack->SortVertices( *volumeBack );
 				volumeBack->AddFace( faceCutBack );
+				
+			}else{
+				delete faceCutBack;
 			}
 			faceCutBack = NULL;
 		}

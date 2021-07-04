@@ -61,6 +61,7 @@ private:
 	float pGetAttributeFloat( const decXmlElementTag &tag, const char *name ) const;
 	
 	void pWriteWorld( decXmlWriter &writer, const meWorld &world );
+	void pWriteWorldEditor( decXmlWriter &writer, const meWorld &world );
 	void pWriteObject( decXmlWriter &writer, const meObject &object );
 	void pWriteObjectTexture( decXmlWriter &writer, const meObjectTexture &texture );
 	void pWriteDecal( decXmlWriter &writer, const meDecal &decal );

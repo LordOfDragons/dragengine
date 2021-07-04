@@ -23,6 +23,20 @@ the license. They can use any license they see fit.
 In a nutshell this means: __If you create a game, no matter if commercial or not__
 __, you do not have to worry about licensing at all.__
 
+# GIT Branches
+
+The __master__ branch is the current development branch with the most recent work.
+It is potentially unstable and should be only used by developers working on
+bleeding edge software build against the upcoming release.
+
+The __stable__ branch is the stable branch pointing to the latest release. This
+branch is for public use by distribution builders and developers working on
+software to work with the latest stable release.
+
+All other branches are internal feature development and platform support branches
+not intended for public use. If you want to work on these branches please get in
+contact with the development team first.
+
 # Building Linux
 
 To customize build either copy "custom.py.dist" to "custom.py" and edit or add the
@@ -46,6 +60,11 @@ respective with_system_* parameter to 'yes' (to force using the library from hos
 system and fail if not found) or 'no' (to force compile from in-tree version) or
 'auto' (use from system if found otherwise fall back to in-tree version).
 
+The default installation prefix is "/usr". To change the installation prefix use
+"custom.py" or use
+
+    scons prefix=/usr/local
+
 To build distribution archives run
 
     scons archive
@@ -61,6 +80,30 @@ The installers will be located under "installer/build"
 In general all compiling takes place inside "build" directories underneath the
 respective SConscript files. To make a full clean you can delete all directories
 named "build" safely
+
+Every target can be cleared by appending "-c" to the command line. For example
+to clear build files run
+
+    scons -c
+
+To clear only archive files run
+
+    scons -c archive
+
+Clearing only removes files not directories. This is the way SCons behaves.
+
+When running SCons as user it is recommended to use "prefix" parameter to define
+the installation directory otherwise installing files fails with permission
+denied errors. It is not recommended to run SCons as root unless you intent to
+install files directly into the system.
+
+Package maintainers requiring sandboxing to build packages can use the SCons
+sandbox support to place installed files in a different location than the
+"prefix" parameter defines like this:
+
+    scons --install-sandbox=path/to/sandbox
+
+See the __debian__ branch for an example of how this is used.
 
 
 # Build Dependencies

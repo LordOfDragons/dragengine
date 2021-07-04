@@ -1,0 +1,257 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+namespace Dragengine.TestSystem
+
+pin Dragengine.LoadSave
+pin Dragengine.Scenery
+pin Dragengine.Preloading
+pin Dragengine.Utils
+
+
+
+/**
+ * \brief Base class for testing BehaviorElementClass behaviors.
+ * \version 1.5
+ * 
+ * This class helps to test ECBehavior subclasses by providing the boiler plate code required
+ * to set up such tests. In particular this base class does the following:
+ * <ul>
+ * <li>Create a GameWorld instance</li>
+ * <li>Create a BehaviorElementClass instance</li>
+ * <li>Wait for preloading resources to finish</li>
+ * <li>Create a StubElement instance</li>
+ * <li>Create BehaviorElement instance</li>
+ * <li>Safely tear down all created resources</li>
+ * </ul>
+ * 
+ * This class calls hook methods at specific points during the test to allow the subclass to
+ * set up the behaviors in the required layout as well as running the tests. The following
+ * example implementation shows how a subclass can be written.
+ * 
+ * \code{.ds}
+ * class MyTestCase extends TestCaseECBehavior
+ *    public func new()
+ *    end
+ *    
+ *    protected var ECBehaviorComponent behavior
+ *    
+ *    // Overwrite method to add behaviors to element class. Created behaviors
+ *    // have to be store aside if required during tests later on. Overwriting
+ *    // this method is mandatory
+ *    protected func void addBehaviors()
+ *      behavior = ECBehaviorComponent.new(getElementClass(), null)
+ *    end
+ *    
+ *    // Overwrite method to set element stub properties. This simulates mapper setting
+ *    // object properties in the world editor. Overwriting this method is optional.
+ *    protected func void setStubProperties()
+ *      getStubElement().setPropertyValueFor("component.model", "/content/models/test.demodel")
+ *    end
+ *    
+ *    // Overwrite method to set up element after it has been created. Overwriting
+ *    // this method is optional
+ *    protected func void elementCreated()
+ *      getElement().setPosition(DVector.new(2, 1, 3))
+ *    end
+ *    
+ *    // Overwrite to run your tests on the behavior. Overwriting this method is mandatory
+ *    protected func bool testBehaviors(TestSuite testSuite)
+ *       var ECBehaviorComponent.Instance component = behavior.instance(getElement())
+ *       assertNotNull(component.getComponent())
+ *       
+ *       // Return true to continue testing during the next frame update or false
+ *       // if the test finished successfully.
+ *       return false
+ *    end
+ * end
+ * \endcode
+ */
+abstract class TestCaseECBehavior extends TestCase
+	/** \brief Helper class to store the created element aside. */
+	protected class TestBehaviorElementClass extends BehaviorElementClass
+		public var TestCaseECBehavior test
+		
+		/** \brief Create element class. */
+		public func new(TestCaseECBehavior test) super("TestBehaviorElement")
+			this.test = test
+		end
+		
+		/** \brief Dispose of element class. */
+		public func void dispose()
+			test = null
+			super.dispose()
+		end
+		
+		/** \brief Store element aside. */
+		protected func Element createElement()
+			var Element element = super.createElement()
+			test.setElement(element cast BehaviorElement)
+			return element
+		end
+	end
+	
+	
+	
+	private var BehaviorElementClass elementClass
+	private var StubElement stubElement
+	private var BehaviorElement element
+	private var PreloadCounter preloadCounter
+	private var GameWorld gameWorld
+	
+	
+	
+	/** \brief Create test. */
+	public func new(String id, UnicodeString name) super(id, name)
+	end
+	
+	
+	
+	/** \brief Element class to use for testing. */
+	protected func BehaviorElementClass getElementClass()
+		return elementClass
+	end
+	
+	/** \brief Stub element to use for testing. */
+	protected func StubElement getStubElement()
+		return stubElement
+	end
+	
+	/** \brief Element to use for testing. */
+	protected func BehaviorElement getElement()
+		return element
+	end
+	
+	/** \brief Preload counter used to preload element class resources. */
+	protected func PreloadCounter getPreloadCounter()
+		return preloadCounter
+	end
+	
+	/** \brief Game world to use for testing. */
+	protected func GameWorld getGameWorld()
+		return gameWorld
+	end
+	
+	
+	
+	/** \brief Add behaviors to element class. */
+	protected abstract func void addBehaviors()
+	
+	/** \brief Set stub properties. */
+	protected func void setStubProperties()
+	end
+	
+	/** \brief Element created. */
+	protected func void elementCreated()
+	end
+	
+	/** \brief Test behaviors. */
+	protected abstract func bool testBehaviors(TestSuite testSuite)
+	
+	
+	
+	/** \brief Assert element class has named property. */
+	protected func void assertHasProperty(String name)
+		assertNotNull(elementClass.getPropertyNamed(name))
+	end
+	
+	
+	
+	/**
+	 * \brief Set element.
+	 * 
+	 * For internal use only.
+	 */
+	public func void setElement(BehaviorElement element)
+		this.element = element
+	end
+	
+	/** \brief Initialize test. */
+	public func void init()
+		// create game world
+		gameWorld = GameWorld.new()
+		
+		// create element class
+		elementClass = TestBehaviorElementClass.new(this)
+		
+		// add behaviors
+		addBehaviors()
+		
+		// start preloading
+		preloadCounter = PreloadCounter.new()
+		elementClass.preloadResources(preloadCounter)
+	end
+	
+	/** \brief Run test. */
+	public func bool run(TestSuite testSuite)
+		// if preloading
+		if preloadCounter != null
+			// if still preloading wait
+			if preloadCounter.isNotZero()
+				return true
+			end
+			
+			// preloading finished
+			preloadCounter = null
+			
+			// create element stub
+			stubElement = StubElement.new(elementClass, UniqueID.new(123))
+			setStubProperties()
+			
+			// create element. assert element has been created and has been added to game world
+			stubElement.createAndAddElement(gameWorld)
+			//assertNotNull(element)
+			//assertEquals(element.getGameWorld(), gameWorld)
+			
+			elementCreated()
+		end
+		
+		// run test
+		return testBehaviors(testSuite)
+	end
+	
+	/** \brief Clean up resources. */
+	public func void tearDown()
+		// stop preloading
+		preloadCounter = null
+		
+		// dispose of element
+		if element != null
+			element.safeDispose()
+			element = null
+		end
+		
+		// drop stub
+		stubElement = null
+		
+		// dispose of element class
+		if elementClass != null
+			elementClass.dispose()
+			elementClass = null
+		end
+		
+		// dispose of game world
+		if gameWorld != null
+			gameWorld.dispose()
+			gameWorld = null
+		end
+	end
+end

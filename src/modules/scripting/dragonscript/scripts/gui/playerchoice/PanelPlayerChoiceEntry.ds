@@ -32,23 +32,49 @@ pin Dragengine.Utils
  * \brief Simple text to be used as option in a player choice box.
  * 
  * Changes the background and text color when the mouse enters and leaves the widget.
+ * 
+ * PanelPlayerChoiceEntry is a Panel containing a Label and DisplayImage widget using a
+ * CentrizedBoxLayout. The DisplayImage is created only if an image is provided in the
+ * constructor.
  */
-class PanelPlayerChoiceEntry extends Label
+class PanelPlayerChoiceEntry extends Panel
 	/** \brief Action listener to use if the entry is selected. */
 	private var ActionListener pAction
+	
+	/** \brief Label. */
+	private var Label pLabel
+	
+	/** \brief Image. */
+	private var DisplayImage pImage
 	
 	
 	
 	/** \brief Create player choice option. */
-	public func new( String text, ActionListener action ) super( text )
+	public func new( String text, ActionListener action ) this( text, null, action )
+	end
+	
+	/** \brief Create player choice option. */
+	public func new( String text, Image image, ActionListener action )
 		if action == null
 			throw EInvalidParam.new()
 		end
 		
-		this.setAlignment( Label.middleCenter )
-		this.setDesignerSelector( "PlayerChoiceEntry" )
-		this.setWordWrap( true )
-		this.setCanFocus( true )
+		this.runWhileBlockingLayout( block
+			this.setLayout( CentrizedBoxLayout.new( LayoutAxis.x, 5 ) )
+			this.setCanFocus( true )
+			this.setStateChangeNotifyChildren( true )
+			
+			if image != null
+				this.pImage = DisplayImage.new( image, RepeatMode.stretch )
+				this.addWidget( this.pImage )
+			end
+			
+			this.pLabel = Label.new( text )
+			this.pLabel.setWordWrap( true )
+			this.addWidget( this.pLabel )
+			
+			this.setDesignerSelector( "PlayerChoiceEntry" )
+		end )
 		
 		this.pAction = action
 	end
@@ -56,6 +82,8 @@ class PanelPlayerChoiceEntry extends Label
 	/** \brief Dispose of widget. */
 	public func void dispose()
 		super.dispose()
+		this.pImage = null
+		this.pLabel = null
 		this.pAction = null
 	end
 	
@@ -66,11 +94,37 @@ class PanelPlayerChoiceEntry extends Label
 		return this.pAction
 	end
 	
+	/** \brief Label widget. */
+	public func Label getLabel()
+		return this.pLabel
+	end
+	
+	/** \brief Display image widget or null if no image has been used in the constructor. */
+	public func DisplayImage getImage()
+		return this.pImage
+	end
+	
 	
 	
 	/** \brief Mouse button pressed. */
 	public func void onButtonPress( MouseEvent event )
 		super.onButtonPress( event )
 		this.pAction.onAction( ActionEvent.new( this, ActionEvent.idAction, 0 ) )
+	end
+	
+	
+	
+	/**
+	 * Overrides Widget.onDesignerSelectorChanged(). Sets designer selector of label to
+	 * "Label.{selector}" and display image to "Image.{selector}".
+	 */
+	public func void onDesignerSelectorChanged()
+		var String selector = this.getDesignerSelector()
+		
+		this.pLabel.setDesignerSelector( "Label." + selector )
+		
+		if this.pImage != null
+			this.pImage.setDesignerSelector( "Image." + selector )
+		end
 	end
 end

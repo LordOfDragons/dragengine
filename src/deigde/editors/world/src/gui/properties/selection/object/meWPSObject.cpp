@@ -89,6 +89,8 @@
 #include <deigde/gui/composed/igdeEditPathListener.h>
 #include <deigde/gui/composed/igdeEditSliderText.h>
 #include <deigde/gui/composed/igdeEditSliderTextListener.h>
+#include <deigde/gui/composed/igdeEditDVector.h>
+#include <deigde/gui/composed/igdeEditDVectorListener.h>
 #include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/composed/igdeEditVectorListener.h>
 #include <deigde/gui/composed/igdeEditVector2.h>
@@ -230,6 +232,29 @@ public:
 	virtual igdeUndo *OnChanged( const decVector &vector, meObject *object ) = 0;
 };
 
+class cBaseEditDVectorListener : public igdeEditDVectorListener{
+protected:
+	meWPSObject &pPanel;
+	
+public:
+	cBaseEditDVectorListener( meWPSObject &panel ) : pPanel( panel ){ }
+	
+	virtual void OnDVectorChanged( igdeEditDVector *editDVector ){
+		meObject * const object = pPanel.GetActiveObject();
+		if( ! object ){
+			return;
+		}
+		
+		igdeUndoReference undo;
+		undo.TakeOver( OnChanged( editDVector->GetDVector(), object ) );
+		if( undo ){
+			object->GetWorld()->GetUndoSystem()->Add( undo );
+		}
+	}
+	
+	virtual igdeUndo *OnChanged( const decDVector &vector, meObject *object ) = 0;
+};
+
 
 
 class cSpinActive : public igdeSpinTextFieldListener{
@@ -318,11 +343,11 @@ public:
 };
 
 
-class cEditPosition : public cBaseEditVectorListener{
+class cEditPosition : public cBaseEditDVectorListener{
 public:
-	cEditPosition( meWPSObject &panel ) : cBaseEditVectorListener( panel ){}
+	cEditPosition( meWPSObject &panel ) : cBaseEditDVectorListener( panel ){}
 	
-	virtual igdeUndo *OnChanged( const decVector &vector, meObject *object ){
+	virtual igdeUndo *OnChanged( const decDVector &vector, meObject *object ){
 		if( object->GetPosition().IsEqualTo( vector ) ){
 			return NULL;
 		}
@@ -1140,7 +1165,7 @@ pWorld( NULL )
 	helper.EditString( groupBox, "Attach:", "ID of object to attach to", pEditAttach, NULL );
 	pEditAttach->SetEditable( false );
 	
-	helper.EditVector( groupBox, "Position:", "Position of the object.",
+	helper.EditDVector( groupBox, "Position:", "Position of the object.",
 		pEditPosition, new cEditPosition( *this ) );
 	helper.EditVector( groupBox, "Rotation:", "Rotation of the object.",
 		pEditRotation, new cEditRotation( *this ) );
@@ -1388,7 +1413,7 @@ void meWPSObject::UpdateGeometry(){
 			pEditAttach->SetText( "<none>" );
 		}
 		
-		pEditPosition->SetVector( object->GetPosition() );
+		pEditPosition->SetDVector( object->GetPosition() );
 		pEditSize->SetVector( object->GetSize() );
 		pEditScaling->SetVector( object->GetScaling() );
 		pEditRotation->SetVector( object->GetRotation() );
@@ -1397,7 +1422,7 @@ void meWPSObject::UpdateGeometry(){
 	}else{
 		pEditID->ClearText();
 		pEditAttach->ClearText();
-		pEditPosition->SetVector( decVector() );
+		pEditPosition->SetDVector( decDVector() );
 		pEditSize->SetVector( decVector( 1.0f, 1.0f, 1.0f ) );
 		pEditScaling->SetVector( decVector( 1.0f, 1.0f, 1.0f ) );
 		pEditRotation->SetVector( decVector() );

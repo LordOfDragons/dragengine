@@ -30,7 +30,16 @@
 		<path>scripts/StartGame.ds</path>
 	</file>
 	<file>
+		<path>scripts/testing/GameAppTesting.ds</path>
+	</file>
+	<file>
+		<path>scripts/testing/ExampleTestSuite.ds</path>
+	</file>
+	<file>
 		<path>develop/Notes</path>
+	</file>
+	<file>
+		<path>configuration.ptree.xml</path>
 	</file>
 	
 	<!-- KDevelop project file for editing scripts. -->

@@ -901,8 +901,8 @@ class ECBehaviorPlayerInputMove extends DefaultECBehavior
 	 * of type ECBehaviorPlayerInputMove.
 	 */
 	static public func ECBehaviorPlayerInputMove getBehaviorIn( BehaviorElementClass eclass )
-		return eclass.findBehavior( block ECBehavior each
-			return each castable ECBehaviorPlayerInputMove
+		return eclass.findBehavior( block ECBehaviorPlayerInputMove each
+			return true
 		end ) cast ECBehaviorPlayerInputMove
 	end
 	
@@ -913,8 +913,8 @@ class ECBehaviorPlayerInputMove extends DefaultECBehavior
 	 * of type ECBehaviorPlayerInputMove.Instance .
 	 */
 	static public func Instance getInstanceIn( BehaviorElement element )
-		return element.findInstance( block ECBehaviorInstance each
-			return each castable Instance
+		return element.findInstance( block Instance each
+			return true
 		end ) cast Instance
 	end
 	

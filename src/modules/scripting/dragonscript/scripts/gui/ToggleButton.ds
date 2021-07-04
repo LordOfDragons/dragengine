@@ -274,7 +274,6 @@ class ToggleButton extends Button implements ToggleModelListener
 		this.runWhileBlockingLayout( block
 			this.setPressed( model.getToggled() )
 			this.notifyBorderParametersChanged()
-			this.notifyChildrenParentStateChanged()
 			this.onStateChanged( StateChangeEvent.new( this, StateChangeEvent.idStateChanged ) )
 		end )
 		this.doLayoutIfBlocked()

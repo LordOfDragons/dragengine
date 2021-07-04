@@ -54,25 +54,12 @@ out vec4 outColor;
 	const vec4 cemefac = vec4( 0.5, 1.0, -0.1591549, -0.3183099 ); // 0.5, 1.0, -1/2pi, -1/pi
 #endif
 
+#include "v130/shared/normal.glsl"
 
 
 /** Calculate the reflections parameters. */
-void calculateReflectionParameters( in ivec2 tc, in vec3 position, out vec3 normal, out vec3 reflectivity, out float roughness, out vec3 reflectDir ){
-	// fetch normal
-	#ifdef MATERIAL_NORMAL_INTBASIC
-		normal = texelFetch( texNormal, tc, 0 ).rgb * vec3( 2.0 ) + vec3( -1.0 ); // IF USING FLOAT TEXTURE
-		//normal = texelFetch( texNormal, tc, 0 ).rgb * vec3( 1.9921569 ) + vec3( -0.9921722 ); // IF USING INT TEXTURE
-	#elif defined( MATERIAL_NORMAL_SPHEREMAP )
-		vec2 fenc = texelFetch( texNormal, tc, 0 ).rgb * vec2( 4.0 ) - vec2( 2.0 );
-		float f = dot( fenc, fenc );
-		float g = sqrt( 1.0 - f * 0.25 );
-		normal = vec3( fenc.xy * vec2( g ), f * 0.5 - 1.0 );
-	#else
-		normal = texelFetch( texNormal, tc, 0 ).rgb;
-	#endif
-	
-	normal = normalize( normal );
-	
+void calculateReflectionParameters( in ivec2 tc, in vec3 position, out vec3 normal,
+out vec3 reflectivity, out float roughness, out vec3 reflectDir ){
 	// fetch reflectivity
 	reflectivity = texelFetch( texReflectivity, tc, 0 ).rgb;
 	
@@ -84,6 +71,7 @@ void calculateReflectionParameters( in ivec2 tc, in vec3 position, out vec3 norm
 	
 	// calculate fresnel reflection
 	vec3 fragmentDirection = normalize( position );
+	normal = normalize( normalLoadMaterial( texNormal, tc ) );
 	float reflectDot = min( abs( dot( -fragmentDirection, normal ) ), 1.0 );
 	reflectDir = reflect( fragmentDirection, normal );
 	
@@ -350,21 +338,6 @@ void main( void ){
 		position.xy = vVolumePos.xy * position.zz / vVolumePos.zz;
 	#endif
 	
-	// fetch normal
-	#ifdef MATERIAL_NORMAL_INTBASIC
-		vec3 normal = texelFetch( texNormal, tc, 0 ).rgb * vec3( 2.0 ) + vec3( -1.0 ); // IF USING FLOAT TEXTURE
-		//vec3 normal = texelFetch( texNormal, tc, 0 ).rgb * vec3( 1.9921569 ) + vec3( -0.9921722 ); // IF USING INT TEXTURE
-	#elif defined( MATERIAL_NORMAL_SPHEREMAP )
-		vec2 fenc = texelFetch( texNormal, tc, 0 ).rgb * vec2( 4.0 ) - vec2( 2.0 );
-		float f = dot( fenc, fenc );
-		float g = sqrt( 1.0 - f * 0.25 );
-		vec3 normal = vec3( fenc.xy * vec2( g ), f * 0.5 - 1.0 );
-	#else
-		vec3 normal = texelFetch( texNormal, tc, 0 ).rgb;
-	#endif
-	
-	normal = normalize( normal );
-	
 	// fetch reflectivity
 	vec3 reflectivity = texelFetch( texReflectivity, tc, 0 ).rgb;
 	
@@ -376,6 +349,7 @@ void main( void ){
 	
 	// calculate fresnel reflection
 	vec3 fragmentDirection = normalize( position );
+	vec3 normal = normalize( normalLoadMaterial( texNormal, tc ) );
 	float reflectDot = min( abs( dot( -fragmentDirection, normal ) ), 1.0 );
 	vec3 envMapDir = pMatrixEnvMap * vec3( reflect( fragmentDirection, normal ) );
 	

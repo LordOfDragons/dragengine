@@ -1,0 +1,24 @@
+// pin namespaces to located script classes
+pin Dragengine.TestSystem
+
+
+/**
+ * Testing Game Project. Creates WindowTesting instance to add TestSuite instances to.
+ */
+class GameAppTesting extends BaseGameAppTesting
+	/**
+	 * Create Application.
+	 */
+	public func new()
+	end
+	
+	
+	/**
+	 * Add test suites to test window.
+	 */
+	protected func void addTestSuites()
+		var WindowTesting window = getWindowTesting()
+		
+		window.addTestSuite(ExampleTestSuite.new())
+	end
+end

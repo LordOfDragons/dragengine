@@ -6,7 +6,7 @@
 	<version>130</version>
 	
 	<texture name='texOccMap' target='0'/>
-	<texture name='texOccMap2' target='0'/>
+	<texture name='texOccMap2' target='1'/>
 	
 	<parameter name='pPosTransform'/>
 	<parameter name='pInvWidth'/>

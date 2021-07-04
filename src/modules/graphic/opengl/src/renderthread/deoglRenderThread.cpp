@@ -36,6 +36,7 @@
 #include "deoglRTRenderers.h"
 #include "deoglRTShader.h"
 #include "deoglRTTexture.h"
+#include "deoglRTUniqueKey.h"
 #include "../deGraphicOpenGl.h"
 #include "../deoglBasics.h"
 #include "../deoglPreloader.h"
@@ -50,13 +51,15 @@
 #include "../edgefinder/deoglEdgeFinder.h"
 #include "../envmap/deoglEnvMapSlotManager.h"
 #include "../extensions/deoglExtensions.h"
+#include "../gi/deoglGI.h"
 #include "../light/deoglLightBoundaryMap.h"
-#include "../occlusiontest/deoglOcclusionTest.h"
+#include "../occlusiontest/deoglOcclusionTestPool.h"
 #include "../occquery/deoglOcclusionQueryManager.h"
 #include "../optimizer/deoglOptimizerManager.h"
 #include "../rendering/deoglRenderCanvas.h"
-#include "../rendering/cache/deoglRenderCache.h"
 #include "../rendering/defren/deoglDeferredRendering.h"
+#include "../rendering/task/persistent/deoglPersistentRenderTaskPool.h"
+#include "../rendering/task/shared/deoglRenderTaskSharedPool.h"
 #include "../shadow/deoglShadowMapper.h"
 #include "../texture/deoglTextureStageManager.h"
 #include "../triangles/deoglTriangleSorter.h"
@@ -89,6 +92,7 @@ deoglRenderThread::deoglRenderThread( deGraphicOpenGl &ogl ) :
 pOgl( ogl ),
 
 pAsyncRendering( true ),
+pConfigChanged( true ),
 
 pLeakTracker( *this ),
 
@@ -112,10 +116,13 @@ pEnvMapSlotManager( NULL ),
 pExtensions( NULL ),
 pLightBoundarybox( NULL ),
 pOccQueryMgr( NULL ),
-pOcclusionTest( NULL ),
-pRenderCache( NULL ),
+pGI( NULL ),
 pShadowMapper( NULL ),
 pTriangleSorter( NULL ),
+pPersistentRenderTaskPool( NULL ),
+pRenderTaskSharedPool( NULL ),
+pUniqueKey( NULL ),
+pOcclusionTestPool( NULL ),
 
 pTimeHistoryMain( 29, 2 ),
 pTimeHistoryRender( 29, 2 ),
@@ -285,6 +292,7 @@ void deoglRenderThread::SetCanvasDebugOverlay( deoglRCanvas *canvas ){
 void deoglRenderThread::Init( deRenderWindow *renderWindow ){
 	OGL_INIT_MAIN_THREAD_CHECK;
 	
+	pConfigChanged = true;
 	pInitialRenderWindow = renderWindow;
 	pUpdateConfigFrameLimiter();
 	
@@ -491,6 +499,7 @@ void deoglRenderThread::Run(){
 	DEBUG_SYNC_RT_PASS("out")
 	
 	// render loop
+	pTimerFrameUpdate.Reset();
 	while( true ){
 		// wait for entering synchronize
 		DEBUG_SYNC_RT_WAIT("in")
@@ -513,6 +522,8 @@ void deoglRenderThread::Run(){
 			
 		// render a single frame if ready
 		}else if( pThreadState == etsRendering ){
+			float elapsedRender = 0.0f;
+			
 			try{
 				pTimerRender.Reset();
 				
@@ -520,15 +531,12 @@ void deoglRenderThread::Run(){
 				pThreadFailure = false;
 				DEBUG_SYNC_RT_FAILURE
 				
-				const float elapsed = pTimerRender.GetElapsedTime();
-				pTimeHistoryRender.Add( elapsed );
+				elapsedRender = pTimerRender.GetElapsedTime();
+				pTimeHistoryRender.Add( elapsedRender );
 				//pLogger->LogInfo( decString("TimeHistory Render: ") + pTimeHistoryRender.DebugPrint() );
-				/*
-				pLogger->LogInfoFormat( "RenderThread Elapsed %dms (FPS %d)",
-					( int )( elapsed * 1000.0f ), ( int )( 1.0f / decMath::max( elapsed, 0.001f ) ) );
-				*/
+// 				pLogger->LogInfoFormat( "RenderThread Elapsed %.1fms (FPS %.1f)", elapsed * 1000.0f, 1.0f / decMath::max( elapsed, 0.001f ) );
 				
-				pLimitFrameRate( elapsed );
+				pLimitFrameRate( elapsedRender );
 				pThreadFailure = false;
 				DEBUG_SYNC_RT_FAILURE
 				
@@ -538,6 +546,14 @@ void deoglRenderThread::Run(){
 				pThreadFailure = true;
 				DEBUG_SYNC_RT_FAILURE
 			}
+			
+			pTimerFrameUpdate.GetElapsedTime();
+			/*
+			const float elapsedFrameUpdate = pTimerFrameUpdate.GetElapsedTime();
+			pLogger->LogInfoFormat( "RenderThread render=%.1fms frameUpdate=%.1fms fps=%.1f",
+				elapsedRender * 1000.0f, elapsedFrameUpdate * 1000.0f,
+				1.0f / decMath::max( elapsedFrameUpdate, 0.001f ) );
+			*/
 			
 		#ifdef ANDROID
 		}else if( pThreadState == etsWindowTerminate ){
@@ -868,6 +884,11 @@ void deoglRenderThread::pInitThreadPhase4(){
 	pOptimizerManager = new deoglOptimizerManager;
 	// deprecated
 	
+	// required to be present before anything else
+	pUniqueKey = new deoglRTUniqueKey;
+	pRenderTaskSharedPool = new deoglRenderTaskSharedPool( *this );
+	
+	// init extensions
 	pInitExtensions();
 	
 	// below depends on extensions to be initialized first
@@ -880,7 +901,7 @@ void deoglRenderThread::pInitThreadPhase4(){
 	
 	// debug information
 	const decColor colorText( 1.0f, 1.0f, 1.0f, 1.0f );
-	const decColor colorBg( 0.0f, 0.0f, 0.0f, 0.75f );
+	const decColor colorBg( 0.0f, 0.0f, 0.25f, 0.75f );
 	const decColor colorBgSub( 0.05f, 0.05f, 0.05f, 0.75f );
 	const decColor colorBgSub2( 0.1f, 0.1f, 0.1f, 0.75f );
 	const decColor colorBgSub3( 0.15f, 0.15f, 0.15f, 0.75f );
@@ -945,15 +966,17 @@ void deoglRenderThread::pInitThreadPhase4(){
 	pBufferObject->Init();
 	
 	pTriangleSorter = new deoglTriangleSorter;
+	pOcclusionTestPool = new deoglOcclusionTestPool( *this );
+	pPersistentRenderTaskPool = new deoglPersistentRenderTaskPool;
 	pDelayedOperations = new deoglDelayedOperations( *this );
-	pRenderCache = new deoglRenderCache( *this );
 	pShadowMapper = new deoglShadowMapper( *this );
 	pDeferredRendering = new deoglDeferredRendering( *this );
 	pEnvMapSlotManager = new deoglEnvMapSlotManager( *this );
 	
 	pOccQueryMgr = new deoglOcclusionQueryManager( *this );
-	pOcclusionTest = new deoglOcclusionTest( *this );
-	pLightBoundarybox = new deoglLightBoundaryMap( *this, pConfiguration.GetShadowMapSize() >> 1 );
+	pGI = new deoglGI( *this );
+	pLightBoundarybox = new deoglLightBoundaryMap( *this,
+		deoglShadowMapper::ShadowMapSize( pConfiguration ) >> 1 );
 	
 	pRenderers = new deoglRTRenderers( *this );
 	pDefaultTextures = new deoglRTDefaultTextures( *this );
@@ -1062,6 +1085,12 @@ void deoglRenderThread::pInitCapabilities(){
 
 
 void deoglRenderThread::pRenderSingleFrame(){
+	if( pConfigChanged ){
+		pConfigChanged = false;
+		
+		pGI->GetTraceRays().UpdateFromConfig();
+	}
+	
 	//const deoglDeveloperMode &devmode = pDebug->GetDeveloperMode();
 	const bool showDebugInfoModule = pDebugInfoModule->GetVisible();
 	
@@ -1678,7 +1707,6 @@ void deoglRenderThread::pBeginFrame(){
 	// hickups if lots of objects are deleted.
 	pDelayedOperations->ProcessFreeOperations( false );
 	
-	pRenderCache->Clear(); // just to be safe in case an exception messed things up
 	pDelayedOperations->ProcessInitOperations();
 	
 	pPreloader->PreloadAll(); // DEPRECATED
@@ -1702,6 +1730,7 @@ void deoglRenderThread::pSyncConfiguration(){
 		const bool needResize = ( config.GetDefRenUsePOTs() != pConfiguration.GetDefRenUsePOTs() );
 		
 		pConfiguration = config;
+		pConfigChanged = true;
 		
 		pConfiguration.SetDirty( false );
 		config.SetDirty( false );
@@ -1743,7 +1772,6 @@ void deoglRenderThread::pCaptureCanvas(){
 }
 
 void deoglRenderThread::pEndFrame(){
-	pRenderCache->Clear();
 }
 
 void deoglRenderThread::pLimitFrameRate( float elapsed ){
@@ -1872,6 +1900,14 @@ void deoglRenderThread::pCleanUpThread(){
 			delete pLightBoundarybox;
 			pLightBoundarybox = NULL;
 		}
+		if( pOcclusionTestPool ){
+			delete pOcclusionTestPool;
+			pOcclusionTestPool = NULL;
+		}
+		if( pPersistentRenderTaskPool ){
+			delete pPersistentRenderTaskPool;
+			pPersistentRenderTaskPool = NULL;
+		}
 		if( pTriangleSorter ){
 			delete pTriangleSorter;
 			pTriangleSorter = NULL;
@@ -1881,9 +1917,9 @@ void deoglRenderThread::pCleanUpThread(){
 			delete pOccQueryMgr;
 			pOccQueryMgr = NULL;
 		}
-		if( pOcclusionTest ){
-			delete pOcclusionTest;
-			pOcclusionTest = NULL;
+		if( pGI ){
+			delete pGI;
+			pGI = NULL;
 		}
 		#ifdef TIME_CLEANUP
 		pLogger->LogInfoFormat( "RT-CleanUp: destroy occlusion managers (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f) );
@@ -1910,13 +1946,6 @@ void deoglRenderThread::pCleanUpThread(){
 		}
 		#ifdef TIME_CLEANUP
 		pLogger->LogInfoFormat( "RT-CleanUp: destroy shadow mapper (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f) );
-		#endif
-		if( pRenderCache ){
-			delete pRenderCache;
-			pRenderCache = NULL;
-		}
-		#ifdef TIME_CLEANUP
-		pLogger->LogInfoFormat( "RT-CleanUp: destroy render cache (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f) );
 		#endif
 		if( pEnvMapSlotManager ){
 			delete pEnvMapSlotManager;
@@ -2066,6 +2095,11 @@ void deoglRenderThread::pCleanUpThread(){
 		pLogger->LogInfoFormat( "RT-CleanUp: destroy shaders (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f) );
 		#endif
 		
+		if( pChoices ){
+			delete pChoices;
+			pChoices = NULL;
+		}
+		
 		// deprecated
 		if( pEdgeFinder ){
 			delete pEdgeFinder;
@@ -2084,6 +2118,16 @@ void deoglRenderThread::pCleanUpThread(){
 			pQuickSorter = NULL;
 		}
 		// deprecated
+		
+		// has to come last
+		if( pRenderTaskSharedPool ){
+			delete pRenderTaskSharedPool;
+			pRenderTaskSharedPool = NULL;
+		}
+		if( pUniqueKey ){
+			delete pUniqueKey;
+			pUniqueKey = NULL;
+		}
 		
 		// free context
 // 		cleanUpWindow->FreeReference();

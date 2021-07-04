@@ -46,8 +46,8 @@ class OBJECT_OT_ExportModel(bpy.types.Operator, ExportHelper):
 	bl_label = "Model (.demodel)"
 	__doc__ = """Export as Drag[en]gine Model Resource"""
 	filename_ext = ".demodel"
-	filter_glob = bpy.props.StringProperty(default="*.demodel", options={ 'HIDDEN' })
-	debug_level = bpy.props.EnumProperty(items = (
+	filter_glob: bpy.props.StringProperty(default="*.demodel", options={ 'HIDDEN' })
+	debug_level: bpy.props.EnumProperty(items = (
 		('0', "None", "Output no debug messages."),
 		('1', "Basic", "Output basic amount of debug messages."),
 		('2', "Verbose", "Output lots of debug messages."),
@@ -239,15 +239,36 @@ class OBJECT_OT_ExportModel(bpy.types.Operator, ExportHelper):
 			or len(self.mesh.weights) > 65000
 			or len(self.mesh.vertices) > 65000
 			or len(self.mesh.faces) > 65000
-			or [tcs for tcs in self.mesh.texCoordSets if len(tcs.texCoords) > 65000])
+			or any(len(tcs.texCoords) > 65000 for tcs in self.mesh.texCoordSets))
+		
+		if any(x.type == 'MIRROR' for x in self.mesh.object.modifiers):
+			self.report({'INFO', 'ERROR'}, ("Mirror modifier found on object '{}'."
+				+ " Apply mirror before export otherwise only one half is exported.").format(self.mesh.object.name))
+			return False
 		
 		lodMesh = self.mesh.lodMesh
 		while lodMesh:
-			if not self.checkLODMeshSameTextures(lodMesh):
-				self.report({ 'INFO', 'ERROR' }, "LOD Mesh textures do not match base mesh textures.")
+			if lodMesh.multiFoldMesh:
+				self.report({'INFO', 'ERROR'}, ("LOD Mesh '{}': Can not Multi-Fold meshes"
+					" (Edges used by more than 2 faces).").format(lodMesh.object.name))
 				return False
+			
+			if lodMesh.degeneratedFaces:
+				self.report({'INFO', 'ERROR'}, "LOD Mesh '{}': Degenerated Faces found.".format(lodMesh.object.name))
+				return False
+			
+			if lodMesh.ngons:
+				self.report({'INFO', 'ERROR'}, "LOD Mesh '{}': NGon faces found.".format(lodMesh.object.name))
+				return False
+			
+			if not self.checkLODMeshSameTextures(lodMesh):
+				self.report({'INFO', 'ERROR'}, "LOD Mesh '{}': Textures do not match base mesh '{}' textures.".format(
+					lodMesh.object.name, self.mesh.object.name))
+				return False
+			
 			if not self.checkLODMeshSameTexCoordSets(lodMesh):
-				self.report({ 'INFO', 'ERROR' }, "LOD Mesh texture coordinate sets do not match base mesh texture coordinate sets.")
+				self.report({'INFO', 'ERROR'}, ("LOD Mesh '{}': Texture coordinate sets do not"
+					+ " match base mesh '{}' texture coordinate sets.").format(lodMesh.object.name, self.mesh.object.name))
 				return False
 			
 			lodMesh.largeModel = (lodMesh.normalCount > 65000
@@ -255,13 +276,20 @@ class OBJECT_OT_ExportModel(bpy.types.Operator, ExportHelper):
 				or len(lodMesh.weights) > 65000
 				or len(lodMesh.vertices) > 65000
 				or len(lodMesh.faces) > 65000
-				or [tcs for tcs in lodMesh.texCoordSets if len(tcs.texCoords) > 65000])
+				or any(len(tcs.texCoords) > 65000 for tcs in lodMesh.texCoordSets))
 			
 			if not lodMesh.hasUVSeams and not lodMesh.object.dragengine_hasnoseams:
-				self.report({ 'INFO', 'ERROR' }, "No UV-Seams found. Add at least one UV-Seam for Tanget-Calculation to work.")
+				self.report({'INFO', 'ERROR'}, ("LOD Mesh '{}': No UV-Seams. Add at least"
+					+ " one UV-Seam for Tanget-Calculation to work.").format(lodMesh.object.name))
+				return False
+			
+			if any(x.type == 'MIRROR' for x in lodMesh.object.modifiers):
+				self.report({'INFO', 'ERROR'}, ("LOD Mesh '{}': Mirror modifier."
+					+ " Apply mirror before export otherwise only one half is exported.").format(lodMesh.object.name))
 				return False
 			
 			lodMesh = lodMesh.lodMesh
+		
 		return True
 	
 	def checkLODMeshSameTextures(self, lodMesh):

@@ -25,6 +25,10 @@
 #include "deoglShaderCompiled.h"
 #include "deoglShaderProgram.h"
 #include "deoglShaderUnitSourceCode.h"
+#include "../rendering/task/shared/deoglRenderTaskSharedPool.h"
+#include "../rendering/task/shared/deoglRenderTaskSharedShader.h"
+#include "../renderthread/deoglRenderThread.h"
+#include "../renderthread/deoglRTUniqueKey.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -36,11 +40,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglShaderProgram::deoglShaderProgram( deoglShaderSources *sources ){
+deoglShaderProgram::deoglShaderProgram( deoglRenderThread &renderThread, deoglShaderSources *sources ) :
+pRenderThread( renderThread ),
+pRTSShader( NULL )
+{
 	if( ! sources ){
 		DETHROW( deeInvalidParam );
 	}
 	
+	pSCCompute = NULL;
 	pSCTessellationControl = NULL;
 	pSCTessellationEvaluation = NULL;
 	pSCGeometry = NULL;
@@ -50,17 +58,21 @@ deoglShaderProgram::deoglShaderProgram( deoglShaderSources *sources ){
 	pCompiled = NULL;
 	pSources = sources;
 	
-	pRenderTaskShader = NULL;
-	pRenderTaskTrackingNumber = 0;
+	pUniqueKey = renderThread.GetUniqueKey().Get();
 	
 	pUsageCount = 1;
 }
 
-deoglShaderProgram::deoglShaderProgram( deoglShaderSources *sources, const deoglShaderDefines &defines ){
+deoglShaderProgram::deoglShaderProgram( deoglRenderThread &renderThread,
+deoglShaderSources *sources, const deoglShaderDefines &defines ) :
+pRenderThread( renderThread ),
+pRTSShader( NULL )
+{
 	if( ! sources ){
 		DETHROW( deeInvalidParam );
 	}
 	
+	pSCCompute = NULL;
 	pSCTessellationControl = NULL;
 	pSCTessellationEvaluation = NULL;
 	pSCGeometry = NULL;
@@ -70,24 +82,32 @@ deoglShaderProgram::deoglShaderProgram( deoglShaderSources *sources, const deogl
 	pCompiled = NULL;
 	pSources = sources;
 	
-	pRenderTaskShader = NULL;
-	pRenderTaskTrackingNumber = 0;
+	pDefines = defines;
+	
+	pUniqueKey = renderThread.GetUniqueKey().Get();
 	
 	pUsageCount = 1;
-	
-	pDefines = defines;
 }
 
 deoglShaderProgram::~deoglShaderProgram(){
+	if( pRTSShader ){
+		pRTSShader->ReturnToPool();
+	}
 	if( pCompiled ){
 		delete pCompiled;
 	}
+	
+	pRenderThread.GetUniqueKey().Return( pUniqueKey );
 }
 
 
 
 // Management
 ///////////////
+
+void deoglShaderProgram::SetComputeCode( deoglShaderUnitSourceCode *sourceCode ){
+	pSCCompute = sourceCode;
+}
 
 void deoglShaderProgram::SetTessellationControlSourceCode( deoglShaderUnitSourceCode *sourceCode ){
 	pSCTessellationControl = sourceCode;
@@ -117,12 +137,13 @@ void deoglShaderProgram::SetCompiled( deoglShaderCompiled *compiled ){
 	}
 }
 
-void deoglShaderProgram::SetRenderTaskShader( deoglRenderTaskShader *renderTaskShader ){
-	pRenderTaskShader = renderTaskShader;
-}
-
-void deoglShaderProgram::SetRenderTaskTrackingNumber( unsigned int trackingNumber ){
-	pRenderTaskTrackingNumber = trackingNumber;
+void deoglShaderProgram::EnsureRTSShader(){
+	if( pRTSShader ){
+		return;
+	}
+	
+	pRTSShader = pRenderThread.GetRenderTaskSharedPool().GetShader();
+	pRTSShader->SetShader( this );
 }
 
 
@@ -138,4 +159,9 @@ void deoglShaderProgram::RemoveUsage(){
 	}
 	
 	pUsageCount--;
+	
+	if( pUsageCount == 0 && pRTSShader ){
+		pRTSShader->ReturnToPool();
+		pRTSShader = NULL;
+	}
 }

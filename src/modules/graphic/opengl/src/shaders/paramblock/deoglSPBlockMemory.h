@@ -63,10 +63,16 @@ public:
 	inline char *GetBuffer() const{ return pBuffer; }
 	
 	/** \brief Always throws an exception. */
-	virtual void Activate();
+	virtual void Activate() const;
+	
+	/** \brief Activate buffer overriding binding point. */
+	virtual void Activate( int bindingPoint ) const;
 	
 	/** \brief Always throws an exception. */
-	virtual void Deactivate();
+	virtual void Deactivate() const;
+	
+	/** \brief Deactivate buffer overriding binding point. */
+	virtual void Deactivate( int bindingPoint ) const;
 	
 	/** \brief Map buffer discarding content. */
 	virtual void MapBuffer();

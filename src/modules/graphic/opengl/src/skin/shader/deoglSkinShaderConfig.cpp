@@ -51,7 +51,8 @@ void deoglSkinShaderConfig::Reset(){
 	pShaderMode = esmGeometry;
 	pGeometryMode = egmComponent;
 	pDepthMode = edmProjection;
-	pMaterialNormalMode = emnmIntBasic;
+	pMaterialNormalModeDec = emnmIntBasic;
+	pMaterialNormalModeEnc = emnmFloat;
 	pParticleMode = epmParticle;
 	pTessellationMode = etmNone;
 	pDepthTestMode = edtmNone;
@@ -71,14 +72,12 @@ void deoglSkinShaderConfig::Reset(){
 	pVariations = false;
 	pUseNormalRoughnessCorrection = true;
 	pGSRenderCube = false;
+	pGSRenderCascaded = false;
 	pSharedSPB = false;
-	pSharedSPBUsingSSBO = false;
-	pSharedSPBArraySize = 0;
-	pSharedSPBPadding = 0;
-	pSPBInstanceArraySize = 0;
 	pOutline = false;
 	pOutlineThicknessScreen = false;
 	pLuminanceOnly = false;
+	pGIMaterial = false;
 	
 	pDynamicColorTint = false;
 	pDynamicColorGamma = false;
@@ -150,8 +149,12 @@ void deoglSkinShaderConfig::SetDepthMode( eDepthModes mode ){
 	pDepthMode = mode;
 }
 
-void deoglSkinShaderConfig::SetMaterialNormalMode( eMaterialNormalModes mode ){
-	pMaterialNormalMode = mode;
+void deoglSkinShaderConfig::SetMaterialNormalModeDec( eMaterialNormalModes mode ){
+	pMaterialNormalModeDec = mode;
+}
+
+void deoglSkinShaderConfig::SetMaterialNormalModeEnc( eMaterialNormalModes mode ){
+	pMaterialNormalModeEnc = mode;
 }
 
 void deoglSkinShaderConfig::SetParticleMode( eParticleModes mode ){
@@ -228,24 +231,12 @@ void deoglSkinShaderConfig::SetGSRenderCube( bool gsRenderCube ){
 	pGSRenderCube = gsRenderCube;
 }
 
+void deoglSkinShaderConfig::SetGSRenderCascaded( bool gsRenderCascaded ){
+	pGSRenderCascaded = gsRenderCascaded;
+}
+
 void deoglSkinShaderConfig::SetSharedSPB( bool sharedSPB ){
 	pSharedSPB = sharedSPB;
-}
-
-void deoglSkinShaderConfig::SetSharedSPBUsingSSBO( bool useSSBO ){
-	pSharedSPBUsingSSBO = useSSBO;
-}
-
-void deoglSkinShaderConfig::SetSharedSPBArraySize( int size ){
-	pSharedSPBArraySize = size;
-}
-
-void deoglSkinShaderConfig::SetSharedSPBPadding( int size ){
-	pSharedSPBPadding = size;
-}
-
-void deoglSkinShaderConfig::SetSPBInstanceArraySize( int size ){
-	pSPBInstanceArraySize = size;
 }
 
 void deoglSkinShaderConfig::SetOutline( bool outline ){
@@ -258,6 +249,10 @@ void deoglSkinShaderConfig::SetOutlineThicknessScreen( bool enable ){
 
 void deoglSkinShaderConfig::SetLuminanceOnly( bool luminanceOnly ){
 	pLuminanceOnly = luminanceOnly;
+}
+
+void deoglSkinShaderConfig::SetGIMaterial( bool gimaterial ){
+	pGIMaterial = gimaterial;
 }
 
 
@@ -508,10 +503,17 @@ void deoglSkinShaderConfig::DebugGetConfigString( decString &string ) const{
 		default: string.Append( " ?" );
 	}
 	
-	switch( pMaterialNormalMode ){
+	switch( pMaterialNormalModeDec ){
 		case emnmFloat: string.Append( " matnorFloat" ); break;
 		case emnmIntBasic: string.Append( " matnorIntBasic" ); break;
 		case emnmSpheremap: string.Append( " matnorSpheremap" ); break;
+		default: string.Append( " ?" );
+	}
+	
+	switch( pMaterialNormalModeEnc ){
+		case emnmFloat: string.Append( "/matnorFloat" ); break;
+		case emnmIntBasic: string.Append( "/matnorIntBasic" ); break;
+		case emnmSpheremap: string.Append( "/matnorSpheremap" ); break;
 		default: string.Append( " ?" );
 	}
 	
@@ -580,20 +582,11 @@ void deoglSkinShaderConfig::DebugGetConfigString( decString &string ) const{
 	if( pGSRenderCube ){
 		string.Append( " gsRenderCube" );
 	}
+	if( pGSRenderCascaded ){
+		string.Append( " gsRenderCascaded" );
+	}
 	if( pSharedSPB ){
 		string.Append( " sharedSPB" );
-	}
-	if( pSharedSPBUsingSSBO ){
-		string.Append( " sspbSSBO" );
-	}
-	if( pSharedSPBArraySize != 0 ){
-		string.AppendFormat( " sSPBArrSize=%d", pSharedSPBArraySize );
-	}
-	if( pSharedSPBPadding != 0 ){
-		string.AppendFormat( " sSPBPad=%d", pSharedSPBPadding );
-	}
-	if( pSPBInstanceArraySize != 0 ){
-		string.AppendFormat( " spbInstArrSize=%d", pSPBInstanceArraySize );
 	}
 	if( pOutline ){
 		string.Append( " outline" );
@@ -603,6 +596,9 @@ void deoglSkinShaderConfig::DebugGetConfigString( decString &string ) const{
 	}
 	if( pLuminanceOnly ){
 		string.Append( " luminanceOnly" );
+	}
+	if( pGIMaterial ){
+		string.Append( " giMaterial" );
 	}
 	
 	if( pDynamicColorTint ){
@@ -778,7 +774,8 @@ deoglSkinShaderConfig &deoglSkinShaderConfig::operator=( const deoglSkinShaderCo
 	pShaderMode = config.pShaderMode;
 	pGeometryMode = config.pGeometryMode;
 	pDepthMode = config.pDepthMode;
-	pMaterialNormalMode = config.pMaterialNormalMode;
+	pMaterialNormalModeDec = config.pMaterialNormalModeDec;
+	pMaterialNormalModeEnc = config.pMaterialNormalModeEnc;
 	pParticleMode = config.pParticleMode;
 	pTessellationMode = config.pTessellationMode;
 	pDepthTestMode = config.pDepthTestMode;
@@ -798,14 +795,12 @@ deoglSkinShaderConfig &deoglSkinShaderConfig::operator=( const deoglSkinShaderCo
 	pVariations = config.pVariations;
 	pUseNormalRoughnessCorrection = config.pUseNormalRoughnessCorrection;
 	pGSRenderCube = config.pGSRenderCube;
+	pGSRenderCascaded = config.pGSRenderCascaded;
 	pSharedSPB = config.pSharedSPB;
-	pSharedSPBUsingSSBO = config.pSharedSPBUsingSSBO;
-	pSharedSPBArraySize = config.pSharedSPBArraySize;
-	pSharedSPBPadding = config.pSharedSPBPadding;
-	pSPBInstanceArraySize = config.pSPBInstanceArraySize;
 	pOutline = config.pOutline;
 	pOutlineThicknessScreen = config.pOutlineThicknessScreen;
 	pLuminanceOnly = config.pLuminanceOnly;
+	pGIMaterial = config.pGIMaterial;
 	
 	pDynamicColorTint = config.pDynamicColorTint;
 	pDynamicColorGamma = config.pDynamicColorGamma;
@@ -869,7 +864,8 @@ bool deoglSkinShaderConfig::operator==( const deoglSkinShaderConfig &config ) co
 	return pShaderMode == config.pShaderMode
 		&& pGeometryMode == config.pGeometryMode
 		&& pDepthMode == config.pDepthMode
-		&& pMaterialNormalMode == config.pMaterialNormalMode
+		&& pMaterialNormalModeDec == config.pMaterialNormalModeDec
+		&& pMaterialNormalModeEnc == config.pMaterialNormalModeEnc
 		&& pParticleMode == config.pParticleMode
 		&& pTessellationMode == config.pTessellationMode
 		&& pDepthTestMode == config.pDepthTestMode
@@ -889,14 +885,12 @@ bool deoglSkinShaderConfig::operator==( const deoglSkinShaderConfig &config ) co
 		&& pVariations == config.pVariations
 		&& pUseNormalRoughnessCorrection == config.pUseNormalRoughnessCorrection
 		&& pGSRenderCube == config.pGSRenderCube
+		&& pGSRenderCascaded == config.pGSRenderCascaded
 		&& pSharedSPB == config.pSharedSPB
-		&& pSharedSPBUsingSSBO == config.pSharedSPBUsingSSBO
-		&& pSharedSPBArraySize == config.pSharedSPBArraySize
-		&& pSharedSPBPadding == config.pSharedSPBPadding
-		&& pSPBInstanceArraySize == config.pSPBInstanceArraySize
 		&& pOutline == config.pOutline
 		&& pOutlineThicknessScreen == config.pOutlineThicknessScreen
 		&& pLuminanceOnly == config.pLuminanceOnly
+		&& pGIMaterial == config.pGIMaterial
 		
 		&& pDynamicColorTint == config.pDynamicColorTint
 		&& pDynamicColorGamma == config.pDynamicColorGamma

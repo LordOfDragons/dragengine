@@ -141,7 +141,7 @@ class FlowLayout extends BoxLayout
 		
 		select axis
 		case LayoutAxis.x, LayoutAxis.inverseX
-			var int availSpace = DEMath.max( width - minSize.getX(), 0 )
+			var int availSpace = DEMath.max( container.getWidth() - minSize.getX(), 0 )
 			var int fixedHeight = height
 			if negate
 				cx += width
@@ -193,7 +193,7 @@ class FlowLayout extends BoxLayout
 			end
 			
 		else
-			var int availSpace = DEMath.max( height - minSize.getY(), 0 )
+			var int availSpace = DEMath.max( container.getHeight() - minSize.getY(), 0 )
 			var int fixedWidth = width
 			if negate
 				cy += height

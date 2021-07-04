@@ -178,6 +178,10 @@ void igdeWOSOSpeaker::UpdateTriggers(){
 			pSpeaker->SetMuted( false );
 		}
 		
+		if( pTriggerPlaying ){
+			pTriggerPlaying->Evaluate();
+		}
+		
 		if( pEvalPlaying() ){
 			pSpeaker->Play();
 			

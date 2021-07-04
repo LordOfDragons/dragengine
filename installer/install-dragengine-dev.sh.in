@@ -9,10 +9,31 @@ function unpack_payload()
 	tail -n +$payload_start $0 | tar -C / -xjf -
 }
 
+function uninstall_files()
+{
+	echo ">>> Removing directories"
+	rm -rf /usr/include/dragengine
+}
+
+
 echo -e "\e[32m\e[1m********************************************************************"
 echo -e "***        Drag[en]gine Game Engine Development Installer        ***"
 echo -e "********************************************************************\e[39m\e[0m"
 echo ""
+
+if [ "$1" == "--help" ] || [ "$1" == "-h" ]; then
+	echo "Syntax:"
+	echo ""
+	echo "./install-dragengine-dev.sh"
+	echo "   install game engine development"
+	echo ""
+	echo "./install-dragengine-dev.sh {--help | -h}"
+	echo "   this help information"
+	echo ""
+	echo "./install-dragengine-dev.sh --uninstall"
+	echo "   uninstall game engine development"
+	exit 0
+fi
 
 if [ `id -u` != 0 ]; then
 	echo -e "\e[31m\e[1mYou have to be root to use this installer.\e[39m\e[0m"
@@ -27,11 +48,24 @@ if [[ ! $(builtin type -P "tar") ]]; then
 	exit -1
 fi
 
-read -p "Install Game Engine? [y/n] " ans
-if [[ "${ans:0:1}" == "y" || "${ans:0:1}" == "Y" ]]; then
-	unpack_payload
+
+if [ "$1" == "--uninstall" ]; then
+	echo -e "\e[93mAttention: Uninstalling requested!\e[39m"
 	echo ""
-	echo -e "\e[93m\e[1m>>> Finished Successfully\e[39m\e[0m"
+	read -p "Uninstall Game Engine Development? [y/n] " ans
+	if [[ "${ans:0:1}" == "y" || "${ans:0:1}" == "Y" ]]; then
+		uninstall_files
+		echo ""
+		echo -e "\e[93m\e[1m>>> Finished Successfully\e[39m\e[0m"
+	fi
+	
+else
+	read -p "Install Game Engine Development? [y/n] " ans
+	if [[ "${ans:0:1}" == "y" || "${ans:0:1}" == "Y" ]]; then
+		unpack_payload
+		echo ""
+		echo -e "\e[93m\e[1m>>> Finished Successfully\e[39m\e[0m"
+	fi
 fi
 
 exit 0

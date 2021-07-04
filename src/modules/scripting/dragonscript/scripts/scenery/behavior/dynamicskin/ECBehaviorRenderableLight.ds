@@ -62,17 +62,16 @@ pin Dragengine.Utils
  * \code{.ds}
  * class MyElement extends BehaviorElementClass
  *    public func new()
- *       ECBehaviorComponent.new(this)
- *       ECBehaviorDynamicSkin.new(this)
+ *       var ECBehaviorComponent component = ECBehaviorComponent.new(this)
+ *       var ECBehaviorDynamicSkin dynamicSkin = ECBehaviorDynamicSkin.new(this, component)
  *       
- *       ECBehaviorLight.new(this)
- *       ECBehaviorLight.new(this, "light2")
+ *       var ECBehaviorLight light = ECBehaviorLight.new(this)
+ *       var ECBehaviorLight light2 = ECBehaviorLight.new(this, "light2")
  *       
- *       var ECBehaviorRenderableLight behavior = ECBehaviorRenderableLight.new(this)
+ *       var ECBehaviorRenderableLight behavior = ECBehaviorRenderableLight.new(this, dynamicSkin, light)
  *       behavior.getRenderableIntensity().setValue("intensity1")
  *       
- *       behavior = ECBehaviorRenderableLight.new(this, "renderableLight2")
- *       behavior.setLightID("light2")
+ *       behavior = ECBehaviorRenderableLight.new(this, dynamicSkin, light2, "renderableLight2")
  *       behavior.getRenderableIntensity().setValue("intensity2")
  *    end
  * end
@@ -161,6 +160,8 @@ class ECBehaviorRenderableLight extends DefaultECBehavior
 			this.pScaleIntensity = this.pECBehavior.getScaleIntensity().getValue( stub )
 			this.pScaleColor = this.pECBehavior.getScaleColor().getColor( stub, \
 				this.getElement().getClass().getCodecPropertyString() )
+			
+			this.updateRenderables()
 		end
 		
 		
@@ -341,8 +342,8 @@ class ECBehaviorRenderableLight extends DefaultECBehavior
 	 * of type ECBehaviorComponent.
 	 */
 	static public func ECBehaviorRenderableLight getBehaviorIn( BehaviorElementClass eclass )
-		return eclass.findBehavior( block ECBehavior each
-			return each castable ECBehaviorRenderableLight
+		return eclass.findBehavior( block ECBehaviorRenderableLight each
+			return true
 		end ) cast ECBehaviorRenderableLight
 	end
 	
@@ -354,8 +355,7 @@ class ECBehaviorRenderableLight extends DefaultECBehavior
 	 */
 	static public func ECBehaviorRenderableLight getBehaviorIn( BehaviorElementClass eclass, String id )
 		return eclass.findBehavior( block ECBehaviorRenderableLight each
-			return each castable ECBehaviorRenderableLight and \
-				( each cast ECBehaviorRenderableLight ).getID().equals( id )
+			return each.getID().equals( id )
 		end ) cast ECBehaviorRenderableLight
 	end
 	
@@ -366,13 +366,9 @@ class ECBehaviorRenderableLight extends DefaultECBehavior
 	 * been created in the element.
 	 */
 	static public func Array getAllBehaviorsIn( BehaviorElementClass eclass )
-		var Array list = Array.new()
-		eclass.forEachBehavior( block ECBehavior each
-			if each castable ECBehaviorRenderableLight
-				list.add( each )
-			end
+		return eclass.collectBehaviors( block ECBehaviorRenderableLight each
+			return true
 		end )
-		return list
 	end
 	
 	
@@ -385,8 +381,8 @@ class ECBehaviorRenderableLight extends DefaultECBehavior
 	 * the first instance.
 	 */
 	static public func Instance getInstanceIn( BehaviorElement element )
-		return element.findInstance( block ECBehaviorInstance each
-			return each castable Instance
+		return element.findInstance( block Instance each
+			return true
 		end ) cast Instance
 	end
 	
@@ -397,9 +393,8 @@ class ECBehaviorRenderableLight extends DefaultECBehavior
 	 * of type ECBehaviorRenderableLight.Instance with specific identifier.
 	 */
 	static public func Instance getInstanceIn( BehaviorElement element, String id )
-		return element.findInstance( block ECBehaviorInstance each
-			return each castable Instance and \
-				( each cast Instance ).getECBehavior().getID().equals( id )
+		return element.findInstance( block Instance each
+			return each.getECBehavior().getID().equals( id )
 		end ) cast Instance
 	end
 	
@@ -410,13 +405,9 @@ class ECBehaviorRenderableLight extends DefaultECBehavior
 	 * been created in the element.
 	 */
 	static public func Array getAllInstancesIn( BehaviorElement element )
-		var Array list = Array.new()
-		element.forEachInstance( block ECBehaviorInstance each
-			if each castable Instance
-				list.add( each )
-			end
+		return element.collectInstances( block Instance each
+			return true
 		end )
-		return list
 	end
 	
 	

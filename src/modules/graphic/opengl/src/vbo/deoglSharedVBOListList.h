@@ -31,7 +31,6 @@ class deoglSharedVBOList;
 
 
 /**
- * @brief OpenGL Shared VBO List List.
  * List of shared VBO lists. Convenience class to store various types of shared VBO lists.
  * The list is gready so lists are created if not existing and stay around for as long as
  * the graphic module runs.
@@ -40,34 +39,47 @@ class deoglSharedVBOListList{
 public:
 	deoglRenderThread &pRenderThread;
 	int pMaxSize;
+	int pMaxIndexSize;
 	decPointerList pLists;
 	
+	
+	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Creates a new shared vbo list list. */
-	deoglSharedVBOListList( deoglRenderThread &renderThread, int maxSize );
-	/** Cleans up the shared vbo list list. */
+	/** Create shared vbo list list. */
+	deoglSharedVBOListList( deoglRenderThread &renderThread, int maxSize, int maxIndexSize );
+	
+	/** Clean up shared vbo list list. */
 	~deoglSharedVBOListList();
 	/*@}*/
 	
-	/** @name Management */
+	
+	
+	/** \name Management */
 	/*@{*/
-	/** \brief Render thread. */
+	/** Render thread. */
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
-	/** Retrieves the maximum vbo size. */
+	
+	/** Maximum VBO size. */
 	inline int GetMaxSize() const{ return pMaxSize; }
 	
-	/** Retrieves the number of lists. */
+	/** Maximum IBO size. */
+	inline int GetMaxIndexSize() const{ return pMaxIndexSize; }
+	
+	/** Count of lists. */
 	int GetCount() const;
-	/** Retrieves the list at the given location. */
+	
+	/** List at index. */
 	deoglSharedVBOList *GetAt( int index ) const;
-	/** Determines if a matching list exists. */
+	
+	/** Matching list is present. */
 	bool HasWith( const deoglVBOLayout &layout, GLenum drawType ) const;
-	/** Retrieves the matching list creating it if not existing already. */
+	
+	/** Matching list creating it if absent. */
 	deoglSharedVBOList *GetWith( const deoglVBOLayout &layout, GLenum drawType );
 	
-	/** \brief Prepare all lists. */
+	/** Prepare all lists. */
 	void PrepareAllLists();
 	/*@}*/
 };

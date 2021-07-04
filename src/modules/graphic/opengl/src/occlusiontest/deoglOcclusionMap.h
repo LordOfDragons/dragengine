@@ -31,7 +31,6 @@ class deoglFramebuffer;
 
 
 /**
- * @brief Occlusion Map.
  * Occlusion map used for occlusion testing. The occlusion map stores a Z-Pyramid
  * of the depth in the scene used for testing. For each lod level in the occlusion
  * map an own framebuffer is used.
@@ -47,29 +46,39 @@ private:
 	int pHeight;
 	int pLevelCount;
 	
+	
+	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Creates a new occlusion map. */
+	/** Create occlusion map. */
 	deoglOcclusionMap( deoglRenderThread &renderThread, int width, int height );
-	/** Cleans up the occlusion map. */
+	
+	/** Clean up occlusion map. */
 	~deoglOcclusionMap();
 	/*@}*/
 	
-	/** @name Management */
+	
+	
+	/** \name Management */
 	/*@{*/
-	/** Retrieves the width of the base level. */
+	/** Width of the base level. */
 	inline int GetWidth() const{ return pWidth; }
-	/** Retrieves the height of the base level. */
+	
+	/** Height of the base level. */
 	inline int GetHeight() const{ return pHeight; }
-	/** Retrieves the level count. */
+	
+	/** Level count. */
 	inline int GetLevelCount() const{ return pLevelCount; }
 	
-	/** Retrieves the texture. */
+	/** Texture. */
 	inline deoglTexture *GetTexture() const{ return pTexture; }
-	/** Retrieves the fbo for a level. */
+	
+	/** FBO for level. */
 	deoglFramebuffer *GetFBOAt( int level );
 	/*@}*/
+	
+	
 	
 private:
 	void pCleanUp();

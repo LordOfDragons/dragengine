@@ -155,11 +155,11 @@ class AnimatorController
 	end
 	
 	/** \brief Set controller value and vector from another controller. */
-	public func void setValueFrom( AnimatorInstance instance )
+	public func void setValueFrom( AnimatorController controller )
 	end
 	
 	/** \brief Set entire controller configuration from another controller. */
-	public func void setAllFrom( AnimatorInstance instance )
+	public func void setAllFrom( AnimatorController controller )
 	end
 	
 	/** \brief Controller value is at lower value. */

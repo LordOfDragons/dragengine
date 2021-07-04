@@ -39,6 +39,8 @@ out vec3 outAO; // ao, ssao, solidity
 // Calculate the screen space ambient occlusion
 /////////////////////////////////////////////////
 
+#include "v130/shared/normal.glsl"
+
 #define pSSAOSelfOcclusion pParamSSAO.x
 #define pSSAOEpsilon pParamSSAO.y
 #define pSSAOScale pParamSSAO.z
@@ -123,18 +125,7 @@ void main( void ){
 	
 	// calculate the parameters
 #if 1
-	#ifdef MATERIAL_NORMAL_INTBASIC
-		vec3 normal = texelFetch( texNormal, tc, 0 ).rgb * vec3( 2.0 ) + vec3( -1.0 ); // IF USING FLOAT TEXTURE
-		//vec3 normal = texelFetch( texNormal, tc, 0 ).rgb * vec3( 1.9921569 ) + vec3( -0.9921722 ); // IF USING INT TEXTURE
-	#elif defined( MATERIAL_NORMAL_SPHEREMAP )
-		vec2 fenc = texelFetch( texNormal, tc, 0 ).rgb * vec2( 4.0 ) - vec2( 2.0 );
-		float f = dot( fenc, fenc );
-		float g = sqrt( 1.0 - f * 0.25 );
-		vec3 normal = vec3( fenc.xy * vec2( g ), f * 0.5 - 1.0 );
-	#else
-		vec3 normal = texelFetch( texNormal, tc, 0 ).rgb;
-	#endif
-	normal = normalize( normal );
+	vec3 normal = normalize( normalLoadMaterial( texNormal, tc ) );
 #else
 	vec3 normal = normalize( cross( dFdy( position ), dFdx( position ) ) );
 #endif

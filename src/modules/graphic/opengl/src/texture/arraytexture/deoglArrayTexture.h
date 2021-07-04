@@ -51,9 +51,7 @@ public:
 	GLuint pTexture;
 	const deoglCapsTextureFormat *pFormat;
 	
-	int pWidth;
-	int pHeight;
-	int pLayerCount;
+	decPoint3 pSize;
 	bool pMipMapped;
 	int pMipMapLevelCount;
 	int pRealMipMapLevelCount;
@@ -76,22 +74,48 @@ public:
 	/** Retrieves the texture handle. */
 	inline GLuint GetTexture() const{ return pTexture; }
 	
+	/** Size. */
+	inline const decPoint3 &GetSize() const{ return pSize; }
+	
 	/** Retrieves the width in pixels. */
-	inline int GetWidth() const{ return pWidth; }
+	inline int GetWidth() const{ return pSize.x; }
 	/** Retrieves the height in pixels. */
-	inline int GetHeight() const{ return pHeight; }
+	inline int GetHeight() const{ return pSize.y; }
 	/** Retrieves the number of layers. */
-	inline int GetLayerCount() const{ return pLayerCount; }
+	inline int GetLayerCount() const{ return pSize.z; }
 	/** Sets the size of the texture destroying the old texture if present. */
+	void SetSize( const decPoint3 &size );
 	void SetSize( int width, int height, int layerCount );
 	/** Retrieves the texture format. */
 	inline const deoglCapsTextureFormat *GetFormat() const{ return pFormat; }
-	/** Sets the texture format. */
+	
+	/** Set texture format. */
 	void SetFormat( const deoglCapsTextureFormat *format );
-	/** Sets the texture format by number from the list of mapping texture formats to use. */
+	
+	/** Set texture format suitable for texture mapping according to the provided texture description. */
+	void SetMapingFormat( int channels, bool useFloat, bool compressed );
+	
+	/** Set texture format suitable for attaching as FBO render target. */
+	void SetFBOFormat( int channels, bool useFloat );
+	
+	/** Set texture format suitable for attaching as FBO render target. */
+	void SetFBOFormatFloat32( int channels );
+	
+	/** Set texture format suitable for rendering to an integral texture using an FBO. */
+	void SetFBOFormatIntegral( int channels, int bpp, bool useUnsigned );
+	
+	/** Set texture format suitable for attaching as FBO render target. */
+	void SetFBOFormatSNorm( int channels, int bpp );
+	
+	/** Set depth texture format suitable for attaching as FBO render target. */
+	void SetDepthFormat( bool packedStencil, bool useFloat );
+	
+	/** Set texture format by number from the list of mapping texture formats to use. */
 	void SetFormatMappingByNumber( deoglCapsFmtSupport::eUseTextureFormats formatNumber );
-	/** Sets the texture format by number from the list of fbo texture formats to use. */
+	
+	/** Set texture format by number from the list of fbo texture formats to use. */
 	void SetFormatFBOByNumber( deoglCapsFmtSupport::eUseTextureFormats formatNumber );
+	
 	/** Determines if mip mapping has to be used on this texture. */
 	inline bool GetMipMapped() const{ return pMipMapped; }
 	/** Sets if mip mapping has to be used on this texture. */
@@ -141,16 +165,6 @@ public:
 	inline bool GetMemoryUsageCompressed() const{ return pMemoryUsageCompressed; }
 	/** Update memory usage. */
 	void UpdateMemoryUsage();
-	/*@}*/
-	
-	/** @name Helper Functions */
-	/*@{*/
-	/** Sets the texture format suitable for texture mapping according to the provided texture description. */
-	void SetMapingFormat( int channels, bool useFloat, bool compressed );
-	/** Sets the texture format suitable for attaching as FBO render target. */
-	void SetFBOFormat( int channels, bool useFloat );
-	/** Sets the depth texture format suitable for attaching as FBO render target. */
-	void SetDepthFormat( bool packedStencil );
 	/*@}*/
 };
 

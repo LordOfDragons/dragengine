@@ -22,8 +22,9 @@
 #ifndef _DECANVAS_H_
 #define _DECANVAS_H_
 
-#include "../../common/math/decMath.h"
+#include "deCanvasReference.h"
 #include "../deResource.h"
+#include "../../common/math/decMath.h"
 
 class deBaseGraphicCanvas;
 class deCanvasManager;
@@ -79,9 +80,11 @@ private:
 	float pOrder;
 	float pTransparency;
 	eBlendModes pBlendMode;
+	deCanvasReference pMask;
 	
 	deBaseGraphicCanvas *pPeerGraphic;
 	
+	deCanvas *pParentMask;
 	deCanvasView *pParentView;
 	deCanvas *pLLViewPrev;
 	deCanvas *pLLViewNext;
@@ -161,6 +164,12 @@ public:
 	/** \brief Set blend mode used to blend canvas over previous content. */
 	void SetBlendMode( eBlendModes blendMode );
 	
+	/** \brief Mask canvas or NULL if not set. */
+	inline deCanvas *GetMask() const{ return pMask; }
+	
+	/** \brief Set mask canvas or NULL if not set. */
+	void SetMask( deCanvas *mask );
+	
 	
 	
 	/** \brief Notify peers about changes to the canvas content. */
@@ -190,6 +199,12 @@ public:
 	
 	/** \name Linked List */
 	/*@{*/
+	/** \brief Parent mask or NULL if not set. */
+	inline deCanvas *GetParentMask() const{ return pParentMask; }
+	
+	/** \brief Set parent mask or NULL if not set. */
+	void SetParentMask( deCanvas *mask );
+	
 	/** \brief Parent view or NULL if not set. */
 	inline deCanvasView *GetParentView() const{ return pParentView; }
 	

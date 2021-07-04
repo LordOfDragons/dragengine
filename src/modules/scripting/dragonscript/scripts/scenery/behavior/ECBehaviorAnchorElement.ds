@@ -142,8 +142,8 @@ class ECBehaviorAnchorElement extends DefaultECBehavior
 	 * of type ECBehaviorCollider.
 	 */
 	static public func ECBehaviorAnchorElement getBehaviorIn( BehaviorElementClass eclass )
-		return eclass.findBehavior( block ECBehavior each
-			return each castable ECBehaviorAnchorElement
+		return eclass.findBehavior( block ECBehaviorAnchorElement each
+			return true
 		end ) cast ECBehaviorAnchorElement
 	end
 	
@@ -155,8 +155,8 @@ class ECBehaviorAnchorElement extends DefaultECBehavior
 	 * the first instance.
 	 */
 	static public func Instance getInstanceIn( BehaviorElement element )
-		return element.findInstance( block ECBehaviorInstance each
-			return each castable Instance
+		return element.findInstance( block Instance each
+			return true
 		end ) cast Instance
 	end
 	

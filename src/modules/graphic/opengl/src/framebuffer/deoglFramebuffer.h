@@ -132,7 +132,7 @@ public:
 	/** Determines if the framebuffer is a primary framebuffer. */
 	inline bool GetIsPrimary() const{ return pPrimary; }
 	/** Activates the framebuffer if not active yet. */
-	void SetAsCurrent();
+	void SetAsCurrent() const;
 	/** Verifies the framebuffer for completeness. */
 	void Verify();
 	
@@ -180,6 +180,8 @@ public:
 	void AttachColorArrayTextureLayer( int index, deoglArrayTexture *texture, int layer );
 	/** Attach a color array texture layer level. */
 	void AttachColorArrayTextureLayerLevel( int index, deoglArrayTexture *texture, int layer, int level );
+	/** Attach a color render buffer. */
+	void AttachColorRenderbuffer( int index, const deoglRenderbuffer &renderbuffer );
 	/** Detach a color image if attached. */
 	void DetachColorImage( int index );
 	/** Detaches all color images in this and all higher attachment points if they are attached. */

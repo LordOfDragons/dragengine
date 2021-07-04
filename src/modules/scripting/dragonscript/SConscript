@@ -15,7 +15,7 @@ appendLibrary(envModule, parent_targets['dragengine'], libs)
 appendLibrary(envModule, parent_targets['lib_dragonscript'], libs)
 
 # fetch values in expanded form for later use
-versionString = '1.4'
+versionString = '1.5'
 if envModule['force_version']:
 	versionString = envModule['force_version']
 
@@ -121,6 +121,7 @@ for s in igdeGameDefs:
 	node = envModule.File(s)
 	modifiedFile = envModule.Command(node, node.srcnode(),
 		Action(ActionReplaceTokenInPlace), Replacements=replacements)
+	envModule.Depends(modifiedFile, 'SConscript')
 	
 	filename = os.path.join(pathIGDEShared, 'gamedefs', s.split('/')[-1])
 	

@@ -50,6 +50,7 @@ pFormats( *this ),
 
 pMaxDrawBuffers( 4 ),
 pUBOMaxSize( 0 ),
+pTBOMaxSize( 0 ),
 pSSBOMaxSize( 0 ),
 pSSBOMaxBlocksVertex( 0 ),
 pSSBOMaxBlocksFragment( 0 ),
@@ -154,6 +155,9 @@ void deoglCapabilities::DetectCapabilities(){
 		OGL_CHECK( pRenderThread, glGetIntegerv( GL_MAX_UNIFORM_BLOCK_SIZE, &resultsInt[ 0 ] ) );
 		pUBOMaxSize = ( int )resultsInt[ 0 ];
 		
+		OGL_CHECK( pRenderThread, glGetIntegerv( GL_MAX_TEXTURE_BUFFER_SIZE, &resultsInt[ 0 ] ) );
+		pTBOMaxSize = ( int )resultsInt[ 0 ];
+		
 		if( ext.GetHasExtension( deoglExtensions::ext_ARB_shader_storage_buffer_object ) ){
 			if( pglGetInteger64v ){
 				OGL_CHECK( pRenderThread, pglGetInteger64v( GL_MAX_SHADER_STORAGE_BLOCK_SIZE, &resultsInt64[ 0 ] ) );
@@ -190,6 +194,7 @@ void deoglCapabilities::DetectCapabilities(){
 			logger.LogInfoFormat( "- UBO Maximum Bindings = %d", maxUBOBindings );
 			logger.LogInfoFormat( "- UBO Maximum Block Size = %d", pUBOMaxSize );
 			logger.LogInfoFormat( "- UBO Buffer Offset Alignment = %d", pUBOOffsetAlignment );
+			logger.LogInfoFormat( "- TBO Maximum Size = %d", pTBOMaxSize );
 			logger.LogInfoFormat( "- SSBO Maximum Size = %d", pSSBOMaxSize );
 			logger.LogInfo( "- SSBO Maximum Blocks Shader:" );
 			logger.LogInfoFormat( "  - Vertex = %d", pSSBOMaxBlocksVertex );
@@ -218,9 +223,9 @@ void deoglCapabilities::DetectCapabilities(){
 		
 		pUBOIndirectMatrixAccess.Check( fbo );
 		pRasterizerDiscard.Check( fbo );
-		pClearEntireCubeMap.Check( fbo );
+// 		pClearEntireCubeMap.Check( fbo ); // nVidia fails this although working
 		pClearEntireArrayTexture.Check( fbo );
-		pGeometryShaderLayer.Check( fbo );
+// 		pGeometryShaderLayer.Check( fbo ); // nVidia fails this although working
 		pUBODirectLinkDeadloop.Check( fbo );
 		
 		#ifdef OS_ANDROID
@@ -410,6 +415,7 @@ void deoglCapabilities::pAndroidTest( deoglFramebuffer *framebuffer ){
 		
 		// prepare framebuffer with texture
 		pRenderThread.GetFramebuffer().Activate( framebuffer );
+		framebuffer->DetachAllImages();
 		framebuffer->AttachColorTexture( 0, texture );
 		framebuffer->UpdateReadWriteBuffers();
 		framebuffer->Verify();

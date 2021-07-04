@@ -31,6 +31,7 @@
 #include <dragengine/common/curve/decCurveBezierPoint.h>
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/common/file/decBaseFileReader.h>
+#include <dragengine/common/file/decBaseFileReaderReference.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/xmlparser/decXmlParser.h>
 #include <dragengine/common/xmlparser/decXmlDocument.h>
@@ -44,6 +45,7 @@
 #include <dragengine/resources/animation/deAnimationManager.h>
 #include <dragengine/resources/animation/deAnimation.h>
 #include <dragengine/resources/animator/deAnimator.h>
+#include <dragengine/resources/animator/deAnimatorReference.h>
 #include <dragengine/resources/animator/deAnimatorManager.h>
 #include <dragengine/resources/animator/deAnimatorLink.h>
 #include <dragengine/resources/animator/controller/deAnimatorController.h>
@@ -276,7 +278,8 @@ void igdeLoadAnimator::pReadLink( const decXmlElementTag &root, deAnimator &anim
 	}
 }
 
-deAnimatorRule *igdeLoadAnimator::pReadRule( const decXmlElementTag &root, const char *basePath, deAnimator &animator ){
+deAnimatorRule *igdeLoadAnimator::pReadRule( const decXmlElementTag &root,
+const char *basePath, deAnimator &animator ){
 	if( strcmp( root.GetName(), "ruleAnimation" ) == 0 ){
 		return pReadRuleAnimation( root, animator );
 		
@@ -930,7 +933,8 @@ deAnimatorRule * igdeLoadAnimator::pReadRuleForeignState( const decXmlElementTag
 	return rule;
 }
 
-deAnimatorRule *igdeLoadAnimator::pReadRuleGroup( const decXmlElementTag &root, const char *basePath, deAnimator &animator ){
+deAnimatorRule *igdeLoadAnimator::pReadRuleGroup( const decXmlElementTag &root,
+const char *basePath, deAnimator &animator ){
 	const int elementCount = root.GetElementCount();
 	deAnimatorRuleGroup *rule = NULL;
 	int i;
@@ -1005,16 +1009,14 @@ deAnimatorRule *igdeLoadAnimator::pReadRuleGroup( const decXmlElementTag &root, 
 	return rule;
 }
 
-deAnimatorRule * igdeLoadAnimator::pReadRuleSubAnimator( const decXmlElementTag &root, const char *basePath, deAnimator &animator ){
+deAnimatorRule * igdeLoadAnimator::pReadRuleSubAnimator( const decXmlElementTag &root,
+const char *basePath, deAnimator &animator ){
 	deEngine &engine = *animator.GetEngine();
 	deVirtualFileSystem &vfs = *engine.GetVirtualFileSystem();
 	const int elementCount = root.GetElementCount();
 	deAnimatorRuleSubAnimator *rule = NULL;
-	decBaseFileReader *reader = NULL;
-	deAnimator *subAnimator = NULL;
 	bool hasConnections = false;
 	decString pathAnimator;
-	decPath pathFile;
 	decVector vector;
 	const char *name;
 	int e, target;
@@ -1034,26 +1036,17 @@ deAnimatorRule * igdeLoadAnimator::pReadRuleSubAnimator( const decXmlElementTag 
 					continue;
 				}
 				
-				subAnimator = NULL;
-				reader = NULL;
-				
 				try{
-					pathFile.SetFromUnix( pathAnimator.GetString() );
-					
-					reader = vfs.OpenFileForReading( pathFile );
-					subAnimator = animator.GetEngine()->GetAnimatorManager()->CreateAnimator();
-					Load( pathAnimator, *subAnimator, *reader );
+					const decPath realPath( decPath::AbsolutePathNative( pathAnimator, basePath ) );
+					decBaseFileReaderReference reader;
+					reader.TakeOver( vfs.OpenFileForReading( realPath ) );
+					deAnimatorReference subAnimator;
+					subAnimator.TakeOver( animator.GetEngine()->GetAnimatorManager()->CreateAnimator() );
+					Load( realPath.GetPathUnix(), subAnimator, reader );
 					rule->SetSubAnimator( subAnimator );
-					subAnimator->FreeReference();
-					reader->FreeReference();
 					
 				}catch( const deException &e ){
-					if( subAnimator ){
-						subAnimator->FreeReference();
-					}
-					if( reader ){
-						reader->FreeReference();
-					}
+					LogWarnExceptionTag( *tag, e );
 					LogWarnGenericProblemTag( root, tag->GetName(), "Failed loading animator" );
 				}
 				

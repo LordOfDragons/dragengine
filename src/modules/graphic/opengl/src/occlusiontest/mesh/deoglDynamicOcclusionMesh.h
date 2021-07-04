@@ -32,6 +32,7 @@ class deoglROcclusionMesh;
 class deoglSharedVBOBlock;
 class deoglRenderThread;
 class deoglVAO;
+class deoglBVH;
 
 class deComponent;
 
@@ -61,6 +62,10 @@ public:
 	bool pDirtyOccMesh;
 	bool pDirtyVBO;
 	
+	deoglBVH *pBVH;
+	
+	
+	
 public:
 	/** @name Constructors and Destructors */
 	/*@{*/
@@ -74,27 +79,42 @@ public:
 	
 	/** @name Management */
 	/*@{*/
-	/** \brief Render thread. */
+	/** Render thread. */
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	/** Retrieves the occlusion mesh. */
 	inline deoglROcclusionMesh *GetOcclusionMesh() const{ return pOcclusionMesh; }
 	
-	/** Retrives the vbo. */
+	/** VBO. */
 	inline GLuint GetVBO() const{ return pVBO; }
-	/** Retrieves the VAO. */
-	deoglVAO *GetVAO();
+	
+	/** VAO. */
+	deoglVAO *GetVAO() const;
+	
 	/** Invalidates the VAO. */
 	void InvalidateVAO();
 	
 	/** Component state changed. */
 	void ComponentStateChanged();
 	
-	/** \brief Update bone mappings. */
+	/** Update bone mappings. */
 	void UpdateBoneMappings( const deComponent &component );
 	
 	/** Prepare for rendering. */
-	void Prepare();
+	void PrepareForRender();
+	
+	/** Direct access to vertices. */
+	inline const decVector *GetVertices() const{ return pVertices; }
+	
+	
+	
+	/** BVH or NULL. */
+	inline deoglBVH *GetBVH() const{ return pBVH; }
+	
+	/** Build BVH if not build yet. */
+	void PrepareBVH();
 	/*@}*/
+	
+	
 	
 private:
 	void pCleanUp();

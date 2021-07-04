@@ -491,9 +491,10 @@ void cePlaybackProcessAction::ProcessActorSpeak( ceConversation &conversation, c
 		}
 	}
 	
-	// update the eyes look-at to play
-	if( action.GetEyesLookAtList().GetCount() > 0 ){
-		const ceStripList &caEyesLAList = action.GetEyesLookAtList();
+	// update the eyes look-at to play. uses head look-ats if empty
+	const ceStripList &caEyesLAList = action.GetEyesLookAtList().GetCount() > 0
+		? action.GetEyesLookAtList() : action.GetHeadLookAtList();
+	if( caEyesLAList.GetCount() > 0 ){
 		const int count = caEyesLAList.GetCount();
 		int i;
 		

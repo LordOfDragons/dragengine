@@ -1,0 +1,152 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+namespace Dragengine.TestSystem
+
+pin Dragengine.Gui.Layouts
+pin Dragengine.Gui.Events
+pin Dragengine.LoadSave
+pin Dragengine.Scenery
+pin Dragengine.Utils
+
+
+
+/**
+ * \brief Basic implementation of application class for use by testing applications.
+ * \version 1.5
+ * 
+ * Creates a Desktop and WindowTesting instance. Subclass can add TestSuite to the window.
+ * Using the window the tests can be run.
+ */
+class BaseGameAppTesting extends Game
+	private var Console console
+	private var Loaders loaders
+	private var Desktop desktop
+	private var WindowTesting windowTesting
+	private var InputProcessor inputProcessor
+	
+	private static var BaseGameAppTesting app = null
+	
+	
+	
+	/** \brief Create Application. */
+	public func new()
+	end
+	
+	
+	
+	/** \brief The one and only application object */
+	public static func BaseGameAppTesting getApp()
+		return app
+	end
+	
+	
+	
+	/** \brief Console object. */
+	public func Console getConsole()
+		return console
+	end
+	
+	/** \brief Loaders. */
+	public func Loaders getLoaders()
+		return loaders
+	end
+	
+	/** \brief Desktop widget. */
+	public func Desktop getDesktop()
+		return desktop
+	end
+	
+	/** \brief Testing window. */
+	public func WindowTesting getWindowTesting()
+		return windowTesting
+	end
+	
+	
+	
+	/**
+	 * \brief Add test suites to test window.
+	 */
+	protected func void addTestSuites()
+	end
+	
+	
+	
+	/** \brief Init application. */
+	public func void initGame()
+		app = this
+		
+		InputSystem.setCaptureInputDevices(false)
+		
+		console = Console.new(50)
+		console.addListener(LogConsoleMessages.new())
+		
+		loaders = Loaders.new(console)
+		
+		desktop = Desktop.new(GraphicSystem.getWindowSize())
+		desktop.setGuiTheme(loaders.getGuiTheme().loadFromFile("/shareddata/guithemes/testing.guitheme.xml"))
+		GraphicSystem.getPrimaryCanvas().addCanvas(desktop.getCanvasWidget())
+		
+		windowTesting = WindowTesting.new(console, desktop)
+		addTestSuites()
+		
+		inputProcessor = WidgetInputProcessor.new(desktop)
+	end
+	
+	/** \brief Clean up application. */
+	public func void cleanUp()
+		if windowTesting != null
+			windowTesting.close()
+			windowTesting = null
+		end
+		
+		if desktop != null
+			GraphicSystem.getPrimaryCanvas().removeCanvas(desktop.getCanvasWidget())
+			desktop.dispose()
+			desktop = null
+		end
+		
+		inputProcessor = null
+		
+		app = null
+	end
+	
+	/** \brief Process input event. */
+	public func void inputEvent(InputEvent event)
+		inputProcessor.inputEvent(event)
+	end
+	
+	/** \brief User requested window to be closed. */
+	public func void userRequestedQuit()
+		Engine.quit()
+	end
+	
+	/** \brief Frame update. */
+	public func void onFrameUpdate()
+		TimerManager.advanceDefault(Engine.getElapsedTime())
+		FrameUpdateManager.notifyAllDefault()
+	end
+	
+	/** \brief Render window size changed. */
+	public func void onResizeRenderWindow()
+		desktop.setSize(GraphicSystem.getWindowSize())
+	end
+end

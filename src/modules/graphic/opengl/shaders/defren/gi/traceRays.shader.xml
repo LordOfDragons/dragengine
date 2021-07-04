@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shader>
+	<name>DefRen GI Trace Rays</name>
+	
+	<version>130</version>
+	
+	<texture name='tboGIRayCastNodeBox' target='0'/>
+	<texture name='tboGIRayCastIndex' target='1'/>
+	<texture name='tboGIRayCastInstance' target='2'/>
+	<texture name='tboGIRayCastMatrix' target='3'/>
+	<texture name='tboGIRayCastFace' target='4'/>
+	<texture name='tboGIRayCastVertex' target='5'/>
+	<texture name='tboGIRayCastTexCoord' target='6'/>
+	<texture name='tboGIRayCastMaterial' target='7'/>
+	<texture name='tboGIRayCastMaterial2' target='8'/>
+	<texture name='tboGIRayCastMaterialDiffuse' target='9'/>
+	<texture name='tboGIRayCastMaterialReflectivity' target='10'/>
+	<texture name='tboGIRayCastMaterialEmissivity' target='11'/>
+	<texture name='texGIRayCastDistanceLimit' target='12'/>
+	
+	<uniformBlock name='GIParameters' target='1'/>
+	<uniformBlock name='GIProbeIndices' target='2'/>
+	<uniformBlock name='GIProbePositions' target='3'/>
+	<uniformBlock name='GIRayDirections' target='4'/>
+	
+	<attribute name='inPosition' target='0'/>
+	
+	<output name='outPosition' target='0'/>
+	<output name='outNormal' target='1'/>
+	<output name='outDiffuse' target='2'/>
+	<output name='outReflectivity' target='3'/>
+	<output name='outLight' target='4'/>
+	
+	<sourceCode unit='vertex'>v130/vertex/defren/gi/traceRays.glsl</sourceCode>
+	<sourceCode unit='fragment'>v130/fragment/defren/gi/traceRays.glsl</sourceCode>
+</shader>

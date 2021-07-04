@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shader>
+	<name>DefRen GI Dynamic State</name>
+	
+	<version>130</version>
+	
+	<texture name='texPosition' target='0'/>
+	<texture name='texNormal' target='1'/>
+	
+	<uniformBlock name='GIParameters' target='1'/>
+	<uniformBlock name='GIProbeIndices' target='2'/>
+	<uniformBlock name='GIProbePositions' target='3'/>
+	<uniformBlock name='GIRayDirections' target='4'/>
+	
+	<output name='outState' target='0'/>
+	
+	<sourceCode unit='vertex'>v130/vertex/defren/gi/dynamicState.glsl</sourceCode>
+	<sourceCode unit='fragment'>v130/fragment/defren/gi/dynamicState.glsl</sourceCode>
+</shader>

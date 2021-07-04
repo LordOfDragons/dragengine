@@ -112,7 +112,7 @@ public:
 	inline deoglTexSamplerConfig *GetSampler() const{ return pSampler; }
 	
 	/** \brief Apply texture unit configuration. */
-	void Apply( deoglRenderThread &renderThread, int stage );
+	void Apply( deoglRenderThread &renderThread, int stage ) const;
 	
 	/** \brief Set texture sampler configuration or \em NULL if not used. */
 	void SetSampler( deoglTexSamplerConfig *sampler );

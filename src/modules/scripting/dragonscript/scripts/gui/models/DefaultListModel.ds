@@ -26,11 +26,19 @@ namespace Dragengine.Gui
 
 /**
  * \brief Default implementation of ListModel.
+ * 
+ * \par Version 1.5 Changes
+ * 
+ * Added support to set Auto-Select mode. Default is enabled as before version 1.5 . If enabled
+ * adding and removing items ensures an item is selected if the list is not empty. If disabled
+ * the user is responsible to set the selection after adding or removing items. If disabled
+ * and the selected item is removed the selection will be cleared.
  */
 class DefaultListModel implements ListModel
 	private var Array pElements
 	private var Array pListeners
 	private var int pSelected
+	private var bool pAutoSelect
 	
 	
 	
@@ -39,6 +47,7 @@ class DefaultListModel implements ListModel
 		this.pElements = Array.new()
 		this.pListeners = Array.new()
 		this.pSelected = -1
+		this.pAutoSelect = true
 	end
 	
 	/** \brief Create default list model with initial content. */
@@ -46,6 +55,7 @@ class DefaultListModel implements ListModel
 		this.pElements = Array.new( content )
 		this.pListeners = Array.new()
 		this.pSelected = content.getCount() > 0 if 0 else -1
+		this.pAutoSelect = true
 	end
 	
 	
@@ -464,6 +474,39 @@ class DefaultListModel implements ListModel
 		end )
 	end
 	
+	/**
+	 * \brief Automatically select items.
+	 * \version 1.5
+	 * 
+	 * If no item is selected and an item is added it is selected. If selected item is
+	 * removed selects the next suitible item if the list is not empty.
+	 */
+	public func bool getAutoSelect()
+		return this.pAutoSelect
+	end
+	
+	/**
+	 * \brief Set to automatically select items.
+	 * \version 1.5
+	 * 
+	 * If no item is selected and an item is added it is selected. If selected item is
+	 * removed selects the next suitible item if the list is not empty.
+	 * 
+	 * If auto select is set to true while no item is selected the first item in the
+	 * list is selected if the list is not empty.
+	 */
+	public func void setAutoSelect( bool autoSelect )
+		if autoSelect == this.pAutoSelect
+			return
+		end
+		
+		this.pAutoSelect = autoSelect
+		
+		if autoSelect and this.pSelected == -1 and this.pElements.getCount() > 0
+			this.setSelected( 0 )
+		end
+	end
+	
 	
 	
 	/**
@@ -472,29 +515,9 @@ class DefaultListModel implements ListModel
 	 * \param toIndex Index of last element that changed
 	 */
 	public func void notifyContentChanged( int fromIndex, int toIndex )
-		var bool notifySelectedChanged
-		var int count = this.pElements.getCount()
-		
-		if count > 0
-			if this.pSelected >= count
-				this.pSelected = count - 1
-				notifySelectedChanged = true
-			end
-			
-		elif this.pSelected != -1
-			this.pSelected = -1
-			notifySelectedChanged = true
-		end
-		
 		this.pListeners.forEach( block ListModelListener each
 			each.contentChanged( this, fromIndex, toIndex )
 		end )
-		
-		if notifySelectedChanged
-			this.pListeners.forEach( block ListModelListener each
-				each.selectionChanged( this )
-			end )
-		end
 	end
 	
 	/**
@@ -507,8 +530,8 @@ class DefaultListModel implements ListModel
 			each.elementsAdded( this, fromIndex, toIndex )
 		end )
 		
-		if this.pSelected == -1
-			this.setSelected( 0 )
+		if this.pSelected == -1 and this.pAutoSelect
+			this.setSelected( fromIndex )
 		end
 	end
 	
@@ -522,10 +545,15 @@ class DefaultListModel implements ListModel
 		
 		if this.pSelected > toIndex
 			this.pSelected -= toIndex - fromIndex + 1
-			notifySelectedChanged = true
+			//notifySelectedChanged = true // same selection but different index
 			
 		elif this.pSelected >= fromIndex
-			this.pSelected = DEMath.min( fromIndex, this.pElements.getCount() - 1 )
+			if this.pAutoSelect
+				this.pSelected = DEMath.min( fromIndex, this.pElements.getCount() - 1 )
+				
+			else
+				this.pSelected = -1
+			end
 			notifySelectedChanged = true
 		end
 		

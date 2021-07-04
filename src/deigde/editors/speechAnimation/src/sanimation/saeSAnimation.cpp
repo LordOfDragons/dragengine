@@ -752,6 +752,17 @@ void saeSAnimation::NotifyWordStructureChanged(){
 	SetChanged( true );
 }
 
+void saeSAnimation::NotifyWordNameChanged( saeWord *word ){
+	const int count = pListeners.GetCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		( ( saeSAnimationListener* )pListeners.GetAt( i ) )->WordNameChanged( this, word );
+	}
+	
+	SetChanged( true );
+}
+
 void saeSAnimation::NotifyWordChanged( saeWord *word ){
 	const int listenerCount = pListeners.GetCount();
 	int l;

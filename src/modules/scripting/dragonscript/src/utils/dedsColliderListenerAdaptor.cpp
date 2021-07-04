@@ -49,9 +49,12 @@ pHasListener( false )
 }
 
 dedsColliderListenerAdaptor::~dedsColliderListenerAdaptor(){
-	if( pListener ){
-		pDS.GetScriptEngine()->GetMainRunTime()->FreeValue( pListener );
+	if( ! pListener ){
+		return;
 	}
+	
+	pDS.GetScriptEngine()->GetMainRunTime()->FreeValue( pListener );
+	pListener = NULL;
 }
 
 

@@ -846,7 +846,6 @@ class ListBox extends Container implements RangeModelListener, ListModelListener
 	public func void onStateChanged( StateChangeEvent event )
 		this.runWhileBlockingLayout( block
 			this.notifyBorderParametersChanged()
-			this.notifyChildrenParentStateChanged()
 			super.onStateChanged( event )
 		end )
 		this.doLayoutIfBlocked()

@@ -34,13 +34,16 @@
 #include "debug/deoglRenderDebugDrawer.h"
 #include "defren/deoglDeferredRendering.h"
 #include "light/deoglRenderLight.h"
+#include "light/deoglRenderGI.h"
 #include "plan/deoglRenderPlan.h"
 #include "plan/deoglRenderPlanMasked.h"
 #include "task/deoglAddToRenderTask.h"
 #include "task/deoglAddToRenderTaskParticles.h"
 #include "task/deoglRenderTask.h"
 #include "task/deoglRenderTaskParticles.h"
+#include "../component/deoglRComponent.h"
 #include "../debug/deoglDebugSnapshot.h"
+#include "../debug/deoglDebugInformation.h"
 #include "../devmode/deoglDeveloperMode.h"
 #include "../effects/render/deoglREffect.h"
 #include "../envmap/deoglEnvironmentMap.h"
@@ -167,11 +170,11 @@ pDebugInfo( renderThread )
 	deoglShaderDefines defines;
 	
 	try{
-		pRenderPB = deoglSkinShader::CreateSPBRender( renderThread, false );
-		pRenderLuminancePB = deoglSkinShader::CreateSPBRender( renderThread, false );
-		pRenderCubePB = deoglSkinShader::CreateSPBRender( renderThread, true );
+		pRenderPB = deoglSkinShader::CreateSPBRender( renderThread, false, false );
+		pRenderLuminancePB = deoglSkinShader::CreateSPBRender( renderThread, false, false );
+		pRenderCubePB = deoglSkinShader::CreateSPBRender( renderThread, true, false );
 		
-		pRenderTask = new deoglRenderTask;
+		pRenderTask = new deoglRenderTask( renderThread );
 		pAddToRenderTask = new deoglAddToRenderTask( renderThread, *pRenderTask );
 		
 		pParticleSorter = new deoglParticleSorter;
@@ -257,7 +260,7 @@ void deoglRenderWorld::RenderBlackScreen( deoglRenderPlan &plan ){
 	defren.SwapPostProcessTarget();
 }
 
-void deoglRenderWorld::RenderWorld( deoglRenderPlan &plan, deoglRenderPlanMasked *mask ){
+void deoglRenderWorld::RenderWorld( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask ){
 DBG_ENTER_PARAM("RenderWorld", "%p", mask)
 DEBUG_RESET_TIMER
 //	bool maskedRendering = info->GetUseRenderMask();
@@ -340,12 +343,26 @@ DEBUG_RESET_TIMER
 // 		ClearScreen( plan, false, false );
 	}
 	
-	if( debugMainPass ){
-		DebugTimer2Sample( plan, *pDebugInfo.infoPrepare, true );
-	}
-	
 	// prepare for one render turn with this camera
 	plan.PrepareRenderOneTurn();
+	
+	// trace global illumination rays if in main render pass
+	if( ! mask ){
+		deoglRenderGI &renderGI = renderThread.GetRenderers().GetLight().GetRenderGI();
+		if( plan.GetUpdateGIState() ){
+			renderGI.TraceRays( plan );
+			OGL_CHECK( renderThread, glViewport( 0, 0, defren.GetWidth(), defren.GetHeight() ) );
+			OGL_CHECK( renderThread, glScissor( 0, 0, defren.GetWidth(), defren.GetHeight() ) );
+			DebugTimer2Sample( plan, *pDebugInfo.infoGITraceRays, true );
+			
+			// calculate probe offset and extends. done here to avoid stalling since the results
+			// are read during the next frame update. for offsets the result is also used later
+			// on to update offset texture when not used anymore. this has no stalling problem
+			// since the rendering happens sequentially on the GPU
+			renderGI.ProbeOffset( plan );
+			renderGI.ProbeExtends( plan );
+		}
+	}
 	
 	// solid pass
 	QUICK_DEBUG_START( 15, 19 )
@@ -359,9 +376,19 @@ DEBUG_RESET_TIMER
 	DBG_ENTER("RenderDepthMinMaxMipMap")
 	renderers.GetReflection().RenderDepthMinMaxMipMap( plan );
 	DBG_EXIT("RenderDepthMinMaxMipMap")
-	DBG_ENTER("RenderReflections")
-	renderers.GetReflection().RenderReflections( plan );
-	DBG_EXIT("RenderReflections")
+	
+	if( deoglSkinShader::REFLECTION_TEST_MODE == 1 ){
+		// NOTE actually this requires updated GI probes but this happens below during RenderLights().
+		//      this is though not that much of a trouble. it only causes environment maps to be
+		//      GI light one frame behind
+		DBG_ENTER("RenderGIEnvMaps")
+		renderers.GetReflection().RenderGIEnvMaps( plan );
+		DBG_EXIT("RenderGIEnvMaps")
+		
+		DBG_ENTER("RenderReflections")
+		renderers.GetReflection().RenderReflections( plan );
+		DBG_EXIT("RenderReflections")
+	}
 	if( debugMainPass ){
 		DebugTimer2Sample( plan, *pDebugInfo.infoReflection, true );
 	}
@@ -393,12 +420,21 @@ DEBUG_RESET_TIMER
 		if( ! mask ){
 			renderers.GetToneMap().LuminancePrepare( plan );
 // 			renderers.GetGeometryPass().RenderLuminanceOnly( plan );
+			DebugTimer2Sample( plan, *pDebugInfo.infoLuminancePrepare, true );
+		}
+		
+		if( ! mask ){
+			DBG_ENTER("EnvMapCopyMaterials")
+			renderers.GetReflection().CopyMaterial( plan, true );
+			DBG_EXIT("EnvMapCopyMaterials")
 		}
 		
 		DBG_ENTER("RenderLights")
-		renderers.GetLight().RenderLights( plan, true );
+		renderers.GetLight().RenderLights( plan, true, mask );
 		DBG_EXIT("RenderLights")
-		DebugTimer2Sample( plan, *pDebugInfo.infoSolidGeometryLights, true );
+		if( debugMainPass ){
+			DebugTimer2Sample( plan, *pDebugInfo.infoSolidGeometryLights, true );
+		}
 #if 0
 			if(plan.GetFBOTarget()){
 				static int c = 0;
@@ -414,6 +450,12 @@ DEBUG_RESET_TIMER
 #endif
 	}
 	QUICK_DEBUG_END
+	
+	if( deoglSkinShader::REFLECTION_TEST_MODE != 1 ){
+		DBG_ENTER("RenderGIEnvMaps")
+		renderers.GetReflection().RenderGIEnvMaps( plan );
+		DBG_EXIT("RenderGIEnvMaps")
+	}
 	
 	DBG_ENTER("RenderReflectionScreenSpace")
 	renderers.GetReflection().RenderScreenSpace( plan );
@@ -502,6 +544,7 @@ DEBUG_RESET_TIMER
 		
 		if( plan.GetRenderDebugPass() ){
 			RenderDebugDrawers( plan );
+			renderers.GetLight().GetRenderGI().RenderDebugOverlay( plan );
 			
 			//pRenderDebugging( info );
 			DebugTimer2Sample( plan, *pDebugInfo.infoDebugDrawers, true );
@@ -516,7 +559,17 @@ DEBUG_RESET_TIMER
 		
 		// debug information
 		if( plan.GetDebugTiming() && ! plan.GetFBOTarget() && devMode.GetEnabled() ){ // only in canvas rendering and main pass
+			// measuring the time required for rendering developer mode is tricky. the reason is
+			// that we need to sample the time across this function call. the sampling is present
+			// only after the function call returns which draws the measurements. we can not
+			// simply delay the result and show it the next time since we also need to clear
+			// at some time. to solve this a temporary measurement container is used. before
+			// showing the result the temporary measurement is copied to the real measurement
+			// which is then displayed while the temporary one is clear
+			pDebugInfo.infoDeveloperMode->CopyResults( *pDebugInfo.infoDeveloperModeTemp );
+			pDebugInfo.infoDeveloperModeTemp->Clear();
 			renderers.GetDevMode().RenderDevMode( plan );
+			DebugTimer1Sample( plan, *pDebugInfo.infoDeveloperModeTemp, true );
 		}
 		
 		// swap one last time so the caller finds the final image to work with in GetPostProcessTexture
@@ -528,7 +581,7 @@ DBG_EXIT("RenderWorld")
 
 
 
-void deoglRenderWorld::PrepareRenderParamBlock( deoglRenderPlan &plan, deoglRenderPlanMasked *mask ){
+void deoglRenderWorld::PrepareRenderParamBlock( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask ){
 DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 	deoglRenderThread &renderThread = GetRenderThread();
 	const decDMatrix matrixEnvMap( plan.GetRefPosCameraMatrix().GetRotationMatrix().Invert() );
@@ -732,9 +785,10 @@ DBG_EXIT("RenderMaskedPass(early)")
 		pAddToRenderTask->SetSkinShaderType( deoglSkinTexture::estComponentDepth );
 		pAddToRenderTask->SetNoRendered( false );
 		
-		pAddToRenderTask->AddComponentFaces( *maskedPlan->GetComponent(), maskedPlan->GetComponentTexture(), 0 );
+		pAddToRenderTask->AddComponentFaces( maskedPlan->GetComponent()->GetLODAt( 0 ),
+			maskedPlan->GetComponentTexture(), 0 );
 		
-		pRenderTask->PrepareForRender( renderThread );
+		pRenderTask->PrepareForRender();
 		rengeom.RenderTask( *pRenderTask );
 		
 		// render the world using this mask
@@ -841,7 +895,6 @@ void deoglRenderWorld::RenderAntiAliasingPass(){
 void deoglRenderWorld::RenderFinalizeFBO( deoglRenderPlan &plan ){
 DBG_ENTER("RenderFinalizeFBO")
 	deoglRenderThread &renderThread = GetRenderThread();
-	const bool copyDepth = plan.GetFBOTargetCopyDepth();
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	deoglShaderCompiled *shader;
@@ -865,36 +918,17 @@ DBG_ENTER("RenderFinalizeFBO")
 	sampler = &GetSamplerClampLinear();
 	
 	tsmgr.EnableTexture( 0, *defren.GetPostProcessTexture(), *sampler );
-	if( copyDepth ){
-		tsmgr.EnableTexture( 1, *defren.GetDepthTexture1(), *sampler );
-	}
 	
 	// set states
 	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
-	
-	if( copyDepth ){
-		OGL_CHECK( renderThread, glDepthMask( GL_TRUE ) );
-		OGL_CHECK( renderThread, glEnable( GL_DEPTH_TEST ) );
-		OGL_CHECK( renderThread, glDepthFunc( GL_ALWAYS ) );
-		
-	}else{
-		OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
-		OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
-	}
-	
+	OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
+	OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
 	OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
-	
 	OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
 	
 	// set program and parameters
-	if( copyDepth ){
-		renderThread.GetShader().ActivateShader( pShaderFinalize );
-		shader = pShaderFinalize->GetCompiled();
-		
-	}else{
-		renderThread.GetShader().ActivateShader( pShaderFinalize );
-		shader = pShaderFinalize->GetCompiled();
-	}
+	renderThread.GetShader().ActivateShader( pShaderFinalize );
+	shader = pShaderFinalize->GetCompiled();
 	
 	shader->SetParameterFloat( spfinPosTransform, 1.0f, 1.0f, 0.0f, 0.0f );
 	shader->SetParameterFloat( spfinGamma, 1.0f, 1.0f, 1.0f, 1.0f );
@@ -1029,6 +1063,9 @@ void deoglRenderWorld::pCleanUp(){
 	}
 	if( pRenderCubePB ){
 		pRenderCubePB->FreeReference();
+	}
+	if( pRenderLuminancePB ){
+		pRenderLuminancePB->FreeReference();
 	}
 	if( pRenderPB ){
 		pRenderPB->FreeReference();

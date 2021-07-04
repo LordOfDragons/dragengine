@@ -51,6 +51,9 @@ public:
 	
 	/** \name Notifications */
 	/*@{*/
+	/** World parameters changed. */
+	virtual void WorldParametersChanged( meWorld *world );
+	
 	/** \brief Lighting parameters changed. */
 	virtual void LightingChanged( meWorld *world );
 	

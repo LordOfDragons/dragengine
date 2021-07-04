@@ -96,7 +96,7 @@ private:
 	void pReadList( const decXmlElementTag &root, decStringList &list, const char *filename );
 	void pReadMap( const decXmlElementTag &root, cMap &map, const char *filename );
 	void pProcessTextureReplacements( const cMap &map, igdeGDClass &gdClass, const char *basePath );
-	igdeGDCComponent &pGetLoadedComponent( igdeGDClass &gdClass );
+	//igdeGDCComponent &pGetLoadedComponent( igdeGDClass &gdClass );
 };
 
 #endif

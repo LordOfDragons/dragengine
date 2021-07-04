@@ -28,6 +28,7 @@
 #include "deoglRenderLightSky.h"
 #include "deoglRenderLightPoint.h"
 #include "deoglRenderLightParticles.h"
+#include "deoglRenderGI.h"
 #include "../deoglRenderWorld.h"
 #include "../defren/deoglDeferredRendering.h"
 #include "../plan/deoglRenderPlan.h"
@@ -39,8 +40,9 @@
 #include "../../debug/deoglDebugInformation.h"
 #include "../../devmode/deoglDeveloperMode.h"
 #include "../../framebuffer/deoglFramebuffer.h"
+#include "../../gi/deoglGIState.h"
+#include "../../gi/deoglGICascade.h"
 #include "../../light/deoglRLight.h"
-#include "../../light/probes/deoglLightProbeTexture.h"
 #include "../../light/shader/deoglLightShader.h"
 #include "../../renderthread/deoglRenderThread.h"
 #include "../../renderthread/deoglRTDebug.h"
@@ -140,14 +142,15 @@ pRenderLightSpot( NULL ),
 pRenderLightSky( NULL ),
 pRenderLightPoint( NULL ),
 pRenderLightParticles( NULL ),
+pRenderGI( NULL ),
 
 pLightPB( NULL ),
 pShadowPB( NULL ),
+pShadowCascadedPB( NULL ),
 pShadowCubePB( NULL ),
 pOccMapPB( NULL ),
 pRenderTask( NULL ),
 pAddToRenderTask( NULL ),
-pLightProbesTexture( NULL ),
 
 pDebugInfoSolid( NULL ),
 pDebugInfoSolidCopyDepth( NULL ),
@@ -168,18 +171,19 @@ pDebugInfoTransparentSSSSS( NULL )
 		pShaderCopyDepth = shaderManager.GetProgramWith( sources, defines );
 		
 		pLightPB = deoglLightShader::CreateSPBRender( renderThread );
-		pShadowPB = deoglSkinShader::CreateSPBRender( renderThread, false );
-		pShadowCubePB = deoglSkinShader::CreateSPBRender( renderThread, true );
+		pShadowPB = deoglSkinShader::CreateSPBRender( renderThread, false, false );
+		pShadowCascadedPB = deoglSkinShader::CreateSPBRender( renderThread, false, true );
+		pShadowCubePB = deoglSkinShader::CreateSPBRender( renderThread, true, false );
 		pOccMapPB = deoglSkinShader::CreateSPBOccMap( renderThread );
 		
-		pRenderTask = new deoglRenderTask;
+		pRenderTask = new deoglRenderTask( renderThread );
 		pAddToRenderTask = new deoglAddToRenderTask( renderThread, *pRenderTask );
-		pLightProbesTexture = new deoglLightProbeTexture( renderThread );
 		
 		pRenderLightSky = new deoglRenderLightSky( renderThread );
 		pRenderLightSpot = new deoglRenderLightSpot( renderThread, renderers );
 		pRenderLightPoint = new deoglRenderLightPoint( renderThread, renderers );
 		pRenderLightParticles = new deoglRenderLightParticles( renderThread );
+		pRenderGI = new deoglRenderGI( renderThread );
 		
 		
 		
@@ -192,7 +196,7 @@ pDebugInfoTransparentSSSSS( NULL )
 		if( config.GetDefRenEncDepth() ){
 			defines.AddDefine( "DECODE_IN_DEPTH", "1" );
 		}
-		defines.AddDefine( "MATERIAL_NORMAL_INTBASIC", "1" );
+		defines.AddDefine( "MATERIAL_NORMAL_DEC_INTBASIC", "1" );
 		defines.AddDefine( "SSAO_RESOLUTION_COUNT", "1" ); // 1-4
 		pShaderAOLocal = shaderManager.GetProgramWith( sources, defines );
 		defines.RemoveAllDefines();
@@ -227,7 +231,7 @@ pDebugInfoTransparentSSSSS( NULL )
 		
 		// debug information
 		const decColor colorText( 1.0f, 1.0f, 1.0f, 1.0f );
-		const decColor colorBg( 0.0f, 0.0f, 0.0f, 0.75f );
+		const decColor colorBg( 0.0f, 0.0f, 0.25f, 0.75f );
 		const decColor colorBgSub( 0.05f, 0.05f, 0.05f, 0.75f );
 		
 		pDebugInfoSolid = new deoglDebugInformation( "Lights Solid", colorText, colorBg );
@@ -278,7 +282,7 @@ deoglRenderLight::~deoglRenderLight(){
 // Rendering
 //////////////
 
-void deoglRenderLight::RenderLights( deoglRenderPlan &plan, bool solid ){
+void deoglRenderLight::RenderLights( deoglRenderPlan &plan, bool solid, const deoglRenderPlanMasked *mask ){
 	deoglRenderThread &renderThread = GetRenderThread();
 	const deoglConfiguration &config = renderThread.GetConfiguration();
 	const bool sssssEnable = config.GetSSSSSEnable();
@@ -302,6 +306,13 @@ void deoglRenderLight::RenderLights( deoglRenderPlan &plan, bool solid ){
 	}
 	
 	// render lights
+	const bool hasGIStateUpdate = plan.GetUpdateGIState() != NULL;
+	const bool hasGIStateRender = plan.GetRenderGIState() != NULL;
+	
+	if( solid && ! mask && hasGIStateUpdate ){
+		pRenderGI->ClearProbes( plan );
+	}
+	
 	RestoreFBO( plan );
 	
 	if( sssssEnable ){
@@ -319,10 +330,29 @@ void deoglRenderLight::RenderLights( deoglRenderPlan &plan, bool solid ){
 	}
 	
 	PrepareRenderParamBlockLight( plan );
+	if( hasGIStateRender ){
+		pRenderGI->PrepareUBORenderLight( plan );
+	}
 	
-	pRenderLightSky->RenderLights( plan, solid );
-	pRenderLightPoint->RenderLights( plan, solid );
-	pRenderLightSpot->RenderLights( plan, solid );
+	pRenderLightPoint->RenderLights( plan, solid, mask );
+	pRenderLightSpot->RenderLights( plan, solid, mask );
+	
+	// sky light requires large render tasks that can be expensive to build. to do this as
+	// fast as possible the render task building is done using parallel tasks. by rendering
+	// sky light as last light type before GI reduces the time waiting for the parallel
+	// tasks to finish
+	pRenderLightSky->RenderLights( plan, solid, mask );
+	
+	if( solid && ! mask && hasGIStateUpdate ){
+		if( hasGIStateRender ){
+			pRenderGI->RenderLightGIRay( plan );
+		}
+		pRenderGI->UpdateProbes( plan );
+		pRenderGI->MoveProbes( plan );
+	}
+	if( hasGIStateRender ){
+		pRenderGI->RenderLight( plan, solid );
+	}
 	
 	DebugTimer2Reset( plan, false );
 	
@@ -644,6 +674,7 @@ void deoglRenderLight::PrepareRenderParamBlockLight( deoglRenderPlan &plan ){
 	pLightPB->MapBuffer();
 	try{
 		pLightPB->SetParameterDataVec4( deoglLightShader::erutPosTransform, plan.GetDepthToPosition() );
+		pLightPB->SetParameterDataVec2( deoglLightShader::erutDepthSampleOffset, plan.GetDepthSampleOffset() );
 		
 		pLightPB->SetParameterDataVec2( deoglLightShader::erutAOSelfShadow,
 			config.GetAOSelfShadowEnable() ? 0.1 : 1.0,
@@ -652,6 +683,23 @@ void deoglRenderLight::PrepareRenderParamBlockLight( deoglRenderPlan &plan ){
 		pLightPB->SetParameterDataVec2( deoglLightShader::erutLumFragCoordScale,
 			( float )defren.GetWidth() / ( float )defren.GetTextureLuminance()->GetWidth(),
 			( float )defren.GetHeight() / ( float )defren.GetTextureLuminance()->GetHeight() );
+		
+		// global illumination
+		const deoglGIState * const giState = plan.GetRenderGIState();
+		if( giState ){
+			// ray
+			const decDMatrix matrix( decDMatrix::CreateTranslation( giState->GetActiveCascade().GetPosition() )
+				* plan.GetCameraMatrix() );
+			
+			pLightPB->SetParameterDataMat4x3( deoglLightShader::erutGIRayMatrix, matrix );
+			pLightPB->SetParameterDataMat3x3( deoglLightShader::erutGIRayMatrixNormal,
+				matrix.GetRotationMatrix().QuickInvert() );
+			pLightPB->SetParameterDataMat4x4( deoglLightShader::erutGICameraProjection,
+				plan.GetProjectionMatrix() );
+			
+			// general
+			pLightPB->SetParameterDataInt( deoglLightShader::erutGIHighestCascade, giState->GetCascadeCount() - 1 );
+		}
 		
 	}catch( const deException & ){
 		pLightPB->UnmapBuffer();
@@ -675,6 +723,7 @@ void deoglRenderLight::ResetDebugInfo(){
 	pRenderLightSky->ResetDebugInfo();
 	pRenderLightPoint->ResetDebugInfo();
 	pRenderLightSpot->ResetDebugInfo();
+	pRenderGI->ResetDebugInfo();
 }
 
 void deoglRenderLight::AddTopLevelDebugInfo(){
@@ -689,6 +738,8 @@ void deoglRenderLight::AddTopLevelDebugInfo(){
 	pRenderLightSky->AddTopLevelDebugInfoTransparent();
 	pRenderLightPoint->AddTopLevelDebugInfoTransparent();
 	pRenderLightSpot->AddTopLevelDebugInfoTransparent();
+	
+	pRenderGI->AddTopLevelDebugInfo();
 }
 
 void deoglRenderLight::DevModeDebugInfoChanged(){
@@ -701,6 +752,7 @@ void deoglRenderLight::DevModeDebugInfoChanged(){
 	pRenderLightSky->DevModeDebugInfoChanged();
 	pRenderLightPoint->DevModeDebugInfoChanged();
 	pRenderLightSpot->DevModeDebugInfoChanged();
+	pRenderGI->DevModeDebugInfoChanged();
 }
 
 
@@ -709,6 +761,9 @@ void deoglRenderLight::DevModeDebugInfoChanged(){
 //////////////////////
 
 void deoglRenderLight::pCleanUp(){
+	if( pRenderGI ){
+		delete pRenderGI;
+	}
 	if( pRenderLightParticles ){
 		delete pRenderLightParticles;
 	}
@@ -722,9 +777,6 @@ void deoglRenderLight::pCleanUp(){
 		delete pRenderLightSky;
 	}
 	
-	if( pLightProbesTexture ){
-		delete pLightProbesTexture;
-	}
 	if( pAddToRenderTask ){
 		delete pAddToRenderTask;
 	}
@@ -736,6 +788,9 @@ void deoglRenderLight::pCleanUp(){
 	}
 	if( pShadowCubePB ){
 		pShadowCubePB->FreeReference();
+	}
+	if( pShadowCascadedPB ){
+		pShadowCascadedPB->FreeReference();
 	}
 	if( pShadowPB ){
 		pShadowPB->FreeReference();
@@ -765,7 +820,7 @@ void deoglRenderLight::pCleanUp(){
 	}
 	
 	if( pDebugInfoSolid ){
-		GetRenderThread().GetDebug().GetDebugInformationList().Remove( pDebugInfoSolid );
+		GetRenderThread().GetDebug().GetDebugInformationList().RemoveIfPresent( pDebugInfoSolid );
 		pDebugInfoSolid->FreeReference();
 	}
 	if( pDebugInfoSolidCopyDepth ){
@@ -779,7 +834,7 @@ void deoglRenderLight::pCleanUp(){
 	}
 	
 	if( pDebugInfoTransparent ){
-		GetRenderThread().GetDebug().GetDebugInformationList().Remove( pDebugInfoTransparent );
+		GetRenderThread().GetDebug().GetDebugInformationList().RemoveIfPresent( pDebugInfoTransparent );
 		pDebugInfoTransparent->FreeReference();
 	}
 	if( pDebugInfoTransparentCopyDepth ){

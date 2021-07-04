@@ -1,0 +1,74 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.LoadSave
+
+
+/**
+ * \brief Interface for behaviors supporting compatible persistency.
+ * \version 1.5
+ * 
+ * Compatible persistency behaviors allow BehaviorElement to persist behavior instances in a
+ * backwards and future expansion compatible way. Such behaviors needs to provide a unique
+ * behavior identifier saved together with the behavior instance data. While loading the
+ * behavior data is matched by using this behavior identifier.
+ * 
+ * Furthermore if a behavior data block does not match any behavior all behaviors are asked
+ * if they know how to load the behavior data block although not belonging to them. This is
+ * required if a user replaces a behavior with another behavior providing the same but
+ * enhanced behavior. Typically these behaviors are subclass of the replaced behavior.
+ * They can be written to support reading the behavior data block of the super class they
+ * enhance to avoid breaking save files if possible.
+ */
+public interface BehaviorCompatiblePersistency
+	/**
+	 * \brief Unique identifier of behavior.
+	 * \version 1.5
+	 * 
+	 * Has to return a string which is unique in the owner BehaviorElementClass. This string
+	 * will be stored while persisting BehaviorElement instances. This allows to assign
+	 * restored behavior instance data to the correct behavior instance if present.
+	 */
+	func String getBehaviorID()
+	
+	/**
+	 * \brief Behavior supports loading instance data of another behavior.
+	 * \version 1.5
+	 * 
+	 * Returns true if thie behavior supports loading instance data of another behavior
+	 * matching behavior identifier. Called for all behaviors if BehaviorElement encountered
+	 * an instance data block with a behavior identifier not matching any behavior instances.
+	 */
+	func bool supportsBehaviorID( String identifier )
+	
+	/**
+	 * \brief Load instance data of another behavior.
+	 * \version 1.5
+	 * 
+	 * Called if supportsBehaviorID(String) returns true for \em identifier. BehaviorElement
+	 * requests behavior to load the supported instance data block into \em instance.
+	 */
+	func void loadSupportedData( String identifier, PersistencyEnvironment env, \
+		FileReader reader, ECBehaviorInstance instance )
+end

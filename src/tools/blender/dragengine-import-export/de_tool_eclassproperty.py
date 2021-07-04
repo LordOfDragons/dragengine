@@ -41,7 +41,7 @@ class OBJECT_OT_DEToolEClassProperty( bpy.types.Operator ):
 	bl_options = { 'REGISTER', 'UNDO' }
 	__doc__ = """Element class property value from selection into Text object"""
 	
-	relative3DCursor = bpy.props.BoolProperty( name="Relative 3D-Cursor", description="Relative to 3D cursor", default=False )
+	relative3DCursor: bpy.props.BoolProperty( name="Relative 3D-Cursor", description="Relative to 3D cursor", default=False )
 	
 	@classmethod
 	def poll( cls, context ):

@@ -28,17 +28,19 @@ class deoglRenderThread;
 
 class deoglCombinedTextureList;
 class deoglRenderableTexture1DManager;
-class deoglRenderableArrayTextureManager;
+class deoglRenderableColorArrayTextureManager;
 class deoglRenderableColorCubeMapManager;
 class deoglRenderableColorTextureManager;
 class deoglRenderableDepthCubeMapManager;
+class deoglRenderableDepthArrayTextureManager;
 class deoglRenderableDepthTextureManager;
 class deoglTextureStageManager;
+class deoglOcclusionMapPool;
 
 
 
 /**
- * \brief Render thread texture related objects.
+ * Render thread texture related objects.
  */
 class deoglRTTexture{
 private:
@@ -50,15 +52,17 @@ private:
 	deoglRenderableColorCubeMapManager *pRenColorCubeMgr;
 	deoglRenderableDepthCubeMapManager *pRenDepthCubeMgr;
 	deoglRenderableTexture1DManager *pRenTex1DMgr;
-	deoglRenderableArrayTextureManager *pRenArrTexMgr;
+	deoglRenderableColorArrayTextureManager *pRenColorArrTexMgr;
+	deoglRenderableDepthArrayTextureManager *pRenDepthArrTexMgr;
+	deoglOcclusionMapPool *pOcclusionMapPool;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create render thread texture related object. */
+	/** Create render thread texture related object. */
 	deoglRTTexture( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up render thread texture related object. */
+	/** Clean up render thread texture related object. */
 	virtual ~deoglRTTexture();
 	/*@}*/
 	
@@ -66,29 +70,35 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Texture stage manager. */
+	/** Texture stage manager. */
 	inline deoglTextureStageManager &GetStages() const{ return *pTextureStageManager; }
 	
-	/** \brief Combined texture list. */
+	/** Combined texture list. */
 	inline deoglCombinedTextureList &GetCombinedTexture() const{ return *pCombinedTextureList; }
 	
-	/** \brief Renderable color texture manager. */
+	/** Renderable color texture manager. */
 	inline deoglRenderableColorTextureManager &GetRenderableColorTexture() const{ return *pRenColorTexMgr; }
 	
-	/** \brief Renderable depth texture manager. */
+	/** Renderable depth texture manager. */
 	inline deoglRenderableDepthTextureManager &GetRenderableDepthTexture() const{ return *pRenDepthTexMgr; }
 	
-	/** \brief Renderable color cubemap manager. */
+	/** Renderable color cubemap manager. */
 	inline deoglRenderableColorCubeMapManager &GetRenderableColorCubeMap() const{ return *pRenColorCubeMgr; }
 	
-	/** \brief Renderable depth cubemap manager. */
+	/** Renderable depth cubemap manager. */
 	inline deoglRenderableDepthCubeMapManager &GetRenderableDepthCubeMap() const{ return *pRenDepthCubeMgr; }
 	
-	/** \brief Renderable 1d texture manager. */
+	/** Renderable 1d texture manager. */
 	inline deoglRenderableTexture1DManager &GetRenderableTexture1D() const{ return *pRenTex1DMgr; }
 	
-	/** \brief Renderable array texture manager. */
-	inline deoglRenderableArrayTextureManager &GetRenderableArrayTexture() const{ return *pRenArrTexMgr; }
+	/** Renderable color array texture manager. */
+	inline deoglRenderableColorArrayTextureManager &GetRenderableColorArrayTexture() const{ return *pRenColorArrTexMgr; }
+	
+	/** Renderable depth array texture manager. */
+	inline deoglRenderableDepthArrayTextureManager &GetRenderableDepthArrayTexture() const{ return *pRenDepthArrTexMgr; }
+	
+	/** Occlusion map pool. */
+	inline deoglOcclusionMapPool &GetOcclusionMapPool() const{ return *pOcclusionMapPool; }
 	/*@}*/
 	
 private:

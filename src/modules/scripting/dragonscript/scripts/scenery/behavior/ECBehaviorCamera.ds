@@ -114,10 +114,12 @@ class ECBehaviorCamera extends DefaultECBehavior
 			camera.setFovRatio( this.pECBehavior.getFovRatio().getValue( stub ) )
 			camera.setImageDistance( this.pECBehavior.getImageDistance().getValue( stub ) )
 			camera.setViewDistance( this.pECBehavior.getViewDistance().getValue( stub ) )
+			camera.setEnableHDRR( this.pECBehavior.getEnableHDRR().getValue( stub ) )
 			camera.setExposure( this.pECBehavior.getExposure().getValue( stub ) )
 			camera.setLowestIntensity( this.pECBehavior.getLowestIntensity().getValue( stub ) )
 			camera.setHighestIntensity( this.pECBehavior.getHighestIntensity().getValue( stub ) )
 			camera.setAdaptionTime( this.pECBehavior.getAdaptionTime().getValue( stub ) )
+			camera.setEnableGI( this.pECBehavior.getEnableGI().getValue( stub ) )
 			camera.setLayerMask( this.pECBehavior.getLayerMask() )
 			return camera
 		end
@@ -169,10 +171,12 @@ class ECBehaviorCamera extends DefaultECBehavior
 	private var ECPFloat pFovRatio
 	private var ECPFloat pImageDistance
 	private var ECPFloat pViewDistance
+	private var ECPBoolean pEnableHDRR
 	private var ECPFloat pExposure
 	private var ECPFloat pLowestIntensity
 	private var ECPFloat pHighestIntensity
 	private var ECPFloat pAdaptionTime
+	private var ECPBoolean pEnableGI
 	private var LayerMask pLayerMask
 	
 	
@@ -209,6 +213,9 @@ class ECBehaviorCamera extends DefaultECBehavior
 		this.pViewDistance = ECPFloat.new( prefix + ".viewDistance", 200, 0.01 )
 		eclass.addProperty( this.pViewDistance )
 		
+		this.pEnableHDRR = ECPBoolean.new( prefix + ".enableHDRR", true )
+		eclass.addProperty( this.pEnableHDRR )
+		
 		this.pExposure = ECPFloat.new( prefix + ".exposure", 1, 0 )
 		eclass.addProperty( this.pExposure )
 		
@@ -220,6 +227,9 @@ class ECBehaviorCamera extends DefaultECBehavior
 		
 		this.pAdaptionTime = ECPFloat.new( prefix + ".adaptionTime", 0.1, 0 )
 		eclass.addProperty( this.pAdaptionTime )
+		
+		this.pEnableGI = ECPBoolean.new( prefix + ".enableGI", Engine.getDefaultEnableGI() )
+		eclass.addProperty( this.pEnableGI )
 		
 		eclass.addBehavior( this )
 	end
@@ -262,6 +272,11 @@ class ECBehaviorCamera extends DefaultECBehavior
 		return this.pViewDistance
 	end
 	
+	/** \brief Enable high definition range rendering (HDRR) if supported. */
+	public func ECPBoolean getEnableHDRR()
+		return this.pEnableHDRR
+	end
+	
 	/** \brief Exposure. */
 	public func ECPFloat getExposure()
 		return this.pExposure
@@ -280,6 +295,11 @@ class ECBehaviorCamera extends DefaultECBehavior
 	/** \brief Adaption time of the eye in seconds. */
 	public func ECPFloat getAdaptionTime()
 		return this.pAdaptionTime
+	end
+	
+	/** \brief Enable global illumination (GI) if supported. */
+	public func ECPBoolean getEnableGI()
+		return this.pEnableGI
 	end
 	
 	/** \brief Layer mask. */
@@ -311,8 +331,8 @@ class ECBehaviorCamera extends DefaultECBehavior
 	 * of type ECBehaviorCollider.
 	 */
 	static public func ECBehaviorCamera getBehaviorIn( BehaviorElementClass eclass )
-		return eclass.findBehavior( block ECBehavior each
-			return each castable ECBehaviorCamera
+		return eclass.findBehavior( block ECBehaviorCamera each
+			return true
 		end ) cast ECBehaviorCamera
 	end
 	
@@ -324,8 +344,7 @@ class ECBehaviorCamera extends DefaultECBehavior
 	 */
 	static public func ECBehaviorCamera getBehaviorIn( BehaviorElementClass eclass, String id )
 		return eclass.findBehavior( block ECBehaviorCamera each
-			return each castable ECBehaviorCamera and \
-				( each cast ECBehaviorCamera ).getID().equals( id )
+			return each.getID().equals( id )
 		end ) cast ECBehaviorCamera
 	end
 	
@@ -336,13 +355,9 @@ class ECBehaviorCamera extends DefaultECBehavior
 	 * been created in the element.
 	 */
 	static public func Array getAllBehaviorsIn( BehaviorElementClass eclass )
-		var Array list = Array.new()
-		eclass.forEachBehavior( block ECBehavior each
-			if each castable ECBehaviorCamera
-				list.add( each )
-			end
+		return eclass.collectBehaviors( block ECBehaviorCamera each
+			return true
 		end )
-		return list
 	end
 	
 	
@@ -355,8 +370,8 @@ class ECBehaviorCamera extends DefaultECBehavior
 	 * the first instance.
 	 */
 	static public func Instance getInstanceIn( BehaviorElement element )
-		return element.findInstance( block ECBehaviorInstance each
-			return each castable Instance
+		return element.findInstance( block Instance each
+			return true
 		end ) cast Instance
 	end
 	
@@ -367,9 +382,8 @@ class ECBehaviorCamera extends DefaultECBehavior
 	 * of type ECBehaviorCamera.Instance with specific identifier.
 	 */
 	static public func Instance getInstanceIn( BehaviorElement element, String id )
-		return element.findInstance( block ECBehaviorInstance each
-			return each castable Instance and \
-				( each cast Instance ).getECBehavior().getID().equals( id )
+		return element.findInstance( block Instance each
+			return each.getECBehavior().getID().equals( id )
 		end ) cast Instance
 	end
 	
@@ -380,13 +394,9 @@ class ECBehaviorCamera extends DefaultECBehavior
 	 * been created in the element.
 	 */
 	static public func Array getAllInstancesIn( BehaviorElement element )
-		var Array list = Array.new()
-		element.forEachInstance( block ECBehaviorInstance each
-			if each castable Instance
-				list.add( each )
-			end
+		return element.collectInstances( block Instance each
+			return true
 		end )
-		return list
 	end
 	
 	

@@ -101,10 +101,17 @@ public:
 	
 	/**
 	 * \brief Move pointer.
-	 * \throws deeInvalidParam \em from is less than 0 or larger than GetCount()-1.
-	 * \throws deeInvalidParam \em to is less than 0 or larger than GetCount().
+	 * \throws deeInvalidParam \em pointer is not part of the list.
+	 * \throws deeInvalidParam \em index is less than 0 or larger than GetCount()-1.
 	 */
 	void Move( void *pointer, int index );
+	
+	/**
+	 * \brief Move pointer.
+	 * \throws deeInvalidParam \em from is less than 0 or larger than GetCount()-1.
+	 * \throws deeInvalidParam \em to is less than 0 or larger than GetCount()-1.
+	 */
+	void Move( int from, int to );
 	
 	/**
 	 * \brief Remove pointer from index.

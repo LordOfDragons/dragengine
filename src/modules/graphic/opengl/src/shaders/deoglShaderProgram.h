@@ -24,10 +24,11 @@
 
 #include "deoglShaderDefines.h"
 
+class deoglRenderThread;
 class deoglShaderUnitSourceCode;
 class deoglShaderSources;
 class deoglShaderCompiled;
-class deoglRenderTaskShader;
+class deoglRenderTaskSharedShader;
 
 
 
@@ -38,9 +39,11 @@ class deoglRenderTaskShader;
  */
 class deoglShaderProgram{
 private:
+	deoglRenderThread &pRenderThread;
 	deoglShaderSources *pSources;
 	deoglShaderDefines pDefines;
 	
+	deoglShaderUnitSourceCode *pSCCompute;
 	deoglShaderUnitSourceCode *pSCTessellationControl;
 	deoglShaderUnitSourceCode *pSCTessellationEvaluation;
 	deoglShaderUnitSourceCode *pSCGeometry;
@@ -49,8 +52,8 @@ private:
 	
 	deoglShaderCompiled *pCompiled;
 	
-	deoglRenderTaskShader *pRenderTaskShader;
-	unsigned int pRenderTaskTrackingNumber;
+	unsigned int pUniqueKey;
+	deoglRenderTaskSharedShader *pRTSShader;
 	
 	int pUsageCount;
 	
@@ -58,9 +61,9 @@ public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new shader program object. */
-	deoglShaderProgram( deoglShaderSources *sources );
+	deoglShaderProgram( deoglRenderThread &renderThread, deoglShaderSources *sources );
 	/** Creates a new shader program object. */
-	deoglShaderProgram( deoglShaderSources *sources, const deoglShaderDefines &defines );
+	deoglShaderProgram( deoglRenderThread &renderThread, deoglShaderSources *sources, const deoglShaderDefines &defines );
 	/** Cleans up the shader program object. */
 	~deoglShaderProgram();
 	/*@}*/
@@ -72,13 +75,21 @@ public:
 	/** Retrieves the defines. */
 	inline const deoglShaderDefines &GetDefines() const{ return pDefines; }
 	
-	/** \brief Retrieves the tessellation control source code or NULL if not used. */
+	/** Compute source code or NULL. */
+	inline deoglShaderUnitSourceCode *GetComputeSourceCode() const{ return pSCCompute; }
+	
+	/** Set compute source code or NULL. */
+	void SetComputeCode( deoglShaderUnitSourceCode *sourceCode );
+	
+	/** Retrieves the tessellation control source code or NULL if not used. */
 	inline deoglShaderUnitSourceCode *GetTessellationControlSourceCode() const{ return pSCTessellationControl; }
-	/** \brief Sets the tessellation control source code or NULL if not used. */
+	
+	/** Sets the tessellation control source code or NULL if not used. */
 	void SetTessellationControlSourceCode( deoglShaderUnitSourceCode *sourceCode );
-	/** \brief Retrieves the tessellation evaluation source code or NULL if not used. */
+	
+	/** Retrieves the tessellation evaluation source code or NULL if not used. */
 	inline deoglShaderUnitSourceCode *GetTessellationEvaluationSourceCode() const{ return pSCTessellationEvaluation; }
-	/** \brief Sets the tessellation evaluation source code or NULL if not used. */
+	/** Sets the tessellation evaluation source code or NULL if not used. */
 	void SetTessellationEvaluationSourceCode( deoglShaderUnitSourceCode *sourceCode );
 	/** Retrieves the geometry source code or NULL if not used. */
 	inline deoglShaderUnitSourceCode *GetGeometrySourceCode() const{ return pSCGeometry; }
@@ -98,14 +109,14 @@ public:
 	/** Sets the compiled shader. */
 	void SetCompiled( deoglShaderCompiled *compiled );
 	
-	/** Retrieves the render task shader pointer. */
-	inline deoglRenderTaskShader *GetRenderTaskShader() const{ return pRenderTaskShader; }
-	/** Sets the render task shader pointer. */
-	void SetRenderTaskShader( deoglRenderTaskShader *renderTaskShader );
-	/** Retrieves the render task tracking number. */
-	inline unsigned int GetRenderTaskTrackingNumber() const{ return pRenderTaskTrackingNumber; }
-	/** Sets the render task tracking number. */
-	void SetRenderTaskTrackingNumber( unsigned int trackingNumber );
+	/** Unique key for use with dictionaries. */
+	inline unsigned int GetUniqueKey() const{ return pUniqueKey; }
+	
+	/** Render task shared shader. */
+	inline deoglRenderTaskSharedShader *GetRTSShader() const{ return pRTSShader; }
+	
+	/** Ensure render task sharded shader is present. */
+	void EnsureRTSShader();
 	
 	/** Retrieves the usage count. */
 	inline int GetUsageCount() const{ return pUsageCount; }

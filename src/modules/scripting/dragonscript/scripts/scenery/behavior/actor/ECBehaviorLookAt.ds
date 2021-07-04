@@ -681,8 +681,8 @@ class ECBehaviorLookAt extends DefaultECBehavior
 	 * of type ECBehaviorLookAt.
 	 */
 	static public func ECBehaviorLookAt getBehaviorIn( BehaviorElementClass eclass )
-		return eclass.findBehavior( block ECBehavior each
-			return each castable ECBehaviorLookAt
+		return eclass.findBehavior( block ECBehaviorLookAt each
+			return true
 		end ) cast ECBehaviorLookAt
 	end
 	
@@ -693,8 +693,8 @@ class ECBehaviorLookAt extends DefaultECBehavior
 	 * of type ECBehaviorLookAt.Instance .
 	 */
 	static public func Instance getInstanceIn( BehaviorElement element )
-		return element.findInstance( block ECBehaviorInstance each
-			return each castable Instance
+		return element.findInstance( block Instance each
+			return true
 		end ) cast Instance
 	end
 	

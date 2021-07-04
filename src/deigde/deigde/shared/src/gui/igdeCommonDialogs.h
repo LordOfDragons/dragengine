@@ -245,6 +245,16 @@ public:
 		decString &value );
 	
 	/**
+	 * \brief Request string input from user with proposed values.
+	 * 
+	 * Initial value is located in \em value. If the user accepts the input \em value
+	 * is updated with the user input and \em true returned. If the user cancelled
+	 * the input \em false is returned.
+	 */
+	static bool GetString( igdeWidget *owner, const char *title, const char *text,
+		decString &value, const decStringList &proposals );
+	
+	/**
 	 * \brief Request string selection input from user.
 	 * 
 	 * Initial selection is located in \em selection showing entries from \em list.

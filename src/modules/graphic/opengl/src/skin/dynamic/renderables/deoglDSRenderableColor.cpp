@@ -42,6 +42,7 @@ deoglDSRenderableColor::deoglDSRenderableColor( deoglDynamicSkin &dynamicSkin, c
 deoglDSRenderable( dynamicSkin, renderable ),
 pRenderableColor( renderable ),
 pRRenderableColor( NULL ),
+pColor( renderable.GetColor() ),
 pDirty( true )
 {
 	try{
@@ -67,7 +68,18 @@ deoglRDSRenderable *deoglDSRenderableColor::GetRRenderable() const{
 }
 
 void deoglDSRenderableColor::RenderableChanged(){
-	pDirty = true;
+	const decColor &color = pRenderableColor.GetColor();
+	
+	if( ! color.IsEqualTo( pColor ) ){
+		pColor = color;
+		pDirty = true;
+		
+		pDynamicSkin.NotifyRenderableChanged( *this );
+	}
+	
+	if( pRenderableColor.GetName() != pRRenderableColor->GetName() ){
+		pDynamicSkin.NotifyRenderablesChanged();
+	}
 }
 
 void deoglDSRenderableColor::SyncToRender(){

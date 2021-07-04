@@ -57,11 +57,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeVAOLight::gdeVAOLight( gdeViewActiveObject &view, gdeOCLight *oclight ) :
-pView( view ),
+gdeVAOLight::gdeVAOLight( gdeViewActiveObject &view, const gdeObjectClass &objectClass,
+	const decString &propertyPrefix, gdeOCLight *oclight ) :
+gdeVAOSubObject( view, objectClass, propertyPrefix ),
 pOCLight( oclight ),
-pLight( NULL ),
-pDebugDrawer( NULL ),
 pDDSCenter( NULL ),
 pDDSCoordSystem( NULL )
 {
@@ -118,9 +117,8 @@ void gdeVAOLight::AttachResources(){
 		return;
 	}
 	
-	const decVector &position = pOCLight->GetPosition();
-	const decQuaternion orientation( decQuaternion::CreateFromEuler(
-		pOCLight->GetRotation() * DEG2RAD ) );
+	const decVector position( PropertyVector( pOCLight->GetPropertyName( gdeOCLight::epAttachPosition ), pOCLight->GetPosition() ) );
+	const decQuaternion orientation( PropertyQuaternion( pOCLight->GetPropertyName( gdeOCLight::epAttachRotation ), pOCLight->GetRotation() ) );
 	const decString &bone = pOCLight->GetBoneName();
 	
 	deColliderAttachment *attachment = NULL;
@@ -214,7 +212,7 @@ void gdeVAOLight::pCleanUp(){
 	}
 	if( pDebugDrawer ){
 		pView.GetGameDefinition()->GetWorld()->RemoveDebugDrawer( pDebugDrawer );
-		pDebugDrawer->FreeReference();
+		pDebugDrawer = NULL;
 	}
 	
 	if( pOCLight ){
@@ -228,7 +226,7 @@ void gdeVAOLight::pCreateDebugDrawer(){
 	const deEngine &engine = *pView.GetGameDefinition()->GetEngine();
 	
 	// create debug drawer
-	pDebugDrawer = engine.GetDebugDrawerManager()->CreateDebugDrawer();
+	pDebugDrawer.TakeOver( engine.GetDebugDrawerManager()->CreateDebugDrawer() );
 	pDebugDrawer->SetXRay( true );
 	pView.GetGameDefinition()->GetWorld()->AddDebugDrawer( pDebugDrawer );
 	
@@ -249,30 +247,57 @@ void gdeVAOLight::pCreateLight(){
 	igdeEnvironment &environment = pView.GetWindowMain().GetEnvironment();
 	const deEngine &engine = *pView.GetGameDefinition()->GetEngine();
 	
-	pLight = engine.GetLightManager()->CreateLight();
-	pLight->SetType( pOCLight->GetType() );
+	pLight.TakeOver( engine.GetLightManager()->CreateLight() );
+	
+	decString typeName;
+	switch( pOCLight->GetType() ){
+	case deLight::eltSpot:
+		typeName = "spot";
+		break;
+		
+	case deLight::eltProjector:
+		typeName = "projector";
+		break;
+		
+	case deLight::eltPoint:
+	default:
+		typeName = "point";
+		break;
+	}
+	
+	typeName = PropertyString( pOCLight->GetPropertyName( gdeOCLight::epType ), typeName );
+	
+	if( typeName == "spot" ){
+		pLight->SetType( deLight::eltSpot );
+		
+	}else if( typeName == "projector" ){
+		pLight->SetType( deLight::eltProjector );
+		
+	}else{
+		pLight->SetType( deLight::eltPoint );
+	}
+	
 	pLight->SetHintMovement( pOCLight->GetHintMovement() );
 	pLight->SetHintParameter( pOCLight->GetHintParameter() );
-	pLight->SetColor( pOCLight->GetColor() );
-	pLight->SetIntensity( pOCLight->GetIntensity() );
-	pLight->SetRange( pOCLight->GetRange() );
-	pLight->SetAmbientRatio( pOCLight->GetAmbientRatio() );
-	pLight->SetHalfIntensityDistance( pOCLight->GetHalfIntensityDistance() );
-	pLight->SetSpotAngle( pOCLight->GetSpotAngle() * DEG2RAD );
-	pLight->SetSpotRatio( pOCLight->GetSpotRatio() );
-	pLight->SetSpotSmoothness( pOCLight->GetSpotSmoothness() );
-	pLight->SetSpotExponent( pOCLight->GetSpotExponent() );
-	pLight->SetCastShadows( pOCLight->GetCastShadows() );
-	pLight->SetHintLightImportance( pOCLight->GetHintLightImportance() );
-	pLight->SetHintShadowImportance( pOCLight->GetHintShadowImportance() );
-	pLight->SetPosition( pOCLight->GetPosition() );
-	pLight->SetOrientation( decQuaternion::CreateFromEuler( pOCLight->GetRotation() * DEG2RAD ) );
+	pLight->SetColor( PropertyColor( pOCLight->GetPropertyName( gdeOCLight::epColor ), pOCLight->GetColor() ) );
+	pLight->SetIntensity( PropertyFloat( pOCLight->GetPropertyName( gdeOCLight::epIntensity ), pOCLight->GetIntensity() ) );
+	pLight->SetRange( PropertyFloat( pOCLight->GetPropertyName( gdeOCLight::epRange ), pOCLight->GetRange() ) );
+	pLight->SetAmbientRatio( PropertyFloat( pOCLight->GetPropertyName( gdeOCLight::epAmbientRatio ), pOCLight->GetAmbientRatio() ) );
+	pLight->SetHalfIntensityDistance( PropertyFloat( pOCLight->GetPropertyName( gdeOCLight::epHalfIntDist ), pOCLight->GetHalfIntensityDistance() ) );
+	pLight->SetSpotAngle( PropertyFloat( pOCLight->GetPropertyName( gdeOCLight::epSpotAngle ), pOCLight->GetSpotAngle() ) * DEG2RAD );
+	pLight->SetSpotRatio( PropertyFloat( pOCLight->GetPropertyName( gdeOCLight::epSpotRatio ), pOCLight->GetSpotRatio() ) );
+	pLight->SetSpotSmoothness( PropertyFloat( pOCLight->GetPropertyName( gdeOCLight::epSpotSmoothness ), pOCLight->GetSpotSmoothness() ) );
+	pLight->SetSpotExponent( PropertyFloat( pOCLight->GetPropertyName( gdeOCLight::epSpotExponent ), pOCLight->GetSpotExponent() ) );
+	pLight->SetCastShadows( PropertyBool( pOCLight->GetPropertyName( gdeOCLight::epCastShadows ), pOCLight->GetCastShadows() ) );
+	pLight->SetHintLightImportance( PropertyInt( pOCLight->GetPropertyName( gdeOCLight::epHintLightImportance ), pOCLight->GetHintLightImportance() ) );
+	pLight->SetHintShadowImportance( PropertyInt( pOCLight->GetPropertyName( gdeOCLight::epHintShadowImportance ), pOCLight->GetHintShadowImportance() ) );
 	
 	// light skin
+	decString path( PropertyString( pOCLight->GetPropertyName( gdeOCLight::epLightSkin ), pOCLight->GetLightSkinPath() ) );
 	deSkinReference skin;
-	if( ! pOCLight->GetLightSkinPath().IsEmpty() ){
+	if( ! path.IsEmpty() ){
 		try{
-			skin.TakeOver( engine.GetSkinManager()->LoadSkin( vfs, pOCLight->GetLightSkinPath(), "/" ) );
+			skin.TakeOver( engine.GetSkinManager()->LoadSkin( vfs, path, "/" ) );
 			
 		}catch( const deException &e ){
 			skin = environment.GetErrorSkin();
@@ -309,11 +334,8 @@ void gdeVAOLight::pUpdateDDShapeColor(){
 
 
 void gdeVAOLight::pReleaseResources(){
-	deWorld &world = *pView.GetGameDefinition()->GetWorld();
-	
 	if( pLight ){
-		world.RemoveLight( pLight );
-		pLight->FreeReference();
+		pView.GetGameDefinition()->GetWorld()->RemoveLight( pLight );
 		pLight = NULL;
 	}
 }

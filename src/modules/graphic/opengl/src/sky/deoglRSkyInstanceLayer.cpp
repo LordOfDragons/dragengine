@@ -28,9 +28,10 @@
 #include "deoglRSkyInstance.h"
 #include "deoglRSkyInstanceLayer.h"
 #include "deoglRSkyControllerTarget.h"
-#include "deoglSkyLayerShadowCaster.h"
 #include "deoglSkyLayerTracker.h"
+#include "deoglSkyLayerGICascade.h"
 #include "../configuration/deoglConfiguration.h"
+#include "../gi/deoglGIState.h"
 #include "../light/shader/deoglLightShader.h"
 #include "../light/shader/deoglLightShaderManager.h"
 #include "../renderthread/deoglRenderThread.h"
@@ -41,6 +42,7 @@
 #include "../skin/deoglRSkin.h"
 #include "../skin/deoglSkin.h"
 #include "../skin/deoglSkinTexture.h"
+#include "../shadow/deoglShadowCaster.h"
 #include "../delayedoperation/deoglDelayedDeletion.h"
 #include "../delayedoperation/deoglDelayedOperations.h"
 
@@ -73,7 +75,7 @@ pParamBlockInstance( NULL )
 		pShaders[ i ] = NULL;
 	}
 	
-	pShadowCaster = new deoglSkyLayerShadowCaster( instance.GetRenderThread() );
+	pShadowCaster = new deoglShadowCaster( instance.GetRenderThread() );
 }
 
 class deoglRSkyInstanceLayerDeletion : public deoglDelayedDeletion{
@@ -81,7 +83,7 @@ public:
 	deoglLightShader *shaders[ deoglRSkyInstanceLayer::EST_COUNT ];
 	deoglSPBlockUBO *paramBlockLight;
 	deoglSPBlockUBO *paramBlockInstance;
-	deoglSkyLayerShadowCaster *shadowCaster;
+	deoglShadowCaster *shadowCaster;
 	
 	deoglRSkyInstanceLayerDeletion() :
 	paramBlockLight( NULL ),
@@ -96,7 +98,7 @@ public:
 	virtual ~deoglRSkyInstanceLayerDeletion(){
 	}
 	
-	virtual void DeleteObjects( deoglRenderThread &renderThread ){
+	virtual void DeleteObjects( deoglRenderThread& ){
 		int i;
 		
 		if( shadowCaster ){
@@ -117,6 +119,8 @@ public:
 };
 
 deoglRSkyInstanceLayer::~deoglRSkyInstanceLayer(){
+	RemoveAllGICascades();
+	
 	if( pTrackerEnvMap ){
 		delete pTrackerEnvMap;
 	}
@@ -219,13 +223,33 @@ bool deoglRSkyInstanceLayer::GetShaderConfigFor( int shaderType, deoglLightShade
 	config.SetHWDepthCompare( true );
 	config.SetDecodeInShadow( false );
 	
-	config.SetShadowTapMode( deoglLightShaderConfig::estmPcf9 );
+	switch( shaderType ){
+	case estGIRayNoShadow:
+	case estGIRaySolid1:
+	case estGIRaySolid2:
+		config.SetMaterialNormalModeDec( deoglLightShaderConfig::emnmFloat );
+		// regular sky shadow casting uses PCF 9-Tap mode. for GI shadow map resollution
+		// is rather low and rays spread by a large angle. for this reason 1-Tap mode is
+		// a possible solution which is slightly faster (17ys versus 22ys). so what to
+		// choose? difficult to say. the PCF 9-Tap version smoothes shadows more than
+		// the 1-Tap version (which uses HW bilinear filtering by the way). This can help
+		// reduce flickering in GI probes due to the smoothing
+		//config.SetShadowTapMode( deoglLightShaderConfig::estmSingle );
+		config.SetShadowTapMode( deoglLightShaderConfig::estmPcf9 );
+		config.SetSubSurface( false );
+		config.SetGIRay( true );
+		break;
+		
+	default:
+		config.SetMaterialNormalModeDec( deoglLightShaderConfig::emnmFloat );
+		config.SetShadowTapMode( deoglLightShaderConfig::estmPcf9 );
+		config.SetSubSurface( oglconfig.GetSSSSSEnable() );
+	}
+	
 	config.SetTextureNoise( false );
 	
 	config.SetDecodeInDepth( oglconfig.GetDefRenEncDepth() );
 	config.SetFullScreenQuad( true );
-	
-	config.SetSubSurface( oglconfig.GetSSSSSEnable() );
 	
 	switch( shaderType ){
 	case estNoShadow:
@@ -239,6 +263,21 @@ bool deoglRSkyInstanceLayer::GetShaderConfigFor( int shaderType, deoglLightShade
 	case estSolid:
 		config.SetAmbientLighting( true );
 		config.SetTextureShadow1Solid( true );
+		break;
+		
+	case estGIRayNoShadow:
+		config.SetAmbientLighting( false );
+		break;
+		
+	case estGIRaySolid1:
+		config.SetAmbientLighting( false );
+		config.SetTextureShadow1Solid( true );
+		break;
+		
+	case estGIRaySolid2:
+		config.SetAmbientLighting( false );
+		config.SetTextureShadow1Solid( true );
+		config.SetTextureShadow2Solid( true );
 		break;
 	}
 	
@@ -287,6 +326,74 @@ deoglSPBlockUBO *deoglRSkyInstanceLayer::GetInstanceParameterBlock(){
 	}
 	
 	return pParamBlockInstance;
+}
+
+void deoglRSkyInstanceLayer::NotifyUpdateStaticComponent( deoglRComponent *component ){
+	const int count = pGICascades.GetCount();
+	int i;
+	for( i=0; i<count; i++ ){
+		( ( deoglSkyLayerGICascade* )pGICascades.GetAt( i ) )->NotifyUpdateStaticComponent( component );
+	}
+}
+
+
+
+int deoglRSkyInstanceLayer::GetGICascadeCount() const{
+	return pGICascades.GetCount();
+}
+
+deoglSkyLayerGICascade *deoglRSkyInstanceLayer::GetGICascade( const deoglGICascade &cascade ) const{
+	const int count = pGICascades.GetCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		deoglSkyLayerGICascade * const slgc = ( deoglSkyLayerGICascade* )pGICascades.GetAt( i );
+		if( &slgc->GetGICascade() == &cascade ){
+			return slgc;
+		}
+	}
+	
+	return NULL;
+}
+
+deoglSkyLayerGICascade *deoglRSkyInstanceLayer::AddGICascade( const deoglGICascade &cascade ){
+	deoglSkyLayerGICascade *slgc = GetGICascade( cascade );
+	if( slgc ){
+		return slgc;
+	}
+	
+	slgc = new deoglSkyLayerGICascade( *this, cascade );
+	pGICascades.Add( slgc );
+	return slgc;
+}
+
+void deoglRSkyInstanceLayer::RemoveGICascade( const deoglGICascade &cascade ){
+	const int count = pGICascades.GetCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		deoglSkyLayerGICascade * const slgc = ( deoglSkyLayerGICascade* )pGICascades.GetAt( i );
+		if( &slgc->GetGICascade() == &cascade ){
+			delete slgc;
+			pGICascades.RemoveFrom( i );
+			return;
+		}
+	}
+}
+
+void deoglRSkyInstanceLayer::RemoveAllGICascades( const deoglGIState &state ){
+	const int count = state.GetCascadeCount();
+	int i;
+	for( i=0; i<count; i++ ){
+		RemoveGICascade( state.GetCascadeAt( i ) );
+	}
+}
+
+void deoglRSkyInstanceLayer::RemoveAllGICascades(){
+	int count = pGICascades.GetCount();
+	while( count > 0 ){
+		delete ( deoglSkyLayerGICascade* )pGICascades.GetAt( --count );
+	}
 }
 
 

@@ -1,27 +1,22 @@
-uniform int pLayer;
-
 layout( triangles ) in;
 layout( triangle_strip, max_vertices=3 ) out;
+
+#include "v130/shared/ubo_defines.glsl"
+#include "v130/shared/defren/gi/ubo_gi.glsl"
 
 in vec2 vGSTexCoord[ 3 ];
 
 out vec2 vTexCoord;
 
 void main( void ){
-	gl_PrimitiveID = gl_PrimitiveIDIn;
-	gl_Layer = pLayer;
-	
-	gl_Position = gl_in[ 0 ].gl_Position;
-	vTexCoord = vGSTexCoord[ 0 ];
-	EmitVertex();
-	
-	gl_Position = gl_in[ 1 ].gl_Position;
-	vTexCoord = vGSTexCoord[ 1 ];
-	EmitVertex();
-	
-	gl_Position = gl_in[ 2 ].gl_Position;
-	vTexCoord = vGSTexCoord[ 2 ];
-	EmitVertex();
+	int i;
+	for( i=0; i<3; i++ ){
+		gl_Position = gl_in[ i ].gl_Position;
+		vTexCoord = vGSTexCoord[ i ];
+		gl_Layer = pGICascade;
+		gl_PrimitiveID = gl_PrimitiveIDIn;
+		EmitVertex();
+	}
 	
 	EndPrimitive();
 }

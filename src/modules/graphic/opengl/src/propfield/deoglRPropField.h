@@ -22,12 +22,14 @@
 #ifndef _DEOGLRPROPFIELD_H_
 #define _DEOGLRPROPFIELD_H_
 
+#include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/collection/decObjectList.h>
-#include <dragengine/deObject.h>
+#include <dragengine/common/collection/decPointerLinkedList.h>
 
 #include "../deoglGL.h"
 
+class deoglRenderPlan;
 class deoglRenderThread;
 class deoglRPropFieldType;
 class deoglRWorld;
@@ -35,15 +37,12 @@ class deoglRWorld;
 class dePropField;
 
 
-
 /**
- * \brief Render prop field.
- * The LOD parameter indicates the lod level using a value in the range of 0 to 1.
- * 0 Indicates that the prop field is fully ignored. Changing to this lod level
- * clears the content of the prop field. A value of 1 indicates that the prop field
- * is fully populated with all possible instances. Changing to this lod level
- * clears the prop field and calls the script to create the instances with 1
- * density as parameter.
+ * Render prop field. The LOD parameter indicates the lod level using a value in the range
+ * of 0 to 1. 0 Indicates that the prop field is fully ignored. Changing to this lod level
+ * clears the content of the prop field. A value of 1 indicates that the prop field is fully
+ * populated with all possible instances. Changing to this lod level clears the prop field
+ * and calls the script to create the instances with 1 density as parameter.
  */
 class deoglRPropField : public deObject{
 private:
@@ -56,16 +55,20 @@ private:
 	decDVector pMaxExtend;
 	
 	decObjectList pTypes;
+	bool pTypesRequirePrepareForRender;
 	
 	bool pWorldMarkedRemove;
+	decPointerLinkedList::cListEntry pLLPrepareForRenderWorld;
+	
+	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create render prop field. */
+	/** Create render prop field. */
 	deoglRPropField( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up render prop field. */
+	/** Clean up render prop field. */
 	virtual ~deoglRPropField();
 	/*@}*/
 	
@@ -73,86 +76,89 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Render thread. */
+	/** Render thread. */
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
-	/** \brief Parent world or \em NULL if not set. */
+	/** Parent world or NULL if not set. */
 	inline deoglRWorld *GetParentWorld() const{ return pParentWorld; }
 	
-	/** \brief Set parent world or \em NULL if not set. */
+	/** Set parent world or NULL if not set. */
 	void SetParentWorld( deoglRWorld *parentWorld );
 	
 	
 	
-	/** \brief Position. */
+	/** Position. */
 	inline const decDVector &GetPosition() const{ return pPosition; }
 	
-	/** \brief Set position. */
+	/** Set position. */
 	void SetPosition( const decDVector &position );
 	
 	
 	
-	/** \brief Minimum extend. */
+	/** Minimum extend. */
 	inline const decDVector &GetMinimumExtend() const{ return pMinExtend; }
 	
-	/** \brief Maximum extend. */
+	/** Maximum extend. */
 	inline const decDVector &GetMaximumExtend() const{ return pMaxExtend; }
 	
-	/** \brief Update extends. */
+	/** Update extends. */
 	void UpdateExtends( const dePropField &propField );
 	
 	
 	
-	/** \brief Prepare for rendering. */
+	/** Prepare for render. Called by deoglRWorld if registered previously. */
 	void PrepareForRender();
 	
 	/**
-	 * \brief Prepare instances for rendering using a camera position.
-	 * \details First all instances are removed. Then each instance is distance tested
-	 *          using the given camera position. Only instances inside the clipping
-	 *          distance are added to the list of instances to render. For all the
-	 *          instances entered into the list their matrix is calculated using the
-	 *          given camera matrix. After this is done the instance matrices are ready
-	 *          to be used in subsequent rendering calls.
+	 * Prepare instances for rendering using a camera position.
+	 * First all instances are removed. Then each instance is distance tested
+	 * using the given camera position. Only instances inside the clipping
+	 * distance are added to the list of instances to render. For all the
+	 * instances entered into the list their matrix is calculated using the
+	 * given camera matrix. After this is done the instance matrices are ready
+	 * to be used in subsequent rendering calls.
 	 */
 	void PrepareInstances( const decDVector &cameraPosition, const decDMatrix &cameraMatrix );
 	
 	
 	
-	/** \brief Number of types. */
+	/** Number of types. */
 	int GetTypeCount() const;
 	
-	/** \brief Type at index. */
+	/** Type at index. */
 	deoglRPropFieldType &GetTypeAt( int index ) const;
 	
-	/** \brief Remove all types. */
+	/** Remove all types. */
 	void RemoveAllTypes();
 	
-	/** \brief Add type. */
+	/** Add type. */
 	void AddType( deoglRPropFieldType* type );
 	
+	/** Type requires prepare for render. */
+	void TypeRequiresPrepareForRender();
 	
 	
-	/** \brief World reference point changed. */
+	
+	/** World reference point changed. */
 	void WorldReferencePointChanged();
-	/*@}*/
 	
 	
 	
-	/** \name Render world usage */
-	/*@{*/
-	/**
-	 * \brief Marked for removal.
-	 * \details For use by deoglRWorld only. Non-thread safe.
-	 */
+	/** Marked for removal. For use by deoglRWorld only. Non-thread safe. */
 	inline bool GetWorldMarkedRemove() const{ return pWorldMarkedRemove; }
 	
-	/**
-	 * \brief Set marked for removal.
-	 * \details For use by deoglRWorld only. Non-thread safe.
-	 */
+	/** Set marked for removal. */
 	void SetWorldMarkedRemove( bool marked );
+	
+	/** World prepare for render linked list. */
+	inline decPointerLinkedList::cListEntry &GetLLPrepareForRenderWorld(){ return pLLPrepareForRenderWorld; }
+	inline const decPointerLinkedList::cListEntry &GetLLPrepareForRenderWorld() const{ return pLLPrepareForRenderWorld; }
 	/*@}*/
+	
+	
+	
+private:
+	void pRequiresPrepareForRender();
 };
 
 #endif

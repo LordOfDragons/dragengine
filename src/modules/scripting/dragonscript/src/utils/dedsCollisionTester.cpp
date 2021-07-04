@@ -381,16 +381,19 @@ bool dedsCollisionTester::CanHitCollider( deCollider *owner, deCollider *collide
 void dedsCollisionTester::pCleanUp(){
 	if( pHitCollider ){
 		pHitCollider->FreeReference();
+		pHitCollider = NULL;
 	}
 	
 	SetWorld( NULL );
 	SetTouchSensor( NULL );
 	if( pCollider ){
 		pCollider->FreeReference();
+		pCollider = NULL;
 	}
 	
 	if( pColliderListener ){
 		pDS.GetScriptEngine()->GetMainRunTime()->FreeValue( pColliderListener );
+		pColliderListener = NULL;
 	}
 }
 

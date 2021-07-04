@@ -143,10 +143,17 @@ bool debnServer::ListenOn( const char *address ){
 	if( useAddress == "*" ){
 		decStringList publicAddresses;
 		pNetBasic->FindPublicAddresses( publicAddresses );
-		useAddress = publicAddresses.GetAt( 0 );
+		
+		if( publicAddresses.GetCount() > 0 ){
+			useAddress = publicAddresses.GetAt( 0 );
+			
+		}else{
+			pNetBasic->LogInfo( "debnServer.ListenOn: No public address found. Using localhost" );
+			useAddress = "127.0.0.1";
+		}
 	}
 	
-// 	pNetBasic->LogInfoFormat( "Listening on %s", useAddress.GetString() );
+	pNetBasic->LogInfoFormat( "debnServer.ListenOn: Listening on %s", useAddress.GetString() );
 	
 	try{
 		pSocket = new debnSocket( pNetBasic );

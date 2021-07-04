@@ -92,6 +92,8 @@ void deoglRSkyInstance::SetParentWorld( deoglRWorld *world ){
 		return;
 	}
 	
+	DropAllGIStates();
+	
 	pParentWorld = world;
 	
 	pSkyNeedsUpdate = true;
@@ -216,14 +218,17 @@ void deoglRSkyInstance::UpdateLayers(){
 	int i;
 	
 	pTotalSkyLightIntensity = 0.0f;
+	pTotalSkyAmbientIntensity = 0.0f;
 	pTotalSkyLightColor.SetZero();
 	
 	for( i=0; i<pLayerCount; i++ ){
 		pLayers[ i ]->Update();
 		
-		const float lightIntensity = pLayers[ i ]->GetAmbientIntensity()
-			+ pLayers[ i ]->GetLightIntensity();
+		const float ambientIntensity = pLayers[ i ]->GetAmbientIntensity();
+		const float lightIntensity = ambientIntensity + pLayers[ i ]->GetLightIntensity();
+		
 		pTotalSkyLightIntensity += lightIntensity;
+		pTotalSkyAmbientIntensity += ambientIntensity;
 		pTotalSkyLightColor += pLayers[ i ]->GetLightColor() * lightIntensity;
 		
 		pSkyNeedsUpdate |= pLayers[ i ]->GetSkyNeedsUpdate();
@@ -261,10 +266,31 @@ void deoglRSkyInstance::NotifySkyChanged(){
 	pSkyNeedsUpdate = false;
 }
 
+void deoglRSkyInstance::DropGIState( const deoglGIState *giState ){
+	int i;
+	for( i=0; i<pLayerCount; i++ ){
+		pLayers[ i ]->RemoveAllGICascades( *giState );
+	}
+}
+
+void deoglRSkyInstance::DropAllGIStates(){
+	int i;
+	for( i=0; i<pLayerCount; i++ ){
+		pLayers[ i ]->RemoveAllGICascades();
+	}
+}
+
 
 
 void deoglRSkyInstance::PrepareQuickDispose(){
 	pParentWorld = NULL;
+}
+
+void deoglRSkyInstance::NotifyUpdateStaticComponent( deoglRComponent *component ){
+	int i;
+	for( i=0; i<pLayerCount; i++ ){
+		pLayers[ i ]->NotifyUpdateStaticComponent( component );
+	}
 }
 
 

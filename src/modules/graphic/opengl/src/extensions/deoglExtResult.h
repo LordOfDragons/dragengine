@@ -245,6 +245,15 @@ extern GLAPI PFNGLGETQUERYOBJECTUIVPROC pglGetQueryObjectuiv;
 
 
 
+// opengl version 2.0
+///////////////////////
+
+extern PFNGLSTENCILOPSEPARATEPROC pglStencilOpSeparate;
+extern PFNGLSTENCILFUNCSEPARATEPROC pglStencilFuncSeparate;
+extern PFNGLSTENCILMASKSEPARATEPROC pglStencilMaskSeparate;
+
+
+
 // GL_ARB_vertex_program . opengl version 2.0
 ///////////////////////////////////////////////
 
@@ -404,6 +413,16 @@ extern GLAPI PFNGLCLEARBUFFERIVPROC pglClearBufferiv;
 extern GLAPI PFNGLCLEARBUFFERUIVPROC pglClearBufferuiv;
 extern GLAPI PFNGLCLEARBUFFERFVPROC pglClearBufferfv;
 extern GLAPI PFNGLCLEARBUFFERFIPROC pglClearBufferfi;
+
+
+
+// OpenGL 3.2 core stuff
+//////////////////////////
+
+extern GLAPI PFNGLFENCESYNCPROC pglFenceSync;
+extern GLAPI PFNGLDELETESYNCPROC pglDeleteSync;
+extern GLAPI PFNGLCLIENTWAITSYNCPROC pglClientWaitSync;
+extern GLAPI PFNGLWAITSYNCPROC pglWaitSync;
 
 
 
@@ -674,6 +693,21 @@ extern GLAPI PFNGLCOPYIMAGESUBDATANVPROC pglCopyImageSubDataNV;
 
 extern GLAPI PFNGLSHADERSTORAGEBLOCKBINDINGPROC pglShaderStorageBlockBinding;
 
+
+
+// GL_ARB_program_interface_query : opengl version 4.3
+/////////////////////////////////////////////////////////////
+
+extern GLAPI PFNGLGETPROGRAMINTERFACEIVPROC pglGetProgramInterfaceiv;
+extern GLAPI PFNGLGETPROGRAMRESOURCEINDEXPROC pglGetProgramResourceIndex;
+
+
+
+// GL_ARB_compute_shader : opengl version 4.3
+///////////////////////////////////////////////
+
+extern GLAPI PFNGLDISPATCHCOMPUTEPROC pglDispatchCompute;
+extern GLAPI PFNGLDISPATCHCOMPUTEINDIRECTPROC pglDispatchComputeIndirect;
 
 
 

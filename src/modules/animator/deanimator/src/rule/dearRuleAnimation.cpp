@@ -85,6 +85,9 @@ pEnableSize( rule.GetEnableSize() )
 }
 
 dearRuleAnimation::~dearRuleAnimation(){
+	if( pMove ){
+		pMove->FreeReference();
+	}
 }
 
 

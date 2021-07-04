@@ -56,6 +56,7 @@
 #include <deigde/gui/igdeComboBox.h>
 #include <deigde/gui/igdeComboBoxFilter.h>
 #include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/igdeWindow.h>
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/composed/igdeEditPath.h>
 #include <deigde/gui/composed/igdeEditPathListener.h>
@@ -242,7 +243,7 @@ public:
 			codec.DecodeShapeList( encoded, shapeList );
 			
 		}catch( const deException & ){
-			igdeCommonDialogs::Error( &pPanel, "Invalid Input",
+			igdeCommonDialogs::Error( pPanel.GetParentWindow(), "Invalid Input",
 				"Input value does not decode to a proper shape list" );
 			textField.Focus();
 			return NULL;
@@ -374,7 +375,7 @@ public:
 			codec.DecodeShapeList( encoded, shapeList );
 			
 		}catch( const deException & ){
-			igdeCommonDialogs::Error( &pPanel, "Invalid Input",
+			igdeCommonDialogs::Error( pPanel.GetParentWindow(), "Invalid Input",
 				"Input value does not decode to a proper shape list" );
 			textField.Focus();
 			return NULL;

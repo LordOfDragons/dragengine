@@ -57,7 +57,7 @@ class deLogger;
 
 
 /**
- * \brief Main Application Window.
+ * Main Application Window.
  */
 class meWindowMain : public igdeEditorWindow{
 private:
@@ -189,11 +189,11 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create main window. */
+	/** Create main window. */
 	meWindowMain( meIGDEModule &module );
 	
 protected:
-	/** \brief Clean up main window. */
+	/** Clean up main window. */
 	virtual ~meWindowMain();
 	/*@}*/
 	
@@ -202,46 +202,49 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Ask user if it is okay to quit the application. */
+	/** Ask user if it is okay to quit the application. */
 	bool QuitRequest();
 	
-	/** \brief Reset views. */
+	/** Reset views. */
 	void ResetViews();
 	
-	/** \brief Configuration. */
+	/** Configuration. */
 	inline meConfiguration &GetConfiguration() const{ return *pConfiguration; }
 	
-	/** \brief Clipboard. */
+	/** Clipboard. */
 	inline igdeClipboard &GetClipboard(){ return pClipboard; }
 	inline const igdeClipboard &GetClipboard() const { return pClipboard; }
 	
-	/** \brief Load/save system. */
+	/** Load/save system. */
 	inline meLoadSaveSystem &GetLoadSaveSystem() const{ return *pLoadSaveSystem; }
 	
-	/** \brief Save support. */
+	/** Save support. */
 	inline meSaveSupport &GetSaveSupport() const{ return *pSaveSupport; }
 	
 	
 	
-	/** \brief Properties window. */
+	/** Properties window. */
 	inline meWindowProperties *GetWindowProperties() const{ return pWindowProperties; }
 	
-	/** \brief View 3D. */
+	/** View 3D. */
 	inline meView3D *GetView3D() const{ return pView3D; }
 	
 	
 	
-	/** \brief World. */
+	/** World. */
 	inline meWorld *GetWorld() const{ return pWorld; }
 	
-	/** \brief Set world. */
+	/** Set world. */
 	void SetWorld( meWorld *world );
 	
-	/** \brief Create world. */
+	/** Create world. */
 	void CreateNewWorld();
 	
-	/** \brief Load game world. */
+	/** Load game world. */
 	void LoadWorld( const char *filename );
+	
+	/** Notify configuration enable GI changed. */
+	void ConfigEnableGIChanged();
 	
 	
 	
@@ -261,7 +264,7 @@ public:
 	
 	
 	
-	/** \brief Icons. */
+	/** Icons. */
 	inline igdeIcon *GetIconEditObject() const{ return pIconEditObject; }
 	inline igdeIcon *GetIconEditDecal() const{ return pIconEditDecal; }
 	inline igdeIcon *GetIconEditNavSpace() const{ return pIconEditNavSpace; }
@@ -287,34 +290,34 @@ public:
 	
 	
 	
-	/** \brief Actions. */
+	/** Actions. */
 	inline igdeAction *GetActionObjectSubclassAsEclass() const{ return pActionObjectSubclassAsEclass; }
 	
 	
 	
-	/** \brief Game engine is about to be started. */
+	/** Game engine is about to be started. */
 	virtual void OnBeforeEngineStart();
 	
-	/** \brief Game engine has been started. */
+	/** Game engine has been started. */
 	virtual void OnAfterEngineStart();
 	
-	/** \brief Game engine is about to be stopped. */
+	/** Game engine is about to be stopped. */
 	virtual void OnBeforeEngineStop();
 	
-	/** \brief Game engine has been stopped. */
+	/** Game engine has been stopped. */
 	virtual void OnAfterEngineStop();
 	
-	/** \brief Module has been activated. */
+	/** Module has been activated. */
 	virtual void OnActivate();
 	
-	/** \brief Module has been deactivated. */
+	/** Module has been deactivated. */
 	virtual void OnDeactivate();
 	
-	/** \brief Game like frame update. */
+	/** Game like frame update. */
 	virtual void OnFrameUpdate( float elapsed );
 	
 	/**
-	 * \brief Retrieves a list of changed documents.
+	 * Retrieves a list of changed documents.
 	 * 
 	 * This list is requested by the IGDE if a game project is closed due to creating or
 	 * loading a new one or because the application is about to be closed. Editors modules
@@ -325,12 +328,12 @@ public:
 	virtual void GetChangedDocuments( decStringList &list );
 	
 	/**
-	 * \brief Requests a document to be loaded.
+	 * Requests a document to be loaded.
 	 */
 	virtual void LoadDocument( const char *filename );
 	
 	/**
-	 * \brief Requests a document to be saved.
+	 * Requests a document to be saved.
 	 * 
 	 * The document has to be saved if changed. If not changed this call can be ignored.
 	 * This call is usually made after a previous call to \ref GetUnsavedDocuments.
@@ -340,12 +343,12 @@ public:
 	virtual bool SaveDocument( const char *filename );
 	
 	/**
-	 * \brief Recent files changed.
+	 * Recent files changed.
 	 */
 	virtual void RecentFilesChanged();
 	
 	/**
-	 * \brief The game project has changed.
+	 * The game project has changed.
 	 * 
 	 * Notification send to the editor modules after a new game project has been set.
 	 * The editor module has to discard all open documents and all references held of
@@ -355,7 +358,7 @@ public:
 	virtual void OnGameProjectChanged();
 	
 	/**
-	 * \brief Project game definition changed.
+	 * Project game definition changed.
 	 * 
 	 * Called after an editor changed the game definition. The old game definition used so
 	 * far is replaced by a new game definition. The module has to update everything

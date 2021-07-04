@@ -28,6 +28,7 @@
 #include "deoglSharedSPBElement.h"
 #include "../deoglShaderParameterBlock.h"
 
+#include <dragengine/deObjectReference.h>
 #include <dragengine/common/exceptions.h>
 
 
@@ -89,28 +90,10 @@ deoglSharedSPBElement *deoglSharedSPBList::AddElement(){
 		}
 	}
 	
-	deoglSharedSPB *spb = NULL;
-	deoglShaderParameterBlock *parameterBlock = NULL;
+	deObjectReference spb, paramBlock;
+	paramBlock.TakeOver( pCreateBlock() );
+	spb.TakeOver( new deoglSharedSPB( ( deoglShaderParameterBlock* )( deObject* )paramBlock ) );
+	pSPBs.Add( spb );
 	
-	try{
-		parameterBlock = pCreateBlock();
-		
-		spb = new deoglSharedSPB( parameterBlock );
-		parameterBlock->FreeReference();
-		parameterBlock = NULL;
-		
-		pSPBs.Add( spb );
-		spb->FreeReference();
-		
-		return spb->AddElement();
-		
-	}catch( const deException & ){
-		if( spb ){
-			spb->FreeReference();
-		}
-		if( parameterBlock ){
-			parameterBlock->FreeReference();
-		}
-		throw;
-	}
+	return ( ( deoglSharedSPB& )( deObject& )spb ).AddElement();
 }

@@ -95,12 +95,14 @@ public:
 	
 private:
 	deoglDOctree *pNodes[ 8 ];
-	decDVector pCenter;
-	decDVector pHalfSize;
+	const decDVector pCenter;
+	const decDVector pHalfSize;
+	const decDVector pMinExtend;
+	const decDVector pMaxExtend;
 	deoglDOctree *pParent;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new generic octree object. */
 	deoglDOctree( const decDVector &center, const decDVector &halfSize );
@@ -108,7 +110,7 @@ public:
 	virtual ~deoglDOctree();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the parent of the octree or NULL if a root octree. */
 	inline deoglDOctree *GetParent() const{ return pParent; }
@@ -118,6 +120,13 @@ public:
 	inline const decDVector &GetCenter() const{ return pCenter; }
 	/** Retrieves the half size of the octree. */
 	inline const decDVector &GetHalfSize() const{ return pHalfSize; }
+	
+	/** Minimum extend. */
+	inline const decDVector &GetMinimumExtend() const{ return pMinExtend; }
+	
+	/** Maximum extend. */
+	inline const decDVector &GetMaximumExtend() const{ return pMaxExtend; }
+	
 	/**
 	 * Retrieves one of the 8 child nodes. This is NULL if there
 	 * exists no such node yet. You can use either an index from 0
@@ -135,35 +144,25 @@ public:
 	 * does not yet exist it is created. If found the node is returned. If
 	 * no node could be found NULL is returned.
 	 */
-	deoglDOctree *GetNodeAtBox( const decDVector &boxCenter, const decDVector &boxHalfSize );
+	deoglDOctree *GetNodeAtBox( const decDVector &minExtend, const decDVector &maxExtend );
 	/**
 	 * Looks for the child node in which the box lies. If found the node
 	 * is returned. If no node could be found NULL or the node does not exist
 	 * yet NULL is returned.
 	 */
-	deoglDOctree *FindNodeAtBox( const decDVector &boxCenter, const decDVector &boxHalfSize ) const;
+	deoglDOctree *FindNodeAtBox( const decDVector &minExtend, const decDVector &maxExtend ) const;
 	/**
 	 * Looks for the octant in which the element lies. Returns eoNotFound
 	 * if no octant fully contains the element.
 	 */
-	int FindOctantAtBox( const decDVector &boxCenter, const decDVector &boxHalfSize ) const;
+	int FindOctantAtBox( const decDVector &minExtend, const decDVector &maxExtend ) const;
 	/** Determines if the box is located completely in this node. */
-	bool ContainsBox( const decDVector &boxCenter, const decDVector &boxHalfSize ) const;
-	/**
-	 * Looks for the child node in which the point lies. If found the node
-	 * is returned. If no node could be found NULL or the node does not exist
-	 * yet NULL is returned.
-	 */
-	deoglDOctree *FindNodeAtPoint( const decDVector &point ) const;
+	bool ContainsBox( const decDVector &minExtend, const decDVector &maxExtend ) const;
 	/** Looks for the octant in which the point lies. */
 	int FindOctantAtPoint( const decDVector &point ) const;
 	/** Determines if the point is located in this node. */
 	bool ContainsPoint( const decDVector &point ) const;
 	
-	/** Searches for the Node containing a given box. */
-	deoglDOctree *SearchTreeForBox( const decDVector &boxCenter, const decDVector &boxHalfSize ) const;
-	/** Searches for the Node where the given point lies in. */
-	deoglDOctree *SearchTreeForPoint( const decDVector &point ) const;
 	/** Visits all nodes. */
 	void VisitNodes( deoglDOctreeVisitor *visitor );
 	/** Visits all nodes which collide with the given collision volume. */

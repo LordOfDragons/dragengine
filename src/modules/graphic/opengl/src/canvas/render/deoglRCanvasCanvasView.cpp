@@ -86,11 +86,13 @@ void deoglRCanvasCanvasView::SetTCClampMaximum( const decVector2 &clamp ){
 
 
 
-void deoglRCanvasCanvasView::PrepareForRender(){
+void deoglRCanvasCanvasView::PrepareForRender( const deoglRenderPlanMasked *renderPlanMask ){
 	if( ! pCanvasView ){
 		return;
 	}
-	pCanvasView->PrepareRenderTarget();
+	
+	deoglRCanvas::PrepareForRender( renderPlanMask );
+	pCanvasView->PrepareRenderTarget( renderPlanMask );
 }
 
 void deoglRCanvasCanvasView::Render( const deoglRenderCanvasContext &context ){

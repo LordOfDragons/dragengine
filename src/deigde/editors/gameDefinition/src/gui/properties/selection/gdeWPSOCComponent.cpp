@@ -76,6 +76,7 @@
 #include <deigde/gui/igdeColorBox.h>
 #include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/igdeIconListBox.h>
+#include <deigde/gui/igdeWindow.h>
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/composed/igdeEditPath.h>
 #include <deigde/gui/composed/igdeEditPathListener.h>
@@ -624,12 +625,12 @@ public:
 			name = "Texture";
 			
 			while( true ){
-				if( ! igdeCommonDialogs::GetString( &pPanel, "Add Texture", "Name:", name ) ){
+				if( ! igdeCommonDialogs::GetString( pPanel.GetParentWindow(), "Add Texture", "Name:", name ) ){
 					return NULL;
 				}
 				
 				if( component->GetTextures().HasNamed( name ) ){
-					igdeCommonDialogs::Error( &pPanel, "Add Texture", "A texture with this name exists already." );
+					igdeCommonDialogs::Error( pPanel.GetParentWindow(), "Add Texture", "A texture with this name exists already." );
 					
 				}else{
 					break;
@@ -712,7 +713,7 @@ public:
 		}
 		
 		if( component->GetTextures().HasNamed( textField.GetText() ) ){
-			igdeCommonDialogs::Information( &pPanel, "Rename texture", "A texture with this name exists already." );
+			igdeCommonDialogs::Information( pPanel.GetParentWindow(), "Rename texture", "A texture with this name exists already." );
 			textField.SetText( texture->GetName() );
 			return NULL;
 		}
@@ -820,7 +821,7 @@ public:
 			value = property->GetDefaultValue();
 		}
 		
-		if( ! igdeCommonDialogs::GetString( &pPanel, "Set Texture Property Value", "Value:", value ) ){
+		if( ! igdeCommonDialogs::GetString( pPanel.GetParentWindow(), "Set Texture Property Value", "Value:", value ) ){
 			return NULL;
 		}
 		
@@ -895,7 +896,7 @@ public:
 		}
 		
 		decString value( texture->GetProperties().GetAt( key ) );
-		if( ! igdeCommonDialogs::GetString( &pPanel, "Edit Texture Property Value", "Value:", value ) ){
+		if( ! igdeCommonDialogs::GetString( pPanel.GetParentWindow(), "Edit Texture Property Value", "Value:", value ) ){
 			return;
 		}
 		

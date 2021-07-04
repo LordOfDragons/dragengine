@@ -55,7 +55,7 @@ public:
 	void SetCanvas( deoglRCanvasView *canvas );
 	
 	/** \brief Prepare for render. */
-	virtual void PrepareForRender();
+	virtual void PrepareForRender( const deoglRenderPlanMasked *renderPlanMask );
 	
 	/**
 	 * \brief Get texture to use for rendering or \em NULL if not applicable.

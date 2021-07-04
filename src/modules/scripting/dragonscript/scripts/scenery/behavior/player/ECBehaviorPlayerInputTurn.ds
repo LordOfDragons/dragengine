@@ -301,8 +301,8 @@ class ECBehaviorPlayerInputTurn extends DefaultECBehavior
 	 * of type ECBehaviorPlayerInputTurn.
 	 */
 	static public func ECBehaviorPlayerInputTurn getBehaviorIn( BehaviorElementClass eclass )
-		return eclass.findBehavior( block ECBehavior each
-			return each castable ECBehaviorPlayerInputTurn
+		return eclass.findBehavior( block ECBehaviorPlayerInputTurn each
+			return true
 		end ) cast ECBehaviorPlayerInputTurn
 	end
 	
@@ -313,8 +313,8 @@ class ECBehaviorPlayerInputTurn extends DefaultECBehavior
 	 * of type ECBehaviorPlayerInputTurn.Instance .
 	 */
 	static public func Instance getInstanceIn( BehaviorElement element )
-		return element.findInstance( block ECBehaviorInstance each
-			return each castable Instance
+		return element.findInstance( block Instance each
+			return true
 		end ) cast Instance
 	end
 	

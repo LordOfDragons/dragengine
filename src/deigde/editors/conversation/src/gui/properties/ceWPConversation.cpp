@@ -817,7 +817,7 @@ public:
 	virtual igdeUndo *OnChanged( igdeEditVector &editVector, ceConversation* ){
 		ceCameraShot * const cameraShot = pPanel.GetCameraShot();
 		return cameraShot && ! editVector.GetVector().IsEqualTo( cameraShot->GetRotationFrom() )
-			? new ceUCCShotSetPosFrom( cameraShot, editVector.GetVector() ) : NULL;
+			? new ceUCCShotSetRotFrom( cameraShot, editVector.GetVector() ) : NULL;
 	}
 };
 
@@ -828,7 +828,7 @@ public:
 	virtual igdeUndo *OnChanged( igdeEditVector &editVector, ceConversation* ){
 		ceCameraShot * const cameraShot = pPanel.GetCameraShot();
 		return cameraShot && ! editVector.GetVector().IsEqualTo( cameraShot->GetRotationTo() )
-			? new ceUCCShotSetPosTo( cameraShot, editVector.GetVector() ) : NULL;
+			? new ceUCCShotSetRotTo( cameraShot, editVector.GetVector() ) : NULL;
 	}
 };
 
@@ -1554,6 +1554,7 @@ void ceWPConversation::UpdateGestureList(){
 		}
 		
 		pCBGesture->SortItems();
+		pCBGesture->StoreFilterItems();
 	}
 	
 	if( pConversation ){
@@ -1605,6 +1606,7 @@ void ceWPConversation::UpdateFacePoseList(){
 		}
 		
 		pCBFacePose->SortItems();
+		pCBFacePose->StoreFilterItems();
 	}
 	
 	if( pConversation ){
@@ -1709,6 +1711,7 @@ void ceWPConversation::UpdateCameraShotList(){
 		}
 		
 		pCBCameraShot->SortItems();
+		pCBCameraShot->StoreFilterItems();
 	}
 	
 	if( pConversation ){
@@ -1824,6 +1827,7 @@ void ceWPConversation::UpdateTargetList(){
 		}
 		
 		pCBTarget->SortItems();
+		pCBTarget->StoreFilterItems();
 	}
 	
 	if( pConversation ){
@@ -1922,6 +1926,7 @@ void ceWPConversation::UpdateActorIDLists(){
 		}
 		
 		pCBTargetActorID->SortItems();
+		pCBTargetActorID->StoreFilterItems();
 	}
 	
 	pCBTargetActorID->SetText( selection );

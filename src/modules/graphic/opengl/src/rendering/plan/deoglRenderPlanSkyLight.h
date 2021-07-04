@@ -22,20 +22,28 @@
 #ifndef _DEOGLRENDERPLANSKYLIGHT_H_
 #define _DEOGLRENDERPLANSKYLIGHT_H_
 
-#include <dragengine/common/math/decMath.h>
-
+#include "../task/deoglAddToRenderTask.h"
+#include "../task/deoglRenderTask.h"
 #include "../../collidelist/deoglCollideList.h"
+
+#include <dragengine/deObjectReference.h>
+#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/math/decMath.h>
 
 
 class deoglRenderThread;
 class deoglRSkyInstance;
 class deoglRSkyInstanceLayer;
+class deoglRPTSkyLightFindContent;
+class deoglRPTSkyLightBuildRT;
+class deoglRPTSkyLightGIFindContent;
+class deoglRPTSkyLightGIUpdateRT;
 class deoglRenderPlan;
-
+class deoglOcclusionTest;
 
 
 /**
- * \brief Render plan sky light.
+ * Render plan sky light.
  */
 class deoglRenderPlanSkyLight{
 public:
@@ -50,31 +58,57 @@ public:
 		decVector position;
 		decVector scale;
 		decMatrix matrix;
+		deoglRenderTask *renderTask;
+		deoglAddToRenderTask *addToRenderTask;
 	};
 	
 	
 	
 private:
-	deoglRenderThread &pRenderThread;
+	deoglRenderPlan &pPlan;
+	deoglRSkyInstance *pSky;
 	deoglRSkyInstanceLayer *pLayer;
 	
 	deoglCollideList pCollideList;
 	decVector pFrustumBoxMinExtend;
 	decVector pFrustumBoxMaxExtend;
 	
+	deoglOcclusionTest *pOcclusionTest;
+	
+	bool pPlanned;
+	bool pUseLight;
 	bool pUseShadow;
 	int pShadowLayerCount;
 	sShadowLayer pShadowLayers[ 4 ];
+	deoglCollideList pSLCollideList1;
+	deoglCollideList pSLCollideList2;
+	
+	deoglCollideList pGICollideList;
+// 	decVector pGIBoxMinExtend;
+// 	decVector pGIBoxMaxExtend;
+	int pGIShadowSize;
+	sShadowLayer pGIShadowLayer;
+	bool pGIShadowUpdateStatic;
+	deoglRenderTask pGIRenderTaskStatic;
+	deoglRenderTask pGIRenderTaskDynamic;
+	deoglAddToRenderTask pGIRenderTaskAddStatic;
+	deoglAddToRenderTask pGIRenderTaskAddDynamic;
+	
+	deoglRPTSkyLightFindContent *pTaskFindContent;
+	deoglRPTSkyLightBuildRT *pTaskBuildRT1;
+	deoglRPTSkyLightBuildRT *pTaskBuildRT2;
+	deoglRPTSkyLightGIFindContent *pTaskGIFindContent;
+	deoglRPTSkyLightGIUpdateRT *pTaskGIUpdateRT;
 	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create render plan light. */
-	deoglRenderPlanSkyLight( deoglRenderThread &renderThread );
+	/** Create render plan light. */
+	deoglRenderPlanSkyLight( deoglRenderPlan &plan );
 	
-	/** \brief Clean up render plan light. */
+	/** Clean up render plan light. */
 	~deoglRenderPlanSkyLight();
 	/*@}*/
 	
@@ -82,63 +116,136 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Sky layer. */
+	/** Render plan. */
+	inline deoglRenderPlan &GetPlan() const{ return pPlan; }
+	
+	/** Sky instance. */
+	inline deoglRSkyInstance *GetSky() const{ return pSky; }
+	
+	/** Sky layer. */
 	inline deoglRSkyInstanceLayer *GetLayer() const{ return pLayer; }
 	
-	/** \brief Set sky layer. */
-	void SetLayer( deoglRSkyInstanceLayer *layer );
+	/** Set sky layer. */
+	void SetLayer( deoglRSkyInstance *sky, deoglRSkyInstanceLayer *layer );
 	
 	
 	
-	/** \brief Collide list with potentially shadow casting elements. */
+	/** Collide list with potentially shadow casting elements. */
 	inline deoglCollideList &GetCollideList(){ return pCollideList; }
 	inline const deoglCollideList &GetCollideList() const{ return pCollideList; }
 	
-	/** \brief Frustum box min extend. */
+	/** Frustum box min extend. */
 	inline const decVector &GetFrustumBoxMinExtend() const{ return pFrustumBoxMinExtend; }
 	
-	/** \brief Frustum box max extend. */
+	/** Frustum box max extend. */
 	inline const decVector &GetFrustumBoxMaxExtend() const{ return pFrustumBoxMaxExtend; }
 	
+	/** Set frustom box extends. */
+	void SetFrustumBoxExtend( const decVector &minExtend, const decVector &maxExtend );
 	
 	
-	/** \brief Use shadow casting. */
+	
+	/** Occlusion test. */
+	inline deoglOcclusionTest *GetOcclusionTest() const{ return pOcclusionTest; }
+	
+	/** Set occlusion test. */
+	void SetOcclusionTest( deoglOcclusionTest *occlusionTest );
+	
+	
+	
+	/** Plan has been planed. */
+	inline bool GetPlanned() const{ return pPlanned; }
+	
+	/** Clear plan is planned. */
+	void ClearPlanned();
+	
+	/** Use light. */
+	inline bool GetUseLight() const{ return pUseLight; }
+	
+	/** Use shadow casting. */
 	inline bool GetUseShadow() const{ return pUseShadow; }
 	
-	/** \brief Shadow layer count. */
+	/** Shadow layer count. */
 	inline int GetShadowLayerCount() const{ return pShadowLayerCount; }
 	
-	/** \brief Shadow layer at index. */
+	/** Shadow layer at index. */
 	sShadowLayer &GetShadowLayerAt( int index );
 	const sShadowLayer &GetShadowLayerAt( int index ) const;
 	
 	
 	
-	/** \brief Clear. */
+	/** GI collide list with potentially shadow casting elements. */
+	inline deoglCollideList &GetGICollideList(){ return pGICollideList; }
+	inline const deoglCollideList &GetGICollideList() const{ return pGICollideList; }
+	
+	/** GI box min extend. */
+// 	inline const decVector &GetGIBoxMinExtend() const{ return pGIBoxMinExtend; }
+	
+	/** GI box max extend. */
+// 	inline const decVector &GetGIBoxMaxExtend() const{ return pGIBoxMaxExtend; }
+	
+	/** GI shadow size. */
+	inline int GetGIShadowSize() const{ return pGIShadowSize; }
+	
+	/** GI shadow layer. */
+	inline sShadowLayer &GetGIShadowLayer(){ return pGIShadowLayer; }
+	inline const sShadowLayer &GetGIShadowLayer() const{ return pGIShadowLayer; }
+	
+	/** Update static GI shadow map. */
+	inline bool GetGIShadowUpdateStatic() const{ return pGIShadowUpdateStatic; }
+	
+	/** GI render task. */
+	inline deoglRenderTask &GetGIRenderTaskStatic(){ return pGIRenderTaskStatic; }
+	inline const deoglRenderTask &GetGIRenderTaskStatic() const{ return pGIRenderTaskStatic; }
+	
+	inline deoglRenderTask &GetGIRenderTaskDynamic(){ return pGIRenderTaskDynamic; }
+	inline const deoglRenderTask &GetGIRenderTaskDynamic() const{ return pGIRenderTaskDynamic; }
+	
+	/** GI add to render task. */
+	inline deoglAddToRenderTask &GetGIRenderTaskAddStatic(){ return pGIRenderTaskAddStatic; }
+	inline const deoglAddToRenderTask &GetGIRenderTaskAddStatic() const{ return pGIRenderTaskAddStatic; }
+	
+	inline deoglAddToRenderTask &GetGIRenderTaskAddDynamic(){ return pGIRenderTaskAddDynamic; }
+	inline const deoglAddToRenderTask &GetGIRenderTaskAddDynamic() const{ return pGIRenderTaskAddDynamic; }
+	
+	
+	
+	/** Clear. */
 	void Clear();
 	
-	/** \brief Initialize plan. */
-	void Init( deoglRenderPlan &plan );
+	/** Plan sky light. */
+	void Plan();
 	
-	/**
-	 * \brief Prepare for render.
-	 * 
-	 * \warning After this call various render states including temporary render targets are
-	 *          potentially invalid. Call this only before doing any kind of rendering.
-	 */
-	void PrepareForRender( deoglRenderPlan &plan );
+	/** Start find content. */
+	void StartFindContent();
+	
+	/** Render occlusion tests. */
+	void RenderOcclusionTests();
+	
+	/** Finish preparations. */
+	void FinishPrepare();
+	
+	/** Start building render task. */
+	void StartBuildRT();
+	
+	/** Wait for GI Update Render Task parallel task to finish. */
+	void WaitFinishedGIUpdateRT();
+	
+	/** Wait for Build Render Task parallel task to finish. */
+	void WaitFinishedBuildRT1();
+	void WaitFinishedBuildRT2();
+	
+	/** Clean up after rendering. */
+	void CleanUp();
 	
 	
 	
 private:
-	/** \brief Determine shadow parameters. */
-	void pDetermineShadowParameters( deoglRenderPlan &plan );
-	
-	/** \brief Calculate shadow layer parameters. */
-	void pCalcShadowLayerParams( deoglRenderPlan &plan );
-	
-	/** \brief Collect elements for shadow casting. */
-	void pCollectElements( deoglRenderPlan &plan );
+	void pDetermineShadowParameters();
+	void pCalcShadowLayerParams();
+	void pWaitFinishedFindContent();
+	void pWaitFinishedGIFindContent();
+	void pGICalcShadowLayerParams();
 	/*@}*/
 };
 

@@ -22,12 +22,12 @@
 #ifndef _GDEVAONAVBLOCKER_H_
 #define _GDEVAONAVBLOCKER_H_
 
-#include <dragengine/deObject.h>
+#include "gdeVAOSubObject.h"
 
-class gdeViewActiveObject;
+#include <dragengine/resources/debug/deDebugDrawerReference.h>
+
 class gdeOCNavigationBlocker;
 
-class deDebugDrawer;
 class igdeWDebugDrawerShape;
 
 
@@ -35,13 +35,11 @@ class igdeWDebugDrawerShape;
 /**
  * \brief Active object view object class navigation blocker.
  */
-class gdeVAONavBlocker : public deObject{
+class gdeVAONavBlocker : public gdeVAOSubObject{
 private:
-	gdeViewActiveObject &pView;
-	
 	gdeOCNavigationBlocker *pOCNavBlocker;
 	
-	deDebugDrawer *pDebugDrawer;
+	deDebugDrawerReference pDebugDrawer;
 	igdeWDebugDrawerShape *pDDSBlocker;
 	
 	
@@ -50,7 +48,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create active object component. */
-	gdeVAONavBlocker( gdeViewActiveObject &view, gdeOCNavigationBlocker *occomponent );
+	gdeVAONavBlocker( gdeViewActiveObject &view, const gdeObjectClass &objectClass,
+		const decString &propertyPrefix, gdeOCNavigationBlocker *occomponent );
 	
 protected:
 	/**

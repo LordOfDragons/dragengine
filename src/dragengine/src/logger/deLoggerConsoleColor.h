@@ -175,6 +175,10 @@ protected:
 		eTextAttributes attribute, eTextColors colorForeground,
 		eTextColors colorBackground, char lineEnd ) const;
 	
+	void LogMessage( const char *source, const char *message,
+		eTextAttributes attribute, eTextColors colorForeground,
+		eTextColors colorBackground );
+	
 	inline deMutex &GetMutex(){ return pMutex; }
 };
 

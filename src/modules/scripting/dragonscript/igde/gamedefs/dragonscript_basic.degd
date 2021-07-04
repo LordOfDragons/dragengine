@@ -1704,6 +1704,11 @@
 			<type>float</type>
 			<default>200</default>
 		</property>
+		<property name='enableHDRR'>
+			<description>Enable high definition range rendering (HDRR) if supported.</description>
+			<type>boolean</type>
+			<default>1</default>
+		</property>
 		<property name='exposure'>
 			<description>Exposure.</description>
 			<type>float</type>
@@ -1723,6 +1728,11 @@
 			<description>Adaption time of the eye in seconds.</description>
 			<type>float</type>
 			<default>0.1</default>
+		</property>
+		<property name='enableGI'>
+			<description>Enable global illumination (GI) if supported.</description>
+			<type>boolean</type>
+			<default>0</default>
 		</property>
 		<property name='position'>
 			<description>Position relative to behavior element to attach camera to.</description>
@@ -2587,6 +2597,50 @@
 			<description>Look-at position for element to use while approaching. By default no look-at is used which equals to an empty string.</description>
 			<type>vector3</type>
 			<default>0 0 0</default>
+		</property>
+		<category>Dragengine/Behavior</category>
+	</class>
+	<class name='ECBehaviorCustomColor'>
+		<description>Adds support to define custom colors the player can modify.</description>
+		<ghost>true</ghost>
+		<canInstantiate>false</canInstantiate>
+		<defaultInheritPropertyPrefix>customColor.</defaultInheritPropertyPrefix>
+		<property name='name'>
+			<description>Name to display in UI.</description>
+			<type>string</type>
+		</property>
+		<property name='description'>
+			<description>Description to display in UI.</description>
+			<type>string</type>
+		</property>
+		<property name='allowedColors'>
+			<description>List of allowed colors or empty list to allow all colors. Value is in the form "r1,g1,b1 r2,g2,b2 ..." where (rX,gX,bX) define the Xth color. Optionally new-line can be used instead of space to separate colors.</description>
+			<type>list</type>
+		</property>
+		<property name='defaultColor'>
+			<description>Default color if color is not set by the player.</description>
+			<type>color</type>
+			<default>1 1 1</default>
+		</property>
+		<property name='color'>
+			<description>Initial color selection. Use empty string if there to use default color.</description>
+			<type>color</type>
+		</property>
+		<category>Dragengine/Behavior</category>
+	</class>
+	<class name='ECBehaviorRenderableCustomColor'>
+		<description>Applies ECBehaviorCustomColor to a renderable. Supports two modes: Single-Texture and Multi-Texture. For Single-Texture also set the image. For Multi-Texture also set the renderable name.</description>
+		<ghost>true</ghost>
+		<canInstantiate>false</canInstantiate>
+		<defaultInheritPropertyPrefix>renderableCustomColor.</defaultInheritPropertyPrefix>
+		<property name='renderable'>
+			<description>Name of renderable to create or empty string if not used. Required for Multi-Texture mode.</description>
+			<type>string</type>
+		</property>
+		<property name='image'>
+			<description>Image to use as mask. Required for Single-Texture mode.</description>
+			<type>path</type>
+			<pathPatternType>image</pathPatternType>
 		</property>
 		<category>Dragengine/Behavior</category>
 	</class>

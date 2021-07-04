@@ -76,6 +76,7 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 		private var float pRollOff
 		private var DVector pOffset
 		private var String pType
+		private var Sound pLastRandomSound
 		
 		
 		/** \brief Create foot step event. */
@@ -89,8 +90,12 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 		this( time, sounds, volume, range, DVector.new( 0, 0.05, 0 ) )
 		end
 		
+		public func new( float time, WeightedRandomList sounds, float volume, float range, float rollOff ) \
+		this( time, sounds, volume, range, DVector.new( 0, 0.05, 0 ), rollOff )
+		end
+		
 		public func new( float time, WeightedRandomList sounds, float volume, float range, DVector offset ) \
-		this( time, sounds, volume, range, offset, 1 )
+		this( time, sounds, volume, range, offset, 0.5 )
 		end
 		
 		public func new( float time, WeightedRandomList sounds, float volume, float range, DVector offset, float rollOff )
@@ -104,6 +109,7 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 			this.pRange = DEMath.max( range, 0.0 )
 			this.pRollOff = DEMath.max( rollOff, 0.0 )
 			this.pOffset = offset
+			this.pLastRandomSound = null
 		end
 		
 		public func new( float time, String type ) this( time )
@@ -146,6 +152,7 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 				throw EInvalidParam.new()
 			end
 			this.pSounds = sounds
+			this.pLastRandomSound = null
 		end
 		
 		/** \brief Volume to use for created speakers. */
@@ -210,10 +217,28 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 		
 		/** \brief Random sound from the list of sounds to play or null if list is empty. */
 		public func Sound randomSound()
-			if this.pSounds.getCount() > 0
-				return this.pSounds.random() cast Sound
+			var int count = this.pSounds.getCount()
+			if count == 0
+				return null
 			end
-			return null
+			
+			var Sound sound
+			
+			if this.pLastRandomSound == null or count == 1
+				sound = this.pSounds.random() cast Sound
+				
+			else
+				var int i
+				for i = 0 to 3
+					sound = this.pSounds.random() cast Sound
+					if sound != this.pLastRandomSound
+						break
+					end
+				end
+			end
+			
+			this.pLastRandomSound = sound
+			return sound
 		end
 		
 		/** \brief Optional type string (by default null). */
@@ -646,6 +671,7 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 			speaker.setLooping( false )
 			speaker.setVolume( event.getVolume() )
 			speaker.setRange( event.getRange() )
+			speaker.setRollOff( event.getRollOff() )
 			speaker.setLayerMask( this.pLayerMask )
 			speaker.setOwner( element )
 			
@@ -753,8 +779,8 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 	 * of type ECBehaviorFootSteps.
 	 */
 	static public func ECBehaviorFootSteps getBehaviorIn( BehaviorElementClass eclass )
-		return eclass.findBehavior( block ECBehavior each
-			return each castable ECBehaviorFootSteps
+		return eclass.findBehavior( block ECBehaviorFootSteps each
+			return true
 		end ) cast ECBehaviorFootSteps
 	end
 	
@@ -765,8 +791,8 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 	 * of type ECBehaviorFootSteps.Instance .
 	 */
 	static public func Instance getInstanceIn( BehaviorElement element )
-		return element.findInstance( block ECBehaviorInstance each
-			return each castable Instance
+		return element.findInstance( block Instance each
+			return true
 		end ) cast Instance
 	end
 	

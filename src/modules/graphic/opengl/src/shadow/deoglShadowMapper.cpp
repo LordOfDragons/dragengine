@@ -32,8 +32,10 @@
 #include "../renderthread/deoglRTFramebuffer.h"
 #include "../renderthread/deoglRTTexture.h"
 #include "../texture/arraytexture/deoglArrayTexture.h"
-#include "../texture/arraytexture/deoglRenderableArrayTexture.h"
-#include "../texture/arraytexture/deoglRenderableArrayTextureManager.h"
+#include "../texture/arraytexture/deoglRenderableColorArrayTexture.h"
+#include "../texture/arraytexture/deoglRenderableColorArrayTextureManager.h"
+#include "../texture/arraytexture/deoglRenderableDepthArrayTexture.h"
+#include "../texture/arraytexture/deoglRenderableDepthArrayTextureManager.h"
 #include "../texture/cubemap/deoglCubeMap.h"
 #include "../texture/cubemap/deoglRenderableColorCubeMap.h"
 #include "../texture/cubemap/deoglRenderableColorCubeMapManager.h"
@@ -231,7 +233,7 @@ void deoglShadowMapper::DropForeignTextures(){
 	}
 }
 
-void deoglShadowMapper::ActivateSolidTexture( int size, bool useFloatDepth ){
+void deoglShadowMapper::ActivateSolidTexture( int size, bool useFloatDepth, bool withStencil ){
 	// drop the textures including the fbo if the size differs
 	if( pForeignTexDepthSolid ){
 		if( pForeignTexDepthSolid->GetWidth() != size
@@ -263,6 +265,9 @@ void deoglShadowMapper::ActivateSolidTexture( int size, bool useFloatDepth ){
 	
 	pFBOTextureSolid->DetachAllImages();
 	pFBOTextureSolid->AttachDepthTexture( pUseTexDepthSolid );
+	if( withStencil ){
+		pFBOTextureSolid->AttachStencilTexture( pUseTexDepthSolid );
+	}
 	
 	const GLenum buffers[ 1 ] = { GL_NONE };
 	OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
@@ -861,7 +866,7 @@ deoglArrayTexture *deoglShadowMapper::GetSolidDepthArrayTexture() const{
 		DETHROW( deeInvalidParam );
 	}
 	
-	return pArrTexSolidDepth->GetTexture();
+	return pArrTexSolidDepth->GetArrayTexture();
 }
 
 void deoglShadowMapper::SetForeignSolidDepthArrayTexture( deoglArrayTexture *texture ){
@@ -879,7 +884,7 @@ deoglArrayTexture *deoglShadowMapper::GetTransparentDepthArrayTexture() const{
 		DETHROW( deeInvalidParam );
 	}
 	
-	return pArrTexTranspDepth->GetTexture();
+	return pArrTexTranspDepth->GetArrayTexture();
 }
 
 void deoglShadowMapper::SetForeignTransparentDepthArrayTexture( deoglArrayTexture *texture ){
@@ -897,7 +902,7 @@ deoglArrayTexture *deoglShadowMapper::GetTransparentColorArrayTexture() const{
 		DETHROW( deeInvalidParam );
 	}
 	
-	return pArrTexTranspColor->GetTexture();
+	return pArrTexTranspColor->GetArrayTexture();
 }
 
 void deoglShadowMapper::SetForeignTransparentColorArrayTexture( deoglArrayTexture *texture ){
@@ -955,12 +960,14 @@ void deoglShadowMapper::DropForeignArrayTextures(){
 	}
 }
 
-void deoglShadowMapper::ActivateSolidArrayTexture( int size, int layerCount ){
+void deoglShadowMapper::ActivateSolidArrayTexture( int size, int layerCount, bool withStencil ){
 	// drop the textures including the fbo if the size differs
-	if( pForeignArrTexSolidDepth && ( pForeignArrTexSolidDepth->GetWidth() != size || pForeignArrTexSolidDepth->GetLayerCount() != layerCount ) ){
+	if( pForeignArrTexSolidDepth && ( pForeignArrTexSolidDepth->GetWidth() != size
+	|| pForeignArrTexSolidDepth->GetLayerCount() != layerCount ) ){
 		DropArrayTextures();
 	}
-	if( pArrTexSolidDepth && ( pArrTexSolidDepth->GetWidth() != size || pArrTexSolidDepth->GetLayerCount() != layerCount ) ){
+	if( pArrTexSolidDepth && ( pArrTexSolidDepth->GetWidth() != size
+	|| pArrTexSolidDepth->GetLayerCount() != layerCount ) ){
 		DropArrayTextures();
 	}
 	
@@ -971,8 +978,9 @@ void deoglShadowMapper::ActivateSolidArrayTexture( int size, int layerCount ){
 	
 	// obtain solid depth texture if not existing already
 	if( ! pArrTexSolidDepth && ! pForeignArrTexSolidDepth ){
-		pArrTexSolidDepth = pRenderThread.GetTexture().GetRenderableArrayTexture().GetTextureWith( size, size, layerCount, deoglPixelBuffer::epfDepth );
-		pUseArrTexSolidDepth = pArrTexSolidDepth->GetTexture();
+		pArrTexSolidDepth = pRenderThread.GetTexture().GetRenderableDepthArrayTexture()
+			.GetWith( size, size, layerCount, withStencil, false );
+		pUseArrTexSolidDepth = pArrTexSolidDepth->GetArrayTexture();
 	}
 	
 	// switch to the framebuffer required by this shadow map
@@ -980,6 +988,9 @@ void deoglShadowMapper::ActivateSolidArrayTexture( int size, int layerCount ){
 	
 	pFBOArrTex->DetachAllImages();
 	pFBOArrTex->AttachDepthArrayTexture( pUseArrTexSolidDepth );
+	if( withStencil ){
+		pFBOArrTex->AttachStencilArrayTexture( pUseArrTexSolidDepth );
+	}
 	
 	const GLenum buffers[ 1 ] = { GL_NONE };
 	OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
@@ -991,12 +1002,14 @@ void deoglShadowMapper::ActivateSolidArrayTexture( int size, int layerCount ){
 	OGL_CHECK( pRenderThread, glDisable( GL_SCISSOR_TEST ) );
 }
 
-void deoglShadowMapper::ActivateSolidArrayTextureLayer( int size, int layerCount, int layer ){
+void deoglShadowMapper::ActivateSolidArrayTextureLayer( int size, int layerCount, int layer, bool withStencil ){
 	// drop the textures including the fbo if the size differs
-	if( pForeignArrTexSolidDepth && ( pForeignArrTexSolidDepth->GetWidth() != size || pForeignArrTexSolidDepth->GetLayerCount() != layerCount ) ){
+	if( pForeignArrTexSolidDepth && ( pForeignArrTexSolidDepth->GetWidth() != size
+	|| pForeignArrTexSolidDepth->GetLayerCount() != layerCount ) ){
 		DropArrayTextures();
 	}
-	if( pArrTexSolidDepth && ( pArrTexSolidDepth->GetWidth() != size || pArrTexSolidDepth->GetLayerCount() != layerCount ) ){
+	if( pArrTexSolidDepth && ( pArrTexSolidDepth->GetWidth() != size
+	|| pArrTexSolidDepth->GetLayerCount() != layerCount ) ){
 		DropArrayTextures();
 	}
 	
@@ -1007,8 +1020,9 @@ void deoglShadowMapper::ActivateSolidArrayTextureLayer( int size, int layerCount
 	
 	// obtain solid depth texture if not existing already
 	if( ! pArrTexSolidDepth && ! pForeignArrTexSolidDepth ){
-		pArrTexSolidDepth = pRenderThread.GetTexture().GetRenderableArrayTexture().GetTextureWith( size, size, layerCount, deoglPixelBuffer::epfDepth );
-		pUseArrTexSolidDepth = pArrTexSolidDepth->GetTexture();
+		pArrTexSolidDepth = pRenderThread.GetTexture().GetRenderableDepthArrayTexture()
+			.GetWith( size, size, layerCount, withStencil, false );
+		pUseArrTexSolidDepth = pArrTexSolidDepth->GetArrayTexture();
 	}
 	
 	// switch to the framebuffer required by this shadow map
@@ -1016,6 +1030,9 @@ void deoglShadowMapper::ActivateSolidArrayTextureLayer( int size, int layerCount
 	
 	pFBOArrTex->DetachAllImages();
 	pFBOArrTex->AttachDepthArrayTextureLayer( pUseArrTexSolidDepth, layer );
+	if( withStencil ){
+		pFBOArrTex->AttachStencilArrayTextureLayer( pUseArrTexSolidDepth, layer );
+	}
 	
 	const GLenum buffers[ 1 ] = { GL_NONE };
 	OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
@@ -1043,14 +1060,16 @@ void deoglShadowMapper::ActivateTransparentArrayTexture( int size, int layerCoun
 	
 	// obtain transparent depth texture if not existing already
 	if( ! pArrTexTranspDepth && ! pForeignArrTexTranspDepth ){
-		pArrTexTranspDepth = pRenderThread.GetTexture().GetRenderableArrayTexture().GetTextureWith( size, size, layerCount, deoglPixelBuffer::epfDepth );
-		pUseArrTexTranspDepth = pArrTexTranspDepth->GetTexture();
+		pArrTexTranspDepth = pRenderThread.GetTexture().GetRenderableDepthArrayTexture().
+			GetWith( size, size, layerCount, false, false );
+		pUseArrTexTranspDepth = pArrTexTranspDepth->GetArrayTexture();
 	}
 	
 	// obtain transparent color texture if not existing already
 	if( ! pArrTexTranspColor && ! pForeignArrTexTranspColor ){
-		pArrTexTranspColor = pRenderThread.GetTexture().GetRenderableArrayTexture().GetTextureWith( size, size, layerCount, deoglPixelBuffer::epfByte4 );
-		pUseArrTexTranspColor = pArrTexTranspColor->GetTexture();
+		pArrTexTranspColor = pRenderThread.GetTexture().GetRenderableColorArrayTexture().
+			GetWith( size, size, layerCount, 4, false );
+		pUseArrTexTranspColor = pArrTexTranspColor->GetArrayTexture();
 	}
 	
 	// switch to the framebuffer required by this shadow map
@@ -1317,6 +1336,32 @@ void deoglShadowMapper::ActivateAmbientCubeMapFace( int size, int face ){
 	
 	OGL_CHECK( pRenderThread, glViewport( 0, 0, size, size ) );
 	OGL_CHECK( pRenderThread, glDisable( GL_SCISSOR_TEST ) );
+}
+
+
+
+int deoglShadowMapper::ShadowMapSize ( const deoglConfiguration &config ){
+	switch( config.GetShadowQuality() ){
+	case deoglConfiguration::esqVeryHigh:
+		return 4096;
+		
+	case deoglConfiguration::esqHigh:
+	default:
+		return 2048;
+		
+	case deoglConfiguration::esqMedium:
+		return 1024;
+		
+	case deoglConfiguration::esqLow:
+		return 512;
+		
+	case deoglConfiguration::esqVeryLow:
+		return 256;
+	}
+}
+
+int deoglShadowMapper::ShadowCubeSize( const deoglConfiguration& config ){
+	return ShadowMapSize( config );
 }
 
 

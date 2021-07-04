@@ -86,6 +86,7 @@ debpParticleEmitterInstance::debpParticleEmitterInstance( dePhysicsBullet *bulle
 	
 	pDirtyEmitterMatrix = true;
 	pCheckForLastParticle = false;
+	pEnsureCastOnce = false;
 	
 	pLastPosition = instance->GetPosition();
 	
@@ -152,6 +153,9 @@ void debpParticleEmitterInstance::PrepareParticles( float elapsed ){
 	debpParticleEmitter * const emitter = GetParticleEmitter();
 	const float travelledDistance = ( float )( pInstance->GetPosition() - pLastPosition ).Length();
 	
+	const bool casting = pInstance->GetEnableCasting() || pEnsureCastOnce;
+	pEnsureCastOnce = false;
+	
 	if( emitter ){
 		int i;
 		
@@ -164,7 +168,7 @@ void debpParticleEmitterInstance::PrepareParticles( float elapsed ){
 		
 		for( i=0; i<pTypeCount; i++ ){
 //timer.Reset();
-			pTypes[ i ].PrepareParticles( elapsed, travelledDistance );
+			pTypes[ i ].PrepareParticles( casting, elapsed, travelledDistance );
 //pBullet->LogInfoFormat( "PrepareParticle (%i) = %iys", pTypes[ i ].GetParticlesCount(), ( int )( timer.GetElapsedTime() * 1000000.0f ) );
 		}
 		
@@ -176,7 +180,7 @@ void debpParticleEmitterInstance::PrepareParticles( float elapsed ){
 				pInstance->SetBurstTime( 0.0f );
 			}
 			
-			if( pInstance->GetEnableCasting() && pBurstTimer >= pInstance->GetEmitter()->GetBurstLifetime() ){
+			if( casting && pBurstTimer >= pInstance->GetEmitter()->GetBurstLifetime() ){
 				pInstance->SetEnableCasting( false );
 				RequestCheckForLastParticle();
 			}
@@ -300,6 +304,7 @@ void debpParticleEmitterInstance::EnableCastingChanged(){
 			pSimulateWarpUp();
 		}
 		pCheckForLastParticle = false;
+		pEnsureCastOnce = true;
 	}
 }
 

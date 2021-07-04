@@ -381,8 +381,8 @@ class FormLayout implements Layout
 	/** \brief Minimum size required for child widgets. */
 	protected func Point getMinimumSizeFor( Container container, int width )
 		var int count = container.getWidgetCount()
-		var Point minSize = Point.new( 1, 1 )
 		var bool side = this.pStretchRightColumn
+		var bool usePadding = false
 		var bool nextRow = false
 		var Point childSize
 		var Widget child
@@ -399,6 +399,7 @@ class FormLayout implements Layout
 			end
 			
 			childSize = child.getMinimumSizeWithBorderForWidth( width )
+			usePadding = true
 			
 			if side
 				cxNonStretch = DEMath.max( cxNonStretch, childSize.getX() )
@@ -427,7 +428,11 @@ class FormLayout implements Layout
 			cy += DEMath.max( cyRow, childSize.getY() )
 		end
 		
-		return Point.new( cxNonStretch + this.pGapColumns + cxStretch, cy ).largest( minSize ) + container.getPadding().getSize()
+		var Point size = Point.new().largest( cxNonStretch + this.pGapColumns + cxStretch, cy )
+		if usePadding
+			size = size + container.getPadding().getSize()
+		end
+		return size
 	end
 	
 	/** \brief Minimum size required for the non-stretching column widgets. */

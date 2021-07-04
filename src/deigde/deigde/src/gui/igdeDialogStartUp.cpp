@@ -173,6 +173,9 @@ void igdeDialogStartUp::LoadSelectedRecentProject(){
 	
 	if( pWindowMain.LoadGameProject( pWindowMain.GetConfiguration().GetRecentProjectList().GetAt( selection ) ) ){
 		Accept();
+		
+	}else{
+		pUpdateRecentProjectList();
 	}
 }
 
@@ -182,13 +185,6 @@ void igdeDialogStartUp::LoadProjectFromFile(){
 	path.AddComponent( "project.degp" );
 	
 	decString filename( path.GetPathNative() );
-	
-	/*
-	const decStringList &recentProjectList = pWindowMain.GetConfiguration().GetRecentProjectList();
-	if( recentProjectList.GetCount() == 0 ){
-		filename = recentProjectList.GetAt( 0 );
-	}
-	*/
 	
 	if( ! igdeCommonDialogs::GetFileOpen( this, "Open Game Project",
 	pWindowMain.GetLoadSaveSystem()->GetOpenFilePatternList( igdeLoadSaveSystem::efplGameProject ), filename ) ){

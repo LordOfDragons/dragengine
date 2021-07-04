@@ -145,11 +145,12 @@ void deoglRCanvasPaint::SetPointCount( int count ){
 
 
 
-void deoglRCanvasPaint::PrepareForRender(){
+void deoglRCanvasPaint::PrepareForRender( const deoglRenderPlanMasked *renderPlanMask ){
 	if( pFillColor.a < FLOAT_SAFE_EPSILON && pLineColor.a < FLOAT_SAFE_EPSILON ){
 		return;
 	}
 	
+	deoglRCanvas::PrepareForRender( renderPlanMask );
 	pPrepareVBOBlock();
 }
 
@@ -183,6 +184,10 @@ public:
 };
 
 void deoglRCanvasPaint::pCleanUp(){
+	if( pPoints ){
+		delete [] pPoints;
+	}
+	
 	// delayed deletion of opengl containing objects
 	deoglRCanvasPaintDeletion *delayedDeletion = NULL;
 	

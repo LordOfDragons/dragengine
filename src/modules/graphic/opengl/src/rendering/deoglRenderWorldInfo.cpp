@@ -45,19 +45,21 @@ deoglRenderWorldInfo::deoglRenderWorldInfo( deoglRenderThread &renderThread ) :
 deoglRenderBase( renderThread ),
 
 infoWorld( NULL ),
-infoPrepare( NULL ),
 infoPassMasked( NULL ),
+infoGITraceRays( NULL ),
 infoSolidGeometry( NULL ),
 infoReflection( NULL ),
 infoSSR( NULL ),
+infoLuminancePrepare( NULL ),
 infoSolidGeometryLights( NULL ),
 infoTransparent( NULL ),
 infoToneMapping( NULL ),
 infoDebugDrawers( NULL ),
 infoPostProcessing( NULL ),
+infoDeveloperMode( NULL ),
+infoDeveloperModeTemp( NULL ),
 
 infoSolidGeometryDetails( NULL ),
-infoSolidGeometryClear( NULL ),
 infoSolidGeometryDepthTask( NULL ),
 infoSolidGeometryDepthRender( NULL ),
 infoSolidGeometryOcclusion( NULL ),
@@ -81,18 +83,19 @@ infoTransparentLights( NULL ),
 infoTransparentVolumetric( NULL )
 {
 	const decColor colorText( 1.0f, 1.0f, 1.0f, 1.0f );
-	const decColor colorBg( 0.0f, 0.0f, 0.0f, 0.75f );
+	const decColor colorBg( 0.0f, 0.0f, 0.25f, 0.75f );
 	const decColor colorBgSub( 0.05f, 0.05f, 0.05f, 0.75f );
 	//const decColor colorBgSub2( 0.1f, 0.1f, 0.1f, 0.75f );
+	const decColor colorBgSpecial( 0.05f, 0.025f, 0.05f, 0.75f );
 	
 	try{
 		infoWorld = new deoglDebugInformation( "World", colorText, colorBg );
 		
-		infoPrepare = new deoglDebugInformation( "Prepare", colorText, colorBgSub );
-		infoWorld->GetChildren().Add( infoPrepare );
-		
 		infoPassMasked = new deoglDebugInformation( "Masked", colorText, colorBgSub );
 		infoWorld->GetChildren().Add( infoPassMasked );
+		
+		infoGITraceRays = new deoglDebugInformation( "GI Trace Rays", colorText, colorBgSub );
+		infoWorld->GetChildren().Add( infoGITraceRays );
 		
 		infoSolidGeometry = new deoglDebugInformation( "Solid Geometry", colorText, colorBgSub );
 		infoWorld->GetChildren().Add( infoSolidGeometry );
@@ -102,6 +105,9 @@ infoTransparentVolumetric( NULL )
 		
 		infoSSR = new deoglDebugInformation( "SSR", colorText, colorBgSub );
 		infoWorld->GetChildren().Add( infoSSR );
+		
+		infoLuminancePrepare = new deoglDebugInformation( "Lum Prepare", colorText, colorBgSub );
+		infoWorld->GetChildren().Add( infoLuminancePrepare );
 		
 		infoSolidGeometryLights = new deoglDebugInformation( "Solid Lights", colorText, colorBgSub );
 		infoWorld->GetChildren().Add( infoSolidGeometryLights );
@@ -118,12 +124,14 @@ infoTransparentVolumetric( NULL )
 		infoPostProcessing = new deoglDebugInformation( "Post Processing", colorText, colorBgSub );
 		infoWorld->GetChildren().Add( infoPostProcessing );
 		
+		infoDeveloperMode = new deoglDebugInformation( "Developer Mode", colorText, colorBgSpecial );
+		infoWorld->GetChildren().Add( infoDeveloperMode );
+		
+		infoDeveloperModeTemp = new deoglDebugInformation( "", colorText, colorBgSpecial );
+		
 		
 		
 		infoSolidGeometryDetails = new deoglDebugInformation( "Solid Geometry", colorText, colorBg );
-		
-		infoSolidGeometryClear = new deoglDebugInformation( "Clear", colorText, colorBgSub );
-		infoSolidGeometryDetails->GetChildren().Add( infoSolidGeometryClear );
 		
 		infoSolidGeometryDepthTask = new deoglDebugInformation( "Depth Task", colorText, colorBgSub );
 		infoSolidGeometryDetails->GetChildren().Add( infoSolidGeometryDepthTask );
@@ -203,18 +211,20 @@ deoglRenderWorldInfo::~deoglRenderWorldInfo(){
 
 void deoglRenderWorldInfo::ClearAll(){
 	infoWorld->Clear();
-	infoPrepare->Clear();
 	infoPassMasked->Clear();
+	infoGITraceRays->Clear();
+	infoLuminancePrepare->Clear();
 	infoSolidGeometry->Clear();
 	infoReflection->Clear();
 	infoSSR->Clear();
+	//infoGI->Clear(); // not done here since this happens during prepare
 	infoSolidGeometryLights->Clear();
 	infoTransparent->Clear();
 	infoToneMapping->Clear();
 	infoDebugDrawers->Clear();
 	infoPostProcessing->Clear();
+	//infoDeveloperMode, infoDeveloperModeTemp => special
 	
-	infoSolidGeometryClear->Clear();
 	infoSolidGeometryDepthTask->Clear();
 	infoSolidGeometryDepthRender->Clear();
 	infoSolidGeometryOcclusion->Clear();
@@ -269,14 +279,17 @@ void deoglRenderWorldInfo::pCleanUp(){
 			.RemoveIfPresent( infoWorld );
 		infoWorld->FreeReference();
 	}
-	if( infoPrepare ){
-		infoPrepare->FreeReference();
-	}
 	if( infoPassMasked ){
 		infoPassMasked->FreeReference();
 	}
+	if( infoGITraceRays ){
+		infoGITraceRays->FreeReference();
+	}
 	if( infoSolidGeometry ){
 		infoSolidGeometry->FreeReference();
+	}
+	if( infoLuminancePrepare ){
+		infoLuminancePrepare->FreeReference();
 	}
 	if( infoReflection ){
 		infoReflection->FreeReference();
@@ -299,14 +312,16 @@ void deoglRenderWorldInfo::pCleanUp(){
 	if( infoPostProcessing ){
 		infoPostProcessing->FreeReference();
 	}
+	if( infoDeveloperMode ){
+		infoDeveloperMode->FreeReference();
+	}
+	if( infoDeveloperModeTemp ){
+		infoDeveloperModeTemp->FreeReference();
+	}
 	
 	if( infoSolidGeometryDetails ){
-		GetRenderThread().GetDebug().GetDebugInformationList()
-			.RemoveIfPresent( infoSolidGeometryDetails );
+		GetRenderThread().GetDebug().GetDebugInformationList().RemoveIfPresent( infoSolidGeometryDetails );
 		infoSolidGeometryDetails->FreeReference();
-	}
-	if( infoSolidGeometryClear ){
-		infoSolidGeometryClear->FreeReference();
 	}
 	if( infoSolidGeometryDepthTask ){
 		infoSolidGeometryDepthTask->FreeReference();

@@ -356,17 +356,17 @@ pVAPreview( NULL )
 	
 	// lanes
 	deObjectReference lane;
-	lane.TakeOver( new ceWDSLaneWord( *this, 0, "Word", "Speech animation" ) );
+	lane.TakeOver( new ceWDSLaneWord( *this, 0, "Word", "Speech animation." ) );
 	pLanes.Add( lane );
-	lane.TakeOver( new ceWDSLaneFacePose( *this, 1, "Face Pose", "Facial animation" ) );
+	lane.TakeOver( new ceWDSLaneFacePose( *this, 1, "Face Pose", "Facial animation." ) );
 	pLanes.Add( lane );
-	lane.TakeOver( new ceWDSLaneGesture( *this, 2, "Gesture", "Gesture playback" ) );
+	lane.TakeOver( new ceWDSLaneGesture( *this, 2, "Gesture", "Gesture playback." ) );
 	pLanes.Add( lane );
-	lane.TakeOver( new ceWDSLaneBodyLookAt( *this, 3, "Body Look-At", "Body orientation" ) );
+	lane.TakeOver( new ceWDSLaneBodyLookAt( *this, 3, "Body Look-At", "Body orientation." ) );
 	pLanes.Add( lane );
-	lane.TakeOver( new ceWDSLaneHeadLookAt( *this, 4, "Head Look-At", "Head orientation" ) );
+	lane.TakeOver( new ceWDSLaneHeadLookAt( *this, 4, "Head Look-At", "Head orientation." ) );
 	pLanes.Add( lane );
-	lane.TakeOver( new ceWDSLaneEyesLookAt( *this, 5, "Eyes Look-At", "Eyes orientation" ) );
+	lane.TakeOver( new ceWDSLaneEyesLookAt( *this, 5, "Eyes Look-At", "Eyes orientation. If empty uses Head Look-At." ) );
 	pLanes.Add( lane );
 	
 	// voice audio preview

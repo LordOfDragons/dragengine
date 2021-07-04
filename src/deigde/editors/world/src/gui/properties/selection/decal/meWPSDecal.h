@@ -30,6 +30,7 @@
 #include <deigde/gui/igdeTextFieldReference.h>
 #include <deigde/gui/igdeWidgetReference.h>
 #include <deigde/gui/composed/igdeEditPathReference.h>
+#include <deigde/gui/composed/igdeEditDVectorReference.h>
 #include <deigde/gui/composed/igdeEditVectorReference.h>
 #include <deigde/gui/composed/igdeEditVector2Reference.h>
 #include <deigde/gui/event/igdeActionReference.h>
@@ -61,7 +62,7 @@ private:
 	
 	
 	igdeTextFieldReference pEditID;
-	igdeEditVectorReference pEditPosition;
+	igdeEditDVectorReference pEditPosition;
 	igdeEditVectorReference pEditRotation;
 	igdeEditVectorReference pEditSize;
 	igdeCheckBoxReference pChkVisible;

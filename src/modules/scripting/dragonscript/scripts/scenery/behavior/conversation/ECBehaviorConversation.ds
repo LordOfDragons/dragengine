@@ -597,8 +597,8 @@ class ECBehaviorConversation extends DefaultECBehavior
 	 * of type ECBehaviorConversation.
 	 */
 	static public func ECBehaviorConversation getBehaviorIn( BehaviorElementClass eclass )
-		return eclass.findBehavior( block ECBehavior each
-			return each castable ECBehaviorConversation
+		return eclass.findBehavior( block ECBehaviorConversation each
+			return true
 		end ) cast ECBehaviorConversation
 	end
 	
@@ -609,8 +609,8 @@ class ECBehaviorConversation extends DefaultECBehavior
 	 * of type ECBehaviorConversation.Instance .
 	 */
 	static public func Instance getInstanceIn( BehaviorElement element )
-		return element.findInstance( block ECBehaviorInstance each
-			return each castable Instance
+		return element.findInstance( block Instance each
+			return true
 		end ) cast Instance
 	end
 	

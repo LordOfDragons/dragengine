@@ -576,12 +576,12 @@ public:
 					continue;
 				}
 				
-				const ceConversationActor &conversationActor = *actorList.GetWithIDOrAliasID( actorID );
-				if( ! conversationActor.GetSpeechAnimation() ){
+				const ceConversationActor * const conversationActor = actorList.GetWithIDOrAliasID( actorID );
+				if( ! conversationActor || ! conversationActor->GetSpeechAnimation() ){
 					continue;
 				}
 				
-				const ceSpeechAnimation &speechAnimation = *conversationActor.GetSpeechAnimation();
+				const ceSpeechAnimation &speechAnimation = *conversationActor->GetSpeechAnimation();
 				const ceSAWordList &saWordList = speechAnimation.GetWordList();
 				
 				for( j=0; j<wordCount; j++ ){
@@ -1015,6 +1015,7 @@ void ceWPTopic::UpdateFileList(){
 		}
 		
 		pCBFile->SortItems();
+		pCBFile->StoreFilterItems();
 	}
 	
 	SelectActiveFile();
@@ -1066,6 +1067,7 @@ void ceWPTopic::UpdateTopicList(){
 		}
 		
 		pCBTopic->SortItems();
+		pCBTopic->StoreFilterItems();
 	}
 	
 	SelectActiveTopic();
@@ -1284,7 +1286,7 @@ void ceWPTopic::UpdateActive(){
 		break;
 		
 	case epASetAParam:
-		pPanelASetVariable->UpdateAction();
+		pPanelASetAParam->UpdateAction();
 		break;
 		
 	case epAActorCmd:
@@ -1300,7 +1302,7 @@ void ceWPTopic::UpdateActive(){
 		break;
 		
 	case epATrigger:
-		pPanelASetVariable->UpdateAction();
+		pPanelATrigger->UpdateAction();
 		break;
 		
 	case epAActorAdd:

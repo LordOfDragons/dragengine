@@ -37,7 +37,7 @@ class deoglRenderTarget;
 
 
 /**
- * \brief Canvas renderer.
+ * Canvas renderer.
  */
 class deoglRenderCanvas : public deoglRenderBase{
 private:
@@ -46,7 +46,9 @@ private:
 	GLuint pActiveVAO;
 	
 	deoglShaderProgram *pShaderCanvasColor;
+	deoglShaderProgram *pShaderCanvasColorMask;
 	deoglShaderProgram *pShaderCanvasImage;
+	deoglShaderProgram *pShaderCanvasImageMask;
 	
 	GLenum pBlendSrc;
 	GLenum pBlendDest;
@@ -76,26 +78,32 @@ private:
 	int pDebugCountCanvasCanvasView;
 	
 	deoglDebugInformation *pDebugInfoPlanPrepare;
-	deoglDebugInformation *pDebugInfoPlanPrepareCollect;
+	deoglDebugInformation *pDebugInfoPlanPrepareEarlyWorld;
+	deoglDebugInformation *pDebugInfoPlanPrepareFindContent;
+	deoglDebugInformation *pDebugInfoPlanPrepareBuildRTs;
+	deoglDebugInformation *pDebugInfoPlanPrepareSkyLightFindContent;
+	deoglDebugInformation *pDebugInfoPlanPrepareSkyLightBuildRT;
+	deoglDebugInformation *pDebugInfoPlanPrepareSkyLightGIFindContent;
+	deoglDebugInformation *pDebugInfoPlanPrepareSkyLightGIUpdateRenderTask;
+	deoglDebugInformation *pDebugInfoPlanPrepareWorld;
+	deoglDebugInformation *pDebugInfoPlanPrepareGIUpdate;
 	deoglDebugInformation *pDebugInfoPlanPrepareCulling;
 	deoglDebugInformation *pDebugInfoPlanPrepareEnvMaps;
+	deoglDebugInformation *pDebugInfoPlanPreparePrepareContent;
 	deoglDebugInformation *pDebugInfoPlanPrepareHTViewVBOs;
-	deoglDebugInformation *pDebugInfoPlanPrepareComponents;
-	deoglDebugInformation *pDebugInfoPlanPrepareComponentsVBO;
-	deoglDebugInformation *pDebugInfoPlanPrepareComponentsRenderables;
-	deoglDebugInformation *pDebugInfoPlanPrepareSort;
 	deoglDebugInformation *pDebugInfoPlanPrepareBuildPlan;
 	deoglDebugInformation *pDebugInfoPlanPrepareLights;
+	deoglDebugInformation *pDebugInfoPlanPrepareFinish;
 	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create canvas renderer. */
+	/** Create canvas renderer. */
 	deoglRenderCanvas( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up canvas renderer. */
+	/** Clean up canvas renderer. */
 	virtual ~deoglRenderCanvas();
 	/*@}*/
 	
@@ -103,25 +111,25 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Set opengl states required for canvas rendering. */
+	/** Set opengl states required for canvas rendering. */
 	void Prepare( const deoglRenderCanvasContext &context );
 	
-	/** \brief Draw canvas paint. */
+	/** Draw canvas paint. */
 	void DrawCanvasPaint( const deoglRenderCanvasContext &context, const deoglRCanvasPaint &canvas );
 	
-	/** \brief Draw canvas image. */
+	/** Draw canvas image. */
 	void DrawCanvasImage( const deoglRenderCanvasContext &context, const deoglRCanvasImage &canvas );
 	
-	/** \brief Draw canvas canvas view. */
+	/** Draw canvas canvas view. */
 	void DrawCanvasCanvasView( const deoglRenderCanvasContext &context, const deoglRCanvasCanvasView &canvas );
 	
-	/** \brief Draw canvas render world. */
+	/** Draw canvas render world. */
 	void DrawCanvasRenderWorld( const deoglRenderCanvasContext &context, const deoglRCanvasRenderWorld &canvas );
 	
-	/** \brief Draw canvas video player. */
+	/** Draw canvas video player. */
 	void DrawCanvasVideoPlayer( const deoglRenderCanvasContext &context, const deoglRCanvasVideoPlayer &canvas );
 	
-	/** \brief Draw canvas text. */
+	/** Draw canvas text. */
 	void DrawCanvasText( const deoglRenderCanvasContext &context, const deoglRCanvasText &canvas );
 	/*@}*/
 	
@@ -129,56 +137,41 @@ public:
 	
 	/** \name Debugging */
 	/*@{*/
-	/** \brief Reset debug information canvas. */
+	/** Reset debug information canvas. */
 	void DebugInfoCanvasReset();
 	
-	/** \brief Update debug information canvas. */
+	/** Update debug information canvas. */
 	void DebugInfoCanvasUpdate();
 	
 	
 	
-	/** \brief Clear all debug information prepare plan. */
+	/** Clear all debug information prepare plan. */
 	void ClearAllDebugInfoPlanPrepare( deoglRenderPlan &plan );
 	
-	/** \brief Sample debug information plan prepare. */
 	void SampleDebugInfoPlanPrepare( deoglRenderPlan &plan );
-	
-	/** \brief Debug information plan prepare collect. */
-	void SampleDebugInfoPlanPrepareCollect( deoglRenderPlan &plan );
-	
-	/** \brief Debug information plan prepare culling. */
+	void SampleDebugInfoPlanPrepareEarlyWorld( deoglRenderPlan &plan );
+	void SampleDebugInfoPlanPrepareFindContent( deoglRenderPlan &plan, float elapsed );
+	void SampleDebugInfoPlanPrepareBuildRTs( deoglRenderPlan &plan, float elapsed );
+	void SampleDebugInfoPlanPrepareSkyLightFindContent( deoglRenderPlan &plan, float elapsed );
+	void SampleDebugInfoPlanPrepareSkyLightBuildRT( deoglRenderPlan &plan, float elapsed );
+	void SampleDebugInfoPlanPrepareSkyLightGIFindContent( deoglRenderPlan &plan, float elapsed );
+	void SampleDebugInfoPlanPrepareSkyLightGIUpdateRenderTask( deoglRenderPlan &plan, float elapsed );
+	void SampleDebugInfoPlanPrepareWorld( deoglRenderPlan &plan );
+	void SampleDebugInfoPlanPrepareGIUpdate( deoglRenderPlan &plan );
 	void SampleDebugInfoPlanPrepareCulling( deoglRenderPlan &plan );
-	
-	/** \brief Debug information plan prepare env-maps. */
 	void SampleDebugInfoPlanPrepareEnvMaps( deoglRenderPlan &plan );
-	
-	/** \brief Debug information plan prepare ht-view vbos. */
+	void SampleDebugInfoPlanPreparePrepareContent( deoglRenderPlan &plan );
 	void SampleDebugInfoPlanPrepareHTViewVBOs( deoglRenderPlan &plan );
-	
-	/** \brief Debug information plan prepare components. */
-	void SampleDebugInfoPlanPrepareComponents( deoglRenderPlan &plan );
-	
-	/** \brief Debug information plan prepare components vbo. */
-	void SampleDebugInfoPlanPrepareComponentsVBO( deoglRenderPlan &plan );
-	
-	/** \brief Debug information plan prepare components renderables. */
-	void SampleDebugInfoPlanPrepareComponentsRenderables( deoglRenderPlan &plan );
-	
-	/** \brief Debug information plan prepare sort. */
-	void SampleDebugInfoPlanPrepareSort( deoglRenderPlan &plan );
-	
-	/** \brief Debug information plan prepare build plan. */
 	void SampleDebugInfoPlanPrepareBuildPlan( deoglRenderPlan &plan );
-	
-	/** \brief Debug information plan prepare lights. */
 	void SampleDebugInfoPlanPrepareLights( deoglRenderPlan &plan );
+	void SampleDebugInfoPlanPrepareFinish( deoglRenderPlan &plan );
 	
 	
 	
-	/** \brief Add top level debug information in the right order. */
+	/** Add top level debug information in the right order. */
 	virtual void AddTopLevelDebugInfo();
 	
-	/** \brief Developer mode debug information changed. */
+	/** Developer mode debug information changed. */
 	virtual void DevModeDebugInfoChanged();
 	/*@}*/
 	

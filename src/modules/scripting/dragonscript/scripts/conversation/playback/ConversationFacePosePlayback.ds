@@ -230,8 +230,10 @@ class ConversationFacePosePlayback
 	 * apply the animation yet to allow proper use of state capturing.
 	 */
  	public func void update( float elapsed )
-		var float blendFactor1 = 0.0
-		var float blendFactor2 = 1.0
+		var float blendFactor1 = 0
+		var float blendFactor2 = 1
+		
+		this.pRequiresApply = false
 		
 		if this.pRunning and this.pPoses.getCount() > 0
 			var int poseCount = this.pPoses.getCount()
@@ -284,7 +286,7 @@ class ConversationFacePosePlayback
 		var int i, controller
 		
 		for i = 0 to controllerCount
-			this.pAnimatorInstance.getControllerAt( i ).setValue( 0.0 )
+			this.pAnimatorInstance.getControllerAt( i ).setValue( 0 )
 		end
 		
 		if this.pLastPose != null
@@ -309,9 +311,9 @@ class ConversationFacePosePlayback
 		this.pBlinkNext -= elapsed
 		this.pBlinkElapsed += elapsed
 		
-		if this.pBlinkNext <= 0.0
+		if this.pBlinkNext <= 0
 			this.pBlinkNext = DEMath.random( this.pBlinkIntervalMin, this.pBlinkIntervalMax )
-			this.pBlinkElapsed = 0.0
+			this.pBlinkElapsed = 0
 		end
 		
 		if controllerCount > 0
@@ -327,12 +329,9 @@ class ConversationFacePosePlayback
 	 * Called after update() to apply animation. Can do nothing if no change has been done.
 	 */
 	public func void applyAnimation()
-		if not this.pRequiresApply
-			return
+		if this.pRequiresApply
+			this.pAnimatorInstance.apply()
 		end
-		
-		this.pRequiresApply = false
-		this.pAnimatorInstance.apply()
 	end
 	
 	

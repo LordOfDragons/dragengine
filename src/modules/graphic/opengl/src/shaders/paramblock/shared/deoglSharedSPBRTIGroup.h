@@ -24,14 +24,13 @@
 
 #include <dragengine/deObject.h>
 
-#include "../../../rendering/task/deoglRenderTaskInstanceGroup.h"
-
 class deoglSharedSPB;
 class deoglSharedSPBRTIGroupList;
+class deoglRenderTaskSharedInstance;
 
 
 /**
- * \brief OpenGL shared SPB render task instance group.
+ * OpenGL shared SPB render task instance group.
  * 
  * Stores a deoglRenderTaskInstanceGroup used to group instances in render tasks.
  * The shared spb is used to find the matching group and is not reference counted.
@@ -43,17 +42,20 @@ class deoglSharedSPBRTIGroup : public deObject{
 public:
 	deoglSharedSPBRTIGroupList &pParent;
 	deoglSharedSPB &pSharedSPB;
-	deoglRenderTaskInstanceGroup pGroup;
+	int pTextureCount;
+	deoglRenderTaskSharedInstance *pRTSInstance;
+	unsigned int pUniqueKey;
 	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create shared SPB render task instance group. */
-	deoglSharedSPBRTIGroup( deoglSharedSPBRTIGroupList &parent, deoglSharedSPB &sharedSPB );
+	/** Create shared SPB render task instance group. */
+	deoglSharedSPBRTIGroup( deoglSharedSPBRTIGroupList &parent,
+		deoglSharedSPB &sharedSPB, int textureCount );
 	
-	/** \brief Clean up shared SPB render task instance group. */
+	/** Clean up shared SPB render task instance group. */
 	virtual ~deoglSharedSPBRTIGroup();
 	/*@}*/
 	
@@ -61,14 +63,20 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Parent list. */
+	/** Parent list. */
 	inline deoglSharedSPBRTIGroupList &GetParent() const{ return pParent; }
 	
-	/** \brief Shared SPB. */
+	/** Shared SPB. */
 	inline deoglSharedSPB &GetSharedSPB() const{ return pSharedSPB; }
 	
-	/** \brief Render task instance group. */
-	inline deoglRenderTaskInstanceGroup &GetGroup(){ return pGroup; }
+	/** Render task shared instance. */
+	inline deoglRenderTaskSharedInstance *GetRTSInstance() const{ return pRTSInstance; }
+	
+	/** Count of following textures covered by the group. */
+	inline int GetTextureCount() const{ return pTextureCount; }
+	
+	/** Unique key for use with dictionaries. */
+	inline unsigned int GetUniqueKey() const{ return pUniqueKey; }
 	/*@}*/
 };
 

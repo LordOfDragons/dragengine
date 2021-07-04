@@ -107,6 +107,15 @@ GLAPI PFNGLGETQUERYOBJECTUIVPROC pglGetQueryObjectuiv = NULL;
 
 
 
+// opengl version 2.0
+///////////////////////
+
+GLAPI PFNGLSTENCILOPSEPARATEPROC pglStencilOpSeparate = NULL;
+GLAPI PFNGLSTENCILFUNCSEPARATEPROC pglStencilFuncSeparate = NULL;
+GLAPI PFNGLSTENCILMASKSEPARATEPROC pglStencilMaskSeparate = NULL;
+
+
+
 // GL_ARB_vertex_program . opengl version 2.0
 ///////////////////////////////////////////////
 
@@ -196,6 +205,16 @@ GLAPI PFNGLCLEARBUFFERUIVPROC pglClearBufferuiv = NULL;
 GLAPI PFNGLCLEARBUFFERFVPROC pglClearBufferfv = NULL;
 GLAPI PFNGLCLEARBUFFERFIPROC pglClearBufferfi = NULL;
 GLAPI PFNGLVERTEXATTRIBIPOINTERPROC pglVertexAttribIPointer = NULL;
+
+
+
+// OpenGL 3.2 core stuff
+//////////////////////////
+
+GLAPI PFNGLFENCESYNCPROC pglFenceSync = NULL;
+GLAPI PFNGLDELETESYNCPROC pglDeleteSync = NULL;
+GLAPI PFNGLCLIENTWAITSYNCPROC pglClientWaitSync = NULL;
+GLAPI PFNGLWAITSYNCPROC pglWaitSync = NULL;
 
 
 
@@ -424,6 +443,22 @@ GLAPI PFNGLCOPYIMAGESUBDATANVPROC pglCopyImageSubDataNV = NULL;
 /////////////////////////////////////////////////////////////
 
 GLAPI PFNGLSHADERSTORAGEBLOCKBINDINGPROC pglShaderStorageBlockBinding = NULL;
+
+
+
+// GL_ARB_program_interface_query : opengl version 4.3
+/////////////////////////////////////////////////////////////
+
+GLAPI PFNGLGETPROGRAMINTERFACEIVPROC pglGetProgramInterfaceiv = NULL;
+GLAPI PFNGLGETPROGRAMRESOURCEINDEXPROC pglGetProgramResourceIndex = NULL;
+
+
+
+// GL_ARB_compute_shader : opengl version 4.3
+///////////////////////////////////////////////
+
+GLAPI PFNGLDISPATCHCOMPUTEPROC pglDispatchCompute = NULL;
+GLAPI PFNGLDISPATCHCOMPUTEINDIRECTPROC pglDispatchComputeIndirect = NULL;
 
 
 

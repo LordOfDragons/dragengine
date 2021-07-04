@@ -39,6 +39,8 @@
 #include "terrain/meHeightTerrainSector.h"
 #include "weather/meWeather.h"
 #include "objectshape/meObjectShape.h"
+#include "../configuration/meConfiguration.h"
+#include "../gui/meWindowMain.h"
 
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gamedefinition/igdeGameDefinition.h>
@@ -90,8 +92,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-meWorld::meWorld( igdeEnvironment *environment ) :
+meWorld::meWorld( meWindowMain &windowMain, igdeEnvironment *environment ) :
 igdeEditableEntity( environment ),
+pWindowMain( windowMain ),
 pNextObjectID( 1 ) // 0 is reserved for invalid or undefined IDs
 {
 	deEngine * const engine = GetEngine();
@@ -103,6 +106,8 @@ pNextObjectID( 1 ) // 0 is reserved for invalid or undefined IDs
 	pSky = NULL;
 	pEngMicrophone = NULL;
 	
+	pSize.Set( 1000.0, 1000.0, 1000.0 );
+	pGravity.Set( 0.0f, -9.81f, 0.0f );
 	pHeightTerrain = NULL;
 	pWeather = NULL;
 	
@@ -130,8 +135,8 @@ pNextObjectID( 1 ) // 0 is reserved for invalid or undefined IDs
 		
 		// create world
 		pDEWorld = engine->GetWorldManager()->CreateWorld();
-		//pDEWorld->SetSectorSize( DEPRECATDSize );
-		pDEWorld->SetGravity( decVector( 0.0f, -9.81f, 0.0f ) );
+		pDEWorld->SetSize( pSize );
+		pDEWorld->SetGravity( pGravity );
 		pDEWorld->SetDisableLights( pFullBright );
 		pUpdateAmbientLight();
 		
@@ -160,10 +165,12 @@ pNextObjectID( 1 ) // 0 is reserved for invalid or undefined IDs
 		// create cameras
 		pFreeRoamCamera = new meCamera( engine );
 		pFreeRoamCamera->SetName( "Free Roaming Camera" );
+		pFreeRoamCamera->SetEnableGI( windowMain.GetConfiguration().GetEnableGI() );
 		pFreeRoamCamera->SetWorld( this );
 		
 		pPlayerCamera = new meCamera( engine );
 		pPlayerCamera->SetName( "Player Camera" );
+		pPlayerCamera->SetEnableGI( windowMain.GetConfiguration().GetEnableGI() );
 		pPlayerCamera->SetWorld( this );
 		
 		pActiveCamera = pFreeRoamCamera;
@@ -339,6 +346,23 @@ void meWorld::ElementVisibilityChanged(){
 	pShowStateChanged();
 }
 
+void meWorld::EnableGIChanged(){
+	const bool enable = pWindowMain.GetConfiguration().GetEnableGI();
+	
+	pFreeRoamCamera->SetEnableGI( enable );
+	pPlayerCamera->SetEnableGI( enable );
+	
+	const int count = pObjects.GetCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		meObject &object = *pObjects.GetAt( i );
+		if( object.GetCamera() ){
+			object.GetCamera()->SetEnableGI( enable );
+		}
+	}
+}
+
 void meWorld::ClearScalingOfNonScaledElements(){
 	const decVector unitScale( 1.0f, 1.0f, 1.0f );
 	const int count = pObjects.GetCount();
@@ -506,12 +530,29 @@ void meWorld::RemoveAllNavSpaces(){
 // World Parameters
 /////////////////////
 
-const decVector &meWorld::GetGravity() const{
-	return pDEWorld->GetGravity();
+void meWorld::SetSize( const decDVector &size ){
+	if( ! ( size > decDVector( 1.0, 1.0, 1.0 ) ) ){
+		DETHROW( deeInvalidParam );
+	}
+	if( size.IsEqualTo( pSize ) ){
+		return;
+	}
+	
+	pSize = size;
+	pDEWorld->SetSize( size );
+	
+	NotifyWorldParametersChanged();
 }
 
 void meWorld::SetGravity( const decVector &gravity ){
+	if( gravity.IsEqualTo( pGravity ) ){
+		return;
+	}
+	
+	pGravity = gravity;
 	pDEWorld->SetGravity( gravity );
+	
+	NotifyWorldParametersChanged();
 }
 
 void meWorld::SetFullBright( bool fullBright ){
@@ -833,12 +874,23 @@ void meWorld::RemoveAllNotifiers(){
 
 
 
+void meWorld::NotifyWorldParametersChanged(){
+	int i;
+	for( i=0; i<pNotifierCount; i++ ){
+		pNotifiers[ i ]->WorldParametersChanged( this );
+	}
+	
+	SetChanged( true );
+}
+
 void meWorld::NotifySkyChanged(){
 	int n;
 	
 	for( n=0; n<pNotifierCount; n++ ){
 		pNotifiers[ n ]->SkyChanged( this );
 	}
+	
+	SetChanged( true ); // this is correct. sky information is saved as world-editor specific data
 }
 
 void meWorld::NotifyModeChanged(){

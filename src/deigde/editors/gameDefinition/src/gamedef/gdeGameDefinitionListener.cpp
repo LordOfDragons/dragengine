@@ -330,6 +330,19 @@ gdeObjectClass *objectClass, gdeOCSpeaker* ){
 	ObjectClassChanged( gameDefinition, objectClass );
 }
 
+void gdeGameDefinitionListener::OCTexturesChanged( gdeGameDefinition *gameDefinition,
+gdeObjectClass *objectClass ){
+	ObjectClassChanged( gameDefinition, objectClass );
+}
+
+void gdeGameDefinitionListener::OCTextureChanged( gdeGameDefinition *gameDefinition,
+gdeObjectClass *objectClass, gdeOCComponentTexture* ){
+	ObjectClassChanged( gameDefinition, objectClass );
+}
+
+void gdeGameDefinitionListener::OCActiveTextureChanged( gdeGameDefinition*, gdeObjectClass* ){
+}
+
 void gdeGameDefinitionListener::ActiveObjectClassChanged( gdeGameDefinition* ){
 }
 

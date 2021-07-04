@@ -101,6 +101,7 @@ private:
 	void pParseClassSpeaker( const decXmlElementTag &root, igdeGDClass &gdclass );
 	void pParseClassNavigationSpace( const decXmlElementTag &root, igdeGDClass &gdclass );
 	void pParseClassNavigationBlocker( const decXmlElementTag &root, igdeGDClass &gdclass );
+	void pParseClassTexture( const decXmlElementTag &root, igdeGDClass &gdclass );
 	void pParseProperty( const decXmlElementTag &root, igdeGDProperty &property );
 	void pParseCustomFilePatternList( const decXmlElementTag &root, igdeFilePatternList &list );
 	void pParseCamera( const decXmlElementTag &root, igdeGDCamera *camera );

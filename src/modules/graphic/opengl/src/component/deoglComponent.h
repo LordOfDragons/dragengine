@@ -22,6 +22,8 @@
 #ifndef _DEOGLCOMPONENT_H_
 #define _DEOGLCOMPONENT_H_
 
+#include "../skin/dynamic/deoglDynamicSkinListener.h"
+
 #include <dragengine/common/collection/decPointerLinkedList.h>
 #include <dragengine/systems/modules/graphic/deBaseGraphicComponent.h>
 
@@ -37,9 +39,9 @@ class deGraphicOpenGl;
 
 
 /**
- * \brief Component peer.
+ * Component peer.
  */
-class deoglComponent : public deBaseGraphicComponent{
+class deoglComponent : public deBaseGraphicComponent, deoglDynamicSkinListener{
 public:
 	deGraphicOpenGl &pOgl;
 	deComponent &pComponent;
@@ -74,13 +76,22 @@ public:
 	bool pDirtyDynamicSkin;
 	bool pDirtyOcclusionMesh;
 	bool pDirtyOcclusionMeshBones;
-	bool pDirtyRenderables;
+	bool pDirtyRenderableMapping;
 	bool pDirtyBoneMatrices;
 	bool pDirtyLODErrorScaling;
 	bool pDirtyMesh;
 	bool pDirtySkinStateCalculatedProperties;
+	bool pSkinStatePrepareRenderables;
+	bool pDirtyStaticTexture;
+	bool pNotifyTexturesChanged;
+	bool pNotifyTUCChanged;
+	bool pDirtySolid;
+	bool pDirtyTextureUseSkin;
 	
+	bool pDynamicSkinRenderablesChanged;
 	bool pDynamicSkinRequiresSync;
+	
+	bool pTextureDynamicSkinRenderablesChanged;
 	bool pTextureDynamicSkinRequiresSync;
 	bool pDecalRequiresSync;
 	bool pRequiresUpdateEverySync;
@@ -92,10 +103,10 @@ public:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create component peer. */
+	/** Create component peer. */
 	deoglComponent( deGraphicOpenGl &ogl, deComponent &component );
 	
-	/** \brief Clean up component peer. */
+	/** Clean up component peer. */
 	virtual ~deoglComponent();
 	/*@}*/
 	
@@ -103,150 +114,160 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Opengl module. */
+	/** Opengl module. */
 	inline deGraphicOpenGl &GetOgl() const{ return pOgl; }
 	
-	/** \brief Engine resource component. */
+	/** Engine resource component. */
 	inline deComponent &GetComponent() const{ return pComponent; }
 	
 	
 	
-	/** \brief Render component. */
+	/** Render component. */
 	inline deoglRComponent *GetRComponent() const{ return pRComponent; }
 	
-	/** \brief Update render thread counterpart if required. */
+	/** Update render thread counterpart if required. */
 	void SyncToRender();
 	
-	/** \brief Update. */
+	/** Update. */
 	void Update( float elapsed );
 	
 	
 	
-	/** \brief Parent world or \em NULL if not in a world. */
+	/** Parent world or \em NULL if not in a world. */
 	inline deoglWorld *GetParentWorld() const{ return pParentWorld; }
 	
 	/**
-	 * \brief Set parent world or \em NULL if not in a world.
+	 * Set parent world or \em NULL if not in a world.
 	 * \details For use by deoglWorld only.
 	 */
 	void SetParentWorld( deoglWorld *world );
 	
 	
 	
-	/** \brief Number of LODs. */
+	/** Number of LODs. */
 	inline int GetLODCount() const{ return pLODCount; }
 	
-	/** \brief LOD at index. */
+	/** LOD at index. */
 	deoglComponentLOD &GetLODAt( int index ) const;
 	
 	
 	
-	/** \brief Number of textures. */
+	/** Number of textures. */
 	inline int GetTextureCount() const{ return pTextureCount; }
 	
-	/** \brief Texture at index. */
+	/** Texture at index. */
 	deoglComponentTexture &GetTextureAt( int index );
 	
 	
 	
-	/** \brief Dynamic skin needs sync. */
+	/** Dynamic skin needs sync. */
 	void DynamicSkinRequiresSync();
 	
-	/** \brief Texture dynamic skin needs sync. */
+	void TextureDynamicSkinRenderableChanged();
 	void TextureDynamicSkinRequiresSync();
 	
-	/** \brief Drop dynamic skin because it is about to be deleted. */
-	void DropDynamicSkin();
+	void DirtyRenderableMapping();
+	void DirtyTextureUseSkin();
 	
-	/** \brief Decal needs sync. */
+	/** Decal needs sync. */
 	void DecalRequiresSync();
+	/*@}*/
+	
+	
+	
+	/** \name Dynamic skin listener */
+	/*@{*/
+	virtual void DynamicSkinDestroyed();
+	virtual void DynamicSkinRenderablesChanged();
+	virtual void DynamicSkinRenderableChanged( deoglDSRenderable &renderable );
+	virtual void DynamicSkinRenderableRequiresSync( deoglDSRenderable &renderable );
 	/*@}*/
 	
 	
 	
 	/** \name Notifications */
 	/*@{*/
-	/** \brief Position changed. */
+	/** Position changed. */
 	virtual void PositionChanged();
 	
-	/** \brief Scaling changed. */
+	/** Scaling changed. */
 	virtual void ScalingChanged();
 	
-	/** \brief Orientation changed. */
+	/** Orientation changed. */
 	virtual void OrientationChanged();
 	
-	/** \brief Model object changed. */
+	/** Model object changed. */
 	virtual void ModelChanged();
 	
-	/** \brief Skin object changed. */
+	/** Skin object changed. */
 	virtual void SkinChanged();
 	
-	/** \brief Model and skin object changed. */
+	/** Model and skin object changed. */
 	virtual void ModelAndSkinChanged();
 	
-	/** \brief Rig object changed. */
+	/** Rig object changed. */
 	virtual void RigChanged();
 	
-	/** \brief Visitility changed. */
+	/** Visitility changed. */
 	virtual void VisibilityChanged();
 	
-	/** \brief Extends changed. */
+	/** Extends changed. */
 	virtual void ExtendsChanged();
 	
 	/**
-	 * \brief Mesh vertices have been invalidated.
+	 * Mesh vertices have been invalidated.
 	 * 
 	 * Called if Model changed or bones have been invalidated.
 	 */
 	virtual void MeshDirty();
 	
-	/** \brief Occlusion mesh changed. */
+	/** Occlusion mesh changed. */
 	virtual void OcclusionMeshChanged();
 	
-	/** \brief Parameter or hint changed. */
+	/** Parameter or hint changed. */
 	virtual void ParametersChanged();
 	
 	
 	
-	/** \brief Texture changed. */
+	/** Texture changed. */
 	virtual void TextureChanged(int index, deComponentTexture& texture);
 	
-	/** \brief Dynamic skin changed. */
+	/** Dynamic skin changed. */
 	virtual void DynamicSkinChanged();
 	
 	
 	
-	/** \brief Layer mask changed. */
+	/** Layer mask changed. */
 	virtual void LayerMaskChanged();
 	
 	
 	
-	/** \brief Decal has been added. */
+	/** Decal has been added. */
 	virtual void DecalAdded( deDecal *decal );
 	
-	/** \brief Decal has been removed. */
+	/** Decal has been removed. */
 	virtual void DecalRemoved( deDecal *decal );
 	
-	/** \brief All decals have been removed. */
+	/** All decals have been removed. */
 	virtual void AllDecalsRemoved();
 	
 	
 	
 	/**
-	 * \brief Retrieve index of the texture of the face closest to a position or -1 if not found.
+	 * Retrieve index of the texture of the face closest to a position or -1 if not found.
 	 * \details Limits the search to the provided radius.
 	 */
 	virtual int IndexOfTextureClosestTo( const decVector &vector, float radius );
 	
-	/** \brief Retrieve index of the face closest to a position or -1 if not found. */
+	/** Retrieve index of the face closest to a position or -1 if not found. */
 	//int IndexOfFaceClosestTo( const decVector &vector, float radius );
 	
-	/** \brief Retrieve index of the vertex closest to a position or -1 if not found. */
+	/** Retrieve index of the vertex closest to a position or -1 if not found. */
 	//int IndexOfVertexClosestTo( const decVector &vector );
 	
 	
 	
-	/** \brief World syncing linked list. */
+	/** World syncing linked list. */
 	inline decPointerLinkedList::cListEntry &GetLLSyncWorld(){ return pLLSyncWorld; }
 	inline const decPointerLinkedList::cListEntry &GetLLSyncWorld() const{ return pLLSyncWorld; }
 	/*@}*/
@@ -267,6 +288,7 @@ private:
 	void pSyncOcclusionMesh();
 	void pSyncLodTextures();
 	void pSyncDecals();
+	void pSyncTextureDynamicSkinRenderablesChanged();
 	void pCheckRequiresUpdateEverySync();
 	
 	void pRequiresSync();

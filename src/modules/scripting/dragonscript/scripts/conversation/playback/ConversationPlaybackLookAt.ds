@@ -164,7 +164,7 @@ class ConversationPlaybackLookAt
 	
 	/** \brief Set custom target or \em null if not used. */
 	public func void setCustomTarget( ConversationCustomTarget target )
-		this.pCustomTarget
+		this.pCustomTarget = target
 	end
 	
 	

@@ -184,12 +184,10 @@ bool decObjectDictionary::Has( const char *key ) const{
 		DETHROW( deeNullPointer );
 	}
 	
-	const unsigned int hash = decString::Hash( key );
-	
-	sDictEntry *iterEntry = pBuckets[ hash % pBucketCount ];
+	sDictEntry *iterEntry = pBuckets[ decString::Hash( key ) % pBucketCount ];
 	
 	while( iterEntry ){
-		if( iterEntry->hash == hash && iterEntry->key == key ){
+		if( iterEntry->key == key ){
 			return true;
 		}
 		iterEntry = iterEntry->next;
@@ -213,16 +211,12 @@ bool decObjectDictionary::GetAt( const char *key, deObject **object ) const{
 		DETHROW( deeNullPointer );
 	}
 	
-	const unsigned int hash = decString::Hash( key );
-	
-	sDictEntry *iterEntry = pBuckets[ hash % pBucketCount ];
+	sDictEntry *iterEntry = pBuckets[ decString::Hash( key ) % pBucketCount ];
 	
 	while( iterEntry ){
-		if( iterEntry->hash == hash ){
-			if( iterEntry->key == key ){
-				*object = iterEntry->value;
-				return true;
-			}
+		if( iterEntry->key == key ){
+			*object = iterEntry->value;
+			return true;
 		}
 		iterEntry = iterEntry->next;
 	}
@@ -242,7 +236,7 @@ void decObjectDictionary::SetAt( const char *key, deObject *value ){
 	sDictEntry *lastEntry = NULL;
 	
 	while( iterEntry ){
-		if( iterEntry->hash == hash && iterEntry->key == key ){
+		if( iterEntry->key == key ){
 			iterEntry->SetValue( value );
 			pEntryCount++;
 			CheckLoad();
@@ -254,7 +248,7 @@ void decObjectDictionary::SetAt( const char *key, deObject *value ){
 	
 	sDictEntry *newEntry = NULL;
 	try{
-		newEntry = new sDictEntry(hash, key, value );
+		newEntry = new sDictEntry( hash, key, value );
 		
 		if( lastEntry ){
 			lastEntry->next = newEntry;
@@ -279,14 +273,13 @@ void decObjectDictionary::Remove( const char *key ){
 		DETHROW( deeNullPointer );
 	}
 	
-	const unsigned int hash = decString::Hash( key );
-	const int bucketIndex = hash % pBucketCount;
+	const int bucketIndex = decString::Hash( key ) % pBucketCount;
 	
 	sDictEntry *iterEntry = pBuckets[ bucketIndex ];
 	sDictEntry *lastEntry = NULL;
 	
 	while( iterEntry ){
-		if( iterEntry->hash == hash && iterEntry->key == key ){
+		if( iterEntry->key == key ){
 			if( lastEntry ){
 				lastEntry->next = iterEntry->next;
 				
@@ -312,14 +305,13 @@ void decObjectDictionary::RemoveIfPresent( const char *key ){
 		DETHROW( deeNullPointer );
 	}
 	
-	const unsigned int hash = decString::Hash( key );
-	const int bucketIndex = hash % pBucketCount;
+	const int bucketIndex = decString::Hash( key ) % pBucketCount;
 	
 	sDictEntry *iterEntry = pBuckets[ bucketIndex ];
 	sDictEntry *lastEntry = NULL;
 	
 	while( iterEntry ){
-		if( iterEntry->hash == hash && iterEntry->key == key ){
+		if( iterEntry->key == key ){
 			if( lastEntry ){
 				lastEntry->next = iterEntry->next;
 				
@@ -443,7 +435,7 @@ void decObjectDictionary::CheckLoad(){
 				sDictEntry * const moveEntry = iterEntry;
 				iterEntry = iterEntry->next;
 				
-				const int bucketIndex = ( moveEntry->hash % newBucketCount );
+				const int bucketIndex = moveEntry->hash % newBucketCount;
 				sDictEntry *iterEntry2 = newBuckets[ bucketIndex ];
 				
 				if( iterEntry2 ){

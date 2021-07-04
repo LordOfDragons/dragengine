@@ -37,8 +37,10 @@
 #include "../renderthread/deoglRTShader.h"
 #include "../rendering/plan/deoglRenderPlan.h"
 #include "../rendering/plan/deoglRenderPlanMasked.h"
+#include "../rendering/task/shared/deoglRenderTaskSharedInstance.h"
 #include "../shaders/paramblock/deoglSPBlockUBO.h"
 #include "../shaders/paramblock/deoglSPBParameter.h"
+#include "../shaders/paramblock/shared/deoglSharedSPB.h"
 #include "../shaders/paramblock/shared/deoglSharedSPBElement.h"
 #include "../shaders/paramblock/shared/deoglSharedSPBList.h"
 #include "../shaders/paramblock/shared/deoglSharedSPBListUBO.h"
@@ -93,7 +95,7 @@ pSkinRendered( renderThread, *this ),
 pSkyShadowSplitMask( 0 ),
 pSortDistance( 0.0f ),
 pOccluded( false ),
-pDirtyRenderables( true ),
+pDirtyPrepareSkinStateRenderables( true ),
 
 pRenderEnvMap( NULL ),
 pRenderEnvMapFade( NULL ),
@@ -101,9 +103,6 @@ pRenderEnvMapFadePerTime( 1.0f ),
 pRenderEnvMapFadeFactor( 1.0f ),
 pDirtyRenderEnvMap( true ),
 
-pParamBlockDepth( NULL ),
-pParamBlockGeometry( NULL ),
-pParamBlockEnvMap( NULL ),
 pSharedSPBElement( NULL ),
 pSharedSPBRTIGroup( NULL ),
 
@@ -112,20 +111,9 @@ pTUCGeometry( NULL ),
 pTUCCounter( NULL ),
 pTUCEnvMap( NULL ),
 
-pValidParamBlockDepth( false ),
-pValidParamBlockGeometry( false ),
-pValidParamBlockEnvMap( false ),
-pDirtyParamBlockDepth( true ),
-pDirtyParamBlockGeometry( true ),
-pDirtyParamBlockEnvMap( true ),
 pDirtySharedSPBElement( true ),
+pDirtyTUCs( true ),
 
-pDirtyTUCDepth( true ),
-pDirtyTUCGeometry( true ),
-pDirtyTUCCounter( true ),
-pDirtyTUCEnvMap( true ),
-
-pParamBlockSpecial( NULL ),
 pSpecialFlags( 0 ),
 
 pCullSphereRadius( 0.0f ),
@@ -136,7 +124,9 @@ pMarked( false ),
 
 pWorldMarkedRemove( false ),
 pLLWorldPrev( NULL ),
-pLLWorldNext( NULL )
+pLLWorldNext( NULL ),
+
+pLLPrepareForRenderWorld( this )
 {
 	try{
 		pSkinState = new deoglSkinState( renderThread, *this );
@@ -188,7 +178,7 @@ void deoglRBillboard::UpdateOctreeNode(){
 	
 	// insert into parent world octree
 	if( pVisible ){
-		pParentWorld->GetOctree().InsertBillboardIntoTree( this, 8 );
+		pParentWorld->GetOctree().InsertBillboardIntoTree( this );
 		
 	}else{
 		if( pOctreeNode ){
@@ -303,16 +293,40 @@ void deoglRBillboard::InitSkinStateCalculatedProperties(){
 	pSkinState->InitCalculatedProperties();
 }
 
-void deoglRBillboard::SetDirtyRendereables(){
-	pDirtyRenderables = true;
+void deoglRBillboard::UpdateSkinStateCalculatedProperties(){
+	if( pSkinState ){
+		pSkinState->UpdateCalculatedProperties();
+	}
 }
 
-void deoglRBillboard::UpdateRenderables( deoglRenderPlan& ){
-	// update renderables. required here to ensure skin state is properly set up
-	pUpdateRenderables();
+void deoglRBillboard::DirtyPrepareSkinStateRenderables(){
+	pDirtyPrepareSkinStateRenderables = true;
+	pRequiresPrepareForRender();
+}
+
+void deoglRBillboard::UpdateRenderableMapping(){
+	pSkinState->RemoveAllRenderables();
+	if( pSkin && pDynamicSkin ){
+		pSkinState->AddRenderables( *pSkin, *pDynamicSkin );
+	}
 	
-	// make sure all textures are updated and create the render info if required
-	pSkinState->PrepareRenderables( pSkin, pDynamicSkin );
+	MarkParamBlocksDirty();
+	MarkTUCsDirty();
+}
+
+void deoglRBillboard::DynamicSkinRenderablesChanged(){
+	if( ! pDynamicSkin || ! pSkin || ! pSkin->GetHasRenderables() ){
+		return;
+	}
+	
+	MarkParamBlocksDirty();
+	MarkTUCsDirty();
+}
+
+void deoglRBillboard::PrepareSkinStateRenderables( const deoglRenderPlanMasked *renderPlanMask ){
+	if( pSkinState ){
+		pSkinState->PrepareRenderables( pSkin, pDynamicSkin, renderPlanMask );
+	}
 }
 
 void deoglRBillboard::AddSkinStateRenderPlans( deoglRenderPlan &plan ){
@@ -348,164 +362,7 @@ void deoglRBillboard::UpdateExtends( const deBillboard &billboard ){
 
 
 
-deoglSPBlockUBO *deoglRBillboard::GetParamBlockFor( deoglSkinTexture::eShaderTypes shaderType ){
-	switch( shaderType ){
-	case deoglSkinTexture::estBillboardGeometry:
-		return GetParamBlockGeometry();
-		
-	case deoglSkinTexture::estBillboardDepth:
-	case deoglSkinTexture::estBillboardDepthClipPlane:
-	case deoglSkinTexture::estBillboardDepthReversed:
-	case deoglSkinTexture::estBillboardDepthClipPlaneReversed:
-	case deoglSkinTexture::estBillboardCounter:
-	case deoglSkinTexture::estBillboardCounterClipPlane:
-		return GetParamBlockDepth();
-		
-	case deoglSkinTexture::estBillboardEnvMap:
-		return GetParamBlockEnvMap();
-		
-	default:
-		DETHROW( deeInvalidParam );
-	}
-}
-
-deoglSPBlockUBO *deoglRBillboard::GetParamBlockDepth(){
-	if( ! pValidParamBlockDepth ){
-		if( pParamBlockDepth ){
-			pParamBlockDepth->FreeReference();
-			pParamBlockDepth = NULL;
-		}
-		
-		if( pUseSkinTexture ){
-			deoglSkinShader &skinShader = *pUseSkinTexture->GetShaderFor( deoglSkinTexture::estBillboardDepth );
-			
-			if( deoglSkinShader::USE_SHARED_SPB ){
-				pParamBlockDepth = new deoglSPBlockUBO( *pRenderThread.GetBufferObject().GetLayoutSkinInstanceUBO() );
-				
-			}else{
-				pParamBlockDepth = skinShader.CreateSPBInstParam();
-			}
-		}
-		
-		pValidParamBlockDepth = true;
-		pDirtyParamBlockDepth = true;
-	}
-	
-	if( pDirtyParamBlockDepth ){
-		if( pParamBlockDepth && pUseSkinTexture ){
-			pParamBlockDepth->MapBuffer();
-			try{
-				UpdateInstanceParamBlock( *pParamBlockDepth, 0,
-					*pUseSkinTexture->GetShaderFor( deoglSkinTexture::estBillboardDepth ) );
-				
-			}catch( const deException & ){
-				pParamBlockDepth->UnmapBuffer();
-				throw;
-			}
-			pParamBlockDepth->UnmapBuffer();
-		}
-		
-		pDirtyParamBlockDepth = false;
-	}
-	
-	return pParamBlockDepth;
-}
-
-deoglSPBlockUBO *deoglRBillboard::GetParamBlockGeometry(){
-	if( ! pValidParamBlockGeometry ){
-		if( pParamBlockGeometry ){
-			pParamBlockGeometry->FreeReference();
-			pParamBlockGeometry = NULL;
-		}
-		
-		if( pUseSkinTexture ){
-			deoglSkinShader &skinShader = *pUseSkinTexture->GetShaderFor( deoglSkinTexture::estBillboardGeometry );
-			
-			if( deoglSkinShader::USE_SHARED_SPB ){
-				pParamBlockGeometry = new deoglSPBlockUBO( *pRenderThread.GetBufferObject().GetLayoutSkinInstanceUBO() );
-				
-			}else{
-				pParamBlockGeometry = skinShader.CreateSPBInstParam();
-			}
-		}
-		
-		pValidParamBlockGeometry = true;
-		pDirtyParamBlockGeometry = true;
-	}
-	
-	if( pDirtyParamBlockGeometry ){
-		if( pParamBlockGeometry && pUseSkinTexture ){
-			pParamBlockGeometry->MapBuffer();
-			try{
-				UpdateInstanceParamBlock( *pParamBlockGeometry, 0,
-					*pUseSkinTexture->GetShaderFor( deoglSkinTexture::estBillboardGeometry ) );
-				
-			}catch( const deException & ){
-				pParamBlockGeometry->UnmapBuffer();
-				throw;
-			}
-			pParamBlockGeometry->UnmapBuffer();
-		}
-		
-		pDirtyParamBlockGeometry = false;
-	}
-	
-	return pParamBlockGeometry;
-}
-
-deoglSPBlockUBO *deoglRBillboard::GetParamBlockEnvMap(){
-	return NULL;
-}
-
-deoglSharedSPBElement *deoglRBillboard::GetSharedSPBElement(){
-	if( ! pSharedSPBElement ){
-		if( pRenderThread.GetChoices().GetSharedSPBUseSSBO() ){
-			pSharedSPBElement = pRenderThread.GetBufferObject()
-				.GetSharedSPBList( deoglRTBufferObject::esspblSkinInstanceSSBO ).AddElement();
-			
-		}else if( pRenderThread.GetChoices().GetGlobalSharedSPBLists() ){
-			pSharedSPBElement = pRenderThread.GetBufferObject()
-				.GetSharedSPBList( deoglRTBufferObject::esspblSkinInstanceUBO ).AddElement();
-			
-		}else{
-			pSharedSPBElement = pRenderThread.GetBufferObject().GetBillboardSPBListUBO().AddElement();
-		}
-	}
-	
-	if( pDirtySharedSPBElement ){
-		if( pSharedSPBElement && pUseSkinTexture ){
-			// it does not matter which shader type we use since all are required to use the
-			// same shared spb instance layout
-			deoglSkinShader &skinShader = *pUseSkinTexture->GetShaderFor( deoglSkinTexture::estBillboardGeometry );
-			
-			// update parameter block area belonging to this element
-			deoglShaderParameterBlock &paramBlock = pSharedSPBElement->MapBuffer();
-			try{
-				UpdateInstanceParamBlock( paramBlock, pSharedSPBElement->GetIndex(), skinShader );
-				
-			}catch( const deException & ){
-				paramBlock.UnmapBuffer();
-				throw;
-			}
-			
-			paramBlock.UnmapBuffer();
-		}
-		
-		pDirtySharedSPBElement = false;
-	}
-	
-	return pSharedSPBElement;
-}
-
-deoglSharedSPBRTIGroup &deoglRBillboard::GetSharedSPBRTIGroup(){
-	if( ! pSharedSPBRTIGroup ){
-		pSharedSPBRTIGroup = pRenderThread.GetBufferObject().GetBillboardRTIGroups()
-			.GetWith( GetSharedSPBElement()->GetSPB() );
-	}
-	return *pSharedSPBRTIGroup;
-}
-
-deoglTexUnitsConfig *deoglRBillboard::GetTUCForShaderType( deoglSkinTexture::eShaderTypes shaderType ){
+deoglTexUnitsConfig *deoglRBillboard::GetTUCForShaderType( deoglSkinTexture::eShaderTypes shaderType ) const{
 	switch( shaderType ){
 	case deoglSkinTexture::estBillboardGeometry:
 	case deoglSkinTexture::estDecalGeometry:
@@ -529,135 +386,47 @@ deoglTexUnitsConfig *deoglRBillboard::GetTUCForShaderType( deoglSkinTexture::eSh
 	}
 }
 
-deoglTexUnitsConfig *deoglRBillboard::GetTUCDepth(){
-	if( pDirtyTUCDepth ){
-		if( pTUCDepth ){
-			pTUCDepth->RemoveUsage();
-			pTUCDepth = NULL;
-		}
-		
-		pTUCDepth = BareGetTUCFor( deoglSkinTexture::estBillboardDepth );
-		
-		pDirtyTUCDepth = false;
-	}
-	
-	return pTUCDepth;
-}
-
-deoglTexUnitsConfig *deoglRBillboard::GetTUCGeometry(){
-	if( pDirtyTUCGeometry ){
-		if( pTUCGeometry ){
-			pTUCGeometry->RemoveUsage();
-			pTUCGeometry = NULL;
-		}
-		
-		pTUCGeometry = BareGetTUCFor( deoglSkinTexture::estBillboardGeometry );
-		
-		pDirtyTUCGeometry = false;
-	}
-	
-	return pTUCGeometry;
-}
-
-deoglTexUnitsConfig *deoglRBillboard::GetTUCCounter(){
-	if( pDirtyTUCCounter ){
-		if( pTUCCounter ){
-			pTUCCounter->RemoveUsage();
-			pTUCCounter = NULL;
-		}
-		
-		pTUCCounter = BareGetTUCFor( deoglSkinTexture::estBillboardCounter );
-		
-		pDirtyTUCCounter = false;
-	}
-	
-	return pTUCCounter;
-}
-
-deoglTexUnitsConfig *deoglRBillboard::GetTUCEnvMap(){
-	if( pDirtyTUCEnvMap ){
-		if( pTUCEnvMap ){
-			pTUCEnvMap->RemoveUsage();
-			pTUCEnvMap = NULL;
-		}
-		
-		if( pUseSkinTexture ){
-			deoglRenderThread &renderThread = pRenderThread;
-			deoglTexUnitConfig unit[ 8 ];
-			
-			if( pUseSkinTexture->GetVariationU() || pUseSkinTexture->GetVariationV() ){
-				unit[ 0 ].EnableArrayTextureFromChannel( renderThread, *pUseSkinTexture,
-					deoglSkinChannel::ectColor, pSkinState, pDynamicSkin,
-					renderThread.GetDefaultTextures().GetColorArray() );
-				
-				unit[ 1 ].EnableArrayTextureFromChannel( renderThread, *pUseSkinTexture,
-					deoglSkinChannel::ectEmissivity, pSkinState, pDynamicSkin,
-					renderThread.GetDefaultTextures().GetEmissivityArray() );
-				
-			}else{
-				unit[ 0 ].EnableTextureFromChannel( renderThread, *pUseSkinTexture,
-					deoglSkinChannel::ectColor, pSkinState, pDynamicSkin,
-					renderThread.GetDefaultTextures().GetColor() );
-				
-				unit[ 1 ].EnableTextureFromChannel( renderThread, *pUseSkinTexture,
-					deoglSkinChannel::ectEmissivity, pSkinState, pDynamicSkin,
-					renderThread.GetDefaultTextures().GetEmissivity() );
-			}
-			
-			pTUCEnvMap = renderThread.GetShader().GetTexUnitsConfigList().GetWith( &unit[ 0 ], 2 );
-		}
-		
-		pDirtyTUCEnvMap = false;
-	}
-	
-	return pTUCEnvMap;
-}
-
-deoglTexUnitsConfig *deoglRBillboard::BareGetTUCFor(
-deoglSkinTexture::eShaderTypes shaderType ) const{
+deoglTexUnitsConfig *deoglRBillboard::BareGetTUCFor( deoglSkinTexture::eShaderTypes shaderType ) const{
 	if( ! pUseSkinTexture ){
 		return NULL;
 	}
 	
-	deoglRenderThread &renderThread = pRenderThread;
+	deoglSkinShader &skinShader = *pUseSkinTexture->GetShaderFor( shaderType );
 	deoglTexUnitConfig units[ deoglSkinShader::ETT_COUNT ];
 	deoglRDynamicSkin *dynamicSkin = NULL;
 	deoglSkinState *skinState = NULL;
 	deoglTexUnitsConfig *tuc = NULL;
 	
-	deoglSkinShader &skinShader = *pUseSkinTexture->GetShaderFor( shaderType );
-	
 	if( skinShader.GetUsedTextureTargetCount() > 0 ){
 		skinShader.SetTUCCommon( &units[ 0 ], *pUseSkinTexture, skinState, dynamicSkin );
 		skinShader.SetTUCPerObjectEnvMap( &units[ 0 ], pParentWorld->GetSkyEnvironmentMap(),
 			pRenderEnvMap, pRenderEnvMapFade );
-		tuc = renderThread.GetShader().GetTexUnitsConfigList().GetWith(
-			&units[ 0 ], skinShader.GetUsedTextureTargetCount() );
+		tuc = pRenderThread.GetShader().GetTexUnitsConfigList().GetWith(
+			&units[ 0 ], skinShader.GetUsedTextureTargetCount(),
+			pUseSkinTexture->GetSharedSPBElement()->GetSPB().GetParameterBlock() );
 	}
+	
+	if( ! tuc ){
+		tuc = pRenderThread.GetShader().GetTexUnitsConfigList().GetWith( NULL, 0,
+			pUseSkinTexture->GetSharedSPBElement()->GetSPB().GetParameterBlock() );
+	}
+	tuc ->EnsureRTSTexture();
 	
 	return tuc;
 }
 
 void deoglRBillboard::InvalidateParamBlocks(){
-	pValidParamBlockDepth = false;
-	pValidParamBlockGeometry = false;
-	pValidParamBlockEnvMap = false;
-	
 	MarkParamBlocksDirty();
 }
 
 void deoglRBillboard::MarkParamBlocksDirty(){
-	pDirtyParamBlockDepth = true;
-	pDirtyParamBlockGeometry = true;
-	pDirtyParamBlockEnvMap = true;
 	pDirtySharedSPBElement = true;
+	pRequiresPrepareForRender();
 }
 
 void deoglRBillboard::MarkTUCsDirty(){
-	pDirtyTUCDepth = true;
-	pDirtyTUCGeometry = true;
-	pDirtyTUCCounter = true;
-	pDirtyTUCEnvMap = true;
+	pDirtyTUCs = true;
+	pRequiresPrepareForRender();
 }
 
 
@@ -758,17 +527,13 @@ int element, deoglSkinShader &skinShader ){
 		}
 	}
 	
+	skinShader.SetTexParamsInInstParamSPB( paramBlock, element, *pUseSkinTexture );
+	
 	// per texture dynamic texture properties
 	skinShader.SetDynTexParamsInInstParamSPB( paramBlock, element, *pUseSkinTexture, pSkinState, pDynamicSkin );
 }
 
 
-deoglSPBlockUBO *deoglRBillboard::GetParamBlockSpecial(){
-	if( ! pParamBlockSpecial ){
-		pParamBlockSpecial = deoglSkinShader::CreateSPBSpecial( pRenderThread );
-	}
-	return pParamBlockSpecial;
-}
 
 void deoglRBillboard::UpdateCubeFaceVisibility( const decDVector &cubePosition ){
 	deoglCubeHelper::CalcFaceVisibility(
@@ -814,22 +579,6 @@ void deoglRBillboard::SetSpecialFlagsFromFaceVisibility(){
 	}
 }
 
-void deoglRBillboard::UpdateSpecialSPBCubeRender(){
-	deoglSPBlockUBO &spb = *GetParamBlockSpecial();
-	
-	SetSpecialFlagsFromFaceVisibility();
-	
-	spb.MapBuffer();
-	try{
-		spb.SetParameterDataInt( deoglSkinShader::esutCubeFaceVisible, pSpecialFlags );
-		
-	}catch( const deException & ){
-		spb.UnmapBuffer();
-		throw;
-	}
-	spb.UnmapBuffer();
-}
-
 
 
 const decDVector &deoglRBillboard::GetCullSphereCenter(){
@@ -856,14 +605,14 @@ void deoglRBillboard::SetDirtyCulling(){
 
 
 
-void deoglRBillboard::StartOcclusionTest( const decDVector &cameraPosition ){
+void deoglRBillboard::StartOcclusionTest( deoglOcclusionTest &occlusionTest, const decDVector &cameraPosition ){
 	if( ! pUseSkinTexture ){
 		return;
 	}
 	
 	const decVector minExtend( pMinExtend - cameraPosition );
 	const decVector maxExtend( pMaxExtend - cameraPosition );
-	pRenderThread.GetOcclusionTest().AddInputData( minExtend, maxExtend, this );
+	occlusionTest.AddInputData( minExtend, maxExtend, this );
 }
 
 void deoglRBillboard::OcclusionTestInvisible(){
@@ -911,40 +660,26 @@ void deoglRBillboard::SetRenderEnvMap( deoglEnvironmentMap *envmap ){
 	}
 	
 	deoglEnvironmentMap * const prevEnvMap = pRenderEnvMap;
-	if( prevEnvMap ){
-		prevEnvMap->AddReference(); // guard reference
+	const deObjectReference guard( prevEnvMap );
+	
+	if( pRenderEnvMap ){
+		pRenderEnvMap->GetBillboardList().RemoveIfExisting( this );
+		pRenderEnvMap->FreeReference();
 	}
 	
-	try{
-		if( pRenderEnvMap ){
-			pRenderEnvMap->GetBillboardList().RemoveIfExisting( this );
-			pRenderEnvMap->FreeReference();
-		}
-		
-		pRenderEnvMap = envmap;
-		
-		if( envmap ){
-			envmap->AddReference();
-			envmap->GetBillboardList().Add( this );
-		}
-		
-		// now it is safe to set the fade env map
-		SetRenderEnvMapFade( prevEnvMap );
-		pRenderEnvMapFadeFactor = 0.0f;
-		
-		if( ! prevEnvMap ){ // in case SetRenderEnvMapFade did not mark all textures dirty yet
-			MarkTUCsDirty();
-		}
-		
-	}catch( const deException & ){
-		if( prevEnvMap ){
-			prevEnvMap->FreeReference(); // drop guard reference
-		}
-		throw;
+	pRenderEnvMap = envmap;
+	
+	if( envmap ){
+		envmap->AddReference();
+		envmap->GetBillboardList().Add( this );
 	}
 	
-	if( prevEnvMap ){
-		prevEnvMap->FreeReference(); // drop guard reference
+	// now it is safe to set the fade env map
+	SetRenderEnvMapFade( prevEnvMap );
+	pRenderEnvMapFadeFactor = 0.0f;
+	
+	if( ! prevEnvMap ){ // in case SetRenderEnvMapFade did not mark all textures dirty yet
+		MarkTUCsDirty();
 	}
 }
 
@@ -1077,6 +812,16 @@ void deoglRBillboard::WorldReferencePointChanged(){
 
 
 
+void deoglRBillboard::PrepareForRender( deoglRenderPlan&, const deoglRenderPlanMasked *mask ){
+	if( pDirtyPrepareSkinStateRenderables ){
+		PrepareSkinStateRenderables( mask );
+		pDirtyPrepareSkinStateRenderables = false;
+	}
+	
+	pPrepareTUCs();
+	pPrepareParamBlocks();
+}
+
 void deoglRBillboard::PrepareQuickDispose(){
 	pParentWorld = NULL;
 	pOctreeNode = NULL;
@@ -1090,10 +835,6 @@ void deoglRBillboard::PrepareQuickDispose(){
 class deoglRBillboardDeletion : public deoglDelayedDeletion{
 public:
 	deoglSkinState *skinState;
-	deoglSPBlockUBO *paramBlockSpecial;
-	deoglSPBlockUBO *paramBlockDepth;
-	deoglSPBlockUBO *paramBlockGeometry;
-	deoglSPBlockUBO *paramBlockEnvMap;
 	deoglTexUnitsConfig *tucDepth;
 	deoglTexUnitsConfig *tucGeometry;
 	deoglTexUnitsConfig *tucCounter;
@@ -1101,10 +842,6 @@ public:
 	
 	deoglRBillboardDeletion() :
 	skinState( NULL ),
-	paramBlockSpecial( NULL ),
-	paramBlockDepth( NULL ),
-	paramBlockGeometry( NULL ),
-	paramBlockEnvMap( NULL ),
 	tucDepth( NULL ),
 	tucGeometry( NULL ),
 	tucCounter( NULL ),
@@ -1126,18 +863,6 @@ public:
 		}
 		if( tucEnvMap ){
 			tucEnvMap->RemoveUsage();
-		}
-		if( paramBlockDepth ){
-			paramBlockDepth->FreeReference();
-		}
-		if( paramBlockGeometry ){
-			paramBlockGeometry->FreeReference();
-		}
-		if( paramBlockEnvMap ){
-			paramBlockEnvMap->FreeReference();
-		}
-		if( paramBlockSpecial ){
-			paramBlockSpecial->FreeReference();
 		}
 		if( skinState ){
 			delete skinState;
@@ -1180,10 +905,6 @@ void deoglRBillboard::pCleanUp(){
 	try{
 		delayedDeletion = new deoglRBillboardDeletion;
 		delayedDeletion->skinState = pSkinState;
-		delayedDeletion->paramBlockSpecial = pParamBlockSpecial;
-		delayedDeletion->paramBlockDepth = pParamBlockDepth;
-		delayedDeletion->paramBlockEnvMap = pParamBlockEnvMap;
-		delayedDeletion->paramBlockGeometry = pParamBlockGeometry;
 		delayedDeletion->skinState = pSkinState;
 		delayedDeletion->tucDepth = pTUCDepth;
 		delayedDeletion->tucEnvMap = pTUCEnvMap;
@@ -1213,46 +934,127 @@ void deoglRBillboard::pUpdateCullSphere(){
 	pCullSphereRadius = ( float )sphere.GetRadius();
 }
 
-void deoglRBillboard::pUpdateRenderables(){
-	// TODO this situation here is not blistering at all. usually there happens only one update
-	// at the beginning of the billboard life time where the renderables are set up. then usually
-	// no change happens at all anymore during the life time of the billboard. with the current
-	// code though a lot of counter checking is done for all the billboards having a dynamic skin
-	// to verify no change happened. a notification system would be a better here not only to
-	// remove the counter handling but also to remove potential errors.
+void deoglRBillboard::pPrepareTUCs(){
+	if( ! pDirtyTUCs ){
+		return;
+	}
 	
-	// update dynamic skins to check
-	if( pDynamicSkin && pSkin && pSkin->GetHasRenderables() ){
-		const int updateNumber = pDynamicSkin->Update();
-		if( updateNumber != pSkinState->GetUpdateNumber() ){
-			pSkinState->SetUpdateNumber( updateNumber );
-			pDirtyRenderables = true;
-			if( pUseSkinTexture && pUseSkinTexture->GetDynamicChannels() ){
-				MarkParamBlocksDirty();
-				MarkTUCsDirty();
+	// depth
+	if( pTUCDepth ){
+		pTUCDepth->RemoveUsage();
+		pTUCDepth = NULL;
+	}
+	pTUCDepth = BareGetTUCFor( deoglSkinTexture::estBillboardDepth );
+	
+	// geometry
+	if( pTUCGeometry ){
+		pTUCGeometry->RemoveUsage();
+		pTUCGeometry = NULL;
+	}
+	pTUCGeometry = BareGetTUCFor( deoglSkinTexture::estBillboardGeometry );
+	
+	// counter
+	if( pTUCCounter ){
+		pTUCCounter->RemoveUsage();
+		pTUCCounter = NULL;
+	}
+	pTUCCounter = BareGetTUCFor( deoglSkinTexture::estBillboardCounter );
+	
+	// envmap
+	if( pTUCEnvMap ){
+		pTUCEnvMap->RemoveUsage();
+		pTUCEnvMap = NULL;
+	}
+	
+	if( pUseSkinTexture ){
+		deoglTexUnitConfig unit[ 8 ];
+		
+		if( pUseSkinTexture->GetVariationU() || pUseSkinTexture->GetVariationV() ){
+			unit[ 0 ].EnableArrayTextureFromChannel( pRenderThread, *pUseSkinTexture,
+				deoglSkinChannel::ectColor, pSkinState, pDynamicSkin,
+				pRenderThread.GetDefaultTextures().GetColorArray() );
+			
+			unit[ 1 ].EnableArrayTextureFromChannel( pRenderThread, *pUseSkinTexture,
+				deoglSkinChannel::ectEmissivity, pSkinState, pDynamicSkin,
+				pRenderThread.GetDefaultTextures().GetEmissivityArray() );
+			
+		}else{
+			unit[ 0 ].EnableTextureFromChannel( pRenderThread, *pUseSkinTexture,
+				deoglSkinChannel::ectColor, pSkinState, pDynamicSkin,
+				pRenderThread.GetDefaultTextures().GetColor() );
+			
+			unit[ 1 ].EnableTextureFromChannel( pRenderThread, *pUseSkinTexture,
+				deoglSkinChannel::ectEmissivity, pSkinState, pDynamicSkin,
+				pRenderThread.GetDefaultTextures().GetEmissivity() );
+		}
+		
+		pTUCEnvMap = pRenderThread.GetShader().GetTexUnitsConfigList().GetWith( &unit[ 0 ], 2,
+			pUseSkinTexture->GetSharedSPBElement()->GetSPB().GetParameterBlock() );
+		pTUCEnvMap->EnsureRTSTexture();
+	}
+	
+	// finished
+	pDirtyTUCs = false;
+}
+
+void deoglRBillboard::pPrepareParamBlocks(){
+	if( ! pSharedSPBElement ){
+		if( pRenderThread.GetChoices().GetSharedSPBUseSSBO() ){
+			pSharedSPBElement = pRenderThread.GetBufferObject()
+				.GetSharedSPBList( deoglRTBufferObject::esspblSkinInstanceSSBO ).AddElement();
+			
+		}else if( pRenderThread.GetChoices().GetGlobalSharedSPBLists() ){
+			pSharedSPBElement = pRenderThread.GetBufferObject()
+				.GetSharedSPBList( deoglRTBufferObject::esspblSkinInstanceUBO ).AddElement();
+			
+		}else{
+			pSharedSPBElement = pRenderThread.GetBufferObject().GetBillboardSPBListUBO().AddElement();
+		}
+	}
+	
+	if( pDirtySharedSPBElement ){
+		if( pSharedSPBElement && pUseSkinTexture ){
+			// it does not matter which shader type we use since all are required to use the
+			// same shared spb instance layout
+			deoglSkinShader &skinShader = *pUseSkinTexture->GetShaderFor( deoglSkinTexture::estBillboardGeometry );
+			
+			// update parameter block area belonging to this element
+			deoglShaderParameterBlock &paramBlock = pSharedSPBElement->MapBuffer();
+			try{
+				UpdateInstanceParamBlock( paramBlock, pSharedSPBElement->GetIndex(), skinShader );
+				
+			}catch( const deException & ){
+				paramBlock.UnmapBuffer();
+				throw;
 			}
-		}
-	}
-	
-	if( pDynamicSkin ){
-		const int updateNumber = pDynamicSkin->Update();
-		if( updateNumber != pSkinState->GetUpdateNumber() ){
-			pSkinState->SetUpdateNumber( updateNumber );
-			MarkParamBlocksDirty();
-			MarkTUCsDirty();
-			pDirtyRenderables = true;
-		}
-	}
-	
-	if( pDirtyRenderables ){
-		pSkinState->RemoveAllRenderables();
-		if( pSkin && pDynamicSkin ){
-			pSkinState->AddRenderables( *pSkin, *pDynamicSkin );
+			
+			paramBlock.UnmapBuffer();
 		}
 		
-		MarkParamBlocksDirty();
-		MarkTUCsDirty();
+		pDirtySharedSPBElement = false;
+	}
+	
+	if( ! pSharedSPBRTIGroup && pSharedSPBElement ){
+		deoglSharedSPBRTIGroupList &list = pRenderThread.GetBufferObject().GetBillboardRTIGroups();
+		deoglSharedSPB &spb = pSharedSPBElement->GetSPB();
+		pSharedSPBRTIGroup = list.GetWith( spb );
 		
-		pDirtyRenderables = false;
+		if( ! pSharedSPBRTIGroup ){
+			pSharedSPBRTIGroup = list.AddWith( spb );
+			
+			deoglRenderTaskSharedInstance &rtsi = *pSharedSPBRTIGroup->GetRTSInstance();
+			rtsi.SetSubInstanceSPB( &spb );
+			rtsi.SetFirstPoint( 0 );
+			rtsi.SetFirstIndex( 0 );
+			rtsi.SetPointCount( 4 );
+			rtsi.SetDoubleSided( true );
+			rtsi.SetPrimitiveType( GL_TRIANGLE_FAN );
+		}
+	}
+}
+
+void deoglRBillboard::pRequiresPrepareForRender(){
+	if( ! pLLPrepareForRenderWorld.GetList() && pParentWorld ){
+		pParentWorld->AddPrepareForRenderBillboard( this );
 	}
 }

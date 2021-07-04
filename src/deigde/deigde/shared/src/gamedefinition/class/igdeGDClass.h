@@ -24,6 +24,7 @@
 
 #include "billboard/igdeGDCBillboardList.h"
 #include "component/igdeGDCComponentList.h"
+#include "component/igdeGDCCTextureList.h"
 #include "envmapprobe/igdeGDCEnvMapProbeList.h"
 #include "light/igdeGDCLightList.h"
 #include "snappoint/igdeGDCSnapPointList.h"
@@ -102,6 +103,7 @@ private:
 	decObjectOrderedSet pInheritClasses;
 	
 	decString pPathEClass;
+	igdeGDCCTextureList pComponentTextures;
 	
 	deImage *pPreviewImage;
 	
@@ -214,6 +216,13 @@ public:
 	
 	/** \brief Set element class path or empty string if defined manually. */
 	void SetPathEClass( const decString &pathEClass );
+	
+	/** \brief Component texture replacements. */
+	inline igdeGDCCTextureList &GetComponentTextures(){ return pComponentTextures; }
+	inline const igdeGDCCTextureList &GetComponentTextures() const{ return pComponentTextures; }
+	
+	/** \brief Build flattened component texture replacements list. */
+	void GetDeepComponentTextures( igdeGDCCTextureList &list ) const;
 	/*@}*/
 	
 	

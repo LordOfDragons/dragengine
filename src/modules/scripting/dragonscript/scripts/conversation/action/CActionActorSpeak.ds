@@ -623,14 +623,18 @@ class CActionActorSpeak extends ConversationAction
 		end )
 	end
 	
-	/** \brief Execute eyes look-at. */
+	/**
+	 * \brief Execute eyes look-at.
+	 * 
+	 * If no eyes look-ats are present uses head look-ats.
+	 */
 	public func void executeEyesLookAt( ConversationPlayback playback, ConversationActor actor )
-		if this.pEyesLookAts.getCount() == 0
+		var Array lookAts = this.pEyesLookAts.getCount() > 0 if this.pEyesLookAts else this.pHeadLookAts
+		if lookAts.getCount() == 0
 			return
 		end
 		
 		var ConversationLookAtPlayback eyesPlayback = actor.getEyesLookAtPlayback()
-		
 		if eyesPlayback == null
 			return
 		end
@@ -639,7 +643,7 @@ class CActionActorSpeak extends ConversationAction
 		
 		eyesPlayback.removeAllLookAts()
 		
-		this.pEyesLookAts.forEach( block ConversationStrip each
+		lookAts.forEach( block ConversationStrip each
 			var ConversationPlaybackLookAt charLookAt
 			
 			if each.getID() != null

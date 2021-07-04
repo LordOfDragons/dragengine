@@ -32,6 +32,7 @@
 #include "../common/exceptions.h"
 #include "../common/file/decPath.h"
 #include "../common/string/unicode/decUnicodeString.h"
+#include "../logger/deLogger.h"
 #include "../systems/deInputSystem.h"
 #include "../systems/modules/input/deBaseInputModule.h"
 
@@ -145,10 +146,15 @@ void deOSWindows::ProcessEventLoop( bool sendToInputModule ){
 			GetEngine()->Quit();
 			break;
 			
-		//case WM_ACTIVATEAPP:
-			// message.wParam == TRUE
-			//break;
-		
+		case WM_ACTIVATEAPP:
+			SetAppActive( message.wParam == TRUE );
+			DispatchMessage( &message );
+			break;
+			
+// 		case WM_ACTIVATE:
+// 			SetAppActive( LOWORD( message.wParam ) == TRUE );
+// 			break;
+			
 		case WM_SIZE:
 			//const int windowWidth = LOWORD( message.lParam );
 			//const int windowHeight = HIWORD( message.wParam );
@@ -161,7 +167,6 @@ void deOSWindows::ProcessEventLoop( bool sendToInputModule ){
 		default:
 			//TranslateMessage( &message );
 			DispatchMessage( &message );
-			
 		}
 		
 		if( sendToInputModule ){

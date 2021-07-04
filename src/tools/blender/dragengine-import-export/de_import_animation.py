@@ -49,19 +49,19 @@ class OBJECT_OT_ImportAnimation( bpy.types.Operator, ImportHelper ):
 	bl_label = "Animations (.deanim)"
 	__doc__ = """Import as Drag[en]gine Animation Resource"""
 	filename_ext = ".deanim"
-	filter_glob = bpy.props.StringProperty( default="*.deanim", options={ 'HIDDEN' } )
-	debug_level = bpy.props.EnumProperty( items = (
+	filter_glob: bpy.props.StringProperty( default="*.deanim", options={ 'HIDDEN' } )
+	debug_level: bpy.props.EnumProperty( items = (
 		( '0', "None", "Output no debug messages." ),
 		( '1', "Basic", "Output basic amount of debug messages." ),
 		( '2', "Verbose", "Output lots of debug messages." ),
 		( '3', "Debug", "Output very large amount of debug messages." ),
 		), name = "Logging", description = "Choose amount of logging", default = '1' )
-	import_mode = bpy.props.EnumProperty( items = (
+	import_mode: bpy.props.EnumProperty( items = (
 		( '0', "Import All", "Import all moves." ),
 		( '1', "Import Single", "Import single move." ),
 		), name = "Import Mode", description = "Import mode", default = '0' )
-	#import_move = bpy.props.EnumProperty( items=importActionList )
-	import_move = bpy.props.StringProperty( default="" )
+	#import_move: bpy.props.EnumProperty( items=importActionList )
+	import_move: bpy.props.StringProperty( default="" )
 	
 	def __init__( self ):
 		self.mesh = None

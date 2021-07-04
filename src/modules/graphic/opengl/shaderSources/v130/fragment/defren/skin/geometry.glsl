@@ -9,10 +9,6 @@
 #include "v130/shared/defren/skin/ubo_instance_parameters.glsl"
 #include "v130/shared/defren/skin/ubo_dynamic_parameters.glsl"
 
-#ifdef NODE_FRAGMENT_UNIFORMS
-NODE_FRAGMENT_UNIFORMS
-#endif
-
 
 
 // Samplers
@@ -95,10 +91,6 @@ NODE_FRAGMENT_UNIFORMS
 	uniform HIGHP sampler2D texDepthTest;
 #endif
 
-#ifdef NODE_FRAGMENT_SAMPLERS
-NODE_FRAGMENT_SAMPLERS
-#endif
-
 
 
 // Inputs
@@ -153,9 +145,7 @@ in vec3 vNormal;
 	#include "v130/shared/defren/skin/shared_spb_redirect.glsl"
 #endif
 
-#ifdef NODE_FRAGMENT_INPUTS
-NODE_FRAGMENT_INPUTS
-#endif
+#include "v130/shared/defren/skin/shared_spb_texture_redirect.glsl"
 
 
 
@@ -218,6 +208,8 @@ const vec4 colorTransparent = vec4( 0.0, 0.0, 0.0, 1.0 );
 	const vec3 lumiFactors = vec3( 0.2125, 0.7154, 0.0721 );
 	//const vec3 lumiFactors = vec3( 0.3086, 0.6094, 0.0820 ); // nVidia
 #endif
+
+#include "v130/shared/normal.glsl"
 
 
 // functions required to be define last because they are based on stuff defined above
@@ -446,14 +438,11 @@ void main( void ){
 		#endif
 	#endif
 	
-	// Node based calculations
-	#ifdef NODE_FRAGMENT_MAIN
-	NODE_FRAGMENT_MAIN
-	#endif
-	
 	// for height map adjust alpha value
-	#ifdef HEIGHT_MAP
-		color.a *= vHTMask;
+	#ifndef LUMINANCE_ONLY
+		#ifdef HEIGHT_MAP
+			color.a *= vHTMask;
+		#endif
 	#endif
 	
 	
@@ -481,9 +470,7 @@ void main( void ){
 	#if defined TEXTURE_ENVROOM || defined TEXTURE_ENVROOM_EMISSIVITY
 		#ifdef OUTPUT_MATERIAL_PROPERTIES
 			outDiffuse = vec4( 0.0, 0.0, 0.0, 0.0 );
-			#ifdef MATERIAL_NORMAL_INTBASIC
-				outNormal = vec4( 0.0, 0.0, 0.0, 0.0 );
-			#endif
+			outNormal = vec4( normalZeroMaterialEnc, 0.0 );
 			outReflectivity = vec4( 0.0, 0.0, 0.0, 0.0 );
 			outRoughness = vec4( 0.0, 1.0, 1.0, 0.0 );
 		#endif
@@ -564,22 +551,9 @@ void main( void ){
 		normal.xyz = normalize( normal.xyz );
 		#ifdef OUTPUT_MATERIAL_PROPERTIES
 			#ifdef WITH_OUTLINE
-				#ifdef MATERIAL_NORMAL_INTBASIC
-					outNormal = vec4( 0.5, 0.5, 0.5, color.a ); // vec4( 0.5, 0.5, 0.0, color.a );
-				#elif defined( MATERIAL_NORMAL_SPHEREMAP )
-					outNormal = vec4( 0.5, 0.5, 0.0, color.a ); // vec4( 0.5, 0.5, 0.0, color.a );
-				#else
-					outNormal = vec4( 0.0, 0.0, 0.0, color.a ); // vec4( 0.0, 0.0, -1.0, color.a );
-				#endif
+				outNormal = vec4( normalZeroMaterialEnc, color.a );
 			#else
-				#ifdef MATERIAL_NORMAL_INTBASIC
-					outNormal = vec4( normal.xyz * vec3( 0.5 ) + vec3( 0.5 ), color.a );
-				#elif defined( MATERIAL_NORMAL_SPHEREMAP )
-					float f = sqrt( 8.0001 - 7.9999 * normal.z );
-					outNormal = vec4( vec3( normal.xy / vec2( f ) + vec2( 0.5 ), 0.0 ), color.a );
-				#else
-					outNormal = vec4( normal.xyz, color.a );
-				#endif
+				outNormal = vec4( normalEncodeMaterial( normal.xyz ), color.a );
 				#ifdef SOLIDITY_MULTIPLIER
 					outNormal.a *= pNormalSolidityMultiplier;
 				#endif

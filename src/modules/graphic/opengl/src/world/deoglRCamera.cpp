@@ -56,10 +56,13 @@ pTextureToneMapParams( NULL ),
 pElapsedToneMapAdaption( 0.0f ),
 pForceToneMapAdaption( true ),
 
+pEnableHDRR( true ),
 pExposure( 1.0f ),
 pLowestIntensity( 0.0f ),
 pHighestIntensity( 1.0f ),
 pAdaptionTime( 1.0f ),
+
+pEnableGI( false ),
 
 pPlan( NULL ),
 
@@ -100,6 +103,8 @@ void deoglRCamera::SetParentWorld( deoglRWorld *parentWorld ){
 		return;
 	}
 	
+	pPlan->SetWorld( NULL ); // has to come first since SetWorld accesses previous world
+	
 	if( pParentWorld ){
 		pParentWorld->FreeReference();
 	}
@@ -108,11 +113,9 @@ void deoglRCamera::SetParentWorld( deoglRWorld *parentWorld ){
 	
 	if( parentWorld ){
 		parentWorld->AddReference();
-		pPlan->SetWorld( parentWorld );
-		
-	}else{
-		pPlan->SetWorld( NULL );
 	}
+	
+	pPlan->SetWorld( parentWorld );
 }
 
 
@@ -150,6 +153,10 @@ void deoglRCamera::ResetElapsedToneMapAdaption(){
 
 
 
+void deoglRCamera::SetEnableHDRR( bool enable ){
+	pEnableHDRR = enable;
+}
+
 void deoglRCamera::SetExposure( float exposure ){
 	pExposure = decMath::max( exposure, 0.0f );
 }
@@ -164,6 +171,13 @@ void deoglRCamera::SetHighestIntensity( float highestIntensity ){
 
 void deoglRCamera::SetAdaptionTime( float adaptionTime ){
 	pAdaptionTime = decMath::max( adaptionTime, 0.0f );
+}
+
+
+
+void deoglRCamera::SetEnableGI( bool enable ){
+	pEnableGI = enable;
+	pPlan->SetUseGIState( enable );
 }
 
 
@@ -239,8 +253,7 @@ class deoglRCameraDeletion : public deoglDelayedDeletion{
 public:
 	deoglTexture *textureToneMapParams;
 	
-	deoglRCameraDeletion() :
-	textureToneMapParams( NULL ){
+	deoglRCameraDeletion() : textureToneMapParams( NULL ){
 	}
 	
 	virtual ~deoglRCameraDeletion(){
@@ -258,9 +271,7 @@ void deoglRCamera::pCleanUp(){
 	
 	RemoveAllEffects();
 	
-	if( pPlan ){
-		delete pPlan;
-	}
+	delete pPlan;
 	
 	// delayed deletion of opengl containing objects
 	deoglRCameraDeletion *delayedDeletion = NULL;

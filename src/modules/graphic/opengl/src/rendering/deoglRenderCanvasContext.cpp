@@ -26,6 +26,8 @@
 #include "../canvas/render/deoglRCanvas.h"
 #include "../canvas/render/deoglRCanvasView.h"
 #include "../framebuffer/deoglFramebuffer.h"
+#include "../target/deoglRenderTarget.h"
+#include "../texture/texture2d/deoglTexture.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -41,6 +43,7 @@ deoglRenderCanvasContext::deoglRenderCanvasContext( const deoglRenderCanvasConte
 pFBO( copy.pFBO ),
 pViewportOffset( copy.pViewportOffset ),
 pViewportSize( copy.pViewportSize ),
+pRenderPlanMask( copy.pRenderPlanMask ),
 
 pClipFactor( copy.pClipFactor ),
 pClipMin( copy.pClipMin ),
@@ -50,15 +53,18 @@ pTransform( copy.pTransform ),
 pTCClampMin( 0.0f, 0.0f ),
 pTCClampMax( 1.0f, 1.0f ),
 pColorTransform( copy.pColorTransform ),
-pTransparency( copy.pTransparency ){
+pTransparency( copy.pTransparency ),
+pMask( copy.pMask ),
+pTransformMask( copy.pTransformMask ){
 }
 
-deoglRenderCanvasContext::deoglRenderCanvasContext( const deoglRCanvasView &canvas,
+deoglRenderCanvasContext::deoglRenderCanvasContext( const deoglRCanvas &canvas,
 deoglFramebuffer *fbo, const decPoint &viewportOffset, const decPoint &viewportSize,
-bool upsideDown ) :
+bool upsideDown, const deoglRenderPlanMasked *renderPlanMask ) :
 pFBO( fbo ),
 pViewportOffset( viewportOffset ),
 pViewportSize( viewportSize ),
+pRenderPlanMask( renderPlanMask ),
 
 pClipMin( -1.0f, -1.0f ),
 pClipMax( 1.0f, 1.0f ),
@@ -67,7 +73,8 @@ pClipMax( 1.0f, 1.0f ),
 pTCClampMin( 0.0f, 0.0f ),
 pTCClampMax( 1.0f, 1.0f ),
 pColorTransform( canvas.GetColorTransform() ),
-pTransparency( canvas.GetTransparency() )
+pTransparency( canvas.GetTransparency() ),
+pMask( NULL )
 {
 	// set clip factor to obtain correct clipping coordinates for the shaders
 	pClipFactor.x = ( float )viewportSize.x * 0.5f;
@@ -80,10 +87,16 @@ pTransparency( canvas.GetTransparency() )
 	const float biasOffsetV = -1.0f;
 	
 	if( upsideDown ){
-		pTransform *= decTexMatrix2::CreateST( biasScaleU, -biasScaleV, biasOffsetU, -biasOffsetV );
+		pTransform = decTexMatrix2::CreateST( biasScaleU, -biasScaleV, biasOffsetU, -biasOffsetV );
 		
 	}else{
-		pTransform *= decTexMatrix2::CreateST( biasScaleU, biasScaleV, biasOffsetU, biasOffsetV );
+		pTransform = decTexMatrix2::CreateST( biasScaleU, biasScaleV, biasOffsetU, biasOffsetV );
+	}
+	
+	// mask
+	if( canvas.GetMaskRenderTarget() ){
+		pMask = canvas.GetMaskRenderTarget()->GetTexture();
+		UpdateTransformMask();
 	}
 }
 
@@ -92,18 +105,27 @@ const deoglRCanvas &childCanvas ) :
 pFBO( parentContext.pFBO ),
 pViewportOffset( parentContext.pViewportOffset ),
 pViewportSize( parentContext.pViewportSize ),
+pRenderPlanMask( parentContext.pRenderPlanMask ),
 
-pClipFactor( parentContext.GetClipFactor() ),
+pClipFactor( parentContext.pClipFactor ),
 
 pTransform( childCanvas.GetTransform() * parentContext.pTransform ),
 pTCClampMin( 0.0f, 0.0f ),
 pTCClampMax( 1.0f, 1.0f ),
 pColorTransform( childCanvas.GetColorTransform() * parentContext.pColorTransform ),
-pTransparency( childCanvas.GetTransparency() * parentContext.pTransparency )
+pTransparency( childCanvas.GetTransparency() * parentContext.pTransparency ),
+pMask( parentContext.pMask ),
+pTransformMask( parentContext.pTransformMask )
 {
 	pCalculateClipping( childCanvas.GetSize() );
 	pClipMin.SetLargest( parentContext.pClipMin );
 	pClipMax.SetSmallest( parentContext.pClipMax );
+	
+	// mask. child mask replaces parent mask. this is not correct but right now the only solution
+	if( childCanvas.GetMaskRenderTarget() ){
+		pMask = childCanvas.GetMaskRenderTarget()->GetTexture();
+		UpdateTransformMask();
+	}
 }
 
 deoglRenderCanvasContext::~deoglRenderCanvasContext(){
@@ -146,6 +168,20 @@ void deoglRenderCanvasContext::SetColorTransform( const decColorMatrix &transfor
 
 void deoglRenderCanvasContext::SetTransparency( float transparency ){
 	pTransparency = transparency;
+}
+
+void deoglRenderCanvasContext::SetMask( deoglTexture *mask ){
+	pMask = mask;
+}
+
+void deoglRenderCanvasContext::SetTransformMask( const decTexMatrix2 &transform ){
+	pTransformMask = transform;
+}
+
+void deoglRenderCanvasContext::UpdateTransformMask(){
+	pTransformMask = ( decTexMatrix2::CreateST(
+		( float )pViewportSize.x, ( float )pViewportSize.y, 0.5f, 0.5f )
+			* pTransform ).Invert().ToTexMatrix2();
 }
 
 

@@ -33,7 +33,7 @@ class deoglSPBlockUBO;
 class deoglShaderProgram;
 class deoglShadowMapper;
 class deoglRTRenderers;
-
+class deoglRenderPlanMasked;
 
 
 /**
@@ -44,8 +44,10 @@ public:
 	struct sShadowDepthMaps{
 		deoglCubeMap *shadow1Solid;
 		deoglCubeMap *shadow1Transp;
+		deoglCubeMap *shadow1TranspColor;
 		deoglCubeMap *shadow2Solid;
 		deoglCubeMap *shadow2Transp;
+		deoglCubeMap *shadow2TranspColor;
 		deoglCubeMap *shadow1Ambient;
 		deoglCubeMap *shadow2Ambient;
 		
@@ -84,7 +86,6 @@ private:
 	
 	deoglDebugInformation *pDebugInfoSolidDetail;
 	deoglDebugInformation *pDebugInfoSolidShadow;
-	deoglDebugInformation *pDebugInfoSolidShadowVBOs;
 	deoglDebugInformation *pDebugInfoSolidShadowClear;
 	deoglDebugInformation *pDebugInfoSolidShadowClearTransp;
 	deoglDebugInformation *pDebugInfoSolidShadowFace;
@@ -98,7 +99,6 @@ private:
 	
 	deoglDebugInformation *pDebugInfoTransparentDetail;
 	deoglDebugInformation *pDebugInfoTransparentShadow;
-	deoglDebugInformation *pDebugInfoTransparentShadowVBOs;
 	deoglDebugInformation *pDebugInfoTransparentShadowClear;
 	deoglDebugInformation *pDebugInfoTransparentShadowClearTransp;
 	deoglDebugInformation *pDebugInfoTransparentShadowFace;
@@ -130,10 +130,15 @@ public:
 	void CalculateBoxBoundary( deoglRLight &light );
 	
 	/** \brief Renders lights. */
-	void RenderLights( deoglRenderPlan &plan, bool solid );
+	void RenderLights( deoglRenderPlan &plan, bool solid, const deoglRenderPlanMasked *mask );
 	
 	/** \brief Render point light. */
-	void RenderLight( deoglRenderPlan &plan, bool solid, deoglRLight &light );
+	void RenderLight( deoglRenderPlan &plan, bool solid, const deoglRenderPlanMasked *mask,
+		deoglCollideListLight &cllight );
+	
+	/** \brief Activate textures for lighting. */
+	void ActivateTextures( deoglRLight &light, deoglLightShader &shader,
+		const sShadowDepthMaps &shadowDepthMaps );
 	
 	/** \brief Render shadows for a point light. */
 	void RenderShadows( deoglRenderPlan &plan, bool solid, deoglRLight &light,
@@ -160,7 +165,7 @@ public:
 	
 	/** \brief Update instance shader parameter block. */
 	void UpdateInstanceParamBlock( deoglLightShader &lightShader, deoglSPBlockUBO &paramBlock,
-		deoglRenderPlan &plan, deoglRLight &light, sShadowDepthMaps &shadowDepthMaps );
+		deoglRenderPlan &plan, deoglCollideListLight &cllight, sShadowDepthMaps &shadowDepthMaps );
 	
 	
 	

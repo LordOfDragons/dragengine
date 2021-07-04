@@ -35,7 +35,12 @@ pin Dragengine.Scenery
  * assume to interact properly with this element. The ECBehaviorOccupier behavior provides
  * support to claim such interaction spots.
  * 
- * Element class properties have the prefix "occupier.".
+ * Usually an element has one instance of ECBehaviorOccupier but it is possible to use
+ * multiple instance for example to track different interacions. Think of a chair the
+ * actor can sit down upon. The actor can use one occupier to track sitting on the chair
+ * while using another occupier to track interacting with something while being seated.
+ * 
+ * Element class properties have the prefix "occupier{(id)}.".
  * 
  * This behavior uses no other behaviors.
  * 
@@ -231,7 +236,11 @@ class ECBehaviorOccupier extends DefaultECBehavior
 	end
 	
 	/** \brief Create behavior element class. */
-	public func new( BehaviorElementClass eclass, String prefix ) super( eclass )
+	public func new( BehaviorElementClass eclass, String id ) \
+	this( eclass, id, id.empty() if "occupier." else "occupier(" + id + ")." )
+	end
+	
+	public func new( BehaviorElementClass eclass, String id, String prefix ) super( eclass, id )
 		if this.getBehaviorIn( eclass ) != null
 			throw BEMultipleInstanceException.new( eclass, this )
 		end
@@ -294,8 +303,8 @@ class ECBehaviorOccupier extends DefaultECBehavior
 	 * of type ECBehaviorComponent.
 	 */
 	static public func ECBehaviorOccupier getBehaviorIn( BehaviorElementClass eclass )
-		return eclass.findBehavior( block ECBehavior each
-			return each castable ECBehaviorOccupier
+		return eclass.findBehavior( block ECBehaviorOccupier each
+			return true
 		end ) cast ECBehaviorOccupier
 	end
 	
@@ -307,8 +316,7 @@ class ECBehaviorOccupier extends DefaultECBehavior
 	 */
 	static public func ECBehaviorOccupier getBehaviorIn( BehaviorElementClass eclass, String id )
 		return eclass.findBehavior( block ECBehaviorOccupier each
-			return each castable ECBehaviorOccupier and \
-				( each cast ECBehaviorOccupier ).getID().equals( id )
+			return each.getID().equals( id )
 		end ) cast ECBehaviorOccupier
 	end
 	
@@ -319,13 +327,9 @@ class ECBehaviorOccupier extends DefaultECBehavior
 	 * been created in the element.
 	 */
 	static public func Array getAllBehaviorsIn( BehaviorElementClass eclass )
-		var Array list = Array.new()
-		eclass.forEachBehavior( block ECBehavior each
-			if each castable ECBehaviorOccupier
-				list.add( each )
-			end
+		return eclass.collectBehaviors( block ECBehaviorOccupier each
+			return true
 		end )
-		return list
 	end
 	
 	
@@ -338,8 +342,8 @@ class ECBehaviorOccupier extends DefaultECBehavior
 	 * the first instance.
 	 */
 	static public func Instance getInstanceIn( BehaviorElement element )
-		return element.findInstance( block ECBehaviorInstance each
-			return each castable Instance
+		return element.findInstance( block Instance each
+			return true
 		end ) cast Instance
 	end
 	
@@ -350,9 +354,8 @@ class ECBehaviorOccupier extends DefaultECBehavior
 	 * of type ECBehaviorOccupier.Instance with specific identifier.
 	 */
 	static public func Instance getInstanceIn( BehaviorElement element, String id )
-		return element.findInstance( block ECBehaviorInstance each
-			return each castable Instance and \
-				( each cast Instance ).getECBehavior().getID().equals( id )
+		return element.findInstance( block Instance each
+			return each.getECBehavior().getID().equals( id )
 		end ) cast Instance
 	end
 	
@@ -363,13 +366,9 @@ class ECBehaviorOccupier extends DefaultECBehavior
 	 * been created in the element.
 	 */
 	static public func Array getAllInstancesIn( BehaviorElement element )
-		var Array list = Array.new()
-		element.forEachInstance( block ECBehaviorInstance each
-			if each castable Instance
-				list.add( each )
-			end
+		return element.collectInstances( block Instance each
+			return true
 		end )
-		return list
 	end
 	
 	

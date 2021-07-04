@@ -23,6 +23,9 @@
 #define _DEOGLRRTFRAMEBUFFER_H_
 
 #include "../deoglBasics.h"
+#include "../framebuffer/deoglFramebuffer.h"
+#include "../framebuffer/deoglFramebufferManager.h"
+#include "../texture/deoglRenderbuffer.h"
 
 class deoglFramebuffer;
 class deoglFramebufferManager;
@@ -31,26 +34,31 @@ class deoglRenderThread;
 
 
 /**
- * \brief Render thread framebuffer related objects.
+ * Render thread framebuffer related objects.
  */
 class deoglRTFramebuffer{
 private:
-	deoglFramebufferManager *pManager;
+	deoglFramebufferManager pManager;
 	
-	deoglFramebuffer *pPrimary;
 	deoglFramebuffer *pActive;
 	
-	deoglFramebuffer *pEnvMap;
+	deoglFramebuffer pPrimary;
+	
+	deoglRenderbuffer pDummyRenderBuffer;
+	deoglFramebuffer pDummy;
+	
+	deoglFramebuffer pEnvMap;
+	deoglFramebuffer pEnvMapMaterial;
 	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create render thread framebuffer related object. */
+	/** Create render thread framebuffer related object. */
 	deoglRTFramebuffer( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up render thread framebuffer related object. */
+	/** Clean up render thread framebuffer related object. */
 	virtual ~deoglRTFramebuffer();
 	/*@}*/
 	
@@ -58,20 +66,33 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Framebuffer manager. */
-	inline deoglFramebufferManager &GetManager() const{ return *pManager; }
+	/** Framebuffer manager. */
+	inline deoglFramebufferManager &GetManager(){ return pManager; }
+	inline const deoglFramebufferManager &GetManager() const{ return pManager; }
 	
-	/** \brief Primary framebuffer. */
-	inline deoglFramebuffer *GetPrimary() const{ return pPrimary; }
+	/** Primary framebuffer. */
+	inline deoglFramebuffer &GetPrimary(){ return pPrimary; }
+	inline const deoglFramebuffer &GetPrimary() const{ return pPrimary; }
 	
-	/** \brief Active framebuffer. */
+	/** Active framebuffer. */
 	inline deoglFramebuffer *GetActive() const{ return pActive; }
 	
-	/** \brief Activate framebuffer or \em NULL to activate the primary framebuffer. */
+	/** Activate framebuffer or \em NULL to activate the primary framebuffer. */
 	void Activate( deoglFramebuffer *framebuffer );
 	
-	/** \brief Environment map framebuffer. */
-	inline deoglFramebuffer *GetEnvMap() const{ return pEnvMap; }
+	/** Dummy framebuffer for use by transform feedback with discard enabled. */
+	inline const deoglFramebuffer &GetDummy() const{ return pDummy; }
+	
+	/** Activate dummy framebuffer for use by transform feedback with discard enabled. */
+	void ActivateDummy();
+	
+	/** Environment map framebuffer. */
+	inline deoglFramebuffer &GetEnvMap(){ return pEnvMap; }
+	inline const deoglFramebuffer &GetEnvMap() const{ return pEnvMap; }
+	
+	/** Environment material map framebuffer. */
+	inline deoglFramebuffer &GetEnvMapMaterial(){ return pEnvMapMaterial; }
+	inline const deoglFramebuffer &GetEnvMapMaterial() const{ return pEnvMapMaterial; }
 	/*@}*/
 	
 private:

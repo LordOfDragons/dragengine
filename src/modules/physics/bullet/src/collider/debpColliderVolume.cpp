@@ -1346,10 +1346,7 @@ void debpColliderVolume::pUpdateStaticCollisionTest(){
 	
 	try{
 		if( pColliderVolume.GetShapes().GetCount() > 0 ){
-			pStaticCollisionTestShape = pCreateBPShape();
-			if( pStaticCollisionTestShape ){
-				pStaticCollisionTestShape->AddReference();
-			}
+			pStaticCollisionTestShape = pCreateBPShape(); // take over reference
 		}
 		
 		if( pStaticCollisionTestShape->GetShape() ){
@@ -1429,7 +1426,7 @@ void debpColliderVolume::pUpdateBPShape(){
 	debpBulletShape *shape = NULL;
 	try{
 		if( pColliderVolume.GetShapes().GetCount() > 0 ){
-			shape = pCreateBPShape();
+			shape = pCreateBPShape(); // take over reference
 		}
 		pPhyBody->SetShape( shape );
 		if( shape ){

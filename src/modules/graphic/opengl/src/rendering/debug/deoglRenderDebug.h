@@ -31,14 +31,22 @@ class deoglRenderPlan;
 class deoglShaderProgram;
 class deoglTexture;
 class deoglDebugFont;
+class deoglDynamicTBOFloat32;
+class deoglDynamicTBOFloat8;
 
 
 
 /**
- * \brief Debug rendering helper.
+ * Debug rendering helper.
  */
 class deoglRenderDebug : public deoglRenderBase{
 private:
+	struct sVBODataGlyph{
+		decVector2 position;
+		decVector2 texCoord;
+		decColor color;
+	};
+	
 	deoglShaderProgram *pShaderXRay;
 	deoglShaderProgram *pShaderSolid;
 	
@@ -48,19 +56,26 @@ private:
 	deoglShaderProgram *pShaderOutTexLayer;
 	deoglShaderProgram *pShaderOutArrTex;
 	
+	deoglShaderProgram *pShaderRenderText;
 	deoglShaderProgram *pShaderRectangle;
 	
 	deoglDebugFont *pDebugFont;
+	
+	deoglDynamicTBOFloat32 *pTBORenderText1;
+	deoglDynamicTBOFloat8 *pTBORenderText2;
+	
+	deoglDynamicTBOFloat32 *pTBORenderRectangle1;
+	deoglDynamicTBOFloat8 *pTBORenderRectangle2;
 	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create renderer. */
+	/** Create renderer. */
 	deoglRenderDebug( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up renderer. */
+	/** Clean up renderer. */
 	virtual ~deoglRenderDebug();
 	/*@}*/
 	
@@ -68,35 +83,49 @@ public:
 	
 	/** \name Rendering */
 	/*@{*/
-	/** \brief Debug font. */
+	/** Debug font. */
 	inline deoglDebugFont &GetDebugFont() const{ return *pDebugFont; }
 	
 	
 	
-	/** \brief Display texture. */
+	/** Display texture. */
 	void DisplayTexture( deoglRenderPlan &plan, deoglTexture *texture, bool gammaCorrect );
 	
-	/** \brief Display texture level. */
+	/** Display texture level. */
 	void DisplayTextureLevel( deoglRenderPlan &plan, deoglTexture *texture, int level, bool gammaCorrect );
 	
-	/** \brief Display array texture layer. */
+	/** Display array texture layer. */
 	void DisplayArrayTextureLayer( deoglRenderPlan &plan, deoglArrayTexture *texture, int layer, bool gammaCorrect );
 	
 	
 	
-	/** \brief Render component static information as colored boxes. */
+	/** Render component static information as colored boxes. */
 	void RenderComponentsStatic( sRenderParameters &params );
 	
-	/** \brief Render component using a colored box using the component extends. */
+	/** Render component using a colored box using the component extends. */
 	void RenderComponentBox( sRenderParameters &params, deoglRComponent &component, const decColor &color );
 	
 	
 	
-	/** \brief Render text using the debug font. */
-	void RenderText( deoglRenderPlan &plan, const char *text, int x, int y, const decColor &color );
+	/** Begin render text. */
+	void BeginRenderText();
 	
-	/** \brief Render filled rectangle. */
-	void RenderRectangle( deoglRenderPlan &plan, int x1, int y1, int x2, int y2, const decColor &color );
+	/** Add rendered text to TBO. */
+	void AddRenderText( deoglRenderPlan &plan, const char *text, int x, int y, const decColor &color );
+	
+	/** Finish render text. */
+	void EndRenderText();
+	
+	
+	
+	/** Begin render filled rectangle. */
+	void BeginRenderRectangle();
+	
+	/** Add rendered filled rectangle to TBO. */
+	void AddRenderRectangle( deoglRenderPlan &plan, int x1, int y1, int x2, int y2, const decColor &color );
+	
+	/** Finish render filled rectangle. */
+	void EndRenderRectangle();
 	/*@}*/
 	
 	

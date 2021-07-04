@@ -73,6 +73,8 @@ public:
 		decString cameraShot1, cameraShot2;
 		decString target1, target2;
 		decString snippet;
+		float delayCameraShot, delayActorSpeak;
+		float scaleActorSpeak;
 	};
 	
 	/** \brief Layer masks. */

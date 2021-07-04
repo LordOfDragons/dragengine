@@ -24,6 +24,7 @@
 
 #include "deoglDSRenderable.h"
 
+class deoglImage;
 class deDSRenderableImage;
 class deoglRDSRenderableImage;
 
@@ -36,6 +37,7 @@ class deoglDSRenderableImage : public deoglDSRenderable{
 public:
 	const deDSRenderableImage &pRenderableImage;
 	deoglRDSRenderableImage *pRRenderableImage;
+	deoglImage *pImage;
 	bool pDirty;
 	
 public:

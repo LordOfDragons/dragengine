@@ -9,10 +9,6 @@
 #include "v130/shared/defren/skin/ubo_instance_parameters.glsl"
 #include "v130/shared/defren/skin/ubo_dynamic_parameters.glsl"
 
-#ifdef NODE_FRAGMENT_UNIFORMS
-NODE_FRAGMENT_UNIFORMS
-#endif
-
 
 
 // Samplers
@@ -96,14 +92,18 @@ NODE_FRAGMENT_SAMPLERS
 #ifdef FADEOUT_RANGE
 	in float vFadeZ;
 #endif
+
 #ifdef SHARED_SPB
 	flat in int vSPBIndex;
 	#define spbIndex vSPBIndex
 	#include "v130/shared/defren/skin/shared_spb_redirect.glsl"
 #endif
-#ifdef NODE_FRAGMENT_INPUTS
-NODE_FRAGMENT_INPUTS
+
+#ifdef GS_RENDER_CASCADED
+	flat in int vLayer;
 #endif
+
+#include "v130/shared/defren/skin/shared_spb_texture_redirect.glsl"
 
 
 
@@ -167,13 +167,6 @@ vec3 finalEmissivityIntensity( in vec3 intensity ){
 //////////////////
 
 void main( void ){
-	// discard fragments beyond render range
-	#ifdef FADEOUT_RANGE
-		if( vFadeZ > pFadeRange.y ){
-			discard;
-		}
-	#endif
-	
 	// calculate depth if non-projective depth is used. this has to be done before any branching
 	// because derivatives become undefined otherwise.
 	#ifdef DEPTH_ORTHOGONAL
@@ -186,6 +179,13 @@ void main( void ){
 		gl_FragDepth = depth;
 	#endif
 	
+	// discard fragments beyond render range
+	#ifdef FADEOUT_RANGE
+		if( vFadeZ > pFadeRange.y ){
+			discard;
+		}
+	#endif
+	
 	#ifdef DEPTH_OFFSET
 		/*if( gl_FrontFacing ){
 			gl_FragDepth += length( depthDeriv ) * pDepthOffset.x + pDepthOffset.y;
@@ -193,7 +193,12 @@ void main( void ){
 		}else{
 			gl_FragDepth += length( depthDeriv ) * pDepthOffset.z + pDepthOffset.w;
 		}*/
-		vec2 depthOffset = mix( pDepthOffset.zw, pDepthOffset.xy, bvec2( gl_FrontFacing || pDoubleSided ) ); // mix( if-false, if-true, condition )
+		#ifdef GS_RENDER_CASCADED
+			vec2 depthOffset = mix( pDepthOffset[ vLayer ].zw, pDepthOffset[ vLayer ].xy,
+				bvec2( gl_FrontFacing || pDoubleSided ) ); // mix( if-false, if-true, condition )
+		#else
+			vec2 depthOffset = mix( pDepthOffset.zw, pDepthOffset.xy, bvec2( gl_FrontFacing || pDoubleSided ) ); // mix( if-false, if-true, condition )
+		#endif
 		gl_FragDepth += length( depthDeriv ) * depthOffset.x + depthOffset.y;
 	#endif
 	

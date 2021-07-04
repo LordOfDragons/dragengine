@@ -71,7 +71,7 @@ in vec3 vTESNormal[];
 // Outputs
 ////////////
 
-#ifdef GS_RENDER_CUBE
+#if defined GS_RENDER_CUBE || defined GS_RENDER_CASCADED
 	out vec2 vGSTCColor;
 	#define vTCColor vGSTCColor
 	#ifdef TEXTURE_NORMAL

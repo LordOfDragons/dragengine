@@ -416,6 +416,12 @@ void deNetworkBasic::FindPublicAddresses( decStringList &list ){
 			if( ! inet_ntop( AF_INET, &saddr, bufferIP, 16 ) ){
 				continue;
 			}
+			
+			if( strcmp( bufferIP, "127.0.0.1" ) == 0 ){
+				continue; // ignore localhost
+			}
+			
+			LogInfoFormat( "Found public address: %s", bufferIP );
 			list.Add( bufferIP );
 			// ifr.ifr_name  => device name
 		}
@@ -471,6 +477,13 @@ void deNetworkBasic::FindPublicAddresses( decStringList &list ){
 				pAdapter = pAdapter->Next;
 				continue;
 			}
+			
+			if( strcmp( pAdapter->IpAddressList.IpAddress.String, "127.0.0.1" ) == 0 ){
+				pAdapter = pAdapter->Next;
+				continue; // ignore localhost
+			}
+			
+			LogInfoFormat( "Found public address: %s", pAdapter->IpAddressList.IpAddress.String );
 			
 			list.Add( pAdapter->IpAddressList.IpAddress.String );
 			// pAdapter->AdapterName  => device name

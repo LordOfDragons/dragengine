@@ -19,22 +19,21 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-// include only once
 #ifndef _DEDSRESOURCELOADERTASK_H_
 #define _DEDSRESOURCELOADERTASK_H_
 
 #include "dedsResourceLoader.h"
 
-// predefinitions
+#include <dragengine/common/string/decString.h>
+
 class deFileResource;
 class dsValue;
 class dsRealObject;
 class deScriptingDragonScript;
 
 
-
 /**
- * @brief DragonScript Resource Loader Wrapper Task.
+ * \brief DragonScript Resource Loader Wrapper Task.
  *
  * Task for the wrapper around the engine resource loader. Stores for each request the script listeners.
  */
@@ -42,15 +41,17 @@ class dedsResourceLoaderTask{
 private:
 	deScriptingDragonScript *pDS;
 	
-	char *pFilename;
+	decString pFilename;
 	deResourceLoader::eResourceType pResourceType;
 	
 	dsValue **pListeners;
 	int pListenerCount;
 	int pListenerSize;
 	
+	
+	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new task. */
 	dedsResourceLoaderTask( deScriptingDragonScript *ds, const char *filename,
@@ -59,10 +60,10 @@ public:
 	~dedsResourceLoaderTask();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the filename. */
-	inline const char *GetFilename() const{ return ( const char * )pFilename; }
+	inline const decString &GetFilename() const{ return pFilename; }
 	/** Retrieves the resource type. */
 	inline deResourceLoader::eResourceType GetResourceType() const{ return pResourceType; }
 	/** Determines if this task matches the given filename/resourceType. */

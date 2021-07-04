@@ -54,26 +54,22 @@ pValueOwner( NULL )
 }
 
 dedsSpeaker::~dedsSpeaker(){
+	if( ! pValueOwner ){
+		return;
+	}
+	
 	// check if the speaker resource is in progress of being deleted. if this is not
 	// the case we can end up re-entering this destructor due to the speaker resource
 	// being deleted due to links breaking while freeing the value. if this is the
 	// case delay the deletion until a safe time
 	if( pSpeaker && pSpeaker->GetRefCount() > 0 ){
-		if( pValueOwner ){
-			if( pValueOwner->GetRealObject() ){
-				pDS.AddValueDeleteLater( pValueOwner );
-			}
-			pValueOwner = NULL;
-		}
+		pDS.AddValueDeleteLater( pValueOwner );
 		
 	}else{
-		if( pValueOwner ){
-			if( pValueOwner->GetRealObject() ){
-				pDS.GetScriptEngine()->GetMainRunTime()->FreeValue( pValueOwner );
-			}
-			pValueOwner = NULL;
-		}
+		pDS.GetScriptEngine()->GetMainRunTime()->FreeValue( pValueOwner );
 	}
+	
+	pValueOwner = NULL;
 }
 
 

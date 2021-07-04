@@ -45,6 +45,7 @@
 #include <deigde/gui/igdeTextArea.h>
 #include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/igdeComboBoxFilter.h>
+#include <deigde/gui/igdeWindow.h>
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/composed/igdeEditPath.h>
 #include <deigde/gui/composed/igdeEditPathListener.h>
@@ -81,7 +82,7 @@ public:
 		}
 		
 		if( pPanel.GetGameDefinition()->GetSkins().HasWithPath( editPath->GetPath() ) ){
-			igdeCommonDialogs::Information( &pPanel, "Change skin emitter path",
+			igdeCommonDialogs::Information( pPanel.GetParentWindow(), "Change skin emitter path",
 				"A skin emitter with this path exists already." );
 			editPath->SetPath( skin->GetPath() );
 			return;

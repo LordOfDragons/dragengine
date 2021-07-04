@@ -34,19 +34,21 @@ class deoglDebugInformation;
 class deoglRenderWorldInfo : public deoglRenderBase{
 public:
 	deoglDebugInformation *infoWorld;
-	deoglDebugInformation *infoPrepare;
 	deoglDebugInformation *infoPassMasked;
+	deoglDebugInformation *infoGITraceRays;
 	deoglDebugInformation *infoSolidGeometry;
 	deoglDebugInformation *infoReflection;
 	deoglDebugInformation *infoSSR;
+	deoglDebugInformation *infoLuminancePrepare;
 	deoglDebugInformation *infoSolidGeometryLights;
 	deoglDebugInformation *infoTransparent;
 	deoglDebugInformation *infoToneMapping;
 	deoglDebugInformation *infoDebugDrawers;
 	deoglDebugInformation *infoPostProcessing;
+	deoglDebugInformation *infoDeveloperMode;
+	deoglDebugInformation *infoDeveloperModeTemp;
 	
 	deoglDebugInformation *infoSolidGeometryDetails;
-	deoglDebugInformation *infoSolidGeometryClear;
 	deoglDebugInformation *infoSolidGeometryDepthTask;
 	deoglDebugInformation *infoSolidGeometryDepthRender;
 	deoglDebugInformation *infoSolidGeometryOcclusion;

@@ -56,7 +56,8 @@ pSkinStateController( NULL ),
 pSkin( NULL ),
 pDynamicSkin( NULL ),
 
-pDirtyTexture( true )
+pDirtyTexture( true ),
+pDynamicSkinRenderablesChanged( true )
 {
 	try{
 		pRTexture = new deoglRComponentTexture( *component.GetRComponent(), index );
@@ -102,7 +103,7 @@ void deoglComponentTexture::SyncToRender(){
 		// other stuff
 		pRTexture->SetTransform( texture.GetTransform() );
 		
-		pRTexture->UpdateSkinState();
+		pRTexture->UpdateSkinState( pComponent );
 		
 		InitSkinState();
 		
@@ -110,6 +111,10 @@ void deoglComponentTexture::SyncToRender(){
 	}
 	
 	pSkinStateController->SyncToRender();
+}
+
+void deoglComponentTexture::SetDynamicSkinRenderablesChanged( bool changed ){
+	pDynamicSkinRenderablesChanged = changed;
 }
 
 
@@ -131,11 +136,31 @@ void deoglComponentTexture::AdvanceTime( float timeStep ){
 	pSkinStateController->AdvanceTime( timeStep );
 }
 
-void deoglComponentTexture::PrepareSkinStateRenderables(){
-}
-
 void deoglComponentTexture::ClearSkinStateController(){
 	pSkinStateController->Clear();
+}
+
+
+
+// Dynamic skin listener
+//////////////////////////
+
+void deoglComponentTexture::DynamicSkinDestroyed(){
+	pDynamicSkin = NULL;
+}
+
+void deoglComponentTexture::DynamicSkinRenderablesChanged(){
+	pDynamicSkinRenderablesChanged = true;
+	pComponent.TextureDynamicSkinRenderableChanged();
+}
+
+void deoglComponentTexture::DynamicSkinRenderableChanged( deoglDSRenderable& ){
+	pDynamicSkinRenderablesChanged = true;
+	pComponent.TextureDynamicSkinRenderableChanged();
+}
+
+void deoglComponentTexture::DynamicSkinRenderableRequiresSync( deoglDSRenderable& ){
+	pComponent.TextureDynamicSkinRequiresSync();
 }
 
 
@@ -145,31 +170,37 @@ void deoglComponentTexture::ClearSkinStateController(){
 
 void deoglComponentTexture::TextureChanged( const deComponentTexture &texture ){
 	// skin
+	deoglSkin *skin = NULL;
 	if( texture.GetSkin() ){
-		pSkin = ( deoglSkin* )texture.GetSkin()->GetPeerGraphic();
-		
-	}else{
-		pSkin = NULL;
+		skin = ( deoglSkin* )texture.GetSkin()->GetPeerGraphic();
+	}
+	
+	if( skin != pSkin ){
+		pSkin = skin;
+		pComponent.DirtyTextureUseSkin();
 	}
 	
 	// dynamic skin
-	if( pDynamicSkin ){
-		pDynamicSkin->GetNotifyComponentTextures().Remove( this );
+	deoglDynamicSkin *dynamicSkin = NULL;
+	if( texture.GetDynamicSkin() ){
+		dynamicSkin = ( deoglDynamicSkin* )texture.GetDynamicSkin()->GetPeerGraphic();
 	}
 	
-	if( texture.GetDynamicSkin() ){
-		pDynamicSkin = ( deoglDynamicSkin* )texture.GetDynamicSkin()->GetPeerGraphic();
-		pDynamicSkin->GetNotifyComponentTextures().Add( this );
+	if( dynamicSkin != pDynamicSkin ){
+		if( pDynamicSkin ){
+			pDynamicSkin->RemoveListener( this );
+		}
 		
-	}else{
-		pDynamicSkin = NULL;
+		pDynamicSkin = dynamicSkin;
+		
+		if( dynamicSkin ){
+			dynamicSkin->AddListener( this );
+		}
+		
+		pComponent.DirtyTextureUseSkin();
 	}
 	
 	pDirtyTexture = true;
-}
-
-void deoglComponentTexture::DropDynamicSkin(){
-	pDynamicSkin = NULL;
 }
 
 
@@ -187,6 +218,6 @@ void deoglComponentTexture::pCleanUp(){
 	}
 	
 	if( pDynamicSkin ){
-		pDynamicSkin->GetNotifyComponentTextures().Remove( this );
+		pDynamicSkin->RemoveListener( this );
 	}
 }

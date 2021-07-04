@@ -15,7 +15,7 @@ elif envModule['OSWindows']:
 	libs.append( [ 'gdi32', 'kernel32', 'user32', 'wsock32', 'iphlpapi' ] )
 
 # fetch values in expanded form for later use
-versionString = '1.3'
+versionString = '1.5'
 if envModule['force_version']:
 	versionString = envModule['force_version']
 

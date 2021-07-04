@@ -299,7 +299,7 @@ void deoalASpeaker::PrepareProcessAudio(){
 	pCheckStillSourceOwner();
 	if( ! pSource ){
 		if( pPlayState == deSpeaker::epsPlaying ){
-			// there ware two ways to handle this.
+			// there are two ways to handle this.
 			// 
 			// the first way is the precise way by advancing the sample offset. this is accurate
 			// and ensures sound continues while not audible. this allows a player to drop in on
@@ -1375,7 +1375,13 @@ void deoalASpeaker::pUpdateAttenuatedGain(){
 	const decDVector &microphonePos = pAudioThread.GetActiveMicrophone()->GetPosition();
 	const float distance = ( float )( microphonePos - pPosition ).Length();
 	
-	float gainMultiplier = decMath::linearStep( distance, pAttenuationRefDist, pRange, 1.0f, 0.0f );
+// 	float gainMultiplier = decMath::linearStep( distance, pAttenuationRefDist, pRange, 1.0f, 0.0f );
+	
+	// we use squared multiplier drop here to affect the gain more towards the range and
+	// less along the large part of the distance. this prevents the sound from getting
+	// more silent in general than it should be while still yielding the pulling to 0
+	float gainMultiplier = decMath::linearStep( distance, pAttenuationRefDist, pRange );
+	gainMultiplier = 1.0f - gainMultiplier * gainMultiplier;
 	
 	if( pEnvironment && ( ! pAudioThread.GetExtensions().GetHasEFX()
 	|| ! pAudioThread.GetConfiguration().GetEnableEFX() ) ){

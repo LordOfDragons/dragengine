@@ -140,7 +140,7 @@ void deoglFramebuffer::DecreaseUsageCount(){
 
 
 
-void deoglFramebuffer::SetAsCurrent(){
+void deoglFramebuffer::SetAsCurrent() const{
 	// if primary, pFBO is 0 which is what we need
 	OGL_CHECK( pRenderThread, pglBindFramebuffer( GL_FRAMEBUFFER, pFBO ) );
 }
@@ -418,12 +418,33 @@ deoglArrayTexture *texture, int layer, int level ){
 	}
 }
 
+void deoglFramebuffer::AttachColorRenderbuffer( int index, const deoglRenderbuffer &renderbuffer ){
+	if( pPrimary || index < 0 || index >= FBO_MAX_ATTACHMENT_COUNT ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	const GLuint image = renderbuffer.GetRenderbuffer();
+	
+	if( pAttColor[ index ].DoesNotMatch( image, eatRenderbuffer ) ){
+		DetachColorImage( index );
+		
+		OGL_CHECK( pRenderThread, pglFramebufferRenderbuffer( GL_FRAMEBUFFER,
+			GL_COLOR_ATTACHMENT0 + index, GL_RENDERBUFFER, image ) );
+		
+		pAttColor[ index ].Set( image, eatRenderbuffer );
+	}
+}
+
 void deoglFramebuffer::DetachColorImage( int index ){
 	if( pAttColor[ index ].type == eatNone ){
 		return;
 	}
 	
-	if( pglFramebufferTexture
+	if( pAttColor[ index ].type == eatRenderbuffer ){
+		OGL_CHECK( pRenderThread, pglFramebufferRenderbuffer( GL_FRAMEBUFFER,
+			GL_COLOR_ATTACHMENT0 + index, GL_RENDERBUFFER, 0 ) );
+		
+	}else if( pglFramebufferTexture
 	&& pRenderThread.GetCapabilities().GetFramebufferTextureSingle().Working() ){
 		OGL_CHECK( pRenderThread, pglFramebufferTexture( GL_FRAMEBUFFER,
 			GL_COLOR_ATTACHMENT0 + index, 0, 0 ) );
@@ -438,22 +459,7 @@ void deoglFramebuffer::DetachColorImage( int index ){
 
 void deoglFramebuffer::DetachColorImages( int startIndex ){
 	while( startIndex < FBO_MAX_ATTACHMENT_COUNT ){
-		if( pAttColor[ startIndex ].type != eatNone ){
-			if( pglFramebufferTexture
-			&& pRenderThread.GetCapabilities().GetFramebufferTextureSingle().Working() ){
-				OGL_CHECK( pRenderThread, pglFramebufferTexture( GL_FRAMEBUFFER,
-					GL_COLOR_ATTACHMENT0 + startIndex, 0, 0 ) );
-				
-			}else{
-				OGL_CHECK( pRenderThread, pglFramebufferTexture2D( GL_FRAMEBUFFER,
-					GL_COLOR_ATTACHMENT0 + startIndex,
-					targetMap[ pAttColor[ startIndex ].type ], 0, 0 ) );
-			}
-			
-			pAttColor[ startIndex ].Reset();
-		}
-		
-		startIndex++;
+		DetachColorImage( startIndex++ );
 	}
 }
 
@@ -808,7 +814,7 @@ void deoglFramebuffer::AttachStencilArrayTextureLayerLevel( deoglArrayTexture *t
 	const GLuint image = texture->GetTexture();
 	
 	if( pAttStencil.DoesNotMatch( image, eatArrayTextureLayer, level, pAttStencil.layer ) ){
-		DetachDepthImage();
+		DetachStencilImage();
 		
 		OGL_CHECK( pRenderThread, pglFramebufferTextureLayer( GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, image, level, layer ) );
 		
@@ -944,11 +950,17 @@ void deoglFramebuffer::UpdateReadWriteBuffers(){
 // Debugging
 //////////////
 
+static const char * const vAttTypeName[] = {
+	"none",
+	"texture", "texture1D", "cubeMap",
+	"cubeMapPosX", "cubeMapNegX",
+	"cubeMapPosY", "cubeMapNegY",
+	"cubeMapPosZ", "cubeMapNegZ",
+	"arrayTexture", "arrayTextureLayer",
+	"renderbuffer"
+};
+
 void deoglFramebuffer::DebugPrint( const char *prefix ){
-	const char * const attTypes[] = {
-		"eatNone", "eatTexture", "eatTexture1D", "eatRectTexture", "eatCubeMap", "eatCubeMapPosX",
-		"eatCubeMapNegX", "eatCubeMapPosY", "eatCubeMapNegY", "eatCubeMapPosZ", "eatCubeMapNegZ",
-		"eatArrayTexture", "eatArrayTextureLayer", "eatRenderbuffer" };
 	decString text;
 	int i;
 	
@@ -957,21 +969,17 @@ void deoglFramebuffer::DebugPrint( const char *prefix ){
 	
 	for( i=0; i<FBO_MAX_ATTACHMENT_COUNT; i++ ){
 		pRenderThread.GetLogger().LogInfoFormat( "- AttachmentColor%d: type=%s image=%d layer=%d level=%d",
-			i + 1, attTypes[ pAttColor[ i ].type ], pAttColor[ i ].image, pAttColor[ i ].layer, pAttColor[ i ].level );
+			i + 1, vAttTypeName[ pAttColor[ i ].type ], pAttColor[ i ].image, pAttColor[ i ].layer, pAttColor[ i ].level );
 	}
 	
 	pRenderThread.GetLogger().LogInfoFormat( "- AttachmentDepth: type=%s image=%d layer=%d level=%d",
-		attTypes[ pAttDepth.type ], pAttDepth.image, pAttDepth.layer, pAttDepth.level );
+		vAttTypeName[ pAttDepth.type ], pAttDepth.image, pAttDepth.layer, pAttDepth.level );
 	
 	pRenderThread.GetLogger().LogInfoFormat( "- AttachmentStencil: type=%s image=%d layer=%d level=%d",
-		attTypes[ pAttStencil.type ], pAttStencil.image, pAttStencil.layer, pAttStencil.level );
+		vAttTypeName[ pAttStencil.type ], pAttStencil.image, pAttStencil.layer, pAttStencil.level );
 }
 
 void deoglFramebuffer::AddConfigToTrace( deErrorTracePoint &tracePoint ){
-	const char * const attTypes[] = {
-		"eatNone", "eatTexture", "eatTexture1D", "eatRectTexture", "eatCubeMap", "eatCubeMapPosX",
-		"eatCubeMapNegX", "eatCubeMapPosY", "eatCubeMapNegY", "eatCubeMapPosZ", "eatCubeMapNegZ",
-		"eatArrayTexture", "eatArrayTextureLayer", "eatRenderbuffer" };
 	decString text;
 	int i;
 	
@@ -988,20 +996,20 @@ void deoglFramebuffer::AddConfigToTrace( deErrorTracePoint &tracePoint ){
 		
 		deErrorTraceValue &valueColor = *valueConfig.AddSubValue( text.GetString(), "<sAttachement>" );
 		
-		valueColor.AddSubValue( "type", attTypes[ pAttColor[ i ].type ] );
+		valueColor.AddSubValue( "type", vAttTypeName[ pAttColor[ i ].type ] );
 		valueColor.AddSubValueInt( "image", pAttColor[ i ].image );
 		valueColor.AddSubValueInt( "layer", pAttColor[ i ].layer );
 		valueColor.AddSubValueInt( "level", pAttColor[ i ].level );
 	}
 	
 	deErrorTraceValue &valueDepth = *valueConfig.AddSubValue( "attachmentDepth", "<sAttachement>" );
-	valueDepth.AddSubValue( "type", attTypes[ pAttDepth.type ] );
+	valueDepth.AddSubValue( "type", vAttTypeName[ pAttDepth.type ] );
 	valueDepth.AddSubValueInt( "image", pAttDepth.image );
 	valueDepth.AddSubValueInt( "layer", pAttDepth.layer );
 	valueDepth.AddSubValueInt( "level", pAttDepth.level );
 	
 	deErrorTraceValue &valueStencil = *valueConfig.AddSubValue( "attachmentStencil", "<sAttachement>" );
-	valueStencil.AddSubValue( "type", attTypes[ pAttStencil.type ] );
+	valueStencil.AddSubValue( "type", vAttTypeName[ pAttStencil.type ] );
 	valueStencil.AddSubValueInt( "image", pAttStencil.image );
 	valueStencil.AddSubValueInt( "layer", pAttStencil.layer );
 	valueStencil.AddSubValueInt( "level", pAttStencil.level );

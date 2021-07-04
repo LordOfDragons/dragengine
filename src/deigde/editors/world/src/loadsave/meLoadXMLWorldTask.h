@@ -82,6 +82,7 @@ public:
 private:
 	void pCleanUp();
 	
+	void pLoadWorldEditor( const decXmlElementTag &root );
 	void pLoadObject( const decXmlElementTag &root, meObject &object );
 	void pLoadObjectTexture( const decXmlElementTag &root, meObjectTexture &texture );
 	void pLoadObjectTextureTransform( const decXmlElementTag &root, meObjectTexture &texture );

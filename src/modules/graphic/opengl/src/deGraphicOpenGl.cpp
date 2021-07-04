@@ -63,7 +63,6 @@
 #include "parameters/debug/deoglPDebugContext.h"
 #include "parameters/debug/deoglPDebugNoCulling.h"
 #include "parameters/debug/deoglPDebugShowCB.h"
-#include "parameters/debug/deoglPDebugUseShadow.h"
 #include "parameters/debug/deoglPQuickDebug.h"
 #include "parameters/debug/deoglPShowLightCB.h"
 #include "parameters/debug/deoglPOcclusionReduction.h"
@@ -77,6 +76,8 @@
 #include "parameters/defren/deoglPTranspLayerLimit.h"
 #include "parameters/defren/deoglPAsyncRenderSkipSyncTimeRatio.h"
 #include "parameters/defren/deoglPFrameRateLimit.h"
+#include "parameters/gi/deoglPGIQuality.h"
+#include "parameters/gi/deoglPGIUpdateSpeed.h"
 #include "parameters/light/deoglPLightCutOffIntensity.h"
 #include "parameters/lod/deoglPLODMaxErrorPerLevel.h"
 #include "parameters/lod/deoglPLODMaxPixelError.h"
@@ -100,17 +101,14 @@
 #include "parameters/ssao/deoglPSSAOTapCount.h"
 #include "parameters/ssao/deoglPSSAOTurnCount.h"
 #include "parameters/shadow/deoglPShadowCubePCFSize.h"
-#include "parameters/shadow/deoglPShadowCubeSize.h"
+#include "parameters/shadow/deoglPShadowQuality.h"
 #include "parameters/shadow/deoglPShadowMapOffsetBias.h"
 #include "parameters/shadow/deoglPShadowMapOffsetScale.h"
-#include "parameters/shadow/deoglPShadowMapSize.h"
 
 #include "particle/deoglParticleEmitter.h"
 #include "particle/deoglParticleEmitterInstance.h"
 
 #include "propfield/deoglPropField.h"
-
-#include "rendering/cache/deoglRenderCache.h"
 
 #include "window/deoglRenderWindow.h"
 
@@ -300,8 +298,9 @@ void deGraphicOpenGl::TerminateAppWindow(){
 // Frame Management
 /////////////////////
 
-// #include <dragengine/common/utils/decTimer.h>
+// static decTimer timerInBetween;
 void deGraphicOpenGl::RenderWindows(){
+// 		LogInfoFormat( "RenderWindows: InBetween = %d ys", (int)(timerInBetween.GetElapsedTime() * 1e6f) );
 // 	decTimer timer;
 	// wait for rendering to finish. if done asynchronously uses time history to judge if
 	// rendering is finished soon enough to wait for this event or to skip synchronization
@@ -347,6 +346,7 @@ void deGraphicOpenGl::RenderWindows(){
 	pRenderThread->Synchronize();
 // 	LogInfoFormat( "RenderWindows() %d", __LINE__ );
 // 		LogInfoFormat( "RenderWindows: RenderThread.Sync = %d ys", (int)(timer.GetElapsedTime() * 1e6f) );
+// 		timerInBetween.Reset();
 #ifdef OS_ANDROID
 	pRenderThread->DebugMemoryUsage( "deGraphicOpenGl::RenderWindows EXIT" );
 #endif
@@ -609,11 +609,13 @@ void deGraphicOpenGl::pCreateParameters() {
 	pParameters.AddParameter( new deoglPSSAOMipMapBase( *this ) );
 	pParameters.AddParameter( new deoglPSSAOTurnCount( *this ) );
 	
+	pParameters.AddParameter( new deoglPGIQuality( *this ) );
+	pParameters.AddParameter( new deoglPGIUpdateSpeed( *this ) );
+	
 	pParameters.AddParameter( new deoglPLightCutOffIntensity( *this ) );
-	pParameters.AddParameter( new deoglPShadowMapSize( *this ) );
+	pParameters.AddParameter( new deoglPShadowQuality( *this ) );
 	pParameters.AddParameter( new deoglPShadowMapOffsetScale( *this ) );
 	pParameters.AddParameter( new deoglPShadowMapOffsetBias( *this ) );
-	pParameters.AddParameter( new deoglPShadowCubeSize( *this ) );
 	pParameters.AddParameter( new deoglPShadowCubePCFSize( *this ) );
 	
 	pParameters.AddParameter( new deoglPHDRRMaximumIntensity( *this ) );
@@ -626,7 +628,6 @@ void deGraphicOpenGl::pCreateParameters() {
 	pParameters.AddParameter( new deoglPDebugContext( *this ) );
 	pParameters.AddParameter( new deoglPDebugNoCulling( *this ) );
 	pParameters.AddParameter( new deoglPDebugShowCB( *this ) );
-	pParameters.AddParameter( new deoglPDebugUseShadow( *this ) );
 	pParameters.AddParameter( new deoglPOcclusionReduction( *this ) );
 	pParameters.AddParameter( new deoglPOccTestMode( *this ) );
 	pParameters.AddParameter( new deoglPQuickDebug( *this ) );
