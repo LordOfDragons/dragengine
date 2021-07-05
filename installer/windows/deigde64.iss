@@ -31,7 +31,7 @@ Source: "unpacked\@ProgramFiles\DEIGDE\Data\*"; DestDir: "{app}\Data"; Flags: ig
 Source: "unpacked\@ProgramFiles\DEIGDE\Share\*"; DestDir: "{app}\Share"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 ; InnoSetup ignore hidden files, which seems to include .* files. Whoever had this idea should be smacked
-Source: "unpacked\@ProgramFiles\DEIGDE\Share\templates\dscriptBasic\.kdev4\*"; DestDir: "{app}\Share\templates\dscriptBasic\.kdev4"; Flags: ignoreversion recursesubdirs createallsubdirs
+;Source: "unpacked\@ProgramFiles\DEIGDE\Share\templates\dscriptBasic\.kdev4\*"; DestDir: "{app}\Share\templates\dscriptBasic\.kdev4"; Flags: ignoreversion recursesubdirs createallsubdirs
 
 [Icons]
 Name: "{group}\Drag[en]gine IGDE"; Filename: "{app}\Bin\deigde.exe"
