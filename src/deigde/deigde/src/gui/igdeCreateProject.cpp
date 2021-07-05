@@ -418,6 +418,9 @@ void igdeCreateProject::pApplyTemplate(){
 	( ( deVFSDiskDirectory& )( deVFSContainer& )container ).SetReadOnly( true );
 	pVFS->AddContainer( container );
 	
+	// create file renames
+	pCreateFileRenames();
+	
 	// create files
 	const igdeTemplateFileList &files = pTemplate->GetFiles();
 	const int fileCount = files.GetCount();
@@ -431,6 +434,13 @@ void igdeCreateProject::pApplyTemplate(){
 void igdeCreateProject::pTemplateCreateFile( const igdeTemplateFile &file ){
 	dePathList list;
 	
+	// set up replacements if present
+	decStringList replaceTokens, replaceValues;
+	pCreateFileReplacements( file, replaceTokens, replaceValues );
+	const bool hasReplacements = replaceTokens.GetCount() > 0;
+	decString renamePath;
+	
+	// find files
 	if( ! file.GetPattern().IsEmpty() ){
 		deVirtualFileSystemReference vfs;
 		vfs.TakeOver( new deVirtualFileSystem );
@@ -441,12 +451,11 @@ void igdeCreateProject::pTemplateCreateFile( const igdeTemplateFile &file ){
 		
 	}else{
 		list.Add( decPath::CreatePathUnix( file.GetPath() ) );
+		
+		if( ! file.GetPathRename().IsEmpty() ){
+			renamePath = pReplaceTokens( file.GetPathRename(), pFileRenameTokens, pFileRenameValues );
+		}
 	}
-	
-	// set up replacements if present
-	decStringList replaceTokens, replaceValues;
-	pCreateFileReplacements( file, replaceTokens, replaceValues );
-	const bool hasReplacements = replaceTokens.GetCount() > 0;
 	
 	// process files
 	const int count = list.GetCount();
@@ -455,9 +464,8 @@ void igdeCreateProject::pTemplateCreateFile( const igdeTemplateFile &file ){
 	int i;
 	
 	for( i=0; i<count; i++ ){
-		const decPath &path = list.GetAt( i );
-		
 		// read file from template
+		decPath path( list.GetAt( i ) );
 		reader.TakeOver( pVFS->OpenFileForReading( decPath::CreatePathUnix( VFS_DIR_TEMPLATE ) + path ) );
 		
 		int contentLen = reader->GetLength();
@@ -473,6 +481,10 @@ void igdeCreateProject::pTemplateCreateFile( const igdeTemplateFile &file ){
 		}
 		
 		// create project file with content
+		if( ! renamePath.IsEmpty() ){
+			path = decPath::CreatePathUnix( renamePath );
+		}
+		
 		switch( file.GetDirectory() ){
 		case igdeTemplateFile::edData:
 			writer.TakeOver( pVFS->OpenFileForWriting( decPath::CreatePathUnix( VFS_DIR_DATA ) + path ) );
@@ -491,6 +503,20 @@ void igdeCreateProject::pTemplateCreateFile( const igdeTemplateFile &file ){
 	}
 }
 
+void igdeCreateProject::pCreateFileRenames(){
+	pFileRenameTokens.Add( "{projectPathDirectory}" );
+	pFileRenameValues.Add( pNativePathProject.GetLastComponent() );
+	
+	pFileRenameTokens.Add( "{projectName}" );
+	pFileRenameValues.Add( pName );
+	
+	pFileRenameTokens.Add( "{gameId}" );
+	pFileRenameValues.Add( pGameId );
+	
+	pFileRenameTokens.Add( "{gameAliasId}" );
+	pFileRenameValues.Add( pGameAliasId );
+}
+
 void igdeCreateProject::pCreateFileReplacements( const igdeTemplateFile &file,
 decStringList &tokens, decStringList &values ){
 	const igdeTemplateReplaceList &list = file.GetReplacements();
@@ -506,6 +532,10 @@ decStringList &tokens, decStringList &values ){
 		switch( replace.GetValue() ){
 		case igdeTemplateReplace::evProjectPath:
 			value = pNativePathProject.GetPathNative();
+			break;
+			
+		case igdeTemplateReplace::evProjectPathDirectory:
+			value = pNativePathProject.GetLastComponent();
 			break;
 			
 		case igdeTemplateReplace::evDataPath:
