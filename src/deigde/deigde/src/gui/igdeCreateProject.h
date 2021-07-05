@@ -63,6 +63,9 @@ private:
 	decString pSharedGameDefContent;
 	deVirtualFileSystemReference pVFS;
 	
+	decStringList pFileRenameTokens;
+	decStringList pFileRenameValues;
+	
 	
 	
 public:
@@ -137,6 +140,7 @@ private:
 	void pStoreBaseGameDefs();
 	void pApplyTemplate();
 	void pTemplateCreateFile( const igdeTemplateFile &file );
+	void pCreateFileRenames();
 	void pCreateFileReplacements( const igdeTemplateFile &file,
 		decStringList &tokens, decStringList &values );
 	decString pEscapeStringC( const decString &string );

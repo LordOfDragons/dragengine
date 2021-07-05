@@ -65,7 +65,7 @@ void igdeLoadTemplate::Load( decBaseFileReader &reader, igdeTemplate &atemplate 
 	xmlDoc->CleanCharData();
 	
 	decXmlElementTag * const root = xmlDoc->GetRoot();
-	if( ! root || strcmp( root->GetName(), "projectTemplate" ) != 0 ){
+	if( ! root || root->GetName() != "projectTemplate" ){
 		DETHROW( deeInvalidParam );
 	}
 	
@@ -87,19 +87,19 @@ void igdeLoadTemplate::pReadTemplate( const decXmlElementTag &root, igdeTemplate
 			continue;
 		}
 		
-		if( strcmp( tag->GetName(), "name" ) == 0 ){
+		if( tag->GetName() == "name" ){
 			atemplate.SetName( GetCDataString( *tag ) );
 			
-		}else if( strcmp( tag->GetName(), "description" ) == 0 ){
+		}else if( tag->GetName() == "description" ){
 			atemplate.SetDescription( ReadMultilineString( *tag ) );
 			
-		}else if( strcmp( tag->GetName(), "scriptModule" ) == 0 ){
+		}else if( tag->GetName() == "scriptModule" ){
 			atemplate.SetScriptModule( GetCDataString( *tag ) );
 			
-		}else if( strcmp( tag->GetName(), "baseGameDefinition" ) == 0 ){
+		}else if( tag->GetName() == "baseGameDefinition" ){
 			atemplate.GetBaseGameDefinitions().Add( GetCDataString( *tag ) );
 			
-		}else if( strcmp( tag->GetName(), "file" ) == 0 ){
+		}else if( tag->GetName() == "file" ){
 			igdeTemplateFile *file = NULL;
 			
 			try{
@@ -131,13 +131,16 @@ void igdeLoadTemplate::pReadFile( const decXmlElementTag &root, igdeTemplateFile
 			continue;
 		}
 		
-		if( strcmp( tag->GetName(), "path" ) == 0 ){
+		if( tag->GetName() == "path" ){
 			file.SetPath( GetCDataString( *tag ) );
 			
-		}else if( strcmp( tag->GetName(), "pattern" ) == 0 ){
+		}else if( tag->GetName() == "pathRename" ){
+			file.SetPathRename( GetCDataString( *tag ) );
+			
+		}else if( tag->GetName() == "pattern" ){
 			file.SetPattern( GetCDataString( *tag ) );
 			
-		}else if( strcmp( tag->GetName(), "directory" ) == 0 ){
+		}else if( tag->GetName() == "directory" ){
 			const decString directory( GetCDataString( *tag ) );
 			
 			if( directory == "data" ){
@@ -150,7 +153,7 @@ void igdeLoadTemplate::pReadFile( const decXmlElementTag &root, igdeTemplateFile
 				LogWarnUnknownValue( *tag, directory );
 			}
 			
-		}else if( strcmp( tag->GetName(), "replace" ) == 0 ){
+		}else if( tag->GetName() == "replace" ){
 			igdeTemplateReplace *replace = NULL;
 			
 			try{
@@ -182,14 +185,17 @@ void igdeLoadTemplate::pReadReplace( const decXmlElementTag &root, igdeTemplateR
 			continue;
 		}
 		
-		if( strcmp( tag->GetName(), "token" ) == 0 ){
+		if( tag->GetName() == "token" ){
 			replace.SetToken( GetCDataString( *tag ) );
 			
-		}else if( strcmp( tag->GetName(), "value" ) == 0 ){
+		}else if( tag->GetName() == "value" ){
 			const decString value( GetCDataString( *tag ) );
 			
 			if( value == "projectPath" ){
 				replace.SetValue( igdeTemplateReplace::evProjectPath );
+				
+			}else if( value == "projectPathDirectory" ){
+				replace.SetValue( igdeTemplateReplace::evProjectPathDirectory );
 				
 			}else if( value == "dataPath" ){
 				replace.SetValue( igdeTemplateReplace::evDataPath );
@@ -210,7 +216,7 @@ void igdeLoadTemplate::pReadReplace( const decXmlElementTag &root, igdeTemplateR
 				LogWarnUnknownValue( *tag, value );
 			}
 			
-		}else if( strcmp( tag->GetName(), "format" ) == 0 ){
+		}else if( tag->GetName() == "format" ){
 			const decString format( GetCDataString( *tag ) );
 			
 			if( format == "text" ){
