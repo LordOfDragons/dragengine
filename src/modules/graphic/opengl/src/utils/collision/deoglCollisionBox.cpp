@@ -1595,8 +1595,7 @@ void deoglCollisionBox::SetCenter( const decVector &center ){
 }
 
 void deoglCollisionBox::SetHalfSize( const decVector &halfSize ){
-	if( halfSize.x < -1e-6f || halfSize.y < -1e-6f || halfSize.z < -1e-6f ) DETHROW( deeInvalidParam );
-	pHalfSize = halfSize;
+	pHalfSize = decVector().Largest( halfSize );
 }
 
 void deoglCollisionBox::SetOrientation( const decQuaternion &orientation ){

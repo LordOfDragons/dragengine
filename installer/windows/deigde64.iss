@@ -1,8 +1,8 @@
 [Setup]
 AppId={{636641D2-B432-415A-AE7F-6BB0AF42A86E}
 AppName=Drag[en]gine IGDE
-AppVersion=1.4
-;AppVerName=Drag[en]gine IGDE 1.4
+AppVersion=1.5
+;AppVerName=Drag[en]gine IGDE 1.5
 AppPublisher=Dragon Dreams
 AppPublisherURL=https://dragondreams.ch
 AppSupportURL=https://dragondreams.ch
@@ -31,7 +31,7 @@ Source: "unpacked\@ProgramFiles\DEIGDE\Data\*"; DestDir: "{app}\Data"; Flags: ig
 Source: "unpacked\@ProgramFiles\DEIGDE\Share\*"; DestDir: "{app}\Share"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 ; InnoSetup ignore hidden files, which seems to include .* files. Whoever had this idea should be smacked
-Source: "unpacked\@ProgramFiles\DEIGDE\Share\templates\dscriptBasic\.kdev4\*"; DestDir: "{app}\Share\templates\dscriptBasic\.kdev4"; Flags: ignoreversion recursesubdirs createallsubdirs
+;Source: "unpacked\@ProgramFiles\DEIGDE\Share\templates\dscriptBasic\.kdev4\*"; DestDir: "{app}\Share\templates\dscriptBasic\.kdev4"; Flags: ignoreversion recursesubdirs createallsubdirs
 
 [Icons]
 Name: "{group}\Drag[en]gine IGDE"; Filename: "{app}\Bin\deigde.exe"
