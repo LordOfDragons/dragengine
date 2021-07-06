@@ -1,7 +1,12 @@
+dragengine (1.5.2-ubuntu2~ubuntu20.10-ppa1) focal; urgency=medium
+
+  * Changelog 1.5: https://dragondreams.ch/?page_id=307
+
+ -- Roland Plüss <roland@rptd.ch>  Tue, 06 Jul 2021 11:14:56 +0000
+
 dragengine (1.5.1-ubuntu2~ubuntu20.10-ppa1) focal; urgency=medium
 
-  * Added file rename support in IGDE Templares to solve problem
-    of KDevelop expecting specific project file name
+  * Changelog 1.5: https://dragondreams.ch/?page_id=307
 
  -- Roland Plüss <roland@rptd.ch>  Mon, 05 Jul 2021 18:07:54 +0000
 
