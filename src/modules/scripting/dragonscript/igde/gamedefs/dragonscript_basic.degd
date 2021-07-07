@@ -475,6 +475,7 @@
 			<description>Note.</description>
 			<type>string</type>
 		</property>
+		<partialHideTag>Editing</partialHideTag>
 		<category>Dragengine</category>
 	</class>
 	<class name='BaseSpeaker'>
