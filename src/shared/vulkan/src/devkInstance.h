@@ -23,6 +23,11 @@
 #define _DEVKINSTANCE_H_
 
 #include "devkBasics.h"
+#include "devkInstance.h"
+#include "devkDevice.h"
+
+#include <dragengine/deObject.h>
+#include <dragengine/deTObjectReference.h>
 
 class deSharedVulkan;
 
@@ -30,15 +35,22 @@ class deSharedVulkan;
 /**
  * Vulkan instance.
  */
-class devkInstance{
+class devkInstance : public deObject{
+public:
+	/** Reference. */
+	typedef deTObjectReference<devkInstance> Ref;
+	
+	
+	
 private:
 	deSharedVulkan &pVulkan;
 	
 	VkInstance pInstance;
 	
-	VkPhysicalDevice *pDevices;
-	int pDeviceCount;
+	VkPhysicalDevice *pPhysicalDevices;
+	int pPhysicalDeviceCount;
 	
+// 	VkDebugReportCallbackEXT debugReportCallback{};
 	
 	
 public:
@@ -47,16 +59,30 @@ public:
 	/** Create instance. */
 	devkInstance( deSharedVulkan &vulkan );
 	
+protected:
 	/** Clean up instance. */
-	~devkInstance();
+	virtual ~devkInstance();
 	/*@}*/
 	
 	
 	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Shared vulkan. */
 	inline deSharedVulkan &GetVulkan() const{ return pVulkan; }
+	
+	/** Count of physical devices. */
+	inline int GetPhysicalDeviceCount() const{ return pPhysicalDeviceCount; }
+	
+	/** Physical device at index. */
+	VkPhysicalDevice GetPhysicalDeviceAt( int index ) const;
+	
+	/** Create device. */
+	devkDevice::Ref CreateDevice( int index, const devkDevice::DeviceConfig &config );
+	
+	/** Create headless device for compute use only. */
+	devkDevice::Ref CreateDeviceHeadlessComputeOnly( int index );
 	/*@}*/
 	
 	

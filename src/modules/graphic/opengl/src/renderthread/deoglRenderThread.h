@@ -28,6 +28,9 @@
 #include "../memory/deoglMemoryManager.h"
 #include "../utils/deoglTimeHistory.h"
 
+#include <deSharedVulkan.h>
+#include <devkDevice.h>
+
 #include <dragengine/common/collection/decObjectOrderedSet.h>
 #include <dragengine/common/utils/decTimer.h>
 #include <dragengine/threading/deMutex.h>
@@ -66,8 +69,6 @@ class deoglRTTexture;
 class deoglRTChoices;
 
 class deRenderWindow;
-
-class deSharedVulkan;
 
 // deprecated
 class deoglEdgeFinder;
@@ -135,7 +136,9 @@ private:
 	deoglRenderTaskSharedPool *pRenderTaskSharedPool;
 	deoglRTUniqueKey *pUniqueKey;
 	deoglOcclusionTestPool *pOcclusionTestPool;
-	deSharedVulkan *pVulkan;
+	
+	deSharedVulkan::Ref pVulkan;
+	devkDevice::Ref pVulkanDevice;
 	
 	deoglTimeHistory pTimeHistoryMain;
 	deoglTimeHistory pTimeHistoryRender;
@@ -329,8 +332,13 @@ public:
 	/** Occlusion test pool. */
 	inline deoglOcclusionTestPool &GetOcclusionTestPool() const{ return *pOcclusionTestPool; }
 	
+	
+	
 	/** Vulkan if present. */
 	inline deSharedVulkan *GetVulkan() const{ return pVulkan; }
+	
+	/** Vulkan device if present. */
+	inline devkDevice *GetVulkanDevice() const{ return pVulkanDevice; }
 	
 	
 	

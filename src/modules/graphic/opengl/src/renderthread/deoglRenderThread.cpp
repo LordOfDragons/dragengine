@@ -68,8 +68,6 @@
 #include "../window/deoglRenderWindow.h"
 #include "../window/deoglRRenderWindow.h"
 
-#include <deSharedVulkan.h>
-
 #include <dragengine/deEngine.h>
 #include <dragengine/app/deOS.h>
 #include <dragengine/common/exceptions.h>
@@ -125,7 +123,6 @@ pPersistentRenderTaskPool( NULL ),
 pRenderTaskSharedPool( NULL ),
 pUniqueKey( NULL ),
 pOcclusionTestPool( NULL ),
-pVulkan( NULL ),
 
 pTimeHistoryMain( 29, 2 ),
 pTimeHistoryRender( 29, 2 ),
@@ -984,9 +981,10 @@ void deoglRenderThread::pInitThreadPhase4(){
 	pRenderers = new deoglRTRenderers( *this );
 	pDefaultTextures = new deoglRTDefaultTextures( *this );
 	
-	// load vulkan if supported
+	// load vulkan and create device if supported
 	try{
-		pVulkan = new deSharedVulkan( pOgl );
+		pVulkan.TakeOver( new deSharedVulkan( pOgl ) );
+		pVulkanDevice = pVulkan->GetInstance().CreateDeviceHeadlessComputeOnly( 0 );
 		
 	}catch( const deException &e ){
 		pLogger->LogException( e );
@@ -1990,10 +1988,8 @@ void deoglRenderThread::pCleanUpThread(){
 		pLogger->LogInfoFormat( "RT-CleanUp: destroy textures (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f) );
 		#endif
 		
-		if( pVulkan ){
-			delete pVulkan;
-			pVulkan = NULL;
-		}
+		pVulkanDevice = nullptr;
+		pVulkan = nullptr;
 		
 		if( pDebugInfoModule ){
 			pDebug->GetDebugInformationList().Remove( pDebugInfoModule );

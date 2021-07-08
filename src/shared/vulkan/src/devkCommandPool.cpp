@@ -22,26 +22,31 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "deSharedVulkan.h"
-#include "devkLoader.h"
+#include "devkCommandPool.h"
+#include "devkDevice.h"
 #include "devkInstance.h"
-#include "devkGlobalFunctions.h"
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/systems/modules/deBaseModule.h>
 
 
+// class devkCommandPool
+//////////////////////////
 
-// Class deSharedVulkan
-/////////////////////////
-
-deSharedVulkan::deSharedVulkan( deBaseModule &module ) :
-pModule( module ),
-pLoader( NULL )
+devkCommandPool::devkCommandPool( devkDevice &device, uint32_t queueFamily ) :
+pDevice( device ),
+pPool( nullptr )
 {
 	try{
-		pLoader = new devkLoader( *this );
-		pInstance.TakeOver( new devkInstance( *this ) );
+		VkCommandPoolCreateInfo info;
+		memset( &info, 0, sizeof( info ) );
+		
+		info.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
+		info.queueFamilyIndex = queueFamily;
+		info.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
+		
+		VK_CHECK( device.GetInstance().GetVulkan(),
+			device.vkCreateCommandPool( device.GetDevice(), &info, nullptr, &pPool ) );
 		
 	}catch( const deException & ){
 		pCleanUp();
@@ -49,7 +54,7 @@ pLoader( NULL )
 	}
 }
 
-deSharedVulkan::~deSharedVulkan(){
+devkCommandPool::~devkCommandPool(){
 	pCleanUp();
 }
 
@@ -60,14 +65,11 @@ deSharedVulkan::~deSharedVulkan(){
 
 
 
-
 // Private Functions
 //////////////////////
 
-void deSharedVulkan::pCleanUp(){
-	pInstance = nullptr;
-	
-	if( pLoader ){
-		delete pLoader;
+void devkCommandPool::pCleanUp(){
+	if( pPool ){
+		pDevice.vkDestroyCommandPool( pDevice.GetDevice(), pPool, nullptr );
 	}
 }

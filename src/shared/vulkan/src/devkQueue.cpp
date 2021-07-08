@@ -22,26 +22,25 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "deSharedVulkan.h"
-#include "devkLoader.h"
-#include "devkInstance.h"
-#include "devkGlobalFunctions.h"
+#include "devkQueue.h"
+#include "devkDevice.h"
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/systems/modules/deBaseModule.h>
 
 
+// class devkQueue
+////////////////////
 
-// Class deSharedVulkan
-/////////////////////////
-
-deSharedVulkan::deSharedVulkan( deBaseModule &module ) :
-pModule( module ),
-pLoader( NULL )
+devkQueue::devkQueue( devkDevice &device, VkQueue queue ) :
+pDevice( device ),
+pQueue( queue )
 {
+	if( ! queue ){
+		DETHROW( deeInvalidParam );
+	}
+	
 	try{
-		pLoader = new devkLoader( *this );
-		pInstance.TakeOver( new devkInstance( *this ) );
 		
 	}catch( const deException & ){
 		pCleanUp();
@@ -49,7 +48,7 @@ pLoader( NULL )
 	}
 }
 
-deSharedVulkan::~deSharedVulkan(){
+devkQueue::~devkQueue(){
 	pCleanUp();
 }
 
@@ -60,14 +59,8 @@ deSharedVulkan::~deSharedVulkan(){
 
 
 
-
 // Private Functions
 //////////////////////
 
-void deSharedVulkan::pCleanUp(){
-	pInstance = nullptr;
-	
-	if( pLoader ){
-		delete pLoader;
-	}
+void devkQueue::pCleanUp(){
 }

@@ -23,6 +23,11 @@
 #define _DEVKDEVICE_H_
 
 #include "devkBasics.h"
+#include "devkQueue.h"
+
+#include <dragengine/deObject.h>
+#include <dragengine/deTObjectReference.h>
+#include <dragengine/common/collection/decObjectList.h>
 
 class devkInstance;
 
@@ -30,11 +35,42 @@ class devkInstance;
 /**
  * Vulkan device.
  */
-class devkDevice{
+class devkDevice : public deObject{
+public:
+	/** Reference. */
+	typedef deTObjectReference<devkDevice> Ref;
+	
+	/** Configuration to use for new device. */
+	struct DeviceConfig{
+		/** Count of graphic queues to create. */
+		int graphicQueueCount;
+		
+		/** Count of compute queues to create. */
+		int computeQueueCount;
+		
+		/** Count of transfer queues to create. */
+		int transferQueueCount;
+		
+		/** Create struct. */
+		DeviceConfig();
+	};
+	
+	
+	
 private:
 	devkInstance &pInstance;
 	
+	VkPhysicalDevice pPhysicalDevice;
+	VkPhysicalDeviceProperties pPhysicalDeviceProperties;
+	const DeviceConfig pConfig;
+	uint32_t pFamilyIndexGraphic;
+	uint32_t pFamilyIndexCompute;
+	uint32_t pFamilyIndexTransfer;
+	
 	VkDevice pDevice;
+	decObjectList pGraphicQueues;
+	decObjectList pComputeQueues;
+	decObjectList pTransferQueues;
 	
 	
 	
@@ -42,18 +78,61 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create device. */
-	devkDevice( devkInstance &instance );
+	devkDevice( devkInstance &instance, VkPhysicalDevice physicalDevice, const DeviceConfig &config );
 	
+protected:
 	/** Clean up device. */
-	~devkDevice();
+	virtual ~devkDevice();
 	/*@}*/
 	
 	
 	
+public:
 	/** \name Management */
 	/*@{*/
-	/** Instance. */
+	/** Owner instance. */
 	inline devkInstance &GetInstance() const{ return pInstance; }
+	
+	/** Physical device. */
+	inline VkPhysicalDevice GetPhysicalDevice() const{ return pPhysicalDevice; }
+	
+	/** Device properties. */
+	inline const VkPhysicalDeviceProperties &GetPhysicalDeviceProperties() const{ return pPhysicalDeviceProperties; }
+	
+	/** Configuration. */
+	inline const DeviceConfig &GetConfig() const{ return pConfig; }
+	
+	/** Device. */
+	inline VkDevice GetDevice() const{ return pDevice; }
+	
+	
+	
+	/** Count of graphic queues. */
+	int GetGraphicQueueCount() const;
+	
+	/** Graphic queue at index. */
+	devkQueue &GetGraphicQueueAt( int index ) const;
+	
+	/** First graphic queue. */
+	inline devkQueue &GetGraphicQueue() const{ return GetGraphicQueueAt( 0 ); }
+	
+	/** Count of compute queues. */
+	int GetComputeQueueCount() const;
+	
+	/** Compute queue at index. */
+	devkQueue &GetComputeQueueAt( int index ) const;
+	
+	/** First compute queue. */
+	devkQueue &GetComputeQueue() const{ return GetComputeQueueAt( 0 ); }
+	
+	/** Count of transfer queues. */
+	int GetTransferQueueCount() const;
+	
+	/** Get transfer queue at index. */
+	devkQueue &GetTransferQueueAt( int index ) const;
+	
+	/** Get first transfer queue. */
+	devkQueue &GetTransferQueue() const{ return GetTransferQueueAt( 0 ); }
 	/*@}*/
 	
 	

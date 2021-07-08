@@ -19,55 +19,61 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include <stdlib.h>
-#include <string.h>
+#ifndef _DEVKQUEUE_H_
+#define _DEVKQUEUE_H_
 
-#include "deSharedVulkan.h"
-#include "devkLoader.h"
-#include "devkInstance.h"
-#include "devkGlobalFunctions.h"
+#include "devkBasics.h"
 
-#include <dragengine/common/exceptions.h>
-#include <dragengine/systems/modules/deBaseModule.h>
+#include <dragengine/deObject.h>
+#include <dragengine/deTObjectReference.h>
 
+class devkDevice;
 
 
-// Class deSharedVulkan
-/////////////////////////
-
-deSharedVulkan::deSharedVulkan( deBaseModule &module ) :
-pModule( module ),
-pLoader( NULL )
-{
-	try{
-		pLoader = new devkLoader( *this );
-		pInstance.TakeOver( new devkInstance( *this ) );
-		
-	}catch( const deException & ){
-		pCleanUp();
-		throw;
-	}
-}
-
-deSharedVulkan::~deSharedVulkan(){
-	pCleanUp();
-}
-
-
-
-// Management
-///////////////
-
-
-
-
-// Private Functions
-//////////////////////
-
-void deSharedVulkan::pCleanUp(){
-	pInstance = nullptr;
+/**
+ * Vulkan device queue.
+ */
+class devkQueue : public deObject{
+public:
+	/** Reference. */
+	typedef deTObjectReference<devkQueue> Ref;
 	
-	if( pLoader ){
-		delete pLoader;
-	}
-}
+	
+	
+private:
+	devkDevice &pDevice;
+	
+	VkQueue pQueue;
+	
+	
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** Create queue. */
+	devkQueue( devkDevice &device, VkQueue queue );
+	
+protected:
+	/** Clean up queue. */
+	virtual ~devkQueue();
+	/*@}*/
+	
+	
+	
+public:
+	/** \name Management */
+	/*@{*/
+	/** Device. */
+	inline devkDevice &GetDevice() const{ return pDevice; }
+	
+	/** Queue. */
+	inline VkQueue GetQueue() const{ return pQueue; }
+	/*@}*/
+	
+	
+	
+private:
+	void pCleanUp();
+};
+
+#endif
+

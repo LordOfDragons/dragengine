@@ -35,12 +35,12 @@
 
 devkInstance::devkInstance( deSharedVulkan &vulkan ) :
 pVulkan( vulkan ),
-pInstance( NULL ),
-pDevices( NULL ),
-pDeviceCount( 0 )
+pInstance( nullptr ),
+pPhysicalDevices( nullptr ),
+pPhysicalDeviceCount( 0 )
 {
-	#define INSTANCE_LEVEL_VULKAN_FUNCTION( name ) name = NULL;
-	#define INSTANCE_LEVEL_VULKAN_FUNCTION_FROM_EXTENSION( name, extension ) name = NULL;
+	#define INSTANCE_LEVEL_VULKAN_FUNCTION( name ) name = nullptr;
+	#define INSTANCE_LEVEL_VULKAN_FUNCTION_FROM_EXTENSION( name, extension ) name = nullptr;
 	
 	#include "devkFunctionNames.h"
 	
@@ -64,6 +64,23 @@ devkInstance::~devkInstance(){
 // Management
 ///////////////
 
+VkPhysicalDevice devkInstance::GetPhysicalDeviceAt( int index ) const{
+	if( index < 0 || index >= pPhysicalDeviceCount ){
+		DETHROW( deeInvalidParam );
+	}
+	return pPhysicalDevices[ index ];
+}
+
+devkDevice::Ref devkInstance::CreateDevice( int index, const devkDevice::DeviceConfig &config ){
+	return devkDevice::Ref::With( new devkDevice( *this, GetPhysicalDeviceAt( index ), config ) );
+}
+
+devkDevice::Ref devkInstance::CreateDeviceHeadlessComputeOnly( int index ){
+	devkDevice::DeviceConfig config;
+	config.computeQueueCount = 1;
+	return CreateDevice( index, config );
+}
+
 
 
 
@@ -71,13 +88,38 @@ devkInstance::~devkInstance(){
 //////////////////////
 
 void devkInstance::pCleanUp(){
-	if( pDevices ){
-		delete [] pDevices;
+	if( pPhysicalDevices ){
+		delete [] pPhysicalDevices;
 	}
 	if( pInstance ){
-		vkDestroyInstance( pInstance, NULL );
+		// DEBUG
+// 		if( debugReportCallback ){
+// 			PFN_vkDestroyDebugReportCallbackEXT vkDestroyDebugReportCallback =
+// 				( PFN_vkDestroyDebugReportCallbackEXT )vkGetInstanceProcAddr( pInstance, "vkDestroyDebugReportCallbackEXT" );
+// 			if( vkDestroyDebugReportCallback ){
+// 				vkDestroyDebugReportCallback( pInstance, debugReportCallback, nullptr );
+// 			}
+// 		}
+		// DEBUG
+		
+		vkDestroyInstance( pInstance, nullptr );
 	}
 }
+
+// static VKAPI_ATTR VkBool32 VKAPI_CALL debugMessageCallback(
+// 	VkDebugReportFlagsEXT flags,
+// 	VkDebugReportObjectTypeEXT objectType,
+// 	uint64_t object,
+// 	size_t location,
+// 	int32_t messageCode,
+// 	const char* pLayerPrefix,
+// 	const char* pMessage,
+// 	void* pUserData)
+// {
+// 	devkInstance * const instance = ( devkInstance* )pUserData;
+// 	instance->GetVulkan().GetModule().LogInfoFormat( "VALIDATION: %s - %s", pLayerPrefix, pMessage );
+// 	return VK_FALSE;
+// }
 
 void devkInstance::pCreateInstance(){
 	pVulkan.GetModule().LogInfo( "Create Vulkan Instance" );
@@ -105,9 +147,9 @@ void devkInstance::pCreateInstance(){
 	#ifdef WITH_DEBUG
 	// check if layers are available
 	uint32_t instanceLayerCount = 0;
-	vkEnumerateInstanceLayerProperties( &instanceLayerCount, NULL );
+	vkEnumerateInstanceLayerProperties( &instanceLayerCount, nullptr );
 	
-	VkLayerProperties *instanceLayers = NULL;
+	VkLayerProperties *instanceLayers = nullptr;
 	if( instanceLayerCount > 0 ){
 		instanceLayers = new VkLayerProperties[ instanceLayerCount ];
 		vkEnumerateInstanceLayerProperties( &instanceLayerCount, instanceLayers );
@@ -144,7 +186,23 @@ void devkInstance::pCreateInstance(){
 	}
 	#endif
 	
-	VK_CHECK( pVulkan, vkCreateInstance( &instanceCreateInfo, NULL, &pInstance ) );
+	VK_CHECK( pVulkan, vkCreateInstance( &instanceCreateInfo, nullptr, &pInstance ) );
+	
+	// debug
+// 	if( layersAvailable ){
+// 		VkDebugReportCallbackCreateInfoEXT debugReportCreateInfo = {};
+// 		debugReportCreateInfo.sType = VK_STRUCTURE_TYPE_DEBUG_REPORT_CALLBACK_CREATE_INFO_EXT;
+// 		debugReportCreateInfo.flags = VK_DEBUG_REPORT_ERROR_BIT_EXT | VK_DEBUG_REPORT_WARNING_BIT_EXT;
+// 		debugReportCreateInfo.pfnCallback = (PFN_vkDebugReportCallbackEXT)debugMessageCallback;
+// 		debugReportCreateInfo.pUserData = this;
+// 		
+// 		PFN_vkCreateDebugReportCallbackEXT vkCreateDebugReportCallbackEXT =
+// 			( PFN_vkCreateDebugReportCallbackEXT )vkGetInstanceProcAddr( pInstance, "vkCreateDebugReportCallbackEXT");
+// 		if( ! vkCreateDebugReportCallbackEXT ){
+// 			DETHROW( deeInvalidAction );
+// 		}
+// 		VK_CHECK( pVulkan, vkCreateDebugReportCallbackEXT( pInstance, &debugReportCreateInfo, nullptr, &debugReportCallback ) );
+// 	}
 }
 
 void devkInstance::pLoadFunctions(){
@@ -165,12 +223,12 @@ void devkInstance::pLoadFunctions(){
 
 void devkInstance::pFindDevices(){
 	uint32_t deviceCount = 0;
-	VK_CHECK( pVulkan, vkEnumeratePhysicalDevices( pInstance, &deviceCount, NULL ) );
+	VK_CHECK( pVulkan, vkEnumeratePhysicalDevices( pInstance, &deviceCount, nullptr ) );
 	
 	if( deviceCount > 0 ){
-		pDevices = new VkPhysicalDevice[ deviceCount ];
-		VK_CHECK( pVulkan, vkEnumeratePhysicalDevices( pInstance, &deviceCount, pDevices ) );
-		pDeviceCount = deviceCount;
+		pPhysicalDevices = new VkPhysicalDevice[ deviceCount ];
+		VK_CHECK( pVulkan, vkEnumeratePhysicalDevices( pInstance, &deviceCount, pPhysicalDevices ) );
+		pPhysicalDeviceCount = deviceCount;
 	}
 	
 	pVulkan.GetModule().LogInfo( "Vulkan Devices:" );
@@ -178,9 +236,9 @@ void devkInstance::pFindDevices(){
 	VkPhysicalDeviceProperties properties;
 	int i;
 	
-	for( i=0; i<pDeviceCount; i++ ){
+	for( i=0; i<pPhysicalDeviceCount; i++ ){
 		memset( &properties, 0, sizeof( properties ) );
-		vkGetPhysicalDeviceProperties( pDevices[ i ], &properties );
+		vkGetPhysicalDeviceProperties( pPhysicalDevices[ i ], &properties );
 		pVulkan.GetModule().LogInfoFormat( "- %s (id=%d vendor=%d version=%d.%d.%d.%d api=%d.%d.%d.%d)",
 			properties.deviceName, properties.deviceID, properties.vendorID,
 			VK_API_VERSION_MAJOR( properties.driverVersion ),
