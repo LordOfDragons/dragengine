@@ -19,43 +19,35 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-#include "deoglPShadowCubeSize.h"
-#include "../../deGraphicOpenGl.h"
-#include "../../configuration/deoglConfiguration.h"
-
-#include <dragengine/common/exceptions.h>
+#include "deoglDecalListener.h"
 
 
 
-// Class deoglPShadowCubeSize
-///////////////////////////////
+// Class deoglDecalNotifier
+/////////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
 
-deoglPShadowCubeSize::deoglPShadowCubeSize( deGraphicOpenGl &ogl ) : deoglParameterInt( ogl ){
-	SetName( "shadowCubeSize" );
-	SetDescription( "Sets the size of shadow cube maps." );
-	SetCategory( ecExpert );
-	SetDisplayName( "Shadow Cube Size" );
+deoglDecalListener::deoglDecalListener(){
 }
 
-deoglPShadowCubeSize::~deoglPShadowCubeSize(){
+deoglDecalListener::~deoglDecalListener(){
 }
 
 
 
-// Parameter Value
-////////////////////
+// Notifications
+//////////////////
 
-int deoglPShadowCubeSize::GetParameterInt(){
-	return pOgl.GetConfiguration().GetShadowCubeSize();
+void deoglDecalListener::DecalDestroyed( deoglRDecal& ){
 }
 
-void deoglPShadowCubeSize::SetParameterInt( int value ){
-	pOgl.GetConfiguration().SetShadowCubeSize( value );
+void deoglDecalListener::GeometryChanged( deoglRDecal& ){
+}
+
+void deoglDecalListener::TextureChanged( deoglRDecal& ){
+}
+
+void deoglDecalListener::TUCChanged( deoglRDecal& ){
 }

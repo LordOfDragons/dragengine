@@ -49,7 +49,9 @@
 deoglRPTSkyLightFindContent::deoglRPTSkyLightFindContent( deoglRenderPlanSkyLight &plan ) :
 deParallelTask( &plan.GetPlan().GetRenderThread().GetOgl() ),
 pPlan( plan ),
-pElapsedTime( 0.0f ){
+pElapsedTime( 0.0f )
+{
+	SetMarkFinishedAfterRun( true );
 }
 
 deoglRPTSkyLightFindContent::~deoglRPTSkyLightFindContent(){
@@ -121,7 +123,7 @@ void deoglRPTSkyLightFindContent::Run(){
 		
 	}catch( const deException &e ){
 		plan.GetRenderThread().GetLogger().LogException( e );
-		pSemaphore.Wait();
+		pSemaphore.Signal();
 		throw;
 	}
 	

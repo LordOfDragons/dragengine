@@ -860,6 +860,7 @@ void deoglDelayedOperations::pGenerateConeMap( deoglRSkin &skin, const deoglSkin
 				//      like a waste of processing time. On the other hand this would avoid switching the
 				//      FBO target all time. check this problem out if it is really used and shows to be
 				//      a problem. Using layer-rebinding is the simpler solution
+				fbo->DetachAllImages();
 				fbo->AttachColorArrayTextureLayer( 0, coneMapArr, i );
 				shader->SetParameterFloat( spgcmLayer, ( float )i );
 				OGL_CHECK( pRenderThread, pglDrawArraysInstanced( GL_TRIANGLE_FAN, 0, 4, size.x * size.y ) );

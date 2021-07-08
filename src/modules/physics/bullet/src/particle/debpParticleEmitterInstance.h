@@ -60,6 +60,9 @@ private:
 	bool pDirtyEmitterMatrix;
 	bool pCheckForLastParticle;
 	bool pCanCollide;
+	bool pEnsureCastOnce;
+	
+	
 	
 public:
 	/** @name Constructors and Destructors */

@@ -72,13 +72,13 @@ deoalPAurealizationMode::~deoalPAurealizationMode(){
 
 decString deoalPAurealizationMode::GetParameterValue(){
 	switch( pOal.GetConfiguration().GetAurealizationMode() ){
-	case deoalConfiguration::eaDisabled:
+	case deoalConfiguration::eamDisabled:
 		return "disabled";
 		
-	case deoalConfiguration::eaDirectSound:
+	case deoalConfiguration::eamDirectSound:
 		return "directSound";
 		
-	case deoalConfiguration::eaFull:
+	case deoalConfiguration::eamFull:
 		return "full";
 		
 	default:
@@ -87,17 +87,17 @@ decString deoalPAurealizationMode::GetParameterValue(){
 }
 
 void deoalPAurealizationMode::SetParameterValue( const char *value ){
-	const decString svalue( value );
+	const decString svalue( decString( value ).GetLower() );
 	if( svalue.EqualsInsensitive( "disabled" ) ){
-		pOal.GetConfiguration().SetAurealizationMode( deoalConfiguration::eaDisabled );
+		pOal.GetConfiguration().SetAurealizationMode( deoalConfiguration::eamDisabled );
 		
-	}else if( svalue.EqualsInsensitive( "directSound" ) ){
-		pOal.GetConfiguration().SetAurealizationMode( deoalConfiguration::eaDirectSound );
+	}else if( svalue.EqualsInsensitive( "directsound" ) ){
+		pOal.GetConfiguration().SetAurealizationMode( deoalConfiguration::eamDirectSound );
 		
 	}else if( svalue.EqualsInsensitive( "full" ) ){
-		pOal.GetConfiguration().SetAurealizationMode( deoalConfiguration::eaFull );
+		pOal.GetConfiguration().SetAurealizationMode( deoalConfiguration::eamFull );
 		
 	}else{
-		pOal.GetConfiguration().SetAurealizationMode( deoalConfiguration::eaDisabled );
+		pOal.GetConfiguration().SetAurealizationMode( deoalConfiguration::eamDisabled );
 	}
 }

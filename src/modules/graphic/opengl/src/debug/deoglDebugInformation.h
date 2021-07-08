@@ -116,6 +116,9 @@ public:
 	/** Elapsed time. */
 	inline float GetElapsedTime() const{ return pElapsedTime; }
 	
+	/** Accumulated elapsed time. */
+	inline float GetElapsedTimeAccum() const{ return pElapsedTimeAccum; }
+	
 	/** Set elapsed time. */
 	void SetElapsedTime( float time );
 	

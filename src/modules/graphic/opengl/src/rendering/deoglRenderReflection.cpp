@@ -2214,6 +2214,7 @@ void deoglRenderReflection::RenderGIEnvMaps( deoglRenderPlan &plan ){
 // 		renderThread.GetLogger().LogInfoFormat( "- LightEnvMap: %p (%g,%g,%g)", envmap,
 // 			envmap->GetPosition().x, envmap->GetPosition().y, envmap->GetPosition().z );
 		
+		fbo.DetachAllImages();
 		fbo.AttachColorCubeMap( 0, envmap->GetEnvironmentMap() );
 		fbo.Verify();
 		
@@ -2249,13 +2250,6 @@ void deoglRenderReflection::CopyEnvMap( deoglArrayTexture &source, deoglCubeMap 
 	deoglFramebuffer &fbo = renderThread.GetFramebuffer().GetEnvMap();
 	const GLenum buffers[ 1 ] = { GL_COLOR_ATTACHMENT0 };
 	
-	renderThread.GetFramebuffer().Activate( &fbo );
-	fbo.DetachAllImages();
-	OGL_CHECK( renderThread, pglDrawBuffers( 1, buffers ) );
-	OGL_CHECK( renderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
-	
-	renderThread.GetShader().ActivateShader( pShaderEnvMapCopy );
-	
 	OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
 	OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
 	OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
@@ -2264,9 +2258,15 @@ void deoglRenderReflection::CopyEnvMap( deoglArrayTexture &source, deoglCubeMap 
 	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
 	OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
 	
+	renderThread.GetShader().ActivateShader( pShaderEnvMapCopy );
+	
 	OGL_CHECK( renderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) );
 	
+	renderThread.GetFramebuffer().Activate( &fbo );
+	fbo.DetachAllImages();
 	fbo.AttachColorCubeMap( 0, &target );
+	OGL_CHECK( renderThread, pglDrawBuffers( 1, buffers ) );
+	OGL_CHECK( renderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
 	fbo.Verify();
 	
 	OGL_CHECK( renderThread, glViewport( 0, 0, target.GetSize(), target.GetSize() ) );

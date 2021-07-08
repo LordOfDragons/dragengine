@@ -37,6 +37,9 @@ public:
 		/** \brief Project directory path. */
 		evProjectPath,
 		
+		/** \brief Project directory path filename (last component of path). */
+		evProjectPathDirectory,
+		
 		/** \brief Project data directory path. */
 		evDataPath,
 		

@@ -47,6 +47,7 @@ public:
 	
 private:
 	decString pPath;
+	decString pPathRename;
 	decString pPattern;
 	eDirectories pDirectory;
 	igdeTemplateReplaceList pReplacements;
@@ -77,6 +78,12 @@ public:
 	
 	/** \brief Set file path relative to template base path. */
 	void SetPath( const char *path );
+	
+	/** \brief File path rename relative to template base path. */
+	inline const decString &GetPathRename() const{ return pPathRename; }
+	
+	/** \brief Set file path rename relative to template base path. */
+	void SetPathRename( const char *path );
 	
 	/** \brief File pattern relative to template base path. */
 	inline const decString &GetPattern() const{ return pPattern; }

@@ -19,33 +19,43 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef _DEOGLPSHADOWMAPSIZE_H_
-#define _DEOGLPSHADOWMAPSIZE_H_
+#ifndef _DEOGLDECALLISTENER_H_
+#define _DEOGLDECALLISTENER_H_
 
-#include "../deoglParameter.h"
+#include <dragengine/deObject.h>
 
+class deoglRDecal;
 
 
 /**
- * \brief Shadow Map Size Parameter.
+ * Render decal listener.
  */
-class deoglPShadowMapSize : public deoglParameter{
+class deoglDecalListener : public deObject{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Creates a new parameter. */
-	deoglPShadowMapSize( deGraphicOpenGl &ogl );
-	/** Cleans up the parameter. */
-	virtual ~deoglPShadowMapSize();
+	/** Create decal listener. */
+	deoglDecalListener();
+	
+	/** Clean up decal listener. */
+	virtual ~deoglDecalListener();
 	/*@}*/
 	
-	/** \name Parameter Value */
-	/*@{*/
-	/** \brief Current value. */
-	virtual decString GetParameterValue();
 	
-	/** \brief Set current value. */
-	virtual void SetParameterValue( const char *value );
+	
+	/** \name Notifications */
+	/*@{*/
+	/** Decal has been destroyed. */
+	virtual void DecalDestroyed( deoglRDecal &decal );
+	
+	/** Decal geometry changed. */
+	virtual void GeometryChanged( deoglRDecal &decal );
+	
+	/** Texture changed. */
+	virtual void TextureChanged( deoglRDecal &decal );
+	
+	/** TUC changed. */
+	virtual void TUCChanged( deoglRDecal &decal );
 	/*@}*/
 };
 

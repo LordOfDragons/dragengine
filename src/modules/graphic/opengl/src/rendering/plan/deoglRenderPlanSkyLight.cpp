@@ -369,7 +369,7 @@ void deoglRenderPlanSkyLight::pDetermineShadowParameters(){
 	const deoglConfiguration &config = pPlan.GetRenderThread().GetConfiguration();
 	
 	pUseLight = true;
-	pUseShadow = config.GetDebugUseShadow();
+	pUseShadow = config.GetShadowQuality() != deoglConfiguration::esqOff;
 	pShadowLayerCount = 4;
 	
 	// if array-texture support is missing no shadows for the time being

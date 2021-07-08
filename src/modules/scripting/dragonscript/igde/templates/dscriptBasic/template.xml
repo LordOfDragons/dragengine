@@ -45,16 +45,18 @@
 	<!-- KDevelop project file for editing scripts. -->
 	<file>
 		<path>project.kdev4</path>
+		<pathRename>{projectPathDirectory}.kdev4</pathRename>
 		<directory>project</directory>
 		<replace>
-			<token>%{GAME_ALIAS_ID}</token>
-			<value>gameAliasId</value>
+			<token>%{PROJECT_PATH_DIR}</token>
+			<value>projectPathDirectory</value>
 			<format>text</format>
 		</replace>
 	</file>
 	
 	<file>
-		<path>.kdev4/project.kdev4</path>
+		<path>dotkdev_project.kdev4</path>
+		<pathRename>.kdev4/{projectPathDirectory}.kdev4</pathRename>
 		<directory>project</directory>
 	</file>
 	

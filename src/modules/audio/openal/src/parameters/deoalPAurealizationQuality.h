@@ -1,7 +1,7 @@
 /* 
- * Drag[en]gine OpenGL Graphic Module
+ * Drag[en]gine OpenAL Audio Module
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * Copyright (C) 2021, Roland Plüss (roland@rptd.ch)
  * 
  * This program is free software; you can redistribute it and/or 
  * modify it under the terms of the GNU General Public License 
@@ -19,31 +19,35 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef _DEOGLPDEBUGUSESHADOW_H_
-#define _DEOGLPDEBUGUSESHADOW_H_
+#ifndef _DEOALPAUREALIZATIONQUALITY_H_
+#define _DEOALPAUREALIZATIONQUALITY_H_
 
-#include "../deoglParameterBool.h"
+#include "deoalParameter.h"
 
 
 /**
- * \brief Use Shadow Parameter.
+ * Parameter aurealization mode.
  */
-class deoglPDebugUseShadow : public deoglParameterBool{
+class deoalPAurealizationQuality : public deoalParameter{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Creates a new parameter. */
-	deoglPDebugUseShadow( deGraphicOpenGl &ogl );
-	/** Cleans up the parameter. */
-	virtual ~deoglPDebugUseShadow();
+	/** Create parameter. */
+	deoalPAurealizationQuality( deAudioOpenAL &oal );
+	
+	/** Clean up parameter. */
+	virtual ~deoalPAurealizationQuality();
 	/*@}*/
+	
+	
 	
 	/** \name Parameter Value */
 	/*@{*/
-	/** Retrieves the current value. */
-	virtual bool GetParameterBool();
-	/** Sets the current value. */
-	virtual void SetParameterBool( bool value );
+	/** Current value. */
+	virtual decString GetParameterValue();
+	
+	/** Set current value. */
+	virtual void SetParameterValue( const char *value );
 	/*@}*/
 };
 

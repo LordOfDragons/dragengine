@@ -116,7 +116,7 @@ void debpParticleEmitterInstanceType::SetType( int type ){
 
 
 
-void debpParticleEmitterInstanceType::PrepareParticles( float elapsed, float travelledDistance ){
+void debpParticleEmitterInstanceType::PrepareParticles( bool casting, float elapsed, float travelledDistance ){
 	debpParticleEmitter * const emitter = pInstance->GetParticleEmitter();
 	
 	if( emitter ){
@@ -146,7 +146,7 @@ void debpParticleEmitterInstanceType::PrepareParticles( float elapsed, float tra
 		}
 		
 		// cast new particles if enabled until the cast timer runs out
-		if( pInstance->GetInstance()->GetEnableCasting() ){
+		if( casting ){
 			// for beams and ribbons emit just one particle. for particles as many as requested
 			const bool castMultipleParticles = ( engType.GetSimulationType() == deParticleEmitterType::estParticle );
 			deParticleEmitterInstance &instance = *pInstance->GetInstance();

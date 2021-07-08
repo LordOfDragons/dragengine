@@ -178,7 +178,7 @@ void deoglGIMaterials::pCreateFBOMaterial(){
 	pTexEmissivity->CreateTexture();
 	
 	pRenderThread.GetFramebuffer().Activate( &pFBOMaterial );
-	pFBOMaterial.DetachAllImages(); // if this is ommit FBO becomes invalid. what the ???
+	pFBOMaterial.DetachAllImages();
 	pFBOMaterial.AttachColorTexture( 0, pTexDiffuse );
 	pFBOMaterial.AttachColorTexture( 1, pTexReflectivity );
 	pFBOMaterial.AttachColorTexture( 2, pTexEmissivity );

@@ -236,6 +236,7 @@ pShowSSAO( false ),
 
 pShowDebugInfo( false ),
 pDebugInfoSync( false ),
+pDebugInfoLog( false ),
 pDebugInfoDetails( 0 ),
 
 pGIShowProbes( false ),
@@ -256,7 +257,10 @@ pDebugImageUsed( false )
 	#endif
 // 	pEnabled = true;
 // 	pShowDebugInfo = true;
+// 	pDebugInfoLog = true;
+// 	pDebugInfoSync = true;
 // 	pDebugInfoDetails = edimPlanPrepare | edimWorld | edimSolidGeometry | edimTransparency | edimLight | edimLightSky | edimLightPoint | edimLightSpot | edimGI;
+// 	pDebugInfoDetails = edimPlanPrepare | edimWorld | edimLight | edimLightPoint;
 }
 
 deoglDeveloperMode::~deoglDeveloperMode(){
@@ -465,6 +469,10 @@ bool deoglDeveloperMode::ExecuteCommand( const decUnicodeArgumentList &command, 
 				pCmdDebugInfoSync( command, answer );
 				result = true;
 				
+			}else if( command.MatchesArgumentAt( 0, "dm_debug_info_log" ) ){
+				pCmdDebugInfoLog( command, answer );
+				result = true;
+				
 			}else if( command.MatchesArgumentAt( 0, "dm_debug_info_details" ) ){
 				pCmdDebugInfoDetails( command, answer );
 				result = true;
@@ -536,6 +544,7 @@ void deoglDeveloperMode::pCmdHelp( const decUnicodeArgumentList &command, decUni
 	answer.AppendFromUTF8( "dm_tests => Runs various tests.\n" );
 	answer.AppendFromUTF8( "dm_show_debug_info [1|0] => Show debug information and enable timing measurements.\n" );
 	answer.AppendFromUTF8( "dm_debug_info_sync [1|0] => Call glFinish before each debug timing measurement for true GPU time measuring.\n" );
+	answer.AppendFromUTF8( "dm_debug_info_log [1|0] => Log debug timing measurement for each frame.\n" );
 	answer.AppendFromUTF8( "dm_debug_info_details [list|+name...|-name...] => Debug info details to show.\n" );
 	answer.AppendFromUTF8( "dm_gi_show_probes [1|0] => Display GI probes.\n" );
 	answer.AppendFromUTF8( "dm_gi_show_probe_offsets [1|0] => Display GI probe offsets.\n" );
@@ -1197,6 +1206,12 @@ void deoglDeveloperMode::pCmdShowDebugInfo( const decUnicodeArgumentList &comman
 
 void deoglDeveloperMode::pCmdDebugInfoSync( const decUnicodeArgumentList &command, decUnicodeString &answer ){
 	if( pBaseCmdBool( command, answer, pDebugInfoSync, "dm_debug_info_sync" ) ){
+		pRenderThread.DevModeDebugInfoChanged();
+	}
+}
+
+void deoglDeveloperMode::pCmdDebugInfoLog( const decUnicodeArgumentList &command, decUnicodeString &answer ){
+	if( pBaseCmdBool( command, answer, pDebugInfoLog, "dm_debug_info_log" ) ){
 		pRenderThread.DevModeDebugInfoChanged();
 	}
 }

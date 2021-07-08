@@ -42,11 +42,9 @@ pDirty( false ),
 
 pEnableEFX( true ),
 pStreamBufSizeThreshold( 700000 ), // see deoalSound.cpp
-pAurealizationMode( eaFull ),
+pAurealizationMode( eamFull ),
+pAurealizationQuality( eaqMedium ),
 
-pSoundTraceRayCount( 64 ),
-pSoundTraceMaxBounceCount( 20 ),
-pSoundTraceMaxTransmitCount( 2 ),
 pEstimateRoomRayCount( 128 ),
 
 pEAXReverbReflectionGainFactor( 1.0f ),
@@ -56,6 +54,7 @@ pAsyncAudio( true ),
 pFrameRateLimit( 0 ), // 0 means disabled
 pAsyncAudioSkipSyncTimeRatio( 0.5 )
 {
+	pApplyAurealizationProfile();
 }
 
 deoalConfiguration::deoalConfiguration( const deoalConfiguration &config ){
@@ -114,6 +113,16 @@ void deoalConfiguration::SetAurealizationMode( eAurealizationModes mode ){
 	
 	pAurealizationMode = mode;
 	pDirty = true;
+}
+
+void deoalConfiguration::SetAurealizationQuality( eAurealizationQuality quality ){
+	if( quality == pAurealizationQuality ){
+		return;
+	}
+	
+	pAurealizationQuality = quality;
+	pDirty = true;
+	pApplyAurealizationProfile();
 }
 
 
@@ -232,6 +241,7 @@ deoalConfiguration &deoalConfiguration::operator=( const deoalConfiguration &con
 	pStreamBufSizeThreshold = config.pStreamBufSizeThreshold;
 	pDisableExtensions = config.pDisableExtensions;
 	pAurealizationMode = config.pAurealizationMode;
+	pAurealizationQuality = config.pAurealizationQuality;
 	
 	pSoundTraceRayCount = config.pSoundTraceRayCount;
 	pSoundTraceMaxBounceCount = config.pSoundTraceMaxBounceCount;
@@ -250,4 +260,53 @@ deoalConfiguration &deoalConfiguration::operator=( const deoalConfiguration &con
 //////////////////////
 
 void deoalConfiguration::pCleanUp(){
+}
+
+void deoalConfiguration::pApplyAurealizationProfile(){
+	// switch profile.
+	// 
+	// bounces up to 100 go farther but if walls are absorbing enough this is not often reached.
+	// 
+	// less than 10 bounces has negative effect on reverberation time calculation stability
+	// and in general sounds worse if moving
+	switch( pAurealizationQuality ){
+	case eaqVeryHigh:
+		// best working version for moving-sound scenario but creates 8x the ray segments.
+		// not usable from a performance point of view unless HW-acceleration can be used.
+		pSoundTraceRayCount = 256;
+		pSoundTraceMaxBounceCount = 40;
+		pSoundTraceMaxTransmitCount = 2;
+		break;
+		
+	case eaqHigh:
+		// works better for moving-sound scenario creating roughly 1.5x times the ray segments.
+		// this would be usable from a performance point of view depending on the scene.
+		pSoundTraceRayCount = 128;
+		pSoundTraceMaxBounceCount = 30;
+		pSoundTraceMaxTransmitCount = 2;
+		break;
+		
+	case eaqMedium:
+		// this version is working similar well for the moving-sound scenario creating also
+		// roughly 1.5x times the ray segments. maybe slightly less good sounding.
+		// this version is stable for reverberation time calculation.
+		pSoundTraceRayCount = 64;
+		pSoundTraceMaxBounceCount = 20;
+		pSoundTraceMaxTransmitCount = 2;
+		break;
+		
+	case eaqLow:
+		pSoundTraceRayCount = 48;
+		pSoundTraceMaxBounceCount = 18;
+		pSoundTraceMaxTransmitCount = 2;
+		break;
+		
+	case eaqVeryLow:
+		// 32 is a possible value for lower performance paltforms. the gains are slightly
+		// higher than on 64 but performance is roughly 2x faster
+		pSoundTraceRayCount = 32;
+		pSoundTraceMaxBounceCount = 16;
+		pSoundTraceMaxTransmitCount = 2;
+		break;
+	}
 }

@@ -26,6 +26,7 @@
 #include "deoglDynamicTBO.h"
 #include "deoglDynamicTBOShared.h"
 #include "deoglDynamicTBOBlock.h"
+#include "../renderthread/deoglRTLogger.h"
 
 #include <dragengine/deObjectReference.h>
 #include <dragengine/common/exceptions.h>
@@ -255,6 +256,20 @@ int deoglDynamicTBOShared::FirstMatchingBlock( deoglDynamicTBO *tbo ){
 	}
 	
 	return -1;
+}
+
+
+
+void deoglDynamicTBOShared::DebugPrint( deoglRTLogger &logger ) const{
+	logger.LogInfoFormat( "DynamicTBOShared: tbo=%p tbo2=%p stride=%d stride2=%d usedSize=%d",
+		( deObject* )pTBO, ( deObject* )pTBO2, pStride, pStride2, pUsedSize );
+	const int count = pBlocks.GetCount();
+	int i;
+	for( i=0; i<count; i++ ){
+		const deoglDynamicTBOBlock &block = *( ( deoglDynamicTBOBlock* )pBlocks.GetAt( i ) );
+		logger.LogInfoFormat( "- Block %d: offset=%d size=%d empty=%d",
+			i, block.GetOffset(), block.GetSize(), block.GetEmpty() );
+	}
 }
 
 

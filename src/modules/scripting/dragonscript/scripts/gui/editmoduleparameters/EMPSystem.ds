@@ -144,7 +144,7 @@ class EMPSystem extends Panel
 		end
 		
 		/** \brief Pick value from list action. */
-		class SelectFromList extends DefaultMouseListener
+		class SelectFromList extends ClickedActionListener
 			private var PVECycleValue pCycleValue
 			
 			/** \brief Create listener. */
@@ -152,9 +152,31 @@ class EMPSystem extends Panel
 				this.pCycleValue = cycleValue
 			end
 			
-			/** \brief Mouse button has been released. */
-			public func void onButtonRelease( MouseEvent event )
+			/** \brief User clicked on label. */
+			public func void onAction()
 				this.pCycleValue.selectFromList()
+			end
+		end
+		
+		/** \brief Design parent on mouse enter, move and leave. */
+		class ForwardMouseEnterMoveLeave extends DefaultMouseListener
+			private var Widget pWidget
+			
+			/** \brief Create listener. */
+			public func new( Widget widget )
+				this.pWidget = widget
+			end
+			
+			public func void onMouseEnter( MouseEvent event )
+				this.pWidget.sendEvent( event )
+			end
+			
+			public func void onMouseMove( MouseEvent event )
+				this.pWidget.sendEvent( event )
+			end
+			
+			public func void onMouseLeave( MouseEvent event )
+				this.pWidget.sendEvent( event )
 			end
 		end
 		
@@ -254,6 +276,7 @@ class EMPSystem extends Panel
 				this.pLabelValue.setDesignerSelector( "Label.EMPSystem.CycleValue.Value" )
 				this.pLabelValue.addMouseListener( SelectFromList.new( this ) )
 				this.pLabelValue.addMouseListener( ParentWheelActionListener.new() )
+				this.pLabelValue.addMouseListener( ForwardMouseEnterMoveLeave.new( this ) )
 				this.addWidget( this.pLabelValue, BorderLayout.Area.content )
 				
 				this.pButtonNext = Button.new( "", \
@@ -506,10 +529,11 @@ class EMPSystem extends Panel
 	protected func void createContent()
 		this.runWhileBlockingLayout( block
 			this.setLayout( BorderLayout.new( 5 ) )
-			this.setDesignerSelector( "Panel.EMPSystem" )
+			this.setDesignerSelector( "Panel.EMPSystem.Content" )
 			
 			this.pPanelParameters = Panel.new()
 			this.pPanelParameters.setLayout( FormLayout.new( true, 20, 2 ) )
+			this.pPanelParameters.setDesignerSelector( "Panel.EMPSystem.Parameters" )
 			var Viewport viewport = Viewport.new( this.pPanelParameters, BoxLayout.new( LayoutAxis.y ) )
 			this.addWidget( ScrollPanel.new( viewport, ScrollPanel.Policy.hidden, \
 				ScrollPanel.Policy.visible ), BorderLayout.Area.content )
@@ -589,7 +613,7 @@ class EMPSystem extends Panel
 		var FocusShowInfo showInfo = FocusShowInfo.new( parameter, this )
 		widget.getButtonPrev().addFocusListener( showInfo )
 		widget.getButtonNext().addFocusListener( showInfo )
-		widget.getLabelValue().addFocusListener( showInfo )
+		widget.getLabelValue().addMouseListener( ClickShowInfo.new( parameter, this ) )
 		return widget
 	end
 	
@@ -599,7 +623,7 @@ class EMPSystem extends Panel
 		var FocusShowInfo showInfo = FocusShowInfo.new( parameter, this )
 		widget.getButtonPrev().addFocusListener( showInfo )
 		widget.getButtonNext().addFocusListener( showInfo )
-		widget.getLabelValue().addFocusListener( showInfo )
+		widget.getLabelValue().addMouseListener( ClickShowInfo.new( parameter, this ) )
 		return widget
 	end
 end

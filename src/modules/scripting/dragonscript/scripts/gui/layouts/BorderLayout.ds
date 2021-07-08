@@ -378,6 +378,7 @@ class BorderLayout implements Layout
 	 *          widthis the reference size.
 	 */
 	protected func Point getMinimumSizeFor( Container container, int width, int height )
+		var bool usePadding = false
 		var Point childSize
 		var int cx = 0
 		var int cy = 0
@@ -386,6 +387,7 @@ class BorderLayout implements Layout
 			childSize = this.pContentWidget.getMinimumSizeWithBorderForWidth( width )
 			cx = childSize.getX()
 			cy = childSize.getY()
+			usePadding = true
 		end
 		
 		if this.pLeftWidget != null and this.pLeftWidget.getVisible()
@@ -394,6 +396,7 @@ class BorderLayout implements Layout
 			if childSize.getY() > cy
 				cy = childSize.getY()
 			end
+			usePadding = true
 		end
 		
 		if this.pTopWidget != null and this.pTopWidget.getVisible()
@@ -402,6 +405,7 @@ class BorderLayout implements Layout
 				cx = childSize.getX()
 			end
 			cy += childSize.getY() + this.pGap
+			usePadding = true
 		end
 		
 		if this.pRightWidget != null and this.pRightWidget.getVisible()
@@ -410,6 +414,7 @@ class BorderLayout implements Layout
 			if childSize.getY() > cy
 				cy = childSize.getY()
 			end
+			usePadding = true
 		end
 		
 		if this.pBottomWidget != null and this.pBottomWidget.getVisible()
@@ -418,8 +423,13 @@ class BorderLayout implements Layout
 				cx = childSize.getX()
 			end
 			cy += childSize.getY() + this.pGap
+			usePadding = true
 		end
 		
-		return Point.new( 1, 1 ).largest( cx, cy ) + container.getPadding().getSize()
+		var Point size = Point.new().largest( cx, cy )
+		if usePadding
+			size = size + container.getPadding().getSize()
+		end
+		return size
 	end
 end

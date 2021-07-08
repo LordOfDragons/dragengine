@@ -61,6 +61,7 @@ class FixedLayout implements Layout
 	public func Point getMinimumSize( Container container )
 		var int i, count = container.getWidgetCount()
 		var RectArea rect = RectArea.new()
+		var bool usePadding = false
 		var BorderSize borderSize
 		var Border border
 		var Widget child
@@ -72,6 +73,7 @@ class FixedLayout implements Layout
 			end
 			
 			border = child.getBorder()
+			usePadding = true
 			
 			if border == null
 				rect = rect.include( RectArea.new( child.getPosition(), child.getSize() ) )
@@ -84,7 +86,11 @@ class FixedLayout implements Layout
 			end
 		end
 		
-		return rect.getSize() + container.getPadding().getSize()
+		var Point size = rect.getSize()
+		if usePadding
+			size = size + container.getPadding().getSize()
+		end
+		return size
 	end
 	
 	/** \brief Minimum size of layout using reference width and variable height. */

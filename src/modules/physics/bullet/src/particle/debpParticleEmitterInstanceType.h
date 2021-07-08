@@ -134,7 +134,7 @@ public:
 	inline int GetParticlesCount() const{ return pParticleCount; }
 	
 	/** Prepare stepping. */
-	void PrepareParticles( float elapsed, float travelledDistance );
+	void PrepareParticles( bool casting, float elapsed, float travelledDistance );
 	/** Applies forces caused by a force field. */
 	void ApplyForceField( const debpForceField &forceField, float elapsed );
 	/** Steps the particles. */

@@ -87,7 +87,7 @@ decString deoglPGIQuality::GetParameterValue(){
 		return "veryHigh";
 		
 	default:
-		return "medium";
+		return "high";
 	}
 }
 
@@ -113,6 +113,6 @@ void deoglPGIQuality::SetParameterValue( const char *value ){
 		pOgl.GetConfiguration().SetGIQuality( deoglConfiguration::egiqVeryHigh );
 		
 	}else{
-		pOgl.GetConfiguration().SetGIQuality( deoglConfiguration::egiqMedium );
+		pOgl.GetConfiguration().SetGIQuality( deoglConfiguration::egiqHigh );
 	}
 }

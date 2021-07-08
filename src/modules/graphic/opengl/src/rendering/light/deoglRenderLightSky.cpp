@@ -722,7 +722,13 @@ deoglShadowMapper &shadowMapper ){
 #else
 	if( ! bugClearEntireArrTex ){
 		shadowMapper.ActivateSolidArrayTexture( shadowMapSize, layerCount, true );
-		OGL_CHECK( renderThread, pglClearBufferfi( GL_DEPTH_STENCIL, 0, 1.0f, 0xff ) );
+		if( clearBackFaceFragments ){
+			OGL_CHECK( renderThread, pglClearBufferfi( GL_DEPTH_STENCIL, 0, 1.0f, 0xff ) );
+			
+		}else{
+			const GLfloat clearDepth = 1.0f;
+			OGL_CHECK( renderThread, pglClearBufferfv( GL_DEPTH, 0, &clearDepth ) );
+		}
 	}
 #endif
 	
@@ -1271,7 +1277,13 @@ deoglRenderTask &renderTask, int shadowMapSize, bool clearBackFaceFragments ){
 	// clear shadow map
 	shadowMapper.ActivateSolidTexture( shadowMapSize, false, true );
 	
-	OGL_CHECK( renderThread, pglClearBufferfi( GL_DEPTH_STENCIL, 0, 1.0f, 0xff ) );
+	if( clearBackFaceFragments ){
+		OGL_CHECK( renderThread, pglClearBufferfi( GL_DEPTH_STENCIL, 0, 1.0f, 0xff ) );
+		
+	}else{
+		const GLfloat clearDepth = 1.0f;
+		OGL_CHECK( renderThread, pglClearBufferfv( GL_DEPTH, 0, &clearDepth ) );
+	}
 			SSDTLOG("RenderGIShadowMap Clear %d", (int)(timer.GetElapsedTime() * 1e6f));
 	
 	// render shadow map. only solid content without holes is rendered at the highest lod level

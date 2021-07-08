@@ -55,8 +55,12 @@ public:
 	bool pDirtyVisibility;
 	bool pDirtyParamBlocks;
 	bool pDirtyRenderableMapping;
+	bool pDirtyStaticTexture;
 	
 	bool pDynamicSkinRequiresSync;
+	
+	bool pNotifyTextureChanged;
+	bool pNotifyTUCChanged;
 	
 	deoglComponent *pParentComponent;
 	
@@ -128,6 +132,8 @@ public:
 	/** \brief Visible changed. */
 	virtual void VisibleChanged();
 	/*@}*/
+	
+	
 	
 private:
 	void pCleanUp();

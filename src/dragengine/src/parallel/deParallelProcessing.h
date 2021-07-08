@@ -152,6 +152,9 @@ public:
 	 * although the dependencies added later on are not finished.
 	 * 
 	 * \note Safe to be called from all kinds of threads.
+	 * 
+	 * \note If parallel processing is paused the task is run immediately without
+	 *       being queued. This avoids synchronization issues.
 	 * \throws deeInvalidParam \em task is NULL.
 	 */
 	void AddTaskAsync( deParallelTask *task );
@@ -224,7 +227,8 @@ private:
 	void pDestroyThreads();
 	void pStopAllThreads();
 	
-	void pProcessOneTaskDirect( bool takeLowPriorityTasks );
+	bool pProcessOneTaskDirect( bool takeLowPriorityTasks );
+	void pEnsureRunTaskNow( deParallelTask *task );
 	
 	void pLogTask( const char *prefix, const char *contPrefix, const deParallelTask &task );
 };

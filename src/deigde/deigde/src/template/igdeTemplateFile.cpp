@@ -43,6 +43,7 @@ pDirectory( edData ){
 
 igdeTemplateFile::igdeTemplateFile( const igdeTemplateFile &file ) :
 pPath( file.pPath ),
+pPathRename( file.pPathRename ),
 pPattern( file.pPattern ),
 pDirectory( file.pDirectory )
 {
@@ -64,6 +65,10 @@ igdeTemplateFile::~igdeTemplateFile(){
 
 void igdeTemplateFile::SetPath( const char *path ){
 	pPath = path;
+}
+
+void igdeTemplateFile::SetPathRename( const char *path ){
+	pPathRename = path;
 }
 
 void igdeTemplateFile::SetPattern( const char *pattern ){

@@ -29,6 +29,7 @@ class deoglDMBConvexVolumeList;
 class deoglDMBConvexVolumeFace;
 class deoglDecalMeshBuilderFace;
 class deoglRComponent;
+class deoglRComponentLOD;
 class deoglRenderThread;
 class deoglDCollisionBox;
 class decConvexVolume;
@@ -87,6 +88,7 @@ public:
 	
 	/** \brief Build mesh for component. */
 	void BuildMeshForComponent( const deoglRComponent &oglComponent );
+	void BuildMeshForComponent( const deoglRComponentLOD &lod );
 	
 	/** \brief Debug. */
 	void Debug();

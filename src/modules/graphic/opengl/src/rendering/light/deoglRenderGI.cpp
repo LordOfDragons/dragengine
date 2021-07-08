@@ -351,6 +351,7 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 	
 	deoglRenderThread &renderThread = GetRenderThread();
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
+	const deoglGICascade &cascade = giState->GetActiveCascade();
 	deoglGI &gi = renderThread.GetGI();
 	deoglGIBVH &bvh = gi.GetBVH();
 	
@@ -360,7 +361,6 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 	
 	// if any ray caches are invalid update them
 	#ifdef GI_USE_RAY_CACHE
-	const deoglGICascade &cascade = giState->GetActiveCascade();
 	if( cascade.GetRayCacheProbeCount() > 0 ){
 		pRenderTask->Clear();
 		pAddToRenderTask->Reset();
@@ -1030,7 +1030,7 @@ void deoglRenderGI::ProbeExtends( deoglRenderPlan &plan ){
 	#ifdef GI_USE_RAY_CACHE
 		tsmgr.EnableArrayTexture( 0, giState->GetRayCache().GetTextureDistance(), GetSamplerClampNearest() );
 	#else
-		tsmgr.EnableTexture( 0, gi.GetTraceRays().GetTexturePosition(), GetSamplerClampNearest() );
+		tsmgr.EnableTexture( 0, renderThread.GetGI().GetTraceRays().GetTexturePosition(), GetSamplerClampNearest() );
 	#endif
 	tsmgr.DisableStagesAbove( 0 );
 	

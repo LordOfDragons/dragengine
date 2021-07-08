@@ -608,8 +608,8 @@ DBG_ENTER_PARAM("RenderTransparentGeometryPass", "%p", mask)
 	
 	addToRenderTask.Reset();
 	addToRenderTask.SetSolid( false );
-	addToRenderTask.SetNoRendered( true );
-	addToRenderTask.SetFilterHoles( true );
+	addToRenderTask.SetNoRendered( mask );
+	addToRenderTask.SetNoNotReflected( plan.GetNoReflections() );
 	
 	addToRenderTask.SetSkinShaderType( deoglSkinTexture::estComponentGeometry );
 	addToRenderTask.AddComponents( collideList );

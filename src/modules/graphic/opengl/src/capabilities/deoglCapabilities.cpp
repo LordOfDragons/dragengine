@@ -415,6 +415,7 @@ void deoglCapabilities::pAndroidTest( deoglFramebuffer *framebuffer ){
 		
 		// prepare framebuffer with texture
 		pRenderThread.GetFramebuffer().Activate( framebuffer );
+		framebuffer->DetachAllImages();
 		framebuffer->AttachColorTexture( 0, texture );
 		framebuffer->UpdateReadWriteBuffers();
 		framebuffer->Verify();

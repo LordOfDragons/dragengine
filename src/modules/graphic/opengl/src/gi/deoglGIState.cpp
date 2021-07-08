@@ -764,6 +764,7 @@ void deoglGIState::pPrepareProbeTexturesAndFBO(){
 	}
 	
 	if( pClearMaps ){
+		OGL_CHECK( pRenderThread, glDisable( GL_BLEND ) ); // silence performance warning
 		OGL_CHECK( pRenderThread, glDisable( GL_SCISSOR_TEST ) );
 		OGL_CHECK( pRenderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
 		

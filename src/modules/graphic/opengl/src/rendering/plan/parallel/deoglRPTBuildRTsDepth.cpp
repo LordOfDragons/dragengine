@@ -47,7 +47,9 @@ deoglRPTBuildRTsDepth::deoglRPTBuildRTsDepth( deoglRenderPlanTasks &plan, const 
 deParallelTask( &plan.GetPlan().GetRenderThread().GetOgl() ),
 pPlan( plan ),
 pMask( mask ),
-pElapsedTime( 0.0f ){
+pElapsedTime( 0.0f )
+{
+	SetMarkFinishedAfterRun( true );
 }
 
 deoglRPTBuildRTsDepth::~deoglRPTBuildRTsDepth(){
@@ -70,7 +72,7 @@ void deoglRPTBuildRTsDepth::Run(){
 		
 	}catch( const deException &e ){
 		pPlan.GetPlan().GetRenderThread().GetLogger().LogException( e );
-		pSemaphore.Wait();
+		pSemaphore.Signal();
 		throw;
 	}
 	

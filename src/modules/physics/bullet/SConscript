@@ -21,7 +21,7 @@ if not buildModule:
 useDebugSnapshot = True
 
 # fetch values in expanded form for later use
-versionString = '1.4'
+versionString = '1.5'
 if envModule['force_version']:
 	versionString = envModule['force_version']
 
@@ -68,10 +68,10 @@ envSpecialBullet = envModule.Clone()
 """if useDebugSnapshot:
 	envSpecialBulletExtras = envSpecialBullet.Clone()
 	
-	envSpecialBulletExtras.Append( CPPFLAGS = '-I{}/BulletExtras/COLLADA_DOM/include/1.4'.format( pathSConscript ) )
+	envSpecialBulletExtras.Append( CPPFLAGS = '-I{}/BulletExtras/COLLADA_DOM/include/{}'.format(pathSConscript, versionString))
 	envSpecialBulletExtras.Append( CPPFLAGS = '-I{}/BulletExtras/COLLADA_DOM/include'.format( pathSConscript ) )
 	envSpecialBulletExtras.Append( CPPFLAGS = '-I{}/BulletExtras/LibXML/include'.format( pathSConscript ) )
-	envSpecialBulletExtras.Append( CFLAGS = '-I{}/BulletExtras/COLLADA_DOM/include/1.4'.format( pathSConscript ) )
+	envSpecialBulletExtras.Append( CFLAGS = '-I{}/BulletExtras/COLLADA_DOM/include/{}'.format(pathSConscript, versionString))
 	envSpecialBulletExtras.Append( CFLAGS = '-I{}/BulletExtras/COLLADA_DOM/include'.format( pathSConscript ) )
 	envSpecialBulletExtras.Append( CFLAGS = '-I{}/BulletExtras/LibXML/include'.format( pathSConscript ) )"""
 

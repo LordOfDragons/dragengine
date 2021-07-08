@@ -27,6 +27,7 @@
 
 #ifdef OS_W32
 #include "../../app/include_windows.h"
+#include <stdint.h>
 #endif
 
 #include <stdio.h>
@@ -147,6 +148,19 @@ TIME_SYSTEM decDateTime::GetSystemTime(){
 #endif
 	
 #ifdef OS_W32
-	return ( TIME_SYSTEM )timeGetTime();
+	// Note: some broken versions only have 8 trailing zero's, the correct epoch has 9 trailing zero's
+	// This magic number is the number of 100 nanosecond intervals since January 1, 1601 (UTC)
+	// until 00:00:00 January 1, 1970 
+	static const uint64_t epoch = ( uint64_t )116444736000000000ULL;
+	
+	SYSTEMTIME systemTime;
+	FILETIME fileTime;
+	uint64_t time;
+	
+	::GetSystemTime( &systemTime );
+	SystemTimeToFileTime( &systemTime, &fileTime );
+	time = ( uint64_t )fileTime.dwLowDateTime + ( ( uint64_t )fileTime.dwHighDateTime << 32 );
+	
+	return ( TIME_SYSTEM )( ( time - epoch ) / 10000000L );
 #endif
 }

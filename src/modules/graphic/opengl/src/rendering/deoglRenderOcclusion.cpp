@@ -1264,7 +1264,6 @@ deoglCubeMap *cubemap, const decDVector &position, float imageDistance, float vi
 		pAddToRenderTask->SetEnforceShader( pShaderOccMap->GetRTSShader() );
 	}
 	pAddToRenderTask->SetSolid( true );
-	pAddToRenderTask->SetWithHoles( false );
 	pAddToRenderTask->SetNoRendered( false );
 	pAddToRenderTask->SetNoShadowNone( false );
 	

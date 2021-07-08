@@ -554,7 +554,7 @@ const deoglRenderPlanMasked *mask, deoglCollideListLight &cllight ){
 	deoglShadowMapper &shadowMapper = renderThread.GetShadowMapper();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	deoglRenderPlanDebug * const planDebug = plan.GetDebug();
-	bool useShadow = renderThread.GetConfiguration().GetDebugUseShadow();
+	bool useShadow = renderThread.GetConfiguration().GetShadowQuality() != deoglConfiguration::esqOff;
 	deoglDCollisionBox colbox;
 	int shadowType = shadowCaster.GetShadowType();
 	deoglTexture *texSolidDepth1 = NULL;
@@ -1191,6 +1191,8 @@ bool refilterShadow ){
 			RenderShadowMap( plan, light, matrixCamera, matrixProjection, shadowMapper,
 				light.GetStaticCollideList(), NULL, staticShadowMapSize,
 				staticTranspShadowMapSize, transparentStaticShadow, false, solid );
+			
+			shadowMapper.DropForeignTextures();
 			
 			/*
 			decString text;

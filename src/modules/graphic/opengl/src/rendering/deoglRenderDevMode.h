@@ -27,6 +27,7 @@
 class deoglDebugInformationList;
 class deoglShaderProgram;
 class deoglDebugInformation;
+class decString;
 
 
 
@@ -97,6 +98,10 @@ public:
 	
 	/** Show visible debug information. */
 	void RenderDebugInformation( deoglRenderPlan &plan, const decPoint &position, decPoint &size );
+	
+	/** Log visible debug information. */
+	void LogDebugInformation();
+	void LogDebugInformation( const deoglDebugInformationList &list, const decString &prefix );
 	
 	/** Layout visible debug information for rendering. */
 	void LayoutDebugInformation( deoglRenderPlan &plan, const decPoint &position, decPoint &size,

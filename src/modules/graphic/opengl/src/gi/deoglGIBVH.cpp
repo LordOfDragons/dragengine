@@ -186,7 +186,7 @@ const deoglGIInstances &instances, bool dynamic ){
 }
 
 void deoglGIBVH::AddComponent( deoglRenderPlan &plan, const decMatrix &matrix, deoglGIInstance &instance ){
-	if( ! instance.GetHasBVHNodes() ){
+	if( ! instance.GetHasBVHNodes() || ! instance.GetComponent() ){
 		return;
 	}
 	
