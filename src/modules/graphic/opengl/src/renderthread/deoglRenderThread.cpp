@@ -68,6 +68,8 @@
 #include "../window/deoglRenderWindow.h"
 #include "../window/deoglRRenderWindow.h"
 
+#include <deSharedVulkan.h>
+
 #include <dragengine/deEngine.h>
 #include <dragengine/app/deOS.h>
 #include <dragengine/common/exceptions.h>
@@ -123,6 +125,7 @@ pPersistentRenderTaskPool( NULL ),
 pRenderTaskSharedPool( NULL ),
 pUniqueKey( NULL ),
 pOcclusionTestPool( NULL ),
+pVulkan( NULL ),
 
 pTimeHistoryMain( 29, 2 ),
 pTimeHistoryRender( 29, 2 ),
@@ -981,6 +984,13 @@ void deoglRenderThread::pInitThreadPhase4(){
 	pRenderers = new deoglRTRenderers( *this );
 	pDefaultTextures = new deoglRTDefaultTextures( *this );
 	
+	// load vulkan if supported
+	try{
+		pVulkan = new deSharedVulkan( pOgl );
+		
+	}catch( const deException &e ){
+		pLogger->LogException( e );
+	}
 	// initial notification. required for testing if devode config is hardcoded in constructor
 	DevModeDebugInfoChanged();
 	
@@ -1979,6 +1989,11 @@ void deoglRenderThread::pCleanUpThread(){
 		#ifdef TIME_CLEANUP
 		pLogger->LogInfoFormat( "RT-CleanUp: destroy textures (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f) );
 		#endif
+		
+		if( pVulkan ){
+			delete pVulkan;
+			pVulkan = NULL;
+		}
 		
 		if( pDebugInfoModule ){
 			pDebug->GetDebugInformationList().Remove( pDebugInfoModule );

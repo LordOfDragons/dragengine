@@ -657,6 +657,9 @@ SConscript( dirs='src/dragengine', variant_dir='src/dragengine/build', duplicate
 
 scdirs = []
 
+# shared libraries
+scdirs.append( 'src/shared/vulkan' )
+
 # game engine modules
 scdirs.append( 'src/modules/animator/deanimator' )
 

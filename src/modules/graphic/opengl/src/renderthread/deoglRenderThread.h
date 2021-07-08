@@ -67,6 +67,8 @@ class deoglRTChoices;
 
 class deRenderWindow;
 
+class deSharedVulkan;
+
 // deprecated
 class deoglEdgeFinder;
 class deoglOptimizerManager;
@@ -133,6 +135,7 @@ private:
 	deoglRenderTaskSharedPool *pRenderTaskSharedPool;
 	deoglRTUniqueKey *pUniqueKey;
 	deoglOcclusionTestPool *pOcclusionTestPool;
+	deSharedVulkan *pVulkan;
 	
 	deoglTimeHistory pTimeHistoryMain;
 	deoglTimeHistory pTimeHistoryRender;
@@ -325,6 +328,9 @@ public:
 	
 	/** Occlusion test pool. */
 	inline deoglOcclusionTestPool &GetOcclusionTestPool() const{ return *pOcclusionTestPool; }
+	
+	/** Vulkan if present. */
+	inline deSharedVulkan *GetVulkan() const{ return pVulkan; }
 	
 	
 	
