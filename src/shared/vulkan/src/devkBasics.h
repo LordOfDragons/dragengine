@@ -33,9 +33,11 @@ class deSharedVulkan;
 #ifdef VK_CHECKCOMMANDS
 	void devkDebugCheckCommand( VkResult result, deSharedVulkan &vulkan, const char *file, int line );
 	#define VK_CHECK(vulkan,cmd) devkDebugCheckCommand( cmd, vulkan, __FILE__, __LINE__ )
+	#define VK_IF_CHECK(cmd) cmd
 	
 #else
 	#define VK_CHECK(renderThread,cmd) cmd
+	#define VK_IF_CHECK(cmd)
 #endif
 
 #endif

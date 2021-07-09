@@ -38,6 +38,8 @@ pDevice( device ),
 pPool( nullptr )
 {
 	try{
+		VK_IF_CHECK( deSharedVulkan &vulkan = device.GetInstance().GetVulkan() );
+		
 		VkCommandPoolCreateInfo info;
 		memset( &info, 0, sizeof( info ) );
 		
@@ -45,8 +47,7 @@ pPool( nullptr )
 		info.queueFamilyIndex = queueFamily;
 		info.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
 		
-		VK_CHECK( device.GetInstance().GetVulkan(),
-			device.vkCreateCommandPool( device.GetDevice(), &info, nullptr, &pPool ) );
+		VK_CHECK( vulkan, device.vkCreateCommandPool( device.GetDevice(), &info, nullptr, &pPool ) );
 		
 	}catch( const deException & ){
 		pCleanUp();

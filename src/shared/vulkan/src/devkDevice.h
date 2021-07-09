@@ -27,7 +27,6 @@
 
 #include <dragengine/deObject.h>
 #include <dragengine/deTObjectReference.h>
-#include <dragengine/common/collection/decObjectList.h>
 
 class devkInstance;
 
@@ -61,16 +60,15 @@ private:
 	devkInstance &pInstance;
 	
 	VkPhysicalDevice pPhysicalDevice;
-	VkPhysicalDeviceProperties pPhysicalDeviceProperties;
+	VkPhysicalDeviceProperties pProperties;
+	VkPhysicalDeviceMemoryProperties pMemoryProperties;
 	const DeviceConfig pConfig;
 	uint32_t pFamilyIndexGraphic;
 	uint32_t pFamilyIndexCompute;
 	uint32_t pFamilyIndexTransfer;
 	
 	VkDevice pDevice;
-	decObjectList pGraphicQueues;
-	decObjectList pComputeQueues;
-	decObjectList pTransferQueues;
+	devkQueue::Ref *pQueues;
 	
 	
 	
@@ -97,13 +95,22 @@ public:
 	inline VkPhysicalDevice GetPhysicalDevice() const{ return pPhysicalDevice; }
 	
 	/** Device properties. */
-	inline const VkPhysicalDeviceProperties &GetPhysicalDeviceProperties() const{ return pPhysicalDeviceProperties; }
+	inline const VkPhysicalDeviceProperties &GetProperties() const{ return pProperties; }
 	
 	/** Configuration. */
 	inline const DeviceConfig &GetConfig() const{ return pConfig; }
 	
 	/** Device. */
 	inline VkDevice GetDevice() const{ return pDevice; }
+	
+	
+	
+	/** Device memory properties. */
+	inline const VkPhysicalDeviceMemoryProperties &GetMemoryProperties() const{ return pMemoryProperties; }
+	
+	/** Index of matching memory type. */
+	uint32_t IndexOfMemoryType( VkMemoryPropertyFlags property, uint32_t bits ) const;
+	uint32_t IndexOfMemoryType( VkMemoryPropertyFlags property, const VkMemoryRequirements &requirements ) const;
 	
 	
 	

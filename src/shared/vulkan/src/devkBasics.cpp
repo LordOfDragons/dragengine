@@ -39,7 +39,7 @@ void devkDebugCheckCommand( VkResult result, deSharedVulkan &vulkan, const char 
 		break;
 		
 	CASE_ERROR( VK_INCOMPLETE )
-	
+	CASE_ERROR( VK_ERROR_DEVICE_LOST )
 	CASE_ERROR( VK_ERROR_OUT_OF_HOST_MEMORY )
 	CASE_ERROR( VK_ERROR_OUT_OF_DEVICE_MEMORY )
 	CASE_ERROR( VK_ERROR_INITIALIZATION_FAILED )

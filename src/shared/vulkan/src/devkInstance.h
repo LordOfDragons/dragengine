@@ -50,7 +50,9 @@ private:
 	VkPhysicalDevice *pPhysicalDevices;
 	int pPhysicalDeviceCount;
 	
-// 	VkDebugReportCallbackEXT debugReportCallback{};
+	// DEBUG
+	VkDebugReportCallbackEXT debugReportCallback{};
+	// DEBUG
 	
 	
 public:

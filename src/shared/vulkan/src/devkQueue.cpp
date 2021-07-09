@@ -32,8 +32,9 @@
 // class devkQueue
 ////////////////////
 
-devkQueue::devkQueue( devkDevice &device, VkQueue queue ) :
+devkQueue::devkQueue( devkDevice &device, uint32_t family, VkQueue queue ) :
 pDevice( device ),
+pFamily( family ),
 pQueue( queue )
 {
 	if( ! queue ){
@@ -56,6 +57,10 @@ devkQueue::~devkQueue(){
 
 // Management
 ///////////////
+
+devkCommandPool::Ref devkQueue::CreateCommandPool(){
+	return devkCommandPool::Ref::With( new devkCommandPool( pDevice, pFamily ) );
+}
 
 
 

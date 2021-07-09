@@ -93,33 +93,33 @@ void devkInstance::pCleanUp(){
 	}
 	if( pInstance ){
 		// DEBUG
-// 		if( debugReportCallback ){
-// 			PFN_vkDestroyDebugReportCallbackEXT vkDestroyDebugReportCallback =
-// 				( PFN_vkDestroyDebugReportCallbackEXT )vkGetInstanceProcAddr( pInstance, "vkDestroyDebugReportCallbackEXT" );
-// 			if( vkDestroyDebugReportCallback ){
-// 				vkDestroyDebugReportCallback( pInstance, debugReportCallback, nullptr );
-// 			}
-// 		}
+		if( debugReportCallback ){
+			PFN_vkDestroyDebugReportCallbackEXT vkDestroyDebugReportCallback =
+				( PFN_vkDestroyDebugReportCallbackEXT )vkGetInstanceProcAddr( pInstance, "vkDestroyDebugReportCallbackEXT" );
+			if( vkDestroyDebugReportCallback ){
+				vkDestroyDebugReportCallback( pInstance, debugReportCallback, nullptr );
+			}
+		}
 		// DEBUG
 		
 		vkDestroyInstance( pInstance, nullptr );
 	}
 }
 
-// static VKAPI_ATTR VkBool32 VKAPI_CALL debugMessageCallback(
-// 	VkDebugReportFlagsEXT flags,
-// 	VkDebugReportObjectTypeEXT objectType,
-// 	uint64_t object,
-// 	size_t location,
-// 	int32_t messageCode,
-// 	const char* pLayerPrefix,
-// 	const char* pMessage,
-// 	void* pUserData)
-// {
-// 	devkInstance * const instance = ( devkInstance* )pUserData;
-// 	instance->GetVulkan().GetModule().LogInfoFormat( "VALIDATION: %s - %s", pLayerPrefix, pMessage );
-// 	return VK_FALSE;
-// }
+static VKAPI_ATTR VkBool32 VKAPI_CALL debugMessageCallback(
+	VkDebugReportFlagsEXT flags,
+	VkDebugReportObjectTypeEXT objectType,
+	uint64_t object,
+	size_t location,
+	int32_t messageCode,
+	const char* pLayerPrefix,
+	const char* pMessage,
+	void* pUserData)
+{
+	devkInstance * const instance = ( devkInstance* )pUserData;
+	instance->GetVulkan().GetModule().LogInfoFormat( "VALIDATION: %s - %s", pLayerPrefix, pMessage );
+	return VK_FALSE;
+}
 
 void devkInstance::pCreateInstance(){
 	pVulkan.GetModule().LogInfo( "Create Vulkan Instance" );
@@ -141,7 +141,8 @@ void devkInstance::pCreateInstance(){
 	instanceCreateInfo.pApplicationInfo = &appInfo;
 	
 	// init layers
-	const char* validationLayers[] = { "VK_LAYER_LUNARG_standard_validation" };
+// 	const char* validationLayers[] = { "VK_LAYER_LUNARG_standard_validation" };
+	const char* validationLayers[] = { "VK_LAYER_KHRONOS_validation" };
 	const uint32_t layerCount = 1;
 	
 	#ifdef WITH_DEBUG
@@ -157,6 +158,12 @@ void devkInstance::pCreateInstance(){
 	
 	bool layersAvailable = true;
 	uint32_t i;
+	
+	pVulkan.GetModule().LogInfo( "Available Vulkan Layers:" );
+	for( i=0; i<instanceLayerCount; i++ ){
+		pVulkan.GetModule().LogInfoFormat( "- %s", instanceLayers[ i ].layerName );
+	}
+	
 	for( i=0; i<layerCount; i++ ){
 		bool layerAvailable = false;
 		uint32_t j;
@@ -166,10 +173,12 @@ void devkInstance::pCreateInstance(){
 				layerAvailable = true;
 				break;
 			}
-			if( ! layerAvailable ){
-				layersAvailable = false;
-				break;
-			}
+		}
+		
+		if( ! layerAvailable ){
+			pVulkan.GetModule().LogInfoFormat( "Layer '%s' not found", validationLayers[ i ] );
+			layersAvailable = false;
+			break;
 		}
 	}
 	
@@ -179,6 +188,7 @@ void devkInstance::pCreateInstance(){
 	
 	const char * const validationExt = VK_EXT_DEBUG_REPORT_EXTENSION_NAME;
 	if( layersAvailable ){
+		pVulkan.GetModule().LogInfo( "Create Layers Available" );
 		instanceCreateInfo.ppEnabledLayerNames = validationLayers;
 		instanceCreateInfo.enabledLayerCount = layerCount;
 		instanceCreateInfo.enabledExtensionCount = 1;
@@ -189,20 +199,20 @@ void devkInstance::pCreateInstance(){
 	VK_CHECK( pVulkan, vkCreateInstance( &instanceCreateInfo, nullptr, &pInstance ) );
 	
 	// debug
-// 	if( layersAvailable ){
-// 		VkDebugReportCallbackCreateInfoEXT debugReportCreateInfo = {};
-// 		debugReportCreateInfo.sType = VK_STRUCTURE_TYPE_DEBUG_REPORT_CALLBACK_CREATE_INFO_EXT;
-// 		debugReportCreateInfo.flags = VK_DEBUG_REPORT_ERROR_BIT_EXT | VK_DEBUG_REPORT_WARNING_BIT_EXT;
-// 		debugReportCreateInfo.pfnCallback = (PFN_vkDebugReportCallbackEXT)debugMessageCallback;
-// 		debugReportCreateInfo.pUserData = this;
-// 		
-// 		PFN_vkCreateDebugReportCallbackEXT vkCreateDebugReportCallbackEXT =
-// 			( PFN_vkCreateDebugReportCallbackEXT )vkGetInstanceProcAddr( pInstance, "vkCreateDebugReportCallbackEXT");
-// 		if( ! vkCreateDebugReportCallbackEXT ){
-// 			DETHROW( deeInvalidAction );
-// 		}
-// 		VK_CHECK( pVulkan, vkCreateDebugReportCallbackEXT( pInstance, &debugReportCreateInfo, nullptr, &debugReportCallback ) );
-// 	}
+	if( layersAvailable ){
+		VkDebugReportCallbackCreateInfoEXT debugReportCreateInfo = {};
+		debugReportCreateInfo.sType = VK_STRUCTURE_TYPE_DEBUG_REPORT_CALLBACK_CREATE_INFO_EXT;
+		debugReportCreateInfo.flags = VK_DEBUG_REPORT_ERROR_BIT_EXT | VK_DEBUG_REPORT_WARNING_BIT_EXT;
+		debugReportCreateInfo.pfnCallback = (PFN_vkDebugReportCallbackEXT)debugMessageCallback;
+		debugReportCreateInfo.pUserData = this;
+		
+		PFN_vkCreateDebugReportCallbackEXT vkCreateDebugReportCallbackEXT =
+			( PFN_vkCreateDebugReportCallbackEXT )vkGetInstanceProcAddr( pInstance, "vkCreateDebugReportCallbackEXT");
+		if( ! vkCreateDebugReportCallbackEXT ){
+			DETHROW( deeInvalidAction );
+		}
+		VK_CHECK( pVulkan, vkCreateDebugReportCallbackEXT( pInstance, &debugReportCreateInfo, nullptr, &debugReportCallback ) );
+	}
 }
 
 void devkInstance::pLoadFunctions(){
