@@ -42,56 +42,37 @@ devkPipeline( device, configuration )
 		DETHROW_INFO( deeNullPointer, "configuration.shaderCompute" );
 	}
 	
-	const int specializationCount = configuration.GetSpecializationCount();
-	VkSpecializationMapEntry *specializationEntries = nullptr;
-	int i;
+	const devkSpecialization * const specialization = configuration.GetSpecialization();
+	VK_IF_CHECK( deSharedVulkan &vulkan = device.GetInstance().GetVulkan() );
 	
-	try{
-		VK_IF_CHECK( deSharedVulkan &vulkan = device.GetInstance().GetVulkan() );
-		
-		VkComputePipelineCreateInfo pipelineInfo;
-		memset( &pipelineInfo, 0, sizeof( pipelineInfo ) );
-		pipelineInfo.sType = VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO;
-		pipelineInfo.layout = pLayout;
-		pipelineInfo.flags = 0;
-		
-		if( specializationCount > 0 ){
-			specializationEntries = new VkSpecializationMapEntry[ specializationCount ];
-			for( i=0; i<specializationCount; i++ ){
-				specializationEntries->constantID = i;
-				specializationEntries->offset = sizeof( devkPipelineConfiguration::Specialization ) * i;
-				specializationEntries->size = sizeof( devkPipelineConfiguration::Specialization );
-			}
-		}
-		
-		VkSpecializationInfo specializationInfo;
-		memset( &specializationInfo, 0, sizeof( specializationInfo ) );
-		specializationInfo.pData = configuration.GetSpecializations();
-		specializationInfo.dataSize = sizeof( devkPipelineConfiguration::Specialization ) * specializationCount;
-		specializationInfo.mapEntryCount = specializationCount;
-		specializationInfo.pMapEntries = specializationEntries;
-		
-		pipelineInfo.stage.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
-		pipelineInfo.stage.stage = VK_SHADER_STAGE_COMPUTE_BIT;
-		pipelineInfo.stage.module = configuration.GetShaderCompute()->GetModule();
-		pipelineInfo.stage.pName = "main";
-		pipelineInfo.stage.pSpecializationInfo = &specializationInfo;
-		
-		VK_CHECK( vulkan, pDevice.vkCreateComputePipelines( device.GetDevice(),
-			pCache, 1, &pipelineInfo, nullptr, &pPipeline ) );
-		
-		if( specializationEntries ){
-			delete [] specializationEntries;
-		}
-		
-		pSaveCache = true;
-		
-	}catch( const deException & ){
-		if( specializationEntries ){
-			delete [] specializationEntries;
-		}
-		throw;
+	VkComputePipelineCreateInfo pipelineInfo;
+	memset( &pipelineInfo, 0, sizeof( pipelineInfo ) );
+	pipelineInfo.sType = VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO;
+	pipelineInfo.layout = pLayout;
+	pipelineInfo.flags = 0;
+	
+	VkSpecializationInfo specializationInfo;
+	memset( &specializationInfo, 0, sizeof( specializationInfo ) );
+	if( specialization ){
+		specializationInfo.pData = specialization->GetData();
+		specializationInfo.dataSize = specialization->GetDataSize();
+		specializationInfo.mapEntryCount = specialization->GetEntryCount();
+		specializationInfo.pMapEntries = specialization->GetEntries();
 	}
+	
+	pipelineInfo.stage.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+	pipelineInfo.stage.stage = VK_SHADER_STAGE_COMPUTE_BIT;
+	pipelineInfo.stage.module = configuration.GetShaderCompute()->GetModule();
+	pipelineInfo.stage.pName = "main";
+	
+	if( specialization ){
+		pipelineInfo.stage.pSpecializationInfo = &specializationInfo;
+	}
+	
+	VK_CHECK( vulkan, pDevice.vkCreateComputePipelines( device.GetDevice(),
+		pCache, 1, &pipelineInfo, nullptr, &pPipeline ) );
+	
+	pSaveCache = true;
 }
 
 devkPipelineCompute::~devkPipelineCompute(){

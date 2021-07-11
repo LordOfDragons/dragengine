@@ -22,10 +22,8 @@
 #ifndef _DEVKPIPELINECONFIGURATION_H_
 #define _DEVKPIPELINECONFIGURATION_H_
 
+#include "devkSpecialization.h"
 #include "../devkBasics.h"
-
-#include <dragengine/deObject.h>
-#include <dragengine/deTObjectReference.h>
 
 class devkDescriptorSetLayout;
 class devkShaderModule;
@@ -41,13 +39,6 @@ public:
 		graphics,
 		compute,
 		raytracing
-	};
-	
-	/** Specialization constant value. */
-	union Specialization{
-		int integer;
-		float floating;
-		bool boolean;
 	};
 	
 	
@@ -74,8 +65,7 @@ private:
 	devkShaderModule *pShaderTask;
 	devkShaderModule *pShaderMesh;
 	
-	Specialization *pSpecializations;
-	int pSpecializationCount;
+	devkSpecialization::Ref pSpecialization;
 	
 	
 	
@@ -202,14 +192,11 @@ public:
 	
 	
 	
-	/** Specialization values. */
-	inline const Specialization *GetSpecializations() const{ return pSpecializations; }
+	/** Specialization. */
+	inline devkSpecialization *GetSpecialization() const{ return pSpecialization; }
 	
-	/** Count of specialization values. */
-	inline int GetSpecializationCount() const{ return pSpecializationCount; }
-	
-	/** Set specialization values. */
-	void SetSpecializations( const Specialization *specializations, int count );
+	/** Set specialization. */
+	void SetSpecialization( devkSpecialization *specialization );
 	/*@}*/
 	
 	

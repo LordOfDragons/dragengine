@@ -48,9 +48,7 @@ pShaderMiss( nullptr ),
 pShaderIntersection( nullptr ),
 pShaderCallable( nullptr ),
 pShaderTask( nullptr ),
-pShaderMesh( nullptr ),
-pSpecializations( nullptr ),
-pSpecializationCount( 0 ){
+pShaderMesh( nullptr ){
 }
 
 devkPipelineConfiguration::devkPipelineConfiguration( const devkPipelineConfiguration &configuration ) :
@@ -69,17 +67,12 @@ pShaderMiss( nullptr ),
 pShaderIntersection( nullptr ),
 pShaderCallable( nullptr ),
 pShaderTask( nullptr ),
-pShaderMesh( nullptr ),
-pSpecializations( nullptr ),
-pSpecializationCount( 0 )
+pShaderMesh( nullptr )
 {
 	*this = configuration;
 }
 
 devkPipelineConfiguration::~devkPipelineConfiguration(){
-	if( pSpecializations ){
-		delete [] pSpecializations;
-	}
 }
 
 
@@ -159,27 +152,8 @@ void devkPipelineConfiguration::SetShaderMesh( devkShaderModule *shader ){
 
 
 
-void devkPipelineConfiguration::SetSpecializations( const Specialization *specializations, int count ){
-	if( count < 0 ){
-		DETHROW_INFO( deeInvalidParam, "count < 0" );
-	}
-	if( count > 0 && ! specializations ){
-		DETHROW_INFO( deeNullPointer, "specializations" );
-	}
-	
-	if( pSpecializations ){
-		delete [] pSpecializations;
-		pSpecializations = nullptr;
-		pSpecializationCount = 0;
-	}
-	
-	if( count == 0 ){
-		return;
-	}
-	
-	pSpecializations = new Specialization[ count ];
-	memcpy( pSpecializations, specializations, sizeof( Specialization ) * count );
-	pSpecializationCount = count;
+void devkPipelineConfiguration::SetSpecialization( devkSpecialization *specialization ){
+	pSpecialization = specialization;
 }
 
 
@@ -204,9 +178,7 @@ bool devkPipelineConfiguration::operator==( const devkPipelineConfiguration &con
 	&& pShaderCallable == configuration.pShaderCallable
 	&& pShaderTask == configuration.pShaderTask
 	&& pShaderMesh == configuration.pShaderMesh
-	&& pSpecializationCount == configuration.pSpecializationCount
-	&& ( ! pSpecializations || memcmp( pSpecializations, configuration.pSpecializations,
-		sizeof( Specialization ) * pSpecializationCount ) == 0 );
+	&& pSpecialization == configuration.pSpecialization;
 }
 
 devkPipelineConfiguration &devkPipelineConfiguration::operator=( const devkPipelineConfiguration &configuration ){
@@ -226,6 +198,6 @@ devkPipelineConfiguration &devkPipelineConfiguration::operator=( const devkPipel
 	pShaderCallable = configuration.pShaderCallable;
 	pShaderTask = configuration.pShaderTask;
 	pShaderMesh = configuration.pShaderMesh;
-	SetSpecializations( configuration.pSpecializations, configuration.pSpecializationCount );
+	pSpecialization = configuration.pSpecialization;
 	return *this;
 }

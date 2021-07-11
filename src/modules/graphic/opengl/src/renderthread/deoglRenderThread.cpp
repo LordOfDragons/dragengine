@@ -1038,6 +1038,15 @@ void deoglRenderThread::pInitThreadPhase4(){
 		
 		devkDescriptorSet::Ref dsSSBO;
 		VKTLOG( dsSSBO.TakeOver( new devkDescriptorSet( dpSSBO ) ), "DescriptorSet SSBO")
+		
+		/*
+		VkDescriptorBufferInfo bufferDescriptor = { deviceBuffer, 0, VK_WHOLE_SIZE };
+		std::vector<VkWriteDescriptorSet> computeWriteDescriptorSets = {
+			vks::initializers::writeDescriptorSet(descriptorSet, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, 0, &bufferDescriptor),
+		};
+		vkUpdateDescriptorSets(device, static_cast<uint32_t>(computeWriteDescriptorSets.size()), computeWriteDescriptorSets.data(), 0, NULL);
+		 */
+		
 		const uint32_t test1_spv_data[] = {
 			0x07230203,0x00010000,0x0008000a,0x00000027,0x00000000,0x00020011,0x00000001,0x0006000b,
 			0x00000002,0x4c534c47,0x6474732e,0x3035342e,0x00000000,0x0003000e,0x00000000,0x00000001,
@@ -1111,20 +1120,17 @@ void deoglRenderThread::pInitThreadPhase4(){
 		pipelineConfig.SetType( devkPipelineConfiguration::Type::compute );
 		pipelineConfig.SetShaderCompute( shader );
 		
-		devkPipelineConfiguration::Specialization specs[ 1 ];
-		specs[ 0 ].integer = 1024;
-		pipelineConfig.SetSpecializations( specs, 1 );
+		const struct ShaderConfig{
+			uint32_t valueCount = 1024;
+		} shaderConfig;
+		
+		devkSpecialization::Ref specialization;
+		specialization.TakeOver( new devkSpecialization( &shaderConfig, sizeof( shaderConfig ), 1 ) );
+		specialization->SetEntryUIntAt( 0, 0, offsetof( ShaderConfig, valueCount ) );
+		pipelineConfig.SetSpecialization( specialization );
 		
 		VKTLOG( devkPipeline * const pipeline = pVulkanDevice->GetPipelineManager().GetWith( pipelineConfig ), "PipelineCompute")
 		(void)pipeline;
-		
-		/*
-		VkDescriptorBufferInfo bufferDescriptor = { deviceBuffer, 0, VK_WHOLE_SIZE };
-		std::vector<VkWriteDescriptorSet> computeWriteDescriptorSets = {
-			vks::initializers::writeDescriptorSet(descriptorSet, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, 0, &bufferDescriptor),
-		};
-		vkUpdateDescriptorSets(device, static_cast<uint32_t>(computeWriteDescriptorSets.size()), computeWriteDescriptorSets.data(), 0, NULL);		
-		 */
 		
 	}
 #endif
