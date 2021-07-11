@@ -873,6 +873,25 @@ void deoglRenderThread::pInitThreadPhase3(){
 	pContext->InitPhase3( pInitialRenderWindow );
 }
 
+// #define DO_VULKAN_TEST
+#ifdef DO_VULKAN_TEST
+#include <queue/devkCommandPool.h>
+#include <buffer/devkBuffer.h>
+#include <descriptor/devkDescriptorPool.h>
+#include <descriptor/devkDescriptorSet.h>
+#include <descriptor/devkDescriptorSetLayout.h>
+#include <descriptor/devkDescriptorSetLayoutConfiguration.h>
+#include <pipeline/devkPipelineCompute.h>
+#include <pipeline/devkPipelineConfiguration.h>
+#include <shader/devkShaderModule.h>
+#include <dragengine/common/file/decMemoryFile.h>
+#include <dragengine/common/file/decMemoryFileReference.h>
+#include <dragengine/common/file/decMemoryFileReader.h>
+#include <dragengine/common/file/decMemoryFileWriter.h>
+#include <dragengine/common/file/decBaseFileReaderReference.h>
+#include <dragengine/common/file/decBaseFileWriterReference.h>
+#endif
+
 void deoglRenderThread::pInitThreadPhase4(){
 	pContext->InitPhase4( pInitialRenderWindow );
 	pInitialRenderWindow = NULL;
@@ -989,6 +1008,127 @@ void deoglRenderThread::pInitThreadPhase4(){
 	}catch( const deException &e ){
 		pLogger->LogException( e );
 	}
+	
+#ifdef DO_VULKAN_TEST
+	if( pVulkan ){
+		#define VKTLOG(cmd,s) timer.Reset(); cmd; pLogger->LogInfoFormat("Vulkan Test: " s " %dys", (int)(timer.GetElapsedTime()*1e6));
+		devkQueue &queue = pVulkanDevice->GetComputeQueue();
+		const devkCommandPool::Ref commandPool( queue.CreateCommandPool() );
+		const devkBuffer::Ref bufferInput( devkBuffer::Ref::With(
+			new devkBuffer( pVulkanDevice, sizeof( uint32_t ) * 1024 ) ) );
+		int i;
+		uint32_t bufferInputData[ 1024 ];
+		for( i=0; i<1024; i++ ){
+			bufferInputData[ i ] = i;
+		}
+		decTimer timer;
+		VKTLOG( bufferInput->SetData( bufferInputData, sizeof( uint32_t ) * 1024 ), "SetData")
+		VKTLOG( bufferInput->TransferToDevice( commandPool, queue ), "TransferToDevice")
+		VKTLOG( bufferInput->Wait(), "Wait")
+		
+		devkDescriptorSetLayoutConfiguration dslSSBOConfig;
+		dslSSBOConfig.SetShaderStageFlags( VK_DESCRIPTOR_TYPE_STORAGE_BUFFER );
+		dslSSBOConfig.SetLayoutBindingCount( 1 );
+		dslSSBOConfig.SetLayoutBindingAt( 0, 0, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, VK_SHADER_STAGE_COMPUTE_BIT );
+		
+		devkDescriptorSetLayout * const dslSSBO = pVulkanDevice->GetDescriptorSetLayoutManager().GetWith( dslSSBOConfig );
+		
+		devkDescriptorPool::Ref dpSSBO;
+		dpSSBO.TakeOver( new devkDescriptorPool( pVulkanDevice, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, dslSSBO ) );
+		
+		devkDescriptorSet::Ref dsSSBO;
+		VKTLOG( dsSSBO.TakeOver( new devkDescriptorSet( dpSSBO ) ), "DescriptorSet SSBO")
+		const uint32_t test1_spv_data[] = {
+			0x07230203,0x00010000,0x0008000a,0x00000027,0x00000000,0x00020011,0x00000001,0x0006000b,
+			0x00000002,0x4c534c47,0x6474732e,0x3035342e,0x00000000,0x0003000e,0x00000000,0x00000001,
+			0x0006000f,0x00000005,0x00000005,0x6e69616d,0x00000000,0x0000000c,0x00060010,0x00000005,
+			0x00000011,0x00000001,0x00000001,0x00000001,0x00050007,0x00000001,0x74736574,0x6f632e31,
+			0x0000706d,0x008b0003,0x00000002,0x000001c2,0x00000001,0x4f202f2f,0x646f4d70,0x50656c75,
+			0x65636f72,0x64657373,0x746e6520,0x702d7972,0x746e696f,0x69616d20,0x2f2f0a6e,0x4d704f20,
+			0x6c75646f,0x6f725065,0x73736563,0x64206465,0x6e696665,0x616d2d65,0x206f7263,0x544c554d,
+			0x494c5049,0x323d5245,0x202f2f0a,0x6f4d704f,0x656c7564,0x636f7250,0x65737365,0x6c632064,
+			0x746e6569,0x6c757620,0x316e616b,0x2f0a3030,0x704f202f,0x75646f4d,0x7250656c,0x7365636f,
+			0x20646573,0x67726174,0x652d7465,0x7620766e,0x616b6c75,0x302e316e,0x202f2f0a,0x6f4d704f,
+			0x656c7564,0x636f7250,0x65737365,0x6e652064,0x2d797274,0x6e696f70,0x616d2074,0x230a6e69,
+			0x656e696c,0x230a3120,0x73726576,0x206e6f69,0x0a303534,0x79616c0a,0x2874756f,0x646e6962,
+			0x20676e69,0x2930203d,0x66756220,0x20726566,0x61746144,0x200a7b20,0x69752020,0x7620746e,
+			0x65756c61,0x3b5d5b73,0x0a3b7d0a,0x79616c0a,0x2074756f,0x636f6c28,0x735f6c61,0x5f657a69,
+			0x203d2078,0x6c202c31,0x6c61636f,0x7a69735f,0x20795f65,0x2c31203d,0x636f6c20,0x735f6c61,
+			0x5f657a69,0x203d207a,0x69202931,0x0a0a3b6e,0x6f79616c,0x28207475,0x736e6f63,0x746e6174,
+			0x2064695f,0x2930203d,0x6e6f6320,0x75207473,0x20746e69,0x6c615663,0x6f436575,0x20746e75,
+			0x3233203d,0x760a0a3b,0x2064696f,0x6e69616d,0x0a7b2928,0x6e6f6309,0x75207473,0x20746e69,
+			0x65646e69,0x203d2078,0x475f6c67,0x61626f6c,0x766e496c,0x7461636f,0x496e6f69,0x3b782e44,
+			0x6669090a,0x6e692028,0x20786564,0x63203d3e,0x756c6156,0x756f4365,0x2920746e,0x09090a7b,
+			0x75746572,0x0a3b6e72,0x090a7d09,0x6176090a,0x7365756c,0x6e69205b,0x20786564,0x3d2a205d,
+			0x4c554d20,0x4c504954,0x3b524549,0x000a7d0a,0x00040005,0x00000005,0x6e69616d,0x00000000,
+			0x00040005,0x00000009,0x65646e69,0x00000078,0x00080005,0x0000000c,0x475f6c67,0x61626f6c,
+			0x766e496c,0x7461636f,0x496e6f69,0x00000044,0x00050005,0x00000012,0x6c615663,0x6f436575,
+			0x00746e75,0x00040005,0x00000019,0x61746144,0x00000000,0x00050006,0x00000019,0x00000000,
+			0x756c6176,0x00007365,0x00030005,0x0000001b,0x00000000,0x00040047,0x0000000c,0x0000000b,
+			0x0000001c,0x00040047,0x00000012,0x00000001,0x00000000,0x00040047,0x00000018,0x00000006,
+			0x00000004,0x00050048,0x00000019,0x00000000,0x00000023,0x00000000,0x00030047,0x00000019,
+			0x00000003,0x00040047,0x0000001b,0x00000022,0x00000000,0x00040047,0x0000001b,0x00000021,
+			0x00000000,0x00040047,0x00000026,0x0000000b,0x00000019,0x00020013,0x00000003,0x00030021,
+			0x00000004,0x00000003,0x00040015,0x00000007,0x00000020,0x00000000,0x00040020,0x00000008,
+			0x00000007,0x00000007,0x00040017,0x0000000a,0x00000007,0x00000003,0x00040020,0x0000000b,
+			0x00000001,0x0000000a,0x0004003b,0x0000000b,0x0000000c,0x00000001,0x0004002b,0x00000007,
+			0x0000000d,0x00000000,0x00040020,0x0000000e,0x00000001,0x00000007,0x00040032,0x00000007,
+			0x00000012,0x00000020,0x00020014,0x00000013,0x0003001d,0x00000018,0x00000007,0x0003001e,
+			0x00000019,0x00000018,0x00040020,0x0000001a,0x00000002,0x00000019,0x0004003b,0x0000001a,
+			0x0000001b,0x00000002,0x00040015,0x0000001c,0x00000020,0x00000001,0x0004002b,0x0000001c,
+			0x0000001d,0x00000000,0x0004002b,0x00000007,0x0000001f,0x00000002,0x00040020,0x00000020,
+			0x00000002,0x00000007,0x0004002b,0x00000007,0x00000025,0x00000001,0x0006002c,0x0000000a,
+			0x00000026,0x00000025,0x00000025,0x00000025,0x00050036,0x00000003,0x00000005,0x00000000,
+			0x00000004,0x000200f8,0x00000006,0x0004003b,0x00000008,0x00000009,0x00000007,0x00040008,
+			0x00000001,0x0000000c,0x00000000,0x00050041,0x0000000e,0x0000000f,0x0000000c,0x0000000d,
+			0x0004003d,0x00000007,0x00000010,0x0000000f,0x0003003e,0x00000009,0x00000010,0x00040008,
+			0x00000001,0x0000000d,0x00000000,0x0004003d,0x00000007,0x00000011,0x00000009,0x000500ae,
+			0x00000013,0x00000014,0x00000011,0x00000012,0x000300f7,0x00000016,0x00000000,0x000400fa,
+			0x00000014,0x00000015,0x00000016,0x000200f8,0x00000015,0x00040008,0x00000001,0x0000000e,
+			0x00000000,0x000100fd,0x000200f8,0x00000016,0x00040008,0x00000001,0x00000011,0x00000000,
+			0x0004003d,0x00000007,0x0000001e,0x00000009,0x00060041,0x00000020,0x00000021,0x0000001b,
+			0x0000001d,0x0000001e,0x0004003d,0x00000007,0x00000022,0x00000021,0x00050084,0x00000007,
+			0x00000023,0x00000022,0x0000001f,0x00060041,0x00000020,0x00000024,0x0000001b,0x0000001d,
+			0x0000001e,0x0003003e,0x00000024,0x00000023,0x000100fd,0x00010038
+		};
+		decMemoryFileReference mfshader;
+		mfshader.TakeOver( new decMemoryFile( "/shaders/vulkantest.spv" ) );
+		{
+			decBaseFileWriterReference mfwriter;
+			mfwriter.TakeOver( new decMemoryFileWriter( mfshader, false ) );
+			mfwriter->Write( test1_spv_data, sizeof( test1_spv_data ) );
+		}
+		
+		devkShaderModule::Ref shader;
+		{
+			decBaseFileReaderReference mfreader;
+			mfreader.TakeOver( new decMemoryFileReader( mfshader ) );
+			VKTLOG( shader.TakeOver( new devkShaderModule( pVulkanDevice, "/shaders/vulkantest.spv", mfreader ) ), "LoadShader");
+		}
+		
+		devkPipelineConfiguration pipelineConfig;
+		pipelineConfig.SetDescriptorSetLayout( dslSSBO );
+		pipelineConfig.SetType( devkPipelineConfiguration::Type::compute );
+		pipelineConfig.SetShaderCompute( shader );
+		
+		devkPipelineConfiguration::Specialization specs[ 1 ];
+		specs[ 0 ].integer = 1024;
+		pipelineConfig.SetSpecializations( specs, 1 );
+		
+		VKTLOG( devkPipeline * const pipeline = pVulkanDevice->GetPipelineManager().GetWith( pipelineConfig ), "PipelineCompute")
+		(void)pipeline;
+		
+		/*
+		VkDescriptorBufferInfo bufferDescriptor = { deviceBuffer, 0, VK_WHOLE_SIZE };
+		std::vector<VkWriteDescriptorSet> computeWriteDescriptorSets = {
+			vks::initializers::writeDescriptorSet(descriptorSet, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, 0, &bufferDescriptor),
+		};
+		vkUpdateDescriptorSets(device, static_cast<uint32_t>(computeWriteDescriptorSets.size()), computeWriteDescriptorSets.data(), 0, NULL);		
+		 */
+		
+	}
+#endif
+	
 	// initial notification. required for testing if devode config is hardcoded in constructor
 	DevModeDebugInfoChanged();
 	
