@@ -19,51 +19,42 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef _DESHAREDVULKAN_H_
-#define _DESHAREDVULKAN_H_
+#ifndef _DEVKCOMMANDPOOL_H_
+#define _DEVKCOMMANDPOOL_H_
 
-#include "devkBasics.h"
-#include "devkInstance.h"
+#include "../devkBasics.h"
 
 #include <dragengine/deObject.h>
 #include <dragengine/deTObjectReference.h>
-#include <dragengine/common/file/decPath.h>
 
-class deBaseModule;
-class devkLoader;
+class devkDevice;
 
 
 /**
- * Shared Vulkan.
+ * Vulkan command pool.
  */
-class deSharedVulkan : public deObject{
+class devkCommandPool : public deObject{
 public:
 	/** Reference. */
-	typedef deTObjectReference<deSharedVulkan> Ref;
+	typedef deTObjectReference<devkCommandPool> Ref;
 	
 	
 	
 private:
-	deBaseModule &pModule;
-	devkLoader *pLoader;
+	devkDevice &pDevice;
 	
-	devkInstance::Ref pInstance;
-	
-	decPath pCachePath;
-	
+	VkCommandPool pPool;
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/**
-	 * Create shared vulkan. If loading the vulkan library fails an exception is thrown.
-	 */
-	deSharedVulkan( deBaseModule &module );
+	/** Create command pool. */
+	devkCommandPool( devkDevice &device, uint32_t queueFamily );
 	
 protected:
-	/** Clean up shared vulkan. */
-	virtual ~deSharedVulkan();
+	/** Clean up queue. */
+	virtual ~devkCommandPool();
 	/*@}*/
 	
 	
@@ -71,17 +62,11 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** Owner module. */
-	inline deBaseModule &GetModule() const{ return pModule; }
+	/** Device. */
+	inline devkDevice &GetDevice() const{ return pDevice; }
 	
-	/** Instance. */
-	inline devkInstance &GetInstance() const{ return pInstance; }
-	
-	/** Cache path. */
-	inline const decPath &GetCachePath() const{ return pCachePath; }
-	
-	/** Set cache path. */
-	void SetCachePath( const decPath &path );
+	/** Command pool. */
+	inline VkCommandPool GetPool() const{ return pPool; }
 	/*@}*/
 	
 	

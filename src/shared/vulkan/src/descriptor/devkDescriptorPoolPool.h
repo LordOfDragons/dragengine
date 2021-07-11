@@ -19,51 +19,48 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef _DESHAREDVULKAN_H_
-#define _DESHAREDVULKAN_H_
+#ifndef _DEVKDESCRIPTORPOOLPOOL_H_
+#define _DEVKDESCRIPTORPOOLPOOL_H_
 
-#include "devkBasics.h"
-#include "devkInstance.h"
+#include "../devkBasics.h"
 
 #include <dragengine/deObject.h>
 #include <dragengine/deTObjectReference.h>
-#include <dragengine/common/file/decPath.h>
+#include <dragengine/common/collection/decObjectList.h>
 
-class deBaseModule;
-class devkLoader;
+class devkDescriptorPool;
+class devkDescriptorPoolSlot;
 
 
 /**
- * Shared Vulkan.
+ * Vulkan descriptor pool pool.
  */
-class deSharedVulkan : public deObject{
+class devkDescriptorPoolPool : public deObject{
 public:
 	/** Reference. */
-	typedef deTObjectReference<deSharedVulkan> Ref;
+	typedef deTObjectReference<devkDescriptorPoolPool> Ref;
 	
 	
 	
 private:
-	deBaseModule &pModule;
-	devkLoader *pLoader;
+	devkDescriptorPool &pOwner;
 	
-	devkInstance::Ref pInstance;
+	VkDescriptorPool pPool;
 	
-	decPath pCachePath;
+	decObjectList pFreeSlots;
+	bool pOutOfMemory;
 	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/**
-	 * Create shared vulkan. If loading the vulkan library fails an exception is thrown.
-	 */
-	deSharedVulkan( deBaseModule &module );
+	/** Create descriptor pool pool. */
+	devkDescriptorPoolPool( devkDescriptorPool &owner, const VkDescriptorPoolCreateInfo &poolCreateInfo );
 	
 protected:
-	/** Clean up shared vulkan. */
-	virtual ~deSharedVulkan();
+	/** Clean up descriptor pool pool. */
+	virtual ~devkDescriptorPoolPool();
 	/*@}*/
 	
 	
@@ -71,17 +68,14 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** Owner module. */
-	inline deBaseModule &GetModule() const{ return pModule; }
+	/** Owner. */
+	inline devkDescriptorPool &GetOwner() const{ return pOwner; }
 	
-	/** Instance. */
-	inline devkInstance &GetInstance() const{ return pInstance; }
+	/** Get next free slot or nullptr if pool is full. */
+	devkDescriptorPoolSlot *Get();
 	
-	/** Cache path. */
-	inline const decPath &GetCachePath() const{ return pCachePath; }
-	
-	/** Set cache path. */
-	void SetCachePath( const decPath &path );
+	/** Return slot to pool. */
+	void Return( devkDescriptorPoolSlot *slot );
 	/*@}*/
 	
 	

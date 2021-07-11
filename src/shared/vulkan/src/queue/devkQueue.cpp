@@ -22,27 +22,27 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "deSharedVulkan.h"
-#include "devkLoader.h"
-#include "devkInstance.h"
-#include "devkGlobalFunctions.h"
+#include "devkQueue.h"
+#include "../devkDevice.h"
+#include "../devkInstance.h"
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/systems/modules/deBaseModule.h>
 
 
+// class devkQueue
+////////////////////
 
-// Class deSharedVulkan
-/////////////////////////
-
-deSharedVulkan::deSharedVulkan( deBaseModule &module ) :
-pModule( module ),
-pLoader( NULL ),
-pCachePath( decPath::CreatePathUnix( "/cache/local/vulkan" ) )
+devkQueue::devkQueue( devkDevice &device, uint32_t family, VkQueue queue ) :
+pDevice( device ),
+pFamily( family ),
+pQueue( queue )
 {
+	if( ! queue ){
+		DETHROW( deeInvalidParam );
+	}
+	
 	try{
-		pLoader = new devkLoader( *this );
-		pInstance.TakeOver( new devkInstance( *this ) );
 		
 	}catch( const deException & ){
 		pCleanUp();
@@ -50,7 +50,7 @@ pCachePath( decPath::CreatePathUnix( "/cache/local/vulkan" ) )
 	}
 }
 
-deSharedVulkan::~deSharedVulkan(){
+devkQueue::~devkQueue(){
 	pCleanUp();
 }
 
@@ -59,20 +59,18 @@ deSharedVulkan::~deSharedVulkan(){
 // Management
 ///////////////
 
-void deSharedVulkan::SetCachePath( const decPath &path ){
-	pCachePath = path;
+devkCommandPool::Ref devkQueue::CreateCommandPool(){
+	return devkCommandPool::Ref::With( new devkCommandPool( pDevice, pFamily ) );
 }
 
+void devkQueue::WaitIdle(){
+	VK_CHECK( pDevice.GetInstance().GetVulkan(), pDevice.vkQueueWaitIdle( pQueue ) );
+}
 
 
 
 // Private Functions
 //////////////////////
 
-void deSharedVulkan::pCleanUp(){
-	pInstance = nullptr;
-	
-	if( pLoader ){
-		delete pLoader;
-	}
+void devkQueue::pCleanUp(){
 }

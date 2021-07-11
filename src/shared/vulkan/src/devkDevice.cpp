@@ -53,7 +53,10 @@ pFamilyIndexGraphic( 0 ),
 pFamilyIndexCompute( 0 ),
 pFamilyIndexTransfer( 0 ),
 pDevice( nullptr ),
-pQueues( nullptr )
+pQueues( nullptr ),
+pDescriptorSetLayoutManager( *this ),
+pShaderModuleManager( *this ),
+pPipelineManager( *this )
 {
 	if( ! physicalDevice ){
 		DETHROW_INFO( deeNullPointer, "physicalDevice" );
@@ -152,11 +155,28 @@ devkQueue &devkDevice::GetTransferQueueAt( int index ) const{
 //////////////////////
 
 void devkDevice::pCleanUp(){
+	// ensure all queues are idle before releasing them
+	const int queueCount = pConfig.graphicQueueCount + pConfig.computeQueueCount + pConfig.transferQueueCount;
+	int i;
+	for( i=0; i<queueCount; i++ ){
+		pQueues[ i ]->WaitIdle();
+	}
+	
+	// not it is save to release queues
 	if( pQueues ){
 		delete [] pQueues;
 	}
+	
+	// ensure all resources cleaned up using destructor calls are cleaned up before
+	// the device is destroyed
+	pPipelineManager.Clear();
+	pShaderModuleManager.Clear();
+	pDescriptorSetLayoutManager.Clear();
+	
+	// now it is safe to destroy the device
 	if( pDevice ){
 		vkDestroyDevice( pDevice, nullptr );
+		pDevice = nullptr;
 	}
 }
 
@@ -249,13 +269,16 @@ void devkDevice::pCreateDevice(){
 		delete [] queueFamilyProperties;
 	}
 	
-	if( queueGraphic != -1 && queueCreateInfo[ queueGraphic ].queueCount != ( uint32_t )pConfig.graphicQueueCount ){
+	if( queueGraphic != -1
+	&& queueCreateInfo[ queueGraphic ].queueCount != ( uint32_t )pConfig.graphicQueueCount ){
 		DETHROW_INFO( deeInvalidAction, "graphic queue count mismatch"  );
 	}
-	if( queueCompute != -1 && queueCreateInfo[ queueCompute ].queueCount != ( uint32_t )pConfig.computeQueueCount ){
+	if( queueCompute != -1
+	&& queueCreateInfo[ queueCompute ].queueCount != ( uint32_t )pConfig.computeQueueCount ){
 		DETHROW_INFO( deeInvalidAction, "compute queue count mismatch"  );
 	}
-	if( queueTransfer != -1 && queueCreateInfo[ queueTransfer ].queueCount != ( uint32_t )pConfig.transferQueueCount ){
+	if( queueTransfer != -1
+	&& queueCreateInfo[ queueTransfer ].queueCount != ( uint32_t )pConfig.transferQueueCount ){
 		DETHROW_INFO( deeInvalidAction, "transfer queue count mismatch"  );
 	}
 	

@@ -23,7 +23,10 @@
 #define _DEVKDEVICE_H_
 
 #include "devkBasics.h"
-#include "devkQueue.h"
+#include "descriptor/devkDescriptorSetLayoutManager.h"
+#include "queue/devkQueue.h"
+#include "pipeline/devkPipelineManager.h"
+#include "shader/devkShaderModuleManager.h"
 
 #include <dragengine/deObject.h>
 #include <dragengine/deTObjectReference.h>
@@ -70,6 +73,9 @@ private:
 	VkDevice pDevice;
 	devkQueue::Ref *pQueues;
 	
+	devkDescriptorSetLayoutManager pDescriptorSetLayoutManager;
+	devkShaderModuleManager pShaderModuleManager;
+	devkPipelineManager pPipelineManager;
 	
 	
 public:
@@ -102,6 +108,18 @@ public:
 	
 	/** Device. */
 	inline VkDevice GetDevice() const{ return pDevice; }
+	
+	/** Descriptor set layout manager. */
+	inline devkDescriptorSetLayoutManager &GetDescriptorSetLayoutManager(){ return pDescriptorSetLayoutManager; }
+	inline const devkDescriptorSetLayoutManager &GetDescriptorSetLayoutManager() const{ return pDescriptorSetLayoutManager; }
+	
+	/** Shader module manager. */
+	inline devkShaderModuleManager &GetShaderModuleManager(){ return pShaderModuleManager; }
+	inline const devkShaderModuleManager &GetShaderModuleManager() const{ return pShaderModuleManager; }
+	
+	/** Pipeline manager. */
+	inline devkPipelineManager &GetPipelineManager(){ return pPipelineManager; }
+	inline const devkPipelineManager &GetPipelineManager() const{ return pPipelineManager; }
 	
 	
 	

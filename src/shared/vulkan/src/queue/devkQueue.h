@@ -19,51 +19,44 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef _DESHAREDVULKAN_H_
-#define _DESHAREDVULKAN_H_
+#ifndef _DEVKQUEUE_H_
+#define _DEVKQUEUE_H_
 
-#include "devkBasics.h"
-#include "devkInstance.h"
+#include "devkCommandPool.h"
+#include "../devkBasics.h"
 
 #include <dragengine/deObject.h>
 #include <dragengine/deTObjectReference.h>
-#include <dragengine/common/file/decPath.h>
 
-class deBaseModule;
-class devkLoader;
+class devkDevice;
 
 
 /**
- * Shared Vulkan.
+ * Vulkan device queue.
  */
-class deSharedVulkan : public deObject{
+class devkQueue : public deObject{
 public:
 	/** Reference. */
-	typedef deTObjectReference<deSharedVulkan> Ref;
+	typedef deTObjectReference<devkQueue> Ref;
 	
 	
 	
 private:
-	deBaseModule &pModule;
-	devkLoader *pLoader;
+	devkDevice &pDevice;
+	uint32_t pFamily;
 	
-	devkInstance::Ref pInstance;
-	
-	decPath pCachePath;
-	
+	VkQueue pQueue;
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/**
-	 * Create shared vulkan. If loading the vulkan library fails an exception is thrown.
-	 */
-	deSharedVulkan( deBaseModule &module );
+	/** Create queue. */
+	devkQueue( devkDevice &device, uint32_t family, VkQueue queue );
 	
 protected:
-	/** Clean up shared vulkan. */
-	virtual ~deSharedVulkan();
+	/** Clean up queue. */
+	virtual ~devkQueue();
 	/*@}*/
 	
 	
@@ -71,17 +64,20 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** Owner module. */
-	inline deBaseModule &GetModule() const{ return pModule; }
+	/** Device. */
+	inline devkDevice &GetDevice() const{ return pDevice; }
 	
-	/** Instance. */
-	inline devkInstance &GetInstance() const{ return pInstance; }
+	/** Family. */
+	inline uint32_t GetFamily() const{ return pFamily; }
 	
-	/** Cache path. */
-	inline const decPath &GetCachePath() const{ return pCachePath; }
+	/** Queue. */
+	inline VkQueue GetQueue() const{ return pQueue; }
 	
-	/** Set cache path. */
-	void SetCachePath( const decPath &path );
+	/** Create command pool compatible with this queue and all queues of the same family. */
+	devkCommandPool::Ref CreateCommandPool();
+	
+	/** Wait for queue to be idle. */
+	void WaitIdle();
 	/*@}*/
 	
 	

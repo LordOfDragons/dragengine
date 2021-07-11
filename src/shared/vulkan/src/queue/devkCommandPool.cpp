@@ -23,8 +23,8 @@
 #include <string.h>
 
 #include "devkCommandPool.h"
-#include "devkDevice.h"
-#include "devkInstance.h"
+#include "../devkDevice.h"
+#include "../devkInstance.h"
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/systems/modules/deBaseModule.h>

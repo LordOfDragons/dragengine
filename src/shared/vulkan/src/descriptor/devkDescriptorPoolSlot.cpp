@@ -20,38 +20,27 @@
  */
 
 #include <stdlib.h>
-#include <string.h>
 
-#include "deSharedVulkan.h"
-#include "devkLoader.h"
-#include "devkInstance.h"
-#include "devkGlobalFunctions.h"
+#include "devkDescriptorPoolSlot.h"
+#include "devkDescriptorPoolPool.h"
 
 #include <dragengine/common/exceptions.h>
-#include <dragengine/systems/modules/deBaseModule.h>
 
 
+// class devkDescriptorPoolSlot
+/////////////////////////////////
 
-// Class deSharedVulkan
-/////////////////////////
-
-deSharedVulkan::deSharedVulkan( deBaseModule &module ) :
-pModule( module ),
-pLoader( NULL ),
-pCachePath( decPath::CreatePathUnix( "/cache/local/vulkan" ) )
+devkDescriptorPoolSlot::devkDescriptorPoolSlot( devkDescriptorPoolPool &pool, VkDescriptorSet set ) :
+pPool( pool ),
+pSet( set )
 {
-	try{
-		pLoader = new devkLoader( *this );
-		pInstance.TakeOver( new devkInstance( *this ) );
-		
-	}catch( const deException & ){
-		pCleanUp();
-		throw;
+	if( ! set ){
+		DETHROW_INFO( deeNullPointer, "set" );
 	}
 }
 
-deSharedVulkan::~deSharedVulkan(){
-	pCleanUp();
+devkDescriptorPoolSlot::~devkDescriptorPoolSlot(){
+	// descriptor sets are automatically removed if the pool is deleted
 }
 
 
@@ -59,20 +48,6 @@ deSharedVulkan::~deSharedVulkan(){
 // Management
 ///////////////
 
-void deSharedVulkan::SetCachePath( const decPath &path ){
-	pCachePath = path;
-}
-
-
-
-
-// Private Functions
-//////////////////////
-
-void deSharedVulkan::pCleanUp(){
-	pInstance = nullptr;
-	
-	if( pLoader ){
-		delete pLoader;
-	}
+void devkDescriptorPoolSlot::ReturnToPool(){
+	pPool.Return( this );
 }

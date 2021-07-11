@@ -22,35 +22,27 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "devkQueue.h"
-#include "devkDevice.h"
+#include "devkDescriptorSet.h"
+#include "devkDescriptorPool.h"
+#include "devkDescriptorPoolSlot.h"
+#include "../devkDevice.h"
+#include "../devkInstance.h"
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/systems/modules/deBaseModule.h>
 
 
-// class devkQueue
-////////////////////
+// class devkDescriptorSet
+////////////////////////////
 
-devkQueue::devkQueue( devkDevice &device, uint32_t family, VkQueue queue ) :
-pDevice( device ),
-pFamily( family ),
-pQueue( queue )
-{
-	if( ! queue ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	try{
-		
-	}catch( const deException & ){
-		pCleanUp();
-		throw;
-	}
+devkDescriptorSet::devkDescriptorSet( devkDescriptorPool &pool ) :
+pPool( pool ),
+pSlot( pool.Get() ),
+pLayout( nullptr ),
+pSet( pSlot->GetSet() ){
 }
 
-devkQueue::~devkQueue(){
-	pCleanUp();
+devkDescriptorSet::~devkDescriptorSet(){
 }
 
 
@@ -58,14 +50,3 @@ devkQueue::~devkQueue(){
 // Management
 ///////////////
 
-devkCommandPool::Ref devkQueue::CreateCommandPool(){
-	return devkCommandPool::Ref::With( new devkCommandPool( pDevice, pFamily ) );
-}
-
-
-
-// Private Functions
-//////////////////////
-
-void devkQueue::pCleanUp(){
-}

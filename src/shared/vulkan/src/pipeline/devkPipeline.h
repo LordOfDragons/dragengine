@@ -19,51 +19,48 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef _DESHAREDVULKAN_H_
-#define _DESHAREDVULKAN_H_
+#ifndef _DEVKPIPELINE_H_
+#define _DEVKPIPELINE_H_
 
-#include "devkBasics.h"
-#include "devkInstance.h"
+#include "devkPipelineConfiguration.h"
+#include "../devkBasics.h"
 
 #include <dragengine/deObject.h>
 #include <dragengine/deTObjectReference.h>
-#include <dragengine/common/file/decPath.h>
 
-class deBaseModule;
-class devkLoader;
+class devkDevice;
+class devkDescriptorSetLayout;
+class decPath;
 
 
 /**
- * Shared Vulkan.
+ * Vulkan pipeline.
  */
-class deSharedVulkan : public deObject{
+class devkPipeline : public deObject{
 public:
 	/** Reference. */
-	typedef deTObjectReference<deSharedVulkan> Ref;
+	typedef deTObjectReference<devkPipeline> Ref;
 	
 	
-	
-private:
-	deBaseModule &pModule;
-	devkLoader *pLoader;
-	
-	devkInstance::Ref pInstance;
-	
-	decPath pCachePath;
-	
-	
-	
-public:
-	/** \name Constructors and Destructors */
-	/*@{*/
-	/**
-	 * Create shared vulkan. If loading the vulkan library fails an exception is thrown.
-	 */
-	deSharedVulkan( deBaseModule &module );
 	
 protected:
-	/** Clean up shared vulkan. */
-	virtual ~deSharedVulkan();
+	devkDevice &pDevice;
+	const devkPipelineConfiguration pConfiguration;
+	
+	VkPipelineLayout pLayout;
+	VkPipeline pPipeline;
+	VkPipelineCache pCache;
+	bool pSaveCache;
+	
+	
+protected:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** Create pipeline. */
+	devkPipeline( devkDevice &device, const devkPipelineConfiguration &configuration );
+	
+	/** Clean up pipeline. */
+	virtual ~devkPipeline();
 	/*@}*/
 	
 	
@@ -71,23 +68,22 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** Owner module. */
-	inline deBaseModule &GetModule() const{ return pModule; }
+	/** Device. */
+	inline devkDevice &GetDevice() const{ return pDevice; }
 	
-	/** Instance. */
-	inline devkInstance &GetInstance() const{ return pInstance; }
+	/** Configuration. */
+	inline const devkPipelineConfiguration &GetConfiguration() const{ return pConfiguration; }
 	
-	/** Cache path. */
-	inline const decPath &GetCachePath() const{ return pCachePath; }
-	
-	/** Set cache path. */
-	void SetCachePath( const decPath &path );
+	/** Pipeline. */
+	inline VkPipeline GetPipeline() const{ return pPipeline; }
 	/*@}*/
 	
 	
 	
 private:
 	void pCleanUp();
+	decPath pCachePath() const;
+	void pDropCache();
 };
 
 #endif

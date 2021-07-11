@@ -19,61 +19,59 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef _DEVKCOMMANDPOOL_H_
-#define _DEVKCOMMANDPOOL_H_
+#ifndef _DEVKPIPELINEMANAGER_H_
+#define _DEVKPIPELINEMANAGER_H_
 
-#include "devkBasics.h"
-
-#include <dragengine/deObject.h>
-#include <dragengine/deTObjectReference.h>
+#include <dragengine/common/collection/decObjectList.h>
 
 class devkDevice;
+class devkPipeline;
+class devkPipelineConfiguration;
 
 
 /**
- * Vulkan command pool.
+ * Pipeline manager.
  */
-class devkCommandPool : public deObject{
-public:
-	/** Reference. */
-	typedef deTObjectReference<devkCommandPool> Ref;
-	
-	
-	
+class devkPipelineManager{
 private:
 	devkDevice &pDevice;
 	
-	VkCommandPool pPool;
+	decObjectList pLayouts;
+	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Create command pool. */
-	devkCommandPool( devkDevice &device, uint32_t queueFamily );
+	/** Create pipeline manager. */
+	devkPipelineManager( devkDevice &device );
 	
-protected:
-	/** Clean up queue. */
-	virtual ~devkCommandPool();
+	/** Clean up pipelines manager. */
+	~devkPipelineManager();
 	/*@}*/
 	
 	
 	
-public:
 	/** \name Management */
 	/*@{*/
 	/** Device. */
 	inline devkDevice &GetDevice() const{ return pDevice; }
 	
-	/** Command pool. */
-	inline VkCommandPool GetPool() const{ return pPool; }
+	/** Count of pipelines. */
+	int GetCount() const;
+	
+	/** Pipeline at index. Caller does not hold reference. */
+	devkPipeline *GetAt( int index ) const;
+	
+	/** Pipeline with configuration creating it if absent. Caller does not hold reference. */
+	devkPipeline *GetWith( const devkPipelineConfiguration &configuration );
+	
+	/** Pipeline with configuration is present. */
+	bool HasWith( const devkPipelineConfiguration &configuration ) const;
+	
+	/** Remove all pipelines. */
+	void Clear();
 	/*@}*/
-	
-	
-	
-private:
-	void pCleanUp();
 };
 
 #endif
-

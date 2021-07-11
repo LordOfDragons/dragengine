@@ -19,51 +19,47 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef _DESHAREDVULKAN_H_
-#define _DESHAREDVULKAN_H_
+#ifndef _DEVKSHADERMODULE_H_
+#define _DEVKSHADERMODULE_H_
 
-#include "devkBasics.h"
-#include "devkInstance.h"
+#include "../devkBasics.h"
 
 #include <dragengine/deObject.h>
 #include <dragengine/deTObjectReference.h>
-#include <dragengine/common/file/decPath.h>
+#include <dragengine/common/string/decString.h>
 
-class deBaseModule;
-class devkLoader;
+class devkDevice;
+class decBaseFileReader;
 
 
 /**
- * Shared Vulkan.
+ * Vulkan shader module.
  */
-class deSharedVulkan : public deObject{
+class devkShaderModule : public deObject{
 public:
 	/** Reference. */
-	typedef deTObjectReference<deSharedVulkan> Ref;
+	typedef deTObjectReference<devkShaderModule> Ref;
 	
 	
 	
 private:
-	deBaseModule &pModule;
-	devkLoader *pLoader;
+	devkDevice &pDevice;
+	const decString pPath;
+	char *pSource;
+	int pSourceLength;
 	
-	devkInstance::Ref pInstance;
-	
-	decPath pCachePath;
-	
+	VkShaderModule pModule;
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/**
-	 * Create shared vulkan. If loading the vulkan library fails an exception is thrown.
-	 */
-	deSharedVulkan( deBaseModule &module );
+	/** Create shader module. */
+	devkShaderModule( devkDevice &device, const char *path, decBaseFileReader &reader );
 	
 protected:
-	/** Clean up shared vulkan. */
-	virtual ~deSharedVulkan();
+	/** Clean up shader module. */
+	virtual ~devkShaderModule();
 	/*@}*/
 	
 	
@@ -71,17 +67,20 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** Owner module. */
-	inline deBaseModule &GetModule() const{ return pModule; }
+	/** Device. */
+	inline devkDevice &GetDevice() const{ return pDevice; }
 	
-	/** Instance. */
-	inline devkInstance &GetInstance() const{ return pInstance; }
+	/** Path. */
+	inline const decString &GetPath() const{ return pPath; }
 	
-	/** Cache path. */
-	inline const decPath &GetCachePath() const{ return pCachePath; }
+	/** Shader source. */
+	inline const char *GetSource() const{ return pSource; }
 	
-	/** Set cache path. */
-	void SetCachePath( const decPath &path );
+	/** Shader source length. */
+	inline int GetSourceLength() const{ return pSourceLength; }
+	
+	/** Shader module. */
+	inline VkShaderModule GetModule() const{ return pModule; }
 	/*@}*/
 	
 	

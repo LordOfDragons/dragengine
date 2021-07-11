@@ -19,44 +19,49 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef _DEVKQUEUE_H_
-#define _DEVKQUEUE_H_
+#ifndef _DEVKDESCRIPTORSET_H_
+#define _DEVKDESCRIPTORSET_H_
 
-#include "devkBasics.h"
-#include "devkCommandPool.h"
+#include "devkDescriptorPoolSlot.h"
+#include "../devkBasics.h"
+#include "../devkDevice.h"
 
 #include <dragengine/deObject.h>
 #include <dragengine/deTObjectReference.h>
 
-class devkDevice;
+class devkDescriptorPool;
 
 
 /**
- * Vulkan device queue.
+ * Vulkan descriptor set. Constructor obtains a set from the pool and returns it to the pooL
+ * in the destructor.
  */
-class devkQueue : public deObject{
+class devkDescriptorSet : public deObject{
 public:
 	/** Reference. */
-	typedef deTObjectReference<devkQueue> Ref;
+	typedef deTObjectReference<devkDescriptorSet> Ref;
 	
 	
 	
 private:
-	devkDevice &pDevice;
-	uint32_t pFamily;
+	devkDescriptorPool &pPool;
 	
-	VkQueue pQueue;
+	devkDescriptorPoolSlot::Ref pSlot;
+	
+	VkDescriptorSetLayout pLayout;
+	VkDescriptorSet pSet;
+	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Create queue. */
-	devkQueue( devkDevice &device, uint32_t family, VkQueue queue );
+	/** Create descriptor set. */
+	devkDescriptorSet( devkDescriptorPool &pool );
 	
 protected:
-	/** Clean up queue. */
-	virtual ~devkQueue();
+	/** Clean up descriptor set. */
+	virtual ~devkDescriptorSet();
 	/*@}*/
 	
 	
@@ -64,23 +69,15 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** Device. */
-	inline devkDevice &GetDevice() const{ return pDevice; }
+	/** Pool. */
+	inline devkDescriptorPool &GetPool() const{ return pPool; }
 	
-	/** Family. */
-	inline uint32_t GetFamily() const{ return pFamily; }
+	/** Layout. */
+	inline VkDescriptorSetLayout GetLayout() const{ return pLayout; }
 	
-	/** Queue. */
-	inline VkQueue GetQueue() const{ return pQueue; }
-	
-	/** Create command pool compatible with this queue and all queues of the same family. */
-	devkCommandPool::Ref CreateCommandPool();
+	/** Descriptor set. */
+	inline VkDescriptorSet GetSet() const{ return pSet; }
 	/*@}*/
-	
-	
-	
-private:
-	void pCleanUp();
 };
 
 #endif

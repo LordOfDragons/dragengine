@@ -23,16 +23,16 @@
 #include <string.h>
 
 #include "devkBuffer.h"
-#include "devkDevice.h"
-#include "devkInstance.h"
-#include "devkQueue.h"
+#include "../devkDevice.h"
+#include "../devkInstance.h"
+#include "../queue/devkQueue.h"
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/systems/modules/deBaseModule.h>
 
 
 // class devkBuffer
-// //////////////////
+/////////////////////
 
 devkBuffer::devkBuffer( devkDevice &device, VkDeviceSize size ) :
 pDevice( device ),

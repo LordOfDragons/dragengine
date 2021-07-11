@@ -22,8 +22,8 @@
 #ifndef _DEVKBUFFER_H_
 #define _DEVKBUFFER_H_
 
-#include "devkBasics.h"
-#include "devkCommandPool.h"
+#include "../devkBasics.h"
+#include "../queue/devkCommandPool.h"
 
 #include <dragengine/deObject.h>
 #include <dragengine/deTObjectReference.h>

@@ -1,0 +1,14 @@
+II [OpenGL-RT] [2021-06-10 18:04:36] Vulkan Test: SetData 27ys
+II [OpenGL-RT] [2021-06-10 18:04:36] Vulkan Test: TransferToDevice 246ys
+II [OpenGL-RT] [2021-06-10 18:04:36] Vulkan Test: Wait 57ys
+II [OpenGL-RT] [2021-06-10 18:04:36] Vulkan Test: DescriptorSet SSBO 52ys
+II [OpenGL-RT] [2021-06-10 18:04:36] Vulkan Test: LoadShader 1086ys
+II [OpenGL-RT] [2021-06-10 18:04:36] Vulkan Test: PipelineCompute 16979ys
+
+II [OpenGL-RT] [2021-06-10 18:35:18] Vulkan Test: SetData 27ys
+II [OpenGL-RT] [2021-06-10 18:35:18] Vulkan Test: TransferToDevice 230ys
+II [OpenGL-RT] [2021-06-10 18:35:18] Vulkan Test: Wait 58ys
+II [OpenGL-RT] [2021-06-10 18:35:18] Vulkan Test: DescriptorSet SSBO 48ys
+II [OpenGL-RT] [2021-06-10 18:35:18] Vulkan Test: LoadShader 1057ys
+II [OpenGL] [2021-06-10 18:35:18] Vulkan Pipeline: Read Cache for device 67df
+II [OpenGL-RT] [2021-06-10 18:35:18] Vulkan Test: PipelineCompute 956ys
