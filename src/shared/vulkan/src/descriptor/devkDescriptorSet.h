@@ -25,6 +25,7 @@
 #include "devkDescriptorPoolSlot.h"
 #include "../devkBasics.h"
 #include "../devkDevice.h"
+#include "../buffer/devkBuffer.h"
 
 #include <dragengine/deObject.h>
 #include <dragengine/deTObjectReference.h>
@@ -33,8 +34,9 @@ class devkDescriptorPool;
 
 
 /**
- * Vulkan descriptor set. Constructor obtains a set from the pool and returns it to the pooL
- * in the destructor.
+ * Vulkan descriptor set. Constructor obtains a set from the pool and returns it to the pool
+ * in the destructor. Bindings are created at construction time and set to nullptr. Assign
+ * bindings then call Update() to write bindings to descriptor set.
  */
 class devkDescriptorSet : public deObject{
 public:
@@ -50,6 +52,11 @@ private:
 	
 	VkDescriptorSetLayout pLayout;
 	VkDescriptorSet pSet;
+	
+	VkDescriptorBufferInfo *pBindings;
+	VkWriteDescriptorSet *pWriteSets;
+	devkBuffer::Ref *pBuffers;
+	int pBindingCount;
 	
 	
 	
@@ -77,7 +84,25 @@ public:
 	
 	/** Descriptor set. */
 	inline VkDescriptorSet GetSet() const{ return pSet; }
+	
+	/** Set binding. */
+	void SetBinding( int index, devkBuffer *buffer,
+		VkDeviceSize offset = 0, VkDeviceSize range = VK_WHOLE_SIZE );
+	
+	/** Clear binding. */
+	void ClearBinding( int index );
+	
+	/** Clear all bindings. */
+	void ClearAllBindings();
+	
+	/** Write bindings to descriptor set. */
+	void Update();
 	/*@}*/
+	
+	
+	
+private:
+	void pCleanUp();
 };
 
 #endif

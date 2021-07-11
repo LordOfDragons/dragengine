@@ -1039,13 +1039,8 @@ void deoglRenderThread::pInitThreadPhase4(){
 		devkDescriptorSet::Ref dsSSBO;
 		VKTLOG( dsSSBO.TakeOver( new devkDescriptorSet( dpSSBO ) ), "DescriptorSet SSBO")
 		
-		/*
-		VkDescriptorBufferInfo bufferDescriptor = { deviceBuffer, 0, VK_WHOLE_SIZE };
-		std::vector<VkWriteDescriptorSet> computeWriteDescriptorSets = {
-			vks::initializers::writeDescriptorSet(descriptorSet, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, 0, &bufferDescriptor),
-		};
-		vkUpdateDescriptorSets(device, static_cast<uint32_t>(computeWriteDescriptorSets.size()), computeWriteDescriptorSets.data(), 0, NULL);
-		 */
+		dsSSBO->SetBinding( 0, bufferInput );
+		VKTLOG( dsSSBO->Update(), "DescriptorSet SSBO Update" );
 		
 		const uint32_t test1_spv_data[] = {
 			0x07230203,0x00010000,0x0008000a,0x00000027,0x00000000,0x00020011,0x00000001,0x0006000b,
