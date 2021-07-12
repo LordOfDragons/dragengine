@@ -41,7 +41,7 @@ pOwner( owner ),
 pOutOfMemory( false )
 {
 	try{
-		deSharedVulkan &vulkan = owner.GetDevice().GetInstance().GetVulkan();
+		VK_IF_CHECK( deSharedVulkan &vulkan = owner.GetDevice().GetInstance().GetVulkan() );
 		VkDevice device = owner.GetDevice().GetDevice();
 		
 		VK_CHECK( vulkan, owner.GetDevice().vkCreateDescriptorPool(
@@ -79,7 +79,7 @@ devkDescriptorPoolSlot * devkDescriptorPoolPool::Get(){
 	
 	// no free slots present. try allocate a new descriptor set. this can fail if
 	// the pool has not enough free memory left
-	deSharedVulkan &vulkan = pOwner.GetDevice().GetInstance().GetVulkan();
+	VK_IF_CHECK( deSharedVulkan &vulkan = pOwner.GetDevice().GetInstance().GetVulkan() );
 	VkDevice device = pOwner.GetDevice().GetDevice();
 	
 	const VkDescriptorSetLayout setLayouts[ 1 ] = { pOwner.GetLayout()->GetLayout() };
@@ -103,7 +103,10 @@ devkDescriptorPoolSlot * devkDescriptorPoolPool::Get(){
 		return nullptr;
 		
 	default:
+		#ifdef VK_CHECKCOMMANDS
 		VK_CHECK( vulkan, result );
+		#endif
+		DETHROW( deeInvalidAction );
 	}
 	
 	// create slot for set and return it. caller holds reference

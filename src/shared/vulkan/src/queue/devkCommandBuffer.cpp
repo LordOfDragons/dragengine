@@ -258,7 +258,10 @@ bool devkCommandBuffer::IsFinished( bool reset ){
 		return false;
 		
 	default:
+		#ifdef VK_CHECKCOMMANDS
 		VK_CHECK( vulkan, result );
+		#endif
+		DETHROW( deeInvalidAction );
 		return false;
 	}
 }

@@ -106,6 +106,7 @@ void devkInstance::pCleanUp(){
 	}
 }
 
+#ifdef WITH_DEBUG
 static VKAPI_ATTR VkBool32 VKAPI_CALL debugMessageCallback(
 	VkDebugReportFlagsEXT flags,
 	VkDebugReportObjectTypeEXT objectType,
@@ -120,6 +121,7 @@ static VKAPI_ATTR VkBool32 VKAPI_CALL debugMessageCallback(
 	instance->GetVulkan().GetModule().LogInfoFormat( "VALIDATION: %s - %s", pLayerPrefix, pMessage );
 	return VK_FALSE;
 }
+#endif
 
 void devkInstance::pCreateInstance(){
 	pVulkan.GetModule().LogInfo( "Create Vulkan Instance" );
@@ -141,9 +143,11 @@ void devkInstance::pCreateInstance(){
 	instanceCreateInfo.pApplicationInfo = &appInfo;
 	
 	// init layers
+	#ifdef WITH_DEBUG
 // 	const char* validationLayers[] = { "VK_LAYER_LUNARG_standard_validation" };
 	const char* validationLayers[] = { "VK_LAYER_KHRONOS_validation" };
 	const uint32_t layerCount = 1;
+	#endif
 	
 	#ifdef WITH_DEBUG
 	// check if layers are available
