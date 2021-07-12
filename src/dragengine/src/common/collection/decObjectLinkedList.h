@@ -19,8 +19,8 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef _DECPOINTERLINKEDLIST_H_
-#define _DECPOINTERLINKEDLIST_H_
+#ifndef _DECOBJECTLINKEDLIST_H_
+#define _DECOBJECTLINKEDLIST_H_
 
 
 class deObject;
