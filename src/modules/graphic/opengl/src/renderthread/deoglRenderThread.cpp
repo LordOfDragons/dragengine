@@ -883,6 +883,7 @@ void deoglRenderThread::pInitThreadPhase3(){
 #include <descriptor/devkDescriptorSetLayoutConfiguration.h>
 #include <pipeline/devkPipelineCompute.h>
 #include <pipeline/devkPipelineConfiguration.h>
+#include <queue/devkCommandBuffer.h>
 #include <shader/devkShaderModule.h>
 #include <dragengine/common/file/decMemoryFile.h>
 #include <dragengine/common/file/decMemoryFileReference.h>
@@ -1127,6 +1128,12 @@ void deoglRenderThread::pInitThreadPhase4(){
 		VKTLOG( devkPipeline * const pipeline = pVulkanDevice->GetPipelineManager().GetWith( pipelineConfig ), "PipelineCompute")
 		(void)pipeline;
 		
+		devkCommandBuffer::Ref cmdbuf( commandPool->GetCommandBuffer() );
+		VKTLOG( cmdbuf->Begin(), "CmdBuf Begin")
+		VKTLOG( cmdbuf->BarrierHostShader( bufferInput, VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT ), "CmdBuf BarrierHostShader")
+		VKTLOG( cmdbuf->BindPipeline( pipeline ), "CmdBuf BindPipeline")
+		VKTLOG( cmdbuf->BindDescriptorSet( 0, dsSSBO ), "CmdBuf BindDescriptorSet")
+		VKTLOG( cmdbuf->DispatchCompute( shaderConfig.valueCount, 1, 1 ), "CmdBuf DispatchCompute")
 	}
 #endif
 	

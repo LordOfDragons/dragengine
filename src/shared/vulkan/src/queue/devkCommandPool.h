@@ -26,8 +26,10 @@
 
 #include <dragengine/deObject.h>
 #include <dragengine/deTObjectReference.h>
+#include <dragengine/common/collection/decObjectLinkedList.h>
 
 class devkDevice;
+class devkCommandBuffer;
 
 
 /**
@@ -44,6 +46,7 @@ private:
 	devkDevice &pDevice;
 	
 	VkCommandPool pPool;
+	decObjectLinkedList pFreeCommandBuffers;
 	
 	
 public:
@@ -67,6 +70,12 @@ public:
 	
 	/** Command pool. */
 	inline VkCommandPool GetPool() const{ return pPool; }
+	
+	/** Get next free command buffer. */
+	devkCommandBuffer *GetCommandBuffer();
+	
+	/** Return command buffer to pool. */
+	void ReturnCommandBuffer( devkCommandBuffer *commandBuffer );
 	/*@}*/
 	
 	

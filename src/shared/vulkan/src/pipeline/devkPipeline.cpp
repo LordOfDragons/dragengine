@@ -43,12 +43,27 @@
 devkPipeline::devkPipeline( devkDevice &device, const devkPipelineConfiguration &configuration ) :
 pDevice( device ),
 pConfiguration( configuration ),
+pBindPoint( VK_PIPELINE_BIND_POINT_GRAPHICS ),
 pLayout( nullptr ),
 pPipeline( nullptr ),
 pCache( nullptr ),
 pSaveCache( false )
 {
 	try{
+		switch( configuration.GetType() ){
+		case devkPipelineConfiguration::Type::graphics:
+			pBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
+			break;
+			
+		case devkPipelineConfiguration::Type::compute:
+			pBindPoint = VK_PIPELINE_BIND_POINT_COMPUTE;
+			break;
+			
+		case devkPipelineConfiguration::Type::raytracing:
+			pBindPoint = VK_PIPELINE_BIND_POINT_RAY_TRACING_KHR;
+			break;
+		}
+		
 		deSharedVulkan &vulkan = device.GetInstance().GetVulkan();
 		
 		const VkDescriptorSetLayout layouts[ 1 ] = {

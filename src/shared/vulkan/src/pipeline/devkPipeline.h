@@ -47,6 +47,8 @@ protected:
 	devkDevice &pDevice;
 	const devkPipelineConfiguration pConfiguration;
 	
+	VkPipelineBindPoint pBindPoint;
+	
 	VkPipelineLayout pLayout;
 	VkPipeline pPipeline;
 	VkPipelineCache pCache;
@@ -73,6 +75,12 @@ public:
 	
 	/** Configuration. */
 	inline const devkPipelineConfiguration &GetConfiguration() const{ return pConfiguration; }
+	
+	/** Bind point. */
+	inline VkPipelineBindPoint GetBindPoint() const{ return pBindPoint; }
+	
+	/** Pipeline layout. */
+	inline VkPipelineLayout GetLayout() const{ return pLayout; }
 	
 	/** Pipeline. */
 	inline VkPipeline GetPipeline() const{ return pPipeline; }
