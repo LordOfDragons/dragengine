@@ -199,6 +199,7 @@ void devkInstance::pCreateInstance(){
 	VK_CHECK( pVulkan, vkCreateInstance( &instanceCreateInfo, nullptr, &pInstance ) );
 	
 	// debug
+	#ifdef WITH_DEBUG
 	if( layersAvailable ){
 		VkDebugReportCallbackCreateInfoEXT debugReportCreateInfo = {};
 		debugReportCreateInfo.sType = VK_STRUCTURE_TYPE_DEBUG_REPORT_CALLBACK_CREATE_INFO_EXT;
@@ -213,6 +214,7 @@ void devkInstance::pCreateInstance(){
 		}
 		VK_CHECK( pVulkan, vkCreateDebugReportCallbackEXT( pInstance, &debugReportCreateInfo, nullptr, &debugReportCallback ) );
 	}
+	#endif
 }
 
 void devkInstance::pLoadFunctions(){
