@@ -1015,17 +1015,18 @@ void deoglRenderThread::pInitThreadPhase4(){
 		#define VKTLOG(cmd,s) timer.Reset(); cmd; pLogger->LogInfoFormat("Vulkan Test: " s " %dys", (int)(timer.GetElapsedTime()*1e6));
 		devkQueue &queue = pVulkanDevice->GetComputeQueue();
 		const devkCommandPool::Ref commandPool( queue.CreateCommandPool() );
+		const int inputDataCount = 32;
 		const devkBuffer::Ref bufferInput( devkBuffer::Ref::With(
-			new devkBuffer( pVulkanDevice, sizeof( uint32_t ) * 1024 ) ) );
+			new devkBuffer( pVulkanDevice, sizeof( uint32_t ) * inputDataCount ) ) );
 		int i;
-		uint32_t bufferInputData[ 1024 ];
-		for( i=0; i<1024; i++ ){
+		uint32_t bufferInputData[ inputDataCount ];
+		for( i=0; i<inputDataCount; i++ ){
 			bufferInputData[ i ] = i;
 		}
 		decTimer timer;
-		VKTLOG( bufferInput->SetData( bufferInputData, sizeof( uint32_t ) * 1024 ), "SetData")
-		VKTLOG( bufferInput->TransferToDevice( commandPool, queue ), "TransferToDevice")
-		VKTLOG( bufferInput->Wait(), "Wait")
+		VKTLOG( bufferInput->SetData( bufferInputData ), "Buffer SetData")
+		VKTLOG( bufferInput->TransferToDevice( commandPool, queue ), "Buffer TransferToDevice")
+		VKTLOG( bufferInput->Wait(), "Buffer Wait")
 		
 		devkDescriptorSetLayoutConfiguration dslSSBOConfig;
 		dslSSBOConfig.SetShaderStageFlags( VK_DESCRIPTOR_TYPE_STORAGE_BUFFER );
@@ -1117,7 +1118,7 @@ void deoglRenderThread::pInitThreadPhase4(){
 		pipelineConfig.SetShaderCompute( shader );
 		
 		const struct ShaderConfig{
-			uint32_t valueCount = 1024;
+			uint32_t valueCount = inputDataCount;
 		} shaderConfig;
 		
 		devkSpecialization::Ref specialization;
@@ -1130,10 +1131,25 @@ void deoglRenderThread::pInitThreadPhase4(){
 		
 		devkCommandBuffer::Ref cmdbuf( commandPool->GetCommandBuffer() );
 		VKTLOG( cmdbuf->Begin(), "CmdBuf Begin")
-		VKTLOG( cmdbuf->BarrierHostShader( bufferInput, VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT ), "CmdBuf BarrierHostShader")
+		VKTLOG( cmdbuf->BarrierHostShader( bufferInput, VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT ), "CmdBuf BarrierShader")
 		VKTLOG( cmdbuf->BindPipeline( pipeline ), "CmdBuf BindPipeline")
 		VKTLOG( cmdbuf->BindDescriptorSet( 0, dsSSBO ), "CmdBuf BindDescriptorSet")
 		VKTLOG( cmdbuf->DispatchCompute( shaderConfig.valueCount, 1, 1 ), "CmdBuf DispatchCompute")
+		VKTLOG( cmdbuf->BarrierShaderTransfer( bufferInput, VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT ), "CmdBuf BarrierHost")
+		VKTLOG( cmdbuf->ReadBuffer( bufferInput ), "CmdBuf ReadBuffer")
+		VKTLOG( cmdbuf->BarrierTransferHost( bufferInput ), "CmdBuf BarrierTransferHost")
+		VKTLOG( cmdbuf->End(), "CmdBuf End")
+		VKTLOG( cmdbuf->Submit( queue ), "CmdBuf Submit")
+		
+		VKTLOG( cmdbuf->Wait(), "CmdBuf Wait")
+		
+		VKTLOG( bufferInput->GetData( bufferInputData ), "Buffer GetData")
+		decString string( "Computed: [" );
+		for( i=0; i<inputDataCount; i++ ){
+			string.AppendFormat( "%s%d", i > 0 ? ", " : "", bufferInputData[ i ] );
+		}
+		string.Append( "]" );
+		pLogger->LogInfo( string );
 	}
 #endif
 	

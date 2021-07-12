@@ -34,6 +34,7 @@ class devkDevice;
 class devkBuffer;
 class devkPipeline;
 class devkDescriptorSet;
+class devkQueue;
 
 
 /**
@@ -87,11 +88,17 @@ public:
 	void Begin();
 	
 	/** Add buffer memory barrier. */
-	void Barrier( devkBuffer *buffer, VkAccessFlags sourceAccessMask, VkAccessFlags destAccessMask,
-		VkPipelineStageFlags sourceStageMask, VkPipelineStageFlags destStageMask );
+	void Barrier( devkBuffer *buffer, bool useDeviceBuffer, VkAccessFlags sourceAccessMask,
+		VkAccessFlags destAccessMask, VkPipelineStageFlags sourceStageMask, VkPipelineStageFlags destStageMask );
 	
-	/** Add buffer memory barrier from host to shader. */
+	/** Add buffer memory barrier between host writing and shader reading. */
 	void BarrierHostShader( devkBuffer *buffer, VkPipelineStageFlags destStageMask );
+	
+	/** Add buffer memory barrier between shader writing and transfer reading. */
+	void BarrierShaderTransfer( devkBuffer *buffer, VkPipelineStageFlags srcStageMask );
+	
+	/** Add buffer memory barrier between transfer writing and host reading. */
+	void BarrierTransferHost( devkBuffer *buffer );
 	
 	/** Bind pipeline. */
 	void BindPipeline( devkPipeline *pipeline );
@@ -102,6 +109,18 @@ public:
 	/** Dispatch compute shader. */
 	void DispatchCompute( const decPoint3 &group );
 	void DispatchCompute( int groupX, int groupY, int groupZ );
+	
+	/** Write buffer data from host memory to device memory. */
+	void WriteBuffer( devkBuffer *buffer );
+	
+	/** Read buffer data from device memory to host memory. */
+	void ReadBuffer( devkBuffer *buffer );
+	
+	/** End recording command buffer. */
+	void End();
+	
+	/** Submit to queue. */
+	void Submit( devkQueue &queue );
 	
 	
 	

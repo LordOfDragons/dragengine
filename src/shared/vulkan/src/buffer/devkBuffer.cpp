@@ -23,6 +23,7 @@
 #include <string.h>
 
 #include "devkBuffer.h"
+#include "devkGuardUnmapBuffer.h"
 #include "../devkDevice.h"
 #include "../devkInstance.h"
 #include "../queue/devkQueue.h"
@@ -78,11 +79,8 @@ devkBuffer::~devkBuffer(){
 // Management
 ///////////////
 
-void devkBuffer::SetData( const void *data, uint32_t size ){
-	if( size != pSize ){
-		DETHROW_INFO( deeInvalidParam, "size mismatch" );
-	}
-	SetData( data, 0, size );
+void devkBuffer::SetData( const void *data ){
+	SetData( data, 0, pSize );
 }
 
 void devkBuffer::SetData( const void *data, uint32_t offset, uint32_t size ){
@@ -113,6 +111,7 @@ void devkBuffer::SetData( const void *data, uint32_t offset, uint32_t size ){
 	}else{
 		VK_CHECK( vulkan, pDevice.vkMapMemory( device, pBufferHostMemory, offset, size, 0, &mapped ) );
 	}
+	const devkGuardUnmapBuffer guardUnmapBuffer( pDevice, pBufferHostMemory );
 	
 	memcpy( mapped, data, size );
 	
@@ -131,8 +130,6 @@ void devkBuffer::SetData( const void *data, uint32_t offset, uint32_t size ){
 	}
 	
 	pDevice.vkFlushMappedMemoryRanges( device, 1, &mappedRange );
-	
-	pDevice.vkUnmapMemory( device, pBufferHostMemory );
 }
 
 void devkBuffer::TransferToDevice( devkCommandPool *pool, devkQueue &queue ){
@@ -176,13 +173,58 @@ void devkBuffer::TransferToDevice( devkCommandPool *pool, devkQueue &queue ){
 	submitInfo.commandBufferCount = 1;
 	submitInfo.pCommandBuffers = &command;
 	
-	VkFenceCreateInfo fenceInfo;
-	memset( &fenceInfo, 0, sizeof( fenceInfo ) );
-	fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
-	fenceInfo.flags = 0;
-	
 	VK_CHECK( vulkan, pDevice.vkQueueSubmit( queue.GetQueue(), 1, &submitInfo, pFence ) );
 	pFenceActive = true;
+}
+
+void devkBuffer::GetData( void *data ){
+	GetData( data, 0, pSize );
+}
+
+void devkBuffer::GetData( void *data, uint32_t offset, uint32_t size ){
+	if( offset < 0 ){
+		DETHROW_INFO( deeInvalidParam, "offset < 0" );
+	}
+	if( size < 0 ){
+		DETHROW_INFO( deeInvalidParam, "size < 0" );
+	}
+	if( size == 0 ){
+		return;
+	}
+	if( offset + size > pSize ){
+		DETHROW_INFO( deeInvalidParam, "offset + size > bufferSize" );
+	}
+	if( ! data ){
+		DETHROW_INFO( deeNullPointer, "data" );
+	}
+	
+	Wait( true );
+	
+	VK_IF_CHECK( deSharedVulkan &vulkan = pDevice.GetInstance().GetVulkan() );
+	const bool whole = offset == 0 && size == pSize;
+	VkDevice const device = pDevice.GetDevice();
+	
+	void *mapped = nullptr;
+	VK_CHECK( vulkan, pDevice.vkMapMemory( device, pBufferHostMemory, 0, VK_WHOLE_SIZE, 0, &mapped ) );
+	const devkGuardUnmapBuffer guardUnmapBuffer( pDevice, pBufferHostMemory );
+	
+	VkMappedMemoryRange mappedRange;
+	memset( &mappedRange, 0, sizeof( mappedRange ) );
+	mappedRange.sType = VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE;
+	mappedRange.memory = pBufferHostMemory;
+	
+	if( whole ){
+		mappedRange.offset = 0;
+		mappedRange.size = VK_WHOLE_SIZE;
+		
+	}else{
+		mappedRange.offset = offset;
+		mappedRange.size = size;
+	}
+	
+	VK_CHECK( vulkan, pDevice.vkInvalidateMappedMemoryRanges( device, 1, &mappedRange ) );
+	
+	memcpy( data, mapped, size );
 }
 
 void devkBuffer::Wait( bool reset ){

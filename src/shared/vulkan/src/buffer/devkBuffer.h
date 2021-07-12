@@ -80,14 +80,17 @@ public:
 	/** Device. */
 	inline devkDevice &GetDevice() const{ return pDevice; }
 	
-	/** Device buffer. */
+	/** Buffer. */
 	inline VkBuffer GetBuffer() const{ return pBuffer; }
+	
+	/** Host buffer. */
+	inline VkBuffer GetBufferHost() const{ return pBufferHost; }
 	
 	/** Size. */
 	inline uint32_t GetSize() const{ return pSize; }
 	
-	/** Copy data to host memory. Size has to equal buffer size. */
-	void SetData( const void *data, uint32_t size );
+	/** Copy data to host memory. */
+	void SetData( const void *data );
 	
 	/** Copy data to host memory. */
 	void SetData( const void *data, uint32_t offset, uint32_t size );
@@ -98,6 +101,12 @@ public:
 	 * \note After call exist Wait() has to be called before using buffer.
 	 */
 	void TransferToDevice( devkCommandPool *pool, devkQueue &queue );
+	
+	/** Copy data from host memory. */
+	void GetData( void *data );
+	
+	/** Copy data from host memory. */
+	void GetData( void *data, uint32_t offset, uint32_t size );
 	
 	/**
 	 * If fence is active wait for fence to be signaled.

@@ -87,6 +87,8 @@ void devkCommandBuffer::Begin(){
 		DETHROW_INFO( deeInvalidAction, "recording" );
 	}
 	
+	Wait( true );
+	
 	VkCommandBufferBeginInfo beginInfo;
 	memset( &beginInfo, 0, sizeof( beginInfo ) );
 	beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
@@ -98,9 +100,9 @@ void devkCommandBuffer::Begin(){
 	pRecording = true;
 }
 
-void devkCommandBuffer::Barrier( devkBuffer *buffer, VkAccessFlags sourceAccessMask,
-VkAccessFlags destAccessMask, VkPipelineStageFlags sourceStageMask,
-VkPipelineStageFlags destStageMask ){
+void devkCommandBuffer::Barrier( devkBuffer *buffer, bool useDeviceBuffer,
+VkAccessFlags sourceAccessMask, VkAccessFlags destAccessMask,
+VkPipelineStageFlags sourceStageMask, VkPipelineStageFlags destStageMask ){
 	if( ! pRecording ){
 		DETHROW_INFO( deeInvalidAction, "not recording" );
 	}
@@ -113,7 +115,7 @@ VkPipelineStageFlags destStageMask ){
 	barrier.sType = VK_STRUCTURE_TYPE_BUFFER_MEMORY_BARRIER;
 	barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
 	barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-	barrier.buffer = buffer->GetBuffer();
+	barrier.buffer = useDeviceBuffer ? buffer->GetBuffer() : buffer->GetBufferHost();
 	barrier.size = VK_WHOLE_SIZE;
 	barrier.srcAccessMask = sourceAccessMask;
 	barrier.dstAccessMask = destAccessMask;
@@ -125,8 +127,18 @@ VkPipelineStageFlags destStageMask ){
 }
 
 void devkCommandBuffer::BarrierHostShader( devkBuffer *buffer, VkPipelineStageFlags destStageMask ){
-	Barrier( buffer, VK_ACCESS_HOST_WRITE_BIT, VK_ACCESS_SHADER_READ_BIT,
+	Barrier( buffer, true, VK_ACCESS_HOST_WRITE_BIT, VK_ACCESS_SHADER_READ_BIT,
 		VK_PIPELINE_STAGE_HOST_BIT, destStageMask );
+}
+
+void devkCommandBuffer::BarrierShaderTransfer( devkBuffer *buffer, VkPipelineStageFlags srcStageMask ){
+	Barrier( buffer, true, VK_ACCESS_SHADER_WRITE_BIT, VK_ACCESS_TRANSFER_READ_BIT,
+		srcStageMask, VK_PIPELINE_STAGE_TRANSFER_BIT );
+}
+
+void devkCommandBuffer::BarrierTransferHost( devkBuffer *buffer ){
+	Barrier( buffer, false, VK_ACCESS_TRANSFER_WRITE_BIT, VK_ACCESS_HOST_READ_BIT,
+		VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_HOST_BIT );
 }
 
 void devkCommandBuffer::BindPipeline( devkPipeline *pipeline ){
@@ -174,6 +186,54 @@ void devkCommandBuffer::DispatchCompute( int groupX, int groupY, int groupZ ){
 	}
 	
 	pPool.GetDevice().vkCmdDispatch( pBuffer, groupX, groupY, groupZ );
+}
+
+void devkCommandBuffer::WriteBuffer( devkBuffer *buffer ){
+	VkBufferCopy copy;
+	memset( &copy, 0, sizeof( copy ) );
+	copy.size = buffer->GetSize();
+	pPool.GetDevice().vkCmdCopyBuffer( pBuffer, buffer->GetBufferHost(), buffer->GetBuffer(), 1, &copy );
+}
+
+void devkCommandBuffer::ReadBuffer( devkBuffer *buffer ){
+	VkBufferCopy copy;
+	memset( &copy, 0, sizeof( copy ) );
+	copy.size = buffer->GetSize();
+	pPool.GetDevice().vkCmdCopyBuffer( pBuffer, buffer->GetBuffer(), buffer->GetBufferHost(), 1, &copy );
+}
+
+void devkCommandBuffer::End(){
+	if( ! pRecording ){
+		DETHROW_INFO( deeInvalidAction, "not recording" );
+	}
+	
+	VK_CHECK( pPool.GetDevice().GetInstance().GetVulkan(), pPool.GetDevice().vkEndCommandBuffer( pBuffer ) );
+	
+	pRecording = false;
+	pBoundPipeline = nullptr;
+}
+
+void devkCommandBuffer::Submit( devkQueue &queue ){
+	if( pRecording ){
+		DETHROW_INFO( deeInvalidAction, "recording" );
+	}
+	
+	Wait( true );
+	
+	devkDevice &device = pPool.GetDevice();
+	VK_IF_CHECK( deSharedVulkan &vulkan = device.GetInstance().GetVulkan() );
+	
+	pFenceActive = false;
+	VK_CHECK( vulkan, device.vkResetFences( device.GetDevice(), 1, &pFence ) );
+	
+	VkSubmitInfo submitInfo;
+	memset( &submitInfo, 0, sizeof( submitInfo ) );
+	submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+	submitInfo.commandBufferCount = 1;
+	submitInfo.pCommandBuffers = &pBuffer;
+	
+	VK_CHECK( vulkan, device.vkQueueSubmit( queue.GetQueue(), 1, &submitInfo, pFence ) );
+	pFenceActive = true;
 }
 
 
