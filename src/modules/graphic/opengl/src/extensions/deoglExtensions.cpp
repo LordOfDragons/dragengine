@@ -595,7 +595,8 @@ void deoglExtensions::pScanExtensions(){
 		|| pHasExtension[ ext_ARB_geometry_shader4 ]
 		|| pHasExtension[ ext_EXT_gpu_shader4 ];
 	
-	pSupportsGSInstancing = pGLVersion >= evgl4p0
+	// "core since" = "4.0". "core in" = "4.6". 4.0 is not working
+	pSupportsGSInstancing = pGLVersion >= evgl4p6
 		|| pGLESVersion >= evgles3p2
 		|| pHasExtension[ ext_ARB_gpu_shader5 ];
 	
