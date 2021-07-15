@@ -121,7 +121,7 @@ if not (parent_env['OSPosix'] or parent_env['OSWindows'] or parent_env['OSBeOS']
 
 # parameters
 #params = Variables( [ 'parameters.cache', 'custom.py' ] )
-params = Variables( [ 'custom.py' ] )
+params = Variables(['custom.py']) 
 
 params.Add( EnumVariable( 'platform_android', 'Build for Android platform', 'no', ['no','armv7','x86'] ) )
 params.Add( BoolVariable( 'with_tests', 'Build engine tests', False ) )

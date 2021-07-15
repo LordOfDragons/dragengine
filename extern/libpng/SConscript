@@ -117,7 +117,9 @@ libpath = [ envLibrary.Dir( 'lib' ) ]
 libpath.extend( parent_targets[ 'lib_zlib' ][ 'libpath' ] )
 
 forceRuntimeLibs = []
-forceRuntimeLibs.extend(parent_targets['lib_zlib']['forceRuntimeLibs'])
+if 'forceRuntimeLibs' in parent_targets['lib_zlib']:
+	forceRuntimeLibs.extend(parent_targets['lib_zlib']['forceRuntimeLibs'])
+
 if envLibrary['OSWindows']:
 	forceRuntimeLibs.append(library[-1])
 	library = library[0:-1]
