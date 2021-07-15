@@ -298,8 +298,8 @@ void deoglRCanvasPaint::pWriteVBOData(){
 		if( pIsThick ){
 			const float ht = thickness * 0.5f;
 			const decVector2 shift[ 6 ] = {
-				{ -ht, -ht }, { ht, -ht }, { ht, ht },
-				{ -ht, -ht }, { ht, ht }, { -ht, ht } };
+				decVector2( -ht, -ht ), decVector2( ht, -ht ), decVector2( ht, ht ),
+				decVector2( -ht, -ht ), decVector2( ht, ht ), decVector2( -ht, ht ) };
 			int j;
 			
 			pDrawModeLine = GL_TRIANGLES;

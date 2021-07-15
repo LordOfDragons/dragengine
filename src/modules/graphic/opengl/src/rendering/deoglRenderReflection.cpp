@@ -538,6 +538,8 @@ deoglRenderBase( renderThread )
 			}
 		}
 		
+		(void)pIndexTextureWidth;
+		(void)pIndexTextureHeight;
 		/*
 		// create textures
 		pIndexTextureWidth = 512;

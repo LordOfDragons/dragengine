@@ -41,7 +41,9 @@ pPool( pool ),
 pLLInstance( this ),
 pParentInstance( NULL ),
 pIndexInstance( 0 ),
-pFlags( 0 ){
+pFlags( 0 )
+{
+	(void)pPool; // silence compiler warning
 }
 
 deoglPersistentRenderTaskSubInstance::~deoglPersistentRenderTaskSubInstance(){

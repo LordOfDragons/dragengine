@@ -50,7 +50,9 @@ pResultInWorldSpace( false ),
 pCheckAxisX( false ),
 pCheckAxisY( false ),
 pCheckAxisZ( false ),
-pRayLength( 0.0f ){
+pRayLength( 0.0f )
+{
+	(void)pModel; // silence compiler warning
 #ifdef MOVRAYHITSFACES_DO_TIMIING
 	timing = 0.0f;
 	timingCount = 0;

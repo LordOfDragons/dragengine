@@ -80,6 +80,9 @@ pDebug( NULL ),
 
 pLLSyncWorld( this )
 {
+	(void)pDirtyRig; // not used yet
+	(void)pDirtyDynamicSkin; // not used yet
+	
 	try{
 		pAComponent = new deoalAComponent( oal.GetAudioThread() );
 		

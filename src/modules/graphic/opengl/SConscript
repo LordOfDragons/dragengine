@@ -40,7 +40,7 @@ if envModule['build_graphics_opengl'] != TernaryVariableNo:
 			buildModule = True
 		
 		if hasOpenGL:
-			if envModule['OSPosix']:
+			if envModule['OSPosix'] or envModule['OSMacOS']:
 				hasFuncProc = conf.CheckLibWithHeader('GL', 'GL/glx.h', 'c++', 'glXGetProcAddress(NULL);')
 				if hasFuncProc:
 					envModule.Append(CXXFLAGS = '-DHAS_OGL_GETPROC')
@@ -75,6 +75,12 @@ if envModule['OSBeOS']:
 
 if envModule['OSMacOS']:
 	envModule.Append(FRAMEWORKS = ['Cocoa', 'OpenGL'])
+	# OpenGL deprecation. for the time being silence until Vulkan is done
+	envModule.Append(CPPFLAGS = ['-DGL_SILENCE_DEPRECATION'])
+	# Silence more deprecated warnings. Looking at them later
+	envModule.Append(CPPFLAGS = ['-Wno-deprecated-declarations'])
+	# Enable C++-11 for those compilers not doing it
+	envModule.Append(CXXFLAGS = ['-std=c++11'])
 
 if envModule['with_debug']:
 	envModule.Append(CPPFLAGS = ['-DWITH_DEBUG'])

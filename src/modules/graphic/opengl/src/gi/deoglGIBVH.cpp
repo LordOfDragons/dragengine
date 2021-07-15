@@ -73,7 +73,6 @@
 
 deoglGIBVH::deoglGIBVH( deoglRenderThread &renderThread ) :
 pRenderThread( renderThread ),
-pMaxDetectionRange( 10.0f ),
 pComponents( NULL ),
 pComponentCount( 0 ),
 pComponentSize( 0 ),

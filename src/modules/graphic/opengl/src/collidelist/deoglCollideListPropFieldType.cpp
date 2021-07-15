@@ -40,7 +40,9 @@
 deoglCollideListPropFieldType::deoglCollideListPropFieldType( deoglCollideListPropField &propField ) :
 pPropField( propField ),
 pType( NULL ),
-pClusterCount( 0 ){
+pClusterCount( 0 )
+{
+	(void)pPropField; // silence compiler warning
 }
 
 deoglCollideListPropFieldType::~deoglCollideListPropFieldType(){

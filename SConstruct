@@ -559,7 +559,10 @@ parent_env.Append( CPPFLAGS = [ '-Wall' ] )
 # the idea behind all this is all nice and dandy but it prevents legit fast memory handling
 # trying to pretend idiots from shooting themselves in the foot. if somebody uses memcpy then
 # he should know what he is doing so stop breaking builds with non-sense errors.
-parent_env.Append(CXXFLAGS = ['-Wno-class-memaccess'])
+# 
+# and to add insult to injury MacOS does not understand the flag. great... just great
+if not parent_env['OSMacOS']:
+	parent_env.Append(CXXFLAGS = ['-Wno-class-memaccess'])
 
 if parent_env[ 'with_warnerrors' ]:
 	parent_env.Append( CPPFLAGS = [ '-Werror' ] )

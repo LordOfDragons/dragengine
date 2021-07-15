@@ -182,8 +182,6 @@ private:
 	
 	deoglRenderThread &pRenderThread;
 	
-	float pMaxDetectionRange;
-	
 	sComponent *pComponents;
 	int pComponentCount;
 	int pComponentSize;

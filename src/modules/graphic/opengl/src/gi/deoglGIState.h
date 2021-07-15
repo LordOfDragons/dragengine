@@ -66,7 +66,6 @@ private:
 	
 	int pIrradianceMapSize;
 	int pDistanceMapSize;
-	float pMaxProbeDistance;
 	float pDepthSharpness;
 	float pHysteresis;
 	float pNormalBias;

@@ -80,7 +80,6 @@ private:
 	deoglShaderParameterBlockList pSPBInstances;
 	int pSPBInstanceMaxEntries;
 	bool pUseSPBInstanceFlags;
-	unsigned int pTrackingNumber;
 	bool pForceDoubleSided;
 	
 	decPointerList pShaders;

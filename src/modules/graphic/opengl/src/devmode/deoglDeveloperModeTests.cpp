@@ -61,7 +61,9 @@
 ////////////////////////////
 
 deoglDeveloperModeTests::deoglDeveloperModeTests( deoglRenderThread &renderThread ) :
-pRenderThread( renderThread ){
+pRenderThread( renderThread )
+{
+	(void)pRenderThread; // silence compiler warning
 }
 
 deoglDeveloperModeTests::~deoglDeveloperModeTests(){

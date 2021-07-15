@@ -59,6 +59,8 @@ pRayCount( 0 ),
 pRange( 0.0f ),
 pInitialRayLength( 10.0f )
 {
+	(void)pOwner; // silence compiler warning
+	
 	pWOVRayHitsElement.SetResult( &pRTResult );
 	SetMarkFinishedAfterRun( true );
 	SetLowPriority( true );

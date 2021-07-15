@@ -49,7 +49,9 @@
 
 deoalWOVRayHitsElement::deoalWOVRayHitsElement() :
 pResult( NULL ),
-pThresholdTransmit( 1e-3f ){
+pThresholdTransmit( 1e-3f )
+{
+	(void)pThresholdTransmit; // not used yet
 }
 
 deoalWOVRayHitsElement::~deoalWOVRayHitsElement(){

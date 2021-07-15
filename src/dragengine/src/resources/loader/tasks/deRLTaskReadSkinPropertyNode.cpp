@@ -50,7 +50,9 @@ pResourceLoader( resourceLoader ),
 pTask( task ),
 pEngine( engine ),
 pVirtualFileSystem( vfs ),
-pBasePath( basePath ){
+pBasePath( basePath )
+{
+	(void)pEngine; // silence compiler moaning
 }
 
 deRLTaskReadSkinPropertyNode::~deRLTaskReadSkinPropertyNode(){
