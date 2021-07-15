@@ -763,16 +763,15 @@ deoglShaderCompiled *deoglShaderLanguage::CompileShader( deoglShaderProgram &pro
 			}
 		}
 		
-		// bind shader storage blocks. we do not throw an exception here if the required
-		// functions are missing since SSBO usage is often wrapped in if-defs
+		// bind shader storage blocks
 		count = shaderStorageBlockList.GetCount();
-		if( count > 0 && pglGetProgramResourceIndex && pglShaderStorageBlockBinding ){
-			/*if( ! pglGetProgramResourceIndex ){
+		if( count > 0 ){
+			if( ! pglGetProgramResourceIndex ){
 				DETHROW_INFO( deeInvalidParam, "missing glGetProgramResourceIndex" );
 			}
 			if( ! pglShaderStorageBlockBinding ){
 				DETHROW_INFO( deeInvalidParam, "missing glShaderStorageBlockBinding" );
-			}*/
+			}
 			for( i=0; i<count; i++ ){
 				location = pglGetProgramResourceIndex( handleShader, GL_SHADER_STORAGE_BLOCK,
 					shaderStorageBlockList.GetNameAt( i ) );
