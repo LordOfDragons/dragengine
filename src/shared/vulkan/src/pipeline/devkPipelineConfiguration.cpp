@@ -33,7 +33,7 @@
 ////////////////////////////////////
 
 devkPipelineConfiguration::devkPipelineConfiguration() :
-pType( Type::graphics ),
+pType( etGraphics ),
 pDescriptorSetLayout( nullptr ),
 pShaderVertex( nullptr ),
 pShaderTessellationControl( nullptr ),
@@ -52,7 +52,7 @@ pShaderMesh( nullptr ){
 }
 
 devkPipelineConfiguration::devkPipelineConfiguration( const devkPipelineConfiguration &configuration ) :
-pType( Type::graphics ),
+pType( etGraphics ),
 pDescriptorSetLayout( nullptr ),
 pShaderVertex( nullptr ),
 pShaderTessellationControl( nullptr ),
@@ -80,7 +80,7 @@ devkPipelineConfiguration::~devkPipelineConfiguration(){
 // Management
 ///////////////
 
-void devkPipelineConfiguration::SetType( Type type ){
+void devkPipelineConfiguration::SetType( eType type ){
 	pType = type;
 }
 

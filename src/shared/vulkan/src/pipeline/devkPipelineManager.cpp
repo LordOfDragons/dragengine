@@ -68,14 +68,14 @@ const devkPipelineConfiguration &configuration ){
 	devkPipeline::Ref layout;
 	
 	switch( configuration.GetType() ){
-	case devkPipelineConfiguration::Type::graphics:
+	case devkPipelineConfiguration::etGraphics:
 		DETHROW( deeInvalidParam );
 		
-	case devkPipelineConfiguration::Type::compute:
+	case devkPipelineConfiguration::etCompute:
 		layout.TakeOver( new devkPipelineCompute( pDevice, configuration ) );
 		break;
 		
-	case devkPipelineConfiguration::Type::raytracing:
+	case devkPipelineConfiguration::etRaytracing:
 		DETHROW( deeInvalidParam );
 	}
 	

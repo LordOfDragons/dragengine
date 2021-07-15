@@ -1114,7 +1114,7 @@ void deoglRenderThread::pInitThreadPhase4(){
 		
 		devkPipelineConfiguration pipelineConfig;
 		pipelineConfig.SetDescriptorSetLayout( dslSSBO );
-		pipelineConfig.SetType( devkPipelineConfiguration::Type::compute );
+		pipelineConfig.SetType( devkPipelineConfiguration::etCompute );
 		pipelineConfig.SetShaderCompute( shader );
 		
 		const struct ShaderConfig{
