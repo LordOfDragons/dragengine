@@ -51,15 +51,15 @@ pSaveCache( false )
 {
 	try{
 		switch( configuration.GetType() ){
-		case devkPipelineConfiguration::Type::graphics:
+		case devkPipelineConfiguration::etGraphics:
 			pBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
 			break;
 			
-		case devkPipelineConfiguration::Type::compute:
+		case devkPipelineConfiguration::etCompute:
 			pBindPoint = VK_PIPELINE_BIND_POINT_COMPUTE;
 			break;
 			
-		case devkPipelineConfiguration::Type::raytracing:
+		case devkPipelineConfiguration::etRaytracing:
 			pBindPoint = VK_PIPELINE_BIND_POINT_RAY_TRACING_KHR;
 			break;
 		}

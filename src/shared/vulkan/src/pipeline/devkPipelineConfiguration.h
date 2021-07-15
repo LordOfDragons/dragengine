@@ -35,16 +35,16 @@ class devkShaderModule;
 class devkPipelineConfiguration{
 public:
 	/** Type. */
-	enum class Type{
-		graphics,
-		compute,
-		raytracing
+	enum eType{
+		etGraphics,
+		etCompute,
+		etRaytracing
 	};
 	
 	
 	
 private:
-	Type pType;
+	eType pType;
 	devkDescriptorSetLayout *pDescriptorSetLayout;
 	
 	devkShaderModule *pShaderVertex;
@@ -87,10 +87,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Type. */
-	inline Type GetType() const{ return pType; }
+	inline eType GetType() const{ return pType; }
 	
 	/** Set type. */
-	void SetType( Type type );
+	void SetType( eType type );
 	
 	/** Descriptor set layout. */
 	inline devkDescriptorSetLayout *GetDescriptorSetLayout() const{ return pDescriptorSetLayout; }
