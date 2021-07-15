@@ -212,34 +212,34 @@ void dbgCheckOglError( deoglRenderThread &renderThread, const char *file, int li
 		break;
 		
 	case GL_INVALID_ENUM:
-		renderThread.GetLogger().LogException( deeInvalidParam( __FILE__, __LINE__, "GL_INVALID_ENUM" ) );
+		renderThread.GetLogger().LogException( deeInvalidParam( file, line, "GL_INVALID_ENUM" ) );
 		break;
 		
 	case GL_INVALID_VALUE:
-		renderThread.GetLogger().LogException( deeInvalidParam( __FILE__, __LINE__, "GL_INVALID_VALUE" ) );
+		renderThread.GetLogger().LogException( deeInvalidParam( file, line, "GL_INVALID_VALUE" ) );
 		break;
 		
 	case GL_INVALID_OPERATION:
-		renderThread.GetLogger().LogException( deeInvalidParam( __FILE__, __LINE__, "GL_INVALID_OPERATION" ) );
+		renderThread.GetLogger().LogException( deeInvalidParam( file, line, "GL_INVALID_OPERATION" ) );
 		break;
 		
 	case GL_STACK_OVERFLOW:
-		renderThread.GetLogger().LogException( deeInvalidParam( __FILE__, __LINE__, "GL_STACK_OVERFLOW" ) );
+		renderThread.GetLogger().LogException( deeInvalidParam( file, line, "GL_STACK_OVERFLOW" ) );
 		break;
 		
 	case GL_STACK_UNDERFLOW:
-		renderThread.GetLogger().LogException( deeInvalidParam( __FILE__, __LINE__, "GL_STACK_UNDERFLOW" ) );
+		renderThread.GetLogger().LogException( deeInvalidParam( file, line, "GL_STACK_UNDERFLOW" ) );
 		break;
 		
 	case GL_OUT_OF_MEMORY:
-		renderThread.GetLogger().LogException( deeInvalidParam( __FILE__, __LINE__, "GL_OUT_OF_MEMORY" ) );
+		renderThread.GetLogger().LogException( deeInvalidParam( file, line, "GL_OUT_OF_MEMORY" ) );
 		//dbgPrintMemoryUsage( renderThread );
 		break;
 		
 	default:{
 		decString message;
 		message.Format( "Error %x (%d)", err, err );
-		renderThread.GetLogger().LogException( deeInvalidParam( __FILE__, __LINE__, message ) );
+		renderThread.GetLogger().LogException( deeInvalidParam( file, line, message ) );
 		}
 	}
 	

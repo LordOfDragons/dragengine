@@ -79,6 +79,8 @@ if envModule['OSMacOS']:
 if envModule['with_debug']:
 	envModule.Append(CPPFLAGS = ['-DWITH_DEBUG'])
 
+appendLibrary(envModule, parent_targets['shared_vulkan'], libs)
+
 # fetch values in expanded form for later use
 versionString = '1.5'
 if envModule['force_version']:
