@@ -59,6 +59,8 @@ pFirstRay( 0 ),
 pRayCount( 0 ),
 pBackStepDistance( 1e-4 )
 {
+	(void)pOwner; // silence compiler warning
+	
 	pWOVRayHitsElement.SetResult( &pRTResult );
 	SetMarkFinishedAfterRun( true );
 	SetLowPriority( true );

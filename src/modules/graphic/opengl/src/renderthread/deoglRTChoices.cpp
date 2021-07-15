@@ -39,8 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglRTChoices::deoglRTChoices( deoglRenderThread &renderThread ) :
-pRenderThread( renderThread ){
+deoglRTChoices::deoglRTChoices( deoglRenderThread &renderThread ){
 	// base-vertex allows to render Shared-VBO instances without needing to pre-offset indices
 	// using the first point of a VBO block. using base-vertex reduces the amount of VBO required.
 	// 

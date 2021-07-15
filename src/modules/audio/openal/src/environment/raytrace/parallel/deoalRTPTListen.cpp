@@ -58,6 +58,8 @@ pRayCount( 0 ),
 pListenProbe( NULL ),
 pSourceProbe( NULL )
 {
+	(void)pOwner; // silence compiler warning
+	
 	pWOVRayHitsElement.SetResult( &pRTResult );
 	pRTWOVRayHitsElement.SetResult( &pRTResult );
 	SetMarkFinishedAfterRun( true );

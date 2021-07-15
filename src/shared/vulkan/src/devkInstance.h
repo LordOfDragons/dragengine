@@ -51,7 +51,7 @@ private:
 	int pPhysicalDeviceCount;
 	
 	// DEBUG
-	VkDebugReportCallbackEXT debugReportCallback{};
+	VkDebugReportCallbackEXT debugReportCallback;
 	// DEBUG
 	
 	

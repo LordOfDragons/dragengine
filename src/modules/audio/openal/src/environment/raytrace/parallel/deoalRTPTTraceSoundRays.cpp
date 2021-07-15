@@ -74,6 +74,8 @@ pInverseRayTracing( false ),
 pDetectOutsideLength( 100.0 ),
 pBackStepDistance( 1e-4 )
 {
+	(void)pOwner; // silence compiler warning
+	
 	pWOVRayHitsElement.SetResult( &pRTResult );
 	pRTWOVRayHitsElement.SetResult( &pRTResult );
 	SetMarkFinishedAfterRun( true );

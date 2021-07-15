@@ -57,6 +57,7 @@
 #endif
 
 #ifdef OS_MACOS
+#include "../extensions/macosfix.h"
 #include <dragengine/app/deOSMacOS.h>
 #endif
 

@@ -94,7 +94,6 @@ pDirtyLights( true ),
 pDirtyLumimeters( true ),
 pDirtyParticleEmitterInstances( true ),
 pDirtyPropFields( true ),
-pDirtySky( true ),
 
 pSyncing( false )
 {

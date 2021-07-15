@@ -41,8 +41,6 @@ public:
 	
 	
 private:
-	deoglRenderThread &pRenderThread;
-	
 	bool pSharedVBOUseBaseVertex;
 	bool pSharedSPBUseSSBO;
 	bool pGlobalSharedSPBLists;

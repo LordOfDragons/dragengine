@@ -56,6 +56,7 @@
 deoglSkinState::deoglSkinState( deoglRenderThread &renderThread ) :
 pRenderThread( renderThread )
 {
+	(void)pRenderThread; // silence compiler warning
 	pSharedInit();
 }
 

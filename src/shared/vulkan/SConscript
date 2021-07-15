@@ -31,6 +31,10 @@ envShared.Append(CPPFLAGS = ['-DVK_NO_PROTOTYPES'])
 # always use included vulkan headers. ignore system provided ones if present
 envShared.Append(CPPPATH = [envShared.Dir('extern/include').srcnode()])
 
+if envShared['OSMacOS']:
+	# Enable C++-11 for those compilers not doing it
+	envShared.Append(CXXFLAGS = ['-std=c++11'])
+
 sources = []
 globFiles(envShared, 'src', '*.cpp', sources)
 

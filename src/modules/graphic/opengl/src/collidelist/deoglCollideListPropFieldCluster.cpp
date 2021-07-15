@@ -42,7 +42,9 @@ deoglCollideListPropFieldCluster::deoglCollideListPropFieldCluster( deoglCollide
 pType( type ),
 pCluster( NULL ),
 pCulled( false ),
-pCascadeMask( 0 ){
+pCascadeMask( 0 )
+{
+	(void)pType; // silence compiler warning
 }
 
 deoglCollideListPropFieldCluster::~deoglCollideListPropFieldCluster(){

@@ -53,6 +53,7 @@ pCheckAxisZ( false ),
 pRayLength( 0.0f ),
 pHasResult( false )
 {
+	(void)pModel; // silence compiler warning
 #ifdef MOVRAYHITSFACES_DO_TIMIING
 	timing = 0.0f;
 	timingCount = 0;

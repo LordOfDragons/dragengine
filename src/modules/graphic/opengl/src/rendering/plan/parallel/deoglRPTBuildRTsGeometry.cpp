@@ -49,6 +49,7 @@ pPlan( plan ),
 pMask( mask ),
 pElapsedTime( 0.0f )
 {
+	(void)pMask; // silence compiler warning
 	SetMarkFinishedAfterRun( true );
 }
 

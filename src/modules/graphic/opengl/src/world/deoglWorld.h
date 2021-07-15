@@ -62,7 +62,6 @@ private:
 	bool pDirtyLumimeters;
 	bool pDirtyParticleEmitterInstances;
 	bool pDirtyPropFields;
-	bool pDirtySky;
 	
 	bool pSyncing;
 	

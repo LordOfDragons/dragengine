@@ -29,7 +29,7 @@ appendLibrary(envLauncher, parent_targets['dragengine'], libs)
 appendLibrary(envLauncher, parent_targets['lib_fox'], libs)
 libs.extend(parent_targets['dragengine']['binlibs'])
 
-if envLauncher['OSPosix']:
+if envLauncher['OSPosix'] or envLauncher['OSMacOS']:
 	envLauncher.Append(CXXFLAGS = '-DHAS_LIB_DL')
 	
 elif envLauncher['OSBeOS']:
