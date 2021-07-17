@@ -26,7 +26,6 @@
 #include "devkInstance.h"
 
 #include <dragengine/deObject.h>
-#include <dragengine/deTObjectReference.h>
 #include <dragengine/common/file/decPath.h>
 
 class deBaseModule;

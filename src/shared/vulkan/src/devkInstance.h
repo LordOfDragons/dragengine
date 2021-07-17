@@ -27,7 +27,6 @@
 #include "devkDevice.h"
 
 #include <dragengine/deObject.h>
-#include <dragengine/deTObjectReference.h>
 
 class deSharedVulkan;
 

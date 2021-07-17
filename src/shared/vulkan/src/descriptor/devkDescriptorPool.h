@@ -27,7 +27,6 @@
 #include "../devkBasics.h"
 
 #include <dragengine/deObject.h>
-#include <dragengine/deTObjectReference.h>
 #include <dragengine/common/collection/decObjectList.h>
 
 class devkDevice;

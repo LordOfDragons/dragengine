@@ -29,7 +29,6 @@
 #include "shader/devkShaderModuleManager.h"
 
 #include <dragengine/deObject.h>
-#include <dragengine/deTObjectReference.h>
 
 class devkInstance;
 

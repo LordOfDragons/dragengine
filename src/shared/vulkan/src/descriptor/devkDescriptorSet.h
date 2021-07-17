@@ -28,7 +28,6 @@
 #include "../buffer/devkBuffer.h"
 
 #include <dragengine/deObject.h>
-#include <dragengine/deTObjectReference.h>
 
 class devkDescriptorPool;
 

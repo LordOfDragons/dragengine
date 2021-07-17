@@ -26,7 +26,6 @@
 #include "../devkBasics.h"
 
 #include <dragengine/deObject.h>
-#include <dragengine/deTObjectReference.h>
 
 class devkDevice;
 class devkDescriptorSetLayout;
