@@ -1,0 +1,140 @@
+from SConsCommon import *
+
+Import('parent_env parent_targets parent_report')
+
+envLibrary = parent_env.Clone()
+
+pathBin = envLibrary.subst(envLibrary['path_launcher_bin'])
+pathBinLib = envLibrary.subst(envLibrary['path_launcher_bin_lib'])
+pathConfig = envLibrary.subst(envLibrary['path_launcher_config'])
+pathData = envLibrary.subst(envLibrary['path_launcher_data'])
+pathShare = envLibrary.subst(envLibrary['path_launcher_share'])
+pathGames = envLibrary.subst(envLibrary['path_launcher_games'])
+pathInclude = envLibrary.subst(envLibrary['path_launcher_include'])
+pathLib = envLibrary.subst(envLibrary['path_launcher_lib'])
+
+versionString = '1.5'
+if envLibrary['force_version']:
+	versionString = envModule['force_version']
+
+libVersionString = '{}.0'.format(versionString)
+
+envLibrary.Replace(WINDOWS_INSERT_DEF = 1) # generated .def file if dll is build
+
+if envLibrary['OSWindows']:
+	# this is required for windows otherwise not all symbols are available to users
+	# of this library. no idea why this is required for delauncher.dll but not
+	# dragengine.dll
+	envLibrary.Append(LINKFLAGS = ['-Wl,--export-all-symbols'])
+
+if envLibrary['OSMacOS']:
+	envLibrary.Append(LINKFLAGS = ['-install_name', '@rpath/libdelauncher.dylib'])
+
+sources = []
+headers = []
+globFiles(envLibrary, 'src', '*.cpp', sources)
+globFiles(envLibrary, 'src', '*.h', headers)
+
+headers = [envLibrary.File(h).srcnode() for h in headers]
+objects = [envLibrary.SharedObject(s) for s in sources]
+
+libsLib = []
+
+appendLibrary(envLibrary, parent_targets['dragengine'], libsLib)
+
+if envLibrary['OSPosix']:
+	envLibrary.Replace(SHLIBVERSION = libVersionString)
+
+buildLibrary = envLibrary.SharedLibrary(target='delauncher', source=objects, LIBS=libsLib)
+targetBuildLib = envLibrary.Alias('delauncher_build', buildLibrary)
+
+copyHeaders = []
+refDir = envLibrary.Dir('src').srcnode()
+for h in headers:
+	copyHeaders.append(envLibrary.Command(
+		os.path.join('include', 'delauncher', refDir.rel_path(h)),
+		h, Copy('$TARGET', '$SOURCE')))
+envLibrary.Depends(buildLibrary, copyHeaders)
+
+installLibDevelop = [envLibrary.InstallAs(os.path.join(pathInclude, refDir.rel_path(h)), h) for h in headers]
+
+installLibRuntime = []
+
+archiveLibDevelop = {os.path.join(pathInclude, refDir.rel_path(h)):h for h in headers}
+archiveLib = {}
+
+if envLibrary['OSPosix']:
+	l = buildLibrary[0]
+	lname = l.name
+	installLibRuntime.append(envLibrary.InstallVersionedLib(pathLib, l))
+	archiveLib['{}/{}'.format(pathLib, l.name)] = l
+	
+	lname = '.'.join(lname.split('.')[0:-2])
+	archiveLib['{}/{}'.format(pathLib, lname)] = envLibrary.File(lname)
+	
+	lname = '.'.join(lname.split('.')[0:-1])
+	archiveLib['{}/{}'.format(pathLib, lname)] = envLibrary.File(lname)
+	
+elif envLibrary['OSWindows']:
+	installLibRuntime.append(envLibrary.Install(pathBin, 'delauncher.dll'))
+	installLibDevelop.append(envLibrary.Install(pathLib, 'delauncher.lib'))
+	installLibDevelop.append(envLibrary.Install(pathLib, 'delauncher.def'))
+	
+	archiveLib[os.path.join(pathBin, 'delauncher.dll')] = envLibrary.File('delauncher.dll')
+	archiveLibDevelop[os.path.join(pathLib, 'delauncher.lib')] = envLibrary.File('delauncher.lib')
+	archiveLibDevelop[os.path.join(pathLib, 'delauncher.def')] = envLibrary.File('delauncher.def')
+
+dataFiles = []
+globFiles(envLibrary, 'shared/data', '*', dataFiles)
+
+for f in dataFiles:
+	path = f.split('/')
+	filename = os.path.join(pathShare, *path[2:])
+	installLibRuntime.append(envLibrary.InstallAs(filename, f))
+	archiveLib[filename] = envLibrary.File(f).srcnode()
+
+targetInstallLibDevelop = envLibrary.Alias('delauncher_develop', installLibDevelop)
+targetInstallLibRuntime = envLibrary.Alias('delauncher_runtime', installLibRuntime)
+targetInstallLib = envLibrary.Alias('delauncher', [targetInstallLibRuntime, targetInstallLibDevelop])
+
+cpppath = [envLibrary.Dir('include')]
+cpppath.extend(parent_targets['dragengine']['cpppath'])
+
+libpath = [buildLibrary[0].get_dir()]
+libpath.extend(parent_targets['dragengine']['libpath'])
+
+linklibs = ['delauncher']
+linklibs.extend(parent_targets['dragengine']['libs'])
+
+targetDoxygen = envLibrary.Alias('delauncher_doc', envLibrary.Command(
+	'doc/html/index.html', 'Doxyfile', 'cd "{}" && doxygen ../../Doxyfile'.format(
+		Dir('shared/src').srcnode().abspath)))
+
+# source directory required for special commands
+srcdir = Dir('.').srcnode().abspath
+
+# cloc
+buildClocBare = BuildCLOC(envLibrary,
+	['{}/src'.format(srcdir), '{}/shared'.format(srcdir)],
+	'{}/clocreport.csv'.format(srcdir), ['doc'])
+Depends(buildClocBare, sources)
+Depends(buildClocBare, headers)
+Depends(buildClocBare, sources)
+Depends(buildClocBare, headers)
+buildCloc = envLibrary.Alias('delauncher_cloc', buildClocBare)
+
+# add the targets to the targets list
+parent_targets['delauncher'] = {
+	'name' : 'Drag[en]gine Launcher Shared',
+	'cpppath' : cpppath,
+	'libpath' : libpath,
+	'libs' : linklibs,
+	'build' : targetBuildLib,
+	'install' : targetInstallLib,
+	'install-runtime' : targetInstallLibRuntime,
+	'install-launcher-runtime' : targetInstallLibRuntime,
+	'archive-launcher' : archiveLib,
+	'archive-launcher-develop' : archiveLibDevelop,
+	'doxygen' : targetDoxygen,
+	'cloc' : buildCloc,
+	'clocReport' : '{}/clocreport.csv'.format(srcdir)}
