@@ -32,6 +32,12 @@
  * \note Logger console is thread safe.
  */
 class deLoggerConsole : public deLogger{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deLoggerConsole> Ref;
+	
+	
+	
 private:
 	deMutex pMutex;
 	

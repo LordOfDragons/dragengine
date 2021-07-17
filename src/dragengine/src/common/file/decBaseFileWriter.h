@@ -24,8 +24,8 @@
 
 #include <stdint.h>
 
-#include "../../deObject.h"
 #include "../math/decMath.h"
+#include "../../deObject.h"
 
 
 /**
@@ -35,6 +35,12 @@
  * If seeking is not supported an exception is thrown.
  */
 class decBaseFileWriter : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<decBaseFileWriter> Ref;
+	
+	
+	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

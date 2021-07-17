@@ -30,6 +30,12 @@
  * \brief Null file writer doing nothing.
  */
 class decNullFileWriter : public decBaseFileWriter{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<decNullFileWriter> Ref;
+	
+	
+	
 private:
 	decString pFilename;
 	

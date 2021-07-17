@@ -26,6 +26,7 @@
 
 /**
  * \brief Template version of deObjectReference.
+ * \version 1.5
  * 
  * Safe way to hold an object reference with correct reference handling.
  * Storing nullptr is allowed. Initial value is nullptr.

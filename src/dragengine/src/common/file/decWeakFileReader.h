@@ -34,6 +34,12 @@
  * to avoid problems if the engine module is unloaded while the reader is still held.
  */
 class decWeakFileReader : public decBaseFileReader{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<decWeakFileReader> Ref;
+	
+	
+	
 private:
 	decBaseFileReaderReference pReader;
 	

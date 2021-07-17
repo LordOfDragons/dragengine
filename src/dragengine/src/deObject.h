@@ -22,6 +22,8 @@
 #ifndef _DEOBJECT_H_
 #define _DEOBJECT_H_
 
+#include "deTObjectReference.h"
+
 
 /**
  * \brief Basic object interface.
@@ -35,6 +37,12 @@
  * add a refernece after creating an object.
  */
 class deObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deObject> Ref;
+	
+	
+	
 private:
 	int pRefCount;
 	

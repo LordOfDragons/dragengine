@@ -29,6 +29,12 @@
  * \brief Container mapping the content of a disk directory into the virtual file system.
  */
 class deVFSDiskDirectory : public deVFSContainer{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deVFSDiskDirectory> Ref;
+	
+	
+	
 private:
 	const decPath pDiskPath;
 	bool pReadOnly;
@@ -43,6 +49,12 @@ public:
 	
 	/** \brief Create disk directory mapping disk path to root path. */
 	deVFSDiskDirectory( const decPath &rootPath, const decPath &diskPath );
+	
+	/**
+	 * \brief Create disk directory mapping disk path to root path.
+	 * \version 1.5
+	 */
+	deVFSDiskDirectory( const decPath &rootPath, const decPath &diskPath, bool readonly );
 	
 protected:
 	/**

@@ -37,6 +37,12 @@
  */
 class deLoggerConsoleColor : public deLogger{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deLoggerConsoleColor> Ref;
+	
+	
+	
+public:
 	/** \brief Text attributes. */
 	enum eTextAttributes{
 		etaDefault,

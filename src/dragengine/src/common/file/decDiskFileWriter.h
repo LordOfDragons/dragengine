@@ -32,6 +32,12 @@
  * \brief Writes data to files on disc.
  */
 class decDiskFileWriter : public decBaseFileWriter{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<decDiskFileWriter> Ref;
+	
+	
+	
 private:
 	decString pFilename;
 	FILE *pFile;

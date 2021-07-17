@@ -30,6 +30,12 @@
  * \brief XML Comment.
  */
 class decXmlComment : public decXmlElement{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<decXmlComment> Ref;
+	
+	
+	
 private:
 	decString pComment;
 	

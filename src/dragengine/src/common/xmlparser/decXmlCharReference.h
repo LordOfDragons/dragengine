@@ -31,6 +31,12 @@
  */
 class decXmlCharReference : public decXmlElement{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<decXmlCharReference> Ref;
+	
+	
+	
+public:
 	/** \brief Radix enumeration. */
 	enum eRadices{
 		/** \brief Decimal radix. */

@@ -33,6 +33,12 @@
  * much space would be consumed.
  */
 class deVFSCacheDiskDirectory : public deVFSDiskDirectory{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deVFSCacheDiskDirectory> Ref;
+	
+	
+	
 private:
 	int pMaxCacheSize;
 	int pCacheSize;

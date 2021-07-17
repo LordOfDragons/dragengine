@@ -37,6 +37,12 @@ class deVirtualFileSystem;
  * overflows.
  */
 class deVFSRedirect : public deVFSContainer{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deVFSRedirect> Ref;
+	
+	
+	
 private:
 	const decPath pRedirectPath;
 	deVFSContainer *pContainer;

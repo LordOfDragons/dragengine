@@ -34,6 +34,12 @@
  * to avoid problems if the engine module is unloaded while the writer is still held.
  */
 class decWeakFileWriter : public decBaseFileWriter{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<decWeakFileWriter> Ref;
+	
+	
+	
 private:
 	decBaseFileWriterReference pWriter;
 	

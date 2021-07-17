@@ -41,6 +41,12 @@
  * z-writer can be transparently used everywhere a file writer is used.
  */
 class decZFileWriter : public decBaseFileWriter{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<decZFileWriter> Ref;
+	
+	
+	
 private:
 	decBaseFileWriter *pWriter;
 	

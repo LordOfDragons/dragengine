@@ -31,6 +31,12 @@ class decMemoryFile;
  * \brief Read memory file.
  */
 class decMemoryFileReader : public decBaseFileReader{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<decMemoryFileReader> Ref;
+	
+	
+	
 private:
 	decMemoryFile *pFile;
 	int pPosition;

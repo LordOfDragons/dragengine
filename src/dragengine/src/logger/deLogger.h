@@ -40,6 +40,12 @@ class deException;
  */
 class deLogger : public deObject{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deLogger> Ref;
+	
+	
+	
+public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates logger. */

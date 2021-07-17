@@ -37,6 +37,12 @@
  * being thread safe.
  */
 class deLoggerChain : public deLogger{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deLoggerChain> Ref;
+	
+	
+	
 private:
 	decObjectOrderedSet pLoggerList;
 	deMutex pMutex;

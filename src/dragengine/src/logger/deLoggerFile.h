@@ -41,6 +41,12 @@ class decBaseFileWriter;
  * reference counting is not thread safe.
  */
 class deLoggerFile : public deLogger{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deLoggerFile> Ref;
+	
+	
+	
 private:
 	decBaseFileWriter *pWriter;
 	deMutex pMutex;

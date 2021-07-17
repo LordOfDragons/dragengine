@@ -34,6 +34,12 @@
  */
 class deVFSNull : public deVFSContainer{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deVFSNull> Ref;
+	
+	
+	
+public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create null container with root path. */

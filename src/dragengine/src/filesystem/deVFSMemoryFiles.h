@@ -40,6 +40,12 @@ class decMemoryFile;
  * memory file class is better suited.
  */
 class deVFSMemoryFiles : public deVFSContainer{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deVFSMemoryFiles> Ref;
+	
+	
+	
 private:
 	decObjectList pFiles;
 	dePathList pDirectories;

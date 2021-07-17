@@ -30,6 +30,12 @@
  */
 class decXmlCDSect : public decXmlCharacterData{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<decXmlCDSect> Ref;
+	
+	
+	
+public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create xml cd section with the given data. */

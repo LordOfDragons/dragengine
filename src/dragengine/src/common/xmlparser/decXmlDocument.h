@@ -38,6 +38,12 @@ class decXmlVisitorStripComments;
  * are ignored.
  */
 class decXmlDocument : public decXmlContainer{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<decXmlDocument> Ref;
+	
+	
+	
 private:
 	decString pEncoding;
 	decString pDocType;

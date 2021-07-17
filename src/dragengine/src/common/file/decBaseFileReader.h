@@ -24,10 +24,10 @@
 
 #include <stdint.h>
 
-#include "../../deObject.h"
 #include "../math/decMath.h"
 #include "../string/decString.h"
 #include "../utils/decDateTime.h"
+#include "../../deObject.h"
 
 class decDataChunk;
 
@@ -36,6 +36,12 @@ class decDataChunk;
  * \brief File reader interface.
  */
 class decBaseFileReader : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<decBaseFileReader> Ref;
+	
+	
+	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

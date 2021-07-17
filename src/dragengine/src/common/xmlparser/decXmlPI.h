@@ -30,6 +30,12 @@
  * \brief XML Process Instruction.
  */
 class decXmlPI : public decXmlElement{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<decXmlPI> Ref;
+	
+	
+	
 private:
 	decString pTarget;
 	decString pCommand;

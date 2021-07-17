@@ -53,6 +53,12 @@ class decBaseFileWriter;
  */
 class deVFSContainer : public deObject{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deVFSContainer> Ref;
+	
+	
+	
+public:
 	/** \brief File types */
 	enum eFileTypes{
 		/** \brief Regular file. */

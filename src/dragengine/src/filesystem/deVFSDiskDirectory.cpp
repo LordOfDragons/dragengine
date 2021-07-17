@@ -90,6 +90,12 @@ pDiskPath( diskPath ),
 pReadOnly( false ){
 }
 
+deVFSDiskDirectory::deVFSDiskDirectory( const decPath &rootPath, const decPath &diskPath, bool readonly ) :
+deVFSContainer( rootPath ),
+pDiskPath( diskPath ),
+pReadOnly( readonly ){
+}
+
 deVFSDiskDirectory::~deVFSDiskDirectory(){
 }
 

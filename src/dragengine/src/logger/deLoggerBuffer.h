@@ -39,6 +39,12 @@
  */
 class deLoggerBuffer : public deLogger{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deLoggerBuffer> Ref;
+	
+	
+	
+public:
 	/** \brief Message types. */
 	enum eMessageTypes{
 		/** \brief Information. */

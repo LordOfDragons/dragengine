@@ -43,6 +43,12 @@ class decXmlNamespace;
  */
 class decXmlElement : public deObject{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<decXmlElement> Ref;
+	
+	
+	
+public:
 	/** \brief Occurance enumeration. */
 	enum eOccuranceTypes{
 		/** \brief Element occures exactly one. */

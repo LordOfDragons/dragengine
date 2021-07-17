@@ -41,6 +41,12 @@
  * z-reader can be transparently used everywhere a file reader is used.
  */
 class decZFileReader : public decBaseFileReader{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<decZFileReader> Ref;
+	
+	
+	
 private:
 	decBaseFileReader *pReader;
 	int pFilePosition;

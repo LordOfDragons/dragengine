@@ -30,6 +30,12 @@
  * \brief XML Attribute Value.
  */
 class decXmlAttValue : public decXmlElement{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<decXmlAttValue> Ref;
+	
+	
+	
 private:
 	decString pName;
 	decString pValue;
