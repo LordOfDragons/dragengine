@@ -197,6 +197,8 @@ params.Add( StringVariable( 'archive_name_igde',
 	'Archive file name without extension for IGDE archive', 'deigde' ) )
 params.Add( StringVariable( 'archive_name_igde_dev',
 	'Archive file name without extension for IGDE Development archive', 'deigde_dev' ) )
+params.Add( StringVariable( 'archive_name_launcher_dev',
+	'Archive file name without extension for Launcher Development archive', 'delauncher_dev' ) )
 params.Add( StringVariable( 'archive_name_special',
 	'Archive file name without extension for Special archive', 'despecial' ) )
 params.Add( StringVariable( 'installer_name_engine',
@@ -207,6 +209,8 @@ params.Add( StringVariable( 'installer_name_igde',
 	'Installer file name without extension for IGDE installer', 'install-deigde' ) )
 params.Add( StringVariable( 'installer_name_igde_dev',
 	'Installer file name without extension for IGDE Development installer', 'install-deigde-dev' ) )
+params.Add( StringVariable( 'installer_name_launcher_dev',
+	'Installer file name without extension for Launcher Development installer', 'install-delauncher-dev' ) )
 
 
 if parent_env['OSMacOS']:
@@ -265,7 +269,10 @@ if parent_env['OSMacOS']:
 		'${datadir}/delauncher', PathVariable.PathAccept ) )
 	params.Add( PathVariable( 'path_launcher_games', 'Path to the Launcher games',
 		'/opt/delauncher/games', PathVariable.PathAccept ) )
-
+	params.Add( PathVariable( 'path_launcher_include', 'Path to the Launcher headers',
+		'${includedir}/delauncher', PathVariable.PathAccept ) )
+	params.Add( PathVariable( 'path_launcher_lib', 'Path to the Launcher libraries',
+		'${libdir}', PathVariable.PathAccept ) )
 	
 elif parent_env['OSBeOS']:
 	params.Add( TernaryVariable( 'with_dl', 'Use the dynamic library system' ) )
@@ -324,6 +331,10 @@ elif parent_env['OSBeOS']:
 		'${datadir}/delauncher', PathVariable.PathAccept ) )
 	params.Add( PathVariable( 'path_launcher_games', 'Path to the Launcher games',
 		'${sysvardir}/delauncher/games', PathVariable.PathAccept ) )
+	params.Add( PathVariable( 'path_launcher_include', 'Path to the Launcher headers',
+		'${includedir}/delauncher', PathVariable.PathAccept ) )
+	params.Add( PathVariable( 'path_launcher_lib', 'Path to the Launcher libraries',
+		'${libdir}', PathVariable.PathAccept ) )
 	
 elif parent_env['OSPosix']:
 	params.Add( TernaryVariable( 'with_dl', 'Use the dynamic library system' ) )
@@ -381,6 +392,10 @@ elif parent_env['OSPosix']:
 		'${datadir}/delauncher', PathVariable.PathAccept ) )
 	params.Add( PathVariable( 'path_launcher_games', 'Path to the Launcher games',
 		'/opt/delauncher/games', PathVariable.PathAccept ) )
+	params.Add( PathVariable( 'path_launcher_include', 'Path to the Launcher headers',
+		'${includedir}/delauncher', PathVariable.PathAccept ) )
+	params.Add( PathVariable( 'path_launcher_lib', 'Path to the Launcher libraries',
+		'${libdir}', PathVariable.PathAccept ) )
 	
 elif parent_env['OSWindows']:
 	params.Add(EnumVariable('igde_toolkit', 'ToolKit to use for building IGDE', 'fox', ['fox','null']))
@@ -450,6 +465,18 @@ elif parent_env['OSWindows']:
 		'${path_launcher}/Share', PathVariable.PathAccept ) )
 	params.Add( PathVariable( 'path_launcher_games', 'Path to the Launcher games',
 		'${path_launcher}/Games', PathVariable.PathAccept ) )
+	
+	params.Add( PathVariable( 'path_launcher_sdk', 'Path to Drag[en]gine Launcher SDK directory',
+		'${path_launcher}/SDK', PathVariable.PathAccept ) )
+	params.Add( PathVariable( 'path_launcher_sdk_lib', 'Path to Drag[en]gine Launcher SDK libraries',
+		'${path_launcher_sdk}/lib', PathVariable.PathAccept ) )
+	params.Add( PathVariable( 'path_launcher_sdk_inc', 'Path to Drag[en]gine Launcher SDK includes',
+		'${path_launcher_sdk}/include', PathVariable.PathAccept ) )
+	
+	params.Add( PathVariable( 'path_launcher_include', 'Path to the Launcher headers',
+		'${path_launcher_sdk_inc}/delauncher', PathVariable.PathAccept ) )
+	params.Add( PathVariable( 'path_launcher_lib', 'Path to the Launcher libraries',
+		'${path_launcher_sdk_lib}', PathVariable.PathAccept ) )
 	
 else:
 	Exit( 'No supported OS found!')
@@ -724,6 +751,7 @@ scdirs.append( 'src/modules/archive/delga' )
 scdirs.append( 'src/modules/combined/fbx' )
 
 # launchers
+scdirs.append( 'src/launcher/shared' )
 scdirs.append( 'src/launcher/console' )
 scdirs.append( 'src/launcher/gui' )
 #scdirs.append( 'src/launcher/android' )

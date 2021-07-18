@@ -19,23 +19,31 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef _DELLAUNCHERSUPPORT_H_
-#define _DELLAUNCHERSUPPORT_H_
+#ifndef _DELLAUNCHER_H_
+#define _DELLAUNCHER_H_
 
+#include "engine/delEngine.h"
 #include "game/delGameManager.h"
 #include "game/patch/delPatchManager.h"
+#include "logger/delLoggerHistory.h"
 
 #include <dragengine/common/string/decString.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/logger/deLoggerChain.h>
 
+class delGameIcon;
+
 
 /**
- * \brief Drag[en]gine launching support.
+ * \brief Drag[en]gine base launcher class.
  * 
- * Main class managing Drag[en]gine launching support.
+ * Manages resources required to launch games. The game engine class stores information
+ * about the Drag[en]gine installation on the user system and allows running games through
+ * engine instances. The launcher stores games, game patches and game profiles.
+ * 
+ * Launchers can subclass to overwrite hooks to customize the launching process.
  */
-class delLauncherSupport{
+class delLauncher{
 private:
 	decString pPathConfigSystem;
 	decString pPathConfigUser;
@@ -45,8 +53,10 @@ private:
 	
 	deVirtualFileSystem::Ref pVFS;
 	deLoggerChain::Ref pLogger;
+	delLoggerHistory::Ref pLoggerHistory;
 	decString pLogSource;
 	
+	delEngine pEngine;
 	delGameManager pGameManager;
 	delPatchManager pPatchManager;
 	
@@ -65,10 +75,10 @@ public:
 	 * - "/data" : GetPathShares(), read-write
 	 * - "/logs" : GetPathLogs(), read-write
 	 */
-	delLauncherSupport( const char *loggerSource = "Launcher" );
+	delLauncher( const char *loggerSource = "Launcher" );
 	
 	/** \brief Clean up launcher support. */
-	virtual ~delLauncherSupport();
+	virtual ~delLauncher();
 	/*@}*/
 	
 	
@@ -98,6 +108,9 @@ public:
 	/** \brief Logger. */
 	inline deLoggerChain *GetLogger() const{ return pLogger; }
 	
+	/** \brief Logger history. */
+	inline delLoggerHistory *GetLoggerHistory() const{ return pLoggerHistory; }
+	
 	/** \brief Log source. */
 	inline const decString &GetLogSource() const{ return pLogSource; }
 	
@@ -118,6 +131,10 @@ public:
 	
 	
 	
+	/** \brief Engine. */
+	inline delEngine &GetEngine(){ return pEngine; }
+	inline const delEngine &GetEngine() const{ return pEngine; }
+	
 	/** \brief Game manager. */
 	inline delGameManager &GetGameManager(){ return pGameManager; }
 	inline const delGameManager &GetGameManager() const{ return pGameManager; }
@@ -125,6 +142,29 @@ public:
 	/** \brief Patch manager. */
 	inline delPatchManager &GetPatchManager(){ return pPatchManager; }
 	inline const delPatchManager &GetPatchManager() const{ return pPatchManager; }
+	
+	
+	
+	/**
+	 * \brief Create game instance.
+	 * 
+	 * Default implementation creates instance of delGame.
+	 */
+	delGame *CreateGame();
+	
+	/**
+	 * \brief Create game profile instance.
+	 * 
+	 * Default implementation creates instance of delGameProfile.
+	 */
+	delGameProfile *CreateGameProfile( const delGameProfile *copyFrom = nullptr );
+	
+	/**
+	 * \brief Create game icon instance.
+	 * 
+	 * Default implementation creates instance of delGameIcon.
+	 */
+	delGameIcon *CreateGameIcon( int size, const char *path );
 	/*@}*/
 	
 	

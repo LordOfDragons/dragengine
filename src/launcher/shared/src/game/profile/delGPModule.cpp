@@ -25,7 +25,7 @@
 
 #include "delGPModule.h"
 #include "delGPMParameter.h"
-#include "../../delLauncherSupport.h"
+#include "../../delLauncher.h"
 #include "../../engine/delEngine.h"
 #include "../../engine/delEngineInstance.h"
 #include "../../engine/modules/delEngineModule.h"
@@ -61,27 +61,21 @@ void delGPModule::SetName( const char *name ){
 	pName = name;
 }
 
-void delGPModule::ApplyParameters( const char *version, delLauncherSupport &support,
+void delGPModule::ApplyParameters( const char *version, delLauncher &launcher,
 delEngineInstance &engineInstance ) const{
-	delEngineModule * const engineModule = support.GetEngine()->GetModuleList()
-		.GetModuleNamed( pName, version );
-	if( ! engineModule ){
+	delEngineModule * const module = launcher.GetEngine().GetModules().GetNamed( pName, version );
+	if( ! module ){
 		return;
 	}
 	
-	const delEMParameterList &engineParameterList = engineModule->GetParameters();
-	const int count = pParameterList.GetCount();
-	delEMParameter *engineParameter;
+	const delEMParameterList &parameters = module->GetParameters();
+	const int count = pParameters.GetCount();
 	int i;
 	
 	for( i=0; i<count; i++ ){
-		const delGPMParameter &parameter = *pParameterList.GetAt ( i );
-		
-		engineParameter = engineParameterList.GetNamed ( parameter.GetName() );
-		
-		if( engineParameter ){
-			engineInstance.SetModuleParameter( pName, version,
-				parameter.GetName(), parameter.GetValue() );
+		const delGPMParameter &parameter = *pParameters.GetAt ( i );
+		if( parameters.HasNamed( parameter.GetName() ) ){
+			engineInstance.SetModuleParameter( pName, version, parameter.GetName(), parameter.GetValue() );
 		}
 	}
 }
@@ -92,17 +86,16 @@ delEngineInstance &engineInstance ) const{
 //////////////
 
 delGPModule &delGPModule::operator=( const delGPModule &module ){
-	const delGPMParameterList &parameterList = module.GetParameterList();
-	const int parameterCount = parameterList.GetCount();
+	const delGPMParameterList &parameters = module.GetParameters();
+	const int count = parameters.GetCount();
 	int i;
 	
 	pName = module.pName;
 	
-	pParameterList.RemoveAll();
+	pParameters.RemoveAll();
 	
-	for( i=0; i<parameterCount; i++ ){
-		pParameterList.Add ( delGPMParameter::Ref::With(
-			new delGPMParameter( *parameterList.GetAt ( i ) ) ) );
+	for( i=0; i<count; i++ ){
+		pParameters.Add ( delGPMParameter::Ref::With( new delGPMParameter( *parameters.GetAt ( i ) ) ) );
 	}
 	
 	return *this;

@@ -19,34 +19,19 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-#include "delEMParameter.h"
-
-#include <dragengine/common/exceptions.h>
+#include "delLoggerHistoryListener.h"
 
 
+// Class delLoggerHistoryListener
+///////////////////////////////////
 
-// Class delEMParameter
-/////////////////////////
+// Constructor, destructor
+////////////////////////////
 
-// Constructors and Destructors
-/////////////////////////////////
-
-delEMParameter::delEMParameter( int index, const deModuleParameter &info ) :
-pIndex( index ),
-pInfo( info ){
+delLoggerHistoryListener::delLoggerHistoryListener(){
 }
 
-delEMParameter::delEMParameter( int index, const deModuleParameter &info, const char *value ) :
-pIndex( index ),
-pInfo( info ),
-pValue( value ){
-}
-
-delEMParameter::~delEMParameter(){
+delLoggerHistoryListener::~delLoggerHistoryListener(){
 }
 
 
@@ -54,6 +39,8 @@ delEMParameter::~delEMParameter(){
 // Management
 ///////////////
 
-void delEMParameter::SetValue( const char *value ){
-	pValue = value;
+void delLoggerHistoryListener::MessageAdded( const delLoggerHistory &, const delLoggerHistoryEntry & ){
+}
+
+void delLoggerHistoryListener::HistoryCleared( const delLoggerHistory & ){
 }

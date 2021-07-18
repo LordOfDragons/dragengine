@@ -19,62 +19,71 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef _DELEMPARAMETER_H_
-#define _DELEMPARAMETER_H_
+#ifndef _DELLOGGERWRITEPIPE_H_
+#define _DELLOGGERWRITEPIPE_H_
 
-#include <dragengine/common/string/decString.h>
+#ifdef OS_W32
+#include <dragengine/app/include_windows.h>
+#endif
 
-#include <dragengine/deObject.h>
-#include <dragengine/systems/modules/deModuleParameter.h>
+#include <dragengine/logger/deLogger.h>
 
 
 
 /**
- * \brief Game Engine Module Parameter.
+ * \brief Logger writing logs to pipe.
  */
-class delEMParameter : public deObject{
+class delLoggerWritePipe : public deLogger{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<delEMParameter> Ref;
+	typedef deTObjectReference<delLoggerWritePipe> Ref;
 	
 	
 	
 private:
-	int pIndex;
-	deModuleParameter pInfo;
-	decString pValue;
+#ifdef OS_W32
+	HANDLE pPipe;
+#else
+	int pPipe;
+#endif
 	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create engine module parameter. */
-	delEMParameter( int index, const deModuleParameter &info );
+	/** \brief Create logger. */
+#ifdef OS_W32
+	delLoggerWritePipe( HANDLE pipe );
+#else
+	delLoggerWritePipe( int pipe );
+#endif
 	
-	/** \brief Create engine module parameter. */
-	delEMParameter( int index, const deModuleParameter &info, const char *value );
-	
-	/** \brief Clean up engine module parameter. */
-	virtual ~delEMParameter();
+protected:
+	/** \brief Clean up logger. */
+	virtual ~delLoggerWritePipe();
 	/*@}*/
 	
 	
 	
+public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Parameter index. */
-	inline int GetIndex() const{ return pIndex; }
+	/** \brief Log an information message. */
+	virtual void LogInfo( const char *source, const char *message );
 	
-	/** \brief Parameter info. */
-	inline const deModuleParameter &GetInfo() const{ return pInfo; }
+	/** \brief Log a warning message. */
+	virtual void LogWarn( const char *source, const char *message );
 	
-	/** \brief Value. */
-	inline const decString &GetValue() const{ return pValue; }
-	
-	/** \brief Set value. */
-	void SetValue( const char *value );
+	/** \brief Log an error message. */
+	virtual void LogError( const char *source, const char *message );
 	/*@}*/
+	
+	
+	
+protected:
+	void LogToPipe( const char *source, const char *message, int type );
+	void WriteToPipe( const void *data, int length );
 };
 
 #endif

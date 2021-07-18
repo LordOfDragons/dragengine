@@ -19,61 +19,52 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef _DELEMPARAMETER_H_
-#define _DELEMPARAMETER_H_
-
-#include <dragengine/common/string/decString.h>
+#ifndef _DELLOGGERHISTORYLISTENER_H_
+#define _DELLOGGERHISTORYLISTENER_H_
 
 #include <dragengine/deObject.h>
-#include <dragengine/systems/modules/deModuleParameter.h>
 
+class delLoggerHistory;
+class delLoggerHistoryEntry;
 
 
 /**
- * \brief Game Engine Module Parameter.
+ * \brief Logger history listener.
  */
-class delEMParameter : public deObject{
+class delLoggerHistoryListener : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<delEMParameter> Ref;
-	
-	
-	
-private:
-	int pIndex;
-	deModuleParameter pInfo;
-	decString pValue;
+	typedef deTObjectReference<delLoggerHistoryListener> Ref;
 	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create engine module parameter. */
-	delEMParameter( int index, const deModuleParameter &info );
+	/** \brief Create listener. */
+	delLoggerHistoryListener();
 	
-	/** \brief Create engine module parameter. */
-	delEMParameter( int index, const deModuleParameter &info, const char *value );
-	
-	/** \brief Clean up engine module parameter. */
-	virtual ~delEMParameter();
+protected:
+	/** \brief Clean up listener. */
+	virtual ~delLoggerHistoryListener();
 	/*@}*/
 	
 	
 	
+public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Parameter index. */
-	inline int GetIndex() const{ return pIndex; }
+	/**
+	 * \brief Message added.
+	 * \note Histroy mutex is locked while this method is called.
+	 */
+	virtual void MessageAdded( const delLoggerHistory &history, const delLoggerHistoryEntry &entry );
 	
-	/** \brief Parameter info. */
-	inline const deModuleParameter &GetInfo() const{ return pInfo; }
-	
-	/** \brief Value. */
-	inline const decString &GetValue() const{ return pValue; }
-	
-	/** \brief Set value. */
-	void SetValue( const char *value );
+	/**
+	 * \brief History cleared.
+	 * \note Histroy mutex is locked while this method is called.
+	 */
+	virtual void HistoryCleared( const delLoggerHistory &history );
 	/*@}*/
 };
 

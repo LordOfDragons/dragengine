@@ -69,7 +69,7 @@ delGameIcon *delGameIconList::GetWithSize( int size ) const{
 	return nullptr;
 }
 
-delGameIcon *delGameIconList::GetWithSizeLargest( int size ) const{
+delGameIcon *delGameIconList::GetLargest( int size ) const{
 	const int count = pIcons.GetCount();
 	delGameIcon *bestIcon = nullptr;
 	int i;
@@ -88,7 +88,7 @@ delGameIcon *delGameIconList::GetWithSizeLargest( int size ) const{
 	return bestIcon;
 }
 
-delGameIcon *delGameIconList::GetWithSizeSmallest( int size ) const{
+delGameIcon *delGameIconList::GetSmallest( int size ) const{
 	const int count = pIcons.GetCount();
 	delGameIcon *bestIcon = nullptr;
 	int i;
@@ -99,6 +99,36 @@ delGameIcon *delGameIconList::GetWithSizeSmallest( int size ) const{
 			continue;
 		}
 		
+		if( ! bestIcon || icon->GetSize() < bestIcon->GetSize() ){
+			bestIcon = icon;
+		}
+	}
+	
+	return bestIcon;
+}
+
+delGameIcon *delGameIconList::GetLargest() const{
+	const int count = pIcons.GetCount();
+	delGameIcon *bestIcon = nullptr;
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		delGameIcon * const icon = ( delGameIcon* )pIcons.GetAt( i );
+		if( ! bestIcon || icon->GetSize() > bestIcon->GetSize() ){
+			bestIcon = icon;
+		}
+	}
+	
+	return bestIcon;
+}
+
+delGameIcon *delGameIconList::GetSmallest() const{
+	const int count = pIcons.GetCount();
+	delGameIcon *bestIcon = nullptr;
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		delGameIcon * const icon = ( delGameIcon* )pIcons.GetAt( i );
 		if( ! bestIcon || icon->GetSize() < bestIcon->GetSize() ){
 			bestIcon = icon;
 		}
@@ -144,8 +174,11 @@ int delGameIconList::IndexOfWithSize( int size ) const{
 }
 
 void delGameIconList::Add( delGameIcon *icon ){
-	if( ! icon || HasWithSize( icon->GetSize() ) ){
-		DETHROW( deeInvalidParam );
+	if( ! icon ){
+		DETHROW_INFO( deeNullPointer, "icon" );
+	}
+	if( HasWithSize( icon->GetSize() ) ){
+		DETHROW_INFO( deeInvalidParam, "icon with size is present" );
 	}
 	
 	pIcons.Add( icon );
@@ -154,7 +187,7 @@ void delGameIconList::Add( delGameIcon *icon ){
 void delGameIconList::Remove( delGameIcon *icon ){
 	const int index = IndexOf( icon );
 	if( index == -1 ){
-		DETHROW( deeInvalidParam );
+		DETHROW_INFO( deeInvalidParam, "icon is absent" );
 	}
 	
 	pIcons.RemoveFrom( index );

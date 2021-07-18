@@ -22,7 +22,10 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "delLauncherSupport.h"
+#include "delLauncher.h"
+#include "game/delGame.h"
+#include "game/icon/delGameIcon.h"
+#include "game/profile/delGameProfile.h"
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decPath.h>
@@ -38,17 +41,20 @@
 #endif
 
 
-// Class delLauncherSupport
+// Class delLauncher
 /////////////////////////////
 
-delLauncherSupport::delLauncherSupport( const char *loggerSource ) :
+delLauncher::delLauncher( const char *loggerSource ) :
+pLoggerHistory( delLoggerHistory::Ref::With( new delLoggerHistory ) ),
 pLogSource ( loggerSource ),
+pEngine( *this ),
 pGameManager( *this ),
 pPatchManager( *this )
 {
 	try{
 		pLogger.TakeOver( new deLoggerChain );
 		pLogger->AddLogger( deLoggerConsoleColor::Ref::With( new deLoggerConsoleColor ) );
+		pLogger->AddLogger( pLoggerHistory );
 		
 		pLocatePath();
 		pInitVFS();
@@ -59,7 +65,7 @@ pPatchManager( *this )
 	}
 }
 
-delLauncherSupport::~delLauncherSupport(){
+delLauncher::~delLauncher(){
 	pCleanUp();
 }
 
@@ -68,7 +74,7 @@ delLauncherSupport::~delLauncherSupport(){
 // Management
 ///////////////
 
-void delLauncherSupport::AddFileLogger( const char *filetitle ){
+void delLauncher::AddFileLogger( const char *filetitle ){
 	if( ! filetitle ){
 		DETHROW_INFO( deeNullPointer, "filetitle" );
 	}
@@ -83,7 +89,7 @@ void delLauncherSupport::AddFileLogger( const char *filetitle ){
 		pVFS->OpenFileForWriting( decPath::CreatePathUnix( filename ) ) ) ) ) );
 }
 
-void delLauncherSupport::LogInitialParameters(){
+void delLauncher::LogInitialParameters(){
 	pLogger->LogInfoFormat( pLogSource, "System config path: %s", pPathConfigSystem.GetString() );
 	pLogger->LogInfoFormat( pLogSource, "User config path: %s", pPathConfigUser.GetString() );
 	pLogger->LogInfoFormat( pLogSource, "Shares path: %s", pPathShares.GetString() );
@@ -93,15 +99,33 @@ void delLauncherSupport::LogInitialParameters(){
 
 
 
+delGame * delLauncher::CreateGame(){
+	return new delGame( *this );
+}
+
+delGameProfile *delLauncher::CreateGameProfile( const delGameProfile *copyFrom ){
+	return copyFrom ? new delGameProfile( *copyFrom ) : new delGameProfile;
+}
+
+delGameIcon *delLauncher::CreateGameIcon( int size, const char *path ){
+	return new delGameIcon( size, path );
+}
+
+
+
 // Private Functions
 //////////////////////
 
-void delLauncherSupport::pCleanUp(){
+void delLauncher::pCleanUp(){
+	pPatchManager.Clear();
+	pGameManager.Clear();
+	pEngine.Clear();
+	
 	pLogger = nullptr;
 	pVFS = nullptr;
 }
 
-void delLauncherSupport::pLocatePath(){
+void delLauncher::pLocatePath(){
 	const char *value;
 	decPath path;
 	
@@ -220,7 +244,7 @@ void delLauncherSupport::pLocatePath(){
 #endif
 }
 
-void delLauncherSupport::pInitVFS(){
+void delLauncher::pInitVFS(){
 	pVFS.TakeOver( new deVirtualFileSystem );
 	
 	// add the found path to the virtual file system. this makes it easier to find the

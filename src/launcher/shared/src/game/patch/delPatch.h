@@ -30,7 +30,6 @@
 #include <dragengine/common/utils/decUuidSet.h>
 
 
-
 /**
  * \brief Game patch.
  */

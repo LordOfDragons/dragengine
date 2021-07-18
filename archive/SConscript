@@ -63,6 +63,7 @@ filesEngine = {}
 filesEngineDev = {}
 filesIGDE = {}
 filesIGDEDev = {}
+filesLauncherDev = {}
 filesSpecial = {}
 
 for target in parent_targets.values():
@@ -72,6 +73,8 @@ for target in parent_targets.values():
 		filesEngineDev.update(target['archive-engine-develop'])
 	if 'archive-launcher' in target:
 		filesEngine.update(target['archive-launcher'])
+	if 'archive-launcher-develop' in target:
+		filesLauncherDev.update(target['archive-launcher-develop'])
 	if 'archive-igde' in target:
 		filesIGDE.update(target['archive-igde'])
 	if 'archive-igde-develop' in target:
@@ -120,6 +123,13 @@ if envArchive['archive_name_igde_dev']:
 		ArchiveFiles = filesIGDEDev)
 	archive.append(archiveIgdeDev)
 
+if envArchive['archive_name_launcher_dev']:
+	filename = '{}{}'.format(envArchive['archive_name_launcher_dev'], archiveSuffix)
+	archiveLauncherDev = envArchive.Command(filename, filesLauncherDev.values(),
+		envArchive.Action(archiveMethod, 'Archiving {}'.format(filename)),
+		ArchiveFiles = filesLauncherDev)
+	archive.append(archiveLauncherDev)
+
 if envArchive['archive_name_special']:
 	filename = '{}{}'.format(envArchive['archive_name_special'], archiveSuffix)
 	archiveSpecial = envArchive.Command(filename, filesSpecial.values(),
@@ -139,4 +149,5 @@ parent_targets['archive'] = {
 	'archiveEngineDev': archiveEngineDev,
 	'archiveIgde': archiveIgde,
 	'archiveIgdeDev': archiveIgdeDev,
+	'archiveLauncherDev': archiveLauncherDev,
 	'archiveSpecial': archiveSpecial}

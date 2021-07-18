@@ -30,7 +30,7 @@
 #include <dragengine/systems/deModuleSystem.h>
 
 
-class delLauncherSupport;
+class delLauncher;
 
 
 /**
@@ -198,7 +198,7 @@ public:
 	inline const delEMParameterList &GetParameters() const{ return pParameters; }
 	
 	/** \brief Calculate file size and hashes. */
-	void CalcSizeAndHashes( delLauncherSupport &support );
+	void CalcSizeAndHashes( delLauncher &launcher );
 	/*@}*/
 };
 

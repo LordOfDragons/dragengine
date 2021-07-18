@@ -51,7 +51,7 @@ pLoggerSource( loggerSource )
 		DETHROW_INFO( deeNullPointer, "logger" );
 	}
 	if( ! loggerSource ){
-		DETHROW_INFO( deeInvalidParam, "loggerSource" );
+		DETHROW_INFO( deeNullPointer, "loggerSource" );
 	}
 }
 

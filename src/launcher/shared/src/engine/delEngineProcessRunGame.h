@@ -22,12 +22,9 @@
 #ifndef _DELENGINEPROCESSRUNGAME_H_
 #define _DELENGINEPROCESSRUNGAME_H_
 
-#if ! defined OS_W32 || defined OS_W32_HELPER
-
 #include <dragengine/threading/deThread.h>
 
 class delEngineProcess;
-
 
 
 /**
@@ -80,7 +77,5 @@ public:
 	int BlockingReadCommandFromPipe();
 	/*@}*/
 };
-
-#endif // ! OS_W32 || OS_W32_HELPER
 
 #endif

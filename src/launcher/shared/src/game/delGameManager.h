@@ -26,7 +26,7 @@
 #include "profile/delGameProfile.h"
 #include "profile/delGameProfileList.h"
 
-class delLauncherSupport;
+class delLauncher;
 class decPath;
 class deVFSDiskDirectory;
 class deVirtualFileSystem;
@@ -38,7 +38,7 @@ class delEngineInstance;
  */
 class delGameManager{
 private:
-	delLauncherSupport &pSupport;
+	delLauncher &pLauncher;
 	delGameList pGames;
 	
 	delGameProfileList pProfileList;
@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create game manager. */
-	delGameManager( delLauncherSupport &support );
+	delGameManager( delLauncher &launcher );
 	
 	/** \brief Clean up game manager. */
 	~delGameManager();
@@ -61,6 +61,9 @@ public:
 	
 	/** \name Management */
 	/*@{*/
+	/** \brief Launcher. */
+	inline delLauncher &GetLauncher() const{ return pLauncher; }
+	
 	/** \brief Game list. */
 	inline delGameList &GetGameList(){ return pGames; }
 	inline const delGameList &GetGameList() const{ return pGames; }
@@ -101,6 +104,9 @@ public:
 	
 	/** \brief Save game configurations. */
 	void SaveGameConfigs();
+	
+	/** \brief Clear. */
+	void Clear();
 	/*@}*/
 	
 	

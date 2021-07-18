@@ -25,7 +25,7 @@
 
 #include "delEngineModule.h"
 #include "../delEngine.h"
-#include "../../delLauncherSupport.h"
+#include "../../delLauncher.h"
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decPath.h>
@@ -136,7 +136,7 @@ void delEngineModule::SetLibFileEntryPoint( const char *name ){
 	pLibFileEntryPoint = name;
 }
 
-void delEngineModule::CalcSizeAndHashes( delLauncherSupport &support ){
+void delEngineModule::CalcSizeAndHashes( delLauncher &launcher ){
 	decBaseFileReader::Ref reader;
 	unsigned char buffer[ 4096 ];
 	unsigned int values[ 5 ];
@@ -157,7 +157,7 @@ void delEngineModule::CalcSizeAndHashes( delLauncherSupport &support ){
 			path.AddUnixPath( pDirName );
 			path.AddComponent( pVersion );
 			path.AddUnixPath( pLibFileName );
-			reader.TakeOver( support.GetVFS()->OpenFileForReading( path ) );
+			reader.TakeOver( launcher.GetVFS()->OpenFileForReading( path ) );
 		}
 		
 		pLibFileSizeIs = reader->GetLength();
@@ -175,8 +175,8 @@ void delEngineModule::CalcSizeAndHashes( delLauncherSupport &support ){
 		}
 		
 	}catch( const deException &e ){
-		support.GetLogger()->LogErrorFormat( support.GetLogSource(),
+		launcher.GetLogger()->LogErrorFormat( launcher.GetLogSource(),
 			"EngineModule.CalcSizeAndHashes failed with exception (module=%s)", pName.GetString() );
-		support.GetLogger()->LogException( support.GetLogSource(), e );
+		launcher.GetLogger()->LogException( launcher.GetLogSource(), e );
 	}
 }

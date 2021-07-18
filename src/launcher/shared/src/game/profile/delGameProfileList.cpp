@@ -127,11 +127,11 @@ void delGameProfileList::RemoveAll(){
 	pProfiles.RemoveAll();
 }
 
-void delGameProfileList::ValidateAll( delLauncherSupport &support ){
+void delGameProfileList::ValidateAll( delLauncher &launcher ){
 	const int count = pProfiles.GetCount();
 	int i;
 	
 	for( i=0; i<count; i++ ){
-		( ( delGameProfile* )pProfiles.GetAt( i ) )->Verify( support );
+		( ( delGameProfile* )pProfiles.GetAt( i ) )->Verify( launcher );
 	}
 }

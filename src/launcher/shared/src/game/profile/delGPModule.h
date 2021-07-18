@@ -27,7 +27,7 @@
 #include <dragengine/common/string/decString.h>
 
 class delEngineInstance;
-class delLauncherSupport;
+class delLauncher;
 
 
 /**
@@ -45,7 +45,7 @@ public:
 	
 private:
 	decString pName;
-	delGPMParameterList pParameterList;
+	delGPMParameterList pParameters;
 	
 	
 	
@@ -74,9 +74,9 @@ public:
 	/** \brief Set module name. */
 	void SetName( const char *name );
 	
-	/** \brief Parameter list. */
-	inline delGPMParameterList &GetParameterList(){ return pParameterList; }
-	inline const delGPMParameterList &GetParameterList() const{ return pParameterList; }
+	/** \brief Parameters. */
+	inline delGPMParameterList &GetParameters(){ return pParameters; }
+	inline const delGPMParameterList &GetParameters() const{ return pParameters; }
 	
 	/**
 	 * \brief Set parameters for a module version if possible.
@@ -84,13 +84,12 @@ public:
 	 * Invalid parameters are silently ignored and do not cause an exception.
 	 * Version has to be set to the module version to operate on.
 	 */
-	void ApplyParameters( const char *version, delLauncherSupport &support,
+	void ApplyParameters( const char *version, delLauncher &launcher,
 		delEngineInstance &engineInstance ) const;
 	/*@}*/
 	
 	
 	
-public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Copy module. */

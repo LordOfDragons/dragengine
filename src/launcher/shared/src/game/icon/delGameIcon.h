@@ -28,7 +28,9 @@
 
 
 /**
- * \brief Game Icon in PNG format.
+ * \brief Game icon.
+ * 
+ * Format of content depends on path extension.
  */
 class delGameIcon : public deObject{
 public:
@@ -64,10 +66,10 @@ public:
 	/** \brief Path. */
 	inline const decString &GetPath() const{ return pPath; }
 	
-	/** \brief Content in PNG format or nullptr if not loaded. */
+	/** \brief Content or nullptr if not loaded. */
 	inline decMemoryFile *GetContent() const{ return pContent; }
 	
-	/** \brief Set content in PNG format or nullptr if not loaded. */
+	/** \brief Set content or nullptr if not loaded. */
 	void SetContent( decMemoryFile *content );
 	/*@}*/
 };

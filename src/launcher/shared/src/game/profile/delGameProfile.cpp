@@ -26,7 +26,7 @@
 #include "delGameProfile.h"
 #include "delGPModule.h"
 #include "delGPDisableModuleVersion.h"
-#include "../../delLauncherSupport.h"
+#include "../../delLauncher.h"
 #include "../../engine/delEngine.h"
 #include "../../engine/delEngineInstance.h"
 #include "../../engine/modules/delEngineModule.h"
@@ -168,22 +168,22 @@ void delGameProfile::SetHeight( int height ){
 
 
 
-void delGameProfile::Verify( delLauncherSupport &support ){
+void delGameProfile::Verify( delLauncher &launcher ){
 	pValid = true;
-	pValid &= VerifyModule( support, pModuleGraphic, pModuleGraphicVersion, deModuleSystem::emtGraphic );
-	pValid &= VerifyModule( support, pModuleInput, pModuleInputVersion, deModuleSystem::emtInput );
-	pValid &= VerifyModule( support, pModulePhysics, pModulePhysicsVersion, deModuleSystem::emtPhysics );
-	pValid &= VerifyModule( support, pModuleAnimator, pModuleAnimatorVersion, deModuleSystem::emtAnimator );
-	pValid &= VerifyModule( support, pModuleAI, pModuleAIVersion, deModuleSystem::emtAI );
-	pValid &= VerifyModule( support, pModuleCrashRecovery, pModuleCrashRecoveryVersion, deModuleSystem::emtCrashRecovery );
-	pValid &= VerifyModule( support, pModuleAudio, pModuleAudioVersion, deModuleSystem::emtAudio );
-	pValid &= VerifyModule( support, pModuleSynthesizer, pModuleSynthesizerVersion, deModuleSystem::emtSynthesizer );
-	pValid &= VerifyModule( support, pModuleNetwork, pModuleNetworkVersion, deModuleSystem::emtNetwork );
+	pValid &= VerifyModule( launcher, pModuleGraphic, pModuleGraphicVersion, deModuleSystem::emtGraphic );
+	pValid &= VerifyModule( launcher, pModuleInput, pModuleInputVersion, deModuleSystem::emtInput );
+	pValid &= VerifyModule( launcher, pModulePhysics, pModulePhysicsVersion, deModuleSystem::emtPhysics );
+	pValid &= VerifyModule( launcher, pModuleAnimator, pModuleAnimatorVersion, deModuleSystem::emtAnimator );
+	pValid &= VerifyModule( launcher, pModuleAI, pModuleAIVersion, deModuleSystem::emtAI );
+	pValid &= VerifyModule( launcher, pModuleCrashRecovery, pModuleCrashRecoveryVersion, deModuleSystem::emtCrashRecovery );
+	pValid &= VerifyModule( launcher, pModuleAudio, pModuleAudioVersion, deModuleSystem::emtAudio );
+	pValid &= VerifyModule( launcher, pModuleSynthesizer, pModuleSynthesizerVersion, deModuleSystem::emtSynthesizer );
+	pValid &= VerifyModule( launcher, pModuleNetwork, pModuleNetworkVersion, deModuleSystem::emtNetwork );
 }
 
-bool delGameProfile::VerifyModule( delLauncherSupport &support, const char *moduleName,
+bool delGameProfile::VerifyModule( delLauncher &launcher, const char *moduleName,
 const char *moduleVersion, int requiredType ) const{
-	const delEngineModuleList &moduleList = support.GetEngine()->GetModuleList();
+	const delEngineModuleList &moduleList = launcher.GetEngine().GetModules();
 	delEngineModule *module;
 	
 	if( strlen( moduleVersion ) == 0 ){
@@ -202,9 +202,9 @@ const char *moduleVersion, int requiredType ) const{
 	return true;
 }
 
-void delGameProfile::Activate( delLauncherSupport &support, delEngineInstance &engineInstance ) const{
+void delGameProfile::Activate( delLauncher &launcher, delEngineInstance &engineInstance ) const{
 	// disable module versions. this affects all modules
-	const delEngineModuleList &engineModuleList = support.GetEngine()->GetModuleList();
+	const delEngineModuleList &engineModuleList = launcher.GetEngine().GetModules();
 	const int moduleCount = pModuleList.GetCount();
 	const int disableModuleVersionCount = pDisableModuleVersionList.GetCount();
 	int i;
@@ -233,7 +233,7 @@ void delGameProfile::Activate( delLauncherSupport &support, delEngineInstance &e
 		delGPModule &module = *pModuleList.GetAt ( i );
 		delEngineModule * const engineModule = engineModuleList.GetNamed ( module.GetName() );
 		if( engineModule ){
-			module.ApplyParameters( engineModule->GetVersion(), support, engineInstance );
+			module.ApplyParameters( engineModule->GetVersion(), launcher, engineInstance );
 		}
 	}
 }

@@ -68,8 +68,8 @@ void delEngineModuleXML::ReadFromFile( const char *filename, decBaseFileReader &
 	xmlDoc->CleanCharData();
 	
 	decXmlElementTag * const root = xmlDoc->GetRoot();
-	if( ! root || strcmp( root->GetName(), "module" ) != 0 ){
-		DETHROW_INFO( deeInvalidParam, "root tag 'module' not found" );
+	if( ! root || root->GetName() != "module" ){
+		DETHROW_INFO( deeInvalidParam, "missing root tag 'module'" );
 	}
 	
 	pReadModule( *root, module );

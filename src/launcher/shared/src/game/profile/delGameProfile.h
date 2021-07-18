@@ -29,7 +29,7 @@
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/decStringSet.h>
 
-class delLauncherSupport;
+class delLauncher;
 class delEngineInstance;
 
 
@@ -256,17 +256,18 @@ public:
 	inline bool GetValid() const{ return pValid; }
 	
 	/** \brief Verify profile. */
-	void Verify( delLauncherSupport &support );
+	void Verify( delLauncher &launcher );
 	
 	/** \brief Verify module. */
-	bool VerifyModule( delLauncherSupport &support , const char *moduleName, const char *moduleVersion, int requiredType ) const;
+	bool VerifyModule( delLauncher &launcher, const char *moduleName,
+		const char *moduleVersion, int requiredType ) const;
 	
 	/**
 	 * \brief Activate profile.
 	 * 
 	 * This activates the modules and sets the module properties.
 	 */
-	void Activate( delLauncherSupport &support , delEngineInstance &engineInstance ) const;
+	void Activate( delLauncher &launcher, delEngineInstance &engineInstance ) const;
 	/*@}*/
 	
 	

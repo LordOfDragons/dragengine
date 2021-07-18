@@ -25,7 +25,7 @@
 #include <dragengine/common/collection/decObjectList.h>
 
 class delGameProfile;
-class delLauncherSupport;
+class delLauncher;
 
 
 /**
@@ -82,7 +82,7 @@ public:
 	void RemoveAll();
 	
 	/** \brief Validate profiles. */
-	void ValidateAll( delLauncherSupport &launcher );
+	void ValidateAll( delLauncher &launcher );
 	/*@}*/
 };
 

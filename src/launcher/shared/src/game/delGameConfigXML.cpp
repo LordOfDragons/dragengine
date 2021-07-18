@@ -31,6 +31,7 @@
 #include "profile/delGPMParameter.h"
 #include "profile/delGPDisableModuleVersion.h"
 #include "profile/delGPDisableModuleVersionList.h"
+#include "../delLauncher.h"
 
 #include <dragengine/logger/deLogger.h>
 #include <dragengine/common/file/decBaseFileReader.h>
@@ -77,7 +78,7 @@ void delGameConfigXML::ReadFromFile( decBaseFileReader &reader, delGame &game ){
 	
 	decXmlElementTag * const root = xmlDoc->GetRoot();
 	if( ! root || root->GetName() != "gameConfig" ){
-		DETHROW_INFO( deeInvalidParam, "root tag is not named 'gameConfig'" );
+		DETHROW_INFO( deeInvalidParam, "missing root tag 'gameConfig'" );
 	}
 	
 	pReadConfig( *root, game );
@@ -98,7 +99,7 @@ void delGameConfigXML::pWriteConfig( decXmlWriter &writer, const delGame &game )
 	writer.WriteOpeningTag( "gameConfig", false, true );
 	
 	if( game.GetCustomProfile() ){
-		pWriteProfile( writer, *game.GetCustomProfile(), "customProfile" );
+		WriteProfile( writer, *game.GetCustomProfile(), "customProfile" );
 	}
 	
 	if( game.GetActiveProfile() ){
@@ -131,8 +132,8 @@ void delGameConfigXML::pReadConfig( const decXmlElementTag &root, delGame &game 
 		
 		const decString &tagName = tag->GetName();
 		if( tagName == "customProfile" ){
-			delGameProfile::Ref profile( delGameProfile::Ref::With( new delGameProfile ) );
-			pReadProfile( *tag, profile );
+			delGameProfile::Ref profile( delGameProfile::Ref::With( game.GetLauncher().CreateGameProfile() ) );
+			ReadProfile( *tag, profile );
 			profile->SetName( "" );
 			
 			game.SetCustomProfile( profile );

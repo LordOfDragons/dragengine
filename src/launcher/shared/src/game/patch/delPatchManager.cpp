@@ -26,7 +26,7 @@
 #include "delPatch.h"
 #include "delPatchXML.h"
 #include "delPatchManager.h"
-#include "../../delLauncherSupport.h"
+#include "../../delLauncher.h"
 #include "../../engine/delEngine.h"
 
 #include <dragengine/deEngine.h>
@@ -51,11 +51,12 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-delPatchManager::delPatchManager( delLauncherSupport &support ) :
-pSupport( support ){
+delPatchManager::delPatchManager( delLauncher &launcher ) :
+pLauncher( launcher ){
 }
 
 delPatchManager::~delPatchManager(){
+	Clear();
 }
 
 
@@ -64,14 +65,14 @@ delPatchManager::~delPatchManager(){
 ///////////////
 
 void delPatchManager::LoadPatchList( delEngineInstance &instance ){
-	pSupport.GetLogger()->LogInfo( pSupport.GetLogSource(), "Loading patch list" );
+	pLauncher.GetLogger()->LogInfo( pLauncher.GetLogSource(), "Loading patch list" );
 	
 	deVirtualFileSystem::Ref vfs;
 	vfs.TakeOver( new deVirtualFileSystem );
 	
 	deVFSDiskDirectory::Ref container;
 	const decPath pathRoot( decPath::CreatePathUnix( "/" ) );
-	const decPath pathDisk( decPath::CreatePathNative( pSupport.GetPathGames() ) );
+	const decPath pathDisk( decPath::CreatePathNative( pLauncher.GetPathGames() ) );
 	container.TakeOver( new deVFSDiskDirectory( pathRoot, pathDisk ) );
 	vfs->AddContainer( container );
 	
@@ -80,14 +81,14 @@ void delPatchManager::LoadPatchList( delEngineInstance &instance ){
 }
 
 void delPatchManager::LoadPatchFromDisk( delEngineInstance &instance, const decString &path, delPatchList &list ){
-	deLogger &logger = *pSupport.GetLogger();
-	delPatchXML patchXML( &logger, pSupport.GetLogSource() );
+	deLogger &logger = *pLauncher.GetLogger();
+	delPatchXML patchXML( &logger, pLauncher.GetLogSource() );
 	
-	logger.LogInfoFormat( pSupport.GetLogSource(), "Reading patch file '%s'", path.GetString() );
+	logger.LogInfoFormat( pLauncher.GetLogSource(), "Reading patch file '%s'", path.GetString() );
 	
 	if( path.EndsWith( ".delga" ) ){
 		delPatchList delgaPatches;
-		pSupport.GetEngine()->ReadDelgaPatchDefs( instance, path, delgaPatches );
+		pLauncher.GetEngine().ReadDelgaPatchDefs( instance, path, delgaPatches );
 		
 		const int count = delgaPatches.GetCount();
 		int i;
@@ -112,10 +113,14 @@ void delPatchManager::LoadPatchFromDisk( delEngineInstance &instance, const decS
 	}
 }
 
+void delPatchManager::Clear(){
+	pPatches.RemoveAll();
+}
 
 
-// Private Functions
-//////////////////////
+
+// Protected Functions
+////////////////////////
 
 void delPatchManager::pScanPatchDefFiles( delEngineInstance &instance,
 deVirtualFileSystem &vfs, const decPath &baseDir, const decPath &directory ){
@@ -140,7 +145,7 @@ void delPatchManager::pProcessFoundFiles( delEngineInstance &instance, const dec
 		LoadPatchFromDisk( instance, path.GetPathNative(), list );
 		
 	}catch( const deException &e ){
-		pSupport.GetLogger()->LogException( pSupport.GetLogSource(), e );
+		pLauncher.GetLogger()->LogException( pLauncher.GetLogSource(), e );
 		return;
 	}
 	
@@ -149,7 +154,7 @@ void delPatchManager::pProcessFoundFiles( delEngineInstance &instance, const dec
 	for( i=0; i<count; i++ ){
 		delPatch * const patch = list.GetAt( i );
 		if( pPatches.HasWithID( patch->GetIdentifier() ) ){
-			pSupport.GetLogger()->LogWarnFormat( pSupport.GetLogSource(), "Ignore duplicate game patch '%s'",
+			pLauncher.GetLogger()->LogWarnFormat( pLauncher.GetLogSource(), "Ignore duplicate game patch '%s'",
 				patch->GetIdentifier().ToHexString( false ).GetString() );
 			continue;
 		}

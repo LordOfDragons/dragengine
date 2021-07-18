@@ -60,16 +60,16 @@ delSharedConfigXML::~delSharedConfigXML(){
 // Protected Functions
 ////////////////////////
 
-void delSharedConfigXML::pWriteProfile( decXmlWriter &writer, const delGameProfile &profile, const char *tagName ){
+void delSharedConfigXML::WriteProfile( decXmlWriter &writer, const delGameProfile &profile, const char *tagName ){
 	writer.WriteOpeningTagStart( tagName );
 	if( ! profile.GetName().IsEmpty() ){
 		writer.WriteAttributeString( "name", profile.GetName().GetString() );
 	}
 	writer.WriteOpeningTagEnd();
 	
-	pWriteProfileSystems( writer, profile );
-	pWriteProfileDisableModuleVersions( writer, profile );
-	pWriteProfileModules( writer, profile );
+	WriteProfileSystems( writer, profile );
+	WriteProfileDisableModuleVersions( writer, profile );
+	WriteProfileModules( writer, profile );
 	
 	if( ! profile.GetRunArguments().IsEmpty() ){
 		writer.WriteDataTagString( "runArguments", profile.GetRunArguments() );
@@ -78,12 +78,12 @@ void delSharedConfigXML::pWriteProfile( decXmlWriter &writer, const delGameProfi
 		writer.WriteDataTagInt( "replaceRunArguments", profile.GetReplaceRunArguments() ? 1 : 0 );
 	}
 	
-	pWriteProfileWindow( writer, profile );
+	WriteProfileWindow( writer, profile );
 	
 	writer.WriteClosingTag( tagName, true );
 }
 
-void delSharedConfigXML::pWriteProfileSystems( decXmlWriter &writer, const delGameProfile &profile ){
+void delSharedConfigXML::WriteProfileSystems( decXmlWriter &writer, const delGameProfile &profile ){
 	writer.WriteOpeningTag( "systems", false, true );
 	
 	writer.WriteDataTagString( "graphic", profile.GetModuleGraphic() );
@@ -134,7 +134,7 @@ void delSharedConfigXML::pWriteProfileSystems( decXmlWriter &writer, const delGa
 	writer.WriteClosingTag( "systems", true );
 }
 
-void delSharedConfigXML::pWriteProfileDisableModuleVersions( decXmlWriter &writer, const delGameProfile &profile ){
+void delSharedConfigXML::WriteProfileDisableModuleVersions( decXmlWriter &writer, const delGameProfile &profile ){
 	const delGPDisableModuleVersionList &list = profile.GetDisableModuleVersionList();
 	const int count = list.GetCount();
 	int i;
@@ -156,7 +156,7 @@ void delSharedConfigXML::pWriteProfileDisableModuleVersions( decXmlWriter &write
 	writer.WriteClosingTag( "disableModuleVersions", true );
 }
 
-void delSharedConfigXML::pWriteProfileModules( decXmlWriter &writer, const delGameProfile &profile ){
+void delSharedConfigXML::WriteProfileModules( decXmlWriter &writer, const delGameProfile &profile ){
 	const delGPModuleList &moduleList = profile.GetModuleList();
 	int i, count = moduleList.GetCount();
 	
@@ -167,24 +167,24 @@ void delSharedConfigXML::pWriteProfileModules( decXmlWriter &writer, const delGa
 	writer.WriteOpeningTag( "modules", false, true );
 	
 	for( i=0; i<count; i++ ){
-		pWriteProfileModule( writer, *moduleList.GetAt ( i ) );
+		WriteProfileModule( writer, *moduleList.GetAt ( i ) );
 	}
 	
 	writer.WriteClosingTag( "modules", true );
 }
 
-void delSharedConfigXML::pWriteProfileModule( decXmlWriter &writer, const delGPModule &module ){
+void delSharedConfigXML::WriteProfileModule( decXmlWriter &writer, const delGPModule &module ){
 	writer.WriteOpeningTagStart( "module" );
 	writer.WriteAttributeString( "name", module.GetName() );
 	writer.WriteOpeningTagEnd();
 	
-	pWriteProfileModuleParameters( writer, module );
+	WriteProfileModuleParameters( writer, module );
 	
 	writer.WriteClosingTag( "module", true );
 }
 
-void delSharedConfigXML::pWriteProfileModuleParameters( decXmlWriter &writer, const delGPModule &module ){
-	const delGPMParameterList &parametersList = module.GetParameterList();
+void delSharedConfigXML::WriteProfileModuleParameters( decXmlWriter &writer, const delGPModule &module ){
+	const delGPMParameterList &parametersList = module.GetParameters();
 	int i, count = parametersList.GetCount();
 	
 	writer.WriteOpeningTag( "parameters", false, true );
@@ -202,7 +202,7 @@ void delSharedConfigXML::pWriteProfileModuleParameters( decXmlWriter &writer, co
 	writer.WriteClosingTag( "parameters", true );
 }
 
-void delSharedConfigXML::pWriteProfileWindow( decXmlWriter &writer, const delGameProfile &profile ){
+void delSharedConfigXML::WriteProfileWindow( decXmlWriter &writer, const delGameProfile &profile ){
 	writer.WriteOpeningTag( "window", false, true );
 	
 	writer.WriteDataTagInt( "fullScreen", profile.GetFullScreen() ? 1 : 0 );
@@ -214,7 +214,7 @@ void delSharedConfigXML::pWriteProfileWindow( decXmlWriter &writer, const delGam
 
 
 
-void delSharedConfigXML::pReadProfile( const decXmlElementTag &root, delGameProfile &profile ){
+void delSharedConfigXML::ReadProfile( const decXmlElementTag &root, delGameProfile &profile ){
 	const int count = root.GetElementCount();
 	int i;
 	
@@ -230,13 +230,13 @@ void delSharedConfigXML::pReadProfile( const decXmlElementTag &root, delGameProf
 		
 		const decString &tagName = tag->GetName();
 		if( tagName == "systems" ){
-			pReadProfileSystems( *tag, profile );
+			ReadProfileSystems( *tag, profile );
 			
 		}else if( tagName == "disableModuleVersions" ){
-			pReadProfileDisableModuleVersions( *tag, profile );
+			ReadProfileDisableModuleVersions( *tag, profile );
 			
 		}else if( tagName == "modules" ){
-			pReadProfileModules( *tag, profile );
+			ReadProfileModules( *tag, profile );
 			
 		}else if( tagName == "runArguments" ){
 			profile.SetRunArguments( GetCDataString( *tag ) );
@@ -245,79 +245,80 @@ void delSharedConfigXML::pReadProfile( const decXmlElementTag &root, delGameProf
 			profile.SetReplaceRunArguments( GetCDataBool( *tag ) );
 			
 		}else if( tagName == "window" ){
-			pReadProfileWindow( *tag, profile );
+			ReadProfileWindow( *tag, profile );
 		}
 	}
 }
 
-void delSharedConfigXML::pReadProfileSystems( const decXmlElementTag &root, delGameProfile &profile ){
-	int e, elementCount = root.GetElementCount();
-	const decXmlElementTag *tag;
-	
-	for( e=0; e<elementCount; e++ ){
-		tag = root.GetElementIfTag( e );
-		
-		if( tag ){
-			if( strcmp( tag->GetName(), "graphic" ) == 0 ){
-				profile.SetModuleGraphic( GetCDataString( *tag ) );
-				
-			}else if( strcmp( tag->GetName(), "graphicVersion" ) == 0 ){
-				profile.SetModuleGraphicVersion( GetCDataString( *tag ) );
-				
-			}else if( strcmp( tag->GetName(), "input" ) == 0 ){
-				profile.SetModuleInput( GetCDataString( *tag ) );
-				
-			}else if( strcmp( tag->GetName(), "inputVersion" ) == 0 ){
-				profile.SetModuleInputVersion( GetCDataString( *tag ) );
-				
-			}else if( strcmp( tag->GetName(), "physics" ) == 0 ){
-				profile.SetModulePhysics( GetCDataString( *tag ) );
-				
-			}else if( strcmp( tag->GetName(), "physicsVersion" ) == 0 ){
-				profile.SetModulePhysicsVersion( GetCDataString( *tag ) );
-				
-			}else if( strcmp( tag->GetName(), "animator" ) == 0 ){
-				profile.SetModuleAnimator( GetCDataString( *tag ) );
-				
-			}else if( strcmp( tag->GetName(), "animatorVersion" ) == 0 ){
-				profile.SetModuleAnimatorVersion( GetCDataString( *tag ) );
-				
-			}else if( strcmp( tag->GetName(), "ai" ) == 0 ){
-				profile.SetModuleAI( GetCDataString( *tag ) );
-				
-			}else if( strcmp( tag->GetName(), "aiVersion" ) == 0 ){
-				profile.SetModuleAIVersion( GetCDataString( *tag ) );
-				
-			}else if( strcmp( tag->GetName(), "crashRecovery" ) == 0 ){
-				profile.SetModuleCrashRecovery( GetCDataString( *tag ) );
-				
-			}else if( strcmp( tag->GetName(), "crashRecoveryVersion" ) == 0 ){
-				profile.SetModuleCrashRecoveryVersion( GetCDataString( *tag ) );
-				
-			}else if( strcmp( tag->GetName(), "audio" ) == 0 ){
-				profile.SetModuleAudio( GetCDataString( *tag ) );
-				
-			}else if( strcmp( tag->GetName(), "audioVersion" ) == 0 ){
-				profile.SetModuleAudioVersion( GetCDataString( *tag ) );
-				
-			}else if( strcmp( tag->GetName(), "network" ) == 0 ){
-				profile.SetModuleNetwork( GetCDataString( *tag ) );
-				
-			}else if( strcmp( tag->GetName(), "synthesizer" ) == 0 ){
-				profile.SetModuleSynthesizer( GetCDataString( *tag ) );
-				
-			}else if( strcmp( tag->GetName(), "networkVersion" ) == 0 ){
-				profile.SetModuleNetworkVersion( GetCDataString( *tag ) );
-			}
-		}
-	}
-}
-
-void delSharedConfigXML::pReadProfileDisableModuleVersions( const decXmlElementTag &root, delGameProfile &profile ){
-	const int elementCount = root.GetElementCount();
+void delSharedConfigXML::ReadProfileSystems( const decXmlElementTag &root, delGameProfile &profile ){
+	const int count = root.GetElementCount();
 	int i;
 	
-	for( i=0; i<elementCount; i++ ){
+	for( i=0; i<count; i++ ){
+		const decXmlElementTag * const tag = root.GetElementIfTag( i );
+		if( ! tag ){
+			continue;
+		}
+		
+		if( tag->GetName() == "graphic" ){
+			profile.SetModuleGraphic( GetCDataString( *tag ) );
+			
+		}else if( tag->GetName() == "graphicVersion" ){
+			profile.SetModuleGraphicVersion( GetCDataString( *tag ) );
+			
+		}else if( tag->GetName() == "input" ){
+			profile.SetModuleInput( GetCDataString( *tag ) );
+			
+		}else if( tag->GetName() == "inputVersion" ){
+			profile.SetModuleInputVersion( GetCDataString( *tag ) );
+			
+		}else if( tag->GetName() == "physics" ){
+			profile.SetModulePhysics( GetCDataString( *tag ) );
+			
+		}else if( tag->GetName() == "physicsVersion" ){
+			profile.SetModulePhysicsVersion( GetCDataString( *tag ) );
+			
+		}else if( tag->GetName() == "animator" ){
+			profile.SetModuleAnimator( GetCDataString( *tag ) );
+			
+		}else if( tag->GetName() == "animatorVersion" ){
+			profile.SetModuleAnimatorVersion( GetCDataString( *tag ) );
+			
+		}else if( tag->GetName() == "ai" ){
+			profile.SetModuleAI( GetCDataString( *tag ) );
+			
+		}else if( tag->GetName() == "aiVersion" ){
+			profile.SetModuleAIVersion( GetCDataString( *tag ) );
+			
+		}else if( tag->GetName() == "crashRecovery" ){
+			profile.SetModuleCrashRecovery( GetCDataString( *tag ) );
+			
+		}else if( tag->GetName() == "crashRecoveryVersion" ){
+			profile.SetModuleCrashRecoveryVersion( GetCDataString( *tag ) );
+			
+		}else if( tag->GetName() == "audio" ){
+			profile.SetModuleAudio( GetCDataString( *tag ) );
+			
+		}else if( tag->GetName() == "audioVersion" ){
+			profile.SetModuleAudioVersion( GetCDataString( *tag ) );
+			
+		}else if( tag->GetName() == "network" ){
+			profile.SetModuleNetwork( GetCDataString( *tag ) );
+			
+		}else if( tag->GetName() == "synthesizer" ){
+			profile.SetModuleSynthesizer( GetCDataString( *tag ) );
+			
+		}else if( tag->GetName() == "networkVersion" ){
+			profile.SetModuleNetworkVersion( GetCDataString( *tag ) );
+		}
+	}
+}
+
+void delSharedConfigXML::ReadProfileDisableModuleVersions( const decXmlElementTag &root, delGameProfile &profile ){
+	const int count = root.GetElementCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
 		const decXmlElementTag * const tag = root.GetElementIfTag( i );
 		if( ! tag ){
 			continue;
@@ -331,47 +332,50 @@ void delSharedConfigXML::pReadProfileDisableModuleVersions( const decXmlElementT
 	}
 }
 
-void delSharedConfigXML::pReadProfileModules( const decXmlElementTag &root, delGameProfile &profile ){
-	int e, elementCount = root.GetElementCount();
-	const decXmlElementTag *tag;
+void delSharedConfigXML::ReadProfileModules( const decXmlElementTag &root, delGameProfile &profile ){
+	const int count = root.GetElementCount();
+	int i;
 	
-	for( e=0; e<elementCount; e++ ){
-		tag = root.GetElementIfTag( e );
+	for( i=0; i<count; i++ ){
+		const decXmlElementTag * const tag = root.GetElementIfTag( i );
+		if( ! tag ){
+			continue;
+		}
 		
-		if( tag ){
-			if( strcmp( tag->GetName(), "module" ) == 0 ){
-				pReadProfileModule( *tag, profile );
-			}
+		if( tag->GetName() == "module" ){
+			ReadProfileModule( *tag, profile );
 		}
 	}
 }
 
-void delSharedConfigXML::pReadProfileModule( const decXmlElementTag &root, delGameProfile &profile ){
-	int e, elementCount = root.GetElementCount();
-	const decXmlElementTag *tag;
+void delSharedConfigXML::ReadProfileModule( const decXmlElementTag &root, delGameProfile &profile ){
+	const int count = root.GetElementCount();
+	int i;
 	
 	const delGPModule::Ref module( delGPModule::Ref::With(
 		new delGPModule( GetAttributeString( root, "name" ) ) ) );
 	
-	for( e=0; e<elementCount; e++ ){
-		tag = root.GetElementIfTag( e );
+	for( i=0; i<count; i++ ){
+		const decXmlElementTag * const tag = root.GetElementIfTag( i );
+		if( ! tag ){
+			continue;
+		}
 		
-		if( tag ){
-			if( tag->GetName() == "parameters" ){
-				pReadProfileModuleParameters( *tag, module );
-			}
+		if( tag->GetName() == "parameters" ){
+			ReadProfileModuleParameters( *tag, module );
 		}
 	}
 	
 	profile.GetModuleList().Add ( module );
 }
 
-void delSharedConfigXML::pReadProfileModuleParameters( const decXmlElementTag &root, delGPModule &module ){
-	delGPMParameterList &parametersList = module.GetParameterList();
-	int e, elementCount = root.GetElementCount();
+void delSharedConfigXML::ReadProfileModuleParameters( const decXmlElementTag &root, delGPModule &module ){
+	delGPMParameterList &parametersList = module.GetParameters();
+	const int count = root.GetElementCount();
+	int i;
 	
-	for( e=0; e<elementCount; e++ ){
-		const decXmlElementTag * const tag = root.GetElementIfTag( e );
+	for( i=0; i<count; i++ ){
+		const decXmlElementTag * const tag = root.GetElementIfTag( i );
 		if( ! tag ){
 			continue;
 		}
@@ -383,7 +387,7 @@ void delSharedConfigXML::pReadProfileModuleParameters( const decXmlElementTag &r
 	}
 }
 
-void delSharedConfigXML::pReadProfileWindow( const decXmlElementTag &root, delGameProfile &profile ){
+void delSharedConfigXML::ReadProfileWindow( const decXmlElementTag &root, delGameProfile &profile ){
 	const int count = root.GetElementCount();
 	int i;
 	

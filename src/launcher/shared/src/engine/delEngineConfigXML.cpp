@@ -25,7 +25,7 @@
 
 #include "delEngine.h"
 #include "delEngineConfigXML.h"
-#include "../delLauncherSupport.h"
+#include "../delLauncher.h"
 #include "../game/delGameManager.h"
 #include "../game/profile/delGameProfile.h"
 #include "../game/profile/delGPModule.h"
@@ -65,7 +65,7 @@ delEngineConfigXML::~delEngineConfigXML(){
 // Management
 ///////////////
 
-void delEngineConfigXML::ReadFromFile( decBaseFileReader &reader, delLauncherSupport &launcher ){
+void delEngineConfigXML::ReadFromFile( decBaseFileReader &reader, delLauncher &launcher ){
 	const decXmlDocument::Ref xmlDoc( decXmlDocument::Ref::With( new decXmlDocument ) );
 	decXmlParser( launcher.GetLogger() ).ParseXml( &reader, xmlDoc );
 	
@@ -80,7 +80,7 @@ void delEngineConfigXML::ReadFromFile( decBaseFileReader &reader, delLauncherSup
 	pReadConfig( *root, launcher );
 }
 
-void delEngineConfigXML::WriteToFile( decBaseFileWriter &writer, const delLauncherSupport &launcher ){
+void delEngineConfigXML::WriteToFile( decBaseFileWriter &writer, const delLauncher &launcher ){
 	decXmlWriter xmlWriter( &writer );
 	xmlWriter.WriteXMLDeclaration();
 	pWriteConfig( xmlWriter, launcher );
@@ -91,7 +91,7 @@ void delEngineConfigXML::WriteToFile( decBaseFileWriter &writer, const delLaunch
 // Private Functions
 //////////////////////
 
-void delEngineConfigXML::pWriteConfig( decXmlWriter &writer, const delLauncherSupport &launcher ){
+void delEngineConfigXML::pWriteConfig( decXmlWriter &writer, const delLauncher &launcher ){
 	const delGameManager &gameManager = launcher.GetGameManager();
 	
 	writer.WriteOpeningTag( "launcherConfig", false, true );
@@ -105,7 +105,7 @@ void delEngineConfigXML::pWriteConfig( decXmlWriter &writer, const delLauncherSu
 	writer.WriteClosingTag( "launcherConfig", true );
 }
 
-void delEngineConfigXML::pWriteProfiles( decXmlWriter &writer, const delLauncherSupport &launcher ){
+void delEngineConfigXML::pWriteProfiles( decXmlWriter &writer, const delLauncher &launcher ){
 	const delGameManager &gameManager = launcher.GetGameManager();
 	const delGameProfileList &profileList = gameManager.GetProfileList();
 	const int count = profileList.GetCount();
@@ -114,7 +114,7 @@ void delEngineConfigXML::pWriteProfiles( decXmlWriter &writer, const delLauncher
 	writer.WriteOpeningTag( "profiles", false, true );
 	
 	for( i=0; i<count; i++ ){
-		pWriteProfile( writer, *profileList.GetAt ( i ), "profile" );
+		WriteProfile( writer, *profileList.GetAt ( i ), "profile" );
 	}
 	
 	writer.WriteClosingTag( "profiles", true );
@@ -122,7 +122,7 @@ void delEngineConfigXML::pWriteProfiles( decXmlWriter &writer, const delLauncher
 
 
 
-void delEngineConfigXML::pReadConfig( const decXmlElementTag &root, delLauncherSupport &launcher ){
+void delEngineConfigXML::pReadConfig( const decXmlElementTag &root, delLauncher &launcher ){
 	delGameManager &gameManager = launcher.GetGameManager();
 	const int count = root.GetElementCount();
 	int i;
@@ -157,7 +157,7 @@ void delEngineConfigXML::pReadConfig( const decXmlElementTag &root, delLauncherS
 	}
 }
 
-void delEngineConfigXML::pReadProfiles( const decXmlElementTag &root, delLauncherSupport &launcher ){
+void delEngineConfigXML::pReadProfiles( const decXmlElementTag &root, delLauncher &launcher ){
 	delGameManager &gameManager = launcher.GetGameManager();
 	const int count = root.GetElementCount();
 	int i;
@@ -169,8 +169,8 @@ void delEngineConfigXML::pReadProfiles( const decXmlElementTag &root, delLaunche
 		}
 		
 		if( tag->GetName() == "profile" ){
-			delGameProfile::Ref profile( delGameProfile::Ref::With( new delGameProfile ) );
-			pReadProfile( *tag, profile );
+			delGameProfile::Ref profile( delGameProfile::Ref::With( launcher.CreateGameProfile() ) );
+			ReadProfile( *tag, profile );
 			
 			if( ! profile->GetName().IsEmpty()
 			&& ! gameManager.GetProfileList().HasNamed ( profile->GetName() ) ){

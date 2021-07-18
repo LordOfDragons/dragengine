@@ -26,7 +26,7 @@
 #include "delGame.h"
 #include "delGameXML.h"
 #include "delGameManager.h"
-#include "../delLauncherSupport.h"
+#include "../delLauncher.h"
 #include "../engine/delEngine.h"
 #include "../engine/modules/delEngineModule.h"
 
@@ -52,15 +52,12 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-delGameManager::delGameManager( delLauncherSupport &support ) :
-pSupport( support ){
+delGameManager::delGameManager( delLauncher &launcher ) :
+pLauncher( launcher ){
 }
 
 delGameManager::~delGameManager(){
-	pDefaultProfile = nullptr;
-	SetActiveProfile( nullptr );
-	
-	pGames.RemoveAll();
+	Clear();
 }
 
 
@@ -69,12 +66,12 @@ delGameManager::~delGameManager(){
 ///////////////
 
 void delGameManager::LoadGameList( delEngineInstance &instance ){
-	pSupport.GetLogger()->LogInfo( pSupport.GetLogSource(), "Loading game list" );
+	pLauncher.GetLogger()->LogInfo( pLauncher.GetLogSource(), "Loading game list" );
 	
 	const deVirtualFileSystem::Ref vfs( deVirtualFileSystem::Ref::With( new deVirtualFileSystem ) );
 	
 	const decPath pathRoot( decPath::CreatePathUnix( "/" ) );
-	const decPath pathDisk( decPath::CreatePathNative( pSupport.GetPathGames() ) );
+	const decPath pathDisk( decPath::CreatePathNative( pLauncher.GetPathGames() ) );
 	vfs->AddContainer( deVFSDiskDirectory::Ref::With( new deVFSDiskDirectory( pathRoot, pathDisk ) ) );
 	
 	pGames.RemoveAll();
@@ -83,9 +80,9 @@ void delGameManager::LoadGameList( delEngineInstance &instance ){
 
 void delGameManager::Verify(){
 	if( pDefaultProfile ){
-		pDefaultProfile->Verify( pSupport );
+		pDefaultProfile->Verify( pLauncher );
 	}
-	pProfileList.ValidateAll ( pSupport );
+	pProfileList.ValidateAll( pLauncher );
 	
 	const int count = pGames.GetCount();
 	int i;
@@ -102,22 +99,23 @@ void delGameManager::ApplyProfileChanges(){
 	for( i=0; i<count; i++ ){
 		delGame &game = *pGames.GetAt( i );
 		
-		if( ! pProfileList.Has ( game.GetActiveProfile() ) ){
+		if( ! pProfileList.Has( game.GetActiveProfile() ) ){
 			game.SetActiveProfile( nullptr );
 			game.VerifyRequirements();
 		}
 	}
 }
 
-void delGameManager::LoadGameFromDisk( delEngineInstance &instance, const decString &path, delGameList &list ){
-	deLogger &logger = *pSupport.GetLogger();
-	delGameXML gameXML( &logger, pSupport.GetLogSource() );
+void delGameManager::LoadGameFromDisk( delEngineInstance &instance,
+const decString &path, delGameList &list ){
+	deLogger &logger = *pLauncher.GetLogger();
+	delGameXML gameXML( &logger, pLauncher.GetLogSource() );
 	
-	logger.LogInfoFormat( pSupport.GetLogSource(), "Reading game file '%s'", path.GetString() );
+	logger.LogInfoFormat( pLauncher.GetLogSource(), "Reading game file '%s'", path.GetString() );
 	
 	if( path.EndsWith( ".delga" ) ){
 		delGameList delgaGames;
-		pSupport.GetEngine()->ReadDelgaGameDefs( instance, path, delgaGames );
+		pLauncher.GetEngine().ReadDelgaGameDefs( instance, path, delgaGames );
 		
 		const int count = delgaGames.GetCount();
 		int i;
@@ -125,11 +123,13 @@ void delGameManager::LoadGameFromDisk( delEngineInstance &instance, const decStr
 			delGame * const game = delgaGames.GetAt( i );
 			
 			if( game->GetPathConfig().IsEmpty() ){
-				logger.LogInfo( pSupport.GetLogSource(), "No configuration path specified, ignoring game file." );
+				logger.LogInfo( pLauncher.GetLogSource(),
+					"No configuration path specified, ignoring game file." );
 				continue;
 			}
 			if( game->GetPathCapture().IsEmpty() ){
-				logger.LogInfo( pSupport.GetLogSource(), "No capture path specified, ignoring game file." );
+				logger.LogInfo( pLauncher.GetLogSource(),
+					"No capture path specified, ignoring game file." );
 				continue;
 			}
 			
@@ -140,7 +140,7 @@ void delGameManager::LoadGameFromDisk( delEngineInstance &instance, const decStr
 		const decDiskFileReader::Ref reader( decDiskFileReader::Ref::With( new decDiskFileReader( path ) ) );
 		
 		try{
-			const delGame::Ref game( delGame::Ref::With( new delGame( pSupport ) ) );
+			const delGame::Ref game( delGame::Ref::With( pLauncher.CreateGame() ) );
 			gameXML.ReadFromFile( reader, game );
 			
 			if( ! decPath::IsNativePathAbsolute( game->GetGameDirectory() ) ){
@@ -153,29 +153,31 @@ void delGameManager::LoadGameFromDisk( delEngineInstance &instance, const decStr
 			game->SetDefaultLogFile();
 			
 			if( game->GetPathConfig().IsEmpty() ){
-				logger.LogInfo( pSupport.GetLogSource(), "No configuration path specified, ignoring game file." );
+				logger.LogInfo( pLauncher.GetLogSource(),
+					"No configuration path specified, ignoring game file." );
 				DETHROW_INFO( deeInvalidFileFormat, path );
 			}
 			if( game->GetPathCapture().IsEmpty() ){
-				logger.LogInfo( pSupport.GetLogSource(), "No capture path specified, ignoring game file." );
+				logger.LogInfo( pLauncher.GetLogSource(),
+					"No capture path specified, ignoring game file." );
 				DETHROW_INFO( deeInvalidFileFormat, path );
 			}
 			
 			list.Add( game );
 			
 		}catch( const deException & ){
-			logger.LogError( pSupport.GetLogSource(), "Failed to read game file" );
+			logger.LogError( pLauncher.GetLogSource(), "Failed to read game file" );
 			throw;
 		}
 	}
 }
 
 void delGameManager::CreateDefaultProfile(){
-	delEngine &engine = *pSupport.GetEngine();
+	const delEngine &engine = pLauncher.GetEngine();
 	delEngineModule *module;
 	
 	if( ! pDefaultProfile ){
-		pDefaultProfile.TakeOver( new delGameProfile );
+		pDefaultProfile.TakeOver( pLauncher.CreateGameProfile() );
 	}
 	
 	module = engine.GetBestModuleForType( deModuleSystem::emtGraphic );
@@ -209,33 +211,33 @@ void delGameManager::CreateDefaultProfile(){
 	pDefaultProfile->SetWidth( engine.GetCurrentResolution().x );
 	pDefaultProfile->SetHeight( engine.GetCurrentResolution().y );
 	
-	deLogger &logger = *pSupport.GetLogger();
+	deLogger &logger = *pLauncher.GetLogger();
 	
-	logger.LogInfoFormat( pSupport.GetLogSource(), "Default profile: graphic module = '%s'",
+	logger.LogInfoFormat( pLauncher.GetLogSource(), "Default profile: graphic module = '%s'",
 		pDefaultProfile->GetModuleGraphic().GetString() );
 	
-	logger.LogInfoFormat( pSupport.GetLogSource(), "Default profile: input module = '%s'",
+	logger.LogInfoFormat( pLauncher.GetLogSource(), "Default profile: input module = '%s'",
 		pDefaultProfile->GetModuleInput().GetString() );
 	
-	logger.LogInfoFormat( pSupport.GetLogSource(), "Default profile: physics module = '%s'",
+	logger.LogInfoFormat( pLauncher.GetLogSource(), "Default profile: physics module = '%s'",
 		pDefaultProfile->GetModulePhysics().GetString() );
 	
-	logger.LogInfoFormat( pSupport.GetLogSource(), "Default profile: animator module = '%s'",
+	logger.LogInfoFormat( pLauncher.GetLogSource(), "Default profile: animator module = '%s'",
 		pDefaultProfile->GetModuleAnimator().GetString() );
 	
-	logger.LogInfoFormat( pSupport.GetLogSource(), "Default profile: ai module = '%s'",
+	logger.LogInfoFormat( pLauncher.GetLogSource(), "Default profile: ai module = '%s'",
 		pDefaultProfile->GetModuleAI().GetString() );
 	
-	logger.LogInfoFormat( pSupport.GetLogSource(), "Default profile: crash recovery module = '%s'",
+	logger.LogInfoFormat( pLauncher.GetLogSource(), "Default profile: crash recovery module = '%s'",
 		pDefaultProfile->GetModuleCrashRecovery().GetString() );
 	
-	logger.LogInfoFormat( pSupport.GetLogSource(), "Default profile: audio module = '%s'",
+	logger.LogInfoFormat( pLauncher.GetLogSource(), "Default profile: audio module = '%s'",
 		pDefaultProfile->GetModuleAudio().GetString() );
 	
-	logger.LogInfoFormat( pSupport.GetLogSource(), "Default profile: synthesizer module = '%s'",
+	logger.LogInfoFormat( pLauncher.GetLogSource(), "Default profile: synthesizer module = '%s'",
 		pDefaultProfile->GetModuleSynthesizer().GetString() );
 	
-	logger.LogInfoFormat( pSupport.GetLogSource(), "Default profile: network module = '%s'",
+	logger.LogInfoFormat( pLauncher.GetLogSource(), "Default profile: network module = '%s'",
 		pDefaultProfile->GetModuleNetwork().GetString() );
 }
 
@@ -274,6 +276,12 @@ void delGameManager::SaveGameConfigs(){
 	}
 }
 
+void delGameManager::Clear(){
+	pDefaultProfile = nullptr;
+	SetActiveProfile( nullptr );
+	pGames.RemoveAll();
+}
+
 
 
 // Private Functions
@@ -302,7 +310,7 @@ void delGameManager::pProcessFoundFiles( delEngineInstance &instance, const decP
 		LoadGameFromDisk( instance, path.GetPathNative(), list );
 		
 	}catch( const deException &e ){
-		pSupport.GetLogger()->LogException( pSupport.GetLogSource(), e );
+		pLauncher.GetLogger()->LogException( pLauncher.GetLogSource(), e );
 		return;
 	}
 	
@@ -311,7 +319,7 @@ void delGameManager::pProcessFoundFiles( delEngineInstance &instance, const decP
 	for( i=0; i<count; i++ ){
 		delGame * const game = list.GetAt( i );
 		if( pGames.HasWithID( game->GetIdentifier() ) ){
-			pSupport.GetLogger()->LogWarnFormat( pSupport.GetLogSource(), "Ignore duplicate game '%s'",
+			pLauncher.GetLogger()->LogWarnFormat( pLauncher.GetLogSource(), "Ignore duplicate game '%s'",
 				game->GetIdentifier().ToHexString( false ).GetString() );
 			continue;
 		}

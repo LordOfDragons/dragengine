@@ -19,41 +19,17 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#ifndef _DELENGINEPROCESSMAIN_H_
+#define _DELENGINEPROCESSMAIN_H_
 
-#include "delEMParameter.h"
+/**
+ * \brief Helper class for running game engine process from main().
+ */
+namespace delEngineProcessMain{
+	#ifdef OS_W32
+	/** \brief Run process from main(). */
+	int RunMain( int argc, char **args );
+	#endif
+};
 
-#include <dragengine/common/exceptions.h>
-
-
-
-// Class delEMParameter
-/////////////////////////
-
-// Constructors and Destructors
-/////////////////////////////////
-
-delEMParameter::delEMParameter( int index, const deModuleParameter &info ) :
-pIndex( index ),
-pInfo( info ){
-}
-
-delEMParameter::delEMParameter( int index, const deModuleParameter &info, const char *value ) :
-pIndex( index ),
-pInfo( info ),
-pValue( value ){
-}
-
-delEMParameter::~delEMParameter(){
-}
-
-
-
-// Management
-///////////////
-
-void delEMParameter::SetValue( const char *value ){
-	pValue = value;
-}
+#endif

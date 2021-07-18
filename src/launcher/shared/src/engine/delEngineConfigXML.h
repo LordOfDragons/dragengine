@@ -26,7 +26,7 @@
 
 #include <dragengine/common/string/decString.h>
 
-class delLauncherSupport;
+class delLauncher;
 class delGameProfile;
 class delGPModule;
 class decBaseFileReader;
@@ -52,20 +52,20 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Read from XML file. */
-	void ReadFromFile( decBaseFileReader &reader, delLauncherSupport &launcher );
+	void ReadFromFile( decBaseFileReader &reader, delLauncher &launcher );
 	
 	/** \brief Write to XML file. */
-	void WriteToFile( decBaseFileWriter &writer, const delLauncherSupport &launcher );
+	void WriteToFile( decBaseFileWriter &writer, const delLauncher &launcher );
 	/*@}*/
 	
 	
 	
 private:
-	void pWriteConfig( decXmlWriter &writer, const delLauncherSupport &launcher );
-	void pWriteProfiles( decXmlWriter &writer, const delLauncherSupport &launcher );
+	void pWriteConfig( decXmlWriter &writer, const delLauncher &launcher );
+	void pWriteProfiles( decXmlWriter &writer, const delLauncher &launcher );
 	
-	void pReadConfig( const decXmlElementTag &root, delLauncherSupport &launcher );
-	void pReadProfiles( const decXmlElementTag &root, delLauncherSupport &launcher );
+	void pReadConfig( const decXmlElementTag &root, delLauncher &launcher );
+	void pReadProfiles( const decXmlElementTag &root, delLauncher &launcher );
 };
 
 #endif

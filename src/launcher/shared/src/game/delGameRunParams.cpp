@@ -101,7 +101,8 @@ const decUuid &useCustomPatch, decString &error ){
 	
 	delPatch *usePatch = patches.GetWithID( useCustomPatch );
 	if( ! usePatch ){
-		error.Format( "No patch found with identifier '%s'", useCustomPatch.ToHexString( false ).GetString() );
+		error.Format( "No patch found with identifier '%s'",
+			useCustomPatch.ToHexString( false ).GetString() );
 		return false;
 	}
 	

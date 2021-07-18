@@ -26,7 +26,7 @@
 #include <dragengine/common/string/decString.h>
 
 class delEngineInstance;
-class delLauncherSupport;
+class delLauncher;
 
 
 /**

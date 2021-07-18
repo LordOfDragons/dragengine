@@ -19,8 +19,6 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#if ! defined OS_W32 || defined OS_W32_HELPER
-
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -93,10 +91,10 @@ int delEngineProcessRunGame::BlockingReadCommandFromPipe(){
 		DWORD bytesRead = 0;
 		
 		if( ! ReadFile( pProcess->GetPipeIn(), &command, sizeof( command ), &bytesRead, NULL ) ){
-			DETHROW( deeInvalidAction );
+			DETHROW_INFO( deeInvalidAction, "read pipe failed" );
 		}
 		if( bytesRead < sizeof( command ) ){
-			DETHROW( deeInvalidAction );
+			DETHROW_INFO( deeInvalidAction, "read pipe too short data received" );
 		}
 		
 	#else
@@ -110,7 +108,7 @@ int delEngineProcessRunGame::BlockingReadCommandFromPipe(){
 			}
 			
 			if( bytes == -1 && errno != EINTR ){
-				DETHROW( deeInvalidAction );
+				DETHROW_INFO( deeInvalidAction, "read pipe failed" );
 			}
 			
 			//printf( "read call interrupted, restarting!\n" );
@@ -119,5 +117,3 @@ int delEngineProcessRunGame::BlockingReadCommandFromPipe(){
 	
 	return command;
 }
-
-#endif // ! OS_W32 || OS_W32_HELPER

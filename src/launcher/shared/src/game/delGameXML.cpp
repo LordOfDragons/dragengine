@@ -28,6 +28,7 @@
 #include "icon/delGameIcon.h"
 #include "fileformat/delFileFormat.h"
 #include "fileformat/delFileFormatList.h"
+#include "../delLauncher.h"
 
 #include <dragengine/logger/deLogger.h>
 #include <dragengine/systems/deModuleSystem.h>
@@ -64,15 +65,14 @@ delGameXML::~delGameXML(){
 
 void delGameXML::ReadFromFile( decBaseFileReader &reader, delGame &game ){
 	const decXmlDocument::Ref xmlDoc( decXmlDocument::Ref::With( new decXmlDocument ) );
-	
 	decXmlParser( GetLogger() ).ParseXml( &reader, xmlDoc );
 	
 	xmlDoc->StripComments();
 	xmlDoc->CleanCharData();
 	
 	decXmlElementTag * const root = xmlDoc->GetRoot();
-	if( ! root || strcmp( root->GetName(), "degame" ) != 0 ){
-		DETHROW_INFO( deeInvalidParam, "missing tag 'degame'" );
+	if( ! root || root->GetName() != "degame" ){
+		DETHROW_INFO( deeInvalidParam, "missing root tag 'degame'" );
 	}
 	
 	pReadGame( *root, game );
@@ -85,68 +85,69 @@ void delGameXML::ReadFromFile( decBaseFileReader &reader, delGame &game ){
 
 void delGameXML::pReadGame( const decXmlElementTag &root, delGame &game ){
 	delFileFormatList &fileFormats = game.GetFileFormats();
-	int e, elementCount = root.GetElementCount();
+	const int count = root.GetElementCount();
+	int i;
 	
-	for( e=0; e<elementCount; e++ ){
-		const decXmlElementTag * const tag = root.GetElementIfTag( e );
+	for( i=0; i<count; i++ ){
+		const decXmlElementTag * const tag = root.GetElementIfTag( i );
 		if( ! tag ){
 			continue;
 		}
 		
-		if( strcmp( tag->GetName(), "identifier" ) == 0 ){
+		if( tag->GetName() == "identifier" ){
 			game.SetIdentifier( decUuid( GetCDataString( *tag ), false ) );
 			
-		}else if( strcmp( tag->GetName(), "aliasIdentifier" ) == 0 ){
+		}else if( tag->GetName() == "aliasIdentifier" ){
 			game.SetAliasIdentifier( GetCDataString( *tag ) );
 			
-		}else if( strcmp( tag->GetName(), "title" ) == 0 ){
+		}else if( tag->GetName() == "title" ){
 			game.SetTitle( decUnicodeString::NewFromUTF8( GetCDataString( *tag ) ) );
 			
-		}else if( strcmp( tag->GetName(), "subTitle" ) == 0 ){
+		}else if( tag->GetName() == "subTitle" ){
 			game.SetTitle( game.GetTitle() + decUnicodeString::NewFromUTF8( " - " )
 				+ decUnicodeString::NewFromUTF8( GetCDataString( *tag ) ) );
 			
-		}else if( strcmp( tag->GetName(), "description" ) == 0 ){
+		}else if( tag->GetName() == "description" ){
 			game.SetDescription( decUnicodeString::NewFromUTF8( GetCDataString( *tag ) ) );
 			
-		}else if( strcmp( tag->GetName(), "icon" ) == 0 ){
-			game.GetIcons().Add( delGameIcon::Ref::With( new delGameIcon(
+		}else if( tag->GetName() == "icon" ){
+			game.GetIcons().Add( delGameIcon::Ref::With( game.GetLauncher().CreateGameIcon(
 				GetAttributeInt( *tag, "size" ), GetCDataString( *tag ) ) ) );
 			
-		}else if( strcmp( tag->GetName(), "creator" ) == 0 ){
+		}else if( tag->GetName() == "creator" ){
 			game.SetCreator( decUnicodeString::NewFromUTF8( GetCDataString( *tag ) ) );
 			
-		}else if( strcmp( tag->GetName(), "homepage" ) == 0 ){
+		}else if( tag->GetName() == "homepage" ){
 			game.SetHomepage( GetCDataString( *tag ) );
 			
-		}else if( strcmp( tag->GetName(), "license" ) == 0 ){
+		}else if( tag->GetName() == "license" ){
 			// deprecated
 			
-		}else if( strcmp( tag->GetName(), "gameDirectory" ) == 0 ){
+		}else if( tag->GetName() == "gameDirectory" ){
 			game.SetGameDirectory( GetCDataString( *tag ) );
 			
-		}else if( strcmp( tag->GetName(), "dataDirectory" ) == 0 ){
+		}else if( tag->GetName() == "dataDirectory" ){
 			game.SetDataDirectory( GetCDataString( *tag ) );
 			
-		}else if( strcmp( tag->GetName(), "scriptDirectory" ) == 0 ){
+		}else if( tag->GetName() == "scriptDirectory" ){
 			game.SetScriptDirectory( GetCDataString( *tag ) );
 			
-		}else if( strcmp( tag->GetName(), "gameObject" ) == 0 ){
+		}else if( tag->GetName() == "gameObject" ){
 			game.SetGameObject( GetCDataString( *tag ) );
 			
-		}else if( strcmp( tag->GetName(), "pathConfig" ) == 0 ){
+		}else if( tag->GetName() == "pathConfig" ){
 			game.SetPathConfig( GetCDataString( *tag ) );
 			
-		}else if( strcmp( tag->GetName(), "pathCapture" ) == 0 ){
+		}else if( tag->GetName() == "pathCapture" ){
 			game.SetPathCapture( GetCDataString( *tag ) );
 			
-		}else if( strcmp( tag->GetName(), "scriptModule" ) == 0 ){
+		}else if( tag->GetName() == "scriptModule" ){
 			game.SetScriptModule( GetCDataString( *tag ) );
 			
-		}else if( strcmp( tag->GetName(), "windowSize" ) == 0 ){
+		}else if( tag->GetName() == "windowSize" ){
 			game.SetWindowSize( decPoint( GetAttributeInt( *tag, "x" ), GetAttributeInt( *tag, "y" ) ) );
 			
-		}else if( strcmp( tag->GetName(), "requireFormat" ) == 0 ){
+		}else if( tag->GetName() == "requireFormat" ){
 			const decString typeName( GetAttributeString( *tag, "type" ) );
 			const deModuleSystem::eModuleTypes formatType = deModuleSystem::GetTypeFromString( typeName );
 			if( formatType == deModuleSystem::emtUnknown ){
@@ -154,8 +155,7 @@ void delGameXML::pReadGame( const decXmlElementTag &root, delGame &game ){
 				DETHROW_INFO( deeInvalidParam, "invalid tag value" );
 			}
 			
-			fileFormats.Add ( delFileFormat::Ref::With(
-				new delFileFormat( formatType, GetCDataString( *tag ) ) ) );
+			fileFormats.Add ( delFileFormat::Ref::With( new delFileFormat( formatType, GetCDataString( *tag ) ) ) );
 			
 		}else{
 			ErrorUnknownTag( root, *tag );
@@ -164,6 +164,6 @@ void delGameXML::pReadGame( const decXmlElementTag &root, delGame &game ){
 	
 	if( ! game.GetIdentifier() ){
 		ErrorMissingTag( root, "identifier" );
-		DETHROW_INFO( deeInvalidParam, "missing tag 'identifier'" );
+		DETHROW_INFO( deeInvalidParam, "missing tag" );
 	}
 }

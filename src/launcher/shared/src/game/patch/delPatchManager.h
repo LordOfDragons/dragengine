@@ -26,7 +26,7 @@
 
 #include <dragengine/common/string/decString.h>
 
-class delLauncherSupport;
+class delLauncher;
 class deVirtualFileSystem;
 class decPath;
 class delEngineInstance;
@@ -37,7 +37,7 @@ class delEngineInstance;
  */
 class delPatchManager{
 private:
-	delLauncherSupport &pSupport;
+	delLauncher &pLauncher;
 	delPatchList pPatches;
 	
 	
@@ -46,7 +46,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create game patch manager. */
-	delPatchManager( delLauncherSupport &support );
+	delPatchManager( delLauncher &launcher );
 	
 	/** \brief Clean up game patch manager. */
 	~delPatchManager();
@@ -56,6 +56,9 @@ public:
 	
 	/** \name Management */
 	/*@{*/
+	/** \brief Launcher. */
+	inline delLauncher &GetLauncher() const{ return pLauncher; }
+	
 	/** \brief Game list. */
 	inline delPatchList &GetPatches(){ return pPatches; }
 	inline const delPatchList &GetPatches() const{ return pPatches; }
@@ -65,11 +68,14 @@ public:
 	
 	/** \brief Load a game patch from a disk file. */
 	void LoadPatchFromDisk( delEngineInstance &instance, const decString &path, delPatchList &list );
+	
+	/** \brief Clear. */
+	void Clear();
 	/*@}*/
 	
 	
 	
-private:
+protected:
 	void pScanPatchDefFiles( delEngineInstance &instance, deVirtualFileSystem &vfs,
 		const decPath &baseDir, const decPath &directory );
 	

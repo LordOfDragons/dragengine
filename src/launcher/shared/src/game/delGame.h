@@ -38,7 +38,7 @@
 class delEngineInstance;
 class delGameRunParams;
 class delGPModuleList;
-class delLauncherSupport;
+class delLauncher;
 class delPatchList;
 class delSharedIcon;
 
@@ -69,7 +69,7 @@ public:
 	
 	
 private:
-	delLauncherSupport &pSupport;
+	delLauncher &pLauncher;
 	
 	decUuid pIdentifier;
 	decString pAliasIdentifier;
@@ -120,7 +120,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create game. */
-	delGame( delLauncherSupport &support );
+	delGame( delLauncher &launcher );
 	
 protected:
 	/** \brief Clean up game. */
@@ -132,6 +132,9 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
+	/** \brief Launcher. */
+	inline delLauncher &GetLauncher() const{ return pLauncher; }
+	
 	/** \brief Identifier. */
 	inline const decUuid &GetIdentifier() const{ return pIdentifier; }
 	
@@ -236,58 +239,73 @@ public:
 	
 	
 	
-	/** Determines if an engine instance exists. */
+	/** \brief Engine instance is present. */
 	bool HasEngineInstance() const;
-	/** Retrieves the engine instance. */
+	
+	/** \brief Engine instance or nullptr. */
 	inline delEngineInstance *GetEngineInstance() const{ return pEngineInstance; }
-	/** Sets the engine instance. */
+	
+	/** \brief Set engine instance or nullptr. */
 	void SetEngineInstance( delEngineInstance *engineInstance );
 	
-	/** Verifies if all requirements are fullfilled storing the results for quick retrieval. */
+	/** \brief Verify all requirements are fullfilled storing results. */
 	void VerifyRequirements();
-	/** Determines if all file formats are supported. */
+	
+	/** \brief All file formats are supported. */
 	inline bool GetAllFormatsSupported() const{ return pAllFormatsSupported; }
-	/** Sets if all file formats are supported. */
+	
+	/** \brief Set all file formats are supported. */
 	void SetAllFormatsSupported( bool supported );
-	/** Determines if the script module is found. */
+	
+	/** \brief Script module is found. */
 	inline bool GetScriptModuleFound() const{ return pScriptModuleFound; }
-	/** Sets if the script module is found. */
+	
+	/** \brief Set if script module is found. */
 	void SetScriptModuleFound( bool found );
-	/** Determines if the game is up to date. */
+	
+	/** \brief Game is up to date. */
 	inline bool GetGameUpToDate() const{ return pGameUpToDate; }
-	/** Sets if the game is up to date. */
+	
+	/** \brief Set if game is up to date. */
 	void SetGameUpToDate( bool upToDate );
-	/** Determines if the game can be run. */
+	
+	/** \brief Game can run. */
 	inline bool GetCanRun() const{ return pCanRun; }
-	/** Sets if the game can be run. */
+	
+	/** \brief Set if game can run. */
 	void SetCanRun( bool canRun );
 	
-	/** \brief Custom profile or NULL to use global profile. */
+	/** \brief Custom profile or nullptr to use global profile. */
 	inline delGameProfile *GetCustomProfile() const{ return pCustomProfile; }
 	
-	/** \brief Set custom profile or NULL to use global profile. */
+	/** \brief Set custom profile or nullptr to use global profile. */
 	void SetCustomProfile( delGameProfile *profile );
 	
-	/** \brief Active profile or NULL to use last run profile. */
+	/** \brief Active profile or nullptr to use last run profile. */
 	inline delGameProfile *GetActiveProfile() const{ return pActiveProfile; }
 	
-	/** \brief Set active profile or NULL to use last run profile. */
+	/** \brief Set active profile or nullptr to use last run profile. */
 	void SetActiveProfile( delGameProfile *profile );
 	
-	/** Retrieves the run arguments. */
+	/** \brief Run arguments. */
 	inline const decString &GetRunArguments() const{ return pRunArguments; }
-	/** Sets the run arguments. */
+	
+	/** \brief Set run arguments. */
 	void SetRunArguments( const char *arguments );
 	
-	/** Retrieves the engine log filename. */
+	/** \brief Engine log filename. */
 	inline const decString &GetLogFile() const{ return pLogFile; }
-	/** Sets the engine log filename. */
+	
+	/** \brief Set engine log filename. */
 	void SetLogFile( const char *path );
-	/** Set default log filename which is /logs/delauncher-game-{game-name}. */
+	
+	/** \brief Set default log filename "/logs/delauncher-game-{game-name}". */
 	void SetDefaultLogFile();
-	/** Determines if the logs are written to the console instead of a file. */
+	
+	/** \brief Logs are written to console instead of file. */
 	inline bool GetLogToConsole() const{ return pLogToConsole; }
-	/** Sets if the logs are written to the console instead of a file. */
+	
+	/** \brief Set if logs are written to console instead of file. */
 	void SetLogToConsole( bool logToConsole );
 	
 	/** \brief Delga file name or empty string. */
@@ -310,22 +328,28 @@ public:
 	
 	
 	
-	
-	/** Determines if the game is running. */
+	/** \brief Game is running. */
 	bool IsRunning() const;
-	/** Start game. */
+	
+	/** \brief Start game. */
 	void StartGame( const delGameRunParams &runParams );
-	/** Stop game. */
+	
+	/** \brief Stop game. */
 	void StopGame();
-	/** Kill game. */
+	
+	/** \brief Kill game. */
 	void KillGame();
-	/** Pulse checking. */
+	
+	/** \brief Pulse checking. */
 	void PulseChecking();
-	/** Load configuration. */
+	
+	/** \brief Load configuration. */
 	void LoadConfig();
-	/** Save configuration. */
+	
+	/** \brief Save configuration. */
 	void SaveConfig();
-	/** Determine profile to use. */
+	
+	/** \brief Profile to use. */
 	delGameProfile *GetProfileToUse() const;
 	
 	/** \brief Find patches for this game. */

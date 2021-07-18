@@ -60,10 +60,16 @@ public:
 	delGameIcon *GetWithSize( int size ) const;
 	
 	/** \brief Icon with larges size less than or equal or nullptr if absent. */
-	delGameIcon *GetWithSizeLargest( int size ) const;
+	delGameIcon *GetLargest( int size ) const;
 	
 	/** \brief Icon with smallest size larger than or equal or nullptr if absent. */
-	delGameIcon *GetWithSizeSmallest( int size ) const;
+	delGameIcon *GetSmallest( int size ) const;
+	
+	/** \brief Icon with larges size or nullptr if absent. */
+	delGameIcon *GetLargest() const;
+	
+	/** \brief Icon with smallest size larger than or equal or nullptr if absent. */
+	delGameIcon *GetSmallest() const;
 	
 	/** \brief Icon is present. */
 	bool Has( delGameIcon *icon ) const;

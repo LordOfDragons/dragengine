@@ -28,7 +28,6 @@ class delPatch;
 class decBaseFileReader;
 
 
-
 /**
  * \brief Load game patch XML.
  */
