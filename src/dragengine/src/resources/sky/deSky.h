@@ -48,6 +48,12 @@ class deSkyManager;
  * user to modify the controller at runtime.
  */
 class deSky : public deResource{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deSky> Ref;
+	
+	
+	
 private:
 	decColor pBgColor;
 	

@@ -44,6 +44,12 @@ class deBaseScriptingParticleEmitterInstance;
  * Instance of a particle emitter.
  */
 class deParticleEmitterInstance : public deResource{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deParticleEmitterInstance> Ref;
+	
+	
+	
 private:
 	deParticleEmitterReference pEmitter;
 	

@@ -33,6 +33,12 @@
  * components. The Vector-3 contains three components.
  */
 class deNetworkValueVector3 : public deNetworkValue{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deNetworkValueVector3> Ref;
+	
+	
+	
 private:
 	eValueFormats pFormat;
 	decDVector pValue;

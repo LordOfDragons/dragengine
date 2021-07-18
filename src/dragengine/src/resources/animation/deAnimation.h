@@ -47,6 +47,12 @@ class deBaseAnimatorAnimation;
  * the bones of a rig.
  */
 class deAnimation : public deFileResource{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deAnimation> Ref;
+	
+	
+	
 private:
 	deAnimationBone **pBones;
 	deAnimationMove **pMoves;

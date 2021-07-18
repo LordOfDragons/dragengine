@@ -141,6 +141,12 @@ class decShape;
  */
 class deLight : public deResource{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deLight> Ref;
+	
+	
+	
+public:
 	/** \brief Light type. */
 	enum eLightTypes{
 		/** \brief Point light. */

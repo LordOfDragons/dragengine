@@ -66,6 +66,12 @@ class deBaseAudioSynthesizerInstance;
  * Synthesizers can not be shared. If done so problems will most likely happen.
  */
 class deSynthesizerInstance : public deResource{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deSynthesizerInstance> Ref;
+	
+	
+	
 private:
 	deSynthesizerReference pSynthesizer;
 	

@@ -40,6 +40,12 @@
  */
 class deAnimatorRuleForeignState : public deAnimatorRule{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deAnimatorRuleForeignState> Ref;
+	
+	
+	
+public:
 	/** \brief Coordinate frame. */
 	enum eCoordinateFrames{
 		/** \brief Bone local coordinate frame. */

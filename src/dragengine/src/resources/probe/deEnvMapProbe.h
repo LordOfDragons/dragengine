@@ -54,6 +54,12 @@ class deWorld;
  * border as this is usually better for Graphic Modules to handle.
  */
 class deEnvMapProbe : public deResource{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deEnvMapProbe> Ref;
+	
+	
+	
 private:
 	decDVector pPosition;
 	decQuaternion pOrientation;

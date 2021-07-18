@@ -46,6 +46,12 @@ class deCollisionInfo;
  * collision volume.
  */
 class deColliderComponent : public deColliderRig{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deColliderComponent> Ref;
+	
+	
+	
 private:
 	deComponentReference pComponent;
 	

@@ -41,6 +41,12 @@
  * of animations.
  */
 class deAnimatorRuleAnimationSelect : public deAnimatorRule{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deAnimatorRuleAnimationSelect> Ref;
+	
+	
+	
 private:
 	decStringList pMoves;
 	

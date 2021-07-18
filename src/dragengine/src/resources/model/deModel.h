@@ -44,6 +44,12 @@ class deModelWeight;
  * information to support texturing, animation, level-of-detail and physics.
  */
 class deModel : public deFileResource{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deModel> Ref;
+	
+	
+	
 private:
 	deModelBone **pBones;
 	int pBoneCount;

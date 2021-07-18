@@ -63,6 +63,12 @@ class deBaseScriptingSpeaker;
  */
 class deSpeaker : public deResource{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deSpeaker> Ref;
+	
+	
+	
+public:
 	/** \brief Speaker type. */
 	enum eSpeakerType{
 		/** \brief Speaker emits equally in all directions. */

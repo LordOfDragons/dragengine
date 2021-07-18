@@ -31,6 +31,12 @@
  * \brief Canvas rendering a text.
  */
 class deCanvasText : public deCanvas{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deCanvasText> Ref;
+	
+	
+	
 private:
 	deFontReference pFont;
 	float pFontSize;

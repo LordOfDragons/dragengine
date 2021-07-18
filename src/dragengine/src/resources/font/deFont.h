@@ -39,6 +39,12 @@ class decUnicodeString;
  * colorized. Colored fonts can not be colorized.
  */
 class deFont : public deFileResource{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deFont> Ref;
+	
+	
+	
 private:
 	deFontGlyph pUndefinedGlyph;
 	deFontGlyph *pGlyphs;

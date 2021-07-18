@@ -62,6 +62,12 @@ class deBaseAnimatorAnimatorInstance;
  * physics. Animators can though be used if the rig is kinematic. 
  */
 class deAnimatorInstance : public deResource{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deAnimatorInstance> Ref;
+	
+	
+	
 private:
 	deAnimatorReference pAnimator;
 	deComponentReference pComponent;

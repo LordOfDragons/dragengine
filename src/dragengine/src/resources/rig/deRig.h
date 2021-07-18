@@ -65,6 +65,12 @@ class deBasePhysicsRig;
  * 
  */
 class deRig : public deFileResource{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deRig> Ref;
+	
+	
+	
 private:
 	deRigBone **pBones;
 	int pBoneCount;

@@ -42,6 +42,12 @@ class deWorld;
  * 1M marks the node or connection as blocked or impassable.
  */
 class deNavigator : public deResource{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deNavigator> Ref;
+	
+	
+	
 private:
 	int pLayer;
 	deNavigationSpace::eSpaceTypes pSpaceType;

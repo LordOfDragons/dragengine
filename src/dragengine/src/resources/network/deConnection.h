@@ -43,6 +43,12 @@ class deBaseScriptingConnection;
  * servers themselves or between individual players.
  */
 class deConnection : public deResource{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deConnection> Ref;
+	
+	
+	
 private:
 	decString pLocalAddress;
 	decString pRemoteAddress;

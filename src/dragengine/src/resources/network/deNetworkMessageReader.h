@@ -30,6 +30,12 @@
  * \brief Network message reader.
  */
 class deNetworkMessageReader : public decBaseFileReader{
+public:
+	/** \brief Type holding strong . */
+	typedef deTObjectReference<deNetworkMessageReader> Ref;
+	
+	
+	
 private:
 	deNetworkMessageReference pMessage;
 	int pPosition;

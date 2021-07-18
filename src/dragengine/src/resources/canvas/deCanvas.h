@@ -51,6 +51,12 @@ class deCanvasView;
  */
 class deCanvas : public deResource{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deCanvas> Ref;
+	
+	
+	
+public:
 	/** \brief Blend modes used to blend canvas over previous content. */
 	enum eBlendModes{
 		/**

@@ -48,6 +48,12 @@ class deCollisionInfo;
  * explicitly exclude it from CanHitCollider call.
  */
 class deColliderCollisionTest : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deColliderCollisionTest> Ref;
+	
+	
+	
 private:
 	deTouchSensorReference pTouchSensor;
 	deColliderReference pCollider;

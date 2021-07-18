@@ -72,6 +72,12 @@ class deBaseGraphicCamera;
  *    image with depth 1 as most other images are
  */
 class deCamera : public deResource{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deCamera> Ref;
+	
+	
+	
 private:
 	decDVector pPosition;
 	decQuaternion pOrientation;

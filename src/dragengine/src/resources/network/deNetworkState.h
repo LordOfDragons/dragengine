@@ -42,6 +42,12 @@ class deWorld;
  * network states are updated and monitored.
  */
 class deNetworkState : public deResource{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deNetworkState> Ref;
+	
+	
+	
 private:
 	decObjectOrderedSet pValues;
 	bool pReadOnly;

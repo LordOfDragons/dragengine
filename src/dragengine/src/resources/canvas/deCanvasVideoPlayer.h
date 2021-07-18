@@ -30,6 +30,12 @@
  * \brief Canvas rendering a video.
  */
 class deCanvasVideoPlayer : public deCanvas{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deCanvasVideoPlayer> Ref;
+	
+	
+	
 private:
 	deVideoPlayerReference pVideoPlayer;
 	int pRepeatX;

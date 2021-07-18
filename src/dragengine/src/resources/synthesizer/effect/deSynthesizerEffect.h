@@ -33,6 +33,12 @@ class deSynthesizerEffectVisitor;
  * \brief Synthesizer effect.
  */
 class deSynthesizerEffect : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deSynthesizerEffect> Ref;
+	
+	
+	
 private:
 	deSynthesizer *pSynthesizer;
 	float pStrength;

@@ -39,6 +39,12 @@ class deHeightTerrainSector;
  * collision objects.
  */
 class deCollisionInfo : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deCollisionInfo> Ref;
+	
+	
+	
 private:
 	int pOwnerBone;
 	int pOwnerShape;

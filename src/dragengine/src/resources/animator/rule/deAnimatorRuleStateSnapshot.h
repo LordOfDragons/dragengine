@@ -50,6 +50,12 @@
  * function call.
  */
 class deAnimatorRuleStateSnapshot : public deAnimatorRule{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deAnimatorRuleStateSnapshot> Ref;
+	
+	
+	
 private:
 	bool pEnablePosition;
 	bool pEnableOrientation;

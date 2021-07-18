@@ -58,6 +58,12 @@ class decShape;
  */
 class deComponent : public deResource{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deComponent> Ref;
+	
+	
+	
+public:
 	/** \brief Movement hints. */
 	enum eMovementHints{
 		/** \brief Component remains static for the entire lifetime. */

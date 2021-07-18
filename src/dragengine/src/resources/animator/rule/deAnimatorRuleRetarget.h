@@ -39,6 +39,12 @@
  * are assumed to stay the same but with different rest poses.
  */
 class deAnimatorRuleRetarget : public deAnimatorRule{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deAnimatorRuleRetarget> Ref;
+	
+	
+	
 private:
 	deRigReference pSrcRig;
 	deRigReference pDestRig;

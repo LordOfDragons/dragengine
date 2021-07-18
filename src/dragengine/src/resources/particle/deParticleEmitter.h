@@ -106,6 +106,12 @@ class deBasePhysicsParticleEmitter;
  * entirely on the GPU.
  */
 class deParticleEmitter : public deResource{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deParticleEmitter> Ref;
+	
+	
+	
 private:
 	deParticleEmitterController **pControllers;
 	int pControllerCount;

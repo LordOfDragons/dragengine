@@ -37,6 +37,12 @@
  * final image rendering in hardware.
  */
 class deEffectColorMatrix : public deEffect{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deEffectColorMatrix> Ref;
+	
+	
+	
 private:
 	decColorMatrix pColorMatrix;
 	

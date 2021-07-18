@@ -62,6 +62,12 @@ class deBaseAIHeightTerrain;
  * Defines a height terrain.
  */
 class deHeightTerrain : public deResource{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deHeightTerrain> Ref;
+	
+	
+	
 private:
 	float pSectorSize;
 	int pSectorResolution;

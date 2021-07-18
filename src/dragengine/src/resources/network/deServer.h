@@ -39,6 +39,12 @@ class deBaseScriptingServer;
  * handling the communication.
  */
 class deServer : public deResource{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deServer> Ref;
+	
+	
+	
 private:
 	decString pAddress;
 	

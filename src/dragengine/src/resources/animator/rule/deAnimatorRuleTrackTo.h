@@ -38,6 +38,12 @@
  */
 class deAnimatorRuleTrackTo : public deAnimatorRule{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deAnimatorRuleTrackTo> Ref;
+	
+	
+	
+public:
 	/** \brief Track axis. */
 	enum eTrackAxis{
 		/** \brief Positive X-Axis. */

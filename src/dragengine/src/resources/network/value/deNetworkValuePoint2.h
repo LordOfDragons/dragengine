@@ -33,6 +33,12 @@
  * components. The Point-2 contains two components.
  */
 class deNetworkValuePoint2 : public deNetworkValue{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deNetworkValuePoint2> Ref;
+	
+	
+	
 private:
 	eValueFormats pFormat;
 	decPoint pValue;

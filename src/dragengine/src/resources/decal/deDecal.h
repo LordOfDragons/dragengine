@@ -50,6 +50,12 @@ class deBaseAudioDecal;
  * on the geometry it is attached to.
  */
 class deDecal : public deResource{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deDecal> Ref;
+	
+	
+	
 private:
 	decVector pPosition;
 	decQuaternion pOrientation;

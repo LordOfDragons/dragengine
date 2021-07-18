@@ -35,6 +35,12 @@ class deArchive;
  * file. In general archive containers are read-only.
  */
 class deArchiveContainer : public deVFSContainer{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deArchiveContainer> Ref;
+	
+	
+	
 private:
 	const decPath pArchivePath;
 	deArchive *pArchive;

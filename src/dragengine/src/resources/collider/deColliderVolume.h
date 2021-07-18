@@ -39,6 +39,12 @@
  * considered to be the boolean union of all the volumes.
  */
 class deColliderVolume : public deCollider{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deColliderVolume> Ref;
+	
+	
+	
 private:
 	decShapeList pShapes;
 	

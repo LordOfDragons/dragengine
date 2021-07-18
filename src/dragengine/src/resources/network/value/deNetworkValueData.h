@@ -36,6 +36,12 @@
  * other complex data.
  */
 class deNetworkValueData : public deNetworkValue{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deNetworkValueData> Ref;
+	
+	
+	
 private:
 	uint8_t *pData;
 	int pLength;

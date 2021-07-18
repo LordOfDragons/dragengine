@@ -62,6 +62,12 @@ struct deSmokeDensityPoint{
  * radius become invisible and are removed.
  */
 class deSmokeEmitter : public deResource{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deSmokeEmitter> Ref;
+	
+	
+	
 private:
 	decDVector pEmitterPosition;
 	decQuaternion pEmitterOrientation;

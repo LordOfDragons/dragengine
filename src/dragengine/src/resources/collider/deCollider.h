@@ -77,6 +77,12 @@ class deWorld;
  */
 class deCollider : public deResource{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deCollider> Ref;
+	
+	
+	
+public:
 	/** \brief Collision Response Types. */
 	enum eResponseType{
 		/** \brief Static, same as no response. */

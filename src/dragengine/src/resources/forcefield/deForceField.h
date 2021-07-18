@@ -91,6 +91,12 @@ class deWorld;
  */
 class deForceField : public deResource{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deForceField> Ref;
+	
+	
+	
+public:
 	/** \brief Field types. */
 	enum eFieldTypes{
 		/** \brief Force is applied radial from the center. */

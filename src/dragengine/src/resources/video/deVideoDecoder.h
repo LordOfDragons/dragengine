@@ -38,6 +38,12 @@ class deBaseVideoDecoder;
  * not replicated in the decoder but found in the source video resource.
  */
 class deVideoDecoder : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deVideoDecoder> Ref;
+	
+	
+	
 private:
 	deVideoManager &pVideoManager;
 	deVideoReference pVideo;

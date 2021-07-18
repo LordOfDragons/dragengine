@@ -33,6 +33,12 @@
  * components. The Vector-2 contains two components.
  */
 class deNetworkValueVector2 : public deNetworkValue{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deNetworkValueVector2> Ref;
+	
+	
+	
 private:
 	eValueFormats pFormat;
 	decVector2 pValue;

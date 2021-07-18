@@ -41,6 +41,12 @@
  * 
  */
 class deSynthesizerLink : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deSynthesizerLink> Ref;
+	
+	
+	
 private:
 	int pController;
 	decCurveBezier pCurve;

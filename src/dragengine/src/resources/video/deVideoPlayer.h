@@ -36,6 +36,12 @@ class deBaseAudioVideoPlayer;
  */
 class deVideoPlayer : public deResource{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deVideoPlayer> Ref;
+	
+	
+	
+public:
 	/** \brief Play state. */
 	enum ePlayState{
 		/** \brief Playback is stopped. */

@@ -47,6 +47,12 @@ class deBaseGraphicOcclusionMesh;
  * indices. Each face defines the number of corners it contains in clockwise order.
  */
 class deOcclusionMesh : public deFileResource{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deOcclusionMesh> Ref;
+	
+	
+	
 private:
 	deOcclusionMeshBone *pBones;
 	deOcclusionMeshWeight *pWeights;

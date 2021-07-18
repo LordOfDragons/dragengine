@@ -42,6 +42,12 @@ class deBaseSynthesizerSynthesizer;
  * synthesizer instances can share the same synthesizer.
  */
 class deSynthesizer : public deResource{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deSynthesizer> Ref;
+	
+	
+	
 private:
 	decObjectOrderedSet pControllers;
 	decObjectOrderedSet pLinks;

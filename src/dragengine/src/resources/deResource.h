@@ -41,6 +41,12 @@ class decBaseFileReader;
  * you have to use 'delete' to dispose of the resource and only then.
  */
 class deResource : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deResource> Ref;
+	
+	
+	
 private:
 	deResourceManager *pResourceManager;
 	deResource *pLLManagerPrev;

@@ -40,6 +40,12 @@ class deBaseSynthesizerSound;
  * use the samples in a streaming way.
  */
 class deSound : public deFileResource{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deSound> Ref;
+	
+	
+	
 private:
 	int pBytesPerSample;
 	int pSampleCount;

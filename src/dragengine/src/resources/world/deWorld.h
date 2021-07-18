@@ -67,6 +67,12 @@ class deBaseAIWorld;
  * able to do collision detection and physical responses to them.
  */
 class deWorld : public deResource{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deWorld> Ref;
+	
+	
+	
 private:
 	deHeightTerrain *pHeightTerrain;
 	decDVector pSize;

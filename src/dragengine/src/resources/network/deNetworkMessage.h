@@ -44,6 +44,12 @@
  * the data into the messagchare.
  */
 class deNetworkMessage : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deNetworkMessage> Ref;
+	
+	
+	
 private:
 	uint8_t *pBuffer;
 	int pBufferSize;

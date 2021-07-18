@@ -44,6 +44,12 @@ class deSound;
  * 
  */
 class deSynthesizerSourceChain : public deSynthesizerSource{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deSynthesizerSourceChain> Ref;
+	
+	
+	
 private:
 	decObjectList pSounds;
 	

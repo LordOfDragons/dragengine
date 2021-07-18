@@ -40,6 +40,12 @@ class deWorld;
  * instance parameters.
  */
 class deSkyInstance : public deResource{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deSkyInstance> Ref;
+	
+	
+	
 private:
 	deSkyReference pSky;
 	int pOrder;

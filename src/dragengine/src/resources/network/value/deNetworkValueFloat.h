@@ -31,6 +31,12 @@
  * Defines an float network value.
  */
 class deNetworkValueFloat : public deNetworkValue{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deNetworkValueFloat> Ref;
+	
+	
+	
 private:
 	eValueFormats pFormat;
 	double pValue;

@@ -30,6 +30,12 @@
  */
 class deSynthesizerSourceWave : public deSynthesizerSource{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deSynthesizerSourceWave> Ref;
+	
+	
+	
+public:
 	/** \brief Wave type. */
 	enum eWaveType{
 		/** \brief Sine wave. */

@@ -46,6 +46,12 @@ class deWorld;
  * processing and memory overhead. Each prop field contains a list of types.
  */
 class dePropField : public deResource{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<dePropField> Ref;
+	
+	
+	
 private:
 	decDVector pPosition;
 	

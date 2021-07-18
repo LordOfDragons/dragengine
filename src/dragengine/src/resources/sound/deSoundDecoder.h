@@ -38,6 +38,12 @@ class deBaseSoundDecoder;
  * not replicated in the decoder but found in the source sound resource.
  */
 class deSoundDecoder : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deSoundDecoder> Ref;
+	
+	
+	
 private:
 	deSoundManager &pSoundManager;
 	deSoundReference pSound;

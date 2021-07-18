@@ -48,6 +48,12 @@ class deBaseAudioMicrophone;
  */
 class deMicrophone : public deResource{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deMicrophone> Ref;
+	
+	
+	
+public:
 	enum eMicrophoneType{
 		emtPoint,
 		emtDirected

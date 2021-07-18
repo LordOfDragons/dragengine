@@ -50,6 +50,12 @@ class deBaseAnimatorAnimator;
  * This way the creation of animations can be accelerated if possible.
  */
 class deAnimator : public deResource{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deAnimator> Ref;
+	
+	
+	
 private:
 	deRigReference pRig;
 	deAnimationReference pAnimation;

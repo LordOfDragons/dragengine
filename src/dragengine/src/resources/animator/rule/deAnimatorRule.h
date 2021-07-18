@@ -55,6 +55,12 @@ class deAnimatorRuleVisitor;
  */
 class deAnimatorRule : public deObject{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deAnimatorRule> Ref;
+	
+	
+	
+public:
 	/** \brief Blending Modes. */
 	enum eBlendModes{
 		/** \brief Blend from the existing state over to the state produced by the rule. */

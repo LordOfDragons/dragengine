@@ -44,6 +44,12 @@ class deBaseGraphicVideo;
  */
 class deVideo : public deFileResource{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deVideo> Ref;
+	
+	
+	
+public:
 	/** \brief Pixel format. */
 	enum ePixelFormat{
 		/** \brief Pixels are stored in the 4:4:4 format. */

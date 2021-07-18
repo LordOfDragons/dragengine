@@ -33,6 +33,12 @@
  * Defines an integer network value.
  */
 class deNetworkValueInteger : public deNetworkValue{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deNetworkValueInteger> Ref;
+	
+	
+	
 private:
 	eValueFormats pFormat;
 	int64_t pValue;

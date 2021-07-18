@@ -34,6 +34,12 @@
  */
 class deAnimatorRuleLimit : public deAnimatorRule{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deAnimatorRuleLimit> Ref;
+	
+	
+	
+public:
 	/** \brief Coordinate frame. */
 	enum eCoordinateFrames{
 		/** \brief Bone local coordinate frame. */

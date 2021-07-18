@@ -35,6 +35,12 @@ class deDecal;
  * test into a list for later processing.
  */
 class deDecalList : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deDecalList> Ref;
+	
+	
+	
 private:
 	deDecal **pDecals;
 	int pDecalCount;

@@ -52,6 +52,12 @@ class deWorld;
  */
 class deSoundLevelMeter : public deResource{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deSoundLevelMeter> Ref;
+	
+	
+	
+public:
 	/** \brief Meter type. */
 	enum eMeterTypes {
 		/** \brief Meter senses sound all directions. */

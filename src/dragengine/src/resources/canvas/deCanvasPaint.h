@@ -30,6 +30,12 @@
  */
 class deCanvasPaint : public deCanvas{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deCanvasPaint> Ref;
+	
+	
+	
+public:
 	/** \brief Shape types. */
 	enum eShapeTypes{
 		/**

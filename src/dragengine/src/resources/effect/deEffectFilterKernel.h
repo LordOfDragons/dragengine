@@ -38,6 +38,12 @@
  * and clamping the result to valid color values.
  */
 class deEffectFilterKernel : public deEffect{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deEffectFilterKernel> Ref;
+	
+	
+	
 private:
 	float *pKernel;
 	int pKernelRows;

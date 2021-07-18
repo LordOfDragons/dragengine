@@ -32,6 +32,12 @@ class deNetworkMessage;
  * \brief Write network message.
  */
 class deNetworkMessageWriter : public decBaseFileWriter{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deNetworkMessageWriter> Ref;
+	
+	
+	
 private:
 	deNetworkMessageReference pMessage;
 	int pPosition;

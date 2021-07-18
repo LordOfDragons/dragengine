@@ -36,6 +36,12 @@ class deSynthesizerSourceVisitor;
  */
 class deSynthesizerSource : public deObject{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deSynthesizerSource> Ref;
+	
+	
+	
+public:
 	/** \brief Mixing modes. */
 	enum eMixModes{
 		/** \brief Blend sound output of this source over the previous sound. */

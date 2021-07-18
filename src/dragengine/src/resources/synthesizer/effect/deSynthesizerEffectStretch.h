@@ -29,6 +29,12 @@
  * \brief Synthesizer effect stretch time and pitch.
  */
 class deSynthesizerEffectStretch : public deSynthesizerEffect{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deSynthesizerEffectStretch> Ref;
+	
+	
+	
 private:
 	float pMinTime;
 	float pMaxTime;

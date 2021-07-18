@@ -31,6 +31,12 @@
  */
 class deSynthesizerSourceGroup : public deSynthesizerSource{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deSynthesizerSourceGroup> Ref;
+	
+	
+	
+public:
 	/** \brief Application types. */
 	enum eApplicationTypes{
 		/** \brief Output the mix of all sources in the group. */

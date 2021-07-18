@@ -50,6 +50,12 @@ class deCaptureCanvasManager;
  * similar to a deCanvasCanvas.
  */
 class deCaptureCanvas : public deResource{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deCaptureCanvas> Ref;
+	
+	
+	
 private:
 	deCanvasViewReference pCanvasView;
 	deImageReference pImage;

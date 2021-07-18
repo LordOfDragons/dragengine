@@ -103,6 +103,12 @@ class deWorld;
  */
 class deNavigationSpace : public deResource{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deNavigationSpace> Ref;
+	
+	
+	
+public:
 	/** \brief Space Type. */
 	enum eSpaceTypes{
 		/** \brief Navigation Grid. */

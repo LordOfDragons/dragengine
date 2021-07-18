@@ -33,6 +33,12 @@
  * components. The quaternion contains four components.
  */
 class deNetworkValueQuaternion : public deNetworkValue{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deNetworkValueQuaternion> Ref;
+	
+	
+	
 private:
 	eValueFormats pFormat;
 	decQuaternion pValue;

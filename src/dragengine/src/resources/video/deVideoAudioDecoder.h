@@ -38,6 +38,12 @@ class deBaseVideoAudioDecoder;
  * The audio information is not replicated in the decoder but found in the source video resource.
  */
 class deVideoAudioDecoder : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deVideoAudioDecoder> Ref;
+	
+	
+	
 private:
 	deVideoManager &pVideoManager;
 	deVideoReference pVideo;

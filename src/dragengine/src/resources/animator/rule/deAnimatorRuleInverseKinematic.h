@@ -43,6 +43,12 @@
  * the finger tip ). There are no additional controllers in this rule.
  */
 class deAnimatorRuleInverseKinematic : public deAnimatorRule{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deAnimatorRuleInverseKinematic> Ref;
+	
+	
+	
 private:
 	decVector pGoalPosition;
 	decQuaternion pGoalOrientation;

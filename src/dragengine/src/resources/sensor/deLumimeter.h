@@ -48,6 +48,12 @@ class deWorld;
  * color.
  */
 class deLumimeter : public deResource{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deLumimeter> Ref;
+	
+	
+	
 private:
 	decDVector pPosition;
 	decVector pDirection;

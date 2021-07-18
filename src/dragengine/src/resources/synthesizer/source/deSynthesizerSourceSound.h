@@ -30,6 +30,12 @@
  * \brief Synthesizer sound source.
  */
 class deSynthesizerSourceSound : public deSynthesizerSource{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deSynthesizerSourceSound> Ref;
+	
+	
+	
 private:
 	deSoundReference pSound;
 	

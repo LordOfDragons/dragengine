@@ -52,6 +52,12 @@ class deWorld;
  * set to white fully transparent.
  */
 class deDebugDrawer : public deResource{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deDebugDrawer> Ref;
+	
+	
+	
 private:
 	decDVector pPosition;
 	decQuaternion pOrientation;

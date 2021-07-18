@@ -76,6 +76,12 @@ class deRenderWindowManager;
  * with only one OS or you need specific code anyways.
  */
 class deRenderWindow : public deResource{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deRenderWindow> Ref;
+	
+	
+	
 private:
 #ifdef ANDROID
 	void *pHostWindow;

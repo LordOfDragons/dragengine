@@ -47,6 +47,12 @@ class deBasePhysicsSkin;
  * can be shared which is why they are stored outside the data trees.
  */
 class deSkin : public deFileResource{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deSkin> Ref;
+	
+	
+	
 private:
 	deSkinTexture **pTextures;
 	int pTextureCount, pTextureSize;

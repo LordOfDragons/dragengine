@@ -35,6 +35,12 @@
  * the only allowed way to reuse a canvas view in different places.
  */
 class deCanvasCanvasView : public deCanvas{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deCanvasCanvasView> Ref;
+	
+	
+	
 private:
 	deCanvasViewReference pCanvasView;
 	int pRepeatX;

@@ -37,6 +37,12 @@
  */
 class deAnimatorRuleGroup : public deAnimatorRule{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deAnimatorRuleGroup> Ref;
+	
+	
+	
+public:
 	/** \brief Application types. */
 	enum eApplicationTypes{
 		/**

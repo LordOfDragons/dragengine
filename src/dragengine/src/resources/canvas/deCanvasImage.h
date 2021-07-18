@@ -30,6 +30,12 @@
  * \brief Canvas rendering an image.
  */
 class deCanvasImage : public deCanvas{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deCanvasImage> Ref;
+	
+	
+	
 private:
 	deImageReference pImage;
 	int pRepeatX;

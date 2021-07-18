@@ -43,6 +43,12 @@ class deBaseGraphicEffect;
  * combined to achieve all sorts of complex effects.
  */
 class deEffect : public deResource{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deEffect> Ref;
+	
+	
+	
 private:
 	bool pEnabled;
 	deBaseGraphicEffect *pPeerGraphic;

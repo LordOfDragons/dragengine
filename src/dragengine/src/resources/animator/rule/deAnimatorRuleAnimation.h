@@ -34,6 +34,12 @@
  * from the beginning of the move.
  */
 class deAnimatorRuleAnimation : public deAnimatorRule{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deAnimatorRuleAnimation> Ref;
+	
+	
+	
 private:
 	decString pMoveName;
 	float pMoveTime;

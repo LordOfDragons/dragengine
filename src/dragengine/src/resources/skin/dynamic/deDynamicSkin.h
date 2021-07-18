@@ -35,6 +35,12 @@ class deBaseGraphicDynamicSkin;
  * Defines dynamic properties of a skin resource.
  */
 class deDynamicSkin : public deResource{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deDynamicSkin> Ref;
+	
+	
+	
 private:
 	deDSRenderable **pRenderables;
 	int pRenderableCount;

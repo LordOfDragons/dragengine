@@ -41,6 +41,12 @@ class deNetworkValueVisitor;
  */
 class deNetworkValue : public deObject{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deNetworkValue> Ref;
+	
+	
+	
+public:
 	/** \brief Value formats. */
 	enum eValueFormats{
 		/** \brief 8-Bit signed integer. */

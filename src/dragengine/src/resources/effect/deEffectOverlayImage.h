@@ -37,6 +37,12 @@
  * effects can be applied to this image ( effect chaining ) before applying it.
  */
 class deEffectOverlayImage : public deEffect{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deEffectOverlayImage> Ref;
+	
+	
+	
 private:
 	deImageReference pImage;
 	decVector2 pTexCoords[ 4 ];

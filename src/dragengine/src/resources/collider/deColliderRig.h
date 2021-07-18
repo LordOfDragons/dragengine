@@ -45,6 +45,12 @@ class deRigConstraint;
  * direct parent bone.
  */
 class deColliderRig : public deCollider{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deColliderRig> Ref;
+	
+	
+	
 private:
 	deRigReference pRig;
 	

@@ -139,6 +139,12 @@ struct sRGBA32{
  * locking is required since GetData() is only valid after RetainImageData() finished.
  */
 class deImage : public deFileResource{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deImage> Ref;
+	
+	
+	
 private:
 	int pWidth;
 	int pHeight;

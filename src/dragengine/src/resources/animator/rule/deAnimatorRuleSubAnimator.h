@@ -42,6 +42,12 @@
  * connections again.
  */
 class deAnimatorRuleSubAnimator : public deAnimatorRule{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deAnimatorRuleSubAnimator> Ref;
+	
+	
+	
 private:
 	deAnimatorReference pSubAnimator;
 	

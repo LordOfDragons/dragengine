@@ -54,6 +54,12 @@ class deWorld;
  * oriented with a world-up axis and are spherical.
  */
 class deBillboard : public deResource{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deBillboard> Ref;
+	
+	
+	
 private:
 	decDVector pPosition;
 	decVector pAxis;

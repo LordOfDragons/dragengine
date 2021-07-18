@@ -42,6 +42,12 @@ class deBaseArchiveContainer;
  * archive containers are read-only.
  */
 class deArchive : public deFileResource{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deArchive> Ref;
+	
+	
+	
 private:
 	deBaseArchiveContainer *pPeerContainer;
 	
