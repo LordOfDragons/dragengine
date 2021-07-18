@@ -91,7 +91,7 @@ int RunMain( int argc, char **args ){
 //		printf( "reading log file name\n");
 //		fflush( stdout );
 		logfile.Set( ' ', logfileLength );
-		if( ! ReadFile( pipeIn, logfile, ( int )logfileLength, &bytesRead, NULL ) ){
+		if( ! ReadFile( pipeIn, ( LPVOID )logfile.GetString(), ( int )logfileLength, &bytesRead, NULL ) ){
 			DETHROW_INFO( deeInvalidParam, "failed reading log filename" );
 		}
 		if( bytesRead < ( DWORD )logfileLength ){

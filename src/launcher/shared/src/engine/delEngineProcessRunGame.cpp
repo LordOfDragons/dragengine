@@ -90,7 +90,7 @@ int delEngineProcessRunGame::BlockingReadCommandFromPipe(){
 	#ifdef OS_W32
 		DWORD bytesRead = 0;
 		
-		if( ! ReadFile( pProcess->GetPipeIn(), &command, sizeof( command ), &bytesRead, NULL ) ){
+		if( ! ReadFile( pProcess.GetPipeIn(), &command, sizeof( command ), &bytesRead, NULL ) ){
 			DETHROW_INFO( deeInvalidAction, "read pipe failed" );
 		}
 		if( bytesRead < sizeof( command ) ){

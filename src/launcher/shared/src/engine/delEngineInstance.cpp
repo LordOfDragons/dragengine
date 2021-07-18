@@ -28,7 +28,7 @@
 #include <sys/time.h>
 #include <sys/types.h>
 #ifdef OS_W32
-#include <dragengine/app/include_windows.h>
+#include <dragengine/app/deOSWindows.h>
 #else
 #include <sys/wait.h>
 #include <sys/select.h>
@@ -135,7 +135,7 @@ bool delEngineInstance::StartEngine(){
 		
 		TCHAR cmdline[ 256 ];
 		ZeroMemory( &cmdline, sizeof( cmdline ) );
-		deOSWindows::Utf8ToWide( pExecutableName, &cmdline, sizeof( cmdline ) - 1 )
+		deOSWindows::Utf8ToWide( pExecutableName, &cmdline[ 0 ], sizeof( cmdline ) - 1 );
 		
 		try{
 			// create the pipes. the child process inherits the in-pipe read end
@@ -183,7 +183,7 @@ bool delEngineInstance::StartEngine(){
 				DETHROW_INFO( deeInvalidAction, "send out pipe failed" );
 			}
 			if( bytesWritten < sizeof( pipesOutWrite ) ){
-				DETHROW( deeInvalidAction, "send out pipe too short" );
+				DETHROW_INFO( deeInvalidAction, "send out pipe too short" );
 			}
 			
 			// send name of log file relative to the log directory
