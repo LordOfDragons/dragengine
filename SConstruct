@@ -197,8 +197,6 @@ params.Add( StringVariable( 'archive_name_igde',
 	'Archive file name without extension for IGDE archive', 'deigde' ) )
 params.Add( StringVariable( 'archive_name_igde_dev',
 	'Archive file name without extension for IGDE Development archive', 'deigde_dev' ) )
-params.Add( StringVariable( 'archive_name_launcher_dev',
-	'Archive file name without extension for Launcher Development archive', 'delauncher_dev' ) )
 params.Add( StringVariable( 'archive_name_special',
 	'Archive file name without extension for Special archive', 'despecial' ) )
 params.Add( StringVariable( 'installer_name_engine',
@@ -209,8 +207,6 @@ params.Add( StringVariable( 'installer_name_igde',
 	'Installer file name without extension for IGDE installer', 'install-deigde' ) )
 params.Add( StringVariable( 'installer_name_igde_dev',
 	'Installer file name without extension for IGDE Development installer', 'install-deigde-dev' ) )
-params.Add( StringVariable( 'installer_name_launcher_dev',
-	'Installer file name without extension for Launcher Development installer', 'install-delauncher-dev' ) )
 
 
 if parent_env['OSMacOS']:
