@@ -31,6 +31,7 @@ Source: "unpacked\@ProgramFiles\Dragengine\Data\*"; DestDir: "{app}\Data"; Flags
 Source: "unpacked\@ProgramFiles\Dragengine\Launchers\*"; DestDir: "{app}\Launchers"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "unpacked\@ProgramFiles\Dragengine\Share\*"; DestDir: "{app}\Share"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "unpacked\@System\dragengine.dll"; DestDir: "{sys}"
+Source: "unpacked\@System\delauncher.dll"; DestDir: "{sys}"
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]

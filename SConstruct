@@ -267,8 +267,6 @@ if parent_env['OSMacOS']:
 		'/opt/delauncher/games', PathVariable.PathAccept ) )
 	params.Add( PathVariable( 'path_launcher_include', 'Path to the Launcher headers',
 		'${includedir}/delauncher', PathVariable.PathAccept ) )
-	params.Add( PathVariable( 'path_launcher_lib', 'Path to the Launcher libraries',
-		'${libdir}', PathVariable.PathAccept ) )
 	
 elif parent_env['OSBeOS']:
 	params.Add( TernaryVariable( 'with_dl', 'Use the dynamic library system' ) )
@@ -329,8 +327,6 @@ elif parent_env['OSBeOS']:
 		'${sysvardir}/delauncher/games', PathVariable.PathAccept ) )
 	params.Add( PathVariable( 'path_launcher_include', 'Path to the Launcher headers',
 		'${includedir}/delauncher', PathVariable.PathAccept ) )
-	params.Add( PathVariable( 'path_launcher_lib', 'Path to the Launcher libraries',
-		'${libdir}', PathVariable.PathAccept ) )
 	
 elif parent_env['OSPosix']:
 	params.Add( TernaryVariable( 'with_dl', 'Use the dynamic library system' ) )
@@ -390,8 +386,6 @@ elif parent_env['OSPosix']:
 		'/opt/delauncher/games', PathVariable.PathAccept ) )
 	params.Add( PathVariable( 'path_launcher_include', 'Path to the Launcher headers',
 		'${includedir}/delauncher', PathVariable.PathAccept ) )
-	params.Add( PathVariable( 'path_launcher_lib', 'Path to the Launcher libraries',
-		'${libdir}', PathVariable.PathAccept ) )
 	
 elif parent_env['OSWindows']:
 	params.Add(EnumVariable('igde_toolkit', 'ToolKit to use for building IGDE', 'fox', ['fox','null']))
@@ -470,9 +464,7 @@ elif parent_env['OSWindows']:
 		'${path_launcher_sdk}/include', PathVariable.PathAccept ) )
 	
 	params.Add( PathVariable( 'path_launcher_include', 'Path to the Launcher headers',
-		'${path_launcher_sdk_inc}/delauncher', PathVariable.PathAccept ) )
-	params.Add( PathVariable( 'path_launcher_lib', 'Path to the Launcher libraries',
-		'${path_launcher_sdk_lib}', PathVariable.PathAccept ) )
+		'${path_de_sdk_inc}/delauncher', PathVariable.PathAccept ) )
 	
 else:
 	Exit( 'No supported OS found!')

@@ -4,14 +4,15 @@ Import('parent_env parent_targets parent_report')
 
 envLibrary = parent_env.Clone()
 
-pathBin = envLibrary.subst(envLibrary['path_launcher_bin'])
-pathBinLib = envLibrary.subst(envLibrary['path_launcher_bin_lib'])
 pathConfig = envLibrary.subst(envLibrary['path_launcher_config'])
 pathData = envLibrary.subst(envLibrary['path_launcher_data'])
 pathShare = envLibrary.subst(envLibrary['path_launcher_share'])
 pathGames = envLibrary.subst(envLibrary['path_launcher_games'])
 pathInclude = envLibrary.subst(envLibrary['path_launcher_include'])
-pathLib = envLibrary.subst(envLibrary['path_launcher_lib'])
+pathLib = envLibrary.subst(envLibrary['path_de_lib'])
+
+if envLibrary['OSWindows']:
+	pathSysLib = envLibrary.subst(envLibrary['systemroot'])
 
 versionString = '1.5'
 if envLibrary['force_version']:
@@ -81,11 +82,11 @@ if envLibrary['OSPosix']:
 	archiveLib['{}/{}'.format(pathLib, lname)] = envLibrary.File(lname)
 	
 elif envLibrary['OSWindows']:
-	installLibRuntime.append(envLibrary.Install(pathBin, 'delauncher.dll'))
+	installLibRuntime.append(envLibrary.Install(pathSysLib, 'delauncher.dll'))
 	installLibDevelop.append(envLibrary.Install(pathLib, 'delauncher.lib'))
 	installLibDevelop.append(envLibrary.Install(pathLib, 'delauncher.def'))
 	
-	archiveLib[os.path.join(pathBin, 'delauncher.dll')] = envLibrary.File('delauncher.dll')
+	archiveLib[os.path.join(pathSysLib, 'delauncher.dll')] = envLibrary.File('delauncher.dll')
 	archiveLibDevelop[os.path.join(pathLib, 'delauncher.lib')] = envLibrary.File('delauncher.lib')
 	archiveLibDevelop[os.path.join(pathLib, 'delauncher.def')] = envLibrary.File('delauncher.def')
 
