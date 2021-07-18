@@ -19,58 +19,45 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef _DELFILEFORMATLIST_H_
-#define _DELFILEFORMATLIST_H_
+#ifndef _DELENGINEMODULEXML_H_
+#define _DELENGINEMODULEXML_H_
 
-#include <dragengine/common/collection/decObjectList.h>
+#include "../../utils/delBaseXML.h"
 
-class delFileFormat;
+#include <dragengine/common/string/decString.h>
+
+class delEngineModule;
+class decBaseFileReader;
+class decBaseFileWriter;
 
 
 /**
- * \brief File Format List.
+ * \brief Load Engine Module XML.
  */
-class delFileFormatList{
-private:
-	decObjectList pFormats;
-	
-	
-	
+class delEngineModuleXML : public delBaseXML{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/**  \brief Create file format list. */
-	delFileFormatList();
+	/** \brief Create engine module xml read. */
+	delEngineModuleXML( deLogger *logger, const char *loggerSource );
 	
-	/** \brief Clean up file format list. */
-	~delFileFormatList();
+	/** \brief Clean up engine module xml read. */
+	virtual ~delEngineModuleXML();
 	/*@}*/
 	
 	
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Count of file formats. */
-	int GetCount() const;
-	
-	/** \brief File format at index. */
-	delFileFormat *GetAt( int index ) const;
-	
-	/** \brief File format is present. */
-	bool Has( delFileFormat *format ) const;
-	
-	/** \brief Index of file format or -1 if absent. */
-	int IndexOf( delFileFormat *format ) const;
-	
-	/** \brief Add file format. */
-	void Add( delFileFormat *format );
-	
-	/** \brief Remove file format. */
-	void Remove( delFileFormat *format );
-	
-	/** \brief Remove all file formats. */
-	void RemoveAll();
+	/** \brief Read from XML file. */
+	void ReadFromFile( const char *filename, decBaseFileReader &reader, delEngineModule &module );
 	/*@}*/
+	
+	
+	
+private:
+	void pReadModule( const decXmlElementTag &root, delEngineModule &module );
+	void pReadModuleLibrary( const decXmlElementTag &root, delEngineModule &module );
 };
 
 #endif

@@ -263,13 +263,13 @@ public:
 	void SetCanRun( bool canRun );
 	
 	/** \brief Custom profile or NULL to use global profile. */
-	inline delGameProfile *GetCustomProfile() const{ return ( delGameProfile* )( deObject* )pCustomProfile; }
+	inline delGameProfile *GetCustomProfile() const{ return pCustomProfile; }
 	
 	/** \brief Set custom profile or NULL to use global profile. */
 	void SetCustomProfile( delGameProfile *profile );
 	
 	/** \brief Active profile or NULL to use last run profile. */
-	inline delGameProfile *GetActiveProfile() const{ return ( delGameProfile* )( deObject* )pActiveProfile; }
+	inline delGameProfile *GetActiveProfile() const{ return pActiveProfile; }
 	
 	/** \brief Set active profile or NULL to use last run profile. */
 	void SetActiveProfile( delGameProfile *profile );

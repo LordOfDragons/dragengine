@@ -1,7 +1,7 @@
 /* 
- * Drag[en]gine GUI Launcher
+ * Drag[en]gine Launcher Shared
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * Copyright (C) 2021, Roland Plüss (roland@rptd.ch)
  * 
  * This program is free software; you can redistribute it and/or 
  * modify it under the terms of the GNU General Public License 
@@ -40,7 +40,7 @@ delGPModuleList::delGPModuleList(){
 }
 
 delGPModuleList::~delGPModuleList(){
-	RemoveAllModules();
+	RemoveAll();
 }
 
 
@@ -48,46 +48,51 @@ delGPModuleList::~delGPModuleList(){
 // Management
 ///////////////
 
-int delGPModuleList::GetModuleCount() const{
+int delGPModuleList::GetCount() const{
 	return pModules.GetCount();
 }
 
-delGPModule *delGPModuleList::GetModuleAt( int index ) const{
+delGPModule *delGPModuleList::GetAt( int index ) const{
 	return ( delGPModule* )pModules.GetAt( index );
 }
 
-delGPModule *delGPModuleList::GetModuleNamed( const char *name ) const{
-	if( ! name ) DETHROW( deeInvalidParam );
+delGPModule *delGPModuleList::GetNamed ( const char *name ) const{
+	if( ! name ){
+		DETHROW_INFO( deeNullPointer, "name" );
+	}
 	
-	int i, count = pModules.GetCount();
-	delGPModule *module;
+	const int count = pModules.GetCount();
+	int i;
 	
 	for( i=0; i<count; i++ ){
-		module = ( delGPModule* )pModules.GetAt( i );
-		if( module->GetName().Equals( name ) ){
+		delGPModule * const module = ( delGPModule* )pModules.GetAt( i );
+		if( module->GetName() == name ){
 			return module;
 		}
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
-bool delGPModuleList::HasModule( delGPModule *module ) const{
+bool delGPModuleList::Has( delGPModule *module ) const{
 	return pModules.Has( module );
 }
 
-bool delGPModuleList::HasModuleNamed( const char *name ) const{
-	return GetModuleNamed( name ) != NULL;
+bool delGPModuleList::HasNamed( const char *name ) const{
+	return GetNamed ( name );
 }
 
-int delGPModuleList::IndexOfModule( delGPModule *module ) const{
+int delGPModuleList::IndexOf( delGPModule *module ) const{
 	return pModules.IndexOf( module );
 }
 
-int delGPModuleList::IndexOfModuleNamed( const char *name ) const{
-	if( ! name ) DETHROW( deeInvalidParam );
+int delGPModuleList::IndexOfNamed( const char *name ) const{
+	if( ! name ){
+		DETHROW_INFO( deeNullPointer, "name" );
+	}
 	
-	int i, count = pModules.GetCount();
+	const int count = pModules.GetCount();
+	int i;
 	
 	for( i=0; i<count; i++ ){
 		if( ( ( delGPModule* )pModules.GetAt( i ) )->GetName().Equals( name ) ){
@@ -98,20 +103,26 @@ int delGPModuleList::IndexOfModuleNamed( const char *name ) const{
 	return -1;
 }
 
-void delGPModuleList::AddModule( delGPModule *module ){
-	if( ! module || HasModuleNamed( module->GetName().GetString() ) ) DETHROW( deeInvalidParam );
+void delGPModuleList::Add( delGPModule *module ){
+	if( ! module ){
+		DETHROW_INFO( deeNullPointer, "module" );
+	}
+	if( HasNamed ( module->GetName() ) ){
+		DETHROW_INFO( deeInvalidParam, "named module is present" );
+	}
 	
 	pModules.Add( module );
 }
 
-void delGPModuleList::RemoveModule( delGPModule *module ){
-	int index = IndexOfModule( module );
-	
-	if( index == -1 ) DETHROW( deeInvalidParam );
+void delGPModuleList::Remove ( delGPModule *module ){
+	const int index = IndexOf ( module );
+	if( index == -1 ){
+		DETHROW_INFO( deeInvalidParam, "module is absent" );
+	}
 	
 	pModules.RemoveFrom( index );
 }
 
-void delGPModuleList::RemoveAllModules(){
+void delGPModuleList::RemoveAll(){
 	pModules.RemoveAll();
 }

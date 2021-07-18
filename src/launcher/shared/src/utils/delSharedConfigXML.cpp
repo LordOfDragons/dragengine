@@ -158,7 +158,7 @@ void delSharedConfigXML::pWriteProfileDisableModuleVersions( decXmlWriter &write
 
 void delSharedConfigXML::pWriteProfileModules( decXmlWriter &writer, const delGameProfile &profile ){
 	const delGPModuleList &moduleList = profile.GetModuleList();
-	int i, count = moduleList.GetModuleCount();
+	int i, count = moduleList.GetCount();
 	
 	if( count == 0 ){
 		return;
@@ -167,7 +167,7 @@ void delSharedConfigXML::pWriteProfileModules( decXmlWriter &writer, const delGa
 	writer.WriteOpeningTag( "modules", false, true );
 	
 	for( i=0; i<count; i++ ){
-		pWriteProfileModule( writer, *moduleList.GetModuleAt( i ) );
+		pWriteProfileModule( writer, *moduleList.GetAt ( i ) );
 	}
 	
 	writer.WriteClosingTag( "modules", true );
@@ -185,12 +185,12 @@ void delSharedConfigXML::pWriteProfileModule( decXmlWriter &writer, const delGPM
 
 void delSharedConfigXML::pWriteProfileModuleParameters( decXmlWriter &writer, const delGPModule &module ){
 	const delGPMParameterList &parametersList = module.GetParameterList();
-	int i, count = parametersList.GetParameterCount();
+	int i, count = parametersList.GetCount();
 	
 	writer.WriteOpeningTag( "parameters", false, true );
 	
 	for( i=0; i<count; i++ ){
-		const delGPMParameter &parameters = *parametersList.GetParameterAt( i );
+		const delGPMParameter &parameters = *parametersList.GetAt ( i );
 		
 		writer.WriteOpeningTagStart( "parameter" );
 		writer.WriteAttributeString( "name", parameters.GetName() );
@@ -363,7 +363,7 @@ void delSharedConfigXML::pReadProfileModule( const decXmlElementTag &root, delGa
 		}
 	}
 	
-	profile.GetModuleList().AddModule( module );
+	profile.GetModuleList().Add ( module );
 }
 
 void delSharedConfigXML::pReadProfileModuleParameters( const decXmlElementTag &root, delGPModule &module ){
@@ -377,7 +377,7 @@ void delSharedConfigXML::pReadProfileModuleParameters( const decXmlElementTag &r
 		}
 		
 		if( tag->GetName() == "parameter" ){
-			parametersList.AddParameter( delGPMParameter::Ref::With( new delGPMParameter(
+			parametersList.Add ( delGPMParameter::Ref::With( new delGPMParameter(
 				GetAttributeString( *tag, "name" ), GetCDataString( *tag ) ) ) );
 		}
 	}

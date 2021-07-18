@@ -119,12 +119,12 @@ public:
 	
 	
 	/** \brief Game manager. */
-	inline deglGameManager &GetGameManager(){ return pGameManager; }
-	inline const deglGameManager &GetGameManager() const{ return pGameManager; }
+	inline delGameManager &GetGameManager(){ return pGameManager; }
+	inline const delGameManager &GetGameManager() const{ return pGameManager; }
 	
 	/** \brief Patch manager. */
-	inline deglPatchManager &GetPatchManager(){ return pPatchManager; }
-	inline const deglPatchManager &GetPatchManager() const{ return pPatchManager; }
+	inline delPatchManager &GetPatchManager(){ return pPatchManager; }
+	inline const delPatchManager &GetPatchManager() const{ return pPatchManager; }
 	/*@}*/
 	
 	

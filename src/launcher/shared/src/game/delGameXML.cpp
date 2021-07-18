@@ -154,7 +154,7 @@ void delGameXML::pReadGame( const decXmlElementTag &root, delGame &game ){
 				DETHROW_INFO( deeInvalidParam, "invalid tag value" );
 			}
 			
-			fileFormats.AddFormat( delFileFormat::Ref::With(
+			fileFormats.Add ( delFileFormat::Ref::With(
 				new delFileFormat( formatType, GetCDataString( *tag ) ) ) );
 			
 		}else{

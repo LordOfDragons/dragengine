@@ -19,21 +19,21 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef _DELGAMEPROFILELIST_H_
-#define _DELGAMEPROFILELIST_H_
+#ifndef _DELEMPARAMETERLIST_H_
+#define _DELEMPARAMETERLIST_H_
 
 #include <dragengine/common/collection/decObjectList.h>
 
-class delGameProfile;
-class delLauncherSupport;
+class delEMParameter;
+
 
 
 /**
- * \brief Game profile list.
+ * \brief Engine Parameter Parameter List.
  */
-class delGameProfileList{
+class delEMParameterList{
 private:
-	decObjectList pProfiles;
+	decObjectList pParameters;
 	
 	
 	
@@ -41,48 +41,45 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create list. */
-	delGameProfileList();
+	delEMParameterList();
 	
 	/** \brief Clean up list. */
-	~delGameProfileList();
+	~delEMParameterList();
 	/*@}*/
 	
 	
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Count of profiles. */
+	/** \brief Count of parameters. */
 	int GetCount() const;
 	
-	/** \brief Profile at index. */
-	delGameProfile *GetAt( int index ) const;
+	/** \brief Parameter at index. */
+	delEMParameter *GetAt( int index ) const;
 	
-	/** \brief Named profile or nullptr if absent. */
-	delGameProfile *GetNamed( const char *name ) const;
+	/** \brief Named parameter or nullptr if absent. */
+	delEMParameter *GetNamed( const char *name ) const;
 	
-	/** \brief Profile is present. */
-	bool Has( delGameProfile *profile ) const;
+	/** \brief Parameter is present. */
+	bool Has( delEMParameter *parameter ) const;
 	
-	/** \brief Named profile is present. */
+	/** \brief Named parameter is present. */
 	bool HasNamed( const char *name ) const;
 	
-	/** \brief Index of profile or -1 if absent. */
-	int IndexOf( delGameProfile *profile ) const;
+	/** \brief Index of parameter or -1 if absent. */
+	int IndexOf( delEMParameter *parameter ) const;
 	
-	/** \brief Index of named profile or -1 if absent. */
+	/** \brief Index of named parameter or -1 if absent. */
 	int IndexOfNamed( const char *name ) const;
 	
-	/** \brief Add profile. */
-	void Add( delGameProfile *profile );
+	/** \brief Add parameter. */
+	void Add( delEMParameter *parameter );
 	
-	/** \brief Remove profile. */
-	void Remove( delGameProfile *profile );
+	/** \brief Remove parameter. */
+	void Remove( delEMParameter *parameter );
 	
-	/** \brief Remove all profiles. */
+	/** \brief Remove all parameters. */
 	void RemoveAll();
-	
-	/** \brief Validate profiles. */
-	void ValidateAll( delLauncherSupport &launcher );
 	/*@}*/
 };
 

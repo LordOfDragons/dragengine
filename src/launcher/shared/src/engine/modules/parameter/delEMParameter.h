@@ -19,57 +19,58 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef _DELFILEFORMATLIST_H_
-#define _DELFILEFORMATLIST_H_
+#ifndef _DELEMPARAMETER_H_
+#define _DELEMPARAMETER_H_
 
-#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/string/decString.h>
 
-class delFileFormat;
+#include <dragengine/deObject.h>
+#include <dragengine/systems/modules/deModuleParameter.h>
+
 
 
 /**
- * \brief File Format List.
+ * \brief Game Engine Module Parameter.
  */
-class delFileFormatList{
+class delEMParameter : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<delEMParameter> Ref;
+	
+	
+	
 private:
-	decObjectList pFormats;
+	int pIndex;
+	deModuleParameter pInfo;
+	decString pValue;
 	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/**  \brief Create file format list. */
-	delFileFormatList();
+	/** \brief Create engine module parameter. */
+	delEMParameter( int index, const deModuleParameter &info );
 	
-	/** \brief Clean up file format list. */
-	~delFileFormatList();
+	/** \brief Clean up engine module parameter. */
+	virtual ~delEMParameter();
 	/*@}*/
 	
 	
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Count of file formats. */
-	int GetCount() const;
+	/** \brief Parameter index. */
+	inline int GetIndex() const{ return pIndex; }
 	
-	/** \brief File format at index. */
-	delFileFormat *GetAt( int index ) const;
+	/** \brief Parameter info. */
+	inline const deModuleParameter &GetInfo() const{ return pInfo; }
 	
-	/** \brief File format is present. */
-	bool Has( delFileFormat *format ) const;
+	/** \brief Value. */
+	inline const decString &GetValue() const{ return pValue; }
 	
-	/** \brief Index of file format or -1 if absent. */
-	int IndexOf( delFileFormat *format ) const;
-	
-	/** \brief Add file format. */
-	void Add( delFileFormat *format );
-	
-	/** \brief Remove file format. */
-	void Remove( delFileFormat *format );
-	
-	/** \brief Remove all file formats. */
-	void RemoveAll();
+	/** \brief Set value. */
+	void SetValue( const char *value );
 	/*@}*/
 };
 

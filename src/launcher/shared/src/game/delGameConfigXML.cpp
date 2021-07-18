@@ -143,7 +143,7 @@ void delGameConfigXML::pReadConfig( const decXmlElementTag &root, delGame &game 
 				game.SetActiveProfile( game.GetCustomProfile() );
 				
 			}else{
-				game.SetActiveProfile( pGameManager.GetProfileList().GetProfileNamed( name ) );
+				game.SetActiveProfile( pGameManager.GetProfileList().GetNamed ( name ) );
 				if( ! game.GetActiveProfile() ){
 					GetLogger()->LogWarnFormat( GetLoggerSource(), "%s(%i:%i): Profile '%s' does not exist",
 						tag->GetName().GetString(), tag->GetLineNumber(), tag->GetPositionNumber(), name.GetString() );

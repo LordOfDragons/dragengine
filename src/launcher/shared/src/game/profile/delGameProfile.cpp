@@ -187,10 +187,10 @@ const char *moduleVersion, int requiredType ) const{
 	delEngineModule *module;
 	
 	if( strlen( moduleVersion ) == 0 ){
-		module = moduleList.GetModuleNamed( moduleName );
+		module = moduleList.GetNamed ( moduleName );
 		
 	}else{
-		module = moduleList.GetModuleNamed( moduleName, moduleVersion );
+		module = moduleList.GetNamed ( moduleName, moduleVersion );
 	}
 	
 	if( ! module
@@ -205,13 +205,13 @@ const char *moduleVersion, int requiredType ) const{
 void delGameProfile::Activate( delLauncherSupport &support, delEngineInstance &engineInstance ) const{
 	// disable module versions. this affects all modules
 	const delEngineModuleList &engineModuleList = support.GetEngine()->GetModuleList();
-	const int moduleCount = pModuleList.GetModuleCount();
+	const int moduleCount = pModuleList.GetCount();
 	const int disableModuleVersionCount = pDisableModuleVersionList.GetCount();
 	int i;
 	
 	for( i=0; i<disableModuleVersionCount; i++ ){
 		const delGPDisableModuleVersion &version = *pDisableModuleVersionList.GetAt( i );
-		delEngineModule * const module = engineModuleList.GetModuleNamed( version.GetName(), version.GetVersion() );
+		delEngineModule * const module = engineModuleList.GetNamed ( version.GetName(), version.GetVersion() );
 		if( module ){
 			engineInstance.EnableModule( module->GetName(), module->GetVersion(), false );
 		}
@@ -230,8 +230,8 @@ void delGameProfile::Activate( delLauncherSupport &support, delEngineInstance &e
 	
 	// set module properties
 	for( i=0; i<moduleCount; i++ ){
-		delGPModule &module = *pModuleList.GetModuleAt( i );
-		delEngineModule * const engineModule = engineModuleList.GetModuleNamed( module.GetName() );
+		delGPModule &module = *pModuleList.GetAt ( i );
+		delEngineModule * const engineModule = engineModuleList.GetNamed ( module.GetName() );
 		if( engineModule ){
 			module.ApplyParameters( engineModule->GetVersion(), support, engineInstance );
 		}
@@ -266,14 +266,14 @@ delGameProfile &delGameProfile::operator=( const delGameProfile &profile ){
 	
 	pDisableModuleVersionList = profile.pDisableModuleVersionList;
 	
-	pModuleList.RemoveAllModules();
+	pModuleList.RemoveAll();
 	
 	const delGPModuleList &moduleList = profile.GetModuleList();
-	const int moduleCount = moduleList.GetModuleCount();
+	const int moduleCount = moduleList.GetCount();
 	int i;
 	for( i=0; i<moduleCount; i++ ){
-		pModuleList.AddModule( delGPModule::Ref::With(
-			new delGPModule( *moduleList.GetModuleAt( i ) ) ) );
+		pModuleList.Add ( delGPModule::Ref::With(
+			new delGPModule( *moduleList.GetAt ( i ) ) ) );
 	}
 	
 	pRunArgs = profile.pRunArgs;

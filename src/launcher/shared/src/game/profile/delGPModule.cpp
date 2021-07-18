@@ -61,23 +61,23 @@ void delGPModule::SetName( const char *name ){
 	pName = name;
 }
 
-void delGPModule::ApplyParameters( const char *version, delLauncherSupport &launcher,
+void delGPModule::ApplyParameters( const char *version, delLauncherSupport &support,
 delEngineInstance &engineInstance ) const{
-	delEngineModule * const engineModule = launcher.GetEngine()->GetModuleList()
+	delEngineModule * const engineModule = support.GetEngine()->GetModuleList()
 		.GetModuleNamed( pName, version );
 	if( ! engineModule ){
 		return;
 	}
 	
-	const delEMParameterList &engineParameterList = engineModule->GetParameterList();
-	const int count = pParameterList.GetParameterCount();
+	const delEMParameterList &engineParameterList = engineModule->GetParameters();
+	const int count = pParameterList.GetCount();
 	delEMParameter *engineParameter;
 	int i;
 	
 	for( i=0; i<count; i++ ){
-		const delGPMParameter &parameter = *pParameterList.GetParameterAt( i );
+		const delGPMParameter &parameter = *pParameterList.GetAt ( i );
 		
-		engineParameter = engineParameterList.GetParameterNamed( parameter.GetName() );
+		engineParameter = engineParameterList.GetNamed ( parameter.GetName() );
 		
 		if( engineParameter ){
 			engineInstance.SetModuleParameter( pName, version,
@@ -93,15 +93,15 @@ delEngineInstance &engineInstance ) const{
 
 delGPModule &delGPModule::operator=( const delGPModule &module ){
 	const delGPMParameterList &parameterList = module.GetParameterList();
-	const int parameterCount = parameterList.GetParameterCount();
+	const int parameterCount = parameterList.GetCount();
 	int i;
 	
 	pName = module.pName;
 	
-	pParameterList.RemoveAllParameters();
+	pParameterList.RemoveAll();
 	
 	for( i=0; i<parameterCount; i++ ){
-		pParameterList.AddParameter( delGPMParameter::Ref::With(
-			new delGPMParameter( *parameterList.GetParameterAt( i ) ) ) );
+		pParameterList.Add ( delGPMParameter::Ref::With(
+			new delGPMParameter( *parameterList.GetAt ( i ) ) ) );
 	}
 }

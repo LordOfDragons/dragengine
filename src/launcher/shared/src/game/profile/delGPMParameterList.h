@@ -51,34 +51,34 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Count of parameters. */
-	int GetParameterCount() const;
+	int GetCount() const;
 	
 	/** \brief Parameter at index. */
-	delGPMParameter *GetParameterAt( int index ) const;
+	delGPMParameter *GetAt( int index ) const;
 	
 	/** \brief Named parameter or nullptr if absent. */
-	delGPMParameter *GetParameterNamed( const char *name ) const;
+	delGPMParameter *GetNamed( const char *name ) const;
 	
 	/** \brief Parameter is present. */
-	bool HasParameter( delGPMParameter *parameter ) const;
+	bool Has( delGPMParameter *parameter ) const;
 	
 	/** \brief Named parameter is present. */
-	bool HasParameterNamed( const char *name ) const;
+	bool HasNamed( const char *name ) const;
 	
 	/** \brief Index of parameter or -1 if absent. */
-	int IndexOfParameter( delGPMParameter *parameter ) const;
+	int IndexOf( delGPMParameter *parameter ) const;
 	
 	/** \brief Index of named parameter or -1 if absent. */
-	int IndexOfParameterNamed( const char *name ) const;
+	int IndexOfNamed( const char *name ) const;
 	
 	/** \brief Add parameter. */
-	void AddParameter( delGPMParameter *parameter );
+	void Add( delGPMParameter *parameter );
 	
 	/** \brief Remove parameter. */
-	void RemoveParameter( delGPMParameter *parameter );
+	void Remove( delGPMParameter *parameter );
 	
 	/** \brief Remove all parameters. */
-	void RemoveAllParameters();
+	void RemoveAll();
 	/*@}*/
 };
 

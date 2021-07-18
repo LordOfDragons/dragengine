@@ -176,8 +176,8 @@ void delGame::SetEngineInstance( delEngineInstance *engineInstance ){
 void delGame::VerifyRequirements(){
 	const delEngine &engine = *pSupport.GetEngine();
 	const delEngineModuleList &moduleList = engine.GetModuleList();
-	int f, formatCount = pFileFormats.GetFormatCount();
-	int m, moduleCount = moduleList.GetModuleCount();
+	int f, formatCount = pFileFormats.GetCount();
+	int m, moduleCount = moduleList.GetCount();
 	delEngineModule *module;
 	deModuleSystem::eModuleTypes formatType;
 	
@@ -190,7 +190,7 @@ void delGame::VerifyRequirements(){
 	pAllFormatsSupported = true;
 	
 	for( f=0; f<formatCount; f++ ){
-		delFileFormat &format = *pFileFormats.GetFormatAt( f );
+		delFileFormat &format = *pFileFormats.GetAt ( f );
 		formatType = format.GetType();
 		
 		format.SetSupported( false );
@@ -199,7 +199,7 @@ void delGame::VerifyRequirements(){
 			const decString &formatPattern = format.GetPattern();
 			
 			for( m=0; m<moduleCount; m++ ){
-				module = moduleList.GetModuleAt( m );
+				module = moduleList.GetAt ( m );
 				
 				if( module->GetType() == formatType && module->GetStatus() == delEngineModule::emsReady
 				&& formatPattern.MatchesPattern( module->GetPattern() ) ){
@@ -217,10 +217,10 @@ void delGame::VerifyRequirements(){
 	// check if the script module exists. we can only check if a module of any version exists.
 	// the actual version check can only be done once the actual profile is known
 	if( pScriptModuleVersion.IsEmpty() ){
-		module = moduleList.GetModuleNamed( pScriptModule );
+		module = moduleList.GetNamed ( pScriptModule );
 		
 	}else{
-		module = moduleList.GetModuleNamedAtLeast( pScriptModule, pScriptModuleVersion );
+		module = moduleList.GetNamedAtLeast ( pScriptModule, pScriptModuleVersion );
 	}
 	
 	pScriptModuleFound = module
@@ -396,7 +396,7 @@ void delGame::StartGame( const delGameRunParams &runParams ){
 			runParams.GetFullScreen(), pTitle.ToUTF8(), pIconPath );
 		
 		// store information for handling parameter cchanges during runtime
-		pCollectChangedParams.RemoveAllModules();
+		pCollectChangedParams.RemoveAll();
 		pCollectChangedParamsProfile.TakeOver( new delGameProfile( *runParams.GetGameProfile() ) );
 		
 		// start game
@@ -521,13 +521,13 @@ void delGame::SaveConfig(){
 
 delGameProfile *delGame::GetProfileToUse() const{
 	if( pActiveProfile ){
-		return ( delGameProfile* )( deObject* )pActiveProfile;
+		return pActiveProfile;
 	}
 	if( pCustomProfile ){
-		return ( delGameProfile* )( deObject* )pCustomProfile;
+		return pCustomProfile;
 	}
 	
-	delGameManager &gameManager = *pSupport.GetGameManager();
+	delGameManager &gameManager = pSupport.GetGameManager();
 	if( gameManager.GetActiveProfile() ){
 		return gameManager.GetActiveProfile();
 	}
@@ -589,7 +589,7 @@ void delGame::SortPatches( delPatchList &sorted, const delPatchList &patches ) c
 //////////////////////
 
 void delGame::pStoreCustomConfig(){
-	if( pCollectChangedParams.GetModuleCount() == 0 || ! pCollectChangedParamsProfile ){
+	if( pCollectChangedParams.GetCount() == 0 || ! pCollectChangedParamsProfile ){
 		return;
 	}
 	
@@ -605,32 +605,32 @@ void delGame::pStoreCustomConfig(){
 	
 	// update custom profile
 	delGPModuleList &modules = pCustomProfile->GetModuleList();
-	const int moduleCount = pCollectChangedParams.GetModuleCount();
+	const int moduleCount = pCollectChangedParams.GetCount();
 	int i, j;
 	
 	for( i=0; i<moduleCount; i++ ){
-		const delGPModule &moduleChanges = *pCollectChangedParams.GetModuleAt( i );
-		delGPModule * const module = modules.GetModuleNamed( moduleChanges.GetName() );
+		const delGPModule &moduleChanges = *pCollectChangedParams.GetAt ( i );
+		delGPModule * const module = modules.GetNamed ( moduleChanges.GetName() );
 		
 		if( module ){
 			delGPMParameterList &params = module->GetParameterList();
 			const delGPMParameterList &paramsChanges = moduleChanges.GetParameterList();
-			const int paramCount = paramsChanges.GetParameterCount();
+			const int paramCount = paramsChanges.GetCount();
 			
 			for( j=0; j<paramCount; j++ ){
-				const delGPMParameter &paramChanges = *paramsChanges.GetParameterAt( j );
-				delGPMParameter * const parameter = params.GetParameterNamed( paramChanges.GetName() );
+				const delGPMParameter &paramChanges = *paramsChanges.GetAt ( j );
+				delGPMParameter * const parameter = params.GetNamed ( paramChanges.GetName() );
 				
 				if( parameter ){
 					parameter->SetValue( paramChanges.GetValue() );
 					
 				}else{
-					params.AddParameter( delGPMParameter::Ref::With( new delGPMParameter( paramChanges ) ) );
+					params.Add ( delGPMParameter::Ref::With( new delGPMParameter( paramChanges ) ) );
 				}
 			}
 			
 		}else{
-			modules.AddModule( delGPModule::Ref::With( new delGPModule( moduleChanges ) ) );
+			modules.Add ( delGPModule::Ref::With( new delGPModule( moduleChanges ) ) );
 		}
 	}
 	

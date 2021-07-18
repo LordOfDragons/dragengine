@@ -85,7 +85,7 @@ void delGameManager::Verify(){
 	if( pDefaultProfile ){
 		pDefaultProfile->Verify( pSupport );
 	}
-	pProfileList.ValidateProfiles( pSupport );
+	pProfileList.ValidateAll ( pSupport );
 	
 	const int count = pGames.GetCount();
 	int i;
@@ -102,7 +102,7 @@ void delGameManager::ApplyProfileChanges(){
 	for( i=0; i<count; i++ ){
 		delGame &game = *pGames.GetAt( i );
 		
-		if( ! pProfileList.HasProfile( game.GetActiveProfile() ) ){
+		if( ! pProfileList.Has ( game.GetActiveProfile() ) ){
 			game.SetActiveProfile( nullptr );
 			game.VerifyRequirements();
 		}

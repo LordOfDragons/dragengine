@@ -40,7 +40,7 @@ delGameProfileList::delGameProfileList(){
 }
 
 delGameProfileList::~delGameProfileList(){
-	RemoveAllProfiles();
+	RemoveAll();
 }
 
 
@@ -48,15 +48,15 @@ delGameProfileList::~delGameProfileList(){
 // Management
 ///////////////
 
-int delGameProfileList::GetProfileCount() const{
+int delGameProfileList::GetCount() const{
 	return pProfiles.GetCount();
 }
 
-delGameProfile *delGameProfileList::GetProfileAt( int index ) const{
+delGameProfile *delGameProfileList::GetAt( int index ) const{
 	return ( delGameProfile* )pProfiles.GetAt( index );
 }
 
-delGameProfile *delGameProfileList::GetProfileNamed( const char *name ) const{
+delGameProfile *delGameProfileList::GetNamed( const char *name ) const{
 	if( ! name ){
 		DETHROW_INFO( deeNullPointer, "name" );
 	}
@@ -74,19 +74,19 @@ delGameProfile *delGameProfileList::GetProfileNamed( const char *name ) const{
 	return nullptr;
 }
 
-bool delGameProfileList::HasProfile( delGameProfile *profile ) const{
+bool delGameProfileList::Has( delGameProfile *profile ) const{
 	return pProfiles.Has( profile );
 }
 
-bool delGameProfileList::HasProfileNamed( const char *name ) const{
-	return GetProfileNamed( name );
+bool delGameProfileList::HasNamed( const char *name ) const{
+	return GetNamed ( name );
 }
 
-int delGameProfileList::IndexOfProfile( delGameProfile *profile ) const{
+int delGameProfileList::IndexOf( delGameProfile *profile ) const{
 	return pProfiles.IndexOf( profile );
 }
 
-int delGameProfileList::IndexOfProfileNamed( const char *name ) const{
+int delGameProfileList::IndexOfNamed( const char *name ) const{
 	if( ! name ){
 		DETHROW_INFO( deeNullPointer, "name" );
 	}
@@ -103,19 +103,19 @@ int delGameProfileList::IndexOfProfileNamed( const char *name ) const{
 	return -1;
 }
 
-void delGameProfileList::AddProfile( delGameProfile *profile ){
+void delGameProfileList::Add( delGameProfile *profile ){
 	if( ! profile ){
 		DETHROW_INFO( deeNullPointer, "profile" );
 	}
-	if( HasProfileNamed( profile->GetName() ) ){
+	if( HasNamed ( profile->GetName() ) ){
 		DETHROW_INFO( deeInvalidParam, "named profile is present" );
 	}
 	
 	pProfiles.Add( profile );
 }
 
-void delGameProfileList::RemoveProfile( delGameProfile *profile ){
-	const int index = IndexOfProfile( profile );
+void delGameProfileList::Remove( delGameProfile *profile ){
+	const int index = IndexOf ( profile );
 	if( index == -1 ){
 		DETHROW_INFO( deeInvalidParam, "profile is absent" );
 	}
@@ -123,11 +123,11 @@ void delGameProfileList::RemoveProfile( delGameProfile *profile ){
 	pProfiles.RemoveFrom( index );
 }
 
-void delGameProfileList::RemoveAllProfiles(){
+void delGameProfileList::RemoveAll(){
 	pProfiles.RemoveAll();
 }
 
-void delGameProfileList::ValidateProfiles( delLauncherSupport &support ){
+void delGameProfileList::ValidateAll( delLauncherSupport &support ){
 	const int count = pProfiles.GetCount();
 	int i;
 	

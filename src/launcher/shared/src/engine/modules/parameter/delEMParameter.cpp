@@ -23,24 +23,24 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "delFileFormat.h"
-#include "delFileFormatList.h"
+#include "delEMParameter.h"
 
 #include <dragengine/common/exceptions.h>
 
 
 
-// Class delFileFormatList
-/////////////////////////////
+// Class delEMParameter
+/////////////////////////
 
 // Constructors and Destructors
 /////////////////////////////////
 
-delFileFormatList::delFileFormatList(){
+delEMParameter::delEMParameter( int index, const deModuleParameter &info ) :
+pIndex( index ),
+pInfo( info ){
 }
 
-delFileFormatList::~delFileFormatList(){
-	RemoveAll();
+delEMParameter::~delEMParameter(){
 }
 
 
@@ -48,39 +48,6 @@ delFileFormatList::~delFileFormatList(){
 // Management
 ///////////////
 
-int delFileFormatList::GetCount() const{
-	return pFormats.GetCount();
-}
-
-delFileFormat *delFileFormatList::GetAt( int index ) const{
-	return ( delFileFormat* )pFormats.GetAt( index );
-}
-
-bool delFileFormatList::Has( delFileFormat *format ) const{
-	return pFormats.Has( format );
-}
-
-int delFileFormatList::IndexOf( delFileFormat *format ) const{
-	return pFormats.IndexOf( format );
-}
-
-void delFileFormatList::Add( delFileFormat *format ){
-	if( ! format ){
-		DETHROW_INFO( deeNullPointer, "format" );
-	}
-	
-	pFormats.Add( format );
-}
-
-void delFileFormatList::Remove( delFileFormat *format ){
-	const int index = IndexOf ( format );
-	if( index == -1 ){
-		DETHROW_INFO( deeInvalidParam, "format is absent" );
-	}
-	
-	pFormats.RemoveFrom( index );
-}
-
-void delFileFormatList::RemoveAll(){
-	pFormats.RemoveAll();
+void delEMParameter::SetValue( const char *value ){
+	pValue = value;
 }

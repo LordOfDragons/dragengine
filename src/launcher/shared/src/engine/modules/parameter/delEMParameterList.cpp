@@ -23,23 +23,22 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "delGPMParameter.h"
-#include "delGPMParameterList.h"
+#include "delEMParameter.h"
+#include "delEMParameterList.h"
 
 #include <dragengine/common/exceptions.h>
 
 
-
-// Class delGPMParameterList
-///////////////////////////////
+// Class delEMParameterList
+/////////////////////////////
 
 // Constructors and Destructors
 /////////////////////////////////
 
-delGPMParameterList::delGPMParameterList(){
+delEMParameterList::delEMParameterList(){
 }
 
-delGPMParameterList::~delGPMParameterList(){
+delEMParameterList::~delEMParameterList(){
 	RemoveAll();
 }
 
@@ -48,15 +47,15 @@ delGPMParameterList::~delGPMParameterList(){
 // Management
 ///////////////
 
-int delGPMParameterList::GetCount() const{
+int delEMParameterList::GetCount() const{
 	return pParameters.GetCount();
 }
 
-delGPMParameter *delGPMParameterList::GetAt( int index ) const{
-	return ( delGPMParameter* )pParameters.GetAt( index );
+delEMParameter *delEMParameterList::GetAt( int index ) const{
+	return ( delEMParameter* )pParameters.GetAt( index );
 }
 
-delGPMParameter *delGPMParameterList::GetNamed( const char *name ) const{
+delEMParameter *delEMParameterList::GetNamed( const char *name ) const{
 	if( ! name ){
 		DETHROW_INFO( deeNullPointer, "name" );
 	}
@@ -65,8 +64,8 @@ delGPMParameter *delGPMParameterList::GetNamed( const char *name ) const{
 	int i;
 	
 	for( i=0; i<count; i++ ){
-		delGPMParameter * const parameter = ( delGPMParameter* )pParameters.GetAt( i );
-		if( parameter->GetName() == name ){
+		delEMParameter * const parameter = ( delEMParameter* )pParameters.GetAt( i );
+		if( parameter->GetInfo().GetName().Equals( name ) ){
 			return parameter;
 		}
 	}
@@ -74,19 +73,19 @@ delGPMParameter *delGPMParameterList::GetNamed( const char *name ) const{
 	return nullptr;
 }
 
-bool delGPMParameterList::Has( delGPMParameter *parameter ) const{
+bool delEMParameterList::Has( delEMParameter *parameter ) const{
 	return pParameters.Has( parameter );
 }
 
-bool delGPMParameterList::HasNamed( const char *name ) const{
-	return GetNamed ( name ) != NULL;
+bool delEMParameterList::HasNamed( const char *name ) const{
+	return GetNamed ( name );
 }
 
-int delGPMParameterList::IndexOf( delGPMParameter *parameter ) const{
+int delEMParameterList::IndexOf( delEMParameter *parameter ) const{
 	return pParameters.IndexOf( parameter );
 }
 
-int delGPMParameterList::IndexOfNamed( const char *name ) const{
+int delEMParameterList::IndexOfNamed( const char *name ) const{
 	if( ! name ){
 		DETHROW_INFO( deeNullPointer, "name" );
 	}
@@ -95,7 +94,7 @@ int delGPMParameterList::IndexOfNamed( const char *name ) const{
 	int i;
 	
 	for( i=0; i<count; i++ ){
-		if( ( ( delGPMParameter* )pParameters.GetAt( i ) )->GetName() == name ){
+		if( ( ( delEMParameter* )pParameters.GetAt( i ) )->GetInfo().GetName().Equals( name ) ){
 			return i;
 		}
 	}
@@ -103,18 +102,18 @@ int delGPMParameterList::IndexOfNamed( const char *name ) const{
 	return -1;
 }
 
-void delGPMParameterList::Add( delGPMParameter *parameter ){
+void delEMParameterList::Add( delEMParameter *parameter ){
 	if( ! parameter ){
 		DETHROW_INFO( deeNullPointer, "parameter" );
 	}
-	if( HasNamed ( parameter->GetName() ) ){
-		DETHROW_INFO( deeInvalidParam, "parameter is present" );
+	if( HasNamed ( parameter->GetInfo().GetName() ) ){
+		DETHROW_INFO( deeInvalidParam, "named parameter is present" );
 	}
 	
 	pParameters.Add( parameter );
 }
 
-void delGPMParameterList::Remove( delGPMParameter *parameter ){
+void delEMParameterList::Remove( delEMParameter *parameter ){
 	const int index = IndexOf ( parameter );
 	if( index == -1 ){
 		DETHROW_INFO( deeInvalidParam, "parameter is absent" );
@@ -123,6 +122,6 @@ void delGPMParameterList::Remove( delGPMParameter *parameter ){
 	pParameters.RemoveFrom( index );
 }
 
-void delGPMParameterList::RemoveAll(){
+void delEMParameterList::RemoveAll(){
 	pParameters.RemoveAll();
 }
