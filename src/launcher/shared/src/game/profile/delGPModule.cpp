@@ -104,4 +104,6 @@ delGPModule &delGPModule::operator=( const delGPModule &module ){
 		pParameterList.Add ( delGPMParameter::Ref::With(
 			new delGPMParameter( *parameterList.GetAt ( i ) ) ) );
 	}
+	
+	return *this;
 }

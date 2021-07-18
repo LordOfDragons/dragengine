@@ -30,6 +30,11 @@ if envLibrary['OSWindows']:
 if envLibrary['OSMacOS']:
 	envLibrary.Append(LINKFLAGS = ['-install_name', '@rpath/libdelauncher.dylib'])
 
+envLibrary.Append(CXXFLAGS = [
+	cmdlineDefinePath(envLibrary, 'LAUNCHER_SHARE_PATH', pathShare),
+	cmdlineDefinePath(envLibrary, 'LAUNCHER_GAMES_PATH', pathGames),
+	cmdlineDefinePath(envLibrary, 'LAUNCHER_CONFIG_PATH', pathConfig)])
+
 sources = []
 headers = []
 globFiles(envLibrary, 'src', '*.cpp', sources)
