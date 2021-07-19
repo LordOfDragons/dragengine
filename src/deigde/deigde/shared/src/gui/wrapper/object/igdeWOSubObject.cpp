@@ -286,8 +286,10 @@ int igdeWOSubObject::GetIntProperty( const decString &name, int defaultValue ) c
 
 
 void igdeWOSubObject::pInitTrigger( igdeTriggerExpressionReference &trigger, const decString &propertyName ){
-	const igdeTriggerExpressionReference guard( trigger );
-	trigger = NULL;
+	if( trigger ){
+		trigger->UnlinkTriggerTargets();
+		trigger = NULL;
+	}
 	
 	decString value;
 	if( pWrapper.GetTriggerTable() && GetPropertyValue( propertyName, value ) && ! value.IsEmpty() ){
@@ -303,10 +305,6 @@ void igdeWOSubObject::pInitTrigger( igdeTriggerExpressionReference &trigger, con
 		if( trigger ){
 			trigger->LinkTriggerTargets( *pWrapper.GetTriggerTable(), pWrapper.GetTriggerListener() );
 		}
-	}
-	
-	if( guard ){
-		guard->UnlinkTriggerTargets();
 	}
 }
 
