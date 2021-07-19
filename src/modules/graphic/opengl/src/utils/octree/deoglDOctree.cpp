@@ -138,7 +138,7 @@ int deoglDOctree::FindOctantAtBox( const decDVector &minExtend, const decDVector
 }
 
 bool deoglDOctree::ContainsBox( const decDVector &minExtend, const decDVector &maxExtend ) const{
-	return maxExtend >= pMinExtend && minExtend <= pMaxExtend;
+	return minExtend >= pMinExtend && maxExtend <= pMaxExtend;
 }
 
 int deoglDOctree::FindOctantAtPoint( const decDVector &point ) const{
