@@ -609,19 +609,22 @@ void debpPhysicsBody::pCreateRigidBody(){
 		pRigidBody->setCollisionFlags( btCollisionObject::CF_STATIC_OBJECT
 			| btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK );
 		pRigidBody->forceActivationState( 0 ); // make sure the rigid body is in deactivated state
+		pRigidBody->setDeactivationTime( 0.1f );
 		
 	}else if( pResponseType == ertKinematic ){
 		pRigidBody->setCollisionFlags( btCollisionObject::CF_KINEMATIC_OBJECT
 			| btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK );
 		//pRigidBody->setActivationState( DISABLE_DEACTIVATION );
 		pRigidBody->forceActivationState( 0 ); // make sure the rigid body is in deactivated state
+		pRigidBody->setDeactivationTime( 0.1f );
 		
 	}else{
 		pRigidBody->setCollisionFlags( btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK );
 		pRigidBody->forceActivationState( ACTIVE_TAG );
+		pRigidBody->setDeactivationTime( 0.0f );
 	}
+	// NOTE actually forceActivationState helps nothing since addRigidBody() resets it
 	
-	pRigidBody->setDeactivationTime( 0.1f );
 	//pRigidBody->setCcdSquareMotionThreshold( pCcdThreshold );
 	//pRigidBody->setCcdSweptSphereRadius( pCcdRadius );
 	pRigidBody->setUserPointer( ( debpCollisionObject* )this );

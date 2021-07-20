@@ -148,6 +148,11 @@ public:
 	
 private:
 	void pApplyPendingOperations();
+	void pClearFromBroadphase();
+	void pRemoveCollisionObjects();
+	void pRemoveRigidBodies();
+	void pAddRigidBodies();
+	void pAddCollisionObjects();
 };
 
 #endif
