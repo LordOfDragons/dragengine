@@ -220,6 +220,14 @@ void deoglRComponent::SetParentWorld( deoglRWorld *parentWorld ){
 		pEnvMap->SetWorld( parentWorld );
 	}*/
 	
+	if( pParentWorld ){
+		// make sure we are unregistered from the old world. this is required since the
+		// calls above can potentially smuggle in an AddPrepareForRenderComponent() call
+		// along complicated ways. if this happens any further prepare for render is not
+		// possible anymore and the object vanishes and even throws exceptions
+		pParentWorld->RemovePrepareForRenderComponent( this );
+	}
+	
 	pParentWorld = parentWorld;
 	
 	pRemoveFromAllLights();
@@ -594,7 +602,7 @@ int element ){
 	}
 	
 	const decDVector &referencePosition = pParentWorld->GetReferencePosition();
-	decDMatrix matrix( GetMatrix() );
+	decDMatrix matrix( pMatrix );
 	matrix.a14 -= referencePosition.x;
 	matrix.a24 -= referencePosition.y;
 	matrix.a34 -= referencePosition.z;
