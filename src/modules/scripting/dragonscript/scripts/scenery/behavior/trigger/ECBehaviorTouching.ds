@@ -118,11 +118,15 @@ class ECBehaviorTouching extends DefaultECBehavior
 			end
 			
 			public func void elementEntered( ECBehaviorTouchSensor.Instance instance, Element element )
-				this.pInstance.startTouching()
+				if instance.getTouchingElementCount() == 1
+					this.pInstance.startTouching()
+				end
 			end
 			
 			public func void elementLeft( ECBehaviorTouchSensor.Instance instance, Element element )
-				this.pInstance.stopTouching()
+				if instance.getTouchingElementCount() == 0
+					this.pInstance.stopTouching()
+				end
 			end
 			
 			public func bool elementCanTouch( ECBehaviorTouchSensor.Instance instance, Element element )

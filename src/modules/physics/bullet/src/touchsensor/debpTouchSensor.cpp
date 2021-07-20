@@ -248,7 +248,7 @@ void debpTouchSensor::ApplyChanges(){
 	
 	// NOTE it is possible the user removes touch sensors during tracking changes. to avoid problems
 	//      touch sensors are keeping a fake reference while applying changes to not vanish underneath
-	deTouchSensorReference guard( &pTouchSensor );
+	const deTouchSensorReference guard( &pTouchSensor );
 	
 	// this function is only called if tracking enter-leave is enabled
 	if( pGhostObject->GetGhostObject() ){
