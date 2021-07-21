@@ -48,6 +48,7 @@ class ConversationCameraDirector extends CameraDirector
 	private var ConversationCoordSystem pLookAtCoordSystem
 	private var DMatrix pLockedCameraMatrix
 	private var DMatrix pLockedLookAtMatrix
+	private var bool pCameraShotChanged
 	
 	
 	
@@ -57,6 +58,7 @@ class ConversationCameraDirector extends CameraDirector
 		this.pDuration = 10
 		this.pLooping = false
 		this.pCoordSys = DMatrix.new()
+		this.pCameraShotChanged = false
 	end
 	
 	
@@ -73,6 +75,7 @@ class ConversationCameraDirector extends CameraDirector
 		this.pDuration = 10
 		this.pLockedCameraMatrix = null
 		this.pLockedLookAtMatrix = null
+		this.pCameraShotChanged = true
 	end
 	
 	/** \brief Elapsed time. */
@@ -196,6 +199,14 @@ class ConversationCameraDirector extends CameraDirector
 	/** \brief Set locked look-at target matrix or null if not yet set. */
 	public func void setLockedLookAtMatrix( DMatrix matrix )
 		this.pLockedLookAtMatrix = matrix
+	end
+	
+	/**
+	 * \brief Camera shot changed.
+	 * \version 1.6
+	 */
+	protected func bool getCameraShotChanged()
+		return this.pCameraShotChanged
 	end
 	
 	
@@ -438,7 +449,19 @@ class ConversationCameraDirector extends CameraDirector
 		camera.setViewDistance( 200.0 )
 	end
 	
-	/** \brief Update camera. */
+	/**
+	 * \brief Update camera.
+	 * 
+	 * Updates camera using super.updateCamera() or updateLinear() if a camera shot is set.
+	 * 
+	 * \par Version 1.6 and later
+	 * 
+	 * If camera shot changed calls resetAdaptedIntensity() on camera. This ensures camera
+	 * is fully adapted to the lighting conditions. This is required if the camera switches
+	 * between locations of drastically different lighting conditions.
+	 * 
+	 * If camera shot changed calls onCameraChanged().
+	 */
 	public func void updateCamera( float elapsed )
 		if this.pCameraShot == null
 			super.updateCamera( elapsed )
@@ -447,6 +470,21 @@ class ConversationCameraDirector extends CameraDirector
 			//this.updateConstant()
 			this.updateLinear()
 		end
+		
+		if this.pCameraShotChanged
+			this.pCameraShotChanged = false
+			this.getCamera().resetAdaptedIntensity()
+			this.onCameraChanged()
+		end
+	end
+	
+	/**
+	 * \brief Camera shot changed hook method.
+	 * \version 1.6
+	 * 
+	 * Called once by updateCamera() after camera shot changed.
+	 */
+	protected func void onCameraChanged()
 	end
 	
 	
