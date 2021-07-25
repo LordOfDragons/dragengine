@@ -255,12 +255,14 @@ pDebugImageUsed( false )
 	pDebugInfoDetails = edimModule;
 	*/
 	#endif
-// 	pEnabled = true;
-// 	pShowDebugInfo = true;
-// 	pDebugInfoLog = true;
+	/*
+	pEnabled = true;
+	pShowDebugInfo = true;
+	pDebugInfoLog = true;
 // 	pDebugInfoSync = true;
-// 	pDebugInfoDetails = edimPlanPrepare | edimWorld | edimSolidGeometry | edimTransparency | edimLight | edimLightSky | edimLightPoint | edimLightSpot | edimGI;
+	pDebugInfoDetails = edimPlanPrepare | edimWorld | edimSolidGeometry | edimTransparency | edimLight | edimLightSky | edimLightPoint | edimLightSpot | edimGI;
 // 	pDebugInfoDetails = edimPlanPrepare | edimWorld | edimLight | edimLightPoint;
+	*/
 }
 
 deoglDeveloperMode::~deoglDeveloperMode(){

@@ -31,6 +31,7 @@
 #include "../texture/arraytexture/deoglRenderableDepthArrayTextureManager.h"
 #include "../texture/cubemap/deoglRenderableColorCubeMapManager.h"
 #include "../texture/cubemap/deoglRenderableDepthCubeMapManager.h"
+#include "../texture/deoglImageStageManager.h"
 #include "../texture/deoglTextureStageManager.h"
 #include "../texture/texture1d/deoglRenderableTexture1DManager.h"
 #include "../texture/texture2d/deoglRenderableColorTextureManager.h"
@@ -48,6 +49,7 @@
 
 deoglRTTexture::deoglRTTexture( deoglRenderThread &renderThread ) :
 pTextureStageManager( NULL ),
+pImageStageManager( NULL ),
 pCombinedTextureList( NULL ),
 pRenColorTexMgr( NULL ),
 pRenDepthTexMgr( NULL ),
@@ -60,6 +62,7 @@ pOcclusionMapPool( NULL )
 {
 	try{
 		pTextureStageManager = new deoglTextureStageManager( renderThread );
+		pImageStageManager = new deoglImageStageManager( renderThread );
 		pCombinedTextureList = new deoglCombinedTextureList( renderThread );
 		
 		pRenColorTexMgr = new deoglRenderableColorTextureManager( renderThread );
@@ -124,5 +127,8 @@ void deoglRTTexture::pCleanUp(){
 	}
 	if( pTextureStageManager ){
 		delete pTextureStageManager;
+	}
+	if( pImageStageManager ){
+		delete pImageStageManager;
 	}
 }

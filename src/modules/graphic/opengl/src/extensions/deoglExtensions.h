@@ -381,6 +381,7 @@ private:
 	bool pHasCopyImage;
 	bool pSupportsGeometryShader;
 	bool pSupportsGSInstancing;
+	bool pSupportsComputeShader;
 	
 	
 	
@@ -447,6 +448,9 @@ public:
 	
 	/** \brief Geometry shader instancing is supported. */
 	inline bool SupportsGSInstancing() const{ return pSupportsGSInstancing; }
+	
+	/** \brief Compute shader is supported. */
+	inline bool SupportsComputeShader() const{ return pSupportsComputeShader; }
 	/*@}*/
 	
 private:
@@ -458,6 +462,7 @@ private:
 	void pFetchRequiredFunctions();
 	void pFetchOptionalFunctions();
 	void pFixBuggedFunctions();
+	void pOptionalDisableExtensions();
 	
 	void pGetRequiredFunction( void **funcPointer, const char *funcName );
 	void pGetRequiredFunction( void **funcPointer, const char *funcNameBase, const char *funcNameExtension );

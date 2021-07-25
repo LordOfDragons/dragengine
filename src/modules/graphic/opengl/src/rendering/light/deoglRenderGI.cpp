@@ -1322,6 +1322,7 @@ void deoglRenderGI::ResetDebugInfo(){
 	pDebugInfoGI->Clear();
 	pDebugInfoGITraceRays->Clear();
 	pDebugInfoGIRenderMaterials->Clear();
+	pDebugInfoGIClearProbes->Clear();
 	pDebugInfoGIUpdateProbes->Clear();
 	pDebugInfoGIMoveProbes->Clear();
 	pDebugInfoGIRenderLight->Clear();

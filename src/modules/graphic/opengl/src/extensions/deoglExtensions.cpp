@@ -197,7 +197,8 @@ pHasArrayCubeMap( false ),
 pHasSeamlessCubeMap( false ),
 pHasCopyImage( false ),
 pSupportsGeometryShader( false ),
-pSupportsGSInstancing( false )
+pSupportsGSInstancing( false ),
+pSupportsComputeShader( false )
 {
 	int i;
 	for( i=0; i<EXT_COUNT; i++ ){
@@ -223,6 +224,7 @@ void deoglExtensions::Initialize(){
 	if( ! pInitialized ){
 		pFetchRequiredFunctions();
 		pFetchOptionalFunctions();
+		pOptionalDisableExtensions();
 		pFixBuggedFunctions();
 		
 		pInitialized = true;
@@ -599,6 +601,11 @@ void deoglExtensions::pScanExtensions(){
 	pSupportsGSInstancing = pGLVersion >= evgl4p6
 		|| pGLESVersion >= evgles3p2
 		|| pHasExtension[ ext_ARB_gpu_shader5 ];
+	
+	// "core since" = "4.3". "core in" = "4.6"
+	pSupportsComputeShader = pGLVersion >= evgl4p6
+		|| pGLESVersion >= evgles3p2
+		|| pHasExtension[ ext_ARB_compute_shader ];
 	
 	#ifdef OS_ANDROID
 	/*
@@ -1092,6 +1099,13 @@ void deoglExtensions::pFetchOptionalFunctions(){
 	// OpenGL 3.2 : no extension
 	if( pGLVersion >= evgl3p2 || pGLESVersion >= evgles3p0 ){
 		pGetRequiredFunction( (void**)&pglGetInteger64v, "glGetInteger64v" );
+	}
+}
+
+void deoglExtensions::pOptionalDisableExtensions(){
+	// ext_ARB_compute_shader without ext_ARB_shader_image_load_store is useless
+	if( ! pglBindImageTexture ){
+		DisableExtension( ext_ARB_compute_shader );
 	}
 }
 

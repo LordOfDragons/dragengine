@@ -35,6 +35,7 @@ class deoglRenderableDepthCubeMapManager;
 class deoglRenderableDepthArrayTextureManager;
 class deoglRenderableDepthTextureManager;
 class deoglTextureStageManager;
+class deoglImageStageManager;
 class deoglOcclusionMapPool;
 
 
@@ -45,6 +46,7 @@ class deoglOcclusionMapPool;
 class deoglRTTexture{
 private:
 	deoglTextureStageManager *pTextureStageManager;
+	deoglImageStageManager *pImageStageManager;
 	deoglCombinedTextureList *pCombinedTextureList;
 	
 	deoglRenderableColorTextureManager *pRenColorTexMgr;
@@ -72,6 +74,9 @@ public:
 	/*@{*/
 	/** Texture stage manager. */
 	inline deoglTextureStageManager &GetStages() const{ return *pTextureStageManager; }
+	
+	/** Image stage manager. */
+	inline deoglImageStageManager &GetImageStages() const{ return *pImageStageManager; }
 	
 	/** Combined texture list. */
 	inline deoglCombinedTextureList &GetCombinedTexture() const{ return *pCombinedTextureList; }
