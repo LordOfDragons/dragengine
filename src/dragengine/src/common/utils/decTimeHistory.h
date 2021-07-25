@@ -1,7 +1,7 @@
 /* 
- * Drag[en]gine OpenGL Graphic Module
+ * Drag[en]gine Game Engine
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * Copyright (C) 2021, Roland Plüss (roland@rptd.ch)
  * 
  * This program is free software; you can redistribute it and/or 
  * modify it under the terms of the GNU General Public License 
@@ -19,19 +19,20 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef _DEOGLTIMEHISTORY_H_
-#define _DEOGLTIMEHISTORY_H_
+#ifndef _DECTIMEHISTORY_H_
+#define _DECTIMEHISTORY_H_
 
-#include <dragengine/common/string/decString.h>
+#include "../string/decString.h"
 
 
 /**
  * \brief History of elapsed times for timing handling.
+ * \version 1.6
  * 
- * Stores a list of N time entries using two rotating pointers. Also
- * supports calculating the minimum, maximum and average time.
+ * Stores a list of N time entries using two rotating pointers. Also supports calculating
+ * the minimum, maximum and average time.
  */
-class deoglTimeHistory{
+class decTimeHistory{
 private:
 	float *pEntries;
 	float *pSorted;
@@ -53,10 +54,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create history with initial size. */
-	deoglTimeHistory( int initialSize, int cutExtremeValues );
+	decTimeHistory( int initialSize, int cutExtremeValues );
 	
 	/** \brief Clean up history. */
-	~deoglTimeHistory();
+	~decTimeHistory();
 	/*@}*/
 	
 	

@@ -143,8 +143,8 @@ void deoalDebugInfo::StoreTimeAudioThread(){
 	pDebugTimeAudioThread.Add( pDebugTimerAudioThread1.GetElapsedTime() );
 }
 
-void deoalDebugInfo::StoreTimeFrameLimiter( const deoalTimeHistory &main,
-const deoalTimeHistory &audio, const deoalTimeHistory &audioEstimated ){
+void deoalDebugInfo::StoreTimeFrameLimiter( const decTimeHistory &main,
+const decTimeHistory &audio, const decTimeHistory &audioEstimated ){
 	if( ! pDIModule ){
 		return;
 	}

@@ -26,13 +26,13 @@
 #include "../deoglBasics.h"
 #include "../configuration/deoglConfiguration.h"
 #include "../memory/deoglMemoryManager.h"
-#include "../utils/deoglTimeHistory.h"
 
 #include <deSharedVulkan.h>
 #include <devkDevice.h>
 
 #include <dragengine/common/collection/decObjectOrderedSet.h>
 #include <dragengine/common/utils/decTimer.h>
+#include <dragengine/common/utils/decTimeHistory.h>
 #include <dragengine/threading/deMutex.h>
 #include <dragengine/threading/deBarrier.h>
 #include <dragengine/threading/deThread.h>
@@ -140,8 +140,8 @@ private:
 	deSharedVulkan::Ref pVulkan;
 	devkDevice::Ref pVulkanDevice;
 	
-	deoglTimeHistory pTimeHistoryMain;
-	deoglTimeHistory pTimeHistoryRender;
+	decTimeHistory pTimeHistoryMain;
+	decTimeHistory pTimeHistoryRender;
 	decTimer pTimerMain;
 	decTimer pTimerRender;
 	decTimer pTimerFrameUpdate;
@@ -343,12 +343,12 @@ public:
 	
 	
 	/** Main thread time history. */
-	inline deoglTimeHistory &GetTimeHistoryMain(){ return pTimeHistoryMain; }
-	inline const deoglTimeHistory &GetTimeHistoryMain() const{ return pTimeHistoryMain; }
+	inline decTimeHistory &GetTimeHistoryMain(){ return pTimeHistoryMain; }
+	inline const decTimeHistory &GetTimeHistoryMain() const{ return pTimeHistoryMain; }
 	
 	/** Render thread time history. */
-	inline deoglTimeHistory &GetTimeHistoryRender(){ return pTimeHistoryRender; }
-	inline const deoglTimeHistory &GetTimeHistoryRender() const{ return pTimeHistoryRender; }
+	inline decTimeHistory &GetTimeHistoryRender(){ return pTimeHistoryRender; }
+	inline const decTimeHistory &GetTimeHistoryRender() const{ return pTimeHistoryRender; }
 	
 	
 	

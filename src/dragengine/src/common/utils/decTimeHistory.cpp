@@ -1,7 +1,7 @@
 /* 
- * Drag[en]gine OpenGL Graphic Module
+ * Drag[en]gine Game Engine
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * Copyright (C) 2021, Roland Plüss (roland@rptd.ch)
  * 
  * This program is free software; you can redistribute it and/or 
  * modify it under the terms of the GNU General Public License 
@@ -23,20 +23,19 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include "deoglTimeHistory.h"
-
-#include <dragengine/common/exceptions.h>
-#include <dragengine/logger/deLogger.h>
-
+#include "decTimeHistory.h"
+#include "../exceptions.h"
+#include "../../logger/deLogger.h"
 
 
-// Class deoglTimeHistory
-///////////////////////////
+
+// Class decTimeHistory
+/////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
 
-deoglTimeHistory::deoglTimeHistory( int initialSize, int cutExtremeValues ) :
+decTimeHistory::decTimeHistory( int initialSize, int cutExtremeValues ) :
 pEntries( NULL ),
 pSorted( NULL ),
 pSize( 0 ),
@@ -53,7 +52,7 @@ pAverage( 0.0f )
 	SetCutExtremeValues( cutExtremeValues );
 }
 
-deoglTimeHistory::~deoglTimeHistory(){
+decTimeHistory::~decTimeHistory(){
 	if( pSorted ){
 		delete [] pSorted;
 	}
@@ -67,13 +66,13 @@ deoglTimeHistory::~deoglTimeHistory(){
 // Management
 ///////////////
 
-void deoglTimeHistory::SetSize( int size ){
+void decTimeHistory::SetSize( int size ){
 	if( size == pSize ){
 		return;
 	}
 	
 	if( size < 1 ){
-		DETHROW( deeInvalidParam );
+		DETHROW_INFO( deeInvalidParam, "size < 1" );
 	}
 	
 	pHead = 0;
@@ -95,14 +94,18 @@ void deoglTimeHistory::SetSize( int size ){
 	pSize = size;
 }
 
-float deoglTimeHistory::GetAt( int position ) const{
-	if( position < 0 || position >= pCount ){
-		DETHROW( deeInvalidParam );
+float decTimeHistory::GetAt( int position ) const{
+	if( position < 0 ){
+		DETHROW_INFO( deeInvalidParam, "position < 0" );
 	}
+	if( position >= pCount ){
+		DETHROW_INFO( deeInvalidParam, "position >= count" );
+	}
+	
 	return pEntries[ ( pHead + position ) % pSize ];
 }
 
-void deoglTimeHistory::Add( float time ){
+void decTimeHistory::Add( float time ){
 	pEntries[ pTail ] = time;
 	
 	pTail++;
@@ -120,7 +123,7 @@ void deoglTimeHistory::Add( float time ){
 	pCalculateMetrics();
 }
 
-void deoglTimeHistory::Clear(){
+void decTimeHistory::Clear(){
 	pHead = 0;
 	pTail = 0;
 	pCount = 0;
@@ -130,12 +133,12 @@ void deoglTimeHistory::Clear(){
 
 
 
-void deoglTimeHistory::SetCutExtremeValues( int cutExtremeValues ){
+void decTimeHistory::SetCutExtremeValues( int cutExtremeValues ){
 	if( cutExtremeValues == pCutExtremeValues ){
 		return;
 	}
 	if( cutExtremeValues < 0 ){
-		DETHROW( deeInvalidParam );
+		DETHROW_INFO( deeInvalidParam, "cutExtremeValues < 0" );
 	}
 	
 	pCutExtremeValues = cutExtremeValues;
@@ -144,7 +147,7 @@ void deoglTimeHistory::SetCutExtremeValues( int cutExtremeValues ){
 
 
 
-decString deoglTimeHistory::DebugPrint() const{
+decString decTimeHistory::DebugPrint() const{
 	if( pCount <= pCutExtremeValues * 2 ){
 		return decString( "no metrics" );
 	}
@@ -180,8 +183,10 @@ decString deoglTimeHistory::DebugPrint() const{
 	const int intTimeMin = ( int )( pMinimum * 1e4f );
 	const int intTimeMax = ( int )( pMaximum * 1e4f );
 	const int intTimeAvg = ( int )( pAverage * 1e4f );
-	buffer.AppendFormat( "] min=%2d.%1d max=%2d.%1d avg=%2d.%1d", intTimeMin / 10, intTimeMin % 10,
-		intTimeMax / 10, intTimeMax % 10, intTimeAvg / 10, intTimeAvg % 10);
+	buffer.AppendFormat( "] min=%2d.%1d max=%2d.%1d avg=%2d.%1d",
+		intTimeMin / 10, intTimeMin % 10,
+		intTimeMax / 10, intTimeMax % 10,
+		intTimeAvg / 10, intTimeAvg % 10);
 	return buffer;
 }
 
@@ -190,7 +195,7 @@ decString deoglTimeHistory::DebugPrint() const{
 // Private Functions
 //////////////////////
 
-void deoglTimeHistory::pCalculateMetrics(){
+void decTimeHistory::pCalculateMetrics(){
 	if( pCount == 0 ){
 		// no entries
 		pHasMetrics = false;
