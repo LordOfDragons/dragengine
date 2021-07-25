@@ -30,3 +30,12 @@ deBaseModule( loadableModule ){
 
 deBasePhysicsModule::~deBasePhysicsModule(){
 }
+
+
+
+// Management
+///////////////
+
+int deBasePhysicsModule::GetFPSRate(){
+	return 0;
+}

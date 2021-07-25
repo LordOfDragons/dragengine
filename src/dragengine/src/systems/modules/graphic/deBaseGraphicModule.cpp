@@ -36,3 +36,12 @@ deBaseModule( loadableModule ){
 
 deBaseGraphicModule::~deBaseGraphicModule(){
 }
+
+
+
+// Management
+///////////////
+
+int deBaseGraphicModule::GetFPSRate(){
+	return 0;
+}

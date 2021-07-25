@@ -33,3 +33,12 @@ deBaseModule( loadableModule ){
 
 deBaseAudioModule::~deBaseAudioModule(){
 }
+
+
+
+// Management
+///////////////
+
+int deBaseAudioModule::GetFPSRate(){
+	return 0;
+}

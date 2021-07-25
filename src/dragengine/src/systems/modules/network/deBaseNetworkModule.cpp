@@ -30,3 +30,12 @@ deBaseModule( loadableModule ){
 
 deBaseNetworkModule::~deBaseNetworkModule(){
 }
+
+
+
+// Management
+///////////////
+
+int deBaseNetworkModule::GetFPSRate(){
+	return 0;
+}
