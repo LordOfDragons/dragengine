@@ -232,14 +232,14 @@ class FormLayout implements Layout
 		
 		if this.pStretchRightColumn
 			cxNonStretch = container.getPadding().getLeft()
-			cxStretch = cxNonStretch + this.pGapColumns + columnNonStretchWidth
-			columnStretchWidth = newSizeX - cxStretch
+			cxStretch = cxNonStretch + columnNonStretchWidth + this.pGapColumns
+			columnStretchWidth = cxNonStretch + newSizeX - cxStretch
 			refSizeLeft = columnNonStretchWidth
 			refSizeRight = columnStretchWidth
 			
 		else
 			cxStretch = container.getPadding().getLeft()
-			cxNonStretch = newSizeX - columnNonStretchWidth
+			cxNonStretch = cxStretch + newSizeX - columnNonStretchWidth
 			columnStretchWidth = cxNonStretch - this.pGapColumns - cxStretch
 			refSizeLeft = columnStretchWidth
 			refSizeRight = columnNonStretchWidth
@@ -288,7 +288,7 @@ class FormLayout implements Layout
 				continue
 			end
 			
-			// sotre row right widget parameters
+			// store row right widget parameters
 			rightWidget = child
 			rightSettings = this.pWidgetSettings.getAt( rightWidget, null ) cast LayoutSettings
 			rightChildSize = rightWidget.getMinimumSizeForWidth( refSizeRight )
@@ -439,7 +439,7 @@ class FormLayout implements Layout
 	protected func int getNoStretchColumnWidth( Container container, int width )
 		var int count = container.getWidgetCount()
 		var bool side = this.pStretchRightColumn
-		var int minWidth = 1
+		var int minWidth = 0
 		var Widget child
 		var int i
 		
