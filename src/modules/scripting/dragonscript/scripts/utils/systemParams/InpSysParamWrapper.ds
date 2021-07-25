@@ -62,4 +62,14 @@ class InpSysParamWrapper implements SysParamWrapper
 	public func String sendCommand( String command )
 		return InputSystem.sendCommand( command )
 	end
+	
+	/**
+	 * \brief Frame-per-second rate averaged over the last couple of frames.
+	 * \version 1.6
+	 * 
+	 * Returns 0 if module is not using a separate thread.
+	 */
+	public func int getFPSRate()
+		return 0
+	end
 end

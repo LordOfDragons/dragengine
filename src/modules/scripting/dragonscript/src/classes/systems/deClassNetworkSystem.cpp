@@ -141,6 +141,16 @@ void deClassNetworkSystem::nfSendCommand::RunFunction( dsRunTime *rt, dsValue *m
 	rt->PushString( answer.ToUTF8() );
 }
 
+// public static func int getFPSRate()
+deClassNetworkSystem::nfGetFPSRate::nfGetFPSRate( const sInitData &init ) :
+dsFunction( init.clsNetSys, "getFPSRate", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsInteger ){
+}
+void deClassNetworkSystem::nfGetFPSRate::RunFunction( dsRunTime *rt, dsValue* ){
+	const deScriptingDragonScript &ds = ( ( deClassNetworkSystem* )GetOwnerClass() )->GetDS();
+	rt->PushInt( ds.GetGameEngine()->GetNetworkSystem()->GetActiveModule()->GetFPSRate() );
+}
+
 
 
 // Class deClassNetworkSystem
@@ -187,4 +197,5 @@ void deClassNetworkSystem::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfSetParameterValue( init ) );
 	
 	AddFunction( new nfSendCommand( init ) );
+	AddFunction( new nfGetFPSRate( init ) );
 }

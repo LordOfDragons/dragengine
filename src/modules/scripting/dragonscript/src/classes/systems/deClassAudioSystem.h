@@ -87,6 +87,7 @@ private:
 	DEF_NATFUNC( nfGetParameterValue );
 	DEF_NATFUNC( nfSetParameterValue );
 	DEF_NATFUNC( nfSendCommand );
+	DEF_NATFUNC( nfGetFPSRate );
 #undef DEF_NATFUNC
 };
 

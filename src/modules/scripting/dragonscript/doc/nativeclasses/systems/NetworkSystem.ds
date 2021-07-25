@@ -56,5 +56,15 @@ fixed class NetworkSystem
 	public static func String sendCommand( String command )
 		return null
 	end
+	
+	/**
+	 * \brief Frame-per-second rate averaged over the last couple of frames.
+	 * \version 1.6
+	 * 
+	 * Returns 0 if module is not using a separate thread.
+	 */
+	public static func int getFPSRate()
+		return 0
+	end
 	/*@}*/
 end
