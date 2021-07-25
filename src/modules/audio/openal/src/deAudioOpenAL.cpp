@@ -261,6 +261,10 @@ void deAudioOpenAL::SetActiveMicrophone( deMicrophone *microphone ){
 	}
 }
 
+int deAudioOpenAL::GetFPSRate(){
+	return pAudioThread->GetFPSRate();
+}
+
 
 
 // Audio Management

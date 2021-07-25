@@ -352,6 +352,10 @@ void deGraphicOpenGl::RenderWindows(){
 #endif
 }
 
+int deGraphicOpenGl::GetFPSRate(){
+	return pRenderThread->GetFPSRate();
+}
+
 
 
 deBaseGraphicBillboard *deGraphicOpenGl::CreateBillboard( deBillboard *billboard ){

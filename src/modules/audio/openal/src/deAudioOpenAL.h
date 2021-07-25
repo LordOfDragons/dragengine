@@ -108,6 +108,14 @@ public:
 	 */
 	virtual void SetActiveMicrophone( deMicrophone *microphone );
 	
+	/**
+	 * \brief Frame-per-second rate averaged over the last couple of frames.
+	 * \version 1.6
+	 * 
+	 * Returns 0 if module is not using a separate thread.
+	 */
+	virtual int GetFPSRate();
+	
 	
 	
 	/** \brief Configuration. */

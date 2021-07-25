@@ -110,6 +110,14 @@ public:
 	 * best performance. For this reason run RenderWindows in regular intervals.
 	 */
 	virtual void RenderWindows();
+	
+	/**
+	 * \brief Frame-per-second rate averaged over the last couple of frames.
+	 * \version 1.6
+	 * 
+	 * Returns 0 if module is not using a separate thread.
+	 */
+	virtual int GetFPSRate();
 	/*@}*/
 	
 	

@@ -114,11 +114,13 @@ private:
 	decTimeHistory pTimeHistoryMain;
 	decTimeHistory pTimeHistoryAudio;
 	decTimeHistory pTimeHistoryAudioEstimated;
+	decTimeHistory pTimeHistoryUpdate;
 	decTimer pTimerMain;
 	decTimer pTimerAudio;
 	float pEstimatedAudioTime;
 	float pAccumulatedMainTime;
 	float pFrameTimeLimit;
+	int pFPSRate;
 	bool pReadyToWait;
 	
 	// thread control
@@ -294,6 +296,9 @@ public:
 	
 	/** \brief Elapsed time. */
 	inline float GetElapsed() const{ return pElapsed; }
+	
+	/** \brief FPS Rate. */
+	inline int GetFPSRate() const{ return pFPSRate; }
 	
 	
 	

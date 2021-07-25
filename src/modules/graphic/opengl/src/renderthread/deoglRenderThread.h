@@ -142,12 +142,14 @@ private:
 	
 	decTimeHistory pTimeHistoryMain;
 	decTimeHistory pTimeHistoryRender;
+	decTimeHistory pTimeHistoryFrame;
 	decTimer pTimerMain;
 	decTimer pTimerRender;
 	decTimer pTimerFrameUpdate;
 	float pEstimatedRenderTime;
 	float pAccumulatedMainTime;
 	float pFrameTimeLimit;
+	int pFPSRate;
 	
 	// debug information
 	deoglDebugInformation *pDebugInfoModule;
@@ -418,6 +420,9 @@ public:
 	
 	/** Create a render window thread safe. */
 	void CreateRenderWindow( deoglRRenderWindow *window );
+	
+	/** FPS Rate. */
+	inline int GetFPSRate() const{ return pFPSRate; }
 	/*@}*/
 	
 	

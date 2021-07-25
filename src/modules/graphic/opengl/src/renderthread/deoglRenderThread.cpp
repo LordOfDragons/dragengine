@@ -126,6 +126,7 @@ pOcclusionTestPool( NULL ),
 
 pTimeHistoryMain( 29, 2 ),
 pTimeHistoryRender( 29, 2 ),
+pTimeHistoryFrame( 29, 2 ),
 pEstimatedRenderTime( 0.0f ),
 pAccumulatedMainTime( 0.0f ),
 pFrameTimeLimit( 1.0f / 30.0f ),
@@ -547,9 +548,10 @@ void deoglRenderThread::Run(){
 				DEBUG_SYNC_RT_FAILURE
 			}
 			
-			pTimerFrameUpdate.GetElapsedTime();
-			/*
 			const float elapsedFrameUpdate = pTimerFrameUpdate.GetElapsedTime();
+			pTimeHistoryFrame.Add( elapsedFrameUpdate );
+			
+			/*
 			pLogger->LogInfoFormat( "RenderThread render=%.1fms frameUpdate=%.1fms fps=%.1f",
 				elapsedRender * 1000.0f, elapsedFrameUpdate * 1000.0f,
 				1.0f / decMath::max( elapsedFrameUpdate, 0.001f ) );
@@ -651,6 +653,11 @@ void deoglRenderThread::Synchronize(){
 	}
 	
 	pMainThreadShowDebugInfoModule = pDebugInfoModule->GetVisible();
+	
+	pFPSRate = 0;
+	if( pTimeHistoryFrame.HasMetrics() ){
+		pFPSRate = ( int )( 1.0f / pTimeHistoryFrame.GetAverage() );
+	}
 	
 	if( pAsyncRendering ){
 		// begin rendering next frame unless thread is not active
