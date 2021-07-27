@@ -19,54 +19,35 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef _DESHAREDVULKAN_H_
-#define _DESHAREDVULKAN_H_
+#ifndef _DEVKDEBUG_H_
+#define _DEVKDEBUG_H_
 
 #include "devkBasics.h"
-#include "devkInstance.h"
 
-#include <dragengine/deObject.h>
-#include <dragengine/common/file/decPath.h>
-
-class deBaseModule;
-class devkLoader;
+class devkInstance;
 
 
 /**
- * Shared Vulkan.
+ * Vulkan debug support.
  */
-class deSharedVulkan : public deObject{
-public:
-	/** Reference. */
-	typedef deTObjectReference<deSharedVulkan> Ref;
-	
-	
-	
+class devkDebug{
 private:
-	deBaseModule &pModule;
-	devkLoader *pLoader;
+	devkInstance &pInstance;
 	
-	devkInstance::Ref pInstance;
+	bool pEnabled;
 	
-	decPath pCachePath;
+	VkDebugReportCallbackEXT pReportCallback;
 	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/**
-	 * Create shared vulkan. If loading the vulkan library fails an exception is thrown.
-	 */
-	#ifdef WITH_DEBUG
-	deSharedVulkan( deBaseModule &module, bool enableDebug = true );
-	#else
-	deSharedVulkan( deBaseModule &module, bool enableDebug = false );
-	#endif
+	/** Create debug. */
+	devkDebug( devkInstance &instance );
 	
-protected:
-	/** Clean up shared vulkan. */
-	virtual ~deSharedVulkan();
+	/** Clean up debug. */
+	~devkDebug();
 	/*@}*/
 	
 	
@@ -74,23 +55,27 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** Owner module. */
-	inline deBaseModule &GetModule() const{ return pModule; }
-	
 	/** Instance. */
 	inline devkInstance &GetInstance() const{ return pInstance; }
 	
-	/** Cache path. */
-	inline const decPath &GetCachePath() const{ return pCachePath; }
+	/** Debug mode is enabled. */
+	inline bool GetEnabled() const{ return pEnabled; }
 	
-	/** Set cache path. */
-	void SetCachePath( const decPath &path );
-	/*@}*/
+	/** Enable or disable debug mode. */
+	void SetEnabled( bool enabled );
 	
 	
 	
 private:
-	void pCleanUp();
+	void pRegisterReportCallback();
+	void pUnregisterReportCallback();
+	
+	void DebugMessage( const char* layerPrefix, const char* message );
+	
+	static VKAPI_ATTR VkBool32 VKAPI_CALL DebugMessageCallback(
+		VkDebugReportFlagsEXT flags, VkDebugReportObjectTypeEXT objectType,
+		uint64_t object, size_t location, int32_t messageCode,
+		const char* pLayerPrefix, const char* pMessage, void* pUserData );
 };
 
 #endif

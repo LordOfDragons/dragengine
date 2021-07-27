@@ -32,6 +32,10 @@ INSTANCE_LEVEL_VULKAN_FUNCTION( vkGetPhysicalDeviceProperties )
 INSTANCE_LEVEL_VULKAN_FUNCTION( vkCreateDevice )
 INSTANCE_LEVEL_VULKAN_FUNCTION( vkGetPhysicalDeviceQueueFamilyProperties )
 INSTANCE_LEVEL_VULKAN_FUNCTION( vkGetPhysicalDeviceMemoryProperties )
+INSTANCE_LEVEL_VULKAN_FUNCTION( vkEnumerateDeviceExtensionProperties )
+
+INSTANCE_LEVEL_VULKAN_FUNCTION_FROM_EXTENSION( vkCreateDebugReportCallbackEXT, extEXTDebugReport )
+INSTANCE_LEVEL_VULKAN_FUNCTION_FROM_EXTENSION( vkDestroyDebugReportCallbackEXT, extEXTDebugReport )
 
 DEVICE_LEVEL_VULKAN_FUNCTION( vkDestroyDevice )
 

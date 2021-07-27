@@ -35,14 +35,14 @@
 // Class deSharedVulkan
 /////////////////////////
 
-deSharedVulkan::deSharedVulkan( deBaseModule &module ) :
+deSharedVulkan::deSharedVulkan( deBaseModule &module, bool enableDebug ) :
 pModule( module ),
 pLoader( NULL ),
 pCachePath( decPath::CreatePathUnix( "/cache/local/vulkan" ) )
 {
 	try{
 		pLoader = new devkLoader( *this );
-		pInstance.TakeOver( new devkInstance( *this ) );
+		pInstance.TakeOver( new devkInstance( *this, enableDebug ) );
 		
 	}catch( const deException & ){
 		pCleanUp();

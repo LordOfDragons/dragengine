@@ -33,20 +33,52 @@
 // class devkInstance
 ///////////////////////
 
-devkInstance::devkInstance( deSharedVulkan &vulkan ) :
+devkInstance::devkInstance( deSharedVulkan &vulkan, bool enableDebug ) :
 pVulkan( vulkan ),
+pDebug( *this ),
 pInstance( nullptr ),
 pPhysicalDevices( nullptr ),
 pPhysicalDeviceCount( 0 )
 {
+	memset( &pSupportsExtension, 0, sizeof( pSupportsExtension ) );
+	pSupportsExtension[ extKHRSurface ].name = VK_KHR_SURFACE_EXTENSION_NAME;
+	pSupportsExtension[ extKHRDisplay ].name = VK_KHR_DISPLAY_EXTENSION_NAME;
+	pSupportsExtension[ extKHRGetDisplayProperties2 ].name = VK_KHR_GET_DISPLAY_PROPERTIES_2_EXTENSION_NAME;
+	pSupportsExtension[ extKHRGetPhysicalDeviceProperties2 ].name = VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME;
+	pSupportsExtension[ extKHRGetSurfaceCapabilities2 ].name = VK_KHR_GET_SURFACE_CAPABILITIES_2_EXTENSION_NAME;
+	pSupportsExtension[ extKHRXcbSurface ].name = "VK_KHR_xcb_surface";
+	pSupportsExtension[ extKHRXlibSurface ].name = "VK_KHR_xlib_surface";
+	pSupportsExtension[ extKHRExternalFenceCapabilities ].name = VK_KHR_EXTERNAL_FENCE_CAPABILITIES_EXTENSION_NAME;
+	pSupportsExtension[ extKHRExternalMemoryCapabilities ].name = VK_KHR_EXTERNAL_MEMORY_CAPABILITIES_EXTENSION_NAME;
+	pSupportsExtension[ extKHRExternalSemaphoreCapabilities ].name = VK_KHR_EXTERNAL_SEMAPHORE_CAPABILITIES_EXTENSION_NAME;
+	pSupportsExtension[ extEXTDebugReport ].name = VK_EXT_DEBUG_REPORT_EXTENSION_NAME;
+	pSupportsExtension[ extEXTDebugUtils ].name = VK_EXT_DEBUG_UTILS_EXTENSION_NAME;
+	
+	memset( &pSupportsLayer, 0, sizeof( pSupportsLayer ) );
+	pSupportsLayer[ layerKhronosValidation ].name = "VK_LAYER_KHRONOS_validation";
+	pSupportsLayer[ layerLunargStandardValidation ].name = "VK_LAYER_LUNARG_standard_validation";
+	pSupportsLayer[ layerRenderdocCapture ].name = "VK_LAYER_RENDERDOC_Capture";
+	pSupportsLayer[ layerValveSteamOverlay64 ].name = "VK_LAYER_VALVE_steam_overlay_64";
+	pSupportsLayer[ layerValveSteamOverlay32 ].name = "VK_LAYER_VALVE_steam_overlay_32";
+	
 	#define INSTANCE_LEVEL_VULKAN_FUNCTION( name ) name = nullptr;
 	#define INSTANCE_LEVEL_VULKAN_FUNCTION_FROM_EXTENSION( name, extension ) name = nullptr;
 	
 	#include "devkFunctionNames.h"
 	
 	try{
-		pCreateInstance();
+		#ifdef WITH_DEBUG
+			pCreateInstance( enableDebug );
+		#else
+			pCreateInstance( false );
+		#endif
+		
 		pLoadFunctions();
+		
+		#ifdef WITH_DEBUG
+			pDebug.SetEnabled( enableDebug );
+		#endif
+		
 		pFindDevices();
 		
 	}catch( const deException & ){
@@ -63,6 +95,22 @@ devkInstance::~devkInstance(){
 
 // Management
 ///////////////
+
+bool devkInstance::SupportsExtension( eExtension extension ) const{
+	return pSupportsExtension[ extension ].version != 0;
+}
+
+uint32_t devkInstance::ExtensionVersion( eExtension extension ) const{
+	return pSupportsExtension[ extension ].version;
+}
+
+bool devkInstance::SupportsLayer( eLayer layer ) const{
+	return pSupportsLayer[ layer ].implementationVersion != 0;
+}
+
+uint32_t devkInstance::LayerVersion( eLayer layer ) const{
+	return pSupportsLayer[ layer ].implementationVersion;
+}
 
 VkPhysicalDevice devkInstance::GetPhysicalDeviceAt( int index ) const{
 	if( index < 0 || index >= pPhysicalDeviceCount ){
@@ -91,39 +139,137 @@ void devkInstance::pCleanUp(){
 	if( pPhysicalDevices ){
 		delete [] pPhysicalDevices;
 	}
+	
+	pDebug.SetEnabled( false );
+	
 	if( pInstance ){
-		// DEBUG
-		if( debugReportCallback ){
-			PFN_vkDestroyDebugReportCallbackEXT vkDestroyDebugReportCallback =
-				( PFN_vkDestroyDebugReportCallbackEXT )vkGetInstanceProcAddr( pInstance, "vkDestroyDebugReportCallbackEXT" );
-			if( vkDestroyDebugReportCallback ){
-				vkDestroyDebugReportCallback( pInstance, debugReportCallback, nullptr );
-			}
-		}
-		// DEBUG
-		
 		vkDestroyInstance( pInstance, nullptr );
 	}
 }
 
-#ifdef WITH_DEBUG
-static VKAPI_ATTR VkBool32 VKAPI_CALL debugMessageCallback(
-	VkDebugReportFlagsEXT flags,
-	VkDebugReportObjectTypeEXT objectType,
-	uint64_t object,
-	size_t location,
-	int32_t messageCode,
-	const char* pLayerPrefix,
-	const char* pMessage,
-	void* pUserData)
-{
-	devkInstance * const instance = ( devkInstance* )pUserData;
-	instance->GetVulkan().GetModule().LogInfoFormat( "VALIDATION: %s - %s", pLayerPrefix, pMessage );
-	return VK_FALSE;
+void devkInstance::pDetectExtensions(){
+	uint32_t count = 0;
+	VK_CHECK( pVulkan, vkEnumerateInstanceExtensionProperties( nullptr, &count, nullptr ) );
+	if( count == 0 ){
+		return;
+	}
+	
+	VkExtensionProperties * const extensions = new VkExtensionProperties[ count ];
+	try{
+		VK_CHECK( pVulkan, vkEnumerateInstanceExtensionProperties( nullptr, &count, extensions ) );
+		
+		// report all extensions for debug purpose
+		deBaseModule &baseModule = pVulkan.GetModule();
+		uint32_t i;
+		
+		baseModule.LogInfo( "Extensions:" );
+		for( i=0; i<count; i++ ){
+			baseModule.LogInfoFormat( "- %s: %d", extensions[ i ].extensionName, extensions[ i ].specVersion );
+		}
+		
+		// store supported extensions
+		int j;
+		for( i=0; i<count; i++ ){
+			for( j=0; j<ExtensionCount; j++ ){
+				if( strcmp( pSupportsExtension[ j ].name, extensions[ i ].extensionName ) == 0 ){
+					pSupportsExtension[ j ].version = extensions[ i ].specVersion;
+					break;
+				}
+			}
+		}
+		
+		// report support extensions
+		baseModule.LogInfo( "Supported Extensions:" );
+		for( i=0; i<ExtensionCount; i++ ){
+			if( pSupportsExtension[ i ].version ){
+				baseModule.LogInfoFormat( "- %s: %d", pSupportsExtension[ i ].name,
+					pSupportsExtension[ i ].version );
+			}
+		}
+		
+		// report support extensions
+		baseModule.LogInfo( "Not upported Extensions:" );
+		for( i=0; i<ExtensionCount; i++ ){
+			if( ! pSupportsExtension[ i ].version ){
+				baseModule.LogInfoFormat( "- %s", pSupportsExtension[ i ].name );
+			}
+		}
+		
+		delete [] extensions;
+		
+	}catch( const deException & ){
+		delete [] extensions;
+		throw;
+	}
 }
-#endif
 
-void devkInstance::pCreateInstance(){
+void devkInstance::pDetectLayers(){
+	uint32_t count = 0;
+	VK_CHECK( pVulkan, vkEnumerateInstanceLayerProperties( &count, nullptr ) );
+	if( count == 0 ){
+		return;
+	}
+	
+	VkLayerProperties *layers = nullptr;
+	try{
+		layers = new VkLayerProperties[ count ];
+		VK_CHECK( pVulkan, vkEnumerateInstanceLayerProperties( &count, layers ) );
+		
+		// report all layers for debug purpose
+		deBaseModule &baseModule = pVulkan.GetModule();
+		uint32_t i;
+		
+		baseModule.LogInfo( "Layers:" );
+		for( i=0; i<count; i++ ){
+			baseModule.LogInfoFormat( "- %s: %d (%d.%d.%d.%d)",
+				layers[ i ].layerName, layers[ i ].implementationVersion,
+				VK_API_VERSION_MAJOR( layers[ i ].specVersion ),
+				VK_API_VERSION_MINOR( layers[ i ].specVersion ),
+				VK_API_VERSION_PATCH( layers[ i ].specVersion ),
+				VK_API_VERSION_VARIANT( layers[ i ].specVersion ) );
+		}
+		
+		// store supported layers
+		int j;
+		for( i=0; i<count; i++ ){
+			for( j=0; j<LayerCount; j++ ){
+				if( strcmp( pSupportsLayer[ j ].name, layers[ i ].layerName ) == 0 ){
+					pSupportsLayer[ j ].version = layers[ i ].specVersion;
+					pSupportsLayer[ j ].implementationVersion = layers[ i ].implementationVersion;
+					break;
+				}
+			}
+		}
+		
+		// report support layers
+		baseModule.LogInfo( "Supported Layers:" );
+		for( i=0; i<LayerCount; i++ ){
+			if( pSupportsLayer[ i ].implementationVersion ){
+				baseModule.LogInfoFormat( "- %s: %d (%d.%d.%d.%d)",
+					pSupportsLayer[ i ].name, pSupportsLayer[ i ].implementationVersion,
+					VK_API_VERSION_MAJOR( pSupportsLayer[ i ].implementationVersion ),
+					VK_API_VERSION_MINOR( pSupportsLayer[ i ].implementationVersion ),
+					VK_API_VERSION_PATCH( pSupportsLayer[ i ].implementationVersion ),
+					VK_API_VERSION_VARIANT( pSupportsLayer[ i ].implementationVersion ) );
+			}
+		}
+		
+		baseModule.LogInfo( "Not Supported Layers:" );
+		for( i=0; i<LayerCount; i++ ){
+			if( ! pSupportsLayer[ i ].implementationVersion ){
+				baseModule.LogInfoFormat( "- %s", pSupportsLayer[ i ].name );
+			}
+		}
+		
+		delete [] layers;
+		
+	}catch( const deException & ){
+		delete [] layers;
+		throw;
+	}
+}
+
+void devkInstance::pCreateInstance( bool enableValidationLayers ){
 	pVulkan.GetModule().LogInfo( "Create Vulkan Instance" );
 	
 	// set up application information
@@ -142,83 +288,49 @@ void devkInstance::pCreateInstance(){
 	instanceCreateInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
 	instanceCreateInfo.pApplicationInfo = &appInfo;
 	
-	// init layers
-	#ifdef WITH_DEBUG
-// 	const char* validationLayers[] = { "VK_LAYER_LUNARG_standard_validation" };
-	const char* validationLayers[] = { "VK_LAYER_KHRONOS_validation" };
-	const uint32_t layerCount = 1;
-	#endif
+	// detect extensions and layers
+	pDetectExtensions();
+	pDetectLayers();
 	
-	#ifdef WITH_DEBUG
-	// check if layers are available
-	uint32_t instanceLayerCount = 0;
-	vkEnumerateInstanceLayerProperties( &instanceLayerCount, nullptr );
+	// enable layers
+	const char *layers[ LayerCount ];
+	uint32_t layerCount = 0;
 	
-	VkLayerProperties *instanceLayers = nullptr;
-	if( instanceLayerCount > 0 ){
-		instanceLayers = new VkLayerProperties[ instanceLayerCount ];
-		vkEnumerateInstanceLayerProperties( &instanceLayerCount, instanceLayers );
+	if( enableValidationLayers && SupportsExtension( extEXTDebugReport ) ){
+		if( SupportsLayer( layerLunargStandardValidation ) ){
+			layers[ layerCount++ ] = pSupportsLayer[ layerLunargStandardValidation ].name;
+			
+		}else if( SupportsLayer( layerKhronosValidation ) ){
+			layers[ layerCount++ ] = pSupportsLayer[ layerKhronosValidation ].name;
+		}
 	}
 	
-	bool layersAvailable = true;
-	uint32_t i;
+	// enable extensions
+	const char *extensions[ ExtensionCount ];
+	uint32_t i, extensionCount = 0;
 	
-	pVulkan.GetModule().LogInfo( "Available Vulkan Layers:" );
-	for( i=0; i<instanceLayerCount; i++ ){
-		pVulkan.GetModule().LogInfoFormat( "- %s", instanceLayers[ i ].layerName );
+	for( i=0; i<ExtensionCount; i++ ){
+		if( pSupportsExtension[ i ].version ){
+			extensions[ extensionCount++ ] = pSupportsExtension[ i ].name;
+		}
 	}
 	
+	pVulkan.GetModule().LogInfo( "Enable Layers:" );
 	for( i=0; i<layerCount; i++ ){
-		bool layerAvailable = false;
-		uint32_t j;
-		
-		for( j=0; j<instanceLayerCount; j++ ){
-			if( strcmp( instanceLayers[ j ].layerName, validationLayers[ i ] ) == 0 ) {
-				layerAvailable = true;
-				break;
-			}
-		}
-		
-		if( ! layerAvailable ){
-			pVulkan.GetModule().LogInfoFormat( "Layer '%s' not found", validationLayers[ i ] );
-			layersAvailable = false;
-			break;
-		}
+		pVulkan.GetModule().LogInfoFormat( "- %s", layers[ i ] );
 	}
 	
-	if( instanceLayers ){
-		delete [] instanceLayers;
-	}
-	
-	const char * const validationExt = VK_EXT_DEBUG_REPORT_EXTENSION_NAME;
-	if( layersAvailable ){
-		pVulkan.GetModule().LogInfo( "Create Layers Available" );
-		instanceCreateInfo.ppEnabledLayerNames = validationLayers;
+	if( layerCount > 0 ){
+		instanceCreateInfo.ppEnabledLayerNames = layers;
 		instanceCreateInfo.enabledLayerCount = layerCount;
-		instanceCreateInfo.enabledExtensionCount = 1;
-		instanceCreateInfo.ppEnabledExtensionNames = &validationExt;
 	}
-	#endif
+	if( extensionCount > 0 ){
+		instanceCreateInfo.ppEnabledExtensionNames = extensions;
+		instanceCreateInfo.enabledExtensionCount = extensionCount;
+	}
 	
+	// create device
 	VK_CHECK( pVulkan, vkCreateInstance( &instanceCreateInfo, nullptr, &pInstance ) );
-	
-	// debug
-	#ifdef WITH_DEBUG
-	if( layersAvailable ){
-		VkDebugReportCallbackCreateInfoEXT debugReportCreateInfo = {};
-		debugReportCreateInfo.sType = VK_STRUCTURE_TYPE_DEBUG_REPORT_CALLBACK_CREATE_INFO_EXT;
-		debugReportCreateInfo.flags = VK_DEBUG_REPORT_ERROR_BIT_EXT | VK_DEBUG_REPORT_WARNING_BIT_EXT;
-		debugReportCreateInfo.pfnCallback = (PFN_vkDebugReportCallbackEXT)debugMessageCallback;
-		debugReportCreateInfo.pUserData = this;
-		
-		PFN_vkCreateDebugReportCallbackEXT vkCreateDebugReportCallbackEXT =
-			( PFN_vkCreateDebugReportCallbackEXT )vkGetInstanceProcAddr( pInstance, "vkCreateDebugReportCallbackEXT");
-		if( ! vkCreateDebugReportCallbackEXT ){
-			DETHROW( deeInvalidAction );
-		}
-		VK_CHECK( pVulkan, vkCreateDebugReportCallbackEXT( pInstance, &debugReportCreateInfo, nullptr, &debugReportCallback ) );
-	}
-	#endif
 }
 
 void devkInstance::pLoadFunctions(){
@@ -229,9 +341,8 @@ void devkInstance::pLoadFunctions(){
 		}
 	
 	#define INSTANCE_LEVEL_VULKAN_FUNCTION_FROM_EXTENSION( name, extension ) \
-		name = ( PFN_##name )vkGetInstanceProcAddr( pInstance, #name ); \
-		if( ! name ){ \
-			DETHROW_INFO( deeInvalidAction, "Instance function " #name " not found" ); \
+		if( pSupportsExtension[ extension ].version != 0 ){ \
+			INSTANCE_LEVEL_VULKAN_FUNCTION( name ) \
 		}
 	
 	#include "devkFunctionNames.h"

@@ -56,9 +56,22 @@ public:
 		DeviceConfig();
 	};
 	
+	/** Extension. */
+	enum eExtension{
+		extKHRMaintenance3, //<! VK_KHR_MAINTENANCE3_EXTENSION_NAME
+		extEXTDescriptorIndexing //<! VK_EXT_DESCRIPTOR_INDEXING_EXTENSION_NAME 
+	};
+	
+	static const int ExtensionCount = extEXTDescriptorIndexing + 1;
+	
 	
 	
 private:
+	struct sExtension{
+		const char *name;
+		uint32_t version;
+	};
+	
 	devkInstance &pInstance;
 	
 	VkPhysicalDevice pPhysicalDevice;
@@ -68,6 +81,8 @@ private:
 	uint32_t pFamilyIndexGraphic;
 	uint32_t pFamilyIndexCompute;
 	uint32_t pFamilyIndexTransfer;
+	
+	sExtension pSupportsExtension[ ExtensionCount ];
 	
 	VkDevice pDevice;
 	devkQueue::Ref *pQueues;
@@ -119,6 +134,12 @@ public:
 	/** Pipeline manager. */
 	inline devkPipelineManager &GetPipelineManager(){ return pPipelineManager; }
 	inline const devkPipelineManager &GetPipelineManager() const{ return pPipelineManager; }
+	
+	/** Extension is supported. */
+	bool SupportsExtension( eExtension extension ) const;
+	
+	/** Extension version or 0 if not supported. */
+	uint32_t ExtensionVersion( eExtension extension ) const;
 	
 	
 	
@@ -177,6 +198,8 @@ public:
 private:
 	void pCleanUp();
 	void pCreateDevice();
+	void pGetProperties();
+	void pDetectExtensions();
 	void pLoadFunctions();
 };
 

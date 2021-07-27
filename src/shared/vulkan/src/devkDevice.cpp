@@ -58,6 +58,10 @@ pDescriptorSetLayoutManager( *this ),
 pShaderModuleManager( *this ),
 pPipelineManager( *this )
 {
+	memset( pSupportsExtension, 0, sizeof( pSupportsExtension ) );
+	pSupportsExtension[ extKHRMaintenance3 ].name = VK_KHR_MAINTENANCE3_EXTENSION_NAME;
+	pSupportsExtension[ extEXTDescriptorIndexing ].name = VK_EXT_DESCRIPTOR_INDEXING_EXTENSION_NAME;
+	
 	if( ! physicalDevice ){
 		DETHROW_INFO( deeNullPointer, "physicalDevice" );
 	}
@@ -96,6 +100,14 @@ devkDevice::~devkDevice(){
 
 // Management
 ///////////////
+
+bool devkDevice::SupportsExtension( eExtension extension ) const{
+	return pSupportsExtension[ extension ].version != 0;
+}
+
+uint32_t devkDevice::ExtensionVersion( eExtension extension ) const{
+	return pSupportsExtension[ extension ].version;
+}
 
 uint32_t devkDevice::IndexOfMemoryType( VkMemoryPropertyFlags property, uint32_t bits ) const{
 	uint32_t i;
@@ -184,23 +196,8 @@ void devkDevice::pCreateDevice(){
 	deBaseModule &module = pInstance.GetVulkan().GetModule();
 	module.LogInfo( "Create Vulkan Device:" );
 	
-	// get device properties and log them
-	pInstance.vkGetPhysicalDeviceProperties( pPhysicalDevice, &pProperties );
-	pInstance.vkGetPhysicalDeviceMemoryProperties( pPhysicalDevice, &pMemoryProperties );
-	
-	module.LogInfoFormat( "- Device Name: %s", pProperties.deviceName );
-	module.LogInfoFormat( "- Device ID: %d", pProperties.deviceID );
-	module.LogInfoFormat( "- Vendor ID: %d", pProperties.vendorID );
-	module.LogInfoFormat( "- Driver Version: %d.%d.%d.%d",
-		VK_API_VERSION_MAJOR( pProperties.driverVersion ),
-		VK_API_VERSION_MINOR( pProperties.driverVersion ),
-		VK_API_VERSION_PATCH( pProperties.driverVersion ),
-		VK_API_VERSION_VARIANT( pProperties.driverVersion ) );
-	module.LogInfoFormat( "- API Version: %d.%d.%d.%d",
-		VK_API_VERSION_MAJOR( pProperties.apiVersion ),
-		VK_API_VERSION_MINOR( pProperties.apiVersion ),
-		VK_API_VERSION_PATCH( pProperties.apiVersion ),
-		VK_API_VERSION_VARIANT( pProperties.apiVersion ) );
+	pGetProperties();
+	pDetectExtensions();
 	
 	// find requested queue families
 	const float defaultQueuePriority = 0.0f;
@@ -331,6 +328,83 @@ void devkDevice::pCreateDevice(){
 	}
 }
 
+void devkDevice::pGetProperties(){
+	deBaseModule &module = pInstance.GetVulkan().GetModule();
+	pInstance.vkGetPhysicalDeviceProperties( pPhysicalDevice, &pProperties );
+	pInstance.vkGetPhysicalDeviceMemoryProperties( pPhysicalDevice, &pMemoryProperties );
+	
+	module.LogInfoFormat( "- Device Name: %s", pProperties.deviceName );
+	module.LogInfoFormat( "- Device ID: %d", pProperties.deviceID );
+	module.LogInfoFormat( "- Vendor ID: %d", pProperties.vendorID );
+	module.LogInfoFormat( "- Driver Version: %d.%d.%d.%d",
+		VK_API_VERSION_MAJOR( pProperties.driverVersion ),
+		VK_API_VERSION_MINOR( pProperties.driverVersion ),
+		VK_API_VERSION_PATCH( pProperties.driverVersion ),
+		VK_API_VERSION_VARIANT( pProperties.driverVersion ) );
+	module.LogInfoFormat( "- API Version: %d.%d.%d.%d",
+		VK_API_VERSION_MAJOR( pProperties.apiVersion ),
+		VK_API_VERSION_MINOR( pProperties.apiVersion ),
+		VK_API_VERSION_PATCH( pProperties.apiVersion ),
+		VK_API_VERSION_VARIANT( pProperties.apiVersion ) );
+	
+}
+
+void devkDevice::pDetectExtensions(){
+	deSharedVulkan &vulkan = pInstance.GetVulkan();
+	uint32_t count = 0;
+	VK_CHECK( vulkan, pInstance.vkEnumerateDeviceExtensionProperties( pPhysicalDevice, nullptr, &count, nullptr ) );
+	if( count == 0 ){
+		return;
+	}
+	
+	VkExtensionProperties * const extensions = new VkExtensionProperties[ count ];
+	try{
+		VK_CHECK( vulkan, pInstance.vkEnumerateDeviceExtensionProperties( pPhysicalDevice, nullptr, &count, extensions ) );
+		
+		// report all extensions reported for debug purpose
+		deBaseModule &baseModule = pInstance.GetVulkan().GetModule();
+		uint32_t i;
+		
+		baseModule.LogInfo( "Device Extensions:" );
+		for( i=0; i<count; i++ ){
+			baseModule.LogInfoFormat( "- %s: %d", extensions[ i ].extensionName, extensions[ i ].specVersion );
+		}
+		
+		// store supported extensions
+		int j;
+		for( i=0; i<count; i++ ){
+			for( j=0; j<ExtensionCount; j++ ){
+				if( strcmp( pSupportsExtension[ j ].name, extensions[ i ].extensionName ) == 0 ){
+					pSupportsExtension[ j ].version = extensions[ i ].specVersion;
+					break;
+				}
+			}
+		}
+		
+		// report support extensions
+		baseModule.LogInfo( "Supported Extensions:" );
+		for( i=0; i<ExtensionCount; i++ ){
+			if( pSupportsExtension[ i ].version ){
+				baseModule.LogInfoFormat( "- %s: %d", pSupportsExtension[ i ].name,
+					pSupportsExtension[ i ].version );
+			}
+		}
+		
+		baseModule.LogInfo( "Not Supported Extensions:" );
+		for( i=0; i<ExtensionCount; i++ ){
+			if( ! pSupportsExtension[ i ].version ){
+				baseModule.LogInfoFormat( "- %s", pSupportsExtension[ i ].name );
+			}
+		}
+		
+		delete [] extensions;
+		
+	}catch( const deException & ){
+		delete [] extensions;
+		throw;
+	}
+}
+
 void devkDevice::pLoadFunctions(){
 	#define DEVICE_LEVEL_VULKAN_FUNCTION( name ) \
 		name = ( PFN_##name )vkGetDeviceProcAddr( pDevice, #name ); \
@@ -339,9 +413,8 @@ void devkDevice::pLoadFunctions(){
 		}
 	
 	#define DEVICE_LEVEL_VULKAN_FUNCTION_FROM_EXTENSION( name, extension ) \
-		name = ( PFN_##name )vkGetInstanceProcAddr( pInstance, #name ); \
-		if( ! name ){ \
-			DETHROW_INFO( deeInvalidAction, "Device function " #name " not found" ); \
+		if( pInstance.SupportsExtension( extension ) ){ \
+			DEVICE_LEVEL_VULKAN_FUNCTION( name ) \
 		}
 	
 	#include "devkFunctionNames.h"
