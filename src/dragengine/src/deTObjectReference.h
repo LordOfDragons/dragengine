@@ -140,7 +140,7 @@ public:
 	 * 
 	 * Same as calling TakeOver() on a new instance but allows for inline use.
 	 */
-	static deTObjectReference With( T *object ){
+	static deTObjectReference New( T *object ){
 		deTObjectReference reference;
 		reference.TakeOver( object );
 		return reference;
@@ -149,14 +149,14 @@ public:
 	/**
 	 * \brief Returns reference to protect against problems.
 	 */
-	static deTObjectReference With( const deTObjectReference &reference ){
+	static deTObjectReference New( const deTObjectReference &reference ){
 		return reference;
 	}
 	
 	/**
 	 * \brief Returns reference to protect against problems.
 	 */
-	static deTObjectReference With( deTObjectReference &reference ){
+	static deTObjectReference New( deTObjectReference &reference ){
 		return reference;
 	}
 	

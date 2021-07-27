@@ -64,7 +64,7 @@ delGameXML::~delGameXML(){
 ///////////////
 
 void delGameXML::ReadFromFile( decBaseFileReader &reader, delGame &game ){
-	const decXmlDocument::Ref xmlDoc( decXmlDocument::Ref::With( new decXmlDocument ) );
+	const decXmlDocument::Ref xmlDoc( decXmlDocument::Ref::New( new decXmlDocument ) );
 	decXmlParser( GetLogger() ).ParseXml( &reader, xmlDoc );
 	
 	xmlDoc->StripComments();
@@ -111,7 +111,7 @@ void delGameXML::pReadGame( const decXmlElementTag &root, delGame &game ){
 			game.SetDescription( decUnicodeString::NewFromUTF8( GetCDataString( *tag ) ) );
 			
 		}else if( tag->GetName() == "icon" ){
-			game.GetIcons().Add( delGameIcon::Ref::With( game.GetLauncher().CreateGameIcon(
+			game.GetIcons().Add( delGameIcon::Ref::New( game.GetLauncher().CreateGameIcon(
 				GetAttributeInt( *tag, "size" ), GetCDataString( *tag ) ) ) );
 			
 		}else if( tag->GetName() == "creator" ){
@@ -155,7 +155,7 @@ void delGameXML::pReadGame( const decXmlElementTag &root, delGame &game ){
 				DETHROW_INFO( deeInvalidParam, "invalid tag value" );
 			}
 			
-			fileFormats.Add ( delFileFormat::Ref::With( new delFileFormat( formatType, GetCDataString( *tag ) ) ) );
+			fileFormats.Add ( delFileFormat::Ref::New( new delFileFormat( formatType, GetCDataString( *tag ) ) ) );
 			
 		}else{
 			ErrorUnknownTag( root, *tag );

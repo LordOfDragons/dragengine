@@ -75,7 +75,7 @@ devkDescriptorPoolSlot *devkDescriptorPool::Get(){
 	}
 	
 	// no pool has free slots. create a new pool and get slot
-	devkDescriptorPoolPool::Ref pool( devkDescriptorPoolPool::Ref::With(
+	devkDescriptorPoolPool::Ref pool( devkDescriptorPoolPool::Ref::New(
 			new devkDescriptorPoolPool( *this, pPoolCreateInfo ) ) );
 	pPools.Add( pool );
 	

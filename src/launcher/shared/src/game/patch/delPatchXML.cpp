@@ -57,7 +57,7 @@ delPatchXML::~delPatchXML(){
 ///////////////
 
 void delPatchXML::ReadFromFile( decBaseFileReader &reader, delPatch &patch ){
-	const decXmlDocument::Ref xmlDoc( decXmlDocument::Ref::With( new decXmlDocument ) );
+	const decXmlDocument::Ref xmlDoc( decXmlDocument::Ref::New( new decXmlDocument ) );
 	decXmlParser( GetLogger() ).ParseXml( &reader, xmlDoc );
 	
 	xmlDoc->StripComments();

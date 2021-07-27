@@ -68,11 +68,11 @@ delGameManager::~delGameManager(){
 void delGameManager::LoadGameList( delEngineInstance &instance ){
 	pLauncher.GetLogger()->LogInfo( pLauncher.GetLogSource(), "Loading game list" );
 	
-	const deVirtualFileSystem::Ref vfs( deVirtualFileSystem::Ref::With( new deVirtualFileSystem ) );
+	const deVirtualFileSystem::Ref vfs( deVirtualFileSystem::Ref::New( new deVirtualFileSystem ) );
 	
 	const decPath pathRoot( decPath::CreatePathUnix( "/" ) );
 	const decPath pathDisk( decPath::CreatePathNative( pLauncher.GetPathGames() ) );
-	vfs->AddContainer( deVFSDiskDirectory::Ref::With( new deVFSDiskDirectory( pathRoot, pathDisk ) ) );
+	vfs->AddContainer( deVFSDiskDirectory::Ref::New( new deVFSDiskDirectory( pathRoot, pathDisk ) ) );
 	
 	pGames.RemoveAll();
 	pScanGameDefFiles( instance, vfs, pathDisk, pathRoot );
@@ -137,10 +137,10 @@ const decString &path, delGameList &list ){
 		}
 		
 	}else{
-		const decDiskFileReader::Ref reader( decDiskFileReader::Ref::With( new decDiskFileReader( path ) ) );
+		const decDiskFileReader::Ref reader( decDiskFileReader::Ref::New( new decDiskFileReader( path ) ) );
 		
 		try{
-			const delGame::Ref game( delGame::Ref::With( pLauncher.CreateGame() ) );
+			const delGame::Ref game( delGame::Ref::New( pLauncher.CreateGame() ) );
 			gameXML.ReadFromFile( reader, game );
 			
 			if( ! decPath::IsNativePathAbsolute( game->GetGameDirectory() ) ){

@@ -113,7 +113,7 @@ void delEngine::SetLogFile( const char *path ){
 	// using open file for writing instead of delete file to allow applications
 	// to keep file open in a text viewer on operating systems preventing file
 	// deleting while the file is open in an application (windows for example)
-	decBaseFileWriter::Ref::With( pLauncher.GetVFS()->OpenFileForWriting( filePath ) );
+	decBaseFileWriter::Ref::New( pLauncher.GetVFS()->OpenFileForWriting( filePath ) );
 	
 	//if( pLauncher.GetFileSystem()->ExistsFile( filePath ) ){
 	//	pLauncher.GetFileSystem()->DeleteFile( filePath );
@@ -273,25 +273,25 @@ void delEngine::PutEngineIntoVFS( delEngineInstance &instance ){
 		deVirtualFileSystem &vfs = *pLauncher.GetVFS();
 		
 		if( ! pPathConfig.IsEmpty() ){
-			vfs.AddContainer( deVFSDiskDirectory::Ref::With( new deVFSDiskDirectory(
+			vfs.AddContainer( deVFSDiskDirectory::Ref::New( new deVFSDiskDirectory(
 				decPath::CreatePathUnix( "/engine/config" ),
 				decPath::CreatePathNative( pPathConfig ), false ) ) );
 		}
 		
 		if( ! pPathShare.IsEmpty() ){
-			vfs.AddContainer( deVFSDiskDirectory::Ref::With( new deVFSDiskDirectory(
+			vfs.AddContainer( deVFSDiskDirectory::Ref::New( new deVFSDiskDirectory(
 				decPath::CreatePathUnix( "/engine/share" ),
 				decPath::CreatePathNative( pPathShare ), false ) ) );
 		}
 		
 		if( ! pPathLib.IsEmpty() ){
-			vfs.AddContainer( deVFSDiskDirectory::Ref::With( new deVFSDiskDirectory(
+			vfs.AddContainer( deVFSDiskDirectory::Ref::New( new deVFSDiskDirectory(
 				decPath::CreatePathUnix( "/engine/lib" ),
 				decPath::CreatePathNative( pPathLib ), false ) ) );
 		}
 		
 		if( ! pPathCache.IsEmpty() ){
-			vfs.AddContainer( deVFSDiskDirectory::Ref::With( new deVFSDiskDirectory(
+			vfs.AddContainer( deVFSDiskDirectory::Ref::New( new deVFSDiskDirectory(
 				decPath::CreatePathUnix( "/engine/cache" ),
 				decPath::CreatePathNative( pPathCache ), false ) ) );
 		}
@@ -474,7 +474,7 @@ void delEngine::ReadDelgaGameDefs( delEngineInstance &instance, const char *file
 	}
 	
 	delGameXML gameXML( pLauncher.GetLogger(), pLauncher.GetLogSource() );
-	const decMemoryFile::Ref memoryFile( decMemoryFile::Ref::With( new decMemoryFile( "DelgaGameDefinition" ) ) );
+	const decMemoryFile::Ref memoryFile( decMemoryFile::Ref::New( new decMemoryFile( "DelgaGameDefinition" ) ) );
 	delGame::Ref game;
 	int i;
 	
@@ -486,7 +486,7 @@ void delEngine::ReadDelgaGameDefs( delEngineInstance &instance, const char *file
 		memcpy( memoryFile->GetPointer(), fileContent.GetString(), lenContent );
 		
 		game.TakeOver( pLauncher.CreateGame() );
-		gameXML.ReadFromFile( decMemoryFileReader::Ref::With( new decMemoryFileReader( memoryFile ) ), game );
+		gameXML.ReadFromFile( decMemoryFileReader::Ref::New( new decMemoryFileReader( memoryFile ) ), game );
 		
 		game->SetDefaultLogFile();
 		game->SetDelgaFile( filename );
@@ -545,7 +545,7 @@ void delEngine::ReadDelgaPatchDefs( delEngineInstance &instance, const char *fil
 	}
 	
 	delPatchXML patchXML( pLauncher.GetLogger(), pLauncher.GetLogSource() );
-	decMemoryFile::Ref memoryFile( decMemoryFile::Ref::With( new decMemoryFile( "DelgaPatchDefinition" ) ) );
+	decMemoryFile::Ref memoryFile( decMemoryFile::Ref::New( new decMemoryFile( "DelgaPatchDefinition" ) ) );
 	delPatch::Ref patch;
 	int i;
 	
@@ -557,7 +557,7 @@ void delEngine::ReadDelgaPatchDefs( delEngineInstance &instance, const char *fil
 		memcpy( memoryFile->GetPointer(), fileContent.GetString(), lenContent );
 		
 		patch.TakeOver( new delPatch );
-		patchXML.ReadFromFile( decMemoryFileReader::Ref::With( new decMemoryFileReader( memoryFile ) ), patch );
+		patchXML.ReadFromFile( decMemoryFileReader::Ref::New( new decMemoryFileReader( memoryFile ) ), patch );
 		
 		patch->SetDelgaFile( filename );
 		
@@ -585,7 +585,7 @@ void delEngine::LoadConfig(){
 	}
 	
 	logger.LogInfo( pLauncher.GetLogSource(), "Reading engine configuration file" );
-	configXML.ReadFromFile( decBaseFileReader::Ref::With( vfs.OpenFileForReading( pathFile ) ), pLauncher );
+	configXML.ReadFromFile( decBaseFileReader::Ref::New( vfs.OpenFileForReading( pathFile ) ), pLauncher );
 }
 
 void delEngine::SaveConfig(){
@@ -606,7 +606,7 @@ void delEngine::SaveConfig(){
 	logger.LogInfo( pLauncher.GetLogSource(), "Writing engine configuration file" );
 	
 	try{
-		configXML.WriteToFile( decBaseFileWriter::Ref::With( vfs.OpenFileForWriting( pathFile ) ), pLauncher );
+		configXML.WriteToFile( decBaseFileWriter::Ref::New( vfs.OpenFileForWriting( pathFile ) ), pLauncher );
 		
 	}catch( const deException &e ){
 		logger.LogErrorFormat( pLauncher.GetLogSource(), "Failed to write engine configuration file (file permission problem)" );

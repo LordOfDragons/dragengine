@@ -698,7 +698,7 @@ void delEngineInstance::GetModuleParamList( delEngineModule &module ){
 			
 			ReadString16FromPipe( string );
 			
-			parameters.Add( delEMParameter::Ref::With( new delEMParameter( i, info, string ) ) );
+			parameters.Add( delEMParameter::Ref::New( new delEMParameter( i, info, string ) ) );
 			
 		}catch( const deException &e ){
 			pLauncher.GetLogger()->LogError( pLauncher.GetLogSource(),
@@ -1017,7 +1017,7 @@ int delEngineInstance::IsGameRunning(){
 				ReadString16FromPipe( paramName );
 				ReadString16FromPipe( paramValue );
 				
-				module->GetParameters().Add( delGPMParameter::Ref::With(
+				module->GetParameters().Add( delGPMParameter::Ref::New(
 					new delGPMParameter( paramName, paramValue ) ) );
 			}
 			

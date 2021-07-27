@@ -60,7 +60,7 @@ devkQueue::~devkQueue(){
 ///////////////
 
 devkCommandPool::Ref devkQueue::CreateCommandPool(){
-	return devkCommandPool::Ref::With( new devkCommandPool( pDevice, pFamily ) );
+	return devkCommandPool::Ref::New( new devkCommandPool( pDevice, pFamily ) );
 }
 
 void devkQueue::WaitIdle(){

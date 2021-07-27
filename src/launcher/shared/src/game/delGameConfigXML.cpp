@@ -132,7 +132,7 @@ void delGameConfigXML::pReadConfig( const decXmlElementTag &root, delGame &game 
 		
 		const decString &tagName = tag->GetName();
 		if( tagName == "customProfile" ){
-			delGameProfile::Ref profile( delGameProfile::Ref::With( game.GetLauncher().CreateGameProfile() ) );
+			delGameProfile::Ref profile( delGameProfile::Ref::New( game.GetLauncher().CreateGameProfile() ) );
 			ReadProfile( *tag, profile );
 			profile->SetName( "" );
 			

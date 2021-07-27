@@ -1023,7 +1023,7 @@ void deoglRenderThread::pInitThreadPhase4(){
 		devkQueue &queue = pVulkanDevice->GetComputeQueue();
 		const devkCommandPool::Ref commandPool( queue.CreateCommandPool() );
 		const int inputDataCount = 32;
-		const devkBuffer::Ref bufferInput( devkBuffer::Ref::With(
+		const devkBuffer::Ref bufferInput( devkBuffer::Ref::New(
 			new devkBuffer( pVulkanDevice, sizeof( uint32_t ) * inputDataCount ) ) );
 		int i;
 		uint32_t bufferInputData[ inputDataCount ];

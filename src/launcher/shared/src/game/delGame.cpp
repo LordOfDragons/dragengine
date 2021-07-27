@@ -318,7 +318,7 @@ void delGame::StartGame( const delGameRunParams &runParams ){
 		// deleting while the file is open in an application (windows for example)
 		filePath.SetFromUnix( "/logs" );
 		filePath.AddUnixPath( logfile );
-		decBaseFileWriter::Ref::With( pLauncher.GetVFS()->OpenFileForWriting( filePath ) );
+		decBaseFileWriter::Ref::New( pLauncher.GetVFS()->OpenFileForWriting( filePath ) );
 	}
 	
 	// start the game
@@ -477,7 +477,7 @@ void delGame::LoadConfig(){
 		if( vfs.GetFileType( pathFile ) == deVFSContainer::eftRegularFile ){
 			logger.LogInfoFormat( pLauncher.GetLogSource(),
 				"Reading game configuration file for '%s'", pTitle.ToUTF8().GetString() );
-			configXML.ReadFromFile( decBaseFileReader::Ref::With( vfs.OpenFileForReading( pathFile ) ), *this );
+			configXML.ReadFromFile( decBaseFileReader::Ref::New( vfs.OpenFileForReading( pathFile ) ), *this );
 			
 		}else{
 			logger.LogErrorFormat( pLauncher.GetLogSource(),
@@ -506,7 +506,7 @@ void delGame::SaveConfig(){
 			"Writing game configuration file for '%s'", pTitle.ToUTF8().GetString() );
 		
 		try{
-			configXML.WriteToFile( decBaseFileWriter::Ref::With( vfs.OpenFileForWriting( pathFile ) ), *this );
+			configXML.WriteToFile( decBaseFileWriter::Ref::New( vfs.OpenFileForWriting( pathFile ) ), *this );
 			
 		}catch( const deException & ){
 			logger.LogError( pLauncher.GetLogSource(),
@@ -634,12 +634,12 @@ void delGame::pStoreCustomConfig(){
 					parameter->SetValue( paramChanges.GetValue() );
 					
 				}else{
-					parameters.Add ( delGPMParameter::Ref::With( new delGPMParameter( paramChanges ) ) );
+					parameters.Add ( delGPMParameter::Ref::New( new delGPMParameter( paramChanges ) ) );
 				}
 			}
 			
 		}else{
-			modules.Add ( delGPModule::Ref::With( new delGPModule( moduleChanges ) ) );
+			modules.Add ( delGPModule::Ref::New( new delGPModule( moduleChanges ) ) );
 		}
 	}
 	

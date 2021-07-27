@@ -272,7 +272,7 @@ delGameProfile &delGameProfile::operator=( const delGameProfile &profile ){
 	const int moduleCount = moduleList.GetCount();
 	int i;
 	for( i=0; i<moduleCount; i++ ){
-		pModuleList.Add ( delGPModule::Ref::With(
+		pModuleList.Add ( delGPModule::Ref::New(
 			new delGPModule( *moduleList.GetAt ( i ) ) ) );
 	}
 	

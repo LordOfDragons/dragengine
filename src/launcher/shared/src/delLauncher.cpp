@@ -45,7 +45,7 @@
 /////////////////////////////
 
 delLauncher::delLauncher( const char *loggerSource ) :
-pLoggerHistory( delLoggerHistory::Ref::With( new delLoggerHistory ) ),
+pLoggerHistory( delLoggerHistory::Ref::New( new delLoggerHistory ) ),
 pLogSource ( loggerSource ),
 pEngine( *this ),
 pGameManager( *this ),
@@ -53,7 +53,7 @@ pPatchManager( *this )
 {
 	try{
 		pLogger.TakeOver( new deLoggerChain );
-		pLogger->AddLogger( deLoggerConsoleColor::Ref::With( new deLoggerConsoleColor ) );
+		pLogger->AddLogger( deLoggerConsoleColor::Ref::New( new deLoggerConsoleColor ) );
 		pLogger->AddLogger( pLoggerHistory );
 		
 		pLocatePath();
@@ -85,7 +85,7 @@ void delLauncher::AddFileLogger( const char *filetitle ){
 	decString filename;
 	filename.Format( "/logs/%s.log", filetitle );
 	
-	pLogger->AddLogger( deLoggerFile::Ref::With( new deLoggerFile( decBaseFileWriter::Ref::With(
+	pLogger->AddLogger( deLoggerFile::Ref::New( new deLoggerFile( decBaseFileWriter::Ref::New(
 		pVFS->OpenFileForWriting( decPath::CreatePathUnix( filename ) ) ) ) ) );
 }
 
@@ -254,13 +254,13 @@ void delLauncher::pInitVFS(){
 	// as we want to read the config files one by one and mapping both containers to
 	// the same path would shadow the system config files.
 	if( ! pPathConfigSystem.IsEmpty() ){
-		pVFS->AddContainer( deVFSDiskDirectory::Ref::With( new deVFSDiskDirectory(
+		pVFS->AddContainer( deVFSDiskDirectory::Ref::New( new deVFSDiskDirectory(
 			decPath::CreatePathUnix( "/config/system" ),
 			decPath::CreatePathNative( pPathConfigSystem ), true ) ) );
 	}
 	
 	if( ! pPathConfigUser.IsEmpty() ){
-		pVFS->AddContainer( deVFSDiskDirectory::Ref::With( new deVFSDiskDirectory(
+		pVFS->AddContainer( deVFSDiskDirectory::Ref::New( new deVFSDiskDirectory(
 			decPath::CreatePathUnix( "/config/user" ),
 			decPath::CreatePathNative( pPathConfigUser ), false ) ) );
 	}
@@ -270,14 +270,14 @@ void delLauncher::pInitVFS(){
 	// the shares container is set to read-write as the launcher has to potentiall install
 	// new games or uninstall them
 	if( ! pPathShares.IsEmpty() ){
-		pVFS->AddContainer( deVFSDiskDirectory::Ref::With( new deVFSDiskDirectory(
+		pVFS->AddContainer( deVFSDiskDirectory::Ref::New( new deVFSDiskDirectory(
 			decPath::CreatePathUnix( "/data" ),
 			decPath::CreatePathNative( pPathShares ), false ) ) );
 	}
 	
 	// add the logs directory. this is read-write
 	if( ! pPathLogs.IsEmpty() ){
-		pVFS->AddContainer( deVFSDiskDirectory::Ref::With( new deVFSDiskDirectory(
+		pVFS->AddContainer( deVFSDiskDirectory::Ref::New( new deVFSDiskDirectory(
 			decPath::CreatePathUnix( "/logs" ),
 			decPath::CreatePathNative( pPathLogs ), false ) ) );
 	}

@@ -325,7 +325,7 @@ void delSharedConfigXML::ReadProfileDisableModuleVersions( const decXmlElementTa
 		}
 		
 		if( tag->GetName() == "disableModuleVersion" ){
-			profile.GetDisableModuleVersionList().Add( delGPDisableModuleVersion::Ref::With(
+			profile.GetDisableModuleVersionList().Add( delGPDisableModuleVersion::Ref::New(
 				new delGPDisableModuleVersion( GetAttributeString( *tag, "name" ),
 					GetAttributeString( *tag, "version" ) ) ) );
 		}
@@ -352,7 +352,7 @@ void delSharedConfigXML::ReadProfileModule( const decXmlElementTag &root, delGam
 	const int count = root.GetElementCount();
 	int i;
 	
-	const delGPModule::Ref module( delGPModule::Ref::With(
+	const delGPModule::Ref module( delGPModule::Ref::New(
 		new delGPModule( GetAttributeString( root, "name" ) ) ) );
 	
 	for( i=0; i<count; i++ ){
@@ -381,7 +381,7 @@ void delSharedConfigXML::ReadProfileModuleParameters( const decXmlElementTag &ro
 		}
 		
 		if( tag->GetName() == "parameter" ){
-			parametersList.Add ( delGPMParameter::Ref::With( new delGPMParameter(
+			parametersList.Add ( delGPMParameter::Ref::New( new delGPMParameter(
 				GetAttributeString( *tag, "name" ), GetCDataString( *tag ) ) ) );
 		}
 	}

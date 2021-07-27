@@ -66,7 +66,7 @@ delEngineConfigXML::~delEngineConfigXML(){
 ///////////////
 
 void delEngineConfigXML::ReadFromFile( decBaseFileReader &reader, delLauncher &launcher ){
-	const decXmlDocument::Ref xmlDoc( decXmlDocument::Ref::With( new decXmlDocument ) );
+	const decXmlDocument::Ref xmlDoc( decXmlDocument::Ref::New( new decXmlDocument ) );
 	decXmlParser( launcher.GetLogger() ).ParseXml( &reader, xmlDoc );
 	
 	xmlDoc->StripComments();
@@ -169,7 +169,7 @@ void delEngineConfigXML::pReadProfiles( const decXmlElementTag &root, delLaunche
 		}
 		
 		if( tag->GetName() == "profile" ){
-			delGameProfile::Ref profile( delGameProfile::Ref::With( launcher.CreateGameProfile() ) );
+			delGameProfile::Ref profile( delGameProfile::Ref::New( launcher.CreateGameProfile() ) );
 			ReadProfile( *tag, profile );
 			
 			if( ! profile->GetName().IsEmpty()

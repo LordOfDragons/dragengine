@@ -97,8 +97,8 @@ void delPatchManager::LoadPatchFromDisk( delEngineInstance &instance, const decS
 		}
 		
 	}else{
-		const decDiskFileReader::Ref reader( decDiskFileReader::Ref::With( new decDiskFileReader( path ) ) );
-		const delPatch::Ref patch( delPatch::Ref::With( new delPatch ) );
+		const decDiskFileReader::Ref reader( decDiskFileReader::Ref::New( new decDiskFileReader( path ) ) );
+		const delPatch::Ref patch( delPatch::Ref::New( new delPatch ) );
 		
 		patchXML.ReadFromFile( reader, patch );
 		
