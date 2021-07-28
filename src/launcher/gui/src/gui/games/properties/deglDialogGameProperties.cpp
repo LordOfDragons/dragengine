@@ -35,16 +35,10 @@
 #include "../../engine/deglDialogModuleProps.h"
 #include "../../../deglLauncher.h"
 #include "../../../config/deglConfiguration.h"
-#include "../../../engine/deglEngine.h"
-#include "../../../engine/deglEngineInstance.h"
-#include "../../../engine/modules/deglEngineModule.h"
-#include "../../../engine/modules/deglEngineModuleList.h"
-#include "../../../game/deglGame.h"
-#include "../../../game/deglGameManager.h"
-#include "../../../game/fileformat/deglFileFormat.h"
-#include "../../../game/profile/deglGameProfile.h"
-#include "../../../game/patch/deglPatch.h"
-#include "../../../game/patch/deglPatchManager.h"
+#include "../../../game/deglGameIcon.h"
+
+#include <delauncher/game/fileformat/delFileFormat.h>
+#include <delauncher/game/patch/delPatch.h>
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decPath.h>
@@ -95,26 +89,27 @@ FXDEFMAP( deglDialogGameProperties ) deglDialogGamePropertiesMap[]={
 // Class deglDialogGameProperties
 ///////////////////////////////////
 
-FXIMPLEMENT( deglDialogGameProperties, FXDialogBox, deglDialogGamePropertiesMap, ARRAYNUMBER( deglDialogGamePropertiesMap ) )
+FXIMPLEMENT( deglDialogGameProperties, FXDialogBox,
+	deglDialogGamePropertiesMap, ARRAYNUMBER( deglDialogGamePropertiesMap ) )
 
 // Constructor, destructor
 ////////////////////////////
 
 deglDialogGameProperties::deglDialogGameProperties(){ }
 
-deglDialogGameProperties::deglDialogGameProperties( deglWindowMain *windowMain, deglGame *game, FXWindow *owner ) :
+deglDialogGameProperties::deglDialogGameProperties( deglWindowMain *windowMain, delGame *game, FXWindow *owner ) :
 FXDialogBox( owner, "Game Properties", DECOR_TITLE | DECOR_BORDER | DECOR_RESIZE | DECOR_CLOSE,
 0, 0, 600, 400, 10, 10, 10, 5 ),
 pWindowMain( windowMain ),
 pGame( game ),
-pCaches( NULL ),
+pCaches( nullptr ),
 pCacheCount( 0 ),
-pCalcSizeDataDir( NULL ),
-pCalcSizeCaptureDir( NULL ),
-pCalcSizeConfigDir( NULL ),
+pCalcSizeDataDir( nullptr ),
+pCalcSizeCaptureDir( nullptr ),
+pCalcSizeConfigDir( nullptr ),
 pCalcSizePending( true )
 {
-	deglConfiguration &configuration = *windowMain->GetLauncher()->GetConfiguration();
+	deglConfiguration &configuration = windowMain->GetLauncher()->GetConfiguration();
 	const deglGuiBuilder &guiBuilder = *windowMain->GetGuiBuilder();
 	FXVerticalFrame *content, *frameRight, *frameTab, *frameGroup, *scrollContent;
 	FXHorizontalFrame *frameLine, *frameComboBox;
@@ -143,31 +138,31 @@ pCalcSizePending( true )
 	toolTip = "Unique identifier of the game used as directory name and for running the game from the command line.";
 	guiBuilder.CreateLabel( block, "Identifier:", toolTip );
 	frameLine = guiBuilder.CreateHFrame( block );
-	pEditIdentifier = guiBuilder.CreateTextField( frameLine, NULL, 0, toolTip, false );
+	pEditIdentifier = guiBuilder.CreateTextField( frameLine, nullptr, 0, toolTip, false );
 	pEditIdentifier->setEditable( false );
 	
 	toolTip = "Alias identifier of the game used by launchers to use a human friendly name to run game.";
 	guiBuilder.CreateLabel( block, "Alias Identifier:", toolTip );
 	frameLine = guiBuilder.CreateHFrame( block );
-	pEditAliasIdentifier = guiBuilder.CreateTextField( frameLine, NULL, 0, toolTip, false );
+	pEditAliasIdentifier = guiBuilder.CreateTextField( frameLine, nullptr, 0, toolTip, false );
 	pEditAliasIdentifier->setEditable( false );
 	
 	toolTip = "Game title";
 	guiBuilder.CreateLabel( block, "Title:", toolTip );
 	frameLine = guiBuilder.CreateHFrame( block );
-	pEditTitle = guiBuilder.CreateTextField( frameLine, NULL, 0, toolTip, false );
+	pEditTitle = guiBuilder.CreateTextField( frameLine, nullptr, 0, toolTip, false );
 	pEditTitle->setEditable( false );
 	
 	toolTip = "Creator of the game";
 	guiBuilder.CreateLabel( block, "Creator:", toolTip );
 	frameLine = guiBuilder.CreateHFrame( block );
-	pEditCreator = guiBuilder.CreateTextField( frameLine, NULL, 0, toolTip, false );
+	pEditCreator = guiBuilder.CreateTextField( frameLine, nullptr, 0, toolTip, false );
 	pEditCreator->setEditable( false );
 	
 	toolTip = "Homepage";
 	guiBuilder.CreateLabel( block, "Homepage:", toolTip );
 	frameLine = guiBuilder.CreateHFrame( block );
-	pEditHomepage = guiBuilder.CreateTextField( frameLine, NULL, 0, toolTip, false );
+	pEditHomepage = guiBuilder.CreateTextField( frameLine, nullptr, 0, toolTip, false );
 	pEditHomepage->setEditable( false );
 	
 	toolTip = "DELGA File";
@@ -177,9 +172,9 @@ pCalcSizePending( true )
 	frameLine = new FXHorizontalFrame( frameRight, LAYOUT_SIDE_TOP | LAYOUT_FILL_X |
 		LAYOUT_FILL_Y | LAYOUT_FILL_ROW | LAYOUT_FILL_COLUMN, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1 );
 	pLabStatusDelgaFile = new FXLabel( frameLine, "", windowMain->GetIconValidSmall(), LABEL_NORMAL, 0, 0, 0, 0, 0, 0, 0, 0 );
-	pEditDelgaFile = guiBuilder.CreateTextField( frameLine, NULL, 0, toolTip, false );
+	pEditDelgaFile = guiBuilder.CreateTextField( frameLine, nullptr, 0, toolTip, false );
 	pEditDelgaFile->setEditable( false );
-	pLabProblemDelgaFile = new FXLabel( frameRight, "", NULL, LABEL_NORMAL | LAYOUT_FILL_X );
+	pLabProblemDelgaFile = new FXLabel( frameRight, "", nullptr, LABEL_NORMAL | LAYOUT_FILL_X );
 	pLabProblemDelgaFile->setJustify( JUSTIFY_LEFT | JUSTIFY_TOP );
 	pLabProblemDelgaFile->setBackColor( configuration.GetBackColorProblem() );
 	pLabProblemDelgaFile->setTextColor( configuration.GetTextColorProblem() );
@@ -191,9 +186,9 @@ pCalcSizePending( true )
 	frameLine = new FXHorizontalFrame( frameRight, LAYOUT_SIDE_TOP | LAYOUT_FILL_X |
 		LAYOUT_FILL_Y | LAYOUT_FILL_ROW | LAYOUT_FILL_COLUMN, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1 );
 	pLabStatusGameDir = new FXLabel( frameLine, "", windowMain->GetIconValidSmall(), LABEL_NORMAL, 0, 0, 0, 0, 0, 0, 0, 0 );
-	pEditGameDir = guiBuilder.CreateTextField( frameLine, NULL, 0, toolTip, false );
+	pEditGameDir = guiBuilder.CreateTextField( frameLine, nullptr, 0, toolTip, false );
 	pEditGameDir->setEditable( false );
-	pLabProblemGameDir = new FXLabel( frameRight, "", NULL, LABEL_NORMAL | LAYOUT_FILL_X );
+	pLabProblemGameDir = new FXLabel( frameRight, "", nullptr, LABEL_NORMAL | LAYOUT_FILL_X );
 	if( ! pLabProblemGameDir ) DETHROW( deeOutOfMemory );
 	pLabProblemGameDir->setJustify( JUSTIFY_LEFT | JUSTIFY_TOP );
 	pLabProblemGameDir->setBackColor( configuration.GetBackColorProblem() );
@@ -206,9 +201,9 @@ pCalcSizePending( true )
 	frameLine = new FXHorizontalFrame( frameRight, LAYOUT_SIDE_TOP | LAYOUT_FILL_X |
 		LAYOUT_FILL_Y | LAYOUT_FILL_ROW | LAYOUT_FILL_COLUMN, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1 );
 	pLabStatusDataDir = new FXLabel( frameLine, "", windowMain->GetIconValidSmall(), LABEL_NORMAL, 0, 0, 0, 0, 0, 0, 0, 0 );
-	pEditDataDir = guiBuilder.CreateTextField( frameLine, NULL, 0, toolTip, false );
+	pEditDataDir = guiBuilder.CreateTextField( frameLine, nullptr, 0, toolTip, false );
 	pEditDataDir->setEditable( false );
-	pLabProblemDataDir = new FXLabel( frameRight, "", NULL, LABEL_NORMAL | LAYOUT_FILL_X );
+	pLabProblemDataDir = new FXLabel( frameRight, "", nullptr, LABEL_NORMAL | LAYOUT_FILL_X );
 	if( ! pLabProblemDataDir ) DETHROW( deeOutOfMemory );
 	pLabProblemDataDir->setJustify( JUSTIFY_LEFT | JUSTIFY_TOP );
 	pLabProblemDataDir->setBackColor( configuration.GetBackColorProblem() );
@@ -221,9 +216,9 @@ pCalcSizePending( true )
 	frameLine = new FXHorizontalFrame( frameRight, LAYOUT_SIDE_TOP | LAYOUT_FILL_X |
 		LAYOUT_FILL_Y | LAYOUT_FILL_ROW | LAYOUT_FILL_COLUMN, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1 );
 	pLabStatusScriptDir = new FXLabel( frameLine, "", windowMain->GetIconValidSmall(), LABEL_NORMAL, 0, 0, 0, 0, 0, 0, 0, 0 );
-	pEditScriptDir = guiBuilder.CreateTextField( frameLine, NULL, 0, toolTip, false );
+	pEditScriptDir = guiBuilder.CreateTextField( frameLine, nullptr, 0, toolTip, false );
 	pEditScriptDir->setEditable( false );
-	pLabProblemScriptDir = new FXLabel( frameRight, "", NULL, LABEL_NORMAL | LAYOUT_FILL_X );
+	pLabProblemScriptDir = new FXLabel( frameRight, "", nullptr, LABEL_NORMAL | LAYOUT_FILL_X );
 	if( ! pLabProblemScriptDir ) DETHROW( deeOutOfMemory );
 	pLabProblemScriptDir->setJustify( JUSTIFY_LEFT | JUSTIFY_TOP );
 	pLabProblemScriptDir->setBackColor( configuration.GetBackColorProblem() );
@@ -236,26 +231,27 @@ pCalcSizePending( true )
 	frameLine = new FXHorizontalFrame( frameRight, LAYOUT_SIDE_TOP | LAYOUT_FILL_X |
 		LAYOUT_FILL_Y | LAYOUT_FILL_ROW | LAYOUT_FILL_COLUMN, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1 );
 	pLabStatusScriptModule = new FXLabel( frameLine, "", windowMain->GetIconValidSmall(), LABEL_NORMAL, 0, 0, 0, 0, 0, 0, 0, 0 );
-	pEditScriptModule = guiBuilder.CreateTextField( frameLine, NULL, 0, toolTip, false );
+	pEditScriptModule = guiBuilder.CreateTextField( frameLine, nullptr, 0, toolTip, false );
 	pEditScriptModule->setEditable( false );
 	pEditScriptModuleVersion = guiBuilder.CreateTextField(
-		frameLine, NULL, 0, "Minimum required module version", 6, true );
+		frameLine, nullptr, 0, "Minimum required module version", 6, true );
 	pEditScriptModuleVersion->setEditable( false );
 	pBtnScriptModuleInfo = guiBuilder.CreateButton( frameLine, "", windowMain->GetIconButtonInfo(), this, ID_BTN_SCRMODINFO, "Show module information" );
 	pBtnScriptModuleInfo->setLayoutHints( pBtnScriptModuleInfo->getLayoutHints() | LAYOUT_FILL_Y );
-	pLabProblemScriptModule = new FXLabel( frameRight, "", NULL, LABEL_NORMAL | LAYOUT_FILL_X );
+	pLabProblemScriptModule = new FXLabel( frameRight, "", nullptr, LABEL_NORMAL | LAYOUT_FILL_X );
 	if( ! pLabProblemScriptModule ) DETHROW( deeOutOfMemory );
 	pLabProblemScriptModule->setJustify( JUSTIFY_LEFT | JUSTIFY_TOP );
 	pLabProblemScriptModule->setBackColor( configuration.GetBackColorProblem() );
 	pLabProblemScriptModule->setTextColor( configuration.GetTextColorProblem() );
 	
-	pIconBig = game->GetFoxIconBig();
+	const deglGameIcon * const icon = ( deglGameIcon* )game->GetIcons().GetLargest( 128 );
 	pLabIcon = guiBuilder.CreateLabel( block, "", "Game Icon", 0 );
-	if( game->GetFoxIconBig() ){
-		pLabIcon->setIcon( game->GetFoxIconBig()->GetIcon() );
+	if( icon && icon->GetFoxIcon() ){
+		pIconBig = icon->GetFoxIcon();
+		pLabIcon->setIcon( pIconBig->GetIcon() );
 	}
 	
-	pTextDescription = guiBuilder.CreateTextArea( block, NULL, 0, "", false, false );
+	pTextDescription = guiBuilder.CreateTextArea( block, nullptr, 0, "", false, false );
 	pTextDescription->setVisibleColumns( 50 );
 	pTextDescription->setVisibleRows( 5 );
 	pTextDescription->setEditable( false );
@@ -279,15 +275,15 @@ pCalcSizePending( true )
 	pLabProfileIcon = new FXLabel( frameComboBox, "", pWindowMain->GetIconValidSmall(), LABEL_NORMAL, 0, 0, 0, 0, 0, 0, 0, 0 );
 	pCBProfile = guiBuilder.CreateComboBox( frameComboBox, this, ID_CB_PROFILE, "Select profile to use", false, 20, 8, false );
 	pCBProfile->setSortFunc( deglGuiBuilder::SortListItemByName );
-	pBtnEditProfiles = guiBuilder.CreateButton( frameComboBox, "Edit", NULL, this, ID_BTN_EDIT_PROFILES, "Edit Profiles" );
+	pBtnEditProfiles = guiBuilder.CreateButton( frameComboBox, "Edit", nullptr, this, ID_BTN_EDIT_PROFILES, "Edit Profiles" );
 	
-	pLabProfileProblems = new FXLabel( frameRight, "", NULL, LABEL_NORMAL | LAYOUT_FILL_X );
+	pLabProfileProblems = new FXLabel( frameRight, "", nullptr, LABEL_NORMAL | LAYOUT_FILL_X );
 	pLabProfileProblems->setJustify( JUSTIFY_LEFT | JUSTIFY_TOP );
 	pLabProfileProblems->setBackColor( configuration.GetBackColorProblem() );
 	pLabProfileProblems->setTextColor( configuration.GetTextColorProblem() );
 	
 	guiBuilder.CreateLabel( block, "", "" );
-	pBtnDropCustomProfile = guiBuilder.CreateButton( block, "Drop Custom Profile", NULL,
+	pBtnDropCustomProfile = guiBuilder.CreateButton( block, "Drop Custom Profile", nullptr,
 		this, ID_BTN_DROP_CUSTOM_PROFILE, "Drop custom profile to use default profile" );
 	pBtnDropCustomProfile->setLayoutHints( pBtnDropCustomProfile->getLayoutHints()
 		| LAYOUT_FILL_COLUMN | LAYOUT_FILL_X );
@@ -295,13 +291,13 @@ pCalcSizePending( true )
 	toolTip = "Arguments to run the game with";
 	guiBuilder.CreateLabel( block, "Run Arguments:", toolTip );
 	frameLine = guiBuilder.CreateHFrame( block );
-	pEditRunArgs = guiBuilder.CreateTextField( frameLine, NULL, 0, toolTip, false );
+	pEditRunArgs = guiBuilder.CreateTextField( frameLine, nullptr, 0, toolTip, false );
 	
 	toolTip = "Patch to run game with";
 	guiBuilder.CreateLabel( block, "Patch:", toolTip );
 	frameLine = guiBuilder.CreateHFrame( block );
 	pCBPatches = guiBuilder.CreateComboBox( frameLine, this, ID_CB_PATCHES, toolTip, false, 20, 8, false );
-	pBtnPatches = guiBuilder.CreateButton( frameLine, "...", NULL, this, ID_BTN_PATCHES, "Manage Patches" );
+	pBtnPatches = guiBuilder.CreateButton( frameLine, "...", nullptr, this, ID_BTN_PATCHES, "Manage Patches" );
 	
 	
 	
@@ -312,15 +308,15 @@ pCalcSizePending( true )
 	
 	pListFileFormats = new FXIconList( frameTab, this, ID_LIST_FILEFORMATS, ICONLIST_BROWSESELECT | ICONLIST_DETAILED |
 		LAYOUT_FILL_X | LAYOUT_FILL_Y );
-	pListFileFormats->appendHeader( "Resource Type", NULL, 130 );
-	pListFileFormats->appendHeader( "File Format", NULL, 150 );
-	pListFileFormats->appendHeader( "Supported by", NULL, 130 );
-	pListFileFormats->appendHeader( "Status", NULL, 100 );
+	pListFileFormats->appendHeader( "Resource Type", nullptr, 130 );
+	pListFileFormats->appendHeader( "File Format", nullptr, 150 );
+	pListFileFormats->appendHeader( "Supported by", nullptr, 130 );
+	pListFileFormats->appendHeader( "Status", nullptr, 100 );
 	
 	
 	
 	// disc usage
-	pTabDiscUsage = new FXTabItem( pTabPanels, "Disc Usage", NULL, TAB_TOP_NORMAL, 0, 0, 0, 0, 10, 10, 2, 2 );
+	pTabDiscUsage = new FXTabItem( pTabPanels, "Disc Usage", nullptr, TAB_TOP_NORMAL, 0, 0, 0, 0, 10, 10, 2, 2 );
 	frameTab = new FXVerticalFrame( pTabPanels, FRAME_RAISED | LAYOUT_FILL_Y | LAYOUT_FILL_X,
 		0, 0, 0, 0, 10, 10, 10, 10, 0, 3 );
 	block = guiBuilder.CreateMatrixPacker( frameTab, 4 );
@@ -328,7 +324,7 @@ pCalcSizePending( true )
 	toolTip = "Size of DELGA directory";
 	guiBuilder.CreateLabel( block, "DELGA size:", toolTip );
 	frameLine = guiBuilder.CreateHFrame( block );
-	pEditSizeDelgaFile = guiBuilder.CreateTextField( frameLine, NULL, 0, toolTip, false );
+	pEditSizeDelgaFile = guiBuilder.CreateTextField( frameLine, nullptr, 0, toolTip, false );
 	pEditSizeDelgaFile->setEditable( false );
 	pEditSizeDelgaFile->setJustify( JUSTIFY_RIGHT );
 	pEditSizeDelgaFile->setFrameStyle( pEditSizeDelgaFile->getFrameStyle() & ~FRAME_SUNKEN );
@@ -337,7 +333,7 @@ pCalcSizePending( true )
 	toolTip = "Size of game data directory";
 	guiBuilder.CreateLabel( block, "Data dir size:", toolTip );
 	frameLine = guiBuilder.CreateHFrame( block );
-	pEditSizeDataDir = guiBuilder.CreateTextField( frameLine, NULL, 0, toolTip, false );
+	pEditSizeDataDir = guiBuilder.CreateTextField( frameLine, nullptr, 0, toolTip, false );
 	pEditSizeDataDir->setEditable( false );
 	pEditSizeDataDir->setJustify( JUSTIFY_RIGHT );
 	pEditSizeDataDir->setFrameStyle( pEditSizeDataDir->getFrameStyle() & ~FRAME_SUNKEN );
@@ -346,7 +342,7 @@ pCalcSizePending( true )
 	toolTip = "Size of game capture directory (screenshots, videos, ...)";
 	guiBuilder.CreateLabel( block, "Capture dir size (screenshots, videos, ...):", toolTip );
 	frameLine = guiBuilder.CreateHFrame( block );
-	pEditSizeCaptureDir = guiBuilder.CreateTextField( frameLine, NULL, 0, toolTip, false );
+	pEditSizeCaptureDir = guiBuilder.CreateTextField( frameLine, nullptr, 0, toolTip, false );
 	pEditSizeCaptureDir->setEditable( false );
 	pEditSizeCaptureDir->setJustify( JUSTIFY_RIGHT );
 	pEditSizeCaptureDir->setFrameStyle( pEditSizeCaptureDir->getFrameStyle() & ~FRAME_SUNKEN );
@@ -355,7 +351,7 @@ pCalcSizePending( true )
 	toolTip = "Size of game config directory (config, profiles, saves, ...)";
 	guiBuilder.CreateLabel( block, "Config dir size (config, saves...):", toolTip );
 	frameLine = guiBuilder.CreateHFrame( block );
-	pEditSizeConfigDir = guiBuilder.CreateTextField( frameLine, NULL, 0, toolTip, false );
+	pEditSizeConfigDir = guiBuilder.CreateTextField( frameLine, nullptr, 0, toolTip, false );
 	pEditSizeConfigDir->setEditable( false );
 	pEditSizeConfigDir->setJustify( JUSTIFY_RIGHT );
 	pEditSizeConfigDir->setFrameStyle( pEditSizeConfigDir->getFrameStyle() & ~FRAME_SUNKEN );
@@ -364,7 +360,7 @@ pCalcSizePending( true )
 	toolTip = "Size of all engine module caches";
 	guiBuilder.CreateLabel( block, "All caches size:", toolTip );
 	frameLine = guiBuilder.CreateHFrame( block );
-	pEditSizeCaches = guiBuilder.CreateTextField( frameLine, NULL, 0, toolTip, false );
+	pEditSizeCaches = guiBuilder.CreateTextField( frameLine, nullptr, 0, toolTip, false );
 	pEditSizeCaches->setEditable( false );
 	pEditSizeCaches->setJustify( JUSTIFY_RIGHT );
 	pEditSizeCaches->setFrameStyle( pEditSizeCaches->getFrameStyle() & ~FRAME_SUNKEN );
@@ -373,10 +369,10 @@ pCalcSizePending( true )
 	FXVerticalFrame * const groupBoxModules = guiBuilder.CreateGroupBox( frameTab, "Engine module caches:", true );
 	pListCaches = new FXIconList( groupBoxModules, this, ID_LIST_FILEFORMATS, ICONLIST_BROWSESELECT
 		| ICONLIST_DETAILED | LAYOUT_FILL_X | LAYOUT_FILL_Y );
-	pListCaches->appendHeader( "Module", NULL, 200 );
-	pListCaches->appendHeader( "Used", NULL, 100 );
-	pListCaches->appendHeader( "Limit", NULL, 100 );
-	pListCaches->appendHeader( "Fill-Level", NULL, 100 );
+	pListCaches->appendHeader( "Module", nullptr, 200 );
+	pListCaches->appendHeader( "Used", nullptr, 100 );
+	pListCaches->appendHeader( "Limit", nullptr, 100 );
+	pListCaches->appendHeader( "Fill-Level", nullptr, 100 );
 	pListCaches->setSortFunc( fSortCache );
 	
 	
@@ -386,9 +382,9 @@ pCalcSizePending( true )
 	
 	frameLine = new FXHorizontalFrame( frameGroup, LAYOUT_CENTER_X, 0, 0, 0, 0, 0, 0, 0, 0, 20, 0 );
 	if( ! frameLine ) DETHROW( deeOutOfMemory );
-	new FXButton( frameLine, "Accept", NULL, this, ID_ACCEPT, LAYOUT_CENTER_X
+	new FXButton( frameLine, "Accept", nullptr, this, ID_ACCEPT, LAYOUT_CENTER_X
 		| FRAME_RAISED | JUSTIFY_NORMAL | ICON_BEFORE_TEXT, 0, 0, 0, 0, 30, 30 );
-	new FXButton( frameLine, "Cancel", NULL, this, ID_CANCEL, LAYOUT_CENTER_X
+	new FXButton( frameLine, "Cancel", nullptr, this, ID_CANCEL, LAYOUT_CENTER_X
 		| FRAME_RAISED | JUSTIFY_NORMAL | ICON_BEFORE_TEXT, 0, 0, 0, 0, 30, 30 );
 	
 	
@@ -426,10 +422,10 @@ deglDialogGameProperties::~deglDialogGameProperties(){
 ///////////////
 
 void deglDialogGameProperties::UpdateGame(){
-	const deglGameManager &gameManager = *pWindowMain->GetLauncher()->GetGameManager();
-	const deglGame &game = GetGame();
-	deglGameProfile *validateGameProfile;
-	deglEngineModule *engineModule;
+	const delGameManager &gameManager = pWindowMain->GetLauncher()->GetGameManager();
+	const delGame &game = GetGame();
+	delGameProfile *validateGameProfile;
+	delEngineModule *engineModule;
 	FXString text;
 	bool panelInfosWorking = true;
 	
@@ -448,12 +444,12 @@ void deglDialogGameProperties::UpdateGame(){
 	pEditScriptModuleVersion->setText( game.GetScriptModuleVersion().GetString() );
 	
 	if( game.GetScriptModuleVersion().IsEmpty() ){
-		engineModule = pWindowMain->GetLauncher()->GetEngine()->
-			GetModuleList().GetModuleNamed( game.GetScriptModule() );
+		engineModule = pWindowMain->GetLauncher()->GetEngine().
+			GetModules().GetNamed( game.GetScriptModule() );
 			
 	}else{
-		engineModule = pWindowMain->GetLauncher()->GetEngine()->GetModuleList()
-			.GetModuleNamedAtLeast( game.GetScriptModule(), game.GetScriptModuleVersion() );
+		engineModule = pWindowMain->GetLauncher()->GetEngine().GetModules()
+			.GetNamedAtLeast( game.GetScriptModule(), game.GetScriptModuleVersion() );
 	}
 	
 	if( ! engineModule ){
@@ -462,7 +458,7 @@ void deglDialogGameProperties::UpdateGame(){
 		pLabProblemScriptModule->show();
 		panelInfosWorking = false;
 		
-	}else if( engineModule->GetStatus() != deglEngineModule::emsReady ){
+	}else if( engineModule->GetStatus() != delEngineModule::emsReady ){
 		pLabStatusScriptModule->setIcon( pWindowMain->GetIconInvalidSmall() );
 		pLabProblemScriptModule->setText( "The required Script Module is not working correctly." );
 		pLabProblemScriptModule->show();
@@ -499,13 +495,13 @@ void deglDialogGameProperties::UpdateGame(){
 	
 	// settings
 	pCBProfile->clearItems();
-	pCBProfile->appendItem( game.GetCustomProfile() ? "< Custom Profile >" : "< Default Profile >", NULL );
+	pCBProfile->appendItem( game.GetCustomProfile() ? "< Custom Profile >" : "< Default Profile >", nullptr );
 	
-	const deglGameProfileList &profiles = gameManager.GetProfileList();
-	const int profileCount = profiles.GetProfileCount();
+	const delGameProfileList &profiles = gameManager.GetProfiles();
+	const int profileCount = profiles.GetCount();
 	int i;
 	for( i=0; i<profileCount; i++ ){
-		deglGameProfile * const profile = profiles.GetProfileAt( i );
+		delGameProfile * const profile = profiles.GetAt( i );
 		pCBProfile->appendItem( profile->GetName().GetString(), profile );
 	}
 	
@@ -539,22 +535,22 @@ void deglDialogGameProperties::UpdateGame(){
 	
 	pEditRunArgs->setText( game.GetRunArguments().GetString() );
 	
-	deglPatchList patches, sorted;
+	delPatchList patches, sorted;
 	game.FindPatches( patches );
 	game.SortPatches( sorted, patches );
 	
 	pCBPatches->clearItems();
-	pCBPatches->appendItem( "< Latest >", NULL );
+	pCBPatches->appendItem( "< Latest >", nullptr );
 	for( i=sorted.GetCount()-1; i>=0; i-- ){
-		deglPatch * const patch = sorted.GetAt( i );
+		delPatch * const patch = sorted.GetAt( i );
 		pCBPatches->appendItem( patch->GetName().ToUTF8().GetString(), patch );
 	}
-	pCBPatches->appendItem( "< Vanilla >", NULL );
+	pCBPatches->appendItem( "< Vanilla >", nullptr );
 	if( game.GetUseLatestPatch() ){
 		pCBPatches->setCurrentItem( 0 );
 		
 	}else if( game.GetUseCustomPatch() ){
-		deglPatch * const patch = pWindowMain->GetLauncher()->GetPatchManager().GetPatches().GetWithID( game.GetUseCustomPatch() );
+		delPatch * const patch = pWindowMain->GetLauncher()->GetPatchManager().GetPatches().GetWithID( game.GetUseCustomPatch() );
 		const int index = patch ? pCBPatches->findItemByData( patch ) : -1;
 		if( index != -1 ){
 			pCBPatches->setCurrentItem( index );
@@ -586,14 +582,14 @@ void deglDialogGameProperties::UpdateGame(){
 }
 
 void deglDialogGameProperties::UpdateFileFormatList(){
-	const deglEngine &engine = *pWindowMain->GetLauncher()->GetEngine();
-	const deglEngineModuleList &moduleList = engine.GetModuleList();
-	const deglGame &game = GetGame();
-	const deglFileFormatList &fileFormatList = game.GetFileFormatList();
-	int f, formatCount = fileFormatList.GetFormatCount();
-	int m, moduleCount = moduleList.GetModuleCount();
-	deglEngineModule *matchingModule;
-	deglEngineModule *module = NULL;
+	const delEngine &engine = pWindowMain->GetLauncher()->GetEngine();
+	const delEngineModuleList &moduleList = engine.GetModules();
+	const delGame &game = GetGame();
+	const delFileFormatList &fileFormatList = game.GetFileFormats();
+	int f, formatCount = fileFormatList.GetCount();
+	int m, moduleCount = moduleList.GetCount();
+	delEngineModule *matchingModule;
+	delEngineModule *module = nullptr;
 	deModuleSystem::eModuleTypes formatType;
 	FXString text;
 	FXIcon *icon;
@@ -601,7 +597,7 @@ void deglDialogGameProperties::UpdateFileFormatList(){
 	pListFileFormats->clearItems();
 	
 	for( f=0; f<formatCount; f++ ){
-		deglFileFormat &format = *fileFormatList.GetFormatAt( f );
+		delFileFormat &format = *fileFormatList.GetAt( f );
 		const decString &formatPattern = format.GetPattern();
 		formatType = format.GetType();
 		
@@ -656,11 +652,11 @@ void deglDialogGameProperties::UpdateFileFormatList(){
 		text.append( '\t' );
 		
 		// add module supporting this file format
-		matchingModule = NULL;
+		matchingModule = nullptr;
 		
 		if( ! deModuleSystem::IsSingleType( formatType ) ){
 			for( m=0; m<moduleCount; m++ ){
-				module = moduleList.GetModuleAt( m );
+				module = moduleList.GetAt( m );
 				
 				if( module->GetType() == formatType && formatPattern.MatchesPattern( module->GetPattern() ) ){
 					matchingModule = module;
@@ -679,7 +675,7 @@ void deglDialogGameProperties::UpdateFileFormatList(){
 		
 		// add status
 		if( matchingModule ){
-			if( module->GetStatus() == deglEngineModule::emsReady ){
+			if( module->GetStatus() == delEngineModule::emsReady ){
 				text.append( "OK" );
 				icon = pWindowMain->GetIconValidSmall();
 				
@@ -693,16 +689,15 @@ void deglDialogGameProperties::UpdateFileFormatList(){
 			icon = pWindowMain->GetIconInvalidSmall();
 		}
 		
-		pListFileFormats->appendItem( text, icon, icon, NULL );
+		pListFileFormats->appendItem( text, icon, icon, nullptr );
 	}
 }
 
 void deglDialogGameProperties::UpdateDiscUsage(){
-	const deglConfiguration &configuration = *pWindowMain->GetLauncher()->GetConfiguration();
-	const deglGame &game = GetGame();
+	const delGame &game = GetGame();
 	decPath path;
 	
-	getApp()->addTimeout( this, ID_TIMER_UPDATE_CALCSIZE, INTERVAL_TIMER_UPDATE_CALCSIZE, NULL );
+	getApp()->addTimeout( this, ID_TIMER_UPDATE_CALCSIZE, INTERVAL_TIMER_UPDATE_CALCSIZE, nullptr );
 	
 	pEditSizeDelgaFile->setText( "0" );
 	if( ! game.GetDelgaFile().IsEmpty() ){
@@ -730,7 +725,7 @@ void deglDialogGameProperties::UpdateDiscUsage(){
 	}
 	
 	try{
-		path.SetFromNative( configuration.GetPathConfigUser() );
+		path.SetFromNative( pWindowMain->GetLauncher()->GetPathConfigUser() );
 		path.AddComponent( "games" );
 		path.AddComponent( game.GetIdentifier().ToHexString( false ) );
 		path.AddComponent( "capture" );
@@ -742,7 +737,7 @@ void deglDialogGameProperties::UpdateDiscUsage(){
 	}
 	
 	try{
-		path.SetFromNative( configuration.GetPathConfigUser() );
+		path.SetFromNative( pWindowMain->GetLauncher()->GetPathConfigUser() );
 		path.AddComponent( "games" );
 		path.AddComponent( game.GetIdentifier().ToHexString( false ) );
 		path.AddComponent( "config" );
@@ -757,11 +752,11 @@ void deglDialogGameProperties::UpdateDiscUsage(){
 }
 
 void deglDialogGameProperties::UpdateCacheList(){
-	const deglEngine &engine = *pWindowMain->GetLauncher()->GetEngine();
-	const deglEngineModuleList &moduleList = engine.GetModuleList();
-	const deglGame &game = GetGame();
+	const delEngine &engine = pWindowMain->GetLauncher()->GetEngine();
+	const delEngineModuleList &moduleList = engine.GetModules();
+	const delGame &game = GetGame();
 	
-	const int count = moduleList.GetModuleCount();
+	const int count = moduleList.GetCount();
 	FXString text;
 	decPath path;
 	FXIcon *icon;
@@ -776,15 +771,15 @@ void deglDialogGameProperties::UpdateCacheList(){
 	pCaches = new sCache[ count ];
 	
 	for( pCacheCount=0; pCacheCount<count; pCacheCount++ ){
-		const deglEngineModule &module = *moduleList.GetModuleAt( pCacheCount );
+		const delEngineModule &module = *moduleList.GetAt( pCacheCount );
 		
-		pCaches[ pCacheCount ].calcSize = NULL;
+		pCaches[ pCacheCount ].calcSize = nullptr;
 		pCaches[ pCacheCount ].name = module.GetName().GetString();
 		pCaches[ pCacheCount ].used = 0;
 		pCaches[ pCacheCount ].limit = 1000000000;
 		pCaches[ pCacheCount ].fillLevel = 0.0f;
 		
-		icon = NULL;
+		icon = nullptr;
 		text = module.GetName().GetString();
 		text.append( "\tCalculating...\t-\t-" );
 		
@@ -795,7 +790,7 @@ void deglDialogGameProperties::UpdateCacheList(){
 			path.AddUnixPath( "local" );
 			path.AddUnixPath( game.GetIdentifier().ToHexString( false ) );
 			path.AddUnixPath( "modules" );
-			path.AddUnixPath( deModuleSystem::GetTypeDirectory( ( deModuleSystem::eModuleTypes )module.GetType() ) );
+			path.AddUnixPath( deModuleSystem::GetTypeDirectory( module.GetType() ) );
 			path.AddUnixPath( module.GetDirectoryName() );
 			pCaches[ pCacheCount ].calcSize = new deglCalculateDirectorySize( path.GetPathNative() );
 			pCaches[ pCacheCount ].calcSize->Start();
@@ -853,15 +848,15 @@ long deglDialogGameProperties::onTabPanelsChanged( FXObject*, FXSelector, void* 
 
 
 long deglDialogGameProperties::onBtnScriptModuleInfo( FXObject*, FXSelector, void* ){
-	const deglEngineModuleList &moduleList = pWindowMain->GetLauncher()->GetEngine()->GetModuleList();
-	const deglGame &game = GetGame();
-	deglEngineModule *module;
+	const delEngineModuleList &moduleList = pWindowMain->GetLauncher()->GetEngine().GetModules();
+	const delGame &game = GetGame();
+	delEngineModule *module;
 	
 	if( game.GetScriptModuleVersion().IsEmpty() ){
-		module = moduleList.GetModuleNamed( game.GetScriptModule() );
+		module = moduleList.GetNamed( game.GetScriptModule() );
 		
 	}else{
-		module = moduleList.GetModuleNamedAtLeast( game.GetScriptModule(), game.GetScriptModuleVersion() );
+		module = moduleList.GetNamedAtLeast( game.GetScriptModule(), game.GetScriptModuleVersion() );
 	}
 	
 	if( module ){
@@ -875,22 +870,22 @@ long deglDialogGameProperties::onBtnScriptModuleInfo( FXObject*, FXSelector, voi
 
 long deglDialogGameProperties::onCBProfileChanged( FXObject*, FXSelector, void* ){
 	if( pCBProfile->getCurrentItem() == -1 ){
-		GetGame().SetActiveProfile( NULL );
+		GetGame().SetActiveProfile( nullptr );
 		
 	}else{
-		GetGame().SetActiveProfile( ( deglGameProfile* )pCBProfile->getItemData( pCBProfile->getCurrentItem() ) );
+		GetGame().SetActiveProfile( ( delGameProfile* )pCBProfile->getItemData( pCBProfile->getCurrentItem() ) );
 	}
 	UpdateGame();
 	return 1;
 }
 
 long deglDialogGameProperties::onBtnEditProfiles( FXObject*, FXSelector, void* ){
-	deglGameManager &gameManager = *pWindowMain->GetLauncher()->GetGameManager();
+	delGameManager &gameManager = pWindowMain->GetLauncher()->GetGameManager();
 	
 	try{
-		deglGameProfile *profile = NULL;
+		delGameProfile *profile = nullptr;
 		if( pCBProfile->getCurrentItem() != -1 ){
-			profile = ( deglGameProfile* )pCBProfile->getItemData( pCBProfile->getCurrentItem() );
+			profile = ( delGameProfile* )pCBProfile->getItemData( pCBProfile->getCurrentItem() );
 		}
 		if( ! profile ){
 			profile = GetGame().GetCustomProfile();
@@ -903,8 +898,8 @@ long deglDialogGameProperties::onBtnEditProfiles( FXObject*, FXSelector, void* )
 		}
 		
 		if( deglDialogProfileList( pWindowMain, this, profile ).execute() ){
-			pWindowMain->GetLauncher()->GetEngine()->SaveConfig();
-			gameManager.GetProfileList().ValidateProfiles( *pWindowMain->GetLauncher() );
+			pWindowMain->GetLauncher()->GetEngine().SaveConfig();
+			gameManager.GetProfiles().ValidateAll( *pWindowMain->GetLauncher() );
 			gameManager.ApplyProfileChanges();
 			gameManager.SaveGameConfigs();
 			UpdateGame();
@@ -919,7 +914,7 @@ long deglDialogGameProperties::onBtnEditProfiles( FXObject*, FXSelector, void* )
 }
 
 long deglDialogGameProperties::onBtnDropCustomProfile( FXObject*, FXSelector, void* ){
-	deglGame &game = GetGame();
+	delGame &game = GetGame();
 	if( ! game.GetCustomProfile() ){
 		return 1;
 	}
@@ -930,7 +925,7 @@ long deglDialogGameProperties::onBtnDropCustomProfile( FXObject*, FXSelector, vo
 		return 1;
 	}
 	
-	game.SetCustomProfile( NULL );
+	game.SetCustomProfile( nullptr );
 	game.SaveConfig();
 	
 	UpdateGame();
@@ -939,7 +934,7 @@ long deglDialogGameProperties::onBtnDropCustomProfile( FXObject*, FXSelector, vo
 
 long deglDialogGameProperties::onCBPatchesChanged( FXObject*, FXSelector, void* ){
 	const int selection = pCBPatches->getCurrentItem();
-	deglGame &game = GetGame();
+	delGame &game = GetGame();
 	
 	if( selection <= 0 ){
 		game.SetUseLatestPatch( true );
@@ -951,7 +946,7 @@ long deglDialogGameProperties::onCBPatchesChanged( FXObject*, FXSelector, void* 
 		
 	}else{
 		game.SetUseLatestPatch( false );
-		game.SetUseCustomPatch( ( ( deglPatch* )pCBPatches->getItemData( selection ) )->GetIdentifier() );
+		game.SetUseCustomPatch( ( ( delPatch* )pCBPatches->getItemData( selection ) )->GetIdentifier() );
 	}
 	
 	return 1;
@@ -965,7 +960,7 @@ long deglDialogGameProperties::onBtnPatches( FXObject*, FXSelector, void* ){
 	try{
 		FXMenuPane popup( this );
 		
-		command = new FXMenuCommand( &popup, "Uninstall Patch", NULL, this, ID_PU_PATCH_UNINSTALL );
+		command = new FXMenuCommand( &popup, "Uninstall Patch", nullptr, this, ID_PU_PATCH_UNINSTALL );
 		if( ! isPatchSelected ){
 			command->disable();
 		}
@@ -974,7 +969,7 @@ long deglDialogGameProperties::onBtnPatches( FXObject*, FXSelector, void* ){
 		
 		FXint x, y;
 		pBtnPatches->translateCoordinatesTo( x, y, getRoot(), 0, pBtnPatches->getHeight() );
-		popup.popup( NULL, x + 1, y + 1 ); // popup-bug. do not show straight under the cursor
+		popup.popup( nullptr, x + 1, y + 1 ); // popup-bug. do not show straight under the cursor
 		getApp()->runModalWhileShown( &popup );
 		
 	}catch( const deException &e ){
@@ -990,11 +985,11 @@ long deglDialogGameProperties::onPUPatchUninstall( FXObject*, FXSelector, void* 
 		return 1;
 	}
 	
-	deglPatch &patch = *( ( deglPatch* )pCBPatches->getItemData( selection ) );
+	delPatch &patch = *( ( delPatch* )pCBPatches->getItemData( selection ) );
 	
 	if( patch.GetGameID() ){
-		deglGame * const game = pWindowMain->GetLauncher()->GetGameManager()->
-			GetGameList().GetWithID( patch.GetGameID() );
+		delGame * const game = pWindowMain->GetLauncher()->GetGameManager().
+			GetGames().GetWithID( patch.GetGameID() );
 		if( game ){
 			if( game->IsRunning() ){
 				FXMessageBox::information( this, MBOX_OK, "Uninstall Patch",
@@ -1018,7 +1013,7 @@ long deglDialogGameProperties::onPUPatchUninstall( FXObject*, FXSelector, void* 
 		
 		pWindowMain->ReloadGamesAndPatches();
 		
-		pGame = pWindowMain->GetLauncher()->GetGameManager()->GetGameList().GetWithID( gameID );
+		pGame = pWindowMain->GetLauncher()->GetGameManager().GetGames().GetWithID( gameID );
 		pWindowMain->GetPanelGames()->SetSelectedGame( &GetGame() );
 		
 		UpdateGame();
@@ -1046,8 +1041,11 @@ long deglDialogGameProperties::onTimerUpdateCalcSize( FXObject*, FXSelector, voi
 			pCalcSizeDataDir->WaitForExit();
 			const uint64_t size = pCalcSizeDataDir->GetSize();
 			const bool failed = pCalcSizeDataDir->GetFailed();
+			if( failed ){
+				pLogException( pCalcSizeDataDir->GetDirectory(), pCalcSizeDataDir->GetException() );
+			}
 			delete pCalcSizeDataDir;
-			pCalcSizeDataDir = NULL;
+			pCalcSizeDataDir = nullptr;
 			
 			if( failed ){
 				pEditSizeDataDir->setText( "Failed!" );
@@ -1067,8 +1065,11 @@ long deglDialogGameProperties::onTimerUpdateCalcSize( FXObject*, FXSelector, voi
 			pCalcSizeCaptureDir->WaitForExit();
 			const uint64_t size = pCalcSizeCaptureDir->GetSize();
 			const bool failed = pCalcSizeCaptureDir->GetFailed();
+			if( failed ){
+				pLogException( pCalcSizeCaptureDir->GetDirectory(), pCalcSizeCaptureDir->GetException() );
+			}
 			delete pCalcSizeCaptureDir;
-			pCalcSizeCaptureDir = NULL;
+			pCalcSizeCaptureDir = nullptr;
 			
 			if( failed ){
 				pEditSizeCaptureDir->setText( "Failed!" );
@@ -1088,8 +1089,11 @@ long deglDialogGameProperties::onTimerUpdateCalcSize( FXObject*, FXSelector, voi
 			pCalcSizeConfigDir->WaitForExit();
 			const uint64_t size = pCalcSizeConfigDir->GetSize();
 			const bool failed = pCalcSizeConfigDir->GetFailed();
+			if( failed ){
+				pLogException( pCalcSizeConfigDir->GetDirectory(), pCalcSizeConfigDir->GetException() );
+			}
 			delete pCalcSizeConfigDir;
-			pCalcSizeConfigDir = NULL;
+			pCalcSizeConfigDir = nullptr;
 			
 			if( failed ){
 				pEditSizeConfigDir->setText( "Failed!" );
@@ -1120,8 +1124,11 @@ long deglDialogGameProperties::onTimerUpdateCalcSize( FXObject*, FXSelector, voi
 			pCaches[ i ].calcSize->WaitForExit();
 			pCaches[ i ].used = pCaches[ i ].calcSize->GetSize();
 			const bool failed = pCaches[ i ].calcSize->GetFailed();
+			if( failed ){
+				pLogException( pCaches[ i ].calcSize->GetDirectory(), pCaches[ i ].calcSize->GetException() );
+			}
 			delete pCaches[ i ].calcSize;
-			pCaches[ i ].calcSize = NULL;
+			pCaches[ i ].calcSize = nullptr;
 			
 			pCaches[ i ].fillLevel = ( float )pCaches[ i ].used / ( float )pCaches[ i ].limit;
 			
@@ -1167,7 +1174,7 @@ long deglDialogGameProperties::onTimerUpdateCalcSize( FXObject*, FXSelector, voi
 	}
 	
 	if( reschedule ){
-		getApp()->addTimeout( this, ID_TIMER_UPDATE_CALCSIZE, INTERVAL_TIMER_UPDATE_CALCSIZE, NULL );
+		getApp()->addTimeout( this, ID_TIMER_UPDATE_CALCSIZE, INTERVAL_TIMER_UPDATE_CALCSIZE, nullptr );
 	}
 	
 	return updated ? 1 : 0;
@@ -1197,11 +1204,11 @@ void deglDialogGameProperties::pDeleteCaches(){
 		
 		pCaches[ i ].calcSize->WaitForExit();
 		delete pCaches[ i ].calcSize;
-		pCaches[ i ].calcSize = NULL;
+		pCaches[ i ].calcSize = nullptr;
 	}
 	
 	delete [] pCaches;
-	pCaches = NULL;
+	pCaches = nullptr;
 	pCacheCount = 0;
 }
 
@@ -1257,5 +1264,18 @@ FXint deglDialogGameProperties::fSortCache( const FXIconItem *item1, const FXIco
 		
 	}else{
 		return compare( cache1.name, cache2.name );
+	}
+}
+
+void deglDialogGameProperties::pLogException( const char *source, const decStringList &exception ){
+	const decString &logSource = pWindowMain->GetLauncher()->GetLogSource();
+	deLogger &logger = *pWindowMain->GetLauncher()->GetLogger();
+	const int count = exception.GetCount();
+	int i;
+	
+	logger.LogErrorFormat( logSource, "Exception while scanning '%s'", source );
+	
+	for( i=0; i<count; i++ ){
+		logger.LogError( logSource, exception.GetAt( i ) );
 	}
 }

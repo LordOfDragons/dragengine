@@ -28,7 +28,7 @@ class deglWindowMain;
 
 
 /**
- * \brief Install delga file.
+ * Install delga file.
  */
 class deglInstallDelga{
 private:
@@ -39,10 +39,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create installer. */
+	/** Create installer. */
 	deglInstallDelga( deglWindowMain &window );
 	
-	/** \brief Clean up installer. */
+	/** Clean up installer. */
 	~deglInstallDelga();
 	/*@}*/
 	
@@ -50,8 +50,8 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Run. */
-	bool Run( const char *forceFilename = NULL );
+	/** Run. */
+	bool Run( const char *forceFilename = nullptr );
 	/*@}*/
 };
 

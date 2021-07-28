@@ -26,10 +26,11 @@
 #include "deglWindowLoggerListener.h"
 #include "deglWindowLoggerTable.h"
 #include "deglWindowLoggerTableItem.h"
-#include "../../logger/deglLoggerHistory.h"
-#include "../../logger/deglLoggerHistoryEntry.h"
+
+#include <delauncher/logger/delLoggerHistoryEntry.h>
 
 #include <dragengine/common/exceptions.h>
+#include <dragengine/threading/deMutexGuard.h>
 
 
 
@@ -58,24 +59,18 @@ FXIMPLEMENT( deglWindowLogger, FXTopWindow, deglWindowLoggerMap, ARRAYNUMBER( de
 deglWindowLogger::deglWindowLogger(){ }
 
 deglWindowLogger::deglWindowLogger( FXApp *app ) :
-FXTopWindow( app, "Logging History", NULL, NULL, DECOR_ALL, 0, 0, 600, 450, 0, 0, 0, 0, 0, 0 ){
-	FXVerticalFrame *content;
-	
-	pListener = NULL;
-	pLogger = NULL;
-	pFontNormal = NULL;
-	pFontBold = NULL;
-	
-	// create listener
-	pListener = new deglWindowLoggerListener( this );
-	if( ! pListener ) DETHROW( deeOutOfMemory );
-	
+FXTopWindow( app, "Logging History", nullptr, nullptr, DECOR_ALL, 0, 0, 600, 450, 0, 0, 0, 0, 0, 0 ),
+pListener( delLoggerHistoryListener::Ref::New( new deglWindowLoggerListener( *this ) ) ),
+pFontNormal( nullptr ),
+pFontBold( nullptr ),
+pTableLogs( nullptr )
+{
 	// create window
-	content = new FXVerticalFrame( this, LAYOUT_FILL_X | LAYOUT_FILL_Y | LAYOUT_TOP | LAYOUT_LEFT, 0, 0, 0, 0, 0, 0, 0, 0 );
+	FXVerticalFrame * const content = new FXVerticalFrame( this,
+		LAYOUT_FILL_X | LAYOUT_FILL_Y | LAYOUT_TOP | LAYOUT_LEFT, 0, 0, 0, 0, 0, 0, 0, 0 );
 	
-	pTableLogs = new deglWindowLoggerTable( content, NULL, 0, TABLE_COL_SIZABLE | TABLE_NO_COLSELECT | TABLE_NO_ROWSELECT
-		| LAYOUT_FILL_X | LAYOUT_FILL_Y );
-	if( ! pTableLogs ) DETHROW( deeOutOfMemory );
+	pTableLogs = new deglWindowLoggerTable( content, nullptr, 0,
+		TABLE_COL_SIZABLE | TABLE_NO_COLSELECT | TABLE_NO_ROWSELECT | LAYOUT_FILL_X | LAYOUT_FILL_Y );
 	pTableLogs->setEditable( false );
 	pTableLogs->setTableSize( 0, 2 );
 	
@@ -93,8 +88,7 @@ FXTopWindow( app, "Logging History", NULL, NULL, DECOR_ALL, 0, 0, 600, 450, 0, 0
 }
 
 deglWindowLogger::~deglWindowLogger(){
-	SetLogger( NULL );
-	if( pListener ) pListener->FreeReference();
+	SetLogger( nullptr );
 }
 
 
@@ -114,33 +108,31 @@ void deglWindowLogger::create(){
 //	fontDesc.size = ( int )( ( float )fontDesc.size * 0.1f );
 //#endif
 	pFontNormal = new FXFont( getApp(), fontDesc );
-	if( ! pFontNormal ) DETHROW( deeOutOfMemory );
 	pFontNormal->create();
 	
 	fontDesc.weight = FXFont::Bold;
 	pFontBold = new FXFont( getApp(), fontDesc );
-	if( ! pFontBold ) DETHROW( deeOutOfMemory );
 	pFontBold->create();
 }
 
 
 
-void deglWindowLogger::SetLogger( deglLoggerHistory *logger ){
-	if( logger != pLogger ){
-		if( pLogger ){
-			pLogger->RemoveListener( pListener );
-			pLogger->FreeReference();
-		}
-		
-		pLogger = logger;
-		
-		if( logger ){
-			logger->AddReference();
-			logger->AddListener( pListener );
-		}
-		
-		UpdateLogs();
+void deglWindowLogger::SetLogger( delLoggerHistory *logger ){
+	if( pLogger == logger ){
+		return;
 	}
+	
+	if( pLogger ){
+		pLogger->RemoveListener( pListener );
+	}
+	
+	pLogger = logger;
+	
+	if( logger ){
+		logger->AddListener( pListener );
+	}
+	
+	UpdateLogs();
 }
 
 
@@ -148,39 +140,39 @@ void deglWindowLogger::SetLogger( deglLoggerHistory *logger ){
 void deglWindowLogger::UpdateLogs(){
 	ClearLogsTable();
 	
-	if( pLogger ){
-		pLogger->GetMutex().Lock();
-		
-		const int count = pLogger->GetEntryCount();
-		int i;
-		
-		try{
-			for( i=0; i<count; i++ ){
-				AddLogToTable( pLogger->GetEntryAt( i ) );
-			}
-			
-		}catch( const deException & ){
-			pLogger->GetMutex().Unlock();
-			throw;
-		}
-		
-		pLogger->GetMutex().Unlock();
+	if( ! pLogger ){
+		return;
+	}
+	
+	const deMutexGuard lock( pLogger->GetMutex() );
+	const int count = pLogger->GetEntryCount();
+	int i;
+	for( i=0; i<count; i++ ){
+		AddLogToTable( pLogger->GetEntryAt( i ) );
 	}
 }
 
-void deglWindowLogger::AddLogToTable( const deglLoggerHistoryEntry &entry ){
+void deglWindowLogger::AddLogToTable( const delLoggerHistoryEntry &entry ){
 	int index = pTableLogs->getNumRows();
 	FXFont *font = pFontNormal;
 	FXColor color = 0;
 	
-	if( entry.GetType() == deglLoggerHistoryEntry::emtWarn ){
+	switch( entry.GetType() ){
+	case delLoggerHistoryEntry::emtWarn:
 		//color = FXRGB( 255, 192, 0 );
 		color = FXRGB( 128, 0, 255 );
 		font = pFontBold;
+		break;
 		
-	}else if( entry.GetType() == deglLoggerHistoryEntry::emtError ){
+	case delLoggerHistoryEntry::emtError:
 		color = FXRGB( 255, 0, 0 );
 		font = pFontBold;
+		break;
+		
+	case delLoggerHistoryEntry::emtInfo:
+		font = pFontNormal;
+		color = 0;
+		break;
 	}
 	
 	pTableLogs->insertRows( index );
@@ -223,7 +215,7 @@ void deglWindowLogger::ClearLogsTable(){
 // Events
 ///////////
 
-long deglWindowLogger::onMap( FXObject *sender, FXSelector selector, void *data ){
+long deglWindowLogger::onMap( FXObject*, FXSelector, void* ){
 	int index = pTableLogs->getNumRows() - 1;
 	
 	raise();
@@ -234,7 +226,7 @@ long deglWindowLogger::onMap( FXObject *sender, FXSelector selector, void *data 
 	return 1;
 }
 
-long deglWindowLogger::onClose( FXObject *sender, FXSelector selector, void *data ){
+long deglWindowLogger::onClose( FXObject*, FXSelector, void* ){
 	hide();
 	return 1;
 }

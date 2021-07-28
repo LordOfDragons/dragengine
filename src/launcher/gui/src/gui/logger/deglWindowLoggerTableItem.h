@@ -27,7 +27,7 @@
 
 
 /**
- * @brief Logger Window Table Item.
+ * Logger Window Table Item.
  * Special version of the FXTableItem providing support for individual cell
  * text color and text font.
  */
@@ -42,23 +42,23 @@ private:
 	FXFont *pFont;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new item. */
-	deglWindowLoggerTableItem( const FXString &text, FXIcon *ic = NULL, void *ptr = NULL );
+	deglWindowLoggerTableItem( const FXString &text, FXIcon *ic = nullptr, void *ptr = nullptr );
 	/** Cleans up the item. */
 	virtual ~deglWindowLoggerTableItem();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the text color. */
 	inline FXColor GetTextColor() const{ return pTextColor; }
 	/** Sets the text color. */
 	void SetTextColor( FXColor color );
-	/** Retrieves the text font or NULL to use the table font. */
+	/** Retrieves the text font or nullptr to use the table font. */
 	inline FXFont *GetFont() const{ return pFont; }
-	/** Sets the text font or NULL to use the table font. */
+	/** Sets the text font or nullptr to use the table font. */
 	void SetFont( FXFont *font );
 	
 	/*

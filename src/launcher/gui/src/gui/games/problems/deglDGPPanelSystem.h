@@ -29,7 +29,7 @@ class deglDialogGameProblems;
 
 
 /**
- * @brief Game Problems Dialog Systems Panel.
+ * Game Problems Dialog Systems Panel.
  * Shows problems with systems.
  */
 class deglDGPPanelSystem : public FXVerticalFrame{
@@ -76,31 +76,41 @@ private:
 	sSystem pSysSynthesizer;
 	sSystem pSysNetwork;
 	
+	
+	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Creates a new dialog. */
+	/** Create dialog. */
 	deglDGPPanelSystem( deglDialogGameProblems *parentDialog, FXComposite *container );
-	/** Cleans up the dialog. */
+	
+	/** Clean up dialog. */
 	virtual ~deglDGPPanelSystem();
 	/*@}*/
 	
-	/** @name Management */
+	
+	
+	/** \name Management */
 	/*@{*/
-	/** Retrieves the parent dialog. */
+	/** Parent dialog. */
 	inline deglDialogGameProblems *GetParentDialog() const{ return pParentDialog; }
-	/** Determines if the system is working. */
+	
+	/** System is working. */
 	inline bool GetStatusWorking() const{ return pStatusWorking; }
 	
 	/** Update modules. */
 	void UpdateSystemModuleLists();
+	
 	/** Update panel. */
 	void UpdatePanel();
+	
 	/** Update a system. */
 	void UpdateSystem( sSystem &system, const char *moduleName );
 	/*@}*/
 	
-	/** @name Events */
+	
+	
+	/** \name Events */
 	/*@{*/
 	long onCBModGraChanged( FXObject *sender, FXSelector selector, void *data );
 	long onCBModInpChanged( FXObject *sender, FXSelector selector, void *data );
@@ -113,9 +123,11 @@ public:
 	long onCBModSynChanged( FXObject *sender, FXSelector selector, void *data );
 	/*@}*/
 	
+	
+	
 private:
-	void pCreateSystem( sSystem &system, const char *textLabel, const char *toolText, int comboBoxSelector, FXComposite *container );
+	void pCreateSystem( sSystem &system, const char *textLabel, const char *toolText,
+		int comboBoxSelector, FXComposite *container );
 };
 
-// end of include only once
 #endif

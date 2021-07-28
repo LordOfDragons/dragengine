@@ -24,21 +24,20 @@
 
 #include "../foxtoolkit.h"
 
-#include <dragengine/deObject.h>
-#include <dragengine/deObjectReference.h>
+#include <delauncher/game/delGame.h>
+#include <delauncher/game/profile/delGameProfile.h>
+
 #include <dragengine/common/collection/decObjectOrderedSet.h>
 #include <dragengine/systems/modules/deModuleParameter.h>
 
 class deglDialogProfileListParameter;
-class deglEngineModule;
-class deglEMParameter;
-class deglGame;
-class deglGameProfile;
+class delEngineModule;
+class delEMParameter;
 class deglWindowMain;
 
 
 /**
- * @brief Profiles Panel.
+ * Profiles Panel.
  */
 class deglDialogProfileList : public FXDialogBox{
 	FXDECLARE( deglDialogProfileList )
@@ -110,19 +109,20 @@ private:
 	class cEditProfile : public deObject{
 	private:
 		deglDialogProfileList &pDialog;
-		deObjectReference pOriginal;
-		deObjectReference pEdit;
-		deObjectReference pGameCustom;
+		const delGameProfile::Ref pOriginal;
+		const delGameProfile::Ref pEdit;
+		const delGame::Ref pGameCustom;
 		
 	protected:
 		virtual ~cEditProfile();
 		
 	public:
+		typedef deTObjectReference<cEditProfile> Ref;
 		cEditProfile( deglDialogProfileList &dialog, const char *name );
-		cEditProfile( deglDialogProfileList &dialog, deglGameProfile *profile, deglGame *gameCustom );
-		inline deglGameProfile *GetOriginal() const{ return ( deglGameProfile* )( deObject* )pOriginal; }
-		inline deglGameProfile *GetEdit() const{ return ( deglGameProfile* )( deObject* )pEdit; }
-		inline deglGame *GetGameCustom() const{ return ( deglGame* )( deObject* )pGameCustom; }
+		cEditProfile( deglDialogProfileList &dialog, delGameProfile *profile, delGame *gameCustom );
+		inline delGameProfile *GetOriginal() const{ return pOriginal; }
+		inline delGameProfile *GetEdit() const{ return pEdit; }
+		inline delGame *GetGameCustom() const{ return pGameCustom; }
 		FXString GetText() const;
 		FXIcon *GetIcon() const;
 	};
@@ -139,7 +139,8 @@ private:
 	
 	class Parameter : public deObject{
 	public:
-		deglEMParameter *parameter;
+		typedef deTObjectReference<Parameter> Ref;
+		delEMParameter *parameter;
 		FXLabel *label;
 		FXComboBox *combobox;
 		FXRealSlider *slider;
@@ -191,20 +192,20 @@ private:
 	deglDialogProfileListParameter *pPUMPParameter;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new dialog. */
-	deglDialogProfileList( deglWindowMain *windowMain, FXWindow *owner, deglGameProfile *selectProfile );
+	deglDialogProfileList( deglWindowMain *windowMain, FXWindow *owner, delGameProfile *selectProfile );
 	/** Cleans up the dialog. */
 	virtual ~deglDialogProfileList();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the main window. */
 	inline deglWindowMain *GetWindowMain() const{ return pWindowMain; }
 	
-	/** \brief Update full screen resolution list. */
+	/** Update full screen resolution list. */
 	void UpdateFullScreenResolutions();
 	
 	/** Update system module lists. */
@@ -219,7 +220,7 @@ public:
 	/** Disable a system. */
 	void DisableSystem( sSystem &system );
 	
-	/** \brief Update module versions. */
+	/** Update module versions. */
 	void UpdateModuleVersions( sSystem &system, const char *moduleName, const char *moduleVersion );
 	
 	/** Get selected module name. */
@@ -229,18 +230,18 @@ public:
 	/** Update parameters list. */
 	void UpdateMPParameterList();
 	
-	/** \brief Update disabled module versions list. */
+	/** Update disabled module versions list. */
 	void UpdateListDisabledModuleVersions();
-	/** \brief Update disabled module versions module combo box. */
+	/** Update disabled module versions module combo box. */
 	void UpdateCBDisabledModuleVersionsModule();
-	/** \brief Update disabled module versions version combo box. */
+	/** Update disabled module versions version combo box. */
 	void UpdateCBDisabledModuleVersionsVersion();
 	
 	/** Run modal invocation of the dialog. */
 	virtual FXuint execute( FXuint placement = PLACEMENT_OWNER );
 	/*@}*/
 	
-	/** @name Events */
+	/** \name Events */
 	/*@{*/
 	long onListProfilesChanged( FXObject *sender, FXSelector selector, void *data );
 	long onBtnProfAdd( FXObject *sender, FXSelector selector, void *data );
@@ -311,7 +312,7 @@ private:
 		FXComposite *container );
 	void pUpdateMPParamVisiblity();
 	cEditProfile *pGetSelectedProfile() const;
-	void pSetSelectedProfile( deglGameProfile *profile );
+	void pSetSelectedProfile( delGameProfile *profile );
 	void pSetSelectedProfile( cEditProfile *profile );
 	cEditProfile *pGetProfileNamed( const char *name ) const;
 };

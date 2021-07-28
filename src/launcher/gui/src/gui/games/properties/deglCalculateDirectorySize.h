@@ -23,7 +23,8 @@
 #define _DEGLCALCULATEDIRECTORYSIZE_H_
 
 #include <dragengine/common/file/decPath.h>
-#include <dragengine/filesystem/deVirtualFileSystemReference.h>
+#include <dragengine/common/string/decStringList.h>
+#include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/threading/deMutex.h>
 #include <dragengine/threading/deThread.h>
 
@@ -32,25 +33,27 @@ class decPath;
 
 
 /**
- * \brief Thread calculating the size of a disc directory.
+ * Thread calculating the size of a disc directory.
  */
 class deglCalculateDirectorySize : public deThread{
 private:
-	deVirtualFileSystemReference pVFS;
+	const decString pDirectory;
+	const deVirtualFileSystem::Ref pVFS;
 	uint64_t pSize;
 	bool pAbort;
 	bool pFailed;
 	deMutex pMutex;
+	decStringList pException;
 	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create. */
+	/** Create. */
 	deglCalculateDirectorySize( const char *directory );
 	
-	/** \brief Clean up. */
+	/** Clean up. */
 	virtual ~deglCalculateDirectorySize();
 	/*@}*/
 	
@@ -58,21 +61,28 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Directory size. */
+	/** Directory to scan. */
+	decString GetDirectory();
+	
+	/** Directory size. */
 	uint64_t GetSize();
 	
-	/** \brief Calculating size failed. */
+	/** Calculating size failed. */
 	bool GetFailed();
 	
-	/** \brief Abort thread. */
+	/** Exception if failed. */
+	decStringList GetException();
+	
+	/** Abort thread. */
 	void Abort();
 	
 	
-	/** \brief Run function of the thread. */
+	/** Run function of the thread. */
 	virtual void Run();
 	
-	/** \brief For internal use only. */
+	/** For internal use only. */
 	void IncrementSize( int size );
+	
 	
 	
 private:

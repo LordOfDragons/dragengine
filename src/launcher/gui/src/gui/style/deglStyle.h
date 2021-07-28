@@ -19,48 +19,59 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-// include only once
 #ifndef _DEGLSTYLE_H_
 #define _DEGLSTYLE_H_
 
-// includes
 #include <dragengine/deObject.h>
 
 #include <dragengine/common/math/decMath.h>
 
 
-
 /**
- * @brief Style Color.
- * Defines a color in a style. Stores the color in the range from 0 to 1 as
+ * Style Color. Defines a color in a style. Stores the color in the range from 0 to 1 as
  * float values. Stores red, green, blue and alpha.
  */
 class deglStyle : public deObject{
+public:
+	/** Type holding strong reference. */
+	typedef deTObjectReference<deglStyle> Ref;
+	
+	
+	
 private:
 	decColor pColorBackground;
 	decColor pColorText;
 	
+	
+	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Creates a new style. */
+	/** Create style. */
 	deglStyle();
-	/** Cleans up the style. */
+	
+protected:
+	/** Clean up style. */
 	virtual ~deglStyle();
 	/*@}*/
 	
-	/** @name Management */
+	
+	
+public:
+	/** \name Management */
 	/*@{*/
-	/** Retrieves the background color. */
+	/** Background color. */
 	inline const decColor &GetColorBackground() const{ return pColorBackground; }
-	/** Sets the background color. */
+	
+	/** Set background color. */
 	void SetColorBackground( const decColor &color );
-	/** Retrieves the text color. */
+	
+	/** Text color. */
 	inline const decColor &GetColorText() const{ return pColorText; }
-	/** Sets the text color. */
+	
+	/** Set text color. */
 	void SetColorText( const decColor &color );
 	/*@}*/
 };
 
-// end of include only once
 #endif

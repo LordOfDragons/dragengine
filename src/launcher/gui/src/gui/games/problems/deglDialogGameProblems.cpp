@@ -30,11 +30,8 @@
 #include "../../deglWindowMain.h"
 #include "../../deglGuiBuilder.h"
 #include "../../../deglLauncher.h"
-#include "../../../engine/deglEngine.h"
-#include "../../../engine/modules/deglEngineModule.h"
-#include "../../../game/deglGame.h"
-#include "../../../game/fileformat/deglFileFormat.h"
-#include "../../../game/profile/deglGameProfile.h"
+
+#include <delauncher/engine/modules/delEngineModule.h>
 
 #include <dragengine/systems/deModuleSystem.h>
 #include <dragengine/common/string/decString.h>
@@ -45,24 +42,42 @@
 // Events
 ///////////
 
-FXDEFMAP( deglDialogGameProblems ) deglDialogGameProblemsMap[]={
-};
+FXDEFMAP( deglDialogGameProblems ) deglDialogGameProblemsMap[] = {};
 
 
 
 // Class deglDialogGameProblems
 /////////////////////////////////
 
-FXIMPLEMENT( deglDialogGameProblems, FXDialogBox, deglDialogGameProblemsMap, ARRAYNUMBER( deglDialogGameProblemsMap ) )
+FXIMPLEMENT( deglDialogGameProblems, FXDialogBox,
+	deglDialogGameProblemsMap, ARRAYNUMBER( deglDialogGameProblemsMap ) )
 
 // Constructor, destructor
 ////////////////////////////
 
 deglDialogGameProblems::deglDialogGameProblems(){ }
 
-deglDialogGameProblems::deglDialogGameProblems( deglWindowMain *windowMain, deglGame *game, deglGameProfile *profile, FXWindow *owner ) :
+deglDialogGameProblems::deglDialogGameProblems( deglWindowMain *windowMain,
+	delGame *game, delGameProfile *profile, FXWindow *owner ) :
 FXDialogBox( owner, "Game Problems", DECOR_TITLE | DECOR_BORDER | DECOR_RESIZE | DECOR_CLOSE,
-0, 0, 600, 450, 10, 10, 10, 5 ){
+	0, 0, 600, 450, 10, 10, 10, 5 ),
+pWindowMain( windowMain ),
+
+pProfileOrg( delGameProfile::Ref::New( windowMain->GetLauncher()->CreateGameProfile( profile ) ) ),
+pProfileWork( delGameProfile::Ref::New( windowMain->GetLauncher()->CreateGameProfile( profile ) ) ),
+
+pGame( game ),
+
+pStatusWorking( false ),
+
+pClrValidBack( FXRGB( 87, 217, 87 ) ),
+pClrValidText( FXRGB( 0, 0, 0 ) ),
+pClrProblemBack( FXRGB( 255, 128, 128 ) ),
+pClrProblemText( FXRGB( 0, 0, 0 ) ),
+
+pPanelSystems( nullptr ),
+pPanelFileFormats( nullptr )
+{
 	if( ! game || ! profile ) DETHROW( deeInvalidParam );
 	
 	//const deglGuiBuilder &guiBuilder = *windowMain->GetGuiBuilder();
@@ -72,82 +87,44 @@ FXDialogBox( owner, "Game Problems", DECOR_TITLE | DECOR_BORDER | DECOR_RESIZE |
 	//const char *toolTip;
 	//FXMatrix *block;
 	
-	pWindowMain = windowMain;
-	pGame = game;
-	pProfileOrg = NULL;
-	pProfileWork = NULL;
-	pStatusWorking = false;
-	pPanelSystems = NULL;
-	pPanelFileFormats = NULL;
 	
-	pClrValidBack = FXRGB( 87, 217, 87 );
-	pClrValidText = FXRGB( 0, 0, 0 );
-	pClrProblemBack = FXRGB( 255, 128, 128 );
-	pClrProblemText = FXRGB( 0, 0, 0 );
+	// create content
+	content =  new FXVerticalFrame( this, LAYOUT_FILL_Y | LAYOUT_FILL_X, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10 );
+	frameGroup = new FXVerticalFrame( content, LAYOUT_FILL_Y | LAYOUT_FILL_X, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 );
 	
-	try{
-		// create copy of profile
-		pProfileOrg = profile;
-		profile->AddReference();
-		
-		pProfileWork = new deglGameProfile( *profile );
-		if( ! pProfileWork ) DETHROW( deeOutOfMemory );
-		
-		// create content
-		content =  new FXVerticalFrame( this, LAYOUT_FILL_Y | LAYOUT_FILL_X, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10 );
-		if( ! content ) DETHROW( deeOutOfMemory );
-		
-		frameGroup = new FXVerticalFrame( content, LAYOUT_FILL_Y | LAYOUT_FILL_X, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 );
-		if( ! frameGroup ) DETHROW( deeOutOfMemory );
-		
-		// status display
-		pFraStatus = new FXHorizontalFrame( frameGroup, FRAME_GROOVE | LAYOUT_FILL_X, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 );
-		if( ! pFraStatus ) DETHROW( deeOutOfMemory );
-		
-		pLabStatus = new FXLabel( pFraStatus, "", NULL, LABEL_NORMAL | LAYOUT_FILL_X | LAYOUT_FILL_Y );
-		if( ! pLabStatus ) DETHROW( deeOutOfMemory );
-		pLabStatus->setJustify( JUSTIFY_CENTER_X | JUSTIFY_TOP );
-		
-		// panels
-		pTabPanels = new FXTabBook( frameGroup, NULL, 0, TABBOOK_NORMAL | LAYOUT_FILL_X | LAYOUT_FILL_Y );
-		if( ! pTabPanels ) DETHROW( deeOutOfMemory );
-		
-		pTabSystems = new FXTabItem( pTabPanels, "Systems", NULL, TAB_TOP_NORMAL, 0, 0, 0, 0, 10, 10, 2, 2 );
-		if( ! pTabSystems ) DETHROW( deeOutOfMemory );
-		pPanelSystems = new deglDGPPanelSystem( this, pTabPanels );
-		if( ! pPanelSystems ) DETHROW( deeOutOfMemory );
-		
-		pTabFileFormats = new FXTabItem( pTabPanels, "File Formats", NULL, TAB_TOP_NORMAL, 0, 0, 0, 0, 10, 10, 2, 2 );
-		if( ! pTabFileFormats ) DETHROW( deeOutOfMemory );
-		pPanelFileFormats = new deglDGPPanelFileFormats( this, pTabPanels );
-		if( ! pPanelFileFormats ) DETHROW( deeOutOfMemory );
-		
-		pCreateTabGame();
-		
-		// buttons
-		frameGroup =  new FXVerticalFrame( content, LAYOUT_SIDE_TOP | LAYOUT_FILL_X, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5 );
-		if( ! frameGroup ) DETHROW( deeOutOfMemory );
-		
-		new FXSeparator( frameGroup );
-		
-		frameLine = new FXHorizontalFrame( frameGroup, LAYOUT_CENTER_X, 0, 0, 0, 0, 0, 0, 0, 0, 20, 0 );
-		if( ! frameLine ) DETHROW( deeOutOfMemory );
-		pBtnRunGame = new FXButton( frameLine, "Run Game", NULL, this, ID_ACCEPT, LAYOUT_CENTER_X | FRAME_RAISED | JUSTIFY_NORMAL | ICON_BEFORE_TEXT, 0, 0, 0, 0, 30, 30 );
-		new FXButton( frameLine, "Abord", NULL, this, ID_CANCEL, LAYOUT_CENTER_X | FRAME_RAISED | JUSTIFY_NORMAL | ICON_BEFORE_TEXT, 0, 0, 0, 0, 30, 30 );
-		
-		// prepare
-		UpdatePanels();
-		
-	}catch( const deException & ){
-		if( pProfileWork ) pProfileWork->FreeReference();
-		if( pProfileOrg ) pProfileOrg->FreeReference();
-		throw;
-	}
+	// status display
+	pFraStatus = new FXHorizontalFrame( frameGroup, FRAME_GROOVE | LAYOUT_FILL_X, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 );
+	
+	pLabStatus = new FXLabel( pFraStatus, "", nullptr, LABEL_NORMAL | LAYOUT_FILL_X | LAYOUT_FILL_Y );
+	pLabStatus->setJustify( JUSTIFY_CENTER_X | JUSTIFY_TOP );
+	
+	// panels
+	pTabPanels = new FXTabBook( frameGroup, nullptr, 0, TABBOOK_NORMAL | LAYOUT_FILL_X | LAYOUT_FILL_Y );
+	
+	pTabSystems = new FXTabItem( pTabPanels, "Systems", nullptr, TAB_TOP_NORMAL, 0, 0, 0, 0, 10, 10, 2, 2 );
+	pPanelSystems = new deglDGPPanelSystem( this, pTabPanels );
+	
+	pTabFileFormats = new FXTabItem( pTabPanels, "File Formats", nullptr, TAB_TOP_NORMAL, 0, 0, 0, 0, 10, 10, 2, 2 );
+	pPanelFileFormats = new deglDGPPanelFileFormats( this, pTabPanels );
+	
+	pCreateTabGame();
+	
+	// buttons
+	frameGroup =  new FXVerticalFrame( content, LAYOUT_SIDE_TOP | LAYOUT_FILL_X, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5 );
+	
+	new FXSeparator( frameGroup );
+	
+	frameLine = new FXHorizontalFrame( frameGroup, LAYOUT_CENTER_X, 0, 0, 0, 0, 0, 0, 0, 0, 20, 0 );
+	pBtnRunGame = new FXButton( frameLine, "Run Game", nullptr, this, ID_ACCEPT,
+		LAYOUT_CENTER_X | FRAME_RAISED | JUSTIFY_NORMAL | ICON_BEFORE_TEXT, 0, 0, 0, 0, 30, 30 );
+	new FXButton( frameLine, "Abord", nullptr, this, ID_CANCEL,
+		LAYOUT_CENTER_X | FRAME_RAISED | JUSTIFY_NORMAL | ICON_BEFORE_TEXT, 0, 0, 0, 0, 30, 30 );
+	
+	// prepare
+	UpdatePanels();
 }
 
 deglDialogGameProblems::~deglDialogGameProblems(){
-	if( pProfileWork ) pProfileWork->FreeReference();
-	if( pProfileOrg ) pProfileOrg->FreeReference();
 }
 
 
@@ -224,15 +201,13 @@ void deglDialogGameProblems::UpdatePanels(){
 }
 
 void deglDialogGameProblems::UpdatePanelGame(){
-	deglLauncher &launcher = *pWindowMain->GetLauncher();
-	const deglEngine &engine = *launcher.GetEngine();
-	const deglEngineModuleList &moduleList = engine.GetModuleList();
-	deglEngineModule *module;
+	const delEngineModuleList &modules = pWindowMain->GetLauncher()->GetEngine().GetModules();
 	bool working = true;
 	
-	module = moduleList.GetModuleNamed( pGame->GetScriptModule().GetString() );
+	const delEngineModule * const module = modules.GetNamed( pGame->GetScriptModule() );
 	
-	if( ! module || module->GetType() != deModuleSystem::emtScript || module->GetStatus() != deglEngineModule::emsReady ){
+	if( ! module || module->GetType() != deModuleSystem::emtScript
+	|| module->GetStatus() != delEngineModule::emsReady ){
 		working = false;
 	}
 	
@@ -248,23 +223,11 @@ void deglDialogGameProblems::UpdatePanelGame(){
 
 
 
-// Events
-///////////
-
-
-
 // Private Functions
 //////////////////////
 
 void deglDialogGameProblems::pCreateTabGame(){
-	//const deglGuiBuilder &guiBuilder = *windowMain->GetGuiBuilder();
-	//FXHorizontalFrame *frameLine;
-	FXVerticalFrame *frameTab;
-	//const char *toolTip;
-	//FXMatrix *block;
-	
-	pTabGame = new FXTabItem( pTabPanels, "Game", NULL, TAB_TOP_NORMAL, 0, 0, 0, 0, 10, 10, 2, 2 );
-	
-	frameTab = new FXVerticalFrame( pTabPanels, FRAME_RAISED | LAYOUT_FILL_Y | LAYOUT_FILL_X, 0, 0, 0, 0, 10, 10, 10, 10, 0, 3 );
-	if( ! frameTab ) DETHROW( deeOutOfMemory );
+	pTabGame = new FXTabItem( pTabPanels, "Game", nullptr, TAB_TOP_NORMAL, 0, 0, 0, 0, 10, 10, 2, 2 );
+	new FXVerticalFrame( pTabPanels, FRAME_RAISED | LAYOUT_FILL_Y | LAYOUT_FILL_X,
+		0, 0, 0, 0, 10, 10, 10, 10, 0, 3 );
 }

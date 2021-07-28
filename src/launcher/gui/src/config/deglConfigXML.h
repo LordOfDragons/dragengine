@@ -22,7 +22,7 @@
 #ifndef _DEGLCONFIGXML_H_
 #define _DEGLCONFIGXML_H_
 
-#include "../deglBaseXML.h"
+#include <delauncher/utils/delBaseXML.h>
 
 #include <dragengine/common/string/decString.h>
 
@@ -34,27 +34,32 @@ class decXmlWriter;
 class decXmlElementTag;
 
 
-
 /**
- * @brief Load/Save Configuration XML.
+ * Load/Save Configuration XML.
  */
-class deglConfigXML : public deglBaseXML{
+class deglConfigXML : public delBaseXML{
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Creates a new configuration xml read/save. */
+	/** Create configuration xml read/save. */
 	deglConfigXML( deLogger *logger, const char *loggerSource );
-	/** Cleans up the configuration xml read/save. */
+	
+	/** Clean up configuration xml read/save. */
 	virtual ~deglConfigXML();
 	/*@}*/
 	
-	/** @name Management */
+	
+	
+	/** \name Management */
 	/*@{*/
 	/** Read from XML file. */
 	void ReadFromFile( decBaseFileReader &reader, deglConfiguration &config );
+	
 	/** Write to XML file. */
 	void WriteToFile( decBaseFileWriter &writer, const deglConfiguration &config );
 	/*@}*/
+	
+	
 	
 private:
 	void pWriteConfig( decXmlWriter &writer, const deglConfiguration &config );
@@ -64,4 +69,4 @@ private:
 	void pReadWindow( const decXmlElementTag &root, deglConfigWindow &window );
 };
 
-#endif // _DEGLGAME_H_
+#endif

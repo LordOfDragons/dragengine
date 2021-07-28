@@ -41,7 +41,7 @@
 // Class deglDPLListItemParam
 //////////////////////////////
 
-FXIMPLEMENT( deglDPLListItemParam, FXListItem, NULL, 0 )
+FXIMPLEMENT( deglDPLListItemParam, FXListItem, nullptr, 0 )
 
 // Constructor, destructor
 ////////////////////////////

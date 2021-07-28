@@ -25,7 +25,6 @@
 
 #include "deglPEListItemModule.h"
 #include "deglPanelEngine.h"
-#include "../../engine/modules/deglEngineModule.h"
 
 #include <dragengine/systems/deModuleSystem.h>
 #include <dragengine/common/exceptions.h>
@@ -35,122 +34,136 @@
 // Class deglPEListItemModule
 ///////////////////////////////
 
-FXIMPLEMENT( deglPEListItemModule, FXIconItem, NULL, 0 )
+FXIMPLEMENT( deglPEListItemModule, FXIconItem, nullptr, 0 )
 
 // Constructor, destructor
 ////////////////////////////
 
 deglPEListItemModule::deglPEListItemModule(){ }
 
-deglPEListItemModule::deglPEListItemModule( deglPanelEngine *panelEngine, deglEngineModule *module ) :
-FXIconItem( "", NULL, NULL, NULL ){
+deglPEListItemModule::deglPEListItemModule( deglPanelEngine *panelEngine, delEngineModule *module ) :
+FXIconItem( "", nullptr, nullptr, nullptr ),
+pPanelEngine( panelEngine ),
+pModule( module )
+{
 	if( ! panelEngine || ! module ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	const int status = module->GetStatus();
-	const int type = module->GetType();
+	const delEngineModule::eModuleStatus status = module->GetStatus();
+	const deModuleSystem::eModuleTypes type = module->GetType();
 	FXString text;
-	
-	pPanelEngine = panelEngine;
-	pModule = module;
-	module->AddReference();
 	
 	const decString &moduleName = module->GetName();
 	const decString &moduleVersion = module->GetVersion();
 	
-	if( status == deglEngineModule::emsReady ){
+	switch( status ){
+	case delEngineModule::emsReady:
 		pStatusString = "Ready";
+		break;
 		
-	}else if( status == deglEngineModule::emsNotTested ){
+	case delEngineModule::emsNotTested:
 		pStatusString = "Not Tested";
+		break;
 		
-	}else if( status == deglEngineModule::emsBroken ){
+	case delEngineModule::emsBroken:
 		pStatusString = "Broken";
-		
-	}else{
-		pStatusString = "?";
+		break;
 	}
 	
-	if( type == deModuleSystem::emtGraphic ){
+	switch( type ){
+	case deModuleSystem::emtGraphic:
 		pTypeString = "Graphic";
+		break;
 		
-	}else if( type == deModuleSystem::emtAudio ){
+	case deModuleSystem::emtAudio:
 		pTypeString = "Audio";
+		break;
 		
-	}else if( type == deModuleSystem::emtInput ){
+	case deModuleSystem::emtInput:
 		pTypeString = "Input";
+		break;
 		
-	}else if( type == deModuleSystem::emtNetwork ){
+	case deModuleSystem::emtNetwork:
 		pTypeString = "Network";
+		break;
 		
-	}else if( type == deModuleSystem::emtPhysics ){
+	case deModuleSystem::emtPhysics:
 		pTypeString = "Physics";
+		break;
 		
-	}else if( type == deModuleSystem::emtImage ){
+	case deModuleSystem::emtImage:
 		pTypeString = "Image";
+		break;
 		
-	}else if( type == deModuleSystem::emtVideo ){
+	case deModuleSystem::emtVideo:
 		pTypeString = "Video";
+		break;
 		
-	}else if( type == deModuleSystem::emtScript ){
+	case deModuleSystem::emtScript:
 		pTypeString = "Script";
+		break;
 		
-	}else if( type == deModuleSystem::emtModel ){
+	case deModuleSystem::emtModel:
 		pTypeString = "Model";
+		break;
 		
-	}else if( type == deModuleSystem::emtRig ){
+	case deModuleSystem::emtRig:
 		pTypeString = "Rig";
+		break;
 		
-	}else if( type == deModuleSystem::emtSkin ){
+	case deModuleSystem::emtSkin:
 		pTypeString = "Skin";
+		break;
 		
-	}else if( type == deModuleSystem::emtAnimation ){
+	case deModuleSystem::emtAnimation:
 		pTypeString = "Animation";
+		break;
 		
-	}else if( type == deModuleSystem::emtFont ){
+	case deModuleSystem::emtFont:
 		pTypeString = "Font";
+		break;
 		
-	}else if( type == deModuleSystem::emtCrashRecovery ){
+	case deModuleSystem::emtCrashRecovery:
 		pTypeString = "Crash Recovery";
+		break;
 		
-	}else if( type == deModuleSystem::emtLanguagePack ){
+	case deModuleSystem::emtLanguagePack:
 		pTypeString = "Language Pack";
+		break;
 		
-	}else if( type == deModuleSystem::emtAnimator ){
+	case deModuleSystem::emtAnimator:
 		pTypeString = "Animator";
+		break;
 		
-	}else if( type == deModuleSystem::emtSound ){
+	case deModuleSystem::emtSound:
 		pTypeString = "Sound";
+		break;
 		
-	}else if( type == deModuleSystem::emtAI ){
+	case deModuleSystem::emtAI:
 		pTypeString = "AI";
+		break;
 		
-	}else if( type == deModuleSystem::emtOcclusionMesh ){
+	case deModuleSystem::emtOcclusionMesh:
 		pTypeString = "Occlusion Mesh";
+		break;
 		
-	}else if( type == deModuleSystem::emtSynthesizer ){
+	case deModuleSystem::emtSynthesizer:
 		pTypeString = "Synthesizer";
+		break;
 		
-	}else if( type == deModuleSystem::emtArchive ){
+	case deModuleSystem::emtArchive:
 		pTypeString = "Archive";
+		break;
 		
-	}else{
-		pTypeString = "?";
+	case deModuleSystem::emtUnknown:
+		pTypeString = "Unknown";
 	}
 	
-	text.format( "%s\t%s\t%s\t%s", moduleName.GetString(), pTypeString.GetString(), moduleVersion.GetString(), pStatusString.GetString() );
+	text.format( "%s\t%s\t%s\t%s", moduleName.GetString(), pTypeString.GetString(),
+		moduleVersion.GetString(), pStatusString.GetString() );
 	setText( text );
 }
 
 deglPEListItemModule::~deglPEListItemModule(){
-	if( pModule ){
-		pModule->FreeReference();
-	}
 }
-
-
-
-// Management
-///////////////
-

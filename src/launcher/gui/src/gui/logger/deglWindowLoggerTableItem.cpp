@@ -30,16 +30,17 @@
 // Class deglWindowLoggerTableItem
 ////////////////////////////////////
 
-FXIMPLEMENT( deglWindowLoggerTableItem, FXTableItem, NULL, 0 )
+FXIMPLEMENT( deglWindowLoggerTableItem, FXTableItem, nullptr, 0 )
 
 // Constructor, destructor
 ////////////////////////////
 
 deglWindowLoggerTableItem::deglWindowLoggerTableItem(){ }
 
-deglWindowLoggerTableItem::deglWindowLoggerTableItem( const FXString &text, FXIcon *ic, void *ptr ) : FXTableItem( text, ic, ptr ){
-	pTextColor = 0;
-	pFont = NULL;
+deglWindowLoggerTableItem::deglWindowLoggerTableItem( const FXString &text, FXIcon *ic, void *ptr ) :
+FXTableItem( text, ic, ptr ),
+pTextColor( 0 ),
+pFont( nullptr ){
 }
 
 deglWindowLoggerTableItem::~deglWindowLoggerTableItem(){

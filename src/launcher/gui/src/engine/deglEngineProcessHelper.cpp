@@ -1,7 +1,7 @@
 /* 
  * Drag[en]gine GUI Launcher
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * Copyright (C) 2021, Roland Plüss (roland@rptd.ch)
  * 
  * This program is free software; you can redistribute it and/or 
  * modify it under the terms of the GNU General Public License 
@@ -19,35 +19,12 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#ifdef OS_W32_HELPER
 
-#include "deglEMParameter.h"
+#include <delauncher/engine/delEngineProcessMain.h>
 
-#include <dragengine/common/exceptions.h>
-
-
-
-// Class deglEMParameter
-//////////////////////////
-
-// Constructors and Destructors
-/////////////////////////////////
-
-deglEMParameter::deglEMParameter( int index, const deModuleParameter &info ) :
-pIndex( index ),
-pInfo( info ){
+int main( int argc, char **args ){
+	return delEngineProcessMain::RunMain( argc, args );
 }
 
-deglEMParameter::~deglEMParameter(){
-}
-
-
-
-// Management
-///////////////
-
-void deglEMParameter::SetValue( const char *value ){
-	pValue = value;
-}
+#endif

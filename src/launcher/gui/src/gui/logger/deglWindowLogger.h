@@ -24,16 +24,15 @@
 
 #include "../foxtoolkit.h"
 
-class deglLoggerHistory;
-class deglLoggerHistoryEntry;
+#include <delauncher/logger/delLoggerHistory.h>
+#include <delauncher/logger/delLoggerHistoryListener.h>
+
 class deglWindowLoggerListener;
 class deglWindowLoggerTable;
 
 
-
 /**
- * @brief Logger Window.
- * Display the logging history.
+ * Logger Window. Display the logging history.
  */
 class deglWindowLogger : public FXTopWindow{
 	FXDECLARE( deglWindowLogger )
@@ -48,47 +47,58 @@ public:
 		ID_LAST
 	};
 	
+	
+	
 private:
-	deglWindowLoggerListener *pListener;
-	deglLoggerHistory *pLogger;
+	delLoggerHistoryListener::Ref pListener;
+	delLoggerHistory::Ref pLogger;
 	FXFont *pFontNormal;
 	FXFont *pFontBold;
 	
 	deglWindowLoggerTable *pTableLogs;
 	
+	
+	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Creates a new logger window. */
+	/** Create logger window. */
 	deglWindowLogger( FXApp *app );
-	/** Cleans up the logger window. */
+	
+	/** Clean up logger window. */
 	virtual ~deglWindowLogger();
 	/*@}*/
 	
-	/** @name Management */
+	
+	
+	/** \name Management */
 	/*@{*/
 	/** Create window. */
 	virtual void create();
 	
-	/** Retrieves the logger to monitor or NULL if none. */
-	inline deglLoggerHistory *GetLogger() const{ return pLogger; }
-	/** Sets the logger to monitor or NULL if none. */
-	void SetLogger( deglLoggerHistory *logger );
+	/** Logger to monitor or nullptr if none. */
+	inline delLoggerHistory *GetLogger() const{ return pLogger; }
 	
-	/** Updates the logs table. */
+	/** Set logger to monitor or nullptr if none. */
+	void SetLogger( delLoggerHistory *logger );
+	
+	/** Update logs table. */
 	void UpdateLogs();
+	
 	/** Add log to table. */
-	void AddLogToTable( const deglLoggerHistoryEntry &entry );
+	void AddLogToTable( const delLoggerHistoryEntry &entry );
+	
 	/** Clear logs table. */
 	void ClearLogsTable();
 	/*@}*/
 	
-	/** @name Events */
+	
+	
+	/** \name Events */
 	/*@{*/
 	long onMap( FXObject *sender, FXSelector selector, void *data );
 	long onClose( FXObject *sender, FXSelector selector, void *data );
 	/*@}*/
 };
 
-// end of include only once
 #endif

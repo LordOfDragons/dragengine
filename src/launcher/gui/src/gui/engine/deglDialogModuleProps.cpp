@@ -28,8 +28,6 @@
 #include "../deglWindowMain.h"
 #include "../deglGuiBuilder.h"
 #include "../../deglLauncher.h"
-#include "../../engine/deglEngine.h"
-#include "../../engine/modules/deglEngineModule.h"
 
 #include <dragengine/systems/deModuleSystem.h>
 #include <dragengine/common/string/unicode/decUnicodeString.h>
@@ -59,9 +57,12 @@ FXIMPLEMENT( deglDialogModuleProps, FXDialogBox, deglDialogModulePropsMap, ARRAY
 
 deglDialogModuleProps::deglDialogModuleProps(){ }
 
-deglDialogModuleProps::deglDialogModuleProps( deglWindowMain *windowMain, deglEngineModule *module, FXWindow *owner ) :
+deglDialogModuleProps::deglDialogModuleProps( deglWindowMain *windowMain, delEngineModule *module, FXWindow *owner ) :
 FXDialogBox( owner, "Module Properties", DECOR_TITLE | DECOR_BORDER | DECOR_RESIZE | DECOR_CLOSE,
-0, 0, 0, 0, 10, 10, 10, 5 ){
+0, 0, 0, 0, 10, 10, 10, 5 ),
+pWindowMain( windowMain ),
+pModule( module )
+{
 	const deglGuiBuilder &guiBuilder = *windowMain->GetGuiBuilder();
 	FXVerticalFrame *frameTab;
 	FXVerticalFrame *frameGroup;
@@ -70,71 +71,64 @@ FXDialogBox( owner, "Module Properties", DECOR_TITLE | DECOR_BORDER | DECOR_RESI
 	const char *toolTip;
 	FXMatrix *block;
 	
-	pWindowMain = windowMain;
-	pModule = module;
-	
 	
 	
 	// create content
 	content =  new FXVerticalFrame( this, LAYOUT_FILL_Y | LAYOUT_FILL_X, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10 );
-	if( ! content ) DETHROW( deeOutOfMemory );
-	
 	frameGroup = new FXVerticalFrame( content, LAYOUT_FILL_Y | LAYOUT_FILL_X, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 );
-	if( ! frameGroup ) DETHROW( deeOutOfMemory );
 	
 	
 	
 	// information
-	pTabPanels = new FXTabBook( frameGroup, NULL, 0, TABBOOK_NORMAL | LAYOUT_FILL_X | LAYOUT_FILL_Y );
-	if( ! pTabPanels ) DETHROW( deeOutOfMemory );
+	pTabPanels = new FXTabBook( frameGroup, nullptr, 0, TABBOOK_NORMAL | LAYOUT_FILL_X | LAYOUT_FILL_Y );
 	
-	new FXTabItem( pTabPanels, "Information", NULL, TAB_TOP_NORMAL, 0, 0, 0, 0, 10, 10, 2, 2 );
+	new FXTabItem( pTabPanels, "Information", nullptr, TAB_TOP_NORMAL, 0, 0, 0, 0, 10, 10, 2, 2 );
 	
-	frameTab = new FXVerticalFrame( pTabPanels, FRAME_RAISED | LAYOUT_FILL_Y | LAYOUT_FILL_X, 0, 0, 0, 0, 10, 10, 10, 10, 0, 3 );
-	if( ! frameTab ) DETHROW( deeOutOfMemory );
+	frameTab = new FXVerticalFrame( pTabPanels, FRAME_RAISED | LAYOUT_FILL_Y | LAYOUT_FILL_X,
+		0, 0, 0, 0, 10, 10, 10, 10, 0, 3 );
 	
 	block = guiBuilder.CreateMatrixPacker( frameTab, 2 );
 	
 	toolTip = "Name of the module.";
 	guiBuilder.CreateLabel( block, "Name:", toolTip );
 	frameLine = guiBuilder.CreateHFrame( block );
-	pEditName = guiBuilder.CreateTextField( frameLine, NULL, 0, toolTip, false );
+	pEditName = guiBuilder.CreateTextField( frameLine, nullptr, 0, toolTip, false );
 	pEditName->setEditable( false );
 	
 	toolTip = "Type of the module";
 	guiBuilder.CreateLabel( block, "Type:", toolTip );
 	frameLine = guiBuilder.CreateHFrame( block );
-	pEditType = guiBuilder.CreateTextField( frameLine, NULL, 0, toolTip, false );
+	pEditType = guiBuilder.CreateTextField( frameLine, nullptr, 0, toolTip, false );
 	pEditType->setEditable( false );
 	
 	toolTip = "Status of the module";
 	guiBuilder.CreateLabel( block, "Status:", toolTip );
 	frameLine = guiBuilder.CreateHFrame( block );
-	pEditStatus = guiBuilder.CreateTextField( frameLine, NULL, 0, toolTip, false );
+	pEditStatus = guiBuilder.CreateTextField( frameLine, nullptr, 0, toolTip, false );
 	pEditStatus->setEditable( false );
 	
 	toolTip = "Author of the module";
 	guiBuilder.CreateLabel( block, "Author:", toolTip );
 	frameLine = guiBuilder.CreateHFrame( block );
-	pEditAuthor = guiBuilder.CreateTextField( frameLine, NULL, 0, toolTip, false );
+	pEditAuthor = guiBuilder.CreateTextField( frameLine, nullptr, 0, toolTip, false );
 	pEditAuthor->setEditable( false );
 	
 	toolTip = "Module version";
 	guiBuilder.CreateLabel( block, "Version:", toolTip );
 	frameLine = guiBuilder.CreateHFrame( block );
-	pEditVersion = guiBuilder.CreateTextField( frameLine, NULL, 0, toolTip, 6, true );
+	pEditVersion = guiBuilder.CreateTextField( frameLine, nullptr, 0, toolTip, 6, true );
 	pEditVersion->setEditable( false );
 	
 	toolTip = "Pattern recognized by this module if this is a resource module";
 	guiBuilder.CreateLabel( block, "Pattern:", toolTip );
 	frameLine = guiBuilder.CreateHFrame( block );
-	pEditPattern = guiBuilder.CreateTextField( frameLine, NULL, 0, toolTip, false );
+	pEditPattern = guiBuilder.CreateTextField( frameLine, nullptr, 0, toolTip, false );
 	pEditPattern->setEditable( false );
 	
 	toolTip = "Determines if this module is a fallback module";
-	pChkIsFallback = guiBuilder.CreateCheckBox( frameTab, "Is Fallback", NULL, 0, toolTip );
+	pChkIsFallback = guiBuilder.CreateCheckBox( frameTab, "Is Fallback", nullptr, 0, toolTip );
 	
-	pTextDescription = guiBuilder.CreateTextArea( frameTab, NULL, 0, "", false, false );
+	pTextDescription = guiBuilder.CreateTextArea( frameTab, nullptr, 0, "", false, false );
 	pTextDescription->setVisibleColumns( 50 );
 	pTextDescription->setVisibleRows( 5 );
 	pTextDescription->setEditable( false );
@@ -142,59 +136,59 @@ FXDialogBox( owner, "Module Properties", DECOR_TITLE | DECOR_BORDER | DECOR_RESI
 	
 	
 	// status
-	new FXTabItem( pTabPanels, "Status", NULL, TAB_TOP_NORMAL, 0, 0, 0, 0, 10, 10, 2, 2 );
+	new FXTabItem( pTabPanels, "Status", nullptr, TAB_TOP_NORMAL, 0, 0, 0, 0, 10, 10, 2, 2 );
 	
-	frameTab = new FXVerticalFrame( pTabPanels, FRAME_RAISED | LAYOUT_FILL_Y | LAYOUT_FILL_X, 0, 0, 0, 0, 10, 10, 10, 10, 0, 3 );
-	if( ! frameTab ) DETHROW( deeOutOfMemory );
+	frameTab = new FXVerticalFrame( pTabPanels, FRAME_RAISED | LAYOUT_FILL_Y | LAYOUT_FILL_X,
+		0, 0, 0, 0, 10, 10, 10, 10, 0, 3 );
 	
 	block = guiBuilder.CreateMatrixPacker( frameTab, 2 );
 	
 	toolTip = "Error code from the loading operation.";
 	guiBuilder.CreateLabel( block, "Error Code:", toolTip );
 	frameLine = guiBuilder.CreateHFrame( block );
-	pEditErrorCode = guiBuilder.CreateTextField( frameLine, NULL, 0, toolTip, false );
+	pEditErrorCode = guiBuilder.CreateTextField( frameLine, nullptr, 0, toolTip, false );
 	pEditErrorCode->setEditable( false );
 	pBtnInfoErrorCode = guiBuilder.CreateButton( frameLine, "?", this, ID_BTN_INFO, "" );
 	
 	toolTip = "Library file.";
 	guiBuilder.CreateLabel( block, "Library File:", toolTip );
 	frameLine = guiBuilder.CreateHFrame( block );
-	pEditLibFileName = guiBuilder.CreateTextField( frameLine, NULL, 0, toolTip, false );
+	pEditLibFileName = guiBuilder.CreateTextField( frameLine, nullptr, 0, toolTip, false );
 	pEditLibFileName->setEditable( false );
 	
 	toolTip = "Library file size.";
 	guiBuilder.CreateLabel( block, "File Size Should:", toolTip );
 	frameLine = guiBuilder.CreateHFrame( block );
-	pEditLibFileSizeShould = guiBuilder.CreateTextField( frameLine, NULL, 0, toolTip, 12, true );
+	pEditLibFileSizeShould = guiBuilder.CreateTextField( frameLine, nullptr, 0, toolTip, 12, true );
 	pEditLibFileSizeShould->setEditable( false );
 	
 	toolTip = "Library file size.";
 	guiBuilder.CreateLabel( block, "File Size Is:", toolTip );
 	frameLine = guiBuilder.CreateHFrame( block );
-	pEditLibFileSizeIs = guiBuilder.CreateTextField( frameLine, NULL, 0, toolTip, 12, true );
+	pEditLibFileSizeIs = guiBuilder.CreateTextField( frameLine, nullptr, 0, toolTip, 12, true );
 	pEditLibFileSizeIs->setEditable( false );
 	
 	toolTip = "SHA1 hash of the library file.";
 	guiBuilder.CreateLabel( block, "File Hash Should:", toolTip );
 	frameLine = guiBuilder.CreateHFrame( block );
-	pEditLibFileHashShould = guiBuilder.CreateTextField( frameLine, NULL, 0, toolTip, 50, false );
+	pEditLibFileHashShould = guiBuilder.CreateTextField( frameLine, nullptr, 0, toolTip, 50, false );
 	pEditLibFileHashShould->setEditable( false );
 	
 	toolTip = "SHA1 hash of the library file.";
 	guiBuilder.CreateLabel( block, "File Hash Is:", toolTip );
 	frameLine = guiBuilder.CreateHFrame( block );
-	pEditLibFileHashIs = guiBuilder.CreateTextField( frameLine, NULL, 0, toolTip, 50, false );
+	pEditLibFileHashIs = guiBuilder.CreateTextField( frameLine, nullptr, 0, toolTip, 50, false );
 	pEditLibFileHashIs->setEditable( false );
 	
 	toolTip = "Name of the entry point function.";
 	guiBuilder.CreateLabel( block, "Entry Point:", toolTip );
 	frameLine = guiBuilder.CreateHFrame( block );
-	pEditLibFileEntryPoint = guiBuilder.CreateTextField( frameLine, NULL, 0, toolTip, false );
+	pEditLibFileEntryPoint = guiBuilder.CreateTextField( frameLine, nullptr, 0, toolTip, false );
 	pEditLibFileEntryPoint->setEditable( false );
 	
 	// module properties
 	/*
-	new FXTabItem( pTabPanels, "Properties", NULL, TAB_TOP_NORMAL, 0, 0, 0, 0, 10, 10, 2, 2 );
+	new FXTabItem( pTabPanels, "Properties", nullptr, TAB_TOP_NORMAL, 0, 0, 0, 0, 10, 10, 2, 2 );
 	
 	frameTab = new FXVerticalFrame( pTabPanels, FRAME_RAISED | LAYOUT_FILL_Y | LAYOUT_FILL_X, 0, 0, 0, 0, 10, 10, 10, 10, 0, 3 );
 	if( ! frameTab ) DETHROW( deeOutOfMemory );
@@ -204,14 +198,14 @@ FXDialogBox( owner, "Module Properties", DECOR_TITLE | DECOR_BORDER | DECOR_RESI
 	
 	
 	// buttons below
-	frameGroup =  new FXVerticalFrame( content, LAYOUT_SIDE_TOP | LAYOUT_FILL_X, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5 );
-	if( ! frameGroup ) DETHROW( deeOutOfMemory );
+	frameGroup =  new FXVerticalFrame( content, LAYOUT_SIDE_TOP | LAYOUT_FILL_X,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 5 );
 	
 	new FXSeparator( frameGroup );
 	
 	frameLine = new FXHorizontalFrame( frameGroup, LAYOUT_CENTER_X, 0, 0, 0, 0, 0, 0, 0, 0, 20, 0 );
-	if( ! frameLine ) DETHROW( deeOutOfMemory );
-	new FXButton( frameLine, "Close Dialog", NULL, this, ID_ACCEPT, LAYOUT_CENTER_X | FRAME_RAISED | JUSTIFY_NORMAL | ICON_BEFORE_TEXT, 0, 0, 0, 0, 30, 30 );
+	new FXButton( frameLine, "Close Dialog", nullptr, this, ID_ACCEPT,
+		LAYOUT_CENTER_X | FRAME_RAISED | JUSTIFY_NORMAL | ICON_BEFORE_TEXT, 0, 0, 0, 0, 30, 30 );
 	
 	// set values
 	SetFromModule();
@@ -227,88 +221,114 @@ deglDialogModuleProps::~deglDialogModuleProps(){
 
 void deglDialogModuleProps::SetFromModule(){
 	// information
-	int status = pModule->GetStatus();
-	int type = pModule->GetType();
+	const delEngineModule::eModuleStatus status = pModule->GetStatus();
+	const deModuleSystem::eModuleTypes type = pModule->GetType();
 	FXString text;
 	
 	pTextDescription->setText( pModule->GetDescription().ToUTF8().GetString() );
 	pEditName->setText( pModule->GetName().GetString() );
 	
-	if( type == deModuleSystem::emtGraphic ){
+	switch( type ){
+	case deModuleSystem::emtGraphic:
 		pEditType->setText( "Graphic" );
+		break;
 		
-	}else if( type == deModuleSystem::emtAudio ){
+	case deModuleSystem::emtAudio:
 		pEditType->setText( "Audio" );
+		break;
 		
-	}else if( type == deModuleSystem::emtInput ){
+	case deModuleSystem::emtInput:
 		pEditType->setText( "Input" );
+		break;
 		
-	}else if( type == deModuleSystem::emtNetwork ){
+	case deModuleSystem::emtNetwork:
 		pEditType->setText( "Network" );
+		break;
 		
-	}else if( type == deModuleSystem::emtPhysics ){
+	case deModuleSystem::emtPhysics:
 		pEditType->setText( "Physics" );
+		break;
 		
-	}else if( type == deModuleSystem::emtImage ){
+	case deModuleSystem::emtImage:
 		pEditType->setText( "Image" );
+		break;
 		
-	}else if( type == deModuleSystem::emtVideo ){
+	case deModuleSystem::emtVideo:
 		pEditType->setText( "Video" );
+		break;
 		
-	}else if( type == deModuleSystem::emtScript ){
+	case deModuleSystem::emtScript:
 		pEditType->setText( "Script" );
+		break;
 		
-	}else if( type == deModuleSystem::emtModel ){
+	case deModuleSystem::emtModel:
 		pEditType->setText( "Model" );
+		break;
 		
-	}else if( type == deModuleSystem::emtRig ){
+	case deModuleSystem::emtRig:
 		pEditType->setText( "Rig" );
+		break;
 		
-	}else if( type == deModuleSystem::emtSkin ){
+	case deModuleSystem::emtSkin:
 		pEditType->setText( "Skin" );
+		break;
 		
-	}else if( type == deModuleSystem::emtAnimation ){
+	case deModuleSystem::emtAnimation:
 		pEditType->setText( "Animation" );
+		break;
 		
-	}else if( type == deModuleSystem::emtFont ){
+	case deModuleSystem::emtFont:
 		pEditType->setText( "Font" );
+		break;
 		
-	}else if( type == deModuleSystem::emtCrashRecovery ){
+	case deModuleSystem::emtCrashRecovery:
 		pEditType->setText( "Crash Recovery" );
+		break;
 		
-	}else if( type == deModuleSystem::emtLanguagePack ){
+	case deModuleSystem::emtLanguagePack:
 		pEditType->setText( "Language Pack" );
+		break;
 		
-	}else if( type == deModuleSystem::emtAnimator ){
+	case deModuleSystem::emtAnimator:
 		pEditType->setText( "Animator" );
+		break;
 		
-	}else if( type == deModuleSystem::emtSound ){
+	case deModuleSystem::emtSound:
 		pEditType->setText( "Sound" );
+		break;
 		
-	}else if( type == deModuleSystem::emtAI ){
+	case deModuleSystem::emtAI:
 		pEditType->setText( "AI" );
+		break;
 		
-	}else if( type == deModuleSystem::emtOcclusionMesh ){
+	case deModuleSystem::emtOcclusionMesh:
 		pEditType->setText( "Occlusion Mesh" );
+		break;
 		
-	}else if( type == deModuleSystem::emtSynthesizer ){
+	case deModuleSystem::emtSynthesizer:
 		pEditType->setText( "Synthesizer" );
+		break;
 		
-	}else{
-		pEditType->setText( "?" );
+	case deModuleSystem::emtArchive:
+		pEditType->setText( "Archive" );
+		break;
+		
+	case deModuleSystem::emtUnknown:
+		pEditType->setText( "Unknown" );
 	}
 	
-	if( status == deglEngineModule::emsReady ){
+	switch( status ){
+	case delEngineModule::emsReady:
 		pEditStatus->setText( "Ready" );
+		break;
 		
-	}else if( status == deglEngineModule::emsNotTested ){
+	case delEngineModule::emsNotTested:
 		pEditStatus->setText( "Not Tested" );
+		break;
 		
-	}else if( status == deglEngineModule::emsBroken ){
+	case delEngineModule::emsBroken:
 		pEditStatus->setText( "Broken" );
-		
-	}else{
-		pEditStatus->setText( "?" );
+		break;
 	}
 	
 	pEditAuthor->setText( pModule->GetAuthor().ToUTF8().GetString() );
@@ -323,43 +343,64 @@ void deglDialogModuleProps::SetFromModule(){
 	// status
 	int errorCode = pModule->GetErrorCode();
 	
-	if( errorCode == deLoadableModule::eecSuccess ){
+	switch( errorCode ){
+	case deLoadableModule::eecSuccess:
 		pEditErrorCode->setText( "Success" );
-		pBtnInfoErrorCode->setTipText( "The module loaded successfully and is ready\nfor usage." );
+		pBtnInfoErrorCode->setTipText( "The module loaded successfully and is ready\n"
+			"for usage." );
+		break;
 		
-	}else if( errorCode == deLoadableModule::eecCreateModuleFailed ){
+	case deLoadableModule::eecCreateModuleFailed:
 		pEditErrorCode->setText( "CreateModuleFailed" );
 		pBtnInfoErrorCode->setTipText( "Creating the module instance failed." );
+		break;
 		
-	}else if( errorCode == deLibraryModule::eecLibFileNotFound ){
+	case deLibraryModule::eecLibFileNotFound:
 		pEditErrorCode->setText( "LibFileNotFound" );
 		pBtnInfoErrorCode->setTipText( "The module library file could not be found." );
+		break;
 		
-	}else if( errorCode == deLibraryModule::eecLibFileNotRegularFile ){
+	case deLibraryModule::eecLibFileNotRegularFile:
 		pEditErrorCode->setText( "LibFileNotRegularFile" );
-		pBtnInfoErrorCode->setTipText( "The module library file is not a regular\nlibrary file." );
+		pBtnInfoErrorCode->setTipText( "The module library file is not a regular\n"
+			"library file." );
+		break;
 		
-	}else if( errorCode == deLibraryModule::eecLibFileSizeMismatch ){
+	case deLibraryModule::eecLibFileSizeMismatch:
 		pEditErrorCode->setText( "LibFileSizeMismatch" );
-		pBtnInfoErrorCode->setTipText( "The size of the module library file does not\nmatch the size specified in the module\ndefinition file." );
+		pBtnInfoErrorCode->setTipText( "The size of the module library file does not\n"
+			"match the size specified in the module\n"
+			"definition file." );
+		break;
 		
-	}else if( errorCode == deLibraryModule::eecLibFileCheckSumMismatch ){
+	case deLibraryModule::eecLibFileCheckSumMismatch:
 		pEditErrorCode->setText( "LibFileCheckSumMismatch" );
-		pBtnInfoErrorCode->setTipText( "The checksum of the module library file does\nnot match the checksum specified in the\nmodule definition file." );
+		pBtnInfoErrorCode->setTipText( "The checksum of the module library file does\n"
+			"not match the checksum specified in the\n"
+			"module definition file." );
+		break;
 		
-	}else if( errorCode == deLibraryModule::eecLibFileOpenFailed ){
+	case deLibraryModule::eecLibFileOpenFailed:
 		pEditErrorCode->setText( "LibFileOpenFailed" );
-		pBtnInfoErrorCode->setTipText( "The module library file could not be opened.\nThis can be due to the file not being a valid\nlibrary file or symbols that can not be resolved." );
+		pBtnInfoErrorCode->setTipText( "The module library file could not be opened.\n"
+			"This can be due to the file not being a valid\n"
+			"library file or symbols that can not be resolved." );
+		break;
 		
-	}else if( errorCode == deLibraryModule::eecLibFileEntryPointNotFound ){
+	case deLibraryModule::eecLibFileEntryPointNotFound:
 		pEditErrorCode->setText( "LibFileEntryPointNotFound" );
-		pBtnInfoErrorCode->setTipText( "The entry point function specified in the\nmodule definition file could not be found\nin the library file." );
+		pBtnInfoErrorCode->setTipText( "The entry point function specified in the\n"
+			"module definition file could not be found\n"
+			"in the library file." );
+		break;
 		
-	}else if( errorCode == deLibraryModule::eecLibFileCreateModuleFailed ){
+	case deLibraryModule::eecLibFileCreateModuleFailed:
 		pEditErrorCode->setText( "LibFileCreateModuleFailed" );
-		pBtnInfoErrorCode->setTipText( "Creating the module instance using the\nentry point function failed." );
+		pBtnInfoErrorCode->setTipText( "Creating the module instance using the\n"
+			"entry point function failed." );
+		break;
 		
-	}else{
+	default:
 		pEditErrorCode->setText( "?" );
 		pBtnInfoErrorCode->setTipText( "Unknown error code." );
 	}
@@ -367,11 +408,11 @@ void deglDialogModuleProps::SetFromModule(){
 	pEditLibFileName->setText( pModule->GetLibFileName().GetString() );
 	pEditLibFileName->setCursorPos( 0 );
 	
-	text.format( "%i", pModule->GetLibFileSizeShould() );
+	text.format( "%d", pModule->GetLibFileSizeShould() );
 	pEditLibFileSizeShould->setText( text );
 	pEditLibFileSizeShould->setCursorPos( 0 );
 	
-	text.format( "%i", pModule->GetLibFileSizeIs() );
+	text.format( "%d", pModule->GetLibFileSizeIs() );
 	pEditLibFileSizeIs->setText( text );
 	pEditLibFileSizeIs->setCursorPos( 0 );
 	
@@ -390,10 +431,8 @@ void deglDialogModuleProps::SetFromModule(){
 // Events
 ///////////
 
-long deglDialogModuleProps::onBtnInfo( FXObject *sender, FXSelector selector, void *data ){
-	FXButton *button = ( FXButton* )sender;
-	
-	FXMessageBox::information( this, MBOX_OK, "Detail Information", "%s", button->getTipText().text() );
-	
+long deglDialogModuleProps::onBtnInfo( FXObject *sender, FXSelector, void* ){
+	FXButton &button = *( ( FXButton* )sender );
+	FXMessageBox::information( this, MBOX_OK, "Detail Information", "%s", button.getTipText().text() );
 	return 0;
 }

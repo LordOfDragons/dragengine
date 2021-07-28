@@ -24,18 +24,17 @@
 
 #include "../../foxtoolkit.h"
 
-#include <dragengine/deObjectReference.h>
+#include <delauncher/game/delGame.h>
+#include <delauncher/game/profile/delGameProfile.h>
+
 #include <dragengine/common/string/decString.h>
 
 class deglWindowMain;
-class deglGame;
-class deglGameProfileList;
-class deglGameProfile;
 
 
 
 /**
- * \brief Run Game With Panel.
+ * Run Game With Panel.
  */
 class deglDialogRunGameWith : public FXDialogBox{
 	FXDECLARE( deglDialogRunGameWith )
@@ -54,9 +53,8 @@ public:
 	
 private:
 	deglWindowMain *pWindowMain;
-	deglGame *pGame;
-	
-	deObjectReference pProfile;
+	const delGame::Ref pGame;
+	delGameProfile::Ref pProfile;
 	
 	FXLabel *pLabIcon;
 	FXComboBox *pCBProfile;
@@ -68,10 +66,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create dialog. */
-	deglDialogRunGameWith( deglWindowMain *windowMain, deglGame *game, FXWindow *owner );
+	/** Create dialog. */
+	deglDialogRunGameWith( deglWindowMain *windowMain, delGame *game, FXWindow *owner );
 	
-	/** \brief Clean up dialog. */
+	/** Clean up dialog. */
 	virtual ~deglDialogRunGameWith();
 	/*@}*/
 	
@@ -79,20 +77,20 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Main window. */
+	/** Main window. */
 	inline deglWindowMain *GetWindowMain() const{ return pWindowMain; }
 	
-	/** \brief Game. */
-	inline deglGame *GetModule() const{ return pGame; }
+	/** Game. */
+	inline delGame *GetModule() const{ return pGame; }
 	
-	/** \brief Update game values. */
+	/** Update game values. */
 	void UpdateGame();
 	
-	/** \brief Profile. */
-	inline deglGameProfile *GetProfile() const{ return ( deglGameProfile* )( deObject* )pProfile; }
+	/** Profile. */
+	inline delGameProfile *GetProfile() const{ return pProfile; }
 	
-	/** \brief Set profile. */
-	void SetProfile( deglGameProfile *profile );
+	/** Set profile. */
+	void SetProfile( delGameProfile *profile );
 	/*@}*/
 	
 	

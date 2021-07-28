@@ -1,7 +1,7 @@
 /* 
  * Drag[en]gine GUI Launcher
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * Copyright (C) 2021, Roland Plüss (roland@rptd.ch)
  * 
  * This program is free software; you can redistribute it and/or 
  * modify it under the terms of the GNU General Public License 
@@ -19,38 +19,43 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef _DEGLGAMEXML_H_
-#define _DEGLGAMEXML_H_
+#ifndef _DEGLSIGNALHANDLER_H_
+#define _DEGLSIGNALHANDLER_H_
 
-#include "../deglBaseXML.h"
-
-class deglGame;
-class decBaseFileReader;
-class decBaseFileWriter;
-
+class deglLauncher;
 
 
 /**
- * @brief Load Game XML.
+ * Signal handler.
  */
-class deglGameXML : public deglBaseXML{
+class deglSignalHandler{
+private:
+	deglLauncher &pLauncher;
+	
+	
+	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Creates a new game xml read. */
-	deglGameXML( deLogger *logger, const char *loggerSource );
-	/** Cleans up the game xml read. */
-	virtual ~deglGameXML();
+	/** Create signal handler. */
+	deglSignalHandler( deglLauncher &launcher );
+	
+	/** Clean up signal handler. */
+	~deglSignalHandler();
 	/*@}*/
 	
-	/** @name Management */
+	
+	
+	/** \name Management */
 	/*@{*/
-	/** Read from XML file. */
-	void ReadFromFile( decBaseFileReader &reader, deglGame &game );
+	/** Launcher. */
+	inline deglLauncher &GetLauncher() const{ return pLauncher; }
 	/*@}*/
+	
+	
 	
 private:
-	void pReadGame( const decXmlElementTag &root, deglGame &game );
+	void pRegisterSignals();
 };
 
-#endif // _DEGLGAME_H_
+#endif

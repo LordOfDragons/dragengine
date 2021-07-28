@@ -29,7 +29,7 @@ class deglDialogProfileList;
 
 
 /**
- * @brief Profile List Dialog List Item Parameter.
+ * Profile List Dialog List Item Parameter.
  */
 class deglDPLListItemParam : public FXListItem{
 	FXDECLARE( deglDPLListItemParam )
@@ -40,20 +40,26 @@ private:
 	FXFont *pFont;
 	FXString pParameterName;
 	
+	
+	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Creates a new list item. */
+	/** Create list item. */
 	deglDPLListItemParam( const FXString &text, const char *parameterName, FXFont *font );
-	/** Cleans up the list item. */
+	
+	/** Clean up list item. */
 	virtual ~deglDPLListItemParam();
 	/*@}*/
 	
-	/** @name Management */
+	
+	
+	/** \name Management */
 	/*@{*/
-	/** Retrieves the parameter name. */
+	/** Parameter name. */
 	inline const FXString &GetParameterName() const{ return pParameterName; }
-	/** Sets the font. */
+	
+	/** Set font. */
 	void SetFont( FXFont *font );
 	
 	/** Draw item. */
@@ -61,5 +67,4 @@ public:
 	/*@}*/
 };
 
-// end of include only once
 #endif

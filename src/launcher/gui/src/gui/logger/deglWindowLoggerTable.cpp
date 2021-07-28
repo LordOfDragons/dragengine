@@ -32,7 +32,7 @@
 // Class deglWindowLoggerTable
 ////////////////////////////////
 
-FXIMPLEMENT( deglWindowLoggerTable, FXTable, NULL, 0 )
+FXIMPLEMENT( deglWindowLoggerTable, FXTable, nullptr, 0 )
 
 // Constructor, destructor
 ////////////////////////////
@@ -40,8 +40,9 @@ FXIMPLEMENT( deglWindowLoggerTable, FXTable, NULL, 0 )
 deglWindowLoggerTable::deglWindowLoggerTable(){
 }
 
-deglWindowLoggerTable::deglWindowLoggerTable( FXComposite *p, FXObject *tgt, FXSelector sel, FXuint opts, FXint x, FXint y, FXint w, FXint h,
-FXint pl, FXint pr, FXint pt, FXint pb ) : FXTable( p, tgt, sel, opts, x, y, w, h, pl, pr, pt, pb ){
+deglWindowLoggerTable::deglWindowLoggerTable( FXComposite *p, FXObject *tgt, FXSelector sel,
+	FXuint opts, FXint x, FXint y, FXint w, FXint h, FXint pl, FXint pr, FXint pt, FXint pb ) :
+FXTable( p, tgt, sel, opts, x, y, w, h, pl, pr, pt, pb ){
 }
 
 deglWindowLoggerTable::~deglWindowLoggerTable(){

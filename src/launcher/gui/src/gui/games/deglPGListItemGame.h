@@ -23,16 +23,16 @@
 #define _DEGLPGLISTITEMGAME_H_
 
 #include "../foxtoolkit.h"
+#include "../deglSharedIcon.h"
 
-#include <dragengine/deObjectReference.h>
+#include <delauncher/game/delGame.h>
 
-class deglGame;
 class deglPanelGames;
 
 
 
 /**
- * @brief Games Panel List Item Game.
+ * Games Panel List Item Game.
  */
 class deglPGListItemGame : public FXIconItem{
 	FXDECLARE( deglPGListItemGame )
@@ -41,27 +41,32 @@ protected:
 	
 private:
 	deglPanelGames *pPanelGames;
-	deObjectReference pGame;
-	deObjectReference pIconBig;
-	deObjectReference pIconMini;
+	const delGame::Ref pGame;
+	deglSharedIcon::Ref pIconBig;
+	deglSharedIcon::Ref pIconMini;
+	
+	
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Creates a new list item. */
-	deglPGListItemGame( deglPanelGames *panelGames, deglGame *game );
-	/** Cleans up the list item. */
+	/** Create list item. */
+	deglPGListItemGame( deglPanelGames *panelGames, delGame *game );
+	
+	/** Clean up list item. */
 	virtual ~deglPGListItemGame();
 	/*@}*/
 	
-	/** @name Management */
+	
+	
+	/** \name Management */
 	/*@{*/
-	/** Retrieves the games panel. */
+	/** Games panel. */
 	inline deglPanelGames *GetPanelGames() const{ return pPanelGames; }
-	/** Retrieves the game object. */
-	inline deglGame *GetGame() const{ return ( deglGame* )( deObject* )pGame; }
+	
+	/** Game object. */
+	inline delGame *GetGame() const{ return pGame; }
 	/*@}*/
 };
 
-// end of include only once
 #endif

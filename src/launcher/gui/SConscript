@@ -25,9 +25,9 @@ elif envLauncher['OSPosix']:
 
 libs = []
 
-appendLibrary(envLauncher, parent_targets['dragengine'], libs)
+appendLibrary(envLauncher, parent_targets['delauncher'], libs)
 appendLibrary(envLauncher, parent_targets['lib_fox'], libs)
-libs.extend(parent_targets['dragengine']['binlibs'])
+libs.extend(parent_targets['delauncher']['binlibs'])
 
 if envLauncher['OSPosix'] or envLauncher['OSMacOS']:
 	envLauncher.Append(CXXFLAGS = '-DHAS_LIB_DL')
@@ -74,15 +74,11 @@ if envLauncher['OSWindows']:
 	envEngine.Append(CXXFLAGS = ['-DOS_W32_HELPER'])
 	
 	libsEngine = []
-	appendLibrary(envEngine, parent_targets['dragengine'], libsEngine)
-	libsEngine.extend(parent_targets['dragengine']['binlibs'])
+	appendLibrary(envEngine, parent_targets['delauncher'], libsEngine)
+	libsEngine.extend(parent_targets['delauncher']['binlibs'])
 	libsEngine.extend(['kernel32', 'user32'])
 	
-	objectsEngine = [
-		envEngine.StaticObject('src/engine/deglEngineProcess-helper',
-			'src/engine/deglEngineProcess.cpp'),
-		envEngine.StaticObject('src/engine/deglEngineProcessRunGame-helper',
-			'src/engine/deglEngineProcessRunGame.cpp')]
+	objectsEngine = [envEngine.StaticObject('src/engine/deglEngineProcessHelper.cpp')]
 	
 	programEngine = envEngine.Program(target='delauncher-gui-engine', source=objectsEngine, LIBS=libsEngine)
 	programs.append(programEngine)

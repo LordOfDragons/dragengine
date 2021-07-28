@@ -27,23 +27,17 @@
 #include "deglWindowMain.h"
 #include "../deglLauncher.h"
 #include "../config/deglConfiguration.h"
-#include "../engine/deglEngine.h"
-#include "../engine/deglEngineInstance.h"
-#include "../game/deglGame.h"
-#include "../game/deglGameManager.h"
-#include "../game/patch/deglPatch.h"
-#include "../game/patch/deglPatchManager.h"
+
+#include <delauncher/engine/delEngineInstance.h>
+#include <delauncher/game/patch/delPatch.h>
 
 #include <dragengine/common/exceptions.h>
-#include <dragengine/common/file/decBaseFileReaderReference.h>
-#include <dragengine/common/file/decBaseFileWriterReference.h>
 #include <dragengine/common/file/decDiskFileReader.h>
 #include <dragengine/common/file/decDiskFileWriter.h>
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/unicode/decUnicodeString.h>
 #include <dragengine/filesystem/deVFSDiskDirectory.h>
-#include <dragengine/filesystem/deVFSContainerReference.h>
 #include <dragengine/logger/deLogger.h>
 
 
@@ -85,20 +79,20 @@ public:
 	};
 	
 	virtual FXint run(){
-		decBaseFileReaderReference reader;
-		decBaseFileWriterReference writer;
-		deVFSContainerReference container;
-		char *buffer = NULL;
+		char *buffer = nullptr;
 		
 		try{
-			container.TakeOver( new deVFSDiskDirectory( decPath::CreatePathNative(
-				pLauncher.GetConfiguration()->GetPathGames() ) ) );
+			const deVFSDiskDirectory::Ref container( deVFSDiskDirectory::Ref::New(
+				new deVFSDiskDirectory( decPath::CreatePathNative( pLauncher.GetPathGames() ) ) ) );
 			
-			reader.TakeOver( new decDiskFileReader( pFilename ) );
+			const decDiskFileReader::Ref reader( decDiskFileReader::Ref::New(
+				new decDiskFileReader( pFilename ) ) );
 			
 			decPath target( decPath::CreatePathUnix( "/" ) );
 			target.AddComponent( decPath::CreatePathNative( pFilename ).GetLastComponent() );
-			writer.TakeOver( container->OpenFileForWriting( target ) );
+			
+			decBaseFileWriter::Ref writer( decBaseFileWriter::Ref::New(
+				container->OpenFileForWriting( target ) ) );
 			
 			const int totalSize = reader->GetLength();
 			const double percentageFactor = 100.0 / ( double )totalSize;
@@ -128,22 +122,20 @@ public:
 			if( buffer ){
 				delete [] buffer;
 			}
-			writer = NULL;
 			pDeleteTarget();
 			
-			pMessageChannel.message( pDialogProgress, FXSEL( SEL_COMMAND, FXProgressDialog::ID_CANCEL ), NULL );
+			pMessageChannel.message( pDialogProgress, FXSEL( SEL_COMMAND, FXProgressDialog::ID_CANCEL ), nullptr );
 			pFinished = true;
 			return -1;
 		}
 		
 		if( pAbort ){
-			writer = NULL;
 			pDeleteTarget();
 			pFinished = true;
 			return -1;
 		}
 		
-		pMessageChannel.message( pDialogProgress, FXSEL( SEL_COMMAND, FXProgressDialog::ID_ACCEPT ), NULL );
+		pMessageChannel.message( pDialogProgress, FXSEL( SEL_COMMAND, FXProgressDialog::ID_ACCEPT ), nullptr );
 		pFinished = true;
 		return 0;
 	}
@@ -162,9 +154,9 @@ public:
 private:
 	void pDeleteTarget(){
 		try{
-			deVFSContainerReference container;
-			container.TakeOver( new deVFSDiskDirectory( decPath::CreatePathNative(
-				pLauncher.GetConfiguration()->GetPathGames() ) ) );
+			deVFSDiskDirectory::Ref container( deVFSDiskDirectory::Ref::New(
+				new deVFSDiskDirectory( decPath::CreatePathNative( pLauncher.GetPathGames() ) ) ) );
+			
 			decPath target( decPath::CreatePathUnix( "/" ) );
 			target.AddComponent( decPath::CreatePathNative( pFilename ).GetLastComponent() );
 			
@@ -198,14 +190,14 @@ bool deglInstallDelga::Run( const char *forceFilename ){
 	
 	// load delga file
 	deglLauncher &launcher = *pWindow.GetLauncher();
-	deglPatchList patches;
-	deglGameList games;
+	delPatchList patches;
+	delGameList games;
 	
 	try{
-		deglEngineInstance instance( launcher, launcher.GetEngine()->GetLogFile() );
+		delEngineInstance instance( launcher, launcher.GetEngine().GetLogFile() );
 		instance.StartEngine();
 		instance.LoadModules();
-		launcher.GetGameManager()->LoadGameFromDisk( instance, filename, games );
+		launcher.GetGameManager().LoadGameFromDisk( instance, filename, games );
 		launcher.GetPatchManager().LoadPatchFromDisk( instance, filename, patches );
 		
 	}catch( const deException &e ){
@@ -217,7 +209,7 @@ bool deglInstallDelga::Run( const char *forceFilename ){
 	const int gameCount = games.GetCount();
 	int i;
 	for( i=0; i<gameCount; i++ ){
-		if( launcher.GetGameManager()->GetGameList().HasWithID( games.GetAt( i )->GetIdentifier() ) ){
+		if( launcher.GetGameManager().GetGames().HasWithID( games.GetAt( i )->GetIdentifier() ) ){
 			FXMessageBox::information( &pWindow, MBOX_OK, "Install DELGA",
 				"Game '%s' is already installed", games.GetAt( i )->GetTitle().ToUTF8().GetString() );
 			return false;
@@ -236,12 +228,12 @@ bool deglInstallDelga::Run( const char *forceFilename ){
 	// show what would be installed and ask to continue
 	decString text( "The following content will be installed:\n\n" );
 	for( i=0; i<games.GetCount(); i++ ){
-		const deglGame &game = *games.GetAt( i );
+		const delGame &game = *games.GetAt( i );
 		text.AppendFormat( "- Game '%s'\n", game.GetTitle().ToUTF8().GetString() );
 	}
 	for( i=0; i<patches.GetCount(); i++ ){
-		const deglPatch &patch = *patches.GetAt( i );
-		const deglGame *game = launcher.GetGameManager()->GetGameList().GetWithID( patch.GetGameID() );
+		const delPatch &patch = *patches.GetAt( i );
+		const delGame *game = launcher.GetGameManager().GetGames().GetWithID( patch.GetGameID() );
 		if( ! game ){
 			game = games.GetWithID( patch.GetGameID() );
 		}

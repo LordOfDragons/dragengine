@@ -1,7 +1,7 @@
 /* 
  * Drag[en]gine GUI Launcher
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * Copyright (C) 2021, Roland Plüss (roland@rptd.ch)
  * 
  * This program is free software; you can redistribute it and/or 
  * modify it under the terms of the GNU General Public License 
@@ -19,42 +19,62 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef _DEGLPATCHXML_H_
-#define _DEGLPATCHXML_H_
+#ifndef _DEGLGAMEICON_H_
+#define _DEGLGAMEICON_H_
 
-#include "../../deglBaseXML.h"
+#include "../gui/deglSharedIcon.h"
 
-class deglPatch;
-class decBaseFileReader;
-
+#include <delauncher/game/icon/delGameIcon.h>
 
 
 /**
- * \brief Load game patch XML.
+ * Game icon.
  */
-class deglPatchXML : public deglBaseXML{
+class deglGameIcon : public delGameIcon{
 public:
-	/** \name Constructors and Destructors */
-	/*@{*/
-	/** \brief Create loader. */
-	deglPatchXML( deLogger *logger, const char *loggerSource );
-	
-	/** \brief Clean up loader. */
-	virtual ~deglPatchXML();
-	/*@}*/
-	
-	
-	
-	/** \name Management */
-	/*@{*/
-	/** \brief Read from file. */
-	void ReadFromFile( decBaseFileReader &reader, deglPatch &patch );
-	/*@}*/
+	/** Type holding strong reference. */
+	typedef deTObjectReference<deglGameIcon> Ref;
 	
 	
 	
 private:
-	void pReadPatch( const decXmlElementTag &root, deglPatch &patch );
+	deglSharedIcon::Ref pFoxIcon;
+	
+	
+	
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** Create game iconn. */
+	deglGameIcon( int size, const char *path );
+	
+protected:
+	/** Cleans up the game. */
+	virtual ~deglGameIcon();
+	/*@}*/
+	
+	
+	
+public:
+	/** \name Management */
+	/*@{*/
+	/** FOX icon or nullptr if unable to load. */
+	inline deglSharedIcon *GetFoxIcon() const{ return pFoxIcon; }
+	
+	/** FOX icon scaled to size or nullptr if unable to load. */
+	deglSharedIcon::Ref GetScaledFoxIcon( int size ) const;
+	/*@}*/
+	
+	
+	
+protected:
+	virtual void OnContentChanged();
+	
+	
+	
+private:
+	void pCreateFoxIcon();
+	void pCreatePNGFoxIcon();
 };
 
 #endif

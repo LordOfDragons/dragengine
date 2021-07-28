@@ -29,7 +29,7 @@ class deglWindowMain;
 
 
 /**
- * @brief Engine Properties Panel.
+ * Engine Properties Panel.
  */
 class deglDialogEngineProps : public FXDialogBox{
 	FXDECLARE( deglDialogEngineProps )
@@ -56,32 +56,39 @@ private:
 	FXComboBox *pCBActiveProfile;
 	FXButton *pBtnEditProfiles;
 	
+	
+	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Creates a new dialog. */
+	/** Create dialog. */
 	deglDialogEngineProps( deglWindowMain *windowMain, FXWindow *owner );
-	/** Cleans up the dialog. */
+	
+	/** Clean up dialog. */
 	virtual ~deglDialogEngineProps();
 	/*@}*/
 	
-	/** @name Management */
+	
+	
+	/** \name Management */
 	/*@{*/
-	/** Retrieves the main window. */
+	/** Main window. */
 	inline deglWindowMain *GetWindowMain() const{ return pWindowMain; }
 	
 	/** Set values from engine. */
 	void SetFromEngine();
+	
 	/** Update profile list. */
 	void UpdateProfileList();
 	/*@}*/
 	
-	/** @name Events */
+	
+	
+	/** \name Events */
 	/*@{*/
 	long onCBProfilesChanged( FXObject *sender, FXSelector selector, void *data );
 	long onBtnEditProfiles( FXObject *sender, FXSelector selector, void *data );
 	/*@}*/
 };
 
-// end of include only once
 #endif

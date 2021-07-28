@@ -23,9 +23,8 @@
 #define _DEGLCONFIGWINDOW_H_
 
 
-
 /**
- * @brief Window Configuration.
+ * Window Configuration.
  */
 class deglConfigWindow{
 private:
@@ -34,34 +33,46 @@ private:
 	int pWidth;
 	int pHeight;
 	
+	
+	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Creates a new window configuration. */
+	/** Create window configuration. */
 	deglConfigWindow();
-	/** Cleans up the window configuration. */
+	
+	/** Clean up window configuration. */
 	~deglConfigWindow();
 	/*@}*/
 	
-	/** @name Management */
+	
+	
+	/** \name Management */
 	/*@{*/
-	/** Retrieves the x position. */
+	/** X position. */
 	inline int GetX() const{ return pX; }
-	/** Sets the x position. */
+	
+	/** Set x position. */
 	void SetX( int x );
-	/** Retrieves the y position. */
+	
+	/** Y position. */
 	inline int GetY() const{ return pY; }
-	/** Sets the y position. */
+	
+	/** Set y position. */
 	void SetY( int y );
-	/** Retrieves the width. */
+	
+	/** Width. */
 	inline int GetWidth() const{ return pWidth; }
-	/** Sets the widht. */
+	
+	/** Set widht. */
 	void SetWidth( int width );
-	/** Retrieves the height. */
+	
+	/** Height. */
 	inline int GetHeight() const{ return pHeight; }
-	/** Sets the height. */
+	
+	/** Set height. */
 	void SetHeight( int height );
 	/*@}*/
 };
 
-#endif // _DEGLGAME_H_
+#endif

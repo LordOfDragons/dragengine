@@ -25,12 +25,12 @@
 #include "../foxtoolkit.h"
 
 class deglWindowMain;
-class deglGame;
+class delGame;
 
 
 
 /**
- * @brief Games Panel.
+ * Games Panel.
  */
 class deglPanelGames : public FXVerticalFrame{
 	FXDECLARE( deglPanelGames )
@@ -38,7 +38,7 @@ protected:
 	deglPanelGames();
 	
 public:
-	/** \brief Icon list extended to send header click to enable sorting. */
+	/** Icon list extended to send header click to enable sorting. */
 	class ExtIconList : public FXIconList{
 		FXDECLARE( ExtIconList )
 	protected:
@@ -49,7 +49,7 @@ public:
 			SEL_HEADER_CLICKED = SEL_LAST
 		};
 		
-		ExtIconList( FXComposite *p, FXObject *tgt = NULL, FXSelector sel = 0,
+		ExtIconList( FXComposite *p, FXObject *tgt = nullptr, FXSelector sel = 0,
 			FXuint opts = ICONLIST_NORMAL, FXint x = 0, FXint y = 0,
 			FXint w = 0, FXint h = 0 );
 		
@@ -88,40 +88,50 @@ private:
 	FXIconList *pListGames;
 	int pSortListGames;
 	
+	
+	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Creates a new panel. */
+	/** Create panel. */
 	deglPanelGames( deglWindowMain *windowMain, FXComposite *container );
-	/** Cleans up the panel. */
+	
+	/** Clean up panel. */
 	virtual ~deglPanelGames();
 	/*@}*/
 	
-	/** @name Management */
+	
+	
+	/** \name Management */
 	/*@{*/
-	/** Retrieves the main window. */
+	/** Main window. */
 	inline deglWindowMain *GetWindowMain() const{ return pWindowMain; }
 	
-	/** Retrieves the selected game if any. */
-	deglGame *GetSelectedGame() const;
-	/** Sets the selected game. */
-	void SetSelectedGame( deglGame *game );
+	/** Selected game or nullptr. */
+	delGame *GetSelectedGame() const;
+	
+	/** Set selected game. */
+	void SetSelectedGame( delGame *game );
 	
 	/** Update the games list. */
 	void UpdateGameList();
 	
-	/** Sorts game list by the title. */
+	/** Sort game list by the title. */
 	static FXint SortGamesByTitleAsc( const FXIconItem *item1, const FXIconItem *item2 );
 	static FXint SortGamesByTitleDesc( const FXIconItem *item1, const FXIconItem *item2 );
-	/** Sorts game list by the status. */
+	
+	/** Sort game list by the status. */
 	static FXint SortGamesByStatusAsc( const FXIconItem *item1, const FXIconItem *item2 );
 	static FXint SortGamesByStatusDesc( const FXIconItem *item1, const FXIconItem *item2 );
-	/** Sorts game list by the creator. */
+	
+	/** Sort game list by the creator. */
 	static FXint SortGamesByCreatorAsc( const FXIconItem *item1, const FXIconItem *item2 );
 	static FXint SortGamesByCreatorDesc( const FXIconItem *item1, const FXIconItem *item2 );
 	/*@}*/
 	
-	/** @name Events */
+	
+	
+	/** \name Events */
 	/*@{*/
 	long onListGamesChanged( FXObject *sender, FXSelector selector, void *data );
 	long onListGamesRDown( FXObject *sender, FXSelector selector, void *data );
@@ -143,5 +153,4 @@ public:
 	/*@}*/
 };
 
-// end of include only once
 #endif
