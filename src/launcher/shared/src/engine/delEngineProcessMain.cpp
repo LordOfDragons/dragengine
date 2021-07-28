@@ -41,10 +41,12 @@
 #	error OS not supported!
 #endif
 
-using namespace delEngineProcessMain;
+
+delEngineProcessMain::delEngineProcessMain(){
+}
 
 #ifdef OS_W32
-int RunMain( int argc, char **args ){
+int delEngineProcessMain::RunMain( int argc, char **args ){
 	HANDLE pipeIn = INVALID_HANDLE_VALUE;
 	HANDLE pipeOut = INVALID_HANDLE_VALUE;
 	uint16_t logfileLength;

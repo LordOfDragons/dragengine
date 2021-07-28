@@ -25,7 +25,11 @@
 /**
  * \brief Helper class for running game engine process from main().
  */
-namespace delEngineProcessMain{
+class delEngineProcessMain{
+public:
+	/** \brief Create instance. */
+	delEngineProcessMain();
+	
 	#ifdef OS_W32
 	/** \brief Run process from main(). */
 	int RunMain( int argc, char **args );

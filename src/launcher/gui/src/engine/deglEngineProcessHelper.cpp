@@ -24,7 +24,7 @@
 #include <delauncher/engine/delEngineProcessMain.h>
 
 int main( int argc, char **args ){
-	return delEngineProcessMain::RunMain( argc, args );
+	return delEngineProcessMain().RunMain( argc, args );
 }
 
 #endif

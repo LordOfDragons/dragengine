@@ -196,7 +196,9 @@ pLauncher( launcher ){
 }
 
 deglSignalHandler::~deglSignalHandler(){
+#ifndef OS_W32
 	pSignalHandler = nullptr;
+#endif
 }
 
 
