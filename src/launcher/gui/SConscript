@@ -78,7 +78,8 @@ if envLauncher['OSWindows']:
 	libsEngine.extend(parent_targets['delauncher']['binlibs'])
 	libsEngine.extend(['kernel32', 'user32'])
 	
-	objectsEngine = [envEngine.StaticObject('src/engine/deglEngineProcessHelper.cpp')]
+	objectsEngine = [envEngine.StaticObject('src/engine/deglEngineProcessHelper-helper',
+		'src/engine/deglEngineProcessHelper.cpp')]
 	
 	programEngine = envEngine.Program(target='delauncher-gui-engine', source=objectsEngine, LIBS=libsEngine)
 	programs.append(programEngine)
