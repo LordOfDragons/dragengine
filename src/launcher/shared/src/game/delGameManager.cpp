@@ -65,7 +65,7 @@ delGameManager::~delGameManager(){
 // Management
 ///////////////
 
-void delGameManager::LoadGameList( delEngineInstance &instance ){
+void delGameManager::LoadGames ( delEngineInstance &instance ){
 	pLauncher.GetLogger()->LogInfo( pLauncher.GetLogSource(), "Loading game list" );
 	
 	const deVirtualFileSystem::Ref vfs( deVirtualFileSystem::Ref::New( new deVirtualFileSystem ) );
@@ -82,7 +82,7 @@ void delGameManager::Verify(){
 	if( pDefaultProfile ){
 		pDefaultProfile->Verify( pLauncher );
 	}
-	pProfileList.ValidateAll( pLauncher );
+	pProfiles.ValidateAll( pLauncher );
 	
 	const int count = pGames.GetCount();
 	int i;
@@ -99,7 +99,7 @@ void delGameManager::ApplyProfileChanges(){
 	for( i=0; i<count; i++ ){
 		delGame &game = *pGames.GetAt( i );
 		
-		if( ! pProfileList.Has( game.GetActiveProfile() ) ){
+		if( ! pProfiles.Has( game.GetActiveProfile() ) ){
 			game.SetActiveProfile( nullptr );
 			game.VerifyRequirements();
 		}

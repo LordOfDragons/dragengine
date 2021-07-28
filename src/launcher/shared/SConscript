@@ -112,6 +112,9 @@ libpath.extend(parent_targets['dragengine']['libpath'])
 linklibs = ['delauncher']
 linklibs.extend(parent_targets['dragengine']['libs'])
 
+binlibs = []
+binlibs.extend(parent_targets['dragengine']['libs'])
+
 targetDoxygen = envLibrary.Alias('delauncher_doc', envLibrary.Command(
 	'doc/html/index.html', 'Doxyfile', 'cd "{}" && doxygen ../../Doxyfile'.format(
 		Dir('shared/src').srcnode().abspath)))
@@ -135,6 +138,7 @@ parent_targets['delauncher'] = {
 	'cpppath' : cpppath,
 	'libpath' : libpath,
 	'libs' : linklibs,
+	'binlibs' : binlibs,
 	'build' : targetBuildLib,
 	'install' : targetInstallLib,
 	'install-runtime' : targetInstallLibRuntime,

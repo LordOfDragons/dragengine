@@ -135,7 +135,7 @@ void delSharedConfigXML::WriteProfileSystems( decXmlWriter &writer, const delGam
 }
 
 void delSharedConfigXML::WriteProfileDisableModuleVersions( decXmlWriter &writer, const delGameProfile &profile ){
-	const delGPDisableModuleVersionList &list = profile.GetDisableModuleVersionList();
+	const delGPDisableModuleVersionList &list = profile.GetDisableModuleVersions();
 	const int count = list.GetCount();
 	int i;
 	
@@ -157,7 +157,7 @@ void delSharedConfigXML::WriteProfileDisableModuleVersions( decXmlWriter &writer
 }
 
 void delSharedConfigXML::WriteProfileModules( decXmlWriter &writer, const delGameProfile &profile ){
-	const delGPModuleList &moduleList = profile.GetModuleList();
+	const delGPModuleList &moduleList = profile.GetModules();
 	int i, count = moduleList.GetCount();
 	
 	if( count == 0 ){
@@ -325,7 +325,7 @@ void delSharedConfigXML::ReadProfileDisableModuleVersions( const decXmlElementTa
 		}
 		
 		if( tag->GetName() == "disableModuleVersion" ){
-			profile.GetDisableModuleVersionList().Add( delGPDisableModuleVersion::Ref::New(
+			profile.GetDisableModuleVersions().Add( delGPDisableModuleVersion::Ref::New(
 				new delGPDisableModuleVersion( GetAttributeString( *tag, "name" ),
 					GetAttributeString( *tag, "version" ) ) ) );
 		}
@@ -366,7 +366,7 @@ void delSharedConfigXML::ReadProfileModule( const decXmlElementTag &root, delGam
 		}
 	}
 	
-	profile.GetModuleList().Add ( module );
+	profile.GetModules().Add ( module );
 }
 
 void delSharedConfigXML::ReadProfileModuleParameters( const decXmlElementTag &root, delGPModule &module ){

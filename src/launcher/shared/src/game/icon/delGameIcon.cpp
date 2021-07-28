@@ -48,5 +48,19 @@ delGameIcon::~delGameIcon(){
 ///////////////
 
 void delGameIcon::SetContent( decMemoryFile *content ){
+	if( pContent == content ){
+		return;
+	}
+	
 	pContent = content;
+	
+	OnContentChanged();
+}
+
+
+
+// Protected Functions
+////////////////////////
+
+void delGameIcon::OnContentChanged(){
 }

@@ -122,7 +122,7 @@ void delEngine::SetLogFile( const char *path ){
 
 
 
-void delEngine::ReloadModuleList(){
+void delEngine::ReloadModules(){
 	pModules.RemoveAll();
 	
 	pLauncher.GetLogger()->LogInfo( pLauncher.GetLogSource(), "loading module list" );
@@ -168,7 +168,7 @@ void delEngine::CheckModules( delEngineInstance &instance ){
 				module.SetStatus( delEngineModule::emsBroken );
 			}
 			
-			instance.GetModuleParamList( module );
+			instance.GetModuleParams( module );
 			
 		}catch( const deException &e ){
 			pLauncher.GetLogger()->LogErrorFormat( pLauncher.GetLogSource(),

@@ -205,12 +205,12 @@ const char *moduleVersion, int requiredType ) const{
 void delGameProfile::Activate( delLauncher &launcher, delEngineInstance &engineInstance ) const{
 	// disable module versions. this affects all modules
 	const delEngineModuleList &engineModuleList = launcher.GetEngine().GetModules();
-	const int moduleCount = pModuleList.GetCount();
-	const int disableModuleVersionCount = pDisableModuleVersionList.GetCount();
+	const int moduleCount = pModules.GetCount();
+	const int disableModuleVersionCount = pDisableModuleVersions.GetCount();
 	int i;
 	
 	for( i=0; i<disableModuleVersionCount; i++ ){
-		const delGPDisableModuleVersion &version = *pDisableModuleVersionList.GetAt( i );
+		const delGPDisableModuleVersion &version = *pDisableModuleVersions.GetAt( i );
 		delEngineModule * const module = engineModuleList.GetNamed ( version.GetName(), version.GetVersion() );
 		if( module ){
 			engineInstance.EnableModule( module->GetName(), module->GetVersion(), false );
@@ -230,7 +230,7 @@ void delGameProfile::Activate( delLauncher &launcher, delEngineInstance &engineI
 	
 	// set module properties
 	for( i=0; i<moduleCount; i++ ){
-		delGPModule &module = *pModuleList.GetAt ( i );
+		delGPModule &module = *pModules.GetAt ( i );
 		delEngineModule * const engineModule = engineModuleList.GetNamed ( module.GetName() );
 		if( engineModule ){
 			module.ApplyParameters( engineModule->GetVersion(), launcher, engineInstance );
@@ -264,15 +264,15 @@ delGameProfile &delGameProfile::operator=( const delGameProfile &profile ){
 	pModuleSynthesizerVersion = profile.pModuleSynthesizerVersion;
 	pModuleNetworkVersion = profile.pModuleNetworkVersion;
 	
-	pDisableModuleVersionList = profile.pDisableModuleVersionList;
+	pDisableModuleVersions = profile.pDisableModuleVersions;
 	
-	pModuleList.RemoveAll();
+	pModules.RemoveAll();
 	
-	const delGPModuleList &moduleList = profile.GetModuleList();
+	const delGPModuleList &moduleList = profile.GetModules();
 	const int moduleCount = moduleList.GetCount();
 	int i;
 	for( i=0; i<moduleCount; i++ ){
-		pModuleList.Add ( delGPModule::Ref::New(
+		pModules.Add ( delGPModule::Ref::New(
 			new delGPModule( *moduleList.GetAt ( i ) ) ) );
 	}
 	

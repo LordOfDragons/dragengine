@@ -67,9 +67,9 @@ private:
 	decString pModuleSynthesizerVersion;
 	decString pModuleNetworkVersion;
 	
-	delGPDisableModuleVersionList pDisableModuleVersionList;
+	delGPDisableModuleVersionList pDisableModuleVersions;
 	
-	delGPModuleList pModuleList;
+	delGPModuleList pModules;
 	
 	decString pRunArgs;
 	bool pReplaceRunArgs;
@@ -215,12 +215,12 @@ public:
 	void SetModuleNetworkVersion( const char *moduleVersion );
 	
 	/** \brief List of module versions to enable or disable. */
-	inline delGPDisableModuleVersionList &GetDisableModuleVersionList(){ return pDisableModuleVersionList; }
-	inline const delGPDisableModuleVersionList &GetDisableModuleVersionList() const{ return pDisableModuleVersionList; }
+	inline delGPDisableModuleVersionList &GetDisableModuleVersions(){ return pDisableModuleVersions; }
+	inline const delGPDisableModuleVersionList &GetDisableModuleVersions() const{ return pDisableModuleVersions; }
 	
 	/** \brief Lodule list. */
-	inline delGPModuleList &GetModuleList(){ return pModuleList; }
-	inline const delGPModuleList &GetModuleList() const{ return pModuleList; }
+	inline delGPModuleList &GetModules(){ return pModules; }
+	inline const delGPModuleList &GetModules() const{ return pModules; }
 	
 	/** \brief Run arguments. */
 	inline const decString &GetRunArguments() const{ return pRunArgs; }

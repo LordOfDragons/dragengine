@@ -64,7 +64,7 @@ delPatchManager::~delPatchManager(){
 // Management
 ///////////////
 
-void delPatchManager::LoadPatchList( delEngineInstance &instance ){
+void delPatchManager::LoadPatches( delEngineInstance &instance ){
 	pLauncher.GetLogger()->LogInfo( pLauncher.GetLogSource(), "Loading patch list" );
 	
 	deVirtualFileSystem::Ref vfs;

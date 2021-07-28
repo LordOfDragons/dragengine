@@ -23,6 +23,7 @@
 #include <string.h>
 
 #include "delLauncher.h"
+#include "engine/delEngineInstance.h"
 #include "game/delGame.h"
 #include "game/icon/delGameIcon.h"
 #include "game/profile/delGameProfile.h"
@@ -89,12 +90,37 @@ void delLauncher::AddFileLogger( const char *filetitle ){
 		pVFS->OpenFileForWriting( decPath::CreatePathUnix( filename ) ) ) ) ) );
 }
 
-void delLauncher::LogInitialParameters(){
+void delLauncher::Prepare(){
 	pLogger->LogInfoFormat( pLogSource, "System config path: %s", pPathConfigSystem.GetString() );
 	pLogger->LogInfoFormat( pLogSource, "User config path: %s", pPathConfigUser.GetString() );
 	pLogger->LogInfoFormat( pLogSource, "Shares path: %s", pPathShares.GetString() );
 	pLogger->LogInfoFormat( pLogSource, "Games path: %s", pPathGames.GetString() );
 	pLogger->LogInfoFormat( pLogSource, "Logs path: %s", pPathLogs.GetString() );
+	
+	{
+	delEngineInstance instance( *this, pEngine.GetLogFile() );
+	instance.StartEngine();
+	instance.LoadModules();
+	
+	pEngine.PutEngineIntoVFS( instance );
+	
+	pLogger->LogInfoFormat( pLogSource, "Engine config path = '%s'", pEngine.GetPathConfig().GetString() );
+	pLogger->LogInfoFormat( pLogSource, "Engine share path = '%s'", pEngine.GetPathShare().GetString() );
+	pLogger->LogInfoFormat( pLogSource, "Engine lib path = '%s'", pEngine.GetPathLib().GetString() );
+	
+	pEngine.UpdateResolutions( instance );
+	pEngine.ReloadModules();
+	pEngine.CheckModules( instance );
+	pEngine.LoadConfig();
+	
+	pGameManager.CreateDefaultProfile();
+	
+	pGameManager.LoadGames( instance );
+	pPatchManager.LoadPatches( instance );
+	}
+	
+	pGameManager.LoadGameConfigs();
+	pGameManager.Verify();
 }
 
 

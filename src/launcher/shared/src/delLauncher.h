@@ -122,13 +122,6 @@ public:
 	 */
 	void AddFileLogger( const char *filetitle );
 	
-	/**
-	 * \brief Log initial parameters.
-	 * 
-	 * Call this after calling AddFileLogger() to log initial parameters useful for debuggin.
-	 */
-	void LogInitialParameters();
-	
 	
 	
 	/** \brief Engine. */
@@ -143,6 +136,24 @@ public:
 	inline delPatchManager &GetPatchManager(){ return pPatchManager; }
 	inline const delPatchManager &GetPatchManager() const{ return pPatchManager; }
 	
+	/**
+	 * \brief Prepares launcher loading engine, games and patches.
+	 * 
+	 * Does the following:
+	 * - Logs important launcher path for debugging
+	 * - Detect game engine modules
+	 * - Logs important game engine path for debugging
+	 * - Updates list of available screen resolutions
+	 * - Checks usability of game engine modules
+	 * - Loads engine configuration from "/config/user/launcher.xml"
+	 * - Creates default game profile using available game engine modules
+	 * - Load game list
+	 * - Load patch list
+	 * - Load game configurations from user directory
+	 * - Verify games can run
+	 */
+	void Prepare();
+	
 	
 	
 	/**
@@ -150,21 +161,21 @@ public:
 	 * 
 	 * Default implementation creates instance of delGame.
 	 */
-	delGame *CreateGame();
+	virtual delGame *CreateGame();
 	
 	/**
 	 * \brief Create game profile instance.
 	 * 
 	 * Default implementation creates instance of delGameProfile.
 	 */
-	delGameProfile *CreateGameProfile( const delGameProfile *copyFrom = nullptr );
+	virtual delGameProfile *CreateGameProfile( const delGameProfile *copyFrom = nullptr );
 	
 	/**
 	 * \brief Create game icon instance.
 	 * 
 	 * Default implementation creates instance of delGameIcon.
 	 */
-	delGameIcon *CreateGameIcon( int size, const char *path );
+	virtual delGameIcon *CreateGameIcon( int size, const char *path );
 	/*@}*/
 	
 	

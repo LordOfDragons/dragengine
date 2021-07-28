@@ -159,7 +159,7 @@ public:
 	int GetModuleStatus( const char *moduleName, const char *moduleVersion );
 	
 	/** \brief Get module parameter list. */
-	void GetModuleParamList( delEngineModule &module );
+	void GetModuleParams ( delEngineModule &module );
 	
 	/** \brief Set module parameter. */
 	void SetModuleParameter( const char *moduleName, const char *moduleVersion,

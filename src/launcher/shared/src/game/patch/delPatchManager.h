@@ -64,7 +64,7 @@ public:
 	inline const delPatchList &GetPatches() const{ return pPatches; }
 	
 	/** \brief Load list of game patches from game patch directory. */
-	void LoadPatchList( delEngineInstance &instance );
+	void LoadPatches( delEngineInstance &instance );
 	
 	/** \brief Load a game patch from a disk file. */
 	void LoadPatchFromDisk( delEngineInstance &instance, const decString &path, delPatchList &list );

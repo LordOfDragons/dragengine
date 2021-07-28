@@ -72,6 +72,16 @@ public:
 	/** \brief Set content or nullptr if not loaded. */
 	void SetContent( decMemoryFile *content );
 	/*@}*/
+	
+	
+	
+protected:
+	/**
+	 * \brief Content changed due to call by SetContent().
+	 * 
+	 * Default implementation does nothing. For subclass use.
+	 */
+	virtual void OnContentChanged();
 };
 
 #endif

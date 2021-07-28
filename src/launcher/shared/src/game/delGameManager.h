@@ -41,7 +41,7 @@ private:
 	delLauncher &pLauncher;
 	delGameList pGames;
 	
-	delGameProfileList pProfileList;
+	delGameProfileList pProfiles;
 	delGameProfile::Ref pActiveProfile;
 	delGameProfile::Ref pDefaultProfile;
 	
@@ -65,11 +65,11 @@ public:
 	inline delLauncher &GetLauncher() const{ return pLauncher; }
 	
 	/** \brief Game list. */
-	inline delGameList &GetGameList(){ return pGames; }
-	inline const delGameList &GetGameList() const{ return pGames; }
+	inline delGameList &GetGames(){ return pGames; }
+	inline const delGameList &GetGames() const{ return pGames; }
 	
 	/** \brief Load list of games from game directory. */
-	void LoadGameList( delEngineInstance &instance );
+	void LoadGames ( delEngineInstance &instance );
 	
 	/** \brief Create default profile from the current engine state. */
 	void CreateDefaultProfile();
@@ -84,8 +84,8 @@ public:
 	void LoadGameFromDisk( delEngineInstance &instance, const decString &path, delGameList &list );
 	
 	/** \brief Profile list. */
-	inline delGameProfileList &GetProfileList(){ return pProfileList; }
-	inline const delGameProfileList &GetProfileList() const{ return pProfileList; }
+	inline delGameProfileList &GetProfiles(){ return pProfiles; }
+	inline const delGameProfileList &GetProfiles() const{ return pProfiles; }
 	
 	/** \brief Active profile or NULL if none is active. */
 	inline delGameProfile *GetActiveProfile() const{ return pActiveProfile; }

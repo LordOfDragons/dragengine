@@ -652,7 +652,7 @@ int delEngineInstance::GetModuleStatus( const char *moduleName, const char *modu
 	return ReadUShortFromPipe();
 }
 
-void delEngineInstance::GetModuleParamList( delEngineModule &module ){
+void delEngineInstance::GetModuleParams( delEngineModule &module ){
 	pLauncher.GetLogger()->LogInfoFormat( pLauncher.GetLogSource(),
 		"Sending eccGetModuleParamList(moduleName='%s') to process %i",
 		module.GetName().GetString(), ( int )pProcessID );

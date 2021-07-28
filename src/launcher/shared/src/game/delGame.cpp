@@ -613,7 +613,7 @@ void delGame::pStoreCustomConfig(){
 	}
 	
 	// update custom profile
-	delGPModuleList &modules = pCustomProfile->GetModuleList();
+	delGPModuleList &modules = pCustomProfile->GetModules();
 	const int moduleCount = pCollectChangedParams.GetCount();
 	int i, j;
 	

@@ -119,7 +119,7 @@ public:
 	inline const delEngineModuleList &GetModules() const{ return pModules; }
 	
 	/** \brief Reload list of modules from module directory. */
-	void ReloadModuleList();
+	void ReloadModules();
 	
 	/** \brief Run quick test to check if modules are working. */
 	void CheckModules( delEngineInstance &instance );
