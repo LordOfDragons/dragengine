@@ -362,7 +362,7 @@ void devkDevice::pDetectExtensions(){
 		VK_CHECK( vulkan, pInstance.vkEnumerateDeviceExtensionProperties( pPhysicalDevice, nullptr, &count, extensions ) );
 		
 		// report all extensions reported for debug purpose
-		deBaseModule &baseModule = pInstance.GetVulkan().GetModule();
+		deBaseModule &baseModule = vulkan.GetModule();
 		uint32_t i;
 		
 		baseModule.LogInfo( "Device Extensions:" );

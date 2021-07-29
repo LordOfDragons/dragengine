@@ -40,6 +40,10 @@ pInstance( nullptr ),
 pPhysicalDevices( nullptr ),
 pPhysicalDeviceCount( 0 )
 {
+	#ifndef WITH_DEBUG
+	(void)enableDebug;
+	#endif
+	
 	memset( &pSupportsExtension, 0, sizeof( pSupportsExtension ) );
 	pSupportsExtension[ extKHRSurface ].name = VK_KHR_SURFACE_EXTENSION_NAME;
 	pSupportsExtension[ extKHRDisplay ].name = VK_KHR_DISPLAY_EXTENSION_NAME;
