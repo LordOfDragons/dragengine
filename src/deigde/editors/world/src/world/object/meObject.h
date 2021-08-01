@@ -65,6 +65,12 @@ class deEngine;
  * \brief World object.
  */
 class meObject : public deObject{
+public:
+	/** Reference. */
+	typedef deTObjectReference<meObject> Ref;
+	
+	
+	
 private:
 	class cWOAsyncFinished : public igdeWObject::cAsyncLoadFinished {
 		meObject &pObject;

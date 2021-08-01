@@ -101,6 +101,12 @@ class deLogger;
  */
 class meWorld : public igdeEditableEntity{
 public:
+	/** Reference. */
+	typedef deTObjectReference<meWorld> Ref;
+	
+	
+	
+public:
 	/** Layer masks for colliders. */
 	enum eColliderLayerMasks{
 		/** Editing. */

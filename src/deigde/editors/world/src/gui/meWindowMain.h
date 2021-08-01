@@ -133,6 +133,19 @@ private:
 	igdeActionReference pActionObjectRotate180;
 	igdeActionReference pActionObjectDropToGround;
 	igdeActionReference pActionObjectSnapToGrid;
+	igdeActionReference pActionObjectCopyPositionX;
+	igdeActionReference pActionObjectCopyPositionY;
+	igdeActionReference pActionObjectCopyPositionZ;
+	igdeActionReference pActionObjectCopyPositionXZ;
+	igdeActionReference pActionObjectCopyPositionXYZ;
+	igdeActionReference pActionObjectCopyRotationX;
+	igdeActionReference pActionObjectCopyRotationY;
+	igdeActionReference pActionObjectCopyRotationZ;
+	igdeActionReference pActionObjectCopyRotationXYZ;
+	igdeActionReference pActionObjectCopyScaleX;
+	igdeActionReference pActionObjectCopyScaleY;
+	igdeActionReference pActionObjectCopyScaleZ;
+	igdeActionReference pActionObjectCopyScaleXYZ;
 	igdeActionReference pActionObjectAttachTo;
 	igdeActionReference pActionObjectDetach;
 	igdeActionReference pActionObjectSelectAttached;
@@ -292,6 +305,26 @@ public:
 	
 	/** Actions. */
 	inline igdeAction *GetActionObjectSubclassAsEclass() const{ return pActionObjectSubclassAsEclass; }
+	inline igdeAction *GetActionObjectRotateL45() const{ return pActionObjectRotateL45; }
+	inline igdeAction *GetActionObjectRotateL90() const{ return pActionObjectRotateL90; }
+	inline igdeAction *GetActionObjectRotateR45() const{ return pActionObjectRotateR45; }
+	inline igdeAction *GetActionObjectRotateR90() const{ return pActionObjectRotateR90; }
+	inline igdeAction *GetActionObjectRotate180() const{ return pActionObjectRotate180; }
+	inline igdeAction *GetActionObjectDropToGround() const{ return pActionObjectDropToGround; }
+	inline igdeAction *GetActionObjectSnapToGrid() const{ return pActionObjectSnapToGrid; }
+	inline igdeAction *GetActionObjectCopyPositionX() const{ return pActionObjectCopyPositionX; }
+	inline igdeAction *GetActionObjectCopyPositionY() const{ return pActionObjectCopyPositionY; }
+	inline igdeAction *GetActionObjectCopyPositionZ() const{ return pActionObjectCopyPositionZ; }
+	inline igdeAction *GetActionObjectCopyPositionXZ() const{ return pActionObjectCopyPositionXZ; }
+	inline igdeAction *GetActionObjectCopyPositionXYZ() const{ return pActionObjectCopyPositionXYZ; }
+	inline igdeAction *GetActionObjectCopyRotationX() const{ return pActionObjectCopyRotationX; }
+	inline igdeAction *GetActionObjectCopyRotationY() const{ return pActionObjectCopyRotationY; }
+	inline igdeAction *GetActionObjectCopyRotationZ() const{ return pActionObjectCopyRotationZ; }
+	inline igdeAction *GetActionObjectCopyRotationXYZ() const{ return pActionObjectCopyRotationXYZ; }
+	inline igdeAction *GetActionObjectCopyScaleX() const{ return pActionObjectCopyScaleX; }
+	inline igdeAction *GetActionObjectCopyScaleY() const{ return pActionObjectCopyScaleY; }
+	inline igdeAction *GetActionObjectCopyScaleZ() const{ return pActionObjectCopyScaleZ; }
+	inline igdeAction *GetActionObjectCopyScaleXYZ() const{ return pActionObjectCopyScaleXYZ; }
 	
 	
 	

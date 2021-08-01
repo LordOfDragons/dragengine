@@ -43,6 +43,12 @@ class deDebugDrawerShape;
  * \brief Draws a link from one object to another.
  */
 class meObjectLink : public deObject{
+public:
+	/** Reference. */
+	typedef deTObjectReference<meObjectLink> Ref;
+	
+	
+	
 private:
 	igdeEnvironment *pEnvironment;
 	meWorld *pWorld;

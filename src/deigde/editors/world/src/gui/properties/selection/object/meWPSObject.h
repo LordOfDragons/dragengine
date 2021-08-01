@@ -65,6 +65,10 @@ private:
 	igdeActionReference pActionClassBrowse;
 	igdeActionReference pActionClassEdit;
 	
+	igdeActionContextMenuReference pActionMenuPosition;
+	igdeActionContextMenuReference pActionMenuRotation;
+	igdeActionContextMenuReference pActionMenuScale;
+	
 	igdeActionContextMenuReference pActionMenuTexture;
 	igdeActionReference pActionTextureAddCustom;
 	igdeActionReference pActionTextureAddAllModel;
@@ -87,10 +91,12 @@ private:
 	igdeComboBoxFilterReference pCBClass;
 	igdeButtonReference pBtnClassMenu;
 	igdeEditDVectorReference pEditPosition;
+	igdeButtonReference pBtnPositionMenu;
 	igdeEditVectorReference pEditRotation;
+	igdeButtonReference pBtnRotationMenu;
 	igdeEditVectorReference pEditSize;
 	igdeEditVectorReference pEditScaling;
-	igdeButtonReference pBtnResetScaling;
+	igdeButtonReference pBtnScaleMenu;
 	
 	igdeComboBoxReference pCBTexture;
 	igdeButtonReference pBtnTextureMenu;
