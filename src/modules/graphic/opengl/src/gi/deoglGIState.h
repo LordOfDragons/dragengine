@@ -22,6 +22,7 @@
 #ifndef _DEOGLGISTATE_H_
 #define _DEOGLGISTATE_H_
 
+#include "deoglGIBVH.h"
 #include "deoglGIRayCache.h"
 #include "deoglGIInstances.h"
 #include "deoglGIAreaTracker.h"
@@ -112,6 +113,8 @@ private:
 	
 	deoglGIInstances pInstances;
 	deoglGIRayCache pRayCache;
+	deoglGIBVH pBVHStatic;
+	deoglGIBVH pBVHDynamic;
 	
 	
 	
@@ -309,6 +312,14 @@ public:
 	/** Rays. */
 	inline deoglGIRayCache &GetRayCache(){ return pRayCache; }
 	inline const deoglGIRayCache &GetRayCache() const{ return pRayCache; }
+	
+	/** Static BVH. */
+	inline deoglGIBVH &GetBVHStatic(){ return pBVHStatic; }
+	inline const deoglGIBVH &GetBVHStatic() const{ return pBVHStatic; }
+	
+	/** Dynamic BVH. */
+	inline deoglGIBVH &GetBVHDynamic(){ return pBVHDynamic; }
+	inline const deoglGIBVH &GetBVHDynamic() const{ return pBVHDynamic; }
 	/*@}*/
 	
 	

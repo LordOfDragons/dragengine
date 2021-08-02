@@ -22,15 +22,15 @@
 #ifndef _DEOGLGIBVH_H_
 #define _DEOGLGIBVH_H_
 
-#include "../collidelist/deoglCollideList.h"
-#include "../utils/bvh/deoglBVH.h"
 #include "../deoglBasics.h"
+#include "../collidelist/deoglCollideList.h"
+#include "../rendering/task/deoglRenderTask.h"
+#include "../utils/bvh/deoglBVH.h"
 
 #include <dragengine/deObjectReference.h>
 #include <dragengine/common/math/decMath.h>
 
 class deoglGIBVHLocal;
-class deoglGIBVHDynamic;
 class deoglGIInstance;
 class deoglGIInstances;
 class deoglRComponent;
@@ -38,7 +38,6 @@ class deoglRComponentLOD;
 class deoglRComponentTexture;
 class deoglRDynamicSkin;
 class deoglRenderPlan;
-class deoglRenderTaskTexture;
 class deoglRenderThread;
 class deoglRSkin;
 class deoglRWorld;
@@ -46,10 +45,8 @@ class deoglSkinState;
 class deoglSkinTexture;
 class deoglTexUnitsConfig;
 class deoglDynamicTBOFloat32;
-class deoglDynamicTBOFloat16;
 class deoglDynamicTBOUInt32;
 class deoglDynamicTBOUInt16;
-class deoglDynamicTBOShared;
 
 
 /**
@@ -194,24 +191,14 @@ private:
 	
 	int pIndexRootNode;
 	
-	deoglDynamicTBOFloat32 *pTBONodeBox;
-	deoglDynamicTBOUInt16 *pTBOIndex;
 	deoglDynamicTBOUInt32 *pTBOInstance;
 	deoglDynamicTBOFloat32 *pTBOMatrix;
-	deoglDynamicTBOUInt16 *pTBOFace;
-	deoglDynamicTBOFloat32 *pTBOVertex;
-	deoglDynamicTBOFloat16 *pTBOTexCoord;
-	deoglDynamicTBOUInt32 *pTBOMaterial;
-	deoglDynamicTBOFloat16 *pTBOMaterial2;
-	
-	deoglDynamicTBOShared *pSharedTBONode;
-	deoglDynamicTBOShared *pSharedTBOFace;
-	deoglDynamicTBOShared *pSharedTBOVertex;
-	deoglDynamicTBOShared *pSharedTBOMaterial;
 	
 	deoglDynamicTBOFloat32 *pBVHTBONodeBox;
 	deoglDynamicTBOUInt16 *pBVHTBOIndex;
 	deObjectReference pBlockBVH;
+	
+	deoglRenderTask pRenderTaskMaterial;
 	
 	
 	
@@ -229,41 +216,11 @@ public:
 	
 	/** \name Management */
 	/*@{*/
+	/** Render thread. */
+	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
+	
 	/** Index of bvh component root node or -1 if there are no components. */
 	inline int GetIndexRootNode() const{ return pIndexRootNode; }
-	
-	/** TBO for BVH node boundaries. */
-	inline deoglDynamicTBOFloat32 *GetTBONodeBox() const{ return pTBONodeBox; }
-	
-	/** TBO for BVH node indices. */
-	inline deoglDynamicTBOUInt16 *GetTBOIndex() const{ return pTBOIndex; }
-	
-	/** TBO for instance data. */
-	inline deoglDynamicTBOUInt32 *GetTBOInstance() const{ return pTBOInstance; }
-	
-	/** TBO for instance matrices. */
-	inline deoglDynamicTBOFloat32 *GetTBOMatrix() const{ return pTBOMatrix; }
-	
-	/** TBO for mesh faces. */
-	inline deoglDynamicTBOUInt16 *GetTBOFace() const{ return pTBOFace; }
-	
-	/** TBO for mesh vertices. */
-	inline deoglDynamicTBOFloat32 *GetTBOVertex() const{ return pTBOVertex; }
-	
-	/** TBO for mesh texture coordinates. */
-	inline deoglDynamicTBOFloat16 *GetTBOTexCoord() const{ return pTBOTexCoord; }
-	
-	/** TBO for material parameters. */
-	inline deoglDynamicTBOUInt32 *GetTBOMaterial() const{ return pTBOMaterial; }
-	
-	/** TBO for material float parameters. */
-	inline deoglDynamicTBOFloat16 *GetTBOMaterial2() const{ return pTBOMaterial2; }
-	
-	/** Shared TBOs. */
-	inline deoglDynamicTBOShared *GetSharedTBONode() const{ return pSharedTBONode; }
-	inline deoglDynamicTBOShared *GetSharedTBOFace() const{ return pSharedTBOFace; }
-	inline deoglDynamicTBOShared *GetSharedTBOVertex() const{ return pSharedTBOVertex; }
-	inline deoglDynamicTBOShared *GetSharedTBOMaterial() const{ return pSharedTBOMaterial; }
 	
 	
 	
@@ -284,6 +241,18 @@ public:
 	
 	/** Debug print BVH. */
 	void DebugPrint( const decDVector &position );
+	
+	
+	
+	/** TBO for instance data. */
+	inline deoglDynamicTBOUInt32 *GetTBOInstance() const{ return pTBOInstance; }
+	
+	/** TBO for instance matrices. */
+	inline deoglDynamicTBOFloat32 *GetTBOMatrix() const{ return pTBOMatrix; }
+	
+	/** Render materials render task. */
+	inline deoglRenderTask &GetRenderTaskMaterial(){ return pRenderTaskMaterial; }
+	inline const deoglRenderTask &GetRenderTaskMaterial() const{ return pRenderTaskMaterial; }
 	/*@}*/
 	
 	

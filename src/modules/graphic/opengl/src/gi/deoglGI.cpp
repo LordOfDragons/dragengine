@@ -39,7 +39,7 @@
 
 deoglGI::deoglGI( deoglRenderThread &renderThread ) :
 pRenderThread( renderThread  ),
-pBVH( renderThread ),
+pBVHShared( renderThread ),
 pTraceRays( renderThread ),
 pMaterials( renderThread )
 {

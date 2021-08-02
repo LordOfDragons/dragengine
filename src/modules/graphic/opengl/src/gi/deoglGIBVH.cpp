@@ -23,9 +23,11 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "deoglGI.h"
 #include "deoglGIBVH.h"
 #include "deoglGIBVHLocal.h"
 #include "deoglGIBVHDynamic.h"
+#include "deoglGIBVHShared.h"
 #include "deoglGIInstance.h"
 #include "deoglGIInstances.h"
 #include "../capabilities/deoglCapabilities.h"
@@ -40,7 +42,6 @@
 #include "../model/texture/deoglModelTexture.h"
 #include "../rendering/light/deoglRenderLight.h"
 #include "../rendering/light/deoglRenderGI.h"
-#include "../rendering/task/deoglRenderTask.h"
 #include "../rendering/task/deoglRenderTaskTexture.h"
 #include "../rendering/task/deoglAddToRenderTaskGIMaterial.h"
 #include "../rendering/task/shared/deoglRenderTaskSharedTexture.h"
@@ -81,33 +82,15 @@ pPrimitiveSize( 0 ),
 pRecalcNodes( NULL ),
 pRecalcNodeSize( 0 ),
 pIndexRootNode( 0 ),
-pTBONodeBox( NULL ),
-pTBOIndex( NULL ),
 pTBOInstance( NULL ),
 pTBOMatrix( NULL ),
-pTBOFace( NULL ),
-pTBOVertex( NULL ),
-pTBOTexCoord( NULL ),
-pTBOMaterial( NULL ),
-pTBOMaterial2( NULL ),
 pBVHTBONodeBox( NULL ),
-pBVHTBOIndex(  NULL )
+pBVHTBOIndex(  NULL ),
+pRenderTaskMaterial( renderThread )
 {
 	try{
-		pTBONodeBox = new deoglDynamicTBOFloat32( renderThread, 4 );
-		pTBOIndex = new deoglDynamicTBOUInt16( renderThread, 2 );
 		pTBOInstance = new deoglDynamicTBOUInt32( renderThread, 4 );
 		pTBOMatrix = new deoglDynamicTBOFloat32( renderThread, 4 );
-		pTBOFace = new deoglDynamicTBOUInt16( renderThread, 4 );
-		pTBOVertex = new deoglDynamicTBOFloat32( renderThread, 4 );
-		pTBOTexCoord = new deoglDynamicTBOFloat16( renderThread, 2 );
-		pTBOMaterial = new deoglDynamicTBOUInt32( renderThread, 4 );
-		pTBOMaterial2 = new deoglDynamicTBOFloat16( renderThread, 4 );
-		
-		pSharedTBONode = new deoglDynamicTBOShared( pTBOIndex, 1, pTBONodeBox, 2 );
-		pSharedTBOFace = new deoglDynamicTBOShared( pTBOFace, 1, pTBOTexCoord, 3 );
-		pSharedTBOVertex = new deoglDynamicTBOShared( pTBOVertex, 1 );
-		pSharedTBOMaterial = new deoglDynamicTBOShared( pTBOMaterial, 1, pTBOMaterial2, 3 );
 		
 		pBVHTBONodeBox = new deoglDynamicTBOFloat32( renderThread, 4 );
 		pBVHTBOIndex = new deoglDynamicTBOUInt16( renderThread, 2 );
@@ -223,8 +206,7 @@ void deoglGIBVH::AddComponent( deoglRenderPlan &plan, const decMatrix &matrix, d
 #ifdef DO_TIMING_TEST
 	vDebugTUCs++;
 #endif
-		deoglAddToRenderTaskGIMaterial &addToRenderTask =
-			pRenderThread.GetRenderers().GetLight().GetRenderGI().GetAddToRenderTask();
+		deoglAddToRenderTaskGIMaterial addToRenderTask( pRenderThread, pRenderTaskMaterial );
 		
 		instance.RemoveAllTUCs();
 		instance.SetDirtyTUCs( false );
@@ -319,6 +301,7 @@ void deoglGIBVH::BuildBVH(){
 	}
 	
 	// add BVH to TBOs
+	const deoglGIBVHShared &shared = pRenderThread.GetGI().GetBVHShared();
 	const int nodeCount = pBVH.GetNodeCount();
 	
 	if( nodeCount > 0 ){
@@ -331,22 +314,23 @@ void deoglGIBVH::BuildBVH(){
 			pBVHTBOIndex->AddVec2( node.GetFirstIndex(), node.GetPrimitiveCount() );
 		}
 		
-		pBlockBVH.TakeOver( pSharedTBONode->AddBlock( pBVHTBOIndex, pBVHTBONodeBox ) );
+		pBlockBVH.TakeOver( shared.GetSharedTBONode()->AddBlock( pBVHTBOIndex, pBVHTBONodeBox ) );
 		
 		pIndexRootNode = ( ( deoglDynamicTBOBlock* )( deObject* )pBlockBVH )->GetOffset();
 	}
 	
 	// update TBOs
-	pSharedTBONode->Prepare();
-	pSharedTBOFace->Prepare();
-	pSharedTBOVertex->Prepare();
-	pSharedTBOMaterial->Prepare();
+	shared.GetSharedTBONode()->Prepare();
+	shared.GetSharedTBOFace()->Prepare();
+	shared.GetSharedTBOVertex()->Prepare();
+	shared.GetSharedTBOMaterial()->Prepare();
 	
 	pTBOInstance->Update();
 	pTBOMatrix->Update();
 }
 
 void deoglGIBVH::DebugPrint( const decDVector &position ){
+	const deoglGIBVHShared &shared = pRenderThread.GetGI().GetBVHShared();
 	deoglRTLogger &logger = pRenderThread.GetLogger();
 	int i;
 	logger.LogInfoFormat("GIBVH: %d Components", pComponentCount);
@@ -359,23 +343,23 @@ void deoglGIBVH::DebugPrint( const decDVector &position ){
 	}
 	logger.LogInfoFormat("GIBVH: Root Node %d", pIndexRootNode);
 	logger.LogInfo("GIBVH: TBONodeBox");
-	pTBONodeBox->DebugPrint();
+	shared.GetTBONodeBox()->DebugPrint();
 	logger.LogInfo("GIBVH: TBOIndex");
-	pTBOIndex->DebugPrint();
+	shared.GetTBOIndex()->DebugPrint();
 	logger.LogInfo("GIBVH: TBOInstance");
 	pTBOInstance->DebugPrint();
 	logger.LogInfo("GIBVH: TBOMatrix");
 	pTBOMatrix->DebugPrint();
 	logger.LogInfo("GIBVH: TBOFace");
-	pTBOFace->DebugPrint();
+	shared.GetTBOFace()->DebugPrint();
 	logger.LogInfo("GIBVH: pTBOVertex");
-	pTBOVertex->DebugPrint();
+	shared.GetTBOVertex()->DebugPrint();
 	logger.LogInfo("GIBVH: pTBOTexCoord");
-	pTBOTexCoord->DebugPrint();
+	shared.GetTBOTexCoord()->DebugPrint();
 	logger.LogInfo("GIBVH: pTBOMaterial");
-	pTBOMaterial->DebugPrint();
+	shared.GetTBOMaterial()->DebugPrint();
 	logger.LogInfo("GIBVH: pTBOMaterial2");
-	pTBOMaterial2->DebugPrint();
+	shared.GetTBOMaterial2()->DebugPrint();
 	
 	struct PrintBVH{
 		deoglRTLogger &logger;
@@ -412,19 +396,6 @@ void deoglGIBVH::DebugPrint( const decDVector &position ){
 //////////////////////
 
 void deoglGIBVH::pCleanUp(){
-	if( pSharedTBONode ){
-		pSharedTBONode->FreeReference();
-	}
-	if( pSharedTBOFace ){
-		pSharedTBOFace->FreeReference();
-	}
-	if( pSharedTBOVertex ){
-		pSharedTBOVertex->FreeReference();
-	}
-	if( pSharedTBOMaterial ){
-		pSharedTBOMaterial->FreeReference();
-	}
-	
 	if( pBVHTBONodeBox ){
 		pBVHTBONodeBox->FreeReference();
 	}
@@ -432,32 +403,11 @@ void deoglGIBVH::pCleanUp(){
 		pBVHTBOIndex->FreeReference();
 	}
 	
-	if( pTBONodeBox ){
-		pTBONodeBox->FreeReference();
-	}
-	if( pTBOIndex ){
-		pTBOIndex->FreeReference();
-	}
 	if( pTBOInstance ){
 		pTBOInstance->FreeReference();
 	}
 	if( pTBOMatrix ){
 		pTBOMatrix->FreeReference();
-	}
-	if( pTBOFace ){
-		pTBOFace->FreeReference();
-	}
-	if( pTBOVertex ){
-		pTBOVertex->FreeReference();
-	}
-	if( pTBOTexCoord ){
-		pTBOTexCoord->FreeReference();
-	}
-	if( pTBOMaterial ){
-		pTBOMaterial->FreeReference();
-	}
-	if( pTBOMaterial2 ){
-		pTBOMaterial2->FreeReference();
 	}
 	
 	if( pRecalcNodes ){

@@ -169,9 +169,6 @@ pShaderDebugProbeOffset( NULL ),
 pShaderDebugProbeUpdatePass1( NULL ),
 pShaderDebugProbeUpdatePass2( NULL ),
 
-pRenderTask( NULL ),
-pAddToRenderTask( NULL ),
-
 pDebugInfoGI( NULL ),
 pDebugInfoGITraceRays( NULL ),
 pDebugInfoGIRenderMaterials( NULL ),
@@ -292,12 +289,6 @@ pDebugInfoGIRenderLightGIRay( NULL )
 		defines.RemoveDefine( "GI_RAY" );
 		
 		
-		// render task for GI material
-		pRenderTask = new deoglRenderTask( renderThread );
-		pAddToRenderTask = new deoglAddToRenderTaskGIMaterial( renderThread, *pRenderTask );
-		
-		
-		
 		// debug information
 		const decColor colorText( 1.0f, 1.0f, 1.0f, 1.0f );
 		const decColor colorBg( 0.0f, 0.0f, 0.25f, 0.75f );
@@ -343,6 +334,16 @@ deoglRenderGI::~deoglRenderGI(){
 // Rendering
 //////////////
 
+// #define DO_BVH_TIMING
+
+#ifdef DO_BVH_TIMING
+	#define BVH_TIMING_INIT decTimer timerBvh;
+	#define BVH_TIMING_PRINT(t) renderThread.GetLogger().LogInfoFormat(t ": %d", (int)(timerBvh.GetElapsedTime() * 1e6f));
+#else
+	#define BVH_TIMING_INIT
+	#define BVH_TIMING_PRINT(t)
+#endif
+
 void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 	deoglGIState * const giState = plan.GetUpdateGIState();
 	if( ! giState ){
@@ -353,7 +354,6 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	const deoglGICascade &cascade = giState->GetActiveCascade();
 	deoglGI &gi = renderThread.GetGI();
-	deoglGIBVH &bvh = gi.GetBVH();
 	
 	if( pDebugInfoGI->GetVisible() ){
 		DebugTimer1Reset( plan, true );
@@ -362,25 +362,26 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 	// if any ray caches are invalid update them
 	#ifdef GI_USE_RAY_CACHE
 	if( cascade.GetRayCacheProbeCount() > 0 ){
-		pRenderTask->Clear();
-		pAddToRenderTask->Reset();
+		deoglGIBVH &bvh = giState->GetBVHStatic();
+		deoglRenderTask &renderTaskMaterial = bvh.GetRenderTaskMaterial();
+		renderTaskMaterial.Clear();
 		
 		bvh.Clear();
-			decTimer timer1;
+			BVH_TIMING_INIT
 		bvh.AddComponents( plan, cascade.GetPosition(), giState->GetInstances(), false );
-// 			renderThread.GetLogger().LogInfoFormat("Cache BVH Add Components: %d", (int)(timer1.GetElapsedTime() * 1e6f));
+			BVH_TIMING_PRINT("Cache BVH Add Components")
 		bvh.BuildBVH();
-// 			renderThread.GetLogger().LogInfoFormat("Cache BVH Build: %d", (int)(timer1.GetElapsedTime() * 1e6f));
+			BVH_TIMING_PRINT("Cache BVH Build")
 		
 		giState->PrepareUBOStateRayCache(); // has to be done here since it is shared
 		
-		RenderMaterials( plan );
+		RenderMaterials( plan, bvh.GetRenderTaskMaterial() );
 		pSharedTraceRays( plan );
 		pClearTraceRays();
 		
 		renderThread.GetShader().ActivateShader( pShaderTraceRaysCache );
 		pActivateGIUBOs();
-		pInitTraceTextures();
+		pInitTraceTextures( bvh );
 		
 		OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
 		
@@ -410,24 +411,25 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 	#endif
 	
 	// trace rays
-	pRenderTask->Clear();
-	pAddToRenderTask->Reset();
+	deoglGIBVH &bvh = giState->GetBVHDynamic();
+	deoglRenderTask &renderTaskMaterial = bvh.GetRenderTaskMaterial();
+	renderTaskMaterial.Clear();
 	
 	bvh.Clear();
-		decTimer timer2;
+		BVH_TIMING_INIT
 	#ifdef GI_USE_RAY_CACHE
 		bvh.AddComponents( plan, cascade.GetPosition(), giState->GetInstances(), true );
 	#else
 		bvh.AddComponents( plan, cascade.GetPosition(), giState->GetInstances() );
 	#endif
-// 		renderThread.GetLogger().LogInfoFormat("Frame BVH Add Components: %d", (int)(timer2.GetElapsedTime() * 1e6f));
+		BVH_TIMING_PRINT("Frame BVH Add Components")
 	bvh.BuildBVH();
-// 		renderThread.GetLogger().LogInfoFormat("Frame BVH Build: %d", (int)(timer2.GetElapsedTime() * 1e6f));
+		BVH_TIMING_PRINT("Frame BVH Build")
 	//bvh.DebugPrint( giState.GetPosition() );
 	
 	giState->PrepareUBOState(); // has to be done here since it is shared
 	
-	RenderMaterials( plan );
+	RenderMaterials( plan, bvh.GetRenderTaskMaterial() );
 	pSharedTraceRays( plan );
 	pClearTraceRays();
 	
@@ -448,7 +450,7 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 	
 	renderThread.GetShader().ActivateShader( pShaderTraceRays );
 	pActivateGIUBOs();
-	pInitTraceTextures();
+	pInitTraceTextures( bvh );
 	
 	#ifdef GI_USE_RAY_CACHE
 		tsmgr.EnableArrayTexture( 12, rayCache.GetTextureDistance(), GetSamplerClampNearest() );
@@ -559,20 +561,21 @@ void deoglRenderGI::PrepareUBORenderLight( const deoglGIState &giState, const de
 	ubo.UnmapBuffer();
 }
 
-void deoglRenderGI::RenderMaterials( deoglRenderPlan &plan ){
+void deoglRenderGI::RenderMaterials( deoglRenderPlan &plan, const deoglRenderTask &renderTask ){
 	deoglGIState * const giState = plan.GetUpdateGIState();
 	if( ! giState ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	const int shaderCount = pRenderTask->GetShaderCount();
+	deoglRenderThread &renderThread = GetRenderThread();
+	deoglGI &gi = renderThread.GetGI();
+	
+	const int shaderCount = renderTask.GetShaderCount();
 	if( shaderCount == 0 ){
 		return;
 	}
 	
-	deoglRenderThread &renderThread = GetRenderThread();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
-	deoglGI &gi = renderThread.GetGI();
 	deoglGIMaterials &materials = gi.GetMaterials();
 	const int width = materials.GetTextureDiffuse().GetWidth();
 	const int height = materials.GetTextureDiffuse().GetHeight();
@@ -605,7 +608,7 @@ void deoglRenderGI::RenderMaterials( deoglRenderPlan &plan ){
 	const float offsetBaseV = offsetScaleV * 0.5f - 1.0f;
 	
 	for( i=0; i<shaderCount; i++ ){
-		const deoglRenderTaskShader &rtshader = *pRenderTask->GetShaderAt( i );
+		const deoglRenderTaskShader &rtshader = *renderTask.GetShaderAt( i );
 		deoglShaderProgram &shaderProgram = *rtshader.GetShader()->GetShader();
 		const deoglShaderCompiled &shader = *shaderProgram.GetCompiled();
 		
@@ -1346,13 +1349,6 @@ void deoglRenderGI::DevModeDebugInfoChanged(){
 //////////////////////
 
 void deoglRenderGI::pCleanUp(){
-	if( pAddToRenderTask ){
-		delete pAddToRenderTask;
-	}
-	if( pRenderTask ){
-		delete pRenderTask;
-	}
-	
 	if( pShaderDebugProbeUpdatePass1 ){
 		pShaderDebugProbeUpdatePass1->RemoveUsage();
 	}
@@ -1519,23 +1515,23 @@ void deoglRenderGI::pClearTraceRays(){
 	OGL_CHECK( renderThread, pglClearBufferfv( GL_COLOR, 4, &clearLight[ 0 ] ) );
 }
 
-void deoglRenderGI::pInitTraceTextures(){
+void deoglRenderGI::pInitTraceTextures( deoglGIBVH &bvh ){
 	deoglRenderThread &renderThread = GetRenderThread();
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
-	deoglGI &gi = renderThread.GetGI();
+	const deoglGI &gi = renderThread.GetGI();
+	const deoglGIBVHShared &shared = gi.GetBVHShared();
 	
-	const deoglGIBVH &bvh = gi.GetBVH();
-	tsmgr.EnableTBO( 0, bvh.GetTBONodeBox()->GetTBO(), GetSamplerClampNearest() );
-	tsmgr.EnableTBO( 1, bvh.GetTBOIndex()->GetTBO(), GetSamplerClampNearest() );
+	tsmgr.EnableTBO( 0, shared.GetTBONodeBox()->GetTBO(), GetSamplerClampNearest() );
+	tsmgr.EnableTBO( 1, shared.GetTBOIndex()->GetTBO(), GetSamplerClampNearest() );
 	tsmgr.EnableTBO( 2, bvh.GetTBOInstance()->GetTBO(), GetSamplerClampNearest() );
 	tsmgr.EnableTBO( 3, bvh.GetTBOMatrix()->GetTBO(), GetSamplerClampNearest() );
-	tsmgr.EnableTBO( 4, bvh.GetTBOFace()->GetTBO(), GetSamplerClampNearest() );
-	tsmgr.EnableTBO( 5, bvh.GetTBOVertex()->GetTBO(), GetSamplerClampNearest() );
-	tsmgr.EnableTBO( 6, bvh.GetTBOTexCoord()->GetTBO(), GetSamplerClampNearest() );
-	tsmgr.EnableTBO( 7, bvh.GetTBOMaterial()->GetTBO(), GetSamplerClampNearest() );
-	tsmgr.EnableTBO( 8, bvh.GetTBOMaterial2()->GetTBO(), GetSamplerClampNearest() );
+	tsmgr.EnableTBO( 4, shared.GetTBOFace()->GetTBO(), GetSamplerClampNearest() );
+	tsmgr.EnableTBO( 5, shared.GetTBOVertex()->GetTBO(), GetSamplerClampNearest() );
+	tsmgr.EnableTBO( 6, shared.GetTBOTexCoord()->GetTBO(), GetSamplerClampNearest() );
+	tsmgr.EnableTBO( 7, shared.GetTBOMaterial()->GetTBO(), GetSamplerClampNearest() );
+	tsmgr.EnableTBO( 8, shared.GetTBOMaterial2()->GetTBO(), GetSamplerClampNearest() );
 	
-	deoglGIMaterials &materials = gi.GetMaterials();
+	const deoglGIMaterials &materials = gi.GetMaterials();
 	tsmgr.EnableTexture( 9, materials.GetTextureDiffuse(), GetSamplerClampNearest() );
 	tsmgr.EnableTexture( 10, materials.GetTextureReflectivity(), GetSamplerClampNearest() );
 	tsmgr.EnableTexture( 11, materials.GetTextureEmissivity(), GetSamplerClampNearest() );

@@ -52,6 +52,8 @@
 // Constructor, destructor
 ////////////////////////////
 
+// #define GISTATE_SPECIAL_DEBUG
+
 deoglGIState::deoglGIState( deoglRenderThread &renderThread, const decVector &size ) :
 pRenderThread( renderThread ),
 
@@ -111,7 +113,9 @@ pVBOProbeExtendsData( NULL ),
 pProbesExtendsChanged( false ),
 
 pInstances( *this ),
-pRayCache( renderThread, 64, pRealProbeCount, 4 )
+pRayCache( renderThread, 64, pRealProbeCount, 4 ),
+pBVHStatic( renderThread ),
+pBVHDynamic( renderThread )
 {
 	try{
 		pInitCascades();
@@ -216,7 +220,7 @@ deoglGICascade & deoglGIState::GetSkyShadowCascade() const{
 
 void deoglGIState::PrepareUBOClearProbes() const{
 	deoglGICascade &cascade = GetActiveCascade();
-	cascade.UpdateUBOParameters( pRenderThread.GetGI().GetUBOParameter(), 0 );
+	cascade.UpdateUBOParameters( pRenderThread.GetGI().GetUBOParameter(), 0, pBVHDynamic );
 	cascade.PrepareUBOClearProbes( GetUBOClearProbes() );
 }
 
@@ -305,7 +309,7 @@ void deoglGIState::Update( const decDVector &cameraPosition, const deoglDCollisi
 void deoglGIState::PrepareUBOState() const{
 	deoglGICascade &cascade = GetActiveCascade();
 	const int count = cascade.GetUpdateProbeCount();
-	cascade.UpdateUBOParameters( pRenderThread.GetGI().GetUBOParameter(), count );
+	cascade.UpdateUBOParameters( pRenderThread.GetGI().GetUBOParameter(), count, pBVHDynamic );
 	pPrepareUBORayDirections();
 	
 	if( count > 0 ){
@@ -317,7 +321,7 @@ void deoglGIState::PrepareUBOState() const{
 void deoglGIState::PrepareUBOStateRayCache() const{
 	deoglGICascade &cascade = GetActiveCascade();
 	const int count = cascade.GetRayCacheProbeCount();
-	cascade.UpdateUBOParameters( pRenderThread.GetGI().GetUBOParameter(), count );
+	cascade.UpdateUBOParameters( pRenderThread.GetGI().GetUBOParameter(), count, pBVHStatic );
 	pPrepareUBORayDirections();
 	
 	if( count > 0 ){
@@ -370,6 +374,10 @@ void deoglGIState::TouchDynamicArea( const decDVector &minExtend, const decDVect
 }
 
 void deoglGIState::ValidatedRayCaches(){
+	#ifdef GISTATE_SPECIAL_DEBUG
+	return;
+	#endif
+	
 	GetActiveCascade().ValidatedRayCaches();
 	pProbesExtendsChanged = true;
 }
@@ -550,6 +558,10 @@ void deoglGIState::pInitCascadeUpdateCycle(){
 	// debug
 // 	pCascaceUpdateCycle[ 0 ] = 0;
 // 	pCascaceUpdateCycleCount = 1;
+	#ifdef GISTATE_SPECIAL_DEBUG
+	pCascaceUpdateCycle[ 0 ] = 3;
+	pCascaceUpdateCycleCount = 1;
+	#endif
 }
 
 void deoglGIState::pInitUBOClearProbes(){

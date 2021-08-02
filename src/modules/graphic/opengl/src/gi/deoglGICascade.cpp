@@ -548,7 +548,7 @@ float deoglGICascade::CalcUBOSelfShadowBias() const{
 	return pGIState.GetSelfShadowBias() * decMath::min( pProbeSpacing.x, pProbeSpacing.y, pProbeSpacing.z );
 }
 
-void deoglGICascade::UpdateUBOParameters( deoglSPBlockUBO &ubo, int probeCount ) const{
+void deoglGICascade::UpdateUBOParameters( deoglSPBlockUBO &ubo, int probeCount, const deoglGIBVH &bvh ) const{
 	const deoglGI &gi = pGIState.GetRenderThread().GetGI();
 	const deoglGITraceRays &traceRays = gi.GetTraceRays();
 	const int raysPerProbe = traceRays.GetRaysPerProbe();
@@ -571,7 +571,7 @@ void deoglGICascade::UpdateUBOParameters( deoglSPBlockUBO &ubo, int probeCount )
 		ubo.SetParameterDataIVec3( deoglGI::eupGridCoordUnshift, pGridCoordShift );
 		ubo.SetParameterDataVec3( deoglGI::eupFieldSize, pFieldSize );
 		ubo.SetParameterDataFloat( deoglGI::eupBlendUpdateProbe, 1.0f - pGIState.GetHysteresis() );
-		ubo.SetParameterDataInt( deoglGI::eupBVHInstanceRootNode, gi.GetBVH().GetIndexRootNode() );
+		ubo.SetParameterDataInt( deoglGI::eupBVHInstanceRootNode, bvh.GetIndexRootNode() );
 		ubo.SetParameterDataIVec3( deoglGI::eupGridProbeCount, pGIState.GetProbeCount() );
 		ubo.SetParameterDataVec3( deoglGI::eupGridProbeSpacing, pProbeSpacing );
 		ubo.SetParameterDataFloat( deoglGI::eupIrradianceGamma, pGIState.GetIrradianceGamma() );

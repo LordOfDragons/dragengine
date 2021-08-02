@@ -27,11 +27,11 @@
 #include <dragengine/deObjectReference.h>
 
 
+class deoglGIState;
+class deoglGIBVH;
+class deoglRenderTask;
 class deoglSPBlockUBO;
 class deoglShaderProgram;
-class deoglGIState;
-class deoglRenderTask;
-class deoglAddToRenderTaskGIMaterial;
 class deoglTexture;
 
 
@@ -64,9 +64,6 @@ private:
 	deObjectReference pUBORenderLight;
 	deObjectReference pUBORenderLightSSS;
 	
-	deoglRenderTask *pRenderTask;
-	deoglAddToRenderTaskGIMaterial *pAddToRenderTask;
-	
 	
 	
 	deoglDebugInformation *pDebugInfoGI;
@@ -97,12 +94,6 @@ public:
 	/** Render light UBO. */
 	inline deoglSPBlockUBO &GetUBORenderLight() const{ return ( deoglSPBlockUBO& )( deObject& )pUBORenderLight; }
 	
-	/** Render task for GI material. */
-	inline deoglRenderTask &GetRenderTask() const{ return *pRenderTask; }
-	
-	/** Add to render task for GI material. */
-	inline deoglAddToRenderTaskGIMaterial &GetAddToRenderTask() const{ return *pAddToRenderTask; }
-	
 	
 	
 	/** Trace rays. */
@@ -113,7 +104,7 @@ public:
 	void PrepareUBORenderLight( const deoglGIState &giState, const decDVector &position );
 	
 	/** Render materials. */
-	void RenderMaterials( deoglRenderPlan &plan );
+	void RenderMaterials( deoglRenderPlan &plan, const deoglRenderTask &renderTask );
 	
 	/** Resize materials. */
 	void ResizeMaterials( deoglTexture &texDiffuse, deoglTexture &texReflectivity,
@@ -162,7 +153,7 @@ private:
 	void pCreateUBORenderLight();
 	void pSharedTraceRays( deoglRenderPlan &plan );
 	void pClearTraceRays();
-	void pInitTraceTextures();
+	void pInitTraceTextures( deoglGIBVH &bvh);
 	void pActivateGIUBOs();
 };
 

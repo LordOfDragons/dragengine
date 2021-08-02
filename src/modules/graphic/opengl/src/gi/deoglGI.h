@@ -22,7 +22,7 @@
 #ifndef _DEOGLGI_H_
 #define _DEOGLGI_H_
 
-#include "deoglGIBVH.h"
+#include "deoglGIBVHShared.h"
 #include "deoglGITraceRays.h"
 #include "deoglGIMaterials.h"
 #include "../shaders/paramblock/deoglSPBlockUBO.h"
@@ -82,7 +82,7 @@ public:
 private:
 	deoglRenderThread &pRenderThread;
 	
-	deoglGIBVH pBVH;
+	deoglGIBVHShared pBVHShared;
 	deoglGITraceRays pTraceRays;
 	deoglGIMaterials pMaterials;
 	
@@ -110,9 +110,9 @@ public:
 	/** \brief Render thread. */
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
-	/** \brief BVH. */
-	inline deoglGIBVH &GetBVH(){ return pBVH; }
-	inline const deoglGIBVH &GetBVH() const{ return pBVH; }
+	/** \brief BVH Shared. */
+	inline deoglGIBVHShared &GetBVHShared(){ return pBVHShared; }
+	inline const deoglGIBVHShared &GetBVHShared() const{ return pBVHShared; }
 	
 	/** \brief Trace rays. */
 	inline deoglGITraceRays &GetTraceRays(){ return pTraceRays; }

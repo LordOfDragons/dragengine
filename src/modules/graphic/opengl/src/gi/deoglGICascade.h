@@ -28,6 +28,7 @@
 class deoglGIState;
 class deoglSPBlockUBO;
 class deoglDCollisionFrustum;
+class deoglGIBVH;
 
 
 /**
@@ -255,7 +256,7 @@ public:
 	float CalcUBOSelfShadowBias() const;
 	
 	/** Update parameters UBO. */
-	void UpdateUBOParameters( deoglSPBlockUBO &ubo, int probeCount ) const;
+	void UpdateUBOParameters( deoglSPBlockUBO &ubo, int probeCount, const deoglGIBVH &bvh ) const;
 	
 	/** Update probe positions UBO. */
 	void UpdateUBOProbePosition( deoglSPBlockUBO &ubo ) const;

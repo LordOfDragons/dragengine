@@ -514,7 +514,7 @@ void deoglGIInstance::SetDirtyTUCs( bool dirty ){
 
 deoglDynamicTBOBlock *deoglGIInstance::GetBlockMaterial(){
 	if( ! pBlockMaterial ){
-		pBlockMaterial.TakeOver( pInstances.GetGIState().GetRenderThread().GetGI().GetBVH()
+		pBlockMaterial.TakeOver( pInstances.GetGIState().GetRenderThread().GetGI().GetBVHShared()
 			.GetSharedTBOMaterial()->AddBlock( pTBOMaterial, pTBOMaterial2 ) );
 	}
 	return ( deoglDynamicTBOBlock* )( deObject* )pBlockMaterial;
