@@ -74,7 +74,8 @@ public:
 		eupInvIrradianceGamma, // float
 		eupSelfShadowBias, // float
 		eupCascade, // int
-		eupDetectionBox // vec3
+		eupDetectionBox, // vec3
+		eupBVHOffset // vec3
 	};
 	
 	

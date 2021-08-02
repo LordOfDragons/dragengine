@@ -232,7 +232,7 @@ public:
 	/** Invalidate area. */
 	void InvalidateArea( const decDVector &minExtend, const decDVector &maxExtend, bool hard );
 	
-	/** Dynamic area count increment. */
+	/** Dynamic area changed. */
 	void TouchDynamicArea( const decDVector &minExtend, const decDVector &maxExtend );
 	
 	/** Validate ray caches marked for update. */

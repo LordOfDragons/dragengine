@@ -266,7 +266,7 @@ void deoglGIInstances::ApplyChanges(){
 			// like switching a texture temporarily switches render static flag off which in
 			// turn cause IsComponentStatic to return false. this would cause a simple texture
 			// switch to invalidate hard all disabled probes. to get good results we have to
-			// not wake up disabled probes whenevr possible even if we run the risk of missing
+			// not wake up disabled probes whenever possible even if we run the risk of missing
 			// a potential chance for disabled probes to wake up
 			
 			if( invalidate ){
@@ -554,8 +554,8 @@ void deoglGIInstances::pCleanUp(){
 void deoglGIInstances::pInvalidateAddInstance( const deoglGIInstance &instance ){
 	if( instance.GetDynamic() ){
 		pGIState.TouchDynamicArea( instance.GetMinimumExtend(), instance.GetMaximumExtend() );
-	}else{
 		
+	}else{
 		pGIState.InvalidateArea( instance.GetMinimumExtend(), instance.GetMaximumExtend(), true );
 			// WARNING InvalidateArea becomes expensive if called multiple times.
 			//         unfortunately we can not collect all boxes into an enclosing box

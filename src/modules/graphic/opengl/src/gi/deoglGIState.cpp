@@ -286,6 +286,8 @@ void deoglGIState::Update( const decDVector &cameraPosition, const deoglDCollisi
 	SPECIAL_TIMER_PRINT("Update: UpdatePosition")
 	
 	pFindContent( cameraPosition );
+	pBVHDynamic.SetPosition( pAreaTracker.GetPosition() );
+	pBVHStatic.SetPosition( pAreaTracker.GetPosition() );
 	SPECIAL_TIMER_PRINT("Update: FindContent")
 // 		if(pAreaTracker.HasChanged()){
 // 			pRenderThread.GetLogger().LogInfoFormat("GIState.FindContent: enter=%d leave=%d allLeaving=%d",
@@ -358,6 +360,8 @@ void deoglGIState::InvalidateArea( const decDVector &minExtend, const decDVector
 	for( i=0; i<pCascadeCount; i++ ){
 		pCascades[ i ]->InvalidateArea( minExtend, maxExtend, hard );
 	}
+	
+	pBVHStatic.MarkDirty();
 }
 
 void deoglGIState::TouchDynamicArea( const decDVector &minExtend, const decDVector &maxExtend ){
@@ -371,6 +375,8 @@ void deoglGIState::TouchDynamicArea( const decDVector &minExtend, const decDVect
 	for( i=0; i<pCascadeCount; i++ ){
 		pCascades[ i ]->TouchDynamicArea( minExtend, maxExtend );
 	}
+	
+	pBVHDynamic.MarkDirty();
 }
 
 void deoglGIState::ValidatedRayCaches(){

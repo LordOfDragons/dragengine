@@ -363,19 +363,25 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 	#ifdef GI_USE_RAY_CACHE
 	if( cascade.GetRayCacheProbeCount() > 0 ){
 		deoglGIBVH &bvh = giState->GetBVHStatic();
-		deoglRenderTask &renderTaskMaterial = bvh.GetRenderTaskMaterial();
-		renderTaskMaterial.Clear();
 		
-		bvh.Clear();
-			BVH_TIMING_INIT
-		bvh.AddComponents( plan, cascade.GetPosition(), giState->GetInstances(), false );
-			BVH_TIMING_PRINT("Cache BVH Add Components")
-		bvh.BuildBVH();
-			BVH_TIMING_PRINT("Cache BVH Build")
+		if( bvh.GetDirty() ){
+			bvh.GetRenderTaskMaterial().Clear();
+			
+			bvh.Clear();
+				BVH_TIMING_INIT
+			bvh.AddComponents( plan, giState->GetInstances(), false );
+				BVH_TIMING_PRINT("Cache BVH Add Components")
+			bvh.BuildBVH();
+				BVH_TIMING_PRINT("Cache BVH Build")
+			
+			giState->PrepareUBOStateRayCache(); // has to be done here since it is shared
+			
+			RenderMaterials( plan, bvh.GetRenderTaskMaterial() );
+			
+		}else{
+			giState->PrepareUBOStateRayCache();
+		}
 		
-		giState->PrepareUBOStateRayCache(); // has to be done here since it is shared
-		
-		RenderMaterials( plan, bvh.GetRenderTaskMaterial() );
 		pSharedTraceRays( plan );
 		pClearTraceRays();
 		
@@ -412,15 +418,14 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 	
 	// trace rays
 	deoglGIBVH &bvh = giState->GetBVHDynamic();
-	deoglRenderTask &renderTaskMaterial = bvh.GetRenderTaskMaterial();
-	renderTaskMaterial.Clear();
+	bvh.GetRenderTaskMaterial().Clear();
 	
 	bvh.Clear();
 		BVH_TIMING_INIT
 	#ifdef GI_USE_RAY_CACHE
-		bvh.AddComponents( plan, cascade.GetPosition(), giState->GetInstances(), true );
+		bvh.AddComponents( plan, giState->GetInstances(), true );
 	#else
-		bvh.AddComponents( plan, cascade.GetPosition(), giState->GetInstances() );
+		bvh.AddComponents( plan, giState->GetInstances() );
 	#endif
 		BVH_TIMING_PRINT("Frame BVH Add Components")
 	bvh.BuildBVH();

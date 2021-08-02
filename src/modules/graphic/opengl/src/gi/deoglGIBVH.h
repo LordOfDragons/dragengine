@@ -188,6 +188,7 @@ private:
 	int pPrimitiveSize;
 	deoglBVHNode *pRecalcNodes;
 	int pRecalcNodeSize;
+	decDVector pPosition;
 	
 	int pIndexRootNode;
 	
@@ -199,6 +200,7 @@ private:
 	deObjectReference pBlockBVH;
 	
 	deoglRenderTask pRenderTaskMaterial;
+	bool pDirty;
 	
 	
 	
@@ -222,16 +224,28 @@ public:
 	/** Index of bvh component root node or -1 if there are no components. */
 	inline int GetIndexRootNode() const{ return pIndexRootNode; }
 	
+	/** Position. */
+	inline const decDVector &GetPosition() const{ return pPosition; }
 	
+	/** Set position. If changed marks BVH dirty. */
+	void SetPosition( const decDVector &position );
+	
+	
+	
+	/** BVH is dirty. */
+	inline bool GetDirty() const{ return pDirty; }
+	
+	/** Mark BVH dirty. */
+	void MarkDirty();
 	
 	/** Clear BVH. */
 	void Clear();
 	
 	/** Add components. */
-	void AddComponents( deoglRenderPlan &plan, const decDVector &position, const deoglGIInstances &instances );
+	void AddComponents( deoglRenderPlan &plan, const deoglGIInstances &instances );
 	
 	/** Add components. */
-	void AddComponents( deoglRenderPlan &plan, const decDVector &position, const deoglGIInstances &instances, bool dynamic );
+	void AddComponents( deoglRenderPlan &plan, const deoglGIInstances &instances, bool dynamic );
 	
 	/** Add component. */
 	void AddComponent( deoglRenderPlan &plan, const decMatrix &matrix, deoglGIInstance &instance );

@@ -86,7 +86,8 @@ pTBOInstance( NULL ),
 pTBOMatrix( NULL ),
 pBVHTBONodeBox( NULL ),
 pBVHTBOIndex(  NULL ),
-pRenderTaskMaterial( renderThread )
+pRenderTaskMaterial( renderThread ),
+pDirty( true )
 {
 	try{
 		pTBOInstance = new deoglDynamicTBOUInt32( renderThread, 4 );
@@ -110,6 +111,19 @@ deoglGIBVH::~deoglGIBVH(){
 // Management
 ///////////////
 
+void deoglGIBVH::SetPosition( const decDVector &position ){
+	if( position.IsEqualTo( pPosition ) ){
+		return;
+	}
+	
+	pPosition = position;
+	MarkDirty();
+}
+
+void deoglGIBVH::MarkDirty(){
+	pDirty = true;
+}
+
 void deoglGIBVH::Clear(){
 	pDropBlockBVH();
 	pBVHTBONodeBox->Clear();
@@ -126,9 +140,8 @@ void deoglGIBVH::Clear(){
 #ifdef DO_TIMING_TEST
 static int vDebugTimeA = 0, vDebugTimeB = 0, vDebugTimeC = 0, vDebugTUCs = 0;
 #endif
-void deoglGIBVH::AddComponents( deoglRenderPlan &plan, const decDVector &position,
-const deoglGIInstances &instances ){
-	const decDMatrix matrix( decDMatrix::CreateTranslation( -position ) );
+void deoglGIBVH::AddComponents( deoglRenderPlan &plan, const deoglGIInstances &instances ){
+	const decDMatrix matrix( decDMatrix::CreateTranslation( -pPosition ) );
 	const int count = instances.GetInstanceCount();
 	int i;
 	
@@ -141,12 +154,11 @@ const deoglGIInstances &instances ){
 	}
 }
 
-void deoglGIBVH::AddComponents( deoglRenderPlan &plan, const decDVector &position,
-const deoglGIInstances &instances, bool dynamic ){
+void deoglGIBVH::AddComponents( deoglRenderPlan &plan, const deoglGIInstances &instances, bool dynamic ){
 #ifdef DO_TIMING_TEST
 	vDebugTimeA=0; vDebugTimeB=0; vDebugTimeC=0; int vDebugCount=0; vDebugTUCs=0;
 #endif
-	const decDMatrix matrix( decDMatrix::CreateTranslation( -position ) );
+	const decDMatrix matrix( decDMatrix::CreateTranslation( -pPosition ) );
 	const int count = instances.GetInstanceCount();
 	int i;
 	
@@ -167,7 +179,7 @@ const deoglGIInstances &instances, bool dynamic ){
 #endif
 }
 
-void deoglGIBVH::AddComponent( deoglRenderPlan &plan, const decMatrix &matrix, deoglGIInstance &instance ){
+void deoglGIBVH::AddComponent( deoglRenderPlan&, const decMatrix &matrix, deoglGIInstance &instance ){
 	if( ! instance.GetHasBVHNodes() || ! instance.GetComponent() ){
 		return;
 	}
@@ -327,6 +339,8 @@ void deoglGIBVH::BuildBVH(){
 	
 	pTBOInstance->Update();
 	pTBOMatrix->Update();
+	
+	pDirty = false;
 }
 
 void deoglGIBVH::DebugPrint( const decDVector &position ){

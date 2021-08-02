@@ -52,7 +52,7 @@ void main( void ){
 	vec3 dir = vec3(sin(pc.x)*r, sin(pc.y), cos(pc.x)*r);
 	
 	GIRayCastResult result;
-	if( giRayCastTraceInstance( pBVHInstanceRootNode, vec3( 0.0 ), dir, giRayCastNoHitDistance, result ) ){
+	if( giRayCastTraceInstance( pBVHInstanceRootNode, pGIBVHOffset, dir, giRayCastNoHitDistance, result ) ){
 		outPosition = vec4( dir * result.distance, result.distance );
 		outNormal = result.normal;
 		
@@ -88,7 +88,8 @@ void main( void ){
 		GIRayCastResult result;
 		
 		#ifdef GI_RAYCAST_DISTANCE_ONLY
-			if( giRayCastTraceInstance( pGIBVHInstanceRootNode, pp, direction, giRayCastNoHitDistance, result ) ){
+			if( giRayCastTraceInstance( pGIBVHInstanceRootNode, pp + pGIBVHOffset,
+			direction, giRayCastNoHitDistance, result ) ){
 				outDistance = result.distance;
 				
 			}else{
@@ -96,7 +97,8 @@ void main( void ){
 			}
 			
 		#else
-			if( giRayCastTraceInstance( pGIBVHInstanceRootNode, pp, direction, giRayCastNoHitDistance, result ) ){
+			if( giRayCastTraceInstance( pGIBVHInstanceRootNode,  pp + pGIBVHOffset,
+			direction, giRayCastNoHitDistance, result ) ){
 				outPosition = vec4( pp, result.distance );
 				outPosition.xyz += direction * max( result.distance - STEP_BACK_DISTANCE, 0.0 );
 				outNormal = result.normal;
@@ -146,7 +148,7 @@ void main( void ){
 	
 	#ifdef GI_RAYCAST_DISTANCE_ONLY
 		if( pGIBVHInstanceRootNode != -1 && giRayCastTraceInstance( pGIBVHInstanceRootNode,
-				position, direction, giRayCastNoHitDistance, result ) ){
+		position + pGIBVHOffset, direction, giRayCastNoHitDistance, result ) ){
 			outDistance = result.distance;
 			
 		}else{
@@ -160,8 +162,8 @@ void main( void ){
 			float distLimit = giRayCastNoHitDistance;
 		#endif
 		
-		if( pGIBVHInstanceRootNode != -1
-		&& giRayCastTraceInstance( pGIBVHInstanceRootNode, position, direction, distLimit, result ) ){
+		if( pGIBVHInstanceRootNode != -1 && giRayCastTraceInstance( pGIBVHInstanceRootNode,
+		position + pGIBVHOffset, direction, distLimit, result ) ){
 			outPosition.xyz = position + direction * result.distance;
 			outPosition.xyz += result.normal * STEP_BACK_DISTANCE;
 			

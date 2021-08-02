@@ -579,6 +579,7 @@ void deoglGICascade::UpdateUBOParameters( deoglSPBlockUBO &ubo, int probeCount, 
 		ubo.SetParameterDataFloat( deoglGI::eupSelfShadowBias, CalcUBOSelfShadowBias() );
 		ubo.SetParameterDataInt( deoglGI::eupCascade, pIndex );
 		ubo.SetParameterDataVec3( deoglGI::eupDetectionBox, pDetectionBox );
+		ubo.SetParameterDataVec3( deoglGI::eupBVHOffset, ( pPosition - bvh.GetPosition() ).ToVector() );
 		
 		// material
 		/*
