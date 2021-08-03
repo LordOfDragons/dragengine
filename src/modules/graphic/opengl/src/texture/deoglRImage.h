@@ -22,6 +22,8 @@
 #ifndef _DEOGLRIMAGE_H_
 #define _DEOGLRIMAGE_H_
 
+#include "../memory/consumption/deoglMemoryConsumptionSkinUse.h"
+
 #include <dragengine/deObject.h>
 #include <dragengine/common/string/decString.h>
 
@@ -56,6 +58,8 @@ private:
 	
 	float pScaleU;
 	float pScaleV;
+	
+	deoglMemoryConsumptionSkinUse pSkinMemUse;
 	
 	
 	
@@ -169,7 +173,7 @@ private:
 	void pCleanUp();
 	void pReleaseTextures();
 	void pDirectReleaseTextures();
-	void pUpdateSkinMemoryUsage( bool add );
+	void pUpdateSkinMemoryUsage();
 };
 
 #endif

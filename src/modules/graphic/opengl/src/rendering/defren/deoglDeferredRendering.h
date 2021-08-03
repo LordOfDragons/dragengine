@@ -22,7 +22,9 @@
 #ifndef _DEOGLDEFERREDRENDERING_H_
 #define _DEOGLDEFERREDRENDERING_H_
 
-#include "../../deoglGL.h"
+#include "../../deoglBasics.h"
+#include "../../memory/consumption/deoglMemoryConsumptionDeferredRenderingUse.h"
+
 #include <dragengine/common/math/decMath.h>
 
 class deoglRenderThread;
@@ -100,9 +102,7 @@ private:
 // 	deoglFramebuffer *pFBOLuminance;
 // 	deoglFramebuffer *pFBOLuminanceNormal;
 	
-	int pMemoryUsageGPU;
-	int pMemoryUsageGPUTexture;
-	int pMemoryUsageGPURenBuf;
+	deoglMemoryConsumptionDeferredRenderingUse pMemUse;
 	
 	GLuint pVBOFullScreenQuad;
 	GLuint pVBOBillboard;
@@ -312,12 +312,8 @@ public:
 	/** Retrieves the billboard VAO. */
 	inline deoglVAO *GetVAOBillboard() const{ return pVAOBillboard; }
 	
-	/** Retrieves the GPU memory usage. */
-	inline int GetMemoryUsageGPU() const{ return pMemoryUsageGPU; }
-	/** Retrieves the texture GPU memory usage. */
-	inline int GetMemoryUsageGPUTexture() const{ return pMemoryUsageGPUTexture; }
-	/** Retrieves the renderbuffer GPU memory usage. */
-	inline int GetMemoryUsageGPURenderbuffer() const{ return pMemoryUsageGPURenBuf; }
+	/** Memory consumption. */
+	inline const deoglMemoryConsumptionDeferredRenderingUse &GetMemoryConsumption() const{ return pMemUse; }
 	/*@}*/
 	
 	/** @name Rendering */

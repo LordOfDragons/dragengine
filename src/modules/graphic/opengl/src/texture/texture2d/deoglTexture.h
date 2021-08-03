@@ -24,6 +24,7 @@
 
 #include "../../deoglBasics.h"
 #include "../../capabilities/deoglCapsFmtSupport.h"
+#include "../../memory/consumption/deoglMemoryConsumptionTextureUse.h"
 
 #include <dragengine/common/math/decMath.h>
 
@@ -56,9 +57,7 @@ public:
 	int pRealMipMapLevelCount;
 	bool pMipMapped;
 	
-	int pMemoryUsageGPU;
-	bool pMemoryUsageCompressed;
-	bool pMemoryUsageColor;
+	deoglMemoryConsumptionTextureUse pMemUse;
 	
 	
 	
@@ -168,11 +167,8 @@ public:
 	
 	
 	
-	/** GPU memory usage. */
-	inline int GetMemoryUsageGPU() const{ return pMemoryUsageGPU; }
-	
-	/** GPU memory usage is compressed image data. */
-	inline bool GetMemoryUsageCompressed() const{ return pMemoryUsageCompressed; }
+	/** Memory consumption. */
+	inline const deoglMemoryConsumptionTextureUse &GetMemoryConsumption() const{ return pMemUse; }
 	
 	/** Update memory usage. */
 	void UpdateMemoryUsage();

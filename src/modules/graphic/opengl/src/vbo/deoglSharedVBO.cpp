@@ -44,7 +44,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglSharedVBO::deoglSharedVBO( deoglSharedVBOList *parentList, int size, int indexSize ){
+deoglSharedVBO::deoglSharedVBO( deoglSharedVBOList *parentList, int size, int indexSize ) :
+pMemUseVBO( parentList->GetRenderThread().GetMemoryManager().GetConsumption().bufferObject.vboShared ),
+pMemUseIBO( parentList->GetRenderThread().GetMemoryManager().GetConsumption().bufferObject.iboShared )
+{
 	if( ! parentList || size < 1 || indexSize < 0 ){
 		DETHROW( deeInvalidParam );
 	}
@@ -52,7 +55,6 @@ deoglSharedVBO::deoglSharedVBO( deoglSharedVBOList *parentList, int size, int in
 	const deoglVBOLayout &layout = parentList->GetLayout();
 	const int attributeCount = layout.GetAttributeCount();
 	deoglRenderThread &renderThread = parentList->GetRenderThread();
-	deoglMemoryConsumptionVBO &consumption = renderThread.GetMemoryManager().GetConsumption().GetVBO();
 	int i;
 	
 	pParentList = parentList;
@@ -64,9 +66,6 @@ deoglSharedVBO::deoglSharedVBO( deoglSharedVBOList *parentList, int size, int in
 	pIndexSize = indexSize;
 	pIndexUsedSize = 0;
 	pDirty = true;
-	
-	pMemoryGPUVBO = 0;
-	pMemoryGPUIBO = 0;
 	
 	try{
 		// create vbo
@@ -104,10 +103,6 @@ deoglSharedVBO::deoglSharedVBO( deoglSharedVBOList *parentList, int size, int in
 		block.TakeOver( new deoglSharedVBOBlock( this, 0, size, 0, indexSize ) );
 		pBlocks.Add( block );
 		
-		consumption.IncrementCount();
-		consumption.IncrementSharedCount();
-		consumption.IncrementIBOCount();
-		
 	}catch( const deException & ){
 		pCleanUp();
 		throw;
@@ -129,17 +124,12 @@ void deoglSharedVBO::Prepare(){
 	}
 	
 	deoglRenderThread &renderThread = pParentList->GetRenderThread();
-	deoglMemoryConsumptionVBO &consumption = renderThread.GetMemoryManager().GetConsumption().GetVBO();
 	const int indexSize = pParentList->GetLayout().GetIndexSize();
 	const int stride = pParentList->GetLayout().GetStride();
 	const GLenum drawType = pParentList->GetDrawType();
 	const int blockCount = pBlocks.GetCount();
 	unsigned char *vboData = NULL;
 	int i;
-	
-	consumption.DecrementIBOGPU( pMemoryGPUIBO );
-	consumption.DecrementSharedGPU( pMemoryGPUVBO );
-	consumption.DecrementGPU( pMemoryGPUVBO + pMemoryGPUIBO );
 	
 	// update vertex buffer
 	OGL_CHECK( renderThread, pglBindBuffer( GL_ARRAY_BUFFER, pVBO ) );
@@ -229,12 +219,8 @@ void deoglSharedVBO::Prepare(){
 	OGL_CHECK( renderThread, pglBindBuffer( GL_ARRAY_BUFFER, 0 ) );
 	pDirty = false;
 	
-	pMemoryGPUVBO = stride * pUsedSize;
-	pMemoryGPUIBO = indexSize * pIndexUsedSize;
-	
-	consumption.IncrementIBOGPU( pMemoryGPUIBO );
-	consumption.IncrementSharedGPU( pMemoryGPUVBO );
-	consumption.IncrementGPU( pMemoryGPUVBO + pMemoryGPUIBO );
+	pMemUseVBO = stride * pUsedSize;
+	pMemUseIBO = indexSize * pIndexUsedSize;
 }
 
 void deoglSharedVBO::UpdateUsedSizes(){
@@ -378,21 +364,12 @@ int deoglSharedVBO::IndexOfEmptyBlockWithMinSize( int size, int indexCount ){
 //////////////////////
 
 void deoglSharedVBO::pCleanUp(){
-	deoglMemoryConsumptionVBO &consumption = pParentList->GetRenderThread().GetMemoryManager().GetConsumption().GetVBO();
-	
 	const int count = pBlocks.GetCount();
 	int i;
 	for( i=0; i<count; i++ ){
 		( ( deoglSharedVBOBlock* )pBlocks.GetAt( i ) )->DropVBO();
 	}
 	pBlocks.RemoveAll();
-	
-	consumption.DecrementIBOGPU( pMemoryGPUIBO );
-	consumption.DecrementIBOCount();
-	consumption.DecrementSharedGPU( pMemoryGPUVBO );
-	consumption.DecrementSharedCount();
-	consumption.DecrementGPU( pMemoryGPUVBO + pMemoryGPUIBO );
-	consumption.DecrementCount();
 	
 	if( pVAO ){
 		delete pVAO;

@@ -22,6 +22,8 @@
 #ifndef _DEOGLSCTRANSPARENT_H_
 #define _DEOGLSCTRANSPARENT_H_
 
+#include "../memory/consumption/deoglMemoryConsumptionGPUUse.h"
+
 class deoglRenderThread;
 class deoglCubeMap;
 class deoglTexture;
@@ -54,6 +56,15 @@ private:
 	int pPlanStaticSize;
 	int pPlanDynamicSize;
 	int pPlanTransparentSize;
+	
+	deoglMemoryConsumptionGPUUse pMemUseStaMapDepth;
+	deoglMemoryConsumptionGPUUse pMemUseStaMapColor;
+	deoglMemoryConsumptionGPUUse pMemUseStaCubeDepth;
+	deoglMemoryConsumptionGPUUse pMemUseStaCubeColor;
+	deoglMemoryConsumptionGPUUse pMemUseDynMapDepth;
+	deoglMemoryConsumptionGPUUse pMemUseDynMapColor;
+	deoglMemoryConsumptionGPUUse pMemUseDynCubeDepth;
+	deoglMemoryConsumptionGPUUse pMemUseDynCubeColor;
 	
 	
 	

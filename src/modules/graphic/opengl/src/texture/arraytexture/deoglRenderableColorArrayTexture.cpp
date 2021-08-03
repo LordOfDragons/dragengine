@@ -94,16 +94,12 @@ void deoglRenderableColorArrayTexture::SetInUse( bool inUse ){
 
 
 void deoglRenderableColorArrayTexture::UpdateMemoryUsage(){
-	//const int oldMemoryGPU = pMemoryUsageGPU;
-	
 	if( pArrayTexture ){
-		pMemoryUsageGPU = pArrayTexture->GetMemoryUsageGPU();
+		pMemoryUsageGPU = pArrayTexture->GetMemoryConsumption().Total();
 		
 	}else{
 		pMemoryUsageGPU = 0;
 	}
-	
-//	pRenderThread.GetMemoryManager().IncRenderable2DColorGPUTotal( pMemoryUsageGPU - oldMemoryGPU );
 }
 
 

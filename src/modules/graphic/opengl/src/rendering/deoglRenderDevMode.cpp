@@ -1266,38 +1266,39 @@ void deoglRenderDevMode::RenderRenderPlanDebugInfo( deoglRenderPlan &plan, const
 void deoglRenderDevMode::RenderMemoryInfo( deoglRenderPlan &plan, const decPoint &position, decPoint &size ){
 	const decColor color1 = decColor( 1.0f, 1.0f, 1.0f );
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglMemoryConsumption &consumption = renderThread.GetMemoryManager().GetConsumption();
 	deoglRenderDebug &renderDebug = GetRenderThread().GetRenderers().GetDebug();
 	const int fontHeight = renderDebug.GetDebugFont().GetFontHeight();
 	int y = position.y;
 	int maxWidth = 0;
 	decString text;
 	
-	const char * const fmtTex2D  = "Tex2D (%4d): %4uM %4uM(%2d%%) %3uM | C(%4d) %4uM %4uM(%2d%%) %3uM | D(%3d) %3uM";
-	const char * const fmtTexArr = "TexArr(%4d): %4uM %4uM(%2d%%) %3uM | C(%4d) %4uM %4uM(%2d%%) %3uM | D(%3d) %3uM";
-	const char * const fmtCube   = "Cube  (%4d): %4uM %4uM(%2d%%) %3uM | C(%4d) %4uM %4uM(%2d%%) %3uM | D(%3d) %3uM";
-	const char * const fmtRenBuf = "RenBuf(%4d): %4uM                 | C(%4d) %4uM                 | D(%3d) %3uM";
-	const char * const fmtSkin   = "Skins (%4d): %4uM %4uM(%2d%%) %3uM";
-	const char * const fmtRender = "Renderables :  2D-C(%2d) %3uM | 2D-D(%2d) %3uM | Arr-C(%2d) %3uM | Arr-D(%2d) %3uM";
-	const char * const fmtVBO    = "VBO   (%4d): %4uM | S(%4d) %4uM | I(%4d) %4uM | T(%4d) %4uM";
+	const char * const fmtTex2D  = "Tex2D (%4d): %4lluM %4lluM(%2d%%) %3lluM | C(%4d) %4lluM %4lluM(%2d%%) %3lluM | D(%3d) %3lluM";
+	const char * const fmtTexArr = "TexArr(%4d): %4lluM %4lluM(%2d%%) %3lluM | C(%4d) %4lluM %4lluM(%2d%%) %3lluM | D(%3d) %3lluM";
+	const char * const fmtCube   = "Cube  (%4d): %4lluM %4lluM(%2d%%) %3lluM | C(%4d) %4lluM %4lluM(%2d%%) %3lluM | D(%3d) %3lluM";
+	const char * const fmtRenBuf = "RenBuf(%4d): %4lluM                 | C(%4d) %4lluM                 | D(%3d) %3lluM";
+	const char * const fmtSkin   = "Skins (%4d): %4lluM %4lluM(%2d%%) %3lluM";
+	const char * const fmtRender = "Renderables :  2D-C(%2d) %3lluM | 2D-D(%2d) %3lluM | Arr-C(%2d) %3lluM | Arr-D(%2d) %3lluM";
+	const char * const fmtVBO    = "VBO   (%4d): %4uM | S(%4d) %4uM | I(%4d) %4uM | S(%4d) %4uM | T(%4d) %4uM";
 	const char * const fmtDefRen = "DefRen      : %3uM | T %3uM | R %3uM";
 	
 	// textures 2d
-	const deoglMemoryConsumptionTexture &consumptionTexture2D = renderThread.GetMemoryManager().GetConsumption().GetTexture2D();
-	const int textureCount = consumptionTexture2D.GetCount();
-	const int textureColorCount = consumptionTexture2D.GetColorCount();
-	const int textureDepthCount = consumptionTexture2D.GetDepthCount();
-	unsigned int textureGPU = consumptionTexture2D.GetGPU();
-	unsigned int textureGPUCompressed = consumptionTexture2D.GetGPUCompressed();
-	unsigned int textureGPUUncompressed = consumptionTexture2D.GetGPUUncompressed();
-	unsigned int textureColorGPU = consumptionTexture2D.GetColorGPU();
-	unsigned int textureColorGPUCompressed = consumptionTexture2D.GetColorGPUCompressed();
-	unsigned int textureColorGPUUncompressed = consumptionTexture2D.GetColorGPUUncompressed();
-	unsigned int textureDepthGPU = consumptionTexture2D.GetDepthGPU();
-	//unsigned int textureDepthGPUCompressed = consumptionTexture2D.GetDepthGPUCompressed();
-	//unsigned int textureDepthGPUUncompressed = consumptionTexture2D.GetDepthGPUUncompressed();
-	double textureRatioCompressed = 0.0f;
-	double textureColorRatioCompressed = 0.0f;
-	//double textureDepthRatioCompressed = 0.0f;
+	const deoglMemoryConsumptionTexture &consumptionTexture2D = consumption.texture2D;
+	const int textureCount = consumptionTexture2D.all.GetCount();
+	const int textureColorCount = consumptionTexture2D.color.GetCount();
+	const int textureDepthCount = consumptionTexture2D.depth.GetCount();
+	unsigned long long textureGPU = consumptionTexture2D.all.GetConsumption();
+	unsigned long long textureGPUCompressed = consumptionTexture2D.allCompressed.GetConsumption();
+	unsigned long long textureGPUUncompressed = consumptionTexture2D.allUncompressed.GetConsumption();
+	unsigned long long textureColorGPU = consumptionTexture2D.color.GetConsumption();
+	unsigned long long textureColorGPUCompressed = consumptionTexture2D.colorCompressed.GetConsumption();
+	unsigned long long textureColorGPUUncompressed = consumptionTexture2D.colorUncompressed.GetConsumption();
+	unsigned long long textureDepthGPU = consumptionTexture2D.depth.GetConsumption();
+	//unsigned long long textureDepthGPUCompressed = consumptionTexture2D.depthCompressed.GetConsumption();
+	//unsigned long long textureDepthGPUUncompressed = consumptionTexture2D.depthUncompressed.GetConsumption();
+	double textureRatioCompressed = 0.0;
+	double textureColorRatioCompressed = 0.0;
+	//double textureDepthRatioCompressed = 0.0;
 	
 	if( textureGPU > 0 ){
 		textureRatioCompressed = 100.0 * ( ( double )textureGPUCompressed / ( double )textureGPU );
@@ -1315,15 +1316,15 @@ void deoglRenderDevMode::RenderMemoryInfo( deoglRenderPlan &plan, const decPoint
 	//	textureDepthRatioCompressed = 100.0 * ( ( double )textureDepthGPUCompressed / ( double )textureDepthGPU );
 	//}
 	
-	textureGPU /= 1000000;
-	textureGPUCompressed /= 1000000;
-	textureGPUUncompressed /= 1000000;
-	textureColorGPU /= 1000000;
-	textureColorGPUCompressed /= 1000000;
-	textureColorGPUUncompressed /= 1000000;
-	textureDepthGPU /= 1000000;
-	//textureDepthGPUCompressed /= 1000000;
-	//textureDepthGPUUncompressed /= 1000000;
+	textureGPU /= 1000000ull;
+	textureGPUCompressed /= 1000000ull;
+	textureGPUUncompressed /= 1000000ull;
+	textureColorGPU /= 1000000ull;
+	textureColorGPUCompressed /= 1000000ull;
+	textureColorGPUUncompressed /= 1000000ull;
+	textureDepthGPU /= 1000000ull;
+	//textureDepthGPUCompressed /= 1000000ull;
+	//textureDepthGPUUncompressed /= 1000000ull;
 	
 	renderDebug.BeginRenderText();
 	
@@ -1335,22 +1336,22 @@ void deoglRenderDevMode::RenderMemoryInfo( deoglRenderPlan &plan, const decPoint
 	y += fontHeight;
 	
 	// textures array
-	const deoglMemoryConsumptionTexture &consumptionTextureArray = renderThread.GetMemoryManager().GetConsumption().GetTextureArray();
-	const int textureArrayCount = consumptionTextureArray.GetCount();
-	const int textureArrayColorCount = consumptionTextureArray.GetColorCount();
-	const int textureArrayDepthCount = consumptionTextureArray.GetDepthCount();
-	unsigned int textureArrayGPU = consumptionTextureArray.GetGPU();
-	unsigned int textureArrayGPUCompressed = consumptionTextureArray.GetGPUCompressed();
-	unsigned int textureArrayGPUUncompressed = consumptionTextureArray.GetGPUUncompressed();
-	unsigned int textureArrayColorGPU = consumptionTextureArray.GetColorGPU();
-	unsigned int textureArrayColorGPUCompressed = consumptionTextureArray.GetColorGPUCompressed();
-	unsigned int textureArrayColorGPUUncompressed = consumptionTextureArray.GetColorGPUUncompressed();
-	unsigned int textureArrayDepthGPU = consumptionTextureArray.GetDepthGPU();
-	//unsigned int textureArrayDepthGPUCompressed = consumptionTextureArray.GetDepthGPUCompressed();
-	//unsigned int textureArrayDepthGPUUncompressed = consumptionTextureArray.GetDepthGPUUncompressed();
-	double textureArrayRatioCompressed = 0.0f;
-	double textureArrayColorRatioCompressed = 0.0f;
-	//double textureArrayDepthRatioCompressed = 0.0f;
+	const deoglMemoryConsumptionTexture &consumptionTextureArray = consumption.textureArray;
+	const int textureArrayCount = consumptionTextureArray.all.GetCount();
+	const int textureArrayColorCount = consumptionTextureArray.color.GetCount();
+	const int textureArrayDepthCount = consumptionTextureArray.depth.GetCount();
+	unsigned long long textureArrayGPU = consumptionTextureArray.all.GetConsumption();
+	unsigned long long textureArrayGPUCompressed = consumptionTextureArray.allCompressed.GetConsumption();
+	unsigned long long textureArrayGPUUncompressed = consumptionTextureArray.allUncompressed.GetConsumption();
+	unsigned long long textureArrayColorGPU = consumptionTextureArray.color.GetConsumption();
+	unsigned long long textureArrayColorGPUCompressed = consumptionTextureArray.colorCompressed.GetConsumption();
+	unsigned long long textureArrayColorGPUUncompressed = consumptionTextureArray.colorUncompressed.GetConsumption();
+	unsigned long long textureArrayDepthGPU = consumptionTextureArray.depth.GetConsumption();
+	//unsigned long long textureArrayDepthGPUCompressed = consumptionTextureArray.depthCompressed.GetConsumption();
+	//unsigned long long textureArrayDepthGPUUncompressed = consumptionTextureArray.depthUncompressed.GetConsumption();
+	double textureArrayRatioCompressed = 0.0;
+	double textureArrayColorRatioCompressed = 0.0;
+	//double textureArrayDepthRatioCompressed = 0.0;
 	
 	if( textureArrayGPU > 0 ){
 		textureArrayRatioCompressed = 100.0 * ( ( double )textureArrayGPUCompressed / ( double )textureArrayGPU );
@@ -1368,15 +1369,15 @@ void deoglRenderDevMode::RenderMemoryInfo( deoglRenderPlan &plan, const decPoint
 	//	textureArrayDepthRatioCompressed = 100.0 * ( ( double )textureArrayDepthGPUCompressed / ( double )textureArrayDepthGPU );
 	//}
 	
-	textureArrayGPU /= 1000000;
-	textureArrayGPUCompressed /= 1000000;
-	textureArrayGPUUncompressed /= 1000000;
-	textureArrayColorGPU /= 1000000;
-	textureArrayColorGPUCompressed /= 1000000;
-	textureArrayColorGPUUncompressed /= 1000000;
-	textureArrayDepthGPU /= 1000000;
-	//textureArrayDepthGPUCompressed /= 1000000;
-	//textureArrayDepthGPUUncompressed /= 1000000;
+	textureArrayGPU /= 1000000ull;
+	textureArrayGPUCompressed /= 1000000ull;
+	textureArrayGPUUncompressed /= 1000000ull;
+	textureArrayColorGPU /= 1000000ull;
+	textureArrayColorGPUCompressed /= 1000000ull;
+	textureArrayColorGPUUncompressed /= 1000000ull;
+	textureArrayDepthGPU /= 1000000ull;
+	//textureArrayDepthGPUCompressed /= 1000000ull;
+	//textureArrayDepthGPUUncompressed /= 1000000ull;
 	
 	text.Format( fmtTexArr, textureArrayCount, textureArrayGPU, textureArrayGPUCompressed, ( int )textureArrayRatioCompressed,
 		textureArrayGPUUncompressed, textureArrayColorCount, textureArrayColorGPU, textureArrayColorGPUCompressed,
@@ -1386,19 +1387,19 @@ void deoglRenderDevMode::RenderMemoryInfo( deoglRenderPlan &plan, const decPoint
 	y += fontHeight;
 	
 	// cube maps
-	const deoglMemoryConsumptionTexture &consumptionTextureCube = renderThread.GetMemoryManager().GetConsumption().GetTextureCube();
-	const int cubemapCount = consumptionTextureCube.GetCount();
-	const int cubemapColorCount = consumptionTextureCube.GetColorCount();
-	const int cubemapDepthCount = consumptionTextureCube.GetDepthCount();
-	unsigned int cubemapGPU = consumptionTextureCube.GetGPU();
-	unsigned int cubemapGPUCompressed = consumptionTextureCube.GetGPUCompressed();
-	unsigned int cubemapGPUUncompressed = consumptionTextureCube.GetGPUUncompressed();
-	unsigned int cubemapColorGPU = consumptionTextureCube.GetColorGPU();
-	unsigned int cubemapColorGPUCompressed = consumptionTextureCube.GetColorGPUCompressed();
-	unsigned int cubemapColorGPUUncompressed = consumptionTextureCube.GetColorGPUUncompressed();
-	unsigned int cubemapDepthGPU = consumptionTextureCube.GetDepthGPU();
-	//unsigned int cubemapDepthGPUCompressed = consumptionTextureCube.GetDepthGPUCompressed();
-	//unsigned int cubemapDepthGPUUncompressed = consumptionTextureCube.GetDepthGPUUncompressed();
+	const deoglMemoryConsumptionTexture &consumptionTextureCube = consumption.textureCube;
+	const int cubemapCount = consumptionTextureCube.all.GetCount();
+	const int cubemapColorCount = consumptionTextureCube.color.GetCount();
+	const int cubemapDepthCount = consumptionTextureCube.depth.GetCount();
+	unsigned long long cubemapGPU = consumptionTextureCube.all.GetConsumption();
+	unsigned long long cubemapGPUCompressed = consumptionTextureCube.allCompressed.GetConsumption();
+	unsigned long long cubemapGPUUncompressed = consumptionTextureCube.allUncompressed.GetConsumption();
+	unsigned long long cubemapColorGPU = consumptionTextureCube.color.GetConsumption();
+	unsigned long long cubemapColorGPUCompressed = consumptionTextureCube.colorCompressed.GetConsumption();
+	unsigned long long cubemapColorGPUUncompressed = consumptionTextureCube.colorUncompressed.GetConsumption();
+	unsigned long long cubemapDepthGPU = consumptionTextureCube.depth.GetConsumption();
+	//unsigned long long cubemapDepthGPUCompressed = consumptionTextureCube.depthCompressed.GetConsumption();
+	//unsigned long long cubemapDepthGPUUncompressed = consumptionTextureCube.depthUncompressed.GetConsumption();
 	double cubemapRatioCompressed = 0.0f;
 	double cubemapColorRatioCompressed = 0.0f;
 	//double cubemapDepthRatioCompressed = 0.0f;
@@ -1419,15 +1420,15 @@ void deoglRenderDevMode::RenderMemoryInfo( deoglRenderPlan &plan, const decPoint
 	//	cubemapDepthRatioCompressed = 100.0 * ( ( double )cubemapDepthGPUCompressed / ( double )cubemapDepthGPU );
 	//}
 	
-	cubemapGPU /= 1000000;
-	cubemapGPUCompressed /= 1000000;
-	cubemapGPUUncompressed /= 1000000;
-	cubemapColorGPU /= 1000000;
-	cubemapColorGPUCompressed /= 1000000;
-	cubemapColorGPUUncompressed /= 1000000;
-	cubemapDepthGPU /= 1000000;
-	//cubemapDepthGPUCompressed /= 1000000;
-	//cubemapDepthGPUUncompressed /= 1000000;
+	cubemapGPU /= 1000000ull;
+	cubemapGPUCompressed /= 1000000ull;
+	cubemapGPUUncompressed /= 1000000ull;
+	cubemapColorGPU /= 1000000ull;
+	cubemapColorGPUCompressed /= 1000000ull;
+	cubemapColorGPUUncompressed /= 1000000ull;
+	cubemapDepthGPU /= 1000000ull;
+	//cubemapDepthGPUCompressed /= 1000000ull;
+	//cubemapDepthGPUUncompressed /= 1000000ull;
 	
 	text.Format( fmtCube, cubemapCount, cubemapGPU, cubemapGPUCompressed, ( int )cubemapRatioCompressed, cubemapGPUUncompressed,
 		cubemapColorCount, cubemapColorGPU, cubemapColorGPUCompressed, ( int )cubemapColorRatioCompressed, cubemapColorGPUUncompressed,
@@ -1437,17 +1438,17 @@ void deoglRenderDevMode::RenderMemoryInfo( deoglRenderPlan &plan, const decPoint
 	y += fontHeight;
 	
 	// renderbuffer
-	const deoglMemoryConsumptionTexture &consumptionRenderbuffer = renderThread.GetMemoryManager().GetConsumption().GetRenderbuffer();
-	const int renderbufferCount = consumptionRenderbuffer.GetCount();
-	const int renderbufferColorCount = consumptionRenderbuffer.GetColorCount();
-	const int renderbufferDepthCount = consumptionRenderbuffer.GetDepthCount();
-	unsigned int renderbufferGPU = consumptionRenderbuffer.GetGPU();
-	unsigned int renderbufferColorGPU = consumptionRenderbuffer.GetColorGPU();
-	unsigned int renderbufferDepthGPU = consumptionRenderbuffer.GetDepthGPU();
+	const deoglMemoryConsumptionRenderBuffer &consumptionRenderbuffer = consumption.renderbuffer;
+	const int renderbufferCount = consumptionRenderbuffer.all.GetCount();
+	const int renderbufferColorCount = consumptionRenderbuffer.color.GetCount();
+	const int renderbufferDepthCount = consumptionRenderbuffer.depth.GetCount();
+	unsigned long long renderbufferGPU = consumptionRenderbuffer.all.GetConsumption();
+	unsigned long long renderbufferColorGPU = consumptionRenderbuffer.color.GetConsumption();
+	unsigned long long renderbufferDepthGPU = consumptionRenderbuffer.depth.GetConsumption();
 	
-	renderbufferGPU /= 1000000;
-	renderbufferColorGPU /= 1000000;
-	renderbufferDepthGPU /= 1000000;
+	renderbufferGPU /= 1000000ull;
+	renderbufferColorGPU /= 1000000ull;
+	renderbufferDepthGPU /= 1000000ull;
 	
 	text.Format( fmtRenBuf, renderbufferCount, renderbufferGPU, renderbufferColorCount, renderbufferColorGPU,
 		renderbufferDepthCount, renderbufferDepthGPU );
@@ -1456,12 +1457,12 @@ void deoglRenderDevMode::RenderMemoryInfo( deoglRenderPlan &plan, const decPoint
 	y += fontHeight;
 	
 	// skin memory consumption
-	const deoglMemoryConsumptionTexture &consumptionSkin = renderThread.GetMemoryManager().GetConsumption().GetSkin();
-	const int skinCount = consumptionSkin.GetCount();
-	unsigned int skinGPU = consumptionSkin.GetGPU();
-	unsigned int skinGPUCompressed = consumptionSkin.GetGPUCompressed();
-	unsigned int skinGPUUncompressed = consumptionSkin.GetGPUUncompressed();
-	double percentageCompressed = 0.0f;
+	const deoglMemoryConsumptionSkin &consumptionSkin = consumption.skin;
+	const int skinCount = consumptionSkin.all.GetCount();
+	unsigned long long skinGPU = consumptionSkin.all.GetConsumption();
+	unsigned long long skinGPUCompressed = consumptionSkin.allCompressed.GetConsumption();
+	unsigned long long skinGPUUncompressed = consumptionSkin.allUncompressed.GetConsumption();
+	double percentageCompressed = 0.0;
 	
 	if( skinGPU > 0 ){
 		percentageCompressed = 100.0 * ( ( double )skinGPUCompressed / ( double )skinGPU );
@@ -1470,9 +1471,9 @@ void deoglRenderDevMode::RenderMemoryInfo( deoglRenderPlan &plan, const decPoint
 		}
 	}
 	
-	skinGPU /= 1000000;
-	skinGPUCompressed /= 1000000;
-	skinGPUUncompressed /= 1000000;
+	skinGPU /= 1000000ull;
+	skinGPUCompressed /= 1000000ull;
+	skinGPUUncompressed /= 1000000ull;
 	
 	text.Format( fmtSkin, skinCount, skinGPU, skinGPUCompressed, ( int )percentageCompressed, skinGPUUncompressed );
 	renderDebug.AddRenderText( plan, text.GetString(), position.x, y, color1 );
@@ -1484,15 +1485,15 @@ void deoglRenderDevMode::RenderMemoryInfo( deoglRenderPlan &plan, const decPoint
 	const int renderable2DDepthCount = renderThread.GetTexture().GetRenderableDepthTexture().GetTextureCount();
 	const int renderableArrayColorCount = renderThread.GetTexture().GetRenderableColorArrayTexture().GetCount();
 	const int renderableArrayDepthCount = renderThread.GetTexture().GetRenderableDepthArrayTexture().GetCount();
-	unsigned int renderable2DColorGPU = 0; //memmgr.GetRenderable2DColorGPU();
-	unsigned int renderable2DDepthGPU = 0; //memmgr.GetRenderable2DDepthGPU();
-	unsigned int renderableArrayColorGPU = 0; //memmgr.GetRenderableArrayGPU();
-	unsigned int renderableArrayDepthGPU = 0; //memmgr.GetRenderableArrayGPU();
+	unsigned long long renderable2DColorGPU = 0; //memmgr.GetRenderable2DColorGPU();
+	unsigned long long renderable2DDepthGPU = 0; //memmgr.GetRenderable2DDepthGPU();
+	unsigned long long renderableArrayColorGPU = 0; //memmgr.GetRenderableArrayGPU();
+	unsigned long long renderableArrayDepthGPU = 0; //memmgr.GetRenderableArrayGPU();
 	
-	renderable2DColorGPU /= 1000000;
-	renderable2DDepthGPU /= 1000000;
-	renderableArrayColorGPU /= 1000000;
-	renderableArrayDepthGPU /= 1000000;
+	renderable2DColorGPU /= 1000000ull;
+	renderable2DDepthGPU /= 1000000ull;
+	renderableArrayColorGPU /= 1000000ull;
+	renderableArrayDepthGPU /= 1000000ull;
 	
 	text.Format( fmtRender, renderable2DColorCount, renderable2DColorGPU, renderable2DDepthCount,
 		renderable2DDepthGPU, renderableArrayColorCount, renderableArrayColorGPU,
@@ -1502,26 +1503,29 @@ void deoglRenderDevMode::RenderMemoryInfo( deoglRenderPlan &plan, const decPoint
 	y += fontHeight;
 	
 	// vbo
-	const deoglMemoryConsumptionVBO &consumptionVBO = renderThread.GetMemoryManager().GetConsumption().GetVBO();
-	const int vboCount = consumptionVBO.GetCount();
-	const int vboSharedCount = consumptionVBO.GetSharedCount();
-	const int vboIBOCount = consumptionVBO.GetIBOCount();
-	const int vboTBOCount = consumptionVBO.GetTBOCount();
-	unsigned int vboGPU = consumptionVBO.GetGPU() / 1000000;
-	unsigned int vboSharedGPU = consumptionVBO.GetSharedGPU() / 1000000;
-	unsigned int vboIBOGPU = consumptionVBO.GetIBOGPU() / 1000000;
-	unsigned int vboTBOGPU = consumptionVBO.GetTBOGPU() / 1000000;
+	const deoglMemoryConsumptionBufferObject &consumptionBO = consumption.bufferObject;
+	const int vboCount = consumptionBO.vbo.GetCount();
+	const int vboSharedCount = consumptionBO.vboShared.GetCount();
+	const int iboCount = consumptionBO.ibo.GetCount();
+	const int iboSharedCount = consumptionBO.iboShared.GetCount();
+	const int tboCount = consumptionBO.tbo.GetCount();
+	unsigned int vboGPU = consumptionBO.vbo.GetConsumptionMB();
+	unsigned int vboSharedGPU = consumptionBO.vboShared.GetConsumptionMB();
+	unsigned int iboGPU = consumptionBO.ibo.GetConsumptionMB();
+	unsigned int iboSharedGPU = consumptionBO.iboShared.GetConsumptionMB();
+	unsigned int tboGPU = consumptionBO.tbo.GetConsumptionMB();
 	
-	text.Format( fmtVBO, vboCount, vboGPU, vboSharedCount, vboSharedGPU, vboIBOCount, vboIBOGPU, vboTBOCount, vboTBOGPU );
+	text.Format( fmtVBO, vboCount, vboGPU, vboSharedCount, vboSharedGPU, iboCount,
+		iboGPU, iboSharedCount, iboSharedGPU, tboCount, tboGPU );
 	renderDebug.AddRenderText( plan, text.GetString(), position.x, y, color1 );
 	size.y += fontHeight;
 	y += fontHeight;
 	
 	// deferred rendering system
-	const deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
-	int defrenGPU = defren.GetMemoryUsageGPU() / 1000000;
-	int defrenGPUTexture = defren.GetMemoryUsageGPUTexture() / 1000000;
-	int defrenGPURenBuf = defren.GetMemoryUsageGPURenderbuffer() / 1000000;
+	const deoglMemoryConsumptionDeferredRendering &consumptionDefren = consumption.deferredRendering;
+	unsigned int defrenGPU = consumptionDefren.target.GetConsumptionMB();
+	unsigned int defrenGPUTexture = consumptionDefren.texture.GetConsumptionMB();
+	unsigned int defrenGPURenBuf = consumptionDefren.renderBuffer.GetConsumptionMB();
 	
 	text.Format( fmtDefRen, defrenGPU, defrenGPUTexture, defrenGPURenBuf );
 	renderDebug.AddRenderText( plan, text.GetString(), position.x, y, color1 );
@@ -1529,16 +1533,19 @@ void deoglRenderDevMode::RenderMemoryInfo( deoglRenderPlan &plan, const decPoint
 	y += fontHeight;
 	
 	// grand total of all above
-	int totalGPU;
+	unsigned long long totalGPU;
 	
-	totalGPU = consumptionTexture2D.GetGPU();
-	totalGPU += consumptionTextureArray.GetGPU();
-	totalGPU += consumptionTextureCube.GetGPU();
-	totalGPU += consumptionRenderbuffer.GetGPU();
-	totalGPU += consumptionVBO.GetGPU();
-	totalGPU /= 1000000;
+	totalGPU = consumptionTexture2D.all.GetConsumption();
+	totalGPU += consumptionTextureArray.all.GetConsumption();
+	totalGPU += consumptionTextureCube.all.GetConsumption();
+	totalGPU += consumptionRenderbuffer.all.GetConsumption();
+	totalGPU += consumptionBO.vbo.GetConsumption();
+	totalGPU += consumptionBO.ibo.GetConsumption();
+	totalGPU += consumptionBO.ubo.GetConsumption();
+	totalGPU += consumptionBO.ssbo.GetConsumption();
+	totalGPU /= 1000000ull;
 	
-	text.Format( "Total %4dM", totalGPU );
+	text.Format( "Total %4lluM", totalGPU );
 	renderDebug.AddRenderText( plan, text.GetString(), position.x, y, color1 );
 	size.y += fontHeight;
 	y += fontHeight;

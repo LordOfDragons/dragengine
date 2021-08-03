@@ -65,7 +65,14 @@ pDynamicArrayMap( NULL ),
 
 pPlanStaticSize( 16 ),
 pPlanDynamicSize( 16 ),
-pPlanTransparentSize( 16 ){
+pPlanTransparentSize( 16 ),
+
+pMemUseStaMap( renderThread.GetMemoryManager().GetConsumption().shadow.solidStaticMap ),
+pMemUseStaCube( renderThread.GetMemoryManager().GetConsumption().shadow.solidStaticCube ),
+pMemUseStaArray( renderThread.GetMemoryManager().GetConsumption().shadow.solidStaticArray ),
+pMemUseDynMap( renderThread.GetMemoryManager().GetConsumption().shadow.solidDynamicMap ),
+pMemUseDynCube( renderThread.GetMemoryManager().GetConsumption().shadow.solidDynamicCube ),
+pMemUseDynArray( renderThread.GetMemoryManager().GetConsumption().shadow.solidDynamicArray ){
 }
 
 deoglSCSolid::~deoglSCSolid(){
@@ -99,6 +106,7 @@ deoglTexture *deoglSCSolid::ObtainStaticMapWithSize( int size, bool withStencil,
 	pStaticMap->SetDepthFormat( withStencil, useFloat );
 	pStaticMap->SetSize( size, size );
 	pStaticMap->CreateTexture();
+	pMemUseStaMap = pStaticMap->GetMemoryConsumption().Total();
 	pHasStatic = true;
 	pLastUseStatic = 0;
 	
@@ -135,6 +143,7 @@ deoglCubeMap *deoglSCSolid::ObtainStaticCubeMapWithSize( int size ){
 	}
 	
 	pStaticCubeMap->CreateCubeMap();
+	pMemUseStaCube = pStaticCubeMap->GetMemoryConsumption().Total();
 	pHasStatic = true;
 	pLastUseStatic = 0;
 	
@@ -162,6 +171,7 @@ deoglArrayTexture *deoglSCSolid::ObtainStaticArrayMapWithSize( int size, int lay
 	pStaticArrayMap->SetDepthFormat( false, useFloat );
 	pStaticArrayMap->SetSize( size, size, layers );
 	pStaticArrayMap->CreateTexture();
+	pMemUseStaArray = pStaticArrayMap->GetMemoryConsumption().Total();
 	pHasStatic = true;
 	pLastUseStatic = 0;
 	
@@ -169,6 +179,10 @@ deoglArrayTexture *deoglSCSolid::ObtainStaticArrayMapWithSize( int size, int lay
 }
 
 void deoglSCSolid::DropStatic(){
+	pMemUseStaMap = 0;
+	pMemUseStaCube = 0;
+	pMemUseStaArray = 0;
+	
 	if( pStaticMap ){
 		delete pStaticMap;
 		pStaticMap = NULL;
@@ -211,6 +225,7 @@ deoglRenderableDepthTexture *deoglSCSolid::ObtainDynamicMapWithSize( int size, b
 	
 	pDynamicMap = pRenderThread.GetTexture().GetRenderableDepthTexture()
 		.GetTextureWith( size, size, withStencil, useFloat );
+	pMemUseDynMap = pDynamicMap->GetTexture()->GetMemoryConsumption().Total();
 	
 	return pDynamicMap;
 }
@@ -232,6 +247,7 @@ deoglRenderableDepthCubeMap *deoglSCSolid::ObtainDynamicCubeMapWithSize( int siz
 	}
 	
 	pDynamicCubeMap = pRenderThread.GetTexture().GetRenderableDepthCubeMap().GetCubeMapWith( size );
+	pMemUseDynCube = pDynamicCubeMap->GetCubeMap()->GetMemoryConsumption().Total();
 	
 	return pDynamicCubeMap;
 }
@@ -252,11 +268,16 @@ int size, int layers, bool useFloat ){
 	
 	pDynamicArrayMap = pRenderThread.GetTexture().GetRenderableDepthArrayTexture()
 		.GetWith( size, size, layers, false, useFloat );
+	pMemUseDynArray = pDynamicArrayMap->GetArrayTexture()->GetMemoryConsumption().Total();
 	
 	return pDynamicArrayMap;
 }
 
 void deoglSCSolid::DropDynamic(){
+	pMemUseDynMap = 0;
+	pMemUseDynCube = 0;
+	pMemUseDynArray = 0;
+	
 	if( pDynamicMap ){
 		pDynamicMap->SetInUse( false );
 		pDynamicMap = NULL;

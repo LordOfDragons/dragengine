@@ -117,16 +117,12 @@ void deoglRenderableTexture1D::SetInUse( bool inUse ){
 }
 
 void deoglRenderableTexture1D::UpdateMemoryUsage(){
-	//const int oldMemoryGPU = pMemoryUsageGPU;
-	
 	if( pTexture ){
-		pMemoryUsageGPU = pTexture->GetMemoryUsageGPU();
+		pMemoryUsageGPU = pTexture->GetMemoryConsumption().Total();
 		
 	}else{
 		pMemoryUsageGPU = 0;
 	}
-	
-	//pRenderThread.GetMemoryManager().IncRenderableArrayGPUTotal( pMemoryUsageGPU - oldMemoryGPU );
 }
 
 

@@ -723,8 +723,6 @@ void deoglDelayedOperations::pProcessSkin( deoglRSkin &skin ){
 		}
 	}
 	
-	skin.UpdateMemoryUsage();
-	
 	for( t=0; t<textureCount; t++ ){
 		deoglSkinTexture &skinTexture = skin.GetTextureAt( t );
 		skinTexture.PrepareParamBlock();

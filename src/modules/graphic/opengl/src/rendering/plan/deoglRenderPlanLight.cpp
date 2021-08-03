@@ -84,10 +84,10 @@ void deoglRenderPlanLight::PlanShadowCasting(){
 	// if memory becomes low static shadow maps can be removed from memory and reduced in size.
 	// if reduced in size the shadow maps have to be dropped to force rebuilding them.
 	// 
-	// the dynamic shadow maps are used only during solid geometry rendering and forgotten
-	// right afterwards. for this the shadow mapper is used using a temporary texture reused
-	// for each light. these shadow maps can be of lower resolution since they exist only for
-	// one render pass
+	// the dynamic shadow maps are used only during solid geometry rendering and global
+	// illumination. although they can be forgotten later especially due to global illumination
+	// the shadow mapper can not be used. instead they are stored like static shadow maps
+	// but removed from memory if not used for a couple of frames.
 	// 
 	// transparent shadow maps are used for transparent render passes only. these shadow maps
 	// work similar to static ones in that they are keep over multiple render passes (all
@@ -119,7 +119,10 @@ void deoglRenderPlanLight::PlanShadowCasting(){
 		pSolidShadowSizeStatic = decMath::max( pSolidShadowSizeStatic >> pReductionFactor, minSize );
 	}
 	
-	// reduce size for dynamic shadow maps
+	// reduce size for dynamic shadow maps. for dynamic shadow maps affecting only global
+	// illumination reduce the size to 64. this reduces memory consumption while not
+	// degrading quality too much. do this only for lights further away to avoid flickering
+	// of light intensity if the camera turns in place
 	pSolidShadowSizeDynamic = decMath::max( pSolidShadowSizeStatic >> 1, minSize );
 	
 	// reduce size for transparent shadow maps

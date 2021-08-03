@@ -22,6 +22,8 @@
 #ifndef _DEOGLSCSOLID_H_
 #define _DEOGLSCSOLID_H_
 
+#include "../memory/consumption/deoglMemoryConsumptionGPUUse.h"
+
 class deoglRenderThread;
 class deoglArrayTexture;
 class deoglTexture;
@@ -53,6 +55,12 @@ private:
 	int pPlanDynamicSize;
 	int pPlanTransparentSize;
 	
+	deoglMemoryConsumptionGPUUse pMemUseStaMap;
+	deoglMemoryConsumptionGPUUse pMemUseStaCube;
+	deoglMemoryConsumptionGPUUse pMemUseStaArray;
+	deoglMemoryConsumptionGPUUse pMemUseDynMap;
+	deoglMemoryConsumptionGPUUse pMemUseDynCube;
+	deoglMemoryConsumptionGPUUse pMemUseDynArray;
 	
 	
 public:

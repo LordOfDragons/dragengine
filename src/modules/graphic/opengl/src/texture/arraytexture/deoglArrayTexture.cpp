@@ -52,7 +52,8 @@
 
 deoglArrayTexture::deoglArrayTexture( deoglRenderThread &renderThread ) :
 pRenderThread( renderThread ),
-pSize( 1, 1, 1 )
+pSize( 1, 1, 1 ),
+pMemUse( pRenderThread.GetMemoryManager().GetConsumption().textureArray )
 {
 	pTexture = 0;
 	pFormat = renderThread.GetCapabilities().GetFormats().GetUseArrayTexFormatFor( deoglCapsFmtSupport::eutfRGB8 );
@@ -60,10 +61,6 @@ pSize( 1, 1, 1 )
 	pMipMapLevelCount = 0;
 	pRealMipMapLevelCount = 0;
 	pMipMapped = false;
-	
-	pMemoryUsageGPU = 0;
-	pMemoryUsageCompressed = false;
-	pMemoryUsageColor = true;
 }
 
 deoglArrayTexture::~deoglArrayTexture(){
@@ -660,119 +657,45 @@ int width, int height, int srcX, int srcY, int destX, int destY ){
 
 
 void deoglArrayTexture::UpdateMemoryUsage(){
-	deoglMemoryConsumptionTexture &consumption = pRenderThread.GetMemoryManager().GetConsumption().GetTextureArray();
+	pMemUse.Clear();
 	
-	if( pMemoryUsageGPU > 0 ){
-		consumption.DecrementCount();
-		consumption.DecrementGPU( pMemoryUsageGPU );
-		
-		if( pMemoryUsageColor ){
-			consumption.DecrementColorCount();
-			consumption.DecrementColorGPU( pMemoryUsageGPU );
-			
-			if( pMemoryUsageCompressed ){
-				consumption.DecrementGPUCompressed( pMemoryUsageGPU );
-				consumption.DecrementColorGPUCompressed( pMemoryUsageGPU );
-				
-			}else{
-				consumption.DecrementGPUUncompressed( pMemoryUsageGPU );
-				consumption.DecrementColorGPUUncompressed( pMemoryUsageGPU );
-			}
-			
-		}else{
-			consumption.DecrementDepthCount();
-			consumption.DecrementDepthGPU( pMemoryUsageGPU );
-			
-			if( pMemoryUsageCompressed ){
-				consumption.DecrementGPUCompressed( pMemoryUsageGPU );
-				consumption.DecrementDepthGPUCompressed( pMemoryUsageGPU );
-				
-			}else{
-				consumption.DecrementGPUUncompressed( pMemoryUsageGPU );
-				consumption.DecrementDepthGPUUncompressed( pMemoryUsageGPU );
-			}
-		}
-		
-		pMemoryUsageGPU = 0;
-		pMemoryUsageCompressed = false;
-		pMemoryUsageColor = true;
+	if( ! pTexture || ! pFormat ){
+		return;
 	}
 	
-	if( pTexture ){
-		const int bitsPerPixel = pFormat->GetBitsPerPixel();
-		int baseSize;
-		
-		baseSize = pSize.x * pSize.y * pSize.z;
-		
-		baseSize *= bitsPerPixel >> 3;
-		if( ( bitsPerPixel & 0x7 ) > 0 ){
-			baseSize >>= 1;
-		}
-		
-		pMemoryUsageColor = ! pFormat->GetIsDepth();
-		
-		#ifdef ANDROID
-		pMemoryUsageGPU = baseSize;
-		
-		#else
-		if( pFormat->GetIsCompressed() ){
-			deoglTextureStageManager &tsmgr = pRenderThread.GetTexture().GetStages();
-			GLint compressedSize, isCompressed;
-			
-			tsmgr.EnableBareArrayTexture( 0, *this );
-			
-			isCompressed = 0;
-			OGL_CHECK( pRenderThread, glGetTexLevelParameteriv( GL_TEXTURE_2D_ARRAY, 0, GL_TEXTURE_COMPRESSED, &isCompressed ) );
-			
-			if( isCompressed ){
-				compressedSize = 0;
-				OGL_CHECK( pRenderThread, glGetTexLevelParameteriv( GL_TEXTURE_2D_ARRAY, 0, GL_TEXTURE_COMPRESSED_IMAGE_SIZE, &compressedSize ) );
-				pMemoryUsageGPU = compressedSize;
-				pMemoryUsageCompressed = true;
-				
-			}else{
-				pMemoryUsageGPU = baseSize;
-			}
-			
-			tsmgr.DisableStage( 0 );
-			
-		}else{
-			pMemoryUsageGPU = baseSize;
-		}
-		#endif
-	}
+	#ifdef ANDROID
+	pMemUse.SetUncompressed( *pFormat, pSize.x, pSize.y, pSize.z, pRealMipMapLevelCount );
 	
-	if( pMemoryUsageGPU > 0 ){
-		consumption.IncrementCount();
-		consumption.IncrementGPU( pMemoryUsageGPU );
+	#else
+	if( pFormat->GetIsCompressed() ){
+		deoglTextureStageManager &tsmgr = pRenderThread.GetTexture().GetStages();
+		tsmgr.EnableBareArrayTexture( 0, *this );
 		
-		if( pMemoryUsageColor ){
-			consumption.IncrementColorCount();
-			consumption.IncrementColorGPU( pMemoryUsageGPU );
-			
-			if( pMemoryUsageCompressed ){
-				consumption.IncrementGPUCompressed( pMemoryUsageGPU );
-				consumption.IncrementColorGPUCompressed( pMemoryUsageGPU );
-				
-			}else{
-				consumption.IncrementGPUUncompressed( pMemoryUsageGPU );
-				consumption.IncrementColorGPUUncompressed( pMemoryUsageGPU );
+		GLint isCompressed = 0;
+		OGL_CHECK( pRenderThread, glGetTexLevelParameteriv( GL_TEXTURE_2D_ARRAY,
+			0, GL_TEXTURE_COMPRESSED, &isCompressed ) );
+		
+		if( isCompressed ){
+			unsigned long consumption = 0ull;
+			GLint compressedSize, l;
+			for( l=0; l<pRealMipMapLevelCount; l++ ){
+				OGL_CHECK( pRenderThread, glGetTexLevelParameteriv( GL_TEXTURE_2D_ARRAY, l,
+					GL_TEXTURE_COMPRESSED_IMAGE_SIZE, &compressedSize ) );
+				consumption += ( unsigned long long )compressedSize;
 			}
+			
+			pMemUse.SetCompressed( consumption, *pFormat );
 			
 		}else{
-			consumption.IncrementDepthCount();
-			consumption.IncrementDepthGPU( pMemoryUsageGPU );
-			
-			if( pMemoryUsageCompressed ){
-				consumption.IncrementGPUCompressed( pMemoryUsageGPU );
-				consumption.IncrementDepthGPUCompressed( pMemoryUsageGPU );
-				
-			}else{
-				consumption.IncrementGPUUncompressed( pMemoryUsageGPU );
-				consumption.IncrementDepthGPUUncompressed( pMemoryUsageGPU );
-			}
+			pMemUse.SetUncompressed( *pFormat, pSize.x, pSize.y, pSize.z, pRealMipMapLevelCount );
 		}
+		
+		tsmgr.DisableStage( 0 );
+		
+	}else{
+		pMemUse.SetUncompressed( *pFormat, pSize.x, pSize.y, pSize.z, pRealMipMapLevelCount );
 	}
+	#endif
 }
 
 

@@ -314,7 +314,8 @@ enum eFBOMappingsDepth{
 
 deoglDeferredRendering::deoglDeferredRendering( deoglRenderThread &renderThread ) :
 pRenderThread( renderThread ),
-pTextureLuminance( NULL )
+pTextureLuminance( NULL ),
+pMemUse( renderThread.GetMemoryManager().GetConsumption().deferredRendering )
 // pTextureLuminanceNormal( NULL ),
 // pTextureLuminanceDepth( NULL ),
 // pFBOLuminance( NULL ),
@@ -407,10 +408,6 @@ pTextureLuminance( NULL )
 	pModePostProcess = true;
 	
 	pDepthMinMax = NULL;
-	
-	pMemoryUsageGPU = 0;
-	pMemoryUsageGPUTexture = 0;
-	pMemoryUsageGPURenBuf = 0;
 	
 	pVBOFullScreenQuad = 0;
 	pVBOBillboard = 0;
@@ -1562,47 +1559,44 @@ void deoglDeferredRendering::pCreateTextures(){
 }
 
 void deoglDeferredRendering::pUpdateMemoryUsage(){
-	pMemoryUsageGPURenBuf = 0;
-	pMemoryUsageGPUTexture = 0;
+	pMemUse.Clear();
 	
-	pMemoryUsageGPURenBuf += pRenderbuffer->GetMemoryUsageGPU();
+	pMemUse.renderBuffer += pRenderbuffer->GetMemoryConsumption().Total();
 	
-	pMemoryUsageGPUTexture += pTextureDepth1->GetMemoryUsageGPU();
-	pMemoryUsageGPUTexture += pTextureDepth2->GetMemoryUsageGPU();
-	pMemoryUsageGPUTexture += pTextureDepth3->GetMemoryUsageGPU();
-	pMemoryUsageGPUTexture += pTextureDiffuse->GetMemoryUsageGPU();
-	pMemoryUsageGPUTexture += pTextureNormal->GetMemoryUsageGPU();
-	pMemoryUsageGPUTexture += pTextureReflectivity->GetMemoryUsageGPU();
-	pMemoryUsageGPUTexture += pTextureRoughness->GetMemoryUsageGPU();
-	pMemoryUsageGPUTexture += pTextureAOSolidity->GetMemoryUsageGPU();
-	pMemoryUsageGPUTexture += pTextureSubSurface->GetMemoryUsageGPU();
-	pMemoryUsageGPUTexture += pTextureColor->GetMemoryUsageGPU();
-	pMemoryUsageGPUTexture += pTextureLuminance->GetMemoryUsageGPU();
-	pMemoryUsageGPUTexture += pTextureTemporary1->GetMemoryUsageGPU();
-	pMemoryUsageGPUTexture += pTextureTemporary2->GetMemoryUsageGPU();
-	pMemoryUsageGPUTexture += pTextureTemporary3->GetMemoryUsageGPU();
+	pMemUse.texture += pTextureDepth1->GetMemoryConsumption().Total();
+	pMemUse.texture += pTextureDepth2->GetMemoryConsumption().Total();
+	pMemUse.texture += pTextureDepth3->GetMemoryConsumption().Total();
+	pMemUse.texture += pTextureDiffuse->GetMemoryConsumption().Total();
+	pMemUse.texture += pTextureNormal->GetMemoryConsumption().Total();
+	pMemUse.texture += pTextureReflectivity->GetMemoryConsumption().Total();
+	pMemUse.texture += pTextureRoughness->GetMemoryConsumption().Total();
+	pMemUse.texture += pTextureAOSolidity->GetMemoryConsumption().Total();
+	pMemUse.texture += pTextureSubSurface->GetMemoryConsumption().Total();
+	pMemUse.texture += pTextureColor->GetMemoryConsumption().Total();
+	pMemUse.texture += pTextureLuminance->GetMemoryConsumption().Total();
+	pMemUse.texture += pTextureTemporary1->GetMemoryConsumption().Total();
+	pMemUse.texture += pTextureTemporary2->GetMemoryConsumption().Total();
+	pMemUse.texture += pTextureTemporary3->GetMemoryConsumption().Total();
 	
 	if( deoglDRDepthMinMax::USAGE_VERSION == 0 ){
-		pMemoryUsageGPUTexture += pDepthMinMax->GetTexture()->GetMemoryUsageGPU();
+		pMemUse.texture += pDepthMinMax->GetTexture()->GetMemoryConsumption().Total();
 		
 	}else if( deoglDRDepthMinMax::USAGE_VERSION == 1 ){
-		pMemoryUsageGPUTexture += pDepthMinMax->GetTextureMin()->GetMemoryUsageGPU();
-		pMemoryUsageGPUTexture += pDepthMinMax->GetTextureMax()->GetMemoryUsageGPU();
+		pMemUse.texture += pDepthMinMax->GetTextureMin()->GetMemoryConsumption().Total();
+		pMemUse.texture += pDepthMinMax->GetTextureMax()->GetMemoryConsumption().Total();
 		
 	}else if( deoglDRDepthMinMax::USAGE_VERSION == 2 ){
-		pMemoryUsageGPUTexture += pDepthMinMax->GetTexture()->GetMemoryUsageGPU();
+		pMemUse.texture += pDepthMinMax->GetTexture()->GetMemoryConsumption().Total();
 	}
 	
-// 	pMemoryUsageGPUTexture += pTextureLuminance->GetMemoryUsageGPU();
-// 	pMemoryUsageGPUTexture += pTextureLuminanceNormal->GetMemoryUsageGPU();
-// 	pMemoryUsageGPUTexture += pTextureLuminanceDepth->GetMemoryUsageGPU();
-	
-	pMemoryUsageGPU = pMemoryUsageGPUTexture + pMemoryUsageGPURenBuf;
+// 	pMemUse.texture += pTextureLuminance->GetMemoryConsumption().Total();
+// 	pMemUse.texture += pTextureLuminanceNormal->GetMemoryConsumption().Total();
+// 	pMemUse.texture += pTextureLuminanceDepth->GetMemoryConsumption().Total();
 	
 	pRenderThread.GetLogger().LogInfoFormat( "DefRen: Memory Consumption (%d x %d)", pRealWidth, pRealHeight );
-	pRenderThread.GetLogger().LogInfoFormat( "- Render Buffer: %d", pMemoryUsageGPURenBuf );
-	pRenderThread.GetLogger().LogInfoFormat( "- Texture: %d", pMemoryUsageGPUTexture );
-	pRenderThread.GetLogger().LogInfoFormat( "- Total: %d", pMemoryUsageGPU );
+	pRenderThread.GetLogger().LogInfoFormat( "- Render Buffer: %uMB", pMemUse.renderBuffer.GetConsumptionMB() );
+	pRenderThread.GetLogger().LogInfoFormat( "- Texture: %uMB", pMemUse.texture.GetConsumptionMB() );
+	pRenderThread.GetLogger().LogInfoFormat( "- Total: %uMB", pMemUse.TotalMB() );
 }
 
 void deoglDeferredRendering::pCreateFBOs(){

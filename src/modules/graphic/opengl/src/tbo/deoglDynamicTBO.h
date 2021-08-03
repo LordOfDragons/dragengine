@@ -23,6 +23,7 @@
 #define _DEOGLDYNAMICTBO_H_
 
 #include "../deoglBasics.h"
+#include "../memory/consumption/deoglMemoryConsumptionGPUUse.h"
 
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/deObject.h>
@@ -48,7 +49,7 @@ protected:
 	int pDataSize;
 	int pDataCount;
 	
-	int pMemoryGPU;
+	deoglMemoryConsumptionGPUUse pMemUse;
 	
 	
 	
@@ -119,8 +120,8 @@ public:
 	/** Update sub range of TBO with data measured in pixels. */
 	void Update( int offset, int count );
 	
-	/** GPU memory consumption. */
-	inline int GetMemoryConsumptionGPU() const{ return pMemoryGPU; }
+	/** Memory consumption. */
+	inline const deoglMemoryConsumptionGPUUse &GetMemoryConsumption() const{ return pMemUse; }
 	
 	/** Debug print. */
 	virtual void DebugPrint() = 0;

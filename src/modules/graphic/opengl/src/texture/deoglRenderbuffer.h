@@ -23,6 +23,7 @@
 #define _DEOGLRENDERBUFFER_H_
 
 #include "../deoglBasics.h"
+#include "../memory/consumption/deoglMemoryConsumptionRenderBufferUse.h"
 
 class deoglRenderThread;
 class deoglCapsTextureFormat;
@@ -44,8 +45,8 @@ private:
 	int pBitsPerPixel;
 	bool pIsDepth;
 	
-	int pMemoryUsageGPU;
-	bool pMemoryUsageColor;
+	deoglMemoryConsumptionRenderBufferUse pMemUse;
+	
 	
 public:
 	/** @name Constructors and Destructors */
@@ -81,8 +82,9 @@ public:
 	/** Deactivates the current render buffer. */
 	void Deactivate();
 	
-	/** Retrieves the GPU memory usage. */
-	inline int GetMemoryUsageGPU() const{ return pMemoryUsageGPU; }
+	/** Memory consumption. */
+	inline const deoglMemoryConsumptionRenderBufferUse &GetMemoryConsumption() const{ return pMemUse; }
+	
 	/** Update memory usage. */
 	void UpdateMemoryUsage();
 	/*@}*/

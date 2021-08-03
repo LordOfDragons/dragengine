@@ -75,6 +75,7 @@ private:
 	
 	bool pDebugRenderPlan;
 	bool pShowMemoryInfo;
+	bool pLogMemoryConsumption;
 	
 	int pShowOccMapLevel;
 	
@@ -151,6 +152,9 @@ public:
 	inline bool GetDebugRenderPlan() const{ return pDebugRenderPlan; }
 	/** Determines if the memory information are displayed. */
 	inline bool GetShowMemoryInfo() const{ return pShowMemoryInfo; }
+	
+	/** Log memory consumption. */
+	inline bool GetLogMemoryConsumption() const{ return pLogMemoryConsumption; }
 	
 	/** Retrieves the occlusion map level to show or -1 to disable. */
 	inline int GetShowOccMapLevel() const{ return pShowOccMapLevel; }
@@ -243,6 +247,7 @@ private:
 	
 	void pCmdDebugRenderPlan( const decUnicodeArgumentList &command, decUnicodeString &answer );
 	void pCmdShowMemoryInfo( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	void pCmdLogMemoryConsumption( const decUnicodeArgumentList &command, decUnicodeString &answer );
 	
 	void pCmdShowOccMapLevel( const decUnicodeArgumentList &command, decUnicodeString &answer );
 	

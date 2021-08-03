@@ -23,6 +23,7 @@
 #define _DEOGLRCOMPONENTLOD_H_
 
 #include "../deoglBasics.h"
+#include "../memory/consumption/deoglMemoryConsumptionGPUUse.h"
 #include "../rendering/task/config/deoglRenderTaskConfig.h"
 #include "../skin/deoglSkinTexture.h"
 
@@ -81,7 +82,7 @@ public:
 	bool pDirtyVBO;
 	bool pDirtyVAO;
 	
-	int pMemoryConsumptionGPU;
+	deoglMemoryConsumptionGPUUse pMemUse;
 	
 	GLuint pVBOWeightMatrices;
 	GLuint pTBOWeightMatrices;

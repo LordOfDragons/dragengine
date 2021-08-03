@@ -22,11 +22,12 @@
 #ifndef _DEOGLSHAREDVBO_H_
 #define _DEOGLSHAREDVBO_H_
 
+#include "deoglVBOLayout.h"
+#include "../deoglBasics.h"
+#include "../memory/consumption/deoglMemoryConsumptionGPUUse.h"
+
 #include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/deObject.h>
-
-#include "../deoglBasics.h"
-#include "deoglVBOLayout.h"
 
 class deoglSharedVBOBlock;
 class deoglSharedVBOList;
@@ -53,8 +54,8 @@ public:
 	int pIndexUsedSize;
 	bool pDirty;
 	
-	int pMemoryGPUVBO;
-	int pMemoryGPUIBO;
+	deoglMemoryConsumptionGPUUse pMemUseVBO;
+	deoglMemoryConsumptionGPUUse pMemUseIBO;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -90,10 +91,9 @@ public:
 	/** Marks the VBO dirty. */
 	void MarkDirty();
 	
-	/** Retrieves the GPU memory consumption for the VBO. */
-	inline int GetMemoryConsumptionGPUVBO() const{ return pMemoryGPUVBO; }
-	/** Retrieves the GPU memory consumption for the IBO. */
-	inline int GetMemoryConsumptionGPUIBO() const{ return pMemoryGPUIBO; }
+	/** Memory consumption. */
+	inline const deoglMemoryConsumptionGPUUse &GetMemoryConsumptionVBO() const{ return pMemUseVBO; }
+	inline const deoglMemoryConsumptionGPUUse &GetMemoryConsumptionIBO() const{ return pMemUseIBO; }
 	/*@}*/
 	
 	/** \name Data Management */

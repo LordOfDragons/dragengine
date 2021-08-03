@@ -80,12 +80,8 @@ pCastTranspShadow( false ),
 
 pVideoPlayerCount( 0 ),
 
-pMemoryUsageGPU( 0 ),
-pMemoryUsageGPUCompressed( 0 ),
-pMemoryUsageGPUUncompressed( 0 ),
-pMemoryUsageCount( 0 ),
-
-pVSRetainImageData( NULL )
+pVSRetainImageData( NULL ),
+pMemUse( renderThread.GetMemoryManager().GetConsumption().skin )
 {
 	// NOTE this is called during asynchronous resource loading. careful accessing other objects
 	
@@ -252,12 +248,6 @@ pVSRetainImageData( NULL )
 
 deoglRSkin::~deoglRSkin(){
 	LEAK_CHECK_FREE( pRenderThread, Skin );
-	deoglMemoryConsumptionTexture &consumption = pRenderThread.GetMemoryManager().GetConsumption().GetSkin();
-	consumption.DecrementGPU( pMemoryUsageGPU );
-	consumption.DecrementGPUCompressed( pMemoryUsageGPUCompressed );
-	consumption.DecrementGPUUncompressed( pMemoryUsageGPUUncompressed );
-	consumption.DecrementCountBy( pMemoryUsageCount );
-	
 	pCleanUp();
 }
 
@@ -296,77 +286,6 @@ deoglSkinTexture &deoglRSkin::GetTextureAt( int index ) const{
 	
 	return *pTextures[ index ];
 }
-
-void deoglRSkin::UpdateMemoryUsage(){
-	deoglMemoryConsumptionTexture &consumption = pRenderThread.GetMemoryManager().GetConsumption().GetSkin();
-	int t, c;
-	
-	consumption.DecrementGPU( pMemoryUsageGPU );
-	consumption.DecrementGPUCompressed( pMemoryUsageGPUCompressed );
-	consumption.DecrementGPUUncompressed( pMemoryUsageGPUUncompressed );
-	consumption.DecrementCountBy( pMemoryUsageCount );
-	
-	pMemoryUsageGPU = 0;
-	pMemoryUsageGPUCompressed = 0;
-	pMemoryUsageGPUUncompressed = 0;
-	pMemoryUsageCount = 0;
-	
-	for( t=0; t<pTextureCount; t++ ){
-		const deoglSkinTexture &skinTexture = *pTextures[ t ];
-		
-		for( c=0; c<deoglSkinChannel::CHANNEL_COUNT; c++ ){
-			deoglSkinChannel * const channel = skinTexture.GetChannelAt( ( deoglSkinChannel::eChannelTypes )c );
-			if( ! channel ){
-				continue;
-			}
-			
-			deoglTexture * const texture = channel->GetTexture();
-			if( texture ){
-				pMemoryUsageGPU += texture->GetMemoryUsageGPU();
-				pMemoryUsageCount++;
-				
-				if( texture->GetMemoryUsageCompressed() ){
-					pMemoryUsageGPUCompressed += texture->GetMemoryUsageGPU();
-					
-				}else{
-					pMemoryUsageGPUUncompressed += texture->GetMemoryUsageGPU();
-				}
-			}
-			
-			deoglCubeMap * const cubemap = channel->GetCubeMap();
-			if( cubemap ){
-				pMemoryUsageGPU += cubemap->GetMemoryUsageGPU();
-				pMemoryUsageCount++;
-				
-				if( cubemap->GetMemoryUsageCompressed() ){
-					pMemoryUsageGPUCompressed += cubemap->GetMemoryUsageGPU();
-					
-				}else{
-					pMemoryUsageGPUUncompressed += cubemap->GetMemoryUsageGPU();
-				}
-			}
-			
-			deoglArrayTexture * const arrayTexture = channel->GetArrayTexture();
-			if( arrayTexture ){
-				pMemoryUsageGPU += arrayTexture->GetMemoryUsageGPU();
-				pMemoryUsageCount++;
-				
-				if( arrayTexture->GetMemoryUsageCompressed() ){
-					pMemoryUsageGPUCompressed += arrayTexture->GetMemoryUsageGPU();
-					
-				}else{
-					pMemoryUsageGPUUncompressed += arrayTexture->GetMemoryUsageGPU();
-				}
-			}
-		}
-	}
-	
-	consumption.IncrementGPU( pMemoryUsageGPU );
-	consumption.IncrementGPUCompressed( pMemoryUsageGPUCompressed );
-	consumption.IncrementGPUUncompressed( pMemoryUsageGPUUncompressed );
-	consumption.IncrementCountBy( pMemoryUsageCount );
-}
-
 
 
 

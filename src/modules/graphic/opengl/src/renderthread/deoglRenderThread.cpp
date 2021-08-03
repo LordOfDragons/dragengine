@@ -1621,7 +1621,7 @@ void deoglRenderThread::DebugMemoryUsage( const char *prefix ){
 		renderableArrayCount, renderableArrayGPU );
 	
 	// vbo
-	const deoglMemoryConsumptionVBO &consumptionVBO = pMemoryManager.GetConsumption().GetVBO();
+	const deoglMemoryConsumptionBufferObject &consumptionVBO = pMemoryManager.GetConsumption().GetVBO();
 	const int vboCount = consumptionVBO.GetCount();
 	const int vboSharedCount = consumptionVBO.GetSharedCount();
 	const int vboIBOCount = consumptionVBO.GetIBOCount();
@@ -1954,6 +1954,11 @@ void deoglRenderThread::pCaptureCanvas(){
 }
 
 void deoglRenderThread::pEndFrame(){
+	if( pDebug->GetDeveloperMode().GetEnabled() ){
+		if( pDebug->GetDeveloperMode().GetLogMemoryConsumption() ){
+			pDebug->GetDebugMemoryConsumption().Update();
+		}
+	}
 }
 
 void deoglRenderThread::pLimitFrameRate( float elapsed ){

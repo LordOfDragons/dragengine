@@ -199,38 +199,15 @@ void deoglDeveloperModeStats::Skins( const decUnicodeArgumentList &command, decU
 						oglSkinChannel.GetSize().x, oglSkinChannel.GetSize().y, oglSkinChannel.GetSize().z,
 						oglSkinChannel.GetUniform() ? 1 : 0, oglSkinChannel.GetDynamic() ? 1 : 0 );
 					
-					deoglTexture *oglTexture = NULL;
-					deoglCubeMap *oglCubeMap = NULL;
-					deoglArrayTexture *oglArrayTexture = NULL;
-					
 					if( oglSkinChannel.GetImage() ){
 						text.Append( " image" );
-						oglTexture = oglSkinChannel.GetImage()->GetTexture();
 						
 					}else if( oglSkinChannel.GetCombinedTexture() ){
 						text.Append( " combined" );
-						oglTexture = oglSkinChannel.GetCombinedTexture()->GetTexture();
 						
 					}else{
 						text.Append( " unique" );
-						oglTexture = oglSkinChannel.GetTexture();
-						oglCubeMap = oglSkinChannel.GetCubeMap();
-						oglArrayTexture = oglSkinChannel.GetArrayTexture();
 					}
-					
-					int sizeGpu = 0;
-					
-					if( oglTexture ){
-						sizeGpu = oglTexture->GetMemoryUsageGPU();
-						
-					}else if( oglCubeMap ){
-						sizeGpu = oglCubeMap->GetMemoryUsageGPU();
-						
-					}else if( oglArrayTexture ){
-						sizeGpu = oglArrayTexture->GetMemoryUsageGPU();
-					}
-					
-					text.AppendFormat( " sizeGpu=%d", sizeGpu );
 					
 					text.Append( " )\n" );
 					answer.AppendFromUTF8( text.GetString() );

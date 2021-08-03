@@ -23,39 +23,20 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "deoglMemoryConsumptionVBO.h"
-
-#include <dragengine/common/exceptions.h>
+#include "deoglMemoryConsumptionDeferredRendering.h"
 
 
-
-// Class deoglMemoryConsumptionVBO
-////////////////////////////////////
+// Class deoglMemoryConsumptionDeferredRendering
+//////////////////////////////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
 
-deoglMemoryConsumptionVBO::deoglMemoryConsumptionVBO(){
-	pCount = 0;
-	pGPU = 0;
-	
-	pSharedCount = 0;
-	pSharedGPU = 0;
-	
-	pIBOCount = 0;
-	pIBOGPU = 0;
-	
-	pTBOCount = 0;
-	pTBOGPU = 0;
-	
-	pUBOCount = 0;
-	pUBOGPU = 0;
+deoglMemoryConsumptionDeferredRendering::deoglMemoryConsumptionDeferredRendering() :
+target( "Deferred Rendering Target" ),
+texture( "Deferred Rendering Texture", target ),
+renderBuffer( "Deferred Rendering RenderBuffer", target ){
 }
 
-deoglMemoryConsumptionVBO::~deoglMemoryConsumptionVBO(){
+deoglMemoryConsumptionDeferredRendering::~deoglMemoryConsumptionDeferredRendering(){
 }
-
-
-
-// Management
-///////////////

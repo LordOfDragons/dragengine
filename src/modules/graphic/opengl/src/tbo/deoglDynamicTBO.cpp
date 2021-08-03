@@ -49,7 +49,7 @@ pTBO( 0 ),
 pData( NULL ),
 pDataSize( 0 ),
 pDataCount( 0 ),
-pMemoryGPU( 0 )
+pMemUse( renderThread.GetMemoryManager().GetConsumption().bufferObject.tbo )
 {
 	if( componentCount < 1 || componentCount > 4 || dataTypeSize < 1 || dataTypeSize > 4 ){
 		DETHROW( deeInvalidParam );
@@ -194,13 +194,9 @@ void deoglDynamicTBO::pCleanUp(){
 		glDeleteTextures( 1, &pTBO );
 	}
 	
+	pMemUse = 0;
+	
 	if( pVBO ){
-		deoglMemoryConsumptionVBO &consumption = pRenderThread.GetMemoryManager().GetConsumption().GetVBO();
-		consumption.DecrementTBOGPU( pMemoryGPU );
-		consumption.DecrementTBOCount();
-		consumption.DecrementGPU( pMemoryGPU );
-		consumption.DecrementCount();
-		
 		pglDeleteBuffers( 1, &pVBO );
 	}
 	
@@ -227,24 +223,16 @@ void deoglDynamicTBO::pEnlarge( int count ){
 }
 
 void deoglDynamicTBO::pEnsureVBO(){
-	deoglMemoryConsumptionVBO &consumption = pRenderThread.GetMemoryManager().GetConsumption().GetVBO();
-	
-	if( ! pVBO ){
-		OGL_CHECK( pRenderThread, pglGenBuffers( 1, &pVBO ) );
-		if( ! pVBO ){
-			DETHROW( deeOutOfMemory );
-		}
-		
-		consumption.IncrementCount();
-		consumption.IncrementTBOCount();
+	if( pVBO ){
+		return;
 	}
 	
-	int incrMemoryGPU = -pMemoryGPU;
-	pMemoryGPU = pDataCount * pDataTypeSize;
-	incrMemoryGPU += pMemoryGPU;
+	OGL_CHECK( pRenderThread, pglGenBuffers( 1, &pVBO ) );
+	if( ! pVBO ){
+		DETHROW( deeOutOfMemory );
+	}
 	
-	consumption.IncrementTBOGPU( incrMemoryGPU );
-	consumption.IncrementGPU( incrMemoryGPU );
+	pMemUse = pDataCount * pDataTypeSize;
 }
 
 void deoglDynamicTBO::pEnsureTBO(){

@@ -223,6 +223,7 @@ pHighlightTransparentObjects( false ),
 
 pDebugRenderPlan( false ),
 pShowMemoryInfo( false ),
+pLogMemoryConsumption( false ),
 
 pShowOccMapLevel( -1 ),
 
@@ -435,6 +436,10 @@ bool deoglDeveloperMode::ExecuteCommand( const decUnicodeArgumentList &command, 
 				pCmdShowMemoryInfo( command, answer );
 				result = true;
 				
+			}else if( command.MatchesArgumentAt( 0, "dm_log_memory_consumption" ) ){
+				pCmdLogMemoryConsumption( command, answer );
+				result = true;
+				
 			}else if( command.MatchesArgumentAt( 0, "dm_show_occmap_level" ) ){
 				pCmdShowOccMapLevel( command, answer );
 				result = true;
@@ -513,7 +518,7 @@ bool deoglDeveloperMode::ExecuteCommand( const decUnicodeArgumentList &command, 
 // Private functions
 //////////////////////
 
-void deoglDeveloperMode::pCmdHelp( const decUnicodeArgumentList &command, decUnicodeString &answer ){
+void deoglDeveloperMode::pCmdHelp( const decUnicodeArgumentList &, decUnicodeString &answer ){
 	answer.SetFromUTF8( "dm_help => Displays this help screen.\n" );
 	answer.AppendFromUTF8( "dm_capabilities => Displays hardware capabilities.\n" );
 	answer.AppendFromUTF8( "dm_debug_enable_light_depth_stencil => Enable depth and stencil test using depth copy for lighting passes.\n" );
@@ -554,7 +559,7 @@ void deoglDeveloperMode::pCmdHelp( const decUnicodeArgumentList &command, decUni
 	answer.AppendFromUTF8( "dm_gi_show_cascade [0..maxCascaded] => GI Cascade to show.\n" );
 }
 
-void deoglDeveloperMode::pCmdEnable( const decUnicodeArgumentList &command, decUnicodeString &answer ){
+void deoglDeveloperMode::pCmdEnable( const decUnicodeArgumentList &, decUnicodeString &answer ){
 	/*if( command.GetArgumentCount() == 2 ){
 		if( command.MatchesArgumentAt( 1, "who is your daddy" ) ){
 			answer.SetFromUTF8( "Developer mode is now enabled.\n" );
@@ -574,21 +579,15 @@ void deoglDeveloperMode::pCmdEnable( const decUnicodeArgumentList &command, decU
 
 
 void deoglDeveloperMode::pCmdShowVisComponent( const decUnicodeArgumentList &command, decUnicodeString &answer ){
-	if( command.GetArgumentCount() == 2 ){
-		pShowVisComponent = ! command.MatchesArgumentAt( 1, "0" );
-	}
+	pBaseCmdBool( command, answer, pShowVisComponent, "dm_show_vis_component" );
 }
 
 void deoglDeveloperMode::pCmdShowVisLight( const decUnicodeArgumentList &command, decUnicodeString &answer ){
-	if( command.GetArgumentCount() == 2 ){
-		pShowVisLight = ! command.MatchesArgumentAt( 1, "0" );
-	}
+	pBaseCmdBool( command, answer, pShowVisLight, "dm_show_vis_light" );
 }
 
 void deoglDeveloperMode::pCmdShowComponentLodLevels( const decUnicodeArgumentList &command, decUnicodeString &answer ){
-	if( command.GetArgumentCount() == 2 ){
-		pShowComponentLODLevels = ! command.MatchesArgumentAt( 1, "0" );
-	}
+	pBaseCmdBool( command, answer, pShowComponentLODLevels, "dm_show_component_lod_levels" );
 }
 
 
@@ -613,13 +612,13 @@ void deoglDeveloperMode::pCmdShowPropFieldClusters( const decUnicodeArgumentList
 
 
 
-void deoglDeveloperMode::pCmdQuickTest( const decUnicodeArgumentList &command, decUnicodeString &answer ){
+void deoglDeveloperMode::pCmdQuickTest( const decUnicodeArgumentList &, decUnicodeString &answer ){
 	answer.AppendFromUTF8( "I'm not implemented anymore. Wanna have a beer instead?\n" );
 }
 
 
 
-void deoglDeveloperMode::pCmdOpenGLCaps( const decUnicodeArgumentList &command, decUnicodeString &answer ){
+void deoglDeveloperMode::pCmdOpenGLCaps( const decUnicodeArgumentList &, decUnicodeString &answer ){
 	// this is not working since all opengl calls would have to be done in the render thread
 	return;
 	
@@ -975,7 +974,7 @@ void deoglDeveloperMode::pCmdCapabilities( const decUnicodeArgumentList &command
 	answer.AppendFromUTF8( "renBuf_use => Used RenderBuffer formats.\n" );
 }
 
-void deoglDeveloperMode::pCmdMemoryInfo( const decUnicodeArgumentList &command, decUnicodeString &answer ){
+void deoglDeveloperMode::pCmdMemoryInfo( const decUnicodeArgumentList &, decUnicodeString &answer ){
 	const deoglExtensions &extensions = pRenderThread.GetExtensions();
 	
 	if( extensions.GetHasExtension( deoglExtensions::ext_ATI_meminfo ) ){
@@ -983,15 +982,18 @@ void deoglDeveloperMode::pCmdMemoryInfo( const decUnicodeArgumentList &command, 
 		decString text;
 		
 		OGL_CHECK( pRenderThread, glGetIntegerv( GL_VBO_FREE_MEMORY_ATI, &values[ 0 ] ) );
-		text.Format( "VBO: total=%ikb largestFree=%ikb totalAux=%ikb largestFreeAux=%ikb\n", values[ 0 ], values[ 1 ], values[ 2 ], values[ 3 ] );
+		text.Format( "VBO: total=%ikb largestFree=%ikb totalAux=%ikb largestFreeAux=%ikb\n",
+			values[ 0 ], values[ 1 ], values[ 2 ], values[ 3 ] );
 		answer.SetFromUTF8( text.GetString() );
 		
 		OGL_CHECK( pRenderThread, glGetIntegerv( GL_TEXTURE_FREE_MEMORY_ATI, &values[ 0 ] ) );
-		text.Format( "Texture: total=%ikb largestFree=%ikb totalAux=%ikb largestFreeAux=%ikb\n", values[ 0 ], values[ 1 ], values[ 2 ], values[ 3 ] );
+		text.Format( "Texture: total=%ikb largestFree=%ikb totalAux=%ikb largestFreeAux=%ikb\n",
+			values[ 0 ], values[ 1 ], values[ 2 ], values[ 3 ] );
 		answer.AppendFromUTF8( text.GetString() );
 		
 		OGL_CHECK( pRenderThread, glGetIntegerv( GL_RENDERBUFFER_FREE_MEMORY_ATI, &values[ 0 ] ) );
-		text.Format( "Renderbuffer: total=%ikb largestFree=%ikb totalAux=%ikb largestFreeAux=%ikb\n", values[ 0 ], values[ 1 ], values[ 2 ], values[ 3 ] );
+		text.Format( "Renderbuffer: total=%ikb largestFree=%ikb totalAux=%ikb largestFreeAux=%ikb\n",
+			values[ 0 ], values[ 1 ], values[ 2 ], values[ 3 ] );
 		answer.AppendFromUTF8( text.GetString() );
 		
 	}else{
@@ -1065,6 +1067,10 @@ void deoglDeveloperMode::pCmdDebugRenderPlan( const decUnicodeArgumentList &comm
 
 void deoglDeveloperMode::pCmdShowMemoryInfo( const decUnicodeArgumentList &command, decUnicodeString &answer ){
 	pBaseCmdBool( command, answer, pShowMemoryInfo, "dm_show_memory_info" );
+}
+
+void deoglDeveloperMode::pCmdLogMemoryConsumption( const decUnicodeArgumentList &command, decUnicodeString &answer ){
+	pBaseCmdBool( command, answer, pLogMemoryConsumption, "dm_log_memory_consumption" );
 }
 
 

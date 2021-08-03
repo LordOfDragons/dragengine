@@ -21,6 +21,7 @@
 
 #ifndef _DEOGLRSKIN_H_
 #define _DEOGLRSKIN_H_
+#include "../memory/consumption/deoglMemoryConsumptionSkinUse.h"
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/collection/decObjectList.h>
@@ -74,12 +75,9 @@ private:
 	int pVideoPlayerCount;
 	decObjectList pCalculatedProperties;
 	
-	int pMemoryUsageGPU;
-	int pMemoryUsageGPUCompressed;
-	int pMemoryUsageGPUUncompressed;
-	int pMemoryUsageCount;
-	
 	deoglVSRetainImageData *pVSRetainImageData;
+	
+	deoglMemoryConsumptionSkinUse pMemUse;
 	
 	
 	
@@ -153,11 +151,6 @@ public:
 	
 	/** \brief Texture at index. */
 	deoglSkinTexture &GetTextureAt( int index ) const;
-	
-	
-	
-	/** \brief Update memory usage. */
-	void UpdateMemoryUsage();
 	
 	
 	

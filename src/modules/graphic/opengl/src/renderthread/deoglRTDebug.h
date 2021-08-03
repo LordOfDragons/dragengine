@@ -23,6 +23,7 @@
 #define _DEOGLRRTDEBUG_H_
 
 #include "../debug/deoglDebugInformationList.h"
+#include "../debug/deoglDebugMemoryConsumption.h"
 
 #include <dragengine/common/file/decBaseFileWriter.h>
 
@@ -43,6 +44,7 @@ private:
 	deoglDeveloperMode *pDeveloperMode;
 	deoglDebugInformationList pDebugInformation;
 	bool pEnableHwDebugOutput;
+	deoglDebugMemoryConsumption pDebugMemoryConsumption;
 	
 	
 	
@@ -82,7 +84,13 @@ public:
 	
 	/** \brief Set enable hardware debug output. */
 	void SetEnableHwDebugOutput( bool enable );
+	
+	/** \brief Debug memory consumption. */
+	inline deoglDebugMemoryConsumption &GetDebugMemoryConsumption(){ return pDebugMemoryConsumption; }
+	inline const deoglDebugMemoryConsumption &GetDebugMemoryConsumption() const{ return pDebugMemoryConsumption; }
 	/*@}*/
+	
+	
 	
 private:
 	void pCleanUp();

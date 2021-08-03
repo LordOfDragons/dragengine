@@ -87,16 +87,12 @@ void deoglRenderableDepthTexture::SetInUse( bool inUse ){
 }
 
 void deoglRenderableDepthTexture::UpdateMemoryUsage(){
-	//const int oldMemoryGPU = pMemoryUsageGPU;
-	
 	if( pTexture ){
-		pMemoryUsageGPU = pTexture->GetMemoryUsageGPU();
+		pMemoryUsageGPU = pTexture->GetMemoryConsumption().Total();
 		
 	}else{
 		pMemoryUsageGPU = 0;
 	}
-	
-//	pRenderThread.GetMemoryManager().IncRenderable2DDepthGPUTotal( pMemoryUsageGPU - oldMemoryGPU );
 }
 
 

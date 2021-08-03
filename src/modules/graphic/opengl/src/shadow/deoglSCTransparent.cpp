@@ -67,7 +67,16 @@ pDynamicColorCubeMap( NULL ),
 
 pPlanStaticSize( 16 ),
 pPlanDynamicSize( 16 ),
-pPlanTransparentSize( 16 ){
+pPlanTransparentSize( 16 ),
+
+pMemUseStaMapDepth( renderThread.GetMemoryManager().GetConsumption().shadow.transparentStaticMapDepth ),
+pMemUseStaMapColor( renderThread.GetMemoryManager().GetConsumption().shadow.transparentStaticMapColor ),
+pMemUseStaCubeDepth( renderThread.GetMemoryManager().GetConsumption().shadow.transparentStaticCubeDepth ),
+pMemUseStaCubeColor( renderThread.GetMemoryManager().GetConsumption().shadow.transparentStaticCubeColor ),
+pMemUseDynMapDepth( renderThread.GetMemoryManager().GetConsumption().shadow.transparentDynamicMapDepth ),
+pMemUseDynMapColor( renderThread.GetMemoryManager().GetConsumption().shadow.transparentDynamicMapColor ),
+pMemUseDynCubeDepth( renderThread.GetMemoryManager().GetConsumption().shadow.transparentDynamicCubeDepth ),
+pMemUseDynCubeColor( renderThread.GetMemoryManager().GetConsumption().shadow.transparentDynamicCubeColor ){
 }
 
 deoglSCTransparent::~deoglSCTransparent(){
@@ -100,6 +109,7 @@ deoglTexture *deoglSCTransparent::ObtainStaticShadowMapWithSize( int size, bool 
 	pStaticShadowMap->SetDepthFormat( false, useFloat );
 	pStaticShadowMap->SetSize( size, size );
 	pStaticShadowMap->CreateTexture();
+	pMemUseStaMapDepth = pStaticShadowMap->GetMemoryConsumption().Total();
 	pHasStatic = true;
 	pLastUseStatic = 0;
 	
@@ -126,6 +136,7 @@ deoglTexture *deoglSCTransparent::ObtainStaticColorMapWithSize( int size ){
 	pStaticColorMap->SetFBOFormat( 4, false );
 	pStaticColorMap->SetSize( size, size );
 	pStaticColorMap->CreateTexture();
+	pMemUseStaMapColor = pStaticColorMap->GetMemoryConsumption().Total();
 	pHasStatic = true;
 	pLastUseStatic = 0;
 	
@@ -162,6 +173,7 @@ deoglCubeMap *deoglSCTransparent::ObtainStaticShadowCubeMapWithSize( int size ){
 	}
 	
 	pStaticShadowCubeMap->CreateCubeMap();
+	pMemUseStaCubeDepth = pStaticShadowCubeMap->GetMemoryConsumption().Total();
 	pHasStatic = true;
 	pLastUseStatic = 0;
 	
@@ -188,6 +200,7 @@ deoglCubeMap *deoglSCTransparent::ObtainStaticColorCubeMapWithSize( int size ){
 	pStaticColorCubeMap->SetSize( size );
 	pStaticColorCubeMap->SetFBOFormat( 4, false );
 	pStaticColorCubeMap->CreateCubeMap();
+	pMemUseStaCubeColor = pStaticColorCubeMap->GetMemoryConsumption().Total();
 	pHasStatic = true;
 	pLastUseStatic = 0;
 	
@@ -195,6 +208,11 @@ deoglCubeMap *deoglSCTransparent::ObtainStaticColorCubeMapWithSize( int size ){
 }
 
 void deoglSCTransparent::DropStatic(){
+	pMemUseStaMapDepth = 0;
+	pMemUseStaMapColor = 0;
+	pMemUseStaCubeDepth = 0;
+	pMemUseStaCubeColor = 0;
+	
 	if( pStaticShadowMap ){
 		delete pStaticShadowMap;
 		pStaticShadowMap = NULL;
@@ -239,6 +257,7 @@ deoglRenderableDepthTexture *deoglSCTransparent::ObtainDynamicShadowMapWithSize(
 	
 	pDynamicShadowMap = pRenderThread.GetTexture().GetRenderableDepthTexture()
 		.GetTextureWith( size, size, false, false );
+	pMemUseDynMapDepth = pDynamicShadowMap->GetTexture()->GetMemoryConsumption().Total();
 	
 	return pDynamicShadowMap;
 }
@@ -257,6 +276,7 @@ deoglRenderableColorTexture *deoglSCTransparent::ObtainDynamicColorMapWithSize( 
 	
 	pDynamicColorMap = pRenderThread.GetTexture().GetRenderableColorTexture()
 		.GetTextureWith( size, size, 4, false );
+	pMemUseDynMapColor = pDynamicColorMap->GetTexture()->GetMemoryConsumption().Total();
 	
 	return pDynamicColorMap;
 }
@@ -274,6 +294,7 @@ deoglRenderableDepthCubeMap *deoglSCTransparent::ObtainDynamicShadowCubeMapWithS
 	}
 	
 	pDynamicShadowCubeMap = pRenderThread.GetTexture().GetRenderableDepthCubeMap().GetCubeMapWith( size );
+	pMemUseDynCubeDepth = pDynamicShadowCubeMap->GetCubeMap()->GetMemoryConsumption().Total();
 	
 	return pDynamicShadowCubeMap;
 }
@@ -292,11 +313,17 @@ deoglRenderableColorCubeMap *deoglSCTransparent::ObtainDynamicColorCubeMapWithSi
 	
 	pDynamicColorCubeMap = pRenderThread.GetTexture().GetRenderableColorCubeMap().
 		GetCubeMapWith( size, 4, false );
+	pMemUseDynCubeColor = pDynamicColorCubeMap->GetCubeMap()->GetMemoryConsumption().Total();
 	
 	return pDynamicColorCubeMap;
 }
 
 void deoglSCTransparent::DropDynamic(){
+	pMemUseDynMapDepth = 0;
+	pMemUseDynMapColor = 0;
+	pMemUseDynCubeDepth = 0;
+	pMemUseDynCubeColor = 0;
+	
 	if( pDynamicShadowMap ){
 		pDynamicShadowMap->SetInUse( false );
 		pDynamicShadowMap = NULL;

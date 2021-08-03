@@ -236,7 +236,8 @@ deoglRTDebug::deoglRTDebug( deoglRenderThread &renderThread ) :
 pRenderThread( renderThread ),
 pDebugSaveTexture( NULL ),
 pDeveloperMode( NULL ),
-pEnableHwDebugOutput( true )
+pEnableHwDebugOutput( true ),
+pDebugMemoryConsumption( renderThread )
 {
 	try{
 		if( renderThread.GetConfiguration().GetDebugContext() ){

@@ -121,7 +121,7 @@ pDirtyDataNorTan( true ),
 pDirtyVBO( true ),
 pDirtyVAO( true ),
 
-pMemoryConsumptionGPU( 0 ),
+pMemUse( component.GetRenderThread().GetMemoryManager().GetConsumption().bufferObject.vbo ),
 
 pVBOWeightMatrices( 0 ),
 pTBOWeightMatrices( 0 ),
@@ -253,13 +253,9 @@ void deoglRComponentLOD::UpdateVBO(){
 }
 
 void deoglRComponentLOD::FreeVBO(){
+	pMemUse = 0;
+	
 	if( pVBO ){
-		deoglMemoryConsumptionVBO &consumption = pComponent.GetRenderThread().GetMemoryManager().GetConsumption().GetVBO();
-		
-		consumption.DecrementGPU( pMemoryConsumptionGPU );
-		consumption.DecrementCount();
-		pMemoryConsumptionGPU = 0;
-		
 		pglDeleteBuffers( 1, &pVBO );
 		pVBO = 0;
 	}
@@ -1085,13 +1081,8 @@ void deoglRComponentLOD::pCleanUp(){
 		delete [] pWeights;
 	}
 	
-	if( pVBO ){
-		deoglMemoryConsumptionVBO &consumption = pComponent.GetRenderThread().GetMemoryManager().GetConsumption().GetVBO();
-		
-		consumption.DecrementGPU( pMemoryConsumptionGPU );
-		consumption.DecrementCount();
-		pMemoryConsumptionGPU = 0;
-	}
+	pMemUse = 0;
+	
 	if( pVBOData ){
 		delete [] pVBOData;
 		pVBOData = NULL;
@@ -1127,7 +1118,6 @@ void deoglRComponentLOD::pCleanUp(){
 
 void deoglRComponentLOD::pBuildVBO( const deoglModelLOD &modelLOD ){
 	deoglRenderThread &renderThread = pComponent.GetRenderThread();
-	deoglMemoryConsumptionVBO &consumption = renderThread.GetMemoryManager().GetConsumption().GetVBO();
 	const int pointCount = modelLOD.GetVertexCount();
 	deoglVBOpnt *newArray = NULL;
 	int dataSize;
@@ -1141,7 +1131,6 @@ void deoglRComponentLOD::pBuildVBO( const deoglModelLOD &modelLOD ){
 		if( ! pVBO ){
 			DETHROW( deeOutOfMemory );
 		}
-		consumption.IncrementCount();
 	}
 	
 	OGL_CHECK( renderThread, pglBindBuffer( GL_ARRAY_BUFFER, pVBO ) );
@@ -1156,10 +1145,8 @@ void deoglRComponentLOD::pBuildVBO( const deoglModelLOD &modelLOD ){
 		pVBOPointSize = pointCount;
 		
 		// enlarge vbo
-		consumption.DecrementGPU( pMemoryConsumptionGPU );
 		OGL_CHECK( renderThread, pglBufferData( GL_ARRAY_BUFFER, dataSize, NULL, GL_STREAM_DRAW ) );
-		pMemoryConsumptionGPU = dataSize;
-		consumption.IncrementGPU( pMemoryConsumptionGPU );
+		pMemUse = dataSize;
 	}
 	
 	// write data to buffer

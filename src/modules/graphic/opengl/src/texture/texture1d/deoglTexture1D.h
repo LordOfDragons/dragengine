@@ -24,6 +24,7 @@
 
 #include "../../deoglBasics.h"
 #include "../../capabilities/deoglCapsFmtSupport.h"
+#include "../../memory/consumption/deoglMemoryConsumptionTextureUse.h"
 
 #include <dragengine/common/math/decMath.h>
 
@@ -53,9 +54,8 @@ public:
 	int pRealMipMapLevelCount;
 	bool pMipMapped;
 	
-	int pMemoryUsageGPU;
-	bool pMemoryUsageCompressed;
-	bool pMemoryUsageColor;
+	deoglMemoryConsumptionTextureUse pMemUse;
+	
 	
 public:
 	/** \name Constructors and Destructors */
@@ -119,10 +119,9 @@ public:
 	/** \brief Copy area from another texture to this texture. */
 	void CopyFrom( const deoglTexture1D &texture, bool withMipMaps, int size, int srcX, int destX );
 	
-	/** \brief Retrieves the GPU memory usage. */
-	inline int GetMemoryUsageGPU() const{ return pMemoryUsageGPU; }
-	/** \brief Determines if the GPU memory usage is compressed image data. */
-	inline bool GetMemoryUsageCompressed() const{ return pMemoryUsageCompressed; }
+	/** Memory consumption. */
+	inline const deoglMemoryConsumptionTextureUse &GetMemoryConsumption() const{ return pMemUse; }
+	
 	/** \brief Update memory usage. */
 	void UpdateMemoryUsage();
 	/*@}*/
