@@ -103,9 +103,6 @@ deoglCubeMap *deoglSCAmbient::ObtainStaticCubeMapWithSize( int size ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	const deoglConfiguration &config = pRenderThread.GetConfiguration();
-	const bool useCubeEncodeDepth = config.GetUseShadowCubeEncodeDepth();
-	
 	if( pStaticCubeMap ){
 		if( pStaticCubeMap->GetSize() == size ){
 			return pStaticCubeMap;
@@ -119,14 +116,7 @@ deoglCubeMap *deoglSCAmbient::ObtainStaticCubeMapWithSize( int size ){
 	
 	pStaticCubeMap = new deoglCubeMap( pRenderThread );
 	pStaticCubeMap->SetSize( size );
-	
-	if( useCubeEncodeDepth ){
-		pStaticCubeMap->SetFBOFormat( 4, false );
-		
-	}else{
-		pStaticCubeMap->SetDepthFormat();
-	}
-	
+	pStaticCubeMap->SetDepthFormat();
 	pStaticCubeMap->CreateCubeMap();
 	pLastUseStatic = 0;
 	
@@ -176,10 +166,6 @@ deoglRenderableDepthTexture *deoglSCAmbient::ObtainDynamicMapWithSize( int size 
 }
 
 deoglRenderableDepthCubeMap *deoglSCAmbient::ObtainDynamicCubeMapWithSize( int size ){
-	if( pRenderThread.GetConfiguration().GetUseShadowCubeEncodeDepth() ){
-		DETHROW( deeInvalidAction );
-	}
-	
 	if( size < 1 ){
 		DETHROW( deeInvalidParam );
 	}
@@ -222,27 +208,4 @@ bool deoglSCAmbient::RequiresUpdate() const{
 void deoglSCAmbient::Clear(){
 	DropStatic();
 	DropDynamic();
-}
-
-
-
-void deoglSCAmbient::SetPlanStaticSize( int size ){
-	if( size < 16 ){
-		DETHROW( deeInvalidParam );
-	}
-	pPlanStaticSize = size;
-}
-
-void deoglSCAmbient::SetPlanDynamicSize( int size ){
-	if( size < 16 ){
-		DETHROW( deeInvalidParam );
-	}
-	pPlanDynamicSize = size;
-}
-
-void deoglSCAmbient::SetPlanTransparentSize( int size ){
-	if( size < 16 ){
-		DETHROW( deeInvalidParam );
-	}
-	pPlanTransparentSize = size;
 }

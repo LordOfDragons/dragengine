@@ -28,6 +28,10 @@
 #include "../../light/deoglRLight.h"
 #include "../../renderthread/deoglRenderThread.h"
 #include "../../renderthread/deoglRTLogger.h"
+#include "../../shadow/deoglShadowCaster.h"
+#include "../../shadow/deoglSCAmbient.h"
+#include "../../shadow/deoglSCSolid.h"
+#include "../../shadow/deoglSCTransparent.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -46,17 +50,13 @@ pLight( NULL ),
 pDistance( 0.0f ),
 pReductionFactor( 1 ),
 
-pSolidShadowSizeStatic( 0 ),
-pSolidShadowSizeDynamic( 0 ),
-pSolidShadowSizeTransp( 0 ),
-
+pShadowSizeStatic( 0 ),
 pTranspShadowSizeStatic( 0 ),
-pTranspShadowSizeDynamic( 0 ),
-pTranspShadowSizeTransp( 0 ),
-
 pAmbientShadowSizeStatic( 0 ),
-pAmbientShadowSizeDynamic( 0 ),
-pAmbientShadowSizeTransp( 0 ){
+
+pShadowSizeDynamic( 0 ),
+pTranspShadowSizeDynamic( 0 ),
+pAmbientShadowSizeDynamic( 0 ){
 }
 
 deoglRenderPlanLight::~deoglRenderPlanLight(){
@@ -96,15 +96,15 @@ void deoglRenderPlanLight::PlanShadowCasting(){
 	const deoglRLight &light = *pLight->GetLight();
 	const int minSize = 16;
 	
-	// solid static shadow map size
+	// static shadow map size
 	switch( light.GetLightType() ){
 	case deLight::eltSpot:
 	case deLight::eltProjector:
-		pSolidShadowSizeStatic = pPlan.GetShadowMapSize();
+		pShadowSizeStatic = pPlan.GetShadowMapSize();
 		break;
 		
 	case deLight::eltPoint:
-		pSolidShadowSizeStatic = pPlan.GetShadowCubeSize();
+		pShadowSizeStatic = pPlan.GetShadowCubeSize();
 		break;
 		
 	default:
@@ -116,18 +116,15 @@ void deoglRenderPlanLight::PlanShadowCasting(){
 	
 	// reduce static shadow map size
 	if( pReductionFactor > 0 ){
-		pSolidShadowSizeStatic = decMath::max( pSolidShadowSizeStatic >> pReductionFactor, minSize );
+		pShadowSizeStatic = decMath::max( pShadowSizeStatic >> pReductionFactor, minSize );
 	}
 	
-	// reduce size for dynamic shadow maps. for dynamic shadow maps affecting only global
-	// illumination reduce the size to 64. this reduces memory consumption while not
-	// degrading quality too much. do this only for lights further away to avoid flickering
-	// of light intensity if the camera turns in place
-	pSolidShadowSizeDynamic = decMath::max( pSolidShadowSizeStatic >> 1, minSize );
+	// reduce size for dynamic shadow maps
+	pShadowSizeDynamic = decMath::max( pShadowSizeStatic >> 1, minSize );
 	
-	// reduce size for transparent shadow maps
-	pTranspShadowSizeStatic = decMath::max( pSolidShadowSizeStatic >> 1, minSize );
-	pTranspShadowSizeDynamic = decMath::max( pSolidShadowSizeDynamic >> 1, minSize );
+	// reduce size for transparent shadow maps (or use static sizes?)
+	pTranspShadowSizeStatic = decMath::max( pShadowSizeStatic >> 1, minSize );
+	pTranspShadowSizeDynamic = decMath::max( pShadowSizeDynamic >> 1, minSize );
 	
 	// temporary hack. calculating the static point shadow map at higher resolution
 	// is currently a problem and causes noticeable stutter. reducing the static
@@ -145,14 +142,39 @@ void deoglRenderPlanLight::PlanShadowCasting(){
 	}
 	*/
 	
-	// ambient is same size as solid due to boundary box calculation
-	pAmbientShadowSizeStatic = pSolidShadowSizeStatic;
-	pAmbientShadowSizeDynamic = pSolidShadowSizeDynamic;
+	// ambient is same size as base size due to boundary box calculation
+	pAmbientShadowSizeStatic = pShadowSizeStatic;
+	pAmbientShadowSizeDynamic = pShadowSizeDynamic;
 	
-	// transparency is reduced
-	pSolidShadowSizeTransp = decMath::max( pSolidShadowSizeDynamic >> 1 /*2*/, minSize );
-	pTranspShadowSizeTransp = decMath::max( pTranspShadowSizeDynamic >> 1 /*2*/, minSize );
-	pAmbientShadowSizeTransp = decMath::max( pAmbientShadowSizeDynamic >> 1 /*2*/, minSize );
+	// update next frame sizes. this keeps the largest size across an entire frame
+	deoglShadowCaster &shadowCaster = *pLight->GetLight()->GetShadowCaster();
+	deoglSCSolid &scsolid = shadowCaster.GetSolid();
+	deoglSCTransparent &sctransp = shadowCaster.GetTransparent();
+	
+	scsolid.SetLargestNextSizeStatic( pShadowSizeStatic );
+	scsolid.SetLargestNextSizeDynamic( pShadowSizeDynamic );
+	
+	sctransp.SetLargestNextSizeStatic( pTranspShadowSizeStatic );
+	sctransp.SetLargestNextSizeDynamic( pTranspShadowSizeDynamic );
+	
+	// clamp sizes to last frame and next frame sizes to avoid resizing textures.
+	// using the last frame size avoids resizing if the first rendered camera requires
+	// a smaller size than a later one. using the next frame size avoids resiting if
+	// the first rendered camera requires a larger size than a later one.
+// 	pPlan.GetRenderThread().GetLogger().LogInfoFormat("PlanShadowCasting: %p %d %d %d",
+// 		pLight->GetLight(), pShadowSizeDynamic, scsolid.GetLastSizeDynamic(), scsolid.GetNextSizeDynamic() );
+	
+	pShadowSizeStatic = decMath::max( pShadowSizeStatic,
+		scsolid.GetLastSizeStatic(), scsolid.GetNextSizeStatic() );
+	
+	pShadowSizeDynamic = decMath::max( pShadowSizeDynamic,
+		scsolid.GetLastSizeDynamic(), scsolid.GetNextSizeDynamic() );
+	
+	pTranspShadowSizeStatic = decMath::max( pTranspShadowSizeStatic,
+		sctransp.GetLastSizeStatic(), sctransp.GetNextSizeStatic() );
+	
+	pTranspShadowSizeDynamic = decMath::max( pTranspShadowSizeDynamic,
+		sctransp.GetLastSizeDynamic(), sctransp.GetNextSizeDynamic() );
 	
 	// log values used
 #if 0
@@ -166,44 +188,28 @@ void deoglRenderPlanLight::PlanShadowCasting(){
 
 
 
-void deoglRenderPlanLight::SetSolidShadowSizeStatic( int size ){
-	pSolidShadowSizeStatic = size;
+void deoglRenderPlanLight::SetShadowSizeStatic( int size ){
+	pShadowSizeStatic = size;
 }
-
-void deoglRenderPlanLight::SetSolidShadowSizeDynamic( int size ){
-	pSolidShadowSizeDynamic = size;
-}
-
-void deoglRenderPlanLight::SetSolidShadowSizeTransp( int size ){
-	pSolidShadowSizeTransp = size;
-}
-
-
 
 void deoglRenderPlanLight::SetTranspShadowSizeStatic( int size ){
 	pTranspShadowSizeStatic = size;
+}
+
+void deoglRenderPlanLight::SetAmbientShadowSizeStatic( int size ){
+	pAmbientShadowSizeStatic = size;
+}
+
+void deoglRenderPlanLight::SetShadowSizeDynamic( int size ){
+	pShadowSizeDynamic = size;
 }
 
 void deoglRenderPlanLight::SetTranspShadowSizeDynamic( int size ){
 	pTranspShadowSizeDynamic = size;
 }
 
-void deoglRenderPlanLight::SetTranspShadowSizeTransp( int size ){
-	pTranspShadowSizeTransp = size;
-}
-
-
-
-void deoglRenderPlanLight::SetAmbientShadowSizeStatic( int size ){
-	pAmbientShadowSizeStatic = size;
-}
-
 void deoglRenderPlanLight::SetAmbientShadowSizeDynamic( int size ){
 	pAmbientShadowSizeDynamic = size;
-}
-
-void deoglRenderPlanLight::SetAmbientShadowSizeTransp( int size ){
-	pAmbientShadowSizeTransp = size;
 }
 
 

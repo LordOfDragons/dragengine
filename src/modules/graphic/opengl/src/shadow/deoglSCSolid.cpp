@@ -62,10 +62,14 @@ pHasStatic( false ),
 pDynamicMap( NULL ),
 pDynamicCubeMap( NULL ),
 pDynamicArrayMap( NULL ),
+pLastUseDynamic( 0 ),
+pHasDynamic( false ),
+pDirtyDynamic( true ),
 
-pPlanStaticSize( 16 ),
-pPlanDynamicSize( 16 ),
-pPlanTransparentSize( 16 ),
+pLastSizeStatic( 0 ),
+pNextSizeStatic( 0 ),
+pLastSizeDynamic( 0 ),
+pNextSizeDynamic( 0 ),
 
 pMemUseStaMap( renderThread.GetMemoryManager().GetConsumption().shadow.solidStaticMap ),
 pMemUseStaCube( renderThread.GetMemoryManager().GetConsumption().shadow.solidStaticCube ),
@@ -109,14 +113,12 @@ deoglTexture *deoglSCSolid::ObtainStaticMapWithSize( int size, bool withStencil,
 	pMemUseStaMap = pStaticMap->GetMemoryConsumption().Total();
 	pHasStatic = true;
 	pLastUseStatic = 0;
+	pLastSizeStatic = pNextSizeStatic;
 	
 	return pStaticMap;
 }
 
 deoglCubeMap *deoglSCSolid::ObtainStaticCubeMapWithSize( int size ){
-	const deoglConfiguration &config = pRenderThread.GetConfiguration();
-	const bool useShadowCubeEncodeDepth = config.GetUseShadowCubeEncodeDepth();
-	
 	if( size < 1 ){
 		DETHROW( deeInvalidParam );
 	}
@@ -134,18 +136,12 @@ deoglCubeMap *deoglSCSolid::ObtainStaticCubeMapWithSize( int size ){
 	
 	pStaticCubeMap = new deoglCubeMap( pRenderThread );
 	pStaticCubeMap->SetSize( size );
-	
-	if( useShadowCubeEncodeDepth ){
-		pStaticCubeMap->SetFBOFormat( 4, false );
-		
-	}else{
-		pStaticCubeMap->SetDepthFormat();
-	}
-	
+	pStaticCubeMap->SetDepthFormat();
 	pStaticCubeMap->CreateCubeMap();
 	pMemUseStaCube = pStaticCubeMap->GetMemoryConsumption().Total();
 	pHasStatic = true;
 	pLastUseStatic = 0;
+	pLastSizeStatic = pNextSizeStatic;
 	
 	return pStaticCubeMap;
 }
@@ -174,6 +170,7 @@ deoglArrayTexture *deoglSCSolid::ObtainStaticArrayMapWithSize( int size, int lay
 	pMemUseStaArray = pStaticArrayMap->GetMemoryConsumption().Total();
 	pHasStatic = true;
 	pLastUseStatic = 0;
+	pLastSizeStatic = pNextSizeStatic;
 	
 	return pStaticArrayMap;
 }
@@ -196,6 +193,7 @@ void deoglSCSolid::DropStatic(){
 		pStaticArrayMap = NULL;
 	}
 	
+	pLastSizeStatic = 0;
 	pHasStatic = false;
 }
 
@@ -226,15 +224,15 @@ deoglRenderableDepthTexture *deoglSCSolid::ObtainDynamicMapWithSize( int size, b
 	pDynamicMap = pRenderThread.GetTexture().GetRenderableDepthTexture()
 		.GetTextureWith( size, size, withStencil, useFloat );
 	pMemUseDynMap = pDynamicMap->GetTexture()->GetMemoryConsumption().Total();
+	pHasDynamic = true;
+	pDirtyDynamic = true;
+	pLastUseDynamic = 0;
+	pLastSizeDynamic = pNextSizeDynamic;
 	
 	return pDynamicMap;
 }
 
 deoglRenderableDepthCubeMap *deoglSCSolid::ObtainDynamicCubeMapWithSize( int size ){
-	if( pRenderThread.GetConfiguration().GetUseShadowCubeEncodeDepth() ){
-		DETHROW( deeInvalidAction );
-	}
-	
 	if( size < 1 ){
 		DETHROW( deeInvalidParam );
 	}
@@ -248,6 +246,10 @@ deoglRenderableDepthCubeMap *deoglSCSolid::ObtainDynamicCubeMapWithSize( int siz
 	
 	pDynamicCubeMap = pRenderThread.GetTexture().GetRenderableDepthCubeMap().GetCubeMapWith( size );
 	pMemUseDynCube = pDynamicCubeMap->GetCubeMap()->GetMemoryConsumption().Total();
+	pHasDynamic = true;
+	pDirtyDynamic = true;
+	pLastUseDynamic = 0;
+	pLastSizeDynamic = pNextSizeDynamic;
 	
 	return pDynamicCubeMap;
 }
@@ -269,6 +271,10 @@ int size, int layers, bool useFloat ){
 	pDynamicArrayMap = pRenderThread.GetTexture().GetRenderableDepthArrayTexture()
 		.GetWith( size, size, layers, false, useFloat );
 	pMemUseDynArray = pDynamicArrayMap->GetArrayTexture()->GetMemoryConsumption().Total();
+	pHasDynamic = true;
+	pDirtyDynamic = true;
+	pLastUseDynamic = 0;
+	pLastSizeDynamic = pNextSizeDynamic;
 	
 	return pDynamicArrayMap;
 }
@@ -290,6 +296,36 @@ void deoglSCSolid::DropDynamic(){
 		pDynamicArrayMap->SetInUse( false );
 		pDynamicArrayMap = NULL;
 	}
+	
+	pLastSizeDynamic = 0;
+	pHasDynamic = false;
+	pDirtyDynamic = true;
+}
+
+void deoglSCSolid::IncrementLastUseDynamic(){
+	pLastUseDynamic++;
+}
+
+void deoglSCSolid::ResetLastUseDynamic(){
+	pLastUseDynamic = 0;
+}
+
+void deoglSCSolid::SetDirtyDynamic( bool dirty ){
+	pDirtyDynamic = dirty;
+}
+
+
+
+void deoglSCSolid::SetLargestNextSizeStatic( int size ){
+	if( size > pNextSizeStatic ){
+		pNextSizeStatic = size;
+	}
+}
+
+void deoglSCSolid::SetLargestNextSizeDynamic( int size ){
+	if( size > pNextSizeDynamic ){
+		pNextSizeDynamic = size;
+	}
 }
 
 
@@ -298,36 +334,28 @@ void deoglSCSolid::Update(){
 	if( pHasStatic && pLastUseStatic++ > 5 ){ // for the time being 5 frames
 		DropStatic();
 	}
+	if( pHasDynamic && pLastUseDynamic++ > 5 ){ // for the time being 5 frames
+		DropDynamic();
+	}
+	
+	if( pNextSizeStatic > 0 ){
+		pLastSizeStatic = pNextSizeStatic;
+		pNextSizeStatic = 0;
+	}
+	
+	if( pNextSizeDynamic > 0 ){
+		pLastSizeDynamic = pNextSizeDynamic;
+		pNextSizeDynamic = 0;
+	}
+	
+	pDirtyDynamic = true;
 }
 
 bool deoglSCSolid::RequiresUpdate() const{
-	return pHasStatic;
+	return pHasStatic || pHasDynamic;
 }
 
 void deoglSCSolid::Clear(){
 	DropStatic();
 	DropDynamic();
-}
-
-
-
-void deoglSCSolid::SetPlanStaticSize( int size ){
-	if( size < 16 ){
-		DETHROW( deeInvalidParam );
-	}
-	pPlanStaticSize = size;
-}
-
-void deoglSCSolid::SetPlanDynamicSize( int size ){
-	if( size < 16 ){
-		DETHROW( deeInvalidParam );
-	}
-	pPlanDynamicSize = size;
-}
-
-void deoglSCSolid::SetPlanTransparentSize( int size ){
-	if( size < 16 ){
-		DETHROW( deeInvalidParam );
-	}
-	pPlanTransparentSize = size;
 }

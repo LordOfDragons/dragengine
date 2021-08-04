@@ -118,26 +118,6 @@ public:
 	
 	/** Clear ambient caster. */
 	void Clear();
-	
-	
-	
-	/** Plan static map size. */
-	inline int GetPlanStaticSize() const{ return pPlanStaticSize; }
-	
-	/** Set plan static map size. */
-	void SetPlanStaticSize( int size );
-	
-	/** Plan dynamic map size. */
-	inline int GetPlanDynamicSize() const{ return pPlanDynamicSize; }
-	
-	/** Set plan dynamic map size. */
-	void SetPlanDynamicSize( int size );
-	
-	/** Plan transparent map size. */
-	inline int GetPlanTransparentSize() const{ return pPlanTransparentSize; }
-	
-	/** Set plan transparent map size. */
-	void SetPlanTransparentSize( int size );
 	/*@}*/
 };
 

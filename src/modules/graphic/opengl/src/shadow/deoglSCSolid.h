@@ -50,10 +50,14 @@ private:
 	deoglRenderableDepthTexture *pDynamicMap;
 	deoglRenderableDepthCubeMap *pDynamicCubeMap;
 	deoglRenderableDepthArrayTexture *pDynamicArrayMap;
+	int pLastUseDynamic;
+	bool pHasDynamic;
+	bool pDirtyDynamic;
 	
-	int pPlanStaticSize;
-	int pPlanDynamicSize;
-	int pPlanTransparentSize;
+	int pLastSizeStatic;
+	int pNextSizeStatic;
+	int pLastSizeDynamic;
+	int pNextSizeDynamic;
 	
 	deoglMemoryConsumptionGPUUse pMemUseStaMap;
 	deoglMemoryConsumptionGPUUse pMemUseStaCube;
@@ -130,6 +134,41 @@ public:
 	/** Drop dynamic shadow map if present. */
 	void DropDynamic();
 	
+	/** Number of frames elapsed since the last time dynamic shadow map has been used. */
+	inline int GetLastUseDynamic() const{ return pLastUseDynamic; }
+	
+	/** Increment last use dynamic shadow map counter by one. */
+	void IncrementLastUseDynamic();
+	
+	/** Reset last use dynamic shadow map counter. */
+	void ResetLastUseDynamic();
+	
+	/** Dynamic shadow map is dirty. */
+	inline bool GetDirtyDynamic() const{ return pDirtyDynamic; }
+	
+	/** Set dynamic shadow map dirty. */
+	void SetDirtyDynamic( bool dirty );
+	
+	
+	
+	/** Last frame static size or 0. */
+	inline int GetLastSizeStatic() const{ return pLastSizeStatic; }
+	
+	/** Next frame static size or 0. */
+	inline int GetNextSizeStatic() const{ return pNextSizeStatic; }
+	
+	/** Set next frame static size to largest value. */
+	void SetLargestNextSizeStatic( int size );
+	
+	/** Last frame dynamic size or 0. */
+	inline int GetLastSizeDynamic() const{ return pLastSizeDynamic; }
+	
+	/** Next frame dynamic size or 0. */
+	inline int GetNextSizeDynamic() const{ return pNextSizeDynamic; }
+	
+	/** Set next frame dynamic size to largest value. */
+	void SetLargestNextSizeDynamic( int size );
+	
 	
 	
 	/** Check if static maps have not been used recently removing them. */
@@ -140,26 +179,6 @@ public:
 	
 	/** Drop all maps. */
 	void Clear();
-	
-	
-	
-	/** Plan static map size. */
-	inline int GetPlanStaticSize() const{ return pPlanStaticSize; }
-	
-	/** Set plan static map size. */
-	void SetPlanStaticSize( int size );
-	
-	/** Plan dynamic map size. */
-	inline int GetPlanDynamicSize() const{ return pPlanDynamicSize; }
-	
-	/** Set plan dynamic map size. */
-	void SetPlanDynamicSize( int size );
-	
-	/** Plan transparent map size. */
-	inline int GetPlanTransparentSize() const{ return pPlanTransparentSize; }
-	
-	/** Set plan transparent map size. */
-	void SetPlanTransparentSize( int size );
 	/*@}*/
 };
 

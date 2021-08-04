@@ -93,6 +93,7 @@ pOgl( ogl ),
 
 pAsyncRendering( true ),
 pConfigChanged( true ),
+pFrameCounter( 0 ),
 
 pLeakTracker( *this ),
 
@@ -1900,6 +1901,8 @@ void deoglRenderThread::pBeginFrame(){
 	#if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 	pContext->ProcessEventLoop();
 	#endif
+	
+	pFrameCounter++; // wraps around when hitting maximum
 }
 
 void deoglRenderThread::pSyncConfiguration(){

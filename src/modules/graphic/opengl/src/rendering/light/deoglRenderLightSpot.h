@@ -27,6 +27,7 @@
 
 class deoglLightShader;
 class deoglRenderPlan;
+class deoglRenderPlanLight;
 class deoglRLight;
 class deoglSPBlockUBO;
 class deoglShaderProgram;
@@ -106,38 +107,37 @@ public:
 	/** \name Rendering */
 	/*@{*/
 	/** \brief Calculate box boundary for a spot light. */
-	void CalculateBoxBoundary( deoglRenderPlan &plan, deoglRLight &light );
+	void CalculateBoxBoundary( deoglRenderPlanLight &planLight );
 	
 	/** \brief Render lights. */
 	void RenderLights( deoglRenderPlan &plan, bool solid, const deoglRenderPlanMasked *mask );
 	
 	/** \brief Render light. */
-	void RenderLight( deoglRenderPlan &plan, bool solid, const deoglRenderPlanMasked *mask,
-		deoglCollideListLight &cllight );
+	void RenderLight( deoglRenderPlanLight &planLight, bool solid, const deoglRenderPlanMasked *mask );
 	
 	/** \brief Activate textures for lighting. */
-	void ActivateTextures( deoglRLight &light, deoglLightShader &shader,
+	void ActivateTextures( deoglRenderPlanLight &planLight, deoglLightShader &shader,
 		const sShadowDepthMaps &shadowDepthMaps );
 	
 	/** \brief Render shadow maps. */
-	void RenderShadows( deoglRenderPlan &plan, bool solid, deoglRLight &light,
+	void RenderShadows( deoglRenderPlanLight &planLight, bool solid,
 		const decDMatrix &matrixProjection, bool transparentStaticShadow,
 		bool transparentDynamicShadow, bool refilterShadow );
 	
 	/** \brief Render shadow map. */
-	void RenderShadowMap( deoglRenderPlan &plan, deoglRLight &light, const decDMatrix &matrixCamera,
+	void RenderShadowMap( deoglRenderPlanLight &planLight, const decDMatrix &matrixCamera,
 		const decDMatrix &matrixProjection, deoglShadowMapper &shadowMapper,
 		const deoglCollideList *clist1, const deoglCollideList *clist2, int solidShadowMapSize,
 		int transpShadowMapSize, bool withTransparent, bool copyDepth, bool debugSolid );
 	
 	/** \brief Render ambient map. */
-	void RenderAmbientMap( deoglRenderPlan &plan, deoglRLight &light, const decDMatrix &matrixCamera,
+	void RenderAmbientMap( deoglRenderPlanLight &planLight, const decDMatrix &matrixCamera,
 		const decDMatrix &matrixProjection, deoglShadowMapper &shadowMapper,
 		const deoglCollideList *clist1, const deoglCollideList *clist2, int ambientMapSize );
 	
 	/** \brief Update light shader parameter block. */
 	void UpdateLightParamBlock( deoglLightShader &lightShader, deoglSPBlockUBO &paramBlock,
-		deoglRenderPlan &plan, deoglRLight &light );
+		deoglRenderPlanLight &planLight );
 	
 	/** \brief Update instance shader parameter block. */
 	void UpdateInstanceParamBlock( deoglLightShader &lightShader, deoglSPBlockUBO &paramBlock,

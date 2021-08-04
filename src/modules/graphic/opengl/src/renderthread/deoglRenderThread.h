@@ -102,6 +102,7 @@ private:
 	
 	bool pAsyncRendering;
 	bool pConfigChanged;
+	uint32_t pFrameCounter;
 	
 	deoglConfiguration pConfiguration;
 	deoglRTLeakTracker pLeakTracker;
@@ -230,6 +231,9 @@ public:
 	inline bool GetAsyncRendering() const{ return pAsyncRendering; }
 	
 	
+	
+	/** Frame counter. */
+	inline uint32_t GetFrameCounter() const{ return pFrameCounter; }
 	
 	/** Configuration. */
 	inline deoglConfiguration &GetConfiguration(){ return pConfiguration; }

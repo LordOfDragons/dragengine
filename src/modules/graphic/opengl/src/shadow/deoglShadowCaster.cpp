@@ -41,6 +41,7 @@
 ////////////////////////////
 
 deoglShadowCaster::deoglShadowCaster( deoglRenderThread &renderThread ) :
+pFrameCounterTracker( renderThread ),
 pSolid( renderThread ),
 pTransparent( renderThread ),
 pAmbient( renderThread ),
@@ -73,6 +74,13 @@ deoglShadowCaster::~deoglShadowCaster(){
 /////////////
 
 void deoglShadowCaster::Update(){
+	pFrameCounterTracker.Update();
+	if( ! pFrameCounterTracker.HasElapsedFrames() ){
+		return;
+	}
+	
+	// call Update() only if render frame changed
+	
 	pSolid.Update();
 	pTransparent.Update();
 	pAmbient.Update();
@@ -92,7 +100,7 @@ void deoglShadowCaster::Clear(){
 
 void deoglShadowCaster::DropDynamic(){
 	pSolid.DropDynamic();
-	//pTransparent.DropDynamic();
+	pTransparent.DropDynamic();
 	pAmbient.DropDynamic();
 }
 

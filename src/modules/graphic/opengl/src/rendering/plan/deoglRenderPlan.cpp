@@ -1335,16 +1335,10 @@ void deoglRenderPlan::PlanTransparency( int layerCount ){
 	
 	// plan transparency handling for lights
 // 	if( pDisableLights ){ // what?
-		int i;
-		for( i=0; i<pLightCount; i++ ){
-			deoglRenderPlanLight &planLight = *pLights[ i ];
-			
-			// deprecated
-			deoglShadowCaster &scaster = *planLight.GetLight()->GetLight()->GetShadowCaster();
-			scaster.GetSolid().SetPlanTransparentSize( planLight.GetSolidShadowSizeTransp() );
-			scaster.GetTransparent().SetPlanTransparentSize( planLight.GetTranspShadowSizeTransp() );
-			scaster.GetAmbient().SetPlanTransparentSize( planLight.GetAmbientShadowSizeTransp() );
-		}
+// 		int i;
+// 		for( i=0; i<pLightCount; i++ ){
+// 			deoglRenderPlanLight &planLight = *pLights[ i ];
+// 		}
 // 	}
 }
 
@@ -1381,7 +1375,7 @@ void deoglRenderPlan::CleanUp(){
 	RemoveAllSkyInstances();
 	RemoveAllMaskedPlans();
 	RemoveAllLights();
-	pDropLightsDynamic();
+// 	pDropLightsDynamic(); // keep dynamics around to improve GI performance
 	pCollideList.Clear();
 	pComponentsOccMap.RemoveAll();
 	SetOcclusionTest( NULL );
@@ -2074,21 +2068,6 @@ void deoglRenderPlan::pBuildLightPlan(){
 		
 		planLight.Init();
 		planLight.PlanShadowCasting();
-		
-		// below deprecated
-		deoglShadowCaster &scaster = *planLight.GetLight()->GetLight()->GetShadowCaster();
-		
-		deoglSCSolid &scsolid = scaster.GetSolid();
-		scsolid.SetPlanStaticSize( planLight.GetSolidShadowSizeStatic() );
-		scsolid.SetPlanDynamicSize( planLight.GetSolidShadowSizeDynamic() );
-		
-		deoglSCTransparent &sctransparent = scaster.GetTransparent();
-		sctransparent.SetPlanStaticSize( planLight.GetTranspShadowSizeStatic() );
-		sctransparent.SetPlanDynamicSize( planLight.GetTranspShadowSizeDynamic() );
-		
-		deoglSCAmbient &scambient = scaster.GetAmbient();
-		scambient.SetPlanStaticSize( planLight.GetAmbientShadowSizeStatic() );
-		scambient.SetPlanDynamicSize( planLight.GetAmbientShadowSizeDynamic() );
 	}
 }
 

@@ -720,17 +720,9 @@ deoglLightShaderConfig &config ){
 		config.SetLightMode( deoglLightShaderConfig::elmPoint );
 		config.SetShadowMappingAlgorithm1( deoglLightShaderConfig::esmaCube );
 		config.SetShadowMappingAlgorithm2( deoglLightShaderConfig::esmaCube );
-		
-		if( oglconfig.GetUseShadowCubeEncodeDepth() ){
-			config.SetHWDepthCompare( false );
-			config.SetDecodeInShadow( true );
-			config.SetShadowMatrix2EqualsMatrix1( true );
-			
-		}else{
-			config.SetHWDepthCompare( true );
-			config.SetDecodeInShadow( false );
-			config.SetShadowMatrix2EqualsMatrix1( true );
-		}
+		config.SetHWDepthCompare( true );
+		config.SetDecodeInShadow( false );
+		config.SetShadowMatrix2EqualsMatrix1( true );
 		
 		switch( shaderType ){
 		case estLumSolid1:

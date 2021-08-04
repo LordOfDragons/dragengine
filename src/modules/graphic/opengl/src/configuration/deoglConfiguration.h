@@ -105,7 +105,6 @@ private:
 	float pShadowMapOffsetBias;
 	float pShadowCubePCFSize;
 	int pOcclusionReduction;
-	bool pUseShadowCubeEncodedDepth;
 	
 	float pDistShadowScale;
 	float pDistShadowBias;
@@ -306,10 +305,6 @@ public:
 	inline bool GetStencilOnlyOnRB() const{ return pStencilOnlyOnRB; }
 	/** Sets if stencil buffer is used only on renderbuffers ( broken hardware fix ). */
 	void SetStencilOnlyOnRB( bool stencilOnlyOnRB );
-	/** Determines if depth has to be encoded for cube shadow maps. */
-	inline bool GetUseShadowCubeEncodeDepth() const{ return pUseShadowCubeEncodedDepth; }
-	/** Sets if depth has to be encoded for cube shadow maps. */
-	void SetUseShadowCubeEncodeDepth( bool useEncodeDepth );
 	
 	/** Determines if depth has to be encoded for deferred rendering. */
 	inline bool GetDefRenEncDepth() const{ return pDefRenEncDepth; }

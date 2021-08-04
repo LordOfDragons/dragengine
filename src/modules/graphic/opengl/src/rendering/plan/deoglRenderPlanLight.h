@@ -41,17 +41,13 @@ private:
 	float pDistance;
 	int pReductionFactor;
 	
-	int pSolidShadowSizeStatic;
-	int pSolidShadowSizeDynamic;
-	int pSolidShadowSizeTransp;
-	
+	int pShadowSizeStatic;
 	int pTranspShadowSizeStatic;
-	int pTranspShadowSizeDynamic;
-	int pTranspShadowSizeTransp;
-	
 	int pAmbientShadowSizeStatic;
+	
+	int pShadowSizeDynamic;
+	int pTranspShadowSizeDynamic;
 	int pAmbientShadowSizeDynamic;
-	int pAmbientShadowSizeTransp;
 	
 	
 	
@@ -94,30 +90,22 @@ public:
 	void PlanShadowCasting();
 	
 	/** Shadow size. */
-	inline int GetSolidShadowSizeStatic() const{ return pSolidShadowSizeStatic; }
-	inline int GetSolidShadowSizeDynamic() const{ return pSolidShadowSizeDynamic; }
-	inline int GetSolidShadowSizeTransp() const{ return pSolidShadowSizeTransp; }
-	
+	inline int GetShadowSizeStatic() const{ return pShadowSizeStatic; }
 	inline int GetTranspShadowSizeStatic() const{ return pTranspShadowSizeStatic; }
-	inline int GetTranspShadowSizeDynamic() const{ return pTranspShadowSizeDynamic; }
-	inline int GetTranspShadowSizeTransp() const{ return pTranspShadowSizeTransp; }
-	
 	inline int GetAmbientShadowSizeStatic() const{ return pAmbientShadowSizeStatic; }
+	
+	inline int GetShadowSizeDynamic() const{ return pShadowSizeDynamic; }
+	inline int GetTranspShadowSizeDynamic() const{ return pTranspShadowSizeDynamic; }
 	inline int GetAmbientShadowSizeDynamic() const{ return pAmbientShadowSizeDynamic; }
-	inline int GetAmbientShadowSizeTransp() const{ return pAmbientShadowSizeTransp; }
 	
 	/** Set shadow size. */
-	void SetSolidShadowSizeStatic( int size );
-	void SetSolidShadowSizeDynamic( int size );
-	void SetSolidShadowSizeTransp( int size );
-	
+	void SetShadowSizeStatic( int size );
 	void SetTranspShadowSizeStatic( int size );
-	void SetTranspShadowSizeDynamic( int size );
-	void SetTranspShadowSizeTransp( int size );
-	
 	void SetAmbientShadowSizeStatic( int size );
+	
+	void SetShadowSizeDynamic( int size );
+	void SetTranspShadowSizeDynamic( int size );
 	void SetAmbientShadowSizeDynamic( int size );
-	void SetAmbientShadowSizeTransp( int size );
 	/*@}*/
 	
 	

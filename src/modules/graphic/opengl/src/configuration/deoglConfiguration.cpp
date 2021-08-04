@@ -58,7 +58,6 @@ pShadowMapOffsetScale( 1.1f ),
 pShadowMapOffsetBias( 4.0f ),
 pShadowCubePCFSize( 1.0f ),
 pOcclusionReduction( 1 ),
-pUseShadowCubeEncodedDepth( false ),
 
 pDistShadowScale( 1.0f ),
 pDistShadowBias( 0.001f ), //4.0f ), // 24-bit: 1 step is 1.192093e-7
@@ -334,14 +333,6 @@ void deoglConfiguration::SetOcclusionReduction( int reductionFactor ){
 		return;
 	}
 	pOcclusionReduction = reductionFactor;
-	pDirty = true;
-}
-
-void deoglConfiguration::SetUseShadowCubeEncodeDepth( bool useEncodeDepth ){
-	if( useEncodeDepth == pUseShadowCubeEncodedDepth ){
-		return;
-	}
-	pUseShadowCubeEncodedDepth = useEncodeDepth;
 	pDirty = true;
 }
 

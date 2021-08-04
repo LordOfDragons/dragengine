@@ -230,9 +230,6 @@ void deoglLSConfiguration::pLoadConfigOpenGL( deoglConfiguration &configuration,
 				}else if( strcmp( name, "useEncodeDepth" ) == 0 ){
 					configuration.SetUseEncodeDepth( strtol( tag->GetFirstData()->GetData(), NULL, 10 ) != 0 );
 					
-				}else if( strcmp( name, "useShadowCubeEncodeDepth" ) == 0 ){
-					configuration.SetUseShadowCubeEncodeDepth( strtol( tag->GetFirstData()->GetData(), NULL, 10 ) != 0 );
-					
 				}else if( strcmp( name, "disableStencil" ) == 0 ){
 					configuration.SetDisableStencil( strtol( tag->GetFirstData()->GetData(), NULL, 10 ) != 0 );
 					

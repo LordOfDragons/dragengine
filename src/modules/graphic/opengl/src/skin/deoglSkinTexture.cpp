@@ -684,7 +684,6 @@ bool deoglSkinTexture::GetShaderConfigFor( eShaderTypes shaderType, deoglSkinSha
 	const deoglDeferredRendering &defren = pRenderThread.GetDeferredRendering();
 	const sShaderConfigInfo &shaderConfigInfo = vShaderConfigInfo[ shaderType ];
 	const bool useEquiEnvMap = pRenderThread.GetRenderers().GetReflection().GetUseEquiEnvMap();
-	const deoglConfiguration &oglconfig = pRenderThread.GetConfiguration();
 	bool hasChanTex[ deoglSkinChannel::CHANNEL_COUNT ];
 	const bool isDecal = ( shaderConfigInfo.geometryMode == deoglSkinShaderConfig::egmDecal );
 	const bool isParticle = ( shaderConfigInfo.geometryMode == deoglSkinShaderConfig::egmParticle );
@@ -1005,12 +1004,7 @@ bool deoglSkinTexture::GetShaderConfigFor( eShaderTypes shaderType, deoglSkinSha
 		break;
 		
 	case esctShadow:
-		if( shaderConfigInfo.depthMode == deoglSkinShaderConfig::edmDistance ){
-			config.SetEncodeOutDepth( oglconfig.GetUseShadowCubeEncodeDepth() );
-			
-		}else{
-			config.SetEncodeOutDepth( false );
-		}
+		config.SetEncodeOutDepth( false );
 		config.SetNoZClip( shaderConfigInfo.depthMode == deoglSkinShaderConfig::edmOrthogonal );
 		config.SetOutputColor( ! pSolid );
 		

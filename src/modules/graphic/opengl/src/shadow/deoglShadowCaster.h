@@ -25,6 +25,7 @@
 #include "deoglSCSolid.h"
 #include "deoglSCTransparent.h"
 #include "deoglSCAmbient.h"
+#include "../renderthread/deoglRTFrameCounterTracker.h"
 
 #include <dragengine/common/math/decMath.h>
 
@@ -65,6 +66,7 @@ public:
 	
 	
 private:
+	deoglRTFrameCounterTracker pFrameCounterTracker;
 	deoglSCSolid pSolid;
 	deoglSCTransparent pTransparent;
 	deoglSCAmbient pAmbient;

@@ -65,9 +65,14 @@ pDynamicColorMap( NULL ),
 pDynamicShadowCubeMap( NULL ),
 pDynamicColorCubeMap( NULL ),
 
-pPlanStaticSize( 16 ),
-pPlanDynamicSize( 16 ),
-pPlanTransparentSize( 16 ),
+pLastUseDynamic( 0 ),
+pHasDynamic( false ),
+pDirtyDynamic( true ),
+
+pLastSizeStatic( 0 ),
+pNextSizeStatic( 0 ),
+pLastSizeDynamic( 0 ),
+pNextSizeDynamic( 0 ),
 
 pMemUseStaMapDepth( renderThread.GetMemoryManager().GetConsumption().shadow.transparentStaticMapDepth ),
 pMemUseStaMapColor( renderThread.GetMemoryManager().GetConsumption().shadow.transparentStaticMapColor ),
@@ -112,6 +117,7 @@ deoglTexture *deoglSCTransparent::ObtainStaticShadowMapWithSize( int size, bool 
 	pMemUseStaMapDepth = pStaticShadowMap->GetMemoryConsumption().Total();
 	pHasStatic = true;
 	pLastUseStatic = 0;
+	pLastSizeStatic = pNextSizeStatic;
 	
 	return pStaticShadowMap;
 }
@@ -139,14 +145,12 @@ deoglTexture *deoglSCTransparent::ObtainStaticColorMapWithSize( int size ){
 	pMemUseStaMapColor = pStaticColorMap->GetMemoryConsumption().Total();
 	pHasStatic = true;
 	pLastUseStatic = 0;
+	pLastSizeStatic = pNextSizeStatic;
 	
 	return pStaticColorMap;
 }
 
 deoglCubeMap *deoglSCTransparent::ObtainStaticShadowCubeMapWithSize( int size ){
-	const deoglConfiguration &config = pRenderThread.GetConfiguration();
-	const bool useShadowCubeEncodeDepth = config.GetUseShadowCubeEncodeDepth();
-	
 	if( size < 1 ){
 		DETHROW( deeInvalidParam );
 	}
@@ -164,18 +168,12 @@ deoglCubeMap *deoglSCTransparent::ObtainStaticShadowCubeMapWithSize( int size ){
 	
 	pStaticShadowCubeMap = new deoglCubeMap( pRenderThread );
 	pStaticShadowCubeMap->SetSize( size );
-	
-	if( useShadowCubeEncodeDepth ){
-		pStaticShadowCubeMap->SetFBOFormat( 4, false );
-		
-	}else{
-		pStaticShadowCubeMap->SetDepthFormat();
-	}
-	
+	pStaticShadowCubeMap->SetDepthFormat();
 	pStaticShadowCubeMap->CreateCubeMap();
 	pMemUseStaCubeDepth = pStaticShadowCubeMap->GetMemoryConsumption().Total();
 	pHasStatic = true;
 	pLastUseStatic = 0;
+	pLastSizeStatic = pNextSizeStatic;
 	
 	return pStaticShadowCubeMap;
 }
@@ -203,6 +201,7 @@ deoglCubeMap *deoglSCTransparent::ObtainStaticColorCubeMapWithSize( int size ){
 	pMemUseStaCubeColor = pStaticColorCubeMap->GetMemoryConsumption().Total();
 	pHasStatic = true;
 	pLastUseStatic = 0;
+	pLastSizeStatic = pNextSizeStatic;
 	
 	return pStaticColorCubeMap;
 }
@@ -230,6 +229,7 @@ void deoglSCTransparent::DropStatic(){
 		pStaticColorCubeMap = NULL;
 	}
 	
+	pLastSizeStatic = 0;
 	pHasStatic = false;
 }
 
@@ -258,6 +258,10 @@ deoglRenderableDepthTexture *deoglSCTransparent::ObtainDynamicShadowMapWithSize(
 	pDynamicShadowMap = pRenderThread.GetTexture().GetRenderableDepthTexture()
 		.GetTextureWith( size, size, false, false );
 	pMemUseDynMapDepth = pDynamicShadowMap->GetTexture()->GetMemoryConsumption().Total();
+	pHasDynamic = true;
+	pDirtyDynamic = true;
+	pLastUseDynamic = 0;
+	pLastSizeDynamic = pNextSizeDynamic;
 	
 	return pDynamicShadowMap;
 }
@@ -277,6 +281,10 @@ deoglRenderableColorTexture *deoglSCTransparent::ObtainDynamicColorMapWithSize( 
 	pDynamicColorMap = pRenderThread.GetTexture().GetRenderableColorTexture()
 		.GetTextureWith( size, size, 4, false );
 	pMemUseDynMapColor = pDynamicColorMap->GetTexture()->GetMemoryConsumption().Total();
+	pHasDynamic = true;
+	pDirtyDynamic = true;
+	pLastUseDynamic = 0;
+	pLastSizeDynamic = pNextSizeDynamic;
 	
 	return pDynamicColorMap;
 }
@@ -295,6 +303,10 @@ deoglRenderableDepthCubeMap *deoglSCTransparent::ObtainDynamicShadowCubeMapWithS
 	
 	pDynamicShadowCubeMap = pRenderThread.GetTexture().GetRenderableDepthCubeMap().GetCubeMapWith( size );
 	pMemUseDynCubeDepth = pDynamicShadowCubeMap->GetCubeMap()->GetMemoryConsumption().Total();
+	pHasDynamic = true;
+	pDirtyDynamic = true;
+	pLastUseDynamic = 0;
+	pLastSizeDynamic = pNextSizeDynamic;
 	
 	return pDynamicShadowCubeMap;
 }
@@ -314,6 +326,10 @@ deoglRenderableColorCubeMap *deoglSCTransparent::ObtainDynamicColorCubeMapWithSi
 	pDynamicColorCubeMap = pRenderThread.GetTexture().GetRenderableColorCubeMap().
 		GetCubeMapWith( size, 4, false );
 	pMemUseDynCubeColor = pDynamicColorCubeMap->GetCubeMap()->GetMemoryConsumption().Total();
+	pHasDynamic = true;
+	pDirtyDynamic = true;
+	pLastUseDynamic = 0;
+	pLastSizeDynamic = pNextSizeDynamic;
 	
 	return pDynamicColorCubeMap;
 }
@@ -340,6 +356,36 @@ void deoglSCTransparent::DropDynamic(){
 		pDynamicColorCubeMap->SetInUse( false );
 		pDynamicColorCubeMap = NULL;
 	}
+	
+	pLastSizeDynamic = 0;
+	pHasDynamic = false;
+	pDirtyDynamic = true;
+}
+
+void deoglSCTransparent::IncrementLastUseDynamic(){
+	pLastUseDynamic++;
+}
+
+void deoglSCTransparent::ResetLastUseDynamic(){
+	pLastUseDynamic = 0;
+}
+
+void deoglSCTransparent::SetDirtyDynamic( bool dirty ){
+	pDirtyDynamic = dirty;
+}
+
+
+
+void deoglSCTransparent::SetLargestNextSizeStatic( int size ){
+	if( size > pNextSizeStatic ){
+		pNextSizeStatic = size;
+	}
+}
+
+void deoglSCTransparent::SetLargestNextSizeDynamic( int size ){
+	if( size > pNextSizeDynamic ){
+		pNextSizeDynamic = size;
+	}
 }
 
 
@@ -348,36 +394,28 @@ void deoglSCTransparent::Update(){
 	if( pHasStatic && pLastUseStatic++ > 5 ){ // for the time being 5 frames
 		DropStatic();
 	}
+	if( pHasDynamic && pLastUseDynamic++ > 5 ){ // for the time being 5 frames
+		DropDynamic();
+	}
+	
+	if( pNextSizeStatic > 0 ){
+		pLastSizeStatic = pNextSizeStatic;
+		pNextSizeStatic = 0;
+	}
+	
+	if( pNextSizeDynamic > 0 ){
+		pLastSizeDynamic = pNextSizeDynamic;
+		pNextSizeDynamic = 0;
+	}
+	
+	pDirtyDynamic = true;
 }
 
 bool deoglSCTransparent::RequiresUpdate() const{
-	return pHasStatic;
+	return pHasStatic || pHasDynamic;
 }
 
 void deoglSCTransparent::Clear(){
 	DropStatic();
 	DropDynamic();
-}
-
-
-
-void deoglSCTransparent::SetPlanStaticSize( int size ){
-	if( size < 16 ){
-		DETHROW( deeInvalidParam );
-	}
-	pPlanStaticSize = size;
-}
-
-void deoglSCTransparent::SetPlanDynamicSize( int size ){
-	if( size < 16 ){
-		DETHROW( deeInvalidParam );
-	}
-	pPlanDynamicSize = size;
-}
-
-void deoglSCTransparent::SetPlanTransparentSize( int size ){
-	if( size < 16 ){
-		DETHROW( deeInvalidParam );
-	}
-	pPlanTransparentSize = size;
 }

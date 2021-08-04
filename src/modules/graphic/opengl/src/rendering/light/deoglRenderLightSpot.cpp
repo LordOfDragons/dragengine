@@ -31,6 +31,7 @@
 #include "../defren/deoglDeferredRendering.h"
 #include "../plan/deoglRenderPlan.h"
 #include "../plan/deoglRenderPlanDebug.h"
+#include "../plan/deoglRenderPlanLight.h"
 #include "../task/deoglRenderTask.h"
 #include "../task/deoglAddToRenderTask.h"
 #include "../task/deoglRenderTaskShader.h"
@@ -200,6 +201,18 @@ shadow2Ambient( NULL ){
 
 
 
+// #define DO_LOG_SIZE_CHANGE 1
+
+#ifdef DO_LOG_SIZE_CHANGE
+#define LOG_SIZE_CHANGE(s,o,n) GetRenderThread().GetLogger().LogInfoFormat(\
+	"Spot.%s: Size changed from %d to %d (light=%p fbotarget=%p)", \
+	s, o, n->GetWidth(), &light, plan.GetFBOTarget());
+#else
+#define LOG_SIZE_CHANGE(s,o,n)
+#endif
+
+
+
 // Class deoglRenderLightSpot
 ///////////////////////////////
 
@@ -357,7 +370,8 @@ deoglRenderLightSpot::~deoglRenderLightSpot(){
 // Rendering
 //////////////
 
-void deoglRenderLightSpot::CalculateBoxBoundary( deoglRenderPlan &plan, deoglRLight &light ) {
+void deoglRenderLightSpot::CalculateBoxBoundary( deoglRenderPlanLight &planLight ) {
+	deoglRLight &light = *planLight.GetLight()->GetLight();
 	deoglShadowCaster &shadowCaster = *light.GetShadowCaster();
 	deoglSCSolid &scsolid = shadowCaster.GetSolid();
 	deoglSCAmbient &scambient = shadowCaster.GetAmbient();
@@ -500,19 +514,18 @@ void deoglRenderLightSpot::CalculateBoxBoundary( deoglRenderPlan &plan, deoglRLi
 
 
 void deoglRenderLightSpot::RenderLights( deoglRenderPlan &plan, bool solid, const deoglRenderPlanMasked *mask ){
-	const deoglCollideList &clist = plan.GetCollideList();
-	const int lightCount = clist.GetLightCount();
+	const int count = plan.GetLightCount();
 	int i;
 	
 	DebugTimersReset( plan, false );
 	
-	for( i=0; i<lightCount; i++ ){
-		deoglCollideListLight &cllight = *clist.GetLightAt( i );
+	for( i=0; i<count; i++ ){
+		deoglRenderPlanLight &light = *plan.GetLightAt( i );
 		
-		switch( cllight.GetLight()->GetLightType() ){
+		switch( light.GetLight()->GetLight()->GetLightType() ){
 		case deLight::eltSpot:
 		case deLight::eltProjector:
-			RenderLight( plan, solid, mask, cllight );
+			RenderLight( light, solid, mask );
 			break;
 			
 		default:
@@ -530,14 +543,16 @@ void deoglRenderLightSpot::RenderLights( deoglRenderPlan &plan, bool solid, cons
 
 
 #include "../../debug/deoglDebugStateSnapshot.h"
-void deoglRenderLightSpot::RenderLight( deoglRenderPlan &plan, bool solid,
-const deoglRenderPlanMasked *mask, deoglCollideListLight &cllight ){
+void deoglRenderLightSpot::RenderLight( deoglRenderPlanLight &planLight, bool solid,
+const deoglRenderPlanMasked *mask ){
 	// determine what needs to be rendered
+	deoglCollideListLight &cllight = *planLight.GetLight();
 	if( cllight.IsHiddenByOccQuery() ){
 		cllight.SetCulled( true );
 	}
 	
 	const bool lightGeometry = ! cllight.GetCulled();
+	deoglRenderPlan &plan = planLight.GetPlan();
 	deoglGIState * const giState = ! mask && solid ? plan.GetUpdateGIState() : NULL;
 	
 	if( ! lightGeometry && ! giState ){
@@ -654,7 +669,7 @@ const deoglRenderPlanMasked *mask, deoglCollideListLight &cllight ){
 	
 	// render shadow map if required
 	if( useShadow ){
-		RenderShadows( plan, solid, light, matrixLP, transparentStaticShadow, transparentDynamicShadow, refilterShadow );
+		RenderShadows( planLight, solid, matrixLP, transparentStaticShadow, transparentDynamicShadow, refilterShadow );
 		
 		OGL_CHECK( renderThread, glViewport( 0, 0, defren.GetWidth(), defren.GetHeight() ) );
 		OGL_CHECK( renderThread, glScissor( 0, 0, defren.GetWidth(), defren.GetHeight() ) );
@@ -674,27 +689,13 @@ const deoglRenderPlanMasked *mask, deoglCollideListLight &cllight ){
 		case deoglShadowCaster::estDynamicOnly:
 			if( scsolid.GetDynamicMap() ){
 				texSolidDepth1 = scsolid.GetDynamicMap()->GetTexture();
-				
-			}else{
-				texSolidDepth1 = shadowMapper.GetSolidDepthTexture();
 			}
-			
-			if( transparentDynamicShadow ){
-				if( sctransp.GetDynamicShadowMap() ){
-					texTranspDepth1 = sctransp.GetDynamicShadowMap()->GetTexture();
-					texTranspColor1 = sctransp.GetDynamicColorMap()->GetTexture();
-					
-				}else{
-					texTranspDepth1 = shadowMapper.GetTransparentDepthTexture();
-					texTranspColor1 = shadowMapper.GetTransparentColorTexture();
-				}
+			if( transparentDynamicShadow && sctransp.GetDynamicShadowMap() && sctransp.GetDynamicColorMap() ){
+				texTranspDepth1 = sctransp.GetDynamicShadowMap()->GetTexture();
+				texTranspColor1 = sctransp.GetDynamicColorMap()->GetTexture();
 			}
-			
 			if( scambient.GetDynamicMap() ){
 				texAmbient1 = scambient.GetDynamicMap()->GetTexture();
-				
-			}else{
-				texAmbient1 = shadowMapper.GetAmbientTexture();
 			}
 			break;
 			
@@ -710,39 +711,32 @@ const deoglRenderPlanMasked *mask, deoglCollideListLight &cllight ){
 			}
 			
 			texSolidDepth1 = scsolid.GetStaticMap();
-			texAmbient1 = scambient.GetStaticMap();
-			
-			if( scsolid.GetDynamicMap() ){
-				texSolidDepth2 = scsolid.GetDynamicMap()->GetTexture();
-				
-			}else{
-				texSolidDepth2 = shadowMapper.GetSolidDepthTexture();
-			}
-			
 			if( transparentStaticShadow ){
 				texTranspDepth1 = sctransp.GetStaticShadowMap();
 				texTranspColor1 = sctransp.GetStaticColorMap();
 			}
+			texAmbient1 = scambient.GetStaticMap();
 			
-			if( transparentDynamicShadow ){
-				deoglTexture *&depth = transparentStaticShadow ? texTranspDepth2 : texTranspDepth1;
-				deoglTexture *&color = transparentStaticShadow ? texTranspColor2 : texTranspColor1;
-				
-				if( sctransp.GetDynamicShadowMap() ){
-					depth = sctransp.GetDynamicShadowMap()->GetTexture();
-					color = sctransp.GetDynamicColorMap()->GetTexture();
+			if( scsolid.GetDynamicMap() ){
+				texSolidDepth2 = scsolid.GetDynamicMap()->GetTexture();
+			}
+			if( transparentDynamicShadow && sctransp.GetDynamicShadowMap() && sctransp.GetDynamicColorMap() ){
+				if( texTranspDepth1 ){
+					texTranspDepth2 = sctransp.GetDynamicShadowMap()->GetTexture();
 					
 				}else{
-					depth = shadowMapper.GetTransparentDepthTexture();
-					color = shadowMapper.GetTransparentColorTexture();
+					texTranspDepth1 = sctransp.GetDynamicShadowMap()->GetTexture();
+				}
+				
+				if( texTranspColor1 ){
+					texTranspColor2 = sctransp.GetDynamicColorMap()->GetTexture();
+					
+				}else{
+					texTranspColor1 = sctransp.GetDynamicColorMap()->GetTexture();
 				}
 			}
-			
 			if( scambient.GetDynamicMap() ){
 				texAmbient2 = scambient.GetDynamicMap()->GetTexture();
-				
-			}else{
-				texAmbient2 = shadowMapper.GetAmbientTexture();
 			}
 			break;
 		}
@@ -876,7 +870,7 @@ const deoglRenderPlanMasked *mask, deoglCollideListLight &cllight ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	UpdateLightParamBlock( *lightShader, *spbLight, plan, light );
+	UpdateLightParamBlock( *lightShader, *spbLight, planLight );
 	
 	sShadowDepthMaps shadowDepthMaps;
 	shadowDepthMaps.shadow1Solid = texSolidDepth1;
@@ -897,7 +891,7 @@ const deoglRenderPlanMasked *mask, deoglCollideListLight &cllight ){
 		spbLight->Activate();
 		spbInstance->Activate();
 		
-		ActivateTextures( light, *lightShader, shadowDepthMaps );
+		ActivateTextures( planLight, *lightShader, shadowDepthMaps );
 		
 		// render the light
 		pglBindVertexArray( light.GetLightVolume()->GetVAO() );
@@ -936,15 +930,16 @@ const deoglRenderPlanMasked *mask, deoglCollideListLight &cllight ){
 			spbLight->Activate();
 			spbInstance->Activate();
 			
-			ActivateTextures( light, *lightShader, shadowDepthMaps );
+			ActivateTextures( planLight, *lightShader, shadowDepthMaps );
 			
 			defren.RenderFSQuadVAO();
 		}
 	}
 }
 
-void deoglRenderLightSpot::ActivateTextures( deoglRLight &light, deoglLightShader &shader,
-const sShadowDepthMaps &shadowDepthMaps ){
+void deoglRenderLightSpot::ActivateTextures( deoglRenderPlanLight &planLight,
+deoglLightShader &shader, const sShadowDepthMaps &shadowDepthMaps ){
+	deoglRLight &light = *planLight.GetLight()->GetLight();
 	deoglRenderThread &renderThread = GetRenderThread();
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	deoglRTDefaultTextures &dt = renderThread.GetDefaultTextures();
@@ -1084,9 +1079,11 @@ const sShadowDepthMaps &shadowDepthMaps ){
 
 
 
-void deoglRenderLightSpot::RenderShadows( deoglRenderPlan &plan, bool solid, deoglRLight &light,
+void deoglRenderLightSpot::RenderShadows( deoglRenderPlanLight &planLight, bool solid,
 const decDMatrix &matrixProjection, bool transparentStaticShadow, bool transparentDynamicShadow,
 bool refilterShadow ){
+	deoglRLight &light = *planLight.GetLight()->GetLight();
+	deoglRenderPlan &plan = planLight.GetPlan();
 	const decDVector lightPosition( light.GetMatrix().GetPosition() - plan.GetWorld()->GetReferencePosition() );
 	deoglRenderThread &renderThread = GetRenderThread();
 	const deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
@@ -1096,7 +1093,6 @@ bool refilterShadow ){
 	deoglSCSolid &scsolid = shadowCaster.GetSolid();
 	deoglSCAmbient &scambient = shadowCaster.GetAmbient();
 	deoglShadowCaster::eShadowTypes shadowType = shadowCaster.GetShadowType();
-	bool copyShadowMaps = false;
 	bool updateBoxBoundary = false;
 	
 	// calculate camera matrix
@@ -1104,17 +1100,13 @@ bool refilterShadow ){
 	matrixCamera.SetCamera( lightPosition, matrixCamera.TransformView(), matrixCamera.TransformUp() );
 	
 	// get map sizes as calculated by render plan
-	const int staticShadowMapSize = scsolid.GetPlanStaticSize();
-	const int dynamicShadowMapSize = solid ?
-		scsolid.GetPlanDynamicSize() : scsolid.GetPlanTransparentSize();
+	const int staticShadowMapSize = planLight.GetShadowSizeStatic();
+	const int staticTranspShadowMapSize = planLight.GetTranspShadowSizeStatic();
+	const int staticAmbientMapSize = planLight.GetAmbientShadowSizeStatic();
 	
-	const int staticTranspShadowMapSize = sctransp.GetPlanStaticSize();
-	const int dynamicTranspShadowMapSize = solid ?
-		sctransp.GetPlanDynamicSize() : sctransp.GetPlanTransparentSize();
-	
-	const int staticAmbientMapSize = scambient.GetPlanStaticSize();
-	const int dynamicAmbientMapSize = solid ?
-		scambient.GetPlanDynamicSize() : scambient.GetPlanTransparentSize();
+	const int dynamicShadowMapSize = planLight.GetShadowSizeDynamic();
+	const int dynamicTranspShadowMapSize = planLight.GetTranspShadowSizeDynamic();
+	const int dynamicAmbientMapSize = planLight.GetAmbientShadowSizeDynamic();
 	
 	// if layer mask restriction is used dynamic only shadows have to be used to filter properly
 	if( refilterShadow ){
@@ -1128,16 +1120,21 @@ bool refilterShadow ){
 		
 		// check if an update is required. updates can be required due to the following reasons:
 		// 1) the texture does not exist
-		// 2) the size is less than the requested size
-		// the point 2 happens if an environment map has been rendered. in this case a small texture is
-		// used for shadow casting. at the regular scene then the texture exists but obviously it is way
-		// too small and needs to be recreated. a larger texture than required is not a problem.
-		if( scsolid.GetStaticMap() && scambient.GetStaticMap() ){
-			if( scsolid.GetStaticMap()->GetWidth() < staticShadowMapSize ){
+		// 2) the size changed
+		if( scsolid.GetStaticMap() ){
+			if( scsolid.GetStaticMap()->GetWidth() != staticShadowMapSize ){
+				LOG_SIZE_CHANGE("scsolid.static", staticShadowMapSize, scsolid.GetStaticMap())
 				scsolid.DropStatic();
 				requiresUpdate = true;
 			}
+			
+		}else{
+			requiresUpdate = true;
+		}
+		
+		if( scambient.GetStaticMap() ){
 			if( scambient.GetStaticMap()->GetWidth() < staticAmbientMapSize ){
+				LOG_SIZE_CHANGE("scambient.static", staticAmbientMapSize, scambient.GetStaticMap())
 				scambient.DropStatic();
 				requiresUpdate = true;
 			}
@@ -1148,7 +1145,8 @@ bool refilterShadow ){
 		
 		if( transparentStaticShadow ){
 			if( sctransp.GetStaticShadowMap() ){
-				if( sctransp.GetStaticShadowMap()->GetWidth() < staticTranspShadowMapSize ){
+				if( sctransp.GetStaticShadowMap()->GetWidth() != staticTranspShadowMapSize ){
+					LOG_SIZE_CHANGE("sctransp.static", staticTranspShadowMapSize, sctransp.GetStaticShadowMap())
 					sctransp.DropStatic();
 					requiresUpdate = true;
 				}
@@ -1159,6 +1157,7 @@ bool refilterShadow ){
 			
 			if( sctransp.GetStaticColorMap() ){
 				if( sctransp.GetStaticColorMap()->GetWidth() < staticTranspShadowMapSize ){
+					LOG_SIZE_CHANGE("sctransp.staticColor", staticTranspShadowMapSize, sctransp.GetStaticColorMap())
 					sctransp.DropStatic();
 					requiresUpdate = true;
 				}
@@ -1180,15 +1179,15 @@ bool refilterShadow ){
 			shadowMapper.SetForeignSolidDepthTexture( scsolid.ObtainStaticMapWithSize(
 				staticShadowMapSize, false, defren.GetUseInverseDepth() ) );
 			
-			if( transparentStaticShadow ){
-				shadowMapper.SetForeignTransparentDepthTexture( sctransp.
-					ObtainStaticShadowMapWithSize( staticTranspShadowMapSize,
+			if( ! solid && transparentStaticShadow ){
+				shadowMapper.SetForeignTransparentDepthTexture(
+					sctransp.ObtainStaticShadowMapWithSize( staticTranspShadowMapSize,
 						defren.GetUseInverseDepth() ) );
-				shadowMapper.SetForeignTransparentColorTexture( sctransp.
-					ObtainStaticColorMapWithSize( staticTranspShadowMapSize ) );
+				shadowMapper.SetForeignTransparentColorTexture(
+					sctransp.ObtainStaticColorMapWithSize( staticTranspShadowMapSize ) );
 			}
 			
-			RenderShadowMap( plan, light, matrixCamera, matrixProjection, shadowMapper,
+			RenderShadowMap( planLight, matrixCamera, matrixProjection, shadowMapper,
 				light.GetStaticCollideList(), NULL, staticShadowMapSize,
 				staticTranspShadowMapSize, transparentStaticShadow, false, solid );
 			
@@ -1211,7 +1210,7 @@ bool refilterShadow ){
 			*/
 			shadowMapper.SetForeignAmbientTexture( scambient.ObtainStaticMapWithSize(
 				staticAmbientMapSize, defren.GetUseInverseDepth() ) );
-			RenderAmbientMap( plan, light, matrixCamera, matrixProjection, shadowMapper,
+			RenderAmbientMap( planLight, matrixCamera, matrixProjection, shadowMapper,
 				light.GetStaticCollideList(), NULL, staticAmbientMapSize );
 			shadowMapper.DropForeignAmbientTextures();
 			
@@ -1273,46 +1272,30 @@ bool refilterShadow ){
 			clist1 = light.GetDynamicCollideList();
 		}
 		
-		/*
-		// version 1. render using dynamic resolution first then copy to transparent resolution
-		// this version requires a copy/downsample shader and has to be able to copy with
-		// transparent resolution being any scale of 1/1, 1/2, 1/4 or more of the dynamic size
-		if( ! scsolid.GetDynamicMap() ){
-			if( copyShadowMaps ){
-				RenderShadowMap( plan, light, matrixCamera, matrixProjection, shadowMapper,
-					clist1, clist2, dynamicShadowMapSize, dynamicTranspShadowMapSize,
-					transparentDynamicShadow, shadowType == deoglShadowCaster::estStaticAndDynamic,
-					solid );
-				
-			}else{
-				RenderShadowMap( plan, light, matrixCamera, matrixProjection, shadowMapper,
-					clist1, clist2, dynamicShadowMapSize, dynamicTranspShadowMapSize,
-					transparentDynamicShadow, false, solid );
-			}
-			//ClearCubeMap( shadowMapper, shadowSize );
+		// drop shadow map if size changed
+		if( scsolid.GetDynamicMap() && scsolid.GetDynamicMap()->GetWidth() != dynamicShadowMapSize ){
+			LOG_SIZE_CHANGE("scsolid.dynamic", dynamicShadowMapSize, scsolid.GetDynamicMap())
+			scsolid.DropDynamic();
 		}
-		*/
+		if( scambient.GetDynamicMap() && scambient.GetDynamicMap()->GetWidth() < dynamicAmbientMapSize ){
+			LOG_SIZE_CHANGE("scambient.dynamic", dynamicAmbientMapSize, scambient.GetDynamicMap())
+			scambient.DropDynamic();
+		}
+		if( transparentDynamicShadow && sctransp.GetDynamicShadowMap()
+		&& sctransp.GetDynamicShadowMap()->GetWidth() != dynamicTranspShadowMapSize ){
+			LOG_SIZE_CHANGE("sctransp.dynamic", dynamicTranspShadowMapSize, sctransp.GetDynamicShadowMap())
+			sctransp.DropDynamic();
+		}
 		
-		// version 2. in solid case use dynamic resolution. in transparent case use transparent
-		// resolution. if only one transparency layer is present use regular shadow mapper
-		// rendering. if more than one transparency layer is present render the maps at layer 0
-		if( solid ){
-			if( copyShadowMaps ){
-				// DISABLED CODE
-				RenderShadowMap( plan, light, matrixCamera, matrixProjection, shadowMapper,
-					clist1, clist2, dynamicShadowMapSize, dynamicTranspShadowMapSize,
-					transparentDynamicShadow, shadowType == deoglShadowCaster::estStaticAndDynamic,
-					solid );
-				
-			}else{
-				RenderShadowMap( plan, light, matrixCamera, matrixProjection, shadowMapper,
-					clist1, clist2, dynamicShadowMapSize, dynamicTranspShadowMapSize,
-					transparentDynamicShadow, false, solid );
-			}
-			
-		}else if( ! scsolid.GetDynamicMap() ){
-			// dynamicShadowMapSize maps to scsolid.GetPlanTransparentSize() for this case
-			
+		// render shadow map if dirty. the dirty flag is reset each frame update. this ensures
+		// dynamic shadow maps are rendered once per frame update
+		bool requiresUpdate = ! scsolid.GetDynamicMap() || scsolid.GetDirtyDynamic();
+		if( transparentDynamicShadow ){
+			requiresUpdate |= ! sctransp.GetDynamicShadowMap()
+				|| ! sctransp.GetDynamicColorMap() || sctransp.GetDirtyDynamic();
+		}
+		
+		if( requiresUpdate ){
 			shadowMapper.SetForeignSolidDepthTexture( scsolid.ObtainDynamicMapWithSize(
 				dynamicShadowMapSize, false, defren.GetUseInverseDepth() )->GetTexture() );
 			
@@ -1323,23 +1306,27 @@ bool refilterShadow ){
 					ObtainDynamicColorMapWithSize( dynamicTranspShadowMapSize )->GetTexture() );
 			}
 			
-			RenderShadowMap( plan, light, matrixCamera, matrixProjection, shadowMapper,
-				clist1, clist2, dynamicShadowMapSize, dynamicTranspShadowMapSize,
-				transparentDynamicShadow, shadowType == deoglShadowCaster::estStaticAndDynamic,
-				solid );
+			RenderShadowMap( planLight, matrixCamera, matrixProjection, shadowMapper, clist1,
+				clist2, dynamicShadowMapSize, dynamicTranspShadowMapSize, transparentDynamicShadow,
+				shadowType == deoglShadowCaster::estStaticAndDynamic, solid );
 			
 			shadowMapper.DropForeignTextures();
+			
+			scsolid.SetDirtyDynamic( false );
+			if( transparentDynamicShadow ){
+				sctransp.SetDirtyDynamic( false );
+			}
 		}
 		
 		// ambient map
 		if( solid ){
-			RenderAmbientMap( plan, light, matrixCamera, matrixProjection, shadowMapper,
+			RenderAmbientMap( planLight, matrixCamera, matrixProjection, shadowMapper,
 				clist1, clist2, dynamicAmbientMapSize );
 			
 		}else if( ! scambient.GetDynamicMap() ){
 			shadowMapper.SetForeignAmbientTexture( scambient.ObtainDynamicMapWithSize(
 				dynamicAmbientMapSize )->GetTexture() );
-			RenderAmbientMap( plan, light, matrixCamera, matrixProjection, shadowMapper,
+			RenderAmbientMap( planLight, matrixCamera, matrixProjection, shadowMapper,
 				clist1, clist2, dynamicAmbientMapSize );
 			shadowMapper.DropForeignAmbientTextures();
 		}
@@ -1347,7 +1334,7 @@ bool refilterShadow ){
 	
 	// update box boundary if required
 	if( updateBoxBoundary ){
-		CalculateBoxBoundary( plan, light );
+		CalculateBoxBoundary( planLight );
 	}
 	
 	// activate stencil as we had to disable it for rendering the shadow maps
@@ -1356,10 +1343,12 @@ bool refilterShadow ){
 
 
 
-void deoglRenderLightSpot::RenderShadowMap( deoglRenderPlan &plan, deoglRLight &light,
+void deoglRenderLightSpot::RenderShadowMap( deoglRenderPlanLight &planLight,
 const decDMatrix &matrixCamera, const decDMatrix &matrixProjection, deoglShadowMapper &shadowMapper,
 const deoglCollideList *clist1, const deoglCollideList *clist2, int solidShadowMapSize,
 int transpShadowMapSize, bool withTransparent, bool copyDepth, bool debugSolid ){
+	deoglRLight &light = *planLight.GetLight()->GetLight();
+	deoglRenderPlan &plan = planLight.GetPlan();
 	deoglRenderThread &renderThread = GetRenderThread();
 	deoglSPBlockUBO * const renderParamBlock = renderThread.GetRenderers().GetLight().GetShadowPB();
 	deoglAddToRenderTask &addToRenderTask = renderThread.GetRenderers().GetLight().GetAddToRenderTask();
@@ -1539,7 +1528,7 @@ int transpShadowMapSize, bool withTransparent, bool copyDepth, bool debugSolid )
 	OGL_CHECK( renderThread, glDisable( GL_POLYGON_OFFSET_FILL ) );
 }
 
-void deoglRenderLightSpot::RenderAmbientMap( deoglRenderPlan &plan, deoglRLight &light,
+void deoglRenderLightSpot::RenderAmbientMap( deoglRenderPlanLight &planLight,
 const decDMatrix &matrixCamera, const decDMatrix &matrixProjection, deoglShadowMapper &shadowMapper,
 const deoglCollideList *clist1, const deoglCollideList *clist2, int ambientMapSize ) {
 	deoglRenderThread &renderThread = GetRenderThread();
@@ -1623,7 +1612,9 @@ const deoglCollideList *clist1, const deoglCollideList *clist2, int ambientMapSi
 
 
 void deoglRenderLightSpot::UpdateLightParamBlock( deoglLightShader &lightShader,
-deoglSPBlockUBO &paramBlock, deoglRenderPlan &plan, deoglRLight &light ){
+deoglSPBlockUBO &paramBlock, deoglRenderPlanLight &planLight ){
+	deoglRLight &light = *planLight.GetLight()->GetLight();
+	deoglRenderPlan &plan = planLight.GetPlan();
 	int target;
 	
 	// get light properties
