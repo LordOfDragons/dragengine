@@ -250,16 +250,24 @@ void deoglExtensions::PrintSummary(){
 	pRenderThread.GetLogger().LogInfo( "Supported Extensions:" );
 	for( i=0; i<EXT_COUNT; i++ ){
 		if( pHasExtension[ i ] ){
-			pRenderThread.GetLogger().LogInfoFormat( "%s", vExtensionNames[ i ] );
+			pRenderThread.GetLogger().LogInfoFormat( "- %s", vExtensionNames[ i ] );
 		}
 	}
 	
 	pRenderThread.GetLogger().LogInfo( "Not Supported Extensions:" );
 	for( i=0; i<EXT_COUNT; i++ ){
 		if( ! pHasExtension[ i ] ){
-			pRenderThread.GetLogger().LogInfoFormat( "%s", vExtensionNames[ i ] );
+			pRenderThread.GetLogger().LogInfoFormat( "- %s", vExtensionNames[ i ] );
 		}
 	}
+	
+	pRenderThread.GetLogger().LogInfo( "Extension Choices:" );
+	pRenderThread.GetLogger().LogInfoFormat( "- Has Arry Cube Map: %s", pHasArrayCubeMap ? "Yes" : "No" );
+	pRenderThread.GetLogger().LogInfoFormat( "- Has Seamless Cube Map: %s", pHasSeamlessCubeMap ? "Yes" : "No" );
+	pRenderThread.GetLogger().LogInfoFormat( "- Has Copy Image: %s", pHasCopyImage ? "Yes" : "No" );
+	pRenderThread.GetLogger().LogInfoFormat( "- Supports Geometry Shader: %s", pSupportsGeometryShader ? "Yes" : "No" );
+	pRenderThread.GetLogger().LogInfoFormat( "- Supports Geometry Shader Instancing: %s", pSupportsGSInstancing ? "Yes" : "No" );
+	pRenderThread.GetLogger().LogInfoFormat( "- Supports Compute Shader: %s", pSupportsComputeShader ? "Yes" : "No" );
 }
 
 bool deoglExtensions::VerifyPresence(){

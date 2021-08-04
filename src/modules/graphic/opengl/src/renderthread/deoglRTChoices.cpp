@@ -23,8 +23,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "deoglRTChoices.h"
 #include "deoglRenderThread.h"
+#include "deoglRTChoices.h"
+#include "deoglRTLogger.h"
 #include "../capabilities/deoglCapabilities.h"
 #include "../extensions/deoglExtensions.h"
 #include "../extensions/deoglExtResult.h"
@@ -80,6 +81,29 @@ deoglRTChoices::deoglRTChoices( deoglRenderThread &renderThread ){
 	#else
 		pGPUTransformVertices = egputvApproximate;
 	#endif
+		
+	// log choices
+	renderThread.GetLogger().LogInfo( "Render Thread Choices:" );
+	renderThread.GetLogger().LogInfoFormat( "- Shared VBO Use Base Vertex: %s", pSharedVBOUseBaseVertex ? "Yes" : "No" );
+	renderThread.GetLogger().LogInfoFormat( "- Shared SPB Use SSBO: %s", pSharedSPBUseSSBO ? "Yes" : "No" );
+	renderThread.GetLogger().LogInfoFormat( "- Global Shared SPB Lists: %s", pGlobalSharedSPBLists ? "Yes" : "No" );
+	renderThread.GetLogger().LogInfoFormat( "- Real Transparent Particles: %s", pRealTransparentParticles ? "Yes" : "No" );
+	
+	switch( pGPUTransformVertices ){
+	case egputvAccurate:
+		renderThread.GetLogger().LogInfo( "- GPU Transform Vertices: Accurate" );
+		break;
+		
+	case egputvApproximate:
+		renderThread.GetLogger().LogInfo( "- GPU Transform Vertices: Approximate" );
+		break;
+		
+	case egputvNone:
+		renderThread.GetLogger().LogInfo( "- GPU Transform Vertices: None" );
+		break;
+	}
+	
+	renderThread.GetLogger().LogInfoFormat( "- GI Move Using Cache: %s", pGIMoveUsingCache ? "Yes" : "No" );
 }
 
 deoglRTChoices::~deoglRTChoices(){
