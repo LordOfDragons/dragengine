@@ -102,9 +102,11 @@ void deoglDebugMemoryConsumption::pLog( const deoglMemoryConsumptionTexture &con
 	pLog( consumption.all );
 	pLog( consumption.allCompressed );
 	pLog( consumption.allUncompressed );
+	
 	pLog( consumption.color );
 	pLog( consumption.colorCompressed );
 	pLog( consumption.colorUncompressed );
+	
 	pLog( consumption.depth );
 	pLog( consumption.depthCompressed );
 	pLog( consumption.depthUncompressed );
@@ -143,14 +145,17 @@ void deoglDebugMemoryConsumption::pLog( const deoglMemoryConsumptionShadow &cons
 	pLog( consumption.all );
 	pLog( consumption.allStatic );
 	pLog( consumption.allDynamic );
+	
 	pLog( consumption.skyStatic );
 	pLog( consumption.skyDynamic );
+	
 	pLog( consumption.solidStaticMap );
 	pLog( consumption.solidStaticCube );
 	pLog( consumption.solidStaticArray );
 	pLog( consumption.solidDynamicMap );
 	pLog( consumption.solidDynamicCube );
 	pLog( consumption.solidDynamicArray );
+	
 	pLog( consumption.transparentStaticMapDepth );
 	pLog( consumption.transparentStaticMapColor );
 	pLog( consumption.transparentStaticCubeDepth );
@@ -159,4 +164,9 @@ void deoglDebugMemoryConsumption::pLog( const deoglMemoryConsumptionShadow &cons
 	pLog( consumption.transparentDynamicMapColor );
 	pLog( consumption.transparentDynamicCubeDepth );
 	pLog( consumption.transparentDynamicCubeColor );
+	
+	pLog( consumption.ambientStaticMap );
+	pLog( consumption.ambientStaticCube );
+	pLog( consumption.ambientDynamicMap );
+	pLog( consumption.ambientDynamicCube );
 }

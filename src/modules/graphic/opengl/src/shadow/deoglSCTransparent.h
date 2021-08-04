@@ -27,10 +27,6 @@
 class deoglRenderThread;
 class deoglCubeMap;
 class deoglTexture;
-class deoglRenderableDepthTexture;
-class deoglRenderableColorTexture;
-class deoglRenderableDepthCubeMap;
-class deoglRenderableColorCubeMap;
 
 
 
@@ -48,10 +44,10 @@ private:
 	int pLastUseStatic;
 	bool pHasStatic;
 	
-	deoglRenderableDepthTexture *pDynamicShadowMap;
-	deoglRenderableColorTexture *pDynamicColorMap;
-	deoglRenderableDepthCubeMap *pDynamicShadowCubeMap;
-	deoglRenderableColorCubeMap *pDynamicColorCubeMap;
+	deoglTexture *pDynamicShadowMap;
+	deoglTexture *pDynamicColorMap;
+	deoglCubeMap *pDynamicShadowCubeMap;
+	deoglCubeMap *pDynamicColorCubeMap;
 	
 	int pLastUseDynamic;
 	bool pHasDynamic;
@@ -126,28 +122,28 @@ public:
 	
 	
 	/** Dynamic shadow map if present or \em NULL otherwise. */
-	inline deoglRenderableDepthTexture *GetDynamicShadowMap() const{ return pDynamicShadowMap; }
+	inline deoglTexture *GetDynamicShadowMap() const{ return pDynamicShadowMap; }
 	
 	/** Obtain dynamic shadow map with size if absent. */
-	deoglRenderableDepthTexture *ObtainDynamicShadowMapWithSize( int size, bool useFloat );
+	deoglTexture *ObtainDynamicShadowMapWithSize( int size, bool useFloat );
 	
 	/** Dynamic color map if present or \em NULL otherwise. */
-	inline deoglRenderableColorTexture *GetDynamicColorMap() const{ return pDynamicColorMap; }
+	inline deoglTexture *GetDynamicColorMap() const{ return pDynamicColorMap; }
 	
 	/** Obtain dynamic color map with size if absent. */
-	deoglRenderableColorTexture *ObtainDynamicColorMapWithSize( int size );
+	deoglTexture *ObtainDynamicColorMapWithSize( int size );
 	
 	/** Dynamic shadow cube map if present or \em NULL otherwise. */
-	inline deoglRenderableDepthCubeMap *GetDynamicShadowCubeMap() const{ return pDynamicShadowCubeMap; }
+	inline deoglCubeMap *GetDynamicShadowCubeMap() const{ return pDynamicShadowCubeMap; }
 	
 	/** Obtain dynamic shadow cube map with size if absent. */
-	deoglRenderableDepthCubeMap *ObtainDynamicShadowCubeMapWithSize( int size );
+	deoglCubeMap *ObtainDynamicShadowCubeMapWithSize( int size );
 	
 	/** Dynamic color cube map if present or \em NULL otherwise. */
-	inline deoglRenderableColorCubeMap *GetDynamicColorCubeMap() const{ return pDynamicColorCubeMap; }
+	inline deoglCubeMap *GetDynamicColorCubeMap() const{ return pDynamicColorCubeMap; }
 	
 	/** Obtain dynamic shadow cube map with size if absent. */
-	deoglRenderableColorCubeMap *ObtainDynamicColorCubeMapWithSize( int size );
+	deoglCubeMap *ObtainDynamicColorCubeMapWithSize( int size );
 	
 	/** Drop dynamic shadow map if present. */
 	void DropDynamic();

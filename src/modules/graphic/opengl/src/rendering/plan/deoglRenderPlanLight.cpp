@@ -48,7 +48,8 @@ pPlan( plan ),
 pLight( NULL ),
 
 pDistance( 0.0f ),
-pReductionFactor( 1 ),
+pReductionFactorStatic( 1 ),
+pReductionFactorDynamic( 1 ),
 
 pShadowSizeStatic( 0 ),
 pTranspShadowSizeStatic( 0 ),
@@ -111,16 +112,20 @@ void deoglRenderPlanLight::PlanShadowCasting(){
 		DETHROW( deeInvalidParam );
 	}
 	
-	// calculate reduction factor
-	pCalcReductionFactor();
+	pShadowSizeDynamic = pShadowSizeStatic;
 	
-	// reduce static shadow map size
-	if( pReductionFactor > 0 ){
-		pShadowSizeStatic = decMath::max( pShadowSizeStatic >> pReductionFactor, minSize );
+	// calculate reduction factors
+	pCalcReductionFactorStatic();
+	pCalcReductionFactorDynamic();
+	
+	// reduce shadow map size
+	if( pReductionFactorStatic > 0 ){
+		pShadowSizeStatic = decMath::max( pShadowSizeStatic >> pReductionFactorStatic, minSize );
 	}
 	
-	// reduce size for dynamic shadow maps
-	pShadowSizeDynamic = decMath::max( pShadowSizeStatic >> 1, minSize );
+	if( pReductionFactorDynamic > 0 ){
+		pShadowSizeDynamic = decMath::max( pShadowSizeDynamic >> pReductionFactorDynamic, minSize );
+	}
 	
 	// reduce size for transparent shadow maps (or use static sizes?)
 	pTranspShadowSizeStatic = decMath::max( pShadowSizeStatic >> 1, minSize );
@@ -148,14 +153,18 @@ void deoglRenderPlanLight::PlanShadowCasting(){
 	
 	// update next frame sizes. this keeps the largest size across an entire frame
 	deoglShadowCaster &shadowCaster = *pLight->GetLight()->GetShadowCaster();
-	deoglSCSolid &scsolid = shadowCaster.GetSolid();
 	deoglSCTransparent &sctransp = shadowCaster.GetTransparent();
+	deoglSCAmbient &scambient = shadowCaster.GetAmbient();
+	deoglSCSolid &scsolid = shadowCaster.GetSolid();
 	
 	scsolid.SetLargestNextSizeStatic( pShadowSizeStatic );
 	scsolid.SetLargestNextSizeDynamic( pShadowSizeDynamic );
 	
 	sctransp.SetLargestNextSizeStatic( pTranspShadowSizeStatic );
 	sctransp.SetLargestNextSizeDynamic( pTranspShadowSizeDynamic );
+	
+	scambient.SetLargestNextSizeStatic( pAmbientShadowSizeStatic );
+	scambient.SetLargestNextSizeDynamic( pAmbientShadowSizeDynamic );
 	
 	// clamp sizes to last frame and next frame sizes to avoid resizing textures.
 	// using the last frame size avoids resizing if the first rendered camera requires
@@ -175,6 +184,12 @@ void deoglRenderPlanLight::PlanShadowCasting(){
 	
 	pTranspShadowSizeDynamic = decMath::max( pTranspShadowSizeDynamic,
 		sctransp.GetLastSizeDynamic(), sctransp.GetNextSizeDynamic() );
+	
+	pAmbientShadowSizeStatic = decMath::max( pAmbientShadowSizeStatic,
+		scambient.GetLastSizeStatic(), scambient.GetNextSizeStatic() );
+	
+	pAmbientShadowSizeDynamic = decMath::max( pAmbientShadowSizeDynamic,
+		scambient.GetLastSizeDynamic(), scambient.GetNextSizeDynamic() );
 	
 	// log values used
 #if 0
@@ -217,12 +232,12 @@ void deoglRenderPlanLight::SetAmbientShadowSizeDynamic( int size ){
 // Private Functions
 //////////////////////
 
-void deoglRenderPlanLight::pCalcReductionFactor(){
+void deoglRenderPlanLight::pCalcReductionFactorStatic(){
 	// use distance to scale down shadow maps. this is quite arbitrary but has the goal to
 	// avoid lots of lights using high resolution shadow maps if they are seen from far away
 	const deoglRLight &light = *pLight->GetLight();
 	
-	pReductionFactor = 0;
+	pReductionFactorStatic = 0;
 	
 	// up to the light range the scaling has to be highest quality
 	const float range = decMath::max( light.GetRange(), 1.0f );
@@ -238,8 +253,42 @@ void deoglRenderPlanLight::pCalcReductionFactor(){
 	// to be more on the safe side the multiple is reduced by 0.5 . this way the first
 	// reduction step happens at 1.5 multiple and the next at 2.5
 	const float multiple = ( pDistance / range ) - 0.5f;
-	pReductionFactor = decMath::clamp( ( int )log2f( multiple ), 0, 8 );
+	pReductionFactorStatic = decMath::clamp( ( int )log2f( multiple ), 0, 8 );
 	
 	// NOTE maybe this can be improved by using the light clamp box if present to reduce
 	//      the range. this would allow for higher reduction for lights
+}
+
+void deoglRenderPlanLight::pCalcReductionFactorDynamic(){
+	// two possible solutions.
+	// 
+	// the first one is to use a reduction factor 1 higher than static. this causes all
+	// dynamic shadows to be half the size of their static sibligns. while reducing memory
+	// consuumption a lot and render time a bit the quality difference is noticable
+	// especially in smaller resolutions.
+	// 
+	// the second solution is to use the same calculation as pCalcReductionFactorStatic()
+	// but reducing light range by 50%. this causes close up dynamic shadows to retain
+	// the good quality level with farther away dynamic shadows reducing resolution quicker
+	// than the static shadows. this reduces memory consumption faster and has a similar
+	// effect without sacrificing quality up close
+	
+	// version 1
+// 	pReductionFactorDynamic = pReductionFactorStatic + 1;
+	
+	// version 2
+	pReductionFactorDynamic = 0;
+	
+// 	const float rangeReduction = 1.0f; // consumption 4x compared to version 1
+	const float rangeReduction = 0.5f; // consumption ~2.6x compared to version 1
+// 	const float rangeReduction = 0.4f; // consumption ~2.4x compared to version 1
+// 	const float rangeReduction = 0.25f; // consumption ~2x compared to version 1
+	
+	const float range = decMath::max( pLight->GetLight()->GetRange(), 1.0f ) * rangeReduction;
+	if( pDistance <= range ){
+		return;
+	}
+	
+	const float multiple = ( pDistance / range ) - 0.5f;
+	pReductionFactorDynamic = decMath::clamp( ( int )log2f( multiple ), 0, 8 );
 }

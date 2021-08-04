@@ -29,15 +29,10 @@
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTTexture.h"
 #include "../texture/cubemap/deoglCubeMap.h"
-#include "../texture/cubemap/deoglRenderableDepthCubeMap.h"
-#include "../texture/cubemap/deoglRenderableDepthCubeMapManager.h"
-#include "../texture/texture2d/deoglRenderableDepthTexture.h"
-#include "../texture/texture2d/deoglRenderableDepthTextureManager.h"
 #include "../texture/texture2d/deoglTexture.h"
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/math/decMath.h>
-#include "../utils/collision/deoglDCollisionDetection.h"
 
 
 
@@ -57,10 +52,19 @@ pHasStatic( false ),
 
 pDynamicMap( NULL ),
 pDynamicCubeMap( NULL ),
+pLastUseDynamic( 0 ),
+pHasDynamic( false ),
+pDirtyDynamic( true ),
 
-pPlanStaticSize( 16 ),
-pPlanDynamicSize( 16 ),
-pPlanTransparentSize( 16 ){
+pLastSizeStatic( 0 ),
+pNextSizeStatic( 0 ),
+pLastSizeDynamic( 0 ),
+pNextSizeDynamic( 0 ),
+
+pMemUseStaMap( renderThread.GetMemoryManager().GetConsumption().shadow.ambientStaticMap ),
+pMemUseStaCube( renderThread.GetMemoryManager().GetConsumption().shadow.ambientStaticCube ),
+pMemUseDynMap( renderThread.GetMemoryManager().GetConsumption().shadow.ambientDynamicMap ),
+pMemUseDynCube( renderThread.GetMemoryManager().GetConsumption().shadow.ambientDynamicCube ){
 }
 
 deoglSCAmbient::~deoglSCAmbient(){
@@ -92,8 +96,10 @@ deoglTexture *deoglSCAmbient::ObtainStaticMapWithSize( int size, bool useFloat )
 	pStaticMap->SetDepthFormat( false, useFloat );
 	pStaticMap->SetSize( size, size );
 	pStaticMap->CreateTexture();
+	pMemUseStaMap = pStaticMap->GetMemoryConsumption().Total();
 	pHasStatic = true;
 	pLastUseStatic = 0;
+	pLastSizeStatic = pNextSizeStatic;
 	
 	return pStaticMap;
 }
@@ -118,12 +124,18 @@ deoglCubeMap *deoglSCAmbient::ObtainStaticCubeMapWithSize( int size ){
 	pStaticCubeMap->SetSize( size );
 	pStaticCubeMap->SetDepthFormat();
 	pStaticCubeMap->CreateCubeMap();
+	pMemUseStaCube = pStaticCubeMap->GetMemoryConsumption().Total();
+	pHasStatic = true;
 	pLastUseStatic = 0;
+	pLastSizeStatic = pNextSizeStatic;
 	
 	return pStaticCubeMap;
 }
 
 void deoglSCAmbient::DropStatic(){
+	pMemUseStaMap = 0;
+	pMemUseStaCube = 0;
+	
 	if( pStaticMap ){
 		delete pStaticMap;
 		pStaticMap = NULL;
@@ -133,6 +145,7 @@ void deoglSCAmbient::DropStatic(){
 		pStaticCubeMap = NULL;
 	}
 	
+	pLastSizeStatic = 0;
 	pHasStatic = false;
 }
 
@@ -146,26 +159,37 @@ void deoglSCAmbient::ResetLastUseStatic(){
 
 
 
-deoglRenderableDepthTexture *deoglSCAmbient::ObtainDynamicMapWithSize( int size ){
+deoglTexture *deoglSCAmbient::ObtainDynamicMapWithSize( int size ){
 	if( size < 1 ){
 		DETHROW( deeInvalidParam );
 	}
+	
 	
 	if( pDynamicMap ){
 		if( pDynamicMap->GetWidth() == size ){
 			return pDynamicMap;
 		}
 		
-		DropDynamic();
+		if( pDynamicMap ){
+			delete pDynamicMap;
+			pDynamicMap = NULL;
+		}
 	}
 	
-	pDynamicMap = pRenderThread.GetTexture().GetRenderableDepthTexture()
-		.GetTextureWith( size, size, false, false );
+	pDynamicMap = new deoglTexture( pRenderThread );
+	pDynamicMap->SetDepthFormat( false, false );
+	pDynamicMap->SetSize( size, size );
+	pDynamicMap->CreateTexture();
+	pMemUseDynMap = pDynamicMap->GetMemoryConsumption().Total();
+	pHasDynamic = true;
+	pDirtyDynamic = true;
+	pLastUseDynamic = 0;
+	pLastSizeDynamic = pNextSizeDynamic;
 	
 	return pDynamicMap;
 }
 
-deoglRenderableDepthCubeMap *deoglSCAmbient::ObtainDynamicCubeMapWithSize( int size ){
+deoglCubeMap *deoglSCAmbient::ObtainDynamicCubeMapWithSize( int size ){
 	if( size < 1 ){
 		DETHROW( deeInvalidParam );
 	}
@@ -174,22 +198,67 @@ deoglRenderableDepthCubeMap *deoglSCAmbient::ObtainDynamicCubeMapWithSize( int s
 		if( pDynamicCubeMap->GetSize() == size ){
 			return pDynamicCubeMap;
 		}
-		DropDynamic();
+		
+		if( pDynamicCubeMap ){
+			delete pDynamicCubeMap;
+			pDynamicCubeMap = NULL;
+		}
 	}
 	
-	pDynamicCubeMap = pRenderThread.GetTexture().GetRenderableDepthCubeMap().GetCubeMapWith( size );
+	pDynamicCubeMap = new deoglCubeMap( pRenderThread );
+	pDynamicCubeMap->SetSize( size );
+	pDynamicCubeMap->SetDepthFormat();
+	pDynamicCubeMap->CreateCubeMap();
+	pMemUseDynCube = pDynamicCubeMap->GetMemoryConsumption().Total();
+	pHasDynamic = true;
+	pDirtyDynamic = true;
+	pLastUseDynamic = 0;
+	pLastSizeDynamic = pNextSizeDynamic;
 	
 	return pDynamicCubeMap;
 }
 
 void deoglSCAmbient::DropDynamic(){
+	pMemUseDynMap = 0;
+	pMemUseDynCube = 0;
+	
 	if( pDynamicMap ){
-		pDynamicMap->SetInUse( false );
+		delete pDynamicMap;
 		pDynamicMap = NULL;
 	}
 	if( pDynamicCubeMap ){
-		pDynamicCubeMap->SetInUse( false );
+		delete pDynamicCubeMap;
 		pDynamicCubeMap = NULL;
+	}
+	
+	pLastSizeDynamic = 0;
+	pHasDynamic = false;
+	pDirtyDynamic = true;
+}
+
+void deoglSCAmbient::IncrementLastUseDynamic(){
+	pLastUseDynamic++;
+}
+
+void deoglSCAmbient::ResetLastUseDynamic(){
+	pLastUseDynamic = 0;
+}
+
+void deoglSCAmbient::SetDirtyDynamic( bool dirty ){
+	pDirtyDynamic = dirty;
+}
+
+
+
+void deoglSCAmbient::SetLargestNextSizeStatic( int size ){
+	if( size > pNextSizeStatic ){
+		pNextSizeStatic = size;
+	}
+}
+
+void deoglSCAmbient::SetLargestNextSizeDynamic( int size ){
+	if( size > pNextSizeDynamic ){
+		pNextSizeDynamic = size;
 	}
 }
 
@@ -199,10 +268,25 @@ void deoglSCAmbient::Update(){
 	if( pHasStatic && pLastUseStatic++ > 5 ){ // for the time being 5 frames
 		DropStatic();
 	}
+	if( pHasDynamic && pLastUseDynamic++ > 5 ){ // for the time being 5 frames
+		DropDynamic();
+	}
+	
+	if( pNextSizeStatic > 0 ){
+		pLastSizeStatic = pNextSizeStatic;
+		pNextSizeStatic = 0;
+	}
+	
+	if( pNextSizeDynamic > 0 ){
+		pLastSizeDynamic = pNextSizeDynamic;
+		pNextSizeDynamic = 0;
+	}
+	
+	pDirtyDynamic = true;
 }
 
 bool deoglSCAmbient::RequiresUpdate() const{
-	return pHasStatic;
+	return pHasStatic || pHasDynamic;
 }
 
 void deoglSCAmbient::Clear(){

@@ -54,7 +54,12 @@ transparentStaticCubeColor( "Shadow Transparent Static Cube Color", allStatic ),
 transparentDynamicMapDepth( "Shadow Transparent Dynamic Map Depth", allDynamic ),
 transparentDynamicMapColor( "Shadow Transparent Dynamic Map Color", allDynamic ),
 transparentDynamicCubeDepth( "Shadow Transparent Dynamic Cube Depth", allDynamic ),
-transparentDynamicCubeColor( "Shadow Transparent Dynamic Cube Color", allDynamic ){
+transparentDynamicCubeColor( "Shadow Transparent Dynamic Cube Color", allDynamic ),
+
+ambientStaticMap( "Shadow Solid Static Ambient Map", allStatic ),
+ambientStaticCube( "Shadow Solid Static Ambient Cube", allStatic ),
+ambientDynamicMap( "Shadow Solid Dynamic Ambient Map", allDynamic ),
+ambientDynamicCube( "Shadow Solid Dynamic Ambient Cube", allDynamic ){
 }
 
 deoglMemoryConsumptionShadow::~deoglMemoryConsumptionShadow(){

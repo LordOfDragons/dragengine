@@ -29,14 +29,6 @@
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTTexture.h"
 #include "../texture/cubemap/deoglCubeMap.h"
-#include "../texture/cubemap/deoglRenderableColorCubeMap.h"
-#include "../texture/cubemap/deoglRenderableColorCubeMapManager.h"
-#include "../texture/cubemap/deoglRenderableDepthCubeMap.h"
-#include "../texture/cubemap/deoglRenderableDepthCubeMapManager.h"
-#include "../texture/texture2d/deoglRenderableColorTexture.h"
-#include "../texture/texture2d/deoglRenderableColorTextureManager.h"
-#include "../texture/texture2d/deoglRenderableDepthTexture.h"
-#include "../texture/texture2d/deoglRenderableDepthTextureManager.h"
 #include "../texture/texture2d/deoglTexture.h"
 
 #include <dragengine/common/exceptions.h>
@@ -243,21 +235,28 @@ void deoglSCTransparent::ResetLastUseStatic(){
 
 
 
-deoglRenderableDepthTexture *deoglSCTransparent::ObtainDynamicShadowMapWithSize( int size, bool useFloat ){
+deoglTexture *deoglSCTransparent::ObtainDynamicShadowMapWithSize( int size, bool useFloat ){
 	if( size < 1 ){
 		DETHROW( deeInvalidParam );
 	}
 	
 	if( pDynamicShadowMap ){
-		if( pDynamicShadowMap->GetWidth() == size && pDynamicShadowMap->GetUseFloat() == useFloat ){
+		if( pDynamicShadowMap->GetWidth() == size
+		&& pDynamicShadowMap->GetFormat()->GetIsDepthFloat() == useFloat ){
 			return pDynamicShadowMap;
 		}
-		DropDynamic();
+		
+		if( pDynamicShadowMap ){
+			delete pDynamicShadowMap;
+			pDynamicShadowMap = NULL;
+		}
 	}
 	
-	pDynamicShadowMap = pRenderThread.GetTexture().GetRenderableDepthTexture()
-		.GetTextureWith( size, size, false, false );
-	pMemUseDynMapDepth = pDynamicShadowMap->GetTexture()->GetMemoryConsumption().Total();
+	pDynamicShadowMap = new deoglTexture( pRenderThread );
+	pDynamicShadowMap->SetDepthFormat( false, useFloat );
+	pDynamicShadowMap->SetSize( size, size );
+	pDynamicShadowMap->CreateTexture();
+	pMemUseDynMapDepth = pDynamicShadowMap->GetMemoryConsumption().Total();
 	pHasDynamic = true;
 	pDirtyDynamic = true;
 	pLastUseDynamic = 0;
@@ -266,7 +265,7 @@ deoglRenderableDepthTexture *deoglSCTransparent::ObtainDynamicShadowMapWithSize(
 	return pDynamicShadowMap;
 }
 
-deoglRenderableColorTexture *deoglSCTransparent::ObtainDynamicColorMapWithSize( int size ){
+deoglTexture *deoglSCTransparent::ObtainDynamicColorMapWithSize( int size ){
 	if( size < 1 ){
 		DETHROW( deeInvalidParam );
 	}
@@ -275,12 +274,18 @@ deoglRenderableColorTexture *deoglSCTransparent::ObtainDynamicColorMapWithSize( 
 		if( pDynamicColorMap->GetWidth() == size ){
 			return pDynamicColorMap;
 		}
-		DropDynamic();
+		
+		if( pDynamicColorMap ){
+			delete pDynamicColorMap;
+			pDynamicColorMap = NULL;
+		}
 	}
 	
-	pDynamicColorMap = pRenderThread.GetTexture().GetRenderableColorTexture()
-		.GetTextureWith( size, size, 4, false );
-	pMemUseDynMapColor = pDynamicColorMap->GetTexture()->GetMemoryConsumption().Total();
+	pDynamicColorMap = new deoglTexture( pRenderThread );
+	pDynamicColorMap->SetFBOFormat( 4, false );
+	pDynamicColorMap->SetSize( size, size );
+	pDynamicColorMap->CreateTexture();
+	pMemUseDynMapColor = pDynamicColorMap->GetMemoryConsumption().Total();
 	pHasDynamic = true;
 	pDirtyDynamic = true;
 	pLastUseDynamic = 0;
@@ -289,7 +294,7 @@ deoglRenderableColorTexture *deoglSCTransparent::ObtainDynamicColorMapWithSize( 
 	return pDynamicColorMap;
 }
 
-deoglRenderableDepthCubeMap *deoglSCTransparent::ObtainDynamicShadowCubeMapWithSize( int size ){
+deoglCubeMap *deoglSCTransparent::ObtainDynamicShadowCubeMapWithSize( int size ){
 	if( size < 1 ){
 		DETHROW( deeInvalidParam );
 	}
@@ -298,11 +303,18 @@ deoglRenderableDepthCubeMap *deoglSCTransparent::ObtainDynamicShadowCubeMapWithS
 		if( pDynamicShadowCubeMap->GetSize() == size ){
 			return pDynamicShadowCubeMap;
 		}
-		DropDynamic();
+		
+		if( pDynamicShadowCubeMap ){
+			delete pDynamicShadowCubeMap;
+			pDynamicShadowCubeMap = NULL;
+		}
 	}
 	
-	pDynamicShadowCubeMap = pRenderThread.GetTexture().GetRenderableDepthCubeMap().GetCubeMapWith( size );
-	pMemUseDynCubeDepth = pDynamicShadowCubeMap->GetCubeMap()->GetMemoryConsumption().Total();
+	pDynamicShadowCubeMap = new deoglCubeMap( pRenderThread );
+	pDynamicShadowCubeMap->SetSize( size );
+	pDynamicShadowCubeMap->SetDepthFormat();
+	pDynamicShadowCubeMap->CreateCubeMap();
+	pMemUseDynCubeDepth = pDynamicShadowCubeMap->GetMemoryConsumption().Total();
 	pHasDynamic = true;
 	pDirtyDynamic = true;
 	pLastUseDynamic = 0;
@@ -311,7 +323,7 @@ deoglRenderableDepthCubeMap *deoglSCTransparent::ObtainDynamicShadowCubeMapWithS
 	return pDynamicShadowCubeMap;
 }
 
-deoglRenderableColorCubeMap *deoglSCTransparent::ObtainDynamicColorCubeMapWithSize( int size ){
+deoglCubeMap *deoglSCTransparent::ObtainDynamicColorCubeMapWithSize( int size ){
 	if( size < 1 ){
 		DETHROW( deeInvalidParam );
 	}
@@ -320,12 +332,18 @@ deoglRenderableColorCubeMap *deoglSCTransparent::ObtainDynamicColorCubeMapWithSi
 		if( pDynamicColorCubeMap->GetSize() == size ){
 			return pDynamicColorCubeMap;
 		}
-		DropDynamic();
+		
+		if( pDynamicColorCubeMap ){
+			delete pDynamicColorCubeMap;
+			pDynamicColorCubeMap = NULL;
+		}
 	}
 	
-	pDynamicColorCubeMap = pRenderThread.GetTexture().GetRenderableColorCubeMap().
-		GetCubeMapWith( size, 4, false );
-	pMemUseDynCubeColor = pDynamicColorCubeMap->GetCubeMap()->GetMemoryConsumption().Total();
+	pDynamicColorCubeMap = new deoglCubeMap( pRenderThread );
+	pDynamicColorCubeMap->SetSize( size );
+	pDynamicColorCubeMap->SetFBOFormat( 4, false );
+	pDynamicColorCubeMap->CreateCubeMap();
+	pMemUseDynCubeColor = pDynamicColorCubeMap->GetMemoryConsumption().Total();
 	pHasDynamic = true;
 	pDirtyDynamic = true;
 	pLastUseDynamic = 0;
@@ -341,19 +359,19 @@ void deoglSCTransparent::DropDynamic(){
 	pMemUseDynCubeColor = 0;
 	
 	if( pDynamicShadowMap ){
-		pDynamicShadowMap->SetInUse( false );
+		delete pDynamicShadowMap;
 		pDynamicShadowMap = NULL;
 	}
 	if( pDynamicColorMap ){
-		pDynamicColorMap->SetInUse( false );
+		delete pDynamicColorMap;
 		pDynamicColorMap = NULL;
 	}
 	if( pDynamicShadowCubeMap ){
-		pDynamicShadowCubeMap->SetInUse( false );
+		delete pDynamicShadowCubeMap;
 		pDynamicShadowCubeMap = NULL;
 	}
 	if( pDynamicColorCubeMap ){
-		pDynamicColorCubeMap->SetInUse( false );
+		delete pDynamicColorCubeMap;
 		pDynamicColorCubeMap = NULL;
 	}
 	

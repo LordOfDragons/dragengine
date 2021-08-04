@@ -523,7 +523,7 @@ const deoglRenderPlanMasked *mask ){
 					texture1 = scsolid->GetStaticMap();
 					
 					if( scsolid->GetDynamicMap() ){
-						texture2 = scsolid->GetDynamicMap()->GetTexture();
+						texture2 = scsolid->GetDynamicMap();
 						lightShader = skyLayer.GetShaderFor( deoglRSkyInstanceLayer::estGIRaySolid2 );
 						
 					}else{
@@ -531,7 +531,7 @@ const deoglRenderPlanMasked *mask ){
 					}
 					
 				}else if( scsolid->GetDynamicMap() ){
-					texture1 = scsolid->GetDynamicMap()->GetTexture();
+					texture1 = scsolid->GetDynamicMap();
 					lightShader = skyLayer.GetShaderFor( deoglRSkyInstanceLayer::estGIRaySolid1 );
 					
 				}else{
@@ -1229,7 +1229,7 @@ deoglShadowMapper &shadowMapper ){
 		scsolid.DropDynamic();
 	}
 	
-	shadowMapper.SetForeignSolidDepthTexture( scsolid.ObtainDynamicMapWithSize( shadowMapSize, true, false )->GetTexture() );
+	shadowMapper.SetForeignSolidDepthTexture( scsolid.ObtainDynamicMapWithSize( shadowMapSize, true, false ) );
 	RenderGIShadowMap( shadowMapper, plan.GetGIRenderTaskDynamic(), shadowMapSize, false );
 	shadowMapper.DropForeignTextures();
 	

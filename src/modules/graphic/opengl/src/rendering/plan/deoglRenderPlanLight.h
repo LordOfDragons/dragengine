@@ -39,7 +39,8 @@ private:
 	
 	decDVector pPosition;
 	float pDistance;
-	int pReductionFactor;
+	int pReductionFactorStatic;
+	int pReductionFactorDynamic;
 	
 	int pShadowSizeStatic;
 	int pTranspShadowSizeStatic;
@@ -80,9 +81,6 @@ public:
 	/** Distance of light to camera. */
 	inline float GetDistance() const{ return pDistance; }
 	
-	/** Shadow map size reduction factor. */
-	inline int GetReductionFactor() const{ return pReductionFactor; }
-	
 	/** Init. */
 	void Init();
 	
@@ -111,7 +109,8 @@ public:
 	
 	
 private:
-	void pCalcReductionFactor();
+	void pCalcReductionFactorStatic();
+	void pCalcReductionFactorDynamic();
 };
 
 #endif

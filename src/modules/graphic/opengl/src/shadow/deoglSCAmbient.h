@@ -22,11 +22,11 @@
 #ifndef _DEOGLSCAMBIENT_H_
 #define _DEOGLSCAMBIENT_H_
 
+#include "../memory/consumption/deoglMemoryConsumptionGPUUse.h"
+
 class deoglRenderThread;
 class deoglTexture;
 class deoglCubeMap;
-class deoglRenderableDepthTexture;
-class deoglRenderableDepthCubeMap;
 
 
 
@@ -42,12 +42,21 @@ private:
 	int pLastUseStatic;
 	bool pHasStatic;
 	
-	deoglRenderableDepthTexture *pDynamicMap;
-	deoglRenderableDepthCubeMap *pDynamicCubeMap;
+	deoglTexture *pDynamicMap;
+	deoglCubeMap *pDynamicCubeMap;
+	int pLastUseDynamic;
+	bool pHasDynamic;
+	bool pDirtyDynamic;
 	
-	int pPlanStaticSize;
-	int pPlanDynamicSize;
-	int pPlanTransparentSize;
+	int pLastSizeStatic;
+	int pNextSizeStatic;
+	int pLastSizeDynamic;
+	int pNextSizeDynamic;
+	
+	deoglMemoryConsumptionGPUUse pMemUseStaMap;
+	deoglMemoryConsumptionGPUUse pMemUseStaCube;
+	deoglMemoryConsumptionGPUUse pMemUseDynMap;
+	deoglMemoryConsumptionGPUUse pMemUseDynCube;
 	
 	
 	
@@ -94,19 +103,54 @@ public:
 	
 	
 	/** Dynamic map if present or \em NULL otherwise. */
-	inline deoglRenderableDepthTexture *GetDynamicMap() const{ return pDynamicMap; }
+	inline deoglTexture *GetDynamicMap() const{ return pDynamicMap; }
 	
 	/** Obtain dynamic map with size if absent. */
-	deoglRenderableDepthTexture *ObtainDynamicMapWithSize( int size );
+	deoglTexture *ObtainDynamicMapWithSize( int size );
 	
 	/** Dynamic shadow cube map if present or \em NULL otherwise. */
-	inline deoglRenderableDepthCubeMap *GetDynamicCubeMap() const{ return pDynamicCubeMap; }
+	inline deoglCubeMap *GetDynamicCubeMap() const{ return pDynamicCubeMap; }
 	
 	/** Obtain dynamic shadow cube map with size if absent. */
-	deoglRenderableDepthCubeMap *ObtainDynamicCubeMapWithSize( int size );
+	deoglCubeMap *ObtainDynamicCubeMapWithSize( int size );
 	
 	/** Drop dynamic map if present. */
 	void DropDynamic();
+	
+	/** Number of frames elapsed since the last time dynamic shadow map has been used. */
+	inline int GetLastUseDynamic() const{ return pLastUseDynamic; }
+	
+	/** Increment last use dynamic shadow map counter by one. */
+	void IncrementLastUseDynamic();
+	
+	/** Reset last use dynamic shadow map counter. */
+	void ResetLastUseDynamic();
+	
+	/** Dynamic shadow map is dirty. */
+	inline bool GetDirtyDynamic() const{ return pDirtyDynamic; }
+	
+	/** Set dynamic shadow map dirty. */
+	void SetDirtyDynamic( bool dirty );
+	
+	
+	
+	/** Last frame static size or 0. */
+	inline int GetLastSizeStatic() const{ return pLastSizeStatic; }
+	
+	/** Next frame static size or 0. */
+	inline int GetNextSizeStatic() const{ return pNextSizeStatic; }
+	
+	/** Set next frame static size to largest value. */
+	void SetLargestNextSizeStatic( int size );
+	
+	/** Last frame dynamic size or 0. */
+	inline int GetLastSizeDynamic() const{ return pLastSizeDynamic; }
+	
+	/** Next frame dynamic size or 0. */
+	inline int GetNextSizeDynamic() const{ return pNextSizeDynamic; }
+	
+	/** Set next frame dynamic size to largest value. */
+	void SetLargestNextSizeDynamic( int size );
 	
 	
 	

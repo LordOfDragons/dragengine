@@ -136,12 +136,10 @@ private:
 	bool pFlipCulling;
 	
 	bool pDisableLights;
-	bool pRescaleShadowMaps;
 	int pShadowMapSize;
 	int pShadowCubeSize;
 	int pShadowSkySize;
 	float pDominance;
-	int pForceShadowMapSize;
 	
 	deoglRenderPlanEnvMap *pEnvMaps;
 	int pEnvMapCount;
@@ -226,12 +224,6 @@ public:
 	/** All lights are disabled. */
 	inline bool GetDisableLights() const{ return pDisableLights; }
 	
-	/** Shadow map sizes are rescaled relative to the viewport size. */
-	inline bool GetRescaleShadowMaps() const{ return pRescaleShadowMaps; }
-	
-	/** Set if shadow map sizes are rescaled relative to the viewport size. */
-	void SetRescaleShadowMaps( bool rescale );
-	
 	/** Shadow map size. */
 	inline int GetShadowMapSize() const{ return pShadowMapSize; }
 	
@@ -243,12 +235,6 @@ public:
 	
 	/** Dominance. */
 	inline float GetDominance() const{ return pDominance; }
-	
-	/** Forced shadow map size or 0 to use the default shadow map size. */
-	inline int GetForceShadowMapSize() const{ return pForceShadowMapSize; }
-	
-	/** Set forced shadow map size or 0 to use the default shadow map size. */
-	void SetForceShadowMapSize( int forcedSize );
 	
 	
 	

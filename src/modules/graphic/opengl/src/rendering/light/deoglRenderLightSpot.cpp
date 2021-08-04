@@ -687,16 +687,12 @@ const deoglRenderPlanMasked *mask ){
 			break;
 			
 		case deoglShadowCaster::estDynamicOnly:
-			if( scsolid.GetDynamicMap() ){
-				texSolidDepth1 = scsolid.GetDynamicMap()->GetTexture();
+			texSolidDepth1 = scsolid.GetDynamicMap();
+			if( transparentDynamicShadow ){
+				texTranspDepth1 = sctransp.GetDynamicShadowMap();
+				texTranspColor1 = sctransp.GetDynamicColorMap();
 			}
-			if( transparentDynamicShadow && sctransp.GetDynamicShadowMap() && sctransp.GetDynamicColorMap() ){
-				texTranspDepth1 = sctransp.GetDynamicShadowMap()->GetTexture();
-				texTranspColor1 = sctransp.GetDynamicColorMap()->GetTexture();
-			}
-			if( scambient.GetDynamicMap() ){
-				texAmbient1 = scambient.GetDynamicMap()->GetTexture();
-			}
+			texAmbient1 = scambient.GetDynamicMap();
 			break;
 			
 		case deoglShadowCaster::estStaticAndDynamic:
@@ -717,27 +713,23 @@ const deoglRenderPlanMasked *mask ){
 			}
 			texAmbient1 = scambient.GetStaticMap();
 			
-			if( scsolid.GetDynamicMap() ){
-				texSolidDepth2 = scsolid.GetDynamicMap()->GetTexture();
-			}
-			if( transparentDynamicShadow && sctransp.GetDynamicShadowMap() && sctransp.GetDynamicColorMap() ){
+			texSolidDepth2 = scsolid.GetDynamicMap();
+			if( transparentDynamicShadow ){
 				if( texTranspDepth1 ){
-					texTranspDepth2 = sctransp.GetDynamicShadowMap()->GetTexture();
+					texTranspDepth2 = sctransp.GetDynamicShadowMap();
 					
 				}else{
-					texTranspDepth1 = sctransp.GetDynamicShadowMap()->GetTexture();
+					texTranspDepth1 = sctransp.GetDynamicShadowMap();
 				}
 				
 				if( texTranspColor1 ){
-					texTranspColor2 = sctransp.GetDynamicColorMap()->GetTexture();
+					texTranspColor2 = sctransp.GetDynamicColorMap();
 					
 				}else{
-					texTranspColor1 = sctransp.GetDynamicColorMap()->GetTexture();
+					texTranspColor1 = sctransp.GetDynamicColorMap();
 				}
 			}
-			if( scambient.GetDynamicMap() ){
-				texAmbient2 = scambient.GetDynamicMap()->GetTexture();
-			}
+			texAmbient2 = scambient.GetDynamicMap();
 			break;
 		}
 		
@@ -1116,11 +1108,9 @@ bool refilterShadow ){
 	// static shadow map
 	if( shadowType == deoglShadowCaster::estStaticOnly
 	||  shadowType == deoglShadowCaster::estStaticAndDynamic ){
+		// check if an update is required
 		bool requiresUpdate = false;
 		
-		// check if an update is required. updates can be required due to the following reasons:
-		// 1) the texture does not exist
-		// 2) the size changed
 		if( scsolid.GetStaticMap() ){
 			if( scsolid.GetStaticMap()->GetWidth() != staticShadowMapSize ){
 				LOG_SIZE_CHANGE("scsolid.static", staticShadowMapSize, scsolid.GetStaticMap())
@@ -1133,7 +1123,7 @@ bool refilterShadow ){
 		}
 		
 		if( scambient.GetStaticMap() ){
-			if( scambient.GetStaticMap()->GetWidth() < staticAmbientMapSize ){
+			if( scambient.GetStaticMap()->GetWidth() != staticAmbientMapSize ){
 				LOG_SIZE_CHANGE("scambient.static", staticAmbientMapSize, scambient.GetStaticMap())
 				scambient.DropStatic();
 				requiresUpdate = true;
@@ -1277,7 +1267,7 @@ bool refilterShadow ){
 			LOG_SIZE_CHANGE("scsolid.dynamic", dynamicShadowMapSize, scsolid.GetDynamicMap())
 			scsolid.DropDynamic();
 		}
-		if( scambient.GetDynamicMap() && scambient.GetDynamicMap()->GetWidth() < dynamicAmbientMapSize ){
+		if( scambient.GetDynamicMap() && scambient.GetDynamicMap()->GetWidth() != dynamicAmbientMapSize ){
 			LOG_SIZE_CHANGE("scambient.dynamic", dynamicAmbientMapSize, scambient.GetDynamicMap())
 			scambient.DropDynamic();
 		}
@@ -1289,7 +1279,8 @@ bool refilterShadow ){
 		
 		// render shadow map if dirty. the dirty flag is reset each frame update. this ensures
 		// dynamic shadow maps are rendered once per frame update
-		bool requiresUpdate = ! scsolid.GetDynamicMap() || scsolid.GetDirtyDynamic();
+		bool requiresUpdate = ! scsolid.GetDynamicMap() || scsolid.GetDirtyDynamic()
+			|| scambient.GetDynamicMap() || scambient.GetDirtyDynamic();
 		if( transparentDynamicShadow ){
 			requiresUpdate |= ! sctransp.GetDynamicShadowMap()
 				|| ! sctransp.GetDynamicColorMap() || sctransp.GetDirtyDynamic();
@@ -1297,13 +1288,13 @@ bool refilterShadow ){
 		
 		if( requiresUpdate ){
 			shadowMapper.SetForeignSolidDepthTexture( scsolid.ObtainDynamicMapWithSize(
-				dynamicShadowMapSize, false, defren.GetUseInverseDepth() )->GetTexture() );
+				dynamicShadowMapSize, false, defren.GetUseInverseDepth() ) );
 			
 			if( transparentDynamicShadow ){
 				shadowMapper.SetForeignTransparentDepthTexture( sctransp.ObtainDynamicShadowMapWithSize(
-					dynamicTranspShadowMapSize, defren.GetUseInverseDepth() )->GetTexture() );
-				shadowMapper.SetForeignTransparentColorTexture( sctransp.
-					ObtainDynamicColorMapWithSize( dynamicTranspShadowMapSize )->GetTexture() );
+					dynamicTranspShadowMapSize, defren.GetUseInverseDepth() ) );
+				shadowMapper.SetForeignTransparentColorTexture(
+					sctransp.ObtainDynamicColorMapWithSize( dynamicTranspShadowMapSize ) );
 			}
 			
 			RenderShadowMap( planLight, matrixCamera, matrixProjection, shadowMapper, clist1,
@@ -1316,20 +1307,23 @@ bool refilterShadow ){
 			if( transparentDynamicShadow ){
 				sctransp.SetDirtyDynamic( false );
 			}
-		}
-		
-		// ambient map
-		if( solid ){
+			
+			// ambient map
+			shadowMapper.SetForeignAmbientTexture( scambient.ObtainDynamicMapWithSize( dynamicAmbientMapSize ) );
+			
 			RenderAmbientMap( planLight, matrixCamera, matrixProjection, shadowMapper,
 				clist1, clist2, dynamicAmbientMapSize );
 			
-		}else if( ! scambient.GetDynamicMap() ){
-			shadowMapper.SetForeignAmbientTexture( scambient.ObtainDynamicMapWithSize(
-				dynamicAmbientMapSize )->GetTexture() );
-			RenderAmbientMap( planLight, matrixCamera, matrixProjection, shadowMapper,
-				clist1, clist2, dynamicAmbientMapSize );
 			shadowMapper.DropForeignAmbientTextures();
+			
+			scambient.SetDirtyDynamic( false );
 		}
+		
+		scsolid.ResetLastUseDynamic();
+		if( transparentStaticShadow ){
+			sctransp.ResetLastUseDynamic();
+		}
+		scambient.ResetLastUseDynamic();
 	}
 	
 	// update box boundary if required

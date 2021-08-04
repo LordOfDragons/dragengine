@@ -159,11 +159,9 @@ pTaskFindContent( NULL )
 	pFlipCulling = false;
 	
 	pDisableLights = false;
-	pRescaleShadowMaps = true;
 	pShadowMapSize = 0;
 	pShadowCubeSize = 0;
 	pShadowSkySize = 0;
-	pForceShadowMapSize = 0;
 	
 	pEnvMaps = new deoglRenderPlanEnvMap[ 16 ];
 	pEnvMapCount = 8; //4;
@@ -307,16 +305,6 @@ void deoglRenderPlan::SetWorld( deoglRWorld *world ){
 
 void deoglRenderPlan::SetLevel( int level ){
 	pLevel = level;
-}
-
-
-
-void deoglRenderPlan::SetRescaleShadowMaps( bool rescale ){
-	pRescaleShadowMaps = rescale;
-}
-
-void deoglRenderPlan::SetForceShadowMapSize( int forcedSize ){
-	pForceShadowMapSize = forcedSize;
 }
 
 
@@ -627,6 +615,7 @@ void deoglRenderPlan::pPlanDominance(){
 void deoglRenderPlan::pPlanShadowCasting(){
 	const deoglConfiguration &config = pRenderThread.GetConfiguration();
 	
+#if 0
 	// largest screen size
 	int renderSize = pViewportWidth;
 	
@@ -653,57 +642,56 @@ void deoglRenderPlan::pPlanShadowCasting(){
 	const int shadowMapSize = deoglShadowMapper::ShadowMapSize( config );
 	int shiftSize = 0;
 	
-	if( pForceShadowMapSize > 0 ){
-		pShadowMapSize = decMath::clamp( pForceShadowMapSize, 16, shadowMapSize );
-		pShadowCubeSize = pForceShadowMapSize;
-		pShadowSkySize = pForceShadowMapSize;
+	// disabled since shadow maps are now reused across rendered frames. reducing the size
+	// in one render situation is not helping much and is often nullified by the last frame
+	// size limitation
+	if( pRescaleShadowMaps ){
+		// TODO review this code. it looks wrong from one end to the other. no idea
+		//      what the original idea has been behind this code
+		
+		if( shadowMapSize > 1024 ){
+			shiftSize = ( shadowMapSize / 1024 ) - 1;
+			
+		}else if( shadowMapSize < 1024 ){
+			shiftSize = 1 - ( 1024 / shadowMapSize );
+		}
+		
+		for( pShadowMapSize=16; pShadowMapSize<renderSize; pShadowMapSize<<=1 );
+		
+		if( shiftSize > 0 ){
+			pShadowMapSize <<= shiftSize;
+			
+		}else if( shiftSize < 0 ){
+			pShadowMapSize >>= -shiftSize;
+		}
 		//unclampedSize = pShadowMapSize;
 		
-	}else{
-		if( pRescaleShadowMaps ){
-			// TODO review this code. it looks wrong from one end to the other. no idea
-			//      what the original idea has been behind this code
+		pShadowMapSize = decMath::clamp( pShadowMapSize, 16, shadowMapSize );
+		pShadowCubeSize = pShadowMapSize;
+		pShadowSkySize = pShadowMapSize;
+		
+		/*
+		if( shiftSize > 0 ){
+			pShadowCubeSize = config.GetShadowCubeSize() << shiftSize;
 			
-			if( shadowMapSize > 1024 ){
-				shiftSize = ( shadowMapSize / 1024 ) - 1;
-				
-			}else if( shadowMapSize < 1024 ){
-				shiftSize = 1 - ( 1024 / shadowMapSize );
-			}
-			
-			for( pShadowMapSize=16; pShadowMapSize<renderSize; pShadowMapSize<<=1 );
-			
-			if( shiftSize > 0 ){
-				pShadowMapSize <<= shiftSize;
-				
-			}else if( shiftSize < 0 ){
-				pShadowMapSize >>= -shiftSize;
-			}
-			//unclampedSize = pShadowMapSize;
-			
-			pShadowMapSize = decMath::clamp( pShadowMapSize, 16, shadowMapSize );
-			pShadowCubeSize = pShadowMapSize;
-			pShadowSkySize = pShadowMapSize;
-			
-			/*
-			if( shiftSize > 0 ){
-				pShadowCubeSize = config.GetShadowCubeSize() << shiftSize;
-				
-			}else if( shiftSize < 0 ){
-				pShadowCubeSize = config.GetShadowCubeSize() >> shiftSize;
-				
-			}else{
-				pShadowCubeSize = config.GetShadowCubeSize();
-			}
-			*/
+		}else if( shiftSize < 0 ){
+			pShadowCubeSize = config.GetShadowCubeSize() >> shiftSize;
 			
 		}else{
-			pShadowMapSize = shadowMapSize;
-			pShadowCubeSize = shadowMapSize; //config.GetShadowCubeSize();
-			pShadowSkySize = shadowMapSize;
-			//unclampedSize = pShadowMapSize;
+			pShadowCubeSize = config.GetShadowCubeSize();
 		}
+		*/
+		
+	}else{
+		pShadowMapSize = shadowMapSize;
+		pShadowCubeSize = shadowMapSize; //config.GetShadowCubeSize();
+		pShadowSkySize = shadowMapSize;
+		//unclampedSize = pShadowMapSize;
 	}
+#endif
+	pShadowMapSize = deoglShadowMapper::ShadowMapSize( config );
+	pShadowCubeSize = deoglShadowMapper::ShadowCubeSize( config );
+	pShadowSkySize = pShadowMapSize;
 	
 	//printf( "shadow map size: rendersize=%i forced=%i shift=%i size=%i cube=%i sky=%i config=%i\n", renderSize, pForceShadowMapSize, shiftSize, pShadowMapSize, pShadowCubeSize, pShadowSkySize, shadowMapSize );
 }

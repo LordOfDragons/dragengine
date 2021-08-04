@@ -783,15 +783,13 @@ const deoglRenderPlanMasked *mask ){
 			
 		case deoglShadowCaster::estDynamicOnly:
 			if( scsolid.GetDynamicCubeMap() ){
-				texSolidDepth1 = scsolid.GetDynamicCubeMap()->GetCubeMap();
+				texSolidDepth1 = scsolid.GetDynamicCubeMap();
 			}
-			if( transparentDynamicShadow && sctransp.GetDynamicShadowCubeMap() && sctransp.GetDynamicColorCubeMap() ){
-				texTranspDepth1 = sctransp.GetDynamicShadowCubeMap()->GetCubeMap();
-				texTranspColor1 = sctransp.GetDynamicColorCubeMap()->GetCubeMap();
+			if( transparentDynamicShadow ){
+				texTranspDepth1 = sctransp.GetDynamicShadowCubeMap();
+				texTranspColor1 = sctransp.GetDynamicColorCubeMap();
 			}
-			if( scambient.GetDynamicCubeMap() ){
-				texAmbient1 = scambient.GetDynamicCubeMap()->GetCubeMap();
-			}
+			texAmbient1 = scambient.GetDynamicCubeMap();
 			break;
 			
 		case deoglShadowCaster::estStaticAndDynamic:
@@ -803,30 +801,24 @@ const deoglRenderPlanMasked *mask ){
 			texAmbient1 = scambient.GetStaticCubeMap();
 			
 			if( scsolid.GetDynamicCubeMap() ){
-				texSolidDepth2 = scsolid.GetDynamicCubeMap()->GetCubeMap();
+				texSolidDepth2 = scsolid.GetDynamicCubeMap();
 			}
 			if( transparentDynamicShadow ){
-				if( sctransp.GetDynamicShadowCubeMap() ){
-					if( texTranspDepth1 ){
-						texTranspDepth2 = sctransp.GetDynamicShadowCubeMap()->GetCubeMap();
-						
-					}else{
-						texTranspDepth1 = sctransp.GetDynamicShadowCubeMap()->GetCubeMap();
-					}
+				if( texTranspDepth1 ){
+					texTranspDepth2 = sctransp.GetDynamicShadowCubeMap();
+					
+				}else{
+					texTranspDepth1 = sctransp.GetDynamicShadowCubeMap();
 				}
 				
-				if( sctransp.GetDynamicColorCubeMap() ){
-					if( texTranspColor1 ){
-						texTranspColor2 = sctransp.GetDynamicColorCubeMap()->GetCubeMap();
-						
-					}else{
-						texTranspColor1 = sctransp.GetDynamicColorCubeMap()->GetCubeMap();
-					}
+				if( texTranspColor1 ){
+					texTranspColor2 = sctransp.GetDynamicColorCubeMap();
+					
+				}else{
+					texTranspColor1 = sctransp.GetDynamicColorCubeMap();
 				}
 			}
-			if( scambient.GetDynamicCubeMap() ){
-				texAmbient2 = scambient.GetDynamicCubeMap()->GetCubeMap();
-			}
+			texAmbient2 = scambient.GetDynamicCubeMap();
 			break;
 			
 		default:
@@ -1176,11 +1168,9 @@ bool transparentDynamicShadow, bool refilterShadow ){
 	// static shadow map
 	if( shadowType == deoglShadowCaster::estStaticOnly
 	||  shadowType == deoglShadowCaster::estStaticAndDynamic ){
+		// check if an update is required
 		bool requiresUpdate = false;
 		
-		// check if an update is required. updates can be required due to the following reasons:
-		// 1) the texture does not exist
-		// 2) the size changed
 		if( scsolid.GetStaticCubeMap() ){
 			if( staticShadowMapSize != scsolid.GetStaticCubeMap()->GetSize() ){
 				LOG_SIZE_CHANGE("scsolid.static", staticShadowMapSize, scsolid.GetStaticCubeMap())
@@ -1260,8 +1250,10 @@ DEBUG_RESET_TIMER
 			}
 			*/
 			shadowMapper.SetForeignAmbientCubeMap( scambient.ObtainStaticCubeMapWithSize( staticAmbientMapSize ) );
+			
 			RenderAmbientMap( planLight, matrixProjection, shadowMapper, light.GetStaticCollideList(), NULL,
 				staticAmbientMapSize, shadowCaster.GetStaticScale(), shadowCaster.GetStaticOffset() );
+			
 			shadowMapper.DropForeignAmbientCubeMaps();
 			shadowMapper.DropForeignAmbientTextures();
 			
@@ -1327,7 +1319,7 @@ DEBUG_PRINT_TIMER( "Shadow Static" );
 			LOG_SIZE_CHANGE("scsolid.dynamic", dynamicShadowMapSize, scsolid.GetDynamicCubeMap())
 			scsolid.DropDynamic();
 		}
-		if( scambient.GetDynamicCubeMap() && scambient.GetDynamicCubeMap()->GetSize() < dynamicAmbientMapSize ){
+		if( scambient.GetDynamicCubeMap() && scambient.GetDynamicCubeMap()->GetSize() != dynamicAmbientMapSize ){
 			LOG_SIZE_CHANGE("scambient.dynamic", dynamicAmbientMapSize, scambient.GetDynamicCubeMap())
 			scambient.DropDynamic();
 		}
@@ -1339,7 +1331,8 @@ DEBUG_PRINT_TIMER( "Shadow Static" );
 		
 		// render shadow map if dirty. the dirty flag is reset each frame update. this ensures
 		// dynamic shadow maps are rendered once per frame update
-		bool requiresUpdate = ! scsolid.GetDynamicCubeMap() || scsolid.GetDirtyDynamic();
+		bool requiresUpdate = ! scsolid.GetDynamicCubeMap() || scsolid.GetDirtyDynamic()
+			|| scambient.GetDynamicCubeMap() || scambient.GetDirtyDynamic();
 		if( transparentDynamicShadow ){
 			requiresUpdate |= ! sctransp.GetDynamicShadowCubeMap()
 				|| ! sctransp.GetDynamicColorCubeMap() || sctransp.GetDirtyDynamic();
@@ -1347,14 +1340,14 @@ DEBUG_PRINT_TIMER( "Shadow Static" );
 		
 		if( requiresUpdate ){
 DEBUG_RESET_TIMER
-			shadowMapper.SetForeignSolidDepthCubeMap( scsolid.ObtainDynamicCubeMapWithSize(
-				dynamicShadowMapSize )->GetCubeMap() );
+			shadowMapper.SetForeignSolidDepthCubeMap(
+				scsolid.ObtainDynamicCubeMapWithSize( dynamicShadowMapSize ) );
 			
 			if( transparentDynamicShadow ){
 				shadowMapper.SetForeignTransparentDepthCubeMap( sctransp.
-					ObtainDynamicShadowCubeMapWithSize( dynamicTranspShadowMapSize )->GetCubeMap() );
+					ObtainDynamicShadowCubeMapWithSize( dynamicTranspShadowMapSize ) );
 				shadowMapper.SetForeignTransparentColorCubeMap( sctransp.
-					ObtainDynamicColorCubeMapWithSize( dynamicTranspShadowMapSize )->GetCubeMap() );
+					ObtainDynamicColorCubeMapWithSize( dynamicTranspShadowMapSize ) );
 			}
 			
 			RenderShadowMaps( planLight, matrixProjection, shadowMapper, clist1, clist2,
@@ -1363,22 +1356,30 @@ DEBUG_RESET_TIMER
 			
 			shadowMapper.DropForeignCubeMaps();
 			shadowMapper.DropForeignTextures();
+			
+			scsolid.SetDirtyDynamic( false );
+			if( transparentDynamicShadow ){
+				sctransp.SetDirtyDynamic( false );
+			}
 DEBUG_PRINT_TIMER( "Shadow Dynamic Transparent" );
-		}
-		
-		// ambient map
-		if( solid ){
+			
+			// ambient map
+			shadowMapper.SetForeignAmbientCubeMap( scambient.ObtainDynamicCubeMapWithSize( dynamicAmbientMapSize ) );
+			
 			RenderAmbientMap( planLight, matrixProjection, shadowMapper, clist1, clist2,
 				dynamicAmbientMapSize, shadowCaster.GetStaticScale(), shadowCaster.GetStaticOffset() );
 			
-		}else if( ! scambient.GetDynamicCubeMap() ){
-			shadowMapper.SetForeignAmbientCubeMap( scambient.ObtainDynamicCubeMapWithSize(
-				dynamicAmbientMapSize )->GetCubeMap() );
-			RenderAmbientMap( planLight, matrixProjection, shadowMapper, clist1, clist2,
-				dynamicAmbientMapSize, shadowCaster.GetStaticScale(), shadowCaster.GetStaticOffset() );
 			shadowMapper.DropForeignAmbientCubeMaps();
 			shadowMapper.DropForeignAmbientTextures();
+			
+			scambient.SetDirtyDynamic( false );
 		}
+		
+		scsolid.ResetLastUseDynamic();
+		if( transparentStaticShadow ){
+			sctransp.ResetLastUseDynamic();
+		}
+		scambient.ResetLastUseDynamic();
 	}
 	
 	// update box boundary if required

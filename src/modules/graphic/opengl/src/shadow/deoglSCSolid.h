@@ -28,9 +28,6 @@ class deoglRenderThread;
 class deoglArrayTexture;
 class deoglTexture;
 class deoglCubeMap;
-class deoglRenderableDepthTexture;
-class deoglRenderableDepthCubeMap;
-class deoglRenderableDepthArrayTexture;
 
 
 
@@ -47,9 +44,9 @@ private:
 	int pLastUseStatic;
 	bool pHasStatic;
 	
-	deoglRenderableDepthTexture *pDynamicMap;
-	deoglRenderableDepthCubeMap *pDynamicCubeMap;
-	deoglRenderableDepthArrayTexture *pDynamicArrayMap;
+	deoglTexture *pDynamicMap;
+	deoglCubeMap *pDynamicCubeMap;
+	deoglArrayTexture *pDynamicArrayMap;
 	int pLastUseDynamic;
 	bool pHasDynamic;
 	bool pDirtyDynamic;
@@ -114,22 +111,22 @@ public:
 	
 	
 	/** Dynamic shadow map if present or NULL otherwise. */
-	inline deoglRenderableDepthTexture *GetDynamicMap() const{ return pDynamicMap; }
+	inline deoglTexture *GetDynamicMap() const{ return pDynamicMap; }
 	
 	/** Obtain dynamic shadow map with size if absent. */
-	deoglRenderableDepthTexture *ObtainDynamicMapWithSize( int size, bool withStencil, bool useFloat );
+	deoglTexture *ObtainDynamicMapWithSize( int size, bool withStencil, bool useFloat );
 	
 	/** Dynamic shadow cube map if present or NULL otherwise. */
-	inline deoglRenderableDepthCubeMap *GetDynamicCubeMap() const{ return pDynamicCubeMap; }
+	inline deoglCubeMap *GetDynamicCubeMap() const{ return pDynamicCubeMap; }
 	
 	/** Obtain dynamic shadow cube map with size if absent. */
-	deoglRenderableDepthCubeMap *ObtainDynamicCubeMapWithSize( int size );
+	deoglCubeMap *ObtainDynamicCubeMapWithSize( int size );
 	
 	/** Dynamic array shadow map if present or NULL otherwise. */
-	inline deoglRenderableDepthArrayTexture *GetDynamicArrayMap() const{ return pDynamicArrayMap; }
+	inline deoglArrayTexture *GetDynamicArrayMap() const{ return pDynamicArrayMap; }
 	
 	/** Obtain dynamic array shadow map with size if absent. */
-	deoglRenderableDepthArrayTexture *ObtainDynamicArrayMapWithSize( int size, int layers, bool useFloat );
+	deoglArrayTexture *ObtainDynamicArrayMapWithSize( int size, int layers, bool useFloat );
 	
 	/** Drop dynamic shadow map if present. */
 	void DropDynamic();

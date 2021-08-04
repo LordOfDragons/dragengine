@@ -1189,22 +1189,31 @@ int deoglShadowMapper::ShadowMapSize ( const deoglConfiguration &config ){
 }
 
 int deoglShadowMapper::ShadowCubeSize( const deoglConfiguration& config ){
+	// cube map sizes above 1024 are brutal on the memory consumption especially if many
+	// point lights are close to the cameras. later on this can be modified to use higher
+	// resolution if the count of active point light shadow cubes is low
+	// 
+	// the memory consumption of a cube map is 6x the memory consumption of a shadow map
+	// of the same size. if the cube map is half the size of the shadow map the memory
+	// consumption of the cube map is 1.5x the memory consumption of the shadow map
+	// 
+	// for the time being half the shadow map size is used.
 	switch( config.GetShadowQuality() ){
 	case deoglConfiguration::esqVeryHigh:
 		return 2048; //4096;
 		
 	case deoglConfiguration::esqHigh:
 	default:
-		return 2048;
+		return 1024; //2048;
 		
 	case deoglConfiguration::esqMedium:
-		return 1024;
+		return 512; //1024;
 		
 	case deoglConfiguration::esqLow:
-		return 512;
+		return 256; //512;
 		
 	case deoglConfiguration::esqVeryLow:
-		return 256;
+		return 128; //256;
 	}
 }
 

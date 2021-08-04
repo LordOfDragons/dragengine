@@ -53,6 +53,11 @@ public:
 	deoglMemoryConsumptionGPU transparentDynamicCubeDepth;
 	deoglMemoryConsumptionGPU transparentDynamicCubeColor;
 	
+	deoglMemoryConsumptionGPU ambientStaticMap;
+	deoglMemoryConsumptionGPU ambientStaticCube;
+	deoglMemoryConsumptionGPU ambientDynamicMap;
+	deoglMemoryConsumptionGPU ambientDynamicCube;
+	
 	
 	
 public:
