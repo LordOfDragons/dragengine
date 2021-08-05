@@ -250,4 +250,12 @@ enum eRenderTaskFilters{
 
 
 
+/** Printf problems. */
+#ifdef OS_W32
+#define OGLPFLLU "%I64"
+#else
+#define OGLPFLLU "%llu"
+#endif
+
+
 #endif

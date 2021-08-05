@@ -62,7 +62,7 @@ void deoglDebugMemoryConsumption::LogConsumption(){
 	
 	pRenderThread.GetLogger().LogInfo( "Memory Consumption:" );
 	
-	pRenderThread.GetLogger().LogInfoFormat( "Total: %lluMB (%lluB)", pLastTotal / 1024000ull, pLastTotal );
+	pRenderThread.GetLogger().LogInfoFormat( "Total: " OGLPFLLU "MB (" OGLPFLLU "B)", pLastTotal / 1024000ull, pLastTotal );
 	
 	pLog( consumption.texture1D );
 	pLog( consumption.texture2D );
@@ -93,7 +93,7 @@ void deoglDebugMemoryConsumption::pLog( const deoglMemoryConsumptionGPU &consump
 		return;
 	}
 	
-	pRenderThread.GetLogger().LogInfoFormat( "- %s: %uMB (%dx, %lluB)",
+	pRenderThread.GetLogger().LogInfoFormat( "- %s: %uMB (%dx, " OGLPFLLU "B)",
 		consumption.GetName().GetString(), consumption.GetConsumptionMB(),
 		consumption.GetCount(), consumption.GetConsumption() );
 }
