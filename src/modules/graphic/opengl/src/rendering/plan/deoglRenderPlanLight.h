@@ -50,6 +50,9 @@ private:
 	int pTranspShadowSizeDynamic;
 	int pAmbientShadowSizeDynamic;
 	
+	bool pUseShadow;
+	bool pUseAmbient;
+	
 	
 	
 public:
@@ -104,6 +107,10 @@ public:
 	void SetShadowSizeDynamic( int size );
 	void SetTranspShadowSizeDynamic( int size );
 	void SetAmbientShadowSizeDynamic( int size );
+	
+	/** Render switches. */
+	inline bool GetUseShadow() const{ return pUseShadow; }
+	inline bool GetUseAmbient() const{ return pUseAmbient; }
 	/*@}*/
 	
 	
@@ -111,6 +118,8 @@ public:
 private:
 	void pCalcReductionFactorStatic();
 	void pCalcReductionFactorDynamic();
+	void pDetermineUseShadow();
+	void pDetermineUseAmbient();
 };
 
 #endif

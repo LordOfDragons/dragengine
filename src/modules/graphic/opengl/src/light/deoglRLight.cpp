@@ -707,6 +707,7 @@ deoglLightShaderConfig &config ){
 	case estLumSolid1:
 	case estLumSolid1NoAmbient:
 	case estLumSolid2:
+	case estLumSolid2NoAmbient:
 	case estGIRaySolid1:
 	case estGIRaySolid2:
 		break;
@@ -728,6 +729,7 @@ deoglLightShaderConfig &config ){
 		case estLumSolid1:
 		case estLumSolid1NoAmbient:
 		case estLumSolid2:
+		case estLumSolid2NoAmbient:
 		case estGIRaySolid1:
 		case estGIRaySolid2:
 			config.SetShadowTapMode( deoglLightShaderConfig::estmSingle );
@@ -783,6 +785,7 @@ deoglLightShaderConfig &config ){
 		case estLumSolid1:
 		case estLumSolid1NoAmbient:
 		case estLumSolid2:
+		case estLumSolid2NoAmbient:
 		case estGIRaySolid1:
 		case estGIRaySolid2:
 			config.SetShadowTapMode( deoglLightShaderConfig::estmSingle );
@@ -859,12 +862,24 @@ deoglLightShaderConfig &config ){
 		config.SetTextureShadow2Ambient( true );
 		break;
 		
+	case estSolid2NoAmbient:
+	case estLumSolid2NoAmbient:
+		config.SetTextureShadow1Solid( true );
+		config.SetTextureShadow2Solid( true );
+		break;
+		
 	case estSolid2Transp1:
 		config.SetTextureShadow1Solid( true );
 		config.SetTextureShadow1Transparent( true );
 		config.SetTextureShadow2Solid( true );
 		config.SetTextureShadow1Ambient( true );
 		config.SetTextureShadow2Ambient( true );
+		break;
+		
+	case estSolid2Transp1NoAmbient:
+		config.SetTextureShadow1Solid( true );
+		config.SetTextureShadow1Transparent( true );
+		config.SetTextureShadow2Solid( true );
 		break;
 		
 	case estSolid2Transp2:
@@ -874,6 +889,13 @@ deoglLightShaderConfig &config ){
 		config.SetTextureShadow2Transparent( true );
 		config.SetTextureShadow1Ambient( true );
 		config.SetTextureShadow2Ambient( true );
+		break;
+		
+	case estSolid2Transp2NoAmbient:
+		config.SetTextureShadow1Solid( true );
+		config.SetTextureShadow1Transparent( true );
+		config.SetTextureShadow2Solid( true );
+		config.SetTextureShadow2Transparent( true );
 		break;
 		
 	case estGIRaySolid1:

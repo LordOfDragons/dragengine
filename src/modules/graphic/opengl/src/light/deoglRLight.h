@@ -89,6 +89,15 @@ public:
 		/** Double solid and transparent shadow. */
 		estSolid2Transp2,
 		
+		/** Double solid no transparent shadow. */
+		estSolid2NoAmbient,
+		
+		/** Double solid and single transparent shadow. */
+		estSolid2Transp1NoAmbient,
+		
+		/** Double solid and transparent shadow. */
+		estSolid2Transp2NoAmbient,
+		
 		/** Luminance only single solid. */
 		estLumSolid1,
 		
@@ -97,6 +106,9 @@ public:
 		
 		/** Luminance only double solid. */
 		estLumSolid2,
+		
+		/** Luminance only double solid. */
+		estLumSolid2NoAmbient,
 		
 		/** GI rays no shadow casting. */
 		estGIRayNoShadow,

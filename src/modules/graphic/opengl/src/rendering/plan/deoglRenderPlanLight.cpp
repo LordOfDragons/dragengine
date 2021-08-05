@@ -57,7 +57,10 @@ pAmbientShadowSizeStatic( 0 ),
 
 pShadowSizeDynamic( 0 ),
 pTranspShadowSizeDynamic( 0 ),
-pAmbientShadowSizeDynamic( 0 ){
+pAmbientShadowSizeDynamic( 0 ),
+
+pUseShadow( false ),
+pUseAmbient( false ){
 }
 
 deoglRenderPlanLight::~deoglRenderPlanLight(){
@@ -191,6 +194,10 @@ void deoglRenderPlanLight::PlanShadowCasting(){
 	pAmbientShadowSizeDynamic = decMath::max( pAmbientShadowSizeDynamic,
 		scambient.GetLastSizeDynamic(), scambient.GetNextSizeDynamic() );
 	
+	// determine render switches
+	pDetermineUseShadow();
+	pDetermineUseAmbient();
+	
 	// log values used
 #if 0
 	static const char * const lightTypeNames[] = { "point", "spot", "projector" };
@@ -291,4 +298,38 @@ void deoglRenderPlanLight::pCalcReductionFactorDynamic(){
 	
 	const float multiple = ( pDistance / range ) - 0.5f;
 	pReductionFactorDynamic = decMath::clamp( ( int )log2f( multiple ), 0, 8 );
+}
+
+void deoglRenderPlanLight::pDetermineUseShadow(){
+	pUseShadow = pPlan.GetRenderThread().GetConfiguration().GetShadowQuality() != deoglConfiguration::esqOff;
+	
+	// no shadows if the light wishes so
+	if( ! pLight->GetLight()->GetCastShadows() ){
+		pUseShadow = false;
+	}
+	
+	// it can also happen that the light has nothing to cast shadows with
+	// so in this case shadow casting is disabled too as it is faster
+	const deoglShadowCaster::eShadowTypes shadowType = pLight->GetLight()->GetShadowCaster()->GetShadowType();
+	if( shadowType == deoglShadowCaster::estNoShadows ){
+		pUseShadow = false;
+	}
+	
+	// for environment maps we use only static shadows
+	/*
+	if( pUseShadow && pPlan.GetFBOTarget() && shadowType == deoglShadowCaster::estDynamicOnly ){
+		pUseShadow = false;
+	}
+	*/
+}
+
+void deoglRenderPlanLight::pDetermineUseAmbient(){
+	pUseAmbient = ! pPlan.GetNoAmbientLight();
+	
+	// disable ambient if GI is used. for rendering uses faster shader. for boundary
+	// calculation uses only depth map. ambient is only required if GI is disabled
+	// since then lights have no way to do ambient lighting otherwise
+	if( pPlan.GetRenderGIState() ){
+		pUseAmbient = false;
+	}
 }

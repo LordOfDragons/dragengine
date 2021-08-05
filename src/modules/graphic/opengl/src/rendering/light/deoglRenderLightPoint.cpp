@@ -468,6 +468,7 @@ void deoglRenderLightPoint::CalculateBoxBoundary( deoglRenderPlanLight &planLigh
 	deoglShadowCaster &shadowCaster = *light.GetShadowCaster();
 	deoglSCSolid &scsolid = shadowCaster.GetSolid();
 	deoglSCAmbient &scambient = shadowCaster.GetAmbient();
+	const bool useAmbient = planLight.GetUseAmbient();
 	
 	if( ! scsolid.GetStaticCubeMap() ){
 		DETHROW( deeInvalidParam );
@@ -511,7 +512,7 @@ void deoglRenderLightPoint::CalculateBoxBoundary( deoglRenderPlanLight &planLigh
 	
 	deoglShaderCompiled *shader;
 	
-	if( scambient.GetStaticCubeMap() ){
+	if( useAmbient && scambient.GetStaticCubeMap() ){
 		renderThread.GetShader().ActivateShader( pShaderBoxBoundary1Ambient );
 		shader = pShaderBoxBoundary1Ambient->GetCompiled();
 		
@@ -532,7 +533,7 @@ void deoglRenderLightPoint::CalculateBoxBoundary( deoglRenderPlanLight &planLigh
 	
 	tsmgr.DisableAllStages();
 	tsmgr.EnableCubeMap( 2, shadowmap, GetSamplerClampNearest() );
-	if( scambient.GetStaticCubeMap() ){
+	if( useAmbient && scambient.GetStaticCubeMap() ){
 		tsmgr.EnableCubeMap( 3, *scambient.GetStaticCubeMap(), GetSamplerClampNearest() );
 	}
 	
@@ -647,34 +648,14 @@ const deoglRenderPlanMasked *mask ){
 	deoglRenderPlanDebug * const planDebug = plan.GetDebug();
 	deoglSCSolid &scsolid = shadowCaster.GetSolid();
 	deoglShadowCaster::eShadowTypes shadowType = shadowCaster.GetShadowType();
-	bool useShadow = renderThread.GetConfiguration().GetShadowQuality() != deoglConfiguration::esqOff;
-	
-	// no shadows if the light wishes so
-	if( ! light.GetCastShadows() ){
-		useShadow = false;
-	}
-	
-	// it can also happen that the light has nothing to cast shadows with
-	// so in this case shadow casting is disabled too as it is faster
-	if( shadowType == deoglShadowCaster::estNoShadows ){
-		useShadow = false;
-	}
+	const bool useShadow = planLight.GetUseShadow();
+	const bool useAmbient = planLight.GetUseAmbient();
 	
 	// for environment maps we use only static shadows
 	/*
 	if( useShadow && plan.GetFBOTarget() ){
-		switch( shadowType ){
-		case deoglShadowCaster::estStaticAndDynamic:
+		if( shadowType == deoglShadowCaster::estStaticAndDynamic ){
 			shadowType = deoglShadowCaster::estStaticOnly;
-			break;
-			
-		case deoglShadowCaster::estDynamicOnly:
-			shadowType = deoglShadowCaster::estNoShadows;
-			useShadow = false;
-			break;
-			
-		default:
-			break;
 		}
 	}
 	*/
@@ -779,7 +760,9 @@ const deoglRenderPlanMasked *mask ){
 				texTranspDepth1 = sctransp.GetStaticShadowCubeMap();
 				texTranspColor1 = sctransp.GetStaticColorCubeMap();
 			}
-			texAmbient1 = scambient.GetStaticCubeMap();
+			if( useAmbient ){
+				texAmbient1 = scambient.GetStaticCubeMap();
+			}
 			break;
 			
 		case deoglShadowCaster::estDynamicOnly:
@@ -790,7 +773,9 @@ const deoglRenderPlanMasked *mask ){
 				texTranspDepth1 = sctransp.GetDynamicShadowCubeMap();
 				texTranspColor1 = sctransp.GetDynamicColorCubeMap();
 			}
-			texAmbient1 = scambient.GetDynamicCubeMap();
+			if( useAmbient ){
+				texAmbient1 = scambient.GetDynamicCubeMap();
+			}
 			break;
 			
 		case deoglShadowCaster::estStaticAndDynamic:
@@ -799,7 +784,9 @@ const deoglRenderPlanMasked *mask ){
 				texTranspDepth1 = sctransp.GetStaticShadowCubeMap();
 				texTranspColor1 = sctransp.GetStaticColorCubeMap();
 			}
-			texAmbient1 = scambient.GetStaticCubeMap();
+			if( useAmbient ){
+				texAmbient1 = scambient.GetStaticCubeMap();
+			}
 			
 			if( scsolid.GetDynamicCubeMap() ){
 				texSolidDepth2 = scsolid.GetDynamicCubeMap();
@@ -819,7 +806,9 @@ const deoglRenderPlanMasked *mask ){
 					texTranspColor1 = sctransp.GetDynamicColorCubeMap();
 				}
 			}
-			texAmbient2 = scambient.GetDynamicCubeMap();
+			if( useAmbient ){
+				texAmbient2 = scambient.GetDynamicCubeMap();
+			}
 			break;
 			
 		default:
@@ -832,13 +821,6 @@ const deoglRenderPlanMasked *mask ){
 		}else{
 			DebugTimer2SampleCount( plan, *pDebugInfoTransparentShadow, 1, true );
 		}
-	}
-	
-	if( ! mask && solid ){
-		// disable ambient if GI is used. uses faster shader but does not prevent
-		// rendering ambient maps since they are used for more than shading
-		texAmbient1 = NULL;
-		texAmbient2 = NULL;
 	}
 	
 DEBUG_RESET_TIMER
@@ -872,13 +854,28 @@ DEBUG_RESET_TIMER
 	if( useShadow ){
 		if( texSolidDepth2 ){
 			if( texTranspDepth2 ){
-				lightShader = light.GetShaderFor( deoglRLight::estSolid2Transp2 );
+				if( texAmbient1 ){
+					lightShader = light.GetShaderFor( deoglRLight::estSolid2Transp2 );
+					
+				}else{
+					lightShader = light.GetShaderFor( deoglRLight::estSolid2Transp2NoAmbient );
+				}
 				
 			}else if( texTranspDepth1 ){
-				lightShader = light.GetShaderFor( deoglRLight::estSolid2Transp1 );
+				if( texAmbient1 ){
+					lightShader = light.GetShaderFor( deoglRLight::estSolid2Transp1 );
+					
+				}else{
+					lightShader = light.GetShaderFor( deoglRLight::estSolid2Transp1NoAmbient );
+				}
 				
 			}else{
-				lightShader = light.GetShaderFor( deoglRLight::estSolid2 );
+				if( texAmbient1 ){
+					lightShader = light.GetShaderFor( deoglRLight::estSolid2 );
+					
+				}else{
+					lightShader = light.GetShaderFor( deoglRLight::estSolid2NoAmbient );
+				}
 			}
 			
 		}else{
@@ -1150,6 +1147,7 @@ bool transparentDynamicShadow, bool refilterShadow ){
 	deoglSCTransparent &sctransp = shadowCaster.GetTransparent();
 	deoglSCAmbient &scambient = shadowCaster.GetAmbient();
 	deoglSCSolid &scsolid = shadowCaster.GetSolid();
+	const bool useAmbient = planLight.GetUseAmbient();
 	bool updateBoxBoundary = false;
 	
 	// get map sizes as calculated by render plan
@@ -1183,15 +1181,17 @@ bool transparentDynamicShadow, bool refilterShadow ){
 			requiresUpdate = true;
 		}
 		
-		if( scambient.GetStaticCubeMap() ){
-			if( staticAmbientMapSize != scambient.GetStaticCubeMap()->GetSize() ){
-				LOG_SIZE_CHANGE("scambient.static", staticAmbientMapSize, scambient.GetStaticCubeMap())
-				scambient.DropStatic();
+		if( useAmbient ){
+			if( scambient.GetStaticCubeMap() ){
+				if( scambient.GetStaticCubeMap()->GetSize() != staticAmbientMapSize ){
+					LOG_SIZE_CHANGE("scambient.static", staticAmbientMapSize, scambient.GetStaticCubeMap())
+					scambient.DropStatic();
+					requiresUpdate = true;
+				}
+				
+			}else{
 				requiresUpdate = true;
 			}
-			
-		}else{
-			requiresUpdate = true;
 		}
 		
 		if( transparentStaticShadow ){
@@ -1236,6 +1236,7 @@ DEBUG_RESET_TIMER
 				shadowCaster.GetStaticScale(), shadowCaster.GetStaticOffset(), solid );
 			
 			shadowMapper.DropForeignCubeMaps();
+			shadowMapper.DropForeignTextures();
 			
 			/*
 			decString text;
@@ -1250,13 +1251,15 @@ DEBUG_RESET_TIMER
 				renderThread.GetDebug().GetDebugSaveTexture().SaveCubeMap( *sctransp.GetColorCubeMap(), text.GetString(), false, false );
 			}
 			*/
-			shadowMapper.SetForeignAmbientCubeMap( scambient.ObtainStaticCubeMapWithSize( staticAmbientMapSize ) );
-			
-			RenderAmbientMap( planLight, matrixProjection, shadowMapper, light.GetStaticCollideList(), NULL,
-				staticAmbientMapSize, shadowCaster.GetStaticScale(), shadowCaster.GetStaticOffset() );
-			
-			shadowMapper.DropForeignAmbientCubeMaps();
-			shadowMapper.DropForeignAmbientTextures();
+			if( useAmbient ){
+				shadowMapper.SetForeignAmbientCubeMap( scambient.ObtainStaticCubeMapWithSize( staticAmbientMapSize ) );
+				
+				RenderAmbientMap( planLight, matrixProjection, shadowMapper, light.GetStaticCollideList(), NULL,
+					staticAmbientMapSize, shadowCaster.GetStaticScale(), shadowCaster.GetStaticOffset() );
+				
+				shadowMapper.DropForeignAmbientCubeMaps();
+				shadowMapper.DropForeignAmbientTextures();
+			}
 			
 			if( ! light.GetLightVolumeCropBox() ){
 				updateBoxBoundary = true;
@@ -1268,7 +1271,9 @@ DEBUG_PRINT_TIMER( "Shadow Static" );
 		if( transparentStaticShadow ){
 			sctransp.ResetLastUseStatic();
 		}
-		scambient.ResetLastUseStatic();
+		if( useAmbient ){
+			scambient.ResetLastUseStatic();
+		}
 		
 		light.ShadowCasterRequiresPrepare();
 	}
@@ -1320,7 +1325,7 @@ DEBUG_PRINT_TIMER( "Shadow Static" );
 			LOG_SIZE_CHANGE("scsolid.dynamic", dynamicShadowMapSize, scsolid.GetDynamicCubeMap())
 			scsolid.DropDynamic();
 		}
-		if( scambient.GetDynamicCubeMap() && scambient.GetDynamicCubeMap()->GetSize() != dynamicAmbientMapSize ){
+		if( useAmbient && scambient.GetDynamicCubeMap() && scambient.GetDynamicCubeMap()->GetSize() != dynamicAmbientMapSize ){
 			LOG_SIZE_CHANGE("scambient.dynamic", dynamicAmbientMapSize, scambient.GetDynamicCubeMap())
 			scambient.DropDynamic();
 		}
@@ -1332,8 +1337,10 @@ DEBUG_PRINT_TIMER( "Shadow Static" );
 		
 		// render shadow map if dirty. the dirty flag is reset each frame update. this ensures
 		// dynamic shadow maps are rendered once per frame update
-		bool requiresUpdate = ! scsolid.GetDynamicCubeMap() || scsolid.GetDirtyDynamic()
-			|| scambient.GetDynamicCubeMap() || scambient.GetDirtyDynamic();
+		bool requiresUpdate = ! scsolid.GetDynamicCubeMap() || scsolid.GetDirtyDynamic();
+		if( useAmbient ){
+			requiresUpdate |= ! scambient.GetDynamicCubeMap() || scambient.GetDirtyDynamic();
+		}
 		if( transparentDynamicShadow ){
 			requiresUpdate |= ! sctransp.GetDynamicShadowCubeMap()
 				|| ! sctransp.GetDynamicColorCubeMap() || sctransp.GetDirtyDynamic();
@@ -1365,22 +1372,26 @@ DEBUG_RESET_TIMER
 DEBUG_PRINT_TIMER( "Shadow Dynamic Transparent" );
 			
 			// ambient map
-			shadowMapper.SetForeignAmbientCubeMap( scambient.ObtainDynamicCubeMapWithSize( dynamicAmbientMapSize ) );
-			
-			RenderAmbientMap( planLight, matrixProjection, shadowMapper, clist1, clist2,
-				dynamicAmbientMapSize, shadowCaster.GetStaticScale(), shadowCaster.GetStaticOffset() );
-			
-			shadowMapper.DropForeignAmbientCubeMaps();
-			shadowMapper.DropForeignAmbientTextures();
-			
-			scambient.SetDirtyDynamic( false );
+			if( useAmbient ){
+				shadowMapper.SetForeignAmbientCubeMap( scambient.ObtainDynamicCubeMapWithSize( dynamicAmbientMapSize ) );
+				
+				RenderAmbientMap( planLight, matrixProjection, shadowMapper, clist1, clist2,
+					dynamicAmbientMapSize, shadowCaster.GetStaticScale(), shadowCaster.GetStaticOffset() );
+				
+				shadowMapper.DropForeignAmbientCubeMaps();
+				shadowMapper.DropForeignAmbientTextures();
+				
+				scambient.SetDirtyDynamic( false );
+			}
 		}
 		
 		scsolid.ResetLastUseDynamic();
 		if( transparentStaticShadow ){
 			sctransp.ResetLastUseDynamic();
 		}
-		scambient.ResetLastUseDynamic();
+		if( useAmbient ){
+			scambient.ResetLastUseDynamic();
+		}
 	}
 	
 	// update box boundary if required
