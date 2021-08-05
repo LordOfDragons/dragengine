@@ -1394,7 +1394,7 @@ DEBUG_PRINT_TIMER( "Boundary Box" );
 
 
 void deoglRenderLightPoint::ClearCubeMap( deoglShadowMapper &shadowMapper, int shadowMapSize ){
-	deoglRenderThread &renderThread = GetRenderThread();
+	OGL_IF_CHECK( deoglRenderThread &renderThread = GetRenderThread() );
 	int cmf;
 	
 	OGL_CHECK( renderThread, glColorMask( GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE ) );

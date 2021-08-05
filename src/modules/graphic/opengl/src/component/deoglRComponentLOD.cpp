@@ -1117,7 +1117,7 @@ void deoglRComponentLOD::pCleanUp(){
 
 
 void deoglRComponentLOD::pBuildVBO( const deoglModelLOD &modelLOD ){
-	deoglRenderThread &renderThread = pComponent.GetRenderThread();
+	OGL_IF_CHECK( deoglRenderThread &renderThread = pComponent.GetRenderThread() );
 	const int pointCount = modelLOD.GetVertexCount();
 	deoglVBOpnt *newArray = NULL;
 	int dataSize;
