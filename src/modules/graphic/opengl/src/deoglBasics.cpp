@@ -165,7 +165,7 @@ void dbgPrintMemoryUsage( deoglRenderThread &renderThread ){
 	const deoglMemoryConsumptionBufferObject &conBO = consumption.bufferObject;
 	
 	renderThread.GetLogger().LogWarnFormat(
-		OGLPFLLU "M:"
+		"%" OGLPFLLU "M:"
 		" skin(%d,%dM)"
 		" tex1D(%d,%dM|%d,%dM)"
 		" tex2D(%d,%dM|%d,%dM)"

@@ -1273,12 +1273,12 @@ void deoglRenderDevMode::RenderMemoryInfo( deoglRenderPlan &plan, const decPoint
 	int maxWidth = 0;
 	decString text;
 	
-	const char * const fmtTex2D  = "Tex2D (%4d): %4lluM %4lluM(%2d%%) %3lluM | C(%4d) %4lluM %4lluM(%2d%%) %3lluM | D(%3d) %3lluM";
-	const char * const fmtTexArr = "TexArr(%4d): %4lluM %4lluM(%2d%%) %3lluM | C(%4d) %4lluM %4lluM(%2d%%) %3lluM | D(%3d) %3lluM";
-	const char * const fmtCube   = "Cube  (%4d): %4lluM %4lluM(%2d%%) %3lluM | C(%4d) %4lluM %4lluM(%2d%%) %3lluM | D(%3d) %3lluM";
-	const char * const fmtRenBuf = "RenBuf(%4d): %4lluM                 | C(%4d) %4lluM                 | D(%3d) %3lluM";
-	const char * const fmtSkin   = "Skins (%4d): %4lluM %4lluM(%2d%%) %3lluM";
-	const char * const fmtRender = "Renderables :  2D-C(%2d) %3lluM | 2D-D(%2d) %3lluM | Arr-C(%2d) %3lluM | Arr-D(%2d) %3lluM";
+	const char * const fmtTex2D  = "Tex2D (%4d): %4" OGLPFLLU "M %4" OGLPFLLU "M(%2d%%) %3" OGLPFLLU "M | C(%4d) %4" OGLPFLLU "M %4" OGLPFLLU "M(%2d%%) %3" OGLPFLLU "M | D(%3d) %3" OGLPFLLU "M";
+	const char * const fmtTexArr = "TexArr(%4d): %4" OGLPFLLU "M %4" OGLPFLLU "M(%2d%%) %3" OGLPFLLU "M | C(%4d) %4" OGLPFLLU "M %4" OGLPFLLU "M(%2d%%) %3" OGLPFLLU "M | D(%3d) %3" OGLPFLLU "M";
+	const char * const fmtCube   = "Cube  (%4d): %4" OGLPFLLU "M %4" OGLPFLLU "M(%2d%%) %3" OGLPFLLU "M | C(%4d) %4" OGLPFLLU "M %4" OGLPFLLU "M(%2d%%) %3" OGLPFLLU "M | D(%3d) %3" OGLPFLLU "M";
+	const char * const fmtRenBuf = "RenBuf(%4d): %4" OGLPFLLU "M                 | C(%4d) %4" OGLPFLLU "M                 | D(%3d) %3" OGLPFLLU "M";
+	const char * const fmtSkin   = "Skins (%4d): %4" OGLPFLLU "M %4" OGLPFLLU "M(%2d%%) %3" OGLPFLLU "M";
+	const char * const fmtRender = "Renderables :  2D-C(%2d) %3" OGLPFLLU "M | 2D-D(%2d) %3" OGLPFLLU "M | Arr-C(%2d) %3" OGLPFLLU "M | Arr-D(%2d) %3" OGLPFLLU "M";
 	const char * const fmtVBO    = "VBO   (%4d): %4uM | S(%4d) %4uM | I(%4d) %4uM | S(%4d) %4uM | T(%4d) %4uM";
 	const char * const fmtDefRen = "DefRen      : %3uM | T %3uM | R %3uM";
 	
@@ -1545,7 +1545,7 @@ void deoglRenderDevMode::RenderMemoryInfo( deoglRenderPlan &plan, const decPoint
 	totalGPU += consumptionBO.ssbo.GetConsumption();
 	totalGPU /= 1000000ull;
 	
-	text.Format( "Total %4lluM", totalGPU );
+	text.Format( "Total %4" OGLPFLLU "M", totalGPU );
 	renderDebug.AddRenderText( plan, text.GetString(), position.x, y, color1 );
 	size.y += fontHeight;
 	y += fontHeight;
