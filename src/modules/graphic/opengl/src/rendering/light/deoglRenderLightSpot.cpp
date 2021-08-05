@@ -669,6 +669,7 @@ const deoglRenderPlanMasked *mask ){
 	
 	// render shadow map if required
 	if( useShadow ){
+		DebugTimer2Reset( plan, true );
 		RenderShadows( planLight, solid, matrixLP, transparentStaticShadow, transparentDynamicShadow, refilterShadow );
 		
 		OGL_CHECK( renderThread, glViewport( 0, 0, defren.GetWidth(), defren.GetHeight() ) );

@@ -762,6 +762,7 @@ const deoglRenderPlanMasked *mask ){
 	deoglCubeMap *texAmbient2 = NULL;
 	
 	if( useShadow ){
+		DebugTimer2Reset( plan, true );
 		RenderShadows( planLight, solid, matrixLP, transparentStaticShadow,
 			transparentDynamicShadow, refilterShadow );
 		
@@ -1538,6 +1539,7 @@ float shadowScale, float shadowOffset, bool debugSolid ){
 	
 	if( useGSRenderCube ){
 		// cube map activate already by clear
+		DebugTimer4Reset( plan, false );
 		
 		renderTask.Clear();
 		renderTask.SetRenderParamBlock( renderParamBlock );
@@ -1577,6 +1579,7 @@ float shadowScale, float shadowOffset, bool debugSolid ){
 		
 	}else{
 		for( cmf=0; cmf<6; cmf++ ){
+			DebugTimer4Reset( plan, false );
 			deoglCubeMap::CreateMatrixForFace( matrixCamera, lightPosition, cmf );
 			
 			renderParamBlock->MapBuffer();
@@ -1672,6 +1675,7 @@ float shadowScale, float shadowOffset, bool debugSolid ){
 		
 		if( useGSRenderCube ){
 			// cube map activate already by clear
+			DebugTimer4Reset( plan, false );
 			
 			renderTask.Clear();
 			renderTask.SetRenderParamBlock( renderParamBlock );
@@ -1704,6 +1708,7 @@ float shadowScale, float shadowOffset, bool debugSolid ){
 			
 		}else{
 			for( cmf=0; cmf<6; cmf++ ){
+				DebugTimer4Reset( plan, false );
 				deoglCubeMap::CreateMatrixForFace( matrixCamera, lightPosition, cmf );
 				
 				renderParamBlock->MapBuffer();

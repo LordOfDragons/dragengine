@@ -489,7 +489,6 @@ void deoglRenderOcclusion::RenderTestsCamera( deoglRenderPlan &plan, const deogl
 		renderPlanDebug->IncrementOccMapObjects( plan.GetCollideList().GetComponentCount() );
 		RenderOcclusionMap( plan, mask );
 		renderPlanDebug->IncrementOccMapTriangles( pRenderTask->GetTotalPointCount() / 3 );
-		//glFinish();
 		renderPlanDebug->SetOccMapRenderTime( timer.GetElapsedTime() );
 		
 	}else{

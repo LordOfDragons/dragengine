@@ -472,9 +472,6 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 	tsmgr.DisableAllStages();
 	
 	if( pDebugInfoGI->GetVisible() ){
-		if( renderThread.GetDebug().GetDeveloperMode().GetDebugInfoSync() ){
-			glFinish();
-		}
 		DebugTimer1Sample( plan, *pDebugInfoGITraceRays, true );
 	}
 }
@@ -645,9 +642,6 @@ void deoglRenderGI::RenderMaterials( deoglRenderPlan &plan, const deoglRenderTas
 	renderThread.GetTexture().GetStages().DisableAllStages();
 	
 	if( pDebugInfoGI->GetVisible() ){
-		if( renderThread.GetDebug().GetDeveloperMode().GetDebugInfoSync() ){
-			glFinish();
-		}
 		DebugTimer1Sample( plan, *pDebugInfoGIRenderMaterials, true );
 	}
 	
@@ -755,9 +749,6 @@ void deoglRenderGI::ClearProbes( deoglRenderPlan &plan ){
 	OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
 	
 	if( pDebugInfoGI->GetVisible() ){
-		if( renderThread.GetDebug().GetDeveloperMode().GetDebugInfoSync() ){
-			glFinish();
-		}
 		DebugTimer1Sample( plan, *pDebugInfoGIClearProbes, true );
 	}
 }
@@ -846,9 +837,6 @@ void deoglRenderGI::UpdateProbes( deoglRenderPlan &plan ){
 	tsmgr.DisableAllStages();
 	
 	if( pDebugInfoGI->GetVisible() ){
-		if( renderThread.GetDebug().GetDeveloperMode().GetDebugInfoSync() ){
-			glFinish();
-		}
 		DebugTimer1Sample( plan, *pDebugInfoGIUpdateProbes, true );
 	}
 }
@@ -904,9 +892,6 @@ void deoglRenderGI::MoveProbes( deoglRenderPlan &plan ){
 	OGL_CHECK( renderThread, glEnable( GL_SCISSOR_TEST ) );
 	
 	if( pDebugInfoGI->GetVisible() ){
-		if( renderThread.GetDebug().GetDeveloperMode().GetDebugInfoSync() ){
-			glFinish();
-		}
 		DebugTimer1Sample( plan, *pDebugInfoGIMoveProbes, true );
 	}
 }
@@ -1004,9 +989,6 @@ void deoglRenderGI::ProbeOffset( deoglRenderPlan &plan ){
 	OGL_CHECK( renderThread, glEnable( GL_SCISSOR_TEST ) );
 	
 	if( pDebugInfoGI->GetVisible() ){
-		if( renderThread.GetDebug().GetDeveloperMode().GetDebugInfoSync() ){
-			glFinish();
-		}
 		DebugTimer1Sample( plan, *pDebugInfoGIMoveProbes, true );
 	}
 }
@@ -1100,9 +1082,6 @@ void deoglRenderGI::RenderLight( deoglRenderPlan &plan, bool solid ){
 	
 	// clean up
 	if( pDebugInfoGI->GetVisible() ){
-		if( renderThread.GetDebug().GetDeveloperMode().GetDebugInfoSync() ){
-			glFinish();
-		}
 		DebugTimer1Sample( plan, *pDebugInfoGIRenderLight, true );
 	}
 }
@@ -1137,9 +1116,6 @@ void deoglRenderGI::RenderLightGIRay( deoglRenderPlan &plan ){
 	
 	// clean up
 	if( pDebugInfoGI->GetVisible() ){
-		if( renderThread.GetDebug().GetDeveloperMode().GetDebugInfoSync() ){
-			glFinish();
-		}
 		DebugTimer1Sample( plan, *pDebugInfoGIRenderLightGIRay, true );
 	}
 }
