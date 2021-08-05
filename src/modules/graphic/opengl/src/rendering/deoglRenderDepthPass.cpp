@@ -751,11 +751,7 @@ DBG_EXIT("DownsampleDepth")
 
 void deoglRenderDepthPass::RenderOcclusionQueryPass( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask ){
 DBG_ENTER_PARAM("RenderOcclusionQueryPass", "%p", mask)
-	deoglRenderThread &renderThread = GetRenderThread();
-	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
-	
 	deoglCollideList &collideList = plan.GetCollideList();
-	const int lightCount = collideList.GetLightCount();
 	
 	// NOTE: the currently does not fully work and breaks for lights the camera
 	// is inside the light box. the same check should be used as for the 180
@@ -768,18 +764,33 @@ DBG_ENTER_PARAM("RenderOcclusionQueryPass", "%p", mask)
 	// to arrive. rendering seems though to be faster than the occlusion test
 	// can return. not much one can do here except reintroducing the assigning
 	// of lights to rooms to cull them this way. solution pending.
+	// 
+	// NOTE: GI required reordering rendering to support the expensive operation.
+	// Now the first light rendering happens rather soon after the depth pass.
+	// this causes the first light to request for the occlusion query result nearly
+	// directly after the query has been started. this causes delays up to 10ms
+	// which is not acceptable. since GI requires light shadows to be rendered
+	// even if not visible or outside the view the entire occlusion query is not
+	// helping much at all. so dropping it for the time being and improving shadow
+	// rendering performance instead
 	
 	collideList.MarkLightsCulled( false );
 	
+	DBG_EXIT("RenderOcclusionQueryPass(disabled)")
+	
+#if 0
+	const int lightCount = collideList.GetLightCount();
 	if( lightCount == 0 ){
 		DBG_EXIT("RenderOcclusionQueryPass(earily)")
 		return;
 	}
 	
+	deoglRenderThread &renderThread = GetRenderThread();
 	const decDMatrix &matrixV = plan.GetCameraMatrix();
 	const decDMatrix matrixP( plan.GetProjectionMatrix() );
 	deoglShapeManager &shapeManager = renderThread.GetBufferObject().GetShapeManager();
 	deoglShape &shapeBox = *shapeManager.GetShapeAt( deoglRTBufferObject::esBox );
+	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	const decDVector extoff( 0.1, 0.1, 0.1 );
 	deoglShaderCompiled *shader;
 	int l;
@@ -838,4 +849,5 @@ DBG_ENTER_PARAM("RenderOcclusionQueryPass", "%p", mask)
 	
 	pglBindVertexArray( 0 );
 DBG_EXIT("RenderOcclusionQueryPass")
+#endif
 }
