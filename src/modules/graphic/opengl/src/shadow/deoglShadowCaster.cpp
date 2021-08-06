@@ -98,10 +98,10 @@ void deoglShadowCaster::Clear(){
 	pAmbient.Clear();
 }
 
-void deoglShadowCaster::DropDynamic(){
-	pSolid.DropDynamic();
-	pTransparent.DropDynamic();
-	pAmbient.DropDynamic();
+void deoglShadowCaster::DropTemporary(){
+	pSolid.DropTemporary();
+	pTransparent.DropTemporary();
+	pAmbient.DropTemporary();
 }
 
 
@@ -159,10 +159,4 @@ deoglShadowCaster::sShadowLayer &deoglShadowCaster::GetShadowLayerAt( int index 
 		DETHROW( deeInvalidParam );
 	}
 	return pShadowLayers[ index ];
-}
-
-
-
-void deoglShadowCaster::SetLayerMask( const decLayerMask &layerMask ){
-	pLayerMask = layerMask;
 }

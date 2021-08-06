@@ -29,7 +29,11 @@
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTTexture.h"
 #include "../texture/cubemap/deoglCubeMap.h"
+#include "../texture/cubemap/deoglRenderableDepthCubeMap.h"
+#include "../texture/cubemap/deoglRenderableDepthCubeMapManager.h"
 #include "../texture/texture2d/deoglTexture.h"
+#include "../texture/texture2d/deoglRenderableDepthTexture.h"
+#include "../texture/texture2d/deoglRenderableDepthTextureManager.h"
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/math/decMath.h>
@@ -55,6 +59,9 @@ pDynamicCubeMap( NULL ),
 pLastUseDynamic( 0 ),
 pHasDynamic( false ),
 pDirtyDynamic( true ),
+
+pTemporaryMap( NULL ),
+pTemporaryCubeMap( NULL ),
 
 pLastSizeStatic( 0 ),
 pNextSizeStatic( 0 ),
@@ -250,6 +257,55 @@ void deoglSCAmbient::SetDirtyDynamic( bool dirty ){
 
 
 
+deoglRenderableDepthTexture *deoglSCAmbient::ObtainTemporaryMapWithSize( int size ){
+	if( size < 1 ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	if( pTemporaryMap ){
+		if( pTemporaryMap->GetWidth() == size ){
+			return pTemporaryMap;
+		}
+		
+		DropTemporary();
+	}
+	
+	pTemporaryMap = pRenderThread.GetTexture().GetRenderableDepthTexture()
+		.GetTextureWith( size, size, false, false );
+	
+	return pTemporaryMap;
+}
+
+deoglRenderableDepthCubeMap *deoglSCAmbient::ObtainTemporaryCubeMapWithSize( int size ){
+	if( size < 1 ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	if( pTemporaryCubeMap ){
+		if( pTemporaryCubeMap->GetSize() == size ){
+			return pTemporaryCubeMap;
+		}
+		DropTemporary();
+	}
+	
+	pTemporaryCubeMap = pRenderThread.GetTexture().GetRenderableDepthCubeMap().GetCubeMapWith( size );
+	
+	return pTemporaryCubeMap;
+}
+
+void deoglSCAmbient::DropTemporary(){
+	if( pTemporaryMap ){
+		pTemporaryMap->SetInUse( false );
+		pTemporaryMap = NULL;
+	}
+	if( pTemporaryCubeMap ){
+		pTemporaryCubeMap->SetInUse( false );
+		pTemporaryCubeMap = NULL;
+	}
+}
+
+
+
 void deoglSCAmbient::SetLargestNextSizeStatic( int size ){
 	if( size > pNextSizeStatic ){
 		pNextSizeStatic = size;
@@ -292,4 +348,5 @@ bool deoglSCAmbient::RequiresUpdate() const{
 void deoglSCAmbient::Clear(){
 	DropStatic();
 	DropDynamic();
+	DropTemporary();
 }

@@ -754,7 +754,7 @@ private:
 	
 	void pCheckOutsideVisibility();
 	
-	void pDropLightsDynamic();
+	void pDropLightsTemporary();
 };
 
 #endif

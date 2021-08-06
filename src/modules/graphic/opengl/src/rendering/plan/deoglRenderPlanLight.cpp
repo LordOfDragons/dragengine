@@ -60,7 +60,9 @@ pTranspShadowSizeDynamic( 0 ),
 pAmbientShadowSizeDynamic( 0 ),
 
 pUseShadow( false ),
-pUseAmbient( false ){
+pUseShadowTemporary( false ),
+pUseAmbient( false ),
+pRefilterShadows( false ){
 }
 
 deoglRenderPlanLight::~deoglRenderPlanLight(){
@@ -84,6 +86,10 @@ void deoglRenderPlanLight::Init(){
 }
 
 void deoglRenderPlanLight::PlanShadowCasting(){
+	pDetermineUseShadow();
+	pDetermineUseAmbient();
+	pDetermineRefilterShadows();
+	
 	// the static shadow maps are used across multiple frames and uses the best resolution.
 	// if memory becomes low static shadow maps can be removed from memory and reduced in size.
 	// if reduced in size the shadow maps have to be dropped to force rebuilding them.
@@ -121,6 +127,13 @@ void deoglRenderPlanLight::PlanShadowCasting(){
 	pCalcReductionFactorStatic();
 	pCalcReductionFactorDynamic();
 	
+	// for temporary shadow casting reduce shadow map size. this is done to avoid requesting
+	// and keeping large shared textures. rendering time is not affected much by size
+	if( pUseShadowTemporary ){
+		pReductionFactorStatic += 2;
+		pReductionFactorDynamic += 2;
+	}
+	
 	// reduce shadow map size
 	if( pReductionFactorStatic > 0 ){
 		pShadowSizeStatic = decMath::max( pShadowSizeStatic >> pReductionFactorStatic, minSize );
@@ -154,50 +167,48 @@ void deoglRenderPlanLight::PlanShadowCasting(){
 	pAmbientShadowSizeStatic = pShadowSizeStatic;
 	pAmbientShadowSizeDynamic = pShadowSizeDynamic;
 	
-	// update next frame sizes. this keeps the largest size across an entire frame
-	deoglShadowCaster &shadowCaster = *pLight->GetLight()->GetShadowCaster();
-	deoglSCTransparent &sctransp = shadowCaster.GetTransparent();
-	deoglSCAmbient &scambient = shadowCaster.GetAmbient();
-	deoglSCSolid &scsolid = shadowCaster.GetSolid();
-	
-	scsolid.SetLargestNextSizeStatic( pShadowSizeStatic );
-	scsolid.SetLargestNextSizeDynamic( pShadowSizeDynamic );
-	
-	sctransp.SetLargestNextSizeStatic( pTranspShadowSizeStatic );
-	sctransp.SetLargestNextSizeDynamic( pTranspShadowSizeDynamic );
-	
-	scambient.SetLargestNextSizeStatic( pAmbientShadowSizeStatic );
-	scambient.SetLargestNextSizeDynamic( pAmbientShadowSizeDynamic );
-	
-	// clamp sizes to last frame and next frame sizes to avoid resizing textures.
-	// using the last frame size avoids resizing if the first rendered camera requires
-	// a smaller size than a later one. using the next frame size avoids resiting if
-	// the first rendered camera requires a larger size than a later one.
-// 	pPlan.GetRenderThread().GetLogger().LogInfoFormat("PlanShadowCasting: %p %d %d %d",
-// 		pLight->GetLight(), pShadowSizeDynamic, scsolid.GetLastSizeDynamic(), scsolid.GetNextSizeDynamic() );
-	
-	pShadowSizeStatic = decMath::max( pShadowSizeStatic,
-		scsolid.GetLastSizeStatic(), scsolid.GetNextSizeStatic() );
-	
-	pShadowSizeDynamic = decMath::max( pShadowSizeDynamic,
-		scsolid.GetLastSizeDynamic(), scsolid.GetNextSizeDynamic() );
-	
-	pTranspShadowSizeStatic = decMath::max( pTranspShadowSizeStatic,
-		sctransp.GetLastSizeStatic(), sctransp.GetNextSizeStatic() );
-	
-	pTranspShadowSizeDynamic = decMath::max( pTranspShadowSizeDynamic,
-		sctransp.GetLastSizeDynamic(), sctransp.GetNextSizeDynamic() );
-	
-	pAmbientShadowSizeStatic = decMath::max( pAmbientShadowSizeStatic,
-		scambient.GetLastSizeStatic(), scambient.GetNextSizeStatic() );
-	
-	pAmbientShadowSizeDynamic = decMath::max( pAmbientShadowSizeDynamic,
-		scambient.GetLastSizeDynamic(), scambient.GetNextSizeDynamic() );
-	
-	// determine render switches
-	pDetermineUseShadow();
-	pDetermineUseAmbient();
-	pDetermineShadowLayerMask();
+	// manipulate cached shadows only if not using temporary shadows
+	if( ! pUseShadowTemporary ){
+		// update next frame sizes. this keeps the largest size across an entire frame
+		deoglShadowCaster &shadowCaster = *pLight->GetLight()->GetShadowCaster();
+		deoglSCTransparent &sctransp = shadowCaster.GetTransparent();
+		deoglSCAmbient &scambient = shadowCaster.GetAmbient();
+		deoglSCSolid &scsolid = shadowCaster.GetSolid();
+		
+		scsolid.SetLargestNextSizeStatic( pShadowSizeStatic );
+		scsolid.SetLargestNextSizeDynamic( pShadowSizeDynamic );
+		
+		sctransp.SetLargestNextSizeStatic( pTranspShadowSizeStatic );
+		sctransp.SetLargestNextSizeDynamic( pTranspShadowSizeDynamic );
+		
+		scambient.SetLargestNextSizeStatic( pAmbientShadowSizeStatic );
+		scambient.SetLargestNextSizeDynamic( pAmbientShadowSizeDynamic );
+		
+		// clamp sizes to last frame and next frame sizes to avoid resizing textures.
+		// using the last frame size avoids resizing if the first rendered camera requires
+		// a smaller size than a later one. using the next frame size avoids resiting if
+		// the first rendered camera requires a larger size than a later one.
+	// 	pPlan.GetRenderThread().GetLogger().LogInfoFormat("PlanShadowCasting: %p %d %d %d",
+	// 		pLight->GetLight(), pShadowSizeDynamic, scsolid.GetLastSizeDynamic(), scsolid.GetNextSizeDynamic() );
+		
+		pShadowSizeStatic = decMath::max( pShadowSizeStatic,
+			scsolid.GetLastSizeStatic(), scsolid.GetNextSizeStatic() );
+		
+		pShadowSizeDynamic = decMath::max( pShadowSizeDynamic,
+			scsolid.GetLastSizeDynamic(), scsolid.GetNextSizeDynamic() );
+		
+		pTranspShadowSizeStatic = decMath::max( pTranspShadowSizeStatic,
+			sctransp.GetLastSizeStatic(), sctransp.GetNextSizeStatic() );
+		
+		pTranspShadowSizeDynamic = decMath::max( pTranspShadowSizeDynamic,
+			sctransp.GetLastSizeDynamic(), sctransp.GetNextSizeDynamic() );
+		
+		pAmbientShadowSizeStatic = decMath::max( pAmbientShadowSizeStatic,
+			scambient.GetLastSizeStatic(), scambient.GetNextSizeStatic() );
+		
+		pAmbientShadowSizeDynamic = decMath::max( pAmbientShadowSizeDynamic,
+			scambient.GetLastSizeDynamic(), scambient.GetNextSizeDynamic() );
+	}
 	
 	// log values used
 #if 0
@@ -303,6 +314,7 @@ void deoglRenderPlanLight::pCalcReductionFactorDynamic(){
 
 void deoglRenderPlanLight::pDetermineUseShadow(){
 	pUseShadow = pPlan.GetRenderThread().GetConfiguration().GetShadowQuality() != deoglConfiguration::esqOff;
+	pUseShadowTemporary = false;
 	
 	// no shadows if the light wishes so
 	if( ! pLight->GetLight()->GetCastShadows() ){
@@ -335,7 +347,7 @@ void deoglRenderPlanLight::pDetermineUseAmbient(){
 	}
 }
 
-void deoglRenderPlanLight::pDetermineShadowLayerMask(){
+void deoglRenderPlanLight::pDetermineRefilterShadows(){
 	// if layer mask restriction is used dynamic only shadows have to be used to filter properly.
 	// the logic is this. lights filter scene elements to be included in their shadow maps by
 	// matching the element "layer mask" against the "shadow layer mask". if the camera restricts
@@ -351,9 +363,9 @@ void deoglRenderPlanLight::pDetermineShadowLayerMask(){
 	pRefilterShadows = pPlan.GetUseLayerMask()
 		&& ! pLight->GetLight()->StaticMatchesCamera( pPlan.GetLayerMask() );
 	
-	pShadowLayerMask = pLight->GetLight()->GetLayerMaskShadow();
-	
 	if( pRefilterShadows ){
-		pShadowLayerMask &= pPlan.GetLayerMask();
+		// if refiltering is used temporary shadow maps have to use used to avoid rebuilding
+		// cached shadow maps slowing rendering down and producing hitches
+		pUseShadowTemporary = true;
 	}
 }

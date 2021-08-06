@@ -1363,7 +1363,7 @@ void deoglRenderPlan::CleanUp(){
 	RemoveAllSkyInstances();
 	RemoveAllMaskedPlans();
 	RemoveAllLights();
-// 	pDropLightsDynamic(); // keep dynamics around to improve GI performance
+	pDropLightsTemporary();
 	pCollideList.Clear();
 	pComponentsOccMap.RemoveAll();
 	SetOcclusionTest( NULL );
@@ -2099,10 +2099,10 @@ void deoglRenderPlan::pCheckOutsideVisibility(){
 	}
 }
 
-void deoglRenderPlan::pDropLightsDynamic(){
+void deoglRenderPlan::pDropLightsTemporary(){
 	const int count = pCollideList.GetLightCount();
 	int i;
 	for( i=0; i<count; i++ ){
-		pCollideList.GetLightAt( i )->GetLight()->GetShadowCaster()->DropDynamic();
+		pCollideList.GetLightAt( i )->GetLight()->GetShadowCaster()->DropTemporary();
 	}
 }

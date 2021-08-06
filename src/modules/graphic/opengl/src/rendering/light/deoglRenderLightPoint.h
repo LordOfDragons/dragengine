@@ -141,9 +141,8 @@ public:
 		const sShadowDepthMaps &shadowDepthMaps );
 	
 	/** \brief Render shadows for a point light. */
-	void RenderShadows( deoglRenderPlanLight &planLight, bool solid,
-		const decDMatrix &matrixProjection, bool transparentStaticShadow,
-		bool transparentDynamicShadow, bool refilterShadow );
+	void RenderShadows( deoglRenderPlanLight &planLight, bool solid, const decDMatrix &matrixProjection,
+		bool transparentStaticShadow, bool transparentDynamicShadow );
 	
 	/** \brief Clear cube map. */
 	void ClearCubeMap( deoglShadowMapper &shadowMapper, int shadowMapSize );

@@ -120,9 +120,8 @@ public:
 		const sShadowDepthMaps &shadowDepthMaps );
 	
 	/** \brief Render shadow maps. */
-	void RenderShadows( deoglRenderPlanLight &planLight, bool solid,
-		const decDMatrix &matrixProjection, bool transparentStaticShadow,
-		bool transparentDynamicShadow, bool refilterShadow );
+	void RenderShadows( deoglRenderPlanLight &planLight, bool solid, const decDMatrix &matrixProjection,
+		bool transparentStaticShadow, bool transparentDynamicShadow );
 	
 	/** \brief Render shadow map. */
 	void RenderShadowMap( deoglRenderPlanLight &planLight, const decDMatrix &matrixCamera,

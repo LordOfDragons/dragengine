@@ -28,6 +28,9 @@ class deoglRenderThread;
 class deoglArrayTexture;
 class deoglTexture;
 class deoglCubeMap;
+class deoglRenderableDepthTexture;
+class deoglRenderableDepthCubeMap;
+class deoglRenderableDepthArrayTexture;
 
 
 
@@ -50,6 +53,10 @@ private:
 	int pLastUseDynamic;
 	bool pHasDynamic;
 	bool pDirtyDynamic;
+	
+	deoglRenderableDepthTexture *pTemporaryMap;
+	deoglRenderableDepthCubeMap *pTemporaryCubeMap;
+	deoglRenderableDepthArrayTexture *pTemporaryArrayMap;
 	
 	int pLastSizeStatic;
 	int pNextSizeStatic;
@@ -145,6 +152,29 @@ public:
 	
 	/** Set dynamic shadow map dirty. */
 	void SetDirtyDynamic( bool dirty );
+	
+	
+	
+	/** Temporary shadow map if present or NULL otherwise. */
+	inline deoglRenderableDepthTexture *GetTemporaryMap() const{ return pTemporaryMap; }
+	
+	/** Obtain temporary shadow map with size if absent. */
+	deoglRenderableDepthTexture *ObtainTemporaryMapWithSize( int size, bool withStencil, bool useFloat );
+	
+	/** Temporary shadow cube map if present or NULL otherwise. */
+	inline deoglRenderableDepthCubeMap *GetTemporaryCubeMap() const{ return pTemporaryCubeMap; }
+	
+	/** Obtain temporary shadow cube map with size if absent. */
+	deoglRenderableDepthCubeMap *ObtainTemporaryCubeMapWithSize( int size );
+	
+	/** Temporary array shadow map if present or NULL otherwise. */
+	inline deoglRenderableDepthArrayTexture *GetTemporaryArrayMap() const{ return pTemporaryArrayMap; }
+	
+	/** Obtain temporary array shadow map with size if absent. */
+	deoglRenderableDepthArrayTexture *ObtainTemporaryArrayMapWithSize( int size, int layers, bool useFloat );
+	
+	/** Drop temporary shadow map if present. */
+	void DropTemporary();
 	
 	
 	

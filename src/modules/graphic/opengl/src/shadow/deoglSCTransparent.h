@@ -27,6 +27,10 @@
 class deoglRenderThread;
 class deoglCubeMap;
 class deoglTexture;
+class deoglRenderableDepthTexture;
+class deoglRenderableColorTexture;
+class deoglRenderableDepthCubeMap;
+class deoglRenderableColorCubeMap;
 
 
 
@@ -48,10 +52,14 @@ private:
 	deoglTexture *pDynamicColorMap;
 	deoglCubeMap *pDynamicShadowCubeMap;
 	deoglCubeMap *pDynamicColorCubeMap;
-	
 	int pLastUseDynamic;
 	bool pHasDynamic;
 	bool pDirtyDynamic;
+	
+	deoglRenderableDepthTexture *pTemporaryShadowMap;
+	deoglRenderableColorTexture *pTemporaryColorMap;
+	deoglRenderableDepthCubeMap *pTemporaryShadowCubeMap;
+	deoglRenderableColorCubeMap *pTemporaryColorCubeMap;
 	
 	int pLastSizeStatic;
 	int pNextSizeStatic;
@@ -162,6 +170,35 @@ public:
 	
 	/** Set dynamic shadow map dirty. */
 	void SetDirtyDynamic( bool dirty );
+	
+	
+	
+	/** Temporary shadow map if present or \em NULL otherwise. */
+	inline deoglRenderableDepthTexture *GetTemporaryShadowMap() const{ return pTemporaryShadowMap; }
+	
+	/** Obtain temporary shadow map with size if absent. */
+	deoglRenderableDepthTexture *ObtainTemporaryShadowMapWithSize( int size, bool useFloat );
+	
+	/** Temporary color map if present or \em NULL otherwise. */
+	inline deoglRenderableColorTexture *GetTemporaryColorMap() const{ return pTemporaryColorMap; }
+	
+	/** Obtain temporary color map with size if absent. */
+	deoglRenderableColorTexture *ObtainTemporaryColorMapWithSize( int size );
+	
+	/** Temporary shadow cube map if present or \em NULL otherwise. */
+	inline deoglRenderableDepthCubeMap *GetTemporaryShadowCubeMap() const{ return pTemporaryShadowCubeMap; }
+	
+	/** Obtain temporary shadow cube map with size if absent. */
+	deoglRenderableDepthCubeMap *ObtainTemporaryShadowCubeMapWithSize( int size );
+	
+	/** Temporary color cube map if present or \em NULL otherwise. */
+	inline deoglRenderableColorCubeMap *GetTemporaryColorCubeMap() const{ return pTemporaryColorCubeMap; }
+	
+	/** Obtain temporary shadow cube map with size if absent. */
+	deoglRenderableColorCubeMap *ObtainTemporaryColorCubeMapWithSize( int size );
+	
+	/** Drop temporary shadow map if present. */
+	void DropTemporary();
 	
 	
 	

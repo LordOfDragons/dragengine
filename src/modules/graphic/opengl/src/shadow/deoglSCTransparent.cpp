@@ -29,7 +29,15 @@
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTTexture.h"
 #include "../texture/cubemap/deoglCubeMap.h"
+#include "../texture/cubemap/deoglRenderableColorCubeMap.h"
+#include "../texture/cubemap/deoglRenderableColorCubeMapManager.h"
+#include "../texture/cubemap/deoglRenderableDepthCubeMap.h"
+#include "../texture/cubemap/deoglRenderableDepthCubeMapManager.h"
 #include "../texture/texture2d/deoglTexture.h"
+#include "../texture/texture2d/deoglRenderableColorTexture.h"
+#include "../texture/texture2d/deoglRenderableColorTextureManager.h"
+#include "../texture/texture2d/deoglRenderableDepthTexture.h"
+#include "../texture/texture2d/deoglRenderableDepthTextureManager.h"
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/math/decMath.h>
@@ -56,10 +64,14 @@ pDynamicShadowMap( NULL ),
 pDynamicColorMap( NULL ),
 pDynamicShadowCubeMap( NULL ),
 pDynamicColorCubeMap( NULL ),
-
 pLastUseDynamic( 0 ),
 pHasDynamic( false ),
 pDirtyDynamic( true ),
+
+pTemporaryShadowMap( NULL ),
+pTemporaryColorMap( NULL ),
+pTemporaryShadowCubeMap( NULL ),
+pTemporaryColorCubeMap( NULL ),
 
 pLastSizeStatic( 0 ),
 pNextSizeStatic( 0 ),
@@ -394,6 +406,98 @@ void deoglSCTransparent::SetDirtyDynamic( bool dirty ){
 
 
 
+deoglRenderableDepthTexture *deoglSCTransparent::ObtainTemporaryShadowMapWithSize( int size, bool useFloat ){
+	if( size < 1 ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	if( pTemporaryShadowMap ){
+		if( pTemporaryShadowMap->GetWidth() == size && pTemporaryShadowMap->GetUseFloat() == useFloat ){
+			return pTemporaryShadowMap;
+		}
+		DropTemporary();
+	}
+	
+	pTemporaryShadowMap = pRenderThread.GetTexture().GetRenderableDepthTexture()
+		.GetTextureWith( size, size, false, false );
+	
+	return pTemporaryShadowMap;
+}
+
+deoglRenderableColorTexture *deoglSCTransparent::ObtainTemporaryColorMapWithSize( int size ){
+	if( size < 1 ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	if( pTemporaryColorMap ){
+		if( pTemporaryColorMap->GetWidth() == size ){
+			return pTemporaryColorMap;
+		}
+		DropTemporary();
+	}
+	
+	pTemporaryColorMap = pRenderThread.GetTexture().GetRenderableColorTexture()
+		.GetTextureWith( size, size, 4, false );
+	
+	return pTemporaryColorMap;
+}
+
+deoglRenderableDepthCubeMap *deoglSCTransparent::ObtainTemporaryShadowCubeMapWithSize( int size ){
+	if( size < 1 ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	if( pTemporaryShadowCubeMap ){
+		if( pTemporaryShadowCubeMap->GetSize() == size ){
+			return pTemporaryShadowCubeMap;
+		}
+		DropTemporary();
+	}
+	
+	pTemporaryShadowCubeMap = pRenderThread.GetTexture().GetRenderableDepthCubeMap().GetCubeMapWith( size );
+	
+	return pTemporaryShadowCubeMap;
+}
+
+deoglRenderableColorCubeMap *deoglSCTransparent::ObtainTemporaryColorCubeMapWithSize( int size ){
+	if( size < 1 ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	if( pTemporaryColorCubeMap ){
+		if( pTemporaryColorCubeMap->GetSize() == size ){
+			return pTemporaryColorCubeMap;
+		}
+		DropTemporary();
+	}
+	
+	pTemporaryColorCubeMap = pRenderThread.GetTexture().GetRenderableColorCubeMap().
+		GetCubeMapWith( size, 4, false );
+	
+	return pTemporaryColorCubeMap;
+}
+
+void deoglSCTransparent::DropTemporary(){
+	if( pTemporaryShadowMap ){
+		pTemporaryShadowMap->SetInUse( false );
+		pTemporaryShadowMap = NULL;
+	}
+	if( pTemporaryColorMap ){
+		pTemporaryColorMap->SetInUse( false );
+		pTemporaryColorMap = NULL;
+	}
+	if( pTemporaryShadowCubeMap ){
+		pTemporaryShadowCubeMap->SetInUse( false );
+		pTemporaryShadowCubeMap = NULL;
+	}
+	if( pTemporaryColorCubeMap ){
+		pTemporaryColorCubeMap->SetInUse( false );
+		pTemporaryColorCubeMap = NULL;
+	}
+}
+
+
+
 void deoglSCTransparent::SetLargestNextSizeStatic( int size ){
 	if( size > pNextSizeStatic ){
 		pNextSizeStatic = size;
@@ -436,4 +540,5 @@ bool deoglSCTransparent::RequiresUpdate() const{
 void deoglSCTransparent::Clear(){
 	DropStatic();
 	DropDynamic();
+	DropTemporary();
 }

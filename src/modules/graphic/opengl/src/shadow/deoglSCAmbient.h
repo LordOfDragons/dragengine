@@ -27,6 +27,8 @@
 class deoglRenderThread;
 class deoglTexture;
 class deoglCubeMap;
+class deoglRenderableDepthTexture;
+class deoglRenderableDepthCubeMap;
 
 
 
@@ -47,6 +49,9 @@ private:
 	int pLastUseDynamic;
 	bool pHasDynamic;
 	bool pDirtyDynamic;
+	
+	deoglRenderableDepthTexture *pTemporaryMap;
+	deoglRenderableDepthCubeMap *pTemporaryCubeMap;
 	
 	int pLastSizeStatic;
 	int pNextSizeStatic;
@@ -131,6 +136,24 @@ public:
 	
 	/** Set dynamic shadow map dirty. */
 	void SetDirtyDynamic( bool dirty );
+	
+	
+	
+	/** Temporary map if present or \em NULL otherwise. */
+	inline deoglRenderableDepthTexture *GetTemporaryMap() const{ return pTemporaryMap; }
+	
+	/** Obtain temporary map with size if absent. */
+	deoglRenderableDepthTexture *ObtainTemporaryMapWithSize( int size );
+	
+	/** Temporary shadow cube map if present or \em NULL otherwise. */
+	inline deoglRenderableDepthCubeMap *GetTemporaryCubeMap() const{ return pTemporaryCubeMap; }
+	
+	/** Obtain temporary shadow cube map with size if absent. */
+	deoglRenderableDepthCubeMap *ObtainTemporaryCubeMapWithSize( int size );
+	
+	/** Drop temporary map if present. */
+	void DropTemporary();
+	
 	
 	
 	

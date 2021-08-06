@@ -51,11 +51,10 @@ private:
 	int pTranspShadowSizeDynamic;
 	int pAmbientShadowSizeDynamic;
 	
-	bool pRefilterShadows;
-	decLayerMask pShadowLayerMask;
-	
 	bool pUseShadow;
+	bool pUseShadowTemporary;
 	bool pUseAmbient;
+	bool pRefilterShadows;
 	
 	
 	
@@ -112,15 +111,11 @@ public:
 	void SetTranspShadowSizeDynamic( int size );
 	void SetAmbientShadowSizeDynamic( int size );
 	
-	/** Refilter shadows. */
-	inline bool GetRefilterShadows() const{ return pRefilterShadows; }
-	
-	/** Shadow layer mask. */
-	inline const decLayerMask &GetShadowLayerMask() const{ return pShadowLayerMask; }
-	
 	/** Render switches. */
 	inline bool GetUseShadow() const{ return pUseShadow; }
+	inline bool GetUseShadowTemporary() const{ return pUseShadowTemporary; }
 	inline bool GetUseAmbient() const{ return pUseAmbient; }
+	inline bool GetRefilterShadows() const{ return pRefilterShadows; }
 	/*@}*/
 	
 	
@@ -130,7 +125,7 @@ private:
 	void pCalcReductionFactorDynamic();
 	void pDetermineUseShadow();
 	void pDetermineUseAmbient();
-	void pDetermineShadowLayerMask();
+	void pDetermineRefilterShadows();
 };
 
 #endif

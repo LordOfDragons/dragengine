@@ -29,8 +29,14 @@
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTTexture.h"
 #include "../texture/arraytexture/deoglArrayTexture.h"
+#include "../texture/arraytexture/deoglRenderableDepthArrayTexture.h"
+#include "../texture/arraytexture/deoglRenderableDepthArrayTextureManager.h"
 #include "../texture/cubemap/deoglCubeMap.h"
+#include "../texture/cubemap/deoglRenderableDepthCubeMap.h"
+#include "../texture/cubemap/deoglRenderableDepthCubeMapManager.h"
 #include "../texture/texture2d/deoglTexture.h"
+#include "../texture/texture2d/deoglRenderableDepthTexture.h"
+#include "../texture/texture2d/deoglRenderableDepthTextureManager.h"
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/math/decMath.h>
@@ -58,6 +64,10 @@ pDynamicArrayMap( NULL ),
 pLastUseDynamic( 0 ),
 pHasDynamic( false ),
 pDirtyDynamic( true ),
+
+pTemporaryMap( nullptr ),
+pTemporaryCubeMap( nullptr ),
+pTemporaryArrayMap( nullptr ),
 
 pLastSizeStatic( 0 ),
 pNextSizeStatic( 0 ),
@@ -328,6 +338,80 @@ void deoglSCSolid::SetDirtyDynamic( bool dirty ){
 
 
 
+deoglRenderableDepthTexture *deoglSCSolid::ObtainTemporaryMapWithSize( int size, bool withStencil, bool useFloat ){
+	if( size < 1 ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	if( pTemporaryMap ){
+		if( pTemporaryMap->GetWidth() == size
+		&& pTemporaryMap->GetWithStencil() == withStencil
+		&& pTemporaryMap->GetUseFloat() == useFloat ){
+			return pTemporaryMap;
+		}
+		DropTemporary();
+	}
+	
+	pTemporaryMap = pRenderThread.GetTexture().GetRenderableDepthTexture()
+		.GetTextureWith( size, size, withStencil, useFloat );
+	
+	return pTemporaryMap;
+}
+
+deoglRenderableDepthCubeMap *deoglSCSolid::ObtainTemporaryCubeMapWithSize( int size ){
+	if( size < 1 ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	if( pTemporaryCubeMap ){
+		if( pTemporaryCubeMap->GetSize() == size ){
+			return pTemporaryCubeMap;
+		}
+		DropTemporary();
+	}
+	
+	pTemporaryCubeMap = pRenderThread.GetTexture().GetRenderableDepthCubeMap().GetCubeMapWith( size );
+	
+	return pTemporaryCubeMap;
+}
+
+deoglRenderableDepthArrayTexture *deoglSCSolid::ObtainTemporaryArrayMapWithSize(
+int size, int layers, bool useFloat ){
+	if( size < 1 || layers < 1 ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	if( pTemporaryArrayMap ){
+		if( pTemporaryArrayMap->GetWidth() == size && pTemporaryArrayMap->GetLayerCount() == layers
+		&& pTemporaryArrayMap->GetUseFloat() == useFloat ){
+			return pTemporaryArrayMap;
+		}
+		DropTemporary();
+	}
+	
+	pTemporaryArrayMap = pRenderThread.GetTexture().GetRenderableDepthArrayTexture()
+		.GetWith( size, size, layers, false, useFloat );
+	
+	return pTemporaryArrayMap;
+}
+
+void deoglSCSolid::DropTemporary(){
+	if( pTemporaryMap ){
+		pTemporaryMap->SetInUse( false );
+		pTemporaryMap = NULL;
+	}
+	if( pTemporaryCubeMap ){
+		pTemporaryCubeMap->SetInUse( false );
+		pTemporaryCubeMap = NULL;
+	}
+	if( pTemporaryArrayMap ){
+		pTemporaryArrayMap->SetInUse( false );
+		pTemporaryArrayMap = NULL;
+	}
+}
+
+
+
 void deoglSCSolid::SetLargestNextSizeStatic( int size ){
 	if( size > pNextSizeStatic ){
 		pNextSizeStatic = size;
@@ -370,4 +454,5 @@ bool deoglSCSolid::RequiresUpdate() const{
 void deoglSCSolid::Clear(){
 	DropStatic();
 	DropDynamic();
+	DropTemporary();
 }
