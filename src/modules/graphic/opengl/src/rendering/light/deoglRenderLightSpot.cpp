@@ -570,8 +570,6 @@ const deoglRenderPlanMasked *mask ){
 	deoglShadowMapper &shadowMapper = renderThread.GetShadowMapper();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	deoglRenderPlanDebug * const planDebug = plan.GetDebug();
-	const bool useShadow = planLight.GetUseShadow();
-	const bool useAmbient = planLight.GetUseAmbient();
 	deoglDCollisionBox colbox;
 	int shadowType = shadowCaster.GetShadowType();
 	deoglTexture *texSolidDepth1 = NULL;
@@ -582,6 +580,10 @@ const deoglRenderPlanMasked *mask ){
 	deoglTexture *texTranspColor2 = NULL;
 	deoglTexture *texAmbient1 = NULL;
 	deoglTexture *texAmbient2 = NULL;
+	
+	const bool refilterShadow = planLight.GetRefilterShadows();
+	const bool useAmbient = planLight.GetUseAmbient();
+	const bool useShadow = planLight.GetUseShadow();
 	
 	bool copyShadowMaps = false;
 	
@@ -594,19 +596,6 @@ const deoglRenderPlanMasked *mask ){
 	}
 	*/
 	
-	// if layer mask restriction is used dynamic only shadows have to be used to filter properly.
-	// the logic is this. lights filter scene elements to be included in their shadow maps by
-	// matching the element "layer mask" against the "shadow layer mask". if the camera restricts
-	// the layer mask this filtering stays correct if all bits of the "shadow layer mask" are
-	// covered by the bits of the "camery layer mask".
-	// 
-	// as a side note it would be also possible for this rule to not apply if not all bits of
-	// the "shadow layer mask" match the "camera layer mask". this requires or combining all
-	// layer masks of all filtered scene elements. if this combined layer mask does match in
-	// all bits the "camera layer mask" then this would be enough to still fullfil the
-	// requirement to use the static shadow maps.
-	// TODO check if this special filter check should be added or not
-	const bool refilterShadow = plan.GetUseLayerMask() && ! light.StaticMatchesCamera( plan.GetLayerMask() );
 	
 	if( useShadow && refilterShadow ){
 		shadowType = deoglShadowCaster::estDynamicOnly;
@@ -1108,6 +1097,11 @@ bool refilterShadow ){
 	// if layer mask restriction is used dynamic only shadows have to be used to filter properly
 	if( refilterShadow ){
 		shadowType = deoglShadowCaster::estDynamicOnly;
+	}
+	
+	if( planLight.GetShadowLayerMask() != shadowCaster.GetLayerMask() ){
+		shadowCaster.Clear();
+		shadowCaster.SetLayerMask( planLight.GetShadowLayerMask() );
 	}
 	
 	// static shadow map

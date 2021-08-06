@@ -64,9 +64,7 @@ private:
 	
 	deoglFramebuffer *pFBOCube;
 	deoglRenderableDepthCubeMap *pCubeMapDepthSolid;
-	deoglRenderableColorCubeMap *pCubeMapEncodedDepthSolid;
 	deoglRenderableDepthCubeMap *pCubeMapDepthTransp;
-	deoglRenderableColorCubeMap *pCubeMapEncodedDepthTransp;
 	deoglRenderableColorCubeMap *pCubeMapColorTransp;
 	deoglCubeMap *pForeignCubeMapDepthSolid;
 	deoglCubeMap *pForeignCubeMapDepthTransp;
@@ -156,19 +154,13 @@ public:
 	/** Solid depth cubemap. */
 	deoglCubeMap *GetSolidDepthCubeMap() const;
 	
-	/** Solid encoded depth cubemap. */
-	deoglCubeMap *GetSolidEncodedDepthCubeMap() const;
-	
 	/** Set foreign solid depth cubemap. */
 	void SetForeignSolidDepthCubeMap( deoglCubeMap *cubemap );
 	
 	/** Transparent depth cubemap. */
 	deoglCubeMap *GetTransparentDepthCubeMap() const;
 	
-	/** Transparent encoded depth cubemap. */
-	deoglCubeMap *GetTransparentEncodedDepthCubeMap() const;
-	
-	/** Set foreign transparent encoded depth cubemap. */
+	/** Set foreign transparent depth cubemap. */
 	void SetForeignTransparentDepthCubeMap( deoglCubeMap *cubemap );
 	
 	/** Transparent color cubemap. */

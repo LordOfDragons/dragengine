@@ -91,9 +91,7 @@ pUseTexColorTransp( NULL ),
 
 pFBOCube( NULL ),
 pCubeMapDepthSolid( NULL ),
-pCubeMapEncodedDepthSolid( NULL ),
 pCubeMapDepthTransp( NULL ),
-pCubeMapEncodedDepthTransp( NULL ),
 pCubeMapColorTransp( NULL ),
 pForeignCubeMapDepthSolid( NULL ),
 pForeignCubeMapDepthTransp( NULL ),
@@ -354,22 +352,10 @@ deoglCubeMap *deoglShadowMapper::GetSolidDepthCubeMap() const{
 	return pCubeMapDepthSolid->GetCubeMap();
 }
 
-deoglCubeMap *deoglShadowMapper::GetSolidEncodedDepthCubeMap() const{
-	if( ! pCubeMapEncodedDepthSolid ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	return pCubeMapEncodedDepthSolid->GetCubeMap();
-}
-
 void deoglShadowMapper::SetForeignSolidDepthCubeMap( deoglCubeMap *cubemap ){
 	if( pCubeMapDepthSolid ){
 		pCubeMapDepthSolid->SetInUse( false );
 		pCubeMapDepthSolid = NULL;
-	}
-	if( pCubeMapEncodedDepthSolid ){
-		pCubeMapEncodedDepthSolid->SetInUse( false );
-		pCubeMapEncodedDepthSolid = NULL;
 	}
 	
 	pForeignCubeMapDepthSolid = cubemap;
@@ -385,22 +371,10 @@ deoglCubeMap *deoglShadowMapper::GetTransparentDepthCubeMap() const{
 	return pCubeMapDepthTransp->GetCubeMap();
 }
 
-deoglCubeMap *deoglShadowMapper::GetTransparentEncodedDepthCubeMap() const{
-	if( ! pCubeMapEncodedDepthTransp ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	return pCubeMapEncodedDepthTransp->GetCubeMap();
-}
-
 void deoglShadowMapper::SetForeignTransparentDepthCubeMap( deoglCubeMap *cubemap ){
 	if( pCubeMapDepthTransp ){
 		pCubeMapDepthTransp->SetInUse( false );
 		pCubeMapDepthTransp = NULL;
-	}
-	if( pCubeMapEncodedDepthTransp ){
-		pCubeMapEncodedDepthTransp->SetInUse( false );
-		pCubeMapEncodedDepthTransp = NULL;
 	}
 	
 	pForeignCubeMapDepthTransp = cubemap;
@@ -444,10 +418,6 @@ void deoglShadowMapper::DropCubeMapsSolid(){
 		pCubeMapDepthSolid->SetInUse( false );
 		pCubeMapDepthSolid = NULL;
 	}
-	if( pCubeMapEncodedDepthSolid ){
-		pCubeMapEncodedDepthSolid->SetInUse( false );
-		pCubeMapEncodedDepthSolid = NULL;
-	}
 	DBGCALL("DropSolidCubeMaps", pCubeMapDepthSolid, pForeignCubeMapDepthSolid, pUseCubeMapDepthSolid)
 }
 
@@ -463,11 +433,7 @@ void deoglShadowMapper::DropCubeMapsTransparent(){
 		pCubeMapDepthTransp->SetInUse( false );
 		pCubeMapDepthTransp = NULL;
 	}
-	if( pCubeMapEncodedDepthTransp ){
-		pCubeMapEncodedDepthTransp->SetInUse( false );
-		pCubeMapEncodedDepthTransp = NULL;
-	}
-	DBGCALL("DropTransparentCubeMaps1", pUseCubeMapDepthTransp, pForeignCubeMapDepthTransp, pCubeMapEncodedDepthTransp)
+	DBGCALL("DropTransparentCubeMaps1", pUseCubeMapDepthTransp, pForeignCubeMapDepthTransp, 0)
 	
 	pUseCubeMapColorTransp = NULL;
 	pForeignCubeMapColorTransp = NULL;

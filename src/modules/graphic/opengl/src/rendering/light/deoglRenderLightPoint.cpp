@@ -548,7 +548,7 @@ void deoglRenderLightPoint::CalculateBoxBoundary( deoglRenderPlanLight &planLigh
 	
 	tsmgr.EnableTexture( 0, *boundaryMap.GetTextureMin(), GetSamplerClampNearest() );
 	tsmgr.EnableTexture( 1, *boundaryMap.GetTextureMax(), GetSamplerClampNearest() );
-	tsmgr.DisableStage( 2 );
+	tsmgr.DisableStagesAbove( 1 );
 	
 	while( size > 1 ){
 		size >>= 1;
@@ -574,17 +574,14 @@ void deoglRenderLightPoint::CalculateBoxBoundary( deoglRenderPlanLight &planLigh
 	
 	boundaryMin -= decVector( 0.01f, 0.01f, 0.01f ); // just to make sure the box is not too small
 	boundaryMax += decVector( 0.01f, 0.01f, 0.01f ); // just to make sure the box is not too small
-	
-	const decVector cbExtends = ( boundaryMax - boundaryMin ) * 0.5f;
-	const decVector cbPosition = ( boundaryMin + boundaryMax ) * 0.5f;
-	
-	light.SetLightVolumeCropBox( new decShapeBox( cbExtends, cbPosition ) );
+	light.SetLightVolumeCropBox( new decShapeBox(
+		( boundaryMax - boundaryMin ) * 0.5f, ( boundaryMin + boundaryMax ) * 0.5f ) );
 	
 	/*{
-	const decDVector bmin( light.GetMatrix() * boundaryMin );
-	const decDVector bmax( light.GetMatrix() * boundaryMax );
-	GetRenderThread().GetLogger().LogInfoFormat( "Point BoxBoundary %p min(%g,%g,%g) max(%g,%g,%g)",
-		&light, bmin.x, bmin.y, bmin.z, bmax.x, bmax.y, bmax.z );
+	const decDVector dlp( light.GetMatrix().GetPosition() );
+	GetRenderThread().GetLogger().LogInfoFormat( "Point BoxBoundary %p (%g,%g,%g) min(%g,%g,%g) max(%g,%g,%g)",
+		&light, dlp.x, dlp.y, dlp.z, boundaryMin.x, boundaryMin.y, boundaryMin.z,
+		boundaryMax.x, boundaryMax.y, boundaryMax.z );
 	}*/
 }
 
@@ -648,8 +645,9 @@ const deoglRenderPlanMasked *mask ){
 	deoglRenderPlanDebug * const planDebug = plan.GetDebug();
 	deoglSCSolid &scsolid = shadowCaster.GetSolid();
 	deoglShadowCaster::eShadowTypes shadowType = shadowCaster.GetShadowType();
-	const bool useShadow = planLight.GetUseShadow();
+	const bool refilterShadow = planLight.GetRefilterShadows();
 	const bool useAmbient = planLight.GetUseAmbient();
+	const bool useShadow = planLight.GetUseShadow();
 	
 	// for environment maps we use only static shadows
 	/*
@@ -659,20 +657,6 @@ const deoglRenderPlanMasked *mask ){
 		}
 	}
 	*/
-	
-	// if layer mask restriction is used dynamic only shadows have to be used to filter properly.
-	// the logic is this. lights filter scene elements to be included in their shadow maps by
-	// matching the element "layer mask" against the "shadow layer mask". if the camera restricts
-	// the layer mask this filtering stays correct if all bits of the "shadow layer mask" are
-	// covered by the bits of the "camery layer mask".
-	// 
-	// as a side note it would be also possible for this rule to not apply if not all bits of
-	// the "shadow layer mask" match the "camera layer mask". this requires or combining all
-	// layer masks of all filtered scene elements. if this combined layer mask does match in
-	// all bits the "camera layer mask" then this would be enough to still fullfil the
-	// requirement to use the static shadow maps.
-	// TODO check if this special filter check should be added or not
-	const bool refilterShadow = plan.GetUseLayerMask() && ! light.StaticMatchesCamera( plan.GetLayerMask() );
 	
 	if( useShadow && refilterShadow ){
 		shadowType = deoglShadowCaster::estDynamicOnly;
@@ -766,9 +750,7 @@ const deoglRenderPlanMasked *mask ){
 			break;
 			
 		case deoglShadowCaster::estDynamicOnly:
-			if( scsolid.GetDynamicCubeMap() ){
-				texSolidDepth1 = scsolid.GetDynamicCubeMap();
-			}
+			texSolidDepth1 = scsolid.GetDynamicCubeMap();
 			if( transparentDynamicShadow ){
 				texTranspDepth1 = sctransp.GetDynamicShadowCubeMap();
 				texTranspColor1 = sctransp.GetDynamicColorCubeMap();
@@ -788,9 +770,7 @@ const deoglRenderPlanMasked *mask ){
 				texAmbient1 = scambient.GetStaticCubeMap();
 			}
 			
-			if( scsolid.GetDynamicCubeMap() ){
-				texSolidDepth2 = scsolid.GetDynamicCubeMap();
-			}
+			texSolidDepth2 = scsolid.GetDynamicCubeMap();
 			if( transparentDynamicShadow ){
 				if( texTranspDepth1 ){
 					texTranspDepth2 = sctransp.GetDynamicShadowCubeMap();
@@ -1162,6 +1142,11 @@ bool transparentDynamicShadow, bool refilterShadow ){
 	// if layer mask restriction is used dynamic only shadows have to be used to filter properly
 	if( refilterShadow ){
 		shadowType = deoglShadowCaster::estDynamicOnly;
+	}
+	
+	if( planLight.GetShadowLayerMask() != shadowCaster.GetLayerMask() ){
+		shadowCaster.Clear();
+		shadowCaster.SetLayerMask( planLight.GetShadowLayerMask() );
 	}
 	
 	// static shadow map

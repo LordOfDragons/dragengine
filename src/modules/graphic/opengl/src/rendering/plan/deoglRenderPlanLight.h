@@ -23,6 +23,7 @@
 #define _DEOGLRENDERPLANLIGHT_H_
 
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/common/utils/decLayerMask.h>
 
 class deoglRenderPlan;
 class deoglCollideListLight;
@@ -49,6 +50,9 @@ private:
 	int pShadowSizeDynamic;
 	int pTranspShadowSizeDynamic;
 	int pAmbientShadowSizeDynamic;
+	
+	bool pRefilterShadows;
+	decLayerMask pShadowLayerMask;
 	
 	bool pUseShadow;
 	bool pUseAmbient;
@@ -108,6 +112,12 @@ public:
 	void SetTranspShadowSizeDynamic( int size );
 	void SetAmbientShadowSizeDynamic( int size );
 	
+	/** Refilter shadows. */
+	inline bool GetRefilterShadows() const{ return pRefilterShadows; }
+	
+	/** Shadow layer mask. */
+	inline const decLayerMask &GetShadowLayerMask() const{ return pShadowLayerMask; }
+	
 	/** Render switches. */
 	inline bool GetUseShadow() const{ return pUseShadow; }
 	inline bool GetUseAmbient() const{ return pUseAmbient; }
@@ -120,6 +130,7 @@ private:
 	void pCalcReductionFactorDynamic();
 	void pDetermineUseShadow();
 	void pDetermineUseAmbient();
+	void pDetermineShadowLayerMask();
 };
 
 #endif

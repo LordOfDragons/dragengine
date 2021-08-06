@@ -160,3 +160,9 @@ deoglShadowCaster::sShadowLayer &deoglShadowCaster::GetShadowLayerAt( int index 
 	}
 	return pShadowLayers[ index ];
 }
+
+
+
+void deoglShadowCaster::SetLayerMask( const decLayerMask &layerMask ){
+	pLayerMask = layerMask;
+}

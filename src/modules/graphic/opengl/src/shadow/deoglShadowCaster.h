@@ -28,6 +28,7 @@
 #include "../renderthread/deoglRTFrameCounterTracker.h"
 
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/common/utils/decLayerMask.h>
 
 class deoglCollideList;
 class deoglRenderThread;
@@ -85,6 +86,8 @@ private:
 	
 	sShadowLayer *pShadowLayers;
 	int pShadowLayerCount;
+	
+	decLayerMask pLayerMask;
 	
 	
 	
@@ -183,6 +186,14 @@ public:
 	/** Shadow layer at index. */
 	sShadowLayer &GetShadowLayerAt( int index );
 	const sShadowLayer &GetShadowLayerAt( int index ) const;
+	
+	
+	
+	/** Layer mask. */
+	inline const decLayerMask &GetLayerMask() const{ return pLayerMask; }
+	
+	/** Set layer mask. */
+	void SetLayerMask( const decLayerMask &layerMask );
 	/*@}*/
 };
 
