@@ -45,3 +45,6 @@ deBaseGraphicModule::~deBaseGraphicModule(){
 int deBaseGraphicModule::GetFPSRate(){
 	return 0;
 }
+
+void deBaseGraphicModule::GlobalPropertyChanged(){
+}

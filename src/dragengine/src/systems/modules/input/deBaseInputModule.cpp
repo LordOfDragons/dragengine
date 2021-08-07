@@ -35,6 +35,14 @@ deBaseInputModule::~deBaseInputModule(){
 
 
 
+// Management
+///////////////
+
+void deBaseInputModule::GlobalPropertyChanged(){
+}
+
+
+
 // Notifications
 //////////////////
 

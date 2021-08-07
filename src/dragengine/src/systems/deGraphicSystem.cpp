@@ -235,12 +235,20 @@ void deGraphicSystem::TerminateAppWindow(){
 //////////////////////
 
 void deGraphicSystem::RenderWindows(){
-	pActiveModule->RenderWindows();
+	if( GetIsRunning() ){
+		pActiveModule->RenderWindows();
+	}
 }
 
 void deGraphicSystem::CreateGlobalResources(){
 	if( ! pDebugOverlayCanvas ){
 		pDebugOverlayCanvas.TakeOver( GetEngine()->GetCanvasManager()->CreateCanvasView() );
+	}
+}
+
+void deGraphicSystem::NotifyGlobalPropertyChanged(){
+	if( GetIsRunning() ){
+		pActiveModule->GlobalPropertyChanged();
 	}
 }
 

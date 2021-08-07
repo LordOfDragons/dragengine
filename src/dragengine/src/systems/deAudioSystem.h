@@ -75,6 +75,12 @@ public:
 	
 	/** \brief Set active microphone or NULL to unset it. */
 	void SetActiveMicrophone( deMicrophone *microphone );
+	
+	/**
+	 * \brief Notify active module global engine property changed.
+	 * \version 1.6
+	 */
+	void NotifyGlobalPropertyChanged();
 	/*@}*/
 	
 	

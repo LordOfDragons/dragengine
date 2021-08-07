@@ -83,6 +83,12 @@ public:
 	
 	/** \brief Clean up module. */
 	virtual void CleanUp() = 0;
+	
+	/**
+	 * \brief Global engine property changed.
+	 * \version 1.6
+	 */
+	virtual void GlobalPropertyChanged();
 	/*@}*/
 	
 	

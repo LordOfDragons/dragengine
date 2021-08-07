@@ -169,6 +169,9 @@ private:
 	// os events
 	bool pRequestQuit;
 	
+	// global properties
+	bool pEnableVR;
+	
 	
 	
 public:
@@ -443,6 +446,28 @@ public:
 	
 	
 	
+	/** \name Global Properties. */
+	/*@{*/
+	/**
+	 * \brief VR is enabled.
+	 * \version 1.6
+	 */
+	inline bool GetEnableVR() const{ return pEnableVR; }
+	
+	/**
+	 * \brief Enable VR.
+	 * \version 1.6
+	 * 
+	 * VR systems typically are required to be activated before they can be used.
+	 * Enabling VR connects the engine to the VR system present on the host system
+	 * and activates VR support on various modules. VR mode can be enabled and
+	 * disabled any time.
+	 */
+	void SetEnableVR( bool enable );
+	/*@}*/
+	
+	
+	
 	/**
 	 * \name Game Engine Run Time
 	 */
@@ -523,6 +548,7 @@ private:
 	bool pClearPermanents();
 	bool pStopSystems();
 	bool pRecoverFromError();
+	void pNotifyGlobalPropertyChanged();
 };
 
 #endif

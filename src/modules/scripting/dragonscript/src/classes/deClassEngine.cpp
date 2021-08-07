@@ -216,6 +216,27 @@ void deClassEngine::nfSetDefaultEnableGI::RunFunction( dsRunTime *rt, dsValue* )
 
 
 
+// static public func bool getEnableVR()
+deClassEngine::nfGetEnableVR::nfGetEnableVR( const sInitData &init ) :
+dsFunction( init.clsEngine, "getEnableVR", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsBoolean ){
+}
+void deClassEngine::nfGetEnableVR::RunFunction( dsRunTime *rt, dsValue* ){
+	rt->PushBool( ( ( ( deClassEngine* )GetOwnerClass() )->GetDS().GetGameEngine()->GetEnableVR() ) );
+}
+
+// static public func void setEnableVR( bool enable )
+deClassEngine::nfSetEnableVR::nfSetEnableVR( const sInitData &init ) :
+dsFunction( init.clsEngine, "setEnableVR", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsVoid ){
+	p_AddParameter( init.clsBoolean ); // enable
+}
+void deClassEngine::nfSetEnableVR::RunFunction( dsRunTime *rt, dsValue* ){
+	( ( deClassEngine* )GetOwnerClass() )->GetDS().GetGameEngine()->SetEnableVR( rt->GetValue( 0 )->GetBool() );
+}
+
+
+
 // Class deClassEngine
 ////////////////////////
 
@@ -268,6 +289,9 @@ void deClassEngine::CreateClassMembers(dsEngine *engine){
 	
 	AddFunction( new nfGetDefaultEnableGI( init ) );
 	AddFunction( new nfSetDefaultEnableGI( init ) );
+	
+	AddFunction( new nfGetEnableVR( init ) );
+	AddFunction( new nfSetEnableVR( init ) );
 
 	// calculate member offsets
 	CalcMemberOffsets();

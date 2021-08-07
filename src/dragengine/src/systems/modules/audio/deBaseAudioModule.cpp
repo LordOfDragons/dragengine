@@ -42,3 +42,6 @@ deBaseAudioModule::~deBaseAudioModule(){
 int deBaseAudioModule::GetFPSRate(){
 	return 0;
 }
+
+void deBaseAudioModule::GlobalPropertyChanged(){
+}

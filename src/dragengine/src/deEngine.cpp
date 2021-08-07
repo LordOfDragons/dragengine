@@ -268,50 +268,44 @@ const int *vResourcePeerCreationOrder = &vLocalResourcePeerCreationOrder[ 0 ];
 // Constructor, destructor
 ////////////////////////////
 
-deEngine::deEngine( deOS *os, deVirtualFileSystem *fileSystem ){
+deEngine::deEngine( deOS *os, deVirtualFileSystem *fileSystem ) :
+pArgs( nullptr ),
+pOS( os ),
+pOSFileSystem( fileSystem ),
+
+pErrorTrace( nullptr ),
+pScriptFailed( false ),
+pSystemFailed( false ),
+pLogger( nullptr ),
+
+pModSys( nullptr ),
+pSystems( nullptr ),
+
+pParallelProcessing( nullptr ),
+pResLoader( nullptr ),
+pResMgrs( nullptr ),
+
+pVFS( nullptr ),
+
+pFrameTimer( nullptr ),
+pElapsedTime( 0.0f ),
+pAccumElapsedTime( 0.0f ),
+
+pFPSAccum( 0 ),
+pFPSFrames( 0 ),
+pFPSRate( 1 ),
+
+pRequestQuit( false ),
+
+pEnableVR( false )
+{
 	if( ! os ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	// os binding
-	pArgs = NULL;
-	pOSFileSystem = fileSystem;
-	pOS = os;
-	os->SetEngine( this );
-	
-	// recovery
-	pErrorTrace = NULL;
-	pScriptFailed = false;
-	pSystemFailed = false;
-	pLogger = NULL;
-	
-	// systems
-	pModSys = NULL;
-	pSystems = NULL;
-	
-	// resource managers
-	pResMgrs = NULL;
-	pParallelProcessing = NULL;
-	pResLoader = NULL;
-	
-	// files
-	pVFS = NULL;
-	
-	// frame timer
-	pFrameTimer = NULL;
-	pElapsedTime = 0.0f;
-	pAccumElapsedTime = 0.0f;
-	
-	// fps rate
-	pFPSAccum = 0;
-	pFPSFrames = 0;
-	pFPSRate = 1;
-	
-	// os events
-	pRequestQuit = false;
-	
-	// init
 	try{
+		os->SetEngine( this );
+		
 		pInit();
 		
 	}catch( const deException &e ){
@@ -684,6 +678,20 @@ void deEngine::Quit(){
 
 void deEngine::ResetQuitRequest(){
 	pRequestQuit = false;
+}
+
+
+
+// Global properties
+//////////////////////
+
+void deEngine::SetEnableVR( bool enable ){
+	if( enable == pEnableVR ){
+		return;
+	}
+	
+	pEnableVR = enable;
+	pNotifyGlobalPropertyChanged();
 }
 
 
@@ -1339,4 +1347,10 @@ bool deEngine::pRecoverFromError(){
 	
 	// we can continue
 	return true;
+}
+
+void deEngine::pNotifyGlobalPropertyChanged(){
+	GetGraphicSystem()->NotifyGlobalPropertyChanged();
+	GetAudioSystem()->NotifyGlobalPropertyChanged();
+	GetInputSystem()->NotifyGlobalPropertyChanged();
 }

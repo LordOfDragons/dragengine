@@ -64,20 +64,20 @@ deInputSystem::~deInputSystem(){
 
 void deInputSystem::ClearEventQueues(){
 	GetEngine()->GetOS()->ProcessEventLoop( false );
-	if( pActiveModule ){
+	if( GetIsRunning() ){
 		pActiveModule->ClearEvents();
 	}
 	pEventQueue->RemoveAllEvents();
 }
 
 void deInputSystem::ScreenSizeChanged(){
-	if( pActiveModule ){
+	if( GetIsRunning() ){
 		pActiveModule->ScreenSizeChanged();
 	}
 }
 
 void deInputSystem::AppActivationChanged(){
-	if( pActiveModule ){
+	if( GetIsRunning() ){
 		pActiveModule->AppActivationChanged();
 	}
 }
@@ -89,10 +89,17 @@ void deInputSystem::SetCaptureInputDevices( bool captureInputDevices ){
 	
 	pCaptureInputDevices = captureInputDevices;
 	
-	if( pActiveModule ){
+	if( GetIsRunning() ){
 		pActiveModule->CaptureInputDevicesChanged();
 	}
 }
+
+void deInputSystem::NotifyGlobalPropertyChanged(){
+	if( GetIsRunning() ){
+		pActiveModule->GlobalPropertyChanged();
+	}
+}
+
 
 
 void deInputSystem::SetActiveModule( deLoadableModule *module ){

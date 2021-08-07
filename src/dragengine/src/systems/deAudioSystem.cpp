@@ -139,6 +139,12 @@ void deAudioSystem::SetActiveMicrophone( deMicrophone *microphone ){
 	}
 }
 
+void deAudioSystem::NotifyGlobalPropertyChanged(){
+	if( GetIsRunning() ){
+		pActiveModule->GlobalPropertyChanged();
+	}
+}
+
 
 
 // Runtime Functions

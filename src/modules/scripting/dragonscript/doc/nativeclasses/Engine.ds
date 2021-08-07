@@ -89,5 +89,25 @@ fixed class Engine
 	 */
 	public static func void setDefaultEnableGI(bool enable)
 	end
+	
+	/**
+	 * \brief VR is enabled.
+	 * \version 1.6
+	 */
+	public static func bool getEnableVR()
+		return false
+	end
+	
+	/**
+	 * \brief Enable VR.
+	 * \version 1.6
+	 * 
+	 * VR systems typically are required to be activated before they can be used.
+	 * Enabling VR connects the engine to the VR system present on the host system
+	 * and activates VR support on various modules. VR mode can be enabled and
+	 * disabled any time.
+	 */
+	public static func void setEnableVR(bool enable)
+	end
 	/*@}*/
 end
