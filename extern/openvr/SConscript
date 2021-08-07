@@ -1,0 +1,79 @@
+import os
+import sys
+import SCons
+
+from SConsCommon import *
+from SConsExternCommon import *
+
+Import('parent_env parent_targets parent_report')
+
+envLibrary = parent_env.Clone()
+
+# parameters
+openvrVersion = '1.16.8'
+
+srcdir = 'openvr-{}'.format(openvrVersion)
+
+if envLibrary['OSWindows']:
+	staticFileName = envLibrary.subst('lib/${LIBPREFIX}openvr_api${LIBSUFFIX}')
+	libpath = [envLibrary.Dir('lib')]
+elif envLibrary['OSBeOS']:
+	Return()
+else:
+	staticFileName = envLibrary.subst('lib/${LIBPREFIX}openvr_api${LIBSUFFIX}')
+	libpath = [envLibrary.Dir('lib')]
+
+def openvrBuild(target, source, env):
+	buildDir = target[0].get_dir().up()
+	
+	script = createScriptHeader(env)
+	
+	script.append('cd "{}" || exit 1'.format(buildDir.abspath))
+	
+	cmdline = ['cmake']
+	cmdline.append('-DCMAKE_INSTALL_PREFIX="{}"'.format(buildDir.abspath))
+	if env['with_debug']:
+		cmdline.append('-DCMAKE_BUILD_TYPE=RelWithDebInfo')
+	else:
+		cmdline.append('-DCMAKE_BUILD_TYPE=Release')
+	#cmdline.append('-DCMAKE_VERBOSE_MAKEFILE=True')
+	
+	cmdline.append('../{}'.format(srcdir))
+	
+	if env['platform_android'] != 'no':
+		cmdline.append('-DANDROID_PLATFORM={}'.format(env['ANDROID_APILEVEL']))
+		cmdline.append('-DCMAKE_TOOLCHAIN_FILE="{}/build/cmake/android.toolchain.cmake"'.format(env['ndkroot']))
+		
+	elif 'CROSSCOMPILE_HOST' in env:
+		cmdline.append('-DCMAKE_SYSTEM_NAME="{}"'.format(env['CROSSCOMPILE_HOST']))
+	
+	script.append('{} || exit 1'.format(' '.join(cmdline)))
+	
+	script.append('make install || exit 1')
+	
+	# delete build file incorrectly put in source directory
+	script.append('rm -rf ../{}/bin'.format(srcdir))
+	
+	if not env.RunIsolatedSystem(script):
+		raise Exception('Failed building openvr')
+
+targets = [staticFileName]
+targets.append('include/openvr/openvr_capi.h')
+targets.append('include/openvr/openvr_driver.h')
+targets.append('include/openvr/openvr.h')
+
+library = envLibrary.Command(targets, '{}/CMakeLists.txt'.format(srcdir),
+	envLibrary.Action(openvrBuild, 'Build OpenVR'))
+
+depends = parent_env.Alias('lib_openvr', library)
+cpppath = [envLibrary.Dir('include')]
+libs = [library[0]]
+runtimelibs = []
+
+parent_targets['lib_openvr'] = {
+	'name' : 'Internal OpenVR library',
+	'cpppath' : cpppath,
+	'libpath' : libpath,
+	'libs' : libs,
+	'runtimelibs' : runtimelibs,
+	'depends' : depends }

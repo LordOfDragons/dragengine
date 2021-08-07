@@ -1,0 +1,7 @@
+Original source code located at:
+	https://github.com/ValveSoftware/openvr
+
+The original source repository is 143MB in size. This is too large to
+include as in-tree distribution archive. For this reason only the
+relevant files to compile the static library are included. See the
+original source code location for the full source.
