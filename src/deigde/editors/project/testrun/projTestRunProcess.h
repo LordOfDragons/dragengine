@@ -94,6 +94,7 @@ public:
 		decString moduleAudio;
 		decString moduleSynthesizer;
 		decString moduleNetwork;
+		decString moduleVR;
 		
 		sRunParameters();
 		~sRunParameters();

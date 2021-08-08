@@ -103,9 +103,6 @@ private:
 	
 	DEF_NATFUNC( nfGetDefaultEnableGI );
 	DEF_NATFUNC( nfSetDefaultEnableGI );
-	
-	DEF_NATFUNC( nfGetEnableVR );
-	DEF_NATFUNC( nfSetEnableVR );
 #undef DEF_NATFUNC
 };
 

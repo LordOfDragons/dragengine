@@ -85,9 +85,6 @@ if envModule['with_debug']:
 
 appendLibrary(envModule, parent_targets['shared_vulkan'], libs)
 
-if parent_env['OSPosix'] and not parent_env['OSBeOS'] and not parent_env['OSMacOS']:
-	appendLibrary(envModule, parent_targets['lib_openvr'], libs)
-
 # fetch values in expanded form for later use
 versionString = '1.5'
 if envModule['force_version']:

@@ -50,6 +50,7 @@ public:
 		ID_CB_MOD_AUD,
 		ID_CB_MOD_NET,
 		ID_CB_MOD_SYN,
+		ID_CB_MOD_VR,
 		
 		ID_LAST
 	};
@@ -75,6 +76,7 @@ private:
 	sSystem pSysAudio;
 	sSystem pSysSynthesizer;
 	sSystem pSysNetwork;
+	sSystem pSysVR;
 	
 	
 	
@@ -121,6 +123,7 @@ public:
 	long onCBModAudChanged( FXObject *sender, FXSelector selector, void *data );
 	long onCBModNetChanged( FXObject *sender, FXSelector selector, void *data );
 	long onCBModSynChanged( FXObject *sender, FXSelector selector, void *data );
+	long onCBModVRChanged( FXObject *sender, FXSelector selector, void *data );
 	/*@}*/
 	
 	

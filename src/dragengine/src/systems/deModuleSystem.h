@@ -115,7 +115,13 @@ public:
 		emtSynthesizer,
 		
 		/** \brief Archive module. */
-		emtArchive
+		emtArchive,
+		
+		/**
+		 * \brief VR system module.
+		 * \version 1.6
+		 */
+		emtVR
 	};
 	
 	
@@ -248,6 +254,7 @@ public:
 	 * - "OcclusionMesh" returns emtOcclusionMesh
 	 * - "Synthesizer" returns emtSynthesizer
 	 * - "Archive" returns emtArchive
+	 * - "VR" returns emtVR
 	 *
 	 * In all other cases emtUnknown is returned. Case does not matter.
 	 */
@@ -268,6 +275,7 @@ public:
 	 * - emtAI
 	 * - emtCrashRecovery
 	 * - emtSynthesizer
+	 * - emtVR
 	 *
 	 * All others are multiple type.
 	 */

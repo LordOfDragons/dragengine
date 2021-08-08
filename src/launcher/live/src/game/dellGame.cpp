@@ -267,6 +267,16 @@ void dellGame::LoadConfig(){
 	}else{
 		logger.LogInfoFormat( LOGSOURCE, "Game configuration file not found, will be created upon exiting" );
 	}
+	
+	// VR module exists since version 1.6 . if absent use module from default profile
+	const dellGameProfile * const defaultProfile = pLauncher.GetGameManager().GetDefaultProfile();
+	if( defaultProfile ){
+		dellGameProfile * const profile = ( dellGameProfile* )( deObject * )pCustomProfile;
+		if( profile && profile->GetModuleVR().IsEmpty() ){
+			profile->SetModuleVR( defaultProfile->GetModuleVR() );
+			profile->SetModuleVRVersion( defaultProfile->GetModuleVRVersion() );
+		}
+	}
 }
 
 void dellGame::SaveConfig(){

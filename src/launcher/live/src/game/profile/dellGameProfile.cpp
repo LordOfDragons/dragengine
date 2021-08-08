@@ -38,6 +38,7 @@
 #include <dragengine/systems/deCrashRecoverySystem.h>
 #include <dragengine/systems/deGraphicSystem.h>
 #include <dragengine/systems/deInputSystem.h>
+#include <dragengine/systems/deVRSystem.h>
 #include <dragengine/systems/dePhysicsSystem.h>
 #include <dragengine/systems/deAnimatorSystem.h>
 #include <dragengine/systems/deAISystem.h>
@@ -117,6 +118,10 @@ void dellGameProfile::SetModuleNetwork( const char *moduleName ){
 	pModuleNetwork = moduleName;
 }
 
+void dellGameProfile::SetModuleVR( const char *moduleName ){
+	pModuleVR = moduleName;
+}
+
 
 
 void dellGameProfile::SetModuleGraphicVersion( const char *moduleVersion ){
@@ -155,6 +160,10 @@ void dellGameProfile::SetModuleNetworkVersion( const char *moduleVersion ){
 	pModuleNetworkVersion = moduleVersion;
 }
 
+void dellGameProfile::SetModuleVRVersion( const char *moduleVersion ){
+	pModuleVRVersion = moduleVersion;
+}
+
 
 
 void dellGameProfile::SetRunArguments( const char *arguments ){
@@ -189,6 +198,7 @@ void dellGameProfile::CopyFrom( const dellGameProfile &profile ){
 	pModuleAudio = profile.pModuleAudio;
 	pModuleSynthesizer = profile.pModuleSynthesizer;
 	pModuleNetwork = profile.pModuleNetwork;
+	pModuleVR = profile.pModuleVR;
 	
 	pModuleGraphicVersion = profile.pModuleGraphicVersion;
 	pModuleInputVersion = profile.pModuleInputVersion;
@@ -199,6 +209,7 @@ void dellGameProfile::CopyFrom( const dellGameProfile &profile ){
 	pModuleAudioVersion = profile.pModuleAudioVersion;
 	pModuleSynthesizerVersion = profile.pModuleSynthesizerVersion;
 	pModuleNetworkVersion = profile.pModuleNetworkVersion;
+	pModuleVRVersion = profile.pModuleVRVersion;
 	
 	pDisableModuleVersionList = profile.pDisableModuleVersionList;
 	
@@ -233,6 +244,7 @@ void dellGameProfile::Verify( dellLauncher &launcher ){
 	pValid &= VerifyModule( launcher, pModuleAudio, deModuleSystem::emtAudio );
 	pValid &= VerifyModule( launcher, pModuleSynthesizer, deModuleSystem::emtSynthesizer );
 	pValid &= VerifyModule( launcher, pModuleNetwork, deModuleSystem::emtNetwork );
+	pValid &= VerifyModule( launcher, pModuleVR, deModuleSystem::emtVR );
 }
 
 bool dellGameProfile::VerifyModule( dellLauncher &launcher, const char *moduleName, int requiredType ) const{
@@ -328,6 +340,12 @@ void dellGameProfile::Activate( dellLauncher &launcher ) const{
 		DETHROW( deeInvalidParam );
 	}
 	engine->GetNetworkSystem()->SetActiveModule( engineModule->GetLoadableModule() );
+	
+	engineModule = engineModuleList.GetNamed( pModuleVR.GetString() );
+	if( ! engineModule || ! engineModule->GetLoadableModule() ){
+		DETHROW( deeInvalidParam );
+	}
+	engine->GetVRSystem()->SetActiveModule( engineModule->GetLoadableModule() );
 	
 	// set module properties
 	pModuleList.Apply( launcher );

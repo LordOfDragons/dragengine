@@ -901,11 +901,6 @@ void deoglRenderThread::pInitThreadPhase3(){
 #include <dragengine/common/file/decBaseFileWriterReference.h>
 #endif
 
-// #define DO_OPENVR_TEST
-#ifdef DO_OPENVR_TEST
-#include <openvr/openvr.h>
-#endif
-
 void deoglRenderThread::pInitThreadPhase4(){
 	pContext->InitPhase4( pInitialRenderWindow );
 	pInitialRenderWindow = NULL;
@@ -1163,25 +1158,6 @@ void deoglRenderThread::pInitThreadPhase4(){
 		}
 		string.Append( "]" );
 		pLogger->LogInfo( string );
-	}
-#endif
-	
-#ifdef DO_OPENVR_TEST
-	pLogger->LogInfoFormat( "VR_IsHmdPresent: %d", vr::VR_IsHmdPresent() );
-	pLogger->LogInfoFormat( "VR_IsRuntimeInstalled: %d", vr::VR_IsRuntimeInstalled() );
-	
-	char vrPath[ 256 ];
-	uint32_t vrPathLen = 0;
-	memset( vrPath, 0, sizeof( vrPath ) );
-	if( vr::VR_GetRuntimePath( vrPath, 255, &vrPathLen ) ){
-		pLogger->LogInfoFormat( "VR_RuntimePath: %s", vrPath );
-	}
-	
-	if( vr::VR_IsHmdPresent() ){
-		vr::HmdError error = vr::VRInitError_None;
-		vr::IVRSystem * const vrsys = vr::VR_Init( &error, vr::VRApplication_Scene );
-		pLogger->LogInfoFormat( "VR_Init: %p %d (%s)", vrsys, error, vr::VR_GetVRInitErrorAsSymbol(error) );
-		(void)vrsys;
 	}
 #endif
 	

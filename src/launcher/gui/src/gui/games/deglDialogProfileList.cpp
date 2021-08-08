@@ -100,6 +100,11 @@ FXDEFMAP( deglDialogProfileList ) deglDialogProfileListMap[]={
 	FXMAPFUNC( SEL_COMMAND, deglDialogProfileList::ID_CB_MOD_SYN_VERSION, deglDialogProfileList::onCBModSynVersionChanged ),
 	FXMAPFUNC( SEL_CHANGED, deglDialogProfileList::ID_CB_MOD_SYN_VERSION, deglDialogProfileList::onCBModSynVersionChanged ),
 	FXMAPFUNC( SEL_COMMAND, deglDialogProfileList::ID_BTN_SYNMODINFO, deglDialogProfileList::onBtnSynModInfo ),
+	FXMAPFUNC( SEL_COMMAND, deglDialogProfileList::ID_CB_MOD_VR, deglDialogProfileList::onCBModVRChanged ),
+	FXMAPFUNC( SEL_CHANGED, deglDialogProfileList::ID_CB_MOD_VR, deglDialogProfileList::onCBModVRChanged ),
+	FXMAPFUNC( SEL_COMMAND, deglDialogProfileList::ID_CB_MOD_VR_VERSION, deglDialogProfileList::onCBModVRVersionChanged ),
+	FXMAPFUNC( SEL_CHANGED, deglDialogProfileList::ID_CB_MOD_VR_VERSION, deglDialogProfileList::onCBModVRVersionChanged ),
+	FXMAPFUNC( SEL_COMMAND, deglDialogProfileList::ID_BTN_VRMODINFO, deglDialogProfileList::onBtnVRModInfo ),
 	
 	FXMAPFUNC( SEL_COMMAND, deglDialogProfileList::ID_LIST_MP_MODULES, deglDialogProfileList::onListMPModulesChanged ),
 	FXMAPFUNC( SEL_COMMAND, deglDialogProfileList::ID_MPPARAM_VALUE, deglDialogProfileList::onMPParameterValueCommand ),
@@ -215,6 +220,7 @@ FXDialogBox( owner, "Profiles", DECOR_TITLE | DECOR_BORDER | DECOR_RESIZE | DECO
 	pSysNetwork.type = deModuleSystem::emtNetwork;
 	pSysPhysics.type = deModuleSystem::emtPhysics;
 	pSysSynthesizer.type = deModuleSystem::emtSynthesizer;
+	pSysVR.type = deModuleSystem::emtVR;
 	
 	
 	content =  new FXVerticalFrame( this, LAYOUT_FILL_Y | LAYOUT_FILL_X, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10 );
@@ -266,6 +272,8 @@ FXDialogBox( owner, "Profiles", DECOR_TITLE | DECOR_BORDER | DECOR_RESIZE | DECO
 		ID_CB_MOD_NET, ID_CB_MOD_NET_VERSION, ID_BTN_NETMODINFO, block );
 	pCreateSystem( pSysSynthesizer, "Synthesizer Module:", "Select Synthesizer Module to use",
 		ID_CB_MOD_SYN, ID_CB_MOD_SYN_VERSION, ID_BTN_SYNMODINFO, block );
+	pCreateSystem( pSysVR, "VR Module:", "Select the VR Module to use",
+		ID_CB_MOD_VR, ID_CB_MOD_VR_VERSION, ID_BTN_VRMODINFO, block );
 	
 	
 	// Module Parameters
@@ -422,6 +430,7 @@ void deglDialogProfileList::UpdateSystemModuleLists(){
 	pSysAudio.combobox->clearItems();
 	pSysNetwork.combobox->clearItems();
 	pSysSynthesizer.combobox->clearItems();
+	pSysVR.combobox->clearItems();
 	
 	for( i=0; i<count; i++ ){
 		delEngineModule * const module = moduleList.GetAt( i );
@@ -480,6 +489,12 @@ void deglDialogProfileList::UpdateSystemModuleLists(){
 			}
 			break;
 			
+		case deModuleSystem::emtVR:
+			if( pSysVR.combobox->findItem( module->GetName().GetString() ) == -1 ){
+				pSysVR.combobox->appendItem( module->GetName().GetString() );
+			}
+			break;
+			
 		default:
 			break;
 		}
@@ -494,6 +509,7 @@ void deglDialogProfileList::UpdateSystemModuleLists(){
 	pSysAudio.combobox->sortItems();
 	pSysSynthesizer.combobox->sortItems();
 	pSysNetwork.combobox->sortItems();
+	pSysVR.combobox->sortItems();
 	
 	UpdateProfile();
 }
@@ -536,6 +552,7 @@ void deglDialogProfileList::UpdateProfile(){
 		UpdateSystem( pSysAudio, profile.GetModuleAudio(), profile.GetModuleAudioVersion() );
 		UpdateSystem( pSysSynthesizer, profile.GetModuleSynthesizer(), profile.GetModuleSynthesizerVersion() );
 		UpdateSystem( pSysNetwork, profile.GetModuleNetwork(), profile.GetModuleNetworkVersion() );
+		UpdateSystem( pSysVR, profile.GetModuleVR(), profile.GetModuleVRVersion() );
 		
 		pEditRunArgs->setText( profile.GetRunArguments().GetString() );
 		pEditRunArgs->enable();
@@ -578,6 +595,7 @@ void deglDialogProfileList::UpdateProfile(){
 		DisableSystem( pSysAudio );
 		DisableSystem( pSysSynthesizer );
 		DisableSystem( pSysNetwork );
+		DisableSystem( pSysVR );
 		
 		pEditRunArgs->setText( "" );
 		pEditRunArgs->disable();
@@ -1442,6 +1460,58 @@ long deglDialogProfileList::onBtnSynModInfo( FXObject*, FXSelector, void* ){
 		pGetSelectedProfile()->GetEdit()->Verify( *pWindowMain->GetLauncher() );
 		UpdateSystem( pSysSynthesizer, pGetSelectedProfile()->GetEdit()->GetModuleSynthesizer(),
 			pGetSelectedProfile()->GetEdit()->GetModuleSynthesizerVersion() );
+		UpdateProfileList();
+	}
+	return 1;
+}
+
+long deglDialogProfileList::onCBModVRChanged( FXObject*, FXSelector, void* ){
+	if( ! pGetSelectedProfile() ){
+		return 1;
+	}
+	
+	delGameProfile &profile = *pGetSelectedProfile()->GetEdit();
+	if( profile.GetModuleVR() != pSysVR.combobox->getText().text() ){
+		profile.SetModuleVR( pSysVR.combobox->getText().text() );
+		profile.SetModuleVRVersion( "" );
+	}
+	profile.Verify( *pWindowMain->GetLauncher() );
+	UpdateSystem( pSysVR, profile.GetModuleVR(), profile.GetModuleVRVersion() );
+	UpdateProfileList();
+	return 1;
+}
+
+long deglDialogProfileList::onCBModVRVersionChanged( FXObject*, FXSelector, void* ){
+	if( ! pGetSelectedProfile() ){
+		return 1;
+	}
+	
+	delGameProfile &profile = *pGetSelectedProfile()->GetEdit();
+	profile.SetModuleVRVersion( pSysVR.comboboxVersion->getCurrentItem() > 0
+		? pSysVR.comboboxVersion->getText().text() : "" );
+	profile.Verify( *pWindowMain->GetLauncher() );
+	UpdateModuleVersions( pSysVR, profile.GetModuleVR(), profile.GetModuleVRVersion() );
+	UpdateProfileList();
+	return 1;
+}
+
+long deglDialogProfileList::onBtnVRModInfo( FXObject*, FXSelector, void* ){
+	const delEngineModuleList &moduleList = pWindowMain->GetLauncher()->GetEngine().GetModules();
+	delEngineModule *module = nullptr;
+	if( pGetSelectedProfile() ){
+		if( pGetSelectedProfile()->GetEdit()->GetModuleVRVersion().IsEmpty() ){
+			module = moduleList.GetNamed( pGetSelectedProfile()->GetEdit()->GetModuleVR() );
+		}else{
+			module = moduleList.GetNamed( pGetSelectedProfile()->GetEdit()->GetModuleVR(),
+				pGetSelectedProfile()->GetEdit()->GetModuleVRVersion() );
+		}
+	}
+	
+	if( module ){
+		deglDialogModuleProps( pWindowMain, module, this ).execute( PLACEMENT_OWNER );
+		pGetSelectedProfile()->GetEdit()->Verify( *pWindowMain->GetLauncher() );
+		UpdateSystem( pSysVR, pGetSelectedProfile()->GetEdit()->GetModuleGraphic(),
+			pGetSelectedProfile()->GetEdit()->GetModuleGraphicVersion() );
 		UpdateProfileList();
 	}
 	return 1;

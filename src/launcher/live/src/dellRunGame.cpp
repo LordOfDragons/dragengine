@@ -65,6 +65,7 @@
 #include <dragengine/systems/deCrashRecoverySystem.h>
 #include <dragengine/systems/deGraphicSystem.h>
 #include <dragengine/systems/deInputSystem.h>
+#include <dragengine/systems/deVRSystem.h>
 #include <dragengine/systems/deModuleSystem.h>
 #include <dragengine/systems/deNetworkSystem.h>
 #include <dragengine/systems/dePhysicsSystem.h>
@@ -79,6 +80,7 @@
 #include <dragengine/systems/modules/crashrecovery/deBaseCrashRecoveryModule.h>
 #include <dragengine/systems/modules/graphic/deBaseGraphicModule.h>
 #include <dragengine/systems/modules/input/deBaseInputModule.h>
+#include <dragengine/systems/modules/vr/deBaseVRModule.h>
 #include <dragengine/systems/modules/network/deBaseNetworkModule.h>
 #include <dragengine/systems/modules/physics/deBasePhysicsModule.h>
 #include <dragengine/systems/modules/scripting/deBaseScriptingModule.h>
@@ -388,6 +390,7 @@ void dellRunGame::ShowProfileProblems(){
 	ShowModuleProblem( pProfile->GetModuleAudio(), deModuleSystem::emtAudio );
 	ShowModuleProblem( pProfile->GetModuleSynthesizer(), deModuleSystem::emtSynthesizer );
 	ShowModuleProblem( pProfile->GetModuleNetwork(), deModuleSystem::emtNetwork );
+	ShowModuleProblem( pProfile->GetModuleVR(), deModuleSystem::emtVR );
 }
 
 void dellRunGame::ShowModuleProblem( const char *moduleName, deModuleSystem::eModuleTypes moduleType ){
@@ -615,7 +618,7 @@ void dellRunGame::Run(){
 		const deBaseModule *module;
 		decStringDictionary parameters;
 	};
-	sModuleParamState moduleState[ 10 ];
+	sModuleParamState moduleState[ 11 ];
 	deModuleParameter moduleParameter;
 	int i, j;
 	
@@ -674,6 +677,7 @@ void dellRunGame::Run(){
 		moduleState[ 7 ].module = engine.GetPhysicsSystem()->GetActiveModule();
 		moduleState[ 8 ].module = engine.GetScriptingSystem()->GetActiveModule();
 		moduleState[ 9 ].module = engine.GetSynthesizerSystem()->GetActiveModule();
+		moduleState[ 10 ].module = engine.GetVRSystem()->GetActiveModule();
 		
 		for( i=0; i<10; i++ ){
 			if( moduleState[ i ].module ){

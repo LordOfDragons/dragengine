@@ -739,6 +739,9 @@ scdirs.append( 'src/modules/archive/delga' )
 
 scdirs.append( 'src/modules/combined/fbx' )
 
+scdirs.append( 'src/modules/vr/null' )
+scdirs.append( 'src/modules/vr/openvr' )
+
 # launchers
 scdirs.append( 'src/launcher/shared' )
 scdirs.append( 'src/launcher/console' )

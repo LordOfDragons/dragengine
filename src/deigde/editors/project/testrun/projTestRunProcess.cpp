@@ -308,6 +308,7 @@ void projTestRunProcess::pReadRunParameters(){
 	pRunParameters.moduleAudio = ReadString16FromPipe();
 	pRunParameters.moduleSynthesizer = ReadString16FromPipe();
 	pRunParameters.moduleNetwork = ReadString16FromPipe();
+	pRunParameters.moduleVR = ReadString16FromPipe();
 	
 // 	WriteUCharToPipe( projTestRunConstants::ercSuccess );
 }
@@ -391,6 +392,8 @@ void projTestRunProcess::pLogConfiguration(){
 		pRunParameters.moduleSynthesizer.GetString() );
 	pLogger->LogInfoFormat( LOGSOURCE, "- Module Network: %s",
 		pRunParameters.moduleNetwork.GetString() );
+	pLogger->LogInfoFormat( LOGSOURCE, "- Module VR: %s",
+		pRunParameters.moduleVR.GetString() );
 }
 
 void projTestRunProcess::pCreateLogger(){

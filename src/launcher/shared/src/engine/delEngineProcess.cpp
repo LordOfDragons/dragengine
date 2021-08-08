@@ -76,6 +76,7 @@
 #include <dragengine/systems/dePhysicsSystem.h>
 #include <dragengine/systems/deScriptingSystem.h>
 #include <dragengine/systems/deSynthesizerSystem.h>
+#include <dragengine/systems/deVRSystem.h>
 #include <dragengine/systems/modules/deBaseModule.h>
 #include <dragengine/systems/modules/deLoadableModule.h>
 #include <dragengine/systems/modules/deModuleParameter.h>
@@ -89,6 +90,7 @@
 #include <dragengine/systems/modules/physics/deBasePhysicsModule.h>
 #include <dragengine/systems/modules/scripting/deBaseScriptingModule.h>
 #include <dragengine/systems/modules/synthesizer/deBaseSynthesizerModule.h>
+#include <dragengine/systems/modules/vr/deBaseVRModule.h>
 
 
 
@@ -720,6 +722,10 @@ void delEngineProcess::CommandActivateModule(){
 			pEngine->GetScriptingSystem()->SetActiveModule( module );
 			break;
 			
+		case deModuleSystem::emtVR:
+			pEngine->GetVRSystem()->SetActiveModule( module );
+			break;
+			
 		default:
 			WriteUCharToPipe( ercFailed );
 			return;
@@ -1029,7 +1035,7 @@ void delEngineProcess::CommandStartGame(){
 		const deBaseModule *module;
 		decStringDictionary parameters;
 	};
-	sModuleParamState moduleState[ 10 ] = {
+	sModuleParamState moduleState[ 11 ] = {
 		{ pEngine->GetAISystem()->GetActiveModule() },
 		{ pEngine->GetAnimatorSystem()->GetActiveModule() },
 		{ pEngine->GetAudioSystem()->GetActiveModule() },
@@ -1039,7 +1045,8 @@ void delEngineProcess::CommandStartGame(){
 		{ pEngine->GetNetworkSystem()->GetActiveModule() },
 		{ pEngine->GetPhysicsSystem()->GetActiveModule() },
 		{ pEngine->GetScriptingSystem()->GetActiveModule() },
-		{ pEngine->GetSynthesizerSystem()->GetActiveModule() } };
+		{ pEngine->GetSynthesizerSystem()->GetActiveModule() },
+		{ pEngine->GetVRSystem()->GetActiveModule() } };
 	deModuleParameter moduleParameter;
 	int i, j;
 	

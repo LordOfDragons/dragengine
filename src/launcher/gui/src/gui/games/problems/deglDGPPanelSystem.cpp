@@ -62,6 +62,8 @@ FXDEFMAP( deglDGPPanelSystem ) deglDGPPanelSystemMap[]={
 	FXMAPFUNC( SEL_CHANGED, deglDGPPanelSystem::ID_CB_MOD_NET, deglDGPPanelSystem::onCBModNetChanged ),
 	FXMAPFUNC( SEL_COMMAND, deglDGPPanelSystem::ID_CB_MOD_SYN, deglDGPPanelSystem::onCBModSynChanged ),
 	FXMAPFUNC( SEL_CHANGED, deglDGPPanelSystem::ID_CB_MOD_SYN, deglDGPPanelSystem::onCBModSynChanged ),
+	FXMAPFUNC( SEL_COMMAND, deglDGPPanelSystem::ID_CB_MOD_VR, deglDGPPanelSystem::onCBModVRChanged ),
+	FXMAPFUNC( SEL_CHANGED, deglDGPPanelSystem::ID_CB_MOD_VR, deglDGPPanelSystem::onCBModVRChanged ),
 };
 
 
@@ -95,6 +97,7 @@ pStatusWorking( false )
 	pSysNetwork.type = deModuleSystem::emtNetwork;
 	pSysSynthesizer.type = deModuleSystem::emtSynthesizer;
 	pSysPhysics.type = deModuleSystem::emtPhysics;
+	pSysVR.type = deModuleSystem::emtVR;
 	
 	// create content
 	scrollWindow = new FXScrollWindow( this, LAYOUT_FILL_X | LAYOUT_FILL_Y | SCROLLERS_NORMAL | HSCROLLING_OFF | SCROLLERS_TRACK );
@@ -109,6 +112,7 @@ pStatusWorking( false )
 	pCreateSystem( pSysAudio, "Audio Module:", "Select the Audio Module to use", ID_CB_MOD_AUD, frameContent );
 	pCreateSystem( pSysSynthesizer, "Synthesizer Module:", "Select Synthesizer Module to use", ID_CB_MOD_SYN, frameContent );
 	pCreateSystem( pSysNetwork, "Network Module:", "Select the Network Module to use", ID_CB_MOD_NET, frameContent );
+	pCreateSystem( pSysVR, "VR Module:", "Select the VR Module to use", ID_CB_MOD_VR, frameContent );
 }
 
 deglDGPPanelSystem::~deglDGPPanelSystem(){
@@ -132,6 +136,7 @@ void deglDGPPanelSystem::UpdateSystemModuleLists(){
 	pSysAudio.combobox->clearItems();
 	pSysSynthesizer.combobox->clearItems();
 	pSysNetwork.combobox->clearItems();
+	pSysVR.combobox->clearItems();
 	
 	for( i=0; i<count; i++ ){
 		const delEngineModule &module = *moduleList.GetAt( i );
@@ -173,6 +178,10 @@ void deglDGPPanelSystem::UpdateSystemModuleLists(){
 			pSysNetwork.combobox->appendItem( module.GetName().GetString() );
 			break;
 			
+		case deModuleSystem::emtVR:
+			pSysVR.combobox->appendItem( module.GetName().GetString() );
+			break;
+			
 		default:
 			break;
 		}
@@ -187,6 +196,7 @@ void deglDGPPanelSystem::UpdateSystemModuleLists(){
 	pSysAudio.combobox->sortItems();
 	pSysSynthesizer.combobox->sortItems();
 	pSysNetwork.combobox->sortItems();
+	pSysVR.combobox->sortItems();
 }
 
 void deglDGPPanelSystem::UpdatePanel(){
@@ -201,6 +211,7 @@ void deglDGPPanelSystem::UpdatePanel(){
 	UpdateSystem( pSysAudio, pParentDialog->GetWorkingProfile()->GetModuleAudio().GetString() );
 	UpdateSystem( pSysSynthesizer, pParentDialog->GetWorkingProfile()->GetModuleSynthesizer().GetString() );
 	UpdateSystem( pSysNetwork, pParentDialog->GetWorkingProfile()->GetModuleNetwork().GetString() );
+	UpdateSystem( pSysVR, pParentDialog->GetWorkingProfile()->GetModuleVR().GetString() );
 }
 
 void deglDGPPanelSystem::UpdateSystem( sSystem &system, const char *moduleName ){
@@ -300,6 +311,12 @@ long deglDGPPanelSystem::onCBModNetChanged( FXObject*, FXSelector, void* ){
 
 long deglDGPPanelSystem::onCBModSynChanged( FXObject*, FXSelector, void* ){
 	pParentDialog->GetWorkingProfile()->SetModuleSynthesizer( pSysSynthesizer.combobox->getText().text() );
+	pParentDialog->UpdatePanels();
+	return 1;
+}
+
+long deglDGPPanelSystem::onCBModVRChanged( FXObject*, FXSelector, void* ){
+	pParentDialog->GetWorkingProfile()->SetModuleVR( pSysVR.combobox->getText().text() );
 	pParentDialog->UpdatePanels();
 	return 1;
 }

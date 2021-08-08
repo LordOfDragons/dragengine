@@ -131,6 +131,11 @@ void delSharedConfigXML::WriteProfileSystems( decXmlWriter &writer, const delGam
 		writer.WriteDataTagString( "networkVersion", profile.GetModuleNetworkVersion() );
 	}
 	
+	writer.WriteDataTagString( "vr", profile.GetModuleVR() );
+	if( ! profile.GetModuleVRVersion().IsEmpty() ){
+		writer.WriteDataTagString( "vrVersion", profile.GetModuleVRVersion() );
+	}
+	
 	writer.WriteClosingTag( "systems", true );
 }
 
@@ -310,6 +315,9 @@ void delSharedConfigXML::ReadProfileSystems( const decXmlElementTag &root, delGa
 			
 		}else if( tag->GetName() == "networkVersion" ){
 			profile.SetModuleNetworkVersion( GetCDataString( *tag ) );
+			
+		}else if( tag->GetName() == "vr" ){
+			profile.SetModuleVR( GetCDataString( *tag ) );
 		}
 	}
 }

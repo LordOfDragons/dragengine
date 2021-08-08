@@ -156,6 +156,10 @@ pModule( module )
 		pTypeString = "Archive";
 		break;
 		
+	case deModuleSystem::emtVR:
+		pTypeString = "VR";
+		break;
+		
 	case deModuleSystem::emtUnknown:
 		pTypeString = "Unknown";
 	}

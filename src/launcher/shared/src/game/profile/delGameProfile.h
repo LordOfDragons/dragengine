@@ -56,6 +56,7 @@ private:
 	decString pModuleAudio;
 	decString pModuleSynthesizer;
 	decString pModuleNetwork;
+	decString pModuleVR;
 	
 	decString pModuleGraphicVersion;
 	decString pModuleInputVersion;
@@ -66,6 +67,7 @@ private:
 	decString pModuleAudioVersion;
 	decString pModuleSynthesizerVersion;
 	decString pModuleNetworkVersion;
+	decString pModuleVRVersion;
 	
 	delGPDisableModuleVersionList pDisableModuleVersions;
 	
@@ -111,6 +113,8 @@ public:
 	
 	/** \brief Set graphic module or an empty string if not set. */
 	void SetModuleGraphic( const char *moduleName );
+	
+	
 	
 	/** \brief Input module or an empty string if not set. */
 	inline const decString &GetModuleInput() const{ return pModuleInput; }
@@ -159,6 +163,14 @@ public:
 	
 	/** \brief Set network module or an empty string if not set. */
 	void SetModuleNetwork( const char *moduleName );
+	
+	/** \brief VR module or an empty string if not set. */
+	inline const decString &GetModuleVR() const{ return pModuleVR; }
+	
+	/** \brief Set VR module or an empty string if not set. */
+	void SetModuleVR( const char *moduleName );
+	
+	
 	
 	/** \brief Graphic module version or an empty string to use the latest. */
 	inline const decString &GetModuleGraphicVersion() const{ return pModuleGraphicVersion; }
@@ -213,6 +225,14 @@ public:
 	
 	/** \brief Set network module version or an empty string to use the latest. */
 	void SetModuleNetworkVersion( const char *moduleVersion );
+	
+	/** \brief VR module version or an empty string to use the latest. */
+	inline const decString &GetModuleVRVersion() const{ return pModuleVRVersion; }
+	
+	/** \brief Set VR module version or an empty string to use the latest. */
+	void SetModuleVRVersion( const char *moduleVersion );
+	
+	
 	
 	/** \brief List of module versions to enable or disable. */
 	inline delGPDisableModuleVersionList &GetDisableModuleVersions(){ return pDisableModuleVersions; }

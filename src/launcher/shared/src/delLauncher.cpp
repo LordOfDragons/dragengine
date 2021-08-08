@@ -45,10 +45,10 @@
 // Class delLauncher
 /////////////////////////////
 
-delLauncher::delLauncher( const char *loggerSource ) :
+delLauncher::delLauncher( const char *loggerSource, const char *engineLogFileTitle ) :
 pLoggerHistory( delLoggerHistory::Ref::New( new delLoggerHistory ) ),
 pLogSource ( loggerSource ),
-pEngine( *this ),
+pEngine( *this, engineLogFileTitle ),
 pGameManager( *this ),
 pPatchManager( *this )
 {

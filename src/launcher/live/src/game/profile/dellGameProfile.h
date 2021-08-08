@@ -48,6 +48,7 @@ private:
 	decString pModuleAudio;
 	decString pModuleSynthesizer;
 	decString pModuleNetwork;
+	decString pModuleVR;
 	
 	decString pModuleGraphicVersion;
 	decString pModuleInputVersion;
@@ -58,6 +59,7 @@ private:
 	decString pModuleAudioVersion;
 	decString pModuleSynthesizerVersion;
 	decString pModuleNetworkVersion;
+	decString pModuleVRVersion;
 	
 	dellGPModuleList pModuleList;
 	
@@ -131,6 +133,11 @@ public:
 	/** Sets the network module or NULL if not set. */
 	void SetModuleNetwork( const char *moduleName );
 	
+	/** Retrieves the vr module or NULL if not set. */
+	inline const decString &GetModuleVR() const{ return pModuleVR; }
+	/** Sets the vr module or NULL if not set. */
+	void SetModuleVR( const char *moduleName );
+	
 	/** \brief Graphic module version or an empty string to use the latest. */
 	inline const decString &GetModuleGraphicVersion() const{ return pModuleGraphicVersion; }
 	
@@ -184,6 +191,12 @@ public:
 	
 	/** \brief Set network module version or an empty string to use the latest. */
 	void SetModuleNetworkVersion( const char *moduleVersion );
+	
+	/** \brief VR module version or an empty string to use the latest. */
+	inline const decString &GetModuleVRVersion() const{ return pModuleVRVersion; }
+	
+	/** \brief Set vr module version or an empty string to use the latest. */
+	void SetModuleVRVersion( const char *moduleVersion );
 	
 	/** Retrieves the module list. */
 	inline dellGPModuleList &GetModuleList(){ return pModuleList; }

@@ -207,12 +207,6 @@ public:
 	/** \brief Create global resources. */
 	void CreateGlobalResources();
 	
-	/**
-	 * \brief Notify active module global engine property changed.
-	 * \version 1.6
-	 */
-	void NotifyGlobalPropertyChanged();
-	
 	
 	
 	/** \brief Create peer object for the given billboard using the active module and assigns it. */

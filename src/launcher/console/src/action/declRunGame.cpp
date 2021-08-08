@@ -66,6 +66,7 @@
 #include <dragengine/systems/deCrashRecoverySystem.h>
 #include <dragengine/systems/deGraphicSystem.h>
 #include <dragengine/systems/deInputSystem.h>
+#include <dragengine/systems/deVRSystem.h>
 #include <dragengine/systems/deModuleSystem.h>
 #include <dragengine/systems/deNetworkSystem.h>
 #include <dragengine/systems/dePhysicsSystem.h>
@@ -84,6 +85,7 @@
 #include <dragengine/systems/modules/physics/deBasePhysicsModule.h>
 #include <dragengine/systems/modules/scripting/deBaseScriptingModule.h>
 #include <dragengine/systems/modules/synthesizer/deBaseSynthesizerModule.h>
+#include <dragengine/systems/modules/vr/deBaseVRModule.h>
 
 
 
@@ -687,6 +689,7 @@ void declRunGame::PrintProfileProblems(){
 	PrintModuleProblem( pProfile->GetModuleAudio(), deModuleSystem::emtAudio );
 	PrintModuleProblem( pProfile->GetModuleSynthesizer(), deModuleSystem::emtSynthesizer );
 	PrintModuleProblem( pProfile->GetModuleNetwork(), deModuleSystem::emtNetwork );
+	PrintModuleProblem( pProfile->GetModuleVR(), deModuleSystem::emtVR );
 }
 
 void declRunGame::PrintModuleProblem( const char *moduleName, deModuleSystem::eModuleTypes moduleType ){
@@ -930,7 +933,7 @@ void declRunGame::Run(){
 		const deBaseModule *module;
 		decStringDictionary parameters;
 	};
-	sModuleParamState moduleState[ 10 ];
+	sModuleParamState moduleState[ 11 ];
 	deModuleParameter moduleParameter;
 	int i, j;
 	
@@ -995,8 +998,9 @@ void declRunGame::Run(){
 		moduleState[ 7 ].module = engine.GetPhysicsSystem()->GetActiveModule();
 		moduleState[ 8 ].module = engine.GetScriptingSystem()->GetActiveModule();
 		moduleState[ 9 ].module = engine.GetSynthesizerSystem()->GetActiveModule();
+		moduleState[ 10 ].module = engine.GetVRSystem()->GetActiveModule();
 		
-		for( i=0; i<10; i++ ){
+		for( i=0; i<11; i++ ){
 			if( moduleState[ i ].module ){
 				const int count = moduleState[ i ].module->GetParameterCount();
 				for( j=0; j<count; j++ ){

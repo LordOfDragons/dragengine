@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<module>
+	<name>OpenVR</name>
+	<description>OpenVR.</description>
+	<author>Plüss Roland (roland@rptd.ch)</author>
+	<version>VERSION</version>
+	<type>VR</type>
+	<library>
+		<file>FILENAME</file>
+		<size>FILESIZE</size>
+		<sha1>SHA1SUM</sha1>
+		<entrypoint>OpenVRCreateModule</entrypoint>
+	</library>
+</module>

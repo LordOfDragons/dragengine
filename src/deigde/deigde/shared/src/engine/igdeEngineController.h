@@ -48,6 +48,7 @@ public:
 		esAnimator,
 		esAI,
 		esSynthesizer,
+		esVR,
 		esScripting
 	};
 	

@@ -131,6 +131,11 @@ void dellSharedConfigXML::pWriteProfileSystems( decXmlWriter &writer, const dell
 		writer.WriteDataTagString( "networkVersion", profile.GetModuleNetworkVersion() );
 	}
 	
+	writer.WriteDataTagString( "vr", profile.GetModuleVR() );
+	if( ! profile.GetModuleVRVersion().IsEmpty() ){
+		writer.WriteDataTagString( "vrVersion", profile.GetModuleVRVersion() );
+	}
+	
 	writer.WriteClosingTag( "systems", true );
 }
 
@@ -308,6 +313,9 @@ void dellSharedConfigXML::pReadProfileSystems( const decXmlElementTag &root, del
 				
 			}else if( strcmp( tag->GetName(), "networkVersion" ) == 0 ){
 				profile.SetModuleNetworkVersion( pGetCDataString( *tag ) );
+				
+			}else if( strcmp( tag->GetName(), "vr" ) == 0 ){
+				profile.SetModuleVR( pGetCDataString( *tag ) );
 			}
 		}
 	}

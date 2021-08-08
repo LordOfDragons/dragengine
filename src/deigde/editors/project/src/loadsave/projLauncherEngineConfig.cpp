@@ -226,6 +226,9 @@ const decXmlElementTag &root, projTRProfile &profile ){
 		}else if( tagName == "network" ){
 			profile.SetModuleNetwork( GetCDataString( *tag ) );
 			
+		}else if( tagName == "vr" ){
+			profile.SetModuleVR( GetCDataString( *tag ) );
+			
 		}else{
 			LogWarnUnknownTag( root, *tag );
 		}

@@ -94,12 +94,6 @@ void deInputSystem::SetCaptureInputDevices( bool captureInputDevices ){
 	}
 }
 
-void deInputSystem::NotifyGlobalPropertyChanged(){
-	if( GetIsRunning() ){
-		pActiveModule->GlobalPropertyChanged();
-	}
-}
-
 
 
 void deInputSystem::SetActiveModule( deLoadableModule *module ){

@@ -139,6 +139,9 @@ void deModuleSystem::DetectModules(){
 		logger.LogInfoFormat( LOGSOURCE, "Loading Synthesizer modules" );
 		pDetectModulesIn( searchPath.GetPathNative(), "synthesizer", emtSynthesizer );
 		
+		logger.LogInfoFormat( LOGSOURCE, "Loading VR modules" );
+		pDetectModulesIn( searchPath.GetPathNative(), "vr", emtVR );
+		
 		
 		
 		logger.LogInfoFormat( LOGSOURCE, "Loading Archive modules" );
@@ -555,6 +558,9 @@ deModuleSystem::eModuleTypes deModuleSystem::GetTypeFromString( const char *type
 	}else if( strcmp( typeString, "Archive" ) == 0 ){
 		return emtArchive;
 		
+	}else if( strcmp( typeString, "VR" ) == 0 ){
+		return emtVR;
+		
 	}else{
 		return emtUnknown;
 	}
@@ -625,6 +631,9 @@ const char *deModuleSystem::GetTypeDirectory( eModuleTypes type ){
 	case emtArchive:
 		return "archive";
 		
+	case emtVR:
+		return "vr";
+		
 	default:
 		DETHROW( deeInvalidParam );
 	}
@@ -642,6 +651,7 @@ bool deModuleSystem::IsSingleType( eModuleTypes type ){
 	case emtPhysics:
 	case emtScript:
 	case emtSynthesizer:
+	case emtVR:
 		return true;
 		
 	default:

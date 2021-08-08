@@ -213,6 +213,7 @@ void dellEngine::LoadModuleList(){
 	AddModulesFrom( "/engine/lib/modules/animator", deModuleSystem::emtAnimator );
 	AddModulesFrom( "/engine/lib/modules/ai", deModuleSystem::emtAI );
 	AddModulesFrom( "/engine/lib/modules/synthesizer", deModuleSystem::emtSynthesizer );
+	AddModulesFrom( "/engine/lib/modules/vr", deModuleSystem::emtVR );
 	
 	AddModulesFrom( "/engine/lib/modules/archive", deModuleSystem::emtArchive );
 	AddModulesFrom( "/engine/lib/modules/animation", deModuleSystem::emtAnimation );
@@ -483,6 +484,9 @@ const char *dellEngine::GetModuleTypeText( int moduleType ) const{
 		
 	case deModuleSystem::emtArchive:
 		return "Archive";
+		
+	case deModuleSystem::emtVR:
+		return "VR";
 		
 	default:
 		return "Unknown";

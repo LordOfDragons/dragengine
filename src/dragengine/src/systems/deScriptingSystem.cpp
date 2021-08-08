@@ -334,7 +334,13 @@ void deScriptingSystem::OnResizeRenderWindow(){
 }
 
 void deScriptingSystem::SendEvent( deInputEvent *event){
-	if( ! pActiveModule->SendEvent(event) ){
+	if( ! pActiveModule->SendEvent( event ) ){
+		GetEngine()->SignalScriptFailed();
+	}
+}
+
+void deScriptingSystem::SendVREvent( deInputEvent *event ){
+	if( ! pActiveModule->SendVREvent( event ) ){
 		GetEngine()->SignalScriptFailed();
 	}
 }

@@ -221,6 +221,7 @@
 #include "classes/systems/deClassScriptSystem.h"
 #include "classes/systems/deClassSynthesizerSystem.h"
 #include "classes/systems/deClassSystem.h"
+#include "classes/systems/deClassVRSystem.h"
 
 #include "classes/translation/deClassLanguagePack.h"
 #include "classes/translation/deClassLanguagePackBuilder.h"
@@ -489,6 +490,7 @@ deBaseScriptingModule( loadableModule ){
 	pClsWorld = NULL;
 	pClsXMLEl = NULL;
 	pClsXML = NULL;
+	pClsVRSys = NULL;
 	
 	pClsGameObj = NULL;
 	pGameObj = NULL;
@@ -940,6 +942,11 @@ bool deScriptingDragonScript::SendEvent( deInputEvent *event ){
 	return true;
 }
 
+bool deScriptingDragonScript::SendVREvent( deInputEvent *event ){
+	// handled the same in scripts
+	return SendEvent( event );
+}
+
 void deScriptingDragonScript::UserRequestQuit(){
 	if( ! pGameObj ){
 		return;
@@ -1128,6 +1135,7 @@ void deScriptingDragonScript::pLoadBasicPackage(){
 		package->AddHostClass( pClsAudSys = new deClassAudioSystem( *this ) );
 		package->AddHostClass( pClsSynthesizerSystem = new deClassSynthesizerSystem( *this ) );
 		package->AddHostClass( pClsInpSys = new deClassInputSystem( *this ) );
+		package->AddHostClass( pClsVRSys = new deClassVRSystem( *this ) );
 		package->AddHostClass( pClsInpEvent = new deClassInputEvent( *this ) );
 		package->AddHostClass( pClsInpDev = new deClassInputDevice( *this ) );
 		package->AddHostClass( pClsInpDevAxis = new deClassInputDeviceAxis( *this ) );

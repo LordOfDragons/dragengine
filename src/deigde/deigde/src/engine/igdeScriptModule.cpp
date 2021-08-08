@@ -157,9 +157,13 @@ bool igdeScriptModule::OnResizeRenderWindow(){
 	return true;
 }
 
-bool igdeScriptModule::SendEvent( deInputEvent *event ){
+bool igdeScriptModule::SendEvent( deInputEvent* ){
 	return true;
 }
 
 void igdeScriptModule::UserRequestQuit(){
+}
+
+bool igdeScriptModule::SendVREvent( deInputEvent* ){
+	return true;
 }

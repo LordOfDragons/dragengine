@@ -80,6 +80,9 @@ public:
 		ID_CB_MOD_SYN,
 		ID_CB_MOD_SYN_VERSION,
 		ID_BTN_SYNMODINFO,
+		ID_CB_MOD_VR,
+		ID_CB_MOD_VR_VERSION,
+		ID_BTN_VRMODINFO,
 		
 		ID_LIST_MP_MODULES,
 		ID_MPPARAM_LABEL,
@@ -170,6 +173,7 @@ private:
 	sSystem pSysAudio;
 	sSystem pSysSynthesizer;
 	sSystem pSysNetwork;
+	sSystem pSysVR;
 	
 	FXIconList *pListMPModules;
 	FXMatrix *pFrameMPParameters;
@@ -278,6 +282,9 @@ public:
 	long onCBModSynChanged( FXObject *sender, FXSelector selector, void *data );
 	long onCBModSynVersionChanged( FXObject *sender, FXSelector selector, void *data );
 	long onBtnSynModInfo( FXObject *sender, FXSelector selector, void *data );
+	long onCBModVRChanged( FXObject *sender, FXSelector selector, void *data );
+	long onCBModVRVersionChanged( FXObject *sender, FXSelector selector, void *data );
+	long onBtnVRModInfo( FXObject *sender, FXSelector selector, void *data );
 	
 	long onListMPModulesChanged( FXObject *sender, FXSelector selector, void *data );
 	long onMPParameterValueCommand( FXObject *sender, FXSelector selector, void *data );

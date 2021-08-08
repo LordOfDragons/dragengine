@@ -260,6 +260,10 @@ void igdeDEModuleStatus::UpdateModuleStatus(){
 		pEditType->SetText( "Archive" );
 		break;
 		
+	case deModuleSystem::emtVR:
+		pEditType->SetText( "VR" );
+		break;
+		
 	default:
 		pEditType->SetText( "Unknown Type" );
 	}

@@ -35,6 +35,7 @@
 #include <dragengine/systems/deAISystem.h>
 #include <dragengine/systems/deAudioSystem.h>
 #include <dragengine/systems/deSynthesizerSystem.h>
+#include <dragengine/systems/deVRSystem.h>
 #include <dragengine/systems/deNetworkSystem.h>
 #include <dragengine/systems/modules/deBaseModule.h>
 #include <dragengine/systems/modules/deLoadableModule.h>
@@ -104,6 +105,10 @@ void projTRProfile::SetModuleNetwork( const char *moduleName ){
 	pModuleNetwork = moduleName;
 }
 
+void projTRProfile::SetModuleVR( const char *moduleName ){
+	pModuleVR = moduleName;
+}
+
 
 
 void projTRProfile::SetRunArguments( const char *arguments ){
@@ -145,6 +150,7 @@ void projTRProfile::Verify( deEngine &engine ){
 	pValid &= VerifyModule( engine, pModuleAudio, deModuleSystem::emtAudio );
 	pValid &= VerifyModule( engine, pModuleSynthesizer, deModuleSystem::emtSynthesizer );
 	pValid &= VerifyModule( engine, pModuleNetwork, deModuleSystem::emtNetwork );
+	pValid &= VerifyModule( engine, pModuleVR, deModuleSystem::emtVR );
 }
 
 bool projTRProfile::VerifyModule( deEngine &engine, const char *moduleName,

@@ -42,7 +42,7 @@
 ////////////////////////////
 
 deglLauncher::deglLauncher( deglWindowMain *windowMain, int argc, char **argv ) :
-delLauncher( "LauncherGui" ),
+delLauncher( "LauncherGui", "delauncher-gui-engine" ),
 
 pSignalHandler( *this ),
 pConfiguration( *this ),

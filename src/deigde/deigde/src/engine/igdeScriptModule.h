@@ -164,6 +164,13 @@ public:
 	 * Default implementation calls deEngine.Quit().
 	 */
 	virtual void UserRequestQuit();
+	
+	/**
+	 * \brief Send the given VR event to game scripts.
+	 * \version 1.6
+	 * \return true if the call has been successfull or false otherwise
+	 */
+	virtual bool SendVREvent( deInputEvent *event );
 	/*@}*/
 };
 

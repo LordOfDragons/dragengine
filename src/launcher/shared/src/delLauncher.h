@@ -75,7 +75,7 @@ public:
 	 * - "/data" : GetPathShares(), read-write
 	 * - "/logs" : GetPathLogs(), read-write
 	 */
-	delLauncher( const char *loggerSource = "Launcher" );
+	delLauncher( const char *loggerSource = "Launcher", const char *engineLogFileTitle = "launcher-engine" );
 	
 	/** \brief Clean up launcher support. */
 	virtual ~delLauncher();

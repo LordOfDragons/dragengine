@@ -50,6 +50,7 @@
 #include <dragengine/systems/deCrashRecoverySystem.h>
 #include <dragengine/systems/deGraphicSystem.h>
 #include <dragengine/systems/deInputSystem.h>
+#include <dragengine/systems/deVRSystem.h>
 #include <dragengine/systems/deModuleSystem.h>
 #include <dragengine/systems/deNetworkSystem.h>
 #include <dragengine/systems/dePhysicsSystem.h>
@@ -220,6 +221,7 @@ void projTestRunEngine::ActivateModules(){
 	ActivateModule( deModuleSystem::emtAudio, runParameters.moduleAudio );
 	ActivateModule( deModuleSystem::emtSynthesizer, runParameters.moduleSynthesizer );
 	ActivateModule( deModuleSystem::emtNetwork, runParameters.moduleNetwork );
+	ActivateModule( deModuleSystem::emtVR, runParameters.moduleVR );
 	
 	ActivateModule( deModuleSystem::emtScript,
 		runParameters.moduleScript, runParameters.moduleScriptVersion );
@@ -312,6 +314,10 @@ const char *name, const char *version ){
 		
 	case deModuleSystem::emtScript:
 		pEngine->GetScriptingSystem()->SetActiveModule( module );
+		break;
+		
+	case deModuleSystem::emtVR:
+		pEngine->GetVRSystem()->SetActiveModule( module );
 		break;
 		
 	default:

@@ -159,6 +159,9 @@ void declGameManager::CreateDefaultProfile(){
 	module = engine.GetBestModuleForType( deModuleSystem::emtNetwork );
 	pDefaultProfile->SetModuleNetwork( module ? module->GetName() : "" );
 	
+	module = engine.GetBestModuleForType( deModuleSystem::emtVR );
+	pDefaultProfile->SetModuleVR( module ? module->GetName() : "" );
+	
 	pDefaultProfile->SetWidth( engine.GetCurrentResolution().x );
 	pDefaultProfile->SetHeight( engine.GetCurrentResolution().y );
 	pDefaultProfile->SetFullScreen( true );
@@ -181,6 +184,22 @@ void declGameManager::CreateDefaultProfile(){
 		pDefaultProfile->GetModuleSynthesizer().GetString() );
 	logger.LogInfoFormat( LOGSOURCE, "Default profile: network module = '%s'",
 		pDefaultProfile->GetModuleNetwork().GetString() );
+	logger.LogInfoFormat( LOGSOURCE, "Default profile: vr module = '%s'",
+		pDefaultProfile->GetModuleVR().GetString() );
+	
+	// VR module exists since version 1.6 . if absent use module from default profile
+	if( pDefaultProfile ){
+		const int count = pProfileList.GetCount();
+		int i;
+		
+		for( i=0; i<count; i++ ){
+			declGameProfile &profile = *pProfileList.GetAt( i );
+			if( profile.GetModuleVR().IsEmpty() ){
+				profile.SetModuleVR( pDefaultProfile->GetModuleVR() );
+				profile.SetModuleVRVersion( pDefaultProfile->GetModuleVRVersion() );
+			}
+		}
+	}
 }
 
 

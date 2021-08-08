@@ -38,6 +38,7 @@
 #include <dragengine/systems/deCrashRecoverySystem.h>
 #include <dragengine/systems/deGraphicSystem.h>
 #include <dragengine/systems/deInputSystem.h>
+#include <dragengine/systems/deVRSystem.h>
 #include <dragengine/systems/dePhysicsSystem.h>
 #include <dragengine/systems/deAnimatorSystem.h>
 #include <dragengine/systems/deAISystem.h>
@@ -89,6 +90,10 @@ void declGameProfile::SetModuleInput( const char *moduleName ){
 	pModuleInput = moduleName;
 }
 
+void declGameProfile::SetModuleVR( const char *moduleName ){
+	pModuleVR = moduleName;
+}
+
 void declGameProfile::SetModulePhysics( const char *moduleName ){
 	pModulePhysics = moduleName;
 }
@@ -125,6 +130,10 @@ void declGameProfile::SetModuleGraphicVersion( const char *moduleVersion ){
 
 void declGameProfile::SetModuleInputVersion( const char *moduleVersion ){
 	pModuleInputVersion = moduleVersion;
+}
+
+void declGameProfile::SetModuleVRVersion( const char *moduleVersion ){
+	pModuleVRVersion = moduleVersion;
 }
 
 void declGameProfile::SetModulePhysicsVersion( const char *moduleVersion ){
@@ -182,6 +191,7 @@ void declGameProfile::SetFullScreen( bool fullScreen ){
 void declGameProfile::CopyFrom( const declGameProfile &profile ){
 	pModuleGraphic = profile.pModuleGraphic;
 	pModuleInput = profile.pModuleInput;
+	pModuleVR = profile.pModuleVR;
 	pModulePhysics = profile.pModulePhysics;
 	pModuleAnimator = profile.pModuleAnimator;
 	pModuleAI = profile.pModuleAI;
@@ -192,6 +202,7 @@ void declGameProfile::CopyFrom( const declGameProfile &profile ){
 	
 	pModuleGraphicVersion = profile.pModuleGraphicVersion;
 	pModuleInputVersion = profile.pModuleInputVersion;
+	pModuleVRVersion = profile.pModuleVRVersion;
 	pModulePhysicsVersion = profile.pModulePhysicsVersion;
 	pModuleAnimatorVersion = profile.pModuleAnimatorVersion;
 	pModuleAIVersion = profile.pModuleAIVersion;
@@ -233,6 +244,7 @@ void declGameProfile::Verify( declLauncher &launcher ){
 	pValid &= VerifyModule( launcher, pModuleAudio, deModuleSystem::emtAudio );
 	pValid &= VerifyModule( launcher, pModuleSynthesizer, deModuleSystem::emtSynthesizer );
 	pValid &= VerifyModule( launcher, pModuleNetwork, deModuleSystem::emtNetwork );
+	pValid &= VerifyModule( launcher, pModuleVR, deModuleSystem::emtVR );
 }
 
 bool declGameProfile::VerifyModule( declLauncher &launcher, const char *moduleName, int requiredType ) const{
@@ -328,6 +340,12 @@ void declGameProfile::Activate( declLauncher &launcher ) const{
 		DETHROW( deeInvalidParam );
 	}
 	engine->GetNetworkSystem()->SetActiveModule( engineModule->GetLoadableModule() );
+	
+	engineModule = engineModuleList.GetNamed( pModuleVR.GetString() );
+	if( ! engineModule || ! engineModule->GetLoadableModule() ){
+		DETHROW( deeInvalidParam );
+	}
+	engine->GetVRSystem()->SetActiveModule( engineModule->GetLoadableModule() );
 	
 	// set module properties
 	pModuleList.Apply( launcher );

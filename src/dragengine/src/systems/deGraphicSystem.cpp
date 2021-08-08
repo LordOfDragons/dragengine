@@ -246,12 +246,6 @@ void deGraphicSystem::CreateGlobalResources(){
 	}
 }
 
-void deGraphicSystem::NotifyGlobalPropertyChanged(){
-	if( GetIsRunning() ){
-		pActiveModule->GlobalPropertyChanged();
-	}
-}
-
 
 
 void deGraphicSystem::LoadBillboard( deBillboard *billboard ){

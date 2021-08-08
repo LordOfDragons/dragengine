@@ -48,6 +48,7 @@
 #include "systems/dePhysicsSystem.h"
 #include "systems/deScriptingSystem.h"
 #include "systems/deSynthesizerSystem.h"
+#include "systems/deVRSystem.h"
 #include "systems/modules/input/deBaseInputModule.h"
 
 #include "resources/animation/deAnimationManager.h"
@@ -182,6 +183,7 @@ enum eSystems{
 	esAnimator,
 	esSynthesizer,
 	esAI,
+	esVR,
 	esScripting,
 	esSystemCount
 };
@@ -295,9 +297,7 @@ pFPSAccum( 0 ),
 pFPSFrames( 0 ),
 pFPSRate( 1 ),
 
-pRequestQuit( false ),
-
-pEnableVR( false )
+pRequestQuit( false )
 {
 	if( ! os ){
 		DETHROW( deeInvalidParam );
@@ -403,6 +403,10 @@ deAISystem *deEngine::GetAISystem() const{
 
 deSynthesizerSystem *deEngine::GetSynthesizerSystem() const{
 	return ( deSynthesizerSystem* )pSystems[ esSynthesizer ];
+}
+
+deVRSystem *deEngine::GetVRSystem() const{
+	return ( deVRSystem* )pSystems[ esVR ];
 }
 
 
@@ -682,20 +686,6 @@ void deEngine::ResetQuitRequest(){
 
 
 
-// Global properties
-//////////////////////
-
-void deEngine::SetEnableVR( bool enable ){
-	if( enable == pEnableVR ){
-		return;
-	}
-	
-	pEnableVR = enable;
-	pNotifyGlobalPropertyChanged();
-}
-
-
-
 // Run Engine ( using gamedir as basic game directory )
 /////////////////////////////////////////////////////////
 
@@ -721,8 +711,9 @@ bool deEngine::Run( const char *scriptDirectory, const char *gameObject ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	deScriptingSystem *scrSys = GetScriptingSystem();
-	deInputSystem *inpSys = GetInputSystem();
+	deScriptingSystem &scrSys = *GetScriptingSystem();
+	deInputSystem &inpSys = *GetInputSystem();
+	deVRSystem &vrSys = *GetVRSystem();
 	
 	deErrorTracePoint *tracePoint;
 	bool keepRunning = true;
@@ -752,8 +743,8 @@ bool deEngine::Run( const char *scriptDirectory, const char *gameObject ){
 	}
 	
 	// set script module directory and game object
-	scrSys->SetScriptDirectory( scriptDirectory );
-	scrSys->SetGameObject( gameObject );
+	scrSys.SetScriptDirectory( scriptDirectory );
+	scrSys.SetGameObject( gameObject );
 	
 	// start systems
 	while( hasErrors ){
@@ -825,7 +816,7 @@ bool deEngine::Run( const char *scriptDirectory, const char *gameObject ){
 		// protecting the running engine using our crash recovery module.
 		try{
 			// init the game if not done already
-			scrSys->InitGame();
+			scrSys.InitGame();
 			
 			if( pScriptFailed || pSystemFailed ){
 				pErrorTrace->AddPoint( NULL, "deEngine::Run", __LINE__ );
@@ -834,7 +825,7 @@ bool deEngine::Run( const char *scriptDirectory, const char *gameObject ){
 			}
 			
 			// clear all event queues
-			inpSys->ClearEventQueues();
+			inpSys.ClearEventQueues();
 			
 			// run the engine loop
 			while( keepRunning ){
@@ -847,8 +838,11 @@ DEBUG_RESET_TIMERS;
 				}
 				
 				// process input module events into engine events
-				inpSys->GetActiveModule()->ProcessEvents();
+				inpSys.GetActiveModule()->ProcessEvents();
 DEBUG_PRINT_TIMER( "Run: Process input events" );
+				
+				vrSys.ProcessEvents();
+DEBUG_PRINT_TIMER( "Run: Process VR events" );
 				
 				// render frame
 				UpdateElapsedTime();
@@ -860,8 +854,8 @@ DEBUG_PRINT_TIMER( "Run: Process input events" );
 					
 					if( ! pRecoverFromError() ) return false;
 					
-					scrSys->InitGame();
-					inpSys->ClearEventQueues();
+					scrSys.InitGame();
+					inpSys.ClearEventQueues();
 				}
 DEBUG_PRINT_TIMER_TOTAL( "Run: Cycle" );
 			}
@@ -889,7 +883,7 @@ DEBUG_PRINT_TIMER_TOTAL( "Run: Cycle" );
 	}
 	
 	// exit the game if it is running
-	scrSys->ExitGame();
+	scrSys.ExitGame();
 	
 	// stop systems
 	return pStopSystems();
@@ -923,8 +917,8 @@ void deEngine::RunSingleFrame(){
 	deGraphicSystem &graSys = *GetGraphicSystem();
 	deNetworkSystem &netSys = *GetNetworkSystem();
 	deAudioSystem &audSys = *GetAudioSystem();
-	deInputSystem &inpSys = *GetInputSystem();
-	deInputEventQueue &eventQueue = inpSys.GetEventQueue();
+	deInputEventQueue &eventQueue = GetInputSystem()->GetEventQueue();
+	deInputEventQueue &vrEventQueue = GetVRSystem()->GetEventQueue();
 	deInputEvent event;
 	int i, count;
 	
@@ -944,6 +938,20 @@ void deEngine::RunSingleFrame(){
 	}
 	eventQueue.RemoveAllEvents();
 DEBUG_PRINT_TIMER( "DoFrame: Process input events" );
+	
+	// process vr inputs
+	count = vrEventQueue.GetEventCount();
+	for( i=0; i<count; i++ ){
+		scrSys.SendVREvent( ( deInputEvent* )( &( vrEventQueue.GetEventAt( i ) ) ) );
+		if( pScriptFailed ){
+			deErrorTracePoint *tracePoint = pErrorTrace->AddPoint( NULL, "deEngine::RunDoSingleFrame", __LINE__ );
+			tracePoint->AddValueFloat( "elapsedTime", pElapsedTime );
+			vrEventQueue.RemoveAllEvents();
+			return;
+		}
+	}
+	vrEventQueue.RemoveAllEvents();
+DEBUG_PRINT_TIMER( "DoFrame: Process VR events" );
 	
 	// frame update
 	pParallelProcessing->Update();
@@ -1022,6 +1030,7 @@ void deEngine::pInitSystems(){
 	pSystems[ esNetwork ] = new deNetworkSystem( this );
 	pSystems[ esSynthesizer ] = new deSynthesizerSystem( this );
 	pSystems[ esAI ] = new deAISystem( this );
+	pSystems[ esVR ] = new deVRSystem( this );
 }
 
 void deEngine::pInitResourceManagers(){
@@ -1347,10 +1356,4 @@ bool deEngine::pRecoverFromError(){
 	
 	// we can continue
 	return true;
-}
-
-void deEngine::pNotifyGlobalPropertyChanged(){
-	GetGraphicSystem()->NotifyGlobalPropertyChanged();
-	GetAudioSystem()->NotifyGlobalPropertyChanged();
-	GetInputSystem()->NotifyGlobalPropertyChanged();
 }

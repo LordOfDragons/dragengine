@@ -205,6 +205,7 @@ class deClassVector;
 class deClassVector2;
 class deClassVideo;
 class deClassVideoPlayer;
+class deClassVRSystem;
 class deClassWorld;
 
 class deCollisionInfo;
@@ -411,6 +412,7 @@ private:
 	deClassVector2 *pClsVec2;
 	deClassVideo *pClsVid;
 	deClassVideoPlayer *pClsVP;
+	deClassVRSystem *pClsVRSys;
 	deClassWorld *pClsWorld;
 	
 	dsEngine *pScriptEngine;
@@ -508,6 +510,13 @@ public:
 	 * Default implementation calls deEngine.Quit().
 	 */
 	virtual void UserRequestQuit();
+	
+	/**
+	 * \brief Send the given VR event to game scripts.
+	 * \version 1.6
+	 * \return true if the call has been successfull or false otherwise
+	 */
+	virtual bool SendVREvent( deInputEvent *event );
 	/*@}*/
 	
 public:
@@ -706,6 +715,7 @@ public:
 	inline deClassVector2 *GetClassVector2() const{ return pClsVec2; }
 	inline deClassVideo *GetClassVideo() const{ return pClsVid; }
 	inline deClassVideoPlayer *GetClassVideoPlayer() const{ return pClsVP; }
+	inline deClassVRSystem *GetClassVRSystem() const{ return pClsVRSys; }
 	inline deClassWorld *GetClassWorld() const{ return pClsWorld; }
 	
 	/** @name Management */

@@ -313,6 +313,10 @@ void deglDialogModuleProps::SetFromModule(){
 		pEditType->setText( "Archive" );
 		break;
 		
+	case deModuleSystem::emtVR:
+		pEditType->setText( "VR" );
+		break;
+		
 	case deModuleSystem::emtUnknown:
 		pEditType->setText( "Unknown" );
 	}

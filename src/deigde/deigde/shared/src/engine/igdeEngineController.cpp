@@ -52,6 +52,7 @@
 #include <dragengine/systems/deAISystem.h>
 #include <dragengine/systems/deNetworkSystem.h>
 #include <dragengine/systems/deModuleSystem.h>
+#include <dragengine/systems/deVRSystem.h>
 #include <dragengine/systems/modules/deBaseModule.h>
 #include <dragengine/systems/modules/deInternalModule.h>
 #include <dragengine/systems/modules/graphic/deBaseGraphicModule.h>
@@ -304,6 +305,7 @@ void igdeEngineController::StartEngine(){
 		if( ! pEngine->GetSynthesizerSystem()->CanStart() ) DETHROW( deeInvalidParam );
 		if( ! pEngine->GetAISystem()->CanStart() ) DETHROW( deeInvalidParam );
 		if( ! pEngine->GetNetworkSystem()->CanStart() ) DETHROW( deeInvalidParam );
+		if( ! pEngine->GetVRSystem()->CanStart() ) DETHROW( deeInvalidParam );
 		
 		// set script module directory
 		pEngine->GetScriptingSystem()->SetScriptDirectory( scriptDirectory );
@@ -343,6 +345,9 @@ void igdeEngineController::StartEngine(){
 		if( ! pEngine->GetNetworkSystem()->GetIsRunning() ){
 			pEngine->GetNetworkSystem()->Start();
 		}
+		if( ! pEngine->GetVRSystem()->GetIsRunning() ){
+			pEngine->GetVRSystem()->Start();
+		}
 		
 	}catch( const deException &e ){
 		e.PrintError();
@@ -377,6 +382,9 @@ void igdeEngineController::StopEngine(){
 		//	pEngine->GetScriptingSystem()->Stop();
 		//}
 		
+		if( pEngine->GetVRSystem()->GetIsRunning() ){
+			pEngine->GetVRSystem()->Stop();
+		}
 		if( pEngine->GetNetworkSystem()->GetIsRunning() ){
 			pEngine->GetNetworkSystem()->Stop();
 		}
@@ -532,6 +540,10 @@ void igdeEngineController::ActivateModule( int system, const char *name ){
 		pEngine->GetScriptingSystem()->SetActiveModule( engineModule );
 		break;
 		
+	case esVR:
+		pEngine->GetVRSystem()->SetActiveModule( engineModule );
+		break;
+		
 	default:
 		DETHROW( deeInvalidParam );
 	}
@@ -552,6 +564,7 @@ void igdeEngineController::pConfigModules(){
 	deLoadableModule *bestModuleCR = NULL;
 	deLoadableModule *bestModuleSyn = NULL;
 	deLoadableModule *bestModuleNet = NULL;
+	deLoadableModule *bestModuleVR = NULL;
 	int m, moduleCount;
 	
 	// load modules
@@ -673,6 +686,19 @@ void igdeEngineController::pConfigModules(){
 			}
 			break;
 			
+		case deModuleSystem::emtVR:
+			if( module->GetIsFallback() ){
+				if( ! bestModuleVR ){
+					bestModuleVR = module;
+				}
+				
+			}else{
+				if( ! bestModuleVR || bestModuleVR->GetIsFallback() ){
+					bestModuleVR = module;
+				}
+			}
+			break;
+			
 		default:
 			break;
 		}
@@ -701,6 +727,9 @@ void igdeEngineController::pConfigModules(){
 	
 	if( ! bestModuleNet ) DETHROW( deeInvalidAction );
 	pEngine->GetNetworkSystem()->SetActiveModule( bestModuleNet );
+	
+	if( ! bestModuleVR ) DETHROW( deeInvalidAction );
+	pEngine->GetVRSystem()->SetActiveModule( bestModuleVR );
 	
 	// load default modules
 	/*

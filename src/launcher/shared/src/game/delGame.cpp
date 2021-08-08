@@ -489,6 +489,13 @@ void delGame::LoadConfig(){
 		logger.LogInfoFormat( pLauncher.GetLogSource(),
 			"Game configuration file not found, will be created upon exiting" );
 	}
+	
+	// VR module exists since version 1.6 . if absent use module from default profile
+	const delGameProfile * const defaultProfile = pLauncher.GetGameManager().GetDefaultProfile();
+	if( defaultProfile && pCustomProfile && pCustomProfile->GetModuleVR().IsEmpty() ){
+		pCustomProfile->SetModuleVR( defaultProfile->GetModuleVR() );
+		pCustomProfile->SetModuleVRVersion( defaultProfile->GetModuleVRVersion() );
+	}
 }
 
 void delGame::SaveConfig(){

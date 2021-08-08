@@ -38,6 +38,7 @@
 #include <dragengine/common/exceptions.h>
 #include <dragengine/systems/deGraphicSystem.h>
 #include <dragengine/systems/deInputSystem.h>
+#include <dragengine/systems/deVRSystem.h>
 #include <dragengine/systems/dePhysicsSystem.h>
 #include <dragengine/systems/deAudioSystem.h>
 #include <dragengine/systems/deScriptingSystem.h>
@@ -127,6 +128,7 @@ pDialogEngine( dialogEngine )
 	pAddSystem( GetEngine()->GetCrashRecoverySystem() );
 	pAddSystem( GetEngine()->GetAnimatorSystem() );
 	pAddSystem( GetEngine()->GetSynthesizerSystem() );
+	pAddSystem( GetEngine()->GetVRSystem() );
 	
 	UpdateStatus();
 }

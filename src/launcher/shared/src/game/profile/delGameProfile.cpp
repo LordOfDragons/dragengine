@@ -106,6 +106,10 @@ void delGameProfile::SetModuleNetwork( const char *moduleName ){
 	pModuleNetwork = moduleName;
 }
 
+void delGameProfile::SetModuleVR( const char *moduleName ){
+	pModuleVR = moduleName;
+}
+
 
 
 void delGameProfile::SetModuleGraphicVersion( const char *moduleVersion ){
@@ -144,6 +148,10 @@ void delGameProfile::SetModuleNetworkVersion( const char *moduleVersion ){
 	pModuleNetworkVersion = moduleVersion;
 }
 
+void delGameProfile::SetModuleVRVersion( const char *moduleVersion ){
+	pModuleVRVersion = moduleVersion;
+}
+
 
 
 void delGameProfile::SetRunArguments( const char *arguments ){
@@ -179,6 +187,7 @@ void delGameProfile::Verify( delLauncher &launcher ){
 	pValid &= VerifyModule( launcher, pModuleAudio, pModuleAudioVersion, deModuleSystem::emtAudio );
 	pValid &= VerifyModule( launcher, pModuleSynthesizer, pModuleSynthesizerVersion, deModuleSystem::emtSynthesizer );
 	pValid &= VerifyModule( launcher, pModuleNetwork, pModuleNetworkVersion, deModuleSystem::emtNetwork );
+	pValid &= VerifyModule( launcher, pModuleVR, pModuleVRVersion, deModuleSystem::emtVR );
 }
 
 bool delGameProfile::VerifyModule( delLauncher &launcher, const char *moduleName,
@@ -227,6 +236,7 @@ void delGameProfile::Activate( delLauncher &launcher, delEngineInstance &engineI
 	engineInstance.ActivateModule( pModuleAudio, pModuleAudioVersion );
 	engineInstance.ActivateModule( pModuleSynthesizer, pModuleSynthesizerVersion );
 	engineInstance.ActivateModule( pModuleNetwork, pModuleNetworkVersion );
+	engineInstance.ActivateModule( pModuleVR, pModuleVRVersion );
 	
 	// set module properties
 	for( i=0; i<moduleCount; i++ ){
@@ -253,6 +263,7 @@ delGameProfile &delGameProfile::operator=( const delGameProfile &profile ){
 	pModuleAudio = profile.pModuleAudio;
 	pModuleSynthesizer = profile.pModuleSynthesizer;
 	pModuleNetwork = profile.pModuleNetwork;
+	pModuleVR = profile.pModuleVR;
 	
 	pModuleGraphicVersion = profile.pModuleGraphicVersion;
 	pModuleInputVersion = profile.pModuleInputVersion;
@@ -263,6 +274,7 @@ delGameProfile &delGameProfile::operator=( const delGameProfile &profile ){
 	pModuleAudioVersion = profile.pModuleAudioVersion;
 	pModuleSynthesizerVersion = profile.pModuleSynthesizerVersion;
 	pModuleNetworkVersion = profile.pModuleNetworkVersion;
+	pModuleVRVersion = profile.pModuleVRVersion;
 	
 	pDisableModuleVersions = profile.pDisableModuleVersions;
 	

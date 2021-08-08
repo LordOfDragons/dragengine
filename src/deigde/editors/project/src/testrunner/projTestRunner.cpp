@@ -60,6 +60,7 @@
 #include <dragengine/systems/deCrashRecoverySystem.h>
 #include <dragengine/systems/deGraphicSystem.h>
 #include <dragengine/systems/deInputSystem.h>
+#include <dragengine/systems/deVRSystem.h>
 #include <dragengine/systems/deModuleSystem.h>
 #include <dragengine/systems/deNetworkSystem.h>
 #include <dragengine/systems/dePhysicsSystem.h>
@@ -846,6 +847,7 @@ void projTestRunner::pSendLaunchParameters(){
 		WriteString16ToPipe( pLauncherProfile->GetModuleAudio() );
 		WriteString16ToPipe( pLauncherProfile->GetModuleSynthesizer() );
 		WriteString16ToPipe( pLauncherProfile->GetModuleNetwork() );
+		WriteString16ToPipe( pLauncherProfile->GetModuleVR() );
 		
 	}else{
 		WriteString16ToPipe( "" ); // default graphic
@@ -857,11 +859,13 @@ void projTestRunner::pSendLaunchParameters(){
 		WriteString16ToPipe( "" ); // default audio
 		WriteString16ToPipe( "" ); // default synthesizer
 		WriteString16ToPipe( "" ); // default network
+		WriteString16ToPipe( "" ); // default vr
 		
 		/*
 		const deEngine &engine = *pWindowMain.GetEngine();
 		WriteString16ToPipe( engine.GetGraphicSystem()->GetActiveLoadableModule()->GetName() );
 		WriteString16ToPipe( engine.GetInputSystem()->GetActiveLoadableModule()->GetName() );
+		WriteString16ToPipe( engine.GetVRSystem()->GetActiveLoadableModule()->GetName() );
 		WriteString16ToPipe( engine.GetPhysicsSystem()->GetActiveLoadableModule()->GetName() );
 		WriteString16ToPipe( engine.GetAnimatorSystem()->GetActiveLoadableModule()->GetName() );
 		WriteString16ToPipe( engine.GetAISystem()->GetActiveLoadableModule()->GetName() );

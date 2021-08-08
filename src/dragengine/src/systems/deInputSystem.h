@@ -77,12 +77,6 @@ public:
 	
 	/** \brief Set if input devices are captured by the active input module if supported. */
 	void SetCaptureInputDevices( bool captureInputDevices );
-	
-	/**
-	 * \brief Notify active module global engine property changed.
-	 * \version 1.6
-	 */
-	void NotifyGlobalPropertyChanged();
 	/*@}*/
 	
 	
