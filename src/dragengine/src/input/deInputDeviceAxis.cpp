@@ -61,10 +61,6 @@ void deInputDeviceAxis::SetName( const char *name ){
 }
 
 void deInputDeviceAxis::SetType( eAxisTypes type ){
-	if( type < eatMouse || type > eatGeneric ){
-		DETHROW( deeInvalidParam );
-	}
-	
 	pType = type;
 }
 

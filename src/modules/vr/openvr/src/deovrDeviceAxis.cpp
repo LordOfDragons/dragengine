@@ -39,9 +39,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-deovrDeviceAxis::deovrDeviceAxis( deVROpenVR &ovr ) :
-pOvr( ovr ),
+deovrDeviceAxis::deovrDeviceAxis( deovrDevice &device, int axisIndex ) :
+pDevice( device ),
 pIndex( -1 ),
+pAxisIndex( axisIndex ),
+pAxisType( vr::k_eControllerAxis_None ),
 pType( deInputDeviceAxis::eatGeneric ),
 pMinimum( -100 ),
 pMaximum( 100 ),
@@ -58,6 +60,10 @@ deovrDeviceAxis::~deovrDeviceAxis(){
 
 void deovrDeviceAxis::SetIndex( int index ){
 	pIndex = index;
+}
+
+void deovrDeviceAxis::SetAxisType( vr::EVRControllerAxisType axisType ){
+	pAxisType = axisType;
 }
 
 void deovrDeviceAxis::SetID( const char *id ){
@@ -82,8 +88,8 @@ void deovrDeviceAxis::SetDisplayImages( const char *name ){
 		return;
 	}
 	
-	deImageManager &imageManager = *pOvr.GetGameEngine()->GetImageManager();
-	deVirtualFileSystem * const vfs = &pOvr.GetVFS();
+	deImageManager &imageManager = *pDevice.GetOvr().GetGameEngine()->GetImageManager();
+	deVirtualFileSystem * const vfs = &pDevice.GetOvr().GetVFS();
 	const char * const basePath = "/share/image/axis";
 	decString filename;
 	
@@ -122,13 +128,13 @@ void deovrDeviceAxis::SetValue( float value ){
 
 
 void deovrDeviceAxis::GetInfo( deInputDeviceAxis &info ) const{
-	int i;
-	
 	info.SetID( pID );
 	info.SetName( pName );
 	info.SetType( pType );
 	
 	info.SetDisplayImage( pDisplayImage );
+	
+	int i;
 	for( i=0; i<pDisplayIcons.GetCount(); i++ ){
 		info.AddDisplayIcon( ( deImage* )pDisplayIcons.GetAt( i ) );
 	}

@@ -22,6 +22,7 @@
 #include <stdlib.h>
 
 #include "deovrDeviceButton.h"
+#include "deovrDevice.h"
 #include "deVROpenVR.h"
 
 #include <dragengine/deEngine.h>
@@ -39,8 +40,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-deovrDeviceButton::deovrDeviceButton( deVROpenVR &ovr ) :
-pOvr( ovr ),
+deovrDeviceButton::deovrDeviceButton( deovrDevice &device, vr::EVRButtonId buttonType ) :
+pDevice( device ),
+pIndex( -1 ),
+pButtonType( buttonType ),
+pButtonMask( vr::ButtonMaskFromId( buttonType ) ),
 pPressed( false ){
 }
 
@@ -51,6 +55,10 @@ deovrDeviceButton::~deovrDeviceButton(){
 
 // Management
 ///////////////
+
+void deovrDeviceButton::SetIndex( int index ){
+	pIndex = index;
+}
 
 void deovrDeviceButton::SetID( const char *id ){
 	pID = id;
@@ -74,8 +82,8 @@ void deovrDeviceButton::SetDisplayImages( const char *name ){
 		return;
 	}
 	
-	deImageManager &imageManager = *pOvr.GetGameEngine()->GetImageManager();
-	deVirtualFileSystem * const vfs = &pOvr.GetVFS();
+	deImageManager &imageManager = *pDevice.GetOvr().GetGameEngine()->GetImageManager();
+	deVirtualFileSystem * const vfs = &pDevice.GetOvr().GetVFS();
 	const char * const basePath = "/share/image/button";
 	decString filename;
 	
@@ -103,12 +111,12 @@ void deovrDeviceButton::SetDisplayText( const char *text ){
 
 
 void deovrDeviceButton::GetInfo( deInputDeviceButton &info ) const{
-	int i;
-	
 	info.SetID( pID );
 	info.SetName( pName );
 	
 	info.SetDisplayImage( pDisplayImage );
+	
+	int i;
 	for( i=0; i<pDisplayIcons.GetCount(); i++ ){
 		info.AddDisplayIcon( ( deImage* )pDisplayIcons.GetAt( i ) );
 	}

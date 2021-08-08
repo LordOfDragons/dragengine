@@ -22,6 +22,10 @@
 #ifndef _DEOVRDEVICEBUTTON_H_
 #define _DEOVRDEVICEBUTTON_H_
 
+#include <stdint.h>
+
+#include <openvr/openvr.h>
+
 #include <dragengine/deObject.h>
 #include <dragengine/common/collection/decObjectOrderedSet.h>
 #include <dragengine/common/string/decString.h>
@@ -29,16 +33,26 @@
 #include <dragengine/resources/image/deImage.h>
 
 class deInputDeviceButton;
-class deVROpenVR;
-
+class deovrDevice;
 
 
 /**
  * VR input device button.
  */
 class deovrDeviceButton : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deovrDeviceButton> Ref;
+	
+	
+	
 private:
-	deVROpenVR &pOvr;
+	deovrDevice &pDevice;
+	
+	int pIndex;
+	
+	const vr::EVRButtonId pButtonType;
+	const uint64_t pButtonMask;
 	
 	decString pID;
 	decString pName;
@@ -56,7 +70,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create device button. */
-	deovrDeviceButton( deVROpenVR &ovr );
+	deovrDeviceButton( deovrDevice &device, vr::EVRButtonId buttonType );
 	
 protected:
 	/** Clean up device button. */
@@ -68,8 +82,24 @@ protected:
 public:
 	/** \name Module Management */
 	/*@{*/
-	/** OpenVR ovr. */
-	inline deVROpenVR &GetOvr() const{ return pOvr; }
+	/** Device. */
+	inline deovrDevice &GetDevice() const{ return pDevice; }
+	
+	/** Index. */
+	inline int GetIndex() const{ return pIndex; }
+	
+	/** Set index. */
+	void SetIndex( int index );
+	
+	
+	
+	/** Button type. */
+	inline vr::EVRButtonId GetButtonType() const{ return pButtonType; }
+	
+	/** Button mask. */
+	inline uint64_t GetButtonMask() const{ return pButtonMask; }
+	
+	
 	
 	/** Identifier. */
 	inline const decString &GetID() const{ return pID; }

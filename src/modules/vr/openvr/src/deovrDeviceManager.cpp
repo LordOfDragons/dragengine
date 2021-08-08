@@ -195,7 +195,7 @@ int deovrDeviceManager::IndexOfWithIndex( vr::TrackedDeviceIndex_t index ) const
 
 void deovrDeviceManager::Add( vr::TrackedDeviceIndex_t index ){
 	if( IndexOfWithIndex( index ) != -1 ){
-		DETHROW( deeInvalidParam );
+		return;
 	}
 	
 	const int realIndex  = pDevices.GetCount();

@@ -194,6 +194,15 @@ public:
 	/** Update device parameters. */
 	void UpdateParameters();
 	/*@}*/
+	
+	
+	
+private:
+	void pUpdateParametersHMD();
+	void pUpdateParametersController();
+	void pAddAxisTrigger( int index, int &nextNum );
+	void pAddAxesJoystick( int index, int &nextNum );
+	void pAddAxesTrackpad( int index, int &nextNum );
 };
 
 #endif

@@ -245,17 +245,17 @@ void deVROpenVR::ProcessEvents(){
 		switch( event.eventType ){
 		case vr::VREvent_TrackedDeviceActivated:
 			LogInfoFormat( "ProcessEvents: Tracked device activated %d", event.trackedDeviceIndex );
-			         pDevices.Add( event.trackedDeviceIndex );
+			pDevices.Add( event.trackedDeviceIndex );
 			break;
 			
 		case vr::VREvent_TrackedDeviceDeactivated:
 			LogInfoFormat( "ProcessEvents: Tracked device deactivated %d", event.trackedDeviceIndex );
-			         pDevices.Remove( event.trackedDeviceIndex );
+			pDevices.Remove( event.trackedDeviceIndex );
 			break;
 			
 		case vr::VREvent_TrackedDeviceUpdated:
 			LogInfoFormat( "ProcessEvents: Tracked device updated %d", event.trackedDeviceIndex );
-			         pDevices.UpdateParameters( event.trackedDeviceIndex );
+// 			pDevices.UpdateParameters( event.trackedDeviceIndex );
 			break;
 			
 		case vr::VREvent_TrackedDeviceUserInteractionStarted:
@@ -287,7 +287,7 @@ void deVROpenVR::ProcessEvents(){
 			break;
 			
 		case vr::VREvent_PropertyChanged:
-			LogInfo( "ProcessEvents: Property changed" );
+// 			LogInfo( "ProcessEvents: Property changed" );
 			break;
 			
 		case vr::VREvent_ButtonPress:

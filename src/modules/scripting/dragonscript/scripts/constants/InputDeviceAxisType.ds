@@ -58,4 +58,10 @@ enum InputDeviceAxisType
 	
 	/** \brief Generic. */
 	generic
+	
+	/**
+	 * \brief Trigger.
+	 * \version 1.6
+	 */
+	trigger
 end

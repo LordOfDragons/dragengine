@@ -84,7 +84,7 @@ public:
 	/** Index of device with index or -1 if absent. */
 	int IndexOfWithIndex( vr::TrackedDeviceIndex_t index ) const;
 	
-	/** Add device and queue event. */
+	/** Add device if absent and queue event. */
 	void Add( vr::TrackedDeviceIndex_t index );
 	
 	/** Remove device if present and queue event. */

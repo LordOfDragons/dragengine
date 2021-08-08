@@ -22,24 +22,34 @@
 #ifndef _DEOVRDEVICEAXIS_H_
 #define _DEOVRDEVICEAXIS_H_
 
+#include <openvr/openvr.h>
+
 #include <dragengine/deObject.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/input/deInputDeviceAxis.h>
 #include <dragengine/resources/image/deImage.h>
 
 class deovrDevice;
-class deVROpenVR;
-
 
 
 /**
  * VR input device axis.
  */
 class deovrDeviceAxis : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deovrDeviceAxis> Ref;
+	
+	
+	
 private:
-	deVROpenVR &pOvr;
+	deovrDevice &pDevice;
 	
 	int pIndex;
+	
+	const int pAxisIndex;
+	vr::EVRControllerAxisType pAxisType;
+	
 	decString pID;
 	decString pName;
 	deInputDeviceAxis::eAxisTypes pType;
@@ -60,7 +70,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create device axis. */
-	deovrDeviceAxis( deVROpenVR &ovr );
+	deovrDeviceAxis( deovrDevice &device, int axisIndex );
 	
 protected:
 	/** Clean up device axis. */
@@ -72,14 +82,27 @@ protected:
 public:
 	/** \name Module Management */
 	/*@{*/
-	/** OpenVR ovr. */
-	inline deVROpenVR &GetOvr() const{ return pOvr; }
+	/** Device. */
+	inline deovrDevice &GetDevice() const{ return pDevice; }
 	
 	/** Index. */
 	inline int GetIndex() const{ return pIndex; }
 	
 	/** Set index. */
 	void SetIndex( int index );
+	
+	
+	
+	/** Axis index. */
+	inline int GetAxisIndex() const{ return pAxisIndex; }
+	
+	/** Axis type. */
+	inline vr::EVRControllerAxisType GetAxisType() const{ return pAxisType; }
+	
+	/** Set axis type. */
+	void SetAxisType( vr::EVRControllerAxisType axisType );
+	
+	
 	
 	/** Identifier. */
 	inline const decString &GetID() const{ return pID; }
@@ -145,7 +168,6 @@ public:
 	
 	
 private:
-	void pUpdateDeadZone();
 };
 
 #endif

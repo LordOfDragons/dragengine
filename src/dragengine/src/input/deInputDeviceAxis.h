@@ -89,7 +89,13 @@ public:
 		eatTouchPad,
 		
 		/** \brief Generic. */
-		eatGeneric
+		eatGeneric,
+		
+		/**
+		 * \brief Trigger.
+		 * \version 1.6
+		 */
+		eatTrigger
 	};
 	
 	
