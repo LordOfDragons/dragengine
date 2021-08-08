@@ -28,8 +28,8 @@ namespace Dragengine.Gui.Events
  */
 interface KeyListener
 	/** \brief Keyboard key has been pressed. */
-	public func void onKeyPress( KeyEvent event )
+	func void onKeyPress( KeyEvent event )
 	
 	/** \brief Keyboard key has been released. */
-	public func void onKeyRelease( KeyEvent event )
+	func void onKeyRelease( KeyEvent event )
 end

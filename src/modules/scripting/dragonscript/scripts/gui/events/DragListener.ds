@@ -28,14 +28,14 @@ namespace Dragengine.Gui.Events
  */
 interface DragListener
 	/** \brief Drag enters widget. */
-	public func void onDragEnter( DragEvent event )
+	func void onDragEnter( DragEvent event )
 	
 	/** \brief Drag leaves widget. */
-	public func void onDragLeave( DragEvent event )
+	func void onDragLeave( DragEvent event )
 	
 	/** \brief Drag over. */
-	public func void onDragOver( DragEvent event )
+	func void onDragOver( DragEvent event )
 	
 	/** \brief Drag drop. */
-	public func void onDragDrop( DragEvent event )
+	func void onDragDrop( DragEvent event )
 end

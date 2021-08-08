@@ -50,4 +50,16 @@ enum InputDeviceType
 	
 	/** \brief Generic device. */
 	generic
+	
+	/** \brief VR Head mounted display. */
+	vrHMD
+	
+	/** \brief VR Controller. */
+	vrController
+	
+	/** \brief VR Tracker. */
+	vrTracker
+	
+	/** \brief VR Base Station. */
+	vrBaseStation
 end

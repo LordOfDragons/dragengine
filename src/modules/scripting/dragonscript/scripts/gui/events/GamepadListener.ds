@@ -28,11 +28,11 @@ namespace Dragengine.Gui.Events
  */
 interface GamepadListener
 	/** \brief Gamepad axis has been moved. */
-	public func void onGamepadAxisMoved( GamepadEvent event )
+	func void onGamepadAxisMoved( GamepadEvent event )
 	
 	/** \brief Gamepad button has been pressed. */
-	public func void onGamepadButtonPressed( GamepadEvent event )
+	func void onGamepadButtonPressed( GamepadEvent event )
 	
 	/** \brief Gamepad button has been released. */
-	public func void onGamepadButtonReleased( GamepadEvent event )
+	func void onGamepadButtonReleased( GamepadEvent event )
 end

@@ -910,8 +910,22 @@ bool deScriptingDragonScript::SendEvent( deInputEvent *event ){
 		return false;
 	}
 	
-	if( event->GetType() == deInputEvent::eeDeviceParamsChanged ){
-		pClsInpSys->InvalidCachedDevices();
+	switch( event->GetType() ){
+	case deInputEvent::eeDeviceAttached:
+	case deInputEvent::eeDeviceDetached:
+	case deInputEvent::eeDeviceParamsChanged:
+		switch( event->GetSource() ){
+		case deInputEvent::esInput:
+			pClsInpSys->InvalidCachedDevices();
+			break;
+			
+		case deInputEvent::esVR:
+			pClsVRSys->InvalidCachedDevices();
+			break;
+		}
+		
+	default:
+		break;
 	}
 	
 	dsRunTime &rt = *pScriptEngine->GetMainRunTime();

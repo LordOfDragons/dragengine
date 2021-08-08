@@ -442,24 +442,12 @@ void deClassVRSystem::pUpdateCachedDevices(){
 	
 	deBaseVRModule &module = *pDS.GetGameEngine()->GetVRSystem()->GetActiveModule();
 	const int count = module.GetDeviceCount();
-	deInputDevice *device = NULL;
 	int i;
 	
 	pCachedDevices.RemoveAll();
 	
-	try{
-		for( i=0; i<count; i++ ){
-			device = module.GetDeviceAt( i );
-			pCachedDevices.Add( device );
-			device->FreeReference();
-			device = NULL;
-		}
-		
-	}catch( ... ){
-		if( device ){
-			device->FreeReference();
-		}
-		throw;
+	for( i=0; i<count; i++ ){
+		pCachedDevices.Add( deInputDevice::Ref::New( module.GetDeviceAt( i ) ) );
 	}
 	
 	pCacheDirty = false;
