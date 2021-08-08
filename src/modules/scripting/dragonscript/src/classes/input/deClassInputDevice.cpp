@@ -53,6 +53,7 @@
 
 struct sInputDeviceNatDat{
 	deInputDevice *device;
+	deInputEvent::eSources source;
 	int index;
 };
 
@@ -70,7 +71,7 @@ deClassInputDevice::nfDestructor::nfDestructor( const sInitData &init ) :
 dsFunction( init.clsInputDevice, DSFUNC_DESTRUCTOR, DSFT_DESTRUCTOR,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
 }
-void deClassInputDevice::nfDestructor::RunFunction( dsRunTime *rt, dsValue *myself ){
+void deClassInputDevice::nfDestructor::RunFunction( dsRunTime*, dsValue *myself ){
 	if( myself->GetRealObject()->GetRefCount() != 1 ){
 		return; // protected against GC cleaning up leaking
 	}
@@ -88,6 +89,17 @@ void deClassInputDevice::nfDestructor::RunFunction( dsRunTime *rt, dsValue *myse
 
 // Management
 ///////////////
+
+// public func InputEventSource getSource()
+deClassInputDevice::nfGetSource::nfGetSource( const sInitData &init ) :
+dsFunction( init.clsInputDevice, "getSource", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsInputEventSource ){
+}
+void deClassInputDevice::nfGetSource::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const sInputDeviceNatDat &nd = *( ( sInputDeviceNatDat* )p_GetNativeData( myself ) );
+	rt->PushValue( ( ( deClassInputDevice* )GetOwnerClass() )->GetClassInputEventSource()
+		->GetVariable( nd.source )->GetStaticValue() );
+}
 
 // public func String getIndex()
 deClassInputDevice::nfGetIndex::nfGetIndex( const sInitData &init ) :
@@ -274,7 +286,7 @@ void deClassInputDevice::nfGetAxisAt::RunFunction( dsRunTime *rt, dsValue *mysel
 	deScriptingDragonScript &ds = ( ( deClassInputDevice* )GetOwnerClass() )->GetDS();
 	
 	const int axisIndex = rt->GetValue( 0 )->GetInt();
-	ds.GetClassInputDeviceAxis()->PushAxis( rt, nd.device, nd.index, axisIndex );
+	ds.GetClassInputDeviceAxis()->PushAxis( rt, nd.device, nd.source, nd.index, axisIndex );
 }
 
 
@@ -300,7 +312,7 @@ void deClassInputDevice::nfGetButtonAt::RunFunction( dsRunTime *rt, dsValue *mys
 	deScriptingDragonScript &ds = ( ( deClassInputDevice* )GetOwnerClass() )->GetDS();
 	
 	const int buttonIndex = rt->GetValue( 0 )->GetInt();
-	ds.GetClassInputDeviceButton()->PushButton( rt, nd.device, nd.index, buttonIndex );
+	ds.GetClassInputDeviceButton()->PushButton( rt, nd.device, nd.source, nd.index, buttonIndex );
 }
 
 
@@ -327,7 +339,7 @@ void deClassInputDevice::nfGetFeedbackAt::RunFunction( dsRunTime *rt, dsValue *m
 	deScriptingDragonScript &ds = ( ( deClassInputDevice* )GetOwnerClass() )->GetDS();
 	
 	const int feedbackIndex = rt->GetValue( 0 )->GetInt();
-	ds.GetClassInputDeviceFeedback()->PushFeedback( rt, nd.device, nd.index, feedbackIndex );
+	ds.GetClassInputDeviceFeedback()->PushFeedback( rt, nd.device, nd.source, nd.index, feedbackIndex );
 }
 
 
@@ -442,6 +454,7 @@ deClassInputDevice::~deClassInputDevice(){
 
 void deClassInputDevice::CreateClassMembers( dsEngine *engine ){
 	pClsInputDeviceType = engine->GetClass( "Dragengine.InputDeviceType" );
+	pClsInputEventSource = engine->GetClass( "Dragengine.InputEventSource" );
 	
 	sInitData init;
 	init.clsInputDevice = this;
@@ -457,9 +470,11 @@ void deClassInputDevice::CreateClassMembers( dsEngine *engine ){
 	init.clsIDButton = pDS.GetClassInputDeviceButton();
 	init.clsIDFeedback = pDS.GetClassInputDeviceFeedback();
 	init.clsInputDeviceType = pClsInputDeviceType;
+	init.clsInputEventSource = pClsInputEventSource;
 	
 	AddFunction( new nfDestructor( init ) );
 	
+	AddFunction( new nfGetSource( init ) );
 	AddFunction( new nfGetIndex( init ) );
 	AddFunction( new nfGetID( init ) );
 	AddFunction( new nfGetName( init ) );
@@ -501,13 +516,14 @@ deInputDevice *deClassInputDevice::GetInputDevice( dsRealObject *myself ) const{
 	return ( ( sInputDeviceNatDat* )p_GetNativeData( myself->GetBuffer() ) )->device;
 }
 
-void deClassInputDevice::PushInputDevice( dsRunTime *rt, deInputDevice *device, int index ){
+void deClassInputDevice::PushInputDevice( dsRunTime *rt, deInputDevice *device,
+deInputEvent::eSources source, int index ){
 	if( ! rt ){
 		DSTHROW( dueInvalidParam );
 	}
 	
 	if( ! device ){
-		rt->PushObject( NULL, this );
+		rt->PushObject( nullptr, this );
 		return;
 	}
 	
@@ -515,6 +531,7 @@ void deClassInputDevice::PushInputDevice( dsRunTime *rt, deInputDevice *device, 
 	sInputDeviceNatDat &nd = *( ( sInputDeviceNatDat* )p_GetNativeData(
 		rt->GetValue( 0 )->GetRealObject()->GetBuffer() ) );
 	nd.device = device;
+	nd.source = source;
 	nd.index = index;
 	device->AddReference();
 }

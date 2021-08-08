@@ -212,6 +212,15 @@ public:
 		embcMiddle
 	};
 	
+	/**
+	 * \brief Source of the input event.
+	 * \version 1.6
+	 */
+	enum eSources{
+		esInput, //<! Originates from Input System
+		esVR//<! Originates from VR System
+	};
+	
 	
 	
 private:
@@ -225,6 +234,7 @@ private:
 	int pY;
 	float pValue;
 	timeval pTime;
+	eSources pSource;
 	
 	
 	
@@ -334,6 +344,18 @@ public:
 	
 	/** \brief Set time the event occurred. */
 	void SetTime( const timeval &eventTime );
+	
+	/**
+	 * \brief Source of the input event.
+	 * \version 1.6
+	 */
+	inline eSources GetSource() const{ return pSource; }
+	
+	/**
+	 * \brief Set source of the input event.
+	 * \version 1.6
+	 */
+	void SetSource( eSources source );
 	
 	/** \brief Copies properties of another event to this event. */
 	void SetFrom( const deInputEvent &event );

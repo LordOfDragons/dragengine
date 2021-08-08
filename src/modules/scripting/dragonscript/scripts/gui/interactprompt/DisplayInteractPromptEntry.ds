@@ -348,42 +348,44 @@ class DisplayInteractPromptEntry extends Panel
 			var int index
 			
 			this.pBindingManager.forEachButtonBinding( block Binding each
-				if each.getCommand() == this.pCommand and each.getDeviceIndex() != -1 and each.getSourceIndex() != -1
-					index = refIndex.get() cast int
-					refIndex.set( index + 1 )
-					
-					if index < widgetCount
-						widget = this.pPanelBindings.getWidget( index )
-						widget.setVisible( true )
+				if each.getCommand() == this.pCommand
+					var InputDeviceButton button = each.getInputDeviceButton()
+					if button != null
+						index = refIndex.get() cast int
+						refIndex.set( index + 1 )
 						
-					else
-						widget = this.createBindingWidget()
-						this.pPanelBindings.addWidget( widget )
+						if index < widgetCount
+							widget = this.pPanelBindings.getWidget( index )
+							widget.setVisible( true )
+							
+						else
+							widget = this.createBindingWidget()
+							this.pPanelBindings.addWidget( widget )
+						end
+						
+						this.updateBindingWidget( widget, button.getInputDevice(), button )
 					end
-					
-					var InputDevice device = this.pBindingManager.getDeviceAt( each.getDeviceIndex() )
-					var InputDeviceButton button = device.getButtonAt( each.getSourceIndex() )
-					this.updateBindingWidget( widget, device, button )
 				end
 			end )
 			
 			this.pBindingManager.forEachAxisBinding( block Binding each
-				if each.getCommand() == this.pCommand and each.getDeviceIndex() != -1 and each.getSourceIndex() != -1
-					index = refIndex.get() cast int
-					refIndex.set( index + 1 )
-					
-					if index < widgetCount
-						widget = this.pPanelBindings.getWidget( index )
-						widget.setVisible( true )
+				if each.getCommand() == this.pCommand
+					var InputDeviceAxis axis = each.getInputDeviceAxis()
+					if axis != null
+						index = refIndex.get() cast int
+						refIndex.set( index + 1 )
 						
-					else
-						widget = this.createBindingWidget()
-						this.pPanelBindings.addWidget( widget )
+						if index < widgetCount
+							widget = this.pPanelBindings.getWidget( index )
+							widget.setVisible( true )
+							
+						else
+							widget = this.createBindingWidget()
+							this.pPanelBindings.addWidget( widget )
+						end
+						
+						this.updateBindingWidget( widget, axis.getInputDevice(), axis )
 					end
-					
-					var InputDevice device = this.pBindingManager.getDeviceAt( each.getDeviceIndex() )
-					var InputDeviceAxis axis = device.getAxisAt( each.getSourceIndex() )
-					this.updateBindingWidget( widget, device, axis )
 				end
 			end )
 			

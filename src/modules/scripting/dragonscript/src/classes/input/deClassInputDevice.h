@@ -23,6 +23,7 @@
 #define _DECLASSINPUTDEVICE_H_
 
 #include <libdscript/libdscript.h>
+#include <dragengine/input/deInputEvent.h>
 
 class deScriptingDragonScript;
 
@@ -37,6 +38,7 @@ class deClassInputDevice : public dsClass{
 private:
 	deScriptingDragonScript &pDS;
 	dsClass *pClsInputDeviceType;
+	dsClass *pClsInputEventSource;
 	
 	
 	
@@ -64,9 +66,11 @@ public:
 	deInputDevice *GetInputDevice( dsRealObject *myself ) const;
 	
 	/** \brief Push input device which can be \em NULL. */
-	void PushInputDevice( dsRunTime *rt, deInputDevice *device, int index );
+	void PushInputDevice( dsRunTime *rt, deInputDevice *device,
+		deInputEvent::eSources source, int index );
 	
 	inline dsClass *GetClassInputDeviceType() const{ return pClsInputDeviceType; }
+	inline dsClass *GetClassInputEventSource() const{ return pClsInputEventSource; }
 	/*@}*/
 	
 	
@@ -88,6 +92,7 @@ private:
 		dsClass *clsIDButton;
 		dsClass *clsIDFeedback;
 		dsClass *clsInputDeviceType;
+		dsClass *clsInputEventSource;
 	};
 #define DEF_NATFUNC(name) \
 	class name : public dsFunction{ \
@@ -97,6 +102,7 @@ private:
 	}
 	DEF_NATFUNC( nfDestructor );
 	
+	DEF_NATFUNC( nfGetSource );
 	DEF_NATFUNC( nfGetIndex );
 	DEF_NATFUNC( nfGetID );
 	DEF_NATFUNC( nfGetName );

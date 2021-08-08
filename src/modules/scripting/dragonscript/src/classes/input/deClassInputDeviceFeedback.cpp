@@ -35,7 +35,9 @@
 #include <dragengine/input/deInputDeviceFeedback.h>
 #include <dragengine/resources/image/deImage.h>
 #include <dragengine/systems/deInputSystem.h>
+#include <dragengine/systems/deVRSystem.h>
 #include <dragengine/systems/modules/input/deBaseInputModule.h>
+#include <dragengine/systems/modules/vr/deBaseVRModule.h>
 
 #include <libdscript/exceptions.h>
 #include <libdscript/packages/default/dsClassEnumeration.h>
@@ -47,6 +49,7 @@
 
 struct sIDFeedbackNatDat{
 	deInputDevice *device;
+	deInputEvent::eSources deviceSource;
 	int deviceIndex;
 	int feedbackIndex;
 };
@@ -61,7 +64,7 @@ deClassInputDeviceFeedback::nfDestructor::nfDestructor( const sInitData &init ) 
 dsFunction( init.clsIDFeedback, DSFUNC_DESTRUCTOR, DSFT_DESTRUCTOR,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
 }
-void deClassInputDeviceFeedback::nfDestructor::RunFunction( dsRunTime *rt, dsValue *myself ){
+void deClassInputDeviceFeedback::nfDestructor::RunFunction( dsRunTime*, dsValue *myself ){
 	if( myself->GetRealObject()->GetRefCount() != 1 ){
 		return; // protected against GC cleaning up leaking
 	}
@@ -88,7 +91,7 @@ void deClassInputDeviceFeedback::nfGetInputDevice::RunFunction( dsRunTime *rt, d
 	const sIDFeedbackNatDat &nd = *( ( const sIDFeedbackNatDat* )p_GetNativeData( myself ) );
 	deScriptingDragonScript &ds = ( ( deClassInputDeviceFeedback* )GetOwnerClass() )->GetDS();
 	
-	ds.GetClassInputDevice()->PushInputDevice( rt, nd.device, nd.deviceIndex );
+	ds.GetClassInputDevice()->PushInputDevice( rt, nd.device, nd.deviceSource, nd.deviceIndex );
 }
 
 // public func int getFeedbackIndex()
@@ -255,14 +258,34 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat ){
 void deClassInputDeviceFeedback::nfGetValue::RunFunction( dsRunTime *rt, dsValue *myself ){
 	const sIDFeedbackNatDat &nd = *( ( const sIDFeedbackNatDat* )p_GetNativeData( myself ) );
 	deScriptingDragonScript &ds = ( ( deClassInputDeviceFeedback* )GetOwnerClass() )->GetDS();
-	deBaseInputModule &module = *ds.GetGameEngine()->GetInputSystem()->GetActiveModule();
 	
-	const int deviceIndex = module.IndexOfDeviceWithID( nd.device->GetID() );
-	if( deviceIndex != -1 ){
-		rt->PushFloat( module.GetFeedbackValue( deviceIndex, nd.feedbackIndex ) );
+	switch( nd.deviceSource ){
+	case deInputEvent::esInput:{
+		deBaseInputModule &module = *ds.GetGameEngine()->GetInputSystem()->GetActiveModule();
 		
-	}else{
-		rt->PushFloat( 0.0f );
+		const int deviceIndex = module.IndexOfDeviceWithID( nd.device->GetID() );
+		if( deviceIndex != -1 ){
+			rt->PushFloat( module.GetFeedbackValue( deviceIndex, nd.feedbackIndex ) );
+			
+		}else{
+			rt->PushFloat( 0.0f );
+		}
+		}break;
+		
+	case deInputEvent::esVR:{
+		deBaseVRModule &module = *ds.GetGameEngine()->GetVRSystem()->GetActiveModule();
+		
+		const int deviceIndex = module.IndexOfDeviceWithID( nd.device->GetID() );
+		if( deviceIndex != -1 ){
+			rt->PushFloat( module.GetFeedbackValue( deviceIndex, nd.feedbackIndex ) );
+			
+		}else{
+			rt->PushFloat( 0.0f );
+		}
+		}break;
+		
+	default:
+		DETHROW_INFO( deeInvalidParam, "input source" );
 	}
 }
 
@@ -275,11 +298,28 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
 void deClassInputDeviceFeedback::nfSetValue::RunFunction( dsRunTime *rt, dsValue *myself ){
 	const sIDFeedbackNatDat &nd = *( ( const sIDFeedbackNatDat* )p_GetNativeData( myself ) );
 	deScriptingDragonScript &ds = ( ( deClassInputDeviceFeedback* )GetOwnerClass() )->GetDS();
-	deBaseInputModule &module = *ds.GetGameEngine()->GetInputSystem()->GetActiveModule();
 	
-	const int deviceIndex = module.IndexOfDeviceWithID( nd.device->GetID() );
-	if( deviceIndex != -1 ){
-		module.SetFeedbackValue( deviceIndex, nd.feedbackIndex, rt->GetValue( 0 )->GetFloat() );
+	switch( nd.deviceSource ){
+	case deInputEvent::esInput:{
+		deBaseInputModule &module = *ds.GetGameEngine()->GetInputSystem()->GetActiveModule();
+		
+		const int deviceIndex = module.IndexOfDeviceWithID( nd.device->GetID() );
+		if( deviceIndex != -1 ){
+			module.SetFeedbackValue( deviceIndex, nd.feedbackIndex, rt->GetValue( 0 )->GetFloat() );
+		}
+		}break;
+		
+	case deInputEvent::esVR:{
+		deBaseVRModule &module = *ds.GetGameEngine()->GetVRSystem()->GetActiveModule();
+		
+		const int deviceIndex = module.IndexOfDeviceWithID( nd.device->GetID() );
+		if( deviceIndex != -1 ){
+			module.SetFeedbackValue( deviceIndex, nd.feedbackIndex, rt->GetValue( 0 )->GetFloat() );
+		}
+		}break;
+		
+	default:
+		DETHROW_INFO( deeInvalidParam, "input source" );
 	}
 }
 
@@ -307,7 +347,7 @@ void deClassInputDeviceFeedback::nfEquals::RunFunction( dsRunTime *rt, dsValue *
 
 
 // Class deClassInputDeviceFeedback
-///////////////////////////////
+/////////////////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
@@ -369,7 +409,7 @@ void deClassInputDeviceFeedback::CreateClassMembers( dsEngine *engine ){
 }
 
 void deClassInputDeviceFeedback::PushFeedback( dsRunTime *rt, deInputDevice *device,
-int deviceIndex, int index ){
+deInputEvent::eSources deviceSource, int deviceIndex, int index ){
 	if( ! rt || ! device || index < 0 || index >= device->GetFeedbackCount() ){
 		DSTHROW( dueInvalidParam );
 	}
@@ -378,6 +418,7 @@ int deviceIndex, int index ){
 	sIDFeedbackNatDat &nd = *( ( sIDFeedbackNatDat* )p_GetNativeData(
 		rt->GetValue( 0 )->GetRealObject()->GetBuffer() ) );
 	nd.device = device;
+	nd.deviceSource = deviceSource;
 	nd.deviceIndex = deviceIndex;
 	device->AddReference();
 	nd.feedbackIndex = index;

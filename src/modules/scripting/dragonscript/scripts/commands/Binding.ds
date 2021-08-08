@@ -42,6 +42,9 @@ class Binding
 	/** \brief Inverse axis. */
 	private var bool pInverseAxis
 	
+	/** \brief System. */
+	private var InputEventSource pSystem
+	
 	/** \brief Device index or -1 if not set. */
 	private var int pDeviceIndex
 	
@@ -63,6 +66,7 @@ class Binding
 		this.pSourceID = sourceID
 		this.pCommand = command
 		this.pInverseAxis = inverseAxis
+		this.pSystem = null
 		this.pDeviceIndex = -1
 		this.pSourceIndex = -1
 		this.pSimulateAxisPressed = false
@@ -74,6 +78,7 @@ class Binding
 		this.pSourceID = binding.pSourceID
 		this.pCommand = binding.pCommand
 		this.pInverseAxis = binding.pInverseAxis
+		this.pSystem = binding.pSystem
 		this.pDeviceIndex = binding.pDeviceIndex
 		this.pSourceIndex = binding.pSourceIndex
 		this.pSimulateAxisPressed = false
@@ -111,6 +116,22 @@ class Binding
 	
 	
 	
+	/**
+	 * \brief System or null if not set.
+	 * \version 1.6
+	 */
+	public func InputEventSource getSystem()
+		return this.pSystem
+	end
+	
+	/**
+	 * \brief Set system or null if not set.
+	 * \version 1.6
+	 */
+	public func void setSystem( InputEventSource system )
+		this.pSystem = system
+	end
+	
 	/** \brief Device index or -1 if not set. */
 	public func int getDeviceIndex()
 		return this.pDeviceIndex
@@ -131,6 +152,69 @@ class Binding
 		this.pSourceIndex = index
 	end
 	
+	
+	
+	/**
+	 * \brief Device or null if not set.
+	 * \version 1.6
+	 */
+	public func InputDevice getInputDevice()
+		if this.pDeviceIndex == -1
+			return null
+		end
+		
+		select this.pSystem
+		case InputEventSource.input
+			return InputSystem.getDeviceAt( this.pDeviceIndex )
+			
+		case InputEventSource.vr
+			return VRSystem.getDeviceAt( this.pDeviceIndex )
+		end
+		
+		return null
+	end
+	
+	/**
+	 * \brief Device axis or null if not set.
+	 * \version 1.6
+	 */
+	public func InputDeviceAxis getInputDeviceAxis()
+		if this.pSourceIndex != -1
+			var InputDevice device = this.getInputDevice()
+			if device != null
+				return device.getAxisAt( this.pSourceIndex )
+			end
+		end
+		return null
+	end
+	
+	/**
+	 * \brief Device button or null if not set.
+	 * \version 1.6
+	 */
+	public func InputDeviceButton getInputDeviceButton()
+		if this.pSourceIndex != -1
+			var InputDevice device = this.getInputDevice()
+			if device != null
+				return device.getButtonAt( this.pSourceIndex )
+			end
+		end
+		return null
+	end
+	
+	/**
+	 * \brief Device feedback or null if not set.
+	 * \version 1.6
+	 */
+	public func InputDeviceFeedback getInputDeviceFeedback()
+		if this.pSourceIndex != -1
+			var InputDevice device = this.getInputDevice()
+			if device != null
+				return device.getFeedbackAt( this.pSourceIndex )
+			end
+		end
+		return null
+	end
 	
 	
 	

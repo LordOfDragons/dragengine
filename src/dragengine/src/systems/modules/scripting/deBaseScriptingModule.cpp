@@ -44,7 +44,3 @@ deBaseScriptingModule::~deBaseScriptingModule(){
 void deBaseScriptingModule::UserRequestQuit(){
 	GetGameEngine()->Quit();
 }
-
-bool deBaseScriptingModule::SendVREvent( deInputEvent* ){
-	return false;
-}

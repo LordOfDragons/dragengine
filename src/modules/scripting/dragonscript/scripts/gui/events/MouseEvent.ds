@@ -47,6 +47,12 @@ class MouseEvent extends ModifiableEvent
 	
 	
 	
+	/**
+	 * \brief Source system.
+	 * \version 1.6
+	 */
+	private var InputEventSource pSystem
+	
 	/** \brief Input device index. */
 	private var int pDevice
 	
@@ -65,19 +71,43 @@ class MouseEvent extends ModifiableEvent
 	
 	
 	
-	/** \brief Create mouse event. */
+	/**
+	 * \brief Create mouse event.
+	 * \deprecated Use new(Object,int,int,int,InputEventSource,int)
+	 */
 	public func new( Object source, int id, int button, int modifiers, int device ) \
-	super( source, id, modifiers )
+	this( source, id, button, modifiers, InputEventSource.input, device )
+	end
+	
+	/**
+	 * \brief Create mouse event.
+	 * \deprecated Use new(Object,int,int,int,Point,InputEventSource,int)
+	 */
+	public func new( Object source, int id, int button, int modifiers, Point position, int device ) \
+	this( source, id, button, modifiers, position, InputEventSource.input, device )
+	end
+	
+	/**
+	 * \brief Create mouse event.
+	 * \version 1.6
+	 */
+	public func new( Object source, int id, int button, int modifiers, \
+	InputEventSource system, int device ) super( source, id, modifiers )
 		this.pButton = button
 		this.pPosition = Point.new()
+		this.pSystem = system
 		this.pDevice = device
 	end
 	
-	/** \brief Create mouse event. */
-	public func new( Object source, int id, int button, int modifiers, Point position, int device ) \
-	super( source, id, modifiers )
+	/**
+	 * \brief Create mouse event.
+	 * \version 1.6
+	 */
+	public func new( Object source, int id, int button, int modifiers, Point position, \
+	InputEventSource system, int device ) super( source, id, modifiers )
 		this.pButton = button
 		this.pPosition = position
+		this.pSystem = system
 		this.pDevice = device
 	end
 	
@@ -93,6 +123,14 @@ class MouseEvent extends ModifiableEvent
 		return this.pPosition
 	end
 	
+	/**
+	 * \brief Source system.
+	 * \version 1.6
+	 */
+	public func InputEventSource getSystem()
+		return this.pSystem
+	end
+	
 	/** \brief Device index. */
 	public func int getDevice()
 		return this.pDevice
@@ -103,6 +141,6 @@ class MouseEvent extends ModifiableEvent
 	/** \brief Create copy of a mouse event with different position. */
 	public func MouseEvent relocate( Point position )
 		return new( this.getSource(), this.getIdentifier(), this.pButton, \
-			this.getModifiers(), position, this.pDevice )
+			this.getModifiers(), position, this.pSystem, this.pDevice )
 	end
 end

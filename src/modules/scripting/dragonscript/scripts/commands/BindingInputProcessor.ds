@@ -128,7 +128,7 @@ class BindingInputProcessor extends DefaultInputProcessor
 			InputEventType.mousePress, \
 			InputEventType.buttonPress
 				var Binding binding = this.pBindingManager.findButtonBinding( \
-					event.getDevice(), event.getCode() )
+					event.getSource(), event.getDevice(), event.getCode() )
 				if binding != null
 					this.activate( binding )
 				end
@@ -137,7 +137,7 @@ class BindingInputProcessor extends DefaultInputProcessor
 			InputEventType.mouseRelease, \
 			InputEventType.buttonRelease
 				var Binding binding = this.pBindingManager.findButtonBinding( \
-					event.getDevice(), event.getCode() )
+					event.getSource(), event.getDevice(), event.getCode() )
 				if binding != null
 					this.deactivate( binding )
 				end
@@ -145,7 +145,7 @@ class BindingInputProcessor extends DefaultInputProcessor
 		case InputEventType.mouseMove
 			// first axis is X axis or horizontal axis
 			var Binding binding = this.pBindingManager.findAxisBinding( \
-				event.getDevice(), event.getCode() )
+				event.getSource(), event.getDevice(), event.getCode() )
 			if binding != null
 				if binding.getInverseAxis()
 					this.analogRelative( binding, this.pScaleMouseAxis * -event.getX() )
@@ -157,7 +157,7 @@ class BindingInputProcessor extends DefaultInputProcessor
 			
 			// second axis is Y axis or vertical axis
 			binding = this.pBindingManager.findAxisBinding( \
-				event.getDevice(), event.getCode() + 1 )
+				event.getSource(), event.getDevice(), event.getCode() + 1 )
 			if binding != null
 				if binding.getInverseAxis()
 					this.analogRelative( binding, this.pScaleMouseAxis * -event.getY() )
@@ -169,9 +169,9 @@ class BindingInputProcessor extends DefaultInputProcessor
 			
 		case InputEventType.mouseWheel
 			var Binding bindingPositive = this.pBindingManager.findAxisBinding( \
-				event.getDevice(), event.getCode(), false )
+				event.getSource(), event.getDevice(), event.getCode(), false )
 			var Binding bindingNegative = this.pBindingManager.findAxisBinding( \
-				event.getDevice(), event.getCode(), true )
+				event.getSource(), event.getDevice(), event.getCode(), true )
 			if bindingPositive == null and bindingNegative == null
 				break
 			end
@@ -210,9 +210,9 @@ class BindingInputProcessor extends DefaultInputProcessor
 			// exists with the right value range. if this is not the case try the axis
 			// without value range.
 			var Binding bindingPositive = this.pBindingManager.findAxisBinding( \
-				event.getDevice(), event.getCode(), false )
+				event.getSource(), event.getDevice(), event.getCode(), false )
 			var Binding bindingNegative = this.pBindingManager.findAxisBinding( \
-				event.getDevice(), event.getCode(), true )
+				event.getSource(), event.getDevice(), event.getCode(), true )
 			if bindingPositive == null and bindingNegative == null
 				break
 			end

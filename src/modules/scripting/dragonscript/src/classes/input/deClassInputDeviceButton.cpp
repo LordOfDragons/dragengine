@@ -36,7 +36,9 @@
 #include <dragengine/input/deInputDeviceButton.h>
 #include <dragengine/resources/image/deImage.h>
 #include <dragengine/systems/deInputSystem.h>
+#include <dragengine/systems/deVRSystem.h>
 #include <dragengine/systems/modules/input/deBaseInputModule.h>
+#include <dragengine/systems/modules/vr/deBaseVRModule.h>
 
 
 
@@ -45,6 +47,7 @@
 
 struct sIDButtonNatDat{
 	deInputDevice *device;
+	deInputEvent::eSources deviceSource;
 	int deviceIndex;
 	int buttonIndex;
 };
@@ -59,7 +62,7 @@ deClassInputDeviceButton::nfDestructor::nfDestructor( const sInitData &init ) :
 dsFunction( init.clsIDButton, DSFUNC_DESTRUCTOR, DSFT_DESTRUCTOR,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
 }
-void deClassInputDeviceButton::nfDestructor::RunFunction( dsRunTime *rt, dsValue *myself ){
+void deClassInputDeviceButton::nfDestructor::RunFunction( dsRunTime*, dsValue *myself ){
 	if( myself->GetRealObject()->GetRefCount() != 1 ){
 		return; // protected against GC cleaning up leaking
 	}
@@ -86,7 +89,7 @@ void deClassInputDeviceButton::nfGetInputDevice::RunFunction( dsRunTime *rt, dsV
 	const sIDButtonNatDat &nd = *( ( const sIDButtonNatDat* )p_GetNativeData( myself ) );
 	deScriptingDragonScript &ds = ( ( deClassInputDeviceButton* )GetOwnerClass() )->GetDS();
 	
-	ds.GetClassInputDevice()->PushInputDevice( rt, nd.device, nd.deviceIndex );
+	ds.GetClassInputDevice()->PushInputDevice( rt, nd.device, nd.deviceSource, nd.deviceIndex );
 }
 
 // public func int getButtonIndex()
@@ -240,14 +243,22 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsBool ){
 void deClassInputDeviceButton::nfIsPressed::RunFunction( dsRunTime *rt, dsValue *myself ){
 	const sIDButtonNatDat &nd = *( ( const sIDButtonNatDat* )p_GetNativeData( myself ) );
 	deScriptingDragonScript &ds = ( ( deClassInputDeviceButton* )GetOwnerClass() )->GetDS();
-	deBaseInputModule &module = *ds.GetGameEngine()->GetInputSystem()->GetActiveModule();
 	
-	const int deviceIndex = module.IndexOfDeviceWithID( nd.device->GetID() );
-	if( deviceIndex != -1 ){
-		rt->PushBool( module.GetButtonPressed( deviceIndex, nd.buttonIndex ) );
+	switch( nd.deviceSource ){
+	case deInputEvent::esInput:{
+		deBaseInputModule &module = *ds.GetGameEngine()->GetInputSystem()->GetActiveModule();
+		const int deviceIndex = module.IndexOfDeviceWithID( nd.device->GetID() );
+		rt->PushBool( deviceIndex != -1 && module.GetButtonPressed( deviceIndex, nd.buttonIndex ) );
+		}break;
 		
-	}else{
-		rt->PushBool( false );
+	case deInputEvent::esVR:{
+		deBaseVRModule &module = *ds.GetGameEngine()->GetVRSystem()->GetActiveModule();
+		const int deviceIndex = module.IndexOfDeviceWithID( nd.device->GetID() );
+		rt->PushBool( deviceIndex != -1 && module.GetButtonPressed( deviceIndex, nd.buttonIndex ) );
+		}break;
+		
+	default:
+		DETHROW_INFO( deeInvalidParam, "input source" );
 	}
 }
 
@@ -334,7 +345,7 @@ void deClassInputDeviceButton::CreateClassMembers( dsEngine *engine ){
 }
 
 void deClassInputDeviceButton::PushButton( dsRunTime *rt, deInputDevice *device,
-int deviceIndex, int index ){
+deInputEvent::eSources deviceSource, int deviceIndex, int index ){
 	if( ! rt || ! device || index < 0 || index >= device->GetButtonCount() ){
 		DSTHROW( dueInvalidParam );
 	}
@@ -343,6 +354,7 @@ int deviceIndex, int index ){
 	sIDButtonNatDat &nd = *( ( sIDButtonNatDat* )p_GetNativeData(
 		rt->GetValue( 0 )->GetRealObject()->GetBuffer() ) );
 	nd.device = device;
+	nd.deviceSource = deviceSource;
 	nd.deviceIndex = deviceIndex;
 	device->AddReference();
 	nd.buttonIndex = index;

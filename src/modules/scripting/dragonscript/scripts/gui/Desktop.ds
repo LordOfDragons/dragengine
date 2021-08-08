@@ -188,9 +188,8 @@ class Desktop extends Container
 			// which in turn overwrites pHoverWidget while the next call is running. this results in
 			// pHoverWidget different than widget which is wrong
 			this.runWhileBlockingLayout( block
-				leaveWidget.sendEvent( MouseEvent.new( leaveWidget, \
-					MouseEvent.idMouseLeave, event.getButton(), \
-					event.getModifiers(), event.getDevice() ) )
+				leaveWidget.sendEvent( MouseEvent.new( leaveWidget, MouseEvent.idMouseLeave, \
+					event.getButton(), event.getModifiers(), event.getSystem(), event.getDevice() ) )
 			end )
 		end
 		
@@ -200,7 +199,7 @@ class Desktop extends Container
 		else
 			this.setActiveMousePointer( widget.getFirstMousePointer() )
 			widget.sendEvent( MouseEvent.new( widget, MouseEvent.idMouseEnter, \
-				event.getButton(), event.getModifiers(), event.getDevice() ) )
+				event.getButton(), event.getModifiers(), event.getSystem(), event.getDevice() ) )
 		end
 	end
 	
@@ -715,7 +714,7 @@ class Desktop extends Container
 			eventWidget = this.pFocusWidget
 			eventToSend = KeyEvent.new( eventWidget, ident, keyEvent.getKeyCode(), \
 				keyEvent.getModifiers(), keyEvent.getKeyChar(), \
-				keyEvent.getDevice() , keyEvent.getButtonCode() )
+				keyEvent.getSystem(), keyEvent.getDevice() , keyEvent.getButtonCode() )
 			// send event if an appropriate widget has been found
 			if eventWidget != null
 				eventWidget.sendEvent( eventToSend )
@@ -724,8 +723,8 @@ class Desktop extends Container
 		elif GamepadEvent.isGamepadEvent( ident )
 			if this.pFocusWidget != null
 				var GamepadEvent gevent = event cast GamepadEvent
-				eventToSend = GamepadEvent.new( this.pFocusWidget, ident, gevent.getDevice(), \
-					gevent.getCode(), gevent.getModifiers(), gevent.getAxisValue() )
+				eventToSend = GamepadEvent.new( this.pFocusWidget, ident, gevent.getSystem(), \
+					gevent.getDevice(), gevent.getCode(), gevent.getModifiers(), gevent.getAxisValue() )
 				this.pFocusWidget.sendEvent( eventToSend )
 			end
 			
@@ -740,7 +739,7 @@ class Desktop extends Container
 			if eventWidget != null
 				var MouseEvent mevent = event cast MouseEvent
 				eventToSend = MouseEvent.new( eventWidget, ident, mevent.getButton(), \
-					mevent.getModifiers(), mevent.getPosition(), mevent.getDevice() )
+					mevent.getModifiers(), mevent.getPosition(), mevent.getSystem(), mevent.getDevice() )
 				eventWidget.sendEvent( eventToSend )
 			end
 			
@@ -819,7 +818,7 @@ class Desktop extends Container
 				this.pCaptureWidget.sendEvent( MouseEvent.new( this.pCaptureWidget, \
 					event.getIdentifier(), event.getButton(), event.getModifiers(), \
 					this.pMouseLocation - this.pCaptureWidget.getScreenPosition(), \
-					event.getDevice() ) )
+					event.getSystem(), event.getDevice() ) )
 			end
 			return
 		end
@@ -1058,7 +1057,7 @@ class Desktop extends Container
 				widget.sendEvent( MouseEvent.new( widget, event.getIdentifier(), \
 					event.getButton(), event.getModifiers(), \
 					this.pMouseLocation - widget.getScreenPosition(), \
-					event.getDevice() ) )
+					event.getSystem(), event.getDevice() ) )
 				return
 			end
 			
@@ -1148,7 +1147,7 @@ class Desktop extends Container
 				this.pCaptureWidget.sendEvent( MouseEvent.new( this.pCaptureWidget, \
 					event.getIdentifier(), event.getButton(), event.getModifiers(), \
 					this.pMouseLocation - this.pCaptureWidget.getScreenPosition(), \
-					event.getDevice() ) )
+					event.getSystem(), event.getDevice() ) )
 			end
 			
 		else
@@ -1162,7 +1161,7 @@ class Desktop extends Container
 							widget.sendEvent( MouseEvent.new( widget, event.getIdentifier(), \
 								event.getButton(), event.getModifiers(), \
 								this.pMouseLocation - widget.getScreenPosition(), \
-								event.getDevice() ) )
+								event.getSystem(), event.getDevice() ) )
 						end
 						
 						break
@@ -1270,7 +1269,7 @@ class Desktop extends Container
 				this.pCaptureWidget.sendEvent( MouseEvent.new( this.pCaptureWidget, \
 					event.getIdentifier(), event.getButton(), event.getModifiers(), \
 					this.pMouseLocation - this.pCaptureWidget.getScreenPosition(), \
-					event.getDevice() ) )
+					event.getSystem(), event.getDevice() ) )
 			end
 			
 		else
@@ -1334,7 +1333,7 @@ class Desktop extends Container
 				hoverWidget.sendEvent( MouseEvent.new( hoverWidget, event.getIdentifier(), \
 					event.getButton(), event.getModifiers(), \
 					this.pMouseLocation - hoverWidget.getScreenPosition(), \
-					event.getDevice() ) )
+					event.getSystem(), event.getDevice() ) )
 			end
 		end
 	end

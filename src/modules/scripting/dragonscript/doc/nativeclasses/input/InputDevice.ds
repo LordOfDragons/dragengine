@@ -41,6 +41,16 @@ class InputDevice
 	/** \name Management */
 	/*@{*/
 	/**
+	 * \brief System owning the device.
+	 * \version 1.6
+	 * 
+	 * Device index is only valid for the matching system.
+	 */
+	public func InputEventSource getSource()
+		return null
+	end
+	
+	/**
 	 * \brief Device index.
 	 */
 	public func int getIndex()

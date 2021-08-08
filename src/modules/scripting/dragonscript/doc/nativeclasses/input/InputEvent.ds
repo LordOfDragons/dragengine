@@ -123,5 +123,13 @@ class InputEvent
 	public func int getTime()
 		return 0
 	end
+	
+	/**
+	 * \brief Source of event.
+	 * \version 1.6
+	 */
+	public func InputEventSource getSource()
+		return null
+	end
 	/*@}*/
 end

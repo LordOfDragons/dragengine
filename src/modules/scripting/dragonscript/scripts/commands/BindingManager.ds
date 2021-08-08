@@ -122,18 +122,41 @@ class BindingManager
 		this.pAxisBindings.forEach( ablock )
 	end
 	
-	/** \brief Find axis binding matching device and source. */
+	/**
+	 * \brief Find axis binding matching device and source.
+	 * \deprecated Use findAxisBinding(InputEventSource,int,int).
+	 */
 	public func Binding findAxisBinding( int device, int axis )
+		return this.findAxisBinding( InputEventSource.input, device, axis )
+	end
+	
+	/**
+	 * \brief Find axis binding matching device and source.
+	 * \version 1.6
+	 */
+	public func Binding findAxisBinding( InputEventSource source, int device, int axis )
 		return this.pAxisBindings.find( block Binding each
-			return each.getDeviceIndex() == device and each.getSourceIndex() == axis
+			return each.getSystem() == source and each.getDeviceIndex() == device \
+				and each.getSourceIndex() == axis
 		end ) cast Binding
 	end
 	
-	/** \brief Find axis binding matching device and source. */
+	/**
+	 * \brief Find axis binding matching device and source.
+	 * \deprecated Use findAxisBinding(InputEventSource,int,int,bool)
+	 */
 	public func Binding findAxisBinding( int device, int axis, bool inverseAxis )
+		return this.findAxisBinding( InputEventSource.input, device, axis, inverseAxis )
+	end
+	
+	/**
+	 * \brief Find axis binding matching device and source.
+	 * \version 1.6
+	 */
+	public func Binding findAxisBinding( InputEventSource source, int device, int axis, bool inverseAxis )
 		return this.pAxisBindings.find( block Binding each
-			return each.getDeviceIndex() == device and each.getSourceIndex() == axis \
-				and each.getInverseAxis() == inverseAxis
+			return each.getSystem() == source and each.getDeviceIndex() == device \
+				and each.getSourceIndex() == axis and each.getInverseAxis() == inverseAxis
 		end ) cast Binding
 	end
 	
@@ -197,10 +220,22 @@ class BindingManager
 		this.pButtonBindings.forEach( ablock )
 	end
 	
-	/** \brief Find button binding matching device and source. */
+	/**
+	 * \brief Find button binding matching device and source.
+	 * \deprecated Use findButtonBinding(InputEventSource,int,int)
+	 */
 	public func Binding findButtonBinding( int device, int button )
+		return this.findButtonBinding( InputEventSource.input, device, button )
+	end
+	
+	/**
+	 * \brief Find button binding matching device and source.
+	 * \version 1.6
+	 */
+	public func Binding findButtonBinding( InputEventSource source, int device, int button )
 		return this.pButtonBindings.find( block Binding each
-			return each.getDeviceIndex() == device and each.getSourceIndex() == button
+			return each.getSystem() == source and each.getDeviceIndex() == device \
+				and each.getSourceIndex() == button
 		end ) cast Binding
 	end
 	
@@ -263,16 +298,35 @@ class BindingManager
 	 * You do not need to call this if you added or removed the binding.
 	 */
 	public func void updateAxisBindingIndices( Binding binding )
-		var int deviceIndex = InputSystem.indexOfDeviceWithID( binding.getDeviceID() )
-		binding.setDeviceIndex( deviceIndex )
+		var int deviceIndex = -1
+		var int sourceIndex = -1
 		
+		deviceIndex = InputSystem.indexOfDeviceWithID( binding.getDeviceID() )
 		if deviceIndex != -1
-			binding.setSourceIndex( InputSystem.indexOfAxisWithID( \
-				deviceIndex, binding.getSourceID() ) )
+			sourceIndex = InputSystem.indexOfAxisWithID( deviceIndex, binding.getSourceID() )
+			if sourceIndex != -1
+				binding.setSystem( InputEventSource.input )
+				binding.setDeviceIndex( deviceIndex )
+				binding.setSourceIndex( sourceIndex )
+				return
+			end
 			
 		else
-			binding.setSourceIndex( -1 )
+			deviceIndex = VRSystem.indexOfDeviceWithID( binding.getDeviceID() )
+			if deviceIndex != -1
+				sourceIndex = VRSystem.indexOfAxisWithID( deviceIndex, binding.getSourceID() )
+				if sourceIndex != -1
+					binding.setSystem( InputEventSource.vr )
+					binding.setDeviceIndex( deviceIndex )
+					binding.setSourceIndex( sourceIndex )
+					return
+				end
+			end
 		end
+		
+		binding.setSystem( null )
+		binding.setDeviceIndex( -1 )
+		binding.setSourceIndex( -1 )
 	end
 	
 	/**
@@ -282,16 +336,35 @@ class BindingManager
 	 * You do not need to call this if you added or removed the binding.
 	 */
 	public func void updateButtonBindingIndices( Binding binding )
-		var int deviceIndex = InputSystem.indexOfDeviceWithID( binding.getDeviceID() )
-		binding.setDeviceIndex( deviceIndex )
+		var int deviceIndex = -1
+		var int sourceIndex = -1
 		
+		deviceIndex = InputSystem.indexOfDeviceWithID( binding.getDeviceID() )
 		if deviceIndex != -1
-			binding.setSourceIndex( InputSystem.indexOfButtonWithID( \
-				deviceIndex, binding.getSourceID() ) )
+			sourceIndex = InputSystem.indexOfButtonWithID( deviceIndex, binding.getSourceID() )
+			if sourceIndex != -1
+				binding.setSystem( InputEventSource.input )
+				binding.setDeviceIndex( deviceIndex )
+				binding.setSourceIndex( sourceIndex )
+				return
+			end
 			
 		else
-			binding.setSourceIndex( -1 )
+			deviceIndex = VRSystem.indexOfDeviceWithID( binding.getDeviceID() )
+			if deviceIndex != -1
+				sourceIndex = VRSystem.indexOfButtonWithID( deviceIndex, binding.getSourceID() )
+				if sourceIndex != -1
+					binding.setSystem( InputEventSource.vr )
+					binding.setDeviceIndex( deviceIndex )
+					binding.setSourceIndex( sourceIndex )
+					return
+				end
+			end
 		end
+		
+		binding.setSystem( null )
+		binding.setDeviceIndex( -1 )
+		binding.setSourceIndex( -1 )
 	end
 	
 	/**
@@ -312,15 +385,18 @@ class BindingManager
 	
 	/** \brief Update input devices and all binding indices. */
 	public func void reloadDevices()
-		var int deviceCount = InputSystem.getDeviceCount()
-		var InputDevice device
-		var int i
+		var int i, deviceCount
 		
 		this.pDevices.removeAll()
 		
+		deviceCount = InputSystem.getDeviceCount()
 		for i = 0 to deviceCount
-			device = InputSystem.getDeviceAt( i )
 			this.pDevices.add( InputSystem.getDeviceAt( i ) )
+		end
+		
+		deviceCount = VRSystem.getDeviceCount()
+		for i = 0 to deviceCount
+			this.pDevices.add( VRSystem.getDeviceAt( i ) )
 		end
 		
 		this.updateAllBindingIndices()

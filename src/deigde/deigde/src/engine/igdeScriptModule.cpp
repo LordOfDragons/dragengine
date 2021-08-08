@@ -163,7 +163,3 @@ bool igdeScriptModule::SendEvent( deInputEvent* ){
 
 void igdeScriptModule::UserRequestQuit(){
 }
-
-bool igdeScriptModule::SendVREvent( deInputEvent* ){
-	return true;
-}

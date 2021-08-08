@@ -139,12 +139,6 @@ public:
 	/** \brief Event has to be processed. */
 	void SendEvent( deInputEvent *event );
 	
-	/**
-	 * \brief VR Event has to be processed.
-	 * \version 1.6
-	 */
-	void SendVREvent( deInputEvent *event );
-	
 	/** \brief Create peer object for the given collider using the active module and assigns it. */
 	void LoadCollider( deCollider *collider );
 	

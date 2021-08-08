@@ -119,7 +119,7 @@ void deClassVRSystem::nfGetDeviceAt::RunFunction( dsRunTime *rt, dsValue* ){
 	const int index = rt->GetValue( 0 )->GetInt();
 	
 	clsVRSystem.GetDS().GetClassInputDevice()->PushInputDevice( rt,
-		clsVRSystem.GetCachedDeviceAt( index ), index );
+		clsVRSystem.GetCachedDeviceAt( index ), deInputEvent::esVR, index );
 }
 
 // public static func int indexOfDeviceWithID( String id )

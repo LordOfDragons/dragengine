@@ -35,7 +35,9 @@
 #include <dragengine/input/deInputDeviceAxis.h>
 #include <dragengine/resources/image/deImage.h>
 #include <dragengine/systems/deInputSystem.h>
+#include <dragengine/systems/deVRSystem.h>
 #include <dragengine/systems/modules/input/deBaseInputModule.h>
+#include <dragengine/systems/modules/vr/deBaseVRModule.h>
 
 #include <libdscript/exceptions.h>
 #include <libdscript/packages/default/dsClassEnumeration.h>
@@ -47,6 +49,7 @@
 
 struct sIDAxisNatDat{
 	deInputDevice *device;
+	deInputEvent::eSources deviceSource;
 	int deviceIndex;
 	int axisIndex;
 };
@@ -61,7 +64,7 @@ deClassInputDeviceAxis::nfDestructor::nfDestructor( const sInitData &init ) :
 dsFunction( init.clsIDAxis, DSFUNC_DESTRUCTOR, DSFT_DESTRUCTOR,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
 }
-void deClassInputDeviceAxis::nfDestructor::RunFunction( dsRunTime *rt, dsValue *myself ){
+void deClassInputDeviceAxis::nfDestructor::RunFunction( dsRunTime*, dsValue *myself ){
 	if( myself->GetRealObject()->GetRefCount() != 1 ){
 		return; // protected against GC cleaning up leaking
 	}
@@ -88,7 +91,7 @@ void deClassInputDeviceAxis::nfGetInputDevice::RunFunction( dsRunTime *rt, dsVal
 	const sIDAxisNatDat &nd = *( ( const sIDAxisNatDat* )p_GetNativeData( myself ) );
 	deScriptingDragonScript &ds = ( ( deClassInputDeviceAxis* )GetOwnerClass() )->GetDS();
 	
-	ds.GetClassInputDevice()->PushInputDevice( rt, nd.device, nd.deviceIndex );
+	ds.GetClassInputDevice()->PushInputDevice( rt, nd.device, nd.deviceSource, nd.deviceIndex );
 }
 
 // public func int getAxisIndex()
@@ -255,14 +258,32 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat ){
 void deClassInputDeviceAxis::nfGetValue::RunFunction( dsRunTime *rt, dsValue *myself ){
 	const sIDAxisNatDat &nd = *( ( const sIDAxisNatDat* )p_GetNativeData( myself ) );
 	deScriptingDragonScript &ds = ( ( deClassInputDeviceAxis* )GetOwnerClass() )->GetDS();
-	deBaseInputModule &module = *ds.GetGameEngine()->GetInputSystem()->GetActiveModule();
 	
-	const int deviceIndex = module.IndexOfDeviceWithID( nd.device->GetID() );
-	if( deviceIndex != -1 ){
-		rt->PushFloat( module.GetAxisValue( deviceIndex, nd.axisIndex ) );
+	switch( nd.deviceSource ){
+	case deInputEvent::esInput:{
+		deBaseInputModule &module = *ds.GetGameEngine()->GetInputSystem()->GetActiveModule();
+		const int deviceIndex = module.IndexOfDeviceWithID( nd.device->GetID() );
+		if( deviceIndex != -1 ){
+			rt->PushFloat( module.GetAxisValue( deviceIndex, nd.axisIndex ) );
+			
+		}else{
+			rt->PushFloat( 0.0f );
+		}
+		}break;
 		
-	}else{
-		rt->PushFloat( 0.0f );
+	case deInputEvent::esVR:{
+		deBaseVRModule &module = *ds.GetGameEngine()->GetVRSystem()->GetActiveModule();
+		const int deviceIndex = module.IndexOfDeviceWithID( nd.device->GetID() );
+		if( deviceIndex != -1 ){
+			rt->PushFloat( module.GetAxisValue( deviceIndex, nd.axisIndex ) );
+			
+		}else{
+			rt->PushFloat( 0.0f );
+		}
+		}break;
+		
+	default:
+		DETHROW_INFO( deeInvalidParam, "input source" );
 	}
 }
 
@@ -351,7 +372,7 @@ void deClassInputDeviceAxis::CreateClassMembers( dsEngine *engine ){
 }
 
 void deClassInputDeviceAxis::PushAxis( dsRunTime *rt, deInputDevice *device,
-int deviceIndex, int index ){
+deInputEvent::eSources deviceSource, int deviceIndex, int index ){
 	if( ! rt || ! device || index < 0 || index >= device->GetAxisCount() ){
 		DSTHROW( dueInvalidParam );
 	}
@@ -360,6 +381,7 @@ int deviceIndex, int index ){
 	sIDAxisNatDat &nd = *( ( sIDAxisNatDat* )p_GetNativeData(
 		rt->GetValue( 0 )->GetRealObject()->GetBuffer() ) );
 	nd.device = device;
+	nd.deviceSource = deviceSource;
 	nd.deviceIndex = deviceIndex;
 	device->AddReference();
 	nd.axisIndex = index;

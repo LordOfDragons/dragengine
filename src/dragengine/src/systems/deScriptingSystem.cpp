@@ -338,9 +338,3 @@ void deScriptingSystem::SendEvent( deInputEvent *event){
 		GetEngine()->SignalScriptFailed();
 	}
 }
-
-void deScriptingSystem::SendVREvent( deInputEvent *event ){
-	if( ! pActiveModule->SendVREvent( event ) ){
-		GetEngine()->SignalScriptFailed();
-	}
-}

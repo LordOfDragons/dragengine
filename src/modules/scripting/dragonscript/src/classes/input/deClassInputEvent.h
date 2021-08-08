@@ -37,6 +37,7 @@ class deClassInputEvent : public dsClass{
 private:
 	deScriptingDragonScript &pDS;
 	dsClass *pClsInputEventType;
+	dsClass *pClsInputEventSource;
 	
 	
 	
@@ -67,6 +68,7 @@ public:
 	void PushInputEvent( dsRunTime *rt, const deInputEvent &event );
 	
 	inline dsClass *GetClassInputEventType() const{ return pClsInputEventType; }
+	inline dsClass *GetClassInputEventSource() const{ return pClsInputEventSource; }
 	/*@}*/
 	
 	
@@ -82,6 +84,7 @@ private:
 		dsClass *clsString;
 		dsClass *clsObject;
 		dsClass *clsInputEventType;
+		dsClass *clsInputEventSource;
 	};
 #define DEF_NATFUNC(name) \
 	class name : public dsFunction{ \
@@ -101,6 +104,7 @@ private:
 	DEF_NATFUNC( nfGetY );
 	DEF_NATFUNC( nfGetValue );
 	DEF_NATFUNC( nfGetTime );
+	DEF_NATFUNC( nfGetSource );
 	
 	DEF_NATFUNC( nfEquals );
 	DEF_NATFUNC( nfHashCode );

@@ -942,11 +942,6 @@ bool deScriptingDragonScript::SendEvent( deInputEvent *event ){
 	return true;
 }
 
-bool deScriptingDragonScript::SendVREvent( deInputEvent *event ){
-	// handled the same in scripts
-	return SendEvent( event );
-}
-
 void deScriptingDragonScript::UserRequestQuit(){
 	if( ! pGameObj ){
 		return;

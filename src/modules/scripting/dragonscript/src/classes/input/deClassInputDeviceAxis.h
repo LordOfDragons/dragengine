@@ -23,6 +23,7 @@
 #define _DEDSCLASSINPUTDEVICEAXIS_H_
 
 #include <libdscript/libdscript.h>
+#include <dragengine/input/deInputEvent.h>
 
 class deScriptingDragonScript;
 
@@ -61,7 +62,8 @@ public:
 	void CreateClassMembers( dsEngine *engine );
 	
 	/** \brief Push axis. */
-	void PushAxis( dsRunTime *rt, deInputDevice *device, int deviceIndex, int index );
+	void PushAxis( dsRunTime *rt, deInputDevice *device,
+		deInputEvent::eSources deviceSource, int deviceIndex, int index );
 	
 	inline dsClass *GetClassInputDeviceAxisType() const{ return pClsInputDeviceAxisType; }
 	/*@}*/

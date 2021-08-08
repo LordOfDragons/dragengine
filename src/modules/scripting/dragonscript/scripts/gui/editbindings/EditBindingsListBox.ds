@@ -160,6 +160,7 @@ class EditBindingsListBox extends ListBox
 		var EditBindingsListModel model = this.getModel() cast EditBindingsListModel
 		var EditBindingsListModelEntry entry = model.getAt( selection ) cast EditBindingsListModelEntry
 		var BindingManager bindingManager = model.getBindingManager()
+		var InputEventSource system = captured.getSystem()
 		var int deviceIndex = captured.getDeviceIndex()
 		var int sourceIndex = captured.getSourceIndex()
 		var Command command = entry.getCommand()
@@ -170,11 +171,11 @@ class EditBindingsListBox extends ListBox
 		select captured.getInputSource()
 		case EditBindingsListModelEntry.InputSource.axis
 			if entry.getInputSource() == EditBindingsListModelEntry.InputSource.button
-				binding = bindingManager.findAxisBinding( \
-					deviceIndex, sourceIndex, captured.getInverseAxis() )
+				binding = bindingManager.findAxisBinding( system, deviceIndex, \
+					sourceIndex, captured.getInverseAxis() )
 				
 			else
-				binding = bindingManager.findAxisBinding( deviceIndex, sourceIndex )
+				binding = bindingManager.findAxisBinding( system, deviceIndex, sourceIndex )
 			end
 			
 			if binding == null
@@ -207,7 +208,7 @@ class EditBindingsListBox extends ListBox
 			bindingManager.removeAxisBinding( binding )
 			
 		case EditBindingsListModelEntry.InputSource.button
-			binding = bindingManager.findButtonBinding( deviceIndex, sourceIndex )
+			binding = bindingManager.findButtonBinding( system, deviceIndex, sourceIndex )
 			
 			if binding == null
 				break
@@ -246,18 +247,17 @@ class EditBindingsListBox extends ListBox
 		end
 		
 		// add binding
-		var InputDevice device = bindingManager.getDeviceAt( deviceIndex )
 		select captured.getInputSource()
 		case EditBindingsListModelEntry.InputSource.axis
-			var InputDeviceAxis axis = device.getAxisAt( sourceIndex )
+			var InputDeviceAxis axis = captured.getInputDeviceAxis()
 			
-			bindingManager.addAxisBinding( Binding.new( device.getID(), \
+			bindingManager.addAxisBinding( Binding.new( axis.getInputDevice().getID(), \
 				axis.getID(), command, captured.getInverseAxis() ) )
 			
 		case EditBindingsListModelEntry.InputSource.button
-			var InputDeviceButton button = device.getButtonAt( sourceIndex )
+			var InputDeviceButton button = captured.getInputDeviceButton()
 			
-			bindingManager.addButtonBinding( Binding.new( device.getID(), \
+			bindingManager.addButtonBinding( Binding.new( button.getInputDevice().getID(), \
 				button.getID(), command, false ) )
 		end
 		

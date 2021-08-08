@@ -175,7 +175,7 @@ class WindowPopup extends Window
 			
 			hoverWidget.sendEvent( MouseEvent.new( hoverWidget, ident, \
 				mouseEvent.getButton(), mouseEvent.getModifiers(), \
-				mouseEvent.getPosition(), mouseEvent.getDevice() ) )
+				mouseEvent.getPosition(), mouseEvent.getSystem(), mouseEvent.getDevice() ) )
 			
 		else
 			var Widget hoverWidget = this.getWidgetAt( mouseEvent.getPosition() )
@@ -187,7 +187,7 @@ class WindowPopup extends Window
 			hoverWidget.sendEvent( MouseEvent.new( hoverWidget, ident, \
 				mouseEvent.getButton(), mouseEvent.getModifiers(), \
 				mouseEvent.getPosition() - hoverWidget.getWindowPosition(), \
-				mouseEvent.getDevice() ) )
+				mouseEvent.getSystem(), mouseEvent.getDevice() ) )
 		end
 	end
 	

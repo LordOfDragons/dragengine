@@ -155,7 +155,3 @@ bool igdeNullScriptModule::SendEvent( deInputEvent* ){
 
 void igdeNullScriptModule::UserRequestQuit(){
 }
-
-bool igdeNullScriptModule::SendVREvent( deInputEvent* ){
-	return true;
-}

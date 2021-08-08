@@ -69,47 +69,47 @@ class WidgetInputProcessor extends DefaultInputProcessor
 		select event.getType()
 		case InputEventType.keyPress
 			this.pWidget.processEvent( KeyEvent.new( this.pWidget, \
-				KeyEvent.idKeyPressed, event.getKeyCode(), event.getState(), \
-				event.getKeyChar(), event.getDevice(), event.getCode() ) )
+				KeyEvent.idKeyPressed, event.getKeyCode(), event.getState(), event.getKeyChar(), \
+				event.getSource(), event.getDevice(), event.getCode() ) )
 			
 		case InputEventType.keyRelease
 			this.pWidget.processEvent( KeyEvent.new( this.pWidget, \
-				KeyEvent.idKeyReleased, event.getKeyCode(), event.getState(), \
-				event.getKeyChar(), event.getDevice() ) )
+				KeyEvent.idKeyReleased, event.getKeyCode(), event.getState(), event.getKeyChar(), \
+				event.getSource(), event.getDevice(), event.getCode() ) )
 			
 		case InputEventType.mousePress
 			this.pWidget.processEvent( MouseEvent.new( this.pWidget, \
 				MouseEvent.idMousePressed, event.getCode(), event.getState(), \
-				event.getDevice() ) )
+				event.getSource(), event.getDevice() ) )
 			
 		case InputEventType.mouseRelease
 			this.pWidget.processEvent( MouseEvent.new( this.pWidget, \
 				MouseEvent.idMouseReleased, event.getCode(), event.getState(), \
-				event.getDevice() ) )
+				event.getSource(), event.getDevice() ) )
 			
 		case InputEventType.mouseMove
 			this.pWidget.processEvent( MouseEvent.new( this.pWidget, \
 				MouseEvent.idMouseMoved, event.getCode(), event.getState(), \
-				Point.new( event.getX(), event.getY() ), event.getDevice() ) )
+				Point.new( event.getX(), event.getY() ), event.getSource(), event.getDevice() ) )
 			
 		case InputEventType.mouseWheel
 			this.pWidget.processEvent( MouseEvent.new( this.pWidget, \
 				MouseEvent.idMouseWheeled, event.getCode(), event.getState(), \
-				Point.new( event.getX(), event.getY() ), event.getDevice() ) )
+				Point.new( event.getX(), event.getY() ), event.getSource(), event.getDevice() ) )
 			
 		case InputEventType.axisMove
 			this.pWidget.processEvent( GamepadEvent.new( this.pWidget, \
-				GamepadEvent.idGamepadAxisMoved, event.getDevice(), \
+				GamepadEvent.idGamepadAxisMoved, event.getSource(), event.getDevice(), \
 				event.getCode(), event.getState(), event.getValue() ) )
 			
 		case InputEventType.buttonPress
 			this.pWidget.processEvent( GamepadEvent.new( this.pWidget, \
-				GamepadEvent.idGamepadButtonPressed, event.getDevice(), \
+				GamepadEvent.idGamepadButtonPressed, event.getSource(), event.getDevice(), \
 				event.getCode(), event.getState() ) )
 			
 		case InputEventType.buttonRelease
 			this.pWidget.processEvent( GamepadEvent.new( this.pWidget, \
-				GamepadEvent.idGamepadButtonReleased, event.getDevice(), \
+				GamepadEvent.idGamepadButtonReleased, event.getSource(), event.getDevice(), \
 				event.getCode(), event.getState() ) )
 			
 		//case InputEventType.deviceAttached

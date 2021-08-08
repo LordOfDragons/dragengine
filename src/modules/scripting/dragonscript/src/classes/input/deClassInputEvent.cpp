@@ -178,6 +178,18 @@ void deClassInputEvent::nfGetTime::RunFunction( dsRunTime *rt, dsValue *myself )
 	rt->PushInt( event.GetTime().tv_sec * 1000 + event.GetTime().tv_usec / 1000 );  // temp hack
 }
 
+// public func InputEventSource getSource()
+deClassInputEvent::nfGetSource::nfGetSource( const sInitData &init ) :
+dsFunction( init.clsInputEvent, "getSource", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsInputEventSource ){
+}
+void deClassInputEvent::nfGetSource::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const deInputEvent &event = *( ( ( sInpEvNatDat* )p_GetNativeData( myself ) )->event );
+	
+	rt->PushValue( ( ( deClassInputEvent* )GetOwnerClass() )->GetClassInputEventSource()
+		->GetVariable( event.GetSource() )->GetStaticValue() );
+}
+
 
 
 // public func int hashCode()
@@ -238,6 +250,7 @@ deClassInputEvent::~deClassInputEvent(){
 
 void deClassInputEvent::CreateClassMembers( dsEngine *engine ){
 	pClsInputEventType = engine->GetClass( "Dragengine.InputEventType" );
+	pClsInputEventSource = engine->GetClass( "Dragengine.InputEventSource" );
 	
 	sInitData init;
 	init.clsInputEvent = this;
@@ -248,6 +261,7 @@ void deClassInputEvent::CreateClassMembers( dsEngine *engine ){
 	init.clsBool = engine->GetClassBool();
 	init.clsObject = engine->GetClassObject();
 	init.clsInputEventType = pClsInputEventType;
+	init.clsInputEventSource = pClsInputEventSource;
 	
 	AddFunction( new nfDestructor( init ) );
 	
@@ -261,6 +275,7 @@ void deClassInputEvent::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfGetY( init ) );
 	AddFunction( new nfGetValue( init ) );
 	AddFunction( new nfGetTime( init ) );
+	AddFunction( new nfGetSource( init ) );
 	
 	AddFunction( new nfEquals( init ) );
 	AddFunction( new nfHashCode( init ) );

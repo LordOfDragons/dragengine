@@ -928,7 +928,7 @@ void deEngine::RunSingleFrame(){
 	// process inputs
 	count = eventQueue.GetEventCount();
 	for( i=0; i<count; i++ ){
-		scrSys.SendEvent( ( deInputEvent* )( &( eventQueue.GetEventAt( i ) ) ) );
+		scrSys.SendEvent( ( deInputEvent* )&eventQueue.GetEventAt( i ) );
 		if( pScriptFailed ){
 			deErrorTracePoint *tracePoint = pErrorTrace->AddPoint( NULL, "deEngine::RunDoSingleFrame", __LINE__ );
 			tracePoint->AddValueFloat( "elapsedTime", pElapsedTime );
@@ -942,7 +942,7 @@ DEBUG_PRINT_TIMER( "DoFrame: Process input events" );
 	// process vr inputs
 	count = vrEventQueue.GetEventCount();
 	for( i=0; i<count; i++ ){
-		scrSys.SendVREvent( ( deInputEvent* )( &( vrEventQueue.GetEventAt( i ) ) ) );
+		scrSys.SendEvent( ( deInputEvent* )&vrEventQueue.GetEventAt( i ) );
 		if( pScriptFailed ){
 			deErrorTracePoint *tracePoint = pErrorTrace->AddPoint( NULL, "deEngine::RunDoSingleFrame", __LINE__ );
 			tracePoint->AddValueFloat( "elapsedTime", pElapsedTime );
