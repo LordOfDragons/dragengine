@@ -22,13 +22,15 @@
 #ifndef _DEOVRDEVICEMANAGER_H_
 #define _DEOVRDEVICEMANAGER_H_
 
+#include <openvr/openvr.h>
+
 #include <dragengine/common/collection/decObjectOrderedSet.h>
 
 class deVROpenVR;
 class deovrDevice;
 class deovrDeviceCoreMouse;
 class deovrDeviceCoreKeyboard;
-
+class decString;
 
 
 /**
@@ -56,11 +58,11 @@ public:
 	
 	/** \name Module Management */
 	/*@{*/
-	/** Clear list. */
+	/** Clear list. Queues events for all removed devices. */
 	void Clear();
 	
-	/** Update list of available devices. */
-	void UpdateDeviceList();
+	/** Init devices. Queues events for all added devices. */
+	void InitDevices();
 	
 	
 	
@@ -70,11 +72,29 @@ public:
 	/** Device at index. */
 	deovrDevice *GetAt( int index ) const;
 	
-	/** Device with identifier or \em nullptr if absent. */
-	deovrDevice *GetWithID( const char *id );
+	/** Device with identifier or nullptr if absent. */
+	deovrDevice *GetWithID( const char *id ) const;
+	
+	/** Device with device index or nullptr if absent. */
+	deovrDevice *GetWithIndex( vr::TrackedDeviceIndex_t index ) const;
 	
 	/** Index of device with identifier or -1 if absent. */
-	int IndexOfWithID( const char *id );
+	int IndexOfWithID( const char *id ) const;
+	
+	/** Index of device with index or -1 if absent. */
+	int IndexOfWithIndex( vr::TrackedDeviceIndex_t index ) const;
+	
+	/** Add device and queue event. */
+	void Add( vr::TrackedDeviceIndex_t index );
+	
+	/** Remove device if present and queue event. */
+	void Remove( vr::TrackedDeviceIndex_t index );
+	
+	/**
+	 * Update device parameters if present and queue event. If device becomes invalid
+	 * remove it instead.
+	 */
+	void UpdateParameters( vr::TrackedDeviceIndex_t index );
 	
 	
 	
@@ -86,6 +106,7 @@ public:
 	/** Normalize identifier. */
 	static decString NormalizeID( const char *id );
 	/*@}*/
+	
 	
 	
 	

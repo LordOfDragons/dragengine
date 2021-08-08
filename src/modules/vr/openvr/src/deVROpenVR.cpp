@@ -23,10 +23,15 @@
 #include <string.h>
 
 #include "deVROpenVR.h"
+#include "deovrDevice.h"
+#include "deovrDeviceAxis.h"
+#include "deovrDeviceButton.h"
+#include "deovrDeviceFeedback.h"
 #include "deovrDeviceManager.h"
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
+#include <dragengine/input/deInputEvent.h>
 #include <dragengine/systems/deVRSystem.h>
 
 
@@ -62,8 +67,8 @@ deBaseModule *OpenVRCreateModule( deLoadableModule *loadableModule ){
 deVROpenVR::deVROpenVR( deLoadableModule &loadableModule ) :
 deBaseVRModule( loadableModule ),
 pRuntimeInstalled( false ),
-pSystem( nullptr ),
-pDeviceManager( nullptr ){
+pDevices( *this ),
+pSystem( nullptr ){
 }
 
 deVROpenVR::~deVROpenVR(){
@@ -74,6 +79,18 @@ deVROpenVR::~deVROpenVR(){
 
 // Management
 ///////////////
+
+vr::IVRSystem &deVROpenVR::GetSystem() const{
+	if( ! pSystem ){
+		DETHROW( deeInvalidAction );
+	}
+	return *pSystem;
+}
+
+
+
+// Module Management
+//////////////////////
 
 bool deVROpenVR::Init(){
 	pRuntimeInstalled = vr::VR_IsRuntimeInstalled();
@@ -94,26 +111,10 @@ bool deVROpenVR::Init(){
 	}
 	
 	LogInfoFormat( "HMD Present: %s", vr::VR_IsHmdPresent() ? "Yes" : "No" );
-	
-	try{
-		pDeviceManager = new deovrDeviceManager( *this );
-		pDeviceManager->UpdateDeviceList();
-		
-	}catch( const deException &e ){
-		LogException( e );
-		CleanUp();
-		return false;
-	}
-	
 	return true;
 }
 
 void deVROpenVR::CleanUp(){
-	if( pDeviceManager ){
-		delete pDeviceManager;
-		pDeviceManager = nullptr;
-	}
-	
 	StopRuntime();
 }
 
@@ -133,18 +134,25 @@ void deVROpenVR::StartRuntime(){
 	
 	LogInfo( "Start Runtime" );
 	
-	vr::HmdError error = vr::VRInitError_None;
-	pSystem = vr::VR_Init( &error, vr::VRApplication_Scene );
-	
-	if( ! pSystem || error != vr::VRInitError_None ){
-		LogErrorFormat( "Failed starting runtime: %s", vr::VR_GetVRInitErrorAsSymbol( error ) );
-		DETHROW_INFO( deeInvalidAction, "Failed starting runtime" );
+	try{
+		vr::HmdError error = vr::VRInitError_None;
+		pSystem = vr::VR_Init( &error, vr::VRApplication_Scene );
+		
+		if( ! pSystem || error != vr::VRInitError_None ){
+			LogErrorFormat( "Failed starting runtime: %s", vr::VR_GetVRInitErrorAsSymbol( error ) );
+			DETHROW_INFO( deeInvalidAction, "Failed starting runtime" );
+		}
+		
+		pDevices.InitDevices();
+		pDevices.LogDevices();
+		
+		LogInfo( "Runtime Ready" );
+		
+	}catch( const deException &e ){
+		LogException( e );
+		StopRuntime();
+		throw;
 	}
-	
-// 	vr::VRCompositor();
-// 	vr::VRInput();
-	
-	LogInfo( "Runtime Ready" );
 }
 
 void deVROpenVR::StopRuntime(){
@@ -153,6 +161,8 @@ void deVROpenVR::StopRuntime(){
 	}
 	
 	LogInfo( "Shutdown runtime" );
+	
+	pDevices.Clear();
 	
 	vr::VR_Shutdown();
 	pSystem = nullptr;
@@ -167,43 +177,57 @@ void deVROpenVR::SetCamera( deCamera* ){
 ////////////
 
 int deVROpenVR::GetDeviceCount(){
-	return 0;
+	return pDevices.GetCount();
 }
 
-deInputDevice *deVROpenVR::GetDeviceAt( int ){
-	DETHROW( deeInvalidParam );
+deInputDevice *deVROpenVR::GetDeviceAt( int index ){
+	deInputDevice *device = nullptr;
+	
+	try{
+		device = new deInputDevice;
+		pDevices.GetAt( index )->GetInfo( *device );
+		
+	}catch( const deException & ){
+		if( device ){
+			device->FreeReference();
+		}
+		throw;
+	}
+	
+	return device;
 }
 
-int deVROpenVR::IndexOfDeviceWithID( const char* ){
-	return -1;
+int deVROpenVR::IndexOfDeviceWithID( const char *id ){
+	return pDevices.IndexOfWithID( id );
 }
 
 
-int deVROpenVR::IndexOfButtonWithID( int, const char* ){
-	return -1;
+int deVROpenVR::IndexOfButtonWithID( int device, const char *id ){
+	return pDevices.GetAt( device )->IndexOfButtonWithID( id );
 }
 
-int deVROpenVR::IndexOfAxisWithID( int, const char* ){
-	return -1;
+int deVROpenVR::IndexOfAxisWithID( int device, const char *id ){
+	return pDevices.GetAt( device )->IndexOfAxisWithID( id );
 }
 
-int deVROpenVR::IndexOfFeedbackWithID( int, const char* ){
-	return -1;
+int deVROpenVR::IndexOfFeedbackWithID( int device, const char *id ){
+	return pDevices.GetAt( device )->IndexOfFeedbackWithID( id );
 }
 
-bool deVROpenVR::GetButtonPressed( int, int ){
-	DETHROW( deeInvalidParam );
+bool deVROpenVR::GetButtonPressed( int device, int button ){
+	return pDevices.GetAt( device )->GetButtonAt( button )->GetPressed();
 }
 
-float deVROpenVR::GetAxisValue( int, int ){
-	DETHROW( deeInvalidParam );
+float deVROpenVR::GetAxisValue( int device, int axis ){
+	return pDevices.GetAt( device )->GetAxisAt( axis )->GetValue();
 }
 
-float deVROpenVR::GetFeedbackValue( int, int ){
-	DETHROW( deeInvalidParam );
+float deVROpenVR::GetFeedbackValue( int device, int feedback ){
+	return pDevices.GetAt( device )->GetFeedbackAt( feedback )->GetValue();
 }
 
-void deVROpenVR::SetFeedbackValue( int, int, float ){
+void deVROpenVR::SetFeedbackValue( int device, int feedback, float value ){
+	pDevices.GetAt( device )->GetFeedbackAt( feedback )->SetValue( value );
 }
 
 
@@ -221,14 +245,17 @@ void deVROpenVR::ProcessEvents(){
 		switch( event.eventType ){
 		case vr::VREvent_TrackedDeviceActivated:
 			LogInfoFormat( "ProcessEvents: Tracked device activated %d", event.trackedDeviceIndex );
+			         pDevices.Add( event.trackedDeviceIndex );
 			break;
 			
 		case vr::VREvent_TrackedDeviceDeactivated:
 			LogInfoFormat( "ProcessEvents: Tracked device deactivated %d", event.trackedDeviceIndex );
+			         pDevices.Remove( event.trackedDeviceIndex );
 			break;
 			
 		case vr::VREvent_TrackedDeviceUpdated:
 			LogInfoFormat( "ProcessEvents: Tracked device updated %d", event.trackedDeviceIndex );
+			         pDevices.UpdateParameters( event.trackedDeviceIndex );
 			break;
 			
 		case vr::VREvent_TrackedDeviceUserInteractionStarted:

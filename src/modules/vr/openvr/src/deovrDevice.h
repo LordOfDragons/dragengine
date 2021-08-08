@@ -22,6 +22,8 @@
 #ifndef _DEOVRDEVICE_H_
 #define _DEOVRDEVICE_H_
 
+#include <openvr/openvr.h>
+
 #include <dragengine/deObject.h>
 #include <dragengine/common/collection/decObjectOrderedSet.h>
 #include <dragengine/common/string/decString.h>
@@ -33,7 +35,6 @@ class deovrDeviceAxis;
 class deovrDeviceButton;
 class deovrDeviceFeedback;
 class deInputDevice;
-
 
 
 /**
@@ -50,6 +51,10 @@ private:
 	deVROpenVR &pOvr;
 	
 	int pIndex;
+	
+	const vr::TrackedDeviceIndex_t pDeviceIndex;
+	vr::TrackedDeviceClass pDeviceClass;
+	vr::ETrackedControllerRole pControllerRole;
 	
 	deInputDevice::eDeviceTypes pType;
 	decString pID;
@@ -68,7 +73,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create device. */
-	deovrDevice( deVROpenVR &ovr );
+	deovrDevice( deVROpenVR &ovr, vr::TrackedDeviceIndex_t deviceIndex );
 	
 protected:
 	/** Clean up device. */
@@ -88,6 +93,15 @@ public:
 	
 	/** Set index. */
 	void SetIndex( int index );
+	
+	/** Device index. */
+	inline vr::TrackedDeviceIndex_t GetDeviceIndex() const{ return pDeviceIndex; }
+	
+	/** Device class. */
+	inline vr::TrackedDeviceClass GetDeviceClass() const{ return pDeviceClass; }
+	
+	/** Controller role. */
+	inline vr::ETrackedControllerRole GetControllerRole() const{ return pControllerRole; }
 	
 	
 	
@@ -177,8 +191,8 @@ public:
 	/** Update engine input device information. */
 	void GetInfo( deInputDevice &info ) const;
 	
-	/** Update device state. */
-	void Update();
+	/** Update device parameters. */
+	void UpdateParameters();
 	/*@}*/
 };
 

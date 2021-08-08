@@ -45,10 +45,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-deovrDevice::deovrDevice( deVROpenVR &ovr ) :
+deovrDevice::deovrDevice( deVROpenVR &ovr, vr::TrackedDeviceIndex_t deviceIndex ) :
 pOvr( ovr ),
 pIndex( -1 ),
-pType( deInputDevice::edtGeneric ){
+pDeviceIndex( deviceIndex )
+{
+	UpdateParameters();
 }
 
 deovrDevice::~deovrDevice(){
@@ -258,7 +260,88 @@ void deovrDevice::GetInfo( deInputDevice &info ) const{
 	}
 }
 
-void deovrDevice::Update(){
+void deovrDevice::UpdateParameters(){
+	pDeviceClass = pOvr.GetSystem().GetTrackedDeviceClass( pDeviceIndex );
+	pControllerRole = vr::TrackedControllerRole_Invalid;
+	
+	switch( pDeviceClass ){
+	case vr::TrackedDeviceClass_HMD:
+		pType = deInputDevice::edtVRHMD;
+		pName = "HMD";
+		pID.Format( "%shmd", OVR_DEVID_PREFIX );
+		break;
+		
+	case vr::TrackedDeviceClass_Controller:
+		pType = deInputDevice::edtVRController;
+		pControllerRole = pOvr.GetSystem().GetControllerRoleForTrackedDeviceIndex( pDeviceIndex );
+		
+		switch( pControllerRole ){
+		case vr::TrackedControllerRole_LeftHand:
+			pName = "Controller Left";
+			pID.Format( "%scl", OVR_DEVID_PREFIX );
+			break;
+			
+		case vr::TrackedControllerRole_RightHand:
+			pName = "Controller Right";
+			pID.Format( "%scr", OVR_DEVID_PREFIX );
+			break;
+			
+		case vr::TrackedControllerRole_Treadmill:
+			pName = "Treadmill";
+			pID.Format( "%sct", OVR_DEVID_PREFIX );
+			break;
+			
+		case vr::TrackedControllerRole_Stylus:
+			pName = "Stylus";
+			pID.Format( "%scs", OVR_DEVID_PREFIX );
+			break;
+			
+		default:
+			pName = "Controller";
+			pID.Format( "%scg", OVR_DEVID_PREFIX );
+		}
+		break;
+		
+	case vr::TrackedDeviceClass_GenericTracker:
+		pType = deInputDevice::edtVRTracker;
+		pName = "Tracker";
+		pID.Format( "%st", OVR_DEVID_PREFIX );
+		break;
+		
+	case vr::TrackedDeviceClass_TrackingReference:
+		pType = deInputDevice::edtVRBaseStation;
+		pName = "Base Station";
+		pID.Format( "%sbs", OVR_DEVID_PREFIX );
+		break;
+		
+	default:
+		pType = deInputDevice::edtGeneric;
+		pName.Empty();
+		pID.Empty();
+		return;
+	}
+	
+	// display name. seems to always return "lighthouse". how stupid is that :(
+	vr::ETrackedPropertyError error;
+	char buffer[ 256 ];
+	
+	/*
+	pOvr.GetSystem().GetStringTrackedDeviceProperty( pDeviceIndex,
+		vr::Prop_TrackingSystemName_String, buffer, 256, &error );
+	if( error != vr::TrackedProp_Success ){
+		DETHROW_INFO( deeInvalidParam, "GetStringTrackedDeviceProperty failed" );
+	}
+	pName = buffer;
+	*/
+	
+	// serial number. append to ID to make it unique (hopefully)
+	pOvr.GetSystem().GetStringTrackedDeviceProperty( pDeviceIndex,
+		vr::Prop_SerialNumber_String, buffer, 256, &error );
+	if( error != vr::TrackedProp_Success ){
+		DETHROW_INFO( deeInvalidParam, "Prop_SerialNumber_String failed" );
+	}
+	pID += "_";
+	pID += pOvr.GetDevices().NormalizeID( buffer );
 }
 
 

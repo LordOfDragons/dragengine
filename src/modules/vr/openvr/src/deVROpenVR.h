@@ -22,12 +22,16 @@
 #ifndef _DEVROPENVR_H_
 #define _DEVROPENVR_H_
 
+#include "deovrDeviceManager.h"
+
 #include <openvr/openvr.h>
 
 #include <dragengine/common/string/decString.h>
 #include <dragengine/systems/modules/vr/deBaseVRModule.h>
 
-class deovrDeviceManager;
+
+/** input module device identifier prefix. */
+#define OVR_DEVID_PREFIX "OVR_"
 
 
 /**
@@ -38,8 +42,9 @@ private:
 	bool pRuntimeInstalled;
 	decString pPathRuntime;
 	
+	deovrDeviceManager pDevices;
+	
 	vr::IVRSystem *pSystem;
-	deovrDeviceManager *pDeviceManager;
 	
 	
 	
@@ -51,6 +56,18 @@ public:
 	
 	/** Clean up null VR ovr. */
 	virtual ~deVROpenVR();
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** Devices. */
+	inline deovrDeviceManager &GetDevices(){ return pDevices; }
+	inline const deovrDeviceManager &GetDevices() const{ return pDevices; }
+	
+	/** VR System. */
+	vr::IVRSystem &GetSystem() const;
 	/*@}*/
 	
 	
