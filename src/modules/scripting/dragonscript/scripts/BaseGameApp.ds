@@ -495,7 +495,10 @@ class BaseGameApp extends Game
 		this.pWindowGameWorld = null
 		this.pPanelHud = null
 		
-		this.pBindingManager = null
+		if this.pBindingManager != null
+			this.pBindingManager.removeAllAxisBindings()
+			this.pBindingManager.removeAllButtonBindings()
+		end
 		
 		if this.pCommandManager != null
 			this.pCommandManager.removeAll()
@@ -525,9 +528,9 @@ class BaseGameApp extends Game
 			this.pConnectionTracker = null
 		end
 		
+		this.pBindingManager = null
 		this.pSkinAnnotations = null
 		this.pGlobalEvents = null
-		
 		this.pLoaders = null
 		this.pConsole = null
 		

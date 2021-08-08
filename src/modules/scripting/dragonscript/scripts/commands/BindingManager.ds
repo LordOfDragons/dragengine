@@ -45,6 +45,9 @@ class BindingManager
 	/** \brief Input device information as array of InputDevice. */
 	private var Array pDevices
 	
+	/** \brief Listeners. */
+	private var Array pListeners
+	
 	
 	
 	/** \brief Create binding manager. */
@@ -52,6 +55,7 @@ class BindingManager
 		this.pAxisBindings = Array.new()
 		this.pButtonBindings = Array.new()
 		this.pDevices = Array.new()
+		this.pListeners = Array.new()
 		
 		this.reloadDevices()
 	end
@@ -105,16 +109,32 @@ class BindingManager
 		this.pAxisBindings.add( binding )
 		
 		this.updateAxisBindingIndices( binding )
+		
+		this.pListeners.forEach( block BindingManagerListener each
+			each.axisBindingAdded( this, binding )
+		end )
 	end
 	
 	/** \brief Remove axis binding. */
 	public func void removeAxisBinding( Binding binding )
 		this.pAxisBindings.remove( binding )
+		
+		this.pListeners.forEach( block BindingManagerListener each
+			each.axisBindingRemoved( this, binding )
+		end )
 	end
 	
 	/** \brief Remove all axis bindings. */
 	public func void removeAllAxisBindings()
+		if this.pAxisBindings.getCount() == 0
+			return
+		end
+		
 		this.pAxisBindings.removeAll()
+		
+		this.pListeners.forEach( block BindingManagerListener each
+			each.allAxisBindingsRemoved( this )
+		end )
 	end
 	
 	/** \brief Visit axis bindings with block with parameter Binding. */
@@ -203,16 +223,32 @@ class BindingManager
 		this.pButtonBindings.add( binding )
 		
 		this.updateButtonBindingIndices( binding )
+		
+		this.pListeners.forEach( block BindingManagerListener each
+			each.buttonBindingAdded( this, binding )
+		end )
 	end
 	
 	/** \brief Remove button binding. */
 	public func void removeButtonBinding( Binding binding )
 		this.pButtonBindings.remove( binding )
+		
+		this.pListeners.forEach( block BindingManagerListener each
+			each.buttonBindingRemoved( this, binding )
+		end )
 	end
 	
 	/** \brief Remove all button bindings. */
 	public func void removeAllButtonBindings()
+		if this.pButtonBindings.getCount() == 0
+			return
+		end
+		
 		this.pButtonBindings.removeAll()
+		
+		this.pListeners.forEach( block BindingManagerListener each
+			each.allButtonBindingsRemoved( this )
+		end )
 	end
 	
 	/** \brief Visit button bindings with block with parameter Binding. */
@@ -255,11 +291,16 @@ class BindingManager
 	
 	/** \brief Remove all bindings with command. */
 	public func void removeBindingsWithCommand( Command command )
-		this.pAxisBindings.removeIf( block Binding each
+		this.pAxisBindings.collect( block Binding each
 			return each.getCommand() == command
+		end ).forEach( block Binding each
+			this.removeAxisBinding( each )
 		end )
-		this.pButtonBindings.removeIf( block Binding each
+		
+		this.pButtonBindings.collect( block Binding each
 			return each.getCommand() == command
+		end ).forEach( block Binding each
+			this.removeButtonBinding( each )
 		end )
 	end
 	
@@ -400,5 +441,30 @@ class BindingManager
 		end
 		
 		this.updateAllBindingIndices()
+		
+		this.pListeners.forEach( block BindingManagerListener each
+			each.devicesReloaded( this )
+		end )
+	end
+	
+	
+	
+	/**
+	 * \brief Add listener.
+	 * \version 1.6
+	 */
+	public func void addListener( BindingManagerListener listener )
+		if listener == null
+			throw ENullPointer.new( "listener" )
+		end
+		this.pListeners.add( listener )
+	end
+	
+	/**
+	 * \brief Remove listener.
+	 * \version 1.6
+	 */
+	public func void removeListener( BindingManagerListener listener )
+		this.pListeners.remove( listener )
 	end
 end
