@@ -137,7 +137,9 @@ versionString = '1.5'
 if envDragengine['force_version']:
 	versionString = envModule['force_version']
 
-libVersionString = '{}.0'.format(versionString)
+libVersionString = versionString
+if len(libVersionString.split('.')) < 3:
+	libVersionString = '{}.0'.format(libVersionString)
 
 # update the compile flags
 # envDragengine.Append(CXXFLAGS=' -D__DEBUG__')
