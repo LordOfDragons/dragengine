@@ -157,12 +157,6 @@ public:
 	virtual int GetFPSRate();
 	/*@}*/
 	
-	/**
-	 * \brief Global engine property changed.
-	 * \version 1.6
-	 */
-	virtual void GlobalPropertyChanged();
-	
 	
 	
 	/** \name Notifications */

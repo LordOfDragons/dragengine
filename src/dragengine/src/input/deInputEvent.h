@@ -70,7 +70,19 @@ public:
 		eeDeviceDetached,
 		
 		/** \brief Input device parameters changed. */
-		eeDeviceParamsChanged
+		eeDeviceParamsChanged,
+		
+		/**
+		 * \brief Device button touched.
+		 * \version 1.6
+		 */
+		eeButtonTouch,
+		
+		/**
+		 * \brief Device button untouched.
+		 * \version 1.6
+		 */
+		eeButtonUntouch
 	};
 	
 	/** \brief State modifiers. */

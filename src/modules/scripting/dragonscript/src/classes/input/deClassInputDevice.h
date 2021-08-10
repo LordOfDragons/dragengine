@@ -23,11 +23,10 @@
 #define _DECLASSINPUTDEVICE_H_
 
 #include <libdscript/libdscript.h>
-#include <dragengine/input/deInputEvent.h>
 
 class deScriptingDragonScript;
 
-class deInputDevice;
+class dedsInputDevice;
 
 
 
@@ -38,6 +37,7 @@ class deClassInputDevice : public dsClass{
 private:
 	deScriptingDragonScript &pDS;
 	dsClass *pClsInputDeviceType;
+	dsClass *pClsInputDeviceBoneConfiguration;
 	dsClass *pClsInputEventSource;
 	
 	
@@ -63,13 +63,13 @@ public:
 	void CreateClassMembers( dsEngine *engine );
 	
 	/** \brief InputDevice or \em NULL if myself is \em NULL. */
-	deInputDevice *GetInputDevice( dsRealObject *myself ) const;
+	dedsInputDevice *GetInputDevice( dsRealObject *myself ) const;
 	
 	/** \brief Push input device which can be \em NULL. */
-	void PushInputDevice( dsRunTime *rt, deInputDevice *device,
-		deInputEvent::eSources source, int index );
+	void PushInputDevice( dsRunTime *rt, dedsInputDevice *device );
 	
 	inline dsClass *GetClassInputDeviceType() const{ return pClsInputDeviceType; }
+	inline dsClass *GetClassInputDeviceBoneConfiguration() const{ return pClsInputDeviceBoneConfiguration; }
 	inline dsClass *GetClassInputEventSource() const{ return pClsInputEventSource; }
 	/*@}*/
 	
@@ -92,7 +92,11 @@ private:
 		dsClass *clsIDButton;
 		dsClass *clsIDFeedback;
 		dsClass *clsInputDeviceType;
+		dsClass *clsInputDeviceBoneConfiguration;
 		dsClass *clsInputEventSource;
+		dsClass *clsVector;
+		dsClass *clsQuaternion;
+		dsClass *clsMatrix;
 	};
 #define DEF_NATFUNC(name) \
 	class name : public dsFunction{ \
@@ -128,7 +132,21 @@ private:
 	DEF_NATFUNC( nfButtonMatchingKeyCode );
 	DEF_NATFUNC( nfButtonMatchingKeyChar );
 	
+	DEF_NATFUNC( nfGetBoneConfiguration );
+	
 	DEF_NATFUNC( nfIsPresent );
+	
+	DEF_NATFUNC( nfGetDevicePosePosition );
+	DEF_NATFUNC( nfGetDevicePoseOrientation );
+	DEF_NATFUNC( nfGetDevicePoseLinearVelocity );
+	DEF_NATFUNC( nfGetDevicePoseAngularVelocity );
+	DEF_NATFUNC( nfGetDevicePoseMatrix );
+	
+	DEF_NATFUNC( nfGetDeviceBonePosePosition );
+	DEF_NATFUNC( nfGetDeviceBonePoseOrientation );
+	DEF_NATFUNC( nfGetDeviceBonePoseLinearVelocity );
+	DEF_NATFUNC( nfGetDeviceBonePoseAngularVelocity );
+	DEF_NATFUNC( nfGetDeviceBonePoseMatrix );
 	
 	DEF_NATFUNC( nfEquals );
 	DEF_NATFUNC( nfHashCode );

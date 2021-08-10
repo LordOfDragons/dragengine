@@ -31,9 +31,9 @@
 #include "../input/deClassInputDevice.h"
 #include "../../deScriptingDragonScript.h"
 #include "../../deClassPathes.h"
+#include "../../utils/dedsInputDevice.h"
 
 #include <dragengine/deEngine.h>
-#include <dragengine/input/deInputDevice.h>
 #include <dragengine/systems/deVRSystem.h>
 #include <dragengine/systems/modules/vr/deBaseVRModule.h>
 #include <dragengine/common/string/unicode/decUnicodeString.h>
@@ -118,8 +118,7 @@ void deClassVRSystem::nfGetDeviceAt::RunFunction( dsRunTime *rt, dsValue* ){
 	deClassVRSystem &clsVRSystem = *( ( deClassVRSystem* )GetOwnerClass() );
 	const int index = rt->GetValue( 0 )->GetInt();
 	
-	clsVRSystem.GetDS().GetClassInputDevice()->PushInputDevice( rt,
-		clsVRSystem.GetCachedDeviceAt( index ), deInputEvent::esVR, index );
+	clsVRSystem.GetDS().GetClassInputDevice()->PushInputDevice( rt, clsVRSystem.GetCachedDeviceAt( index ) );
 }
 
 // public static func int indexOfDeviceWithID( String id )
@@ -198,6 +197,22 @@ void deClassVRSystem::nfGetButtonPressed::RunFunction( dsRunTime *rt, dsValue* )
 	const int device = rt->GetValue( 0 )->GetInt();
 	const int button  = rt->GetValue( 1 )->GetInt();
 	rt->PushBool( module.GetButtonPressed( device, button ) );
+}
+
+// public static func bool getButtonTouched( int device, int button )
+deClassVRSystem::nfGetButtonTouched::nfGetButtonTouched( const sInitData &init ) :
+dsFunction( init.clsVRSystem, "getButtonTouched", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsBool ){
+	p_AddParameter( init.clsInteger ); // device
+	p_AddParameter( init.clsInteger ); // button
+}
+void deClassVRSystem::nfGetButtonTouched::RunFunction( dsRunTime *rt, dsValue* ){
+	const deScriptingDragonScript &ds = ( ( deClassVRSystem* )GetOwnerClass() )->GetDS();
+	deBaseVRModule &module = *ds.GetGameEngine()->GetVRSystem()->GetActiveModule();
+	
+	const int device = rt->GetValue( 0 )->GetInt();
+	const int button  = rt->GetValue( 1 )->GetInt();
+	rt->PushBool( module.GetButtonTouched( device, button ) );
 }
 
 // public static func int getAxisValue( int device, int axis )
@@ -400,6 +415,7 @@ void deClassVRSystem::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfIndexOfAxisWithID( init ) );;
 	AddFunction( new nfIndexOfFeedbackWithID( init ) );;
 	AddFunction( new nfGetButtonPressed( init ) );;
+	AddFunction( new nfGetButtonTouched( init ) );;
 	AddFunction( new nfGetAxisValue( init ) );;
 	AddFunction( new nfGetFeedbackValue( init ) );;
 	AddFunction( new nfSetFeedbackValue( init ) );;
@@ -420,14 +436,22 @@ int deClassVRSystem::GetCachedDeviceCount(){
 	return pCachedDevices.GetCount();
 }
 
-deInputDevice *deClassVRSystem::GetCachedDeviceAt( int index ){
+dedsInputDevice *deClassVRSystem::GetCachedDeviceAt( int index ){
 	pUpdateCachedDevices();
-	return ( deInputDevice* )pCachedDevices.GetAt( index );
+	return ( dedsInputDevice* )pCachedDevices.GetAt( index );
 }
 
 void deClassVRSystem::InvalidCachedDevices(){
 	pCachedDevices.RemoveAll();
 	pCacheDirty = true;
+}
+
+void deClassVRSystem::OnFrameUpdate(){
+	const int count = pCachedDevices.GetCount();
+	int i;
+	for( i=0; i<count; i++ ){
+		( ( dedsInputDevice* )pCachedDevices.GetAt( i ) )->OnFrameUpdate();
+	}
 }
 
 
@@ -447,7 +471,7 @@ void deClassVRSystem::pUpdateCachedDevices(){
 	pCachedDevices.RemoveAll();
 	
 	for( i=0; i<count; i++ ){
-		pCachedDevices.Add( deInputDevice::Ref::New( module.GetDeviceAt( i ) ) );
+		pCachedDevices.Add( dedsInputDevice::Ref::New( new dedsInputDevice( pDS, module, i ) ) );
 	}
 	
 	pCacheDirty = false;

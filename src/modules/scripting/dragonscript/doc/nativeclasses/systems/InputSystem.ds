@@ -66,6 +66,11 @@ fixed class InputSystem
 		return false
 	end
 	
+	/** \brief Button at index on device at index is touched. */
+	public static func bool getButtonTouched( int device, int button )
+		return false
+	end
+	
 	/** \brief Value of axis at index on device at index. */
 	public static func int getAxisValue( int device, int axis )
 		return 0

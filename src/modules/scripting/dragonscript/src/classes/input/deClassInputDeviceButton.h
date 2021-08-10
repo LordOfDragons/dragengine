@@ -23,11 +23,10 @@
 #define _DEDSCLASSINPUTDEVICEBUTTON_H_
 
 #include <libdscript/libdscript.h>
-#include <dragengine/input/deInputEvent.h>
 
 class deScriptingDragonScript;
 
-class deInputDevice;
+class dedsInputDevice;
 
 
 
@@ -61,8 +60,7 @@ public:
 	void CreateClassMembers( dsEngine *engine );
 	
 	/** \brief Push button. */
-	void PushButton( dsRunTime *rt, deInputDevice *device,
-		deInputEvent::eSources deviceSource, int deviceIndex, int index );
+	void PushButton( dsRunTime *rt, dedsInputDevice *device, int index );
 	/*@}*/
 	
 	
@@ -101,6 +99,7 @@ private:
 	DEF_NATFUNC( nfGetDisplayText );
 	
 	DEF_NATFUNC( nfIsPressed );
+	DEF_NATFUNC( nfIsTouched );
 	
 	DEF_NATFUNC( nfEquals );
 #undef DEF_NATFUNC

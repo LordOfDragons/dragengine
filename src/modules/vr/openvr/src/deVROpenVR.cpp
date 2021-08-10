@@ -87,6 +87,10 @@ vr::IVRSystem &deVROpenVR::GetSystem() const{
 	return *pSystem;
 }
 
+void deVROpenVR::SendEvent( const deInputEvent &event ){
+	GetGameEngine()->GetVRSystem()->GetEventQueue().AddEvent( event );
+}
+
 
 
 // Module Management
@@ -218,6 +222,10 @@ bool deVROpenVR::GetButtonPressed( int device, int button ){
 	return pDevices.GetAt( device )->GetButtonAt( button )->GetPressed();
 }
 
+bool deVROpenVR::GetButtonTouched( int device, int button ){
+	return pDevices.GetAt( device )->GetButtonAt( button )->GetTouched();
+}
+
 float deVROpenVR::GetAxisValue( int device, int axis ){
 	return pDevices.GetAt( device )->GetAxisAt( axis )->GetValue();
 }
@@ -228,6 +236,14 @@ float deVROpenVR::GetFeedbackValue( int device, int feedback ){
 
 void deVROpenVR::SetFeedbackValue( int device, int feedback, float value ){
 	pDevices.GetAt( device )->GetFeedbackAt( feedback )->SetValue( value );
+}
+
+void deVROpenVR::GetDevicePose( int device, deInputDevicePose &pose ){
+	pDevices.GetAt( device )->GetDevicePose( pose );
+}
+
+void deVROpenVR::GetDeviceBonePose( int device, int bone, deInputDevicePose &pose ){
+	pDevices.GetAt( device )->GetBonePose( bone, pose );
 }
 
 
@@ -291,27 +307,145 @@ void deVROpenVR::ProcessEvents(){
 			break;
 			
 		case vr::VREvent_ButtonPress:
-			LogInfoFormat( "ProcessEvents: Button pressed %d:%d",
-				event.trackedDeviceIndex, event.data.controller.button );
+// 			LogInfoFormat( "ProcessEvents: Button pressed %d:%d",
+// 				event.trackedDeviceIndex, event.data.controller.button );
+			pButtonPress( event.trackedDeviceIndex, ( vr::EVRButtonId )event.data.controller.button );
 			break;
 			
 		case vr::VREvent_ButtonUnpress:
-			LogInfoFormat( "ProcessEvents: Button unpress %d:%d",
-				event.trackedDeviceIndex, event.data.controller.button );
+// 			LogInfoFormat( "ProcessEvents: Button unpress %d:%d",
+// 				event.trackedDeviceIndex, event.data.controller.button );
+			pButtonRelease( event.trackedDeviceIndex, ( vr::EVRButtonId )event.data.controller.button );
 			break;
 			
 		case vr::VREvent_ButtonTouch:
-			LogInfoFormat( "ProcessEvents: Button touch %d:%d",
-				event.trackedDeviceIndex, event.data.controller.button );
+// 			LogInfoFormat( "ProcessEvents: Button touch %d:%d",
+// 				event.trackedDeviceIndex, event.data.controller.button );
+			pButtonTouch( event.trackedDeviceIndex, ( vr::EVRButtonId )event.data.controller.button );
 			break;
 			
 		case vr::VREvent_ButtonUntouch:
-			LogInfoFormat( "ProcessEvents: Button untouch %d:%d",
-				event.trackedDeviceIndex, event.data.controller.button );
+// 			LogInfoFormat( "ProcessEvents: Button untouch %d:%d",
+// 				event.trackedDeviceIndex, event.data.controller.button );
+			pButtonUntouch( event.trackedDeviceIndex, ( vr::EVRButtonId )event.data.controller.button );
 			break;
 			
 		default:
 			LogInfoFormat( "ProcessEvents: Event type %d", event.eventType );
 		}
 	}
+	
+	pDevices.TrackDeviceStates();
+}
+
+void deVROpenVR::pButtonPress( vr::TrackedDeviceIndex_t deviceIndex, vr::EVRButtonId buttonType ){
+	const int realDeviceIndex = pDevices.IndexOfWithIndex( deviceIndex );
+	if( realDeviceIndex == -1 ){
+		return;
+	}
+	
+	deovrDevice &device = *pDevices.GetAt( realDeviceIndex );
+	const int realButtonIndex = device.IndexOfButtonWithType( buttonType );
+	if( realButtonIndex == -1 ){
+		return;
+	}
+	
+	deovrDeviceButton &button = *device.GetButtonAt( realButtonIndex );
+	if( button.GetPressed() ){
+		return;
+	}
+	
+	button.SetPressed( true );
+	
+	deInputEvent event;
+	event.SetType( deInputEvent::eeButtonPress );
+	event.SetSource( deInputEvent::esVR );
+	event.SetDevice( realDeviceIndex );
+	event.SetCode( realButtonIndex );
+	event.SetTime( { decDateTime().ToSystemTime(), 0 } );
+	SendEvent( event );
+}
+
+void deVROpenVR::pButtonRelease( vr::TrackedDeviceIndex_t deviceIndex, vr::EVRButtonId buttonType ){
+	const int realDeviceIndex = pDevices.IndexOfWithIndex( deviceIndex );
+	if( realDeviceIndex == -1 ){
+		return;
+	}
+	
+	deovrDevice &device = *pDevices.GetAt( realDeviceIndex );
+	const int realButtonIndex = device.IndexOfButtonWithType( buttonType );
+	if( realButtonIndex == -1 ){
+		return;
+	}
+	
+	deovrDeviceButton &button = *device.GetButtonAt( realButtonIndex );
+	if( ! button.GetPressed() ){
+		return;
+	}
+	
+	button.SetPressed( false );
+	
+	deInputEvent event;
+	event.SetType( deInputEvent::eeButtonRelease );
+	event.SetSource( deInputEvent::esVR );
+	event.SetDevice( realDeviceIndex );
+	event.SetCode( realButtonIndex );
+	event.SetTime( { decDateTime().ToSystemTime(), 0 } );
+	SendEvent( event );
+}
+
+void deVROpenVR::pButtonTouch( vr::TrackedDeviceIndex_t deviceIndex, vr::EVRButtonId buttonType ){
+	const int realDeviceIndex = pDevices.IndexOfWithIndex( deviceIndex );
+	if( realDeviceIndex == -1 ){
+		return;
+	}
+	
+	deovrDevice &device = *pDevices.GetAt( realDeviceIndex );
+	const int realButtonIndex = device.IndexOfButtonWithType( buttonType );
+	if( realButtonIndex == -1 ){
+		return;
+	}
+	
+	deovrDeviceButton &button = *device.GetButtonAt( realButtonIndex );
+	if( button.GetTouched() ){
+		return;
+	}
+	
+	button.SetTouched( true );
+	
+	deInputEvent event;
+	event.SetType( deInputEvent::eeButtonTouch );
+	event.SetSource( deInputEvent::esVR );
+	event.SetDevice( realDeviceIndex );
+	event.SetCode( realButtonIndex );
+	event.SetTime( { decDateTime().ToSystemTime(), 0 } );
+	SendEvent( event );
+}
+
+void deVROpenVR::pButtonUntouch( vr::TrackedDeviceIndex_t deviceIndex, vr::EVRButtonId buttonType ){
+	const int realDeviceIndex = pDevices.IndexOfWithIndex( deviceIndex );
+	if( realDeviceIndex == -1 ){
+		return;
+	}
+	
+	deovrDevice &device = *pDevices.GetAt( realDeviceIndex );
+	const int realButtonIndex = device.IndexOfButtonWithType( buttonType );
+	if( realButtonIndex == -1 ){
+		return;
+	}
+	
+	deovrDeviceButton &button = *device.GetButtonAt( realButtonIndex );
+	if( ! button.GetTouched() ){
+		return;
+	}
+	
+	button.SetTouched( false );
+	
+	deInputEvent event;
+	event.SetType( deInputEvent::eeButtonUntouch );
+	event.SetSource( deInputEvent::esVR );
+	event.SetDevice( realDeviceIndex );
+	event.SetCode( realButtonIndex );
+	event.SetTime( { decDateTime().ToSystemTime(), 0 } );
+	SendEvent( event );
 }

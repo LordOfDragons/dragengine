@@ -886,8 +886,12 @@ bool deScriptingDragonScript::OnFrameUpdate(){
 	timerCanHitCollider = 0; timerCanHitColliderCount = 0;
 	timerColliderChanged = 0; timerColliderChangedCount = 0;
 	#endif
-	pResourceLoader->Update();
+	pResourceLoader->OnFrameUpdate();
+	pClsInpSys->OnFrameUpdate();
+	pClsVRSys->OnFrameUpdate();
+	
 	DeleteValuesDeleteLater();
+	
 	const bool result = pCallFunction( "onFrameUpdate" );
 	#ifdef SPECIAL_DEBUG
 	LogInfoFormat( "OnFrameUpdate: collisionResponse(%i) = %iys", timerCollisionResponseCount, timerCollisionResponse );

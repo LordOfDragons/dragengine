@@ -49,6 +49,7 @@ private:
 	
 	const int pAxisIndex;
 	vr::EVRControllerAxisType pAxisType;
+	bool pUseX;
 	
 	decString pID;
 	decString pName;
@@ -58,11 +59,12 @@ private:
 	decObjectOrderedSet pDisplayIcons;
 	decString pDisplayText;
 	
-	int pMinimum;
-	int pMaximum;
-	
 	float pValue;
-	timeval pLastEventTime;
+	
+	float pJitterHistory[ 3 ];
+	int pJitterHistorySize;
+	int pJitterHistoryOffset;
+	int pJitterHistoryCount;
 	
 	
 	
@@ -101,6 +103,12 @@ public:
 	
 	/** Set axis type. */
 	void SetAxisType( vr::EVRControllerAxisType axisType );
+	
+	/** Use X state value if true otherwise use Y state value. */
+	inline bool GetUseX() const{ return pUseX; }
+	
+	/** Set use X state value if true otherwise use Y state value. */
+	void SetUseX( bool useX );
 	
 	
 	
@@ -141,23 +149,20 @@ public:
 	
 	
 	
-	/** Minimum value. */
-	inline int GetMinimum() const{ return pMinimum; }
-	
-	/** Set minimum value. */
-	void SetMinimum( int minimum );
-	
-	/** Maximum value. */
-	inline int GetMaximum() const{ return pMaximum; }
-	
-	/** Set maximum value. */
-	void SetMaximum( int maximum );
-	
 	/** Value. */
 	inline float GetValue() const{ return pValue; }
 	
 	/** Set value. */
 	void SetValue( float value );
+	
+	/** Update value if changed. */
+	void UpdateValue( float value );
+	
+	/** Track state. */
+	void TrackState();
+	
+	/** Reset state. */
+	void ResetState();
 	
 	
 	

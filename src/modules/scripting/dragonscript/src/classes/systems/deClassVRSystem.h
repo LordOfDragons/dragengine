@@ -27,7 +27,7 @@
 #include <libdscript/libdscript.h>
 
 class deScriptingDragonScript;
-class deInputDevice;
+class dedsInputDevice;
 
 
 /**
@@ -66,10 +66,13 @@ public:
 	int GetCachedDeviceCount();
 	
 	/** \brief Cached device. */
-	deInputDevice *GetCachedDeviceAt( int index );
+	dedsInputDevice *GetCachedDeviceAt( int index );
 	
 	/** \brief Invalidate cached devices. */
 	void InvalidCachedDevices();
+	
+	/** Frame update. */
+	void OnFrameUpdate();
 	/*@}*/
 	
 	
@@ -111,6 +114,7 @@ private:
 	DEF_NATFUNC( nfIndexOfAxisWithID );
 	DEF_NATFUNC( nfIndexOfFeedbackWithID );
 	DEF_NATFUNC( nfGetButtonPressed );
+	DEF_NATFUNC( nfGetButtonTouched );
 	DEF_NATFUNC( nfGetAxisValue );
 	DEF_NATFUNC( nfGetFeedbackValue );
 	DEF_NATFUNC( nfSetFeedbackValue );

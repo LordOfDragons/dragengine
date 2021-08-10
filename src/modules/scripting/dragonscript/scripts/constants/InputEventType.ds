@@ -62,4 +62,16 @@ enum InputEventType
 	
 	/** \brief Input device parameters changed. */
 	deviceParamsChanged
+	
+	/**
+	 * \brief Device button touched.
+	 * \version 1.6
+	 */
+	buttonTouch
+	
+	/**
+	 * \brief Device button untouched.
+	 * \version 1.6
+	 */
+	buttonUntouch
 end

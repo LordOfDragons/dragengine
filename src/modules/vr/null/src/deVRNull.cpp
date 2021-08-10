@@ -26,6 +26,7 @@
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
+#include <dragengine/input/deInputDevicePose.h>
 #include <dragengine/systems/deVRSystem.h>
 
 
@@ -130,6 +131,10 @@ bool deVRNull::GetButtonPressed( int, int ){
 	DETHROW( deeInvalidParam );
 }
 
+bool deVRNull::GetButtonTouched( int, int ){
+	DETHROW( deeInvalidParam );
+}
+
 float deVRNull::GetAxisValue( int, int ){
 	DETHROW( deeInvalidParam );
 }
@@ -139,6 +144,14 @@ float deVRNull::GetFeedbackValue( int, int ){
 }
 
 void deVRNull::SetFeedbackValue( int, int, float ){
+}
+
+void deVRNull::GetDevicePose( int, deInputDevicePose &pose ){
+	pose = deInputDevicePose();
+}
+
+void deVRNull::GetDeviceBonePose( int, int, deInputDevicePose &pose ){
+	pose = deInputDevicePose();
 }
 
 

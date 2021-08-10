@@ -35,6 +35,7 @@
 #include "../deBaseModule.h"
 
 class deInputDevice;
+class deInputDevicePose;
 class deInputEvent;
 
 #ifdef OS_ANDROID
@@ -83,12 +84,6 @@ public:
 	
 	/** \brief Clean up module. */
 	virtual void CleanUp() = 0;
-	
-	/**
-	 * \brief Global engine property changed.
-	 * \version 1.6
-	 */
-	virtual void GlobalPropertyChanged();
 	/*@}*/
 	
 	
@@ -113,17 +108,35 @@ public:
 	/** \brief Index of feedback with identifier on device at index or -1 if absent. */
 	virtual int IndexOfFeedbackWithID( int device, const char *id ) = 0;
 	
-	/** \brief Button at index on device at index is pressed down. */
+	/** \brief Button at index on device is pressed down. */
 	virtual bool GetButtonPressed( int device, int button ) = 0;
 	
-	/** \brief Value of axis at index on device at index. */
+	/**
+	 * \brief Button at index on device is touched.
+	 * \version 1.6
+	 */
+	virtual bool GetButtonTouched( int device, int button );
+	
+	/** \brief Value of axis at index on device. */
 	virtual float GetAxisValue( int device, int axis ) = 0;
 	
-	/** \brief Value of feedback at index on device at index. */
+	/** \brief Value of feedback at index on device. */
 	virtual float GetFeedbackValue( int device, int feedback ) = 0;
 	
-	/** \brief Set value of feedback at index on device at index. */
+	/** \brief Set value of feedback at index on device. */
 	virtual void SetFeedbackValue( int device, int feedback, float value ) = 0;
+	
+	/**
+	 * \brief Device pose or identity if not supported.
+	 * \version 1.6
+	 */
+	virtual void GetDevicePose( int device, deInputDevicePose &pose );
+	
+	/**
+	 * \brief Device bone pose or identity if not supported.
+	 * \version 1.6
+	 */
+	virtual void GetDeviceBonePose( int device, int bone, deInputDevicePose &pose );
 	
 	/**
 	 * \brief Index of button best matching key code or -1 if not found.

@@ -124,4 +124,18 @@ class Command
 	 */
 	public func void analogAbsolute( float value )
 	end
+	
+	/**
+	 * \brief Input device button has been touched.
+	 * \version 1.6
+	 */
+	public func void touch()
+	end
+	
+	/**
+	 * \brief Input device button has been untouched.
+	 * \version 1.6
+	 */
+	public func void untouch()
+	end
 end

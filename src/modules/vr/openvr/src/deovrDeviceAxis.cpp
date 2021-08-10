@@ -28,6 +28,7 @@
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/input/deInputEvent.h>
 #include <dragengine/resources/image/deImage.h>
 #include <dragengine/resources/image/deImageManager.h>
 
@@ -44,10 +45,12 @@ pDevice( device ),
 pIndex( -1 ),
 pAxisIndex( axisIndex ),
 pAxisType( vr::k_eControllerAxis_None ),
+pUseX( true ),
 pType( deInputDeviceAxis::eatGeneric ),
-pMinimum( -100 ),
-pMaximum( 100 ),
-pValue( 0.0f ){
+pValue( 0.0f ),
+pJitterHistorySize( 3 ),
+pJitterHistoryOffset( 0 ),
+pJitterHistoryCount( 0 ){
 }
 
 deovrDeviceAxis::~deovrDeviceAxis(){
@@ -64,6 +67,10 @@ void deovrDeviceAxis::SetIndex( int index ){
 
 void deovrDeviceAxis::SetAxisType( vr::EVRControllerAxisType axisType ){
 	pAxisType = axisType;
+}
+
+void deovrDeviceAxis::SetUseX( bool useX ){
+	pUseX = useX;
 }
 
 void deovrDeviceAxis::SetID( const char *id ){
@@ -111,18 +118,74 @@ void deovrDeviceAxis::SetDisplayText( const char *text ){
 
 
 
-void deovrDeviceAxis::SetMinimum( int minimum ){
-	pMinimum = minimum;
-}
-
-void deovrDeviceAxis::SetMaximum( int maximum ){
-	pMaximum = maximum;
-}
-
-
-
 void deovrDeviceAxis::SetValue( float value ){
+	pValue = value;
+}
+
+void deovrDeviceAxis::UpdateValue( float value ){
 	value = decMath::clamp( value, -1.0f, 1.0f );
+	
+	/*
+	pJitterHistory[ pJitterHistoryOffset ] = value;
+	pJitterHistoryOffset = ( pJitterHistoryOffset + 1 ) % pJitterHistorySize;
+	pJitterHistoryCount = decMath::min( pJitterHistoryCount + 1, pJitterHistorySize );
+	
+	int i;
+	value = pJitterHistory[ 0 ];
+	for( i=1; i<pJitterHistoryCount; i++ ){
+		value += pJitterHistory[ i ];
+	}
+	value /= pJitterHistoryCount;
+	*/
+	
+	if( fabsf( value - pValue ) < 0.01f ){
+		return;
+	}
+	
+	SetValue( value );
+	
+	deInputEvent event;
+	event.SetType( deInputEvent::eeAxisMove );
+	event.SetSource( deInputEvent::esVR );
+	event.SetDevice( pDevice.GetIndex() );
+	event.SetCode( pIndex );
+	event.SetValue( value );
+	event.SetTime( { decDateTime().ToSystemTime(), 0 } );
+	pDevice.GetOvr().SendEvent( event );
+}
+
+void deovrDeviceAxis::TrackState(){
+	const vr::VRControllerState_t &state = pDevice.GetState();
+	
+	switch( pAxisType ){
+	case vr::k_eControllerAxis_Trigger:
+		UpdateValue( state.rAxis[ pAxisIndex ].x * 2.0f - 1.0f );
+		break;
+		
+	default:
+		if( pUseX ){
+			UpdateValue( state.rAxis[ pAxisIndex ].x );
+			
+		}else{
+			UpdateValue( state.rAxis[ pAxisIndex ].y );
+		}
+	}
+}
+
+void deovrDeviceAxis::ResetState(){
+	pJitterHistoryCount = 0;
+	pJitterHistoryOffset = 0;
+	
+	switch( pAxisType ){
+	case vr::k_eControllerAxis_Trigger:
+		UpdateValue( -1.0f );
+		SetValue( -1.0f );
+		break;
+		
+	default:
+		UpdateValue( 0.0f );
+		SetValue( 0.0f );
+	}
 }
 
 

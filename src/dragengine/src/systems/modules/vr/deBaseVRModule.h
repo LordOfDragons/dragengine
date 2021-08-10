@@ -25,6 +25,7 @@
 #include "../deBaseModule.h"
 
 class deInputDevice;
+class deInputDevicePose;
 class deCamera;
 
 
@@ -122,6 +123,9 @@ public:
 	/** \brief Button at index on device at index is pressed down. */
 	virtual bool GetButtonPressed( int device, int button ) = 0;
 	
+	/** \brief Button at index on device at index is touched. */
+	virtual bool GetButtonTouched( int device, int button ) = 0;
+	
 	/** \brief Value of axis at index on device at index. */
 	virtual float GetAxisValue( int device, int axis ) = 0;
 	
@@ -130,6 +134,12 @@ public:
 	
 	/** \brief Set value of feedback at index on device at index. */
 	virtual void SetFeedbackValue( int device, int feedback, float value ) = 0;
+	
+	/** \brief Device pose or identity if not supported. */
+	virtual void GetDevicePose( int device, deInputDevicePose &pose ) = 0;
+	
+	/** \brief Device bone pose or identity if not supported. */
+	virtual void GetDeviceBonePose( int device, int bone, deInputDevicePose &pose ) = 0;
 	/*@}*/
 	
 	

@@ -46,10 +46,17 @@
 ////////////////////////////
 
 deovrDeviceManager::deovrDeviceManager( deVROpenVR &ovr ) :
-pOvr( ovr ){
+pOvr( ovr ),
+pDevicePoses( nullptr )
+{
+	pDevicePoses = new vr::TrackedDevicePose_t[ vr::k_unMaxTrackedDeviceCount ];
+	memset( pDevicePoses, 0, sizeof( vr::TrackedDevicePose_t ) * vr::k_unMaxTrackedDeviceCount );
 }
 
 deovrDeviceManager::~deovrDeviceManager(){
+	if( pDevicePoses ){
+		delete [] pDevicePoses;
+	}
 }
 
 
@@ -86,6 +93,12 @@ void deovrDeviceManager::InitDevices(){
 	event.SetTime( { decDateTime().ToSystemTime(), 0 } );
 	
 	for( index=0; index<vr::k_unMaxTrackedDeviceCount; index++ ){
+		if( ! pOvr.GetSystem().IsTrackedDeviceConnected( index ) ){
+			// openvr potentially reports previously attached devices which are no more
+			// attached right now. avoid listing them confusing the user
+			continue;
+		}
+		
 		device.TakeOver( new deovrDevice( pOvr, index ) );
 		if( device->GetType() == deInputDevice::edtGeneric ){
 			continue;
@@ -254,6 +267,43 @@ void deovrDeviceManager::UpdateParameters( vr::TrackedDeviceIndex_t index ){
 	pOvr.GetGameEngine()->GetVRSystem()->GetEventQueue().AddEvent( event );
 }
 
+int deovrDeviceManager::NextNameNumber( vr::TrackedDeviceClass deviceClass ) const{
+	const int count = pDevices.GetCount();
+	int i, nameNumber = 1;
+	
+	while( true ){
+		for( i=0; i<count; i++ ){
+			const deovrDevice &device = *GetAt( i );
+			if( device.GetDeviceClass() == deviceClass && device.GetNameNumber() == nameNumber ){
+				break;
+			}
+		}
+		if( i == count ){
+			return nameNumber;
+		}
+		nameNumber++;
+	}
+}
+
+void deovrDeviceManager::TrackDeviceStates(){
+	float photonsFromNow = 0.0f;
+	pOvr.GetSystem().GetDeviceToAbsoluteTrackingPose( vr::TrackingUniverseStanding,
+		photonsFromNow, pDevicePoses, vr::k_unMaxTrackedDeviceCount );
+	
+	const int count = pDevices.GetCount();
+	int i;
+	for( i=0; i<count; i++ ){
+		GetAt( i )->TrackStates();
+	}
+}
+
+const vr::TrackedDevicePose_t &deovrDeviceManager::GetDevicePoseAt( int index ) const{
+	if( index < 0 || index >= ( int )vr::k_unMaxTrackedDeviceCount ){
+		DETHROW( deeInvalidParam );
+	}
+	return pDevicePoses[ index ];
+}
+
 
 
 void deovrDeviceManager::LogDevices(){
@@ -272,8 +322,8 @@ void deovrDeviceManager::LogDevices(){
 			pOvr.LogInfo( "  Axes:" );
 			for( j=0; j<axisCount; j++ ){
 				const deovrDeviceAxis &axis = *device.GetAxisAt( j );
-				pOvr.LogInfoFormat( "    - '%s' (%s) %d .. %d", axis.GetName().GetString(),
-					axis.GetID().GetString(), axis.GetMinimum(), axis.GetMaximum() );
+				pOvr.LogInfoFormat( "    - '%s' (%s)", axis.GetName().GetString(),
+					axis.GetID().GetString() );
 			}
 		}
 		

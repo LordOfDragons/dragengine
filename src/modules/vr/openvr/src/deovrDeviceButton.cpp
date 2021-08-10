@@ -45,7 +45,8 @@ pDevice( device ),
 pIndex( -1 ),
 pButtonType( buttonType ),
 pButtonMask( vr::ButtonMaskFromId( buttonType ) ),
-pPressed( false ){
+pPressed( false ),
+pTouched( false ){
 }
 
 deovrDeviceButton::~deovrDeviceButton(){
@@ -70,6 +71,10 @@ void deovrDeviceButton::SetName( const char *name ){
 
 void deovrDeviceButton::SetPressed( bool pressed ){
 	pPressed = pressed;
+}
+
+void deovrDeviceButton::SetTouched( bool touched ){
+	pTouched = touched;
 }
 
 

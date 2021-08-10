@@ -32,6 +32,7 @@
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/input/deInputDevice.h>
+#include <dragengine/input/deInputDevicePose.h>
 #include <dragengine/input/deInputEvent.h>
 #include <dragengine/input/deInputEventQueue.h>
 #include <dragengine/resources/image/deImage.h>
@@ -48,7 +49,8 @@
 deovrDevice::deovrDevice( deVROpenVR &ovr, vr::TrackedDeviceIndex_t deviceIndex ) :
 pOvr( ovr ),
 pIndex( -1 ),
-pDeviceIndex( deviceIndex )
+pDeviceIndex( deviceIndex ),
+pNameNumber( -1 )
 {
 	UpdateParameters();
 }
@@ -137,6 +139,34 @@ deovrDeviceButton *deovrDevice::GetButtonWithID( const char *id ) const{
 	return nullptr;
 }
 
+deovrDeviceButton *deovrDevice::GetButtonWithType( vr::EVRButtonId buttonType ) const{
+	const int count = pButtons.GetCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		deovrDeviceButton * const button = ( deovrDeviceButton* )pButtons.GetAt( i );
+		if( button->GetButtonType() == buttonType ){
+			return button;
+		}
+	}
+	
+	return nullptr;
+}
+
+deovrDeviceButton *deovrDevice::GetButtonWithMask( uint32_t buttonMask ) const{
+	const int count = pButtons.GetCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		deovrDeviceButton * const button = ( deovrDeviceButton* )pButtons.GetAt( i );
+		if( button->GetButtonMask() == buttonMask ){
+			return button;
+		}
+	}
+	
+	return nullptr;
+}
+
 int deovrDevice::IndexOfButtonWithID( const char *id ) const{
 	const int count = pButtons.GetCount();
 	int i;
@@ -144,6 +174,34 @@ int deovrDevice::IndexOfButtonWithID( const char *id ) const{
 	for( i=0; i<count; i++ ){
 		const deovrDeviceButton &button = *( ( deovrDeviceButton* )pButtons.GetAt( i ) );
 		if( button.GetID() == id ){
+			return i;
+		}
+	}
+	
+	return -1;
+}
+
+int deovrDevice::IndexOfButtonWithType( vr::EVRButtonId buttonType ) const{
+	const int count = pButtons.GetCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		const deovrDeviceButton &button = *( ( deovrDeviceButton* )pButtons.GetAt( i ) );
+		if( button.GetButtonType() == buttonType ){
+			return i;
+		}
+	}
+	
+	return -1;
+}
+
+int deovrDevice::IndexOfButtonWithMask( uint32_t buttonMask ) const{
+	const int count = pButtons.GetCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		const deovrDeviceButton &button = *( ( deovrDeviceButton* )pButtons.GetAt( i ) );
+		if( button.GetButtonMask() == buttonMask ){
 			return i;
 		}
 	}
@@ -258,10 +316,19 @@ void deovrDevice::GetInfo( deInputDevice &info ) const{
 	for( i=0; i<feedbackCount; i++ ){
 		( ( deovrDeviceFeedback* )pFeedbacks.GetAt( i ) )->GetInfo( info.GetFeedbackAt( i ) );
 	}
+	
+	info.SetBoneConfiguration( deInputDevice::ebcNone );
 }
 
 void deovrDevice::UpdateParameters(){
+	const vr::TrackedDeviceClass oldDeviceClass = pDeviceClass;
 	pDeviceClass = pOvr.GetSystem().GetTrackedDeviceClass( pDeviceIndex );
+	
+	if( pDeviceClass != oldDeviceClass || pNameNumber == -1 ){
+		pNameNumber = -1; // required so we do not block ourselves
+		pNameNumber = pOvr.GetDevices().NextNameNumber( pDeviceClass );
+	}
+	
 	pControllerRole = vr::TrackedControllerRole_Invalid;
 	
 	switch( pDeviceClass ){
@@ -275,14 +342,13 @@ void deovrDevice::UpdateParameters(){
 		
 	case vr::TrackedDeviceClass_GenericTracker:
 		pType = deInputDevice::edtVRTracker;
-		pName = "Tracker";
-// 		pDisplayText.Format( "%d", );
-		pID.Format( "%st", OVR_DEVID_PREFIX );
+		pName.Format( "Tracker %d", pNameNumber );
+		pID.Format( "%str", OVR_DEVID_PREFIX );
 		break;
 		
 	case vr::TrackedDeviceClass_TrackingReference:
 		pType = deInputDevice::edtVRBaseStation;
-		pName = "Base Station";
+		pName.Format( "Base Station %d", pNameNumber );
 // 		pDisplayText.Format( "%d", );
 		pID.Format( "%sbs", OVR_DEVID_PREFIX );
 		break;
@@ -319,6 +385,36 @@ void deovrDevice::UpdateParameters(){
 	// controller only: Prop_AttachedDeviceId_String
 }
 
+void deovrDevice::TrackStates(){
+	if( ! pOvr.GetSystem().GetControllerState( pDeviceIndex, &pState, sizeof( pState ) ) ){
+		ResetStates();
+		return;
+	}
+	
+	const int axisCount = pAxes.GetCount();
+	int i;
+	for( i=0; i<axisCount; i++ ){
+		GetAxisAt( i )->TrackState();
+	}
+}
+
+void deovrDevice::ResetStates(){
+	const int axisCount = pAxes.GetCount();
+	int i;
+	
+	for( i=0; i<axisCount; i++ ){
+		GetAxisAt( i )->ResetState();
+	}
+}
+
+void deovrDevice::GetDevicePose( deInputDevicePose &pose ){
+	pUpdatePose( pOvr.GetDevices().GetDevicePoseAt( pDeviceIndex ), pose );
+}
+
+void deovrDevice::GetBonePose( int bone, deInputDevicePose &pose ){
+	pose = deInputDevicePose();
+}
+
 
 
 // Private Functions
@@ -339,27 +435,27 @@ void deovrDevice::pUpdateParametersController(){
 	
 	switch( pControllerRole ){
 	case vr::TrackedControllerRole_LeftHand:
-		pName = "Controller Left";
+		pName.Format( "Controller Left %d", pNameNumber );
 		pID.Format( "%scl", OVR_DEVID_PREFIX );
 		break;
 		
 	case vr::TrackedControllerRole_RightHand:
-		pName = "Controller Right";
+		pName.Format( "Controller Right %d", pNameNumber );
 		pID.Format( "%scr", OVR_DEVID_PREFIX );
 		break;
 		
 	case vr::TrackedControllerRole_Treadmill:
-		pName = "Treadmill";
+		pName.Format( "Treadmill %d", pNameNumber );
 		pID.Format( "%sct", OVR_DEVID_PREFIX );
 		break;
 		
 	case vr::TrackedControllerRole_Stylus:
-		pName = "Stylus";
+		pName.Format( "Stylus %d", pNameNumber );
 		pID.Format( "%scs", OVR_DEVID_PREFIX );
 		break;
 		
 	default:
-		pName = "Controller";
+		pName.Format( "Controller %d", pNameNumber );
 		pID.Format( "%scg", OVR_DEVID_PREFIX );
 	}
 	
@@ -495,12 +591,10 @@ void deovrDevice::pAddAxisTrigger( int index, int &nextNum ){
 	axis.TakeOver( new deovrDeviceAxis( *this, index ) );
 	axis->SetAxisType( vr::k_eControllerAxis_Trigger );
 	axis->SetType( deInputDeviceAxis::eatTrigger );
-	axis->SetMinimum( 0 );
-	axis->SetMaximum( 100 );
-	axis->SetValue( 0.0f );
+	axis->SetValue( -1.0f );
 	text.Format( "Trigger %d", nextNum );
 	axis->SetName( text );
-	text.Format( "trigger%d", nextNum );
+	text.Format( "tr%d", nextNum );
 	axis->SetID( text );
 	axis->SetIndex( pAxes.GetCount() );
 	pAxes.Add( axis );
@@ -509,67 +603,70 @@ void deovrDevice::pAddAxisTrigger( int index, int &nextNum ){
 }
 
 void deovrDevice::pAddAxesJoystick( int index, int &nextNum ){
+	static const char *name[ 2 ] = { "X", "Y" };
+	static const char *id[ 2 ] = { "x", "y" };
 	deovrDeviceAxis::Ref axis;
 	decString text;
+	int i;
 	
-	// x axis
-	axis.TakeOver( new deovrDeviceAxis( *this, index ) );
-	axis->SetAxisType( vr::k_eControllerAxis_Joystick );
-	axis->SetType( deInputDeviceAxis::eatStick );
-	axis->SetMinimum( -100 );
-	axis->SetMaximum( 100 );
-	text.Format( "Joystick %d X", nextNum );
-	axis->SetName( text );
-	text.Format( "joystick%dx", nextNum );
-	axis->SetID( text );
-	axis->SetIndex( pAxes.GetCount() );
-	pAxes.Add( axis );
-	
-	// y axis
-	axis.TakeOver( new deovrDeviceAxis( *this, index ) );
-	axis->SetAxisType( vr::k_eControllerAxis_Joystick );
-	axis->SetType( deInputDeviceAxis::eatStick );
-	axis->SetMinimum( -100 );
-	axis->SetMaximum( 100 );
-	text.Format( "Joystick %d Y", nextNum );
-	axis->SetName( text );
-	text.Format( "joystick%dy", nextNum );
-	axis->SetID( text );
-	axis->SetIndex( pAxes.GetCount() );
-	pAxes.Add( axis );
+	for( i=0; i<2; i++ ){
+		axis.TakeOver( new deovrDeviceAxis( *this, index ) );
+		axis->SetAxisType( vr::k_eControllerAxis_Joystick );
+		axis->SetType( deInputDeviceAxis::eatStick );
+		axis->SetUseX( i == 0 );
+		text.Format( "Joystick %d %s", nextNum, name[ i ] );
+		axis->SetName( text );
+		text.Format( "js%d%s", nextNum, id[ i ] );
+		axis->SetID( text );
+		axis->SetIndex( pAxes.GetCount() );
+		pAxes.Add( axis );
+	}
 	
 	nextNum++;
 }
 
 void deovrDevice::pAddAxesTrackpad( int index, int &nextNum ){
+	static const char *name[ 2 ] = { "X", "Y" };
+	static const char *id[ 2 ] = { "x", "y" };
 	deovrDeviceAxis::Ref axis;
 	decString text;
+	int i;
 	
-	// x axis
-	axis.TakeOver( new deovrDeviceAxis( *this, index ) );
-	axis->SetAxisType( vr::k_eControllerAxis_TrackPad );
-	axis->SetType( deInputDeviceAxis::eatTouchPad );
-	axis->SetMinimum( -100 );
-	axis->SetMaximum( 100 );
-	text.Format( "TrackPad %d X", nextNum );
-	axis->SetName( text );
-	text.Format( "trackpad%dx", nextNum );
-	axis->SetID( text );
-	axis->SetIndex( pAxes.GetCount() );
-	pAxes.Add( axis );
-	
-	// y axis
-	axis.TakeOver( new deovrDeviceAxis( *this, index ) );
-	axis->SetAxisType( vr::k_eControllerAxis_TrackPad );
-	axis->SetType( deInputDeviceAxis::eatTouchPad );
-	axis->SetMinimum( -100 );
-	axis->SetMaximum( 100 );
-	text.Format( "TrackPad %d Y", nextNum );
-	axis->SetName( text );
-	text.Format( "trackpad%dy", nextNum );
-	axis->SetID( text );
-	axis->SetIndex( pAxes.GetCount() );
-	pAxes.Add( axis );
+	for( i=0; i<2; i++ ){
+		axis.TakeOver( new deovrDeviceAxis( *this, index ) );
+		axis->SetAxisType( vr::k_eControllerAxis_TrackPad );
+		axis->SetType( deInputDeviceAxis::eatTouchPad );
+		axis->SetUseX( i == 0 );
+		text.Format( "TrackPad %d %s", nextNum, name[ i ] );
+		axis->SetName( text );
+		text.Format( "tp%d%s", nextNum, id[ i ] );
+		axis->SetID( text );
+		axis->SetIndex( pAxes.GetCount() );
+		pAxes.Add( axis );
+	}
 	
 	nextNum++;
+}
+
+void deovrDevice::pUpdatePose( const vr::TrackedDevicePose_t &in, deInputDevicePose &out ) const{
+	// OpenVR is right handed: right=x, up=y, forward=-z
+	
+	if( ! in.bPoseIsValid ){
+		out = deInputDevicePose();
+	}
+	
+	const vr::HmdMatrix34_t &m = in.mDeviceToAbsoluteTracking;
+	out.SetPosition( decVector( m.m[ 0 ][ 3 ], m.m[ 1 ][ 3 ], -m.m[ 2 ][ 3 ] ) );
+	
+	decMatrix rm;
+	rm.a11 =  m.m[ 0 ][ 0 ]; rm.a12 =  m.m[ 0 ][ 1 ]; rm.a13 =  m.m[ 0 ][ 2 ];
+	rm.a21 =  m.m[ 1 ][ 0 ]; rm.a22 =  m.m[ 1 ][ 1 ]; rm.a23 =  m.m[ 1 ][ 2 ];
+	rm.a31 = -m.m[ 2 ][ 0 ]; rm.a32 = -m.m[ 2 ][ 1 ]; rm.a33 = -m.m[ 2 ][ 2 ];
+	out.SetOrientation( rm.ToQuaternion() );
+	
+	const vr::HmdVector3_t &lv = in.vVelocity;
+	out.SetLinearVelocity( decVector( lv.v[ 0 ], lv.v[ 1 ], lv.v[ 2 ] ) );
+	
+	const vr::HmdVector3_t &av = in.vAngularVelocity;
+	out.SetAngularVelocity( decVector( av.v[ 0 ], av.v[ 1 ], av.v[ 2 ] ) );
 }

@@ -61,7 +61,7 @@ public:
 	/** Determines if there are still some resources left to load. */
 	inline bool HasResourcesLeft() const{ return pTaskCount > 0; }
 	/** Update. */
-	void Update();
+	void OnFrameUpdate();
 	
 	/** Adds a request. */
 	void AddRequest( const char *filename, deResourceLoader::eResourceType resourceType,

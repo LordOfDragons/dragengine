@@ -29,6 +29,7 @@
 #include "../graphics/deClassImage.h"
 #include "../../deScriptingDragonScript.h"
 #include "../../deClassPathes.h"
+#include "../../utils/dedsInputDevice.h"
 
 #include <dragengine/deEngine.h>
 #include <dragengine/input/deInputDevice.h>
@@ -48,9 +49,7 @@
 /////////////////////
 
 struct sIDAxisNatDat{
-	deInputDevice *device;
-	deInputEvent::eSources deviceSource;
-	int deviceIndex;
+	dedsInputDevice *device;
 	int axisIndex;
 };
 
@@ -91,7 +90,7 @@ void deClassInputDeviceAxis::nfGetInputDevice::RunFunction( dsRunTime *rt, dsVal
 	const sIDAxisNatDat &nd = *( ( const sIDAxisNatDat* )p_GetNativeData( myself ) );
 	deScriptingDragonScript &ds = ( ( deClassInputDeviceAxis* )GetOwnerClass() )->GetDS();
 	
-	ds.GetClassInputDevice()->PushInputDevice( rt, nd.device, nd.deviceSource, nd.deviceIndex );
+	ds.GetClassInputDevice()->PushInputDevice( rt, nd.device );
 }
 
 // public func int getAxisIndex()
@@ -114,7 +113,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsString ){
 }
 void deClassInputDeviceAxis::nfGetID::RunFunction( dsRunTime *rt, dsValue *myself ){
 	const sIDAxisNatDat &nd = *( ( const sIDAxisNatDat* )p_GetNativeData( myself ) );
-	const deInputDeviceAxis &axis = nd.device->GetAxisAt( nd.axisIndex );
+	const deInputDeviceAxis &axis = nd.device->GetDevice()->GetAxisAt( nd.axisIndex );
 	
 	rt->PushString( axis.GetID() );
 }
@@ -126,7 +125,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsString ){
 }
 void deClassInputDeviceAxis::nfGetName::RunFunction( dsRunTime *rt, dsValue *myself ){
 	const sIDAxisNatDat &nd = *( ( const sIDAxisNatDat* )p_GetNativeData( myself ) );
-	const deInputDeviceAxis &axis = nd.device->GetAxisAt( nd.axisIndex );
+	const deInputDeviceAxis &axis = nd.device->GetDevice()->GetAxisAt( nd.axisIndex );
 	
 	rt->PushString( axis.GetName() );
 }
@@ -138,7 +137,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsInputDeviceAxisType ){
 }
 void deClassInputDeviceAxis::nfGetType::RunFunction( dsRunTime *rt, dsValue *myself ){
 	const sIDAxisNatDat &nd = *( ( const sIDAxisNatDat* )p_GetNativeData( myself ) );
-	const deInputDeviceAxis &axis = nd.device->GetAxisAt( nd.axisIndex );
+	const deInputDeviceAxis &axis = nd.device->GetDevice()->GetAxisAt( nd.axisIndex );
 	
 	rt->PushValue( ( ( deClassInputDeviceAxis* )GetOwnerClass() )->GetClassInputDeviceAxisType()
 		->GetVariable( axis.GetType() )->GetStaticValue() );
@@ -151,7 +150,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsImage ){
 }
 void deClassInputDeviceAxis::nfGetDisplayImage::RunFunction( dsRunTime *rt, dsValue *myself ){
 	const sIDAxisNatDat &nd = *( ( const sIDAxisNatDat* )p_GetNativeData( myself ) );
-	const deInputDeviceAxis &axis = nd.device->GetAxisAt( nd.axisIndex );
+	const deInputDeviceAxis &axis = nd.device->GetDevice()->GetAxisAt( nd.axisIndex );
 	deScriptingDragonScript &ds = ( ( deClassInputDeviceAxis* )GetOwnerClass() )->GetDS();
 	
 	ds.GetClassImage()->PushImage( rt, axis.GetDisplayImage() );
@@ -164,7 +163,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger ){
 }
 void deClassInputDeviceAxis::nfGetDisplayIconCount::RunFunction( dsRunTime *rt, dsValue *myself ){
 	const sIDAxisNatDat &nd = *( ( const sIDAxisNatDat* )p_GetNativeData( myself ) );
-	const deInputDeviceAxis &axis = nd.device->GetAxisAt( nd.axisIndex );
+	const deInputDeviceAxis &axis = nd.device->GetDevice()->GetAxisAt( nd.axisIndex );
 	rt->PushInt( axis.GetDisplayIconCount() );
 }
 
@@ -176,7 +175,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsImage ){
 }
 void deClassInputDeviceAxis::nfGetDisplayIconAt::RunFunction( dsRunTime *rt, dsValue *myself ){
 	const sIDAxisNatDat &nd = *( ( const sIDAxisNatDat* )p_GetNativeData( myself ) );
-	const deInputDeviceAxis &axis = nd.device->GetAxisAt( nd.axisIndex );
+	const deInputDeviceAxis &axis = nd.device->GetDevice()->GetAxisAt( nd.axisIndex );
 	deScriptingDragonScript &ds = ( ( deClassInputDeviceAxis* )GetOwnerClass() )->GetDS();
 	
 	ds.GetClassImage()->PushImage( rt, axis.GetDisplayIconAt( rt->GetValue( 0 )->GetInt() ) );
@@ -190,7 +189,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsImage ){
 }
 void deClassInputDeviceAxis::nfGetLargestDisplayIconX::RunFunction( dsRunTime *rt, dsValue *myself ){
 	const sIDAxisNatDat &nd = *( ( const sIDAxisNatDat* )p_GetNativeData( myself ) );
-	const deInputDeviceAxis &axis = nd.device->GetAxisAt( nd.axisIndex );
+	const deInputDeviceAxis &axis = nd.device->GetDevice()->GetAxisAt( nd.axisIndex );
 	deScriptingDragonScript &ds = ( ( deClassInputDeviceAxis* )GetOwnerClass() )->GetDS();
 	const int count = axis.GetDisplayIconCount();
 	const int maxWidth = rt->GetValue( 0 )->GetInt();
@@ -217,7 +216,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsImage ){
 }
 void deClassInputDeviceAxis::nfGetLargestDisplayIconY::RunFunction( dsRunTime *rt, dsValue *myself ){
 	const sIDAxisNatDat &nd = *( ( const sIDAxisNatDat* )p_GetNativeData( myself ) );
-	const deInputDeviceAxis &axis = nd.device->GetAxisAt( nd.axisIndex );
+	const deInputDeviceAxis &axis = nd.device->GetDevice()->GetAxisAt( nd.axisIndex );
 	deScriptingDragonScript &ds = ( ( deClassInputDeviceAxis* )GetOwnerClass() )->GetDS();
 	const int count = axis.GetDisplayIconCount();
 	const int maxHeight = rt->GetValue( 0 )->GetInt();
@@ -243,7 +242,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsString ){
 }
 void deClassInputDeviceAxis::nfGetDisplayText::RunFunction( dsRunTime *rt, dsValue *myself ){
 	const sIDAxisNatDat &nd = *( ( const sIDAxisNatDat* )p_GetNativeData( myself ) );
-	const deInputDeviceAxis &axis = nd.device->GetAxisAt( nd.axisIndex );
+	const deInputDeviceAxis &axis = nd.device->GetDevice()->GetAxisAt( nd.axisIndex );
 	
 	rt->PushString( axis.GetDisplayText() );
 }
@@ -259,10 +258,10 @@ void deClassInputDeviceAxis::nfGetValue::RunFunction( dsRunTime *rt, dsValue *my
 	const sIDAxisNatDat &nd = *( ( const sIDAxisNatDat* )p_GetNativeData( myself ) );
 	deScriptingDragonScript &ds = ( ( deClassInputDeviceAxis* )GetOwnerClass() )->GetDS();
 	
-	switch( nd.deviceSource ){
+	switch( nd.device->GetDeviceSource() ){
 	case deInputEvent::esInput:{
 		deBaseInputModule &module = *ds.GetGameEngine()->GetInputSystem()->GetActiveModule();
-		const int deviceIndex = module.IndexOfDeviceWithID( nd.device->GetID() );
+		const int deviceIndex = module.IndexOfDeviceWithID( nd.device->GetDevice()->GetID() );
 		if( deviceIndex != -1 ){
 			rt->PushFloat( module.GetAxisValue( deviceIndex, nd.axisIndex ) );
 			
@@ -273,7 +272,7 @@ void deClassInputDeviceAxis::nfGetValue::RunFunction( dsRunTime *rt, dsValue *my
 		
 	case deInputEvent::esVR:{
 		deBaseVRModule &module = *ds.GetGameEngine()->GetVRSystem()->GetActiveModule();
-		const int deviceIndex = module.IndexOfDeviceWithID( nd.device->GetID() );
+		const int deviceIndex = module.IndexOfDeviceWithID( nd.device->GetDevice()->GetID() );
 		if( deviceIndex != -1 ){
 			rt->PushFloat( module.GetAxisValue( deviceIndex, nd.axisIndex ) );
 			
@@ -371,9 +370,8 @@ void deClassInputDeviceAxis::CreateClassMembers( dsEngine *engine ){
 	CalcMemberOffsets();
 }
 
-void deClassInputDeviceAxis::PushAxis( dsRunTime *rt, deInputDevice *device,
-deInputEvent::eSources deviceSource, int deviceIndex, int index ){
-	if( ! rt || ! device || index < 0 || index >= device->GetAxisCount() ){
+void deClassInputDeviceAxis::PushAxis( dsRunTime *rt, dedsInputDevice *device, int index ){
+	if( ! rt || ! device || index < 0 || index >= device->GetDevice()->GetAxisCount() ){
 		DSTHROW( dueInvalidParam );
 	}
 	
@@ -381,8 +379,6 @@ deInputEvent::eSources deviceSource, int deviceIndex, int index ){
 	sIDAxisNatDat &nd = *( ( sIDAxisNatDat* )p_GetNativeData(
 		rt->GetValue( 0 )->GetRealObject()->GetBuffer() ) );
 	nd.device = device;
-	nd.deviceSource = deviceSource;
-	nd.deviceIndex = deviceIndex;
 	device->AddReference();
 	nd.axisIndex = index;
 }

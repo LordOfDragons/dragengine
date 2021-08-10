@@ -143,6 +143,13 @@ class InputDevice
 	
 	
 	
+	/** \brief Device bone configuration. */
+	public func InputDeviceBoneConfiguration getBoneConfiguration()
+		return null
+	end
+	
+	
+	
 	/**
 	 * \brief Input device is present on the host platform.
 	 * 
@@ -241,6 +248,60 @@ class InputDevice
 	 */
 	public func int buttonMatchingKeyChar( int character )
 		return 0
+	end
+	
+	
+	
+	/** \brief Device pose position relative to tracking reference coordinate frame. */
+	public func Vector getDevicePosePosition()
+		return null
+	end
+	
+	/** \brief Device pose orientation relative to tracking reference coordinate frame. */
+	public func Quaternion getDevicePoseOrientation()
+		return null
+	end
+	
+	/** \brief Device pose linear velocity relative to tracking reference coordinate frame. */
+	public func Vector getDevicePoseLinearVelocity()
+		return null
+	end
+	
+	/** \brief Device pose angular velocity relative to tracking reference coordinate frame. */
+	public func Vector getDevicePoseAngularVelocity()
+		return null
+	end
+	
+	/** \brief Device pose matrix relative to tracking reference coordinate frame. */
+	public func Matrix getDevicePoseMatrix()
+		return null
+	end
+	
+	
+	
+	/** \brief Device bone pose position relative to parent reference coordinate frame. */
+	public func Vector getDeviceBonePosePosition( int bone )
+		return null
+	end
+	
+	/** \brief Device bone pose orientation relative to parent reference coordinate frame. */
+	public func Quaternion getDeviceBonePoseOrientation( int bone )
+		return null
+	end
+	
+	/** \brief Device bone pose linear velocity relative to parent reference coordinate frame. */
+	public func Vector getDeviceBonePoseLinearVelocity( int bone )
+		return null
+	end
+	
+	/** \brief Device bone pose angular velocity relative to parent reference coordinate frame. */
+	public func Vector getDeviceBonePoseAngularVelocity( int bone )
+		return null
+	end
+	
+	/** \brief Device bone pose matrix relative to parent reference coordinate frame. */
+	public func Matrix getDeviceBonePoseMatrix( int bone )
+		return null
 	end
 	/*@}*/
 end

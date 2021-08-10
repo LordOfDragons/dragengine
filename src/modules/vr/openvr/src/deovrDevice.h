@@ -35,6 +35,7 @@ class deovrDeviceAxis;
 class deovrDeviceButton;
 class deovrDeviceFeedback;
 class deInputDevice;
+class deInputDevicePose;
 
 
 /**
@@ -57,6 +58,7 @@ private:
 	vr::ETrackedControllerRole pControllerRole;
 	
 	deInputDevice::eDeviceTypes pType;
+	int pNameNumber;
 	decString pID;
 	decString pName;
 	deImage::Ref pDisplayImage;
@@ -66,6 +68,8 @@ private:
 	decObjectOrderedSet pButtons;
 	decObjectOrderedSet pAxes;
 	decObjectOrderedSet pFeedbacks;
+	
+	vr::VRControllerState_t pState;
 	
 	
 	
@@ -111,6 +115,9 @@ public:
 	/** Set device type. */
 	void SetType( deInputDevice::eDeviceTypes type );
 	
+	/** Name number or -1 it not set. */
+	inline int GetNameNumber() const{ return pNameNumber; }
+	
 	/** Identifier. */
 	inline const decString &GetID() const{ return pID; }
 	
@@ -149,11 +156,23 @@ public:
 	/** Button at index. */
 	deovrDeviceButton *GetButtonAt( int index ) const;
 	
-	/** Button with identifier or \em nullptr if absent. */
+	/** Button with identifier or nullptr if absent. */
 	deovrDeviceButton *GetButtonWithID( const char *id ) const;
+	
+	/** Button with button type or nullptr if absent. */
+	deovrDeviceButton *GetButtonWithType( vr::EVRButtonId buttonType ) const;
+	
+	/** Button with button mask or nullptr if absent. */
+	deovrDeviceButton *GetButtonWithMask( uint32_t buttonMask ) const;
 	
 	/** Index of button with identifier or -1 if absent. */
 	int IndexOfButtonWithID( const char *id ) const;
+	
+	/** Index of button with button type or -1 if absent. */
+	int IndexOfButtonWithType( vr::EVRButtonId buttonType ) const;
+	
+	/** Index of button with button mask or -1 if absent. */
+	int IndexOfButtonWithMask( uint32_t buttonMask ) const;
 	
 	
 	
@@ -166,7 +185,7 @@ public:
 	/** Axis at index. */
 	deovrDeviceAxis *GetAxisAt( int index ) const;
 	
-	/** Axis with identifier or \em nullptr if absent. */
+	/** Axis with identifier or nullptr if absent. */
 	deovrDeviceAxis *GetAxisWithID( const char *id ) const;
 	
 	/** Index of axis with identifier or -1 if absent. */
@@ -193,6 +212,21 @@ public:
 	
 	/** Update device parameters. */
 	void UpdateParameters();
+	
+	/** Track states. */
+	void TrackStates();
+	
+	/** Reset states. */
+	void ResetStates();
+	
+	/** State. */
+	inline const vr::VRControllerState_t &GetState() const{ return pState; }
+	
+	/** Get device pose. */
+	void GetDevicePose( deInputDevicePose &pose );
+	
+	/** Get bone pose. */
+	void GetBonePose( int bone, deInputDevicePose &pose );
 	/*@}*/
 	
 	
@@ -203,6 +237,7 @@ private:
 	void pAddAxisTrigger( int index, int &nextNum );
 	void pAddAxesJoystick( int index, int &nextNum );
 	void pAddAxesTrackpad( int index, int &nextNum );
+	void pUpdatePose( const vr::TrackedDevicePose_t &in, deInputDevicePose &out ) const;
 };
 
 #endif

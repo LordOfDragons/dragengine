@@ -33,6 +33,8 @@
 /** input module device identifier prefix. */
 #define OVR_DEVID_PREFIX "OVR_"
 
+class deInputEvent;
+
 
 /**
  * OpenVR VR Module.
@@ -68,6 +70,9 @@ public:
 	
 	/** VR System. */
 	vr::IVRSystem &GetSystem() const;
+	
+	/** Send event. */
+	void SendEvent( const deInputEvent &event );
 	/*@}*/
 	
 	
@@ -149,6 +154,9 @@ public:
 	/** Button at index on device at index is pressed down. */
 	virtual bool GetButtonPressed( int device, int button );
 	
+	/** Button at index on device at index is touched. */
+	virtual bool GetButtonTouched( int device, int button );
+	
 	/** Value of axis at index on device at index. */
 	virtual float GetAxisValue( int device, int axis );
 	
@@ -157,6 +165,12 @@ public:
 	
 	/** Set value of feedback at index on device at index. */
 	virtual void SetFeedbackValue( int device, int feedback, float value );
+	
+	/** \brief Device pose or identity if not supported. */
+	virtual void GetDevicePose( int device, deInputDevicePose &pose );
+	
+	/** \brief Device bone pose or identity if not supported. */
+	virtual void GetDeviceBonePose( int device, int bone, deInputDevicePose &pose );
 	/*@}*/
 	
 	
@@ -174,6 +188,14 @@ public:
 	 */
 	virtual void ProcessEvents();
 	/*@}*/
+	
+	
+	
+private:
+	void pButtonPress( vr::TrackedDeviceIndex_t deviceIndex, vr::EVRButtonId buttonType );
+	void pButtonRelease( vr::TrackedDeviceIndex_t deviceIndex, vr::EVRButtonId buttonType );
+	void pButtonTouch( vr::TrackedDeviceIndex_t deviceIndex, vr::EVRButtonId buttonType );
+	void pButtonUntouch( vr::TrackedDeviceIndex_t deviceIndex, vr::EVRButtonId buttonType );
 };
 
 #endif

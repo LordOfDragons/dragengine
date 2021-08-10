@@ -49,8 +49,22 @@ class deInputDeviceFeedback;
  * from -1 to 1 for absolue axes. For relative axes like the mouse only the relative change
  * is returned. Buttons return a pressed or unpressed state. Feedbacks on the other hand
  * allow manipulating a feedback state of the device if present.
+ * 
+ * Devices can have a pose indicating the coordinate frame and velocities for use with VR
+ * tracking. These are all the edtVR* types. If a device does not support tracking the
+ * identity coordinate frame with zero velocities is returned.
+ * 
+ * Devices can have bone poses for use by VR controllers. To keep the system simple the bone
+ * configuration is indicated using an enumeration type. This ensures a consistent bone
+ * configuration developers can rely upon.
  */
 class deInputDevice : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deInputDevice> Ref;
+	
+	
+	
 public:
 	/** \brief Device types. */
 	enum eDeviceTypes{
@@ -76,7 +90,67 @@ public:
 		edtRacingWheel,
 		
 		/** \brief Generic device. */
-		edtGeneric
+		edtGeneric,
+		
+		/**
+		 * \brief VR Head mounted display.
+		 * \version 1.6
+		 */
+		edtVRHMD,
+		
+		/**
+		 * \brief VR Controller.
+		 * \version 1.6
+		 */
+		edtVRController,
+		
+		/**
+		 * \brief VR Treadmill.
+		 * \version 1.6
+		 */
+		edtVRTreadmill,
+		
+		/**
+		 * \brief VR Tracker.
+		 * \version 1.6
+		 */
+		edtVRTracker,
+		
+		/**
+		 * \brief VR Base Station.
+		 * \version 1.6
+		 */
+		edtVRBaseStation
+	};
+	
+	/**
+	 * \brief Bone configurations.
+	 * \version 1.6
+	 */
+	enum eBoneConfigurations{
+		/** \brief No bones supported. */
+		ebcNone,
+		
+		/**
+		 * \brief Articulated hand bones.
+		 * 
+		 * Bones are defined for fingers in this order:
+		 * - Thumb: bones 0 to 3
+		 * - Index finger: bones 4 to 7
+		 * - Middle finger: bones 8 to 11
+		 * - Ring finger: bones 12 to 15
+		 * - Pinky finger: bones 16 to 19
+		 * 
+		 * For a total of 20 bones. Each finger has bones in these order:
+		 * - Wrist: inside the hand
+		 * - Segment 1: first finger segment
+		 * - Segment 2: second finger segment
+		 * - Segment 3: third finger segment
+		 * 
+		 * Poses are relative to the parent bone inside chains and the device coordinate
+		 * frame for chain root bones.
+		 */
+		ebcHand
 	};
 	
 	
@@ -127,6 +201,9 @@ private:
 	
 	/** \brief Number of feedbacks. */
 	int pFeedbackCount;
+	
+	/** \brief Bone configuration. */
+	eBoneConfigurations pBoneConfiguration;
 	
 	
 	
@@ -225,6 +302,18 @@ public:
 	
 	/** \brief Set text to display centered across display image or icon. */
 	void SetDisplayText( const char *text );
+	
+	/**
+	 * \brief Bone configuration.
+	 * \version 1.6
+	 */
+	inline eBoneConfigurations GetBoneConfiguration() const{ return pBoneConfiguration; }
+	
+	/**
+	 * \brief Set bone configuration.
+	 * \version 1.6
+	 */
+	void SetBoneConfiguration( eBoneConfigurations configuration );
 	/*@}*/
 	
 	

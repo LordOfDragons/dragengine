@@ -356,9 +356,6 @@ int deGraphicOpenGl::GetFPSRate(){
 	return pRenderThread->GetFPSRate();
 }
 
-void deGraphicOpenGl::GlobalPropertyChanged(){
-}
-
 
 
 deBaseGraphicBillboard *deGraphicOpenGl::CreateBillboard( deBillboard *billboard ){

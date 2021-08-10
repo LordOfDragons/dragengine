@@ -42,7 +42,8 @@ pButtonCount( 0 ),
 pAxes( NULL ),
 pAxisCount( 0 ),
 pFeedbacks( NULL ),
-pFeedbackCount( 0 ){
+pFeedbackCount( 0 ),
+pBoneConfiguration( ebcNone ){
 }
 
 deInputDevice::~deInputDevice(){
@@ -95,6 +96,10 @@ void deInputDevice::AddDisplayIcon( deImage *image ){
 
 void deInputDevice::SetDisplayText( const char * text){
 	pDisplayText = text;
+}
+
+void deInputDevice::SetBoneConfiguration( eBoneConfigurations configuration ){
+	pBoneConfiguration = configuration;
 }
 
 

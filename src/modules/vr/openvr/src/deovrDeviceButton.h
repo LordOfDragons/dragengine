@@ -57,12 +57,11 @@ private:
 	decString pID;
 	decString pName;
 	bool pPressed;
+	bool pTouched;
 	
 	deImage::Ref pDisplayImage;
 	decObjectOrderedSet pDisplayIcons;
 	decString pDisplayText;
-	
-	bool pDirtyValue;
 	
 	
 	
@@ -116,8 +115,14 @@ public:
 	/** Button is pressed. */
 	inline bool GetPressed() const{ return pPressed; }
 	
-	/** Set if button is presssed. */
+	/** Set if button is pressed. */
 	void SetPressed( bool pressed );
+	
+	/** Button is touched. */
+	inline bool GetTouched() const{ return pTouched; }
+	
+	/** Set if button is touched. */
+	void SetTouched( bool touched );
 	
 	
 	

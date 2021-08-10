@@ -119,6 +119,24 @@ class BindingInputProcessor extends DefaultInputProcessor
 		binding.getCommand().analogAbsolute( value )
 	end
 	
+	/**
+	 * \brief Touch binding command.
+	 * 
+	 * Default implementation calls Command.touch() .
+	 */
+	protected func void touch( Binding binding )
+		binding.getCommand().touch()
+	end
+	
+	/**
+	 * \brief Untouch binding command.
+	 * 
+	 * Default implementation calls Command.untouch() .
+	 */
+	protected func void untouch( Binding binding )
+		binding.getCommand().untouch()
+	end
+	
 	
 	
 	/** \brief Process input event. */
@@ -256,6 +274,20 @@ class BindingInputProcessor extends DefaultInputProcessor
 					
 					bindingNegative.setSimulateAxisPressed( simulatePressed )
 				end
+			end
+			
+		case InputEventType.buttonTouch
+			var Binding binding = this.pBindingManager.findButtonBinding( \
+				event.getSource(), event.getDevice(), event.getCode() )
+			if binding != null
+				this.touch( binding )
+			end
+			
+		case InputEventType.buttonUntouch
+			var Binding binding = this.pBindingManager.findButtonBinding( \
+				event.getSource(), event.getDevice(), event.getCode() )
+			if binding != null
+				this.untouch( binding )
 			end
 		end
 	end

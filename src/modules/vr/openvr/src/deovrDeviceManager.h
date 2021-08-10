@@ -24,6 +24,7 @@
 
 #include <openvr/openvr.h>
 
+#include <dragengine/common/collection/decIntList.h>
 #include <dragengine/common/collection/decObjectOrderedSet.h>
 
 class deVROpenVR;
@@ -41,6 +42,8 @@ private:
 	deVROpenVR &pOvr;
 	
 	decObjectOrderedSet pDevices;
+	
+	vr::TrackedDevicePose_t *pDevicePoses;
 	
 	
 	
@@ -95,6 +98,15 @@ public:
 	 * remove it instead.
 	 */
 	void UpdateParameters( vr::TrackedDeviceIndex_t index );
+	
+	/** Free name number for device type. */
+	int NextNameNumber( vr::TrackedDeviceClass deviceClass ) const;
+	
+	/** Track device states. */
+	void TrackDeviceStates();
+	
+	/** Device pose at index. */
+	const vr::TrackedDevicePose_t &GetDevicePoseAt( int index ) const;
 	
 	
 	

@@ -30,9 +30,9 @@
 #include "../input/deClassInputDevice.h"
 #include "../../deScriptingDragonScript.h"
 #include "../../deClassPathes.h"
+#include "../../utils/dedsInputDevice.h"
 
 #include <dragengine/deEngine.h>
-#include <dragengine/input/deInputDevice.h>
 #include <dragengine/systems/deInputSystem.h>
 #include <dragengine/systems/modules/input/deBaseInputModule.h>
 #include <dragengine/common/string/unicode/decUnicodeString.h>
@@ -89,8 +89,7 @@ void deClassInputSystem::nfGetDeviceAt::RunFunction( dsRunTime *rt, dsValue* ){
 	deClassInputSystem &clsInpSys = *( ( deClassInputSystem* )GetOwnerClass() );
 	const int index = rt->GetValue( 0 )->GetInt();
 	
-	clsInpSys.GetDS().GetClassInputDevice()->PushInputDevice( rt,
-		clsInpSys.GetCachedDeviceAt( index ), deInputEvent::esInput, index );
+	clsInpSys.GetDS().GetClassInputDevice()->PushInputDevice( rt, clsInpSys.GetCachedDeviceAt( index ) );
 }
 
 // public static func int indexOfDeviceWithID( String id )
@@ -169,6 +168,22 @@ void deClassInputSystem::nfGetButtonPressed::RunFunction( dsRunTime *rt, dsValue
 	const int device = rt->GetValue( 0 )->GetInt();
 	const int button  = rt->GetValue( 1 )->GetInt();
 	rt->PushBool( module.GetButtonPressed( device, button ) );
+}
+
+// public static func bool getButtonTouched( int device, int button )
+deClassInputSystem::nfGetButtonTouched::nfGetButtonTouched( const sInitData &init ) :
+dsFunction( init.clsInpSys, "getButtonTouched", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsBool ){
+	p_AddParameter( init.clsInteger ); // device
+	p_AddParameter( init.clsInteger ); // button
+}
+void deClassInputSystem::nfGetButtonTouched::RunFunction( dsRunTime *rt, dsValue* ){
+	const deScriptingDragonScript &ds = ( ( deClassInputSystem* )GetOwnerClass() )->GetDS();
+	deBaseInputModule &module = *ds.GetGameEngine()->GetInputSystem()->GetActiveModule();
+	
+	const int device = rt->GetValue( 0 )->GetInt();
+	const int button  = rt->GetValue( 1 )->GetInt();
+	rt->PushBool( module.GetButtonTouched( device, button ) );
 }
 
 // public static func int getAxisValue( int device, int axis )
@@ -400,6 +415,7 @@ void deClassInputSystem::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfIndexOfAxisWithID( init ) );;
 	AddFunction( new nfIndexOfFeedbackWithID( init ) );;
 	AddFunction( new nfGetButtonPressed( init ) );;
+	AddFunction( new nfGetButtonTouched( init ) );;
 	AddFunction( new nfGetAxisValue( init ) );;
 	AddFunction( new nfGetFeedbackValue( init ) );;
 	AddFunction( new nfSetFeedbackValue( init ) );;
@@ -422,14 +438,23 @@ int deClassInputSystem::GetCachedDeviceCount(){
 	return pCachedDevices.GetCount();
 }
 
-deInputDevice *deClassInputSystem::GetCachedDeviceAt( int index ){
+dedsInputDevice *deClassInputSystem::GetCachedDeviceAt( int index ){
 	pUpdateCachedDevices();
-	return ( deInputDevice* )pCachedDevices.GetAt( index );
+	return ( dedsInputDevice* )pCachedDevices.GetAt( index );
 }
 
 void deClassInputSystem::InvalidCachedDevices(){
 	pCachedDevices.RemoveAll();
 	pCacheDirty = true;
+}
+
+void deClassInputSystem::OnFrameUpdate(){
+	const int count = pCachedDevices.GetCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		( ( dedsInputDevice* )pCachedDevices.GetAt( i ) )->OnFrameUpdate();
+	}
 }
 
 
@@ -444,24 +469,12 @@ void deClassInputSystem::pUpdateCachedDevices(){
 	
 	deBaseInputModule &module = *pDS.GetGameEngine()->GetInputSystem()->GetActiveModule();
 	const int count = module.GetDeviceCount();
-	deInputDevice *device = NULL;
 	int i;
 	
 	pCachedDevices.RemoveAll();
 	
-	try{
-		for( i=0; i<count; i++ ){
-			device = module.GetDeviceAt( i );
-			pCachedDevices.Add( device );
-			device->FreeReference();
-			device = NULL;
-		}
-		
-	}catch( ... ){
-		if( device ){
-			device->FreeReference();
-		}
-		throw;
+	for( i=0; i<count; i++ ){
+		pCachedDevices.Add( dedsInputDevice::Ref::New( new dedsInputDevice( pDS, module, i ) ) );
 	}
 	
 	pCacheDirty = false;
