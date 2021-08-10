@@ -650,6 +650,8 @@ void deovrDevice::pAddAxesTrackpad( int index, int &nextNum ){
 
 void deovrDevice::pUpdatePose( const vr::TrackedDevicePose_t &in, deInputDevicePose &out ) const{
 	// OpenVR is right handed: right=x, up=y, forward=-z
+	// to transform the matrix apply the conversion (-z) for both the row vectors and
+	// the column vectors
 	
 	if( ! in.bPoseIsValid ){
 		out = deInputDevicePose();
@@ -659,14 +661,17 @@ void deovrDevice::pUpdatePose( const vr::TrackedDevicePose_t &in, deInputDeviceP
 	out.SetPosition( decVector( m.m[ 0 ][ 3 ], m.m[ 1 ][ 3 ], -m.m[ 2 ][ 3 ] ) );
 	
 	decMatrix rm;
-	rm.a11 =  m.m[ 0 ][ 0 ]; rm.a12 =  m.m[ 0 ][ 1 ]; rm.a13 =  m.m[ 0 ][ 2 ];
-	rm.a21 =  m.m[ 1 ][ 0 ]; rm.a22 =  m.m[ 1 ][ 1 ]; rm.a23 =  m.m[ 1 ][ 2 ];
-	rm.a31 = -m.m[ 2 ][ 0 ]; rm.a32 = -m.m[ 2 ][ 1 ]; rm.a33 = -m.m[ 2 ][ 2 ];
+	rm.a11 =  m.m[ 0 ][ 0 ]; rm.a12 =  m.m[ 0 ][ 1 ]; rm.a13 = -m.m[ 0 ][ 2 ];
+	rm.a21 =  m.m[ 1 ][ 0 ]; rm.a22 =  m.m[ 1 ][ 1 ]; rm.a23 = -m.m[ 1 ][ 2 ];
+	rm.a31 = -m.m[ 2 ][ 0 ]; rm.a32 = -m.m[ 2 ][ 1 ]; rm.a33 =  m.m[ 2 ][ 2 ];
 	out.SetOrientation( rm.ToQuaternion() );
 	
 	const vr::HmdVector3_t &lv = in.vVelocity;
-	out.SetLinearVelocity( decVector( lv.v[ 0 ], lv.v[ 1 ], lv.v[ 2 ] ) );
+	out.SetLinearVelocity( decVector( lv.v[ 0 ], lv.v[ 1 ], -lv.v[ 2 ] ) );
 	
+	// angular velocity is rotationAxis * rotationAngle. rotationAxis has to be converted
+	// by flipping z coordinate. going from right handed to left handed coordinate frame
+	// requires flipping the rotationAngle, hence all coordinates
 	const vr::HmdVector3_t &av = in.vAngularVelocity;
-	out.SetAngularVelocity( decVector( av.v[ 0 ], av.v[ 1 ], av.v[ 2 ] ) );
+	out.SetAngularVelocity( decVector( -av.v[ 0 ], -av.v[ 1 ], av.v[ 2 ] ) );
 }

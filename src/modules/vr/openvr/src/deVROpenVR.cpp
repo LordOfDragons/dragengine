@@ -331,7 +331,8 @@ void deVROpenVR::ProcessEvents(){
 			break;
 			
 		default:
-			LogInfoFormat( "ProcessEvents: Event type %d", event.eventType );
+// 			LogInfoFormat( "ProcessEvents: Event type %d", event.eventType );
+			break;
 		}
 	}
 	
