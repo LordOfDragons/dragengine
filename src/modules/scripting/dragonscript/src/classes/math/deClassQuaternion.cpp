@@ -515,9 +515,34 @@ deClassQuaternion::nfToString::nfToString( const sInitData &init ) : dsFunction(
 }
 void deClassQuaternion::nfToString::RunFunction( dsRunTime *rt, dsValue *myself ){
 	const decQuaternion &quaternion = ( ( sQuatNatDat* )p_GetNativeData( myself ) )->quaternion;
-	char buffer[ 80 ];
-	sprintf( ( char* )&buffer, "(%g,%g,%g,%g)", quaternion.x, quaternion.y, quaternion.z, quaternion.w );
-	rt->PushString( buffer );
+	decString str;
+	str.Format( "(%g,%g,%g,%g)", quaternion.x, quaternion.y, quaternion.z, quaternion.w );
+	rt->PushString( str );
+}
+
+// public func String toString( int precision )
+deClassQuaternion::nfToStringPrecision::nfToStringPrecision( const sInitData &init ) :
+dsFunction( init.clsQuat, "toString", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsStr ){
+	p_AddParameter( init.clsInt ); // precision
+}
+void deClassQuaternion::nfToStringPrecision::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const int precision = rt->GetValue( 0 )->GetInt();
+	if( precision < 0 ){
+		DSTHROW_INFO( dueInvalidParam, "precision < 0" );
+	}
+	if( precision > 6 ){
+		DSTHROW_INFO( dueInvalidParam, "precision > 6" );
+	}
+	
+	const unsigned char p = ( unsigned char )precision;
+	char format[ 22 ];
+	sprintf( format, "(%%.%hhuf,%%.%hhuf,%%.%hhuf,%%.%hhuf)", p, p, p, p );
+	
+	const decQuaternion &quaternion = ( ( sQuatNatDat* )p_GetNativeData( myself ) )->quaternion;
+	decString str;
+	str.Format( format, quaternion.x, quaternion.y, quaternion.z, quaternion.w );
+	rt->PushString( str );
 }
 
 
@@ -600,6 +625,7 @@ void deClassQuaternion::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfEquals( init ) );
 	AddFunction( new nfHashCode( init ) );
 	AddFunction( new nfToString( init ) );
+	AddFunction( new nfToStringPrecision( init ) );
 }
 
 const decQuaternion &deClassQuaternion::GetQuaternion( dsRealObject *myself ) const{

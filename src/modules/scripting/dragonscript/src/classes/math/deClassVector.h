@@ -102,6 +102,7 @@ private:
 	DEF_NATFUNC( nfEquals );
 	DEF_NATFUNC( nfHashCode );
 	DEF_NATFUNC( nfToString );
+	DEF_NATFUNC( nfToStringPrecision );
 #undef DEF_NATFUNC
 };
 

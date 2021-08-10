@@ -1099,6 +1099,39 @@ void deClassDMatrix::nfToString::RunFunction( dsRunTime *rt, dsValue *myself ){
 	rt->PushString( str );
 }
 
+// public func String toString( int precision )
+deClassDMatrix::nfToStringPrecision::nfToStringPrecision( const sInitData &init ) :
+dsFunction( init.clsDMatrix, "toString", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsStr ){
+	p_AddParameter( init.clsInt ); // precision
+}
+void deClassDMatrix::nfToStringPrecision::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const int precision = rt->GetValue( 0 )->GetInt();
+	if( precision < 0 ){
+		DSTHROW_INFO( dueInvalidParam, "precision < 0" );
+	}
+	if( precision > 6 ){
+		DSTHROW_INFO( dueInvalidParam, "precision > 6" );
+	}
+	
+	const unsigned char p = ( unsigned char )precision;
+	char format[ 90 ];
+	sprintf( format, "[[%%.%hhuf,%%.%hhuf,%%.%hhuf,%%.%hhuf],"
+		"[%%.%hhuf,%%.%hhuf,%%.%hhuf,%%.%hhuf],"
+		"[%%.%hhuf,%%.%hhuf,%%.%hhuf,%%.%hhuf],"
+		"[%%.%hhuf,%%.%hhuf,%%.%hhuf,%%.%hhuf]]",
+		p, p, p, p, p, p, p, p, p, p, p, p, p, p, p, p );
+	
+	const decDMatrix &matrix = ( ( sMatNatDat* )p_GetNativeData( myself ) )->matrix;
+	decString str;
+	
+	str.Format( format,
+		matrix.a11, matrix.a12, matrix.a13, matrix.a14, matrix.a21, matrix.a22, matrix.a23, matrix.a24,
+		matrix.a31, matrix.a32, matrix.a33, matrix.a34, matrix.a41, matrix.a42, matrix.a43, matrix.a44 );
+	
+	rt->PushString( str );
+}
+
 
 
 // Class deClassDMatrix
@@ -1218,6 +1251,7 @@ void deClassDMatrix::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfEquals( init ) );
 	AddFunction( new nfHashCode( init ) );
 	AddFunction( new nfToString( init ) );
+	AddFunction( new nfToStringPrecision( init ) );
 }
 
 const decDMatrix &deClassDMatrix::GetDMatrix( dsRealObject *myself ) const{

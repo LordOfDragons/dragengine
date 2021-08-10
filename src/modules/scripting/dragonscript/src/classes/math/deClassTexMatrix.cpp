@@ -636,6 +636,55 @@ void deClassTexMatrix::nfHashCode::RunFunction( dsRunTime *rt, dsValue *myself )
 	rt->PushInt( hash );
 }
 
+// public func String toString()
+deClassTexMatrix::nfToString::nfToString( const sInitData &init ) : dsFunction( init.clsTexMat,
+"toString", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsStr ){
+}
+void deClassTexMatrix::nfToString::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const decTexMatrix &matrix = ( ( sTMatNatDat* )p_GetNativeData( myself ) )->matrix;
+	decString str;
+	
+	str.Format( "[[%g,%g,%g],[%g,%g,%g],[%g,%g,%g]]",
+		matrix.a11, matrix.a12, matrix.a13,
+		matrix.a21, matrix.a22, matrix.a23,
+		matrix.a31, matrix.a32, matrix.a33 );
+	
+	rt->PushString( str );
+}
+
+// public func String toString( int precision )
+deClassTexMatrix::nfToStringPrecision::nfToStringPrecision( const sInitData &init ) :
+dsFunction( init.clsTexMat, "toString", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsStr ){
+	p_AddParameter( init.clsInt ); // precision
+}
+void deClassTexMatrix::nfToStringPrecision::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const int precision = rt->GetValue( 0 )->GetInt();
+	if( precision < 0 ){
+		DSTHROW_INFO( dueInvalidParam, "precision < 0" );
+	}
+	if( precision > 6 ){
+		DSTHROW_INFO( dueInvalidParam, "precision > 6" );
+	}
+	
+	const unsigned char p = ( unsigned char )precision;
+	char format[ 53 ];
+	sprintf( format, "[[%%.%hhuf,%%.%hhuf,%%.%hhuf],"
+		"[%%.%hhuf,%%.%hhuf,%%.%hhuf],"
+		"[%%.%hhuf,%%.%hhuf,%%.%hhuf]]",
+		p, p, p, p, p, p, p, p, p );
+	
+	const decTexMatrix &matrix = ( ( sTMatNatDat* )p_GetNativeData( myself ) )->matrix;
+	decString str;
+	
+	str.Format( format,
+		matrix.a11, matrix.a12, matrix.a13,
+		matrix.a21, matrix.a22, matrix.a23,
+		matrix.a31, matrix.a32, matrix.a33 );
+	
+	rt->PushString( str );
+}
+
 
 
 // Class deClassTexMatrix
@@ -723,6 +772,8 @@ void deClassTexMatrix::CreateClassMembers( dsEngine *engine ){
 	
 	AddFunction( new nfHashCode( init ) );
 	AddFunction( new nfEquals( init ) );
+	AddFunction( new nfToString( init ) );
+	AddFunction( new nfToStringPrecision( init ) );
 }
 
 const decTexMatrix &deClassTexMatrix::GetTexMatrix( dsRealObject *myself ) const{

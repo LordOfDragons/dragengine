@@ -648,13 +648,37 @@ void deClassDVector::nfHashCode::RunFunction( dsRunTime *rt, dsValue *myself ){
 // public func String toString()
 deClassDVector::nfToString::nfToString( const sInitData &init ) : dsFunction( init.clsDVec,
 "toString", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsStr ){
+	p_AddParameter( init.clsInt ); // precision
 }
 void deClassDVector::nfToString::RunFunction( dsRunTime *rt, dsValue *myself ){
 	const decDVector &vector = ( ( sDVecNatDat* )p_GetNativeData( myself ) )->vector;
-	char buffer[ 50 ];
+	decString str;
+	str.Format( "(%f,%f,%f)", vector.x, vector.y, vector.z );
+	rt->PushString( str );
+}
+
+// public func String toString( int precision )
+deClassDVector::nfToStringPrecision::nfToStringPrecision( const sInitData &init ) :
+dsFunction( init.clsDVec, "toString", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsStr ){
+}
+void deClassDVector::nfToStringPrecision::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const int precision = rt->GetValue( 0 )->GetInt();
+	if( precision < 0 ){
+		DSTHROW_INFO( dueInvalidParam, "precision < 0" );
+	}
+	if( precision > 6 ){
+		DSTHROW_INFO( dueInvalidParam, "precision > 6" );
+	}
 	
-	sprintf( ( char* )&buffer, "(%g,%g,%g)", vector.x, vector.y, vector.z );
-	rt->PushString( buffer );
+	const unsigned char p = ( unsigned char )precision;
+	char format[ 17 ];
+	sprintf( format, "(%%.%hhuf,%%.%hhuf,%%.%hhuf)", p, p, p );
+	
+	const decDVector &vector = ( ( sDVecNatDat* )p_GetNativeData( myself ) )->vector;
+	decString str;
+	str.Format( str, vector.x, vector.y, vector.z );
+	rt->PushString( str );
 }
 
 
@@ -753,6 +777,7 @@ void deClassDVector::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfEquals( init ) );
 	AddFunction( new nfHashCode( init ) );
 	AddFunction( new nfToString( init ) );
+	AddFunction( new nfToStringPrecision( init ) );
 }
 
 const decDVector &deClassDVector::GetDVector( dsRealObject *myself ) const{
