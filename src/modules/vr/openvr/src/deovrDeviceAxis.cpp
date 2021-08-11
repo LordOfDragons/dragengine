@@ -157,11 +157,13 @@ void deovrDeviceAxis::UpdateValue( float value ){
 void deovrDeviceAxis::TrackState(){
 	switch( pType ){
 	case deInputDeviceAxis::eatFingerBend:
-		UpdateValue( pDevice.GetSkeletalSummaryData().flFingerCurl[ pFinger ] );
+		UpdateValue( decMath::linearStep( pDevice.GetSkeletalSummaryData().flFingerCurl[ pFinger ],
+			pMinimum, pMaximum, -1.0f, 1.0f ) );
 		break;
 		
 	case deInputDeviceAxis::eatFingerSpread:
-		UpdateValue( pDevice.GetSkeletalSummaryData().flFingerSplay[ pFinger ] );
+		UpdateValue( decMath::linearStep( pDevice.GetSkeletalSummaryData().flFingerSplay[ pFinger ],
+			pMinimum, pMaximum, -1.0f, 1.0f ) );
 		break;
 		
 	default:{
@@ -172,10 +174,12 @@ void deovrDeviceAxis::TrackState(){
 			&dataAnalog, sizeof( dataAnalog ), pDevice.GetInputValueHandle() );
 		
 		if( error == vr::VRInputError_None ){
-			UpdateValue( decMath::linearStep( ( &dataAnalog.x )[ pComponent ], pMinimum, pMaximum, -1.0f, 1.0f ) );
+			UpdateValue( decMath::linearStep( ( &dataAnalog.x )[ pComponent ],
+				pMinimum, pMaximum, -1.0f, 1.0f ) );
 			
 		}else{
-			UpdateValue( pDefaultValue );
+			//UpdateValue( pDefaultValue );
+			// keep the last known value
 		}
 		}break;
 	}

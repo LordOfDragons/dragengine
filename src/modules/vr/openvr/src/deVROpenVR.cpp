@@ -421,6 +421,7 @@ void deVROpenVR::ProcessEvents(){
 		case vr::VREvent_Input_BindingLoadFailed:
 		case vr::VREvent_Input_ActionManifestReloaded:
 		case vr::VREvent_ActionBindingReloaded:
+		case vr::VREvent_Input_HapticVibration:
 			break;
 			
 		default:

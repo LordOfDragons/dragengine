@@ -52,6 +52,7 @@ pIndex( -1 ),
 pDeviceIndex( deviceIndex ),
 pInputValueHandle( vr::k_ulInvalidInputValueHandle ),
 pActionPose( vr::k_ulInvalidActionHandle ),
+pActionHandPose( vr::k_ulInvalidActionHandle ),
 pBoneConfiguration( deInputDevice::ebcNone ),
 pNameNumber( -1 ),
 pBoneTransformData( nullptr ),
@@ -364,6 +365,7 @@ void deovrDevice::UpdateParameters(){
 void deovrDevice::TrackStates(){
 	if( pInputValueHandle == vr::k_ulInvalidInputValueHandle ){
 		ResetStates();
+		pUpdatePose( pOvr.GetDevices().GetDevicePoseAt( pDeviceIndex ), pPoseDevice );
 		return;
 	}
 	
@@ -373,7 +375,10 @@ void deovrDevice::TrackStates(){
 		error = pOvr.GetInput().GetPoseActionDataForNextFrame( pActionPose,
 			vr::TrackingUniverseStanding, &pDevicePoseData, sizeof( pDevicePoseData), pInputValueHandle );
 		if( error != vr::VRInputError_None ){
-			DETHROW_INFO( deeInvalidParam, "GetPoseActionDataForNextFrame failed" );
+			//pOvr.LogErrorFormat( "GetPoseActionDataForNextFrame failed: %d", error );
+			// spams logs if data is lost
+			//DETHROW_INFO( deeInvalidParam, "GetPoseActionDataForNextFrame failed" );
+			// can be VRInputError_NoData which is fine. better wrong data than fail
 		}
 		
 		if( pDevicePoseData.bActive ){
@@ -387,6 +392,10 @@ void deovrDevice::TrackStates(){
 			// results this would require smoothly blending over to the correct state to
 			// make the lost tracking not so nauseaing
 		}
+		
+	}else{
+		// track devices not having an input assignment like the HMD
+		pUpdatePose( pOvr.GetDevices().GetDevicePoseAt( pDeviceIndex ), pPoseDevice );
 	}
 	
 	if( pActionHandPose != vr::k_ulInvalidActionHandle ){
@@ -394,23 +403,46 @@ void deovrDevice::TrackStates(){
 		error = pOvr.GetInput().GetSkeletalSummaryData( pActionHandPose,
 			vr::VRSummaryType_FromAnimation, &pSkeletalSummeryData );
 		if( error != vr::VRInputError_None ){
-			DETHROW_INFO( deeInvalidParam, "GetSkeletalSummaryData failed" );
+			//pOvr.LogErrorFormat( "GetSkeletalSummaryData failed: %d", error );
+			// spams logs if data is lost
+			//DETHROW_INFO( deeInvalidParam, "GetSkeletalSummaryData failed" );
+			// can be VRInputError_NoData which is fine. better wrong data than fail
 		}
 		
+		// if bones are supported
 		if( pBoneCount > 0 ){
+			bool validData = true;
+			
 			error = pOvr.GetInput().GetSkeletalBoneData( pActionHandPose, vr::VRSkeletalTransformSpace_Parent,
 				vr::VRSkeletalMotionRange_WithoutController, pBoneTransformData, pBoneCount );
 			if( error != vr::VRInputError_None ){
-				DETHROW_INFO( deeInvalidParam, "GetSkeletalBoneData failed" );
+				//pOvr.LogErrorFormat( "GetSkeletalBoneData failed: %d", error );
+				// spams logs if data is lost
+				//DETHROW_INFO( deeInvalidParam, "GetSkeletalBoneData failed" );
+				// can be VRInputError_NoData which is fine. better wrong data than fail
+				validData = false;
 			}
 			
 			error = pOvr.GetInput().GetSkeletalBoneData( pActionHandPose, vr::VRSkeletalTransformSpace_Parent,
 				vr::VRSkeletalMotionRange_WithController, pBoneTransformData + pBoneCount, pBoneCount );
 			if( error != vr::VRInputError_None ){
-				DETHROW_INFO( deeInvalidParam, "GetSkeletalBoneData failed" );
+				//pOvr.LogErrorFormat( "GetSkeletalBoneData failed: %d", error );
+				// spams logs if data is lost
+				//DETHROW_INFO( deeInvalidParam, "GetSkeletalBoneData failed" );
+				// can be VRInputError_NoData which is fine. better wrong data than fail
+				validData = false;
 			}
 			
 			// TODO convert bone transforms. requires remapping bones and thus combining matrices
+			if( validData ){
+				/*
+				pUpdatePose( pBoneTransformData[0], pPoseBones[0] );
+				const decVector p(pPoseBones[0].GetPosition());
+				const decVector r(pPoseBones[0].GetOrientation().GetEulerAngles() * RAD2DEG);
+				pOvr.LogInfoFormat( "Hand(%s): valid=%d p=(%g,%g,%g) r=(%g,%g,%g)",
+					pName.GetString(), validData, p.x, p.y, p.z, r.x, r.y, r.z);
+				*/
+			}
 		}
 	}
 	
@@ -462,7 +494,7 @@ void deovrDevice::pUpdateParametersHMD(){
 	pName = "HMD";
 	pID.Format( "%shmd", OVR_DEVID_PREFIX );
 	pInputValuePath = "/user/head";
-	pActionPose = pOvr.GetActionHandle( deVROpenVR::eiaPose );
+// 	pActionPose = pOvr.GetActionHandle( deVROpenVR::eiaPose ); // not working
 	
 	// input source handle
 	vr::EVRInputError inputError = pOvr.GetInput().GetInputSourceHandle( pInputValuePath, &pInputValueHandle );
@@ -581,34 +613,34 @@ void deovrDevice::pUpdateParametersHandPose( vr::VRActionHandle_t actionHandle )
 		return;
 	}
 	
-	uint32_t boneCount;
-	inputError = vrinput.GetBoneCount( pActionHandPose, &boneCount );
-	if( inputError != vr::VRInputError_None || boneCount == 0 ){
-		return;
-	}
-	
 	pActionHandPose = actionHandle;
-	pBoneConfiguration = deInputDevice::ebcHand;
 	
-	pBoneTransformData = new vr::VRBoneTransform_t[ boneCount * 2 ];
-	pBoneCount = ( int )boneCount;
-	
-	pPoseBones = new deInputDevicePose[ deInputDevice::HandBoneCount ];
-	pPoseBoneCount = deInputDevice::HandBoneCount;
+	uint32_t boneCount;
+	inputError = vrinput.GetBoneCount( actionHandle, &boneCount );
+	if( inputError == vr::VRInputError_None && boneCount > 0 ){
+		pBoneConfiguration = deInputDevice::ebcHand;
+		
+		pBoneTransformData = new vr::VRBoneTransform_t[ boneCount * 2 ];
+		pBoneCount = ( int )boneCount;
+		
+		pPoseBones = new deInputDevicePose[ deInputDevice::HandBoneCount ];
+		pPoseBoneCount = deInputDevice::HandBoneCount;
+	}
 }
 
 void deovrDevice::pUpdateParametersTracker(){
 	pType = deInputDevice::edtVRTracker;
 	pName.Format( "Tracker %d", pNameNumber );
 	pID.Format( "%str", OVR_DEVID_PREFIX );
-	pActionPose = pOvr.GetActionHandle( deVROpenVR::eiaPose );
+	//pActionPose = pOvr.GetActionHandle( deVROpenVR::eiaPose );
+	// not working
 	
 	// this is ugly but I found no better way yet. try to construct the device path
 	pInputValuePath = "/devices/htc/vive_tracker";
 	pInputValuePath += pSerialNumber;
 	
 	vr::EVRInputError inputError = pOvr.GetInput().GetInputSourceHandle( pInputValuePath, &pInputValueHandle );
-	pOvr.LogInfoFormat("TRACKER: path(%s) handle(%lu) error(%d)", pInputValuePath.GetString(), pInputValueHandle, inputError );
+	pOvr.LogInfoFormat("Tracker: path(%s) handle(%lu) error(%d)", pInputValuePath.GetString(), pInputValueHandle, inputError );
 }
 
 void deovrDevice::pAddButton( deVROpenVR::eInputActions actionPress,
