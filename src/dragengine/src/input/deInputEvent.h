@@ -230,7 +230,7 @@ public:
 	 */
 	enum eSources{
 		esInput, //<! Originates from Input System
-		esVR//<! Originates from VR System
+		esVR //<! Originates from VR System
 	};
 	
 	

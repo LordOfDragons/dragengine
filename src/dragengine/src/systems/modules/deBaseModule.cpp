@@ -168,6 +168,19 @@ deOS *deBaseModule::GetOS() const{
 	return GetGameEngine()->GetOS();
 }
 
+decString deBaseModule::GetNativePathShare() const{
+	const deModuleSystem &moduleSystem = *pLoadableModule.GetSystem();
+	decPath path;
+	
+	path.SetFromNative( moduleSystem.GetEngine()->GetOS()->GetPathShare() );
+	path.AddUnixPath( "modules" );
+	path.AddUnixPath( moduleSystem.GetTypeDirectory( pLoadableModule.GetType() ) );
+	path.AddUnixPath( pLoadableModule.GetDirectoryName() );
+	path.AddComponent( pLoadableModule.GetVersion() );
+	
+	return path.GetPathNative();
+}
+
 
 
 // Debugging

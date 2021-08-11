@@ -143,8 +143,47 @@ class InputDevice
 	
 	
 	
-	/** \brief Device bone configuration. */
+	/**
+	 * \brief Device bone configuration.
+	 * \version 1.6
+	 */
 	public func InputDeviceBoneConfiguration getBoneConfiguration()
+		return null
+	end
+	
+	/**
+	 * \brief Finger tip offsets.
+	 * \version 1.6
+	 * 
+	 * For use with ebcHand bone configuration. Defines the offset of the finger tip point
+	 * relative to the last finger segment coordinate frame. These are typically used to
+	 * figure out where finger tips touch objects in the world.
+	 */
+	public func Vector getFingerTipOffset( int index )
+		return null
+	end
+	
+	/**
+	 * \brief Hand rig if ebcHand is used.
+	 * \version 1.6
+	 */
+	public func Rig getHandRig()
+		return null
+	end
+	
+	/**
+	 * \brief Model to represent the device in VR environments or NULL if not set.
+	 * \version 1.6
+	 */
+	public func Model getVRModel()
+		return null
+	end
+	
+	/**
+	 * \brief Skin for VR model or NULL if not set.
+	 * \version 1.6
+	 */
+	public func Skin getVRSkin()
 		return null
 	end
 	
@@ -279,28 +318,39 @@ class InputDevice
 	
 	
 	
-	/** \brief Device bone pose position relative to parent reference coordinate frame. */
-	public func Vector getDeviceBonePosePosition( int bone )
+	/** \brief Count of device bone pose positions. */
+	public func int getDeviceBonePoseCount()
+		return 0
+	end
+	
+	/**
+	 * \brief Device bone pose position relative to parent reference coordinate frame.
+	 * \param bone Index of bone to retrieve.
+	 * \param withController If true returns bone position as accurate as possible to the
+	 *                       real hand position. If false remaps the position to simulate
+	 *                       not holding the controller in hand.
+	 */
+	public func Vector getDeviceBonePosePosition( int bone, bool withController )
 		return null
 	end
 	
-	/** \brief Device bone pose orientation relative to parent reference coordinate frame. */
-	public func Quaternion getDeviceBonePoseOrientation( int bone )
+	/**
+	 * \brief Device bone pose orientation relative to parent reference coordinate frame.
+	 * \param withController If true returns bone position as accurate as possible to the
+	 *                       real hand position. If false remaps the position to simulate
+	 *                       not holding the controller in hand.
+	 */
+	public func Quaternion getDeviceBonePoseOrientation( int bone, bool withController )
 		return null
 	end
 	
-	/** \brief Device bone pose linear velocity relative to parent reference coordinate frame. */
-	public func Vector getDeviceBonePoseLinearVelocity( int bone )
-		return null
-	end
-	
-	/** \brief Device bone pose angular velocity relative to parent reference coordinate frame. */
-	public func Vector getDeviceBonePoseAngularVelocity( int bone )
-		return null
-	end
-	
-	/** \brief Device bone pose matrix relative to parent reference coordinate frame. */
-	public func Matrix getDeviceBonePoseMatrix( int bone )
+	/**
+	 * \brief Device bone pose matrix relative to parent reference coordinate frame.
+	 * \param withController If true returns bone position as accurate as possible to the
+	 *                       real hand position. If false remaps the position to simulate
+	 *                       not holding the controller in hand.
+	 */
+	public func Matrix getDeviceBonePoseMatrix( int bone, bool withController )
 		return null
 	end
 	/*@}*/

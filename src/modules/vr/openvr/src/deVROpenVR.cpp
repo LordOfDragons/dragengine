@@ -31,6 +31,7 @@
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
+#include <dragengine/common/file/decPath.h>
 #include <dragengine/input/deInputEvent.h>
 #include <dragengine/systems/deVRSystem.h>
 
@@ -68,7 +69,14 @@ deVROpenVR::deVROpenVR( deLoadableModule &loadableModule ) :
 deBaseVRModule( loadableModule ),
 pRuntimeInstalled( false ),
 pDevices( *this ),
-pSystem( nullptr ){
+pSystem( nullptr ),
+pInput( nullptr ),
+pActionSetHandle( vr::k_ulInvalidActionSetHandle )
+{
+	int i;
+	for( i=0; i<InputActionCount; i++ ){
+		pActionHandle[ i ] = vr::k_ulInvalidActionHandle;
+	}
 }
 
 deVROpenVR::~deVROpenVR(){
@@ -85,6 +93,13 @@ vr::IVRSystem &deVROpenVR::GetSystem() const{
 		DETHROW( deeInvalidAction );
 	}
 	return *pSystem;
+}
+
+vr::IVRInput &deVROpenVR::GetInput() const{
+	if( ! pInput ){
+		DETHROW( deeInvalidAction );
+	}
+	return *pInput;
 }
 
 void deVROpenVR::SendEvent( const deInputEvent &event ){
@@ -139,6 +154,7 @@ void deVROpenVR::StartRuntime(){
 	LogInfo( "Start Runtime" );
 	
 	try{
+		// init runtime
 		vr::HmdError error = vr::VRInitError_None;
 		pSystem = vr::VR_Init( &error, vr::VRApplication_Scene );
 		
@@ -147,6 +163,79 @@ void deVROpenVR::StartRuntime(){
 			DETHROW_INFO( deeInvalidAction, "Failed starting runtime" );
 		}
 		
+		LogInfoFormat( "Runtime Version: %s", pSystem->GetRuntimeVersion() );
+		
+		// load input action manifest
+		pInput = vr::VRInput();
+		
+		decPath pathActionManifest( decPath::CreatePathNative( GetNativePathShare() ) );
+		pathActionManifest.AddComponent( "input" );
+		pathActionManifest.AddComponent( "actions.json" );
+		
+		vr::EVRInputError inputError = pInput->SetActionManifestPath( pathActionManifest.GetPathNative() );
+		if( inputError != vr::VRInputError_None ){
+			LogErrorFormat( "Failed loading action manifest: %d", inputError );
+			DETHROW_INFO( deeInvalidAction, "Failed loading action manifest" );
+		}
+		
+		// get input handlers
+		inputError = pInput->GetActionSetHandle( "/actions/dragengine", &pActionSetHandle );
+		if( inputError != vr::VRInputError_None ){
+			LogErrorFormat( "Failed retrieving action set handle: %d", inputError );
+			DETHROW_INFO( deeInvalidAction, "Failed retrieving action set handle" );
+		}
+		
+		static const struct InputHandleMap{
+			eInputActions action;
+			const char *path;
+		} inputHandleMap[ InputActionCount ] = {
+			{ eiaTriggerPress, "/actions/dragengine/in/trigger_press" },
+			{ eiaTriggerTouch, "/actions/dragengine/in/trigger_touch" },
+			{ eiaTriggerAnalog, "/actions/dragengine/in/trigger_analog" },
+			{ eiaTriggerHaptic, "/actions/dragengine/out/trigger_haptic" },
+			{ eiaButtonPrimaryPress, "/actions/dragengine/in/button_primary_press" },
+			{ eiaButtonPrimaryTouch, "/actions/dragengine/in/button_primary_touch" },
+			{ eiaButtonSecondaryPress, "/actions/dragengine/in/button_secondary_press" },
+			{ eiaButtonSecondaryTouch, "/actions/dragengine/in/button_secondary_touch" },
+			{ eiaJoystickPress, "/actions/dragengine/in/joystick_press" },
+			{ eiaJoystickTouch, "/actions/dragengine/in/joystick_touch" },
+			{ eiaJoystickAnalog, "/actions/dragengine/in/joystick_analog" },
+			{ eiaTrackpadPress, "/actions/dragengine/in/trackpad_press" },
+			{ eiaTrackpadTouch, "/actions/dragengine/in/trackpad_touch" },
+			{ eiaTrackpadAnalog, "/actions/dragengine/in/trackpad_analog" },
+			{ eiaGripPress, "/actions/dragengine/in/grip_press" },
+			{ eiaGripTouch, "/actions/dragengine/in/grip_touch" },
+			{ eiaGripGrab, "/actions/dragengine/in/grip_grab" },
+			{ eiaGripSqueeze, "/actions/dragengine/in/grip_squeeze" },
+			{ eiaGripPinch, "/actions/dragengine/in/grip_pinch" },
+			{ eiaGripHaptic, "/actions/dragengine/out/grip_haptic" },
+			{ eiaPose, "/actions/dragengine/in/pose" },
+			{ eiaSkeletonHandRight, "/actions/dragengine/in/skeleton_hand_right" },
+			{ eiaSkeletonHandLeft, "/actions/dragengine/in/skeleton_hand_left" }
+		};
+		int i;
+		for( i=0; i<InputActionCount; i++ ){
+			inputError = pInput->GetActionHandle( inputHandleMap[ i ].path, &pActionHandle[ inputHandleMap[ i ].action ] );
+			if( inputError != vr::VRInputError_None ){
+				LogErrorFormat( "Failed retrieving action handle '%s': %d", inputHandleMap[ i ].path, inputError );
+				DETHROW_INFO( deeInvalidAction, "Failed retrieving action handle" );
+			}
+		}
+		
+		// update action state
+		vr::VRActiveActionSet_t actionSet;
+		memset( &actionSet, 0, sizeof( actionSet ) );
+		actionSet.nPriority = 0;
+		actionSet.ulActionSet = pActionSetHandle;
+		actionSet.ulRestrictedToDevice = vr::k_ulInvalidInputValueHandle;
+		actionSet.ulSecondaryActionSet = vr::k_ulInvalidActionSetHandle;
+		inputError = vr::VRInput()->UpdateActionState( &actionSet, sizeof( actionSet ), 1 );
+		if( inputError != vr::VRInputError_None ){
+			LogErrorFormat( "Failed update action state: %d", inputError );
+			DETHROW_INFO( deeInvalidAction, "Failed update action state" );
+		}
+		
+		// init devies
 		pDevices.InitDevices();
 		pDevices.LogDevices();
 		
@@ -167,6 +256,13 @@ void deVROpenVR::StopRuntime(){
 	LogInfo( "Shutdown runtime" );
 	
 	pDevices.Clear();
+	
+	int i;
+	for( i=0; i<InputActionCount; i++ ){
+		pActionHandle[ i ] = vr::k_ulInvalidActionHandle;
+	}
+	
+	pActionSetHandle = vr::k_ulInvalidActionSetHandle;
 	
 	vr::VR_Shutdown();
 	pSystem = nullptr;
@@ -242,8 +338,9 @@ void deVROpenVR::GetDevicePose( int device, deInputDevicePose &pose ){
 	pDevices.GetAt( device )->GetDevicePose( pose );
 }
 
-void deVROpenVR::GetDeviceBonePose( int device, int bone, deInputDevicePose &pose ){
-	pDevices.GetAt( device )->GetBonePose( bone, pose );
+void deVROpenVR::GetDeviceBonePose( int device, int bone,
+bool withController, deInputDevicePose &pose ){
+	pDevices.GetAt( device )->GetBonePose( bone, withController, pose );
 }
 
 
@@ -258,7 +355,7 @@ void deVROpenVR::ProcessEvents(){
 	
 	vr::VREvent_t event;
 	while( pSystem->PollNextEvent( &event, sizeof( event ) ) ){
-		switch( event.eventType ){
+		switch( ( vr::EVREventType )event.eventType ){
 		case vr::VREvent_TrackedDeviceActivated:
 			LogInfoFormat( "ProcessEvents: Tracked device activated %d", event.trackedDeviceIndex );
 			pDevices.Add( event.trackedDeviceIndex );
@@ -294,159 +391,56 @@ void deVROpenVR::ProcessEvents(){
 			LogInfo( "ProcessEvents: Leave StandBy mode" );
 			break;
 			
-		case vr::VREvent_TrackedDeviceRoleChanged:
-			LogInfoFormat( "ProcessEvents: Tracked device role changed %d", event.trackedDeviceIndex );
-			break;
-			
 		case vr::VREvent_LensDistortionChanged:
 			LogInfo( "ProcessEvents: Lens distortion changed" );
 			break;
 			
+		case vr::VREvent_Quit:
+			LogInfo( "ProcessEvents: VR quit request received" );
+			
+			// buy us some time before steam tries to kill us
+			pSystem->AcknowledgeQuit_Exiting();
+			
+			// shutdown VR runtime. this should prevent us from getting killed
+			// TODO add a notification to the scripting system so it can be notified
+			StopRuntime();
+			
+			// do not continue since runtime is stopped
+			return;
+			
+// 		case vr::VREvent_ButtonPress: // old input system
+// 		case vr::VREvent_ButtonUnpress: // old input system
+// 		case vr::VREvent_ButtonTouch: // old input system
+// 		case vr::VREvent_ButtonUntouch: // old input system
+			
+		case vr::VREvent_TrackedDeviceRoleChanged:
 		case vr::VREvent_PropertyChanged:
-// 			LogInfo( "ProcessEvents: Property changed" );
-			break;
-			
-		case vr::VREvent_ButtonPress:
-// 			LogInfoFormat( "ProcessEvents: Button pressed %d:%d",
-// 				event.trackedDeviceIndex, event.data.controller.button );
-			pButtonPress( event.trackedDeviceIndex, ( vr::EVRButtonId )event.data.controller.button );
-			break;
-			
-		case vr::VREvent_ButtonUnpress:
-// 			LogInfoFormat( "ProcessEvents: Button unpress %d:%d",
-// 				event.trackedDeviceIndex, event.data.controller.button );
-			pButtonRelease( event.trackedDeviceIndex, ( vr::EVRButtonId )event.data.controller.button );
-			break;
-			
-		case vr::VREvent_ButtonTouch:
-// 			LogInfoFormat( "ProcessEvents: Button touch %d:%d",
-// 				event.trackedDeviceIndex, event.data.controller.button );
-			pButtonTouch( event.trackedDeviceIndex, ( vr::EVRButtonId )event.data.controller.button );
-			break;
-			
-		case vr::VREvent_ButtonUntouch:
-// 			LogInfoFormat( "ProcessEvents: Button untouch %d:%d",
-// 				event.trackedDeviceIndex, event.data.controller.button );
-			pButtonUntouch( event.trackedDeviceIndex, ( vr::EVRButtonId )event.data.controller.button );
+		case vr::VREvent_ProcessConnected:
+		case vr::VREvent_SceneApplicationStateChanged:
+		case vr::VREvent_Input_BindingLoadSuccessful:
+		case vr::VREvent_Input_BindingLoadFailed:
+		case vr::VREvent_Input_ActionManifestReloaded:
+		case vr::VREvent_ActionBindingReloaded:
 			break;
 			
 		default:
-// 			LogInfoFormat( "ProcessEvents: Event type %d", event.eventType );
+			LogInfoFormat( "ProcessEvents: Event type %d (%s)", event.eventType,
+				pSystem->GetEventTypeNameFromEnum( ( vr::EVREventType )event.eventType ) );
 			break;
 		}
 	}
 	
+	vr::VRActiveActionSet_t actionSet;
+	memset( &actionSet, 0, sizeof( actionSet ) );
+	actionSet.nPriority = 0;
+	actionSet.ulActionSet = pActionSetHandle;
+	actionSet.ulRestrictedToDevice = vr::k_ulInvalidInputValueHandle;
+	actionSet.ulSecondaryActionSet = vr::k_ulInvalidActionSetHandle;
+	vr::EVRInputError inputError = vr::VRInput()->UpdateActionState( &actionSet, sizeof( actionSet ), 1 );
+	if( inputError != vr::VRInputError_None ){
+		LogErrorFormat( "Failed update action state: %d", inputError );
+		DETHROW_INFO( deeInvalidAction, "Failed update action state" );
+	}
+	
 	pDevices.TrackDeviceStates();
-}
-
-void deVROpenVR::pButtonPress( vr::TrackedDeviceIndex_t deviceIndex, vr::EVRButtonId buttonType ){
-	const int realDeviceIndex = pDevices.IndexOfWithIndex( deviceIndex );
-	if( realDeviceIndex == -1 ){
-		return;
-	}
-	
-	deovrDevice &device = *pDevices.GetAt( realDeviceIndex );
-	const int realButtonIndex = device.IndexOfButtonWithType( buttonType );
-	if( realButtonIndex == -1 ){
-		return;
-	}
-	
-	deovrDeviceButton &button = *device.GetButtonAt( realButtonIndex );
-	if( button.GetPressed() ){
-		return;
-	}
-	
-	button.SetPressed( true );
-	
-	deInputEvent event;
-	event.SetType( deInputEvent::eeButtonPress );
-	event.SetSource( deInputEvent::esVR );
-	event.SetDevice( realDeviceIndex );
-	event.SetCode( realButtonIndex );
-	event.SetTime( { decDateTime().ToSystemTime(), 0 } );
-	SendEvent( event );
-}
-
-void deVROpenVR::pButtonRelease( vr::TrackedDeviceIndex_t deviceIndex, vr::EVRButtonId buttonType ){
-	const int realDeviceIndex = pDevices.IndexOfWithIndex( deviceIndex );
-	if( realDeviceIndex == -1 ){
-		return;
-	}
-	
-	deovrDevice &device = *pDevices.GetAt( realDeviceIndex );
-	const int realButtonIndex = device.IndexOfButtonWithType( buttonType );
-	if( realButtonIndex == -1 ){
-		return;
-	}
-	
-	deovrDeviceButton &button = *device.GetButtonAt( realButtonIndex );
-	if( ! button.GetPressed() ){
-		return;
-	}
-	
-	button.SetPressed( false );
-	
-	deInputEvent event;
-	event.SetType( deInputEvent::eeButtonRelease );
-	event.SetSource( deInputEvent::esVR );
-	event.SetDevice( realDeviceIndex );
-	event.SetCode( realButtonIndex );
-	event.SetTime( { decDateTime().ToSystemTime(), 0 } );
-	SendEvent( event );
-}
-
-void deVROpenVR::pButtonTouch( vr::TrackedDeviceIndex_t deviceIndex, vr::EVRButtonId buttonType ){
-	const int realDeviceIndex = pDevices.IndexOfWithIndex( deviceIndex );
-	if( realDeviceIndex == -1 ){
-		return;
-	}
-	
-	deovrDevice &device = *pDevices.GetAt( realDeviceIndex );
-	const int realButtonIndex = device.IndexOfButtonWithType( buttonType );
-	if( realButtonIndex == -1 ){
-		return;
-	}
-	
-	deovrDeviceButton &button = *device.GetButtonAt( realButtonIndex );
-	if( button.GetTouched() ){
-		return;
-	}
-	
-	button.SetTouched( true );
-	
-	deInputEvent event;
-	event.SetType( deInputEvent::eeButtonTouch );
-	event.SetSource( deInputEvent::esVR );
-	event.SetDevice( realDeviceIndex );
-	event.SetCode( realButtonIndex );
-	event.SetTime( { decDateTime().ToSystemTime(), 0 } );
-	SendEvent( event );
-}
-
-void deVROpenVR::pButtonUntouch( vr::TrackedDeviceIndex_t deviceIndex, vr::EVRButtonId buttonType ){
-	const int realDeviceIndex = pDevices.IndexOfWithIndex( deviceIndex );
-	if( realDeviceIndex == -1 ){
-		return;
-	}
-	
-	deovrDevice &device = *pDevices.GetAt( realDeviceIndex );
-	const int realButtonIndex = device.IndexOfButtonWithType( buttonType );
-	if( realButtonIndex == -1 ){
-		return;
-	}
-	
-	deovrDeviceButton &button = *device.GetButtonAt( realButtonIndex );
-	if( ! button.GetTouched() ){
-		return;
-	}
-	
-	button.SetTouched( false );
-	
-	deInputEvent event;
-	event.SetType( deInputEvent::eeButtonUntouch );
-	event.SetSource( deInputEvent::esVR );
-	event.SetDevice( realDeviceIndex );
-	event.SetCode( realButtonIndex );
-	event.SetTime( { decDateTime().ToSystemTime(), 0 } );
-	SendEvent( event );
 }

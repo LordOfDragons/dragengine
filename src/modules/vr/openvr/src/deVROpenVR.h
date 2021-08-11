@@ -40,6 +40,38 @@ class deInputEvent;
  * OpenVR VR Module.
  */
 class deVROpenVR : public deBaseVRModule{
+public:
+	/** Input actions. */
+	enum eInputActions{
+		eiaTriggerPress,
+		eiaTriggerTouch,
+		eiaTriggerAnalog,
+		eiaTriggerHaptic,
+		eiaButtonPrimaryPress,
+		eiaButtonPrimaryTouch,
+		eiaButtonSecondaryPress,
+		eiaButtonSecondaryTouch,
+		eiaJoystickPress,
+		eiaJoystickTouch,
+		eiaJoystickAnalog,
+		eiaTrackpadPress,
+		eiaTrackpadTouch,
+		eiaTrackpadAnalog,
+		eiaGripPress,
+		eiaGripTouch,
+		eiaGripGrab,
+		eiaGripSqueeze,
+		eiaGripPinch,
+		eiaGripHaptic,
+		eiaPose,
+		eiaSkeletonHandRight,
+		eiaSkeletonHandLeft
+	};
+	
+	static const int InputActionCount = eiaSkeletonHandLeft + 1;
+	
+	
+	
 private:
 	bool pRuntimeInstalled;
 	decString pPathRuntime;
@@ -47,6 +79,9 @@ private:
 	deovrDeviceManager pDevices;
 	
 	vr::IVRSystem *pSystem;
+	vr::IVRInput *pInput;
+	vr::VRActionSetHandle_t pActionSetHandle;
+	vr::VRActionHandle_t pActionHandle[ InputActionCount ];
 	
 	
 	
@@ -70,6 +105,15 @@ public:
 	
 	/** VR System. */
 	vr::IVRSystem &GetSystem() const;
+	
+	/** VR System. */
+	vr::IVRInput &GetInput() const;
+	
+	/** VR Action Set Handle. */
+	inline vr::VRActionSetHandle_t GetActionSetHandle() const{ return pActionSetHandle; }
+	
+	/** VR Action Handle. */
+	inline vr::VRActionHandle_t GetActionHandle( eInputActions action ) const{ return pActionHandle[ action ]; }
 	
 	/** Send event. */
 	void SendEvent( const deInputEvent &event );
@@ -170,7 +214,8 @@ public:
 	virtual void GetDevicePose( int device, deInputDevicePose &pose );
 	
 	/** \brief Device bone pose or identity if not supported. */
-	virtual void GetDeviceBonePose( int device, int bone, deInputDevicePose &pose );
+	virtual void GetDeviceBonePose( int device, int bone,
+		bool withController, deInputDevicePose &pose );
 	/*@}*/
 	
 	
@@ -192,10 +237,6 @@ public:
 	
 	
 private:
-	void pButtonPress( vr::TrackedDeviceIndex_t deviceIndex, vr::EVRButtonId buttonType );
-	void pButtonRelease( vr::TrackedDeviceIndex_t deviceIndex, vr::EVRButtonId buttonType );
-	void pButtonTouch( vr::TrackedDeviceIndex_t deviceIndex, vr::EVRButtonId buttonType );
-	void pButtonUntouch( vr::TrackedDeviceIndex_t deviceIndex, vr::EVRButtonId buttonType );
 };
 
 #endif

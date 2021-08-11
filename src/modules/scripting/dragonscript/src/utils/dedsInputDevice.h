@@ -97,7 +97,7 @@ public:
 	inline int GetBonePoseCount() const{ return pBonePoseCount; }
 	
 	/** Bone pose at index. */
-	const deInputDevicePose &GetBonePoseAt( int index ) const;
+	const deInputDevicePose &GetBonePoseAt( int index, bool withController ) const;
 	
 	/** Update poses. */
 	void OnFrameUpdate();

@@ -97,6 +97,7 @@ private:
 		dsClass *clsVector;
 		dsClass *clsQuaternion;
 		dsClass *clsMatrix;
+		dsClass *clsRig;
 	};
 #define DEF_NATFUNC(name) \
 	class name : public dsFunction{ \
@@ -133,6 +134,10 @@ private:
 	DEF_NATFUNC( nfButtonMatchingKeyChar );
 	
 	DEF_NATFUNC( nfGetBoneConfiguration );
+	DEF_NATFUNC( nfGetFingerTipOffset );
+	DEF_NATFUNC( nfGetHandRig );
+	DEF_NATFUNC( nfGetVRModel );
+	DEF_NATFUNC( nfGetVRSkin );
 	
 	DEF_NATFUNC( nfIsPresent );
 	
@@ -142,10 +147,9 @@ private:
 	DEF_NATFUNC( nfGetDevicePoseAngularVelocity );
 	DEF_NATFUNC( nfGetDevicePoseMatrix );
 	
+	DEF_NATFUNC( nfGetDeviceBonePoseCount );
 	DEF_NATFUNC( nfGetDeviceBonePosePosition );
 	DEF_NATFUNC( nfGetDeviceBonePoseOrientation );
-	DEF_NATFUNC( nfGetDeviceBonePoseLinearVelocity );
-	DEF_NATFUNC( nfGetDeviceBonePoseAngularVelocity );
 	DEF_NATFUNC( nfGetDeviceBonePoseMatrix );
 	
 	DEF_NATFUNC( nfEquals );

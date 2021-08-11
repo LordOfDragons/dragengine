@@ -50,12 +50,25 @@ deovrDevice::deovrDevice( deVROpenVR &ovr, vr::TrackedDeviceIndex_t deviceIndex 
 pOvr( ovr ),
 pIndex( -1 ),
 pDeviceIndex( deviceIndex ),
-pNameNumber( -1 )
+pInputValueHandle( vr::k_ulInvalidInputValueHandle ),
+pActionPose( vr::k_ulInvalidActionHandle ),
+pBoneConfiguration( deInputDevice::ebcNone ),
+pNameNumber( -1 ),
+pBoneTransformData( nullptr ),
+pBoneCount( 0 ),
+pPoseBones( nullptr ),
+pPoseBoneCount( 0 )
 {
 	UpdateParameters();
 }
 
 deovrDevice::~deovrDevice(){
+	if( pPoseBones ){
+		delete [] pPoseBones;
+	}
+	if( pBoneTransformData ){
+		delete [] pBoneTransformData;
+	}
 }
 
 
@@ -69,6 +82,10 @@ void deovrDevice::SetIndex( int index ){
 
 void deovrDevice::SetType( deInputDevice::eDeviceTypes type ){
 	pType = type;
+}
+
+void deovrDevice::SetBoneConfiguration( deInputDevice::eBoneConfigurations config ){
+	pBoneConfiguration = config;
 }
 
 void deovrDevice::SetID( const char *id ){
@@ -139,34 +156,6 @@ deovrDeviceButton *deovrDevice::GetButtonWithID( const char *id ) const{
 	return nullptr;
 }
 
-deovrDeviceButton *deovrDevice::GetButtonWithType( vr::EVRButtonId buttonType ) const{
-	const int count = pButtons.GetCount();
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		deovrDeviceButton * const button = ( deovrDeviceButton* )pButtons.GetAt( i );
-		if( button->GetButtonType() == buttonType ){
-			return button;
-		}
-	}
-	
-	return nullptr;
-}
-
-deovrDeviceButton *deovrDevice::GetButtonWithMask( uint32_t buttonMask ) const{
-	const int count = pButtons.GetCount();
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		deovrDeviceButton * const button = ( deovrDeviceButton* )pButtons.GetAt( i );
-		if( button->GetButtonMask() == buttonMask ){
-			return button;
-		}
-	}
-	
-	return nullptr;
-}
-
 int deovrDevice::IndexOfButtonWithID( const char *id ) const{
 	const int count = pButtons.GetCount();
 	int i;
@@ -174,34 +163,6 @@ int deovrDevice::IndexOfButtonWithID( const char *id ) const{
 	for( i=0; i<count; i++ ){
 		const deovrDeviceButton &button = *( ( deovrDeviceButton* )pButtons.GetAt( i ) );
 		if( button.GetID() == id ){
-			return i;
-		}
-	}
-	
-	return -1;
-}
-
-int deovrDevice::IndexOfButtonWithType( vr::EVRButtonId buttonType ) const{
-	const int count = pButtons.GetCount();
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		const deovrDeviceButton &button = *( ( deovrDeviceButton* )pButtons.GetAt( i ) );
-		if( button.GetButtonType() == buttonType ){
-			return i;
-		}
-	}
-	
-	return -1;
-}
-
-int deovrDevice::IndexOfButtonWithMask( uint32_t buttonMask ) const{
-	const int count = pButtons.GetCount();
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		const deovrDeviceButton &button = *( ( deovrDeviceButton* )pButtons.GetAt( i ) );
-		if( button.GetButtonMask() == buttonMask ){
 			return i;
 		}
 	}
@@ -317,7 +278,7 @@ void deovrDevice::GetInfo( deInputDevice &info ) const{
 		( ( deovrDeviceFeedback* )pFeedbacks.GetAt( i ) )->GetInfo( info.GetFeedbackAt( i ) );
 	}
 	
-	info.SetBoneConfiguration( deInputDevice::ebcNone );
+	info.SetBoneConfiguration( pBoneConfiguration );
 }
 
 void deovrDevice::UpdateParameters(){
@@ -330,7 +291,32 @@ void deovrDevice::UpdateParameters(){
 	}
 	
 	pControllerRole = vr::TrackedControllerRole_Invalid;
+	pInputValuePath.Empty();
+	pInputValueHandle = vr::k_ulInvalidInputValueHandle;
+	pPoseDevice = deInputDevicePose();
 	
+	if( pPoseBones ){
+		delete [] pPoseBones;
+		pPoseBones = nullptr;
+		pPoseBoneCount = 0;
+	}
+	if( pBoneTransformData ){
+		delete [] pBoneTransformData;
+		pBoneTransformData = nullptr;
+		pBoneCount = 0;
+	}
+	
+	// serial number
+	vr::ETrackedPropertyError error;
+	char buffer[ 256 ];
+	pOvr.GetSystem().GetStringTrackedDeviceProperty( pDeviceIndex,
+		vr::Prop_SerialNumber_String, buffer, 256, &error );
+	if( error != vr::TrackedProp_Success ){
+		DETHROW_INFO( deeInvalidParam, "Prop_SerialNumber_String failed" );
+	}
+	pSerialNumber = buffer;
+	
+	// init device dependingon class
 	switch( pDeviceClass ){
 	case vr::TrackedDeviceClass_HMD:
 		pUpdateParametersHMD();
@@ -341,9 +327,7 @@ void deovrDevice::UpdateParameters(){
 		break;
 		
 	case vr::TrackedDeviceClass_GenericTracker:
-		pType = deInputDevice::edtVRTracker;
-		pName.Format( "Tracker %d", pNameNumber );
-		pID.Format( "%str", OVR_DEVID_PREFIX );
+		pUpdateParametersTracker();
 		break;
 		
 	case vr::TrackedDeviceClass_TrackingReference:
@@ -361,9 +345,6 @@ void deovrDevice::UpdateParameters(){
 	}
 	
 	// display name. seems to always return "lighthouse". how stupid is that :(
-	vr::ETrackedPropertyError error;
-	char buffer[ 256 ];
-	
 	/*
 	pOvr.GetSystem().GetStringTrackedDeviceProperty( pDeviceIndex,
 		vr::Prop_TrackingSystemName_String, buffer, 256, &error );
@@ -373,27 +354,73 @@ void deovrDevice::UpdateParameters(){
 	pName = buffer;
 	*/
 	
-	// serial number. append to ID to make it unique (hopefully)
-	pOvr.GetSystem().GetStringTrackedDeviceProperty( pDeviceIndex,
-		vr::Prop_SerialNumber_String, buffer, 256, &error );
-	if( error != vr::TrackedProp_Success ){
-		DETHROW_INFO( deeInvalidParam, "Prop_SerialNumber_String failed" );
-	}
+	// append serial number to id to make it unique (hopefully)
 	pID += "_";
-	pID += pOvr.GetDevices().NormalizeID( buffer );
+	pID += pOvr.GetDevices().NormalizeID( pSerialNumber );
 	
 	// controller only: Prop_AttachedDeviceId_String
 }
 
 void deovrDevice::TrackStates(){
-	if( ! pOvr.GetSystem().GetControllerState( pDeviceIndex, &pState, sizeof( pState ) ) ){
+	if( pInputValueHandle == vr::k_ulInvalidInputValueHandle ){
 		ResetStates();
 		return;
 	}
 	
-	const int axisCount = pAxes.GetCount();
-	int i;
-	for( i=0; i<axisCount; i++ ){
+	vr::EVRInputError error;
+	
+	if( pActionPose != vr::k_ulInvalidActionHandle ){
+		error = pOvr.GetInput().GetPoseActionDataForNextFrame( pActionPose,
+			vr::TrackingUniverseStanding, &pDevicePoseData, sizeof( pDevicePoseData), pInputValueHandle );
+		if( error != vr::VRInputError_None ){
+			DETHROW_INFO( deeInvalidParam, "GetPoseActionDataForNextFrame failed" );
+		}
+		
+		if( pDevicePoseData.bActive ){
+			pUpdatePose( pDevicePoseData.pose, pPoseDevice );
+			
+		}else{
+			//pPoseDevice = deInputDevicePose();
+			// reset pose is not good since this can snap the HMD around. a possible solution
+			// is to use the last linear and angular velocity to estimate the next position
+			// while reducing velocites to 0 over a short time. when getting back correct
+			// results this would require smoothly blending over to the correct state to
+			// make the lost tracking not so nauseaing
+		}
+	}
+	
+	if( pActionHandPose != vr::k_ulInvalidActionHandle ){
+		// skeletal pose can not be limited to a device
+		error = pOvr.GetInput().GetSkeletalSummaryData( pActionHandPose,
+			vr::VRSummaryType_FromAnimation, &pSkeletalSummeryData );
+		if( error != vr::VRInputError_None ){
+			DETHROW_INFO( deeInvalidParam, "GetSkeletalSummaryData failed" );
+		}
+		
+		if( pBoneCount > 0 ){
+			error = pOvr.GetInput().GetSkeletalBoneData( pActionHandPose, vr::VRSkeletalTransformSpace_Parent,
+				vr::VRSkeletalMotionRange_WithoutController, pBoneTransformData, pBoneCount );
+			if( error != vr::VRInputError_None ){
+				DETHROW_INFO( deeInvalidParam, "GetSkeletalBoneData failed" );
+			}
+			
+			error = pOvr.GetInput().GetSkeletalBoneData( pActionHandPose, vr::VRSkeletalTransformSpace_Parent,
+				vr::VRSkeletalMotionRange_WithController, pBoneTransformData + pBoneCount, pBoneCount );
+			if( error != vr::VRInputError_None ){
+				DETHROW_INFO( deeInvalidParam, "GetSkeletalBoneData failed" );
+			}
+			
+			// TODO convert bone transforms. requires remapping bones and thus combining matrices
+		}
+	}
+	
+	int i, count = pButtons.GetCount();
+	for( i=0; i<count; i++ ){
+		GetButtonAt( i )->TrackState();
+	}
+	
+	count = pAxes.GetCount();
+	for( i=0; i<count; i++ ){
 		GetAxisAt( i )->TrackState();
 	}
 }
@@ -408,11 +435,21 @@ void deovrDevice::ResetStates(){
 }
 
 void deovrDevice::GetDevicePose( deInputDevicePose &pose ){
-	pUpdatePose( pOvr.GetDevices().GetDevicePoseAt( pDeviceIndex ), pose );
+	pose = pPoseDevice;
 }
 
-void deovrDevice::GetBonePose( int bone, deInputDevicePose &pose ){
-	pose = deInputDevicePose();
+void deovrDevice::GetBonePose( int bone, bool withController, deInputDevicePose &pose ){
+	if( bone < 0 || bone >= pBoneCount ){
+		pose = deInputDevicePose();
+		return;
+	}
+	
+	if( withController ){
+		pUpdatePose( pBoneTransformData[ pBoneCount + bone ], pose );
+		
+	}else{
+		pUpdatePose( pBoneTransformData[ bone ], pose );
+	}
 }
 
 
@@ -424,24 +461,48 @@ void deovrDevice::pUpdateParametersHMD(){
 	pType = deInputDevice::edtVRHMD;
 	pName = "HMD";
 	pID.Format( "%shmd", OVR_DEVID_PREFIX );
+	pInputValuePath = "/user/head";
+	pActionPose = pOvr.GetActionHandle( deVROpenVR::eiaPose );
+	
+	// input source handle
+	vr::EVRInputError inputError = pOvr.GetInput().GetInputSourceHandle( pInputValuePath, &pInputValueHandle );
+	if( inputError != vr::VRInputError_None ){
+		pOvr.LogErrorFormat( "Failed retrieving input source handle: %d", inputError );
+		DETHROW_INFO( deeInvalidAction, "Failed retrieving input source handle" );
+	}
 }
 
 void deovrDevice::pUpdateParametersController(){
-	vr::ETrackedPropertyError error;
-	int i;
-	
 	pType = deInputDevice::edtVRController;
-	pControllerRole = pOvr.GetSystem().GetControllerRoleForTrackedDeviceIndex( pDeviceIndex );
+	//pControllerRole = pOvr.GetSystem().GetControllerRoleForTrackedDeviceIndex( pDeviceIndex );
+	// ^= old input system. unreliable using new system. resorting to device property
+	
+	vr::ETrackedPropertyError propError;
+	pControllerRole = ( vr::ETrackedControllerRole )pOvr.GetSystem().GetInt32TrackedDeviceProperty(
+		pDeviceIndex, vr::Prop_ControllerRoleHint_Int32, &propError );
+	if( propError != vr::TrackedProp_Success ){
+		DETHROW_INFO( deeInvalidParam, "Prop_ControllerRoleHint_Int32 failed" );
+	}
+	
+	vr::VRActionHandle_t actionHandPose = vr::k_ulInvalidActionHandle;
 	
 	switch( pControllerRole ){
 	case vr::TrackedControllerRole_LeftHand:
-		pName.Format( "Controller Left %d", pNameNumber );
+		pName = "Controller Left";
+		pNameNumber = -1;
 		pID.Format( "%scl", OVR_DEVID_PREFIX );
+		pInputValuePath = "/user/hand/left";
+		pActionPose = pOvr.GetActionHandle( deVROpenVR::eiaPose );
+		actionHandPose = pOvr.GetActionHandle( deVROpenVR::eiaSkeletonHandLeft );
 		break;
 		
 	case vr::TrackedControllerRole_RightHand:
-		pName.Format( "Controller Right %d", pNameNumber );
+		pName = "Controller Right";
+		pNameNumber = -1;
 		pID.Format( "%scr", OVR_DEVID_PREFIX );
+		pInputValuePath = "/user/hand/right";
+		pActionPose = pOvr.GetActionHandle( deVROpenVR::eiaPose );
+		actionHandPose = pOvr.GetActionHandle( deVROpenVR::eiaSkeletonHandRight );
 		break;
 		
 	case vr::TrackedControllerRole_Treadmill:
@@ -452,207 +513,244 @@ void deovrDevice::pUpdateParametersController(){
 	case vr::TrackedControllerRole_Stylus:
 		pName.Format( "Stylus %d", pNameNumber );
 		pID.Format( "%scs", OVR_DEVID_PREFIX );
+		pActionPose = pOvr.GetActionHandle( deVROpenVR::eiaPose );
 		break;
 		
 	default:
 		pName.Format( "Controller %d", pNameNumber );
+		pActionPose = pOvr.GetActionHandle( deVROpenVR::eiaPose );
 		pID.Format( "%scg", OVR_DEVID_PREFIX );
 	}
 	
-	// axes
-	static const vr::ETrackedDeviceProperty axisProp[ 5 ] = { vr::Prop_Axis0Type_Int32,
-		vr::Prop_Axis1Type_Int32, vr::Prop_Axis2Type_Int32, vr::Prop_Axis3Type_Int32,
-		vr::Prop_Axis4Type_Int32 };
-	
-	int axisNumber[ 5 ] = { 1, 1, 1, 1, 1 };
-	int nextNumTrigger = 1;
-	int nextNumJoystick = 1;
-	int nextNumTrackpad = 1;
-	
-	for( i=0; i<5; i++ ){
-		const vr::EVRControllerAxisType type = ( vr::EVRControllerAxisType )
-			pOvr.GetSystem().GetInt32TrackedDeviceProperty( pDeviceIndex, axisProp[ i ], &error );
-		if( error != vr::TrackedProp_Success ){
-			continue; // not present or otherwise not usable. ignore it
-		}
-		
-		switch( type ){
-		case vr::k_eControllerAxis_Trigger:
-			axisNumber[ i ] = nextNumTrigger;
-			pAddAxisTrigger( i, nextNumTrigger );
-			break;
-			
-		case vr::k_eControllerAxis_Joystick:
-			axisNumber[ i ] = nextNumJoystick;
-			pAddAxesJoystick( i, nextNumJoystick );
-			break;
-			
-		case vr::k_eControllerAxis_TrackPad:
-			axisNumber[ i ] = nextNumTrackpad;
-			pAddAxesTrackpad( i, nextNumTrackpad );
-			break;
-			
-		default:
-			break;
+	// input source handle
+	if( ! pInputValuePath.IsEmpty() ){
+		vr::EVRInputError inputError = pOvr.GetInput().GetInputSourceHandle( pInputValuePath, &pInputValueHandle );
+		if( inputError != vr::VRInputError_None ){
+			pOvr.LogErrorFormat( "Failed retrieving input source handle: %d", inputError );
+			DETHROW_INFO( deeInvalidAction, "Failed retrieving input source handle" );
 		}
 	}
+	
+	// input data can be only retrieved with a handle
+	if( pInputValueHandle == vr::k_ulInvalidInputValueHandle ){
+		return;
+	}
+	
+	// axes
+	pAddAxisTrigger( deInputDeviceAxis::eatTrigger, deVROpenVR::eiaTriggerAnalog, "Trigger", "trig", "Tri" );
+	pAddAxesJoystick( deVROpenVR::eiaJoystickAnalog, "Joystick", "js", "Joy" );
+	pAddAxesTrackpad( deVROpenVR::eiaTrackpadAnalog, "TrackPad", "tp", "Pad" );
+	pAddAxisTrigger( deInputDeviceAxis::eatGripGrab, deVROpenVR::eiaGripGrab, "Grab", "gg", "Grab" );
+	pAddAxisTrigger( deInputDeviceAxis::eatGripSqueeze, deVROpenVR::eiaGripSqueeze, "Squeeze", "gs", "Squ" );
+	pAddAxisTrigger( deInputDeviceAxis::eatGripPinch, deVROpenVR::eiaGripPinch, "Pinch", "gp", "Pin" );
 	
 	// buttons
-	const uint64_t buttons = pOvr.GetSystem().GetUint64TrackedDeviceProperty(
-		pDeviceIndex, vr::Prop_SupportedButtons_Uint64, &error );
-	if( error != vr::TrackedProp_Success ){
-		DETHROW_INFO( deeInvalidParam, "Prop_SerialNumber_String failed" );
-	}
+	pAddButton( deVROpenVR::eiaTriggerPress, deVROpenVR::eiaTriggerTouch, "Trigger", "trig", "Tri" );
+	pAddButton( deVROpenVR::eiaButtonPrimaryPress, deVROpenVR::eiaButtonPrimaryTouch, "A", "a", "A" );
+	pAddButton( deVROpenVR::eiaButtonSecondaryPress, deVROpenVR::eiaButtonSecondaryTouch, "B", "b", "B" );
+	pAddButton( deVROpenVR::eiaJoystickPress, deVROpenVR::eiaJoystickTouch, "Joystick", "js", "Joy" );
+	pAddButton( deVROpenVR::eiaTrackpadPress, deVROpenVR::eiaTrackpadTouch, "TrackPad", "tp", "Pad" );
+	pAddButton( deVROpenVR::eiaGripPress, deVROpenVR::eiaGripTouch, "Grip", "grip", "Grip" );
 	
-	static const struct sButtonConfig{
-		vr::EVRButtonId buttonType;
-		const char *name;
-		const char *id;
-		const char *displayText;
-		vr::ETrackedDeviceProperty axis;
-		int axisNum;
-	} btnConf[ 14 ] = {
-		{ vr::k_EButton_System, "System", "system", "Sys", vr::Prop_Invalid, 0 },
-		{ vr::k_EButton_ApplicationMenu, "Menu", "menu", "Menu", vr::Prop_Invalid, 0 },
-		{ vr::k_EButton_Grip, "Grip", "grip", "Grip", vr::Prop_Invalid, 0 },
-		{ vr::k_EButton_DPad_Left, "Left", "left", "Left", vr::Prop_Invalid, 0 },
-		{ vr::k_EButton_DPad_Up, "Up", "up", "Up", vr::Prop_Invalid, 0 },
-		{ vr::k_EButton_DPad_Right, "Right", "right", "Right", vr::Prop_Invalid, 0 },
-		{ vr::k_EButton_DPad_Down, "Down", "down", "Down", vr::Prop_Invalid, 0 },
-		{ vr::k_EButton_A, "A", "a", "A", vr::Prop_Invalid, 0 },
-		{ vr::k_EButton_ProximitySensor, "Proximity", "proximity", "Prox", vr::Prop_Invalid, 0 },
-		{ vr::k_EButton_Axis0, "Axis 1", "axis1", "A1", vr::Prop_Axis0Type_Int32, 1 },
-		{ vr::k_EButton_Axis1, "Axis 2", "axis2", "A2", vr::Prop_Axis1Type_Int32, 2 },
-		{ vr::k_EButton_Axis2, "Axis 3", "axis3", "A3", vr::Prop_Axis2Type_Int32, 3 },
-		{ vr::k_EButton_Axis3, "Axis 4", "axis4", "A4", vr::Prop_Axis3Type_Int32, 4 },
-		{ vr::k_EButton_Axis4, "Axis 5", "axis5", "A5", vr::Prop_Axis4Type_Int32, 5 } };
-	
-	deovrDeviceButton::Ref button;
-	decString text;
-	
-	for( i=0; i<14; i++ ){
-		if( ( buttons & vr::ButtonMaskFromId( btnConf[ i ].buttonType ) ) == 0 ){
-			continue;
-		}
-		
-		button.TakeOver( new deovrDeviceButton( *this, btnConf[ i ].buttonType ) );
-		button->SetID( btnConf[ i ].id );
-		
-		if( btnConf[ i ].axis == vr::Prop_Invalid ){
-			button->SetName( btnConf[ i ].name );
-			button->SetDisplayText( btnConf[ i ].displayText );
-			
-		}else{
-			const vr::EVRControllerAxisType type = ( vr::EVRControllerAxisType )pOvr.GetSystem().
-				GetInt32TrackedDeviceProperty( pDeviceIndex, btnConf[ i ].axis, &error );
-			if( error == vr::TrackedProp_Success ){
-				switch( type ){
-				case vr::k_eControllerAxis_Trigger:
-					text.Format( "Trigger %d", axisNumber[ btnConf[ i ].axisNum ] );
-					button->SetName( text );
-					text.Format( "Trig%d", axisNumber[ btnConf[ i ].axisNum ] );
-					button->SetDisplayText( text );
-					break;
-					
-				case vr::k_eControllerAxis_Joystick:
-					text.Format( "Joystick %d", axisNumber[ btnConf[ i ].axisNum ] );
-					button->SetName( text );
-					text.Format( "Joy%d", axisNumber[ btnConf[ i ].axisNum ] );
-					button->SetDisplayText( text );
-					break;
-					
-				case vr::k_eControllerAxis_TrackPad:
-					text.Format( "TrackPad %d", axisNumber[ btnConf[ i ].axisNum ] );
-					button->SetName( text );
-					text.Format( "Pad%d", axisNumber[ btnConf[ i ].axisNum ] );
-					button->SetDisplayText( text );
-					break;
-					
-				default:
-					button->SetName( btnConf[ i ].name );
-					button->SetDisplayText( btnConf[ i ].displayText );
-				}
-				
-			}else{
-				button->SetName( btnConf[ i ].name );
-				button->SetDisplayText( btnConf[ i ].displayText );
-			}
-		}
-		
-		button->SetIndex( pButtons.GetCount() );
-		pButtons.Add( button );
+	// hand pose
+	if( actionHandPose != vr::k_ulInvalidActionHandle ){
+		pUpdateParametersHandPose( actionHandPose );
 	}
 }
 
-void deovrDevice::pAddAxisTrigger( int index, int &nextNum ){
-	deovrDeviceAxis::Ref axis;
-	decString text;
+void deovrDevice::pUpdateParametersHandPose( vr::VRActionHandle_t actionHandle ){
+	vr::IVRInput &vrinput = pOvr.GetInput();
+	vr::InputSkeletalActionData_t dataSkeletal;
 	
-	axis.TakeOver( new deovrDeviceAxis( *this, index ) );
-	axis->SetAxisType( vr::k_eControllerAxis_Trigger );
-	axis->SetType( deInputDeviceAxis::eatTrigger );
+	// finger bending and spreading
+	pAddAxisFinger( deInputDeviceAxis::eatFingerBend, 0, "Bend Thumb", "fb1", "FB1" );
+	pAddAxisFinger( deInputDeviceAxis::eatFingerBend, 1, "Bend Index Finger", "fb2", "FB2" );
+	pAddAxisFinger( deInputDeviceAxis::eatFingerBend, 2, "Bend Middle Finger", "fb3", "FB3" );
+	pAddAxisFinger( deInputDeviceAxis::eatFingerBend, 3, "Bend Ring Finger", "fb4", "FB4" );
+	pAddAxisFinger( deInputDeviceAxis::eatFingerBend, 4, "Bend Pinky Finger", "fb5", "FB5" );
+	
+	pAddAxisFinger( deInputDeviceAxis::eatFingerSpread, 0, "Spread Thumb Index Finger", "fs1", "FS1" );
+	pAddAxisFinger( deInputDeviceAxis::eatFingerSpread, 1, "Spread Index Middle Finger", "fs2", "FS2" );
+	pAddAxisFinger( deInputDeviceAxis::eatFingerSpread, 2, "Spread Middle Ring Finger", "fs3", "FS3" );
+	pAddAxisFinger( deInputDeviceAxis::eatFingerSpread, 3, "Spread Ring Pinky Finger", "fs4", "FS4" );
+	
+	// skeletal input can not be limited to a device, hence why different actions are used
+	vr::EVRInputError inputError = vrinput.GetSkeletalActionData(
+		actionHandle, &dataSkeletal, sizeof( dataSkeletal ) );
+	if( inputError != vr::VRInputError_None ){
+		return;
+	}
+	
+	uint32_t boneCount;
+	inputError = vrinput.GetBoneCount( pActionHandPose, &boneCount );
+	if( inputError != vr::VRInputError_None || boneCount == 0 ){
+		return;
+	}
+	
+	pActionHandPose = actionHandle;
+	pBoneConfiguration = deInputDevice::ebcHand;
+	
+	pBoneTransformData = new vr::VRBoneTransform_t[ boneCount * 2 ];
+	pBoneCount = ( int )boneCount;
+	
+	pPoseBones = new deInputDevicePose[ deInputDevice::HandBoneCount ];
+	pPoseBoneCount = deInputDevice::HandBoneCount;
+}
+
+void deovrDevice::pUpdateParametersTracker(){
+	pType = deInputDevice::edtVRTracker;
+	pName.Format( "Tracker %d", pNameNumber );
+	pID.Format( "%str", OVR_DEVID_PREFIX );
+	pActionPose = pOvr.GetActionHandle( deVROpenVR::eiaPose );
+	
+	// this is ugly but I found no better way yet. try to construct the device path
+	pInputValuePath = "/devices/htc/vive_tracker";
+	pInputValuePath += pSerialNumber;
+	
+	vr::EVRInputError inputError = pOvr.GetInput().GetInputSourceHandle( pInputValuePath, &pInputValueHandle );
+	pOvr.LogInfoFormat("TRACKER: path(%s) handle(%lu) error(%d)", pInputValuePath.GetString(), pInputValueHandle, inputError );
+}
+
+void deovrDevice::pAddButton( deVROpenVR::eInputActions actionPress,
+deVROpenVR::eInputActions actionTouch, const char *name, const char *id, const char *displayText ){
+	vr::IVRInput &vrinput = pOvr.GetInput();
+	vr::VRActionHandle_t actionHandle = pOvr.GetActionHandle( actionPress );
+	vr::InputDigitalActionData_t dataDigital;
+	
+	vr::EVRInputError inputError = vrinput.GetDigitalActionData( actionHandle,
+		&dataDigital, sizeof( dataDigital ), pInputValueHandle );
+	if( inputError != vr::VRInputError_None ){
+		return;
+	}
+	
+	const deovrDeviceButton::Ref button( deovrDeviceButton::Ref::New( new deovrDeviceButton( *this ) ) );
+	button->SetID( id );
+	button->SetActionPressHandle( actionHandle );
+	
+	actionHandle = pOvr.GetActionHandle( actionTouch );
+	inputError = vrinput.GetDigitalActionData( actionHandle,
+		&dataDigital, sizeof( dataDigital ), pInputValueHandle );
+	if( inputError == vr::VRInputError_None ){
+		button->SetActionTouchHandle( actionHandle );
+	}
+	
+	button->SetName( name );
+	button->SetDisplayText( displayText );
+	
+	button->SetIndex( pButtons.GetCount() );
+	pButtons.Add( button );
+}
+
+void deovrDevice::pAddAxisTrigger( deInputDeviceAxis::eAxisTypes type,
+deVROpenVR::eInputActions actionAnalog, const char *name, const char *id, const char *displayText ){
+	vr::IVRInput &vrinput = pOvr.GetInput();
+	vr::VRActionHandle_t actionHandle = pOvr.GetActionHandle( actionAnalog );
+	
+	vr::InputAnalogActionData_t dataAnalog;
+	vr::EVRInputError inputError = vrinput.GetAnalogActionData( actionHandle,
+		&dataAnalog, sizeof( dataAnalog ), pInputValueHandle );
+	if( inputError != vr::VRInputError_None ){
+		return;
+	}
+	
+	const deovrDeviceAxis::Ref axis( deovrDeviceAxis::Ref::New( new deovrDeviceAxis( *this ) ) );
+	axis->SetActionAnalogHandle( actionHandle );
+	axis->SetType( type );
+	axis->SetRange( 0.0f, 1.0f );
+	axis->SetDefault( -1.0f );
 	axis->SetValue( -1.0f );
-	text.Format( "Trigger %d", nextNum );
-	axis->SetName( text );
-	text.Format( "tr%d", nextNum );
-	axis->SetID( text );
+	axis->SetName( name );
+	axis->SetID( id );
+	axis->SetDisplayText( displayText );
 	axis->SetIndex( pAxes.GetCount() );
 	pAxes.Add( axis );
-	
-	nextNum++;
 }
 
-void deovrDevice::pAddAxesJoystick( int index, int &nextNum ){
-	static const char *name[ 2 ] = { "X", "Y" };
-	static const char *id[ 2 ] = { "x", "y" };
+void deovrDevice::pAddAxisFinger( deInputDeviceAxis::eAxisTypes type, int finger,
+const char *name, const char *id, const char *displayText ){
+	const deovrDeviceAxis::Ref axis( deovrDeviceAxis::Ref::New( new deovrDeviceAxis( *this ) ) );
+	axis->SetType( type );
+	axis->SetRange( 0.0f, 1.0f );
+	axis->SetDefault( -1.0f );
+	axis->SetValue( -1.0f );
+	axis->SetName( name );
+	axis->SetID( id );
+	axis->SetDisplayText( displayText );
+	axis->SetIndex( pAxes.GetCount() );
+	axis->SetFinger( finger );
+	pAxes.Add( axis );
+}
+
+void deovrDevice::pAddAxesJoystick( deVROpenVR::eInputActions actionAnalog,
+const char *name, const char *id, const char *displayText ){
+	vr::IVRInput &vrinput = pOvr.GetInput();
+	vr::VRActionHandle_t actionHandle = pOvr.GetActionHandle( actionAnalog );
+	vr::InputAnalogActionData_t dataAnalog;
+	
+	vr::EVRInputError inputError = vrinput.GetAnalogActionData( actionHandle,
+		&dataAnalog, sizeof( dataAnalog ), pInputValueHandle );
+	if( inputError != vr::VRInputError_None ){
+		return;
+	}
+	
+	static const char *nameAxis[ 2 ] = { "X", "Y" };
+	static const char *idAxis[ 2 ] = { "x", "y" };
 	deovrDeviceAxis::Ref axis;
 	decString text;
 	int i;
 	
 	for( i=0; i<2; i++ ){
-		axis.TakeOver( new deovrDeviceAxis( *this, index ) );
-		axis->SetAxisType( vr::k_eControllerAxis_Joystick );
+		axis.TakeOver( deovrDeviceAxis::Ref::New( new deovrDeviceAxis( *this ) ) );
+		axis->SetActionAnalogHandle( actionHandle );
 		axis->SetType( deInputDeviceAxis::eatStick );
-		axis->SetUseX( i == 0 );
-		text.Format( "Joystick %d %s", nextNum, name[ i ] );
+		axis->SetComponent( i );
+		text.Format( "%s %s", name, nameAxis[ i ] );
 		axis->SetName( text );
-		text.Format( "js%d%s", nextNum, id[ i ] );
+		text.Format( "%s%s", id, idAxis[ i ] );
 		axis->SetID( text );
+		axis->SetDisplayText( displayText );
 		axis->SetIndex( pAxes.GetCount() );
 		pAxes.Add( axis );
 	}
-	
-	nextNum++;
 }
 
-void deovrDevice::pAddAxesTrackpad( int index, int &nextNum ){
-	static const char *name[ 2 ] = { "X", "Y" };
-	static const char *id[ 2 ] = { "x", "y" };
+void deovrDevice::pAddAxesTrackpad( deVROpenVR::eInputActions actionAnalog,
+const char *name, const char *id, const char *displayText ){
+	vr::IVRInput &vrinput = pOvr.GetInput();
+	vr::VRActionHandle_t actionHandle = pOvr.GetActionHandle( actionAnalog );
+	vr::InputAnalogActionData_t dataAnalog;
+	
+	vr::EVRInputError inputError = vrinput.GetAnalogActionData( actionHandle,
+		&dataAnalog, sizeof( dataAnalog ), pInputValueHandle );
+	if( inputError != vr::VRInputError_None ){
+		return;
+	}
+	
+	static const char *nameAxis[ 2 ] = { "X", "Y" };
+	static const char *idAxis[ 2 ] = { "x", "y" };
 	deovrDeviceAxis::Ref axis;
 	decString text;
 	int i;
 	
 	for( i=0; i<2; i++ ){
-		axis.TakeOver( new deovrDeviceAxis( *this, index ) );
-		axis->SetAxisType( vr::k_eControllerAxis_TrackPad );
+		axis.TakeOver( deovrDeviceAxis::Ref::New( new deovrDeviceAxis( *this ) ) );
+		axis->SetActionAnalogHandle( actionHandle );
 		axis->SetType( deInputDeviceAxis::eatTouchPad );
-		axis->SetUseX( i == 0 );
-		text.Format( "TrackPad %d %s", nextNum, name[ i ] );
+		axis->SetComponent( i );
+		text.Format( "%s %s", name, nameAxis[ i ] );
 		axis->SetName( text );
-		text.Format( "tp%d%s", nextNum, id[ i ] );
+		text.Format( "%s%s", id, idAxis[ i ] );
 		axis->SetID( text );
+		axis->SetDisplayText( displayText );
 		axis->SetIndex( pAxes.GetCount() );
 		pAxes.Add( axis );
 	}
-	
-	nextNum++;
 }
 
 void deovrDevice::pUpdatePose( const vr::TrackedDevicePose_t &in, deInputDevicePose &out ) const{
 	// OpenVR is right handed: right=x, up=y, forward=-z
 	// to transform the matrix apply the conversion (-z) for both the row vectors and
 	// the column vectors
-	
 	if( ! in.bPoseIsValid ){
 		out = deInputDevicePose();
 	}
@@ -674,4 +772,15 @@ void deovrDevice::pUpdatePose( const vr::TrackedDevicePose_t &in, deInputDeviceP
 	// requires flipping the rotationAngle, hence all coordinates
 	const vr::HmdVector3_t &av = in.vAngularVelocity;
 	out.SetAngularVelocity( decVector( -av.v[ 0 ], -av.v[ 1 ], av.v[ 2 ] ) );
+}
+
+void deovrDevice::pUpdatePose( const vr::VRBoneTransform_t &in, deInputDevicePose &out ) const{
+	const vr::HmdVector4_t &p = in.position;
+	out.SetPosition( decVector( p.v[ 0 ], p.v[ 1 ], -p.v[ 2 ] ) );
+	
+	const vr::HmdQuaternionf_t &o = in.orientation;
+	out.SetOrientation( decQuaternion( -o.x, -o.y, o.z, -o.w ) );
+	
+	out.SetLinearVelocity( decVector() );
+	out.SetAngularVelocity( decVector() );
 }

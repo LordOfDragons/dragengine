@@ -35,14 +35,15 @@ enum InputDeviceBoneConfiguration
 	 * \brief Articulated hand bones.
 	 * 
 	 * Bones are defined for fingers in this order:
-	 * - Thumb: bones 0 to 3
-	 * - Index finger: bones 4 to 7
-	 * - Middle finger: bones 8 to 11
-	 * - Ring finger: bones 12 to 15
-	 * - Pinky finger: bones 16 to 19
+	 * - Wrist: 0
+	 * - Thumb: bones 1 to 4
+	 * - Index finger: bones 5 to 8
+	 * - Middle finger: bones 9 to 12
+	 * - Ring finger: bones 13 to 16
+	 * - Pinky finger: bones 17 to 20
 	 * 
-	 * For a total of 20 bones. Each finger has bones in these order:
-	 * - Wrist: inside the hand
+	 * For a total of 21 bones. Each finger has 4 bones in these order:
+	 * - Segment 0: inside palm
 	 * - Segment 1: first finger segment
 	 * - Segment 2: second finger segment
 	 * - Segment 3: third finger segment

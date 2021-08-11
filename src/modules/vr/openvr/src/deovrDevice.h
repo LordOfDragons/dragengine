@@ -22,15 +22,18 @@
 #ifndef _DEOVRDEVICE_H_
 #define _DEOVRDEVICE_H_
 
+#include "deVROpenVR.h"
+
 #include <openvr/openvr.h>
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/collection/decObjectOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/input/deInputDevice.h>
+#include <dragengine/input/deInputDeviceAxis.h>
+#include <dragengine/input/deInputDevicePose.h>
 #include <dragengine/resources/image/deImage.h>
 
-class deVROpenVR;
 class deovrDeviceAxis;
 class deovrDeviceButton;
 class deovrDeviceFeedback;
@@ -56,8 +59,14 @@ private:
 	const vr::TrackedDeviceIndex_t pDeviceIndex;
 	vr::TrackedDeviceClass pDeviceClass;
 	vr::ETrackedControllerRole pControllerRole;
+	decString  pInputValuePath;
+	vr::VRInputValueHandle_t pInputValueHandle;
+	vr::VRActionHandle_t pActionPose;
+	vr::VRActionHandle_t pActionHandPose;
+	decString pSerialNumber;
 	
 	deInputDevice::eDeviceTypes pType;
+	deInputDevice::eBoneConfigurations pBoneConfiguration;
 	int pNameNumber;
 	decString pID;
 	decString pName;
@@ -70,6 +79,14 @@ private:
 	decObjectOrderedSet pFeedbacks;
 	
 	vr::VRControllerState_t pState;
+	vr::InputPoseActionData_t pDevicePoseData;
+	vr::VRSkeletalSummaryData_t pSkeletalSummeryData;
+	vr::VRBoneTransform_t *pBoneTransformData;
+	int pBoneCount;
+	
+	deInputDevicePose pPoseDevice;
+	deInputDevicePose *pPoseBones;
+	int pPoseBoneCount;
 	
 	
 	
@@ -107,6 +124,18 @@ public:
 	/** Controller role. */
 	inline vr::ETrackedControllerRole GetControllerRole() const{ return pControllerRole; }
 	
+	/** Input value path. */
+	inline const decString &GetInputValuePath() const{ return pInputValuePath; }
+	
+	/** Input value handler. */
+	inline vr::VRInputValueHandle_t GetInputValueHandle() const{ return pInputValueHandle; }
+	
+	/** Pose action handle. */
+	inline vr::VRActionHandle_t GetActionPose() const{ return pActionPose; }
+	
+	/** Hand pose action handle. */
+	inline vr::VRActionHandle_t GetActionHandPose() const{ return pActionHandPose; }
+	
 	
 	
 	/** Device type. */
@@ -114,6 +143,12 @@ public:
 	
 	/** Set device type. */
 	void SetType( deInputDevice::eDeviceTypes type );
+	
+	/** Bone configuration. */
+	inline deInputDevice::eBoneConfigurations GetBoneConfiguration() const{ return pBoneConfiguration; }
+	
+	/** Set bone configuration. */
+	void SetBoneConfiguration( deInputDevice::eBoneConfigurations config );
 	
 	/** Name number or -1 it not set. */
 	inline int GetNameNumber() const{ return pNameNumber; }
@@ -159,20 +194,8 @@ public:
 	/** Button with identifier or nullptr if absent. */
 	deovrDeviceButton *GetButtonWithID( const char *id ) const;
 	
-	/** Button with button type or nullptr if absent. */
-	deovrDeviceButton *GetButtonWithType( vr::EVRButtonId buttonType ) const;
-	
-	/** Button with button mask or nullptr if absent. */
-	deovrDeviceButton *GetButtonWithMask( uint32_t buttonMask ) const;
-	
 	/** Index of button with identifier or -1 if absent. */
 	int IndexOfButtonWithID( const char *id ) const;
-	
-	/** Index of button with button type or -1 if absent. */
-	int IndexOfButtonWithType( vr::EVRButtonId buttonType ) const;
-	
-	/** Index of button with button mask or -1 if absent. */
-	int IndexOfButtonWithMask( uint32_t buttonMask ) const;
 	
 	
 	
@@ -226,7 +249,10 @@ public:
 	void GetDevicePose( deInputDevicePose &pose );
 	
 	/** Get bone pose. */
-	void GetBonePose( int bone, deInputDevicePose &pose );
+	void GetBonePose( int bone, bool withController, deInputDevicePose &pose );
+	
+	/** Skeletal summary data. */
+	inline const vr::VRSkeletalSummaryData_t &GetSkeletalSummaryData() const{ return pSkeletalSummeryData; }
 	/*@}*/
 	
 	
@@ -234,10 +260,26 @@ public:
 private:
 	void pUpdateParametersHMD();
 	void pUpdateParametersController();
-	void pAddAxisTrigger( int index, int &nextNum );
-	void pAddAxesJoystick( int index, int &nextNum );
-	void pAddAxesTrackpad( int index, int &nextNum );
+	void pUpdateParametersHandPose( vr::VRActionHandle_t actionHandle );
+	void pUpdateParametersTracker();
+	
+	void pAddButton( deVROpenVR::eInputActions actionPress, deVROpenVR::eInputActions actionTouch,
+		const char *name, const char *id, const char *displayText );
+	
+	void pAddAxisTrigger( deInputDeviceAxis::eAxisTypes type, deVROpenVR::eInputActions actionAnalog,
+		const char *name, const char *id, const char *displayText );
+	
+	void pAddAxisFinger( deInputDeviceAxis::eAxisTypes type, int finger, const char *name,
+		const char *id, const char *displayText );
+	
+	void pAddAxesJoystick( deVROpenVR::eInputActions actionAnalog, const char *name,
+		const char *id, const char *displayText );
+	
+	void pAddAxesTrackpad( deVROpenVR::eInputActions actionAnalog, const char *name,
+		const char *id, const char *displayText );
+	
 	void pUpdatePose( const vr::TrackedDevicePose_t &in, deInputDevicePose &out ) const;
+	void pUpdatePose( const vr::VRBoneTransform_t &in, deInputDevicePose &out ) const;
 };
 
 #endif

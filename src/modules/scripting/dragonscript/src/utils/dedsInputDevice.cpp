@@ -48,6 +48,10 @@ pDevice( deInputDevice::Ref::New( module.GetDeviceAt( deviceIndex ) ) ),
 pBonePoses( nullptr ),
 pBonePoseCount( 0 )
 {
+	if( pDevice->GetBoneConfiguration() == deInputDevice::ebcHand ){
+		pBonePoses = new deInputDevicePose[ deInputDevice::HandBoneCount ];
+		pBonePoseCount = deInputDevice::HandBoneCount;
+	}
 }
 
 dedsInputDevice::dedsInputDevice( deScriptingDragonScript &ds, deBaseVRModule &module, int deviceIndex ) :
@@ -58,6 +62,10 @@ pDevice( deInputDevice::Ref::New( module.GetDeviceAt( deviceIndex ) ) ),
 pBonePoses( nullptr ),
 pBonePoseCount( 0 )
 {
+	if( pDevice->GetBoneConfiguration() == deInputDevice::ebcHand ){
+		pBonePoses = new deInputDevicePose[ deInputDevice::HandBoneCount ];
+		pBonePoseCount = deInputDevice::HandBoneCount;
+	}
 }
 
 dedsInputDevice::~dedsInputDevice(){
@@ -71,13 +79,18 @@ dedsInputDevice::~dedsInputDevice(){
 // Management
 ///////////////
 
-const deInputDevicePose &dedsInputDevice::GetBonePoseAt( int index ) const{
+const deInputDevicePose &dedsInputDevice::GetBonePoseAt( int index, bool withController ) const{
 	if( index < 0 || index >= pBonePoseCount ){
 		static const deInputDevicePose defaultPose;
 		return defaultPose;
 	}
 	
-	return pBonePoses[ index ];
+	if( withController ){
+		return pBonePoses[ pBonePoseCount + index ];
+		
+	}else{
+		return pBonePoses[ index ];
+	}
 }
 
 void dedsInputDevice::OnFrameUpdate(){
@@ -90,7 +103,10 @@ void dedsInputDevice::OnFrameUpdate(){
 		module.GetDevicePose( pDeviceIndex, pDevicePose );
 		
 		for( i=0; i<pBonePoseCount; i++ ){
-			module.GetDeviceBonePose( pDeviceIndex, i, pBonePoses[ i ] );
+			module.GetDeviceBonePose( pDeviceIndex, i, false, pBonePoses[ i ] );
+		}
+		for( i=0; i<pBonePoseCount; i++ ){
+			module.GetDeviceBonePose( pDeviceIndex, i, true, pBonePoses[ pBonePoseCount + i ] );
 		}
 		}break;
 		
@@ -100,7 +116,10 @@ void dedsInputDevice::OnFrameUpdate(){
 		module.GetDevicePose( pDeviceIndex, pDevicePose );
 		
 		for( i=0; i<pBonePoseCount; i++ ){
-			module.GetDeviceBonePose( pDeviceIndex, i, pBonePoses[ i ] );
+			module.GetDeviceBonePose( pDeviceIndex, i, false, pBonePoses[ i ] );
+		}
+		for( i=0; i<pBonePoseCount; i++ ){
+			module.GetDeviceBonePose( pDeviceIndex, i, true, pBonePoses[ pBonePoseCount + i ] );
 		}
 		}break;
 	}

@@ -47,9 +47,9 @@ private:
 	
 	int pIndex;
 	
-	const int pAxisIndex;
-	vr::EVRControllerAxisType pAxisType;
-	bool pUseX;
+	vr::VRActionHandle_t pActionAnalogHandle;
+	int pComponent;
+	int pFinger;
 	
 	decString pID;
 	decString pName;
@@ -59,12 +59,11 @@ private:
 	decObjectOrderedSet pDisplayIcons;
 	decString pDisplayText;
 	
-	float pValue;
+	float pMinimum;
+	float pMaximum;
+	float pDefaultValue;
 	
-	float pJitterHistory[ 3 ];
-	int pJitterHistorySize;
-	int pJitterHistoryOffset;
-	int pJitterHistoryCount;
+	float pValue;
 	
 	
 	
@@ -72,7 +71,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create device axis. */
-	deovrDeviceAxis( deovrDevice &device, int axisIndex );
+	deovrDeviceAxis( deovrDevice &device );
 	
 protected:
 	/** Clean up device axis. */
@@ -95,20 +94,23 @@ public:
 	
 	
 	
-	/** Axis index. */
-	inline int GetAxisIndex() const{ return pAxisIndex; }
+	/** Analog action handle. */
+	inline vr::VRActionHandle_t GetActionAnalogHandle() const{ return pActionAnalogHandle; }
 	
-	/** Axis type. */
-	inline vr::EVRControllerAxisType GetAxisType() const{ return pAxisType; }
+	/** Set analog action handle. */
+	void SetActionAnalogHandle( vr::VRActionHandle_t handle );
 	
-	/** Set axis type. */
-	void SetAxisType( vr::EVRControllerAxisType axisType );
+	/** Component to use. */
+	inline int GetComponent() const{ return pComponent; }
 	
-	/** Use X state value if true otherwise use Y state value. */
-	inline bool GetUseX() const{ return pUseX; }
+	/** Set component to use. */
+	void SetComponent( int component );
 	
-	/** Set use X state value if true otherwise use Y state value. */
-	void SetUseX( bool useX );
+	/** Finger. */
+	inline int GetFinger() const{ return pFinger; }
+	
+	/** Set finger. */
+	void SetFinger( int finger );
 	
 	
 	
@@ -146,6 +148,23 @@ public:
 	
 	/** Set display text. */
 	void SetDisplayText( const char *text );
+	
+	
+	
+	/** Minimum. */
+	inline float GetMinimum() const{ return pMinimum; }
+	
+	/** Maximum. */
+	inline float GetMaximum() const{ return pMaximum; }
+	
+	/** Set range. */
+	void SetRange( float minimum, float maximum );
+	
+	/** Default value. */
+	inline float GetDefault() const{ return pDefaultValue; }
+	
+	/** Set default value. */
+	void SetDefault( float defaultValue );
 	
 	
 	

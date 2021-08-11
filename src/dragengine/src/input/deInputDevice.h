@@ -24,10 +24,12 @@
 
 #include "../deObject.h"
 #include "../common/collection/decObjectOrderedSet.h"
+#include "../common/math/decMath.h"
 #include "../common/string/decString.h"
 #include "../resources/image/deImageReference.h"
 #include "../resources/model/deModelReference.h"
 #include "../resources/skin/deSkinReference.h"
+#include "../resources/rig/deRigReference.h"
 
 class deInputDeviceButton;
 class deInputDeviceAxis;
@@ -135,14 +137,15 @@ public:
 		 * \brief Articulated hand bones.
 		 * 
 		 * Bones are defined for fingers in this order:
-		 * - Thumb: bones 0 to 3
-		 * - Index finger: bones 4 to 7
-		 * - Middle finger: bones 8 to 11
-		 * - Ring finger: bones 12 to 15
-		 * - Pinky finger: bones 16 to 19
+		 * - Wrist: 0
+		 * - Thumb: bones 1 to 4
+		 * - Index finger: bones 5 to 8
+		 * - Middle finger: bones 9 to 12
+		 * - Ring finger: bones 13 to 16
+		 * - Pinky finger: bones 17 to 20
 		 * 
-		 * For a total of 20 bones. Each finger has bones in these order:
-		 * - Wrist: inside the hand
+		 * For a total of 21 bones. Each finger has 4 bones in these order:
+		 * - Segment 0: inside palm
 		 * - Segment 1: first finger segment
 		 * - Segment 2: second finger segment
 		 * - Segment 3: third finger segment
@@ -152,6 +155,40 @@ public:
 		 */
 		ebcHand
 	};
+	
+	/**
+	 * \brief Convenience enumeration for hand bones.
+	 * \version 1.6
+	 */
+	enum eHandBones{
+		ehbWrist,
+		ehbThumb0,
+		ehbThumb1,
+		ehbThumb2,
+		ehbThumb3,
+		ehbIndex0,
+		ehbIndex1,
+		ehbIndex2,
+		ehbIndex3,
+		ehbMiddle0,
+		ehbMiddle1,
+		ehbMiddle2,
+		ehbMiddle3,
+		ehbRing0,
+		ehbRing1,
+		ehbRing2,
+		ehbRing3,
+		ehbPinky0,
+		ehbPinky1,
+		ehbPinky2,
+		ehbPinky3
+	};
+	
+	/**
+	 * \brief Convenience value count of hand bones.
+	 * \version 1.6
+	 */
+	static const int HandBoneCount = 21;
 	
 	
 	
@@ -204,6 +241,24 @@ private:
 	
 	/** \brief Bone configuration. */
 	eBoneConfigurations pBoneConfiguration;
+	
+	/**
+	 * \brief Finger tip offsets.
+	 * 
+	 * For use with ebcHand bone configuration. Defines the offset of the finger tip point
+	 * relative to the last finger segment coordinate frame. These are typically used to
+	 * figure out where finger tips touch objects in the world.
+	 */
+	decVector pFingerTipOffset[ 5 ];
+	
+	/** \brief Hand rig if ebcHand is used. */
+	deRigReference pHandRig;
+	
+	/** \brief Model to represent the device in VR environments or NULL if not set. */
+	deModelReference pVRModel;
+	
+	/** \brief Skin for VR model or NULL if not set. */
+	deSkinReference pVRSkin;
 	
 	
 	
@@ -314,6 +369,62 @@ public:
 	 * \version 1.6
 	 */
 	void SetBoneConfiguration( eBoneConfigurations configuration );
+	
+	/**
+	 * \brief Finger tip offsets.
+	 * \version 1.6
+	 * 
+	 * For use with ebcHand bone configuration. Defines the offset of the finger tip point
+	 * relative to the last finger segment coordinate frame. These are typically used to
+	 * figure out where finger tips touch objects in the world.
+	 */
+	const decVector &GetFingerTipOffset( int index ) const;
+	
+	/**
+	 * \brief Finger tip offsets.
+	 * \version 1.6
+	 * 
+	 * For use with ebcHand bone configuration. Defines the offset of the finger tip point
+	 * relative to the last finger segment coordinate frame. These are typically used to
+	 * figure out where finger tips touch objects in the world.
+	 */
+	void SetFingerTipOffset( int index, const decVector &offset );
+	
+	/**
+	 * \brief Hand rig if ebcHand is used.
+	 * \version 1.6
+	 */
+	inline deRig *GetHandRig() const{ return pHandRig; }
+	
+	/**
+	 * \brief Set hand rig if ebcHand is used.
+	 * \version 1.6
+	 */
+	void SetHandRig( deRig *rig );
+	
+	/**
+	 * \brief Model to represent the device in VR environments or NULL if not set.
+	 * \version 1.6
+	 */
+	inline deModel *GetVRModel() const{ return pVRModel; }
+	
+	/**
+	 * \brief Set model to represent the device in VR environments or NULL if not set.
+	 * \version 1.6
+	 */
+	void SetModel( deModel *model );
+	
+	/**
+	 * \brief Skin for VR model or NULL if not set.
+	 * \version 1.6
+	 */
+	inline deSkin *GetVRSkin() const{ return pVRSkin; }
+	
+	/**
+	 * \brief Skin for VR model or NULL if not set.
+	 * \version 1.6
+	 */
+	void SetVRSkin( deSkin *skin );
 	/*@}*/
 	
 	

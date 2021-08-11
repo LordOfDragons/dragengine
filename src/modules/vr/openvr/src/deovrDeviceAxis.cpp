@@ -40,17 +40,17 @@
 // Constructor, destructor
 ////////////////////////////
 
-deovrDeviceAxis::deovrDeviceAxis( deovrDevice &device, int axisIndex ) :
+deovrDeviceAxis::deovrDeviceAxis( deovrDevice &device ) :
 pDevice( device ),
 pIndex( -1 ),
-pAxisIndex( axisIndex ),
-pAxisType( vr::k_eControllerAxis_None ),
-pUseX( true ),
+pActionAnalogHandle( vr::k_ulInvalidActionHandle ),
+pComponent( 0 ),
+pFinger( -1 ),
 pType( deInputDeviceAxis::eatGeneric ),
-pValue( 0.0f ),
-pJitterHistorySize( 3 ),
-pJitterHistoryOffset( 0 ),
-pJitterHistoryCount( 0 ){
+pMinimum( -1.0f ),
+pMaximum( 1.0f ),
+pDefaultValue( 0.0f ),
+pValue( 0.0f ){
 }
 
 deovrDeviceAxis::~deovrDeviceAxis(){
@@ -65,12 +65,16 @@ void deovrDeviceAxis::SetIndex( int index ){
 	pIndex = index;
 }
 
-void deovrDeviceAxis::SetAxisType( vr::EVRControllerAxisType axisType ){
-	pAxisType = axisType;
+void deovrDeviceAxis::SetActionAnalogHandle( vr::VRActionHandle_t handle ){
+	pActionAnalogHandle = handle;
 }
 
-void deovrDeviceAxis::SetUseX( bool useX ){
-	pUseX = useX;
+void deovrDeviceAxis::SetComponent( int component ){
+	pComponent = component;
+}
+
+void deovrDeviceAxis::SetFinger( int finger ){
+	pFinger = finger;
 }
 
 void deovrDeviceAxis::SetID( const char *id ){
@@ -118,25 +122,21 @@ void deovrDeviceAxis::SetDisplayText( const char *text ){
 
 
 
+void deovrDeviceAxis::SetRange( float minimum, float maximum ){
+	pMinimum = minimum;
+	pMaximum = maximum;
+}
+
+void deovrDeviceAxis::SetDefault( float defaultValue ){
+	pDefaultValue = defaultValue;
+}
+
 void deovrDeviceAxis::SetValue( float value ){
 	pValue = value;
 }
 
 void deovrDeviceAxis::UpdateValue( float value ){
 	value = decMath::clamp( value, -1.0f, 1.0f );
-	
-	/*
-	pJitterHistory[ pJitterHistoryOffset ] = value;
-	pJitterHistoryOffset = ( pJitterHistoryOffset + 1 ) % pJitterHistorySize;
-	pJitterHistoryCount = decMath::min( pJitterHistoryCount + 1, pJitterHistorySize );
-	
-	int i;
-	value = pJitterHistory[ 0 ];
-	for( i=1; i<pJitterHistoryCount; i++ ){
-		value += pJitterHistory[ i ];
-	}
-	value /= pJitterHistoryCount;
-	*/
 	
 	if( fabsf( value - pValue ) < 0.01f ){
 		return;
@@ -155,37 +155,35 @@ void deovrDeviceAxis::UpdateValue( float value ){
 }
 
 void deovrDeviceAxis::TrackState(){
-	const vr::VRControllerState_t &state = pDevice.GetState();
-	
-	switch( pAxisType ){
-	case vr::k_eControllerAxis_Trigger:
-		UpdateValue( state.rAxis[ pAxisIndex ].x * 2.0f - 1.0f );
+	switch( pType ){
+	case deInputDeviceAxis::eatFingerBend:
+		UpdateValue( pDevice.GetSkeletalSummaryData().flFingerCurl[ pFinger ] );
 		break;
 		
-	default:
-		if( pUseX ){
-			UpdateValue( state.rAxis[ pAxisIndex ].x );
+	case deInputDeviceAxis::eatFingerSpread:
+		UpdateValue( pDevice.GetSkeletalSummaryData().flFingerSplay[ pFinger ] );
+		break;
+		
+	default:{
+		vr::IVRInput &vrinput = pDevice.GetOvr().GetInput();
+		
+		vr::InputAnalogActionData_t dataAnalog;
+		vr::EVRInputError error = vrinput.GetAnalogActionData( pActionAnalogHandle,
+			&dataAnalog, sizeof( dataAnalog ), pDevice.GetInputValueHandle() );
+		
+		if( error == vr::VRInputError_None ){
+			UpdateValue( decMath::linearStep( ( &dataAnalog.x )[ pComponent ], pMinimum, pMaximum, -1.0f, 1.0f ) );
 			
 		}else{
-			UpdateValue( state.rAxis[ pAxisIndex ].y );
+			UpdateValue( pDefaultValue );
 		}
+		}break;
 	}
 }
 
 void deovrDeviceAxis::ResetState(){
-	pJitterHistoryCount = 0;
-	pJitterHistoryOffset = 0;
-	
-	switch( pAxisType ){
-	case vr::k_eControllerAxis_Trigger:
-		UpdateValue( -1.0f );
-		SetValue( -1.0f );
-		break;
-		
-	default:
-		UpdateValue( 0.0f );
-		SetValue( 0.0f );
-	}
+	UpdateValue( pDefaultValue );
+	SetValue( pDefaultValue );
 }
 
 

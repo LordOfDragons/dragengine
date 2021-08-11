@@ -150,7 +150,7 @@ void deVRNull::GetDevicePose( int, deInputDevicePose &pose ){
 	pose = deInputDevicePose();
 }
 
-void deVRNull::GetDeviceBonePose( int, int, deInputDevicePose &pose ){
+void deVRNull::GetDeviceBonePose( int, int, bool, deInputDevicePose &pose ){
 	pose = deInputDevicePose();
 }
 

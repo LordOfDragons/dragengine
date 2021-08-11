@@ -47,7 +47,7 @@ void deBaseInputModule::GetDevicePose( int, deInputDevicePose &pose ){
 	pose = deInputDevicePose();
 }
 
-void deBaseInputModule::GetDeviceBonePose( int, int, deInputDevicePose &pose ){
+void deBaseInputModule::GetDeviceBonePose( int, int, bool, deInputDevicePose &pose ){
 	pose = deInputDevicePose();
 }
 

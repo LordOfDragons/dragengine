@@ -136,7 +136,8 @@ public:
 	 * \brief Device bone pose or identity if not supported.
 	 * \version 1.6
 	 */
-	virtual void GetDeviceBonePose( int device, int bone, deInputDevicePose &pose );
+	virtual void GetDeviceBonePose( int device, int bone,
+		bool withController, deInputDevicePose &pose );
 	
 	/**
 	 * \brief Index of button best matching key code or -1 if not found.

@@ -51,8 +51,8 @@ private:
 	
 	int pIndex;
 	
-	const vr::EVRButtonId pButtonType;
-	const uint64_t pButtonMask;
+	vr::VRActionHandle_t pActionPressHandle;
+	vr::VRActionHandle_t pActionTouchHandle;
 	
 	decString pID;
 	decString pName;
@@ -69,7 +69,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create device button. */
-	deovrDeviceButton( deovrDevice &device, vr::EVRButtonId buttonType );
+	deovrDeviceButton( deovrDevice &device );
 	
 protected:
 	/** Clean up device button. */
@@ -92,11 +92,17 @@ public:
 	
 	
 	
-	/** Button type. */
-	inline vr::EVRButtonId GetButtonType() const{ return pButtonType; }
+	/** Press button action handle. */
+	inline vr::VRActionHandle_t GetActionPressHandle() const{ return pActionPressHandle; }
 	
-	/** Button mask. */
-	inline uint64_t GetButtonMask() const{ return pButtonMask; }
+	/** Set press button action handle. */
+	void SetActionPressHandle( vr::VRActionHandle_t handle );
+	
+	/** Touch button action handle. */
+	inline vr::VRActionHandle_t GetActionTouchHandle() const{ return pActionTouchHandle; }
+	
+	/** Set touch button action handle. */
+	void SetActionTouchHandle( vr::VRActionHandle_t handle );
 	
 	
 	
@@ -118,11 +124,17 @@ public:
 	/** Set if button is pressed. */
 	void SetPressed( bool pressed );
 	
+	/** Update pressed sending event if changed. */
+	void UpdatePressed( bool pressed );
+	
 	/** Button is touched. */
 	inline bool GetTouched() const{ return pTouched; }
 	
 	/** Set if button is touched. */
 	void SetTouched( bool touched );
+	
+	/** Update touched sending event if changed. */
+	void UpdateTouched( bool touched );
 	
 	
 	
@@ -148,6 +160,9 @@ public:
 	
 	/** Update engine input device information button. */
 	void GetInfo( deInputDeviceButton &info ) const;
+	
+	/** Track state. */
+	void TrackState();
 	/*@}*/
 };
 

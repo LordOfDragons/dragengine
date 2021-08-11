@@ -40,11 +40,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-deovrDeviceButton::deovrDeviceButton( deovrDevice &device, vr::EVRButtonId buttonType ) :
+deovrDeviceButton::deovrDeviceButton( deovrDevice &device ) :
 pDevice( device ),
 pIndex( -1 ),
-pButtonType( buttonType ),
-pButtonMask( vr::ButtonMaskFromId( buttonType ) ),
+pActionPressHandle( vr::k_ulInvalidActionHandle ),
+pActionTouchHandle( vr::k_ulInvalidActionHandle ),
 pPressed( false ),
 pTouched( false ){
 }
@@ -61,6 +61,14 @@ void deovrDeviceButton::SetIndex( int index ){
 	pIndex = index;
 }
 
+void deovrDeviceButton::SetActionPressHandle( vr::VRActionHandle_t handle ){
+	pActionPressHandle = handle;
+}
+
+void deovrDeviceButton::SetActionTouchHandle( vr::VRActionHandle_t handle ){
+	pActionTouchHandle = handle;
+}
+
 void deovrDeviceButton::SetID( const char *id ){
 	pID = id;
 }
@@ -73,8 +81,40 @@ void deovrDeviceButton::SetPressed( bool pressed ){
 	pPressed = pressed;
 }
 
+void deovrDeviceButton::UpdatePressed( bool pressed ){
+	if( pressed == pPressed ){
+		return;
+	}
+	
+	SetPressed( pressed );
+	
+	deInputEvent event;
+	event.SetType( pressed ? deInputEvent::eeButtonPress : deInputEvent::eeButtonRelease );
+	event.SetSource( deInputEvent::esVR );
+	event.SetDevice( pDevice.GetIndex() );
+	event.SetCode( pIndex );
+	event.SetTime( { decDateTime().ToSystemTime(), 0 } );
+	pDevice.GetOvr().SendEvent( event );
+}
+
 void deovrDeviceButton::SetTouched( bool touched ){
 	pTouched = touched;
+}
+
+void deovrDeviceButton::UpdateTouched( bool touched ){
+	if( touched == pTouched ){
+		return;
+	}
+	
+	SetTouched( touched );
+	
+	deInputEvent event;
+	event.SetType( touched ? deInputEvent::eeButtonTouch : deInputEvent::eeButtonUntouch );
+	event.SetSource( deInputEvent::esVR );
+	event.SetDevice( pDevice.GetIndex() );
+	event.SetCode( pIndex );
+	event.SetTime( { decDateTime().ToSystemTime(), 0 } );
+	pDevice.GetOvr().SendEvent( event );
 }
 
 
@@ -126,4 +166,19 @@ void deovrDeviceButton::GetInfo( deInputDeviceButton &info ) const{
 		info.AddDisplayIcon( ( deImage* )pDisplayIcons.GetAt( i ) );
 	}
 	info.SetDisplayText( pDisplayText );
+}
+
+void deovrDeviceButton::TrackState(){
+	vr::IVRInput &vrinput = pDevice.GetOvr().GetInput();
+	
+	vr::InputDigitalActionData_t dataDigital;
+	vr::EVRInputError error = vrinput.GetDigitalActionData( pActionPressHandle,
+		&dataDigital, sizeof( dataDigital ), pDevice.GetInputValueHandle() );
+	UpdatePressed( error == vr::VRInputError_None ? dataDigital.bState : false );
+	
+	if( pActionTouchHandle != vr::k_ulInvalidActionHandle ){
+		vr::EVRInputError error = vrinput.GetDigitalActionData( pActionTouchHandle,
+			&dataDigital, sizeof( dataDigital ), pDevice.GetInputValueHandle() );
+		UpdateTouched( error == vr::VRInputError_None ? dataDigital.bState : false );
+	}
 }

@@ -34,6 +34,7 @@
 #include "../math/deClassVector.h"
 #include "../world/deClassModel.h"
 #include "../world/deClassSkin.h"
+#include "../world/deClassRig.h"
 #include "../../deScriptingDragonScript.h"
 #include "../../deClassPathes.h"
 #include "../../utils/dedsInputDevice.h"
@@ -395,6 +396,56 @@ void deClassInputDevice::nfGetBoneConfiguration::RunFunction( dsRunTime *rt, dsV
 		->GetVariable( device.GetDevice()->GetBoneConfiguration() )->GetStaticValue() );
 }
 
+// public func Vector getFingerTipOffset( int index )
+deClassInputDevice::nfGetFingerTipOffset::nfGetFingerTipOffset( const sInitData &init ) :
+dsFunction( init.clsInputDevice, "getFingerTipOffset", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVector ){
+	p_AddParameter( init.clsInteger ); // index
+}
+void deClassInputDevice::nfGetFingerTipOffset::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const dedsInputDevice &device = *( ( sInputDeviceNatDat* )p_GetNativeData( myself ) )->device;
+	deScriptingDragonScript &ds = ( ( deClassInputDevice* )GetOwnerClass() )->GetDS();
+	const int index = rt->GetValue( 0 )->GetInt();
+	
+	ds.GetClassVector()->PushVector( rt, device.GetDevice()->GetFingerTipOffset( index ) );
+}
+
+// public func Rig getHandRig()
+deClassInputDevice::nfGetHandRig::nfGetHandRig( const sInitData &init ) :
+dsFunction( init.clsInputDevice, "getHandRig", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsRig ){
+}
+void deClassInputDevice::nfGetHandRig::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const dedsInputDevice &device = *( ( sInputDeviceNatDat* )p_GetNativeData( myself ) )->device;
+	deScriptingDragonScript &ds = ( ( deClassInputDevice* )GetOwnerClass() )->GetDS();
+	
+	ds.GetClassRig()->PushRig( rt, device.GetDevice()->GetHandRig() );
+}
+
+// public func Model getVRModel()
+deClassInputDevice::nfGetVRModel::nfGetVRModel( const sInitData &init ) :
+dsFunction( init.clsInputDevice, "getVRModel", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsModel ){
+}
+void deClassInputDevice::nfGetVRModel::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const dedsInputDevice &device = *( ( sInputDeviceNatDat* )p_GetNativeData( myself ) )->device;
+	deScriptingDragonScript &ds = ( ( deClassInputDevice* )GetOwnerClass() )->GetDS();
+	
+	ds.GetClassModel()->PushModel( rt, device.GetDevice()->GetVRModel() );
+}
+
+// public func Skin getVRSkin()
+deClassInputDevice::nfGetVRSkin::nfGetVRSkin( const sInitData &init ) :
+dsFunction( init.clsInputDevice, "getVRSkin", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsSkin ){
+}
+void deClassInputDevice::nfGetVRSkin::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const dedsInputDevice &device = *( ( sInputDeviceNatDat* )p_GetNativeData( myself ) )->device;
+	deScriptingDragonScript &ds = ( ( deClassInputDevice* )GetOwnerClass() )->GetDS();
+	
+	ds.GetClassSkin()->PushSkin( rt, device.GetDevice()->GetVRSkin() );
+}
+
 
 
 // public func bool isPresent()
@@ -475,73 +526,62 @@ void deClassInputDevice::nfGetDevicePoseMatrix::RunFunction( dsRunTime *rt, dsVa
 
 
 
-// public static func Vector getDeviceBonePosePosition( int bone )
+// public static func int getDeviceBonePoseCount()
+deClassInputDevice::nfGetDeviceBonePoseCount::nfGetDeviceBonePoseCount( const sInitData &init ) :
+dsFunction( init.clsInputDevice, "getDeviceBonePoseCount", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger ){
+}
+void deClassInputDevice::nfGetDeviceBonePoseCount::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const dedsInputDevice &device = *( ( sInputDeviceNatDat* )p_GetNativeData( myself ) )->device;
+	
+	rt->PushInt( device.GetBonePoseCount() );
+}
+
+// public static func Vector getDeviceBonePosePosition( int bone, bool withController )
 deClassInputDevice::nfGetDeviceBonePosePosition::nfGetDeviceBonePosePosition( const sInitData &init ) :
 dsFunction( init.clsInputDevice, "getDeviceBonePosePosition", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVector ){
 	p_AddParameter( init.clsInteger ); // bone
+	p_AddParameter( init.clsBool ); // withController
 }
 void deClassInputDevice::nfGetDeviceBonePosePosition::RunFunction( dsRunTime *rt, dsValue *myself ){
 	const dedsInputDevice &device = *( ( sInputDeviceNatDat* )p_GetNativeData( myself ) )->device;
 	const deScriptingDragonScript &ds = ( ( deClassInputDevice* )GetOwnerClass() )->GetDS();
 	const int bone = rt->GetValue( 0 )->GetInt();
+	const bool withController = rt->GetValue( 1 )->GetBool();
 	
-	ds.GetClassVector()->PushVector( rt, device.GetBonePoseAt( bone ).GetPosition() );
+	ds.GetClassVector()->PushVector( rt, device.GetBonePoseAt( bone, withController ).GetPosition() );
 }
 
-// public static func Quaternion getDeviceBonePoseOrientation( int bone )
+// public static func Quaternion getDeviceBonePoseOrientation( int bone, bool withController )
 deClassInputDevice::nfGetDeviceBonePoseOrientation::nfGetDeviceBonePoseOrientation( const sInitData &init ) :
 dsFunction( init.clsInputDevice, "getDeviceBonePoseOrientation", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsQuaternion ){
 	p_AddParameter( init.clsInteger ); // bone
+	p_AddParameter( init.clsBool ); // withController
 }
 void deClassInputDevice::nfGetDeviceBonePoseOrientation::RunFunction( dsRunTime *rt, dsValue *myself ){
 	const dedsInputDevice &device = *( ( sInputDeviceNatDat* )p_GetNativeData( myself ) )->device;
 	const deScriptingDragonScript &ds = ( ( deClassInputDevice* )GetOwnerClass() )->GetDS();
 	const int bone = rt->GetValue( 0 )->GetInt();
+	const bool withController = rt->GetValue( 1 )->GetBool();
 	
-	ds.GetClassQuaternion()->PushQuaternion( rt, device.GetBonePoseAt( bone ).GetOrientation() );
+	ds.GetClassQuaternion()->PushQuaternion( rt, device.GetBonePoseAt( bone, withController ).GetOrientation() );
 }
 
-// public static func Vector getDeviceBonePoseLinearVelocity( int bone )
-deClassInputDevice::nfGetDeviceBonePoseLinearVelocity::nfGetDeviceBonePoseLinearVelocity( const sInitData &init ) :
-dsFunction( init.clsInputDevice, "getDeviceBonePoseLinearVelocity", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsVector ){
-	p_AddParameter( init.clsInteger ); // bone
-}
-void deClassInputDevice::nfGetDeviceBonePoseLinearVelocity::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const dedsInputDevice &device = *( ( sInputDeviceNatDat* )p_GetNativeData( myself ) )->device;
-	const deScriptingDragonScript &ds = ( ( deClassInputDevice* )GetOwnerClass() )->GetDS();
-	const int bone = rt->GetValue( 0 )->GetInt();
-	
-	ds.GetClassVector()->PushVector( rt, device.GetBonePoseAt( bone ).GetLinearVelocity() );
-}
-
-// public static func Vector getDeviceBonePoseAngularVelocity( int bone )
-deClassInputDevice::nfGetDeviceBonePoseAngularVelocity::nfGetDeviceBonePoseAngularVelocity( const sInitData &init ) :
-dsFunction( init.clsInputDevice, "getDeviceBonePoseAngularVelocity", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsVector ){
-	p_AddParameter( init.clsInteger ); // bone
-}
-void deClassInputDevice::nfGetDeviceBonePoseAngularVelocity::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const dedsInputDevice &device = *( ( sInputDeviceNatDat* )p_GetNativeData( myself ) )->device;
-	const deScriptingDragonScript &ds = ( ( deClassInputDevice* )GetOwnerClass() )->GetDS();
-	const int bone = rt->GetValue( 0 )->GetInt();
-	
-	ds.GetClassVector()->PushVector( rt, device.GetBonePoseAt( bone ).GetAngularVelocity() * RAD2DEG );
-}
-
-// public static func Matrix getDeviceBonePoseMatrix()
+// public static func Matrix getDeviceBonePoseMatrix( int bone, bool withController )
 deClassInputDevice::nfGetDeviceBonePoseMatrix::nfGetDeviceBonePoseMatrix( const sInitData &init ) :
 dsFunction( init.clsInputDevice, "getDeviceBonePoseMatrix", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsMatrix ){
 	p_AddParameter( init.clsInteger ); // bone
+	p_AddParameter( init.clsBool ); // withController
 }
 void deClassInputDevice::nfGetDeviceBonePoseMatrix::RunFunction( dsRunTime *rt, dsValue *myself ){
 	const dedsInputDevice &device = *( ( sInputDeviceNatDat* )p_GetNativeData( myself ) )->device;
 	const deScriptingDragonScript &ds = ( ( deClassInputDevice* )GetOwnerClass() )->GetDS();
 	const int bone = rt->GetValue( 0 )->GetInt();
-	const deInputDevicePose &pose = device.GetBonePoseAt( bone );
+	const bool withController = rt->GetValue( 1 )->GetBool();
+	const deInputDevicePose &pose = device.GetBonePoseAt( bone, withController );
 	
 	ds.GetClassMatrix()->PushMatrix( rt, decMatrix::CreateWorld( pose.GetPosition(), pose.GetOrientation() ) );
 }
@@ -628,6 +668,7 @@ void deClassInputDevice::CreateClassMembers( dsEngine *engine ){
 	init.clsVector = pDS.GetClassVector();
 	init.clsQuaternion = pDS.GetClassQuaternion();
 	init.clsMatrix = pDS.GetClassMatrix();
+	init.clsRig = pDS.GetClassRig();
 	
 	AddFunction( new nfDestructor( init ) );
 	
@@ -658,6 +699,10 @@ void deClassInputDevice::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfButtonMatchingKeyChar( init ) );;
 	
 	AddFunction( new nfGetBoneConfiguration( init ) );
+	AddFunction( new nfGetFingerTipOffset( init ) );
+	AddFunction( new nfGetHandRig( init ) );
+	AddFunction( new nfGetVRModel( init ) );
+	AddFunction( new nfGetVRSkin( init ) );
 	
 	AddFunction( new nfIsPresent( init ) );
 	
@@ -667,10 +712,9 @@ void deClassInputDevice::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfGetDevicePoseAngularVelocity( init ) );
 	AddFunction( new nfGetDevicePoseMatrix( init ) );
 	
+	AddFunction( new nfGetDeviceBonePoseCount( init ) );
 	AddFunction( new nfGetDeviceBonePosePosition( init ) );
 	AddFunction( new nfGetDeviceBonePoseOrientation( init ) );
-	AddFunction( new nfGetDeviceBonePoseLinearVelocity( init ) );
-	AddFunction( new nfGetDeviceBonePoseAngularVelocity( init ) );
 	AddFunction( new nfGetDeviceBonePoseMatrix( init ) );
 	
 	AddFunction( new nfEquals( init ) );

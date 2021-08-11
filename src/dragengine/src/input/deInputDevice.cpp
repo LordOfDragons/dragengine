@@ -102,6 +102,38 @@ void deInputDevice::SetBoneConfiguration( eBoneConfigurations configuration ){
 	pBoneConfiguration = configuration;
 }
 
+const decVector &deInputDevice::GetFingerTipOffset( int index ) const{
+	if( index < 0 ){
+		DETHROW_INFO( deeInvalidParam, "index < 0" );
+	}
+	if( index > 4 ){
+		DETHROW_INFO( deeInvalidParam, "index > 4" );
+	}
+	return pFingerTipOffset[ index ];
+}
+
+void deInputDevice::SetFingerTipOffset( int index, const decVector &offset ){
+	if( index < 0 ){
+		DETHROW_INFO( deeInvalidParam, "index < 0" );
+	}
+	if( index > 4 ){
+		DETHROW_INFO( deeInvalidParam, "index > 4" );
+	}
+	pFingerTipOffset[ index ] = offset;
+}
+
+void deInputDevice::SetHandRig( deRig *rig ){
+	pHandRig = rig;
+}
+
+void deInputDevice::SetModel( deModel *model ){
+	pVRModel = model;
+}
+
+void deInputDevice::SetVRSkin( deSkin *skin ){
+	pVRSkin = skin;
+}
+
 
 
 // Buttons

@@ -135,7 +135,8 @@ public:
 	virtual void GetDevicePose( int device, deInputDevicePose &pose );
 	
 	/** \brief Device bone pose or identity if not supported. */
-	virtual void GetDeviceBonePose( int device, int bone, deInputDevicePose &pose );
+	virtual void GetDeviceBonePose( int device, int bone,
+		bool withController, deInputDevicePose &pose );
 	/*@}*/
 	
 	
