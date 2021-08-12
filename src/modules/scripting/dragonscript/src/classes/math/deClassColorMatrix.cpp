@@ -832,12 +832,12 @@ void deClassColorMatrix::nfToStringPrecision::RunFunction( dsRunTime *rt, dsValu
 		DSTHROW_INFO( dueInvalidParam, "precision > 6" );
 	}
 	
-	const unsigned char p = ( unsigned char )precision;
+	const unsigned short p = ( unsigned short )precision;
 	char format[ 110 ];
-	sprintf( format, "[[%%.%hhuf,%%.%hhuf,%%.%hhuf,%%.%hhuf,%%.%hhuf],"
-		"[%%.%hhuf,%%.%hhuf,%%.%hhuf,%%.%hhuf,%%.%hhuf],"
-		"[%%.%hhuf,%%.%hhuf,%%.%hhuf,%%.%hhuf,%%.%hhuf],"
-		"[%%.%hhuf,%%.%hhuf,%%.%hhuf,%%.%hhuf,%%.%hhuf]]",
+	sprintf( format, "[[%%.%huf,%%.%huf,%%.%huf,%%.%huf,%%.%huf],"
+		"[%%.%huf,%%.%huf,%%.%huf,%%.%huf,%%.%huf],"
+		"[%%.%huf,%%.%huf,%%.%huf,%%.%huf,%%.%huf],"
+		"[%%.%huf,%%.%huf,%%.%huf,%%.%huf,%%.%huf]]",
 		p, p, p, p, p, p, p, p, p, p, p, p, p, p, p, p, p, p, p, p );
 	
 	const decColorMatrix &matrix = ( ( sCMNatDat* )p_GetNativeData( myself ) )->matrix;

@@ -1114,12 +1114,12 @@ void deClassDMatrix::nfToStringPrecision::RunFunction( dsRunTime *rt, dsValue *m
 		DSTHROW_INFO( dueInvalidParam, "precision > 6" );
 	}
 	
-	const unsigned char p = ( unsigned char )precision;
+	const unsigned short p = ( unsigned short )precision;
 	char format[ 90 ];
-	sprintf( format, "[[%%.%hhuf,%%.%hhuf,%%.%hhuf,%%.%hhuf],"
-		"[%%.%hhuf,%%.%hhuf,%%.%hhuf,%%.%hhuf],"
-		"[%%.%hhuf,%%.%hhuf,%%.%hhuf,%%.%hhuf],"
-		"[%%.%hhuf,%%.%hhuf,%%.%hhuf,%%.%hhuf]]",
+	sprintf( format, "[[%%.%huf,%%.%huf,%%.%huf,%%.%huf],"
+		"[%%.%huf,%%.%huf,%%.%huf,%%.%huf],"
+		"[%%.%huf,%%.%huf,%%.%huf,%%.%huf],"
+		"[%%.%huf,%%.%huf,%%.%huf,%%.%huf]]",
 		p, p, p, p, p, p, p, p, p, p, p, p, p, p, p, p );
 	
 	const decDMatrix &matrix = ( ( sMatNatDat* )p_GetNativeData( myself ) )->matrix;

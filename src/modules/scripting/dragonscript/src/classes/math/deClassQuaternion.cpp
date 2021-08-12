@@ -535,9 +535,9 @@ void deClassQuaternion::nfToStringPrecision::RunFunction( dsRunTime *rt, dsValue
 		DSTHROW_INFO( dueInvalidParam, "precision > 6" );
 	}
 	
-	const unsigned char p = ( unsigned char )precision;
+	const unsigned short p = ( unsigned short )precision;
 	char format[ 22 ];
-	sprintf( format, "(%%.%hhuf,%%.%hhuf,%%.%hhuf,%%.%hhuf)", p, p, p, p );
+	sprintf( format, "(%%.%huf,%%.%huf,%%.%huf,%%.%huf)", p, p, p, p );
 	
 	const decQuaternion &quaternion = ( ( sQuatNatDat* )p_GetNativeData( myself ) )->quaternion;
 	decString str;

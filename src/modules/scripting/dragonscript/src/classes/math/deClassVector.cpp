@@ -601,9 +601,9 @@ void deClassVector::nfToStringPrecision::RunFunction( dsRunTime *rt, dsValue *my
 		DSTHROW_INFO( dueInvalidParam, "precision > 6" );
 	}
 	
-	const unsigned char p = ( unsigned char )precision;
+	const unsigned short p = ( unsigned short )precision;
 	char format[ 17 ];
-	sprintf( format, "(%%.%hhuf,%%.%hhuf,%%.%hhuf)", p, p, p );
+	sprintf( format, "(%%.%huf,%%.%huf,%%.%huf)", p, p, p );
 	
 	const decVector &vector = ( ( sVecNatDat* )p_GetNativeData( myself ) )->vector;
 	decString string;

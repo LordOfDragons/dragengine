@@ -667,11 +667,11 @@ void deClassTexMatrix::nfToStringPrecision::RunFunction( dsRunTime *rt, dsValue 
 		DSTHROW_INFO( dueInvalidParam, "precision > 6" );
 	}
 	
-	const unsigned char p = ( unsigned char )precision;
+	const unsigned short p = ( unsigned short )precision;
 	char format[ 53 ];
-	sprintf( format, "[[%%.%hhuf,%%.%hhuf,%%.%hhuf],"
-		"[%%.%hhuf,%%.%hhuf,%%.%hhuf],"
-		"[%%.%hhuf,%%.%hhuf,%%.%hhuf]]",
+	sprintf( format, "[[%%.%huf,%%.%huf,%%.%huf],"
+		"[%%.%huf,%%.%huf,%%.%huf],"
+		"[%%.%huf,%%.%huf,%%.%huf]]",
 		p, p, p, p, p, p, p, p, p );
 	
 	const decTexMatrix &matrix = ( ( sTMatNatDat* )p_GetNativeData( myself ) )->matrix;
