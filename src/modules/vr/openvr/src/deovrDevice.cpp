@@ -126,6 +126,14 @@ void deovrDevice::SetDisplayText( const char *text ){
 	pDisplayText = text;
 }
 
+void deovrDevice::SetRenderModel( deovrRenderModel *renderModel ){
+	pRenderModel = renderModel;
+}
+
+void deovrDevice::SetTextureMap( deovrTextureMap *textureMap ){
+	pTextureMap = textureMap;
+}
+
 
 
 int deovrDevice::GetButtonCount() const{
@@ -261,6 +269,14 @@ void deovrDevice::GetInfo( deInputDevice &info ) const{
 	info.SetDisplayModel( nullptr );
 	info.SetDisplaySkin( nullptr );
 	
+	info.SetBoneConfiguration( pBoneConfiguration );
+	if( pRenderModel ){
+		info.SetVRModel( pRenderModel->GetModel() );
+	}
+	if( pTextureMap ){
+		info.SetVRSkin( pTextureMap->GetSkin() );
+	}
+	
 	const int buttonCount = pButtons.GetCount();
 	info.SetButtonCount( buttonCount );
 	for( i=0; i<buttonCount; i++ ){
@@ -278,13 +294,11 @@ void deovrDevice::GetInfo( deInputDevice &info ) const{
 	for( i=0; i<feedbackCount; i++ ){
 		( ( deovrDeviceFeedback* )pFeedbacks.GetAt( i ) )->GetInfo( info.GetFeedbackAt( i ) );
 	}
-	
-	info.SetBoneConfiguration( pBoneConfiguration );
 }
 
 void deovrDevice::UpdateParameters(){
 	const vr::TrackedDeviceClass oldDeviceClass = pDeviceClass;
-	pDeviceClass = pOvr.GetSystem().GetTrackedDeviceClass( pDeviceIndex );
+	pDeviceClass = pOvr.GetVRSystem().GetTrackedDeviceClass( pDeviceIndex );
 	
 	if( pDeviceClass != oldDeviceClass || pNameNumber == -1 ){
 		pNameNumber = -1; // required so we do not block ourselves
@@ -295,6 +309,8 @@ void deovrDevice::UpdateParameters(){
 	pInputValuePath.Empty();
 	pInputValueHandle = vr::k_ulInvalidInputValueHandle;
 	pPoseDevice = deInputDevicePose();
+	pRenderModel = nullptr;
+	pTextureMap = nullptr;
 	
 	if( pPoseBones ){
 		delete [] pPoseBones;
@@ -310,12 +326,20 @@ void deovrDevice::UpdateParameters(){
 	// serial number
 	vr::ETrackedPropertyError error;
 	char buffer[ 256 ];
-	pOvr.GetSystem().GetStringTrackedDeviceProperty( pDeviceIndex,
+	pOvr.GetVRSystem().GetStringTrackedDeviceProperty( pDeviceIndex,
 		vr::Prop_SerialNumber_String, buffer, 256, &error );
 	if( error != vr::TrackedProp_Success ){
 		DETHROW_INFO( deeInvalidParam, "Prop_SerialNumber_String failed" );
 	}
 	pSerialNumber = buffer;
+	
+	// render model
+	pOvr.GetVRSystem().GetStringTrackedDeviceProperty( pDeviceIndex,
+		vr::Prop_RenderModelName_String, buffer, 256, &error );
+	if( error == vr::TrackedProp_Success ){
+		pRenderModel = pOvr.GetRenderModelNamed( buffer );
+		pTextureMap = pOvr.GetTextureMapWithID( pRenderModel->GetTextureID() );
+	}
 	
 	// init device dependingon class
 	switch( pDeviceClass ){
@@ -372,7 +396,7 @@ void deovrDevice::TrackStates(){
 	vr::EVRInputError error;
 	
 	if( pActionPose != vr::k_ulInvalidActionHandle ){
-		error = pOvr.GetInput().GetPoseActionDataForNextFrame( pActionPose,
+		error = pOvr.GetVRInput().GetPoseActionDataForNextFrame( pActionPose,
 			vr::TrackingUniverseStanding, &pDevicePoseData, sizeof( pDevicePoseData), pInputValueHandle );
 		if( error != vr::VRInputError_None ){
 			//pOvr.LogErrorFormat( "GetPoseActionDataForNextFrame failed: %d", error );
@@ -400,7 +424,7 @@ void deovrDevice::TrackStates(){
 	
 	if( pActionHandPose != vr::k_ulInvalidActionHandle ){
 		// skeletal pose can not be limited to a device
-		error = pOvr.GetInput().GetSkeletalSummaryData( pActionHandPose,
+		error = pOvr.GetVRInput().GetSkeletalSummaryData( pActionHandPose,
 			vr::VRSummaryType_FromAnimation, &pSkeletalSummeryData );
 		if( error != vr::VRInputError_None ){
 			//pOvr.LogErrorFormat( "GetSkeletalSummaryData failed: %d", error );
@@ -413,7 +437,7 @@ void deovrDevice::TrackStates(){
 		if( pBoneCount > 0 ){
 			bool validData = true;
 			
-			error = pOvr.GetInput().GetSkeletalBoneData( pActionHandPose, vr::VRSkeletalTransformSpace_Parent,
+			error = pOvr.GetVRInput().GetSkeletalBoneData( pActionHandPose, vr::VRSkeletalTransformSpace_Parent,
 				vr::VRSkeletalMotionRange_WithoutController, pBoneTransformData, pBoneCount );
 			if( error != vr::VRInputError_None ){
 				//pOvr.LogErrorFormat( "GetSkeletalBoneData failed: %d", error );
@@ -423,7 +447,7 @@ void deovrDevice::TrackStates(){
 				validData = false;
 			}
 			
-			error = pOvr.GetInput().GetSkeletalBoneData( pActionHandPose, vr::VRSkeletalTransformSpace_Parent,
+			error = pOvr.GetVRInput().GetSkeletalBoneData( pActionHandPose, vr::VRSkeletalTransformSpace_Parent,
 				vr::VRSkeletalMotionRange_WithController, pBoneTransformData + pBoneCount, pBoneCount );
 			if( error != vr::VRInputError_None ){
 				//pOvr.LogErrorFormat( "GetSkeletalBoneData failed: %d", error );
@@ -497,7 +521,7 @@ void deovrDevice::pUpdateParametersHMD(){
 // 	pActionPose = pOvr.GetActionHandle( deVROpenVR::eiaPose ); // not working
 	
 	// input source handle
-	vr::EVRInputError inputError = pOvr.GetInput().GetInputSourceHandle( pInputValuePath, &pInputValueHandle );
+	vr::EVRInputError inputError = pOvr.GetVRInput().GetInputSourceHandle( pInputValuePath, &pInputValueHandle );
 	if( inputError != vr::VRInputError_None ){
 		pOvr.LogErrorFormat( "Failed retrieving input source handle: %d", inputError );
 		DETHROW_INFO( deeInvalidAction, "Failed retrieving input source handle" );
@@ -510,7 +534,7 @@ void deovrDevice::pUpdateParametersController(){
 	// ^= old input system. unreliable using new system. resorting to device property
 	
 	vr::ETrackedPropertyError propError;
-	pControllerRole = ( vr::ETrackedControllerRole )pOvr.GetSystem().GetInt32TrackedDeviceProperty(
+	pControllerRole = ( vr::ETrackedControllerRole )pOvr.GetVRSystem().GetInt32TrackedDeviceProperty(
 		pDeviceIndex, vr::Prop_ControllerRoleHint_Int32, &propError );
 	if( propError != vr::TrackedProp_Success ){
 		DETHROW_INFO( deeInvalidParam, "Prop_ControllerRoleHint_Int32 failed" );
@@ -556,7 +580,7 @@ void deovrDevice::pUpdateParametersController(){
 	
 	// input source handle
 	if( ! pInputValuePath.IsEmpty() ){
-		vr::EVRInputError inputError = pOvr.GetInput().GetInputSourceHandle( pInputValuePath, &pInputValueHandle );
+		vr::EVRInputError inputError = pOvr.GetVRInput().GetInputSourceHandle( pInputValuePath, &pInputValueHandle );
 		if( inputError != vr::VRInputError_None ){
 			pOvr.LogErrorFormat( "Failed retrieving input source handle: %d", inputError );
 			DETHROW_INFO( deeInvalidAction, "Failed retrieving input source handle" );
@@ -591,7 +615,7 @@ void deovrDevice::pUpdateParametersController(){
 }
 
 void deovrDevice::pUpdateParametersHandPose( vr::VRActionHandle_t actionHandle ){
-	vr::IVRInput &vrinput = pOvr.GetInput();
+	vr::IVRInput &vrinput = pOvr.GetVRInput();
 	vr::InputSkeletalActionData_t dataSkeletal;
 	
 	// finger bending and spreading
@@ -639,13 +663,13 @@ void deovrDevice::pUpdateParametersTracker(){
 	pInputValuePath = "/devices/htc/vive_tracker";
 	pInputValuePath += pSerialNumber;
 	
-	vr::EVRInputError inputError = pOvr.GetInput().GetInputSourceHandle( pInputValuePath, &pInputValueHandle );
+	vr::EVRInputError inputError = pOvr.GetVRInput().GetInputSourceHandle( pInputValuePath, &pInputValueHandle );
 	pOvr.LogInfoFormat("Tracker: path(%s) handle(%lu) error(%d)", pInputValuePath.GetString(), pInputValueHandle, inputError );
 }
 
 void deovrDevice::pAddButton( deVROpenVR::eInputActions actionPress,
 deVROpenVR::eInputActions actionTouch, const char *name, const char *id, const char *displayText ){
-	vr::IVRInput &vrinput = pOvr.GetInput();
+	vr::IVRInput &vrinput = pOvr.GetVRInput();
 	vr::VRActionHandle_t actionHandle = pOvr.GetActionHandle( actionPress );
 	vr::InputDigitalActionData_t dataDigital;
 	
@@ -675,7 +699,7 @@ deVROpenVR::eInputActions actionTouch, const char *name, const char *id, const c
 
 void deovrDevice::pAddAxisTrigger( deInputDeviceAxis::eAxisTypes type,
 deVROpenVR::eInputActions actionAnalog, const char *name, const char *id, const char *displayText ){
-	vr::IVRInput &vrinput = pOvr.GetInput();
+	vr::IVRInput &vrinput = pOvr.GetVRInput();
 	vr::VRActionHandle_t actionHandle = pOvr.GetActionHandle( actionAnalog );
 	
 	vr::InputAnalogActionData_t dataAnalog;
@@ -715,7 +739,7 @@ const char *name, const char *id, const char *displayText ){
 
 void deovrDevice::pAddAxesJoystick( deVROpenVR::eInputActions actionAnalog,
 const char *name, const char *id, const char *displayText ){
-	vr::IVRInput &vrinput = pOvr.GetInput();
+	vr::IVRInput &vrinput = pOvr.GetVRInput();
 	vr::VRActionHandle_t actionHandle = pOvr.GetActionHandle( actionAnalog );
 	vr::InputAnalogActionData_t dataAnalog;
 	
@@ -748,7 +772,7 @@ const char *name, const char *id, const char *displayText ){
 
 void deovrDevice::pAddAxesTrackpad( deVROpenVR::eInputActions actionAnalog,
 const char *name, const char *id, const char *displayText ){
-	vr::IVRInput &vrinput = pOvr.GetInput();
+	vr::IVRInput &vrinput = pOvr.GetVRInput();
 	vr::VRActionHandle_t actionHandle = pOvr.GetActionHandle( actionAnalog );
 	vr::InputAnalogActionData_t dataAnalog;
 	

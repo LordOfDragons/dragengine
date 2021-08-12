@@ -817,7 +817,7 @@ void deClassComponent::nfIndexOfTextureNamed::RunFunction( dsRunTime *rt, dsValu
 	const deComponent &component = *( ( ( sCompNatDat* )p_GetNativeData( myself ) )->component );
 	const char *name = rt->GetValue( 0 )->GetString();
 	
-	rt->PushInt( component.GetModel()->IndexOfTextureNamed( name ) );
+	rt->PushInt( component.GetModel() ? component.GetModel()->IndexOfTextureNamed( name ) : -1 );
 }
 
 // public func int indexOfTextureClosestTo( Vector position, float radius )

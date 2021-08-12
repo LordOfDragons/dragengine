@@ -23,6 +23,8 @@
 #define _DEOVRDEVICE_H_
 
 #include "deVROpenVR.h"
+#include "deovrRenderModel.h"
+#include "deovrTextureMap.h"
 
 #include <openvr/openvr.h>
 
@@ -73,6 +75,9 @@ private:
 	deImage::Ref pDisplayImage;
 	decObjectOrderedSet pDisplayIcons;
 	decString pDisplayText;
+	
+	deovrRenderModel::Ref pRenderModel;
+	deovrTextureMap::Ref pTextureMap;
 	
 	decObjectOrderedSet pButtons;
 	decObjectOrderedSet pAxes;
@@ -144,12 +149,6 @@ public:
 	/** Set device type. */
 	void SetType( deInputDevice::eDeviceTypes type );
 	
-	/** Bone configuration. */
-	inline deInputDevice::eBoneConfigurations GetBoneConfiguration() const{ return pBoneConfiguration; }
-	
-	/** Set bone configuration. */
-	void SetBoneConfiguration( deInputDevice::eBoneConfigurations config );
-	
 	/** Name number or -1 it not set. */
 	inline int GetNameNumber() const{ return pNameNumber; }
 	
@@ -179,6 +178,24 @@ public:
 	
 	/** Set display text. */
 	void SetDisplayText( const char *text );
+	
+	/** Bone configuration. */
+	inline deInputDevice::eBoneConfigurations GetBoneConfiguration() const{ return pBoneConfiguration; }
+	
+	/** Set bone configuration. */
+	void SetBoneConfiguration( deInputDevice::eBoneConfigurations config );
+	
+	/** Render model. */
+	inline deovrRenderModel *GetRenderModel() const{ return pRenderModel; }
+	
+	/** Set render model. */
+	void SetRenderModel( deovrRenderModel *renderModel );
+	
+	/** Texture map. */
+	inline deovrTextureMap *GetTextureMap() const{ return pTextureMap; }
+	
+	/** Set texture map. */
+	void SetTextureMap( deovrTextureMap *textureMap );
 	
 	
 	

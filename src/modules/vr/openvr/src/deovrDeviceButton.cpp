@@ -169,7 +169,7 @@ void deovrDeviceButton::GetInfo( deInputDeviceButton &info ) const{
 }
 
 void deovrDeviceButton::TrackState(){
-	vr::IVRInput &vrinput = pDevice.GetOvr().GetInput();
+	vr::IVRInput &vrinput = pDevice.GetOvr().GetVRInput();
 	
 	vr::InputDigitalActionData_t dataDigital;
 	vr::EVRInputError error = vrinput.GetDigitalActionData( pActionPressHandle,

@@ -28,6 +28,8 @@
 #include "deovrDeviceButton.h"
 #include "deovrDeviceFeedback.h"
 #include "deovrDeviceManager.h"
+#include "deovrRenderModel.h"
+#include "deovrTextureMap.h"
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
@@ -69,8 +71,9 @@ deVROpenVR::deVROpenVR( deLoadableModule &loadableModule ) :
 deBaseVRModule( loadableModule ),
 pRuntimeInstalled( false ),
 pDevices( *this ),
-pSystem( nullptr ),
-pInput( nullptr ),
+pVRSystem( nullptr ),
+pVRInput( nullptr ),
+pVRRenderModels( nullptr ),
 pActionSetHandle( vr::k_ulInvalidActionSetHandle )
 {
 	int i;
@@ -88,18 +91,52 @@ deVROpenVR::~deVROpenVR(){
 // Management
 ///////////////
 
-vr::IVRSystem &deVROpenVR::GetSystem() const{
-	if( ! pSystem ){
+vr::IVRSystem &deVROpenVR::GetVRSystem() const{
+	if( ! pVRSystem ){
 		DETHROW( deeInvalidAction );
 	}
-	return *pSystem;
+	return *pVRSystem;
 }
 
-vr::IVRInput &deVROpenVR::GetInput() const{
-	if( ! pInput ){
+vr::IVRInput &deVROpenVR::GetVRInput() const{
+	if( ! pVRInput ){
 		DETHROW( deeInvalidAction );
 	}
-	return *pInput;
+	return *pVRInput;
+}
+
+vr::IVRRenderModels &deVROpenVR::GetVRRenderModels() const{
+	if( ! pVRRenderModels ){
+		DETHROW( deeInvalidAction );
+	}
+	return *pVRRenderModels;
+}
+
+deovrRenderModel *deVROpenVR::GetRenderModelNamed( const char *name ){
+	deObject *findObject;
+	if( pRenderModels.GetAt( name, &findObject ) ){
+		return ( deovrRenderModel* )findObject;
+	}
+	
+	const deovrRenderModel::Ref renderModel( deovrRenderModel::Ref::New( new deovrRenderModel( *this, name ) ) );
+	pRenderModels.SetAt( name, renderModel );
+	return renderModel;
+}
+
+deovrTextureMap *deVROpenVR::GetTextureMapWithID( vr::TextureID_t id ){
+	const int count = pTextureMaps.GetCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		deovrTextureMap * const textureMap = ( deovrTextureMap* )pTextureMaps.GetAt( i );
+		if( textureMap->GetID() == id ){
+			return textureMap;
+		}
+	}
+	
+	const deovrTextureMap::Ref textureMap( deovrTextureMap::Ref::New( new deovrTextureMap( *this, id ) ) );
+	pTextureMaps.Add( textureMap );
+	return textureMap;
 }
 
 void deVROpenVR::SendEvent( const deInputEvent &event ){
@@ -135,6 +172,8 @@ bool deVROpenVR::Init(){
 
 void deVROpenVR::CleanUp(){
 	StopRuntime();
+	pRenderModels.RemoveAll();
+	pTextureMaps.RemoveAll();
 }
 
 
@@ -147,7 +186,7 @@ bool deVROpenVR::RuntimeUsable(){
 }
 
 void deVROpenVR::StartRuntime(){
-	if( pSystem ){
+	if( pVRSystem ){
 		return;
 	}
 	
@@ -156,30 +195,33 @@ void deVROpenVR::StartRuntime(){
 	try{
 		// init runtime
 		vr::HmdError error = vr::VRInitError_None;
-		pSystem = vr::VR_Init( &error, vr::VRApplication_Scene );
+		pVRSystem = vr::VR_Init( &error, vr::VRApplication_Scene );
 		
-		if( ! pSystem || error != vr::VRInitError_None ){
+		if( ! pVRSystem || error != vr::VRInitError_None ){
 			LogErrorFormat( "Failed starting runtime: %s", vr::VR_GetVRInitErrorAsSymbol( error ) );
 			DETHROW_INFO( deeInvalidAction, "Failed starting runtime" );
 		}
 		
-		LogInfoFormat( "Runtime Version: %s", pSystem->GetRuntimeVersion() );
+		LogInfoFormat( "Runtime Version: %s", pVRSystem->GetRuntimeVersion() );
+		
+		// render models
+		pVRRenderModels = vr::VRRenderModels();
 		
 		// load input action manifest
-		pInput = vr::VRInput();
+		pVRInput = vr::VRInput();
 		
 		decPath pathActionManifest( decPath::CreatePathNative( GetNativePathShare() ) );
 		pathActionManifest.AddComponent( "input" );
 		pathActionManifest.AddComponent( "actions.json" );
 		
-		vr::EVRInputError inputError = pInput->SetActionManifestPath( pathActionManifest.GetPathNative() );
+		vr::EVRInputError inputError = pVRInput->SetActionManifestPath( pathActionManifest.GetPathNative() );
 		if( inputError != vr::VRInputError_None ){
 			LogErrorFormat( "Failed loading action manifest: %d", inputError );
 			DETHROW_INFO( deeInvalidAction, "Failed loading action manifest" );
 		}
 		
 		// get input handlers
-		inputError = pInput->GetActionSetHandle( "/actions/dragengine", &pActionSetHandle );
+		inputError = pVRInput->GetActionSetHandle( "/actions/dragengine", &pActionSetHandle );
 		if( inputError != vr::VRInputError_None ){
 			LogErrorFormat( "Failed retrieving action set handle: %d", inputError );
 			DETHROW_INFO( deeInvalidAction, "Failed retrieving action set handle" );
@@ -215,7 +257,7 @@ void deVROpenVR::StartRuntime(){
 		};
 		int i;
 		for( i=0; i<InputActionCount; i++ ){
-			inputError = pInput->GetActionHandle( inputHandleMap[ i ].path, &pActionHandle[ inputHandleMap[ i ].action ] );
+			inputError = pVRInput->GetActionHandle( inputHandleMap[ i ].path, &pActionHandle[ inputHandleMap[ i ].action ] );
 			if( inputError != vr::VRInputError_None ){
 				LogErrorFormat( "Failed retrieving action handle '%s': %d", inputHandleMap[ i ].path, inputError );
 				DETHROW_INFO( deeInvalidAction, "Failed retrieving action handle" );
@@ -249,7 +291,7 @@ void deVROpenVR::StartRuntime(){
 }
 
 void deVROpenVR::StopRuntime(){
-	if( ! pSystem ){
+	if( ! pVRSystem ){
 		return;
 	}
 	
@@ -265,7 +307,7 @@ void deVROpenVR::StopRuntime(){
 	pActionSetHandle = vr::k_ulInvalidActionSetHandle;
 	
 	vr::VR_Shutdown();
-	pSystem = nullptr;
+	pVRSystem = nullptr;
 }
 
 void deVROpenVR::SetCamera( deCamera* ){
@@ -349,12 +391,12 @@ bool withController, deInputDevicePose &pose ){
 ///////////
 
 void deVROpenVR::ProcessEvents(){
-	if( ! pSystem ){
+	if( ! pVRSystem ){
 		return;
 	}
 	
 	vr::VREvent_t event;
-	while( pSystem->PollNextEvent( &event, sizeof( event ) ) ){
+	while( pVRSystem->PollNextEvent( &event, sizeof( event ) ) ){
 		switch( ( vr::EVREventType )event.eventType ){
 		case vr::VREvent_TrackedDeviceActivated:
 			LogInfoFormat( "ProcessEvents: Tracked device activated %d", event.trackedDeviceIndex );
@@ -399,7 +441,7 @@ void deVROpenVR::ProcessEvents(){
 			LogInfo( "ProcessEvents: VR quit request received" );
 			
 			// buy us some time before steam tries to kill us
-			pSystem->AcknowledgeQuit_Exiting();
+			pVRSystem->AcknowledgeQuit_Exiting();
 			
 			// shutdown VR runtime. this should prevent us from getting killed
 			// TODO add a notification to the scripting system so it can be notified
@@ -426,7 +468,7 @@ void deVROpenVR::ProcessEvents(){
 			
 		default:
 			LogInfoFormat( "ProcessEvents: Event type %d (%s)", event.eventType,
-				pSystem->GetEventTypeNameFromEnum( ( vr::EVREventType )event.eventType ) );
+				                       pVRSystem->GetEventTypeNameFromEnum( ( vr::EVREventType )event.eventType ) );
 			break;
 		}
 	}

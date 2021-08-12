@@ -26,6 +26,8 @@
 
 #include <openvr/openvr.h>
 
+#include <dragengine/common/collection/decObjectDictionary.h>
+#include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/systems/modules/vr/deBaseVRModule.h>
 
@@ -34,6 +36,8 @@
 #define OVR_DEVID_PREFIX "OVR_"
 
 class deInputEvent;
+class deovrRenderModel;
+class deovrTextureMap;
 
 
 /**
@@ -77,9 +81,12 @@ private:
 	decString pPathRuntime;
 	
 	deovrDeviceManager pDevices;
+	decObjectDictionary pRenderModels;
+	decObjectList pTextureMaps;
 	
-	vr::IVRSystem *pSystem;
-	vr::IVRInput *pInput;
+	vr::IVRSystem *pVRSystem;
+	vr::IVRInput *pVRInput;
+	vr::IVRRenderModels *pVRRenderModels;
 	vr::VRActionSetHandle_t pActionSetHandle;
 	vr::VRActionHandle_t pActionHandle[ InputActionCount ];
 	
@@ -104,16 +111,25 @@ public:
 	inline const deovrDeviceManager &GetDevices() const{ return pDevices; }
 	
 	/** VR System. */
-	vr::IVRSystem &GetSystem() const;
+	vr::IVRSystem &GetVRSystem() const;
 	
 	/** VR System. */
-	vr::IVRInput &GetInput() const;
+	vr::IVRInput &GetVRInput() const;
+	
+	/** VR Render Models. */
+	vr::IVRRenderModels &GetVRRenderModels() const;
 	
 	/** VR Action Set Handle. */
 	inline vr::VRActionSetHandle_t GetActionSetHandle() const{ return pActionSetHandle; }
 	
 	/** VR Action Handle. */
 	inline vr::VRActionHandle_t GetActionHandle( eInputActions action ) const{ return pActionHandle[ action ]; }
+	
+	/** Get render model loading it if required. */
+	deovrRenderModel *GetRenderModelNamed( const char *name );
+	
+	/** Get texture map loading it if required. */
+	deovrTextureMap *GetTextureMapWithID( vr::TextureID_t id );
 	
 	/** Send event. */
 	void SendEvent( const deInputEvent &event );

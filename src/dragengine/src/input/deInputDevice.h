@@ -412,7 +412,7 @@ public:
 	 * \brief Set model to represent the device in VR environments or NULL if not set.
 	 * \version 1.6
 	 */
-	void SetModel( deModel *model );
+	void SetVRModel( deModel *model );
 	
 	/**
 	 * \brief Skin for VR model or NULL if not set.

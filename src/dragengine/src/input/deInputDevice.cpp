@@ -126,7 +126,7 @@ void deInputDevice::SetHandRig( deRig *rig ){
 	pHandRig = rig;
 }
 
-void deInputDevice::SetModel( deModel *model ){
+void deInputDevice::SetVRModel( deModel *model ){
 	pVRModel = model;
 }
 

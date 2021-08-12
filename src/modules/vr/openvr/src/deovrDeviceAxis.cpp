@@ -167,7 +167,7 @@ void deovrDeviceAxis::TrackState(){
 		break;
 		
 	default:{
-		vr::IVRInput &vrinput = pDevice.GetOvr().GetInput();
+		vr::IVRInput &vrinput = pDevice.GetOvr().GetVRInput();
 		
 		vr::InputAnalogActionData_t dataAnalog;
 		vr::EVRInputError error = vrinput.GetAnalogActionData( pActionAnalogHandle,

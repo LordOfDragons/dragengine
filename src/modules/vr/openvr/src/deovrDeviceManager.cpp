@@ -93,7 +93,7 @@ void deovrDeviceManager::InitDevices(){
 	event.SetTime( { decDateTime().ToSystemTime(), 0 } );
 	
 	for( index=0; index<vr::k_unMaxTrackedDeviceCount; index++ ){
-		if( ! pOvr.GetSystem().IsTrackedDeviceConnected( index ) ){
+		if( ! pOvr.GetVRSystem().IsTrackedDeviceConnected( index ) ){
 			// openvr potentially reports previously attached devices which are no more
 			// attached right now. avoid listing them confusing the user
 			continue;
@@ -287,7 +287,7 @@ int deovrDeviceManager::NextNameNumber( vr::TrackedDeviceClass deviceClass ) con
 
 void deovrDeviceManager::TrackDeviceStates(){
 	float photonsFromNow = 0.0f;
-	pOvr.GetSystem().GetDeviceToAbsoluteTrackingPose( vr::TrackingUniverseStanding,
+	pOvr.GetVRSystem().GetDeviceToAbsoluteTrackingPose( vr::TrackingUniverseStanding,
 		photonsFromNow, pDevicePoses, vr::k_unMaxTrackedDeviceCount );
 	
 	const int count = pDevices.GetCount();
