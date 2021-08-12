@@ -86,11 +86,10 @@ public:
 		}else{
 			deSkinPropertyColor * const property = new deSkinPropertyColor( "color" );
 			texture->AddProperty( property );
-			property->SetColor( decColor( 0.5, 0.5, 0.5 ) );
+			property->SetColor( decColor( 0.5f, 0.5f, 0.5f ) );
 		}
 		
 		// add "solidity" property
-		if(false){
 		if( pImageSolidity ){
 			deSkinPropertyImage * const property = new deSkinPropertyImage( "solidity" );
 			texture->AddProperty( property );
@@ -100,7 +99,7 @@ public:
 		}else{
 			deSkinPropertyValue * const property = new deSkinPropertyValue( "solidity" );
 			texture->AddProperty( property );
-			property->SetValue( 0.75 );
+			property->SetValue( 1.0f );
 		}
 		
 		// add "solidity.masked" property
@@ -108,7 +107,7 @@ public:
 		deSkinPropertyValue * const property = new deSkinPropertyValue( "solidity.masked" );
 		texture->AddProperty( property );
 		property->SetValue( 0.0f );
-		}}
+		}
 	}
 };
 
@@ -153,6 +152,9 @@ void deovrTextureMap::pLoadTextureMap(){
 				destPixel.blue = srcPixel.blue;
 			}
 		}
+		
+		pImageColor->NotifyImageDataChanged();
+		
 // 		decString filename;
 // 		filename.Format("/capture/color_%u.png", pID);
 // 		pOvr.GetGameEngine()->GetImageManager()->SaveImage(&pOvr.GetVFS(), pImageColor, filename);
@@ -164,12 +166,15 @@ void deovrTextureMap::pLoadTextureMap(){
 		
 		sGrayscale8 * const destPixels = pImageSolidity->GetDataGrayscale8();
 		for( y=0; y<textureMap->unHeight; y++ ){
-// 			const sRGBA8 * const srcPixelLine = srcPixels + textureMap->unWidth * y;
+			const sRGBA8 * const srcPixelLine = srcPixels + textureMap->unWidth * y;
 			sGrayscale8 * const destPixelLine = destPixels + textureMap->unWidth * y; //( textureMap->unHeight - 1 - y );
 			for( x=0; x<textureMap->unWidth; x++ ){
-				destPixelLine[ x ].value = 255; //srcPixelLine[ x ].alpha;
+				destPixelLine[ x ].value = srcPixelLine[ x ].alpha;
 			}
 		}
+		
+		pImageSolidity->NotifyImageDataChanged();
+		
 // 		decString filename;
 // 		filename.Format("/capture/solidity_%u.png", pID);
 // 		pOvr.GetGameEngine()->GetImageManager()->SaveImage(&pOvr.GetVFS(), pImageSolidity, filename);
