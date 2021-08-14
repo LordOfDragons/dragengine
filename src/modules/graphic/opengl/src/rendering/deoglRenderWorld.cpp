@@ -893,7 +893,7 @@ void deoglRenderWorld::RenderAntiAliasingPass(){
 	*/
 }
 
-void deoglRenderWorld::RenderFinalizeFBO( deoglRenderPlan &plan ){
+void deoglRenderWorld::RenderFinalizeFBO( deoglRenderPlan &plan, bool withColorCorrection ){
 DBG_ENTER("RenderFinalizeFBO")
 	deoglRenderThread &renderThread = GetRenderThread();
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
@@ -932,9 +932,21 @@ DBG_ENTER("RenderFinalizeFBO")
 	shader = pShaderFinalize->GetCompiled();
 	
 	shader->SetParameterFloat( spfinPosTransform, 1.0f, 1.0f, 0.0f, 0.0f );
-	shader->SetParameterFloat( spfinGamma, 1.0f, 1.0f, 1.0f, 1.0f );
-	shader->SetParameterFloat( spfinBrightness, 0.0f, 0.0f, 0.0f, 0.0f );
-	shader->SetParameterFloat( spfinContrast, 1.0f, 1.0f, 1.0f, 1.0f );
+	
+	if( withColorCorrection ){
+		const deoglConfiguration &config = renderThread.GetConfiguration();
+		const float gamma = 1.0f / ( OGL_RENDER_GAMMA * config.GetGammaCorrection() );
+		shader->SetParameterFloat( spfinGamma, gamma, gamma, gamma, 1.0f );
+		shader->SetParameterFloat( spfinBrightness, config.GetBrightness(),
+			config.GetBrightness(), config.GetBrightness(), 1.0f );
+		shader->SetParameterFloat( spfinContrast, config.GetContrast(),
+			config.GetContrast(), config.GetContrast(), 1.0f );
+		
+	}else{
+		shader->SetParameterFloat( spfinGamma, 1.0f, 1.0f, 1.0f, 1.0f );
+		shader->SetParameterFloat( spfinBrightness, 0.0f, 0.0f, 0.0f, 0.0f );
+		shader->SetParameterFloat( spfinContrast, 1.0f, 1.0f, 1.0f, 1.0f );
+	}
 	
 	if( plan.GetUpsideDown() ){
 		defren.SetShaderParamFSQuad( *shader, spfinTCTransform );

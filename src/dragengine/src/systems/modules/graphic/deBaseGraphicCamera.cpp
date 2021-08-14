@@ -66,3 +66,17 @@ void deBaseGraphicCamera::AllEffectsRemoved(){
 
 void deBaseGraphicCamera::ResetAdaptedIntensity(){
 }
+
+
+
+// For use by VR Module only
+//////////////////////////////
+
+void deBaseGraphicCamera::VRAssignedToHMD(){
+}
+
+void deBaseGraphicCamera::VRResignedFromHMD(){
+}
+
+void deBaseGraphicCamera::VRRenderParametersChanged(){
+}

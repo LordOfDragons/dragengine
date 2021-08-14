@@ -71,6 +71,29 @@ public:
 	/** \brief Request graphic module to reset adapted intensity to optimal value. */
 	virtual void ResetAdaptedIntensity();
 	/*@}*/
+	
+	
+	
+	/** \name For use by VR Module only */
+	/*@{*/
+	/**
+	 * \brief Camera assigned to HMD.
+	 * \version 1.6.
+	 */
+	virtual void VRAssignedToHMD();
+	
+	/**
+	 * \brief Camera resigned from HMD.
+	 * \version 1.6.
+	 */
+	virtual void VRResignedFromHMD();
+	
+	/**
+	 * \brief VR Render parameters changed.
+	 * \version 1.6.
+	 */
+	virtual void VRRenderParametersChanged();
+	/*@}*/
 };
 
 #endif

@@ -768,7 +768,7 @@ void deoglEnvironmentMap::RenderEnvCubeMap( deoglRenderPlan &parentPlan ){
 			plan.SetCameraMatrix( matrixCamera );
 			plan.SetFBOMaterialMatrix( plan.GetInverseCameraMatrix() * decDMatrix::CreateTranslation( -pPosition ) );
 			
-			plan.PrepareRender( NULL );
+			plan.PrepareRender( nullptr );
 			// ^-- this can cause ourself to be marked for deletion. due to the render plan
 			//     keeping a guard reference we do not die ending up with a segfault but the
 			//     pEnvMap has been NULL-ed already. if pEnvMap is NULL we drop out since
@@ -806,7 +806,7 @@ void deoglEnvironmentMap::RenderEnvCubeMap( deoglRenderPlan &parentPlan ){
 			fbo.Verify();
 			
 			plan.Render();
-			pRenderThread.GetRenderers().GetWorld().RenderFinalizeFBO( plan );
+			pRenderThread.GetRenderers().GetWorld().RenderFinalizeFBO( plan, false );
 			pRenderThread.GetRenderers().GetReflection().RenderEnvMapMask( plan, *this, vCubeFaces[ cmf ] );
 			renderTime[ cmf ] = ( int )( timer.GetElapsedTime() * 1000000.0 );
 			renderTime[ 7 ] += renderTime[ cmf ];

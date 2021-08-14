@@ -65,8 +65,10 @@
 #include "../triangles/deoglTriangleSorter.h"
 #include "../utils/deoglQuickSorter.h"
 #include "../vbo/deoglSharedVBOListList.h"
+#include "../vr/deoglVR.h"
 #include "../window/deoglRenderWindow.h"
 #include "../window/deoglRRenderWindow.h"
+#include "../world/deoglRCamera.h"
 
 #include <dragengine/deEngine.h>
 #include <dragengine/app/deOS.h>
@@ -94,6 +96,7 @@ pOgl( ogl ),
 pAsyncRendering( true ),
 pConfigChanged( true ),
 pFrameCounter( 0 ),
+pVRCamera( nullptr ),
 
 pLeakTracker( *this ),
 
@@ -238,6 +241,10 @@ bool deoglRenderThread::HasContext() const{
 }
 
 
+
+void deoglRenderThread::SetVRCamera( deoglRCamera *camera ){
+	pVRCamera = camera;
+}
 
 void deoglRenderThread::SetCanvasInputOverlay( deoglRCanvas *canvas ){
 	if( canvas == pCanvasInputOverlay ){
@@ -1308,6 +1315,7 @@ void deoglRenderThread::pRenderSingleFrame(){
 	//      or using a render thread for each of them which would be a problem. this
 	//      scenario though happens only on applications like the game editor
 	if( pRRenderWindowList.GetCount() > 1 ){
+		pVRSubmit();
 		pBeginFrame();
 		if( showDebugInfoModule ){
 			pDebugTimeThreadRenderSwap = 0.0f;
@@ -1330,6 +1338,7 @@ void deoglRenderThread::pRenderSingleFrame(){
 				pDebugTimeThreadRenderSwap += pDebugTimerRenderThread2.GetElapsedTime();
 			}
 		}
+		pVRRender();
 		
 		pCaptureCanvas();
 		if( showDebugInfoModule ){
@@ -1340,6 +1349,7 @@ void deoglRenderThread::pRenderSingleFrame(){
 		
 	}else{
 		pSwapBuffers();
+		pVRSubmit();
 		if( showDebugInfoModule ){
 			pDebugTimeThreadRenderSwap = pDebugTimerRenderThread2.GetElapsedTime();
 		}
@@ -1357,6 +1367,7 @@ void deoglRenderThread::pRenderSingleFrame(){
 		#endif
 		
 		pRenderWindows();
+		pVRRender();
 		if( showDebugInfoModule ){
 			pDebugTimeThreadRenderWindows = pDebugTimerRenderThread2.GetElapsedTime();
 		}
@@ -1944,6 +1955,20 @@ void deoglRenderThread::pRenderWindows(){
 	
 	for( i=0; i<count; i++ ){
 		( ( deoglRRenderWindow* )pRRenderWindowList.GetAt( i ) )->Render();
+	}
+}
+
+void deoglRenderThread::pVRSubmit(){
+	deoglVR * const vr = pVRCamera ? pVRCamera->GetVR() : nullptr;
+	if( vr ){
+		vr->Submit();
+	}
+}
+
+void deoglRenderThread::pVRRender(){
+	deoglVR * const vr = pVRCamera ? pVRCamera->GetVR() : nullptr;
+	if( vr ){
+		vr->Render();
 	}
 }
 

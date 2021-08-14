@@ -36,6 +36,7 @@
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/input/deInputEvent.h>
 #include <dragengine/systems/deVRSystem.h>
+#include <dragengine/systems/modules/graphic/deBaseGraphicCamera.h>
 
 
 #ifdef __cplusplus
@@ -74,7 +75,10 @@ pDevices( *this ),
 pVRSystem( nullptr ),
 pVRInput( nullptr ),
 pVRRenderModels( nullptr ),
-pActionSetHandle( vr::k_ulInvalidActionSetHandle )
+pVRCompositor( nullptr ),
+pActionSetHandle( vr::k_ulInvalidActionSetHandle ),
+pLeftSubmitted( false ),
+pRightSubmitted( false )
 {
 	int i;
 	for( i=0; i<InputActionCount; i++ ){
@@ -112,6 +116,13 @@ vr::IVRRenderModels &deVROpenVR::GetVRRenderModels() const{
 	return *pVRRenderModels;
 }
 
+vr::IVRCompositor & deVROpenVR::GetVRCompositor() const{
+	if( ! pVRCompositor ){
+		DETHROW( deeInvalidAction );
+	}
+	return *pVRCompositor;
+}
+
 deovrRenderModel *deVROpenVR::GetRenderModelNamed( const char *name ){
 	deObject *findObject;
 	if( pRenderModels.GetAt( name, &findObject ) ){
@@ -143,6 +154,17 @@ void deVROpenVR::SendEvent( const deInputEvent &event ){
 	GetGameEngine()->GetVRSystem()->GetEventQueue().AddEvent( event );
 }
 
+decMatrix deVROpenVR::ConvertMatrix( const vr::HmdMatrix34_t &matrix ) const{
+	// OpenVR is right handed: right=x, up=y, forward=-z
+	// to transform the matrix apply the conversion (-z) for both the row vectors and
+	// the column vectors
+	decMatrix m;
+	m.a11 =  matrix.m[ 0 ][ 0 ]; m.a12 =  matrix.m[ 0 ][ 1 ]; m.a13 = -matrix.m[ 0 ][ 2 ]; m.a14 =  matrix.m[ 0 ][ 3 ];
+	m.a21 =  matrix.m[ 1 ][ 0 ]; m.a22 =  matrix.m[ 1 ][ 1 ]; m.a23 = -matrix.m[ 1 ][ 2 ]; m.a24 =  matrix.m[ 1 ][ 3 ];
+	m.a31 = -matrix.m[ 2 ][ 0 ]; m.a32 = -matrix.m[ 2 ][ 1 ]; m.a33 =  matrix.m[ 2 ][ 2 ]; m.a34 = -matrix.m[ 2 ][ 3 ];
+	return m;
+}
+
 
 
 // Module Management
@@ -172,6 +194,7 @@ bool deVROpenVR::Init(){
 
 void deVROpenVR::CleanUp(){
 	StopRuntime();
+	SetCamera( nullptr );
 	pRenderModels.RemoveAll();
 	pTextureMaps.RemoveAll();
 }
@@ -206,6 +229,9 @@ void deVROpenVR::StartRuntime(){
 		
 		// render models
 		pVRRenderModels = vr::VRRenderModels();
+		
+		// compositor
+		pVRCompositor = vr::VRCompositor();
 		
 		// load input action manifest
 		pVRInput = vr::VRInput();
@@ -281,7 +307,15 @@ void deVROpenVR::StartRuntime(){
 		pDevices.InitDevices();
 		pDevices.LogDevices();
 		
+		pLeftSubmitted = false;
+		pRightSubmitted = false;
+		
 		LogInfo( "Runtime Ready" );
+		
+		// attach camera if set
+		if( pCamera && pCamera->GetPeerGraphic() ){
+			pCamera->GetPeerGraphic()->VRAssignedToHMD();
+		}
 		
 	}catch( const deException &e ){
 		LogException( e );
@@ -297,6 +331,10 @@ void deVROpenVR::StopRuntime(){
 	
 	LogInfo( "Shutdown runtime" );
 	
+	if( pCamera && pCamera->GetPeerGraphic() ){
+		pCamera->GetPeerGraphic()->VRResignedFromHMD();
+	}
+	
 	pDevices.Clear();
 	
 	int i;
@@ -310,7 +348,20 @@ void deVROpenVR::StopRuntime(){
 	pVRSystem = nullptr;
 }
 
-void deVROpenVR::SetCamera( deCamera* ){
+void deVROpenVR::SetCamera( deCamera *camera ){
+	if( pCamera == camera ){
+		return;
+	}
+	
+	if( pVRSystem && pCamera && pCamera->GetPeerGraphic() ){
+		pCamera->GetPeerGraphic()->VRResignedFromHMD();
+	}
+	
+	pCamera = camera;
+	
+	if( pVRSystem && camera && camera->GetPeerGraphic() ){
+		camera->GetPeerGraphic()->VRAssignedToHMD();
+	}
 }
 
 
@@ -486,4 +537,97 @@ void deVROpenVR::ProcessEvents(){
 	}
 	
 	pDevices.TrackDeviceStates();
+}
+
+
+
+// Graphic Module use only
+////////////////////////////
+
+decPoint deVROpenVR::GetRenderSize(){
+	uint32_t width, height;
+	GetVRSystem().GetRecommendedRenderTargetSize( &width, &height );
+	return decPoint( ( int )width, ( int )height );
+}
+
+void deVROpenVR::GetProjectionParameters( eEye eye, float &left, float &right, float &top, float &bottom ){
+	GetVRSystem().GetProjectionRaw( ConvertEye( eye ), &left, &right, &top, &bottom );
+}
+
+decMatrix deVROpenVR::GetMatrixViewEye( eEye eye ){
+	// NOTE openvr documentation states transformation is "Model * View * Eye^-1 * Projection".
+	//      what we need is thus the inverse of the eye matrix
+	return ConvertMatrix( GetVRSystem().GetEyeToHeadTransform( ConvertEye( eye ) ) ).QuickInvert();
+}
+
+deModel *deVROpenVR::GetHiddenArea( eEye eye ){
+	// const HiddenAreaMesh_t mesh = GetVRSystem().GetHiddenAreaMesh( ConvertEye( eye ) );
+	// ...
+	return nullptr;
+}
+
+deImage *deVROpenVR::GetDistortionMap( eEye eye ){
+	// bool GetVRSystem().ComputeDistortion( Hmd_Eye eEye, float fU, float fV, DistortionCoordinates_t *pDistortionCoordinates )
+	return nullptr;
+}
+
+void deVROpenVR::SubmitOpenGLTexture2D( eEye eye, void *texture, const decVector2 &tcFrom,
+const decVector2 &tcTo, bool distortionApplied ){
+	const vr::Hmd_Eye vreye = ConvertEye( eye );
+	
+	vr::Texture_t vrtexture;
+	vrtexture.eColorSpace = vr::ColorSpace_Gamma;
+	vrtexture.eType = vr::TextureType_OpenGL;
+	vrtexture.handle = texture;
+	
+	vr::VRTextureBounds_t bounds;
+	bounds.uMin = tcFrom.x;
+	bounds.uMax = tcTo.x;
+	bounds.vMin = tcFrom.y;
+	bounds.vMax = tcTo.y;
+	
+	const vr::EVRCompositorError error = GetVRCompositor().Submit( vreye, &vrtexture, &bounds,
+		distortionApplied ? vr::Submit_LensDistortionAlreadyApplied : vr::Submit_Default );
+	if( error != vr::VRCompositorError_None ){
+		LogErrorFormat( "Compositor.Submit failed: eye=%d error=%d", eye, error );
+		// ignore errors
+	}
+	
+	pCheckFinishSubmit( eye );
+}
+
+vr::Hmd_Eye deVROpenVR::ConvertEye( eEye eye ) const{
+	switch( eye ){
+	case evreLeft:
+		return vr::Eye_Left;
+		
+	case evreRight:
+		return vr::Eye_Right;
+		
+	default:
+		DETHROW( deeInvalidParam );
+	}
+}
+
+void deVROpenVR::pCheckFinishSubmit( eEye eye ){
+	if( eye == evreLeft ){
+		pLeftSubmitted = true;
+		
+	}else{
+		pRightSubmitted = true;
+	}
+	
+	if( ! pLeftSubmitted || ! pRightSubmitted ){
+		return;
+	}
+	
+	// both eyes submitted. trigger a WaitGetPoses and reset the flags
+	pLeftSubmitted = false;
+	pRightSubmitted = false;
+	
+	const vr::EVRCompositorError error = GetVRCompositor().WaitGetPoses( nullptr, 0, nullptr, 0 );
+	if( error != vr::VRCompositorError_None ){
+		LogErrorFormat( "Compositor.WaitGetPoses failed: error=%d", error );
+		// ignore errors
+	}
 }

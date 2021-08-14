@@ -36,6 +36,7 @@
 #include "../texture/texture2d/deoglTexture.h"
 #include "../delayedoperation/deoglDelayedDeletion.h"
 #include "../delayedoperation/deoglDelayedOperations.h"
+#include "../vr/deoglVR.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -69,7 +70,9 @@ pPlan( NULL ),
 pInitTexture( true ),
 
 pLastAverageLuminance( 0.0f ),
-pDirtyLastAverageLuminance( true )
+pDirtyLastAverageLuminance( true ),
+
+pVR( nullptr )
 {
 	try{
 		// create render plan
@@ -128,7 +131,7 @@ void deoglRCamera::SetPosition( const decDVector &position ){
 
 void deoglRCamera::SetCameraMatrices( const decDMatrix &matrix ){
 	pCameraMatrix = matrix;
-	pInverseCameraMatrix = pCameraMatrix.Invert();
+	pInverseCameraMatrix = pCameraMatrix.QuickInvert();
 }
 
 
@@ -178,6 +181,28 @@ void deoglRCamera::SetAdaptionTime( float adaptionTime ){
 void deoglRCamera::SetEnableGI( bool enable ){
 	pEnableGI = enable;
 	pPlan->SetUseGIState( enable );
+}
+
+
+
+void deoglRCamera::EnableVR( bool enable ){
+	if( enable ){
+		if( ! pVR ){
+			pVR = new deoglVR( *this );
+		}
+		
+		pRenderThread.SetVRCamera( this );
+		
+	}else{
+		if( pRenderThread.GetVRCamera() == this ){
+			pRenderThread.SetVRCamera( nullptr );
+		}
+		
+		if( pVR ){
+			delete pVR;
+			pVR = nullptr;
+		}
+	}
 }
 
 
@@ -267,6 +292,7 @@ public:
 };
 
 void deoglRCamera::pCleanUp(){
+	EnableVR( false );
 	SetParentWorld( NULL );
 	
 	RemoveAllEffects();

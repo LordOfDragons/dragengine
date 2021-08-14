@@ -35,6 +35,12 @@ class deoglRenderbuffer;
  * \brief Render target.
  */
 class deoglRenderTarget : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoglRenderTarget> Ref;
+	
+	
+	
 private:
 	deoglRenderThread &pRenderThread;
 	

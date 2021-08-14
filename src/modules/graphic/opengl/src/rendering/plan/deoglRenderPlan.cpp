@@ -85,6 +85,7 @@
 #include "../../texture/texture2d/deoglRenderableColorTexture.h"
 #include "../../utils/collision/deoglDCollisionFrustum.h"
 #include "../../utils/collision/deoglDCollisionSphere.h"
+#include "../../vr/deoglVR.h"
 #include "../../world/deoglRCamera.h"
 #include "../../world/deoglRWorld.h"
 
@@ -107,8 +108,15 @@
 
 deoglRenderPlan::deoglRenderPlan( deoglRenderThread &renderThread ) :
 pRenderThread( renderThread ),
+pWorld( nullptr ),
+
+pIsRendering( false ),
+
+pLevel( 0 ),
+
 pUseGIState( false ),
 pUseConstGIState( NULL ),
+pRenderVR( ervrNone ),
 pSkyLightCount( 0 ),
 pOcclusionMap( NULL ),
 pOcclusionTest( NULL ),
@@ -116,12 +124,6 @@ pGIState( NULL ),
 pTasks( *this ),
 pTaskFindContent( NULL )
 {
-	pWorld = NULL;
-	
-	pIsRendering = false;
-	
-	pLevel = 0;
-	
 	pCamera = NULL;
 	pCameraFov = DEG2RAD * 90.0f;
 	pCameraFovRatio = 1.0f;
@@ -317,7 +319,12 @@ void deoglRenderPlan::PrepareRender( const deoglRenderPlanMasked *mask ){
 	pIsRendering = true;
 	
 	try{
-		pBarePrepareRender( mask );
+		if( pRenderVR == ervrRightEye ){
+			pBarePrepareRenderRightEye();
+			
+		}else{
+			pBarePrepareRender( mask );
+		}
 		
 	}catch( const deException & ){
 		pIsRendering = false;
@@ -390,6 +397,9 @@ void deoglRenderPlan::pBarePrepareRender( const deoglRenderPlanMasked *mask ){
 	pUpdateGI();
 	SPECIAL_TIMER_PRINT("UpdateGI")
 	
+	// NOTE indirectly accesses projection matrix. renders though a separate occlusion map
+	//      so the regular projection matrix could be used. occlusion though can be testes
+	//      for the first rendered eye only and reused for the other eye
 	pRenderOcclusionTests( mask );
 	renderCanvas.SampleDebugInfoPlanPrepareCulling( *this );
 	SPECIAL_TIMER_PRINT("RenderOcclusionTests")
@@ -424,6 +434,7 @@ void deoglRenderPlan::pBarePrepareRender( const deoglRenderPlanMasked *mask ){
 	SPECIAL_TIMER_PRINT("FinishOcclusionTests")
 	
 	// update dynamic skins and masked rendering if required
+	// NOTE these calls indirectly access projection matrix. this requires per-eye updating
 	const int componentCount = pCollideList.GetComponentCount();
 	for( i=0; i<componentCount; i++ ){
 		deoglRComponent &oglComponent = *pCollideList.GetComponentAt( i )->GetComponent();
@@ -467,16 +478,57 @@ void deoglRenderPlan::pBarePrepareRender( const deoglRenderPlanMasked *mask ){
 	renderCanvas.SampleDebugInfoPlanPrepare( *this );
 }
 
+void deoglRenderPlan::pBarePrepareRenderRightEye(){
+	if( ! pWorld ){
+		return;
+	}
+	
+	deoglRenderCanvas &renderCanvas = pRenderThread.GetRenderers().GetCanvas();
+	int i;
+	INIT_SPECIAL_TIMING
+	
+	pPlanCameraProjectionMatrix();
+	
+	// and masked rendering if required
+	const int componentCount = pCollideList.GetComponentCount();
+	for( i=0; i<componentCount; i++ ){
+		pCollideList.GetComponentAt( i )->GetComponent()->AddSkinStateRenderPlans( *this );
+	}
+	
+	const int billboardCount = pCollideList.GetBillboardCount();
+	for( i=0; i<billboardCount; i++ ){
+		pCollideList.GetBillboardAt( i )->AddSkinStateRenderPlans( *this );
+	}
+	SPECIAL_TIMER_PRINT("Components")
+	renderCanvas.SampleDebugInfoPlanPreparePrepareContent( *this );
+	
+	// determine the stencil properties for pass and mask rendering. right now the
+	// mask is always 1 bit and the rest is available to the render pass number
+	pStencilRefValue = 0;
+	pStencilPrevRefValue = 0;
+	pStencilWriteMask = 0xe;
+	
+	// reset the transparency layer stuff just for the case somebody reads it too early
+	pClearStencilPassBits = false;
+	pClearColor = true;
+	pTransparencyLayerCount = 0;
+	pCurTransparencyLayer = 0;
+	
+	renderCanvas.SampleDebugInfoPlanPrepare( *this );
+}
+
 void deoglRenderPlan::pPlanCamera(){
-	// prepare the camera if existing
 	if( pCamera ){
 		pCamera->PrepareForRender();
 	}
 	
-	// check reference position and update reference position camera matrix
 	pWorld->CheckReferencePosition( pCameraPosition );
 	UpdateRefPosCameraMatrix();
 	
+	pPlanCameraProjectionMatrix();
+}
+
+void deoglRenderPlan::pPlanCameraProjectionMatrix(){
 	// prepare the projection matrix if dirty
 	if( pDirtyProjMat ){
 		const deoglDeferredRendering &defren = pRenderThread.GetDeferredRendering();
@@ -510,6 +562,22 @@ void deoglRenderPlan::pPlanCamera(){
 		*/
 		
 		pDirtyProjMat = false;
+	}
+	
+	// VR modifies the matrices
+	if( pCamera && pCamera->GetVR() && pRenderVR != ervrNone ){
+		const deoglVR &vr = *pCamera->GetVR();
+		const deoglVR::sProjection &projection = pRenderVR == ervrLeftEye
+			? vr.GetProjectionLeftEye() : vr.GetProjectionRightEye();
+		
+		pCameraFov = vr.GetCameraFov();
+		pCameraFovRatio = vr.GetCameraFovRatio();
+		
+		pDepthToPosition.z = tanf( pCameraFov * 0.5f );
+		pDepthToPosition.w = tanf( pCameraFov * pCameraFovRatio * 0.5f ) / pAspectRatio;
+		
+		pProjectionMatrix = vr.CreateProjectionDMatrix( projection, pCameraImageDistance, pCameraViewDistance );
+		pFrustumMatrix = vr.CreateFrustumDMatrix( projection, pCameraImageDistance, pCameraViewDistance );
 	}
 	
 	// determine frustum to use
@@ -1344,11 +1412,15 @@ void deoglRenderPlan::Render(){
 	}catch( const deException &e ){
 		e.PrintError();
 		// add to exception trace
-		CleanUp();
+		if( pRenderVR != ervrLeftEye ){
+			CleanUp();
+		}
 		throw;
 	}
 	
-	CleanUp();
+	if( pRenderVR != ervrLeftEye ){
+		CleanUp();
+	}
 }
 
 void deoglRenderPlan::CleanUp(){
@@ -1406,8 +1478,9 @@ void deoglRenderPlan::SetCameraMatrixNonMirrored( const decDMatrix &matrix ){
 }
 
 void deoglRenderPlan::SetCameraParameters( float fov, float fovRatio, float imageDistance, float viewDistance ){
-	if( fov <= 0.0f || fov >= PI || fovRatio <= 0.0f || imageDistance <= 0.0f || imageDistance >= viewDistance ) DETHROW( deeInvalidParam );
-	
+	if( fov <= 0.0f || fov >= PI || fovRatio <= 0.0f || imageDistance <= 0.0f || imageDistance >= viewDistance ){
+		DETHROW( deeInvalidParam );
+	}
 	pCameraFov = fov;
 	pCameraFovRatio = fovRatio;
 	pCameraImageDistance = imageDistance;
@@ -1557,6 +1630,10 @@ void deoglRenderPlan::SetUseConstGIState( deoglGIState *giState ){
 	pUseConstGIState = giState;
 }
 
+void deoglRenderPlan::SetRenderVR( eRenderVR renderVR ){
+	pRenderVR = renderVR;
+}
+
 
 
 void deoglRenderPlan::SetUseLayerMask( bool useLayerMask ){
@@ -1569,7 +1646,8 @@ void deoglRenderPlan::SetLayerMask( const decLayerMask &layerMask ){
 
 
 
-void deoglRenderPlan::SetCustomFrustumBoundaries( const decDVector &position, const decDVector &topLeft, const decDVector &topRight,
+void deoglRenderPlan::SetCustomFrustumBoundaries(
+const decDVector &position, const decDVector &topLeft, const decDVector &topRight,
 const decDVector &bottomLeft, const decDVector &bottomRight, double near, double far ){
 	decDVector normal;
 	
@@ -1695,7 +1773,8 @@ void deoglRenderPlan::SetOcclusionTestMatrix( const decMatrix &matrix ){
 
 deoglGIState *deoglRenderPlan::GetUpdateGIState() const{
 	if( pUseGIState && ! pUseConstGIState
-	&& pRenderThread.GetConfiguration().GetGIQuality() != deoglConfiguration::egiqOff ){
+	&& pRenderThread.GetConfiguration().GetGIQuality() != deoglConfiguration::egiqOff
+	&& pRenderVR != ervrRightEye ){
 		return pGIState;
 	}
 	return NULL;

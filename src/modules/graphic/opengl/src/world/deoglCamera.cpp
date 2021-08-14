@@ -65,7 +65,9 @@ pDirtyLayerMask( true ),
 pDirtyPlanCamParams( true ),
 pDirtyPropFields( true ),
 pDirtyEffects( true ),
-pResetAdaptedIntensity( true )
+pResetAdaptedIntensity( true ),
+pDirtyVR( true ),
+pEnableVR( false )
 {
 	try{
 		pRCamera = new deoglRCamera( ogl.GetRenderThread() );
@@ -175,8 +177,10 @@ void deoglCamera::SyncToRender(){
 	}
 	
 	if( pDirtyPlanCamParams ){
-		pRCamera->GetPlan().SetCameraParameters( pCamera.GetFov(), pCamera.GetFovRatio(),
-			pCamera.GetImageDistance(), pCamera.GetViewDistance() );
+		if( ! pEnableVR ){
+			pRCamera->GetPlan().SetCameraParameters( pCamera.GetFov(), pCamera.GetFovRatio(),
+				pCamera.GetImageDistance(), pCamera.GetViewDistance() );
+		}
 		pRCamera->SetEnableHDRR( pCamera.GetEnableHDRR() );
 		pRCamera->SetEnableGI( pCamera.GetEnableGI() );
 		pDirtyPlanCamParams = false;
@@ -209,6 +213,12 @@ void deoglCamera::SyncToRender(){
 		( ( deoglEffect* )pCamera.GetEffectAt( i )->GetPeerGraphic() )->SyncToRender();
 	}
 // 		pOgl.LogInfoFormat( "Camera.Sync effects sync: %d ys", (int)(timer.GetElapsedTime() * 1e6f) );
+	
+	// vr
+	if( pDirtyVR ){
+		pRCamera->EnableVR( pEnableVR );
+		pDirtyVR = false;
+	}
 }
 
 
@@ -254,6 +264,27 @@ void deoglCamera::EffectRemoved( int index, deEffect *effect ){
 
 void deoglCamera::AllEffectsRemoved(){
 	pDirtyEffects = true;
+}
+
+
+
+
+// For use by VR Module only
+//////////////////////////////
+
+void deoglCamera::VRAssignedToHMD(){
+	pDirtyVR = true;
+	pEnableVR = true;
+}
+
+void deoglCamera::VRResignedFromHMD(){
+	pDirtyPlanCamParams = true;
+	pDirtyVR = true;
+	pEnableVR = false;
+}
+
+void deoglCamera::VRRenderParametersChanged(){
+	pDirtyVR = true;
 }
 
 

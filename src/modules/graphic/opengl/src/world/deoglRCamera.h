@@ -31,7 +31,7 @@ class deoglRenderPlan;
 class deoglRenderThread;
 class deoglRWorld;
 class deoglTexture;
-
+class deoglVR;
 
 
 /**
@@ -66,6 +66,8 @@ private:
 	
 	float pLastAverageLuminance;
 	bool pDirtyLastAverageLuminance;
+	
+	deoglVR *pVR;
 	
 	
 	
@@ -176,6 +178,14 @@ public:
 	
 	/** Set enable GI. */
 	void SetEnableGI( bool enable );
+	
+	
+	
+	/** VR or nullptr. */
+	inline deoglVR *GetVR() const{ return pVR; }
+	
+	/** Enable/Disable VR. */
+	void EnableVR( bool enable );
 	
 	
 	

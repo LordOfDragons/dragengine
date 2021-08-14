@@ -26,7 +26,7 @@ fixed class VRSystem
 	 * 
 	 * Returns true if a call to startRuntime() is likely to succeed or not.
 	 */
-	public func bool runtimeUsable()
+	public static func bool runtimeUsable()
 		return false
 	end
 	
@@ -38,7 +38,7 @@ fixed class VRSystem
 	 * and activates VR support on various modules. VR mode can be started and
 	 * stopped at any time.
 	 */
-	public func void startRuntime()
+	public static func void startRuntime()
 	end
 	
 	/**
@@ -49,11 +49,11 @@ fixed class VRSystem
 	 * and activates VR support on various modules. VR mode can be started and
 	 * stopped at any time.
 	 */
-	public func void stopRuntime()
+	public static func void stopRuntime()
 	end
 	
 	/** \brief Camera to render on head mounted display or null. */
-	public func Camera getCamera()
+	public static func Camera getCamera()
 		return null
 	end
 	
@@ -62,7 +62,7 @@ fixed class VRSystem
 	 * 
 	 * If set to null fades back to safe scene as defined by VR Runtime.
 	 */
-	public func void setCamera( Camera camera )
+	public static func void setCamera( Camera camera )
 	end
 	/*@}*/
 	

@@ -56,6 +56,7 @@ class deoglPersistentRenderTaskPool;
 class deoglRenderTaskSharedPool;
 class deoglRTUniqueKey;
 class deoglOcclusionTestPool;
+class deoglRCamera;
 
 class deoglRTBufferObject;
 class deoglRTContext;
@@ -103,6 +104,7 @@ private:
 	bool pAsyncRendering;
 	bool pConfigChanged;
 	uint32_t pFrameCounter;
+	deoglRCamera *pVRCamera;
 	
 	deoglConfiguration pConfiguration;
 	deoglRTLeakTracker pLeakTracker;
@@ -234,6 +236,12 @@ public:
 	
 	/** Frame counter. */
 	inline uint32_t GetFrameCounter() const{ return pFrameCounter; }
+	
+	/** VR camera or nullptr. */
+	inline deoglRCamera *GetVRCamera() const{ return pVRCamera; }
+	
+	/** Set VR camera or nullptr. */
+	void SetVRCamera ( deoglRCamera *camera );
 	
 	/** Configuration. */
 	inline deoglConfiguration &GetConfiguration(){ return pConfiguration; }
@@ -483,6 +491,8 @@ private:
 	void pSwapBuffers();
 	void pBeginFrame();
 	void pRenderWindows();
+	void pVRSubmit();
+	void pVRRender();
 	void pCaptureCanvas();
 	void pEndFrame();
 	void pLimitFrameRate( float elapsed );

@@ -23,10 +23,13 @@
 #define _DEBASEVRMODULE_H_
 
 #include "../deBaseModule.h"
+#include "../../../common/math/decMath.h"
 
 class deInputDevice;
 class deInputDevicePose;
 class deCamera;
+class deModel;
+class deImage;
 
 
 /**
@@ -157,6 +160,68 @@ public:
 	 * engine.
 	 */
 	virtual void ProcessEvents() = 0;
+	/*@}*/
+	
+	
+	
+	/** \name Graphic Module use only */
+	/*@{*/
+	/**
+	 * \brief VR eye.
+	 * \warning For Graphic Module use only.
+	 */
+	enum eEye{
+		evreLeft,
+		evreRight
+	};
+	
+	
+	
+	/**
+	 * \brief VR recommended render target size.
+	 * \warning For Graphic Module use only.
+	 */
+	virtual decPoint GetRenderSize() = 0;
+	
+	/**
+	 * \brief VR render projection matrix parameters.
+	 * \warning For Graphic Module use only.
+	 */
+	virtual void GetProjectionParameters( eEye eye, float &left,
+		float &right, float &top, float &bottom ) = 0;
+	
+	/**
+	 * \brief VR render matrix transforming from camera space to eye space.
+	 * \warning For Graphic Module use only.
+	 */
+	virtual decMatrix GetMatrixViewEye( eEye eye ) = 0;
+	
+	/**
+	 * \brief VR render hidden area model or nullptr if not supported.
+	 * \warning For Graphic Module use only.
+	 */
+	virtual deModel *GetHiddenArea( eEye eye ) = 0;
+	
+	/**
+	 * \brief VR render distortion image or nullptr if not supported.
+	 * 
+	 * Distortion image can be of any size with depth of 2. Z=0 is the U texture coordinate
+	 * for the respective color and Z=1 the V texture coordinate.
+	 * \warning For Graphic Module use only.
+	 */
+	virtual deImage *GetDistortionMap( eEye eye ) = 0;
+	
+	/**
+	 * \brief Submit OpenGL rendered image to the HMD.
+	 * \warning For Graphic Module use only.
+	 * \param[in] eye Eye to submit image to.
+	 * \param[in] texture Name of Texture2D.
+	 * \param[in] tcFrom Bottom left texture coordinates (range 0 to 1).
+	 * \param[in] tcTo Top right texture coordinates (range 0 to 1).
+	 * \param[in] distortionApplied Distortion has been already applied.
+	 */
+	virtual void SubmitOpenGLTexture2D( eEye eye, void *texture, const decVector2 &tcFrom,
+		const decVector2 &tcTo, bool distortionApplied ) = 0;
 	/*@}*/
 };
 

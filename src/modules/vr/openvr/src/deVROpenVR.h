@@ -29,6 +29,7 @@
 #include <dragengine/common/collection/decObjectDictionary.h>
 #include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/common/string/decString.h>
+#include <dragengine/resources/camera/deCamera.h>
 #include <dragengine/systems/modules/vr/deBaseVRModule.h>
 
 
@@ -80,6 +81,8 @@ private:
 	bool pRuntimeInstalled;
 	decString pPathRuntime;
 	
+	deCamera::Ref pCamera;
+	
 	deovrDeviceManager pDevices;
 	decObjectDictionary pRenderModels;
 	decObjectList pTextureMaps;
@@ -87,8 +90,12 @@ private:
 	vr::IVRSystem *pVRSystem;
 	vr::IVRInput *pVRInput;
 	vr::IVRRenderModels *pVRRenderModels;
+	vr::IVRCompositor *pVRCompositor;
 	vr::VRActionSetHandle_t pActionSetHandle;
 	vr::VRActionHandle_t pActionHandle[ InputActionCount ];
+	
+	bool pLeftSubmitted;
+	bool pRightSubmitted;
 	
 	
 	
@@ -119,6 +126,9 @@ public:
 	/** VR Render Models. */
 	vr::IVRRenderModels &GetVRRenderModels() const;
 	
+	/** VR Compositor. */
+	vr::IVRCompositor &GetVRCompositor() const;
+	
 	/** VR Action Set Handle. */
 	inline vr::VRActionSetHandle_t GetActionSetHandle() const{ return pActionSetHandle; }
 	
@@ -133,6 +143,9 @@ public:
 	
 	/** Send event. */
 	void SendEvent( const deInputEvent &event );
+	
+	/** Convert matrix. */
+	decMatrix ConvertMatrix( const vr::HmdMatrix34_t &matrix ) const;
 	/*@}*/
 	
 	
@@ -181,11 +194,10 @@ public:
 	 */
 	virtual void StopRuntime();
 	
-	/**
-	 * Set camera to render on head mounted display.
-	 * 
-	 * If set to nullptr fades back to safe scene as defined by VR Runtime.
-	 */
+	/** Camera or nullptr. */
+	inline deCamera *GetCamera() const{ return pCamera; }
+	
+	/** Set camera to render on head mounted display. */
 	virtual void SetCamera( deCamera *camera );
 	/*@}*/
 	
@@ -252,7 +264,34 @@ public:
 	
 	
 	
+	/** \name Graphic Module use only */
+	/*@{*/
+	/** VR recommended render target size. */
+	virtual decPoint GetRenderSize();
+	
+	/** VR render projection matrix parameters. */
+	virtual void GetProjectionParameters( eEye eye, float &left,
+		float &right, float &top, float &bottom );
+	
+	/** VR render matrix transforming from camera space to eye space. */
+	virtual decMatrix GetMatrixViewEye( eEye eye );
+	
+	/** VR render hidden area model or nullptr if not supported. */
+	virtual deModel *GetHiddenArea( eEye eye );
+	
+	/** VR render distortion image or nullptr if not supported. */
+	virtual deImage *GetDistortionMap( eEye eye );
+	
+	/** Submit OpenGL rendered image to the HMD. */
+	virtual void SubmitOpenGLTexture2D( eEye eye, void *texture, const decVector2 &tcFrom,
+		const decVector2 &tcTo, bool distortionApplied );
+	/*@}*/
+	
+	
+	
 private:
+	vr::Hmd_Eye ConvertEye( eEye eye ) const;
+	void pCheckFinishSubmit( eEye eye );
 };
 
 #endif

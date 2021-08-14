@@ -147,11 +147,11 @@ void deVRNull::SetFeedbackValue( int, int, float ){
 }
 
 void deVRNull::GetDevicePose( int, deInputDevicePose &pose ){
-	pose = deInputDevicePose();
+	DETHROW( deeInvalidParam );
 }
 
 void deVRNull::GetDeviceBonePose( int, int, bool, deInputDevicePose &pose ){
-	pose = deInputDevicePose();
+	DETHROW( deeInvalidParam );
 }
 
 
@@ -160,4 +160,28 @@ void deVRNull::GetDeviceBonePose( int, int, bool, deInputDevicePose &pose ){
 ///////////
 
 void deVRNull::ProcessEvents(){
+}
+
+decPoint deVRNull::GetRenderSize(){
+	DETHROW( deeInvalidParam );
+}
+
+void deVRNull::GetProjectionParameters( eEye, float&, float&, float&, float& ){
+	DETHROW( deeInvalidParam );
+}
+
+decMatrix deVRNull::GetMatrixViewEye( eEye ){
+	DETHROW( deeInvalidParam );
+}
+
+deModel *deVRNull::GetHiddenArea( eEye ){
+	return nullptr;
+}
+
+deImage *deVRNull::GetDistortionMap( eEye ){
+	return nullptr;
+}
+
+void deVRNull::SubmitOpenGLTexture2D( eEye, void*, const decVector2 &, const decVector2 &, bool ){
+	DETHROW( deeInvalidParam );
 }

@@ -103,10 +103,11 @@ public:
 		}
 		
 		// add "solidity.masked" property
+		// NOTE if this is set to 0 the skin fails... why?
 		{
 		deSkinPropertyValue * const property = new deSkinPropertyValue( "solidity.masked" );
 		texture->AddProperty( property );
-		property->SetValue( 0.0f );
+		property->SetValue( 1.0f );
 		}
 	}
 };
@@ -142,7 +143,7 @@ void deovrTextureMap::pLoadTextureMap(){
 		sRGB8 * const destPixels = pImageColor->GetDataRGB8();
 		for( y=0; y<textureMap->unHeight; y++ ){
 			const sRGBA8 * const srcPixelLine = srcPixels + textureMap->unWidth * y;
-			sRGB8 * const destPixelLine = destPixels + textureMap->unWidth * y; //( textureMap->unHeight - 1 - y );
+			sRGB8 * const destPixelLine = destPixels + textureMap->unWidth * y;
 			for( x=0; x<textureMap->unWidth; x++ ){
 				const sRGBA8 &srcPixel = srcPixelLine[ x ];
 				sRGB8 &destPixel = destPixelLine[ x ];
@@ -167,7 +168,7 @@ void deovrTextureMap::pLoadTextureMap(){
 		sGrayscale8 * const destPixels = pImageSolidity->GetDataGrayscale8();
 		for( y=0; y<textureMap->unHeight; y++ ){
 			const sRGBA8 * const srcPixelLine = srcPixels + textureMap->unWidth * y;
-			sGrayscale8 * const destPixelLine = destPixels + textureMap->unWidth * y; //( textureMap->unHeight - 1 - y );
+			sGrayscale8 * const destPixelLine = destPixels + textureMap->unWidth * y;
 			for( x=0; x<textureMap->unWidth; x++ ){
 				destPixelLine[ x ].value = srcPixelLine[ x ].alpha;
 			}

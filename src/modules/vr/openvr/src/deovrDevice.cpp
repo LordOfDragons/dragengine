@@ -811,14 +811,9 @@ void deovrDevice::pUpdatePose( const vr::TrackedDevicePose_t &in, deInputDeviceP
 		out = deInputDevicePose();
 	}
 	
-	const vr::HmdMatrix34_t &m = in.mDeviceToAbsoluteTracking;
-	out.SetPosition( decVector( m.m[ 0 ][ 3 ], m.m[ 1 ][ 3 ], -m.m[ 2 ][ 3 ] ) );
-	
-	decMatrix rm;
-	rm.a11 =  m.m[ 0 ][ 0 ]; rm.a12 =  m.m[ 0 ][ 1 ]; rm.a13 = -m.m[ 0 ][ 2 ];
-	rm.a21 =  m.m[ 1 ][ 0 ]; rm.a22 =  m.m[ 1 ][ 1 ]; rm.a23 = -m.m[ 1 ][ 2 ];
-	rm.a31 = -m.m[ 2 ][ 0 ]; rm.a32 = -m.m[ 2 ][ 1 ]; rm.a33 =  m.m[ 2 ][ 2 ];
-	out.SetOrientation( rm.ToQuaternion() );
+	const decMatrix m( pOvr.ConvertMatrix( in.mDeviceToAbsoluteTracking ) );
+	out.SetPosition( m.GetPosition() );
+	out.SetOrientation( m.ToQuaternion() );
 	
 	const vr::HmdVector3_t &lv = in.vVelocity;
 	out.SetLinearVelocity( decVector( lv.v[ 0 ], lv.v[ 1 ], -lv.v[ 2 ] ) );

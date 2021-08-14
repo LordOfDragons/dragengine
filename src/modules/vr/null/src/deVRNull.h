@@ -45,13 +45,13 @@ public:
 	/** \name Module Management */
 	/*@{*/
 	/**
-	 * \brief Init the module.
+	 * Init the module.
 	 * \returns true on success.
 	 * \note To access the os object of the engine use the GetOS function.
 	 */
 	virtual bool Init();
 	
-	/** \brief Clean up module. */
+	/** Clean up module. */
 	virtual void CleanUp();
 	/*@}*/
 	
@@ -60,14 +60,14 @@ public:
 	/** \name Runtime */
 	/*@{*/
 	/**
-	 * \brief VR Runtime is usable.
+	 * VR Runtime is usable.
 	 * 
 	 * Returns true if a call to StartRuntime() is likely to succeed or not.
 	 */
 	virtual bool RuntimeUsable();
 	
 	/**
-	 * \brief Start VR.
+	 * Start VR.
 	 * 
 	 * VR systems typically are required to be activated before they can be used.
 	 * Starting VR connects the engine to the VR system present on the host system
@@ -77,7 +77,7 @@ public:
 	virtual void StartRuntime();
 	
 	/**
-	 * \brief Stop VR.
+	 * Stop VR.
 	 * 
 	 * VR systems typically are required to be activated before they can be used.
 	 * Starting VR connects the engine to the VR system present on the host system
@@ -87,7 +87,7 @@ public:
 	virtual void StopRuntime();
 	
 	/**
-	 * \brief Set camera to render on head mounted display.
+	 * Set camera to render on head mounted display.
 	 * 
 	 * If set to nullptr fades back to safe scene as defined by VR Runtime.
 	 */
@@ -98,43 +98,43 @@ public:
 	
 	/** \name Devices */
 	/*@{*/
-	/** \brief Number of input devices. */
+	/** Number of input devices. */
 	virtual int GetDeviceCount();
 	
-	/** \brief Information for input device at index. */
+	/** Information for input device at index. */
 	virtual deInputDevice *GetDeviceAt( int index );
 	
-	/** \brief Index of device with identifier or -1 if absent. */
+	/** Index of device with identifier or -1 if absent. */
 	virtual int IndexOfDeviceWithID( const char *id );
 	
-	/** \brief Index of button with identifier on device at index or -1 if absent. */
+	/** Index of button with identifier on device at index or -1 if absent. */
 	virtual int IndexOfButtonWithID( int device, const char *id );
 	
-	/** \brief Index of axis with identifier on device at index or -1 if absent. */
+	/** Index of axis with identifier on device at index or -1 if absent. */
 	virtual int IndexOfAxisWithID( int device, const char *id );
 	
-	/** \brief Index of feedback with identifier on device at index or -1 if absent. */
+	/** Index of feedback with identifier on device at index or -1 if absent. */
 	virtual int IndexOfFeedbackWithID( int device, const char *id );
 	
-	/** \brief Button at index on device at index is pressed down. */
+	/** Button at index on device at index is pressed down. */
 	virtual bool GetButtonPressed( int device, int button );
 	
-	/** \brief Button at index on device at index is touched. */
+	/** Button at index on device at index is touched. */
 	virtual bool GetButtonTouched( int device, int button );
 	
-	/** \brief Value of axis at index on device at index. */
+	/** Value of axis at index on device at index. */
 	virtual float GetAxisValue( int device, int axis );
 	
-	/** \brief Value of feedback at index on device at index. */
+	/** Value of feedback at index on device at index. */
 	virtual float GetFeedbackValue( int device, int feedback );
 	
-	/** \brief Set value of feedback at index on device at index. */
+	/** Set value of feedback at index on device at index. */
 	virtual void SetFeedbackValue( int device, int feedback, float value );
 	
-	/** \brief Device pose or identity if not supported. */
+	/** Device pose or identity if not supported. */
 	virtual void GetDevicePose( int device, deInputDevicePose &pose );
 	
-	/** \brief Device bone pose or identity if not supported. */
+	/** Device bone pose or identity if not supported. */
 	virtual void GetDeviceBonePose( int device, int bone,
 		bool withController, deInputDevicePose &pose );
 	/*@}*/
@@ -144,7 +144,7 @@ public:
 	/** \name Events */
 	/*@{*/
 	/**
-	 * \brief Add events to the VR System event queue.
+	 * Add events to the VR System event queue.
 	 * 
 	 * This function is called before any other frame related tasks are carried out.
 	 * Record changes in devices states have to be recored into a game event
@@ -153,6 +153,31 @@ public:
 	 * engine.
 	 */
 	virtual void ProcessEvents();
+	/*@}*/
+	
+	
+	
+	/** \name Graphic Module use only */
+	/*@{*/
+	/** VR recommended render target size. */
+	virtual decPoint GetRenderSize();
+	
+	/** VR render projection matrix parameters. */
+	virtual void GetProjectionParameters( eEye eye, float &left,
+		float &right, float &top, float &bottom );
+	
+	/** VR render matrix transforming from camera space to eye space. */
+	virtual decMatrix GetMatrixViewEye( eEye eye );
+	
+	/** VR render hidden area model or nullptr if not supported. */
+	virtual deModel *GetHiddenArea( eEye eye );
+	
+	/** VR render distortion image or nullptr if not supported. */
+	virtual deImage *GetDistortionMap( eEye eye );
+	
+	/** Submit OpenGL rendered image to the HMD. */
+	virtual void SubmitOpenGLTexture2D( eEye eye, void *texture, const decVector2 &tcFrom,
+		const decVector2 &tcTo, bool distortionApplied );
 	/*@}*/
 };
 

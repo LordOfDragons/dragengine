@@ -73,6 +73,14 @@ class deoglRPTFindContent;
  *       render plans.
  */
 class deoglRenderPlan{
+public:
+	enum eRenderVR{
+		ervrNone,
+		ervrLeftEye,
+		ervrRightEye
+	};
+	
+	
 private:
 	deoglRenderThread &pRenderThread;
 	deoglRWorld *pWorld;
@@ -113,6 +121,7 @@ private:
 	bool pNoAmbientLight;
 	bool pUseGIState;
 	deoglGIState *pUseConstGIState;
+	eRenderVR pRenderVR;
 	
 	bool pUseLayerMask;
 	decLayerMask pLayerMask;
@@ -448,6 +457,12 @@ public:
 	/** Set use const GI state. */
 	void SetUseConstGIState( deoglGIState *giState );
 	
+	/** Render VR. */
+	inline eRenderVR GetRenderVR() const{ return pRenderVR; }
+	
+	/** Set render VR. */
+	void SetRenderVR( eRenderVR renderVR );
+	
 	
 	
 	/** Layer mask is used for culling. */
@@ -725,7 +740,9 @@ public:
 	
 private:
 	void pBarePrepareRender( const deoglRenderPlanMasked *mask );
+	void pBarePrepareRenderRightEye();
 	void pPlanCamera();
+	void pPlanCameraProjectionMatrix();
 	void pPlanSky();
 	void pPlanSkyLight();
 	void pPlanDominance();

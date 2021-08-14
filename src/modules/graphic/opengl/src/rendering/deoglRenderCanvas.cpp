@@ -64,6 +64,7 @@
 #include "../vbo/deoglSharedVBOBlock.h"
 #include "../vbo/deoglSharedVBOList.h"
 #include "../vbo/deoglSharedVBOListList.h"
+#include "../vr/deoglVR.h"
 #include "../world/deoglRCamera.h"
 #include "../world/deoglRWorld.h"
 
@@ -708,37 +709,45 @@ const deoglRCanvasRenderWorld &canvas ){
 	}
 	
 	deoglRenderThread &renderThread = GetRenderThread();
-	
-	pActiveVAO = 0; // usually this will be trashed
-	
-	// determine the render size
-	const decVector2 &size = canvas.GetSize();
-	const decPoint intSize( size );
-	int rwidth = intSize.x;
-	int rheight = intSize.y;
-	pWorldRenderSize( rwidth, rheight );
-	
-	// if zero do not try to render otherwise deoglDeferredRendering throws an exception
-	if( rwidth == 0 || rheight == 0 ){
-		return;
-	}
-	
-	// render using render plan
-	deoglRenderPlan &plan = camera->GetPlan();
-	
-	plan.SetViewport( 0, 0, rwidth, rheight );
-	plan.SetUpscaleSize( intSize.x, intSize.y );
-	plan.SetUseUpscaling( rwidth != intSize.x || rheight != intSize.y );
-	plan.SetUpsideDown( false );
-	
-	const deoglDeveloperMode &devmode = renderThread.GetDebug().GetDeveloperMode();
-	plan.SetDebugTiming( ! context.GetFBO() && devmode.GetEnabled() && devmode.GetShowDebugInfo() );
-	
-	plan.PrepareRender( context.GetRenderPlanMask() );
-	
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
-	defren.Resize( rwidth, rheight );
-	plan.Render();
+	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
+	const decVector2 &size = canvas.GetSize();
+	deoglVR * const vr = camera->GetVR();
+	
+	if( vr ){
+		vr->Render();
+		
+	}else{
+		pActiveVAO = 0; // usually this will be trashed
+		
+		// determine the render size
+		const decPoint intSize( size );
+		int rwidth = intSize.x;
+		int rheight = intSize.y;
+		pWorldRenderSize( rwidth, rheight );
+		
+		// if zero do not try to render otherwise deoglDeferredRendering throws an exception
+		if( rwidth == 0 || rheight == 0 ){
+			return;
+		}
+		
+		// render using render plan
+		deoglRenderPlan &plan = camera->GetPlan();
+		
+		plan.SetRenderVR( deoglRenderPlan::ervrNone );
+		plan.SetViewport( 0, 0, rwidth, rheight );
+		plan.SetUpscaleSize( intSize.x, intSize.y );
+		plan.SetUseUpscaling( rwidth != intSize.x || rheight != intSize.y );
+		plan.SetUpsideDown( false );
+		
+		const deoglDeveloperMode &devmode = renderThread.GetDebug().GetDeveloperMode();
+		plan.SetDebugTiming( ! context.GetFBO() && devmode.GetEnabled() && devmode.GetShowDebugInfo() );
+		
+		plan.PrepareRender( context.GetRenderPlanMask() );
+		
+		defren.Resize( rwidth, rheight );
+		plan.Render();
+	}
 	
 	// revert back to 2d rendering
 	// TODO time finalize pass too
@@ -747,8 +756,13 @@ const deoglRCanvasRenderWorld &canvas ){
 	Prepare( context );
 	
 	// render finalize pass into canvas space with all the bells and whistles
-	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
-	tsmgr.EnableTexture( 0, *defren.GetPostProcessTexture(), GetSamplerClampLinear() );
+	if( vr ){
+		tsmgr.EnableTexture( 0, *vr->GetTargetLeftEye()->GetTexture(), GetSamplerClampLinear() );
+		
+	}else{
+		tsmgr.EnableTexture( 0, *defren.GetPostProcessTexture(), GetSamplerClampLinear() );
+	}
+	
 	if( context.GetMask() ){
 		tsmgr.EnableTexture( 1, *context.GetMask(), GetSamplerClampLinear() );
 	}
@@ -761,8 +775,17 @@ const deoglRCanvasRenderWorld &canvas ){
 	deoglShaderCompiled &shader = *program->GetCompiled();
 	
 	shader.SetParameterTexMatrix3x2( spcTransform, billboardTransform * context.GetTransform() );
-	shader.SetParameterTexMatrix3x2( spcTCTransform, decTexMatrix2::CreateST(
-		defren.GetScalingU(), -defren.GetScalingV(), 0.0f, defren.GetScalingV() ) );
+	
+	if( vr ){
+		const decVector2 &from = vr->GetCanvasTCFromLeftEye();
+		const decVector2 &to = vr->GetCanvasTCToLeftEye();
+		shader.SetParameterTexMatrix3x2( spcTCTransform, decTexMatrix2::CreateST( to - from, from ) );
+		
+	}else{
+		shader.SetParameterTexMatrix3x2( spcTCTransform, decTexMatrix2::CreateST(
+			defren.GetScalingU(), -defren.GetScalingV(), 0.0f, defren.GetScalingV() ) );
+	}
+	
 	shader.SetParameterTexMatrix3x2( spcTCTransformMask, context.GetTransformMask() );
 	
 	// color correction from configuration applied over canvas color transformation
