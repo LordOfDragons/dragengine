@@ -1665,39 +1665,49 @@ void deoglSkinChannel::pBuildCacheID(){
 	
 	// for images update the cache id sources if present
 	if( pDelayedCombineImage1 ){
+		const decString &filename = pDelayedCombineImage1->GetImage().GetFilename();
+		if( filename.IsEmpty() ){
+			pCanBeCached = false; // this one is problematic. dont do it
+			return;
+		}
+		
 		if( pDelayedCombineImage1->GetImage().GetVirtualFileSystem() !=
 		pRenderThread.GetOgl().GetGameEngine()->GetVirtualFileSystem() ){
 			pCanBeCached = false;
 			return;
 		}
 		
-		decPath path;
-		path.SetFromUnix( pDelayedCombineImage1->GetImage().GetFilename() );
-		if( ! pDelayedCombineImage1->GetImage().GetVirtualFileSystem()->CanReadFile( path ) ){
+		if( ! pDelayedCombineImage1->GetImage().GetVirtualFileSystem()->CanReadFile(
+		decPath::CreatePathUnix( filename ) ) ){
 			pCanBeCached = false;
 			return;
 		}
 		
 		pCacheIDSource1 = "I";
-		pCacheIDSource1.Append( pDelayedCombineImage1->GetImage().GetFilename() );
+		pCacheIDSource1.Append( filename );
 	}
 	
 	if( pDelayedCombineImage2 ){
+		const decString &filename = pDelayedCombineImage2->GetImage().GetFilename();
+		if( filename.IsEmpty() ){
+			pCanBeCached = false; // this one is problematic. dont do it
+			return;
+		}
+		
 		if( pDelayedCombineImage2->GetImage().GetVirtualFileSystem() !=
 		pRenderThread.GetOgl().GetGameEngine()->GetVirtualFileSystem() ){
 			pCanBeCached = false;
 			return;
 		}
 		
-		decPath path;
-		path.SetFromUnix( pDelayedCombineImage2->GetImage().GetFilename() );
-		if( ! pDelayedCombineImage2->GetImage().GetVirtualFileSystem()->CanReadFile( path ) ){
+		if( ! pDelayedCombineImage2->GetImage().GetVirtualFileSystem()->CanReadFile(
+		decPath::CreatePathUnix( filename ) ) ){
 			pCanBeCached = false;
 			return;
 		}
 		
 		pCacheIDSource2 = "I";
-		pCacheIDSource2.Append( pDelayedCombineImage2->GetImage().GetFilename() );
+		pCacheIDSource2.Append( filename );
 	}
 	
 	// for constructed update the cache id sources if present
@@ -1831,9 +1841,12 @@ void deoglSkinChannel::pBuildCacheVerify(){
 		
 		// source 1 verify
 		if( pDelayedCombineImage1 ){
-			decPath path;
-			path.SetFromUnix( pDelayedCombineImage1->GetImage().GetFilename() );
+			const decString &filename = pDelayedCombineImage1->GetImage().GetFilename();
+			if( filename.IsEmpty() ){
+				DETHROW( deeInvalidAction ); // this one is problematic. dont do it
+			}
 			
+			const decPath path( decPath::CreatePathUnix( filename ) );
 			writer->WriteUInt( ( uint32_t )pDelayedCombineImage1->GetImage().
 				GetVirtualFileSystem()->GetFileModificationTime( path ) );
 			
@@ -1848,9 +1861,12 @@ void deoglSkinChannel::pBuildCacheVerify(){
 		
 		// source 2 verify
 		if( pDelayedCombineImage2 ){
-			decPath path;
-			path.SetFromUnix( pDelayedCombineImage2->GetImage().GetFilename() );
+			const decString &filename = pDelayedCombineImage2->GetImage().GetFilename();
+			if( filename.IsEmpty() ){
+				DETHROW( deeInvalidParam ); // this one is problematic. dont do it
+			}
 			
+			const decPath path( decPath::CreatePathUnix( filename ) );
 			writer->WriteUInt( ( uint32_t )pDelayedCombineImage2->GetImage().
 				GetVirtualFileSystem()->GetFileModificationTime( path ) );
 			

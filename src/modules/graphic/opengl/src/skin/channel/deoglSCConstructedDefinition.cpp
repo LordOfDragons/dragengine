@@ -144,20 +144,25 @@ void deoglSCConstructedDefinition::VisitImage( deSkinPropertyNodeImage &node ){
 	
 	const deImage * const image = node.GetImage();
 	if( image ){
+		const decString &filename = image->GetFilename();
+		if( filename.IsEmpty() ){
+			pCacheValid = false; // this one is problematic. dont do it
+			return;
+		}
+		
 		const deVirtualFileSystem * const vfs = image->GetVirtualFileSystem();
 		if( vfs != pEngine.GetVirtualFileSystem() ){
 			pCacheValid = false;
 			return;
 		}
 		
-		decPath path;
-		path.SetFromUnix( image->GetFilename() );
+		const decPath path( decPath::CreatePathUnix( filename ) );
 		if( ! vfs->CanReadFile( path ) ){
 			pCacheValid = false;
 			return;
 		}
 		
-		pDefinition->WriteString16( image->GetFilename() );
+		pDefinition->WriteString16( filename );
 		
 		pVerify->WriteUInt( ( uint32_t )vfs->GetFileModificationTime( path ) );
 		
@@ -190,20 +195,25 @@ void deoglSCConstructedDefinition::VisitText( deSkinPropertyNodeText &node ){
 	
 	const deFont * const font = node.GetFont();
 	if( font ){
+		const decString &filename = font->GetFilename();
+		if( filename.IsEmpty() ){
+			pCacheValid = false; // this one is problematic. dont do it
+			return;
+		}
+		
 		const deVirtualFileSystem * const vfs = font->GetVirtualFileSystem();
 		if( vfs != pEngine.GetVirtualFileSystem() ){
 			pCacheValid = false;
 			return;
 		}
 		
-		decPath path;
-		path.SetFromUnix( font->GetFilename() );
+		const decPath path( decPath::CreatePathUnix( filename ) );
 		if( ! vfs->CanReadFile( path ) ){
 			pCacheValid = false;
 			return;
 		}
 		
-		pDefinition->WriteString16( font->GetFilename() );
+		pDefinition->WriteString16( filename );
 		
 		pVerify->WriteUInt( ( uint32_t )vfs->GetFileModificationTime( path ) );
 		
