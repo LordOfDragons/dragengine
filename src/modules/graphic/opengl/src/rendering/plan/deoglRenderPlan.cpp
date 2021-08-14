@@ -487,6 +487,7 @@ void deoglRenderPlan::pBarePrepareRenderRightEye(){
 	int i;
 	INIT_SPECIAL_TIMING
 	
+	UpdateRefPosCameraMatrix(); // this is required for rendering but not updating world ref pos
 	pPlanCameraProjectionMatrix();
 	
 	// and masked rendering if required
@@ -565,7 +566,7 @@ void deoglRenderPlan::pPlanCameraProjectionMatrix(){
 	}
 	
 	// VR modifies the matrices
-	if( pCamera && pCamera->GetVR() && pRenderVR != ervrNone ){
+	if( pCamera && pCamera->GetVR() && pRenderVR != ervrNone){
 		const deoglVR &vr = *pCamera->GetVR();
 		const deoglVR::sProjection &projection = pRenderVR == ervrLeftEye
 			? vr.GetProjectionLeftEye() : vr.GetProjectionRightEye();
@@ -1457,7 +1458,7 @@ void deoglRenderPlan::SetCamera( deoglRCamera *camera ){
 
 void deoglRenderPlan::SetCameraMatrix( const decDMatrix &matrix ){
 	pCameraMatrix = matrix;
-	pCameraInverseMatrix = matrix.Invert();
+	pCameraInverseMatrix = matrix.QuickInvert();
 	pCameraMatrixNonMirrored = matrix;
 	
 	// NOTE has to be this way. the camera can be the same but the matrix can be

@@ -96,12 +96,12 @@ decDMatrix deoglVR::CreateProjectionDMatrix( const sProjection &projection, floa
 	
 	m.a11 = 2.0 * idx;
 	m.a12 = 0.0;
-	m.a13 = sx * idx;
+	m.a13 = -sx * idx;
 	m.a14 = 0.0;
 	
 	m.a21 = 0.0;
 	m.a22 = 2.0 * idy;
-	m.a23 = sy * idy;
+	m.a23 = -sy * idy;
 	m.a24 = 0.0;
 	
 	m.a31 = 0.0;
@@ -136,12 +136,12 @@ decDMatrix deoglVR::CreateFrustumDMatrix( const sProjection &projection, float z
 	
 	m.a11 = 2.0 * idx;
 	m.a12 = 0.0;
-	m.a13 = sx * idx;
+	m.a13 = -sx * idx;
 	m.a14 = 0.0;
 	
 	m.a21 = 0.0;
 	m.a22 = 2.0 * idy;
-	m.a23 = sy * idy;
+	m.a23 = -sy * idy;
 	m.a24 = 0.0;
 	
 	m.a31 = 0.0;
@@ -174,7 +174,7 @@ void deoglVR::Render(){
 	plan.SetViewport( 0, 0, size.x, size.y );
 	plan.SetUpscaleSize( pRenderSize.x, pRenderSize.y );
 	plan.SetUseUpscaling( size != pRenderSize );
-	plan.SetUpsideDown( false );
+	plan.SetUpsideDown( true );
 	
 	try{
 		pRenderLeftEye( renderThread, size );
@@ -204,8 +204,8 @@ void deoglVR::Submit(){
 		return;
 	}
 	
-	const decVector2 tcFrom( 0.0f, 1.0f );
-	const decVector2 tcTo( 1.0f, 0.0f );
+	const decVector2 tcFrom( 0.0f, 0.0f );
+	const decVector2 tcTo( 1.0f, 1.0f );
 	
 	module->SubmitOpenGLTexture2D( deBaseVRModule::evreLeft,
 		( void* )( intptr_t )pTargetLeftEye->GetTexture()->GetTexture(), tcFrom, tcTo, false );
@@ -283,25 +283,21 @@ void deoglVR::pGetParameters( deoglRenderThread &renderThread ){
 	renderThread.GetLogger().LogInfoFormat( "VR: size=(%d,%d) fov(%.1f,%.1f)",
 		pRenderSize.x, pRenderSize.y, pFovX * RAD2DEG, pFovY * RAD2DEG );
 	
-	renderThread.GetLogger().LogInfoFormat( "VR: view left\n[%g,%g,%g,%g]\n[%g,%g,%g,%g]\n[%g,%g,%g,%g]",
+	renderThread.GetLogger().LogInfoFormat( "VR: view left eye\n[%g,%g,%g,%g]\n[%g,%g,%g,%g]\n[%g,%g,%g,%g]",
 		pMatrixViewToLeftEye.a11, pMatrixViewToLeftEye.a12, pMatrixViewToLeftEye.a13, pMatrixViewToLeftEye.a14,
 		pMatrixViewToLeftEye.a21, pMatrixViewToLeftEye.a22, pMatrixViewToLeftEye.a23, pMatrixViewToLeftEye.a24,
 		pMatrixViewToLeftEye.a31, pMatrixViewToLeftEye.a32, pMatrixViewToLeftEye.a33, pMatrixViewToLeftEye.a34);
 	
-	renderThread.GetLogger().LogInfoFormat( "VR: view right\n[%g,%g,%g,%g]\n[%g,%g,%g,%g]\n[%g,%g,%g,%g]",
+	renderThread.GetLogger().LogInfoFormat( "VR: view right eye\n[%g,%g,%g,%g]\n[%g,%g,%g,%g]\n[%g,%g,%g,%g]",
 		pMatrixViewToRightEye.a11, pMatrixViewToRightEye.a12, pMatrixViewToRightEye.a13, pMatrixViewToRightEye.a14,
 		pMatrixViewToRightEye.a21, pMatrixViewToRightEye.a22, pMatrixViewToRightEye.a23, pMatrixViewToRightEye.a24,
 		pMatrixViewToRightEye.a31, pMatrixViewToRightEye.a32, pMatrixViewToRightEye.a33, pMatrixViewToRightEye.a34);
 	
-	renderThread.GetLogger().LogInfoFormat( "VR: proj left=(%g,%g,%g,%g)[%g,%g,%g,%g]",
-		pProjectionLeftEye.left, pProjectionLeftEye.right, pProjectionLeftEye.top, pProjectionLeftEye.bottom,
-		atan(pProjectionLeftEye.left)*RAD2DEG, atan(pProjectionLeftEye.right)*RAD2DEG,
-		atan(pProjectionLeftEye.top)*RAD2DEG, atan(pProjectionLeftEye.bottom)*RAD2DEG);
+	renderThread.GetLogger().LogInfoFormat( "VR: projection left=(%g,%g,%g,%g)",
+		pProjectionLeftEye.left, pProjectionLeftEye.right, pProjectionLeftEye.top, pProjectionLeftEye.bottom);
 	
-	renderThread.GetLogger().LogInfoFormat( "VR: proj right=(%g,%g,%g,%g)[%g,%g,%g,%g]",
-		pProjectionRightEye.left, pProjectionRightEye.right, pProjectionRightEye.top, pProjectionRightEye.bottom,
-		atan(pProjectionRightEye.left)*RAD2DEG, atan(pProjectionRightEye.right)*RAD2DEG,
-		atan(pProjectionRightEye.top)*RAD2DEG, atan(pProjectionRightEye.bottom)*RAD2DEG);
+	renderThread.GetLogger().LogInfoFormat( "VR: projection right=(%g,%g,%g,%g)",
+		pProjectionRightEye.left, pProjectionRightEye.right, pProjectionRightEye.top, pProjectionRightEye.bottom);
 }
 
 void deoglVR::pRenderLeftEye( deoglRenderThread &renderThread, const decPoint &size ){

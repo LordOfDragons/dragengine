@@ -779,7 +779,8 @@ const deoglRCanvasRenderWorld &canvas ){
 	if( vr ){
 		const decVector2 &from = vr->GetCanvasTCFromLeftEye();
 		const decVector2 &to = vr->GetCanvasTCToLeftEye();
-		shader.SetParameterTexMatrix3x2( spcTCTransform, decTexMatrix2::CreateST( to - from, from ) );
+		shader.SetParameterTexMatrix3x2( spcTCTransform, decTexMatrix2::CreateST(
+			to.x - from.x, from.y - to.y, from.x, 1.0 - from.y ) );
 		
 	}else{
 		shader.SetParameterTexMatrix3x2( spcTCTransform, decTexMatrix2::CreateST(
