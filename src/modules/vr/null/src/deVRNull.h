@@ -175,9 +175,15 @@ public:
 	/** VR render distortion image or nullptr if not supported. */
 	virtual deImage *GetDistortionMap( eEye eye );
 	
+	/** Begin frame. */
+	virtual void BeginFrame();
+	
 	/** Submit OpenGL rendered image to the HMD. */
 	virtual void SubmitOpenGLTexture2D( eEye eye, void *texture, const decVector2 &tcFrom,
 		const decVector2 &tcTo, bool distortionApplied );
+	
+	/** End frame. */
+	virtual void EndFrame();
 	/*@}*/
 };
 

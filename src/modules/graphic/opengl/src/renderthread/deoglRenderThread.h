@@ -491,8 +491,10 @@ private:
 	void pSwapBuffers();
 	void pBeginFrame();
 	void pRenderWindows();
-	void pVRSubmit();
+	void pVRBeginFrame();
 	void pVRRender();
+	void pVRSubmit();
+	void pVREndFrame();
 	void pCaptureCanvas();
 	void pEndFrame();
 	void pLimitFrameRate( float elapsed );

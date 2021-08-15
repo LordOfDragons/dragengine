@@ -212,6 +212,12 @@ public:
 	virtual deImage *GetDistortionMap( eEye eye ) = 0;
 	
 	/**
+	 * \brief Begin frame.
+	 * \warning For Graphic Module use only.
+	 */
+	virtual void BeginFrame() = 0;
+	
+	/**
 	 * \brief Submit OpenGL rendered image to the HMD.
 	 * \warning For Graphic Module use only.
 	 * \param[in] eye Eye to submit image to.
@@ -222,6 +228,12 @@ public:
 	 */
 	virtual void SubmitOpenGLTexture2D( eEye eye, void *texture, const decVector2 &tcFrom,
 		const decVector2 &tcTo, bool distortionApplied ) = 0;
+	
+	/**
+	 * \brief End frame.
+	 * \warning For Graphic Module use only.
+	 */
+	virtual void EndFrame() = 0;
 	/*@}*/
 };
 

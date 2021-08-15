@@ -143,11 +143,17 @@ public:
 	inline const decVector2 &GetCanvasTCFromRightEye() const{ return pCanvasTCFromRightEye; }
 	inline const decVector2 &GetCanvasTCToRightEye() const{ return pCanvasTCToRightEye; }
 	
+	/** Begin frame. */
+	void BeginFrame();
+	
 	/** Render if required. */
 	void Render();
 	
 	/** Submit if required. */
 	void Submit();
+	
+	/** End frame. */
+	void EndFrame();
 	/*@}*/
 	
 	

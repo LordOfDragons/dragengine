@@ -157,6 +157,13 @@ decDMatrix deoglVR::CreateFrustumDMatrix( const sProjection &projection, float z
 	return m;
 }
 
+void deoglVR::BeginFrame(){
+	deBaseVRModule * const module = pCamera.GetRenderThread().GetOgl().GetGameEngine()->GetVRSystem()->GetActiveModule();
+	if( module ){
+		module->BeginFrame();
+	}
+}
+
 void deoglVR::Render(){
 	if( pState != esRender || ! pCamera.GetPlan().GetWorld() ){
 		return;
@@ -212,6 +219,13 @@ void deoglVR::Submit(){
 	
 	module->SubmitOpenGLTexture2D( deBaseVRModule::evreRight,
 		( void* )( intptr_t )pTargetRightEye->GetTexture()->GetTexture(), tcFrom, tcTo, false );
+}
+
+void deoglVR::EndFrame(){
+	deBaseVRModule * const module = pCamera.GetRenderThread().GetOgl().GetGameEngine()->GetVRSystem()->GetActiveModule();
+	if( module ){
+		module->EndFrame();
+	}
 }
 
 

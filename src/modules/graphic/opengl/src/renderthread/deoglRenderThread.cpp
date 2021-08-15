@@ -1315,7 +1315,6 @@ void deoglRenderThread::pRenderSingleFrame(){
 	//      or using a render thread for each of them which would be a problem. this
 	//      scenario though happens only on applications like the game editor
 	if( pRRenderWindowList.GetCount() > 1 ){
-		pVRSubmit();
 		pBeginFrame();
 		if( showDebugInfoModule ){
 			pDebugTimeThreadRenderSwap = 0.0f;
@@ -1324,6 +1323,7 @@ void deoglRenderThread::pRenderSingleFrame(){
 			pDebugTimerRenderThread3.Reset();
 		}
 		
+		pVRRender();
 		const int count = pRRenderWindowList.GetCount();
 		int i;
 		for( i=0; i<count; i++ ){
@@ -1338,18 +1338,17 @@ void deoglRenderThread::pRenderSingleFrame(){
 				pDebugTimeThreadRenderSwap += pDebugTimerRenderThread2.GetElapsedTime();
 			}
 		}
-		pVRRender();
 		
 		pCaptureCanvas();
 		if( showDebugInfoModule ){
 			pDebugTimeThreadRenderCapture = pDebugTimerRenderThread2.GetElapsedTime();
 		}
 		
+		pVRSubmit();
 		pEndFrame();
 		
 	}else{
 		pSwapBuffers();
-		pVRSubmit();
 		if( showDebugInfoModule ){
 			pDebugTimeThreadRenderSwap = pDebugTimerRenderThread2.GetElapsedTime();
 		}
@@ -1366,8 +1365,8 @@ void deoglRenderThread::pRenderSingleFrame(){
 		if( DoesDebugMemoryUsage() ) pLogger->LogInfo("pRenderSingleFrame BeginFrame");
 		#endif
 		
-		pRenderWindows();
 		pVRRender();
+		pRenderWindows();
 		if( showDebugInfoModule ){
 			pDebugTimeThreadRenderWindows = pDebugTimerRenderThread2.GetElapsedTime();
 		}
@@ -1383,6 +1382,7 @@ void deoglRenderThread::pRenderSingleFrame(){
 		if( DoesDebugMemoryUsage() ) pLogger->LogInfo("pRenderSingleFrame CaptureCanvas");
 		#endif
 		
+		pVRSubmit();
 		pEndFrame();
 	}
 	
@@ -1914,6 +1914,7 @@ void deoglRenderThread::pBeginFrame(){
 	#endif
 	
 	pFrameCounter++; // wraps around when hitting maximum
+	pVRBeginFrame();
 }
 
 void deoglRenderThread::pSyncConfiguration(){
@@ -1958,10 +1959,10 @@ void deoglRenderThread::pRenderWindows(){
 	}
 }
 
-void deoglRenderThread::pVRSubmit(){
+void deoglRenderThread::pVRBeginFrame(){
 	deoglVR * const vr = pVRCamera ? pVRCamera->GetVR() : nullptr;
 	if( vr ){
-		vr->Submit();
+		vr->BeginFrame();
 	}
 }
 
@@ -1969,6 +1970,20 @@ void deoglRenderThread::pVRRender(){
 	deoglVR * const vr = pVRCamera ? pVRCamera->GetVR() : nullptr;
 	if( vr ){
 		vr->Render();
+	}
+}
+
+void deoglRenderThread::pVRSubmit(){
+	deoglVR * const vr = pVRCamera ? pVRCamera->GetVR() : nullptr;
+	if( vr ){
+		vr->Submit();
+	}
+}
+
+void deoglRenderThread::pVREndFrame(){
+	deoglVR * const vr = pVRCamera ? pVRCamera->GetVR() : nullptr;
+	if( vr ){
+		vr->EndFrame();
 	}
 }
 
@@ -1982,6 +1997,7 @@ void deoglRenderThread::pCaptureCanvas(){
 }
 
 void deoglRenderThread::pEndFrame(){
+	pVREndFrame();
 	if( pDebug->GetDeveloperMode().GetEnabled() ){
 		if( pDebug->GetDeveloperMode().GetLogMemoryConsumption() ){
 			pDebug->GetDebugMemoryConsumption().Update();
@@ -1990,6 +2006,11 @@ void deoglRenderThread::pEndFrame(){
 }
 
 void deoglRenderThread::pLimitFrameRate( float elapsed ){
+	// if VR is used no frame limiter. VR does this already
+	if( pVRCamera && pVRCamera->GetVR() ){
+		return;
+	}
+	
 	#ifdef OS_W32
 	decTimer timer;
 	timer.Reset();

@@ -76,9 +76,7 @@ pVRSystem( nullptr ),
 pVRInput( nullptr ),
 pVRRenderModels( nullptr ),
 pVRCompositor( nullptr ),
-pActionSetHandle( vr::k_ulInvalidActionSetHandle ),
-pLeftSubmitted( false ),
-pRightSubmitted( false )
+pActionSetHandle( vr::k_ulInvalidActionSetHandle )
 {
 	int i;
 	for( i=0; i<InputActionCount; i++ ){
@@ -306,9 +304,6 @@ void deVROpenVR::StartRuntime(){
 		// init devies
 		pDevices.InitDevices();
 		pDevices.LogDevices();
-		
-		pLeftSubmitted = false;
-		pRightSubmitted = false;
 		
 		LogInfo( "Runtime Ready" );
 		
@@ -571,6 +566,14 @@ deImage *deVROpenVR::GetDistortionMap( eEye eye ){
 	return nullptr;
 }
 
+void deVROpenVR::BeginFrame(){
+	const vr::EVRCompositorError error = GetVRCompositor().WaitGetPoses( nullptr, 0, nullptr, 0 );
+	if( error != vr::VRCompositorError_None ){
+		LogErrorFormat( "Compositor.WaitGetPoses failed: error=%d", error );
+		// ignore errors
+	}
+}
+
 void deVROpenVR::SubmitOpenGLTexture2D( eEye eye, void *texture, const decVector2 &tcFrom,
 const decVector2 &tcTo, bool distortionApplied ){
 	const vr::Hmd_Eye vreye = ConvertEye( eye );
@@ -592,8 +595,10 @@ const decVector2 &tcTo, bool distortionApplied ){
 		LogErrorFormat( "Compositor.Submit failed: eye=%d error=%d", eye, error );
 		// ignore errors
 	}
-	
-	pCheckFinishSubmit( eye );
+}
+
+void deVROpenVR::EndFrame(){
+	GetVRCompositor().PostPresentHandoff();
 }
 
 vr::Hmd_Eye deVROpenVR::ConvertEye( eEye eye ) const{
@@ -606,28 +611,5 @@ vr::Hmd_Eye deVROpenVR::ConvertEye( eEye eye ) const{
 		
 	default:
 		DETHROW( deeInvalidParam );
-	}
-}
-
-void deVROpenVR::pCheckFinishSubmit( eEye eye ){
-	if( eye == evreLeft ){
-		pLeftSubmitted = true;
-		
-	}else{
-		pRightSubmitted = true;
-	}
-	
-	if( ! pLeftSubmitted || ! pRightSubmitted ){
-		return;
-	}
-	
-	// both eyes submitted. trigger a WaitGetPoses and reset the flags
-	pLeftSubmitted = false;
-	pRightSubmitted = false;
-	
-	const vr::EVRCompositorError error = GetVRCompositor().WaitGetPoses( nullptr, 0, nullptr, 0 );
-	if( error != vr::VRCompositorError_None ){
-		LogErrorFormat( "Compositor.WaitGetPoses failed: error=%d", error );
-		// ignore errors
 	}
 }

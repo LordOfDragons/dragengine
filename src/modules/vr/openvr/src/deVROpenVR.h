@@ -94,9 +94,6 @@ private:
 	vr::VRActionSetHandle_t pActionSetHandle;
 	vr::VRActionHandle_t pActionHandle[ InputActionCount ];
 	
-	bool pLeftSubmitted;
-	bool pRightSubmitted;
-	
 	
 	
 public:
@@ -282,16 +279,21 @@ public:
 	/** VR render distortion image or nullptr if not supported. */
 	virtual deImage *GetDistortionMap( eEye eye );
 	
+	/** Begin frame. */
+	virtual void BeginFrame();
+	
 	/** Submit OpenGL rendered image to the HMD. */
 	virtual void SubmitOpenGLTexture2D( eEye eye, void *texture, const decVector2 &tcFrom,
 		const decVector2 &tcTo, bool distortionApplied );
+	
+	/** End frame. */
+	virtual void EndFrame();
 	/*@}*/
 	
 	
 	
 private:
 	vr::Hmd_Eye ConvertEye( eEye eye ) const;
-	void pCheckFinishSubmit( eEye eye );
 };
 
 #endif
