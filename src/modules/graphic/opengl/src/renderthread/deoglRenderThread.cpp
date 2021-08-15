@@ -734,7 +734,9 @@ bool deoglRenderThread::MainThreadWaitFinishRendering(){
 				remainingTime * 1e3f, remainingTime / estimatedGameTime, ratioTimes );
 			*/
 			
-			if( remainingTime / estimatedGameTime >= ratioTimes ){
+			const bool hasVR = pVRCamera && pVRCamera->GetVR();
+			
+			if( remainingTime / estimatedGameTime >= ratioTimes && ! hasVR ){
 				return false; // enough time to do another game frame update
 			}
 		}
