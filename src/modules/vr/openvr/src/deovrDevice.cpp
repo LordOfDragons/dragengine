@@ -50,6 +50,7 @@ deovrDevice::deovrDevice( deVROpenVR &ovr, vr::TrackedDeviceIndex_t deviceIndex 
 pOvr( ovr ),
 pIndex( -1 ),
 pDeviceIndex( deviceIndex ),
+pDeviceClass( vr::TrackedDeviceClass_Invalid ),
 pInputValueHandle( vr::k_ulInvalidInputValueHandle ),
 pActionPose( vr::k_ulInvalidActionHandle ),
 pActionHandPose( vr::k_ulInvalidActionHandle ),
