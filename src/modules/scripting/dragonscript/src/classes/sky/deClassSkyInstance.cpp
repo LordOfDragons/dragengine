@@ -140,7 +140,7 @@ void deClassSkyInstance::nfSetOrder::RunFunction( dsRunTime *rt, dsValue *myself
 
 // public func LayerMask getLayerMask()
 deClassSkyInstance::nfGetLayerMask::nfGetLayerMask( const sInitData &init ) :
-dsFunction( init.clsLayerMask, "getLayerMask", DSFT_FUNCTION,
+dsFunction( init.clsSkyInst, "getLayerMask", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsLayerMask ){
 }
 void deClassSkyInstance::nfGetLayerMask::RunFunction( dsRunTime *rt, dsValue *myself ){
@@ -152,7 +152,7 @@ void deClassSkyInstance::nfGetLayerMask::RunFunction( dsRunTime *rt, dsValue *my
 
 // public func void setLayerMask( LayerMask layerMask )
 deClassSkyInstance::nfSetLayerMask::nfSetLayerMask( const sInitData &init ) :
-dsFunction( init.clsLayerMask, "setLayerMask", DSFT_FUNCTION,
+dsFunction( init.clsSkyInst, "setLayerMask", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
 	p_AddParameter( init.clsLayerMask ); // layerMask
 }
