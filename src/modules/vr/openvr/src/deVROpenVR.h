@@ -31,6 +31,8 @@
 #include <dragengine/common/string/decString.h>
 #include <dragengine/resources/camera/deCamera.h>
 #include <dragengine/systems/modules/vr/deBaseVRModule.h>
+#include <dragengine/threading/deMutex.h>
+#include <dragengine/threading/deSemaphore.h>
 
 
 /** input module device identifier prefix. */
@@ -94,6 +96,11 @@ private:
 	vr::VRActionSetHandle_t pActionSetHandle;
 	vr::VRActionHandle_t pActionHandle[ InputActionCount ];
 	
+	vr::TrackedDevicePose_t pDevicePoses[ vr::k_unMaxTrackedDeviceCount ];
+	deMutex pMutexDevicePoses;
+	deSemaphore pSemaphoreDevicePoses;
+	bool pWaitCopyDevicePoses;
+	
 	
 	
 public:
@@ -143,6 +150,9 @@ public:
 	
 	/** Convert matrix. */
 	decMatrix ConvertMatrix( const vr::HmdMatrix34_t &matrix ) const;
+	
+	/** Copy device poses. */
+	void CopyDevicesPoses( vr::TrackedDevicePose_t *poses );
 	/*@}*/
 	
 	

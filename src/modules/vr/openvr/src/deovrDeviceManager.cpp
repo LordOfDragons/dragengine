@@ -46,17 +46,12 @@
 ////////////////////////////
 
 deovrDeviceManager::deovrDeviceManager( deVROpenVR &ovr ) :
-pOvr( ovr ),
-pDevicePoses( nullptr )
+pOvr( ovr )
 {
-	pDevicePoses = new vr::TrackedDevicePose_t[ vr::k_unMaxTrackedDeviceCount ];
-	memset( pDevicePoses, 0, sizeof( vr::TrackedDevicePose_t ) * vr::k_unMaxTrackedDeviceCount );
+	memset( pDevicePoses, 0, sizeof( pDevicePoses ) );
 }
 
 deovrDeviceManager::~deovrDeviceManager(){
-	if( pDevicePoses ){
-		delete [] pDevicePoses;
-	}
 }
 
 
@@ -286,9 +281,11 @@ int deovrDeviceManager::NextNameNumber( vr::TrackedDeviceClass deviceClass ) con
 }
 
 void deovrDeviceManager::TrackDeviceStates(){
-	float photonsFromNow = 0.0f;
-	pOvr.GetVRSystem().GetDeviceToAbsoluteTrackingPose( vr::TrackingUniverseStanding,
-		photonsFromNow, pDevicePoses, vr::k_unMaxTrackedDeviceCount );
+// 	float photonsFromNow = 0.0f;
+// 	pOvr.GetVRSystem().GetDeviceToAbsoluteTrackingPose( vr::TrackingUniverseStanding,
+// 		photonsFromNow, pDevicePoses, vr::k_unMaxTrackedDeviceCount );
+	
+	pOvr.CopyDevicesPoses( pDevicePoses );
 	
 	const int count = pDevices.GetCount();
 	int i;

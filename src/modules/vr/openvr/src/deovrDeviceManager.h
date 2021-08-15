@@ -43,7 +43,7 @@ private:
 	
 	decObjectOrderedSet pDevices;
 	
-	vr::TrackedDevicePose_t *pDevicePoses;
+	vr::TrackedDevicePose_t pDevicePoses[ vr::k_unMaxTrackedDeviceCount ];
 	
 	
 	

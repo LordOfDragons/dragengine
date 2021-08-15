@@ -37,6 +37,7 @@
 #include <dragengine/input/deInputEvent.h>
 #include <dragengine/systems/deVRSystem.h>
 #include <dragengine/systems/modules/graphic/deBaseGraphicCamera.h>
+#include <dragengine/threading/deMutexGuard.h>
 
 
 #ifdef __cplusplus
@@ -76,7 +77,8 @@ pVRSystem( nullptr ),
 pVRInput( nullptr ),
 pVRRenderModels( nullptr ),
 pVRCompositor( nullptr ),
-pActionSetHandle( vr::k_ulInvalidActionSetHandle )
+pActionSetHandle( vr::k_ulInvalidActionSetHandle ),
+pWaitCopyDevicePoses( false )
 {
 	int i;
 	for( i=0; i<InputActionCount; i++ ){
@@ -163,6 +165,21 @@ decMatrix deVROpenVR::ConvertMatrix( const vr::HmdMatrix34_t &matrix ) const{
 	return m;
 }
 
+void deVROpenVR::CopyDevicesPoses( vr::TrackedDevicePose_t *poses ){
+	if( ! poses ){
+		DETHROW( deeNullPointer );
+	}
+	
+	if( ! pWaitCopyDevicePoses ){
+		return;
+	}
+	
+	pSemaphoreDevicePoses.Wait();
+	
+	const deMutexGuard lock( pMutexDevicePoses );
+	memcpy( poses, pDevicePoses, sizeof( pDevicePoses ) );
+}
+
 
 
 // Module Management
@@ -214,6 +231,8 @@ void deVROpenVR::StartRuntime(){
 	LogInfo( "Start Runtime" );
 	
 	try{
+		memset( pDevicePoses, 0, sizeof( pDevicePoses ) );
+		
 		// init runtime
 		vr::HmdError error = vr::VRInitError_None;
 		pVRSystem = vr::VR_Init( &error, vr::VRApplication_Scene );
@@ -230,6 +249,10 @@ void deVROpenVR::StartRuntime(){
 		
 		// compositor
 		pVRCompositor = vr::VRCompositor();
+		
+		// hitting 90 fps is tricky and has problems. hitting 45 is easier but still tricky
+		// depending on the scene. for the time being force reprojection to be happy with 45
+// 		pVRCompositor->ForceInterleavedReprojectionOn( true );
 		
 		// load input action manifest
 		pVRInput = vr::VRInput();
@@ -340,7 +363,15 @@ void deVROpenVR::StopRuntime(){
 	pActionSetHandle = vr::k_ulInvalidActionSetHandle;
 	
 	vr::VR_Shutdown();
+	
 	pVRSystem = nullptr;
+	pVRCompositor = nullptr;
+	pVRRenderModels = nullptr;
+	pVRInput = nullptr;
+	
+	const deMutexGuard lock( pMutexDevicePoses );
+	pWaitCopyDevicePoses = false;
+	pSemaphoreDevicePoses.TryWait(); // ensure cleared
 }
 
 void deVROpenVR::SetCamera( deCamera *camera ){
@@ -357,6 +388,10 @@ void deVROpenVR::SetCamera( deCamera *camera ){
 	if( pVRSystem && camera && camera->GetPeerGraphic() ){
 		camera->GetPeerGraphic()->VRAssignedToHMD();
 	}
+	
+	const deMutexGuard lock( pMutexDevicePoses );
+	pWaitCopyDevicePoses = false;
+	pSemaphoreDevicePoses.TryWait(); // ensure cleared
 }
 
 
@@ -567,11 +602,15 @@ deImage *deVROpenVR::GetDistortionMap( eEye eye ){
 }
 
 void deVROpenVR::BeginFrame(){
-	const vr::EVRCompositorError error = GetVRCompositor().WaitGetPoses( nullptr, 0, nullptr, 0 );
+	const deMutexGuard lock( pMutexDevicePoses );
+	const vr::EVRCompositorError error = GetVRCompositor().WaitGetPoses(
+		pDevicePoses, vr::k_unMaxTrackedDeviceCount, nullptr, 0 );
 	if( error != vr::VRCompositorError_None ){
 		LogErrorFormat( "Compositor.WaitGetPoses failed: error=%d", error );
 		// ignore errors
 	}
+	pWaitCopyDevicePoses = true;
+	pSemaphoreDevicePoses.Signal();
 }
 
 void deVROpenVR::SubmitOpenGLTexture2D( eEye eye, void *texture, const decVector2 &tcFrom,
