@@ -330,6 +330,18 @@ void deoglShaderCompiled::SetParameterColor4( int index, const decColor &color, 
 
 
 
+void deoglShaderCompiled::SetParameterVector2( int index, const decVector2 &vector ) const{
+	if( index < 0 || index >= pParameterCount ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	if( pParameters[ index ] != -1 ){
+		OGL_CHECK( pRenderThread, pglUniform2f( pParameters[ index ], vector.x, vector.y ) );
+	}
+}
+
+
+
 void deoglShaderCompiled::SetParameterVector3( int index, const decVector &vector ) const{
 	if( index < 0 || index >= pParameterCount ){
 		DETHROW( deeInvalidParam );

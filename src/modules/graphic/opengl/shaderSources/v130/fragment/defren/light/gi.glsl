@@ -108,7 +108,7 @@ void main( void ){
 		#endif
 		vec3 position = vec3( depth );
 		position.z = pPosTransform.x / ( pPosTransform.y - position.z );
-		position.xy = vScreenCoord * pPosTransform.zw * position.zz;
+		position.xy = ( vScreenCoord + pPosTransform2 ) * pPosTransform.zw * position.zz;
 	#endif
 	
 	// fetch normal

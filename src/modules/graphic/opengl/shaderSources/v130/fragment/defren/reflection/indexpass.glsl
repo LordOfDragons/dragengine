@@ -4,6 +4,7 @@ precision highp int;
 
 
 uniform vec4 pPosTransform;
+uniform vec2 pPosTransform2;
 uniform float pScaleDistance;
 
 uniform vec3 pEnvMapPosition;
@@ -44,7 +45,7 @@ void main( void ){
 	if( position.z == 1.0 ) discard; // temporary hack for not lit sky light
 	position.z = pPosTransform.x / ( pPosTransform.y - position.z );
 	#ifdef FULLSCREENQUAD
-		position.xy = vScreenCoord.zw * pPosTransform.zw * position.zz;
+		position.xy = ( vScreenCoord.zw + pPosTransform2 ) * pPosTransform.zw * position.zz;
 	#else
 		position.xy = vVolumePos.xy * position.zz / vVolumePos.zz;
 	#endif

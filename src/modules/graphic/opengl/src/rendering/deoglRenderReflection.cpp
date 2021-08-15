@@ -117,6 +117,7 @@ enum eSPMinMapMipMap{
 enum pSPScreenSpace{
 	spssQuadTCTransform,
 	spssPosTransform,
+	spssPosTransform2,
 	spssMatrixP,
 	spssMatrixBackProjection,
 	spssClipReflDirNearDist,
@@ -134,6 +135,7 @@ enum pSPScreenSpace{
 enum pSPApplyReflections{
 	sparQuadTCTransform,
 	sparPosTransform,
+	sparPosTransform2,
 	sparMatrixEnvMap,
 	sparEnvMapLodLevel,
 	sparMipMapLevelParams,
@@ -159,6 +161,7 @@ enum pSPBReflection{
 	spbr2MatrixEnvMap,
 	spbr2QuadTCTransform,
 	spbr2PosTransform,
+	spbr2PosTransform2,
 	spbr2BlendFactors,
 	spbr2EnvMapLodLevel,
 	spbr2LayerCount,
@@ -209,6 +212,7 @@ enum eSPEnvMapMask{
 
 enum eSPCopyMaterial{
 	spcmPosTransform,
+	spcmPosTransform2,
 	spcmSCTransform,
 	spcmTCTransform,
 	spcmMatrixPosition,
@@ -507,14 +511,15 @@ deoglRenderBase( renderThread )
 		
 		pRenderParamBlock = new deoglSPBlockUBO( renderThread );
 		pRenderParamBlock->SetRowMajor( ! indirectMatrixAccessBug );
-		pRenderParamBlock->SetParameterCount( 7 );
+		pRenderParamBlock->SetParameterCount( 8 );
 		pRenderParamBlock->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtFloat, 3, 3, 1 ); // mat3 pMatrixEnvMap
 		pRenderParamBlock->GetParameterAt( 1 ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4 pQuadTCTransform
 		pRenderParamBlock->GetParameterAt( 2 ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4 pPosTransform
-		pRenderParamBlock->GetParameterAt( 3 ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2 pBlendFactors
-		pRenderParamBlock->GetParameterAt( 4 ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 1 ); // float pEnvMapLodLevel
-		pRenderParamBlock->GetParameterAt( 5 ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // int pLayerCount
-		pRenderParamBlock->GetParameterAt( 6 ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 100 ); // vec3 pEnvMapPosLayer[ 100 ]
+		pRenderParamBlock->GetParameterAt( 3 ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2 pPosTransform2
+		pRenderParamBlock->GetParameterAt( 4 ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2 pBlendFactors
+		pRenderParamBlock->GetParameterAt( 5 ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 1 ); // float pEnvMapLodLevel
+		pRenderParamBlock->GetParameterAt( 6 ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // int pLayerCount
+		pRenderParamBlock->GetParameterAt( 7 ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 100 ); // vec3 pEnvMapPosLayer[ 100 ]
 		pRenderParamBlock->MapToStd140();
 		pRenderParamBlock->SetBindingPoint( 0 );
 		
@@ -1554,6 +1559,7 @@ void deoglRenderReflection::UpdateRenderParameterBlock( deoglRenderPlan &plan ){
 			plan.GetRefPosCameraMatrix().GetRotationMatrix().Invert() );
 		defren.SetShaderParamFSQuad( *pRenderParamBlock, spbr2QuadTCTransform );
 		pRenderParamBlock->SetParameterDataVec4( spbr2PosTransform, plan.GetDepthToPosition() );
+		pRenderParamBlock->SetParameterDataVec2( spbr2PosTransform2, plan.GetDepthToPosition2() );
 		
 		// we use a blend zone of width 1m
 		pRenderParamBlock->SetParameterDataVec2( spbr2BlendFactors,
@@ -2094,6 +2100,7 @@ void deoglRenderReflection::CopyMaterial( deoglRenderPlan &plan, bool solid ){
 	
 	deoglShaderCompiled &shader = *pShaderCopyMaterial->GetCompiled();
 	shader.SetParameterVector4( spcmPosTransform, plan.GetDepthToPosition() );
+	shader.SetParameterVector2( spcmPosTransform2, plan.GetDepthToPosition2() );
 	shader.SetParameterMatrix4x3( spcmMatrixPosition, plan.GetFBOMaterialMatrix() );
 	shader.SetParameterMatrix3x3( spcmMatrixNormal,
 		plan.GetInverseCameraMatrix().GetRotationMatrix().QuickInvert() );
@@ -2335,6 +2342,7 @@ void deoglRenderReflection::RenderScreenSpace( deoglRenderPlan &plan ){
 	
 	defren.SetShaderParamFSQuad( *shader, spssQuadTCTransform );
 	shader->SetParameterVector4( spssPosTransform, plan.GetDepthToPosition() );
+	shader->SetParameterVector2( spssPosTransform2, plan.GetDepthToPosition2() );
 	
 	// NOTE back projection matrix is not used right now. what has it been added for in the first place?
 	shader->SetParameterDMatrix4x4( spssMatrixP, plan.GetProjectionMatrix() );
@@ -2494,6 +2502,7 @@ void deoglRenderReflection::RenderScreenSpace( deoglRenderPlan &plan ){
 	
 	defren.SetShaderParamFSQuad( *shader, sparQuadTCTransform );
 	shader->SetParameterVector4( sparPosTransform, plan.GetDepthToPosition() );
+	shader->SetParameterVector2( sparPosTransform2, plan.GetDepthToPosition2() );
 	
 	float envMapLodLevel = 1.0f;
 	deoglEnvironmentMap * const envmapSky = plan.GetWorld()->GetSkyEnvironmentMap();

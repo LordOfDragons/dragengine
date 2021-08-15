@@ -72,6 +72,7 @@ public:
 	/** Render parameter uniform targets. */
 	enum eRenderUniformTargets{
 		erutPosTransform,
+		erutPosTransform2,
 		erutDepthSampleOffset,
 		erutAOSelfShadow,
 		erutLumFragCoordScale,

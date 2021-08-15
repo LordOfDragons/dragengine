@@ -548,8 +548,9 @@ void deoglRenderPlan::pPlanCameraProjectionMatrix(){
 			pDepthToPosition.y = 1.0f;
 		}
 		
-		pDepthToPosition.z = tanf( pCameraFov * 0.5f );
-		pDepthToPosition.w = tanf( pCameraFov * pCameraFovRatio * 0.5f ) / pAspectRatio;
+		pDepthToPosition.z = 1.0f / pProjectionMatrix.a11;
+		pDepthToPosition.w = 1.0f / pProjectionMatrix.a22;
+		pDepthToPosition2.Set( 0.0f, 0.0f );
 		
 		// depth sample offset is required to reconstruct depth from nearby depth samples.
 		// offset is relative to 1 fragment texel step
@@ -574,11 +575,12 @@ void deoglRenderPlan::pPlanCameraProjectionMatrix(){
 		pCameraFov = vr.GetCameraFov();
 		pCameraFovRatio = vr.GetCameraFovRatio();
 		
-		pDepthToPosition.z = tanf( pCameraFov * 0.5f );
-		pDepthToPosition.w = tanf( pCameraFov * pCameraFovRatio * 0.5f ) / pAspectRatio;
-		
 		pProjectionMatrix = vr.CreateProjectionDMatrix( projection, pCameraImageDistance, pCameraViewDistance );
 		pFrustumMatrix = vr.CreateFrustumDMatrix( projection, pCameraImageDistance, pCameraViewDistance );
+		
+		pDepthToPosition.z = 1.0f / pProjectionMatrix.a11;
+		pDepthToPosition.w = 1.0f / pProjectionMatrix.a22;
+		pDepthToPosition2.Set( -pProjectionMatrix.a13, -pProjectionMatrix.a23 );
 	}
 	
 	// determine frustum to use
@@ -1472,10 +1474,16 @@ void deoglRenderPlan::SetCameraMatrix( const decDMatrix &matrix ){
 //	}else{
 		pCameraPosition = pCameraInverseMatrix.GetPosition();
 //	}
+	
+	pCameraCorrectionMatrix.SetIdentity();
 }
 
 void deoglRenderPlan::SetCameraMatrixNonMirrored( const decDMatrix &matrix ){
 	pCameraMatrixNonMirrored = matrix;
+}
+
+void deoglRenderPlan::SetCameraCorrectionMatrix( const decDMatrix &matrix ){
+	pCameraCorrectionMatrix = matrix;
 }
 
 void deoglRenderPlan::SetCameraParameters( float fov, float fovRatio, float imageDistance, float viewDistance ){
@@ -1521,6 +1529,7 @@ void deoglRenderPlan::CopyCameraParametersFrom( const deoglRenderPlan &plan ){
 	pProjectionMatrix = plan.pProjectionMatrix;
 	pFrustumMatrix = plan.pFrustumMatrix;
 	pDepthToPosition = plan.pDepthToPosition;
+	pDepthToPosition2 = plan.pDepthToPosition2;
 	pDepthSampleOffset = plan.pDepthSampleOffset;
 	
 	pDirtyProjMat = false;

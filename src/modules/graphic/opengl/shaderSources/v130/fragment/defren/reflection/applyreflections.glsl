@@ -15,6 +15,7 @@ UBOLAYOUT uniform EnvironmentMaps{
 };
 
 uniform vec4 pPosTransform;
+uniform vec2 pPosTransform2;
 uniform mat3 pMatrixEnvMap;
 uniform float pEnvMapLodLevel;
 uniform vec3 pMipMapLevelParams; // matProj.a11*0.5*pixelCountX, matProj.a11*0.5*pixelCountY, 2^maxLevel
@@ -536,7 +537,7 @@ void main( void ){
 		vec3 position = vec3( texelFetch( texDepth, tc, 0 ).r );
 	#endif
 	position.z = pPosTransform.x / ( pPosTransform.y - position.z );
-	position.xy = vScreenCoord.zw * pPosTransform.zw * position.zz;
+	position.xy = ( vScreenCoord.zw + pPosTransform2 ) * pPosTransform.zw * position.zz;
 	
 	// calculate the reflection for the given point using the results found in the screen space reflection pass
 	vec3 reflection = texelFetch( texReflection, tc, 0 ).rgb;
@@ -578,7 +579,7 @@ void main( void ){
 		vec3 hitPosition = vec3( textureLod( texDepth, reflection.xy, 0.0 ).r );
 	#endif
 	hitPosition.z = pPosTransform.x / ( pPosTransform.y - hitPosition.z );
-	hitPosition.xy = vScreenCoord.zw * pPosTransform.zw * hitPosition.zz;
+	hitPosition.xy = ( vScreenCoord.zw + pPosTransform2 ) * pPosTransform.zw * hitPosition.zz;
 	
 	vec2 mipMapLevel = vec2( distance( position, hitPosition )
 		* tan( min( roughness, 0.5 ) * roughnessToAngle ) / position.z );
@@ -639,8 +640,8 @@ void main( void ){
 				vec3 hitPosition = vec3( textureLod( texDepth, reflection.xy, 0.0 ).r );
 			#endif
 			hitPosition.z = pPosTransform.x / ( pPosTransform.y - hitPosition.z );
-			hitPosition.xy = ( reflection.xy / pMipMapTCClamp.xy * vec2( 2.0 ) - vec2( 1.0 ) )
-				* pPosTransform.zw * vec2( hitPosition.z );
+			hitPosition.xy = ( reflection.xy / pMipMapTCClamp.xy * vec2( 2.0 ) - vec2( 1.0 )
+				+ pPosTransform2 ) * pPosTransform.zw * vec2( hitPosition.z );
 			
 			colorEnvMapReflection( hitPosition, bouncedReflectDir, bouncedRoughness, bouncedReflectionColor );
 			

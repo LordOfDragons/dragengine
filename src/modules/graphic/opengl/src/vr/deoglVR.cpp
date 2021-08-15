@@ -282,6 +282,8 @@ void deoglVR::pGetParameters( deoglRenderThread &renderThread ){
 	pMatrixViewToLeftEye = module.GetMatrixViewEye( deBaseVRModule::evreLeft );
 	pMatrixViewToRightEye = module.GetMatrixViewEye( deBaseVRModule::evreRight );
 	
+	pMatrixRightToLeftEye = pMatrixViewToRightEye.QuickInvert().QuickMultiply( pMatrixViewToLeftEye );
+	
 	pCanvasTCFromLeftEye.Set( 0.0f, 0.0f );
 	pCanvasTCToLeftEye.Set( 1.0f, 1.0f );
 	pCanvasTCFromRightEye.Set( 0.0f, 0.0f );
@@ -348,6 +350,7 @@ void deoglVR::pRenderRightEye( deoglRenderThread &renderThread, const decPoint &
 	
 	plan.SetRenderVR( deoglRenderPlan::ervrRightEye );
 	plan.SetCameraMatrix( pCamera.GetCameraMatrix().QuickMultiply( pMatrixViewToRightEye ) );
+	plan.SetCameraCorrectionMatrix( pMatrixRightToLeftEye );
 	plan.SetFBOTarget( pTargetRightEye->GetFBO() );
 	
 	const deoglDeveloperMode &devmode = renderThread.GetDebug().GetDeveloperMode();

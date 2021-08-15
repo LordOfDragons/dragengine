@@ -4,6 +4,7 @@ precision highp int;
 
 
 uniform vec4 pPosTransform;
+uniform vec2 pPosTransform2;
 uniform vec4 pTCTransform;
 uniform vec4 pTCClamp;
 uniform float pRadiusFactor;
@@ -61,7 +62,7 @@ float occlusion( in vec2 tc, in float level, in vec3 position, in vec3 normal ){
 	#endif
 	spos.z = pPosTransform.x / ( pPosTransform.y - spos.z );
 	spos.xy = tc * pTCTransform.xy + pTCTransform.zw;
-	spos.xy *= pPosTransform.zw * spos.zz;
+	spos.xy = ( spos.xy + pPosTransform2 ) * pPosTransform.zw * spos.zz;
 	
 	spos -= position;
 	
@@ -121,7 +122,7 @@ void main( void ){
 	#endif
 	position.z = pPosTransform.x / ( pPosTransform.y - position.z );
 	position.xy = vTexCoord * pTCTransform.xy + pTCTransform.zw;
-	position.xy *= pPosTransform.zw * position.zz;
+	position.xy = ( position.xy + pPosTransform2 ) * pPosTransform.zw * position.zz;
 	
 	// calculate the parameters
 #if 1

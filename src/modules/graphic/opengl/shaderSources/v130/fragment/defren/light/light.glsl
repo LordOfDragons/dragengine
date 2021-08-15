@@ -692,7 +692,7 @@ void main( void ){
 		vec3 position = vec3( depth );
 		position.z = pPosTransform.x / ( pPosTransform.y - position.z );
 		#ifdef FULLSCREENQUAD
-			position.xy = vScreenCoord * pPosTransform.zw * position.zz;
+			position.xy = ( vScreenCoord + pPosTransform2 ) * pPosTransform.zw * position.zz;
 		#else
 			position.xy = vLightVolumePos.xy * position.zz / vLightVolumePos.zz;
 		#endif

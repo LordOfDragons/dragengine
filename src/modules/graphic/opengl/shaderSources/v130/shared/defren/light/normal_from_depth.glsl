@@ -68,8 +68,8 @@ vec3 normalFromDepth( in ivec2 texcoord, in float centerDepth, in vec3 centerPos
 	
 	positionX.z = pPosTransform.x / ( pPosTransform.y - positionX.z );
 	positionY.z = pPosTransform.x / ( pPosTransform.y - positionY.z );
-	positionX.xy = ( vScreenCoord + offsetX ) * pPosTransform.zw * positionX.zz;
-	positionY.xy = ( vScreenCoord + offsetY ) * pPosTransform.zw * positionY.zz;
+	positionX.xy = ( vScreenCoord + offsetX + pPosTransform2 ) * pPosTransform.zw * positionX.zz;
+	positionY.xy = ( vScreenCoord + offsetY + pPosTransform2 ) * pPosTransform.zw * positionY.zz;
 	
 	vec3 normal = normalize( cross( positionY - centerPosition, positionX - centerPosition ) );
 	

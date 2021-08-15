@@ -98,12 +98,14 @@ private:
 	decDMatrix pFrustumMatrix;
 	decDMatrix pRefPosCameraMatrix;
 	decDMatrix pRefPosCameraMatrixNonMirrored;
+	decDMatrix pCameraCorrectionMatrix;
 	float pCameraFov;
 	float pCameraFovRatio;
 	float pCameraImageDistance;
 	float pCameraViewDistance;
 	float pCameraAdaptedIntensity;
 	decVector4 pDepthToPosition;
+	decVector2 pDepthToPosition2;
 	decVector2 pDepthSampleOffset;
 	int pViewportX;
 	int pViewportY;
@@ -314,6 +316,12 @@ public:
 	/** Reference position camera matrix mirror free. */
 	inline const decDMatrix &GetRefPosCameraMatrixNonMirrored() const{ return pRefPosCameraMatrixNonMirrored; }
 	
+	/** Camera correction matrix. */
+	inline const decDMatrix &GetCameraCorrectionMatrix() const{ return pCameraCorrectionMatrix; }
+	
+	/** Set camera correction matrix. */
+	void SetCameraCorrectionMatrix( const decDMatrix &matrix );
+	
 	/** Camera position in world space. */
 	inline const decDVector &GetCameraPosition() const{ return pCameraPosition; }
 	
@@ -348,6 +356,7 @@ public:
 	
 	/** Depth to position transformation factors. */
 	inline const decVector4 &GetDepthToPosition() const{ return pDepthToPosition; }
+	inline const decVector2 &GetDepthToPosition2() const{ return pDepthToPosition2; }
 	
 	/** Depth sample offset. */
 	inline const decVector2 &GetDepthSampleOffset() const{ return pDepthSampleOffset; }

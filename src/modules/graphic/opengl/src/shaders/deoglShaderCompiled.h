@@ -133,6 +133,9 @@ public:
 	/** Sets a 4-color parameter with explicit alpha. */
 	void SetParameterColor4( int index, const decColor &color, float alpha ) const;
 	
+	/** Sets a 2-component vector parameter. */
+	void SetParameterVector2( int index, const decVector2 &vector ) const;
+	
 	/** Sets a 3-component vector parameter. */
 	void SetParameterVector3( int index, const decVector &vector ) const;
 	/** Sets a 3-component double vector parameter. */

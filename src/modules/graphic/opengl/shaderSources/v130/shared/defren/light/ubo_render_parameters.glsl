@@ -1,5 +1,6 @@
 UBOLAYOUT uniform RenderParameters{
 	vec4 pPosTransform;
+	vec2 pPosTransform2;
 	vec2 pDepthSampleOffset;
 	vec2 pAOSelfShadow; // minShadowIntensity, smoothAngle
 	vec2 pLumFragCoordScale;

@@ -22,5 +22,5 @@ void main( void ){
 		float depth = texelFetch( texDepth, ivec2( gl_FragCoord.xy ), 0 ).r;
 	#endif
 	
-	outPosition = vScreenCoord * vec3( pPosTransform.x / ( pPosTransform.y - depth ) );
+	outPosition = ( vScreenCoord + vec3( pPosTransform2, 0 ) ) * vec3( pPosTransform.x / ( pPosTransform.y - depth ) );
 }

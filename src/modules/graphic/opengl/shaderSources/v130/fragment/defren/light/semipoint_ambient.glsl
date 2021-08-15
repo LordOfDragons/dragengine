@@ -2,6 +2,7 @@ precision highp float;
 precision highp int;
 
 uniform vec4 pPosTransform; // position transform
+uniform vec2 pPosTransform2; // position transform 2
 uniform mat4 pShadowMatrix; // shadow matrix
 uniform vec3 pShaOpts1; // scale, offset, cut-off
 
@@ -32,7 +33,7 @@ void main( void ){
 	vec3 position = vec3( texture( texDepth, vScreenCoord ).r );
 #endif
 	position.z = pPosTransform.x / ( pPosTransform.y - position.z );
-	position.xy = vScreenCoord * pPosTransform.zw * position.zz;
+	position.xy = ( vScreenCoord + pPosTransform2 ) * pPosTransform.zw * position.zz;
 	
 	vec3 shapos = ( pShadowMatrix * vec4( position, 1.0 ) ).xyz;
 	

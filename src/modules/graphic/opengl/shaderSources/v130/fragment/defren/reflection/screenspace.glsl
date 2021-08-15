@@ -5,6 +5,7 @@ precision highp int;
 
 uniform vec4 pQuadTCTransform;
 uniform vec4 pPosTransform;
+uniform vec2 pPosTransform2;
 uniform mat4 pMatrixP;
 uniform mat4 pMatrixBackProjection;
 uniform float pClipReflDirNearDist;
@@ -743,7 +744,7 @@ void main( void ){
 		vec3 position = vec3( texelFetch( texDepth, tc, 0 ).r );
 	#endif
 	position.z = pPosTransform.x / ( pPosTransform.y - position.z );
-	position.xy = vScreenCoord.zw * pPosTransform.zw * position.zz;
+	position.xy = ( vScreenCoord.zw + pPosTransform2 ) * pPosTransform.zw * position.zz;
 	
 	// calculate the reflection parameters
 	vec3 normal = normalize( normalLoadMaterial( texNormal, tc ) );

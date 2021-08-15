@@ -4,6 +4,7 @@ precision highp int;
 
 
 uniform vec4 pPosTransform;
+uniform vec2 pPosTransform2;
 uniform float pScaleDistance;
 uniform vec2 pBlendFactors; // multiply, add
 uniform mat3 pMatrixEnvMap;
@@ -62,7 +63,7 @@ void main( void ){
 	#endif
 	position.z = pPosTransform.x / ( pPosTransform.y - position.z );
 	#ifdef FULLSCREENQUAD
-		position.xy = vScreenCoord.zw * pPosTransform.zw * position.zz;
+		position.xy = ( vScreenCoord.zw + pPosTransform2 ) * pPosTransform.zw * position.zz;
 	#else
 		position.xy = vVolumePos.xy * position.zz / vVolumePos.zz;
 	#endif

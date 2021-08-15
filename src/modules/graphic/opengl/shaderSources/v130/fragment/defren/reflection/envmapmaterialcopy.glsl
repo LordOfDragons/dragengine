@@ -4,6 +4,7 @@ precision highp int;
 #endif
 
 uniform vec4 pPosTransform;
+uniform vec2 pPosTransform2;
 uniform mat4x3 pMatrixPosition;
 uniform mat3 pMatrixNormal;
 
@@ -24,7 +25,7 @@ void main( void ){
 	// position is in camera space. transform to target space
 	vec3 position = vec3( textureLod( texDepth, vTexCoord, 0 ).r );
 	position.z = pPosTransform.x / ( pPosTransform.y - position.z );
-	position.xy = vScreenCoord * pPosTransform.zw * position.zz;
+	position.xy = ( vScreenCoord + pPosTransform2 ) * pPosTransform.zw * position.zz;
 	
 	outPosition = vec3( pMatrixPosition * vec4( position, 1 ) );
 	

@@ -7,11 +7,12 @@
 	<texture name='texDiffuse' target='0'/>
 	<texture name='texNormal' target='1'/>
 	
-	<parameter name='pPosTransform'/> <!-- 0 -->
-	<parameter name='pSCTransform'/> <!-- 1 -->
-	<parameter name='pTCTransform'/> <!-- 2 -->
-	<parameter name='pMatrixPosition'/> <!-- 3 -->
-	<parameter name='pMatrixNormal'/> <!-- 4 -->
+	<parameter name='pPosTransform'/>
+	<parameter name='pPosTransform2'/>
+	<parameter name='pSCTransform'/>
+	<parameter name='pTCTransform'/>
+	<parameter name='pMatrixPosition'/>
+	<parameter name='pMatrixNormal'/>
 	
 	<attribute name='inPosition' target='0'/>
 	

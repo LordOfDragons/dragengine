@@ -643,6 +643,7 @@ deoglShadowMapper &shadowMapper ){
 	decMatrix matrixCamera;
 	
 	const decDMatrix &matCamInv = plan.GetPlan().GetInverseCameraMatrix();
+	
 	const decDVector &camPos = plan.GetPlan().GetCameraPosition();
 	const bool clearBackFaceFragments = false; // problems. see GIShadow for the reason why
 // 	int c, componentCount;
@@ -1463,7 +1464,8 @@ deoglSPBlockUBO &paramBlock, deoglRenderPlanSkyLight &plan, int shadowMapSize, i
 		if( target != -1 ){
 			const decMatrix matrixL =
 				decMatrix::CreateFromQuaternion( skyLayer.GetLightOrientation() )
-				* skyLayer.GetMatrix() * plan.GetPlan().GetRefPosCameraMatrix();
+				* skyLayer.GetMatrix() * plan.GetPlan().GetRefPosCameraMatrix()
+				* plan.GetPlan().GetCameraCorrectionMatrix();
 			
 			paramBlock.SetParameterDataVec3( target, matrixL.TransformView().Normalized() );
 		}

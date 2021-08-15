@@ -8,10 +8,11 @@
 	<texture name='texDepth' target='0'/>
 	<texture name='texShadowMap' target='1'/>
 	
-	<parameter name='pQuadParams'/> <!-- 0 -->
-	<parameter name='pPosTransform'/> <!-- 1 -->
-	<parameter name='pShadowMatrix'/> <!-- 2 -->
-	<parameter name='pShaOpts1'/> <!-- 3 -->
+	<parameter name='pQuadParams'/>
+	<parameter name='pPosTransform'/>
+	<parameter name='pPosTransform2'/>
+	<parameter name='pShadowMatrix'/>
+	<parameter name='pShaOpts1'/>
 	
 	<attribute name='inPosition' target='0'/>
 	

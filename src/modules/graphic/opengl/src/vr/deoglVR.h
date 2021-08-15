@@ -56,6 +56,7 @@ private:
 	sProjection pProjectionRightEye;
 	decDMatrix pMatrixViewToLeftEye;
 	decDMatrix pMatrixViewToRightEye;
+	decDMatrix pMatrixRightToLeftEye;
 	float pFovX;
 	float pFovY;
 	float pCameraFov;
@@ -102,6 +103,9 @@ public:
 	
 	/** Matrix transforming from view space to right eye space. */
 	inline const decDMatrix &GetMatrixViewToRightEye() const{ return pMatrixViewToRightEye; }
+	
+	/** Matrix transforming from right eye space to left eye space. */
+	inline const decDMatrix &GetMatrixRightToLeftEye() const{ return pMatrixRightToLeftEye; }
 	
 	/** Horizontal field of view. */
 	inline float GetFovX() const{ return pFovX; }

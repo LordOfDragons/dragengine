@@ -12,6 +12,7 @@ UBOLAYOUT uniform RenderParameters{
 	mat3 pMatrixEnvMap;
 	vec4 pQuadTCTransform;
 	vec4 pPosTransform;
+	vec2 pPosTransform2;
 	vec2 pBlendFactors; // x=multiply, y=add
 	float pEnvMapLodLevel;
 	int pLayerCount;
@@ -249,7 +250,7 @@ void main( void ){
 		vec3 position = vec3( texelFetch( texDepth, tc, 0 ).r );
 	#endif
 	position.z = pPosTransform.x / ( pPosTransform.y - position.z );
-	position.xy = vScreenCoord.zw * pPosTransform.zw * position.zz;
+	position.xy = ( vScreenCoord.zw + pPosTransform2 ) * pPosTransform.zw * position.zz;
 	
 	// calculate the reflection parameters. these are the same no matter which solution is used later on
 	// to obtain the reflected color from
@@ -333,7 +334,7 @@ void main( void ){
 	#endif
 	position.z = pPosTransform.x / ( pPosTransform.y - position.z );
 	#ifdef FULLSCREENQUAD
-		position.xy = vScreenCoord.zw * pPosTransform.zw * position.zz;
+		position.xy = ( vScreenCoord.zw + pPosTransform2 ) * pPosTransform.zw * position.zz;
 	#else
 		position.xy = vVolumePos.xy * position.zz / vVolumePos.zz;
 	#endif

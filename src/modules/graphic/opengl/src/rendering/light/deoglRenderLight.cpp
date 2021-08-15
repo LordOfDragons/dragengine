@@ -72,6 +72,7 @@
 enum pSPAOLocal{
 	spaolQuadParams,
 	spaolPosTransform,
+	spaolPosTransform2,
 	spaolTCTransform,
 	spaolTCClamp,
 	spaolRadiusFactor,
@@ -107,6 +108,7 @@ enum pSPDebugAO{
 enum pSPSSSSS{
 	spsssssQuadParams,
 	spsssssPosTransform,
+	spsssssPosTransform2,
 	spsssssTCTransform,
 	spsssssTCClamp,
 	spsssssDropSubSurfaceThreshold,
@@ -433,6 +435,7 @@ void deoglRenderLight::RenderAO( deoglRenderPlan &plan, bool solid ){
 	
 	defren.SetShaderParamFSQuad( *shader, spaolQuadParams );
 	shader->SetParameterVector4( spaolPosTransform, plan.GetDepthToPosition() );
+	shader->SetParameterVector2( spaolPosTransform2, plan.GetDepthToPosition2() );
 	shader->SetParameterFloat( spaolTCTransform,
 		2.0f / defren.GetScalingU(), 2.0f / defren.GetScalingV(), -1.0f, -1.0f );
 	defren.SetShaderViewport( *shader, spaolTCClamp, true );
@@ -625,6 +628,7 @@ void deoglRenderLight::RenderSSSSS( deoglRenderPlan &plan, bool solid ){
 	
 	defren.SetShaderParamFSQuad( *shader, spsssssQuadParams );
 	shader->SetParameterVector4( spsssssPosTransform, plan.GetDepthToPosition() );
+	shader->SetParameterVector2( spsssssPosTransform2, plan.GetDepthToPosition2() );
 	shader->SetParameterFloat( spsssssTCTransform, 2.0f / defren.GetScalingU(),
 		2.0f / defren.GetScalingV(), -1.0f, -1.0f );
 	defren.SetShaderViewport( *shader, spsssssTCClamp, true );
@@ -674,6 +678,7 @@ void deoglRenderLight::PrepareRenderParamBlockLight( deoglRenderPlan &plan ){
 	pLightPB->MapBuffer();
 	try{
 		pLightPB->SetParameterDataVec4( deoglLightShader::erutPosTransform, plan.GetDepthToPosition() );
+		pLightPB->SetParameterDataVec2( deoglLightShader::erutPosTransform2, plan.GetDepthToPosition2() );
 		pLightPB->SetParameterDataVec2( deoglLightShader::erutDepthSampleOffset, plan.GetDepthSampleOffset() );
 		
 		pLightPB->SetParameterDataVec2( deoglLightShader::erutAOSelfShadow,

@@ -2,6 +2,7 @@ precision highp float;
 precision highp int;
 
 uniform vec4 pPosTransform;
+uniform vec2 pPosTransform2;
 uniform vec4 pTCTransform;
 uniform vec4 pTCClamp;
 
@@ -47,7 +48,7 @@ void scatter( in vec2 tc, in vec3 position, in vec3 scatterScale, inout vec3 sum
 	#endif
 	spos.z = pPosTransform.x / ( pPosTransform.y - spos.z );
 	spos.xy = tc * pTCTransform.xy + pTCTransform.zw; // convert to -1..1 range
-	spos.xy *= pPosTransform.zw * spos.zz;
+	spos.xy = ( spos.xy + pPosTransform2 ) * pPosTransform.zw * spos.zz;
 	
 	spos -= position;
 	
@@ -115,7 +116,7 @@ void main( void ){
 		#endif
 		position.z = pPosTransform.x / ( pPosTransform.y - position.z );
 		position.xy = vTexCoord * pTCTransform.xy + pTCTransform.zw; // convert to -1..1 range
-		position.xy *= pPosTransform.zw * position.zz;
+		position.xy *= ( pPosTransform.zw + pPosTransform2 ) * position.zz;
 		
 		// calculate tap radius
 		float pTapRadiusLimit = 0.5; // 50% screen size

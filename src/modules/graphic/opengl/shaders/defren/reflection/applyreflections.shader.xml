@@ -7,12 +7,13 @@
 	
 	<uniformBlock name='EnvironmentMaps' target='0'/>
 	
-	<parameter name='pQuadTCTransform'/> <!-- 0 -->
-	<parameter name='pPosTransform'/> <!-- 1 -->
-	<parameter name='pMatrixEnvMap'/> <!-- 2 -->
-	<parameter name='pEnvMapLodLevel'/> <!-- 3 -->
-	<parameter name='pMipMapLevelParams'/> <!-- 4 -->
-	<parameter name='pMipMapTCClamp'/> <!-- 5 -->
+	<parameter name='pQuadTCTransform'/>
+	<parameter name='pPosTransform'/>
+	<parameter name='pPosTransform2'/>
+	<parameter name='pMatrixEnvMap'/>
+	<parameter name='pEnvMapLodLevel'/>
+	<parameter name='pMipMapLevelParams'/>
+	<parameter name='pMipMapTCClamp'/>
 	
 	<texture name='texDiffuse' target='0'/>
 	<texture name='texDepth' target='1'/>
