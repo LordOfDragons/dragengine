@@ -40,6 +40,12 @@ class deModel;
  */
 class deoglRModel : public deObject{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoglRModel> Ref;
+	
+	
+	
+public:
 	struct sExtends{
 		decVector minimum;
 		decVector maximum;

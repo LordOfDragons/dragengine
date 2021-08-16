@@ -38,6 +38,7 @@
 #include "../rendering/deoglRenderToneMap.h"
 #include "../rendering/deoglRenderTranspCounting.h"
 #include "../rendering/deoglRenderTransparentPasses.h"
+#include "../rendering/deoglRenderVR.h"
 #include "../rendering/deoglRenderWorld.h"
 #include "../rendering/light/deoglRenderLight.h"
 
@@ -66,6 +67,7 @@ pReflection( NULL ),
 pSky( NULL ),
 pToneMap( NULL ),
 pTransparencyCounter( NULL ),
+pVR( nullptr ),
 pWorld( NULL )
 {
 	try{
@@ -79,6 +81,7 @@ pWorld( NULL )
 		pTransparentPasses = new deoglRenderTransparentPasses( renderThread );
 		pParticles = new deoglRenderParticles( renderThread );
 		pOcclusion = new deoglRenderOcclusion( renderThread );
+		pVR = new deoglRenderVR( renderThread );
 		
 		pLight = new deoglRenderLight( renderThread, *this );
 			// depends on pOcclusion to be initialized
@@ -124,6 +127,7 @@ void deoglRTRenderers::DevModeDebugInfoChanged(){
 	pToneMap->DevModeDebugInfoChanged();
 	pTransparentPasses->DevModeDebugInfoChanged();
 	pTransparencyCounter->DevModeDebugInfoChanged();
+	pVR->DevModeDebugInfoChanged();
 	pWorld->DevModeDebugInfoChanged();
 }
 
@@ -135,6 +139,9 @@ void deoglRTRenderers::DevModeDebugInfoChanged(){
 void deoglRTRenderers::pCleanUp(){
 	if( pWorld ){
 		delete pWorld;
+	}
+	if( pVR ){
+		delete pVR;
 	}
 	if( pTransparencyCounter ){
 		delete pTransparencyCounter;

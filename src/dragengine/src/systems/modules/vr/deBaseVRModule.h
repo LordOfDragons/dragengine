@@ -198,6 +198,11 @@ public:
 	
 	/**
 	 * \brief VR render hidden area model or nullptr if not supported.
+	 * 
+	 * If model is returned it contains a flat mesh (z=0) with one single lod containing
+	 * one single double sided texture. Texture coordinates (x,y) are in the range from
+	 * (0,0) to (1,1). Dummy texture coordinates are present since models require them.
+	 * 
 	 * \warning For Graphic Module use only.
 	 */
 	virtual deModel *GetHiddenArea( eEye eye ) = 0;

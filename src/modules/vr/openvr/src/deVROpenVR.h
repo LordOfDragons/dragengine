@@ -23,6 +23,7 @@
 #define _DEVROPENVR_H_
 
 #include "deovrDeviceManager.h"
+#include "deovrHiddenMesh.h"
 
 #include <openvr/openvr.h>
 
@@ -100,6 +101,9 @@ private:
 	deMutex pMutexDevicePoses;
 	deSemaphore pSemaphoreDevicePoses;
 	bool pWaitCopyDevicePoses;
+	
+	deovrHiddenMesh::Ref pHiddenMeshLeftEye;
+	deovrHiddenMesh::Ref pHiddenMeshRightEye;
 	
 	
 	

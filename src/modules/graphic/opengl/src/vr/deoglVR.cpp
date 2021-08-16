@@ -28,6 +28,8 @@
 #include "../delayedoperation/deoglDelayedDeletion.h"
 #include "../devmode/deoglDeveloperMode.h"
 #include "../framebuffer/deoglFramebuffer.h"
+#include "../model/deoglModel.h"
+#include "../model/deoglRModel.h"
 #include "../rendering/deoglRenderWorld.h"
 #include "../rendering/plan/deoglRenderPlan.h"
 #include "../rendering/defren/deoglDeferredRendering.h"
@@ -79,6 +81,14 @@ deoglVR::~deoglVR(){
 
 // Management
 ///////////////
+
+deoglRModel *deoglVR::GetHiddenMeshLeft() const{
+	return pHiddenMeshLeft ? ( ( deoglModel* )pHiddenMeshLeft->GetPeerGraphic() )->GetRModel() : nullptr;
+}
+
+deoglRModel *deoglVR::GetHiddenMeshRight() const{
+	return pHiddenMeshRight ? ( ( deoglModel* )pHiddenMeshRight->GetPeerGraphic() )->GetRModel() : nullptr;
+}
 
 decDMatrix deoglVR::CreateProjectionDMatrix( const sProjection &projection, float znear, float zfar ) const{
 	if( znear <= 0.0f || znear >= zfar ){
@@ -296,7 +306,11 @@ void deoglVR::pGetParameters( deoglRenderThread &renderThread ){
 	pCameraFov = pFovY;
 	pCameraFovRatio = pFovX / pFovY;
 	
-	renderThread.GetLogger().LogInfoFormat( "VR: size=(%d,%d) fov(%.1f,%.1f)",
+	
+	pHiddenMeshLeft = module.GetHiddenArea( deBaseVRModule::evreLeft );
+	pHiddenMeshRight = module.GetHiddenArea( deBaseVRModule::evreRight );
+	
+	renderThread.GetLogger().LogInfoFormat( "VR: size=(%d,%d) fov=(%.1f,%.1f)",
 		pRenderSize.x, pRenderSize.y, pFovX * RAD2DEG, pFovY * RAD2DEG );
 	
 	renderThread.GetLogger().LogInfoFormat( "VR: view left eye\n[%g,%g,%g,%g]\n[%g,%g,%g,%g]\n[%g,%g,%g,%g]",

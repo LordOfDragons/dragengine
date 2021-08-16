@@ -25,8 +25,10 @@
 #include "../target/deoglRenderTarget.h"
 
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/resources/model/deModel.h>
 
 class deoglRCamera;
+class deoglRModel;
 
 
 /**
@@ -61,6 +63,8 @@ private:
 	float pFovY;
 	float pCameraFov;
 	float pCameraFovRatio;
+	deModel::Ref pHiddenMeshLeft;
+	deModel::Ref pHiddenMeshRight;
 	
 	deoglRenderTarget::Ref pTargetLeftEye;
 	deoglRenderTarget::Ref pTargetRightEye;
@@ -118,6 +122,12 @@ public:
 	
 	/** Camera field of view ratio. */
 	inline float GetCameraFovRatio() const{ return pCameraFovRatio; }
+	
+	/** Hidden area mesh for the left eye or nullptr. */
+	deoglRModel *GetHiddenMeshLeft() const;
+	
+	/** Hidden area mesh for the right eye or nullptr. */
+	deoglRModel *GetHiddenMeshRight() const;
 	
 	/**
 	 * Create projection matrix matching depth usage mode. Depending on the inverse depth

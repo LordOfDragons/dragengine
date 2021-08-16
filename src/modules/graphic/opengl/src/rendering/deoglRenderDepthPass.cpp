@@ -26,6 +26,7 @@
 #include "deoglRenderDepthPass.h"
 #include "deoglRenderGeometry.h"
 #include "deoglRenderOcclusion.h"
+#include "deoglRenderVR.h"
 #include "deoglRenderWorld.h"
 #include "defren/deoglDeferredRendering.h"
 #include "plan/deoglRenderPlanDebug.h"
@@ -385,6 +386,10 @@ DBG_ENTER_PARAM3("RenderDepthPass", "%p", mask, "%d", solid, "%d", maskedOnly)
 		
 	}else{
 		OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
+	}
+	
+	if( solid && ! mask ){
+		renderThread.GetRenderers().GetVR().RenderHiddenArea( plan );
 	}
 	
 	OGL_CHECK( renderThread, glEnable( GL_CULL_FACE ) );

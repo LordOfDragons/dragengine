@@ -19,8 +19,8 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef _DEOVRRENDERMODEL_H_
-#define _DEOVRRENDERMODEL_H_
+#ifndef _DEOVRHIDDENMESH_H_
+#define _DEOVRHIDDENMESH_H_
 
 #include <openvr/openvr.h>
 
@@ -31,33 +31,32 @@ class deVROpenVR;
 
 
 /**
- * VR render model.
+ * VR hidden mesh.
  */
-class deovrRenderModel : public deObject{
+class deovrHiddenMesh : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deovrRenderModel> Ref;
+	typedef deTObjectReference<deovrHiddenMesh> Ref;
 	
 	
 	
 private:
 	deVROpenVR &pOvr;
 	
-	decString pName;
+	const vr::Hmd_Eye pEye;
 	deModel::Ref pModel;
-	vr::TextureID_t pTextureID;
 	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Load render model. */
-	deovrRenderModel( deVROpenVR &ovr, const char *name );
+	/** Load hidden mesh. */
+	deovrHiddenMesh( deVROpenVR &ovr, vr::Hmd_Eye eye );
 	
 protected:
-	/** Clean up render model. */
-	virtual ~deovrRenderModel();
+	/** Clean up hidden mesh. */
+	virtual ~deovrHiddenMesh();
 	/*@}*/
 	
 	
@@ -68,20 +67,17 @@ public:
 	/** OpenVR ovr. */
 	inline deVROpenVR &GetOvr() const{ return pOvr; }
 	
-	/** Name. */
-	inline const decString &GetName() const{ return pName; }
+	/** Eye. */
+	inline vr::Hmd_Eye GetEye() const{ return pEye; }
 	
 	/** Model. */
 	inline deModel *GetModel() const{ return pModel; }
-	
-	/** Texture ID. */
-	inline vr::TextureID_t GetTextureID() const{ return pTextureID; }
 	/*@}*/
 	
 	
 	
 private:
-	void pLoadModel();
+	void pLoadHiddenMesh();
 };
 
 #endif

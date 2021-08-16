@@ -364,6 +364,9 @@ void deVROpenVR::StopRuntime(){
 	
 	vr::VR_Shutdown();
 	
+	pHiddenMeshLeftEye = nullptr;
+	pHiddenMeshRightEye = nullptr;
+	
 	pVRSystem = nullptr;
 	pVRCompositor = nullptr;
 	pVRRenderModels = nullptr;
@@ -591,9 +594,22 @@ decMatrix deVROpenVR::GetMatrixViewEye( eEye eye ){
 }
 
 deModel *deVROpenVR::GetHiddenArea( eEye eye ){
-	// const HiddenAreaMesh_t mesh = GetVRSystem().GetHiddenAreaMesh( ConvertEye( eye ) );
-	// ...
-	return nullptr;
+	switch( eye ){
+	case deBaseVRModule::evreLeft:
+		if( ! pHiddenMeshLeftEye ){
+			pHiddenMeshLeftEye.TakeOver( new deovrHiddenMesh( *this, vr::Eye_Left ) );
+		}
+		return pHiddenMeshLeftEye->GetModel();
+		
+	case deBaseVRModule::evreRight:
+		if( ! pHiddenMeshRightEye ){
+			pHiddenMeshRightEye.TakeOver( new deovrHiddenMesh( *this, vr::Eye_Right ) );
+		}
+		return pHiddenMeshRightEye->GetModel();
+		
+	default:
+		return nullptr;
+	}
 }
 
 deImage *deVROpenVR::GetDistortionMap( eEye eye ){
