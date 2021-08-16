@@ -78,7 +78,8 @@ igdeEditPath::cActionButton::~cActionButton(){
 
 void igdeEditPath::cActionButton::OnAction(){
 	if( pEditPath.GetSelectPathActionCount() == 1 ){
-		pEditPath.GetSelectPathActionAt( 0 )->OnAction();
+		// guard reference to avoid action getting deleted while in use
+		igdeActionReference( pEditPath.GetSelectPathActionAt( 0 ) )->OnAction();
 		
 	}else{
 		igdeActionContextMenu::OnAction();

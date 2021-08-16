@@ -166,7 +166,8 @@ void igdeButton::Focus(){
 
 void igdeButton::OnAction(){
 	if( pAction ){
-		pAction->OnAction();
+		// guard against action being deleted while in use
+		igdeActionReference( pAction )->OnAction();
 	}
 }
 
