@@ -49,7 +49,7 @@ pBonePoses( nullptr ),
 pBonePoseCount( 0 )
 {
 	if( pDevice->GetBoneConfiguration() == deInputDevice::ebcHand ){
-		pBonePoses = new deInputDevicePose[ deInputDevice::HandBoneCount ];
+		pBonePoses = new deInputDevicePose[ deInputDevice::HandBoneCount * 2 ];
 		pBonePoseCount = deInputDevice::HandBoneCount;
 	}
 }
@@ -63,7 +63,7 @@ pBonePoses( nullptr ),
 pBonePoseCount( 0 )
 {
 	if( pDevice->GetBoneConfiguration() == deInputDevice::ebcHand ){
-		pBonePoses = new deInputDevicePose[ deInputDevice::HandBoneCount ];
+		pBonePoses = new deInputDevicePose[ deInputDevice::HandBoneCount * 2 ];
 		pBonePoseCount = deInputDevice::HandBoneCount;
 	}
 }
