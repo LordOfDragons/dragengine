@@ -101,16 +101,34 @@ public:
 		edtVRHMD,
 		
 		/**
-		 * \brief VR Controller.
+		 * \brief VR Right Hand Controller.
 		 * \version 1.6
 		 */
-		edtVRController,
+		edtVRRightHand,
+		
+		/**
+		 * \brief VR Left Hand Controller.
+		 * \version 1.6
+		 */
+		edtVRLeftHand,
 		
 		/**
 		 * \brief VR Treadmill.
 		 * \version 1.6
 		 */
 		edtVRTreadmill,
+		
+		/**
+		 * \brief VR Stylue.
+		 * \version 1.6
+		 */
+		edtVRStylus,
+		
+		/**
+		 * \brief VR Generic Controller.
+		 * \version 1.6
+		 */
+		edtVRController,
 		
 		/**
 		 * \brief VR Tracker.

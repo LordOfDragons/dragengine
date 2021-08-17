@@ -530,7 +530,6 @@ void deovrDevice::pUpdateParametersHMD(){
 }
 
 void deovrDevice::pUpdateParametersController(){
-	pType = deInputDevice::edtVRController;
 	//pControllerRole = pOvr.GetSystem().GetControllerRoleForTrackedDeviceIndex( pDeviceIndex );
 	// ^= old input system. unreliable using new system. resorting to device property
 	
@@ -545,7 +544,8 @@ void deovrDevice::pUpdateParametersController(){
 	
 	switch( pControllerRole ){
 	case vr::TrackedControllerRole_LeftHand:
-		pName = "Controller Left";
+		pType = deInputDevice::edtVRLeftHand;
+		pName = "Left Hand";
 		pNameNumber = -1;
 		pID.Format( "%scl", OVR_DEVID_PREFIX );
 		pInputValuePath = "/user/hand/left";
@@ -554,7 +554,8 @@ void deovrDevice::pUpdateParametersController(){
 		break;
 		
 	case vr::TrackedControllerRole_RightHand:
-		pName = "Controller Right";
+		pType = deInputDevice::edtVRRightHand;
+		pName = "Right Hand";
 		pNameNumber = -1;
 		pID.Format( "%scr", OVR_DEVID_PREFIX );
 		pInputValuePath = "/user/hand/right";
@@ -563,17 +564,20 @@ void deovrDevice::pUpdateParametersController(){
 		break;
 		
 	case vr::TrackedControllerRole_Treadmill:
+		pType = deInputDevice::edtVRTreadmill;
 		pName.Format( "Treadmill %d", pNameNumber );
 		pID.Format( "%sct", OVR_DEVID_PREFIX );
 		break;
 		
 	case vr::TrackedControllerRole_Stylus:
+		pType = deInputDevice::edtVRStylus;
 		pName.Format( "Stylus %d", pNameNumber );
 		pID.Format( "%scs", OVR_DEVID_PREFIX );
 		pActionPose = pOvr.GetActionHandle( deVROpenVR::eiaPose );
 		break;
 		
 	default:
+		pType = deInputDevice::edtVRController;
 		pName.Format( "Controller %d", pNameNumber );
 		pActionPose = pOvr.GetActionHandle( deVROpenVR::eiaPose );
 		pID.Format( "%scg", OVR_DEVID_PREFIX );

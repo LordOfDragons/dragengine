@@ -58,16 +58,34 @@ enum InputDeviceType
 	vrHMD
 	
 	/**
-	 * \brief VR Controller.
+	 * \brief VR Right Hand Controller.
 	 * \version 1.6
 	 */
-	vrController
+	vrRightHand
+	
+	/**
+	 * \brief VR Left Hand Controller.
+	 * \version 1.6
+	 */
+	vrLeftHand
 	
 	/**
 	 * \brief VR Treadmill.
 	 * \version 1.6
 	 */
 	vrTreadmill
+	
+	/**
+	 * \brief VR Stylus.
+	 * \version 1.6
+	 */
+	vrStylus
+	
+	/**
+	 * \brief VR Generic Controller.
+	 * \version 1.6
+	 */
+	vrController
 	
 	/**
 	 * \brief VR Tracker.
