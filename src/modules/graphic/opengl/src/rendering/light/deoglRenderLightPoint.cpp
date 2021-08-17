@@ -649,15 +649,6 @@ const deoglRenderPlanMasked *mask ){
 	const bool useAmbient = planLight.GetUseAmbient();
 	const bool useShadow = planLight.GetUseShadow();
 	
-	// for environment maps we use only static shadows
-	/*
-	if( useShadow && plan.GetFBOTarget() ){
-		if( shadowType == deoglShadowCaster::estStaticAndDynamic ){
-			shadowType = deoglShadowCaster::estStaticOnly;
-		}
-	}
-	*/
-	
 	if( useShadow && useTemporary ){
 		shadowType = deoglShadowCaster::estDynamicOnly;
 	}

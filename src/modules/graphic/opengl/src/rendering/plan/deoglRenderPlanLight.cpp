@@ -327,13 +327,6 @@ void deoglRenderPlanLight::pDetermineUseShadow(){
 	if( shadowType == deoglShadowCaster::estNoShadows ){
 		pUseShadow = false;
 	}
-	
-	// for environment maps we use only static shadows
-	/*
-	if( pUseShadow && pPlan.GetFBOTarget() && shadowType == deoglShadowCaster::estDynamicOnly ){
-		pUseShadow = false;
-	}
-	*/
 }
 
 void deoglRenderPlanLight::pDetermineUseAmbient(){

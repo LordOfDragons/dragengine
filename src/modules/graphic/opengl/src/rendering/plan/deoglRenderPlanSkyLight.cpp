@@ -382,13 +382,6 @@ void deoglRenderPlanSkyLight::pDetermineShadowParameters(){
 		pUseShadow = false;
 	}
 	
-	// determine if shadow casting has to be used
-	/*
-	if( plan.GetFBOTarget() ){
-		pUseShadow = false;
-	}
-	*/
-	
 	// if the total light contribution is a lot smaller than the total ambient only light
 	// contribution of the entire sky this layer can be skipped to improve performance.
 	// for example in a sky with a sun and moon light the sun typically has 16 intensity

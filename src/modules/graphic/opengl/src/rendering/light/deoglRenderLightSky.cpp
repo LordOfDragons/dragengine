@@ -394,27 +394,7 @@ const deoglRenderPlanMasked *mask ){
 	int shadowMapSize = plan.GetPlan().GetShadowSkySize();
 	int passCount = 1;
 	
-	// for transparent shadows we cut down shadow map size a lot
-	if( ! solid ){
-		//shadowMapSize >>= 2;
-		//if( shadowMapSize < 16 ) shadowMapSize = 16;
-		// we are reusing the solid shadow map so no cutting down or the result is wrong
-	}
-	
 	// render shadow map
-#if 0
-			if(plan.GetFBOTarget()){
-				static int c = 0;
-				const decDVector &p = plan.GetCameraPosition();
-				decString s;
-				s.Format("envmap_%g-%g-%g/c%d/skylight-enter/", p.x, p.y, p.z, c++);
-				deoglDebugSnapshot snapshot( renderThread );
-				//snapshot.SetEnableColor( true );
-				snapshot.SetEnableStates( true );
-				snapshot.SetName( s );
-				snapshot.TakeSnapshot();
-			}
-#endif
 	if( useShadow && solid ){
 		passCount = plan.GetShadowLayerCount();
 		RenderShadows( plan, solid, mask );
@@ -569,24 +549,6 @@ const deoglRenderPlanMasked *mask ){
 			}
 		}
 	}
-	
-	// debug
-	//ogl.GetRenderDebug().DisplayArrayTextureLayer( plan, shadowMapper.GetSolidDepthArrayTexture(), 0 );
-	//ogl.GetRenderDebug().DisplayArrayTextureLayer( plan, shadowMapper.GetSolidDepthArrayTexture(), 1 );
-#if 0
-			if(plan.GetFBOTarget()){
-				static int c = 0;
-				const decDVector &p = plan.GetCameraPosition();
-				decString s;
-				s.Format("envmap_%g-%g-%g/c%d/skylight/", p.x, p.y, p.z, c++);
-				deoglDebugSnapshot snapshot( renderThread );
-				//snapshot.SetEnableColor( true );
-				snapshot.SetEnableTemporary2( true );
-				snapshot.SetEnableStates( true );
-				snapshot.SetName( s );
-				snapshot.TakeSnapshot();
-			}
-#endif
 }
 
 
@@ -1064,16 +1026,6 @@ deoglShadowMapper &shadowMapper ){
 			*( pSolidShadowMap->GetArrayTexture() ), "sky_shadow", true );
 		renderThread.GetConfiguration().SetDebugSnapshot( 0 );
 	}
-	
-#if 0
-	if(plan.GetFBOTarget()){
-		static int c = 0;
-		const decDVector &p = plan.GetCameraPosition();
-		decString s;
-		s.Format("envmap_%g-%g-%g_skyshadow-%d", p.x, p.y, p.z, c++);
-		renderThread.GetDebug().GetDebugSaveTexture().SaveDepthArrayTexture(*pSolidShadowMap->GetTexture(), s, true);
-	}
-#endif
 }
 
 void deoglRenderLightSky::RenderGIShadows( deoglRenderPlanSkyLight &plan,

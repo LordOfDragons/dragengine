@@ -587,16 +587,6 @@ const deoglRenderPlanMasked *mask ){
 	
 	bool copyShadowMaps = false;
 	
-	// for environment maps we use only static shadows
-	/*
-	if( useShadow && plan.GetFBOTarget() ){
-		if( shadowType == deoglShadowCaster::estStaticAndDynamic ){
-			shadowType = deoglShadowCaster::estStaticOnly;
-		}
-	}
-	*/
-	
-	
 	if( useShadow && useTemporary ){
 		shadowType = deoglShadowCaster::estDynamicOnly;
 	}
