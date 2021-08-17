@@ -526,5 +526,13 @@ class CommandsBAAMovement
 		else
 			throw EInvalidParam.new()
 		end
+		
+		if helper.hasVRHand( true )
+			helper.vrHandBindStick( true, InputDeviceAxisType.stick, 0, "analogLookLR", "analogLookUD" )
+		end
+		
+		if helper.hasVRHand( false )
+			helper.vrHandBindStick( false, InputDeviceAxisType.stick, 0, "analogMoveLR", "analogMoveFB" )
+		end
 	end
 end

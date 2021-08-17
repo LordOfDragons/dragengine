@@ -31,6 +31,12 @@ interface BindingManagerListener
 	/** \brief Device list reloaded. */
 	func void devicesReloaded( BindingManager manager )
 	
+	/** \brief Device has been attached. */
+	func void deviceAttached( BindingManager manager, InputDevice device )
+	
+	/** \brief Device has been detached. */
+	func void deviceDetached( BindingManager manager, InputDevice device )
+	
 	/** \brief Axis binding added. */
 	func void axisBindingAdded( BindingManager manager, Binding binding )
 	

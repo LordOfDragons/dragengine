@@ -67,6 +67,12 @@ class DefaultBindingHelper
 	/** \brief First found gamepad input device or \em null. */
 	private var InputDevice pGamepad
 	
+	/** \brief VR left hand controller or \em null. */
+	private var InputDevice pVRLeftHand
+	
+	/** \brief VR right hand controller or \em null. */
+	private var InputDevice pVRRightHand
+	
 	
 	
 	/** \name Constructors */
@@ -93,8 +99,11 @@ class DefaultBindingHelper
 	 * \param commandManager Command manager to use for bindings.
 	 */
 	public func new( BindingManager bindingManager, CommandManager commandManager )
-		if bindingManager == null or commandManager == null
-			this.pBindingManager = bindingManager
+		if bindingManager == null
+			throw ENullPointer.new( "bindingManager" )
+		end
+		if commandManager == null
+			throw ENullPointer.new( "commandManager" )
 		end
 		
 		this.pBindingManager = bindingManager
@@ -155,6 +164,35 @@ class DefaultBindingHelper
 		end )
 		this.pButtonBindings.forEach( block Binding each
 			this.pBindingManager.addButtonBinding( each )
+		end )
+	end
+	
+	/**
+	 * \brief Update binding manager with found bindings of device.
+	 * \version 1.6
+	 * 
+	 * Adds bindings if not present already without clearing affected commands. For use of
+	 * adding bindings for a newly attached device with no bindings assigned.
+	 */
+	public func void updateBindingManager( InputDevice device )
+		var String id = device.getID()
+		
+		this.pAxisBindings.forEach( block Binding each
+			if each.getDeviceID().equals( id )
+				var Binding binding = this.pBindingManager.findAxisBinding( id, each.getSourceID() )
+				if binding == null
+					this.pBindingManager.addAxisBinding( each )
+				end
+			end
+		end )
+		
+		this.pButtonBindings.forEach( block Binding each
+			if each.getDeviceID().equals( id )
+				var Binding binding = this.pBindingManager.findButtonBinding( id, each.getSourceID() )
+				if binding == null
+					this.pBindingManager.addButtonBinding( each )
+				end
+			end
 		end )
 	end
 	/*@}*/
@@ -243,7 +281,7 @@ class DefaultBindingHelper
 	 * \returns true if mouse is present and command has been bound.
 	 */
 	public func bool mouseBindWheel( int wheel, String command )
-		return this.mouseBindWheel( wheel, command, command )
+		return this.bindTrigger( this.pMouse, InputDeviceAxisType.mouseWheel, wheel, command )
 	end
 	
 	/**
@@ -255,51 +293,7 @@ class DefaultBindingHelper
 	 * \returns true if mouse is present and all commands have been bound.
 	 */
 	public func bool mouseBindWheel( int wheel, String up, String down )
-		if this.pMouse == null or wheel < 0 or ( up == null and down == null )
-			return false
-		end
-		
-		var int i, count = this.pMouse.getAxisCount()
-		var InputDeviceAxis axis
-		var int number = 0
-		
-		for i = 0 to count
-			axis = this.pMouse.getAxisAt( i )
-			if axis.getType() != InputDeviceAxisType.mouseWheel
-				continue
-			end
-			
-			if number == wheel
-				if up != null
-					var Command command = this.pCommandManager.getNamed( up )
-					if command != null
-						this.addAxisBinding( Binding.new( this.pMouse.getID(), \
-							axis.getID(), command, false ) )
-						
-						if up.equals( down )
-							down = null // both command equal so bind as single binding
-						end
-						
-						up = null  // mark as found
-					end
-				end
-				
-				if down != null
-					var Command command = this.pCommandManager.getNamed( down )
-					if command != null
-						this.addAxisBinding( Binding.new( this.pMouse.getID(), \
-							axis.getID(), command, true ) )
-						down = null  // mark as found
-					end
-				end
-				
-				break
-			end
-			
-			number++
-		end
-		
-		return up == null and down == null
+		return this.bindTrigger( this.pMouse, InputDeviceAxisType.mouseWheel, wheel, up, down )
 	end
 	
 	/**
@@ -464,7 +458,7 @@ class DefaultBindingHelper
 	 * \returns true if gamepad is present and all commands have been bound.
 	 */
 	public func bool gamepadBindStick( int stick, String horizontal, String vertical )
-		return this.gamepadBindStick( stick, horizontal, horizontal, vertical, vertical )
+		return this.bindStick( this.pGamepad, InputDeviceAxisType.stick, stick, horizontal, vertical, false )
 	end
 	
 	/**
@@ -478,75 +472,7 @@ class DefaultBindingHelper
 	 * \returns true if gamepad is present and all commands have been bound.
 	 */
 	public func bool gamepadBindStick( int stick, String left, String right, String up, String down )
-		if stick < 0
-			throw EInvalidParam.new()
-		end
-		
-		if this.pGamepad == null \
-		or ( left == null and right == null and up == null and down == null )
-			return false
-		end
-		
-		var int i, count = this.pGamepad.getAxisCount()
-		var int axisHorz = stick * 2
-		var int axisVert = axisHorz + 1
-		var InputDeviceAxis axis
-		var int number = 0
-		
-		for i = 0 to count
-			axis = this.pGamepad.getAxisAt( i )
-			if axis.getType() != InputDeviceAxisType.stick
-				continue
-			end
-			
-			if number == axisHorz
-				if right != null
-					var Command command = this.pCommandManager.getNamed( right )
-					if command != null
-						this.addAxisBinding( Binding.new( this.pGamepad.getID(), \
-							axis.getID(), command, false ) )
-						if right.equals( left )
-							left = null
-						end
-						right = null  // mark as found
-					end
-				end
-				if left != null
-					var Command command = this.pCommandManager.getNamed( left )
-					if command != null
-						this.addAxisBinding( Binding.new( this.pGamepad.getID(), \
-							axis.getID(), command, true ) )
-						left = null  // mark as found
-					end
-				end
-				
-			elif number == axisVert
-				if up != null
-					var Command command = this.pCommandManager.getNamed( up )
-					if command != null
-						this.addAxisBinding( Binding.new( this.pGamepad.getID(), \
-							axis.getID(), command, false ) )
-						if up.equals( down )
-							down = null
-						end
-						up = null  // mark as found
-					end
-				end
-				if down != null
-					var Command command = this.pCommandManager.getNamed( down )
-					if command != null
-						this.addAxisBinding( Binding.new( this.pGamepad.getID(), \
-							axis.getID(), command, true ) )
-						down = null  // mark as found
-					end
-				end
-				break
-			end
-			
-			number++
-		end
-		
-		return left == null and right == null and up == null and down == null
+		return this.bindStick( this.pGamepad, InputDeviceAxisType.stick, stick, left, right, up, down, false )
 	end
 	
 	/**
@@ -558,7 +484,7 @@ class DefaultBindingHelper
 	 * \returns true if gamepad is present and all commands have been bound.
 	 */
 	public func bool gamepadBindHat( int hat, String horizontal, String vertical )
-		return this.gamepadBindHat( hat, horizontal, horizontal, vertical, vertical )
+		return this.bindStick( this.pGamepad, InputDeviceAxisType.hat, hat, horizontal, vertical, false )
 	end
 	
 	/**
@@ -572,79 +498,11 @@ class DefaultBindingHelper
 	 * \returns true if gamepad is present and all commands have been bound.
 	 */
 	public func bool gamepadBindHat( int hat, String left, String right, String up, String down )
-		if hat < 0
-			throw EInvalidParam.new()
-		end
-		
-		if this.pGamepad == null \
-		or ( left == null and right == null and up == null and down == null )
-			return false
-		end
-		
-		var int i, count = this.pGamepad.getAxisCount()
-		var int axisHorz = hat * 2
-		var int axisVert = axisHorz + 1
-		var InputDeviceAxis axis
-		var int number = 0
-		
-		for i = 0 to count
-			axis = this.pGamepad.getAxisAt( i )
-			if axis.getType() != InputDeviceAxisType.hat
-				continue
-			end
-			
-			if number == axisHorz
-				if right != null
-					var Command command = this.pCommandManager.getNamed( right )
-					if command != null
-						this.addAxisBinding( Binding.new( this.pGamepad.getID(), \
-							axis.getID(), command, false ) )
-						if right.equals( left )
-							left = null
-						end
-						right = null  // mark as found
-					end
-				end
-				if left != null
-					var Command command = this.pCommandManager.getNamed( left )
-					if command != null
-						this.addAxisBinding( Binding.new( this.pGamepad.getID(), \
-							axis.getID(), command, true ) )
-						left = null  // mark as found
-					end
-				end
-				
-			elif number == axisVert
-				if up != null
-					var Command command = this.pCommandManager.getNamed( up )
-					if command != null
-						this.addAxisBinding( Binding.new( this.pGamepad.getID(), \
-							axis.getID(), command, false ) )
-						if up.equals( down )
-							down = null
-						end
-						up = null  // mark as found
-					end
-				end
-				if down != null
-					var Command command = this.pCommandManager.getNamed( down )
-					if command != null
-						this.addAxisBinding( Binding.new( this.pGamepad.getID(), \
-							axis.getID(), command, true ) )
-						down = null  // mark as found
-					end
-				end
-				break
-			end
-			
-			number++
-		end
-		
-		return left == null and right == null and up == null and down == null
+		return this.bindStick( this.pGamepad, InputDeviceAxisType.hat, hat, left, right, up, down, false )
 	end
 	
 	/**
-	 * \brief Bind command to gamepad butrton.
+	 * \brief Bind command to gamepad button.
 	 * 
 	 * \param button Number of button starting with 0 for the first.
 	 * \param command Name of command to bind to button or null.
@@ -666,6 +524,128 @@ class DefaultBindingHelper
 	
 	
 	
+	/** \name VR Controller Binding */
+	/*@{*/
+	
+	/**
+	 * \brief VR hand controller device is present.
+	 * \version 1.6
+	 * \param rightHand True to check right hand controller otherwise left hand controller.
+	 */
+	public func bool hasVRHand( bool rightHand )
+		return ( rightHand if this.pVRRightHand else this.pVRLeftHand ) != null
+	end
+	
+	/**
+	 * \brief VR hand controller device or null.
+	 * \version 1.6
+	 * \param rightHand True for right hand controller otherwise left hand controller.
+	 */
+	public func InputDevice getVRHand( bool rightHand )
+		return rightHand if this.pVRRightHand else this.pVRLeftHand
+	end
+	
+	/**
+	 * \brief Remove all VR hand controller bindings.
+	 * \version 1.6
+	 * \param rightHand True for right hand controller otherwise left hand controller.
+	 */
+	public func void vrHandClear( bool rightHand )
+		var InputDevice device = this.getVRHand( rightHand )
+		if device != null
+			this.removeAllDeviceBindings( device )
+		end
+	end
+	
+	/**
+	 * \brief Bind command to VR hand controller trigger.
+	 * \version 1.6
+	 * \param rightHand True for right hand controller otherwise left hand controller.
+	 * \param type Type of axis. Use InputDeviceAxisType.trigger, InputDeviceAxisType.gripGrab,
+	 *             InputDeviceAxisType.gripSqueeze, InputDeviceAxisType.gripPinch,
+	 *             InputDeviceAxisType.fingerBend or InputDeviceAxisType.fingerSpread .
+	 * \param trigger Number of trigger of given type.
+	 * \param name Name of command to bind to horizontal movement or null.
+	 * \returns true if controller is present and command has been bound.
+	 */
+	public func bool vrHandBindTrigger( bool rightHand, InputDeviceAxisType type, int trigger, String name )
+		return this.bindTrigger( this.getVRHand( rightHand ), type, trigger, name )
+	end
+	
+	/**
+	 * \brief Bind command to VR hand controller trigger.
+	 * \version 1.6
+	 * \param rightHand True for right hand controller otherwise left hand controller.
+	 * \param type Type of axis. Use InputDeviceAxisType.trigger, InputDeviceAxisType.gripGrab,
+	 *             InputDeviceAxisType.gripSqueeze, InputDeviceAxisType.gripPinch,
+	 *             InputDeviceAxisType.fingerBend or InputDeviceAxisType.fingerSpread .
+	 * \param axis Number of axis of given type.
+	 * \param pull Name of command to bind to pull movement or null.
+	 * \param release Name of command to bind to release movement or null.
+	 * \returns true if controller is present and all commands have been bound.
+	 */
+	public func bool vrHandBindTrigger( bool rightHand, InputDeviceAxisType type, \
+	int trigger, String pull, String release )
+		return this.bindTrigger( this.getVRHand( rightHand ), type, trigger, pull, release )
+	end
+	
+	/**
+	 * \brief Bind command to VR hand controller joystick or trackpad.
+	 * \version 1.6
+	 * \param rightHand True for right hand controller otherwise left hand controller.
+	 * \param type Type of stick. Use InputDeviceAxisType.stick or InputDeviceAxis.touchPad .
+	 * \param stick Number of stick of given type.
+	 * \param horizontal Name of command to bind to horizontal movement or null.
+	 * \param vertical Name of command to bind to vertical movement or null.
+	 * \returns true if vrLeftHand is present and all commands have been bound.
+	 */
+	public func bool vrHandBindStick( bool rightHand, InputDeviceAxisType type, \
+	int stick , String horizontal, String vertical )
+		return this.bindStick( this.getVRHand( rightHand ), type, stick, horizontal, vertical, true )
+	end
+	
+	/**
+	 * \brief Bind command to VR hand controller joystick or trackpad.
+	 * \version 1.6
+	 * \param rightHand True for right hand controller otherwise left hand controller.
+	 * \param type Type of stick. Use InputDeviceAxisType.stick or InputDeviceAxis.touchPad .
+	 * \param stick Number of stick of given type.
+	 * \param left Name of command to bind to left movement or null.
+	 * \param right Name of command to bind to right movement or null.
+	 * \param up Name of command to bind to up movement or null.
+	 * \param down Name of command to bind to down movement or null.
+	 * \returns true if vrLeftHand is present and all commands have been bound.
+	 */
+	public func bool vrHandBindStick( bool rightHand, InputDeviceAxisType type, int stick, \
+	String left, String right, String up, String down )
+		return this.bindStick( this.getVRHand( rightHand ), type, stick, left, right, up, down, true )
+	end
+	
+	/**
+	 * \brief Bind command to VR hand controller button.
+	 * \version 1.6
+	 * \param rightHand True for right hand controller otherwise left hand controller.
+	 * \param button Number of button starting with 0 for the first.
+	 * \param command Name of command to bind to button or null.
+	 * \returns true if vrLeftHand is present and command has been bound.
+	 */
+	public func bool vrHandBindButton( bool rightHand, int button, String command )
+		if button < 0
+			throw EInvalidParam.new()
+		end
+		
+		var InputDevice device = this.getVRHand( rightHand )
+		if device == null or command == null
+			return false
+		end
+		
+		return this.bindButton( device, button, command )
+	end
+	
+	/*@}*/
+	
+	
+	
 	/** \name Manual Binding */
 	/*@{*/
 	
@@ -678,7 +658,7 @@ class DefaultBindingHelper
 	 * \returns true if axis is present on device and bound to command.
 	 */
 	public func bool bindAxis( InputDevice device, int axis, String command )
-		if axis >= device.getAxisCount()
+		if axis < 0 or axis >= device.getAxisCount()
 			return false
 		end
 		
@@ -701,7 +681,7 @@ class DefaultBindingHelper
 	 * \returns true if button is present on device and bound to command.
 	 */
 	public func bool bindButton( InputDevice device, int button , String command )
-		if button >= device.getButtonCount()
+		if button < 0 or button >= device.getButtonCount()
 			return false
 		end
 		
@@ -710,9 +690,170 @@ class DefaultBindingHelper
 			return false
 		end
 		
-		this.addButtonBinding( Binding.new( device.getID(), \
-			device.getButtonAt( button ).getID(), cmd, false ) )
+		this.addButtonBinding( Binding.new( device.getID(), device.getButtonAt( button ).getID(), cmd, false ) )
 		return true
+	end
+	
+	/**
+	 * \brief Bind command to trigger.
+	 * \version 1.6
+	 * \param Device device.
+	 * \param type Type of trigger.
+	 * \param trigger Number of trigger of given type.
+	 * \param name Name of command to bind to horizontal movement or null.
+	 * \returns true if controller is present and command has been bound.
+	 */
+	public func bool bindTrigger( InputDevice device, InputDeviceAxisType type, int trigger, String name )
+		return this.bindTrigger( device, type, trigger, name, name )
+	end
+	
+	/**
+	 * \brief Bind command to trigger.
+	 * \version 1.6
+	 * \param Device device.
+	 * \param type Type of trigger.
+	 * \param trigger Number of trigger of given type.
+	 * \param pull Name of command to bind to pull movement or null.
+	 * \param release Name of command to bind to release movement or null.
+	 * \returns true if device is present and all commands have been bound.
+	 */
+	public func bool bindTrigger( InputDevice device, InputDeviceAxisType type, int trigger, String pull, String release )
+		if trigger < 0
+			throw EInvalidParam.new( "trigger < 0" )
+		end
+		
+		if device == null or ( pull == null and release == null )
+			return false
+		end
+		
+		var int i, count = device.getAxisCount()
+		var InputDeviceAxis axis
+		var int number = 0
+		
+		for i = 0 to count
+			axis = device.getAxisAt( i )
+			if axis.getType() != type
+				continue
+			end
+			
+			if number == trigger
+				if pull != null
+					var Command command = this.pCommandManager.getNamed( pull )
+					if command != null
+						this.addAxisBinding( Binding.new( device.getID(), axis.getID(), command, false ) )
+						if pull.equals( release )
+							release = null
+						end
+						pull = null  // mark as found
+					end
+				end
+				if release != null
+					var Command command = this.pCommandManager.getNamed( release )
+					if command != null
+						this.addAxisBinding( Binding.new( device.getID(), axis.getID(), command, true ) )
+						release = null  // mark as found
+					end
+				end
+				break
+			end
+			
+			number++
+		end
+		
+		return pull == null and release == null
+	end
+	
+	/**
+	 * \brief Bind command to joystick.
+	 * \version 1.6
+	 * \param type Type of stick
+	 * \param stick Number of stick of given type.
+	 * \param horizontal Name of command to bind to horizontal movement or null.
+	 * \param vertical Name of command to bind to vertical movement or null.
+	 * \returns true if device is present and all commands have been bound.
+	 */
+	public func bool bindStick( InputDevice device, InputDeviceAxisType type, \
+	int stick , String horizontal, String vertical, bool inverse )
+		return this.bindStick( device, type, stick, horizontal, horizontal, vertical, vertical, inverse )
+	end
+	
+	/**
+	 * \brief Bind command to joystick.
+	 * \version 1.6
+	 * \param type Type of stick.
+	 * \param stick Number of stick of given type.
+	 * \param left Name of command to bind to left movement or null.
+	 * \param right Name of command to bind to right movement or null.
+	 * \param up Name of command to bind to up movement or null.
+	 * \param down Name of command to bind to down movement or null.
+	 * \returns true if device is present and all commands have been bound.
+	 */
+	public func bool bindStick( InputDevice device, InputDeviceAxisType type, int stick, \
+	String left, String right, String up, String down, bool inverse )
+		if stick < 0
+			throw EInvalidParam.new( "stick < 0" )
+		end
+		
+		if device == null or ( left == null and right == null and up == null and down == null )
+			return false
+		end
+		
+		var int i, count = device.getAxisCount()
+		var int axisHorz = stick * 2
+		var int axisVert = axisHorz + 1
+		var InputDeviceAxis axis
+		var int number = 0
+		
+		for i = 0 to count
+			axis = device.getAxisAt( i )
+			if axis.getType() != type
+				continue
+			end
+			
+			if number == axisHorz
+				if right != null
+					var Command command = this.pCommandManager.getNamed( right )
+					if command != null
+						this.addAxisBinding( Binding.new( device.getID(), axis.getID(), command, inverse ) )
+						if right.equals( left )
+							left = null
+						end
+						right = null  // mark as found
+					end
+				end
+				if left != null
+					var Command command = this.pCommandManager.getNamed( left )
+					if command != null
+						this.addAxisBinding( Binding.new( device.getID(), axis.getID(), command, not inverse ) )
+						left = null  // mark as found
+					end
+				end
+				
+			elif number == 1
+				if up != null
+					var Command command = this.pCommandManager.getNamed( up )
+					if command != null
+						this.addAxisBinding( Binding.new( device.getID(), axis.getID(), command, inverse ) )
+						if up.equals( down )
+							down = null
+						end
+						up = null  // mark as found
+					end
+				end
+				if down != null
+					var Command command = this.pCommandManager.getNamed( down )
+					if command != null
+						this.addAxisBinding( Binding.new( device.getID(), axis.getID(), command, not inverse ) )
+						down = null  // mark as found
+					end
+				end
+				break
+			end
+			
+			number++
+		end
+		
+		return left == null and right == null and up == null and down == null
 	end
 	
 	/** \brief Remove all bindings for device. */
@@ -743,8 +884,7 @@ class DefaultBindingHelper
 	
 	/** \brief Add button binding replacing bindings with same command. */
 	protected func void addButtonBinding( Binding binding )
-		this.removeButtonBinding( binding.getDeviceID(), binding.getSourceID(), \
-			binding.getCommand() )
+		this.removeButtonBinding( binding.getDeviceID(), binding.getSourceID(), binding.getCommand() )
 		this.pButtonBindings.add( binding )
 	end
 	
@@ -796,6 +936,16 @@ class DefaultBindingHelper
 			case InputDeviceType.gamepad, InputDeviceType.joystick
 				if this.pGamepad == null
 					this.pGamepad = each
+				end
+				
+			case InputDeviceType.vrLeftHand
+				if this.pVRLeftHand == null
+					this.pVRLeftHand = each
+				end
+				
+			case InputDeviceType.vrRightHand
+				if this.pVRRightHand == null
+					this.pVRRightHand = each
 				end
 			end
 		end )

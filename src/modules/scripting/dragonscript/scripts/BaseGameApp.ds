@@ -461,6 +461,7 @@ class BaseGameApp extends Game
 		
 		this.pBindingManager = BindingManager.new()
 		this.loadBindings()
+		this.pBindingManager.addListener( AttachDeviceDefaultBindings.new() )
 		
 		this.pElementClassList = ElementClassList.new()
 		this.createAndAddElementClasses()

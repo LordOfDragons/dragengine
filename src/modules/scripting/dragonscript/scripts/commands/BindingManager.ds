@@ -81,10 +81,34 @@ class BindingManager
 	 */
 	public func void checkInputEvent( InputEvent event )
 		select event.getType()
-		case InputEventType.deviceAttached, \
-			InputEventType.deviceDetached, \
-			InputEventType.deviceParamsChanged
-				this.reloadDevices()
+		case InputEventType.deviceAttached
+			this.reloadDevices()
+			
+			var InputDevice device = this.findDevice( block InputDevice each
+				return each.getSource() == event.getSource() and each.getIndex() == event.getDevice()
+			end )
+			
+			if device != null
+				this.pListeners.forEach( block BindingManagerListener each
+					each.deviceAttached( this, device )
+				end )
+			end
+			
+		case InputEventType.deviceDetached
+			var InputDevice device = this.findDevice( block InputDevice each
+				return each.getSource() == event.getSource() and each.getIndex() == event.getDevice()
+			end )
+			
+			this.reloadDevices()
+			
+			if device != null
+				this.pListeners.forEach( block BindingManagerListener each
+					each.deviceDetached( this, device )
+				end )
+			end
+			
+		case InputEventType.deviceParamsChanged
+			this.reloadDevices()
 		end
 	end
 	

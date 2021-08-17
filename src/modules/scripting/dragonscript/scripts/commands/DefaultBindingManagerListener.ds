@@ -36,6 +36,14 @@ class DefaultBindingManagerListener implements BindingManagerListener
 	public func void devicesReloaded( BindingManager manager )
 	end
 	
+	/** \brief Device has been attached. */
+	public func void deviceAttached( BindingManager manager, InputDevice device )
+	end
+	
+	/** \brief Device has been detached. */
+	public func void deviceDetached( BindingManager manager, InputDevice device )
+	end
+	
 	/** \brief Axis binding added. */
 	public func void axisBindingAdded( BindingManager manager, Binding binding )
 	end
