@@ -436,19 +436,6 @@ DEBUG_RESET_TIMER
 		if( debugMainPass ){
 			DebugTimer2Sample( plan, *pDebugInfo.infoSolidGeometryLights, true );
 		}
-#if 0
-			if(plan.GetFBOTarget()){
-				static int c = 0;
-				const decDVector &p = plan.GetCameraPosition();
-				decString s;
-				s.Format("envmap_%g-%g-%g/c%d/lights-after/", p.x, p.y, p.z, c++);
-				deoglDebugSnapshot snapshot( renderThread );
-				snapshot.SetEnableColor( true );
-				snapshot.SetEnableStates( true );
-				snapshot.SetName( s );
-				snapshot.TakeSnapshot();
-			}
-#endif
 	}
 	QUICK_DEBUG_END
 	
@@ -467,12 +454,12 @@ DEBUG_RESET_TIMER
 	
 	// transparenc passes
 	QUICK_DEBUG_START( 12, 19 )
-	if( ! plan.GetFBOTarget() ){
+// 	if( ! plan.GetFBOTarget() ){
 		renderers.GetTransparentPasses().RenderTransparentPasses( plan, mask );
 		if( debugMainPass ){
 			DebugTimer2Sample( plan, *pDebugInfo.infoTransparent, true );
 		}
-	}
+// 	}
 	QUICK_DEBUG_END
 	
 	// stop using stencil testing
