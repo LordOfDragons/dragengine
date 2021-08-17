@@ -77,8 +77,7 @@ pVRSystem( nullptr ),
 pVRInput( nullptr ),
 pVRRenderModels( nullptr ),
 pVRCompositor( nullptr ),
-pActionSetHandle( vr::k_ulInvalidActionSetHandle ),
-pWaitCopyDevicePoses( false )
+pActionSetHandle( vr::k_ulInvalidActionSetHandle )
 {
 	int i;
 	for( i=0; i<InputActionCount; i++ ){
@@ -169,12 +168,6 @@ void deVROpenVR::CopyDevicesPoses( vr::TrackedDevicePose_t *poses ){
 	if( ! poses ){
 		DETHROW( deeNullPointer );
 	}
-	
-	if( ! pWaitCopyDevicePoses ){
-		return;
-	}
-	
-	pSemaphoreDevicePoses.Wait();
 	
 	const deMutexGuard lock( pMutexDevicePoses );
 	memcpy( poses, pDevicePoses, sizeof( pDevicePoses ) );
@@ -371,10 +364,6 @@ void deVROpenVR::StopRuntime(){
 	pVRCompositor = nullptr;
 	pVRRenderModels = nullptr;
 	pVRInput = nullptr;
-	
-	const deMutexGuard lock( pMutexDevicePoses );
-	pWaitCopyDevicePoses = false;
-	pSemaphoreDevicePoses.TryWait(); // ensure cleared
 }
 
 void deVROpenVR::SetCamera( deCamera *camera ){
@@ -391,10 +380,6 @@ void deVROpenVR::SetCamera( deCamera *camera ){
 	if( pVRSystem && camera && camera->GetPeerGraphic() ){
 		camera->GetPeerGraphic()->VRAssignedToHMD();
 	}
-	
-	const deMutexGuard lock( pMutexDevicePoses );
-	pWaitCopyDevicePoses = false;
-	pSemaphoreDevicePoses.TryWait(); // ensure cleared
 }
 
 
@@ -552,7 +537,7 @@ void deVROpenVR::ProcessEvents(){
 			
 		default:
 			LogInfoFormat( "ProcessEvents: Event type %d (%s)", event.eventType,
-				                       pVRSystem->GetEventTypeNameFromEnum( ( vr::EVREventType )event.eventType ) );
+				pVRSystem->GetEventTypeNameFromEnum( ( vr::EVREventType )event.eventType ) );
 			break;
 		}
 	}
@@ -625,8 +610,6 @@ void deVROpenVR::BeginFrame(){
 		LogErrorFormat( "Compositor.WaitGetPoses failed: error=%d", error );
 		// ignore errors
 	}
-	pWaitCopyDevicePoses = true;
-	pSemaphoreDevicePoses.Signal();
 }
 
 void deVROpenVR::SubmitOpenGLTexture2D( eEye eye, void *texture, const decVector2 &tcFrom,

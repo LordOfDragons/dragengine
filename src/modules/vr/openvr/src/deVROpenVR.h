@@ -33,7 +33,6 @@
 #include <dragengine/resources/camera/deCamera.h>
 #include <dragengine/systems/modules/vr/deBaseVRModule.h>
 #include <dragengine/threading/deMutex.h>
-#include <dragengine/threading/deSemaphore.h>
 
 
 /** input module device identifier prefix. */
@@ -99,8 +98,6 @@ private:
 	
 	vr::TrackedDevicePose_t pDevicePoses[ vr::k_unMaxTrackedDeviceCount ];
 	deMutex pMutexDevicePoses;
-	deSemaphore pSemaphoreDevicePoses;
-	bool pWaitCopyDevicePoses;
 	
 	deovrHiddenMesh::Ref pHiddenMeshLeftEye;
 	deovrHiddenMesh::Ref pHiddenMeshRightEye;

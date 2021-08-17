@@ -179,7 +179,8 @@ pInitialRenderWindow( NULL ), // temporary variable for thread initialization
 pThreadState( etsStopped ),
 pThreadFailure( false ),
 pBarrierSyncIn( 2 ),
-pBarrierSyncOut( 2 )
+pBarrierSyncOut( 2 ),
+pSignalSemaphoreSyncVR( false )
 {
 	try{
 		pConfiguration = ogl.GetConfiguration();
@@ -552,6 +553,12 @@ void deoglRenderThread::Run(){
 			}catch( const deException &exception ){
 				pLogger->LogException( exception );
 				pTimerRender.Reset();
+				
+				if( pSignalSemaphoreSyncVR ){
+					pSignalSemaphoreSyncVR = false;
+					pSemaphoreSyncVR.Signal();
+				}
+				
 				pThreadFailure = true;
 				DEBUG_SYNC_RT_FAILURE
 			}
@@ -673,6 +680,11 @@ void deoglRenderThread::Synchronize(){
 			return;
 		}
 		
+		const bool hasVR = pVRCamera && pVRCamera->GetVR();
+		if( hasVR ){
+			pSignalSemaphoreSyncVR = true;
+		}
+		
 		pThreadState = etsRendering;
 		DEBUG_SYNC_MT_STATE
 		
@@ -681,6 +693,10 @@ void deoglRenderThread::Synchronize(){
 		DEBUG_SYNC_MT_PASS("out");
 		
 		pTimerMain.Reset();
+		
+		if( hasVR ){
+			pSemaphoreSyncVR.Wait();
+		}
 		
 	}else{
 		// render thread part here run synchronous
@@ -1963,8 +1979,15 @@ void deoglRenderThread::pRenderWindows(){
 
 void deoglRenderThread::pVRBeginFrame(){
 	deoglVR * const vr = pVRCamera ? pVRCamera->GetVR() : nullptr;
-	if( vr ){
-		vr->BeginFrame();
+	if( ! vr ){
+		return;
+	}
+	
+	vr->BeginFrame();
+	
+	if( pSignalSemaphoreSyncVR ){
+		pSignalSemaphoreSyncVR = false;
+		pSemaphoreSyncVR.Signal();
 	}
 }
 

@@ -35,6 +35,7 @@
 #include <dragengine/common/utils/decTimeHistory.h>
 #include <dragengine/threading/deMutex.h>
 #include <dragengine/threading/deBarrier.h>
+#include <dragengine/threading/deSemaphore.h>
 #include <dragengine/threading/deThread.h>
 
 class deGraphicOpenGl;
@@ -207,6 +208,8 @@ private:
 	bool pThreadFailure;
 	deBarrier pBarrierSyncIn;
 	deBarrier pBarrierSyncOut;
+	deSemaphore pSemaphoreSyncVR;
+	bool pSignalSemaphoreSyncVR;
 	
 	
 	
