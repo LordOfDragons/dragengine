@@ -1,0 +1,624 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2021, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Commands
+pin Dragengine.Gui
+pin Dragengine.LoadSave
+pin Dragengine.Preloading
+pin Dragengine.Utils
+
+
+/**
+ * \brief Behavior element behavior adding VR Hand Controller support to actor.
+ * \version 1.6
+ * 
+ * This behavior tracks one hand controller optionally displaying it on screen using either
+ * the developer provided model or a custom model. Optionally a rig can be assigned to get
+ * physical presence of the controller in the game world.
+ * 
+ * This behavior can be added multiple times to an element. This allows to track two hand
+ * controllers. Each instance has an identifier which can be used to retrieve a specific
+ * instance. The prefix of the element class properties is "vrHand." . If the identifier
+ * is not empty the element class properties have the prefix "{id}.vrHand." .
+ * This can be overwritten if required.
+ * 
+ * This behavior does not require persistable element class (setPersistable).
+ */
+class ECBehaviorVRHand extends DefaultECBehavior
+	/** \brief Listener for behavior instance events. */
+	interface Listener
+		/** \brief Hand controller attached and ready to use. */
+		func void controllerAttached( Instance instance )
+		
+		/** \brief Hand controller detached and no more usableuse. */
+		func void controllerDetached( Instance instance )
+	end
+	
+	/** \brief Default implementation of behavior instance listener. */
+	class DefaultListener implements Listener
+		/** \brief Create default listener. */
+		public func new()
+		end
+		
+		/** \brief Hand controller attached and ready to use. */
+		public func void controllerAttached( Instance instance )
+		end
+		
+		/** \brief Hand controller detached and no more usableuse. */
+		public func void controllerDetached( Instance instance )
+		end
+	end
+	
+	/** \brief Factory creating listeners. */
+	interface ListenerFactory
+		/** \brief Create listener. */
+		func Listener createListener( Instance instance )
+	end
+	
+	/** \brief Factory creating listeners using block. */
+	class BlockListenerFactory implements ListenerFactory
+		private var Block pBlock
+		
+		/** \brief Create factory using block receiving Instance as parameter returning Listener. */
+		public func new( Block blockFactory )
+			if blockFactory == null
+				throw ENullPointer.new()
+			end
+			this.pBlock = blockFactory
+		end
+		
+		/** \brief Create listener. */
+		public func Listener createListener( Instance instance )
+			return this.pBlock.run( instance ) cast Listener
+		end
+	end
+	
+	
+	
+	/** \brief Behavior instance. */
+	class Instance extends DefaultECBehaviorInstance
+		/** \brief Controller attach/detach listener. */
+		class AttachDetachListener extends DefaultBindingManagerListener
+			private var Instance pInstance
+			
+			public func new( Instance instance )
+				pInstance = instance
+			end
+			
+			public func void deviceAttached( BindingManager manager, InputDevice device )
+				if device.getType() == this.pInstance.getECBehavior().getInputDeviceType()
+					this.pInstance.setInputDevice( device )
+				end
+			end
+			
+			public func void deviceDetached( BindingManager manager, InputDevice device )
+				if this.pInstance.getInputDevice() == device
+					this.pInstance.setInputDevice( null )
+				end
+			end
+			
+			public func void devicesReloaded( BindingManager manager )
+				// temporary
+				var InputDeviceType type = this.pInstance.getECBehavior().getInputDeviceType()
+				this.pInstance.setInputDevice( manager.findDevice( block InputDevice each
+					return each.getType() == type
+				end ) )
+			end
+		end
+		
+		
+		
+		private var ECBehaviorVRHand pECBehavior
+		private var ECBehaviorVRPlayspace.Instance pVRPlayspace
+		private var ECBehaviorComponent.Instance pComponent
+		private var Model pCustomModel
+		private var Skin pCustomSkin
+		private var bool pUseVendorModel
+		private var bool pShowHand
+		private var InputDevice pInputDevice
+		private var Vector pPosition
+		private var Quaternion pOrientation
+		private var Array pListeners
+		private var AttachDetachListener pAttachDetachListener
+		
+		
+		
+		/** \brief Create instance. */
+		public func new( ECBehaviorVRHand ecbehavior, BehaviorElement element ) super( element )
+			this.pECBehavior = ecbehavior
+			this.pUseVendorModel = true
+			this.pShowHand = true
+			this.pPosition = Vector.new()
+			this.pOrientation = Quaternion.new()
+			this.pListeners = Array.new()
+			this.pAttachDetachListener = AttachDetachListener.new( this )
+			
+			this.pVRPlayspace = ecbehavior.getVRPlayspace().instance( element )
+			this.pComponent = ecbehavior.getComponent().instance( element )
+			
+			this.setRequiresThink( true )
+		end
+		
+		/** \brief Dispose of instance. */
+		public func void dispose()
+			this.pAttachDetachListener = null
+			this.pListeners = null
+			this.pComponent = null
+			this.pVRPlayspace = null
+			super.dispose()
+		end
+		
+		
+		
+		/** \brief Initialize behavior from stub. */
+		public func void init( StubElement stub )
+			var Component component = this.pComponent.getComponent()
+			if component != null
+				this.pCustomModel = component.getModel()
+				this.pCustomSkin = component.getSkin()
+			end
+			
+			this.pUseVendorModel = this.pECBehavior.getUseVendorModel().getValue( stub )
+			
+			this.pECBehavior.createListeners( this )
+		end
+		
+		
+		
+		/** \brief Behavior. */
+		public func ECBehaviorVRHand getECBehavior()
+			return this.pECBehavior
+		end
+		
+		/** \brief VR Playspace. */
+		public func ECBehaviorVRPlayspace.Instance getVRPlayspace()
+			return this.pVRPlayspace
+		end
+		
+		/** \brief Component behavior instance. */
+		public func ECBehaviorComponent.Instance getComponent()
+			return this.pComponent
+		end
+		
+		/** \brief Use vendor model. */
+		public func bool getUseVendorModel()
+			return this.pUseVendorModel
+		end
+		
+		/** \brief Set use vendor model. */
+		protected func void setUseVendorModel( bool useVendorModel )
+			if useVendorModel == this.pUseVendorModel
+				return
+			end
+			
+			this.pUseVendorModel = useVendorModel
+			this.updateModelSkin()
+		end
+		
+		/** \brief Show hand. */
+		public func bool getShowHand()
+			return this.pShowHand
+		end
+		
+		/** \brief Set show hand. */
+		protected func void setShowHand( bool showHand )
+			if showHand == this.pShowHand
+				return
+			end
+			
+			this.pShowHand = showHand
+			this.stateChanged()
+		end
+		
+		/** \brief Input device or null if detached. */
+		public func InputDevice getInputDevice()
+			return this.pInputDevice
+		end
+		
+		/** \brief Set input device or null if detached. */
+		public func void setInputDevice( InputDevice device )
+			if device == this.pInputDevice
+				return
+			end
+			
+			if this.pInputDevice != null
+				this.pListeners.forEach( block Listener each
+					each.controllerDetached( this )
+				end )
+			end
+			
+			this.pInputDevice = device
+			this.updateModelSkin()
+			
+			if device != null
+				this.pListeners.forEach( block Listener each
+					each.controllerAttached( this )
+				end )
+			end
+		end
+		
+		
+		
+		/**
+		 * \brief Position.
+		 * \note Position is queried each time the function is called.
+		 */
+		public func DVector getPosition()
+			if this.pInputDevice != null
+				this.pPosition = this.pInputDevice.getDevicePosePosition()
+			end
+			return this.pVRPlayspace.getMatrix() * DVector.new( this.pPosition )
+		end
+		
+		/**
+		 * \brief Orientation.
+		 * \note Orientation is queried each time the function is called.
+		 */
+		public func Quaternion getOrientation()
+			if this.pInputDevice != null
+				this.pOrientation = this.pInputDevice.getDevicePoseOrientation()
+			end
+			return this.pOrientation * this.pVRPlayspace.getOrientation()
+		end
+		
+		/**
+		 * \brief Matrix.
+		 * \note Position and orientation are queried each time the function is called.
+		 */
+		public func DMatrix getMatrix()
+			return DMatrix.newWorld( this.getPosition(), this.getOrientation() )
+		end
+		
+		/**
+		 * \brief Inverse matrix.
+		 * \note Position and orientation are queried each time the function is called.
+		 */
+		public func DMatrix getInverseMatrix()
+			return this.getMatrix().getInverse()
+		end
+		
+		
+		
+		/** \brief Add listener. */
+		public func void addListener( Listener listener )
+			if listener == null
+				throw EInvalidParam.new()
+			end
+			this.pListeners.add( listener )
+		end
+		
+		/** \brief Remove listener. */
+		public func void removeListener( Listener listener )
+			this.pListeners.remove( listener )
+		end
+		
+		
+		
+		/** \brief Element has been added to game world. Start tracking device. */
+		public func void addToGameWorld()
+			var BindingManager bindingManager = this.pECBehavior.getBindingManager()
+			bindingManager.addListener( this.pAttachDetachListener )
+			
+			// find device
+			var InputDeviceType type = this.pECBehavior.getInputDeviceType()
+			this.setInputDevice( bindingManager.findDevice( block InputDevice each
+				return each.getType() == type
+			end ) )
+		end
+		
+		/** \brief Element has been removed from game world. Stop tracking device. */
+		public func void removeFromGameWorld()
+			this.pECBehavior.getBindingManager().removeListener( this.pAttachDetachListener )
+			this.setInputDevice( null )
+		end
+		
+		/**
+		 * Frame update.
+		 */
+		public func void think( float elapsed )
+			var Component component = this.pComponent.getComponent()
+			if component == null
+				return
+			end
+			
+			component.setPosition( this.getPosition() )
+			component.setOrientation( this.getOrientation() )
+		end
+		
+		/** \brief Element state changed like visible. */
+		public func void stateChanged()
+			this.updateVisibile()
+		end
+		
+		
+		
+		/** \brief Update component model and skin. */
+		protected func void updateModelSkin()
+			var Component component = this.pComponent.getComponent()
+			if component == null
+				return
+			end
+			
+			if this.pUseVendorModel
+				if this.pInputDevice != null
+					component.setModelAndSkin( this.pInputDevice.getVRModel(), this.pInputDevice.getVRSkin() )
+					
+				else
+					component.setModelAndSkin( null, null )
+				end
+				
+			else
+				component.setModelAndSkin( this.pCustomModel, this.pCustomSkin )
+			end
+		end
+		
+		/** \brief Update component visible. */
+		protected func void updateVisibile()
+			var Component component = this.pComponent.getComponent()
+			if component == null
+				return
+			end
+			
+			component.setVisible( this.pShowHand and this.getElement().getVisible() )
+		end
+	end
+	
+	
+	
+	private var InputDeviceType pInputDeviceType
+	private var BindingManager pBindingManager
+	private var ECBehaviorVRPlayspace pVRPlayspace
+	private var ECBehaviorComponent pComponent
+	private var ECPBoolean pUseVendorModel
+	private var Array pListenerFactories
+	
+	
+	
+	/** \brief Create behavior element class. */
+	public func new( BehaviorElementClass eclass, ECBehaviorVRPlayspace vrPlayspace, \
+	InputDeviceType inputDeviceType ) this( eclass, vrPlayspace, inputDeviceType, \
+	BaseGameApp.getApp().getBindingManager() )
+	end
+	
+	/** \brief Create behavior element class. */
+	public func new( BehaviorElementClass eclass, ECBehaviorVRPlayspace vrPlayspace, \
+	InputDeviceType inputDeviceType, String id ) this( eclass, vrPlayspace, inputDeviceType, \
+	BaseGameApp.getApp().getBindingManager(), id )
+	end
+	
+	/** \brief Create behavior element class. */
+	public func new( BehaviorElementClass eclass, ECBehaviorVRPlayspace vrPlayspace, \
+	InputDeviceType inputDeviceType, String id, String subID ) this( eclass, vrPlayspace, \
+	inputDeviceType, BaseGameApp.getApp().getBindingManager(), id, subID )
+	end
+	
+	/** \brief Create behavior element class. */
+	public func new( BehaviorElementClass eclass, ECBehaviorVRPlayspace vrPlayspace, \
+	InputDeviceType inputDeviceType, String id, String subID, String prefix ) \
+	this( eclass, vrPlayspace, inputDeviceType, BaseGameApp.getApp().getBindingManager(), \
+	id, subID, prefix )
+	end
+	
+	/** \brief Create behavior element class. */
+	public func new( BehaviorElementClass eclass, ECBehaviorVRPlayspace vrPlayspace, \
+	InputDeviceType inputDeviceType, BindingManager bindingManager ) \
+	this( eclass, vrPlayspace, inputDeviceType, bindingManager, "" )
+	end
+	
+	/** \brief Create behavior element class. */
+	public func new( BehaviorElementClass eclass, ECBehaviorVRPlayspace vrPlayspace, \
+	InputDeviceType inputDeviceType, BindingManager bindingManager, String id ) \
+	this( eclass, vrPlayspace, inputDeviceType, bindingManager, id, \
+	id.empty() if "vrHand." else "vrHand(" + id + ")." )
+	end
+	
+	/** \brief Create behavior element class. */
+	public func new( BehaviorElementClass eclass, ECBehaviorVRPlayspace vrPlayspace, \
+	InputDeviceType inputDeviceType, BindingManager bindingManager, String id, String subID ) \
+	this( eclass, vrPlayspace, inputDeviceType, bindingManager, id, subID, subID + "." )
+	end
+	
+	/** \brief Create behavior element class. */
+	public func new( BehaviorElementClass eclass, ECBehaviorVRPlayspace vrPlayspace, \
+	InputDeviceType inputDeviceType, BindingManager bindingManager, String id, \
+	String subID, String prefix ) super( eclass, id )
+		if vrPlayspace == null
+			throw ENullPointer.new( "vrPlayspace" )
+		end
+		if inputDeviceType == null
+			throw ENullPointer.new( "inputDeviceType" )
+		end
+		if bindingManager == null
+			throw ENullPointer.new( "bindingManager" )
+		end
+		
+		this.pInputDeviceType = inputDeviceType
+		this.pBindingManager = bindingManager
+		this.pVRPlayspace = vrPlayspace
+		this.pListenerFactories = Array.new()
+		
+		this.pComponent = ECBehaviorComponent.new( eclass, null, subID, prefix + "component" )
+		
+		this.pUseVendorModel = ECPBoolean.new( prefix + "useVendorModel", true )
+		eclass.addProperty( this.pUseVendorModel )
+		
+		eclass.addBehavior( this )
+	end
+	
+	/** \brief Dispose of behavior. */
+	public func void dispose()
+		this.pListenerFactories = null
+		this.pVRPlayspace = null
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief Input device type. */
+	public func InputDeviceType getInputDeviceType()
+		return this.pInputDeviceType
+	end
+	
+	/** \brief Binding manager. */
+	public func BindingManager getBindingManager()
+		return this.pBindingManager
+	end
+	
+	/** \brief VR Playspace behavior. */
+	public func ECBehaviorVRPlayspace getVRPlayspace()
+		return this.pVRPlayspace
+	end
+	
+	/** \brief Component behavior. */
+	public func ECBehaviorComponent getComponent()
+		return this.pComponent
+	end
+	
+	/** \brief Use vendor model. */
+	public func ECPBoolean getUseVendorModel()
+		return this.pUseVendorModel
+	end
+	
+	
+	
+	/** \brief Add listener factory. */
+	public func void addListenerFactory( ListenerFactory factory )
+		if factory == null
+			throw ENullPointer.new()
+		end
+		this.pListenerFactories.add( factory )
+	end
+	
+	/**
+	 * \brief Add listener factory using block.
+	 * 
+	 * Block receives as parameter Instance and returns Listener.
+	 */
+	public func void addListenerFactory( Block blockFactory )
+		this.pListenerFactories.add( BlockListenerFactory.new( blockFactory ) )
+	end
+	
+	/** \brief Visit listener factories with block with argument ListenerFactory. */
+	public func void forEachListenerFactory( Block ablock )
+		this.pListenerFactories.forEach( ablock )
+	end
+	
+	/** \brief Create listeners from factories adding them to behavior instance. */
+	public func void createListeners( Instance instance )
+		this.pListenerFactories.forEach( block ListenerFactory each
+			instance.addListener( each.createListener( instance ) )
+		end )
+	end
+	
+	
+	
+	/** \brief Get instance in element from owner element class. */
+	public func Instance instance( BehaviorElement element )
+		return element.getInstanceAt( this.getInstanceIndex() ) cast Instance
+	end
+	
+	
+	
+	/**
+	 * \brief Get behavior in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorVRHand.
+	 */
+	static public func ECBehaviorVRHand getBehaviorIn( BehaviorElementClass eclass )
+		return eclass.findBehavior( block ECBehaviorVRHand each
+			return true
+		end ) cast ECBehaviorVRHand
+	end
+	
+	/**
+	 * \brief Get behavior with id in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorVRHand with specific identifier.
+	 */
+	static public func ECBehaviorVRHand getBehaviorIn( BehaviorElementClass eclass, String id )
+		return eclass.findBehavior( block ECBehaviorVRHand each
+			return each.getID().equals( id )
+		end ) cast ECBehaviorVRHand
+	end
+	
+	/**
+	 * \brief Get list of all behaviors in element.
+	 * 
+	 * Returns list contains ECBehaviorVRHand behaviors in the order they have
+	 * been created in the element.
+	 */
+	static public func Array getAllBehaviorsIn( BehaviorElementClass eclass )
+		return eclass.collectBehaviors( block ECBehaviorVRHand each
+			return true
+		end )
+	end
+	
+	
+	
+	/**
+	 * \brief Get instance in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorVRHand.Instance . If more than one instance is present returns
+	 * the first instance.
+	 */
+	static public func Instance getInstanceIn( BehaviorElement element )
+		return element.findInstance( block Instance each
+			return true
+		end ) cast Instance
+	end
+	
+	/**
+	 * \brief Get instance with id in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorVRHand.Instance with specific identifier.
+	 */
+	static public func Instance getInstanceIn( BehaviorElement element, String id )
+		return element.findInstance( block Instance each
+			return each.getECBehavior().getID().equals( id )
+		end ) cast Instance
+	end
+	
+	/**
+	 * \brief Get list of all instances in element.
+	 * 
+	 * Returns list contains ECBehaviorVRHand.Instance instances in the order they have
+	 * been created in the element.
+	 */
+	static public func Array getAllInstancesIn( BehaviorElement element )
+		return element.collectInstances( block Instance each
+			return true
+		end )
+	end
+	
+	
+	
+	/** \brief Create Behavior instance. */
+	public func ECBehaviorInstance createInstance( BehaviorElement element )
+		return Instance.new( this, element )
+	end
+end

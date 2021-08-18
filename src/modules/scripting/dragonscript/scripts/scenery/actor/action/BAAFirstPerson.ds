@@ -440,8 +440,11 @@ class BAAFirstPerson extends BaseActorAction implements BAAMovement
 	
 	/**
 	 * \brief Initialize player input tracker.
+	 * 
+	 * Sets ECBehaviorPlayerInputMove to LocomotionType.natural .
 	 */
 	protected func void initPlayerInput()
+		this.playerInputMove.setLocomotionType( ECBehaviorPlayerInputMove.LocomotionType.natural )
 	end
 	
 	/**
@@ -478,10 +481,10 @@ class BAAFirstPerson extends BaseActorAction implements BAAMovement
 	 * - Linear velocity adjust time: 0.5
 	 */
 	protected func void initLocomotionPlayer()
-		var Locomotion locomotion = locomotion.getLocomotion()
-		locomotion.setAdjustTimeVertical( 0 )
-		locomotion.setAdjustTimeHorizontal( 0 )
-		locomotion.setAdjustTimeLinearVelocity( 0.5 )
+		var Locomotion l = locomotion.getLocomotion()
+		l.setAdjustTimeVertical( 0 )
+		l.setAdjustTimeHorizontal( 0 )
+		l.setAdjustTimeLinearVelocity( 0.5 )
 	end
 	
 	

@@ -1014,6 +1014,7 @@ class BaseGameApp extends Game
 	 * - AttachableBaseForceFieldClass named "AttachableBaseForceField"
 	 * - AttachableBillboardClass named "AttachableBillboard"
 	 * - BaseActorClass named "Actor"
+	 * - BaseVRActorClass named "VRActor" (since version 1.6)
 	 * - BaseSpeakerClass named "BaseSpeaker"
 	 * - BaseParticleEmitterClass named "BaseParticleEmitter"
 	 * - BaseSkyClass named "BaseSky"
@@ -1065,6 +1066,7 @@ class BaseGameApp extends Game
 		this.pElementClassList.add( AttachSlotClass.new() )
 		this.pElementClassList.add( SpawnPointClass.new() )
 		this.pElementClassList.add( BaseActorClass.new() )
+		this.pElementClassList.add( BaseVRActorClass.new() )
 		this.pElementClassList.add( EnvironmentMapClass.new() )
 		this.pElementClassList.add( TriggerEvaluateClass.new( this.pTriggerTable ) )
 		this.pElementClassList.add( TriggerTimerClass.new( this.pTriggerTable ) )

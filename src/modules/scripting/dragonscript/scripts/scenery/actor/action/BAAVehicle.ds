@@ -419,8 +419,11 @@ class BAAVehicle extends BaseActorAction implements BAAMovement
 	
 	/**
 	 * \brief Initialize player input tracker.
+	 * 
+	 * Sets ECBehaviorPlayerInputMove to LocomotionType.vehicle .
 	 */
 	protected func void initPlayerInput()
+		this.playerInputMove.setLocomotionType( ECBehaviorPlayerInputMove.LocomotionType.vehicle )
 	end
 	
 	/**
@@ -447,7 +450,7 @@ class BAAVehicle extends BaseActorAction implements BAAMovement
 	 * - Linear velocity adjust time: 1
 	 */
 	protected func void initLocomotion()
-		locomotion.initVehicle( this.playerInputMove.getSpeedWalk() )
+		this.locomotion.initVehicle( this.playerInputMove.getSpeedWalk() )
 	end
 	
 	

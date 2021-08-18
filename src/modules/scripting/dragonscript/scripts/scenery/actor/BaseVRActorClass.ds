@@ -1,0 +1,99 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.LoadSave
+pin Dragengine.Preloading
+pin Dragengine.Utils
+
+
+/**
+ * \brief VR Actor element class.
+ * \version 1.6
+ * 
+ * Extends BaseActorClass with VR behaviors.
+ */
+class BaseVRActorClass extends BaseActorClass
+	private var ECBehaviorVRPlayspace pVRPlayspace
+	private var ECBehaviorPlayerInputMoveVRPlayspace pPlayerInputMoveVRPlayspace
+	private var ECBehaviorVRHand pVRRightHand
+	private var ECBehaviorVRHand pVRLeftHand
+	
+	
+	
+	/** \brief Create element class using loaders from BaseGameApp. */
+	public func new() this( "VRActor", BaseGameApp.getApp().getLoaders(), \
+	BaseGameApp.getApp().getPlayerControlledActor() )
+	end
+	
+	/** \brief Create element class. */
+	public func new( Loaders loaders, ECBehaviorPlayerControllable.Tracker tracker ) \
+	this( "VRActor", loaders, tracker )
+	end
+	
+	/** \brief Create element class using loaders from BaseGameApp. */
+	public func new( String className ) this( className, BaseGameApp.getApp().getLoaders(), \
+	BaseGameApp.getApp().getPlayerControlledActor() )
+	end
+	
+	/** \brief Create element class. */
+	public func new( String className, Loaders loaders, ECBehaviorPlayerControllable.Tracker tracker ) \
+	super( className, loaders, tracker )
+		this.getAIAction().setActionFactory( BAAFirstPersonVR.Factory.new() )
+		
+		this.pVRPlayspace = ECBehaviorVRPlayspace.new( this )
+		this.pPlayerInputMoveVRPlayspace = ECBehaviorPlayerInputMoveVRPlayspace.new( this, this.pVRPlayspace )
+		this.pVRRightHand = ECBehaviorVRHand.new( this, this.pVRPlayspace, InputDeviceType.vrRightHand, "right" )
+		this.pVRLeftHand = ECBehaviorVRHand.new( this, this.pVRPlayspace, InputDeviceType.vrLeftHand, "left" )
+	end
+	
+	
+	
+	/** \brief VR Playspace behavior. */
+	public func ECBehaviorVRPlayspace getVRPlayspace()
+		return this.pVRPlayspace
+	end
+	
+	/** \brief Player Input Move VR Playspace behavior. */
+	public func ECBehaviorPlayerInputMoveVRPlayspace getPlayerInputMoveVRPlayspace()
+		return this.pPlayerInputMoveVRPlayspace
+	end
+	
+	/** \brief VR Right Hand Controller. */
+	public func ECBehaviorVRHand getVRRightHand()
+		return this.pVRRightHand
+	end
+	
+	/** \brief VR Left Hand Controller. */
+	public func ECBehaviorVRHand getVRLeftHand()
+		return this.pVRLeftHand
+	end
+	
+	
+	
+	/** \brief Create element instance. */
+	protected func Element createElement()
+		return BaseVRActor.new( this )
+	end
+end

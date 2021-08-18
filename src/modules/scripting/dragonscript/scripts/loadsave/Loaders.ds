@@ -324,6 +324,7 @@ class Loaders
 		
 		Scenery.BaseActorAction.Factory.registerFactory( persistency )
 		Scenery.BAAFirstPerson.Factory.registerFactory( persistency )
+		Scenery.BAAFirstPersonVR.Factory.registerFactory( persistency )
 		Scenery.BAAVehicle.Factory.registerFactory( persistency )
 		
 		Scenery.BaseActorAI.Factory.registerFactory( persistency )

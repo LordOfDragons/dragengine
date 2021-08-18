@@ -1,0 +1,312 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Commands
+pin Dragengine.LoadSave
+pin Dragengine.Utils
+
+
+/**
+ * \brief Base actor action for VR first person type actors.
+ * 
+ * Works similar to BAAFirstPerson but looking around is handled differently since the HMD
+ * is dictating the looking direction.
+ * 
+ * The looking direction is set from the HMD orientation. This allows other actors (NPCs or
+ * online players) to see where the player is looking at without needing to examine the HMD
+ * orientation and thus without needing to change existing code.
+ * 
+ * The body orientation is used as reference orientation for the HMD and controllers. The
+ * looking around inputs are applied to the orientation directly.
+ * 
+ * This is a kind of crossing between BAAFirstPerson BAAVehicle.
+ */
+class BAAFirstPersonVR extends BAAFirstPerson
+	/** \brief Factory for loading actor actions. */
+	public class Factory implements PersistencyFactory, ECBehaviorActorAIAction.ActionFactory
+		public static fixed var String NAME = "BAAFirstPersonVR"
+		
+		public func new()
+		end
+		
+		public func Persistable readObjectFromFile( PersistencyEnvironment env, FileReader reader )
+			return BAAFirstPersonVR.new()
+		end
+		
+		public static func void registerFactory( Persistency persistency )
+			persistency.addFactory( NAME, Factory.new() )
+		end
+		
+		public func BaseActorAction createAction( ECBehaviorActorAIAction.Instance instance )
+			return BAAFirstPersonVR.new()
+		end
+	end
+	
+	
+	
+	/** \brief VR Playspace behavior. */
+	protected var ECBehaviorVRPlayspace.Instance vrPlayspace
+	
+	/** \brief Player Input Move VR Playspace behavior. */
+	protected var ECBehaviorPlayerInputMoveVRPlayspace.Instance playerInputMoveVRPlayspace
+	
+	/** \brief VR Right Hand Controller behavior. */
+	protected var ECBehaviorVRHand.Instance vrRightHand
+	
+	/** \brief VR Left Hand Controller behavior. */
+	protected var ECBehaviorVRHand.Instance vrLeftHand
+	
+	
+	
+	/** \brief Create actor action. */
+	public func new()
+	end
+	
+	
+	
+	/** \brief VR Playspace. */
+	public func ECBehaviorVRPlayspace.Instance getVRPlayspace()
+		return this.vrPlayspace
+	end
+	
+	/** \brief Player Input Move VR Playspace. */
+	public func ECBehaviorPlayerInputMoveVRPlayspace.Instance getPlayerInputMoveVRPlayspace()
+		return this.playerInputMoveVRPlayspace
+	end
+	
+	/** \brief VR Right Hand Controller. */
+	public func ECBehaviorVRHand.Instance getVRRightHand()
+		return this.vrRightHand
+	end
+	
+	/** \brief VR Left Hand Controller. */
+	public func ECBehaviorVRHand.Instance getVRLeftHand()
+		return this.vrLeftHand
+	end
+	
+	
+	
+	/** \brief Start moving forward. */
+	public func void moveForwardStart()
+		this.playerInputMoveVRPlayspace.setMoveForward( true )
+	end
+	
+	/** \brief Stop moving forward. */
+	public func void moveForwardStop()
+		this.playerInputMoveVRPlayspace.setMoveForward( false )
+	end
+	
+	/** \brief Start moving backward. */
+	public func void moveBackwardStart()
+		this.playerInputMoveVRPlayspace.setMoveBackward( true )
+	end
+	
+	/** \brief Stop moving backward. */
+	public func void moveBackwardStop()
+		this.playerInputMoveVRPlayspace.setMoveBackward( false )
+	end
+	
+	/** \brief Analog moving forward/backward. */
+	public func void analogMoveFB( float amount, bool sticky )
+		if sticky
+			this.playerInputMoveVRPlayspace.setAnalogMoveForwardBackwardSticky( -amount )
+			
+		else
+			this.playerInputMoveVRPlayspace.setAnalogMoveForwardBackward( -amount )
+		end
+	end
+	
+	
+	
+	/** \brief Start moving left. */
+	public func void moveLeftStart()
+		this.playerInputMoveVRPlayspace.setMoveLeft( true )
+	end
+	
+	/** \brief Stop moving left. */
+	public func void moveLeftStop()
+		this.playerInputMoveVRPlayspace.setMoveLeft( false )
+	end
+	
+	/** \brief Start moving right. */
+	public func void moveRightStart()
+		this.playerInputMoveVRPlayspace.setMoveRight( true )
+	end
+	
+	/** \brief Stop moving right. */
+	public func void moveRightStop()
+		this.playerInputMoveVRPlayspace.setMoveRight( false )
+	end
+	
+	/** \brief Analog moving left/right. */
+	public func void analogMoveLR( float amount, bool sticky )
+		if sticky
+			this.playerInputMoveVRPlayspace.setAnalogMoveLeftRightSticky( -amount )
+			
+		else
+			this.playerInputMoveVRPlayspace.setAnalogMoveLeftRight( -amount )
+		end
+	end
+	
+	
+	
+	/** \brief Start looking left. */
+	public func void lookLeftStart()
+		this.playerInputMoveVRPlayspace.setTurnLeft( true )
+	end
+	
+	/** \brief Stop looking left. */
+	public func void lookLeftStop()
+		this.playerInputMoveVRPlayspace.setTurnLeft( false )
+	end
+	
+	/** \brief Start looking right. */
+	public func void lookRightStart()
+		this.playerInputMoveVRPlayspace.setTurnRight( true )
+	end
+	
+	/** \brief Stop looking right. */
+	public func void lookRightStop()
+		this.playerInputMoveVRPlayspace.setTurnRight( false )
+	end
+	
+	/** \brief Start looking up. */
+	public func void lookUpStart()
+	end
+	
+	/** \brief Stop looking up. */
+	public func void lookUpStop()
+	end
+	
+	/** \brief Start looking down. */
+	public func void lookDownStart()
+	end
+	
+	/** \brief Stop looking down. */
+	public func void lookDownStop()
+	end
+	
+	/** \brief Analog looking left/right. */
+	public func void analogLookLR( float amount, bool sticky )
+		if sticky
+			this.playerInputMoveVRPlayspace.setAnalogTurnHorizontalSticky( amount )
+			
+		else
+			this.playerInputMoveVRPlayspace.setAnalogTurnHorizontal( amount )
+		end
+	end
+	
+	/** \brief Analog looking up/down. */
+	public func void analogLookUD( float amount, bool sticky )
+	end
+	
+	
+	
+	/**
+	 * \brief Init behaviors.
+	 * 
+	 * Retrieve and store required and optional behavior instances from the actor element.
+	 */
+	protected func void initBehaviors()
+		super.initBehaviors()
+		
+		if actor castable BaseVRActor
+			var BaseVRActor vrActor = actor cast BaseVRActor
+			this.vrPlayspace = vrActor.getVRPlayspace()
+			this.playerInputMoveVRPlayspace = vrActor.getPlayerInputMoveVRPlayspace()
+			this.vrRightHand = vrActor.getVRRightHand()
+			this.vrLeftHand = vrActor.getVRLeftHand()
+			
+		else
+			this.vrPlayspace = ECBehaviorVRPlayspace.getInstanceIn( actor )
+			this.playerInputMoveVRPlayspace = ECBehaviorPlayerInputMoveVRPlayspace.getInstanceIn( actor )
+			this.vrRightHand = ECBehaviorVRHand.getInstanceIn( actor, "right" )
+			this.vrLeftHand = ECBehaviorVRHand.getInstanceIn( actor, "left" )
+		end
+	end
+	
+	
+	
+	/**
+	 * \brief Thinking for player controlled actor only.
+	 * 
+	 * Calls these hook methods:
+	 * - doTurnLook()
+	 * - playerUpdateLocomotion()
+	 * - playerUpdateVRPlayspace()
+	 */
+	public func void playerThink( float elapsed )
+		super.playerThink( elapsed )
+		this.playerUpdateVRPlayspace( elapsed )
+	end
+	
+	/**
+	 * \brief Update locomotion.
+	 * 
+	 * Extends BAAFirstPerson.playerUpdateLocomotion() to set looking around from HMD.
+	 */
+	protected func void playerUpdateLocomotion( float elapsed )
+		super.playerUpdateLocomotion( elapsed )
+		
+		var InputDevice hmd = BaseGameApp.getApp().getBindingManager().findDevice( block InputDevice each
+			return each.getType() == InputDeviceType.vrHMD
+		end )
+		
+		if hmd != null
+			var Vector rotation = hmd.getDevicePoseOrientation().getEulerAngles()
+			var Locomotion l = locomotion.getLocomotion()
+			l.setLookHorizontalGoal( rotation.getY() )
+			l.setLookVerticalGoal( rotation.getX() )
+		end
+	end
+	
+	/**
+	 * \brief Update VR playspace.
+	 * 
+	 * If ECBehaviorActorMover has a goal set does nothing to not interfere.
+	 */
+	protected func void playerUpdateVRPlayspace( float elapsed )
+		if this.actorMover.hasGoal()
+			return
+		end
+		
+		this.playerInputMoveVRPlayspace.updateVRPlayspace( elapsed )
+	end
+	
+	
+	
+	/**
+	 * \brief Name of PersistencyFactory required to load object from file.
+	 * 
+	 * Name of PersistencyFactory is first written to the file as string with
+	 * 8-bit length. Then writeToFile() is called to write the object itself.
+	 * Empty name is not allowed as is names longer than 255 characters.
+	 * Name has to match a PersistencyFactory present in the Persistency
+	 * instance used for loading objects. Object is read using
+	 * PersistencyFactory.readObjectFromFile() of the matching PersistencyFactory.
+	 */
+	public func String persistencyFactoryName()
+		return Factory.NAME
+	end
+end

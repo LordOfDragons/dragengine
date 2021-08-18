@@ -1,0 +1,352 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2021, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.LoadSave
+pin Dragengine.Preloading
+pin Dragengine.Utils
+
+
+/**
+ * \brief Behavior element behavior adding VR Playspace support to actor.
+ * \version 1.6
+ * 
+ * This behavior defines the position and orientation of a VR Playspace. This is used as
+ * reference coordinate system. The playspace position and orientation are in world space
+ * and thus independent of the position and orientation of the actor owning the playspace.
+ * This allows moving the actor freely inside the playspace.
+ * 
+ * This behavior does not adjust the actor position since there are different ways how
+ * the actor position can be affected by the HMD and playspace position.
+ * 
+ * This behavior can be used only once in the behavior element.
+ * 
+ * This behavior does not require persistable element class (setPersistable).
+ */
+class ECBehaviorVRPlayspace extends DefaultECBehavior
+	/** \brief Listener for behavior instance events. */
+	interface Listener
+		/** \brief Playspace position or orientation changed. */
+		func void playspaceGeometryChanged( Instance instance )
+	end
+	
+	/** \brief Default implementation of behavior instance listener. */
+	class DefaultListener implements Listener
+		/** \brief Create default listener. */
+		public func new()
+		end
+		
+		/** \brief Playspace position or orientation changed. */
+		public func void playspaceGeometryChanged( Instance instance )
+		end
+	end
+	
+	/** \brief Factory creating listeners. */
+	interface ListenerFactory
+		/** \brief Create listener. */
+		func Listener createListener( Instance instance )
+	end
+	
+	/** \brief Factory creating listeners using block. */
+	class BlockListenerFactory implements ListenerFactory
+		private var Block pBlock
+		
+		/** \brief Create factory using block receiving Instance as parameter returning Listener. */
+		public func new( Block blockFactory )
+			if blockFactory == null
+				throw ENullPointer.new()
+			end
+			this.pBlock = blockFactory
+		end
+		
+		/** \brief Create listener. */
+		public func Listener createListener( Instance instance )
+			return this.pBlock.run( instance ) cast Listener
+		end
+	end
+	
+	
+	
+	/** \brief Behavior instance. */
+	class Instance extends DefaultECBehaviorInstance
+		private var ECBehaviorVRPlayspace pECBehavior
+		private var DVector pPosition
+		private var Quaternion pOrientation
+		private var DMatrix pMatrix
+		private var DMatrix pInverseMatrix
+		private var Array pListeners
+		
+		
+		
+		/** \brief Create instance. */
+		public func new( ECBehaviorVRPlayspace ecbehavior, BehaviorElement element ) super( element )
+			this.pECBehavior = ecbehavior
+			this.pPosition = DVector.new()
+			this.pOrientation = Quaternion.new()
+			this.pListeners = Array.new()
+		end
+		
+		/** \brief Dispose of instance. */
+		public func void dispose()
+			this.pListeners = null
+			super.dispose()
+		end
+		
+		
+		
+		/** \brief Initialize behavior from stub. */
+		public func void init( StubElement stub )
+			this.pECBehavior.createListeners( this )
+		end
+		
+		
+		
+		/** \brief Behavior. */
+		public func ECBehaviorVRPlayspace getECBehavior()
+			return this.pECBehavior
+		end
+		
+		/** \brief Position. */
+		public func DVector getPosition()
+			return this.pPosition
+		end
+		
+		/** \brief Set position. */
+		public func void setPosition( DVector position )
+			if position.equals( this.pPosition )
+				return
+			end
+			
+			this.pPosition = position
+			this.pMatrix = null
+			this.pInverseMatrix = null
+			
+			this.pListeners.forEach( block Listener each
+				each.playspaceGeometryChanged( this )
+			end )
+		end
+		
+		/** \brief Orientation. */
+		public func Quaternion getOrientation()
+			return this.pOrientation
+		end
+		
+		/** \brief Set orientation. */
+		public func void setOrientation( Quaternion orientation )
+			if orientation.equals( this.pOrientation )
+				return
+			end
+			
+			this.pOrientation = orientation
+			this.pMatrix = null
+			this.pInverseMatrix = null
+			
+			this.pListeners.forEach( block Listener each
+				each.playspaceGeometryChanged( this )
+			end )
+		end
+		
+		/** \brief Set position and orientation. */
+		public func void setGeometry( DVector position, Quaternion orientation )
+			if position.equals( this.pPosition ) and orientation.equals( this.pOrientation )
+				return
+			end
+			
+			this.pPosition = position
+			this.pOrientation = orientation
+			this.pMatrix = null
+			this.pInverseMatrix = null
+			
+			this.pListeners.forEach( block Listener each
+				each.playspaceGeometryChanged( this )
+			end )
+		end
+		
+		/** \brief Matrix. */
+		public func DMatrix getMatrix()
+			if this.pMatrix == null
+				this.pMatrix = DMatrix.newWorld( this.pPosition, this.pOrientation )
+			end
+			return this.pMatrix
+		end
+		
+		/** \brief Inverse matrix. */
+		public func DMatrix getInverseMatrix()
+			if this.pInverseMatrix == null
+				this.pInverseMatrix = this.getMatrix().getInverse()
+			end
+			return this.pInverseMatrix
+		end
+		
+		/** \brief Move playspace left/right and forward/backward. */
+		public func void move( float right, float forward )
+			this.setPosition( this.pPosition + DVector.new( right, 0, forward ) )
+		end
+		
+		/** \brief Move playspace. */
+		public func void move( DVector distance )
+			this.setPosition( this.pPosition + distance )
+		end
+		
+		/** \brief Rotate playspace along up axis. */
+		public func void rotate( float angle )
+			this.setOrientation( this.pOrientation * Quaternion.newFromEulerY( angle ) )
+		end
+		
+		/** \brief Rotate playspace along up axis. */
+		public func void rotate( Quaternion rotation )
+			this.setOrientation( this.pOrientation * rotation )
+		end
+		
+		
+		
+		/**
+		 * \brief Set actor position and orientation to match playspace.
+		 * 
+		 * This call is useful for spawning or teleporting actors.
+		 */
+		public func void setActorGeometry()
+			this.getElement().setGeometry( this.pPosition, this.pOrientation )
+		end
+		
+		/**
+		 * \brief Set playspace position and orientation to match actor.
+		 * 
+		 * This call is useful for spawning or teleporting actors.
+		 */
+		public func void setGeometryFromActor()
+			var BehaviorElement element = this.getElement()
+			this.setGeometry( element.getPosition(), element.getOrientation() )
+		end
+		
+		
+		
+		/** \brief Add listener. */
+		public func void addListener( Listener listener )
+			if listener == null
+				throw EInvalidParam.new()
+			end
+			this.pListeners.add( listener )
+		end
+		
+		/** \brief Remove listener. */
+		public func void removeListener( Listener listener )
+			this.pListeners.remove( listener )
+		end
+	end
+	
+	
+	
+	private var Array pListenerFactories
+	
+	
+	
+	/** \brief Create behavior element class. */
+	public func new( BehaviorElementClass eclass ) super( eclass )
+		if this.getBehaviorIn( eclass ) != null
+			throw BEMultipleInstanceException.new( eclass, this )
+		end
+		
+		this.pListenerFactories = Array.new()
+		
+		eclass.addBehavior( this )
+	end
+	
+	/** \brief Dispose of behavior. */
+	public func void dispose()
+		this.pListenerFactories = null
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief Add listener factory. */
+	public func void addListenerFactory( ListenerFactory factory )
+		if factory == null
+			throw ENullPointer.new()
+		end
+		this.pListenerFactories.add( factory )
+	end
+	
+	/**
+	 * \brief Add listener factory using block.
+	 * 
+	 * Block receives as parameter Instance and returns Listener.
+	 */
+	public func void addListenerFactory( Block blockFactory )
+		this.pListenerFactories.add( BlockListenerFactory.new( blockFactory ) )
+	end
+	
+	/** \brief Visit listener factories with block with argument ListenerFactory. */
+	public func void forEachListenerFactory( Block ablock )
+		this.pListenerFactories.forEach( ablock )
+	end
+	
+	/** \brief Create listeners from factories adding them to behavior instance. */
+	public func void createListeners( Instance instance )
+		this.pListenerFactories.forEach( block ListenerFactory each
+			instance.addListener( each.createListener( instance ) )
+		end )
+	end
+	
+	
+	
+	/** \brief Get instance in element from owner element class. */
+	public func Instance instance( BehaviorElement element )
+		return element.getInstanceAt( this.getInstanceIndex() ) cast Instance
+	end
+	
+	
+	
+	/**
+	 * \brief Get behavior in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorVRPlayspace.
+	 */
+	static public func ECBehaviorVRPlayspace getBehaviorIn( BehaviorElementClass eclass )
+		return eclass.findBehavior( block ECBehaviorVRPlayspace each
+			return true
+		end ) cast ECBehaviorVRPlayspace
+	end
+	
+	/**
+	 * \brief Get instance in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorVRPlayspace.Instance .
+	 */
+	static public func Instance getInstanceIn( BehaviorElement element )
+		return element.findInstance( block Instance each
+			return true
+		end ) cast Instance
+	end
+	
+	
+	
+	/** \brief Create Behavior instance. */
+	public func ECBehaviorInstance createInstance( BehaviorElement element )
+		return Instance.new( this, element )
+	end
+end
