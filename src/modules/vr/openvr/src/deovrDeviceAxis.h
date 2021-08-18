@@ -61,7 +61,9 @@ private:
 	
 	float pMinimum;
 	float pMaximum;
-	float pDefaultValue;
+	float pCenter;
+	float pDeadZone;
+	float pResolution;
 	
 	float pValue;
 	
@@ -160,11 +162,23 @@ public:
 	/** Set range. */
 	void SetRange( float minimum, float maximum );
 	
-	/** Default value. */
-	inline float GetDefault() const{ return pDefaultValue; }
+	/** Center value. */
+	inline float GetCenter() const{ return pCenter; }
 	
-	/** Set default value. */
-	void SetDefault( float defaultValue );
+	/** Set center value. */
+	void SetCenter( float center );
+	
+	/** Dead zone value. */
+	inline float GetDeadZone() const{ return pDeadZone; }
+	
+	/** Set dead zone value. */
+	void SetDeadZone( float deadZone );
+	
+	/** Resolution. */
+	inline float GetResolution() const{ return pResolution; }
+	
+	/** Set resolution value. */
+	void SetResolution( float resolution );
 	
 	
 	

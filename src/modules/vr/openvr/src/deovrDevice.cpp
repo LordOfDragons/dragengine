@@ -718,7 +718,7 @@ deVROpenVR::eInputActions actionAnalog, const char *name, const char *id, const 
 	axis->SetActionAnalogHandle( actionHandle );
 	axis->SetType( type );
 	axis->SetRange( 0.0f, 1.0f );
-	axis->SetDefault( -1.0f );
+	axis->SetCenter( -1.0f );
 	axis->SetValue( -1.0f );
 	axis->SetName( name );
 	axis->SetID( id );
@@ -732,7 +732,7 @@ const char *name, const char *id, const char *displayText ){
 	const deovrDeviceAxis::Ref axis( deovrDeviceAxis::Ref::New( new deovrDeviceAxis( *this ) ) );
 	axis->SetType( type );
 	axis->SetRange( 0.0f, 1.0f );
-	axis->SetDefault( -1.0f );
+	axis->SetCenter( -1.0f );
 	axis->SetValue( -1.0f );
 	axis->SetName( name );
 	axis->SetID( id );
@@ -771,6 +771,7 @@ const char *name, const char *id, const char *displayText ){
 		axis->SetID( text );
 		axis->SetDisplayText( displayText );
 		axis->SetIndex( pAxes.GetCount() );
+		axis->SetDeadZone( axis->GetResolution() );
 		pAxes.Add( axis );
 	}
 }
@@ -804,6 +805,7 @@ const char *name, const char *id, const char *displayText ){
 		axis->SetID( text );
 		axis->SetDisplayText( displayText );
 		axis->SetIndex( pAxes.GetCount() );
+		axis->SetDeadZone( axis->GetResolution() );
 		pAxes.Add( axis );
 	}
 }

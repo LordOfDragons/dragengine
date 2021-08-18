@@ -49,7 +49,9 @@ pFinger( -1 ),
 pType( deInputDeviceAxis::eatGeneric ),
 pMinimum( -1.0f ),
 pMaximum( 1.0f ),
-pDefaultValue( 0.0f ),
+pCenter( 0.0f ),
+pDeadZone( 0.0f ),
+pResolution( 0.01f ),
 pValue( 0.0f ){
 }
 
@@ -127,8 +129,16 @@ void deovrDeviceAxis::SetRange( float minimum, float maximum ){
 	pMaximum = maximum;
 }
 
-void deovrDeviceAxis::SetDefault( float defaultValue ){
-	pDefaultValue = defaultValue;
+void deovrDeviceAxis::SetCenter( float center ){
+	pCenter = center;
+}
+
+void deovrDeviceAxis::SetDeadZone( float deadZone ){
+	pDeadZone = deadZone;
+}
+
+void deovrDeviceAxis::SetResolution( float resolution ){
+	pResolution = resolution;
 }
 
 void deovrDeviceAxis::SetValue( float value ){
@@ -138,7 +148,11 @@ void deovrDeviceAxis::SetValue( float value ){
 void deovrDeviceAxis::UpdateValue( float value ){
 	value = decMath::clamp( value, -1.0f, 1.0f );
 	
-	if( fabsf( value - pValue ) < 0.01f ){
+	if( fabsf( value - pCenter ) < pDeadZone ){
+		value = pCenter;
+	}
+	
+	if( fabsf( value - pValue ) < pResolution ){
 		return;
 	}
 	
@@ -178,7 +192,7 @@ void deovrDeviceAxis::TrackState(){
 				pMinimum, pMaximum, -1.0f, 1.0f ) );
 			
 		}else{
-			//UpdateValue( pDefaultValue );
+			//UpdateValue( pCenterValue );
 			// keep the last known value
 		}
 		}break;
@@ -186,8 +200,8 @@ void deovrDeviceAxis::TrackState(){
 }
 
 void deovrDeviceAxis::ResetState(){
-	UpdateValue( pDefaultValue );
-	SetValue( pDefaultValue );
+	UpdateValue( pCenter );
+	SetValue( pCenter );
 }
 
 
