@@ -925,7 +925,7 @@ bool deParallelProcessing::pProcessOneTaskDirect( bool takeLowPriorityTasks ){
 		const decString debugName( task->GetDebugName() );
 		const decString debugDetails( task->GetDebugDetails() );
 		pEngine.GetLogger()->LogInfoFormat( LOGSOURCE, "ProcessOneTask Finished [%s] %s",
-				debugName.GetString(), debugDetails.GetString() );
+			debugName.GetString(), debugDetails.GetString() );
 	}
 	
 	AddFinishedTask( task );
@@ -935,7 +935,7 @@ bool deParallelProcessing::pProcessOneTaskDirect( bool takeLowPriorityTasks ){
 void deParallelProcessing::pEnsureRunTaskNow( deParallelTask *task ){
 	bool deadLoopCheck = false;
 	
-	while( ! task->CanRun() ){
+	while( ! task->GetFinished() ){
 		if( task->IsCancelled() ){
 			if( task->GetLowPriority() ){
 				pListPendingTasksLowPriority.RemoveFrom( pListPendingTasksLowPriority.IndexOf( task ) );
@@ -978,6 +978,13 @@ void deParallelProcessing::pEnsureRunTaskNow( deParallelTask *task ){
 				const decString debugDetails( task->GetDebugDetails() );
 				pEngine.GetLogger()->LogInfoFormat( LOGSOURCE, "pEnsureRunTaskNow Finished [%s] %s",
 						debugName.GetString(), debugDetails.GetString() );
+			}
+			
+			if( task->GetLowPriority() ){
+				pListPendingTasksLowPriority.RemoveFrom( pListPendingTasksLowPriority.IndexOf( task ) );
+				
+			}else{
+				pListPendingTasks.RemoveFrom( pListPendingTasks.IndexOf( task ) );
 			}
 			
 			if( task->GetMarkFinishedAfterRun() ){
