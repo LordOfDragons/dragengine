@@ -580,10 +580,14 @@ void dedsLocomotion::ForceBodyAdjustment(){
 		return;
 	}
 	
-	pIsTurningIP = true;
-	pTurnIP = pLookHorizontal.GetGoal();
+	pTurnHorizontal += pLookHorizontal.GetGoal();
 	
-	pResetTimeTurnIP = true;
+	if( pCanTurnInPlace ){
+		pTurnHorizontal += pTurnIP;
+	}
+	pIsTurningIP = false;
+	pTurnIP = 0.0f;
+	pResetTimeTurnIP = false;
 }
 
 
@@ -808,6 +812,11 @@ void dedsLocomotion::UpdateOrientationNotMoving( float elapsed, float &adjustOri
 				pResetTimeTurnIP = true;
 			}
 		}
+		
+	}else{
+		pIsTurningIP = false;
+		pTurnIP = 0.0f;
+		pResetTimeTurnIP = false;
 	}
 	
 	if( pIsTurningIP ){
@@ -841,7 +850,7 @@ void dedsLocomotion::UpdateOrientationNotMoving( float elapsed, float &adjustOri
 void dedsLocomotion::CheckLookingRangeViolation( float &adjustOrientation ){
 	// if we can turn the body keep the looking always inside the limits.
 	// if leaving adjust the adjustOrientation to satisfy the limits again.
-	if( pCanTurn && pCanTurnInPlace ){
+	if( pCanTurn ){
 		if( pLookHorizontal.GetGoal() - adjustOrientation > 90.0f ){
 			adjustOrientation = pLookHorizontal.GetGoal() - 90.0f;
 			

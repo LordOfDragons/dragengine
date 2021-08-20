@@ -685,7 +685,7 @@ class ECBehaviorPlayerInputMove extends DefaultECBehavior
 			select this.pLocomotionType
 			case LocomotionType.natural
 				locomotion.setAnalogMovingHorizontalGoal( this.pMovingDirection + locomotion.getLookHorizontalGoal() )
-				if this.pMovingSpeed > 0.001
+				if this.pMovingSpeed > 0.001 or not locomotion.getCanTurnInPlace()
 					locomotion.setTurnHorizontal( locomotion.getLookHorizontalGoal() + this.pMovingBodyTurn )
 					
 				else
@@ -693,13 +693,8 @@ class ECBehaviorPlayerInputMove extends DefaultECBehavior
 				end
 				
 			case LocomotionType.fps
-				locomotion.setAnalogMovingHorizontalGoal( this.pMovingDirection + locomotion.getLookHorizontalGoal() )
-				if this.pMovingSpeed > 0.001
-					locomotion.setTurnHorizontal( locomotion.getLookHorizontalGoal() )
-					
-				else
-					locomotion.setTurnHorizontal( 0 )
-				end
+				locomotion.setAnalogMovingHorizontalGoal( this.pMovingDirection )
+				locomotion.setTurnHorizontal( locomotion.getLookHorizontalGoal() )
 				
 			case LocomotionType.vehicle
 				locomotion.setAnalogMovingHorizontalGoal( this.pMovingDirection )
