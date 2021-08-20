@@ -36,7 +36,6 @@ pin Dragengine.Utils
  */
 class BaseVRActor extends BaseActor
 	private var ECBehaviorVRPlayspace.Instance pVRPlayspace
-	private var ECBehaviorPlayerInputMoveVRPlayspace.Instance pPlayerInputMoveVRPlayspace
 	private var ECBehaviorVRHand.Instance pVRRightHand
 	private var ECBehaviorVRHand.Instance pVRLeftHand
 	
@@ -45,7 +44,6 @@ class BaseVRActor extends BaseActor
 	/** \brief Create element. */
 	public func new( BaseVRActorClass eclass ) super( eclass )
 		this.pVRPlayspace = eclass.getVRPlayspace().instance( this )
-		this.pPlayerInputMoveVRPlayspace = eclass.getPlayerInputMoveVRPlayspace().instance( this )
 		this.pVRRightHand = eclass.getVRRightHand().instance( this )
 		this.pVRLeftHand = eclass.getVRLeftHand().instance( this )
 	end
@@ -57,11 +55,6 @@ class BaseVRActor extends BaseActor
 		return this.pVRPlayspace
 	end
 	
-	/** \brief Player Input Move VR Playspace behavior instance. */
-	public func ECBehaviorPlayerInputMoveVRPlayspace.Instance getPlayerInputMoveVRPlayspace()
-		return this.pPlayerInputMoveVRPlayspace
-	end
-	
 	/** \brief VR Right Hand Controller. */
 	public func ECBehaviorVRHand.Instance getVRRightHand()
 		return this.pVRRightHand
@@ -70,16 +63,6 @@ class BaseVRActor extends BaseActor
 	/** \brief VR Left Hand Controller. */
 	public func ECBehaviorVRHand.Instance getVRLeftHand()
 		return this.pVRLeftHand
-	end
-	
-	
-	
-	/** \brief Adjust actor after spawning. */
-	protected func void spawnAdjustActor()
-		super.spawnAdjustActor()
-		
-		this.pVRPlayspace.setGeometryFromActor()
-		this.pPlayerInputMoveVRPlayspace.reset()
 	end
 	
 	

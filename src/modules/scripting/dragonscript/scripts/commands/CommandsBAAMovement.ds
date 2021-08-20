@@ -528,7 +528,7 @@ class CommandsBAAMovement
 		end
 		
 		if helper.hasVRHand( true )
-			helper.vrHandBindStick( true, InputDeviceAxisType.stick, 0, "analogLookLR", "analogLookUD" )
+			helper.vrHandBindStick( true, InputDeviceAxisType.stick, 0, "analogLookLR", "" )
 		end
 		
 		if helper.hasVRHand( false )

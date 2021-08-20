@@ -601,7 +601,7 @@ class DefaultBindingHelper
 	 */
 	public func bool vrHandBindStick( bool rightHand, InputDeviceAxisType type, \
 	int stick , String horizontal, String vertical )
-		return this.bindStick( this.getVRHand( rightHand ), type, stick, horizontal, vertical, true )
+		return this.bindStick( this.getVRHand( rightHand ), type, stick, horizontal, vertical, false )
 	end
 	
 	/**
@@ -618,7 +618,7 @@ class DefaultBindingHelper
 	 */
 	public func bool vrHandBindStick( bool rightHand, InputDeviceAxisType type, int stick, \
 	String left, String right, String up, String down )
-		return this.bindStick( this.getVRHand( rightHand ), type, stick, left, right, up, down, true )
+		return this.bindStick( this.getVRHand( rightHand ), type, stick, left, right, up, down, false )
 	end
 	
 	/**

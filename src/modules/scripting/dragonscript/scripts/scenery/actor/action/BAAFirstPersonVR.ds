@@ -65,11 +65,11 @@ class BAAFirstPersonVR extends BAAFirstPerson
 	
 	
 	
+	/** \brief Player input turning behavior. */
+	protected var ECBehaviorPlayerInputTurn.Instance playerInputTurn
+	
 	/** \brief VR Playspace behavior. */
 	protected var ECBehaviorVRPlayspace.Instance vrPlayspace
-	
-	/** \brief Player Input Move VR Playspace behavior. */
-	protected var ECBehaviorPlayerInputMoveVRPlayspace.Instance playerInputMoveVRPlayspace
 	
 	/** \brief VR Right Hand Controller behavior. */
 	protected var ECBehaviorVRHand.Instance vrRightHand
@@ -85,14 +85,14 @@ class BAAFirstPersonVR extends BAAFirstPerson
 	
 	
 	
+	/** \brief Player input turning. */
+	public func ECBehaviorPlayerInputTurn.Instance getPlayerInputTurn()
+		return this.playerInputTurn
+	end
+	
 	/** \brief VR Playspace. */
 	public func ECBehaviorVRPlayspace.Instance getVRPlayspace()
 		return this.vrPlayspace
-	end
-	
-	/** \brief Player Input Move VR Playspace. */
-	public func ECBehaviorPlayerInputMoveVRPlayspace.Instance getPlayerInputMoveVRPlayspace()
-		return this.playerInputMoveVRPlayspace
 	end
 	
 	/** \brief VR Right Hand Controller. */
@@ -106,90 +106,6 @@ class BAAFirstPersonVR extends BAAFirstPerson
 	end
 	
 	
-	
-	/** \brief Start moving forward. */
-	public func void moveForwardStart()
-		this.playerInputMoveVRPlayspace.setMoveForward( true )
-	end
-	
-	/** \brief Stop moving forward. */
-	public func void moveForwardStop()
-		this.playerInputMoveVRPlayspace.setMoveForward( false )
-	end
-	
-	/** \brief Start moving backward. */
-	public func void moveBackwardStart()
-		this.playerInputMoveVRPlayspace.setMoveBackward( true )
-	end
-	
-	/** \brief Stop moving backward. */
-	public func void moveBackwardStop()
-		this.playerInputMoveVRPlayspace.setMoveBackward( false )
-	end
-	
-	/** \brief Analog moving forward/backward. */
-	public func void analogMoveFB( float amount, bool sticky )
-		if sticky
-			this.playerInputMoveVRPlayspace.setAnalogMoveForwardBackwardSticky( -amount )
-			
-		else
-			this.playerInputMoveVRPlayspace.setAnalogMoveForwardBackward( -amount )
-		end
-	end
-	
-	
-	
-	/** \brief Start moving left. */
-	public func void moveLeftStart()
-		this.playerInputMoveVRPlayspace.setMoveLeft( true )
-	end
-	
-	/** \brief Stop moving left. */
-	public func void moveLeftStop()
-		this.playerInputMoveVRPlayspace.setMoveLeft( false )
-	end
-	
-	/** \brief Start moving right. */
-	public func void moveRightStart()
-		this.playerInputMoveVRPlayspace.setMoveRight( true )
-	end
-	
-	/** \brief Stop moving right. */
-	public func void moveRightStop()
-		this.playerInputMoveVRPlayspace.setMoveRight( false )
-	end
-	
-	/** \brief Analog moving left/right. */
-	public func void analogMoveLR( float amount, bool sticky )
-		if sticky
-			this.playerInputMoveVRPlayspace.setAnalogMoveLeftRightSticky( -amount )
-			
-		else
-			this.playerInputMoveVRPlayspace.setAnalogMoveLeftRight( -amount )
-		end
-	end
-	
-	
-	
-	/** \brief Start looking left. */
-	public func void lookLeftStart()
-		this.playerInputMoveVRPlayspace.setTurnLeft( true )
-	end
-	
-	/** \brief Stop looking left. */
-	public func void lookLeftStop()
-		this.playerInputMoveVRPlayspace.setTurnLeft( false )
-	end
-	
-	/** \brief Start looking right. */
-	public func void lookRightStart()
-		this.playerInputMoveVRPlayspace.setTurnRight( true )
-	end
-	
-	/** \brief Stop looking right. */
-	public func void lookRightStop()
-		this.playerInputMoveVRPlayspace.setTurnRight( false )
-	end
 	
 	/** \brief Start looking up. */
 	public func void lookUpStart()
@@ -207,18 +123,22 @@ class BAAFirstPersonVR extends BAAFirstPerson
 	public func void lookDownStop()
 	end
 	
-	/** \brief Analog looking left/right. */
-	public func void analogLookLR( float amount, bool sticky )
-		if sticky
-			this.playerInputMoveVRPlayspace.setAnalogTurnHorizontalSticky( amount )
-			
-		else
-			this.playerInputMoveVRPlayspace.setAnalogTurnHorizontal( amount )
-		end
-	end
-	
 	/** \brief Analog looking up/down. */
 	public func void analogLookUD( float amount, bool sticky )
+	end
+	
+	
+	
+	/** \brief Start crouching. */
+	public func void crouchStart()
+	end
+	
+	/** \brief Stop crouching. */
+	public func void crouchStop()
+	end
+	
+	/** \brief Toggle crouching. */
+	public func void crouchToggle()
 	end
 	
 	
@@ -231,67 +151,82 @@ class BAAFirstPersonVR extends BAAFirstPerson
 	protected func void initBehaviors()
 		super.initBehaviors()
 		
+		if actor castable BaseActor
+			this.playerInputTurn = ( actor cast BaseActor ).getPlayerInputTurn()
+			
+		else
+			this.playerInputTurn = ECBehaviorPlayerInputTurn.getInstanceIn( actor )
+		end
+		
 		if actor castable BaseVRActor
 			var BaseVRActor vrActor = actor cast BaseVRActor
 			this.vrPlayspace = vrActor.getVRPlayspace()
-			this.playerInputMoveVRPlayspace = vrActor.getPlayerInputMoveVRPlayspace()
 			this.vrRightHand = vrActor.getVRRightHand()
 			this.vrLeftHand = vrActor.getVRLeftHand()
 			
 		else
 			this.vrPlayspace = ECBehaviorVRPlayspace.getInstanceIn( actor )
-			this.playerInputMoveVRPlayspace = ECBehaviorPlayerInputMoveVRPlayspace.getInstanceIn( actor )
 			this.vrRightHand = ECBehaviorVRHand.getInstanceIn( actor, "right" )
 			this.vrLeftHand = ECBehaviorVRHand.getInstanceIn( actor, "left" )
 		end
 	end
 	
-	
+	/**
+	 * Init player input.
+	 */
+	protected func void initPlayerInput()
+		this.playerInputMove.setLocomotionType( ECBehaviorPlayerInputMove.LocomotionType.fps )
+		this.playerInputCrouch.setCanCrouch( false )
+	end
 	
 	/**
-	 * \brief Thinking for player controlled actor only.
+	 * \brief Initialize locomotion.
 	 * 
-	 * Calls these hook methods:
-	 * - doTurnLook()
-	 * - playerUpdateLocomotion()
-	 * - playerUpdateVRPlayspace()
+	 * See ECBehaviorLocomotion.initHuman().
 	 */
-	public func void playerThink( float elapsed )
-		super.playerThink( elapsed )
-		this.playerUpdateVRPlayspace( elapsed )
+	protected func void initLocomotion()
+		this.locomotion.initHuman( this.playerInputMove.getSpeedWalk() )
+		
+		// Since we use ECBehaviorPlayerInputMove.LocomotionType.fps we should disable
+		// turn-in-place support. The two settings are not inherently incompatible but
+		// but for FPS locomotion use turning in-place can produce some funky results
+		this.locomotion.getLocomotion().setCanTurnInPlace( false )
+	end
+	
+	/**
+	 * \brief Initialize locomotion if player controls this actor.
+	 * 
+	 * Applies these changes to parameters:
+	 * - Looking adjust times: 0
+	 * - Orientation adjust times: 1
+	 * - Linear velocity adjust time: 1
+	 * 
+	 * The orientation adjust time is important. Too small value cause abrupt changes of
+	 * angular velocity which can lead to vertigo on the player. Larger values create
+	 * smoother angular velocity changes which are easier to sustain.
+	 * 
+	 * The same applies to linear velocity adjustment time.
+	 */
+	protected func void initLocomotionPlayer()
+		var Locomotion l = locomotion.getLocomotion()
+		l.setAdjustTimeVertical( 0 )
+		l.setAdjustTimeHorizontal( 0 )
+		l.setAdjustTimeOrientation( 1 )
+		l.setAdjustTimeLinearVelocity( 1 )
 	end
 	
 	/**
 	 * \brief Update locomotion.
 	 * 
-	 * Extends BAAFirstPerson.playerUpdateLocomotion() to set looking around from HMD.
+	 * In addition to super class implementation force body orientation.
 	 */
 	protected func void playerUpdateLocomotion( float elapsed )
-		super.playerUpdateLocomotion( elapsed )
-		
-		var InputDevice hmd = BaseGameApp.getApp().getBindingManager().findDevice( block InputDevice each
-			return each.getType() == InputDeviceType.vrHMD
-		end )
-		
-		if hmd != null
-			var Vector rotation = hmd.getDevicePoseOrientation().getEulerAngles()
-			var Locomotion l = locomotion.getLocomotion()
-			l.setLookHorizontalGoal( rotation.getY() )
-			l.setLookVerticalGoal( rotation.getX() )
-		end
-	end
-	
-	/**
-	 * \brief Update VR playspace.
-	 * 
-	 * If ECBehaviorActorMover has a goal set does nothing to not interfere.
-	 */
-	protected func void playerUpdateVRPlayspace( float elapsed )
 		if this.actorMover.hasGoal()
 			return
 		end
 		
-		this.playerInputMoveVRPlayspace.updateVRPlayspace( elapsed )
+		this.playerInputCrouch.updateLocomotion( elapsed )
+		this.playerInputMove.updateLocomotion( elapsed )
 	end
 	
 	

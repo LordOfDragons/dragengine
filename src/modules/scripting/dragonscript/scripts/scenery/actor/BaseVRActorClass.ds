@@ -36,7 +36,6 @@ pin Dragengine.Utils
  */
 class BaseVRActorClass extends BaseActorClass
 	private var ECBehaviorVRPlayspace pVRPlayspace
-	private var ECBehaviorPlayerInputMoveVRPlayspace pPlayerInputMoveVRPlayspace
 	private var ECBehaviorVRHand pVRRightHand
 	private var ECBehaviorVRHand pVRLeftHand
 	
@@ -62,8 +61,10 @@ class BaseVRActorClass extends BaseActorClass
 	super( className, loaders, tracker )
 		this.getAIAction().setActionFactory( BAAFirstPersonVR.Factory.new() )
 		
+		// Change horizontal looking speed to 90 degrees per second
+		this.getPlayerInputLook().getSpeedLookHorizontal().setValue( 90 )
+		
 		this.pVRPlayspace = ECBehaviorVRPlayspace.new( this )
-		this.pPlayerInputMoveVRPlayspace = ECBehaviorPlayerInputMoveVRPlayspace.new( this, this.pVRPlayspace )
 		this.pVRRightHand = ECBehaviorVRHand.new( this, this.pVRPlayspace, InputDeviceType.vrRightHand, "right" )
 		this.pVRLeftHand = ECBehaviorVRHand.new( this, this.pVRPlayspace, InputDeviceType.vrLeftHand, "left" )
 	end
@@ -73,11 +74,6 @@ class BaseVRActorClass extends BaseActorClass
 	/** \brief VR Playspace behavior. */
 	public func ECBehaviorVRPlayspace getVRPlayspace()
 		return this.pVRPlayspace
-	end
-	
-	/** \brief Player Input Move VR Playspace behavior. */
-	public func ECBehaviorPlayerInputMoveVRPlayspace getPlayerInputMoveVRPlayspace()
-		return this.pPlayerInputMoveVRPlayspace
 	end
 	
 	/** \brief VR Right Hand Controller. */
