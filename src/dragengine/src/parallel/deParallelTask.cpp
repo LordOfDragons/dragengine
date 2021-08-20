@@ -78,6 +78,8 @@ void deParallelTask::Cancel(){
 	for( i=0; i<count; i++ ){
 		( ( deParallelTask* )pDependedOnBy.GetAt( i ) )->Cancel();
 	}
+	
+	Cancelled();
 }
 
 void deParallelTask::SetFinished(){
@@ -171,6 +173,14 @@ bool deParallelTask::CanRun() const{
 void deParallelTask::Reset(){
 	pFinished = false;
 	pCancel = false;
+}
+
+
+
+// Subclass Responsibility
+////////////////////////////
+
+void deParallelTask::Cancelled(){
 }
 
 

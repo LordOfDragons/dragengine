@@ -233,6 +233,24 @@ public:
 	 * \warning Do as little work as possible here to not stall too much.
 	 */
 	virtual void Finished() = 0;
+	
+	/**
+	 * \brief Parallel task implementation has been cancelled.
+	 * 
+	 * Called if Cancel() is called. This allows tasks marked as finished after run to
+	 * trigger required actions as if Run() has been called.
+	 * 
+	 * The default implementation is empty.
+	 * 
+	 * \warning Can be called while Run() is running. Implementations have to cope with this.
+	 * 
+	 * \warning Do not manipulate the reference count or depends-on of the tasks or any
+	 *          task depending on it.
+	 * 
+	 * \warning Due to implementation details it is possible (although unlikely) this
+	 *          function is called more than once. Implementations have to cope with this.
+	 */
+	virtual void Cancelled();
 	/*@}*/
 	
 	
