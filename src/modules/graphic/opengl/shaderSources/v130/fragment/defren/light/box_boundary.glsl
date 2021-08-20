@@ -3,7 +3,6 @@ precision highp int;
 
 #ifdef DEPTH_INPUT
 	uniform vec4 pPosTransform;
-	uniform vec2 pPosTransform2;
 	uniform mat3 pMatrixRotation;
 	uniform vec3 pInitialMinValue;
 	uniform vec3 pInitialMaxValue;
@@ -85,7 +84,7 @@ void updateMinMaxFromDepth( in HIGHP sampler2D tex, in ivec2 tc ){
 	#endif
 	
 	position.z = pPosTransform.x / ( pPosTransform.y - position.z );
-	position.xy = ( vTexCoord + pPosTransform2 ) * pPosTransform.zw * position.zz;
+	position.xy = vTexCoord * pPosTransform.zw * position.zz;
 	position = pMatrixRotation * position;
 	
 	outMin = min( outMin, position );

@@ -12,7 +12,6 @@
 	
 	<parameter name='pQuadParams'/>
 	<parameter name='pPosTransform'/>
-	<parameter name='pPosTransform2'/>
 	<parameter name='pMipMapLevel'/>
 	<parameter name='pMatrixRotation'/>
 	<parameter name='pInitialMinValue'/>
