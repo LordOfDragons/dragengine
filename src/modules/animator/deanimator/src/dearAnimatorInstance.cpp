@@ -829,7 +829,10 @@ void dearAnimatorInstance::pWaitTaskApplyRules(){
 	}
 	
 	deParallelProcessing &parallelProcessing = pModule.GetGameEngine()->GetParallelProcessing();
-	if( ! parallelProcessing.GetPaused() ){
+	if( parallelProcessing.GetPaused() ){
+		pActiveTaskApplyRule->Drop();
+		
+	}else{
 		// parallel processing is paused if the engine is in progress of being stopped.
 		// in this case all tasks have been waited for already and no tasks are running
 		parallelProcessing.WaitForTask( pActiveTaskApplyRule );
