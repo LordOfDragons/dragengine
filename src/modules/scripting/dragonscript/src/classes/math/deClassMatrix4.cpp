@@ -1111,8 +1111,8 @@ void deClassMatrix4::nfToStringPrecision::RunFunction( dsRunTime *rt, dsValue *m
 	if( precision < 0 ){
 		DSTHROW_INFO( dueInvalidParam, "precision < 0" );
 	}
-	if( precision > 6 ){
-		DSTHROW_INFO( dueInvalidParam, "precision > 6" );
+	if( precision > 9 ){
+		DSTHROW_INFO( dueInvalidParam, "precision > 9" );
 	}
 	
 	const unsigned short p = ( unsigned short )precision;

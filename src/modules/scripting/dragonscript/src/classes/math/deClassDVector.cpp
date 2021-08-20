@@ -648,7 +648,6 @@ void deClassDVector::nfHashCode::RunFunction( dsRunTime *rt, dsValue *myself ){
 // public func String toString()
 deClassDVector::nfToString::nfToString( const sInitData &init ) : dsFunction( init.clsDVec,
 "toString", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsStr ){
-	p_AddParameter( init.clsInt ); // precision
 }
 void deClassDVector::nfToString::RunFunction( dsRunTime *rt, dsValue *myself ){
 	const decDVector &vector = ( ( sDVecNatDat* )p_GetNativeData( myself ) )->vector;
@@ -661,18 +660,19 @@ void deClassDVector::nfToString::RunFunction( dsRunTime *rt, dsValue *myself ){
 deClassDVector::nfToStringPrecision::nfToStringPrecision( const sInitData &init ) :
 dsFunction( init.clsDVec, "toString", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsStr ){
+	p_AddParameter( init.clsInt ); // precision
 }
 void deClassDVector::nfToStringPrecision::RunFunction( dsRunTime *rt, dsValue *myself ){
 	const int precision = rt->GetValue( 0 )->GetInt();
 	if( precision < 0 ){
 		DSTHROW_INFO( dueInvalidParam, "precision < 0" );
 	}
-	if( precision > 6 ){
-		DSTHROW_INFO( dueInvalidParam, "precision > 6" );
+	if( precision > 17 ){
+		DSTHROW_INFO( dueInvalidParam, "precision > 17" );
 	}
 	
 	const unsigned short p = ( unsigned short )precision;
-	char format[ 17 ];
+	char format[ 21 ];
 	sprintf( format, "(%%.%huf,%%.%huf,%%.%huf)", p, p, p );
 	
 	const decDVector &vector = ( ( sDVecNatDat* )p_GetNativeData( myself ) )->vector;

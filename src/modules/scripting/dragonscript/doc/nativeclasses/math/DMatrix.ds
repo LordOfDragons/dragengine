@@ -289,8 +289,8 @@ fixed class DMatrix
 	 * 
 	 * Same as toString() except the count of digits of each component is precision.
 	 * 
-	 * \param precision Precision in digits in the range from 0 to 6 inclusive.
-	 * \throws EInvalidParam precision is less than 0 or larger than 6.
+	 * \param precision Precision in digits in the range from 0 to 17 inclusive.
+	 * \throws EInvalidParam precision is less than 0 or larger than 17.
 	 */
 	public func String toString( int precision )
 		return null

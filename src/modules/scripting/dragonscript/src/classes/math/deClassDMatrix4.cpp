@@ -998,12 +998,12 @@ void deClassDMatrix4::nfToStringPrecision::RunFunction( dsRunTime *rt, dsValue *
 	if( precision < 0 ){
 		DSTHROW_INFO( dueInvalidParam, "precision < 0" );
 	}
-	if( precision > 6 ){
-		DSTHROW_INFO( dueInvalidParam, "precision > 6" );
+	if( precision > 17 ){
+		DSTHROW_INFO( dueInvalidParam, "precision > 17" );
 	}
 	
 	const unsigned short p = ( unsigned short )precision;
-	char format[ 68 ];
+	char format[ 80 ];
 	sprintf( format, "[[%%.%huf,%%.%huf,%%.%huf,%%.%huf],"
 		"[%%.%huf,%%.%huf,%%.%huf,%%.%huf],"
 		"[%%.%huf,%%.%huf,%%.%huf,%%.%huf]]",

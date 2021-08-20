@@ -369,6 +369,31 @@ void deClassColor::nfToString::RunFunction( dsRunTime *RT, dsValue *This ){
 	RT->PushString( buffer );
 }
 
+// public func String toString( int precision )
+deClassColor::nfToStringPrecision::nfToStringPrecision( const sInitData &init ) :
+dsFunction( init.clsClr, "toString", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsStr ){
+	p_AddParameter( init.clsInt ); // precision
+}
+void deClassColor::nfToStringPrecision::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const int precision = rt->GetValue( 0 )->GetInt();
+	if( precision < 0 ){
+		DSTHROW_INFO( dueInvalidParam, "precision < 0" );
+	}
+	if( precision > 9 ){
+		DSTHROW_INFO( dueInvalidParam, "precision > 9" );
+	}
+	
+	const unsigned short p = ( unsigned short )precision;
+	char format[ 22 ];
+	sprintf( format, "(%%.%huf,%%.%huf,%%.%huf,%%.%huf)", p, p, p, p );
+	
+	const decColor &color = ( ( sClrNatDat* )p_GetNativeData( myself ) )->color;
+	decString str;
+	str.Format( str, color.r, color.g, color.b, color.a );
+	rt->PushString( str );
+}
+
 
 
 // class deClassColor
@@ -432,6 +457,7 @@ void deClassColor::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfEquals( init ) );
 	AddFunction( new nfHashCode( init ) );
 	AddFunction( new nfToString( init ) );
+	AddFunction( new nfToStringPrecision( init ) );
 	
 	// add constant variables
 	AddVariable( new dsVariable( this, "white", this, DSTM_PUBLIC | DSTM_STATIC ) );
