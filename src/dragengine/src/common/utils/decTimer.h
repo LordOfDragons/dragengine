@@ -70,6 +70,9 @@ public:
 	
 	/** \brief Time elapsed in seconds since the last reset. */
 	float GetElapsedTime();
+	
+	/** \brief Time elapsed in seconds since the last reset without doing a reset. */
+	float PeekElapsedTime();
 	/*@}*/
 };
 

@@ -60,18 +60,31 @@ void decTimer::Reset(){
 float decTimer::GetElapsedTime(){
 #ifdef OS_UNIX
 	timeval vTime;
-	suseconds_t diff;
 	gettimeofday( &vTime, NULL );
-	diff = ( int )( vTime.tv_sec - pLastSec ) * 1000000 + ( ( int )vTime.tv_usec - ( int )pLastUSec );
+	const suseconds_t diff = ( int )( vTime.tv_sec - pLastSec ) * 1000000 + ( ( int )vTime.tv_usec - ( int )pLastUSec );
 	pLastSec = vTime.tv_sec;
 	pLastUSec = vTime.tv_usec;
 	return ( float )diff * 1e-6f; // / 1000000.0f;
 #endif
 
 #ifdef OS_W32
-	DWORD curTime = timeGetTime();
-	DWORD diff = curTime - pLastTime;
+	const DWORD curTime = timeGetTime();
+	const DWORD diff = curTime - pLastTime;
 	pLastTime = curTime;
+	return ( float )diff * 1e-3f; // / 1000.0f;
+#endif
+}
+
+float decTimer::PeekElapsedTime(){
+#ifdef OS_UNIX
+	timeval vTime;
+	gettimeofday( &vTime, NULL );
+	const suseconds_t diff = ( int )( vTime.tv_sec - pLastSec ) * 1000000 + ( ( int )vTime.tv_usec - ( int )pLastUSec );
+	return ( float )diff * 1e-6f; // / 1000000.0f;
+#endif
+
+#ifdef OS_W32
+	const DWORD diff = timeGetTime() - pLastTime;
 	return ( float )diff * 1e-3f; // / 1000.0f;
 #endif
 }
