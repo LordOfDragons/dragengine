@@ -5,7 +5,7 @@ uniform mat3 pMatrixCamera;
 uniform mat3 pMatrixLayer;
 uniform vec3 pLayerPosition;
 uniform vec4 pLayerColor;
-uniform vec3 pParams;
+uniform vec4 pParams; // x=1/projMat.a11, y=1/projMat.a22, -projMat.a13, -projMat.a23
 uniform vec4 pMaterialGamma;
 uniform vec4 pSkyBgColor; // skybg.rgb, skybgBlendFactor
 
@@ -21,7 +21,8 @@ void main( void ){
 	float p, q, D, l;
 	vec3 normal;
 	
-	normal = pMatrixCamera * normalize( vec3( vTexCoord, 1.0 ) * pParams );
+// 	normal = pMatrixCamera * normalize( vec3( vTexCoord, 1.0 ) * pParams );
+	normal = pMatrixCamera * normalize( vec3( ( vTexCoord + pParams.zw ) * pParams.xy, 1.0 ) );
 	
 	p = 2.0 * dot( pLayerPosition, normal );
 	q = dot( pLayerPosition, pLayerPosition ) - 1.0;

@@ -547,7 +547,6 @@ int layerIndex, bool first ){
 	deoglSkinTexture *oglSkinTexture;
 	deoglRSkin *skin = layer.GetSkin();
 	deoglShaderCompiled *shader;
-	float constX, constY;
 	
 	if( ! skin ){
 		return false;
@@ -571,9 +570,9 @@ int layerIndex, bool first ){
 	}
 	
 	// calculate the parameters
-	float znear = plan.GetCameraImageDistance();
-	constX = tanf( plan.GetCameraFov() * 0.5f ) * znear;
-	constY = tanf( plan.GetCameraFov() * plan.GetCameraFovRatio() * 0.5f ) * znear / plan.GetAspectRatio();
+// 	const float znear = plan.GetCameraImageDistance();
+// 	const float constX = tanf( plan.GetCameraFov() * 0.5f ) * znear;
+// 	const float constY = tanf( plan.GetCameraFov() * plan.GetCameraFovRatio() * 0.5f ) * znear / plan.GetAspectRatio();
 	
 	// set the shaders
 	const float matGamma = oglSkinTexture->GetColorGamma();
@@ -593,7 +592,9 @@ int layerIndex, bool first ){
 	shader->SetParameterDMatrix3x3( spsphMatrixLayer, instanceLayer.GetMatrix() );
 	shader->SetParameterVector3( spsphLayerPosition, -instanceLayer.GetMatrix().GetPosition() );
 	shader->SetParameterColor4( spsphLayerColor, layerColor );
-	shader->SetParameterFloat( spsphParams, constX, constY, znear );
+// 	shader->SetParameterFloat( spsphParams, constX, constY, znear );
+	shader->SetParameterFloat( spsphParams, plan.GetDepthToPosition().z, plan.GetDepthToPosition().w,
+		plan.GetDepthToPosition2().x, plan.GetDepthToPosition2().y );
 	shader->SetParameterFloat( spsphMaterialGamma, matGamma, matGamma, matGamma, 1.0 );
 	shader->SetParameterColor4( spsphSkyBgColor, decColor( LinearBgColor( instance, first ), 0.0f ) );
 	shader->SetParameterFloat( spsphPositionZ, renderThread.GetDeferredRendering().GetClearDepthValueRegular() );

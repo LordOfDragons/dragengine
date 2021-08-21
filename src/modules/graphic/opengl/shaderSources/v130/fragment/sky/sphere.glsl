@@ -5,7 +5,7 @@ uniform mat3 pMatrixCamera;
 uniform mat3 pMatrixLayer;
 uniform vec3 pLayerPosition;
 uniform vec4 pLayerColor;
-uniform vec3 pParams;
+uniform vec4 pParams; // x=1/projMat.a11, y=1/projMat.a22, -projMat.a13, -projMat.a23
 uniform vec4 pMaterialGamma;
 uniform vec4 pSkyBgColor;
 
@@ -27,7 +27,46 @@ void main( void ){
 	vec3 normal;
 	vec2 tc;
 	
-	normal = pMatrixCamera * normalize( vec3( vTexCoord, 1.0 ) * pParams );
+	/*
+	// vScreenCoord = {-1..1}
+	// pPosTransform = {-znear, 0, 1 / projMat.a11, 1 / projMat.a22}
+	// pPosTransform2 = {-projMat.a13, -projMat.a23}
+	vec3 position = vec3(depth);
+	position.z = pPosTransform.x / (pPosTransform.y - position.z);
+	position.xy = (vScreenCoord + pPosTransform2) * pPosTransform.zw * position.zz;
+	
+	// with position.z = 1
+	position = vec3( (vScreenCoord + pPosTransform2) * pPosTransform.zw, 1 );
+	
+	// with position.z = 1000
+	position = vec3( (vScreenCoord + pPosTransform2) * pPosTransform.zw * vec2(1000), 1000 );
+	
+	// when normalized
+	normal = normalize(position)
+	       = normalize(position')  // where position' = position / 1000
+	
+	// so position.z = 1000 or position.z = 1 is the same for this calculation
+	
+	// vTexCoord = {-1..1}
+	// pParams = {tanf(fov / 2) * znear, tanf(fov * fovRatio / 2) * znear / aspectRatio, znear}
+	//         = {znear / projMat.a11, znear / projMat.a22, znear}
+	// pMatrixCamera = rot(inv(camMatrix))
+	normal = pMatrixCamera * normalize( vec3( vTexCoord, 1.0 ) * pParams )
+	
+	// aligning the two normals (without pMatrixCamera) yields
+	normalize( vec3(vTexCoord, 1) * pParams ) = normalize( (vScreenCoord + pPosTransform2) * pPosTransform.zw, 1 )
+	
+	// where pParams' = pParams / znear = {1 / projMat.a11, 1 / projMat.a22, 1}
+	normalize( vTexCoord * pParams'.xy, 1 ) = normalize( (vScreenCoord + pPosTransform2) * pPosTransform.zw, 1 )
+	
+	// which means 1=1 and pParams'.xy = pPosTransform.zw . leaves us with aligning
+	vTexCoord = vScreenCoord + pPosTransform2
+	
+	// hence we can simply add pPosTransform2 and get the right result
+	*/
+	
+// 	normal = pMatrixCamera * normalize( vec3( vTexCoord, 1.0 ) * pParams );
+	normal = pMatrixCamera * normalize( vec3( ( vTexCoord + pParams.zw ) * pParams.xy, 1.0 ) );
 	
 	p = 2.0 * dot( pLayerPosition, normal );
 	q = dot( pLayerPosition, pLayerPosition ) - 1.0;
