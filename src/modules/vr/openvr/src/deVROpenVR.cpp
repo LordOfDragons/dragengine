@@ -243,10 +243,6 @@ void deVROpenVR::StartRuntime(){
 		// compositor
 		pVRCompositor = vr::VRCompositor();
 		
-		// hitting 90 fps is tricky and has problems. hitting 45 is easier but still tricky
-		// depending on the scene. for the time being force reprojection to be happy with 45
-// 		pVRCompositor->ForceInterleavedReprojectionOn( true );
-		
 		// load input action manifest
 		pVRInput = vr::VRInput();
 		

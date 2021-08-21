@@ -147,13 +147,17 @@ private:
 	decTimeHistory pTimeHistoryMain;
 	decTimeHistory pTimeHistoryRender;
 	decTimeHistory pTimeHistoryFrame;
+	decTimeHistory pTimeHistoryFrameVR;
 	decTimer pTimerMain;
 	decTimer pTimerRender;
 	decTimer pTimerFrameUpdate;
+	decTimer pTimerFrameUpdateVR;
 	float pEstimatedRenderTime;
 	float pAccumulatedMainTime;
 	float pFrameTimeLimit;
 	int pFPSRate;
+	int pVRTargetFPS;
+	int pVRTargetFPSCounter;
 	
 	// debug information
 	deoglDebugInformation *pDebugInfoModule;

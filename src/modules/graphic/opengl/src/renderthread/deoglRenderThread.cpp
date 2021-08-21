@@ -131,9 +131,12 @@ pOcclusionTestPool( NULL ),
 pTimeHistoryMain( 29, 2 ),
 pTimeHistoryRender( 29, 2 ),
 pTimeHistoryFrame( 29, 2 ),
+pTimeHistoryFrameVR( 29, 3 ),
 pEstimatedRenderTime( 0.0f ),
 pAccumulatedMainTime( 0.0f ),
 pFrameTimeLimit( 1.0f / 30.0f ),
+pVRTargetFPS( 90 ),
+pVRTargetFPSCounter( 0 ),
 
 pDebugInfoModule( NULL ),
 
@@ -510,6 +513,7 @@ void deoglRenderThread::Run(){
 	
 	// render loop
 	pTimerFrameUpdate.Reset();
+	pTimerFrameUpdateVR.Reset();
 	while( true ){
 		// wait for entering synchronize
 		DEBUG_SYNC_RT_WAIT("in")
@@ -2031,9 +2035,48 @@ void deoglRenderThread::pEndFrame(){
 }
 
 void deoglRenderThread::pLimitFrameRate( float elapsed ){
-	// if VR is used no frame limiter. VR does this already
+	float limit = pFrameTimeLimit;
+	
+	// if VR is used frame limiter has to be overriden. VR does frame limiting itself
+	// to 90Hz. if the rendering can not keep up with steady 90Hz this can result in
+	// problems. one solution is to limit the rendering to 45Hz or 30Hz. this will
+	// cause the VR environment to adjust for a lesser performing application. For this
+	// to work though we have to artifically limit frame rate to not go beyond the
+	// threshold or the VR environment can start oscillate
 	if( pVRCamera && pVRCamera->GetVR() ){
-		return;
+		const float avgFrameTime = pTimeHistoryFrameVR.GetAverage();
+		
+		int targetFPS;
+		
+		if( avgFrameTime < 1.0f / 90.0f || ! pTimeHistoryFrameVR.HasMetrics() ){
+			targetFPS = 90; // we can reach 90Hz. do not frame limit
+			
+		}else if( avgFrameTime < 1.0f / 45.0f ){
+			targetFPS = 45; // we can reach 45Hz
+			
+		}else{
+			targetFPS = 30; // we can reach 30Hz
+		}
+		
+		pVRTargetFPSCounter--;
+		
+		if( targetFPS < pVRTargetFPS || ( targetFPS > pVRTargetFPS && pVRTargetFPSCounter < 0 ) ){
+			// if target FPS is lower switch immediately. if target FPS is higher switch
+			// only of the higher target FPS has been found for the last 10 frames
+			pLogger->LogInfoFormat("FrameLimiterVR: Switched target FPS from %d to %d (avgFrameTime=%fs)",
+				pVRTargetFPS, targetFPS, avgFrameTime );
+			pVRTargetFPS = targetFPS;
+			pVRTargetFPSCounter = 10;
+		}
+		
+		elapsed = pTimerFrameUpdateVR.GetElapsedTime();
+		pTimeHistoryFrameVR.Add( elapsed );
+		
+		if( pVRTargetFPS == 90 ){
+			return;
+		}
+		
+		limit = 1.0f / ( float )pVRTargetFPS;
 	}
 	
 	#ifdef OS_W32
@@ -2041,7 +2084,7 @@ void deoglRenderThread::pLimitFrameRate( float elapsed ){
 	timer.Reset();
 	#endif
 	
-	while( elapsed < pFrameTimeLimit ){
+	while( elapsed < limit ){
 		// we have some spare time due to the frame limiter. we could do here some
 		// optimization work to use the time for intelligent stuff. we can touch
 		// the GPU during this time if necessary but if possible it should be
@@ -2055,13 +2098,15 @@ void deoglRenderThread::pLimitFrameRate( float elapsed ){
 		#else
 		timespec timeout, remaining;
 		timeout.tv_sec = 0;
-		timeout.tv_nsec = ( long )( ( pFrameTimeLimit - elapsed ) * 1e9f );
+		timeout.tv_nsec = ( long )( ( limit - elapsed ) * 1e9f );
 		while( nanosleep( &timeout, &remaining ) == -1 && errno == EINTR ){
 			timeout = remaining;
 		}
 		break;
 		#endif
 	}
+	
+	pTimerFrameUpdateVR.Reset();
 }
 
 
