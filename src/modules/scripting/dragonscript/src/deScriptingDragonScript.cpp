@@ -492,6 +492,8 @@ deBaseScriptingModule( loadableModule ){
 	pClsXML = NULL;
 	pClsVRSys = NULL;
 	
+	pClsResourceLoaderType = nullptr;
+	
 	pClsGameObj = NULL;
 	pGameObj = NULL;
 	
@@ -1290,6 +1292,9 @@ void deScriptingDragonScript::pLoadBasicPackage(){
 		
 //		package->PrintClasses();
 		package = NULL;
+		
+		// find constant classes
+		pClsResourceLoaderType = pScriptEngine->GetClass( "Dragengine.ResourceLoaderType" );
 		
 	}catch( const duException &e ){
 		if( package ){

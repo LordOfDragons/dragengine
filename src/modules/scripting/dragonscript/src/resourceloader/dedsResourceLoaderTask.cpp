@@ -193,7 +193,7 @@ void dedsResourceLoaderTask::NotifyLoadingFinished( deFileResource *resource ){
 		default:
 			DETHROW( deeInvalidParam ); // TODO do something more smart here
 		}
-		rt->PushInt( pResourceType );
+		rt->PushValue( pDS->GetClassResourceLoaderType()->GetVariable( pResourceType )->GetStaticValue() );
 		rt->PushString( pFilename );
 		rt->RunFunctionFast( pListeners[ i ], funcIndex );
 	}
@@ -208,7 +208,7 @@ void dedsResourceLoaderTask::NotifyLoadingFailed(){
 	
 	for( i=0; i<pListenerCount; i++ ){
 		// failedLoading( filename, resourceType )
-		rt->PushInt( pResourceType );
+		rt->PushValue( pDS->GetClassResourceLoaderType()->GetVariable( pResourceType )->GetStaticValue() );
 		rt->PushString( pFilename );
 		rt->RunFunctionFast( pListeners[ i ], funcIndex );
 	}

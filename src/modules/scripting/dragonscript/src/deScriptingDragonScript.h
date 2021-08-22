@@ -415,6 +415,8 @@ private:
 	deClassVRSystem *pClsVRSys;
 	deClassWorld *pClsWorld;
 	
+	dsClass *pClsResourceLoaderType;
+	
 	dsEngine *pScriptEngine;
 	dsClass *pClsGameObj;
 	
@@ -712,6 +714,8 @@ public:
 	inline deClassVideoPlayer *GetClassVideoPlayer() const{ return pClsVP; }
 	inline deClassVRSystem *GetClassVRSystem() const{ return pClsVRSys; }
 	inline deClassWorld *GetClassWorld() const{ return pClsWorld; }
+	
+	inline dsClass *GetClassResourceLoaderType() const{ return pClsResourceLoaderType; }
 	
 	/** @name Management */
 	/*@{*/
