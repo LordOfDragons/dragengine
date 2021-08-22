@@ -666,6 +666,85 @@ class BaseXmlLoader
 	
 	
 	
+	/**
+	 * \brief Write vector tag.
+	 * \version 1.6
+	 */
+	public func void writeVector( EasyXMLElement root, String name, Vector vector )
+		var EasyXMLElement tag = root.addTag( name )
+		tag.setAttribute( "x", vector.getX() )
+		tag.setAttribute( "y", vector.getY() )
+		tag.setAttribute( "z", vector.getZ() )
+	end
+	
+	/**
+	 * \brief Write vector tag.
+	 * \version 1.6
+	 * \note This will loose prevision due to converting to float.
+	 */
+	public func void writeDVector( EasyXMLElement root, String name, DVector vector )
+		var EasyXMLElement tag = root.addTag( name )
+		tag.setAttribute( "x", vector.getX() )
+		tag.setAttribute( "y", vector.getY() )
+		tag.setAttribute( "z", vector.getZ() )
+	end
+	
+	/**
+	 * \brief Write vector2 tag.
+	 * \version 1.6
+	 */
+	public func void writeVector2( EasyXMLElement root, String name, Vector2 vector )
+		var EasyXMLElement tag = root.addTag( name )
+		tag.setAttribute( "x", vector.getX() )
+		tag.setAttribute( "y", vector.getY() )
+	end
+	
+	/**
+	 * \brief Write 3-component color tag using rgb attributes.
+	 * \version 1.6
+	 */
+	public func void writeColor3( EasyXMLElement root, String name, Color color )
+		var EasyXMLElement tag = root.addTag( name )
+		tag.setAttribute( "r", color.getRed() )
+		tag.setAttribute( "g", color.getGreen() )
+		tag.setAttribute( "b", color.getBlue() )
+	end
+	
+	/**
+	 * \brief Write 4-component color tag using rgba attributes.
+	 * \version 1.6
+	 */
+	public func void writeColor4( EasyXMLElement root, String name, Color color )
+		var EasyXMLElement tag = root.addTag( name )
+		tag.setAttribute( "r", color.getRed() )
+		tag.setAttribute( "g", color.getGreen() )
+		tag.setAttribute( "b", color.getBlue() )
+		tag.setAttribute( "a", color.getAlpha() )
+	end
+	
+	/**
+	 * \brief Write point tag.
+	 * \version 1.6
+	 */
+	public func void writePoint( EasyXMLElement root, String name, Point point )
+		var EasyXMLElement tag = root.addTag( name )
+		tag.setAttribute( "x", point.getX() )
+		tag.setAttribute( "y", point.getY() )
+	end
+	
+	/**
+	 * \brief Write point3 tag.
+	 * \version 1.6
+	 */
+	public func void writePoint3( EasyXMLElement root, String name, Point3 point )
+		var EasyXMLElement tag = root.addTag( name )
+		tag.setAttribute( "x", point.getX() )
+		tag.setAttribute( "y", point.getY() )
+		tag.setAttribute( "z", point.getZ() )
+	end
+	
+	
+	
 	/** Outputs an error message on the application console. */
 	public func void printOnConsole( String message )
 		this.pConsole.addMessage( this.pName + ": " + message )
