@@ -211,6 +211,10 @@ void deovrDeviceManager::Add( vr::TrackedDeviceIndex_t index ){
 	device->SetIndex( pDevices.GetCount() );
 	pDevices.Add( device );
 	
+	pOvr.LogInfoFormat( "Input Device Added: id='%s' type=%d axes=%d buttons=%d feedbacks=%d",
+		device->GetID().GetString(), device->GetType(), device->GetAxisCount(),
+		device->GetButtonCount(), device->GetFeedbackCount() );
+	
 	deInputEvent event;
 	event.SetType( deInputEvent::eeDeviceAttached );
 	event.SetSource( deInputEvent::esVR );
@@ -224,6 +228,9 @@ void deovrDeviceManager::Remove( vr::TrackedDeviceIndex_t index ){
 	if( realIndex == -1 ){
 		return;
 	}
+	
+	pOvr.LogInfoFormat( "Input Device Removed: id='%s'", GetAt( realIndex )->GetID().GetString() );
+	
 	pDevices.RemoveFrom( realIndex );
 	
 	const int count = pDevices.GetCount();
