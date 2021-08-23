@@ -22,13 +22,14 @@
 #ifndef _DEOGLVR_H_
 #define _DEOGLVR_H_
 
+#include "../model/deoglRModel.h"
 #include "../target/deoglRenderTarget.h"
+
 
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/resources/model/deModel.h>
 
 class deoglRCamera;
-class deoglRModel;
 
 
 /**
@@ -65,6 +66,8 @@ private:
 	float pCameraFovRatio;
 	deModel::Ref pHiddenMeshLeft;
 	deModel::Ref pHiddenMeshRight;
+	deoglRModel::Ref pHiddenRMeshLeft;
+	deoglRModel::Ref pHiddenRMeshRight;
 	
 	deoglRenderTarget::Ref pTargetLeftEye;
 	deoglRenderTarget::Ref pTargetRightEye;
@@ -124,10 +127,10 @@ public:
 	inline float GetCameraFovRatio() const{ return pCameraFovRatio; }
 	
 	/** Hidden area mesh for the left eye or nullptr. */
-	deoglRModel *GetHiddenMeshLeft() const;
+	inline deoglRModel *GetHiddenMeshLeft() const{ return pHiddenRMeshLeft; }
 	
 	/** Hidden area mesh for the right eye or nullptr. */
-	deoglRModel *GetHiddenMeshRight() const;
+	inline deoglRModel *GetHiddenMeshRight() const{ return pHiddenRMeshRight; }
 	
 	/**
 	 * Create projection matrix matching depth usage mode. Depending on the inverse depth

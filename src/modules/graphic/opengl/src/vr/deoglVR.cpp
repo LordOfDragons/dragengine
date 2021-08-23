@@ -82,14 +82,6 @@ deoglVR::~deoglVR(){
 // Management
 ///////////////
 
-deoglRModel *deoglVR::GetHiddenMeshLeft() const{
-	return pHiddenMeshLeft ? ( ( deoglModel* )pHiddenMeshLeft->GetPeerGraphic() )->GetRModel() : nullptr;
-}
-
-deoglRModel *deoglVR::GetHiddenMeshRight() const{
-	return pHiddenMeshRight ? ( ( deoglModel* )pHiddenMeshRight->GetPeerGraphic() )->GetRModel() : nullptr;
-}
-
 decDMatrix deoglVR::CreateProjectionDMatrix( const sProjection &projection, float znear, float zfar ) const{
 	if( znear <= 0.0f || znear >= zfar ){
 		DETHROW( deeInvalidParam );
@@ -306,9 +298,11 @@ void deoglVR::pGetParameters( deoglRenderThread &renderThread ){
 	pCameraFov = pFovY;
 	pCameraFovRatio = pFovX / pFovY;
 	
-	
 	pHiddenMeshLeft = module.GetHiddenArea( deBaseVRModule::evreLeft );
+	pHiddenRMeshLeft = pHiddenMeshLeft ? ( ( deoglModel* )pHiddenMeshLeft->GetPeerGraphic() )->GetRModel() : nullptr;
+	
 	pHiddenMeshRight = module.GetHiddenArea( deBaseVRModule::evreRight );
+	pHiddenRMeshRight = pHiddenMeshRight ? ( ( deoglModel* )pHiddenMeshRight->GetPeerGraphic() )->GetRModel() : nullptr;
 	
 	renderThread.GetLogger().LogInfoFormat( "VR: size=(%d,%d) fov=(%.1f,%.1f)",
 		pRenderSize.x, pRenderSize.y, pFovX * RAD2DEG, pFovY * RAD2DEG );
