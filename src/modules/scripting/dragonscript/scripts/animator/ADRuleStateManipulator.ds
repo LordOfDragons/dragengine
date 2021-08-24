@@ -59,8 +59,8 @@ class ADRuleStateManipulator extends ADRule
 		this.pMaxPos = Vector.new()
 		this.pMinRot = Vector.new()
 		this.pMaxRot = Vector.new()
-		this.pMinSize = Vector.new()
-		this.pMaxSize = Vector.new()
+		this.pMinSize = Vector.new( 1.0, 1.0, 1.0 )
+		this.pMaxSize = Vector.new( 1.0, 1.0, 1.0 )
 		this.pEnablePos = false
 		this.pEnableOrient = true
 		this.pEnableSize = false
