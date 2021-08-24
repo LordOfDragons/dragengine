@@ -36,6 +36,7 @@ pin Dragengine.Utils
  */
 class BaseVRActor extends BaseActor
 	private var ECBehaviorVRPlayspace.Instance pVRPlayspace
+	private var ECBehaviorVRHMD.Instance pVRHMD
 	private var ECBehaviorVRHand.Instance pVRRightHand
 	private var ECBehaviorVRHand.Instance pVRLeftHand
 	
@@ -44,6 +45,7 @@ class BaseVRActor extends BaseActor
 	/** \brief Create element. */
 	public func new( BaseVRActorClass eclass ) super( eclass )
 		this.pVRPlayspace = eclass.getVRPlayspace().instance( this )
+		this.pVRHMD = eclass.getVRHMD().instance( this )
 		this.pVRRightHand = eclass.getVRRightHand().instance( this )
 		this.pVRLeftHand = eclass.getVRLeftHand().instance( this )
 	end
@@ -53,6 +55,11 @@ class BaseVRActor extends BaseActor
 	/** \brief VR Playspace behavior instance. */
 	public func ECBehaviorVRPlayspace.Instance getVRPlayspace()
 		return this.pVRPlayspace
+	end
+	
+	/** \brief VR HMD. */
+	public func ECBehaviorVRHMD.Instance getVRHMD()
+		return this.pVRHMD
 	end
 	
 	/** \brief VR Right Hand Controller. */

@@ -71,6 +71,9 @@ class BAAFirstPersonVR extends BAAFirstPerson
 	/** \brief VR Playspace behavior. */
 	protected var ECBehaviorVRPlayspace.Instance vrPlayspace
 	
+	/** \brief VR HMD behavior. */
+	protected var ECBehaviorVRHMD.Instance vrHMD
+	
 	/** \brief VR Right Hand Controller behavior. */
 	protected var ECBehaviorVRHand.Instance vrRightHand
 	
@@ -93,6 +96,11 @@ class BAAFirstPersonVR extends BAAFirstPerson
 	/** \brief VR Playspace. */
 	public func ECBehaviorVRPlayspace.Instance getVRPlayspace()
 		return this.vrPlayspace
+	end
+	
+	/** \brief VR HMD. */
+	public func ECBehaviorVRHMD.Instance getVRHMD()
+		return this.vrHMD
 	end
 	
 	/** \brief VR Right Hand Controller. */
@@ -161,11 +169,13 @@ class BAAFirstPersonVR extends BAAFirstPerson
 		if actor castable BaseVRActor
 			var BaseVRActor vrActor = actor cast BaseVRActor
 			this.vrPlayspace = vrActor.getVRPlayspace()
+			this.vrHMD = vrActor.getVRHMD()
 			this.vrRightHand = vrActor.getVRRightHand()
 			this.vrLeftHand = vrActor.getVRLeftHand()
 			
 		else
 			this.vrPlayspace = ECBehaviorVRPlayspace.getInstanceIn( actor )
+			this.vrHMD = ECBehaviorVRHMD.getInstanceIn( actor )
 			this.vrRightHand = ECBehaviorVRHand.getInstanceIn( actor, "right" )
 			this.vrLeftHand = ECBehaviorVRHand.getInstanceIn( actor, "left" )
 		end

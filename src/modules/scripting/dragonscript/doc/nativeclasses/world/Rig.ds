@@ -114,6 +114,22 @@ fixed class Rig
 	end
 	
 	/**
+	 * \brief Matrix transforming from local bone space to model space in reference pose.
+	 * \throws EOutOfBoundary \em bone is less than 0 or greater than or equal to getBoneCount().
+	 */
+	public func Matrix getBoneMatrix( int bone )
+		return null
+	end
+	
+	/**
+	 * \brief Matrix transforming from model space to local bone space in reference pose.
+	 * \throws EOutOfBoundary \em bone is less than 0 or greater than or equal to getBoneCount().
+	 */
+	public func Matrix getBoneInverseMatrix( int bone )
+		return null
+	end
+	
+	/**
 	 * \brief Bone central mass point.
 	 * \throws EOutOfBoundary \em bone is less than 0 or greater than or equal to getBoneCount().
 	 */
