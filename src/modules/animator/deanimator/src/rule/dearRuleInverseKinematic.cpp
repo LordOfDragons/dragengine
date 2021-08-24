@@ -141,6 +141,8 @@ DEBUG_RESET_TIMERS;
 	decQuaternion constLocalOrientation( pLocalOrientation );
 	pTargetLocalOrientation.GetQuaternion( instance, constLocalOrientation );
 	
+	constLocalOrientation = constLocalOrientation.Conjugate(); // we use it like this below
+	
 	const float reachRange = pReachRange * decMath::clamp( pTargetReachRange.GetValue( instance, 1.0f ), 0.0f, 1.0f );
 	decVector reachCenter( pReachCenter );
 	pTargetReachCenter.GetVector( instance, reachCenter );
