@@ -527,10 +527,9 @@ DEBUG_tipposition2[ i ] = tipPosition;
 	
 	// if we have a singular bone
 	}else if( pChainCount == 1 ){
-		bool hasSolverBone = ( pUseSolverBone && pSolverBone != -1 );
+		const bool hasSolverBone = pUseSolverBone && pSolverBone != -1;
 		const deAnimatorRule::eBlendModes blendMode = GetBlendMode();
 		decVector goalPosition( constGoalPosition );
-		decVector bonePosition;
 		decMatrix goalMatrix;
 		
 		// calculate the target values. this depends on the presence of a solver
@@ -571,13 +570,13 @@ DEBUG_tipposition2[ i ] = tipPosition;
 		}
 		goalMatrix = goalMatrix.QuickMultiply( boneState.GetInverseRigLocalMatrix() );
 		
-		bonePosition = goalMatrix.GetPosition() - constLocalPosition;
-		
 		if( pAdjustOrientation ){
-			boneState.BlendWith( bonePosition, goalMatrix.ToQuaternion(), blendMode, blendFactor, true, true );
+			boneState.BlendWith( goalMatrix * -constLocalPosition,
+				goalMatrix.ToQuaternion(), blendMode, blendFactor, true, true );
 			
 		}else{
-			boneState.BlendWith( bonePosition, decQuaternion(), blendMode, blendFactor, true, false );
+			boneState.BlendWith( goalMatrix.GetPosition() - constLocalPosition,
+				decQuaternion(), blendMode, blendFactor, true, false );
 		}
 	}
 DEBUG_PRINT_TIMER;
