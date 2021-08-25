@@ -179,9 +179,12 @@ class ECBehaviorVRHand extends DefaultECBehavior
 				this.pCustomSkin = component.getSkin()
 			end
 			
+			this.pShowHand = this.pECBehavior.getShowHand().getValue( stub )
 			this.pUseVendorModel = this.pECBehavior.getUseVendorModel().getValue( stub )
 			
 			this.pECBehavior.createListeners( this )
+			
+			this.updateVisibile()
 		end
 		
 		
@@ -433,6 +436,7 @@ class ECBehaviorVRHand extends DefaultECBehavior
 	private var ECBehaviorVRPlayspace pVRPlayspace
 	private var ECBehaviorComponent pComponent
 	private var ECPBoolean pUseVendorModel
+	private var ECPBoolean pShowHand
 	private var Array pListenerFactories
 	
 	
@@ -505,6 +509,9 @@ class ECBehaviorVRHand extends DefaultECBehavior
 		this.pUseVendorModel = ECPBoolean.new( prefix + "useVendorModel", true )
 		eclass.addProperty( this.pUseVendorModel )
 		
+		this.pShowHand = ECPBoolean.new( prefix + "showHand", true )
+		eclass.addProperty( this.pShowHand )
+		
 		eclass.addBehavior( this )
 	end
 	
@@ -540,6 +547,11 @@ class ECBehaviorVRHand extends DefaultECBehavior
 	/** \brief Use vendor model. */
 	public func ECPBoolean getUseVendorModel()
 		return this.pUseVendorModel
+	end
+	
+	/** \brief Show hand. */
+	public func ECPBoolean getShowHand()
+		return this.pShowHand
 	end
 	
 	
