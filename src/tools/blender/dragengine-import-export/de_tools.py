@@ -281,6 +281,7 @@ class VIEW3D_PT_Dragengine(bpy.types.Panel):
 		layout.row(align=True).label(text="Export:")
 		col = layout.column(align=True)
 		row = col.row(align=True)
+		row.operator(operator="dragengine.export_rig", text="Rig")
 		row.operator(operator="dragengine.export_animation", text="Animation")
 	
 	def drawCommonTools(self, context):
