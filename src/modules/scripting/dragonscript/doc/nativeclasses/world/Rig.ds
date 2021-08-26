@@ -152,6 +152,15 @@ fixed class Rig
 	public func bool getBoneDynamic( int bone )
 		return false
 	end
+	
+	/**
+	 * \brief Index of parent bone or -1 if bone is a root bone.
+	 * \version 1.6
+	 * \throws EOutOfBoundary \em bone is less than 0 or greater than or equal to getBoneCount().
+	 */
+	public func int boneGetParent( int bone )
+		return 0
+	end
 	/*@}*/
 	
 	

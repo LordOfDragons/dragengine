@@ -94,6 +94,7 @@ private:
 	DEF_NATFUNC( nfBoneGetConstraintAt );
 	DEF_NATFUNC( nfBoneGetShapes );
 	DEF_NATFUNC( nfBoneShapeGetProperty );
+	DEF_NATFUNC( nfBoneGetParent );
 	
 	DEF_NATFUNC( nfGetShapes );
 	DEF_NATFUNC( nfShapeGetProperty );

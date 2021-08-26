@@ -80,7 +80,7 @@ deClassRig::nfLoadAsynchron::nfLoadAsynchron( const sInitData &init ) : dsFuncti
 	p_AddParameter( init.clsStr ); // filename
 	p_AddParameter( init.clsRN ); // listener
 }
-void deClassRig::nfLoadAsynchron::RunFunction( dsRunTime *rt, dsValue *myself ){
+void deClassRig::nfLoadAsynchron::RunFunction( dsRunTime *rt, dsValue* ){
 	deClassRig &clsRig = *( ( deClassRig* )GetOwnerClass() );
 	
 	const char * const filename = rt->GetValue( 0 )->GetString();
@@ -96,7 +96,7 @@ void deClassRig::nfLoadAsynchron::RunFunction( dsRunTime *rt, dsValue *myself ){
 deClassRig::nfDestructor::nfDestructor( const sInitData &init ) : dsFunction( init.clsRig,
 DSFUNC_DESTRUCTOR, DSFT_DESTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
 }
-void deClassRig::nfDestructor::RunFunction( dsRunTime *rt, dsValue *myself ){
+void deClassRig::nfDestructor::RunFunction( dsRunTime*, dsValue *myself ){
 	if( myself->GetRealObject()->GetRefCount() != 1 ){
 		return; // protected against GC cleaning up leaking
 	}
@@ -400,6 +400,18 @@ void deClassRig::nfBoneShapeGetProperty::RunFunction( dsRunTime *rt, dsValue *my
 	rt->PushString( rig.GetBoneAt( bone ).GetShapeProperties().GetAt( shape ) );
 }
 
+// public func int boneGetParent( int bone )
+deClassRig::nfBoneGetParent::nfBoneGetParent( const sInitData &init ) : dsFunction( init.clsRig,
+"boneGetParent", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt ){
+	p_AddParameter( init.clsInt ); // bone
+}
+void deClassRig::nfBoneGetParent::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const deRig &rig = *( ( ( sRigNatDat* )p_GetNativeData( myself ) )->rig );
+	const int bone = rt->GetValue( 0 )->GetInt();
+	
+	rt->PushInt( rig.GetBoneAt( bone ).GetParent() );
+}
+
 
 
 // public func ShapeList getShapes()
@@ -556,6 +568,7 @@ void deClassRig::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfBoneGetConstraintAt( init ) );
 	AddFunction( new nfBoneGetShapes( init ) );
 	AddFunction( new nfBoneShapeGetProperty( init ) );
+	AddFunction( new nfBoneGetParent( init ) );
 	
 	AddFunction( new nfGetShapes( init ) );
 	AddFunction( new nfShapeGetProperty( init ) );
