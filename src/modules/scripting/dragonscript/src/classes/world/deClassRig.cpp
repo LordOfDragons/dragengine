@@ -153,7 +153,7 @@ void deClassRig::nfBoneGetName::RunFunction( dsRunTime *rt, dsValue *myself ){
 	rt->PushString( rig.GetBoneAt( bone ).GetName() );
 }
 
-// public func Vector getBonePosition( int bone )
+// public func Vector boneGetPosition( int bone )
 deClassRig::nfBoneGetPosition::nfBoneGetPosition( const sInitData &init ) : dsFunction( init.clsRig,
 "boneGetPosition", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVec ){
 	p_AddParameter( init.clsInt ); // bone
@@ -166,7 +166,7 @@ void deClassRig::nfBoneGetPosition::RunFunction( dsRunTime *rt, dsValue *myself 
 	ds.GetClassVector()->PushVector( rt, rig.GetBoneAt( bone ).GetPosition() );
 }
 
-// public func Quaternion getBoneOrientation( int bone )
+// public func Quaternion boneGetOrientation( int bone )
 deClassRig::nfBoneGetOrientation::nfBoneGetOrientation( const sInitData &init ) : dsFunction( init.clsRig,
 "boneGetOrientation", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsQuat ){
 	p_AddParameter( init.clsInt ); // bone
@@ -205,7 +205,7 @@ void deClassRig::nfBoneGetInverseMatrix::RunFunction( dsRunTime *rt, dsValue *my
 	ds.GetClassMatrix()->PushMatrix( rt, rig.GetBoneAt( bone ).GetInverseMatrix() );
 }
 
-// public func Vector getBoneCentralMassPoint( int bone )
+// public func Vector boneGetCentralMassPoint( int bone )
 deClassRig::nfBoneGetCentralMassPoint::nfBoneGetCentralMassPoint( const sInitData &init ) : dsFunction( init.clsRig,
 "boneGetCentralMassPoint", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVec ){
 	p_AddParameter( init.clsInt ); // bone
@@ -218,7 +218,7 @@ void deClassRig::nfBoneGetCentralMassPoint::RunFunction( dsRunTime *rt, dsValue 
 	ds.GetClassVector()->PushVector( rt, rig.GetBoneAt( bone ).GetCentralMassPoint() );
 }
 
-// public func float getBoneMass( int bone )
+// public func float boneGetMass( int bone )
 deClassRig::nfBoneGetMass::nfBoneGetMass( const sInitData &init ) : dsFunction( init.clsRig,
 "boneGetMass", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt ){
 	p_AddParameter( init.clsInt ); // bone
@@ -230,7 +230,7 @@ void deClassRig::nfBoneGetMass::RunFunction( dsRunTime *rt, dsValue *myself ){
 	rt->PushFloat( rig.GetBoneAt( bone ).GetMass() );
 }
 
-// public func bool getBoneDynamic( int bone )
+// public func bool boneGetDynamic( int bone )
 deClassRig::nfBoneGetDynamic::nfBoneGetDynamic( const sInitData &init ) : dsFunction( init.clsRig,
 "boneGetDynamic", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool ){
 	p_AddParameter( init.clsInt ); // bone
@@ -242,7 +242,7 @@ void deClassRig::nfBoneGetDynamic::RunFunction( dsRunTime *rt, dsValue *myself )
 	rt->PushBool( rig.GetBoneAt( bone ).GetDynamic() );
 }
 
-// public func Vector getBoneIKLimitsLower( int bone )
+// public func Vector boneGetIKLimitsLower( int bone )
 deClassRig::nfBoneGetIKLimitsLower::nfBoneGetIKLimitsLower( const sInitData &init ) : dsFunction( init.clsRig,
 "boneGetIKLimitsLower", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVec ){
 	p_AddParameter( init.clsInt ); // bone
@@ -255,7 +255,7 @@ void deClassRig::nfBoneGetIKLimitsLower::RunFunction( dsRunTime *rt, dsValue *my
 	ds.GetClassVector()->PushVector( rt, rig.GetBoneAt( bone ).GetIKLimitsLower() );
 }
 
-// public func Vector getBoneIKLimitsUpper( int bone )
+// public func Vector boneGetIKLimitsUpper( int bone )
 deClassRig::nfBoneGetIKLimitsUpper::nfBoneGetIKLimitsUpper( const sInitData &init ) : dsFunction( init.clsRig,
 "boneGetIKLimitsUpper", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVec ){
 	p_AddParameter( init.clsInt ); // bone
@@ -268,7 +268,7 @@ void deClassRig::nfBoneGetIKLimitsUpper::RunFunction( dsRunTime *rt, dsValue *my
 	ds.GetClassVector()->PushVector( rt, rig.GetBoneAt( bone ).GetIKLimitsUpper() );
 }
 
-// public func Vector getBoneIKResistance( int bone )
+// public func Vector boneGetIKResistance( int bone )
 deClassRig::nfBoneGetIKResistance::nfBoneGetIKResistance( const sInitData &init ) : dsFunction( init.clsRig,
 "boneGetIKResistance", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVec ){
 	p_AddParameter( init.clsInt ); // bone
@@ -281,7 +281,7 @@ void deClassRig::nfBoneGetIKResistance::RunFunction( dsRunTime *rt, dsValue *mys
 	ds.GetClassVector()->PushVector( rt, rig.GetBoneAt( bone ).GetIKResistance() );
 }
 
-// public func bool getBoneIKLocked( int bone, int axis )
+// public func bool boneGetIKLocked( int bone, int axis )
 deClassRig::nfBoneGetIKLocked::nfBoneGetIKLocked( const sInitData &init ) : dsFunction( init.clsRig,
 "boneGetIKLocked", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool ){
 	p_AddParameter( init.clsInt ); // bone
@@ -306,7 +306,7 @@ void deClassRig::nfBoneGetIKLocked::RunFunction( dsRunTime *rt, dsValue *myself 
 	}
 }
 
-// public func int getBoneConstraintCount( int bone )
+// public func int boneGetConstraintCount( int bone )
 deClassRig::nfBoneGetConstraintCount::nfBoneGetConstraintCount( const sInitData &init ) : dsFunction( init.clsRig,
 "boneGetConstraintCount", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt ){
 	p_AddParameter( init.clsInt ); // bone
@@ -318,7 +318,7 @@ void deClassRig::nfBoneGetConstraintCount::RunFunction( dsRunTime *rt, dsValue *
 	rt->PushInt( rig.GetBoneAt( bone ).GetConstraintCount() );
 }
 
-// public func ColliderConstraint getBoneConstraintAt( int bone, int constraint )
+// public func ColliderConstraint boneGetConstraintAt( int bone, int constraint )
 deClassRig::nfBoneGetConstraintAt::nfBoneGetConstraintAt( const sInitData &init ) : dsFunction( init.clsRig,
 "boneGetConstraintAt", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsCCon ){
 	p_AddParameter( init.clsInt ); // bone

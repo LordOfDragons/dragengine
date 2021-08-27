@@ -101,7 +101,7 @@ fixed class Rig
 	 * \brief Bone position.
 	 * \throws EOutOfBoundary \em bone is less than 0 or greater than or equal to getBoneCount().
 	 */
-	public func Vector getBonePosition( int bone )
+	public func Vector boneGetPosition( int bone )
 		return null
 	end
 	
@@ -109,7 +109,7 @@ fixed class Rig
 	 * \brief Bone orientation.
 	 * \throws EOutOfBoundary \em bone is less than 0 or greater than or equal to getBoneCount().
 	 */
-	public func Quaternion getBoneOrientation( int bone )
+	public func Quaternion boneGetOrientation( int bone )
 		return null
 	end
 	
@@ -133,7 +133,7 @@ fixed class Rig
 	 * \brief Bone central mass point.
 	 * \throws EOutOfBoundary \em bone is less than 0 or greater than or equal to getBoneCount().
 	 */
-	public func Vector getBoneCentralMassPoint( int bone )
+	public func Vector boneGetCentralMassPoint( int bone )
 		return null
 	end
 	
@@ -149,7 +149,7 @@ fixed class Rig
 	 * \brief Bone is enabled for dynamic simulation if collider rig or collider component is dynamic.
 	 * \throws EOutOfBoundary \em bone is less than 0 or greater than or equal to getBoneCount().
 	 */
-	public func bool getBoneDynamic( int bone )
+	public func bool boneGetDynamic( int bone )
 		return false
 	end
 	
@@ -171,7 +171,7 @@ fixed class Rig
 	 * \brief Bone inverse kinematics lower limits used by animator rules.
 	 * \throws EOutOfBoundary \em bone is less than 0 or greater than or equal to getBoneCount().
 	 */
-	public func Vector getBoneIKLimitsLower( int bone )
+	public func Vector boneGetIKLimitsLower( int bone )
 		return null
 	end
 	
@@ -179,7 +179,7 @@ fixed class Rig
 	 * \brief Bone inverse kinematics upper limits used by animator rules.
 	 * \throws EOutOfBoundary \em bone is less than 0 or greater than or equal to getBoneCount().
 	 */
-	public func Vector getBoneIKLimitsUpper( int bone )
+	public func Vector boneGetIKLimitsUpper( int bone )
 		return null
 	end
 	
@@ -187,7 +187,7 @@ fixed class Rig
 	 * \brief Bone inverse kinematics resisteance used by animator rules.
 	 * \throws EOutOfBoundary \em bone is less than 0 or greater than or equal to getBoneCount().
 	 */
-	public func Vector getBoneIKResistance( int bone )
+	public func Vector boneGetIKResistance( int bone )
 		return null
 	end
 	
@@ -195,7 +195,7 @@ fixed class Rig
 	 * \brief Bone inverse kinematics per axis locked state used by animator rules.
 	 * \throws EOutOfBoundary \em bone is less than 0 or greater than or equal to getBoneCount().
 	 */
-	public func bool getBoneIKLocked( int bone, int axis )
+	public func bool boneGetIKLocked( int bone, int axis )
 		return false
 	end
 	/*@}*/
@@ -208,7 +208,7 @@ fixed class Rig
 	 * \brief Bone constraint count.
 	 * \throws EOutOfBoundary \em bone is less than 0 or greater than or equal to getBoneCount().
 	 */
-	public func int getBoneConstraintCount( int bone )
+	public func int boneGetConstraintCount( int bone )
 		return 0
 	end
 	
@@ -219,9 +219,9 @@ fixed class Rig
 	 *          dynamically managed at runtime or replacing bone constraints with modified versions
 	 *          for example in response to collisions.
 	 * \throws EOutOfBoundary \em bone is less than 0 or greater than or equal to getBoneCount().
-	 * \throws EOutOfBoundary \em constraint is less than 0 or greater than or equal to getBoneConstraintCount().
+	 * \throws EOutOfBoundary \em constraint is less than 0 or greater than or equal to boneGetConstraintCount().
 	 */
-	public func ColliderConstraint getBoneConstraintAt( int bone, int constraint )
+	public func ColliderConstraint boneGetConstraintAt( int bone, int constraint )
 		return null
 	end
 	/*@}*/
