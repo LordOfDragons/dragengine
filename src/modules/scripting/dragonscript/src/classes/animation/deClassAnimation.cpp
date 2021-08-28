@@ -80,6 +80,19 @@ void deClassAnimation::nfLoadAsynchron::RunFunction( dsRunTime *rt, dsValue *mys
 		deResourceLoader::ertAnimation, listener );
 }
 
+// public func void save(String filename)
+deClassAnimation::nfSave::nfSave( const sInitData &init ) :
+dsFunction( init.clsAnim, "save", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsStr ); // filename
+}
+void deClassAnimation::nfSave::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const sAnimNatDat &nd = *( ( sAnimNatDat* )p_GetNativeData( myself) );
+	deClassAnimation &clsAnim = *( ( deClassAnimation* )GetOwnerClass() );
+	
+	const char * const filename = rt->GetValue( 0 )->GetString();
+	clsAnim.GetGameEngine()->GetAnimationManager()->SaveAnimation( *nd.anim, filename );
+}
+
 // public func destructor()
 deClassAnimation::nfDestructor::nfDestructor(const sInitData &init) : dsFunction(init.clsAnim,
 DSFUNC_DESTRUCTOR, DSFT_DESTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
@@ -118,9 +131,27 @@ void deClassAnimation::nfGetMovePlaytime::RunFunction(dsRunTime *RT, dsValue *Th
 	const char *moveName = RT->GetValue(0)->GetString();
 	int moveIndex = anim->FindMove(moveName);
 	if(moveIndex == -1){
-		RT->PushFloat( 0 );
+		RT->PushFloat( 0.0f );
 	}else{
 		RT->PushFloat( anim->GetMove(moveIndex)->GetPlaytime() );
+	}
+}
+
+// public func float getMoveFPS( String moveName )
+deClassAnimation::nfGetMoveFPS::nfGetMoveFPS( const sInitData &init ) :
+dsFunction( init.clsAnim, "getMoveFPS", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt ){
+	p_AddParameter( init.clsStr ); // moveName
+}
+void deClassAnimation::nfGetMoveFPS::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const deAnimation &anim = *( ( ( sAnimNatDat* )p_GetNativeData( myself ) )->anim );
+	const char * const moveName = rt->GetValue( 0 )->GetString();
+	const int moveIndex = anim.FindMove( moveName );
+	
+	if( moveIndex == -1 ){
+		rt->PushFloat( 25.0f );
+		
+	}else{
+		rt->PushFloat( anim.GetMove( moveIndex )->GetPlaytime() );
 	}
 }
 
@@ -189,9 +220,11 @@ void deClassAnimation::CreateClassMembers(dsEngine *engine){
 	// add functions
 	AddFunction(new nfLoad(init));
 	AddFunction( new nfLoadAsynchron( init ) );
+	AddFunction( new nfSave( init ) );
 	AddFunction(new nfDestructor(init));
 	AddFunction(new nfGetFilename(init));
 	AddFunction(new nfGetMovePlaytime(init));
+	AddFunction( new nfGetMoveFPS( init ) );
 	AddFunction(new nfEquals(init));
 	AddFunction(new nfHashCode(init));
 	// calculate member offsets

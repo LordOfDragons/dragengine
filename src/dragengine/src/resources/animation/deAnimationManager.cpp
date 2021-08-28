@@ -187,6 +187,19 @@ void deAnimationManager::AddLoadedAnimation( deAnimation *animation ){
 	pAnimations.Add( animation );
 }
 
+void deAnimationManager::SaveAnimation( const deAnimation &animation, const char *filename ){
+	SaveAnimation( animation, *GetEngine()->GetVirtualFileSystem(), filename );
+}
+
+void deAnimationManager::SaveAnimation( const deAnimation &animation,
+deVirtualFileSystem &vfs, const char *filename ){
+	deBaseAnimationModule &module = *( ( deBaseAnimationModule* )
+		GetModuleSystem()->GetModuleAbleToLoad( deModuleSystem::emtAnimation, filename ) );
+	
+	module.SaveAnimation( decBaseFileWriter::Ref::New( vfs.OpenFileForWriting(
+		decPath::CreatePathUnix( filename ) ) ), animation );
+}
+
 
 
 void deAnimationManager::ReleaseLeakingResources(){

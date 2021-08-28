@@ -219,7 +219,7 @@ class OBJECT_OT_ImportAnimation( bpy.types.Operator, ImportHelper ):
 			nameLen = struct.unpack( "<B", f.read( 1 ) )[0]
 			bone[ "name" ] = f.read( nameLen ).decode("UTF-8")
 			if self.debugLevel > 1:
-				print( "- bone", bone.name )
+				print( "- bone", bone["name"] )
 			self.importBones.append( bone )
 		
 		return True
@@ -274,8 +274,8 @@ class OBJECT_OT_ImportAnimation( bpy.types.Operator, ImportHelper ):
 		moveCount = struct.unpack( "<H", f.read( 2 ) )[0]
 		
 		# activate armature object
-		self.armature.object.select = True
-		bpy.context.scene.objects.active = self.armature.object
+		#self.armature.object.select = True
+		#bpy.context.scene.objects.active = self.armature.object
 		
 		# process moves
 		progressCounter = 0
@@ -354,7 +354,7 @@ class OBJECT_OT_ImportAnimation( bpy.types.Operator, ImportHelper ):
 							moveBone.keyframes.append( keyframe )
 							
 							if self.debugLevel > 1:
-								print( "- bone", importBone["name"], "keyframe", float(kfFrametime) * self.timeScale,
+								print( "- bone", importBone["name"], "keyframe", float(kfFrame) * self.timeScale,
 									"pos", keyframe.pos, "rot", keyframe.rot, "scale", keyframe.scale )
 				
 				moveBones.append( moveBone )
@@ -376,11 +376,24 @@ class OBJECT_OT_ImportAnimation( bpy.types.Operator, ImportHelper ):
 				pose = self.armature.object.pose
 				agroups = action.groups
 				
+				# keyframe_insert is hell slow. rework code to add FCurves and groups
+				# themselves and call insert() on the fcurves. these have a 'FAST' option
+				# which should help
+				# 
+				# pointers:
+				# bpy.types.FCurveKeyframePoints.insert(frame, value, options={}, keyframe_type='KEYFRAME')
+				#   => options: 'FAST' Fast, Fast keyframe insertion to avoid recalculating the curve each time.
+				# bpy.types.FCurve.keyframe_points
+				# bpy.types.ActionFCurves.new(data_path, index=0, action_group='')
+				#   => Add an F-Curve to the action
+				# bpy.types.Action.fcurves
+				# 
 				for moveBone in moveBones:
 					if not moveBone.keyframes:
 						continue
 					
 					boneName = moveBone.bone["name"]
+					print("- bone '{}'".format(boneName))
 					agroup = agroups.new( boneName )
 					poseBone = pose.bones[ boneName ]
 					#poseBone.rotation_mode = 'YXZ'

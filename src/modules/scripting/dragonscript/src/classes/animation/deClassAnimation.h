@@ -67,9 +67,11 @@ private:
 	}
 	DEF_NATFUNC(nfLoad);
 	DEF_NATFUNC( nfLoadAsynchron );
+	DEF_NATFUNC(nfSave);
 	DEF_NATFUNC(nfDestructor);
 	DEF_NATFUNC(nfGetFilename);
 	DEF_NATFUNC(nfGetMovePlaytime);
+	DEF_NATFUNC( nfGetMoveFPS );
 	DEF_NATFUNC(nfEquals);
 	DEF_NATFUNC(nfHashCode);
 #undef DEF_NATFUNC

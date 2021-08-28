@@ -79,6 +79,18 @@ public:
 	deAnimation *LoadAnimation( deVirtualFileSystem *vfs, const char *filename, const char *basePath );
 	
 	/**
+	 * \brief Save animation to file.
+	 * \version 1.6
+	 */
+	void SaveAnimation( const deAnimation &animation, const char *filename );
+	
+	/**
+	 * \brief Save animation to file.
+	 * \version 1.6
+	 */
+	void SaveAnimation( const deAnimation &animation, deVirtualFileSystem &vfs, const char *filename );
+	
+	/**
 	 * \brief Add loaded and fully prepared animation.
 	 * 
 	 * This method is to be used only by the resource loader to add an animation that

@@ -200,6 +200,37 @@ void deClassAnimationBuilder::nfAddMove::RunFunction( dsRunTime *rt, dsValue *my
 	}
 }
 
+// protected func void addMove( String name, float playTime, float fps )
+deClassAnimationBuilder::nfAddMove2::nfAddMove2( const sInitData &init ) :
+dsFunction( init.clsAnimationBuilder, "addMove", DSFT_FUNCTION,
+DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsString ); // name
+	p_AddParameter( init.clsFloat ); // playTime
+	p_AddParameter( init.clsFloat ); // fps
+}
+void deClassAnimationBuilder::nfAddMove2::RunFunction( dsRunTime *rt, dsValue *myself ){
+	deClassAnimationBuilder_Builder * const builder = ( ( sAnimBldNatDat* )p_GetNativeData( myself ) )->builder;
+	if( ! builder || ! builder->GetAnimation() ){
+		DSTHROW( dueInvalidAction );
+	}
+	
+	const char * const name = rt->GetValue( 0 )->GetString();
+	const float playTime = rt->GetValue( 1 )->GetFloat();
+	const float fps = rt->GetValue( 2 )->GetFloat();
+	
+	deAnimationMove * const move = new deAnimationMove;
+	try{
+		move->SetName( name );
+		move->SetPlaytime( playTime );
+		move->SetFPS( fps );
+		builder->GetAnimation()->AddMove( move );
+		
+	}catch( ... ){
+		delete move;
+		throw;
+	}
+}
+
 // protected func void setKeyframeListCount( int move, int count )
 deClassAnimationBuilder::nfSetKeyframeListCount::nfSetKeyframeListCount( const sInitData &init ) :
 dsFunction( init.clsAnimationBuilder, "setKeyframeListCount", DSFT_FUNCTION,
@@ -236,6 +267,7 @@ dsFunction( init.clsAnimationBuilder, "addKeyframe", DSFT_FUNCTION,
 DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid ){
 	p_AddParameter( init.clsInteger ); // move
 	p_AddParameter( init.clsInteger ); // keyFrameList
+	p_AddParameter( init.clsFloat ); // time
 	p_AddParameter( init.clsVector ); // position
 	p_AddParameter( init.clsVector ); // rotation
 	p_AddParameter( init.clsVector ); // scale
@@ -254,7 +286,7 @@ void deClassAnimationBuilder::nfAddKeyframe::RunFunction( dsRunTime *rt, dsValue
 	try{
 		keyframe->SetTime( rt->GetValue( 2 )->GetFloat() );
 		keyframe->SetPosition( ds.GetClassVector()->GetVector( rt->GetValue( 3 )->GetRealObject() ) );
-		keyframe->SetRotation( ds.GetClassVector()->GetVector( rt->GetValue( 4 )->GetRealObject() ) );
+		keyframe->SetRotation( ds.GetClassVector()->GetVector( rt->GetValue( 4 )->GetRealObject() ) * DEG2RAD );
 		keyframe->SetScale( ds.GetClassVector()->GetVector( rt->GetValue( 5 )->GetRealObject() ) );
 		kflist.AddKeyframe( keyframe );
 		
@@ -310,6 +342,7 @@ void deClassAnimationBuilder::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfBuildAnimation( init ) );
 	AddFunction( new nfAddBone( init ) );
 	AddFunction( new nfAddMove( init ) );
+	AddFunction( new nfAddMove2( init ) );
 	AddFunction( new nfSetKeyframeListCount( init ) );
 	AddFunction( new nfAddKeyframe( init ) );
 }
