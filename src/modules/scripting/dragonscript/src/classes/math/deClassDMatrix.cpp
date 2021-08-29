@@ -815,6 +815,17 @@ void deClassDMatrix::nfGetInverse::RunFunction( dsRunTime *rt, dsValue *myself )
 	clsDMatrix.PushDMatrix( rt, matrix.Invert() );
 }
 
+// public func DMatrix getRotation()
+deClassDMatrix::nfGetRotation::nfGetRotation( const sInitData &init ) : dsFunction( init.clsDMatrix,
+"getRotation", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsDMatrix ){
+}
+void deClassDMatrix::nfGetRotation::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const decDMatrix &matrix = ( ( sMatNatDat* )p_GetNativeData( myself ) )->matrix;
+	deClassDMatrix &clsDMatrix = *( ( deClassDMatrix* )GetOwnerClass() );
+	
+	clsDMatrix.PushDMatrix( rt, matrix.GetRotationMatrix() );
+}
+
 // public func DMatrix normalize()
 deClassDMatrix::nfNormalize::nfNormalize( const sInitData &init ) :
 dsFunction( init.clsDMatrix, "normalize", DSFT_FUNCTION,
@@ -1232,6 +1243,7 @@ void deClassDMatrix::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfTransformNormal( init ) );
 	AddFunction( new nfGetEulerAngles( init ) );
 	AddFunction( new nfGetInverse( init ) );
+	AddFunction( new nfGetRotation( init ) );
 	AddFunction( new nfNormalize( init ) );
 	AddFunction( new nfToQuaternion( init ) );
 	AddFunction( new nfToDMatrix4( init ) );

@@ -219,6 +219,11 @@ fixed class DMatrix
 		return null
 	end
 	
+	/** \brief Matrix with only the rotational part. */
+	public func DMatrix getRotation()
+		return null
+	end
+	
 	/**
 	 * \brief Normalize matrix.
 	 * 

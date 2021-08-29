@@ -218,6 +218,11 @@ fixed class Matrix
 		return null
 	end
 	
+	/** \brief Matrix with only the rotational part. */
+	public func Matrix getRotation()
+		return null
+	end
+	
 	/**
 	 * \brief Normalize matrix.
 	 * 
