@@ -153,7 +153,7 @@ DEBUG_RESET_TIMERS;
 		const deAnimatorRule::eBlendModes blendMode = GetBlendMode();
 		decVector goalPosition( constGoalPosition );
 		decVector localPosition( constLocalPosition );
-		decMatrix goalMatrix, rotationMatrix, matrix;
+		decMatrix goalMatrix, rotationMatrix, rotationMatrix2, matrix;
 		decVector tipPosition, bonePosition;
 		decVector planeNormal, targetNormal, gradient;
 		decVector tipVector, vector, rotation;
@@ -322,23 +322,38 @@ DEBUG_RESET_TIMERS;
 					const decVector &refRotation = pChain[ i ].GetReferenceRotation();
 					const decVector &limitsLower = rigBone.GetIKLimitsLower();
 					const decVector &limitsUpper = rigBone.GetIKLimitsUpper();
-					//const decVector &resistance = rigBone.GetIKResistance();
 					
 					// determine the rotation relative to the rig local state
+					const decMatrix globRotMat( pChain[ i ].GetGlobalMatrix().GetRotationMatrix() );
+					
 					if( i == 0 ){
-						rotationMatrix = pChain[ i ].GetGlobalMatrix().GetRotationMatrix()
-							.QuickMultiply( rotationMatrix ).QuickMultiply( baseInverseMatrix );
+						rotationMatrix = globRotMat.QuickMultiply( rotationMatrix ).QuickMultiply( baseInverseMatrix );
+						rotationMatrix2 = globRotMat.QuickMultiply( baseInverseMatrix );
 						
 					}else{
-						rotationMatrix = pChain[ i ].GetGlobalMatrix().GetRotationMatrix()
-							.QuickMultiply( rotationMatrix )
-							.QuickMultiply( pChain[ i - 1 ].GetInverseGlobalMatrix() )
-							.QuickMultiply( stalist.GetStateAt( pChain[ i ].GetBoneStateIndex() )->GetInverseRigLocalMatrix() );
+						const decMatrix tempMap( pChain[ i - 1 ].GetInverseGlobalMatrix().QuickMultiply(
+							stalist.GetStateAt( pChain[ i ].GetBoneStateIndex() )->GetInverseRigLocalMatrix() ) );
+						
+						rotationMatrix = globRotMat.QuickMultiply( rotationMatrix ).QuickMultiply( tempMap );
+						rotationMatrix2 = globRotMat.QuickMultiply( tempMap );
 					}
 					
-					rotation = rotationMatrix.ToQuaternion().GetEulerAngles();
+					decQuaternion quatRotated( rotationMatrix.ToQuaternion() );
 					
-					// apply limits on the rotation where required
+					if( pChain[ i ].HasDampening() ){
+						const decQuaternion quatCurrent( rotationMatrix2.ToQuaternion() );
+						decVector eulerDiff( ( quatRotated * quatCurrent.Conjugate() ).GetEulerAngles() );
+						
+						const decVector &dampening = pChain[ i ].GetDampening();
+						eulerDiff.x *= dampening.x;
+						eulerDiff.y *= dampening.y;
+						eulerDiff.z *= dampening.z;
+						quatRotated = decQuaternion::CreateFromEuler( eulerDiff ) * quatCurrent;
+					}
+					
+					rotation = quatRotated.GetEulerAngles();
+					
+					// apply limits on the rotation where required. includes dampening
 					if( pChain[ i ].GetAxisTypeX() == dearIKWorkState::eatLocked ){
 						rotation.x = refRotation.x;
 						
@@ -711,9 +726,11 @@ void dearRuleInverseKinematic::pInitIKLimits(){
 	for( i=0; i<pChainCount; i++ ){
 		const deRigBone * const rigBone = stateList.GetStateAt( pChain[ i ].GetBoneStateIndex() )->GetRigBone();
 		
-		if( ! rigBone ){
+		if( rigBone ){
 			const decVector &lowerLimits = rigBone->GetIKLimitsLower();
 			const decVector &upperLimits = rigBone->GetIKLimitsUpper();
+			const decVector &resistance = rigBone->GetIKResistance();
+			decVector dampening( 1.0f, 1.0f, 1.0f );
 			bool hasLimits = false;
 			
 			if( rigBone->GetIKLockedX() ){
@@ -722,10 +739,12 @@ void dearRuleInverseKinematic::pInitIKLimits(){
 				
 			}else if( lowerLimits.x < upperLimits.x ){
 				pChain[ i ].SetAxisTypeX( dearIKWorkState::eatLimited );
+				dampening.x = 1.0f - resistance.x;
 				hasLimits = true;
 				
 			}else{
 				pChain[ i ].SetAxisTypeX( dearIKWorkState::eatFree );
+				dampening.x = 1.0f - resistance.x;
 			}
 			
 			if( rigBone->GetIKLockedY() ){
@@ -734,10 +753,12 @@ void dearRuleInverseKinematic::pInitIKLimits(){
 				
 			}else if( lowerLimits.y < upperLimits.y ){
 				pChain[ i ].SetAxisTypeY( dearIKWorkState::eatLimited );
+				dampening.y = 1.0f - resistance.y;
 				hasLimits = true;
 				
 			}else{
 				pChain[ i ].SetAxisTypeY( dearIKWorkState::eatFree );
+				dampening.y = 1.0f - resistance.y;
 			}
 			
 			if( rigBone->GetIKLockedZ() ){
@@ -746,19 +767,23 @@ void dearRuleInverseKinematic::pInitIKLimits(){
 				
 			}else if( lowerLimits.z < upperLimits.z ){
 				pChain[ i ].SetAxisTypeZ( dearIKWorkState::eatLimited );
+				dampening.z = 1.0f - resistance.z;
 				hasLimits = true;
 				
 			}else{
 				pChain[ i ].SetAxisTypeZ( dearIKWorkState::eatFree );
+				dampening.z = 1.0f - resistance.z;
 			}
 			
-			pChain[ i ].SetHasLimits( hasLimits );
+			pChain[ i ].SetDampening( dampening );
+			pChain[ i ].SetHasLimits( hasLimits || pChain[ i ].HasDampening() );
 			
 		}else{
 			pChain[ i ].SetAxisTypeX( dearIKWorkState::eatFree );
 			pChain[ i ].SetAxisTypeY( dearIKWorkState::eatFree );
 			pChain[ i ].SetAxisTypeZ( dearIKWorkState::eatFree );
 			pChain[ i ].SetHasLimits( false );
+			pChain[ i ].SetDampening( decVector( 1.0f, 1.0f, 1.0f ) );
 		}
 	}
 }

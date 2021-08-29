@@ -29,19 +29,19 @@ class dearBoneState;
 
 
 /**
- * \brief Working state of bone for inverse kinematic solving.
+ * Working state of bone for inverse kinematic solving.
  */
 class dearIKWorkState{
 public:
-	/** \brief Axis Types. */
+	/** Axis Types. */
 	enum eAxisTypes{
-		/** \brief Locked. */
+		/** Locked. */
 		eatLocked,
 		
-		/** \brief Limited. */
+		/** Limited. */
 		eatLimited,
 		
-		/** \brief Free. */
+		/** Free. */
 		eatFree
 	};
 	
@@ -56,16 +56,18 @@ private:
 	int pAxisTypeY;
 	int pAxisTypeZ;
 	bool pHasLimits;
+	decVector pDampening;
+	bool pHasDampening;
 	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create bone state. */
+	/** Create bone state. */
 	dearIKWorkState();
 	
-	/** \brief Clean up bone state. */
+	/** Clean up bone state. */
 	~dearIKWorkState();
 	/*@}*/
 	
@@ -73,55 +75,64 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Bone state index. */
+	/** Bone state index. */
 	inline int GetBoneStateIndex() const{ return pBoneStateIndex; }
 	
-	/** \brief Set bone state index. */
+	/** Set bone state index. */
 	void SetBoneStateIndex( int index );
 	
-	/** \brief Global matrix. */
+	/** Global matrix. */
 	inline const decMatrix &GetGlobalMatrix() const{ return pGlobalMatrix; }
 	
-	/** \brief Set global matrix. */
+	/** Set global matrix. */
 	void SetGlobalMatrix( const decMatrix &matrix );
 	
-	/** \brief Inverse global matrix. */
+	/** Inverse global matrix. */
 	inline const decMatrix &GetInverseGlobalMatrix() const{ return pInvGlobalMatrix; }
 	
-	/** \brief Set inverse global matrix. */
+	/** Set inverse global matrix. */
 	void SetInverseGlobalMatrix( const decMatrix &matrix );
 	
 	
 	
-	/** \brief Reference rotation. */
+	/** Reference rotation. */
 	inline const decVector &GetReferenceRotation() const{ return pRefRotation; }
 	
-	/** \brief Set reference rotation. */
+	/** Set reference rotation. */
 	void SetReferenceRotation( const decVector &rotation );
 	
-	/** \brief X axis type. */
+	/** X axis type. */
 	inline int GetAxisTypeX() const{ return pAxisTypeX; }
 	
-	/** \brief Set X axis type. */
+	/** Set X axis type. */
 	void SetAxisTypeX( int type );
 	
-	/** \brief Y axis type. */
+	/** Y axis type. */
 	inline int GetAxisTypeY() const{ return pAxisTypeY; }
 	
-	/** \brief Set Y axis type. */
+	/** Set Y axis type. */
 	void SetAxisTypeY( int type );
 	
-	/** \brief Z axis type. */
+	/** Z axis type. */
 	inline int GetAxisTypeZ() const{ return pAxisTypeZ; }
 	
-	/** \brief Set Z axis type. */
+	/** Set Z axis type. */
 	void SetAxisTypeZ( int type );
 	
-	/** \brief Any limits in effect. */
+	/** Any limits in effect. */
 	inline bool GetHasLimits() const{ return pHasLimits; }
 	
-	/** \brief Set if any limits are in effect. */
+	/** Set if any limits are in effect. */
 	void SetHasLimits( bool hasLimits );
+	
+	/** Dampening. */
+	inline const decVector &GetDampening() const{ return pDampening; }
+	
+	/** Set dampening. */
+	void SetDampening( const decVector &resistance );
+	
+	/** Has dampening. */
+	inline bool HasDampening() const{ return pHasDampening; }
 	/*@}*/
 };
 
