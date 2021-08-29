@@ -55,8 +55,9 @@ class OBJECT_OT_ExportAnimation( bpy.types.Operator, ExportHelper ):
 		for action in bpy.data.actions.values():
 			if len( action.groups ) == 0:
 				continue
-			
 			if not action.dragengine_export:
+				continue
+			if action.library: # linked actions can cause lots of troubles
 				continue
 			
 			exportAction = False
@@ -354,8 +355,9 @@ class OBJECT_OT_ExportAnimation( bpy.types.Operator, ExportHelper ):
 		for action in bpy.data.actions.values():
 			if len( action.groups ) == 0:
 				continue
-			
 			if not action.dragengine_export:
+				continue
+			if action.library: # linked actions can cause lots of troubles
 				continue
 			
 			if self.exportMode == 1 and action != self.exportMove.action:
