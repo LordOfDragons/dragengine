@@ -990,10 +990,11 @@ void deClassMatrix::nfToString::RunFunction( dsRunTime *rt, dsValue *myself ){
 	const decMatrix &matrix = ( ( sMatNatDat* )p_GetNativeData( myself ) )->matrix;
 	decString str;
 	
-	str.Format( "[[%g,%g,%g,%g],[%g,%g,%g,%g],[%g,%g,%g,%g]]",
+	str.Format( "[[%g,%g,%g,%g],[%g,%g,%g,%g],[%g,%g,%g,%g],[%g,%g,%g,%g]]",
 		matrix.a11, matrix.a12, matrix.a13, matrix.a14,
 		matrix.a21, matrix.a22, matrix.a23, matrix.a24,
-		matrix.a31, matrix.a32, matrix.a33, matrix.a34 );
+		matrix.a31, matrix.a32, matrix.a33, matrix.a34,
+		matrix.a41, matrix.a42, matrix.a43, matrix.a44 );
 	
 	rt->PushString( str );
 }
@@ -1014,11 +1015,12 @@ void deClassMatrix::nfToStringPrecision::RunFunction( dsRunTime *rt, dsValue *my
 	}
 	
 	const unsigned short p = ( unsigned short )precision;
-	char format[ 68 ];
+	char format[ 90 ];
 	sprintf( format, "[[%%.%huf,%%.%huf,%%.%huf,%%.%huf],"
 		"[%%.%huf,%%.%huf,%%.%huf,%%.%huf],"
+		"[%%.%huf,%%.%huf,%%.%huf,%%.%huf],"
 		"[%%.%huf,%%.%huf,%%.%huf,%%.%huf]]",
-		p, p, p, p, p, p, p, p, p, p, p, p );
+		p, p, p, p, p, p, p, p, p, p, p, p, p, p, p, p );
 	
 	const decMatrix &matrix = ( ( sMatNatDat* )p_GetNativeData( myself ) )->matrix;
 	decString str;
@@ -1026,7 +1028,8 @@ void deClassMatrix::nfToStringPrecision::RunFunction( dsRunTime *rt, dsValue *my
 	str.Format( format,
 		matrix.a11, matrix.a12, matrix.a13, matrix.a14,
 		matrix.a21, matrix.a22, matrix.a23, matrix.a24,
-		matrix.a31, matrix.a32, matrix.a33, matrix.a34 );
+		matrix.a31, matrix.a32, matrix.a33, matrix.a34,
+		matrix.a41, matrix.a42, matrix.a43, matrix.a44 );
 	
 	rt->PushString( str );
 }
