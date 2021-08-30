@@ -611,6 +611,9 @@ public:
 	/** \brief Quick multiplies this matrix with another one. */
 	decMatrix QuickMultiply( const decMatrix &matrix ) const;
 	
+	/** \brief Quick multiplies this matrix rotation part with another one. */
+	decMatrix QuickMultiplyRotation( const decMatrix &matrix ) const;
+	
 	/** \brief Quick multiplies this matrix with a value k. */
 	decMatrix QuickMultiply( float k ) const;
 	

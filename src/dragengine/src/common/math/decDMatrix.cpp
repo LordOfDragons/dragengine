@@ -972,6 +972,29 @@ decDMatrix decDMatrix::QuickMultiply( const decDMatrix &m ) const{
 	return n;
 }
 
+decDMatrix decDMatrix::QuickMultiplyRotation( const decDMatrix &m ) const{
+	decDMatrix n;
+	
+	n.a11 = a11 * m.a11 + a21 * m.a12 + a31 * m.a13;
+	n.a12 = a12 * m.a11 + a22 * m.a12 + a32 * m.a13;
+	n.a13 = a13 * m.a11 + a23 * m.a12 + a33 * m.a13;
+	n.a14 = 0.0;
+	n.a21 = a11 * m.a21 + a21 * m.a22 + a31 * m.a23;
+	n.a22 = a12 * m.a21 + a22 * m.a22 + a32 * m.a23;
+	n.a23 = a13 * m.a21 + a23 * m.a22 + a33 * m.a23;
+	n.a24 = 0.0;
+	n.a31 = a11 * m.a31 + a21 * m.a32 + a31 * m.a33;
+	n.a32 = a12 * m.a31 + a22 * m.a32 + a32 * m.a33;
+	n.a33 = a13 * m.a31 + a23 * m.a32 + a33 * m.a33;
+	n.a34 = 0.0;
+	n.a41 = 0.0;
+	n.a42 = 0.0;
+	n.a43 = 0.0;
+	n.a44 = 1.0;
+	
+	return n;
+}
+
 decDMatrix decDMatrix::QuickMultiply( double k ) const{
 	decDMatrix n;
 	
