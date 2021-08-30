@@ -34,7 +34,7 @@ from bpy_extras.io_utils import ExportHelper
 from mathutils import Vector, Matrix
 
 from .de_math import transformPosition, transformBonePosition, convertMatrix, convertMatrixBone
-from .de_math import vector_by_matrix, matrixToEuler
+from .de_math import vector_by_matrix, matrixToEuler, ONE_PI
 from .de_configuration import Configuration
 from .de_resources import Mesh, Armature
 from .de_porting import registerClass, matmul
@@ -267,8 +267,8 @@ class OBJECT_OT_ExportRig( bpy.types.Operator, ExportHelper ):
 						f.write( "\t\t\t<resistance>0</resistance>\n" )
 						f.write( "\t\t\t<locked>1</locked>\n" )
 					elif poseBone.use_ik_limit_x:
-						f.write( "\t\t\t<lower>%g</lower>\n" % ( poseBone.ik_min_x ) )
-						f.write( '\t\t\t<upper>%g</upper>\n' % ( poseBone.ik_max_x ) )
+						f.write( "\t\t\t<lower>%g</lower>\n" % ( poseBone.ik_min_x / ONE_PI ) )
+						f.write( '\t\t\t<upper>%g</upper>\n' % ( poseBone.ik_max_x / ONE_PI ) )
 						f.write( "\t\t\t<resistance>%g</resistance>\n" % ( poseBone.ik_stiffness_x ) )
 						f.write( "\t\t\t<locked>0</locked>\n" )
 					else:
@@ -279,38 +279,38 @@ class OBJECT_OT_ExportRig( bpy.types.Operator, ExportHelper ):
 					f.write( "\t\t</ikX>\n" )
 					
 					f.write( "\t\t<ikY>\n" )
-					if poseBone.lock_ik_y:
-						f.write( "\t\t\t<lower>0</lower>\n" )
-						f.write( "\t\t\t<upper>0</upper>\n" )
-						f.write( "\t\t\t<resistance>0</resistance>\n" )
-						f.write( "\t\t\t<locked>1</locked>\n" )
-					elif poseBone.use_ik_limit_y:
-						f.write( "\t\t\t<lower>%g</lower>\n" % ( poseBone.ik_min_y ) )
-						f.write( '\t\t\t<upper>%g</upper>\n' % ( poseBone.ik_max_y ) )
-						f.write( "\t\t\t<resistance>%g</resistance>\n" % ( poseBone.ik_stiffness_y ) )
-						f.write( "\t\t\t<locked>0</locked>\n" )
-					else:
-						f.write( "\t\t\t<lower>1</lower>\n" )
-						f.write( "\t\t\t<upper>0</upper>\n" )
-						f.write( "\t\t\t<resistance>%g</resistance>\n" % ( poseBone.ik_stiffness_y ) )
-						f.write( "\t\t\t<locked>0</locked>\n" )
-					f.write( "\t\t</ikY>\n" )
-					
-					f.write( "\t\t<ikZ>\n" )
 					if poseBone.lock_ik_z:
 						f.write( "\t\t\t<lower>0</lower>\n" )
 						f.write( "\t\t\t<upper>0</upper>\n" )
 						f.write( "\t\t\t<resistance>0</resistance>\n" )
 						f.write( "\t\t\t<locked>1</locked>\n" )
 					elif poseBone.use_ik_limit_z:
-						f.write( "\t\t\t<lower>%g</lower>\n" % ( poseBone.ik_min_z ) )
-						f.write( '\t\t\t<upper>%g</upper>\n' % ( poseBone.ik_max_z ) )
+						f.write( "\t\t\t<lower>%g</lower>\n" % ( poseBone.ik_min_z / ONE_PI ) )
+						f.write( '\t\t\t<upper>%g</upper>\n' % ( poseBone.ik_max_z / ONE_PI ) )
 						f.write( "\t\t\t<resistance>%g</resistance>\n" % ( poseBone.ik_stiffness_z ) )
 						f.write( "\t\t\t<locked>0</locked>\n" )
 					else:
 						f.write( "\t\t\t<lower>1</lower>\n" )
 						f.write( "\t\t\t<upper>0</upper>\n" )
 						f.write( "\t\t\t<resistance>%g</resistance>\n" % ( poseBone.ik_stiffness_z ) )
+						f.write( "\t\t\t<locked>0</locked>\n" )
+					f.write( "\t\t</ikY>\n" )
+					
+					f.write( "\t\t<ikZ>\n" )
+					if poseBone.lock_ik_y:
+						f.write( "\t\t\t<lower>0</lower>\n" )
+						f.write( "\t\t\t<upper>0</upper>\n" )
+						f.write( "\t\t\t<resistance>0</resistance>\n" )
+						f.write( "\t\t\t<locked>1</locked>\n" )
+					elif poseBone.use_ik_limit_y:
+						f.write( "\t\t\t<lower>%g</lower>\n" % ( poseBone.ik_min_y / ONE_PI ) )
+						f.write( '\t\t\t<upper>%g</upper>\n' % ( poseBone.ik_max_y / ONE_PI ) )
+						f.write( "\t\t\t<resistance>%g</resistance>\n" % ( poseBone.ik_stiffness_y ) )
+						f.write( "\t\t\t<locked>0</locked>\n" )
+					else:
+						f.write( "\t\t\t<lower>1</lower>\n" )
+						f.write( "\t\t\t<upper>0</upper>\n" )
+						f.write( "\t\t\t<resistance>%g</resistance>\n" % ( poseBone.ik_stiffness_y ) )
 						f.write( "\t\t\t<locked>0</locked>\n" )
 					f.write( "\t\t</ikZ>\n" )
 				
