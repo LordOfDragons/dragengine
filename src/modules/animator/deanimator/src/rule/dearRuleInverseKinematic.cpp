@@ -149,15 +149,16 @@ DEBUG_RESET_TIMERS;
 	if( pChainCount > 1 ){
 		//deDEAnimator &module = GetModule();
 		bool hasSolverBone = ( pUseSolverBone && pSolverBone != -1 );
-		decMatrix baseMatrix, baseInverseMatrix;
+		decMatrix baseRotMatrix, baseInverseRotMat;
 		const deAnimatorRule::eBlendModes blendMode = GetBlendMode();
 		decVector goalPosition( constGoalPosition );
 		decVector localPosition( constLocalPosition );
-		decMatrix goalMatrix, rotationMatrix, rotationMatrix2, matrix;
+		decMatrix goalMatrix, rotationMatrix, matrix;
+		decMatrix boneLocalRot, boneLocalRotOrg;
 		decVector tipPosition, bonePosition;
 		decVector planeNormal, targetNormal, gradient;
 		decVector tipVector, vector, rotation;
-		float curDist, oldDist, tipLength, angle;
+		float curDist, oldDist, angle;
 		//float dot, oneTan = tanf( DEG2RAD );
 		//float correctionFactor = 0.2f;
 		float planeNormalLen;
@@ -232,21 +233,21 @@ DEBUG_RESET_TIMERS;
 			const dearBoneState &boneState = *stalist.GetStateAt( pChain[ 0 ].GetBoneStateIndex() );
 			
 			if( boneState.GetParentState() ){
-				baseMatrix = boneState.GetRigLocalMatrix()
-					.QuickMultiply( boneState.GetParentState()->GetGlobalMatrix() );
-				baseInverseMatrix = boneState.GetParentState()->GetInverseGlobalMatrix()
-					.QuickMultiply( boneState.GetInverseRigLocalMatrix() );
+				baseRotMatrix = boneState.GetRigLocalMatrix()
+					.QuickMultiplyRotation( boneState.GetParentState()->GetGlobalMatrix() );
+				baseInverseRotMat = boneState.GetParentState()->GetInverseGlobalMatrix()
+					.QuickMultiplyRotation( boneState.GetInverseRigLocalMatrix() );
 				
 			}else{
-				baseMatrix = boneState.GetRigLocalMatrix();
-				baseInverseMatrix = boneState.GetInverseRigLocalMatrix();
+				baseRotMatrix = boneState.GetRigLocalMatrix().GetRotationMatrix();
+				baseInverseRotMat = boneState.GetInverseRigLocalMatrix().GetRotationMatrix();
 			}
 		}
 		
 		// determine the squared distance of the goal to the base of the chain. used later on to
 		// check for singularity situations
 		vector = goalPosition - pChain[ 0 ].GetGlobalMatrix().GetPosition();
-		goalDistSquared = vector * vector;
+		goalDistSquared = vector.LengthSquared();
 		
 		// adjust bones until the we get close enough to the target
 		tipPosition = pChain[ pChainCount - 1 ].GetGlobalMatrix() * localPosition;
@@ -276,17 +277,19 @@ DEBUG_RESET_TIMERS;
 				// determine tip vector and length. if the length is close to 0 the bone in question
 				// is skipped since a 0 length bone corrupts the ik solving calculations
 				tipVector = tipPosition - bonePosition;
-				tipLength = tipVector.Length();
-				if( tipLength < 1e-5f ){
+				if( tipVector.IsZero( 1e-5f ) ){
 					continue;
 				}
 				
 				// calculate the optimal plane to bring the tip closer to the target
 				targetNormal = goalPosition - tipPosition;
+				if( targetNormal.IsZero( 1e-5f ) ){
+					continue;
+				}
 				
 				planeNormal = tipVector % targetNormal;
 				planeNormalLen = planeNormal.Length();
-				if( planeNormalLen < 1e-6f ){
+				if( planeNormalLen < 1e-5f ){
 					continue;
 				}
 				planeNormal /= planeNormalLen;
@@ -306,8 +309,13 @@ DEBUG_RESET_TIMERS;
 				// the gradient is valid.
 			//	gradient = planeNormal % tipVector;
 				gradient = tipVector % planeNormal;
-				gradient.Normalize();
-				angle = targetNormal * gradient;
+				const float gradientLen = gradient.Length();
+				if( gradientLen > 1e-5f ){
+					angle = targetNormal * ( gradient / gradientLen );
+					
+				}else{
+					angle = 0.0f;
+				}
 				
 				if( angle > MAX_ROT ){
 					angle = MAX_ROT;
@@ -324,24 +332,27 @@ DEBUG_RESET_TIMERS;
 					const decVector &limitsUpper = rigBone.GetIKLimitsUpper();
 					
 					// determine the rotation relative to the rig local state
-					const decMatrix globRotMat( pChain[ i ].GetGlobalMatrix().GetRotationMatrix() );
+					const decMatrix &globMat = pChain[ i ].GetGlobalMatrix();
 					
 					if( i == 0 ){
-						rotationMatrix = globRotMat.QuickMultiply( rotationMatrix ).QuickMultiply( baseInverseMatrix );
-						rotationMatrix2 = globRotMat.QuickMultiply( baseInverseMatrix );
+						boneLocalRot = globMat.QuickMultiplyRotation( rotationMatrix )
+							.QuickMultiplyRotation( baseInverseRotMat );
+						boneLocalRotOrg = globMat.QuickMultiplyRotation( baseInverseRotMat );
 						
 					}else{
-						const decMatrix tempMap( pChain[ i - 1 ].GetInverseGlobalMatrix().QuickMultiply(
-							stalist.GetStateAt( pChain[ i ].GetBoneStateIndex() )->GetInverseRigLocalMatrix() ) );
+						const decMatrix tempRotMat( pChain[ i - 1 ].GetInverseGlobalMatrix()
+							.QuickMultiplyRotation( stalist.GetStateAt(
+								pChain[ i ].GetBoneStateIndex() )->GetInverseRigLocalMatrix() ) );
 						
-						rotationMatrix = globRotMat.QuickMultiply( rotationMatrix ).QuickMultiply( tempMap );
-						rotationMatrix2 = globRotMat.QuickMultiply( tempMap );
+						boneLocalRot = globMat.QuickMultiplyRotation( rotationMatrix )
+							.QuickMultiplyRotation( tempRotMat );
+						boneLocalRotOrg = globMat.QuickMultiplyRotation( tempRotMat );
 					}
 					
-					decQuaternion quatRotated( rotationMatrix.ToQuaternion() );
+					decQuaternion quatRotated( boneLocalRot.ToQuaternion() );
 					
 					if( pChain[ i ].HasDampening() ){
-						const decQuaternion quatCurrent( rotationMatrix2.ToQuaternion() );
+						const decQuaternion quatCurrent( boneLocalRotOrg.ToQuaternion() );
 						decVector eulerDiff( ( quatRotated * quatCurrent.Conjugate() ).GetEulerAngles() );
 						
 						const decVector &dampening = pChain[ i ].GetDampening();
@@ -392,25 +403,17 @@ DEBUG_RESET_TIMERS;
 					
 					// create new rotation matrix
 					if( i == 0 ){
-						//rotationMatrix = decMatrix::CreateRotation( rotation ) * baseMatrix * pChain[ i ].GetInverseGlobalMatrix();
 						rotationMatrix = pChain[ i ].GetInverseGlobalMatrix()
-							.QuickMultiply( decMatrix::CreateRotation( rotation ) )
-							.QuickMultiply( baseMatrix );
+							.QuickMultiplyRotation( decMatrix::CreateRotation( rotation ) )
+							.QuickMultiplyRotation( baseRotMatrix );
 						
 					}else{
-						/*
-						rotationMatrix = decMatrix::CreateRotation( rotation )
-							.QuickMultiply( pChain[ i ].GetBoneState()->GetRigLocalMatrix() )
-							.QuickMultiply( pChain[ i - 1 ].GetGlobalMatrix() )
-							.QuickMultiply( pChain[ i ].GetInverseGlobalMatrix() );
-						*/
 						rotationMatrix = pChain[ i ].GetInverseGlobalMatrix()
-							.QuickMultiply( decMatrix::CreateRotation( rotation ) )
-							.QuickMultiply( stalist.GetStateAt( pChain[ i ].GetBoneStateIndex() )->GetRigLocalMatrix() )
-							.QuickMultiply( pChain[ i - 1 ].GetGlobalMatrix() );
+							.QuickMultiplyRotation( decMatrix::CreateRotation( rotation ) )
+							.QuickMultiplyRotation( stalist.GetStateAt(
+								pChain[ i ].GetBoneStateIndex() )->GetRigLocalMatrix() )
+							.QuickMultiplyRotation( pChain[ i - 1 ].GetGlobalMatrix() );
 					}
-					
-					//rotationMatrix.SetFromQuaternion( rotationMatrix.ToQuaternion() );
 				}
 				
 				// rotate chains from the current link to the tip
@@ -465,7 +468,7 @@ DEBUG_tipposition2[ i ] = tipPosition;
 			
 			// if the change in distance is too small two situations can happen. either the target is outside of the
 			// reach of the chain or the chain ended up in a singularity
-			if( fabsf( oldDist - curDist ) < 1e-6f ){
+			if( fabsf( oldDist - curDist ) < 1e-5f ){
 				vector = tipPosition - pChain[ 0 ].GetGlobalMatrix().GetPosition();
 				tipDistSquared = vector.LengthSquared();
 				
@@ -794,7 +797,7 @@ void dearRuleInverseKinematic::pUpdateReachBone(){
 
 void dearRuleInverseKinematic::pLimitReach( dearBoneStateList &stalist, decVector &goalPosition,
 float range, const decVector &center ){
-	if( range < FLOAT_SAFE_EPSILON ){
+	if( range < 1e-4f ){
 		return;
 	}
 	
