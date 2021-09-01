@@ -127,7 +127,7 @@ DEBUG_RESET_TIMERS;
 	// if the track axis is a negative axis this is the same as using the respective positive axis
 	// but using the negated track vector. removes a bunch of lines of code
 	deAnimatorRuleTrackTo::eTrackAxis trackAxis = pTrackAxis;
-	bool negativeTrackAxis = false;;
+	bool negativeTrackAxis = false;
 	
 	if( trackAxis == deAnimatorRuleTrackTo::etaNegX ){
 		trackAxis = deAnimatorRuleTrackTo::etaPosX;
