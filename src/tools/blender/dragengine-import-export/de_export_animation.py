@@ -45,7 +45,7 @@ from .de_porting import registerClass, matmul
 class OBJECT_OT_ExportAnimation( bpy.types.Operator, ExportHelper ):
 	def exportActionList( self, context ):
 		actionFilters = []
-		if context.scene.dragengine_movesetidx == -1:
+		if context.scene.dragengine_movesetidx == -1 or not context.scene.dragengine_movesets:
 			actionFilters.append( re.compile( "^.+$" ) )
 		else:
 			for f in context.scene.dragengine_movesets[ context.scene.dragengine_movesetidx ].filters:
@@ -145,7 +145,7 @@ class OBJECT_OT_ExportAnimation( bpy.types.Operator, ExportHelper ):
 		self.animLimitVarScale = configuration.getValueFor( "animation.limits.variable.scale", 0.01 )
 		
 		self.actionFilters = []
-		if context.scene.dragengine_movesetidx == -1:
+		if context.scene.dragengine_movesetidx == -1 or not context.scene.dragengine_movesets:
 			if self.debugLevel > 0:
 				print( "animation actions: add filter '.+'" )
 			self.actionFilters.append( re.compile( "^.+$" ) )
