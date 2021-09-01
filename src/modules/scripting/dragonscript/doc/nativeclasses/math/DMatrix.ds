@@ -70,6 +70,11 @@ fixed class DMatrix
 		return null
 	end
 	
+	/** \brief Create rotation matrix. */
+	public static func DMatrix newRotationAxis( DVector axis, float rotation )
+		return null
+	end
+	
 	/** \brief Create scaling-rotation-translation matrix composing of a scaling followed by a rotation and a translation. */
 	public static func DMatrix newSRT( DVector scaling, DVector rotation, DVector translation )
 		return null

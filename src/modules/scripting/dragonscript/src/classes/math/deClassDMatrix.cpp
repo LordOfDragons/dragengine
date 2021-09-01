@@ -240,7 +240,7 @@ void deClassDMatrix::nfNewRotation2::RunFunction( dsRunTime *rt, dsValue *myself
 	clsDMatrix.PushDMatrix( rt, decDMatrix::CreateRotation( rx, ry, rz ) );
 }
 
-// public static func Matrix newRotationAxis( Vector axis, float rotation )
+// public static func Matrix newRotationAxis( DVector axis, float rotation )
 deClassDMatrix::nfNewRotationAxis::nfNewRotationAxis( const sInitData &init ) : dsFunction( init.clsDMatrix,
 "newRotationAxis", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_STATIC | DSTM_NATIVE, init.clsDMatrix ){
 	p_AddParameter( init.clsDVec ); // axis
