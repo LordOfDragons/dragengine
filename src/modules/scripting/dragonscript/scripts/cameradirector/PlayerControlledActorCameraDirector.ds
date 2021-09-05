@@ -35,7 +35,7 @@ pin Dragengine.Scenery
  * switch player control from one actor to another without needing to update the camera
  * directory unless different actors require different parameters.
  * 
- * For convenience the actorChanged() hook method called whenever an actor switched.
+ * For convenience the actorChanged() hook method is called whenever the actor switched.
  * 
  * The pivot point is set at the center of the actor head. For best results this should
  * be straight above the actor position. The setPivotAboveGround() takes care of this.

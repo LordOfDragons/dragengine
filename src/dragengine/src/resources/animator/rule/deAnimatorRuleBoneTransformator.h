@@ -69,11 +69,15 @@ private:
 	decVector pMaxRotation;
 	decVector pMinScaling;
 	decVector pMaxScaling;
+	decVector pAxis;
+	float pMinAngle;
+	float pMaxAngle;
 	
 	eCoordinateFrames pCoordinateFrame;
 	bool pEnablePosition;
 	bool pEnableOrientation;
 	bool pEnableSize;
+	bool pUseAxis;
 	
 	decString pTargetBone;
 	
@@ -138,6 +142,42 @@ public:
 	/** \brief Set maximum scaling. */
 	void SetMaximumScaling( const decVector &scaling );
 	
+	/**
+	 * \brief Rotation axis.
+	 * \version 1.6
+	 */
+	inline const decVector &GetAxis() const{ return pAxis; }
+	
+	/**
+	 * \brief Set rotation axis.
+	 * \version 1.6
+	 */
+	void SetAxis( const decVector &axis );
+	
+	/**
+	 * \brief Minimum axis rotation angle.
+	 * \version 1.6
+	 */
+	inline float GetMinimumAngle() const{ return pMinAngle; }
+	
+	/**
+	 * \brief Set minimum axis rotation angle.
+	 * \version 1.6
+	 */
+	void SetMinimumAngle( float angle );
+	
+	/**
+	 * \brief Maximum axis rotation angle.
+	 * \version 1.6
+	 */
+	inline float GetMaximumAngle() const{ return pMaxAngle; }
+	
+	/**
+	 * \brief Set maximum axis rotation angle.
+	 * \version 1.6
+	 */
+	void SetMaximumAngle( float angle );
+	
 	/** \brief Transformation coordinate frame. */
 	inline eCoordinateFrames GetCoordinateFrame() const{ return pCoordinateFrame; }
 	
@@ -161,6 +201,18 @@ public:
 	
 	/** \brief Sets if size manipulation is enabled. */
 	void SetEnableSize( bool enabled );
+	
+	/**
+	 * \brief Use rotation axis instead of rotation directly.
+	 * \version 1.6
+	 */
+	inline bool GetUseAxis() const{ return pUseAxis; }
+	
+	/**
+	 * \brief Set to use rotation axis instead of rotation directly.
+	 * \version 1.6
+	 */
+	void SetUseAxis( bool useAxis );
 	
 	/** \brief Name of the target bone. */
 	inline const decString &GetTargetBone() const{ return pTargetBone; }

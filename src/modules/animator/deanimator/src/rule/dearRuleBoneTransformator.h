@@ -46,12 +46,16 @@ private:
 	const bool pEnablePosition;
 	const bool pEnableOrientation;
 	const bool pEnableSize;
+	const bool pUseAxis;
 	const decVector pMinTranslation;
 	const decVector pMaxTranslation;
 	const decVector pMinRotation;
 	const decVector pMaxRotation;
 	const decVector pMinScaling;
 	const decVector pMaxScaling;
+	const decVector pAxis;
+	const float pMinAngle;
+	const float pMaxAngle;
 	
 public:
 	/** \name Constructors and Destructors */

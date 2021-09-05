@@ -32,14 +32,15 @@ class deScriptingDragonScript;
 
 /**
  * \brief Class animator rule bone transformator.
- * \details Script class wrapping an attached or detached animator rule. Objects of
- *          this class hold a pointer to the rule and optional an animator. If the
- *          animator is non-NULL the rule pointer is held by the object. Otherwise
- *          only a reference to the animator is held and the pointer to the rule
- *          is not held. In addition an index is stored used to update the rule in
- *          the animator if existing. This index is not necessary the index of the
- *          rule itself but the index of the top most rule altered by changes made
- *          to this rule.
+ * 
+ * Script class wrapping an attached or detached animator rule. Objects of
+ * this class hold a pointer to the rule and optional an animator. If the
+ * animator is non-NULL the rule pointer is held by the object. Otherwise
+ * only a reference to the animator is held and the pointer to the rule
+ * is not held. In addition an index is stored used to update the rule in
+ * the animator if existing. This index is not necessary the index of the
+ * rule itself but the index of the top most rule altered by changes made
+ * to this rule.
  */
 class deClassARBoneTransformator : public dsClass{
 public:
@@ -47,7 +48,7 @@ public:
 		etBlendFactor,
 		etTranslation,
 		etRotation,
-		etScaling,
+		etScaling
 	};
 	
 private:
@@ -113,6 +114,10 @@ private:
 	DEF_NATFUNC( nfSetMaximumRotation );
 	DEF_NATFUNC( nfSetMinimumScaling );
 	DEF_NATFUNC( nfSetMaximumScaling );
+	DEF_NATFUNC( nfSetAxis );
+	DEF_NATFUNC( nfSetMinimumAngle );
+	DEF_NATFUNC( nfSetMaximumAngle );
+	DEF_NATFUNC( nfSetUseAxis );
 	DEF_NATFUNC( nfSetCoordinateFrame );
 	DEF_NATFUNC( nfSetTargetBone );
 	

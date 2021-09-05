@@ -34,26 +34,48 @@ pin Dragengine.Utils
 class ADRuleBoneTransformator extends ADRule
 	/** Minimm translation. */
 	private var Vector pMinimumTranslation
+	
 	/** Maximum translation. */
 	private var Vector pMaximumTranslation
+	
 	/** Minimm rotation. */
 	private var Vector pMinimumRotation
+	
 	/** Maximum rotation. */
 	private var Vector pMaximumRotation
+	
 	/** Minimm scaling. */
 	private var Vector pMinimumScaling
+	
 	/** Maximum scaling. */
 	private var Vector pMaximumScaling
+	
 	/** Coordinate frame of rotation. */
 	private var ARBoneTransformatorCFrame pCoordFrame
+	
 	/** Determines if the transformation affects the position. */
 	private var bool pEnablePosition
+	
 	/** Determines if the transformation affects the orientation. */
 	private var bool pEnableOrientation
-	/** Determines if the transformation affects the size, */
+	
+	/** Determines if the transformation affects the size. */
 	private var bool pEnableSize
+	
 	/** Name of the target bone. */
 	private var String pTargetBone
+	
+	/** Rotation axis. */
+	private var Vector pAxis
+	
+	/** Minimm axis rotation angle. */
+	private var float pMinimumAngle
+	
+	/** Maximum axis rotation angle. */
+	private var float pMaximumAngle
+	
+	/** Use rotation axis instead of rotation directly. */
+	private var bool pUseAxis
 	
 	
 	
@@ -70,6 +92,10 @@ class ADRuleBoneTransformator extends ADRule
 		this.pEnableOrientation = true
 		this.pEnableSize = false
 		this.pTargetBone = ""
+		this.pAxis = Vector.new( 0.0, 0.0, 1.0 )
+		this.pMinimumAngle = 0.0
+		this.pMaximumAngle = 0.0
+		this.pUseAxis = false
 	end
 	
 	
@@ -207,6 +233,73 @@ class ADRuleBoneTransformator extends ADRule
 		this.pTargetBone = name
 	end
 	
+	/**
+	 * \brief Rotation axis.
+	 * \version 1.6
+	 */
+	public func Vector getAxis()
+		return this.pAxis
+	end
+	
+	/**
+	 * \brief Set rotation axis.
+	 * \version 1.6
+	 */
+	public func void setAxis( Vector axis )
+		if axis == null
+			throw ENullPointer.new( "axis" )
+		end
+		this.pAxis = axis
+	end
+	
+	/**
+	 * \brief Minimum axis rotation angle.
+	 * \version 1.6
+	 */
+	public func float getMinimumAngle()
+		return this.pMinimumAngle
+	end
+	
+	/**
+	 * \brief Set minimum axis rotation angle.
+	 * \version 1.6
+	 */
+	public func void setMinimumAngle( float angle )
+		this.pMinimumAngle = angle
+	end
+	
+	/**
+	 * \brief Maximum axis rotation angle.
+	 * \version 1.6
+	 */
+	public func float getMaximumAngle()
+		return this.pMaximumAngle
+	end
+	
+	/**
+	 * \brief Set maximum axis rotation angle.
+	 * \version 1.6
+	 */
+	public func void setMaximumAngle( float angle )
+		this.pMaximumAngle = angle
+	end
+	
+	/**
+	 * \brief Use rotation axis instead of rotation directly.
+	 * \version 1.6
+	 */
+	public func bool getUseAxis()
+		return this.pUseAxis
+	end
+	
+	/**
+	 * \brief Set to use rotation axis instead of rotation directly.
+	 * \version 1.6
+	 */
+	public func void setUseAxis( bool useAxis )
+		this.pUseAxis = useAxis
+	end
+	
 	
 	
 	/** Build engine animator rule using the stored definition. */
@@ -230,6 +323,10 @@ class ADRuleBoneTransformator extends ADRule
 		rule.setEnableOrientation( this.pEnableOrientation )
 		rule.setEnableSize( this.pEnableSize )
 		rule.setTargetBone( this.pTargetBone )
+		rule.setAxis( this.pAxis )
+		rule.setMinimumAngle( this.pMinimumAngle )
+		rule.setMaximumAngle( this.pMaximumAngle )
+		rule.setUseAxis( this.pUseAxis )
 		
 		return rule
 	end
@@ -240,6 +337,8 @@ class ADRuleBoneTransformator extends ADRule
 		console.addMessage( this.debugCommon( "Bone Transformator" ) + \
 			" minTrans=" + this.pMinimumTranslation + " maxTrans=" + this.pMaximumTranslation + \
 			" minRot=" + this.pMinimumRotation + " maxRot=" + this.pMaximumRotation + \
-			" minScale=" + this.pMinimumScaling + " maxScale=" + this.pMaximumScaling + " )" )
+			" minScale=" + this.pMinimumScaling + " maxScale=" + this.pMaximumScaling + \
+			" useAxis=" + this.pUseAxis + " axis=" + this.pAxis + \
+			" minAngle=" + this.pMinimumAngle + " maxAngle=" + this.pMaximumAngle + " )")
 	end
 end

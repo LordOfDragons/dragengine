@@ -269,6 +269,70 @@ void deClassARBoneTransformator::nfSetMaximumScaling::RunFunction( dsRunTime *rt
 	}
 }
 
+// public func void setAxis( Vector axis )
+deClassARBoneTransformator::nfSetAxis::nfSetAxis( const sInitData &init ) :
+dsFunction( init.clsARBoneTrans, "setAxis", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsVec ); // axis
+}
+void deClassARBoneTransformator::nfSetAxis::RunFunction( dsRunTime *rt, dsValue *myself ){
+	sARBoneTransNatDat &nd = *( ( sARBoneTransNatDat* )p_GetNativeData( myself ) );
+	const deClassARBoneTransformator &clsARBoneTrans = *( ( deClassARBoneTransformator* )GetOwnerClass() );
+	const deClassVector &clsVec = *clsARBoneTrans.GetDS().GetClassVector();
+	
+	const decVector &vector = clsVec.GetVector( rt->GetValue( 0 )->GetRealObject() );
+	
+	nd.rule->SetAxis( vector );
+	
+	if( nd.animator ){
+		nd.animator->NotifyRulesChanged();
+	}
+}
+
+// public func void setMinimumAngle( float angle )
+deClassARBoneTransformator::nfSetMinimumAngle::nfSetMinimumAngle( const sInitData &init ) :
+dsFunction( init.clsARBoneTrans, "setMinimumAngle", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsFlt ); // angle
+}
+void deClassARBoneTransformator::nfSetMinimumAngle::RunFunction( dsRunTime *rt, dsValue *myself ){
+	sARBoneTransNatDat &nd = *( ( sARBoneTransNatDat* )p_GetNativeData( myself ) );
+	
+	nd.rule->SetMinimumAngle( rt->GetValue( 0 )->GetFloat() * DEG2RAD );
+	
+	if( nd.animator ){
+		nd.animator->NotifyRulesChanged();
+	}
+}
+
+// public func void setMaximumAngle( float angle )
+deClassARBoneTransformator::nfSetMaximumAngle::nfSetMaximumAngle( const sInitData &init ) :
+dsFunction( init.clsARBoneTrans, "setMaximumAngle", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsFlt ); // angle
+}
+void deClassARBoneTransformator::nfSetMaximumAngle::RunFunction( dsRunTime *rt, dsValue *myself ){
+	sARBoneTransNatDat &nd = *( ( sARBoneTransNatDat* )p_GetNativeData( myself ) );
+	
+	nd.rule->SetMaximumAngle( rt->GetValue( 0 )->GetFloat() * DEG2RAD );
+	
+	if( nd.animator ){
+		nd.animator->NotifyRulesChanged();
+	}
+}
+
+// public func void setUseAxis( bool useAxis )
+deClassARBoneTransformator::nfSetUseAxis::nfSetUseAxis( const sInitData &init ) :
+dsFunction( init.clsARBoneTrans, "setUseAxis", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsBool ); // useAxis
+}
+void deClassARBoneTransformator::nfSetUseAxis::RunFunction( dsRunTime *rt, dsValue *myself ){
+	sARBoneTransNatDat &nd = *( ( sARBoneTransNatDat* )p_GetNativeData( myself ) );
+	
+	nd.rule->SetUseAxis( rt->GetValue( 0 )->GetBool() );
+	
+	if( nd.animator ){
+		nd.animator->NotifyRulesChanged();
+	}
+}
+
 // public func void setCoordinateFrame( ARBoneTransformatorCFrame coordinateFrame )
 deClassARBoneTransformator::nfSetCoordinateFrame::nfSetCoordinateFrame( const sInitData &init ) : dsFunction( init.clsARBoneTrans,
 "setCoordinateFrame", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
@@ -449,6 +513,10 @@ void deClassARBoneTransformator::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfSetMaximumRotation( init ) );
 	AddFunction( new nfSetMinimumScaling( init ) );
 	AddFunction( new nfSetMaximumScaling( init ) );
+	AddFunction( new nfSetAxis( init ) );
+	AddFunction( new nfSetMinimumAngle( init ) );
+	AddFunction( new nfSetMaximumAngle( init ) );
+	AddFunction( new nfSetUseAxis( init ) );
 	AddFunction( new nfSetCoordinateFrame( init ) );
 	AddFunction( new nfSetTargetBone( init ) );
 	

@@ -76,13 +76,17 @@ pCoordinateFrame( rule.GetCoordinateFrame() ),
 pEnablePosition( rule.GetEnablePosition() ),
 pEnableOrientation( rule.GetEnableOrientation() ),
 pEnableSize( rule.GetEnableSize() ),
+pUseAxis( rule.GetUseAxis() ),
 
 pMinTranslation( rule.GetMinimumTranslation() ),
 pMaxTranslation( rule.GetMaximumTranslation() ),
 pMinRotation( rule.GetMinimumRotation() ),
 pMaxRotation( rule.GetMaximumRotation() ),
 pMinScaling( rule.GetMinimumScaling() ),
-pMaxScaling( rule.GetMaximumScaling() )
+pMaxScaling( rule.GetMaximumScaling() ),
+pAxis( rule.GetAxis() ),
+pMinAngle( rule.GetMinimumAngle() ),
+pMaxAngle( rule.GetMaximumAngle() )
 {
 	RuleChanged();
 }
@@ -111,18 +115,29 @@ DEBUG_RESET_TIMERS;
 	const int boneCount = GetBoneMappingCount();
 	int i;
 	
-	// transformed values
+	// prepare transformation matrix
 	const float valueTranslation = decMath::clamp( pTargetTranslation.GetValue( instance, 0.0f ), 0.0f, 1.0f );
 	const decVector translation( pMinTranslation * ( 1.0f - valueTranslation ) + pMaxTranslation * valueTranslation );
 	
 	const float valueRotation = decMath::clamp( pTargetRotation.GetValue( instance, 0.0f ), 0.0f, 1.0f );
-	const decVector rotation( pMinRotation * ( 1.0f - valueRotation ) + pMaxRotation * valueRotation );
 	
 	const float valueScaling = decMath::clamp( pTargetScaling.GetValue( instance, 0.0f ), 0.0f, 1.0f );
 	const decVector scaling( pMinScaling * ( 1.0f - valueScaling ) + pMaxScaling * valueScaling );
 	
-	// prepare transformation matrix
-	decMatrix transformMatrix( decMatrix::CreateSRT( scaling, rotation, translation ) );
+	decMatrix transformMatrix;
+	
+	if( pUseAxis ){
+		const float angle = pMinAngle * ( 1.0f - valueRotation ) + pMaxAngle * valueRotation;
+		
+		transformMatrix = decMatrix::CreateScale( scaling ).
+			QuickMultiply( decMatrix::CreateRotationAxis( pAxis, angle ) ).
+			QuickMultiply( decMatrix::CreateTranslation( translation ) );
+		
+	}else{
+		const decVector rotation( pMinRotation * ( 1.0f - valueRotation ) + pMaxRotation * valueRotation );
+		
+		transformMatrix.SetSRT( scaling, rotation, translation );
+	}
 	
 	if( pCoordinateFrame == deAnimatorRuleBoneTransformator::ecfTargetBone && pTargetBone != -1 ){
 		dearBoneState &bstate = *stalist.GetStateAt( pTargetBone );
