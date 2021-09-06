@@ -42,6 +42,12 @@ class deAnimatorRuleVisitor;
  * \brief Animator rule.
  */
 class aeRule : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<aeRule> Ref;
+	
+	
+	
 private:
 	aeAnimator *pAnimator;
 	aeRuleGroup *pParentGroup;

@@ -548,6 +548,17 @@ deAnimatorRule * igdeLoadAnimator::pReadRuleBoneTransformator( const decXmlEleme
 				ReadVector( *tag, vector );
 				rule->SetMaximumScaling( vector );
 				
+			}else if( strcmp( tag->GetName(), "axis" ) == 0 ){
+				vector.SetZero();
+				ReadVector( *tag, vector );
+				rule->SetAxis( vector );
+				
+			}else if( strcmp( tag->GetName(), "minimumAngle" ) == 0 ){
+				rule->SetMinimumAngle( GetCDataFloat( *tag ) * DEG2RAD );
+				
+			}else if( strcmp( tag->GetName(), "maximumAngle" ) == 0 ){
+				rule->SetMaximumAngle( GetCDataFloat( *tag ) * DEG2RAD );
+				
 			}else if( strcmp( tag->GetName(), "cframe" ) == 0 ){
 				name = GetCDataString( *tag );
 				
@@ -572,6 +583,9 @@ deAnimatorRule * igdeLoadAnimator::pReadRuleBoneTransformator( const decXmlEleme
 				
 			}else if( strcmp( tag->GetName(), "enableSize" ) == 0 ){
 				rule->SetEnableSize( GetCDataBool( *tag ) );
+				
+			}else if( strcmp( tag->GetName(), "useAxis" ) == 0 ){
+				rule->SetUseAxis( GetCDataBool( *tag ) );
 				
 			}else if( strcmp( tag->GetName(), "targetBone" ) == 0 ){
 				rule->SetTargetBone( GetCDataString( *tag ) );

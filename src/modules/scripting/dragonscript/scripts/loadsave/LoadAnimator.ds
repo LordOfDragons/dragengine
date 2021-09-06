@@ -383,6 +383,15 @@ class LoadAnimator extends BaseXmlLoader
 			elif tagName.equals( "maximumScaling" )
 				rule.setMaximumScaling( this.readVector( element ) )
 				
+			elif tagName.equals( "axis" )
+				rule.setAxis( this.readVector( element ) )
+				
+			elif tagName.equals( "minimumAngle" )
+				rule.setMinimumAngle( element.getFirstCDataFloat() )
+				
+			elif tagName.equals( "maximumAngle" )
+				rule.setMaximumAngle( element.getFirstCDataFloat() )
+				
 			elif tagName.equals( "cframe" )
 				var ARBoneTransformatorCFrame cframe = ARBoneTransformatorCFrame.named( element.getFirstCData() )
 				if cframe != null
@@ -401,6 +410,9 @@ class LoadAnimator extends BaseXmlLoader
 				
 			elif tagName.equals( "enableSize" )
 				rule.setEnableSize( element.getFirstCDataBool() )
+				
+			elif tagName.equals( "useAxis" )
+				rule.setUseAxis( element.getFirstCDataBool() )
 				
 			elif tagName.equals( "targetBone" )
 				rule.setTargetBone( element.getFirstCData() )

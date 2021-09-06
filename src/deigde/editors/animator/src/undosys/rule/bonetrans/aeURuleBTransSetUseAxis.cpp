@@ -1,7 +1,7 @@
 /* 
  * Drag[en]gine IGDE Animator Editor
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * Copyright (C) 2021, Roland Plüss (roland@rptd.ch)
  * 
  * This program is free software; you can redistribute it and/or 
  * modify it under the terms of the GNU General Public License 
@@ -23,40 +23,30 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include "aeUAddRule.h"
-#include "../../animator/aeAnimator.h"
-#include "../../animator/rule/aeRule.h"
+#include "aeURuleBTransSetUseAxis.h"
+#include "../../../animator/rule/aeRuleBoneTransformator.h"
 
 #include <dragengine/common/exceptions.h>
 
 
 
-// Class aeUAddRule
-/////////////////////
+// Class aeURuleBTransSetUseAxis
+//////////////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
 
-aeUAddRule::aeUAddRule( aeAnimator *animator, aeRule *rule, int index ){
-	if( ! animator || ! rule ){
+aeURuleBTransSetUseAxis::aeURuleBTransSetUseAxis( aeRuleBoneTransformator *rule ) :
+pRule( rule )
+{
+	if( ! rule ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	pAnimator = NULL;
-	pRule = NULL;
-	pIndex = index;
-	
-	SetShortInfo( "Add rule" );
-	
-	pAnimator = animator;
-	animator->AddReference();
-	
-	pRule = rule;
-	rule->AddReference();
+	SetShortInfo( "Bone transformator toggle use axis" );
 }
 
-aeUAddRule::~aeUAddRule(){
-	pCleanUp();
+aeURuleBTransSetUseAxis::~aeURuleBTransSetUseAxis(){
 }
 
 
@@ -64,25 +54,10 @@ aeUAddRule::~aeUAddRule(){
 // Management
 ///////////////
 
-void aeUAddRule::Undo(){
-	pAnimator->RemoveRule( pRule );
+void aeURuleBTransSetUseAxis::Undo(){
+	Redo();
 }
 
-void aeUAddRule::Redo(){
-	pAnimator->InsertRuleAt( pRule, pIndex );
-	pAnimator->SetActiveRule( pRule );
-}
-
-
-
-// Private Functions
-//////////////////////
-
-void aeUAddRule::pCleanUp(){
-	if( pRule ){
-		pRule->FreeReference();
-	}
-	if( pAnimator ){
-		pAnimator->FreeReference();
-	}
+void aeURuleBTransSetUseAxis::Redo(){
+	pRule->SetUseAxis( ! pRule->GetUseAxis() );
 }

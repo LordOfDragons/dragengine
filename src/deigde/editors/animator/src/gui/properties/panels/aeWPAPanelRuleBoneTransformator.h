@@ -24,6 +24,7 @@
 
 #include "aeWPAPanelRule.h"
 
+#include <deigde/gui/igdeTextFieldReference.h>
 #include <deigde/gui/composed/igdeEditVectorReference.h>
 
 
@@ -38,10 +39,14 @@ private:
 	igdeEditVectorReference pEditMaxRot;
 	igdeEditVectorReference pEditMinScale;
 	igdeEditVectorReference pEditMaxScale;
+	igdeEditVectorReference pEditAxis;
+	igdeTextFieldReference pEditMinAngle;
+	igdeTextFieldReference pEditMaxAngle;
 	igdeComboBoxReference pCBCoordFrame;
 	igdeCheckBoxReference pChkEnablePosition;
 	igdeCheckBoxReference pChkEnableRotation;
 	igdeCheckBoxReference pChkEnableSize;
+	igdeCheckBoxReference pChkUseAxis;
 	igdeComboBoxFilterReference pCBTargetBone;
 	
 	

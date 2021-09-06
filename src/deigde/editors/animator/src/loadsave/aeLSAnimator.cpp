@@ -636,50 +636,81 @@ void aeLSAnimator::pSaveRuleBoneTransformator( decXmlWriter &writer, aeAnimator 
 	
 	pSaveRuleCommon( writer, animator, rule );
 	
-	writer.WriteOpeningTagStart( "minimumTranslation" );
-	writer.WriteAttributeFloat( "x", rule->GetMinimumTranslation().x );
-	writer.WriteAttributeFloat( "y", rule->GetMinimumTranslation().y );
-	writer.WriteAttributeFloat( "z", rule->GetMinimumTranslation().z );
-	writer.WriteOpeningTagEnd( true );
+	if( ! rule->GetMinimumTranslation().IsZero() ){
+		writer.WriteOpeningTagStart( "minimumTranslation" );
+		writer.WriteAttributeFloat( "x", rule->GetMinimumTranslation().x );
+		writer.WriteAttributeFloat( "y", rule->GetMinimumTranslation().y );
+		writer.WriteAttributeFloat( "z", rule->GetMinimumTranslation().z );
+		writer.WriteOpeningTagEnd( true );
+	}
 	
-	writer.WriteOpeningTagStart( "maximumTranslation" );
-	writer.WriteAttributeFloat( "x", rule->GetMaximumTranslation().x );
-	writer.WriteAttributeFloat( "y", rule->GetMaximumTranslation().y );
-	writer.WriteAttributeFloat( "z", rule->GetMaximumTranslation().z );
-	writer.WriteOpeningTagEnd( true );
+	if( ! rule->GetMaximumTranslation().IsZero() ){
+		writer.WriteOpeningTagStart( "maximumTranslation" );
+		writer.WriteAttributeFloat( "x", rule->GetMaximumTranslation().x );
+		writer.WriteAttributeFloat( "y", rule->GetMaximumTranslation().y );
+		writer.WriteAttributeFloat( "z", rule->GetMaximumTranslation().z );
+		writer.WriteOpeningTagEnd( true );
+	}
 	
-	writer.WriteOpeningTagStart( "minimumRotation" );
-	writer.WriteAttributeFloat( "x", rule->GetMinimumRotation().x );
-	writer.WriteAttributeFloat( "y", rule->GetMinimumRotation().y );
-	writer.WriteAttributeFloat( "z", rule->GetMinimumRotation().z );
-	writer.WriteOpeningTagEnd( true );
+	if( ! rule->GetMinimumRotation().IsZero() ){
+		writer.WriteOpeningTagStart( "minimumRotation" );
+		writer.WriteAttributeFloat( "x", rule->GetMinimumRotation().x );
+		writer.WriteAttributeFloat( "y", rule->GetMinimumRotation().y );
+		writer.WriteAttributeFloat( "z", rule->GetMinimumRotation().z );
+		writer.WriteOpeningTagEnd( true );
+	}
 	
-	writer.WriteOpeningTagStart( "maximumRotation" );
-	writer.WriteAttributeFloat( "x", rule->GetMaximumRotation().x );
-	writer.WriteAttributeFloat( "y", rule->GetMaximumRotation().y );
-	writer.WriteAttributeFloat( "z", rule->GetMaximumRotation().z );
-	writer.WriteOpeningTagEnd( true );
+	if( ! rule->GetMaximumRotation().IsZero() ){
+		writer.WriteOpeningTagStart( "maximumRotation" );
+		writer.WriteAttributeFloat( "x", rule->GetMaximumRotation().x );
+		writer.WriteAttributeFloat( "y", rule->GetMaximumRotation().y );
+		writer.WriteAttributeFloat( "z", rule->GetMaximumRotation().z );
+		writer.WriteOpeningTagEnd( true );
+	}
 	
-	writer.WriteOpeningTagStart( "minimumScaling" );
-	writer.WriteAttributeFloat( "x", rule->GetMinimumScaling().x );
-	writer.WriteAttributeFloat( "y", rule->GetMinimumScaling().y );
-	writer.WriteAttributeFloat( "z", rule->GetMinimumScaling().z );
-	writer.WriteOpeningTagEnd( true );
+	if( ! rule->GetMinimumScaling().IsEqualTo( decVector( 1.0f, 1.0f, 1.0f ) ) ){
+		writer.WriteOpeningTagStart( "minimumScaling" );
+		writer.WriteAttributeFloat( "x", rule->GetMinimumScaling().x );
+		writer.WriteAttributeFloat( "y", rule->GetMinimumScaling().y );
+		writer.WriteAttributeFloat( "z", rule->GetMinimumScaling().z );
+		writer.WriteOpeningTagEnd( true );
+	}
 	
-	writer.WriteOpeningTagStart( "maximumScaling" );
-	writer.WriteAttributeFloat( "x", rule->GetMaximumScaling().x );
-	writer.WriteAttributeFloat( "y", rule->GetMaximumScaling().y );
-	writer.WriteAttributeFloat( "z", rule->GetMaximumScaling().z );
-	writer.WriteOpeningTagEnd( true );
+	if( ! rule->GetMaximumScaling().IsEqualTo( decVector( 1.0f, 1.0f, 1.0f ) ) ){
+		writer.WriteOpeningTagStart( "maximumScaling" );
+		writer.WriteAttributeFloat( "x", rule->GetMaximumScaling().x );
+		writer.WriteAttributeFloat( "y", rule->GetMaximumScaling().y );
+		writer.WriteAttributeFloat( "z", rule->GetMaximumScaling().z );
+		writer.WriteOpeningTagEnd( true );
+	}
 	
-	if( rule->GetCoordinateFrame() == deAnimatorRuleBoneTransformator::ecfBoneLocal ){
+	if( ! rule->GetAxis().IsEqualTo( decVector( 0.0f, 0.0f, 1.0f ) ) ){
+		writer.WriteOpeningTagStart( "axis" );
+		writer.WriteAttributeFloat( "x", rule->GetAxis().x );
+		writer.WriteAttributeFloat( "y", rule->GetAxis().y );
+		writer.WriteAttributeFloat( "z", rule->GetAxis().z );
+		writer.WriteOpeningTagEnd( true );
+	}
+	
+	if( fabsf( rule->GetMinimumAngle() ) > FLOAT_SAFE_EPSILON ){
+		writer.WriteDataTagFloat( "minimumAngle", rule->GetMinimumAngle() );
+	}
+	if( fabsf( rule->GetMaximumAngle() ) > FLOAT_SAFE_EPSILON ){
+		writer.WriteDataTagFloat( "maximumAngle", rule->GetMaximumAngle() );
+	}
+	
+	switch( rule->GetCoordinateFrame() ){
+	case deAnimatorRuleBoneTransformator::ecfBoneLocal:
 		writer.WriteDataTagString( "cframe", "local" );
+		break;
 		
-	}else if( rule->GetCoordinateFrame() == deAnimatorRuleBoneTransformator::ecfComponent ){
+	case deAnimatorRuleBoneTransformator::ecfComponent:
 		writer.WriteDataTagString( "cframe", "component" );
+		break;
 		
-	}else{ // deAnimatorRuleBoneTransformator::ecfRotationBone
+	case deAnimatorRuleBoneTransformator::ecfTargetBone:
 		writer.WriteDataTagString( "cframe", "target" );
+		break;
 	}
 	
 	if( rule->GetEnablePosition() ){
@@ -691,7 +722,12 @@ void aeLSAnimator::pSaveRuleBoneTransformator( decXmlWriter &writer, aeAnimator 
 	if( rule->GetEnableSize() ){
 		writer.WriteDataTagBool( "enableSize", rule->GetEnableSize() );
 	}
-	writer.WriteDataTagString( "targetBone", rule->GetTargetBone() );
+	if( rule->GetUseAxis() ){
+		writer.WriteDataTagBool( "useAxis", rule->GetUseAxis() );
+	}
+	if( ! rule->GetTargetBone().IsEmpty() ){
+		writer.WriteDataTagString( "targetBone", rule->GetTargetBone() );
+	}
 	
 	pSaveControllerTarget( writer, animator, rule->GetTargetTranslation(), "translation" );
 	pSaveControllerTarget( writer, animator, rule->GetTargetRotation(), "rotation" );
@@ -1962,6 +1998,17 @@ aeRule *aeLSAnimator::pLoadRuleBoneTransformator( decXmlElementTag *root, aeAnim
 						pLoadVector( tag, vector );
 						rule->SetMaximumScaling( vector );
 						
+					}else if( strcmp( tag->GetName(), "axis" ) == 0 ){
+						vector.SetZero();
+						pLoadVector( tag, vector );
+						rule->SetAxis( vector );
+						
+					}else if( strcmp( tag->GetName(), "minimumAngle" ) == 0 ){
+						rule->SetMinimumAngle( GetCDataFloat( *tag ) );
+						
+					}else if( strcmp( tag->GetName(), "maximumAngle" ) == 0 ){
+						rule->SetMaximumAngle( GetCDataFloat( *tag ) );
+						
 					}else if( strcmp( tag->GetName(), "cframe" ) == 0 ){
 						name = tag->GetFirstData()->GetData();
 						
@@ -1989,6 +2036,9 @@ aeRule *aeLSAnimator::pLoadRuleBoneTransformator( decXmlElementTag *root, aeAnim
 						
 					}else if( strcmp( tag->GetName(), "enableSize" ) == 0 ){
 						rule->SetEnableSize( GetCDataBool( *tag ) );
+						
+					}else if( strcmp( tag->GetName(), "useAxis" ) == 0 ){
+						rule->SetUseAxis( GetCDataBool( *tag ) );
 						
 					}else if( strcmp( tag->GetName(), "targetBone" ) == 0 ){
 						cdata = tag->GetFirstData();
