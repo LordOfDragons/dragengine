@@ -1754,6 +1754,9 @@ void reRig::NotifyConstraintCountChanged(){
 	for( n=0; n<pNotifierCount; n++ ){
 		pNotifiers[ n ]->ConstraintCountChanged( this );
 	}
+	
+	pDirtyRig = true;
+	SetChanged( true );
 }
 
 void reRig::NotifyConstraintChanged( reRigConstraint *constraint ){
@@ -1762,6 +1765,9 @@ void reRig::NotifyConstraintChanged( reRigConstraint *constraint ){
 	for( n=0; n<pNotifierCount; n++ ){
 		pNotifiers[ n ]->ConstraintChanged( this, constraint );
 	}
+	
+	pDirtyRig = true;
+	SetChanged( true );
 }
 
 void reRig::NotifyConstraintSelectedChanged( reRigConstraint *constraint ){
@@ -1794,6 +1800,9 @@ void reRig::NotifyAllConstraintChanged( reRigConstraint *constraint ){
 	for( n=0; n<pNotifierCount; n++ ){
 		pNotifiers[ n ]->ConstraintChanged( this, constraint );
 	}
+	
+	pDirtyRig = true;
+	SetChanged( true );
 }
 
 void reRig::NotifyAllConstraintDofChanged( reRigConstraint *constraint, deColliderConstraint::eDegreesOfFreedom dof ){
@@ -1802,6 +1811,9 @@ void reRig::NotifyAllConstraintDofChanged( reRigConstraint *constraint, deCollid
 	for( n=0; n<pNotifierCount; n++ ){
 		pNotifiers[ n ]->ConstraintDofChanged( this, constraint, dof );
 	}
+	
+	pDirtyRig = true;
+	SetChanged( true );
 }
 
 
