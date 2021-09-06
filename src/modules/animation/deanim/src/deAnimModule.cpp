@@ -386,7 +386,21 @@ void deAnimModule::SaveAnimation( decBaseFileWriter &writer, const deAnimation &
 		
 		int playtimeFrames = 0;
 		for( j=0; j<kflCount; j++ ){
-			playtimeFrames = decMath::max( playtimeFrames, move.GetKeyframeList( j )->GetKeyframeCount() + 1 );
+			const deAnimationKeyframeList &kfl = *move.GetKeyframeList( j );
+			const int keyframeCount = kfl.GetKeyframeCount();
+			const float fps = move.GetFPS();
+			int realKeyframeCount = 0;
+			int lastFrame = -1;
+			
+			for( k=0; k<keyframeCount; k++ ){
+				const int frame = ( int )( fps * kfl.GetKeyframe( k )->GetTime() + 0.5f );
+				if( frame != lastFrame ){
+					lastFrame = frame;
+					realKeyframeCount++;
+				}
+			}
+			
+			playtimeFrames = decMath::max( playtimeFrames, realKeyframeCount );
 		}
 		writer.WriteUShort( playtimeFrames );
 		
