@@ -56,12 +56,7 @@ pFloatTexture( bitCount != 8 ),
 pDirtyTexture( true ),
 
 pTexture( NULL ),
-pFBO( NULL )
-{
-	/*if( ogl->GetConfiguration()->GetUsePOTTextures() ){
-		for( pTextureWidth=1; pTextureWidth<pWidth; pTextureWidth<<=1 );
-		for( pTextureHeight=1; pTextureHeight<pHeight; pTextureHeight<<=1 );
-	}*/
+pFBO( NULL ){
 }
 
 deoglRenderTarget::~deoglRenderTarget(){
@@ -98,10 +93,6 @@ void deoglRenderTarget::SetSize( int width, int height ){
 	
 	pTextureWidth = pWidth;
 	pTextureHeight = pHeight;
-	/*if( ogl->GetConfiguration()->GetUsePOTTextures() ){
-		for( pTextureWidth=1; pTextureWidth<pWidth; pTextureWidth<<=1 );
-		for( pTextureHeight=1; pTextureHeight<pHeight; pTextureHeight<<=1 );
-	}*/
 	
 	pDirtyTexture = true;
 }
