@@ -113,6 +113,9 @@ private:
 	DEF_NATFUNC( nfSetForeignBone );
 	DEF_NATFUNC( nfSetSourceCoordinateFrame );
 	DEF_NATFUNC( nfSetDestinationCoordinateFrame );
+	DEF_NATFUNC( nfSetModifyX );
+	DEF_NATFUNC( nfSetModifyY );
+	DEF_NATFUNC( nfSetModifyZ );
 	
 	DEF_NATFUNC( nfSetEnablePosition );
 	DEF_NATFUNC( nfSetEnableOrientation );

@@ -41,8 +41,15 @@ class ARInverseKinematic extends AnimatorRule
 	public func void setLocalOrientation( Vector orientation )
 	end
 	
+	/**
+	 * \brief Set adjust position.
+	 * \version 1.6
+	 */
+	public func void setAdjustPosition( bool adjust )
+	end
+	
 	/** \brief Set adjust orientation. */
-	public func void setAdjustOrientation( bool adjustOrientation )
+	public func void setAdjustOrientation( bool adjust )
 	end
 	
 	/** \brief Set solver bone or empty string to use none. */

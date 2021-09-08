@@ -301,10 +301,25 @@ void deClassARInverseKinematic::nfSetLocalOrientation::RunFunction( dsRunTime *r
 	}
 }
 
-// public func void setAdjustOrientation( bool adjustOrientation )
+// public func void setAdjustPosition( bool adjust )
+deClassARInverseKinematic::nfSetAdjustPosition::nfSetAdjustPosition( const sInitData &init ) : dsFunction( init.clsARIK,
+"setAdjustPosition", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsBool ); // adjust
+}
+void deClassARInverseKinematic::nfSetAdjustPosition::RunFunction( dsRunTime *rt, dsValue *myself ){
+	sARIKNatDat &nd = *( ( sARIKNatDat* )p_GetNativeData( myself ) );
+	
+	nd.rule->SetAdjustPosition( rt->GetValue( 0 )->GetBool() );
+	
+	if( nd.animator ){
+		nd.animator->NotifyRulesChanged();
+	}
+}
+
+// public func void setAdjustOrientation( bool adjust )
 deClassARInverseKinematic::nfSetAdjustOrientation::nfSetAdjustOrientation( const sInitData &init ) : dsFunction( init.clsARIK,
 "setAdjustOrientation", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsBool ); // adjustOrientation
+	p_AddParameter( init.clsBool ); // adjust
 }
 void deClassARInverseKinematic::nfSetAdjustOrientation::RunFunction( dsRunTime *rt, dsValue *myself ){
 	sARIKNatDat &nd = *( ( sARIKNatDat* )p_GetNativeData( myself ) );
@@ -445,6 +460,7 @@ void deClassARInverseKinematic::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfSetGoalOrientation( init ) );
 	AddFunction( new nfSetLocalPosition( init ) );
 	AddFunction( new nfSetLocalOrientation( init ) );
+	AddFunction( new nfSetAdjustPosition( init ) );
 	AddFunction( new nfSetAdjustOrientation( init ) );
 	AddFunction( new nfSetSolverBone( init ) );
 	AddFunction( new nfSetUseSolverBone( init ) );

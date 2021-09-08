@@ -50,6 +50,7 @@ private:
 	
 	int pReachBone;
 	
+	const bool pAdjustPosition;
 	const bool pAdjustOrientation;
 	const bool pUseSolverBone;
 	

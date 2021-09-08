@@ -105,6 +105,51 @@ void deClassARForeignState::nfDestructor::RunFunction( dsRunTime *rt, dsValue *m
 	}
 }
 
+// public func void setModifyX( bool modify )
+deClassARForeignState::nfSetModifyX::nfSetModifyX( const sInitData &init ) : dsFunction( init.clsARFSta,
+"setModifyX", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsBool ); // modify
+}
+void deClassARForeignState::nfSetModifyX::RunFunction( dsRunTime *rt, dsValue *myself ){
+	sARFStaNatDat &nd = *( ( sARFStaNatDat* )p_GetNativeData( myself ) );
+	
+	nd.rule->SetModifyX( rt->GetValue( 0 )->GetBool() );
+	
+	if( nd.animator ){
+		nd.animator->NotifyRulesChanged();
+	}
+}
+
+// public func void setModifyY( bool modify )
+deClassARForeignState::nfSetModifyY::nfSetModifyY( const sInitData &init ) : dsFunction( init.clsARFSta,
+"setModifyY", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsBool ); // modify
+}
+void deClassARForeignState::nfSetModifyY::RunFunction( dsRunTime *rt, dsValue *myself ){
+	sARFStaNatDat &nd = *( ( sARFStaNatDat* )p_GetNativeData( myself ) );
+	
+	nd.rule->SetModifyY( rt->GetValue( 0 )->GetBool() );
+	
+	if( nd.animator ){
+		nd.animator->NotifyRulesChanged();
+	}
+}
+
+// public func void setModifyZ( bool modify )
+deClassARForeignState::nfSetModifyZ::nfSetModifyZ( const sInitData &init ) : dsFunction( init.clsARFSta,
+"setModifyZ", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsBool ); // modify
+}
+void deClassARForeignState::nfSetModifyZ::RunFunction( dsRunTime *rt, dsValue *myself ){
+	sARFStaNatDat &nd = *( ( sARFStaNatDat* )p_GetNativeData( myself ) );
+	
+	nd.rule->SetModifyZ( rt->GetValue( 0 )->GetBool() );
+	
+	if( nd.animator ){
+		nd.animator->NotifyRulesChanged();
+	}
+}
+
 
 
 
@@ -391,19 +436,22 @@ void deClassARForeignState::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfNew( init ) );
 	AddFunction( new nfDestructor( init ) );
 	
-	AddFunction( new nfSetEnablePosition( init ) );
-	AddFunction( new nfSetEnableOrientation( init ) );
-	AddFunction( new nfSetEnableSize( init ) );
-	
-	AddFunction( new nfTargetAddLink( init ) );
-	AddFunction( new nfTargetRemoveAllLinks( init ) );
-	
 	AddFunction( new nfSetScalePosition( init ) );
 	AddFunction( new nfSetScaleOrientation( init ) );
 	AddFunction( new nfSetScaleSize( init ) );
 	AddFunction( new nfSetForeignBone( init ) );
 	AddFunction( new nfSetSourceCoordinateFrame( init ) );
 	AddFunction( new nfSetDestinationCoordinateFrame( init ) );
+	AddFunction( new nfSetModifyX( init ) );
+	AddFunction( new nfSetModifyY( init ) );
+	AddFunction( new nfSetModifyZ( init ) );
+	
+	AddFunction( new nfSetEnablePosition( init ) );
+	AddFunction( new nfSetEnableOrientation( init ) );
+	AddFunction( new nfSetEnableSize( init ) );
+	
+	AddFunction( new nfTargetAddLink( init ) );
+	AddFunction( new nfTargetRemoveAllLinks( init ) );
 	
 	// calculate member offsets
 	CalcMemberOffsets();

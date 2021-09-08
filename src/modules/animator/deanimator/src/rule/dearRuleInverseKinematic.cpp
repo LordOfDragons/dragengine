@@ -90,6 +90,7 @@ pTargetReachCenter( rule.GetTargetReachCenter(), firstLink ),
 
 pReachBone( -1 ),
 
+pAdjustPosition( rule.GetAdjustPosition() ),
 pAdjustOrientation( rule.GetAdjustOrientation() ),
 pUseSolverBone( rule.GetUseSolverBone() ),
 
@@ -590,11 +591,11 @@ DEBUG_tipposition2[ i ] = tipPosition;
 		
 		if( pAdjustOrientation ){
 			boneState.BlendWith( goalMatrix * -constLocalPosition,
-				goalMatrix.ToQuaternion(), blendMode, blendFactor, true, true );
+				goalMatrix.ToQuaternion(), blendMode, blendFactor, pAdjustPosition, true );
 			
 		}else{
 			boneState.BlendWith( goalMatrix.GetPosition() - constLocalPosition,
-				decQuaternion(), blendMode, blendFactor, true, false );
+				decQuaternion(), blendMode, blendFactor, pAdjustPosition, false );
 		}
 	}
 DEBUG_PRINT_TIMER;

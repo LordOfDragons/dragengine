@@ -64,6 +64,9 @@ private:
 	float pScalePosition;
 	float pScaleOrientation;
 	float pScaleSize;
+	bool pModifyX;
+	bool pModifyY;
+	bool pModifyZ;
 	bool pEnablePosition;
 	bool pEnableOrientation;
 	bool pEnableSize;
@@ -128,6 +131,42 @@ public:
 	
 	/** \brief Set destination coordinate frame. */
 	void SetDestCoordinateFrame( eCoordinateFrames coordinateFrame );
+	
+	/**
+	 * \brief Determines if X component is modified.
+	 * \version 1.6
+	 */
+	inline bool GetModifyX() const{ return pModifyX; }
+	
+	/**
+	 * \brief Set if X component is modified.
+	 * \version 1.6
+	 */
+	void SetModifyX( bool modify );
+	
+	/**
+	 * \brief Determines if Y component is modified.
+	 * \version 1.6
+	 */
+	inline bool GetModifyY() const{ return pModifyY; }
+	
+	/**
+	 * \brief Set if Y component is modified.
+	 * \version 1.6
+	 */
+	void SetModifyY( bool modify );
+	
+	/**
+	 * \brief Determines if Z component is modified.
+	 * \version 1.6
+	 */
+	inline bool GetModifyZ() const{ return pModifyZ; }
+	
+	/**
+	 * \brief Set if Z component is modified.
+	 * \version 1.6
+	 */
+	void SetModifyZ( bool modify );
 	
 	/** \brief Determines if position manipulation is enabled. */
 	inline bool GetEnablePosition() const{ return pEnablePosition; }

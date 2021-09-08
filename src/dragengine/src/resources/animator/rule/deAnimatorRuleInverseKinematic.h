@@ -54,6 +54,7 @@ private:
 	decQuaternion pGoalOrientation;
 	decVector pLocalPosition;
 	decQuaternion pLocalOrientation;
+	bool pAdjustPosition;
 	bool pAdjustOrientation;
 	
 	bool pUseSolverBone;
@@ -117,11 +118,23 @@ public:
 	/** \brief Set local orientation. */
 	void SetLocalOrientation( const decQuaternion &orientation );
 	
+	/**
+	 * \brief Adjust position.
+	 * \version 1.6
+	 */
+	inline bool GetAdjustPosition() const{ return pAdjustPosition; }
+	
+	/**
+	 * \brief Set if the position is adjusted.
+	 * \version 1.6
+	 */
+	void SetAdjustPosition( bool adjust );
+	
 	/** \brief Adjust orientation. */
 	inline bool GetAdjustOrientation() const{ return pAdjustOrientation; }
 	
 	/** \brief Set if the orientation is adjusted. */
-	void SetAdjustOrientation( bool adjustOrientation );
+	void SetAdjustOrientation( bool adjust );
 	
 	
 	

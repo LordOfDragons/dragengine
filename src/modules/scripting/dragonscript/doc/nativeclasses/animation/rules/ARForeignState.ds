@@ -25,20 +25,6 @@ class ARForeignState extends AnimatorRule
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Enable position modification. */
-	public func void setEnablePosition( bool enabled )
-	end
-	
-	/** \brief Enable orientation modification. */
-	public func void setEnableOrientation( bool enabled )
-	end
-	
-	/** \brief Enable size modification. */
-	public func void setEnableSize( bool enabled )
-	end
-	
-	
-	
 	/** \brief Set scale position. */
 	public func void setScalePosition( float scalePosition )
 	end
@@ -67,6 +53,41 @@ class ARForeignState extends AnimatorRule
 	 * \throws EInvalidParam \em coordinateFrame is not a valid value.
 	 */
 	public func void setDestinationCoordinateFrame( ARForeignStateCFrame coordinateFrame )
+	end
+	
+	/**
+	 * \brief Modify X component.
+	 * \version 1.6
+	 */
+	public func void setModifyX( bool modify )
+	end
+	
+	/**
+	 * \brief Modify Y component.
+	 * \version 1.6
+	 */
+	public func void setModifyY( bool modify )
+	end
+	
+	/**
+	 * \brief Modify Z component.
+	 * \version 1.6
+	 */
+	public func void setModifyZ( bool modify )
+	end
+	
+	
+	
+	/** \brief Enable position modification. */
+	public func void setEnablePosition( bool enabled )
+	end
+	
+	/** \brief Enable orientation modification. */
+	public func void setEnableOrientation( bool enabled )
+	end
+	
+	/** \brief Enable size modification. */
+	public func void setEnableSize( bool enabled )
 	end
 	
 	

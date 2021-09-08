@@ -40,14 +40,20 @@ private:
 	dearControllerTarget pTargetOrientation;
 	dearControllerTarget pTargetSize;
 	
-	const bool pEnablePosition;
-	const bool pEnableOrientation;
-	const bool pEnableSize;
-	const deAnimatorRuleForeignState::eCoordinateFrames pSourceCoordFrame;
-	const deAnimatorRuleForeignState::eCoordinateFrames pDestCoordFrame;
 	const float pScalePosition;
 	const float pScaleOrientation;
 	const float pScaleSize;
+	const deAnimatorRuleForeignState::eCoordinateFrames pSourceCoordFrame;
+	const deAnimatorRuleForeignState::eCoordinateFrames pDestCoordFrame;
+	const bool pLockX;
+	const bool pLockY;
+	const bool pLockZ;
+	const bool pLockNone;
+	const bool pEnablePosition;
+	const bool pEnableOrientation;
+	const bool pEnableSize;
+	
+	
 	
 public:
 	/** \name Constructors and Destructors */

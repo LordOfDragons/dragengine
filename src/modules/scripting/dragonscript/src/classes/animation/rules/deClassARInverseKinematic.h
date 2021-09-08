@@ -111,6 +111,7 @@ private:
 	DEF_NATFUNC( nfSetGoalOrientation );
 	DEF_NATFUNC( nfSetLocalPosition );
 	DEF_NATFUNC( nfSetLocalOrientation );
+	DEF_NATFUNC( nfSetAdjustPosition );
 	DEF_NATFUNC( nfSetAdjustOrientation );
 	DEF_NATFUNC( nfSetSolverBone );
 	DEF_NATFUNC( nfSetUseSolverBone );

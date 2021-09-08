@@ -44,6 +44,9 @@ class ADRuleInverseKinematic extends ADRule
 	/** Local orientation. */
 	private var Vector pLocalOrient
 	
+	/** Adjust position. */
+	private var bool pAdjustPosition
+	
 	/** Adjust orientation. */
 	private var bool pAdjustOrientation
 	
@@ -72,6 +75,7 @@ class ADRuleInverseKinematic extends ADRule
 		this.pGoalOrient = Vector.new()
 		this.pLocalPos = Vector.new()
 		this.pLocalOrient = Vector.new()
+		this.pAdjustPosition = true
 		this.pAdjustOrientation = false
 		this.pSolverBone = ""
 		this.pUseSolverBone = false
@@ -137,6 +141,22 @@ class ADRuleInverseKinematic extends ADRule
 		end
 		
 		this.pLocalOrient = orientation
+	end
+	
+	/**
+	 * \brief Determines if bone position is adjusted.
+	 * \version 1.6
+	 */
+	public func bool getAdjustPosition()
+		return this.pAdjustPosition
+	end
+	
+	/**
+	 * \brief Set if bone position is adjusted.
+	 * \version 1.6
+	 */
+	public func void setAdjustPosition( bool adjust )
+		this.pAdjustPosition = adjust
 	end
 	
 	/** Determines if the bone orientation is adjusted. */
@@ -229,6 +249,7 @@ class ADRuleInverseKinematic extends ADRule
 		rule.setGoalOrientation( this.pGoalOrient )
 		rule.setLocalPosition( this.pLocalPos )
 		rule.setLocalOrientation( this.pLocalOrient )
+		rule.setAdjustPosition( this.pAdjustPosition )
 		rule.setAdjustOrientation( this.pAdjustOrientation )
 		rule.setSolverBone( this.pSolverBone )
 		rule.setUseSolverBone( this.pUseSolverBone )
@@ -245,6 +266,7 @@ class ADRuleInverseKinematic extends ADRule
 	public func void debug( Console console )
 		console.addMessage( this.debugCommon( "Inverse Kinematic" ) + \
 			" gpos=" + this.pGoalPos + " gorient" + this.pGoalOrient + " lpos=" + this.pLocalPos + \
-			" lorient" + this.pLocalOrient + " adjorient=" + this.pAdjustOrientation + " )" )
+			" lorient" + this.pLocalOrient + " adjpos=" + this.pAdjustPosition + \
+			" adjorient=" + this.pAdjustOrientation + " )" )
 	end
 end

@@ -37,6 +37,7 @@
 ////////////////////////////
 
 deAnimatorRuleInverseKinematic::deAnimatorRuleInverseKinematic() :
+pAdjustPosition( true ),
 pAdjustOrientation( false ),
 pUseSolverBone( false ),
 pReachRange( 0.0f ){
@@ -64,6 +65,10 @@ void deAnimatorRuleInverseKinematic::SetLocalPosition( const decVector &position
 
 void deAnimatorRuleInverseKinematic::SetLocalOrientation( const decQuaternion &orientation ){
 	pLocalOrientation = orientation;
+}
+
+void deAnimatorRuleInverseKinematic::SetAdjustPosition( bool adjust ){
+	pAdjustPosition = adjust;
 }
 
 void deAnimatorRuleInverseKinematic::SetAdjustOrientation( bool adjust ){
