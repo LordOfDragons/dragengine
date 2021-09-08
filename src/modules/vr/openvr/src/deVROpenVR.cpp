@@ -237,6 +237,9 @@ void deVROpenVR::StartRuntime(){
 		
 		LogInfoFormat( "Runtime Version: %s", pVRSystem->GetRuntimeVersion() );
 		
+		const decPoint renderSize( GetRenderSize() );
+		LogInfoFormat( "Render Size: %d %d", renderSize.x, renderSize.y );
+		
 		// render models
 		pVRRenderModels = vr::VRRenderModels();
 		

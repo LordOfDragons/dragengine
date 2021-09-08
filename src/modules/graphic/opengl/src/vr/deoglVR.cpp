@@ -64,8 +64,9 @@ pState( esRender )
 	try{
 		pGetParameters( renderThread );
 		
-		pTargetLeftEye.TakeOver( new deoglRenderTarget( renderThread, pRenderSize.x, pRenderSize.y, 3, 8 ) );
-		pTargetRightEye.TakeOver( new deoglRenderTarget( renderThread, pRenderSize.x, pRenderSize.y, 3, 8 ) );
+		// examples on the internet use RGBA8
+		pTargetLeftEye.TakeOver( new deoglRenderTarget( renderThread, pRenderSize.x, pRenderSize.y, 4, 8 ) );
+		pTargetRightEye.TakeOver( new deoglRenderTarget( renderThread, pRenderSize.x, pRenderSize.y, 4, 8 ) );
 		
 	}catch( const deException & ){
 		pCleanUp();
