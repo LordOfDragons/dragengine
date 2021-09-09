@@ -24,7 +24,6 @@ include/libdscript/objects/dsFunction.h
 include/libdscript/objects/dsVariable.h
 include/libdscript/objects/dsConstant.h
 include/libdscript/objects/dsClass.h
-include/libdscript/objects/optimized/dsFunctionOptimizedGetter.h
 include/libdscript/objects/optimized/dsFOGetParameter.h
 include/libdscript/objects/optimized/dsFunctionOptimized.h
 include/libdscript/objects/optimized/dsFOGetClassVar.h
@@ -38,8 +37,6 @@ include/libdscript/objects/dsClassParserInfo.h
 include/libdscript/packages/utils/dsClassStringBuffer.h
 include/libdscript/packages/dsBaseEnginePackage.h
 include/libdscript/packages/dsEnginePackages.h
-include/libdscript/packages/time/dsClassDate.h
-include/libdscript/packages/time/package_time.h
 include/libdscript/packages/dsNativePackage.h
 include/libdscript/packages/default/dsClassVoid.h
 include/libdscript/packages/default/dsClassObject.h
