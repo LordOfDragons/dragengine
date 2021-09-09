@@ -123,7 +123,7 @@ std::string Path_SanitizeFilename( const std::string& sFilename );
 #endif
 
 //-----------------------------------------------------------------------------
-#if defined(WIN32)
+#if defined(_WIN32)
 #define DYNAMIC_LIB_EXT	".dll"
 #define PROGRAM_EXT ".exe"
 #ifdef _WIN64

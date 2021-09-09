@@ -38,7 +38,7 @@
 	#else
 	#define S_API EXTERN_C
 	#endif // OPENVR_API_EXPORTS
-#else // !WIN32
+#else // !_WIN32
 	#if defined( OPENVR_API_EXPORTS )
 	#define S_API EXTERN_C
 	#else
