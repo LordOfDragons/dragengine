@@ -2054,8 +2054,11 @@ void deoglRenderThread::pLimitFrameRate( float elapsed ){
 		}else if( avgFrameTime < 1.0f / 45.0f ){
 			targetFPS = 45; // we can reach 45Hz
 			
-		}else{
+		}else if( avgFrameTime < 1.0f / 30.0f ){
 			targetFPS = 30; // we can reach 30Hz
+			
+		}else{
+			targetFPS = 15; // we can reach 15Hz
 		}
 		
 		pVRTargetFPSCounter--;
