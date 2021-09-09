@@ -668,8 +668,9 @@ void deovrDevice::pUpdateParametersTracker(){
 	pInputValuePath = "/devices/htc/vive_tracker";
 	pInputValuePath += pSerialNumber;
 	
-	vr::EVRInputError inputError = pOvr.GetVRInput().GetInputSourceHandle( pInputValuePath, &pInputValueHandle );
-	pOvr.LogInfoFormat("Tracker: path(%s) handle(%lu) error(%d)", pInputValuePath.GetString(), pInputValueHandle, inputError );
+	/*vr::EVRInputError inputError = */
+	pOvr.GetVRInput().GetInputSourceHandle( pInputValuePath, &pInputValueHandle );
+	//pOvr.LogInfoFormat("Tracker: path(%s) handle(%lu) error(%d)", pInputValuePath.GetString(), pInputValueHandle, inputError );
 }
 
 void deovrDevice::pAddButton( deVROpenVR::eInputActions actionPress,

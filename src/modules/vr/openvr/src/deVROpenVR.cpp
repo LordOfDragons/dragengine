@@ -173,6 +173,14 @@ void deVROpenVR::CopyDevicesPoses( vr::TrackedDevicePose_t *poses ){
 	memcpy( poses, pDevicePoses, sizeof( pDevicePoses ) );
 }
 
+void deVROpenVR::InputEventSetTimestamp( deInputEvent &event ) const{
+	#ifdef OS_W32
+	event.SetTime( { ( long )decDateTime().ToSystemTime(), 0 } );
+	#else
+	event.SetTime( { decDateTime().ToSystemTime(), 0 } );
+	#endif
+}
+
 
 
 // Module Management

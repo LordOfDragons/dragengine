@@ -164,7 +164,7 @@ void deovrDeviceAxis::UpdateValue( float value ){
 	event.SetDevice( pDevice.GetIndex() );
 	event.SetCode( pIndex );
 	event.SetValue( value );
-	event.SetTime( { decDateTime().ToSystemTime(), 0 } );
+	pDevice.GetOvr().InputEventSetTimestamp( event );
 	pDevice.GetOvr().SendEvent( event );
 }
 

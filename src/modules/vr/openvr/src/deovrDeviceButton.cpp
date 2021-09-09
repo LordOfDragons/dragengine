@@ -93,7 +93,7 @@ void deovrDeviceButton::UpdatePressed( bool pressed ){
 	event.SetSource( deInputEvent::esVR );
 	event.SetDevice( pDevice.GetIndex() );
 	event.SetCode( pIndex );
-	event.SetTime( { decDateTime().ToSystemTime(), 0 } );
+	pDevice.GetOvr().InputEventSetTimestamp( event );
 	pDevice.GetOvr().SendEvent( event );
 }
 
@@ -113,7 +113,7 @@ void deovrDeviceButton::UpdateTouched( bool touched ){
 	event.SetSource( deInputEvent::esVR );
 	event.SetDevice( pDevice.GetIndex() );
 	event.SetCode( pIndex );
-	event.SetTime( { decDateTime().ToSystemTime(), 0 } );
+	pDevice.GetOvr().InputEventSetTimestamp( event );
 	pDevice.GetOvr().SendEvent( event );
 }
 

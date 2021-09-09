@@ -154,6 +154,9 @@ public:
 	
 	/** Copy device poses. */
 	void CopyDevicesPoses( vr::TrackedDevicePose_t *poses );
+	
+	/** Set input event timestamp. */
+	void InputEventSetTimestamp( deInputEvent &event ) const;
 	/*@}*/
 	
 	
