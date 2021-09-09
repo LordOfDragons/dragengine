@@ -93,4 +93,10 @@ if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_C_COMPILER_ID MATCHES "Clang")
 	endif()
 endif()
 
+# Fix for cross compilation
+option(MINGW_STDTHREADS_GENERATE_STDHEADERS "" OFF)
+if(MINGW_STDTHREADS_GENERATE_STDHEADERS)
+	add_subdirectory(mingw_stdthreads)
+endif()
+
 add_subdirectory(src)

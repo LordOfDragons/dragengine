@@ -15,7 +15,7 @@ openvrVersion = '1.16.8'
 srcdir = 'openvr-{}'.format(openvrVersion)
 
 if envLibrary['OSWindows']:
-	staticFileName = envLibrary.subst('lib/${LIBPREFIX}openvr_api${LIBSUFFIX}')
+	staticFileName = envLibrary.subst('lib/libopenvr_api.a')
 	libpath = [envLibrary.Dir('lib')]
 elif envLibrary['OSBeOS']:
 	Return()
@@ -32,11 +32,12 @@ def openvrBuild(target, source, env):
 	
 	cmdline = ['cmake']
 	cmdline.append('-DCMAKE_INSTALL_PREFIX="{}"'.format(buildDir.abspath))
+	if env['OSWindows']:
+		cmdline.append('-DMINGW_STDTHREADS_GENERATE_STDHEADERS=ON')
 	if env['with_debug']:
 		cmdline.append('-DCMAKE_BUILD_TYPE=RelWithDebInfo')
 	else:
 		cmdline.append('-DCMAKE_BUILD_TYPE=Release')
-	#cmdline.append('-DCMAKE_VERBOSE_MAKEFILE=True')
 	
 	cmdline.append('../{}'.format(srcdir))
 	
@@ -70,9 +71,13 @@ cpppath = [envLibrary.Dir('include')]
 libs = [library[0]]
 runtimelibs = []
 
+cppflags = []
+cppflags.append('-DOPENVR_BUILD_STATIC')  # required or windows build fails
+
 parent_targets['lib_openvr'] = {
 	'name' : 'Internal OpenVR library',
 	'cpppath' : cpppath,
+	'cppflags' : cppflags,
 	'libpath' : libpath,
 	'libs' : libs,
 	'runtimelibs' : runtimelibs,

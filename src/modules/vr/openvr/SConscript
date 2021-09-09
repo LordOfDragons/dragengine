@@ -3,9 +3,6 @@ from SConsCommon import *
 # import whatever is given by the parent builder
 Import('parent_env parent_targets parent_report')
 
-if not parent_env['OSPosix'] or parent_env['OSBeOS'] or parent_env['OSMacOS']:
-	Return()
-
 # setup the environment matching the OS
 envModule = parent_env.Clone()
 

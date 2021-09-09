@@ -100,6 +100,10 @@ if(USE_CUSTOM_LIBCXX)
 	set(EXTRA_LIBS ${EXTRA_LIBS} c++ c++abi)
 endif()
 
+if(MINGW_STDTHREADS_GENERATE_STDHEADERS)
+	set(EXTRA_LIBS ${EXTRA_LIBS} mingw_stdthreads)
+endif()
+
 target_link_libraries(${LIBNAME} ${EXTRA_LIBS} ${CMAKE_DL_LIBS})
 target_include_directories(${LIBNAME} PUBLIC ${OPENVR_HEADER_DIR})
 
