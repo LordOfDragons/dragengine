@@ -58,6 +58,11 @@ pCmdLineGame( NULL )
 	// also log to "/log/delauncher-gui.log"
 	AddFileLogger( "delauncher-gui" );
 	
+	// set default engine instance executable (windows only)
+	#ifdef OS_W32
+	delEngineInstance::SetDefaultExecutableName( "delauncher-gui-engine" );
+	#endif
+	
 	// build argument list
 	int i;
 	for( i=1; i<argc; i++ ){
@@ -108,6 +113,7 @@ bool deglLauncher::RunCommandLineGame(){
 		
 		try{
 			delEngineInstance instance( *this, GetEngine().GetLogFile() );
+			
 			instance.StartEngine();
 			instance.LoadModules();
 			

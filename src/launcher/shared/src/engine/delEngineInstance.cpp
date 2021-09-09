@@ -77,7 +77,7 @@ pProcessHandle( INVALID_HANDLE_VALUE ),
 pThreadHandle( INVALID_HANDLE_VALUE ),
 pProcessID( 0 ),
 pThreadID( 0 ),
-pExecutableName( "delauncher-engine" )
+pExecutableName( pDefaultExecutableName )
 #else
 
 pPipeIn( 0 ),
@@ -95,9 +95,16 @@ delEngineInstance::~delEngineInstance(){
 
 // Management
 ///////////////
+
 #ifdef OS_W32
+decString delEngineInstance::pDefaultExecutableName( "delauncher-engine" );
+
 void delEngineInstance::SetExecutableName( const char *executableName ){
 	pExecutableName = executableName;
+}
+
+void delEngineInstance::SetDefaultExecutableName( const char *executableName ){
+	pDefaultExecutableName = executableName;
 }
 #endif
 

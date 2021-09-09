@@ -55,6 +55,7 @@ private:
 	DWORD pProcessID;
 	DWORD pThreadID;
 	decString pExecutableName;
+	static decString pDefaultExecutableName;
 #else
 	int pPipeIn;
 	int pPipeOut;
@@ -83,6 +84,12 @@ public:
 	
 	/** \brief Set executable name. */
 	void SetExecutableName( const char *executableName );
+	
+	/** \brief Default executable name. */
+	inline static const decString &GetDefaultExecutableName(){ return pDefaultExecutableName; }
+	
+	/** \brief Set default executable name. */
+	static void SetDefaultExecutableName( const char *executableName );
 	#endif
 	
 	
