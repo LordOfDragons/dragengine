@@ -217,6 +217,12 @@ void deoglVR::Submit(){
 	const decVector2 tcFrom( 0.0f, 0.0f );
 	const decVector2 tcTo( 1.0f, 1.0f );
 	
+	// NOTE OpenVR does not disable GL_SCISSOR_TEST. this causes the glBlitFramebuffer used
+	//      inside OpenVR to use whatever scissor parameters are in effect by the last call
+	//      of the application. this causes rendere artifacts in the HMD. disabling
+	//      GL_SCISSOR_TEST fixes this problem. this is also save if OpenVR is fixed
+	OGL_CHECK( pCamera.GetRenderThread(), glDisable( GL_SCISSOR_TEST ) );
+	
 	module->SubmitOpenGLTexture2D( deBaseVRModule::evreLeft,
 		( void* )( intptr_t )pTargetLeftEye->GetTexture()->GetTexture(), tcFrom, tcTo, false );
 	
