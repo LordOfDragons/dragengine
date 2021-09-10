@@ -56,7 +56,9 @@ def libpngBuild( target, source, env ):
 	
 	untarArchive( buildDir.abspath, source[ 0 ].abspath )
 	
-	script = createScriptHeader( env, deps=[ parent_targets[ 'lib_zlib' ] ] )
+	nosan = env['OSWindows'] and env['CROSSCOMPILE_CLANG']  # fails to link
+	
+	script = createScriptHeader(env, deps=[parent_targets['lib_zlib']], nosan=nosan)
 	
 	script.append( 'cd "{}" || exit 1'.format( buildDir.Dir( srcdir ).abspath ) )
 	

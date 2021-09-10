@@ -5,10 +5,14 @@ from SConsPlatformAndroid import androidUpdateEnv
 tools = ARGUMENTS.get( 'tools', '' )
 if tools:
 	if tools == 'mingw64':
-		parent_env = Environment( CPPPATH='.', LIBPATH='.', tools=['mingw'] )
+		import os, shutil
+		
+		# import os. llvm-mingw needs to be installed outside /usr . required PATH to be respected
+		parent_env = Environment(ENV = {'PATH': os.environ['PATH']}, CPPPATH='.', LIBPATH='.', tools=['mingw'])
+		#parent_env = Environment(CPPPATH='.', LIBPATH='.', tools=['mingw'])
 		
 		compiler = 'x86_64-w64-mingw32'
-		if not parent_env.Detect( '{}-g++'.format( compiler ) ):
+		if not parent_env.Detect('{}-g++'.format(compiler)):
 			print( 'Windows 64-bit Cross-Compiler not found.' )
 			Return()
 		
@@ -34,7 +38,15 @@ if tools:
 		parent_env[ 'OS_NAME' ] = 'win32'
 		parent_env[ 'SYS_PLATFORM' ] = 'win32'
 		parent_env[ 'CROSSCOMPILE_HOST' ] = compiler
-		parent_env[ 'CROSSCOMPILE_SYSROOT' ] = '/usr/{}'.format( compiler )
+		
+		parent_env['CROSSCOMPILE_CLANG'] = parent_env.Detect('{}-clang++'.format(compiler)) != None
+		
+		# try to guess the sysroot
+		pathCompiler = shutil.which(parent_env['CXX'])
+		dirCompiler = os.path.split(pathCompiler)[0]
+		dirCompilerUp = os.path.split(dirCompiler)[0]
+		parent_env['CROSSCOMPILE_SYSROOT'] = os.path.join(dirCompilerUp, compiler)
+		#print('sysroot: ' + parent_env['CROSSCOMPILE_SYSROOT'])
 		
 		# prevent stdc++6 problems with missnig symbols on different compilers
 		#parent_env.Append( CPPFLAGS = [ '-std=c++11' ] )
@@ -69,6 +81,9 @@ else:
 	parent_env = Environment( CPPPATH='.', LIBPATH='.' )
 	parent_env[ 'OS_NAME' ] = os.name
 	parent_env[ 'SYS_PLATFORM' ] = sys.platform
+
+if not 'CROSSCOMPILE_CLANG' in parent_env:
+	parent_env['CROSSCOMPILE_CLANG'] = False
 
 # Haiku: The PATH found by SCons are wrong in many ways causing binaries to be not found.
 #        Replace them with sane values. This is not a 'good' solution but should work.
@@ -481,14 +496,14 @@ if parent_env['with_debug'] and parent_env['with_sanitize']:
 		parent_env.Append(SANITIZE_FLAGS = ['-fsanitize=thread'])
 		
 	else:
-		parent_env.Append(SANITIZE_FLAGS = [
+		flags = [
 			'-fsanitize=address',
 			'-fsanitize-address-use-after-scope',
 			'-fsanitize=pointer-compare',
-			'-fsanitize=pointer-subtract'])
-		parent_env.Append(SANITIZE_FLAGS = [
+			'-fsanitize=pointer-subtract']
+		flags.extend([
 			'-fsanitize=leak'])
-		parent_env.Append(SANITIZE_FLAGS = [
+		flags.extend([
 			'-fsanitize=undefined',
 			'-fsanitize=shift',
 			'-fsanitize=shift-exponent',
@@ -512,12 +527,31 @@ if parent_env['with_debug'] and parent_env['with_sanitize']:
 			'-fsanitize=vptr',
 			'-fsanitize=pointer-overflow',
 			'-fsanitize=builtin'])
+		
+		if parent_env['CROSSCOMPILE_CLANG']:
+			"""
+			unsupported = [
+				'-fsanitize=leak',
+				'-fsanitize=bounds-strict',
+				'-fsanitize=object-size']
+			
+			flags = [f for f in flags if not f in unsupported]
+			"""
+			flags = ['-fsanitize=address']
+		
+		parent_env.Append(SANITIZE_FLAGS = flags)
 
 # for modules hide everything except the entry point. for this the default visibility
 # is set to hidden and only the entry point is qualified with normal visibility.
 # hiding also inlines is an optimization and helps to remove some special cases.
 # the version script is required to hide symbols of linked static libraries.
 # the -s flag eventually strips unused code linked in by static libraries
+
+if 'CROSSCOMPILE_CPPFLAGS' in parent_env:
+	parent_env.Append(CROSSCOMPILE_NOSAN_CPPFLAGS = parent_env['CROSSCOMPILE_CPPFLAGS'])
+	
+if 'CROSSCOMPILE_LINKFLAGS' in parent_env:
+	parent_env.Append(CROSSCOMPILE_NOSAN_LINKFLAGS = parent_env['CROSSCOMPILE_LINKFLAGS'])
 
 if parent_env['with_debug']:
 	parent_env.Append(MODULE_CPPFLAGS = ['-DMOD_ENTRY_POINT_ATTR='])
@@ -558,7 +592,11 @@ if not parent_env[ 'with_verbose' ]:
 
 if parent_env['with_debug']:
 	if parent_env['OSWindows']:
-		parent_env.Append(CPPFLAGS = ['-g', '-gstabs', '-ggdb'])
+		if parent_env['CROSSCOMPILE_CLANG']:
+			parent_env.Append(CPPFLAGS = ['-g', '-gcodeview'])
+			parent_env.Append(LINKFLAGS = ['-Wl,-pdb='])
+		else:
+			parent_env.Append(CPPFLAGS = ['-g', '-gstabs', '-ggdb'])
 	else:
 		parent_env.Append(CPPFLAGS = ['-g'])
 		# mingw produces internal compiler errors on 8.x GCC. disabled until fixed or a check is present
@@ -576,7 +614,7 @@ parent_env.Append( CPPFLAGS = [ '-Wall' ] )
 # he should know what he is doing so stop breaking builds with non-sense errors.
 # 
 # and to add insult to injury MacOS does not understand the flag. great... just great
-if not parent_env['OSMacOS']:
+if not parent_env['OSMacOS'] and not parent_env['CROSSCOMPILE_CLANG']:
 	parent_env.Append(CXXFLAGS = ['-Wno-class-memaccess'])
 
 if parent_env[ 'with_warnerrors' ]:
@@ -585,6 +623,11 @@ if parent_env[ 'with_warnerrors' ]:
 if parent_env[ 'platform_android' ] != 'no':
 	parent_env.Append(CPPFLAGS = ['-Wno-unused-private-field'])
 	parent_env.Append(CPPFLAGS = ['-Wno-tautological-constant-compare'])
+
+# clang uses some warnings we do not care about right now
+if parent_env['CROSSCOMPILE_CLANG']:
+	parent_env.Append(CPPFLAGS = ['-Wno-unused-function'])
+	parent_env.Append(CPPFLAGS = ['-Wno-unused-private-field'])
 
 # no default targets
 Default( None )

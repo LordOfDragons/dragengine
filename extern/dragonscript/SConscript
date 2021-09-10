@@ -64,8 +64,12 @@ def dragonscriptBuild( target, source, env ):
 	untarArchive( buildDir.abspath, source[ 0 ].abspath )
 	
 	with open(buildDir.Dir(srcdir).File('custom.py').abspath, 'w') as f:
+		useSanitize = envLibrary['with_sanitize']
+		if env['OSWindows'] and env['CROSSCOMPILE_CLANG']:
+			useSanitize = False
+		
 		f.write('with_debug = "{}"\n'.format('yes' if envLibrary['with_debug'] else 'no'))
-		f.write('with_sanitize = "{}"\n'.format('yes' if envLibrary['with_sanitize'] else 'no'))
+		f.write('with_sanitize = "{}"\n'.format('yes' if useSanitize else 'no'))
 		f.write('with_verbose = "no"\n')
 		f.write('with_warnerrors = "yes"\n')
 		f.write('prefix = "{}"\n'.format(buildDir.abspath))
@@ -103,7 +107,7 @@ def dragonscriptBuild( target, source, env ):
 	
 	return 1 if os.system('\n'.join(script)) else None
 
-patches = []
+patches = [] # create with 'diff -rupN original_sources patches_sources'
 globFiles(envLibrary, 'patches/{}.{}'.format(distVersionMajor, distVersionMinor), '*.patch', patches, recursive=False)
 envLibrary.Append(PATCHES = [envLibrary.File(x) for x in sorted(patches)])
 

@@ -37,8 +37,10 @@ def openvrBuild(target, source, env):
 	
 	cmdline = ['cmake']
 	cmdline.append('-DCMAKE_INSTALL_PREFIX="{}"'.format(buildDir.abspath))
-	if env['OSWindows']:
-		cmdline.append('-DMINGW_STDTHREADS_GENERATE_STDHEADERS=ON')
+	
+	"""if env['OSWindows']:
+		cmdline.append('-DMINGW_STDTHREADS_GENERATE_STDHEADERS=ON')"""
+	
 	if env['with_debug']:
 		cmdline.append('-DCMAKE_BUILD_TYPE=RelWithDebInfo')
 	else:

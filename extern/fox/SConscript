@@ -80,7 +80,15 @@ def foxBuild(target, source, env):
 	
 	deps = []
 	deps.append(parent_targets['lib_libpng'])
-	script = createScriptHeader(env, deps=deps)
+	
+	cppflags = []
+	nosan = False
+	
+	if env['OSWindows'] and env['CROSSCOMPILE_CLANG']:
+		cppflags.append('-Wno-narrowing')
+		nosan = True
+	
+	script = createScriptHeader(env, deps=deps, cppflags=cppflags, nosan=nosan)
 	
 	script.append('cd "{}" || exit 1'.format(buildDir.Dir(srcdir).abspath))
 	
@@ -88,6 +96,9 @@ def foxBuild(target, source, env):
 		script.append('patch -p1 <{} || exit 1'.format(p.srcnode().abspath))
 	
 	script.append('autoreconf -fi || exit 1')
+	
+	for p in env['POST_PATCHES']:
+		script.append('patch -p1 <{} || exit 1'.format(p.srcnode().abspath))
 	
 	cmdline = ['./configure --prefix="{}"'.format(buildDir.abspath)]
 	
@@ -149,6 +160,10 @@ patches = [] # create with 'diff -rupN original_sources patches_sources'
 globFiles(envLibrary, 'patches/{}'.format(foxSrcVersion), '*.patch', patches, recursive=False)
 envLibrary.Append(PATCHES = [envLibrary.File(x) for x in sorted(patches)])
 
+postPatches = [] # create with 'diff -rupN original_sources patches_sources'
+globFiles(envLibrary, 'postPatches/{}'.format(foxSrcVersion), '*.patch', postPatches, recursive=False)
+envLibrary.Append(POST_PATCHES = [envLibrary.File(x) for x in sorted(postPatches)])
+
 if buildStaticLinking:
 	targets = [staticFileName]
 else:
@@ -159,6 +174,7 @@ with open(envLibrary.File('header_file_list/{}'.format(foxSrcVersion)).srcnode()
 library = envLibrary.Command(targets, '{}.tar.bz2'.format(srcdir),
 	envLibrary.Action(foxBuild, 'Build fox'))
 envLibrary.Depends(library, envLibrary['PATCHES'])
+envLibrary.Depends(library, envLibrary['POST_PATCHES'])
 if envLibrary['OSWindows']:
 	envLibrary.Depends(library, parent_targets['lib_libpng']['depends'])
 

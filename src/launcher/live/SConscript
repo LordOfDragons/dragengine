@@ -58,7 +58,8 @@ if envLauncher['OSPosix']:
 	program = envLauncher.Program(target='launchLinux64', source=objects, LIBS=libs)
 	
 elif envLauncher['OSWindows']:
-	envLauncher.Append(LINKFLAGS = ['-Wl,-rpath,\'$$ORIGIN/windows64\''])
+	if not envLauncher['CROSSCOMPILE_CLANG']:
+		envLauncher.Append(LINKFLAGS = ['-Wl,-rpath,\'$$ORIGIN/windows64\''])
 	envLauncher.Append(LINKFLAGS = '-mwindows')  # prevent dos window to appear
 	program = envLauncher.Program(target='LaunchWindows64', source=objects, LIBS=libs)
 

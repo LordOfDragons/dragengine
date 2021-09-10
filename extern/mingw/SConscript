@@ -18,11 +18,68 @@ if envLibrary[ 'OSWindows' ]:
 		'x86_64-w64-mingw32-gcc -print-search-dirs',
 		stderr=subprocess.STDOUT, env=spenv,
 		shell=True).decode('utf-8').split('\n')
-	path = [r[8:].strip() for r in result if r[0:8] == 'install:'][0]
+	
+	pathList = []
+	
+	filtered = [r[8:].strip() for r in result if r[0:8] == 'install:']
+	if filtered:
+		filtered = filtered[0]
+		if filtered[0] == '=':
+			filtered = filtered[1:]
+		if filtered:
+			pathList.extend([f for f in filtered.split(':') if f])
+		
+	else:
+		# clang does not provide this path. guess it
+		pathList.append('{}/bin'.format(envLibrary['CROSSCOMPILE_SYSROOT']))
+	
+	filtered = [r[10:].strip() for r in result if r[0:10] == 'libraries:']
+	if filtered:
+		filtered = filtered[0]
+		if filtered[0] == '=':
+			filtered = filtered[1:]
+		if filtered:
+			pathList.extend([f for f in filtered.split(':') if f])
+	
+	copyFiles = []
+	
+	found = None
+	for d in pathList:
+		path = os.path.join(d, 'libclang_rt.asan_dynamic-x86_64.dll')
+		if os.path.isfile(path):
+			found = path
+			break
+	
+	if found:
+		# clang compiler used
+		if envLibrary['with_sanitize']:
+			copyFiles.append('libclang_rt.asan_dynamic-x86_64.dll')
+		copyFiles.append('libc++.dll')
+		copyFiles.append('libwinpthread-1.dll')
+		copyFiles.append('libunwind.dll')
+		
+	else:
+		# gcc compiler used
+		copyFiles.append('libgcc_s_seh-1.dll')
+		copyFiles.append('libstdc++-6.dll')
+		copyFiles.append('libwinpthread-1.dll')  # for posix thread model only
 	
 	files = []
-	for f in ['libgcc_s_seh-1.dll', 'libstdc++-6.dll']:  #, 'libwinpthread-1.dll'
-		files.extend(envLibrary.Install('.', os.path.join(path, f)))
+	for f in copyFiles:
+		found = None
+		for d in pathList:
+			path = os.path.join(d, f)
+			if os.path.isfile(path):
+				found = path
+				break
+		
+		if not found:
+			print('Search Path List:')
+			for d in pathList:
+				print('- {}'.format(d))
+			raise Exception('File "{}" not found in search path list'.format(f))
+		
+		files.extend(envLibrary.Install('.', found))
 	
 	envLibrary.Alias('lib_mingw_runtime', files)
 	

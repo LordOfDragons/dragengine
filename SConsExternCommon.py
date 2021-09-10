@@ -8,7 +8,7 @@ from SCons.Util import flatten
 # deps: List of parent targets to depend on.
 # cppflags: Optional list of manual cpp flags
 # linkflags: Optional list of manual link flags
-def createScriptHeader(env, deps=[], cflags=[], cppflags=[], cxxflags=[], linkflags=[], pkgconfig=[]):
+def createScriptHeader(env, deps=[], cflags=[], cppflags=[], cxxflags=[], linkflags=[], pkgconfig=[], nosan=False):
 	script = []
 	
 	# append all known compiler declarations if present
@@ -30,14 +30,22 @@ def createScriptHeader(env, deps=[], cflags=[], cppflags=[], cxxflags=[], linkfl
 	if 'CROSSCOMPILE_CFLAGS' in env:
 		combinedCFlags.extend( env[ 'CROSSCOMPILE_CFLAGS' ] )
 	
-	if 'CROSSCOMPILE_CPPFLAGS' in env:
-		combinedCPPFlags.extend( env[ 'CROSSCOMPILE_CPPFLAGS' ] )
-	
 	if 'CROSSCOMPILE_CXXFLAGS' in env:
 		combinedCXXFlags.extend( env[ 'CROSSCOMPILE_CXXFLAGS' ] )
 	
-	if 'CROSSCOMPILE_LINKFLAGS' in env:
-		combinedLinkFlags.extend( env[ 'CROSSCOMPILE_LINKFLAGS' ] )
+	if nosan:
+		if 'CROSSCOMPILE_NOSAN_CPPFLAGS' in env:
+			combinedCPPFlags.extend( env[ 'CROSSCOMPILE_NOSAN_CPPFLAGS' ] )
+			
+		if 'CROSSCOMPILE_NOSAN_LINKFLAGS' in env:
+			combinedLinkFlags.extend( env[ 'CROSSCOMPILE_NOSAN_LINKFLAGS' ] )
+		
+	else:
+		if 'CROSSCOMPILE_CPPFLAGS' in env:
+			combinedCPPFlags.extend( env[ 'CROSSCOMPILE_CPPFLAGS' ] )
+			
+		if 'CROSSCOMPILE_LINKFLAGS' in env:
+			combinedLinkFlags.extend( env[ 'CROSSCOMPILE_LINKFLAGS' ] )
 	
 	if 'CROSSCOMPILE_PKGCONFIG' in env:
 		combinedPkgConfig.extend( env[ 'CROSSCOMPILE_PKGCONFIG' ] )

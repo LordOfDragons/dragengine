@@ -1,0 +1,24 @@
+diff -rupN fox-1.7.67/aclocal.m4 fox-1.7.67-patched/aclocal.m4
+--- fox-1.7.67/aclocal.m4	2019-09-11 23:53:16.000000000 +0200
++++ fox-1.7.67-patched/aclocal.m4	2021-09-10 20:23:46.105983306 +0200
+@@ -7544,7 +7544,7 @@ if AC_TRY_EVAL(ac_compile); then
+   for p in `eval "$output_verbose_link_cmd"`; do
+     case $prev$p in
+ 
+-    -L* | -R* | -l*)
++    -L* | -R* | -l* | */libclang_rt.*.a)
+        # Some compilers place space between "-{L,R}" and the path.
+        # Remove the space.
+        if test x-L = "$p" ||
+diff -rupN fox-1.7.67/configure fox-1.7.67-patched/configure
+--- fox-1.7.67/configure	2019-09-11 23:53:20.000000000 +0200
++++ fox-1.7.67-patched/configure	2021-09-10 20:23:38.097972268 +0200
+@@ -14732,7 +14732,7 @@ if { { eval echo "\"\$as_me\":${as_linen
+   for p in `eval "$output_verbose_link_cmd"`; do
+     case $prev$p in
+ 
+-    -L* | -R* | -l*)
++    -L* | -R* | -l* | */libclang_rt.*.a)
+        # Some compilers place space between "-{L,R}" and the path.
+        # Remove the space.
+        if test x-L = "$p" ||
