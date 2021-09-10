@@ -129,11 +129,11 @@ DEBUG_RESET_TIMERS;
 	bool newBlendMode = true;//true; // temporary hack
 	
 	// move times
-	const float ltime = pMove1->GetPlaytime() *
-		decMath::clamp( pTargetLeadingMoveTime.GetValue( GetInstance(), pAnimationDifference.GetLeadingMoveTime() ), 0.0f, 1.0f );
+	const float ltime = pMove1->GetPlaytime() * decMath::clamp(
+		pTargetLeadingMoveTime.GetValue( GetInstance(), pAnimationDifference.GetLeadingMoveTime() ), 0.0f, 1.0f );
 	
-	const float rtime = pMove2->GetPlaytime() *
-		decMath::clamp( pTargetReferenceMoveTime.GetValue( GetInstance(), pAnimationDifference.GetReferenceMoveTime() ), 0.0f, 1.0f );
+	const float rtime = pMove2->GetPlaytime() * decMath::clamp(
+		pTargetReferenceMoveTime.GetValue( GetInstance(), pAnimationDifference.GetReferenceMoveTime() ), 0.0f, 1.0f );
 	
 	// step through all bones and set animation
 	for( i=0; i<boneCount; i++ ){

@@ -45,6 +45,7 @@ class deScriptingDragonScript;
 class deClassAnimator : public dsClass{
 private:
 	deScriptingDragonScript *pDS;
+	dsClass *pClsAnimatorLinkBoneParameter;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -66,6 +67,8 @@ public:
 	deAnimator *GetAnimator( dsRealObject *object ) const;
 	/** Pushes an animator on the stack (pushes nil if instance is NULL). */
 	void PushAnimator( dsRunTime *rt, deAnimator *animator );
+	
+	inline dsClass *GetClassAnimatorLinkBoneParameter() const{ return pClsAnimatorLinkBoneParameter; }
 	/*@}*/
 	
 private:
@@ -73,6 +76,7 @@ private:
 		dsClass *clsAr, *clsVoid, *clsBool, *clsStr, *clsInt, *clsFlt, *clsObj;
 		dsClass *clsArR, *clsRig, *clsAni, *clsCurveBezier;
 		dsClass *clsAnimatorCtrl;
+		dsClass *clsAnimatorLinkBoneParameter;
 	};
 #define DEF_NATFUNC(name) \
 	class name : public dsFunction{ \
@@ -100,6 +104,10 @@ private:
 	DEF_NATFUNC( nfSetLinkController );
 	DEF_NATFUNC( nfSetLinkCurve );
 	DEF_NATFUNC( nfSetLinkRepeat );
+	DEF_NATFUNC( nfSetLinkBone );
+	DEF_NATFUNC( nfSetLinkBoneParameter );
+	DEF_NATFUNC( nfSetLinkBoneValueRange );
+	DEF_NATFUNC( nfSetLinkBoneValueRangeRotation );
 	
 	DEF_NATFUNC( nfGetRuleCount );
 	DEF_NATFUNC( nfAddRule );

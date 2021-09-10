@@ -255,16 +255,56 @@ void igdeLoadAnimator::pReadLink( const decXmlElementTag &root, deAnimator &anim
 				continue;
 			}
 			
-			if( strcmp( tag->GetName(), "controller" ) == 0 ){
+			if( tag->GetName() == "controller" ){
 				link->SetController( GetCDataInt( *tag ) );
 				
-			}else if( strcmp( tag->GetName(), "curve" ) == 0 ){
+			}else if( tag->GetName() == "curve" ){
 				decCurveBezier curve;
 				ReadCurveBezier( *tag, curve );
 				link->SetCurve( curve );
 				
-			}else if( strcmp( tag->GetName(), "repeat" ) == 0 ){
+			}else if( tag->GetName() == "repeat" ){
 				link->SetRepeat( GetCDataInt( *tag ) );
+				
+			}else if( tag->GetName() == "bone" ){
+				link->SetBone( GetCDataString( *tag ) );
+				
+			}else if( tag->GetName() == "boneParameter" ){
+				const char * const name = GetCDataString( *tag );
+				
+				if( strcmp( name, "positionX" ) == 0 ){
+					link->SetBoneParameter( deAnimatorLink::ebpPositionX );
+					
+				}else if( strcmp( name, "positionY" ) == 0 ){
+					link->SetBoneParameter( deAnimatorLink::ebpPositionY );
+					
+				}else if( strcmp( name, "positionZ" ) == 0 ){
+					link->SetBoneParameter( deAnimatorLink::ebpPositionZ );
+					
+				}else if( strcmp( name, "rotationX" ) == 0 ){
+					link->SetBoneParameter( deAnimatorLink::ebpRotationX );
+					
+				}else if( strcmp( name, "rotationY" ) == 0 ){
+					link->SetBoneParameter( deAnimatorLink::ebpRotationY );
+					
+				}else if( strcmp( name, "rotationZ" ) == 0 ){
+					link->SetBoneParameter( deAnimatorLink::ebpRotationZ );
+					
+				}else if( strcmp( name, "scaleX" ) == 0 ){
+					link->SetBoneParameter( deAnimatorLink::ebpScaleX );
+					
+				}else if( strcmp( name, "scaleY" ) == 0 ){
+					link->SetBoneParameter( deAnimatorLink::ebpScaleY );
+					
+				}else if( strcmp( name, "scaleZ" ) == 0 ){
+					link->SetBoneParameter( deAnimatorLink::ebpScaleZ );
+					
+				}else{
+					LogErrorUnknownValue( *tag, name );
+				}
+				
+			}else if( tag->GetName() == "boneLimits" ){
+				link->SetBoneValueRange( GetAttributeFloat( *tag, "min" ), GetAttributeFloat( *tag, "max" ) );
 			}
 		}
 		

@@ -448,6 +448,55 @@ void aeLSAnimator::pSaveLink( decXmlWriter &writer, aeAnimator *animator, aeLink
 	if( link->GetRepeat() != 1 ){
 		writer.WriteDataTagInt( "repeat", link->GetRepeat() );
 	}
+	if( ! link->GetBone().IsEmpty() ){
+		writer.WriteDataTagString( "bone", link->GetBone() );
+	}
+	
+	switch( link->GetBoneParameter() ){
+	case deAnimatorLink::ebpPositionX:
+		writer.WriteDataTagString( "boneParameter", "positionX" );
+		break;
+		
+	case deAnimatorLink::ebpPositionY:
+		writer.WriteDataTagString( "boneParameter", "positionY" );
+		break;
+		
+	case deAnimatorLink::ebpPositionZ:
+		//writer.WriteDataTagString( "boneParameter", "positionZ" ); // default
+		break;
+		
+	case deAnimatorLink::ebpRotationX:
+		writer.WriteDataTagString( "boneParameter", "rotationX" );
+		break;
+		
+	case deAnimatorLink::ebpRotationY:
+		writer.WriteDataTagString( "boneParameter", "rotationY" );
+		break;
+		
+	case deAnimatorLink::ebpRotationZ:
+		writer.WriteDataTagString( "boneParameter", "rotationZ" );
+		break;
+		
+	case deAnimatorLink::ebpScaleX:
+		writer.WriteDataTagString( "boneParameter", "scaleX" );
+		break;
+		
+	case deAnimatorLink::ebpScaleY:
+		writer.WriteDataTagString( "boneParameter", "scaleY" );
+		break;
+		
+	case deAnimatorLink::ebpScaleZ:
+		writer.WriteDataTagString( "boneParameter", "scaleZ" );
+		break;
+	}
+	
+	if( fabsf( link->GetBoneMinimum() ) > FLOAT_SAFE_EPSILON
+	|| fabsf( link->GetBoneMaximum() ) > FLOAT_SAFE_EPSILON ){
+		writer.WriteOpeningTagStart( "boneLimits" );
+		writer.WriteAttributeFloat( "min", link->GetBoneMinimum() );
+		writer.WriteAttributeFloat( "max", link->GetBoneMaximum() );
+		writer.WriteOpeningTagEnd( true );
+	}
 	
 	const decCurveBezier &curve = link->GetCurve();
 	if( curve.GetInterpolationMode() != decCurveBezier::eimLinear || curve.GetPointCount() != 2
@@ -1670,33 +1719,76 @@ void aeLSAnimator::pLoadLink( decXmlElementTag *root, aeAnimator *animator ){
 	// parse tag
 	for( i=0; i<root->GetElementCount(); i++ ){
 		tag = root->GetElementIfTag( i );
-		if( tag ){
-			if( strcmp( tag->GetName(), "name" ) == 0 ){
-				link->SetName( tag->GetFirstData()->GetData() );
-				
-			}else if( strcmp( tag->GetName(), "controller" ) == 0 ){
-				index = ( int )strtol( tag->GetFirstData()->GetData(), NULL, 10 );
-				
-				if( index == -1 ){
-					link->SetController( NULL, false );
-					
-				}else{
-					link->SetController( animator->GetControllers().GetAt( index ), false );
-				}
-				
-			}else if( strcmp( tag->GetName(), "repeat" ) == 0 ){
-				link->SetRepeat( ( int )strtol( tag->GetFirstData()->GetData(), NULL, 10 ) );
-				
-			}else if( strcmp( tag->GetName(), "curve" ) == 0 ){
-				decCurveBezier curve;
-				ReadCurveBezier( *tag, curve );
-				link->SetCurve( curve );
+		if( ! tag ){
+			continue;
+		}
+		
+		if( tag->GetName() == "name" ){
+			link->SetName( tag->GetFirstData()->GetData() );
+			
+		}else if( tag->GetName() == "controller" ){
+			index = ( int )strtol( tag->GetFirstData()->GetData(), NULL, 10 );
+			
+			if( index == -1 ){
+				link->SetController( NULL, false );
 				
 			}else{
-				logger.LogWarnFormat( LOGSOURCE, "%s(%i:%i): Unknown Tag %s, ignoring",
-					root->GetName().GetString(), tag->GetLineNumber(), tag->GetPositionNumber(),
-					tag->GetName().GetString() );
+				link->SetController( animator->GetControllers().GetAt( index ), false );
 			}
+			
+		}else if( tag->GetName() == "repeat" ){
+			link->SetRepeat( ( int )strtol( tag->GetFirstData()->GetData(), NULL, 10 ) );
+			
+		}else if( tag->GetName() == "curve" ){
+			decCurveBezier curve;
+			ReadCurveBezier( *tag, curve );
+			link->SetCurve( curve );
+			
+		}else if( tag->GetName() == "bone" ){
+			link->SetBone( GetCDataString( *tag ) );
+			
+		}else if( tag->GetName() == "boneParameter" ){
+			const char * const name = GetCDataString( *tag );
+			
+			if( strcmp( name, "positionX" ) == 0 ){
+				link->SetBoneParameter( deAnimatorLink::ebpPositionX );
+				
+			}else if( strcmp( name, "positionY" ) == 0 ){
+				link->SetBoneParameter( deAnimatorLink::ebpPositionY );
+				
+			}else if( strcmp( name, "positionZ" ) == 0 ){
+				link->SetBoneParameter( deAnimatorLink::ebpPositionZ );
+				
+			}else if( strcmp( name, "rotationX" ) == 0 ){
+				link->SetBoneParameter( deAnimatorLink::ebpRotationX );
+				
+			}else if( strcmp( name, "rotationY" ) == 0 ){
+				link->SetBoneParameter( deAnimatorLink::ebpRotationY );
+				
+			}else if( strcmp( name, "rotationZ" ) == 0 ){
+				link->SetBoneParameter( deAnimatorLink::ebpRotationZ );
+				
+			}else if( strcmp( name, "scaleX" ) == 0 ){
+				link->SetBoneParameter( deAnimatorLink::ebpScaleX );
+				
+			}else if( strcmp( name, "scaleY" ) == 0 ){
+				link->SetBoneParameter( deAnimatorLink::ebpScaleY );
+				
+			}else if( strcmp( name, "scaleZ" ) == 0 ){
+				link->SetBoneParameter( deAnimatorLink::ebpScaleZ );
+				
+			}else{
+				LogErrorUnknownValue( *tag, name );
+			}
+			
+		}else if( tag->GetName() == "boneLimits" ){
+			link->SetBoneMinimum( GetAttributeFloat( *tag, "min" ) );
+			link->SetBoneMaximum( GetAttributeFloat( *tag, "max" ) );
+			
+		}else{
+			logger.LogWarnFormat( LOGSOURCE, "%s(%i:%i): Unknown Tag %s, ignoring",
+				root->GetName().GetString(), tag->GetLineNumber(), tag->GetPositionNumber(),
+				tag->GetName().GetString() );
 		}
 	}
 }

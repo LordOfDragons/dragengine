@@ -651,7 +651,7 @@ void dearAnimatorInstance::pAddAnimatorLinks(){
 			}
 			
 			for( i=0; i<linkCount; i++ ){
-				link = new dearLink( *animator.GetLinkAt( i ), controllerMapping );
+				link = new dearLink( *this, *animator.GetLinkAt( i ), controllerMapping );
 				AddLink( link );
 				link = NULL;
 			}

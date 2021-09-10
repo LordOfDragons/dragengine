@@ -36,7 +36,10 @@
 
 deAnimatorLink::deAnimatorLink() :
 pController( -1 ),
-pRepeat( 1 )
+pRepeat( 1 ),
+pBoneParameter( ebpPositionZ ),
+pBoneMinValue( 0.0f ),
+pBoneMaxValue( 1.0f )
 {
 	pCurve.SetDefaultLinear();
 }
@@ -44,7 +47,11 @@ pRepeat( 1 )
 deAnimatorLink::deAnimatorLink( const deAnimatorLink &copy ) :
 pController( copy.pController ),
 pCurve( copy.pCurve ),
-pRepeat( copy.pRepeat ){
+pRepeat( copy.pRepeat ),
+pBone( copy.pBone ),
+pBoneParameter( copy.pBoneParameter ),
+pBoneMinValue( copy.pBoneMinValue ),
+pBoneMaxValue( copy.pBoneMaxValue ){
 }
 
 deAnimatorLink::~deAnimatorLink(){
@@ -73,6 +80,19 @@ void deAnimatorLink::SetRepeat( int repeat ){
 	pRepeat = repeat;
 }
 
+void deAnimatorLink::SetBone( const char *bone ){
+	pBone = bone;
+}
+
+void deAnimatorLink::SetBoneParameter( eBoneParameter parameter ){
+	pBoneParameter = parameter;
+}
+
+void deAnimatorLink::SetBoneValueRange( float minimum, float maximum ){
+	pBoneMinValue = minimum;
+	pBoneMaxValue = maximum;
+}
+
 
 
 // Operators
@@ -82,5 +102,9 @@ deAnimatorLink &deAnimatorLink::operator=( const deAnimatorLink &copy ){
 	pController = copy.pController;
 	pCurve = copy.pCurve;
 	pRepeat = copy.pRepeat;
+	pBone = copy.pBone;
+	pBoneParameter = copy.pBoneParameter;
+	pBoneMinValue = copy.pBoneMinValue;
+	pBoneMaxValue = copy.pBoneMaxValue;
 	return *this;
 }

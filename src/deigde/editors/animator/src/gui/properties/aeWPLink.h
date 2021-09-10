@@ -24,6 +24,7 @@
 
 #include <deigde/gui/igdeButtonReference.h>
 #include <deigde/gui/igdeComboBoxReference.h>
+#include <deigde/gui/igdeComboBoxFilterReference.h>
 #include <deigde/gui/igdeListBoxReference.h>
 #include <deigde/gui/igdeSpinTextFieldReference.h>
 #include <deigde/gui/igdeTextFieldReference.h>
@@ -53,6 +54,10 @@ private:
 	igdeComboBoxReference pCBController;
 	igdeSpinTextFieldReference pSpinRepeat;
 	igdeViewCurveBezierReference pEditCurve;
+	igdeComboBoxFilterReference pCBBone;
+	igdeComboBoxReference pCBBoneParameter;
+	igdeTextFieldReference pEditBoneMinimum;
+	igdeTextFieldReference pEditBoneMaximum;
 	
 	bool pPreventUpdate;
 	
@@ -94,6 +99,9 @@ public:
 	
 	/** \brief Update link. */
 	void UpdateLink();
+	
+	/** \brief Update rig bone list. */
+	void UpdateRigBoneList();
 	
 	/** \brief Update controller list. */
 	void UpdateControllerList();

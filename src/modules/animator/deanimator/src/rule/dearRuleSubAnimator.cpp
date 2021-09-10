@@ -312,7 +312,7 @@ void dearRuleSubAnimator::pCreateRules( const decIntList &controllerMapping ){
 		
 		try{
 			for( i=0; i<linkCount; i++ ){
-				link = new dearLink( *animator->GetLinkAt( i ), subControllerMapping );
+				link = new dearLink( instance, *animator->GetLinkAt( i ), subControllerMapping );
 				instance.AddLink( link );
 				link = NULL;
 			}

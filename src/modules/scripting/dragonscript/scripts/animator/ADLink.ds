@@ -37,6 +37,10 @@ class ADLink
 	private var int pIndex
 	private var CurveBezier pCurve
 	private var int pRepeat
+	private var String pBone
+	private var AnimatorLinkBoneParameter pBoneParameter
+	private var float pBoneMinimum
+	private var float pBoneMaximum
 	
 	
 	
@@ -45,6 +49,10 @@ class ADLink
 		this.pIndex = 0
 		this.pCurve = CurveBezier.newDefaultLinear()
 		this.pRepeat = 1
+		this.pBone = ""
+		this.pBoneParameter = AnimatorLinkBoneParameter.positionZ
+		this.pBoneMinimum = 0.0
+		this.pBoneMaximum = 1.0
 	end
 	
 	
@@ -79,6 +87,76 @@ class ADLink
 		this.pRepeat = repeat
 	end
 	
+	/**
+	 * \brief Bone to use parameter of as input or empty string to not use.
+	 * \version 1.6
+	 */
+	public func String getBone()
+		return this.pBone
+	end
+	
+	/**
+	 * \brief Set bone to use parameter of as input or empty string to not use.
+	 * \version 1.6
+	 */
+	public func void setBone( String bone )
+		if bone == null
+			throw ENullPointer.new( "bone" )
+		end
+		this.pBone = bone
+	end
+	
+	/**
+	 * \brief Bone parameter to use as input.
+	 * \version 1.6
+	 */
+	public func AnimatorLinkBoneParameter getBoneParameter()
+		return this.pBoneParameter
+	end
+	
+	/**
+	 * \brief Set bone parameter to use as input.
+	 * \version 1.6
+	 */
+	public func void setBoneParameter( AnimatorLinkBoneParameter parameter )
+		if parameter == null
+			throw ENullPointer.new( "parameter" )
+		end
+		this.pBoneParameter = parameter
+	end
+	
+	/**
+	 * \brief Minimum bone parameter value.
+	 * \version 1.6
+	 */
+	public func float getBoneMinimum()
+		return this.pBoneMinimum
+	end
+	
+	/**
+	 * \brief Set minimum bone parameter value.
+	 * \version 1.6
+	 */
+	public func void setBoneMinimum( float value )
+		this.pBoneMinimum = value
+	end
+	
+	/**
+	 * \brief Maximum bone parameter value.
+	 * \version 1.6
+	 */
+	public func float getBoneMaximum()
+		return this.pBoneMaximum
+	end
+	
+	/**
+	 * \brief Set maximum bone parameter value.
+	 * \version 1.6
+	 */
+	public func void setBoneMaximum( float value )
+		this.pBoneMaximum = value
+	end
+	
 	
 	
 	/** \brief Index of link in animator. */
@@ -103,6 +181,18 @@ class ADLink
 		
 		animator.setLinkCurve( this.pIndex, this.pCurve )
 		animator.setLinkRepeat( this.pIndex, this.pRepeat )
+		animator.setLinkBone( this.pIndex, this.pBone )
+		animator.setLinkBoneParameter( this.pIndex, this.pBoneParameter )
+		
+		select this.pBoneParameter
+		case AnimatorLinkBoneParameter.rotationX, \
+			AnimatorLinkBoneParameter.rotationY, \
+			AnimatorLinkBoneParameter.rotationZ
+				animator.setLinkBoneValueRangeRotation( this.pIndex, this.pBoneMinimum, this.pBoneMaximum )
+			
+		else
+			animator.setLinkBoneValueRange( this.pIndex, this.pBoneMinimum, this.pBoneMaximum )
+		end
 	end
 	
 	
@@ -112,6 +202,8 @@ class ADLink
 		
 		console.addMessage( "- Link " + index + " ( controller=" \
 			+ ( this.pController == null if -1 else this.pController.getIndex() ) \
-			+ " repeat=" + this.pRepeat + ")" )
+			+ " repeat=" + this.pRepeat \
+			+ " bone=" + this.pBone + " boneParam=" + this.pBoneParameter \
+			+ " boneMin=" + this.pBoneMinimum + " " + this.pBoneMaximum + ")" )
 	end
 end

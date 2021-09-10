@@ -166,6 +166,16 @@ class LoadAnimator extends BaseXmlLoader
 				
 			elif tagName.equals( "curve" )
 				link.setCurve( this.readCurveBezier( element ) )
+				
+			elif tagName.equals( "bone" )
+				link.setBone( element.getFirstCData() )
+				
+			elif tagName.equals( "boneParameter" )
+				link.setBoneParameter( AnimatorLinkBoneParameter.named( element.getFirstCData() ) )
+				
+			elif tagName.equals( "boneLimits" )
+				link.setBoneMinimum( element.getAttributeFloatNamed( "min" ) )
+				link.setBoneMaximum( element.getAttributeFloatNamed( "max" ) )
 			end
 		end )
 		

@@ -170,6 +170,38 @@ class Animator
 	 */
 	public func void setLinkCurve( int link, CurveBezier curve )
 	end
+	
+	/**
+	 * \brief Set bone to use parameter of as input for link or empty string to not use.
+	 * \version 1.6
+	 * \throws EOutOfBoundary \em link is less than 0 or large than or equal to getLinkCount().
+	 */
+	public func void setLinkBone( int link, String bone )
+	end
+	
+	/**
+	 * \brief Set bone parameter to use as input for link.
+	 * \version 1.6
+	 * \throws EOutOfBoundary \em link is less than 0 or large than or equal to getLinkCount().
+	 */
+	public func void setLinkBoneParameter( int link, AnimatorLinkBoneParameter parameter )
+	end
+	
+	/**
+	 * \brief Set bone value range.
+	 * \version 1.6
+	 * \throws EOutOfBoundary \em link is less than 0 or large than or equal to getLinkCount().
+	 */
+	public func void setLinkBoneValueRange( int link, float minimum, float maximum )
+	end
+	
+	/**
+	 * \brief Set bone value range for use with rotation parameter.
+	 * \version 1.6
+	 * \throws EOutOfBoundary \em link is less than 0 or large than or equal to getLinkCount().
+	 */
+	public func void setLinkBoneValueRangeRotation( int link, float minimum, float maximum )
+	end
 	/*@}*/
 	
 	

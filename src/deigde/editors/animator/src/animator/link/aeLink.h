@@ -26,6 +26,7 @@
 #include <dragengine/common/curve/decCurveBezier.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
+#include <dragengine/resources/animator/deAnimatorLink.h>
 
 class aeController;
 class aeAnimator;
@@ -47,6 +48,13 @@ private:
 	aeController *pController;
 	int pRepeat;
 	decCurveBezier pCurve;
+	
+	decString pBone;
+	deAnimatorLink::eBoneParameter pBoneParameter;
+	float pBoneMinimum;
+	float pBoneMaximum;
+	
+	
 	
 public:
 	/** \name Constructors and Destructors */
@@ -107,6 +115,54 @@ public:
 	/** \brief Set curve. */
 	void SetCurve( const decCurveBezier &curve );
 	
+	/**
+	 * \brief Bone to use parameter of as input or empty string to not use.
+	 * \version 1.6
+	 */
+	inline const decString &GetBone() const{ return pBone; }
+	
+	/**
+	 * \brief Set bone to use parameter of as input or empty string to not use.
+	 * \version 1.6
+	 */
+	void SetBone( const char *bone );
+	
+	/**
+	 * \brief Bone parameter to use as input.
+	 * \version 1.6
+	 */
+	inline deAnimatorLink::eBoneParameter GetBoneParameter() const{ return pBoneParameter; }
+	
+	/**
+	 * \brief Set bone parameter to use as input.
+	 * \version 1.6
+	 */
+	void SetBoneParameter( deAnimatorLink::eBoneParameter parameter );
+	
+	/**
+	 * \brief Minimum bone parameter value.
+	 * \version 1.6
+	 */
+	inline float GetBoneMinimum() const{ return pBoneMinimum; }
+	
+	/**
+	 * \brief Set minimum bone parameter value
+	 * \version 1.6
+	 */
+	void SetBoneMinimum( float value );
+	
+	/**
+	 * \brief Maximum bone parameter value.
+	 * \version 1.6
+	 */
+	inline float GetBoneMaximum() const{ return pBoneMaximum; }
+	
+	/**
+	 * \brief Set maximum bone parameter value.
+	 * \version 1.6
+	 */
+	void SetBoneMaximum( float value );
+	
 	
 	
 	/** \brief Notify engine object about changes in this link. */
@@ -130,6 +186,7 @@ public:
 	
 private:
 	void pUpdateCurve();
+	void pUpdateBoneLimits();
 };
 
 #endif

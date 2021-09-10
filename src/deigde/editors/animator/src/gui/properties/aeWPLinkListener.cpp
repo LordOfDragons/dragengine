@@ -48,6 +48,14 @@ aeWPLinkListener::~aeWPLinkListener(){
 // Notifications
 //////////////////
 
+void aeWPLinkListener::RigChanged( aeAnimator *animator ){
+	if( animator != pPanel.GetAnimator() ){
+		return;
+	}
+	
+	pPanel.UpdateRigBoneList();
+}
+
 void aeWPLinkListener::ControllerNameChanged( aeAnimator *animator, aeController* ){
 	if( animator != pPanel.GetAnimator() ){
 		return;
