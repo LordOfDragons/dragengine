@@ -48,8 +48,8 @@ public:
 private:
 	deScriptingDragonScript &pDS;
 	
-	const deInputEvent::eSources pDeviceSource;
-	const int pDeviceIndex;
+	deInputEvent::eSources pDeviceSource;
+	int pDeviceIndex;
 	deInputDevice::Ref pDevice;
 	
 	deInputDevicePose pDevicePose;
@@ -101,6 +101,12 @@ public:
 	
 	/** Update poses. */
 	void OnFrameUpdate();
+	
+	/**
+	 * Update device information. Only allowed to be called if device is from the same
+	 * module and the device ID is the same.
+	 */
+	void Update( const dedsInputDevice &device );
 	/*@}*/
 };
 

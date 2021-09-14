@@ -468,13 +468,33 @@ void deClassInputSystem::pUpdateCachedDevices(){
 	}
 	
 	deBaseInputModule &module = *pDS.GetGameEngine()->GetInputSystem()->GetActiveModule();
+	const decObjectList oldDevices( pCachedDevices );
+	const int oldDeviceCount = oldDevices.GetCount();
 	const int count = module.GetDeviceCount();
-	int i;
+	dedsInputDevice::Ref device;
+	int i, j;
 	
 	pCachedDevices.RemoveAll();
 	
 	for( i=0; i<count; i++ ){
-		pCachedDevices.Add( dedsInputDevice::Ref::New( new dedsInputDevice( pDS, module, i ) ) );
+		device.TakeOver( new dedsInputDevice( pDS, module, i ) );
+		
+		dedsInputDevice *reuseDevice = nullptr;
+		for( j=0; j<oldDeviceCount; j++ ){
+			dedsInputDevice * const oldDevice = ( dedsInputDevice* )oldDevices.GetAt( j );
+			if( oldDevice->GetDevice()->GetID() == device->GetDevice()->GetID() ){
+				reuseDevice = oldDevice;
+				break;
+			}
+		}
+		
+		if( reuseDevice ){
+			reuseDevice->Update( device );
+			pCachedDevices.Add( reuseDevice );
+			
+		}else{
+			pCachedDevices.Add( device );
+		}
 	}
 	
 	pCacheDirty = false;

@@ -124,3 +124,28 @@ void dedsInputDevice::OnFrameUpdate(){
 		}break;
 	}
 }
+
+void dedsInputDevice::Update( const dedsInputDevice &device ){
+	if( device.pDeviceSource != pDeviceSource ){
+		DETHROW_INFO( deeInvalidParam, "device source differs" );
+	}
+	if( device.pDevice->GetID() != pDevice->GetID() ){
+		DETHROW_INFO( deeInvalidParam, "device id differs" );
+	}
+	
+	pDeviceIndex = device.pDeviceIndex;
+	pDevice = device.pDevice;
+	
+	if( pBonePoseCount != device.pBonePoseCount ){
+		if( pBonePoses ){
+			delete [] pBonePoses;
+			pBonePoses = nullptr;
+			pBonePoseCount = 0;
+		}
+		
+		if( device.pBonePoses ){
+			pBonePoses = new deInputDevicePose[ deInputDevice::HandBoneCount * 2 ];
+			pBonePoseCount = deInputDevice::HandBoneCount;
+		}
+	}
+}
