@@ -201,7 +201,7 @@ bool deVROpenVR::Init(){
 	}else{
 		LogError( "Failed retrieving runtime path" );
 		pRuntimeInstalled = false;
-		return false;
+		return true;
 	}
 	
 	LogInfoFormat( "HMD Present: %s", vr::VR_IsHmdPresent() ? "Yes" : "No" );
@@ -227,6 +227,9 @@ bool deVROpenVR::RuntimeUsable(){
 void deVROpenVR::StartRuntime(){
 	if( pVRSystem ){
 		return;
+	}
+	if( ! pRuntimeInstalled ){
+		DETHROW_INFO( deeInvalidAction, "runtime not found" );
 	}
 	
 	LogInfo( "Start Runtime" );
