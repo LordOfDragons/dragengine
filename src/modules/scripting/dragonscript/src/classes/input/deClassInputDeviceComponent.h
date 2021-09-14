@@ -19,22 +19,24 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef _DEDSCLASSINPUTDEVICEFEEDBACK_H_
-#define _DEDSCLASSINPUTDEVICEFEEDBACK_H_
+#ifndef _DEDSCLASSINPUTDEVICECOMPONENT_H_
+#define _DEDSCLASSINPUTDEVICECOMPONENT_H_
 
 #include <libdscript/libdscript.h>
 
 class deScriptingDragonScript;
+
 class dedsInputDevice;
 
 
+
 /**
- * \brief Input device feedback script class.
+ * \brief Input device component script class.
  */
-class deClassInputDeviceFeedback : public dsClass{
+class deClassInputDeviceComponent : public dsClass{
 private:
 	deScriptingDragonScript &pDS;
-	dsClass *pClsInputDeviceFeedbackType;
+	dsClass *pClsInputDeviceComponentType;
 	
 	
 	
@@ -42,10 +44,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create class. */
-	deClassInputDeviceFeedback( deScriptingDragonScript &ds );
+	deClassInputDeviceComponent( deScriptingDragonScript &ds );
 	
 	/** \brief Clean up class. */
-	virtual ~deClassInputDeviceFeedback();
+	virtual ~deClassInputDeviceComponent();
 	/*@}*/
 	
 	
@@ -58,28 +60,26 @@ public:
 	/** \brief Creates class members. */
 	void CreateClassMembers( dsEngine *engine );
 	
-	/** \brief Push feedback. */
-	void PushFeedback( dsRunTime *rt, dedsInputDevice *device, int index );
+	/** \brief Push component. */
+	void PushComponent( dsRunTime *rt, dedsInputDevice *device, int index );
 	
-	inline dsClass *GetClassInputDeviceFeedbackType() const{ return pClsInputDeviceFeedbackType; }
+	inline dsClass *GetClassInputDeviceComponentType() const{ return pClsInputDeviceComponentType; }
 	/*@}*/
 	
 	
 	
 private:
 	struct sInitData{
-		dsClass *clsIDFeedback;
+		dsClass *clsIDComponent;
 		
 		dsClass *clsVoid;
 		dsClass *clsBool;
 		dsClass *clsInteger;
-		dsClass *clsFloat;
 		dsClass *clsString;
 		dsClass *clsObject;
 		
 		dsClass *clsInputDevice;
-		dsClass *clsInputDeviceFeedbackType;
-		dsClass *clsInputDeviceComponent;
+		dsClass *clsInputDeviceComponentType;
 		dsClass *clsImage;
 	};
 #define DEF_NATFUNC(name) \
@@ -91,21 +91,17 @@ private:
 	DEF_NATFUNC( nfDestructor );
 	
 	DEF_NATFUNC( nfGetInputDevice );
-	DEF_NATFUNC( nfGetFeedbackIndex );
+	DEF_NATFUNC( nfGetComponentIndex );
 	
 	DEF_NATFUNC( nfGetID );
 	DEF_NATFUNC( nfGetName);
 	DEF_NATFUNC( nfGetType );
-	DEF_NATFUNC( nfGetComponent );
 	DEF_NATFUNC( nfGetDisplayImage );
 	DEF_NATFUNC( nfGetDisplayIconCount );
 	DEF_NATFUNC( nfGetDisplayIconAt );
 	DEF_NATFUNC( nfGetLargestDisplayIconX );
 	DEF_NATFUNC( nfGetLargestDisplayIconY );
 	DEF_NATFUNC( nfGetDisplayText );
-	
-	DEF_NATFUNC( nfGetValue );
-	DEF_NATFUNC( nfSetValue );
 	
 	DEF_NATFUNC( nfEquals );
 #undef DEF_NATFUNC

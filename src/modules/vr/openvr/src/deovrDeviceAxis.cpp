@@ -91,6 +91,10 @@ void deovrDeviceAxis::SetType( deInputDeviceAxis::eAxisTypes type ){
 	pType = type;
 }
 
+void deovrDeviceAxis::SetInputDeviceComponent( deovrDeviceComponent *component ){
+	pInputDeviceComponent = component;
+}
+
 
 
 void deovrDeviceAxis::SetDisplayImages( const char *name ){
@@ -210,6 +214,7 @@ void deovrDeviceAxis::GetInfo( deInputDeviceAxis &info ) const{
 	info.SetID( pID );
 	info.SetName( pName );
 	info.SetType( pType );
+	info.SetComponent( pInputDeviceComponent ? pInputDeviceComponent->GetID() : "" );
 	
 	info.SetDisplayImage( pDisplayImage );
 	

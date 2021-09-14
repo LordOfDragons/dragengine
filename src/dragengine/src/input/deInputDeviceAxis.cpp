@@ -64,6 +64,10 @@ void deInputDeviceAxis::SetType( eAxisTypes type ){
 	pType = type;
 }
 
+void deInputDeviceAxis::SetComponent( const char *component ){
+	pComponent = component;
+}
+
 void deInputDeviceAxis::SetDisplayImage( deImage *image ){
 	pDisplayImage = image;
 }
@@ -96,6 +100,7 @@ deInputDeviceAxis &deInputDeviceAxis::operator=( const deInputDeviceAxis &axis )
 	pID = axis.pID;
 	pName = axis.pName;
 	pType = axis.pType;
+	pComponent = axis.pComponent;
 	pDisplayImage = axis.pDisplayImage;
 	pDisplayIcons = axis.pDisplayIcons;
 	pDisplayText = axis.pDisplayText;

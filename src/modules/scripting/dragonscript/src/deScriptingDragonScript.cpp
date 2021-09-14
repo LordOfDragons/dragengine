@@ -130,6 +130,7 @@
 #include "classes/input/deClassInputDeviceAxis.h"
 #include "classes/input/deClassInputDeviceButton.h"
 #include "classes/input/deClassInputDeviceFeedback.h"
+#include "classes/input/deClassInputDeviceComponent.h"
 #include "classes/input/deClassInputEvent.h"
 
 #include "classes/particle/deClassParticleEmitter.h"
@@ -400,6 +401,7 @@ deBaseScriptingModule( loadableModule ){
 	pClsInpDevAxis = NULL;
 	pClsInpDevBtn = NULL;
 	pClsInpDevFb = NULL;
+	pClsInpDevComp = NULL;
 	pClsInpEvent = NULL;
 	pClsInpSys = NULL;
 	pClsLyM = NULL;
@@ -1156,6 +1158,7 @@ void deScriptingDragonScript::pLoadBasicPackage(){
 		package->AddHostClass( pClsInpDevAxis = new deClassInputDeviceAxis( *this ) );
 		package->AddHostClass( pClsInpDevBtn = new deClassInputDeviceButton( *this ) );
 		package->AddHostClass( pClsInpDevFb = new deClassInputDeviceFeedback( *this ) );
+		package->AddHostClass( pClsInpDevComp = new deClassInputDeviceComponent( *this ) );
 		package->AddHostClass( pClsPhySys = new deClassPhysicsSystem( *this ) );
 		package->AddHostClass( pClsNetSys = new deClassNetworkSystem( *this ) );
 		package->AddHostClass( pClsEnvMapProbe = new deClassEnvMapProbe( this ) );

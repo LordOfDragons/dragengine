@@ -22,6 +22,8 @@
 #ifndef _DEOVRDEVICEAXIS_H_
 #define _DEOVRDEVICEAXIS_H_
 
+#include "deovrDeviceComponent.h"
+
 #include <openvr/openvr.h>
 
 #include <dragengine/deObject.h>
@@ -54,6 +56,7 @@ private:
 	decString pID;
 	decString pName;
 	deInputDeviceAxis::eAxisTypes pType;
+	deovrDeviceComponent::Ref pInputDeviceComponent;
 	
 	deImage::Ref pDisplayImage;
 	decObjectOrderedSet pDisplayIcons;
@@ -133,6 +136,12 @@ public:
 	
 	/** Set type. */
 	void SetType( deInputDeviceAxis::eAxisTypes type );
+	
+	/** Input device component. */
+	inline deovrDeviceComponent *GetInputDeviceComponent() const{ return pInputDeviceComponent; }
+	
+	/** Set input device component. */
+	void SetInputDeviceComponent( deovrDeviceComponent *component );
 	
 	
 	

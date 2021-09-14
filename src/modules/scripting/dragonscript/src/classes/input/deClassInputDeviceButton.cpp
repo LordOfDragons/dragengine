@@ -32,7 +32,6 @@
 #include "../../utils/dedsInputDevice.h"
 
 #include <dragengine/deEngine.h>
-#include <libdscript/exceptions.h>
 #include <dragengine/input/deInputDevice.h>
 #include <dragengine/input/deInputDeviceButton.h>
 #include <dragengine/resources/image/deImage.h>
@@ -40,6 +39,9 @@
 #include <dragengine/systems/deVRSystem.h>
 #include <dragengine/systems/modules/input/deBaseInputModule.h>
 #include <dragengine/systems/modules/vr/deBaseVRModule.h>
+
+#include <libdscript/exceptions.h>
+#include <libdscript/packages/default/dsClassEnumeration.h>
 
 
 
@@ -126,6 +128,31 @@ void deClassInputDeviceButton::nfGetName::RunFunction( dsRunTime *rt, dsValue *m
 	const deInputDeviceButton &button = nd.device->GetDevice()->GetButtonAt( nd.buttonIndex );
 	
 	rt->PushString( button.GetName() );
+}
+
+// public func InputDeviceButtonType getType()
+deClassInputDeviceButton::nfGetType::nfGetType( const sInitData &init ) :
+dsFunction( init.clsIDButton, "getType", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsInputDeviceButtonType ){
+}
+void deClassInputDeviceButton::nfGetType::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const sIDButtonNatDat &nd = *( ( const sIDButtonNatDat* )p_GetNativeData( myself ) );
+	const deInputDeviceButton &button = nd.device->GetDevice()->GetButtonAt( nd.buttonIndex );
+	
+	rt->PushValue( ( ( deClassInputDeviceButton* )GetOwnerClass() )->GetClassInputDeviceButtonType()
+		->GetVariable( button.GetType() )->GetStaticValue() );
+}
+
+// public func String getComponent()
+deClassInputDeviceButton::nfGetComponent::nfGetComponent( const sInitData &init ) :
+dsFunction( init.clsIDButton, "getComponent", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsString ){
+}
+void deClassInputDeviceButton::nfGetComponent::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const sIDButtonNatDat &nd = *( ( const sIDButtonNatDat* )p_GetNativeData( myself ) );
+	const deInputDeviceButton &button = nd.device->GetDevice()->GetButtonAt( nd.buttonIndex );
+	
+	rt->PushString( button.GetComponent() );
 }
 
 // public func Image getDisplayImage()
@@ -336,6 +363,8 @@ deClassInputDeviceButton::~deClassInputDeviceButton(){
 ///////////////
 
 void deClassInputDeviceButton::CreateClassMembers( dsEngine *engine ){
+	pClsInputDeviceButtonType = engine->GetClass( "Dragengine.InputDeviceButtonType" );
+	
 	sInitData init;
 	
 	init.clsIDButton = this;
@@ -347,6 +376,7 @@ void deClassInputDeviceButton::CreateClassMembers( dsEngine *engine ){
 	init.clsObject = engine->GetClassObject();
 	
 	init.clsInputDevice = pDS.GetClassInputDevice();
+	init.clsInputDeviceButtonType = pClsInputDeviceButtonType;
 	init.clsImage = pDS.GetClassImage();
 	
 	AddFunction( new nfDestructor( init ) );
@@ -356,6 +386,8 @@ void deClassInputDeviceButton::CreateClassMembers( dsEngine *engine ){
 	
 	AddFunction( new nfGetID( init ) );
 	AddFunction( new nfGetName( init ) );
+	AddFunction( new nfGetType( init ) );
+	AddFunction( new nfGetComponent( init ) );
 	AddFunction( new nfGetDisplayImage( init ) );
 	AddFunction( new nfGetDisplayIconCount( init ) );
 	AddFunction( new nfGetDisplayIconAt( init ) );

@@ -36,6 +36,7 @@ class dedsInputDevice;
 class deClassInputDeviceButton : public dsClass{
 private:
 	deScriptingDragonScript &pDS;
+	dsClass *pClsInputDeviceButtonType;
 	
 	
 	
@@ -61,6 +62,8 @@ public:
 	
 	/** \brief Push button. */
 	void PushButton( dsRunTime *rt, dedsInputDevice *device, int index );
+	
+	inline dsClass *GetClassInputDeviceButtonType() const{ return pClsInputDeviceButtonType; }
 	/*@}*/
 	
 	
@@ -76,6 +79,7 @@ private:
 		dsClass *clsObject;
 		
 		dsClass *clsInputDevice;
+		dsClass *clsInputDeviceButtonType;
 		dsClass *clsImage;
 	};
 #define DEF_NATFUNC(name) \
@@ -91,6 +95,8 @@ private:
 	
 	DEF_NATFUNC( nfGetID );
 	DEF_NATFUNC( nfGetName);
+	DEF_NATFUNC( nfGetType );
+	DEF_NATFUNC( nfGetComponent );
 	DEF_NATFUNC( nfGetDisplayImage );
 	DEF_NATFUNC( nfGetDisplayIconCount );
 	DEF_NATFUNC( nfGetDisplayIconAt );

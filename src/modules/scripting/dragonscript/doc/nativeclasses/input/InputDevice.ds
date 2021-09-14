@@ -253,6 +253,23 @@ class InputDevice
 	
 	
 	
+	/** \brief Number of components. */
+	public func int getComponentCount()
+		return 0
+	end
+	
+	/**
+	 * \brief Get wrapper for component.
+	 * 
+	 * \throws EOutOfBoundary \em index is less than 0 or larger than or equal
+	 *                        to getComponentCount().
+	 */
+	public func InputDeviceComponent getComponentAt( int index )
+		return null
+	end
+	
+	
+	
 	/**
 	 * \brief Index of button best matching key code or -1 if not found.
 	 * 

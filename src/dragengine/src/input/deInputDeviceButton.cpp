@@ -30,12 +30,14 @@
 // Class deInputDeviceButton
 //////////////////////////////
 
-deInputDeviceButton::deInputDeviceButton(){
+deInputDeviceButton::deInputDeviceButton() :
+pType( ebtGeneric ){
 }
 
 deInputDeviceButton::deInputDeviceButton( const deInputDeviceButton &button ) :
 pID( button.pID ),
 pName( button.pName ),
+pType( button.pType ),
 pDisplayImage( button.pDisplayImage ),
 pDisplayIcons( button.pDisplayIcons ),
 pDisplayText( button.pDisplayText ){
@@ -55,6 +57,14 @@ void deInputDeviceButton::SetID( const char *id ){
 
 void deInputDeviceButton::SetName( const char *name ){
 	pName = name;
+}
+
+void deInputDeviceButton::SetType(deInputDeviceButton:: eButtonTypes type ){
+	pType = type;
+}
+
+void deInputDeviceButton::SetComponent( const char *component ){
+	pComponent = component;
 }
 
 void deInputDeviceButton::SetDisplayImage( deImage *image ){
@@ -88,6 +98,8 @@ void deInputDeviceButton::SetDisplayText( const char *text ){
 deInputDeviceButton &deInputDeviceButton::operator=( const deInputDeviceButton &button ){
 	pID = button.pID;
 	pName = button.pName;
+	pType = button.pType;
+	pComponent = button.pComponent;
 	pDisplayImage = button.pDisplayImage;
 	pDisplayIcons = button.pDisplayIcons;
 	pDisplayText = button.pDisplayText;

@@ -32,13 +32,16 @@
 #include <dragengine/common/collection/decObjectOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/input/deInputDevice.h>
+#include <dragengine/input/deInputDeviceButton.h>
 #include <dragengine/input/deInputDeviceAxis.h>
+#include <dragengine/input/deInputDeviceComponent.h>
 #include <dragengine/input/deInputDevicePose.h>
 #include <dragengine/resources/image/deImage.h>
 
 class deovrDeviceAxis;
 class deovrDeviceButton;
 class deovrDeviceFeedback;
+class deovrDeviceComponent;
 class deInputDevice;
 class deInputDevicePose;
 
@@ -82,6 +85,7 @@ private:
 	decObjectOrderedSet pButtons;
 	decObjectOrderedSet pAxes;
 	decObjectOrderedSet pFeedbacks;
+	decObjectOrderedSet pComponents;
 	
 	vr::VRControllerState_t pState;
 	vr::InputPoseActionData_t pDevicePoseData;
@@ -247,6 +251,20 @@ public:
 	
 	
 	
+	/** Number of components. */
+	int GetComponentCount() const;
+	
+	/** Add component. */
+	void AddComponent( deovrDeviceComponent *component );
+	
+	/** Component at index. */
+	deovrDeviceComponent *GetComponentAt( int index ) const;
+	
+	/** Index of component with identifier or -1 if absent. */
+	int IndexOfComponentWithID( const char *id ) const;
+	
+	
+	
 	/** Update engine input device information. */
 	void GetInfo( deInputDevice &info ) const;
 	
@@ -280,20 +298,24 @@ private:
 	void pUpdateParametersHandPose( vr::VRActionHandle_t actionHandle );
 	void pUpdateParametersTracker();
 	
-	void pAddButton( deVROpenVR::eInputActions actionPress, deVROpenVR::eInputActions actionTouch,
+	deovrDeviceComponent *pAddComponent( deInputDeviceComponent::eComponentTypes type,
 		const char *name, const char *id, const char *displayText );
 	
-	void pAddAxisTrigger( deInputDeviceAxis::eAxisTypes type, deVROpenVR::eInputActions actionAnalog,
+	int pAddButton( deInputDeviceButton::eButtonTypes type, deovrDeviceComponent *component,
+		deVROpenVR::eInputActions actionPress, deVROpenVR::eInputActions actionTouch,
 		const char *name, const char *id, const char *displayText );
 	
-	void pAddAxisFinger( deInputDeviceAxis::eAxisTypes type, int finger, const char *name,
-		const char *id, const char *displayText );
+	int pAddAxisTrigger( deInputDeviceAxis::eAxisTypes type, deVROpenVR::eInputActions actionAnalog,
+		const char *name, const char *id, const char *displayText );
 	
-	void pAddAxesJoystick( deVROpenVR::eInputActions actionAnalog, const char *name,
-		const char *id, const char *displayText );
+	void pAddAxisFinger( deInputDeviceAxis::eAxisTypes type, deovrDeviceComponent *component,
+		int finger, const char *name, const char *id, const char *displayText );
 	
-	void pAddAxesTrackpad( deVROpenVR::eInputActions actionAnalog, const char *name,
-		const char *id, const char *displayText );
+	int pAddAxesJoystick( deVROpenVR::eInputActions actionAnalog,
+		const char *name, const char *id, const char *displayText );
+	
+	int pAddAxesTrackpad( deVROpenVR::eInputActions actionAnalog,
+		const char *name, const char *id, const char *displayText );
 	
 	void pUpdatePose( const vr::TrackedDevicePose_t &in, deInputDevicePose &out ) const;
 	void pUpdatePose( const vr::VRBoneTransform_t &in, deInputDevicePose &out ) const;

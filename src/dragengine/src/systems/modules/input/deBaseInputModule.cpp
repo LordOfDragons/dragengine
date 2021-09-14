@@ -43,6 +43,10 @@ bool deBaseInputModule::GetButtonTouched( int, int ){
 	return false;
 }
 
+int deBaseInputModule::IndexOfComponentWithID( int, const char* ){
+	return -1;
+}
+
 void deBaseInputModule::GetDevicePose( int, deInputDevicePose &pose ){
 	pose = deInputDevicePose();
 }

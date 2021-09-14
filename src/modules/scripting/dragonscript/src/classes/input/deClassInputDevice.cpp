@@ -28,6 +28,7 @@
 #include "deClassInputDeviceAxis.h"
 #include "deClassInputDeviceButton.h"
 #include "deClassInputDeviceFeedback.h"
+#include "deClassInputDeviceComponent.h"
 #include "../graphics/deClassImage.h"
 #include "../math/deClassMatrix.h"
 #include "../math/deClassQuaternion.h"
@@ -44,6 +45,7 @@
 #include <dragengine/input/deInputDeviceAxis.h>
 #include <dragengine/input/deInputDeviceButton.h>
 #include <dragengine/input/deInputDeviceFeedback.h>
+#include <dragengine/input/deInputDeviceComponent.h>
 #include <dragengine/input/deInputDevicePose.h>
 #include <dragengine/resources/image/deImage.h>
 #include <dragengine/systems/deInputSystem.h>
@@ -344,6 +346,33 @@ void deClassInputDevice::nfGetFeedbackAt::RunFunction( dsRunTime *rt, dsValue *m
 	
 	const int feedbackIndex = rt->GetValue( 0 )->GetInt();
 	ds.GetClassInputDeviceFeedback()->PushFeedback( rt, nd.device, feedbackIndex );
+}
+
+
+
+// public func int getComponentCount()
+deClassInputDevice::nfGetComponentCount::nfGetComponentCount( const sInitData &init ) :
+dsFunction( init.clsInputDevice, "getComponentCount", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger ){
+}
+void deClassInputDevice::nfGetComponentCount::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const dedsInputDevice &device = *( ( sInputDeviceNatDat* )p_GetNativeData( myself ) )->device;
+	
+	rt->PushInt( device.GetDevice()->GetComponentCount() );
+}
+
+// public func InputDeviceComponent getComponentAt( int index )
+deClassInputDevice::nfGetComponentAt::nfGetComponentAt( const sInitData &init ) :
+dsFunction( init.clsInputDevice, "getComponentAt", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsIDComponent ){
+	p_AddParameter( init.clsInteger ); // index
+}
+void deClassInputDevice::nfGetComponentAt::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const sInputDeviceNatDat &nd = *( ( sInputDeviceNatDat* )p_GetNativeData( myself ) );
+	deScriptingDragonScript &ds = ( ( deClassInputDevice* )GetOwnerClass() )->GetDS();
+	
+	const int componentIndex = rt->GetValue( 0 )->GetInt();
+	ds.GetClassInputDeviceComponent()->PushComponent( rt, nd.device, componentIndex );
 }
 
 
@@ -662,6 +691,7 @@ void deClassInputDevice::CreateClassMembers( dsEngine *engine ){
 	init.clsIDAxis = pDS.GetClassInputDeviceAxis();
 	init.clsIDButton = pDS.GetClassInputDeviceButton();
 	init.clsIDFeedback = pDS.GetClassInputDeviceFeedback();
+	init.clsIDComponent = pDS.GetClassInputDeviceComponent();
 	init.clsInputDeviceType = pClsInputDeviceType;
 	init.clsInputDeviceBoneConfiguration = pClsInputDeviceBoneConfiguration;
 	init.clsInputEventSource = pClsInputEventSource;
@@ -694,6 +724,9 @@ void deClassInputDevice::CreateClassMembers( dsEngine *engine ){
 	
 	AddFunction( new nfGetFeedbackCount( init ) );
 	AddFunction( new nfGetFeedbackAt( init ) );
+	
+	AddFunction( new nfGetComponentCount( init ) );
+	AddFunction( new nfGetComponentAt( init ) );
 	
 	AddFunction( new nfButtonMatchingKeyCode( init ) );;
 	AddFunction( new nfButtonMatchingKeyChar( init ) );;

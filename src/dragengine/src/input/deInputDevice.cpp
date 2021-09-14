@@ -25,6 +25,7 @@
 #include "deInputDeviceAxis.h"
 #include "deInputDeviceButton.h"
 #include "deInputDeviceFeedback.h"
+#include "deInputDeviceComponent.h"
 #include "../common/exceptions.h"
 #include "../resources/model/deModel.h"
 #include "../resources/skin/deSkin.h"
@@ -43,6 +44,8 @@ pAxes( NULL ),
 pAxisCount( 0 ),
 pFeedbacks( NULL ),
 pFeedbackCount( 0 ),
+pComponents( nullptr ),
+pComponentCount( 0 ),
 pBoneConfiguration( ebcNone ){
 }
 
@@ -263,10 +266,55 @@ int deInputDevice::IndexOfFeedbackWithID( const char *id ) const{
 
 
 
+// Components
+//////////////
+
+void deInputDevice::SetComponentCount( int count ){
+	if( pComponents ){
+		delete [] pComponents;
+		pComponents = NULL;
+		pComponentCount = 0;
+	}
+	
+	if( count == 0 ){
+		return;
+	}
+	
+	pComponents = new deInputDeviceComponent[ count ];
+	pComponentCount = count;
+}
+
+deInputDeviceComponent &deInputDevice::GetComponentAt( int index ) const{
+	if( index < 0 || index >= pComponentCount ){
+		DETHROW( deeOutOfBoundary );
+	}
+	return pComponents[ index ];
+}
+
+int deInputDevice::IndexOfComponentWithID( const char *id ) const{
+	if( ! id ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	int i;
+	for( i=0; i<pComponentCount; i++ ){
+		if( pComponents[ i ].GetID() == id ){
+			return i;
+		}
+	}
+	
+	return -1;
+}
+
+
+
 // Privat functions
 /////////////////////
 
 void deInputDevice::pCleanUp(){
+	if( pComponents ){
+		delete [] pComponents;
+	}
 	if( pFeedbacks ){
 		delete [] pFeedbacks;
 	}

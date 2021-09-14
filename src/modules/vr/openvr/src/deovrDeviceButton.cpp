@@ -45,6 +45,7 @@ pDevice( device ),
 pIndex( -1 ),
 pActionPressHandle( vr::k_ulInvalidActionHandle ),
 pActionTouchHandle( vr::k_ulInvalidActionHandle ),
+pType( deInputDeviceButton::ebtGeneric ),
 pPressed( false ),
 pTouched( false ){
 }
@@ -75,6 +76,14 @@ void deovrDeviceButton::SetID( const char *id ){
 
 void deovrDeviceButton::SetName( const char *name ){
 	pName = name;
+}
+
+void deovrDeviceButton::SetType( deInputDeviceButton::eButtonTypes type ){
+	pType = type;
+}
+
+void deovrDeviceButton::SetInputDeviceComponent( deovrDeviceComponent *component ){
+	pInputDeviceComponent = component;
 }
 
 void deovrDeviceButton::SetPressed( bool pressed ){
@@ -158,6 +167,8 @@ void deovrDeviceButton::SetDisplayText( const char *text ){
 void deovrDeviceButton::GetInfo( deInputDeviceButton &info ) const{
 	info.SetID( pID );
 	info.SetName( pName );
+	info.SetType( pType );
+	info.SetComponent( pInputDeviceComponent ? pInputDeviceComponent->GetID() : "" );
 	
 	info.SetDisplayImage( pDisplayImage );
 	

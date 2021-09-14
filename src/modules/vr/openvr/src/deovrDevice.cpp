@@ -26,6 +26,7 @@
 #include "deovrDeviceAxis.h"
 #include "deovrDeviceButton.h"
 #include "deovrDeviceFeedback.h"
+#include "deovrDeviceComponent.h"
 #include "deovrDeviceManager.h"
 #include "deVROpenVR.h"
 
@@ -246,6 +247,36 @@ int deovrDevice::IndexOfFeedbackWithID( const char *id ) const{
 	for( i=0; i<count; i++ ){
 		const deovrDeviceFeedback &feedback = *( ( deovrDeviceFeedback* )pFeedbacks.GetAt( i ) );
 		if( feedback.GetID() == id ){
+			return i;
+		}
+	}
+	
+	return -1;
+}
+
+
+
+int deovrDevice::GetComponentCount() const{
+	return pComponents.GetCount();
+}
+
+void deovrDevice::AddComponent( deovrDeviceComponent *component ){
+	if( ! component ){
+		DETHROW( deeNullPointer );
+	}
+	pComponents.Add( component );
+}
+
+deovrDeviceComponent *deovrDevice::GetComponentAt( int index ) const{
+	return ( deovrDeviceComponent* )pComponents.GetAt( index );
+}
+
+int deovrDevice::IndexOfComponentWithID( const char *id ) const{
+	const int count = pComponents.GetCount();
+	int i;
+	for( i=0; i<count; i++ ){
+		const deovrDeviceComponent &component = *( ( deovrDeviceComponent* )pComponents.GetAt( i ) );
+		if( component.GetID() == id ){
 			return i;
 		}
 	}
@@ -597,21 +628,82 @@ void deovrDevice::pUpdateParametersController(){
 		return;
 	}
 	
-	// axes
-	pAddAxisTrigger( deInputDeviceAxis::eatTrigger, deVROpenVR::eiaTriggerAnalog, "Trigger", "trig", "Tri" );
-	pAddAxesJoystick( deVROpenVR::eiaJoystickAnalog, "Joystick", "js", "Joy" );
-	pAddAxesTrackpad( deVROpenVR::eiaTrackpadAnalog, "TrackPad", "tp", "Pad" );
-	pAddAxisTrigger( deInputDeviceAxis::eatGripGrab, deVROpenVR::eiaGripGrab, "Grab", "gg", "Grab" );
-	pAddAxisTrigger( deInputDeviceAxis::eatGripSqueeze, deVROpenVR::eiaGripSqueeze, "Squeeze", "gs", "Squ" );
-	pAddAxisTrigger( deInputDeviceAxis::eatGripPinch, deVROpenVR::eiaGripPinch, "Pinch", "gp", "Pin" );
+	// axes and components
+	const int axisTrigger = pAddAxisTrigger( deInputDeviceAxis::eatTrigger, deVROpenVR::eiaTriggerAnalog, "Trigger", "trig", "Tri" );
+	deovrDeviceComponent *compTrigger = nullptr;
+	if( axisTrigger != -1 ){
+		compTrigger = pAddComponent( deInputDeviceComponent::ectTrigger, "Trigger", "trigger", "Trigger" );
+		GetAxisAt( axisTrigger )->SetInputDeviceComponent( compTrigger );
+	}
+	
+	const int axisJoystick = pAddAxesJoystick( deVROpenVR::eiaJoystickAnalog, "Joystick", "js", "Joy" );
+	deovrDeviceComponent *compJoystick = nullptr;
+	if( axisJoystick != -1 ){
+		compJoystick = pAddComponent( deInputDeviceComponent::ectJoystick, "Joystick", "joystick", "Joystick" );
+		GetAxisAt( axisJoystick )->SetInputDeviceComponent( compJoystick );
+		GetAxisAt( axisJoystick + 1 )->SetInputDeviceComponent( compJoystick );
+	}
+	
+	const int axisTrackpad = pAddAxesTrackpad( deVROpenVR::eiaTrackpadAnalog, "TrackPad", "tp", "Pad" );
+	deovrDeviceComponent *compTrackpad = nullptr;
+	if( axisTrackpad != -1 ){
+		compTrackpad = pAddComponent( deInputDeviceComponent::ectTouchPad, "TrackPad", "trackpad", "TrackPad" );
+		GetAxisAt( axisTrackpad )->SetInputDeviceComponent( compTrackpad );
+		GetAxisAt( axisTrackpad + 1 )->SetInputDeviceComponent( compTrackpad );
+	}
+	
+	const int axisGripGrab = pAddAxisTrigger( deInputDeviceAxis::eatGripGrab,
+		deVROpenVR::eiaGripGrab, "Grab", "gg", "Grab" );
+	const int axisGripSqueeze = pAddAxisTrigger( deInputDeviceAxis::eatGripSqueeze,
+		deVROpenVR::eiaGripSqueeze, "Squeeze", "gs", "Squ" );
+	const int axisGripPinch = pAddAxisTrigger( deInputDeviceAxis::eatGripPinch,
+		deVROpenVR::eiaGripPinch, "Pinch", "gp", "Pin" );
+	deovrDeviceComponent *compGrip = nullptr;
+	if( axisGripGrab != -1 || axisGripSqueeze != -1 || axisGripPinch != -1 ){
+		compGrip = pAddComponent( deInputDeviceComponent::ectGeneric, "Grip", "grip", "Grip" );
+		if( axisGripGrab != -1 ){
+			GetAxisAt( axisGripGrab )->SetInputDeviceComponent( compGrip );
+		}
+		if( axisGripSqueeze != -1 ){
+			GetAxisAt( axisGripSqueeze )->SetInputDeviceComponent( compGrip );
+		}
+		if( axisGripPinch != -1 ){
+			GetAxisAt( axisGripPinch )->SetInputDeviceComponent( compGrip );
+		}
+	}
 	
 	// buttons
-	pAddButton( deVROpenVR::eiaTriggerPress, deVROpenVR::eiaTriggerTouch, "Trigger", "trig", "Tri" );
-	pAddButton( deVROpenVR::eiaButtonPrimaryPress, deVROpenVR::eiaButtonPrimaryTouch, "A", "a", "A" );
-	pAddButton( deVROpenVR::eiaButtonSecondaryPress, deVROpenVR::eiaButtonSecondaryTouch, "B", "b", "B" );
-	pAddButton( deVROpenVR::eiaJoystickPress, deVROpenVR::eiaJoystickTouch, "Joystick", "js", "Joy" );
-	pAddButton( deVROpenVR::eiaTrackpadPress, deVROpenVR::eiaTrackpadTouch, "TrackPad", "tp", "Pad" );
-	pAddButton( deVROpenVR::eiaGripPress, deVROpenVR::eiaGripTouch, "Grip", "grip", "Grip" );
+	if( compTrigger ){
+		pAddButton( deInputDeviceButton::ebtTrigger, compTrackpad, deVROpenVR::eiaTriggerPress,
+			deVROpenVR::eiaTriggerTouch, "Trigger", "trig", "Tri" );
+	}
+	
+	const int btnA = pAddButton( deInputDeviceButton::ebtAction, nullptr,
+		deVROpenVR::eiaButtonPrimaryPress, deVROpenVR::eiaButtonPrimaryTouch, "A", "a", "A" );
+	if( btnA != -1 ){
+		GetButtonAt( btnA )->SetInputDeviceComponent( pAddComponent( deInputDeviceComponent::ectButton, "A", "a", "A" ) );
+	}
+	
+	const int btnB = pAddButton( deInputDeviceButton::ebtAction, nullptr,
+		deVROpenVR::eiaButtonSecondaryPress, deVROpenVR::eiaButtonSecondaryTouch, "B", "b", "B" );
+	if( btnB != -1 ){
+		GetButtonAt( btnB )->SetInputDeviceComponent( pAddComponent( deInputDeviceComponent::ectButton, "B", "b", "B" ) );
+	}
+	
+	if( compJoystick ){
+		pAddButton( deInputDeviceButton::ebtStick, compJoystick, deVROpenVR::eiaJoystickPress,
+			deVROpenVR::eiaJoystickTouch, "Joystick", "js", "Joy" );
+	}
+	
+	if( compTrackpad ){
+		pAddButton( deInputDeviceButton::ebtTouchPad, compTrackpad, deVROpenVR::eiaTrackpadPress,
+			deVROpenVR::eiaTrackpadTouch, "TrackPad", "tp", "Pad" );
+	}
+	
+	if( compGrip ){
+		pAddButton( deInputDeviceButton::ebtTrigger, compGrip, deVROpenVR::eiaGripPress,
+			deVROpenVR::eiaGripTouch, "Grip", "grip", "Grip" );
+	}
 	
 	// hand pose
 	if( actionHandPose != vr::k_ulInvalidActionHandle ){
@@ -624,16 +716,19 @@ void deovrDevice::pUpdateParametersHandPose( vr::VRActionHandle_t actionHandle )
 	vr::InputSkeletalActionData_t dataSkeletal;
 	
 	// finger bending and spreading
-	pAddAxisFinger( deInputDeviceAxis::eatFingerBend, 0, "Bend Thumb", "fb1", "FB1" );
-	pAddAxisFinger( deInputDeviceAxis::eatFingerBend, 1, "Bend Index Finger", "fb2", "FB2" );
-	pAddAxisFinger( deInputDeviceAxis::eatFingerBend, 2, "Bend Middle Finger", "fb3", "FB3" );
-	pAddAxisFinger( deInputDeviceAxis::eatFingerBend, 3, "Bend Ring Finger", "fb4", "FB4" );
-	pAddAxisFinger( deInputDeviceAxis::eatFingerBend, 4, "Bend Pinky Finger", "fb5", "FB5" );
+	deovrDeviceComponent * const component = pAddComponent(
+		deInputDeviceComponent::ectGeneric, "Hand Pose", "handPose", "Hand Pose" );
 	
-	pAddAxisFinger( deInputDeviceAxis::eatFingerSpread, 0, "Spread Thumb Index Finger", "fs1", "FS1" );
-	pAddAxisFinger( deInputDeviceAxis::eatFingerSpread, 1, "Spread Index Middle Finger", "fs2", "FS2" );
-	pAddAxisFinger( deInputDeviceAxis::eatFingerSpread, 2, "Spread Middle Ring Finger", "fs3", "FS3" );
-	pAddAxisFinger( deInputDeviceAxis::eatFingerSpread, 3, "Spread Ring Pinky Finger", "fs4", "FS4" );
+	pAddAxisFinger( deInputDeviceAxis::eatFingerBend, component, 0, "Bend Thumb", "fb1", "FB1" );
+	pAddAxisFinger( deInputDeviceAxis::eatFingerBend, component, 1, "Bend Index Finger", "fb2", "FB2" );
+	pAddAxisFinger( deInputDeviceAxis::eatFingerBend, component, 2, "Bend Middle Finger", "fb3", "FB3" );
+	pAddAxisFinger( deInputDeviceAxis::eatFingerBend, component, 3, "Bend Ring Finger", "fb4", "FB4" );
+	pAddAxisFinger( deInputDeviceAxis::eatFingerBend, component, 4, "Bend Pinky Finger", "fb5", "FB5" );
+	
+	pAddAxisFinger( deInputDeviceAxis::eatFingerSpread, component, 0, "Spread Thumb Index Finger", "fs1", "FS1" );
+	pAddAxisFinger( deInputDeviceAxis::eatFingerSpread, component, 1, "Spread Index Middle Finger", "fs2", "FS2" );
+	pAddAxisFinger( deInputDeviceAxis::eatFingerSpread, component, 2, "Spread Middle Ring Finger", "fs3", "FS3" );
+	pAddAxisFinger( deInputDeviceAxis::eatFingerSpread, component, 3, "Spread Ring Pinky Finger", "fs4", "FS4" );
 	
 	// skeletal input can not be limited to a device, hence why different actions are used
 	vr::EVRInputError inputError = vrinput.GetSkeletalActionData(
@@ -673,8 +768,21 @@ void deovrDevice::pUpdateParametersTracker(){
 	//pOvr.LogInfoFormat("Tracker: path(%s) handle(%lu) error(%d)", pInputValuePath.GetString(), pInputValueHandle, inputError );
 }
 
-void deovrDevice::pAddButton( deVROpenVR::eInputActions actionPress,
-deVROpenVR::eInputActions actionTouch, const char *name, const char *id, const char *displayText ){
+deovrDeviceComponent *deovrDevice::pAddComponent( deInputDeviceComponent::eComponentTypes type,
+const char *name, const char *id, const char *displayText ){
+	const deovrDeviceComponent::Ref component( deovrDeviceComponent::Ref::New( new deovrDeviceComponent( *this ) ) );
+	component->SetID( id );
+	component->SetName( name );
+	component->SetType( type );
+	component->SetDisplayText( displayText );
+	component->SetIndex( pComponents.GetCount() );
+	pComponents.Add( component );
+	return component;
+}
+
+int deovrDevice::pAddButton( deInputDeviceButton::eButtonTypes type, deovrDeviceComponent *component,
+deVROpenVR::eInputActions actionPress, deVROpenVR::eInputActions actionTouch,
+const char *name, const char *id, const char *displayText ){
 	vr::IVRInput &vrinput = pOvr.GetVRInput();
 	vr::VRActionHandle_t actionHandle = pOvr.GetActionHandle( actionPress );
 	vr::InputDigitalActionData_t dataDigital;
@@ -682,7 +790,7 @@ deVROpenVR::eInputActions actionTouch, const char *name, const char *id, const c
 	vr::EVRInputError inputError = vrinput.GetDigitalActionData( actionHandle,
 		&dataDigital, sizeof( dataDigital ), pInputValueHandle );
 	if( inputError != vr::VRInputError_None ){
-		return;
+		return -1;
 	}
 	
 	const deovrDeviceButton::Ref button( deovrDeviceButton::Ref::New( new deovrDeviceButton( *this ) ) );
@@ -697,13 +805,16 @@ deVROpenVR::eInputActions actionTouch, const char *name, const char *id, const c
 	}
 	
 	button->SetName( name );
+	button->SetType( type );
 	button->SetDisplayText( displayText );
+	button->SetInputDeviceComponent( component );
 	
 	button->SetIndex( pButtons.GetCount() );
 	pButtons.Add( button );
+	return pButtons.GetCount() - 1;
 }
 
-void deovrDevice::pAddAxisTrigger( deInputDeviceAxis::eAxisTypes type,
+int deovrDevice::pAddAxisTrigger( deInputDeviceAxis::eAxisTypes type,
 deVROpenVR::eInputActions actionAnalog, const char *name, const char *id, const char *displayText ){
 	vr::IVRInput &vrinput = pOvr.GetVRInput();
 	vr::VRActionHandle_t actionHandle = pOvr.GetActionHandle( actionAnalog );
@@ -712,7 +823,7 @@ deVROpenVR::eInputActions actionAnalog, const char *name, const char *id, const 
 	vr::EVRInputError inputError = vrinput.GetAnalogActionData( actionHandle,
 		&dataAnalog, sizeof( dataAnalog ), pInputValueHandle );
 	if( inputError != vr::VRInputError_None ){
-		return;
+		return -1;
 	}
 	
 	const deovrDeviceAxis::Ref axis( deovrDeviceAxis::Ref::New( new deovrDeviceAxis( *this ) ) );
@@ -726,10 +837,11 @@ deVROpenVR::eInputActions actionAnalog, const char *name, const char *id, const 
 	axis->SetDisplayText( displayText );
 	axis->SetIndex( pAxes.GetCount() );
 	pAxes.Add( axis );
+	return pAxes.GetCount() - 1;
 }
 
-void deovrDevice::pAddAxisFinger( deInputDeviceAxis::eAxisTypes type, int finger,
-const char *name, const char *id, const char *displayText ){
+void deovrDevice::pAddAxisFinger( deInputDeviceAxis::eAxisTypes type, deovrDeviceComponent *component,
+int finger, const char *name, const char *id, const char *displayText ){
 	const deovrDeviceAxis::Ref axis( deovrDeviceAxis::Ref::New( new deovrDeviceAxis( *this ) ) );
 	axis->SetType( type );
 	axis->SetRange( 0.0f, 1.0f );
@@ -740,10 +852,11 @@ const char *name, const char *id, const char *displayText ){
 	axis->SetDisplayText( displayText );
 	axis->SetIndex( pAxes.GetCount() );
 	axis->SetFinger( finger );
+	axis->SetInputDeviceComponent( component );
 	pAxes.Add( axis );
 }
 
-void deovrDevice::pAddAxesJoystick( deVROpenVR::eInputActions actionAnalog,
+int deovrDevice::pAddAxesJoystick( deVROpenVR::eInputActions actionAnalog,
 const char *name, const char *id, const char *displayText ){
 	vr::IVRInput &vrinput = pOvr.GetVRInput();
 	vr::VRActionHandle_t actionHandle = pOvr.GetActionHandle( actionAnalog );
@@ -752,7 +865,7 @@ const char *name, const char *id, const char *displayText ){
 	vr::EVRInputError inputError = vrinput.GetAnalogActionData( actionHandle,
 		&dataAnalog, sizeof( dataAnalog ), pInputValueHandle );
 	if( inputError != vr::VRInputError_None ){
-		return;
+		return -1;
 	}
 	
 	static const char *nameAxis[ 2 ] = { "X", "Y" };
@@ -775,9 +888,11 @@ const char *name, const char *id, const char *displayText ){
 		axis->SetDeadZone( axis->GetResolution() );
 		pAxes.Add( axis );
 	}
+	
+	return pAxes.GetCount() - 2;
 }
 
-void deovrDevice::pAddAxesTrackpad( deVROpenVR::eInputActions actionAnalog,
+int deovrDevice::pAddAxesTrackpad( deVROpenVR::eInputActions actionAnalog,
 const char *name, const char *id, const char *displayText ){
 	vr::IVRInput &vrinput = pOvr.GetVRInput();
 	vr::VRActionHandle_t actionHandle = pOvr.GetActionHandle( actionAnalog );
@@ -786,7 +901,7 @@ const char *name, const char *id, const char *displayText ){
 	vr::EVRInputError inputError = vrinput.GetAnalogActionData( actionHandle,
 		&dataAnalog, sizeof( dataAnalog ), pInputValueHandle );
 	if( inputError != vr::VRInputError_None ){
-		return;
+		return -1;
 	}
 	
 	static const char *nameAxis[ 2 ] = { "X", "Y" };
@@ -809,6 +924,8 @@ const char *name, const char *id, const char *displayText ){
 		axis->SetDeadZone( axis->GetResolution() );
 		pAxes.Add( axis );
 	}
+	
+	return pAxes.GetCount() - 2;
 }
 
 void deovrDevice::pUpdatePose( const vr::TrackedDevicePose_t &in, deInputDevicePose &out ) const{

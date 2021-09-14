@@ -108,6 +108,12 @@ public:
 	/** \brief Index of feedback with identifier on device at index or -1 if absent. */
 	virtual int IndexOfFeedbackWithID( int device, const char *id ) = 0;
 	
+	/**
+	 * \brief Index of component with identifier on device at index or -1 if absent.
+	 * \version 1.6
+	 */
+	virtual int IndexOfComponentWithID( int device, const char *id );
+	
 	/** \brief Button at index on device is pressed down. */
 	virtual bool GetButtonPressed( int device, int button ) = 0;
 	

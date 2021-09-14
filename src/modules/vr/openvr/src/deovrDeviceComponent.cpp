@@ -21,32 +21,32 @@
 
 #include <stdlib.h>
 
-#include "deovrDeviceFeedback.h"
+#include "deovrDeviceComponent.h"
+#include "deovrDevice.h"
 #include "deVROpenVR.h"
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
+#include <dragengine/input/deInputEvent.h>
+#include <dragengine/input/deInputDeviceComponent.h>
 #include <dragengine/resources/image/deImage.h>
 #include <dragengine/resources/image/deImageManager.h>
 
 
 
-// Class deovrDeviceFeedback
-//////////////////////////////
+// Class deovrDeviceComponent
+////////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
 
-deovrDeviceFeedback::deovrDeviceFeedback( deVROpenVR &ovr ) :
-pOvr( ovr ),
-
+deovrDeviceComponent::deovrDeviceComponent( deovrDevice &device ) :
+pDevice( device ),
 pIndex( -1 ),
-pType( deInputDeviceFeedback::eftGeneric ),
-pMaximum( 1 ),
-pValue( 0.0f ){
+pType( deInputDeviceComponent::ectGeneric ){
 }
 
-deovrDeviceFeedback::~deovrDeviceFeedback(){
+deovrDeviceComponent::~deovrDeviceComponent(){
 }
 
 
@@ -54,29 +54,25 @@ deovrDeviceFeedback::~deovrDeviceFeedback(){
 // Management
 ///////////////
 
-void deovrDeviceFeedback::SetIndex( int index ){
+void deovrDeviceComponent::SetIndex( int index ){
 	pIndex = index;
 }
 
-void deovrDeviceFeedback::SetID( const char *id ){
+void deovrDeviceComponent::SetID( const char *id ){
 	pID = id;
 }
 
-void deovrDeviceFeedback::SetName( const char *name ){
+void deovrDeviceComponent::SetName( const char *name ){
 	pName = name;
 }
 
-void deovrDeviceFeedback::SetType( deInputDeviceFeedback::eFeedbackTypes type ){
+void deovrDeviceComponent::SetType( deInputDeviceComponent::eComponentTypes type ){
 	pType = type;
 }
 
-void deovrDeviceFeedback::SetInputDeviceComponent( deovrDeviceComponent *component ){
-	pInputDeviceComponent = component;
-}
 
 
-
-void deovrDeviceFeedback::SetDisplayImages( const char *name ){
+void deovrDeviceComponent::SetDisplayImages( const char *name ){
 	pDisplayImage = nullptr;
 	pDisplayIcons.RemoveAll();
 	
@@ -84,9 +80,9 @@ void deovrDeviceFeedback::SetDisplayImages( const char *name ){
 		return;
 	}
 	
-	deImageManager &imageManager = *pOvr.GetGameEngine()->GetImageManager();
-	deVirtualFileSystem * const vfs = &pOvr.GetVFS();
-	const char * const basePath = "/share/image/feedback";
+	deImageManager &imageManager = *pDevice.GetOvr().GetGameEngine()->GetImageManager();
+	deVirtualFileSystem * const vfs = &pDevice.GetOvr().GetVFS();
+	const char * const basePath = "/share/image/component";
 	decString filename;
 	
 	filename.Format( "%s/%s/image.png", basePath, name );
@@ -101,33 +97,25 @@ void deovrDeviceFeedback::SetDisplayImages( const char *name ){
 	}
 }
 
-void deovrDeviceFeedback::SetDisplayText( const char *text ){
+void deovrDeviceComponent::SetDisplayImages( const deovrDeviceComponent &component ){
+	pDisplayImage = component.pDisplayImage;
+	pDisplayIcons = component.pDisplayIcons;
+}
+
+void deovrDeviceComponent::SetDisplayText( const char *text ){
 	pDisplayText = text;
 }
 
 
 
-void deovrDeviceFeedback::SetMaximum( int maximum ){
-	pMaximum = maximum;
-}
-
-
-
-void deovrDeviceFeedback::SetValue( float value ){
-	pValue = value;
-}
-
-
-
-void deovrDeviceFeedback::GetInfo( deInputDeviceFeedback &info ) const{
-	int i;
-	
+void deovrDeviceComponent::GetInfo( deInputDeviceComponent &info ) const{
 	info.SetID( pID );
 	info.SetName( pName );
 	info.SetType( pType );
-	info.SetComponent( pInputDeviceComponent ? pInputDeviceComponent->GetID() : "" );
 	
 	info.SetDisplayImage( pDisplayImage );
+	
+	int i;
 	for( i=0; i<pDisplayIcons.GetCount(); i++ ){
 		info.AddDisplayIcon( ( deImage* )pDisplayIcons.GetAt( i ) );
 	}

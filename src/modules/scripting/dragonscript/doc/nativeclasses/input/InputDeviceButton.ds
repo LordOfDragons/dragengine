@@ -73,6 +73,22 @@ class InputDeviceButton
 	end
 	
 	/**
+	 * \brief Button type.
+	 * \version 1.6
+	 */
+	public func InputDeviceButtonType getType()
+		return null
+	end
+	
+	/**
+	 * \brief Identifier of component or empty string if standalone.
+	 * \version 1.6
+	 */
+	public func String getComponent()
+		return null
+	end
+	
+	/**
 	 * \brief Image to represent the button in 2D user interfaces or NULL if not set.
 	 * 
 	 * Large image of 128 pixels squared or larger.

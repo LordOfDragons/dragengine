@@ -19,53 +19,51 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef _DEOVRDEVICEFEEDBACK_H_
-#define _DEOVRDEVICEFEEDBACK_H_
+#ifndef _DEOVRDEVICECOMPONENT_H_
+#define _DEOVRDEVICECOMPONENT_H_
 
-#include "deovrDeviceComponent.h"
-
-#include <dragengine/deObject.h>
 #include <dragengine/common/collection/decObjectOrderedSet.h>
 #include <dragengine/common/string/decString.h>
-#include <dragengine/input/deInputDeviceFeedback.h>
+#include <dragengine/input/deInputDeviceComponent.h>
 #include <dragengine/resources/image/deImage.h>
 
-class deVROpenVR;
-
+class deovrDevice;
 
 
 /**
- * VR input device feedback.
+ * VR input device component.
  */
-class deovrDeviceFeedback : public deObject{
+class deovrDeviceComponent : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deovrDeviceComponent> Ref;
+	
+	
+	
 private:
-	deVROpenVR &pOvr;
+	deovrDevice &pDevice;
 	
 	int pIndex;
+	
 	decString pID;
 	decString pName;
-	deInputDeviceFeedback::eFeedbackTypes pType;
-	deovrDeviceComponent::Ref pInputDeviceComponent;
+	deInputDeviceComponent::eComponentTypes pType;
 	
 	deImage::Ref pDisplayImage;
 	decObjectOrderedSet pDisplayIcons;
 	decString pDisplayText;
-	
-	int pMaximum;
-	
-	float pValue;
 	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Create device feedback. */
-	deovrDeviceFeedback( deVROpenVR &ovr );
+	/** Create device component. */
+	deovrDeviceComponent( deovrDevice &device );
 	
 protected:
-	/** Clean up device feedback. */
-	virtual ~deovrDeviceFeedback();
+	/** Clean up device component. */
+	virtual ~deovrDeviceComponent();
 	/*@}*/
 	
 	
@@ -73,14 +71,16 @@ protected:
 public:
 	/** \name Module Management */
 	/*@{*/
-	/** OpenVR ovr. */
-	inline deVROpenVR &GetOvr() const{ return pOvr; }
+	/** Device. */
+	inline deovrDevice &GetDevice() const{ return pDevice; }
 	
 	/** Index. */
 	inline int GetIndex() const{ return pIndex; }
 	
 	/** Set index. */
 	void SetIndex( int index );
+	
+	
 	
 	/** Identifier. */
 	inline const decString &GetID() const{ return pID; }
@@ -95,16 +95,10 @@ public:
 	void SetName( const char *name );
 	
 	/** Type. */
-	inline deInputDeviceFeedback::eFeedbackTypes GetType() const{ return pType; }
+	inline deInputDeviceComponent::eComponentTypes GetType() const{ return pType; }
 	
 	/** Set type. */
-	void SetType( deInputDeviceFeedback::eFeedbackTypes type );
-	
-	/** Input device component. */
-	inline deovrDeviceComponent *GetInputDeviceComponent() const{ return pInputDeviceComponent; }
-	
-	/** Set input device component. */
-	void SetInputDeviceComponent( deovrDeviceComponent *component );
+	void SetType( deInputDeviceComponent::eComponentTypes type );
 	
 	
 	
@@ -117,6 +111,9 @@ public:
 	/** Set display image and icons. */
 	void SetDisplayImages( const char *name );
 	
+	/** Set display image and icons. */
+	void SetDisplayImages( const deovrDeviceComponent &component );
+	
 	/** Display text. */
 	inline const decString &GetDisplayText() const{ return pDisplayText; }
 	
@@ -125,24 +122,8 @@ public:
 	
 	
 	
-	/** Maximum value. */
-	inline int GetMaximum() const{ return pMaximum; }
-	
-	/** Set maximum value. */
-	void SetMaximum( int maximum );
-	
-	
-	
-	/** Current value. */
-	inline float GetValue() const{ return pValue; }
-	
-	/** Set current value. */
-	void SetValue( float value );
-	
-	
-	
-	/** Update engine input device information feedback. */
-	void GetInfo( deInputDeviceFeedback &info ) const;
+	/** Update engine input device information component. */
+	void GetInfo( deInputDeviceComponent &info ) const;
 	/*@}*/
 };
 

@@ -26,6 +26,7 @@
 
 #include "deClassInputDevice.h"
 #include "deClassInputDeviceFeedback.h"
+#include "deClassInputDeviceComponent.h"
 #include "../graphics/deClassImage.h"
 #include "../../deScriptingDragonScript.h"
 #include "../../deClassPathes.h"
@@ -141,6 +142,18 @@ void deClassInputDeviceFeedback::nfGetType::RunFunction( dsRunTime *rt, dsValue 
 	
 	rt->PushValue( ( ( deClassInputDeviceFeedback* )GetOwnerClass() )->GetClassInputDeviceFeedbackType()
 		->GetVariable( feedback.GetType() )->GetStaticValue() );
+}
+
+// public func String getComponent()
+deClassInputDeviceFeedback::nfGetComponent::nfGetComponent( const sInitData &init ) :
+dsFunction( init.clsIDFeedback, "getComponent", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsString ){
+}
+void deClassInputDeviceFeedback::nfGetComponent::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const sIDFeedbackNatDat &nd = *( ( const sIDFeedbackNatDat* )p_GetNativeData( myself ) );
+	const deInputDeviceFeedback &feedback = nd.device->GetDevice()->GetFeedbackAt( nd.feedbackIndex );
+	
+	rt->PushString( feedback.GetComponent() );
 }
 
 // public func Image getDisplayImage()
@@ -392,6 +405,7 @@ void deClassInputDeviceFeedback::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfGetID( init ) );
 	AddFunction( new nfGetName( init ) );
 	AddFunction( new nfGetType( init ) );
+	AddFunction( new nfGetComponent( init ) );
 	AddFunction( new nfGetDisplayImage( init ) );
 	AddFunction( new nfGetDisplayIconCount( init ) );
 	AddFunction( new nfGetDisplayIconAt( init ) );

@@ -26,6 +26,7 @@
 
 #include "deClassInputDevice.h"
 #include "deClassInputDeviceAxis.h"
+#include "deClassInputDeviceComponent.h"
 #include "../graphics/deClassImage.h"
 #include "../../deScriptingDragonScript.h"
 #include "../../deClassPathes.h"
@@ -141,6 +142,18 @@ void deClassInputDeviceAxis::nfGetType::RunFunction( dsRunTime *rt, dsValue *mys
 	
 	rt->PushValue( ( ( deClassInputDeviceAxis* )GetOwnerClass() )->GetClassInputDeviceAxisType()
 		->GetVariable( axis.GetType() )->GetStaticValue() );
+}
+
+// public func String getComponent()
+deClassInputDeviceAxis::nfGetComponent::nfGetComponent( const sInitData &init ) :
+dsFunction( init.clsIDAxis, "getComponent", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsString ){
+}
+void deClassInputDeviceAxis::nfGetComponent::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const sIDAxisNatDat &nd = *( ( const sIDAxisNatDat* )p_GetNativeData( myself ) );
+	const deInputDeviceAxis &axis = nd.device->GetDevice()->GetAxisAt( nd.axisIndex );
+	
+	rt->PushString( axis.GetComponent() );
 }
 
 // public func Image getDisplayImage()
@@ -356,6 +369,7 @@ void deClassInputDeviceAxis::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfGetID( init ) );
 	AddFunction( new nfGetName( init ) );
 	AddFunction( new nfGetType( init ) );
+	AddFunction( new nfGetComponent( init ) );
 	AddFunction( new nfGetDisplayImage( init ) );
 	AddFunction( new nfGetDisplayIconCount( init ) );
 	AddFunction( new nfGetDisplayIconAt( init ) );

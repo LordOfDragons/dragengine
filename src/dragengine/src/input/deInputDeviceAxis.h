@@ -152,6 +152,9 @@ private:
 	/** \brief Axis type. */
 	eAxisTypes pType;
 	
+	/** \brief Identifier of component or empty string. */
+	decString pComponent;
+	
 	/**
 	 * \brief Image to represent the axis in 2D user interfaces or NULL if not set.
 	 * 
@@ -213,6 +216,18 @@ public:
 	
 	/** \brief Axis type. */
 	void SetType( eAxisTypes type );
+	
+	/**
+	 * \brief Identifier of component or empty string.
+	 * \version 1.6
+	 */
+	inline const decString &GetComponent() const{ return pComponent; }
+	
+	/**
+	 * \brief Set identifier of component or empty string.
+	 * \version 1.6
+	 */
+	void SetComponent( const char *component );
 	
 	/**
 	 * \brief Image to represent the device in 2D user interfaces or NULL if not set.

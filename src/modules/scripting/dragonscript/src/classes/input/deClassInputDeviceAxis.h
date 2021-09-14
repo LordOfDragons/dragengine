@@ -79,6 +79,7 @@ private:
 		
 		dsClass *clsInputDevice;
 		dsClass *clsInputDeviceAxisType;
+		dsClass *clsInputDeviceComponent;
 		dsClass *clsImage;
 	};
 #define DEF_NATFUNC(name) \
@@ -101,6 +102,7 @@ private:
 	DEF_NATFUNC( nfGetID );
 	DEF_NATFUNC( nfGetName );
 	DEF_NATFUNC( nfGetType );
+	DEF_NATFUNC( nfGetComponent );
 	
 	DEF_NATFUNC( nfGetValue );
 	

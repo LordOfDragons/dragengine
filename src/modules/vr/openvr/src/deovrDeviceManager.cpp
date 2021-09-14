@@ -28,6 +28,7 @@
 #include "deovrDeviceAxis.h"
 #include "deovrDeviceButton.h"
 #include "deovrDeviceFeedback.h"
+#include "deovrDeviceComponent.h"
 #include "deovrDeviceManager.h"
 #include "deVROpenVR.h"
 
@@ -321,13 +322,24 @@ void deovrDeviceManager::LogDevices(){
 		pOvr.LogInfoFormat( "- '%s' (%s) %d [%d]", device.GetName().GetString(),
 			device.GetID().GetString(), device.GetDeviceIndex(), device.GetType() );
 		
+		const int componentCount = device.GetComponentCount();
+		if( componentCount > 0 ){
+			pOvr.LogInfo( "  Components:" );
+			for( j=0; j<componentCount; j++ ){
+				const deovrDeviceComponent &component = *device.GetComponentAt( j );
+				pOvr.LogInfoFormat( "    - '%s' (%s)", component.GetName().GetString(),
+					component.GetID().GetString() );
+			}
+		}
+		
 		const int axisCount = device.GetAxisCount();
 		if( axisCount > 0 ){
 			pOvr.LogInfo( "  Axes:" );
 			for( j=0; j<axisCount; j++ ){
 				const deovrDeviceAxis &axis = *device.GetAxisAt( j );
-				pOvr.LogInfoFormat( "    - '%s' (%s)", axis.GetName().GetString(),
-					axis.GetID().GetString() );
+				pOvr.LogInfoFormat( "    - '%s' (%s) [%s]", axis.GetName().GetString(),
+					axis.GetID().GetString(), axis.GetInputDeviceComponent()
+						? axis.GetInputDeviceComponent()->GetID().GetString() : "" );
 			}
 		}
 		
@@ -336,8 +348,9 @@ void deovrDeviceManager::LogDevices(){
 			pOvr.LogInfo( "  Buttons:" );
 			for( j=0; j<buttonCount; j++ ){
 				const deovrDeviceButton &button = *device.GetButtonAt( j );
-				pOvr.LogInfoFormat( "    - '%s' (%s) => %d",
-					button.GetName().GetString(), button.GetID().GetString(), j );
+				pOvr.LogInfoFormat( "    - '%s' (%s) [%s] => %d",
+					button.GetName().GetString(), button.GetID().GetString(), button.GetInputDeviceComponent()
+						? button.GetInputDeviceComponent()->GetID().GetString() : "", j );
 			}
 		}
 	}

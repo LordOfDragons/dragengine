@@ -122,7 +122,6 @@ DEBUG_RESET_TIMERS;
 	}
 	
 	const deAnimatorRule::eBlendModes blendMode = GetBlendMode();
-//	bool useRefMove = pAnimationDifference.GetUseReferenceMove();
 	const int boneCount = GetBoneMappingCount();
 	int i;
 	

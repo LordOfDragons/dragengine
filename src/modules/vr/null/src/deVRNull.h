@@ -116,6 +116,9 @@ public:
 	/** Index of feedback with identifier on device at index or -1 if absent. */
 	virtual int IndexOfFeedbackWithID( int device, const char *id );
 	
+	/** \brief Index of component with identifier on device at index or -1 if absent. */
+	virtual int IndexOfComponentWithID( int device, const char *id );
+	
 	/** Button at index on device at index is pressed down. */
 	virtual bool GetButtonPressed( int device, int button );
 	

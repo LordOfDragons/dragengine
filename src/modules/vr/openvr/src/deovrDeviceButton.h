@@ -22,6 +22,8 @@
 #ifndef _DEOVRDEVICEBUTTON_H_
 #define _DEOVRDEVICEBUTTON_H_
 
+#include "deovrDeviceComponent.h"
+
 #include <stdint.h>
 
 #include <openvr/openvr.h>
@@ -29,6 +31,7 @@
 #include <dragengine/deObject.h>
 #include <dragengine/common/collection/decObjectOrderedSet.h>
 #include <dragengine/common/string/decString.h>
+#include <dragengine/input/deInputDeviceButton.h>
 #include <dragengine/input/deInputEvent.h>
 #include <dragengine/resources/image/deImage.h>
 
@@ -56,6 +59,8 @@ private:
 	
 	decString pID;
 	decString pName;
+	deInputDeviceButton::eButtonTypes pType;
+	deovrDeviceComponent::Ref pInputDeviceComponent;
 	bool pPressed;
 	bool pTouched;
 	
@@ -117,6 +122,18 @@ public:
 	
 	/** Set name. */
 	void SetName( const char *name );
+	
+	/** Type. */
+	inline deInputDeviceButton::eButtonTypes GetType() const{ return pType; }
+	
+	/** Set type. */
+	void SetType( deInputDeviceButton::eButtonTypes type );
+	
+	/** Input device component. */
+	inline deovrDeviceComponent *GetInputDeviceComponent() const{ return pInputDeviceComponent; }
+	
+	/** Set input device component. */
+	void SetInputDeviceComponent( deovrDeviceComponent *component );
 	
 	/** Button is pressed. */
 	inline bool GetPressed() const{ return pPressed; }

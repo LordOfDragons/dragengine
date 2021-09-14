@@ -1,7 +1,7 @@
 /* 
  * Drag[en]gine Game Engine
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * Copyright (C) 2021, Roland Plüss (roland@rptd.ch)
  * 
  * This program is free software; you can redistribute it and/or 
  * modify it under the terms of the GNU General Public License 
@@ -19,8 +19,8 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef _INPUTDEVICEFEEDBACK_H_
-#define _INPUTDEVICEFEEDBACK_H_
+#ifndef _INPUTDEVICECOMPONENT_H_
+#define _INPUTDEVICECOMPONENT_H_
 
 #include "../common/string/decString.h"
 #include "../common/collection/decObjectOrderedSet.h"
@@ -28,45 +28,48 @@
 
 
 /**
- * \brief Input device feedback.
+ * \brief Input device component.
+ * \version 1.6
  * 
- * Feedback provides support for games to give a feedback in the form of lights, vibration
- * or other haptic feeling. The maximum is fixed to 1 to make it simpler for scripts to work
- * with. The null point is 0 where the feedback is switched off. Using the input module the
- * value  of feedback can be requested to be changed. The input module itself decides if the
- * request is honored or not. The current value of the feedback can be read any time.
+ * Components group buttons, axes and feedbacks into a single unit. For example a joystick
+ * on a gamepad typically composes of 2 axes and optionally buttons (for example press
+ * down) and feedbacks (rumbling). Using components enables the user to relate these
+ * input features.
  */
-class deInputDeviceFeedback{
+class deInputDeviceComponent{
 public:
-	/** \brief Feedback types. */
-	enum eFeedbackTypes{
-		/** \brief Vibration. */
-		eftVibration,
+	/** \brief Component types. */
+	enum eComponentTypes{
+		/** \brief Generic component. */
+		ectGeneric,
 		
-		/** \brief Light. */
-		eftLight,
+		/** \brief Button. */
+		ectButton,
 		
-		/** \brief Generic. */
-		eftGeneric
+		/** \brief Trigger. */
+		ectTrigger,
+		
+		/** \brief Joystick. */
+		ectJoystick,
+		
+		/** \brief Touch pad. */
+		ectTouchPad
 	};
 	
 	
 	
 private:
-	/** \brief Feedback identifier unique in the parent device. */
+	/** \brief Component identifier unique in the parent device. */
 	decString pID;
 	
 	/** \brief Display name. */
 	decString pName;
 	
-	/** \brief Feedback type. */
-	eFeedbackTypes pType;
-	
-	/** \brief Identifier of component or empty string. */
-	decString pComponent;
+	/** \brief Component type. */
+	eComponentTypes pType;
 	
 	/**
-	 * \brief Image to represent the feedback in 2D user interfaces or NULL if not set.
+	 * \brief Image to represent the component in 2D user interfaces or NULL if not set.
 	 * 
 	 * Large image of 128 pixels squared or larger.
 	 */
@@ -83,14 +86,14 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create input device feedback. */
-	deInputDeviceFeedback();
+	/** \brief Create input device component. */
+	deInputDeviceComponent();
 	
-	/** \brief Create copy of input device feedback. */
-	deInputDeviceFeedback( const deInputDeviceFeedback &feedback );
+	/** \brief Create input device component. */
+	deInputDeviceComponent( const deInputDeviceComponent &component );
 	
-	/** \brief Clean up input device feedback. */
-	~deInputDeviceFeedback();
+	/** \brief Clean up input device component. */
+	~deInputDeviceComponent();
 	/*@}*/
 	
 	
@@ -98,9 +101,9 @@ public:
 	/** \name Management */
 	/*@{*/
 	/**
-	 * \brief Feedback identifier.
+	 * \brief Component identifier.
 	 * 
-	 * Unique identifier for the feedback identifying it inside the parent device. The prefix
+	 * Unique identifier for the component identifying it inside the parent device. The prefix
 	 * is a normalized string that contains only letters, numbers and underscores. It is
 	 * suitable to be combined with the device identifier to store them in config files as
 	 * key bindings.
@@ -113,7 +116,7 @@ public:
 	/**
 	 * \brief Display name.
 	 * 
-	 * Dispaly name is human readable like for example 'Feedback #1'. The name is unique but
+	 * Dispaly name is human readable like for example 'Component #1'. The name is unique but
 	 * not guaranteed to stay the same across restarting the input module or game engine.
 	 */
 	inline const decString &GetName() const{ return pName; }
@@ -121,23 +124,11 @@ public:
 	/** \brief Set Display name. */
 	void SetName( const char *name );
 	
-	/** \brief Feedback type. */
-	inline eFeedbackTypes GetType() const{ return pType; }
+	/** \brief Component type. */
+	inline eComponentTypes GetType() const{ return pType; }
 	
-	/** \brief Feedback type. */
-	void SetType( eFeedbackTypes type );
-	
-	/**
-	 * \brief Identifier of component or empty string.
-	 * \version 1.6
-	 */
-	inline const decString &GetComponent() const{ return pComponent; }
-	
-	/**
-	 * \brief Set identifier of component or empty string.
-	 * \version 1.6
-	 */
-	void SetComponent( const char *component );
+	/** \brief Component type. */
+	void SetType( eComponentTypes type );
 	
 	/**
 	 * \brief Image to represent the device in 2D user interfaces or NULL if not set.
@@ -147,24 +138,24 @@ public:
 	inline deImage *GetDisplayImage() const{ return pDisplayImage; }
 	
 	/**
-	 * \brief Set image to represent the feedback in 2D user interfaces or NULL if not set.
+	 * \brief Set image to represent the component in 2D user interfaces or NULL if not set.
 	 * 
 	 * Large image of 128 pixels squared or larger.
 	 */
 	void SetDisplayImage( deImage *image );
 	
-	/** \brief Count of icons representing the feedback in bindings. */
+	/** \brief Count of icons representing the component in bindings. */
 	int GetDisplayIconCount() const;
 	
 	/**
-	 * \brief Icon at index representing the feedback in bindings.
+	 * \brief Icon at index representing the component in bindings.
 	 * 
 	 * Icon is of square size and typically has a size of 16, 24, 32 or 64.
 	 */
 	deImage *GetDisplayIconAt( int index ) const;
 	
 	/**
-	 * \brief Add icon representing the feedback in bindings.
+	 * \brief Add icon representing the component in bindings.
 	 * 
 	 * Icon is of square size and typically has a size of 16, 24, 32 or 64.
 	 */
@@ -181,8 +172,8 @@ public:
 	
 	/** \name Operators */
 	/*@{*/
-	/** \brief Copy input device feedback. */
-	deInputDeviceFeedback &operator=( const deInputDeviceFeedback &feedback );
+	/** \brief Copy input device component. */
+	deInputDeviceComponent &operator=( const deInputDeviceComponent &component );
 	/*@}*/
 };
 

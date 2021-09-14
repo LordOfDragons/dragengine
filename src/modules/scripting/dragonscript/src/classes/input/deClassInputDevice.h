@@ -91,6 +91,7 @@ private:
 		dsClass *clsIDAxis;
 		dsClass *clsIDButton;
 		dsClass *clsIDFeedback;
+		dsClass *clsIDComponent;
 		dsClass *clsInputDeviceType;
 		dsClass *clsInputDeviceBoneConfiguration;
 		dsClass *clsInputEventSource;
@@ -129,6 +130,9 @@ private:
 	
 	DEF_NATFUNC( nfGetFeedbackCount );
 	DEF_NATFUNC( nfGetFeedbackAt );
+	
+	DEF_NATFUNC( nfGetComponentCount );
+	DEF_NATFUNC( nfGetComponentAt );
 	
 	DEF_NATFUNC( nfButtonMatchingKeyCode );
 	DEF_NATFUNC( nfButtonMatchingKeyChar );

@@ -127,6 +127,10 @@ int deVRNull::IndexOfFeedbackWithID( int, const char* ){
 	return -1;
 }
 
+int deVRNull::IndexOfComponentWithID( int, const char* ){
+	return -1;
+}
+
 bool deVRNull::GetButtonPressed( int, int ){
 	DETHROW( deeInvalidParam );
 }

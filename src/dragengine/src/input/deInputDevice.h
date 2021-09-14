@@ -34,6 +34,7 @@
 class deInputDeviceButton;
 class deInputDeviceAxis;
 class deInputDeviceFeedback;
+class deInputDeviceComponent;
 
 
 /**
@@ -256,6 +257,12 @@ private:
 	
 	/** \brief Number of feedbacks. */
 	int pFeedbackCount;
+	
+	/** \brief Components. */
+	deInputDeviceComponent *pComponents;
+	
+	/** \brief Number of components. */
+	int pComponentCount;
 	
 	/** \brief Bone configuration. */
 	eBoneConfigurations pBoneConfiguration;
@@ -506,6 +513,37 @@ public:
 	
 	/** \brief Index of feedback with identifier or -1 if not found. */
 	int IndexOfFeedbackWithID( const char *id ) const;
+	/*@}*/
+	
+	
+	
+	/** \name Components */
+	/*@{*/
+	/**
+	 * \brief Number of components.
+	 * \version 1.6
+	 */
+	inline int GetComponentCount() const{ return pComponentCount; }
+	
+	/**
+	 * \brief Set number of components.
+	 * \version 1.6
+	 * 
+	 * Resets all components to default values.
+	 */
+	void SetComponentCount( int count );
+	
+	/**
+	 * \brief Component at index.
+	 * \version 1.6
+	 */
+	deInputDeviceComponent &GetComponentAt( int index ) const;
+	
+	/**
+	 * \brief Index of component with identifier or -1 if not found.
+	 * \version 1.6
+	 */
+	int IndexOfComponentWithID( const char *id ) const;
 	/*@}*/
 	
 	

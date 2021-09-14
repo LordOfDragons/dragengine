@@ -116,6 +116,7 @@ class deClassInputDevice;
 class deClassInputDeviceAxis;
 class deClassInputDeviceButton;
 class deClassInputDeviceFeedback;
+class deClassInputDeviceComponent;
 class deClassInputEvent;
 class deClassInputSystem;
 class deClassLanguagePack;
@@ -323,6 +324,7 @@ private:
 	deClassInputDeviceAxis *pClsInpDevAxis;
 	deClassInputDeviceButton *pClsInpDevBtn;
 	deClassInputDeviceFeedback *pClsInpDevFb;
+	deClassInputDeviceComponent *pClsInpDevComp;
 	deClassInputSystem *pClsInpSys;
 	deClassLanguagePack *pClsLP;
 	deClassLanguagePackBuilder *pClsLangPackBuilder;
@@ -623,6 +625,7 @@ public:
 	inline deClassInputDeviceAxis *GetClassInputDeviceAxis() const{ return pClsInpDevAxis; }
 	inline deClassInputDeviceButton *GetClassInputDeviceButton() const{ return pClsInpDevBtn; }
 	inline deClassInputDeviceFeedback *GetClassInputDeviceFeedback() const{ return pClsInpDevFb; }
+	inline deClassInputDeviceComponent *GetClassInputDeviceComponent() const{ return pClsInpDevComp; }
 	inline deClassInputEvent *GetClassInputEvent() const{ return pClsInpEvent; }
 	inline deClassInputSystem *GetClassInputSystem() const{ return pClsInpSys; }
 	inline deClassLanguagePack *GetClassLanguagePack() const{ return pClsLP; }

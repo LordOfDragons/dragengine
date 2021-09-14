@@ -432,6 +432,10 @@ int deVROpenVR::IndexOfFeedbackWithID( int device, const char *id ){
 	return pDevices.GetAt( device )->IndexOfFeedbackWithID( id );
 }
 
+int deVROpenVR::IndexOfComponentWithID( int device, const char *id ){
+	return pDevices.GetAt( device )->IndexOfComponentWithID( id );
+}
+
 bool deVROpenVR::GetButtonPressed( int device, int button ){
 	return pDevices.GetAt( device )->GetButtonAt( button )->GetPressed();
 }
