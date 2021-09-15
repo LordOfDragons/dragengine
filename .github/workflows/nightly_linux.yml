@@ -1,10 +1,10 @@
-name: Nightly Linux
+name: Nightly Build
 
 on:
   workflow_dispatch:
 
 jobs:
-  build:
+  Build Linux:
     runs-on: ubuntu-latest
     
     steps:
@@ -21,22 +21,54 @@ jobs:
         run: cp ${{ github.workspace }}/.github/workflows/nightly_custom.py custom.py
       
       - name: Build
-        # Ubuntu keeps on hanging by using multi-threaded builds.
-        # Seems to be a Python issue with Ubunutu
-        #run: scons -j 14 archive installer
-        run: scons -j 1 archive installer
+        run: scons -j 14 archive installer
       
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v2
+      - name: Get current date
+        id: date
+        run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
+        
+      - name: Cache Artifact
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-linux
         with:
-          name: Upload Artifacts
-          retention-days: 3
           path: |
-            ${{ github.workspace }}/archive/build/dragengine-nightly-linux64.tar.bz2
-            ${{ github.workspace }}/archive/build/dragengine-dev-nightly-linux64.tar.bz2
-            ${{ github.workspace }}/archive/build/deigde-nightly-linux64.tar.bz2
-            ${{ github.workspace }}/archive/build/deigde-dev-nightly-linux64.tar.bz2
-            ${{ github.workspace }}/archive/build/despecial-nightly-linux64.tar.bz2
+            ${{ github.workspace }}/installer/build/install-dragengine-nightly-linux64.sh
+            ${{ github.workspace }}/installer/build/install-dragengine-dev-nightly-linux64.sh
+            ${{ github.workspace }}/installer/build/install-deigde-nightly-linux64.sh
+            ${{ github.workspace }}/installer/build/install-deigde-dev-nightly-linux64.sh
+  
+  Upload:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Get Linux Artifact
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-linux
+        with:
+          path: |
+            ${{ github.workspace }}/installer/build/install-dragengine-nightly-linux64.sh
+            ${{ github.workspace }}/installer/build/install-dragengine-dev-nightly-linux64.sh
+            ${{ github.workspace }}/installer/build/install-deigde-nightly-linux64.sh
+            ${{ github.workspace }}/installer/build/install-deigde-dev-nightly-linux64.sh
+      
+      - name: Upload Artifacts
+        uses: meeDamian/github-release@2.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag: 'nightly'
+          name: 'Drag[en]gine Game Engine Release - Nightly Build'
+          body: >
+            Continuous Nightly Build of the Drag[en]gine Game Engine.
+            Created: ${{ steps.date.outputs.date }}
+            Changelog: https://dragondreams.ch/?page_id=287
+            
+            Builds are potentially unstable. Use at own risk.
+          prerelease: true
+          gzip: false
+          allow_override: true
+          files: >
             ${{ github.workspace }}/installer/build/install-dragengine-nightly-linux64.sh
             ${{ github.workspace }}/installer/build/install-dragengine-dev-nightly-linux64.sh
             ${{ github.workspace }}/installer/build/install-deigde-nightly-linux64.sh
