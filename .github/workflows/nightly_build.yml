@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  Build Linux:
+  build_linux:
     runs-on: ubuntu-latest
     
     steps:
@@ -38,7 +38,7 @@ jobs:
             ${{ github.workspace }}/installer/build/install-deigde-nightly-linux64.sh
             ${{ github.workspace }}/installer/build/install-deigde-dev-nightly-linux64.sh
   
-  Upload:
+  upload:
     runs-on: ubuntu-latest
     
     steps:
