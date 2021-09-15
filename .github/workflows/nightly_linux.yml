@@ -21,13 +21,10 @@ jobs:
         run: cp ${{ github.workspace }}/.github/workflows/nightly_custom.py custom.py
       
       - name: Build
-        run: scons -j 14 build
-      
-      - name: Archive
-        run: scons -j 14 archive
-      
-      - name: Installer
-        run: scons -j 1 installer
+        # Ubuntu keeps on hanging by using multi-threaded builds.
+        # Seems to be a Python issue with Ubunutu
+        #run: scons -j 14 archive installer
+        run: scons -j 1 archive installer
       
       - name: Upload Artifact
         uses: actions/upload-artifact@v2
