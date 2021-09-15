@@ -90,7 +90,8 @@ def libapngBuild( target, source, env ):
 	
 	script.append( '{} || exit 1'.format( ' '.join( cmdline ) ) )
 	
-	script.append( 'make install-libLTLIBRARIES'
+	script.append( 'make -j {}'.format(env['with_threads'])
+		+ ' install-libLTLIBRARIES'
 		+ ' install-pkgincludeHEADERS'
 		+ ' install-nodist_pkgincludeHEADERS'
 		+ ' install-header-links'

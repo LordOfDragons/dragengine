@@ -68,13 +68,13 @@ def zlibBuild( target, source, env ):
 				script.append( 'export LIBRARY_PATH="{}"'.format( buildDir.Dir( 'lib' ).abspath ) )
 				
 				if buildStaticLinking:
-					script.append( 'make install -fwin32/Makefile.gcc PREFIX="{}-" SHARED_MODE=0'
-						' || exit 1'.format( envLibrary[ 'CROSSCOMPILE_HOST' ], buildDir.abspath ) )
+					script.append( 'make -j {} install -fwin32/Makefile.gcc PREFIX="{}-" SHARED_MODE=0'
+						' || exit 1'.format(env['with_threads'], env['CROSSCOMPILE_HOST'], buildDir.abspath ) )
 				else:
-					script.append( 'make install -fwin32/Makefile.gcc PREFIX="{}-" SHARED_MODE=1'
-						' || exit 1'.format( envLibrary[ 'CROSSCOMPILE_HOST' ], buildDir.abspath ) )
+					script.append( 'make -j {} install -fwin32/Makefile.gcc PREFIX="{}-" SHARED_MODE=1'
+						' || exit 1'.format(env['with_threads'], env['CROSSCOMPILE_HOST'], buildDir.abspath ) )
 			else:
-				line = ['mingw32-make.exe', '-f"win32\\Makefile.gcc"', 'install']
+				line = ['mingw32-make.exe', '-f"win32\\Makefile.gcc"', '-j {}'.format(env['with_threads']), 'install']
 				line.append('BINARY_PATH="{}"'.format(buildDir.Dir('bin').abspath))
 				line.append('INCLUDE_PATH="{}"'.format(buildDir.Dir('include').abspath))
 				line.append('LIBRARY_PATH="{}"'.format(buildDir.Dir('lib').abspath))
@@ -91,7 +91,7 @@ def zlibBuild( target, source, env ):
 			#cmdline.append( '--archs="-arch i386 -arch x86_64"' )
 			script.append( '{} || exit 1'.format( ' '.join( cmdline ) ) )
 			
-			script.append( 'make install || exit 1' )
+			script.append( 'make -j {} install || exit 1'.format(env['with_threads']) )
 		
 		# NOTE under windows calling this command can do nothing at all with no error given.
 		#      examining the problem shows that python seems to have troubles if the path

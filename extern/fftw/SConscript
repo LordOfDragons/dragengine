@@ -133,7 +133,7 @@ def fftwBuild(target, source, env):
 	
 	script.append('{} || exit 1'.format(' '.join(cmdline)))
 	
-	script.append('make install || exit 1')
+	script.append('make -j {} install || exit 1'.format(env['with_threads']))
 	
 	if not env.RunIsolatedSystem(script):
 		raise Exception('Failed building fftw')

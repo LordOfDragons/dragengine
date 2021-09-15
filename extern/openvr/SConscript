@@ -61,7 +61,7 @@ def openvrBuild(target, source, env):
 	
 	script.append('{} || exit 1'.format(' '.join(cmdline)))
 	
-	script.append('make install || exit 1')
+	script.append('make -j {} install || exit 1'.format(env['with_threads']))
 	
 	# delete build file incorrectly put in source directory
 	script.append('rm -rf ../{}/bin'.format(srcdir))

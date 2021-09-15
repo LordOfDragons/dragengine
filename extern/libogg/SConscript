@@ -75,10 +75,10 @@ def liboggBuild( target, source, env ):
 	script.append( '{} || exit 1'.format( ' '.join( cmdline ) ) )
 	
 	script.append( 'cd src' )
-	script.append( 'make install-libLTLIBRARIES || exit 1' )
+	script.append( 'make -j {} install-libLTLIBRARIES || exit 1'.format(env['with_threads']) )
 	
 	script.append( 'cd ../include' )
-	script.append( 'make install || exit 1' )
+	script.append( 'make -j {} install || exit 1'.format(env['with_threads']) )
 	
 	if not env.RunIsolatedSystem(script):
 		raise Exception('Failed building libogg')

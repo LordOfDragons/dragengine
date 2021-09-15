@@ -134,7 +134,7 @@ def openalBuild(target, source, env):
 	
 	script.append('{} || exit 1'.format(' '.join(cmdline)))
 	
-	script.append('make install || exit 1')
+	script.append('make -j {} install || exit 1'.format(env['with_threads']))
 	
 	# fix annoying wrong-library problems in 64-bit systems
 	script.append('if [ -f ../../lib64/libopenal.a ]')
