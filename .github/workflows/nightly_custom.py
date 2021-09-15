@@ -4,6 +4,7 @@ with_tests = 'no'
 with_warnerrors = 'no'
 with_debug = 'no'
 with_verbose = 'no'
+with_threads = '14'
 
 # external library configuration
 ##########################
