@@ -70,7 +70,6 @@ def jpegBuild( target, source, env ):
 	
 	cmdline = []
 	cmdline.append('cmake')
-	cmdline.append('-j {}'.format(env['with_threads']))
 	cmdline.append('-G"Unix Makefiles"')
 	cmdline.append('-DENABLE_SHARED=Off')
 	cmdline.append('-DENABLE_STATIC=On')
@@ -99,7 +98,7 @@ def jpegBuild( target, source, env ):
 	cmdline.append('.')
 	script.append('{} || exit 1'.format(' '.join(cmdline)))
 	
-	script.append( 'make install || exit 1' )
+	script.append('make -j {} install || exit 1'.format(env['with_threads']))
 	
 	if not env.RunIsolatedSystem(script):
 		raise Exception('Failed building libjpeg')
