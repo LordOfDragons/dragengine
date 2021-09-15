@@ -66,7 +66,7 @@ def openvrBuild(target, source, env):
 	# delete build file incorrectly put in source directory
 	script.append('rm -rf ../{}/bin'.format(srcdir))
 	
-	if not env.RunIsolatedSystem(script):
+	if not env.RunExternalCommand(script):
 		raise Exception('Failed building openvr')
 
 if buildStaticLinking:
@@ -80,6 +80,8 @@ targets.append('include/openvr/openvr.h')
 
 library = envLibrary.Command(targets, '{}/CMakeLists.txt'.format(srcdir),
 	envLibrary.Action(openvrBuild, 'Build OpenVR'))
+
+envLibrary.SideEffect('#notParallelCMake', library)
 
 depends = parent_env.Alias('lib_openvr', library)
 cpppath = [envLibrary.Dir('include')]

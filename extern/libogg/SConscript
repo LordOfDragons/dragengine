@@ -80,7 +80,7 @@ def liboggBuild( target, source, env ):
 	script.append( 'cd ../include' )
 	script.append( 'make -j {} install || exit 1'.format(env['with_threads']) )
 	
-	if not env.RunIsolatedSystem(script):
+	if not env.RunExternalCommand(script):
 		raise Exception('Failed building libogg')
 
 if buildStaticLinking:
@@ -90,6 +90,8 @@ else:
 targets.extend( [ 'include/ogg/ogg.h', 'include/ogg/config_types.h', 'include/ogg/os_types.h' ] )
 library = envLibrary.Command( targets, '{}.tar.bz2'.format( srcdir ),
 	envLibrary.Action(liboggBuild, 'Build libogg' ) )
+
+envLibrary.SideEffect('#notParallelCMake', library)
 
 depends = parent_env.Alias( 'lib_libogg', library )
 

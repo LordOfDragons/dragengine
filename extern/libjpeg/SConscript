@@ -100,7 +100,7 @@ def jpegBuild( target, source, env ):
 	
 	script.append('make -j {} install || exit 1'.format(env['with_threads']))
 	
-	if not env.RunIsolatedSystem(script):
+	if not env.RunExternalCommand(script):
 		raise Exception('Failed building libjpeg')
 
 if buildStaticLinking:
@@ -111,6 +111,8 @@ targets.extend( [ 'include/jconfig.h', 'include/jerror.h', 'include/jmorecfg.h',
 
 library = envLibrary.Command( targets, '{}.tar.bz2'.format( srcdir ),
 	envLibrary.Action(jpegBuild, 'Build JPEG library' ) )
+
+envLibrary.SideEffect('#notParallelCMake', library)
 
 depends = parent_env.Alias( 'lib_libjpeg', library )
 

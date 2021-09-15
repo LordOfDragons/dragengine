@@ -94,7 +94,7 @@ parent_env.Tool('logStdOut')
 if parent_env['LogStdOut_Enabled']:
 	parent_env['LOG_STD_OUT_FILE'] = open('build.log', 'w')
 
-parent_env.Tool('runIsolated')
+parent_env.Tool('runExternalCommand')
 
 parent_env.Tool('macos_bundle')
 

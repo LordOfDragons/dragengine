@@ -89,7 +89,7 @@ def libevdevBuild(target, source, env):
 	script.append('cd libevdev || exit 1')
 	script.append('make -j {} install-libLTLIBRARIES install-libevdevincludeHEADERS || exit 1'.format(env['with_threads']))
 	
-	if not env.RunIsolatedSystem(script):
+	if not env.RunExternalCommand(script):
 		raise Exception('Failed building libevdev')
 
 if not buildStaticLinking:
@@ -110,6 +110,8 @@ library = envLibrary.Command(targets, '{}.tar.bz2'.format(srcdir),
 
 if not buildStaticLinking:
 	envLibrary.Depends(library, envLibrary['PATCHES'])
+
+envLibrary.SideEffect('#notParallelCMake', library)
 
 depends = parent_env.Alias('lib_libevdev', library)
 

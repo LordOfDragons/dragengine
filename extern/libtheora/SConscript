@@ -102,7 +102,7 @@ def libtheoraBuild( target, source, env ):
 	
 	script.append( 'make -j {} install || exit 1'.format(env['with_threads']) )
 	
-	if not env.RunIsolatedSystem(script):
+	if not env.RunExternalCommand(script):
 		raise Exception('Failed building libtheora')
 
 gnuConfigUpdate = None
@@ -127,6 +127,8 @@ if gnuConfigUpdate:
 
 if parent_targets[ 'lib_libvorbis' ][ 'depends' ]:
 	envLibrary.Depends( library, parent_targets[ 'lib_libvorbis' ][ 'depends' ] )
+
+envLibrary.SideEffect('#notParallelCMake', library)
 
 depends = parent_env.Alias( 'lib_libtheora', library )
 

@@ -154,7 +154,7 @@ def foxBuild(target, source, env):
 		script.append('cp "{}" "{}" || exit 1'.format(libFileNameOrg, libFileName))
 		script.append('patchelf --set-soname "{}" "{}" || exit 1'.format(patchSoname, libFileName))
 	
-	if not env.RunIsolatedSystem(script):
+	if not env.RunExternalCommand(script):
 		raise Exception('Failed building fox')
 
 patches = [] # create with 'diff -rupN original_sources patches_sources'
@@ -178,6 +178,8 @@ envLibrary.Depends(library, envLibrary['PATCHES'])
 envLibrary.Depends(library, envLibrary['POST_PATCHES'])
 if envLibrary['OSWindows']:
 	envLibrary.Depends(library, parent_targets['lib_libpng']['depends'])
+
+envLibrary.SideEffect('#notParallelCMake', library)
 
 depends = parent_env.Alias('lib_fox', library)
 

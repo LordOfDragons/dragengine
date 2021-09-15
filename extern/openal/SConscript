@@ -142,7 +142,7 @@ def openalBuild(target, source, env):
 	script.append('  cp -fL ../../lib64/libopenal.a ../../lib/libopenal.a')
 	script.append('fi')
 	
-	if not env.RunIsolatedSystem(script):
+	if not env.RunExternalCommand(script):
 		raise Exception('Failed building openal')
 
 def openalPrecompiled(target, source, env):
@@ -221,6 +221,8 @@ else:
 #	envLibrary.Depends(library, parent_targets['lib_sndio']['depends'])
 
 envLibrary.Depends(library, envLibrary['PATCHES'])
+
+envLibrary.SideEffect('#notParallelCMake', library)
 
 depends = parent_env.Alias('lib_openal', library)
 

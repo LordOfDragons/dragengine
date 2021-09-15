@@ -98,7 +98,7 @@ def zlibBuild( target, source, env ):
 		#      name includes non-ascii7 characters. all attempts to fix this have failed so
 		#      far. only solution is to use a path name not containing such characters.
 		#      maybe it's also a windows problem, no idea.
-		if not env.RunIsolatedSystem(script):
+		if not env.RunExternalCommand(script):
 			raise Exception('Failed building zlib')
 		
 	if env['OSWindows']:
@@ -117,6 +117,8 @@ if envLibrary['OSWindows']:
 
 library = envLibrary.Command( targets, '{}.tar.bz2'.format( srcdir ),
 	envLibrary.Action(zlibBuild, 'Build zlib' ) )
+
+envLibrary.SideEffect('#notParallelCMake', library)
 
 depends = parent_env.Alias( 'lib_zlib', library )
 

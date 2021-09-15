@@ -93,7 +93,7 @@ def libvorbisBuild( target, source, env ):
 	script.append( 'cd ../include' )
 	script.append( 'make -j {} install || exit 1'.format(env['with_threads']) )
 	
-	if not env.RunIsolatedSystem(script):
+	if not env.RunExternalCommand(script):
 		raise Exception('Failed building libvorbis')
 
 if buildStaticLinking:
@@ -108,6 +108,8 @@ library = envLibrary.Command( targets, '{}.tar.bz2'.format( srcdir ),
 
 if parent_targets[ 'lib_libogg' ][ 'depends' ]:
 	envLibrary.Depends( library, parent_targets[ 'lib_libogg' ][ 'depends' ] )
+
+envLibrary.SideEffect('#notParallelCMake', library)
 
 depends = parent_env.Alias( 'lib_libvorbis', library )
 
