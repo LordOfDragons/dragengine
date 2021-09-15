@@ -40,6 +40,8 @@ jobs:
   
   upload:
     runs-on: ubuntu-latest
+    needs: build_linux
+    #needs: [build_linux, build_windows]
     
     steps:
       - name: Get Linux Artifact
