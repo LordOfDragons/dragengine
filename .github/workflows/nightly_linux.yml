@@ -21,7 +21,8 @@ jobs:
         run: cp ${{ github.workspace }}/.github/workflows/nightly_custom.py custom.py
       
       - name: Build
-        run: scons -j 14 archive installer
+        #run: scons -j 14 archive installer
+        run: scons -j 14 lib_libjpeg
       
       - name: Upload Artifact
         uses: actions/upload-artifact@v2
