@@ -1,0 +1,40 @@
+name: Nightly Linux
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v2
+      
+      - name: Install required packages
+        run: |
+          apt -y install build-essential scons cmake autoconf libtool nasm \
+            patchelf libx11-dev libxrandr-dev libgl-dev libxi-dev libpulse-dev \
+            libasound2-dev portaudio19-dev libxft-dev kdevelop-dev kdevelop-pg-qt \
+            extra-cmake-modules flex bison gettext libkf5itemmodels-dev
+      
+      - name: Init custom.py
+        run: cp ${{ github.workspace }}/.github/nightly_custom.py custom.py
+      
+      - name: Build
+        run: scons -j 14 archive installer
+      
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: Upload Artifacts
+          retention-days: 3
+          path: |
+            ${{ github.workspace }}/archive/build/dragengine-nightly-linux64.tar.bz2
+            ${{ github.workspace }}/archive/build/dragengine-dev-nightly-linux64.tar.bz2
+            ${{ github.workspace }}/archive/build/deigde-nightly-linux64.tar.bz2
+            ${{ github.workspace }}/archive/build/deigde-dev-nightly-linux64.tar.bz2
+            ${{ github.workspace }}/archive/build/despecial-nightly-linux64.tar.bz2
+            ${{ github.workspace }}/installer/build/install-dragengine-nightly-linux64.sh
+            ${{ github.workspace }}/installer/build/install-dragengine-dev-nightly-linux64.sh
+            ${{ github.workspace }}/installer/build/install-deigde-nightly-linux64.sh
+            ${{ github.workspace }}/installer/build/install-deigde-dev-nightly-linux64.sh
