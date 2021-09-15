@@ -146,6 +146,7 @@ params.Add( BoolVariable( 'with_sanitize', 'Enable sanitizing (dev-builds)', Fal
 params.Add( BoolVariable( 'with_sanitize_thread', 'Enable thread sanitizing (dev-builds)', False ) )
 params.Add( BoolVariable( 'with_verbose', 'Verbose compilation showing command lines( dev-builds )', False ) )
 params.Add(StringVariable('force_version', 'Force version (empty to disable)', ''))
+params.Add(StringVariable('with_threads', 'Count of threads to use for building external packages', '1'))
 
 params.Add( TernaryVariable( 'with_system_zlib', 'Use System Zlib' ) )
 params.Add( TernaryVariable( 'with_system_libpng', 'Use System libpng' ) )

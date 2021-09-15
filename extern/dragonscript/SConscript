@@ -97,7 +97,7 @@ def dragonscriptBuild( target, source, env ):
 	for p in env['PATCHES']:
 		script.append('patch -p1 <{} || exit 1'.format(p.srcnode().abspath))
 	
-	script.append('scons install || exit 1')
+	script.append('scons -j {} install || exit 1'.format(env['with_threads']))
 	if env['OSMacOS']:
 		script.append('install_name_tool -id "@rpath/libdscript.dylib" "{}" || exit 1'.format(target[0].abspath))
 	
