@@ -39,10 +39,13 @@ def generate(env):
 		
 		with lock as locked:
 			try:
-				return not function()
+				if function():
+					print('runIsolated failed for function: {}'.format(function))
+					return False
 			except:
 				print('runIsolated failed for function: {}'.format(function))
 				raise
+		return True
 	
 	def runIsolatedSystem(commands, group=None):
 		if group:
@@ -56,7 +59,11 @@ def generate(env):
 		with lock as locked:
 			if isinstance(commands, list):
 				try:
-					return not system('\n'.join(commands))
+					if system('\n'.join(commands)):
+						print('runIsolatedSystem failed for script:')
+						for c in commands:
+							print(c)
+						return False
 				except:
 					print('runIsolatedSystem failed for script:')
 					for c in commands:
@@ -64,11 +71,15 @@ def generate(env):
 					raise
 			else:
 				try:
-					return not system(commands)
+					if system(commands):
+						print('runIsolatedSystem failed for script:')
+						print(command)
+						return False
 				except:
 					print('runIsolatedSystem failed for script:')
 					print(command)
 					raise
+		return True
 	
 	env.RunIsolated = runIsolated
 	env.RunIsolatedSystem = runIsolatedSystem
