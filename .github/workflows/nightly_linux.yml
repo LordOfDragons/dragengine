@@ -18,7 +18,7 @@ jobs:
             extra-cmake-modules flex bison gettext libkf5itemmodels-dev
       
       - name: Init custom.py
-        run: cp ${{ github.workspace }}/.github/nightly_custom.py custom.py
+        run: cp ${{ github.workspace }}/.github/workflows/nightly_custom.py custom.py
       
       - name: Build
         run: scons -j 14 archive installer
