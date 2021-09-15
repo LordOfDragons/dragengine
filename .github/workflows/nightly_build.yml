@@ -18,10 +18,14 @@ jobs:
             flex bison gettext
       
       - name: Init custom.py
-        run: cp ${{ github.workspace }}/.github/workflows/nightly_custom.py custom.py
+        run: cp ${{ github.workspace }}/.github/workflows/nightly_custom_linux.py custom.py
       
       - name: Build
-        run: scons -j 14 archive installer
+        # openvr seems to be a problem child that like to get stuck in CMake on Ubuntu.
+        # build it first to avoid it loking up things
+        run: |
+          scons -j 1 lib_openvr
+          scons -j 14 archive installer
       
       - name: Get current date
         id: date
@@ -37,6 +41,60 @@ jobs:
             ${{ github.workspace }}/installer/build/install-dragengine-dev-nightly-linux64.sh
             ${{ github.workspace }}/installer/build/install-deigde-nightly-linux64.sh
             ${{ github.workspace }}/installer/build/install-deigde-dev-nightly-linux64.sh
+  
+  #build_windows:
+  #  runs-on: ubuntu-latest
+  #  
+  #  steps:
+  #    - uses: actions/checkout@v2
+  #    
+  #    - name: Install required packages
+  #      run: |
+  #        sudo apt -y install build-essential scons cmake autoconf libtool nasm \
+  #          patchelf libx11-dev libxrandr-dev libgl-dev libxi-dev libpulse-dev \
+  #          libasound2-dev portaudio19-dev libxft-dev extra-cmake-modules \
+  #          flex bison gettext mingw-w64
+  #        sudo apt -y install --no-install-recommends unzip procps xvfb
+  #    
+  #    - name: Init custom.py
+  #      run: cp ${{ github.workspace }}/.github/workflows/nightly_custom_windows.py custom.py
+  #    
+  #    - name: Build
+  #      # openvr seems to be a problem child that like to get stuck in CMake on Ubuntu.
+  #      # build it first to avoid it loking up things
+  #      run: |
+  #        scons tools=mingw64 -j 1 lib_openvr
+  #        scons tools=mingw64 -j 14 archive
+  #    
+  #    - name: Build Installer
+  #      env:
+  #        # get at least error information from wine
+  #        WINEDEBUG: -all,err+all
+  #        # Run virtual X buffer on this port
+  #        DISPLAY: :99
+  #
+  #      run: |
+  #        unzip archive/build/dragengine-nightly-windows64.zip -d installer/windows/unpacked
+  #        unzip archive/build/dragengine-sdk-nightly-windows64.zip -d installer/windows/unpacked
+  #        unzip archive/build/deigde-nightly-windows64.zip -d installer/windows/unpacked
+  #        unzip archive/build/deigde-sdk-nightly-windows64.zip -d installer/windows/unpacked
+  #        curl -SL "http://files.jrsoftware.org/is/5/innosetup-5.6.1-unicode.exe" -o is.exe
+  #        wine-x11-run wine is.exe /SP- /VERYSILENT
+  #      
+  #    - name: Get current date
+  #      id: date
+  #      run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
+  #      
+  #    - name: Cache Artifact
+  #      uses: actions/cache@v2
+  #      env:
+  #        cache-name: cache-linux
+  #      with:
+  #        path: |
+  #          ${{ github.workspace }}/installer/build/install-dragengine-nightly-linux64.sh
+  #          ${{ github.workspace }}/installer/build/install-dragengine-dev-nightly-linux64.sh
+  #          ${{ github.workspace }}/installer/build/install-deigde-nightly-linux64.sh
+  #          ${{ github.workspace }}/installer/build/install-deigde-dev-nightly-linux64.sh
   
   upload:
     runs-on: ubuntu-latest
