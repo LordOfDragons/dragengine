@@ -116,7 +116,13 @@ def foxBuild(target, source, env):
 	cmdline.append('--disable-bz2lib')
 	cmdline.append('--with-opengl')
 	cmdline.append('--enable-threadsafe')
-	cmdline.append('--enable-silent-rules')
+	
+	# this causes shared build to be static? WTF?! also '-s' parameter in
+	# make is not working. you really need to break this on purpose
+	# otherwise you just can not achieve this by unfortunate luck.
+	# hence we have to keep this build verbose just because the build
+	# files are so horribly broken nothing fixes it
+	#cmdline.append('--enable-silent-rules')
 	
 	if env['OSWindows']:
 		cmdline.append('--without-x')
