@@ -92,6 +92,18 @@ def libpngBuild( target, source, env ):
 		+ ' install-header-links'
 		+ ' install-library-links || exit 1' )
 	
+	if env['OSWindows']:
+		# this seems to be a new problem with newer mingw compilers.
+		# in contrary to previous versions these compilers search for
+		# the dll file matching the library file specifed while compiling.
+		# this file for one is located in bin directory which can not be
+		# found but more importantly the file is named libpng16-16.dll
+		# but the compiler searches for libpng.dll which it can not find.
+		# copy library to make linker happy
+		script.append('cp "{}" "{}" || exit 1'.format(
+			buildDir.File(libFileName).abspath,
+			buildDir.File('lib/libpng.dll').abspath))
+	
 	if not env.RunExternalCommand(script):
 		raise Exception('Failed building libpng')
 
