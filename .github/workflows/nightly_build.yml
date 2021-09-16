@@ -42,30 +42,30 @@ jobs:
             ${{ github.workspace }}/installer/build/install-deigde-nightly-linux64.sh
             ${{ github.workspace }}/installer/build/install-deigde-dev-nightly-linux64.sh
   
-  #build_windows:
-  #  runs-on: ubuntu-latest
-  #  
-  #  steps:
-  #    - uses: actions/checkout@v2
-  #    
-  #    - name: Install required packages
-  #      run: |
-  #        sudo apt -y install build-essential scons cmake autoconf libtool nasm \
-  #          patchelf libx11-dev libxrandr-dev libgl-dev libxi-dev libpulse-dev \
-  #          libasound2-dev portaudio19-dev libxft-dev extra-cmake-modules \
-  #          flex bison gettext mingw-w64
-  #        sudo apt -y install --no-install-recommends unzip procps xvfb
-  #    
-  #    - name: Init custom.py
-  #      run: cp ${{ github.workspace }}/.github/workflows/nightly_custom_windows.py custom.py
-  #    
-  #    - name: Build
-  #      # openvr seems to be a problem child that like to get stuck in CMake on Ubuntu.
-  #      # build it first to avoid it loking up things
-  #      run: |
-  #        scons tools=mingw64 -j 1 lib_openvr
-  #        scons tools=mingw64 -j 14 archive
-  #    
+  build_windows:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v2
+      
+      - name: Install required packages
+        run: |
+          sudo apt -y install build-essential scons cmake autoconf libtool nasm \
+            patchelf libx11-dev libxrandr-dev libgl-dev libxi-dev libpulse-dev \
+            libasound2-dev portaudio19-dev libxft-dev extra-cmake-modules \
+            flex bison gettext mingw-w64
+          sudo apt -y install --no-install-recommends unzip procps xvfb
+      
+      - name: Init custom.py
+        run: cp ${{ github.workspace }}/.github/workflows/nightly_custom_windows.py custom.py
+      
+      - name: Build
+        # openvr seems to be a problem child that like to get stuck in CMake on Ubuntu.
+        # build it first to avoid it loking up things
+        run: |
+          scons tools=mingw64 -j 1 lib_openvr
+          scons tools=mingw64 -j 14 archive
+      
   #    - name: Build Installer
   #      env:
   #        # get at least error information from wine
@@ -117,8 +117,8 @@ jobs:
         uses: meeDamian/github-release@2.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          tag: 'nightly'
-          name: 'Drag[en]gine Game Engine Release - Nightly Build'
+          tag: 'actiontest' #'nightly'
+          name: 'Action Test' #'Drag[en]gine Game Engine Release - Nightly Build'
           body: >
             Continuous Nightly Build of the Drag[en]gine Game Engine.
             Created: ${{ steps.date.outputs.date }}
@@ -128,6 +128,7 @@ jobs:
           prerelease: true
           gzip: false
           allow_override: true
+          draft: true
           files: >
             ${{ github.workspace }}/installer/build/install-dragengine-nightly-linux64.sh
             ${{ github.workspace }}/installer/build/install-dragengine-dev-nightly-linux64.sh
