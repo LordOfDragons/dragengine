@@ -210,8 +210,6 @@ if buildStaticLinking:
 	runtimelibs = []
 else:
 	runtimelibs = [library[0]]
-	if envLibrary['OSWindows']:
-		libs.extend(['gdi32', 'imm32', 'wsock32', 'winspool', 'opengl32'])
 #runtimelibs.extend(parent_targets['lib_libpng']['runtimelibs'])
 
 if envLibrary['OSWindows']:
