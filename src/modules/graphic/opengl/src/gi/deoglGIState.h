@@ -86,6 +86,7 @@ private:
 	int *pCascaceUpdateCycle;
 	int pCascaceUpdateCycleCount;
 	int pCascaceUpdateCycleIndex;
+	int pCameraForceToneMapAdaptionCount;
 	
 	decPoint pSampleImageSize;
 	
@@ -181,6 +182,9 @@ public:
 	
 	/** Cascade to use for sky shadow casting based on the active cascade. */
 	deoglGICascade &GetSkyShadowCascade() const;
+	
+	/** Camera should force tone mapping adaption. */
+	bool CameraForceToneMapAdaption() const;
 	
 	
 	

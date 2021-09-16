@@ -259,6 +259,7 @@ void deoglRCamera::PrepareForRender(){
 		dataToneMapParams.a = 0.0f; // brightPassThreshold
 		pTextureToneMapParams->SetPixels( pbToneMapParams );
 		pInitTexture = false;
+		pForceToneMapAdaption = true;
 		pDirtyLastAverageLuminance = true;
 	}
 	

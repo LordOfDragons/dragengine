@@ -830,6 +830,12 @@ void deoglRenderPlan::pPlanGI(){
 	// this here and not inside pUpdateGI() since deoglRenderPlanSkyLight needs to know the
 	// active cascade used for this frame update. and this happens before pUpdateGI() is called
 	pGIState->ActivateNextCascade();
+	
+	// while doing the first loop of cascade updates force tone mapping adaption on camera
+	// to avoid bad starting values due t non-lit geometry
+	if( pGIState->CameraForceToneMapAdaption() && pCamera ){
+		pCamera->SetForceToneMapAdaption( true );
+	}
 }
 
 void deoglRenderPlan::pUpdateGI(){

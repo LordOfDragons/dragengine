@@ -91,6 +91,7 @@ pActiveCascade( 0 ),
 pCascaceUpdateCycle( NULL ),
 pCascaceUpdateCycleCount( 0 ),
 pCascaceUpdateCycleIndex( 0 ),
+pCameraForceToneMapAdaptionCount( 0 ),
 
 pTexProbeIrradiance( renderThread ),
 pTexProbeDistance( renderThread ),
@@ -121,6 +122,8 @@ pBVHDynamic( renderThread )
 		pInitCascades();
 		pInitCascadeUpdateCycle();
 		pInitUBOClearProbes();
+		
+		pCameraForceToneMapAdaptionCount = pCascaceUpdateCycleCount;
 		
 		#ifdef GI_USE_RAY_CACHE
 		pPrepareProbeVBO();
@@ -216,6 +219,10 @@ deoglGICascade & deoglGIState::GetSkyShadowCascade() const{
 	return *pCascades[ GetActiveCascade().GetSkyShadowCascade() ];
 }
 
+bool deoglGIState::CameraForceToneMapAdaption() const{
+	return pCameraForceToneMapAdaptionCount > 0;
+}
+
 
 
 void deoglGIState::PrepareUBOClearProbes() const{
@@ -266,6 +273,12 @@ void deoglGIState::ActivateNextCascade(){
 		pCascaceUpdateCycleIndex = 0;
 	}
 // 	pRenderThread.GetLogger().LogInfoFormat( "GIState: next cascade %d (cycle)", pActiveCascade );
+	
+	// while doing the first loop of cascade updates force tone mapping adaption on camera
+	// to avoid bad starting values due t non-lit geometry
+	if( pCameraForceToneMapAdaptionCount > 0 ){
+		pCameraForceToneMapAdaptionCount--;
+	}
 }
 
 void deoglGIState::Update( const decDVector &cameraPosition, const deoglDCollisionFrustum &frustum ){
