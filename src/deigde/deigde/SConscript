@@ -121,7 +121,7 @@ if envIGDELib['igde_toolkit'] == 'fox':
 	appendLibrary(envIGDELib, parent_targets['lib_fox'], libsLib)
 
 if envIGDELib['OSWindows']:
-	libsLib.append(['kernel32', 'user32', 'gdi32', 'winmm', 'wsock32', 'imm32'])
+	libsLib.append(['kernel32', 'user32', 'gdi32', 'winmm', 'wsock32'])
 elif envIGDELib['OSBeOS']:
 	libsLib.append(['root', 'be'])
 
