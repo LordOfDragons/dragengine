@@ -35,10 +35,10 @@ jobs:
         uses: actions/cache@v2
         with:
           path: |
-            ${{ github.workspace }}/installer/build/install-dragengine-nightly-linux64.sh
-            ${{ github.workspace }}/installer/build/install-dragengine-dev-nightly-linux64.sh
-            ${{ github.workspace }}/installer/build/install-deigde-nightly-linux64.sh
-            ${{ github.workspace }}/installer/build/install-deigde-dev-nightly-linux64.sh
+            installer/build/install-dragengine-nightly-linux64.sh
+            installer/build/install-dragengine-dev-nightly-linux64.sh
+            installer/build/install-deigde-nightly-linux64.sh
+            installer/build/install-deigde-dev-nightly-linux64.sh
           key: ${{ runner.os }}-cache-linux
           restore-keys: ${{ runner.os }}-cache-linux
   
@@ -109,10 +109,10 @@ jobs:
           cache-name: cache-linux
         with:
           path: |
-            ${{ github.workspace }}/installer/build/install-dragengine-nightly-linux64.sh
-            ${{ github.workspace }}/installer/build/install-dragengine-dev-nightly-linux64.sh
-            ${{ github.workspace }}/installer/build/install-deigde-nightly-linux64.sh
-            ${{ github.workspace }}/installer/build/install-deigde-dev-nightly-linux64.sh
+            installer/build/install-dragengine-nightly-linux64.sh
+            installer/build/install-dragengine-dev-nightly-linux64.sh
+            installer/build/install-deigde-nightly-linux64.sh
+            installer/build/install-deigde-dev-nightly-linux64.sh
           key: ${{ runner.os }}-cache-linux
           restore-keys: ${{ runner.os }}-cache-linux
       
@@ -133,7 +133,7 @@ jobs:
           allow_override: true
           draft: true
           files: >
-            ${{ github.workspace }}/installer/build/install-dragengine-nightly-linux64.sh
-            ${{ github.workspace }}/installer/build/install-dragengine-dev-nightly-linux64.sh
-            ${{ github.workspace }}/installer/build/install-deigde-nightly-linux64.sh
-            ${{ github.workspace }}/installer/build/install-deigde-dev-nightly-linux64.sh
+            installer/build/install-dragengine-nightly-linux64.sh
+            installer/build/install-dragengine-dev-nightly-linux64.sh
+            installer/build/install-deigde-nightly-linux64.sh
+            installer/build/install-deigde-dev-nightly-linux64.sh
