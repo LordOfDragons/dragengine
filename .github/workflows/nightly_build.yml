@@ -33,14 +33,14 @@ jobs:
         
       - name: Cache Artifact
         uses: actions/cache@v2
-        env:
-          cache-name: cache-linux
         with:
           path: |
             ${{ github.workspace }}/installer/build/install-dragengine-nightly-linux64.sh
             ${{ github.workspace }}/installer/build/install-dragengine-dev-nightly-linux64.sh
             ${{ github.workspace }}/installer/build/install-deigde-nightly-linux64.sh
             ${{ github.workspace }}/installer/build/install-deigde-dev-nightly-linux64.sh
+          key: ${{ runner.os }}-cache-linux
+          restore-keys: ${{ runner.os }}-cache-linux
   
   build_windows:
     runs-on: ubuntu-latest
@@ -95,6 +95,8 @@ jobs:
   #          ${{ github.workspace }}/installer/build/install-dragengine-dev-nightly-linux64.sh
   #          ${{ github.workspace }}/installer/build/install-deigde-nightly-linux64.sh
   #          ${{ github.workspace }}/installer/build/install-deigde-dev-nightly-linux64.sh
+  #       key: ${{ runner.os }}-cache-windows
+  #       restore-keys: ${{ runner.os }}-cache-windows
   
   upload:
     runs-on: ubuntu-latest
@@ -111,6 +113,8 @@ jobs:
             ${{ github.workspace }}/installer/build/install-dragengine-dev-nightly-linux64.sh
             ${{ github.workspace }}/installer/build/install-deigde-nightly-linux64.sh
             ${{ github.workspace }}/installer/build/install-deigde-dev-nightly-linux64.sh
+          key: ${{ runner.os }}-cache-linux
+          restore-keys: ${{ runner.os }}-cache-linux
       
       - name: Upload Artifacts
         uses: meeDamian/github-release@2.0
