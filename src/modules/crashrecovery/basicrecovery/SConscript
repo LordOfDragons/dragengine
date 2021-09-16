@@ -14,7 +14,7 @@ appendLibrary( envModule, parent_targets[ 'dragengine' ], libs )
 appendLibrary( envModule, parent_targets[ 'lib_fox' ], libs )
 
 if envModule['OSWindows']:
-	libs.append(['kernel32', 'user32', 'gdi32', 'winmm', 'wsock32'])
+	libs.append(['kernel32', 'user32', 'gdi32', 'winmm', 'wsock32', 'imm32'])
 
 # fetch values in expanded form for later use
 versionString = '1.3'
