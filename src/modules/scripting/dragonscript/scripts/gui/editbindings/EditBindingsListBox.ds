@@ -43,42 +43,59 @@ pin Dragengine.Utils
 class EditBindingsListBox extends ListBox
 	/** \brief Capture binding result listener. */
 	public class CaptureFinished implements WindowDialog.ResultListener
-		/** \brief List box. */
 		private var EditBindingsListBox pListBox
 		
 		/** \brief Create listener. */
-		public func new( EditBindingsListBox listBox )
-			this.pListBox = listBox
+		public func new(EditBindingsListBox listBox)
+			pListBox = listBox
 		end
 		
 		/** \brief Dialog closed with result. */
-		public func void onResult( Object result )
+		public func void onResult(Object result)
 			if result != null
-				this.pListBox.selectedAddCapturedBinding( \
-					result cast WindowCaptureBinding.CaptureResult, false )
+				pListBox.selectedAddCapturedBinding(\
+					result cast WindowCaptureBinding.CaptureResult, false)
 			end
 		end
 	end
 	
 	/** \brief Reassign result listener. */
 	public class ReassignResult implements WindowDialog.ResultListener
-		/** \brief List box. */
 		private var EditBindingsListBox pListBox
 		
 		/** \brief Captured binding. */
 		private var WindowCaptureBinding.CaptureResult pCaptured
 		
 		/** \brief Create listener. */
-		public func new( EditBindingsListBox listBox, WindowCaptureBinding.CaptureResult captured )
-			this.pListBox = listBox
-			this.pCaptured = captured
+		public func new(EditBindingsListBox listBox, WindowCaptureBinding.CaptureResult captured)
+			pListBox = listBox
+			pCaptured = captured
 		end
 		
 		/** \brief Dialog closed with result. */
-		public func void onResult( Object result )
+		public func void onResult(Object result)
 			if result cast bool
-				this.pListBox.selectedAddCapturedBinding( this.pCaptured, true )
+				pListBox.selectedAddCapturedBinding(pCaptured, true)
 			end
+		end
+	end
+	
+	/**
+	 * \brief Capture binding if mouse button is double clicked.
+	 * \version 1.7
+	 */
+	public class DoubleClickCaptureBinding extends ClickedActionListener
+		private var EditBindingsListBox pListBox
+		
+		/** \brief Create listener. */
+		public func new(EditBindingsListBox listBox)
+			pListBox = listBox
+			setMultiClickCount(2)
+		end
+		
+		/** Double click detected. */
+		public func void onAction()
+			pListBox.selectedCaptureBinding()
 		end
 	end
 	
@@ -89,7 +106,7 @@ class EditBindingsListBox extends ListBox
 	 * 
 	 * \param model Model to use.
 	 */
-	public func new( EditBindingsListModel model ) this( model, EditBindingsListRenderer.new() )
+	public func new(EditBindingsListModel model) this(model, EditBindingsListRenderer.new())
 	end
 	
 	/**
@@ -98,67 +115,68 @@ class EditBindingsListBox extends ListBox
 	 * \param model Model to use.
 	 * \param renderer Renderer to use.
 	 */
-	public func new( EditBindingsListModel model, EditBindingsListRenderer renderer ) \
-	super( model, renderer )
-		this.setDesignerSelector( this.getDesignerSelector() + ".EditBindings" )
+	public func new(EditBindingsListModel model, EditBindingsListRenderer renderer) \
+	super(model, renderer)
+		setDesignerSelector(getDesignerSelector() + ".EditBindings")
+		addMouseListener(DoubleClickCaptureBinding.new(this))
 	end
 	
 	
 	
 	/** \brief Capture and add binding for selected entry if any is selected. */
 	public func void selectedCaptureBinding()
-		var int selection = this.getSelectedElement()
+		var int selection = getSelectedElement()
 		if selection == -1
 			return
 		end
 		
-		var EditBindingsListModel model = this.getModel() cast EditBindingsListModel
-		var EditBindingsListModelEntry entry = model.getAt( selection ) cast EditBindingsListModelEntry
+		var EditBindingsListModel model = getModel() cast EditBindingsListModel
+		var EditBindingsListModelEntry entry = model.getAt(selection) cast EditBindingsListModelEntry
 		
 		select entry.getInputSource()
 		case EditBindingsListModelEntry.InputSource.axis
-			WindowCaptureBinding.captureInput( model.getBindingManager(), \
-				EditBindingsListModelEntry.InputSource.axis, this.getWindow(), "Add Binding", \
-				"Push Axis to Set", CaptureFinished.new( this ) )
+			WindowCaptureBinding.captureInput(model.getBindingManager(), \
+				EditBindingsListModelEntry.InputSource.axis, getWindow(), "Add Binding", \
+				"Push Axis to Set", CaptureFinished.new(this))
 			
 		case EditBindingsListModelEntry.InputSource.button
-			WindowCaptureBinding.captureInput( model.getBindingManager(), \
-				EditBindingsListModelEntry.InputSource.button, this.getWindow(), "Add Binding", \
-				"Push Button or Axis to Set", CaptureFinished.new( this ) )
+			WindowCaptureBinding.captureInput(model.getBindingManager(), \
+				EditBindingsListModelEntry.InputSource.button, getWindow(), "Add Binding", \
+				"Push Button or Axis to Set", CaptureFinished.new(this))
 		end
 	end
 	
 	/** \brief Remove all key bindings of selected entry if any is selected. */
 	public func void selectedRemoveBindings()
-		var int selection = this.getSelectedElement()
+		var int selection = getSelectedElement()
 		if selection == -1
 			return
 		end
 		
-		var EditBindingsListModel model = this.getModel() cast EditBindingsListModel
-		var EditBindingsListModelEntry entry = model.getAt( selection ) cast EditBindingsListModelEntry
+		var EditBindingsListModel model = getModel() cast EditBindingsListModel
+		var EditBindingsListModelEntry entry = model.getAt(selection) cast EditBindingsListModelEntry
 		
-		entry.forEachAxisBinding( block Binding each
-			model.getBindingManager().removeAxisBinding( each )
-		end )
+		entry.forEachAxisBinding(block Binding each
+			model.getBindingManager().removeAxisBinding(each)
+		end)
 		
-		entry.forEachButtonBinding( block Binding each
-			model.getBindingManager().removeButtonBinding( each )
-		end )
+		entry.forEachButtonBinding(block Binding each
+			model.getBindingManager().removeButtonBinding(each)
+		end)
 		
-		model.notifyContentChanged( selection, selection )
+		model.notifyContentChanged(selection, selection)
 	end
 	
 	/** \brief Add capture result as binding to selected entry. */
-	public func void selectedAddCapturedBinding( \
-	WindowCaptureBinding.CaptureResult captured, bool reassign )
-		var int selection = this.getSelectedElement()
+	public func void selectedAddCapturedBinding(\
+	WindowCaptureBinding.CaptureResult captured, bool reassign)
+		var int selection = getSelectedElement()
 		if selection == -1
 			return
 		end
 // 		
-		var EditBindingsListModel model = this.getModel() cast EditBindingsListModel
-		var EditBindingsListModelEntry entry = model.getAt( selection ) cast EditBindingsListModelEntry
+		var EditBindingsListModel model = getModel() cast EditBindingsListModel
+		var EditBindingsListModelEntry entry = model.getAt(selection) cast EditBindingsListModelEntry
 		var BindingManager bindingManager = model.getBindingManager()
 		var InputEventSource system = captured.getSystem()
 		var int deviceIndex = captured.getDeviceIndex()
@@ -171,11 +189,11 @@ class EditBindingsListBox extends ListBox
 		select captured.getInputSource()
 		case EditBindingsListModelEntry.InputSource.axis
 			if entry.getInputSource() == EditBindingsListModelEntry.InputSource.button
-				binding = bindingManager.findAxisBinding( system, deviceIndex, \
-					sourceIndex, captured.getInverseAxis() )
+				binding = bindingManager.findAxisBinding(system, deviceIndex, \
+					sourceIndex, captured.getInverseAxis())
 				
 			else
-				binding = bindingManager.findAxisBinding( system, deviceIndex, sourceIndex )
+				binding = bindingManager.findAxisBinding(system, deviceIndex, sourceIndex)
 			end
 			
 			if binding == null
@@ -200,15 +218,15 @@ class EditBindingsListBox extends ListBox
 			// block will be skipped
 			updateCommand = binding.getCommand()
 			if not reassign
-				this.askUserReassignBinding( captured, updateCommand )
+				askUserReassignBinding(captured, updateCommand)
 				return
 			end
 			
 			// remove binding
-			bindingManager.removeAxisBinding( binding )
+			bindingManager.removeAxisBinding(binding)
 			
 		case EditBindingsListModelEntry.InputSource.button
-			binding = bindingManager.findButtonBinding( system, deviceIndex, sourceIndex )
+			binding = bindingManager.findButtonBinding(system, deviceIndex, sourceIndex)
 			
 			if binding == null
 				break
@@ -224,12 +242,12 @@ class EditBindingsListBox extends ListBox
 			// block will be skipped
 			updateCommand = binding.getCommand()
 			if not reassign
-				this.askUserReassignBinding( captured, updateCommand )
+				askUserReassignBinding(captured, updateCommand)
 				return
 			end
 			
 			// remove binding
-			bindingManager.removeButtonBinding( binding )
+			bindingManager.removeButtonBinding(binding)
 		end
 		
 		// update list entry for command
@@ -238,9 +256,9 @@ class EditBindingsListBox extends ListBox
 			var int i, count = model.getCount()
 			
 			for i = 0 to count
-				updateEntry = model.getAt( i ) cast EditBindingsListModelEntry
+				updateEntry = model.getAt(i) cast EditBindingsListModelEntry
 				if updateEntry.getCommand() == updateCommand
-					model.notifyContentChanged( i, i )
+					model.notifyContentChanged(i, i)
 					break
 				end
 			end
@@ -251,17 +269,17 @@ class EditBindingsListBox extends ListBox
 		case EditBindingsListModelEntry.InputSource.axis
 			var InputDeviceAxis axis = captured.getInputDeviceAxis()
 			
-			bindingManager.addAxisBinding( Binding.new( axis.getInputDevice().getID(), \
-				axis.getID(), command, captured.getInverseAxis() ) )
+			bindingManager.addAxisBinding(Binding.new(axis.getInputDevice().getID(), \
+				axis.getID(), command, captured.getInverseAxis()))
 			
 		case EditBindingsListModelEntry.InputSource.button
 			var InputDeviceButton button = captured.getInputDeviceButton()
 			
-			bindingManager.addButtonBinding( Binding.new( button.getInputDevice().getID(), \
-				button.getID(), command, false ) )
+			bindingManager.addButtonBinding(Binding.new(button.getInputDevice().getID(), \
+				button.getID(), command, false))
 		end
 		
-		model.notifyContentChanged( selection, selection )
+		model.notifyContentChanged(selection, selection)
 	end
 	
 	/**
@@ -270,52 +288,52 @@ class EditBindingsListBox extends ListBox
 	 * \param captured Captured binding causing the problem.
 	 * \param command Command already assigned to the binding.
 	 */
-	protected func void askUserReassignBinding( \
-	WindowCaptureBinding.CaptureResult captured, Command command )
-		WindowDialog.question( this.getWindow(), "Replace Binding", \
+	protected func void askUserReassignBinding(\
+	WindowCaptureBinding.CaptureResult captured, Command command)
+		WindowDialog.question(getWindow(), "Replace Binding", \
 			"Binding already assigned to '" + command.getName() + "'.\n" \
 				+ "Do you want to re-assign?", \
-			null, Array.newWith( \
-				WindowDialog.ButtonConfiguration.new( "Yes", true ), \
-				WindowDialog.ButtonConfiguration.new( "No", false) ), \
-			ReassignResult.new( this, captured ) )
+			null, Array.newWith(\
+				WindowDialog.ButtonConfiguration.new("Yes", true), \
+				WindowDialog.ButtonConfiguration.new("No", false)), \
+			ReassignResult.new(this, captured))
 	end
 	
 	
 	
 	/** \brief Key pressed event. */
-	public func void onKeyPress( KeyEvent event )
+	public func void onKeyPress(KeyEvent event)
 		select event.getKeyCode()
 		case InputEventKey.backspace, InputEventKey.delete
-			this.selectedRemoveBindings()
+			selectedRemoveBindings()
 			
 		case InputEventKey.enter
-			this.selectedCaptureBinding()
+			selectedCaptureBinding()
 			
 		else
-			super.onKeyPress( event )
+			super.onKeyPress(event)
 		end
 	end
 	
 	/** \brief Mouse button pressed. */
-	public func void onButtonPress( MouseEvent event )
-		super.onButtonPress( event )
+	public func void onButtonPress(MouseEvent event)
+		super.onButtonPress(event)
 		
 		if event.getButton() == InputEventMouseButton.right
-			this.selectedRemoveBindings()
+			selectedRemoveBindings()
 		end
 	end
 	
 	/** \brief Gamepad button has been pressed. */
-	public func void onGamepadButtonPressed( GamepadEvent event )
+	public func void onGamepadButtonPressed(GamepadEvent event)
 		if event.getCode() == 0
-			this.selectedCaptureBinding()
+			selectedCaptureBinding()
 			
 		elif event.getCode() == 1
-			this.selectedRemoveBindings()
+			selectedRemoveBindings()
 			
 		else
-			super.onGamepadButtonPressed( event )
+			super.onGamepadButtonPressed(event)
 		end
 	end
 end
