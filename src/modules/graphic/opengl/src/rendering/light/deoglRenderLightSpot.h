@@ -127,7 +127,7 @@ public:
 	void RenderShadowMap( deoglRenderPlanLight &planLight, const decDMatrix &matrixCamera,
 		const decDMatrix &matrixProjection, deoglShadowMapper &shadowMapper,
 		const deoglCollideList *clist1, const deoglCollideList *clist2, int solidShadowMapSize,
-		int transpShadowMapSize, bool withTransparent, bool copyDepth, bool debugSolid );
+		int transpShadowMapSize, bool withTransparent, bool debugSolid );
 	
 	/** \brief Render ambient map. */
 	void RenderAmbientMap( deoglRenderPlanLight &planLight, const decDMatrix &matrixCamera,
