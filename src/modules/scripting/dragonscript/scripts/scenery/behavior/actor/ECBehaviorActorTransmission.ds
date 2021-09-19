@@ -181,9 +181,11 @@ class ECBehaviorActorTransmission extends DefaultECBehavior
 		
 		private var Array pParts
 		private var bool pWaitInConversation
+		private var StringID pStyle
+		private var float pTimeout
 		
 		private var SubTitleBoxText pSubTitleText
-		private var float pTimeout
+		private var float pRemainingDisplayTime
 		
 		private var Array pListeners
 		
@@ -212,6 +214,8 @@ class ECBehaviorActorTransmission extends DefaultECBehavior
 		/** \brief Initialize behavior from stub. */
 		public func void init( StubElement stub )
 			this.pWaitInConversation = this.pECBehavior.getWaitInConversation().getValue( stub )
+			this.pStyle = this.pECBehavior.getStyle().getValue( stub )
+			this.pTimeout = this.pECBehavior.getTimeout().getValue( stub )
 			
 			this.pECBehavior.createListeners( this )
 			this.pConversationActor.addListener( WaitInConversation.new( this ) )
@@ -241,11 +245,31 @@ class ECBehaviorActorTransmission extends DefaultECBehavior
 			this.pWaitInConversation = waitInConversation
 		end
 		
+		/** \brief Style to use. */
+		public func StringID getStyle()
+			return this.pStyle
+		end
+		
+		/** \brief Set style to use. */
+		public func void setStyle( StringID style )
+			this.pStyle = style
+		end
+		
+		/** \brief Timeout in seconds to display each part. */
+		public func float getTimeout()
+			return this.pTimeout
+		end
+		
+		/** \brief Set timeout in seconds to display each part. */
+		public func void setTimeout( float timeout )
+			this.pTimeout = DEMath.max( timeout, 0.0 )
+		end
+		
 		
 		
 		/** \brief Transmission is running. */
 		public func bool isRunning()
-			return this.pParts.getCount() > 0 or this.pTimeout > 0
+			return this.pParts.getCount() > 0 or this.pRemainingDisplayTime > 0
 		end
 		
 		/**
@@ -253,6 +277,48 @@ class ECBehaviorActorTransmission extends DefaultECBehavior
 		 * 
 		 * If no parts are present calls transmissionStart() on listeners and shows the
 		 * transmission in the sub title box.
+		 * 
+		 * \param text Text to speak.
+		 */
+		public func void addPart( UnicodeString text )
+			this.addPart( text, this.pStyle, this.pTimeout )
+		end
+		
+		/**
+		 * \brief Add transmission part.
+		 * 
+		 * If no parts are present calls transmissionStart() on listeners and shows the
+		 * transmission in the sub title box.
+		 * 
+		 * \param text Text to speak.
+		 * \param timeout Time in seconds to display transmission part.
+		 */
+		public func void addPart( UnicodeString text, float timeout )
+			this.addPart( text, this.pStyle, timeout )
+		end
+		
+		/**
+		 * \brief Add transmission part.
+		 * 
+		 * If no parts are present calls transmissionStart() on listeners and shows the
+		 * transmission in the sub title box.
+		 * 
+		 * \param text Text to speak.
+		 * \param style Identifier of style to adjust font, color or sub title in general or null.
+		 */
+		public func void addPart( UnicodeString text, StringID style )
+			this.addPart( text, style, this.pTimeout )
+		end
+		
+		/**
+		 * \brief Add transmission part.
+		 * 
+		 * If no parts are present calls transmissionStart() on listeners and shows the
+		 * transmission in the sub title box.
+		 * 
+		 * \param text Text to speak.
+		 * \param style Identifier of style to adjust font, color or sub title in general or null.
+		 * \param timeout Time in seconds to display transmission part.
 		 */
 		public func void addPart( UnicodeString text, StringID style, float timeout )
 			if this.pParts.getCount() == 255
@@ -262,7 +328,7 @@ class ECBehaviorActorTransmission extends DefaultECBehavior
 			var Part part = Part.new( text, style, timeout )
 			this.pParts.add( part )
 			
-			if this.pParts.getCount() > 1 or this.pTimeout > 0
+			if this.pParts.getCount() > 1 or this.pRemainingDisplayTime > 0
 				return
 			end
 			
@@ -283,6 +349,7 @@ class ECBehaviorActorTransmission extends DefaultECBehavior
 				return
 			end
 			
+			this.pRemainingDisplayTime = 0
 			this.pParts.removeAll()
 			this.setSubTitleText( null )
 			this.setRequiresThink( false )
@@ -333,7 +400,7 @@ class ECBehaviorActorTransmission extends DefaultECBehavior
 			this.getSubTitle().addSubTitleText( text.subtitleWidget() )
 			this.setSubTitleText( text )
 			
-			this.pTimeout = part.getTimeout()
+			this.pRemainingDisplayTime = part.getTimeout()
 			
 			this.onPartDisplayed( part )
 			
@@ -375,8 +442,8 @@ class ECBehaviorActorTransmission extends DefaultECBehavior
 		 * \brief Frame update.
 		 */
 		public func void think( float elapsed )
-			this.pTimeout -= elapsed
-			if this.pTimeout > 0
+			this.pRemainingDisplayTime -= elapsed
+			if this.pRemainingDisplayTime > 0
 				return
 			end
 			
@@ -402,7 +469,7 @@ class ECBehaviorActorTransmission extends DefaultECBehavior
 				var PersistencyFlags flags = PersistencyFlags.new( 1, reader )
 				this.pWaitInConversation = flags.getAt( 0 )
 				
-				this.pTimeout = reader.readFloat()
+				this.pRemainingDisplayTime = reader.readFloat()
 				
 				var int i, partCount = reader.readByte()
 				var UnicodeString text
@@ -437,7 +504,7 @@ class ECBehaviorActorTransmission extends DefaultECBehavior
 			flags.setAt( 0, this.pWaitInConversation )
 			flags.writeToFile( writer )
 			
-			writer.writeFloat( this.pTimeout )
+			writer.writeFloat( this.pRemainingDisplayTime )
 			
 			writer.writeByte( this.pParts.getCount() )
 			this.pParts.forEach( block Part each
@@ -459,6 +526,8 @@ class ECBehaviorActorTransmission extends DefaultECBehavior
 	
 	private var ECBehaviorConversationActor pConversationActor
 	private var ECPBoolean pWaitInConversation
+	private var ECPStringID pStyle
+	private var ECPFloat pTimeout
 	private var Array pListenerFactories
 	private var ConversationPlaybackSubTitle pSubTitle
 	
@@ -492,6 +561,12 @@ class ECBehaviorActorTransmission extends DefaultECBehavior
 		this.pWaitInConversation = ECPBoolean.new( prefix + "waitInConversation", false )
 		eclass.addProperty( this.pWaitInConversation )
 		
+		this.pStyle = ECPStringID.new( prefix + "style" )
+		eclass.addProperty( this.pStyle )
+		
+		this.pTimeout = ECPFloat.new( prefix + "timeout", 5.0 )
+		eclass.addProperty( this.pTimeout )
+		
 		eclass.addBehavior( this )
 	end
 	
@@ -513,6 +588,16 @@ class ECBehaviorActorTransmission extends DefaultECBehavior
 	/** \brief Enable wait in conversation. */
 	public func ECPBoolean getWaitInConversation()
 		return this.pWaitInConversation
+	end
+	
+	/** \brief Style. */
+	public func ECPStringID getStyle()
+		return this.pStyle
+	end
+	
+	/** \brief Timeout. */
+	public func ECPFloat getTimeout()
+		return this.pTimeout
 	end
 	
 	/** \brief Sub title. */
