@@ -885,7 +885,7 @@ void dedsLocomotion::UpdateLinearVelocity( float elapsed ){
 	pMovingSpeed = linearVelocity.Length();
 	
 	if( pMovingSpeed > 0.001f ){ // otherwise undefined orientation
-		SetMovingOrientation( -atan2f( linearVelocity.x, linearVelocity.z ) / DEG2RAD );
+		SetMovingOrientation( -atan2f( linearVelocity.x, linearVelocity.z ) * RAD2DEG );
 	}
 	
 	SetMovingDirection( pMovingOrientation - pOrientation );
