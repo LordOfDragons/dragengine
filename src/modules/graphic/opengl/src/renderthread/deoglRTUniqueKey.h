@@ -23,6 +23,7 @@
 #define _DEOGLRTUNIQUEKEY_H_
 
 #include <dragengine/common/collection/decIntList.h>
+#include <dragengine/threading/deMutex.h>
 
 
 /**
@@ -30,6 +31,7 @@
  */
 class deoglRTUniqueKey{
 private:
+	deMutex pMutex;
 	decIntList pFreeKeys;
 	unsigned int pNextKey;
 	

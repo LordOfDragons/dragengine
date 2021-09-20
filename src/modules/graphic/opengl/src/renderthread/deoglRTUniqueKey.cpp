@@ -21,6 +21,7 @@
 
 #include "deoglRTUniqueKey.h"
 
+#include <dragengine/threading/deMutexGuard.h>
 
 
 // Class deoglRTUniqueKey
@@ -42,6 +43,7 @@ deoglRTUniqueKey::~deoglRTUniqueKey(){
 ///////////////
 
 unsigned int deoglRTUniqueKey::Get(){
+	const deMutexGuard lock( pMutex );
 	const int index = pFreeKeys.GetCount() - 1;
 	unsigned int key;
 	
@@ -57,5 +59,6 @@ unsigned int deoglRTUniqueKey::Get(){
 }
 
 void deoglRTUniqueKey::Return( unsigned int key ){
+	const deMutexGuard lock( pMutex );
 	pFreeKeys.Add( ( int )key );
 }
