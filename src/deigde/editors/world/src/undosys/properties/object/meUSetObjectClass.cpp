@@ -56,6 +56,7 @@ meUSetObjectClass::meUSetObjectClass( meObject *object, const char *newcname ){
 		pObjects[ 0 ].oldcname = object->GetClassName();
 		pObjects[ 0 ].newcname = newcname;
 		pObjects[ 0 ].oldsize = object->GetSize();
+		pObjects[ 0 ].oldscaling = object->GetScaling();
 		pObjects[ 0 ].object = object;
 		object->AddReference();
 		
@@ -88,6 +89,7 @@ meUSetObjectClass::meUSetObjectClass( meObjectList &objects, const char *newcnam
 			pObjects[ pObjectCount ].oldcname = object->GetClassName();
 			pObjects[ pObjectCount ].newcname = newcname;
 			pObjects[ pObjectCount ].oldsize = object->GetSize();
+			pObjects[ pObjectCount ].oldscaling = object->GetScaling();
 			pObjects[ pObjectCount ].object = object;
 			object->AddReference();
 		}
@@ -117,7 +119,7 @@ void meUSetObjectClass::Undo(){
 		world = object->GetWorld();
 		
 		object->SetClassName( pObjects[ o ].oldcname.GetString() );
-		object->SetSize( pObjects[ o ].oldsize );
+		object->SetSizeAndScaling( pObjects[ o ].oldsize, pObjects[ o ].oldscaling );
 		
 		world->NotifyObjectClassChanged( object );
 		world->NotifyObjectGeometryChanged( object );

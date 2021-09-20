@@ -560,6 +560,33 @@ void meObject::SetScaling( const decVector &scaling ){
 	pNotifyDecalsAboutChange();
 }
 
+void meObject::SetSizeAndScaling( const decVector &size, const decVector &scaling ){
+	if( size.IsEqualTo( pSize ) && scaling.IsEqualTo( pScaling ) ){
+		return;
+	}
+	
+	meCLInvalidateDecals::Helper InvalidateDecals( pWorld );
+	InvalidateDecals.Collect( *pWObject );
+	
+	pSize = decVector( 1e-5f, 1e-5f, 1e-5f ).Largest( size );
+	pScaling = decVector( 1e-5f, 1e-5f, 1e-5f ).Largest( scaling );
+	
+	if( pWorld ){
+		pWorld->SetChanged( true );
+	}
+	
+	pUpdateDDSCoordSysArrowsLength();
+	
+	pUpdateShapes();
+	pRepositionDDSNavSpaces();
+	UpdateNavPathTest();
+	
+	InvalidateDecals.Collect( *pWObject );
+	InvalidateDecals.InvalidateDecals();
+	
+	pNotifyDecalsAboutChange();
+}
+
 void meObject::SetRotation( const decVector &rotation ){
 	if( rotation.IsEqualTo( pRotation ) ){
 		return;

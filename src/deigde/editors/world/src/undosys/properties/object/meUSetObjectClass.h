@@ -44,6 +44,7 @@ private:
 		decString oldcname;
 		decString newcname;
 		decVector oldsize;
+		decVector oldscaling;
 	};
 	
 private:
