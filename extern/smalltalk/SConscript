@@ -160,7 +160,7 @@ envLibrary.Depends( library, parent_targets[ 'lib_libltdl' ][ 'depends' ] )
 if envLibrary[ 'OSPosix' ]:
 	envLibrary.Depends( library, parent_targets[ 'lib_libsigsegv' ][ 'depends' ] )
 
-envLibrary.SideEffect('#notParallelCMake', library)
+#envLibrary.SideEffect('#notParallelCMake', library)
 
 depends = parent_env.Alias( 'lib_smalltalk', library )
 

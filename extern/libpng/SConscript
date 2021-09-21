@@ -121,7 +121,7 @@ library = envLibrary.Command( targets, '{}.tar.bz2'.format( srcdir ),
 if parent_targets[ 'lib_zlib' ][ 'depends' ]:
 	envLibrary.Depends( library, parent_targets[ 'lib_zlib' ][ 'depends' ] )
 
-envLibrary.SideEffect('#notParallelCMake', library)
+#envLibrary.SideEffect('#notParallelCMake', library)
 
 depends = parent_env.Alias( 'lib_libpng', library )
 

@@ -46,8 +46,6 @@ def openvrBuild(target, source, env):
 	else:
 		cmdline.append('-DCMAKE_BUILD_TYPE=Release')
 	
-	cmdline.append('../{}'.format(srcdir))
-	
 	if env['platform_android'] != 'no':
 		cmdline.append('-DANDROID_PLATFORM={}'.format(env['ANDROID_APILEVEL']))
 		cmdline.append('-DCMAKE_TOOLCHAIN_FILE="{}/build/cmake/android.toolchain.cmake"'.format(env['ndkroot']))
@@ -59,6 +57,7 @@ def openvrBuild(target, source, env):
 		cmdline.append('-DCMAKE_TOOLCHAIN_FILE="{}"'.format(
 			env.File('#extern/mingw/mingw-w64-x86_64.cmake').abspath))
 	
+	cmdline.append('../{}'.format(srcdir))
 	script.append('{} || exit 1'.format(' '.join(cmdline)))
 	
 	script.append('make -j {} install || exit 1'.format(env['with_threads']))

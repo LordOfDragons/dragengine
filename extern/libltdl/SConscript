@@ -105,7 +105,7 @@ library = envLibrary.Command( targets, '{}.tar.bz2'.format( srcdir ),
 	envLibrary.Action(libltdlBuild, 'Build libltdl' ) )
 envLibrary.Depends( library, envLibrary[ 'PATCHES' ] )
 
-envLibrary.SideEffect('#notParallelCMake', library)
+#envLibrary.SideEffect('#notParallelCMake', library)
 
 depends = parent_env.Alias( 'lib_libltdl', library )
 

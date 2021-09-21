@@ -128,7 +128,7 @@ if gnuConfigUpdate:
 if parent_targets[ 'lib_libvorbis' ][ 'depends' ]:
 	envLibrary.Depends( library, parent_targets[ 'lib_libvorbis' ][ 'depends' ] )
 
-envLibrary.SideEffect('#notParallelCMake', library)
+#envLibrary.SideEffect('#notParallelCMake', library)
 
 depends = parent_env.Alias( 'lib_libtheora', library )
 

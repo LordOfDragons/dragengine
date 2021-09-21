@@ -115,7 +115,7 @@ for x in dependencies:
 if not buildStaticLinking:
 	envLibrary.Depends(library, envLibrary['PATCHES'])
 
-envLibrary.SideEffect('#notParallelCMake', library)
+#envLibrary.SideEffect('#notParallelCMake', library)
 
 depends = parent_env.Alias('lib_libopenhmd', library)
 

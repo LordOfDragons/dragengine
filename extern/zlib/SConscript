@@ -118,7 +118,7 @@ if envLibrary['OSWindows']:
 library = envLibrary.Command( targets, '{}.tar.bz2'.format( srcdir ),
 	envLibrary.Action(zlibBuild, 'Build zlib' ) )
 
-envLibrary.SideEffect('#notParallelCMake', library)
+#envLibrary.SideEffect('#notParallelCMake', library)
 
 depends = parent_env.Alias( 'lib_zlib', library )
 

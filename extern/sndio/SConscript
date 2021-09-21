@@ -79,7 +79,7 @@ targets.extend(['include/sndio.h'])
 library = envLibrary.Command( targets, '{}.tar.bz2'.format( srcdir ),
 	envLibrary.Action(sndioBuild, 'Build sndio' ) )
 
-envLibrary.SideEffect('#notParallelCMake', library)
+#envLibrary.SideEffect('#notParallelCMake', library)
 
 depends = parent_env.Alias( 'lib_sndio', library )
 

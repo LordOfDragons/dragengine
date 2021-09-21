@@ -179,7 +179,7 @@ envLibrary.Depends(library, envLibrary['POST_PATCHES'])
 if envLibrary['OSWindows']:
 	envLibrary.Depends(library, parent_targets['lib_libpng']['depends'])
 
-envLibrary.SideEffect('#notParallelCMake', library)
+#envLibrary.SideEffect('#notParallelCMake', library)
 
 depends = parent_env.Alias('lib_fox', library)
 

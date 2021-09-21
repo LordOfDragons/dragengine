@@ -68,6 +68,10 @@ def openalBuild(target, source, env):
 	
 	untarArchive(buildDir.abspath, source[0].abspath)
 	
+	cmakeBuildDir = buildDir.Dir('build').abspath
+	if not os.path.isdir(cmakeBuildDir):
+		os.mkdir(cmakeBuildDir)
+	
 	if env['platform_android'] != 'no':
 		# https://github.com/kcat/openal-soft/issues/274#issuecomment-471091942
 		# OpenAL reacts badly to set up cross compilers manually because it is
@@ -77,12 +81,13 @@ def openalBuild(target, source, env):
 		#script = createScriptHeader(env, deps=[parent_targets['lib_sndio']])
 		script = createScriptHeader(env)
 	
-	script.append('cd "{}" || exit 1'.format(buildDir.Dir(srcdir).abspath))
+	realSrcDir = buildDir.Dir(srcdir).abspath
+	script.append('cd "{}" || exit 1'.format(realSrcDir))
 	
 	for p in env['PATCHES']:
 		script.append('patch -p1 <{} || exit 1'.format(p.srcnode().abspath))
 	
-	script.append('cd build')
+	script.append('cd "{}" || exit 1'.format(cmakeBuildDir))
 	cmdline = ['cmake']
 	cmdline.append('-DCMAKE_INSTALL_PREFIX="{}"'.format(buildDir.abspath))
 	cmdline.append('-DALSOFT_CONFIG=OFF')
@@ -120,7 +125,7 @@ def openalBuild(target, source, env):
 		cmdline.append('-DCMAKE_POSITION_INDEPENDENT_CODE=ON')
 		cmdline.append('-DLIBTYPE=STATIC')
 	
-	cmdline.append('..')
+	cmdline.append('"{}"'.format(realSrcDir))
 	
 	if env['platform_android'] != 'no':
 		cmdline.append('-DANDROID_PLATFORM={}'.format(env['ANDROID_APILEVEL']))
@@ -137,9 +142,11 @@ def openalBuild(target, source, env):
 	script.append('make -j {} install || exit 1'.format(env['with_threads']))
 	
 	# fix annoying wrong-library problems in 64-bit systems
-	script.append('if [ -f ../../lib64/libopenal.a ]')
+	script.append('if [ -f "{}" ]'.format(buildDir.File('lib64/libopenal.a').abspath))
 	script.append('then')
-	script.append('  cp -fL ../../lib64/libopenal.a ../../lib/libopenal.a')
+	script.append('  cp -fL "{}" "{}"'.format(
+		buildDir.File('lib64/libopenal.a').abspath,
+		buildDir.File('lib/libopenal.a').abspath))
 	script.append('fi')
 	
 	if not env.RunExternalCommand(script):
@@ -226,7 +233,7 @@ envLibrary.SideEffect('#notParallelCMake', library)
 
 depends = parent_env.Alias('lib_openal', library)
 
-envLibrary.Clean(library, ['bin', 'include', 'lib', srcdir])
+envLibrary.Clean(library, ['bin', 'include', 'lib', 'build', srcdir])
 
 cpppath = [envLibrary.Dir('include')]
 #cpppath.extend(parent_targets['lib_sndio']['cpppath'])
