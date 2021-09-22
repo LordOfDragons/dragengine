@@ -180,6 +180,8 @@ private:
 	bool pSharedVideoPlayer;
 	int pRenderable;
 	
+	float pSolidityFilterPriority;
+	
 	
 	
 public:

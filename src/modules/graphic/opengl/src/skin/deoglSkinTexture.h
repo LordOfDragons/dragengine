@@ -218,6 +218,7 @@ private:
 	bool pHasEmissivity;
 	
 	bool pSolidityMasked;
+	float pSolidityFilterPriority;
 	bool pSolid;
 	bool pHasHoles;
 	bool pReflects;
@@ -377,6 +378,13 @@ public:
 	inline bool GetSolidityMasked() const{ return pSolidityMasked; }
 	/** Sets if the texture uses full alpha. */
 	void SetSolidityMasked( bool solidityMasked );
+	
+	/** Solidity filter priority. */
+	inline bool GetSolidityFilterPriority() const{ return pSolidityFilterPriority; }
+	
+	/** Set solidity filter priority. */
+	void SetSolidityFilterPriority( float solidityFilterPriority );
+	
 	/** Determines if the texture is solid. */
 	inline bool GetSolid() const{ return pSolid; }
 	/** Sets if the texture is solid. */

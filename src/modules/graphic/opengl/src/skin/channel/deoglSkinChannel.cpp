@@ -113,7 +113,9 @@ pImageHeld( false ),
 pVideo( NULL ),
 pVideoPlayer( -1 ),
 pSharedVideoPlayer( true ),
-pRenderable( -1 ){
+pRenderable( -1 ),
+
+pSolidityFilterPriority( 0.5f ){
 }
 
 deoglSkinChannel::~deoglSkinChannel(){
@@ -669,6 +671,7 @@ deoglSkinChannel::eChannelTypes& channelType ){
 		return true;
 		
 	case deoglSkinPropertyMap::eptSolidity:
+	case deoglSkinPropertyMap::eptSolidityFilterPriority:
 		channelType = ectSolidity;
 		return true;
 		
@@ -1058,6 +1061,10 @@ deoglSkinTexture &texture, const deSkinPropertyValue &property ){
 		}else{
 			texture.SetHasZeroSolidity( value < 0.001f );
 		}
+		break;
+		
+	case deoglSkinPropertyMap::eptSolidityFilterPriority:
+		pSolidityFilterPriority = decMath::clamp( value, 0.0f, 1.0f );
 		break;
 		
 	case deoglSkinPropertyMap::eptRefractionDistort:
@@ -1603,6 +1610,7 @@ void deoglSkinChannel::pBuildCacheID(){
 	//   'b' => mip maps are present and filtered using box-filtering
 	//   'n' => mip maps are present and filtered using 3d-normal respecting filter
 	//   'm' => mip maps are present and filtered uisng maximum filter
+	//   'M' => mip maps are present and filtered uisng minimum filter
 	//   '-' => mip maps are not present
 	// 
 	// <uniform-colors> defines the uniform color as 64-bit hex value in the form RGBA.
@@ -1772,9 +1780,20 @@ void deoglSkinChannel::pBuildCacheID(){
 		case ectReflectivity:
 		case ectRoughness:
 		case ectRefractDistort:
-		case ectSolidity:
 		case ectRimEmissivity:
 			pCacheID.AppendCharacter( 'b' );
+			break;
+			
+		case ectSolidity:
+			if( pSolidityFilterPriority < 0.35f ){
+				pCacheID.AppendCharacter( 'M' ); // minimum filter
+				
+			}else if( pSolidityFilterPriority > 0.65f ){
+				pCacheID.AppendCharacter( 'm' ); // maximum filter
+				
+			}else{
+				pCacheID.AppendCharacter( 'b' ); // box filter (averaging)
+			}
 			break;
 			
 		case ectNormal:

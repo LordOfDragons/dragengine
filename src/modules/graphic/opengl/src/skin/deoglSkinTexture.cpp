@@ -414,6 +414,7 @@ pSharedSPBElement( NULL )
 	pSolidity = 1.0f;
 	pSolidityMultiplier = 1.0f;
 	pSolidityMasked = false;
+	pSolidityFilterPriority = 0.5f;
 	
 	pReflected = true;
 	pShadeless = false;
@@ -619,6 +620,10 @@ void deoglSkinTexture::SetHasEmissivity( bool hasEmissivity ){
 
 void deoglSkinTexture::SetSolidityMasked( bool solidityMasked ){
 	pSolidityMasked = solidityMasked;
+}
+
+void deoglSkinTexture::SetSolidityFilterPriority( float solidityFilterPriority ){
+	pSolidityFilterPriority = decMath::clamp( solidityFilterPriority, 0.0f, 1.0f );
 }
 
 void deoglSkinTexture::SetSolid( bool solid ){
@@ -1861,10 +1866,16 @@ void deoglSkinTexture::pCreateMipMaps(){
 				pChannels[ i ]->SetPixelBufferMipMap( NULL );
 				break;
 			}
-			//pbMipMap->CreateMipMapsMin();
-			pbMipMap->CreateMipMapsMax();
 			#endif
-			pbMipMap->CreateMipMaps();
+			if( pSolidityFilterPriority < 0.35f ){
+				pbMipMap->CreateMipMapsMin();
+				
+			}else if( pSolidityFilterPriority > 0.65f ){
+				pbMipMap->CreateMipMapsMax();
+				
+			}else{
+				pbMipMap->CreateMipMaps();
+			}
 			break;
 			
 		case deoglSkinChannel::ectNormal:
@@ -2211,6 +2222,10 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 			
 		case deoglSkinPropertyMap::eptSolidityMasked:
 			pSolidityMasked = value > 0.5f;
+			break;
+			
+		case deoglSkinPropertyMap::eptSolidityFilterPriority:
+			pSolidityFilterPriority = decMath::clamp( value, 0.0f, 1.0f );
 			break;
 			
 		case deoglSkinPropertyMap::eptRefractionDistortStrength:

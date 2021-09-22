@@ -115,6 +115,9 @@ namespace deoglSkinPropertyMap{
 		/** \brief Solidity multiplier. */
 		eptSolidityMultiplier,
 		
+		/** \brief Solidity filter priority. */
+		eptSolidityFilterPriority,
+		
 		/** \brief Refraction distortion. */
 		eptRefractionDistort,
 		
