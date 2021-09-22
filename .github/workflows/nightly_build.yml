@@ -126,7 +126,7 @@ jobs:
           allow_override: true
           draft: true
           files: >
-            installer/build/install-dragengine-nightly-linux64.sh
-            installer/build/install-dragengine-dev-nightly-linux64.sh
-            installer/build/install-deigde-nightly-linux64.sh
-            installer/build/install-deigde-dev-nightly-linux64.sh
+            install-dragengine-nightly-linux64.sh
+            install-dragengine-dev-nightly-linux64.sh
+            install-deigde-nightly-linux64.sh
+            install-deigde-dev-nightly-linux64.sh
