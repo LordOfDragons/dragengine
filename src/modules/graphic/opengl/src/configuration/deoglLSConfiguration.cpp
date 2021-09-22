@@ -281,9 +281,6 @@ void deoglLSConfiguration::pLoadConfigOpenGL( deoglConfiguration &configuration,
 				}else if( strcmp( name, "lodMaxPixelError" ) == 0 ){
 					configuration.SetLODMaxPixelError( (int)strtol( tag->GetFirstData()->GetData(), NULL, 10 ) );
 					
-				}else if( strcmp( name, "lodMaxErrorPerLevel" ) == 0 ){
-					configuration.SetLODMaxErrorPerLevel( strtof( tag->GetFirstData()->GetData(), NULL ) );
-					
 					
 					
 				}else if( strcmp( name, "normalRoughnessCorrectionStrength" ) == 0 ){

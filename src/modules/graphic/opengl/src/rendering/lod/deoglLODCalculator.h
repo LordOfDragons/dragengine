@@ -36,7 +36,6 @@ class deoglCollideListComponent;
 class deoglLODCalculator{
 private:
 	int pMaxPixelError;
-	float pMaxErrorPerLevel;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -51,8 +50,6 @@ public:
 	/*@{*/
 	/** Sets the maximum pixel error on screen. */
 	void SetMaxPixelError( int maxPixelError );
-	/** Sets the maximum error per lod level. */
-	void SetMaxErrorPerLevel( float maxErrorPerLevel );
 	
 	/** Set lod level of all components to 0. */
 	void SetComponentLOD0( deoglCollideList &collideList );

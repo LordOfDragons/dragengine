@@ -138,7 +138,6 @@ private:
 	float pDecalOffsetBias;
 	
 	int pLODMaxPixelError;
-	float pLODMaxErrorPerLevel;
 	
 	float pNormalRoughnessCorrectionStrength;
 	
@@ -372,10 +371,6 @@ public:
 	inline int GetLODMaxPixelError() const{ return pLODMaxPixelError; }
 	/** Sets the maximum pixel error allowed for LOD calculation. */
 	void SetLODMaxPixelError( int maxPixelError );
-	/** Retrieves the maximum LOD error allowed per level in LOD calculation. */
-	inline float GetLODMaxErrorPerLevel() const{ return pLODMaxErrorPerLevel; }
-	/** Sets the maximum LOD error allowed per level in LOD calculation. */
-	void SetLODMaxErrorPerLevel( float maxErrorPerLevel );
 	
 	/** Retrieves the normal roughness correction strength. */
 	inline float GetNormalRoughnessCorrectionStrength() const{ return pNormalRoughnessCorrectionStrength; }

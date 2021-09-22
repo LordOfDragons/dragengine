@@ -403,6 +403,11 @@ void main( void ){
 			solidity = 1.0;
 		#endif
 		
+		#ifdef MASKED_SOLIDITY
+		// ensure calculation of depth and geometry matches
+		solidity = solidity < 0.35 ? 0.0 : solidity;
+		#endif
+		
 		#ifdef TEXTURE_NORMAL
 			vec4 normal = TEXTURE( texNormal, tcNormal );
 			normal.xyz = normal.rgb * vec3( 1.9921569 ) + vec3( -0.9921722 );

@@ -91,7 +91,6 @@ pDecalOffsetScale( -1.5f ), //-0.1f;
 pDecalOffsetBias( -8.0f ), //-1.0f;
 
 pLODMaxPixelError( 2 ),
-pLODMaxErrorPerLevel( 0.1f ),
 
 pNormalRoughnessCorrectionStrength( 0.75f ), // 0.5f;
 
@@ -558,15 +557,6 @@ void deoglConfiguration::SetLODMaxPixelError( int maxPixelError ){
 		return;
 	}
 	pLODMaxPixelError = maxPixelError;
-	pDirty = true;
-}
-
-void deoglConfiguration::SetLODMaxErrorPerLevel( float maxErrorPerLevel ){
-	maxErrorPerLevel = decMath::max( maxErrorPerLevel, 0.001f );
-	if( fabsf( maxErrorPerLevel - pLODMaxErrorPerLevel ) < FLOAT_SAFE_EPSILON ){
-		return;
-	}
-	pLODMaxErrorPerLevel = maxErrorPerLevel;
 	pDirty = true;
 }
 

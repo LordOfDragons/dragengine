@@ -882,7 +882,6 @@ deoglShadowMapper &shadowMapper ){
 		deoglLODCalculator lodCalculator;
 		
 		lodCalculator.SetMaxPixelError( config.GetLODMaxPixelError() );
-		lodCalculator.SetMaxErrorPerLevel( config.GetLODMaxErrorPerLevel() );
 		
 		lodCalculator.SetComponentLODOrtho( *pColList2, lodBoxWidth, lodBoxHeight, shadowMapSize, shadowMapSize );
 		DebugTimer4Sample( plan.GetPlan(), *pDebugInfoSolidShadowSplitLODLevels, false );

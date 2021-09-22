@@ -858,7 +858,6 @@ void deoglRenderPlan::pPlanLODLevels(){
 	const deoglConfiguration &config = pRenderThread.GetConfiguration();
 	deoglLODCalculator lodCalculator;
 	lodCalculator.SetMaxPixelError( config.GetLODMaxPixelError() );
-	lodCalculator.SetMaxErrorPerLevel( config.GetLODMaxErrorPerLevel() );
 	
 	lodCalculator.SetComponentLODProjection( pCollideList, pCameraPosition,
 		pCameraInverseMatrix.TransformView(), pCameraFov, pCameraFov * pCameraFovRatio,

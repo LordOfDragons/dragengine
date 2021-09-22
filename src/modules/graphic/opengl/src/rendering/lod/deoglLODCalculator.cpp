@@ -39,9 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglLODCalculator::deoglLODCalculator(){
-	pMaxPixelError = 2;
-	pMaxErrorPerLevel = 0.1f;
+deoglLODCalculator::deoglLODCalculator() :
+pMaxPixelError( 2 ){
 }
 
 deoglLODCalculator::~deoglLODCalculator(){
@@ -53,21 +52,7 @@ deoglLODCalculator::~deoglLODCalculator(){
 ///////////////
 
 void deoglLODCalculator::SetMaxPixelError( int maxPixelError ){
-	if( maxPixelError < 1 ){
-		pMaxPixelError = 1;
-		
-	}else{
-		pMaxPixelError = maxPixelError;
-	}
-}
-
-void deoglLODCalculator::SetMaxErrorPerLevel( float maxErrorPerLevel ){
-	if( maxErrorPerLevel < 0.001f ){
-		pMaxErrorPerLevel = 0.001f;
-		
-	}else{
-		pMaxErrorPerLevel = maxErrorPerLevel;
-	}
+	pMaxPixelError = decMath::max( maxPixelError, 1 );
 }
 
 
@@ -159,20 +144,16 @@ const decDVector &view, float fovX, float fovY, int screenWidth, int screenHeigh
 				if( componentDistance > 1.0f ){
 					const float errorScaling = component.GetLODErrorScaling();
 					
-					float clampError = pMaxErrorPerLevel;
-					
 					for( j=1; j<lodLevelCount; j++ ){
 						const deoglModelLOD &lod = model.GetLODAt( j );
 						
-						const float maxError = decMath::min( lod.GetMaxError() * errorScaling, clampError );
+						const float maxError = lod.GetMaxError() * errorScaling;
 						const float minErrorDistance = maxError * factor;
-						if( componentDistance > minErrorDistance ){
-							lodLevel = j;
-							clampError += pMaxErrorPerLevel;
-							
-						}else{
+						if( componentDistance <= minErrorDistance ){
 							break;
 						}
+						
+						lodLevel = j;
 					}
 				}
 			}
@@ -227,19 +208,17 @@ int screenWidth, int screenHeight ){
 		}
 		
 		const float errorScaling = component.GetLODErrorScaling();
-		float clampError = pMaxErrorPerLevel;
 		int lodLevel = 0;
 		
 		for( j=1; j<lodLevelCount; j++ ){
 			const deoglModelLOD &lod = model.GetLODAt( j );
 			
-			const float maxError = decMath::min( lod.GetMaxError() * errorScaling, clampError );
+			const float maxError = lod.GetMaxError() * errorScaling;
 			if( maxError * factor > pMaxPixelError ){
 				break;
 			}
 			
 			lodLevel = j;
-			clampError += pMaxErrorPerLevel;
 		}
 		
 		//lodLevel = 0;
@@ -268,19 +247,17 @@ float boxWidth, float boxHeight, int screenWidth, int screenHeight ){
 	}
 	
 	const float errorScaling = component.GetLODErrorScaling();
-	float clampError = pMaxErrorPerLevel;
 	int i, lodLevel = 0;
 	
 	for( i=1; i<lodLevelCount; i++ ){
 		const deoglModelLOD &lod = model.GetLODAt( i );
 		
-		const float maxError = decMath::min( lod.GetMaxError() * errorScaling, clampError );
+		const float maxError = lod.GetMaxError() * errorScaling;
 		if( maxError * factor > pMaxPixelError ){
 			break;
 		}
 		
 		lodLevel = i;
-		clampError += pMaxErrorPerLevel;
 	}
 	
 	clistComponent.SetLODLevel( lodLevel );

@@ -326,6 +326,7 @@ void main( void ){
 				if( all( lessThan( emissivity, vec3( 0.001 ) ) ) ){
 					discard;
 				}
+				solidity = 0.0;
 			#else
 				discard;
 			#endif

@@ -79,7 +79,6 @@
 #include "parameters/gi/deoglPGIQuality.h"
 #include "parameters/gi/deoglPGIUpdateSpeed.h"
 #include "parameters/light/deoglPLightCutOffIntensity.h"
-#include "parameters/lod/deoglPLODMaxErrorPerLevel.h"
 #include "parameters/lod/deoglPLODMaxPixelError.h"
 #include "parameters/norRoughCorr/deoglPNorRougCorrStrength.h"
 #include "parameters/postprocessing/deoglPBrightness.h"
@@ -589,7 +588,6 @@ void deGraphicOpenGl::pCreateParameters() {
 	pParameters.AddParameter( new deoglPRenderDownScale( *this ) );
 	
 	pParameters.AddParameter( new deoglPLODMaxPixelError( *this ) );
-	pParameters.AddParameter( new deoglPLODMaxErrorPerLevel( *this ) );
 	
 	pParameters.AddParameter( new deoglPNorRougCorrStrength( *this ) );
 	
