@@ -22,9 +22,10 @@ jobs:
       
       - name: Build
         # openvr seems to be a problem child that like to get stuck in CMake on Ubuntu.
-        # build it first to avoid it loking up things
+        # build it first to avoid it loking up things. libjpeg is another trouble maker.
         run: |
           scons -j 1 lib_openvr
+          scons -j 1 lib_libjpeg
           scons -j 14 archive installer
       
       - name: Get current date
@@ -60,9 +61,10 @@ jobs:
       
       - name: Build
         # openvr seems to be a problem child that like to get stuck in CMake on Ubuntu.
-        # build it first to avoid it loking up things
+        # build it first to avoid it loking up things. libjpeg is another trouble maker.
         run: |
           scons tools=mingw64 -j 1 lib_openvr
+          scons tools=mingw64 -j 1 lib_libjpeg
           scons tools=mingw64 -j 14 archive
       
   #    - name: Build Installer
