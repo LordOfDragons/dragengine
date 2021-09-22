@@ -101,7 +101,10 @@ def jpegBuild(target, source, env):
 	cmdline.append('"{}"'.format(buildDir.Dir(srcdir).abspath))
 	script.append('{} || exit 1'.format(' '.join(cmdline)))
 	
-	script.append('make -j {} install || exit 1'.format(env['with_threads']))
+	#script.append('make -j {} install || exit 1'.format(env['with_threads']))
+	# randomly hangs if multithreaded building is used
+	
+	script.append('make install || exit 1')
 	
 	if not env.RunExternalCommand(script):
 		raise Exception('Failed building libjpeg')
