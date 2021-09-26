@@ -88,6 +88,10 @@ private:
 	DEF_NATFUNC( nfSetRemoveAfterLastParticleDied );
 	DEF_NATFUNC( nfGetTimeScale );
 	DEF_NATFUNC( nfSetTimeScale );
+	DEF_NATFUNC( nfGetWarmUpTime );
+	DEF_NATFUNC( nfSetWarmUpTime );
+	DEF_NATFUNC( nfGetBurstTime );
+	DEF_NATFUNC( nfSetBurstTime );
 	
 	DEF_NATFUNC( nfGetControllerCount );
 	DEF_NATFUNC( nfGetControllerAt );

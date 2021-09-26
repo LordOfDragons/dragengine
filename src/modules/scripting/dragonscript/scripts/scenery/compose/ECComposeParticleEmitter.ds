@@ -37,6 +37,7 @@ pin Dragengine.TriggerSystem
 class ECComposeParticleEmitter
 	private var ECPParticleEmitter pParticleEmitter
 	private var ECPFloat pTimeScale
+	private var ECPFloat pWarmUpTime
 	private var ECPBoolean pCasting
 	private var LayerMask pLayerMask
 	private var ECComposeCollisionFilter pCollisionFilter
@@ -72,6 +73,9 @@ class ECComposeParticleEmitter
 		this.pTimeScale = ECPFloat.new( prefix + "timeScale", 1 )
 		ownerClass.addProperty( this.pTimeScale )
 		
+		this.pWarmUpTime = ECPFloat.new( prefix + "warmUpTime", 0 )
+		ownerClass.addProperty( this.pWarmUpTime )
+		
 		this.pCasting = ECPBoolean.new( prefix + "casting", true )
 		ownerClass.addProperty( this.pCasting )
 		
@@ -102,6 +106,11 @@ class ECComposeParticleEmitter
 	/** \brief Time scale for controllers advanced by time. */
 	public func ECPFloat getTimeScale()
 		return this.pTimeScale
+	end
+	
+	/** \brief Warm up time when start casting. */
+	public func ECPFloat getWarmUpTime()
+		return this.pWarmUpTime
 	end
 	
 	/** \brief Emitter is casting particles. */
@@ -167,6 +176,8 @@ class ECComposeParticleEmitter
 		instance.setOrientation( Quaternion.newFromEuler( stub.getRotation() ) )
 		instance.setLayerMask( this.pLayerMask )
 		instance.setCollisionFilter( this.pCollisionFilter.getCollisionFilter() )
+		instance.setTimeScale( this.pTimeScale.getValue( stub ) )
+		instance.setWarmUpTime( this.pWarmUpTime.getValue( stub ) )
 		return instance
 	end
 	

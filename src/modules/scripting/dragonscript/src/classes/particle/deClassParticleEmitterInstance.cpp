@@ -239,6 +239,48 @@ void deClassParticleEmitterInstance::nfSetTimeScale::RunFunction( dsRunTime *rt,
 	instance.SetTimeScale( rt->GetValue( 0 )->GetFloat() );
 }
 
+// public float getWarmUpTime()
+deClassParticleEmitterInstance::nfGetWarmUpTime::nfGetWarmUpTime( const sInitData &init ) : dsFunction( init.clsPEI,
+"getWarmUpTime", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat ){
+}
+void deClassParticleEmitterInstance::nfGetWarmUpTime::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const deParticleEmitterInstance &instance = *( ( ( sPEINatDat* )p_GetNativeData( myself ) )->instance );
+	
+	rt->PushFloat( instance.GetWarmUpTime() );
+}
+
+// public func void setWarmUpTime( float warmUpTime )
+deClassParticleEmitterInstance::nfSetWarmUpTime::nfSetWarmUpTime( const sInitData &init ) : dsFunction( init.clsPEI,
+"setWarmUpTime", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsFloat ); // warmUpTime
+}
+void deClassParticleEmitterInstance::nfSetWarmUpTime::RunFunction( dsRunTime *rt, dsValue *myself ){
+	deParticleEmitterInstance &instance = *( ( ( sPEINatDat* )p_GetNativeData( myself ) )->instance );
+	
+	instance.SetWarmUpTime( rt->GetValue( 0 )->GetFloat() );
+}
+
+// public float getBurstTime()
+deClassParticleEmitterInstance::nfGetBurstTime::nfGetBurstTime( const sInitData &init ) : dsFunction( init.clsPEI,
+"getBurstTime", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat ){
+}
+void deClassParticleEmitterInstance::nfGetBurstTime::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const deParticleEmitterInstance &instance = *( ( ( sPEINatDat* )p_GetNativeData( myself ) )->instance );
+	
+	rt->PushFloat( instance.GetBurstTime() );
+}
+
+// public func void setBurstTime( float burstTime )
+deClassParticleEmitterInstance::nfSetBurstTime::nfSetBurstTime( const sInitData &init ) : dsFunction( init.clsPEI,
+"setBurstTime", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsFloat ); // burstTime
+}
+void deClassParticleEmitterInstance::nfSetBurstTime::RunFunction( dsRunTime *rt, dsValue *myself ){
+	deParticleEmitterInstance &instance = *( ( ( sPEINatDat* )p_GetNativeData( myself ) )->instance );
+	
+	instance.SetBurstTime( rt->GetValue( 0 )->GetFloat() );
+}
+
 
 
 // public func int getControllerCount()
@@ -700,6 +742,10 @@ void deClassParticleEmitterInstance::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfSetRemoveAfterLastParticleDied( init ) );
 	AddFunction( new nfGetTimeScale( init ) );
 	AddFunction( new nfSetTimeScale( init ) );
+	AddFunction( new nfGetWarmUpTime( init ) );
+	AddFunction( new nfSetWarmUpTime( init ) );
+	AddFunction( new nfGetBurstTime( init ) );
+	AddFunction( new nfSetBurstTime( init ) );
 	
 	AddFunction( new nfGetControllerCount( init ) );
 	AddFunction( new nfGetControllerAt( init ) );

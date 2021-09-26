@@ -1551,6 +1551,11 @@
 			<description>Trigger target pulsed if particles died.</description>
 			<type>triggerTarget</type>
 		</property>
+		<property name='warmUpTime'>
+			<description>Time in seconds to warm-start casting particles when enabled. Ensures a stead particle emission is present when starting casting instead of starting with no particles at all</description>
+			<type>float</type>
+			<default>0</default>
+		</property>
 		<category>Dragengine/Behavior</category>
 	</class>
 	<class name='ECBehaviorPlaySound'>
