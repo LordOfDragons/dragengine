@@ -184,7 +184,7 @@ deoglVAO *deoglRComponentLOD::GetUseVAO() const{
 
 void deoglRComponentLOD::InvalidateVAO(){
 	pDirtyVAO = true;
-	pVBOBlock = NULL;
+// 	pVBOBlock = NULL;
 	pComponent.DirtyLODVBOs();
 }
 
