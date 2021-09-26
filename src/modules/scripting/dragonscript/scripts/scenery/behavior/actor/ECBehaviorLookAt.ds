@@ -445,8 +445,12 @@ class ECBehaviorLookAt extends DefaultECBehavior
 				end
 			end
 			
-			this.setLookAtElement( collider.getOwner() cast Element, bone, boneName, \
-				this.pTest.hitDistance( 0 ) )
+			var Element element = collider.getOwner() cast Element
+			if element != null and element.isDisposed()
+				element = null
+			end
+			
+			this.setLookAtElement( element, bone, boneName, this.pTest.hitDistance( 0 ) )
 		end
 		
 		/** \brief Collision test. */
@@ -477,11 +481,10 @@ class ECBehaviorLookAt extends DefaultECBehavior
 				return
 			end
 			
-			if this.pLookAtElement != null and this.pLookAtElement castable BehaviorElement
-				var ECBehaviorLookedAt.Instance behavior = \
-					ECBehaviorLookedAt.getInstanceIn( this.pLookAtElement cast BehaviorElement )
+			if pLookAtElement != null and pLookAtElement castable BehaviorElement and not pLookAtElement.isDisposed()
+				var ECBehaviorLookedAt.Instance behavior = ECBehaviorLookedAt.getInstanceIn(pLookAtElement cast BehaviorElement)
 				if behavior != null
-					behavior.removeLookingActor( this.getElement() )
+					behavior.removeLookingActor(getElement())
 				end
 			end
 			
