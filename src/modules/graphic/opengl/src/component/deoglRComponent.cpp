@@ -2185,6 +2185,7 @@ void deoglRComponent::pPrepareParamBlocks(){
 			UpdateRTSInstances();
 		}
 		
+		pDirtyOccMeshSharedSPBElement = true;
 		pValidOccMeshSharedSPBElement = true;
 	}
 	

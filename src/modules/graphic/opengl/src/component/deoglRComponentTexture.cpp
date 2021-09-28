@@ -364,6 +364,8 @@ void deoglRComponentTexture::UpdateUseSkin(){
 	pUseDoubleSided = false;
 	pUseDecal = false;
 	
+	pDirtyParamBlocks = true;
+	
 	const deoglRModel * const model = pComponent.GetModel();
 	if( ! model ){
 		pIsRendered = false;
@@ -556,6 +558,7 @@ void deoglRComponentTexture::PrepareParamBlocks(){
 		}
 		
 		// done
+		pDirtyParamBlocks = true;
 		pValidParamBlocks = true;
 	}
 	

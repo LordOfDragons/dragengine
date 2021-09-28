@@ -205,6 +205,8 @@ void deoglRBillboard::SetSkin( deoglRSkin *skin ){
 		skin->AddReference();
 	}
 	
+	pDirtySharedSPBElement = true;
+	
 	pSkinRendered.SetDirty();
 }
 
@@ -1010,6 +1012,8 @@ void deoglRBillboard::pPrepareParamBlocks(){
 		}else{
 			pSharedSPBElement = pRenderThread.GetBufferObject().GetBillboardSPBListUBO().AddElement();
 		}
+		
+		pDirtySharedSPBElement = true;
 	}
 	
 	if( pDirtySharedSPBElement ){

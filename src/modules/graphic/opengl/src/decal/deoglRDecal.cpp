@@ -893,6 +893,8 @@ void deoglRDecal::pUpdateUseSkin(){
 	pUseDynamicSkin = NULL;
 	pUseSkinState = NULL;
 	
+	pDirtySharedSPBElement = true;
+	
 	if( pSkinState ){
 		if( pDynamicSkin ){
 			pUseSkinState = pSkinState;
@@ -993,6 +995,8 @@ void deoglRDecal::pPrepareParamBlocks(){
 		pRTSInstance = pRenderThread.GetRenderTaskSharedPool().GetInstance();
 		pRTSInstance->SetSubInstanceSPB( &pSharedSPBElement->GetSPB() );
 		pUpdateRTSInstance();
+		
+		pDirtySharedSPBElement = true;
 	}
 	
 	if( pDirtySharedSPBElement ){
