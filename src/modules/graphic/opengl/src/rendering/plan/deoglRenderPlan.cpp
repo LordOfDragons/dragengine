@@ -1220,7 +1220,8 @@ void deoglRenderPlan::pRenderOcclusionTests( const deoglRenderPlanMasked *mask )
 		
 		// render occlusion tests if there is input data. results are read back in
 		// pFinishOcclusionTests to avoid stalling
-		if( pOcclusionTest->GetInputDataCount() > 0 ){
+		if( pOcclusionTest->GetInputDataCount() > 0
+		&& pRenderThread.GetConfiguration().GetOcclusionTestMode() != deoglConfiguration::eoctmNone ){
 			pOcclusionTest->UpdateVBO();
 			if( pDebug ){
 				pDebug->IncrementOccTestCount( pOcclusionTest->GetInputDataCount() );
@@ -1240,7 +1241,8 @@ void deoglRenderPlan::pFinishOcclusionTests( const deoglRenderPlanMasked *mask )
 	INIT_SPECIAL_TIMING
 	
 	// occlusion tests have been rendered in pRenderOcclusionTests to avoid stalling
-	if( pOcclusionTest->GetInputDataCount() > 0 ){
+	if( pOcclusionTest->GetInputDataCount() > 0
+	&& pRenderThread.GetConfiguration().GetOcclusionTestMode() != deoglConfiguration::eoctmNone ){
 		pOcclusionTest->UpdateResults();
 		SPECIAL_TIMER_PRINT("> UpdateResults")
 		

@@ -239,7 +239,8 @@ void deoglRenderPlanSkyLight::RenderOcclusionTests(){
 	
 	// if occlusion test input data are present render the tests. reading back the result
 	// is delayed until used in the sky light renderer. this avoids stalling
-	if( pOcclusionTest->GetInputDataCount() > 0 ){
+	if( pOcclusionTest->GetInputDataCount() > 0
+	&& pPlan.GetRenderThread().GetConfiguration().GetOcclusionTestMode() != deoglConfiguration::eoctmNone ){
 		pOcclusionTest->UpdateVBO();
 		pPlan.GetRenderThread().GetRenderers().GetOcclusion().RenderTestsSkyLayer( pPlan, *this );
 	}
@@ -259,8 +260,10 @@ void deoglRenderPlanSkyLight::StartBuildRT(){
 	}
 	
 	// potentially stalls if not finished yet
-	pOcclusionTest->UpdateResults();
-	pCollideList.RemoveCulledElements();
+	if( pPlan.GetRenderThread().GetConfiguration().GetOcclusionTestMode() != deoglConfiguration::eoctmNone ){
+		pOcclusionTest->UpdateResults();
+		pCollideList.RemoveCulledElements();
+	}
 	
 	// start parallel task to build split render plans. the first 3 cascades usually have
 	// small amount of content so they can be process sequentially. the 4th cascade on the

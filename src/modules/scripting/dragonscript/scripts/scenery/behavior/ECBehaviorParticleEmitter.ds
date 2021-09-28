@@ -305,7 +305,7 @@ class ECBehaviorParticleEmitter extends DefaultECBehavior
 			return this.pTrigger
 		end
 		
-		/** \brief Particle emitter instance. */
+		/** \brief Particle emitter instance or null if not created. */
 		public func ParticleEmitterInstance getParticleEmitterInstance()
 			return this.pParticleEmitterInstance
 		end
@@ -323,11 +323,14 @@ class ECBehaviorParticleEmitter extends DefaultECBehavior
 				return
 			end
 			
-			this.pCasting = casting
-			if casting
-				this.pParticleEmitterInstance.resetBurst()
+			pCasting = casting
+			
+			if pParticleEmitterInstance != null
+				if casting
+					pParticleEmitterInstance.resetBurst()
+				end
+				pParticleEmitterInstance.setEnableCasting(casting and getElement().getVisible())
 			end
-			this.pParticleEmitterInstance.setEnableCasting( casting and this.getElement().getVisible() )
 			
 			if casting
 				this.pListeners.forEach( block Listener each
@@ -390,12 +393,16 @@ class ECBehaviorParticleEmitter extends DefaultECBehavior
 		
 		/** \brief State changed (visble, touchable). */
 		public func void stateChanged()
-			this.pParticleEmitterInstance.setEnableCasting( this.pCasting and this.getElement().getVisible() )
+			if pParticleEmitterInstance != null
+				pParticleEmitterInstance.setEnableCasting(pCasting and getElement().getVisible())
+			end
 		end
 		
 		/** \brief Add element to game world. */
 		public func void addToGameWorld()
-			this.getElement().getGameWorld().getWorld().addParticleEmitter( this.pParticleEmitterInstance )
+			if pParticleEmitterInstance != null
+				getElement().getGameWorld().getWorld().addParticleEmitter(pParticleEmitterInstance)
+			end
 			
 			this.pTargetCasting.acquireTarget( this.pTriggerTable )
 			if this.pCasting
@@ -410,7 +417,10 @@ class ECBehaviorParticleEmitter extends DefaultECBehavior
 		
 		/** \brief Remove element from game world. */
 		public func void removeFromGameWorld()
-			this.getElement().getGameWorld().getWorld().removeParticleEmitter( this.pParticleEmitterInstance )
+			if pParticleEmitterInstance != null
+				getElement().getGameWorld().getWorld().removeParticleEmitter(pParticleEmitterInstance)
+			end
+			
 			this.pTargetCasting.dropTarget()
 			this.pTargetLastParticleDied.dropTarget()
 		end

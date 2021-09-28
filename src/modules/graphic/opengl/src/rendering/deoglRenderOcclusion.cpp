@@ -1049,6 +1049,7 @@ float clipNear2, const decMatrix &matrixCamera2, deoglRenderPlan &plan ){
 		shader->SetParameterDMatrix4x4( sptMatrix, matrixCamera );
 		shader->SetParameterFloat( sptScaleSize, ( float )occlusionMap.GetWidth(), ( float )occlusionMap.GetHeight() );
 		shader->SetParameterFloat( sptBaseLevel, ( float )baselevel );
+		/* frustum test not supported without transform feedback
 		shader->SetParameterDMatrix4x4( sptMatrix2, matrixCamera2 );
 		shader->SetParameterVector3( sptFrustumNormal1, frustumPlaneNormal[ 0 ] );
 		shader->SetParameterVector3( sptFrustumNormal2, frustumPlaneNormal[ 1 ] );
@@ -1056,6 +1057,7 @@ float clipNear2, const decMatrix &matrixCamera2, deoglRenderPlan &plan ){
 		shader->SetParameterVector3( sptFrustumNormal4, frustumPlaneNormal[ 3 ] );
 		shader->SetParameterFloat( sptFrustumTestAdd, frustumFactorAdd[ 0 ], frustumFactorAdd[ 1 ], frustumFactorAdd[ 2 ], frustumFactorAdd[ 3 ] );
 		shader->SetParameterFloat( sptFrustumTestMul, frustumFactorMul[ 0 ], frustumFactorMul[ 1 ], frustumFactorMul[ 2 ], frustumFactorMul[ 3 ] );
+		*/
 		
 		tsmgr.EnableTexture( 0, *occlusionMap.GetTexture(), GetSamplerClampNearestMipMap() );
 		
