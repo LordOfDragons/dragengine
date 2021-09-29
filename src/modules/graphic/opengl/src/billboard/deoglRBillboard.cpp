@@ -206,6 +206,7 @@ void deoglRBillboard::SetSkin( deoglRSkin *skin ){
 	}
 	
 	pDirtySharedSPBElement = true;
+	pRequiresPrepareForRender();
 	
 	pSkinRendered.SetDirty();
 }

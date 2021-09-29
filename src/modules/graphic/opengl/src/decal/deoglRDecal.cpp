@@ -114,6 +114,7 @@ pListenerIndex( 0 )
 	pUseSkinState = NULL;
 	
 	pDirtyPrepareSkinStateRenderables = true;
+	pRequiresPrepareForRender();
 	
 	pVBOBlock = NULL;
 	pPointCount = 0;

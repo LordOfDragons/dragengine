@@ -365,6 +365,7 @@ void deoglRComponentTexture::UpdateUseSkin(){
 	pUseDecal = false;
 	
 	pDirtyParamBlocks = true;
+	pComponent.DirtyTextureParamBlocks();
 	
 	const deoglRModel * const model = pComponent.GetModel();
 	if( ! model ){
