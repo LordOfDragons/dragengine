@@ -35,6 +35,8 @@
 #include "../../component/deoglRComponent.h"
 #include "../../debug/debugSnapshot.h"
 #include "../../debug/deoglDebugInformation.h"
+#include "../../delayedoperation/deoglDelayedDeletion.h"
+#include "../../delayedoperation/deoglDelayedOperations.h"
 #include "../../gi/deoglGIState.h"
 #include "../../gi/deoglGICascade.h"
 #include "../../model/deoglRModel.h"
@@ -96,6 +98,27 @@ pTaskGIUpdateRT( NULL )
 	}
 }
 
+class deoglRenderPlanSkyLightDeletion : public deoglDelayedDeletion{
+public:
+	deoglRenderTask *renderTasks[ 4 ];
+	
+	deoglRenderPlanSkyLightDeletion(){
+		memset( renderTasks, 0, sizeof( renderTasks ) );
+	}
+	
+	virtual ~deoglRenderPlanSkyLightDeletion(){
+	}
+	
+	virtual void DeleteObjects( deoglRenderThread& ){
+		int i;
+		for( i=0; i<4; i++ ){
+			if( renderTasks[ i ] ){
+				delete renderTasks[ i ];
+			}
+		}
+	}
+};
+
 deoglRenderPlanSkyLight::~deoglRenderPlanSkyLight(){
 	Clear();
 	
@@ -104,9 +127,25 @@ deoglRenderPlanSkyLight::~deoglRenderPlanSkyLight(){
 		if( pShadowLayers[ i ].addToRenderTask ){
 			delete pShadowLayers[ i ].addToRenderTask;
 		}
-		if( pShadowLayers[ i ].renderTask ){
-			delete pShadowLayers[ i ].renderTask;
+		// pShadowLayers[ i ].renderTask has OpenGL objects. needs to be delayed deleted
+	}
+	
+	// delayed deletion of opengl containing objects
+	deoglRenderPlanSkyLightDeletion *delayedDeletion = NULL;
+	
+	try{
+		delayedDeletion = new deoglRenderPlanSkyLightDeletion;
+		for( i=0; i<4; i++ ){
+			delayedDeletion->renderTasks[ i ] = pShadowLayers[ i ].renderTask;
 		}
+		pPlan.GetRenderThread().GetDelayedOperations().AddDeletion( delayedDeletion );
+		
+	}catch( const deException &e ){
+		if( delayedDeletion ){
+			delete delayedDeletion;
+		}
+		pPlan.GetRenderThread().GetLogger().LogException( e );
+		//throw; -> otherwise terminate
 	}
 }
 
