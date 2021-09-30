@@ -27,6 +27,8 @@
 #include "parallel/deoglRPTBuildRTsDepth.h"
 #include "parallel/deoglRPTBuildRTsGeometry.h"
 #include "../../deGraphicOpenGl.h"
+#include "../../delayedoperation/deoglDelayedDeletion.h"
+#include "../../delayedoperation/deoglDelayedOperations.h"
 #include "../../rendering/deoglRenderCanvas.h"
 #include "../../renderthread/deoglRenderThread.h"
 #include "../../renderthread/deoglRTLogger.h"
@@ -46,20 +48,98 @@
 deoglRenderPlanTasks::deoglRenderPlanTasks( deoglRenderPlan &plan ) :
 pPlan( plan ),
 
-pSolidDepthTask( plan.GetRenderThread() ),
-pSolidDepthOutlineTask( plan.GetRenderThread() ),
-pSolidGeometryTask( plan.GetRenderThread() ),
-pSolidGeometryHeight1Task( plan.GetRenderThread() ),
-pSolidGeometryHeight2Task( plan.GetRenderThread() ),
-pSolidGeometryOutlineTask( plan.GetRenderThread() ),
-pSolidDecalsTask( plan.GetRenderThread() ),
+pSolidDepthTask( nullptr ),
+pSolidDepthOutlineTask( nullptr ),
+pSolidGeometryTask( nullptr ),
+pSolidGeometryHeight1Task( nullptr ),
+pSolidGeometryHeight2Task( nullptr ),
+pSolidGeometryOutlineTask( nullptr ),
+pSolidDecalsTask( nullptr ),
 
 pTaskDepth( NULL ),
-pTaskGeometry( NULL ){
+pTaskGeometry( NULL )
+{
+	pSolidDepthTask = new deoglRenderTask( plan.GetRenderThread() );
+	pSolidDepthOutlineTask = new deoglRenderTask( plan.GetRenderThread() );
+	pSolidGeometryTask = new deoglRenderTask( plan.GetRenderThread() );
+	pSolidGeometryHeight1Task = new deoglRenderTask( plan.GetRenderThread() );
+	pSolidGeometryHeight2Task = new deoglRenderTask( plan.GetRenderThread() );
+	pSolidGeometryOutlineTask = new deoglRenderTask( plan.GetRenderThread() );
+	pSolidDecalsTask = new deoglRenderTask( plan.GetRenderThread() );
 }
+
+class deoglRenderPlanTasksDeletion : public deoglDelayedDeletion{
+public:
+	deoglRenderTask *solidDepthTask;
+	deoglRenderTask *solidDepthOutlineTask;
+	deoglRenderTask *solidGeometryTask;
+	deoglRenderTask *solidGeometryHeight1Task;
+	deoglRenderTask *solidGeometryHeight2Task;
+	deoglRenderTask *solidGeometryOutlineTask;
+	deoglRenderTask *solidDecalsTask;
+	
+	deoglRenderPlanTasksDeletion() :
+	solidDepthTask( nullptr ),
+	solidDepthOutlineTask( nullptr ),
+	solidGeometryTask( nullptr ),
+	solidGeometryHeight1Task( nullptr ),
+	solidGeometryHeight2Task( nullptr ),
+	solidGeometryOutlineTask( nullptr ),
+	solidDecalsTask( nullptr ){
+	}
+	
+	virtual ~deoglRenderPlanTasksDeletion(){
+	}
+	
+	virtual void DeleteObjects( deoglRenderThread& ){
+		if( solidDepthTask ){
+			delete solidDepthTask;
+		}
+		if( solidDepthOutlineTask ){
+			delete solidDepthOutlineTask;
+		}
+		if( solidGeometryTask ){
+			delete solidGeometryTask;
+		}
+		if( solidGeometryHeight1Task ){
+			delete solidGeometryHeight1Task;
+		}
+		if( solidGeometryHeight2Task ){
+			delete solidGeometryHeight2Task;
+		}
+		if( solidGeometryOutlineTask ){
+			delete solidGeometryOutlineTask;
+		}
+		if( solidDecalsTask ){
+			delete solidDecalsTask;
+		}
+	}
+};
 
 deoglRenderPlanTasks::~deoglRenderPlanTasks(){
 	CleanUp();
+	
+	// delayed deletion of opengl containing objects
+	deoglRenderPlanTasksDeletion *delayedDeletion = NULL;
+	
+	try{
+		delayedDeletion = new deoglRenderPlanTasksDeletion;
+		delayedDeletion->solidDepthTask = pSolidDepthTask;
+		delayedDeletion->solidDepthOutlineTask = pSolidDepthOutlineTask;
+		delayedDeletion->solidGeometryTask = pSolidGeometryTask;
+		delayedDeletion->solidGeometryHeight1Task = pSolidGeometryHeight1Task;
+		delayedDeletion->solidGeometryHeight2Task = pSolidGeometryHeight2Task;
+		delayedDeletion->solidGeometryOutlineTask = pSolidGeometryOutlineTask;
+		delayedDeletion->solidDecalsTask = pSolidDecalsTask;
+		pPlan.GetRenderThread().GetDelayedOperations().AddDeletion( delayedDeletion );
+		
+	}catch( const deException &e ){
+		if( delayedDeletion ){
+			delete delayedDeletion;
+		}
+		pPlan.GetRenderThread().GetLogger().LogException( e );
+		//throw; -> otherwise terminate
+	}
 }
 
 
@@ -95,8 +175,8 @@ void deoglRenderPlanTasks::WaitFinishBuildingTasksDepth(){
 	pTaskDepth = NULL;
 	
 	// this call does modify a shader parameter block and can thus not be parallel
-	pSolidDepthTask.PrepareForRender();
-	pSolidDepthOutlineTask.PrepareForRender();
+	pSolidDepthTask->PrepareForRender();
+	pSolidDepthOutlineTask->PrepareForRender();
 }
 
 void deoglRenderPlanTasks::WaitFinishBuildingTasksGeometry(){
@@ -113,23 +193,23 @@ void deoglRenderPlanTasks::WaitFinishBuildingTasksGeometry(){
 	pTaskGeometry = NULL;
 	
 	// this call does modify a shader parameter block and can thus not be parallel
-	pSolidGeometryTask.PrepareForRender();
-	pSolidGeometryHeight1Task.PrepareForRender();
-	pSolidGeometryHeight2Task.PrepareForRender();
-	pSolidGeometryOutlineTask.PrepareForRender();
-	pSolidDecalsTask.PrepareForRender();
+	pSolidGeometryTask->PrepareForRender();
+	pSolidGeometryHeight1Task->PrepareForRender();
+	pSolidGeometryHeight2Task->PrepareForRender();
+	pSolidGeometryOutlineTask->PrepareForRender();
+	pSolidDecalsTask->PrepareForRender();
 }
 
 void deoglRenderPlanTasks::CleanUp(){
 	WaitFinishBuildingTasksDepth();
 	WaitFinishBuildingTasksGeometry();
 	
-	pSolidDepthTask.Clear();
-	pSolidDepthOutlineTask.Clear();
+	pSolidDepthTask->Clear();
+	pSolidDepthOutlineTask->Clear();
 	
-	pSolidGeometryTask.Clear();
-	pSolidGeometryHeight1Task.Clear();
-	pSolidGeometryHeight2Task.Clear();
-	pSolidGeometryOutlineTask.Clear();
-	pSolidDecalsTask.Clear();
+	pSolidGeometryTask->Clear();
+	pSolidGeometryHeight1Task->Clear();
+	pSolidGeometryHeight2Task->Clear();
+	pSolidGeometryOutlineTask->Clear();
+	pSolidDecalsTask->Clear();
 }

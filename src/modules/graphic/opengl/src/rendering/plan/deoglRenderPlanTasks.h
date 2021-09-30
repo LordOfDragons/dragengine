@@ -37,13 +37,13 @@ class deoglRenderPlanTasks{
 private:
 	deoglRenderPlan &pPlan;
 	
-	deoglRenderTask pSolidDepthTask;
-	deoglRenderTask pSolidDepthOutlineTask;
-	deoglRenderTask pSolidGeometryTask;
-	deoglRenderTask pSolidGeometryHeight1Task;
-	deoglRenderTask pSolidGeometryHeight2Task;
-	deoglRenderTask pSolidGeometryOutlineTask;
-	deoglRenderTask pSolidDecalsTask;
+	deoglRenderTask *pSolidDepthTask;
+	deoglRenderTask *pSolidDepthOutlineTask;
+	deoglRenderTask *pSolidGeometryTask;
+	deoglRenderTask *pSolidGeometryHeight1Task;
+	deoglRenderTask *pSolidGeometryHeight2Task;
+	deoglRenderTask *pSolidGeometryOutlineTask;
+	deoglRenderTask *pSolidDecalsTask;
 	
 	deoglRPTBuildRTsDepth *pTaskDepth;
 	deoglRPTBuildRTsGeometry *pTaskGeometry;
@@ -68,23 +68,23 @@ public:
 	inline deoglRenderPlan &GetPlan() const{ return pPlan; }
 	
 	/** Solid depth. */
-	inline deoglRenderTask &GetSolidDepthTask(){ return pSolidDepthTask; }
+	inline deoglRenderTask &GetSolidDepthTask(){ return *pSolidDepthTask; }
 	
 	/** Solid depth outline. */
-	inline deoglRenderTask &GetSolidDepthOutlineTask(){ return pSolidDepthOutlineTask; }
+	inline deoglRenderTask &GetSolidDepthOutlineTask(){ return *pSolidDepthOutlineTask; }
 	
 	/** Solid geometry. */
-	inline deoglRenderTask &GetSolidGeometryTask(){ return pSolidGeometryTask; }
+	inline deoglRenderTask &GetSolidGeometryTask(){ return *pSolidGeometryTask; }
 	
 	/** Solid geometry height terrain. */
-	inline deoglRenderTask &GetSolidGeometryHeight1Task(){ return pSolidGeometryHeight1Task; }
-	inline deoglRenderTask &GetSolidGeometryHeight2Task(){ return pSolidGeometryHeight2Task; }
+	inline deoglRenderTask &GetSolidGeometryHeight1Task(){ return *pSolidGeometryHeight1Task; }
+	inline deoglRenderTask &GetSolidGeometryHeight2Task(){ return *pSolidGeometryHeight2Task; }
 	
 	/** Solid geometry outline. */
-	inline deoglRenderTask &GetSolidGeometryOutlineTask(){ return pSolidGeometryOutlineTask; }
+	inline deoglRenderTask &GetSolidGeometryOutlineTask(){ return *pSolidGeometryOutlineTask; }
 	
 	/** Solid decals. */
-	inline deoglRenderTask &GetSolidDecalsTask(){ return pSolidDecalsTask; }
+	inline deoglRenderTask &GetSolidDecalsTask(){ return *pSolidDecalsTask; }
 	
 	/** Start building render tasks. */
 	void StartBuildTasks( const deoglRenderPlanMasked *mask );
