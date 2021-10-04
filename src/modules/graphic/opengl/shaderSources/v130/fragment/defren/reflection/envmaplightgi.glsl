@@ -51,9 +51,13 @@ void main( void ){
 	outColor = texelFetch( texEmissive, tc, 0 );
 	
 	#ifdef WITH_GI
+		// if normal is 0 length pixel value has not been written to
 		vec3 position = texelFetch( texPosition, tc, 0 ).xyz;
 		vec3 diffuse = texelFetch( texDiffuse, tc, 0 ).rgb;
 		vec3 normal = texelFetch( texNormal, tc, 0 ).rgb;
-		outColor.rgb += giIlluminate( position, normal, normal ) * diffuse;
+		
+		if( length( normal ) > 0 ){
+			outColor.rgb += giIlluminate( position, normal, normal ) * diffuse;
+		}
 	#endif
 }

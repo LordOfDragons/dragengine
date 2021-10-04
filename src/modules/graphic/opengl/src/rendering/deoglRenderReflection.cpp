@@ -2124,8 +2124,9 @@ void deoglRenderReflection::CopyMaterial( deoglRenderPlan &plan, bool solid ){
 	
 	OGL_CHECK( renderThread, glViewport( 0, 0, plan.GetViewportWidth(), plan.GetViewportHeight() ) );
 	
-	tsmgr.EnableTexture( 0, *defren.GetTextureDiffuse(), GetSamplerClampNearest() );
-	tsmgr.EnableTexture( 1, *defren.GetTextureNormal(), GetSamplerClampNearest() );
+	tsmgr.EnableTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
+	tsmgr.EnableTexture( 1, *defren.GetTextureDiffuse(), GetSamplerClampNearest() );
+	tsmgr.EnableTexture( 2, *defren.GetTextureNormal(), GetSamplerClampNearest() );
 	
 	defren.RenderFSQuadVAO();
 	

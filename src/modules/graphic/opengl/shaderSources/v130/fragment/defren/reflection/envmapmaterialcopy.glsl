@@ -22,14 +22,23 @@ out vec3 outNormal;
 #include "v130/shared/normal.glsl"
 
 void main( void ){
+	// not all pixels in the material buffer are possibly written to. this happens for
+	// sky pixels for example. in this case material can not be written. using the same
+	// discard rule as lighting shader is using
+	vec4 diffuse = textureLod( texDiffuse, vTexCoord, 0 );
+	
+	if( diffuse.a == 0 ){
+		discard;
+	}
+	
 	// position is in camera space. transform to target space
 	vec3 position = vec3( textureLod( texDepth, vTexCoord, 0 ).r );
 	position.z = pPosTransform.x / ( pPosTransform.y - position.z );
 	position.xy = ( vScreenCoord + pPosTransform2 ) * pPosTransform.zw * position.zz;
 	
-	outPosition = vec3( pMatrixPosition * vec4( position, 1 ) );
+	outPosition = vec3( pMatrixPosition * vec4( position, /*1*/ textureLod( texDepth, vTexCoord, 0 ).r ) );
 	
-	outDiffuse = textureLod( texDiffuse, vTexCoord, 0 ).rgb;
+	outDiffuse = vec3( diffuse );
 	
 	// normal is in camera space. we need it though in world space.
 	// reverse multiplication order does transpose()
