@@ -49,7 +49,6 @@
 #include "../texture/texunitsconfig/deoglTexUnitsConfig.h"
 #include "../texture/texunitsconfig/deoglTexUnitsConfigList.h"
 #include "../world/deoglRWorld.h"
-#include "../delayedoperation/deoglDelayedDeletion.h"
 #include "../delayedoperation/deoglDelayedOperations.h"
 
 #include <dragengine/common/exceptions.h>
@@ -103,49 +102,6 @@ pRTSInstance( NULL )
 	pRTSInstance = instance.GetRenderThread().GetRenderTaskSharedPool().GetInstance();
 }
 
-class deoglRParticleEmitterInstanceTypeDeletion : public deoglDelayedDeletion{
-public:
-	deoglSPBlockUBO *paramBlock;
-	deoglTexUnitsConfig *tucDepth;
-	deoglTexUnitsConfig *tucCounter;
-	deoglTexUnitsConfig *tucGeometry;
-	deoglTexUnitsConfig *tucGeometryDepthTest;
-	deoglSPBlockUBO *paramBlockLightInstance;
-	
-	deoglRParticleEmitterInstanceTypeDeletion() :
-	paramBlock( NULL ),
-	tucDepth( NULL ),
-	tucCounter( NULL ),
-	tucGeometry( NULL ),
-	tucGeometryDepthTest( NULL ),
-	paramBlockLightInstance( NULL ){
-	}
-	
-	virtual ~deoglRParticleEmitterInstanceTypeDeletion(){
-	}
-	
-	virtual void DeleteObjects( deoglRenderThread &renderThread ){
-		if( paramBlockLightInstance ){
-			paramBlockLightInstance->FreeReference();
-		}
-		if( tucGeometryDepthTest ){
-			tucGeometryDepthTest->RemoveUsage();
-		}
-		if( tucGeometry ){
-			tucGeometry->RemoveUsage();
-		}
-		if( tucDepth ){
-			tucDepth->RemoveUsage();
-		}
-		if( tucCounter ){
-			tucCounter->RemoveUsage();
-		}
-		if( paramBlock ){
-			paramBlock->FreeReference();
-		}
-	}
-};
-
 deoglRParticleEmitterInstanceType::~deoglRParticleEmitterInstanceType(){
 	LEAK_CHECK_FREE( pEmitterInstance.GetRenderThread(), ParticleEmitterInstanceType );
 	
@@ -159,26 +115,23 @@ deoglRParticleEmitterInstanceType::~deoglRParticleEmitterInstanceType(){
 	if( pUseSkin ){
 		pUseSkin->FreeReference();
 	}
-	
-	// delayed deletion of opengl containing objects
-	deoglRParticleEmitterInstanceTypeDeletion *delayedDeletion = NULL;
-	
-	try{
-		delayedDeletion = new deoglRParticleEmitterInstanceTypeDeletion;
-		delayedDeletion->paramBlock = pParamBlock;
-		delayedDeletion->paramBlockLightInstance = pParamBlockLightInstance;
-		delayedDeletion->tucDepth = pTUCDepth;
-		delayedDeletion->tucCounter = pTUCCounter;
-		delayedDeletion->tucGeometry = pTUCGeometry;
-		delayedDeletion->tucGeometryDepthTest = pTUCGeometryDepthTest;
-		pEmitterInstance.GetRenderThread().GetDelayedOperations().AddDeletion( delayedDeletion );
-		
-	}catch( const deException &e ){
-		if( delayedDeletion ){
-			delete delayedDeletion;
-		}
-		pEmitterInstance.GetRenderThread().GetLogger().LogException( e );
-		//throw; -> otherwise terminate
+	if( pParamBlockLightInstance ){
+		pParamBlockLightInstance->FreeReference();
+	}
+	if( pTUCGeometryDepthTest ){
+		pTUCGeometryDepthTest->RemoveUsage();
+	}
+	if( pTUCGeometry ){
+		pTUCGeometry->RemoveUsage();
+	}
+	if( pTUCDepth ){
+		pTUCDepth->RemoveUsage();
+	}
+	if( pTUCCounter ){
+		pTUCCounter->RemoveUsage();
+	}
+	if( pParamBlock ){
+		pParamBlock->FreeReference();
 	}
 }
 

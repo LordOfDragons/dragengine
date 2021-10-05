@@ -397,11 +397,6 @@ public:
 	
 	
 	
-	/** \brief Drop objects containing delayed deletion support. */
-	void DropDelayedDeletionObjects();
-	
-	
-	
 	/** \brief Channel name for logging and debugging. */
 	static const char *ChannelNameFor( eChannelTypes type );
 	

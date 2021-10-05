@@ -85,11 +85,6 @@ public:
 	
 	/** \brief Add render plans. */
 	void AddRenderPlans( deoglRenderPlan &plan );
-	
-	
-	
-	/** \brief Drop objects containing delayed deletion support. */
-	void DropDelayedDeletionObjects();
 	/*@}*/
 };
 

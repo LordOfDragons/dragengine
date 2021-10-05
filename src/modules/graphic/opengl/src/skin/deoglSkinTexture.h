@@ -841,11 +841,6 @@ public:
 	
 	/** Channel for type is not \em NULL. */
 	bool IsChannelEnabled( deoglSkinChannel::eChannelTypes type ) const;
-	
-	
-	
-	/** Drop objects containing delayed deletion support. */
-	void DropDelayedDeletionObjects();
 	/*@}*/
 	
 private:

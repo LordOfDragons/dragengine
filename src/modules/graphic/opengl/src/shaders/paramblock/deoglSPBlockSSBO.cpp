@@ -25,6 +25,7 @@
 
 #include "deoglSPBlockSSBO.h"
 #include "../deoglShaderCompiled.h"
+#include "../../delayedoperation/deoglDelayedOperations.h"
 #include "../../extensions/deoglExtensions.h"
 #include "../../renderthread/deoglRenderThread.h"
 #include "../../renderthread/deoglRTLogger.h"
@@ -69,14 +70,12 @@ pMemoryGPUSSBO( paramBlock.pMemoryGPUSSBO ){
 
 deoglSPBlockSSBO::~deoglSPBlockSSBO(){
 	if( IsBufferMapped() ){
-		deoglSPBlockSSBO::UnmapBuffer();
-	}
-	if( pSSBO ){
-		pglDeleteBuffers( 1, &pSSBO );
+		pClearMapped();
 	}
 	if( pWriteBuffer ){
 		delete [] pWriteBuffer;
 	}
+	GetRenderThread().GetDelayedOperations().DeleteOpenGLBuffer( pSSBO );
 }
 
 

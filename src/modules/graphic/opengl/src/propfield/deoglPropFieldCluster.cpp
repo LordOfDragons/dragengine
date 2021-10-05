@@ -28,6 +28,7 @@
 #include "deoglRPropField.h"
 #include "deoglRPropFieldType.h"
 #include "../deGraphicOpenGl.h"
+#include "../delayedoperation/deoglDelayedOperations.h"
 #include "../envmap/deoglEnvironmentMap.h"
 #include "../model/deoglRModel.h"
 #include "../model/deoglModelLOD.h"
@@ -134,18 +135,11 @@ deoglPropFieldCluster::~deoglPropFieldCluster(){
 		pTUCEnvMap = NULL;
 	}
 	
-	if( pTBOBendStates ){
-		OGL_CHECK( pRenderThread, glDeleteTextures( 1, &pTBOBendStates ) );
-	}
-	if( pTBOInstances ){
-		OGL_CHECK( pRenderThread, glDeleteTextures( 1, &pTBOInstances ) );
-	}
-	if( pVBOBendStates ){
-		pglDeleteBuffers( 1, &pVBOBendStates );
-	}
-	if( pVBOInstances ){
-		pglDeleteBuffers( 1, &pVBOInstances );
-	}
+	deoglDelayedOperations &dops = pRenderThread.GetDelayedOperations();
+	dops.DeleteOpenGLTexture( pTBOBendStates );
+	dops.DeleteOpenGLTexture( pTBOInstances );
+	dops.DeleteOpenGLBuffer( pVBOBendStates );
+	dops.DeleteOpenGLBuffer( pVBOInstances );
 }
 
 

@@ -27,6 +27,7 @@
 #include "deoglSharedVBOBlock.h"
 #include "deoglSharedVBOList.h"
 #include "deoglVBOAttribute.h"
+#include "../delayedoperation/deoglDelayedOperations.h"
 #include "../extensions/deoglExtensions.h"
 #include "../memory/deoglMemoryManager.h"
 #include "../renderthread/deoglRenderThread.h"
@@ -374,10 +375,8 @@ void deoglSharedVBO::pCleanUp(){
 	if( pVAO ){
 		delete pVAO;
 	}
-	if( pVBO ){
-		pglDeleteBuffers( 1, &pVBO );
-	}
-	if( pIBO ){
-		pglDeleteBuffers( 1, &pIBO );
-	}
+	
+	deoglDelayedOperations &dops = pParentList->GetRenderThread().GetDelayedOperations();
+	dops.DeleteOpenGLBuffer( pVBO );
+	dops.DeleteOpenGLBuffer( pIBO );
 }

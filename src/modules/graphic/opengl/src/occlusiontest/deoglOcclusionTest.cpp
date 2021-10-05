@@ -28,6 +28,7 @@
 #include "../capabilities/deoglCapabilities.h"
 #include "../capabilities/deoglCapsTextureFormat.h"
 #include "../configuration/deoglConfiguration.h"
+#include "../delayedoperation/deoglDelayedOperations.h"
 #include "../extensions/deoglExtensions.h"
 #include "../framebuffer/deoglFramebuffer.h"
 #include "../framebuffer/deoglFramebufferManager.h"
@@ -162,10 +163,8 @@ void deoglOcclusionTest::UpdateVBO(){
 			pVBOResultData = NULL;
 			pVBOResultDataSize = 0;
 		}
-		if( pVBOResult ){
-			pglDeleteBuffers( 1, &pVBOResult );
-			pVBOResult = 0;
-		}
+		pRenderThread.GetDelayedOperations().DeleteOpenGLBuffer( pVBOResult );
+		pVBOResult = 0;
 	}
 	
 	// textures and FBO
@@ -271,15 +270,12 @@ void deoglOcclusionTest::pCleanUp(){
 	if( pVBOResultData ){
 		delete [] pVBOResultData;
 	}
-	if( pVBOResult ){
-		pglDeleteBuffers( 1, &pVBOResult );
-	}
-	if( pVAO ){
-		pglDeleteVertexArrays( 1, &pVAO );
-	}
-	if( pVBO ){
-		pglDeleteBuffers( 1, &pVBO );
-	}
+	
+	deoglDelayedOperations &dops = pRenderThread.GetDelayedOperations();
+	dops.DeleteOpenGLBuffer( pVBOResult );
+	dops.DeleteOpenGLVertexArray( pVAO );
+	dops.DeleteOpenGLBuffer( pVBO );
+	
 	if( pVBOLayout ){
 		delete pVBOLayout;
 	}

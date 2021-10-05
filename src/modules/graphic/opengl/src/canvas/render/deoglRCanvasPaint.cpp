@@ -24,7 +24,6 @@
 #include <string.h>
 
 #include "deoglRCanvasPaint.h"
-#include "../../delayedoperation/deoglDelayedDeletion.h"
 #include "../../delayedoperation/deoglDelayedOperations.h"
 #include "../../rendering/deoglRenderCanvas.h"
 #include "../../rendering/deoglRenderCanvasContext.h"
@@ -168,40 +167,13 @@ void deoglRCanvasPaint::Render( const deoglRenderCanvasContext &context ){
 // Private Functions
 //////////////////////
 
-class deoglRCanvasPaintDeletion : public deoglDelayedDeletion{
-public:
-	deoglSharedVBOBlock *vboBlock;
-	
-	deoglRCanvasPaintDeletion() : vboBlock( NULL ){ }
-	virtual ~deoglRCanvasPaintDeletion(){ }
-	
-	virtual void DeleteObjects( deoglRenderThread& ){
-		if( vboBlock ){
-			vboBlock->GetVBO()->RemoveBlock( vboBlock );
-			vboBlock->FreeReference();
-		}
-	}
-};
-
 void deoglRCanvasPaint::pCleanUp(){
 	if( pPoints ){
 		delete [] pPoints;
 	}
-	
-	// delayed deletion of opengl containing objects
-	deoglRCanvasPaintDeletion *delayedDeletion = NULL;
-	
-	try{
-		delayedDeletion = new deoglRCanvasPaintDeletion;
-		delayedDeletion->vboBlock = pVBOBlock;
-		GetRenderThread().GetDelayedOperations().AddDeletion( delayedDeletion );
-		
-	}catch( const deException &e ){
-		if( delayedDeletion ){
-			delete delayedDeletion;
-		}
-		GetRenderThread().GetLogger().LogException( e );
-		//throw; -> otherwise terminate
+	if( pVBOBlock ){
+		pVBOBlock->GetVBO()->RemoveBlock( pVBOBlock );
+		pVBOBlock->FreeReference();
 	}
 }
 

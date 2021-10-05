@@ -31,7 +31,6 @@
 #include "../deoglBasics.h"
 #include "../configuration/deoglConfiguration.h"
 #include "../delayedoperation/deoglDelayedOperations.h"
-#include "../delayedoperation/deoglDelayedDeletion.h"
 #include "../memory/deoglMemoryManager.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTLogger.h"
@@ -189,34 +188,6 @@ void deoglRImage::PrepareForRender(){
 // Private Functions
 //////////////////////
 
-class deoglRImageDeletion : public deoglDelayedDeletion{
-public:
-	deoglTexture *texture;
-	deoglCubeMap *cubemap;
-	deoglArrayTexture *arrayTexture;
-	
-	deoglRImageDeletion() :
-	texture( NULL ),
-	cubemap( NULL ),
-	arrayTexture( NULL ){
-	}
-	
-	virtual ~deoglRImageDeletion(){
-	}
-	
-	virtual void DeleteObjects( deoglRenderThread& ){
-		if( texture ){
-			delete texture;
-		}
-		if( cubemap ){
-			delete cubemap;
-		}
-		if( arrayTexture ){
-			delete arrayTexture;
-		}
-	}
-};
-
 void deoglRImage::pCleanUp(){
 	if( pPixelBuffer ){
 		delete pPixelBuffer;
@@ -226,33 +197,11 @@ void deoglRImage::pCleanUp(){
 
 void deoglRImage::pReleaseTextures(){
 	pRenderThread.GetDelayedOperations().RemoveInitImage( this );
-	
-	deoglRImageDeletion *delayedDeletion = NULL;
-	
-	try{
-		delayedDeletion = new deoglRImageDeletion;
-		delayedDeletion->texture = pTexture;
-		delayedDeletion->cubemap = pCubeMap;
-		delayedDeletion->arrayTexture = pArrayTexture;
-		pRenderThread.GetDelayedOperations().AddDeletion( delayedDeletion );
-		
-	}catch( const deException &e ){
-		if( delayedDeletion ){
-			delete delayedDeletion;
-		}
-		pRenderThread.GetLogger().LogException( e );
-		throw;
-	}
-	
-	pTexture = NULL;
-	pCubeMap = NULL;
-	pArrayTexture = NULL;
-	
-	pUpdateSkinMemoryUsage();
+	pDirectReleaseTextures();
 }
 
 void deoglRImage::pDirectReleaseTextures(){
-	// called from render thread. does not use delayed operations to avoid dead-locking
+	// called from render thread and from pReleaseTextures
 	if( pTexture ){
 		delete pTexture;
 		pTexture = NULL;

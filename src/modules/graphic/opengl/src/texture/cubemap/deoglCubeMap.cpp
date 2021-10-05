@@ -28,6 +28,7 @@
 #include "../../configuration/deoglConfiguration.h"
 #include "../../capabilities/deoglCapabilities.h"
 #include "../../capabilities/deoglCapsTextureFormat.h"
+#include "../../delayedoperation/deoglDelayedOperations.h"
 #include "../../memory/deoglMemoryManager.h"
 #include "../../renderthread/deoglRenderThread.h"
 #include "../../renderthread/deoglRTTexture.h"
@@ -217,14 +218,8 @@ void deoglCubeMap::CreateCubeMap(){
 }
 
 void deoglCubeMap::DestroyCubeMap(){
-	// to avoid problems with threading and such it would be a good idea to move this deletion call
-	// out to a safe place. for this we need a texture deletion manager which hosts opengl textures
-	// to be deleted the next time it is safe. a safe time would be before or after frame rendering
-	// calls or somewhere during the clean up process. in this case the texture would be simply
-	// registered with the deletion manager and set to NULL in here
-	
 	if( pTexture ){
-		OGL_CHECK( pRenderThread, glDeleteTextures( 1, &pTexture ) );
+		pRenderThread.GetDelayedOperations().DeleteOpenGLTexture( pTexture );
 		pTexture = 0;
 		
 		UpdateMemoryUsage();

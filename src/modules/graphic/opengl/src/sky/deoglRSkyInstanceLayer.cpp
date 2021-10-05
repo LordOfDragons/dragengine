@@ -43,7 +43,6 @@
 #include "../skin/deoglSkin.h"
 #include "../skin/deoglSkinTexture.h"
 #include "../shadow/deoglShadowCaster.h"
-#include "../delayedoperation/deoglDelayedDeletion.h"
 #include "../delayedoperation/deoglDelayedOperations.h"
 
 #include <dragengine/common/exceptions.h>
@@ -78,73 +77,27 @@ pParamBlockInstance( NULL )
 	pShadowCaster = new deoglShadowCaster( instance.GetRenderThread() );
 }
 
-class deoglRSkyInstanceLayerDeletion : public deoglDelayedDeletion{
-public:
-	deoglLightShader *shaders[ deoglRSkyInstanceLayer::EST_COUNT ];
-	deoglSPBlockUBO *paramBlockLight;
-	deoglSPBlockUBO *paramBlockInstance;
-	deoglShadowCaster *shadowCaster;
-	
-	deoglRSkyInstanceLayerDeletion() :
-	paramBlockLight( NULL ),
-	paramBlockInstance( NULL ),
-	shadowCaster( NULL ){
-		int i;
-		for( i=0; i<deoglRSkyInstanceLayer::EST_COUNT; i++ ){
-			shaders[ i ] = NULL;
-		}
-	}
-	
-	virtual ~deoglRSkyInstanceLayerDeletion(){
-	}
-	
-	virtual void DeleteObjects( deoglRenderThread& ){
-		int i;
-		
-		if( shadowCaster ){
-			delete shadowCaster;
-		}
-		if( paramBlockInstance ){
-			paramBlockInstance->FreeReference();
-		}
-		if( paramBlockLight ){
-			paramBlockLight->FreeReference();
-		}
-		for( i=0; i<deoglRSkyInstanceLayer::EST_COUNT; i++ ){
-			if( shaders[ i ] ){
-				shaders[ i ]->FreeReference();
-			}
-		}
-	}
-};
-
 deoglRSkyInstanceLayer::~deoglRSkyInstanceLayer(){
 	RemoveAllGICascades();
 	
 	if( pTrackerEnvMap ){
 		delete pTrackerEnvMap;
 	}
+	if( pShadowCaster ){
+		delete pShadowCaster;
+	}
+	if( pParamBlockInstance ){
+		pParamBlockInstance->FreeReference();
+	}
+	if( pParamBlockLight ){
+		pParamBlockLight->FreeReference();
+	}
 	
-	// delayed deletion of opengl containing objects
-	deoglRSkyInstanceLayerDeletion *delayedDeletion = NULL;
-	
-	try{
-		delayedDeletion = new deoglRSkyInstanceLayerDeletion;
-		delayedDeletion->shadowCaster = pShadowCaster;
-		delayedDeletion->paramBlockInstance = pParamBlockInstance;
-		delayedDeletion->paramBlockLight = pParamBlockLight;
-		int i;
-		for( i=0; i<EST_COUNT; i++ ){
-			delayedDeletion->shaders[ i ] = pShaders[ i ];
+	int i;
+	for( i=0; i<EST_COUNT; i++ ){
+		if( pShaders[ i ] ){
+			pShaders[ i ]->FreeReference();
 		}
-		pInstance.GetRenderThread().GetDelayedOperations().AddDeletion( delayedDeletion );
-		
-	}catch( const deException &e ){
-		if( delayedDeletion ){
-			delete delayedDeletion;
-		}
-		pInstance.GetRenderThread().GetLogger().LogException( e );
-		//throw; -> otherwise terminate
 	}
 }
 

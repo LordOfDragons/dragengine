@@ -26,6 +26,7 @@
 #include "deoglRenderbuffer.h"
 #include "../capabilities/deoglCapabilities.h"
 #include "../capabilities/deoglCapsTextureFormat.h"
+#include "../delayedoperation/deoglDelayedOperations.h"
 #include "../memory/deoglMemoryManager.h"
 #include "../renderthread/deoglRenderThread.h"
 
@@ -216,7 +217,5 @@ void deoglRenderbuffer::SetStencilFormat(){
 //////////////////////
 
 void deoglRenderbuffer::pCleanUp(){
-	if( pRenderbuffer ){
-		pglDeleteRenderbuffers( 1, &pRenderbuffer );
-	}
+	pRenderThread.GetDelayedOperations().DeleteOpenGLRenderBuffer( pRenderbuffer );
 }

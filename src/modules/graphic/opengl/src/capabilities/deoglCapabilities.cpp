@@ -25,6 +25,7 @@
 
 #include "deoglCapabilities.h"
 #include "deoglCapsTextureFormat.h"
+#include "../delayedoperation/deoglDelayedOperations.h"
 #include "../framebuffer/deoglFramebuffer.h"
 #include "../extensions/deoglExtensions.h"
 #include "../renderthread/deoglRenderThread.h"
@@ -103,12 +104,11 @@ pFramebufferTextureSingle( *this )
 }
 
 deoglCapabilities::~deoglCapabilities(){
+	deoglDelayedOperations &dops = pRenderThread.GetDelayedOperations();
 	if( pFSQuadVAO ){
 		pglDeleteVertexArrays( 1, &pFSQuadVAO );
 	}
-	if( pFSQuadVBO ){
-		pglDeleteBuffers( 1, &pFSQuadVBO );
-	}
+	dops.DeleteOpenGLBuffer( pFSQuadVBO );
 }
 
 

@@ -24,6 +24,7 @@
 #include <string.h>
 
 #include "deoglDynamicTBO.h"
+#include "../delayedoperation/deoglDelayedOperations.h"
 #include "../memory/deoglMemoryManager.h"
 #include "../texture/deoglTextureStageManager.h"
 #include "../renderthread/deoglRenderThread.h"
@@ -190,16 +191,11 @@ void deoglDynamicTBO::Update( int offset, int count ){
 //////////////////////
 
 void deoglDynamicTBO::pCleanUp(){
-	if( pTBO ){
-		glDeleteTextures( 1, &pTBO );
-	}
+	deoglDelayedOperations &dops = pRenderThread.GetDelayedOperations();
+	dops.DeleteOpenGLTexture( pTBO );
+	dops.DeleteOpenGLBuffer( pVBO );
 	
 	pMemUse = 0;
-	
-	if( pVBO ){
-		pglDeleteBuffers( 1, &pVBO );
-	}
-	
 	if( pData ){
 		delete [] pData;
 	}

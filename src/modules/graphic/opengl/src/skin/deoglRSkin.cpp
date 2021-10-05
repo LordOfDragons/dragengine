@@ -31,7 +31,6 @@
 #include "visitor/deoglVSRetainImageData.h"
 #include "../deoglBasics.h"
 #include "../delayedoperation/deoglDelayedOperations.h"
-#include "../delayedoperation/deoglDelayedDeletion.h"
 #include "../memory/deoglMemoryManager.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTLogger.h"
@@ -367,32 +366,6 @@ int deoglRSkin::AddCalculatedProperty( deoglSkinCalculatedProperty *calculated )
 // Private Functions
 //////////////////////
 
-class deoglRSkinDeletion : public deoglDelayedDeletion{
-public:
-	deoglSkinTexture **textures;
-	int textureCount;
-	
-	deoglRSkinDeletion() :
-	textures( NULL ),
-	textureCount( 0 ){
-	}
-	
-	virtual ~deoglRSkinDeletion(){
-	}
-	
-	virtual void DeleteObjects( deoglRenderThread& ){
-		if( textures ){
-			int i;
-			for( i=0; i<textureCount; i++ ){
-				if( textures[ i ] ){
-					delete textures[ i ];
-				}
-			}
-			delete [] textures;
-		}
-	}
-};
-
 void deoglRSkin::pCleanUp(){
 	if( pVSRetainImageData ){
 		delete pVSRetainImageData;
@@ -402,32 +375,14 @@ void deoglRSkin::pCleanUp(){
 	pRenderThread.GetDelayedOperations().RemoveInitSkin( this );
 	pRenderThread.GetDelayedOperations().RemoveAsyncResInitSkin( this );
 	
-	// drop reference otherwise deletion can cause other deletions to be generated
-	// causing a deletion race
 	if( pTextures ){
 		int i;
 		for( i=0; i<pTextureCount; i++ ){
 			if( pTextures[ i ] ){
-				pTextures[ i ]->DropDelayedDeletionObjects();
+				delete pTextures[ i ];
 			}
 		}
-	}
-	
-	// delayed deletion of opengl containing objects
-	deoglRSkinDeletion *delayedDeletion = NULL;
-	
-	try{
-		delayedDeletion = new deoglRSkinDeletion;
-		delayedDeletion->textures = pTextures;
-		delayedDeletion->textureCount = pTextureCount;
-		pRenderThread.GetDelayedOperations().AddDeletion( delayedDeletion );
-		
-	}catch( const deException &e ){
-		if( delayedDeletion ){
-			delete delayedDeletion;
-		}
-		pRenderThread.GetLogger().LogException( e );
-		throw;
+		delete [] pTextures;
 	}
 }
 

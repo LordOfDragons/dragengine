@@ -39,7 +39,6 @@
 #include "../../texture/deoglRImage.h"
 #include "../../texture/deoglTextureStageManager.h"
 #include "../../texture/texture2d/deoglTexture.h"
-#include "../../delayedoperation/deoglDelayedDeletion.h"
 #include "../../delayedoperation/deoglDelayedOperations.h"
 
 #include <dragengine/common/exceptions.h>
@@ -69,44 +68,13 @@ pShader( NULL ){
 	LEAK_CHECK_CREATE( renderThread, EffectOverlayImage );
 }
 
-class deoglREffectOverlayImageDeletion : public deoglDelayedDeletion{
-public:
-	deoglShaderProgram *shader;
-	
-	deoglREffectOverlayImageDeletion() :
-	shader( NULL ){
-	}
-	
-	virtual ~deoglREffectOverlayImageDeletion(){
-	}
-	
-	virtual void DeleteObjects( deoglRenderThread &renderThread ){
-		if( shader ){
-			shader->RemoveUsage();
-		}
-	}
-};
-
 deoglREffectOverlayImage::~deoglREffectOverlayImage(){
 	LEAK_CHECK_FREE( GetRenderThread(), EffectOverlayImage );
 	if( pImage ){
 		pImage->FreeReference();
 	}
-	
-	// delayed deletion of opengl containing objects
-	deoglREffectOverlayImageDeletion *delayedDeletion = NULL;
-	
-	try{
-		delayedDeletion = new deoglREffectOverlayImageDeletion;
-		delayedDeletion->shader = pShader;
-		GetRenderThread().GetDelayedOperations().AddDeletion( delayedDeletion );
-		
-	}catch( const deException &e ){
-		if( delayedDeletion ){
-			delete delayedDeletion;
-		}
-		GetRenderThread().GetLogger().LogException( e );
-		//throw; -> otherwise terminate
+	if( pShader ){
+		pShader->RemoveUsage();
 	}
 }
 

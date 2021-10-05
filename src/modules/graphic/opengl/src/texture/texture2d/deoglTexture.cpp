@@ -28,6 +28,7 @@
 #include "../pixelbuffer/deoglPixelBuffer.h"
 #include "../../capabilities/deoglCapabilities.h"
 #include "../../capabilities/deoglCapsTextureFormat.h"
+#include "../../delayedoperation/deoglDelayedOperations.h"
 #include "../../memory/deoglMemoryManager.h"
 #include "../../extensions/deoglExtensions.h"
 #include "../../renderthread/deoglRenderThread.h"
@@ -229,7 +230,7 @@ void deoglTexture::CreateTexture(){
 
 void deoglTexture::DestroyTexture(){
 	if( pTexture ){
-		OGL_CHECK( pRenderThread, glDeleteTextures( 1, &pTexture ) );
+		pRenderThread.GetDelayedOperations().DeleteOpenGLTexture( pTexture );
 		pTexture = 0;
 		
 		UpdateMemoryUsage();

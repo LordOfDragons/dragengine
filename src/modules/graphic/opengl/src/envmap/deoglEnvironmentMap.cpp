@@ -29,7 +29,6 @@
 #include "../capabilities/deoglCapabilities.h"
 #include "../configuration/deoglConfiguration.h"
 #include "../debug/deoglDebugSaveTexture.h"
-#include "../delayedoperation/deoglDelayedDeletion.h"
 #include "../delayedoperation/deoglDelayedOperations.h"
 #include "../framebuffer/deoglFramebuffer.h"
 #include "../framebuffer/deoglFramebufferManager.h"
@@ -372,51 +371,8 @@ void deoglEnvironmentMap::RemovePlanUsage(){
 
 
 
-class deoglEnvironmentMapDeletion : public deoglDelayedDeletion{
-public:
-	deoglCubeMap *envMap;
-	deoglArrayTexture *envMapPosition;
-	deoglArrayTexture *envMapDiffuse;
-	deoglArrayTexture *envMapNormal;
-	deoglArrayTexture *envMapEmissive;
-	deoglTexture *envMapEqui;
-	
-	deoglEnvironmentMapDeletion() :
-	envMap( NULL ),
-	envMapPosition( NULL ),
-	envMapDiffuse( NULL ),
-	envMapNormal( NULL ),
-	envMapEmissive( NULL ),
-	envMapEqui( NULL ){
-	}
-	
-	virtual ~deoglEnvironmentMapDeletion(){
-	}
-	
-	virtual void DeleteObjects( deoglRenderThread& ){
-		if( envMapEqui ){
-			delete envMapEqui;
-		}
-		if( envMap ){
-			delete envMap;
-		}
-		if( envMapPosition ){
-			delete envMapPosition;
-		}
-		if( envMapDiffuse ){
-			delete envMapDiffuse;
-		}
-		if( envMapNormal ){
-			delete envMapNormal;
-		}
-		if( envMapEmissive ){
-			delete envMapEmissive;
-		}
-	}
-};
-
 void deoglEnvironmentMap::Destroy(){
-	// this can be called from the main thread. we need to use delayed-deletion here.
+	// this can be called from the main thread
 	if( pSlotIndex != -1 ){
 		pRenderThread.GetEnvMapSlotManager().GetSlotAt( pSlotIndex ).Clear();
 		pSlotIndex = -1;
@@ -428,38 +384,29 @@ void deoglEnvironmentMap::Destroy(){
 	pMaterialReady = false;
 	pLastGILightUpdate = MAX_LAST_GILIGHT_UPDATE;
 	
-	// delayed deletion of opengl containing objects
-	deoglEnvironmentMapDeletion *delayedDeletion = NULL;
-	
-	try{
-		delayedDeletion = new deoglEnvironmentMapDeletion;
-		
-		delayedDeletion->envMapEqui = pEnvMapEqui;
-		pEnvMapEqui = NULL;
-		
-		delayedDeletion->envMap = pEnvMap;
-		pEnvMap = NULL;
-		
-		delayedDeletion->envMapPosition = pEnvMapPosition;
-		pEnvMapPosition = NULL;
-		
-		delayedDeletion->envMapDiffuse = pEnvMapDiffuse;
-		pEnvMapDiffuse = NULL;
-		
-		delayedDeletion->envMapNormal = pEnvMapNormal;
-		pEnvMapNormal = NULL;
-		
-		delayedDeletion->envMapEmissive = pEnvMapEmissive;
-		pEnvMapEmissive = NULL;
-		
-		pRenderThread.GetDelayedOperations().AddDeletion( delayedDeletion );
-		
-	}catch( const deException &e ){
-		if( delayedDeletion ){
-			delete delayedDeletion;
-		}
-		pRenderThread.GetLogger().LogException( e );
-		throw;
+	if( pEnvMapEqui ){
+		delete pEnvMapEqui;
+		pEnvMapEqui = nullptr;
+	}
+	if( pEnvMap ){
+		delete pEnvMap;
+		pEnvMap = nullptr;
+	}
+	if( pEnvMapPosition ){
+		delete pEnvMapPosition;
+		pEnvMapPosition = nullptr;
+	}
+	if( pEnvMapDiffuse ){
+		delete pEnvMapDiffuse;
+		pEnvMapDiffuse = nullptr;
+	}
+	if( pEnvMapNormal ){
+		delete pEnvMapNormal;
+		pEnvMapNormal = nullptr;
+	}
+	if( pEnvMapEmissive ){
+		delete pEnvMapEmissive;
+		pEnvMapEmissive = nullptr;
 	}
 }
 

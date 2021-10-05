@@ -25,7 +25,6 @@
 #include <string.h>
 
 #include "deoglRBillboard.h"
-#include "../delayedoperation/deoglDelayedDeletion.h"
 #include "../delayedoperation/deoglDelayedOperations.h"
 #include "../envmap/deoglEnvironmentMap.h"
 #include "../occlusiontest/deoglOcclusionTest.h"
@@ -835,44 +834,6 @@ void deoglRBillboard::PrepareQuickDispose(){
 // Private Functions
 //////////////////////
 
-class deoglRBillboardDeletion : public deoglDelayedDeletion{
-public:
-	deoglSkinState *skinState;
-	deoglTexUnitsConfig *tucDepth;
-	deoglTexUnitsConfig *tucGeometry;
-	deoglTexUnitsConfig *tucCounter;
-	deoglTexUnitsConfig *tucEnvMap;
-	
-	deoglRBillboardDeletion() :
-	skinState( NULL ),
-	tucDepth( NULL ),
-	tucGeometry( NULL ),
-	tucCounter( NULL ),
-	tucEnvMap( NULL ){
-	}
-	
-	virtual ~deoglRBillboardDeletion(){
-	}
-	
-	virtual void DeleteObjects( deoglRenderThread& ){
-		if( tucDepth ){
-			tucDepth->RemoveUsage();
-		}
-		if( tucGeometry ){
-			tucGeometry->RemoveUsage();
-		}
-		if( tucCounter ){
-			tucCounter->RemoveUsage();
-		}
-		if( tucEnvMap ){
-			tucEnvMap->RemoveUsage();
-		}
-		if( skinState ){
-			delete skinState;
-		}
-	}
-};
-
 void deoglRBillboard::pCleanUp(){
 	SetParentWorld( NULL );
 	
@@ -895,32 +856,20 @@ void deoglRBillboard::pCleanUp(){
 	if( pSharedSPBElement ){
 		pSharedSPBElement->FreeReference();
 	}
-	
-	// drop reference otherwise deletion can cause other deletions to be generated
-	// causing a deletion race
-	if( pSkinState ){
-		pSkinState->DropDelayedDeletionObjects();
+	if( pTUCDepth ){
+		pTUCDepth->RemoveUsage();
 	}
-	
-	// delayed deletion of opengl containing objects
-	deoglRBillboardDeletion *delayedDeletion = NULL;
-	
-	try{
-		delayedDeletion = new deoglRBillboardDeletion;
-		delayedDeletion->skinState = pSkinState;
-		delayedDeletion->skinState = pSkinState;
-		delayedDeletion->tucDepth = pTUCDepth;
-		delayedDeletion->tucEnvMap = pTUCEnvMap;
-		delayedDeletion->tucCounter = pTUCCounter;
-		delayedDeletion->tucGeometry = pTUCGeometry;
-		pRenderThread.GetDelayedOperations().AddDeletion( delayedDeletion );
-		
-	}catch( const deException &e ){
-		if( delayedDeletion ){
-			delete delayedDeletion;
-		}
-		pRenderThread.GetLogger().LogException( e );
-		throw;
+	if( pTUCGeometry ){
+		pTUCGeometry->RemoveUsage();
+	}
+	if( pTUCCounter ){
+		pTUCCounter->RemoveUsage();
+	}
+	if( pTUCEnvMap ){
+		pTUCEnvMap->RemoveUsage();
+	}
+	if( pSkinState ){
+		delete pSkinState;
 	}
 }
 

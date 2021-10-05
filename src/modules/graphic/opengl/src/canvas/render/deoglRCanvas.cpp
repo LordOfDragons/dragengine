@@ -24,7 +24,6 @@
 #include <string.h>
 
 #include "deoglRCanvas.h"
-#include "../../delayedoperation/deoglDelayedDeletion.h"
 #include "../../delayedoperation/deoglDelayedOperations.h"
 #include "../../rendering/deoglRenderCanvas.h"
 #include "../../rendering/deoglRenderCanvasContext.h"
@@ -54,43 +53,12 @@ pVisible( true ),
 pMaskRenderTarget( NULL ){
 }
 
-class deoglRCanvasDeletion : public deoglDelayedDeletion{
-public:
-	deoglRenderTarget *maskRenderTarget;
-	
-	deoglRCanvasDeletion() :
-	maskRenderTarget( NULL ){
-	}
-	
-	virtual ~deoglRCanvasDeletion(){
-	}
-	
-	virtual void DeleteObjects( deoglRenderThread& ){
-		if( maskRenderTarget ){
-			maskRenderTarget->FreeReference();
-		}
-	}
-};
-
 deoglRCanvas::~deoglRCanvas(){
 	if( pMask ){
 		pMask->FreeReference();
 	}
-	
-	// delayed deletion of opengl containing objects
-	deoglRCanvasDeletion *delayedDeletion = NULL;
-	
-	try{
-		delayedDeletion = new deoglRCanvasDeletion;
-		delayedDeletion->maskRenderTarget = pMaskRenderTarget;
-		GetRenderThread().GetDelayedOperations().AddDeletion( delayedDeletion );
-		
-	}catch( const deException &e ){
-		if( delayedDeletion ){
-			delete delayedDeletion;
-		}
-		GetRenderThread().GetLogger().LogException( e );
-		// throw; -> otherwise terminate
+	if( pMaskRenderTarget ){
+		pMaskRenderTarget->FreeReference();
 	}
 }
 

@@ -558,31 +558,6 @@ void deoglSkinChannel::GenerateConeMap(){
 
 
 
-void deoglSkinChannel::DropDelayedDeletionObjects(){
-	if( pCombinedTexture ){
-		pCombinedTexture->RemoveUsage();
-		pCombinedTexture = NULL;
-	}
-	
-	if( pCombinedImage1 ){
-		pCombinedImage1->FreeReference();
-		pCombinedImage1 = NULL;
-	}
-	if( pCombinedImage2 ){
-		pCombinedImage2->FreeReference();
-		pCombinedImage2 = NULL;
-	}
-	
-	if( pImage ){
-		if( pImageHeld ){
-			pImage->FreeReference();
-		}
-		pImage = NULL;
-	}
-}
-
-
-
 const char *deoglSkinChannel::ChannelNameFor( eChannelTypes type ){
 	switch( type ){
 	case ectColor:

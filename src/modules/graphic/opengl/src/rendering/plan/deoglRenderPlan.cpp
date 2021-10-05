@@ -44,7 +44,6 @@
 #include "../../component/deoglRComponent.h"
 #include "../../configuration/deoglConfiguration.h"
 #include "../../debug/deoglDebugInformation.h"
-#include "../../delayedoperation/deoglDelayedDeletion.h"
 #include "../../delayedoperation/deoglDelayedOperations.h"
 #include "../../devmode/deoglDeveloperMode.h"
 #include "../../envmap/deoglEnvironmentMap.h"
@@ -193,23 +192,6 @@ pTaskFindContent( NULL )
 	pDebugTiming = false;
 }
 
-class deoglRenderPlanDeletion : public deoglDelayedDeletion{
-public:
-	deoglGIState *giState;
-	
-	deoglRenderPlanDeletion() : giState( NULL ){
-	}
-	
-	virtual ~deoglRenderPlanDeletion(){
-	}
-	
-	virtual void DeleteObjects( deoglRenderThread& ){
-		if( giState ){
-			delete giState;
-		}
-	}
-};
-
 deoglRenderPlan::~deoglRenderPlan(){
 	CleanUp();
 	SetWorld( NULL );
@@ -259,19 +241,8 @@ deoglRenderPlan::~deoglRenderPlan(){
 		delete [] pEnvMaps;
 	}
 	
-	// delayed deletion of opengl containing objects
-	deoglRenderPlanDeletion *delayedDeletion = NULL;
-	
-	try{
-		delayedDeletion = new deoglRenderPlanDeletion;
-		delayedDeletion->giState = pGIState;
-		pRenderThread.GetDelayedOperations().AddDeletion( delayedDeletion );
-		
-	}catch( const deException &e ){
-		if( delayedDeletion ){
-			delete delayedDeletion;
-		}
-		pRenderThread.GetLogger().LogException( e );
+	if( pGIState ){
+		delete pGIState;
 	}
 }
 
@@ -1813,23 +1784,8 @@ deoglGIState *deoglRenderPlan::GetRenderGIState() const{
 void deoglRenderPlan::DropGIState(){
 	// WARNING called from main thread during synchronization
 	
-	if( ! pGIState ){
-		return;
-	}
-	
-	deoglRenderPlanDeletion *delayedDeletion = NULL;
-	
-	try{
-		delayedDeletion = new deoglRenderPlanDeletion;
-		delayedDeletion->giState = pGIState;
-		pGIState = NULL;
-		pRenderThread.GetDelayedOperations().AddDeletion( delayedDeletion );
-		
-	}catch( const deException &e ){
-		if( delayedDeletion ){
-			delete delayedDeletion;
-		}
-		pRenderThread.GetLogger().LogException( e );
+	if( pGIState ){
+		delete pGIState;
 	}
 }
 

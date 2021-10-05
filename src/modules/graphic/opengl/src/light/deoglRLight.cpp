@@ -37,7 +37,6 @@
 #include "../collidelist/deoglCollideList.h"
 #include "../component/deoglRComponent.h"
 #include "../configuration/deoglConfiguration.h"
-#include "../delayedoperation/deoglDelayedDeletion.h"
 #include "../delayedoperation/deoglDelayedOperations.h"
 #include "../occlusiontest/deoglOcclusionTest.h"
 #include "../occlusiontest/mesh/deoglROcclusionMesh.h"
@@ -1304,61 +1303,6 @@ void deoglRLight::SetLLWorldNext( deoglRLight *light ){
 // Private Functions
 //////////////////////
 
-class deoglRLightDeletion : public deoglDelayedDeletion{
-public:
-	deoglShadowCaster *shadowCaster;
-	deoglLightVolume *lightVolume;
-	deoglOcclusionQuery *occlusionQuery;
-	deoglLightShader *shaders[ deoglRLight::EST_COUNT ];
-	deoglSPBlockUBO *paramBlockLight;
-	deoglSPBlockUBO *paramBlockInstance;
-	deoglSkinState *skinState;
-	
-	deoglRLightDeletion() :
-	shadowCaster( NULL ),
-	lightVolume( NULL ),
-	occlusionQuery( NULL ),
-	paramBlockLight( NULL ),
-	paramBlockInstance( NULL ),
-	skinState( NULL )
-	{
-		int i;
-		for( i=0; i<deoglRLight::EST_COUNT; i++ ){
-			shaders[ i ] = NULL;
-		}
-	}
-	
-	virtual ~deoglRLightDeletion(){
-	}
-	
-	virtual void DeleteObjects( deoglRenderThread &renderThread ){
-		int i;
-		if( paramBlockInstance ){
-			paramBlockInstance->FreeReference();
-		}
-		if( paramBlockLight ){
-			paramBlockLight->FreeReference();
-		}
-		for( i=0; i<deoglRLight::EST_COUNT; i++ ){
-			if( shaders[ i ] ){
-				shaders[ i ]->FreeReference();
-			}
-		}
-		if( lightVolume ){
-			delete lightVolume;
-		}
-		if( shadowCaster ){
-			delete shadowCaster;
-		}
-		if( occlusionQuery ){
-			delete occlusionQuery;
-		}
-		if( skinState ){
-			delete skinState;
-		}
-	}
-};
-
 void deoglRLight::pCleanUp(){
 	SetParentWorld( NULL );
 	
@@ -1396,34 +1340,30 @@ void deoglRLight::pCleanUp(){
 		pDynamicSkin->FreeReference();
 	}
 	
-	// delayed deletion of opengl containing objects
-	deoglRLightDeletion *delayedDeletion = NULL;
-	int i;
-	
-	if( pSkinState ){
-		pSkinState->DropDelayedDeletionObjects(); // avoid race conditions
+	if( pParamBlockInstance ){
+		pParamBlockInstance->FreeReference();
+	}
+	if( pParamBlockLight ){
+		pParamBlockLight->FreeReference();
 	}
 	
-	try{
-		delayedDeletion = new deoglRLightDeletion;
-		delayedDeletion->lightVolume = pLightVolume;
-		delayedDeletion->occlusionQuery = pOcclusionQuery;
-		delayedDeletion->paramBlockInstance = pParamBlockInstance;
-		delayedDeletion->paramBlockLight = pParamBlockLight;
-		for( i=0; i<EST_COUNT; i++ ){
-			delayedDeletion->shaders[ i ] = pShaders[ i ];
+	int i;
+	for( i=0; i<deoglRLight::EST_COUNT; i++ ){
+		if( pShaders[ i ] ){
+			pShaders[ i ]->FreeReference();
 		}
-		delayedDeletion->shadowCaster = pShadowCaster;
-		delayedDeletion->skinState = pSkinState;
-		
-		pRenderThread.GetDelayedOperations().AddDeletion( delayedDeletion );
-		
-	}catch( const deException &e ){
-		if( delayedDeletion ){
-			delete delayedDeletion;
-		}
-		pRenderThread.GetLogger().LogException( e );
-		throw;
+	}
+	if( pLightVolume ){
+		delete pLightVolume;
+	}
+	if( pShadowCaster ){
+		delete pShadowCaster;
+	}
+	if( pOcclusionQuery ){
+		delete pOcclusionQuery;
+	}
+	if( pSkinState ){
+		delete pSkinState;
 	}
 }
 

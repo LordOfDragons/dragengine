@@ -24,7 +24,6 @@
 #include <string.h>
 
 #include "deoglROcclusionMesh.h"
-#include "../../delayedoperation/deoglDelayedDeletion.h"
 #include "../../delayedoperation/deoglDelayedOperations.h"
 #include "../../gi/deoglRayTraceField.h"
 #include "../../renderthread/deoglRenderThread.h"
@@ -233,30 +232,6 @@ void deoglROcclusionMesh::PrepareRayTraceField(){
 // Private Functions
 //////////////////////
 
-class deoglROcclusionMeshDeletion : public deoglDelayedDeletion{
-public:
-	deoglSharedVBOBlock *vboBlock;
-	deoglSharedSPBListUBO *sharedSPBListUBO;
-	
-	deoglROcclusionMeshDeletion() :
-	vboBlock( NULL ),
-	sharedSPBListUBO( NULL ){
-	}
-	
-	virtual ~deoglROcclusionMeshDeletion(){
-	}
-	
-	virtual void DeleteObjects( deoglRenderThread& ){
-		if( sharedSPBListUBO ){
-			delete sharedSPBListUBO;
-		}
-		if( vboBlock ){
-			vboBlock->GetVBO()->RemoveBlock( vboBlock );
-			vboBlock->FreeReference();
-		}
-	}
-};
-
 void deoglROcclusionMesh::pCleanUp(){
 	if( pBVH ){
 		delete pBVH;
@@ -273,22 +248,12 @@ void deoglROcclusionMesh::pCleanUp(){
 	if( pWeightsEntries ){
 		delete [] pWeightsEntries;
 	}
-	
-	// delayed deletion of opengl containing objects
-	deoglROcclusionMeshDeletion *delayedDeletion = NULL;
-	
-	try{
-		delayedDeletion = new deoglROcclusionMeshDeletion;
-		delayedDeletion->vboBlock = pVBOBlock;
-		delayedDeletion->sharedSPBListUBO = pSharedSPBListUBO;
-		pRenderThread.GetDelayedOperations().AddDeletion( delayedDeletion );
-		
-	}catch( const deException &e ){
-		if( delayedDeletion ){
-			delete delayedDeletion;
-		}
-		pRenderThread.GetLogger().LogException( e );
-		throw;
+	if( pSharedSPBListUBO ){
+		delete pSharedSPBListUBO;
+	}
+	if( pVBOBlock ){
+		pVBOBlock->GetVBO()->RemoveBlock( pVBOBlock );
+		pVBOBlock->FreeReference();
 	}
 }
 

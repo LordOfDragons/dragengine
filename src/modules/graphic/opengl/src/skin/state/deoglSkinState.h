@@ -121,11 +121,6 @@ public:
 	
 	
 	
-	/** Drop objects containing delayed deletion support. */
-	void DropDelayedDeletionObjects();
-	
-	
-	
 	/** Number of video players. */
 	int GetVideoPlayerCount() const;
 	

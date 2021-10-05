@@ -176,7 +176,6 @@ public:
 	
 	
 private:
-	void pCleanUp();
 	void pGetParameters( deoglRenderThread &renderThread );
 	void pRenderLeftEye( deoglRenderThread &renderThread, const decPoint &size );
 	void pRenderRightEye( deoglRenderThread &renderThread, const decPoint &size );

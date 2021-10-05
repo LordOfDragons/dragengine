@@ -31,7 +31,6 @@
 #include "../vao/deoglVAO.h"
 #include "../vbo/deoglVBOLayout.h"
 #include "../vbo/deoglVBOAttribute.h"
-#include "../delayedoperation/deoglDelayedDeletion.h"
 #include "../delayedoperation/deoglDelayedOperations.h"
 
 #include <dragengine/common/exceptions.h>
@@ -71,29 +70,6 @@ pWorldMarkedRemove( false ){
 	LEAK_CHECK_CREATE( renderThread, DebugDrawer );
 }
 
-class deoglRDebugDrawerDeletion : public deoglDelayedDeletion{
-public:
-	GLuint vbo;
-	deoglVAO *vao;
-	
-	deoglRDebugDrawerDeletion() :
-	vbo( 0 ),
-	vao( NULL ){
-	}
-	
-	virtual ~deoglRDebugDrawerDeletion(){
-	}
-	
-	virtual void DeleteObjects( deoglRenderThread &renderThread ){
-		if( vao ){
-			delete vao;
-		}
-		if( vbo ){
-			OGL_CHECK( renderThread, pglDeleteBuffers( 1, &vbo ) );
-		}
-	}
-};
-
 deoglRDebugDrawer::~deoglRDebugDrawer(){
 	LEAK_CHECK_FREE( pRenderThread, DebugDrawer );
 	if( pShapes ){
@@ -102,23 +78,12 @@ deoglRDebugDrawer::~deoglRDebugDrawer(){
 	if( pVBOData ){
 		delete [] pVBOData;
 	}
-	
-	// delayed deletion of opengl containing objects
-	deoglRDebugDrawerDeletion *delayedDeletion = NULL;
-	
-	try{
-		delayedDeletion = new deoglRDebugDrawerDeletion;
-		delayedDeletion->vao = pVAO;
-		delayedDeletion->vbo = pVBO;
-		pRenderThread.GetDelayedOperations().AddDeletion( delayedDeletion );
-		
-	}catch( const deException &e ){
-		if( delayedDeletion ){
-			delete delayedDeletion;
-		}
-		pRenderThread.GetLogger().LogException( e );
-		//throw; -> otherwise terminate
+	if( pVAO ){
+		delete pVAO;
 	}
+	
+	deoglDelayedOperations &dops = pRenderThread.GetDelayedOperations();
+	dops.DeleteOpenGLBuffer( pVBO );
 }
 
 

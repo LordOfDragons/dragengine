@@ -34,7 +34,6 @@
 #include "../renderthread/deoglRTLogger.h"
 #include "../texture/pixelbuffer/deoglPixelBuffer.h"
 #include "../texture/texture2d/deoglTexture.h"
-#include "../delayedoperation/deoglDelayedDeletion.h"
 #include "../delayedoperation/deoglDelayedOperations.h"
 #include "../vr/deoglVR.h"
 
@@ -275,23 +274,6 @@ void deoglRCamera::PrepareForRender(){
 // Private Functions
 //////////////////////
 
-class deoglRCameraDeletion : public deoglDelayedDeletion{
-public:
-	deoglTexture *textureToneMapParams;
-	
-	deoglRCameraDeletion() : textureToneMapParams( NULL ){
-	}
-	
-	virtual ~deoglRCameraDeletion(){
-	}
-	
-	virtual void DeleteObjects( deoglRenderThread& ){
-		if( textureToneMapParams ){
-			delete textureToneMapParams;
-		}
-	}
-};
-
 void deoglRCamera::pCleanUp(){
 	EnableVR( false );
 	SetParentWorld( NULL );
@@ -300,19 +282,7 @@ void deoglRCamera::pCleanUp(){
 	
 	delete pPlan;
 	
-	// delayed deletion of opengl containing objects
-	deoglRCameraDeletion *delayedDeletion = NULL;
-	
-	try{
-		delayedDeletion = new deoglRCameraDeletion;
-		delayedDeletion->textureToneMapParams = pTextureToneMapParams;
-		pRenderThread.GetDelayedOperations().AddDeletion( delayedDeletion );
-		
-	}catch( const deException &e ){
-		if( delayedDeletion ){
-			delete delayedDeletion;
-		}
-		pRenderThread.GetLogger().LogException( e );
-		throw;
+	if( pTextureToneMapParams ){
+		delete pTextureToneMapParams;
 	}
 }

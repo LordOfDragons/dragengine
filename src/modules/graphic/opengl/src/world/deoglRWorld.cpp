@@ -42,7 +42,6 @@
 #include "../sensor/deoglRLumimeter.h"
 #include "../sky/deoglRSkyInstance.h"
 #include "../terrain/heightmap/deoglRHeightTerrain.h"
-#include "../delayedoperation/deoglDelayedDeletion.h"
 #include "../delayedoperation/deoglDelayedOperations.h"
 
 #include <dragengine/common/exceptions.h>

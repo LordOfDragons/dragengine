@@ -25,6 +25,7 @@
 
 #include "deoglOcclusionQuery.h"
 #include "deoglOcclusionQueryManager.h"
+#include "../delayedoperation/deoglDelayedOperations.h"
 #include "../shapes/deoglShape.h"
 #include "../renderthread/deoglRenderThread.h"
 
@@ -50,9 +51,7 @@ pQuery( 0 )
 
 deoglOcclusionQuery::~deoglOcclusionQuery(){
 	//EndQuery();
-	if( pQuery ){
-		pglDeleteQueries( 1, &pQuery );
-	}
+	pRenderThread.GetDelayedOperations().DeleteOpenGLQuery( pQuery );
 }
 
 

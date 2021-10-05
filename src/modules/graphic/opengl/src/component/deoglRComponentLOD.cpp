@@ -29,7 +29,6 @@
 #include "deoglRComponentTexture.h"
 #include "../capabilities/deoglCapabilities.h"
 #include "../configuration/deoglConfiguration.h"
-#include "../delayedoperation/deoglDelayedDeletion.h"
 #include "../delayedoperation/deoglDelayedOperations.h"
 #include "../framebuffer/deoglFramebuffer.h"
 #include "../gi/deoglGIBVHDynamic.h"
@@ -256,7 +255,7 @@ void deoglRComponentLOD::FreeVBO(){
 	pMemUse = 0;
 	
 	if( pVBO ){
-		pglDeleteBuffers( 1, &pVBO );
+		pComponent.GetRenderThread().GetDelayedOperations().DeleteOpenGLBuffer( pVBO );
 		pVBO = 0;
 	}
 	
@@ -1002,59 +1001,6 @@ void deoglRComponentLOD::PrepareNormalsTangents(){
 // Private Functions
 //////////////////////
 
-class deoglRComponentLODDeletion : public deoglDelayedDeletion{
-public:
-	GLuint vbo;
-	deoglVAO *vao;
-	GLuint vboWeightMatrices;
-	GLuint tboWeightMatrices;
-	GLuint vboTransformVertices;
-	GLuint tboTransformVertices;
-	deoglTexture *texTransformNormTan;
-	deoglFramebuffer *fboCalcNormalTangent;
-	
-	deoglRComponentLODDeletion() :
-	vbo( 0 ),
-	vao( NULL ),
-	vboWeightMatrices( 0 ),
-	tboWeightMatrices( 0 ),
-	vboTransformVertices( 0 ),
-	tboTransformVertices( 0 ),
-	texTransformNormTan( NULL ),
-	fboCalcNormalTangent( NULL ){
-	}
-	
-	virtual ~deoglRComponentLODDeletion(){
-	}
-	
-	virtual void DeleteObjects( deoglRenderThread &renderThread ){
-		if( tboWeightMatrices ){
-			OGL_CHECK( renderThread, glDeleteTextures( 1, &tboWeightMatrices ) );
-		}
-		if( vboWeightMatrices ){
-			OGL_CHECK( renderThread, pglDeleteBuffers( 1, &vboWeightMatrices ) );
-		}
-		if( tboTransformVertices ){
-			OGL_CHECK( renderThread, pglDeleteBuffers( 1, &tboTransformVertices ) );
-		}
-		if( vboTransformVertices ){
-			OGL_CHECK( renderThread, pglDeleteBuffers( 1, &vboTransformVertices ) );
-		}
-		if( texTransformNormTan ){
-			delete texTransformNormTan;
-		}
-		if( fboCalcNormalTangent ){
-			delete fboCalcNormalTangent;
-		}
-		if( vao ){
-			delete vao;
-		}
-		if( vbo ){
-			pglDeleteBuffers( 1, &vbo );
-		}
-	}
-};
-
 void deoglRComponentLOD::pCleanUp(){
 	DropGIDynamicBVH();
 	
@@ -1090,28 +1036,22 @@ void deoglRComponentLOD::pCleanUp(){
 		pVBOPointSize = 0;
 	}
 	
-	// delayed deletion of opengl containing objects
-	deoglRComponentLODDeletion *delayedDeletion = NULL;
-	
-	try{
-		delayedDeletion = new deoglRComponentLODDeletion;
-		delayedDeletion->fboCalcNormalTangent = pFBOCalcNormalTangent;
-		delayedDeletion->tboTransformVertices = pTBOTransformVertices;
-		delayedDeletion->tboWeightMatrices = pTBOWeightMatrices;
-		delayedDeletion->texTransformNormTan = pTexTransformNormTan;
-		delayedDeletion->vao = pVAO;
-		delayedDeletion->vbo = pVBO;
-		delayedDeletion->vboTransformVertices = pVBOTransformVertices;
-		delayedDeletion->vboWeightMatrices = pVBOWeightMatrices;
-		pComponent.GetRenderThread().GetDelayedOperations().AddDeletion( delayedDeletion );
-		
-	}catch( const deException &e ){
-		if( delayedDeletion ){
-			delete delayedDeletion;
-		}
-		pComponent.GetRenderThread().GetLogger().LogException( e );
-		throw;
+	if( pTexTransformNormTan ){
+		delete pTexTransformNormTan;
 	}
+	if( pFBOCalcNormalTangent ){
+		delete pFBOCalcNormalTangent;
+	}
+	if( pVAO ){
+		delete pVAO;
+	}
+	
+	deoglDelayedOperations &dops = pComponent.GetRenderThread().GetDelayedOperations();
+	dops.DeleteOpenGLBuffer( pVBOWeightMatrices );
+	dops.DeleteOpenGLBuffer( pTBOTransformVertices );
+	dops.DeleteOpenGLBuffer( pVBOTransformVertices );
+	dops.DeleteOpenGLBuffer( pVBO );
+	dops.DeleteOpenGLTexture( pTBOWeightMatrices );
 }
 
 

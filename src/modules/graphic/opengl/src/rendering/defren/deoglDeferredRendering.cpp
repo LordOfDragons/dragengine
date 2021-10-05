@@ -26,6 +26,7 @@
 #include "deoglDRDepthMinMax.h"
 #include "../../capabilities/deoglCapabilities.h"
 #include "../../configuration/deoglConfiguration.h"
+#include "../../delayedoperation/deoglDelayedOperations.h"
 #include "../../extensions/deoglExtensions.h"
 #include "../../extensions/deoglExtResult.h"
 #include "../../framebuffer/deoglFramebuffer.h"
@@ -1391,15 +1392,13 @@ void deoglDeferredRendering::pCleanUp(){
 	if( pVAOBillboard ){
 		delete pVAOBillboard;
 	}
-	if( pVBOBillboard ){
-		pglDeleteBuffers( 1, &pVBOBillboard );
-	}
 	if( pVAOFullScreenQuad ){
 		delete pVAOFullScreenQuad;
 	}
-	if( pVBOFullScreenQuad ){
-		pglDeleteBuffers( 1, &pVBOFullScreenQuad );
-	}
+	
+	deoglDelayedOperations &dops = pRenderThread.GetDelayedOperations();
+	dops.DeleteOpenGLBuffer( pVBOBillboard );
+	dops.DeleteOpenGLBuffer( pVBOFullScreenQuad );
 	
 // 	if( pTextureLuminanceDepth ){
 // 		delete pTextureLuminanceDepth;

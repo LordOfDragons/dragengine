@@ -30,7 +30,6 @@
 #include "../../renderthread/deoglRTRenderers.h"
 #include "../../renderthread/deoglRTLogger.h"
 #include "../../target/deoglRenderTarget.h"
-#include "../../delayedoperation/deoglDelayedDeletion.h"
 #include "../../delayedoperation/deoglDelayedOperations.h"
 
 #include <dragengine/common/exceptions.h>
@@ -52,42 +51,11 @@ pResizeRenderTarget( false )
 	LEAK_CHECK_CREATE( renderThread, CanvasView );
 }
 
-class deoglRCanvasViewDeletion : public deoglDelayedDeletion{
-public:
-	deoglRenderTarget *renderTarget;
-	
-	deoglRCanvasViewDeletion() :
-	renderTarget( NULL ){
-	}
-	
-	virtual ~deoglRCanvasViewDeletion(){
-	}
-	
-	virtual void DeleteObjects( deoglRenderThread& ){
-		if( renderTarget ){
-			renderTarget->FreeReference();
-		}
-	}
-};
-
 deoglRCanvasView::~deoglRCanvasView(){
 	LEAK_CHECK_FREE( GetRenderThread(), CanvasView );
 	RemoveAllChildren();
-	
-	// delayed deletion of opengl containing objects
-	deoglRCanvasViewDeletion *delayedDeletion = NULL;
-	
-	try{
-		delayedDeletion = new deoglRCanvasViewDeletion;
-		delayedDeletion->renderTarget = pRenderTarget;
-		GetRenderThread().GetDelayedOperations().AddDeletion( delayedDeletion );
-		
-	}catch( const deException &e ){
-		if( delayedDeletion ){
-			delete delayedDeletion;
-		}
-		GetRenderThread().GetLogger().LogException( e );
-		// throw; -> otherwise terminate
+	if( pRenderTarget ){
+		pRenderTarget->FreeReference();
 	}
 }
 

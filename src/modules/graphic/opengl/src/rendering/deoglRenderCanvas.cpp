@@ -34,6 +34,7 @@
 #include "../canvas/render/deoglRCanvasVideoPlayer.h"
 #include "../canvas/render/deoglRCanvasView.h"
 #include "../configuration/deoglConfiguration.h"
+#include "../delayedoperation/deoglDelayedOperations.h"
 #include "../devmode/deoglDeveloperMode.h"
 #include "../debug/deoglDebugInformation.h"
 #include "../font/deoglRFont.h"
@@ -1071,12 +1072,9 @@ void deoglRenderCanvas::pCleanUp(){
 		pShaderCanvasColorMask->RemoveUsage();
 	}
 	
-	if( pVAOShapes ){
-		pglDeleteVertexArrays( 1, &pVAOShapes );
-	}
-	if( pVBOShapes ){
-		pglDeleteBuffers( 1, &pVBOShapes );
-	}
+	deoglDelayedOperations &dops = GetRenderThread().GetDelayedOperations();
+	dops.DeleteOpenGLVertexArray( pVAOShapes );
+	dops.DeleteOpenGLBuffer( pVBOShapes );
 	
 	if( pDebugInfoCanvas ){
 		GetRenderThread().GetDebug().GetDebugInformationList().RemoveIfPresent( pDebugInfoCanvas );

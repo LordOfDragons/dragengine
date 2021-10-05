@@ -63,11 +63,9 @@ pWriteBufferUsed( false ){
 
 deoglSPBlockUBO::~deoglSPBlockUBO(){
 	if( IsBufferMapped() ){
-		deoglSPBlockUBO::UnmapBuffer();
+		pClearMapped(); // done by delete
 	}
-	if( pUBO ){
-		pglDeleteBuffers( 1, &pUBO );
-	}
+	GetRenderThread().GetDelayedOperations().DeleteOpenGLBuffer( pUBO );
 	if( pWriteBuffer ){
 		delete [] pWriteBuffer;
 	}

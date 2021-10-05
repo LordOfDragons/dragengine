@@ -52,7 +52,6 @@
 #include "../texture/texunitsconfig/deoglTexUnitsConfigList.h"
 #include "../vbo/deoglSharedVBOBlock.h"
 #include "../world/deoglRWorld.h"
-#include "../delayedoperation/deoglDelayedDeletion.h"
 #include "../delayedoperation/deoglDelayedOperations.h"
 
 #include <dragengine/common/exceptions.h>
@@ -91,49 +90,6 @@ pDirtyModel( true )
 	LEAK_CHECK_CREATE( propField.GetRenderThread(), PropFieldType );
 }
 
-class deoglRPropFieldDeletion : public deoglDelayedDeletion{
-public:
-	deoglSPBlockUBO *paramBlock;
-	decPointerList clusters;
-	
-	deoglRPropFieldDeletion() :
-	paramBlock( NULL ){
-	}
-	
-	virtual ~deoglRPropFieldDeletion(){
-	}
-	
-	virtual void DeleteObjects( deoglRenderThread& ){
-		const int clusterCount = clusters.GetCount();
-		int i;
-		for( i=0; i<clusterCount; i++ ){
-			delete ( deoglPropFieldCluster* )clusters.GetAt( i );
-		}
-		if( paramBlock ){
-			paramBlock->FreeReference();
-		}
-	}
-};
-
-class deoglRPropFieldRemoveAllClustersDeletion : public deoglDelayedDeletion{
-public:
-	decPointerList clusters;
-	
-	deoglRPropFieldRemoveAllClustersDeletion(){
-	}
-	
-	virtual ~deoglRPropFieldRemoveAllClustersDeletion(){
-	}
-	
-	virtual void DeleteObjects( deoglRenderThread& ){
-		const int clusterCount = clusters.GetCount();
-		int i;
-		for( i=0; i<clusterCount; i++ ){
-			delete ( deoglPropFieldCluster* )clusters.GetAt( i );
-		}
-	}
-};
-
 deoglRPropFieldType::~deoglRPropFieldType(){
 	LEAK_CHECK_FREE( pPropField.GetRenderThread(), PropFieldType );
 	
@@ -144,21 +100,13 @@ deoglRPropFieldType::~deoglRPropFieldType(){
 		pModel->FreeReference();
 	}
 	
-	// delayed deletion of opengl containing objects
-	deoglRPropFieldDeletion *delayedDeletion = NULL;
-	
-	try{
-		delayedDeletion = new deoglRPropFieldDeletion;
-		delayedDeletion->paramBlock = pParamBlock;
-		delayedDeletion->clusters = pClusters;
-		pPropField.GetRenderThread().GetDelayedOperations().AddDeletion( delayedDeletion );
-		
-	}catch( const deException &e ){
-		if( delayedDeletion ){
-			delete delayedDeletion;
-		}
-		pPropField.GetRenderThread().GetLogger().LogException( e );
-		//throw; -> otherwise terminate
+	const int clusterCount = pClusters.GetCount();
+	int i;
+	for( i=0; i<clusterCount; i++ ){
+		delete ( deoglPropFieldCluster* )pClusters.GetAt( i );
+	}
+	if( pParamBlock ){
+		pParamBlock->FreeReference();
 	}
 }
 
@@ -496,33 +444,13 @@ void deoglRPropFieldType::AddCluster( deoglPropFieldCluster *cluster ){
 }
 
 void deoglRPropFieldType::RemoveAllClusters(){
-	// this is called during synchronization. clusters use though opengl objects a lot so
-	// they have to be delayed deleted
-	deoglRPropFieldRemoveAllClustersDeletion *delayedDeletion = NULL;
-	
-	try{
-		delayedDeletion = new deoglRPropFieldRemoveAllClustersDeletion;
-		delayedDeletion->clusters = pClusters;
-		pPropField.GetRenderThread().GetDelayedOperations().AddDeletion( delayedDeletion );
-		pClusters.RemoveAll();
-		
-	}catch( const deException &e ){
-		if( delayedDeletion ){
-			delete delayedDeletion;
-		}
-		pPropField.GetRenderThread().GetLogger().LogException( e );
-		throw;
-	}
-	
-	/*
-	const int count = pClusters.GetCount();
+	// this is called during synchronization
+	const int clusterCount = pClusters.GetCount();
 	int i;
-	
-	for( i=0; i<count; i++ ){
+	for( i=0; i<clusterCount; i++ ){
 		delete ( deoglPropFieldCluster* )pClusters.GetAt( i );
 	}
 	pClusters.RemoveAll();
-	*/
 }
 
 void deoglRPropFieldType::ClusterRequiresPrepareForRender(){

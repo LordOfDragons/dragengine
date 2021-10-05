@@ -25,7 +25,6 @@
 #include "deoglVR.h"
 #include "../deGraphicOpenGl.h"
 #include "../delayedoperation/deoglDelayedOperations.h"
-#include "../delayedoperation/deoglDelayedDeletion.h"
 #include "../devmode/deoglDeveloperMode.h"
 #include "../framebuffer/deoglFramebuffer.h"
 #include "../model/deoglModel.h"
@@ -61,21 +60,14 @@ pState( esRender )
 {
 	deoglRenderThread &renderThread = camera.GetRenderThread();
 	
-	try{
-		pGetParameters( renderThread );
-		
-		// examples on the internet use RGBA8
-		pTargetLeftEye.TakeOver( new deoglRenderTarget( renderThread, pRenderSize.x, pRenderSize.y, 4, 8 ) );
-		pTargetRightEye.TakeOver( new deoglRenderTarget( renderThread, pRenderSize.x, pRenderSize.y, 4, 8 ) );
-		
-	}catch( const deException & ){
-		pCleanUp();
-		throw;
-	}
+	pGetParameters( renderThread );
+	
+	// examples on the internet use RGBA8
+	pTargetLeftEye.TakeOver( new deoglRenderTarget( renderThread, pRenderSize.x, pRenderSize.y, 4, 8 ) );
+	pTargetRightEye.TakeOver( new deoglRenderTarget( renderThread, pRenderSize.x, pRenderSize.y, 4, 8 ) );
 }
 
 deoglVR::~deoglVR(){
-	pCleanUp();
 }
 
 
@@ -241,33 +233,6 @@ void deoglVR::EndFrame(){
 
 // Private Functions
 //////////////////////
-
-class deoglVRDeletion : public deoglDelayedDeletion{
-public:
-	deoglRenderTarget::Ref targetLeftEye, targetRightEye;
-	
-	deoglVRDeletion(){}
-	virtual void DeleteObjects( deoglRenderThread& ){ }
-};
-
-void deoglVR::pCleanUp(){
-	// delayed deletion of opengl containing objects
-	deoglVRDeletion *delayedDeletion = NULL;
-	
-	try{
-		delayedDeletion = new deoglVRDeletion;
-		delayedDeletion->targetLeftEye = pTargetLeftEye;
-		delayedDeletion->targetRightEye = pTargetRightEye;
-		pCamera.GetRenderThread().GetDelayedOperations().AddDeletion( delayedDeletion );
-		
-	}catch( const deException &e ){
-		if( delayedDeletion ){
-			delete delayedDeletion;
-		}
-		pCamera.GetRenderThread().GetLogger().LogException( e );
-		throw;
-	}
-}
 
 void deoglVR::pGetParameters( deoglRenderThread &renderThread ){
 	deBaseVRModule &module = *renderThread.GetOgl().GetGameEngine()->GetVRSystem()->GetActiveModule();

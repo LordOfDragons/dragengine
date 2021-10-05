@@ -29,7 +29,6 @@
 #include "../../../../renderthread/deoglRTLogger.h"
 #include "../../../../texture/texture2d/deoglTexture.h"
 #include "../../../../texture/pixelbuffer/deoglPixelBuffer.h"
-#include "../../../../delayedoperation/deoglDelayedDeletion.h"
 #include "../../../../delayedoperation/deoglDelayedOperations.h"
 
 #include <dragengine/common/exceptions.h>
@@ -50,41 +49,10 @@ pDirty( true )
 	LEAK_CHECK_CREATE( dynamicSkin.GetRenderThread(), DSRenderableColor );
 }
 
-class deoglRDSRenderableColorDeletion : public deoglDelayedDeletion{
-public:
-	deoglTexture *texture;
-	
-	deoglRDSRenderableColorDeletion() :
-	texture( NULL ){
-	}
-	
-	virtual ~deoglRDSRenderableColorDeletion(){
-	}
-	
-	virtual void DeleteObjects( deoglRenderThread &renderThread ){
-		if( texture){
-			delete texture;
-		}
-	}
-};
-
 deoglRDSRenderableColor::~deoglRDSRenderableColor(){
 	LEAK_CHECK_FREE( GetDynamicSkin().GetRenderThread(), DSRenderableColor );
-	
-	// delayed deletion of opengl containing objects
-	deoglRDSRenderableColorDeletion *delayedDeletion = NULL;
-	
-	try{
-		delayedDeletion = new deoglRDSRenderableColorDeletion;
-		delayedDeletion->texture = pTexture;
-		GetDynamicSkin().GetRenderThread().GetDelayedOperations().AddDeletion( delayedDeletion );
-		
-	}catch( const deException &e ){
-		if( delayedDeletion ){
-			delete delayedDeletion;
-		}
-		GetDynamicSkin().GetRenderThread().GetLogger().LogException( e );
-		//throw; -> otherwise terminate
+	if( pTexture ){
+		delete pTexture;
 	}
 }
 

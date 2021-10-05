@@ -26,7 +26,6 @@
 #include "deoglRSkyInstance.h"
 #include "deoglRSkyInstanceLayer.h"
 #include "deoglSkyLayerGICascade.h"
-#include "../delayedoperation/deoglDelayedDeletion.h"
 #include "../delayedoperation/deoglDelayedOperations.h"
 #include "../gi/deoglGICascade.h"
 #include "../gi/deoglGICascade.h"
@@ -99,37 +98,8 @@ void deoglSkyLayerGICascade::NotifyUpdateStaticComponent( deoglRComponent* ){
 // Private Functions
 //////////////////////
 
-class deoglSkyLayerGICascadeDeletion : public deoglDelayedDeletion{
-public:
-	deoglShadowCaster *shadowCaster;
-	
-	deoglSkyLayerGICascadeDeletion() : shadowCaster( NULL ){
-	}
-	
-	virtual ~deoglSkyLayerGICascadeDeletion(){
-	}
-	
-	virtual void DeleteObjects( deoglRenderThread& ){
-		if( shadowCaster ){
-			delete shadowCaster;
-		}
-	}
-};
-
 void deoglSkyLayerGICascade::pCleanUp(){
-	// delayed deletion of opengl containing objects
-	deoglSkyLayerGICascadeDeletion *delayedDeletion = NULL;
-	
-	try{
-		delayedDeletion = new deoglSkyLayerGICascadeDeletion;
-		delayedDeletion->shadowCaster = pShadowCaster;
-		pLayer.GetInstance().GetRenderThread().GetDelayedOperations().AddDeletion( delayedDeletion );
-		
-	}catch( const deException &e ){
-		if( delayedDeletion ){
-			delete delayedDeletion;
-		}
-		pLayer.GetInstance().GetRenderThread().GetLogger().LogException( e );
-		//throw; -> otherwise terminate
+	if( pShadowCaster ){
+		delete pShadowCaster;
 	}
 }

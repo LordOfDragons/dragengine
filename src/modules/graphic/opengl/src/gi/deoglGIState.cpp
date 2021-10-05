@@ -31,6 +31,7 @@
 #include "../collidelist/deoglCollideListComponent.h"
 #include "../component/deoglRComponent.h"
 #include "../component/deoglRComponentLOD.h"
+#include "../delayedoperation/deoglDelayedOperations.h"
 #include "../model/deoglRModel.h"
 #include "../model/deoglModelLOD.h"
 #include "../rendering/deoglRenderOcclusion.h"
@@ -436,20 +437,16 @@ void deoglGIState::ComponentChangedLayerMask( deoglRComponent *component ){
 //////////////////////
 
 void deoglGIState::pCleanUp(){
+	deoglDelayedOperations &dops = pRenderThread.GetDelayedOperations();
+	dops.DeleteOpenGLBuffer( pVBOProbeOffsets );
+	dops.DeleteOpenGLBuffer( pVBOProbeOffsetsTransition );
+	dops.DeleteOpenGLBuffer( pVBOProbeExtends );
+	
 	if( pVBOProbeOffsetsData ){
 		delete [] pVBOProbeOffsetsData;
 	}
-	if( pVBOProbeOffsets ){
-		pglDeleteBuffers( 1, &pVBOProbeOffsets );
-	}
-	if( pVBOProbeOffsetsTransition ){
-		pglDeleteBuffers( 1, &pVBOProbeOffsetsTransition );
-	}
 	if( pVBOProbeExtendsData ){
 		delete [] pVBOProbeExtendsData;
-	}
-	if( pVBOProbeExtends ){
-		pglDeleteBuffers( 1, &pVBOProbeExtends );
 	}
 	
 	if( pCascades ){

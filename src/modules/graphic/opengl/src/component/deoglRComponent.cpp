@@ -36,7 +36,6 @@
 #include "../configuration/deoglConfiguration.h"
 #include "../decal/deoglDecal.h"
 #include "../decal/deoglRDecal.h"
-#include "../delayedoperation/deoglDelayedDeletion.h"
 #include "../delayedoperation/deoglDelayedOperations.h"
 #include "../envmap/deoglEnvironmentMap.h"
 #include "../extensions/deoglExtResult.h"
@@ -1633,23 +1632,6 @@ void deoglRComponent::SetLLWorldNext( deoglRComponent *component ){
 // Private Functions
 //////////////////////
 
-class deoglRComponentDeletion : public deoglDelayedDeletion{
-public:
-	deoglSkinState *skinState;
-	
-	deoglRComponentDeletion() : skinState( NULL ){
-	}
-	
-	virtual ~deoglRComponentDeletion(){
-	}
-	
-	virtual void DeleteObjects( deoglRenderThread& ){
-		if( skinState ){
-			delete skinState;
-		}
-	}
-};
-
 void deoglRComponent::pCleanUp(){
 	NotifyComponentDestroyed();
 	
@@ -1705,29 +1687,11 @@ void deoglRComponent::pCleanUp(){
 		pRenderEnvMapFade->FreeReference();
 	}
 	
-	// drop reference otherwise deletion can cause other deletions to be generated
-	// causing a deletion race
 	if( pSkinState ){
-		pSkinState->DropDelayedDeletionObjects();
+		delete pSkinState;
 	}
 	
 	pRenderThread.GetUniqueKey().Return( pUniqueKey );
-	
-	// delayed deletion of opengl containing objects
-	deoglRComponentDeletion *delayedDeletion = NULL;
-	
-	try{
-		delayedDeletion = new deoglRComponentDeletion;
-		delayedDeletion->skinState = pSkinState;
-		pRenderThread.GetDelayedOperations().AddDeletion( delayedDeletion );
-		
-	}catch( const deException &e ){
-		if( delayedDeletion ){
-			delete delayedDeletion;
-		}
-		pRenderThread.GetLogger().LogException( e );
-		throw;
-	}
 }
 
 

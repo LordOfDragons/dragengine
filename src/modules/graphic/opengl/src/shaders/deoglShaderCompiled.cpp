@@ -24,6 +24,7 @@
 #include <string.h>
 
 #include "deoglShaderCompiled.h"
+#include "../delayedoperation/deoglDelayedOperations.h"
 #include "../renderthread/deoglRenderThread.h"
 
 #include <dragengine/common/exceptions.h>
@@ -60,28 +61,14 @@ deoglShaderCompiled::~deoglShaderCompiled(){
 		delete [] pParameters;
 	}
 	
-	if( pHandleShader ){
-		pglDeleteProgram( pHandleShader );
-	}
-	
-	if( pHandleFP ){
-		pglDeleteShader( pHandleFP );
-	}
-	if( pHandleVP ){
-		pglDeleteShader( pHandleVP );
-	}
-	if( pHandleGP ){
-		pglDeleteShader( pHandleGP );
-	}
-	if( pHandleTEP ){
-		pglDeleteShader( pHandleTEP );
-	}
-	if( pHandleTCP ){
-		pglDeleteShader( pHandleTCP );
-	}
-	if( pHandleC ){
-		pglDeleteShader( pHandleC );
-	}
+	deoglDelayedOperations &dops = pRenderThread.GetDelayedOperations();
+	dops.DeleteOpenGLProgram( pHandleShader );
+	dops.DeleteOpenGLShader( pHandleFP );
+	dops.DeleteOpenGLShader( pHandleVP );
+	dops.DeleteOpenGLShader( pHandleGP );
+	dops.DeleteOpenGLShader( pHandleTEP );
+	dops.DeleteOpenGLShader( pHandleTCP );
+	dops.DeleteOpenGLShader( pHandleC );
 }
 
 

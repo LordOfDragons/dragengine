@@ -36,7 +36,6 @@
 #include "../../shaders/deoglShaderProgram.h"
 #include "../../shaders/deoglShaderSources.h"
 #include "../../texture/deoglTextureStageManager.h"
-#include "../../delayedoperation/deoglDelayedDeletion.h"
 #include "../../delayedoperation/deoglDelayedOperations.h"
 
 #include <dragengine/common/exceptions.h>
@@ -77,50 +76,16 @@ pShaderDownsample( NULL )
 	LEAK_CHECK_CREATE( renderThread, EffectFilterKernel );
 }
 
-class deoglREffectFilterKernelDeletion : public deoglDelayedDeletion{
-public:
-	deoglShaderProgram *shader;
-	deoglShaderProgram *shaderDownsample;
-	
-	deoglREffectFilterKernelDeletion() :
-	shader( NULL ),
-	shaderDownsample( NULL ){
-	}
-	
-	virtual ~deoglREffectFilterKernelDeletion(){
-	}
-	
-	virtual void DeleteObjects( deoglRenderThread &renderThread ){
-		if( shaderDownsample ){
-			shaderDownsample->RemoveUsage();
-		}
-		if( shader ){
-			shader->RemoveUsage();
-		}
-	}
-};
-
 deoglREffectFilterKernel::~deoglREffectFilterKernel(){
 	LEAK_CHECK_FREE( GetRenderThread(), EffectFilterKernel );
 	if( pKernel ){
 		delete [] pKernel;
 	}
-	
-	// delayed deletion of opengl containing objects
-	deoglREffectFilterKernelDeletion *delayedDeletion = NULL;
-	
-	try{
-		delayedDeletion = new deoglREffectFilterKernelDeletion;
-		delayedDeletion->shader = pShader;
-		delayedDeletion->shaderDownsample = pShaderDownsample;
-		GetRenderThread().GetDelayedOperations().AddDeletion( delayedDeletion );
-		
-	}catch( const deException &e ){
-		if( delayedDeletion ){
-			delete delayedDeletion;
-		}
-		GetRenderThread().GetLogger().LogException( e );
-		// throw; -> otherwise terminate
+	if( pShaderDownsample ){
+		pShaderDownsample->RemoveUsage();
+	}
+	if( pShader ){
+		pShader->RemoveUsage();
 	}
 }
 

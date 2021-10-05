@@ -25,6 +25,7 @@
 
 #include "deoglFramebuffer.h"
 #include "../capabilities/deoglCapabilities.h"
+#include "../delayedoperation/deoglDelayedOperations.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTLogger.h"
 #include "../texture/arraytexture/deoglArrayTexture.h"
@@ -1027,7 +1028,7 @@ void deoglFramebuffer::pCleanUp(){
 			pUsageWidth, pUsageHeight, pUsageCount );
 	}
 	
-	if( ! pPrimary && pFBO ){
-		pglDeleteFramebuffers( 1, &pFBO );
+	if( ! pPrimary ){
+		pRenderThread.GetDelayedOperations().DeleteOpenGLFramebuffer( pFBO );
 	}
 }

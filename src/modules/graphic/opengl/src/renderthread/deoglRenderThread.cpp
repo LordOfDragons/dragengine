@@ -953,6 +953,7 @@ void deoglRenderThread::pInitThreadPhase4(){
 	pTexture = new deoglRTTexture( *this );
 	pFramebuffer = new deoglRTFramebuffer( *this );
 	pShader = new deoglRTShader( *this );
+	pDelayedOperations = new deoglDelayedOperations( *this );
 	
 	pInitCapabilities();
 	
@@ -1025,7 +1026,6 @@ void deoglRenderThread::pInitThreadPhase4(){
 	pTriangleSorter = new deoglTriangleSorter;
 	pOcclusionTestPool = new deoglOcclusionTestPool( *this );
 	pPersistentRenderTaskPool = new deoglPersistentRenderTaskPool;
-	pDelayedOperations = new deoglDelayedOperations( *this );
 	pShadowMapper = new deoglShadowMapper( *this );
 	pDeferredRendering = new deoglDeferredRendering( *this );
 	pEnvMapSlotManager = new deoglEnvMapSlotManager( *this );
@@ -1916,12 +1916,11 @@ void deoglRenderThread::pBeginFrame(){
 	pContext->CheckConfigurationChanged();
 	#endif
 	
-	// free objects registered for delayed deletion. done before the rendering starts not after
-	// since delayed free requests are registered during the synchronization time. during
-	// rendering new objects are created so freeing objects before new ones are created is
-	// uses GPU memory better. the number of objects deleted per call is limited to prevent
-	// hickups if lots of objects are deleted.
-	pDelayedOperations->ProcessFreeOperations( false );
+	// free objects registered for delayed deletion. done before the rendering starts
+	// not after since delayed free requests typically happen during synchronization
+	// time. during rendering time new objects are created so freeing objects before
+	// new ones are created uses GPU memory better
+	pDelayedOperations->ProcessFreeOperations();
 	
 	pDelayedOperations->ProcessInitOperations();
 	
@@ -2235,12 +2234,8 @@ void deoglRenderThread::pCleanUpThread(){
 		#endif
 		
 		if( pDelayedOperations ){
-			delete pDelayedOperations;
-			pDelayedOperations = NULL;
+			pDelayedOperations->Clear(); // first stage clear
 		}
-		#ifdef TIME_CLEANUP
-		pLogger->LogInfoFormat( "RT-CleanUp: destroy delayed operations (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f) );
-		#endif
 		
 		if( pDeferredRendering ){
 			delete pDeferredRendering;
@@ -2440,6 +2435,14 @@ void deoglRenderThread::pCleanUpThread(){
 			delete pUniqueKey;
 			pUniqueKey = NULL;
 		}
+		
+		if( pDelayedOperations ){
+			delete pDelayedOperations;
+			pDelayedOperations = NULL;
+		}
+		#ifdef TIME_CLEANUP
+		pLogger->LogInfoFormat( "RT-CleanUp: destroy delayed operations (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f) );
+		#endif
 		
 		// free context
 // 		cleanUpWindow->FreeReference();

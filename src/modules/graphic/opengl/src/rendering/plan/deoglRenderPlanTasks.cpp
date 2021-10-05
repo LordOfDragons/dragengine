@@ -27,7 +27,6 @@
 #include "parallel/deoglRPTBuildRTsDepth.h"
 #include "parallel/deoglRPTBuildRTsGeometry.h"
 #include "../../deGraphicOpenGl.h"
-#include "../../delayedoperation/deoglDelayedDeletion.h"
 #include "../../delayedoperation/deoglDelayedOperations.h"
 #include "../../rendering/deoglRenderCanvas.h"
 #include "../../renderthread/deoglRenderThread.h"
@@ -68,77 +67,29 @@ pTaskGeometry( NULL )
 	pSolidDecalsTask = new deoglRenderTask( plan.GetRenderThread() );
 }
 
-class deoglRenderPlanTasksDeletion : public deoglDelayedDeletion{
-public:
-	deoglRenderTask *solidDepthTask;
-	deoglRenderTask *solidDepthOutlineTask;
-	deoglRenderTask *solidGeometryTask;
-	deoglRenderTask *solidGeometryHeight1Task;
-	deoglRenderTask *solidGeometryHeight2Task;
-	deoglRenderTask *solidGeometryOutlineTask;
-	deoglRenderTask *solidDecalsTask;
-	
-	deoglRenderPlanTasksDeletion() :
-	solidDepthTask( nullptr ),
-	solidDepthOutlineTask( nullptr ),
-	solidGeometryTask( nullptr ),
-	solidGeometryHeight1Task( nullptr ),
-	solidGeometryHeight2Task( nullptr ),
-	solidGeometryOutlineTask( nullptr ),
-	solidDecalsTask( nullptr ){
-	}
-	
-	virtual ~deoglRenderPlanTasksDeletion(){
-	}
-	
-	virtual void DeleteObjects( deoglRenderThread& ){
-		if( solidDepthTask ){
-			delete solidDepthTask;
-		}
-		if( solidDepthOutlineTask ){
-			delete solidDepthOutlineTask;
-		}
-		if( solidGeometryTask ){
-			delete solidGeometryTask;
-		}
-		if( solidGeometryHeight1Task ){
-			delete solidGeometryHeight1Task;
-		}
-		if( solidGeometryHeight2Task ){
-			delete solidGeometryHeight2Task;
-		}
-		if( solidGeometryOutlineTask ){
-			delete solidGeometryOutlineTask;
-		}
-		if( solidDecalsTask ){
-			delete solidDecalsTask;
-		}
-	}
-};
-
 deoglRenderPlanTasks::~deoglRenderPlanTasks(){
 	CleanUp();
 	
-	// delayed deletion of opengl containing objects
-	deoglRenderPlanTasksDeletion *delayedDeletion = NULL;
-	
-	try{
-		delayedDeletion = new deoglRenderPlanTasksDeletion;
-		delayedDeletion->solidDepthTask = pSolidDepthTask;
-		delayedDeletion->solidDepthOutlineTask = pSolidDepthOutlineTask;
-		delayedDeletion->solidGeometryTask = pSolidGeometryTask;
-		delayedDeletion->solidGeometryHeight1Task = pSolidGeometryHeight1Task;
-		delayedDeletion->solidGeometryHeight2Task = pSolidGeometryHeight2Task;
-		delayedDeletion->solidGeometryOutlineTask = pSolidGeometryOutlineTask;
-		delayedDeletion->solidDecalsTask = pSolidDecalsTask;
-		pPlan.GetRenderThread().GetDelayedOperations().AddDeletion( delayedDeletion );
-		
-	}catch( const deException &e ){
-		if( delayedDeletion ){
-			delete delayedDeletion;
-		}
-		pPlan.GetRenderThread().GetLogger().LogException( e );
-		//throw; -> otherwise terminate
+	if( pSolidDepthTask ){
+		delete pSolidDepthTask;
+	}
+	if( pSolidDepthOutlineTask ){
+		delete pSolidDepthOutlineTask;
+	}
+	if( pSolidGeometryTask ){
+		delete pSolidGeometryTask;
+	}
+	if( pSolidGeometryHeight1Task ){
+		delete pSolidGeometryHeight1Task;
+	}
+	if( pSolidGeometryHeight2Task ){
+		delete pSolidGeometryHeight2Task;
+	}
+	if( pSolidGeometryOutlineTask ){
+		delete pSolidGeometryOutlineTask;
+	}
+	if( pSolidDecalsTask ){
+		delete pSolidDecalsTask;
 	}
 }
 

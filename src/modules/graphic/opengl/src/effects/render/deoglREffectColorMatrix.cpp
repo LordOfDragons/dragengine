@@ -36,7 +36,6 @@
 #include "../../shaders/deoglShaderProgram.h"
 #include "../../shaders/deoglShaderSources.h"
 #include "../../texture/deoglTextureStageManager.h"
-#include "../../delayedoperation/deoglDelayedDeletion.h"
 #include "../../delayedoperation/deoglDelayedOperations.h"
 
 #include <dragengine/common/exceptions.h>
@@ -64,41 +63,10 @@ pShader( NULL ){
 	LEAK_CHECK_CREATE( renderThread, EffectColorMatrix );
 }
 
-class deoglREffectColorMatrixDeletion : public deoglDelayedDeletion{
-public:
-	deoglShaderProgram *shader;
-	
-	deoglREffectColorMatrixDeletion() :
-	shader( NULL ){
-	}
-	
-	virtual ~deoglREffectColorMatrixDeletion(){
-	}
-	
-	virtual void DeleteObjects( deoglRenderThread &renderThread ){
-		if( shader ){
-			shader->RemoveUsage();
-		}
-	}
-};
-
 deoglREffectColorMatrix::~deoglREffectColorMatrix(){
 	LEAK_CHECK_FREE( GetRenderThread(), EffectColorMatrix );
-	
-	// delayed deletion of opengl containing objects
-	deoglREffectColorMatrixDeletion *delayedDeletion = NULL;
-	
-	try{
-		delayedDeletion = new deoglREffectColorMatrixDeletion;
-		delayedDeletion->shader = pShader;
-		GetRenderThread().GetDelayedOperations().AddDeletion( delayedDeletion );
-		
-	}catch( const deException &e ){
-		if( delayedDeletion ){
-			delete delayedDeletion;
-		}
-		GetRenderThread().GetLogger().LogException( e );
-		// throw; -> otherwise terminate
+	if( pShader ){
+		pShader->RemoveUsage();
 	}
 }
 

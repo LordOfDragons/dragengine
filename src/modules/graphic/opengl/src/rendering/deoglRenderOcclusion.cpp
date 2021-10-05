@@ -42,6 +42,7 @@
 #include "../configuration/deoglConfiguration.h"
 #include "../debug/deoglDebugSaveTexture.h"
 #include "../debug/deoglDebugInformation.h"
+#include "../delayedoperation/deoglDelayedOperations.h"
 #include "../devmode/deoglDeveloperMode.h"
 #include "../framebuffer/deoglFramebuffer.h"
 #include "../framebuffer/deoglFramebufferManager.h"
@@ -1406,10 +1407,7 @@ void deoglRenderOcclusion::pCleanUp(){
 		pRenderParamBlock->FreeReference();
 	}
 	
-	if( pVAOFrustumPlanes ){
-		pglDeleteVertexArrays( 1, &pVAOFrustumPlanes );
-	}
-	if( pVBOFrustumPlanes ){
-		pglDeleteBuffers( 1, &pVBOFrustumPlanes );
-	}
+	deoglDelayedOperations &dops = GetRenderThread().GetDelayedOperations();
+	dops.DeleteOpenGLVertexArray( pVAOFrustumPlanes );
+	dops.DeleteOpenGLBuffer( pVBOFrustumPlanes );
 }

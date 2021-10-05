@@ -165,19 +165,6 @@ void deoglSkinState::AdvanceTime( float timeStep ){
 
 
 
-void deoglSkinState::DropDelayedDeletionObjects(){
-	pVideoPlayers.RemoveAll();
-	
-	int i;
-	for( i=0; i<pRenderableCount; i++ ){
-		pRenderables[ i ]->DropDelayedDeletionObjects();
-	}
-	
-	SetCalculatedPropertyCount( 0 );
-}
-
-
-
 int deoglSkinState::GetVideoPlayerCount() const{
 	return pVideoPlayers.GetCount();
 }

@@ -26,7 +26,6 @@
 #include "deoglDelayedOperations.h"
 #include "deoglDelayedFileWrite.h"
 #include "deoglDelayedSaveImage.h"
-#include "deoglDelayedDeletion.h"
 #include "../deGraphicOpenGl.h"
 #include "../capabilities/deoglCapsTextureFormat.h"
 #include "../debug/deoglDebugSaveTexture.h"
@@ -94,10 +93,9 @@ pRenderThread( renderThread ),
 pHasAsyncResInitOperations( false ),
 pHasInitOperations( false ),
 
-pHasFreeOperations( false ),
-pRootDeletion( NULL ),
-pTailDeletion( NULL ),
-pDeletionCount( 0 ),
+pOGLObjects( nullptr ),
+pOGLObjectCount( 0 ),
+pOGLObjectSize( 0 ),
 pHasSynchronizeOperations( false ),
 
 pShaderGenConeMap( NULL ),
@@ -127,6 +125,10 @@ pShaderGenConeMapLayer( NULL )
 
 deoglDelayedOperations::~deoglDelayedOperations(){
 	pCleanUp();
+	
+	if( pOGLObjects ){
+		delete [] pOGLObjects;
+	}
 }
 
 
@@ -300,111 +302,62 @@ void deoglDelayedOperations::RemoveInitModel( deoglRModel *model ){
 // Delayed render thread OpengGL deletion
 ///////////////////////////////////////////
 
-void deoglDelayedOperations::ProcessFreeOperations( bool deleteAll ){
-	// break reference loop: camera -> world -> component -> dynamic skin -> canvas or camera -> camera
-	// this has to be done before free operations are processed since breaking these links can produce
-	// free operations and adding free operations is not allowed while they are processed
-	// 
-	// NOTE amount of time required to clean up a camera depends on the world the camera is
-	//      located in. with complex worlds this can be 35ms inaverage
-	/*
-	pMutexFree.Lock();
- 	pRenderThread.GetLogger().LogInfoFormat( "deoglDelayedOperations.ProcessFreeOperations:"
- 		" camera=%d deletion=%d", pCleanUpCameraList.GetCount(), pDeletionCount );
-	pMutexFree.Unlock();
-	*/
-// 	decTimer timer;
-	
-	int count = pCleanUpCameraList.GetCount();
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		( ( deoglRCamera* )pCleanUpCameraList.GetAt( i ) )->SetParentWorld( NULL );
-	}
-	pCleanUpCameraList.RemoveAll();
-// 	const float accumCamera = timer.GetElapsedTime();
-	
-	// process free operations. empirical values indicate 1000 deletion tasks consume on
-	// average 1ms. to avoid hickups during deletion time the maximum time spend on deletion
-	// is capped to 1ms on average thus 1000 deletions per call. distributing deletions across
-	// multiple frame renders is not a problem since this kind of large deletion tasks happen
-	// only in specific situations. caller can force deleting all tasks
-	// 
-	// NOTE deletion task complexity varies a lot. to create a better distribution across
-	//      frames and to cut spikes a complexity value could be added to the deletion task.
-	//      this would be returned by the sub-class of the deletion task and would indicate
-	//      how expensive the deletion task is. then instead of the task count limit a
-	//      complexity limit coudl be used. whenever a task is done its complexity is added
-	//      to the complexity limit. this would allow to process tons of cheap deletion tasks
-	//      while not spiking if complex ones end up in the mix.
-	const deMutexGuard guard( pMutexFree );
-	
-	if( ! pHasFreeOperations ){
-		return;
-	}
-	
-	int countThreshold = 1000;
-	
-	while( pRootDeletion && ( deleteAll || countThreshold-- > 0 ) ){
-		deoglDelayedDeletion * const deletion = pRootDeletion;
-		pRootDeletion = pRootDeletion->GetLLNext();
-		if( pRootDeletion ){
-			pRootDeletion->SetLLPrev( NULL );
-		}
-		pDeletionCount--;
+void deoglDelayedOperations::ProcessFreeOperations( bool /*deleteAll*/ ){
+	{
+		const deMutexGuard guard( pMutexCameras );
+		// break reference loop: camera -> world -> component -> dynamic skin -> canvas or camera -> camera
+		// this has to be done before free operations are processed since breaking these links can produce
+		// free operations and adding free operations is not allowed while they are processed
+		// 
+		// NOTE amount of time required to clean up a camera depends on the world the camera is
+		//      located in. with complex worlds this can be 35ms inaverage
+		/*
+		pMutexFree.Lock();
+		pRenderThread.GetLogger().LogInfoFormat( "deoglDelayedOperations.ProcessFreeOperations:"
+			" camera=%d deletion=%d", pCleanUpCameraList.GetCount(), pDeletionCount );
+		pMutexFree.Unlock();
+		*/
+	// 	decTimer timer;
 		
-		deletion->DeleteObjects( pRenderThread );
-		delete deletion;
+		int count = pCleanUpCameraList.GetCount();
+		int i;
+		
+		for( i=0; i<count; i++ ){
+			( ( deoglRCamera* )pCleanUpCameraList.GetAt( i ) )->SetParentWorld( NULL );
+		}
+		pCleanUpCameraList.RemoveAll();
+	// 	const float accumCamera = timer.GetElapsedTime();
 	}
 	
-	if( pDeletionCount == 0 ){
-		pTailDeletion = NULL;
+	// delete opengl objects
+	{
+		const deMutexGuard guard( pMutexOGLObjects );
+		pDeleteOpenGLObjects();
 	}
-	
-	pHasFreeOperations = pDeletionCount > 0;
 	
 // 	pRenderThread.GetLogger().LogInfoFormat( "deoglDelayedOperations.ProcessFreeOperations cam=%d del=%d",
 // 		(int)(accumCamera * 1e6f), (int)(timer.GetElapsedTime() * 1e6f) );
 }
 
-
-
-void deoglDelayedOperations::AddDeletion( deoglDelayedDeletion *deletion ){
-	if( ! deletion ){
-		DETHROW( deeInvalidParam );
+void deoglDelayedOperations::DeleteOpenGLObject( eOpenGLObjectType type, GLuint name ){
+	if( ! name ){
+		return;
 	}
 	
+	const deMutexGuard lock( pMutexOGLObjects );
 	
-	if( ! pMutexFree.TryLock() ){
-		pRenderThread.GetLogger().LogInfo( "deoglDelayedDeletion.AddDeletion:"
-			" Called while MutexFree is locked. This is a debug check only."
-			" If graphic module dead-locks this could be the reason." );
-		
-		const decStringList output( deeInvalidAction( __FILE__, __LINE__ ).FormatOutput() );
-		const int count = output.GetCount();
-		int i;
-		for( i=0; i<count; i++ ){
-			pRenderThread.GetLogger().LogInfo( output.GetAt( i ) );
+	if( pOGLObjectCount == pOGLObjectSize ){
+		const int newSize = pOGLObjectSize * 3 / 2 + 1;
+		sOpenGLObject * const newArray = new sOpenGLObject[ newSize ];
+		if( pOGLObjects ){
+			memcpy( newArray, pOGLObjects, sizeof( sOpenGLObject ) * pOGLObjectSize );
+			delete [] pOGLObjects;
 		}
-		
-		pMutexFree.Lock();
+		pOGLObjects = newArray;
+		pOGLObjectSize = newSize;
 	}
 	
-	if( pTailDeletion ){
-		pTailDeletion->SetLLNext( deletion );
-		deletion->SetLLPrev( pTailDeletion );
-		pTailDeletion = deletion;
-		
-	}else{
-		pRootDeletion = deletion;
-		pTailDeletion = deletion;
-	}
-	
-	pDeletionCount++;
-	
-	pHasFreeOperations = true;
-	
-	pMutexFree.Unlock();
+	pOGLObjects[ pOGLObjectCount++ ].Set( type, name );
 }
 
 
@@ -469,12 +422,17 @@ void deoglDelayedOperations::AddSaveImage( deoglDelayedSaveImage *saveImage ){
 
 void deoglDelayedOperations::AddCleanUpCamera( deoglRCamera *camera ){
 	if( ! camera ){
-		DETHROW( deeInvalidParam );
+		return;
 	}
 	
-	const deMutexGuard guard( pMutexFree );
-	
+	const deMutexGuard guard( pMutexCameras );
 	pCleanUpCameraList.AddIfAbsent( camera );
+}
+
+
+
+void deoglDelayedOperations::Clear(){
+	pCleanUp();
 }
 
 
@@ -493,15 +451,7 @@ void deoglDelayedOperations::pCleanUp(){
 	pCleanUpCameraList.RemoveAll();
 	
 	// free deletion objects
-	if( pDeletionCount > 0 ){
-		pRenderThread.GetOgl().LogWarnFormat( "%i unprocessed delayed deletions dropped", pDeletionCount );
-	}
-	while( pRootDeletion ){
-		pTailDeletion = pRootDeletion;
-		pRootDeletion = pRootDeletion->GetLLNext();
-		delete pTailDeletion;
-	}
-	pTailDeletion = NULL;
+	pDeleteOpenGLObjects();
 	
 	// process outstanding synchronization actions
 	ProcessSynchronizeOperations();
@@ -906,4 +856,51 @@ void deoglDelayedOperations::pGenerateConeMap( deoglRSkin &skin, const deoglSkin
 	
 	pRenderThread.GetLogger().LogInfoFormat( "deoglDelayedOperations.pGenerateConeMap: Generated cone map in %ims",
 		( int )( timer.GetElapsedTime() * 1000.0f ) );
+}
+
+void deoglDelayedOperations::pDeleteOpenGLObjects(){
+	int i;
+	for( i=0; i<pOGLObjectCount; i++ ){
+		const sOpenGLObject &entry = pOGLObjects[ i ];
+		
+		switch( entry.type ){
+		case eoglotBuffer:
+			pglDeleteBuffers( 1, &entry.name );
+			break;
+			
+		case eoglotTexture:
+			glDeleteTextures( 1, &entry.name );
+			break;
+			
+		case eoglotVertexArray:
+			pglDeleteVertexArrays( 1, &entry.name );
+			break;
+			
+		case eoglotFramebuffer:
+			pglDeleteFramebuffers( 1, &entry.name );
+			break;
+			
+		case eoglotQuery:
+			pglDeleteQueries( 1, &entry.name );
+			break;
+			
+		case eoglotSampler:
+			pglDeleteSamplers( 1, &entry.name );
+			break;
+			
+		case eoglotRenderBuffer:
+			pglDeleteRenderbuffers( 1, &entry.name );
+			break;
+			
+		case eoglotProgram:
+			pglDeleteProgram( entry.name );
+			break;
+			
+		case eoglotShader:
+			pglDeleteShader( entry.name );
+			break;
+		}
+	}
+	
+	pOGLObjectCount = 0;
 }

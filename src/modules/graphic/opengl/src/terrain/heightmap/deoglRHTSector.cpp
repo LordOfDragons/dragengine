@@ -37,7 +37,6 @@
 #include "../../capabilities/deoglCapabilities.h"
 #include "../../renderthread/deoglRenderThread.h"
 #include "../../renderthread/deoglRTLogger.h"
-#include "../../delayedoperation/deoglDelayedDeletion.h"
 #include "../../delayedoperation/deoglDelayedOperations.h"
 #include "../../utils/collision/deoglDCollisionBox.h"
 #include "../../world/deoglRWorld.h"
@@ -207,76 +206,8 @@ deoglHTSCluster & deoglRHTSector::GetClusterAt( const decPoint &coordinate ) con
 // Private functions
 //////////////////////
 
-class deoglRHTSectorDeletion : public deoglDelayedDeletion{
-public:
-	deoglHTSTexture **textures;
-	int textureCount;
-	deoglTexture *masks[ OGLHTS_MAX_MASK_TEXTURES ];
-	deoglHTSCluster *clusters;
-	GLuint *vboDataPoints1;
-	int vboDataPoints1Count;
-	GLuint *vboDataPoints2;
-	int vboDataPoints2Count;
-	GLuint *vboDataFaces;
-	int vboDataFacesCount;
-	
-	deoglRHTSectorDeletion() :
-	textures( NULL ),
-	textureCount( 0 ),
-	clusters( NULL ),
-	vboDataPoints1( NULL ),
-	vboDataPoints1Count( 0 ),
-	vboDataPoints2( NULL ),
-	vboDataPoints2Count( 0 ),
-	vboDataFaces( NULL ),
-	vboDataFacesCount( 0 ){
-		int i;
-		for( i=0; i<OGLHTS_MAX_MASK_TEXTURES; i++ ){
-			masks[ i ] = NULL;
-		}
-	}
-	
-	virtual ~deoglRHTSectorDeletion(){
-	}
-	
-	virtual void DeleteObjects( deoglRenderThread& ){
-		int i;
-		if( clusters ){
-			delete [] clusters;
-		}
-		if( textures ){
-			for( i=0; i<textureCount; i++ ){
-				delete textures[ i ];
-			}
-			delete [] textures;
-		}
-		for( i=0; i<OGLHTS_MAX_MASK_TEXTURES; i++ ){
-			if( masks[ i ] ){
-				delete masks[ i ];
-			}
-		}
-		if( vboDataFaces ){
-			for( i=0; i<vboDataFacesCount; i++ ){
-				pglDeleteBuffers( 1, &vboDataFaces[ i ] );
-			}
-			delete [] vboDataFaces;
-		}
-		if( vboDataPoints2 ){
-			for( i=0; i<vboDataPoints2Count; i++ ){
-				pglDeleteBuffers( 1, &vboDataPoints2[ i ] );
-			}
-			delete [] vboDataPoints2;
-		}
-		if( vboDataPoints1 ){
-			for( i=0; i<vboDataPoints1Count; i++ ){
-				pglDeleteBuffers( 1, &vboDataPoints1[ i ] );
-			}
-			delete [] vboDataPoints1;
-		}
-	}
-};
-
 void deoglRHTSector::pCleanUp(){
+	deoglDelayedOperations &dops = pHeightTerrain.GetRenderThread().GetDelayedOperations();
 	int i;
 	
 	if( pHeights ){
@@ -285,39 +216,38 @@ void deoglRHTSector::pCleanUp(){
 	
 	pDropMaskPixelBuffers();
 	
-	// drop reference otherwise deletion can cause other deletions to be generated
-	// causing a deletion race
+	if( pClusters ){
+		delete [] pClusters;
+	}
 	if( pTextures ){
 		for( i=0; i<pTextureCount; i++ ){
-			pTextures[ i ]->SetSkin( NULL );
+			delete pTextures[ i ];
+		}
+		delete [] pTextures;
+	}
+	for( i=0; i<OGLHTS_MAX_MASK_TEXTURES; i++ ){
+		if( pMasks[ i ] ){
+			delete pMasks[ i ];
 		}
 	}
 	
-	// delayed deletion of opengl containing objects
-	deoglRHTSectorDeletion *delayedDeletion = NULL;
-	
-	try{
-		delayedDeletion = new deoglRHTSectorDeletion;
-		delayedDeletion->textures = pTextures;
-		delayedDeletion->textureCount = pTextureCount;
-		for( i=0; i<OGLHTS_MAX_MASK_TEXTURES; i++ ){
-			delayedDeletion->masks[ i ] = pMasks[ i ];
+	if( pVBODataFaces ){
+		for( i=0; i<pVBODataFacesCount; i++ ){
+			dops.DeleteOpenGLBuffer( pVBODataFaces[ i ] );
 		}
-		delayedDeletion->clusters = pClusters;
-		delayedDeletion->vboDataFaces = pVBODataFaces;
-		delayedDeletion->vboDataFacesCount = pVBODataFacesCount;
-		delayedDeletion->vboDataPoints1 = pVBODataPoints1;
-		delayedDeletion->vboDataPoints1Count = pVBODataPoints1Count;
-		delayedDeletion->vboDataPoints2 = pVBODataPoints2;
-		delayedDeletion->vboDataPoints2Count = pVBODataPoints2Count;
-		pHeightTerrain.GetRenderThread().GetDelayedOperations().AddDeletion( delayedDeletion );
-		
-	}catch( const deException &e ){
-		if( delayedDeletion ){
-			delete delayedDeletion;
+		delete [] pVBODataFaces;
+	}
+	if( pVBODataPoints2 ){
+		for( i=0; i<pVBODataPoints2Count; i++ ){
+			dops.DeleteOpenGLBuffer( pVBODataPoints2[ i ] );
 		}
-		pHeightTerrain.GetRenderThread().GetLogger().LogException( e );
-		throw;
+		delete [] pVBODataPoints2;
+	}
+	if( pVBODataPoints1 ){
+		for( i=0; i<pVBODataPoints1Count; i++ ){
+			dops.DeleteOpenGLBuffer( pVBODataPoints1[ i ] );
+		}
+		delete [] pVBODataPoints1;
 	}
 }
 

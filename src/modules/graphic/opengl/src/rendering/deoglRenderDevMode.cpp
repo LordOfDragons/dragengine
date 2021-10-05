@@ -37,6 +37,7 @@
 #include "../collidelist/deoglCollideListPropFieldCluster.h"
 #include "../component/deoglRComponent.h"
 #include "../configuration/deoglConfiguration.h"
+#include "../delayedoperation/deoglDelayedOperations.h"
 #include "../deoglDebugFont.h"
 #include "../devmode/deoglDeveloperMode.h"
 #include "../envmap/deoglEnvironmentMap.h"
@@ -1833,12 +1834,9 @@ void deoglRenderDevMode::pCleanUp(){
 		pShaderShape->RemoveUsage();
 	}
 	
-	if( pVAOShapes ){
-		pglDeleteVertexArrays( 1, &pVAOShapes );
-	}
-	if( pVBOShapes ){
-		pglDeleteBuffers( 1, &pVBOShapes );
-	}
+	deoglDelayedOperations &dops = GetRenderThread().GetDelayedOperations();
+	dops.DeleteOpenGLVertexArray( pVAOShapes );
+	dops.DeleteOpenGLBuffer( pVBOShapes );
 }
 
 void deoglRenderDevMode::pCreateShapesVAO(){

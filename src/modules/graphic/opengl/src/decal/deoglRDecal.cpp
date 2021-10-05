@@ -67,7 +67,6 @@
 #include "../vbo/deoglVBOLayout.h"
 #include "../vbo/writer/deoglVBOWriterModel.h"
 #include "../world/deoglRWorld.h"
-#include "../delayedoperation/deoglDelayedDeletion.h"
 #include "../delayedoperation/deoglDelayedOperations.h"
 
 #include <dragengine/common/exceptions.h>
@@ -130,56 +129,6 @@ pListenerIndex( 0 )
 	LEAK_CHECK_CREATE( renderThread, Decal );
 }
 
-class deoglRDecalDeletion : public deoglDelayedDeletion{
-public:
-	deoglSkinState *skinState;
-	deoglSharedVBOBlock *vboBlock;
-	deoglTexUnitsConfig *tucGeometry;
-	deoglTexUnitsConfig *tucShadow;
-	deoglTexUnitsConfig *tucEnvMap;
-	deoglGIBVHLocal *giBVHLocal;
-	deoglGIBVHDynamic *giBVHDynamic;
-	
-	
-	deoglRDecalDeletion() :
-	skinState( NULL ),
-	vboBlock( NULL ),
-	tucGeometry( NULL ),
-	tucShadow( NULL ),
-	tucEnvMap( NULL ),
-	giBVHLocal( NULL ),
-	giBVHDynamic( NULL ){
-	}
-	
-	virtual ~deoglRDecalDeletion(){
-	}
-	
-	virtual void DeleteObjects( deoglRenderThread& ){
-		if( vboBlock ){
-			vboBlock->GetVBO()->RemoveBlock( vboBlock );
-			vboBlock->FreeReference();
-		}
-		if( tucGeometry ){
-			tucGeometry->RemoveUsage();
-		}
-		if( tucShadow ){
-			tucShadow->RemoveUsage();
-		}
-		if( tucEnvMap ){
-			tucEnvMap->RemoveUsage();
-		}
-		if( skinState ){
-			delete skinState;
-		}
-		if( giBVHLocal ){
-			delete giBVHLocal;
-		}
-		if( giBVHDynamic ){
-			delete giBVHDynamic;
-		}
-	}
-};
-
 deoglRDecal::~deoglRDecal(){
 	LEAK_CHECK_FREE( pRenderThread, Decal );
 	
@@ -199,35 +148,27 @@ deoglRDecal::~deoglRDecal(){
 		pSharedSPBElement->FreeReference();
 	}
 	
-	// drop reference otherwise deletion can cause other deletions to be generated
-	// causing a deletion race
-	if( pSkinState ){
-		pSkinState->DropDelayedDeletionObjects();
+	if( pVBOBlock ){
+		pVBOBlock->GetVBO()->RemoveBlock( pVBOBlock );
+		pVBOBlock->FreeReference();
 	}
-	
-	pRenderThread.GetUniqueKey().Return( pUniqueKey );
-	
-	// delayed deletion of opengl containing objects
-	deoglRDecalDeletion *delayedDeletion = NULL;
-	
-	try{
-		delayedDeletion = new deoglRDecalDeletion;
-		delayedDeletion->skinState = pSkinState;
-		delayedDeletion->tucEnvMap = pTUCEnvMap;
-		delayedDeletion->tucGeometry = pTUCGeometry;
-		delayedDeletion->tucShadow = pTUCShadow;
-		delayedDeletion->vboBlock = pVBOBlock;
-		delayedDeletion->giBVHLocal = pGIBVHLocal;
-		delayedDeletion->giBVHDynamic = pGIBVHDynamic;
-		
-		pRenderThread.GetDelayedOperations().AddDeletion( delayedDeletion );
-		
-	}catch( const deException &e ){
-		if( delayedDeletion ){
-			delete delayedDeletion;
-		}
-		pRenderThread.GetLogger().LogException( e );
-		//throw; -> otherwise terminate
+	if( pTUCGeometry ){
+		pTUCGeometry->RemoveUsage();
+	}
+	if( pTUCShadow ){
+		pTUCShadow->RemoveUsage();
+	}
+	if( pTUCEnvMap ){
+		pTUCEnvMap->RemoveUsage();
+	}
+	if( pSkinState ){
+		delete pSkinState;
+	}
+	if( pGIBVHLocal ){
+		delete pGIBVHLocal;
+	}
+	if( pGIBVHDynamic ){
+		delete pGIBVHDynamic;
 	}
 }
 
@@ -351,25 +292,7 @@ void deoglRDecal::SetSkinState( deoglSkinState *skinState ){
 	}
 	
 	if( pSkinState ){
-		// drop reference otherwise deletion can cause other deletions to be generated
-		// causing a deletion race
-		pSkinState->DropDelayedDeletionObjects();
-		
-		// delayed deletion of opengl containing objects
-		deoglRDecalDeletion *delayedDeletion = NULL;
-		
-		try{
-			delayedDeletion = new deoglRDecalDeletion;
-			delayedDeletion->skinState = pSkinState;
-			pRenderThread.GetDelayedOperations().AddDeletion( delayedDeletion );
-			
-		}catch( const deException &e ){
-			if( delayedDeletion ){
-				delete delayedDeletion;
-			}
-			pRenderThread.GetLogger().LogException( e );
-			throw;
-		}
+		delete pSkinState;
 	}
 	
 	pSkinState = skinState;

@@ -58,7 +58,6 @@
 #include "../texture/texunitsconfig/deoglTexUnitsConfigList.h"
 #include "../vbo/deoglSharedVBOBlock.h"
 #include "../world/deoglRWorld.h"
-#include "../delayedoperation/deoglDelayedDeletion.h"
 #include "../delayedoperation/deoglDelayedOperations.h"
 
 #include <dragengine/common/exceptions.h>
@@ -112,79 +111,6 @@ pDirtyTUCsEnvMapUse( true )
 	LEAK_CHECK_CREATE( component.GetRenderThread(), ComponentTexture );
 }
 
-class deoglRComponentTextureDeletion : public deoglDelayedDeletion{
-public:
-	deoglSkinState *skinState;
-	deoglTexUnitsConfig *tucDepth;
-	deoglTexUnitsConfig *tucGeometry;
-	deoglTexUnitsConfig *tucCounter;
-	deoglTexUnitsConfig *tucShadow;
-	deoglTexUnitsConfig *tucShadowCube;
-	deoglTexUnitsConfig *tucEnvMap;
-	deoglTexUnitsConfig *tucOutlineGeometry;
-	deoglTexUnitsConfig *tucOutlineDepth;
-	deoglTexUnitsConfig *tucOutlineCounter;
-	deoglTexUnitsConfig *tucLuminance;
-	deoglTexUnitsConfig *tucGIMaterial;
-	
-	deoglRComponentTextureDeletion() :
-	skinState( NULL ),
-	tucDepth( NULL ),
-	tucGeometry( NULL ),
-	tucCounter( NULL ),
-	tucShadow( NULL ),
-	tucShadowCube( NULL ),
-	tucEnvMap( NULL ),
-	tucOutlineGeometry( NULL ),
-	tucOutlineDepth( NULL ),
-	tucOutlineCounter( NULL ),
-	tucLuminance( NULL ),
-	tucGIMaterial( NULL ){
-	}
-	
-	virtual ~deoglRComponentTextureDeletion(){
-	}
-	
-	virtual void DeleteObjects( deoglRenderThread& ){
-		if( tucDepth ){
-			tucDepth->RemoveUsage();
-		}
-		if( tucGeometry ){
-			tucGeometry->RemoveUsage();
-		}
-		if( tucCounter ){
-			tucCounter->RemoveUsage();
-		}
-		if( tucShadow ){
-			tucShadow->RemoveUsage();
-		}
-		if( tucShadowCube ){
-			tucShadowCube->RemoveUsage();
-		}
-		if( tucEnvMap ){
-			tucEnvMap->RemoveUsage();
-		}
-		if( tucOutlineGeometry ){
-			tucOutlineGeometry->RemoveUsage();
-		}
-		if( tucOutlineDepth ){
-			tucOutlineDepth->RemoveUsage();
-		}
-		if( tucOutlineCounter ){
-			tucOutlineCounter->RemoveUsage();
-		}
-		if( tucLuminance ){
-			tucLuminance->RemoveUsage();
-		}
-		if( tucGIMaterial ){
-			tucGIMaterial->RemoveUsage();
-		}
-		if( skinState ){
-			delete skinState;
-		}
-	}
-};
-
 deoglRComponentTexture::~deoglRComponentTexture(){
 	LEAK_CHECK_FREE( pComponent.GetRenderThread(), ComponentTexture );
 	if( pDynamicSkin ){
@@ -200,37 +126,41 @@ deoglRComponentTexture::~deoglRComponentTexture(){
 		pSharedSPBElement->FreeReference();
 	}
 	
-	// drop reference otherwise deletion can cause other deletions to be generated
-	// causing a deletion race
-	if( pSkinState ){
-		pSkinState->DropDelayedDeletionObjects();
+	if( pTUCDepth ){
+		pTUCDepth->RemoveUsage();
 	}
-	
-	// delayed deletion of opengl containing objects
-	deoglRComponentTextureDeletion *delayedDeletion = NULL;
-	
-	try{
-		delayedDeletion = new deoglRComponentTextureDeletion;
-		delayedDeletion->skinState = pSkinState;
-		delayedDeletion->tucDepth = pTUCDepth;
-		delayedDeletion->tucEnvMap = pTUCEnvMap;
-		delayedDeletion->tucCounter = pTUCCounter;
-		delayedDeletion->tucGeometry = pTUCGeometry;
-		delayedDeletion->tucShadow = pTUCShadow;
-		delayedDeletion->tucShadowCube = pTUCShadowCube;
-		delayedDeletion->tucOutlineGeometry = pTUCOutlineGeometry;
-		delayedDeletion->tucOutlineDepth = pTUCOutlineDepth;
-		delayedDeletion->tucOutlineCounter = pTUCOutlineCounter;
-		delayedDeletion->tucLuminance = pTUCLuminance;
-		delayedDeletion->tucGIMaterial = pTUCGIMaterial;
-		pComponent.GetRenderThread().GetDelayedOperations().AddDeletion( delayedDeletion );
-		
-	}catch( const deException &e ){
-		if( delayedDeletion ){
-			delete delayedDeletion;
-		}
-		pComponent.GetRenderThread().GetLogger().LogException( e );
-		//throw; -> otherwise terminate
+	if( pTUCGeometry ){
+		pTUCGeometry->RemoveUsage();
+	}
+	if( pTUCCounter ){
+		pTUCCounter->RemoveUsage();
+	}
+	if( pTUCShadow ){
+		pTUCShadow->RemoveUsage();
+	}
+	if( pTUCShadowCube ){
+		pTUCShadowCube->RemoveUsage();
+	}
+	if( pTUCEnvMap ){
+		pTUCEnvMap->RemoveUsage();
+	}
+	if( pTUCOutlineGeometry ){
+		pTUCOutlineGeometry->RemoveUsage();
+	}
+	if( pTUCOutlineDepth ){
+		pTUCOutlineDepth->RemoveUsage();
+	}
+	if( pTUCOutlineCounter ){
+		pTUCOutlineCounter->RemoveUsage();
+	}
+	if( pTUCLuminance ){
+		pTUCLuminance->RemoveUsage();
+	}
+	if( pTUCGIMaterial ){
+		pTUCGIMaterial->RemoveUsage();
+	}
+	if( pSkinState ){
+		delete pSkinState;
 	}
 }
 
@@ -291,25 +221,7 @@ void deoglRComponentTexture::SetSkinState( deoglSkinState *skinState ){
 	}
 	
 	if( pSkinState ){
-		// drop reference otherwise deletion can cause other deletions to be generated
-		// causing a deletion race
-		pSkinState->DropDelayedDeletionObjects();
-		
-		// delayed deletion of opengl containing objects
-		deoglRComponentTextureDeletion *delayedDeletion = NULL;
-		
-		try{
-			delayedDeletion = new deoglRComponentTextureDeletion;
-			delayedDeletion->skinState = pSkinState;
-			pComponent.GetRenderThread().GetDelayedOperations().AddDeletion( delayedDeletion );
-			
-		}catch( const deException &e ){
-			if( delayedDeletion ){
-				delete delayedDeletion;
-			}
-			pComponent.GetRenderThread().GetLogger().LogException( e );
-			throw;
-		}
+		delete pSkinState;
 	}
 	
 	pSkinState = skinState;

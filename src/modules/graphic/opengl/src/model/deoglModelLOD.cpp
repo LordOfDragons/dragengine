@@ -33,6 +33,7 @@
 #include "texture/deoglModelTexture.h"
 #include "../deoglPreloader.h"
 #include "../configuration/deoglConfiguration.h"
+#include "../delayedoperation/deoglDelayedOperations.h"
 #include "../rendering/task/shared/deoglRenderTaskSharedInstance.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTBufferObject.h"
@@ -382,14 +383,9 @@ GLuint deoglModelLOD::GetIBO(){
 		}
 		
 	}catch( const deException & ){
-		if( data ){
-			OGL_CHECK( renderThread, pglUnmapBuffer( GL_ELEMENT_ARRAY_BUFFER ) );
-		}
-		if( pIBO ){
-			OGL_CHECK( renderThread, pglBindBuffer( GL_ELEMENT_ARRAY_BUFFER, 0 ) );
-			pglDeleteBuffers( 1, &pIBO );
-			pIBO = 0;
-		}
+		OGL_CHECK( renderThread, pglBindBuffer( GL_ELEMENT_ARRAY_BUFFER, 0 ) );
+		pModel.GetRenderThread().GetDelayedOperations().DeleteOpenGLBuffer( pIBO );
+		pIBO = 0;
 		throw;
 	}
 	
@@ -866,9 +862,7 @@ void deoglModelLOD::pCleanUp(){
 		pVBOBlock->FreeReference();
 	}
 	
-	if( pIBO ){
-		pglDeleteBuffers( 1, &pIBO );
-	}
+	pModel.GetRenderThread().GetDelayedOperations().DeleteOpenGLBuffer( pIBO );
 	
 	if( pOctree ){
 		delete pOctree;

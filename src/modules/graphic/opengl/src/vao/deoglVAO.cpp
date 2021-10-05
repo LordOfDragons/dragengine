@@ -24,6 +24,7 @@
 #include <string.h>
 
 #include "deoglVAO.h"
+#include "../delayedoperation/deoglDelayedOperations.h"
 #include "../vbo/deoglVBOLayout.h"
 #include "../rendering/task/shared/deoglRenderTaskSharedPool.h"
 #include "../rendering/task/shared/deoglRenderTaskSharedVAO.h"
@@ -60,10 +61,7 @@ deoglVAO::~deoglVAO(){
 		pRenderThread.GetRenderTaskSharedPool().ReturnVAO( pRTSVAO );
 	}
 	
-	if( pVAO ){
-		pglDeleteVertexArrays( 1, &pVAO );
-	}
-	
+	pRenderThread.GetDelayedOperations().DeleteOpenGLVertexArray( pVAO );
 	pRenderThread.GetUniqueKey().Return( pUniqueKey );
 }
 

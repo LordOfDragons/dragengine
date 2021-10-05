@@ -25,6 +25,7 @@
 #include <string.h>
 
 #include "deoglConvexVisHull.h"
+#include "../../delayedoperation/deoglDelayedOperations.h"
 #include "../../vbo/deoglVBOLayout.h"
 #include "../../vbo/deoglVBOAttribute.h"
 #include "../../renderthread/deoglRenderThread.h"
@@ -53,12 +54,10 @@ pVBOPointCount( 0 ){
 }
 
 deoglConvexVisHull::~deoglConvexVisHull(){
-	if( pVBO ){
-		pglDeleteBuffers( 1, &pVBO );
-	}
-	if( pVAO ){
-		pglDeleteVertexArrays( 1, &pVAO );
-	}
+	deoglDelayedOperations &dops = pRenderThread.GetDelayedOperations();
+	dops.DeleteOpenGLBuffer( pVBO );
+	dops.DeleteOpenGLVertexArray( pVAO );
+	
 	if( pPoints ){
 		delete [] pPoints;
 	}

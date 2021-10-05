@@ -27,7 +27,6 @@
 #include "deoglROcclusionMesh.h"
 #include "deoglDynamicOcclusionMesh.h"
 #include "../../component/deoglRComponent.h"
-#include "../../delayedoperation/deoglDelayedDeletion.h"
 #include "../../delayedoperation/deoglDelayedOperations.h"
 #include "../../model/deoglRModel.h"
 #include "../../utils/bvh/deoglBVH.h"
@@ -212,28 +211,6 @@ void deoglDynamicOcclusionMesh::PrepareBVH(){
 // Private Functions
 //////////////////////
 
-class deoglDynamicOcclusionMeshDeletion : public deoglDelayedDeletion{
-public:
-	GLuint vbo;
-	deoglVAO *vao;
-	
-	deoglDynamicOcclusionMeshDeletion() :
-	vbo( 0 ), vao( NULL ){
-	}
-	
-	virtual ~deoglDynamicOcclusionMeshDeletion(){
-	}
-	
-	virtual void DeleteObjects( deoglRenderThread &renderThread ){
-		if( vao ){
-			delete vao;
-		}
-		if( vbo ){
-			pglDeleteBuffers( 1, &vbo );
-		}
-	}
-};
-
 void deoglDynamicOcclusionMesh::pCleanUp(){
 	if( pOcclusionMesh ){
 		pOcclusionMesh->FreeReference();
@@ -248,23 +225,12 @@ void deoglDynamicOcclusionMesh::pCleanUp(){
 	if( pWeights ){
 		delete [] pWeights;
 	}
-	
-	// delayed deletion of opengl containing objects
-	deoglDynamicOcclusionMeshDeletion *delayedDeletion = NULL;
-	
-	try{
-		delayedDeletion = new deoglDynamicOcclusionMeshDeletion;
-		delayedDeletion->vao = pVAO;
-		delayedDeletion->vbo = pVBO;
-		pRenderThread.GetDelayedOperations().AddDeletion( delayedDeletion );
-		
-	}catch( const deException &e ){
-		if( delayedDeletion ){
-			delete delayedDeletion;
-		}
-		pRenderThread.GetLogger().LogException( e );
-		throw;
+	if( pVAO ){
+		delete pVAO;
 	}
+	
+	deoglDelayedOperations &dops = pRenderThread.GetDelayedOperations();
+	dops.DeleteOpenGLBuffer( pVBO );
 }
 
 void deoglDynamicOcclusionMesh::pBuildArrays(){

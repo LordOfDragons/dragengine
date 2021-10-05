@@ -1486,20 +1486,6 @@ const deoglSkinTextureProperty &deoglSkinTexture::GetMaterialPropertyAt( int pro
 
 
 
-// Delayed deletion
-/////////////////////
-
-void deoglSkinTexture::DropDelayedDeletionObjects(){
-	int i;
-	for( i=0; i<deoglSkinChannel::CHANNEL_COUNT; i++ ){
-		if( pChannels[ i ] ){
-			pChannels[ i ]->DropDelayedDeletionObjects();
-		}
-	}
-}
-
-
-
 // Private Functions
 //////////////////////
 

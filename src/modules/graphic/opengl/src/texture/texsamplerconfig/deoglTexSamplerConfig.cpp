@@ -25,6 +25,7 @@
 
 #include "deoglTexSamplerConfig.h"
 #include "../deoglTextureStageManager.h"
+#include "../../delayedoperation/deoglDelayedOperations.h"
 #include "../../extensions/deoglExtensions.h"
 #include "../../renderthread/deoglRenderThread.h"
 
@@ -66,10 +67,7 @@ pDepthCompareFunc( GL_LEQUAL )
 }
 
 deoglTexSamplerConfig::~deoglTexSamplerConfig(){
-	if( pSamplerObject ){
-		OGL_CHECK( pRenderThread, pglDeleteSamplers( 1, &pSamplerObject ) );
-		pSamplerObject = 0;
-	}
+	pRenderThread.GetDelayedOperations().DeleteOpenGLSampler( pSamplerObject );
 }
 
 
