@@ -129,11 +129,7 @@ class Window extends Container
 		
 		this.onClosing( WindowEvent.new( this, WindowEvent.idWindowClosing ) )
 		
-		if this.getParent() != null
-			this.getParent().removeWidget( this )
-		end
-		
-		this.dispose()
+		this.safeDispose()
 	end
 	
 	
