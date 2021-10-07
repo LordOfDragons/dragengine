@@ -50,15 +50,15 @@ class BAAFirstPersonVR extends BAAFirstPerson
 		public func new()
 		end
 		
-		public func Persistable readObjectFromFile( PersistencyEnvironment env, FileReader reader )
+		public func Persistable readObjectFromFile(PersistencyEnvironment env, FileReader reader)
 			return BAAFirstPersonVR.new()
 		end
 		
-		public static func void registerFactory( Persistency persistency )
-			persistency.addFactory( NAME, Factory.new() )
+		public static func void registerFactory(Persistency persistency)
+			persistency.addFactory(NAME, Factory.new())
 		end
 		
-		public func BaseActorAction createAction( ECBehaviorActorAIAction.Instance instance )
+		public func BaseActorAction createAction(ECBehaviorActorAIAction.Instance instance)
 			return BAAFirstPersonVR.new()
 		end
 	end
@@ -80,6 +80,18 @@ class BAAFirstPersonVR extends BAAFirstPerson
 	/** \brief VR Left Hand Controller behavior. */
 	protected var ECBehaviorVRHand.Instance vrLeftHand
 	
+	/**
+	 * \brief VR Right Hand Controller Point-At behavior.
+	 * \version 1.7
+	 */
+	protected var ECBehaviorVRHandPointAt.Instance vrRightHandPointAt
+	
+	/**
+	 * \brief VR Left Hand Controller Point-At behavior.
+	 * \version 1.7
+	 */
+	protected var ECBehaviorVRHandPointAt.Instance vrLeftHandPointAt
+	
 	
 	
 	/** \brief Create actor action. */
@@ -90,27 +102,42 @@ class BAAFirstPersonVR extends BAAFirstPerson
 	
 	/** \brief Player input turning. */
 	public func ECBehaviorPlayerInputTurn.Instance getPlayerInputTurn()
-		return this.playerInputTurn
+		return playerInputTurn
 	end
 	
 	/** \brief VR Playspace. */
 	public func ECBehaviorVRPlayspace.Instance getVRPlayspace()
-		return this.vrPlayspace
+		return vrPlayspace
 	end
 	
 	/** \brief VR HMD. */
 	public func ECBehaviorVRHMD.Instance getVRHMD()
-		return this.vrHMD
+		return vrHMD
 	end
 	
 	/** \brief VR Right Hand Controller. */
 	public func ECBehaviorVRHand.Instance getVRRightHand()
-		return this.vrRightHand
+		return vrRightHand
 	end
 	
 	/** \brief VR Left Hand Controller. */
 	public func ECBehaviorVRHand.Instance getVRLeftHand()
-		return this.vrLeftHand
+		return vrLeftHand
+	end
+	
+	/**
+	 * \brief VR Right Hand Controller Point-At.
+	 */
+	public func ECBehaviorVRHandPointAt.Instance getVRRightHandPointAt()
+		return vrRightHandPointAt
+	end
+	
+	/**
+	 * \brief VR Left Hand Controller Point-At.
+	 * \version 1.7
+	 */
+	public func ECBehaviorVRHandPointAt.Instance getVRLeftHandPointAt()
+		return vrLeftHandPointAt
 	end
 	
 	
@@ -132,7 +159,7 @@ class BAAFirstPersonVR extends BAAFirstPerson
 	end
 	
 	/** \brief Analog looking up/down. */
-	public func void analogLookUD( float amount, bool sticky )
+	public func void analogLookUD(float amount, bool sticky)
 	end
 	
 	
@@ -160,24 +187,28 @@ class BAAFirstPersonVR extends BAAFirstPerson
 		super.initBehaviors()
 		
 		if actor castable BaseActor
-			this.playerInputTurn = ( actor cast BaseActor ).getPlayerInputTurn()
+			playerInputTurn = (actor cast BaseActor).getPlayerInputTurn()
 			
 		else
-			this.playerInputTurn = ECBehaviorPlayerInputTurn.getInstanceIn( actor )
+			playerInputTurn = ECBehaviorPlayerInputTurn.getInstanceIn(actor)
 		end
 		
 		if actor castable BaseVRActor
 			var BaseVRActor vrActor = actor cast BaseVRActor
-			this.vrPlayspace = vrActor.getVRPlayspace()
-			this.vrHMD = vrActor.getVRHMD()
-			this.vrRightHand = vrActor.getVRRightHand()
-			this.vrLeftHand = vrActor.getVRLeftHand()
+			vrPlayspace = vrActor.getVRPlayspace()
+			vrHMD = vrActor.getVRHMD()
+			vrRightHand = vrActor.getVRRightHand()
+			vrLeftHand = vrActor.getVRLeftHand()
+			vrRightHandPointAt = vrActor.getVRRightHandPointAt()
+			vrLeftHandPointAt = vrActor.getVRLeftHandPointAt()
 			
 		else
-			this.vrPlayspace = ECBehaviorVRPlayspace.getInstanceIn( actor )
-			this.vrHMD = ECBehaviorVRHMD.getInstanceIn( actor )
-			this.vrRightHand = ECBehaviorVRHand.getInstanceIn( actor, "right" )
-			this.vrLeftHand = ECBehaviorVRHand.getInstanceIn( actor, "left" )
+			vrPlayspace = ECBehaviorVRPlayspace.getInstanceIn(actor)
+			vrHMD = ECBehaviorVRHMD.getInstanceIn(actor)
+			vrRightHand = ECBehaviorVRHand.getInstanceIn(actor, "right")
+			vrLeftHand = ECBehaviorVRHand.getInstanceIn(actor, "left")
+			vrRightHandPointAt = ECBehaviorVRHandPointAt.getInstanceIn(actor, "right")
+			vrLeftHandPointAt = ECBehaviorVRHandPointAt.getInstanceIn(actor, "left")
 		end
 	end
 	
@@ -185,8 +216,8 @@ class BAAFirstPersonVR extends BAAFirstPerson
 	 * Init player input.
 	 */
 	protected func void initPlayerInput()
-		this.playerInputMove.setLocomotionType( ECBehaviorPlayerInputMove.LocomotionType.fps )
-		this.playerInputCrouch.setCanCrouch( false )
+		playerInputMove.setLocomotionType(ECBehaviorPlayerInputMove.LocomotionType.fps)
+		playerInputCrouch.setCanCrouch(false)
 	end
 	
 	/**
@@ -195,12 +226,12 @@ class BAAFirstPersonVR extends BAAFirstPerson
 	 * See ECBehaviorLocomotion.initHuman().
 	 */
 	protected func void initLocomotion()
-		this.locomotion.initHuman( this.playerInputMove.getSpeedWalk() )
+		locomotion.initHuman(playerInputMove.getSpeedWalk())
 		
 		// Since we use ECBehaviorPlayerInputMove.LocomotionType.fps we should disable
 		// turn-in-place support. The two settings are not inherently incompatible but
 		// but for FPS locomotion use turning in-place can produce some funky results
-		this.locomotion.getLocomotion().setCanTurnInPlace( false )
+		locomotion.getLocomotion().setCanTurnInPlace(false)
 	end
 	
 	/**
@@ -219,10 +250,10 @@ class BAAFirstPersonVR extends BAAFirstPerson
 	 */
 	protected func void initLocomotionPlayer()
 		var Locomotion l = locomotion.getLocomotion()
-		l.setAdjustTimeVertical( 0 )
-		l.setAdjustTimeHorizontal( 0 )
-		l.setAdjustTimeOrientation( 1 )
-		l.setAdjustTimeLinearVelocity( 1 )
+		l.setAdjustTimeVertical(0)
+		l.setAdjustTimeHorizontal(0)
+		l.setAdjustTimeOrientation(1)
+		l.setAdjustTimeLinearVelocity(1)
 	end
 	
 	/**
@@ -230,13 +261,13 @@ class BAAFirstPersonVR extends BAAFirstPerson
 	 * 
 	 * In addition to super class implementation force body orientation.
 	 */
-	protected func void playerUpdateLocomotion( float elapsed )
-		if this.actorMover.hasGoal()
+	protected func void playerUpdateLocomotion(float elapsed)
+		if actorMover.hasGoal()
 			return
 		end
 		
-		this.playerInputCrouch.updateLocomotion( elapsed )
-		this.playerInputMove.updateLocomotion( elapsed )
+		playerInputCrouch.updateLocomotion(elapsed)
+		playerInputMove.updateLocomotion(elapsed)
 	end
 	
 	

@@ -39,43 +39,57 @@ class BaseVRActor extends BaseActor
 	private var ECBehaviorVRHMD.Instance pVRHMD
 	private var ECBehaviorVRHand.Instance pVRRightHand
 	private var ECBehaviorVRHand.Instance pVRLeftHand
+	private var ECBehaviorVRHandPointAt.Instance pVRRightHandPointAt
+	private var ECBehaviorVRHandPointAt.Instance pVRLeftHandPointAt
 	
 	
 	
 	/** \brief Create element. */
-	public func new( BaseVRActorClass eclass ) super( eclass )
-		this.pVRPlayspace = eclass.getVRPlayspace().instance( this )
-		this.pVRHMD = eclass.getVRHMD().instance( this )
-		this.pVRRightHand = eclass.getVRRightHand().instance( this )
-		this.pVRLeftHand = eclass.getVRLeftHand().instance( this )
+	public func new(BaseVRActorClass eclass) super(eclass)
+		pVRPlayspace = eclass.getVRPlayspace().instance(this)
+		pVRHMD = eclass.getVRHMD().instance(this)
+		pVRRightHand = eclass.getVRRightHand().instance(this)
+		pVRLeftHand = eclass.getVRLeftHand().instance(this)
+		pVRRightHandPointAt = eclass.getVRRightHandPointAt().instance(this)
+		pVRLeftHandPointAt = eclass.getVRLeftHandPointAt().instance(this)
 	end
 	
 	
 	
 	/** \brief VR Playspace behavior instance. */
 	public func ECBehaviorVRPlayspace.Instance getVRPlayspace()
-		return this.pVRPlayspace
+		return pVRPlayspace
 	end
 	
 	/** \brief VR HMD. */
 	public func ECBehaviorVRHMD.Instance getVRHMD()
-		return this.pVRHMD
+		return pVRHMD
 	end
 	
 	/** \brief VR Right Hand Controller. */
 	public func ECBehaviorVRHand.Instance getVRRightHand()
-		return this.pVRRightHand
+		return pVRRightHand
 	end
 	
 	/** \brief VR Left Hand Controller. */
 	public func ECBehaviorVRHand.Instance getVRLeftHand()
-		return this.pVRLeftHand
+		return pVRLeftHand
+	end
+	
+	/** \brief VR Right Hand Controller Point-At. */
+	public func ECBehaviorVRHandPointAt.Instance getVRRightHandPointAt()
+		return pVRRightHandPointAt
+	end
+	
+	/** \brief VR Left Hand Controller Point-At. */
+	public func ECBehaviorVRHandPointAt.Instance getVRLeftHandPointAt()
+		return pVRLeftHandPointAt
 	end
 	
 	
 	
 	/** \brief Visit element. */
-	public func void visit( ElementVisitor visitor )
-		visitor.visitBaseVRActor( this )
+	public func void visit(ElementVisitor visitor)
+		visitor.visitBaseVRActor(this)
 	end
 end

@@ -1,0 +1,328 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2021, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui.Layouts
+pin Dragengine.LoadSave
+pin Dragengine.Preloading
+pin Dragengine.Utils
+
+
+/**
+ * \brief Behavior element behavior adding a renderable Desktop widget.
+ * \version 1.7
+ * 
+ * This behavior is useful for models displaying interactive UI where the content of the
+ * texture is provided by a Desktop widget. Multiple other behaviors can add their content
+ * Window to the Desktop separating logic for reuse. Using ECBehaviorRenderableDesktop
+ * allows to use the full power of the GUI ToolKit including using GuiThemes to create
+ * complex content easily.
+ * 
+ * The default gui theme is "/shareddata/guithemes/modern/modern.guitheme.xml". The default
+ * Desktop designer selector is "RenderableDesktop".
+ * 
+ * To use this behavior add an ECBehaviorDynamicSkin to the element class before adding this
+ * behavior. Create ECBehaviorRenderableDesktop behavior and set the dynamic skin and designer
+ * selector and GuiTheme for the Desktop. Now you can add other behaviors targeting the
+ * ECBehaviorRenderableDesktop to add Window resources to.
+ * 
+ * The Desktop is created with a default size of 1024x1024 . You can change the size using the
+ * element property to fit the texture requirements.
+ * 
+ * Using WidgetInputProcessor the player can control the Desktop like regular UI Desktops.
+ * 
+ * Multiple ECBehaviorRenderableDesktop instances can be added to affect individual
+ * dynamic skin textures. The example below uses one component with one dynamic skin to two
+ * individual renderables named "content1" and "content2" each allowing to be individiually
+ * filled with content by different behaviors.
+ * 
+ * \code{.ds}
+ * class MyElement extends BehaviorElementClass
+ *    public func new()
+ *       ECBehaviorComponent.new(this)
+ *       ECBehaviorDynamicSkin.new(this)
+ *       
+ *       ECBehaviorCanvas.new(this)
+ *       ECBehaviorCanvas.new(this, "canvas2")
+ *       
+ *       var ECBehaviorRenderableDesktop behavior = ECBehaviorRenderableDesktop.new(this)
+ *       behavior.getRenderable().setValue("content1")
+ *       behavior.getGuiTheme().setPath("/content/renderable.guitheme.xml")
+ *       behavior.getDesignerSelector().setValue("Desktop.MyElement")
+ *       
+ *       behavior = ECBehaviorRenderableDesktop.new(this, "renderableDesktop2")
+ *       behavior.setBackgroundColor(Color.blue)
+ *       behavior.getRenderable().setValue("intensity2")
+ *       behavior.getGuiTheme().setPath("/content/renderable.guitheme.xml")
+ *       behavior.getDesignerSelector().setValue("Desktop.MyElement")
+ *    end
+ * end
+ * \endcode
+ * 
+ * Element class properties have the prefix "renderableDesktop{(id)}.".
+ * 
+ * This behavior does not require the element class to be persistable (setPersistable).
+ */
+class ECBehaviorRenderableDesktop extends DefaultECBehavior
+	/** \brief Behavior instance. */
+	class Instance extends DefaultECBehaviorInstance
+		private var ECBehaviorRenderableDesktop pECBehavior
+		private var ECBehaviorDynamicSkin.Instance pDynamicSkin
+		private var int pRenderable
+		private var Desktop pDesktop
+		
+		
+		
+		/** \brief Create element. */
+		public func new(ECBehaviorRenderableDesktop ecbehavior, BehaviorElement element) super(element)
+			pECBehavior = ecbehavior
+			pRenderable = -1
+			
+			pDynamicSkin = ecbehavior.getDynamicSkin().instance(element)
+		end
+		
+		/** \brief Dispose of behavior instance. */
+		public func void dispose()
+			pDynamicSkin = null
+			if pDesktop != null
+				pDesktop.dispose()
+				pDesktop = null
+			end
+			super.dispose()
+		end
+		
+		
+		
+		/** \brief Initialize element from stub. */
+		public func void init(StubElement stub)
+			var String renderableName = pECBehavior.getRenderable().getValue(stub)
+			if renderableName.empty()
+				return
+			end
+			
+			var ElementClass eclass = getElement().getClass()
+			var CodecPropertyString codec = eclass.getCodecPropertyString()
+			
+			pDesktop = Desktop.new(pECBehavior.getSize().getPoint(stub, codec))
+			pDesktop.setGuiTheme(pECBehavior.getGuiTheme().getGuiTheme(stub, eclass))
+			pDesktop.setDesignerSelector(pECBehavior.getDesignerSelector().getValue(stub))
+			
+			var DynamicSkin dynamicSkin = pDynamicSkin.getDynamicSkin()
+			pRenderable = dynamicSkin.getRenderableCount()
+			dynamicSkin.addRenderable(renderableName, DynamicSkinRenderableType.canvas)
+			dynamicSkin.setCanvasAt(pRenderable, pDesktop.getCanvasWidget())
+		end
+		
+		
+		
+		/** \brief Behavior. */
+		public func ECBehaviorRenderableDesktop getECBehavior()
+			return pECBehavior
+		end
+		
+		/** \brief Dynamic skin behavior instance. */
+		public func ECBehaviorDynamicSkin.Instance getDynamicSkin()
+			return pDynamicSkin
+		end
+		
+		/** \brief Desktop or \em null if no dynamic skin is present. */
+		public func Desktop getDesktop()
+			return pDesktop
+		end
+	end
+	
+	
+	
+	private var ECBehaviorDynamicSkin pDynamicSkin
+	private var ECPString pRenderable
+	private var ECPPoint pSize
+	private var ECPGuiTheme pGuiTheme
+	private var ECPString pDesignerSelector
+	
+	
+	
+	/** \brief Create behavior element class. */
+	public func new(BehaviorElementClass eclass, ECBehaviorDynamicSkin dynamicSkin) \
+	this(eclass, dynamicSkin, BaseGameApp.getApp().getLoaders(), "")
+	end
+	
+	public func new(BehaviorElementClass eclass, ECBehaviorDynamicSkin dynamicSkin, String id) \
+	this(eclass, dynamicSkin, BaseGameApp.getApp().getLoaders(), id)
+	end
+	
+	public func new(BehaviorElementClass eclass, ECBehaviorDynamicSkin dynamicSkin, Loaders loaders) \
+	this(eclass, dynamicSkin, loaders, "")
+	end
+	
+	public func new(BehaviorElementClass eclass, ECBehaviorDynamicSkin dynamicSkin, Loaders loaders, String id) \
+	this(eclass, dynamicSkin, loaders, id, id.empty() if "renderableDesktop." else "renderableDesktop(" + id + ").")
+	end
+	
+	public func new(BehaviorElementClass eclass, ECBehaviorDynamicSkin dynamicSkin, Loaders loaders, \
+	String id, String prefix) super(eclass, id)
+		if dynamicSkin == null
+			throw ENullPointer.new("dynamicSkin")
+		end
+		
+		pDynamicSkin = dynamicSkin
+		
+		pRenderable = ECPString.new(prefix + "renderable", "")
+		eclass.addProperty(pRenderable)
+		
+		pSize = ECPPoint.new(prefix + "size", Point.new(1024, 1024))
+		eclass.addProperty(pSize)
+		
+		pGuiTheme = ECPGuiTheme.new(prefix + "guiTheme", loaders.getGuiTheme(), \
+			"/shareddata/guithemes/modern/modern.guitheme.xml")
+		eclass.addProperty(pGuiTheme)
+		
+		pDesignerSelector = ECPString.new(prefix + "designerSelector", "RenderableDesktop")
+		eclass.addProperty(pDesignerSelector)
+		
+		eclass.addBehavior(this)
+	end
+	
+	/** \brief Dispose of behavior. */
+	public func void dispose()
+		pDynamicSkin = null
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief Dynamic skin behavior. */
+	public func ECBehaviorDynamicSkin getDynamicSkin()
+		return pDynamicSkin
+	end
+	
+	/** \brief Name of renderable to create or empty string if not used. */
+	public func ECPString getRenderable()
+		return pRenderable
+	end
+	
+	/** \brief Size of canvas. */
+	public func ECPPoint getSize()
+		return pSize
+	end
+	
+	/** \brief Gui Theme to use for Desktop. */
+	public func ECPGuiTheme getGuiTheme()
+		return pGuiTheme
+	end
+	
+	/** \brief Designer selector to use for Desktop. */
+	public func ECPString getDesignerSelector()
+		return pDesignerSelector
+	end
+	
+	
+	
+	/** \brief Get instance in element from owner element class. */
+	public func Instance instance(BehaviorElement element)
+		return element.getInstanceAt(getInstanceIndex()) cast Instance
+	end
+	
+	
+	
+	/**
+	 * \brief Get behavior in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorComponent.
+	 */
+	static public func ECBehaviorRenderableDesktop getBehaviorIn(BehaviorElementClass eclass)
+		return eclass.findBehavior(block ECBehaviorRenderableDesktop each
+			return true
+		end) cast ECBehaviorRenderableDesktop
+	end
+	
+	/**
+	 * \brief Get behavior with id in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorRenderableDesktop with specific identifier.
+	 */
+	static public func ECBehaviorRenderableDesktop getBehaviorIn(BehaviorElementClass eclass, String id)
+		return eclass.findBehavior(block ECBehaviorRenderableDesktop each
+			return each.getID().equals(id)
+		end) cast ECBehaviorRenderableDesktop
+	end
+	
+	/**
+	 * \brief Get list of all behaviors in element.
+	 * 
+	 * Returns list contains ECBehaviorRenderableDesktop behaviors in the order they have
+	 * been created in the element.
+	 */
+	static public func Array getAllBehaviorsIn(BehaviorElementClass eclass)
+		return eclass.collectBehaviors(block ECBehaviorRenderableDesktop each
+			return true
+		end)
+	end
+	
+	
+	
+	/**
+	 * \brief Get instance in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorRenderableDesktop.Instance . If more than one instance is present returns
+	 * the first instance.
+	 */
+	static public func Instance getInstanceIn(BehaviorElement element)
+		return element.findInstance(block Instance each
+			return true
+		end) cast Instance
+	end
+	
+	/**
+	 * \brief Get instance with id in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorRenderableDesktop.Instance with specific identifier.
+	 */
+	static public func Instance getInstanceIn(BehaviorElement element, String id)
+		return element.findInstance(block Instance each
+			return each.getECBehavior().getID().equals(id)
+		end) cast Instance
+	end
+	
+	/**
+	 * \brief Get list of all instances in element.
+	 * 
+	 * Returns list contains ECBehaviorRenderableDesktop.Instance instances in the order they have
+	 * been created in the element.
+	 */
+	static public func Array getAllInstancesIn(BehaviorElement element)
+		return element.collectInstances(block Instance each
+			return true
+		end)
+	end
+	
+	
+	
+	/** \brief Create Behavior instance. */
+	public func ECBehaviorInstance createInstance(BehaviorElement element)
+		return Instance.new(this, element)
+	end
+end

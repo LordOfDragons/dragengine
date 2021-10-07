@@ -44,15 +44,22 @@ pin Dragengine.Utils
  * This can be overwritten if required.
  * 
  * This behavior does not require persistable element class (setPersistable).
+ * 
+ * \par Version 1.7
+ * 
+ * Adds a collider resource to allow other elements to attach to the hand. By default
+ * the collider is set to be a ghost collider suitable for attaching elements without
+ * causing interactions with the scene. If you would like to get interaction with the
+ * scene set the collision parameters accordingly.
  */
 class ECBehaviorVRHand extends DefaultECBehavior
 	/** \brief Listener for behavior instance events. */
 	interface Listener
 		/** \brief Hand controller attached and ready to use. */
-		func void controllerAttached( Instance instance )
+		func void controllerAttached(Instance instance)
 		
 		/** \brief Hand controller detached and no more usableuse. */
-		func void controllerDetached( Instance instance )
+		func void controllerDetached(Instance instance)
 	end
 	
 	/** \brief Default implementation of behavior instance listener. */
@@ -62,18 +69,51 @@ class ECBehaviorVRHand extends DefaultECBehavior
 		end
 		
 		/** \brief Hand controller attached and ready to use. */
-		public func void controllerAttached( Instance instance )
+		public func void controllerAttached(Instance instance)
 		end
 		
 		/** \brief Hand controller detached and no more usableuse. */
-		public func void controllerDetached( Instance instance )
+		public func void controllerDetached(Instance instance)
+		end
+	end
+	
+	/**
+	 * \brief Listener for behavior collision events.
+	 * \version 1.7
+	 */
+	interface CollisionListener
+		/**
+		 * \brief Collision detected.
+		 * \param instance Behavior instance owning \em collider.
+		 * \param collider Collider involded in the collision.
+		 * \param info Information about collision partner.
+		 */
+		func void collisionResponse(Instance instance, Collider collider, CollisionInfo info)
+	end
+	
+	/**
+	 * \brief Default implementation of behavior collision listener.
+	 * \version 1.7
+	 */
+	class DefaultCollisionListener implements CollisionListener
+		/** \brief Create default listener. */
+		public func new()
+		end
+		
+		/**
+		 * \brief Collision detected.
+		 * \param instance Behavior instance owning \em collider.
+		 * \param collider Collider involded in the collision.
+		 * \param info Information about collision partner.
+		 */
+		public func void collisionResponse(Instance instance, Collider collider, CollisionInfo info)
 		end
 	end
 	
 	/** \brief Factory creating listeners. */
 	interface ListenerFactory
 		/** \brief Create listener. */
-		func Listener createListener( Instance instance )
+		func Listener createListener(Instance instance)
 	end
 	
 	/** \brief Factory creating listeners using block. */
@@ -81,49 +121,49 @@ class ECBehaviorVRHand extends DefaultECBehavior
 		private var Block pBlock
 		
 		/** \brief Create factory using block receiving Instance as parameter returning Listener. */
-		public func new( Block blockFactory )
+		public func new(Block blockFactory)
 			if blockFactory == null
 				throw ENullPointer.new()
 			end
-			this.pBlock = blockFactory
+			pBlock = blockFactory
 		end
 		
 		/** \brief Create listener. */
-		public func Listener createListener( Instance instance )
-			return this.pBlock.run( instance ) cast Listener
+		public func Listener createListener(Instance instance)
+			return pBlock.run(instance) cast Listener
 		end
 	end
 	
 	
 	
 	/** \brief Behavior instance. */
-	class Instance extends DefaultECBehaviorInstance
+	class Instance extends DefaultECBehaviorInstance implements ColliderListener
 		/** \brief Controller attach/detach listener. */
 		class AttachDetachListener extends DefaultBindingManagerListener
 			private var Instance pInstance
 			
-			public func new( Instance instance )
+			public func new(Instance instance)
 				pInstance = instance
 			end
 			
-			public func void deviceAttached( BindingManager manager, InputDevice device )
-				if device.getType() == this.pInstance.getECBehavior().getInputDeviceType()
-					this.pInstance.setInputDevice( device )
+			public func void deviceAttached(BindingManager manager, InputDevice device)
+				if device.getType() == pInstance.getECBehavior().getInputDeviceType()
+					pInstance.setInputDevice(device)
 				end
 			end
 			
-			public func void deviceDetached( BindingManager manager, InputDevice device )
-				if this.pInstance.getInputDevice() == device
-					this.pInstance.setInputDevice( null )
+			public func void deviceDetached(BindingManager manager, InputDevice device)
+				if pInstance.getInputDevice() == device
+					pInstance.setInputDevice(null)
 				end
 			end
 			
-			public func void devicesReloaded( BindingManager manager )
+			public func void devicesReloaded(BindingManager manager)
 				// temporary
-				var InputDeviceType type = this.pInstance.getECBehavior().getInputDeviceType()
-				this.pInstance.setInputDevice( manager.findDevice( block InputDevice each
+				var InputDeviceType type = pInstance.getECBehavior().getInputDeviceType()
+				pInstance.setInputDevice(manager.findDevice(block InputDevice each
 					return each.getType() == type
-				end ) )
+				end))
 			end
 		end
 		
@@ -141,134 +181,205 @@ class ECBehaviorVRHand extends DefaultECBehavior
 		private var Quaternion pOrientation
 		private var Array pListeners
 		private var AttachDetachListener pAttachDetachListener
+		private var Collider pCollider
+		private var Array pCollisionListeners
 		
 		
 		
 		/** \brief Create instance. */
-		public func new( ECBehaviorVRHand ecbehavior, BehaviorElement element ) super( element )
-			this.pECBehavior = ecbehavior
-			this.pUseVendorModel = true
-			this.pShowHand = true
-			this.pPosition = Vector.new()
-			this.pOrientation = Quaternion.new()
-			this.pListeners = Array.new()
-			this.pAttachDetachListener = AttachDetachListener.new( this )
+		public func new(ECBehaviorVRHand ecbehavior, BehaviorElement element) super(element)
+			pECBehavior = ecbehavior
+			pUseVendorModel = true
+			pShowHand = true
+			pPosition = Vector.new()
+			pOrientation = Quaternion.new()
+			pListeners = Array.new()
+			pAttachDetachListener = AttachDetachListener.new(this)
+			pCollisionListeners = Array.new()
 			
-			this.pVRPlayspace = ecbehavior.getVRPlayspace().instance( element )
-			this.pComponent = ecbehavior.getComponent().instance( element )
+			pVRPlayspace = ecbehavior.getVRPlayspace().instance(element)
+			pComponent = ecbehavior.getComponent().instance(element)
 			
-			this.setRequiresThink( true )
+			setRequiresThink(true)
 		end
 		
 		/** \brief Dispose of instance. */
 		public func void dispose()
-			this.pAttachDetachListener = null
-			this.pListeners = null
-			this.pComponent = null
-			this.pVRPlayspace = null
+			if pCollider != null
+				pCollider.setColliderListener(null)
+				pCollider.setOwner(null)
+				pCollider.removeAllCollisionTests()
+				pCollider.removeAllIgnoreColliders()
+				//pCollider = null // not doing this prevents depending behaviors fail while disposing
+			end
+			pCollisionListeners = null
+			
+			pAttachDetachListener = null
+			pListeners = null
+			pComponent = null
+			pVRPlayspace = null
 			super.dispose()
 		end
 		
 		
 		
 		/** \brief Initialize behavior from stub. */
-		public func void init( StubElement stub )
-			var Component component = this.pComponent.getComponent()
+		public func void init(StubElement stub)
+			// create component
+			var Component component = pComponent.getComponent()
 			if component != null
-				this.pCustomModel = component.getModel()
-				this.pCustomSkin = component.getSkin()
+				pCustomModel = component.getModel()
+				pCustomSkin = component.getSkin()
 			end
 			
-			this.pShowHand = this.pECBehavior.getShowHand().getValue( stub )
-			this.pUseVendorModel = this.pECBehavior.getUseVendorModel().getValue( stub )
+			pShowHand = pECBehavior.getShowHand().getValue(stub)
+			pUseVendorModel = pECBehavior.getUseVendorModel().getValue(stub)
 			
-			this.pECBehavior.createListeners( this )
+			// create collider
+			var BehaviorElement element = getElement()
+			pCollider = createCollider(stub)
+			pCollider.setColliderListener(this)
+			pCollider.setOwner(element)
+			pCollider.setGeometry(element.getPosition(), element.getOrientation(), element.getScaling())
 			
-			this.updateVisibile()
+			// if response type is dynamic update bone position. this is required for dynamic
+			// rigs with bones. upon initializing the bones they are set to zero but bones
+			// in colliders are in world space. without init dynamic bones end up everywhere
+			// but not where we want them
+			if pCollider.getResponseType() == CollisionResponse.dynamic and pCollider castable ColliderComponent
+				(pCollider cast ColliderComponent).copyStatesFromComponent()
+			end
+			
+			// attach component if not rig attached already
+			attachComponent(stub)
+			
+			// do the rest
+			pECBehavior.createListeners(this)
+			
+			updateVisibile()
+		end
+		
+		/**
+		 * \brief Create collider.
+		 * \version 1.7
+		 * \param stub Stub to use.
+		 * \param component Component to use or \em null if absent.
+		 */
+		protected func Collider createCollider(StubElement stub)
+			var BehaviorElement element = getElement()
+			var Collider collider
+			
+			if pComponent != null
+				collider = pECBehavior.getCollider().createCollider(element, stub, pComponent.getComponent())
+			end
+			
+			if collider == null
+				collider = pECBehavior.getCollider().createCollider(element, stub)
+			end
+			
+			return collider
+		end
+		
+		/**
+		 * \brief Attach component to collider if required.
+		 * \version 1.7
+		 */
+		protected func void attachComponent(StubElement stub)
+			if pComponent.getComponent() != null and not pCollider castable ColliderComponent
+				pCollider.attachStatic(pComponent.getComponent(), Vector.new(), Quaternion.new())
+			end
 		end
 		
 		
 		
 		/** \brief Behavior. */
 		public func ECBehaviorVRHand getECBehavior()
-			return this.pECBehavior
+			return pECBehavior
 		end
 		
 		/** \brief VR Playspace. */
 		public func ECBehaviorVRPlayspace.Instance getVRPlayspace()
-			return this.pVRPlayspace
+			return pVRPlayspace
 		end
 		
 		/** \brief Component behavior instance. */
 		public func ECBehaviorComponent.Instance getComponent()
-			return this.pComponent
+			return pComponent
 		end
 		
 		/** \brief Use vendor model. */
 		public func bool getUseVendorModel()
-			return this.pUseVendorModel
+			return pUseVendorModel
 		end
 		
 		/** \brief Set use vendor model. */
-		protected func void setUseVendorModel( bool useVendorModel )
-			if useVendorModel == this.pUseVendorModel
+		protected func void setUseVendorModel(bool useVendorModel)
+			if useVendorModel == pUseVendorModel
 				return
 			end
 			
-			this.pUseVendorModel = useVendorModel
-			this.updateModelSkin()
+			pUseVendorModel = useVendorModel
+			updateModelSkin()
 		end
 		
 		/** \brief Show hand. */
 		public func bool getShowHand()
-			return this.pShowHand
+			return pShowHand
 		end
 		
 		/** \brief Set show hand. */
-		protected func void setShowHand( bool showHand )
-			if showHand == this.pShowHand
+		protected func void setShowHand(bool showHand)
+			if showHand == pShowHand
 				return
 			end
 			
-			this.pShowHand = showHand
-			this.stateChanged()
+			pShowHand = showHand
+			stateChanged()
 		end
 		
 		/** \brief Input device or null if detached. */
 		public func InputDevice getInputDevice()
-			return this.pInputDevice
+			return pInputDevice
 		end
 		
 		/** \brief Set input device or null if detached. */
-		public func void setInputDevice( InputDevice device )
-			if device == this.pInputDevice
+		public func void setInputDevice(InputDevice device)
+			if device == pInputDevice
 				return
 			end
 			
-			if this.pInputDevice != null
-				this.pListeners.forEach( block Listener each
-					each.controllerDetached( this )
-				end )
+			if pInputDevice != null
+				pListeners.forEach(block Listener each
+					each.controllerDetached(this)
+				end)
 			end
 			
-			this.pInputDevice = device
-			this.updateModelSkin()
+			pInputDevice = device
+			updateModelSkin()
 			
 			if device != null
-				this.pListeners.forEach( block Listener each
-					each.controllerAttached( this )
-				end )
+				pListeners.forEach(block Listener each
+					each.controllerAttached(this)
+				end)
 			end
 		end
 		
 		/** \brief Controller is attached. */
 		public func bool isAttached()
-			return this.pInputDevice != null
+			return pInputDevice != null
 		end
 		
 		/** \brief Controller is detached. */
 		public func bool isDetached()
-			return this.pInputDevice == null
+			return pInputDevice == null
+		end
+		
+		/**
+		 * \brief Collider.
+		 * \version 1.7
+		 */
+		public func Collider getCollider()
+			return pCollider
 		end
 		
 		
@@ -278,7 +389,7 @@ class ECBehaviorVRHand extends DefaultECBehavior
 		 * \note Position is queried each time the function is called.
 		 */
 		public func DVector getPosition()
-			return this.pVRPlayspace.getMatrix() * DVector.new( this.getPositionPlayspace() )
+			return pVRPlayspace.getMatrix() * DVector.new(getPositionPlayspace())
 		end
 		
 		/**
@@ -286,10 +397,10 @@ class ECBehaviorVRHand extends DefaultECBehavior
 		 * \note Position is queried each time the function is called.
 		 */
 		public func Vector getPositionPlayspace()
-			if this.pInputDevice != null
-				this.pPosition = this.pInputDevice.getDevicePosePosition()
+			if pInputDevice != null
+				pPosition = pInputDevice.getDevicePosePosition()
 			end
-			return this.pPosition
+			return pPosition
 		end
 		
 		/**
@@ -297,7 +408,7 @@ class ECBehaviorVRHand extends DefaultECBehavior
 		 * \note Orientation is queried each time the function is called.
 		 */
 		public func Quaternion getOrientation()
-			return this.getOrientationPlayspace() * this.pVRPlayspace.getOrientation()
+			return getOrientationPlayspace() * pVRPlayspace.getOrientation()
 		end
 		
 		/**
@@ -305,10 +416,10 @@ class ECBehaviorVRHand extends DefaultECBehavior
 		 * \note Orientation is queried each time the function is called.
 		 */
 		public func Quaternion getOrientationPlayspace()
-			if this.pInputDevice != null
-				this.pOrientation = this.pInputDevice.getDevicePoseOrientation()
+			if pInputDevice != null
+				pOrientation = pInputDevice.getDevicePoseOrientation()
 			end
-			return this.pOrientation
+			return pOrientation
 		end
 		
 		/**
@@ -316,7 +427,7 @@ class ECBehaviorVRHand extends DefaultECBehavior
 		 * \note Position and orientation are queried each time the function is called.
 		 */
 		public func DMatrix getMatrix()
-			return DMatrix.newWorld( this.getPosition(), this.getOrientation() )
+			return DMatrix.newWorld(getPosition(), getOrientation())
 		end
 		
 		/**
@@ -324,7 +435,7 @@ class ECBehaviorVRHand extends DefaultECBehavior
 		 * \note Position and orientation are queried each time the function is called.
 		 */
 		public func Matrix getMatrixPlayspace()
-			return Matrix.newWorld( this.getPositionPlayspace(), this.getOrientationPlayspace() )
+			return Matrix.newWorld(getPositionPlayspace(), getOrientationPlayspace())
 		end
 		
 		/**
@@ -332,7 +443,7 @@ class ECBehaviorVRHand extends DefaultECBehavior
 		 * \note Position and orientation are queried each time the function is called.
 		 */
 		public func DMatrix getInverseMatrix()
-			return this.getMatrix().getInverse()
+			return getMatrix().getInverse()
 		end
 		
 		/**
@@ -340,92 +451,222 @@ class ECBehaviorVRHand extends DefaultECBehavior
 		 * \note Position and orientation are queried each time the function is called.
 		 */
 		public func Matrix getInverseMatrixPlayspace()
-			return this.getMatrixPlayspace().getInverse()
+			return getMatrixPlayspace().getInverse()
+		end
+		
+		
+		
+		/**
+		 * \brief Rig shape property or null if not possible.
+		 * \version 1.7
+		 */
+		public func String getRigShapeProperty(int bone, int shape)
+			if shape == -1 or pCollider == null or not pCollider castable ColliderRig
+				return null
+			end
+			
+			var Rig rig = (pCollider cast ColliderRig).getRig()
+			if rig == null
+				return null
+			end
+			
+			if bone != -1
+				return rig.boneShapeGetProperty(bone, shape)
+				
+			else
+				return rig.shapeGetProperty(shape)
+			end
+		end
+		
+		/**
+		 * \brief Rig shape property from collision or null if not possible.
+		 * \version 1.7
+		 */
+		public func String getRigShapeProperty(CollisionInfo info, bool owner)
+			if owner
+				return getRigShapeProperty(info.getOwnerBone(), info.getOwnerShape())
+				
+			elif info.hasBone() and info.hasShape()
+				return getRigShapeProperty(info.getBone(), info.getShape())
+				
+			else
+				return  null
+			end
 		end
 		
 		
 		
 		/** \brief Add listener. */
-		public func void addListener( Listener listener )
+		public func void addListener(Listener listener)
 			if listener == null
 				throw EInvalidParam.new()
 			end
-			this.pListeners.add( listener )
+			pListeners.add(listener)
 		end
 		
 		/** \brief Remove listener. */
-		public func void removeListener( Listener listener )
-			this.pListeners.remove( listener )
+		public func void removeListener(Listener listener)
+			pListeners.remove(listener)
+		end
+		
+		
+		
+		/**
+		 * \brief Add collision listener.
+		 * \version 1.7
+		 */
+		public func void addCollisionListener(CollisionListener listener)
+			if listener == null
+				throw EInvalidParam.new()
+			end
+			pCollisionListeners.add(listener)
+		end
+		
+		/**
+		 * \brief Remove collision listener.
+		 * \version 1.7
+		 */
+		public func void removeCollisionListener(CollisionListener listener)
+			pCollisionListeners.remove(listener)
 		end
 		
 		
 		
 		/** \brief Element has been added to game world. Start tracking device. */
 		public func void addToGameWorld()
-			var BindingManager bindingManager = this.pECBehavior.getBindingManager()
-			bindingManager.addListener( this.pAttachDetachListener )
+			var BindingManager bindingManager = pECBehavior.getBindingManager()
+			bindingManager.addListener(pAttachDetachListener)
 			
 			// find device
-			var InputDeviceType type = this.pECBehavior.getInputDeviceType()
-			this.setInputDevice( bindingManager.findDevice( block InputDevice each
+			var InputDeviceType type = pECBehavior.getInputDeviceType()
+			setInputDevice(bindingManager.findDevice(block InputDevice each
 				return each.getType() == type
-			end ) )
+			end))
+			
+			// add collider to world
+			getElement().getGameWorld().getWorld().addCollider(pCollider)
 		end
 		
 		/** \brief Element has been removed from game world. Stop tracking device. */
 		public func void removeFromGameWorld()
-			this.pECBehavior.getBindingManager().removeListener( this.pAttachDetachListener )
-			this.setInputDevice( null )
+			// remove collider from game world
+			getElement().getGameWorld().getWorld().removeCollider(pCollider)
+			
+			// forget about input device
+			pECBehavior.getBindingManager().removeListener(pAttachDetachListener)
+			setInputDevice(null)
 		end
 		
-		/**
-		 * Frame update.
-		 */
-		public func void think( float elapsed )
-			var Component component = this.pComponent.getComponent()
-			if component == null
-				return
-			end
-			
-			component.setPosition( this.getPosition() )
-			component.setOrientation( this.getOrientation() )
+		/** \brief Frame update. */
+		public func void think(float elapsed)
+			pCollider.setGeometry(getPosition(), getOrientation())
 		end
 		
 		/** \brief Element state changed like visible. */
 		public func void stateChanged()
-			this.updateVisibile()
+			updateVisibile()
+		end
+		
+		/** \brief Position or orientation changed. */
+		public func void geometryChanged()
+			pCollider.setScale(getElement().getScaling())
+		end
+		
+		
+		
+		/** \brief Colliders can hit each other. */
+		public func bool canHitCollider(Collider owner, Collider collider)
+			return true
+		end
+		
+		/**
+		 * \brief Collision detected.
+		 * 
+		 * If listeners are present calls collisionResponse() on all listeners expecting them
+		 * to handle collision properly. Otherwise for static and kinematic collision response
+		 * clears linear and angular velocity. For dynamic collision response nothing is done.
+		 */
+		public func void collisionResponse(Collider owner, CollisionInfo info)
+			if pCollisionListeners.getCount() > 0
+				pCollisionListeners.forEach(block CollisionListener each
+					each.collisionResponse(this, owner, info)
+				end)
+				
+			elif pCollider.getResponseType() != CollisionResponse.dynamic
+				owner.setLinearVelocity(Vector.new())
+				owner.setAngularVelocity(Vector.new())
+			end
+		end
+		
+		/** \brief Collider position and/or orientation changed. */
+		public func void colliderChanged(Collider owner)
 		end
 		
 		
 		
 		/** \brief Update component model and skin. */
 		protected func void updateModelSkin()
-			var Component component = this.pComponent.getComponent()
+			var Component component = pComponent.getComponent()
 			if component == null
 				return
 			end
 			
-			if this.pUseVendorModel
-				if this.pInputDevice != null
-					component.setModelAndSkin( this.pInputDevice.getVRModel(), this.pInputDevice.getVRSkin() )
+			if pUseVendorModel
+				if pInputDevice != null
+					component.setModelAndSkin(pInputDevice.getVRModel(), pInputDevice.getVRSkin())
 					
 				else
-					component.setModelAndSkin( null, null )
+					component.setModelAndSkin(null, null)
 				end
 				
 			else
-				component.setModelAndSkin( this.pCustomModel, this.pCustomSkin )
+				component.setModelAndSkin(pCustomModel, pCustomSkin)
 			end
+			
+			// update collider? not required if rig is the same
 		end
 		
 		/** \brief Update component visible. */
 		protected func void updateVisibile()
-			var Component component = this.pComponent.getComponent()
+			var Component component = pComponent.getComponent()
 			if component == null
 				return
 			end
 			
-			component.setVisible( this.pShowHand and this.getElement().getVisible() )
+			var bool visible = pShowHand and getElement().getVisible()
+			
+			component.setVisible(visible)
+			pCollider.setEnabled(visible)
+		end
+		
+		
+		
+		/** \brief Read behavior from file. */
+		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
+			select reader.readByte() // version
+			case 0
+				var DVector position = DVector.readFromFile(reader)
+				var Quaternion orientation = Quaternion.readFromFile(reader)
+				var Vector scaling = Vector.readFromFile(reader)
+				
+				pCollider.setGeometry(position, orientation, scaling)
+				pCollider.setLinearVelocity(Vector.readFromFile(reader))
+				pCollider.setAngularVelocity(Vector.readFromFile(reader))
+				
+			else
+				throw EInvalidParam.new("unsupported version")
+			end
+		end
+		
+		/** \brief Write behavior to file. */
+		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+			writer.writeByte( 0 ) // version
+			
+			pCollider.getPosition().writeToFile(writer)
+			pCollider.getOrientation().writeToFile(writer)
+			pCollider.getScale().writeToFile(writer)
+			pCollider.getLinearVelocity().writeToFile(writer)
+			pCollider.getAngularVelocity().writeToFile(writer)
 		end
 	end
 	
@@ -437,88 +678,92 @@ class ECBehaviorVRHand extends DefaultECBehavior
 	private var ECBehaviorComponent pComponent
 	private var ECPBoolean pUseVendorModel
 	private var ECPBoolean pShowHand
+	private var ECComposeCollider pCollider
 	private var Array pListenerFactories
 	
 	
 	
 	/** \brief Create behavior element class. */
-	public func new( BehaviorElementClass eclass, ECBehaviorVRPlayspace vrPlayspace, \
-	InputDeviceType inputDeviceType ) this( eclass, vrPlayspace, inputDeviceType, \
-	BaseGameApp.getApp().getBindingManager() )
+	public func new(BehaviorElementClass eclass, ECBehaviorVRPlayspace vrPlayspace, \
+	InputDeviceType inputDeviceType) this(eclass, vrPlayspace, inputDeviceType, \
+	BaseGameApp.getApp().getBindingManager())
 	end
 	
 	/** \brief Create behavior element class. */
-	public func new( BehaviorElementClass eclass, ECBehaviorVRPlayspace vrPlayspace, \
-	InputDeviceType inputDeviceType, String id ) this( eclass, vrPlayspace, inputDeviceType, \
-	BaseGameApp.getApp().getBindingManager(), id )
+	public func new(BehaviorElementClass eclass, ECBehaviorVRPlayspace vrPlayspace, \
+	InputDeviceType inputDeviceType, String id) this(eclass, vrPlayspace, inputDeviceType, \
+	BaseGameApp.getApp().getBindingManager(), id)
 	end
 	
 	/** \brief Create behavior element class. */
-	public func new( BehaviorElementClass eclass, ECBehaviorVRPlayspace vrPlayspace, \
-	InputDeviceType inputDeviceType, String id, String subID ) this( eclass, vrPlayspace, \
-	inputDeviceType, BaseGameApp.getApp().getBindingManager(), id, subID )
+	public func new(BehaviorElementClass eclass, ECBehaviorVRPlayspace vrPlayspace, \
+	InputDeviceType inputDeviceType, String id, String subID) this(eclass, vrPlayspace, \
+	inputDeviceType, BaseGameApp.getApp().getBindingManager(), id, subID)
 	end
 	
 	/** \brief Create behavior element class. */
-	public func new( BehaviorElementClass eclass, ECBehaviorVRPlayspace vrPlayspace, \
-	InputDeviceType inputDeviceType, String id, String subID, String prefix ) \
-	this( eclass, vrPlayspace, inputDeviceType, BaseGameApp.getApp().getBindingManager(), \
-	id, subID, prefix )
+	public func new(BehaviorElementClass eclass, ECBehaviorVRPlayspace vrPlayspace, \
+	InputDeviceType inputDeviceType, String id, String subID, String prefix) \
+	this(eclass, vrPlayspace, inputDeviceType, BaseGameApp.getApp().getBindingManager(), \
+	id, subID, prefix)
 	end
 	
 	/** \brief Create behavior element class. */
-	public func new( BehaviorElementClass eclass, ECBehaviorVRPlayspace vrPlayspace, \
-	InputDeviceType inputDeviceType, BindingManager bindingManager ) \
-	this( eclass, vrPlayspace, inputDeviceType, bindingManager, "" )
+	public func new(BehaviorElementClass eclass, ECBehaviorVRPlayspace vrPlayspace, \
+	InputDeviceType inputDeviceType, BindingManager bindingManager) \
+	this(eclass, vrPlayspace, inputDeviceType, bindingManager, "")
 	end
 	
 	/** \brief Create behavior element class. */
-	public func new( BehaviorElementClass eclass, ECBehaviorVRPlayspace vrPlayspace, \
-	InputDeviceType inputDeviceType, BindingManager bindingManager, String id ) \
-	this( eclass, vrPlayspace, inputDeviceType, bindingManager, id, \
-	id.empty() if "vrHand." else "vrHand(" + id + ")." )
+	public func new(BehaviorElementClass eclass, ECBehaviorVRPlayspace vrPlayspace, \
+	InputDeviceType inputDeviceType, BindingManager bindingManager, String id) \
+	this(eclass, vrPlayspace, inputDeviceType, bindingManager, id, \
+	id.empty() if "vrHand." else "vrHand(" + id + ").")
 	end
 	
 	/** \brief Create behavior element class. */
-	public func new( BehaviorElementClass eclass, ECBehaviorVRPlayspace vrPlayspace, \
-	InputDeviceType inputDeviceType, BindingManager bindingManager, String id, String subID ) \
-	this( eclass, vrPlayspace, inputDeviceType, bindingManager, id, subID, subID + "." )
+	public func new(BehaviorElementClass eclass, ECBehaviorVRPlayspace vrPlayspace, \
+	InputDeviceType inputDeviceType, BindingManager bindingManager, String id, String subID) \
+	this(eclass, vrPlayspace, inputDeviceType, bindingManager, id, subID, subID + ".")
 	end
 	
 	/** \brief Create behavior element class. */
-	public func new( BehaviorElementClass eclass, ECBehaviorVRPlayspace vrPlayspace, \
+	public func new(BehaviorElementClass eclass, ECBehaviorVRPlayspace vrPlayspace, \
 	InputDeviceType inputDeviceType, BindingManager bindingManager, String id, \
-	String subID, String prefix ) super( eclass, id )
+	String subID, String prefix) super(eclass, id)
 		if vrPlayspace == null
-			throw ENullPointer.new( "vrPlayspace" )
+			throw ENullPointer.new("vrPlayspace")
 		end
 		if inputDeviceType == null
-			throw ENullPointer.new( "inputDeviceType" )
+			throw ENullPointer.new("inputDeviceType")
 		end
 		if bindingManager == null
-			throw ENullPointer.new( "bindingManager" )
+			throw ENullPointer.new("bindingManager")
 		end
 		
-		this.pInputDeviceType = inputDeviceType
-		this.pBindingManager = bindingManager
-		this.pVRPlayspace = vrPlayspace
-		this.pListenerFactories = Array.new()
+		pInputDeviceType = inputDeviceType
+		pBindingManager = bindingManager
+		pVRPlayspace = vrPlayspace
+		pListenerFactories = Array.new()
 		
-		this.pComponent = ECBehaviorComponent.new( eclass, null, subID, prefix + "component" )
+		pComponent = ECBehaviorComponent.new(eclass, null, subID, prefix + "component")
 		
-		this.pUseVendorModel = ECPBoolean.new( prefix + "useVendorModel", true )
-		eclass.addProperty( this.pUseVendorModel )
+		pUseVendorModel = ECPBoolean.new(prefix + "useVendorModel", true)
+		eclass.addProperty(pUseVendorModel)
 		
-		this.pShowHand = ECPBoolean.new( prefix + "showHand", true )
-		eclass.addProperty( this.pShowHand )
+		pShowHand = ECPBoolean.new(prefix + "showHand", true)
+		eclass.addProperty(pShowHand)
 		
-		eclass.addBehavior( this )
+		pCollider = ECComposeCollider.new(eclass, prefix + "collider")
+		setGhost()
+		
+		eclass.addBehavior(this)
 	end
 	
 	/** \brief Dispose of behavior. */
 	public func void dispose()
-		this.pListenerFactories = null
-		this.pVRPlayspace = null
+		pListenerFactories = null
+		pVRPlayspace = null
 		super.dispose()
 	end
 	
@@ -526,42 +771,66 @@ class ECBehaviorVRHand extends DefaultECBehavior
 	
 	/** \brief Input device type. */
 	public func InputDeviceType getInputDeviceType()
-		return this.pInputDeviceType
+		return pInputDeviceType
 	end
 	
 	/** \brief Binding manager. */
 	public func BindingManager getBindingManager()
-		return this.pBindingManager
+		return pBindingManager
 	end
 	
 	/** \brief VR Playspace behavior. */
 	public func ECBehaviorVRPlayspace getVRPlayspace()
-		return this.pVRPlayspace
+		return pVRPlayspace
 	end
 	
 	/** \brief Component behavior. */
 	public func ECBehaviorComponent getComponent()
-		return this.pComponent
+		return pComponent
 	end
 	
 	/** \brief Use vendor model. */
 	public func ECPBoolean getUseVendorModel()
-		return this.pUseVendorModel
+		return pUseVendorModel
 	end
 	
 	/** \brief Show hand. */
 	public func ECPBoolean getShowHand()
-		return this.pShowHand
+		return pShowHand
+	end
+	
+	/**
+	 * \brief Composeable collider for element class.
+	 * \version 1.7
+	 */
+	public func ECComposeCollider getCollider()
+		return pCollider
+	end
+	
+	
+	
+	/**
+	 * \brief Set up collider as ghost collider.
+	 * \version 1.7
+	 * 
+	 * Ghost colliders have empty collision filter and a small sphere shape. They collide with
+	 * nothing and are useful to attach elements composing only of resources like ECBehaviorLight. 
+	 */
+	public func void setGhost()
+		pCollider.getPhysicsType().setEnumeration(CollisionResponse.kinematic)
+		pCollider.getLocalGravity().setVector(Vector.new())
+		pCollider.getWeight().setValue(1)
+		pCollider.setCollisionFilter(CollisionFilter.new())
 	end
 	
 	
 	
 	/** \brief Add listener factory. */
-	public func void addListenerFactory( ListenerFactory factory )
+	public func void addListenerFactory(ListenerFactory factory)
 		if factory == null
 			throw ENullPointer.new()
 		end
-		this.pListenerFactories.add( factory )
+		pListenerFactories.add(factory)
 	end
 	
 	/**
@@ -569,27 +838,27 @@ class ECBehaviorVRHand extends DefaultECBehavior
 	 * 
 	 * Block receives as parameter Instance and returns Listener.
 	 */
-	public func void addListenerFactory( Block blockFactory )
-		this.pListenerFactories.add( BlockListenerFactory.new( blockFactory ) )
+	public func void addListenerFactory(Block blockFactory)
+		pListenerFactories.add(BlockListenerFactory.new(blockFactory))
 	end
 	
 	/** \brief Visit listener factories with block with argument ListenerFactory. */
-	public func void forEachListenerFactory( Block ablock )
-		this.pListenerFactories.forEach( ablock )
+	public func void forEachListenerFactory(Block ablock)
+		pListenerFactories.forEach(ablock)
 	end
 	
 	/** \brief Create listeners from factories adding them to behavior instance. */
-	public func void createListeners( Instance instance )
-		this.pListenerFactories.forEach( block ListenerFactory each
-			instance.addListener( each.createListener( instance ) )
-		end )
+	public func void createListeners(Instance instance)
+		pListenerFactories.forEach(block ListenerFactory each
+			instance.addListener(each.createListener(instance))
+		end)
 	end
 	
 	
 	
 	/** \brief Get instance in element from owner element class. */
-	public func Instance instance( BehaviorElement element )
-		return element.getInstanceAt( this.getInstanceIndex() ) cast Instance
+	public func Instance instance(BehaviorElement element)
+		return element.getInstanceAt(getInstanceIndex()) cast Instance
 	end
 	
 	
@@ -600,10 +869,10 @@ class ECBehaviorVRHand extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorVRHand.
 	 */
-	static public func ECBehaviorVRHand getBehaviorIn( BehaviorElementClass eclass )
-		return eclass.findBehavior( block ECBehaviorVRHand each
+	static public func ECBehaviorVRHand getBehaviorIn(BehaviorElementClass eclass)
+		return eclass.findBehavior(block ECBehaviorVRHand each
 			return true
-		end ) cast ECBehaviorVRHand
+		end) cast ECBehaviorVRHand
 	end
 	
 	/**
@@ -612,10 +881,10 @@ class ECBehaviorVRHand extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorVRHand with specific identifier.
 	 */
-	static public func ECBehaviorVRHand getBehaviorIn( BehaviorElementClass eclass, String id )
-		return eclass.findBehavior( block ECBehaviorVRHand each
-			return each.getID().equals( id )
-		end ) cast ECBehaviorVRHand
+	static public func ECBehaviorVRHand getBehaviorIn(BehaviorElementClass eclass, String id)
+		return eclass.findBehavior(block ECBehaviorVRHand each
+			return each.getID().equals(id)
+		end) cast ECBehaviorVRHand
 	end
 	
 	/**
@@ -624,10 +893,10 @@ class ECBehaviorVRHand extends DefaultECBehavior
 	 * Returns list contains ECBehaviorVRHand behaviors in the order they have
 	 * been created in the element.
 	 */
-	static public func Array getAllBehaviorsIn( BehaviorElementClass eclass )
-		return eclass.collectBehaviors( block ECBehaviorVRHand each
+	static public func Array getAllBehaviorsIn(BehaviorElementClass eclass)
+		return eclass.collectBehaviors(block ECBehaviorVRHand each
 			return true
-		end )
+		end)
 	end
 	
 	
@@ -639,10 +908,10 @@ class ECBehaviorVRHand extends DefaultECBehavior
 	 * of type ECBehaviorVRHand.Instance . If more than one instance is present returns
 	 * the first instance.
 	 */
-	static public func Instance getInstanceIn( BehaviorElement element )
-		return element.findInstance( block Instance each
+	static public func Instance getInstanceIn(BehaviorElement element)
+		return element.findInstance(block Instance each
 			return true
-		end ) cast Instance
+		end) cast Instance
 	end
 	
 	/**
@@ -651,10 +920,10 @@ class ECBehaviorVRHand extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElement contains a behavior instance
 	 * of type ECBehaviorVRHand.Instance with specific identifier.
 	 */
-	static public func Instance getInstanceIn( BehaviorElement element, String id )
-		return element.findInstance( block Instance each
-			return each.getECBehavior().getID().equals( id )
-		end ) cast Instance
+	static public func Instance getInstanceIn(BehaviorElement element, String id)
+		return element.findInstance(block Instance each
+			return each.getECBehavior().getID().equals(id)
+		end) cast Instance
 	end
 	
 	/**
@@ -663,16 +932,16 @@ class ECBehaviorVRHand extends DefaultECBehavior
 	 * Returns list contains ECBehaviorVRHand.Instance instances in the order they have
 	 * been created in the element.
 	 */
-	static public func Array getAllInstancesIn( BehaviorElement element )
-		return element.collectInstances( block Instance each
+	static public func Array getAllInstancesIn(BehaviorElement element)
+		return element.collectInstances(block Instance each
 			return true
-		end )
+		end)
 	end
 	
 	
 	
 	/** \brief Create Behavior instance. */
-	public func ECBehaviorInstance createInstance( BehaviorElement element )
-		return Instance.new( this, element )
+	public func ECBehaviorInstance createInstance(BehaviorElement element)
+		return Instance.new(this, element)
 	end
 end

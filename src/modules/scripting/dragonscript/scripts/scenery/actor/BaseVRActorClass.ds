@@ -39,64 +39,84 @@ class BaseVRActorClass extends BaseActorClass
 	private var ECBehaviorVRHMD pVRHMD
 	private var ECBehaviorVRHand pVRRightHand
 	private var ECBehaviorVRHand pVRLeftHand
+	private var ECBehaviorVRHandPointAt pVRRightHandPointAt
+	private var ECBehaviorVRHandPointAt pVRLeftHandPointAt
 	
 	
 	
 	/** \brief Create element class using loaders from BaseGameApp. */
-	public func new() this( "VRActor", BaseGameApp.getApp().getLoaders(), \
-	BaseGameApp.getApp().getPlayerControlledActor() )
+	public func new() this("VRActor", BaseGameApp.getApp().getLoaders(), \
+	BaseGameApp.getApp().getPlayerControlledActor())
 	end
 	
 	/** \brief Create element class. */
-	public func new( Loaders loaders, ECBehaviorPlayerControllable.Tracker tracker ) \
-	this( "VRActor", loaders, tracker )
+	public func new(Loaders loaders, ECBehaviorPlayerControllable.Tracker tracker) \
+	this("VRActor", loaders, tracker)
 	end
 	
 	/** \brief Create element class using loaders from BaseGameApp. */
-	public func new( String className ) this( className, BaseGameApp.getApp().getLoaders(), \
-	BaseGameApp.getApp().getPlayerControlledActor() )
+	public func new(String className) this(className, BaseGameApp.getApp().getLoaders(), \
+	BaseGameApp.getApp().getPlayerControlledActor())
 	end
 	
 	/** \brief Create element class. */
-	public func new( String className, Loaders loaders, ECBehaviorPlayerControllable.Tracker tracker ) \
-	super( className, loaders, tracker )
-		this.getAIAction().setActionFactory( BAAFirstPersonVR.Factory.new() )
+	public func new(String className, Loaders loaders, ECBehaviorPlayerControllable.Tracker tracker) \
+	super(className, loaders, tracker)
+		getAIAction().setActionFactory(BAAFirstPersonVR.Factory.new())
 		
 		// Change horizontal looking speed to 90 degrees per second
-		this.getPlayerInputLook().getSpeedLookHorizontal().setValue( 90 )
+		getPlayerInputLook().getSpeedLookHorizontal().setValue(90)
 		
-		this.pVRPlayspace = ECBehaviorVRPlayspace.new( this )
-		this.pVRHMD = ECBehaviorVRHMD.new( this, this.pVRPlayspace )
-		this.pVRRightHand = ECBehaviorVRHand.new( this, this.pVRPlayspace, InputDeviceType.vrRightHand, "right" )
-		this.pVRLeftHand = ECBehaviorVRHand.new( this, this.pVRPlayspace, InputDeviceType.vrLeftHand, "left" )
+		pVRPlayspace = ECBehaviorVRPlayspace.new(this)
+		pVRHMD = ECBehaviorVRHMD.new(this, pVRPlayspace)
+		pVRRightHand = ECBehaviorVRHand.new(this, pVRPlayspace, InputDeviceType.vrRightHand, "right")
+		pVRLeftHand = ECBehaviorVRHand.new(this, pVRPlayspace, InputDeviceType.vrLeftHand, "left")
+		pVRRightHandPointAt = ECBehaviorVRHandPointAt.new(this, pVRRightHand, "right")
+		pVRLeftHandPointAt = ECBehaviorVRHandPointAt.new(this, pVRLeftHand, "left")
 	end
 	
 	
 	
 	/** \brief VR Playspace behavior. */
 	public func ECBehaviorVRPlayspace getVRPlayspace()
-		return this.pVRPlayspace
+		return pVRPlayspace
 	end
 	
 	/** \brief VR HMD. */
 	public func ECBehaviorVRHMD getVRHMD()
-		return this.pVRHMD
+		return pVRHMD
 	end
 	
 	/** \brief VR Right Hand Controller. */
 	public func ECBehaviorVRHand getVRRightHand()
-		return this.pVRRightHand
+		return pVRRightHand
 	end
 	
 	/** \brief VR Left Hand Controller. */
 	public func ECBehaviorVRHand getVRLeftHand()
-		return this.pVRLeftHand
+		return pVRLeftHand
+	end
+	
+	/**
+	 * \brief VR Right Hand Controller Point-At.
+	 * \version 1.7
+	 */
+	public func ECBehaviorVRHandPointAt getVRRightHandPointAt()
+		return pVRRightHandPointAt
+	end
+	
+	/**
+	 * \brief VR Left Hand Controller Point-At.
+	 * \version 1.7
+	 */
+	public func ECBehaviorVRHandPointAt getVRLeftHandPointAt()
+		return pVRLeftHandPointAt
 	end
 	
 	
 	
 	/** \brief Create element instance. */
 	protected func Element createElement()
-		return BaseVRActor.new( this )
+		return BaseVRActor.new(this)
 	end
 end
