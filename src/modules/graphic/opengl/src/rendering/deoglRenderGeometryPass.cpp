@@ -211,6 +211,7 @@ DBG_ENTER_PARAM("RenderSolidGeometryPass", "%p", mask)
 	if( mask ){
 		OGL_CHECK( renderThread, glStencilOp( GL_KEEP, GL_KEEP, GL_KEEP ) );
 		OGL_CHECK( renderThread, glStencilFunc( GL_EQUAL, 0x01, 0x01 ) );
+		OGL_CHECK( renderThread, glEnable( GL_STENCIL_TEST ) ); // transparency disables this
 		
 	}else{
 		OGL_CHECK( renderThread, glDisable( GL_STENCIL_TEST ) );

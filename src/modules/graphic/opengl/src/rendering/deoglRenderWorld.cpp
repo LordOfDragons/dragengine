@@ -31,6 +31,7 @@
 #include "deoglRenderTransparentPasses.h"
 #include "deoglRenderTranspCounting.h"
 #include "deoglRenderWorld.h"
+#include "deoglRenderVR.h"
 #include "debug/deoglRenderDebugDrawer.h"
 #include "defren/deoglDeferredRendering.h"
 #include "light/deoglRenderLight.h"
@@ -778,6 +779,11 @@ DBG_EXIT("RenderMaskedPass(early)")
 		
 		pRenderTask->PrepareForRender();
 		rengeom.RenderTask( *pRenderTask );
+		
+		// render vr hidden mesh clearing the mask
+		OGL_CHECK( renderThread, glStencilFunc( GL_ALWAYS, 0x0, 0x01 ) );
+		
+		renderThread.GetRenderers().GetVR().RenderHiddenArea( plan );
 		
 		// render the world using this mask
 		deoglRenderPlan &maskedPlanPlan = *maskedPlan->GetPlan();
