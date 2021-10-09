@@ -356,8 +356,12 @@ class Desktop extends Container
 	 * messages are not send.
 	 */
 	public func void warpMousePointer( Point location )
-		this.onMouseMove( MouseEvent.new( this, MouseEvent.idMouseMoved, 0, 0, \
-			location - this.pMouseLocation, -1 ) )
+		if InputSystem.getCaptureInputDevices()
+			onMouseMove(MouseEvent.new(this, MouseEvent.idMouseMoved, 0, 0, location - pMouseLocation, -1))
+			
+		else
+			onMouseMove(MouseEvent.new(this, MouseEvent.idMouseMoved, 0, 0, location, -1))
+		end
 	end
 	
 	/**
