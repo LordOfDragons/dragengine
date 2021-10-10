@@ -58,10 +58,13 @@ void deBasePhysicsParticleEmitterInstance::WarmUpTimeChanged(){
 void deBasePhysicsParticleEmitterInstance::CollisionFilterChanged(){
 }
 
-void deBasePhysicsParticleEmitterInstance::ControllerChanged( int controller ){
+void deBasePhysicsParticleEmitterInstance::IgnoreCollidersChanged(){
 }
 
-void deBasePhysicsParticleEmitterInstance::TypeChanged( int type ){
+void deBasePhysicsParticleEmitterInstance::ControllerChanged( int ){
+}
+
+void deBasePhysicsParticleEmitterInstance::TypeChanged( int ){
 }
 
 

@@ -28,6 +28,7 @@
 #include "deClassParticleEmitterController.h"
 #include "deClassParticleEmitterInstance.h"
 #include "deClassParticleEmitterInstanceListener.h"
+#include "../collider/deClassCollider.h"
 #include "../curve/deClassCurveBezier.h"
 #include "../graphics/deClassComponent.h"
 #include "../math/deClassVector.h"
@@ -641,6 +642,102 @@ void deClassParticleEmitterInstance::nfSetListener::RunFunction( dsRunTime *rt, 
 
 
 
+// Ignore colliders
+/////////////////////
+
+// public func int getIgnoreColliderCount()
+deClassParticleEmitterInstance::nfGetIgnoreColliderCount::nfGetIgnoreColliderCount( const sInitData &init ) :
+dsFunction( init.clsPEI, "getIgnoreColliderCount", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt ){
+}
+void deClassParticleEmitterInstance::nfGetIgnoreColliderCount::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const sPEINatDat &nd = *( ( sPEINatDat* )p_GetNativeData( myself ) );
+	if( ! nd.instance ){
+		DSTHROW( dueNullPointer );
+	}
+	
+	rt->PushInt( nd.instance->GetIgnoreColliderCount() );
+}
+
+// public func Collider getIgnoreColliderAt( int index )
+deClassParticleEmitterInstance::nfGetIgnoreColliderAt::nfGetIgnoreColliderAt( const sInitData &init ) :
+dsFunction( init.clsPEI, "getIgnoreColliderAt", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsCollider ){
+	p_AddParameter( init.clsInt ); // index
+}
+void deClassParticleEmitterInstance::nfGetIgnoreColliderAt::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const sPEINatDat &nd = *( ( sPEINatDat* )p_GetNativeData( myself ) );
+	if( ! nd.instance ){
+		DSTHROW( dueNullPointer );
+	}
+	
+	deScriptingDragonScript &ds = *( ( ( deClassParticleEmitterInstance* )GetOwnerClass() )->GetDS() );
+	const int index = rt->GetValue( 0 )->GetInt();
+	ds.GetClassCollider()->PushCollider( rt, nd.instance->GetIgnoreColliderAt( index ) );
+}
+
+// public func bool hasIgnoreCollider( Collider collider )
+deClassParticleEmitterInstance::nfHasIgnoreCollider::nfHasIgnoreCollider( const sInitData &init ) :
+dsFunction( init.clsPEI, "hasIgnoreCollider", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool ){
+	p_AddParameter( init.clsCollider ); // collider
+}
+void deClassParticleEmitterInstance::nfHasIgnoreCollider::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const sPEINatDat &nd = *( ( sPEINatDat* )p_GetNativeData( myself ) );
+	if( ! nd.instance ){
+		DSTHROW( dueNullPointer );
+	}
+	
+	deScriptingDragonScript &ds = *( ( ( deClassParticleEmitterInstance* )GetOwnerClass() )->GetDS() );
+	
+	deCollider * const collider = ds.GetClassCollider()->GetCollider( rt->GetValue( 0 )->GetRealObject() );
+	rt->PushBool( nd.instance->HasIgnoreCollider( collider ) );
+}
+
+// public func void addIgnoreCollider( Collider collider )
+deClassParticleEmitterInstance::nfAddIgnoreCollider::nfAddIgnoreCollider( const sInitData &init ) :
+dsFunction( init.clsPEI, "addIgnoreCollider", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsCollider ); // collider
+}
+void deClassParticleEmitterInstance::nfAddIgnoreCollider::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const sPEINatDat &nd = *( ( sPEINatDat* )p_GetNativeData( myself ) );
+	if( ! nd.instance ){
+		DSTHROW( dueNullPointer );
+	}
+	
+	deScriptingDragonScript &ds = *( ( ( deClassParticleEmitterInstance* )GetOwnerClass() )->GetDS() );
+	deCollider * const collider = ds.GetClassCollider()->GetCollider( rt->GetValue( 0 )->GetRealObject() );
+	nd.instance->AddIgnoreCollider( collider );
+}
+
+// public func void removeIgnoreCollider( Collider collider )
+deClassParticleEmitterInstance::nfRemoveIgnoreCollider::nfRemoveIgnoreCollider( const sInitData &init ) :
+dsFunction( init.clsPEI, "removeIgnoreCollider", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsCollider ); // collider
+}
+void deClassParticleEmitterInstance::nfRemoveIgnoreCollider::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const sPEINatDat &nd = *( ( sPEINatDat* )p_GetNativeData( myself ) );
+	if( ! nd.instance ){
+		DSTHROW( dueNullPointer );
+	}
+	
+	deScriptingDragonScript &ds = *( ( ( deClassParticleEmitterInstance* )GetOwnerClass() )->GetDS() );
+	deCollider * const collider = ds.GetClassCollider()->GetCollider( rt->GetValue( 0 )->GetRealObject() );
+	nd.instance->RemoveIgnoreCollider( collider );
+}
+
+// public func void removeAllIgnoreColliders()
+deClassParticleEmitterInstance::nfRemoveAllIgnoreColliders::nfRemoveAllIgnoreColliders( const sInitData &init ) :
+dsFunction( init.clsPEI, "removeAllIgnoreColliders", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+}
+void deClassParticleEmitterInstance::nfRemoveAllIgnoreColliders::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const sPEINatDat &nd = *( ( sPEINatDat* )p_GetNativeData( myself ) );
+	if( ! nd.instance ){
+		DSTHROW( dueNullPointer );
+	}
+	
+	nd.instance->RemoveAllIgnoreColliders();
+}
+
+
+
 // public func int hashCode()
 deClassParticleEmitterInstance::nfHashCode::nfHashCode( const sInitData &init ) :
 dsFunction( init.clsPEI, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt ){
@@ -726,6 +823,7 @@ void deClassParticleEmitterInstance::CreateClassMembers( dsEngine *engine ){
 	init.clsDynSkin = pDS->GetClassDynamicSkin();
 	init.clsPEController = pDS->GetClassParticleEmitterController();
 	init.clsLayerMask = pDS->GetClassLayerMask();
+	init.clsCollider = pDS->GetClassCollider();
 	
 	AddFunction( new nfNew( init ) );
 	AddFunction( new nfDestructor( init ) );
@@ -770,6 +868,13 @@ void deClassParticleEmitterInstance::CreateClassMembers( dsEngine *engine ){
 	
 	AddFunction( new nfGetListener( init ) );
 	AddFunction( new nfSetListener( init ) );
+	
+	AddFunction( new nfGetIgnoreColliderCount( init ) );
+	AddFunction( new nfGetIgnoreColliderAt( init ) );
+	AddFunction( new nfHasIgnoreCollider( init ) );
+	AddFunction( new nfAddIgnoreCollider( init ) );
+	AddFunction( new nfRemoveIgnoreCollider( init ) );
+	AddFunction( new nfRemoveAllIgnoreColliders( init ) );
 	
 	AddFunction( new nfHashCode( init ) );
 	AddFunction( new nfEquals( init ) );

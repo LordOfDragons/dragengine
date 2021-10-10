@@ -24,12 +24,14 @@
 
 #include "deParticleEmitterReference.h"
 #include "../deResource.h"
+#include "../../common/collection/decObjectSet.h"
 #include "../../common/math/decMath.h"
 #include "../../common/utils/decCollisionFilter.h"
 #include "../../common/utils/decLayerMask.h"
 
 class deSkin;
 class deWorld;
+class deCollider;
 class deCollisionInfo;
 class deParticleEmitterInstanceType;
 class deParticleEmitterInstanceManager;
@@ -75,6 +77,7 @@ private:
 	
 	decLayerMask pLayerMask;
 	decCollisionFilter pCollisionFilter;
+	decObjectSet pIgnoreColliders;
 	
 	deBaseGraphicParticleEmitterInstance *pPeerGraphic;
 	deBasePhysicsParticleEmitterInstance *pPeerPhysics;
@@ -232,6 +235,51 @@ public:
 	 * \brief Let scripting module determine response for a custom particle collision.
 	 */
 	void CollisionResponse( deCollisionInfo *cinfo );
+	/*@}*/
+	
+	
+	
+	/** \name Ignore colliders */
+	/*@{*/
+	/**
+	 * \brief Number of colliders to ignore.
+	 * \version 1.7
+	 */
+	int GetIgnoreColliderCount() const;
+	
+	/**
+	 * \brief Collider to ignore at index.
+	 * \version 1.7
+	 * \throws deeInvalidParam \em index is less than 0.
+	 * \throws deeInvalidParam \em index is greater or equal than GetIgnoreColliderCount()-1.
+	 */
+	deCollider *GetIgnoreColliderAt( int index ) const;
+	
+	/**
+	 * \brief Collider to ignore is present.
+	 * \version 1.7
+	 */
+	bool HasIgnoreCollider( deCollider *collider ) const;
+	
+	/**
+	 * \brief Add collider to ignore.
+	 * \version 1.7
+	 * \throws deeInvalidParam \em collider is present.
+	 */
+	void AddIgnoreCollider( deCollider *collider );
+	
+	/**
+	 * \brief Remove collider to ignore.
+	 * \version 1.7
+	 * \throws deeInvalidParam \em collider is absent.
+	 */
+	void RemoveIgnoreCollider( deCollider *collider );
+	
+	/**
+	 * \brief Remove all colliders to ignore.
+	 * \version 1.7
+	 */
+	void RemoveAllIgnoreColliders();
 	/*@}*/
 	
 	

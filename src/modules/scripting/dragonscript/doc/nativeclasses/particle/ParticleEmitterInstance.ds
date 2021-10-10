@@ -257,4 +257,56 @@ class ParticleEmitterInstance
 	public func void copyNamedControllerStates( ParticleEmitterInstance instance )
 	end
 	/*@}*/
+	
+	
+	
+	/** \name Ignore colliders */
+	/*@{*/
+	/**
+	 * \brief Number of colliders to ignore.
+	 * \version 1.7
+	 */
+	public func int getIgnoreColliderCount()
+		return 0
+	end
+	
+	/**
+	 * \brief Ignore collider at index.
+	 * \version 1.7
+	 * \throws deeInvalidParam \em index is less than 0 or equal than or equal to getIgnoreColliderCount().
+	 */
+	public func Collider getIgnoreColliderAt( int index )
+		return null
+	end
+	
+	/**
+	 * \brief Ignore collider is present.
+	 * \version 1.7
+	 */
+	public func bool hasIgnoreCollider( Collider collider )
+		return false
+	end
+	
+	/**
+	 * \brief Add collider to ignore.
+	 * \version 1.7
+	 */
+	public func void addIgnoreCollider( Collider collider )
+	end
+	
+	/**
+	 * \brief Remove collider to ignore.
+	 * \version 1.7
+	 * \throws deeInvalidParam \em collider is absent.
+	 */
+	public func void removeIgnoreCollider( Collider collider )
+	end
+	
+	/**
+	 * \brief Remove all colliders to ignore.
+	 * \version 1.7
+	 */
+	public func void removeAllIgnoreColliders()
+	end
+	/*@}*/
 end

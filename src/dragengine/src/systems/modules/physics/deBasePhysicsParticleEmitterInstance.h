@@ -56,6 +56,12 @@ public:
 	/** \brief Collision filter changed. */
 	virtual void CollisionFilterChanged();
 	
+	/**
+	 * \brief Ignore colliders changed.
+	 * \version 1.7
+	 */
+	virtual void IgnoreCollidersChanged();
+	
 	/** \brief Warm up time changed. */
 	virtual void WarmUpTimeChanged();
 	

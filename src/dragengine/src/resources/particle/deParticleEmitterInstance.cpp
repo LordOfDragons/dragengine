@@ -31,10 +31,11 @@
 #include "deParticleEmitterController.h"
 #include "deParticleEmitterType.h"
 #include "../../deEngine.h"
+#include "../../common/exceptions.h"
+#include "../../resources/collider/deCollider.h"
 #include "../../systems/modules/graphic/deBaseGraphicParticleEmitterInstance.h"
 #include "../../systems/modules/physics/deBasePhysicsParticleEmitterInstance.h"
 #include "../../systems/modules/scripting/deBaseScriptingParticleEmitterInstance.h"
-#include "../../common/exceptions.h"
 
 
 
@@ -352,6 +353,47 @@ void deParticleEmitterInstance::NotifyLastParticleDied(){
 void deParticleEmitterInstance::CollisionResponse( deCollisionInfo *collisionInfo ){
 	if( pPeerScripting ){
 		pPeerScripting->CollisionResponse( collisionInfo );
+	}
+}
+
+
+
+// Colliders to ignore
+////////////////////////
+
+int deParticleEmitterInstance::GetIgnoreColliderCount() const{
+	return pIgnoreColliders.GetCount();
+}
+
+deCollider *deParticleEmitterInstance::GetIgnoreColliderAt( int index ) const{
+	return ( deCollider* )pIgnoreColliders.GetAt( index );
+}
+
+bool deParticleEmitterInstance::HasIgnoreCollider( deCollider *collider ) const{
+	return pIgnoreColliders.Has( collider );
+}
+
+void deParticleEmitterInstance::AddIgnoreCollider( deCollider *collider ){
+	pIgnoreColliders.Add( collider );
+	
+	if( pPeerPhysics ){
+		pPeerPhysics->IgnoreCollidersChanged();
+	}
+}
+
+void deParticleEmitterInstance::RemoveIgnoreCollider( deCollider *collider ){
+	pIgnoreColliders.Remove( collider );
+	
+	if( pPeerPhysics ){
+		pPeerPhysics->IgnoreCollidersChanged();
+	}
+}
+
+void deParticleEmitterInstance::RemoveAllIgnoreColliders(){
+	pIgnoreColliders.RemoveAll();
+	
+	if( pPeerPhysics ){
+		pPeerPhysics->IgnoreCollidersChanged();
 	}
 }
 
