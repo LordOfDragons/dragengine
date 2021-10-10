@@ -53,6 +53,48 @@ pin Dragengine.Utils
  * The actor is responsible to move the mouse pointer. This behavior provides convenience
  * methods to do the calculation and updating of the mouse pointer.
  * 
+ * A typical usage of this behavior looks like this:
+ * 
+ * \code{.ds}
+ * class MyPlayerAction extends BAAFirstPersonVR
+ *    public func new()
+ *    end
+ *    
+ *    public func void playerThink(float elapsed)
+ *       super.think(elapsed)
+ *       
+ *       // Check if right hand controller is pointing at an element
+ *       if vrRightHandPointAt.hasVRHandPointAtElement()
+ *          
+ *          // Store the hit element and hit point in world space. Typically you want
+ *          // to test them against mulitple supported interactions.
+ *          var BehaviorElement element = vrRightHandPointAt.getPointAtBehaviorElement()
+ *          var DVector hitPoint = vrRightHandPointAt.getPointAtHitPoint()
+ *          
+ *          // Move mouse on the desktop controller if present in the pointed at element
+ *          var ECBehaviorControlDesktop.Instance controlDesktop = ECBehaviorControlDesktop.getInstanceIn(element)
+ *          if controlDesktop != null
+ *             // The call moveMouse() converts the hit point in world space to desktop
+ *             // coordinates. If the world position is outside the desktop area nothing
+ *             // is done and false is returned. Otherwise the mouse position is updated
+ *             // and true is returned. In this example we stop here if we updated the
+ *             // desktop mouse position in case more interactions are check below
+ *             if controlDesktop.moveMouse(hitPoint)
+ *                return
+ *             end
+ *          end
+ *          
+ *          // Here you could check for other supported interactions
+ *          
+ *       end
+ *       
+ *       // The same could be done for vrLeftHandPointAt too
+ *    end
+ * end
+ * \endcode
+ * 
+ * The same example can be done using ECBehaviorLookAt instead of ECBehaviorVRHandPointAt.
+ * 
  * This behavior can be used multiple times for example to control different renderable
  * desktops. Element class properties have the prefix "controlDesktop{(id)}.".
  * 
@@ -163,10 +205,46 @@ class ECBehaviorControlDesktop extends DefaultECBehavior
 		 * 
 		 * The virtual plane coordinates map the lower left corner to (0,0), the lower right
 		 * corner to (1,0) and the upper left corner to (0,1).
-		 * 
-		 * If the point is behind the virtual plane null is returned.
 		 */
 		public func Vector2 planePosition(DVector worldPosition)
+			var Vector2 position = planePositionEverywhere(worldPosition)
+			
+			/*
+			// this code would reject points behind the screen
+			var DVector axisZ = (axisY.normalize() % axisX.normalize()).normalize()
+			if localPosition * axisZ < -0.001
+				return null
+			end
+			*/
+			
+			if isInsidePlane(position)
+				return position
+			end
+			return null
+		end
+		
+		/**
+		 * \brief Determines if virtual plane coordinates are inside virtual plane.
+		 * 
+		 * Typically used with position returned by planePositionEverywhere(). The position
+		 * returned by planePosition() is guaranteed to be inside the virtual plane.
+		 * 
+		 * Returns true if position is inside the inclusive range from (0,0) to (1,1).
+		 */
+		public func bool isInsidePlane(Vector2 position)
+			return position >= Vector2.new() and position <= Vector2.new(1, 1)
+		end
+		
+		/**
+		 * \brief Calculate virtual plane coordinates for world position.
+		 * 
+		 * Same as planePosition() but always returns also plane positions outside the virtual
+		 * plane. This is useful if the player simulated a mouse click event but not yet a
+		 * mouse released event. Tracking the virtual plane position outside the virtual plane
+		 * allows then to provide a reasonable mouse position until the mouse release event
+		 * is simulated
+		 */
+		public func Vector2 planePositionEverywhere(DVector worldPosition)
 			var DMatrix matrix = getWorldMatrix()
 			var DVector lowerLeft = matrix * DVector.new(pLowerLeft)
 			var DVector lowerRight = matrix * DVector.new(pLowerRight)
@@ -174,23 +252,10 @@ class ECBehaviorControlDesktop extends DefaultECBehavior
 			var DVector localPosition = worldPosition - lowerLeft
 			
 			var DVector axisX = lowerRight - lowerLeft
-			var float x = localPosition * (axisX / axisX.getLengthSquared())
-			if x < 0 or x > 1
-				return null
-			end
-			
 			var DVector axisY = upperLeft - lowerLeft
-			var float y = localPosition * (axisY / axisY.getLengthSquared())
-			if y < 0 or y > 1
-				return null
-			end
-			
-			var DVector axisZ = (axisY.normalize() % axisX.normalize()).normalize()
-			if localPosition * axisZ < -0.001
-				return null
-			end
-			
-			return Vector2.new(x, y)
+			return Vector2.new(\
+				localPosition * (axisX / axisX.getLengthSquared()), \
+				localPosition * (axisY / axisY.getLengthSquared()))
 		end
 		
 		/**
@@ -198,10 +263,13 @@ class ECBehaviorControlDesktop extends DefaultECBehavior
 		 * 
 		 * Virtual plane Y axis runs from bottom (0) to top(1). Desktop Y axis runs from
 		 * top (0) to bottom (height-1).
+		 * 
+		 * Returned position is clamped to desktop size.
 		 */
 		public func Point planeToDesktop(Vector2 position)
 			var Point size = pRenderableDesktop.getDesktop().getSize()
-			return Vector2.new(position.getX() * size.getX(), (1.0 - position.getY()) * size.getY()).round()
+			return Vector2.new(position.getX() * size.getX(), (1.0 - position.getY()) * size.getY()) \
+				.round().smallest(size - Point.new(1, 1)).largest(Point.new())
 		end
 		
 		/**
@@ -216,6 +284,16 @@ class ECBehaviorControlDesktop extends DefaultECBehavior
 				return null
 			end
 			return planeToDesktop(position)
+		end
+		
+		/**
+		 * \brief Calculate desktop position for world position.
+		 * 
+		 * Same as desktopPoint() but returns desktop position also if the world position
+		 * is outside the virtual plane. The returned position is clamped to the desktop size.
+		 */
+		public func Point desktopPointEverywhere(DVector worldPosition)
+			return planeToDesktop(planePositionEverywhere(worldPosition))
 		end
 		
 		/** \brief Move desktop mouse to new position. */
@@ -238,6 +316,15 @@ class ECBehaviorControlDesktop extends DefaultECBehavior
 			end
 			moveMouse(point)
 			return true
+		end
+		
+		/**
+		 * \brief Move mouse position.
+		 * 
+		 * Same as moveMouse(DVector) but applies also if world position is outside virtual plane.
+		 */
+		public func void moveMouseEverywhere(DVector worldPosition)
+			moveMouse(desktopPoint(worldPosition))
 		end
 		
 		/**
