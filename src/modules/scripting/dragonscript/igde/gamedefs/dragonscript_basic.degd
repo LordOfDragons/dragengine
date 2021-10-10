@@ -2678,4 +2678,30 @@
 		</property>
 		<category>Dragengine/Behavior</category>
 	</class>
+	<class name='ECBehaviorControlDesktop'>
+		<description>Behavior allows player (or other actors) to move the mouse pointer on a ECBehaviorRenderableDesktop by looking or pointing at the desired position. Behavior can be used multiple times for example to control different renderable desktops. Element class properties have the prefix "controlDesktop{(id)}.".</description>
+		<ghost>true</ghost>
+		<canInstantiate>false</canInstantiate>
+		<defaultInheritPropertyPrefix>controlDesktop.</defaultInheritPropertyPrefix>
+		<property name='lowerLeft'>
+			<description>Virtual plane lower left position.</description>
+			<type>vector3</type>
+			<default>-0.5 -0.5 0</default>
+		</property>
+		<property name='lowerRight'>
+			<description>Virtual plane lower right position.</description>
+			<type>vector3</type>
+			<default>0.5 -0.5 0</default>
+		</property>
+		<property name='upperLeft'>
+			<description>Virtual plane upper left position.</description>
+			<type>vector3</type>
+			<default>-0.5 0.5 0</default>
+		</property>
+		<property name='bone'>
+			<description>Name of bone the virtual plane is attached to or empty string to not use.</description>
+			<type>string</type>
+		</property>
+		<category>Dragengine/Behavior</category>
+	</class>
 </gameDefinition>
