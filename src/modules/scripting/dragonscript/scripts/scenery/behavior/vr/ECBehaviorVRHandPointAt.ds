@@ -37,6 +37,11 @@ pin Dragengine.Utils
  * If hand component is present and a test bone is set the collision test will be attached to
  * the component bone.
  * 
+ * By default the test direction is rotated by -45 degrees along the X axis. This accounts
+ * for VR hand controllers typically having their Z axis along the grip direction. This causes
+ * the point at detection to point 45 degrees upwards. For easier usage rotating the point at
+ * detection direction downwards by 45 degrees helps.
+ * 
  * By default point-at is disabled for backwards compatibility.
  * 
  * Requires these behaviors to be present:
@@ -58,6 +63,9 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 		
 		/** \brief Pointing at element changed. */
 		func void pointAtChanged(Instance instance)
+		
+		/** \brief Detection parameters changed like range, origin or rotation. */
+		func void testParametersChanged(Instance instance)
 	end
 	
 	/** \brief Default implementation of behavior instance listener. */
@@ -72,6 +80,10 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 		
 		/** \brief Pointing at element changed. */
 		public func void pointAtChanged(Instance instance)
+		end
+		
+		/** \brief Detection parameters changed like range, origin or rotation. */
+		public func void testParametersChanged(Instance instance)
 		end
 	end
 	
@@ -112,7 +124,7 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 		
 		private var ColliderCollisionTest pTest
 		private var Vector pOrigin
-		private var bool pHasOrigin
+		private var Vector pRotation
 		
 		private var float pRange
 		
@@ -163,10 +175,21 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 			
 			pRange = DEMath.max(pECBehavior.getRange().getValue(stub), 0.0)
 			pOrigin = pECBehavior.getOrigin().getVector(stub, codec)
-			pHasOrigin = not pOrigin.isZero()
+			pRotation = pECBehavior.getRotation().getVector(stub, codec)
 			
-			// create colliision test and add it to element collider
-			var Vector testDirection = Vector.new(0, 0, pRange)
+			// ignore collisions with collider if present. this helps to avoid actor geometry
+			// blocking point-at collision testing. collision tests use the ignore collider
+			// settings of the collider they are attached to. hence the collider to ignore
+			// has to be added to the vr hand collider
+			if pECBehavior.getIgnoreCollider() != null
+				var Collider ignore = pECBehavior.getIgnoreCollider().instance(getElement()).getCollider()
+				if ignore != null
+					collider.addIgnoreCollider(ignore)
+				end
+			end
+			
+			// create collision test and add it to element collider
+			var Vector testDirection = Matrix.newRotation(pRotation).transformNormal(Vector.new(0, 0, pRange))
 			var String testBone = pECBehavior.getTestBone().getValue(stub)
 			
 			if testBone != null and not testBone.empty()
@@ -187,6 +210,7 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 			
 			collider.addCollisionTest(pTest)
 			
+			// create and add listeners
 			pECBehavior.createListeners(this)
 		end
 		
@@ -303,6 +327,31 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 		/** \brief Test origin. */
 		public func Vector getOrigin()
 			return pOrigin
+		end
+		
+		/** \brief Set test origin. */
+		public func void setOrigin(Vector origin)
+			if origin.equals(pOrigin)
+				return
+			end
+			
+			pOrigin = origin
+			updateTestParameters()
+		end
+		
+		/** \brief Test direction rotation. */
+		public func Vector getRotation()
+			return pRotation
+		end
+		
+		/** \brief Set test direction rotation. */
+		public func void setRotation(Vector rotation)
+			if rotation.equals(pRotation)
+				return
+			end
+			
+			pRotation = rotation
+			updateTestParameters()
 		end
 		
 		
@@ -435,7 +484,12 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 		
 		/** \brief Update test parameters. */
 		protected func void updateTestParameters()
-			pTest.setDirection(Vector.new(0, 0, pRange))
+			pTest.setOrigin(pOrigin)
+			pTest.setDirection(Matrix.newRotation(pRotation).transformNormal(Vector.new(0, 0, pRange)))
+			
+			pListeners.forEach(block Listener each
+				each.testParametersChanged(this)
+			end)
 		end
 		
 		/** \brief Set point-at element. */
@@ -473,13 +527,40 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 				each.pointAtChanged(this)
 			end)
 		end
+		
+		
+		
+		/** \brief Read behavior from file. */
+		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
+			select reader.readByte() // version
+			case 0
+				pRange = reader.readFloat()
+				pOrigin = Vector.readFromFile(reader)
+				pRotation = Vector.readFromFile(reader)
+				updateTestParameters()
+				
+			else
+				throw EInvalidParam.new("unsupported version")
+			end
+		end
+		
+		/** \brief Write behavior to file. */
+		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+			writer.writeByte( 0 ) // version
+			
+			writer.writeFloat(pRange)
+			pOrigin.writeToFile(writer)
+			pRotation.writeToFile(writer)
+		end
 	end
 	
 	
 	
 	private var ECBehaviorVRHand pVRHand
+	private var ECBehaviorCollider pIgnoreCollider
 	private var ECPFloat pRange
 	private var ECPVector pOrigin
+	private var ECPVector pRotation
 	private var ECPString pTestBone
 	private var ECComposeCollisionFilter pCollisionFilter
 	private var Array pListenerFactories
@@ -507,6 +588,9 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 		pOrigin = ECPVector.new(prefix + "origin", Vector.new())
 		eclass.addProperty(pOrigin)
 		
+		pRotation = ECPVector.new(prefix + "rotation", Vector.new(-45, 0, 0))
+		eclass.addProperty(pRotation)
+		
 		pTestBone = ECPString.new(prefix + "bone", null)
 		eclass.addProperty(pTestBone)
 		
@@ -524,6 +608,7 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 	
 	/** \brief Dispose of behavior. */
 	public func void dispose()
+		pIgnoreCollider = null
 		pVRHand = null
 		pListenerFactories = null
 		super.dispose()
@@ -536,6 +621,16 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 		return pVRHand
 	end
 	
+	/** \brief Collider to ignore during collision testing or null. */
+	public func ECBehaviorCollider getIgnoreCollider()
+		return pIgnoreCollider
+	end
+	
+	/** \brief Set collider to ignore during collision testing or null. */
+	public func void setIgnoreCollider(ECBehaviorCollider collider)
+		pIgnoreCollider = collider
+	end
+	
 	/** \brief Test range. */
 	public func ECPFloat getRange()
 		return pRange
@@ -544,6 +639,11 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 	/** \brief Test origin. */
 	public func ECPVector getOrigin()
 		return pOrigin
+	end
+	
+	/** \brief Test direction rotation. */
+	public func ECPVector getRotation()
+		return pRotation
 	end
 	
 	/** \brief Test bone. */

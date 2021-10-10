@@ -78,6 +78,10 @@ class ECBehaviorVRHandLaserPointer extends DefaultECBehavior
 			public func void enabledChanged(ECBehaviorVRHandPointAt.Instance instance)
 				pInstance.updateVisibile()
 			end
+			
+			public func void testParametersChanged(ECBehaviorVRHandPointAt.Instance instance)
+				pInstance.updateParameters()
+			end
 		end
 		
 		/** \brief Stop particle at obstacle listener. */
@@ -166,15 +170,19 @@ class ECBehaviorVRHandLaserPointer extends DefaultECBehavior
 					pControllerBlue.setValue(pColor.getBlue())
 				end
 				
-				// attach particle emitter. we have to do this manually since
-				// ECBehaviorVRHandPointAt does not use ECBehaviorCollider
-				pVRHandPointAt.getVRHand().getCollider().attachStatic(pei, Vector.new(), Quaternion.new())
+				// copy colliders to ignore from vr hand collider
+				var Collider collider = pVRHandPointAt.getVRHand().getCollider()
+				var int i, count = collider.getIgnoreColliderCount()
+				for i = 0 to count
+					pei.addIgnoreCollider(collider.getIgnoreColliderAt(i))
+				end
 			end
 			
 			pVRHandPointAt.addListener(ListenPointAt.new(this))
 			pParticleEmitter.addListener(StopAtObstacleListener.new())
 			
 			updateVisibile()
+			updateParameters()
 		end
 		
 		
@@ -286,6 +294,23 @@ class ECBehaviorVRHandLaserPointer extends DefaultECBehavior
 			end
 			
 			pei.setEnableCasting(getElement().getVisible() and pVRHandPointAt.getEnabled())
+		end
+		
+		/**
+		 * \brief Update casting parameters from point at parameters.
+		 * 
+		 * Reattaches the particle emitter instance to line up with the point at test direction.
+		 */
+		public func void updateParameters()
+			var ParticleEmitterInstance pei = pParticleEmitter.getParticleEmitterInstance()
+			if pei == null
+				return
+			end
+			
+			var Collider collider = pVRHandPointAt.getVRHand().getCollider()
+			collider.detach(pei)
+			collider.attachStatic(pei, pVRHandPointAt.getOrigin(), \
+				Quaternion.newFromEuler(pVRHandPointAt.getRotation()))
 		end
 		
 		

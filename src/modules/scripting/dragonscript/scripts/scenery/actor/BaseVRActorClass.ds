@@ -66,15 +66,29 @@ class BaseVRActorClass extends BaseActorClass
 	super(className, loaders, tracker)
 		getAIAction().setActionFactory(BAAFirstPersonVR.Factory.new())
 		
-		// Change horizontal looking speed to 90 degrees per second
+		// change horizontal looking speed to 90 degrees per second
 		getPlayerInputLook().getSpeedLookHorizontal().setValue(90)
 		
+		// add VR Playspace. this is the base for all VR related behaviors
 		pVRPlayspace = ECBehaviorVRPlayspace.new(this)
+		
+		// add HMD behavior allowing to track player head
 		pVRHMD = ECBehaviorVRHMD.new(this, pVRPlayspace)
+		
+		// add right and left hand controllers
 		pVRRightHand = ECBehaviorVRHand.new(this, pVRPlayspace, InputDeviceType.vrRightHand, "right")
 		pVRLeftHand = ECBehaviorVRHand.new(this, pVRPlayspace, InputDeviceType.vrLeftHand, "left")
+		
+		// add support to know what element hand controllers point at
 		pVRRightHandPointAt = ECBehaviorVRHandPointAt.new(this, pVRRightHand, "right")
 		pVRLeftHandPointAt = ECBehaviorVRHandPointAt.new(this, pVRLeftHand, "left")
+		
+		// ignore actor collider for point at behaviors. this avoids problems if the actor
+		// has a full body collider touching the hands
+		pVRRightHandPointAt.setIgnoreCollider(getCollider())
+		pVRLeftHandPointAt.setIgnoreCollider(getCollider())
+		
+		// add support for laser pointers on hand controllers
 		pVRRightHandLaserPointer = ECBehaviorVRHandLaserPointer.new(this, pVRRightHandPointAt, "right")
 		pVRLeftHandLaserPointer = ECBehaviorVRHandLaserPointer.new(this, pVRLeftHandPointAt, "left")
 	end
