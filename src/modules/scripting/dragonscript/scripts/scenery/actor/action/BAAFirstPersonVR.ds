@@ -92,6 +92,18 @@ class BAAFirstPersonVR extends BAAFirstPerson
 	 */
 	protected var ECBehaviorVRHandPointAt.Instance vrLeftHandPointAt
 	
+	/**
+	 * \brief VR Right Hand Controller Laser Pointer behavior.
+	 * \version 1.7
+	 */
+	protected var ECBehaviorVRHandLaserPointer.Instance vrRightHandLaserPointer
+	
+	/**
+	 * \brief VR Left Hand Controller Laser Pointer behavior.
+	 * \version 1.7
+	 */
+	protected var ECBehaviorVRHandLaserPointer.Instance vrLeftHandLaserPointer
+	
 	
 	
 	/** \brief Create actor action. */
@@ -138,6 +150,21 @@ class BAAFirstPersonVR extends BAAFirstPerson
 	 */
 	public func ECBehaviorVRHandPointAt.Instance getVRLeftHandPointAt()
 		return vrLeftHandPointAt
+	end
+	
+	/**
+	 * \brief VR Right Hand Controller Laser Pointer.
+	 */
+	public func ECBehaviorVRHandLaserPointer.Instance getVRRightHandLaserPointer()
+		return vrRightHandLaserPointer
+	end
+	
+	/**
+	 * \brief VR Left Hand Controller Laser Pointer.
+	 * \version 1.7
+	 */
+	public func ECBehaviorVRHandLaserPointer.Instance getVRLeftHandLaserPointer()
+		return vrLeftHandLaserPointer
 	end
 	
 	
@@ -201,6 +228,8 @@ class BAAFirstPersonVR extends BAAFirstPerson
 			vrLeftHand = vrActor.getVRLeftHand()
 			vrRightHandPointAt = vrActor.getVRRightHandPointAt()
 			vrLeftHandPointAt = vrActor.getVRLeftHandPointAt()
+			vrRightHandLaserPointer = vrActor.getVRRightHandLaserPointer()
+			vrLeftHandLaserPointer = vrActor.getVRLeftHandLaserPointer()
 			
 		else
 			vrPlayspace = ECBehaviorVRPlayspace.getInstanceIn(actor)
@@ -209,6 +238,8 @@ class BAAFirstPersonVR extends BAAFirstPerson
 			vrLeftHand = ECBehaviorVRHand.getInstanceIn(actor, "left")
 			vrRightHandPointAt = ECBehaviorVRHandPointAt.getInstanceIn(actor, "right")
 			vrLeftHandPointAt = ECBehaviorVRHandPointAt.getInstanceIn(actor, "left")
+			vrRightHandLaserPointer = ECBehaviorVRHandLaserPointer.getInstanceIn(actor, "right")
+			vrLeftHandLaserPointer = ECBehaviorVRHandLaserPointer.getInstanceIn(actor, "left")
 		end
 	end
 	

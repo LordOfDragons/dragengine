@@ -1,0 +1,362 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2021, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Commands
+pin Dragengine.Gui
+pin Dragengine.LoadSave
+pin Dragengine.Preloading
+pin Dragengine.Utils
+
+
+/**
+ * \brief Behavior element behavior adding VR Hand Controller Laser Pointer support to actor.
+ * \version 1.7
+ * 
+ * VR Hand Controllers often use a laser pointer type interaction.
+ * 
+ * This behavior adds a component representing the laser pointer. The behavior attaches
+ * itself to a ECBehaviorVRHandPointAt. The visiblity of the component is linked to the
+ * enabled state of ECBehaviorVRHandPointAt.
+ * 
+ * An animator is used to modify the component to stretch between the collision test
+ * origin and the collision hit point. If no collision is found a maximum distance is
+ * used instead. The named animator controller represents the distance from the collision
+ * test origin to the collision hit point.
+ * 
+ * The component is aligned with the test direction. Hence the model used has to contain
+ * a beam like mesh originating at (0,0,0) and pointing along the Z axis.
+ * 
+ * This behavior does not require persistable element class (setPersistable).
+ */
+class ECBehaviorVRHandLaserPointer extends DefaultECBehavior
+	/** \brief Behavior instance. */
+	class Instance extends DefaultECBehaviorInstance implements ColliderListener
+		/** \brief Animated listener. */
+		class ListenAnimated extends ECBehaviorAnimated.DefaultListener
+			private var Instance pInstance
+			
+			public func new(Instance instance)
+				pInstance = instance
+			end
+			
+			public func void updateControllers(ECBehaviorAnimated.Instance instance, float elapsed)
+				pInstance.updateController()
+			end
+		end
+		
+		/** \brief VR Hand Point At listener. */
+		class ListenPointAt extends ECBehaviorVRHandPointAt.DefaultListener
+			private var Instance pInstance
+			
+			public func new(Instance instance)
+				pInstance = instance
+			end
+			
+			public func void enabledChanged(ECBehaviorVRHandPointAt.Instance instance)
+				pInstance.updateVisibile()
+			end
+		end
+		
+		
+		
+		private var ECBehaviorVRHandLaserPointer pECBehavior
+		private var ECBehaviorVRHandPointAt.Instance pVRHandPointAt
+		private var ECBehaviorComponent.Instance pComponent
+		private var ECBehaviorAnimated.Instance pAnimated
+		private var AnimatorController pControllerDistance
+		private var float pNoHitDistance
+		
+		
+		
+		/** \brief Create instance. */
+		public func new(ECBehaviorVRHandLaserPointer ecbehavior, BehaviorElement element) super(element)
+			pECBehavior = ecbehavior
+			
+			pVRHandPointAt = ecbehavior.getVRPlayspace().instance(element)
+			pComponent = ecbehavior.getComponent().instance(element)
+			pAnimated = ecbehavior.getAnimated().instance(element)
+			
+			setRequiresThink(true)
+		end
+		
+		/** \brief Dispose of instance. */
+		public func void dispose()
+			pAnimated = null
+			pComponent = null
+			pVRHandPointAt = null
+			super.dispose()
+		end
+		
+		
+		
+		/** \brief Initialize behavior from stub. */
+		public func void init(StubElement stub)
+			pNoHitDistance = DEMath.max(pECBehavior.getNoHitDistance().getValue(stub), 0.0)
+			
+			pControllerDistance = pAnimated.getAnimatorInstance().getControllerNamed(\
+				pECBehavior.getControllerDistance().getValue(stub))
+			
+			pAnimated.addListener(ListenAnimated.new(this))
+			pVRHandPointAt.addListener(ListenPointAt.new(this))
+			
+			updateVisibile()
+		end
+		
+		
+		
+		/** \brief Behavior. */
+		public func ECBehaviorVRHandLaserPointer getECBehavior()
+			return pECBehavior
+		end
+		
+		/** \brief VR Hand Point At behavior instance. */
+		public func ECBehaviorVRHandPointAt.Instance getVRHandPointAt()
+			return pVRHandPointAt
+		end
+		
+		/** \brief Component behavior instance. */
+		public func ECBehaviorComponent.Instance getComponent()
+			return pComponent
+		end
+		
+		/** \brief Animated behavior instance. */
+		public func ECBehaviorAnimated.Instance getAnimated()
+			return pAnimated
+		end
+		
+		/** \brief Distance controller or null if not found. */
+		public func AnimatorController getControllerDistance()
+			return pControllerDistance
+		end
+		
+		/** \brief No hit distance. */
+		public func float getNoHitDistance()
+			return pNoHitDistance
+		end
+		
+		/** \brief Set no hit distance. */
+		protected func void setNoHitDistance(float distance)
+			pNoHitDistance = DEMath.max(distance, 0.0)
+		end
+		
+		
+		
+		/** State like visiblity changed. */
+		public func void stateChanged()
+			updateVisibile()
+		end
+		
+		/** \brief Update distance controller. */
+		public func void updateController()
+			if pVRHandPointAt.hasVRHandPointAtElement()
+				pControllerDistance.setValue(pVRHandPointAt.getPointAtDistance())
+				
+			else
+				pControllerDistance.setValue(pNoHitDistance)
+			end
+		end
+		
+		/** \brief Update component visible. */
+		public func void updateVisibile()
+			var Component component = pComponent.getComponent()
+			if component == null
+				return
+			end
+			
+			component.setVisible(getElement().getVisible() and pVRHandPointAt.getEnabled())
+		end
+	end
+	
+	
+	
+	private var ECBehaviorVRHandPointAt pVRHandPointAt
+	private var ECBehaviorComponent pComponent
+	private var ECBehaviorAnimated pAnimated
+	private var ECPString pControllerDistance
+	private var ECPFloat pNoHitDistance
+	
+	
+	
+	/** \brief Create behavior element class. */
+	public func new(BehaviorElementClass eclass, ECBehaviorVRHandPointAt vrHandPointAt) \
+	this(eclass, vrHandPointAt, "")
+	end
+	
+	/** \brief Create behavior element class. */
+	public func new(BehaviorElementClass eclass, ECBehaviorVRHandPointAt vrHandPointAt, String id) \
+	this(eclass, vrHandPointAt, id, id.empty() if "vrHandLaserPointer." else "vrHandLaserPointer(" + id + ").")
+	end
+	
+	/** \brief Create behavior element class. */
+	public func new(BehaviorElementClass eclass, ECBehaviorVRHandPointAt vrHandPointAt, \
+	String id, String subID) this(eclass, vrHandPointAt, id, subID, subID + ".")
+	end
+	
+	/** \brief Create behavior element class. */
+	public func new(BehaviorElementClass eclass, ECBehaviorVRHandPointAt vrHandPointAt, \
+	String id, String subID, String prefix) super(eclass, id)
+		if vrHandPointAt == null
+			throw ENullPointer.new("vrHandPointAt")
+		end
+		
+		pVRHandPointAt = vrHandPointAt
+		
+		pComponent = ECBehaviorComponent.new(eclass, null, subID, prefix + "component")
+		
+		pAnimated = ECBehaviorAnimated.new(eclass, pComponent, subID, prefix + "animated")
+		pAnimated.getApplyPostThink().setValue(true)
+		
+		pControllerDistance = ECPString.new(prefix + "controllerDistance", "distance")
+		eclass.addProperty(pControllerDistance)
+		
+		pNoHitDistance = ECPFloat.new(prefix + "noHitDistance", 10)
+		eclass.addProperty(pNoHitDistance)
+		
+		eclass.addBehavior(this)
+	end
+	
+	/** \brief Dispose of behavior. */
+	public func void dispose()
+		pVRHandPointAt = null
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief VR Playspace behavior. */
+	public func ECBehaviorVRHandPointAt getVRPlayspace()
+		return pVRHandPointAt
+	end
+	
+	/** \brief Component behavior. */
+	public func ECBehaviorComponent getComponent()
+		return pComponent
+	end
+	
+	/** \brief Animated behavior. */
+	public func ECBehaviorAnimated getAnimated()
+		return pAnimated
+	end
+	
+	/** \brief Controller distance name. */
+	public func ECPString getControllerDistance()
+		return pControllerDistance
+	end
+	
+	/** \brief Distance to use if no hit is found. */
+	public func ECPFloat getNoHitDistance()
+		return pNoHitDistance
+	end
+	
+	
+	
+	/** \brief Get instance in element from owner element class. */
+	public func Instance instance(BehaviorElement element)
+		return element.getInstanceAt(getInstanceIndex()) cast Instance
+	end
+	
+	
+	
+	/**
+	 * \brief Get behavior in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorVRHandLaserPointer.
+	 */
+	static public func ECBehaviorVRHandLaserPointer getBehaviorIn(BehaviorElementClass eclass)
+		return eclass.findBehavior(block ECBehaviorVRHandLaserPointer each
+			return true
+		end) cast ECBehaviorVRHandLaserPointer
+	end
+	
+	/**
+	 * \brief Get behavior with id in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorVRHandLaserPointer with specific identifier.
+	 */
+	static public func ECBehaviorVRHandLaserPointer getBehaviorIn(BehaviorElementClass eclass, String id)
+		return eclass.findBehavior(block ECBehaviorVRHandLaserPointer each
+			return each.getID().equals(id)
+		end) cast ECBehaviorVRHandLaserPointer
+	end
+	
+	/**
+	 * \brief Get list of all behaviors in element.
+	 * 
+	 * Returns list contains ECBehaviorVRHandLaserPointer behaviors in the order they have
+	 * been created in the element.
+	 */
+	static public func Array getAllBehaviorsIn(BehaviorElementClass eclass)
+		return eclass.collectBehaviors(block ECBehaviorVRHandLaserPointer each
+			return true
+		end)
+	end
+	
+	
+	
+	/**
+	 * \brief Get instance in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorVRHandLaserPointer.Instance . If more than one instance is present returns
+	 * the first instance.
+	 */
+	static public func Instance getInstanceIn(BehaviorElement element)
+		return element.findInstance(block Instance each
+			return true
+		end) cast Instance
+	end
+	
+	/**
+	 * \brief Get instance with id in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorVRHandLaserPointer.Instance with specific identifier.
+	 */
+	static public func Instance getInstanceIn(BehaviorElement element, String id)
+		return element.findInstance(block Instance each
+			return each.getECBehavior().getID().equals(id)
+		end) cast Instance
+	end
+	
+	/**
+	 * \brief Get list of all instances in element.
+	 * 
+	 * Returns list contains ECBehaviorVRHandLaserPointer.Instance instances in the order they have
+	 * been created in the element.
+	 */
+	static public func Array getAllInstancesIn(BehaviorElement element)
+		return element.collectInstances(block Instance each
+			return true
+		end)
+	end
+	
+	
+	
+	/** \brief Create Behavior instance. */
+	public func ECBehaviorInstance createInstance(BehaviorElement element)
+		return Instance.new(this, element)
+	end
+end

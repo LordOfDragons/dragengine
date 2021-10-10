@@ -1,0 +1,195 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<particleEmitter>
+	<controller>
+		<name>length</name>
+		<limits lower='0' upper='10'/>
+		<frozen>false</frozen>
+		<clamp>true</clamp>
+		<linkToTime>false</linkToTime>
+	</controller>
+	<controller>
+		<name>red</name>
+		<limits lower='0' upper='1'/>
+		<frozen>false</frozen>
+		<clamp>true</clamp>
+		<linkToTime>false</linkToTime>
+	</controller>
+	<controller>
+		<name>green</name>
+		<limits lower='0' upper='1'/>
+		<frozen>false</frozen>
+		<clamp>true</clamp>
+		<linkToTime>false</linkToTime>
+	</controller>
+	<controller>
+		<name>blue</name>
+		<limits lower='0' upper='1'/>
+		<frozen>false</frozen>
+		<clamp>true</clamp>
+		<linkToTime>false</linkToTime>
+	</controller>
+	<controller>
+		<name>intensity</name>
+		<limits lower='0' upper='1'/>
+		<frozen>false</frozen>
+		<clamp>true</clamp>
+		<linkToTime>false</linkToTime>
+	</controller>
+	<burstLifetime>1</burstLifetime>
+	<emitBurst>false</emitBurst>
+	
+	<type>
+		<name>beam</name>
+		<skin>/shareddata/particles/laserpointer/laserpointer.deskin</skin>
+		<castFrom>vertex</castFrom>
+		<simulationType>beam</simulationType>
+		<intervalAsDistance>false</intervalAsDistance>
+		<physicsSize>0</physicsSize>
+		<collisionResponse>custom</collisionResponse>
+		<emitMinImpulse>0.01</emitMinImpulse>
+		
+		<parameter id='timeToLive'>
+			<value>1</value>
+		</parameter>
+		<parameter id='interval'>
+			<value>0.01</value>
+		</parameter>
+		<parameter id='particleCount'>
+			<value>5</value>
+		</parameter>
+		<parameter id='castAngleX'>
+			<value>0</value>
+		</parameter>
+		<parameter id='castAngleY'>
+			<value>0</value>
+		</parameter>
+		<parameter id='size'>
+			<value>0.02</value>
+		</parameter>
+		<parameter id='red'>
+			<value>1</value>
+			<controllerValue>1</controllerValue>
+			<curveValue>
+				<interpolation>linear</interpolation>
+				<point>
+					<coordinates x='0' y='0'/>
+				</point>
+				<point>
+					<coordinates x='1' y='1'/>
+				</point>
+			</curveValue>
+		</parameter>
+		<parameter id='green'>
+			<value>1</value>
+			<controllerValue>2</controllerValue>
+			<curveValue>
+				<interpolation>linear</interpolation>
+				<point>
+					<coordinates x='0' y='0'/>
+				</point>
+				<point>
+					<coordinates x='1' y='1'/>
+				</point>
+			</curveValue>
+		</parameter>
+		<parameter id='blue'>
+			<value>1</value>
+			<controllerValue>3</controllerValue>
+			<curveValue>
+				<interpolation>linear</interpolation>
+				<point>
+					<coordinates x='0' y='0'/>
+				</point>
+				<point>
+					<coordinates x='1' y='1'/>
+				</point>
+			</curveValue>
+		</parameter>
+		<parameter id='transparency'>
+			<value>1</value>
+		</parameter>
+		<parameter id='emissivity'>
+			<value>0.5</value>
+			<controllerValue>4</controllerValue>
+			<curveValue>
+				<interpolation>linear</interpolation>
+				<point>
+					<coordinates x='0' y='0'/>
+				</point>
+				<point>
+					<coordinates x='1' y='1'/>
+				</point>
+			</curveValue>
+		</parameter>
+		<parameter id='mass'>
+			<value>0.2</value>
+		</parameter>
+		<parameter id='rotation'>
+			<value>0</value>
+		</parameter>
+		<parameter id='linearVelocity'>
+			<value>10</value>
+			<controllerValue>0</controllerValue>
+			<curveValue>
+				<interpolation>linear</interpolation>
+				<point>
+					<coordinates x='0' y='0'/>
+				</point>
+				<point>
+					<coordinates x='1' y='1'/>
+				</point>
+			</curveValue>
+		</parameter>
+		<parameter id='angularVelocity'>
+			<value>0</value>
+		</parameter>
+		<parameter id='brownMotion'>
+			<value>0</value>
+		</parameter>
+		<parameter id='damping'>
+			<value>0</value>
+		</parameter>
+		<parameter id='drag'>
+			<value>0</value>
+		</parameter>
+		<parameter id='gravityX'>
+			<value>0</value>
+		</parameter>
+		<parameter id='gravityY'>
+			<value>0</value>
+		</parameter>
+		<parameter id='gravityZ'>
+			<value>0</value>
+		</parameter>
+		<parameter id='localGravity'>
+			<value>1</value>
+		</parameter>
+		<parameter id='forceFieldDirect'>
+			<value>0</value>
+		</parameter>
+		<parameter id='forceFieldSurface'>
+			<value>0</value>
+		</parameter>
+		<parameter id='forceFieldMass'>
+			<value>0</value>
+		</parameter>
+		<parameter id='forceFieldSpeed'>
+			<value>0</value>
+		</parameter>
+		<parameter id='elasticity'>
+			<value>0</value>
+		</parameter>
+		<parameter id='roughness'>
+			<value>0</value>
+		</parameter>
+		<parameter id='emitDirection'>
+			<value>0</value>
+		</parameter>
+		<parameter id='beamStart'>
+			<value>0</value>
+		</parameter>
+		<parameter id='beamEnd'>
+			<value>0</value>
+		</parameter>
+	</type>
+</particleEmitter>

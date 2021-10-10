@@ -41,6 +41,8 @@ class BaseVRActor extends BaseActor
 	private var ECBehaviorVRHand.Instance pVRLeftHand
 	private var ECBehaviorVRHandPointAt.Instance pVRRightHandPointAt
 	private var ECBehaviorVRHandPointAt.Instance pVRLeftHandPointAt
+	private var ECBehaviorVRHandLaserPointer.Instance pVRRightHandLaserPointer
+	private var ECBehaviorVRHandLaserPointer.Instance pVRLeftHandLaserPointer
 	
 	
 	
@@ -52,6 +54,8 @@ class BaseVRActor extends BaseActor
 		pVRLeftHand = eclass.getVRLeftHand().instance(this)
 		pVRRightHandPointAt = eclass.getVRRightHandPointAt().instance(this)
 		pVRLeftHandPointAt = eclass.getVRLeftHandPointAt().instance(this)
+		pVRRightHandLaserPointer = eclass.getVRRightHandLaserPointer().instance(this)
+		pVRLeftHandLaserPointer = eclass.getVRLeftHandLaserPointer().instance(this)
 	end
 	
 	
@@ -84,6 +88,16 @@ class BaseVRActor extends BaseActor
 	/** \brief VR Left Hand Controller Point-At. */
 	public func ECBehaviorVRHandPointAt.Instance getVRLeftHandPointAt()
 		return pVRLeftHandPointAt
+	end
+	
+	/** \brief VR Right Hand Controller Laser Pointer. */
+	public func ECBehaviorVRHandLaserPointer.Instance getVRRightHandLaserPointer()
+		return pVRRightHandLaserPointer
+	end
+	
+	/** \brief VR Left Hand Controller Laser Pointer. */
+	public func ECBehaviorVRHandLaserPointer.Instance getVRLeftHandLaserPointer()
+		return pVRLeftHandLaserPointer
 	end
 	
 	

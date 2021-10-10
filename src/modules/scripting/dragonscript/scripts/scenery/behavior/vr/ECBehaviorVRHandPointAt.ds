@@ -37,6 +37,8 @@ pin Dragengine.Utils
  * If hand component is present and a test bone is set the collision test will be attached to
  * the component bone.
  * 
+ * By default point-at is disabled for backwards compatibility.
+ * 
  * Requires these behaviors to be present:
  * - ECBehaviorVRHand
  * 
@@ -104,6 +106,10 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 		private var ECBehaviorVRHandPointAt pECBehavior
 		private var ECBehaviorVRHand.Instance pVRHand
 		
+		private var bool pEnabled
+		private var ShapeList pShape
+		private var CollisionFilter pCollisionFilter
+		
 		private var ColliderCollisionTest pTest
 		private var Vector pOrigin
 		private var bool pHasOrigin
@@ -126,6 +132,8 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 		public func new(ECBehaviorVRHandPointAt ecbehavior, BehaviorElement element) super(element)
 			pECBehavior = ecbehavior
 			pListeners = Array.new()
+			pEnabled = false
+			pCollisionFilter = ecbehavior.getCollisionFilter().getCollisionFilter()
 			
 			pVRHand = ecbehavior.getVRHand().instance(element)
 			
@@ -158,16 +166,23 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 			pHasOrigin = not pOrigin.isZero()
 			
 			// create colliision test and add it to element collider
-			var CollisionFilter collisionFilter = pECBehavior.getCollisionFilter().getCollisionFilter()
 			var Vector testDirection = Vector.new(0, 0, pRange)
 			var String testBone = pECBehavior.getTestBone().getValue(stub)
 			
 			if testBone != null and not testBone.empty()
-				pTest = ColliderCollisionTest.new(collisionFilter, \
+				pTest = ColliderCollisionTest.new(pCollisionFilter, \
 					pVRHand.getComponent().getComponent(), testBone, pOrigin, testDirection)
 				
 			else
-				pTest = ColliderCollisionTest.new(collisionFilter, pOrigin, testDirection)
+				pTest = ColliderCollisionTest.new(pCollisionFilter, pOrigin, testDirection)
+			end
+			
+			pTest.setEnabled(pEnabled)
+			
+			if pShape != null
+				var ColliderVolume collider = ColliderVolume.new()
+				collider.setShape(pShape)
+				pTest.setCollider(collider)
 			end
 			
 			collider.addCollisionTest(pTest)
@@ -191,16 +206,20 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 		
 		/** \brief Enable point-at. */
 		public func bool getEnabled()
-			return pTest.getEnabled()
+			return pEnabled
 		end
 		
 		/** \brief Set if point-at is enabled. */
 		public func void setEnabled(bool enabled)
-			if enabled == pTest.getEnabled()
+			if enabled == pEnabled
 				return
 			end
 			
-			pTest.setEnabled(enabled)
+			pEnabled = enabled
+			
+			if pTest != null
+				pTest.setEnabled(enabled)
+			end
 			
 			if not enabled
 				setPointAtElement(null, -1, null, 0)
@@ -220,9 +239,17 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 		 * like a sphere is useful to enlarge the hit area for example with 3rd person views.
 		 */
 		public func void setTestCollider(ShapeList shape)
-			var ColliderVolume collider = ColliderVolume.new()
-			collider.setShape(shape)
-			pTest.setCollider(collider)
+			if shape == null
+				throw ENullPointer.new("shape")
+			end
+			
+			pShape = shape
+			
+			if pTest != null
+				var ColliderVolume collider = ColliderVolume.new()
+				collider.setShape(shape)
+				pTest.setCollider(collider)
+			end
 		end
 		
 		/**
@@ -239,12 +266,20 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 		
 		/** \brief Clear test collider reverting to ray-tracing. */
 		public func void clearTestCollider()
-			pTest.setCollider(null)
+			pShape = null
+			
+			if pTest != null
+				pTest.setCollider(null)
+			end
 		end
 		
 		/** \brief Set test collision filter. */
 		public func void setCollisionFilter(CollisionFilter filter)
-			pTest.setCollisionFilter(filter)
+			pCollisionFilter = filter
+			
+			if pTest != null
+				pTest.setCollisionFilter(filter)
+			end
 		end
 		
 		
@@ -352,7 +387,7 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 		
 		/** \brief Update. */
 		protected func void update(float elapsed)
-			if not pTest.getEnabled()
+			if pTest == null or not pTest.getEnabled()
 				return
 			end
 			
@@ -457,7 +492,7 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 	
 	/** \brief Create behavior element class. */
 	public func new(BehaviorElementClass eclass, ECBehaviorVRHand vrHand, String id) \
-	this(eclass, vrHand, id, id.empty() if "pointAt." else "pointAt(" + id + ").")
+	this(eclass, vrHand, id, id.empty() if "vrHandPointAt." else "vrHandPointAt(" + id + ").")
 	end
 	
 	/** \brief Create behavior element class. */
@@ -480,7 +515,7 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 		var LayerMask cfFilter = LayerMask.new()
 		cfFilter.setBit(BaseGameApp.CollisionFilterBit.geometry)
 		cfFilter.setBit(BaseGameApp.CollisionFilterBit.dynamic)
-		cfFilter.setBit(BaseGameApp.CollisionFilterBit.actorAI)
+		cfFilter.setBit(BaseGameApp.CollisionFilterBit.actor)
 		
 		pCollisionFilter = ECComposeCollisionFilter.new(CollisionFilter.new(cfCategory, cfFilter))
 		
