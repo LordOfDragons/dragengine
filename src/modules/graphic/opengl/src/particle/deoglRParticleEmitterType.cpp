@@ -67,12 +67,6 @@ pSkin( NULL ),
 pEmitLight( false ),
 pParamBlockLight( NULL )
 {
-	int i;
-	
-	for( i=0; i<EST_COUNT; i++ ){
-		pShaders[ i ] = NULL;
-	}
-	
 	LEAK_CHECK_CREATE( emitter.GetRenderThread(), ParticleEmitterType );
 }
 
@@ -90,17 +84,11 @@ deoglRParticleEmitterType::~deoglRParticleEmitterType(){
 		pSkin->FreeReference();
 	}
 	
-	int i;
 	if( pTextureSamples ){
 		delete pTextureSamples;
 	}
 	if( pParamBlockLight ){
 		pParamBlockLight->FreeReference();
-	}
-	for( i=0; i<deoglRParticleEmitterType::EST_COUNT; i++ ){
-		if( pShaders[ i ] ){
-			pShaders[ i ]->FreeReference();
-		}
 	}
 }
 
@@ -325,7 +313,8 @@ deoglLightShader *deoglRParticleEmitterType::GetShaderFor( int shaderType ){
 		deoglLightShaderConfig config;
 		
 		if( GetShaderConfigFor( shaderType, config ) ){
-			pShaders[ shaderType ] = pEmitter.GetRenderThread().GetShader().GetLightShaderManager().GetShaderWith( config );
+			pShaders[ shaderType ].TakeOver( pEmitter.GetRenderThread().GetShader()
+				.GetLightShaderManager().GetShaderWith( config ) );
 		}
 	}
 	
@@ -381,7 +370,7 @@ bool deoglRParticleEmitterType::GetShaderConfigFor( int shaderType, deoglLightSh
 
 deoglSPBlockUBO *deoglRParticleEmitterType::GetLightParameterBlock(){
 	if( ! pParamBlockLight ){
-		deoglLightShader *shader = NULL;
+		deoglLightShader *shader = nullptr;
 		int i;
 		
 		for( i=0; i<EST_COUNT; i++ ){
@@ -409,8 +398,6 @@ void deoglRParticleEmitterType::DropLightShaders(){
 	
 	int i;
 	for( i=0; i<EST_COUNT; i++ ){
-		if( pShaders[ i ] ){
-			pShaders[ i ]->FreeReference();
-		}
+		pShaders[ i ] = nullptr;
 	}
 }

@@ -26,7 +26,8 @@
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/resources/sky/deSkyLayer.h>
 
-class deoglLightShader;
+#include "../light/shader/deoglLightShader.h"
+
 class deoglLightShaderConfig;
 class deoglRenderThread;
 class deoglRSkyInstance;
@@ -92,7 +93,7 @@ private:
 	deoglSkyLayerTracker *pTrackerEnvMap;
 	bool pSkyNeedsUpdate;
 	
-	deoglLightShader *pShaders[ EST_COUNT ];
+	deoglLightShader::Ref pShaders[ EST_COUNT ];
 	deoglSPBlockUBO *pParamBlockLight;
 	deoglSPBlockUBO *pParamBlockInstance;
 	

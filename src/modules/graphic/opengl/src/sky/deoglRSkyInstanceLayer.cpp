@@ -69,11 +69,6 @@ pSkyNeedsUpdate( false ),
 pParamBlockLight( NULL ),
 pParamBlockInstance( NULL )
 {
-	int i;
-	for( i=0; i<EST_COUNT; i++ ){
-		pShaders[ i ] = NULL;
-	}
-	
 	pShadowCaster = new deoglShadowCaster( instance.GetRenderThread() );
 }
 
@@ -91,13 +86,6 @@ deoglRSkyInstanceLayer::~deoglRSkyInstanceLayer(){
 	}
 	if( pParamBlockLight ){
 		pParamBlockLight->FreeReference();
-	}
-	
-	int i;
-	for( i=0; i<EST_COUNT; i++ ){
-		if( pShaders[ i ] ){
-			pShaders[ i ]->FreeReference();
-		}
 	}
 }
 
@@ -153,8 +141,8 @@ deoglLightShader *deoglRSkyInstanceLayer::GetShaderFor( int shaderType ){
 		deoglLightShaderConfig config;
 		
 		if( GetShaderConfigFor( shaderType, config ) ){
-			pShaders[ shaderType ] = pInstance.GetRenderThread().GetShader().
-				GetLightShaderManager().GetShaderWith( config );
+			pShaders[ shaderType ].TakeOver( pInstance.GetRenderThread().GetShader().
+				GetLightShaderManager().GetShaderWith( config ) );
 		}
 	}
 	
@@ -239,7 +227,7 @@ bool deoglRSkyInstanceLayer::GetShaderConfigFor( int shaderType, deoglLightShade
 
 deoglSPBlockUBO *deoglRSkyInstanceLayer::GetLightParameterBlock(){
 	if( ! pParamBlockLight ){
-		deoglLightShader *shader = NULL;
+		deoglLightShader *shader = nullptr;
 		int i;
 		
 		for( i=0; i<EST_COUNT; i++ ){
@@ -261,7 +249,7 @@ deoglSPBlockUBO *deoglRSkyInstanceLayer::GetLightParameterBlock(){
 
 deoglSPBlockUBO *deoglRSkyInstanceLayer::GetInstanceParameterBlock(){
 	if( ! pParamBlockInstance ){
-		deoglLightShader *shader = NULL;
+		deoglLightShader *shader = nullptr;
 		int i;
 		
 		for( i=0; i<EST_COUNT; i++ ){

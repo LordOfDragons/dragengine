@@ -125,8 +125,6 @@ pLLWorldNext( NULL ),
 
 pLLPrepareForRenderWorld( this )
 {
-	int i;
-	
 	pDirtyColVol = true;
 	pDirtyConvexVolumeList = true;
 	pDirtyFullExtends = true;
@@ -150,9 +148,6 @@ pLLPrepareForRenderWorld( this )
 	pMarked = false;
 	pUpdateOnRemoveComponent = true;
 	
-	for( i=0; i<EST_COUNT; i++ ){
-		pShaders[ i ] = NULL;
-	}
 	pParamBlockLight = NULL;
 	pParamBlockInstance = NULL;
 	
@@ -686,7 +681,7 @@ deoglLightShader *deoglRLight::GetShaderFor( deoglRLight::eShaderTypes shaderTyp
 			//	config.DebugGetConfigString(debugString);
 			//	pRenderThread.GetLogger().LogInfoFormat("GetShaderFor(%p): IN %s", this, debugString.GetString());
 			//#endif
-			pShaders[ shaderType ] = pRenderThread.GetShader().GetLightShaderManager().GetShaderWith( config );
+			pShaders[ shaderType ].TakeOver( pRenderThread.GetShader().GetLightShaderManager().GetShaderWith( config ) );
 			//#ifdef OS_ANDROID
 			//	pRenderThread.GetLogger().LogInfoFormat("GetShaderFor(%p): OUT %p", this, pShaders[shaderType]);
 			//#endif
@@ -931,7 +926,7 @@ deoglSPBlockUBO *deoglRLight::GetLightParameterBlock(){
 		return pParamBlockLight;
 	}
 	
-	deoglLightShader *shader = NULL;
+	deoglLightShader *shader = nullptr;
 	int i;
 	
 	for( i=0; i<EST_COUNT; i++ ){
@@ -957,7 +952,7 @@ deoglSPBlockUBO *deoglRLight::GetInstanceParameterBlock(){
 		return pParamBlockInstance;
 	}
 	
-	deoglLightShader *shader = NULL;
+	deoglLightShader *shader = nullptr;
 	int i;
 	
 	for( i=0; i<EST_COUNT; i++ ){
@@ -992,10 +987,7 @@ void deoglRLight::DropShaders(){
 	}
 	
 	for( i=0; i<EST_COUNT; i++ ){
-		if( pShaders[ i ] ){
-			pShaders[ i ]->FreeReference();
-			pShaders[ i ] = NULL;
-		}
+		pShaders[ i ] = nullptr;
 	}
 }
 
@@ -1347,12 +1339,6 @@ void deoglRLight::pCleanUp(){
 		pParamBlockLight->FreeReference();
 	}
 	
-	int i;
-	for( i=0; i<deoglRLight::EST_COUNT; i++ ){
-		if( pShaders[ i ] ){
-			pShaders[ i ]->FreeReference();
-		}
-	}
 	if( pLightVolume ){
 		delete pLightVolume;
 	}

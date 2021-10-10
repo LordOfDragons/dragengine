@@ -22,8 +22,6 @@
 #ifndef _DEOGLRLIGHT_H_
 #define _DEOGLRLIGHT_H_
 
-#include "../component/deoglComponentSet.h"
-
 #include <dragengine/deObject.h>
 #include <dragengine/common/collection/decObjectSet.h>
 #include <dragengine/common/collection/decPointerLinkedList.h>
@@ -31,8 +29,10 @@
 #include <dragengine/common/utils/decLayerMask.h>
 #include <dragengine/resources/light/deLight.h>
 
+#include "shader/deoglLightShader.h"
+#include "../component/deoglComponentSet.h"
+
 class deoglCollideList;
-class deoglLightShader;
 class deoglLightShaderConfig;
 class deoglLightVolume;
 class deoglOcclusionQuery;
@@ -203,7 +203,7 @@ public:
 	
 	bool pUpdateOnRemoveComponent;
 	
-	deoglLightShader *pShaders[ EST_COUNT ];
+	deoglLightShader::Ref pShaders[ EST_COUNT ];
 	deoglSPBlockUBO *pParamBlockLight;
 	deoglSPBlockUBO *pParamBlockInstance;
 	
