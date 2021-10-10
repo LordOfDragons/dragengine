@@ -25,6 +25,7 @@
 #include "../occlusiontest/deoglOcclusionTestListener.h"
 #include "../skin/deoglSkinTexture.h"
 #include "../skin/rendered/deoglSkinRendered.h"
+#include "../shaders/paramblock/shared/deoglSharedSPBRTIGroup.h"
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/collection/decPointerLinkedList.h>
@@ -42,7 +43,6 @@ class deoglSPBlockUBO;
 class deoglTexUnitsConfig;
 class deoglShaderParameterBlock;
 class deoglSharedSPBElement;
-class deoglSharedSPBRTIGroup;
 class deoglRenderPlan;
 class deoglOcclusionTest;
 class deoglRenderPlanMasked;
@@ -89,7 +89,7 @@ public:
 	bool pDirtyRenderEnvMap;
 	
 	deoglSharedSPBElement *pSharedSPBElement;
-	deoglSharedSPBRTIGroup *pSharedSPBRTIGroup;
+	deoglSharedSPBRTIGroup::Ref pSharedSPBRTIGroup;
 	
 	deoglTexUnitsConfig *pTUCDepth;
 	deoglTexUnitsConfig *pTUCGeometry;

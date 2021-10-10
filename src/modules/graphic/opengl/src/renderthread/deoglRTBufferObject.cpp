@@ -70,7 +70,7 @@ pLayoutSkinTextureUBO( NULL ),
 pLayoutSkinTextureSSBO( NULL ),
 
 pBillboardSPBListUBO( NULL ),
-pBillboardRTIGroups( renderThread ),
+pBillboardRTIGroups( deoglSharedSPBRTIGroupList::Ref::New( new deoglSharedSPBRTIGroupList( renderThread ) ) ),
 
 pTemporaryVBOData( NULL ),
 pTemporaryVBODataSize( 0 )

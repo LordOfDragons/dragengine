@@ -22,6 +22,7 @@
 #ifndef _DEOGLSHAREDSPBRTIGROUPLIST_H_
 #define _DEOGLSHAREDSPBRTIGROUPLIST_H_
 
+#include <dragengine/deObject.h>
 #include <dragengine/common/collection/decPointerList.h>
 
 class deoglRenderThread;
@@ -33,7 +34,12 @@ class deoglSharedSPBRTIGroup;
 /**
  * OpenGL shared SPB render task instance group list.
  */
-class deoglSharedSPBRTIGroupList{
+class deoglSharedSPBRTIGroupList : public deObject{
+public:
+	typedef deTObjectReference<deoglSharedSPBRTIGroupList> Ref;
+	
+	
+	
 private:
 	deoglRenderThread &pRenderThread;
 	decPointerList pGroups;
@@ -46,12 +52,14 @@ public:
 	/** Create shared SPB render task instance group list. */
 	deoglSharedSPBRTIGroupList( deoglRenderThread &renderThread );
 	
+protected:
 	/** Clean up shared SPB list. */
-	~deoglSharedSPBRTIGroupList();
+	virtual ~deoglSharedSPBRTIGroupList();
 	/*@}*/
 	
 	
 	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */

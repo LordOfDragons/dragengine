@@ -60,7 +60,6 @@
 #include "../shaders/paramblock/deoglSPBlockUBO.h"
 #include "../shaders/paramblock/shared/deoglSharedSPBElement.h"
 #include "../shaders/paramblock/shared/deoglSharedSPBListUBO.h"
-#include "../shaders/paramblock/shared/deoglSharedSPBRTIGroup.h"
 #include "../skin/channel/deoglSkinChannel.h"
 #include "../skin/deoglRSkin.h"
 #include "../skin/deoglSkinRenderable.h"
@@ -123,8 +122,6 @@ pDirtyModelVBOs( true ),
 pDirtyOccMeshVBO( true ),
 pOccMeshSharedSPBElement( NULL ),
 pDirtyOccMeshSharedSPBElement( true ),
-pOccMeshSharedSPBDoubleSided( NULL ),
-pOccMeshSharedSPBSingleSided( NULL ),
 
 pDirtyLODVBOs( true ),
 pDirtyLODRenderTaskConfigs( true ),
@@ -451,14 +448,8 @@ void deoglRComponent::SetOcclusionMesh( deoglROcclusionMesh *occlusionMesh ){
 		delete pDynamicOcclusionMesh;
 		pDynamicOcclusionMesh = NULL;
 	}
-	if( pOccMeshSharedSPBDoubleSided ){
-		pOccMeshSharedSPBDoubleSided->FreeReference();
-		pOccMeshSharedSPBDoubleSided = NULL;
-	}
-	if( pOccMeshSharedSPBSingleSided ){
-		pOccMeshSharedSPBSingleSided->FreeReference();
-		pOccMeshSharedSPBSingleSided = NULL;
-	}
+	pOccMeshSharedSPBDoubleSided = nullptr;
+	pOccMeshSharedSPBSingleSided = nullptr;
 	if( pOccMeshSharedSPBElement ){
 		pOccMeshSharedSPBElement->FreeReference();
 		pOccMeshSharedSPBElement = NULL;
@@ -499,18 +490,7 @@ void deoglRComponent::SetOcclusionMesh( deoglROcclusionMesh *occlusionMesh ){
 }
 
 deoglSharedSPBRTIGroup &deoglRComponent::GetOccMeshSharedSPBRTIGroup( bool doubleSided ) const{
-	if( doubleSided ){
-		if( ! pOccMeshSharedSPBDoubleSided ){
-			DETHROW( deeInvalidParam );
-		}
-		return *pOccMeshSharedSPBDoubleSided;
-		
-	}else{
-		if( ! pOccMeshSharedSPBSingleSided ){
-			DETHROW( deeInvalidParam );
-		}
-		return *pOccMeshSharedSPBSingleSided;
-	}
+	return doubleSided ? pOccMeshSharedSPBDoubleSided : pOccMeshSharedSPBSingleSided;
 }
 
 void deoglRComponent::DynOccMeshRequiresPrepareForRender(){
@@ -1652,14 +1632,6 @@ void deoglRComponent::pCleanUp(){
 		delete [] pBoneMatrices;
 	}
 	
-	if( pOccMeshSharedSPBDoubleSided ){
-		pOccMeshSharedSPBDoubleSided->FreeReference();
-			// has to be done before pOcclusionMesh mesh is released
-	}
-	if( pOccMeshSharedSPBSingleSided ){
-		pOccMeshSharedSPBSingleSided->FreeReference();
-			// has to be done before pOcclusionMesh mesh is released
-	}
 	if( pOccMeshSharedSPBElement ){
 		pOccMeshSharedSPBElement->FreeReference();
 			// has to be done before pOcclusionMesh mesh is released
@@ -2122,27 +2094,21 @@ void deoglRComponent::pPrepareParamBlocks(){
 		}
 		
 		// shared spb render task instance group
-		if( pOccMeshSharedSPBDoubleSided ){
-			pOccMeshSharedSPBDoubleSided->FreeReference();
-			pOccMeshSharedSPBDoubleSided = NULL;
-		}
-		if( pOccMeshSharedSPBSingleSided ){
-			pOccMeshSharedSPBSingleSided->FreeReference();
-			pOccMeshSharedSPBSingleSided = NULL;
-		}
+		pOccMeshSharedSPBDoubleSided = nullptr;
+		pOccMeshSharedSPBSingleSided = nullptr;
 		
 		if( pOccMeshSharedSPBElement && pOcclusionMesh ){
 			deoglSharedSPBRTIGroupList &listDouble = pOcclusionMesh->GetRTIGroupDouble();
-			pOccMeshSharedSPBDoubleSided = listDouble.GetWith( pOccMeshSharedSPBElement->GetSPB() );
+			pOccMeshSharedSPBDoubleSided.TakeOver( listDouble.GetWith( pOccMeshSharedSPBElement->GetSPB() ) );
 			if( ! pOccMeshSharedSPBDoubleSided ){
-				pOccMeshSharedSPBDoubleSided = listDouble.AddWith( pOccMeshSharedSPBElement->GetSPB() );
+				pOccMeshSharedSPBDoubleSided.TakeOver( listDouble.AddWith( pOccMeshSharedSPBElement->GetSPB() ) );
 				pOccMeshSharedSPBDoubleSided->GetRTSInstance()->SetSubInstanceSPB( &pOccMeshSharedSPBElement->GetSPB() );
 			}
 			
 			deoglSharedSPBRTIGroupList &listSingle = pOcclusionMesh->GetRTIGroupsSingle();
-			pOccMeshSharedSPBSingleSided = listSingle.GetWith( pOccMeshSharedSPBElement->GetSPB() );
+			pOccMeshSharedSPBSingleSided.TakeOver( listSingle.GetWith( pOccMeshSharedSPBElement->GetSPB() ) );
 			if( ! pOccMeshSharedSPBSingleSided ){
-				pOccMeshSharedSPBSingleSided = listSingle.AddWith( pOccMeshSharedSPBElement->GetSPB() );
+				pOccMeshSharedSPBSingleSided.TakeOver( listSingle.AddWith( pOccMeshSharedSPBElement->GetSPB() ) );
 				pOccMeshSharedSPBSingleSided->GetRTSInstance()->SetSubInstanceSPB( &pOccMeshSharedSPBElement->GetSPB() );
 			}
 			

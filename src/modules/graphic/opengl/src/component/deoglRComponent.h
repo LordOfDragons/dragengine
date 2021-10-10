@@ -25,6 +25,7 @@
 #include "../deoglBasics.h"
 #include "../light/deoglLightList.h"
 #include "../skin/rendered/deoglSkinRendered.h"
+#include "../shaders/paramblock/shared/deoglSharedSPBRTIGroup.h"
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
@@ -54,7 +55,6 @@ class deoglRenderThread;
 class deoglSPBlockUBO;
 class deoglShaderParameterBlock;
 class deoglSharedSPBElement;
-class deoglSharedSPBRTIGroup;
 class deoglSkinState;
 class deoglVAO;
 class deoglVBOLayout;
@@ -103,8 +103,8 @@ public:
 	deoglSharedSPBElement *pOccMeshSharedSPBElement;
 	bool pValidOccMeshSharedSPBElement;
 	bool pDirtyOccMeshSharedSPBElement;
-	deoglSharedSPBRTIGroup *pOccMeshSharedSPBDoubleSided;
-	deoglSharedSPBRTIGroup *pOccMeshSharedSPBSingleSided;
+	deoglSharedSPBRTIGroup::Ref pOccMeshSharedSPBDoubleSided;
+	deoglSharedSPBRTIGroup::Ref pOccMeshSharedSPBSingleSided;
 	
 	decObjectList pLODs;
 	float pLODErrorScaling;

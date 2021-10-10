@@ -1678,7 +1678,7 @@ deoglSkinTexture::eShaderTypes type, int renderTaskFlags, int renderTaskFlagMask
 		deoglRenderTaskSharedInstance *rtsi = texture.GetSharedSPBRTIGroup( pLODIndex ).GetRTSInstance();
 		
 		if( shadow ){
-			deoglSharedSPBRTIGroup *group = texture.GetSharedSPBRTIGroupShadow( pLODIndex );
+			const deoglSharedSPBRTIGroup * const group = texture.GetSharedSPBRTIGroupShadow( pLODIndex );
 			if( group ){
 				rtsi = group->GetRTSInstance();
 				i += group->GetTextureCount() - 1;

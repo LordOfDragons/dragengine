@@ -40,7 +40,6 @@
 #include "../renderthread/deoglRTLogger.h"
 #include "../renderthread/deoglRTChoices.h"
 #include "../shaders/paramblock/deoglSPBlockMemory.h"
-#include "../shaders/paramblock/shared/deoglSharedSPBRTIGroup.h"
 #include "../skin/shader/deoglSkinShader.h"
 #include "../utils/vcoptimizer/deoglVCOptimizer.h"
 #include "../vao/deoglVAO.h"

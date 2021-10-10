@@ -75,8 +75,8 @@ public:
 	int pDoubleSidedFaceCount;
 	
 	deoglSharedSPBListUBO *pSharedSPBListUBO;
-	deoglSharedSPBRTIGroupList pRTIGroupsSingle;
-	deoglSharedSPBRTIGroupList pRTIGroupsDouble;
+	deoglSharedSPBRTIGroupList::Ref pRTIGroupsSingle;
+	deoglSharedSPBRTIGroupList::Ref pRTIGroupsDouble;
 	
 	deoglBVH *pBVH;
 	deoglRayTraceField *pRayTraceField;

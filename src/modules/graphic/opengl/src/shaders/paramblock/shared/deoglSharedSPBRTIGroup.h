@@ -22,6 +22,8 @@
 #ifndef _DEOGLSHAREDSPBRTIGROUP_H_
 #define _DEOGLSHAREDSPBRTIGROUP_H_
 
+#include "deoglSharedSPBRTIGroupList.h"
+
 #include <dragengine/deObject.h>
 
 class deoglSharedSPB;
@@ -40,7 +42,12 @@ class deoglRenderTaskSharedInstance;
  */
 class deoglSharedSPBRTIGroup : public deObject{
 public:
-	deoglSharedSPBRTIGroupList &pParent;
+	typedef deTObjectReference<deoglSharedSPBRTIGroup> Ref;
+	
+	
+	
+private:
+	const deoglSharedSPBRTIGroupList::Ref pParent;
 	deoglSharedSPB &pSharedSPB;
 	int pTextureCount;
 	deoglRenderTaskSharedInstance *pRTSInstance;
@@ -52,15 +59,17 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create shared SPB render task instance group. */
-	deoglSharedSPBRTIGroup( deoglSharedSPBRTIGroupList &parent,
+	deoglSharedSPBRTIGroup( deoglSharedSPBRTIGroupList *parent,
 		deoglSharedSPB &sharedSPB, int textureCount );
 	
+protected:
 	/** Clean up shared SPB render task instance group. */
 	virtual ~deoglSharedSPBRTIGroup();
 	/*@}*/
 	
 	
 	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Parent list. */

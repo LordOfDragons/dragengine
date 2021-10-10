@@ -43,7 +43,6 @@
 #include "../shaders/paramblock/shared/deoglSharedSPBElement.h"
 #include "../shaders/paramblock/shared/deoglSharedSPBList.h"
 #include "../shaders/paramblock/shared/deoglSharedSPBListUBO.h"
-#include "../shaders/paramblock/shared/deoglSharedSPBRTIGroup.h"
 #include "../skin/channel/deoglSkinChannel.h"
 #include "../skin/deoglRSkin.h"
 #include "../skin/deoglSkinRenderable.h"
@@ -103,7 +102,6 @@ pRenderEnvMapFadeFactor( 1.0f ),
 pDirtyRenderEnvMap( true ),
 
 pSharedSPBElement( NULL ),
-pSharedSPBRTIGroup( NULL ),
 
 pTUCDepth( NULL ),
 pTUCGeometry( NULL ),
@@ -850,9 +848,6 @@ void deoglRBillboard::pCleanUp(){
 		pRenderEnvMapFade->FreeReference();
 	}
 	
-	if( pSharedSPBRTIGroup ){
-		pSharedSPBRTIGroup->FreeReference();
-	}
 	if( pSharedSPBElement ){
 		pSharedSPBElement->FreeReference();
 	}
@@ -991,10 +986,10 @@ void deoglRBillboard::pPrepareParamBlocks(){
 	if( ! pSharedSPBRTIGroup && pSharedSPBElement ){
 		deoglSharedSPBRTIGroupList &list = pRenderThread.GetBufferObject().GetBillboardRTIGroups();
 		deoglSharedSPB &spb = pSharedSPBElement->GetSPB();
-		pSharedSPBRTIGroup = list.GetWith( spb );
+		pSharedSPBRTIGroup.TakeOver( list.GetWith( spb ) );
 		
 		if( ! pSharedSPBRTIGroup ){
-			pSharedSPBRTIGroup = list.AddWith( spb );
+			pSharedSPBRTIGroup.TakeOver( list.AddWith( spb ) );
 			
 			deoglRenderTaskSharedInstance &rtsi = *pSharedSPBRTIGroup->GetRTSInstance();
 			rtsi.SetSubInstanceSPB( &spb );

@@ -130,7 +130,7 @@ private:
 	deoglSPBlockSSBO *pLayoutSkinTextureSSBO;
 	
 	deoglSharedSPBListUBO *pBillboardSPBListUBO;
-	deoglSharedSPBRTIGroupList pBillboardRTIGroups;
+	deoglSharedSPBRTIGroupList::Ref pBillboardRTIGroups;
 	
 	char *pTemporaryVBOData;
 	int pTemporaryVBODataSize;

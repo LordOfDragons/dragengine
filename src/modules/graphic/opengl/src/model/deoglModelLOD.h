@@ -34,7 +34,6 @@ class deoglModelOctree;
 class deoglModelLODTexCoordSet;
 class deoglSharedVBOBlock;
 class deoglSharedSPB;
-class deoglSharedSPBRTIGroup;
 class deoglSharedSPBRTIGroupList;
 class deoglGIBVHLocal;
 

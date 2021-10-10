@@ -39,7 +39,7 @@ private:
 	bool pDoubleSided;
 	bool pDecal;
 	int pDecalOffset;
-	deoglSharedSPBRTIGroupList pRTIGroups;
+	deoglSharedSPBRTIGroupList::Ref pRTIGroups;
 	
 	
 	
