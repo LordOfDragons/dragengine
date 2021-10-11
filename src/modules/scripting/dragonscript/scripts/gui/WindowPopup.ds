@@ -49,33 +49,33 @@ class WindowPopup extends Window
 	 * Window is initially hidden.
 	 */
 	public func new()
-		this.runWhileBlockingLayout( block
-			this.pCloseOnPopDown = true
-			this.setVisible( false )
-			this.setEnabled( true )
-			this.setCanFocus( false )
-			this.setCanReorder( false )
-			this.setCanActivate( false )
-			this.setCanMove( false )
-			this.setCanResize( false )
-			this.setCanClose( false )
-			this.setCanMaximize( false )
-			this.setCanMinimize( false )
-			this.setLayout( FlowLayout.new( LayoutAxis.y ) )
-			this.setDesignerSelector( "WindowPopup" )
-		end )
+		runWhileBlockingLayout(block
+			pCloseOnPopDown = true
+			setVisible(false)
+			setEnabled(true)
+			setCanFocus(false)
+			setCanReorder(false)
+			setCanActivate(false)
+			setCanMove(false)
+			setCanResize(false)
+			setCanClose(false)
+			setCanMaximize(false)
+			setCanMinimize(false)
+			setLayout(FlowLayout.new(LayoutAxis.y))
+			setDesignerSelector("WindowPopup")
+		end)
 	end
 	
 	
 	
 	/** \brief Close on popdown. */
 	public func bool getCloseOnPopDown()
-		return this.pCloseOnPopDown
+		return pCloseOnPopDown
 	end
 	
 	/** \brief Set close on popdown. */
-	public func void setCloseOnPopDown( bool closeOnPopDown )
-		this.pCloseOnPopDown = closeOnPopDown
+	public func void setCloseOnPopDown(bool closeOnPopDown)
+		pCloseOnPopDown = closeOnPopDown
 	end
 	
 	
@@ -84,34 +84,29 @@ class WindowPopup extends Window
 	 * \brief Pop up window.
 	 * \details Shows the window at the top and grabs mouse and keyboard input.
 	 */
-	public func void popup( Point position )
-		this.fitToContent()
-		this.setPosition( position )
-		this.setVisible( true )
-		this.moveToTop()
-		this.captureMouse()
-		this.grabFocus()
+	public func void popup(Point position)
+		popupInside(position, RectArea.new(Point.new(), getDesktop().getContainerSize() - Point.new(1, 1)))
 	end
 	
 	/**
 	 * \brief Pop up window at desktop coordinates.
 	 * \details Shows the window at the top and grabs mouse and keyboard input.
 	 */
-	public func void popup( int x, int y )
-		this.popup( Point.new( x, y ) )
+	public func void popup(int x, int y)
+		popup(Point.new(x, y))
 	end
 	
 	/**
 	 * \brief Pop up window not clipping outside area.
 	 * \details Shows the window at the top and grabs mouse and keyboard input.
 	 */
-	public func void popupInside( Point position, RectArea boundary )
-		this.fitToContent()
-		this.setPosition( boundary.grow( -this.getSize() ).clamp( position ) )
-		this.setVisible( true )
-		this.moveToTop()
-		this.captureMouse()
-		this.grabFocus()
+	public func void popupInside(Point position, RectArea boundary)
+		fitToContent()
+		setPosition(boundary.grow(-getSize()).clamp(position))
+		setVisible(true)
+		moveToTop()
+		captureMouse()
+		grabFocus()
 	end
 	
 	/**
@@ -120,18 +115,18 @@ class WindowPopup extends Window
 	 *          close() is called too.
 	 */
 	public func void popdown()
-		this.releaseMouse()
-		this.setVisible( false )
+		releaseMouse()
+		setVisible(false)
 		
-		if this.pCloseOnPopDown
-			this.close()
+		if pCloseOnPopDown
+			close()
 		end
 	end
 	
 	
 	
 	/** \brief Send event to the widget. */
-	public func void sendEvent( Event event )
+	public func void sendEvent(Event event)
 		// a child widget did not handle its event. ignore it
 		if event.getSource() != this
 			return
@@ -142,8 +137,8 @@ class WindowPopup extends Window
 		
 		select ident
 		case KeyEvent.idKeyPressed
-			if ( event cast KeyEvent ).getKeyCode() == InputEventKey.escape
-				this.popdown()
+			if (event cast KeyEvent).getKeyCode() == InputEventKey.escape
+				popdown()
 				return
 			end
 			
@@ -151,43 +146,43 @@ class WindowPopup extends Window
 			var MouseEvent mouseEvent = event cast MouseEvent
 			var Point position = mouseEvent.getPosition()
 			
-			if not ( position.isAtLeast( 0 ) and position <= this.getSize() )
-				this.popdown()
+			if not (position.isAtLeast(0) and position <= getSize())
+				popdown()
 				return
 			end
 		end
 		
 		// otherwise send event to widget under cursor if this is a mouse event
-		if not MouseEvent.isMouseEvent( ident )
+		if not MouseEvent.isMouseEvent(ident)
 			return
 		end
 		
 		var MouseEvent mouseEvent = event cast MouseEvent
 		
 		if ident == MouseEvent.idMouseWheeled
-			var Point mouseLocation = this.getDesktop().getMouseLocation()
-			var Point windowPosition = this.getPosition()
-			var Widget hoverWidget = this.getWidgetAt( mouseLocation - windowPosition )
+			var Point mouseLocation = getDesktop().getMouseLocation()
+			var Point windowPosition = getPosition()
+			var Widget hoverWidget = getWidgetAt(mouseLocation - windowPosition)
 			
 			if hoverWidget == null or hoverWidget == this
 				return
 			end
 			
-			hoverWidget.sendEvent( MouseEvent.new( hoverWidget, ident, \
+			hoverWidget.sendEvent(MouseEvent.new(hoverWidget, ident, \
 				mouseEvent.getButton(), mouseEvent.getModifiers(), \
-				mouseEvent.getPosition(), mouseEvent.getSystem(), mouseEvent.getDevice() ) )
+				mouseEvent.getPosition(), mouseEvent.getSystem(), mouseEvent.getDevice()))
 			
 		else
-			var Widget hoverWidget = this.getWidgetAt( mouseEvent.getPosition() )
+			var Widget hoverWidget = getWidgetAt(mouseEvent.getPosition())
 			
 			if hoverWidget == null or hoverWidget == this
 				return
 			end
 			
-			hoverWidget.sendEvent( MouseEvent.new( hoverWidget, ident, \
+			hoverWidget.sendEvent(MouseEvent.new(hoverWidget, ident, \
 				mouseEvent.getButton(), mouseEvent.getModifiers(), \
 				mouseEvent.getPosition() - hoverWidget.getWindowPosition(), \
-				mouseEvent.getSystem(), mouseEvent.getDevice() ) )
+				mouseEvent.getSystem(), mouseEvent.getDevice()))
 		end
 	end
 	
@@ -211,11 +206,11 @@ class WindowPopup extends Window
 	 *          to capture the mouse himself using an MouseListener on the child
 	 *          widget releasing the mouse.
 	 */
-	public func bool requestReleaseMouse( Widget widget )
-		var bool result = super.requestReleaseMouse( widget )
+	public func bool requestReleaseMouse(Widget widget)
+		var bool result = super.requestReleaseMouse(widget)
 		
 		if result
-			this.captureMouse()
+			captureMouse()
 		end
 		
 		return result
