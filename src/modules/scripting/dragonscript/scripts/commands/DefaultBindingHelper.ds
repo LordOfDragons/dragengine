@@ -642,6 +642,27 @@ class DefaultBindingHelper
 		return this.bindButton( device, button, command )
 	end
 	
+	/**
+	 * \brief Bind command to VR hand controller button.
+	 * \version 1.7
+	 * \param rightHand True for right hand controller otherwise left hand controller.
+	 * \param button Number of button starting with 0 for the first.
+	 * \param command Name of command to bind to button or null.
+	 * \returns true if vrLeftHand is present and command has been bound.
+	 */
+	public func bool vrHandBindButton( bool rightHand, InputDeviceButtonType type, int button, String command )
+		if button < 0
+			throw EInvalidParam.new()
+		end
+		
+		var InputDevice device = this.getVRHand( rightHand )
+		if device == null or command == null
+			return false
+		end
+		
+		return this.bindButton( device, type, button, command )
+	end
+	
 	/*@}*/
 	
 	
@@ -692,6 +713,46 @@ class DefaultBindingHelper
 		
 		this.addButtonBinding( Binding.new( device.getID(), device.getButtonAt( button ).getID(), cmd, false ) )
 		return true
+	end
+	
+	/**
+	 * \brief Bind command to button on device.
+	 * \version 1.7
+	 * 
+	 * \param device Device containing axis.
+	 * \param button Index of button to bind.
+	 * \param command Name of command to bind.
+	 * \returns true if button is present on device and bound to command.
+	 */
+	public func bool bindButton( InputDevice device, InputDeviceButtonType type, int button , String command )
+		if button < 0 or button >= device.getButtonCount()
+			return false
+		end
+		
+		var Command cmd = this.pCommandManager.getNamed( command )
+		if cmd == null
+			return false
+		end
+		
+		var int i, count = device.getButtonCount()
+		var InputDeviceButton idbutton
+		var int number = 0
+		
+		for i = 0 to count
+			idbutton = device.getButtonAt( i )
+			if idbutton.getType() != type
+				continue
+			end
+			
+			if number == button
+				addButtonBinding(Binding.new(device.getID(), idbutton.getID(), cmd, false))
+				return true
+			end
+			
+			number++
+		end
+		
+		return false
 	end
 	
 	/**
