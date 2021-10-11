@@ -819,6 +819,22 @@ void delEngineInstance::SetCacheAppID( const char *cacheAppID ){
 	}
 }
 
+void delEngineInstance::SetPathOverlay( const char* path ){
+	if( ! path ){
+		DETHROW_INFO( deeNullPointer, "path" );
+	}
+	
+	pLauncher.GetLogger()->LogInfoFormat( pLauncher.GetLogSource(),
+		"Sending eccSetPathOverlay(path='%s') to process %i", path, ( int )pProcessID );
+	
+	WriteUCharToPipe( delEngineProcess::eccSetPathOverlay );
+	WriteString16ToPipe( path );
+	
+	if( ReadUCharFromPipe() != delEngineProcess::ercSuccess ){
+		DETHROW( deeInvalidAction );
+	}
+}
+
 void delEngineInstance::VFSAddDiskDir( const char *vfsRoot, const char *nativeDirectory, bool readOnly ){
 	if( ! vfsRoot ){
 		DETHROW_INFO( deeNullPointer, "vfsRoot" );

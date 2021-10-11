@@ -671,6 +671,10 @@ void deEngine::SetCacheAppID( const char *cacheAppID ){
 	pCacheAppID = cacheAppID;
 }
 
+void deEngine::SetPathOverlay( const char* path ){
+	pPathOverlay = path;
+}
+
 
 
 // OS Events

@@ -153,6 +153,7 @@ private:
 	decString pPathData; // the path to the data files
 	decString pCacheAppID; // unique catch directory identifier for the application
 	deVirtualFileSystem *pVFS;
+	decString pPathOverlay;
 	
 	// frame timer
 	decTimer *pFrameTimer;
@@ -387,6 +388,24 @@ public:
 	
 	/** \brief Virtual file system used by the game engine. */
 	inline deVirtualFileSystem *GetVirtualFileSystem() const{ return pVFS; }
+	
+	/**
+	 * \brief Overlay directory.
+	 * \version 1.7
+	 * 
+	 * Set by the launcher to indicate to script modules the native path under
+	 * which overlay data is stored or an empty string if not available.
+	 */
+	inline const decString &GetPathOverlay() const{ return pPathOverlay; }
+	
+	/**
+	 * \brief Set overlay directory.
+	 * \version 1.7
+	 * 
+	 * Set by the launcher to indicate to script modules the native path under
+	 * which overlay data is stored or an empty string if not available.
+	 */
+	void SetPathOverlay( const char *path );
 	/*@}*/
 	
 	

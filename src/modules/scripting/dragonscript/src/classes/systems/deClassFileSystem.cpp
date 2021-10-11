@@ -28,12 +28,23 @@
 #include "../../deClassPathes.h"
 
 #include <dragengine/deEngine.h>
+#include <dragengine/app/deOS.h>
+#include <dragengine/common/file/decPath.h>
+#include <dragengine/common/string/decString.h>
 #include <dragengine/filesystem/dePathList.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/filesystem/deVFSContainer.h>
 #include <dragengine/filesystem/deFileSearchVisitor.h>
-#include <dragengine/common/file/decPath.h>
-#include <dragengine/common/string/decString.h>
+
+#ifdef OS_UNIX
+#include <errno.h>
+#include <sys/types.h>
+#include <unistd.h>
+#endif
+
+#ifdef OS_W32
+#include <dragengine/app/deOSWindows.h>
+#endif
 
 #include <libdscript/exceptions.h>
 #include <libdscript/packages/default/dsClassBlock.h>
@@ -257,6 +268,37 @@ void deClassFileSystem::nfPathMatchesPattern::RunFunction( dsRunTime *rt, dsValu
 	rt->PushBool( decString::StringMatchesPattern( path, pattern ) );
 }
 
+// public static func void browseOverlay(String path)
+deClassFileSystem::nfBrowseOverlay::nfBrowseOverlay( const sInitData &init ) :
+dsFunction( init.clsFileSys, "browseOverlay", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsVoid ){
+	p_AddParameter( init.clsStr ); // path
+}
+void deClassFileSystem::nfBrowseOverlay::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const deClassFileSystem &clsFileSys = *( ( deClassFileSystem* )GetOwnerClass() );
+	const char * const path = rt->GetValue( 0 )->GetString();
+	
+	decPath realPath;
+	realPath.SetFromNative( clsFileSys.GetDS()->GetGameEngine()->GetPathOverlay() );
+	realPath.AddUnixPath( path );
+	
+	#ifdef OS_W32
+	wchar_t widePath[ MAX_PATH ];
+	deOSWindows::Utf8ToWide( realPath.GetPathNative(), widePath, MAX_PATH );
+	ShellExecute( NULL, L"open", widePath, NULL, NULL, SW_SHOWDEFAULT );
+	
+	#else
+	const char * const appname = "xdg-open";
+	
+	if( fork() == 0 ){
+		// GetString() is required otherwise execlp fails to run correctly
+		execlp( appname, appname, realPath.GetPathUnix().GetString(), nullptr );
+		clsFileSys.GetDS()->LogErrorFormat( "Failed running '%s' (error %d)\n", appname, errno );
+		exit( 0 );
+	}
+	#endif
+}
+
 
 
 // Class deClassFileSystem
@@ -319,6 +361,7 @@ void deClassFileSystem::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfSearchFiles( init ) );
 	AddFunction( new nfGetFileType( init ) );
 	AddFunction( new nfPathMatchesPattern( init ) );
+	AddFunction( new nfBrowseOverlay( init ) );
 	
 	CalcMemberOffsets();
 }

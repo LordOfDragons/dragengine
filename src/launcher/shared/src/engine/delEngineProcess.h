@@ -109,7 +109,13 @@ public:
 		eccReadDelgaPatchDefs,
 		
 		/** \brief Command reading files from delga. */
-		eccReadDelgaFiles
+		eccReadDelgaFiles,
+		
+		/**
+		 * \brief Set overlay directory.
+		 * \version 1.7
+		 */
+		eccSetPathOverlay
 	};
 	
 	/** \brief Result Codes. */
@@ -288,6 +294,12 @@ public:
 	
 	/** \brief Command set cache application identifier. */
 	void CommandSetCacheAppID();
+	
+	/**
+	 * \brief Command set path overlay.
+	 * \version 1.7
+	 */
+	void CommandSetPathOverlay();
 	
 	/** \brief Command add disk directory to virtual file system. */
 	void CommandVFSAddDiskDir();

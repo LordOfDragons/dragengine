@@ -184,6 +184,12 @@ public:
 	/** \brief Set cache application identifier. */
 	void SetCacheAppID( const char *cacheAppID );
 	
+	/**
+	 * \brief Set overlay directory.
+	 * \version 1.7
+	 */
+	void SetPathOverlay( const char *path );
+	
 	/** \brief Add disk directory to virtual file system. */
 	void VFSAddDiskDir( const char *vfsRoot, const char *nativeDirectory, bool readOnly );
 	

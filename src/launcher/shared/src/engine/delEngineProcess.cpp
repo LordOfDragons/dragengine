@@ -332,6 +332,11 @@ void delEngineProcess::ReadCommandsFromInPipe(){
 			CommandDelgaReadFiles();
 			break;
 			
+		case eccSetPathOverlay:
+			pLogger->LogInfo( pLogSource, "Received eccSetPathOverlay" );
+			CommandSetPathOverlay();
+			break;
+			
 		default:
 			pLogger->LogErrorFormat( pLogSource,
 				"ReadCommandsFromInPipe failed with exception (command=%d):", command );
@@ -821,6 +826,29 @@ void delEngineProcess::CommandSetCacheAppID(){
 	}catch( const deException &e ){
 		pLogger->LogErrorFormat( pLogSource, "EngineProcess.CommandSetCacheAppID "
 			"failed with exception (dir=%s):", cacheAppID.GetString() );
+		pLogger->LogException( pLogSource, e );
+	}
+	
+	WriteUCharToPipe( ercFailed );
+}
+
+void delEngineProcess::CommandSetPathOverlay(){
+	if( ! pEngine ){
+		WriteUCharToPipe( ercFailed );
+		return;
+	}
+	
+	decString path;
+	
+	try{
+		ReadString16FromPipe( path );
+		pEngine->SetPathOverlay( path );
+		WriteUCharToPipe( ercSuccess );
+		return;
+		
+	}catch( const deException &e ){
+		pLogger->LogErrorFormat( pLogSource, "EngineProcess.CommandSetPathOverlay "
+			"failed with exception (dir=%s):", path.GetString() );
 		pLogger->LogException( pLogSource, e );
 	}
 	

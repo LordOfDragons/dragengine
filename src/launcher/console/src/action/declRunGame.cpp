@@ -857,6 +857,8 @@ void declRunGame::InitVFS(){
 	filePath.AddComponent( "overlay" );
 	VFSAddDiskDir( "/", filePath.GetPathNative(), false );
 	
+	engine.SetPathOverlay( filePath.GetPathNative() );
+	
 	// add the user game configuration directory (writeable)
 	filePath.SetFromNative( configuration.GetPathConfigUser() );
 	filePath.AddComponent( "games" );

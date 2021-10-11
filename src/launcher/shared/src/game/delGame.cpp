@@ -377,6 +377,8 @@ void delGame::StartGame( const delGameRunParams &runParams ){
 		filePath.AddComponent( "overlay" );
 		pEngineInstance->VFSAddDiskDir( "/", filePath.GetPathNative(), false );
 		
+		pEngineInstance->SetPathOverlay( filePath.GetPathNative() );
+		
 		filePath.SetFromNative( pLauncher.GetPathConfigUser() );
 		filePath.AddComponent( "games" );
 		filePath.AddComponent( pIdentifier.ToHexString( false ) );

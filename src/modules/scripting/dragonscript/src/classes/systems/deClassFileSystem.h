@@ -91,6 +91,7 @@ private:
 	DEF_NATFUNC( nfSearchFiles );
 	DEF_NATFUNC( nfGetFileType );
 	DEF_NATFUNC( nfPathMatchesPattern );
+	DEF_NATFUNC( nfBrowseOverlay );
 #undef DEF_NATFUNC
 };
 
