@@ -293,7 +293,13 @@ class ECBehaviorVRHandLaserPointer extends DefaultECBehavior
 				return
 			end
 			
-			pei.setEnableCasting(getElement().getVisible() and pVRHandPointAt.getEnabled())
+			if getElement().getVisible() and pVRHandPointAt.getEnabled()
+				pei.setEnableCasting(true)
+				
+			else
+				pei.setEnableCasting(false)
+				pei.killAllParticles()
+			end
 		end
 		
 		/**
