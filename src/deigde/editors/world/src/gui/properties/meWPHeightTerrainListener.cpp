@@ -82,11 +82,11 @@ void meWPHeightTerrainListener::ActiveSectorChanged( meWorld* ){
 
 
 void meWPHeightTerrainListener::HTStateChanged( meWorld* ){
-	pPanel.UpdateHeightPaint();
+	pPanel.UpdateHeightTerrain();
 }
 
 void meWPHeightTerrainListener::HTChanged( meWorld* ){
-	pPanel.UpdateHeightPaint();
+	pPanel.UpdateHeightTerrain();
 }
 
 void meWPHeightTerrainListener::HTSChanged( meWorld*, meHeightTerrainSector *sector ){

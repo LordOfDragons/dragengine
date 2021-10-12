@@ -1601,6 +1601,7 @@ void meWPHeightTerrain::SetWorld( meWorld *world ){
 		world->AddReference();
 	}
 	
+	UpdateHeightTerrain();
 	UpdateSector();
 	UpdateTextureList();
 	UpdateNavSpaceList();
