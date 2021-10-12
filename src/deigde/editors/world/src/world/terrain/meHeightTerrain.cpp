@@ -101,7 +101,14 @@ void meHeightTerrain::SetPathHT( const char *path ){
 
 decString meHeightTerrain::GetBaseDirectory() const{
 	decPath path( decPath::AbsolutePathUnix( pPathHT, pWorld.GetDirectoryPath() ) );
-	path.RemoveLastComponent();
+	
+	if( path.GetComponentCount() > 0 ){
+		path.RemoveLastComponent();
+		
+	}else{
+		path.SetFromNative( "/" ); // in new world files both path can be empty
+	}
+	
 	return path.GetPathUnix();
 }
 
