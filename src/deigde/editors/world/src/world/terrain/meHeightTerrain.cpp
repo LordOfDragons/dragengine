@@ -688,6 +688,9 @@ void meHeightTerrain::pUpdateHeightTerrain(){
 	
 	pEngHT->SetCollisionFilter( decCollisionFilter( collisionCategory, collisionFilter ) );
 	
+	pEngHT->SetBaseHeight( pBaseHeight );
+	pEngHT->SetHeightScaling( pHeightScaling );
+	
 	// set the height terrain to the world
 	world.SetHeightTerrain( pEngHT );
 	
