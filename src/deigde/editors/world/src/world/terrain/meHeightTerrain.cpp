@@ -64,7 +64,7 @@ pSaved( false ),
 pSectorSize( 500 ),
 pSectorResolution( 1024 ),
 pBaseHeight( 0.0f ),
-pHeightScaling( 1.0f ),
+pHeightScaling( 100.0f ),
 pActiveSector( NULL ),
 pActiveVLayer( NULL )
 {
