@@ -543,7 +543,11 @@ class ComboBox extends Container implements ListModelListener
 	end
 	
 	/** \brief Content of the model changed. */
-	public func void contentChanged( ListModel listModel, int fromIndex, int toIndex )
+	public func void contentChanged(ListModel listModel, int fromIndex, int toIndex)
+		var int selection = listModel.getSelected()
+		if selection >= fromIndex and selection <= toIndex
+			selectionChanged(listModel)
+		end
 	end
 	
 	/** \brief Selection in the list box changed. */
