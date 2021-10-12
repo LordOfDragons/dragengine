@@ -6,6 +6,9 @@ Import('parent_env parent_targets parent_report')
 # setup the environment matching the OS
 envModule = parent_env.Clone()
 
+if envModule['OSBeOS']:
+	Return()
+
 # fetch values in expanded form for later use
 versionString = '1.6'
 if envModule['force_version']:

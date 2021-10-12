@@ -53,10 +53,10 @@ pLibHandle( NULL )
 		
 		// get function pointer query function
 		#ifdef OS_BEOS
-		if( get_image_symbol( pLibHandle, name, B_SYMBOL_TYPE_TEXT, ( void** )&vkGetInstanceProcAddr ) != B_OK ){
+		if( get_image_symbol( pLibHandle, "vkGetInstanceProcAddr", B_SYMBOL_TYPE_TEXT, ( void** )&vkGetInstanceProcAddr ) != B_OK ){
 			vkGetInstanceProcAddr = NULL;
 		}
-		if( get_image_symbol( pLibHandle, name, B_SYMBOL_TYPE_TEXT, ( void** )&vkGetDeviceProcAddr ) != B_OK ){
+		if( get_image_symbol( pLibHandle, "vkGetDeviceProcAddr", B_SYMBOL_TYPE_TEXT, ( void** )&vkGetDeviceProcAddr ) != B_OK ){
 			vkGetDeviceProcAddr = NULL;
 		}
 		#endif
@@ -163,14 +163,6 @@ void devkLoader::pLoadVulkan(){
 		LocalFree( lpMsgBuf );
 		
 		DETHROW_INFO( deeInvalidAction, "Load Vulkan DLL failed" );
-	}
-	#endif
-	
-	// look for the entry point function
-	#ifdef OS_BEOS
-	if( get_image_symbol( pLibHandle, pLibFileEntryPoint,
-	B_SYMBOL_TYPE_TEXT, ( void** )&funcCreateModule ) != B_OK ){
-		funcCreateModule = NULL;
 	}
 	#endif
 }
