@@ -51,7 +51,6 @@
 #include <dragengine/systems/deCrashRecoverySystem.h>
 #include <dragengine/systems/deAISystem.h>
 #include <dragengine/systems/deNetworkSystem.h>
-#include <dragengine/systems/deModuleSystem.h>
 #include <dragengine/systems/deVRSystem.h>
 #include <dragengine/systems/modules/deBaseModule.h>
 #include <dragengine/systems/modules/deInternalModule.h>
@@ -555,191 +554,18 @@ void igdeEngineController::ActivateModule( int system, const char *name ){
 //////////////////////
 
 void igdeEngineController::pConfigModules(){
-	deModuleSystem &modsys = *pEngine->GetModuleSystem();
-	deLoadableModule *bestModuleGra = NULL;
-	deLoadableModule *bestModuleAud = NULL;
-	deLoadableModule *bestModulePhy = NULL;
-	deLoadableModule *bestModuleAmr = NULL;
-	deLoadableModule *bestModuleAI = NULL;
-	deLoadableModule *bestModuleCR = NULL;
-	deLoadableModule *bestModuleSyn = NULL;
-	deLoadableModule *bestModuleNet = NULL;
-	deLoadableModule *bestModuleVR = NULL;
-	int m, moduleCount;
-	
-	// load modules
 	pMainWindow.GetLogger()->LogInfo( LOGSOURCE, "Loading Modules." );
 	pEngine->LoadModules();
 	
-	// activate the best modules which currently is the first non-fallback module
-	// or the fallback module if no non-fallback module can be found
-	moduleCount = modsys.GetModuleCount();
-	
-	for( m=0; m<moduleCount; m++ ){
-		deLoadableModule * const module = modsys.GetModuleAt( m );
-		if( ! module->IsLoaded() ){
-			continue;
-		}
-		
-		switch( module->GetType() ){
-		case deModuleSystem::emtGraphic:
-			if( module->GetIsFallback() ){
-				if( ! bestModuleGra ){
-					bestModuleGra = module;
-				}
-				
-			}else{
-				if( ! bestModuleGra || bestModuleGra->GetIsFallback() ){
-					bestModuleGra = module;
-				}
-			}
-			break;
-			
-		case deModuleSystem::emtAudio:
-			if( module->GetIsFallback() ){
-				if( ! bestModuleAud ){
-					bestModuleAud = module;
-				}
-				
-			}else{
-				if( ! bestModuleAud || bestModuleAud->GetIsFallback() ){
-					bestModuleAud = module;
-				}
-			}
-			break;
-			
-		case deModuleSystem::emtPhysics:
-			if( module->GetIsFallback() ){
-				if( ! bestModulePhy ){
-					bestModulePhy = module;
-				}
-				
-			}else{
-				if( ! bestModulePhy || bestModulePhy->GetIsFallback() ){
-					bestModulePhy = module;
-				}
-			}
-			break;
-			
-		case deModuleSystem::emtAnimator:
-			if( module->GetIsFallback() ){
-				if( ! bestModuleAmr ){
-					bestModuleAmr = module;
-				}
-				
-			}else{
-				if( ! bestModuleAmr || bestModuleAmr->GetIsFallback() ){
-					bestModuleAmr = module;
-				}
-			}
-			break;
-			
-		case deModuleSystem::emtAI:
-			if( module->GetIsFallback() ){
-				if( ! bestModuleAI ){
-					bestModuleAI = module;
-				}
-				
-			}else{
-				if( ! bestModuleAI || bestModuleAI->GetIsFallback() ){
-					bestModuleAI = module;
-				}
-			}
-			break;
-			
-		case deModuleSystem::emtCrashRecovery:
-			if( module->GetIsFallback() ){
-				if( ! bestModuleCR ){
-					bestModuleCR = module;
-				}
-				
-			}else{
-				if( ! bestModuleCR || bestModuleCR->GetIsFallback() ){
-					bestModuleCR = module;
-				}
-			}
-			break;
-			
-		case deModuleSystem::emtSynthesizer:
-			if( module->GetIsFallback() ){
-				if( ! bestModuleSyn ){
-					bestModuleSyn = module;
-				}
-				
-			}else{
-				if( ! bestModuleSyn || bestModuleSyn->GetIsFallback() ){
-					bestModuleSyn = module;
-				}
-			}
-			break;
-			
-		case deModuleSystem::emtNetwork:
-			if( module->GetIsFallback() ){
-				if( ! bestModuleNet ){
-					bestModuleNet = module;
-				}
-				
-			}else{
-				if( ! bestModuleNet || bestModuleNet->GetIsFallback() ){
-					bestModuleNet = module;
-				}
-			}
-			break;
-			
-		case deModuleSystem::emtVR:
-			if( module->GetIsFallback() ){
-				if( ! bestModuleVR ){
-					bestModuleVR = module;
-				}
-				
-			}else{
-				if( ! bestModuleVR || bestModuleVR->GetIsFallback() ){
-					bestModuleVR = module;
-				}
-			}
-			break;
-			
-		default:
-			break;
-		}
-	}
-	
-	if( ! bestModuleGra ) DETHROW( deeInvalidAction );
-	pEngine->GetGraphicSystem()->SetActiveModule( bestModuleGra );
-	
-	if( ! bestModuleAud ) DETHROW( deeInvalidAction );
-	pEngine->GetAudioSystem()->SetActiveModule( bestModuleAud );
-	
-	if( ! bestModulePhy ) DETHROW( deeInvalidAction );
-	pEngine->GetPhysicsSystem()->SetActiveModule( bestModulePhy );
-	
-	if( ! bestModuleAmr ) DETHROW( deeInvalidAction );
-	pEngine->GetAnimatorSystem()->SetActiveModule( bestModuleAmr );
-	
-	if( ! bestModuleAI ) DETHROW( deeInvalidAction );
-	pEngine->GetAISystem()->SetActiveModule( bestModuleAI );
-	
-	if( ! bestModuleSyn ) DETHROW( deeInvalidAction );
-	pEngine->GetSynthesizerSystem()->SetActiveModule( bestModuleSyn );
-	
-	if( ! bestModuleCR ) DETHROW( deeInvalidAction );
-	pEngine->GetCrashRecoverySystem()->SetActiveModule( bestModuleCR );
-	
-	if( ! bestModuleNet ) DETHROW( deeInvalidAction );
-	pEngine->GetNetworkSystem()->SetActiveModule( bestModuleNet );
-	
-	if( ! bestModuleVR ) DETHROW( deeInvalidAction );
-	pEngine->GetVRSystem()->SetActiveModule( bestModuleVR );
-	
-	// load default modules
-	/*
-	ActivateModule( esGraphic, "OpenGL" );
-	ActivateModule( esAudio, "NullAudio" ); //"OpenAL" );
-	ActivateModule( esPhysics, "Bullet" );
-	ActivateModule( esAnimator, "DEAnimator" );
-	ActivateModule( esAI, "DEAI" );
-	ActivateModule( esCrashRecovery, "BasicRecovery" );
-	*/
+	pEngine->GetGraphicSystem()->SetActiveModule( GetBestModuleForType( deModuleSystem::emtGraphic ) );
+	pEngine->GetAudioSystem()->SetActiveModule( GetBestModuleForType( deModuleSystem::emtAudio ) );
+	pEngine->GetPhysicsSystem()->SetActiveModule( GetBestModuleForType( deModuleSystem::emtPhysics ) );
+	pEngine->GetAnimatorSystem()->SetActiveModule( GetBestModuleForType( deModuleSystem::emtAnimator ) );
+	pEngine->GetAISystem()->SetActiveModule( GetBestModuleForType( deModuleSystem::emtAI ) );
+	pEngine->GetSynthesizerSystem()->SetActiveModule( GetBestModuleForType( deModuleSystem::emtSynthesizer ) );
+	pEngine->GetCrashRecoverySystem()->SetActiveModule( GetBestModuleForType( deModuleSystem::emtCrashRecovery ) );
+	pEngine->GetNetworkSystem()->SetActiveModule( GetBestModuleForType( deModuleSystem::emtNetwork ) );
+	pEngine->GetVRSystem()->SetActiveModule( GetBestModuleForType( deModuleSystem::emtVR ) );
 }
 
 void igdeEngineController::pCreateMainRenderWindow(){
@@ -765,4 +591,37 @@ void igdeEngineController::pDestroyMainRenderWindow(){
 	
 	pMainRenderWindow->FreeReference();
 	pMainRenderWindow = NULL;
+}
+
+deLoadableModule *igdeEngineController::GetBestModuleForType( deModuleSystem::eModuleTypes moduleType ) const{
+	const deModuleSystem &modsys = *pEngine->GetModuleSystem();
+	const int count = modsys.GetModuleCount();
+	deLoadableModule *bestModule = nullptr;
+	int i;
+	
+	// for the time being we simply pick the first module which matches the type and is ready
+	// to be used. later on this has to be improved to use a matching metrics which tells
+	// how well a module matches a given set of feature requirements.
+	for( i=0; i<count; i++ ){
+		deLoadableModule * const module = modsys.GetModuleAt( i );
+		
+		if( module->GetType() != moduleType || module->GetErrorCode() != deLoadableModule::eecSuccess ){
+			continue;
+		}
+		
+		// non-fallback > fallback > none
+		if( module->GetIsFallback() ){
+			if( ! bestModule ){
+				bestModule = module;
+			}
+			
+		// for non-fallback pick the highest version of the first module
+		}else if( ! bestModule || bestModule->GetIsFallback()
+		|| ( module->GetName() == bestModule->GetName()
+		&& deModuleSystem::CompareVersion( module->GetVersion(), bestModule->GetVersion() ) > 0 ) ){
+			bestModule = module;
+		}
+	}
+	
+	return bestModule;
 }

@@ -309,27 +309,29 @@ dellEngineModule *dellEngine::GetBestModuleForType( int moduleType ){
 	
 	const int count = pModuleList.GetCount();
 	dellEngineModule *bestModule = NULL;
-	dellEngineModule *module;
 	int i;
 	
 	// for the time being we simply pick the first module which matches the type and is ready
 	// to be used. later on this has to be improved to use a matching metrics which tells
 	// how well a module matches a given set of feature requirements.
 	for( i=0; i<count; i++ ){
-		module = pModuleList.GetAt( i );
+		dellEngineModule * const module = pModuleList.GetAt( i );
 		
-		if( module->GetType() == moduleType && module->GetStatus() == dellEngineModule::emsReady ){
-			// non-fallback > fallback > none
-			if( module->GetIsFallback() ){
-				if( ! bestModule ){
-					bestModule = module;
-				}
-				
-			}else{
-				if( ! bestModule || bestModule->GetIsFallback() ){
-					bestModule = module;
-				}
+		if( module->GetType() != moduleType || module->GetStatus() != dellEngineModule::emsReady ){
+			continue;
+		}
+		
+		// non-fallback > fallback > none
+		if( module->GetIsFallback() ){
+			if( ! bestModule ){
+				bestModule = module;
 			}
+			
+		// for non-fallback pick the highest version of the first module
+		}else if( ! bestModule || bestModule->GetIsFallback()
+		|| ( module->GetName() == bestModule->GetName()
+		&& deModuleSystem::CompareVersion( module->GetVersion(), bestModule->GetVersion() ) > 0 ) ){
+			bestModule = module;
 		}
 	}
 	

@@ -22,6 +22,8 @@
 #ifndef _IGDEENGINECONTROLLER_H_
 #define _IGDEENGINECONTROLLER_H_
 
+#include <dragengine/systems/deModuleSystem.h>
+
 class deEngine;
 class deLoadableModule;
 class igdeMainWindow;
@@ -129,6 +131,7 @@ private:
 	
 	void pCreateMainRenderWindow();
 	void pDestroyMainRenderWindow();
+	deLoadableModule *GetBestModuleForType( deModuleSystem::eModuleTypes moduleType ) const;
 };
 
 #endif

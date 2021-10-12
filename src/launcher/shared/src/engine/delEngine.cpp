@@ -250,10 +250,11 @@ delEngineModule *delEngine::GetBestModuleForType( deModuleSystem::eModuleTypes m
 				bestModule = module;
 			}
 			
-		}else{
-			if( ! bestModule || bestModule->GetIsFallback() ){
-				bestModule = module;
-			}
+		// for non-fallback pick the highest version of the first module
+		}else if( ! bestModule || bestModule->GetIsFallback()
+		|| ( module->GetName() == bestModule->GetName()
+		&& deModuleSystem::CompareVersion( module->GetVersion(), bestModule->GetVersion() ) > 0 ) ){
+			bestModule = module;
 		}
 	}
 	

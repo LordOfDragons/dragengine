@@ -250,15 +250,17 @@ const char *name, const char *version ){
 				continue;
 			}
 			
+			// non-fallback > fallback > none
 			if( module2->GetIsFallback() ){
 				if( ! module ){
 					module = module2;
 				}
 				
-			}else{
-				if( ! module || module->GetIsFallback() ){
-					module = module2;
-				}
+			// for non-fallback pick the highest version of the first module
+			}else if( ! module || module->GetIsFallback()
+			|| ( module2->GetName() == module->GetName()
+			&& deModuleSystem::CompareVersion( module2->GetVersion(), module->GetVersion() ) > 0 ) ){
+				module = module2;
 			}
 		}
 	}
