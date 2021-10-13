@@ -45,6 +45,12 @@ class SimpleTextValidator implements TextValidator
 		/** \brief Only digits, dot and minus allowed. */
 		number
 		
+		/**
+		 * \brief Only digits and dot allowed.
+		 * \version 1.7
+		 */
+		positiveNumber
+		
 		/** \brief Only printable characters allowed. */
 		printable
 	end
@@ -65,24 +71,24 @@ class SimpleTextValidator implements TextValidator
 	 * \param characterClass Character class to allow.
 	 * \throws EInvalidParam maxCharCount is less than 1.
 	 */
-	public func new( int maxCharCount, CharacterClass characterClass )
+	public func new(int maxCharCount, CharacterClass characterClass)
 		if maxCharCount < 1
-			throw EInvalidParam.new( "maxCharCount less than 1" )
+			throw EInvalidParam.new("maxCharCount less than 1")
 		end
-		this.pMaxCharCount = maxCharCount
-		this.pCharacterClass = characterClass
+		pMaxCharCount = maxCharCount
+		pCharacterClass = characterClass
 	end
 	
 	
 	
 	/** \brief Maximum number of characters allowed. */
 	public func int getMaxCharCount()
-		return this.pMaxCharCount
+		return pMaxCharCount
 	end
 	
 	/** \brief Character class to accept. */
 	public func CharacterClass getCharacterClass()
-		return this.pCharacterClass
+		return pCharacterClass
 	end
 	
 	
@@ -90,19 +96,19 @@ class SimpleTextValidator implements TextValidator
 	/**
 	 * \brief Text is valid.
 	 */
-	public func bool validates( String text )
+	public func bool validates(String text)
 		var int length = text.getLength()
-		if length > this.pMaxCharCount
+		if length > pMaxCharCount
 			return false
 		end
 		
 		var int i, c
-		select this.pCharacterClass
+		select pCharacterClass
 		case CharacterClass.all
 			
 		case CharacterClass.digits
 			for i = 0 to length
-				c = text.getAt( i )
+				c = text.getAt(i)
 				if c < '0' or c > '9'
 					return false
 				end
@@ -110,15 +116,23 @@ class SimpleTextValidator implements TextValidator
 			
 		case CharacterClass.number
 			for i = 0 to length
-				c = text.getAt( i )
-				if not ( ( c >= '0' and c <= '9' ) or c == '-' or c == '.' )
+				c = text.getAt(i)
+				if not ((c >= '0' and c <= '9') or c == '-' or c == '.')
+					return false
+				end
+			end
+			
+		case CharacterClass.positiveNumber
+			for i = 0 to length
+				c = text.getAt(i)
+				if not ((c >= '0' and c <= '9') or c == '.')
 					return false
 				end
 			end
 			
 		case CharacterClass.printable
 			for i = 0 to length
-				c = text.getAt( i )
+				c = text.getAt(i)
 				if c < 32
 					return false
 				end
