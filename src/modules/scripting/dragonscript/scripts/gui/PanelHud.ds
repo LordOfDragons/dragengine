@@ -95,184 +95,152 @@ class PanelHud extends Panel
 	
 	/** \brief Create hud panel. */
 	public func new()
-		this.runWhileBlockingLayout( block
-			this.setLayout( BorderLayout.new() )
+		runWhileBlockingLayout(block
+			createContent()
+		end)
+	end
+	
+	/**
+	 * \brief Create hud panel calling block to add content.
+	 * \version 1.7
+	 * 
+	 * Block receives panel as argument. Block call is wrapped inside runWhileBlockingLayout()
+	 * for efficiency. doLayout() will be called after leaving the block.
+	 */
+	public func new(Block blockAddContent)
+		try
+			runWhileBlockingLayout(block
+				createContent()
+				blockAddContent.run(this)
+			end)
+			doLayoutIfBlocked()
 			
-			this.pTop = Panel.new( BorderLayout.new(), block Panel top
-				this.pTopLeft = Panel.new( FlowLayout.new( LayoutAxis.x ) )
-				top.addWidget( this.pTopLeft, BorderLayout.Area.left )
-				
-				this.pTopCenter = Panel.new( FlowLayout.new( LayoutAxis.x ) )
-				top.addWidget( this.pTopCenter, BorderLayout.Area.content )
-				
-				this.pTopRight = Panel.new( FlowLayout.new( LayoutAxis.x ) )
-				top.addWidget( this.pTopRight, BorderLayout.Area.right )
-			end )
-			this.addWidget( this.pTop, BorderLayout.Area.top )
-			
-			this.pBottom = Panel.new( BorderLayout.new(), block Panel bottom
-				this.pBottomLeft = Panel.new( FlowLayout.new( LayoutAxis.x ) )
-				bottom.addWidget( this.pBottomLeft, BorderLayout.Area.left )
-				
-				this.pBottomCenter = Panel.new( FlowLayout.new( LayoutAxis.x ) )
-				bottom.addWidget( this.pBottomCenter, BorderLayout.Area.content )
-				
-				this.pBottomRight = Panel.new( FlowLayout.new( LayoutAxis.x ) )
-				bottom.addWidget( this.pBottomRight, BorderLayout.Area.right )
-			end )
-			this.addWidget( this.pBottom, BorderLayout.Area.bottom )
-			
-			this.pLeft = Panel.new( BorderLayout.new(), block Panel left
-				this.pLeftTop = Panel.new( FlowLayout.new( LayoutAxis.y ) )
-				left.addWidget( this.pLeftTop, BorderLayout.Area.top )
-				
-				this.pLeftCenter = Panel.new( FlowLayout.new( LayoutAxis.y ) )
-				left.addWidget( this.pLeftCenter, BorderLayout.Area.content )
-				
-				this.pLeftBottom = Panel.new( FlowLayout.new( LayoutAxis.y ) )
-				left.addWidget( this.pLeftBottom, BorderLayout.Area.bottom )
-			end )
-			this.addWidget( this.pLeft, BorderLayout.Area.left )
-			
-			this.pRight = Panel.new( BorderLayout.new(), block Panel right
-				this.pRightTop = Panel.new( FlowLayout.new( LayoutAxis.y ) )
-				right.addWidget( this.pRightTop, BorderLayout.Area.top )
-				
-				this.pRightCenter = Panel.new( FlowLayout.new( LayoutAxis.y ) )
-				right.addWidget( this.pRightCenter, BorderLayout.Area.content )
-				
-				this.pRightBottom = Panel.new( FlowLayout.new( LayoutAxis.y ) )
-				right.addWidget( this.pRightBottom, BorderLayout.Area.bottom )
-			end )
-			this.addWidget( this.pRight, BorderLayout.Area.right )
-			
-			this.pCenter = Panel.new( StackLayout.new() )
-			this.addWidget( this.pCenter, BorderLayout.Area.content )
-		end )
-		
-		this.setDesignerSelector( "Panel.PanelHud" )
+		catch Exception e
+			dispose()
+			throw
+		end
 	end
 	
 	/** \brief Dispose of widget. */
 	public func void dispose()
 		super.dispose()
 		
-		this.pTop = null
-		this.pTopLeft = null
-		this.pTopCenter = null
-		this.pTopRight = null
+		pTop = null
+		pTopLeft = null
+		pTopCenter = null
+		pTopRight = null
 		
-		this.pBottom = null
-		this.pBottomLeft = null
-		this.pBottomCenter = null
-		this.pBottomRight = null
+		pBottom = null
+		pBottomLeft = null
+		pBottomCenter = null
+		pBottomRight = null
 		
-		this.pLeft = null
-		this.pLeftTop = null
-		this.pLeftCenter = null
-		this.pLeftBottom = null
+		pLeft = null
+		pLeftTop = null
+		pLeftCenter = null
+		pLeftBottom = null
 		
-		this.pRight = null
-		this.pRightTop = null
-		this.pRightCenter = null
-		this.pRightBottom = null
+		pRight = null
+		pRightTop = null
+		pRightCenter = null
+		pRightBottom = null
 		
-		this.pCenter = null
+		pCenter = null
 	end
 	
 	
 	
 	/** \brief Top row. */
 	public func Panel getTop()
-		return this.pTop
+		return pTop
 	end
 	
 	/** \brief Top row left area. */
 	public func Panel getTopLeft()
-		return this.pTopLeft
+		return pTopLeft
 	end
 	
 	/** \brief Top row center area. */
 	public func Panel getTopCenter()
-		return this.pTopCenter
+		return pTopCenter
 	end
 	
 	/** \brief Top row right area. */
 	public func Panel getTopRight()
-		return this.pTopRight
+		return pTopRight
 	end
 	
 	
 	
 	/** \brief Bottom row. */
 	public func Panel getBottom()
-		return this.pBottom
+		return pBottom
 	end
 	
 	/** \brief Bottom row left area. */
 	public func Panel getBottomLeft()
-		return this.pBottomLeft
+		return pBottomLeft
 	end
 	
 	/** \brief Bottom row center area. */
 	public func Panel getBottomCenter()
-		return this.pBottomCenter
+		return pBottomCenter
 	end
 	
 	/** \brief Bottom row right area. */
 	public func Panel getBottomRight()
-		return this.pBottomRight
+		return pBottomRight
 	end
 	
 	
 	
 	/** \brief Left column. */
 	public func Panel getLeft()
-		return this.pLeft
+		return pLeft
 	end
 	
 	/** \brief Left column top area. */
 	public func Panel getLeftTop()
-		return this.pLeftTop
+		return pLeftTop
 	end
 	
 	/** \brief Left column center area. */
 	public func Panel getLeftCenter()
-		return this.pLeftCenter
+		return pLeftCenter
 	end
 	
 	/** \brief Left column bottom area. */
 	public func Panel getLeftBottom()
-		return this.pLeftBottom
+		return pLeftBottom
 	end
 	
 	
 	
 	/** \brief Right column. */
 	public func Panel getRight()
-		return this.pRight
+		return pRight
 	end
 	
 	/** \brief Right column top area. */
 	public func Panel getRightTop()
-		return this.pRightTop
+		return pRightTop
 	end
 	
 	/** \brief Right column center area. */
 	public func Panel getRightCenter()
-		return this.pRightCenter
+		return pRightCenter
 	end
 	
 	/** \brief Right column bottom area. */
 	public func Panel getRightBottom()
-		return this.pRightBottom
+		return pRightBottom
 	end
 	
 	
 	
 	/** \brief Center area. */
 	public func Panel getCenter()
-		return this.pCenter
+		return pCenter
 	end
 	
 	
@@ -284,22 +252,82 @@ class PanelHud extends Panel
 	 * description. You can change this behavior by overwriting onDesignerSelectorChanged().
 	 */
 	public func void onDesignerSelectorChanged()
-		this.runWhileBlockingLayout( block
-			var String selector = this.getDesignerSelector()
-			this.pTopLeft.setDesignerSelector( selector + ".TopLeft" )
-			this.pTopCenter.setDesignerSelector( selector + ".TopCenter" )
-			this.pTopRight.setDesignerSelector( selector + ".TopRight" )
-			this.pBottomLeft.setDesignerSelector( selector + ".BottomLeft" )
-			this.pBottomCenter.setDesignerSelector( selector + ".BottomCenter" )
-			this.pBottomRight.setDesignerSelector( selector + ".BottomRight" )
-			this.pRightTop.setDesignerSelector( selector + ".RightTop" )
-			this.pRightCenter.setDesignerSelector( selector + ".RightCenter" )
-			this.pRightBottom.setDesignerSelector( selector + ".RightBottom" )
-			this.pLeftTop.setDesignerSelector( selector + ".LeftTop" )
-			this.pLeftCenter.setDesignerSelector( selector + ".LeftCenter" )
-			this.pLeftBottom.setDesignerSelector( selector + ".LeftBottom" )
-			this.pCenter.setDesignerSelector( selector + ".Center" )
-		end )
-		this.doLayoutIfBlocked()
+		runWhileBlockingLayout(block
+			var String selector = getDesignerSelector()
+			pTopLeft.setDesignerSelector(selector + ".TopLeft")
+			pTopCenter.setDesignerSelector(selector + ".TopCenter")
+			pTopRight.setDesignerSelector(selector + ".TopRight")
+			pBottomLeft.setDesignerSelector(selector + ".BottomLeft")
+			pBottomCenter.setDesignerSelector(selector + ".BottomCenter")
+			pBottomRight.setDesignerSelector(selector + ".BottomRight")
+			pRightTop.setDesignerSelector(selector + ".RightTop")
+			pRightCenter.setDesignerSelector(selector + ".RightCenter")
+			pRightBottom.setDesignerSelector(selector + ".RightBottom")
+			pLeftTop.setDesignerSelector(selector + ".LeftTop")
+			pLeftCenter.setDesignerSelector(selector + ".LeftCenter")
+			pLeftBottom.setDesignerSelector(selector + ".LeftBottom")
+			pCenter.setDesignerSelector(selector + ".Center")
+		end)
+		doLayoutIfBlocked()
+	end
+	
+	
+	
+	/** \brief Create content. */
+	private func void createContent()
+		setLayout(BorderLayout.new())
+		
+		pTop = Panel.new(BorderLayout.new(), block Panel top
+			pTopLeft = Panel.new(FlowLayout.new(LayoutAxis.x))
+			top.addWidget(pTopLeft, BorderLayout.Area.left)
+			
+			pTopCenter = Panel.new(FlowLayout.new(LayoutAxis.x))
+			top.addWidget(pTopCenter, BorderLayout.Area.content)
+			
+			pTopRight = Panel.new(FlowLayout.new(LayoutAxis.x))
+			top.addWidget(pTopRight, BorderLayout.Area.right)
+		end)
+		addWidget(pTop, BorderLayout.Area.top)
+		
+		pBottom = Panel.new(BorderLayout.new(), block Panel bottom
+			pBottomLeft = Panel.new(FlowLayout.new(LayoutAxis.x))
+			bottom.addWidget(pBottomLeft, BorderLayout.Area.left)
+			
+			pBottomCenter = Panel.new(FlowLayout.new(LayoutAxis.x))
+			bottom.addWidget(pBottomCenter, BorderLayout.Area.content)
+			
+			pBottomRight = Panel.new(FlowLayout.new(LayoutAxis.x))
+			bottom.addWidget(pBottomRight, BorderLayout.Area.right)
+		end)
+		addWidget(pBottom, BorderLayout.Area.bottom)
+		
+		pLeft = Panel.new(BorderLayout.new(), block Panel left
+			pLeftTop = Panel.new(FlowLayout.new(LayoutAxis.y))
+			left.addWidget(pLeftTop, BorderLayout.Area.top)
+			
+			pLeftCenter = Panel.new(FlowLayout.new(LayoutAxis.y))
+			left.addWidget(pLeftCenter, BorderLayout.Area.content)
+			
+			pLeftBottom = Panel.new(FlowLayout.new(LayoutAxis.y))
+			left.addWidget(pLeftBottom, BorderLayout.Area.bottom)
+		end)
+		addWidget(pLeft, BorderLayout.Area.left)
+		
+		pRight = Panel.new(BorderLayout.new(), block Panel right
+			pRightTop = Panel.new(FlowLayout.new(LayoutAxis.y))
+			right.addWidget(pRightTop, BorderLayout.Area.top)
+			
+			pRightCenter = Panel.new(FlowLayout.new(LayoutAxis.y))
+			right.addWidget(pRightCenter, BorderLayout.Area.content)
+			
+			pRightBottom = Panel.new(FlowLayout.new(LayoutAxis.y))
+			right.addWidget(pRightBottom, BorderLayout.Area.bottom)
+		end)
+		addWidget(pRight, BorderLayout.Area.right)
+		
+		pCenter = Panel.new(StackLayout.new())
+		addWidget(pCenter, BorderLayout.Area.content)
+		
+		setDesignerSelector("Panel.PanelHud")
 	end
 end
