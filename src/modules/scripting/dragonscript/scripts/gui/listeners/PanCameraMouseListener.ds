@@ -1,0 +1,190 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2021, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui
+
+pin Dragengine.CameraDirectors
+pin Dragengine.Gui.Events
+pin Dragengine.Scenery
+pin Dragengine.Utils
+
+
+/**
+ * \brief Pan camera director.
+ * \version 1.7
+ * 
+ * Set mouse button and modifiers required to trigger the listener. Once triggered moving
+ * is translated to displacement of camera position relative to current camera matrix.
+ * 
+ * This listener actually moves the element the camera director is attached to.
+ */
+class PanCameraMouseListener extends DefaultMouseListener
+	private var int pButton
+	private var int pModifiers
+	private var Widget pCaptureWidget
+	private var ElementCameraDirector pDirector
+	private var float pSpeed
+	private var Point pPosition
+	private var DVector pAnchorPosition
+	private var DMatrix pViewMatrix
+	
+	
+	
+	/**
+	 * \brief Create mouse listener tracking right mouse button with no modifiers.
+	 * \param director Camera director to update.
+	 */
+	public func new(ElementCameraDirector director) \
+	this(director, InputEventMouseButton.right, InputEventModifier.shift)
+	end
+	
+	/**
+	 * \brief Create mouse listener.
+	 * \param director Camera director to update.
+	 * \param trackButton Value from InputEventMouseButton or custom.
+	 * \param modifiers Modifiers from InputEventModifier or custom.
+	 */
+	public func new(ElementCameraDirector director, int trackButton, int modifiers)
+		if director == null
+			throw ENullPointer.new("director")
+		end
+		
+		pButton = trackButton
+		pModifiers = modifiers
+		pDirector = director
+		pSpeed = 1.0 / 300.0 // 1m per 300 pixels
+	end
+	
+	
+	
+	/** \brief Mouse button to track. */
+	public func int getButton()
+		return pButton
+	end
+	
+	/** \brief Modifiers to track. */
+	public func int getModifiers()
+		return pModifiers
+	end
+	
+	/** \brief Camera director to update. */
+	public func ElementCameraDirector getDirector()
+		return pDirector
+	end
+	
+	/**
+	 * \brief Movement speed in meters per pixel.
+	 * 
+	 * Negative speed moves in the opposite direction.
+	 */
+	public func float getSpeed()
+		return pSpeed
+	end
+	
+	/**
+	 * \brief Set movement speed in meters per pixel.
+	 * 
+	 * Negative speed moves in the opposite direction.
+	 */
+	public func void setSpeed(float speed)
+		pSpeed = speed
+	end
+	
+	
+	
+	/**
+	 * \brief Mouse button pressed.
+	 * 
+	 * Captures mouse and starts tracking if button and modifiers match.
+	 */
+	public func void onButtonPress(MouseEvent event)
+		if event.getButton() != pButton or event.getModifiers() != pModifiers
+			return
+		end
+		if not event.getSource() castable Widget
+			return
+		end
+		if pDirector.getElement() == null
+			return
+		end
+		
+		pPosition = event.getPosition()
+		pAnchorPosition = pDirector.getElement().getPosition()
+		pViewMatrix = pDirector.getCameraMatrix().getRotation().normalize()
+		
+		pCaptureWidget = event.getSource() cast Widget
+		pCaptureWidget.captureMouse()
+		
+		onStartPan()
+	end
+	
+	/**
+	 * \brief Mouse moved.
+	 * 
+	 * Rotate camera if tracking.
+	 */
+	public func void onMouseMove(MouseEvent event)
+		if pPosition == null or pDirector.getElement() == null
+			return
+		end
+		
+		var Vector2 movement = Vector2.new(event.getPosition() - pPosition)
+		
+		pDirector.getElement().setPosition(pAnchorPosition \
+			+ pViewMatrix.getRightVector() * (-pSpeed * movement.getX()) \
+			+ pViewMatrix.getUpVector() * (pSpeed * movement.getY()))
+		
+		onPan()
+	end
+	
+	/**
+	 * \brief Mouse button release.
+	 * 
+	 * If tracking stop tracking and release mouse capture.
+	 */
+	public func void onButtonRelease(MouseEvent event)
+		if pPosition == null
+			return
+		end
+		
+		pCaptureWidget.releaseMouse()
+		pCaptureWidget = null
+		
+		onStopPan()
+		
+		pPosition = null
+	end
+	
+	
+	
+	/** \brief Start rotating camera director. */
+	protected func void onStartPan()
+	end
+	
+	/** \brief Camera director has been rotated. */
+	protected func void onPan()
+	end
+	
+	/** \brief Stop rotating camera director. */
+	protected func void onStopPan()
+	end
+end
