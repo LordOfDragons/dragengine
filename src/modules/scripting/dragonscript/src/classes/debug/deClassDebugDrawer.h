@@ -62,6 +62,8 @@ private:
 	struct sInitData{
 		dsClass *clsDD, *clsVoid, *clsInt, *clsStr, *clsObj, *clsBool, *clsFlt;
 		dsClass *clsClr, *clsVec, *clsDVec, *clsQuat, *clsShapeList;
+		dsClass *clsModel;
+		dsClass *clsMatrix;
 	};
 #define DEF_NATFUNC(name) \
 	class name : public dsFunction{ \
@@ -93,6 +95,13 @@ private:
 	
 	DEF_NATFUNC( nfShapeSetShapes );
 	DEF_NATFUNC( nfShapeRemoveAllShapes );
+	
+	DEF_NATFUNC( nfShapeAddFace );
+	DEF_NATFUNC( nfShapeFaceAddVertex );
+	DEF_NATFUNC( nfShapeFaceCalculateNormal );
+	DEF_NATFUNC( nfShapeRemoveAllFaces );
+	DEF_NATFUNC( nfShapeFinishedFaces );
+	DEF_NATFUNC( nfShapeSetFacesFromModel );
 	
 	DEF_NATFUNC( nfShapeSetEdgeColor );
 	DEF_NATFUNC( nfShapeSetFillColor );
