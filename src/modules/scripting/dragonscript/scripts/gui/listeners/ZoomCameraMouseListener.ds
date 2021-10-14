@@ -37,6 +37,8 @@ pin Dragengine.Utils
  * 
  * The minimum distance is clamped to 0 while the maximum distance is free. Optionally
  * the minimum distance can be adjusted and the maximum distance can be clamped.
+ * 
+ * The camera director is not required to have an element assigned.
  */
 class ZoomCameraMouseListener extends DefaultMouseListener
 	private var int pButton

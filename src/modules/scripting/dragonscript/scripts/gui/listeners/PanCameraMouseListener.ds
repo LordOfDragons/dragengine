@@ -35,7 +35,9 @@ pin Dragengine.Utils
  * Set mouse button and modifiers required to trigger the listener. Once triggered moving
  * is translated to displacement of camera position relative to current camera matrix.
  * 
- * This listener actually moves the element the camera director is attached to.
+ * This listener actually moves the pivot of the camera director.
+ * 
+ * The camera director is not required to have an element assigned.
  */
 class PanCameraMouseListener extends DefaultMouseListener
 	private var int pButton
@@ -44,7 +46,7 @@ class PanCameraMouseListener extends DefaultMouseListener
 	private var ElementCameraDirector pDirector
 	private var float pSpeed
 	private var Point pPosition
-	private var DVector pAnchorPosition
+	private var DVector pAnchorPivot
 	private var DMatrix pViewMatrix
 	
 	
@@ -123,12 +125,9 @@ class PanCameraMouseListener extends DefaultMouseListener
 		if not event.getSource() castable Widget
 			return
 		end
-		if pDirector.getElement() == null
-			return
-		end
 		
 		pPosition = event.getPosition()
-		pAnchorPosition = pDirector.getElement().getPosition()
+		pAnchorPivot = pDirector.getPivot()
 		pViewMatrix = pDirector.getCameraMatrix().getRotation().normalize()
 		
 		pCaptureWidget = event.getSource() cast Widget
@@ -143,13 +142,13 @@ class PanCameraMouseListener extends DefaultMouseListener
 	 * Rotate camera if tracking.
 	 */
 	public func void onMouseMove(MouseEvent event)
-		if pPosition == null or pDirector.getElement() == null
+		if pPosition == null
 			return
 		end
 		
 		var Vector2 movement = Vector2.new(event.getPosition() - pPosition)
 		
-		pDirector.getElement().setPosition(pAnchorPosition \
+		pDirector.setPivot(pAnchorPivot \
 			+ pViewMatrix.getRightVector() * (-pSpeed * movement.getX()) \
 			+ pViewMatrix.getUpVector() * (pSpeed * movement.getY()))
 		

@@ -38,6 +38,8 @@ pin Dragengine.Utils
  * 
  * The elevation is clamped to the range from -90 to 90 while the azimuth is free to rotate.
  * Optionally the azimuth can be clamped too.
+ * 
+ * The camera director is not required to have an element assigned.
  */
 class RotateCameraMouseListener extends DefaultMouseListener
 	private var int pButton
