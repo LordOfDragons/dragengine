@@ -36,7 +36,7 @@
 
 devkCommandPool::devkCommandPool( devkDevice &device, uint32_t queueFamily ) :
 pDevice( device ),
-pPool( nullptr )
+pPool( VK_NULL_HANDLE )
 {
 	try{
 		VK_IF_CHECK( deSharedVulkan &vulkan = device.GetInstance().GetVulkan() );
@@ -48,7 +48,7 @@ pPool( nullptr )
 		info.queueFamilyIndex = queueFamily;
 		info.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
 		
-		VK_CHECK( vulkan, device.vkCreateCommandPool( device.GetDevice(), &info, nullptr, &pPool ) );
+		VK_CHECK( vulkan, device.vkCreateCommandPool( device.GetDevice(), &info, VK_NULL_HANDLE, &pPool ) );
 		
 	}catch( const deException & ){
 		pCleanUp();
@@ -105,6 +105,6 @@ void devkCommandPool::pCleanUp(){
 	pFreeCommandBuffers.RemoveAll();
 	
 	if( pPool ){
-		pDevice.vkDestroyCommandPool( pDevice.GetDevice(), pPool, nullptr );
+		pDevice.vkDestroyCommandPool( pDevice.GetDevice(), pPool, VK_NULL_HANDLE );
 	}
 }

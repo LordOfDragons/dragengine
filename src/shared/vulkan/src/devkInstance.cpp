@@ -36,7 +36,7 @@
 devkInstance::devkInstance( deSharedVulkan &vulkan, bool enableDebug ) :
 pVulkan( vulkan ),
 pDebug( *this ),
-pInstance( nullptr ),
+pInstance( VK_NULL_HANDLE ),
 pPhysicalDevices( nullptr ),
 pPhysicalDeviceCount( 0 )
 {
@@ -65,8 +65,8 @@ pPhysicalDeviceCount( 0 )
 	pSupportsLayer[ layerValveSteamOverlay64 ].name = "VK_LAYER_VALVE_steam_overlay_64";
 	pSupportsLayer[ layerValveSteamOverlay32 ].name = "VK_LAYER_VALVE_steam_overlay_32";
 	
-	#define INSTANCE_LEVEL_VULKAN_FUNCTION( name ) name = nullptr;
-	#define INSTANCE_LEVEL_VULKAN_FUNCTION_FROM_EXTENSION( name, extension ) name = nullptr;
+	#define INSTANCE_LEVEL_VULKAN_FUNCTION( name ) name = VK_NULL_HANDLE;
+	#define INSTANCE_LEVEL_VULKAN_FUNCTION_FROM_EXTENSION( name, extension ) name = VK_NULL_HANDLE;
 	
 	#include "devkFunctionNames.h"
 	
@@ -147,20 +147,20 @@ void devkInstance::pCleanUp(){
 	pDebug.SetEnabled( false );
 	
 	if( pInstance ){
-		vkDestroyInstance( pInstance, nullptr );
+		vkDestroyInstance( pInstance, VK_NULL_HANDLE );
 	}
 }
 
 void devkInstance::pDetectExtensions(){
 	uint32_t count = 0;
-	VK_CHECK( pVulkan, vkEnumerateInstanceExtensionProperties( nullptr, &count, nullptr ) );
+	VK_CHECK( pVulkan, vkEnumerateInstanceExtensionProperties( VK_NULL_HANDLE, &count, VK_NULL_HANDLE ) );
 	if( count == 0 ){
 		return;
 	}
 	
 	VkExtensionProperties * const extensions = new VkExtensionProperties[ count ];
 	try{
-		VK_CHECK( pVulkan, vkEnumerateInstanceExtensionProperties( nullptr, &count, extensions ) );
+		VK_CHECK( pVulkan, vkEnumerateInstanceExtensionProperties( VK_NULL_HANDLE, &count, extensions ) );
 		
 		// report all extensions for debug purpose
 		deBaseModule &baseModule = pVulkan.GetModule();
@@ -209,7 +209,7 @@ void devkInstance::pDetectExtensions(){
 
 void devkInstance::pDetectLayers(){
 	uint32_t count = 0;
-	VK_CHECK( pVulkan, vkEnumerateInstanceLayerProperties( &count, nullptr ) );
+	VK_CHECK( pVulkan, vkEnumerateInstanceLayerProperties( &count, VK_NULL_HANDLE ) );
 	if( count == 0 ){
 		return;
 	}
@@ -334,7 +334,7 @@ void devkInstance::pCreateInstance( bool enableValidationLayers ){
 	}
 	
 	// create device
-	VK_CHECK( pVulkan, vkCreateInstance( &instanceCreateInfo, nullptr, &pInstance ) );
+	VK_CHECK( pVulkan, vkCreateInstance( &instanceCreateInfo, VK_NULL_HANDLE, &pInstance ) );
 }
 
 void devkInstance::pLoadFunctions(){
@@ -354,7 +354,7 @@ void devkInstance::pLoadFunctions(){
 
 void devkInstance::pFindDevices(){
 	uint32_t deviceCount = 0;
-	VK_CHECK( pVulkan, vkEnumeratePhysicalDevices( pInstance, &deviceCount, nullptr ) );
+	VK_CHECK( pVulkan, vkEnumeratePhysicalDevices( pInstance, &deviceCount, VK_NULL_HANDLE ) );
 	
 	if( deviceCount > 0 ){
 		pPhysicalDevices = new VkPhysicalDevice[ deviceCount ];

@@ -38,7 +38,7 @@
 devkDescriptorSet::devkDescriptorSet( devkDescriptorPool &pool ) :
 pPool( pool ),
 pSlot( pool.Get() ),
-pLayout( nullptr ),
+pLayout( VK_NULL_HANDLE ),
 pSet( pSlot->GetSet() ),
 pBindings( nullptr ),
 pWriteSets( nullptr ),
@@ -58,7 +58,7 @@ pBindingCount( 0 )
 			for( i=0; i<count; i++ ){
 				const VkDescriptorSetLayoutBinding &binding = configuration.GetLayoutBindingAt( i );
 				
-				pBindings[ i ].buffer = nullptr;
+				pBindings[ i ].buffer = VK_NULL_HANDLE;
 				pBindings[ i ].offset = 0;
 				pBindings[ i ].range = VK_WHOLE_SIZE;
 				
@@ -107,7 +107,7 @@ VkDeviceSize offset, VkDeviceSize range ){
 		pBindings[ index ].range = range;
 		
 	}else{
-		pBindings[ index ].buffer = nullptr;
+		pBindings[ index ].buffer = VK_NULL_HANDLE;
 		pBindings[ index ].offset = 0;
 		pBindings[ index ].range = VK_WHOLE_SIZE;
 	}
@@ -123,7 +123,7 @@ void devkDescriptorSet::ClearBinding( int index ){
 	
 	pBuffers[ index ] = nullptr;
 	
-	pBindings[ index ].buffer = nullptr;
+	pBindings[ index ].buffer = VK_NULL_HANDLE;
 	pBindings[ index ].offset = 0;
 	pBindings[ index ].range = VK_WHOLE_SIZE;
 }
@@ -133,7 +133,7 @@ void devkDescriptorSet::ClearAllBindings(){
 	for( i=0; i<pBindingCount; i++ ){
 		pBuffers[ i ] = nullptr;
 		
-		pBindings[ i ].buffer = nullptr;
+		pBindings[ i ].buffer = VK_NULL_HANDLE;
 		pBindings[ i ].offset = 0;
 		pBindings[ i ].range = VK_WHOLE_SIZE;
 	}
@@ -145,7 +145,7 @@ void devkDescriptorSet::Update(){
 	}
 	
 	devkDevice &device = pPool.GetDevice();
-	device.vkUpdateDescriptorSets( device.GetDevice(), pBindingCount, pWriteSets, 0, nullptr );
+	device.vkUpdateDescriptorSets( device.GetDevice(), pBindingCount, pWriteSets, 0, VK_NULL_HANDLE );
 }
 
 

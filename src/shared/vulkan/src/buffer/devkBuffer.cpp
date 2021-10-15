@@ -38,11 +38,11 @@
 devkBuffer::devkBuffer( devkDevice &device, VkDeviceSize size ) :
 pDevice( device ),
 pSize( size ),
-pBuffer( nullptr ),
-pBufferHost( nullptr ),
-pFence( nullptr ),
+pBuffer( VK_NULL_HANDLE ),
+pBufferHost( VK_NULL_HANDLE ),
+pFence( VK_NULL_HANDLE ),
 pFenceActive( false ),
-pCommand( nullptr )
+pCommand( VK_NULL_HANDLE )
 {
 	if( size < 0 ){
 		DETHROW_INFO( deeInvalidParam, "size" );
@@ -62,7 +62,7 @@ pCommand( nullptr )
 		memset( &fenceInfo, 0, sizeof( fenceInfo ) );
 		fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
 		fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
-		VK_CHECK( vulkan, device.vkCreateFence( device.GetDevice(), &fenceInfo, nullptr, &pFence ) );
+		VK_CHECK( vulkan, device.vkCreateFence( device.GetDevice(), &fenceInfo, VK_NULL_HANDLE, &pFence ) );
 		
 	}catch( const deException & ){
 		pCleanUp();
@@ -257,21 +257,21 @@ void devkBuffer::pCleanUp(){
 		pDevice.vkFreeCommandBuffers( device, pCommandPool->GetPool(), 1, &pCommand );
 	}
 	if( pFence ){
-		pDevice.vkDestroyFence( device, pFence, nullptr );
+		pDevice.vkDestroyFence( device, pFence, VK_NULL_HANDLE );
 	}
 	
 	if( pBuffer ){
-		pDevice.vkDestroyBuffer( device, pBuffer, nullptr );
+		pDevice.vkDestroyBuffer( device, pBuffer, VK_NULL_HANDLE );
 	}
 	if( pBufferMemory ){
-		pDevice.vkFreeMemory( device, pBufferMemory, nullptr );
+		pDevice.vkFreeMemory( device, pBufferMemory, VK_NULL_HANDLE );
 	}
 	
 	if( pBufferHost ){
-		pDevice.vkDestroyBuffer( device, pBufferHost, nullptr );
+		pDevice.vkDestroyBuffer( device, pBufferHost, VK_NULL_HANDLE );
 	}
 	if( pBufferHostMemory ){
-		pDevice.vkFreeMemory( device, pBufferHostMemory, nullptr );
+		pDevice.vkFreeMemory( device, pBufferHostMemory, VK_NULL_HANDLE );
 	}
 }
 
@@ -287,7 +287,7 @@ VkBuffer* buffer, VkDeviceMemory *memory, VkDeviceSize size ){
 	bufferInfo.usage = usage;
 	bufferInfo.size = size;
 	bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
-	VK_CHECK( vulkan, pDevice.vkCreateBuffer( device, &bufferInfo, nullptr, buffer ) );
+	VK_CHECK( vulkan, pDevice.vkCreateBuffer( device, &bufferInfo, VK_NULL_HANDLE, buffer ) );
 	
 	// create the memory backing up the buffer handle
 	VkMemoryAllocateInfo allocInfo;
@@ -299,6 +299,6 @@ VkBuffer* buffer, VkDeviceMemory *memory, VkDeviceSize size ){
 	allocInfo.allocationSize = memoryRequirements.size;
 	allocInfo.memoryTypeIndex = pDevice.IndexOfMemoryType( memoryProperty, memoryRequirements );
 	
-	VK_CHECK( vulkan, pDevice.vkAllocateMemory( device, &allocInfo, nullptr, memory ) );
+	VK_CHECK( vulkan, pDevice.vkAllocateMemory( device, &allocInfo, VK_NULL_HANDLE, memory ) );
 	VK_CHECK( vulkan, pDevice.vkBindBufferMemory( device, *buffer, *memory, 0 ) );
 }

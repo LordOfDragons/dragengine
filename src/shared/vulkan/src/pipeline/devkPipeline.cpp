@@ -44,9 +44,9 @@ devkPipeline::devkPipeline( devkDevice &device, const devkPipelineConfiguration 
 pDevice( device ),
 pConfiguration( configuration ),
 pBindPoint( VK_PIPELINE_BIND_POINT_GRAPHICS ),
-pLayout( nullptr ),
-pPipeline( nullptr ),
-pCache( nullptr ),
+pLayout( VK_NULL_HANDLE ),
+pPipeline( VK_NULL_HANDLE ),
+pCache( VK_NULL_HANDLE ),
 pSaveCache( false )
 {
 	try{
@@ -77,7 +77,7 @@ pSaveCache( false )
 		layoutInfo.pSetLayouts = layouts;
 		
 		VK_CHECK( vulkan, device.vkCreatePipelineLayout(
-			device.GetDevice(), &layoutInfo, nullptr, &pLayout ) );
+			device.GetDevice(), &layoutInfo, VK_NULL_HANDLE, &pLayout ) );
 		
 		VkPipelineCacheCreateInfo cacheInfo;
 		memset( &cacheInfo, 0, sizeof( cacheInfo ) );
@@ -114,7 +114,7 @@ pSaveCache( false )
 		// reason for the cache failing then try again
 		try{
 			VK_CHECK( vulkan, pDevice.vkCreatePipelineCache(
-				device.GetDevice(), &cacheInfo, nullptr, &pCache ) );
+				device.GetDevice(), &cacheInfo, VK_NULL_HANDLE, &pCache ) );
 			
 		}catch( const deException &e ){
 			if( cacheInfo.pInitialData ){
@@ -126,7 +126,7 @@ pSaveCache( false )
 				cacheInfo.initialDataSize = 0;
 				
 				VK_CHECK( vulkan, pDevice.vkCreatePipelineCache(
-					device.GetDevice(), &cacheInfo, nullptr, &pCache ) );
+					device.GetDevice(), &cacheInfo, VK_NULL_HANDLE, &pCache ) );
 				
 			}else{
 				throw;
@@ -157,7 +157,7 @@ void devkPipeline::pCleanUp(){
 	VkDevice device = pDevice.GetDevice();
 	
 	if( pPipeline ){
-		pDevice.vkDestroyPipeline( device, pPipeline, nullptr );
+		pDevice.vkDestroyPipeline( device, pPipeline, VK_NULL_HANDLE );
 	}
 	
 	if( pCache ){
@@ -175,7 +175,7 @@ void devkPipeline::pCleanUp(){
 				writer.TakeOver( vfs.OpenFileForWriting( path ) );
 				
 				size_t sizeData = 0;
-				VK_CHECK( vulkan, pDevice.vkGetPipelineCacheData( device, pCache, &sizeData, nullptr ) );
+				VK_CHECK( vulkan, pDevice.vkGetPipelineCacheData( device, pCache, &sizeData, VK_NULL_HANDLE ) );
 				
 				if( sizeData > 0 ){
 					data = new char[ sizeData ];
@@ -193,10 +193,10 @@ void devkPipeline::pCleanUp(){
 			}
 		}
 		
-		pDevice.vkDestroyPipelineCache( device, pCache, nullptr );
+		pDevice.vkDestroyPipelineCache( device, pCache, VK_NULL_HANDLE );
 	}
 	if( pLayout ){
-		pDevice.vkDestroyPipelineLayout( device, pLayout, nullptr );
+		pDevice.vkDestroyPipelineLayout( device, pLayout, VK_NULL_HANDLE );
 	}
 }
 

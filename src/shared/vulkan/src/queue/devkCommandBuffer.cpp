@@ -42,10 +42,10 @@
 
 devkCommandBuffer::devkCommandBuffer( devkCommandPool &pool ) :
 pPool( pool ),
-pBuffer( nullptr ),
+pBuffer( VK_NULL_HANDLE ),
 pRecording( false ),
 pBoundPipeline( nullptr ),
-pFence( nullptr ),
+pFence( VK_NULL_HANDLE ),
 pFenceActive( false ),
 pLLPool( this )
 {
@@ -65,7 +65,7 @@ pLLPool( this )
 		memset( &fenceInfo, 0, sizeof( fenceInfo ) );
 		fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
 		fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
-		VK_CHECK( vulkan, device.vkCreateFence( device.GetDevice(), &fenceInfo, nullptr, &pFence ) );
+		VK_CHECK( vulkan, device.vkCreateFence( device.GetDevice(), &fenceInfo, VK_NULL_HANDLE, &pFence ) );
 		
 	}catch( const deException & ){
 		pCleanUp();
@@ -123,7 +123,7 @@ VkPipelineStageFlags sourceStageMask, VkPipelineStageFlags destStageMask ){
 	barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
 	
 	pPool.GetDevice().vkCmdPipelineBarrier( pBuffer, sourceStageMask, destStageMask,
-		0, 0, nullptr, 1, &barrier, 0, nullptr );
+		0, 0, VK_NULL_HANDLE, 1, &barrier, 0, VK_NULL_HANDLE );
 }
 
 void devkCommandBuffer::BarrierHostShader( devkBuffer *buffer, VkPipelineStageFlags destStageMask ){
@@ -170,7 +170,7 @@ void devkCommandBuffer::BindDescriptorSet( int bindPoint, devkDescriptorSet *des
 	
 	const VkDescriptorSet dset[ 1 ] = { descriptorSet->GetSet() };
 	pPool.GetDevice().vkCmdBindDescriptorSets( pBuffer, pBoundPipeline->GetBindPoint(),
-		pBoundPipeline->GetLayout(), bindPoint, 1, dset, 0, nullptr );
+		pBoundPipeline->GetLayout(), bindPoint, 1, dset, 0, VK_NULL_HANDLE );
 }
 
 void devkCommandBuffer::DispatchCompute( const decPoint3 &group ){
@@ -300,6 +300,6 @@ void devkCommandBuffer::pCleanUp(){
 		device.vkFreeCommandBuffers( device.GetDevice(), pPool.GetPool(), 1, &pBuffer );
 	}
 	if( pFence ){
-		device.vkDestroyFence( device.GetDevice(), pFence, nullptr );
+		device.vkDestroyFence( device.GetDevice(), pFence, VK_NULL_HANDLE );
 	}
 }

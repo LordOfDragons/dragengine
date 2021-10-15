@@ -38,7 +38,7 @@ devkDescriptorSetLayout::devkDescriptorSetLayout( devkDevice &device,
 	const devkDescriptorSetLayoutConfiguration &configuration ) :
 pDevice( device ),
 pConfiguration( configuration ),
-pLayout( nullptr )
+pLayout( VK_NULL_HANDLE )
 {
 	VkDescriptorSetLayoutBinding layoutBindings;
 	memset( &layoutBindings, 0, sizeof( layoutBindings ) );
@@ -64,7 +64,7 @@ pLayout( nullptr )
 		layout.bindingCount = configuration.GetLayoutBindingCount();
 		
 		VK_CHECK( device.GetInstance().GetVulkan(), device.vkCreateDescriptorSetLayout(
-			device.GetDevice(), &layout, nullptr, &pLayout ) );
+			device.GetDevice(), &layout, VK_NULL_HANDLE, &pLayout ) );
 		
 		if( bindings ){
 			delete [] bindings;
@@ -80,7 +80,7 @@ pLayout( nullptr )
 
 devkDescriptorSetLayout::~devkDescriptorSetLayout(){
 	if( pLayout ){
-		pDevice.vkDestroyDescriptorSetLayout( pDevice.GetDevice(), pLayout, nullptr );
+		pDevice.vkDestroyDescriptorSetLayout( pDevice.GetDevice(), pLayout, VK_NULL_HANDLE );
 	}
 }
 

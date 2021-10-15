@@ -70,7 +70,7 @@ devkPipeline( device, configuration )
 	}
 	
 	VK_CHECK( vulkan, pDevice.vkCreateComputePipelines( device.GetDevice(),
-		pCache, 1, &pipelineInfo, nullptr, &pPipeline ) );
+		pCache, 1, &pipelineInfo, VK_NULL_HANDLE, &pPipeline ) );
 	
 	pSaveCache = true;
 }

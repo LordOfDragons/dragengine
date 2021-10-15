@@ -52,7 +52,7 @@ pConfig( config ),
 pFamilyIndexGraphic( 0 ),
 pFamilyIndexCompute( 0 ),
 pFamilyIndexTransfer( 0 ),
-pDevice( nullptr ),
+pDevice( VK_NULL_HANDLE ),
 pQueues( nullptr ),
 pDescriptorSetLayoutManager( *this ),
 pShaderModuleManager( *this ),
@@ -75,8 +75,8 @@ pPipelineManager( *this )
 		DETHROW_INFO( deeInvalidParam, "config.transferQueueCount" );
 	}
 	
-	#define DEVICE_LEVEL_VULKAN_FUNCTION( name ) name = nullptr;
-	#define DEVICE_LEVEL_VULKAN_FUNCTION_FROM_EXTENSION( name, extension ) name = nullptr;
+	#define DEVICE_LEVEL_VULKAN_FUNCTION( name ) name = VK_NULL_HANDLE;
+	#define DEVICE_LEVEL_VULKAN_FUNCTION_FROM_EXTENSION( name, extension ) name = VK_NULL_HANDLE;
 	
 	#include "devkFunctionNames.h"
 	
@@ -187,8 +187,8 @@ void devkDevice::pCleanUp(){
 	
 	// now it is safe to destroy the device
 	if( pDevice ){
-		vkDestroyDevice( pDevice, nullptr );
-		pDevice = nullptr;
+		vkDestroyDevice( pDevice, VK_NULL_HANDLE );
+		pDevice = VK_NULL_HANDLE;
 	}
 }
 
@@ -203,7 +203,7 @@ void devkDevice::pCreateDevice(){
 	const float defaultQueuePriority = 0.0f;
 	
 	uint32_t queueFamilyCount;
-	pInstance.vkGetPhysicalDeviceQueueFamilyProperties( pPhysicalDevice, &queueFamilyCount, nullptr );
+	pInstance.vkGetPhysicalDeviceQueueFamilyProperties( pPhysicalDevice, &queueFamilyCount, VK_NULL_HANDLE );
 	
 	VkQueueFamilyProperties *queueFamilyProperties = nullptr;
 	if( queueFamilyCount == 0 ){
@@ -287,7 +287,7 @@ void devkDevice::pCreateDevice(){
 	deviceCreateInfo.queueCreateInfoCount = requiredQueueCount;
 	deviceCreateInfo.pQueueCreateInfos = &queueCreateInfo[ 0 ];
 	VK_CHECK( pInstance.GetVulkan(), pInstance.vkCreateDevice( pPhysicalDevice,
-		&deviceCreateInfo, nullptr, &pDevice ) );
+		&deviceCreateInfo, VK_NULL_HANDLE, &pDevice ) );
 	
 	// load functions. below requires them
 	pLoadFunctions();
@@ -300,7 +300,7 @@ void devkDevice::pCreateDevice(){
 		int nextQueue = 0;
 		
 		for( i=0; i<pConfig.graphicQueueCount; i++ ){
-			VkQueue queue = nullptr;
+			VkQueue queue = VK_NULL_HANDLE;
 			vkGetDeviceQueue( pDevice, pFamilyIndexGraphic, i, &queue );
 			if( ! queue ){
 				DETHROW_INFO( deeInvalidAction, "get graphic device queue failed" );
@@ -309,7 +309,7 @@ void devkDevice::pCreateDevice(){
 		}
 		
 		for( i=0; i<pConfig.computeQueueCount; i++ ){
-			VkQueue queue = nullptr;
+			VkQueue queue = VK_NULL_HANDLE;
 			vkGetDeviceQueue( pDevice, pFamilyIndexCompute, i, &queue );
 			if( ! queue ){
 				DETHROW_INFO( deeInvalidAction, "get compute device queue failed" );
@@ -318,7 +318,7 @@ void devkDevice::pCreateDevice(){
 		}
 		
 		for( i=0; i<pConfig.transferQueueCount; i++ ){
-			VkQueue queue = nullptr;
+			VkQueue queue = VK_NULL_HANDLE;
 			vkGetDeviceQueue( pDevice, pFamilyIndexTransfer, i, &queue );
 			if( ! queue ){
 				DETHROW_INFO( deeInvalidAction, "get transfer device queue failed" );
@@ -352,14 +352,16 @@ void devkDevice::pGetProperties(){
 void devkDevice::pDetectExtensions(){
 	deSharedVulkan &vulkan = pInstance.GetVulkan();
 	uint32_t count = 0;
-	VK_CHECK( vulkan, pInstance.vkEnumerateDeviceExtensionProperties( pPhysicalDevice, nullptr, &count, nullptr ) );
+	VK_CHECK( vulkan, pInstance.vkEnumerateDeviceExtensionProperties(
+		pPhysicalDevice, VK_NULL_HANDLE, &count, VK_NULL_HANDLE ) );
 	if( count == 0 ){
 		return;
 	}
 	
 	VkExtensionProperties * const extensions = new VkExtensionProperties[ count ];
 	try{
-		VK_CHECK( vulkan, pInstance.vkEnumerateDeviceExtensionProperties( pPhysicalDevice, nullptr, &count, extensions ) );
+		VK_CHECK( vulkan, pInstance.vkEnumerateDeviceExtensionProperties(
+			pPhysicalDevice, VK_NULL_HANDLE, &count, extensions ) );
 		
 		// report all extensions reported for debug purpose
 		deBaseModule &baseModule = vulkan.GetModule();

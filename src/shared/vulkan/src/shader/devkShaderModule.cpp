@@ -39,7 +39,7 @@ pDevice( device ),
 pPath( path ),
 pSource( nullptr ),
 pSourceLength( 0 ),
-pModule( nullptr )
+pModule( VK_NULL_HANDLE )
 {
 	try{
 		VK_IF_CHECK( deSharedVulkan &vulkan = device.GetInstance().GetVulkan() );
@@ -84,7 +84,7 @@ devkShaderModule::~devkShaderModule(){
 
 void devkShaderModule::pCleanUp(){
 	if( pModule ){
-		pDevice.vkDestroyShaderModule( pDevice.GetDevice(), pModule, nullptr );
+		pDevice.vkDestroyShaderModule( pDevice.GetDevice(), pModule, VK_NULL_HANDLE );
 	}
 	if( pSource ){
 		delete [] pSource;

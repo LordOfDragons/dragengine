@@ -45,7 +45,7 @@ pOutOfMemory( false )
 		VkDevice device = owner.GetDevice().GetDevice();
 		
 		VK_CHECK( vulkan, owner.GetDevice().vkCreateDescriptorPool(
-			device, &poolCreateInfo, nullptr, &pPool ) );
+			device, &poolCreateInfo, VK_NULL_HANDLE, &pPool ) );
 		
 	}catch( const deException & ){
 		pCleanUp();
@@ -90,7 +90,7 @@ devkDescriptorPoolSlot * devkDescriptorPoolPool::Get(){
 	allocInfo.pSetLayouts = setLayouts;
 	allocInfo.descriptorSetCount = 1;
 	
-	VkDescriptorSet set = nullptr;
+	VkDescriptorSet set = VK_NULL_HANDLE;
 	VkResult result = pOwner.GetDevice().vkAllocateDescriptorSets( device, &allocInfo, &set );
 	
 	switch( result ){
@@ -132,6 +132,6 @@ void devkDescriptorPoolPool::Return( devkDescriptorPoolSlot *slot ){
 
 void devkDescriptorPoolPool::pCleanUp(){
 	if( pPool ){
-		pOwner.GetDevice().vkDestroyDescriptorPool( pOwner.GetDevice().GetDevice(), pPool, nullptr );
+		pOwner.GetDevice().vkDestroyDescriptorPool( pOwner.GetDevice().GetDevice(), pPool, VK_NULL_HANDLE );
 	}
 }
