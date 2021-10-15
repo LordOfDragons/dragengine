@@ -36,6 +36,7 @@ namespace Dragengine.Gui.Events
  * - StateChangeEvent: 70 - 79
  * - WindowEvent: 80 - 89
  * - GamepadEvent: 90 - 99
+ * - MousePointerEvent: 100 - 109
  */
 class Event
 	/** \brief Event source. */

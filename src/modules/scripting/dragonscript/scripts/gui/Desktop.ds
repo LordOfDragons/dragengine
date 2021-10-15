@@ -87,6 +87,7 @@ class Desktop extends Container
 	
 	/** \brief Mouse pointer is hidden. */
 	private var bool pMouseHidden
+	private var Array pMousePointerListeners
 	
 	
 	
@@ -118,6 +119,7 @@ class Desktop extends Container
 	public func new( int x, int y, int width, int height ) super( x, y, width, height )
 		this.pDragOffset = Point.new()
 		this.pNoWindowBorder = BorderSize.new()
+		pMousePointerListeners = Array.new()
 		
 		this.pTrackDecorationAreaHover = Decoration.Area.nothing
 		
@@ -133,6 +135,7 @@ class Desktop extends Container
 		this.pFocusWidget = null
 		this.pFocusInProgress = null
 		
+		pMousePointerListeners = null
 		this.pHoverWidget = null
 		this.pTrackDecoration = null
 		
@@ -347,6 +350,9 @@ class Desktop extends Container
 		if this.pMousePointerInstance != null
 			this.pMousePointerInstance.setPosition( location )
 		end
+		
+		onMousePointerMoved(MousePointerEvent.new(this,\
+			MousePointerEvent.idMousePointerMoved, pMousePointerInstance))
 	end
 	
 	/**
@@ -425,6 +431,9 @@ class Desktop extends Container
 			canvas.setVisible( not this.pMouseHidden )
 			this.getCanvasWidget().addCanvas( canvas )
 		end
+		
+		onMousePointerChanged(MousePointerEvent.new(this,\
+			MousePointerEvent.idMousePointerMoved, pMousePointerInstance))
 	end
 	
 	/** \brief Mouse pointer instance or null. */
@@ -451,16 +460,46 @@ class Desktop extends Container
 	end
 	
 	/** \brief Set if mouse pointer is hidden. */
-	public func void setIsMouseHidden( bool hidden )
-		if hidden == this.pMouseHidden
+	public func void setIsMouseHidden(bool hidden)
+		if hidden == pMouseHidden
 			return
 		end
 		
-		this.pMouseHidden = hidden
+		pMouseHidden = hidden
 		
-		if this.pMousePointerInstance != null
-			this.pMousePointerInstance.getCanvas().setVisible( not hidden )
+		if pMousePointerInstance != null
+			pMousePointerInstance.getCanvas().setVisible(not hidden)
 		end
+		
+		if hidden
+			onMousePointerHidden(MousePointerEvent.new(this,\
+				MousePointerEvent.idMousePointerHidden, pMousePointerInstance))
+			
+		else
+			onMousePointerHidden(MousePointerEvent.new(this,\
+				MousePointerEvent.idMousePointerShown, pMousePointerInstance))
+		end
+	end
+	
+	
+	
+	/**
+	 * \brief Add mouse pointer listener.
+	 * \version 1.7
+	 */
+	public func void addMousePointerListener(MousePointerListener listener)
+		if listener == null
+			throw ENullPointer.new("listener")
+		end
+		pMousePointerListeners.add(listener)
+	end
+	
+	/**
+	 * \brief Remove mouse pointer listener.
+	 * \version 1.7
+	 */
+	public func void removeMousePointerListener(MousePointerListener listener)
+		pMousePointerListeners.remove(listener)
 	end
 	
 	
@@ -706,67 +745,69 @@ class Desktop extends Container
 	
 	
 	
+	
+	
 	/** Sends an Event to the focus widget or drop it. */
-	public func void processEvent( Event event )
+	public func void processEvent(Event event)
 		var int ident = event.getIdentifier()
 		var Widget eventWidget //, focusWidget
 		var Event eventToSend
 		
 		// check if the event has to work on the focused widget or active window
-		if KeyEvent.isKeyEvent( ident )
+		if KeyEvent.isKeyEvent(ident)
 			var KeyEvent keyEvent = event cast KeyEvent
-			eventWidget = this.pFocusWidget
-			eventToSend = KeyEvent.new( eventWidget, ident, keyEvent.getKeyCode(), \
+			eventWidget = pFocusWidget
+			eventToSend = KeyEvent.new(eventWidget, ident, keyEvent.getKeyCode(), \
 				keyEvent.getModifiers(), keyEvent.getKeyChar(), \
-				keyEvent.getSystem(), keyEvent.getDevice() , keyEvent.getButtonCode() )
+				keyEvent.getSystem(), keyEvent.getDevice() , keyEvent.getButtonCode())
 			// send event if an appropriate widget has been found
 			if eventWidget != null
-				eventWidget.sendEvent( eventToSend )
+				eventWidget.sendEvent(eventToSend)
 			end
 			
-		elif GamepadEvent.isGamepadEvent( ident )
-			if this.pFocusWidget != null
+		elif GamepadEvent.isGamepadEvent(ident)
+			if pFocusWidget != null
 				var GamepadEvent gevent = event cast GamepadEvent
-				eventToSend = GamepadEvent.new( this.pFocusWidget, ident, gevent.getSystem(), \
-					gevent.getDevice(), gevent.getCode(), gevent.getModifiers(), gevent.getAxisValue() )
-				this.pFocusWidget.sendEvent( eventToSend )
+				eventToSend = GamepadEvent.new(pFocusWidget, ident, gevent.getSystem(), \
+					gevent.getDevice(), gevent.getCode(), gevent.getModifiers(), gevent.getAxisValue())
+				pFocusWidget.sendEvent(eventToSend)
 			end
 			
 		elif ident == MouseEvent.idMouseWheeled
-			eventWidget = this.pCaptureWidget
+			eventWidget = pCaptureWidget
 			if eventWidget == null
 				// always update the hover widget. if we do not do this it is possible a widget
 				// changes while the mouse pointer does not move
-				this.updateHoverWidget()
-				eventWidget = this.pHoverWidget
+				updateHoverWidget()
+				eventWidget = pHoverWidget
 			end
 			if eventWidget != null
 				var MouseEvent mevent = event cast MouseEvent
-				eventToSend = MouseEvent.new( eventWidget, ident, mevent.getButton(), \
-					mevent.getModifiers(), mevent.getPosition(), mevent.getSystem(), mevent.getDevice() )
-				eventWidget.sendEvent( eventToSend )
+				eventToSend = MouseEvent.new(eventWidget, ident, mevent.getButton(), \
+					mevent.getModifiers(), mevent.getPosition(), mevent.getSystem(), mevent.getDevice())
+				eventWidget.sendEvent(eventToSend)
 			end
 			
 		// check for events working with a screen location or to a capture widget
-		/*elif MouseEvent.isMouseEvent( ident )
+		/*elif MouseEvent.isMouseEvent(ident)
 			var MouseEvent mouseEvent = event cast MouseEvent
-			this.setMouseLocation( this.pMouseLocation + \
-				Point.new( mouseEvent.getX(), mouseEvent.getY() ) )
-			if this.pCaptureWidget == null
-				eventWidget = this.getWidgetAt( this.pMouseLocation )
+			setMouseLocation(pMouseLocation + \
+				Point.new(mouseEvent.getX(), mouseEvent.getY()))
+			if pCaptureWidget == null
+				eventWidget = getWidgetAt(pMouseLocation)
 			else
-				eventWidget = this.pCaptureWidget
+				eventWidget = pCaptureWidget
 			end
 			if eventWidget != null
-				eventToSend = MouseEvent.new( eventWidget, ident, mouseEvent.getButton(), \
-					mouseEvent.getModifiers(), this.pMouseLocation.getX() - eventWidget.getScreenX(), \
-					this.pMouseLocation.getY() - eventWidget.getScreenY() )
+				eventToSend = MouseEvent.new(eventWidget, ident, mouseEvent.getButton(), \
+					mouseEvent.getModifiers(), pMouseLocation.getX() - eventWidget.getScreenX(), \
+					pMouseLocation.getY() - eventWidget.getScreenY())
 			end
 			// store widget where the mouse is above at the moment
-			this.pHoverWidget = eventWidget
+			pHoverWidget = eventWidget
 			*/
 		else
-			this.sendEvent( event )
+			sendEvent(event)
 		end
 	end
 	
@@ -1355,6 +1396,83 @@ class Desktop extends Container
 		this.forEachWidget( block Window each
 			each.onDesktopResized()
 		end )
+	
+	/**
+	 * \brief Mouse pointer moved.
+	 * \version 1.7
+	 */
+	public func void onMousePointerMoved(MousePointerEvent event)
+		sendEventToListeners(event, false)
+	end
+	
+	/**
+	 * \brief Mouse pointer has been hidden.
+	 * \version 1.7
+	 */
+	public func void onMousePointerHidden(MousePointerEvent event)
+		sendEventToListeners(event, false)
+	end
+	
+	/**
+	 * \brief Mouse pointer has been shown.
+	 * \version 1.7
+	 */
+	public func void onMousePointerShown(MousePointerEvent event)
+		sendEventToListeners(event, false)
+	end
+	
+	/**
+	 * \brief Mouse pointer changed.
+	 * \version 1.7
+	 */
+	public func void onMousePointerChanged(MousePointerEvent event)
+		sendEventToListeners(event, false)
+	end
+	
+	
+	
+	/**
+	 * \brief Send event to all appropriate listeners for events of its kind.
+	 * 
+	 * If there are no listeners the event is send to the parent if \em sendToParent is \em true.
+	 */
+	public func void sendEventToListeners(Event event, bool sendToParent)
+		var int identifier = event.getIdentifier()
+		
+		if MousePointerEvent.isMousePointerEvent(identifier)
+			if pMousePointerListeners != null and pMousePointerListeners.getCount() > 0
+				select identifier
+				case MousePointerEvent.idMousePointerMoved
+					pMousePointerListeners.forEach(block MousePointerListener each
+						each.onMousePointerMoved(event cast MousePointerEvent)
+					end)
+					
+				case MousePointerEvent.idMousePointerHidden
+					pMousePointerListeners.forEach(block MousePointerListener each
+						each.onMousePointerHidden(event cast MousePointerEvent)
+					end)
+					
+				case MousePointerEvent.idMousePointerShown
+					pMousePointerListeners.forEach(block MousePointerListener each
+						each.onMousePointerShown(event cast MousePointerEvent)
+					end)
+					
+				case MousePointerEvent.idMousePointerChanged
+					pMousePointerListeners.forEach(block MousePointerListener each
+						each.onMousePointerChanged(event cast MousePointerEvent)
+					end)
+				end
+				
+			elif sendToParent
+				var Container parent = this.getParent()
+				if parent != null
+					parent.sendEvent(event)
+				end
+			end
+			
+		else
+			super.sendEventToListeners(event, sendToParent)
+		end
 	end
 	
 	
