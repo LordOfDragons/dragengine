@@ -37,7 +37,7 @@
 devkDebug::devkDebug( devkInstance &instance ) :
 pInstance( instance ),
 pEnabled( false ),
-pReportCallback( nullptr ){
+pReportCallback( ( VkDebugReportCallbackEXT )nullptr ){
 }
 
 devkDebug::~devkDebug(){
@@ -107,7 +107,7 @@ void devkDebug::pUnregisterReportCallback(){
 		pInstance.vkDestroyDebugReportCallbackEXT( pInstance.GetInstance(), pReportCallback, nullptr );
 	}
 	
-	pReportCallback = nullptr;
+	pReportCallback = ( VkDebugReportCallbackEXT )nullptr;
 	pInstance.GetVulkan().GetModule().LogInfo( "Debug: Message Callback Unregistered" );
 }
 
