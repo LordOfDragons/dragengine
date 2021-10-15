@@ -49,6 +49,21 @@
 		</canvasCreator>
 	</designer>
 	
+	<designer name='WindowToolTip' type='Window'>
+		<canvasCreator parameter='normal.canvas' extend='framed/background.ccreator.xml'>
+			<colorMatrix parameter='colorMatrix'>
+				<scale r='1' g='1' b='0'/>
+			</colorMatrix>
+		</canvasCreator>
+		<border parameter='normal.border' type='CanvasCreator'>
+			<canvasCreator parameter='canvasCreator' extend='framed/normal.ccreator.xml'/>
+			<borderSize parameter='size' all='2'/>
+		</border>
+		<borderSize parameter='normal.padding' all='2'/>
+		<color parameter='normal.textColor' r='0' g='0' b='0'/>
+		<font parameter='normal.font' size='15'>fonts/sans15.defont</font>
+	</designer>
+	
 	<designer name='WindowFullScreen' type='Window'>
 		<canvasCreator parameter='normal.canvas' type='Rectangle'>
 			<color parameter='colorFill' r='0' g='0' b='0'/>
@@ -139,7 +154,7 @@
 			<canvasCreator parameter='canvasCreator' extend='framed/normal.ccreator.xml'/>
 			<borderSize parameter='size' all='2'/>
 		</border>
-		<borderSize parameter='normal.padding' left='2'/>
+		<borderSize parameter='normal.padding' all='2'/>
 		<color parameter='normal.textColor' r='0' g='0' b='0'/>
 		<font parameter='normal.font' size='15'>fonts/sans15.defont</font>
 		
@@ -167,7 +182,7 @@
 			<canvasCreator parameter='canvasCreator' extend='framed/normal.ccreator.xml'/>
 			<borderSize parameter='size' all='2'/>
 		</border>
-		<borderSize parameter='normal.padding' left='2'/>
+		<borderSize parameter='normal.padding' all='2'/>
 		<color parameter='normal.textColor' r='0' g='0' b='0'/>
 		<font parameter='normal.font' size='15'>fonts/sans15.defont</font>
 		

@@ -1,0 +1,219 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2021, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui
+
+pin Dragengine.Gui.Events
+pin Dragengine.Gui.Layouts
+pin Dragengine.Scenery
+pin Dragengine.Utils.StyledText.Definition
+
+
+/**
+ * \brief Tracks desktop mouse pointer events to display tool tips.
+ * \version 1.7
+ * 
+ * Supports tool tips of type String and StyledTextDocument
+ */
+class ToolTipManager
+	/** \brief Mouse pointer listener. */
+	class ListenMousePointer extends DefaultMousePointerListener
+		private var ToolTipManager pManager
+		
+		public func new(ToolTipManager manager)
+			pManager = manager
+		end
+		
+		/** \brief Mouse pointer changed. */
+		public func void onMousePointerChanged(MousePointerEvent event)
+			pManager.update()
+		end
+		
+		/** \brief Mouse pointer has been hidden. */
+		public func void onMousePointerHidden(MousePointerEvent event)
+			pManager.update()
+		end
+		
+		/** \brief Mouse pointer has been shown. */
+		public func void onMousePointerShown(MousePointerEvent event)
+			pManager.update()
+		end
+		
+		/** \brief Mouse pointer moved. */
+		public func void onMousePointerMoved(MousePointerEvent event)
+			pManager.update()
+		end
+	end
+	
+	
+	
+	private var Desktop pDesktop
+	private var WindowToolTip pPopup
+	private var Object pToolTip
+	private var ListenMousePointer pListenMousePointer
+	
+	
+	
+	/**
+	 * \brief Create tool tip manager.
+	 * \param desktop Desktop widget to listen on.
+	 */
+	public func new(Desktop desktop)
+		if desktop == null
+			throw ENullPointer.new("desktop")
+		end
+		
+		pDesktop = desktop
+		
+		pPopup = WindowToolTip.new()
+		desktop.addWindow(pPopup)
+		
+		pListenMousePointer = ListenMousePointer.new(this)
+		desktop.addMousePointerListener(pListenMousePointer)
+	end
+	
+	/** \brief Dispose of tool tip manager. */
+	public func void dispose()
+		if pListenMousePointer != null and pDesktop != null
+			pDesktop.removeMousePointerListener(pListenMousePointer)
+		end
+		pListenMousePointer = null
+		pDesktop = null
+		
+		setPopup(null)
+		pToolTip = null
+	end
+	
+	
+	
+	/** \brief Desktop to listen on. */
+	public func Desktop getDesktop()
+		return pDesktop
+	end
+	
+	/** \brief Popup window. */
+	public func WindowToolTip getPopup()
+		return pPopup
+	end
+	
+	/**
+	 * \brief Set popup window.
+	 * 
+	 * Disposes of the previous popup window if present.
+	 */
+	protected func void setPopup(WindowToolTip popup)
+		if popup == pPopup
+			return
+		end
+		
+		if pPopup != null
+			pPopup.safeDispose()
+			pPopup = null
+		end
+		
+		pPopup = popup
+		
+		if popup != null
+			pDesktop.addWindow(popup)
+		end
+	end
+	
+	/** \brief Shown tool tip or null. */
+	public func Object getToolTip()
+		return pToolTip
+	end
+	
+	/** \brief Set tool tip to show or null. */
+	protected func void setToolTip(Object toolTip)
+		if toolTip == pToolTip
+			return
+		end
+		
+		pToolTip = toolTip
+		
+		updatePopup()
+		
+		if toolTip != null
+			pPopup.popup(calculateToolTipPosition())
+			
+		else
+			pPopup.popdown()
+		end
+	end
+	
+	
+	
+	/** \brief Update tool tip. */
+	public func void update()
+		var Widget hoverWidet = pDesktop.getHoverWidget()
+		if hoverWidet != null
+			setToolTip(hoverWidet.getToolTip())
+			
+		else
+			setToolTip(null)
+		end
+		
+		if pPopup.getVisible()
+			pPopup.setPosition(calculateToolTipPosition())
+		end
+	end
+	
+	/**
+	 * \brief Calculate position to show tool tip at.
+	 * 
+	 * Position is located at lower left corner of mouse pointer. If mouse pointer is null
+	 * the mouse pointer size is considered to be 0
+	 */
+	protected func Point calculateToolTipPosition()
+		var Point position = pDesktop.getMouseLocation()
+		
+		var MousePointer mousePointer = pDesktop.getMousePointerInstance()
+		if mousePointer != null
+			position = position + Point.new(0, mousePointer.getCanvas().getSize().getY())
+		end
+		
+		return position
+	end
+	
+	/** \brief Update popup window content. */
+	protected func void updatePopup()
+		pPopup.removeAllWidgets()
+		if pToolTip == null
+			return
+		end
+		
+		if pToolTip castable StyledTextDefinition
+			var DisplayStyledText dst = DisplayStyledText.new()
+			dst.setPagedMode(false)
+			dst.setStyledTextDefinition(pToolTip cast StyledTextDefinition)
+			dst.setCanFocus(false)
+			dst.setDesignerSelector("StyledText.ToolTip")
+			pPopup.addWidget(dst)
+			
+		else
+			pPopup.addWidget(Label.new(pToolTip.toString()))
+		end
+		
+		pPopup.fitToContent()
+	end
+end
+
