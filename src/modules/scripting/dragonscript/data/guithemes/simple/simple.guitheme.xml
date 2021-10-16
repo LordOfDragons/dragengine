@@ -40,7 +40,7 @@
 	
 	<designer name='WindowToolTip' type='Window'>
 		<canvasCreator parameter='normal.canvas' type='Rectangle'>
-			<color parameter='colorFill' r='1' g='1' b='0'/>
+			<color parameter='colorFill' r='0' g='0' b='0' a='0.5'/>
 		</canvasCreator>
 		<border parameter='normal.border' type='Bevel'>
 			<boolean parameter='raised'>false</boolean>
@@ -48,7 +48,11 @@
 			<color parameter='colorShadow' r='0.5' g='0.5' b='0.5'/>
 		</border>
 		<borderSize parameter='normal.padding' all='2'/>
-		<color parameter='normal.textColor' r='0' g='0' b='0'/>
+	</designer>
+	
+	<designer name='Label.WindowToolTip' type='Label'>
+		<string parameter='normal.alignment'>left,top</string>
+		<color parameter='normal.textColor' r='1' g='1' b='1'/>
 		<font parameter='normal.font' size='15'>../modern/fonts/sans15.defont</font>
 	</designer>
 	

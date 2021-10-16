@@ -52,15 +52,23 @@
 	<designer name='WindowToolTip' type='Window'>
 		<canvasCreator parameter='normal.canvas' extend='framed/background.ccreator.xml'>
 			<colorMatrix parameter='colorMatrix'>
-				<scale r='1' g='1' b='0'/>
+				<scale r='0' g='0' b='0' a='0.5'/>
 			</colorMatrix>
 		</canvasCreator>
 		<border parameter='normal.border' type='CanvasCreator'>
-			<canvasCreator parameter='canvasCreator' extend='framed/normal.ccreator.xml'/>
+			<canvasCreator parameter='canvasCreator' extend='framed/normal.ccreator.xml'>
+				<colorMatrix parameter='colorMatrix'>
+					<scale r='0.75' g='0.75' b='0.75' a='0.65'/>
+				</colorMatrix>
+			</canvasCreator>
 			<borderSize parameter='size' all='2'/>
 		</border>
 		<borderSize parameter='normal.padding' all='2'/>
-		<color parameter='normal.textColor' r='0' g='0' b='0'/>
+	</designer>
+	
+	<designer name='Label.WindowToolTip' type='Label'>
+		<string parameter='normal.alignment'>left,top</string>
+		<color parameter='normal.textColor' r='1' g='1' b='1'/>
 		<font parameter='normal.font' size='15'>fonts/sans15.defont</font>
 	</designer>
 	
