@@ -29,11 +29,10 @@ pin Dragengine.Gui.Layouts
  * \brief Settings window.
  * 
  * Provides typical settings dialog window. The window can be customized by adding settings
- * panels. Some common setting panels can be added with the addPanelBindings() and
- * addPanelModuleParameters() method. Each panel has an accompanying toggle button which
- * is used to show the panel. The buttons can be added to any of the border areas around
- * the panels. In addition the typical "Save" and "Cancel" buttons can be added to any of
- * the button areas.
+ * sheets. Some common setting sheets can be added using WSSModuleParameters or WSSEditBindings.
+ * Each sheet has an accompanying toggle button which is used to show the panel. The buttons
+ * can be added to any of the border areas around the panels. In addition the typical
+ * "Save" and "Cancel" buttons can be added to any of the button areas.
  * 
  * These designer selectors can be used to style the window and the content inside:
  * - "Window.{Base}": Settings window
