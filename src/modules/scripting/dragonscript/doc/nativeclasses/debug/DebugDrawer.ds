@@ -197,5 +197,14 @@ class DebugDrawer
 	 */
 	public func void shapeSetFacesFromModel(int shape, Model model, Matrix matrix)
 	end
+	
+	/**
+	 * \brief Set shape faces from model for faces matching texture.
+	 * \version 1.7
+	 * 
+	 * Vertices are transformed by matrix. Automatically calls shapeFinishedFaces.
+	 */
+	public func void shapeSetFacesFromModel(int shape, Model model, String texture, Matrix matrix)
+	end
 	/*@}*/
 end

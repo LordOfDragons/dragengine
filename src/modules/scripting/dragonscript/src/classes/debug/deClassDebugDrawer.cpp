@@ -481,6 +481,66 @@ void deClassDebugDrawer::nfShapeSetFacesFromModel::RunFunction( dsRunTime *rt, d
 	ddrawer.NotifyShapeContentChanged();
 }
 
+// public func void shapeSetFacesFromModel(int shape, Model model, String texture, Matrix matrix)
+deClassDebugDrawer::nfShapeSetFacesFromModel2::nfShapeSetFacesFromModel2( const sInitData &init ) :
+dsFunction( init.clsDD, "shapeSetFacesFromModel", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsInt ); // shape
+	p_AddParameter( init.clsModel ); // model
+	p_AddParameter( init.clsStr ); // texture
+	p_AddParameter( init.clsMatrix ); // matrix
+}
+void deClassDebugDrawer::nfShapeSetFacesFromModel2::RunFunction( dsRunTime *rt, dsValue *myself ){
+	deDebugDrawer &ddrawer = *( ( ( sDDNatDat* )p_GetNativeData( myself ) )->ddrawer );
+	const deScriptingDragonScript &ds = *( ( ( deClassDebugDrawer* )GetOwnerClass() )->GetDS() );
+	
+	deDebugDrawerShape &ddshape = *ddrawer.GetShapeAt( rt->GetValue( 0 )->GetInt() );
+	const deModel * const model = ds.GetClassModel()->GetModel( rt->GetValue( 1 )->GetRealObject() );
+	if( ! model ){
+		DSTHROW_INFO( dueNullPointer, "model" );
+	}
+	
+	ddshape.RemoveAllFaces();
+	
+	const int texture = model->IndexOfTextureNamed( rt->GetValue( 2 )->GetString() );
+	if( texture == -1 ){
+		return;
+	}
+	
+	const decMatrix &matrix = ds.GetClassMatrix()->GetMatrix( rt->GetValue( 3 )->GetRealObject() );
+	
+	const deModelLOD &lod = *model->GetLODAt( 0 );
+	const deModelVertex * const vertices = lod.GetVertices();
+	const deModelFace * const faces = lod.GetFaces();
+	deDebugDrawerShapeFace *ddsface = nullptr;
+	const int faceCount = lod.GetFaceCount();
+	int i;
+	
+	try{
+		for( i=0; i<faceCount; i++ ){
+			const deModelFace &face = faces[ i ];
+			if( face.GetTexture() != texture ){
+				continue;
+			}
+			
+			ddsface = new deDebugDrawerShapeFace;
+			ddsface->AddVertex( matrix * vertices[ face.GetVertex1() ].GetPosition() );
+			ddsface->AddVertex( matrix * vertices[ face.GetVertex2() ].GetPosition() );
+			ddsface->AddVertex( matrix * vertices[ face.GetVertex3() ].GetPosition() );
+			ddsface->CalculateNormal();
+			ddshape.AddFace( ddsface );
+			ddsface = nullptr;
+		}
+		
+	}catch( ... ){
+		if( ddsface ){
+			delete ddsface;
+		}
+		throw;
+	}
+	
+	ddrawer.NotifyShapeContentChanged();
+}
+
 
 
 // Class deClassDebugDrawer
@@ -565,6 +625,7 @@ void deClassDebugDrawer::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfShapeRemoveAllFaces( init ) );
 	AddFunction( new nfShapeFinishedFaces( init ) );
 	AddFunction( new nfShapeSetFacesFromModel( init ) );
+	AddFunction( new nfShapeSetFacesFromModel2( init ) );
 	
 	// calculate member offsets
 	CalcMemberOffsets();

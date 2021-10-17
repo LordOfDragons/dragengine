@@ -102,6 +102,7 @@ private:
 	DEF_NATFUNC( nfShapeRemoveAllFaces );
 	DEF_NATFUNC( nfShapeFinishedFaces );
 	DEF_NATFUNC( nfShapeSetFacesFromModel );
+	DEF_NATFUNC( nfShapeSetFacesFromModel2 );
 	
 	DEF_NATFUNC( nfShapeSetEdgeColor );
 	DEF_NATFUNC( nfShapeSetFillColor );
