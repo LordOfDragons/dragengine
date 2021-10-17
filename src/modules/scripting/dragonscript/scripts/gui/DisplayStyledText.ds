@@ -232,7 +232,13 @@ class DisplayStyledText extends Widget
 		
 		var StyledTextDocument document = StyledTextDocument.new()
 		document.setDefinition(pStyledTextDocument.getDefinition())
-		document.setPageSize(Point.new(100000, 100000).largest(pageSize))
+		
+		// choose page size. the parameter pageSize is typically pMinPageSize. the size has
+		// to be equal or larger than this. the page size of the document is used as maximum
+		// size similar to Label.setMaximalWidth() . eventually the height has to be very large
+		var int maxWidth = pStyledTextDocument.getDefinition().getPageSize().getX()
+		
+		document.setPageSize(Point.new(maxWidth, 100000).largest(pageSize))
 		document.rebuildPages()
 		
 		var StyledTextRendering page = document.getPageAt(0)
