@@ -64,124 +64,124 @@ class DisplayStyledText extends Widget
 	
 	/** \brief Create widget. */
 	public func new()
-		this.pCurrentPage = 0
-		this.pMinPageSize = Point.new( 50, 50 )
-		this.pPagedMode = true
-		this.pMinSizeForWidthWidth = 0
+		pCurrentPage = 0
+		pMinPageSize = Point.new(50, 50)
+		pPagedMode = true
+		pMinSizeForWidthWidth = 0
 	end
 	
 	
 	
 	/** \brief Minimum page size in case widget size is smaller. */
 	public func Point getMinPageSize()
-		return this.pMinPageSize
+		return pMinPageSize
 	end
 	
 	/** \brief Set minimum page size in case widget size is smaller. */
-	public func void setMinPageSize( Point size )
-		if not ( size > Point.new( 1, 1 ) )
+	public func void setMinPageSize(Point size)
+		if not (size > Point.new())
 			throw EInvalidParam.new()
 		end
-		this.pMinPageSize = size
+		pMinPageSize = size
 	end
 	
 	/** \brief Paged mode. */
 	public func bool getPagedMode()
-		return this.pPagedMode
+		return pPagedMode
 	end
 	
 	/** \brief Set paged mode. */
-	public func void setPagedMode( bool pagedMode )
-		if pagedMode == this.pPagedMode
+	public func void setPagedMode(bool pagedMode)
+		if pagedMode == pPagedMode
 			return
 		end
 		
-		this.pPagedMode = pagedMode
+		pPagedMode = pagedMode
 		
-		if this.pStyledTextDocument != null
+		if pStyledTextDocument != null
 			if pagedMode
-				this.pStyledTextDocument.setPageSize( this.getSize().largest( this.pMinPageSize ) )
+				pStyledTextDocument.setPageSize(getSize().largest(pMinPageSize))
 				
 			else
-				this.pStyledTextDocument.setPageSize( this.getSize().largest( \
-					Point.new( this.pMinPageSize.getX(), 100000 ) ) )
+				pStyledTextDocument.setPageSize(getSize().largest(\
+					Point.new(pMinPageSize.getX(), 100000)))
 			end
 			
-			this.pStyledTextDocument.rebuildPages()
+			pStyledTextDocument.rebuildPages()
 			
-			this.pCurrentPage = 0
-			this.updateCanvasPage()
-			this.pMinSizeBare = null
-			this.pMinSizeForWidthSize = null
+			pCurrentPage = 0
+			updateCanvasPage()
+			pMinSizeBare = null
+			pMinSizeForWidthSize = null
 		end
 		
-		this.layoutParent()
+		layoutParent()
 	end
 	
 	/** \brief Styled text document definition or \em null if not set. */
 	public func StyledTextDefinition getStyledTextDefinition()
-		if this.pStyledTextDocument == null
+		if pStyledTextDocument == null
 			return null
 		end
-		return this.pStyledTextDocument.getDefinition()
+		return pStyledTextDocument.getDefinition()
 	end
 	
 	/** \brief Set styled text document definition or \em null if not set. */
-	public func void setStyledTextDefinition( StyledTextDefinition definition )
-		if definition == this.getStyledTextDefinition()
+	public func void setStyledTextDefinition(StyledTextDefinition definition)
+		if definition == getStyledTextDefinition()
 			return
 		end
 		
 		if definition == null
-			this.pStyledTextDocument = null
+			pStyledTextDocument = null
 			
 		else
-			this.pStyledTextDocument = StyledTextDocument.new()
-			this.pStyledTextDocument.setDefinition( definition )
+			pStyledTextDocument = StyledTextDocument.new()
+			pStyledTextDocument.setDefinition(definition)
 			
-			if this.pPagedMode
-				this.pStyledTextDocument.setPageSize( this.getSize().largest( this.pMinPageSize ) )
+			if pPagedMode
+				pStyledTextDocument.setPageSize(getSize().largest(pMinPageSize))
 				
 			else
-				this.pStyledTextDocument.setPageSize( this.getSize().largest( \
-					Point.new( this.pMinPageSize.getX(), 100000 ) ) )
+				pStyledTextDocument.setPageSize(getSize().largest(\
+					Point.new(pMinPageSize.getX(), 100000)))
 			end
 			
-			this.pStyledTextDocument.rebuildPages()
+			pStyledTextDocument.rebuildPages()
 		end
 		
-		this.pMinSizeBare = null
-		this.pMinSizeForWidthSize = null
-		this.pCurrentPage = 0
-		this.updateCanvasPage()
+		pMinSizeBare = null
+		pMinSizeForWidthSize = null
+		pCurrentPage = 0
+		updateCanvasPage()
 		
-		this.layoutParent()
+		layoutParent()
 	end
 	
 	
 	
 	/** \brief Index of page to display. */
 	public func int getCurrentPage()
-		return this.pCurrentPage
+		return pCurrentPage
 	end
 	
 	/** \brief Set index of page to display. */
-	public func void setCurrentPage( int page )
-		page = DEMath.clamp( page, 0, this.getPageCount() - 1 )
-		if page == this.pCurrentPage
+	public func void setCurrentPage(int page)
+		page = DEMath.clamp(page, 0, getPageCount() - 1)
+		if page == pCurrentPage
 			return
 		end
 		
-		this.pCurrentPage = page
-		this.updateCanvasPage()
+		pCurrentPage = page
+		updateCanvasPage()
 	end
 	
 	/** \brief Number of pages. */
 	public func int getPageCount()
-		if this.pStyledTextDocument == null
+		if pStyledTextDocument == null
 			return 0
 		end
-		return this.pStyledTextDocument.getPageCount()
+		return pStyledTextDocument.getPageCount()
 	end
 	
 	
@@ -190,103 +190,103 @@ class DisplayStyledText extends Widget
 	 * \brief Minimum size of widget.
 	 */
 	public func Point getMinimumSize()
-		if this.isMinimumSizeSet()
+		if isMinimumSizeSet()
 			return super.getMinimumSize()
 		end
 		
-		if this.pMinSizeBare != null
-			return this.pMinSizeBare
+		if pMinSizeBare != null
+			return pMinSizeBare
 		end
 		
-		this.pMinSizeBare = this.calcMinSize( this.pMinPageSize )
-		return this.pMinSizeBare
+		pMinSizeBare = calcMinSize(pMinPageSize)
+		return pMinSizeBare
 	end
 	
 	/**
 	 * \brief Minimum size of widget using reference widget width and variable height.
 	 */
-	public func Point getMinimumSizeForWidth( int width )
-		if this.isMinimumSizeSet()
-			return super.getMinimumSizeForWidth( width )
+	public func Point getMinimumSizeForWidth(int width)
+		if isMinimumSizeSet()
+			return super.getMinimumSizeForWidth(width)
 		end
 		
-		if this.pMinSizeForWidthSize != null and width == this.pMinSizeForWidthWidth
-			return this.pMinSizeForWidthSize
+		if pMinSizeForWidthSize != null and width == pMinSizeForWidthWidth
+			return pMinSizeForWidthSize
 		end
 		
-		this.pMinSizeForWidthSize = this.calcMinSize( Point.new( width, this.pMinPageSize.getY() ) )
-		this.pMinSizeForWidthWidth = width
+		pMinSizeForWidthSize = calcMinSize(Point.new(width, pMinPageSize.getY()))
+		pMinSizeForWidthWidth = width
 		
-		return this.pMinSizeForWidthSize
+		return pMinSizeForWidthSize
 	end
 	
 	/** \brief Calculate minimum size for layout. */
-	protected func Point calcMinSize( Point pageSize )
-		if this.pStyledTextDocument == null
-			return this.pMinPageSize
+	protected func Point calcMinSize(Point pageSize)
+		if pStyledTextDocument == null
+			return pMinPageSize
 		end
 		
-		if this.pPagedMode
-			return this.pMinPageSize.largest( this.pStyledTextDocument.getPageSize() )
+		if pPagedMode
+			return pMinPageSize.largest(pStyledTextDocument.getPageSize())
 		end
 		
 		var StyledTextDocument document = StyledTextDocument.new()
-		document.setDefinition( this.pStyledTextDocument.getDefinition() )
-		document.setPageSize( Point.new( 0, 100000 ).largest( pageSize ) )
+		document.setDefinition(pStyledTextDocument.getDefinition())
+		document.setPageSize(Point.new(100000, 100000).largest(pageSize))
 		document.rebuildPages()
 		
-		var StyledTextRendering page = document.getPageAt( 0 )
+		var StyledTextRendering page = document.getPageAt(0)
 		var int count = page.getElementCount()
 		var Point extend = Point.new()
 		var STRElement element
 		var int i
 		
 		for i = 0 to count
-			element = page.getElementAt( i )
-			extend = extend.largest( element.getPosition() + element.calculateSize() )
+			element = page.getElementAt(i)
+			extend = extend.largest(element.getPosition() + element.calculateSize())
 		end
 		
 		var STDStyle pageStyle = document.getDefinition().getPageStyle()
-		extend = extend + Point.new( pageStyle.getMargins().getX2(), pageStyle.getMargins().getY2() )
+		extend = extend + Point.new(pageStyle.getMargins().getX2(), pageStyle.getMargins().getY2())
 		
-		return this.pMinPageSize.largest( extend )
+		return pMinPageSize.largest(extend)
 	end
 	
 	
 	
 	/** \brief Size changed. */
-	public func void onResize( WidgetEvent event )
-		super.onResize( event )
+	public func void onResize(WidgetEvent event)
+		super.onResize(event)
 		
-		if this.pStyledTextDocument == null
+		if pStyledTextDocument == null
 			return
 		end
 		
-		if this.pPagedMode
-			this.pStyledTextDocument.setPageSize( this.getSize().largest( this.pMinPageSize ) )
+		if pPagedMode
+			pStyledTextDocument.setPageSize(getSize().largest(pMinPageSize))
 			
 		else
-			this.pStyledTextDocument.setPageSize( this.getSize().largest( \
-				Point.new( this.pMinPageSize.getX(), 100000 ) ) )
+			pStyledTextDocument.setPageSize(getSize().largest(\
+				Point.new(pMinPageSize.getX(), 100000)))
 		end
 		
-		this.pStyledTextDocument.rebuildPages()
+		pStyledTextDocument.rebuildPages()
 		
-		this.pMinSizeBare = null
-		this.pMinSizeForWidthSize = null
-		this.pCurrentPage = 0
-		this.updateCanvasPage()
+		pMinSizeBare = null
+		pMinSizeForWidthSize = null
+		pCurrentPage = 0
+		updateCanvasPage()
 	end
 	
 	/** \brief Update canvas page. */
 	private func void updateCanvasPage()
-		if this.pStyledTextDocument == null
-			this.getCanvasContent().removeAllCanvas()
+		if pStyledTextDocument == null
+			getCanvasContent().removeAllCanvas()
 			return
 		end
 		
-		var CanvasView canvas = this.getCanvasContent()
+		var CanvasView canvas = getCanvasContent()
 		canvas.removeAllCanvas()
-		this.pStyledTextDocument.addToCanvas( canvas, this.pCurrentPage, Point.new() )
+		pStyledTextDocument.addToCanvas(canvas, pCurrentPage, Point.new())
 	end
 end
