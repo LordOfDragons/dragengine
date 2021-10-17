@@ -187,11 +187,28 @@ class ToolTipManager
 		var Point position = pDesktop.getMouseLocation()
 		
 		var MousePointer mousePointer = pDesktop.getMousePointerInstance()
-		if mousePointer != null
-			position = position + Point.new(0, mousePointer.getCanvas().getSize().getY())
+		if mousePointer == null
+			return position
 		end
 		
-		return position
+		// adjust the location to ensure the popup is fully visible inside the desktop
+		var Point popupSize = pPopup.getSize()
+		var Point mousePointerSize = mousePointer.getCanvas().getSize()
+		
+		var RectArea visibleAreay = RectArea.new(Point.new(),\
+			pDesktop.getContainerSize() - Point.new(1, 1)).grow(-popupSize)
+		
+		var Point desired = position + Point.new(0, mousePointerSize.getY())
+		var Point clamped = visibleAreay.clamp(desired)
+		
+		if clamped.getY() == desired.getY()
+			// position at bottom is visible so use it
+			return clamped
+		end
+		
+		// clamped position clips at bottom. move popup to top of mouse pointer
+		desired = position - Point.new(0, popupSize.getY())
+		return visibleAreay.clamp(desired)
 	end
 	
 	/** \brief Update popup window content. */
@@ -200,6 +217,13 @@ class ToolTipManager
 		if pToolTip == null
 			return
 		end
+		
+		// layout managers can have troubles calculating the minimum size. most layout managers
+		// use the existing width of the container to calculate the minimum height. for this
+		// reason the size of the popup window is first adjusted to have a specific width.
+		// this width is then typically used by layout managers as desired width and thus
+		// nets us a similar effect of a maximal width
+		pPopup.setSize(Point.new(300, 10) + pPopup.getPadding().getSize())
 		
 		if pToolTip castable StyledTextDefinition
 			var DisplayStyledText dst = DisplayStyledText.new()
@@ -211,7 +235,10 @@ class ToolTipManager
 			pPopup.addWidget(dst)
 			
 		else
-			pPopup.addWidget(Label.new(pToolTip.toString(), "Label.WindowToolTip"))
+			var Label label = Label.new(pToolTip.toString(), "Label.WindowToolTip")
+			label.setMaximalWidth(300)
+			label.setWordWrap(true)
+			pPopup.addWidget(label)
 		end
 		
 		pPopup.fitToContent()
