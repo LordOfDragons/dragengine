@@ -60,6 +60,24 @@ fixed class Animation
 	end
 	
 	/**
+	 * \brief Count of moves.
+	 * \version 1.7
+	 */
+	public func int getMoveCount()
+		return 0
+	end
+	
+	/**
+	 * \brief Name of move at index.
+	 * \version 1.7
+	 * \param index Index of move to get name of
+	 * \throws EInvalidParam index is less than 0 or larger than or equal to getMoveCount().
+	 */
+	public func String getMoveName( int index )
+		return null
+	end
+	
+	/**
 	 * \brief Playtime in seconds of named move.
 	 * 
 	 * If the move is not found 0 is returned.

@@ -155,6 +155,25 @@ void deClassAnimation::nfGetMoveFPS::RunFunction( dsRunTime *rt, dsValue *myself
 	}
 }
 
+// public func int getMoveCount()
+deClassAnimation::nfGetMoveCount::nfGetMoveCount( const sInitData &init ) :
+dsFunction( init.clsAnim, "getMoveCount", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt ){
+}
+void deClassAnimation::nfGetMoveCount::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const deAnimation &animation = *( ( ( sAnimNatDat* )p_GetNativeData( myself ) )->anim );
+	rt->PushInt( animation.GetMoveCount() );
+}
+
+// public func String getMoveName( int index )
+deClassAnimation::nfGetMoveName::nfGetMoveName( const sInitData &init ) :
+dsFunction( init.clsAnim, "getMoveName", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsStr ){
+	p_AddParameter( init.clsInt ); // index
+}
+void deClassAnimation::nfGetMoveName::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const deAnimation &animation = *( ( ( sAnimNatDat* )p_GetNativeData( myself ) )->anim );
+	rt->PushString( animation.GetMove( rt->GetValue( 0 )->GetInt() )->GetName() );
+}
+
 
 
 // public func int hashCode()
@@ -225,6 +244,8 @@ void deClassAnimation::CreateClassMembers(dsEngine *engine){
 	AddFunction(new nfGetFilename(init));
 	AddFunction(new nfGetMovePlaytime(init));
 	AddFunction( new nfGetMoveFPS( init ) );
+	AddFunction( new nfGetMoveCount( init ) );
+	AddFunction( new nfGetMoveName( init ) );
 	AddFunction(new nfEquals(init));
 	AddFunction(new nfHashCode(init));
 	// calculate member offsets
