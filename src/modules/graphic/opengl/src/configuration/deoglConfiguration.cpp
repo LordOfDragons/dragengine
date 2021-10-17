@@ -143,7 +143,9 @@ pDisableCubeMapLinearFiltering( false ),
 pMaxSPBIndexCount( 10000 ),
 
 pGIQuality( egiqHigh ),
-pGIUpdateSpeed( egiusMedium )
+pGIUpdateSpeed( egiusMedium ),
+
+pVRRenderDownScale( 1 )
 {
 	#ifdef OS_ANDROID
 	// android is too weak a platform right now to support advanced features out of the
@@ -922,5 +924,14 @@ void deoglConfiguration::SetGIUpdateSpeed( eGIUpdateSpeed updateSpeed ){
 	}
 	
 	pGIUpdateSpeed = updateSpeed;
+	pDirty = true;
+}
+
+void deoglConfiguration::SetVRRenderDownScale( int scale ){
+	if( scale == pVRRenderDownScale ){
+		return;
+	}
+	
+	pVRRenderDownScale = scale;
 	pDirty = true;
 }

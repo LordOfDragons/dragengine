@@ -194,6 +194,9 @@ private:
 	
 	decStringSet pDisableExtensions;
 	
+	int pVRRenderDownScale;
+	
+	
 	
 public:
 	// constructor, destructor
@@ -551,6 +554,9 @@ public:
 	/** OpenGL extensions to disable. */
 	inline decStringSet &GetDisableExtensions(){ return pDisableExtensions; }
 	inline const decStringSet &GetDisableExtensions() const{ return pDisableExtensions; }
+	
+	inline int GetVRRenderDownScale() const{ return pVRRenderDownScale; }
+	void SetVRRenderDownScale( int scale );
 };
 
 #endif

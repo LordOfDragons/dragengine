@@ -166,10 +166,11 @@ void deoglVR::Render(){
 	
 	deoglRenderThread &renderThread = pCamera.GetRenderThread();
 	const deoglConfiguration &config = renderThread.GetConfiguration();
+	const int downScale = decMath::max( config.GetVRRenderDownScale(), config.GetRenderDownScale() );
 	
 	decPoint size( pRenderSize );
-	size.x /= config.GetRenderDownScale();
-	size.y /= config.GetRenderDownScale();
+	size.x /= downScale;
+	size.y /= downScale;
 	
 	deoglRenderPlan &plan = pCamera.GetPlan();
 	
