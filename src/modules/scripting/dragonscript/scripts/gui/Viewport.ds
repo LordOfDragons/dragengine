@@ -46,95 +46,110 @@ pin Dragengine.Gui.Layouts
  * The default layout is FixedMinimalLayout. Other layouts are possible.
  */
 class Viewport extends Panel implements RangeModelListener
-	/** \brief Vertical range model */
 	private var DefaultRangeModel pVertRangeModel
-	
-	/** \brief Horizontal range model */
 	private var DefaultRangeModel pHorzRangeModel
 	
 	
 	
 	/** \brief Create viewport center aligning content widget. */
-	public func new() this( null )
+	public func new() this(null)
 	end
 	
 	/** \brief Create viewport with content widget. */
-	public func new( Widget content ) this( content, FixedMinimalLayout.new() )
+	public func new(Widget content) this(content, 5, 5, false)
 	end
 	
 	/** \brief Create viewport with content widget and layout. */
-	public func new( Widget content, Layout layout )
-		this.pVertRangeModel = DefaultRangeModel.new( 0, 0, 100, 0, 20 )
-		this.pVertRangeModel.addListener( this )
-		this.pHorzRangeModel = DefaultRangeModel.new( 0, 0, 100, 0, 20 )
-		this.pHorzRangeModel.addListener( this )
+	public func new(Widget content, Layout layout)
+		pVertRangeModel = DefaultRangeModel.new(0, 0, 100, 0, 20)
+		pVertRangeModel.addListener(this)
+		pHorzRangeModel = DefaultRangeModel.new(0, 0, 100, 0, 20)
+		pHorzRangeModel.addListener(this)
 		
-		this.runWhileBlockingLayout( block
-			this.setLayout( layout )
+		runWhileBlockingLayout(block
+			setLayout(layout)
 			
-			this.setProtectMinimumSize( true )
-			this.setMinimumSize( Point.new( 5, 5 ) )
+			setProtectMinimumSize(true)
+			setMinimumSize(Point.new(5, 5))
 			
-			this.setContent( content )
-		end )
+			setContent(content)
+		end)
+	end
+	
+	/**
+	 * \brief Create viewport with content widget and layout.
+	 * \version 1.7
+	 * 
+	 * Uses ViewportLayout with provided width and height restriction.
+	 */
+	public func new(Widget content, int restrictWidth, int restrictHeight, bool stretch)
+		pVertRangeModel = DefaultRangeModel.new(0, 0, 100, 0, 20)
+		pVertRangeModel.addListener(this)
+		pHorzRangeModel = DefaultRangeModel.new(0, 0, 100, 0, 20)
+		pHorzRangeModel.addListener(this)
+		
+		runWhileBlockingLayout(block
+			setLayout(ViewportLayout.new(restrictWidth, restrictHeight, stretch))
+			setContent(content)
+		end)
 	end
 	
 	/** \brief Dispose of this widget. */
 	public func void dispose()
-		if this.pHorzRangeModel != null
-			this.pHorzRangeModel.removeListener( this )
+		if pHorzRangeModel != null
+			pHorzRangeModel.removeListener(this)
 		end
-		if this.pVertRangeModel != null
-			this.pVertRangeModel.removeListener( this )
+		if pVertRangeModel != null
+			pVertRangeModel.removeListener(this)
 		end
 		
 		super.dispose()
 		
-		this.pHorzRangeModel = null
-		this.pVertRangeModel = null
+		pHorzRangeModel = null
+		pVertRangeModel = null
 	end
 	
 	
 	
 	/** \brief Content widget or \em null if not existing. */
 	public func Widget getContent()
-		if this.getWidgetCount() == 1
-			return this.getWidget( 0 )
+		if getWidgetCount() == 1
+			return getWidget(0)
 		end
 		
 		return null
 	end
 	
 	/** \brief Set content widget or \em null to remove it. */
-	public func void setContent( Widget content )
-		var Widget curWidget = this.getContent()
+	public func void setContent(Widget content)
+		var Widget curWidget = getContent()
 		if curWidget == content
 			return
 		end
 		
 		if curWidget != null
-			this.removeWidget( curWidget )
+			removeWidget(curWidget)
 			curWidget.dispose()
 		end
 		
 		if content != null
-			this.addWidget( content )
+			addWidget(content)
 		end
 	end
 	
 	
 	
 	/** \brief Range properties changed. */
-	public func void rangeChanged( RangeModel rangeModel )
+	public func void rangeChanged(RangeModel rangeModel)
 	end
 	
 	/** \brief Value changed. */
-	public func void valueChanged( RangeModel rangeModel )
-		if rangeModel == this.pVertRangeModel
-			this.updateContentPositionY()
+	public func void valueChanged(RangeModel rangeModel)
+		if rangeModel == pVertRangeModel
+			updateContentPositionY()
 			
 		else
-			this.updateContentPositionX()
+			updateContentPositionX()
 		end
 	end
 	
@@ -145,7 +160,7 @@ class Viewport extends Panel implements RangeModelListener
 	 * \details If this widget has no reasonable vertical range model it should return \em null.
 	 */
 	public func RangeModel getVerticalRangeModel()
-		return this.pVertRangeModel
+		return pVertRangeModel
 	end
 	
 	/**
@@ -153,7 +168,7 @@ class Viewport extends Panel implements RangeModelListener
 	 * \details If this widget has no reasonable horizontal range model it should return \em null.
 	 */
 	public func RangeModel getHorizontalRangeModel()
-		return this.pHorzRangeModel
+		return pHorzRangeModel
 	end
 	
 	
@@ -164,16 +179,16 @@ class Viewport extends Panel implements RangeModelListener
 	 *          Otherwise the layout position is kept.
 	 */
 	public func void updateContentPositionX()
-		var Widget content = this.getContent()
+		var Widget content = getContent()
 		if content == null
 			return
 		end
 		
-		if this.pHorzRangeModel.getMaximum() == 0
+		if pHorzRangeModel.getMaximum() == 0
 			return
 		end
 		
-		content.setX( this.getPadding().getLeft() - this.pHorzRangeModel.getValue() )
+		content.setX(getPadding().getLeft() - pHorzRangeModel.getValue())
 	end
 	
 	/**
@@ -182,16 +197,16 @@ class Viewport extends Panel implements RangeModelListener
 	 *          Otherwise the layout position is kept.
 	 */
 	public func void updateContentPositionY()
-		var Widget content = this.getContent()
+		var Widget content = getContent()
 		if content == null
 			return
 		end
 		
-		if this.pVertRangeModel.getMaximum() == 0
+		if pVertRangeModel.getMaximum() == 0
 			return
 		end
 		
-		content.setY( this.getPadding().getTop() - this.pVertRangeModel.getValue() )
+		content.setY(getPadding().getTop() - pVertRangeModel.getValue())
 	end
 	
 	
@@ -204,30 +219,30 @@ class Viewport extends Panel implements RangeModelListener
 	 * tracked to call layoutParent() only if required.
 	 */
 	public func void doLayout()
-		if this.getBlockLayout()
+		if getBlockLayout()
 			return
 		end
 		
-		var Widget content = this.getContent()
+		var Widget content = getContent()
 		if content == null
-			this.pHorzRangeModel.setMaximum( 0 )
-			this.pVertRangeModel.setMaximum( 0 )
+			pHorzRangeModel.setMaximum(0)
+			pVertRangeModel.setMaximum(0)
 			return
 		end
 		
 		// for layouts like FixedMinimalLayout not setting position
-		content.setPosition( Point.new( this.getPadding().getLeft(), this.getPadding().getTop() ) )
+		content.setPosition(Point.new(getPadding().getLeft(), getPadding().getTop()))
 		
 		super.doLayout()
 		
-		var Point containerSize = this.getContainerSize()
+		var Point containerSize = getContainerSize()
 		
-		this.pHorzRangeModel.setMaximum( DEMath.max( content.getWidth() - containerSize.getX(), 0 ) )
-		this.pHorzRangeModel.setPageSize( containerSize.getX() * 2 / 3 )
-		this.updateContentPositionX()
+		pHorzRangeModel.setMaximum(DEMath.max(content.getWidth() - containerSize.getX(), 0))
+		pHorzRangeModel.setPageSize(containerSize.getX() * 2 / 3)
+		updateContentPositionX()
 		
-		this.pVertRangeModel.setMaximum( DEMath.max( content.getHeight() - containerSize.getY(), 0 ) )
-		this.pVertRangeModel.setPageSize( containerSize.getY() * 2 / 3 )
-		this.updateContentPositionY()
+		pVertRangeModel.setMaximum(DEMath.max(content.getHeight() - containerSize.getY(), 0))
+		pVertRangeModel.setPageSize(containerSize.getY() * 2 / 3)
+		updateContentPositionY()
 	end
 end
