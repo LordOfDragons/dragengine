@@ -1921,6 +1921,17 @@ class Widget
 	end
 	
 	/**
+	 * \brief Parent state changed.
+	 * \version 1.7
+	 * 
+	 * Calls onParentStateChanged(bool) on all child widgets. Supports forcing update on the
+	 * entire children chain.
+	 */
+	public func void onParentStateChanged(bool force)
+		design()
+	end
+	
+	/**
 	 * \brief Widget received focus.
 	 * \details Sends event to listeners.
 	 */

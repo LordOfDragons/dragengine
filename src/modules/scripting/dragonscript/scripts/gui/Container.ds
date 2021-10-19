@@ -760,6 +760,22 @@ class Container extends Widget
 	
 	
 	
+	/** Set if widget is enabled. */
+	public func void setEnabled(bool enabled)
+		if enabled == getEnabled()
+			return
+		end
+		
+		super.setEnabled(enabled)
+		
+		// enabled changes require children to be always updated
+		runWhileBlockingLayout(block
+			notifyChildrenParentStateChanged(true)
+		end)
+		doLayoutIfBlocked()
+	end
+	
+	
 	/** \brief Widget has been hidden. */
 	public func void onHidden( WidgetEvent event )
 		super.onHidden( event )
@@ -778,7 +794,7 @@ class Container extends Widget
 		end
 		
 		this.runWhileBlockingLayout( block
-			this.notifyChildrenParentStateChanged()
+			this.notifyChildrenParentStateChanged(false)
 		end )
 		this.doLayoutIfBlocked()
 	end
@@ -801,11 +817,41 @@ class Container extends Widget
 		end
 	end
 	
+	/**
+	 * \brief Parent state changed.
+	 * \version 1.7
+	 * 
+	 * Calls onParentStateChanged() on all child widgets. Supports forcing update on the
+	 * entire children chain.
+	 */
+	public func void onParentStateChanged(bool force)
+		if pStateChangeNotifyChildren or force
+			runWhileBlockingLayout( block
+				super.onParentStateChanged(force)
+				notifyChildrenParentStateChanged(force)
+			end)
+			doLayoutIfBlocked()
+			
+		else
+			super.onParentStateChanged()
+		end
+	end
+	
 	/** \brief Notify children about parent state change. */
 	public func void notifyChildrenParentStateChanged()
 		this.pChildren.forEach( block Widget each
 			each.onParentStateChanged()
 		end )
+	end
+	
+	/**
+	 * \brief Notify children about parent state change.
+	 * \version 1.7
+	 */
+	public func void notifyChildrenParentStateChanged(bool force)
+		pChildren.forEach(block Widget each
+			each.onParentStateChanged(force)
+		end)
 	end
 	
 	/** \brief Size changed. */
@@ -851,7 +897,7 @@ class Container extends Widget
 	public func void onMouseEnter( MouseEvent event )
 		if this.pStateChangeNotifyChildren
 			this.runWhileBlockingLayout( block
-				this.notifyChildrenParentStateChanged()
+				this.notifyChildrenParentStateChanged(false)
 				super.onMouseEnter( event )
 			end )
 			this.doLayoutIfBlocked()
@@ -869,7 +915,7 @@ class Container extends Widget
 	public func void onMouseLeave( MouseEvent event )
 		if this.pStateChangeNotifyChildren
 			this.runWhileBlockingLayout( block
-				this.notifyChildrenParentStateChanged()
+				this.notifyChildrenParentStateChanged(false)
 				super.onMouseLeave( event )
 			end )
 			this.doLayoutIfBlocked()
