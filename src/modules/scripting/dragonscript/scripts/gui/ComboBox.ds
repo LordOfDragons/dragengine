@@ -688,4 +688,22 @@ class ComboBox extends Container implements ListModelListener
 			pDefaultElementSize = pDefaultElementSize.largest(pEditor.getWidget().getMinimumSize())
 		end
 	end
+	
+	/**
+	 * \brief Selected element widget or null.
+	 * \version 1.7
+	 */
+	public func Widget getWidgetSelectedElement()
+		return pSelectedElement
+	end
+	
+	/** \brief Makes the widget grab the focus if possible. */
+	public func void grabFocus()
+		if pEditor != null
+			startEditing()
+			
+		else
+			// TODO
+		end
+	end
 end
