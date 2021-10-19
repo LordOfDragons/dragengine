@@ -174,6 +174,16 @@ void deClassAnimation::nfGetMoveName::RunFunction( dsRunTime *rt, dsValue *mysel
 	rt->PushString( animation.GetMove( rt->GetValue( 0 )->GetInt() )->GetName() );
 }
 
+// public func int indexOfMoveNamed(String name)
+deClassAnimation::nfIndexOfMoveNamed::nfIndexOfMoveNamed( const sInitData &init ) :
+dsFunction( init.clsAnim, "indexOfMoveNamed", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt ){
+	p_AddParameter( init.clsStr ); // name
+}
+void deClassAnimation::nfIndexOfMoveNamed::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const deAnimation &animation = *( ( ( sAnimNatDat* )p_GetNativeData( myself ) )->anim );
+	rt->PushInt( animation.FindMove( rt->GetValue( 0 )->GetString() ) );
+}
+
 
 
 // public func int hashCode()
@@ -246,6 +256,7 @@ void deClassAnimation::CreateClassMembers(dsEngine *engine){
 	AddFunction( new nfGetMoveFPS( init ) );
 	AddFunction( new nfGetMoveCount( init ) );
 	AddFunction( new nfGetMoveName( init ) );
+	AddFunction( new nfIndexOfMoveNamed( init ) );
 	AddFunction(new nfEquals(init));
 	AddFunction(new nfHashCode(init));
 	// calculate member offsets

@@ -74,6 +74,7 @@ private:
 	DEF_NATFUNC( nfGetMoveFPS );
 	DEF_NATFUNC( nfGetMoveCount );
 	DEF_NATFUNC( nfGetMoveName );
+	DEF_NATFUNC( nfIndexOfMoveNamed );
 	DEF_NATFUNC(nfEquals);
 	DEF_NATFUNC(nfHashCode);
 #undef DEF_NATFUNC

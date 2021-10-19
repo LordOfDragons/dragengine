@@ -29,7 +29,7 @@ fixed class Animation
 	 * same loaded animation resource. Once no object instance uses an animation
 	 * file anymore it is released from memory.
 	 */
-	public func new( String filename )
+	public func new(String filename)
 	end
 	
 	/**
@@ -39,14 +39,14 @@ fixed class Animation
 	 * or if the file is already loaded the listener is used to deliver the loaded
 	 * animation or \em null if the loading failed.
 	 */
-	static public func void loadAsynchron( String filename, ResourceListener listener )
+	static public func void loadAsynchron(String filename, ResourceListener listener)
 	end
 	
 	/**
 	 * \brief Save animation to file.
 	 * \version 1.6
 	 */
-	public func void save( String filename )
+	public func void save(String filename)
 	end
 	/*@}*/
 	
@@ -68,12 +68,20 @@ fixed class Animation
 	end
 	
 	/**
+	 * \brief Index of named move or -1 if not found.
+	 * \version 1.7
+	 */
+	public func int indexOfMoveNamed(String name)
+		return 0
+	end
+	
+	/**
 	 * \brief Name of move at index.
 	 * \version 1.7
 	 * \param index Index of move to get name of
 	 * \throws EInvalidParam index is less than 0 or larger than or equal to getMoveCount().
 	 */
-	public func String getMoveName( int index )
+	public func String getMoveName(int index)
 		return null
 	end
 	
@@ -82,7 +90,7 @@ fixed class Animation
 	 * 
 	 * If the move is not found 0 is returned.
 	 */
-	public func float getMovePlaytime( String name )
+	public func float getMovePlaytime(String name)
 		return 0.0
 	end
 	
@@ -92,7 +100,7 @@ fixed class Animation
 	 * 
 	 * Used for saving only if animation file format requires sampling.
 	 */
-	public func float getMoveFPS( String name )
+	public func float getMoveFPS(String name)
 		return 0.0
 	end
 	
@@ -106,7 +114,7 @@ fixed class Animation
 	 * \returns \em true if \em other is of type Animation and both point to the same engine
 	 *          animation resource.
 	 */
-	public func bool equals( Object other )
+	public func bool equals(Object other)
 		return false
 	end
 	
