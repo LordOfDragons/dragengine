@@ -120,16 +120,4 @@ class ViewportLayout extends FixedMinimalLayout
 		var Point size = super.getMinimumSize(container)
 		return Point.new(pWidth > 0 if pWidth else size.getX(), pHeight > 0 if pHeight else size.getY())
 	end
-	
-	/** \brief Minimum size of layout using reference width and variable height. */
-	public func Point getMinimumSizeForWidth(Container container, int width)
-		var Point size = super.getMinimumSizeForWidth(container, width)
-		return Point.new(pWidth > 0 if pWidth else size.getX(), pHeight > 0 if pHeight else size.getY())
-	end
-	
-	/** \brief Minimum size of layout using reference widget height and variable width. */
-	public func Point getMinimumSizeForHeight(Container container, int height)
-		var Point size = super.getMinimumSizeForHeight(container, height)
-		return Point.new(pWidth > 0 if pWidth else size.getX(), pHeight > 0 if pHeight else size.getY())
-	end
 end

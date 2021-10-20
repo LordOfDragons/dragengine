@@ -48,6 +48,7 @@ pin Dragengine.Gui.Layouts
 class Viewport extends Panel implements RangeModelListener
 	private var DefaultRangeModel pVertRangeModel
 	private var DefaultRangeModel pHorzRangeModel
+	private var bool pPreventLayoutParent
 	
 	
 	
@@ -180,15 +181,9 @@ class Viewport extends Panel implements RangeModelListener
 	 */
 	public func void updateContentPositionX()
 		var Widget content = getContent()
-		if content == null
-			return
+		if content != null
+			content.setX(getPadding().getLeft() - pHorzRangeModel.getValue())
 		end
-		
-		if pHorzRangeModel.getMaximum() == 0
-			return
-		end
-		
-		content.setX(getPadding().getLeft() - pHorzRangeModel.getValue())
 	end
 	
 	/**
@@ -198,15 +193,9 @@ class Viewport extends Panel implements RangeModelListener
 	 */
 	public func void updateContentPositionY()
 		var Widget content = getContent()
-		if content == null
-			return
+		if content != null
+			content.setY(getPadding().getTop() - pVertRangeModel.getValue())
 		end
-		
-		if pVertRangeModel.getMaximum() == 0
-			return
-		end
-		
-		content.setY(getPadding().getTop() - pVertRangeModel.getValue())
 	end
 	
 	
@@ -233,7 +222,15 @@ class Viewport extends Panel implements RangeModelListener
 		// for layouts like FixedMinimalLayout not setting position
 		content.setPosition(Point.new(getPadding().getLeft(), getPadding().getTop()))
 		
-		super.doLayout()
+		pPreventLayoutParent = true
+		try
+			super.doLayout()
+			pPreventLayoutParent = false
+			
+		catch Exception e
+			pPreventLayoutParent = false
+			throw
+		end
 		
 		var Point containerSize = getContainerSize()
 		
@@ -244,5 +241,21 @@ class Viewport extends Panel implements RangeModelListener
 		pVertRangeModel.setMaximum(DEMath.max(content.getHeight() - containerSize.getY(), 0))
 		pVertRangeModel.setPageSize(containerSize.getY() * 2 / 3)
 		updateContentPositionY()
+		
+		// required to reproduce this from Container.doLayout() or initial layout is missing.
+		// interestingly the problem is not too visible if the call is here and not earlier
+		if not isMinimumSizeSet()
+			layoutParent()
+		end
+	end
+	
+	public func void layoutParent()
+		// Container.doLayout() calls layoutParent() if isMinimumSizeSet() is false. by forcing
+		// a minimum size the layoutParent() call is not done. for some strange reason calling
+		// layoutParent() inside Container.doLayout() causes various problems including horrible
+		// performance loss and wrong mouse pointer handling.
+		if not pPreventLayoutParent
+			super.layoutParent()
+		end
 	end
 end
