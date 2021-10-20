@@ -491,21 +491,6 @@ class ComboBox extends Container implements ListModelListener
 	
 	
 	
-	/** Set tool tip or null. */
-	public func void setToolTip(Object toolTip)
-		super.setToolTip(toolTip)
-		
-		if pEditor != null
-			pEditor.getWidget().setToolTip(toolTip)
-		end
-		
-		if pSelectedElement != null
-			pSelectedElement.setToolTip(toolTip)
-		end
-	end
-	
-	
-	
 	/** \brief Size changed. */
 	public func void onResize(WidgetEvent event)
 		super.onResize(event)
@@ -601,7 +586,6 @@ class ComboBox extends Container implements ListModelListener
 		
 		pSelectedElement.setMinimumSize(getDefaultElementSize())
 		pSelectedElement.setProtectMinimumSize(true)
-		pSelectedElement.setToolTip(getToolTip())
 		
 		if pEditor != null and selection == null
 			renderer.updateRenderer(pListBox, pSelectedElement, \

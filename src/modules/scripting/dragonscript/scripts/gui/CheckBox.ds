@@ -33,48 +33,41 @@ pin Dragengine.Scenery
  * Specialization of the ToggleButton showing a tickable check box.
  */
 class CheckBox extends ToggleButton
-	/** \brief Check box widget. */
 	private var Widget pWidgetCheckBox
-	
-	/** \brief Check widget. */
 	private var Widget pWidgetCheck
-	
-	/** \brief Panel hosting checkbox widget. */
 	private var Panel pPanelCheckBox
-	
-	/** \brief Panel hosting check widget. */
 	private var Panel pPanelCheck
 	
 	
 	
 	/** \brief Create check box. */
 	public func new()
-		this.setDesignerSelector( "CheckBox" )
+		setDesignerSelector("CheckBox")
 	end
 	
 	/** \brief Create text check button. */
-	public func new( String text ) super( text )
-		this.setDesignerSelector( "CheckBox" )
+	public func new(String text) super(text)
+		setDesignerSelector("CheckBox")
 	end
 	
 	/** \brief Create text and image check button. */
-	public func new( String text, Image image ) super( text, image )
-		this.setDesignerSelector( "CheckBox" )
+	public func new(String text, Image image) super(text, image)
+		setDesignerSelector("CheckBox")
 	end
 	
 	/** \brief Create check box. */
-	public func new( ToggleModel model ) super( model )
-		this.setDesignerSelector( "CheckBox" )
+	public func new(ToggleModel model) super(model)
+		setDesignerSelector("CheckBox")
 	end
 	
 	/** \brief Create text check button. */
-	public func new( ToggleModel model, String text ) super( model, text )
-		this.setDesignerSelector( "CheckBox" )
+	public func new(ToggleModel model, String text) super(model, text)
+		setDesignerSelector("CheckBox")
 	end
 	
 	/** \brief Create text and image check button. */
-	public func new( ToggleModel model, String text, Image image ) super( model, text, image )
-		this.setDesignerSelector( "CheckBox" )
+	public func new(ToggleModel model, String text, Image image) super(model, text, image)
+		setDesignerSelector("CheckBox")
 	end
 	
 	/**
@@ -82,10 +75,10 @@ class CheckBox extends ToggleButton
 	 * for beeing freed. If the widget is already disposed nothing happens.
 	 */
 	public func void dispose()
-		this.pWidgetCheckBox = null
-		this.pWidgetCheck = null
-		this.pPanelCheckBox = null
-		this.pPanelCheck = null
+		pWidgetCheckBox = null
+		pWidgetCheck = null
+		pPanelCheckBox = null
+		pPanelCheck = null
 		
 		super.dispose()
 	end
@@ -97,26 +90,26 @@ class CheckBox extends ToggleButton
 	 * \details For use by check box designers.
 	 */
 	public func Widget getCheckBoxWidget()
-		return this.pWidgetCheckBox
+		return pWidgetCheckBox
 	end
 	
 	/**
 	 * \brief Set check box widget or \em null if not set.
 	 * \details For use by check box designers.
 	 */
-	public func void setCheckBoxWidget( Widget widget )
-		if widget == this.pWidgetCheckBox
+	public func void setCheckBoxWidget(Widget widget)
+		if widget == pWidgetCheckBox
 			return
 		end
 		
-		if this.pWidgetCheckBox != null
-			this.pPanelCheckBox.removeWidget( this.pWidgetCheckBox )
+		if pWidgetCheckBox != null
+			pPanelCheckBox.removeWidget(pWidgetCheckBox)
 		end
 		
-		this.pWidgetCheckBox = widget
+		pWidgetCheckBox = widget
 		
 		if widget != null
-			this.pPanelCheckBox.addWidget( widget )
+			pPanelCheckBox.addWidget(widget)
 		end
 	end
 	
@@ -125,26 +118,26 @@ class CheckBox extends ToggleButton
 	 * \details For use by check box designers.
 	 */
 	public func Widget getCheckWidget()
-		return this.pWidgetCheck
+		return pWidgetCheck
 	end
 	
 	/**
 	 * \brief Set check mark widget.
 	 * \details For use by check box designers.
 	 */
-	public func void setCheckWidget( Widget widget )
-		if widget == this.pWidgetCheck
+	public func void setCheckWidget(Widget widget)
+		if widget == pWidgetCheck
 			return
 		end
 		
-		if this.pWidgetCheck != null
-			this.pPanelCheck.removeWidget( this.pWidgetCheck )
+		if pWidgetCheck != null
+			pPanelCheck.removeWidget(pWidgetCheck)
 		end
 		
-		this.pWidgetCheck = widget
+		pWidgetCheck = widget
 		
 		if widget != null
-			this.pPanelCheck.addWidget( widget )
+			pPanelCheck.addWidget(widget)
 		end
 	end
 	
@@ -153,8 +146,8 @@ class CheckBox extends ToggleButton
 	/** \brief Designer changed. */
 	public func void onDesignerChanged()
 		super.onDesignerChanged()
-		this.setCheckBoxWidget( null )
-		this.setCheckWidget( null )
+		setCheckBoxWidget(null)
+		setCheckWidget(null)
 	end
 	
 	
@@ -164,42 +157,42 @@ class CheckBox extends ToggleButton
 	 * \details Call if the layout of the widgets changes. Removes the old widgets first.
 	 */
 	public func void createContentWidgets()
-		var bool enabled = this.getEnabled()
-		var String text = this.getText()
+		var bool enabled = getEnabled()
+		var String text = getText()
 		
-		this.pWidgetCheckBox = null
-		this.pWidgetCheck = null
-		this.pPanelCheckBox = null
-		this.pPanelCheck = null
+		pWidgetCheckBox = null
+		pWidgetCheck = null
+		pPanelCheckBox = null
+		pPanelCheck = null
 		
-		this.removeAllWidgets()
-		this.setWidgetImage( null )
-		this.setWidgetText( null )
+		removeAllWidgets()
+		setWidgetImage(null)
+		setWidgetText(null)
 		
-		this.setLayout( BorderLayout.new( 5 ) )
+		setLayout(BorderLayout.new(5))
 		
 		// checkbox with check mark
-		this.addWidget( Panel.new( StackLayout.new(), block Panel p
-			this.pPanelCheckBox = Panel.new( CentrizedBoxLayout.new( LayoutAxis.y ) )
-			p.addWidget( this.pPanelCheckBox )
+		addWidget(Panel.new(StackLayout.new(), block Panel p
+			pPanelCheckBox = Panel.new(CentrizedBoxLayout.new(LayoutAxis.y))
+			p.addWidget(pPanelCheckBox)
 			
-			this.pPanelCheck = Panel.new( CentrizedBoxLayout.new( LayoutAxis.y ) )
-			p.addWidget( this.pPanelCheck )
-		end ), BorderLayout.Area.left )
+			pPanelCheck = Panel.new(CentrizedBoxLayout.new(LayoutAxis.y))
+			p.addWidget(pPanelCheck)
+		end), BorderLayout.Area.left)
 		
 		// image and text
-		this.addWidget( Panel.new( FlowLayout.new( LayoutAxis.x ), block Panel p
-			var DisplayImage widgetImage = DisplayImage.new( null, "Image." + this.getDesignerSelector() )
-			widgetImage.setEnabled( enabled )
-			p.addWidget( widgetImage )
-			widgetImage.setVisible( false )
-			this.setWidgetImage( widgetImage )
+		addWidget(Panel.new(FlowLayout.new(LayoutAxis.x), block Panel p
+			var DisplayImage widgetImage = DisplayImage.new(null, "Image." + getDesignerSelector())
+			widgetImage.setEnabled(enabled)
+			p.addWidget(widgetImage)
+			widgetImage.setVisible(false)
+			setWidgetImage(widgetImage)
 			
-			var Label widgetText = Label.new( text, "Label." + this.getDesignerSelector() )
-			widgetText.setEnabled( enabled )
-			p.addWidget( widgetText )
-			widgetText.setVisible( not text.empty() )
-			this.setWidgetText( widgetText )
-		end ), BorderLayout.Area.content )
+			var Label widgetText = Label.new(text, "Label." + getDesignerSelector())
+			widgetText.setEnabled(enabled)
+			p.addWidget(widgetText)
+			widgetText.setVisible(not text.empty())
+			setWidgetText(widgetText)
+		end), BorderLayout.Area.content)
 	end
 end

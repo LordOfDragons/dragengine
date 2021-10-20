@@ -164,13 +164,15 @@ class ToolTipManager
 	
 	/** \brief Update tool tip. */
 	public func void update()
-		var Widget hoverWidet = pDesktop.getHoverWidget()
-		if hoverWidet != null
-			setToolTip(hoverWidet.getToolTip())
-			
-		else
-			setToolTip(null)
+		var Widget widget = pDesktop.getHoverWidget()
+		var Object toolTip
+		
+		while toolTip == null and widget != null
+			toolTip = widget.getToolTip()
+			widget = widget.getParent()
 		end
+		
+		setToolTip(toolTip)
 		
 		if pPopup.getVisible()
 			pPopup.setPosition(calculateToolTipPosition())
