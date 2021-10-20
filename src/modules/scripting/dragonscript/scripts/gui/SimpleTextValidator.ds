@@ -45,14 +45,20 @@ class SimpleTextValidator implements TextValidator
 		/** \brief Only digits, dot and minus allowed. */
 		number
 		
+		/** \brief Only printable characters allowed. */
+		printable
+		
 		/**
 		 * \brief Only digits and dot allowed.
 		 * \version 1.7
 		 */
 		positiveNumber
 		
-		/** \brief Only printable characters allowed. */
-		printable
+		/**
+		 * \brief Only digits and minus allowed.
+		 * \version 1.7
+		 */
+		digitsNegative
 	end
 	
 	
@@ -110,6 +116,14 @@ class SimpleTextValidator implements TextValidator
 			for i = 0 to length
 				c = text.getAt(i)
 				if c < '0' or c > '9'
+					return false
+				end
+			end
+			
+		case CharacterClass.digitsNegative
+			for i = 0 to length
+				c = text.getAt(i)
+				if not ((c >= '0' and c <= '9') or c == '-')
 					return false
 				end
 			end
