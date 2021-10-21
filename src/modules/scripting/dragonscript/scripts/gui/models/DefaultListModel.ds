@@ -228,9 +228,7 @@ class DefaultListModel implements ListModel
 		
 		var int fromIndex = pElements.getCount()
 		
-		content.forEach(block Object each
-			pElements.add(each)
-		end)
+		pElements.addAll(content)
 		
 		notifyElementsAdded(fromIndex, fromIndex + count - 1)
 	end
@@ -410,9 +408,8 @@ class DefaultListModel implements ListModel
 			notifyElementsRemoved(0, count - 1)
 		end
 		
-		content.forEach(block Object each
-			pElements.add(each)
-		end)
+		pElements.addAll(content)
+		
 		if contentCount > 0
 			notifyElementsAdded(0, contentCount - 1)
 		end

@@ -33,12 +33,11 @@ pin Dragengine.Utils
  * \brief Drop down list displaying the currently selected element.
  * 
  * Supports designing using designer selector "ComboBox". The drop-down list box supports
- * desining using designer selector "ListBox.ComboBox". 
+ * desining using designer selector "ListBox.ComboBox".
  */
 class ComboBox extends Container implements ListModelListener
 	/** \brief Start edit mouse listener. */
 	class StartEditMouseListener extends DefaultMouseListener
-		/** \brief Combo box. */
 		private var ComboBox pComboBox
 		
 		/** \brief Create mouse listener. */
@@ -56,7 +55,6 @@ class ComboBox extends Container implements ListModelListener
 	
 	/** \brief Editor focus lost listener. */
 	class EditorFocusLost extends DefaultFocusListener
-		/** \brief Combo box. */
 		private var ComboBox pComboBox
 		
 		/** \brief Create mouse listener. */
@@ -74,7 +72,6 @@ class ComboBox extends Container implements ListModelListener
 	
 	/** \brief Editor value changed listener. */
 	class EditorValueChanged extends DefaultActionListener
-		/** \brief Combo box. */
 		private var ComboBox pComboBox
 		
 		/** \brief Create listener. */
@@ -91,10 +88,7 @@ class ComboBox extends Container implements ListModelListener
 	
 	/** \brief Roll up mouse listener. */
 	class RollUpMouseListener extends DefaultMouseListener
-		/** \brief Combo box. */
 		private var ComboBox pComboBox
-		
-		/** \brief Count mouse release only if pressed before. */
 		private var bool pPressed
 		
 		/** \brief Create mouse listener. */
@@ -120,7 +114,6 @@ class ComboBox extends Container implements ListModelListener
 	
 	/** \brief Popup widget listener. */
 	class PopupWidgetListener extends DefaultWidgetListener
-		/** \brief Combo box. */
 		private var ComboBox pComboBox
 		
 		/** \brief Create widget listener. */
@@ -136,7 +129,6 @@ class ComboBox extends Container implements ListModelListener
 	
 	/** \brief Change combo box selectiong using mouse wheel. */
 	class WheelChangeSelection extends DefaultMouseListener
-		/** \brief List box. */
 		private var ListBox pListBox
 		
 		/** \brief Create mouse listener. */
@@ -180,6 +172,8 @@ class ComboBox extends Container implements ListModelListener
 	private var EditorFocusLost pEditorFocusLost
 	private var EditorValueChanged pEditorValueChanged
 	private var Point pDefaultElementSize
+	private var bool pSelFromEditorOnDropDown
+	private var bool pDropDownRequiresSelFromEditor
 	
 	
 	
@@ -194,6 +188,8 @@ class ComboBox extends Container implements ListModelListener
 	/** \brief Create combo box widget. */
 	public func new(ListModel model, ListElementRenderer renderer)
 // 		setCanFocus(true) // this is not working correctly. needs fixing
+		
+		pSelFromEditorOnDropDown = true
 		
 		pDefaultElementSize = Point.new(1, 1)
 		
@@ -232,14 +228,12 @@ class ComboBox extends Container implements ListModelListener
 	end
 	
 	/** \brief Create combo box widget. */
-	public func new(ListModel model, ComboBoxEditor editor) \
-	this(model, DefaultListElementRenderer.new())
+	public func new(ListModel model, ComboBoxEditor editor) this(model, DefaultListElementRenderer.new())
 		setEditor(editor)
 	end
 	
 	/** \brief Create combo box widget. */
-	public func new(ListModel model, ListElementRenderer renderer, ComboBoxEditor editor) \
-	this(model, renderer)
+	public func new(ListModel model, ListElementRenderer renderer, ComboBoxEditor editor) this(model, renderer)
 		setEditor(editor)
 	end
 	
@@ -388,18 +382,17 @@ class ComboBox extends Container implements ListModelListener
 		
 		onStateChanged(StateChangeEvent.new(this, StateChangeEvent.idStateChanged))
 		
+		if pDropDownRequiresSelFromEditor
+			pDropDownRequiresSelFromEditor = false
+			setSelectedFromEditorValue() // has to be done once drop down is visible
+		end
+		
 		if pEditor != null
 			pEditor.startEditing()
 			
 		else
 			grabFocus()
 		end
-		
-		/*
-		if pEditor == null
-			pListBox.grabFocus()
-		end
-		*/
 	end
 	
 	/** \brief Roll up the list box if dropped down. */
@@ -448,6 +441,49 @@ class ComboBox extends Container implements ListModelListener
 		pEditor.startEditing()
 		
 		pDropDown.moveToTop() // startEditing grabs the focus raising the window. we need an alwaysOnTop
+	end
+	
+	/**
+	 * \brief Set selected from editor value on drop down.
+	 * \version 1.7
+	 * 
+	 * If true delays sets selected from editor value until drop down. If false sets selected
+	 * from editor immediately. This can be slow down UI if the list has many elements.
+	 * 
+	 * Default value is true.
+	 */
+	public func bool getSelectFromEditorOnDropDown()
+		return pSelFromEditorOnDropDown
+	end
+	
+	/**
+	 * \brief Set selected from editor value on drop down.
+	 * \version 1.7
+	 * 
+	 * If true delays sets selected from editor value until drop down. If false sets selected
+	 * from editor immediately. This can be slow down UI if the list has many elements.
+	 * 
+	 * Default value is true.
+	 */
+	public func void setSelectFromEditorOnDropDown(bool selectedFromEditorOnDropDown)
+		pSelFromEditorOnDropDown = selectedFromEditorOnDropDown
+		pDropDownRequiresSelFromEditor = true
+	end
+	
+	/**
+	 * \brief Select from editor value is required during next drop down.
+	 * \version 1.7
+	 */
+	protected func bool getDropDownRequiresSelectFromEditor()
+		return pDropDownRequiresSelFromEditor
+	end
+	
+	/**
+	 * \brief Set select from editor value is required during next drop down.
+	 * \version 1.7
+	 */
+	protected func void setDropDownRequiresSelectFromEditor(bool requiresSelectFromEditor)
+		pDropDownRequiresSelFromEditor = requiresSelectFromEditor
 	end
 	
 	
@@ -559,7 +595,7 @@ class ComboBox extends Container implements ListModelListener
 		setEditorValueFromSelection()
 		updateSelectedWidget()
 		
-		if pEditor != null
+		if pEditor != null and pEditor.getWidget().getVisible()
 			pEditor.startEditing()
 		end
 	end
@@ -619,8 +655,12 @@ class ComboBox extends Container implements ListModelListener
 			return
 		end
 		
-		pListBox.setSelectedElement(pListBox.getModel().indexOf(\
-			pEditor.getEditorValue()))
+		if pSelFromEditorOnDropDown and not pDropDown.getVisible()
+			pDropDownRequiresSelFromEditor = true
+			return
+		end
+		
+		pListBox.setSelectedElement(pListBox.getModel().indexOf(pEditor.getEditorValue()))
 	end
 	
 	/** \brief Update visibility of editor and selected element renderer. */
