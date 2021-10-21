@@ -76,8 +76,10 @@ private:
 	DEF_NATFUNC( nfCounterReset2 );
 	DEF_NATFUNC( nfCounterAdd );
 	DEF_NATFUNC( nfCounterTime );
+	DEF_NATFUNC( nfCounterTimeSeconds );
 	DEF_NATFUNC( nfCounterUpdates );
 	DEF_NATFUNC( nfCounterAverageTime );
+	DEF_NATFUNC( nfCounterAverageTimeSeconds );
 #undef DEF_NATFUNC
 };
 
