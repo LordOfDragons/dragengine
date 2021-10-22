@@ -65,7 +65,7 @@ class ComboBox extends Container implements ListModelListener
 		/** \brief Widget lost focus. */
 		public func void onFocusLost(FocusEvent event)
 			pComboBox.rollUp()
-			pComboBox.setSelectedFromEditorValue()
+			//pComboBox.setSelectedFromEditorValue() // do we really need this?
 			pComboBox.updateSelectedWidget()
 		end
 	end
@@ -547,9 +547,9 @@ class ComboBox extends Container implements ListModelListener
 	public func void onFocusLost(FocusEvent event)
 		super.onFocusLost(event)
 		
-		if pEditor != null and pEditor.getWidget().getVisible()
-			setSelectedFromEditorValue()
-		end
+		/*if pEditor != null and pEditor.getWidget().getVisible()
+			setSelectedFromEditorValue() // is this really required?
+		end*/
 		updateSelectedWidget()
 	end
 	
