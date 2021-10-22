@@ -72,6 +72,7 @@ class Desktop extends Container
 	private var BorderSize pNoWindowBorder
 	
 	private var ToolTipManager pToolTipManager
+	private var WindowVirtualKeyboard pWindowVirtualKeyboard
 	
 	
 	
@@ -102,6 +103,7 @@ class Desktop extends Container
 	
 	/** \brief Disposes of widget. */
 	public func void dispose()
+		setWindowVirtualKeyboard(null)
 		setToolTipManager(null)
 		
 		pMousePointerListeners = null
@@ -740,6 +742,38 @@ class Desktop extends Container
 		end
 		
 		pToolTipManager = tooltipManager
+	end
+	
+	
+	
+	/**
+	 * \brief Virtual keyboard window or null.
+	 * \version 1.7
+	 */
+	public func WindowVirtualKeyboard getWindowVirtualKeyboard()
+		return pWindowVirtualKeyboard
+	end
+	
+	/**
+	 * \brief Set virtual keyboard window or null.
+	 * \version 1.7
+	 */
+	public func void setWindowVirtualKeyboard(WindowVirtualKeyboard window)
+		if window == pWindowVirtualKeyboard
+			return
+		end
+		
+		if pWindowVirtualKeyboard != null
+			pWindowVirtualKeyboard.safeDispose()
+			pWindowVirtualKeyboard = null
+		end
+		
+		pWindowVirtualKeyboard = window
+		
+		if window != null
+			window.setVisible(false)
+			addWindow(window)
+		end
 	end
 	
 	

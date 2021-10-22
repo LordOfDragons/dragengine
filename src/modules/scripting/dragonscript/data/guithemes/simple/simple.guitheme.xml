@@ -56,6 +56,50 @@
 		<font parameter='normal.font' size='15'>../modern/fonts/sans15.defont</font>
 	</designer>
 	
+	<designer name='WindowVirtualKeyboard' type='Window'>
+		<canvasCreator parameter='normal.canvas' type='Rectangle'>
+			<color parameter='colorFill' r='0' g='0' b='0' a='0.65'/>
+		</canvasCreator>
+		<border parameter='normal.border' type='Bevel'>
+			<boolean parameter='raised'>false</boolean>
+			<color parameter='colorHighlight' r='1' g='1' b='1'/>
+			<color parameter='colorShadow' r='0.5' g='0.5' b='0.5'/>
+		</border>
+		<borderSize parameter='normal.padding' all='2'/>
+	</designer>
+	
+	<designer name='Label.WindowVirtualKeyboard.Key' type='Label'>
+		<canvasCreator parameter='normal.canvas' type='Rectangle'>
+			<color parameter='colorFill' r='0.5' g='0.5' b='0.5'/>
+		</canvasCreator>
+		<canvasCreator parameter='hover.canvas' type='Rectangle'>
+			<color parameter='colorFill' r='0.5' g='1' b='1'/>
+		</canvasCreator>
+		<point parameter='normal.minimumSize' x='24' y='24'/>
+		<color parameter='normal.textColor' r='1' g='1' b='1'/>
+		<font parameter='normal.font' size='15'>fonts/sans15.defont</font>
+	</designer>
+	
+	<designer name='Image.WindowVirtualKeyboard.Key' type='Image'>
+		<canvasCreator parameter='normal.canvas' type='Rectangle'>
+			<color parameter='colorFill' r='0.5' g='0.5' b='0.5'/>
+		</canvasCreator>
+		<canvasCreator parameter='hover.canvas' type='Rectangle'>
+			<color parameter='colorFill' r='0.5' g='1' b='1'/>
+		</canvasCreator>
+		<point parameter='normal.minimumSize' x='24' y='24'/>
+		<color parameter='normal.textColor' r='1' g='1' b='1'/>
+		<font parameter='normal.font' size='15'>fonts/sans15.defont</font>
+	</designer>
+	
+	<designer name='Label.WindowVirtualKeyboard.Key.Wide' extendNamed='Label.WindowVirtualKeyboard.Key'>
+		<point parameter='normal.minimumSize' x='42' y='24'/>
+	</designer>
+	
+	<designer name='Label.WindowVirtualKeyboard.Key.Space' extendNamed='Label.WindowVirtualKeyboard.Key'>
+		<point parameter='normal.minimumSize' x='144' y='24'/>
+	</designer>
+	
 	<designer name='WindowFullScreen' type='Window'>
 		<canvasCreator parameter='normal.canvas' type='Rectangle'>
 			<color parameter='colorFill' r='0' g='0' b='0'/>

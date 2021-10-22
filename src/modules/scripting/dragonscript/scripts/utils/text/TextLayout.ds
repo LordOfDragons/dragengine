@@ -254,8 +254,15 @@ class TextLayout
 			
 			if character == '\n'
 				if wordCharacters == 0
-					textLine = TextLayoutLine.new( lineStart, lineEnd - lineStart, \
-						DEMath.ceil( lineWidth ) cast int, lineHeight )
+					if lineWidth == 0 // only spaces on line
+						textLine = TextLayoutLine.new(lineStart, lineEnd - lineStart, \
+							DEMath.ceil(spacesWidth) cast int, lineHeight)
+						
+					else
+						textLine = TextLayoutLine.new( lineStart, lineEnd - lineStart, \
+							DEMath.ceil( lineWidth ) cast int, lineHeight )
+					end
+					
 				else
 					textLine = TextLayoutLine.new( lineStart, lastPosition - lineStart, \
 						DEMath.ceil( lineWidth + spacesWidth + wordWidth ) cast int, lineHeight )
@@ -327,7 +334,6 @@ class TextLayout
 					wordCharacters++
 					wordWidth += characterAdvance
 				end
-				
 			end
 			
 			if textLine != null

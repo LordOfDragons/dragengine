@@ -28,8 +28,9 @@ pin Dragengine.Gui.Layouts
 
 /**
  * \brief Window for showing tool tip.
+ * \version 1.7
  * 
- * Similar to WindowToolTip but does not capture the mouse nor does it allow hovering
+ * Similar to WindowPopup but does not capture the mouse nor does it allow hovering
  * 
  * Supports designing using designer selector "WindowToolTip".
  */

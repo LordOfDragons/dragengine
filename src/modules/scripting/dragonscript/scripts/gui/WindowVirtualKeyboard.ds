@@ -1,0 +1,513 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2021, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui
+
+pin Dragengine.Gui.Events
+pin Dragengine.Gui.Layouts
+
+
+/**
+ * \brief Window for showing virtual keyboard.
+ * \version 1.7
+ * 
+ * Similar to WindowPopup but does not capture the mouse.
+ * 
+ * Supports designing using designer selector "WindowVirtualKeyboard".
+ * 
+ * Window shows one panel out of a selection of possible panels depending on the
+ * characteristics of the input widget.
+ * 
+ * By default Desktop has no virtual keyboard assign. Use Desktop.setWindowVirtualKeyboard()
+ * to assign an instance of this class. Widgets supporting keyboard input in a reasonable
+ * way will call popup() upon receiving the focus and popdown(null) upon loosing the focus.
+ */
+class WindowVirtualKeyboard extends Window
+	/** \brief Virtual key type listener. */
+	class VirtualKeyType extends DefaultMouseListener
+		private var WindowVirtualKeyboard pWindow
+		private var Widget pWidget
+		private var int pKeyCode
+		private var int pKeyChar
+		private var int pShiftedKeyChar
+		private var bool pButtonPressed
+		private var bool pShifted
+		
+		public func new(WindowVirtualKeyboard window, Widget widget, int keyCode,\
+		int keyChar, int shiftedKeyChar)
+			pWindow = window
+			pWidget = widget
+			pKeyCode = keyCode
+			pKeyChar = keyChar
+			pShiftedKeyChar = shiftedKeyChar
+		end
+		
+		public func void onButtonPress(MouseEvent event)
+			if event.getButton() != InputEventMouseButton.left or pButtonPressed
+				return
+			end
+			
+			pButtonPressed = true
+			pShifted = pWindow.getModelShift().getToggled()
+			pWidget.captureMouse()
+			pWindow.sendKeyPressed(pKeyCode, pShifted if pShiftedKeyChar else pKeyChar)
+			
+			if pKeyCode == InputEventKey.shift
+				pWindow.getModelShift().setToggled(not pWindow.getModelShift().getToggled())
+			end
+		end
+		
+		public func void onButtonRelease(MouseEvent event)
+			if event.getButton() != InputEventMouseButton.left or not pButtonPressed
+				return
+			end
+			
+			pButtonPressed = false
+			pWidget.releaseMouse()
+			pWindow.sendKeyReleased(pKeyCode, pShifted if pShiftedKeyChar else pKeyChar)
+			pShifted = false
+		end
+	end
+	
+	/** \brief Rename key upon shift toggle listener. */
+	class RenameShiftToggle extends DefaultToggleModelListener
+		private var TextModel pModelText
+		private var String pText
+		private var String pTextShifted
+		
+		public func new(TextModel modelText, String text, String textShifted)
+			pModelText = modelText
+			pText = text
+			pTextShifted = textShifted
+		end
+		
+		public func void toggledChanged(ToggleModel model)
+			pModelText.setText(model.getToggled() if pTextShifted else pText)
+		end
+	end
+	
+	
+	
+	private var Widget pInputWidget
+	private var Panel pKeyboardLayoutPanel
+	
+	private var Panel pKeyboardLayoutDefaultPanel
+	private var Panel pKeyboardLayoutNumericPanel
+	
+	private var DefaultToggleModel pModelShift
+	
+	
+	
+	/** \brief Create window. */
+	public func new()
+		pModelShift = DefaultToggleModel.new()
+		
+		runWhileBlockingLayout(block
+			setVisible(false)
+			setEnabled(true)
+			setCanFocus(false)
+			setCanReorder(false)
+			setCanActivate(true)
+			setCanMove(false)
+			setCanResize(false)
+			setCanClose(false)
+			setCanMaximize(false)
+			setCanMinimize(false)
+			setDesignerSelector("WindowVirtualKeyboard")
+			
+			setLayout(StackLayout.new())
+			createKeyboardLayoutPanels(this)
+		end)
+	end
+	
+	/** \brief Dispose of widget. */
+	public func void dispose()
+		pInputWidget = null
+		pKeyboardLayoutPanel = null
+		pKeyboardLayoutDefaultPanel = null
+		pKeyboardLayoutNumericPanel = null
+		pModelShift = null
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief Input widget or null. */
+	public func Widget getInputWidget()
+		return pInputWidget
+	end
+	
+	/** \brief Active keyboard layout panel or null. */
+	public func Panel getKeyboardLayoutPanel()
+		return pKeyboardLayoutPanel
+	end
+	
+	/** \brief Default keyboard layout panel. */
+	public func Panel getKeyboardLayoutDefault()
+		return pKeyboardLayoutDefaultPanel
+	end
+	
+	/** \brief Numeric keyboard layout panel. */
+	public func Panel getKeyboardLayoutNumeric()
+		return pKeyboardLayoutNumericPanel
+	end
+	
+	/** \brief Set active keyboard layout panel or null. */
+	protected func void setKeyboardLayoutPanel(Panel panel)
+		if panel == pKeyboardLayoutPanel
+			return
+		end
+		
+		runWhileBlockingLayout(block
+			if pKeyboardLayoutPanel != null
+				pKeyboardLayoutPanel.setVisible(false)
+			end
+			
+			pKeyboardLayoutPanel = panel
+			
+			if panel != null
+				panel.setVisible(true)
+			end
+		end)
+		doLayoutIfBlocked()
+	end
+	
+	/** \brief Shift model. */
+	public func ToggleModel getModelShift()
+		return pModelShift
+	end
+	
+	
+	
+	/**
+	 * \brief Pop up window operating on input widget.
+	 * 
+	 * Shows the window at suitable position. Chooses keyboard layout best matching
+	 * input widget. Input is send to the input widget as KeyEvent.
+	 * 
+	 * If no suitable keyboard layout exists noting is shown.
+	 */
+	public func void popup(Widget inputWidget)
+		if inputWidget == null
+			throw ENullPointer.new("inputWidget")
+		end
+		
+		setKeyboardLayoutPanel(selectKeyboardLayout(inputWidget))
+		if pKeyboardLayoutPanel == null
+			// no suitable keyboard layout so show nothing
+			return
+		end
+		
+		pInputWidget = inputWidget
+		
+		fitToContent()
+		setPosition(calculatePopupPosition(inputWidget))
+		setVisible(true)
+		moveToTop()
+	end
+	
+	/**
+	 * \brief Pop down windowand clears input widget.
+	 * 
+	 * Hides window.
+	 */
+	public func void popdown()
+		setVisible(false)
+		setKeyboardLayoutPanel(null)
+		pInputWidget = null
+	end
+	
+	
+	
+	/** \brief Send key pressed event to input widget if present. */
+	public func void sendKeyPressed(int keyCode, int keyChar)
+		if pInputWidget == null
+			return
+		end
+		
+		pInputWidget.sendEvent(KeyEvent.new(this, KeyEvent.idKeyPressed, \
+			keyCode, InputEventModifier.none, keyChar, -1, keyCode))
+	end
+	
+	/** \brief Send key released event to input widget if present. */
+	public func void sendKeyReleased(int keyCode, int keyChar)
+		if pInputWidget == null
+			return
+		end
+		
+		pInputWidget.sendEvent(KeyEvent.new(this, KeyEvent.idKeyReleased,\
+			keyCode, InputEventModifier.none, keyChar, -1, keyCode))
+	end
+	
+	
+	
+	/**
+	 * \brief Grab focus if possible.
+	 * 
+	 * Implementation for popup windows is slightly different than for regular
+	 * windows. Regular windows focus the first focusable widget if they are not
+	 * focusable itself. Popup windows can not grab the focus nor do they focus
+	 * the first focusable widget. This avoids popup windows stealing focus from
+	 * the underlaying window.
+	 */
+	public func void grabFocus()
+	end
+	
+	
+	
+	/** \brief Calculate popup position. */
+	protected func Point calculatePopupPosition(Widget widget)
+		// adjust the location to ensure the popup is fully visible inside the desktop
+		var Point widgetSize = widget.getSize()
+		var Desktop desktop = getDesktop()
+		var Point popupSize = getSize()
+		
+		var RectArea visibleAreay = RectArea.new(Point.new(),\
+			desktop.getContainerSize() - Point.new(1, 1)).grow(-popupSize)
+		
+		var Point position = widget.getDesktopPosition()
+		var Point desired = position + Point.new((widgetSize.getX() - popupSize.getX()) / 2, widgetSize.getY())
+		var Point clamped = visibleAreay.clamp(desired)
+		
+		if clamped.getY() == desired.getY()
+			// position at bottom is visible so use it
+			return clamped
+		end
+		
+		// clamped position clips at bottom. move popup to top of mouse pointer
+		desired = position - Point.new(0, popupSize.getY())
+		return visibleAreay.clamp(desired)
+	end
+	
+	
+	
+	/** \brief Select keyboard layout best matching input widget. */
+	protected func Panel selectKeyboardLayout(Widget inputWidget)
+		if inputWidget castable TextWidget
+			return selectKeyboardLayout(inputWidget cast TextWidget)
+		end
+		
+		return pKeyboardLayoutDefaultPanel
+	end
+	
+	/** \brief Select keyboard layout best matching input widget. */
+	protected func Panel selectKeyboardLayout(TextWidget textWidget)
+		var TextValidator validator = textWidget.getValidator()
+		if validator == null
+			return pKeyboardLayoutDefaultPanel
+		end
+		
+		if validator castable SimpleTextValidator
+			select (validator cast SimpleTextValidator).getCharacterClass()
+			case SimpleTextValidator.CharacterClass.digits
+				return pKeyboardLayoutNumericPanel
+				
+			case SimpleTextValidator.CharacterClass.digitsNegative
+				return pKeyboardLayoutNumericPanel
+				
+			case SimpleTextValidator.CharacterClass.number
+				return pKeyboardLayoutNumericPanel
+				
+			case SimpleTextValidator.CharacterClass.positiveNumber
+				return pKeyboardLayoutNumericPanel
+				
+			else
+				return pKeyboardLayoutDefaultPanel
+			end
+		end
+		
+		return pKeyboardLayoutDefaultPanel
+	end
+	
+	/** \brief Create layout panels adding them to container. */
+	protected func void createKeyboardLayoutPanels(Container container)
+		pKeyboardLayoutDefaultPanel = createKeyboardLayoutDefaultPanel()
+		container.addWidget(pKeyboardLayoutDefaultPanel)
+		
+		pKeyboardLayoutNumericPanel = createKeyboardLayoutNumericPanel()
+		container.addWidget(pKeyboardLayoutNumericPanel)
+	end
+	
+	/** \brief Create default keyboard layout panel. */
+	protected func Panel createKeyboardLayoutDefaultPanel()
+		return Panel.new(FlowLayout.new(LayoutAxis.y, 1), block Panel p
+			p.setVisible(false)
+			p.addWidget(createKeyboardLayoutDefaultPanelRow1())
+			p.addWidget(createKeyboardLayoutDefaultPanelRow2())
+			p.addWidget(createKeyboardLayoutDefaultPanelRow3())
+			p.addWidget(createKeyboardLayoutDefaultPanelRow4())
+			p.addWidget(createKeyboardLayoutDefaultPanelRow5())
+		end)
+	end
+	
+	/** \brief Create default keyboard layout panel row 1. */
+	protected func Panel createKeyboardLayoutDefaultPanelRow1()
+		return Panel.new(CentrizedBoxLayout.new(LayoutAxis.x, 1), block Panel p
+			p.addWidget(createVirtualKey(InputEventKey.undefined, '`', "`", '~', "~", ""))
+			p.addWidget(createVirtualKey(InputEventKey.digit1, '1', "1", '!', "!", ""))
+			p.addWidget(createVirtualKey(InputEventKey.digit2, '2', "2", '@', "@", ""))
+			p.addWidget(createVirtualKey(InputEventKey.digit3, '3', "3", '#', "#", ""))
+			p.addWidget(createVirtualKey(InputEventKey.digit4, '4', "4", '$', "$", ""))
+			p.addWidget(createVirtualKey(InputEventKey.digit5, '5', "5", '%', "%", ""))
+			p.addWidget(createVirtualKey(InputEventKey.digit6, '6', "6", '^', "^", ""))
+			p.addWidget(createVirtualKey(InputEventKey.digit7, '7', "7", '&', "&", ""))
+			p.addWidget(createVirtualKey(InputEventKey.digit8, '8', "8", '*', "*", ""))
+			p.addWidget(createVirtualKey(InputEventKey.digit9, '9', "9", '(', "(", ""))
+			p.addWidget(createVirtualKey(InputEventKey.digit0, '0', "0", ')', ")", ""))
+			p.addWidget(createVirtualKey(InputEventKey.undefined, '-', "-", '_', "_", ""))
+			p.addWidget(createVirtualKey(InputEventKey.undefined, '=', "=", '+', "+", ""))
+			p.addWidget(createVirtualKey(InputEventKey.backspace, 8, "Back", ".Wide"))
+		end)
+	end
+	
+	/** \brief Create default keyboard layout panel row 2. */
+	protected func Panel createKeyboardLayoutDefaultPanelRow2()
+		return Panel.new(CentrizedBoxLayout.new(LayoutAxis.x, 1), block Panel p
+			p.addWidget(createVirtualKey(InputEventKey.tab, 9, "Tab", ".Wide"))
+			p.addWidget(createVirtualKey(InputEventKey.q, 'q', "q", 'Q', "Q", ""))
+			p.addWidget(createVirtualKey(InputEventKey.w, 'w', "w", 'W', "W", ""))
+			p.addWidget(createVirtualKey(InputEventKey.e, 'e', "e", 'E', "E", ""))
+			p.addWidget(createVirtualKey(InputEventKey.r, 'r', "r", 'R', "R", ""))
+			p.addWidget(createVirtualKey(InputEventKey.t, 't', "t", 'T', "T", ""))
+			p.addWidget(createVirtualKey(InputEventKey.y, 'y', "y", 'Y', "Y", ""))
+			p.addWidget(createVirtualKey(InputEventKey.u, 'u', "u", 'U', "U", ""))
+			p.addWidget(createVirtualKey(InputEventKey.i, 'i', "i", 'I', "I", ""))
+			p.addWidget(createVirtualKey(InputEventKey.o, 'o', "o", 'O', "O", ""))
+			p.addWidget(createVirtualKey(InputEventKey.p, 'p', "p", 'P', "P", ""))
+			p.addWidget(createVirtualKey(InputEventKey.undefined, '[', "[", '{', "{", ""))
+			p.addWidget(createVirtualKey(InputEventKey.undefined, ']', "]", '}', "}", ""))
+			p.addWidget(createVirtualKey(InputEventKey.undefined, '\\', "\\", '|', "|", ""))
+		end)
+	end
+	
+	/** \brief Create default keyboard layout panel row 3. */
+	protected func Panel createKeyboardLayoutDefaultPanelRow3()
+		return Panel.new(CentrizedBoxLayout.new(LayoutAxis.x, 1), block Panel p
+			p.addWidget(createVirtualKey(InputEventKey.a, 'a', "a", 'A', "A", ""))
+			p.addWidget(createVirtualKey(InputEventKey.s, 's', "s", 'S', "S", ""))
+			p.addWidget(createVirtualKey(InputEventKey.d, 'd', "d", 'D', "D", ""))
+			p.addWidget(createVirtualKey(InputEventKey.f, 'f', "f", 'F', "F", ""))
+			p.addWidget(createVirtualKey(InputEventKey.g, 'g', "g", 'G', "G", ""))
+			p.addWidget(createVirtualKey(InputEventKey.h, 'h', "h", 'H', "H", ""))
+			p.addWidget(createVirtualKey(InputEventKey.j, 'j', "j", 'J', "J", ""))
+			p.addWidget(createVirtualKey(InputEventKey.k, 'k', "k", 'K', "K", ""))
+			p.addWidget(createVirtualKey(InputEventKey.l, 'l', "l", 'L', "L", ""))
+			p.addWidget(createVirtualKey(InputEventKey.undefined, ';', ";", ':', ":", ""))
+			p.addWidget(createVirtualKey(InputEventKey.undefined, '\'', "'", '"', "\"", ""))
+			p.addWidget(createVirtualKey(InputEventKey.enter, 13, "Enter", ".Wide"))
+		end)
+	end
+	
+	/** \brief Create default keyboard layout panel row 4. */
+	protected func Panel createKeyboardLayoutDefaultPanelRow4()
+		return Panel.new(CentrizedBoxLayout.new(LayoutAxis.x, 1), block Panel p
+			p.addWidget(createVirtualKey(InputEventKey.shift, 0, "Shift", ".Wide"))
+			p.addWidget(createVirtualKey(InputEventKey.z, 'z', "z", 'Z', "Z", ""))
+			p.addWidget(createVirtualKey(InputEventKey.x, 'x', "x", 'X', "X", ""))
+			p.addWidget(createVirtualKey(InputEventKey.c, 'c', "c", 'C', "C", ""))
+			p.addWidget(createVirtualKey(InputEventKey.v, 'v', "v", 'V', "V", ""))
+			p.addWidget(createVirtualKey(InputEventKey.b, 'b', "b", 'B', "B", ""))
+			p.addWidget(createVirtualKey(InputEventKey.n, 'n', "n", 'N', "N", ""))
+			p.addWidget(createVirtualKey(InputEventKey.m, 'm', "m", 'M', "M", ""))
+			p.addWidget(createVirtualKey(InputEventKey.undefined, ',', ",", '<', "<", ""))
+			p.addWidget(createVirtualKey(InputEventKey.undefined, '.', ".", '>', ">", ""))
+			p.addWidget(createVirtualKey(InputEventKey.undefined, '/', "/", '?', "?", ""))
+			p.addWidget(createVirtualKey(InputEventKey.shift, 0, "Shift", ".Wide"))
+		end)
+	end
+	
+	/** \brief Create default keyboard layout panel row 5. */
+	protected func Panel createKeyboardLayoutDefaultPanelRow5()
+		return Panel.new(CentrizedBoxLayout.new(LayoutAxis.x, 1), block Panel p
+			p.addWidget(createVirtualKey(InputEventKey.home, 0, "Home", ".Wide"))
+			p.addWidget(createVirtualKey(InputEventKey.arrowUp, 0,\
+				Image.new("/shareddata/guithemes/modern/keyboard/arrow_up.png"), ""))
+			p.addWidget(createVirtualKey(InputEventKey.arrowDown, 0,\
+				Image.new("/shareddata/guithemes/modern/keyboard/arrow_down.png"), ""))
+			p.addWidget(createVirtualKey(InputEventKey.space, ' ', " ", ".Space"))
+			p.addWidget(createVirtualKey(InputEventKey.arrowLeft, 0,\
+				Image.new("/shareddata/guithemes/modern/keyboard/arrow_left.png"), ""))
+			p.addWidget(createVirtualKey(InputEventKey.arrowRight, 0,\
+				Image.new("/shareddata/guithemes/modern/keyboard/arrow_right.png"), ""))
+			p.addWidget(createVirtualKey(InputEventKey.last, 0, "End", ".Wide"))
+		end)
+	end
+	
+	/** \brief Create numeric keyboard layout panel. */
+	protected func Panel createKeyboardLayoutNumericPanel()
+		return Panel.new(FlowLayout.new(LayoutAxis.y, 1), block Panel p
+			p.setVisible(false)
+			p.addWidget(createKeyboardLayoutNumericPanelRow1())
+			p.addWidget(createKeyboardLayoutNumericPanelRow2())
+		end)
+	end
+	
+	/** \brief Create numeric keyboard layout panel row 1. */
+	protected func Panel createKeyboardLayoutNumericPanelRow1()
+		return Panel.new(CentrizedBoxLayout.new(LayoutAxis.x, 1), block Panel p
+			p.addWidget(createVirtualKey(InputEventKey.digit1, '1', "1", ""))
+			p.addWidget(createVirtualKey(InputEventKey.digit2, '2', "2", ""))
+			p.addWidget(createVirtualKey(InputEventKey.digit3, '3', "3", ""))
+			p.addWidget(createVirtualKey(InputEventKey.digit4, '4', "4", ""))
+			p.addWidget(createVirtualKey(InputEventKey.digit5, '5', "5", ""))
+			p.addWidget(createVirtualKey(InputEventKey.digit6, '6', "6", ""))
+			p.addWidget(createVirtualKey(InputEventKey.digit7, '7', "7", ""))
+			p.addWidget(createVirtualKey(InputEventKey.digit8, '8', "8", ""))
+			p.addWidget(createVirtualKey(InputEventKey.digit9, '9', "9", ""))
+			p.addWidget(createVirtualKey(InputEventKey.digit0, '0', "0", ""))
+		end)
+	end
+	
+	/** \brief Create numeric keyboard layout panel row 2. */
+	protected func Panel createKeyboardLayoutNumericPanelRow2()
+		return Panel.new(CentrizedBoxLayout.new(LayoutAxis.x, 1), block Panel p
+			p.addWidget(createVirtualKey(InputEventKey.tab, 9, "Tab", ".Wide"))
+			p.addWidget(createVirtualKey(InputEventKey.undefined, '-', "-", ""))
+			p.addWidget(createVirtualKey(InputEventKey.undefined, '.', ".", ""))
+			p.addWidget(createVirtualKey(InputEventKey.backspace, 8, "Back", ".Wide"))
+			p.addWidget(createVirtualKey(InputEventKey.enter, 13, "Enter", ".Wide"))
+		end)
+	end
+	
+	/** \brief Create virtual key widget. */
+	protected func Widget createVirtualKey(int keyCode, int keyChar, String text, String designerSuffix)
+		var Label label = Label.new(text, "Label.WindowVirtualKeyboard.Key" + designerSuffix)
+		label.addMouseListener(VirtualKeyType.new(this, label, keyCode, keyChar, keyChar))
+		return label
+	end
+	
+	/** \brief Create virtual key widget. */
+	protected func Widget createVirtualKey(int keyCode, int keyChar, String text,\
+	int shiftedKeyChar, String shiftedText, String designerSuffix)
+		var Label label = Label.new(text, "Label.WindowVirtualKeyboard.Key" + designerSuffix)
+		label.addMouseListener(VirtualKeyType.new(this, label, keyCode, keyChar, shiftedKeyChar))
+		pModelShift.addListener(RenameShiftToggle.new(label.getModel(), text, shiftedText))
+		return label
+	end
+	
+	/** \brief Create virtual key widget. */
+	protected func Widget createVirtualKey(int keyCode, int keyChar, Image image, String designerSuffix)
+		var DisplayRotatingImage display = DisplayRotatingImage.new(image, "Label.WindowVirtualKeyboard.Key" + designerSuffix)
+		display.addMouseListener(VirtualKeyType.new(this, display, keyCode, keyChar, keyChar))
+		return display
+	end
+end

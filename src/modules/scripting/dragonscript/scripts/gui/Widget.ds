@@ -2077,6 +2077,37 @@ class Widget
 	
 	
 	
+	
+	/**
+	 * \brief Popup virtual keyboard if Desktop has one assigned.
+	 * \version 1.7
+	 */
+	public func void popupVirtualKeyboard()
+		var Desktop desktop = getDesktop()
+		if desktop != null
+			var WindowVirtualKeyboard vk = desktop.getWindowVirtualKeyboard()
+			if vk != null
+				vk.popup(this)
+			end
+		end
+	end
+	
+	/**
+	 * \brief Popdown virtual keyboard if Desktop has one assigned.
+	 * \version 1.7
+	 */
+	public func void popdownVirtualKeyboard()
+		var Desktop desktop = getDesktop()
+		if desktop != null
+			var WindowVirtualKeyboard vk = desktop.getWindowVirtualKeyboard()
+			if vk != null
+				vk.popdown()
+			end
+		end
+	end
+	
+	
+	
 	/**
 	 * \brief Create widget, background and content canvas.
 	 * 

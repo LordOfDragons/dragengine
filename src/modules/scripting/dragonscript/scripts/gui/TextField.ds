@@ -249,12 +249,14 @@ class TextField extends TextWidget
 	public func void onFocusReceived( FocusEvent event )
 		super.onFocusReceived( event )
 		this.updateCanvasText()
+		popupVirtualKeyboard()
 	end
 	
 	/** \brief Widget lost focus. */
 	public func void onFocusLost( FocusEvent event )
 		super.onFocusLost( event )
 		this.updateCanvasText()
+		popdownVirtualKeyboard()
 	end
 	
 	
