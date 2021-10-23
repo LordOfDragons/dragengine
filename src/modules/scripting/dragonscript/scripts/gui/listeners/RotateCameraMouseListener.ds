@@ -87,7 +87,7 @@ class RotateCameraMouseListener extends DefaultMouseListener
 		pMaximumAzimuth = 90
 		pClampAzimuth = false
 		pRotationSpeedAzimuth = -45.0 / 150.0 // 45 degrees per 150 pixels
-		pRotationSpeedElevation = 45.0 / 150.0 // 45 degrees per 150 pixels
+		pRotationSpeedElevation = -45.0 / 150.0 // 45 degrees per 150 pixels
 	end
 	
 	

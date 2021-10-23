@@ -29,28 +29,26 @@ pin Dragengine.Utils
 
 
 /**
- * \brief Zoom camera director.
+ * \brief Move camera director.
  * \version 1.7
  * 
  * Set mouse button and modifiers required to trigger the listener. Once triggered moving
- * up and down is translated to decreasing and increasing the camera distance.
+ * up and down is translated to moving camera forward and backwards relative to current
+ * camera matrix view direction.
  * 
- * The minimum distance is clamped to 0 while the maximum distance is free. Optionally
- * the minimum distance can be adjusted and the maximum distance can be clamped.
+ * This listener actually moves the pivot of the camera director.
  * 
  * The camera director is not required to have an element assigned.
  */
-class ZoomCameraMouseListener extends DefaultMouseListener
+class MoveCameraMouseListener extends DefaultMouseListener
 	private var int pButton
 	private var int pModifiers
 	private var Widget pCaptureWidget
 	private var ElementCameraDirector pDirector
-	private var float pMinimumDistance
-	private var float pMaximumDistance
-	private var bool pClampMaximumDistance
 	private var float pSpeed
 	private var Point pPosition
-	private var float pAnchorDistance
+	private var DVector pAnchorPivot
+	private var DMatrix pViewMatrix
 	
 	
 	
@@ -59,7 +57,7 @@ class ZoomCameraMouseListener extends DefaultMouseListener
 	 * \param director Camera director to update.
 	 */
 	public func new(ElementCameraDirector director) \
-	this(director, InputEventMouseButton.right, InputEventModifier.shift | InputEventModifier.control)
+	this(director, InputEventMouseButton.right, InputEventModifier.control)
 	end
 	
 	/**
@@ -76,10 +74,7 @@ class ZoomCameraMouseListener extends DefaultMouseListener
 		pButton = trackButton
 		pModifiers = modifiers
 		pDirector = director
-		pMinimumDistance = 0
-		pMaximumDistance = 10
-		pClampMaximumDistance = false
-		pSpeed = 1.0 / 200.0 // 1meter per 200 pixels
+		pSpeed = 1.0 / 300.0 // 1m per 300 pixels
 	end
 	
 	
@@ -99,49 +94,19 @@ class ZoomCameraMouseListener extends DefaultMouseListener
 		return pDirector
 	end
 	
-	/** \brief Maximum distance in meters. */
-	public func float getMinimumDistance()
-		return pMinimumDistance
-	end
-	
-	/** \brief Set maximum distance in meters. */
-	public func void setMinimumDistance(float distance)
-		pMinimumDistance = distance
-	end
-	
-	/** \brief Maximum distance in meters if clamping is enabled. */
-	public func float getMaximumDistance()
-		return pMaximumDistance
-	end
-	
-	/** \brief Set maximum distance in meters if clamping is enabled. */
-	public func void setMaximumDistance(float distance)
-		pMaximumDistance = distance
-	end
-	
-	/** \brief Clamp maximum distance. */
-	public func bool getClampMaximumDistance()
-		return pClampMaximumDistance
-	end
-	
-	/** \brief Set to clamp maximum distance. */
-	public func void setClampMaximumDistance(bool clamp)
-		pClampMaximumDistance = clamp
-	end
-	
 	/**
-	 * \brief Speed in meters per pixel.
+	 * \brief Movement speed in meters per pixel.
 	 * 
-	 * Negative speed zooms in the opposite direction.
+	 * Negative speed moves in the opposite direction.
 	 */
 	public func float getSpeed()
 		return pSpeed
 	end
 	
 	/**
-	 * \brief Set speed in meters per pixel.
+	 * \brief Set movement speed in meters per pixel.
 	 * 
-	 * Negative speed zooms in the opposite direction.
+	 * Negative speed moves in the opposite direction.
 	 */
 	public func void setSpeed(float speed)
 		pSpeed = speed
@@ -163,35 +128,30 @@ class ZoomCameraMouseListener extends DefaultMouseListener
 		end
 		
 		pPosition = event.getPosition()
-		pAnchorDistance = pDirector.getDistance()
+		pAnchorPivot = pDirector.getPivot()
+		pViewMatrix = pDirector.getCameraMatrix().getRotation().normalize()
 		
 		pCaptureWidget = event.getSource() cast Widget
 		pCaptureWidget.captureMouse()
 		
-		onStartZoom()
+		onStartMove()
 	end
 	
 	/**
 	 * \brief Mouse moved.
 	 * 
-	 * Zoom camera if tracking.
+	 * Rotate camera if tracking.
 	 */
 	public func void onMouseMove(MouseEvent event)
 		if pPosition == null
 			return
 		end
 		
-		var float movement = event.getPosition().getY() - pPosition.getY()
+		var Vector2 movement = Vector2.new(event.getPosition() - pPosition)
 		
-		var float distance = pAnchorDistance + pSpeed * movement
-		if pClampMaximumDistance
-			distance = DEMath.min(distance, pMaximumDistance)
-		end
-		distance = DEMath.max(distance, pMinimumDistance)
+		pDirector.setPivot(pAnchorPivot + pViewMatrix.getViewVector() * (-pSpeed * movement.getY()))
 		
-		pDirector.setDistance(distance)
-		
-		onZoom()
+		onMove()
 	end
 	
 	/**
@@ -207,22 +167,22 @@ class ZoomCameraMouseListener extends DefaultMouseListener
 		pCaptureWidget.releaseMouse()
 		pCaptureWidget = null
 		
-		onStopZoom()
+		onStopMove()
 		
 		pPosition = null
 	end
 	
 	
 	
-	/** \brief Start zooming camera director. */
-	protected func void onStartZoom()
+	/** \brief Start rotating camera director. */
+	protected func void onStartMove()
 	end
 	
-	/** \brief Camera director has been zoomd. */
-	protected func void onZoom()
+	/** \brief Camera director has been rotated. */
+	protected func void onMove()
 	end
 	
-	/** \brief Stop zooming camera director. */
-	protected func void onStopZoom()
+	/** \brief Stop rotating camera director. */
+	protected func void onStopMove()
 	end
 end
