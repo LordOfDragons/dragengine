@@ -395,12 +395,11 @@ void main( void ){
 		
 		float solidity;
 		#ifdef TEXTURE_SOLIDITY
-			solidity = TEXTURE( texSolidity, tcColor ).r;
-			solidity *= pSolidityMultiplier; // add an #ifdef to avoid this calculation?
+			solidity = TEXTURE( texSolidity, tcColor ).r * pSolidityMultiplier;
 		#elif defined WITH_OUTLINE
 			solidity = pOutlineSolidity;
 		#else
-			solidity = 1.0;
+			solidity = pSolidityMultiplier;
 		#endif
 		
 		#ifdef MASKED_SOLIDITY

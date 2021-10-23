@@ -278,6 +278,8 @@ void main( void ){
 			solidity = texture( texSolidity, tcColor ).r * pSolidityMultiplier;
 		#elif defined WITH_OUTLINE
 			solidity = pOutlineSolidity;
+		#else
+			solidity = pSolidityMultiplier;
 		#endif
 	#endif
 	
