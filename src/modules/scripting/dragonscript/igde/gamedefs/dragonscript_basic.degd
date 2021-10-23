@@ -892,6 +892,10 @@
 			<description>Name of renderable to create or empty string if not used.</description>
 			<type>string</type>
 		</property>
+		<property name='renderableSolidity'>
+			<description>Name of solidity renderable to create or empty string if not used. If not empty the solidity renderable is set to contain the transparency of the regular renderable converted to grayscale image. This can be used to create HUD displays or holographic displays where content is fully or partially transparent.</description>
+			<type>string</type>
+		</property>
 		<property name='size'>
 			<description>Size of Panel.</description>
 			<type>point2</type>
@@ -918,6 +922,10 @@
 		<defaultInheritPropertyPrefix>renderableDesktop.</defaultInheritPropertyPrefix>
 		<property name='renderable'>
 			<description>Name of renderable to create or empty string if not used.</description>
+			<type>string</type>
+		</property>
+		<property name='renderableSolidity'>
+			<description>Name of solidity renderable to create or empty string if not used. If not empty the solidity renderable is set to contain the transparency of the regular renderable converted to grayscale image. This can be used to create HUD displays or holographic displays where content is fully or partially transparent.</description>
 			<type>string</type>
 		</property>
 		<property name='size'>

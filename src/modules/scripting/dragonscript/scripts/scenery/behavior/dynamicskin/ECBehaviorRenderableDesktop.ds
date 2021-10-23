@@ -51,6 +51,12 @@ pin Dragengine.Utils
  * 
  * Using WidgetInputProcessor the player can control the Desktop like regular UI Desktops.
  * 
+ * Using the "renderableSolidity" parameter an additional renderable can be defined.
+ * If used this renderable is set up to contain a CanvasCanvasView using the regular
+ * renderable CanvasView as input using a ColorMatrix to convert the transparency
+ * to a grayscale image. This can then be used to create transparent HUD displays
+ * or holographic displays with fully or partiall transparent content.
+ * 
  * Multiple ECBehaviorRenderableDesktop instances can be added to affect individual
  * dynamic skin textures. The example below uses one component with one dynamic skin to two
  * individual renderables named "content1" and "content2" each allowing to be individiually
@@ -90,6 +96,8 @@ class ECBehaviorRenderableDesktop extends DefaultECBehavior
 		private var ECBehaviorDynamicSkin.Instance pDynamicSkin
 		private var int pRenderable
 		private var Desktop pDesktop
+		private var int pRenderableSolidity
+		private var CanvasView pCanvasViewSolidity
 		
 		
 		
@@ -97,6 +105,7 @@ class ECBehaviorRenderableDesktop extends DefaultECBehavior
 		public func new(ECBehaviorRenderableDesktop ecbehavior, BehaviorElement element) super(element)
 			pECBehavior = ecbehavior
 			pRenderable = -1
+			pRenderableSolidity = -1
 			
 			pDynamicSkin = ecbehavior.getDynamicSkin().instance(element)
 		end
@@ -131,6 +140,27 @@ class ECBehaviorRenderableDesktop extends DefaultECBehavior
 			pRenderable = dynamicSkin.getRenderableCount()
 			dynamicSkin.addRenderable(renderableName, DynamicSkinRenderableType.canvas)
 			dynamicSkin.setCanvasAt(pRenderable, pDesktop.getCanvasWidget())
+			
+			// solidity
+			renderableName = pECBehavior.getRenderableSolidity().getValue(stub)
+			if renderableName.empty()
+				return
+			end
+			
+			pCanvasViewSolidity = CanvasView.new()
+			pCanvasViewSolidity.setSize(pDesktop.getCanvasWidget().getSize())
+			
+			var CanvasCanvasView ccv = CanvasCanvasView.new()
+			ccv.setCanvasView(pDesktop.getCanvasWidget())
+			ccv.setColorTransform(ColorMatrix.new(\
+				Color.new(0, 0, 0, 0), Color.new(0, 0, 0, 0), Color.new(0, 0, 0, 0),\
+				Color.new(1, 1, 1, 0), Color.new(0, 0, 0, 1)))
+			ccv.setSize(pDesktop.getCanvasWidget().getSize())
+			pCanvasViewSolidity.addCanvas(ccv)
+			
+			pRenderableSolidity = dynamicSkin.getRenderableCount()
+			dynamicSkin.addRenderable(renderableName, DynamicSkinRenderableType.canvas)
+			dynamicSkin.setCanvasAt(pRenderableSolidity, pCanvasViewSolidity)
 		end
 		
 		
@@ -149,6 +179,11 @@ class ECBehaviorRenderableDesktop extends DefaultECBehavior
 		public func Desktop getDesktop()
 			return pDesktop
 		end
+		
+		/** \brief Solidity canvas view or \em null if not used. */
+		public func CanvasView getCanvasViewSolidity()
+			return pCanvasViewSolidity
+		end
 	end
 	
 	
@@ -158,6 +193,7 @@ class ECBehaviorRenderableDesktop extends DefaultECBehavior
 	private var ECPPoint pSize
 	private var ECPGuiTheme pGuiTheme
 	private var ECPString pDesignerSelector
+	private var ECPString pRenderableSolidity
 	
 	
 	
@@ -199,6 +235,9 @@ class ECBehaviorRenderableDesktop extends DefaultECBehavior
 		pDesignerSelector = ECPString.new(prefix + "designerSelector", "RenderableDesktop")
 		eclass.addProperty(pDesignerSelector)
 		
+		pRenderableSolidity = ECPString.new(prefix + "renderableSolidity", "")
+		eclass.addProperty(pRenderableSolidity)
+		
 		eclass.addBehavior(this)
 	end
 	
@@ -233,6 +272,17 @@ class ECBehaviorRenderableDesktop extends DefaultECBehavior
 	/** \brief Designer selector to use for Desktop. */
 	public func ECPString getDesignerSelector()
 		return pDesignerSelector
+	end
+	
+	/**
+	 * \brief Name of solidity renderable to create or empty string if not used.
+	 * 
+	 * If not empty the solidity renderable is set to contain the transparency of the regular
+	 * renderable converted to grayscale image. This can be used to create HUD displays or
+	 * holographic displays where content is fully or partially transparent.
+	 */
+	public func ECPString getRenderableSolidity()
+		return pRenderableSolidity
 	end
 	
 	

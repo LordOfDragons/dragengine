@@ -80,6 +80,14 @@ pin Dragengine.Utils
  * Element class properties have the prefix "renderablePanel{(id)}.".
  * 
  * This behavior does not require the element class to be persistable (setPersistable).
+ * 
+ * \par Version 1.7
+ * 
+ * Using the "renderableSolidity" parameter an additional renderable can be defined.
+ * If used this renderable is set up to contain a CanvasCanvasView using the regular
+ * renderable CanvasView as input using a ColorMatrix to convert the transparency
+ * to a grayscale image. This can then be used to create transparent HUD displays
+ * or holographic displays with fully or partiall transparent content.
  */
 class ECBehaviorRenderablePanel extends DefaultECBehavior
 	/** \brief Behavior instance. */
@@ -88,23 +96,26 @@ class ECBehaviorRenderablePanel extends DefaultECBehavior
 		private var ECBehaviorDynamicSkin.Instance pDynamicSkin
 		private var int pRenderable
 		private var Panel pPanel
+		private var int pRenderableSolidity
+		private var CanvasView pCanvasViewSolidity
 		
 		
 		
 		/** \brief Create element. */
-		public func new( ECBehaviorRenderablePanel ecbehavior, BehaviorElement element ) super( element )
-			this.pECBehavior = ecbehavior
-			this.pRenderable = -1
+		public func new(ECBehaviorRenderablePanel ecbehavior, BehaviorElement element) super(element)
+			pECBehavior = ecbehavior
+			pRenderable = -1
+			pRenderableSolidity = -1
 			
-			this.pDynamicSkin = ecbehavior.getDynamicSkin().instance( element )
+			pDynamicSkin = ecbehavior.getDynamicSkin().instance(element)
 		end
 		
 		/** \brief Dispose of behavior instance. */
 		public func void dispose()
-			this.pDynamicSkin = null
-			if this.pPanel != null
-				this.pPanel.dispose()
-				this.pPanel = null
+			pDynamicSkin = null
+			if pPanel != null
+				pPanel.dispose()
+				pPanel = null
 			end
 			super.dispose()
 		end
@@ -112,42 +123,71 @@ class ECBehaviorRenderablePanel extends DefaultECBehavior
 		
 		
 		/** \brief Initialize element from stub. */
-		public func void init( StubElement stub )
-			var String renderableName = this.pECBehavior.getRenderable().getValue( stub )
+		public func void init(StubElement stub)
+			var String renderableName = pECBehavior.getRenderable().getValue(stub)
 			if renderableName.empty()
 				return
 			end
 			
-			var ElementClass eclass = this.getElement().getClass()
+			var ElementClass eclass = getElement().getClass()
 			var CodecPropertyString codec = eclass.getCodecPropertyString()
 			
-			this.pPanel = Panel.new( StackLayout.new(), block Panel p
-				p.setSize( this.pECBehavior.getSize().getPoint( stub, codec ) )
-				p.setGuiTheme( this.pECBehavior.getGuiTheme().getGuiTheme( stub, eclass ) )
-				p.setDesignerSelector( this.pECBehavior.getDesignerSelector().getValue( stub ) )
-			end )
+			pPanel = Panel.new(StackLayout.new(), block Panel p
+				p.setSize(pECBehavior.getSize().getPoint(stub, codec))
+				p.setGuiTheme(pECBehavior.getGuiTheme().getGuiTheme(stub, eclass))
+				p.setDesignerSelector(pECBehavior.getDesignerSelector().getValue(stub))
+			end)
 			
-			var DynamicSkin dynamicSkin = this.pDynamicSkin.getDynamicSkin()
-			this.pRenderable = dynamicSkin.getRenderableCount()
-			dynamicSkin.addRenderable( renderableName, DynamicSkinRenderableType.canvas )
-			dynamicSkin.setCanvasAt( this.pRenderable, this.pPanel.getCanvasWidget() )
+			var DynamicSkin dynamicSkin = pDynamicSkin.getDynamicSkin()
+			pRenderable = dynamicSkin.getRenderableCount()
+			dynamicSkin.addRenderable(renderableName, DynamicSkinRenderableType.canvas)
+			dynamicSkin.setCanvasAt(pRenderable, pPanel.getCanvasWidget())
+			
+			// solidity
+			renderableName = pECBehavior.getRenderableSolidity().getValue(stub)
+			if renderableName.empty()
+				return
+			end
+			
+			pCanvasViewSolidity = CanvasView.new()
+			pCanvasViewSolidity.setSize(pPanel.getCanvasWidget().getSize())
+			
+			var CanvasCanvasView ccv = CanvasCanvasView.new()
+			ccv.setCanvasView(pPanel.getCanvasWidget())
+			ccv.setColorTransform(ColorMatrix.new(\
+				Color.new(0, 0, 0, 0), Color.new(0, 0, 0, 0), Color.new(0, 0, 0, 0),\
+				Color.new(1, 1, 1, 0), Color.new(0, 0, 0, 1)))
+			ccv.setSize(pPanel.getCanvasWidget().getSize())
+			pCanvasViewSolidity.addCanvas(ccv)
+			
+			pRenderableSolidity = dynamicSkin.getRenderableCount()
+			dynamicSkin.addRenderable(renderableName, DynamicSkinRenderableType.canvas)
+			dynamicSkin.setCanvasAt(pRenderableSolidity, pCanvasViewSolidity)
 		end
 		
 		
 		
 		/** \brief Behavior. */
 		public func ECBehaviorRenderablePanel getECBehavior()
-			return this.pECBehavior
+			return pECBehavior
 		end
 		
 		/** \brief Dynamic skin behavior instance. */
 		public func ECBehaviorDynamicSkin.Instance getDynamicSkin()
-			return this.pDynamicSkin
+			return pDynamicSkin
 		end
 		
 		/** \brief Panel or \em null if no dynamic skin is present. */
 		public func Panel getPanel()
-			return this.pPanel
+			return pPanel
+		end
+		
+		/**
+		 * \brief Solidity canvas view or \em null if not used.
+		 * \version 1.7
+		 */
+		public func CanvasView getCanvasViewSolidity()
+			return pCanvasViewSolidity
 		end
 	end
 	
@@ -158,53 +198,57 @@ class ECBehaviorRenderablePanel extends DefaultECBehavior
 	private var ECPPoint pSize
 	private var ECPGuiTheme pGuiTheme
 	private var ECPString pDesignerSelector
+	private var ECPString pRenderableSolidity
 	
 	
 	
 	/** \brief Create behavior element class. */
-	public func new( BehaviorElementClass eclass, ECBehaviorDynamicSkin dynamicSkin ) \
-	this( eclass, dynamicSkin, BaseGameApp.getApp().getLoaders(), "" )
+	public func new(BehaviorElementClass eclass, ECBehaviorDynamicSkin dynamicSkin) \
+	this(eclass, dynamicSkin, BaseGameApp.getApp().getLoaders(), "")
 	end
 	
-	public func new( BehaviorElementClass eclass, ECBehaviorDynamicSkin dynamicSkin, String id ) \
-	this( eclass, dynamicSkin, BaseGameApp.getApp().getLoaders(), id )
+	public func new(BehaviorElementClass eclass, ECBehaviorDynamicSkin dynamicSkin, String id) \
+	this(eclass, dynamicSkin, BaseGameApp.getApp().getLoaders(), id)
 	end
 	
-	public func new( BehaviorElementClass eclass, ECBehaviorDynamicSkin dynamicSkin, Loaders loaders ) \
-	this( eclass, dynamicSkin, loaders, "" )
+	public func new(BehaviorElementClass eclass, ECBehaviorDynamicSkin dynamicSkin, Loaders loaders) \
+	this(eclass, dynamicSkin, loaders, "")
 	end
 	
-	public func new( BehaviorElementClass eclass, ECBehaviorDynamicSkin dynamicSkin, Loaders loaders, String id ) \
-	this( eclass, dynamicSkin, loaders, id, id.empty() if "renderablePanel." else "renderablePanel(" + id + ")." )
+	public func new(BehaviorElementClass eclass, ECBehaviorDynamicSkin dynamicSkin, Loaders loaders, String id) \
+	this(eclass, dynamicSkin, loaders, id, id.empty() if "renderablePanel." else "renderablePanel(" + id + ").")
 	end
 	
-	public func new( BehaviorElementClass eclass, ECBehaviorDynamicSkin dynamicSkin, Loaders loaders, \
-	String id, String prefix ) super( eclass, id )
+	public func new(BehaviorElementClass eclass, ECBehaviorDynamicSkin dynamicSkin, Loaders loaders, \
+	String id, String prefix) super(eclass, id)
 		if dynamicSkin == null
-			throw ENullPointer.new( "dynamicSkin" )
+			throw ENullPointer.new("dynamicSkin")
 		end
 		
-		this.pDynamicSkin = dynamicSkin
+		pDynamicSkin = dynamicSkin
 		
-		this.pRenderable = ECPString.new( prefix + "renderable", "" )
-		eclass.addProperty( this.pRenderable )
+		pRenderable = ECPString.new(prefix + "renderable", "")
+		eclass.addProperty(pRenderable)
 		
-		this.pSize = ECPPoint.new( prefix + "size", Point.new( 512, 512 ) )
-		eclass.addProperty( this.pSize )
+		pSize = ECPPoint.new(prefix + "size", Point.new(512, 512))
+		eclass.addProperty(pSize)
 		
-		this.pGuiTheme = ECPGuiTheme.new( prefix + "guiTheme", loaders.getGuiTheme(), \
-			"/shareddata/guithemes/modern/modern.guitheme.xml" )
-		eclass.addProperty( this.pGuiTheme )
+		pGuiTheme = ECPGuiTheme.new(prefix + "guiTheme", loaders.getGuiTheme(), \
+			"/shareddata/guithemes/modern/modern.guitheme.xml")
+		eclass.addProperty(pGuiTheme)
 		
-		this.pDesignerSelector = ECPString.new( prefix + "designerSelector", "RenderablePanel" )
-		eclass.addProperty( this.pDesignerSelector )
+		pDesignerSelector = ECPString.new(prefix + "designerSelector", "RenderablePanel")
+		eclass.addProperty(pDesignerSelector)
 		
-		eclass.addBehavior( this )
+		pRenderableSolidity = ECPString.new(prefix + "renderableSolidity", "")
+		eclass.addProperty(pRenderableSolidity)
+		
+		eclass.addBehavior(this)
 	end
 	
 	/** \brief Dispose of behavior. */
 	public func void dispose()
-		this.pDynamicSkin = null
+		pDynamicSkin = null
 		super.dispose()
 	end
 	
@@ -212,34 +256,46 @@ class ECBehaviorRenderablePanel extends DefaultECBehavior
 	
 	/** \brief Dynamic skin behavior. */
 	public func ECBehaviorDynamicSkin getDynamicSkin()
-		return this.pDynamicSkin
+		return pDynamicSkin
 	end
 	
 	/** \brief Name of renderable to create or empty string if not used. */
 	public func ECPString getRenderable()
-		return this.pRenderable
+		return pRenderable
 	end
 	
 	/** \brief Size of canvas. */
 	public func ECPPoint getSize()
-		return this.pSize
+		return pSize
 	end
 	
 	/** \brief Gui Theme to use for Panel. */
 	public func ECPGuiTheme getGuiTheme()
-		return this.pGuiTheme
+		return pGuiTheme
 	end
 	
 	/** \brief Designer selector to use for Panel. */
 	public func ECPString getDesignerSelector()
-		return this.pDesignerSelector
+		return pDesignerSelector
+	end
+	
+	/**
+	 * \brief Name of solidity renderable to create or empty string if not used.
+	 * \version 1.7
+	 * 
+	 * If not empty the solidity renderable is set to contain the transparency of the regular
+	 * renderable converted to grayscale image. This can be used to create HUD displays or
+	 * holographic displays where content is fully or partially transparent.
+	 */
+	public func ECPString getRenderableSolidity()
+		return pRenderableSolidity
 	end
 	
 	
 	
 	/** \brief Get instance in element from owner element class. */
-	public func Instance instance( BehaviorElement element )
-		return element.getInstanceAt( this.getInstanceIndex() ) cast Instance
+	public func Instance instance(BehaviorElement element)
+		return element.getInstanceAt(getInstanceIndex()) cast Instance
 	end
 	
 	
@@ -250,10 +306,10 @@ class ECBehaviorRenderablePanel extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorComponent.
 	 */
-	static public func ECBehaviorRenderablePanel getBehaviorIn( BehaviorElementClass eclass )
-		return eclass.findBehavior( block ECBehaviorRenderablePanel each
+	static public func ECBehaviorRenderablePanel getBehaviorIn(BehaviorElementClass eclass)
+		return eclass.findBehavior(block ECBehaviorRenderablePanel each
 			return true
-		end ) cast ECBehaviorRenderablePanel
+		end) cast ECBehaviorRenderablePanel
 	end
 	
 	/**
@@ -262,10 +318,10 @@ class ECBehaviorRenderablePanel extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorRenderablePanel with specific identifier.
 	 */
-	static public func ECBehaviorRenderablePanel getBehaviorIn( BehaviorElementClass eclass, String id )
-		return eclass.findBehavior( block ECBehaviorRenderablePanel each
-			return each.getID().equals( id )
-		end ) cast ECBehaviorRenderablePanel
+	static public func ECBehaviorRenderablePanel getBehaviorIn(BehaviorElementClass eclass, String id)
+		return eclass.findBehavior(block ECBehaviorRenderablePanel each
+			return each.getID().equals(id)
+		end) cast ECBehaviorRenderablePanel
 	end
 	
 	/**
@@ -274,10 +330,10 @@ class ECBehaviorRenderablePanel extends DefaultECBehavior
 	 * Returns list contains ECBehaviorRenderablePanel behaviors in the order they have
 	 * been created in the element.
 	 */
-	static public func Array getAllBehaviorsIn( BehaviorElementClass eclass )
-		return eclass.collectBehaviors( block ECBehaviorRenderablePanel each
+	static public func Array getAllBehaviorsIn(BehaviorElementClass eclass)
+		return eclass.collectBehaviors(block ECBehaviorRenderablePanel each
 			return true
-		end )
+		end)
 	end
 	
 	
@@ -289,10 +345,10 @@ class ECBehaviorRenderablePanel extends DefaultECBehavior
 	 * of type ECBehaviorRenderablePanel.Instance . If more than one instance is present returns
 	 * the first instance.
 	 */
-	static public func Instance getInstanceIn( BehaviorElement element )
-		return element.findInstance( block Instance each
+	static public func Instance getInstanceIn(BehaviorElement element)
+		return element.findInstance(block Instance each
 			return true
-		end ) cast Instance
+		end) cast Instance
 	end
 	
 	/**
@@ -301,10 +357,10 @@ class ECBehaviorRenderablePanel extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElement contains a behavior instance
 	 * of type ECBehaviorRenderablePanel.Instance with specific identifier.
 	 */
-	static public func Instance getInstanceIn( BehaviorElement element, String id )
-		return element.findInstance( block Instance each
-			return each.getECBehavior().getID().equals( id )
-		end ) cast Instance
+	static public func Instance getInstanceIn(BehaviorElement element, String id)
+		return element.findInstance(block Instance each
+			return each.getECBehavior().getID().equals(id)
+		end) cast Instance
 	end
 	
 	/**
@@ -313,16 +369,16 @@ class ECBehaviorRenderablePanel extends DefaultECBehavior
 	 * Returns list contains ECBehaviorRenderablePanel.Instance instances in the order they have
 	 * been created in the element.
 	 */
-	static public func Array getAllInstancesIn( BehaviorElement element )
-		return element.collectInstances( block Instance each
+	static public func Array getAllInstancesIn(BehaviorElement element)
+		return element.collectInstances(block Instance each
 			return true
-		end )
+		end)
 	end
 	
 	
 	
 	/** \brief Create Behavior instance. */
-	public func ECBehaviorInstance createInstance( BehaviorElement element )
-		return Instance.new( this, element )
+	public func ECBehaviorInstance createInstance(BehaviorElement element)
+		return Instance.new(this, element)
 	end
 end
