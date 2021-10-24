@@ -421,7 +421,17 @@ class DefaultListModel implements ListModel
 			return
 		end
 		
+		var Object selected
+		if pSelected != -1
+			selected = pElements.getAt(pSelected)
+		end
+		
 		pElements.sort()
+		
+		if pSelected != -1
+			pSelected = indexOf(selected)
+		end
+		
 		notifyContentChanged(0, pElements.getCount() - 1)
 	end
 	
@@ -436,7 +446,17 @@ class DefaultListModel implements ListModel
 			return
 		end
 		
+		var Object selected
+		if pSelected != -1
+			selected = pElements.getAt(pSelected)
+		end
+		
 		pElements.sort(ablock)
+		
+		if pSelected != -1
+			pSelected = indexOf(selected)
+		end
+		
 		notifyContentChanged(0, pElements.getCount() - 1)
 	end
 	
