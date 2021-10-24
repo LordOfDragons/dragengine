@@ -126,9 +126,6 @@
 
 #include "texture/deoglImage.h"
 
-#include "video/deoglVideo.h"
-#include "video/deoglVideoPlayer.h"
-#include "envmap/deoglEnvMapProbe.h"
 #include "deoglCaches.h"
 #include "canvas/deoglCanvasImage.h"
 #include "canvas/deoglCanvasPaint.h"
@@ -138,9 +135,12 @@
 #include "canvas/deoglCanvasView.h"
 #include "canvas/deoglCanvasCanvasView.h"
 #include "canvas/capture/deoglCaptureCanvas.h"
+#include "configuration/deoglLSConfiguration.h"
+#include "envmap/deoglEnvMapProbe.h"
 #include "renderthread/deoglRenderThread.h"
 #include "renderthread/deoglRTContext.h"
-#include "configuration/deoglLSConfiguration.h"
+#include "video/deoglVideo.h"
+#include "video/deoglVideoPlayer.h"
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
@@ -208,7 +208,8 @@ pCaptureCanvasList( *this ),
 
 pRenderThread( NULL ),
 pCaches( NULL ),
-pDebugOverlay( *this )
+pDebugOverlay( *this ),
+pVRCamera( nullptr )
 {
 	pCreateParameters();
 	pLoadConfig();
@@ -256,6 +257,8 @@ void deGraphicOpenGl::CleanUp(){
 		delete pRenderThread;
 		pRenderThread = NULL;
 	}
+	
+	SetVRCamera( nullptr );
 	
 	deoglLSConfiguration saveConfig( *this );
 	saveConfig.SaveConfig( pConfiguration );
@@ -330,6 +333,11 @@ void deGraphicOpenGl::RenderWindows(){
 // 	LogInfoFormat( "RenderWindows() %d", __LINE__ );
 	pRenderWindowList.SyncToRender(); 
 // 		LogInfoFormat( "RenderWindows: RenderWindowList.Sync = %d ys", (int)(timer.GetElapsedTime() * 1e6f) );
+	
+	// synchronize VR
+	if( pVRCamera ){
+		pVRCamera->SyncToRender();
+	}
 	
 	// synchronize overlay canvas view if present
 	deCanvasView * const inputOverlayCanvas = GetGameEngine()->GetGraphicSystem()->GetInputOverlayCanvas();
@@ -557,11 +565,15 @@ void deGraphicOpenGl::SendCommand( const decUnicodeArgumentList &command, decUni
 
 
 
-// configuration
-//////////////////
+// Management
+///////////////
 
 bool deGraphicOpenGl::HasRenderThread() const{
 	return pRenderThread != NULL;
+}
+
+void deGraphicOpenGl::SetVRCamera( deoglCamera *camera ){
+	pVRCamera = camera;
 }
 
 

@@ -33,11 +33,12 @@
 
 class deoglCaches;
 class deoglRenderThread;
+class deoglCamera;
 
 
 
 /**
- * \brief OpenGl Graphic Module.
+ * OpenGl Graphic Module.
  */
 class deGraphicOpenGl : public deBaseGraphicModule{
 private:
@@ -52,15 +53,17 @@ private:
 	deoglCaches *pCaches;
 	deoglDebugOverlay pDebugOverlay;
 	
+	deoglCamera *pVRCamera;
+	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create graphic module. */
+	/** Create graphic module. */
 	deGraphicOpenGl( deLoadableModule &loadableModule );
 	
-	/** \brief Clean up graphic module. */
+	/** Clean up graphic module. */
 	virtual ~deGraphicOpenGl();
 	/*@}*/
 	
@@ -80,21 +83,21 @@ public:
 	 */
 	virtual void CleanUp();
 	
-	/** \brief Input system overlay canvas view changed. */
+	/** Input system overlay canvas view changed. */
 	virtual void InputOverlayCanvasChanged();
 	
 	#ifdef ANDROID
-	/** \brief Application window has been created. */
+	/** Application window has been created. */
 	virtual void InitAppWindow();
 	
-	/** \brief Application window has been closed. */
+	/** Application window has been closed. */
 	virtual void TerminateAppWindow();
 	#endif
 	
 	
 	
 	/**
-	 * \brief Render windows.
+	 * Render windows.
 	 * 
 	 * Tells the graphic module changes for this frame update are finished
 	 * and the existing render windows can be rendered if required. Depending
@@ -112,7 +115,7 @@ public:
 	virtual void RenderWindows();
 	
 	/**
-	 * \brief Frame-per-second rate averaged over the last couple of frames.
+	 * Frame-per-second rate averaged over the last couple of frames.
 	 * \version 1.6
 	 * 
 	 * Returns 0 if module is not using a separate thread.
@@ -125,10 +128,10 @@ public:
 	/** Create a peer for the given billboard. */
 	virtual deBaseGraphicBillboard *CreateBillboard( deBillboard *billboard );
 	
-	/** \brief Create a peer for the given canvas. */
+	/** Create a peer for the given canvas. */
 	virtual deBaseGraphicCanvas *CreateCanvas( deCanvas *canvas );
 	
-	/** \brief Create peer for capture canvas. */
+	/** Create peer for capture canvas. */
 	virtual deBaseGraphicCaptureCanvas *CreateCaptureCanvas( deCaptureCanvas *captureCanvas );
 	
 	/** Create a peer for the given camera. */
@@ -188,10 +191,10 @@ public:
 	/** Create a peer for the given skin. */
 	virtual deBaseGraphicSkin *CreateSkin( deSkin *skin );
 	
-	/** \brief Create peer sky. */
+	/** Create peer sky. */
 	virtual deBaseGraphicSky *CreateSky( deSky *sky );
 	
-	/** \brief Create peer sky instance. */
+	/** Create peer sky instance. */
 	virtual deBaseGraphicSkyInstance *CreateSkyInstance( deSkyInstance *instance );
 	
 	/** Create a peer for the given smoke emitter. */
@@ -211,23 +214,23 @@ public:
 	
 	/** \name Parameters */
 	/*@{*/
-	/** \brief Number of parameters. */
+	/** Number of parameters. */
 	virtual int GetParameterCount() const;
 	
 	/**
-	 * \brief Get information about parameter.
+	 * Get information about parameter.
 	 * \param[in] index Index of the parameter
 	 * \param[in] parameter Object to fill with information about the parameter
 	 */
 	virtual void GetParameterInfo( int index, deModuleParameter &parameter ) const;
 	
-	/** \brief Index of named parameter or -1 if not found. */
+	/** Index of named parameter or -1 if not found. */
 	virtual int IndexOfParameterNamed( const char *name ) const;
 	
-	/** \brief Value of named parameter. */
+	/** Value of named parameter. */
 	virtual decString GetParameterValue( const char *name ) const;
 	
-	/** \brief Set value of named parameter. */
+	/** Set value of named parameter. */
 	virtual void SetParameterValue( const char *name, const char *value );
 	/*@}*/
 	
@@ -236,7 +239,7 @@ public:
 	/** \name Parallel Processing */
 	/*@{*/
 	/**
-	 * \brief Parallel processing is pausing and threads are still running.
+	 * Parallel processing is pausing and threads are still running.
 	 * 
 	 * If module has special processing which potentially blocks threads from finishing
 	 * running it is given the chances to finish these processings now. This method is
@@ -265,27 +268,33 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Render thread. */
+	/** Render thread. */
 	inline deoglRenderThread &GetRenderThread() const{ return *pRenderThread; }
 	
-	/** \brief Render thread is not NULL. */
+	/** Render thread is not NULL. */
 	bool HasRenderThread() const;
 	
-	/** \brief Capture canvas list. */
+	/** Capture canvas list. */
 	inline deoglCaptureCanvasList &GetCaptureCanvasList(){ return pCaptureCanvasList; }
 	
-	/** \brief Caches. */
+	/** Caches. */
 	inline deoglCaches &GetCaches() const{ return *pCaches; }
 	
-	/** \brief Debug overlay manager. */
+	/** Debug overlay manager. */
 	inline deoglDebugOverlay &GetDebugOverlay(){ return pDebugOverlay; }
 	
-	/** \brief Configuration. */
+	/** Configuration. */
 	inline deoglConfiguration &GetConfiguration(){ return pConfiguration; }
 	
-	/** \brief List of render windows. */
+	/** List of render windows. */
 	inline deoglRenderWindowList &GetRenderWindowList(){ return pRenderWindowList; }
 	inline const deoglRenderWindowList &GetRenderWindowList() const{ return pRenderWindowList; }
+	
+	/** VR camera or null. */
+	inline deoglCamera *GetVRCamera() const{ return pVRCamera; }
+	
+	/** Set VR camera or null. */
+	void SetVRCamera( deoglCamera *camera );
 	/*@}*/
 	
 private:

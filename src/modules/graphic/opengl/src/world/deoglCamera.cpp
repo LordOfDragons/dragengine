@@ -275,9 +275,11 @@ void deoglCamera::AllEffectsRemoved(){
 void deoglCamera::VRAssignedToHMD(){
 	pDirtyVR = true;
 	pEnableVR = true;
+	pOgl.SetVRCamera( this );
 }
 
 void deoglCamera::VRResignedFromHMD(){
+	pOgl.SetVRCamera( nullptr );
 	pDirtyPlanCamParams = true;
 	pDirtyVR = true;
 	pEnableVR = false;
