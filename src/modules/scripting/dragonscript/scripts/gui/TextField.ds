@@ -357,7 +357,7 @@ class TextField extends TextWidget
 				if textLen - this.pCursorPos > 0
 					newText = newText + curText.substring( this.pCursorPos )
 				end
-				if this.getValidator() == null or this.getValidator().validates( newText )
+				if this.getValidator() == null //or this.getValidator().validates( newText )
 					this.pCursorPos--
 					this.getModel().setText( newText )
 					this.updateCanvasText()
@@ -376,7 +376,7 @@ class TextField extends TextWidget
 				if textLen - this.pCursorPos > 1
 					newText = newText + curText.substring( this.pCursorPos + 1 )
 				end
-				if this.getValidator() == null or this.getValidator().validates( newText )
+				if this.getValidator() == null //or this.getValidator().validates( newText )
 					this.getModel().setText( newText )
 				end
 			end
