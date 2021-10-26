@@ -31,7 +31,7 @@ class deoglRenderPlanMasked;
 
 
 /**
- * \brief Render canvas view.
+ * Render canvas view.
  */
 class deoglRCanvasView : public deoglRCanvas{
 private:
@@ -45,10 +45,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create peer. */
+	/** Create peer. */
 	deoglRCanvasView( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up peer. */
+	/** Clean up peer. */
 	virtual ~deoglRCanvasView();
 	/*@}*/
 	
@@ -56,46 +56,45 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Add children with the correct sorting by order. */
+	/** Add children with the correct sorting by order. */
 	void AddChild( deoglRCanvas *canvas );
 	
-	/** \brief Remove all children. */
+	/** Remove all children. */
 	void RemoveAllChildren();
 	
-	/** \brief Has no children. */
+	/** Has no children. */
 	bool HasNoChildren() const;
 	
 	
 	
-	/** \brief Paint tracker number. */
+	/** Paint tracker number. */
 	inline unsigned int GetPaintTracker() const{ return pPaintTracker; }
 	
-	/** \brief Increment paint tracker number by one. */
+	/** Increment paint tracker number by one. */
 	void IncrementPaintTracker();
 	
-	/** \brief Render target or \em NULL if not ready. */
+	/** Render target or \em NULL if not ready. */
 	inline deoglRenderTarget *GetRenderTarget() const{ return pRenderTarget; }
 	
-	/** \brief Render target has to be resized. */
+	/** Render target has to be resized. */
 	void SetResizeRenderTarget();
 	
 	/**
-	 * \brief Prepare render target.
-	 * \details If not existing the render target is created. If dirty the render
-	 *          target texture is rendered. After this call returns GetRenderTarget()
-	 *          returns a render target with a valid texture object suitable for
-	 *          rendering unless an error occurred.
+	 * Prepare render target. If not existing the render target is created. If dirty the render
+	 * target texture is rendered. After this call returns GetRenderTarget() returns a render
+	 * target with a valid texture object suitable for rendering unless an error occurred.
 	 */
-	void PrepareRenderTarget( const deoglRenderPlanMasked *renderPlanMask );
+	void PrepareRenderTarget( const deoglRenderPlanMasked *renderPlanMask,
+		int componentCount, int bitCount );
 	
 	
 	
-	/** \brief Prepare for rendering. */
+	/** Prepare for rendering. */
 	virtual void PrepareForRender( const deoglRenderPlanMasked *renderPlanMask );
 	
 	/**
-	 * \brief Render.
-	 * \details Resets paint dirty flag. Paint tracker is kept unchanged.
+	 * Render.
+	 * Resets paint dirty flag. Paint tracker is kept unchanged.
 	 */
 	virtual void Render( const deoglRenderCanvasContext &context );
 	/*@}*/

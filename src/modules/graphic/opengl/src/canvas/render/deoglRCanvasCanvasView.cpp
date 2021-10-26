@@ -92,7 +92,7 @@ void deoglRCanvasCanvasView::PrepareForRender( const deoglRenderPlanMasked *rend
 	}
 	
 	deoglRCanvas::PrepareForRender( renderPlanMask );
-	pCanvasView->PrepareRenderTarget( renderPlanMask );
+	pCanvasView->PrepareRenderTarget( renderPlanMask, 4, 8 );
 }
 
 void deoglRCanvasCanvasView::Render( const deoglRenderCanvasContext &context ){

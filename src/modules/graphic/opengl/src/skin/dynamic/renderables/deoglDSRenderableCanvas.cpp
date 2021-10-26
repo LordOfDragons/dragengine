@@ -50,7 +50,7 @@ pCanvasView( NULL ),
 pDirty( true )
 {
 	try{
-		pRRenderableCanvas = new deoglRDSRenderableCanvas( *dynamicSkin.GetRDynamicSkin() );
+		pRRenderableCanvas = new deoglRDSRenderableCanvas( *dynamicSkin.GetRDynamicSkin(), renderable );
 		
 		if( renderable.GetCanvas() ){
 			pCanvasView = ( deoglCanvasView* )renderable.GetCanvas()->GetPeerGraphic();
@@ -108,6 +108,8 @@ void deoglDSRenderableCanvas::SyncToRender(){
 	
 	if( pDirty ){
 		pRRenderableCanvas->SetName( pRenderableCanvas.GetName() );
+		pRRenderableCanvas->SetComponentCount( pRenderableCanvas.GetComponentCount() );
+		pRRenderableCanvas->SetBitCount( pRenderableCanvas.GetBitCount() );
 		
 		if( pCanvasView ){
 			pRRenderableCanvas->SetCanvas( pCanvasView->GetRCanvasView() );

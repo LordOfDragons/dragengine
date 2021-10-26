@@ -40,6 +40,10 @@ private:
 	deoglRCanvasView *pCanvasView;
 	deoglPixelBuffer *pPixelBuffer;
 	bool pCapturePending;
+	int pComponentCount;
+	int pBitCount;
+	
+	
 	
 public:
 	/** \name Constructors and Destructors */

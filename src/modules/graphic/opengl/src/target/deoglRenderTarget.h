@@ -32,11 +32,11 @@ class deoglRenderbuffer;
 
 
 /**
- * \brief Render target.
+ * Render target.
  */
 class deoglRenderTarget : public deObject{
 public:
-	/** \brief Type holding strong reference. */
+	/** Type holding strong reference. */
 	typedef deTObjectReference<deoglRenderTarget> Ref;
 	
 	
@@ -61,10 +61,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create render render target. */
+	/** Create render render target. */
 	deoglRenderTarget( deoglRenderThread &renderThread, int width, int height, int componentCount, int bitCount );
 	
-	/** \brief Clean up render render target. */
+	/** Clean up render render target. */
 	virtual ~deoglRenderTarget();
 	/*@}*/
 	
@@ -72,38 +72,41 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Width. */
+	/** Width. */
 	inline int GetWidth() const{ return pWidth; }
 	
-	/** \brief Height. */
+	/** Height. */
 	inline int GetHeight() const{ return pHeight; }
 	
-	/** \brief Aspect ratio. */
+	/** Aspect ratio. */
 	inline float GetAspectRatio() const{ return pAspectRatio; }
 	
-	/** \brief Bit count. */
+	/** Bit count. */
 	inline int GetBitCount() const{ return pBitCount; }
 	
-	/** \brief Set size. */
+	/** Component count. */
+	inline int GetComponentCount() const{ return pComponentCount; }
+	
+	/** Set size. */
 	void SetSize( int width, int height );
 	
 	
 	
-	/** \brief Framebuffer or \em NULL if not existing. */
+	/** Framebuffer or \em NULL if not existing. */
 	inline deoglFramebuffer *GetFBO() const{ return pFBO; }
 	
-	/** \brief Prepare framebuffer for rendering. */
+	/** Prepare framebuffer for rendering. */
 	void PrepareFramebuffer();
 	
-	/** \brief Release framebuffer after rendering. */
+	/** Release framebuffer after rendering. */
 	void ReleaseFramebuffer();
 	
 	
 	
-	/** \brief Texture is dirty. */
+	/** Texture is dirty. */
 	inline bool GetTextureDirty() const{ return pDirtyTexture; }
 	
-	/** \brief Set texture dirty. */
+	/** Set texture dirty. */
 	void SetTextureDirty( bool dirty );
 	
 	// texture management

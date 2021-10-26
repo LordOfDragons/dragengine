@@ -110,10 +110,12 @@ void deoglRCanvasView::SetResizeRenderTarget(){
 	pResizeRenderTarget = true;
 }
 
-void deoglRCanvasView::PrepareRenderTarget( const deoglRenderPlanMasked *renderPlanMask ){
+void deoglRCanvasView::PrepareRenderTarget( const deoglRenderPlanMasked *renderPlanMask,
+int componentCount, int bitCount ){
 	PrepareForRender( renderPlanMask );
 	
-	if( pRenderTarget ){
+	if( pRenderTarget && pRenderTarget->GetComponentCount() == componentCount
+	&& pRenderTarget->GetBitCount() == bitCount ){
 		if( pResizeRenderTarget ){
 			const int width = ( int )( GetSize().x + 0.5f );
 			const int height = ( int )( GetSize().y + 0.5f );
@@ -124,8 +126,11 @@ void deoglRCanvasView::PrepareRenderTarget( const deoglRenderPlanMasked *renderP
 	}else{
 		const int width = ( int )( GetSize().x + 0.5f );
 		const int height = ( int )( GetSize().y + 0.5f );
-		const int componentCount = 4; // if transparency=1 componentCount of 3 would work too
-		const int bitCount = 8;
+		
+		if( pRenderTarget ){
+			pRenderTarget->FreeReference();
+			pRenderTarget = nullptr;
+		}
 		
 		pRenderTarget = new deoglRenderTarget( GetRenderThread(), width, height, componentCount, bitCount );
 		pResizeRenderTarget = false;
@@ -152,6 +157,13 @@ void deoglRCanvasView::PrepareRenderTarget( const deoglRenderPlanMasked *renderP
 		context.UpdateTransformMask();
 		
 		GetRenderThread().GetRenderers().GetCanvas().Prepare( context );
+		
+		// clear the render target. this is required for situations where transparent overlays
+		// are rendered with children canvas not covering all pixels
+		const GLfloat clearColor[ 4 ] = { 0.0f, 0.0f, 0.0f, componentCount == 4 ? 0.0f : 1.0f };
+		OGL_CHECK( GetRenderThread(), pglClearBufferfv( GL_COLOR, 0, clearColor ) );
+		
+		// render content
 		Render( context );
 		
 		// release framebuffer

@@ -27,23 +27,28 @@
 #include "deoglRDSRenderable.h"
 
 class deoglRCanvasView;
+class deDSRenderableCanvas;
 
 
 
 /**
- * \brief Render dynamic skin canvas renderable.
+ * Render dynamic skin canvas renderable.
  */
 class deoglRDSRenderableCanvas : public deoglRDSRenderable{
 private:
 	deoglRCanvasView *pCanvas;
+	int pComponentCount;
+	int pBitCount;
+	
+	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create render dynamic skin canvas renderable. */
-	deoglRDSRenderableCanvas( deoglRDynamicSkin &dynamicSkin );
+	/** Create render dynamic skin canvas renderable. */
+	deoglRDSRenderableCanvas( deoglRDynamicSkin &dynamicSkin, const deDSRenderableCanvas &renderable );
 	
-	/** \brief Clean up render dynamic skin canvas  renderable. */
+	/** Clean up render dynamic skin canvas  renderable. */
 	virtual ~deoglRDSRenderableCanvas();
 	/*@}*/
 	
@@ -51,14 +56,20 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Set canvas. */
+	/** Set canvas. */
 	void SetCanvas( deoglRCanvasView *canvas );
 	
-	/** \brief Prepare for render. */
+	/** Set component count. */
+	void SetComponentCount( int componentCount );
+	
+	/** Set bit count. */
+	void SetBitCount( int bitCount );
+	
+	/** Prepare for render. */
 	virtual void PrepareForRender( const deoglRenderPlanMasked *renderPlanMask );
 	
 	/**
-	 * \brief Get texture to use for rendering or \em NULL if not applicable.
+	 * Get texture to use for rendering or \em NULL if not applicable.
 	 * \details Default implementation returns \em NULL.
 	 */
 	virtual deoglTexture *GetRenderTexture();

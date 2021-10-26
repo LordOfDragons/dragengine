@@ -30,6 +30,7 @@
 #include "../../../../target/deoglRenderTarget.h"
 
 #include <dragengine/common/exceptions.h>
+#include <dragengine/resources/skin/dynamic/renderables/deDSRenderableCanvas.h>
 
 
 
@@ -39,9 +40,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglRDSRenderableCanvas::deoglRDSRenderableCanvas( deoglRDynamicSkin &dynamicSkin ) :
+deoglRDSRenderableCanvas::deoglRDSRenderableCanvas(
+	deoglRDynamicSkin &dynamicSkin, const deDSRenderableCanvas &renderable ) :
 deoglRDSRenderable( dynamicSkin ),
-pCanvas( NULL )
+pCanvas( NULL ),
+pComponentCount( renderable.GetComponentCount() ),
+pBitCount( renderable.GetBitCount() )
 {
 	LEAK_CHECK_CREATE( dynamicSkin.GetRenderThread(), DSRenderableCanvas );
 }
@@ -74,9 +78,17 @@ void deoglRDSRenderableCanvas::SetCanvas( deoglRCanvasView *canvas ){
 	}
 }
 
+void deoglRDSRenderableCanvas::SetComponentCount( int componentCount ){
+	pComponentCount = componentCount;
+}
+
+void deoglRDSRenderableCanvas::SetBitCount( int bitCount ){
+	pBitCount = bitCount;
+}
+
 void deoglRDSRenderableCanvas::PrepareForRender( const deoglRenderPlanMasked *renderPlanMask ){
 	if( pCanvas ){
-		pCanvas->PrepareRenderTarget( renderPlanMask );
+		pCanvas->PrepareRenderTarget( renderPlanMask, pComponentCount, pBitCount );
 	}
 }
 
