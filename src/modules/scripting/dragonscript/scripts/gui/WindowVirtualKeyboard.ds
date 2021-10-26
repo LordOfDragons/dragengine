@@ -458,6 +458,7 @@ class WindowVirtualKeyboard extends Window
 			p.setVisible(false)
 			p.addWidget(createKeyboardLayoutNumericPanelRow1())
 			p.addWidget(createKeyboardLayoutNumericPanelRow2())
+			p.addWidget(createKeyboardLayoutNumericPanelRow3())
 		end)
 	end
 	
@@ -485,6 +486,22 @@ class WindowVirtualKeyboard extends Window
 			p.addWidget(createVirtualKey(InputEventKey.undefined, '.', ".", ""))
 			p.addWidget(createVirtualKey(InputEventKey.backspace, 8, "Back", ".Wide"))
 			p.addWidget(createVirtualKey(InputEventKey.enter, 13, "Enter", ".Wide"))
+		end)
+	end
+	
+	/** \brief Create numeric keyboard layout panel row 3. */
+	protected func Panel createKeyboardLayoutNumericPanelRow3()
+		return Panel.new(CentrizedBoxLayout.new(LayoutAxis.x, 1), block Panel p
+			p.addWidget(createVirtualKey(InputEventKey.home, 0, "Home", ".Wide"))
+			p.addWidget(createVirtualKey(InputEventKey.arrowUp, 0,\
+				Image.new("/shareddata/guithemes/modern/keyboard/arrow_up.png"), ""))
+			p.addWidget(createVirtualKey(InputEventKey.arrowDown, 0,\
+				Image.new("/shareddata/guithemes/modern/keyboard/arrow_down.png"), ""))
+			p.addWidget(createVirtualKey(InputEventKey.arrowLeft, 0,\
+				Image.new("/shareddata/guithemes/modern/keyboard/arrow_left.png"), ""))
+			p.addWidget(createVirtualKey(InputEventKey.arrowRight, 0,\
+				Image.new("/shareddata/guithemes/modern/keyboard/arrow_right.png"), ""))
+			p.addWidget(createVirtualKey(InputEventKey.last, 0, "End", ".Wide"))
 		end)
 	end
 	
