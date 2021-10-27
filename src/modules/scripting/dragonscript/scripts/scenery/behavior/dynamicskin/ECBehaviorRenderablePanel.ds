@@ -160,9 +160,11 @@ class ECBehaviorRenderablePanel extends DefaultECBehavior
 			ccv.setSize(pPanel.getCanvasWidget().getSize())
 			pCanvasViewSolidity.addCanvas(ccv)
 			
+			dynamicSkin.setCanvasAt(pRenderable, pPanel.getCanvasWidget(), 4)
+			
 			pRenderableSolidity = dynamicSkin.getRenderableCount()
 			dynamicSkin.addRenderable(renderableName, DynamicSkinRenderableType.canvas)
-			dynamicSkin.setCanvasAt(pRenderableSolidity, pCanvasViewSolidity)
+			dynamicSkin.setCanvasAt(pRenderableSolidity, pCanvasViewSolidity, 1)
 		end
 		
 		
