@@ -244,7 +244,10 @@ class WindowVirtualKeyboard extends Window
 			return
 		end
 		
-		pInputWidget.sendEvent(KeyEvent.new(this, KeyEvent.idKeyPressed, \
+		// we could use "this" as source to indicate where the event originates from.
+		// this though prevents the key repetition from working since this is only started
+		// if the event originates from the input widget itself
+		pInputWidget.sendEvent(KeyEvent.new(pInputWidget, KeyEvent.idKeyPressed, \
 			keyCode, InputEventModifier.none, keyChar, -1, keyCode))
 	end
 	
@@ -254,7 +257,7 @@ class WindowVirtualKeyboard extends Window
 			return
 		end
 		
-		pInputWidget.sendEvent(KeyEvent.new(this, KeyEvent.idKeyReleased,\
+		pInputWidget.sendEvent(KeyEvent.new(pInputWidget, KeyEvent.idKeyReleased,\
 			keyCode, InputEventModifier.none, keyChar, -1, keyCode))
 	end
 	
