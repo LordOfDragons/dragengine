@@ -414,6 +414,25 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 		
 		
 		
+		/**
+		 * \brief Calculate test matrix.
+		 * 
+		 * Works no matter if point-at testing is enabled or not. Allows to figure out where
+		 * the test origin and orientation would be if enabled.
+		 */
+		public func DMatrix calcTestMatrix()
+			var Matrix matrix = Matrix.newRT(pRotation, pOrigin)
+			
+			var String bone = pTest.getBone()
+			if not bone.empty()
+				matrix = matrix * pVRHand.getComponent().getComponent().getBoneMatrix(bone)
+			end
+			
+			return matrix.toDMatrix() * pVRHand.getCollider().getMatrix()
+		end
+		
+		
+		
 		/** \brief Add listener. */
 		public func void addListener(Listener listener)
 			if listener == null
