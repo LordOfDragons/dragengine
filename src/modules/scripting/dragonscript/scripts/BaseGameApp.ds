@@ -113,7 +113,10 @@ class BaseGameApp extends Game
 	public static fixed var String defaultPathGuiTheme = \
 		"/shareddata/guithemes/modern/modern.guitheme.xml"
 	
-	/** \brief Invert looking up-down setting key. */
+	/**
+	 * \brief Invert looking up-down setting key.
+	 * \note The '.' separator is deprecated. Future values should use '/' separator.
+	 */
 	public static fixed var String settingInputInvertLookVertical = "input.invertLookVertical"
 	
 	/**
