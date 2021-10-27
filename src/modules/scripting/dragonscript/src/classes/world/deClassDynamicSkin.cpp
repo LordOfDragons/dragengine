@@ -73,7 +73,7 @@ struct sDSkinNatDat{
 deClassDynamicSkin::nfNew::nfNew( const sInitData &init ) : dsFunction( init.clsDSkin,
 DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
 }
-void deClassDynamicSkin::nfNew::RunFunction( dsRunTime *rt, dsValue *myself ){
+void deClassDynamicSkin::nfNew::RunFunction( dsRunTime*, dsValue *myself ){
 	sDSkinNatDat &nd = *( ( sDSkinNatDat* )p_GetNativeData( myself ) );
 	deClassDynamicSkin &clsDSkin = *( ( deClassDynamicSkin* )GetOwnerClass() );
 	deDynamicSkinManager &dskinmgr = *clsDSkin.GetDS()->GetGameEngine()->GetDynamicSkinManager();
@@ -90,7 +90,7 @@ void deClassDynamicSkin::nfNew::RunFunction( dsRunTime *rt, dsValue *myself ){
 deClassDynamicSkin::nfDestructor::nfDestructor( const sInitData &init ) : dsFunction( init.clsDSkin,
 DSFUNC_DESTRUCTOR, DSFT_DESTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
 }
-void deClassDynamicSkin::nfDestructor::RunFunction( dsRunTime *rt, dsValue *myself ){
+void deClassDynamicSkin::nfDestructor::RunFunction( dsRunTime*, dsValue *myself ){
 	if( myself->GetRealObject()->GetRefCount() != 1 ){
 		return; // protected against GC cleaning up leaking
 	}
@@ -216,7 +216,7 @@ void deClassDynamicSkin::nfRemoveRenderable::RunFunction( dsRunTime *rt, dsValue
 deClassDynamicSkin::nfRemoveAllRenderables::nfRemoveAllRenderables( const sInitData &init ) : dsFunction( init.clsDSkin,
 "removeAllRenderables", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
 }
-void deClassDynamicSkin::nfRemoveAllRenderables::RunFunction( dsRunTime *rt, dsValue *myself ){
+void deClassDynamicSkin::nfRemoveAllRenderables::RunFunction( dsRunTime*, dsValue *myself ){
 	deDynamicSkin &dynamicSkin = *( ( ( sDSkinNatDat* )p_GetNativeData( myself ) )->dynamicSkin );
 	
 	dynamicSkin.RemoveAllRenderables();
@@ -348,6 +348,65 @@ void deClassDynamicSkin::nfSetCanvasAt::RunFunction( dsRunTime *rt, dsValue *mys
 	}
 	
 	identify.CastToCanvas().SetCanvas( canvas );
+	
+	dynamicSkin.NotifyRenderableChanged( renderable );
+}
+
+// public func void setCanvasAt(int renderable, CanvasView canvas, int componentCount)
+deClassDynamicSkin::nfSetCanvasAt2::nfSetCanvasAt2( const sInitData &init ) :
+dsFunction( init.clsDSkin, "setCanvasAt", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsInt ); // renderable
+	p_AddParameter( init.clsCView ); // canvas
+	p_AddParameter( init.clsInt ); // componentCount
+}
+void deClassDynamicSkin::nfSetCanvasAt2::RunFunction( dsRunTime *rt, dsValue *myself ){
+	deDynamicSkin &dynamicSkin = *( ( ( sDSkinNatDat* )p_GetNativeData( myself ) )->dynamicSkin );
+	const deScriptingDragonScript &ds = *(( ( deClassDynamicSkin* )GetOwnerClass() )->GetDS());
+	const int renderable = rt->GetValue( 0 )->GetInt();
+	deCanvasView * const canvas = ds.GetClassCanvasView()->GetCanvas( rt->GetValue( 1 )->GetRealObject() );
+	const int componentCount = rt->GetValue( 2 )->GetInt();
+	
+	deDSRenderableVisitorIdentify identify;
+	
+	dynamicSkin.GetRenderableAt( renderable )->Visit( identify );
+	if( ! identify.IsCanvas() ){
+		DSTHROW( dueInvalidParam );
+	}
+	
+	deDSRenderableCanvas &renderableCanvas = identify.CastToCanvas();
+	renderableCanvas.SetCanvas( canvas );
+	renderableCanvas.SetComponentCount( componentCount );
+	
+	dynamicSkin.NotifyRenderableChanged( renderable );
+}
+
+// public func void setCanvasAt(int renderable, CanvasView canvas, int componentCount, int bitCount)
+deClassDynamicSkin::nfSetCanvasAt3::nfSetCanvasAt3( const sInitData &init ) :
+dsFunction( init.clsDSkin, "setCanvasAt", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsInt ); // renderable
+	p_AddParameter( init.clsCView ); // canvas
+	p_AddParameter( init.clsInt ); // componentCount
+	p_AddParameter( init.clsInt ); // bitCount
+}
+void deClassDynamicSkin::nfSetCanvasAt3::RunFunction( dsRunTime *rt, dsValue *myself ){
+	deDynamicSkin &dynamicSkin = *( ( ( sDSkinNatDat* )p_GetNativeData( myself ) )->dynamicSkin );
+	const deScriptingDragonScript &ds = *(( ( deClassDynamicSkin* )GetOwnerClass() )->GetDS());
+	const int renderable = rt->GetValue( 0 )->GetInt();
+	deCanvasView * const canvas = ds.GetClassCanvasView()->GetCanvas( rt->GetValue( 1 )->GetRealObject() );
+	const int componentCount = rt->GetValue( 2 )->GetInt();
+	const int bitCount = rt->GetValue( 3 )->GetInt();
+	
+	deDSRenderableVisitorIdentify identify;
+	
+	dynamicSkin.GetRenderableAt( renderable )->Visit( identify );
+	if( ! identify.IsCanvas() ){
+		DSTHROW( dueInvalidParam );
+	}
+	
+	deDSRenderableCanvas &renderableCanvas = identify.CastToCanvas();
+	renderableCanvas.SetCanvas( canvas );
+	renderableCanvas.SetComponentCount( componentCount );
+	renderableCanvas.SetBitCount( bitCount );
 	
 	dynamicSkin.NotifyRenderableChanged( renderable );
 }
@@ -496,6 +555,8 @@ void deClassDynamicSkin::CreateClassMembers( dsEngine *engine ){
 	
 	AddFunction( new nfGetCanvasAt( init ) );
 	AddFunction( new nfSetCanvasAt( init ) );
+	AddFunction( new nfSetCanvasAt2( init ) );
+	AddFunction( new nfSetCanvasAt3( init ) );
 	
 	AddFunction( new nfSetCameraAt( init ) );
 	
