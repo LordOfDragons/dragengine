@@ -135,6 +135,7 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 		private var String pPointAtBoneName
 		private var float pPointAtDistance
 		private var DVector pPointAtHitPoint
+		private var Collider pPointAtCollider
 		
 		private var Array pListeners
 		
@@ -246,7 +247,7 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 			end
 			
 			if not enabled
-				setPointAtElement(null, -1, null, 0)
+				clearPointAtElement()
 			end
 			
 			pListeners.forEach(block Listener each
@@ -402,6 +403,11 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 			return pPointAtHitPoint
 		end
 		
+		/** \brief Point-at collider or \em null. */
+		public func Collider getPointAtCollider()
+			return pPointAtCollider
+		end
+		
 		/** \brief Test origin used for last point-at test. */
 		public func DVector getPointAtOrigin()
 			return pPointAtOrigin
@@ -474,7 +480,7 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 			end
 			
 			if collider == null
-				setPointAtElement(null, -1, null, 0)
+				clearPointAtElement()
 				return
 			end
 			
@@ -493,7 +499,7 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 				element = null
 			end
 			
-			setPointAtElement(element, bone, boneName, pTest.hitDistance(0))
+			setPointAtElement(element, bone, boneName, pTest.hitDistance(0), collider)
 		end
 		
 		/** \brief Collision test. */
@@ -511,9 +517,16 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 			end)
 		end
 		
+		/** \brief Clear point-at element. */
+		public func void clearPointAtElement()
+			setPointAtElement(null, -1, null, 0, null)
+		end
+		
 		/** \brief Set point-at element. */
-		public func void setPointAtElement(Element element, int bone, String boneName, float distance)
-			if pPointAtElement == element and pPointAtBone == bone
+		public func void setPointAtElement(Element element, int bone, String boneName,\
+		float distance, Collider collider)
+			if pPointAtElement == element and pPointAtBone == bone\
+			and Collider.equals(pPointAtCollider, collider)
 				pPointAtHitPoint = null
 				pPointAtDistance = distance
 				return
@@ -533,6 +546,7 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 			pPointAtBoneName = boneName
 			pPointAtHitPoint = null
 			pPointAtDistance = distance
+			pPointAtCollider = collider
 			
 			if element != null and element castable BehaviorElement
 				var ECBehaviorVRHandPointedAt.Instance behavior = \
