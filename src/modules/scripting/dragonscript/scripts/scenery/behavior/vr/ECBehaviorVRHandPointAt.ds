@@ -537,7 +537,7 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 				var ECBehaviorVRHandPointedAt.Instance behavior = \
 					ECBehaviorVRHandPointedAt.getInstanceIn(pPointAtElement cast BehaviorElement)
 				if behavior != null
-					behavior.removePointingHand(getElement())
+					behavior.removePointingHand(this)
 				end
 			end
 			
@@ -552,7 +552,7 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 				var ECBehaviorVRHandPointedAt.Instance behavior = \
 					ECBehaviorVRHandPointedAt.getInstanceIn(element cast BehaviorElement)
 				if behavior != null
-					behavior.addPointingHand(getElement())
+					behavior.addPointingHand(this)
 				end
 			end
 			

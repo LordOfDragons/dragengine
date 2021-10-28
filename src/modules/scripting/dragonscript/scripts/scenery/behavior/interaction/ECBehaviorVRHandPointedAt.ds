@@ -46,10 +46,10 @@ class ECBehaviorVRHandPointedAt extends DefaultECBehavior
 	/** \brief Listener for behavior instance events. */
 	interface Listener
 		/** \brief Hand starts pointing at element. */
-		func void handStartsPointingAt(Instance instance, BehaviorElement hand)
+		func void handStartsPointingAt(Instance instance, ECBehaviorVRHandPointAt.Instance hand)
 		
 		/** \brief Hand stops pointing at element. */
-		func void handStopsPointingAt(Instance instance, BehaviorElement hand)
+		func void handStopsPointingAt(Instance instance, ECBehaviorVRHandPointAt.Instance hand)
 	end
 	
 	/** \brief Default implementation of behavior instance listener. */
@@ -59,11 +59,11 @@ class ECBehaviorVRHandPointedAt extends DefaultECBehavior
 		end
 		
 		/** \brief Hand starts pointing at element. */
-		public func void handStartsPointingAt(Instance instance, BehaviorElement hand)
+		public func void handStartsPointingAt(Instance instance, ECBehaviorVRHandPointAt.Instance hand)
 		end
 		
 		/** \brief Hand stops pointing at element. */
-		public func void handStopsPointingAt(Instance instance, BehaviorElement hand)
+		public func void handStopsPointingAt(Instance instance, ECBehaviorVRHandPointAt.Instance hand)
 		end
 	end
 	
@@ -137,19 +137,19 @@ class ECBehaviorVRHandPointedAt extends DefaultECBehavior
 		end
 		
 		/** \brief Hand pointing at element by index. */
-		public func BehaviorElement getPointingHandAt(int index)
-			return pPointingHands.getAt(index) cast BehaviorElement
+		public func ECBehaviorVRHandPointAt.Instance getPointingHandAt(int index)
+			return pPointingHands.getAt(index) cast ECBehaviorVRHandPointAt.Instance
 		end
 		
 		/** \brief Hand is pointing at element. */
-		public func bool hasPointingHand(BehaviorElement element)
+		public func bool hasPointingHand(ECBehaviorVRHandPointAt.Instance element)
 			return pPointingHands.has(element)
 		end
 		
 		/**
 		 * \brief Visit hands pointing at element using block.
 		 * 
-		 * Block receives as first argument each element of type BehaviorElement.
+		 * Block receives as first argument each element of type ECBehaviorVRHandPointAt.Instance.
 		 */
 		public func void forEachPointingHand(Block ablock)
 			pPointingHands.forEach(ablock)
@@ -158,12 +158,12 @@ class ECBehaviorVRHandPointedAt extends DefaultECBehavior
 		/**
 		 * \brief Find hand pointing at element using block.
 		 * 
-		 * Block receives as first argument each element of type BehaviorElement and has
-		 * to return true if the hand is found otherwise false. Method returns the found
+		 * Block receives as first argument each element of type ECBehaviorVRHandPointAt.Instance
+		 * and has to return true if the hand is found otherwise false. Method returns the found
 		 * hand or null if not found.
 		 */
-		public func BehaviorElement findPointingHand(Block ablock)
-			return pPointingHands.find(ablock) cast BehaviorElement
+		public func ECBehaviorVRHandPointAt.Instance findPointingHand(Block ablock)
+			return pPointingHands.find(ablock) cast ECBehaviorVRHandPointAt.Instance
 		end
 		
 		/**
@@ -173,12 +173,12 @@ class ECBehaviorVRHandPointedAt extends DefaultECBehavior
 		 * ECBehaviorPlayerControllable and it is the active player hand. If found
 		 * returns the player hand. If not found null is returned.
 		 */
-		public func BehaviorElement getPlayerPointing()
-			return pPointingHands.find(block BehaviorElement each
+		public func ECBehaviorVRHandPointAt.Instance getPlayerPointing()
+			return pPointingHands.find(block ECBehaviorVRHandPointAt.Instance each
 				var ECBehaviorPlayerControllable.Instance behavior = \
-					ECBehaviorPlayerControllable.getInstanceIn(each)
+					ECBehaviorPlayerControllable.getInstanceIn(each.getElement())
 				return behavior != null and behavior.isPlayerControlled()
-			end) cast BehaviorElement
+			end) cast ECBehaviorVRHandPointAt.Instance
 		end
 		
 		/**
@@ -196,7 +196,7 @@ class ECBehaviorVRHandPointedAt extends DefaultECBehavior
 		 * 
 		 * If hand is added to the list handStartsPointingAt() is called on all listeners.
 		 */
-		public func void addPointingHand(BehaviorElement hand)
+		public func void addPointingHand(ECBehaviorVRHandPointAt.Instance hand)
 			if hand == null
 				throw ENullPointer.new()
 			end
@@ -217,7 +217,7 @@ class ECBehaviorVRHandPointedAt extends DefaultECBehavior
 		 * 
 		 * If hand is removed from list handStopsPointingAt() is called on all listeners.
 		 */
-		public func void removePointingHand(BehaviorElement hand)
+		public func void removePointingHand(ECBehaviorVRHandPointAt.Instance hand)
 			if hand == null
 				throw ENullPointer.new()
 			end
@@ -271,8 +271,8 @@ class ECBehaviorVRHandPointedAt extends DefaultECBehavior
 				
 				pElementResolver = ElementResolver.new()
 				for i = 0 to count
-					pElementResolver.add(reader, block BehaviorElement element
-						pPointingHands.add(element)
+					pElementResolver.addBehavior(reader, block ECBehaviorVRHandPointAt.Instance instance
+						pPointingHands.add(instance)
 					end)
 				end
 				setRequiresEnterFrame(true)
@@ -287,8 +287,8 @@ class ECBehaviorVRHandPointedAt extends DefaultECBehavior
 			writer.writeByte(0) // version
 			
 			writer.writeUShort(pPointingHands.getCount())
-			pPointingHands.forEach(block BehaviorElement each
-				ElementResolver.writeToFile(writer, each)
+			pPointingHands.forEach(block ECBehaviorVRHandPointAt.Instance each
+				ElementResolver.writeToFileBehavior(writer, each)
 			end)
 		end
 	end
