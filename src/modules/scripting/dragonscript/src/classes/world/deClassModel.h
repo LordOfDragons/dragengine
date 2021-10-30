@@ -81,6 +81,8 @@ private:
 	DEF_NATFUNC( nfGetTextureNameAt );
 	DEF_NATFUNC( nfGetFaceCount );
 	DEF_NATFUNC( nfGetVertexCount );
+	DEF_NATFUNC( nfGetMinimumExtend );
+	DEF_NATFUNC( nfGetMaximumExtend );
 	
 	DEF_NATFUNC( nfEquals );
 	DEF_NATFUNC( nfHashCode );

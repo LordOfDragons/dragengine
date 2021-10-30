@@ -31,12 +31,14 @@
 #include "../../deClassPathes.h"
 #include "../../resourceloader/dedsResourceLoader.h"
 
+#include <dragengine/deEngine.h>
+#include <dragengine/resources/loader/deResourceLoader.h>
 #include <dragengine/resources/model/deModel.h>
 #include <dragengine/resources/model/deModelManager.h>
 #include <dragengine/resources/model/deModelTexture.h>
 #include <dragengine/resources/model/deModelLOD.h>
-#include <dragengine/deEngine.h>
-#include <dragengine/resources/loader/deResourceLoader.h>
+#include <dragengine/resources/model/deModelVertex.h>
+
 #include <libdscript/exceptions.h>
 
 
@@ -176,6 +178,58 @@ void deClassModel::nfGetVertexCount::RunFunction( dsRunTime *rt, dsValue *myself
 	rt->PushInt( model.GetLODAt( lod )->GetVertexCount() );
 }
 
+// public func Vector getMinimumExtend()
+deClassModel::nfGetMinimumExtend::nfGetMinimumExtend( const sInitData &init ) :
+dsFunction( init.clsMdl, "getMinimumExtend", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVec ){
+}
+void deClassModel::nfGetMinimumExtend::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const deModel &model = *( ( sMdlNatDat* )p_GetNativeData( myself ) )->model;
+	deScriptingDragonScript &ds = *( ( deClassModel* )GetOwnerClass() )->GetDS();
+	const deModelLOD &lod = *model.GetLODAt( 0 );
+	
+	const int count = lod.GetVertexCount();
+	decVector extend;
+	
+	if( count > 0 ){
+		const deModelVertex * const vertices = lod.GetVertices();
+		int i;
+		
+		extend = vertices[ 0 ].GetPosition();
+		
+		for( i=1; i<count; i++ ){
+			extend.SetSmallest( vertices[ i ].GetPosition() );
+		}
+	}
+	
+	ds.GetClassVector()->PushVector( rt, extend );
+}
+
+// public func Vector getMaximumExtend()
+deClassModel::nfGetMaximumExtend::nfGetMaximumExtend( const sInitData &init ) :
+dsFunction( init.clsMdl, "getMaximumExtend", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVec ){
+}
+void deClassModel::nfGetMaximumExtend::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const deModel &model = *( ( sMdlNatDat* )p_GetNativeData( myself ) )->model;
+	deScriptingDragonScript &ds = *( ( deClassModel* )GetOwnerClass() )->GetDS();
+	const deModelLOD &lod = *model.GetLODAt( 0 );
+	
+	const int count = lod.GetVertexCount();
+	decVector extend;
+	
+	if( count > 0 ){
+		const deModelVertex * const vertices = lod.GetVertices();
+		int i;
+		
+		extend = vertices[ 0 ].GetPosition();
+		
+		for( i=1; i<count; i++ ){
+			extend.SetLargest( vertices[ i ].GetPosition() );
+		}
+	}
+	
+	ds.GetClassVector()->PushVector( rt, extend );
+}
+
 
 
 // public func int hashCode()
@@ -266,6 +320,8 @@ void deClassModel::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfGetTextureNameAt( init ) );
 	AddFunction( new nfGetFaceCount( init ) );
 	AddFunction( new nfGetVertexCount( init ) );
+	AddFunction( new nfGetMinimumExtend( init ) );
+	AddFunction( new nfGetMaximumExtend( init ) );
 	
 	AddFunction( new nfEquals( init ) );
 	AddFunction( new nfHashCode( init ) );
