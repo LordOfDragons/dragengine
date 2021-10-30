@@ -1265,6 +1265,7 @@ void debpColliderBones::pSetBoneShape( int index, deRigBone &bone, decVector &sc
 		shape->Visit( createBulletShape );
 		shape->Visit( shapeSurface );
 	}
+	createBulletShape.Finish();
 	
 	phyBody->SetShape( createBulletShape.GetBulletShape() );
 	phyBody->SetShapeSurface( shapeSurface.GetSurface() );

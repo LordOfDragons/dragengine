@@ -2422,8 +2422,10 @@ void debpColliderComponent::pUpdateBones(){
 				try{
 					compoundShape = new btCompoundShape( true );
 					compoundShape->setUserPointer( ( void* )( intptr_t )0 );
-					compoundShape->setLocalScaling( btVector3( ( btScalar )scale.x, ( btScalar )scale.y, ( btScalar )scale.z ) );
 					compoundShape->addChildShape( transform, model->GetShape()->GetShape() ); // not released on destructor
+					
+					compoundShape->setLocalScaling( btVector3( ( btScalar )scale.x, ( btScalar )scale.y, ( btScalar )scale.z ) );
+						// setLocalScaling has to come last or scaling does not propagate
 					
 					bulletShape = new debpBulletCompoundShape( compoundShape );
 					bulletShape->AddChildShape( model->GetShape() );
@@ -2467,6 +2469,7 @@ void debpColliderComponent::pUpdateBones(){
 				shape->Visit( createBulletShape );
 				shape->Visit( shapeSurface );
 			}
+			createBulletShape.Finish();
 			pSimplePhyBody->SetShape( createBulletShape.GetBulletShape() );
 			pSimplePhyBody->SetShapeSurface( shapeSurface.GetSurface() );
 			
@@ -2903,6 +2906,7 @@ debpBulletShape *debpColliderComponent::pCreateBPShape(){
 		createBulletShape.SetShapeIndex( i );
 		rig->GetShapes().GetAt( i )->Visit( createBulletShape );
 	}
+	createBulletShape.Finish();
 	
 	debpBulletShape * const bulletShape = createBulletShape.GetBulletShape();
 	if( bulletShape ){

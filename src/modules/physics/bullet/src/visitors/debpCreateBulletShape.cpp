@@ -26,6 +26,7 @@
 #include "debpCreateBulletShape.h"
 #include "../debpBulletShape.h"
 #include "../debpBulletCompoundShape.h"
+#include "../dePhysicsBullet.h"
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/shape/decShapeBox.h>
@@ -104,6 +105,14 @@ void debpCreateBulletShape::Reset(){
 	pCcdRadius = 0.001f;
 }
 
+void debpCreateBulletShape::Finish(){
+	if( pBulletCompoundShape && pHasScale ){
+		pBulletCompoundShape->GetShape()->setLocalScaling( btVector3(
+			( btScalar )pScale.x, ( btScalar )pScale.y, ( btScalar )pScale.z ) );
+		// setLocalScaling has to come last or scaling does not propagate
+	}
+}
+
 void debpCreateBulletShape::SetShapeIndex( int index ){
 	pShapeIndex = index;
 }
@@ -114,6 +123,16 @@ debpBulletShape *debpCreateBulletShape::GetBulletShape() const{
 		
 	}else{
 		return pBulletShape;
+	}
+}
+
+void debpCreateBulletShape::DebugPrintShape( dePhysicsBullet &bullet, const char *prefix ) const{
+	debpBulletShape * const shape = GetBulletShape();
+	if( shape ){
+		pDebugPrintShape( bullet, *shape->GetShape(), prefix );
+		
+	}else{
+		bullet.LogInfoFormat( "%s(null)", prefix );
 	}
 }
 
@@ -185,12 +204,14 @@ printf( "debpCreateBulletShape.VisitShapeSphere: r=%g as=(%g,%g) pos=(%g,%g,%g)\
 			}
 			
 			compoundShape = new btCompoundShape( true );
-			compoundShape->setLocalScaling( btVector3( ( btScalar )axisScaling.x, ( btScalar )1.0, ( btScalar )axisScaling.y ) );
 			compoundShape->addChildShape( transform, sphereShape ); // setLocalScaling has to come before addChildShape
 			if( pNoMargin ){
 				compoundShape->setMargin( ( btScalar )0.0 );
 			}
 			compoundShape->setUserPointer( ( void* )( intptr_t )( pShapeIndex + 1 ) );
+			
+			compoundShape->setLocalScaling( btVector3( ( btScalar )axisScaling.x, ( btScalar )1.0, ( btScalar )axisScaling.y ) );
+				// setLocalScaling has to come last or scaling does not propagate
 			
 			bulletShapeCompound = new debpBulletCompoundShape( compoundShape );
 			bulletShapeCompound->AddChildShape( bulletShapeSphere );
@@ -576,10 +597,8 @@ void debpCreateBulletShape::pCreateCompoundShape(){
 			compoundShape->setMargin( ( btScalar )0.0 );
 		}
 		compoundShape->setUserPointer( ( void* )( intptr_t )( pShapeIndex + 1 ) );
-		
-		if( pHasScale ){
-			compoundShape->setLocalScaling( btVector3( ( btScalar )pScale.x, ( btScalar )pScale.y, ( btScalar )pScale.z ) );
-		}
+			// setLocalScaling has to come last or scaling does not propagate.
+			// for this reason it is applied during Finish() not here
 		
 		bulletShape = new debpBulletCompoundShape( compoundShape );
 		
@@ -590,7 +609,7 @@ void debpCreateBulletShape::pCreateCompoundShape(){
 			#endif
 			btTransform transform;
 			transform.setIdentity(); // required, constructor does not initialize anything
-			compoundShape->addChildShape( transform, pBulletShape->GetShape() ); // setLocalScaling has to come before addChildShape
+			compoundShape->addChildShape( transform, pBulletShape->GetShape() );
 			bulletShape->AddChildShape( pBulletShape );
 			pBulletShape->FreeReference();
 			pBulletShape = NULL;
@@ -657,4 +676,47 @@ void debpCreateBulletShape::pAddTransformedCollisionShape( debpBulletShape *coll
 	pBulletCompoundShape->GetCompoundShape()->addChildShape( transform, collisionShape->GetShape() );
 	pBulletCompoundShape->AddChildShape( collisionShape );
 	collisionShape->FreeReference(); // since we steal the reference
+}
+
+void debpCreateBulletShape::pDebugPrintShape( dePhysicsBullet &bullet,
+const btCollisionShape &shape, const char *prefix ) const
+{
+	switch( shape.getShapeType() ){
+	case SPHERE_SHAPE_PROXYTYPE:{
+		const btSphereShape &sphere = ( btSphereShape& )shape;
+		bullet.LogInfoFormat( "%ssphere r=%f ls=(%f,%f,%f)", prefix, sphere.getRadius(),
+			sphere.getLocalScaling().x(), sphere.getLocalScaling().y(), sphere.getLocalScaling().z());
+		}break;
+		
+	case BOX_SHAPE_PROXYTYPE:{
+		const btBoxShape &box = ( btBoxShape& )shape;
+		bullet.LogInfoFormat( "%sbox he=(%f,%f,%f) ls=(%f,%f,%f)", prefix,
+			box.getHalfExtentsWithoutMargin().x(), box.getHalfExtentsWithoutMargin().y(),
+			box.getHalfExtentsWithoutMargin().z(), box.getLocalScaling().x(),
+			box.getLocalScaling().y(), box.getLocalScaling().z());
+		}break;
+		
+	case COMPOUND_SHAPE_PROXYTYPE:{
+		const btCompoundShape &compound = ( btCompoundShape& )shape;
+		bullet.LogInfoFormat( "%scompound ls=(%f,%f,%f)", prefix, compound.getLocalScaling().x(),
+			compound.getLocalScaling().y(), compound.getLocalScaling().z());
+		const decString childPrefix( decString( prefix ) + "- " );
+		const decString childPrefix2( decString( prefix ) + "    " );
+		const int count = compound.getNumChildShapes();
+		int i;
+		for( i=0; i<count; i++ ){
+			const btTransform &t = compound.getChildTransform( i );
+			const btVector3 p( t.getOrigin() );
+			const btQuaternion o( t.getRotation() );
+			const decVector r( decQuaternion( o.x(), o.y(), o.z(), o.w() ).GetEulerAngles() * RAD2DEG );
+			bullet.LogInfoFormat( "%schild t=[(%f,%f,%f) (%f,%f,%f)]",
+				childPrefix.GetString(), p.x(), p.y(), p.z(), r.x, r.y, r.z );
+			pDebugPrintShape( bullet, *compound.getChildShape( i ), childPrefix2 );
+		}
+		}break;
+		
+	default:
+		bullet.LogInfoFormat( "%sshape ls=(%f,%f,%f)", prefix, shape.getLocalScaling().x(),
+			shape.getLocalScaling().y(), shape.getLocalScaling().z());
+	}
 }

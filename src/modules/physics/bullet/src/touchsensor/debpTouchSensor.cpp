@@ -580,6 +580,7 @@ void debpTouchSensor::ShapeChanged(){
 	for( i=0; i<count; i++ ){
 		shapeList.GetAt( i )->Visit( createBulletShape );
 	}
+	createBulletShape.Finish();
 	pGhostObject->SetShape( createBulletShape.GetBulletShape() );
 	
 	pCalculateBasicExtends();

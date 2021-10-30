@@ -1187,6 +1187,7 @@ void debpColliderRig::pUpdateBones(){
 			createBulletShape.SetShapeIndex( s );
 			engRig->GetShapes().GetAt( s )->Visit( createBulletShape );
 		}
+		createBulletShape.Finish();
 		pSimplePhyBody->SetShape( createBulletShape.GetBulletShape() );
 		
 		//pSimplePhyBody->SetCcdParameters( createBulletShape.GetCcdThreshold(), createBulletShape.GetCcdRadius() );

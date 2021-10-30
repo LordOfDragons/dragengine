@@ -1476,6 +1476,7 @@ debpBulletShape *debpColliderVolume::pCreateBPShape(){
 		createBulletShape.SetShapeIndex( i );
 		shapes.GetAt( i )->Visit( createBulletShape );
 	}
+	createBulletShape.Finish();
 	
 	//pPhyBody->SetCcdParameters( visCreateBody.GetCcdThreshold(), visCreateBody.GetCcdRadius() );
 	
