@@ -39,10 +39,6 @@
 debpShapeCylinder::debpShapeCylinder( decShapeCylinder *shape ) : debpShape( estCylinder, shape ){
 	pSCylinder = shape;
 	
-	pCCylinder.SetHalfHeight( shape->GetHalfHeight() );
-	pCCylinder.SetTopRadius( shape->GetTopRadius() );
-	pCCylinder.SetBottomRadius( shape->GetBottomRadius() );
-	
 	SetCollisionVolume( &pCCylinder );
 }
 
@@ -54,9 +50,14 @@ debpShapeCylinder::~debpShapeCylinder(){
 // Management
 ///////////////
 
-void debpShapeCylinder::UpdateWithMatrix( const decDMatrix &transformation ){
+void debpShapeCylinder::UpdateWithMatrix( const decDMatrix &transformation, const decDVector &scale ){
 	pCCylinder.SetPosition( transformation * pSCylinder->GetPosition() );
 	pCCylinder.SetOrientation( pSCylinder->GetOrientation() * transformation.ToQuaternion() );
+	
+	const float scaleRadius = ( float )( ( scale.x + scale.z ) * 0.5 );
+	pCCylinder.SetHalfHeight( pSCylinder->GetHalfHeight() * ( float )scale.y );
+	pCCylinder.SetTopRadius( pSCylinder->GetTopRadius() * scaleRadius );
+	pCCylinder.SetBottomRadius( pSCylinder->GetBottomRadius() * scaleRadius );
 }
 
 void debpShapeCylinder::PrintDebug( dePhysicsBullet &module ){

@@ -687,6 +687,34 @@ void debpColliderRig::OrientationChanged(){
 	}
 }
 
+void debpColliderRig::ScaleChanged(){
+	const decVector &scale = pColliderRig.GetScale();
+	
+	if( pScale.IsEqualTo( scale ) ){
+		return;
+	}
+	
+	pScale = scale;
+	
+	MarkMatrixDirty();
+	MarkDirtyOctree();
+	
+	if( ! pPreventUpdate ){
+		if( ! pSimplePhyBody ){
+			DirtyBones();
+		}
+	}
+	
+	pDirtyShapes = true;
+	pUpdateBones();
+	
+	RequiresUpdate();
+	
+	if( pColliderRig.GetAttachmentCount() > 0 ){
+		pUpdateAttachments( true );
+	}
+}
+
 void debpColliderRig::GeometryChanged(){
 	const decDVector &position = pColliderRig.GetPosition();
 	const decQuaternion &orientation = pColliderRig.GetOrientation();
@@ -708,33 +736,6 @@ void debpColliderRig::GeometryChanged(){
 			pSimplePhyBody->SetOrientation( orientation );
 			
 		}else{
-			DirtyBones();
-		}
-	}
-	
-	pDirtyShapes = true;
-	
-	RequiresUpdate();
-	
-	if( pColliderRig.GetAttachmentCount() > 0 ){
-		pUpdateAttachments( true );
-	}
-}
-
-void debpColliderRig::ScaleChanged(){
-	const decVector &scale = pColliderRig.GetScale();
-	
-	if( pScale.IsEqualTo( scale ) ){
-		return;
-	}
-	
-	pScale = scale;
-	
-	MarkMatrixDirty();
-	MarkDirtyOctree();
-	
-	if( ! pPreventUpdate ){
-		if( ! pSimplePhyBody ){
 			DirtyBones();
 		}
 	}
@@ -1141,7 +1142,6 @@ void debpColliderRig::pUpdateBones(){
 	}else if( shapeCount > 0 ){
 		// create the physics body which is the same no matter what shape we have
 		pSimplePhyBody = new debpPhysicsBody;
-		if( ! pSimplePhyBody ) DETHROW( deeOutOfMemory );
 		
 		pSimplePhyBody->SetOwnerCollider( this, -1 );
 		pSimplePhyBody->SetDynamicsWorld( dynWorld );

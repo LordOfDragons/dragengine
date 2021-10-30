@@ -1297,11 +1297,43 @@ void debpColliderComponent::OrientationChanged(){
 	}
 }
 
+void debpColliderComponent::ScaleChanged(){
+	const decVector &scale = pColliderComponent.GetScale();
+	
+	if( pScale.IsEqualTo( scale ) ){
+		return;
+	}
+	
+	pScale = scale;
+	
+	MarkMatrixDirty();
+	MarkDirtyOctree();
+	
+	if( ! pPreventUpdate ){
+		if( ! pSimplePhyBody ){
+			DirtyBones();
+		}
+	}
+	
+	pDirtyShapes = true;
+	pDirtySweepTest = true;
+	pDirtyStaticTest = true;
+	
+	pUpdateBones();
+	
+	RequiresUpdate();
+	
+	if( pColliderComponent.GetAttachmentCount() > 0 ){
+		pUpdateAttachments( true );
+	}
+}
+
 void debpColliderComponent::GeometryChanged(){
 	const decDVector &position = pColliderComponent.GetPosition();
 	const decQuaternion &orientation = pColliderComponent.GetOrientation();
 	const decVector &scale = pColliderComponent.GetScale();
-	if( pPosition.IsEqualTo( position ) && pOrientation.IsEqualTo( orientation ) && pScale.IsEqualTo( scale ) ){
+	const bool sameScale = pScale.IsEqualTo( scale );
+	if( pPosition.IsEqualTo( position ) && pOrientation.IsEqualTo( orientation ) && sameScale ){
 		return;
 	}
 	
@@ -1313,6 +1345,7 @@ void debpColliderComponent::GeometryChanged(){
 	
 	pPosition = position;
 	pOrientation = orientation;
+	pScale = scale;
 	
 	MarkMatrixDirty();
 	MarkDirtyOctree();
@@ -1343,32 +1376,12 @@ void debpColliderComponent::GeometryChanged(){
 	
 	pDirtyShapes = true;
 	
-	RequiresUpdate();
-	
-	if( pColliderComponent.GetAttachmentCount() > 0 ){
-		pUpdateAttachments( true );
+	if( ! sameScale ){
+		pDirtySweepTest = true;
+		pDirtyStaticTest = true;
+		
+		pUpdateBones();
 	}
-}
-
-void debpColliderComponent::ScaleChanged(){
-	const decVector &scale = pColliderComponent.GetScale();
-	
-	if( pScale.IsEqualTo( scale ) ){
-		return;
-	}
-	
-	pScale = scale;
-	
-	MarkMatrixDirty();
-	MarkDirtyOctree();
-	
-	if( ! pPreventUpdate ){
-		if( ! pSimplePhyBody ){
-			DirtyBones();
-		}
-	}
-	
-	pDirtyShapes = true;
 	
 	RequiresUpdate();
 	
@@ -2775,6 +2788,7 @@ void debpColliderComponent::pUpdateSweepCollisionTest(){
 	}
 	
 	if( pDirtySweepTest ){
+		const decVector &scale = pColliderComponent.GetScale();
 		deRig *rig = NULL;
 		int count = 0;
 		int i;
@@ -2789,7 +2803,7 @@ void debpColliderComponent::pUpdateSweepCollisionTest(){
 		pSweepCollisionTest->RemoveAllShapes();
 		
 		for( i=0; i<count; i++ ){
-			pSweepCollisionTest->AddShape( *rig->GetShapes().GetAt( i ) );
+			pSweepCollisionTest->AddShape( *rig->GetShapes().GetAt( i ), scale );
 		}
 		
 		pDirtySweepTest = false;

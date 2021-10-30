@@ -466,12 +466,13 @@ bool debpTouchSensor::TestCollider( debpCollider *collider ){
 		}
 		
 	}else{
+		const decDVector scale( transformation.GetScale() );
 		const int count = pShape.GetShapeCount();
 		int i;
 		
 		for( i=0; i<count; i++ ){
 			debpShape &shape = *pShape.GetShapeAt( i );
-			shape.UpdateWithMatrix( transformation );
+			shape.UpdateWithMatrix( transformation, scale );
 			if( shape.GetCollisionVolume()->BoxHitsVolume( &approxColliderBox ) ){
 				return true;
 			}

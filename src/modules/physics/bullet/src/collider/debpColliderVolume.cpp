@@ -778,34 +778,6 @@ void debpColliderVolume::OrientationChanged(){
 	}
 }
 
-void debpColliderVolume::GeometryChanged(){
-	const decDVector &position = pColliderVolume.GetPosition();
-	const decQuaternion &orientation = pColliderVolume.GetOrientation();
-	if( pPosition.IsEqualTo( position ) && pOrientation.IsEqualTo( orientation ) ){
-		return;
-	}
-	
-	debpCollider::GeometryChanged();
-	
-	pPosition = position;
-	pOrientation = orientation;
-	
-	pDirtyShapes = true;
-	MarkMatrixDirty();
-	MarkDirtyOctree();
-	
-	if( ! pPreventUpdate ){
-		RequiresUpdate();
-		
-		pPhyBody->SetPosition( position );
-		pPhyBody->SetOrientation( orientation );
-	}
-	
-	if( pColliderVolume.GetAttachmentCount() > 0 ){
-		pUpdateAttachments( true );
-	}
-}
-
 void debpColliderVolume::ScaleChanged(){
 	const decVector &scale = pColliderVolume.GetScale();
 	
@@ -816,11 +788,52 @@ void debpColliderVolume::ScaleChanged(){
 	pScale = scale;
 	
 	pDirtyShapes = true;
+	pDirtyBPShape = true;
+	pDirtySweepTest = true;
+	pDirtyStaticTest = true;
+	
 	MarkMatrixDirty();
 	MarkDirtyOctree();
 	
 	if( ! pPreventUpdate ){
 		RequiresUpdate();
+	}
+	
+	if( pColliderVolume.GetAttachmentCount() > 0 ){
+		pUpdateAttachments( true );
+	}
+}
+
+void debpColliderVolume::GeometryChanged(){
+	const decDVector &position = pColliderVolume.GetPosition();
+	const decQuaternion &orientation = pColliderVolume.GetOrientation();
+	const decVector &scale = pColliderVolume.GetScale();
+	const bool sameScale = pScale.IsEqualTo( scale );
+	if( pPosition.IsEqualTo( position ) && pOrientation.IsEqualTo( orientation ) && sameScale ){
+		return;
+	}
+	
+	debpCollider::GeometryChanged();
+	
+	pPosition = position;
+	pOrientation = orientation;
+	pScale = scale;
+	
+	pDirtyShapes = true;
+	MarkMatrixDirty();
+	MarkDirtyOctree();
+	
+	if( ! sameScale ){
+		pDirtyBPShape = true;
+		pDirtySweepTest = true;
+		pDirtyStaticTest = true;
+	}
+	
+	if( ! pPreventUpdate ){
+		RequiresUpdate();
+		
+		pPhyBody->SetPosition( position );
+		pPhyBody->SetOrientation( orientation );
 	}
 	
 	if( pColliderVolume.GetAttachmentCount() > 0 ){
@@ -1315,13 +1328,14 @@ void debpColliderVolume::pUpdateSweepCollisionTest(){
 	
 	if( pDirtySweepTest ){
 		const decShapeList &shapes = pColliderVolume.GetShapes();
+		const decVector &scale = pColliderVolume.GetScale();
 		const int count = shapes.GetCount();
 		int i;
 		
 		pSweepCollisionTest->RemoveAllShapes();
 		
 		for( i=0; i<count; i++ ){
-			pSweepCollisionTest->AddShape( *shapes.GetAt( i ) );
+			pSweepCollisionTest->AddShape( *shapes.GetAt( i ), scale );
 		}
 		
 		pDirtySweepTest = false;

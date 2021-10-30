@@ -93,7 +93,7 @@ pPointTestBulletColObj( NULL )
 	pColInfo = new deCollisionInfo;
 	
 	decShapeSphere hackSphere( 0.001f );
-	pRayHackShape.AddShape( hackSphere );
+	pRayHackShape.AddShape( hackSphere, decVector( 1.0f, 1.0f, 1.0f ) );
 	
 	pPointTestShape = new btSphereShape( ( btScalar )0.001 );
 	pPointTestShape->setMargin( BT_ZERO );
