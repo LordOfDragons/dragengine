@@ -602,6 +602,7 @@ void debpCollider::UpdateDebugDrawer(){
 			pDebugDrawer->SetXRay( true );
 			pDebugDrawer->SetPosition( pCollider.GetPosition() );
 			pDebugDrawer->SetOrientation( pCollider.GetOrientation() );
+			pDebugDrawer->SetScale( pCollider.GetScale() );
 			
 			if( pParentWorld ){
 				pParentWorld->GetWorld().AddDebugDrawer( pDebugDrawer );
@@ -675,10 +676,17 @@ void debpCollider::OrientationChanged(){
 	}
 }
 
+void debpCollider::ScaleChanged(){
+	if( pDebugDrawer ){
+		pDebugDrawer->SetScale( pCollider.GetScale() );
+	}
+}
+
 void debpCollider::GeometryChanged(){
 	if( pDebugDrawer ){
 		pDebugDrawer->SetPosition( pCollider.GetPosition() );
 		pDebugDrawer->SetOrientation( pCollider.GetOrientation() );
+		pDebugDrawer->SetScale( pCollider.GetScale() );
 	}
 }
 

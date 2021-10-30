@@ -370,6 +370,9 @@ public:
 	/** \brief Orientation changed. */
 	virtual void OrientationChanged();
 	
+	/** \brief Scale changed. */
+	virtual void ScaleChanged();
+	
 	/** \brief Position or orientation changed. */
 	virtual void GeometryChanged();
 	
