@@ -34,6 +34,7 @@
 #include "../math/deClassDVector.h"
 #include "../math/deClassQuaternion.h"
 #include "../math/deClassPoint.h"
+#include "../math/deClassDMatrix.h"
 #include "../physics/deClassLayerMask.h"
 #include "../world/deClassWorld.h"
 #include "../../deScriptingDragonScript.h"
@@ -517,6 +518,21 @@ void deClassCamera::nfGetParentWorld::RunFunction( dsRunTime *rt, dsValue *mysel
 
 
 
+// public func DMatrix getMatrix()
+deClassCamera::nfGetMatrix::nfGetMatrix( const sInitData &init ) :
+dsFunction( init.clsWorld, "getMatrix", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsDMatrix ){
+}
+void deClassCamera::nfGetMatrix::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const deCamera &camera = *( ( ( sCamNatDat* )p_GetNativeData( myself ) )->camera );
+	const deScriptingDragonScript &ds = ( ( deClassCamera* )GetOwnerClass() )->GetDS();
+	
+	ds.GetClassDMatrix()->PushDMatrix( rt, decDMatrix::CreateWorld(
+		camera.GetPosition(), camera.GetOrientation() ) );
+}
+
+
+
 // Efects
 ///////////
 
@@ -669,6 +685,7 @@ void deClassCamera::CreateClassMembers( dsEngine *engine ){
 	init.clsPoint = pDS.GetClassPoint();
 	init.clsLayerMask = pDS.GetClassLayerMask();
 	init.clsWorld = pDS.GetClassWorld();
+	init.clsDMatrix = pDS.GetClassDMatrix();
 	
 	// add functions
 	AddFunction( new nfNew( init ) );
@@ -708,6 +725,8 @@ void deClassCamera::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfGetLayerMask( init ) );
 	AddFunction( new nfSetLayerMask( init ) );
 	AddFunction( new nfGetParentWorld( init ) );
+	
+	AddFunction( new nfGetMatrix( init ) );
 	
 	AddFunction( new nfGetEffectCount( init ) );
 	AddFunction( new nfGetEffectAt( init ) );

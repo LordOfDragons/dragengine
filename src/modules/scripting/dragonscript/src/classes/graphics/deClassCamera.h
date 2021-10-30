@@ -88,6 +88,7 @@ private:
 		dsClass *clsPoint;
 		dsClass *clsLayerMask;
 		dsClass *clsWorld;
+		dsClass *clsDMatrix;
 	};
 #define DEF_NATFUNC(name) \
 	class name : public dsFunction{ \
@@ -133,6 +134,8 @@ private:
 	DEF_NATFUNC( nfGetLayerMask );
 	DEF_NATFUNC( nfSetLayerMask );
 	DEF_NATFUNC( nfGetParentWorld );
+	
+	DEF_NATFUNC( nfGetMatrix );
 	
 	DEF_NATFUNC( nfGetEffectCount );
 	DEF_NATFUNC( nfGetEffectAt );

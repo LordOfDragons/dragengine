@@ -188,6 +188,14 @@ class Camera
 	public func World getParentWorld()
 		return null
 	end
+	
+	/**
+	 * \brief World matrix of camera.
+	 * \version 1.7
+	 */
+	public func DMatrix getMatrix()
+		return null
+	end
 	/*@}*/
 	
 	
