@@ -356,6 +356,37 @@ class WindowGameWorld extends Window
 	
 	
 	/**
+	 * \brief Project point from 3d world.
+	 * \version 1.7
+	 */
+	public func Point project(DVector position)
+		return pWorldRenderer.project(position)
+	end
+	
+	/**
+	 * \brief Back project position into 3d world.
+	 * \version 1.7
+	 */
+	public func Vector backProject(Point position)
+		return pWorldRenderer.backProject(position)
+	end
+
+	
+	/**
+	 * \brief Back project position into 3d world.
+	 * \version 1.7
+	 * 
+	 * Event can originate from any widget inside the window. The event position is converted
+	 * to world renderer coordinate system before calling backProject on world renderer.
+	 */
+	public func Vector backProject(MouseEvent event)
+		return pWorldRenderer.backProject((event.getSource() cast Widget).getWindowPosition()\
+			+ event.getPosition() - pWorldRenderer.getWindowPosition())
+	end
+	
+	
+	
+	/**
 	 * \brief Update game world every frame update if present.
 	 * 
 	 * \param elapsed Elapsed time as reported by Engine.getElapsedTime().

@@ -41,77 +41,79 @@ class WorldRenderer extends Widget
 	
 	/** \brief Create world renderer. */
 	public func new()
-		this.pCanvasRenderWorld = CanvasRenderWorld.new()
-		this.getCanvasContent().addCanvas( this.pCanvasRenderWorld )
+		pCanvasRenderWorld = CanvasRenderWorld.new()
+		getCanvasContent().addCanvas(pCanvasRenderWorld)
 	end
 	
 	/** \brief Create world renderer. */
-	public func new( int x, int y, int width, int height ) super( x, y, width, height ) 
-		this.pRenderMinimumSize = Point.new( width, height )
+	public func new(int x, int y, int width, int height) super(x, y, width, height) 
+		pRenderMinimumSize = Point.new(width, height)
 		
-		this.pCanvasRenderWorld = CanvasRenderWorld.new()
-		this.getCanvasContent().addCanvas( this.pCanvasRenderWorld )
+		pCanvasRenderWorld = CanvasRenderWorld.new()
+		getCanvasContent().addCanvas(pCanvasRenderWorld)
 		
-		this.updateCanvasRenderWorld()
+		updateCanvasRenderWorld()
 	end
 	
 	
 	
 	/** \brief Camera. */
 	public func Camera getCamera()
-		return this.pCanvasRenderWorld.getCamera()
+		return pCanvasRenderWorld.getCamera()
 	end
 	
 	/** \brief Set camera. */
-	public func void setCamera( Camera camera )
-		this.pCanvasRenderWorld.setCamera( camera )
+	public func void setCamera(Camera camera)
+		pCanvasRenderWorld.setCamera(camera)
 	end
 	
 	/** \brief Minimum renderer size or null if not set. */
 	public func Point getRenderMinimumSize()
-		return this.pRenderMinimumSize
+		return pRenderMinimumSize
 	end
 	
 	/** \brief Set minimum renderer size or null if not set. */
-	public func void setRenderMinimumSize( Point size )
+	public func void setRenderMinimumSize(Point size)
 		if size == null
-			if this.pRenderMinimumSize == null
+			if pRenderMinimumSize == null
 				return
 			end
-			this.pRenderMinimumSize = size
+			pRenderMinimumSize = size
 			
 		else
-			if size.equals( this.pRenderMinimumSize )
+			if size.equals(pRenderMinimumSize)
 				return
 			end
-			this.pRenderMinimumSize = Point.new().largest( size )
+			pRenderMinimumSize = Point.new().largest(size)
 		end
 		
-		this.layoutParent()
+		layoutParent()
 	end
 	
 	
 	
 	/** \brief Project point from 3d world. */
-	public func Point project( DVector position )
-		return this.pCanvasRenderWorld.project( position )
+	public func Point project(DVector position)
+		var BorderSize padding = getPadding()
+		return Point.new(padding.getLeft(), padding.getTop()) + pCanvasRenderWorld.project(position)
 	end
 	
 	/** \brief Back project position into 3d world. */
-	public func Vector backProject( Point position )
-		return this.pCanvasRenderWorld.backProject( position )
+	public func Vector backProject(Point position)
+		var BorderSize padding = getPadding()
+		return pCanvasRenderWorld.backProject(position - Point.new(padding.getLeft(), padding.getTop()))
 	end
 	
 	
 	
 	/** \brief Minimal size of widget. */
 	public func Point getMinimumSize()
-		if this.isMinimumSizeSet()
+		if isMinimumSizeSet()
 			return super.getMinimumSize()
 		end
 		
-		if this.pRenderMinimumSize != null
-			return this.getPadding().getSize() + this.pRenderMinimumSize
+		if pRenderMinimumSize != null
+			return getPadding().getSize() + pRenderMinimumSize
 			
 		else
 			return super.getMinimumSize()
@@ -121,28 +123,28 @@ class WorldRenderer extends Widget
 	
 	
 	/** \brief State changed. */
-	public func void onStateChanged( StateChangeEvent event )
-		super.onStateChanged( event )
-		this.updateCanvasRenderWorld()
+	public func void onStateChanged(StateChangeEvent event)
+		super.onStateChanged(event)
+		updateCanvasRenderWorld()
 	end
 	
 	/** \brief Padding changed. */
 	public func void onPaddingChanged()
-		this.updateCanvasRenderWorld()
+		updateCanvasRenderWorld()
 	end
 	
 	/** \brief Size changed. */
-	public func void onResize( WidgetEvent event )
-		super.onResize( event )
-		this.updateCanvasRenderWorld()
+	public func void onResize(WidgetEvent event)
+		super.onResize(event)
+		updateCanvasRenderWorld()
 	end
 	
 	
 	
 	/** \brief Update canvas render world. */
 	protected func void updateCanvasRenderWorld()
-		var BorderSize padding = this.getPadding()
-		this.pCanvasRenderWorld.setPosition( Point.new( padding.getLeft(), padding.getTop() ) )
-		this.pCanvasRenderWorld.setSize( Point.new().largest( this.getSize() - padding.getSize() ) )
+		var BorderSize padding = getPadding()
+		pCanvasRenderWorld.setPosition(Point.new(padding.getLeft(), padding.getTop()))
+		pCanvasRenderWorld.setSize(Point.new().largest(getSize() - padding.getSize()))
 	end
 end
