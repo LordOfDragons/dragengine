@@ -337,6 +337,16 @@ void delEngineProcess::ReadCommandsFromInPipe(){
 			CommandSetPathOverlay();
 			break;
 			
+		case eccSetPathCapture:
+			pLogger->LogInfo( pLogSource, "Received eccSetPathCapture" );
+			CommandSetPathCapture();
+			break;
+			
+		case eccSetPathConfig:
+			pLogger->LogInfo( pLogSource, "Received eccSetPathConfig" );
+			CommandSetPathConfig();
+			break;
+			
 		default:
 			pLogger->LogErrorFormat( pLogSource,
 				"ReadCommandsFromInPipe failed with exception (command=%d):", command );
@@ -848,6 +858,52 @@ void delEngineProcess::CommandSetPathOverlay(){
 		
 	}catch( const deException &e ){
 		pLogger->LogErrorFormat( pLogSource, "EngineProcess.CommandSetPathOverlay "
+			"failed with exception (dir=%s):", path.GetString() );
+		pLogger->LogException( pLogSource, e );
+	}
+	
+	WriteUCharToPipe( ercFailed );
+}
+
+void delEngineProcess::CommandSetPathCapture(){
+	if( ! pEngine ){
+		WriteUCharToPipe( ercFailed );
+		return;
+	}
+	
+	decString path;
+	
+	try{
+		ReadString16FromPipe( path );
+		pEngine->SetPathCapture( path );
+		WriteUCharToPipe( ercSuccess );
+		return;
+		
+	}catch( const deException &e ){
+		pLogger->LogErrorFormat( pLogSource, "EngineProcess.CommandSetPathCapture "
+			"failed with exception (dir=%s):", path.GetString() );
+		pLogger->LogException( pLogSource, e );
+	}
+	
+	WriteUCharToPipe( ercFailed );
+}
+
+void delEngineProcess::CommandSetPathConfig(){
+	if( ! pEngine ){
+		WriteUCharToPipe( ercFailed );
+		return;
+	}
+	
+	decString path;
+	
+	try{
+		ReadString16FromPipe( path );
+		pEngine->SetPathConfig( path );
+		WriteUCharToPipe( ercSuccess );
+		return;
+		
+	}catch( const deException &e ){
+		pLogger->LogErrorFormat( pLogSource, "EngineProcess.CommandSetPathConfig "
 			"failed with exception (dir=%s):", path.GetString() );
 		pLogger->LogException( pLogSource, e );
 	}

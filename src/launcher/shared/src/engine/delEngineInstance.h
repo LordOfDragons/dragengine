@@ -190,6 +190,18 @@ public:
 	 */
 	void SetPathOverlay( const char *path );
 	
+	/**
+	 * \brief Set capture directory.
+	 * \version 1.7
+	 */
+	void SetPathCapture( const char *path );
+	
+	/**
+	 * \brief Set config directory.
+	 * \version 1.7
+	 */
+	void SetPathConfig( const char *path );
+	
 	/** \brief Add disk directory to virtual file system. */
 	void VFSAddDiskDir( const char *vfsRoot, const char *nativeDirectory, bool readOnly );
 	

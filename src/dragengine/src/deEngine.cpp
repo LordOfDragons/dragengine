@@ -675,6 +675,14 @@ void deEngine::SetPathOverlay( const char* path ){
 	pPathOverlay = path;
 }
 
+void deEngine::SetPathCapture( const char* path ){
+	pPathCapture = path;
+}
+
+void deEngine::SetPathConfig( const char* path ){
+	pPathConfig = path;
+}
+
 
 
 // OS Events

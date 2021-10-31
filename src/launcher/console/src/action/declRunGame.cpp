@@ -866,12 +866,16 @@ void declRunGame::InitVFS(){
 	filePath.AddComponent( "config" );
 	VFSAddDiskDir( pGame->GetPathConfig(), filePath.GetPathNative(), false );
 	
+	engine.SetPathConfig( filePath.GetPathNative() );
+	
 	// add the user game capture directory (writeable)
 	filePath.SetFromNative( configuration.GetPathConfigUser() );
 	filePath.AddComponent( "games" );
 	filePath.AddComponent( pGame->GetIdentifier().ToHexString( false ) );
 	filePath.AddComponent( "capture" );
 	VFSAddDiskDir( pGame->GetPathCapture(), filePath.GetPathNative(), false );
+	
+	engine.SetPathCapture( filePath.GetPathNative() );
 }
 
 

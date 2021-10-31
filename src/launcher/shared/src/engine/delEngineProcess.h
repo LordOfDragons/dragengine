@@ -115,7 +115,19 @@ public:
 		 * \brief Set overlay directory.
 		 * \version 1.7
 		 */
-		eccSetPathOverlay
+		eccSetPathOverlay,
+		
+		/**
+		 * \brief Set capture directory.
+		 * \version 1.7
+		 */
+		eccSetPathCapture,
+		
+		/**
+		 * \brief Set config directory.
+		 * \version 1.7
+		 */
+		eccSetPathConfig
 	};
 	
 	/** \brief Result Codes. */
@@ -300,6 +312,18 @@ public:
 	 * \version 1.7
 	 */
 	void CommandSetPathOverlay();
+	
+	/**
+	 * \brief Command set path capture.
+	 * \version 1.7
+	 */
+	void CommandSetPathCapture();
+	
+	/**
+	 * \brief Command set path config.
+	 * \version 1.7
+	 */
+	void CommandSetPathConfig();
 	
 	/** \brief Command add disk directory to virtual file system. */
 	void CommandVFSAddDiskDir();

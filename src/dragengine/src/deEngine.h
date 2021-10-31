@@ -153,7 +153,9 @@ private:
 	decString pPathData; // the path to the data files
 	decString pCacheAppID; // unique catch directory identifier for the application
 	deVirtualFileSystem *pVFS;
+	decString pPathCapture;
 	decString pPathOverlay;
+	decString pPathConfig;
 	
 	// frame timer
 	decTimer *pFrameTimer;
@@ -406,6 +408,42 @@ public:
 	 * which overlay data is stored or an empty string if not available.
 	 */
 	void SetPathOverlay( const char *path );
+	
+	/**
+	 * \brief Capture directory.
+	 * \version 1.7
+	 * 
+	 * Set by the launcher to indicate to script modules the native path under
+	 * which capture data is stored or an empty string if not available.
+	 */
+	inline const decString &GetPathCapture() const{ return pPathCapture; }
+	
+	/**
+	 * \brief Set capture directory.
+	 * \version 1.7
+	 * 
+	 * Set by the launcher to indicate to script modules the native path under
+	 * which capture data is stored or an empty string if not available.
+	 */
+	void SetPathCapture( const char *path );
+	
+	/**
+	 * \brief Config directory.
+	 * \version 1.7
+	 * 
+	 * Set by the launcher to indicate to script modules the native path under
+	 * which config data is stored or an empty string if not available.
+	 */
+	inline const decString &GetPathConfig() const{ return pPathConfig; }
+	
+	/**
+	 * \brief Set config directory.
+	 * \version 1.7
+	 * 
+	 * Set by the launcher to indicate to script modules the native path under
+	 * which config data is stored or an empty string if not available.
+	 */
+	void SetPathConfig( const char *path );
 	/*@}*/
 	
 	

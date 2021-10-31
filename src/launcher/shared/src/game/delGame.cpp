@@ -385,11 +385,15 @@ void delGame::StartGame( const delGameRunParams &runParams ){
 		filePath.AddComponent( "config" );
 		pEngineInstance->VFSAddDiskDir( pPathConfig, filePath.GetPathNative(), false );
 		
+		pEngineInstance->SetPathConfig( filePath.GetPathNative() );
+		
 		filePath.SetFromNative( pLauncher.GetPathConfigUser() );
 		filePath.AddComponent( "games" );
 		filePath.AddComponent( pIdentifier.ToHexString( false ) );
 		filePath.AddComponent( "capture" );
 		pEngineInstance->VFSAddDiskDir( pPathCapture, filePath.GetPathNative(), false );
+		
+		pEngineInstance->SetPathCapture( filePath.GetPathNative() );
 		
 		// create render window. for the time being use the largest icon present
 		delGameIcon * const icon = pIcons.GetLargest();

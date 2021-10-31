@@ -835,6 +835,38 @@ void delEngineInstance::SetPathOverlay( const char* path ){
 	}
 }
 
+void delEngineInstance::SetPathCapture( const char* path ){
+	if( ! path ){
+		DETHROW_INFO( deeNullPointer, "path" );
+	}
+	
+	pLauncher.GetLogger()->LogInfoFormat( pLauncher.GetLogSource(),
+		"Sending eccSetPathCapture(path='%s') to process %i", path, ( int )pProcessID );
+	
+	WriteUCharToPipe( delEngineProcess::eccSetPathCapture );
+	WriteString16ToPipe( path );
+	
+	if( ReadUCharFromPipe() != delEngineProcess::ercSuccess ){
+		DETHROW( deeInvalidAction );
+	}
+}
+
+void delEngineInstance::SetPathConfig( const char* path ){
+	if( ! path ){
+		DETHROW_INFO( deeNullPointer, "path" );
+	}
+	
+	pLauncher.GetLogger()->LogInfoFormat( pLauncher.GetLogSource(),
+		"Sending eccSetPathConfig(path='%s') to process %i", path, ( int )pProcessID );
+	
+	WriteUCharToPipe( delEngineProcess::eccSetPathConfig );
+	WriteString16ToPipe( path );
+	
+	if( ReadUCharFromPipe() != delEngineProcess::ercSuccess ){
+		DETHROW( deeInvalidAction );
+	}
+}
+
 void delEngineInstance::VFSAddDiskDir( const char *vfsRoot, const char *nativeDirectory, bool readOnly ){
 	if( ! vfsRoot ){
 		DETHROW_INFO( deeNullPointer, "vfsRoot" );
