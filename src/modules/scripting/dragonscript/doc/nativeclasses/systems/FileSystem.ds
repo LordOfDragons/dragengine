@@ -101,9 +101,8 @@ fixed class FileSystem
 	 * \brief Browse overlay path.
 	 * \version 1.7
 	 * 
-	 * Tries to open an operating system native file browser showing the content of path
-	 * inside the currently running game overlay directory. If the directory is not found
-	 * the user will be presented with an operating system native error dialog.
+	 * Open operating system native file browser showing the content of path inside the
+	 * currently running game overlay directory. If the directory not exist it is created.
 	 * 
 	 * Calling this function switches the focus to another application.
 	 */

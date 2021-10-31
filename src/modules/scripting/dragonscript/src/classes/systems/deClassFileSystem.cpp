@@ -30,6 +30,7 @@
 #include <dragengine/deEngine.h>
 #include <dragengine/app/deOS.h>
 #include <dragengine/common/file/decPath.h>
+#include <dragengine/common/file/decBaseFileWriter.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/filesystem/dePathList.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
@@ -276,8 +277,20 @@ DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsVoid ){
 }
 void deClassFileSystem::nfBrowseOverlay::RunFunction( dsRunTime *rt, dsValue *myself ){
 	const deClassFileSystem &clsFileSys = *( ( deClassFileSystem* )GetOwnerClass() );
+	deVirtualFileSystem &vfs = *clsFileSys.GetDS()->GetGameEngine()->GetVirtualFileSystem();
 	const char * const path = rt->GetValue( 0 )->GetString();
 	
+	// ensure directory exists
+	decPath ensurePath;
+	ensurePath.SetFromUnix( path );
+	ensurePath.AddComponent( "__ds_overlay_delete_me__" );
+	
+	if( ! vfs.ExistsFile( ensurePath ) && vfs.CanWriteFile( ensurePath ) ){
+		decBaseFileWriter::Ref::New( vfs.OpenFileForWriting( ensurePath ) );
+		vfs.DeleteFile( ensurePath );
+	}
+	
+	// browse directory
 	decPath realPath;
 	realPath.SetFromNative( clsFileSys.GetDS()->GetGameEngine()->GetPathOverlay() );
 	realPath.AddUnixPath( path );
