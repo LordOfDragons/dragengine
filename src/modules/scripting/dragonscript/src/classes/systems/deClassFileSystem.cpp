@@ -294,22 +294,83 @@ void deClassFileSystem::nfBrowseOverlay::RunFunction( dsRunTime *rt, dsValue *my
 	decPath realPath;
 	realPath.SetFromNative( clsFileSys.GetDS()->GetGameEngine()->GetPathOverlay() );
 	realPath.AddUnixPath( path );
+	clsFileSys.BrowseNativeDirectory( realPath );
+}
+
+// public static func void browseCapture(String path)
+deClassFileSystem::nfBrowseCapture::nfBrowseCapture( const sInitData &init ) :
+dsFunction( init.clsFileSys, "browseCapture", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsVoid ){
+	p_AddParameter( init.clsStr ); // path
+}
+void deClassFileSystem::nfBrowseCapture::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const deClassFileSystem &clsFileSys = *( ( deClassFileSystem* )GetOwnerClass() );
+	deVirtualFileSystem &vfs = *clsFileSys.GetDS()->GetGameEngine()->GetVirtualFileSystem();
+	const char * const path = rt->GetValue( 0 )->GetString();
 	
-	#ifdef OS_W32
-	wchar_t widePath[ MAX_PATH ];
-	deOSWindows::Utf8ToWide( realPath.GetPathNative(), widePath, MAX_PATH );
-	ShellExecute( NULL, L"open", widePath, NULL, NULL, SW_SHOWDEFAULT );
-	
-	#else
-	const char * const appname = "xdg-open";
-	
-	if( fork() == 0 ){
-		// GetString() is required otherwise execlp fails to run correctly
-		execlp( appname, appname, realPath.GetPathUnix().GetString(), nullptr );
-		clsFileSys.GetDS()->LogErrorFormat( "Failed running '%s' (error %d)\n", appname, errno );
-		exit( 0 );
+	decPath tempPath;
+	tempPath.SetFromUnix( path );
+	if( tempPath.IsAbsolute() ){
+		if( tempPath.GetComponentCount() == 0 || tempPath.GetComponentAt( 0 ) != "capture" ){
+			DSTHROW_INFO( dueInvalidParam, "absolute path has to start with '/capture'" );
+		}
+		tempPath.RemoveComponentFrom( 0 );
 	}
-	#endif
+	
+	// ensure directory exists
+	decPath ensurePath;
+	ensurePath.SetFromUnix( "/capture" );
+	ensurePath.Add( tempPath );
+	ensurePath.AddComponent( "__ds_capture_delete_me__" );
+	
+	if( ! vfs.ExistsFile( ensurePath ) && vfs.CanWriteFile( ensurePath ) ){
+		decBaseFileWriter::Ref::New( vfs.OpenFileForWriting( ensurePath ) );
+		vfs.DeleteFile( ensurePath );
+	}
+	
+	// browse directory
+	decPath realPath;
+	realPath.SetFromNative( clsFileSys.GetDS()->GetGameEngine()->GetPathCapture() );
+	realPath.Add( tempPath );
+	clsFileSys.BrowseNativeDirectory( realPath );
+}
+
+// public static func void browseConfig(String path)
+deClassFileSystem::nfBrowseConfig::nfBrowseConfig( const sInitData &init ) :
+dsFunction( init.clsFileSys, "browseConfig", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsVoid ){
+	p_AddParameter( init.clsStr ); // path
+}
+void deClassFileSystem::nfBrowseConfig::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const deClassFileSystem &clsFileSys = *( ( deClassFileSystem* )GetOwnerClass() );
+	deVirtualFileSystem &vfs = *clsFileSys.GetDS()->GetGameEngine()->GetVirtualFileSystem();
+	const char * const path = rt->GetValue( 0 )->GetString();
+	
+	decPath tempPath;
+	tempPath.SetFromUnix( path );
+	if( tempPath.IsAbsolute() ){
+		if( tempPath.GetComponentCount() == 0 || tempPath.GetComponentAt( 0 ) != "config" ){
+			DSTHROW_INFO( dueInvalidParam, "absolute path has to start with '/config'" );
+		}
+		tempPath.RemoveComponentFrom( 0 );
+	}
+	
+	// ensure directory exists
+	decPath ensurePath;
+	ensurePath.SetFromUnix( "/config" );
+	ensurePath.Add( tempPath );
+	ensurePath.AddComponent( "__ds_config_delete_me__" );
+	
+	if( ! vfs.ExistsFile( ensurePath ) && vfs.CanWriteFile( ensurePath ) ){
+		decBaseFileWriter::Ref::New( vfs.OpenFileForWriting( ensurePath ) );
+		vfs.DeleteFile( ensurePath );
+	}
+	
+	// browse directory
+	decPath realPath;
+	realPath.SetFromNative( clsFileSys.GetDS()->GetGameEngine()->GetPathConfig() );
+	realPath.Add( tempPath );
+	clsFileSys.BrowseNativeDirectory( realPath );
 }
 
 
@@ -375,6 +436,8 @@ void deClassFileSystem::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfGetFileType( init ) );
 	AddFunction( new nfPathMatchesPattern( init ) );
 	AddFunction( new nfBrowseOverlay( init ) );
+	AddFunction( new nfBrowseCapture( init ) );
+	AddFunction( new nfBrowseConfig( init ) );
 	
 	CalcMemberOffsets();
 }
@@ -388,4 +451,22 @@ void deClassFileSystem::PrepareTypes(){
 	pTypeDirectory = pClsFileType->GetVariable( deVFSContainer::eftDirectory )->GetStaticValue();
 	pTypeSpecial = pClsFileType->GetVariable( deVFSContainer::eftSpecial )->GetStaticValue();
 	pTypesReady = true;
+}
+
+void deClassFileSystem::BrowseNativeDirectory( const decPath& path ) const{
+	#ifdef OS_W32
+	wchar_t widePath[ MAX_PATH ];
+	deOSWindows::Utf8ToWide( path.GetPathNative(), widePath, MAX_PATH );
+	ShellExecute( NULL, L"open", widePath, NULL, NULL, SW_SHOWDEFAULT );
+	
+	#else
+	const char * const appname = "xdg-open";
+	
+	if( fork() == 0 ){
+		// GetString() is required otherwise execlp fails to run correctly
+		execlp( appname, appname, path.GetPathUnix().GetString(), nullptr );
+		pDS->LogErrorFormat( "Failed running '%s' (error %d)\n", appname, errno );
+		exit( 0 );
+	}
+	#endif
 }

@@ -26,7 +26,7 @@
 
 class deEngine;
 class deScriptingDragonScript;
-
+class decPath;
 
 
 /**
@@ -65,6 +65,8 @@ public:
 	inline dsValue *GetTypeFile() const{ return pTypeFile; }
 	inline dsValue *GetTypeDirectory() const{ return pTypeDirectory; }
 	inline dsValue *GetTypeSpecial() const{ return pTypeSpecial; }
+	
+	void BrowseNativeDirectory( const decPath &path ) const;
 	/*@}*/
 	
 private:
@@ -92,6 +94,8 @@ private:
 	DEF_NATFUNC( nfGetFileType );
 	DEF_NATFUNC( nfPathMatchesPattern );
 	DEF_NATFUNC( nfBrowseOverlay );
+	DEF_NATFUNC( nfBrowseCapture );
+	DEF_NATFUNC( nfBrowseConfig );
 #undef DEF_NATFUNC
 };
 

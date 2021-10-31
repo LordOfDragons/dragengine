@@ -108,5 +108,35 @@ fixed class FileSystem
 	 */
 	public static func void browseOverlay(String path)
 	end
+	
+	/**
+	 * \brief Browse capture path.
+	 * \version 1.7
+	 * 
+	 * Open operating system native file browser showing the content of path inside the
+	 * currently running game capture directory. If the directory not exist it is created.
+	 * 
+	 * If path is an absolute path it has to start with "/capture" directory.
+	 * If path is relative it is considered relative to "/capture" directory.
+	 * 
+	 * Calling this function switches the focus to another application.
+	 */
+	public static func void browseCapture(String path)
+	end
+	
+	/**
+	 * \brief Browse config path.
+	 * \version 1.7
+	 * 
+	 * Open operating system native file browser showing the content of path inside the
+	 * currently running game config directory. If the directory not exist it is created.
+	 * 
+	 * If path is an absolute path it has to start with "/config" directory.
+	 * If path is relative it is considered relative to "/config" directory.
+	 * 
+	 * Calling this function switches the focus to another application.
+	 */
+	public static func void browseConfig(String path)
+	end
 	/*@}*/
 end
