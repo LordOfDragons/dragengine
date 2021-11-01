@@ -623,7 +623,7 @@ class ComboBox extends Container implements ListModelListener
 		pSelectedElement.setMinimumSize(getDefaultElementSize())
 		pSelectedElement.setProtectMinimumSize(true)
 		
-		if pEditor != null and selection == null
+		if pEditor != null
 			renderer.updateRenderer(pListBox, pSelectedElement, \
 				pEditor.getEditorValue(), false, getHasFocus())
 			
