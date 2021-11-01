@@ -169,10 +169,8 @@ class DefaultListModel implements ListModel
 			selectedNew = elements.getAt(pSelected)
 		end
 		
-		var int i
-		for i = 0 to count
-			pElements.setAt(i, elements.getAt(i))
-		end
+		pElements.removeAll()
+		pElements.addAll(elements)
 		
 		notifyContentChanged(0, count - 1)
 		
