@@ -241,8 +241,14 @@ class DefaultListModel implements ListModel
 	 * \throws EOutOfBounds \em index is less than 0 or larger than getCount().
 	 */
 	public func void insert(int index, Object element)
+		var int selected = pSelected
+		if selected >= index
+			selected++
+		end
+		
 		pElements.insert(index, element)
 		notifyElementsAdded(index, index)
+		setSelected(selected)
 	end
 	
 	/**
@@ -259,12 +265,14 @@ class DefaultListModel implements ListModel
 			return
 		end
 		
-		var int i
-		for i = 0 to count
-			pElements.insert(index + i, content.getAt(i))
+		var int selected = pSelected
+		if selected >= index
+			selected += count
 		end
 		
+		pElements.insertAll(index, content)
 		notifyElementsAdded(index, index + count - 1)
+		setSelected(selected)
 	end
 	
 	/**
