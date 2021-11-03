@@ -59,7 +59,7 @@ void deAnimatorController::SetName( const char *name ){
 
 void deAnimatorController::SetValueRange( float minValue, float maxValue ){
 	if( minValue > maxValue ){
-		DETHROW( deeInvalidParam );
+		minValue = maxValue;
 	}
 	
 	if( pFrozen ){
