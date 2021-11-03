@@ -36,6 +36,8 @@
 #include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/filesystem/deVFSContainer.h>
 #include <dragengine/filesystem/deFileSearchVisitor.h>
+#include <dragengine/resources/loader/deResourceLoader.h>
+#include <dragengine/systems/modules/deLoadableModule.h>
 
 #ifdef OS_UNIX
 #include <errno.h>
@@ -373,6 +375,160 @@ void deClassFileSystem::nfBrowseConfig::RunFunction( dsRunTime *rt, dsValue *mys
 	clsFileSys.BrowseNativeDirectory( realPath );
 }
 
+// public static func Array getFileExtensions(ResourceLoaderType type)
+deClassFileSystem::nfGetFileExtensions::nfGetFileExtensions( const sInitData &init ) :
+dsFunction( init.clsFileSys, "getFileExtensions", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsArray ){
+	p_AddParameter( init.clsResourceLoaderType ); // type
+}
+void deClassFileSystem::nfGetFileExtensions::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const deClassFileSystem &clsFileSys = *( ( deClassFileSystem* )GetOwnerClass() );
+	
+	// determine module type to enumerate
+	const deResourceLoader::eResourceType type = ( deResourceLoader::eResourceType )
+		( ( dsClassEnumeration* )rt->GetEngine()->GetClassEnumeration() )->GetConstantOrder(
+			*rt->GetValue( 0 )->GetRealObject() );
+	
+	deModuleSystem::eModuleTypes moduleType = deModuleSystem::emtUnknown;
+	
+	switch( type ){
+	case deResourceLoader::ertAnimation:
+		moduleType = deModuleSystem::emtAnimation;
+		break;
+		
+	case deResourceLoader::ertFont:
+		moduleType = deModuleSystem::emtFont;
+		break;
+		
+	case deResourceLoader::ertImage:
+		moduleType = deModuleSystem::emtImage;
+		break;
+		
+	case deResourceLoader::ertLanguagePack:
+		moduleType = deModuleSystem::emtLanguagePack;
+		break;
+		
+	case deResourceLoader::ertModel:
+		moduleType = deModuleSystem::emtModel;
+		break;
+		
+	case deResourceLoader::ertOcclusionMesh:
+		moduleType = deModuleSystem::emtOcclusionMesh;
+		break;
+		
+	case deResourceLoader::ertRig:
+		moduleType = deModuleSystem::emtRig;
+		break;
+		
+	case deResourceLoader::ertSkin:
+		moduleType = deModuleSystem::emtSkin;
+		break;
+		
+	case deResourceLoader::ertSound:
+		moduleType = deModuleSystem::emtSound;
+		break;
+		
+	case deResourceLoader::ertVideo:
+		moduleType = deModuleSystem::emtVideo;
+		break;
+	}
+	
+	if( moduleType == deModuleSystem::emtUnknown ){
+		DSTHROW( dueInvalidParam );
+	}
+	
+	// enumerate modules
+	const deModuleSystem &modsys = *clsFileSys.GetDS()->GetGameEngine()->GetModuleSystem();
+	const int moduleCount = modsys.GetModuleCount();
+	decPointerList modules;
+	int i, j;
+	
+	for( i=0; i<moduleCount; i++ ){
+		const deLoadableModule * const module = modsys.GetModuleAt( i );
+		if( module->GetType() != moduleType || ! module->GetEnabled()
+		|| module->GetErrorCode() != deLoadableModule::eecSuccess ){
+			continue;
+		}
+		
+		const decString &name = module->GetName();
+		const int foundCount = modules.GetCount();
+		for( j=0; j<foundCount; j++ ){
+			const deLoadableModule * const module2 = ( const deLoadableModule * )modules.GetAt( j );
+			if( module2->GetName() == name ){
+				if( modsys.CompareVersion( module->GetVersion(), module2->GetVersion() ) > 0 ){
+					modules.SetAt( j, ( void* )module );
+				}
+				break;
+			}
+		}
+		
+		if( j == foundCount ){
+			modules.Add( ( void* )module );
+		}
+	}
+	
+	// build array
+	const dsEngine &sengine = *clsFileSys.GetDS()->GetScriptEngine();
+	dsValue *valueResult = rt->CreateValue( sengine.GetClassArray() );
+	dsValue *valueExtension = rt->CreateValue( clsFileSys.GetClassFileExtension() );
+	dsValue *valuePatterns = rt->CreateValue( sengine.GetClassArray() );
+	
+	try{
+		// create array
+		rt->CreateObject( valueResult, sengine.GetClassArray(), 0 );
+		
+		// iterate
+		const int foundCount = modules.GetCount();
+		for( i=0; i<foundCount; i++ ){
+			const deLoadableModule &module = *( const deLoadableModule * )modules.GetAt( i );
+			
+			// create pattern array
+			rt->CreateObject( valuePatterns, sengine.GetClassArray(), 0 );
+			
+			const decStringList &patterns = module.GetPatternList();
+			const int patternCount = patterns.GetCount();
+			for( j=0; j<patternCount; j++ ){
+				rt->PushString( patterns.GetAt( j ) );
+				rt->RunFunction( valuePatterns, "add", 1 );
+			}
+			
+			// create file extension
+			rt->PushString( module.GetDefaultExtension() );
+			rt->PushValue( valuePatterns );
+			rt->PushString( module.GetName() );
+			rt->CreateObject( valueExtension, clsFileSys.GetClassFileExtension(), 3 );
+			
+			// add to list
+			rt->PushValue( valueExtension );
+			rt->RunFunction( valueResult, "add", 1 );
+		}
+		
+		// push list as return value
+		rt->PushValue( valueResult );
+		
+		// clean up
+		rt->FreeValue( valuePatterns );
+		valuePatterns = nullptr;
+		
+		rt->FreeValue( valueResult );
+		valueResult = nullptr;
+		
+		rt->FreeValue( valueExtension );
+		
+	}catch( ... ){
+		if( valuePatterns ){
+			rt->FreeValue( valuePatterns );
+		}
+		if( valueExtension ){
+			rt->FreeValue( valueExtension );
+		}
+		if( valueResult ){
+			rt->FreeValue( valueResult );
+		}
+		throw;
+	}
+}
+
 
 
 // Class deClassFileSystem
@@ -411,6 +567,8 @@ deClassFileSystem::~deClassFileSystem(){
 
 void deClassFileSystem::CreateClassMembers( dsEngine *engine ){
 	pClsFileType = engine->GetClass( "Dragengine.FileType" );
+	pClsFileExtension = engine->GetClass( "Dragengine.FileExtension" );
+	pClsResourceLoaderType = engine->GetClass( "Dragengine.ResourceLoaderType" );
 	
 	sInitData init;
 	init.clsFileSys = this;
@@ -421,6 +579,9 @@ void deClassFileSystem::CreateClassMembers( dsEngine *engine ){
 	init.clsStr = engine->GetClassString();
 	init.clsBlock = engine->GetClassBlock();
 	init.clsFileType = pClsFileType;
+	init.clsFileExtension = pClsFileExtension;
+	init.clsResourceLoaderType = pClsResourceLoaderType;
+	init.clsArray = engine->GetClassArray();
 	
 	AddFunction( new nfGetSeparator( init ) );
 	AddFunction( new nfGetPathSeparator( init ) );
@@ -438,6 +599,7 @@ void deClassFileSystem::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfBrowseOverlay( init ) );
 	AddFunction( new nfBrowseCapture( init ) );
 	AddFunction( new nfBrowseConfig( init ) );
+	AddFunction( new nfGetFileExtensions( init ) );
 	
 	CalcMemberOffsets();
 }

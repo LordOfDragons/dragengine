@@ -46,31 +46,31 @@ fixed class FileSystem
 	 * \brief File exist.
 	 * \details If the filename is relative it is checked against the game path.
 	 */
-	public static func bool existsFile( String path )
+	public static func bool existsFile(String path)
 		return false
 	end
 	
 	/** \brief File can be read. */
-	public static func bool canReadFile( String path )
+	public static func bool canReadFile(String path)
 		return false
 	end
 	
 	/** \brief File can be written. */
-	public static func bool canWriteFile( String path )
+	public static func bool canWriteFile(String path)
 		return false
 	end
 	
 	/** \brief File can be deleted. */
-	public static func bool canDeleteFile( String path )
+	public static func bool canDeleteFile(String path)
 		return false
 	end
 	
 	/** \brief Delete file. */
-	public static func void deleteFile( String path )
+	public static func void deleteFile(String path)
 	end
 	
 	/** \brief Type of file. */
-	public static func FileType getTypeOfFile( String path )
+	public static func FileType getTypeOfFile(String path)
 		return null
 	end
 	
@@ -89,11 +89,11 @@ fixed class FileSystem
 	 * end)
 	 * \endcode
 	 */
-	public static func void searchFiles( String directory, bool recursive, Block ablock )
+	public static func void searchFiles(String directory, bool recursive, Block ablock)
 	end
 	
 	/** \brief Path matches a file pattern. */
-	public static func bool pathMatchesPattern( String string, String pattern )
+	public static func bool pathMatchesPattern(String string, String pattern)
 		return false
 	end
 	
@@ -137,6 +137,18 @@ fixed class FileSystem
 	 * Calling this function switches the focus to another application.
 	 */
 	public static func void browseConfig(String path)
+	end
+	
+	/**
+	 * \brief Get file extension list for resource type for use in file browsing.
+	 * \version 1.7
+	 * 
+	 * Returns an Array of FileExtension objects. For each running engine module of the
+	 * respective type one FileExtension object is created. The FileExtension object
+	 * contains the display name, an Array of file patterns in the form ".xyz" and
+	 * a default extension in the form ".xyz".
+	 */
+	public static func Array getFileExtensions(ResourceLoaderType type)
 	end
 	/*@}*/
 end

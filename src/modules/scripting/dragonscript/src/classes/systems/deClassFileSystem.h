@@ -36,6 +36,8 @@ class deClassFileSystem : public dsClass{
 private:
 	deScriptingDragonScript *pDS;
 	dsClass *pClsFileType;
+	dsClass *pClsFileExtension;
+	dsClass *pClsResourceLoaderType;
 	
 	dsValue *pTypeFile;
 	dsValue *pTypeDirectory;
@@ -59,6 +61,8 @@ public:
 	void CreateClassMembers( dsEngine *engine );
 	
 	inline dsClass *GetClassFileType() const{ return pClsFileType; }
+	inline dsClass *GetClassFileExtension() const{ return pClsFileExtension; }
+	inline dsClass *GetClassResourceLoaderType() const{ return pClsResourceLoaderType; }
 	
 	void PrepareTypes();
 	
@@ -71,8 +75,17 @@ public:
 	
 private:
 	struct sInitData{
-		dsClass *clsFileSys, *clsVoid, *clsByte, *clsBool, *clsInt, *clsStr, *clsBlock;
+		dsClass *clsFileSys;
+		dsClass *clsVoid;
+		dsClass *clsByte;
+		dsClass *clsBool;
+		dsClass *clsInt;
+		dsClass *clsStr;
+		dsClass *clsBlock;
 		dsClass *clsFileType;
+		dsClass *clsFileExtension;
+		dsClass *clsResourceLoaderType;
+		dsClass *clsArray;
 	};
 #define DEF_NATFUNC(name) \
 	class name : public dsFunction{ \
@@ -96,6 +109,7 @@ private:
 	DEF_NATFUNC( nfBrowseOverlay );
 	DEF_NATFUNC( nfBrowseCapture );
 	DEF_NATFUNC( nfBrowseConfig );
+	DEF_NATFUNC( nfGetFileExtensions );
 #undef DEF_NATFUNC
 };
 
