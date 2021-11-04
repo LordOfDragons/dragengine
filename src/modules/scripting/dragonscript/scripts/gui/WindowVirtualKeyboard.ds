@@ -211,6 +211,10 @@ class WindowVirtualKeyboard extends Window
 			throw ENullPointer.new("inputWidget")
 		end
 		
+		if not inputWidget.getEnabled() or not inputWidget.getVisible()
+			return
+		end
+		
 		setKeyboardLayoutPanel(selectKeyboardLayout(inputWidget))
 		if pKeyboardLayoutPanel == null
 			// no suitable keyboard layout so show nothing
@@ -314,6 +318,10 @@ class WindowVirtualKeyboard extends Window
 	
 	/** \brief Select keyboard layout best matching input widget. */
 	protected func Panel selectKeyboardLayout(TextWidget textWidget)
+		if textWidget.getReadOnly()
+			return null
+		end
+		
 		var TextValidator validator = textWidget.getValidator()
 		if validator == null
 			return pKeyboardLayoutDefaultPanel
