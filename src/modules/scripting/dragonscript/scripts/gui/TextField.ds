@@ -47,8 +47,6 @@ class TextField extends TextWidget
 	/** Password character to obfuscate password text fields */
 	private var int pPasswordChar
 	
-	/** Determines if the text is read only. */
-	private var bool pReadOnly
 	/** Determines if an update is needed */
 	private var bool pNeedsUpdate
 	
@@ -63,7 +61,11 @@ class TextField extends TextWidget
 	end
 	
 	/** Creates a new Text Field. */
-	public func new( TextModel model ) super( model )
+	public func new( TextModel model ) this( model, false )
+	end
+	
+	/** Creates a new Text Field. */
+	public func new( TextModel model, bool readOnly ) super( model, readOnly )
 		this.pCursorPos = 0
 		this.pFirstChar = 0
 		this.pDispCharCount = 10
@@ -82,9 +84,8 @@ class TextField extends TextWidget
 	end
 	
 	/** \brief Create text field. */
-	public func new( TextModel model, int displayCharCount, bool readOnly ) this( model )
+	public func new( TextModel model, int displayCharCount, bool readOnly ) this( model, readOnly )
 		this.setDisplayCharCount( displayCharCount )
-		this.setReadOnly( readOnly )
 	end
 	
 	
@@ -153,21 +154,6 @@ class TextField extends TextWidget
 		
 		this.pPasswordChar = passwordChar
 		this.pNeedsUpdate = true
-		this.updateCanvasText()
-	end
-	
-	/** Determines if the text is read only. */
-	public func bool getReadOnly()
-		return this.pReadOnly
-	end
-	
-	/** Sets if the text is read only. */
-	public func void setReadOnly( bool readOnly )
-		if readOnly == this.pReadOnly
-			return
-		end
-		
-		this.pReadOnly = readOnly
 		this.updateCanvasText()
 	end
 	
@@ -337,10 +323,6 @@ class TextField extends TextWidget
 	 " Convenience method called if onKeyPress is called with an event containing a printable key.
 	 */
 	public func void onKeyType( KeyEvent event )
-		if this.pReadOnly
-			return
-		end
-		
 		var String curText, newText = ""
 		var Font font = this.getFont()
 		var int textLen
@@ -437,6 +419,14 @@ class TextField extends TextWidget
 	public func void textChanged( TextModel textModel )
 		this.checkCursor()
 		this.updateCanvasText()
+	end
+	
+	/**
+	 * \brief Read only state changed.
+	 * \vrsion 1.7
+	 */
+	public func void onReadOnlyChanged()
+		updateCanvasText()
 	end
 	
 	

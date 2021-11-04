@@ -35,32 +35,38 @@ pin Dragengine.Scenery
  * Provides onKeyType() method called if key press event contains printable character.
  */
 class TextWidget extends Widget implements TextModelListener
-	/** \brief Text model */
 	private var TextModel pModel
-	
-	/** \brief Text validator or null if not used. */
 	private var TextValidator pValidator
+	private var bool pReadOnly
 	
 	
 	
 	/** \brief Create text widget. */
-	public func new( TextModel model )
+	public func new(TextModel model) this(model, false)
+	end
+	
+	/**
+	 * \brief Create text widget.
+	 * \version 1.7
+	 */
+	public func new(TextModel model, bool readOnly)
 		if model == null
 			throw EInvalidParam.new()
 		end
 		
-		this.pModel = model
-		this.pModel.addListener( this )
+		pReadOnly = readOnly
+		pModel = model
+		pModel.addListener(this)
 	end
 	
 	/** \brief Dispose of widget. */
 	public func void dispose()
-		if this.pModel != null
-			this.pModel.removeListener( this )
-			this.pModel = null
+		if pModel != null
+			pModel.removeListener(this)
+			pModel = null
 		end
 		
-		this.pValidator = null
+		pValidator = null
 		
 		super.dispose()
 	end
@@ -69,12 +75,12 @@ class TextWidget extends Widget implements TextModelListener
 	
 	/** \brief Text model. */
 	public func TextModel getModel()
-		return this.pModel
+		return pModel
 	end
 	
 	/** \brief Set text model. */
-	public func void setModel( TextModel model )
-		if model == this.pModel
+	public func void setModel(TextModel model)
+		if model == pModel
 			return
 		end
 		
@@ -82,16 +88,16 @@ class TextWidget extends Widget implements TextModelListener
 			throw EInvalidParam.new()
 		end
 		
-		this.pModel.removeListener( this )
-		this.pModel = model
-		this.pModel.addListener( this )
+		pModel.removeListener(this)
+		pModel = model
+		pModel.addListener(this)
 		
-		this.onModelChanged()
+		onModelChanged()
 	end
 	
 	/** \brief Text validator or null if not used. */
 	public func TextValidator getValidator()
-		return this.pValidator
+		return pValidator
 	end
 	
 	/**
@@ -100,8 +106,8 @@ class TextWidget extends Widget implements TextModelListener
 	 * Current model text is not re-validated. Caller has to ensure text is valid before
 	 * assigning a new validator to avoid impossible to solve situations.
 	 */
-	public func void setValidator( TextValidator validator )
-		this.pValidator = validator
+	public func void setValidator(TextValidator validator)
+		pValidator = validator
 	end
 	
 	
@@ -112,7 +118,7 @@ class TextWidget extends Widget implements TextModelListener
 	 * Convenience method for calling getModel().getText().
 	 */
 	public func String getText()
-		return this.pModel.getText()
+		return pModel.getText()
 	end
 	
 	/**
@@ -120,8 +126,25 @@ class TextWidget extends Widget implements TextModelListener
 	 * 
 	 * Convenience method for calling getModel().setText().
 	 */
-	public func void setText( String text )
-		this.pModel.setText( text )
+	public func void setText(String text)
+		pModel.setText(text)
+	end
+	
+	
+	
+	/** Determines if the text is read only. */
+	public func bool getReadOnly()
+		return pReadOnly
+	end
+	
+	/** Sets if the text is read only. */
+	public func void setReadOnly(bool readOnly)
+		if readOnly == pReadOnly
+			return
+		end
+		
+		pReadOnly = readOnly
+		onReadOnlyChanged()
 	end
 	
 	
@@ -131,7 +154,7 @@ class TextWidget extends Widget implements TextModelListener
 	 " 
 	 " Convenience method called if onKeyPress is called with an event containing a printable key.
 	 */
-	public func void onKeyType( KeyEvent event )
+	public func void onKeyType(KeyEvent event)
 	end
 	
 	/** \brief Text model changed. */
@@ -143,7 +166,7 @@ class TextWidget extends Widget implements TextModelListener
 	 * 
 	 * Implementation of TextModelListener.textChanged().
 	 */
-	public func void textChanged( TextModel textModel )
+	public func void textChanged(TextModel textModel)
 	end
 	
 	
@@ -153,10 +176,18 @@ class TextWidget extends Widget implements TextModelListener
 	 * 
 	 * If event contains a printable character onKeyType() is called after super.onKeyPress().
 	 */
-	public func void onKeyPress( KeyEvent event )
-		super.onKeyPress( event )
-		if event.getKeyChar() > 0
-			this.onKeyType( event )
+	public func void onKeyPress(KeyEvent event)
+		super.onKeyPress(event)
+		
+		if event.getKeyChar() > 0 and not pReadOnly
+			onKeyType(event)
 		end
+	end
+	
+	/**
+	 * \brief Read only state changed.
+	 * \vrsion 1.7
+	 */
+	public func void onReadOnlyChanged()
 	end
 end
