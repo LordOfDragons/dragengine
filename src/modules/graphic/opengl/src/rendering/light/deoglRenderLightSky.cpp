@@ -585,8 +585,7 @@ const deoglRenderPlanMasked *mask ){
 	#define SSDTLOG(...)
 #endif
 
-void deoglRenderLightSky::RenderShadowMap( deoglRenderPlanSkyLight &plan,
-deoglShadowMapper &shadowMapper ){
+void deoglRenderLightSky::RenderShadowMap( deoglRenderPlanSkyLight &plan, deoglShadowMapper &shadowMapper ){
 	deoglRenderThread &renderThread = GetRenderThread();
 	const deoglRWorld &world = *plan.GetPlan().GetWorld();
 #ifdef SKY_SHADOW_LAYERED_RENDERING
