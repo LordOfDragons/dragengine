@@ -448,7 +448,7 @@ class CommandsBAAMovement
 		/** \brief DYXC. */
 		dyxc
 		
-		/** WASD. */
+		/** \brief WASD. */
 		wasd
 	end
 	
@@ -492,7 +492,7 @@ class CommandsBAAMovement
 				helper.keyboardBindKeyCode( InputEventKey.arrowUp, "lookUp" )
 				helper.keyboardBindKeyCode( InputEventKey.arrowDown, "lookDown" )
 				helper.keyboardBindKeyCode( InputEventKey.x, "toggleCrouch" )
-				helper.keyboardBindKeyCode( InputEventKey.e, "toggleRun" )
+				helper.keyboardBindKeyCode( InputEventKey.s, "toggleRun" )
 			end
 			
 			if helper.hasGamepad()
@@ -514,8 +514,8 @@ class CommandsBAAMovement
 				helper.keyboardBindKeyCode( InputEventKey.arrowRight, "lookRight" )
 				helper.keyboardBindKeyCode( InputEventKey.arrowUp, "lookUp" )
 				helper.keyboardBindKeyCode( InputEventKey.arrowDown, "lookDown" )
-				helper.keyboardBindKeyCode( InputEventKey.x, "toggleCrouch" )
-				helper.keyboardBindKeyCode( InputEventKey.e, "toggleRun" )
+				helper.keyboardBindKeyCode( InputEventKey.c, "toggleCrouch" ) // or control
+				helper.keyboardBindKeyCode( InputEventKey.shift, "toggleRun" )
 			end
 			
 			if helper.hasGamepad()
