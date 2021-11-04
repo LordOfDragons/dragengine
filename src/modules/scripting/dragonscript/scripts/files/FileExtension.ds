@@ -76,7 +76,7 @@ class FileExtension
 	 * \brief File pattern as single string typically used in file browsers.
 	 * 
 	 * Returned string is in the form "*.abc{delimiter}*.xyz,..." where "{delimiter}" is
-	 * the string provided by delimiter.
+	 * the string provided by delimiter. "*" is only prepended if pattern starts with a period.
 	 */
 	public func String getPatternsString(String delimiter)
 		if pPatterns.getCount() == 0
@@ -84,7 +84,7 @@ class FileExtension
 		end
 		
 		return pPatterns.map(block String each
-			return "*" + each
+			return each.startsWith(".") if "*" + each else each
 		end).fold(block String a, String b
 			return a + delimiter + b
 		end) cast String
@@ -97,8 +97,11 @@ class FileExtension
 	
 	
 	
-	/** String representation. Returns same value as getName(). */
+	/**
+	 * String representation suitable for file dialogs. Returns string in the form
+	 * "{getName()} ({getPatternsString()})".
+	 */
 	public func String toString()
-		return pName
+		return pName + " (" + getPatternsString() + ")"
 	end
 end
