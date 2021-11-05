@@ -291,9 +291,6 @@ void igdeDEParameters::ParameterSetValue(){
 }
 
 void igdeDEParameters::ParameterResetValue(){
-	/*
-	TODO default value missingin deModuleParameter.
-	
 	deLoadableModule * const loadableModule = GetSelectedModule();
 	const decString &name = GetSelectedParameter();
 	if( ! loadableModule || ! loadableModule->GetModule() || name.IsEmpty() ){
@@ -304,5 +301,4 @@ void igdeDEParameters::ParameterResetValue(){
 	module.GetParameterInfo( module.IndexOfParameterNamed( name ), pParameterInfo );
 	
 	pEditValue->SetText( pParameterInfo.GetDefaultValue() );
-	*/
 }

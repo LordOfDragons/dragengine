@@ -109,6 +109,7 @@ private:
 	int pSelectionEntryCount;
 	eCategory pCategory;
 	decString pDisplayName;
+	decString pDefaultValue;
 	
 	
 	
@@ -194,6 +195,18 @@ public:
 	
 	/** \brief Set display name for use in configuration dialogs. */
 	void SetDisplayName( const char *displayName );
+	
+	/**
+	 * \brief Default value.
+	 * \version 1.7
+	 */
+	inline const decString &GetDefaultValue() const{ return pDefaultValue; }
+	
+	/**
+	 * \brief Set default value.
+	 * \version 1.7
+	 */
+	void SetDefaultValue( const decString &defaultValue );
 	
 	/** \brief Reset to default values. */
 	void Reset();

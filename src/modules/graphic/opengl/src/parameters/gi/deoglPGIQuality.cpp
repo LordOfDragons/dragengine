@@ -56,6 +56,7 @@ deoglPGIQuality::deoglPGIQuality( deGraphicOpenGl &ogl ) : deoglParameter( ogl )
 		{ "veryHigh", "Very High", "Very high quality. For high-end GPU delivering best quality." }
 	};
 	AddSelectionEntries( entries, 6 );
+	SetDefaultValue( "high" );
 }
 
 deoglPGIQuality::~deoglPGIQuality(){

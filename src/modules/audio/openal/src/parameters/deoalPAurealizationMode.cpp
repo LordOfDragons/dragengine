@@ -60,6 +60,7 @@ deoalPAurealizationMode::deoalPAurealizationMode( deAudioOpenAL &oal ) : deoalPa
 	
 	SetCategory( ecBasic );
 	SetDisplayName( "Aurealization Mode" );
+	SetDefaultValue( "full" );
 }
 
 deoalPAurealizationMode::~deoalPAurealizationMode(){

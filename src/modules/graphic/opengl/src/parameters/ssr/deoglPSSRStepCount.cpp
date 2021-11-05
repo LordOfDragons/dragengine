@@ -52,6 +52,8 @@ deoglPSSRStepCount::deoglPSSRStepCount( deGraphicOpenGl &ogl ) : deoglParameter(
 		{ "veryHigh", "Very High", "Very high step count." }
 	};
 	AddSelectionEntries( entries, 5 );
+	
+	SetDefaultValue( "low" );
 }
 
 deoglPSSRStepCount::~deoglPSSRStepCount(){

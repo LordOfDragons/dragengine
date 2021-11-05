@@ -53,6 +53,7 @@ deoglParameterFloat( ogl )
 	SetValueStepSize( 0.1f );
 	SetCategory( ecAdvanced );
 	SetDisplayName( "Render Sync Skip Time Ratio" );
+	SetDefaultValue( "0.5" );
 }
 
 deoglPAsyncRenderSkipSyncTimeRatio::~deoglPAsyncRenderSkipSyncTimeRatio(){

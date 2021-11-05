@@ -45,6 +45,7 @@ deoglPBrightness::deoglPBrightness( deGraphicOpenGl &ogl ) : deoglParameterFloat
 	SetValueStepSize( 0.05f );
 	SetDisplayName( "Brightness" );
 	SetCategory( ecAdvanced );
+	SetDefaultValue( "0" );
 }
 
 deoglPBrightness::~deoglPBrightness(){

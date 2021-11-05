@@ -49,6 +49,7 @@ deoglPSSAORadiusLimit::deoglPSSAORadiusLimit( deGraphicOpenGl &ogl ) : deoglPara
 		" a reasonable limit. This is an advanced parameter and should be left at the default." );
 	SetCategory( ecExpert );
 	SetDisplayName( "SSAO Radius Limit" );
+	SetDefaultValue( "0.5" );
 }
 
 deoglPSSAORadiusLimit::~deoglPSSAORadiusLimit(){

@@ -57,6 +57,7 @@ deoalPAurealizationQuality::deoalPAurealizationQuality( deAudioOpenAL &oal ) : d
 	
 	SetCategory( ecBasic );
 	SetDisplayName( "Aurealization Quality" );
+	SetDefaultValue( "medium" );
 }
 
 deoalPAurealizationQuality::~deoalPAurealizationQuality(){

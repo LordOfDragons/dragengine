@@ -52,6 +52,7 @@ deoglParameterBool( ogl )
 		" To fine tune the screen space reflections see the ssr* module parameters." );
 	SetCategory( ecBasic );
 	SetDisplayName( "SSR" );
+	SetDefaultValue( "1" );
 }
 
 deoglPSSREnable::~deoglPSSREnable(){

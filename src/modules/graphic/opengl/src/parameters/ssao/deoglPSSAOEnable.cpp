@@ -52,6 +52,7 @@ deoglPSSAOEnable::deoglPSSAOEnable( deGraphicOpenGl &ogl ) : deoglParameterBool(
 		" To fine tune the screen space ambient occlusion see the ssao* module parameters." );
 	SetCategory( ecBasic );
 	SetDisplayName( "SSAO" );
+	SetDefaultValue( "1" );
 }
 
 deoglPSSAOEnable::~deoglPSSAOEnable(){

@@ -51,6 +51,7 @@ deoglPLogLevel::deoglPLogLevel( deGraphicOpenGl &ogl ) : deoglParameter( ogl ){
 		{ "debug", "Debug", "Log everything" }
 	};
 	AddSelectionEntries( entries, 4 );
+	SetDefaultValue( "info" );
 }
 
 deoglPLogLevel::~deoglPLogLevel(){

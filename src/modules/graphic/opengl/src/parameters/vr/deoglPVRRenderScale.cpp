@@ -24,7 +24,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "deoglPVRRenderDownScale.h"
+#include "deoglPVRRenderScale.h"
 #include "../../deGraphicOpenGl.h"
 #include "../../configuration/deoglConfiguration.h"
 
@@ -32,29 +32,30 @@
 
 
 
-// Class deoglPVRRenderDownScale
-//////////////////////////////////
+// Class deoglPVRRenderScale
+//////////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
 
-deoglPVRRenderDownScale::deoglPVRRenderDownScale( deGraphicOpenGl &ogl ) : deoglParameterInt( ogl ){
-	SetName( "vrRenderDownScale" );
-	SetDescription( "Render VR at lower resolution the up-scale. Improves performance at the cost of quality." );
-	SetType( eptSelection );
+deoglPVRRenderScale::deoglPVRRenderScale( deGraphicOpenGl &ogl ) :
+deoglParameter( ogl )
+{
+	SetName( "vrRenderScale" );
+	SetDescription( "Percentage scale of VR Rendering relative to size requested by VR System. "
+		"Down scaling improves performance at the cost of quality. "
+		"Typically you can adjust the scaling in the VR System (like SteamVR). "
+		"This parameter allows to dynamically adjust the render scale.");
+	SetType( eptRanged );
 	SetCategory( ecBasic );
-	SetDisplayName( "VR Render Down-Scale" );
-	
-	const deModuleParameter::SelectionEntry entries[ 4 ] = {
-		{ "1", "1x", "Render at full resolution." },
-		{ "2", "2x", "Render at half resolution then up-scale to full resolution." },
-		{ "4", "4x", "Render at quarter resolution then up-scale to full resolution." },
-		{ "8", "8x", "Render at 1/8 resolution then up-scale to full resolution." }
-	};
-	AddSelectionEntries( entries, 4 );
+	SetDisplayName( "VR Render Scale" );
+	SetMinimumValue( 50.0f ); // 50%
+	SetMaximumValue( 100.0f ); // 100% (beyond not possible with VR systems)
+	SetValueStepSize( 5.0f ); // 5%
+	SetDefaultValue( "100" );
 }
 
-deoglPVRRenderDownScale::~deoglPVRRenderDownScale(){
+deoglPVRRenderScale::~deoglPVRRenderScale(){
 }
 
 
@@ -62,10 +63,12 @@ deoglPVRRenderDownScale::~deoglPVRRenderDownScale(){
 // Parameter Value
 ////////////////////
 
-int deoglPVRRenderDownScale::GetParameterInt(){
-	return pOgl.GetConfiguration().GetVRRenderDownScale();
+decString deoglPVRRenderScale::GetParameterValue(){
+	decString value;
+	value.Format( "%.0f", pOgl.GetConfiguration().GetVRRenderScale() * 100.0f + 0.01f );
+	return value;
 }
 
-void deoglPVRRenderDownScale::SetParameterInt( int value ){
-	pOgl.GetConfiguration().SetVRRenderDownScale( value );
+void deoglPVRRenderScale::SetParameterValue( const char *value ){
+	pOgl.GetConfiguration().SetVRRenderScale( 0.01f * ( float )( decString( value ).ToInt() ) );
 }

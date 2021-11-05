@@ -59,6 +59,7 @@ deoglParameterFloat( ogl )
 		" Values between 50-100% are reasonable." );
 	SetCategory( ecExpert );
 	SetDisplayName( "Normal Roughness Correction" );
+	SetDefaultValue( "0.75" );
 }
 
 deoglPNorRougCorrStrength::~deoglPNorRougCorrStrength(){

@@ -44,6 +44,7 @@ deoglParameterFloat( ogl )
 		"full ambient and no other lights." );
 	SetCategory( ecExpert );
 	SetDisplayName( "HDRR Maximum Intensity" );
+	SetDefaultValue( "1.5" );
 }
 
 deoglPHDRRMaximumIntensity::~deoglPHDRRMaximumIntensity(){

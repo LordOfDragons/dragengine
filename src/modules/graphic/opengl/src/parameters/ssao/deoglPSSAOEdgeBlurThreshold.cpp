@@ -54,6 +54,7 @@ deoglParameterFloat( ogl )
 		" The default value is 5 which equals a depth difference of 0.2m at 1m distance from the camera." );
 	SetCategory( ecExpert );
 	SetDisplayName( "SSAO Edge Blur Threshold" );
+	SetDefaultValue( "5" );
 }
 
 deoglPSSAOEdgeBlurThreshold::~deoglPSSAOEdgeBlurThreshold(){

@@ -52,6 +52,7 @@ deoglParameterFloat( ogl )
 		" Speed wise this has no impact." );
 	SetCategory( ecExpert );
 	SetDisplayName( "SSR Coverage Edge Size" );
+	SetDefaultValue( "0.1" );
 }
 
 deoglPSSRCoverageEdgeSize::~deoglPSSRCoverageEdgeSize(){

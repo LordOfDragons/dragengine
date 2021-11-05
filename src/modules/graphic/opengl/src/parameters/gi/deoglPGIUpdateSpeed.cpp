@@ -55,6 +55,7 @@ deoglPGIUpdateSpeed::deoglPGIUpdateSpeed( deGraphicOpenGl &ogl ) : deoglParamete
 		{ "veryHigh", "Very High", "Very high update speed. For high-end GPU delivering fastest convergence." }
 	};
 	AddSelectionEntries( entries, 6 );
+	SetDefaultValue( "medium" );
 }
 
 deoglPGIUpdateSpeed::~deoglPGIUpdateSpeed(){

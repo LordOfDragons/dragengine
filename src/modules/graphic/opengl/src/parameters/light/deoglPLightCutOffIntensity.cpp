@@ -42,6 +42,7 @@ deoglPLightCutOffIntensity::deoglPLightCutOffIntensity( deGraphicOpenGl &ogl ) :
 		" Lights are set to 0 beyond the distance where the intensity drops below this intensity." );
 	SetCategory( ecExpert );
 	SetDisplayName( "Light Cut-Off Intensity" );
+	SetDefaultValue( "0.01" );
 }
 
 deoglPLightCutOffIntensity::~deoglPLightCutOffIntensity(){

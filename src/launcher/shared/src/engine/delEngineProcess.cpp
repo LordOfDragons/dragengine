@@ -595,6 +595,7 @@ void delEngineProcess::CommandGetModuleParamList(){
 			WriteFloatToPipe( parameter.GetValueStepSize() );
 			WriteUCharToPipe( parameter.GetCategory() );
 			WriteString16ToPipe( parameter.GetDisplayName() );
+			WriteString16ToPipe( parameter.GetDefaultValue() );
 			
 			const int entryCount = parameter.GetSelectionEntryCount();
 			WriteUShortToPipe( entryCount );

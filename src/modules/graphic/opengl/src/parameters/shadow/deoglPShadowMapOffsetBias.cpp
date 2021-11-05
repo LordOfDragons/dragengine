@@ -43,6 +43,7 @@ deoglParameterFloat( ogl )
 	SetDescription( "Sets the bias factor of the shadow map offset." );
 	SetCategory( ecExpert );
 	SetDisplayName( "Shadow Map Offset Bias" );
+	SetDefaultValue( "4" );
 }
 
 deoglPShadowMapOffsetBias::~deoglPShadowMapOffsetBias(){

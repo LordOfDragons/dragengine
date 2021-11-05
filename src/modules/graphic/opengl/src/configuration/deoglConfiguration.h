@@ -194,7 +194,7 @@ private:
 	
 	decStringSet pDisableExtensions;
 	
-	int pVRRenderDownScale;
+	float pVRRenderScale;
 	
 	
 	
@@ -555,8 +555,8 @@ public:
 	inline decStringSet &GetDisableExtensions(){ return pDisableExtensions; }
 	inline const decStringSet &GetDisableExtensions() const{ return pDisableExtensions; }
 	
-	inline int GetVRRenderDownScale() const{ return pVRRenderDownScale; }
-	void SetVRRenderDownScale( int scale );
+	inline float GetVRRenderScale() const{ return pVRRenderScale; }
+	void SetVRRenderScale( float scale );
 };
 
 #endif

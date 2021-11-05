@@ -695,6 +695,9 @@ void delEngineInstance::GetModuleParams( delEngineModule &module ){
 			ReadString16FromPipe( string );
 			info.SetDisplayName( string );
 			
+			ReadString16FromPipe( string );
+			info.SetDefaultValue( string );
+			
 			const int entryCount = ReadUShortFromPipe();
 			for( j=0; j<entryCount; j++ ){
 				ReadString16FromPipe( entry.value );

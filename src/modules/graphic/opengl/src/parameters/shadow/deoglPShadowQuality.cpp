@@ -54,6 +54,7 @@ deoglPShadowQuality::deoglPShadowQuality( deGraphicOpenGl &ogl ) : deoglParamete
 		{ "veryHigh", "Very High", "Very high quality. For high-end GPU delivering best quality." }
 	};
 	AddSelectionEntries( entries, 6 );
+	SetDefaultValue( "high" );
 }
 
 deoglPShadowQuality::~deoglPShadowQuality(){

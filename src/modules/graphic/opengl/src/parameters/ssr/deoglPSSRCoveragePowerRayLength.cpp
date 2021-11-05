@@ -53,6 +53,7 @@ deoglParameterFloat( ogl )
 		" This can be used to adjust the fading function to your personal liking." );
 	SetCategory( ecExpert );
 	SetDisplayName( "SSR Coverage Power Ray Length" );
+	SetDefaultValue( "8" );
 }
 
 deoglPSSRCoveragePowerRayLength::~deoglPSSRCoveragePowerRayLength(){

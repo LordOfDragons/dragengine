@@ -52,6 +52,7 @@ deoglPFrameRateLimit::deoglPFrameRateLimit( deGraphicOpenGl &ogl ) : deoglParame
 		"valuable GPU time and heating it up for no gain." );
 	SetCategory( ecExpert );
 	SetDisplayName( "Frame Rate Limit" );
+	SetDefaultValue( "0" );
 }
 
 deoglPFrameRateLimit::~deoglPFrameRateLimit(){

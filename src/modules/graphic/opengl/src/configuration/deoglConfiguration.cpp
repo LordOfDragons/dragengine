@@ -145,7 +145,7 @@ pMaxSPBIndexCount( 10000 ),
 pGIQuality( egiqHigh ),
 pGIUpdateSpeed( egiusMedium ),
 
-pVRRenderDownScale( 1 )
+pVRRenderScale( 1.0f )
 {
 	#ifdef OS_ANDROID
 	// android is too weak a platform right now to support advanced features out of the
@@ -927,11 +927,13 @@ void deoglConfiguration::SetGIUpdateSpeed( eGIUpdateSpeed updateSpeed ){
 	pDirty = true;
 }
 
-void deoglConfiguration::SetVRRenderDownScale( int scale ){
-	if( scale == pVRRenderDownScale ){
+void deoglConfiguration::SetVRRenderScale( float scale ){
+	scale = floorf( ( scale / 0.05f ) + 0.5f ) * 0.05f;
+	
+	if( fabsf( scale - pVRRenderScale ) < FLOAT_SAFE_EPSILON ){
 		return;
 	}
 	
-	pVRRenderDownScale = scale;
+	pVRRenderScale = scale;
 	pDirty = true;
 }

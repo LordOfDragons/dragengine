@@ -54,6 +54,7 @@ deoglParameterFloat( ogl )
 		" This can be used to adjust the fading function to your personal liking." );
 	SetCategory( ecExpert );
 	SetDisplayName( "SSR Coverage Edge Power" );
+	SetDefaultValue( "1" );
 }
 
 deoglPSSRCoveragePowerEdge::~deoglPSSRCoveragePowerEdge(){

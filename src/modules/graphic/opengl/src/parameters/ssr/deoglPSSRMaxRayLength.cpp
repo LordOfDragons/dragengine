@@ -53,6 +53,7 @@ deoglParameterFloat( ogl )
 		" use the ssrStepCount parameter." );
 	SetCategory( ecExpert );
 	SetDisplayName( "SSR Max Ray Length" );
+	SetDefaultValue( "1" );
 }
 
 deoglPSSRMaxRayLength::~deoglPSSRMaxRayLength(){

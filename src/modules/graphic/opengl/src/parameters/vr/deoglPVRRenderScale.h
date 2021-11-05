@@ -19,32 +19,33 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef _DEOGLPVRRENDERDOWNSCALE_H_
-#define _DEOGLPVRRENDERDOWNSCALE_H_
+#ifndef _DEOGLPVRRENDERSCALE_H_
+#define _DEOGLPVRRENDERSCALE_H_
 
-#include "../deoglParameterInt.h"
+#include "../deoglParameter.h"
 
 
-/** Render down scale parameter. */
-class deoglPVRRenderDownScale : public deoglParameterInt{
+/** Render scale parameter. */
+class deoglPVRRenderScale : public deoglParameter{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create parameter. */
-	deoglPVRRenderDownScale( deGraphicOpenGl &ogl );
+	deoglPVRRenderScale( deGraphicOpenGl &ogl );
 	
 	/** Clean up parameter. */
-	virtual ~deoglPVRRenderDownScale();
+	virtual ~deoglPVRRenderScale();
 	/*@}*/
 	
 	
-	/** \name Parameter Value */
-	/*@{*/
-	/** Current value. */
-	virtual int GetParameterInt();
 	
-	/** Set current value. */
-	virtual void SetParameterInt( int value );
+	/** \name Management */
+	/*@{*/
+	/** \brief Current value. */
+	virtual decString GetParameterValue();
+	
+	/** \brief Set current value. */
+	virtual void SetParameterValue( const char *value );
 	/*@}*/
 };
 

@@ -77,6 +77,7 @@ private:
 	DEF_NATFUNC( nfGetSelectionEntryDescriptionAt );
 	DEF_NATFUNC( nfGetCategory );
 	DEF_NATFUNC( nfGetDisplayName );
+	DEF_NATFUNC( nfGetDefaultValue );
 #undef DEF_NATFUNC
 };
 
