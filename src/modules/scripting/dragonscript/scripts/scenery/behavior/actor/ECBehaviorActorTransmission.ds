@@ -30,7 +30,7 @@ pin Dragengine.Utils
 
 
 /**
- * \brief Behavior adding animation support to actors.
+ * \brief Behavior adding sub title transmission support to actors.
  * \version 1.7
  * 
  * Adds support for sub title transmission to actor.
