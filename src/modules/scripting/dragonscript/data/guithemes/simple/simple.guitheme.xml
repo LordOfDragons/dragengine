@@ -483,6 +483,8 @@
 	    Next value button in cycle value panel
 	- 'Label.EMPSystem.CycleValue.Value'
 	    Value label in cycle value panel
+	- 'Button.EMPSystem.Reset'
+		Reset button
 	-->
 	<designer name='Panel.EMPSystem.Content' type='Widget'>
 		<border parameter='normal.border' type='Bevel'>
@@ -517,6 +519,26 @@
 	<designer name='Label.EMPSystem.CycleValue.Value' type='Label'>
 		<color parameter='normal.textColor' r='0' g='0' b='0'/>
 		<font parameter='normal.font' size='15'>../modern/fonts/sans15.defont</font>
+	</designer>
+	
+	<designer name='Label.EMPSystem.CycleValue.Value' type='Label'>
+		<color parameter='normal.textColor' r='0' g='0' b='0'/>
+		<font parameter='normal.font' size='15'>fonts/sans15.defont</font>
+	</designer>
+	
+	<designer name='Button.EMPSystem.Reset' extendNamed='Button'>
+		<borderSize parameter='normal.padding' left='5' top='1' right='5' bottom='1'/>
+		<borderSize parameter='pressed.padding' left='6' top='2' right='4' bottom='0'/>
+	</designer>
+	
+	<designer name='Label.Button.EMPSystem.Reset' extendNamed='Label'>
+		<point parameter='normal.minimumSize' x='12' y='12'/>
+		<canvasCreator parameter='normal.canvas' type='Image'>
+			<image parameter='image'>arrows/reload_normal.png</image>
+		</canvasCreator>
+		<canvasCreator parameter='hover.canvas' type='Image'>
+			<image parameter='image'>arrows/reload_hover.png</image>
+		</canvasCreator>
 	</designer>
 	
 	
