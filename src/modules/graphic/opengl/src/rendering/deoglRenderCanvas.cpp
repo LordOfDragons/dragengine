@@ -736,7 +736,7 @@ const deoglRCanvasRenderWorld &canvas ){
 		deoglRenderPlan &plan = camera->GetPlan();
 		
 		plan.SetRenderVR( deoglRenderPlan::ervrNone );
-		plan.SetViewport( 0, 0, rwidth, rheight );
+		plan.SetViewport( rwidth, rheight );
 		plan.SetUpscaleSize( intSize.x, intSize.y );
 		plan.SetUseUpscaling( rwidth != intSize.x || rheight != intSize.y );
 		plan.SetUpsideDown( false );

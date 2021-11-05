@@ -246,11 +246,9 @@ void deoglRenderWorld::RenderBlackScreen( deoglRenderPlan &plan ){
 	
 	const int viewportHeight = plan.GetViewportHeight();
 	const int viewportWidth = plan.GetViewportWidth();
-	const int viewportX = plan.GetViewportX();
-	const int viewportY = plan.GetViewportY();
 	
-	OGL_CHECK( renderThread, glViewport( viewportX, viewportY, viewportWidth, viewportHeight ) );
-	OGL_CHECK( renderThread, glScissor( viewportX, viewportY, viewportWidth, viewportHeight ) );
+	OGL_CHECK( renderThread, glViewport( 0, 0, viewportWidth, viewportHeight ) );
+	OGL_CHECK( renderThread, glScissor( 0, 0, viewportWidth, viewportHeight ) );
 	
 	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
 	OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
@@ -894,22 +892,26 @@ DBG_ENTER("RenderFinalizeFBO")
 	deoglShaderCompiled *shader;
 	deoglTexSamplerConfig *sampler;
 	
-	const int viewportHeight = plan.GetViewportHeight();
-	const int viewportWidth = plan.GetViewportWidth();
-	const int viewportX = plan.GetViewportX();
-	const int viewportY = plan.GetViewportY();
+	const bool upscale = plan.GetUseUpscaling();
+	const int upscaleWidth = plan.GetUpscaleWidth();
+	const int upscaleHeight = plan.GetUpscaleHeight();
 	
 	renderThread.GetFramebuffer().Activate( plan.GetFBOTarget() );
 	
-	OGL_CHECK( renderThread, glViewport( viewportX, viewportY, viewportWidth, viewportHeight ) );
-	OGL_CHECK( renderThread, glScissor( viewportX, viewportY, viewportWidth, viewportHeight ) );
+	const int viewportHeight = upscale ? upscaleHeight : plan.GetViewportHeight();
+	const int viewportWidth = upscale ? upscaleWidth : plan.GetViewportWidth();
 	
 	renderThread.GetTexture().GetStages().DisableAllStages();
-	OGL_CHECK( renderThread, glViewport( viewportX, viewportY, viewportWidth, viewportHeight ) );
-	OGL_CHECK( renderThread, glScissor( viewportX, viewportY, viewportWidth, viewportHeight ) );
+	OGL_CHECK( renderThread, glViewport( 0, 0, viewportWidth, viewportHeight ) );
+	OGL_CHECK( renderThread, glScissor( 0, 0, viewportWidth, viewportHeight ) );
 	OGL_CHECK( renderThread, glEnable( GL_SCISSOR_TEST ) );
 	
-	sampler = &GetSamplerClampLinear();
+	if( plan.GetUseUpscaling() ){
+		sampler = &GetSamplerClampLinear();
+		
+	}else{
+		sampler = &GetSamplerClampNearest();
+	}
 	
 	tsmgr.EnableTexture( 0, *defren.GetPostProcessTexture(), *sampler );
 	
@@ -942,10 +944,22 @@ DBG_ENTER("RenderFinalizeFBO")
 	}
 	
 	if( plan.GetUpsideDown() ){
-		defren.SetShaderParamFSQuad( *shader, spfinTCTransform );
+		if( upscale ){
+			defren.SetShaderParamFSQuad( *shader, spfinTCTransform,
+				plan.GetViewportWidth(), plan.GetViewportHeight() );
+			
+		}else{
+			defren.SetShaderParamFSQuad( *shader, spfinTCTransform );
+		}
 		
 	}else{
-		defren.SetShaderParamFSQuadUpsideDown( *shader, spfinTCTransform );
+		if( upscale ){
+			defren.SetShaderParamFSQuadUpsideDown( *shader, spfinTCTransform,
+				plan.GetViewportWidth(), plan.GetViewportHeight() );
+			
+		}else{
+			defren.SetShaderParamFSQuadUpsideDown( *shader, spfinTCTransform );
+		}
 	}
 	
 	defren.RenderFSQuadVAO();
@@ -980,12 +994,10 @@ DBG_ENTER("RenderFinalizeContext")
 	
 	const int viewportHeight = plan.GetViewportHeight();
 	const int viewportWidth = plan.GetViewportWidth();
-	const int viewportX = plan.GetViewportX();
-	const int viewportY = plan.GetViewportY();
 	
 	renderThread.GetTexture().GetStages().DisableAllStages();
-	OGL_CHECK( renderThread, glViewport( viewportX, viewportY, viewportWidth, viewportHeight ) );
-	OGL_CHECK( renderThread, glScissor( viewportX, viewportY, viewportWidth, viewportHeight ) );
+	OGL_CHECK( renderThread, glViewport( 0, 0, viewportWidth, viewportHeight ) );
+	OGL_CHECK( renderThread, glScissor( 0, 0, viewportWidth, viewportHeight ) );
 	OGL_CHECK( renderThread, glEnable( GL_SCISSOR_TEST ) );
 	
 	if( plan.GetUseUpscaling() ){
@@ -1015,10 +1027,22 @@ DBG_ENTER("RenderFinalizeContext")
 	shader->SetParameterFloat( spfinContrast, contrast, contrast, contrast, 1.0f );
 	
 	if( plan.GetUpsideDown() ){
-		defren.SetShaderParamFSQuad( *shader, spfinTCTransform );
+		if( plan.GetUseUpscaling() ){
+			defren.SetShaderParamFSQuad( *shader, spfinTCTransform,
+				plan.GetUpscaleWidth(), plan.GetUpscaleHeight() );
+			
+		}else{
+			defren.SetShaderParamFSQuad( *shader, spfinTCTransform );
+		}
 		
 	}else{
-		defren.SetShaderParamFSQuadUpsideDown( *shader, spfinTCTransform );
+		if( plan.GetUseUpscaling() ){
+			defren.SetShaderParamFSQuadUpsideDown( *shader, spfinTCTransform,
+				plan.GetUpscaleWidth(), plan.GetUpscaleHeight() );
+			
+		}else{
+			defren.SetShaderParamFSQuadUpsideDown( *shader, spfinTCTransform );
+		}
 	}
 	
 	defren.RenderFSQuadVAO();

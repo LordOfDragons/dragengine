@@ -1328,6 +1328,41 @@ void deoglDeferredRendering::SetShaderParamFSQuadUpsideDown( deoglShaderCompiled
 	shader.SetParameterFloat( parameter, hsu, -hsv, hsu, hsv );
 }
 
+void deoglDeferredRendering::SetShaderParamFSQuadUpsideDown( deoglShaderCompiled &shader, int parameter,
+int width, int height ) const{
+	// ( -1,  1 ) => ( 0, 0 )
+	// (  1,  1 ) => ( su, 0 )
+	// (  1, -1 ) => ( su, sv )
+	// ( -1, -1 ) => ( 0, sv )
+	//
+	// tc.s = x * (su/2) + (su/2)
+	// tc.t = y * (-sv/2) + (sv/2)
+	const float hsu = pPixelSizeU * ( float )width * 0.5f;
+	const float hsv = pPixelSizeV * ( float )height * 0.5f;
+	
+	shader.SetParameterFloat( parameter, hsu, -hsv, hsu, hsv );
+}
+
+void deoglDeferredRendering::SetShaderParamFSQuadUpsideDown( deoglShaderCompiled &shader, int parameter,
+float x1, float y1, float x2, float y2 ) const{
+	// ( -1,  1 ) => ( x1, y1 )
+	// (  1,  1 ) => ( x2, y1 )
+	// (  1, -1 ) => ( x2, y2 )
+	// ( -1, -1 ) => ( x1, y2 )
+	// 
+	// tc.s = (x1+x2)/2 + (x2-x1)/2 * s
+	// tc.t = (y2+y1)/2 + (y1-y2)/2 * t
+	// 
+	// tc.s = s * ((x2-x1)/2) + ((x1+x2)/2)
+	// tc.t = t * ((y1-y2)/2) + ((y2+y1)/2)
+	const float scaleS = pPixelSizeU * ( x2 - x1 ) * 0.5f;
+	const float scaleT = pPixelSizeV * ( y1 - y2 ) * 0.5f;
+	const float offsetS = pPixelSizeU * ( x1 + x2 ) * 0.5f;
+	const float offsetT = pPixelSizeV * ( y2 + y1 ) * 0.5f;
+	
+	shader.SetParameterFloat( parameter, scaleS, scaleT, offsetS, offsetT );
+}
+
 void deoglDeferredRendering::SetShaderParamFSQuad( deoglSPBlockUBO &paramBlock, int parameter ) const{
 	// ( -1,  1 ) => ( 0, sv )
 	// (  1,  1 ) => ( su, sv )

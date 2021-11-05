@@ -363,12 +363,6 @@ public:
 	
 	
 	
-	/** Vierwport x. */
-	inline int GetViewportX() const{ return pViewportX; }
-	
-	/** Vierwport y. */
-	inline int GetViewportY() const{ return pViewportY; }
-	
 	/** Vierwport width. */
 	inline int GetViewportWidth() const{ return pViewportWidth; }
 	
@@ -379,7 +373,7 @@ public:
 	inline float GetAspectRatio() const{ return pAspectRatio; }
 	
 	/** Set viewport parameters. */
-	void SetViewport( int x, int y, int width, int height );
+	void SetViewport( int width, int height );
 	
 	
 	

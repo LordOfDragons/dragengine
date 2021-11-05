@@ -590,7 +590,7 @@ void deoglEnvironmentMap::RenderEnvCubeMap( deoglRenderPlan &parentPlan ){
 	//      nasty problems. to solve this more than one shared render plan
 	//      has to exist.
 	
-	plan.SetViewport( 0, 0, pSize, pSize );
+	plan.SetViewport( pSize, pSize );
 	plan.SetUpscaleSize( pSize, pSize );
 	plan.SetUseUpscaling( false );
 	plan.SetCameraParameters( DEG2RAD * 90.0f, 1.0f, 0.01f, 500.0f );

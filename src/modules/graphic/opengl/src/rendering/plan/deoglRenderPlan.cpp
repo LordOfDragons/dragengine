@@ -129,8 +129,6 @@ pTaskFindContent( NULL )
 	pCameraImageDistance = 0.01f;
 	pCameraViewDistance = 200.0f;
 	pCameraAdaptedIntensity = 1.0f;
-	pViewportX = 0;
-	pViewportY = 0;
 	pViewportWidth = 100;
 	pViewportHeight = 100;
 	pAspectRatio = ( float )pViewportWidth / ( float )pViewportHeight;
@@ -1480,11 +1478,9 @@ void deoglRenderPlan::SetCameraAdaptedIntensity( float intensity ){
 	pCameraAdaptedIntensity = intensity;
 }
 
-void deoglRenderPlan::SetViewport( int x, int y, int width, int height ){
+void deoglRenderPlan::SetViewport( int width, int height ){
 	if( width < 1 || height < 1 ) DETHROW( deeInvalidParam );
 	
-	pViewportX = x;
-	pViewportY = y;
 	pViewportWidth = width;
 	pViewportHeight = height;
 	pAspectRatio = ( float )pViewportWidth / ( float )pViewportHeight;
@@ -1493,8 +1489,6 @@ void deoglRenderPlan::SetViewport( int x, int y, int width, int height ){
 }
 
 void deoglRenderPlan::CopyCameraParametersFrom( const deoglRenderPlan &plan ){
-	pViewportX = plan.pViewportX;
-	pViewportY = plan.pViewportY;
 	pViewportWidth = plan.pViewportWidth;
 	pViewportHeight = plan.pViewportHeight;
 	pAspectRatio = plan.pAspectRatio;

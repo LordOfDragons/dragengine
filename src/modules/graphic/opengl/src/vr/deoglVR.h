@@ -25,8 +25,8 @@
 #include "../model/deoglRModel.h"
 #include "../target/deoglRenderTarget.h"
 
-
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/common/utils/decTimeHistory.h>
 #include <dragengine/resources/model/deModel.h>
 
 class deoglRCamera;
@@ -54,6 +54,7 @@ private:
 	
 	deoglRCamera &pCamera;
 	
+	decPoint pTargetSize;
 	decPoint pRenderSize;
 	sProjection pProjectionLeftEye;
 	sProjection pProjectionRightEye;
@@ -77,6 +78,10 @@ private:
 	decVector2 pCanvasTCToRightEye;
 	eState pState;
 	
+	decTimeHistory pTimeHistoryFrame;
+	int pTargetFPS;
+	float pTargetFPSHysteresis;
+	
 	
 	
 public:
@@ -97,7 +102,7 @@ public:
 	inline deoglRCamera &GetCamera() const{ return pCamera; }
 	
 	/** Render size. */
-	inline const decPoint &GetRenderSize() const{ return pRenderSize; }
+	inline const decPoint &GetRenderSize() const{ return pTargetSize; }
 	
 	/** Projection parameters for left eye. */
 	inline const sProjection &GetProjectionLeftEye() const{ return pProjectionLeftEye; }
@@ -146,6 +151,13 @@ public:
 	
 	
 	
+	/** Update target frame rate. */
+	void UpdateTargetFPS( float elapsed );
+	
+	/** Target frame rate. */
+	inline int GetTargetFPS() const{ return pTargetFPS; }
+	
+	
 	/** Left eye render target. */
 	inline deoglRenderTarget *GetTargetLeftEye() const{ return pTargetLeftEye; }
 	
@@ -177,8 +189,9 @@ public:
 	
 private:
 	void pGetParameters( deoglRenderThread &renderThread );
-	void pRenderLeftEye( deoglRenderThread &renderThread, const decPoint &size );
-	void pRenderRightEye( deoglRenderThread &renderThread, const decPoint &size );
+	void pRenderLeftEye( deoglRenderThread &renderThread );
+	void pRenderRightEye( deoglRenderThread &renderThread );
+	int pCalcTargetFPS( float frameTime ) const;
 };
 
 #endif

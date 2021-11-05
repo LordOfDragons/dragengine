@@ -56,15 +56,18 @@ deoglVR::deoglVR( deoglRCamera &camera ) :
 pCamera( camera ),
 pCameraFov( 1.0f ),
 pCameraFovRatio( 1.0f ),
-pState( esRender )
+pState( esRender ),
+pTimeHistoryFrame( 9, 2 ),
+pTargetFPS( 90 ),
+pTargetFPSHysteresis( 0.1f ) // 0.2f
 {
 	deoglRenderThread &renderThread = camera.GetRenderThread();
 	
 	pGetParameters( renderThread );
 	
 	// examples on the internet use RGBA8
-	pTargetLeftEye.TakeOver( new deoglRenderTarget( renderThread, pRenderSize.x, pRenderSize.y, 4, 8 ) );
-	pTargetRightEye.TakeOver( new deoglRenderTarget( renderThread, pRenderSize.x, pRenderSize.y, 4, 8 ) );
+	pTargetLeftEye.TakeOver( new deoglRenderTarget( renderThread, pTargetSize.x, pTargetSize.y, 4, 8 ) );
+	pTargetRightEye.TakeOver( new deoglRenderTarget( renderThread, pTargetSize.x, pTargetSize.y, 4, 8 ) );
 }
 
 deoglVR::~deoglVR(){
@@ -152,6 +155,31 @@ decDMatrix deoglVR::CreateFrustumDMatrix( const sProjection &projection, float z
 	return m;
 }
 
+
+
+void deoglVR::UpdateTargetFPS( float elapsed ){
+	const float avgFrameTime = pTimeHistoryFrame.GetAverage();
+	const float avgFrameTimeSafe = avgFrameTime * ( 1.0f + pTargetFPSHysteresis );
+	
+	const int targetFPS = pCalcTargetFPS( avgFrameTime );
+	const int targetFPSSafe = pCalcTargetFPS( avgFrameTimeSafe );
+	
+	if( targetFPS < pTargetFPS ){
+		pCamera.GetRenderThread().GetLogger().LogInfoFormat(
+			"VR FrameLimiter: Decrease target FPS from %d to %d", pTargetFPS, targetFPS );
+		pTargetFPS = targetFPS;
+		
+	}else if( targetFPSSafe > pTargetFPS ){
+		pCamera.GetRenderThread().GetLogger().LogInfoFormat(
+			"VR FrameLimiter: Increase target FPS from %d to %d", pTargetFPS, targetFPSSafe );
+		pTargetFPS = targetFPSSafe;
+	}
+	
+	pTimeHistoryFrame.Add( elapsed );
+}
+
+
+
 void deoglVR::BeginFrame(){
 	deBaseVRModule * const module = pCamera.GetRenderThread().GetOgl().GetGameEngine()->GetVRSystem()->GetActiveModule();
 	if( module ){
@@ -166,22 +194,19 @@ void deoglVR::Render(){
 	
 	deoglRenderThread &renderThread = pCamera.GetRenderThread();
 	const deoglConfiguration &config = renderThread.GetConfiguration();
-	const int downScale = decMath::max( config.GetVRRenderDownScale(), config.GetRenderDownScale() );
 	
-	decPoint size( pRenderSize );
-	size.x /= downScale;
-	size.y /= downScale;
+	pRenderSize = ( decVector2( pTargetSize ) * config.GetVRRenderScale() ).Round();
 	
+	// OpenVR uses blitting which is very slow with scaling. use up scaling instead
 	deoglRenderPlan &plan = pCamera.GetPlan();
-	
-	plan.SetViewport( 0, 0, size.x, size.y );
-	plan.SetUpscaleSize( pRenderSize.x, pRenderSize.y );
-	plan.SetUseUpscaling( size != pRenderSize );
+	plan.SetViewport( pRenderSize.x, pRenderSize.y );
+	plan.SetUpscaleSize( pTargetSize.x, pTargetSize.y );
+	plan.SetUseUpscaling( pRenderSize != pTargetSize );
 	plan.SetUpsideDown( true );
 	
 	try{
-		pRenderLeftEye( renderThread, size );
-		pRenderRightEye( renderThread, size );
+		pRenderLeftEye( renderThread );
+		pRenderRightEye( renderThread );
 		
 	}catch( const deException & ){
 		plan.SetFBOTarget( nullptr );
@@ -207,8 +232,12 @@ void deoglVR::Submit(){
 		return;
 	}
 	
+	// OpenVR uses blitting which is very slow with scaling
 	const decVector2 tcFrom( 0.0f, 0.0f );
 	const decVector2 tcTo( 1.0f, 1.0f );
+// 	const decVector2 tcTo( ( float )pRenderSize.x / ( float )pTargetSize.x,
+// 		( float )pRenderSize.y / ( float )pTargetSize.y );
+// 	pCamera.GetRenderThread().GetLogger().LogInfoFormat("tcTo (%g,%g)", tcTo.x, tcTo.y );
 	
 	// NOTE OpenVR does not disable GL_SCISSOR_TEST. this causes the glBlitFramebuffer used
 	//      inside OpenVR to use whatever scissor parameters are in effect by the last call
@@ -237,7 +266,7 @@ void deoglVR::EndFrame(){
 
 void deoglVR::pGetParameters( deoglRenderThread &renderThread ){
 	deBaseVRModule &module = *renderThread.GetOgl().GetGameEngine()->GetVRSystem()->GetActiveModule();
-	pRenderSize = module.GetRenderSize();
+	pTargetSize = module.GetRenderSize();
 	
 	float p[ 4 ];
 	module.GetProjectionParameters( deBaseVRModule::evreLeft, p[ 0 ], p[ 1 ], p[ 2 ], p[ 3 ] );
@@ -278,7 +307,7 @@ void deoglVR::pGetParameters( deoglRenderThread &renderThread ){
 	pHiddenRMeshRight = pHiddenMeshRight ? ( ( deoglModel* )pHiddenMeshRight->GetPeerGraphic() )->GetRModel() : nullptr;
 	
 	renderThread.GetLogger().LogInfoFormat( "VR: size=(%d,%d) fov=(%.1f,%.1f)",
-		pRenderSize.x, pRenderSize.y, pFovX * RAD2DEG, pFovY * RAD2DEG );
+		pTargetSize.x, pTargetSize.y, pFovX * RAD2DEG, pFovY * RAD2DEG );
 	
 	renderThread.GetLogger().LogInfoFormat( "VR: view left eye\n[%g,%g,%g,%g]\n[%g,%g,%g,%g]\n[%g,%g,%g,%g]",
 		pMatrixViewToLeftEye.a11, pMatrixViewToLeftEye.a12, pMatrixViewToLeftEye.a13, pMatrixViewToLeftEye.a14,
@@ -297,9 +326,9 @@ void deoglVR::pGetParameters( deoglRenderThread &renderThread ){
 		pProjectionRightEye.left, pProjectionRightEye.right, pProjectionRightEye.top, pProjectionRightEye.bottom);
 }
 
-void deoglVR::pRenderLeftEye( deoglRenderThread &renderThread, const decPoint &size ){
+void deoglVR::pRenderLeftEye( deoglRenderThread &renderThread ){
 	// prepare render target and fbo
-	pTargetLeftEye->SetSize( size.x, size.y );
+// 	pTargetLeftEye->SetSize( pTargetSize.x, pTargetSize.y );
 	pTargetLeftEye->PrepareFramebuffer();
 	
 	// render using render plan
@@ -315,15 +344,15 @@ void deoglVR::pRenderLeftEye( deoglRenderThread &renderThread, const decPoint &s
 	plan.PrepareRender( nullptr );
 	
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
-	defren.Resize( size.x, size.y );
+	defren.Resize( pRenderSize.x, pRenderSize.y );
 	plan.Render();
 	renderThread.GetRenderers().GetWorld().RenderFinalizeFBO( plan, true );
 	// set render target dirty?
 }
 
-void deoglVR::pRenderRightEye( deoglRenderThread &renderThread, const decPoint &size ){
+void deoglVR::pRenderRightEye( deoglRenderThread &renderThread ){
 	// prepare render target and fbo
-	pTargetRightEye->SetSize( size.x, size.y );
+// 	pTargetRightEye->SetSize( pTargetSize.x, pTargetSize.y );
 	pTargetRightEye->PrepareFramebuffer();
 	
 	// render using render plan
@@ -340,8 +369,23 @@ void deoglVR::pRenderRightEye( deoglRenderThread &renderThread, const decPoint &
 	plan.PrepareRender( nullptr );
 	
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
-	defren.Resize( size.x, size.y );
+	defren.Resize( pRenderSize.x, pRenderSize.y );
 	plan.Render();
 	renderThread.GetRenderers().GetWorld().RenderFinalizeFBO( plan, true );
 	// set render target dirty?
+}
+
+int deoglVR::pCalcTargetFPS( float frameTime ) const{
+	if( frameTime < 1.0f / 90.0f || ! pTimeHistoryFrame.HasMetrics() ){
+		return 90; // we can reach 90Hz. do not frame limit
+		
+	}else if( frameTime < 1.0f / 45.0f ){
+		return 45; // we can reach 45Hz
+		
+	}else if( frameTime < 1.0f / 30.0f ){
+		return 30; // we can reach 30Hz
+		
+	}else{
+		return 15; // we can reach 15Hz
+	}
 }

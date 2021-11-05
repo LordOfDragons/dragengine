@@ -131,12 +131,9 @@ pOcclusionTestPool( NULL ),
 pTimeHistoryMain( 29, 2 ),
 pTimeHistoryRender( 29, 2 ),
 pTimeHistoryFrame( 29, 2 ),
-pTimeHistoryFrameVR( 29, 3 ),
 pEstimatedRenderTime( 0.0f ),
 pAccumulatedMainTime( 0.0f ),
 pFrameTimeLimit( 1.0f / 30.0f ),
-pVRTargetFPS( 90 ),
-pVRTargetFPSCounter( 0 ),
 
 pDebugInfoModule( NULL ),
 
@@ -513,7 +510,7 @@ void deoglRenderThread::Run(){
 	
 	// render loop
 	pTimerFrameUpdate.Reset();
-	pTimerFrameUpdateVR.Reset();
+	pTimerVRFrameUpdate.Reset();
 	while( true ){
 		// wait for entering synchronize
 		DEBUG_SYNC_RT_WAIT("in")
@@ -2042,43 +2039,21 @@ void deoglRenderThread::pLimitFrameRate( float elapsed ){
 	// cause the VR environment to adjust for a lesser performing application. For this
 	// to work though we have to artifically limit frame rate to not go beyond the
 	// threshold or the VR environment can start oscillate
+	// 
+	// to avoid oscillating a hystersis value is used before switching to a higher
+	// target FPS rate. by default the hysteresis is 20%. this ensures the rendering
+	// can really keep up with a higher frame rate before switching up
 	if( pVRCamera && pVRCamera->GetVR() ){
-		const float avgFrameTime = pTimeHistoryFrameVR.GetAverage();
+		elapsed = pTimerVRFrameUpdate.GetElapsedTime();
 		
-		int targetFPS;
+		deoglVR &vr = *pVRCamera->GetVR();
+		vr.UpdateTargetFPS( elapsed );
 		
-		if( avgFrameTime < 1.0f / 90.0f || ! pTimeHistoryFrameVR.HasMetrics() ){
-			targetFPS = 90; // we can reach 90Hz. do not frame limit
-			
-		}else if( avgFrameTime < 1.0f / 45.0f ){
-			targetFPS = 45; // we can reach 45Hz
-			
-		}else if( avgFrameTime < 1.0f / 30.0f ){
-			targetFPS = 30; // we can reach 30Hz
-			
-		}else{
-			targetFPS = 15; // we can reach 15Hz
-		}
-		
-		pVRTargetFPSCounter--;
-		
-		if( targetFPS < pVRTargetFPS || ( targetFPS > pVRTargetFPS && pVRTargetFPSCounter < 0 ) ){
-			// if target FPS is lower switch immediately. if target FPS is higher switch
-			// only of the higher target FPS has been found for the last 10 frames
-			pLogger->LogInfoFormat("FrameLimiterVR: Switched target FPS from %d to %d (avgFrameTime=%fs)",
-				pVRTargetFPS, targetFPS, avgFrameTime );
-			pVRTargetFPS = targetFPS;
-			pVRTargetFPSCounter = 10;
-		}
-		
-		elapsed = pTimerFrameUpdateVR.GetElapsedTime();
-		pTimeHistoryFrameVR.Add( elapsed );
-		
-		if( pVRTargetFPS == 90 ){
+		if( vr.GetTargetFPS() == 90 ){
 			return;
 		}
 		
-		limit = 1.0f / ( float )pVRTargetFPS;
+		limit = 1.0f / ( float )vr.GetTargetFPS();
 	}
 	
 	#ifdef OS_W32
@@ -2108,7 +2083,7 @@ void deoglRenderThread::pLimitFrameRate( float elapsed ){
 		#endif
 	}
 	
-	pTimerFrameUpdateVR.Reset();
+	pTimerVRFrameUpdate.Reset();
 }
 
 

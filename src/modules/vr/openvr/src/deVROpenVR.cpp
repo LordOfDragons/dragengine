@@ -641,6 +641,12 @@ const decVector2 &tcTo, bool distortionApplied ){
 	bounds.vMin = tcFrom.y;
 	bounds.vMax = tcTo.y;
 	
+	// OpenVR seems to align the texture at the top although the coordinate system starts
+	// at the bottom. shift the Y texture coordinates to avoid problems
+	const float shiftY = 1.0f - bounds.vMax;
+	bounds.vMin += shiftY;
+	bounds.vMax += shiftY;
+	
 	const vr::EVRCompositorError error = GetVRCompositor().Submit( vreye, &vrtexture, &bounds,
 		distortionApplied ? vr::Submit_LensDistortionAlreadyApplied : vr::Submit_Default );
 	if( error != vr::VRCompositorError_None ){

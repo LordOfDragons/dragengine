@@ -340,6 +340,8 @@ public:
 	void SetShaderParamFSQuad( deoglShaderCompiled &shader, int parameter, int width, int height ) const;
 	void SetShaderParamFSQuad( deoglShaderCompiled &shader, int parameter, float x1, float y1, float x2, float y2 ) const;
 	void SetShaderParamFSQuadUpsideDown( deoglShaderCompiled &shader, int parameter ) const;
+	void SetShaderParamFSQuadUpsideDown( deoglShaderCompiled &shader, int parameter, int width, int height ) const;
+	void SetShaderParamFSQuadUpsideDown( deoglShaderCompiled &shader, int parameter, float x1, float y1, float x2, float y2 ) const;
 	void SetShaderParamFSQuad( deoglSPBlockUBO &paramBlock, int parameter ) const;
 	/**
 	 * Sets the scaling and offset parameters in a shader required to convert from screen
