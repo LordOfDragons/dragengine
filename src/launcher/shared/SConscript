@@ -14,7 +14,7 @@ pathLib = envLibrary.subst(envLibrary['path_de_lib'])
 if envLibrary['OSWindows']:
 	pathSysLib = envLibrary.subst(envLibrary['systemroot'])
 
-versionString = '1.6'
+versionString = '1.7'
 if envLibrary['force_version']:
 	versionString = envModule['force_version']
 

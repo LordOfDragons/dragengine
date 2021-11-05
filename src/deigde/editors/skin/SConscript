@@ -17,7 +17,7 @@ pathShared = '{}/modules/skin'.format( envEditor.subst( envEditor[ 'path_igde_sh
 envEditor.Append( CPPFLAGS = parent_env[ 'MODULE_CPPFLAGS' ] )
 envEditor.Append( LINKFLAGS = parent_env[ 'MODULE_LINKFLAGS' ] )
 
-versionString = '1.4'
+versionString = '1.7'
 if envEditor['force_version']:
 	versionString = envEditor['force_version']
 

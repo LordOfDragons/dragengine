@@ -17,7 +17,7 @@ pathShared = '{}/modules/particleemitter'.format( envEditor.subst( envEditor[ 'p
 envEditor.Append( CPPFLAGS = parent_env[ 'MODULE_CPPFLAGS' ] )
 envEditor.Append( LINKFLAGS = parent_env[ 'MODULE_LINKFLAGS' ] )
 
-versionString = '1.0'
+versionString = '1.7'
 if envEditor['force_version']:
 	versionString = envEditor['force_version']
 
