@@ -89,7 +89,6 @@ float convertHalfToFloat( HALF_FLOAT h ){
 	const unsigned int sign = ( unsigned int )( h >> 15 );
 	unsigned int mantissa = ( unsigned int )( h & ( ( 1 << 10 ) - 1 ) );
 	unsigned int exp = ( unsigned int )( h & HALF_FLOAT_MAX_BIASED_EXP );
-	unsigned int f;
 	
 	if( exp == HALF_FLOAT_MAX_BIASED_EXP ){
 		// we have a half-float NaN or Inf
@@ -128,8 +127,10 @@ float convertHalfToFloat( HALF_FLOAT h ){
 		exp = ( exp << 13 ) + HALF_FLOAT_MIN_BIASED_EXP_AS_SINGLE_FP_EXP;
 	}
 	
-	f = ( sign << 31 ) | exp | mantissa;
-	const unsigned int * const keepCompilerHappy = &f;
-	
-	return *( ( float* )keepCompilerHappy );
+	union{
+		unsigned int in;
+		float out;
+	} intToFloat;
+	intToFloat.in = ( sign << 31 ) | exp | mantissa;
+	return intToFloat.out;
 }
