@@ -186,9 +186,7 @@ void deoglVR::UpdateTargetFPS( float elapsed ){
 
 
 void deoglVR::BeginFrame(){
-	// NOTE not done during constructor since this is called from the main thread. on windows
-	//      calling some functions seems to crash Steam. delaying this forces all calls to
-	//      happen in the render thread and never on the main thread
+	// NOTE not done during constructor since this is called from the main thread
 	if( ! pTargetRightEye ){
 		deoglRenderThread &renderThread = pCamera.GetRenderThread();
 		
