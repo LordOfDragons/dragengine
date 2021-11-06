@@ -168,6 +168,7 @@ bool debnServer::ListenOn( const char *address ){
 	}catch( const deException &e ){
 		if( pSocket ){
 			pSocket->FreeReference();
+			pSocket = nullptr;
 		}
 		pNetBasic->LogException( e );
 		return false;
