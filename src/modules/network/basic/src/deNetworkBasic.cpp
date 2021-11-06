@@ -463,7 +463,7 @@ void deNetworkBasic::FindPublicAddresses( decStringList &list ){
 		
 		// evaluate
 		PIP_ADAPTER_INFO pAdapter = pAdapterInfo;
-		while( true ){
+		while( pAdapter ){
 			// NOTE: IP_ADDR_STRING is a linked list and can potentially contain more than one address
 			
 			const unsigned long ulAddr = inet_addr( pAdapter->IpAddressList.IpAddress.String );
