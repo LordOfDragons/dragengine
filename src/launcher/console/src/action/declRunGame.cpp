@@ -703,7 +703,7 @@ void declRunGame::PrintModuleProblem( const char *moduleName, deModuleSystem::eM
 	}else if( module->GetType() != moduleType ){
 		logger.LogErrorFormat( LOGSOURCE, "- Module '%s' is not a %s module", moduleName, modsys.GetTypeDirectory( moduleType ) );
 		
-	}else if( module->GetStatus() == declEngineModule::emsReady ){
+	}else if( module->GetStatus() != declEngineModule::emsReady ){
 		const char *reason = "Unknown problem";
 		
 		if( module->GetErrorCode() == deLoadableModule::eecCreateModuleFailed ){
