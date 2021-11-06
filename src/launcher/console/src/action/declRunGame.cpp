@@ -700,7 +700,7 @@ void declRunGame::PrintModuleProblem( const char *moduleName, deModuleSystem::eM
 	if( ! module ){
 		logger.LogErrorFormat( LOGSOURCE, "- %s module '%s' does not exist", modsys.GetTypeDirectory( moduleType ), moduleName );
 		
-	}else if( module->GetType() != deModuleSystem::emtScript ){
+	}else if( module->GetType() != moduleType ){
 		logger.LogErrorFormat( LOGSOURCE, "- Module '%s' is not a %s module", moduleName, modsys.GetTypeDirectory( moduleType ) );
 		
 	}else if( module->GetStatus() == declEngineModule::emsReady ){
