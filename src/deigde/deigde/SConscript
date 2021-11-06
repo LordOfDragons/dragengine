@@ -176,6 +176,10 @@ elif envIGDELib['OSWindows']:
 	archiveLib[os.path.join(pathBin, 'deigdeshared.dll')] = envIGDELib.File('deigdeshared.dll')
 	archiveLibDevelop[os.path.join(pathLib, 'deigdeshared.lib')] = envIGDELib.File('deigdeshared.lib')
 	archiveLibDevelop[os.path.join(pathLib, 'deigdeshared.def')] = envIGDELib.File('deigdeshared.def')
+	
+	if envIGDELib['CROSSCOMPILE_CLANG'] and envIGDELib['with_install_pdb']:
+		installLibRuntime.append(envIGDELib.Install(pathBin, 'deigdeshared.pdb'))
+		archiveLib['{}/deigdeshared.pdb'.format(pathBin)] = envIGDELib.File('deigdeshared.pdb')
 
 dataFiles = []
 globFiles(envIGDEApp, 'shared/data', '*', dataFiles)
@@ -317,6 +321,10 @@ if envIGDEApp['OSPosix']:
 	source = 'man/deigde.1'
 	installApp.append(envIGDEApp.InstallAs(target, source))
 	archiveApp[target] = envIGDEApp.File(source).srcnode()
+	
+if envIGDEApp['OSWindows'] and envIGDEApp['CROSSCOMPILE_CLANG'] and envIGDEApp['with_install_pdb']:
+	install.append(envIGDEApp.Install(pathModule, 'deigde.pdb'))
+	archive['{}/deigde.pdb'.format(pathModule)] = envIGDEApp.File('deigde.pdb')
 
 
 targetInstallApp = envIGDEApp.Alias('deigde', installApp)

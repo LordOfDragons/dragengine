@@ -91,6 +91,10 @@ if envLauncher['OSPosix']:
 	source = 'man/delauncher-console.1'
 	install.append(envLauncher.InstallAs(target, source))
 	archive[target] = envLauncher.File(source).srcnode()
+	
+if envLauncher['OSWindows'] and envLauncher['CROSSCOMPILE_CLANG'] and envLauncher['with_install_pdb']:
+	install.append(envLauncher.Install(pathBin, 'delauncher-console.pdb'))
+	archive['{}/delauncher-console.pdb'.format(pathBin)] = envLauncher.File('delauncher-console.pdb')
 
 targetInstall = envLauncher.Alias('launcher_console', install)
 

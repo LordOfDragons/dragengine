@@ -57,6 +57,10 @@ for l in library:
 		install.append( envModule.Install( pathModule, l ) )
 		archive[ os.path.join( pathModule, l.name ) ] = l
 
+if envModule['CROSSCOMPILE_CLANG'] and envModule['with_install_pdb']:
+	install.append(envModule.Install(pathModule, 'inpw32.pdb'))
+	archive['{}/inpw32.pdb'.format(pathModule)] = envModule.File('inpw32.pdb')
+
 manifestUpdates = [
 	{ 'action': 'filename', 'name': library[ 0 ].name, 'keyword': 'FILENAME' },
 	{ 'action': 'filesize', 'path': library[ 0 ].abspath, 'keyword': 'FILESIZE' },

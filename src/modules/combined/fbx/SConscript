@@ -64,6 +64,10 @@ for l in library:
 		install.append(envModule.Install(pathModule, l))
 		archive[os.path.join(pathModule, l.name)] = l
 
+if envModule['OSWindows'] and envModule['CROSSCOMPILE_CLANG'] and envModule['with_install_pdb']:
+	install.append(envModule.Install(pathModule, 'mdlfbx.pdb'))
+	archive['{}/mdlfbx.pdb'.format(pathModule)] = envModule.File('mdlfbx.pdb')
+
 manifestUpdates = [
 	{'action': 'filename', 'name': library[0].name, 'keyword': 'FILENAME'},
 	{'action': 'filesize', 'path': library[0].abspath, 'keyword': 'FILESIZE'},
@@ -116,6 +120,10 @@ for l in library:
 		install.append(envModule.Install(pathModule, l))
 		archive[os.path.join(pathModule, l.name)] = l
 
+if envModule['OSWindows'] and envModule['CROSSCOMPILE_CLANG'] and envModule['with_install_pdb']:
+	install.append(envModule.Install(pathModule, 'rigfbx.pdb'))
+	archive['{}/rigfbx.pdb'.format(pathModule)] = envModule.File('rigfbx.pdb')
+
 manifestUpdates = [
 	{'action': 'filename', 'name': library[0].name, 'keyword': 'FILENAME'},
 	{'action': 'filesize', 'path': library[0].abspath, 'keyword': 'FILESIZE'},
@@ -166,6 +174,10 @@ for l in library:
 	if l.name.endswith(envModule['SHLIBSUFFIX']):
 		install.append(envModule.Install(pathModule, l))
 		archive[os.path.join(pathModule, l.name)] = l
+
+if envModule['OSWindows'] and envModule['CROSSCOMPILE_CLANG'] and envModule['with_install_pdb']:
+	install.append(envModule.Install(pathModule, 'animfbx.pdb'))
+	archive['{}/animfbx.pdb'.format(pathModule)] = envModule.File('animfbx.pdb')
 
 manifestUpdates = [
 	{'action': 'filename', 'name': library[0].name, 'keyword': 'FILENAME'},

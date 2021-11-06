@@ -46,6 +46,10 @@ for l in library:
 		install.append( envEditor.Install( pathModule, l ) )
 		archive[ os.path.join( pathModule, l.name ) ] = l
 
+if envEditor['OSWindows'] and envEditor['CROSSCOMPILE_CLANG'] and envEditor['with_install_pdb']:
+	install.append(envEditor.Install(pathModule, 'skin.pdb'))
+	archive['{}/skin.pdb'.format(pathModule)] = envEditor.File('skin.pdb')
+
 manifestUpdates = [
 	{ 'action': 'filename', 'name': library[ 0 ].name, 'keyword': 'FILENAME' },
 	{ 'action': 'filesize', 'path': library[ 0 ].abspath, 'keyword': 'FILESIZE' },

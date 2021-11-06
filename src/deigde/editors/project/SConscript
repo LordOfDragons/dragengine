@@ -88,6 +88,10 @@ install.append(envTestRun.Install(pathModule, programTestRun))
 for p in programTestRun:
 	archive[os.path.join(pathModule, p.name)] = p
 
+if envEditor['OSWindows'] and envEditor['CROSSCOMPILE_CLANG'] and envEditor['with_install_pdb']:
+	install.append(envEditor.Install(pathModule, 'testrunner.pdb'))
+	archive['{}/testrunner.pdb'.format(pathModule)] = envEditor.File('testrunner.pdb')
+
 manifestUpdates = [
 	{ 'action': 'filename', 'name': library[ 0 ].name, 'keyword': 'FILENAME' },
 	{ 'action': 'filesize', 'path': library[ 0 ].abspath, 'keyword': 'FILESIZE' },

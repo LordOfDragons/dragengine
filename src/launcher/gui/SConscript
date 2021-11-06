@@ -144,6 +144,10 @@ if envLauncher['OSPosix']:
 	source = 'man/delauncher-gui.1'
 	install.append(envLauncher.InstallAs(target, source))
 	archive[target] = envLauncher.File(source).srcnode()
+	
+if envLauncher['OSWindows'] and envLauncher['CROSSCOMPILE_CLANG'] and envLauncher['with_install_pdb']:
+	install.append(envLauncher.Install(pathBin, 'delauncher-gui.pdb'))
+	archive['{}/delauncher-gui.pdb'.format(pathBin)] = envLauncher.File('delauncher-gui.pdb')
 
 targetInstall = parent_env.Alias('launcher_gui', install)
 

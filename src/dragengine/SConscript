@@ -248,6 +248,10 @@ elif envDragengine['OSWindows']:
 	archiveEngine['{}/dragengine.dll'.format(pathSysLib)] = envDragengine.File('dragengine.dll')
 	archiveDevelop['{}/dragengine.lib'.format(pathLib)] = envDragengine.File('dragengine.lib')
 	archiveDevelop['{}/dragengine.def'.format(pathLib)] = envDragengine.File('dragengine.def')
+	
+	if envDragengine['CROSSCOMPILE_CLANG'] and envDragengine['with_install_pdb']:
+		installRuntime.append(envDragengine.Install(pathSysLib, 'dragengine.pdb'))
+		archiveEngine['{}/dragengine.pdb'.format(pathSysLib)] = envDragengine.File('dragengine.pdb')
 
 
 if envDragengine['OSPosix'] and not envDragengine['OSBeOS']:
