@@ -61,13 +61,9 @@ pTimeHistoryFrame( 9, 2 ),
 pTargetFPS( 90 ),
 pTargetFPSHysteresis( 0.1f ) // 0.2f
 {
-	deoglRenderThread &renderThread = camera.GetRenderThread();
-	
-	pGetParameters( renderThread );
-	
-	// examples on the internet use RGBA8
-	pTargetLeftEye.TakeOver( new deoglRenderTarget( renderThread, pTargetSize.x, pTargetSize.y, 4, 8 ) );
-	pTargetRightEye.TakeOver( new deoglRenderTarget( renderThread, pTargetSize.x, pTargetSize.y, 4, 8 ) );
+	// WARNING called from main thread.
+	// 
+	// for this reason initialization is delayed until BeginFrame.
 }
 
 deoglVR::~deoglVR(){
@@ -190,6 +186,20 @@ void deoglVR::UpdateTargetFPS( float elapsed ){
 
 
 void deoglVR::BeginFrame(){
+	// NOTE not done during constructor since this is called from the main thread. on windows
+	//      calling some functions seems to crash Steam. delaying this forces all calls to
+	//      happen in the render thread and never on the main thread
+	if( ! pTargetRightEye ){
+		deoglRenderThread &renderThread = pCamera.GetRenderThread();
+		
+		pGetParameters( renderThread );
+		
+		// examples on the internet use RGBA8
+		pTargetLeftEye.TakeOver( new deoglRenderTarget( renderThread, pTargetSize.x, pTargetSize.y, 4, 8 ) );
+		pTargetRightEye.TakeOver( new deoglRenderTarget( renderThread, pTargetSize.x, pTargetSize.y, 4, 8 ) );
+	}
+	
+	// begin VR frame
 	deBaseVRModule * const module = pCamera.GetRenderThread().GetOgl().GetGameEngine()->GetVRSystem()->GetActiveModule();
 	if( module ){
 		module->BeginFrame();
