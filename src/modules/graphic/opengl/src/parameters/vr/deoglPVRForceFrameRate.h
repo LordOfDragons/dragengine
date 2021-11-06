@@ -19,22 +19,22 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef _DEOGLPVRRENDERSCALE_H_
-#define _DEOGLPVRRENDERSCALE_H_
+#ifndef _DEOGLPVRFORCEFRAMERATE_H_
+#define _DEOGLPVRFORCEFRAMERATE_H_
 
 #include "../deoglParameter.h"
 
 
-/** VR render scale parameter. */
-class deoglPVRRenderScale : public deoglParameter{
+/** VR force framerate parameter. */
+class deoglPVRForceFrameRate : public deoglParameter{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create parameter. */
-	deoglPVRRenderScale( deGraphicOpenGl &ogl );
+	deoglPVRForceFrameRate( deGraphicOpenGl &ogl );
 	
 	/** Clean up parameter. */
-	virtual ~deoglPVRRenderScale();
+	virtual ~deoglPVRForceFrameRate();
 	/*@}*/
 	
 	

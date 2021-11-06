@@ -158,21 +158,30 @@ decDMatrix deoglVR::CreateFrustumDMatrix( const sProjection &projection, float z
 
 
 void deoglVR::UpdateTargetFPS( float elapsed ){
-	const float avgFrameTime = pTimeHistoryFrame.GetAverage();
-	const float avgFrameTimeSafe = avgFrameTime * ( 1.0f + pTargetFPSHysteresis );
+	const int forceFPS = pCamera.GetRenderThread().GetConfiguration().GetVRForceFrameRate();
 	
-	const int targetFPS = pCalcTargetFPS( avgFrameTime );
-	const int targetFPSSafe = pCalcTargetFPS( avgFrameTimeSafe );
-	
-	if( targetFPS < pTargetFPS ){
-		pCamera.GetRenderThread().GetLogger().LogInfoFormat(
-			"VR FrameLimiter: Decrease target FPS from %d to %d", pTargetFPS, targetFPS );
-		pTargetFPS = targetFPS;
+	if( forceFPS == 0 ){
+		const float avgFrameTime = pTimeHistoryFrame.GetAverage();
+		const float avgFrameTimeSafe = avgFrameTime * ( 1.0f + pTargetFPSHysteresis );
 		
-	}else if( targetFPSSafe > pTargetFPS ){
+		const int targetFPS = pCalcTargetFPS( avgFrameTime );
+		const int targetFPSSafe = pCalcTargetFPS( avgFrameTimeSafe );
+		
+		if( targetFPS < pTargetFPS ){
+			pCamera.GetRenderThread().GetLogger().LogInfoFormat(
+				"VR FrameLimiter: Decrease target FPS from %d to %d", pTargetFPS, targetFPS );
+			pTargetFPS = targetFPS;
+			
+		}else if( targetFPSSafe > pTargetFPS ){
+			pCamera.GetRenderThread().GetLogger().LogInfoFormat(
+				"VR FrameLimiter: Increase target FPS from %d to %d", pTargetFPS, targetFPSSafe );
+			pTargetFPS = targetFPSSafe;
+		}
+		
+	}else if( forceFPS != pTargetFPS ){ 
 		pCamera.GetRenderThread().GetLogger().LogInfoFormat(
-			"VR FrameLimiter: Increase target FPS from %d to %d", pTargetFPS, targetFPSSafe );
-		pTargetFPS = targetFPSSafe;
+			"VR FrameLimiter: Force target FPS %d", forceFPS );
+		pTargetFPS = forceFPS;
 	}
 	
 	pTimeHistoryFrame.Add( elapsed );

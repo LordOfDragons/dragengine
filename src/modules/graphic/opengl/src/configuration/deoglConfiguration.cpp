@@ -145,7 +145,8 @@ pMaxSPBIndexCount( 10000 ),
 pGIQuality( egiqHigh ),
 pGIUpdateSpeed( egiusMedium ),
 
-pVRRenderScale( 1.0f )
+pVRRenderScale( 1.0f ),
+pVRForceFrameRate( 0 )
 {
 	#ifdef OS_ANDROID
 	// android is too weak a platform right now to support advanced features out of the
@@ -935,5 +936,25 @@ void deoglConfiguration::SetVRRenderScale( float scale ){
 	}
 	
 	pVRRenderScale = scale;
+	pDirty = true;
+}
+
+void deoglConfiguration::SetVRForceFrameRate( int framerate ){
+	switch( framerate ){
+	case 90:
+	case 45:
+	case 30:
+	case 15:
+		break;
+		
+	default:
+		framerate = 0;
+	}
+	
+	if( framerate == pVRForceFrameRate ){
+		return;
+	}
+	
+	pVRForceFrameRate = framerate;
 	pDirty = true;
 }

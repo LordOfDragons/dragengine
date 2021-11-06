@@ -441,6 +441,12 @@ void deoglLSConfiguration::pLoadConfigOpenGL( deoglConfiguration &configuration,
 							tag->GetPositionNumber(), value.GetString() );
 					}
 					
+				}else if( strcmp( name, "vrRenderScale" ) == 0 ){
+					configuration.SetVRRenderScale( tag->GetFirstData()->GetData().ToFloat() );
+					
+				}else if( strcmp( name, "vrForceFrameRate" ) == 0 ){
+					configuration.SetVRForceFrameRate( tag->GetFirstData()->GetData().ToInt() );
+					
 				}else{
 					pOgl.LogWarnFormat( "opengl.xml %s(%i:%i): Invalid property name %s.",
 						tag->GetName().GetString(), tag->GetLineNumber(),

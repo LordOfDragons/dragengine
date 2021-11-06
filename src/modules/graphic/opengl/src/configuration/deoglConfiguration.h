@@ -195,6 +195,7 @@ private:
 	decStringSet pDisableExtensions;
 	
 	float pVRRenderScale;
+	int pVRForceFrameRate;
 	
 	
 	
@@ -557,6 +558,9 @@ public:
 	
 	inline float GetVRRenderScale() const{ return pVRRenderScale; }
 	void SetVRRenderScale( float scale );
+	
+	inline int GetVRForceFrameRate() const{ return pVRForceFrameRate; }
+	void SetVRForceFrameRate( int framerate );
 };
 
 #endif

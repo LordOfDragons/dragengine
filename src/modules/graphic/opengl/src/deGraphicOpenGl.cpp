@@ -104,6 +104,7 @@
 #include "parameters/shadow/deoglPShadowMapOffsetBias.h"
 #include "parameters/shadow/deoglPShadowMapOffsetScale.h"
 #include "parameters/vr/deoglPVRRenderScale.h"
+#include "parameters/vr/deoglPVRForceFrameRate.h"
 
 #include "particle/deoglParticleEmitter.h"
 #include "particle/deoglParticleEmitterInstance.h"
@@ -640,6 +641,7 @@ void deGraphicOpenGl::pCreateParameters() {
 	pParameters.AddParameter( new deoglPTranspLayerLimit( *this ) );
 	
 	pParameters.AddParameter( new deoglPVRRenderScale( *this ) );
+	pParameters.AddParameter( new deoglPVRForceFrameRate( *this ) );
 	
 #ifdef WITH_DEBUG
 	pParameters.AddParameter( new deoglPDebugContext( *this ) );
