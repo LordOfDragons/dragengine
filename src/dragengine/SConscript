@@ -135,7 +135,7 @@ if envDragengine['OSWindows']:
 
 versionString = '1.7'
 if envDragengine['force_version']:
-	versionString = envModule['force_version']
+	versionString = envDragengine['force_version']
 
 libVersionString = versionString
 if len(libVersionString.split('.')) < 3:
@@ -250,8 +250,9 @@ elif envDragengine['OSWindows']:
 	archiveDevelop['{}/dragengine.def'.format(pathLib)] = envDragengine.File('dragengine.def')
 	
 	if envDragengine['CROSSCOMPILE_CLANG'] and envDragengine['with_install_pdb']:
-		installRuntime.append(envDragengine.Install(pathSysLib, 'dragengine.pdb'))
-		archiveEngine['{}/dragengine.pdb'.format(pathSysLib)] = envDragengine.File('dragengine.pdb')
+		pathPdb = envDragengine.subst(envDragengine['path_pdb'])
+		installRuntime.append(envDragengine.Install(pathPdb, 'dragengine.pdb'))
+		archiveEngine['{}/dragengine.pdb'.format(pathPdb)] = envDragengine.File('dragengine.pdb')
 
 
 if envDragengine['OSPosix'] and not envDragengine['OSBeOS']:

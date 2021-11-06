@@ -48,8 +48,9 @@ for l in library:
 		archive[ os.path.join( pathModule, l.name ) ] = l
 
 if envEditor['OSWindows'] and envEditor['CROSSCOMPILE_CLANG'] and envEditor['with_install_pdb']:
-	install.append(envEditor.Install(pathModule, 'world.pdb'))
-	archive['{}/world.pdb'.format(pathModule)] = envEditor.File('world.pdb')
+	pathPdb = os.path.join(envEditor.subst(envEditor['path_pdb']), 'IGDEEditors')
+	install.append(envEditor.Install(pathPdb, 'world.pdb'))
+	archive['{}/world.pdb'.format(pathPdb)] = envEditor.File('world.pdb')
 
 manifestUpdates = [
 	{ 'action': 'filename', 'name': library[ 0 ].name, 'keyword': 'FILENAME' },

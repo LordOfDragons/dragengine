@@ -48,8 +48,9 @@ for l in library:
 		archive[ os.path.join( pathModule, l.name ) ] = l
 
 if envEditor['OSWindows'] and envEditor['CROSSCOMPILE_CLANG'] and envEditor['with_install_pdb']:
-	install.append(envEditor.Install(pathModule, 'sky.pdb'))
-	archive['{}/sky.pdb'.format(pathModule)] = envEditor.File('sky.pdb')
+	pathPdb = os.path.join(envEditor.subst(envEditor['path_pdb']), 'IGDEEditors')
+	install.append(envEditor.Install(pathPdb, 'sky.pdb'))
+	archive['{}/sky.pdb'.format(pathPdb)] = envEditor.File('sky.pdb')
 
 manifestUpdates = [
 	{ 'action': 'filename', 'name': library[ 0 ].name, 'keyword': 'FILENAME' },

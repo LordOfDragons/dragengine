@@ -44,8 +44,9 @@ for l in library:
 		archive[ os.path.join( pathModule, l.name ) ] = l
 
 if envModule['OSWindows'] and envModule['CROSSCOMPILE_CLANG'] and envModule['with_install_pdb']:
-	install.append(envModule.Install(pathModule, 'vidapng.pdb'))
-	archive['{}/vidapng.pdb'.format(pathModule)] = envModule.File('vidapng.pdb')
+	pathPdb = os.path.join(envModule.subst(envModule['path_pdb']), 'EngineModules')
+	install.append(envModule.Install(pathPdb, 'vidapng.pdb'))
+	archive['{}/vidapng.pdb'.format(pathPdb)] = envModule.File('vidapng.pdb')
 
 manifestUpdates = [
 	{ 'action': 'filename', 'name': library[ 0 ].name, 'keyword': 'FILENAME' },

@@ -483,6 +483,8 @@ elif parent_env['OSWindows']:
 		'${path_de_sdk_inc}/delauncher', PathVariable.PathAccept ) )
 	
 	params.Add(BoolVariable('with_install_pdb', 'Install/archive PDB files', False))
+	params.Add(PathVariable('path_pdb', 'Path to the PDBs',
+		'${path_de}/PDB', PathVariable.PathAccept))
 	
 else:
 	Exit( 'No supported OS found!')

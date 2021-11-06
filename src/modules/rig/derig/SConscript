@@ -39,8 +39,9 @@ for l in library:
 		archive[ os.path.join( pathModule, l.name ) ] = l
 
 if envModule['OSWindows'] and envModule['CROSSCOMPILE_CLANG'] and envModule['with_install_pdb']:
-	install.append(envModule.Install(pathModule, 'rigderig.pdb'))
-	archive['{}/rigderig.pdb'.format(pathModule)] = envModule.File('rigderig.pdb')
+	pathPdb = os.path.join(envModule.subst(envModule['path_pdb']), 'EngineModules')
+	install.append(envModule.Install(pathPdb, 'rigderig.pdb'))
+	archive['{}/rigderig.pdb'.format(pathPdb)] = envModule.File('rigderig.pdb')
 
 manifestUpdates = [
 	{ 'action': 'filename', 'name': library[ 0 ].name, 'keyword': 'FILENAME' },

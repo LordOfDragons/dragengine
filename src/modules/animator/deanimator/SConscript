@@ -39,8 +39,9 @@ for l in library:
 		archive[ os.path.join( pathModule, l.name ) ] = l
 
 if envModule['OSWindows'] and envModule['CROSSCOMPILE_CLANG'] and envModule['with_install_pdb']:
-	install.append(envModule.Install(pathModule, 'anideanimator.pdb'))
-	archive['{}/anideanimator.pdb'.format(pathModule)] = envModule.File('anideanimator.pdb')
+	pathPdb = os.path.join(envModule.subst(envModule['path_pdb']), 'EngineModules')
+	install.append(envModule.Install(pathPdb, 'anideanimator.pdb'))
+	archive['{}/anideanimator.pdb'.format(pathPdb)] = envModule.File('anideanimator.pdb')
 
 manifestUpdates = [
 	{ 'action': 'filename', 'name': library[ 0 ].name, 'keyword': 'FILENAME' },

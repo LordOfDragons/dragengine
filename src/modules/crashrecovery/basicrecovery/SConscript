@@ -76,8 +76,9 @@ for l in library:
 		archive[ os.path.join( pathModule, l.name ) ] = l
 
 if envModule['OSWindows'] and envModule['CROSSCOMPILE_CLANG'] and envModule['with_install_pdb']:
-	install.append(envModule.Install(pathModule, 'crbasicrecovery.pdb'))
-	archive['{}/crbasicrecovery.pdb'.format(pathModule)] = envModule.File('crbasicrecovery.pdb')
+	pathPdb = os.path.join(envModule.subst(envModule['path_pdb']), 'EngineModules')
+	install.append(envModule.Install(pathPdb, 'crbasicrecovery.pdb'))
+	archive['{}/crbasicrecovery.pdb'.format(pathPdb)] = envModule.File('crbasicrecovery.pdb')
 
 manifestUpdates = [
 	{ 'action': 'filename', 'name': library[ 0 ].name, 'keyword': 'FILENAME' },

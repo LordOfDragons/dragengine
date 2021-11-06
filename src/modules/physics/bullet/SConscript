@@ -159,8 +159,9 @@ for l in library:
 		archive[ os.path.join( pathModule, l.name ) ] = l
 
 if envModule['OSWindows'] and envModule['CROSSCOMPILE_CLANG'] and envModule['with_install_pdb']:
-	install.append(envModule.Install(pathModule, 'phybullet.pdb'))
-	archive['{}/phybullet.pdb'.format(pathModule)] = envModule.File('phybullet.pdb')
+	pathPdb = os.path.join(envModule.subst(envModule['path_pdb']), 'EngineModules')
+	install.append(envModule.Install(pathPdb, 'phybullet.pdb'))
+	archive['{}/phybullet.pdb'.format(pathPdb)] = envModule.File('phybullet.pdb')
 
 manifestUpdates = [
 	{ 'action': 'filename', 'name': library[ 0 ].name, 'keyword': 'FILENAME' },
