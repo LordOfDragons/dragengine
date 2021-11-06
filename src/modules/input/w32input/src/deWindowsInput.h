@@ -225,6 +225,8 @@ private:
 	
 	void pUpdateAutoRepeat();
 	void pSetAutoRepeatEnabled( bool enabled );
+	
+	WPARAM pMapLeftRightKeys( WPARAM virtKey, LPARAM lParam ) const;
 };
 
 #endif

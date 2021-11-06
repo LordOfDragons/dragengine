@@ -304,7 +304,8 @@ void deWindowsInput::EventLoop( const MSG &message ){
 			break;
 		}
 		
-		const int button = pDevices->GetKeyboard()->IndexOfButtonWithWICode( message.wParam );
+		const WPARAM wParam = pMapLeftRightKeys( message.wParam, message.lParam );
+		const int button = pDevices->GetKeyboard()->IndexOfButtonWithWICode( wParam );
 		if( button == -1 ){
 			break;
 		}
@@ -312,14 +313,14 @@ void deWindowsInput::EventLoop( const MSG &message ){
 		const int scanCode = W32_GET_SCANCODE( message.lParam );
 		const int modifiers = 0; // how to get them?
 		GetKeyboardState( &keyStates[ 0 ] );
-		result = ToAsciiEx( message.wParam, scanCode, &keyStates[ 0 ],
+		result = ToAsciiEx( wParam, scanCode, &keyStates[ 0 ],
 			&keyChar, 0, GetKeyboardLayout( 0 ) );
 		int wichar = 0;
 		if( result != 0 ){
 			wichar = LOBYTE( keyChar );
 		}
 		
-		//LogInfoFormat("KEY_DOWN %i, '%c', %i", result, LOBYTE( keyChar ), message.wParam );
+		//LogInfoFormat("KEY_DOWN %i, '%c', %i", result, LOBYTE( keyChar ), wParam );
 		
 		dewiDeviceButton &deviceButton = *pDevices->GetKeyboard()->GetButtonAt( button );
 		deviceButton.SetPressed( true );
@@ -329,7 +330,8 @@ void deWindowsInput::EventLoop( const MSG &message ){
 		}break;
 		
 	case WM_KEYUP:{
-		const int button = pDevices->GetKeyboard()->IndexOfButtonWithWICode( message.wParam );
+		const WPARAM wParam = pMapLeftRightKeys( message.wParam, message.lParam );
+		const int button = pDevices->GetKeyboard()->IndexOfButtonWithWICode( wParam );
 		if( button == -1 ){
 			break;
 		}
@@ -337,7 +339,7 @@ void deWindowsInput::EventLoop( const MSG &message ){
 		const int scanCode = W32_GET_SCANCODE( message.lParam );
 		const int modifiers = 0; // how to get them?
 		GetKeyboardState( &keyStates[ 0 ] );
-		result = ToAsciiEx( message.wParam, scanCode, &keyStates[ 0 ],
+		result = ToAsciiEx( wParam, scanCode, &keyStates[ 0 ],
 			&keyChar, 0, GetKeyboardLayout( 0 ) );
 		int wichar = 0;
 		if( result != 0 ){
@@ -710,4 +712,27 @@ void deWindowsInput::pSetAutoRepeatEnabled( bool enabled ){
 	}
 	
 	pAutoRepeatEnabled = enabled;
+}
+
+WPARAM deWindowsInput::pMapLeftRightKeys( WPARAM virtKey, LPARAM lParam ) const{
+	// this is one of the reasons I hate windows. everything sucks from one end to the other.
+	// workaround from https://stackoverflow.com/questions/15966642/how-do-you-tell-lshift-apart-from-rshift-in-wm-keydown-events
+	
+	const UINT scancode = ( lParam & 0x00ff0000 ) >> 16;
+	const int extended  = ( lParam & 0x01000000 ) != 0;
+	
+	switch( virtKey ){
+	case VK_SHIFT:
+		return MapVirtualKey( scancode, MAPVK_VSC_TO_VK_EX );
+		
+	case VK_CONTROL:
+		return extended ? VK_RCONTROL : VK_LCONTROL;
+		
+	case VK_MENU:
+		return extended ? VK_RMENU : VK_LMENU;
+		
+	default:
+		// not a key we map from generic to left/right specialized just return it
+		return virtKey;
+	}
 }
