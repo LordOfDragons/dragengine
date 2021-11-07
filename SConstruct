@@ -789,6 +789,7 @@ scdirs.append( 'src/modules/combined/fbx' )
 
 scdirs.append( 'src/modules/vr/null' )
 scdirs.append( 'src/modules/vr/openvr' )
+scdirs.append( 'src/modules/vr/openxr' )
 
 # launchers
 scdirs.append( 'src/launcher/shared' )

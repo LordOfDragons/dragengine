@@ -1,0 +1,16 @@
+active runtime is located at:
+	~/.config/openxr/1/active_runtime.json
+
+no idea where it is under windows but the file name is the same
+
+to get function pointers dlsym "xrGetInstanceProcAddr".
+
+to create instance requires fetching functions:
+- xrEnumerateInstanceExtensionProperties
+- xrEnumerateApiLayerProperties
+- xrCreateInstance
+with nullptr instance parameter
+
+from there on continue similar to shared vulkan
+
+url: https://www.khronos.org/registry/OpenXR/specs/1.0/man/html/openxr.html#_xrgetinstanceprocaddr3
