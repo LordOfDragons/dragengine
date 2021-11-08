@@ -470,7 +470,7 @@ elif parent_env['OSWindows']:
 	params.Add( PathVariable( 'path_launcher_share', 'Path to the Launcher shares',
 		'${path_launcher}/Share', PathVariable.PathAccept ) )
 	params.Add( PathVariable( 'path_launcher_games', 'Path to the Launcher games',
-		'${path_launcher}/Games', PathVariable.PathAccept ) )
+		'@Public/DELaunchers/Games', PathVariable.PathAccept ) )
 	
 	params.Add( PathVariable( 'path_launcher_sdk', 'Path to Drag[en]gine Launcher SDK directory',
 		'${path_launcher}/SDK', PathVariable.PathAccept ) )

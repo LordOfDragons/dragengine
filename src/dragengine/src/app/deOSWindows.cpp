@@ -25,7 +25,24 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+
+// required before shlobj.h or SHGetKnownFolderPath is not found
+#ifdef _WIN32_WINNT
+#undef _WIN32_WINNT
+#endif
+#define _WIN32_WINNT _WIN32_WINNT_WIN7
+
+// required before shlobj.h or FOLDERID_* constants are not present
+#ifndef INITKNOWNFOLDERS
+#define INITKNOWNFOLDERS
+#endif
+
+#ifndef INITGUID
+#define INITGUID
+#endif
+
 #include <shlobj.h>
+#include <knownfolders.h>
 
 #include "deOSWindows.h"
 #include "../deEngine.h"
@@ -272,39 +289,44 @@ decString deOSWindows::ParseNativePath( const char *path ){
 	}
 	
 	const decString special( spath.GetMiddle( 1, index ) );
-	
-	WCHAR folderPath[ MAX_PATH ];
-	int nFolder;
+	GUID nFolder;
 	
 	if( special == "ProgramFiles" ){
-		nFolder = CSIDL_PROGRAM_FILES; // FOLDERID_ProgramFiles
+		nFolder = FOLDERID_ProgramFiles;
 		
 	}else if( special == "System" ){
-		nFolder = CSIDL_SYSTEM; // FOLDERID_System
+		nFolder = FOLDERID_System;
 		
 	}else if( special == "RoamingAppData" ){
-		nFolder = CSIDL_APPDATA; // FOLDERID_RoamingAppData
+		nFolder = FOLDERID_RoamingAppData;
 		
 	}else if( special == "ProgramData" ){
-		nFolder = CSIDL_COMMON_APPDATA; // FOLDERID_ProgramData
+		nFolder = FOLDERID_ProgramData;
+		
+	}else if( special == "Public" ){
+		nFolder = FOLDERID_Public;
 		
 	}else if( special == "PublicDocuments" ){
-		nFolder = CSIDL_COMMON_DOCUMENTS; // FOLDERID_PublicDocuments
+		nFolder = FOLDERID_PublicDocuments;
+		
+	}else if( special == "PublicGameTasks" ){
+		nFolder = FOLDERID_PublicGameTasks;
 		
 	}else if( special == "LocalAppData" ){
-		nFolder = CSIDL_LOCAL_APPDATA; // FOLDERID_LocalAppData
+		nFolder = FOLDERID_LocalAppData;
 		
 	}else if( special == "Documents" ){
-		nFolder = CSIDL_MYDOCUMENTS; // FOLDERID_Documents
+		nFolder = FOLDERID_Documents;
 		
 	}else if( special == "Windows" ){
-		nFolder = CSIDL_WINDOWS; // FOLDERID_Windows
+		nFolder = FOLDERID_Windows;
 		
 	}else{
 		return spath;
 	}
 	
-	if( SHGetFolderPathW( NULL, nFolder, NULL, SHGFP_TYPE_CURRENT, &folderPath[0] ) != S_OK ){
+	PWCHAR folderPath = NULL;
+	if( SHGetKnownFolderPath( nFolder, 0, NULL, &folderPath ) != S_OK ){
 		DETHROW( deeInvalidParam );
 	}
 	
