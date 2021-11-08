@@ -671,6 +671,7 @@ elif parent_env['OSWindows']:
 	parent_report[ 'deigde shared data path' ] = parent_env.subst( parent_env[ 'path_igde_share' ] )
 	parent_report[ 'dragengine cache path' ] = parent_env.subst( parent_env[ 'path_de_cache' ] )
 	#parent_report[ 'program files' ] = parent_env.subst( parent_env[ 'programfiles' ] )
+	parent_report['delauncher games'] = parent_env.subst(parent_env['path_launcher_games'])
 
 parent_report[ 'platform_android' ] = parent_env[ 'platform_android' ]
 if parent_env[ 'platform_android' ] != 'no':

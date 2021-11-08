@@ -242,4 +242,4 @@
 # 
 # Value type: string with directory path
 # 
-# path_launcher_games = '${path_launcher}/Games'
+# path_launcher_games = '@Public/DELaunchers/Games'

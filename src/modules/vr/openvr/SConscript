@@ -84,7 +84,7 @@ buildCloc = envModule.Alias('vr_openvr_cloc', buildClocBare)
 
 # add the targets to the targets list
 parent_targets['vr_openvr'] = {
-	'name' : 'Null VR Module',
+	'name' : 'OpenVR VR Module',
 	'build' : targetBuild,
 	'install' : targetInstall,
 	'install-engine-runtime' : targetInstall,
