@@ -238,8 +238,6 @@ void delLauncher::pLocatePath(){
 	// using an environment parameter.
 	pPathGames = LAUNCHER_GAMES_PATH;
 #ifdef OS_W32
-	pPathGames = pathEngineBase + "\\Launchers\\Games";
-	
 	pPathGames = deOSWindows::GetRegistryValue( "SOFTWARE\\Drag[en]gine",
 		"PathLauncherGames", pPathGames );
 #endif
