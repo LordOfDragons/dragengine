@@ -38,11 +38,13 @@
 		<Application Id='DELauncherGUI'
 		             Executable='VFS\ProgramFilesX64\Dragengine\Launchers\Bin\delauncher-gui.exe'
 		             EntryPoint='Windows.FullTrustApplication'>
-			<uap:VisualElements BackgroundColor='transparent'
+			<uap3:VisualElements BackgroundColor='transparent'
 			                    DisplayName='Drag[en]gine GUI Launcher'
 			                    Square150x150Logo='Assets\icon-delauncher-gui-150x150.png'
 			                    Square44x44Logo='Assets\icon-delauncher-gui-44x44.png'
-			                    Description='Launch Drag[en]gine Games using GUI Interface'/>
+			                    Description='Launch Drag[en]gine Games using GUI Interface'
+			                    AppListEntry='default'
+			                    VisualGroup='Drag[en]gine'/>
 			<Extensions>
 				<uap3:Extension Category='windows.fileTypeAssociation'>
 					<uap3:FileTypeAssociation Name='delga'>
