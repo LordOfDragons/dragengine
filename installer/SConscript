@@ -51,6 +51,80 @@ if envInstaller['OSPosix']:
 		installers.append(envInstaller.Command(filename,
 			['install-deigde-dev.sh.in'] + parent_targets['archive']['archiveIgdeDev'],
 			envInstaller.Action(buildInstaller, 'Building Installer {}'.format(filename))))
+	
+elif envInstaller['OSWindows']:
+	def copyArchiveFiles(copied, key, basePath):
+		for target in parent_targets.values():
+			if key in target:
+				for path, node in target[key].items():
+					if path.startswith('@ProgramFiles/'):
+						path = 'VFS/ProgramFilesX64/' + path[14:]
+					elif path.startswith('@System/'):
+						path = 'VFS/SystemX64/' + path[8:]
+					copied.append(envInstaller.InstallAs(os.path.join(basePath, path), node))
+	
+	def copyDataFiles(copied, directory, basePath):
+		dataFiles = []
+		globFiles(envInstaller, directory, '*', dataFiles)
+		
+		cutLen = len(directory.split('/'))
+		for f in dataFiles:
+			path = f.split('/')
+			copied.append(envInstaller.InstallAs(os.path.join(basePath, *path[cutLen:]), f))
+	
+	def msixBuild(target, source, env):
+		script = []
+		script.append('makemsix pack -d "{}" -p "{}" || exit 1'.format(
+			source[0].get_dir().abspath, target[0].abspath))
+		print(script)
+		if not env.RunExternalCommand(script):
+			raise Exception('Failed building MSIX')
+	
+	if envInstaller['installer_name_engine']:
+		copied = []
+		copyArchiveFiles(copied, 'archive-engine', 'msix/dragengine')
+		copyDataFiles(copied, 'msix-data/dragengine', 'msix/dragengine')
+		msix = envInstaller.Command('{}.msix'.format(envInstaller['installer_name_engine']),
+			'msix/dragengine/AppxManifest.xml', envInstaller.Action(msixBuild, 'Build MSIX $TARGET'))
+		envInstaller.Depends(msix, copied)
+		installers.append(msix)
+		
+	if envInstaller['installer_name_launcher']:
+		copied = []
+		copyArchiveFiles(copied, 'archive-launcher', 'msix/dragengine-launcher')
+		copyDataFiles(copied, 'msix-data/dragengine-launcher', 'msix/dragengine-launcher')
+		msix = envInstaller.Command('{}.msix'.format(envInstaller['installer_name_launcher']),
+			'msix/dragengine-launcher/AppxManifest.xml', envInstaller.Action(msixBuild, 'Build MSIX $TARGET'))
+		envInstaller.Depends(msix, copied)
+		installers.append(msix)
+		
+	if envInstaller['installer_name_igde']:
+		copied = []
+		copyArchiveFiles(copied, 'archive-igde', 'msix/deigde')
+		copyDataFiles(copied, 'msix-data/deigde', 'msix/deigde')
+		msix = envInstaller.Command('{}.msix'.format(envInstaller['installer_name_igde']),
+			'msix/deigde/AppxManifest.xml', envInstaller.Action(msixBuild, 'Build MSIX $TARGET'))
+		envInstaller.Depends(msix, copied)
+		installers.append(msix)
+		
+	if envInstaller['installer_name_engine_dev']:
+		copied = []
+		copyArchiveFiles(copied, 'archive-engine-develop', 'msix/dragengine-sdk')
+		copyArchiveFiles(copied, 'archive-launcher-develop', 'msix/dragengine-sdk')
+		copyDataFiles(copied, 'msix-data/dragengine-sdk', 'msix/dragengine-sdk')
+		msix = envInstaller.Command('{}.msix'.format(envInstaller['installer_name_engine_dev']),
+			'msix/dragengine-sdk/AppxManifest.xml', envInstaller.Action(msixBuild, 'Build MSIX $TARGET'))
+		envInstaller.Depends(msix, copied)
+		installers.append(msix)
+		
+	if envInstaller['installer_name_igde_dev']:
+		copied = []
+		copyArchiveFiles(copied, 'archive-igde-develop', 'msix/deigde-sdk')
+		copyDataFiles(copied, 'msix-data/deigde-sdk', 'msix/deigde-sdk')
+		msix = envInstaller.Command('{}.msix'.format(envInstaller['installer_name_igde_dev']),
+			'msix/deigde-sdk/AppxManifest.xml', envInstaller.Action(msixBuild, 'Build MSIX $TARGET'))
+		envInstaller.Depends(msix, copied)
+		installers.append(msix)
 
 envInstaller.Alias('installer', installers)
 

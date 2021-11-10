@@ -169,11 +169,11 @@ if envIGDELib['OSPosix']:
 	archiveLib['{}/{}'.format(pathLib, lname)] = envIGDELib.File(lname)
 	
 elif envIGDELib['OSWindows']:
-	installLibRuntime.append(envIGDELib.Install(pathBin, 'deigdeshared.dll'))
+	installLibRuntime.append(envIGDELib.Install(pathSysLib, 'deigdeshared.dll'))
 	installLibDevelop.append(envIGDELib.Install(pathLib, 'deigdeshared.lib'))
 	installLibDevelop.append(envIGDELib.Install(pathLib, 'deigdeshared.def'))
 	
-	archiveLib[os.path.join(pathBin, 'deigdeshared.dll')] = envIGDELib.File('deigdeshared.dll')
+	archiveLib[os.path.join(pathSysLib, 'deigdeshared.dll')] = envIGDELib.File('deigdeshared.dll')
 	archiveLibDevelop[os.path.join(pathLib, 'deigdeshared.lib')] = envIGDELib.File('deigdeshared.lib')
 	archiveLibDevelop[os.path.join(pathLib, 'deigdeshared.def')] = envIGDELib.File('deigdeshared.def')
 	

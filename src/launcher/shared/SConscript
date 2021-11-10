@@ -145,8 +145,8 @@ parent_targets['delauncher'] = {
 	'install' : targetInstallLib,
 	'install-runtime' : targetInstallLibRuntime,
 	'install-launcher-runtime' : targetInstallLibRuntime,
-	'archive-launcher' : archiveLib,
-	'archive-launcher-develop' : archiveLibDevelop,
+	'archive-engine' : archiveLib,
+	'archive-engine-develop' : archiveLibDevelop,
 	'doxygen' : targetDoxygen,
 	'cloc' : buildCloc,
 	'clocReport' : '{}/clocreport.csv'.format(srcdir)}

@@ -219,6 +219,8 @@ params.Add( StringVariable( 'installer_name_engine',
 	'Installer file name without extension for Drag[en]gine installer', 'install-dragengine' ) )
 params.Add( StringVariable( 'installer_name_engine_dev',
 	'Installer file name without extension for Drag[en]gine Development installer', 'install-dragengine-dev' ) )
+params.Add( StringVariable( 'installer_name_launcher',
+	'Installer file name without extension for Drag[en]gine Launcher installer', 'install-dragengine-launcher' ) )
 params.Add( StringVariable( 'installer_name_igde',
 	'Installer file name without extension for IGDE installer', 'install-deigde' ) )
 params.Add( StringVariable( 'installer_name_igde_dev',

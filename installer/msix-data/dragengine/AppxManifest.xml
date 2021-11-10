@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='utf-8'?>
+<Package xmlns='http://schemas.microsoft.com/appx/manifest/foundation/windows10'
+         xmlns:uap='http://schemas.microsoft.com/appx/manifest/uap/windows10'
+         xmlns:uap2='http://schemas.microsoft.com/appx/manifest/uap/windows10/2'
+         xmlns:uap3='http://schemas.microsoft.com/appx/manifest/uap/windows10/3'
+         xmlns:uap10='http://schemas.microsoft.com/appx/manifest/uap/windows10/10'
+         xmlns:rescap='http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities'
+         IgnorableNamespaces='uap uap2 uap3 uap10 rescap'>
+	<Identity Name='DragonDreams.Dragengine.GameEngine'
+	          Version='1.7.0.0'
+	          Publisher='CN=E95CA5DA-8C21-47A7-9FC7-7DDEFAE1B9E5'
+	          ProcessorArchitecture='x64'/>
+	<Properties>
+		<DisplayName>Drag[en]gine Game Engine</DisplayName>
+		<PublisherDisplayName>DragonDreams</PublisherDisplayName>
+		<Description>Drag[en]gine Game Engine.</Description>
+		<Logo>Assets\icon-dragengine.png</Logo>
+		<uap10:PackageIntegrity>
+			<uap10:Content Enforcement='on'/>
+		</uap10:PackageIntegrity>
+		<Framework>true</Framework>
+	</Properties>
+	<Resources>
+		<Resource Language='en-us'/>
+	</Resources>
+	<Dependencies>
+		<TargetDeviceFamily Name='MSIXCore.Desktop' MinVersion='6.1.7601.0' MaxVersionTested='10.0.22000.1'/>
+		<TargetDeviceFamily Name='Windows.Desktop' MinVersion='10.0.17763.0' MaxVersionTested='10.0.22000.1'/>
+	</Dependencies>
+</Package>
