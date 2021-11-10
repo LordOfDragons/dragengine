@@ -146,14 +146,10 @@ void projTestRunEngine::Start(){
 	pPathShare = pEngine->GetOS()->GetPathShare();
 	pPathLib = pEngine->GetOS()->GetPathEngine();
 	
-	logger->LogInfoFormat( LOGSOURCE, "Cache application ID = '%s'",
-		runParameters.identifier.GetString() );
-	logger->LogInfoFormat( LOGSOURCE, "Engine config path = '%s'",
-		pPathConfig.GetString() );
-	logger->LogInfoFormat( LOGSOURCE, "Engine share path = '%s'",
-		pPathShare.GetString() );
-	logger->LogInfoFormat( LOGSOURCE, "Engine lib path = '%s'",
-		pPathLib.GetString() );
+	logger->LogInfoFormat( LOGSOURCE, "Cache application ID = '%s'", runParameters.identifier.GetString() );
+	logger->LogInfoFormat( LOGSOURCE, "Engine config path = '%s'", pPathConfig.GetString() );
+	logger->LogInfoFormat( LOGSOURCE, "Engine share path = '%s'", pPathShare.GetString() );
+	logger->LogInfoFormat( LOGSOURCE, "Engine lib path = '%s'", pPathLib.GetString() );
 }
 
 void projTestRunEngine::PutIntoVFS(){
