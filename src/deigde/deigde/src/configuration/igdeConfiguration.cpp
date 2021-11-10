@@ -376,8 +376,6 @@ void igdeConfiguration::LocatePath(){
 	// using an environment parameter.
 	pPathShares = IGDE_SHARE_PATH;
 #ifdef OS_W32
-	//pPathShares = deOSWindows::GetRegistryValue( "SOFTWARE\\Drag[en]gine",
-	//	"PathIgdeShares", pPathShares );
 	pPathShares = pathIgde + "\\Share";
 #endif
 	
@@ -413,8 +411,6 @@ void igdeConfiguration::LocatePath(){
 	// using an environment parameter.
 	pPathLib = IGDE_LIB_PATH;
 #ifdef OS_W32
-	//pPathLib = deOSWindows::GetRegistryValue( "SOFTWARE\\Drag[en]gine",
-	//	"PathIgdeLib", pPathLib );
 	pPathLib = pathIgde + "\\Data";
 #endif
 	

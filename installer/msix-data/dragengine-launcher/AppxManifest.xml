@@ -47,7 +47,7 @@
 			                    VisualGroup='Drag[en]gine'/>
 			<Extensions>
 				<uap3:Extension Category='windows.fileTypeAssociation'>
-					<uap3:FileTypeAssociation Name='delga'>
+					<uap3:FileTypeAssociation Name='delga' MultiSelectModel='Single'>
 						<uap:SupportedFileTypes>
 							<uap:FileType>.delga</uap:FileType>
 						</uap:SupportedFileTypes>

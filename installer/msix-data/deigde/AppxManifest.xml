@@ -47,7 +47,7 @@
 			                    VisualGroup='Drag[en]gine'/>
 			<Extensions>
 				<uap3:Extension Category='windows.fileTypeAssociation'>
-					<uap3:FileTypeAssociation Name='degp'>
+					<uap3:FileTypeAssociation Name='degp' MultiSelectModel='Single'>
 						<uap:SupportedFileTypes>
 							<uap:FileType>.degp</uap:FileType>
 						</uap:SupportedFileTypes>
