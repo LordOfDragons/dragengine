@@ -25,6 +25,7 @@
 #include <dragengine/common/math/decMath.h>
 
 class dearBoneState;
+class deRigBone;
 
 
 
@@ -51,13 +52,17 @@ private:
 	int pBoneStateIndex;
 	decMatrix pGlobalMatrix;
 	decMatrix pInvGlobalMatrix;
-	decVector pRefRotation;
-	int pAxisTypeX;
-	int pAxisTypeY;
-	int pAxisTypeZ;
+	eAxisTypes pAxisTypeX;
+	eAxisTypes pAxisTypeY;
+	eAxisTypes pAxisTypeZ;
 	bool pHasLimits;
 	decVector pDampening;
 	bool pHasDampening;
+	decVector pLimitLower;
+	decVector pLimitUpper;
+	decQuaternion pLimitZeroQuat;
+	decQuaternion pLimitZeroQuatInv;
+	decVector pLockedRotation;
 	
 	
 	
@@ -95,29 +100,23 @@ public:
 	
 	
 	
-	/** Reference rotation. */
-	inline const decVector &GetReferenceRotation() const{ return pRefRotation; }
-	
-	/** Set reference rotation. */
-	void SetReferenceRotation( const decVector &rotation );
-	
 	/** X axis type. */
-	inline int GetAxisTypeX() const{ return pAxisTypeX; }
+	inline eAxisTypes GetAxisTypeX() const{ return pAxisTypeX; }
 	
 	/** Set X axis type. */
-	void SetAxisTypeX( int type );
+	void SetAxisTypeX( eAxisTypes type );
 	
 	/** Y axis type. */
-	inline int GetAxisTypeY() const{ return pAxisTypeY; }
+	inline eAxisTypes GetAxisTypeY() const{ return pAxisTypeY; }
 	
 	/** Set Y axis type. */
-	void SetAxisTypeY( int type );
+	void SetAxisTypeY( eAxisTypes type );
 	
 	/** Z axis type. */
-	inline int GetAxisTypeZ() const{ return pAxisTypeZ; }
+	inline eAxisTypes GetAxisTypeZ() const{ return pAxisTypeZ; }
 	
 	/** Set Z axis type. */
-	void SetAxisTypeZ( int type );
+	void SetAxisTypeZ( eAxisTypes type );
 	
 	/** Any limits in effect. */
 	inline bool GetHasLimits() const{ return pHasLimits; }
@@ -133,6 +132,27 @@ public:
 	
 	/** Has dampening. */
 	inline bool HasDampening() const{ return pHasDampening; }
+	
+	/** Lower limit. */
+	inline const decVector &GetLimitLower() const{ return pLimitLower; }
+	
+	/** Upper limit. */
+	inline const decVector &GetLimitUpper() const{ return pLimitUpper; }
+	
+	/** Limit center quaternion. */
+	inline const decQuaternion &GetLimitZeroQuat() const{ return  pLimitZeroQuat; }
+	
+	/** Inverse limit center quaternion. */
+	inline const decQuaternion &GetLimitZeroQuatInv() const{ return pLimitZeroQuatInv; }
+	
+	/** Update limits from rig bone. */
+	void UpdateLimits( const deRigBone &bone );
+	
+	/** Locked rotation. */
+	inline const decVector &GetLockedRotation() const{ return pLockedRotation; }
+	
+	/** Set locked rotation. */
+	void SetLockedRotation( const decVector &rotation );
 	/*@}*/
 };
 

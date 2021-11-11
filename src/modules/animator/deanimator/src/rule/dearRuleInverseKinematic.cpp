@@ -215,7 +215,6 @@ DEBUG_RESET_TIMERS;
 		for( i=0; i<pChainCount; i++ ){
 			dearBoneState &boneState = *stalist.GetStateAt( pChain[ i ].GetBoneStateIndex() );
 			boneState.UpdateMatrices();
-			pChain[ i ].SetReferenceRotation( boneState.GetOrientation().GetEulerAngles() );
 			pChain[ i ].SetGlobalMatrix( boneState.GetGlobalMatrix() );
 		}
 		
@@ -225,7 +224,8 @@ DEBUG_RESET_TIMERS;
 				dearBoneState &boneState = *stalist.GetStateAt( pChain[ i ].GetBoneStateIndex() );
 				boneState.UpdateFromGlobalMatrix();
 				
-				pChain[ i ].SetReferenceRotation( boneState.GetOrientation().GetEulerAngles() );
+				pChain[ i ].SetLockedRotation( ( boneState.GetOrientation()
+					* pChain[ i ].GetLimitZeroQuat() ).GetEulerAngles() );
 			}
 		}
 		
@@ -327,11 +327,6 @@ DEBUG_RESET_TIMERS;
 				
 				// retrieve the current rotation and apply limits if the rig bone has any
 				if( pChain[ i ].GetHasLimits() ){
-					const deRigBone &rigBone = *stalist.GetStateAt( pChain[ i ].GetBoneStateIndex() )->GetRigBone();
-					const decVector &refRotation = pChain[ i ].GetReferenceRotation();
-					const decVector &limitsLower = rigBone.GetIKLimitsLower();
-					const decVector &limitsUpper = rigBone.GetIKLimitsUpper();
-					
 					// determine the rotation relative to the rig local state
 					const decMatrix &globMat = pChain[ i ].GetGlobalMatrix();
 					
@@ -350,10 +345,10 @@ DEBUG_RESET_TIMERS;
 						boneLocalRotOrg = globMat.QuickMultiplyRotation( tempRotMat );
 					}
 					
-					decQuaternion quatRotated( boneLocalRot.ToQuaternion() );
+					decQuaternion quatRotated( boneLocalRot.ToQuaternion() * pChain[ i ].GetLimitZeroQuat() );
 					
 					if( pChain[ i ].HasDampening() ){
-						const decQuaternion quatCurrent( boneLocalRotOrg.ToQuaternion() );
+						const decQuaternion quatCurrent( boneLocalRotOrg.ToQuaternion() * pChain[ i ].GetLimitZeroQuat() );
 						decVector eulerDiff( ( quatRotated * quatCurrent.Conjugate() ).GetEulerAngles() );
 						
 						const decVector &dampening = pChain[ i ].GetDampening();
@@ -366,8 +361,13 @@ DEBUG_RESET_TIMERS;
 					rotation = quatRotated.GetEulerAngles();
 					
 					// apply limits on the rotation where required. includes dampening
+// 					const deRigBone &rigBone = *stalist.GetStateAt( pChain[ i ].GetBoneStateIndex() )->GetRigBone();
+					const decVector &lockedRotation = pChain[ i ].GetLockedRotation();
+					const decVector &limitsLower = pChain[ i ].GetLimitLower();
+					const decVector &limitsUpper = pChain[ i ].GetLimitUpper();
+					
 					if( pChain[ i ].GetAxisTypeX() == dearIKWorkState::eatLocked ){
-						rotation.x = refRotation.x;
+						rotation.x = lockedRotation.x;
 						
 					}else if( pChain[ i ].GetAxisTypeX() == dearIKWorkState::eatLimited ){
 						if( rotation.x < limitsLower.x ){
@@ -379,7 +379,7 @@ DEBUG_RESET_TIMERS;
 					}
 					
 					if( pChain[ i ].GetAxisTypeY() == dearIKWorkState::eatLocked ){
-						rotation.y = refRotation.y;
+						rotation.y = lockedRotation.y;
 						
 					}else if( pChain[ i ].GetAxisTypeY() == dearIKWorkState::eatLimited ){
 						if( rotation.y < limitsLower.y ){
@@ -391,7 +391,7 @@ DEBUG_RESET_TIMERS;
 					}
 					
 					if( pChain[ i ].GetAxisTypeZ() == dearIKWorkState::eatLocked ){
-						rotation.z = refRotation.z;
+						rotation.z = lockedRotation.z;
 						
 					}else if( pChain[ i ].GetAxisTypeZ() == dearIKWorkState::eatLimited ){
 						if( rotation.z < limitsLower.z ){
@@ -402,15 +402,17 @@ DEBUG_RESET_TIMERS;
 						}
 					}
 					
+					quatRotated = decQuaternion::CreateFromEuler( rotation ) * pChain[ i ].GetLimitZeroQuatInv();
+					
 					// create new rotation matrix
 					if( i == 0 ){
 						rotationMatrix = pChain[ i ].GetInverseGlobalMatrix()
-							.QuickMultiplyRotation( decMatrix::CreateRotation( rotation ) )
+							.QuickMultiplyRotation( decMatrix::CreateFromQuaternion( quatRotated ) )
 							.QuickMultiplyRotation( baseRotMatrix );
 						
 					}else{
 						rotationMatrix = pChain[ i ].GetInverseGlobalMatrix()
-							.QuickMultiplyRotation( decMatrix::CreateRotation( rotation ) )
+							.QuickMultiplyRotation( decMatrix::CreateFromQuaternion( quatRotated ) )
 							.QuickMultiplyRotation( stalist.GetStateAt(
 								pChain[ i ].GetBoneStateIndex() )->GetRigLocalMatrix() )
 							.QuickMultiplyRotation( pChain[ i - 1 ].GetGlobalMatrix() );
@@ -777,6 +779,10 @@ void dearRuleInverseKinematic::pInitIKLimits(){
 			}else{
 				pChain[ i ].SetAxisTypeZ( dearIKWorkState::eatFree );
 				dampening.z = 1.0f - resistance.z;
+			}
+			
+			if( hasLimits ){
+				pChain[ i ].UpdateLimits( *rigBone );
 			}
 			
 			pChain[ i ].SetDampening( dampening );
