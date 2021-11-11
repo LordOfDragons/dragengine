@@ -11,7 +11,7 @@
 	          Publisher='CN=E95CA5DA-8C21-47A7-9FC7-7DDEFAE1B9E5'
 	          ProcessorArchitecture='x64'/>
 	<Properties>
-		<DisplayName>Drag[en]gine IGDE</DisplayName>
+		<DisplayName>Drag[en]gine IGDE SDK</DisplayName>
 		<PublisherDisplayName>DragonDreams</PublisherDisplayName>
 		<Description>Drag[en]gine IGDE SDK. Required to develop IGDE Editors.</Description>
 		<Logo>Assets\icon-deigde.png</Logo>
