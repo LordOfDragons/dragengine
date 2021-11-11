@@ -23,4 +23,7 @@
 	<Resources>
 		<Resource Language='en-us'/>
 	</Resources>
+	<Dependencies>
+		<!-- empty tag on purpose. tag has to exist even if empty -->
+	</Dependencies>
 </Package>
