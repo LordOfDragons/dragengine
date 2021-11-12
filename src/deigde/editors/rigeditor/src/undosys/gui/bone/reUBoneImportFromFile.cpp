@@ -223,6 +223,12 @@ void reUBoneImportFromFile::Redo(){
 				bone->SetCentralMassPoint( importBone->GetCentralMassPoint() * pScale );
 				bone->SetMass( importBone->GetMass() );
 				bone->SetDynamic( importBone->GetDynamic() );
+				bone->SetIKLimitsLower( importBone->GetIKLimitsLower() );
+				bone->SetIKLimitsUpper( importBone->GetIKLimitsUpper() );
+				bone->SetIKResistance( importBone->GetIKResistance() );
+				bone->SetIKLockedX( importBone->GetIKLockedX() );
+				bone->SetIKLockedY( importBone->GetIKLockedY() );
+				bone->SetIKLockedZ( importBone->GetIKLockedZ() );
 			}
 			
 			if( pImportShapes ){
