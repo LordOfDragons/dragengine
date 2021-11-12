@@ -35,7 +35,7 @@ class deWindowsInput;
 
 
 /**
- * \brief Windows input device button.
+ * Windows input device button.
  */
 class dewiDeviceButton : public deObject{
 private:
@@ -53,19 +53,18 @@ private:
 	int pWIChar;
 	deInputEvent::eKeyCodes pKeyCode;
 	int pMatchPriority;
-	
-	bool pDirtyValue;
+	deInputEvent::eKeyLocation pKeyLocation;
 	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create device button. */
+	/** Create device button. */
 	dewiDeviceButton( deWindowsInput &module );
 	
 protected:
-	/** \brief Clean up device button. */
+	/** Clean up device button. */
 	virtual ~dewiDeviceButton();
 	/*@}*/
 	
@@ -74,76 +73,82 @@ protected:
 public:
 	/** \name Module Management */
 	/*@{*/
-	/** \brief Input module. */
+	/** Input module. */
 	inline deWindowsInput &GetModule() const{ return pModule; }
 	
-	/** \brief Identifier. */
+	/** Identifier. */
 	inline const decString &GetID() const{ return pID; }
 	
-	/** \brief Set identifier. */
+	/** Set identifier. */
 	void SetID( const char *id );
 	
-	/** \brief Name. */
+	/** Name. */
 	inline const decString &GetName() const{ return pName; }
 	
-	/** \brief Set name. */
+	/** Set name. */
 	void SetName( const char *name );
 	
-	/** \brief Button is pressed. */
+	/** Button is pressed. */
 	inline bool GetPressed() const{ return pPressed; }
 	
-	/** \brief Set if button is presssed. */
+	/** Set if button is presssed. */
 	void SetPressed( bool pressed );
 	
 	
 	
-	/** \brief Display image. */
+	/** Display image. */
 	inline deImage *GetDisplayImage() const{ return pDisplayImage; }
 	
-	/** \brief Display icons (deImage*). */
+	/** Display icons (deImage*). */
 	inline const decObjectOrderedSet &GetDisplayIcons() const{ return pDisplayIcons; }
 	
-	/** \brief Set display image and icons. */
+	/** Set display image and icons. */
 	void SetDisplayImages( const char *name );
 	
-	/** \brief Set display image and icons. */
+	/** Set display image and icons. */
 	void SetDisplayImages( const dewiDeviceButton &button );
 	
-	/** \brief Display text. */
+	/** Display text. */
 	inline const decString &GetDisplayText() const{ return pDisplayText; }
 	
-	/** \brief Set display text. */
+	/** Set display text. */
 	void SetDisplayText( const char *text );
 	
 	
 	
-	/** \brief WI specific code. */
+	/** WI specific code. */
 	inline int GetWICode() const{ return pWICode; }
 	
-	/** \brief Set WI specific code. */
+	/** Set WI specific code. */
 	void SetWICode( int code );
 	
-	/** \brief WI specific character. */
+	/** WI specific character. */
 	inline int GetWIChar() const{ return pWIChar; }
 	
-	/** \brief Set WI specific character. */
+	/** Set WI specific character. */
 	void SetWIChar( int character );
 	
-	/** \brief Input event key code. */
+	/** Input event key code. */
 	inline deInputEvent::eKeyCodes GetKeyCode() const{ return pKeyCode; }
 	
-	/** \brief Set input event key code. */
+	/** Set input event key code. */
 	void SetKeyCode( deInputEvent::eKeyCodes keyCode );
 	
-	/** \brief Match priority. */
+	/** Match priority. */
 	inline int GetMatchPriority() const{ return pMatchPriority; }
 	
-	/** \brief Set match priority. */
+	/** Set match priority. */
 	void SetMatchPriority( int priority );
 	
+	/** Key location. */
+	inline deInputEvent::eKeyLocation GetKeyLocation() const{ return pKeyLocation; }
+	
+	/** Set key location. */
+	void SetKeyLocation( deInputEvent::eKeyLocation location );
 	
 	
-	/** \brief Update engine input device information button. */
+	
+	/** Update engine input device information button. */
 	void GetInfo( deInputDeviceButton &info ) const;
 	/*@}*/
 };

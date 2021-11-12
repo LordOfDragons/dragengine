@@ -259,6 +259,45 @@ int deWindowsInput::ButtonMatchingKeyChar( int device, int character ){
 	return pDevices->GetKeyboard()->ButtonMatchingKeyChar( character );
 }
 
+int deWindowsInput::ButtonMatchingKeyCode( int device, deInputEvent::eKeyCodes keyCode,
+deInputEvent::eKeyLocation location ){
+	if( device != pDevices->GetKeyboard()->GetIndex() ){
+		return -1;
+	}
+	
+	const dewiDeviceKeyboard &rdevice = *pDevices->GetKeyboard();
+	const int count = rdevice.GetButtonCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		const dewiDeviceButton &button = *rdevice.GetButtonAt( i );
+		if( button.GetKeyCode() == keyCode && button.GetKeyLocation() < location ){
+			return i;
+		}
+	}
+	
+	return 1;
+}
+
+int deWindowsInput::ButtonMatchingKeyChar( int device, int character, deInputEvent::eKeyLocation location ){
+	if( device != pDevices->GetKeyboard()->GetIndex() ){
+		return -1;
+	}
+	
+	const dewiDeviceKeyboard &rdevice = *pDevices->GetKeyboard();
+	const int count = rdevice.GetButtonCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		const dewiDeviceButton &button = *rdevice.GetButtonAt( i );
+		if( button.GetWIChar() == character && button.GetKeyLocation() < location ){
+			return i;
+		}
+	}
+	
+	return 1;
+}
+
 
 
 // Events

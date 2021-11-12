@@ -29,17 +29,17 @@
 
 
 /**
- * \brief Windows keyboard input device.
+ * Windows keyboard input device.
  */
 class dewiDeviceKeyboard : public dewiDevice{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create device. */
+	/** Create device. */
 	dewiDeviceKeyboard( deWindowsInput &module );
 	
 protected:
-	/** \brief Clean up device. */
+	/** Clean up device. */
 	virtual ~dewiDeviceKeyboard();
 	/*@}*/
 	
@@ -48,13 +48,16 @@ protected:
 public:
 	/** \name Module Management */
 	/*@{*/
-	/** \brief Get key code for windows virtual key code. */
+	/** Get key code for windows virtual key code. */
 	static deInputEvent::eKeyCodes KeyCodeForWICode( int code );
 	
-	/** \brief Get matching priority for virtual key code. */
+	/** Get key location for windows virtual key code. */
+	static deInputEvent::eKeyLocation KeyLocationForWICode( int code );
+	
+	/** Get matching priority for virtual key code. */
 	static int MatchingPriorityForWICode( int code );
 	
-	/** \brief Get button best matching a character. */
+	/** Get button best matching a character. */
 	int ButtonMatchingKeyChar( int keyChar ) const;
 	/*@}*/
 	
