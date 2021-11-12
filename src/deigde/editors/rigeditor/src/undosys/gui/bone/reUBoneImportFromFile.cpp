@@ -99,6 +99,12 @@ reUBoneImportFromFile::reUBoneImportFromFile( reRig *rig, reRig *importedRig ){
 					ubone.oldCMP = bone->GetCentralMassPoint();
 					ubone.oldMass = bone->GetMass();
 					ubone.oldDynamic = bone->GetDynamic();
+					ubone.oldIKLimitsLower = bone->GetIKLimitsLower();
+					ubone.oldIKLimitsUpper = bone->GetIKLimitsUpper();
+					ubone.oldIKResistance = bone->GetIKResistance();
+					ubone.oldIKLocked[ 0 ] = bone->GetIKLockedX();
+					ubone.oldIKLocked[ 1 ] = bone->GetIKLockedY();
+					ubone.oldIKLocked[ 2 ] = bone->GetIKLockedZ();
 					
 					ubone.oldShapes = new reRigShapeList;
 					
@@ -170,6 +176,12 @@ void reUBoneImportFromFile::Undo(){
 			bone->SetCentralMassPoint( ubone.oldCMP );
 			bone->SetMass( ubone.oldMass );
 			bone->SetDynamic( ubone.oldDynamic );
+			bone->SetIKLimitsLower( ubone.oldIKLimitsLower );
+			bone->SetIKLimitsUpper( ubone.oldIKLimitsUpper );
+			bone->SetIKResistance( ubone.oldIKResistance );
+			bone->SetIKLockedX( ubone.oldIKLocked[ 0 ] );
+			bone->SetIKLockedY( ubone.oldIKLocked[ 1 ] );
+			bone->SetIKLockedZ( ubone.oldIKLocked[ 2 ] );
 		}
 		
 		if( pImportShapes ){

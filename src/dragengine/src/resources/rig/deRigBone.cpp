@@ -115,7 +115,7 @@ void deRigBone::SetIKLimits( const decVector &lower, const decVector &upper ){
 }
 
 void deRigBone::SetIKResistance( const decVector &resistance ){
-	pIKResistance = resistance;
+	pIKResistance = resistance.Clamped( decVector(), decVector( 1.0f, 1.0f, 1.0f ) );
 }
 
 void deRigBone::SetIKLockedX( bool locked ){

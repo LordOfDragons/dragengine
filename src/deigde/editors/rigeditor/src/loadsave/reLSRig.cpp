@@ -140,10 +140,16 @@ void reLSRig::LoadRig( reRig *rig, decBaseFileReader *file ){
 			// copy over the values
 			rigBone->SetName( engRigBone.GetName() );
 			rigBone->SetPosition( engRigBone.GetPosition() );
-			rigBone->SetOrientation( engRigBone.GetRotation() / DEG2RAD );
+			rigBone->SetOrientation( engRigBone.GetRotation() * RAD2DEG );
 			rigBone->SetCentralMassPoint( engRigBone.GetCentralMassPoint() );
 			rigBone->SetDynamic( engRigBone.GetDynamic() );
 			rigBone->SetMass( engRigBone.GetMass() );
+			rigBone->SetIKLimitsLower( engRigBone.GetIKLimitsLower() * RAD2DEG );
+			rigBone->SetIKLimitsUpper( engRigBone.GetIKLimitsUpper() * RAD2DEG );
+			rigBone->SetIKResistance( engRigBone.GetIKResistance() );
+			rigBone->SetIKLockedX( engRigBone.GetIKLockedX() );
+			rigBone->SetIKLockedY( engRigBone.GetIKLockedY() );
+			rigBone->SetIKLockedZ( engRigBone.GetIKLockedZ() );
 			
 			// create shapes
 			shapeCount = engRigBone.GetShapes().GetCount();
@@ -174,7 +180,7 @@ void reLSRig::LoadRig( reRig *rig, decBaseFileReader *file ){
 				constraint = new reRigConstraint( engine );
 				
 				constraint->SetPosition( engConstraint.GetReferencePosition() );
-				constraint->SetOrientation( decMatrix::CreateFromQuaternion( engConstraint.GetReferenceOrientation() ).GetEulerAngles() / DEG2RAD );
+				constraint->SetOrientation( decMatrix::CreateFromQuaternion( engConstraint.GetReferenceOrientation() ).GetEulerAngles() * RAD2DEG );
 				constraint->SetOffset( engConstraint.GetBoneOffset() );
 				
 				constraint->GetDofLinearX().SetFromEngineDof( engConstraint.GetDofLinearX() );

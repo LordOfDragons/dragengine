@@ -51,8 +51,14 @@ private:
 	igdeEditVectorReference pEditPosition;
 	igdeEditVectorReference pEditRotation;
 	igdeEditVectorReference pEditCentralMassPoint;
+	igdeEditVectorReference pEditIKLimitsLower;
+	igdeEditVectorReference pEditIKLimitsUpper;
+	igdeEditVectorReference pEditIKResistance;
 	igdeTextFieldReference pEditMass;
 	igdeCheckBoxReference pChkDynamic;
+	igdeCheckBoxReference pChkIKLockedX;
+	igdeCheckBoxReference pChkIKLockedY;
+	igdeCheckBoxReference pChkIKLockedZ;
 	
 	
 	
