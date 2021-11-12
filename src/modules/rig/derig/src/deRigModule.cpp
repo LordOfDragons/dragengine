@@ -1321,8 +1321,8 @@ void deRigModule::pWriteBone( decXmlWriter &writer, const deRig &rig, const deRi
 		writer.WriteDataTagBool( "dynamic", bone.GetDynamic() );
 	}
 	
-	const decVector &ikLimitsLower = bone.GetIKLimitsLower();
-	const decVector &ikLimitsUpper = bone.GetIKLimitsUpper();
+	const decVector ikLimitsLower( bone.GetIKLimitsLower() * RAD2DEG );
+	const decVector ikLimitsUpper( bone.GetIKLimitsUpper() * RAD2DEG );
 	const decVector &ikResistance = bone.GetIKResistance();
 	
 	if( ! ikLimitsLower.IsZero() || ! ikResistance.IsZero()
