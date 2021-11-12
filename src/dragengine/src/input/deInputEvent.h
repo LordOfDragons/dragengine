@@ -233,6 +233,31 @@ public:
 		esVR //<! Originates from VR System
 	};
 	
+	/**
+	 * \brief Location of key on keyboard.
+	 * \version 1.7
+	 * 
+	 * Used to distinguish between multiple keys producing the same key code.
+	 */
+	enum eKeyLocation{
+		/**
+		 * \brief No location information.
+		 * 
+		 * Used for all keys existing only once on the keyboard and primary keys located
+		 * in the large key block on keyboards.
+		 */
+		eklNone,
+		
+		/** \brief Left side key, for example left shift key. */
+		eklLeft,
+		
+		/** \brief Right side key, for example right shift key. */
+		eklRight,
+		
+		/** \brief Key is located in the key pad. */
+		eklKeyPad
+	};
+	
 	
 	
 private:
@@ -247,6 +272,7 @@ private:
 	float pValue;
 	timeval pTime;
 	eSources pSource;
+	eKeyLocation pKeyLocation;
 	
 	
 	
@@ -368,6 +394,22 @@ public:
 	 * \version 1.6
 	 */
 	void SetSource( eSources source );
+	
+	/**
+	 * \brief Location of key on keyboard.
+	 * \version 1.7
+	 * 
+	 * Used to distinguish between multiple keys producing the same key code.
+	 */
+	inline eKeyLocation GetKeyLocation() const{ return pKeyLocation; }
+	
+	/**
+	 * \brief Set location of key on keyboard.
+	 * \version 1.7
+	 * 
+	 * Used to distinguish between multiple keys producing the same key code.
+	 */
+	void SetKeyLocation( eKeyLocation location );
 	
 	/** \brief Copies properties of another event to this event. */
 	void SetFrom( const deInputEvent &event );

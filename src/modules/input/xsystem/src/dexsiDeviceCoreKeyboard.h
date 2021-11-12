@@ -29,17 +29,17 @@
 
 
 /**
- * \brief X-System core keyboard input device.
+ * X-System core keyboard input device.
  */
 class dexsiDeviceCoreKeyboard : public dexsiDevice{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create device. */
+	/** Create device. */
 	dexsiDeviceCoreKeyboard( deXSystemInput &module );
 	
 protected:
-	/** \brief Clean up device. */
+	/** Clean up device. */
 	virtual ~dexsiDeviceCoreKeyboard();
 	/*@}*/
 	
@@ -48,13 +48,16 @@ protected:
 public:
 	/** \name Module Management */
 	/*@{*/
-	/** \brief Get key code for X11 key sym. */
+	/** Get key code for X11 key sym. */
 	static deInputEvent::eKeyCodes KeyCodeForKeySym( KeySym keysym );
 	
-	/** \brief Get matching priority for X11 key sym. */
+	/** Get key location for X11 key sym. */
+	static deInputEvent::eKeyLocation KeyLocationForKeySym( KeySym keysym );
+	
+	/** Get matching priority for X11 key sym. */
 	static int MatchingPriorityForKeySym( KeySym keysym );
 	
-	/** \brief Get button best matching a character. */
+	/** Get button best matching a character. */
 	int ButtonMatchingKeyChar( int keyChar ) const;
 	/*@}*/
 };

@@ -55,6 +55,15 @@ void deBaseInputModule::GetDeviceBonePose( int, int, bool, deInputDevicePose &po
 	pose = deInputDevicePose();
 }
 
+int deBaseInputModule::ButtonMatchingKeyCode( int device, deInputEvent::eKeyCodes keyCode,
+deInputEvent::eKeyLocation ){
+	return ButtonMatchingKeyCode( device, keyCode );
+}
+
+int deBaseInputModule::ButtonMatchingKeyChar( int device, int character, deInputEvent::eKeyLocation ){
+	return ButtonMatchingKeyChar( device, character );
+}
+
 void deBaseInputModule::ProcessEvents(){
 }
 

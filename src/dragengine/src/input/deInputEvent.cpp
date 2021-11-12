@@ -46,7 +46,8 @@ pKeyChar( 0 ),
 pX( 0 ),
 pY( 0 ),
 pValue( 0.0f ),
-pSource( esInput )
+pSource( esInput ),
+pKeyLocation( eklNone )
 {
 	memset( &pTime, '\0', sizeof( pTime ) );
 }
@@ -62,7 +63,9 @@ pX( event.pX ),
 pY( event.pY ),
 pValue( event.pValue ),
 pTime( event.pTime ),
-pSource( event.pSource ){
+pSource( event.pSource ),
+pKeyLocation( event.pKeyLocation )
+{
 }
 
 deInputEvent::~deInputEvent(){
@@ -120,6 +123,10 @@ void deInputEvent::SetSource( eSources source ){
 	pSource = source;
 }
 
+void deInputEvent::SetKeyLocation( eKeyLocation location ){
+	pKeyLocation = location;
+}
+
 
 
 void deInputEvent::SetFrom( const deInputEvent &event ){
@@ -134,6 +141,7 @@ void deInputEvent::SetFrom( const deInputEvent &event ){
 	pValue = event.pValue;
 	memcpy( &pTime, &event.pTime, sizeof( timeval ) );
 	pSource = event.pSource;
+	pKeyLocation = event.pKeyLocation;
 }
 
 
@@ -152,7 +160,8 @@ bool deInputEvent::operator==( const deInputEvent &event ) const{
 		&& pY == event.pY
 		&& fabsf( pValue - event.pValue ) < FLOAT_SAFE_EPSILON
 		&& memcmp( &pTime, &event.pTime, sizeof( timeval ) ) == 0
-		&& pSource == event.pSource;
+		&& pSource == event.pSource
+		&& pKeyLocation == event.pKeyLocation;
 }
 
 deInputEvent &deInputEvent::operator=( const deInputEvent &event ){
@@ -167,5 +176,6 @@ deInputEvent &deInputEvent::operator=( const deInputEvent &event ){
 	pValue = event.pValue;
 	memcpy( &pTime, &event.pTime, sizeof( timeval ) );
 	pSource = event.pSource;
+	pKeyLocation = event.pKeyLocation;
 	return *this;
 }
