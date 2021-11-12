@@ -429,11 +429,21 @@ class Mesh:
 			for vertex in self.vertices:
 				maxWeights = self.object.dragengine_maxweights
 				# first add all weights as found in the vertex
+				# 
+				# WARNING blender has a bug that can cause data inconsistency. the group.group
+				#         index can be larger or equal to the length of vgroups which is wrong.
+				#         we use a try catch to protect against this problem ignoring such
+				#         broken weights. so far it is totally unknown how such a data
+				#         inconsistency can happen but when it does the exporter breaks
 				vw = vertex.weights.weights
 				for group in vertex.vertex.groups:
-					bone = mapBones.get(vgroups[group.group].name)
-					if bone and group.weight > 0.001:
-						vw.append(Mesh.Weight(bone, group.weight))
+					try:
+						bone = mapBones.get(vgroups[group.group].name)
+						if bone and group.weight > 0.001:
+							vw.append(Mesh.Weight(bone, group.weight))
+					except Exception as e:
+						print('BLENDER BUG! Data inconsistency caught: group.group={} len(vgroups)={}'.format(
+							group.group, len(vgroups)))
 				# normalize weights, sort weights and calculate hash value
 				vertex.weights.normalize(maxWeights)
 			
