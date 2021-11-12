@@ -353,14 +353,14 @@ deInputEvent::eKeyLocation dexsiDeviceCoreKeyboard::KeyLocationForKeySym( KeySym
 	case XK_KP_Page_Down:
 	case XK_KP_End:
 	case XK_KP_Insert:
-		return deInputEvent::eklKeyPad;
+		return deInputEvent::eklNumberPad;
 		
 	default:
 		if( keysym >= XK_KP_F1 && keysym <= XK_KP_F4 ){
-			return deInputEvent::eklKeyPad;
+			return deInputEvent::eklNumberPad;
 			
 		}else if( keysym >= XK_KP_0 && keysym <= XK_KP_9 ){
-			return deInputEvent::eklKeyPad;
+			return deInputEvent::eklNumberPad;
 		}
 	}
 	

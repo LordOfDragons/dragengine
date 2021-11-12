@@ -254,8 +254,8 @@ public:
 		/** \brief Right side key, for example right shift key. */
 		eklRight,
 		
-		/** \brief Key is located in the key pad. */
-		eklKeyPad
+		/** \brief Key is located in the number pad. */
+		eklNumberPad
 	};
 	
 	
