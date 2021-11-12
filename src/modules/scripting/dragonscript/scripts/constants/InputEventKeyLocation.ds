@@ -1,0 +1,49 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine
+
+
+/**
+ * \brief Location of key on keyboard.
+ * \version 1.7
+ * 
+ * Used to distinguish between multiple keys producing the same key code.
+ */
+enum InputEventKeyLocation
+	/**
+	 * \brief No location information.
+	 * 
+	 * Used for all keys existing only once on the keyboard and primary keys located
+	 * in the large key block on keyboards.
+	 */
+	none
+	
+	/** \brief Left side key, for example left shift key. */
+	left
+	
+	/** \brief Right side key, for example right shift key. */
+	right
+	
+	/** \brief Key is located in the number pad. */
+	numberPad
+end

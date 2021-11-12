@@ -39,6 +39,7 @@ private:
 	dsClass *pClsInputDeviceType;
 	dsClass *pClsInputDeviceBoneConfiguration;
 	dsClass *pClsInputEventSource;
+	dsClass *pClsInputEventKeyLocation;
 	
 	
 	
@@ -71,6 +72,7 @@ public:
 	inline dsClass *GetClassInputDeviceType() const{ return pClsInputDeviceType; }
 	inline dsClass *GetClassInputDeviceBoneConfiguration() const{ return pClsInputDeviceBoneConfiguration; }
 	inline dsClass *GetClassInputEventSource() const{ return pClsInputEventSource; }
+	inline dsClass *GetClassInputEventKeyLocation() const{ return pClsInputEventKeyLocation; }
 	/*@}*/
 	
 	
@@ -95,6 +97,7 @@ private:
 		dsClass *clsInputDeviceType;
 		dsClass *clsInputDeviceBoneConfiguration;
 		dsClass *clsInputEventSource;
+		dsClass *clsInputEventKeyLocation;
 		dsClass *clsVector;
 		dsClass *clsQuaternion;
 		dsClass *clsMatrix;
@@ -136,6 +139,8 @@ private:
 	
 	DEF_NATFUNC( nfButtonMatchingKeyCode );
 	DEF_NATFUNC( nfButtonMatchingKeyChar );
+	DEF_NATFUNC( nfButtonMatchingKeyCode2 );
+	DEF_NATFUNC( nfButtonMatchingKeyChar2 );
 	
 	DEF_NATFUNC( nfGetBoneConfiguration );
 	DEF_NATFUNC( nfGetFingerTipOffset );

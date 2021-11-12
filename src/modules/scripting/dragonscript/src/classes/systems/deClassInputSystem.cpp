@@ -23,8 +23,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <libdscript/exceptions.h>
-
 #include "deClassInputSystem.h"
 #include "../deClassModuleParameter.h"
 #include "../input/deClassInputDevice.h"
@@ -37,6 +35,9 @@
 #include <dragengine/systems/modules/input/deBaseInputModule.h>
 #include <dragengine/common/string/unicode/decUnicodeString.h>
 #include <dragengine/common/string/unicode/decUnicodeArgumentList.h>
+
+#include <libdscript/exceptions.h>
+#include <libdscript/packages/default/dsClassEnumeration.h>
 
 
 
@@ -269,6 +270,50 @@ void deClassInputSystem::nfButtonMatchingKeyChar::RunFunction( dsRunTime *rt, ds
 	rt->PushInt( module.ButtonMatchingKeyChar( device, keyChar ) );
 }
 
+// public static func int buttonMatchingKeyCode(int device, int keyCode, InputEventKeyLocation location)
+deClassInputSystem::nfButtonMatchingKeyCode2::nfButtonMatchingKeyCode2( const sInitData &init ) :
+dsFunction( init.clsInpSys, "buttonMatchingKeyCode", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsInteger ){
+	p_AddParameter( init.clsInteger ); // device
+	p_AddParameter( init.clsInteger ); // keyCode
+	p_AddParameter( init.clsInputEventKeyLocation ); // location
+}
+void deClassInputSystem::nfButtonMatchingKeyCode2::RunFunction( dsRunTime *rt, dsValue* ){
+	const deScriptingDragonScript &ds = ( ( deClassInputSystem* )GetOwnerClass() )->GetDS();
+	deBaseInputModule &module = *ds.GetGameEngine()->GetInputSystem()->GetActiveModule();
+	
+	const int device = rt->GetValue( 0 )->GetInt();
+	const deInputEvent::eKeyCodes keyCode = ( deInputEvent::eKeyCodes )rt->GetValue( 1 )->GetInt();
+	
+	const deInputEvent::eKeyLocation location = ( deInputEvent::eKeyLocation )
+		( ( dsClassEnumeration* )rt->GetEngine()->GetClassEnumeration() )->
+			GetConstantOrder( *rt->GetValue( 2 )->GetRealObject() );
+	
+	rt->PushInt( module.ButtonMatchingKeyCode( device, keyCode, location ) );
+}
+
+// public static func int buttonMatchingKeyChar(int device, int keyCode, InputEventKeyLocation location)
+deClassInputSystem::nfButtonMatchingKeyChar2::nfButtonMatchingKeyChar2( const sInitData &init ) :
+dsFunction( init.clsInpSys, "buttonMatchingKeyChar", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsInteger ){
+	p_AddParameter( init.clsInteger ); // device
+	p_AddParameter( init.clsInteger ); // keyChar
+	p_AddParameter( init.clsInputEventKeyLocation ); // location
+}
+void deClassInputSystem::nfButtonMatchingKeyChar2::RunFunction( dsRunTime *rt, dsValue* ){
+	const deScriptingDragonScript &ds = ( ( deClassInputSystem* )GetOwnerClass() )->GetDS();
+	deBaseInputModule &module = *ds.GetGameEngine()->GetInputSystem()->GetActiveModule();
+	
+	const int device = rt->GetValue( 0 )->GetInt();
+	const int keyChar = rt->GetValue( 1 )->GetInt();
+	
+	const deInputEvent::eKeyLocation location = ( deInputEvent::eKeyLocation )
+		( ( dsClassEnumeration* )rt->GetEngine()->GetClassEnumeration() )->
+			GetConstantOrder( *rt->GetValue( 2 )->GetRealObject() );
+	
+	rt->PushInt( module.ButtonMatchingKeyChar( device, keyChar, location ) );
+}
+
 
 
 // public static func int getParameterCount()
@@ -394,6 +439,8 @@ deClassInputSystem::~deClassInputSystem(){
 ///////////////
 
 void deClassInputSystem::CreateClassMembers( dsEngine *engine ){
+	pClsInputEventKeyLocation = engine->GetClass( "Dragengine.InputEventKeyLocation" );
+	
 	sInitData init;
 	
 	init.clsInpSys = this;
@@ -421,6 +468,8 @@ void deClassInputSystem::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfSetFeedbackValue( init ) );;
 	AddFunction( new nfButtonMatchingKeyCode( init ) );;
 	AddFunction( new nfButtonMatchingKeyChar( init ) );;
+	AddFunction( new nfButtonMatchingKeyCode2( init ) );;
+	AddFunction( new nfButtonMatchingKeyChar2( init ) );;
 	
 	AddFunction( new nfGetParameterCount( init ) );
 	AddFunction( new nfGetParameterInfo( init ) );

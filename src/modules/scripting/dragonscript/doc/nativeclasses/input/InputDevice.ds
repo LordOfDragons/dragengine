@@ -114,7 +114,7 @@ class InputDevice
 	 * 
 	 * Icon typically has a size of 16, 24, 32 or 64.
 	 */
-	public func Image getDisplayIconAt( int index )
+	public func Image getDisplayIconAt(int index)
 		return null
 	end
 	
@@ -123,7 +123,7 @@ class InputDevice
 	 * 
 	 * Icon typically has a size of 16, 24, 32 or 64.
 	 */
-	public func Image getLargestDisplayIconX( int maxWidth )
+	public func Image getLargestDisplayIconX(int maxWidth)
 		return null
 	end
 	
@@ -132,7 +132,7 @@ class InputDevice
 	 * 
 	 * Icon typically has a size of 16, 24, 32 or 64.
 	 */
-	public func Image getLargestDisplayIconY( int maxHeight )
+	public func Image getLargestDisplayIconY(int maxHeight)
 		return null
 	end
 	
@@ -159,7 +159,7 @@ class InputDevice
 	 * relative to the last finger segment coordinate frame. These are typically used to
 	 * figure out where finger tips touch objects in the world.
 	 */
-	public func Vector getFingerTipOffset( int index )
+	public func Vector getFingerTipOffset(int index)
 		return null
 	end
 	
@@ -213,7 +213,7 @@ class InputDevice
 	 * \throws EOutOfBoundary \em index is less than 0 or larger than or equal
 	 *                        to getAxisCount().
 	 */
-	public func InputDeviceAxis getAxisAt( int index )
+	public func InputDeviceAxis getAxisAt(int index)
 		return null
 	end
 	
@@ -230,7 +230,7 @@ class InputDevice
 	 * \throws EOutOfBoundary \em index is less than 0 or larger than or equal
 	 *                        to getButtonCount().
 	 */
-	public func InputDeviceButton getButtonAt( int index )
+	public func InputDeviceButton getButtonAt(int index)
 		return null
 	end
 	
@@ -247,7 +247,7 @@ class InputDevice
 	 * \throws EOutOfBoundary \em index is less than 0 or larger than or equal
 	 *                        to getFeedbackCount().
 	 */
-	public func InputDeviceFeedback getFeedbackAt( int index )
+	public func InputDeviceFeedback getFeedbackAt(int index)
 		return null
 	end
 	
@@ -264,7 +264,7 @@ class InputDevice
 	 * \throws EOutOfBoundary \em index is less than 0 or larger than or equal
 	 *                        to getComponentCount().
 	 */
-	public func InputDeviceComponent getComponentAt( int index )
+	public func InputDeviceComponent getComponentAt(int index)
 		return null
 	end
 	
@@ -281,7 +281,7 @@ class InputDevice
 	 * Can be used for example to locate keyboard keys to create default binding
 	 * layouts without the user pressing input keys.
 	 */
-	public func int buttonMatchingKeyCode( int keyCode )
+	public func int buttonMatchingKeyCode(int keyCode)
 		return 0
 	end
 	
@@ -302,7 +302,29 @@ class InputDevice
 	 * Can be used for example to locate keyboard keys to create default binding
 	 * layouts without the user pressing input keys.
 	 */
-	public func int buttonMatchingKeyChar( int character )
+	public func int buttonMatchingKeyChar(int character)
+		return 0
+	end
+	
+	/**
+	 * \brief Index of button best matching key code or -1 if not found.
+	 * \version 1.7
+	 * 
+	 * Same as buttonMatchingKeyChar(int) but allows to distinguish between multiple
+	 * keys of the same type, for example left and right shift key.
+	 */
+	public func int buttonMatchingKeyCode(int keyCode, InputEventKeyLocation location)
+		return 0
+	end
+	
+	/**
+	 * \brief Index of button best matching character or -1 if not found.
+	 * \version 1.7
+	 * 
+	 * Same as buttonMatchingKeyChar(int) but allows to distinguish between multiple
+	 * keys of the same type, for example left and right shift key.
+	 */
+	public func int buttonMatchingKeyChar(int character, InputEventKeyLocation location)
 		return 0
 	end
 	
@@ -347,7 +369,7 @@ class InputDevice
 	 *                       real hand position. If false remaps the position to simulate
 	 *                       not holding the controller in hand.
 	 */
-	public func Vector getDeviceBonePosePosition( int bone, bool withController )
+	public func Vector getDeviceBonePosePosition(int bone, bool withController)
 		return null
 	end
 	
@@ -357,7 +379,7 @@ class InputDevice
 	 *                       real hand position. If false remaps the position to simulate
 	 *                       not holding the controller in hand.
 	 */
-	public func Quaternion getDeviceBonePoseOrientation( int bone, bool withController )
+	public func Quaternion getDeviceBonePoseOrientation(int bone, bool withController)
 		return null
 	end
 	
@@ -367,7 +389,7 @@ class InputDevice
 	 *                       real hand position. If false remaps the position to simulate
 	 *                       not holding the controller in hand.
 	 */
-	public func Matrix getDeviceBonePoseMatrix( int bone, bool withController )
+	public func Matrix getDeviceBonePoseMatrix(int bone, bool withController)
 		return null
 	end
 	/*@}*/

@@ -40,6 +40,7 @@ private:
 	
 	decObjectList pCachedDevices;
 	bool pCacheDirty;
+	dsClass *pClsInputEventKeyLocation;
 	
 	
 	
@@ -74,6 +75,8 @@ public:
 	
 	/** Frame update. */
 	void OnFrameUpdate();
+	
+	inline dsClass *GetClassInputEventKeyLocation() const{ return pClsInputEventKeyLocation; }
 	/*@}*/
 	
 	
@@ -92,6 +95,7 @@ private:
 		
 		dsClass *clsModPar;
 		dsClass *clsInputDevice;
+		dsClass *clsInputEventKeyLocation;
 	};
 #define DEF_NATFUNC(name) \
 	class name : public dsFunction{ \
@@ -116,6 +120,8 @@ private:
 	DEF_NATFUNC( nfSetFeedbackValue );
 	DEF_NATFUNC( nfButtonMatchingKeyCode );
 	DEF_NATFUNC( nfButtonMatchingKeyChar );
+	DEF_NATFUNC( nfButtonMatchingKeyCode2 );
+	DEF_NATFUNC( nfButtonMatchingKeyChar2 );
 	
 	DEF_NATFUNC( nfGetParameterCount );
 	DEF_NATFUNC( nfGetParameterInfo );
