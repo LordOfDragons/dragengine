@@ -56,6 +56,17 @@
 						</uap2:SupportedVerbs>
 					</uap3:FileTypeAssociation>
 				</uap3:Extension>
+				<uap3:Extension Category='windows.appExecutionAlias' EntryPoint='Windows.FullTrustApplication'>
+					<uap3:AppExecutionAlias>
+						<desktop:ExecutionAlias Alias='delauncher.exe'/>
+					</uap3:AppExecutionAlias>
+				</uap3:Extension>
+				<uap:Extension Category='windows.protocol'>
+					<uap:Protocol Name='delauncher'>
+						<uap:Logo>Assets\icon-delauncher-gui-150x150.png</uap:Logo>
+						<uap:DisplayName>Drag[en]gine Launcher URI Scheme</uap:DisplayName>
+					</uap:Protocol>
+				</uap:Extension>
 			</Extensions>
 		</Application>
 	</Applications>
