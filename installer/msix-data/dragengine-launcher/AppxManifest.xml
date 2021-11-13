@@ -57,9 +57,9 @@
 						</uap2:SupportedVerbs>
 					</uap3:FileTypeAssociation>
 				</uap3:Extension>
-				<uap3:Extension Category='windows.appExecutionAlias' EntryPoint='Windows.FullTrustApplication'>
+				<uap3:Extension Category='windows.appExecutionAlias' EntryPoint='Windows.FullTrustApplication'>
 					<uap3:AppExecutionAlias>
-						<desktop:ExecutionAlias Alias='delauncher.exe'/>
+						<desktop:ExecutionAlias Alias='delauncher.exe'/>
 					</uap3:AppExecutionAlias>
 				</uap3:Extension>
 				<uap:Extension Category='windows.protocol'>
