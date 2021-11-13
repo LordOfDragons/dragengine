@@ -271,7 +271,7 @@ deInputEvent::eKeyLocation location ){
 	
 	for( i=0; i<count; i++ ){
 		const dewiDeviceButton &button = *rdevice.GetButtonAt( i );
-		if( button.GetKeyCode() == keyCode && button.GetKeyLocation() < location ){
+		if( button.GetKeyCode() == keyCode && button.GetKeyLocation() == location ){
 			return i;
 		}
 	}
@@ -290,7 +290,7 @@ int deWindowsInput::ButtonMatchingKeyChar( int device, int character, deInputEve
 	
 	for( i=0; i<count; i++ ){
 		const dewiDeviceButton &button = *rdevice.GetButtonAt( i );
-		if( button.GetWIChar() == character && button.GetKeyLocation() < location ){
+		if( button.GetWIChar() == character && button.GetKeyLocation() == location ){
 			return i;
 		}
 	}
