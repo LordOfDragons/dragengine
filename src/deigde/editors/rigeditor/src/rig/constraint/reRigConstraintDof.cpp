@@ -69,7 +69,7 @@ float reRigConstraintDof::GetThresholdLimits() const{
 	case deColliderConstraint::edofAngularY:
 	case deColliderConstraint::edofAngularZ:
 	default:
-		return 1e3f;
+		return 1e-3f;
 	}
 }
 
@@ -91,8 +91,8 @@ void reRigConstraintDof::SetLowerLimit( float lowerLimit ){
 		case deColliderConstraint::edofAngularX:
 		case deColliderConstraint::edofAngularY:
 		case deColliderConstraint::edofAngularZ:
-		default:
 			pRigConstraint.GetEngineConstraint()->GetDof( pDofIndex ).SetLowerLimit( lowerLimit * DEG2RAD );
+			break;
 		}
 	}
 	

@@ -401,10 +401,6 @@ void reRigConstraint::SetOffset( const decVector &offset ){
 
 
 reRigConstraintDof &reRigConstraint::GetDof( deColliderConstraint::eDegreesOfFreedom dof ) const{
-	if( dof < deColliderConstraint::edofLinearX || dof > deColliderConstraint::edofAngularZ ){
-		DETHROW( deeInvalidParam );
-	}
-	
 	return *pDof[ dof ];
 }
 
