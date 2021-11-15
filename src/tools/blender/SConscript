@@ -9,10 +9,6 @@ envAddon = parent_env.Clone()
 
 pathShare = envAddon.subst(envAddon['path_igde_share'])
 
-versionString = '1.7'
-if envAddon['force_version']:
-	versionString = envAddon['force_version']
-
 files = []
 globFiles(envAddon, 'dragengine-import-export', '*.py', files)
 
@@ -22,7 +18,7 @@ def archiveZip(env, target, source):
 		for path, node in archiveFiles.items():
 			arcfile.write(node.srcnode().abspath, path)
 
-filename = 'blender-dragengine-import-export-{}.zip'.format(versionString)
+filename = '{}.zip'.format(envAddon['addon_name_blender'])
 
 targetBuild = envAddon.Command(filename, files, envAddon.Action(archiveZip, 'Archiving $TARGET'))
 

@@ -215,6 +215,10 @@ params.Add( StringVariable( 'archive_name_igde_dev',
 	'Archive file name without extension for IGDE Development archive', 'deigde_dev' ) )
 params.Add( StringVariable( 'archive_name_special',
 	'Archive file name without extension for Special archive', 'despecial' ) )
+
+params.Add(StringVariable('addon_name_blender',
+	'Blender addon file name without extension', 'blender-addon-dragengine'))
+
 params.Add( StringVariable( 'installer_name_engine',
 	'Installer file name without extension for Drag[en]gine installer', 'install-dragengine' ) )
 params.Add( StringVariable( 'installer_name_engine_dev',
