@@ -19,8 +19,8 @@ def archiveZip(env, target, source):
 			arcfile.write(node.srcnode().abspath, path)
 
 versionString = '1.7.1'
-if envEditor['force_version']:
-        versionString = envEditor['force_version']
+if envAddon['force_version']:
+        versionString = envAddon['force_version']
 
 filename = '{}-{}.zip'.format(envAddon['addon_name_blender'], versionString)
 
