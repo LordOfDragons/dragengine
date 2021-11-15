@@ -129,7 +129,7 @@ srcdir = Dir('.').srcnode().abspath
 
 # doxygen
 targetDoxygen = envLibrary.Alias('delauncher_doc', envLibrary.Command(
-	'doc/html/index.html', 'Doxyfile', 'cd {} && doxygen ../Doxyfile'.format(srcdir)))
+	'doc/html/index.html', 'Doxyfile', 'cd {} && doxygen Doxyfile'.format(srcdir)))
 
 # cloc
 buildClocBare = BuildCLOC(envLibrary,
