@@ -18,7 +18,11 @@ def archiveZip(env, target, source):
 		for path, node in archiveFiles.items():
 			arcfile.write(node.srcnode().abspath, path)
 
-filename = '{}.zip'.format(envAddon['addon_name_blender'])
+versionString = '1.7.1'
+if envEditor['force_version']:
+        versionString = envEditor['force_version']
+
+filename = '{}-{}.zip'.format(envAddon['addon_name_blender'], versionString)
 
 targetBuild = envAddon.Command(filename, files, envAddon.Action(archiveZip, 'Archiving $TARGET'))
 
