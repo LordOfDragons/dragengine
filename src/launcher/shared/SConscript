@@ -43,7 +43,10 @@ headers = []
 globFiles(envLibrary, 'src', '*.cpp', sources)
 globFiles(envLibrary, 'src', '*.h', headers)
 
-headers = [envLibrary.File(h).srcnode() for h in headers]
+ignoreHeaders = []
+ignoreHeaders.append('src/doxy_main.h')
+
+headers = [envLibrary.File(h).srcnode() for h in headers if not h in ignoreHeaders]
 objects = [envLibrary.SharedObject(s) for s in sources]
 
 libsLib = []
@@ -123,6 +126,10 @@ targetDoxygen = envLibrary.Alias('delauncher_doc', envLibrary.Command(
 
 # source directory required for special commands
 srcdir = Dir('.').srcnode().abspath
+
+# doxygen
+targetDoxygen = envLibrary.Alias('delauncher_doc', envLibrary.Command(
+	'doc/html/index.html', 'Doxyfile', 'cd {} && doxygen ../Doxyfile'.format(srcdir)))
 
 # cloc
 buildClocBare = BuildCLOC(envLibrary,
