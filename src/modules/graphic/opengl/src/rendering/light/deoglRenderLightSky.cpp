@@ -35,6 +35,7 @@
 #include "../task/deoglRenderTask.h"
 #include "../task/deoglAddToRenderTask.h"
 #include "../task/deoglRenderTaskShader.h"
+#include "../task/shared/deoglRenderTaskSharedShader.h"
 #include "../lod/deoglLODCalculator.h"
 #include "../deoglRenderOcclusion.h"
 #include "../../capabilities/deoglCapabilities.h"
@@ -158,6 +159,7 @@ deoglRenderLightBase( renderThread ),
 pColList2( NULL ),
 pShaderAO( NULL ),
 pShaderClearDepth( NULL ),
+pShaderOccMesh( nullptr ),
 
 pSolidShadowMap( NULL ),
 
@@ -180,21 +182,29 @@ pDebugInfoTransparentDetail( NULL ),
 pDebugInfoTransparentLight( NULL )
 {
 // 	const deoglConfiguration &config = renderThread.GetConfiguration();
-	deoglShaderManager &shamgr = renderThread.GetShader().GetShaderManager();
+	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
 // 	bool useEncodeDepth = config.GetUseEncodeDepth();
 	deoglShaderSources *sources;
 	deoglShaderDefines defines;
 	
 	try{
-// 		sources = shamgr.GetSourcesNamed( "DefRen AO Sky" );
+// 		sources = shaderManager.GetSourcesNamed( "DefRen AO Sky" );
 // 		if( useEncodeDepth ){
 // 			defines.AddDefine( "GEOM_ENCODED_DEPTH", "1" );
 // 		}
-// 		pShaderAO = shamgr.GetProgramWith( sources, defines );
+// 		pShaderAO = shaderManager.GetProgramWith( sources, defines );
 // 		defines.RemoveAllDefines();
 		
-		sources = shamgr.GetSourcesNamed( "DefRen Clear Depth" );
-		pShaderClearDepth = shamgr.GetProgramWith( sources, defines );
+		sources = shaderManager.GetSourcesNamed( "DefRen Clear Depth" );
+		pShaderClearDepth = shaderManager.GetProgramWith( sources, defines );
+		
+		sources = shaderManager.GetSourcesNamed( "DefRen Occlusion OccMap" );
+		AddSharedSPBDefines( defines );
+		defines.AddDefine( "WITH_SHADOWMAP", true );
+		pShaderOccMesh = shaderManager.GetProgramWith( sources, defines );
+		pShaderOccMesh->EnsureRTSShader();
+		pShaderOccMesh->GetRTSShader()->SetSPBInstanceIndexBase( 0 );
+		defines.RemoveAllDefines();
 		
 		
 		
@@ -1547,6 +1557,9 @@ void deoglRenderLightSky::pCleanUp(){
 		pSolidShadowMap = NULL;
 	}
 	
+	if( pShaderOccMesh ){
+		pShaderOccMesh->RemoveUsage();
+	}
 	if( pShaderClearDepth ){
 		pShaderClearDepth->RemoveUsage();
 	}

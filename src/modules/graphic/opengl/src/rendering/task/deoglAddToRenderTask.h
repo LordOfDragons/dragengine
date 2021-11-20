@@ -294,8 +294,14 @@ public:
 	/** Add occlusion meshes for all components in a collide list. */
 	void AddOcclusionMeshes( const deoglCollideList &clist );
 	
+	/** Add occlusion meshes for all components in a collide list. */
+	void AddOcclusionMeshes( const deoglCollideList &clist, deoglRenderTaskTexture *taskTexture );
+	
 	/** Add occlusion meshes for all components from list. */
 	void AddOcclusionMeshes( const deoglComponentList &list );
+	
+	/** Add occlusion meshes for all components from list. */
+	void AddOcclusionMeshes( const deoglComponentList &list, deoglRenderTaskTexture *taskTexture );
 	
 	/** Add a continuous run of faces of an occlusion mesh. */
 	void AddOcclusionMeshFaces( const deoglRComponent &component, bool doubleSided,

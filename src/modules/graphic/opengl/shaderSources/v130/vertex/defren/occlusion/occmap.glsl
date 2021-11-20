@@ -3,13 +3,31 @@ precision highp int;
 
 #include "v130/shared/ubo_defines.glsl"
 
-UBOLAYOUT uniform RenderParameters{
-	mat4 pMatrixVP[ 6 ];
-	mat4x3 pMatrixV[ 6 ];
-	vec4 pTransformZ[ 6 ];
-	vec2 pZToDepth;
-	vec4 pClipPlane; // normal.xyz, distance
-};
+#ifdef WITH_SHADOWMAP
+	#include "v130/shared/defren/skin/ubo_render_parameters.glsl"
+	
+	#if defined GS_RENDER_CUBE || defined GS_RENDER_CASCADED
+		#define MATRIX_VP_0 pMatrixVP[0]
+		#define MATRIX_V_0 pMatrixV[0]
+		#define TRANSFORM_Z_0 pTransformZ[0]
+	#else
+		#define MATRIX_VP_0 pMatrixVP
+		#define MATRIX_V_0 pMatrixV
+		#define TRANSFORM_Z_0 pTransformZ
+	#endif
+	
+#else
+	UBOLAYOUT uniform RenderParameters{
+		mat4 pMatrixVP[ 6 ];
+		mat4x3 pMatrixV[ 6 ];
+		vec4 pTransformZ[ 6 ];
+		vec2 pZToDepth;
+		vec4 pClipPlane; // normal.xyz, distance
+	};
+	#define MATRIX_VP_0 pMatrixVP[0]
+	#define MATRIX_V_0 pMatrixV[0]
+	#define TRANSFORM_Z_0 pTransformZ[0]
+#endif
 
 #include "v130/shared/defren/occmap.glsl"
 
@@ -44,12 +62,12 @@ void main( void ){
 	#if defined GS_RENDER_CUBE || defined GS_RENDER_CASCADED
 		gl_Position = position;
 	#else
-		gl_Position = pMatrixVP[ 0 ] * position;
+		gl_Position = MATRIX_VP_0 * position;
 		#ifdef PERSPECTIVE_TO_LINEAR
-			vDepth = dot( pTransformZ[ 0 ], position );
+			vDepth = dot( TRANSFORM_Z_0, position );
 		#endif
 		#ifdef DEPTH_DISTANCE
-			vPosition = pMatrixV[ 0 ] * position;
+			vPosition = MATRIX_V_0 * position;
 		#endif
 	#endif
 	
@@ -61,6 +79,6 @@ void main( void ){
 	#endif
 	
 	#ifdef USE_CLIP_PLANE
-		vClipCoord = pMatrixV[ 0 ] * position;
+		vClipCoord = MATRIX_V_0 * position;
 	#endif
 }

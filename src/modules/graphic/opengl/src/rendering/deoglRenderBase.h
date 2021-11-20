@@ -89,6 +89,9 @@ public:
 	/** Add basic defines for shaders. */
 	void AddBasicDefines( deoglShaderDefines &defines );
 	
+	/** Add shared SPB defines for shaders. */
+	void AddSharedSPBDefines( deoglShaderDefines &defines );
+	
 	/** Clamped nearest sampler. */
 	deoglTexSamplerConfig &GetSamplerClampNearest() const;
 	

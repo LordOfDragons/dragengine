@@ -25,6 +25,10 @@
 #include "deoglRPTSkyLightBuildRT.h"
 #include "../deoglRenderPlan.h"
 #include "../deoglRenderPlanSkyLight.h"
+#include "../../light/deoglRenderLight.h"
+#include "../../light/deoglRenderLightSky.h"
+#include "../../task/deoglRenderTaskTexture.h"
+#include "../../task/shared/deoglRenderTaskSharedTexture.h"
 #include "../../../deGraphicOpenGl.h"
 #include "../../../collidelist/deoglCollideListComponent.h"
 #include "../../../collidelist/deoglCollideListHTSector.h"
@@ -34,11 +38,17 @@
 #include "../../../collidelist/deoglCollideListPropFieldCluster.h"
 #include "../../../rendering/task/deoglRenderTask.h"
 #include "../../../rendering/task/deoglAddToRenderTask.h"
+#include "../../../rendering/task/deoglRenderTaskShader.h"
 #include "../../../renderthread/deoglRenderThread.h"
 #include "../../../renderthread/deoglRTLogger.h"
+#include "../../../renderthread/deoglRTRenderers.h"
+#include "../../../renderthread/deoglRTShader.h"
 #include "../../../terrain/heightmap/deoglRHTSector.h"
 #include "../../../terrain/heightmap/deoglHTViewSector.h"
 #include "../../../terrain/heightmap/deoglHTSTexture.h"
+#include "../../../texture/texunitsconfig/deoglTexUnitsConfig.h"
+#include "../../../texture/texunitsconfig/deoglTexUnitsConfigList.h"
+#include "../../../shaders/deoglShaderProgram.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -75,6 +85,10 @@ void deoglRPTSkyLightBuildRT::Run(){
 	}
 	
 	try{
+		const deoglShaderProgram * const shaderOccMesh = pPlan.GetPlan().GetRenderThread().
+			GetRenderers().GetLight().GetRenderLightSky().GetShaderOccMesh();
+		deoglRenderTaskSharedTexture * const sharedTexOccMesh = pPlan.GetPlan().GetRenderThread().
+			GetShader().GetTexUnitsConfigList().GetEmptyNoUsage()->GetRTSTexture();
 		decTimer timer;
 		int i;
 		
@@ -88,6 +102,9 @@ void deoglRPTSkyLightBuildRT::Run(){
 			
 			addToRenderTask.SetSolid( true );
 			addToRenderTask.SetNoShadowNone( true );
+			
+			addToRenderTask.AddOcclusionMeshes( pTempCollideList, addToRenderTask.GetRenderTask().
+				AddShader( shaderOccMesh->GetRTSShader() )->AddTexture( sharedTexOccMesh ) );
 			
 			addToRenderTask.SetSkinShaderType( deoglSkinTexture::estComponentShadowOrthogonal );
 			addToRenderTask.AddComponents( pTempCollideList );

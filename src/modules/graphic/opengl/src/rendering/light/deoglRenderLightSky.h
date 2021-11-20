@@ -46,6 +46,7 @@ private:
 	deoglCollideList *pColList2;
 	deoglShaderProgram *pShaderAO;
 	deoglShaderProgram *pShaderClearDepth;
+	deoglShaderProgram *pShaderOccMesh;
 	
 	deoglRenderableDepthArrayTexture *pSolidShadowMap;
 	
@@ -85,6 +86,9 @@ public:
 	
 	/** \name Rendering */
 	/*@{*/
+	/** Occlusion mesh shader. */
+	inline deoglShaderProgram *GetShaderOccMesh() const{ return pShaderOccMesh; }
+	
 	/** Render lights. */
 	void RenderLights( deoglRenderPlan &plan, bool solid, const deoglRenderPlanMasked *mask );
 	
