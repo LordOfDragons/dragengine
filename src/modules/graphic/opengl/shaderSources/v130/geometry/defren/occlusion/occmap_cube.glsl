@@ -58,6 +58,7 @@ out vec3 vPosition;
 #endif
 
 #include "v130/shared/defren/skin/ubo_special_parameters.glsl"
+#include "v130/shared/defren/sanitize_position.glsl"
 
 
 
@@ -72,7 +73,7 @@ void emitCorner( in int face, in vec4 position ){
 		vPosition = pMatrixV[ face ] * position;
 	#endif
 	
-	gl_Position = pMatrixVP[ face ] * position;
+	gl_Position = sanitizePosition( pMatrixVP[ face ] * position );
 	
 	gl_Layer = face;
 	gl_PrimitiveID = gl_PrimitiveIDIn;

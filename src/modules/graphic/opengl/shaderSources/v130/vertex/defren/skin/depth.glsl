@@ -184,6 +184,7 @@ NODE_VERTEX_OUTPUTS
 // Main Function
 //////////////////
 
+#include "v130/shared/defren/sanitize_position.glsl"
 #include "v130/shared/defren/skin/transform_position.glsl"
 #ifdef REQUIRES_NORMAL
 	#include "v130/shared/defren/skin/transform_normal.glsl"

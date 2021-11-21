@@ -132,6 +132,8 @@ void transformPosition( out vec3 position, in int spbIndex )
 		#endif
 		
 		// tessellation applies projection during evaluation stage so apply it only if not tessellation
+		position = sanitizePosition( position );
+		
 		#ifdef NO_TRANSFORMATION
 			gl_Position = vec4( position, 1.0 );
 			
@@ -153,6 +155,8 @@ void transformPosition( out vec3 position, in int spbIndex )
 		#endif
 		
 		// tessellation applies projection during evaluation stage so apply it only if not tessellation
+		position = sanitizePosition( position );
+		
 		#ifdef NO_TRANSFORMATION
 			gl_Position = vec4( position, 1.0 );
 			
