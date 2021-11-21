@@ -45,7 +45,10 @@ pPosition( 0 )
 	
 	pFile = memoryFile;
 	
-	if( ! append ){
+	if( append ){
+		pPosition = memoryFile->GetLength();
+		
+	}else{
 		memoryFile->Resize( 0, false );
 	}
 	
