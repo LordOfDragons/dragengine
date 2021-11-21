@@ -80,6 +80,7 @@ private:
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
 	DEF_NATFUNC( nfNew );
+	DEF_NATFUNC( nfNewZCompressed );
 	DEF_NATFUNC( nfDestructor );
 	
 	DEF_NATFUNC( nfGetFilename );

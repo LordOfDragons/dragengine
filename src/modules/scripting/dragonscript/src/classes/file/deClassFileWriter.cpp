@@ -34,6 +34,7 @@
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/common/file/decBaseFileReader.h>
 #include <dragengine/common/file/decBaseFileWriter.h>
+#include <dragengine/common/file/decZFileWriter.h>
 #include <dragengine/common/string/decString.h>
 #include <libdscript/exceptions.h>
 
@@ -67,6 +68,23 @@ void deClassFileWriter::nfNew::RunFunction( dsRunTime *rt, dsValue *myself ){
 	// create file writer
 	path.SetFromUnix( rt->GetValue( 0 )->GetString() );
 	nd.fileWriter = vfs.OpenFileForWriting( path );
+}
+
+// public static func FileWriter newZCompresed(String filename)
+deClassFileWriter::nfNewZCompressed::nfNewZCompressed( const sInitData &init ) :
+dsFunction( init.clsFileWriter, "newZCompressed", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsFileWriter ){
+	p_AddParameter( init.clsString ); // filename
+}
+void deClassFileWriter::nfNewZCompressed::RunFunction( dsRunTime *rt, dsValue *myself ){
+	deClassFileWriter &clsFileWriter = *( ( deClassFileWriter* )GetOwnerClass() );
+	deVirtualFileSystem &vfs = *clsFileWriter.GetDS()->GetGameEngine()->GetVirtualFileSystem();
+	
+	const char * const filename = rt->GetValue( 0 )->GetString();
+	
+	clsFileWriter.PushFileWriter( rt, decZFileWriter::Ref::New(
+		new decZFileWriter( decBaseFileWriter::Ref::New(
+			vfs.OpenFileForWriting( decPath::CreatePathUnix( filename ) ) ) ) ) );
 }
 
 // public func destructor()
@@ -405,6 +423,7 @@ void deClassFileWriter::CreateClassMembers( dsEngine *engine ){
 	init.clsFileReader = pDS->GetClassFileReader();
 	
 	AddFunction( new nfNew( init ) );
+	AddFunction( new nfNewZCompressed( init ) );
 	AddFunction( new nfDestructor( init ) );
 	
 	AddFunction( new nfGetFilename( init ) );

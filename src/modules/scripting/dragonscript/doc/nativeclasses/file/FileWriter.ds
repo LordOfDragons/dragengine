@@ -20,6 +20,14 @@ class FileWriter
 	/** \brief Create file writer writing to virtual file system file. */
 	public func new( String filename )
 	end
+	
+	/**
+	 * \brief Create Z-Compressing file writer writing to virtual file system file.
+	 * \version 1.8
+	 */
+	public static func FileWriter newZCompressed(String filename)
+		return null
+	end
 	/*@}*/
 	
 	

@@ -31,6 +31,7 @@
 #include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/common/file/decBaseFileReader.h>
+#include <dragengine/common/file/decZFileReader.h>
 #include <dragengine/common/string/decString.h>
 #include <libdscript/exceptions.h>
 
@@ -70,6 +71,23 @@ void deClassFileReader::nfNew::RunFunction( dsRunTime *rt, dsValue *myself ){
 	if( ! nd.fileReader ){
 		DSTHROW( dueOutOfMemory );
 	}
+}
+
+// public static func FileReader newZCompressed(String filename)
+deClassFileReader::nfNewZCompressed::nfNewZCompressed( const sInitData &init ) :
+dsFunction( init.clsFRead, "newZCompressed", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsFRead ){
+	p_AddParameter( init.clsStr ); // filename
+}
+void deClassFileReader::nfNewZCompressed::RunFunction( dsRunTime *rt, dsValue *myself ){
+	deClassFileReader &clsFRead = *( ( deClassFileReader* )GetOwnerClass() );
+	deVirtualFileSystem &vfs = *clsFRead.GetDS()->GetGameEngine()->GetVirtualFileSystem();
+	
+	const char * const filename = rt->GetValue( 0 )->GetString();
+	
+	clsFRead.PushFileReader( rt, decZFileReader::Ref::New(
+		new decZFileReader( decBaseFileReader::Ref::New(
+			vfs.OpenFileForReading( decPath::CreatePathUnix( filename ) ) ) ) ) );
 }
 
 // public func destructor()
@@ -369,6 +387,7 @@ void deClassFileReader::CreateClassMembers( dsEngine *engine ){
 	init.clsFlt = engine->GetClassFloat();
 	
 	AddFunction( new nfNew( init ) );
+	AddFunction( new nfNewZCompressed( init ) );
 	AddFunction( new nfDestructor( init ) );
 	
 	AddFunction( new nfGetFilename( init ) );
