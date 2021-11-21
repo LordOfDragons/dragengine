@@ -26,21 +26,21 @@ else:
 	staticFileName = envLibrary.subst('lib/${{LIBPREFIX}}{}${{LIBSUFFIX}}'.format(libLinkName))
 
 # check if system libwebp is present
-hasSystemwebp = False
+hasSystemWebp = False
 conf = envLibrary.Configure()
 if envLibrary['with_system_libwebp'] != TernaryVariableNo:
-	hasSystemwebp = conf.CheckLibWithHeader(libLinkName,
+	hasSystemWebp = conf.CheckLibWithHeader(libLinkName,
 		'webp/decode.h', 'c++', 'WebPGetDecoderVersion();')
 conf.Finish()
 
-if not hasSystemwebp and envLibrary['with_system_libwebp'] == TernaryVariableYes:
+if not hasSystemWebp and envLibrary['with_system_libwebp'] == TernaryVariableYes:
 	Exit('Requested to use system libwebp but no usable libwebp found.')
 
 libs = [libLinkName]
 
-parent_report['use system libwebp'] = 'yes' if hasSystemwebp else 'no'
+parent_report['use system libwebp'] = 'yes' if hasSystemWebp else 'no'
 
-if hasSystemwebp:
+if hasSystemWebp:
 	parent_targets['lib_libwebp'] = {
 		'name' : 'Internal libwebp library',
 		'cpppath' : [],
@@ -110,10 +110,10 @@ libpath = [envLibrary.Dir('lib')]
 libpath.extend(parent_targets['lib_libogg']['libpath'])
 
 if buildStaticLinking:
-	libs = library[0]
+	libs = library[0:1]
 	runtimelibs = []
 else:
-	runtimelibs = library[0]
+	runtimelibs = library[0:1]
 
 parent_targets['lib_libwebp'] = {
 	'name' : 'Internal libwebp library',
