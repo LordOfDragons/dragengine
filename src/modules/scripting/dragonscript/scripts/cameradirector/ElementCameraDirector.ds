@@ -19,8 +19,6 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-
-
 namespace Dragengine.CameraDirectors
 
 pin Dragengine.Scenery
@@ -34,136 +32,125 @@ pin Dragengine.Scenery
  * rotation point.
  */
 class ElementCameraDirector extends CameraDirector
-	/** \brief Element. */
 	private var Element pElement
-	
-	/** \brief Rotation point. */
 	private var DVector pPivot
-	
-	/** \brief Local matrix */
 	private var DMatrix pLocalMatrix
-	
-	/** \brief Vertical rotation. */
 	private var float pAzimuth
-	
-	/** \brief Horizontal rotation. */
 	private var float pElevation
-	
-	/** \brief Distance. */
 	private var float pDistance
 	
 	
 	
 	/** \brief Create camera director. */
-	public func new( Element element )
-		this.pElement = element
-		this.pPivot = DVector.new()
-		this.pLocalMatrix = DMatrix.new()
-		this.pAzimuth = 0.0
-		this.pElevation = 0.0
-		this.pDistance = 0.0
+	public func new(Element element)
+		pElement = element
+		pPivot = DVector.new()
+		pLocalMatrix = DMatrix.new()
+		pAzimuth = 0
+		pElevation = 0
+		pDistance = 0
 	end
 	
 	/** \brief Create camera director. */
-	public func new( Element element, Camera camera, Microphone microphone ) this( element )
-		this.setCamera( camera )
-		this.setMicrophone( microphone )
+	public func new(Element element, Camera camera, Microphone microphone) this(element)
+		setCamera(camera)
+		setMicrophone(microphone)
 	end
 	
 	
 	
 	/** \brief Element. */
 	public func Element getElement()
-		return this.pElement
+		return pElement
 	end
 	
 	/** \brief Set element. */
-	public func void setElement( Element element )
-		this.pElement = element
+	public func void setElement(Element element)
+		pElement = element
 	end
 	
 	/** \brief Rotation point. */
 	public func DVector getPivot()
-		return this.pPivot
+		return pPivot
 	end
 	
 	/** \brief Set rotation point. */
-	public func void setPivot( DVector pivot )
+	public func void setPivot(DVector pivot)
 		if pivot == null
 			throw EInvalidParam.new()
 		end
-		this.pPivot = pivot
+		pPivot = pivot
 	end
 	
 	/** \brief Local matrix. */
 	public func DMatrix getLocalMatrix()
-		return this.pLocalMatrix
+		return pLocalMatrix
 	end
 	
 	/** \brief Set local matrix. */
-	public func void setLocalMatrix( DMatrix localMatrix )
+	public func void setLocalMatrix(DMatrix localMatrix)
 		if localMatrix == null
 			throw EInvalidParam.new()
 		end
-		this.pLocalMatrix = localMatrix
+		pLocalMatrix = localMatrix
 	end
 	
 	/** \brief Set local matrix from position and rotation. */
-	public func void setLocalMatrix( Vector position, Vector rotation )
-		this.pLocalMatrix = Matrix.newRT( rotation, position ).toDMatrix()
+	public func void setLocalMatrix(Vector position, Vector rotation)
+		pLocalMatrix = Matrix.newRT(rotation, position).toDMatrix()
 	end
 	
 	/** \brief Vertical rotation. */
 	public func float getAzimuth()
-		return this.pAzimuth
+		return pAzimuth
 	end
 	
 	/** \brief Set vertical rotation. */
-	public func void setAzimuth( float azimuth )
-		this.pAzimuth = azimuth
+	public func void setAzimuth(float azimuth)
+		pAzimuth = azimuth
 	end
 	
 	/** \brief Horizontal rotation. */
 	public func float getElevation()
-		return this.pElevation
+		return pElevation
 	end
 	
 	/** \brief Set horizontal rotation. */
-	public func void setElevation( float elevation )
-		this.pElevation = elevation
+	public func void setElevation(float elevation)
+		pElevation = elevation
 	end
 	
 	/** \brief Distance. */
 	public func float getDistance()
-		return this.pDistance
+		return pDistance
 	end
 	
 	/** \brief Set distance. */
-	public func void setDistance( float distance )
-		this.pDistance = DEMath.max( distance, 0.0 )
+	public func void setDistance(float distance)
+		pDistance = DEMath.max(distance, 0.0)
 	end
 	
 	
 	
 	/** \brief Update camera. */
-	public func void updateCamera( float elapsed )
-		var DMatrix matrix = this.getCameraMatrix()
-		var Camera camera = this.getCamera()
-		camera.setPosition( matrix.getPosition() )
-		camera.setOrientation( matrix.toQuaternion() )
+	public func void updateCamera(float elapsed)
+		var DMatrix matrix = getCameraMatrix()
+		var Camera camera = getCamera()
+		camera.setPosition(matrix.getPosition())
+		camera.setOrientation(matrix.toQuaternion())
 	end
 	
 	/** \brief Camera matrix. */
 	public func DMatrix getCameraMatrix()
-		var DMatrix matrix = this.pLocalMatrix \
-			* DMatrix.newTranslation( 0.0, 0.0, -this.pDistance ) \
-			* DMatrix.newRotation( -this.pElevation, this.pAzimuth, 0.0 )
+		var DMatrix matrix = pLocalMatrix \
+			* DMatrix.newTranslation(0.0, 0.0, -pDistance) \
+			* DMatrix.newRotation(-pElevation, pAzimuth, 0.0)
 		
-		if this.pElement == null
-			matrix = matrix * DMatrix.newTranslation( this.pPivot )
+		if pElement == null
+			matrix = matrix * DMatrix.newTranslation(pPivot)
 			
 		else
-			matrix = matrix * DMatrix.newTranslation( this.pElement.getPosition() + this.pPivot )
+			matrix = matrix * DMatrix.newTranslation(pElement.getPosition() + pPivot)
 		end
 		
 		return matrix
