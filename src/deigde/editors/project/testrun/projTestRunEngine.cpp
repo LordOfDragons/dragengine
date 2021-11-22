@@ -375,6 +375,7 @@ void projTestRunEngine::InitVFS(){
 	container.TakeOver( new deVFSDiskDirectory( decPath::CreatePathUnix( "/" ),
 		decPath::CreatePathNative( runParameters.pathOverlay ) ) );
 	pEngine->GetVirtualFileSystem()->AddContainer( container );
+	pEngine->SetPathOverlay( runParameters.pathOverlay );
 	
 	// add the user game configuration directory (writeable)
 	pProcess.GetLogger()->LogInfoFormat( LOGSOURCE, "VFS: '%s' => '%s'",
@@ -384,6 +385,7 @@ void projTestRunEngine::InitVFS(){
 		decPath::CreatePathUnix( runParameters.vfsPathConfig ),
 		decPath::CreatePathNative( runParameters.pathConfig ) ) );
 	pEngine->GetVirtualFileSystem()->AddContainer( container );
+	pEngine->SetPathConfig( runParameters.pathConfig );
 	
 	// add the user game capture directory (writeable)
 	pProcess.GetLogger()->LogInfoFormat( LOGSOURCE, "VFS: '%s' => '%s'",
@@ -393,6 +395,7 @@ void projTestRunEngine::InitVFS(){
 		decPath::CreatePathUnix( runParameters.vfsPathCapture ),
 		decPath::CreatePathNative( runParameters.pathCapture ) ) );
 	pEngine->GetVirtualFileSystem()->AddContainer( container );
+	pEngine->SetPathCapture( runParameters.pathCapture );
 }
 
 void projTestRunEngine::CreateMainWindow(){
