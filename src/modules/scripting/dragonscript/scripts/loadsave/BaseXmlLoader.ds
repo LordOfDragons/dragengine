@@ -35,10 +35,10 @@ pin Dragengine.XML
  */
 class BaseXmlLoader
 	/** \brief Console to print messages to. */
-	public var Console pConsole
+	private var Console pConsole
 	
 	/** \brief Name of the loader object for error reporting. */
-	public var String pName
+	private var String pName
 	
 	
 	
