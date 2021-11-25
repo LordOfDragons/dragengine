@@ -534,10 +534,10 @@
 	<designer name='Label.Button.EMPSystem.Reset' extendNamed='Label'>
 		<point parameter='normal.minimumSize' x='12' y='12'/>
 		<canvasCreator parameter='normal.canvas' type='Image'>
-			<image parameter='image'>arrows/reload_normal.png</image>
+			<image parameter='image'>../modern/arrows/reload_normal.png</image>
 		</canvasCreator>
 		<canvasCreator parameter='hover.canvas' type='Image'>
-			<image parameter='image'>arrows/reload_hover.png</image>
+			<image parameter='image'>../modern/arrows/reload_hover.png</image>
 		</canvasCreator>
 	</designer>
 	
