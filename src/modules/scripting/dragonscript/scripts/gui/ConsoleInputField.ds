@@ -181,6 +181,25 @@ class ConsoleInputField extends TextField
 			this.setCursorPosition( this.getModel().getText().getLength() )
 			this.ensureCursorVisible()
 			
+		case InputEventKey.enter
+			var String command = getModel().getText().trimBoth()
+			getModel().setText("")
+			
+			if command.empty()
+				break
+			end
+			
+			if pHistory.getCount() == 0 or not pHistory.getAt(-1).equals(command)
+				if pHistory.getCount() == 50
+					pHistory.removeFrom(0)
+				end
+				pHistory.add(command)
+				clearHistorySelection()
+			end
+			
+			runCommand(command)
+			super.onKeyPress(event)
+			
 		else
 			super.onKeyPress( event )
 		end
@@ -201,24 +220,6 @@ class ConsoleInputField extends TextField
 	/** \brief Key typed event. */
 	public func void onKeyType( KeyEvent event )
 		select event.getKeyCode()
-		case InputEventKey.enter
-			var String command = this.getModel().getText().trimBoth()
-			this.getModel().setText( "" )
-			
-			if command.empty()
-				break
-			end
-			
-			if this.pHistory.getCount() == 0 or not this.pHistory.getAt( -1 ).equals( command )
-				if this.pHistory.getCount() == 50
-					this.pHistory.removeFrom( 0 )
-				end
-				this.pHistory.add( command )
-				this.clearHistorySelection()
-			end
-			
-			this.runCommand( command )
-			
 		case InputEventKey.delete
 			this.getModel().setText( "" )
 			
