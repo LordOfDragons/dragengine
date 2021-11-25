@@ -77,7 +77,7 @@
 		</canvasCreator>
 		<point parameter='normal.minimumSize' x='24' y='24'/>
 		<color parameter='normal.textColor' r='1' g='1' b='1'/>
-		<font parameter='normal.font' size='15'>fonts/sans15.defont</font>
+		<font parameter='normal.font' size='15'>../modern/fonts/sans15.defont</font>
 	</designer>
 	
 	<designer name='Image.WindowVirtualKeyboard.Key' type='Image'>
@@ -89,7 +89,7 @@
 		</canvasCreator>
 		<point parameter='normal.minimumSize' x='24' y='24'/>
 		<color parameter='normal.textColor' r='1' g='1' b='1'/>
-		<font parameter='normal.font' size='15'>fonts/sans15.defont</font>
+		<font parameter='normal.font' size='15'>../modern/fonts/sans15.defont</font>
 	</designer>
 	
 	<designer name='Label.WindowVirtualKeyboard.Key.Wide' extendNamed='Label.WindowVirtualKeyboard.Key'>
@@ -523,7 +523,7 @@
 	
 	<designer name='Label.EMPSystem.CycleValue.Value' type='Label'>
 		<color parameter='normal.textColor' r='0' g='0' b='0'/>
-		<font parameter='normal.font' size='15'>fonts/sans15.defont</font>
+		<font parameter='normal.font' size='15'>../modern/fonts/sans15.defont</font>
 	</designer>
 	
 	<designer name='Button.EMPSystem.Reset' extendNamed='Button'>
