@@ -38,6 +38,10 @@ class TextWidget extends Widget implements TextModelListener
 	private var TextModel pModel
 	private var TextValidator pValidator
 	private var bool pReadOnly
+	private var Array pActionListeners
+	private var bool pHasTyped
+	private var bool pActionOnEnter
+	private var bool pAddTabToText
 	
 	
 	
@@ -55,8 +59,10 @@ class TextWidget extends Widget implements TextModelListener
 		end
 		
 		pReadOnly = readOnly
+		pAddTabToText = false
 		pModel = model
 		pModel.addListener(this)
+		pActionListeners = Array.new()
 	end
 	
 	/** \brief Dispose of widget. */
@@ -67,6 +73,7 @@ class TextWidget extends Widget implements TextModelListener
 		end
 		
 		pValidator = null
+		pActionListeners = null
 		
 		super.dispose()
 	end
@@ -108,6 +115,88 @@ class TextWidget extends Widget implements TextModelListener
 	 */
 	public func void setValidator(TextValidator validator)
 		pValidator = validator
+	end
+	
+	
+	
+	/**
+	 * \brief Add action listener.
+	 * \version 1.8
+	 */
+	public func void addActionListener(ActionListener listener)
+		if listener == null
+			throw EInvalidParam.new()
+		end
+		pActionListeners.add(listener)
+	end
+	
+	/**
+	 * \brief Remove action listener.
+	 * \version 1.8
+	 */
+	public func void removeActionListener(ActionListener listener)
+		pActionListeners.remove(listener)
+	end
+	
+	/**
+	 * \brief User has changed text by typing in the widget since the last action listener call.
+	 * \version 1.8
+	 */
+	public func bool getHasTyped()
+		return pHasTyped
+	end
+	
+	/**
+	 * \brief Set if user has changed text by typing in the widget since the last action listener call.
+	 * \version 1.8
+	 */
+	protected func void setHasTyped(bool hasTyped)
+		pHasTyped = hasTyped
+	end
+	
+	/**
+	 * \brief Call action listeners if enter is pressed after user changed text by typing into the widget.
+	 * \version 1.8
+	 */
+	public func bool getActionOnEnter()
+		return pActionOnEnter
+	end
+	
+	/**
+	 * \brief Set to call action listeners if enter is pressed after user changed text by typing into the widget.
+	 * \version 1.8
+	 */
+	public func void setActionOnEnter(bool actionOnEnter)
+		pActionOnEnter = actionOnEnter
+	end
+	
+	/**
+	 * \brief Add tab to text instead of moving focus.
+	 * \version 1.8
+	 */
+	public func bool getAddTabToText()
+		return pAddTabToText
+	end
+	
+	/**
+	 * \brief Set to add tab to text instead of moving focus.
+	 * \version 1.8
+	 */
+	public func void setAddTabToText(bool addTabToText)
+		pAddTabToText = addTabToText
+	end
+	
+	/**
+	 * \brief Fire action.
+	 * \version 1.8
+	 */
+	public func void fireAction(int modifiers)
+		pHasTyped = false
+		
+		var ActionEvent event = ActionEvent.new(this, ActionEvent.idAction, modifiers)
+		pActionListeners.forEach(block ActionListener each
+			each.onAction(event)
+		end)
 	end
 	
 	
@@ -177,10 +266,52 @@ class TextWidget extends Widget implements TextModelListener
 	 * If event contains a printable character onKeyType() is called after super.onKeyPress().
 	 */
 	public func void onKeyPress(KeyEvent event)
-		super.onKeyPress(event)
+		select event.getKeyCode()
+		case InputEventKey.enter
+			if not pReadOnly
+				if pActionOnEnter
+					if pHasTyped
+						pHasTyped = false
+						fireAction(event.getModifiers())
+					end
+					
+				elif event.getKeyChar() > 0
+					onKeyType(event)
+				end
+			end
+			
+			super.onKeyPress(event)
+			
+		case InputEventKey.tab
+			if pAddTabToText
+				if not pReadOnly and event.getKeyChar() > 0
+					onKeyType(event)
+				end
+				
+				// no super call since this would move focus away from the widget.
+				// still send event to listeners though
+				sendEventToListeners(event, true)
+				
+			else
+				super.onKeyPress(event)
+			end
+			
+		else
+			if not pReadOnly and event.getKeyChar() > 0
+				onKeyType(event)
+			end
+			
+			super.onKeyPress(event)
+		end
+	end
+	
+	/** \brief Widget lost focus. */
+	public func void onFocusLost(FocusEvent event)
+		super.onFocusLost(event)
 		
-		if event.getKeyChar() > 0 and not pReadOnly
-			onKeyType(event)
+		if pHasTyped
+			pHasTyped = false
+			fireAction(0)
 		end
 	end
 	

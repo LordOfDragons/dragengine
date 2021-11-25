@@ -28,7 +28,7 @@ namespace Dragengine.Gui.Events
  */
 class StateChangeEvent extends Event
 	/** \brief Widget change state. */
-	public fixed var int idStateChanged = 70
+	public static fixed var int idStateChanged = 70
 	
 	
 	

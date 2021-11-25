@@ -30,13 +30,13 @@ namespace Dragengine.Gui.Events
  */
 class GamepadEvent extends ModifiableEvent
 	/** \brief Input device axis moved event identifier. */
-	public fixed var int idGamepadAxisMoved = 90
+	public static fixed var int idGamepadAxisMoved = 90
 	
 	/** \brief Input device button pressed event identifier. */
-	public fixed var int idGamepadButtonPressed = 91
+	public static fixed var int idGamepadButtonPressed = 91
 	
 	/** \brief Input device button released event identifier. */
-	public fixed var int idGamepadButtonReleased = 92
+	public static fixed var int idGamepadButtonReleased = 92
 	
 	
 	

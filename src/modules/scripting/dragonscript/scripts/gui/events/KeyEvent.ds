@@ -30,10 +30,10 @@ namespace Dragengine.Gui.Events
  */
 class KeyEvent extends ModifiableEvent
 	/** Key pressed event idenfitier */
-	public fixed var int idKeyPressed = 10
+	public static fixed var int idKeyPressed = 10
 	
 	/** Key released event idenfitier */
-	public fixed var int idKeyReleased = 11
+	public static fixed var int idKeyReleased = 11
 	
 	
 	

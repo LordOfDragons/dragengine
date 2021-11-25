@@ -28,13 +28,13 @@ namespace Dragengine.Gui.Events
  */
 class ModifiableEvent extends Event
 	/** \brief Shift key pressed */
-	public fixed var int shift = 1
+	public static fixed var int shift = 1
 	
 	/** \brief Control key pressed */
-	public fixed var int control = 2
+	public static fixed var int control = 2
 	
 	/** \brief Alt key pressed */
-	public fixed var int alt = 4
+	public static fixed var int alt = 4
 	
 	
 	

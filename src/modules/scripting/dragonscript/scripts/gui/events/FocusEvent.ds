@@ -28,10 +28,10 @@ namespace Dragengine.Gui.Events
  */
 class FocusEvent extends Event
 	/** \brief Widget received focus. */
-	public fixed var int idFocusReceived = 50
+	public static fixed var int idFocusReceived = 50
 	
 	/** \brief Widget lost focus. */
-	public fixed var int idFocusLost = 51
+	public static fixed var int idFocusLost = 51
 	
 	
 	

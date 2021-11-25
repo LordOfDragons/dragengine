@@ -28,16 +28,16 @@ namespace Dragengine.Gui.Events
  */
 class DragEvent extends ModifiableEvent
 	/** \brief Drag enter event identifier. */
-	public fixed var int idDragEnter = 40
+	public static fixed var int idDragEnter = 40
 	
 	/** \brief Drag leave event identifier. */
-	public fixed var int idDragLeave = 41
+	public static fixed var int idDragLeave = 41
 	
 	/** \brief Drag move event identifier. */
-	public fixed var int idDragOver = 42
+	public static fixed var int idDragOver = 42
 	
 	/** \brief Drag drop event identifier. */
-	public fixed var int idDragDrop = 43
+	public static fixed var int idDragDrop = 43
 	
 	
 	

@@ -34,6 +34,11 @@ pin Dragengine.Scenery
  * Displays an edit field where the user can enter a short one line text.
  * 
  * Supports designing using designer selector "TextField".
+ * 
+ * \par Version 1.8
+ * 
+ * Supports adding ActionListener instances. If InputEventKey.enter is pressed or focus is
+ * lost after typing in the widget action listeners are called.
  */
 class TextField extends TextWidget
 	/** \brief Use no password character constant */
@@ -69,6 +74,8 @@ class TextField extends TextWidget
 		
 		setDesignerSelector("TextField")
 		setCanFocus(true)
+		setActionOnEnter(true)
+		setAddTabToText(false)
 		
 		updateCanvasText()
 	end
@@ -334,6 +341,7 @@ class TextField extends TextWidget
 				end
 // 				if getValidator() == null or getValidator().validates(newText)
 					pCursorPos--
+					setHasTyped(true)
 					getModel().setText(newText)
 					updateCanvasText()
 // 				end
@@ -352,6 +360,7 @@ class TextField extends TextWidget
 					newText = newText + curText.substring(pCursorPos + 1)
 				end
 // 				if getValidator() == null or getValidator().validates(newText)
+					setHasTyped(true)
 					getModel().setText(newText)
 // 				end
 			end
@@ -391,6 +400,7 @@ class TextField extends TextWidget
 			end
 			if getValidator() == null or getValidator().validates(newText)
 				pCursorPos++
+				setHasTyped(true)
 				getModel().setText(newText)
 				updateCanvasText()
 			end

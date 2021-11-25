@@ -29,16 +29,16 @@ namespace Dragengine.Gui.Events
  */
 class MousePointerEvent extends Event
 	/** \brief Mouse pointer moved event identifier. */
-	public fixed var int idMousePointerMoved = 100
+	public static fixed var int idMousePointerMoved = 100
 	
 	/** \brief Mouse pointer has been hidden. */
-	public fixed var int idMousePointerHidden = 101
+	public static fixed var int idMousePointerHidden = 101
 	
 	/** \brief Mouse pointer has been shown. */
-	public fixed var int idMousePointerShown = 102
+	public static fixed var int idMousePointerShown = 102
 	
 	/** \brief Mouse pointer changed event identifier. */
-	public fixed var int idMousePointerChanged = 103
+	public static fixed var int idMousePointerChanged = 103
 	
 	
 	

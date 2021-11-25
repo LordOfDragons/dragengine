@@ -28,22 +28,22 @@ namespace Dragengine.Gui.Events
  */
 class MouseEvent extends ModifiableEvent
 	/** \brief Mouse button press event identifier. */
-	public fixed var int idMousePressed = 20
+	public static fixed var int idMousePressed = 20
 	
 	/** \brief Mouse button released event identifier. */
-	public fixed var int idMouseReleased = 21
+	public static fixed var int idMouseReleased = 21
 	
 	/** \brief Mouse move event identifier. */
-	public fixed var int idMouseMoved = 22
+	public static fixed var int idMouseMoved = 22
 	
 	/** \brief Mouse wheel move event identifier. */
-	public fixed var int idMouseWheeled = 23
+	public static fixed var int idMouseWheeled = 23
 	
 	/** \brief Mouse entered event identifier. */
-	public fixed var int idMouseEnter = 24
+	public static fixed var int idMouseEnter = 24
 	
 	/** \brief Mouse left event identifier. */
-	public fixed var int idMouseLeave = 25
+	public static fixed var int idMouseLeave = 25
 	
 	
 	
