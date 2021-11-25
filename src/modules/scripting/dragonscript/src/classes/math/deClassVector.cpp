@@ -25,6 +25,7 @@
 #include <libdscript/libdscript.h>
 
 #include "deClassVector.h"
+#include "deClassPoint3.h"
 #include "../file/deClassFileReader.h"
 #include "../file/deClassFileWriter.h"
 #include "../../deScriptingDragonScript.h"
@@ -306,6 +307,35 @@ void deClassVector::nfClamped::RunFunction( dsRunTime *rt, dsValue *myself ){
 	const decVector &max = clsVector.GetVector( rt->GetValue( 1 )->GetRealObject() );
 	
 	clsVector.PushVector( rt, vector.Clamped( min, max ) );
+}
+
+// public func Point3 round()
+deClassVector::nfRound::nfRound( const sInitData &init ) :
+dsFunction( init.clsVec, "round", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsPoint3 ){
+}
+void deClassVector::nfRound::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const decVector &vector = ( ( sVecNatDat* )p_GetNativeData( myself ) )->vector;
+	
+	( ( deClassVector* )GetOwnerClass() )->GetScriptModule()->
+		GetClassPoint3()->PushPoint( rt, vector.Round() );
+}
+
+// public func Vector round(float unit)
+deClassVector::nfRound2::nfRound2( const sInitData &init ) :
+dsFunction( init.clsVec, "round", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVec ){
+	p_AddParameter( init.clsFlt ); // unit
+}
+void deClassVector::nfRound2::RunFunction( dsRunTime *rt, dsValue *myself ){
+	decVector vector( ( ( sVecNatDat* )p_GetNativeData( myself ) )->vector );
+	deClassVector &clsVector = *( ( deClassVector* )GetOwnerClass() );
+	const float unit = rt->GetValue( 0 )->GetFloat();
+	
+	vector /= unit;
+	vector.x = floor( vector.x + 0.5f );
+	vector.y = floor( vector.y + 0.5f );
+	vector.z = floor( vector.z + 0.5f );
+	vector *= unit;
+	clsVector.PushVector( rt, vector );
 }
 
 
@@ -644,6 +674,7 @@ void deClassVector::CreateClassMembers( dsEngine *engine ){
 	init.clsFlt = engine->GetClassFloat();
 	init.clsFileReader = pScrMgr->GetClassFileReader();
 	init.clsFileWriter = pScrMgr->GetClassFileWriter();
+	init.clsPoint3 = pScrMgr->GetClassPoint3();
 	
 	// add functions
 	AddFunction( new nfNew( init ) );
@@ -666,6 +697,8 @@ void deClassVector::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfSmallest( init ) );
 	AddFunction( new nfLargest( init ) );
 	AddFunction( new nfClamped( init ) );
+	AddFunction( new nfRound( init ) );
+	AddFunction( new nfRound2( init ) );
 	
 	AddFunction( new nfIsEqualTo( init ) );
 	AddFunction( new nfIsAtLeast( init ) );

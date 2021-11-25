@@ -8,6 +8,9 @@
 
 namespace Dragengine.Scenery
 
+pin Dragengine.Gui
+
+
 /**
  * \brief Immutable 3-component double precision vector.
  * 
@@ -111,6 +114,22 @@ fixed class Vector
 	
 	/** \brief Vector with all components clamped to a range of two vectors. */
 	public func Vector clamped( Vector min, Vector max )
+		return null
+	end
+	
+	/**
+	 * \brief Components rounded to nearest integer value.
+	 * \version 1.8
+	 */
+	public func Point3 round()
+		return null
+	end
+	
+	/**
+	 * \brief Components rounded to the nearest unit.
+	 * \version 1.8
+	 */
+	public func Vector round(float unit)
 		return null
 	end
 	

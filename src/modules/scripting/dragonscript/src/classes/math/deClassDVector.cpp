@@ -28,6 +28,7 @@
 
 #include "deClassVector.h"
 #include "deClassDVector.h"
+#include "deClassPoint3.h"
 #include "../file/deClassFileReader.h"
 #include "../file/deClassFileWriter.h"
 #include "../../deScriptingDragonScript.h"
@@ -341,6 +342,35 @@ void deClassDVector::nfClamped::RunFunction( dsRunTime *rt, dsValue *myself ){
 	const decDVector &max = clsDVector.GetDVector( rt->GetValue( 1 )->GetRealObject() );
 	
 	clsDVector.PushDVector( rt, vector.Clamped( min, max ) );
+}
+
+// public func Point3 round()
+deClassDVector::nfRound::nfRound( const sInitData &init ) :
+dsFunction( init.clsDVec, "round", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsPoint3 ){
+}
+void deClassDVector::nfRound::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const decDVector &vector = ( ( sDVecNatDat* )p_GetNativeData( myself ) )->vector;
+	
+	( ( deClassDVector* )GetOwnerClass() )->GetScriptModule()->
+		GetClassPoint3()->PushPoint( rt, vector.Round() );
+}
+
+// public func DVector round(float unit)
+deClassDVector::nfRound2::nfRound2( const sInitData &init ) :
+dsFunction( init.clsDVec, "round", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsDVec ){
+	p_AddParameter( init.clsFlt ); // unit
+}
+void deClassDVector::nfRound2::RunFunction( dsRunTime *rt, dsValue *myself ){
+	decDVector vector( ( ( sDVecNatDat* )p_GetNativeData( myself ) )->vector );
+	deClassDVector &clsDVector = *( ( deClassDVector* )GetOwnerClass() );
+	const double unit = ( double )rt->GetValue( 0 )->GetFloat();
+	
+	vector /= unit;
+	vector.x = floor( vector.x + 0.5 );
+	vector.y = floor( vector.y + 0.5 );
+	vector.z = floor( vector.z + 0.5 );
+	vector *= unit;
+	clsDVector.PushDVector( rt, vector );
 }
 
 // public func Vector toVector()
@@ -729,6 +759,7 @@ void deClassDVector::CreateClassMembers( dsEngine *engine ){
 	init.clsVec = pClsVec;
 	init.clsFileReader = pScrMgr->GetClassFileReader();
 	init.clsFileWriter = pScrMgr->GetClassFileWriter();
+	init.clsPoint3 = pScrMgr->GetClassPoint3();
 	
 	// add functions
 	AddFunction( new nfNew( init ) );
@@ -752,6 +783,8 @@ void deClassDVector::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfSmallest( init ) );
 	AddFunction( new nfLargest( init ) );
 	AddFunction( new nfClamped( init ) );
+	AddFunction( new nfRound( init ) );
+	AddFunction( new nfRound2( init ) );
 	AddFunction( new nfToVector( init ) );
 	
 	AddFunction( new nfIsEqualTo( init ) );

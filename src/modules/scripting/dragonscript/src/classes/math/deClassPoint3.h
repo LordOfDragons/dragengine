@@ -51,6 +51,8 @@ private:
 	struct sInitData{
 		dsClass *clsPt3, *clsVoid, *clsBool, *clsStr, *clsObj, *clsInt, *clsFlt;
 		dsClass *clsFileReader, *clsFileWriter;
+		dsClass *clsVector;
+		dsClass *clsDVector;
 	};
 #define DEF_NATFUNC(name) \
 	class name : public dsFunction{ \
@@ -77,6 +79,9 @@ private:
 	DEF_NATFUNC( nfIsAtLeast );
 	DEF_NATFUNC( nfIsAtMost );
 	DEF_NATFUNC( nfIsZero );
+	
+	DEF_NATFUNC( nfToVector );
+	DEF_NATFUNC( nfToDVector );
 	
 	DEF_NATFUNC( nfCompMultiply );
 	DEF_NATFUNC( nfCompDivide );
