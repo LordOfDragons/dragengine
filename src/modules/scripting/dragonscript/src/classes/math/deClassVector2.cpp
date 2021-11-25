@@ -236,6 +236,23 @@ void deClassVector2::nfRound::RunFunction( dsRunTime *rt, dsValue *myself ){
 	ds.GetClassPoint()->PushPoint( rt, vector.Round() );
 }
 
+// public func Vector2 round(float unit)
+deClassVector2::nfRound2::nfRound2( const sInitData &init ) :
+dsFunction( init.clsVec2, "round", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVec2 ){
+	p_AddParameter( init.clsFlt ); // unit
+}
+void deClassVector2::nfRound2::RunFunction( dsRunTime *rt, dsValue *myself ){
+	decVector2 vector( ( ( sVec2NatDat* )p_GetNativeData( myself ) )->vector );
+	deClassVector2 &clsVector2 = *( ( deClassVector2* )GetOwnerClass() );
+	const float unit = rt->GetValue( 0 )->GetFloat();
+	
+	vector /= unit;
+	vector.x = floor( vector.x + 0.5f );
+	vector.y = floor( vector.y + 0.5f );
+	vector *= unit;
+	clsVector2.PushVector2( rt, vector );
+}
+
 
 
 // Testing
@@ -620,6 +637,7 @@ void deClassVector2::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfLargest( init ) );
 	AddFunction( new nfClamped( init ) );
 	AddFunction( new nfRound( init ) );
+	AddFunction( new nfRound2( init ) );
 	
 	AddFunction( new nfIsEqualTo( init ) );
 	AddFunction( new nfIsAtLeast( init ) );

@@ -76,6 +76,7 @@ private:
 	DEF_NATFUNC( nfLargest );
 	DEF_NATFUNC( nfClamped );
 	DEF_NATFUNC( nfRound );
+	DEF_NATFUNC( nfRound2 );
 	
 	DEF_NATFUNC( nfIsEqualTo );
 	DEF_NATFUNC( nfIsAtLeast );
