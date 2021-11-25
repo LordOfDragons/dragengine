@@ -103,6 +103,7 @@ private:
 	DEF_NATFUNC( nfRuntimeUsable );
 	DEF_NATFUNC( nfStartRuntime );
 	DEF_NATFUNC( nfStopRuntime );
+	DEF_NATFUNC( nfIsRuntimeRunning );
 	
 	DEF_NATFUNC( nfGetCamera );
 	DEF_NATFUNC( nfSetCamera );

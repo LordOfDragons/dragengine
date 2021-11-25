@@ -74,6 +74,16 @@ void deClassVRSystem::nfStopRuntime::RunFunction( dsRunTime*, dsValue* ){
 	ds.GetGameEngine()->GetVRSystem()->StopRuntime();
 }
 
+// public static func bool isRuntimeRunning()
+deClassVRSystem::nfIsRuntimeRunning::nfIsRuntimeRunning( const sInitData &init ) :
+dsFunction( init.clsVRSystem, "isRuntimeRunning", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsBool ){
+}
+void deClassVRSystem::nfIsRuntimeRunning::RunFunction( dsRunTime *rt, dsValue* ){
+	const deScriptingDragonScript &ds = ( ( deClassVRSystem* )GetOwnerClass() )->GetDS();
+	rt->PushBool( ds.GetGameEngine()->GetVRSystem()->GetIsRunning() );
+}
+
 // public static func Camera getCamera()
 deClassVRSystem::nfGetCamera::nfGetCamera( const sInitData &init ) :
 dsFunction( init.clsVRSystem, "getCamera", DSFT_FUNCTION,
@@ -405,6 +415,8 @@ void deClassVRSystem::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfRuntimeUsable( init ) );
 	AddFunction( new nfStartRuntime( init ) );
 	AddFunction( new nfStopRuntime( init ) );
+	AddFunction( new nfIsRuntimeRunning( init ) );
+	
 	AddFunction( new nfGetCamera( init ) );
 	AddFunction( new nfSetCamera( init ) );
 	

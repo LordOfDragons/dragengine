@@ -52,6 +52,19 @@ fixed class VRSystem
 	public static func void stopRuntime()
 	end
 	
+	/**
+	 * \brief VR is running.
+	 * \version 1.8
+	 * 
+	 * VR systems typically are required to be activated before they can be used.
+	 * Starting VR connects the engine to the VR system present on the host system
+	 * and activates VR support on various modules. VR mode can be started and
+	 * stopped at any time.
+	 */
+	public static func bool isRuntimeRunning()
+		return false
+	end
+	
 	/** \brief Camera to render on head mounted display or null. */
 	public static func Camera getCamera()
 		return null
