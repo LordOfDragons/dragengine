@@ -29,183 +29,180 @@ pin Dragengine.Scenery
 
 
 /**
- * Text Field Widget. Displays an edit field where the user can
- * enter a short one line text.
+ * \brief Text Field Widget.
+ * 
+ * Displays an edit field where the user can enter a short one line text.
  * 
  * Supports designing using designer selector "TextField".
  */
 class TextField extends TextWidget
-	/** Use no password character constant */
+	/** \brief Use no password character constant */
 	public fixed var int noPasswordChar = 0
 	
-	/** Position of cursor */
 	private var int pCursorPos
-	/** Index of first visible character */
 	private var int pFirstChar
-	/** Number of characters the edit field should be able to display */
 	private var int pDispCharCount
-	/** Password character to obfuscate password text fields */
 	private var int pPasswordChar
-	
-	/** Determines if an update is needed */
 	private var bool pNeedsUpdate
 	
 	
 	
-	/** Creates a new Text Field. */
-	public func new() this( DefaultTextModel.new() )
+	/** \brief Create Text Field. */
+	public func new() this(DefaultTextModel.new())
 	end
 	
-	/** Creates a new Text Field. */
-	public func new( String text ) this( DefaultTextModel.new( text ) )
+	/** \brief Create Text Field. */
+	public func new(String text) this(DefaultTextModel.new(text))
 	end
 	
-	/** Creates a new Text Field. */
-	public func new( TextModel model ) this( model, false )
+	/** \brief Create Text Field. */
+	public func new(TextModel model) this(model, false)
 	end
 	
-	/** Creates a new Text Field. */
-	public func new( TextModel model, bool readOnly ) super( model, readOnly )
-		this.pCursorPos = 0
-		this.pFirstChar = 0
-		this.pDispCharCount = 10
-		this.pPasswordChar = noPasswordChar
-		this.pNeedsUpdate = true
+	/** \brief Create Text Field. */
+	public func new(TextModel model, bool readOnly) super(model, readOnly)
+		pCursorPos = 0
+		pFirstChar = 0
+		pDispCharCount = 10
+		pPasswordChar = noPasswordChar
+		pNeedsUpdate = true
 		
-		this.setDesignerSelector( "TextField" )
-		this.setCanFocus( true )
+		setDesignerSelector("TextField")
+		setCanFocus(true)
 		
-		this.updateCanvasText()
+		updateCanvasText()
 	end
 	
 	/** \brief Create text field. */
-	public func new( TextModel model, int displayCharCount ) this( model )
-		this.setDisplayCharCount( displayCharCount )
+	public func new(TextModel model, int displayCharCount) this(model)
+		setDisplayCharCount(displayCharCount)
 	end
 	
 	/** \brief Create text field. */
-	public func new( TextModel model, int displayCharCount, bool readOnly ) this( model, readOnly )
-		this.setDisplayCharCount( displayCharCount )
+	public func new(TextModel model, int displayCharCount, bool readOnly) this(model, readOnly)
+		setDisplayCharCount(displayCharCount)
 	end
 	
 	
 	
-	/** Retrieves the current position of the cursor. */
+	/** \brief Current position of the cursor. */
 	public func int getCursorPosition()
-		return this.pCursorPos
+		return pCursorPos
 	end
 	
 	/**
-	 * Sets the current cursor position. If the cursor is outside
-	 * the visible area the text is shifted to make the cursor visible
+	 * \brief Set current cursor position.
+	 * 
+	 * If the cursor is outside the visible area the text is shifted to make the cursor visible
 	 */
-	public func void setCursorPosition( int position )
-		if position < 0 or position > this.getModel().getText().getLength()
+	public func void setCursorPosition(int position)
+		if position < 0 or position > getModel().getText().getLength()
 			throw EInvalidParam.new()
 		end
 		
-		if position == this.pCursorPos
+		if position == pCursorPos
 			return
 		end
 		
-		this.pCursorPos = position
-		this.pNeedsUpdate = true
-		this.updateCanvasText()
+		pCursorPos = position
+		pNeedsUpdate = true
+		updateCanvasText()
 	end
 	
-	/** Retrieves the index of the first character visible. */
+	/** \brief Index of the first character visible. */
 	public func int getFirstCharacter()
-		return this.pFirstChar
+		return pFirstChar
 	end
 	
-	/** Retrieves the number of characters the edit field has to be able to display. */
+	/** \brief Count of characters the edit field has to be able to display. */
 	public func int getDisplayCharCount()
-		return this.pDispCharCount
+		return pDispCharCount
 	end
 	
-	/** Sets the number of characters the edit field has to be able to display. */
-	public func void setDisplayCharCount( int count )
+	/** \brief Set count of characters the edit field has to be able to display. */
+	public func void setDisplayCharCount(int count)
 		if count < 1
 			throw EInvalidParam.new()
 		end
 		
-		if count == this.pDispCharCount
+		if count == pDispCharCount
 			return
 		end
 		
-		this.pDispCharCount = count
-		this.pNeedsUpdate = true
-		this.updateCanvasText()
+		pDispCharCount = count
+		pNeedsUpdate = true
+		updateCanvasText()
 	end
 	
-	/** Retrieves the password character to obfuscate passwords. */
+	/** \brief Password character to obfuscate passwords. */
 	public func int getPasswordChar()
-		return this.pPasswordChar
+		return pPasswordChar
 	end
 	
 	/**
-	 * Sets password character to obfuscate passwords. use noPasswordChar
-	 * to disable obfuscation of passwords.
+	 * \brief Set password character to obfuscate passwords.
+	 * 
+	 * use noPasswordChar to disable obfuscation of passwords.
 	 */
-	public func void setPasswordChar( int passwordChar )
-		if passwordChar == this.pPasswordChar
+	public func void setPasswordChar(int passwordChar)
+		if passwordChar == pPasswordChar
 			return
 		end
 		
-		this.pPasswordChar = passwordChar
-		this.pNeedsUpdate = true
-		this.updateCanvasText()
+		pPasswordChar = passwordChar
+		pNeedsUpdate = true
+		updateCanvasText()
 	end
 	
 	
 	
-	/** Ensure that the cursor is visible by scrolling the text if necessary. */
+	/** \brief Ensure cursor is visible by scrolling the text if necessary. */
 	public func void ensureCursorVisible()
-		var Font font = this.getFont()
-		var int width = this.getWidth() - this.getPadding().getWidth()
-		var float limit = ( width - 2 ) cast float
+		var Font font = getFont()
+		var int width = getWidth() - getPadding().getWidth()
+		var float limit = (width - 2) cast float
 		var float textLen = 0.0
 		var String text
 		var int i
 		
 		// check for password
-		if this.pPasswordChar == noPasswordChar
-			text = this.getModel().getText()
+		if pPasswordChar == noPasswordChar
+			text = getModel().getText()
 		else
-			text = String.new(this.pPasswordChar cast byte, this.getModel().getText().getLength())
+			text = String.new(pPasswordChar cast byte, getModel().getText().getLength())
 		end
 		
 		// check if the cursor is outside the left boundary
-		if this.pCursorPos < this.pFirstChar
-			this.pFirstChar = this.pCursorPos
-			this.updateCanvasText()
+		if pCursorPos < pFirstChar
+			pFirstChar = pCursorPos
+			updateCanvasText()
 		else
 			// check if the cursor is outside the right boundary
-			for i = this.pCursorPos - 1 downto this.pFirstChar
-				textLen += font.getCharAdvance( text.getAt(i) )
+			for i = pCursorPos - 1 downto pFirstChar
+				textLen += font.getCharAdvance(text.getAt(i))
 				if textLen >= limit
-					this.pFirstChar = i + 1
-					this.updateCanvasText()
+					pFirstChar = i + 1
+					updateCanvasText()
 					break
 				end
 			end
 			
 			// check if there is still space to fill up on the right side
-			for i = this.pCursorPos to text.getLength()
-				textLen += font.getCharAdvance( text.getAt(i) )
+			for i = pCursorPos to text.getLength()
+				textLen += font.getCharAdvance(text.getAt(i))
 				if textLen >= limit
 					break
 				end
 			end
 			
 			if textLen < limit
-				for i = this.pFirstChar - 1 downto 0
-					textLen += font.getCharAdvance( text.getAt(i) )
+				for i = pFirstChar - 1 downto 0
+					textLen += font.getCharAdvance(text.getAt(i))
 					if textLen >= limit
 						break
 					end
-					this.pFirstChar = i
-					this.updateCanvasText()
+					pFirstChar = i
+					updateCanvasText()
 				end
 			end
 		end
@@ -214,105 +211,101 @@ class TextField extends TextWidget
 	
 	
 	/** \brief Size changed. */
-	public func void onResize( WidgetEvent event )
-		super.onResize( event )
-		this.pNeedsUpdate = true
-		this.updateCanvasText()
+	public func void onResize(WidgetEvent event)
+		super.onResize(event)
+		pNeedsUpdate = true
+		updateCanvasText()
 	end
 	
-	/** Notification that the widget font changed. */
+	/** \brief Widget font changed. */
 	public func void onSetFont()
-		this.pNeedsUpdate = true
-		this.updateCanvasText()
+		pNeedsUpdate = true
+		updateCanvasText()
 	end
 	
-	/** Foreground color changed. */
+	/** \brief Foreground color changed. */
 	public func void onSetTextColor()
-		this.updateCanvasText()
+		updateCanvasText()
 	end
 	
 	/** \brief Widget received focus. */
-	public func void onFocusReceived( FocusEvent event )
-		super.onFocusReceived( event )
-		this.updateCanvasText()
+	public func void onFocusReceived(FocusEvent event)
+		super.onFocusReceived(event)
+		updateCanvasText()
 		popupVirtualKeyboard()
 	end
 	
 	/** \brief Widget lost focus. */
-	public func void onFocusLost( FocusEvent event )
-		super.onFocusLost( event )
-		this.updateCanvasText()
+	public func void onFocusLost(FocusEvent event)
+		super.onFocusLost(event)
+		updateCanvasText()
 		popdownVirtualKeyboard()
 	end
 	
 	
 	
-	/** Retrieve the minimal size of widget. */
+	/** \brief Minimal size of widget. */
 	public func Point getMinimumSize()
-		var Font font = this.getFont()
+		var Font font = getFont()
 		if font == null
 			return Point.new()
 		end
 		
-		return Point.new( ( DEMath.ceil( font.getMaxWidth() * \
-			( this.pDispCharCount cast float ) ) cast int ) + this.getPadding().getWidth(), \
-			font.getSize() + this.getPadding().getHeight() )
+		return Point.new((DEMath.ceil(font.getMaxWidth() * \
+			(pDispCharCount cast float)) cast int) + getPadding().getWidth(), \
+			font.getSize() + getPadding().getHeight())
 	end
 	
 	
 	
-	/** Key pressed event. */
-	public func void onKeyPress( KeyEvent event )
+	/** \brief Key pressed event. */
+	public func void onKeyPress(KeyEvent event)
 		select event.getKeyCode()
 		case InputEventKey.arrowLeft
 			// move cursor left
-			if this.pCursorPos > 0
-				this.pCursorPos--
-				this.pNeedsUpdate = true
-				this.updateCanvasText()
+			if pCursorPos > 0
+				pCursorPos--
+				pNeedsUpdate = true
+				updateCanvasText()
 			end
 			
 		case InputEventKey.arrowRight
 			// move cursor right
-			if this.pCursorPos < this.getModel().getText().getLength()
-				this.pCursorPos++
-				this.pNeedsUpdate = true
-				this.updateCanvasText()
+			if pCursorPos < getModel().getText().getLength()
+				pCursorPos++
+				pNeedsUpdate = true
+				updateCanvasText()
 			end
 			
 		case InputEventKey.home
 			// move to the beginning of the line
-			this.pCursorPos = 0
-			this.pNeedsUpdate = true
-			this.updateCanvasText()
+			pCursorPos = 0
+			pNeedsUpdate = true
+			updateCanvasText()
 			
 		case InputEventKey.last
 			// move to the end of the line
-			this.pCursorPos = this.getModel().getText().getLength()
-			this.pNeedsUpdate = true
-			this.updateCanvasText()
+			pCursorPos = getModel().getText().getLength()
+			pNeedsUpdate = true
+			updateCanvasText()
 			
 		else
-			super.onKeyPress( event )
+			super.onKeyPress(event)
 		end
 	end
 	
-	/** Key released event. */
-//	public func void onKeyRelease(KeyEvent event)
-//	end
 	
 	
-	
-	/** Checks that the cursor is inside the text boundaries and adjust it if necessary. */
+	/** \brief Check cursor is inside the text boundaries and adjust it if necessary. */
 	protected func void checkCursor()
-		var String text = this.getModel().getText()
+		var String text = getModel().getText()
 		var int textLen = text.getLength()
 		
-		this.pCursorPos = DEMath.clamp( this.pCursorPos, 0, textLen )
-		this.pFirstChar = DEMath.clamp( this.pFirstChar, 0, textLen )
+		pCursorPos = DEMath.clamp(pCursorPos, 0, textLen)
+		pFirstChar = DEMath.clamp(pFirstChar, 0, textLen)
 		
-		this.pNeedsUpdate = true
-		this.updateCanvasText()
+		pNeedsUpdate = true
+		updateCanvasText()
 	end
 	
 	
@@ -322,44 +315,44 @@ class TextField extends TextWidget
 	 " 
 	 " Convenience method called if onKeyPress is called with an event containing a printable key.
 	 */
-	public func void onKeyType( KeyEvent event )
+	public func void onKeyType(KeyEvent event)
 		var String curText, newText = ""
-		var Font font = this.getFont()
+		var Font font = getFont()
 		var int textLen
 		
 		select event.getKeyCode()
 		case InputEventKey.backspace
 			// delete character to the left of the cursor
-			if this.pCursorPos > 0
-				curText = this.getModel().getText()
+			if pCursorPos > 0
+				curText = getModel().getText()
 				textLen = curText.getLength()
-				if this.pCursorPos - 1 > 0
-					newText = newText + curText.substring( 0, this.pCursorPos - 1 )
+				if pCursorPos - 1 > 0
+					newText = newText + curText.substring(0, pCursorPos - 1)
 				end
-				if textLen - this.pCursorPos > 0
-					newText = newText + curText.substring( this.pCursorPos )
+				if textLen - pCursorPos > 0
+					newText = newText + curText.substring(pCursorPos)
 				end
-// 				if this.getValidator() == null or this.getValidator().validates( newText )
-					this.pCursorPos--
-					this.getModel().setText( newText )
-					this.updateCanvasText()
+// 				if getValidator() == null or getValidator().validates(newText)
+					pCursorPos--
+					getModel().setText(newText)
+					updateCanvasText()
 // 				end
 			end
 		
 		case InputEventKey.delete
 			// delete character to the right of the cursor
-			curText = this.getModel().getText()
+			curText = getModel().getText()
 			textLen = curText.getLength()
 			
-			if this.pCursorPos < textLen
-				if this.pCursorPos > 0
-					newText = newText + curText.substring( 0, this.pCursorPos )
+			if pCursorPos < textLen
+				if pCursorPos > 0
+					newText = newText + curText.substring(0, pCursorPos)
 				end
-				if textLen - this.pCursorPos > 1
-					newText = newText + curText.substring( this.pCursorPos + 1 )
+				if textLen - pCursorPos > 1
+					newText = newText + curText.substring(pCursorPos + 1)
 				end
-// 				if this.getValidator() == null or this.getValidator().validates( newText )
-					this.getModel().setText( newText )
+// 				if getValidator() == null or getValidator().validates(newText)
+					getModel().setText(newText)
 // 				end
 			end
 			
@@ -383,42 +376,42 @@ class TextField extends TextWidget
 			// this fails if keyChar is larger than 127, for example non-latin characters.
 			// the only safe solution is to convert TextModel from String to UnicodeString
 			// 
-			if font.getCharAdvance( event.getKeyChar() ) <= 0.5
+			if font.getCharAdvance(event.getKeyChar()) <= 0.5
 				break
 			end
 			
-			curText = this.getModel().getText()
+			curText = getModel().getText()
 			textLen = curText.getLength()
-			if this.pCursorPos > 0
-				newText = newText + curText.substring( 0, this.pCursorPos )
+			if pCursorPos > 0
+				newText = newText + curText.substring(0, pCursorPos)
 			end
 			newText = newText + event.getKeyChar() cast byte
-			if textLen - this.pCursorPos > 0
-				newText = newText + curText.substring( this.pCursorPos )
+			if textLen - pCursorPos > 0
+				newText = newText + curText.substring(pCursorPos)
 			end
-			if this.getValidator() == null or this.getValidator().validates( newText )
-				this.pCursorPos++
-				this.getModel().setText( newText )
-				this.updateCanvasText()
+			if getValidator() == null or getValidator().validates(newText)
+				pCursorPos++
+				getModel().setText(newText)
+				updateCanvasText()
 			end
 		end
 	end
 	
 	/** \brief Padding changed. */
 	public func void onPaddingChanged()
-		this.pNeedsUpdate = true
-		this.updateCanvasText()
+		pNeedsUpdate = true
+		updateCanvasText()
 	end
 	
 	/** \brief Text model changed. */
 	public func void onModelChanged()
-		this.updateCanvasText()
+		updateCanvasText()
 	end
 	
-	/** Send if the text string has changed. */
-	public func void textChanged( TextModel textModel )
-		this.checkCursor()
-		this.updateCanvasText()
+	/** \brief Model text changed. */
+	public func void textChanged(TextModel textModel)
+		checkCursor()
+		updateCanvasText()
 	end
 	
 	/**
@@ -431,45 +424,45 @@ class TextField extends TextWidget
 	
 	
 	
-	/** Update canvas text. */
+	/** \brief Update canvas text. */
 	private func void updateCanvasText()
-		var Font font = this.getFont()
-		var Color color = this.getTextColor()
+		var Font font = getFont()
+		var Color color = getTextColor()
 		if font == null or color == null
-			this.getCanvasContent().removeAllCanvas()
+			getCanvasContent().removeAllCanvas()
 			return
 		end
 		
-		var CanvasView canvas = this.getCanvasContent()
+		var CanvasView canvas = getCanvasContent()
 		canvas.removeAllCanvas()
 		
-		var int width = this.getWidth() - 1 - this.getPadding().getWidth()
-		var int height = this.getHeight() - 1 - this.getPadding().getHeight()
+		var int width = getWidth() - 1 - getPadding().getWidth()
+		var int height = getHeight() - 1 - getPadding().getHeight()
 		var int charHeight = font.getSize()
 		var int realHeight = charHeight //+ 3
 		var String text
 		
 		// check for update
-		if this.pNeedsUpdate
-			this.ensureCursorVisible()
-			this.pNeedsUpdate = false
+		if pNeedsUpdate
+			ensureCursorVisible()
+			pNeedsUpdate = false
 		end
 		
 		// password check
-		if this.pPasswordChar == noPasswordChar
-			text = this.getModel().getText()
+		if pPasswordChar == noPasswordChar
+			text = getModel().getText()
 			
 		else
-			text = String.new( this.pPasswordChar cast byte, this.getModel().getText().getLength() )
+			text = String.new(pPasswordChar cast byte, getModel().getText().getLength())
 		end
 		
 		// center vertically
 		var int x = 0
-		var int y = ( height - realHeight ) / 2
+		var int y = (height - realHeight) / 2
 		
 		// text starting at given position
 		if not text.empty()
-			var String subString = text.substring( this.pFirstChar )
+			var String subString = text.substring(pFirstChar)
 			
 			// WARNING! right now the model text is not UTF8 anymore if characters are typed
 			//          actually the entire widget has to be modified to properly handle utf8
@@ -481,47 +474,47 @@ class TextField extends TextWidget
 			var UnicodeString usstring = UnicodeString.new()
 			var int i, len = subString.getLength()
 			for i = 0 to len
-				usstring = usstring + subString.getAt( i )
+				usstring = usstring + subString.getAt(i)
 			end
 			subString = usstring.toUTF8()
 			*/
 			// END WARNING
 			
 			var CanvasText textCanvas = CanvasText.new()
-			textCanvas.setFont( font )
-			textCanvas.setColor( color )
-			textCanvas.setText( subString )
-			textCanvas.setPosition( Point.new( x + this.getPadding().getLeft(), y + this.getPadding().getTop() ) )
-			textCanvas.setSize( font.getTextSize( subString ) )
+			textCanvas.setFont(font)
+			textCanvas.setColor(color)
+			textCanvas.setText(subString)
+			textCanvas.setPosition(Point.new(x + getPadding().getLeft(), y + getPadding().getTop()))
+			textCanvas.setSize(font.getTextSize(subString))
 			
-			textCanvas.setOrder( canvas.getCanvasCount() cast float )
-			canvas.addCanvas( textCanvas )
+			textCanvas.setOrder(canvas.getCanvasCount() cast float)
+			canvas.addCanvas(textCanvas)
 		end
 		
 		// caret
-		if this.getHasFocus()
+		if getHasFocus()
 			var float fcx = x cast float
 			var int i
 			
-			for i = this.pFirstChar to this.pCursorPos
-				fcx += font.getCharAdvance( text.getAt( i ) )
+			for i = pFirstChar to pCursorPos
+				fcx += font.getCharAdvance(text.getAt(i))
 			end
 			
 			var int cx = fcx cast int
 			
 			if cx >= 0 and cx <= width
 				var CanvasPaint canvasCaret = CanvasPaint.new()
-				canvasCaret.setShapeType( CanvasPaintShape.lines )
-				canvasCaret.setFillColor( Color.transparent )
-				canvasCaret.setLineColor( color /*Color.black*/ )
-				canvasCaret.setPosition( Point.new( cx + this.getPadding().getLeft(), y + this.getPadding().getTop() ) )
-				canvasCaret.setSize( Point.new( 1, charHeight ) )
-				canvasCaret.setOrder( canvas.getCanvasCount() cast float )
+				canvasCaret.setShapeType(CanvasPaintShape.lines)
+				canvasCaret.setFillColor(Color.transparent)
+				canvasCaret.setLineColor(color /*Color.black*/)
+				canvasCaret.setPosition(Point.new(cx + getPadding().getLeft(), y + getPadding().getTop()))
+				canvasCaret.setSize(Point.new(1, charHeight))
+				canvasCaret.setOrder(canvas.getCanvasCount() cast float)
 				
-				canvasCaret.addPoint( Point.new( 0, 0 ) )
-				canvasCaret.addPoint( Point.new( 0, charHeight + 1 ) )
+				canvasCaret.addPoint(Point.new(0, 0))
+				canvasCaret.addPoint(Point.new(0, charHeight + 1))
 				
-				canvas.addCanvas( canvasCaret )
+				canvas.addCanvas(canvasCaret)
 			end
 		end
 	end
