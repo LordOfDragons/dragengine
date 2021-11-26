@@ -718,7 +718,7 @@ class ECBehaviorVRHand extends DefaultECBehavior
 	public func new(BehaviorElementClass eclass, ECBehaviorVRPlayspace vrPlayspace, \
 	InputDeviceType inputDeviceType, BindingManager bindingManager, String id) \
 	this(eclass, vrPlayspace, inputDeviceType, bindingManager, id, \
-	id.empty() if "vrHand." else "vrHand(" + id + ").")
+	id.empty() if "vrHand" else "vrHand(" + id + ")")
 	end
 	
 	/** \brief Create behavior element class. */

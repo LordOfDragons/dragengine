@@ -366,7 +366,7 @@ class ECBehaviorVRHandLaserPointer extends DefaultECBehavior
 	
 	/** \brief Create behavior element class. */
 	public func new(BehaviorElementClass eclass, ECBehaviorVRHandPointAt vrHandPointAt, String id) \
-	this(eclass, vrHandPointAt, id, id.empty() if "vrHandLaserPointer." else "vrHandLaserPointer(" + id + ").")
+	this(eclass, vrHandPointAt, id, id.empty() if "vrHandLaserPointer" else "vrHandLaserPointer(" + id + ")")
 	end
 	
 	/** \brief Create behavior element class. */
