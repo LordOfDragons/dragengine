@@ -122,8 +122,9 @@ class Desktop extends Container
 	
 	/** \brief Active window or \em null. */
 	public func Window getActiveWindow()
-		if pFocusWidget != null
-			return pFocusWidget.getWindow()
+		var Widget focusWidget = getFocusWidget()
+		if focusWidget != null
+			return focusWidget.getWindow()
 			
 		else
 			return null
@@ -132,6 +133,15 @@ class Desktop extends Container
 	
 	/** \brief Focused widget or \em null. */
 	public func Widget getFocusWidget()
+		if pFocusWidget != null
+			if pFocusWidget.getParent() == null /* removed or disposed while active */ \
+			or not pFocusWidget.getCanFocus() \
+			or not pFocusWidget.getEnabled() \
+			or not pFocusWidget.getVisible()
+				pFocusWidget = null
+			end
+		end
+		
 		return pFocusWidget
 	end
 	
@@ -140,11 +150,14 @@ class Desktop extends Container
 	/** \brief Widget the mouse hovers above or \em null. */
 	public func Widget getHoverWidget()
 		if pHoverWidget != null
-			return pHoverWidget
-			
-		else
-			return this
+			if pHoverWidget.getParent() == null /* removed or disposed while active */ \
+			or not pHoverWidget.getEnabled() \
+			or not pHoverWidget.getVisible()
+				pHoverWidget = null
+			end
 		end
+		
+		return pHoverWidget != null if pHoverWidget else this
 	end
 	
 	/**
@@ -152,11 +165,12 @@ class Desktop extends Container
 	 * \details If widget is different than the old one enter and leave messages are send.
 	 */
 	protected func void setHoverWidget(Widget widget, MouseEvent event)
-		if widget == pHoverWidget
+		var Widget hoverWidget = getHoverWidget()
+		if widget == hoverWidget
 			return
 		end
 		
-		var Widget leaveWidget = pHoverWidget
+		var Widget leaveWidget = hoverWidget
 		
 		pHoverWidget = widget
 		
@@ -213,7 +227,7 @@ class Desktop extends Container
 			end
 		end
 		
-		if hoverWidget == pHoverWidget
+		if hoverWidget == getHoverWidget()
 			return
 		end
 		
@@ -229,9 +243,9 @@ class Desktop extends Container
 	
 	/** \brief Clear hover widget. */
 	protected func void clearHoverWidget()
-		if pHoverWidget != null
-			setHoverWidget(null, MouseEvent.new(pHoverWidget, \
-				MouseEvent.idMouseLeave, 0, 0, -1))
+		var Widget hoverWidget = getHoverWidget()
+		if hoverWidget != null
+			setHoverWidget(null, MouseEvent.new(hoverWidget, MouseEvent.idMouseLeave, 0, 0, -1))
 		end
 	end
 	
@@ -566,7 +580,7 @@ class Desktop extends Container
 		end
 		super.removeWidget(widget)
 		
-		if pFocusWidget == null
+		if getFocusWidget() == null
 			focusActiveWidgetOfFirstUsableWindow()
 		end
 		updateHoverWidget()
@@ -589,16 +603,15 @@ class Desktop extends Container
 	
 	/** Clears the focus widget. */
 	public func void clearFocusWidget()
-		if pFocusWidget == null
+		var Widget focusWidget = getFocusWidget()
+		if focusWidget == null
 			return
 		end
 		
-		var Window window = pFocusWidget.getWindow()
+		var Window window = focusWidget.getWindow()
 		if window != null
 			window.setActivated(false)
 		end
-		
-		var Widget focusWidget = pFocusWidget
 		
 		pFocusWidget = null
 		focusWidget.setHasFocus(false)
@@ -639,8 +652,9 @@ class Desktop extends Container
 		var Window windowNew = widget.getWindow()
 		var Window windowOld
 		
-		if pFocusWidget != null
-			windowOld = pFocusWidget.getWindow()
+		var Widget focusWidget = getFocusWidget()
+		if focusWidget != null
+			windowOld = focusWidget.getWindow()
 		end
 		
 		// if window can not be activated stick with the old window
@@ -654,8 +668,6 @@ class Desktop extends Container
 		end
 		
 		// change focus widget sending events
-		var Widget focusWidget = pFocusWidget
-		
 		pFocusWidget = widget
 		
 		if focusWidget != null
@@ -787,7 +799,7 @@ class Desktop extends Container
 		// check if the event has to work on the focused widget or active window
 		if KeyEvent.isKeyEvent(ident)
 			var KeyEvent keyEvent = event cast KeyEvent
-			eventWidget = pFocusWidget
+			eventWidget = getFocusWidget()
 			eventToSend = KeyEvent.new(eventWidget, ident, keyEvent.getKeyCode(), \
 				keyEvent.getModifiers(), keyEvent.getKeyChar(), \
 				keyEvent.getSystem(), keyEvent.getDevice() , keyEvent.getButtonCode())
@@ -797,11 +809,12 @@ class Desktop extends Container
 			end
 			
 		elif GamepadEvent.isGamepadEvent(ident)
-			if pFocusWidget != null
+			var Widget focusWidget = getFocusWidget()
+			if focusWidget != null
 				var GamepadEvent gevent = event cast GamepadEvent
-				eventToSend = GamepadEvent.new(pFocusWidget, ident, gevent.getSystem(), \
+				eventToSend = GamepadEvent.new(focusWidget, ident, gevent.getSystem(), \
 					gevent.getDevice(), gevent.getCode(), gevent.getModifiers(), gevent.getAxisValue())
-				pFocusWidget.sendEvent(eventToSend)
+				focusWidget.sendEvent(eventToSend)
 			end
 			
 		elif ident == MouseEvent.idMouseWheeled
@@ -810,7 +823,7 @@ class Desktop extends Container
 				// always update the hover widget. if we do not do this it is possible a widget
 				// changes while the mouse pointer does not move
 				updateHoverWidget()
-				eventWidget = pHoverWidget
+				eventWidget = getHoverWidget()
 			end
 			if eventWidget != null
 				var MouseEvent mevent = event cast MouseEvent

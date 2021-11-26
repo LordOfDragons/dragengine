@@ -114,7 +114,7 @@ class Container extends Widget
 			index = this.pChildren.getCount() - 1
 			widget = this.pChildren.getAt( index ) cast Widget
 			
-			widget.setParent( null )
+			widget.setParent(null)
 			
 			if index < this.pChildren.getCount()
 				this.pChildren.removeFrom( index )
@@ -362,6 +362,8 @@ class Container extends Widget
 			while this.pChildren.getCount() > 0
 				index = this.pChildren.getCount() - 1
 				widget = this.pChildren.getAt( index ) cast Widget
+				
+				widget.setParent(null)
 				
 				this.pLayout.removeWidget( widget )
 				this.pChildren.removeFrom( index )

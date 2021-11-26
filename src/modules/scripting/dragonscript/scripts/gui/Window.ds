@@ -441,11 +441,12 @@ class Window extends Container
 	
 	/** \brief Active widget or null if there is none. */
 	public func Widget getActiveWidget()
-		if this.pActiveWidget != null
-			if not this.pActiveWidget.getCanFocus() \
-			or not this.pActiveWidget.getEnabled() \
-			or not this.pActiveWidget.getVisible()
-				this.pActiveWidget = null
+		if pActiveWidget != null
+			if pActiveWidget.getParent() == null /* removed or disposed while active */ \
+			or not pActiveWidget.getCanFocus() \
+			or not pActiveWidget.getEnabled() \
+			or not pActiveWidget.getVisible()
+				pActiveWidget = null
 			end
 		end
 		
