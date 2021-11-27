@@ -205,16 +205,30 @@ void deClassColor::nfInvert::RunFunction( dsRunTime *RT, dsValue *This ){
 ////////////
 
 // public func bool isEqual( Color c )
-deClassColor::nfIsEqualTo::nfIsEqualTo( const sInitData &init ) : dsFunction( init.clsClr,
+deClassColor::nfIsEqual::nfIsEqual( const sInitData &init ) : dsFunction( init.clsClr,
 "isEqual", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool ){
 	p_AddParameter( init.clsClr ); // v
 }
-void deClassColor::nfIsEqualTo::RunFunction( dsRunTime *RT, dsValue *This ){
+void deClassColor::nfIsEqual::RunFunction( dsRunTime *RT, dsValue *This ){
 	const decColor &color = ( ( sClrNatDat* )p_GetNativeData( This ) )->color;
 	deClassColor *clsColor = ( deClassColor* )GetOwnerClass();
 	dsRealObject *objClr = RT->GetValue( 0 )->GetRealObject();
 	if( ! objClr ) DSTHROW( dueNullPointer );
 	RT->PushBool( color.IsEqualTo( clsColor->GetColor( objClr ) ) );
+}
+
+// public func bool isEqual( Color c, float threshold )
+deClassColor::nfIsEqual2::nfIsEqual2( const sInitData &init ) : dsFunction( init.clsClr,
+"isEqual", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool ){
+	p_AddParameter( init.clsClr ); // v
+	p_AddParameter( init.clsFlt ); // threshold
+}
+void deClassColor::nfIsEqual2::RunFunction( dsRunTime *RT, dsValue *This ){
+	const decColor &color = ( ( sClrNatDat* )p_GetNativeData( This ) )->color;
+	const deClassColor &clsColor = *( ( deClassColor* )GetOwnerClass() );
+	dsRealObject *objClr = RT->GetValue( 0 )->GetRealObject();
+	const float threshold = RT->GetValue( 1 )->GetFloat();
+	RT->PushBool( color.IsEqualTo( clsColor.GetColor( objClr ), threshold ) );
 }
 
 
@@ -443,7 +457,8 @@ void deClassColor::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfClamp( init ) );
 	AddFunction( new nfInvert( init ) );
 	
-	AddFunction( new nfIsEqualTo( init ) );
+	AddFunction( new nfIsEqual( init ) );
+	AddFunction( new nfIsEqual2( init ) );
 	
 	AddFunction( new nfReadFromFile( init ) );
 	AddFunction( new nfWriteToFile( init ) );

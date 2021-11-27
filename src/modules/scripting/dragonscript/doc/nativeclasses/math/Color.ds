@@ -122,6 +122,11 @@ fixed class Color
 		return false
 	end
 	
+	/** \brief Two colors are equal. */
+	public func bool isEqual(Color c, float delta)
+		return false
+	end
+	
 	
 	
 	/**

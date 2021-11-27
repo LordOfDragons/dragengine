@@ -74,7 +74,8 @@ private:
 	DEF_NATFUNC( nfClamp );
 	DEF_NATFUNC( nfInvert );
 	
-	DEF_NATFUNC( nfIsEqualTo );
+	DEF_NATFUNC( nfIsEqual );
+	DEF_NATFUNC( nfIsEqual2 );
 	
 	DEF_NATFUNC( nfReadFromFile );
 	DEF_NATFUNC( nfWriteToFile );
