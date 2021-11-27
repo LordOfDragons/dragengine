@@ -199,6 +199,7 @@ class LoadElementClass extends BaseXmlLoader
 			
 		else
 			this.logUnknownTag( tag )
+			return
 		end
 		
 		try
