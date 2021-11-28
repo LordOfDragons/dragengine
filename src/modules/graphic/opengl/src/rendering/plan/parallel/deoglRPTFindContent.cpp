@@ -92,11 +92,11 @@ void deoglRPTFindContent::Run(){
 		
 		// visit for content
 		deoglRPVisitorFindContent visitor( pPlan );
-		visitor.Init( frustum );
-		visitor.SetCullPixelSize( 1.0f );
+		visitor.SetCullPixelSize( 1.0f ); // has to come before Init() call
 		visitor.SetCullDynamicComponents( pPlan.GetIgnoreDynamicComponents() );
 		visitor.SetCullLayerMask( pPlan.GetUseLayerMask() );
 		visitor.SetLayerMask( pPlan.GetLayerMask() );
+		visitor.Init( frustum );
 		
 		const deoglGIState * const gistate = pPlan.GetUpdateGIState();
 		if( gistate ){

@@ -222,7 +222,7 @@ void deoglComponent::SyncToRender(){
 	}
 	if( pDirtyLODErrorScaling ){
 		const decVector &scaling = pComponent.GetScaling();
-		pRComponent->SetLODErrorScaling( decMath::max( scaling.x, decMath::max( scaling.y, scaling.z ) ) );
+		pRComponent->SetLODErrorScaling( decMath::max( scaling.x, scaling.y, scaling.z ) );
 		pDirtyLODErrorScaling = false;
 	}
 	if( pDirtyMesh ){

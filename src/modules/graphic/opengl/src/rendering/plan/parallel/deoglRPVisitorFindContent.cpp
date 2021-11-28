@@ -146,17 +146,23 @@ void deoglRPVisitorFindContent::SetErrorScaling( float errorScaling ){
 }
 
 void deoglRPVisitorFindContent::CalculateErrorScaling(){
+	// aspectRatio = w / h
+	// dx = tan(fov / 2) * (cullPixelSize / (w / 2))
+	// dy = tan(fov * fovRatio / 2) * (cullPixelSize / (w / 2)) / aspectRatio
+	// dz = 1
+	// 
+	// x = dx * z
+	// y = dy * z
+	
 	const float fov = pPlan.GetCameraFov();
 	const float fovRatio = pPlan.GetCameraFovRatio();
-	const float scalingX = ( float )pPlan.GetViewportWidth() * 0.5f / pCullPixelSize / tanf( fov * 0.5f );
-	const float scalingY = ( float )pPlan.GetViewportHeight() * 0.5f / pCullPixelSize / tanf( fov * fovRatio * 0.5f );
+	const float halfWidth = ( float )pPlan.GetViewportWidth() * 0.5f;
+	const float halfHeight = ( float )pPlan.GetViewportHeight() * 0.5f;
+	const float aspectRatio = halfWidth / halfHeight;
+	const float dx = tanf( fov * 0.5f ) * ( pCullPixelSize / halfWidth );
+	const float dy = tanf( fov * 0.5f * fovRatio ) * ( pCullPixelSize / halfWidth ) / aspectRatio;
 	
-	if( scalingX > scalingY ){
-		pErrorScaling = scalingX;
-		
-	}else{
-		pErrorScaling = scalingY;
-	}
+	pErrorScaling = decMath::min( dx, dy );
 }
 
 
@@ -322,7 +328,7 @@ void deoglRPVisitorFindContent::pVisitComponents( const deoglWorldOctree &node, 
 		const float radius = ( float )( ( maxExtend - minExtend ).Length() * 0.5 );
 		const float componentDistance = ( float )( ( center - cameraPosition ) * pCameraView ) - radius;
 		
-		if( componentDistance > ( radius * component.GetLODErrorScaling() ) * pErrorScaling ){
+		if( radius < componentDistance * pErrorScaling ){
 			continue;
 		}
 		
@@ -378,7 +384,7 @@ void deoglRPVisitorFindContent::pVisitBillboards( const deoglWorldOctree &node, 
 		const float radius = ( float )( ( maxExtend - minExtend ).Length() * 0.5 );
 		const float billboardDistance = ( float )( ( center - cameraPosition ) * pCameraView ) - radius;
 		
-		if( billboardDistance > radius * pErrorScaling ){
+		if( radius < billboardDistance * pErrorScaling ){
 			continue;
 		}
 		
