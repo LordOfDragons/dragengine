@@ -36,7 +36,9 @@
 #include <dragengine/common/file/decBaseFileWriter.h>
 #include <dragengine/common/file/decZFileWriter.h>
 #include <dragengine/common/string/decString.h>
+
 #include <libdscript/exceptions.h>
+#include <libdscript/packages/default/dsClassTimeDate.h>
 
 
 
@@ -378,6 +380,32 @@ void deClassFileWriter::nfWriteData2::RunFunction( dsRunTime *rt, dsValue *mysel
 	}
 }
 
+// public func void writeTimeDate(TimeDate timeDate)
+deClassFileWriter::nfWriteTimeDate::nfWriteTimeDate( const sInitData &init ) :
+dsFunction( init.clsFileWriter, "writeTimeDate", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsTimeDate ); // timeDate
+}
+void deClassFileWriter::nfWriteTimeDate::RunFunction( dsRunTime *rt, dsValue *myself ){
+	decBaseFileWriter &fileWriter = *( ( ( const sFileWriterNatDat * )p_GetNativeData( myself ) )->fileWriter );
+	deScriptingDragonScript &ds = *( ( deClassFileWriter* )GetOwnerClass() )->GetDS();
+	dsClassTimeDate &clsTimeDate = *( ( dsClassTimeDate* )ds.GetScriptEngine()->GetClassTimeDate() );
+	
+	const dsClassTimeDate::sTimeDate timeDate( clsTimeDate.GetTimeDate( rt->GetValue( 0 )->GetRealObject() ) );
+	
+	fileWriter.WriteByte( 0 ); // version
+	
+	fileWriter.WriteUShort( timeDate.year );
+	fileWriter.WriteByte( timeDate.month );
+	fileWriter.WriteByte( timeDate.day );
+	fileWriter.WriteByte( timeDate.hour );
+	fileWriter.WriteByte( timeDate.minute );
+	fileWriter.WriteByte( timeDate.second );
+	
+	fileWriter.WriteByte( timeDate.dayOfWeek );
+	fileWriter.WriteUShort( timeDate.dayOfYear );
+}
+
 
 
 // Class deClassFileWriter
@@ -419,6 +447,7 @@ void deClassFileWriter::CreateClassMembers( dsEngine *engine ){
 	init.clsObject = engine->GetClassObject();
 	init.clsInt = engine->GetClassInt();
 	init.clsFloat = engine->GetClassFloat();
+	init.clsTimeDate = engine->GetClassTimeDate();
 	
 	init.clsFileReader = pDS->GetClassFileReader();
 	
@@ -443,6 +472,7 @@ void deClassFileWriter::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfWriteString( init ) );
 	AddFunction( new nfWriteData( init ) );
 	AddFunction( new nfWriteData2( init ) );
+	AddFunction( new nfWriteTimeDate( init ) );
 	
 	CalcMemberOffsets();
 }

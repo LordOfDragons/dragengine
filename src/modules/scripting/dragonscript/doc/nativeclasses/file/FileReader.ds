@@ -135,5 +135,10 @@ class FileReader
 	/** \brief Skips string prefixed by a 2-byte2 length field and advance the file reading position. */
 	public func void skipString16()
 	end
+	
+	/** \brief Read TimeDate instance. */
+	public func TimeDate readTimeDate()
+		return null
+	end
 	/*@}*/
 end

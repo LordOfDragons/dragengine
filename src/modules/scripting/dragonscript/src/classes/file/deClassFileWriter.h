@@ -69,6 +69,7 @@ private:
 		dsClass *clsObject;
 		dsClass *clsInt;
 		dsClass *clsFloat;
+		dsClass *clsTimeDate;
 		
 		dsClass *clsFileReader;
 	};
@@ -100,6 +101,7 @@ private:
 	DEF_NATFUNC( nfWriteString );
 	DEF_NATFUNC( nfWriteData );
 	DEF_NATFUNC( nfWriteData2 );
+	DEF_NATFUNC( nfWriteTimeDate );
 #undef DEF_NATFUNC
 };
 

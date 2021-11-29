@@ -33,7 +33,9 @@
 #include <dragengine/common/file/decBaseFileReader.h>
 #include <dragengine/common/file/decZFileReader.h>
 #include <dragengine/common/string/decString.h>
+
 #include <libdscript/exceptions.h>
+#include <libdscript/packages/default/dsClassTimeDate.h>
 
 
 
@@ -347,6 +349,34 @@ void deClassFileReader::nfSkipString16::RunFunction( dsRunTime *rt, dsValue *mys
 	fileReader.SkipString16();
 }
 
+// public func TimeDate readTimeDate()
+deClassFileReader::nfReadTimeDate::nfReadTimeDate( const sInitData &init ) :
+dsFunction( init.clsFRead, "readTimeDate", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsTimeDate ){
+}
+void deClassFileReader::nfReadTimeDate::RunFunction( dsRunTime *rt, dsValue *myself ){
+	decBaseFileReader &fileReader = *( ( ( const sFReadNatDat * )p_GetNativeData( myself ) )->fileReader );
+	deScriptingDragonScript &ds = *( ( deClassFileReader* )GetOwnerClass() )->GetDS();
+	dsClassTimeDate::sTimeDate timeDate;
+	
+	switch( fileReader.ReadByte() ){ // version
+	case 0:
+		timeDate.year = fileReader.ReadUShort();
+		timeDate.month = fileReader.ReadByte();
+		timeDate.day = fileReader.ReadByte();
+		timeDate.hour = fileReader.ReadByte();
+		timeDate.minute = fileReader.ReadByte();
+		timeDate.second = fileReader.ReadByte();
+		timeDate.dayOfWeek = fileReader.ReadByte();
+		timeDate.dayOfYear = fileReader.ReadUShort();
+		break;
+		
+	default:
+		DETHROW_INFO( deeInvalidFormat, "unsupported version" );
+	}
+	
+	( ( dsClassTimeDate* )ds.GetScriptEngine()->GetClassTimeDate() )->PushTimeDate( rt, timeDate );
+}
+
 
 
 // Class deClassFileReader
@@ -385,6 +415,7 @@ void deClassFileReader::CreateClassMembers( dsEngine *engine ){
 	init.clsObj = engine->GetClassObject();
 	init.clsInt = engine->GetClassInt();
 	init.clsFlt = engine->GetClassFloat();
+	init.clsTimeDate = engine->GetClassTimeDate();
 	
 	AddFunction( new nfNew( init ) );
 	AddFunction( new nfNewZCompressed( init ) );
@@ -413,6 +444,7 @@ void deClassFileReader::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfReadString( init ) );
 	AddFunction( new nfSkipString8( init ) );
 	AddFunction( new nfSkipString16( init ) );
+	AddFunction( new nfReadTimeDate( init ) );
 	
 	CalcMemberOffsets();
 }

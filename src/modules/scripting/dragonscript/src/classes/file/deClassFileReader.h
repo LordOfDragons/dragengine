@@ -62,6 +62,7 @@ public:
 private:
 	struct sInitData{
 		dsClass *clsFRead, *clsVoid, *clsBool, *clsStr, *clsObj, *clsInt, *clsFlt;
+		dsClass *clsTimeDate;
 	};
 #define DEF_NATFUNC(name) \
 	class name : public dsFunction{ \
@@ -96,6 +97,7 @@ private:
 	DEF_NATFUNC( nfReadString );
 	DEF_NATFUNC( nfSkipString8 );
 	DEF_NATFUNC( nfSkipString16 );
+	DEF_NATFUNC( nfReadTimeDate );
 #undef DEF_NATFUNC
 };
 
