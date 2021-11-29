@@ -30,6 +30,7 @@
 #include "../../deClassPathes.h"
 #include "../../resourceloader/dedsResourceLoader.h"
 #include "dragengine/resources/animation/deAnimation.h"
+#include "dragengine/resources/animation/deAnimationBone.h"
 #include "dragengine/resources/animation/deAnimationMove.h"
 #include "dragengine/resources/animation/deAnimationManager.h"
 #include "dragengine/resources/loader/deResourceLoader.h"
@@ -135,6 +136,35 @@ void deClassAnimation::nfGetMovePlaytime::RunFunction(dsRunTime *RT, dsValue *Th
 	}else{
 		RT->PushFloat( anim->GetMove(moveIndex)->GetPlaytime() );
 	}
+}
+
+// public func int getBoneCount()
+deClassAnimation::nfGetBoneCount::nfGetBoneCount( const sInitData &init ) :
+dsFunction( init.clsAnim, "getBoneCount", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt ){
+}
+void deClassAnimation::nfGetBoneCount::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const deAnimation &animation = *( ( ( sAnimNatDat* )p_GetNativeData( myself ) )->anim );
+	rt->PushInt( animation.GetBoneCount() );
+}
+
+// public func int indexOfBoneNamed(String name)
+deClassAnimation::nfIndexOfBoneNamed::nfIndexOfBoneNamed( const sInitData &init ) :
+dsFunction( init.clsAnim, "indexOfBoneNamed", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt ){
+	p_AddParameter( init.clsStr ); // name
+}
+void deClassAnimation::nfIndexOfBoneNamed::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const deAnimation &animation = *( ( ( sAnimNatDat* )p_GetNativeData( myself ) )->anim );
+	rt->PushInt( animation.FindBone( rt->GetValue( 0 )->GetString() ) );
+}
+
+// public func String getBoneName( int index )
+deClassAnimation::nfGetBoneName::nfGetBoneName( const sInitData &init ) :
+dsFunction( init.clsAnim, "getBoneName", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsStr ){
+	p_AddParameter( init.clsInt ); // index
+}
+void deClassAnimation::nfGetBoneName::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const deAnimation &animation = *( ( ( sAnimNatDat* )p_GetNativeData( myself ) )->anim );
+	rt->PushString( animation.GetBone( rt->GetValue( 0 )->GetInt() )->GetName() );
 }
 
 // public func float getMoveFPS( String moveName )
@@ -253,6 +283,9 @@ void deClassAnimation::CreateClassMembers(dsEngine *engine){
 	AddFunction(new nfDestructor(init));
 	AddFunction(new nfGetFilename(init));
 	AddFunction(new nfGetMovePlaytime(init));
+	AddFunction( new nfGetBoneCount( init ) );
+	AddFunction( new nfIndexOfBoneNamed( init ) );
+	AddFunction( new nfGetBoneName( init ) );
 	AddFunction( new nfGetMoveFPS( init ) );
 	AddFunction( new nfGetMoveCount( init ) );
 	AddFunction( new nfGetMoveName( init ) );

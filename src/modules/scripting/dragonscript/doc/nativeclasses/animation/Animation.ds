@@ -60,6 +60,32 @@ fixed class Animation
 	end
 	
 	/**
+	 * \brief Count of bones.
+	 * \version 1.8
+	 */
+	public func int getBoneCount()
+		return 0
+	end
+	
+	/**
+	 * \brief Index of named bone or -1 if not found.
+	 * \version 1.8
+	 */
+	public func int indexOfBoneNamed(String name)
+		return 0
+	end
+	
+	/**
+	 * \brief Name of bone at index.
+	 * \version 1.8
+	 * \param index Index of bone to get name of
+	 * \throws EInvalidParam index is less than 0 or larger than or equal to getBoneCount().
+	 */
+	public func String getBoneName(int index)
+		return null
+	end
+	
+	/**
 	 * \brief Count of moves.
 	 * \version 1.7
 	 */

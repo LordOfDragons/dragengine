@@ -71,6 +71,9 @@ private:
 	DEF_NATFUNC(nfDestructor);
 	DEF_NATFUNC(nfGetFilename);
 	DEF_NATFUNC(nfGetMovePlaytime);
+	DEF_NATFUNC( nfGetBoneCount );
+	DEF_NATFUNC( nfIndexOfBoneNamed );
+	DEF_NATFUNC( nfGetBoneName );
 	DEF_NATFUNC( nfGetMoveFPS );
 	DEF_NATFUNC( nfGetMoveCount );
 	DEF_NATFUNC( nfGetMoveName );
