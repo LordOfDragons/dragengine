@@ -39,6 +39,12 @@ class fbxProperty;
  * \brief FBX managed animation curve.
  */
 class fbxAnimationCurve : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<fbxAnimationCurve> Ref;
+	
+	
+	
 private:
 	fbxNode &pNodeCurve;
 	fbxProperty *pPropertyTime;

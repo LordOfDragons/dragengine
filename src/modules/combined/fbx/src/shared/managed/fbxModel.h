@@ -45,6 +45,12 @@ class deModelWeight;
  * \brief FBX managed model.
  */
 class fbxModel : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<fbxModel> Ref;
+	
+	
+	
 private:
 	struct sVertex {
 		decIntList weights;

@@ -1,7 +1,7 @@
 /* 
  * FBX Modules
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * Copyright (C) 2021, Roland Plüss (roland@rptd.ch)
  * 
  * This program is free software; you can redistribute it and/or 
  * modify it under the terms of the GNU General Public License 
@@ -19,8 +19,8 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef _FBXRIG_H_
-#define _FBXRIG_H_
+#ifndef _FBXTEXTURE_H_
+#define _FBXTEXTURE_H_
 
 
 #include <stdint.h>
@@ -33,39 +33,42 @@
 
 class fbxNode;
 class fbxScene;
-class fbxRigBone;
 
 class deBaseModule;
 
 
 /**
- * \brief FBX managed rig.
+ * FBX managed texture.
  */
-class fbxRig : public deObject{
+class fbxTexture : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<fbxRig> Ref;
+	typedef deTObjectReference<fbxTexture> Ref;
 	
 	
 	
 private:
 	fbxScene &pScene;
-	fbxNode &pNodePose;
-	decObjectOrderedSet pBones;
-	decMatrix pMatrix;
-	decMatrix pMatrixInverse;
+	fbxNode &pNodeTexture;
+	
+	int64_t pTextureID;
+	decString pName;
+	decString pUVSet;
+	bool pUseMipMap;
+	decString pFilename;
+	decString pRelativeFilename;
 	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create connection. */
-	fbxRig( fbxScene &scene, fbxNode &nodePose );
+	/** Create connection. */
+	fbxTexture( fbxScene &scene, fbxNode &nodeTexture );
 	
 protected:
-	/** \brief Clean up connection. */
-	virtual ~fbxRig();
+	/** Clean up connection. */
+	virtual ~fbxTexture();
 	/*@}*/
 	
 	
@@ -73,37 +76,38 @@ protected:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Scene. */
+	/** Scene. */
 	inline fbxScene &GetScene() const{ return pScene; }
 	
-	/** \brief Pose node. */
-	inline fbxNode &GetNodePose() const{ return pNodePose; }
+	/** Texture node. */
+	inline fbxNode &GetNodeTexture() const{ return pNodeTexture; }
 	
 	
 	
-	/** \brief Count of bones. */
-	int GetBoneCount() const;
+	/** Texture ID. */
+	inline int64_t GetTextureID() const{ return pTextureID; }
 	
-	/** \brief Bone at index. */
-	fbxRigBone *GetBoneAt( int index ) const;
+	/** Name. */
+	inline const decString &GetName() const{ return pName; }
 	
-	/** \brief Named bone or NULL if absent. */
-	fbxRigBone *GetBoneNamed( const char *name ) const;
+	/** Set name. */
+	void SetName( const char *name );
 	
-	/** \brief Bone with model ID or NULL if absent. */
-	fbxRigBone *GetBoneWithModelID( int64_t id ) const;
+	/** UV Set. */
+	inline const decString &GetUVSet() const{ return pUVSet; }
+	
+	/** Use Mip Map. */
+	inline bool GetUseMipMap() const{ return pUseMipMap; }
+	
+	/** Filename. */
+	inline const decString &GetFilename() const{ return pFilename; }
+	
+	/** Relative filename. */
+	inline const decString &GetRelativeFilename() const{ return pRelativeFilename; }
 	
 	
 	
-	/** \brief Matrix. */
-	inline const decMatrix &GetMatrix() const{ return pMatrix; }
-	
-	/** \brief Inverse matrix. */
-	inline const decMatrix &GetMatrixInverse() const{ return pMatrix; }
-	
-	
-	
-	/** \brief Debug print node structure. */
+	/** Debug print node structure. */
 	void DebugPrintStructure( deBaseModule &module, const decString &prefix, bool verbose = false ) const;
 	/*@}*/
 };

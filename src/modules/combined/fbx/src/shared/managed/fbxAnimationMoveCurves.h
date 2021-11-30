@@ -46,6 +46,12 @@ class deBaseModule;
  */
 class fbxAnimationMoveCurves : public deObject{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<fbxAnimationMoveCurves> Ref;
+	
+	
+	
+public:
 	/** \brief Target property. */
 	enum eTargetProperty{
 		etpPosition,

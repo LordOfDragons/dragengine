@@ -1,7 +1,7 @@
 /* 
  * FBX Modules
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * Copyright (C) 2021, Roland Plüss (roland@rptd.ch)
  * 
  * This program is free software; you can redistribute it and/or 
  * modify it under the terms of the GNU General Public License 
@@ -19,8 +19,8 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef _FBXRIG_H_
-#define _FBXRIG_H_
+#ifndef _FBXMATERIAL_H_
+#define _FBXMATERIAL_H_
 
 
 #include <stdint.h>
@@ -33,39 +33,38 @@
 
 class fbxNode;
 class fbxScene;
-class fbxRigBone;
 
 class deBaseModule;
 
 
 /**
- * \brief FBX managed rig.
+ * FBX managed rig.
  */
-class fbxRig : public deObject{
+class fbxMaterial : public deObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<fbxRig> Ref;
+	typedef deTObjectReference<fbxMaterial> Ref;
 	
 	
 	
 private:
 	fbxScene &pScene;
-	fbxNode &pNodePose;
-	decObjectOrderedSet pBones;
-	decMatrix pMatrix;
-	decMatrix pMatrixInverse;
+	fbxNode &pNodeMaterial;
+	
+	int64_t pMaterialID;
+	decString pName;
 	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create connection. */
-	fbxRig( fbxScene &scene, fbxNode &nodePose );
+	/** Create connection. */
+	fbxMaterial( fbxScene &scene, fbxNode &nodeMaterial );
 	
 protected:
-	/** \brief Clean up connection. */
-	virtual ~fbxRig();
+	/** Clean up connection. */
+	virtual ~fbxMaterial();
 	/*@}*/
 	
 	
@@ -73,37 +72,26 @@ protected:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Scene. */
+	/** Scene. */
 	inline fbxScene &GetScene() const{ return pScene; }
 	
-	/** \brief Pose node. */
-	inline fbxNode &GetNodePose() const{ return pNodePose; }
+	/** Material node. */
+	inline fbxNode &GetNodeMaterial() const{ return pNodeMaterial; }
 	
 	
 	
-	/** \brief Count of bones. */
-	int GetBoneCount() const;
+	/** Material ID. */
+	inline int64_t GetMaterialID() const{ return pMaterialID; }
 	
-	/** \brief Bone at index. */
-	fbxRigBone *GetBoneAt( int index ) const;
+	/** Name. */
+	inline const decString &GetName() const{ return pName; }
 	
-	/** \brief Named bone or NULL if absent. */
-	fbxRigBone *GetBoneNamed( const char *name ) const;
-	
-	/** \brief Bone with model ID or NULL if absent. */
-	fbxRigBone *GetBoneWithModelID( int64_t id ) const;
+	/** Set name. */
+	void SetName( const char *name );
 	
 	
 	
-	/** \brief Matrix. */
-	inline const decMatrix &GetMatrix() const{ return pMatrix; }
-	
-	/** \brief Inverse matrix. */
-	inline const decMatrix &GetMatrixInverse() const{ return pMatrix; }
-	
-	
-	
-	/** \brief Debug print node structure. */
+	/** Debug print node structure. */
 	void DebugPrintStructure( deBaseModule &module, const decString &prefix, bool verbose = false ) const;
 	/*@}*/
 };

@@ -1,16 +1,16 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <module>
-	<name>FBXAnim</name>
-	<description>Handles animations in the binary FBX model format.</description>
+	<name>FBXSkin</name>
+	<description>Handles skins in the binary FBX format.</description>
 	<author>Plüss Roland (roland@rptd.ch)</author>
 	<version>VERSION</version>
-	<type>Animation</type>
+	<type>Skin</type>
 	<pattern>.fbx</pattern>
 	<noSaving/>
 	<library>
 		<file>FILENAME</file>
 		<size>FILESIZE</size>
 		<sha1>SHA1SUM</sha1>
-		<entrypoint>FBXAnimCreateModule</entrypoint>
+		<entrypoint>FBXSkinCreateModule</entrypoint>
 	</library>
 </module>

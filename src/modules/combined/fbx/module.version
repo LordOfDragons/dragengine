@@ -12,3 +12,8 @@ FBXANIM {
   global: FBXAnimCreateModule;
   local: *;
 };
+
+FBXSKIN {
+  global: FBXSkinCreateModule;
+  local: *;
+};

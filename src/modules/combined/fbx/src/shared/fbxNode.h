@@ -45,6 +45,12 @@ class decStringSet;
  * \brief FBX node.
  */
 class fbxNode : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<fbxNode> Ref;
+	
+	
+	
 private:
 	decString pName;
 	decObjectOrderedSet pProperties;
@@ -98,13 +104,14 @@ public:
 	fbxProperty *GetPropertyAt( int index ) const;
 	
 	/** \brief Get named object property value. */
-	bool GetPropertyBool( const char *name, bool &value ) const;
-	bool GetPropertyInt( const char *name, int &value ) const;
-	bool GetPropertyLong( const char *name, int64_t &value ) const;
-	bool GetPropertyFloat( const char *name, float &value ) const;
-	bool GetPropertyDouble( const char *name, double &value ) const;
-	bool GetPropertyString( const char *name, decString &value ) const;
-	bool GetPropertyVector( const char *name, decVector &value ) const;
+	bool GetPropertyBoolIf( const char *name, bool &value ) const;
+	bool GetPropertyIntIf( const char *name, int &value ) const;
+	bool GetPropertyLongIf( const char *name, int64_t &value ) const;
+	bool GetPropertyFloatIf( const char *name, float &value ) const;
+	bool GetPropertyDoubleIf( const char *name, double &value ) const;
+	bool GetPropertyStringIf( const char *name, decString &value ) const;
+	bool GetPropertyVectorIf( const char *name, decVector &value ) const;
+	bool GetPropertyColorIf( const char *name, decColor &value ) const;
 	
 	bool GetPropertyBool( const char *name ) const;
 	int GetPropertyInt( const char *name ) const;
@@ -113,6 +120,7 @@ public:
 	double GetPropertyDouble( const char *name ) const;
 	const decString &GetPropertyString( const char *name ) const;
 	decVector GetPropertyVector( const char *name ) const;
+	decColor GetPropertyColor( const char *name ) const;
 	
 	bool GetPropertyBool( const char *name, bool defaultValue ) const;
 	int GetPropertyInt( const char *name, int defaultValue ) const;
@@ -121,6 +129,7 @@ public:
 	double GetPropertyDouble( const char *name, double defaultValue ) const;
 	const decString &GetPropertyString( const char *name, const decString &defaultValue ) const;
 	decVector GetPropertyVector( const char *name, const decVector &defaultValue ) const;
+	decColor GetPropertyColor( const char *name, const decColor &defaultValue ) const;
 	
 	/** \brief Transformation. */
 	const decVector &GetLocalTranslation();

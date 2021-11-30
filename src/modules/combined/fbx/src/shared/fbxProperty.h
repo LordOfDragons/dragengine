@@ -54,6 +54,12 @@ class deBaseModule;
  */
 class fbxProperty : public deObject{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<fbxProperty> Ref;
+	
+	
+	
+public:
 	/** \brief Type. */
 	enum eType{
 		etBoolean,

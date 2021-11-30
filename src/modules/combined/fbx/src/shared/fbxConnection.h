@@ -36,6 +36,12 @@ class deBaseModule;
  * \brief FBX connection.
  */
 class fbxConnection : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<fbxConnection> Ref;
+	
+	
+	
 private:
 	int64_t pSource;
 	int64_t pTarget;
