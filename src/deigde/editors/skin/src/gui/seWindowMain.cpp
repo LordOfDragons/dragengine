@@ -604,7 +604,7 @@ public:
 		decString filename( skin->GetFilePath() );
 		if( igdeCommonDialogs::GetFileSave( &pWindow, "Save Skin",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
-		*pWindow.GetEnvironment().GetOpenFilePatternList( igdeEnvironment::efpltSkin ), filename ) ){
+		*pWindow.GetEnvironment().GetSaveFilePatternList( igdeEnvironment::efpltSkin ), filename ) ){
 			pWindow.SaveSkin( filename );
 		}
 		return NULL;

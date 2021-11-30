@@ -75,6 +75,7 @@ private:
 	decString pDefaultExtension;
 	
 	bool pFallback;
+	bool pNoSaving;
 	
 	bool pEnabled;
 	
@@ -164,6 +165,12 @@ public:
 	
 	/** \brief Sets if this module is a fallback module. */
 	void SetIsFallback( bool fallback );
+	
+	/** \brief Module does not support saving. */
+	inline bool GetNoSaving() const{ return pNoSaving; }
+	
+	/** \brief Set if module does not support saving. */
+	void SetNoSaving( bool noSaving );
 	
 	/**
 	 * \brief Determines if the module is enabled.

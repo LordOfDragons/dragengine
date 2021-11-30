@@ -459,7 +459,7 @@ public:
 		decString filename( rig->GetFilePath() );
 		if( igdeCommonDialogs::GetFileSave( &pWindow, "Save Rig",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
-		*pWindow.GetEnvironment().GetOpenFilePatternList( igdeEnvironment::efpltRig ), filename ) ){
+		*pWindow.GetEnvironment().GetSaveFilePatternList( igdeEnvironment::efpltRig ), filename ) ){
 			pWindow.SaveRig( filename );
 		}
 		return NULL;

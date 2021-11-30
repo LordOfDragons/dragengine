@@ -50,6 +50,7 @@ pAuthor( "Unknown" ),
 pVersion( "1.0" ),
 	
 pFallback( false ),
+pNoSaving( false ),
 
 pEnabled( true ),
 
@@ -120,6 +121,10 @@ void deLoadableModule::SetDirectoryName( const char *dirName ){
 
 void deLoadableModule::SetIsFallback( bool fallback ){
 	pFallback = fallback;
+}
+
+void deLoadableModule::SetNoSaving( bool noSaving ){
+	pNoSaving = noSaving;
 }
 
 void deLoadableModule::SetEnabled( bool enabled ){

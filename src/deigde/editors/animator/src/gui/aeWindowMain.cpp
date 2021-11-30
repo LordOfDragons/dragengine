@@ -545,7 +545,7 @@ public:
 		decString filename( animator->GetFilePath() );
 		if( igdeCommonDialogs::GetFileSave( &pWindow, "Save Animator",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
-		*pWindow.GetEnvironment().GetOpenFilePatternList( igdeEnvironment::efpltAnimator ), filename ) ){
+		*pWindow.GetEnvironment().GetSaveFilePatternList( igdeEnvironment::efpltAnimator ), filename ) ){
 			pWindow.SaveAnimator( filename );
 		}
 		return NULL;

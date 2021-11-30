@@ -494,6 +494,9 @@ void deLibraryModule::pParseXML( const char *filename, decBaseFileReader &reader
 			
 		}else if( strcmp( tag->GetName(), "fallback" ) == 0 ){
 			SetIsFallback( true );
+			
+		}else if( strcmp( tag->GetName(), "noSaving" ) == 0 ){
+			SetNoSaving( true );
 		}
 	}
 	
