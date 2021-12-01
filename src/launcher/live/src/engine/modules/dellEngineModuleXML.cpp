@@ -121,7 +121,7 @@ void dellEngineModuleXML::pReadModule( const decXmlElementTag &root, dellEngineM
 				module.SetIsFallback( true );
 				
 			}else{
-				pErrorUnknownTag( root, *tag );
+// 				pErrorUnknownTag( root, *tag );
 			}
 		}
 	}

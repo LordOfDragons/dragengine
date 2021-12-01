@@ -121,7 +121,7 @@ void declEngineModuleXML::pReadModule( const decXmlElementTag &root, declEngineM
 				module.SetIsFallback( true );
 				
 			}else{
-				pErrorUnknownTag( root, *tag );
+// 				pErrorUnknownTag( root, *tag );
 			}
 		}
 	}

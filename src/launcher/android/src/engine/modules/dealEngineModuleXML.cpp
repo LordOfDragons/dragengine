@@ -117,7 +117,7 @@ void dealEngineModuleXML::pReadModule( const decXmlElementTag &root, dealEngineM
 				module.SetIsFallback( true );
 				
 			}else{
-				pErrorUnknownTag( root, *tag );
+// 				pErrorUnknownTag( root, *tag );
 			}
 		}
 	}
