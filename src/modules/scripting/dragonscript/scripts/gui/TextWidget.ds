@@ -67,13 +67,13 @@ class TextWidget extends Widget implements TextModelListener
 	
 	/** \brief Dispose of widget. */
 	public func void dispose()
+		pValidator = null
+		pActionListeners = null
+		
 		if pModel != null
 			pModel.removeListener(this)
 			pModel = null
 		end
-		
-		pValidator = null
-		pActionListeners = null
 		
 		super.dispose()
 	end

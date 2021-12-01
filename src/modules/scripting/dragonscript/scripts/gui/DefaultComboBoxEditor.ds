@@ -35,7 +35,7 @@ pin Dragengine.Gui.Events
  * Supports designing using designer selector "TextField.ComboBoxEditor".
  */
 class DefaultComboBoxEditor extends TextField implements ComboBoxEditor
-	private var Array pActionListeners
+	private var Array pEditorActionListeners
 	
 	
 	
@@ -45,7 +45,7 @@ class DefaultComboBoxEditor extends TextField implements ComboBoxEditor
 	
 	/** \brief Create default combo box editor. */
 	public func new(TextModel model) super(model)
-		pActionListeners = Array.new()
+		pEditorActionListeners = Array.new()
 		setDesignerSelector(getDesignerSelector() + ".ComboBoxEditor")
 	end
 	
@@ -59,7 +59,7 @@ class DefaultComboBoxEditor extends TextField implements ComboBoxEditor
 		// it is possible the dispose is triggered due to an action listener call.
 		// if Array.removeAll() is called in this case an exception is thrown due to
 		// modifying the array while iterating over it. dropping the array is enough
-		pActionListeners = null
+		pEditorActionListeners = null
 		super.dispose()
 	end
 	
@@ -90,19 +90,43 @@ class DefaultComboBoxEditor extends TextField implements ComboBoxEditor
 		else
 			getModel().setText(object.toString())
 		end
+		
+		fireAction(0)
 	end
 	
 	/**
 	 * \brief Add action listener.
 	 * \details Action listener is called whenever the edited object changes.
+	 * \note This shadows TextWidget.addActionListener(). To use it use addTextActionListener().
 	 */
 	public func void addActionListener(ActionListener listener)
-		pActionListeners.add(listener)
+		pEditorActionListeners.add(listener)
 	end
 	
-	/** \brief Remove action listener. */
+	/**
+	 * \brief Remove action listener.
+	 * \note This shadows TextWidget.removeActionListener(). To use it use removeTextActionListener().
+	 */
 	public func void removeActionListener(ActionListener listener)
-		pActionListeners.remove(listener)
+		pEditorActionListeners.remove(listener)
+	end
+	
+	/**
+	 * \brief Add text widget action listener.
+	 * \version 1.8
+	 * \note Forwards to shadowed TextWidget.addActionListener().
+	 */
+	public func void addTextActionListener(ActionListener listener)
+		super.addActionListener(listener)
+	end
+	
+	/**
+	 * \brief Remove text widget action listener.
+	 * \version 1.8
+	 * \note Forwards to shadowed TextWidget.removeActionListener().
+	 */
+	public func void removeTextActionListener(ActionListener listener)
+		super.removeActionListener(listener)
 	end
 	
 	/**
@@ -125,7 +149,7 @@ class DefaultComboBoxEditor extends TextField implements ComboBoxEditor
 		
 		var ActionEvent event = ActionEvent.new(this, ActionEvent.idAction, 0)
 		
-		pActionListeners.forEach(block ActionListener each
+		pEditorActionListeners.forEach(block ActionListener each
 			each.onAction(event)
 		end)
 	end
