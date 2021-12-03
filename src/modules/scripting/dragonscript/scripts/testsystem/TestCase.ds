@@ -22,6 +22,7 @@
 
 namespace Dragengine.TestSystem
 
+pin Dragengine.Gui
 pin Dragengine.Scenery
 
 
@@ -271,6 +272,14 @@ abstract class TestCase
 	/** \brief Fail test if quaternions are not equal within range. */
 	protected func void assertQuaternion(Quaternion expected, Quaternion found, float range)
 		if found.isEqualTo(expected, range)
+			return
+		end
+		throw AssertEqualsException.new(expected, found)
+	end
+	
+	/** \brief Fail test if colors are not equal within range. */
+	protected func void assertColor(Color expected, Color found, float range)
+		if found.isEqual(expected, range)
 			return
 		end
 		throw AssertEqualsException.new(expected, found)

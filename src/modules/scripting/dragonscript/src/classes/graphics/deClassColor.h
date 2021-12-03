@@ -53,6 +53,7 @@ private:
 	struct sInitData{
 		dsClass *clsClr, *clsVoid, *clsBool, *clsStr, *clsObj, *clsInt, *clsFlt;
 		dsClass *clsFileReader, *clsFileWriter;
+		dsClass *clsArray;
 	};
 #define DEF_NATFUNC(name) \
 	class name : public dsFunction{ \
@@ -65,6 +66,9 @@ private:
 	DEF_NATFUNC( nfNew3 );
 	DEF_NATFUNC( nfNewRGB );
 	DEF_NATFUNC( nfNewRGBA );
+	DEF_NATFUNC( nfNewHSV );
+	DEF_NATFUNC( nfNewHSL );
+	DEF_NATFUNC( nfNewCMYK );
 	DEF_NATFUNC( nfDestructor );
 	
 	DEF_NATFUNC( nfGetRed );
@@ -90,6 +94,9 @@ private:
 	DEF_NATFUNC( nfHashCode );
 	DEF_NATFUNC( nfToString );
 	DEF_NATFUNC( nfToStringPrecision );
+	DEF_NATFUNC( nfToHSV );
+	DEF_NATFUNC( nfToHSL );
+	DEF_NATFUNC( nfToCMYK );
 #undef DEF_NATFUNC
 };
 

@@ -32,6 +32,7 @@
 
 #include <dragengine/deEngine.h>
 #include <libdscript/exceptions.h>
+#include <libdscript/packages/default/dsClassArray.h>
 #include <dragengine/common/file/decBaseFileReader.h>
 #include <dragengine/common/file/decBaseFileWriter.h>
 
@@ -111,7 +112,7 @@ void deClassColor::nfNewRGB::RunFunction( dsRunTime *RT, dsValue *This ){
 	float b = ( float )RT->GetValue( 2 )->GetInt() / ( float )255;
 	clsColor->PushColor( RT, decColor( r, g, b, 1 ) );
 }
-	
+
 // public static func Color newRGBA( int red, int green, int blue, int alpha )
 deClassColor::nfNewRGBA::nfNewRGBA( const sInitData &init ) : dsFunction( init.clsClr,
 "newRGBA", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsClr ){
@@ -128,9 +129,56 @@ void deClassColor::nfNewRGBA::RunFunction( dsRunTime *RT, dsValue *This ){
 	float a = ( float )RT->GetValue( 3 )->GetInt() / ( float )255;
 	clsColor->PushColor( RT, decColor( r, g, b, a ) );
 }
-	
+
+// public static func Color newHSV(float hue, float saturation, float value)
+deClassColor::nfNewHSV::nfNewHSV( const sInitData &init ) :
+dsFunction( init.clsClr, "newHSV", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsClr ){
+	p_AddParameter( init.clsFlt ); // hue
+	p_AddParameter( init.clsFlt ); // saturation
+	p_AddParameter( init.clsFlt ); // value
+}
+void deClassColor::nfNewHSV::RunFunction( dsRunTime *rt, dsValue* ){
+	deClassColor &clsColor = *( ( deClassColor* )GetOwnerClass() );
+	const float hue = rt->GetValue( 0 )->GetFloat();
+	const float saturation = rt->GetValue( 1 )->GetFloat();
+	const float value = rt->GetValue( 2 )->GetFloat();
+	clsColor.PushColor( rt, decColor::CreateHSV( hue, saturation, value ) );
+}
+
+// public static func Color newHSL(float hue, float saturation, float lightness)
+deClassColor::nfNewHSL::nfNewHSL( const sInitData &init ) :
+dsFunction( init.clsClr, "newHSL", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsClr ){
+	p_AddParameter( init.clsFlt ); // hue
+	p_AddParameter( init.clsFlt ); // saturation
+	p_AddParameter( init.clsFlt ); // lightness
+}
+void deClassColor::nfNewHSL::RunFunction( dsRunTime *rt, dsValue* ){
+	deClassColor &clsColor = *( ( deClassColor* )GetOwnerClass() );
+	const float hue = rt->GetValue( 0 )->GetFloat();
+	const float saturation = rt->GetValue( 1 )->GetFloat();
+	const float lightness = rt->GetValue( 2 )->GetFloat();
+	clsColor.PushColor( rt, decColor::CreateHSL( hue, saturation, lightness ) );
+}
+
+// public static func Color newCMYK(float cyan, float magenta, float yellow, float black)
+deClassColor::nfNewCMYK::nfNewCMYK( const sInitData &init ) :
+dsFunction( init.clsClr, "newCMYK", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsClr ){
+	p_AddParameter( init.clsFlt ); // cyan
+	p_AddParameter( init.clsFlt ); // magenta
+	p_AddParameter( init.clsFlt ); // yellow
+	p_AddParameter( init.clsFlt ); // black
+}
+void deClassColor::nfNewCMYK::RunFunction( dsRunTime *rt, dsValue* ){
+	deClassColor &clsColor = *( ( deClassColor* )GetOwnerClass() );
+	const float cyan = rt->GetValue( 0 )->GetFloat();
+	const float magenty = rt->GetValue( 1 )->GetFloat();
+	const float yellow = rt->GetValue( 2 )->GetFloat();
+	const float black = rt->GetValue( 3 )->GetFloat();
+	clsColor.PushColor( rt, decColor::CreateCMYK( cyan, magenty, yellow, black ) );
+}
+
 ////public static func Color newNamed( String name )
-	
+
 // public func destructor()
 deClassColor::nfDestructor::nfDestructor( const sInitData &init ) : dsFunction( init.clsClr,
 DSFUNC_DESTRUCTOR, DSFT_DESTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
@@ -408,6 +456,114 @@ void deClassColor::nfToStringPrecision::RunFunction( dsRunTime *rt, dsValue *mys
 	rt->PushString( str );
 }
 
+// public func Array toHSV()
+deClassColor::nfToHSV::nfToHSV( const sInitData &init ) :
+dsFunction( init.clsClr, "toHSV", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsArray ){
+}
+void deClassColor::nfToHSV::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const decColor &color = ( ( sClrNatDat* )p_GetNativeData( myself ) )->color;
+	float hue, saturation, value;
+	color.ToHSV( hue, saturation, value );
+	
+	const deScriptingDragonScript &ds = *( ( deClassColor* )GetOwnerClass() )->GetScriptModule();
+	dsValue * const valueHsv = rt->CreateValue( ds.GetScriptEngine()->GetClassArray() );
+	
+	try{
+		rt->CreateObject( valueHsv, ds.GetScriptEngine()->GetClassArray(), 0 );
+		
+		rt->PushFloat( hue );
+		rt->RunFunction( valueHsv, "add", 1 );
+		
+		rt->PushFloat( saturation );
+		rt->RunFunction( valueHsv, "add", 1 );
+		
+		rt->PushFloat( value );
+		rt->RunFunction( valueHsv, "add", 1 );
+		
+		rt->PushValue( valueHsv );
+		rt->FreeValue( valueHsv );
+		
+	}catch( ... ){
+		if( valueHsv ){
+			rt->FreeValue( valueHsv );
+		}
+		throw;
+	}
+}
+
+// public func Array toHSL()
+deClassColor::nfToHSL::nfToHSL( const sInitData &init ) :
+dsFunction( init.clsClr, "toHSL", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsArray ){
+}
+void deClassColor::nfToHSL::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const decColor &color = ( ( sClrNatDat* )p_GetNativeData( myself ) )->color;
+	float hue, saturation, lightness;
+	color.ToHSL( hue, saturation, lightness );
+	
+	const deScriptingDragonScript &ds = *( ( deClassColor* )GetOwnerClass() )->GetScriptModule();
+	dsValue * const valueHsv = rt->CreateValue( ds.GetScriptEngine()->GetClassArray() );
+	
+	try{
+		rt->CreateObject( valueHsv, ds.GetScriptEngine()->GetClassArray(), 0 );
+		
+		rt->PushFloat( hue );
+		rt->RunFunction( valueHsv, "add", 1 );
+		
+		rt->PushFloat( saturation );
+		rt->RunFunction( valueHsv, "add", 1 );
+		
+		rt->PushFloat( lightness );
+		rt->RunFunction( valueHsv, "add", 1 );
+		
+		rt->PushValue( valueHsv );
+		rt->FreeValue( valueHsv );
+		
+	}catch( ... ){
+		if( valueHsv ){
+			rt->FreeValue( valueHsv );
+		}
+		throw;
+	}
+}
+
+// public func Array toCMYK()
+deClassColor::nfToCMYK::nfToCMYK( const sInitData &init ) :
+dsFunction( init.clsClr, "toCMYK", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsArray ){
+}
+void deClassColor::nfToCMYK::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const decColor &color = ( ( sClrNatDat* )p_GetNativeData( myself ) )->color;
+	float cyan, magenta, yellow, black;
+	color.ToCMYK( cyan, magenta, yellow, black );
+	
+	const deScriptingDragonScript &ds = *( ( deClassColor* )GetOwnerClass() )->GetScriptModule();
+	dsValue * const valueHsv = rt->CreateValue( ds.GetScriptEngine()->GetClassArray() );
+	
+	try{
+		rt->CreateObject( valueHsv, ds.GetScriptEngine()->GetClassArray(), 0 );
+		
+		rt->PushFloat( cyan );
+		rt->RunFunction( valueHsv, "add", 1 );
+		
+		rt->PushFloat( magenta );
+		rt->RunFunction( valueHsv, "add", 1 );
+		
+		rt->PushFloat( yellow );
+		rt->RunFunction( valueHsv, "add", 1 );
+		
+		rt->PushFloat( black );
+		rt->RunFunction( valueHsv, "add", 1 );
+		
+		rt->PushValue( valueHsv );
+		rt->FreeValue( valueHsv );
+		
+	}catch( ... ){
+		if( valueHsv ){
+			rt->FreeValue( valueHsv );
+		}
+		throw;
+	}
+}
+
 
 
 // class deClassColor
@@ -441,6 +597,7 @@ void deClassColor::CreateClassMembers( dsEngine *engine ){
 	init.clsFlt = engine->GetClassFloat();
 	init.clsFileReader = pScrMgr->GetClassFileReader();
 	init.clsFileWriter = pScrMgr->GetClassFileWriter();
+	init.clsArray = engine->GetClassArray();
 	
 	// add functions
 	AddFunction( new nfNew( init ) );
@@ -448,6 +605,9 @@ void deClassColor::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfNew3( init ) );
 	AddFunction( new nfNewRGB( init ) );
 	AddFunction( new nfNewRGBA( init ) );
+	AddFunction( new nfNewHSV( init ) );
+	AddFunction( new nfNewHSL( init ) );
+	AddFunction( new nfNewCMYK( init ) );
 	AddFunction( new nfDestructor( init ) );
 	
 	AddFunction( new nfGetRed( init ) );
@@ -473,6 +633,9 @@ void deClassColor::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfHashCode( init ) );
 	AddFunction( new nfToString( init ) );
 	AddFunction( new nfToStringPrecision( init ) );
+	AddFunction( new nfToHSV( init ) );
+	AddFunction( new nfToHSL( init ) );
+	AddFunction( new nfToCMYK( init ) );
 	
 	// add constant variables
 	AddVariable( new dsVariable( this, "white", this, DSTM_PUBLIC | DSTM_STATIC ) );
