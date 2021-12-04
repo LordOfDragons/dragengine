@@ -53,8 +53,16 @@ if tools:
 		#parent_env.Append( CROSSCOMPILE_CFLAGS = [ '-std=c++11' ] )
 		#parent_env.Append( CROSSCOMPILE_CPPFLAGS = [ '-std=c++11' ] )
 		
+		# app store requirements
+		parent_env.Append(LINKFLAGS = ['-Wl,--dynamicbase'])
+		parent_env.Append(LINKFLAGS = ['-Wl,--nxcompat'])
 		parent_env['WINDOWS_LIBS'] = []
+		#parent_env.Append(WINDOWS_LIBS = ['winstorecompat'])
 		#parent_env.Append(WINDOWS_LIBS = ['kernel32', 'user32', 'gdi32', 'winmm', 'wsock32', 'advapi32'])
+		
+		parent_env.Append(CROSSCOMPILE_LINKFLAGS = ['-Wl,--dynamicbase'])
+		parent_env.Append(CROSSCOMPILE_LINKFLAGS = ['-Wl,--nxcompat'])
+		
 		print( '*** Using Windows 64 Cross Compiler' )
 		
 	else:

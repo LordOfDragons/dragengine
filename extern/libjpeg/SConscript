@@ -21,6 +21,14 @@ libLinkName = 'jpeg'
 if envLibrary['OSWindows']:
 	libFileName = 'bin/lib{}-{}.dll'.format(libLinkName, libLinkVersion)
 	staticFileName = 'lib/lib{}.a'.format(libLinkName)
+	
+	# libjpeg reacts badly to these
+	if '-Wl,--nxcompat' in envLibrary['CROSSCOMPILE_LINKFLAGS']:
+		envLibrary['CROSSCOMPILE_LINKFLAGS'].remove('-Wl,--nxcompat')
+	
+	if '-Wl,--dynamicbase' in envLibrary['CROSSCOMPILE_LINKFLAGS']:
+		envLibrary['CROSSCOMPILE_LINKFLAGS'].remove('-Wl,--dynamicbase')
+	
 else:
 	libFileName = envLibrary.subst('lib/${{SHLIBPREFIX}}{}${{SHLIBSUFFIX}}.{}'.format(libLinkName, libLinkVersion))
 	staticFileName = envLibrary.subst('lib/${{LIBPREFIX}}{}${{LIBSUFFIX}}'.format(libLinkName))

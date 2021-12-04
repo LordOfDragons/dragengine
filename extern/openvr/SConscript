@@ -21,6 +21,14 @@ if envLibrary['OSWindows']:
 	staticFileName = envLibrary.subst('lib/libopenvr_api64.a')
 	libLinkName = 'openvr_api64'
 	libpath = [envLibrary.Dir('lib')]
+	
+	# openvr reacts badly to these
+	if '-Wl,--nxcompat' in envLibrary['CROSSCOMPILE_LINKFLAGS']:
+		envLibrary['CROSSCOMPILE_LINKFLAGS'].remove('-Wl,--nxcompat')
+	
+	if '-Wl,--dynamicbase' in envLibrary['CROSSCOMPILE_LINKFLAGS']:
+		envLibrary['CROSSCOMPILE_LINKFLAGS'].remove('-Wl,--dynamicbase')
+	
 elif envLibrary['OSBeOS']:
 	Return()
 else:
