@@ -15,7 +15,7 @@
 		<DisplayName>Drag[en]gine Launcher</DisplayName>
 		<PublisherDisplayName>DragonDreams</PublisherDisplayName>
 		<Description>Launch games build using the Drag[en]gine Game Engine. Provides open action for "*.delga" files (game distributables).</Description>
-		<Logo>Assets\icon-delauncher-gui-150x150.png</Logo>
+		<Logo>Assets\icon-delauncher-gui-50x50.png</Logo>
 		<uap10:PackageIntegrity>
 			<uap10:Content Enforcement='on'/>
 		</uap10:PackageIntegrity>
