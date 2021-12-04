@@ -91,7 +91,8 @@ def dragonscriptBuild( target, source, env ):
 			#f.write('crosscompile = "mingw"\n')
 			f.write('includedir = "${prefix}/include"\n')
 	
-	script = []
+	#script = []
+	script = createScriptHeader(env)
 	script.append('cd "{}" || exit 1'.format(buildDir.Dir(srcdir).abspath))
 	
 	for p in env['PATCHES']:

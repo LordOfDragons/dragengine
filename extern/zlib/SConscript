@@ -67,6 +67,15 @@ def zlibBuild( target, source, env ):
 				script.append( 'export INCLUDE_PATH="{}"'.format( buildDir.Dir( 'include' ).abspath ) )
 				script.append( 'export LIBRARY_PATH="{}"'.format( buildDir.Dir( 'lib' ).abspath ) )
 				
+				combinedLoc = []
+				if 'CROSSCOMPILE_CFLAGS' in envLibrary:
+					combinedLoc.extend(envLibrary['CROSSCOMPILE_CFLAGS'])
+				if 'CROSSCOMPILE_LINKFLAGS' in envLibrary:
+					combinedLoc.extend(envLibrary['CROSSCOMPILE_LINKFLAGS'])
+				if combinedLoc:
+					script.append('export LOC="{}"'.format(' '.join(
+						[envLibrary.subst(x) for x in flatten(combinedLoc)])))
+				
 				if buildStaticLinking:
 					script.append( 'make -j {} install -fwin32/Makefile.gcc PREFIX="{}-" SHARED_MODE=0'
 						' || exit 1'.format(env['with_threads'], env['CROSSCOMPILE_HOST'], buildDir.abspath ) )
