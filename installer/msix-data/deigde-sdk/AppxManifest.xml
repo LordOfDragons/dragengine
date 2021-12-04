@@ -6,7 +6,7 @@
          xmlns:uap10='http://schemas.microsoft.com/appx/manifest/uap/windows10/10'
          IgnorableNamespaces='uap uap2 uap3 uap10'>
 	<Identity Name='DragonDreams.Dragengine.IGDE.SDK'
-	          Version='1.7.1.0'
+	          Version='1.8.0.0'
 	          Publisher='CN=E95CA5DA-8C21-47A7-9FC7-7DDEFAE1B9E5'
 	          ProcessorArchitecture='x64'/>
 	<Properties>
