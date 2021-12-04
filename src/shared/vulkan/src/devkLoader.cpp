@@ -143,24 +143,13 @@ void devkLoader::pLoadVulkan(){
 	
 	if( ! pLibHandle ){
 		int err = GetLastError();
-		LPVOID lpMsgBuf;
-		FormatMessage( 
-			FORMAT_MESSAGE_ALLOCATE_BUFFER | 
-			FORMAT_MESSAGE_FROM_SYSTEM | 
-			FORMAT_MESSAGE_IGNORE_INSERTS,
-			NULL,
-			err,
-			MAKELANGID( LANG_NEUTRAL, SUBLANG_DEFAULT ), // Default language
-			( LPTSTR ) &lpMsgBuf,
-			0,
-			NULL 
-		);
+		wchar_t messageBuffer[ 251 ];
+		FormatMessage( FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+			NULL, err, MAKELANGID( LANG_NEUTRAL, SUBLANG_DEFAULT ), // Default language
+			messageBuffer, 250, NULL );
 		
-		// Display the string.
-		pVulkan.GetModule().LogErrorFormat( "LoadLibrary(err=%i): %s.", err, ( char* )lpMsgBuf );
-		
-		// Free the buffer.
-		LocalFree( lpMsgBuf );
+		pVulkan.GetModule().LogErrorFormat( "LoadLibrary(err=%i): %s.",
+			err, deOSWindows::WideToUtf8( messageBuffer ).GetString() );
 		
 		DETHROW_INFO( deeInvalidAction, "Load Vulkan DLL failed" );
 	}
