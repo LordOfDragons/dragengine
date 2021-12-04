@@ -60,7 +60,7 @@ if not buildModule:
 	Return()
 
 if envModule['OSWindows']:
-	libs.append(['kernel32', 'user32', 'gdi32'])
+	libs.append('gdi32')
 	#envModule.Append(CXXFLAGS = '-g')
 
 if envModule['platform_android'] != 'no':

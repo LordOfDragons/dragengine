@@ -6,18 +6,21 @@ Import('parent_env parent_targets parent_report')
 # setup the environment matching the OS
 envDragengine = parent_env.Clone()
 
+libs = []
+
 if envDragengine['OSBeOS']:
-	libs = ['root', 'be']
+	libs.extend(['root', 'be'])
 	
 elif envDragengine['OSMacOS']:
 	envDragengine.Append(FRAMEWORKS = ['Cocoa'])
-	libs = []
 	
 elif envDragengine['OSPosix']:
-	libs = []
+	pass
 	
 elif envDragengine['OSWindows']:
-	libs = ['kernel32', 'user32', 'gdi32', 'winmm', 'wsock32', 'advapi32']
+	libs.extend(envDragengine['WINDOWS_LIBS'])
+	libs.append('winmm')
+	#libs.extend(['kernel32', 'user32', 'gdi32', 'winmm', 'wsock32', 'advapi32'])
 	"""if envDragengine['with_debug']:
 		lib.append('dbghelp')
 		envDragengine.Append(CXXFLAGS = ['-DWITH_DBGHELP'])"""

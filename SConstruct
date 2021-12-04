@@ -53,12 +53,16 @@ if tools:
 		#parent_env.Append( CROSSCOMPILE_CFLAGS = [ '-std=c++11' ] )
 		#parent_env.Append( CROSSCOMPILE_CPPFLAGS = [ '-std=c++11' ] )
 		
+		parent_env['WINDOWS_LIBS'] = []
+		#parent_env.Append(WINDOWS_LIBS = ['kernel32', 'user32', 'gdi32', 'winmm', 'wsock32', 'advapi32'])
 		print( '*** Using Windows 64 Cross Compiler' )
 		
 	else:
 		parent_env = Environment( CPPPATH='.', LIBPATH='.', tools=[ tools ] )
 		parent_env[ 'OS_NAME' ] = os.name
 		parent_env[ 'SYS_PLATFORM' ] = sys.platform
+		parent_env['WINDOWS_LIBS'] = []
+		#parent_env.Append(WINDOWS_LIBS = ['kernel32', 'user32', 'gdi32', 'winmm', 'wsock32', 'advapi32'])
 
 elif sys.platform == 'win32':
 	print( 'Windows detected. Setting up MinGW64 toolchain' )
@@ -76,6 +80,8 @@ elif sys.platform == 'win32':
 	##parent_env.Append( ENV = { 'PATH' : 'C:\MinGW\bin;' + os.environ[ 'PATH' ] } )
 	parent_env[ 'OS_NAME' ] = os.name
 	parent_env[ 'SYS_PLATFORM' ] = sys.platform
+	parent_env['WINDOWS_LIBS'] = []
+	#parent_env.Append(WINDOWS_LIBS = ['kernel32', 'user32', 'gdi32', 'winmm', 'wsock32', 'advapi32'])
 	
 else:
 	parent_env = Environment( CPPPATH='.', LIBPATH='.' )

@@ -121,9 +121,10 @@ if envIGDELib['igde_toolkit'] == 'fox':
 	appendLibrary(envIGDELib, parent_targets['lib_fox'], libsLib)
 
 if envIGDELib['OSWindows']:
-	libsLib.append(['kernel32', 'user32', 'gdi32', 'winmm', 'wsock32'])
+	libsLib.extend(envIGDELib['WINDOWS_LIBS'])
+	pass
 elif envIGDELib['OSBeOS']:
-	libsLib.append(['root', 'be'])
+	libsLib.extend(['root', 'be'])
 
 if envIGDELib['igde_toolkit'] == 'fox':
 	envIGDELib.Append(CPPFLAGS = ['-DIGDE_TOOLKIT_FOX=1'])
@@ -266,9 +267,10 @@ libsApp.extend(parent_targets['dragengine']['binlibs']) # ?????
 if envIGDEApp['OSPosix']:
 	libsApp.append('dl')
 elif envIGDEApp['OSWindows']:
-	libsApp.append(['kernel32', 'user32', 'winmm'])
+	libsApp.extend(envIGDEApp['WINDOWS_LIBS'])
+	pass
 elif envIGDEApp['OSBeOS']:
-	libsApp.append(['root', 'be'])
+	libsApp.extend(['root', 'be'])
 
 program = envIGDEApp.Program(target='deigde', source=objects, LIBS=libsApp)
 targetBuildApp = envIGDEApp.Alias('deigde_build', program)
