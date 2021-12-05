@@ -34,6 +34,7 @@
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decPath.h>
+#include <dragengine/common/utils/decTimer.h>
 #include <dragengine/input/deInputEvent.h>
 #include <dragengine/systems/deVRSystem.h>
 #include <dragengine/systems/modules/graphic/deBaseGraphicCamera.h>
@@ -356,6 +357,16 @@ void deVROpenVR::StopRuntime(){
 		pCamera->GetPeerGraphic()->VRResignedFromHMD();
 	}
 	
+	{ // crash guard. make sure runtime is finished using whatever resources it does
+	{
+	const deMutexGuard lock( pMutexDevicePoses );
+	GetVRCompositor().WaitGetPoses( nullptr, 0, nullptr, 0 );
+	}
+	decTimer timer;
+	float elapsed = 0.0f;
+	while( ( elapsed += timer.GetElapsedTime() ) < 0.5f );
+	}
+	
 	pDevices.Clear();
 	
 	int i;
@@ -617,6 +628,10 @@ deImage *deVROpenVR::GetDistortionMap( eEye eye ){
 }
 
 void deVROpenVR::BeginFrame(){
+	if( ! pVRSystem ){
+		return;
+	}
+	
 	const deMutexGuard lock( pMutexDevicePoses );
 	const vr::EVRCompositorError error = GetVRCompositor().WaitGetPoses(
 		pDevicePoses, vr::k_unMaxTrackedDeviceCount, nullptr, 0 );
@@ -628,6 +643,10 @@ void deVROpenVR::BeginFrame(){
 
 void deVROpenVR::SubmitOpenGLTexture2D( eEye eye, void *texture, const decVector2 &tcFrom,
 const decVector2 &tcTo, bool distortionApplied ){
+	if( ! pVRSystem ){
+		return;
+	}
+	
 	const vr::Hmd_Eye vreye = ConvertEye( eye );
 	
 	vr::Texture_t vrtexture;
@@ -656,6 +675,10 @@ const decVector2 &tcTo, bool distortionApplied ){
 }
 
 void deVROpenVR::EndFrame(){
+	if( ! pVRSystem ){
+		return;
+	}
+	
 	GetVRCompositor().PostPresentHandoff();
 }
 

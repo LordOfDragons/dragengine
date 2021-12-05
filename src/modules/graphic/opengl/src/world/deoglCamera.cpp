@@ -217,6 +217,9 @@ void deoglCamera::SyncToRender(){
 	// vr
 	if( pDirtyVR ){
 		pRCamera->EnableVR( pEnableVR );
+		if( pOgl.GetVRCamera() == this ){
+			pOgl.SetVRCamera( nullptr );
+		}
 		pDirtyVR = false;
 	}
 }
@@ -279,7 +282,7 @@ void deoglCamera::VRAssignedToHMD(){
 }
 
 void deoglCamera::VRResignedFromHMD(){
-	pOgl.SetVRCamera( nullptr );
+	//pOgl.SetVRCamera( nullptr ); // not done here or sync is missing
 	pDirtyPlanCamParams = true;
 	pDirtyVR = true;
 	pEnableVR = false;
