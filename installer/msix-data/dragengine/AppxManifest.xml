@@ -4,7 +4,9 @@
          xmlns:uap2='http://schemas.microsoft.com/appx/manifest/uap/windows10/2'
          xmlns:uap3='http://schemas.microsoft.com/appx/manifest/uap/windows10/3'
          xmlns:uap10='http://schemas.microsoft.com/appx/manifest/uap/windows10/10'
-         IgnorableNamespaces='uap uap2 uap3 uap10'>
+         xmlns:rescap='http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities'
+         xmlns:desktop='http://schemas.microsoft.com/appx/manifest/desktop/windows10'
+         IgnorableNamespaces='uap uap2 uap3 uap10 rescap desktop'>
 	<Identity Name='DragonDreams.Dragengine.GameEngine'
 	          Version='1.8.0.0'
 	          Publisher='CN=E95CA5DA-8C21-47A7-9FC7-7DDEFAE1B9E5'
@@ -12,18 +14,62 @@
 	<Properties>
 		<DisplayName>Drag[en]gine Game Engine</DisplayName>
 		<PublisherDisplayName>DragonDreams</PublisherDisplayName>
-		<Description>Drag[en]gine Game Engine.</Description>
-		<Logo>Assets\icon-dragengine.png</Logo>
+		<Description>Launch games using the Drag[en]gine Game Engine. Provides open action for "*.delga" files (game distributables).</Description>
+		<Logo>Assets\icon-delauncher-gui-50x50.png</Logo>
 		<uap10:PackageIntegrity>
 			<uap10:Content Enforcement='on'/>
 		</uap10:PackageIntegrity>
-		<Framework>true</Framework>
 	</Properties>
 	<Resources>
 		<Resource Language='en-us'/>
 	</Resources>
 	<Dependencies>
-		<!--<TargetDeviceFamily Name='Windows.Desktop' MinVersion='10.0.17763.0' MaxVersionTested='10.0.22000.1'/>-->
-		<TargetDeviceFamily Name='Windows.Universal' MinVersion='10.0.17763.0' MaxVersionTested='10.0.22000.1'/>
+		<TargetDeviceFamily Name='Windows.Desktop' MinVersion='10.0.17763.0' MaxVersionTested='10.0.22000.1'/>
 	</Dependencies>
+	<Capabilities>
+		<Capability Name='internetClientServer'/>
+		<Capability Name='privateNetworkClientServer'/>
+		<rescap:Capability Name='runFullTrust'/>
+	</Capabilities>
+	<Applications>
+		<Application Id='DELauncherGUI'
+		             Executable='VFS\ProgramFilesX64\Dragengine\Launchers\Bin\delauncher-gui.exe'
+		             EntryPoint='Windows.FullTrustApplication'>
+			<uap3:VisualElements BackgroundColor='transparent'
+			                    DisplayName='Drag[en]gine GUI Launcher'
+			                    Square150x150Logo='Assets\icon-delauncher-gui-150x150.png'
+			                    Square44x44Logo='Assets\icon-delauncher-gui-44x44.png'
+			                    Description='Launch Drag[en]gine Games using GUI Interface'
+			                    AppListEntry='default'
+			                    VisualGroup='Drag[en]gine'/>
+			<Extensions>
+				<uap3:Extension Category='windows.fileTypeAssociation'>
+					<uap3:FileTypeAssociation Name='delga' MultiSelectModel='Single'>
+						<uap:SupportedFileTypes>
+							<uap:FileType>.delga</uap:FileType>
+						</uap:SupportedFileTypes>
+						<uap:Logo>Assets\icon-delga.png</uap:Logo>
+						<uap2:SupportedVerbs>
+							<uap3:Verb Id='install' Parameters='--install "%1"'>install</uap3:Verb>
+						</uap2:SupportedVerbs>
+					</uap3:FileTypeAssociation>
+				</uap3:Extension>
+				<uap3:Extension Category='windows.appExecutionAlias' EntryPoint='Windows.FullTrustApplication'>
+					<uap3:AppExecutionAlias>
+						<desktop:ExecutionAlias Alias='delauncher.exe'/>
+					</uap3:AppExecutionAlias>
+				</uap3:Extension>
+				<!--
+				not working. launcher gets "delauncher:" as arguments which is treated as file
+				
+				<uap:Extension Category='windows.protocol'>
+					<uap:Protocol Name='delauncher'>
+						<uap:Logo>Assets\icon-delauncher-gui-150x150.png</uap:Logo>
+						<uap:DisplayName>Drag[en]gine Launcher URI Scheme</uap:DisplayName>
+					</uap:Protocol>
+				</uap:Extension>
+				-->
+			</Extensions>
+		</Application>
+	</Applications>
 </Package>
