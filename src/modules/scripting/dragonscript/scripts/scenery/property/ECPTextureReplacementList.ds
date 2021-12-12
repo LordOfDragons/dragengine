@@ -58,118 +58,117 @@ class ECPTextureReplacementList extends ElementClassProperty implements Resource
 	
 	
 	/** \brief Create property. */
-	public func new( String name ) super( name )
-		this.pList = TextureReplacementList.new()
+	public func new(String name) super(name)
+		pList = TextureReplacementList.new()
 	end
 	
 	/** \brief Create property with initial value. */
-	public func new( String name, TextureReplacementList list ) super( name )
-		this.pList = TextureReplacementList.new( list )
+	public func new(String name, TextureReplacementList list) super(name)
+		pList = TextureReplacementList.new(list)
 	end
 	
 	
 	
 	/** \brief Texture replacement list. */
 	public func TextureReplacementList getList()
-		return this.pList
+		return pList
 	end
 	
 	/** \brief Set texture replacement list. */
-	public func void setList( TextureReplacementList list )
-		this.pList = TextureReplacementList.new( list )
+	public func void setList(TextureReplacementList list)
+		pList = TextureReplacementList.new(list)
 	end
 	
 	/** \brief Property has been preloaded. */
 	public func bool getHasPreloaded()
-		return this.pHasPreloaded
+		return pHasPreloaded
 	end
 	
 	
 	
 	/** \brief Set value of property from XML decoded value. */
-	public func void setValue( Object value )
-		this.pList.removeAll()
+	public func void setValue(Object value)
+		pList.removeAll()
 		
-		( value cast Dictionary ).forEach( block String key, Dictionary value
-			var TextureReplacement texture = TextureReplacement.new( key )
+		(value cast Dictionary).forEach(block String key, Dictionary value
+			var TextureReplacement texture = TextureReplacement.new(key)
 			
-			value.forEach( block String key2, Object value2
-				if key2.equals( "skin" )
-					texture.setPath( value2 cast String )
+			value.forEach(block String key2, Object value2
+				if key2.equals("skin")
+					texture.setPath(value2 cast String)
 					
-				elif key2.equals( "tint" )
-					texture.setColorTint( value2 cast Color )
+				elif key2.equals("tint")
+					texture.setColorTint(value2 cast Color)
 					
-				elif key2.equals( "transform" )
+				elif key2.equals("transform")
 					var Dictionary transformDict = value2 cast Dictionary
-					texture.setTransform( TexMatrix2.newSRT( \
-						transformDict.getAt( "scale", Vector2.new( 1.0, 1.0 ) ) cast Vector2, \
-						transformDict.getAt( "rotate", 0.0 ) cast float, \
-						transformDict.getAt( "translate", Vector2.new() ) cast Vector2 ) )
+					texture.setTransform(TexMatrix2.newSRT(\
+						transformDict.getAt("scale", Vector2.new(1.0, 1.0)) cast Vector2, \
+						transformDict.getAt("rotate", 0.0) cast float, \
+						transformDict.getAt("translate", Vector2.new()) cast Vector2))
 				end
-			end )
+			end)
 			
-			this.pList.add( texture )
-		end )
+			pList.add(texture)
+		end)
 	end
 	
 	
 	
 	/** \brief Preload resources if supported. */
-	public func void preloadResources( ElementClass elementClass, PreloadCounter counter )
-		if this.pHasPreloaded
+	public func void preloadResources(ElementClass elementClass, PreloadCounter counter)
+		if pHasPreloaded
 			return
 		end
 		
-		this.pHasPreloaded = true
-		this.pCounter = counter
+		pHasPreloaded = true
+		pCounter = counter
 		
 		var String basePath = elementClass.getBasePath()
 		
-		this.pList.forEach( block TextureReplacement each
+		pList.forEach(block TextureReplacement each
 			if each.getPath() != null
 				// replace the path with the absolute path. otherwise we have to calculate
 				// the absolute path each time finishedLoading() is called since the resource
 				// has the absolute path not matching the relative path. it is save to do
 				// this replacement here once
-				each.setPath( File.absolutePath( each.getPath(), basePath ).getPath() )
+				each.setPath(File.absolutePath(each.getPath(), basePath).getPath())
 				
-				Skin.loadAsynchron( each.getPath(), this )
+				Skin.loadAsynchron(each.getPath(), this)
 				counter.increase()
 			end
-		end )
+		end)
 	end
 	
 	/**
 	 * \brief Log preloading problems.
 	 * \returns True if problems are present.
 	 */
-	public func bool logPreloadProblems( ElementClass elementClass, Console console )
-		return this.pList.inject( false, block bool hasProblems, TextureReplacement each
+	public func bool logPreloadProblems(ElementClass elementClass, Console console)
+		return pList.inject(false, block bool hasProblems, TextureReplacement each
 			if each.getPath() != null and each.getSkin() == null
-				console.addMessage( "Property " + elementClass.getClassname() + "." \
-					+ this.getName() + ": Failed loading skin " + each.getPath() )
+				console.addMessage("Property " + elementClass.getClassname() + "." \
+					+ getName() + ": Failed loading skin " + each.getPath())
 				return true
 			end
 			return hasProblems
-		end ) cast bool
+		end) cast bool
 	end
 	
 	
 	
 	/** \brief Resource has finished loading. */
-	public func void finishedLoading( String path, ResourceLoaderType resourceType, Object resource )
-		this.pList.forEach( block TextureReplacement each
-			if path.equals( each.getPath() )
-				each.setSkin( resource cast Skin )
+	public func void finishedLoading(String path, ResourceLoaderType resourceType, Object resource)
+		pList.forEach(block TextureReplacement each
+			if path.equals(each.getPath())
+				each.setSkin(resource cast Skin)
 			end
-		end )
-		
-		this.pCounter.decrease()
+		end)
+		pCounter.decrease()
 	end
 	
 	/** \brief Resource failed loading. */
-	public func void failedLoading( String path, ResourceLoaderType resourceType )
-		this.pCounter.decrease()
+	public func void failedLoading(String path, ResourceLoaderType resourceType)
+		pCounter.decrease()
 	end
 end
