@@ -264,7 +264,7 @@ class Component
 	end
 	
 	/**
-	 * \brief Position of bone relative to parent bone or component if bone has no parent.
+	 * \brief Position of bone relative to bone origin matrix.
 	 * \throws EInvalidParam \em bone is less than 0 or larger than or equal to GetBoneCount().
 	 */
 	public func Vector boneGetPosition( int bone )
@@ -272,14 +272,14 @@ class Component
 	end
 	
 	/**
-	 * \brief Set position of the bone.
+	 * \brief Set position of the bone relative to bone origin matrix.
 	 * \throws EInvalidParam \em bone is less than 0 or larger than or equal to GetBoneCount().
 	 */
 	public func void boneSetPosition( int bone, Vector position )
 	end
 	
 	/**
-	 * \brief Rotation of bone relative to parent bone or component if bone has no parent.
+	 * \brief Rotation of bone relative to bone origin matrix.
 	 * \throws EInvalidParam \em bone is less than 0 or larger than or equal to GetBoneCount().
 	 */
 	public func Quaternion boneGetRotation( int bone )
@@ -287,14 +287,14 @@ class Component
 	end
 	
 	/**
-	 * \brief Set rotation of the bone.
+	 * \brief Set rotation of the bone relative to bone origin matrix.
 	 * \throws EInvalidParam \em bone is less than 0 or larger than or equal to GetBoneCount().
 	 */
 	public func void boneSetRotation( int bone, Quaternion rotation )
 	end
 	
 	/**
-	 * \brief Bone matrix relative to component.
+	 * \brief Bone matrix relative to component space.
 	 * \throws EInvalidParam \em bone is less than 0 or larger than or equal to GetBoneCount().
 	 */
 	public func Matrix boneGetMatrix( int bone )
@@ -302,7 +302,7 @@ class Component
 	end
 	
 	/**
-	 * \brief Inverse bone matrix relative to component.
+	 * \brief Inverse bone matrix relative to component space.
 	 * \throws EInvalidParam \em bone is less than 0 or larger than or equal to GetBoneCount().
 	 */
 	public func Matrix boneGetInverseMatrix( int bone )
@@ -332,7 +332,7 @@ class Component
 	
 	
 	/**
-	 * \brief Position of bone relative to parent bone or component if bone has no parent.
+	 * \brief Position of bone relative to bone origin matrix.
 	 * \throws EInvalidParam No bone with name \em bone found.
 	 * \deprecated Use boneGetPosition( indexOfBoneNamed( bone ) )
 	 */
@@ -341,7 +341,7 @@ class Component
 	end
 	
 	/**
-	 * \brief Set position of the bone.
+	 * \brief Set position of the bone relative to bone origin matrix.
 	 * \throws EInvalidParam No bone with name \em boneName found.
 	 * \deprecated Use boneSetPosition( indexOfBoneNamed( bone ), position )
 	 */
@@ -349,7 +349,7 @@ class Component
 	end
 	
 	/**
-	 * \brief Rotation of bone relative to parent bone or component if bone has no parent.
+	 * \brief Rotation of bone relative to bone origin matrix.
 	 * \throws EInvalidParam No bone with name \em boneName found.
 	 * \deprecated Use boneSetRotation( indexOfBoneNamed( bone ), position )
 	 */
@@ -358,7 +358,7 @@ class Component
 	end
 	
 	/**
-	 * \brief Set rotation of the bone.
+	 * \brief Set rotation of the bone relative to bone origin matrix.
 	 * \throws EInvalidParam No bone with name \em boneName found.
 	 * \deprecated Use boneSetRotation( indexOfBoneNamed( bone ), rotation )
 	 */
@@ -366,7 +366,7 @@ class Component
 	end
 	
 	/**
-	 * \brief Bone matrix relative to component.
+	 * \brief Bone matrix relative to component space.
 	 * \throws EInvalidParam No bone with name \em boneName found.
 	 */
 	public func Matrix getBoneMatrix( String bone )
@@ -374,7 +374,7 @@ class Component
 	end
 	
 	/**
-	 * \brief Inverse bone matrix relative to component.
+	 * \brief Inverse bone matrix relative to component space.
 	 * \throws EInvalidParam No bone with name \em boneName found.
 	 */
 	public func Matrix getBoneInverseMatrix( String bone )
