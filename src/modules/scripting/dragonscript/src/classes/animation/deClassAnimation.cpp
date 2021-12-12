@@ -181,7 +181,7 @@ void deClassAnimation::nfGetMoveFPS::RunFunction( dsRunTime *rt, dsValue *myself
 		rt->PushFloat( 25.0f );
 		
 	}else{
-		rt->PushFloat( anim.GetMove( moveIndex )->GetPlaytime() );
+		rt->PushFloat( anim.GetMove( moveIndex )->GetFPS() );
 	}
 }
 
