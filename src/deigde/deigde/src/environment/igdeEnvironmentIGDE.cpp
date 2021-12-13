@@ -175,44 +175,50 @@ const igdeFilePatternList *igdeEnvironmentIGDE::GetSaveFilePatternList( eFilePat
 	case efpltAll:
 		return &lssys.GetSaveFilePatternList( igdeLoadSaveSystem::efplAll );
 		
-	case efpltModel:
-		return &lssys.GetSaveFilePatternList( igdeLoadSaveSystem::efplModel );
-		
-	case efpltSkin:
-		return &lssys.GetSaveFilePatternList( igdeLoadSaveSystem::efplSkin );
-		
-	case efpltRig:
-		return &lssys.GetSaveFilePatternList( igdeLoadSaveSystem::efplRig );
-		
 	case efpltAnimation:
 		return &lssys.GetSaveFilePatternList( igdeLoadSaveSystem::efplAnimation );
 		
-	case efpltImage:
-		return &lssys.GetSaveFilePatternList( igdeLoadSaveSystem::efplImage );
-		
-	case efpltSound:
-		return &lssys.GetSaveFilePatternList( igdeLoadSaveSystem::efplSound );
-		
-	case efpltParticleEmitter:
-		return &lssys.GetSaveFilePatternList( igdeLoadSaveSystem::efplParticleEmitter );
-		
-	case efpltOcclusionMesh:
-		return &lssys.GetSaveFilePatternList( igdeLoadSaveSystem::efplOcclusionMesh );
-		
-	case efpltNavigationSpace:
-		return &lssys.GetSaveFilePatternList( igdeLoadSaveSystem::efplNavigationSpace );
-		
-	case efpltVideo:
-		return &lssys.GetSaveFilePatternList( igdeLoadSaveSystem::efplVideo );
-		
-	case efpltLanguagePack:
-		return &lssys.GetSaveFilePatternList( igdeLoadSaveSystem::efplLanguagePack );
+	case efpltAnimator:
+		return &lssys.GetSaveFilePatternList( igdeLoadSaveSystem::efplAnimator );
 		
 	case efpltFont:
 		return &lssys.GetSaveFilePatternList( igdeLoadSaveSystem::efplFont );
 		
+	case efpltImage:
+		return &lssys.GetSaveFilePatternList( igdeLoadSaveSystem::efplImage );
+		
+	case efpltLanguagePack:
+		return &lssys.GetSaveFilePatternList( igdeLoadSaveSystem::efplLanguagePack );
+		
+	case efpltModel:
+		return &lssys.GetSaveFilePatternList( igdeLoadSaveSystem::efplModel );
+		
+	case efpltNavigationSpace:
+		return &lssys.GetSaveFilePatternList( igdeLoadSaveSystem::efplNavigationSpace );
+		
+	case efpltOcclusionMesh:
+		return &lssys.GetSaveFilePatternList( igdeLoadSaveSystem::efplOcclusionMesh );
+		
+	case efpltParticleEmitter:
+		return &lssys.GetSaveFilePatternList( igdeLoadSaveSystem::efplParticleEmitter );
+		
+	case efpltRig:
+		return &lssys.GetSaveFilePatternList( igdeLoadSaveSystem::efplRig );
+		
 	case efpltSky:
 		return &lssys.GetOpenFilePatternList( igdeLoadSaveSystem::efplSky );
+		
+	case efpltSkin:
+		return &lssys.GetSaveFilePatternList( igdeLoadSaveSystem::efplSkin );
+		
+	case efpltSound:
+		return &lssys.GetSaveFilePatternList( igdeLoadSaveSystem::efplSound );
+		
+	case efpltSynthesizer:
+		return &lssys.GetSaveFilePatternList( igdeLoadSaveSystem::efplSynthesizer );
+		
+	case efpltVideo:
+		return &lssys.GetSaveFilePatternList( igdeLoadSaveSystem::efplVideo );
 		
 	case efpltSpeechAnimation:
 		return &lssys.GetOpenFilePatternList( igdeLoadSaveSystem::efplSpeechAnimation );
