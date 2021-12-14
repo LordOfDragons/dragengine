@@ -373,6 +373,9 @@ class OBJECT_OT_ImportAnimation(bpy.types.Operator, ImportHelper):
 				action.dragengine_exportname = moveName
 				action.use_fake_user=True
 				
+				if not self.armature.object.animation_data:
+					self.armature.object.animation_data_create()
+				
 				self.armature.object.animation_data.action = action
 				bpy.ops.object.mode_set(mode='POSE')
 				
