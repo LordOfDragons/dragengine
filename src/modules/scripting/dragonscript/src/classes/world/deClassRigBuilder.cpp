@@ -228,11 +228,11 @@ void deClassRigBuilder::nfAddBone::RunFunction( dsRunTime *rt, dsValue *myself )
 	try{
 		bone->SetParent( parent );
 		bone->SetPosition( position );
-		bone->SetRotation( rotation );
+		bone->SetRotation( rotation * DEG2RAD );
 		bone->SetCentralMassPoint( centralMassPoint );
 		bone->SetDynamic( dynamic );
 		bone->SetMass( mass );
-		bone->SetIKLimits( ikLimitsLower, ikLimitsUpper );
+		bone->SetIKLimits( ikLimitsLower * DEG2RAD, ikLimitsUpper * DEG2RAD );
 		bone->SetIKResistance( ikResistance );
 		bone->SetIKLockedX( ikLockedX );
 		bone->SetIKLockedY( ikLockedY );
