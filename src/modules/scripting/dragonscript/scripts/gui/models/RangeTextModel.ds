@@ -34,37 +34,39 @@ namespace Dragengine.Gui
  */
 class RangeTextModel extends DefaultTextModel implements RangeModelListener
 	/** \brief Range model. */
-	private var RangeModel pRangeModel
+	private var WeakReference pRangeModel
 	
 	
 	
 	/** \brief Create text model linked to range model. */
 	public func new(RangeModel rangeModel)
+		pRangeModel = WeakReference.new()
 		setRangeModel(rangeModel)
 	end
 	
 	
 	
-	/** \brief Range model. */
+	/** \brief Range model or null. */
 	public func RangeModel getRangeModel()
-		return pRangeModel
+		return pRangeModel.get() cast RangeModel
 	end
 	
-	/** \brief Set range model. */
+	/** \brief Set range model or null. */
 	public func void setRangeModel(RangeModel rangeModel)
-		if rangeModel == pRangeModel
+		var RangeModel oldRangeModel = pRangeModel.get() cast RangeModel
+		if rangeModel == oldRangeModel
 			return
 		end
 		
-		if pRangeModel != null
-			pRangeModel.removeListener(this)
+		if oldRangeModel != null
+			oldRangeModel.removeListener(this)
 		end
 		
-		pRangeModel = rangeModel
+		pRangeModel.set(rangeModel)
 		
 		if rangeModel != null
 			rangeModel.addListener(this)
-			super.setText(pRangeModel.getValue().toString())
+			super.setText(rangeModel.getValue().toString())
 		end
 	end
 	
@@ -77,8 +79,9 @@ class RangeTextModel extends DefaultTextModel implements RangeModelListener
 		// this will update the text and notify listener. for this reason why we do
 		// not call super.setText() here after altering the range model since this
 		// would be duplicated
-		if pRangeModel != null
-			pRangeModel.setValue(text.toInt())
+		var RangeModel rangeModel = pRangeModel.get() cast RangeModel
+		if rangeModel != null
+			rangeModel.setValue(text.toInt())
 		end
 	end
 	
@@ -90,6 +93,6 @@ class RangeTextModel extends DefaultTextModel implements RangeModelListener
 	
 	/** \brief Value changed. */
 	public func void valueChanged(RangeModel rangeModel)
-		super.setText(pRangeModel.getValue().toString())
+		super.setText(rangeModel.getValue().toString())
 	end
 end
