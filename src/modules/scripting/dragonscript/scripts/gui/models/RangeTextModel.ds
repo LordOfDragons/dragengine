@@ -80,9 +80,25 @@ class RangeTextModel extends DefaultTextModel implements RangeModelListener
 		// not call super.setText() here after altering the range model since this
 		// would be duplicated
 		var RangeModel rangeModel = pRangeModel.get() cast RangeModel
-		if rangeModel != null
-			rangeModel.setValue(text.toInt())
+		if rangeModel == null
+			super.setText(text)
+			return
 		end
+		
+		// if the value is invalid do not change the range model. this allows the user
+		// to delete text or using a validator
+		if rangeModel == null or text.empty()
+			super.setText(text)
+			return
+		end
+		
+		var int value = text.toInt()
+		if value < rangeModel.getMinimum() or value > rangeModel.getMaximum()
+			super.setText(text)
+			return
+		end
+		
+		rangeModel.setValue(value)
 	end
 	
 	
