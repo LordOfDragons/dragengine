@@ -8,7 +8,7 @@
          xmlns:desktop='http://schemas.microsoft.com/appx/manifest/desktop/windows10'
          IgnorableNamespaces='uap uap2 uap3 uap10 rescap desktop'>
 	<Identity Name='DragonDreams.Dragengine.IGDE'
-	          Version='1.8.0.0'
+	          Version='1.8.1.0'
 	          Publisher='CN=E95CA5DA-8C21-47A7-9FC7-7DDEFAE1B9E5'
 	          ProcessorArchitecture='x64'/>
 	<Properties>
@@ -26,7 +26,7 @@
 	<Dependencies>
 		<TargetDeviceFamily Name='Windows.Desktop' MinVersion='10.0.17763.0' MaxVersionTested='10.0.22000.1'/>
 		<PackageDependency Name='DragonDreams.Dragengine.GameEngine'
-		                   MinVersion='1.8.0.0'
+		                   MinVersion='1.8.1.0'
 		                   Publisher='CN=E95CA5DA-8C21-47A7-9FC7-7DDEFAE1B9E5'/>
 	</Dependencies>
 	<Capabilities>
