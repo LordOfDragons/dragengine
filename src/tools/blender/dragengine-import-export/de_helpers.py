@@ -112,6 +112,8 @@ class ActionFCurvesBuilder:
 		self.fcurveScaleX = FCurveBuilder(action, rna, 0, actionGroup)
 		self.fcurveScaleY = FCurveBuilder(action, rna, 1, actionGroup)
 		self.fcurveScaleZ = FCurveBuilder(action, rna, 2, actionGroup)
+		
+		self.lastRotation = None
 	
 	## Add position
 	def addPosition(self, frame, position):
@@ -121,6 +123,11 @@ class ActionFCurvesBuilder:
 	
 	## Add rotation
 	def addRotation(self, frame, rotation):
+		if self.lastRotation and self.lastRotation.dot(rotation) < 0:
+			rotation = rotation.copy()
+			rotation.negate()
+		self.lastRotation = rotation
+		
 		self.fcurveRotationX.add(frame, rotation[1])
 		self.fcurveRotationY.add(frame, rotation[2])
 		self.fcurveRotationZ.add(frame, rotation[3])
