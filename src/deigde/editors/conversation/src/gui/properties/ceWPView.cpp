@@ -1673,8 +1673,6 @@ pConversation( NULL )
 	helper.EditVector( form, "Rotation:", "Actor rotation", pEditActorOri, new cVectorActorRotation( *this ) );
 	helper.EditPath( form, "Model:", "Actor model to use", igdeEnvironment::efpltModel,
 		pEditActorPathModel, new cPathActorModel( *this ) );
-	helper.EditPath( form, "Model:", "Actor model to use", igdeEnvironment::efpltModel,
-		pEditActorPathModel, new cPathActorModel( *this ) );
 	helper.EditPath( form, "Skin:", "Actor skin to use", igdeEnvironment::efpltSkin,
 		pEditActorPathSkin, new cPathActorSkin( *this ) );
 	helper.EditPath( form, "Rig:", "Actor rig to use", igdeEnvironment::efpltRig,
