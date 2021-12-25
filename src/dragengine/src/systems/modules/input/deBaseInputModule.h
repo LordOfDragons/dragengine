@@ -22,8 +22,6 @@
 #ifndef _DEBASEINPUTMODULE_H_
 #define _DEBASEINPUTMODULE_H_
 
-#include <sys/time.h>
-
 #if defined OS_UNIX && defined HAS_LIB_X11
 #include <X11/Xlib.h>
 #endif

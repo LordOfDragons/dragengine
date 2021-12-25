@@ -180,7 +180,7 @@ void decPath::SetWorkingDirectory(){
 		DETHROW( deeInvalidAction );
 	}
 	
-	const int count = wcslen( buffer );
+	const int count = ( int )wcslen( buffer );
 	decUnicodeString unicode;
 	int i;
 	unicode.Set( 0, count );

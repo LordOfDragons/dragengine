@@ -315,7 +315,7 @@ char lineEnd ) const {
 
 void deLoggerConsoleColor::LogMessage( const char *source, const char *message,
 eTextAttributes attribute, eTextColors colorForeground, eTextColors colorBackground ){
-	const int len = strlen( message );
+	const int len = ( int )strlen( message );
 	const deMutexGuard lock( pMutex );
 	
 	pPrintMessage( source, message, attribute, colorForeground, colorBackground,

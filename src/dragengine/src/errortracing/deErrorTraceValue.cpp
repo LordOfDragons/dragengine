@@ -34,28 +34,17 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-deErrorTraceValue::deErrorTraceValue( const char *name, const char *value ){
-	if( ! name || ! value ){
-		DETHROW( deeInvalidParam );
-	}
-	pName = NULL;
-	pValue = NULL;
-	pSubValues = NULL;
-	pSubValueCount = 0;
-	pSubValueSize = 0;
-	try{
-		pName = new char[ strlen( name ) + 1 ];
-		if( ! pName ) DETHROW( deeOutOfMemory );
-		strcpy( pName, name );
-		SetValue( value );
-	}catch( const deException & ){
-		pCleanUp();
-		throw;
-	}
+deErrorTraceValue::deErrorTraceValue( const char *name, const char *value ) :
+pName( name ),
+pValue( value ),
+pSubValues( nullptr ),
+pSubValueCount( 0 ),
+pSubValueSize( 0 ){
 }
 
 deErrorTraceValue::~deErrorTraceValue(){
-	pCleanUp();
+	RemoveAllSubValues();
+	if( pSubValues ) delete [] pSubValues;
 }
 
 		
@@ -64,18 +53,17 @@ deErrorTraceValue::~deErrorTraceValue(){
 ////////////////
 
 void deErrorTraceValue::SetValue( const char *value ){
-	if( ! value ) DETHROW( deeInvalidParam );
-	char *newStr = new char[ strlen( value ) + 1 ];
-	if( ! newStr ) DETHROW( deeOutOfMemory );
-	strcpy( newStr, value );
-	if( pValue ) delete [] pValue;
-	pValue = newStr;
+	pValue = value;
+}
+
+void deErrorTraceValue::SetValueFrom( float value ){
+	pValue.SetValue( value );
 }
 
 
 
 // Trace SubValue Management
-///////////////////////////
+//////////////////////////////
 
 deErrorTraceValue *deErrorTraceValue::GetSubValue( int index ) const{
 	if( index < 0 || index >= pSubValueCount ) DETHROW( deeInvalidParam );
@@ -137,7 +125,11 @@ deErrorTraceValue *deErrorTraceValue::AddSubValue( const char *name, const char 
 deErrorTraceValue *deErrorTraceValue::AddSubValueInt( const char *name, int value ){
 	deErrorTraceValue *newSubValue = NULL;
 	char buffer[ 20 ];
-	sprintf( ( char* )&buffer, "%i", value );
+	#ifdef _MSC_VER
+		sprintf_s( ( char* )&buffer, 20, "%i", value );
+	#else
+		sprintf( ( char* )&buffer, "%i", value );
+	#endif
 	try{
 		newSubValue = new deErrorTraceValue( name, buffer );
 		if( ! newSubValue ) DETHROW( deeOutOfMemory );
@@ -152,7 +144,11 @@ deErrorTraceValue *deErrorTraceValue::AddSubValueInt( const char *name, int valu
 deErrorTraceValue *deErrorTraceValue::AddSubValueFloat( const char *name, float value ){
 	deErrorTraceValue *newSubValue = NULL;
 	char buffer[ 20 ];
-	sprintf( ( char* )&buffer, "%g", value );
+	#ifdef _MSC_VER
+		sprintf_s( ( char* )&buffer, 20, "%g", value );
+	#else
+		sprintf( ( char* )&buffer, "%g", value );
+	#endif
 	try{
 		newSubValue = new deErrorTraceValue( name, buffer );
 		if( ! newSubValue ) DETHROW( deeOutOfMemory );
@@ -179,14 +175,4 @@ deErrorTraceValue *deErrorTraceValue::AddSubValueBool( const char *name, bool va
 		throw;
 	}
 	return newSubValue;
-}
-
-
-
-// private functions
-void deErrorTraceValue::pCleanUp(){
-	RemoveAllSubValues();
-	if( pSubValues ) delete [] pSubValues;
-	if( pValue ) delete [] pValue;
-	if( pName ) delete [] pName;
 }

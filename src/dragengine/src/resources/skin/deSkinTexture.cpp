@@ -34,28 +34,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-deSkinTexture::deSkinTexture( const char *name ){
-	if( ! name ) DETHROW( deeInvalidParam );
-	
-	pName = NULL;
-	
-	pProperties = NULL;
-	pPropertyCount = 0;
-	pPropertySize = 0;
-	
-	try{
-		pName = new char[ strlen( name ) + 1 ];
-		if( ! pName ) DETHROW( deeOutOfMemory );
-		strcpy( pName, name );
-		
-	}catch( const deException & ){
-		pCleanUp();
-		throw;
-	}
+deSkinTexture::deSkinTexture( const char *name ) :
+pName( name ),
+pProperties( nullptr ),
+pPropertyCount( 0 ),
+pPropertySize( 0 ){
 }
 
 deSkinTexture::~deSkinTexture(){
-	pCleanUp();
+	if( pProperties ){
+		while( pPropertyCount > 0 ){
+			pPropertyCount--;
+			delete pProperties[ pPropertyCount ];
+		}
+		delete [] pProperties;
+	}
 }
 
 
@@ -140,22 +133,4 @@ void deSkinTexture::AddProperty( deSkinProperty *property ){
 	
 	pProperties[ pPropertyCount ] = property;
 	pPropertyCount++;
-}
-
-
-
-// Private functions
-//////////////////////
-
-void deSkinTexture::pCleanUp(){
-	if( pProperties ){
-		while( pPropertyCount > 0 ){
-			pPropertyCount--;
-			delete pProperties[ pPropertyCount ];
-		}
-		
-		delete [] pProperties;
-	}
-	
-	if( pName ) delete [] pName;
 }

@@ -22,7 +22,13 @@
 #ifndef _DEINPUTEVENT_H_
 #define _DEINPUTEVENT_H_
 
+#include "../dragengine_configuration.h"
+
+#ifdef OS_W32_VS
+#include "../app/include_windows.h"
+#else
 #include <sys/time.h>
+#endif
 
 
 /**

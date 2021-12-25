@@ -57,7 +57,7 @@ void decUTF8Decoder::SetString( const char *string ){
 		DETHROW( deeInvalidParam );
 	}
 	pString = string;
-	pLength = strlen( string );
+	pLength = ( int )strlen( string );
 	pPosition = 0;
 }
 

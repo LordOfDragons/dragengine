@@ -727,7 +727,6 @@ bool deEngine::Run( const char *scriptDirectory, const char *gameObject ){
 	deInputSystem &inpSys = *GetInputSystem();
 	deVRSystem &vrSys = *GetVRSystem();
 	
-	deErrorTracePoint *tracePoint;
 	bool keepRunning = true;
 	bool hasErrors = true;
 	int i;
@@ -771,7 +770,7 @@ bool deEngine::Run( const char *scriptDirectory, const char *gameObject ){
 		try{
 			for( i=0; i<esSystemCount; i++ ){
 				if( ! pSystems[ i ]->CanStart() ){
-					tracePoint = pErrorTrace->AddAndSetIfEmpty( "System is not ready to start",
+					deErrorTracePoint *tracePoint = pErrorTrace->AddAndSetIfEmpty( "System is not ready to start",
 						NULL, "deEngine::Run", __LINE__ );
 					if( ! tracePoint ){
 						tracePoint = pErrorTrace->AddPoint( NULL, "deEngine::Run", __LINE__ );
@@ -785,7 +784,7 @@ bool deEngine::Run( const char *scriptDirectory, const char *gameObject ){
 			
 		}catch( const deException &e ){
 			pErrorTrace->AddAndSetIfEmpty( e.GetName(), NULL, e.GetFile(), e.GetLine() );
-			tracePoint = pErrorTrace->AddPoint( NULL, "deEngine::Run", __LINE__ );
+			deErrorTracePoint * const tracePoint = pErrorTrace->AddPoint( NULL, "deEngine::Run", __LINE__ );
 			tracePoint->AddValue( "system", pSystems[ i ]->GetSystemName() );
 			
 			hasErrors = true;
@@ -802,7 +801,7 @@ bool deEngine::Run( const char *scriptDirectory, const char *gameObject ){
 				
 			}catch( const deException &e ){
 				pErrorTrace->AddAndSetIfEmpty( e.GetName(), NULL, e.GetFile(), e.GetLine() );
-				tracePoint = pErrorTrace->AddPoint( NULL, "deEngine::Run", __LINE__ );
+				deErrorTracePoint * const tracePoint = pErrorTrace->AddPoint( NULL, "deEngine::Run", __LINE__ );
 				tracePoint->AddValue( "system", pSystems[ i ]->GetSystemName() );
 				
 				hasErrors = true;
@@ -880,7 +879,6 @@ DEBUG_PRINT_TIMER_TOTAL( "Run: Cycle" );
 			
 			const decStringList &backtrace = e.GetBacktrace();
 			const int btcount = backtrace.GetCount();
-			int i;
 			
 			for( i=0; i<btcount; i++ ){
 				decString bttext;

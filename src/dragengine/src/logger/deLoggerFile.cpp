@@ -78,7 +78,7 @@ void deLoggerFile::LogPrefix( const char *source, const char *message, const cha
 		DETHROW( deeInvalidParam );
 	}
 	
-	const int len = strlen( message );
+	const int len =( int )strlen( message );
 	const decDateTime timestamp;
 	decString string;
 	

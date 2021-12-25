@@ -164,7 +164,7 @@ void decSmoothDVector::pUpdateFactors(){
 	if( pAdjustTime < 0.001 ){
 		pFactorTime = 0.0;
 		pFactorLimit = 0.0;
-		pFactorDrop = 0.0f;
+		pFactorDrop = 0.0;
 		pSmoothed = false;
 		
 	}else{

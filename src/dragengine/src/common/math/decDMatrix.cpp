@@ -759,19 +759,23 @@ decQuaternion decDMatrix::ToQuaternion() const{
 	
 	if( trace > 0.0 ){
 		const double s = 0.5 / sqrt( trace + 1.0 );
-		return decQuaternion( ( a32 - a23 ) * s, ( a13 - a31 ) * s, ( a21 - a12 ) * s, 0.25 / s );
+		return decQuaternion( ( float )( ( a32 - a23 ) * s ), ( float )( ( a13 - a31 ) * s ),
+			( float )( ( a21 - a12 ) * s ), ( float )( 0.25 / s ) );
 		
 	}else if( a11 > a22 && a11 > a33 ){
 		const double s = 2.0 * sqrt( 1.0 + a11 - a22 - a33 );
-		return decQuaternion( 0.25 * s, ( a12 + a21 ) / s, ( a13 + a31 ) / s, ( a32 - a23 ) / s );
+		return decQuaternion( ( float )( 0.25 * s ), ( float )( ( a12 + a21 ) / s ),
+			( float )( ( a13 + a31 ) / s ), ( float )( ( a32 - a23 ) / s ) );
 		
 	}else if( a22 > a33 ){
 		const double s = 2.0 * sqrt( 1.0 + a22 - a11 - a33 );
-		return decQuaternion( ( a12 + a21 ) / s, 0.25 * s, ( a23 + a32 ) / s, ( a13 - a31 ) / s );
+		return decQuaternion( ( float )( ( a12 + a21 ) / s ), ( float )( 0.25 * s ), 
+			( float )( ( a23 + a32 ) / s ), ( float )( ( a13 - a31 ) / s ) );
 		
 	}else{
 		const double s = 2.0 * sqrt( 1.0 + a33 - a11 - a22 );
-		return decQuaternion( ( a13 + a31 ) / s, ( a23 + a32 ) / s, 0.25 * s, ( a21 - a12 ) / s );
+		return decQuaternion( ( float )( ( a13 + a31 ) / s ), ( float )( ( a23 + a32 ) / s ),
+			( float )( 0.25 * s ), ( float )( ( a21 - a12 ) / s ) );
 	}
 	
 	/*

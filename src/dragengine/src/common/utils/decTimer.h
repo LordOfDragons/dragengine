@@ -42,11 +42,12 @@
  */
 class decTimer{
 private:
-#if defined( OS_UNIX )
+#if defined OS_UNIX
 	time_t pLastSec;
 	suseconds_t pLastUSec;
-#elif defined( OS_W32 )
-	DWORD pLastTime;
+#elif defined OS_W32
+	LONGLONG pLastTime;
+	double pInvFrequency;
 #endif
 	
 	

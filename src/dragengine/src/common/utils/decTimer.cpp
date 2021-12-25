@@ -33,6 +33,12 @@
 ////////////////////////////
 
 decTimer::decTimer(){
+#ifdef OS_W32
+	LARGE_INTEGER frequency;
+	QueryPerformanceFrequency( &frequency );
+	pInvFrequency = 1.0 / ( double )frequency.QuadPart;
+#endif
+
 	Reset();
 }
 
@@ -45,46 +51,50 @@ decTimer::~decTimer(){
 ///////////////
 
 void decTimer::Reset(){
-#ifdef OS_UNIX
+#if defined OS_UNIX
 	timeval vTime;
 	gettimeofday( &vTime, NULL );
 	pLastSec = vTime.tv_sec;
 	pLastUSec = vTime.tv_usec;
-#endif
-
-#ifdef OS_W32
-	pLastTime = timeGetTime();
+	
+#elif defined OS_W32
+	LARGE_INTEGER curTime;
+	QueryPerformanceCounter( &curTime );
+	pLastTime = curTime.QuadPart;
 #endif
 }
 
 float decTimer::GetElapsedTime(){
-#ifdef OS_UNIX
+#if defined OS_UNIX
 	timeval vTime;
 	gettimeofday( &vTime, NULL );
 	const suseconds_t diff = ( int )( vTime.tv_sec - pLastSec ) * 1000000 + ( ( int )vTime.tv_usec - ( int )pLastUSec );
 	pLastSec = vTime.tv_sec;
 	pLastUSec = vTime.tv_usec;
 	return ( float )diff * 1e-6f; // / 1000000.0f;
-#endif
+	
+#elif defined OS_W32
+	LARGE_INTEGER curTime;
+	QueryPerformanceCounter( &curTime );
+	const LONGLONG diffTime = curTime.QuadPart - pLastTime;
+	pLastTime = curTime.QuadPart;
 
-#ifdef OS_W32
-	const DWORD curTime = timeGetTime();
-	const DWORD diff = curTime - pLastTime;
-	pLastTime = curTime;
-	return ( float )diff * 1e-3f; // / 1000.0f;
+	return ( float )( pInvFrequency * diffTime );
 #endif
 }
 
 float decTimer::PeekElapsedTime(){
-#ifdef OS_UNIX
+#if defined OS_UNIX
 	timeval vTime;
 	gettimeofday( &vTime, NULL );
 	const suseconds_t diff = ( int )( vTime.tv_sec - pLastSec ) * 1000000 + ( ( int )vTime.tv_usec - ( int )pLastUSec );
 	return ( float )diff * 1e-6f; // / 1000000.0f;
-#endif
+	
+#elif defined OS_W32
+	LARGE_INTEGER curTime;
+	QueryPerformanceCounter( &curTime );
+	const LONGLONG diffTime = curTime.QuadPart - pLastTime;
 
-#ifdef OS_W32
-	const DWORD diff = timeGetTime() - pLastTime;
-	return ( float )diff * 1e-3f; // / 1000.0f;
+	return ( float )( pInvFrequency * diffTime );
 #endif
 }

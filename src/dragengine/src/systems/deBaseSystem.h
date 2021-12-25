@@ -61,10 +61,10 @@ class deException;
  */
 class deBaseSystem{
 private:
-	char *pSystemName;
-	deEngine *pEngine;
+	const decString pSystemName;
+	deEngine * const pEngine;
 	deLoadableModule *pActiveLoadableModule;
-	int pRequiredModuleType;
+	const int pRequiredModuleType;
 	bool pRunning;
 	bool pFailed;
 	
@@ -97,7 +97,7 @@ public:
 	inline bool GetHasFailed() const{ return pFailed; }
 	
 	/** \brief System name. */
-	inline const char *GetSystemName() const{ return ( const char * )pSystemName; }
+	inline const decString &GetSystemName() const{ return pSystemName; }
 	
 	/**
 	 * Determines if the system can be started up or not. A system is considered

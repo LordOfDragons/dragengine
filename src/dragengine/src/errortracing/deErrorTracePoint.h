@@ -22,6 +22,7 @@
 #ifndef _DEAERRORTRACEPOINT_H_
 #define _DEAERRORTRACEPOINT_H_
 
+#include "../common/string/decString.h"
 
 class deErrorTraceValue;
 class deLoadableModule;
@@ -35,9 +36,9 @@ class deLoadableModule;
  */
 class deErrorTracePoint{
 private:
-	deLoadableModule *pSourceModule;
-	char *pSourceFunc;
-	int pSourceLine;
+	deLoadableModule * const pSourceModule;
+	const decString pSourceFunc;
+	const int pSourceLine;
 	deErrorTraceValue **pValues;
 	int pValueCount, pValueSize;
 	
@@ -64,7 +65,7 @@ public:
 	inline deLoadableModule *GetSourceModule() const{ return pSourceModule; }
 	
 	/** \brief Source function. */
-	inline const char *GetSourceFunction() const{ return ( const char * )pSourceFunc; }
+	inline const decString &GetSourceFunction() const{ return pSourceFunc; }
 	
 	/** \brief Source line. */
 	inline int GetSourceLine() const{ return pSourceLine; }

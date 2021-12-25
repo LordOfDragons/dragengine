@@ -22,9 +22,7 @@
 #ifndef _DEMODULESYSTEM_H_
 #define _DEMODULESYSTEM_H_
 
-
 #include "../common/collection/decObjectOrderedSet.h"
-
 
 class deEngine;
 class deLoadableModule;

@@ -62,7 +62,7 @@ pSpacing( 10 )
 	pViewTitle.TakeOver( engine.GetCanvasManager()->CreateCanvasText() );
 	pViewTitle->SetFont( pFont );
 	pViewTitle->SetColor( decColor( 1.0f, 1.0f, 1.0f ) );
-	pViewTitle->SetFontSize( pFont->GetLineHeight() );
+	pViewTitle->SetFontSize( ( float )pFont->GetLineHeight() );
 	pViewTitle->SetText( "" );
 	pViewTitle->SetOrder( 1.0f );
 	pViewTitle->SetSize( pTextSize( pFont, "" ) );
@@ -195,7 +195,7 @@ const decColor &color, const decColor &bgColor ){
 		entry->viewLabel.TakeOver( canvasManager.CreateCanvasText() );
 		entry->viewLabel->SetFont( pFont );
 		entry->viewLabel->SetColor( color );
-		entry->viewLabel->SetFontSize( pFont->GetLineHeight() );
+		entry->viewLabel->SetFontSize( ( float )pFont->GetLineHeight() );
 		entry->viewLabel->SetText( label );
 		entry->viewLabel->SetOrder( 1.0f );
 		entry->viewLabel->SetSize( pTextSize( pFont, label ) );
@@ -204,7 +204,7 @@ const decColor &color, const decColor &bgColor ){
 		entry->viewText.TakeOver( canvasManager.CreateCanvasText() );
 		entry->viewText->SetFont( pFont );
 		entry->viewText->SetColor( color );
-		entry->viewText->SetFontSize( pFont->GetLineHeight() );
+		entry->viewText->SetFontSize( ( float )pFont->GetLineHeight() );
 		entry->viewText->SetText( text );
 		entry->viewText->SetOrder( 2.0f );
 		entry->viewText->SetSize( pTextSize( pFont, text ) );
@@ -321,7 +321,7 @@ decPoint deDebugBlockInfo::pTextSize( const deFont &font, const char *text ){
 		
 		if( character == '\n' ){
 			textHeight += font.GetLineHeight();
-			lineWidth = 0.0f;
+			lineWidth = 0;
 			
 		}else if( character >= 0 ){
 			const deFontGlyph &glyph = font.GetGlyph( character );

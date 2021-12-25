@@ -38,47 +38,36 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-deErrorTracePoint::deErrorTracePoint( const char *sourceFunc, int sourceLine ){
-	if( ! sourceFunc || sourceLine < 0 ) DETHROW( deeInvalidParam );
-	pSourceModule = NULL;
-	pSourceFunc = NULL;
-	pSourceLine = sourceLine;
-	pValues = NULL;
-	pValueCount = 0;
-	pValueSize = 0;
-	try{
-		pSourceFunc = new char[ strlen( sourceFunc ) + 1 ];
-		if( ! pSourceFunc ) DETHROW( deeOutOfMemory );
-		strcpy( pSourceFunc, sourceFunc );
-	}catch( const deException & ){
-		if( pSourceFunc ) delete [] pSourceFunc;
-		throw;
+deErrorTracePoint::deErrorTracePoint( const char *sourceFunc, int sourceLine ) :
+pSourceModule( nullptr ),
+pSourceFunc( sourceFunc ),
+pSourceLine( sourceLine ),
+pValues( nullptr ),
+pValueCount( 0 ),
+pValueSize( 0 )
+{
+	if( pSourceFunc.IsEmpty() ){
+		DETHROW( deeInvalidParam );
 	}
 }
 
-deErrorTracePoint::deErrorTracePoint( deLoadableModule *module, const char *sourceFunc, int sourceLine ){
-	if( ! sourceFunc || sourceLine < 0 ) DETHROW( deeInvalidParam );
-	pSourceModule = module;
-	pSourceFunc = NULL;
-	pSourceLine = sourceLine;
-	pValues = NULL;
-	pValueCount = 0;
-	pValueSize = 0;
-	if( pSourceModule ) pSourceModule->AddReference();
-	try{
-		pSourceFunc = new char[ strlen( sourceFunc ) + 1 ];
-		if( ! pSourceFunc ) DETHROW( deeOutOfMemory );
-		strcpy( pSourceFunc, sourceFunc );
-	}catch( const deException & ){
-		if( pSourceFunc ) delete [] pSourceFunc;
-		throw;
+deErrorTracePoint::deErrorTracePoint( deLoadableModule *module, const char *sourceFunc, int sourceLine ) :
+pSourceModule( module ),
+pSourceFunc( sourceFunc ),
+pSourceLine( sourceLine ),
+pValues( nullptr ),
+pValueCount( 0 ),
+pValueSize( 0 )
+{
+	if( pSourceFunc.IsEmpty() ){
+		DETHROW( deeInvalidParam );
 	}
+	if( pSourceModule ) pSourceModule->AddReference();
 }
 
 deErrorTracePoint::~deErrorTracePoint(){
 	RemoveAllValues();
 	if( pValues ) delete [] pValues;
-	if( pSourceFunc ) delete [] pSourceFunc;
 	if( pSourceModule ) pSourceModule->FreeReference();
 }
 
@@ -147,7 +136,11 @@ deErrorTraceValue *deErrorTracePoint::AddValue( const char *name, const char *va
 deErrorTraceValue *deErrorTracePoint::AddValueInt( const char *name, int value ){
 	deErrorTraceValue *newValue = NULL;
 	char buffer[ 20 ];
-	sprintf( ( char* )&buffer, "%i", value );
+	#ifdef _MSC_VER
+		sprintf_s( ( char* )&buffer, 20, "%i", value );
+	#else
+		sprintf( ( char* )&buffer, "%i", value );
+	#endif
 	try{
 		newValue = new deErrorTraceValue( name, buffer );
 		if( ! newValue ) DETHROW( deeOutOfMemory );
@@ -162,7 +155,11 @@ deErrorTraceValue *deErrorTracePoint::AddValueInt( const char *name, int value )
 deErrorTraceValue *deErrorTracePoint::AddValueFloat( const char *name, float value ){
 	deErrorTraceValue *newValue = NULL;
 	char buffer[ 20 ];
-	sprintf( ( char* )&buffer, "%g", value );
+	#ifdef _MSC_VER
+		sprintf_s( ( char* )&buffer, 20, "%g", value );
+	#else
+		sprintf( ( char* )&buffer, "%g", value );
+	#endif
 	try{
 		newValue = new deErrorTraceValue( name, buffer );
 		if( ! newValue ) DETHROW( deeOutOfMemory );

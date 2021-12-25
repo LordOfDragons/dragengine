@@ -34,7 +34,7 @@ private:
 	double pChangeSpeed;
 	double pFactorTime;
 	double pFactorLimit;
-	float pFactorDrop;
+	double pFactorDrop;
 	bool pSmoothed;
 	
 	

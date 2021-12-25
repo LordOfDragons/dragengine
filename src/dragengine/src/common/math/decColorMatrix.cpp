@@ -316,7 +316,7 @@ void decColorMatrix::SetContrast( float contrast ){
 
 void decColorMatrix::SetContrast( float red, float green, float blue ){
 	const decColor scale( red, green, blue, 1.0f );
-	const decColor translate( ( 1.0f - red ) * 0.5f, ( 1.0f - green ) * 0.5, ( 1.0f - blue ) * 0.5f, 0.0f );
+	const decColor translate( ( 1.0f - red ) * 0.5f, ( 1.0f - green ) * 0.5f, ( 1.0f - blue ) * 0.5f, 0.0f );
 	SetST( scale, translate );
 }
 

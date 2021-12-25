@@ -387,8 +387,8 @@ int deModuleSystem::CompareVersion( const char *version1, const char *version2 )
 		DETHROW( deeInvalidParam );
 	}
 	
-	const int len1 = strlen( version1 );
-	const int len2 = strlen( version2 );
+	const int len1 = ( int )strlen( version1 );
+	const int len2 = ( int )strlen( version2 );
 	int last1, last2;
 	int pos1 = 0;
 	int pos2 = 0;

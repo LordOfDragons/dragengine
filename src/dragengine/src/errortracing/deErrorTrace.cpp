@@ -26,11 +26,12 @@
 #include "deErrorTrace.h"
 #include "deErrorTracePoint.h"
 #include "deErrorTraceValue.h"
+#include "../dragengine_configuration.h"
+#include "../common/exceptions.h"
 #include "../systems/deModuleSystem.h"
 #include "../systems/modules/deLoadableModule.h"
 #include "../systems/modules/deBaseModule.h"
 #include "../systems/modules/deModuleParameter.h"
-#include "../common/exceptions.h"
 
 
 
@@ -41,18 +42,18 @@
 /////////////////////////////////
 #include "../logger/deLogger.h"
 
-deErrorTrace::deErrorTrace(){
-	pError = NULL;
-	pPoints = NULL;
-	pPointCount = 0;
-	pPointSize = 0;
-	SetError( "Unknown" );
+deErrorTrace::deErrorTrace() :
+pError( "Unknown" ),
+pPoints( nullptr ),
+pPointCount( 0 ),
+pPointSize( 0 ){
 }
 
 deErrorTrace::~deErrorTrace(){
 	RemoveAllPoints();
-	if( pPoints ) delete [] pPoints;
-	if( pError ) delete [] pError;
+	if( pPoints ){
+		delete [] pPoints;
+	}
 }
 
 
@@ -61,17 +62,12 @@ deErrorTrace::~deErrorTrace(){
 ///////////////
 
 void deErrorTrace::SetError( const char *error ){
-	if( ! error ) DETHROW( deeInvalidParam );
-	char *newStr = new char[ strlen( error ) + 1 ];
-	if( ! newStr ) DETHROW( deeOutOfMemory );
-	strcpy( newStr, error  );
-	if( pError ) delete [] pError;
-	pError = newStr;
+	pError = error;
 }
 
 void deErrorTrace::Clear(){
 	RemoveAllPoints();
-	SetError( "Unknown" );
+	pError = "Unknown";
 }
 
 
@@ -117,7 +113,7 @@ void deErrorTrace::RemoveAllPoints(){
 deErrorTracePoint *deErrorTrace::AddAndSetIfEmpty( const char *error, deLoadableModule *sourceModule, const char *sourceFunc, int sourceLine ){
 	if( ! error || ! sourceFunc || sourceLine < 0 ) DETHROW( deeInvalidParam );
 	if( pPointCount > 0 ) return NULL;
-	SetError( error );
+	pError = error;
 	return AddPoint( sourceModule, sourceFunc, sourceLine );
 }
 
@@ -139,20 +135,21 @@ void deErrorTrace::PrintTrace( deLogger &logger ){
 	const char *loggingName = "ErrorTrace";
 	int i, j;
 	
-	logger.LogErrorFormat( loggingName, "Error %s.", pError );
+	logger.LogErrorFormat( loggingName, "Error %s.", pError.GetString() );
 	for( i=0; i<pPointCount; i++ ){
 		if( pPoints[ i ]->GetSourceModule() ){
 			logger.LogErrorFormat( loggingName, "%i) %s %s at %i.", i + 1,
 				pPoints[ i ]->GetSourceModule()->GetName().GetString(),
-				pPoints[ i ]->GetSourceFunction(), pPoints[ i ]->GetSourceLine() );
+				pPoints[ i ]->GetSourceFunction().GetString(), pPoints[ i ]->GetSourceLine() );
 		}else{
 			//moduleType = "Drag[en]gine";
 			logger.LogErrorFormat( loggingName, "%i) Game Engine %s at %i.", i + 1,
-				pPoints[ i ]->GetSourceFunction(), pPoints[ i ]->GetSourceLine() );
+				pPoints[ i ]->GetSourceFunction().GetString(), pPoints[ i ]->GetSourceLine() );
 		}
 		for( j=0; j<pPoints[ i ]->GetValueCount(); j++ ){
 			logger.LogErrorFormat( loggingName, "  - %s = '%s'.",
-				pPoints[ i ]->GetValue( j )->GetName(), pPoints[ i ]->GetValue( j )->GetValue() );
+				pPoints[ i ]->GetValue( j )->GetName().GetString(),
+				pPoints[ i ]->GetValue( j )->GetValue().GetString() );
 		}
 	}
 }

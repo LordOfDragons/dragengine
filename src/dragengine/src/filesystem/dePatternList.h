@@ -22,6 +22,8 @@
 #ifndef _DEPATTERNLIST_H_
 #define _DEPATTERNLIST_H_
 
+#include "../common/string/decStringList.h"
+
 
 /**
  * \brief List of file patterns.
@@ -33,9 +35,7 @@
  */
 class dePatternList{
 private:
-	char **pPatterns;
-	int pPatternCount;
-	int pPatternSize;
+	decStringList pPatterns;
 	
 	
 	
@@ -54,10 +54,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Number of patterns. */
-	inline int GetPatternCount() const{ return pPatternCount; }
+	int GetPatternCount() const;
 	
 	/** \brief Pattern at the given position. */
-	const char *GetPatternAt( int index ) const;
+	const decString &GetPatternAt( int index ) const;
 	
 	/** \brief Index of the pattern or -1 if not found. */
 	int IndexOfPattern( const char *pattern ) const;

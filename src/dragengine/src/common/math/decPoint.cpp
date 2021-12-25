@@ -60,7 +60,7 @@ y( ( int )v.y ){
 ///////////////
 
 float decPoint::Length() const{
-	return sqrtf( x * x + y * y );
+	return sqrtf( ( float )( x * x + y * y ) );
 }
 
 void decPoint::SetZero(){
