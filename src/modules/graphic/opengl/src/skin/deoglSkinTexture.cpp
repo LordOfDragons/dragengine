@@ -1945,7 +1945,7 @@ void deoglSkinTexture::pCompressTextures( deoglRSkin &skin, const deSkinTexture 
 			// compress. should we end up here something went wrong.
 			pRenderThread.GetLogger().LogErrorFormat( "CompressTextures of not supported format:"
 				" skin='%s' texture='%s' channel=%i pbformat=%x", skin.GetFilename().GetString(),
-				texture.GetName(), i, pChannels[ i ]->GetTexture()->GetFormat()->GetFormat() );
+				texture.GetName().GetString(), i, pChannels[ i ]->GetTexture()->GetFormat()->GetFormat() );
 			
 			DETHROW( deeInvalidParam );
 		}

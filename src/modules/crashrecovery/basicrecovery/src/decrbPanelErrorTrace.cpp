@@ -110,12 +110,12 @@ void decrbPanelErrorTrace::UpdateTrace(){
 		if( tracePoint->GetSourceModule() ){
 			traceText.format( "%i. %s, %s at %i", i + 1,
 				tracePoint->GetSourceModule()->GetName().GetString(),
-				tracePoint->GetSourceFunction(),
+				tracePoint->GetSourceFunction().GetString(),
 				tracePoint->GetSourceLine() );
 			
 		}else{
 			traceText.format( "%i. Game Engine, %s at %i", i + 1,
-				tracePoint->GetSourceFunction(),
+				tracePoint->GetSourceFunction().GetString(),
 				tracePoint->GetSourceLine() );
 		}
 		
@@ -156,7 +156,7 @@ void decrbPanelErrorTrace::pAddErrorTraceSubValues( int level, FXTreeItem *treeI
 	pEditTrace->appendText( traceText.text(), traceText.length() );
 	*/
 	
-	traceText.format( "%s = %s", traceValue->GetName(), traceValue->GetValue() );
+	traceText.format( "%s = %s", traceValue->GetName().GetString(), traceValue->GetValue().GetString() );
 	subTreeItem = pTreeTrace->appendItem( treeItem, traceText, NULL, NULL, NULL, false );
 	
 	for( i=0; i<valueCount; i++ ){

@@ -47,12 +47,12 @@
 ////////////////////////////
 
 deBaseSystem::deBaseSystem( deEngine *engine, const char *systemName, int requiredModuleType ) :
-pEngine( engine ),
 pSystemName( systemName ),
+pEngine( engine ),
 pActiveLoadableModule( nullptr ),
 pRequiredModuleType( requiredModuleType ),
-pFailed( false ),
-pRunning( false )
+pRunning( false ),
+pFailed( false )
 {
 	if( ! engine ){
 		DETHROW( deeInvalidParam );

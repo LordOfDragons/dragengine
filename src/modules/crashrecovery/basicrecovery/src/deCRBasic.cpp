@@ -168,12 +168,12 @@ void deCRBasic::LogTrace(){
 		if( tracePoint.GetSourceModule() ){
 			LogErrorFormat( "Trace %i: %s, %s at %i", i + 1,
 				tracePoint.GetSourceModule()->GetName().GetString(),
-				tracePoint.GetSourceFunction(),
+				tracePoint.GetSourceFunction().GetString(),
 				tracePoint.GetSourceLine() );
 			
 		}else{
 			LogErrorFormat( "Trace %i: Game Engine, %s at %i", i + 1,
-				tracePoint.GetSourceFunction(),
+				tracePoint.GetSourceFunction().GetString(),
 				tracePoint.GetSourceLine() );
 		}
 		
@@ -186,7 +186,7 @@ void deCRBasic::LogTrace(){
 }
 
 void deCRBasic::LogTraceSubValues( const deErrorTraceValue &traceValue, const char *indent ){
-	LogErrorFormat( "- %s = %s", traceValue.GetName(), traceValue.GetValue() );
+	LogErrorFormat( "- %s = %s", traceValue.GetName().GetString(), traceValue.GetValue().GetString() );
 	
 	const int valueCount = traceValue.GetSubValueCount();
 	if( valueCount == 0 ){

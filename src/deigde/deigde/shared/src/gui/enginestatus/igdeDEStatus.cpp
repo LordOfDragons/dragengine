@@ -201,7 +201,7 @@ void igdeDEStatus::StartEngine(){
 			
 			message.Format( "Engine can not be started because system %s is not possible to start."
 				" Verify that a module is selected and that this module is runnable on this system.",
-				system.GetSystemName() );
+				system.GetSystemName().GetString() );
 			pTextStatus->SetText( message );
 			break;
 		}
