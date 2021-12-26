@@ -22,6 +22,8 @@
 #ifndef _DENETWORKVALUEVISITOR_H_
 #define _DENETWORKVALUEVISITOR_H_
 
+#include "../../../dragengine_export.h"
+
 class deNetworkValue;
 class deNetworkValueInteger;
 class deNetworkValueFloat;

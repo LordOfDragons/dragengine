@@ -22,6 +22,8 @@
 #ifndef _DERESOURCELIST_H_
 #define _DERESOURCELIST_H_
 
+#include "../dragengine_export.h"
+
 class deResource;
 
 

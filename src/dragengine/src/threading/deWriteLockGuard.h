@@ -22,6 +22,8 @@
 #ifndef _DEREADLOCKGUARD_H_
 #define _DEREADLOCKGUARD_H_
 
+#include "../dragengine_export.h"
+
 class deReadWriteLock;
 
 

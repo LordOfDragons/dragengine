@@ -22,6 +22,7 @@
 #ifndef _DETHREADSAFEOBJECTREFERENCE_H_
 #define _DETHREADSAFEOBJECTREFERENCE_H_
 
+#include "../dragengine_export.h"
 
 class deThreadSafeObject;
 

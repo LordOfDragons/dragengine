@@ -22,6 +22,8 @@
 #ifndef _DECCURVEBEZIER3DDISTANCEEVALUATOR_H_
 #define _DECCURVEBEZIER3DDISTANCEEVALUATOR_H_
 
+#include "../../dragengine_export.h"
+
 class decCurveBezier3D;
 
 

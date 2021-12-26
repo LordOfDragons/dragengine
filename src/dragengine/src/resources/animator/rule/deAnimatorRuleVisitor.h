@@ -22,6 +22,8 @@
 #ifndef _DEANIMATORRULEVISITOR_H_
 #define _DEANIMATORRULEVISITOR_H_
 
+#include "../../../dragengine_export.h"
+
 class deAnimatorRule;
 class deAnimatorRuleAnimation;
 class deAnimatorRuleAnimationDifference;

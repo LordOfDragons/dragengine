@@ -22,6 +22,8 @@
 #ifndef _DECXMLPARSER_H_
 #define _DECXMLPARSER_H_
 
+#include "../../dragengine_export.h"
+
 #define DEXP_EOF 0x100
 
 class decXmlDocument;

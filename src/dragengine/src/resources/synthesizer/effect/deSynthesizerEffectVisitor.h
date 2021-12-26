@@ -22,6 +22,8 @@
 #ifndef _DESYNTHESIZEREFFECTVISITOR_H_
 #define _DESYNTHESIZEREFFECTVISITOR_H_
 
+#include "../../../dragengine_export.h"
+
 class deSynthesizerEffect;
 class deSynthesizerEffectStretch;
 

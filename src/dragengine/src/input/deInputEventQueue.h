@@ -22,6 +22,8 @@
 #ifndef _DEINPUTEVENTQUEUE_H_
 #define _DEINPUTEVENTQUEUE_H_
 
+#include "../dragengine_export.h"
+
 class deInputEvent;
 
 

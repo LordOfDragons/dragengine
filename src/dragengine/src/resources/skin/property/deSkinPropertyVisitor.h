@@ -22,6 +22,8 @@
 #ifndef _DESKINPROPERTYVISITOR_H_
 #define _DESKINPROPERTYVISITOR_H_
 
+#include "../../../dragengine_export.h"
+
 class deSkinProperty;
 class deSkinPropertyValue;
 class deSkinPropertyColor;

@@ -22,6 +22,8 @@
 #ifndef _DECSHAPEVISITOR_H_
 #define _DECSHAPEVISITOR_H_
 
+#include "../../dragengine_export.h"
+
 class decShape;
 class decShapeSphere;
 class decShapeBox;

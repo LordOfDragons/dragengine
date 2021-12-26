@@ -22,6 +22,8 @@
 #ifndef _DEDSRENDERABLEVISITOR_H_
 #define _DEDSRENDERABLEVISITOR_H_
 
+#include "../../../../dragengine_export.h"
+
 class deDSRenderable;
 class deDSRenderableValue;
 class deDSRenderableColor;

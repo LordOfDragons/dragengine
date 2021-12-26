@@ -22,6 +22,8 @@
 #ifndef _DECANVASVISITOR_H_
 #define _DECANVASVISITOR_H_
 
+#include "../../dragengine_export.h"
+
 class deCanvas;
 class deCanvasImage;
 class deCanvasPaint;

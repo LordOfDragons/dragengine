@@ -22,6 +22,8 @@
 #ifndef _DECOLLIDERVISITOR_H_
 #define _DECOLLIDERVISITOR_H_
 
+#include "../../dragengine_export.h"
+
 class deCollider;
 class deColliderVolume;
 class deColliderRig;

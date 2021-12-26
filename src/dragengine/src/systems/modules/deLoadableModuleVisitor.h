@@ -22,6 +22,7 @@
 #ifndef _DELOADABLEMODULEVISITOR_H_
 #define _DELOADABLEMODULEVISITOR_H_
 
+#include "../../dragengine_export.h"
 
 class deLoadableModule;
 class deInternalModule;
