@@ -503,7 +503,7 @@ bool dedaiLayer::NavMeshLineCollide( const decDVector &origin, const decVector &
 			}
 			
 			// otherwise this is the end of the line
-			distance = ( curOrigin - origin ).Length() / ( target - origin ).Length();
+			distance = ( float )( ( curOrigin - origin ).Length() / ( target - origin ).Length() );
 			return true;
 		}
 		
