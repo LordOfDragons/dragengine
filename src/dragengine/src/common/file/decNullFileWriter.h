@@ -29,7 +29,7 @@
 /**
  * \brief Null file writer doing nothing.
  */
-class decNullFileWriter : public decBaseFileWriter{
+class DE_DLL_EXPORT decNullFileWriter : public decBaseFileWriter{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<decNullFileWriter> Ref;

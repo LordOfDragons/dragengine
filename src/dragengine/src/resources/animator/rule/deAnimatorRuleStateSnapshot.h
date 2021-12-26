@@ -49,7 +49,7 @@
  * and from time to time the move names in the rules all of which is a single
  * function call.
  */
-class deAnimatorRuleStateSnapshot : public deAnimatorRule{
+class DE_DLL_EXPORT deAnimatorRuleStateSnapshot : public deAnimatorRule{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<deAnimatorRuleStateSnapshot> Ref;

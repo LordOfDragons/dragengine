@@ -44,7 +44,7 @@ class deSmokeEmitter;
  * Worlds are used by the physics module to provide collision detection
  * and physical simulations against the contained scenes.
  */
-class deBasePhysicsWorld{
+class DE_DLL_EXPORT deBasePhysicsWorld{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

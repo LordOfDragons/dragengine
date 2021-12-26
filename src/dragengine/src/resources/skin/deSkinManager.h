@@ -37,7 +37,7 @@ class deSkinBuilder;
  * \brief Skin Resource Manager.
  *
  */
-class deSkinManager : public deFileResourceManager{
+class DE_DLL_EXPORT deSkinManager : public deFileResourceManager{
 private:
 	deFileResourceList pSkins;
 	

@@ -31,7 +31,7 @@ class deFont;
 /**
  * \brief Skin property text node for constructed texture property.
  */
-class deSkinPropertyNodeText : public deSkinPropertyNode{
+class DE_DLL_EXPORT deSkinPropertyNodeText : public deSkinPropertyNode{
 private:
 	decString pPath;
 	deFont *pFont;

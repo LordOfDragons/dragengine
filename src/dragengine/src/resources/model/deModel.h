@@ -43,7 +43,7 @@ class deModelWeight;
  * Triangle mesh representing visual geometry of a Component in a scene. Contains various
  * information to support texturing, animation, level-of-detail and physics.
  */
-class deModel : public deFileResource{
+class DE_DLL_EXPORT deModel : public deFileResource{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<deModel> Ref;

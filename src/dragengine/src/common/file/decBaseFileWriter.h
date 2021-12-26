@@ -34,7 +34,7 @@
  * File writers can support seeking but are not required to.
  * If seeking is not supported an exception is thrown.
  */
-class decBaseFileWriter : public deObject{
+class DE_DLL_EXPORT decBaseFileWriter : public deObject{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<decBaseFileWriter> Ref;

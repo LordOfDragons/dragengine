@@ -34,7 +34,7 @@ class deRenderWindow;
 /**
  * \brief Render Window Resource Manager.
  */
-class deRenderWindowManager : public deResourceManager{
+class DE_DLL_EXPORT deRenderWindowManager : public deResourceManager{
 private:
 	deResourceList pRenderWindows;
 	

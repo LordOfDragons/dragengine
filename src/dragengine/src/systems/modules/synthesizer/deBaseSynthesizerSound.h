@@ -22,11 +22,13 @@
 #ifndef _DEBASESYNTHESIZERSOUND_H_
 #define _DEBASESYNTHESIZERSOUND_H_
 
+#include "../../../dragengine_export.h"
+
 
 /**
  * \brief Synthesizer module peer.
  */
-class deBaseSynthesizerSound{
+class DE_DLL_EXPORT deBaseSynthesizerSound{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

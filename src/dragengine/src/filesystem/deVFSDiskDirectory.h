@@ -28,7 +28,7 @@
 /**
  * \brief Container mapping the content of a disk directory into the virtual file system.
  */
-class deVFSDiskDirectory : public deVFSContainer{
+class DE_DLL_EXPORT deVFSDiskDirectory : public deVFSContainer{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<deVFSDiskDirectory> Ref;

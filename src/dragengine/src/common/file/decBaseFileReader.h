@@ -35,7 +35,7 @@ class decDataChunk;
 /**
  * \brief File reader interface.
  */
-class decBaseFileReader : public deObject{
+class DE_DLL_EXPORT decBaseFileReader : public deObject{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<decBaseFileReader> Ref;

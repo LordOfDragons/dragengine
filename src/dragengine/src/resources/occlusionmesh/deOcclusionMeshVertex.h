@@ -28,7 +28,7 @@
 /**
  * \brief Occlusion Mesh Vertex.
  */
-class deOcclusionMeshVertex{
+class DE_DLL_EXPORT deOcclusionMeshVertex{
 private:
 	decVector pPosition;
 	int pWeightSet;

@@ -22,11 +22,13 @@
 #ifndef _DEBASEPHYSICSFORCEFIELD_H_
 #define _DEBASEPHYSICSFORCEFIELD_H_
 
+#include "../../../dragengine_export.h"
+
 
 /**
  * \brief Physics system force field peer.
  */
-class deBasePhysicsForceField{
+class DE_DLL_EXPORT deBasePhysicsForceField{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

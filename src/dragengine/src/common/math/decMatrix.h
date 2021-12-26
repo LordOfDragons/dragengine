@@ -29,7 +29,7 @@
  * always in counter clockwise orientation. Rotation angles are
  * measured in radians.
  */
-class decMatrix{
+class DE_DLL_EXPORT decMatrix{
 public:
 	/**
 	 * \name Cells

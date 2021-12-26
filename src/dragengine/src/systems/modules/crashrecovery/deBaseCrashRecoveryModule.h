@@ -36,7 +36,7 @@
  * the engine hence this is the module to pay special attention to in terms of
  * error safeness.
  */
-class deBaseCrashRecoveryModule : public deBaseModule{
+class DE_DLL_EXPORT deBaseCrashRecoveryModule : public deBaseModule{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

@@ -22,11 +22,13 @@
 #ifndef _DEHEIGHTTERRAINNAVSPACEEDGE_H_
 #define _DEHEIGHTTERRAINNAVSPACEEDGE_H_
 
+#include "../../../dragengine_export.h"
+
 
 /**
  * \brief Height terrain navigation space edge.
  */
-class deHeightTerrainNavSpaceEdge{
+class DE_DLL_EXPORT deHeightTerrainNavSpaceEdge{
 private:
 	unsigned int pPoint1;
 	unsigned int pPoint2;

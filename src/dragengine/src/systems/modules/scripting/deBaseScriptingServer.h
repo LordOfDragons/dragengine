@@ -22,6 +22,8 @@
 #ifndef _DEBASESCRIPTINGSERVER_H_
 #define _DEBASESCRIPTINGSERVER_H_
 
+#include "../../../dragengine_export.h"
+
 class deServer;
 class deConnection;
 class deNetworkState;
@@ -30,7 +32,7 @@ class deNetworkState;
 /**
  * \brief Scripting Module Server Peer.
  */
-class deBaseScriptingServer{
+class DE_DLL_EXPORT deBaseScriptingServer{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

@@ -33,7 +33,7 @@ class deSpeaker;
  * \brief Scene Speaker Resource Manager.
  *
  */
-class deSpeakerManager : public deResourceManager{
+class DE_DLL_EXPORT deSpeakerManager : public deResourceManager{
 private:
 	deResourceList pSpeakers;
 	

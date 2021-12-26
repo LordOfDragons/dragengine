@@ -34,7 +34,7 @@ class deSkinPropertyMapped;
 /**
  * \brief Visitor for skin properties.
  */
-class deSkinPropertyVisitor{
+class DE_DLL_EXPORT deSkinPropertyVisitor{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

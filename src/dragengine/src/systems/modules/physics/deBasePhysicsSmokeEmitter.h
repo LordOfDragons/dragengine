@@ -22,13 +22,15 @@
 #ifndef _DEBASEPHYSICSSMOKEEMITTER_H_
 #define _DEBASEPHYSICSSMOKEEMITTER_H_
 
+#include "../../../dragengine_export.h"
+
 
 /**
  * \brief Smoke Emitter Particle System Peer.
  *
  * Peer for the smoke emitter resource used by the physics system.
  */
-class deBasePhysicsSmokeEmitter{
+class DE_DLL_EXPORT deBasePhysicsSmokeEmitter{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

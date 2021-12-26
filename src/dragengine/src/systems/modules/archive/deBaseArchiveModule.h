@@ -34,7 +34,7 @@ class deArchive;
 /**
  * \brief Base archive module.
  */
-class deBaseArchiveModule : public deBaseModule{
+class DE_DLL_EXPORT deBaseArchiveModule : public deBaseModule{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

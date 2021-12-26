@@ -22,13 +22,14 @@
 #ifndef _DEANIMATORCONTROLLERTARGET_H_
 #define _DEANIMATORCONTROLLERTARGET_H_
 
+#include "../../../dragengine_export.h"
 
 /**
  * \brief Animator Controller Target.
  *
  * Holds links for a controller target.
  */
-class deAnimatorControllerTarget{
+class DE_DLL_EXPORT deAnimatorControllerTarget{
 private:
 	int *pLinks;
 	int pLinkCount;

@@ -31,7 +31,7 @@ class deNavigator;
 /**
  * \brief Navigator Manager.
  */
-class deNavigatorManager : public deResourceManager{
+class DE_DLL_EXPORT deNavigatorManager : public deResourceManager{
 private:
 	deResourceList pNavigators;
 	

@@ -22,10 +22,12 @@
 #ifndef _DECSMOOTHFLOAT_H_
 #define _DECSMOOTHFLOAT_H_
 
+#include "../../../dragengine_export.h"
+
 /**
  * \brief Floating point value with smooth adjusting over time.
  */
-class decSmoothFloat{
+class DE_DLL_EXPORT decSmoothFloat{
 private:
 	float pValue;
 	float pGoal;

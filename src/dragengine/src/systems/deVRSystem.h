@@ -34,7 +34,7 @@ class deCamera;
  * \brief VR system.
  * \version 1.6
  */
-class deVRSystem : public deBaseSystem{
+class DE_DLL_EXPORT deVRSystem : public deBaseSystem{
 private:
 	deBaseVRModule *pActiveModule;
 	deInputEventQueue pEventQueue;

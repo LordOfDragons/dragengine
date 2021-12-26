@@ -105,7 +105,7 @@ class deSkyLayerBody;
  * Therefor all images for all bodies inside the same layer have to be stored in
  * the same skin.
  */
-class deSkyLayer{
+class DE_DLL_EXPORT deSkyLayer{
 public:
 	/** \brief Targets. */
 	enum eTargets{

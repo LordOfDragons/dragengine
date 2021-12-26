@@ -1,7 +1,7 @@
 /* 
  * Drag[en]gine Game Engine
  *
- * Copyright (C) 2020, Roland PlÃ¼ss (roland@rptd.ch)
+ * Copyright (C) 2021, Roland Plüss (roland@rptd.ch)
  * 
  * This program is free software; you can redistribute it and/or 
  * modify it under the terms of the GNU General Public License 
@@ -19,36 +19,20 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef _DEBASEAUDIOSYNTHESIZERINSTANCE_H_
-#define _DEBASEAUDIOSYNTHESIZERINSTANCE_H_
+#ifndef _DRAGENGINE_EXPORT_H_
+#define _DRAGENGINE_EXPORT_H_
 
-#include "../../../dragengine_export.h"
+#include "dragengine_configuration.h"
 
-
-/**
- * \brief Audio module synthesizer instance peer.
- */
-class DE_DLL_EXPORT deBaseAudioSynthesizerInstance{
-public:
-	/** \name Constructors and Destructors */
-	/*@{*/
-	/** \brief Create peer. */
-	deBaseAudioSynthesizerInstance();
+#ifdef OS_W32_VS
+	#ifdef DE_COMPILE_DLL
+		#define DE_DLL_EXPORT __declspec(dllexport)
+	#else
+		#define DE_DLL_EXPORT __declspec(dllimport)
+	#endif
 	
-	/** \brief Clean up peer. */
-	virtual ~deBaseAudioSynthesizerInstance();
-	/*@}*/
-	
-	
-	
-	/** \name Notifications */
-	/*@{*/
-	/** \brief Synthesizer changed. */
-	virtual void SynthesizerChanged();
-	
-	/** \brief Play time changed. */
-	virtual void PlayTimeChanged();
-	/*@}*/
-};
+#else
+	#define DE_DLL_EXPORT
+#endif
 
 #endif

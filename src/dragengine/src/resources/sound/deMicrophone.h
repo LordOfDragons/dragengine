@@ -46,7 +46,7 @@ class deBaseAudioMicrophone;
  * The layer masks affects which speakers the microphone can hear and which components affect
  * sound propagation. Speakers assigned to the microphone are not affected by the layer mask.
  */
-class deMicrophone : public deResource{
+class DE_DLL_EXPORT deMicrophone : public deResource{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<deMicrophone> Ref;

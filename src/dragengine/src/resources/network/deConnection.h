@@ -42,7 +42,7 @@ class deBaseScriptingConnection;
  * between the player and a server but can also be established between
  * servers themselves or between individual players.
  */
-class deConnection : public deResource{
+class DE_DLL_EXPORT deConnection : public deResource{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<deConnection> Ref;

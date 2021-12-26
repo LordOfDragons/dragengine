@@ -33,7 +33,7 @@ class decShapeHull;
 /**
  * \brief Visitor for analytic shapes.
  */
-class decShapeVisitor{
+class DE_DLL_EXPORT decShapeVisitor{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

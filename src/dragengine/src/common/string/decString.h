@@ -23,6 +23,7 @@
 #define _DECSTRING_H_
 
 #include <stdarg.h>
+#include "../../dragengine_export.h"
 
 class decStringList;
 
@@ -37,7 +38,7 @@ class decStringList;
  * the StringBuffer class instead which stores a string length and can handle 0 characters
  * inside the string.
  */
-class decString{
+class DE_DLL_EXPORT decString{
 private:
 	char *pString;
 	

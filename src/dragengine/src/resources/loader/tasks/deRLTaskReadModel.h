@@ -29,7 +29,7 @@
 /**
  * \brief Read model resource loader task.
  */
-class deRLTaskReadModel : public deResourceLoaderTask {
+class DE_DLL_EXPORT deRLTaskReadModel : public deResourceLoaderTask {
 private:
 	deModelReference pModel;
 	bool pSucceeded;

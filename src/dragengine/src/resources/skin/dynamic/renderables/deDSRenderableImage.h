@@ -31,7 +31,7 @@
  *
  * The texture is defined by an image.
  */
-class deDSRenderableImage : public deDSRenderable{
+class DE_DLL_EXPORT deDSRenderableImage : public deDSRenderable{
 private:
 	deImageReference pImage;
 	

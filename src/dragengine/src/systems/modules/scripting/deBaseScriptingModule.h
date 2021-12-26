@@ -55,7 +55,7 @@ class deTouchSensor;
  * scripting or programming language. The scripting module defines also
  * how much of the power of the engine is exposed to the scripter.
  */
-class deBaseScriptingModule : public deBaseModule{
+class DE_DLL_EXPORT deBaseScriptingModule : public deBaseModule{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

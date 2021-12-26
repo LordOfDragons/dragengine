@@ -59,7 +59,7 @@ class deCollider;
  * touch sensors too use a layer mask and group number to
  * determine what colliders can be tracked.
  */
-class deTouchSensor : public deResource{
+class DE_DLL_EXPORT deTouchSensor : public deResource{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<deTouchSensor> Ref;

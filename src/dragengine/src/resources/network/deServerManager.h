@@ -33,7 +33,7 @@ class deServer;
  * \brief Server Resource Manager.
  *
  */
-class deServerManager : public deResourceManager{
+class DE_DLL_EXPORT deServerManager : public deResourceManager{
 private:
 	deResourceList pServers;
 	

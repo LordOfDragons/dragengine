@@ -35,7 +35,7 @@ class decBaseFileReader;
  * user decides if the data is read synchronous or asynchronous. The video information is
  * not replicated in the decoder but found in the source video resource.
  */
-class deBaseVideoDecoder{
+class DE_DLL_EXPORT deBaseVideoDecoder{
 private:
 	decBaseFileReader *pFile;
 	

@@ -34,7 +34,7 @@ class deTouchSensor;
  *
  * Manages touch sensor resources.
  */
-class deTouchSensorManager : public deResourceManager{
+class DE_DLL_EXPORT deTouchSensorManager : public deResourceManager{
 private:
 	deResourceList pTouchSensors;
 	

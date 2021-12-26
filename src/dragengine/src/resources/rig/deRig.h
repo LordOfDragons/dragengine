@@ -64,7 +64,7 @@ class deBasePhysicsRig;
  * the fastest and most stable behavior.
  * 
  */
-class deRig : public deFileResource{
+class DE_DLL_EXPORT deRig : public deFileResource{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<deRig> Ref;

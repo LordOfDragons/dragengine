@@ -34,7 +34,7 @@ class dePropField;
  *
  * Manages a list of prop fields.
  */
-class dePropFieldManager : public deResourceManager{
+class DE_DLL_EXPORT dePropFieldManager : public deResourceManager{
 private:
 	deResourceList pFields;
 	

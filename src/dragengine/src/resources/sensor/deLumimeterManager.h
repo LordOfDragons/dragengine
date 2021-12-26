@@ -32,7 +32,7 @@ class deLumimeter;
 /**
  * \brief Lumimeter Resourse Manager.
  */
-class deLumimeterManager : public deResourceManager{
+class DE_DLL_EXPORT deLumimeterManager : public deResourceManager{
 private:
 	deResourceList pLumimeters;
 	

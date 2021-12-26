@@ -37,7 +37,7 @@ class deSkin;
  * it as pointer and memory allocate it. For this reason the destructor
  * is on purpose not virtual.
  */
-class deSkinReference : protected deObjectReference {
+class DE_DLL_EXPORT deSkinReference : protected deObjectReference {
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

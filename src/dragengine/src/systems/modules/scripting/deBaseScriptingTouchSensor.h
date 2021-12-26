@@ -22,13 +22,15 @@
 #ifndef _DEBASESCRIPTINGTOUCHSENSOR_H_
 #define _DEBASESCRIPTINGTOUCHSENSOR_H_
 
+#include "../../../dragengine_export.h"
+
 class deCollider;
 
 
 /**
  * \brief Scripting Module Touch Sensor Peer.
  */
-class deBaseScriptingTouchSensor{
+class DE_DLL_EXPORT deBaseScriptingTouchSensor{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

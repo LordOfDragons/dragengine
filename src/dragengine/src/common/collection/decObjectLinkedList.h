@@ -22,6 +22,7 @@
 #ifndef _DECOBJECTLINKEDLIST_H_
 #define _DECOBJECTLINKEDLIST_H_
 
+#include "../../dragengine_export.h"
 
 class deObject;
 
@@ -54,13 +55,13 @@ class deObject;
  * cListEntry is keeping a weak owner object pointer. decObjectLinkedList keeps a strong
  * reference to all objects in the list.
  */
-class decObjectLinkedList{
+class DE_DLL_EXPORT decObjectLinkedList{
 public:
 	/**
 	 * \brief List entry.
 	 * \warning Use only on stack! Never use it with new allocator!
 	 */
-	class cListEntry{
+	class DE_DLL_EXPORT cListEntry{
 	private:
 		deObject *pOwner;
 		cListEntry *pPrev;
@@ -140,7 +141,7 @@ public:
 	 * }
 	 * \endcode
 	 */
-	class cIterator{
+	class DE_DLL_EXPORT cIterator{
 	private:
 		decObjectLinkedList &pList;
 		deObject *pEntry;

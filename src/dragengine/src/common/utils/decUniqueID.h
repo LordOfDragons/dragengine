@@ -35,7 +35,7 @@
  * kept that is used to initialize new ids with. Unique ids are stored as an
  * array of bytes. You can retrieve and alter the bytes individually.
  */
-class decUniqueID{
+class DE_DLL_EXPORT decUniqueID{
 private:
 	unsigned char *pBytes;
 	int pByteCount;

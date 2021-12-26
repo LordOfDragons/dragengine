@@ -53,7 +53,7 @@ class decBaseFileReader;
  * information from an XML module definition file. Supports loading
  * of modules from libraries on unix and windows systems.
  */
-class deLibraryModule : public deLoadableModule{
+class DE_DLL_EXPORT deLibraryModule : public deLoadableModule{
 public:
 	/** \brief Error Codes. */
 	enum eErrorCodes{

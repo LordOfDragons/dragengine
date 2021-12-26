@@ -37,7 +37,7 @@
 /**
  * \brief Windows Operating System.
  */
-class deOSWindows : public deOS{
+class DE_DLL_EXPORT deOSWindows : public deOS{
 private:
 	HINSTANCE pInstApp;
 	int pScreenWidth;

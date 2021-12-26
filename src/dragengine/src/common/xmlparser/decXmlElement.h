@@ -41,7 +41,7 @@ class decXmlNamespace;
 /**
  * \brief Base XML Tree Element.
  */
-class decXmlElement : public deObject{
+class DE_DLL_EXPORT decXmlElement : public deObject{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<decXmlElement> Ref;

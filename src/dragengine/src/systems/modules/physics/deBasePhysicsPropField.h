@@ -33,7 +33,7 @@ class dePropFieldGround;
  *
  * Peer for the prop field resource used by the physics system.
  */
-class deBasePhysicsPropField{
+class DE_DLL_EXPORT deBasePhysicsPropField{
 private:
 	
 public:

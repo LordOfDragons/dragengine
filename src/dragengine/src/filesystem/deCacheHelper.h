@@ -50,7 +50,7 @@ class deVirtualFileSystem;
  * the cache directory are scanned for their identifier and the mapping
  * build from them.
  */
-class deCacheHelper{
+class DE_DLL_EXPORT deCacheHelper{
 public:
 	/** \brief Compression methods for new cached files. */
 	enum eCompressionMethods{

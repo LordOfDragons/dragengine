@@ -30,7 +30,7 @@
 /**
  * \brief Memory file.
  */
-class decMemoryFile : public deObject{
+class DE_DLL_EXPORT decMemoryFile : public deObject{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<decMemoryFile> Ref;

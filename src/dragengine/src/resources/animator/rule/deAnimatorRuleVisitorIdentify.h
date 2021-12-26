@@ -34,7 +34,7 @@
  * Furthermore save casting is provided. If the cast is not valid an
  * exception is raised.
  */
-class deAnimatorRuleVisitorIdentify : public deAnimatorRuleVisitor{
+class DE_DLL_EXPORT deAnimatorRuleVisitorIdentify : public deAnimatorRuleVisitor{
 public:
 	enum eRuleTypes{
 		ertUnknown,

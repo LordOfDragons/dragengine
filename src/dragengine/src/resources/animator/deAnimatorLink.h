@@ -51,7 +51,7 @@
  * as input instead of a controller value. The bone parameter is mapped from
  * the specified range to the 0 to 1 range.
  */
-class deAnimatorLink{
+class DE_DLL_EXPORT deAnimatorLink{
 public:
 	/**
 	 * \brief Bone parameter to use.

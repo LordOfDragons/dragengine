@@ -35,7 +35,7 @@ class decShapeVisitor;
  * provides the basic parameters of a shape being the position
  * and the orientation.
  */
-class decShape{
+class DE_DLL_EXPORT decShape{
 private:
 	decVector pPosition;
 	decQuaternion pOrientation;

@@ -45,7 +45,7 @@ class deWorld;
  * props are defined to create large numbers of props with little definition,
  * processing and memory overhead. Each prop field contains a list of types.
  */
-class dePropField : public deResource{
+class DE_DLL_EXPORT dePropField : public deResource{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<dePropField> Ref;

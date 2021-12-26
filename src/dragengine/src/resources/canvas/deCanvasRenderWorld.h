@@ -29,7 +29,7 @@
 /**
  * \brief Canvas rendering a 3d world.
  */
-class deCanvasRenderWorld : public deCanvas{
+class DE_DLL_EXPORT deCanvasRenderWorld : public deCanvas{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<deCanvasRenderWorld> Ref;

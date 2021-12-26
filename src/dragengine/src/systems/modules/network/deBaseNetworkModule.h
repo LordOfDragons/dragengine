@@ -37,7 +37,7 @@ class deNetworkState;
 /**
  * \brief Base Network Module.
  */
-class deBaseNetworkModule : public deBaseModule{
+class DE_DLL_EXPORT deBaseNetworkModule : public deBaseModule{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

@@ -32,7 +32,7 @@ class deOcclusionMesh;
 /**
  * \brief Base occlusion mesh module providing support to load occlusion meshes.
  */
-class deBaseOcclusionMeshModule : public deBaseModule{
+class DE_DLL_EXPORT deBaseOcclusionMeshModule : public deBaseModule{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

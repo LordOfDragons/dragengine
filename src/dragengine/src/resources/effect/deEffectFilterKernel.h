@@ -37,7 +37,7 @@
  * neighboring pixels with the values stored in the filter kernel
  * and clamping the result to valid color values.
  */
-class deEffectFilterKernel : public deEffect{
+class DE_DLL_EXPORT deEffectFilterKernel : public deEffect{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<deEffectFilterKernel> Ref;

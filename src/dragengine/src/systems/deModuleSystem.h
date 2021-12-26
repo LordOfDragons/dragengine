@@ -45,7 +45,7 @@ class deBaseModule;
  * provide a nice view to the user showing what is working and what
  * not. Only loaded modules are used by the engine.
  */
-class deModuleSystem{
+class DE_DLL_EXPORT deModuleSystem{
 public:
 	/** \brief Module Types. */
 	enum eModuleTypes{

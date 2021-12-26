@@ -22,13 +22,15 @@
 #ifndef _DENAVIGATIONSPACEFACE_H_
 #define _DENAVIGATIONSPACEFACE_H_
 
+#include "../../../dragengine_export.h"
+
 
 /**
  * \brief Navigation Space Face.
  * Face in a navigation space. A valid face composes of 3 or more vertices.
  * All vertices have to be co-planar and the face has to be convex.
  */
-class deNavigationSpaceFace{
+class DE_DLL_EXPORT deNavigationSpaceFace{
 private:
 	unsigned short pCornerCount;
 	unsigned short pType;

@@ -22,6 +22,7 @@
 #ifndef _DECTIMER_H_
 #define _DECTIMER_H_
 
+#include "../../dragengine_export.h"
 #include "../../dragengine_configuration.h"
 
 #ifdef OS_UNIX
@@ -40,7 +41,7 @@
  * \brief Simple timer.
  *
  */
-class decTimer{
+class DE_DLL_EXPORT decTimer{
 private:
 #if defined OS_UNIX
 	time_t pLastSec;

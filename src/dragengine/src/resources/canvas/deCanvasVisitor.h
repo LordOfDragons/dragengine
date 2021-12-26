@@ -35,7 +35,7 @@ class deCanvasView;
 /**
  * \brief Canvas visitor.
  */
-class deCanvasVisitor{
+class DE_DLL_EXPORT deCanvasVisitor{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

@@ -38,7 +38,7 @@ class deBaseScriptingServer;
  * address. For connecting players a new connection object is created
  * handling the communication.
  */
-class deServer : public deResource{
+class DE_DLL_EXPORT deServer : public deResource{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<deServer> Ref;

@@ -43,7 +43,7 @@ class dePropFieldBendState;
  * to alter the count of instances. The parent prop field allows to mutate
  * the list of types so this restriction is not a road blocking one.
  */
-class dePropFieldType{
+class DE_DLL_EXPORT dePropFieldType{
 private:
 	deModelReference pModel;
 	deSkinReference pSkin;

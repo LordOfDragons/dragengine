@@ -31,7 +31,7 @@
  *
  * Defines a color property of a skin texture.
  */
-class deSkinPropertyColor : public deSkinProperty{
+class DE_DLL_EXPORT deSkinPropertyColor : public deSkinProperty{
 private:
 	decColor pColor;
 	

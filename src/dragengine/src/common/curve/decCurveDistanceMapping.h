@@ -32,7 +32,7 @@ class decCurveBezier3D;
  * basis instead of local coordinates.
  * 
  */
-class decCurveDistanceMapping{
+class DE_DLL_EXPORT decCurveDistanceMapping{
 private:
 	float pResolution;
 	float pLength;

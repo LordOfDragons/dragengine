@@ -101,7 +101,7 @@ class deWorld;
  * navigation space borders.
  * 
  */
-class deNavigationSpace : public deResource{
+class DE_DLL_EXPORT deNavigationSpace : public deResource{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<deNavigationSpace> Ref;

@@ -29,7 +29,7 @@
 /**
  * \brief XML Character Data.
  */
-class decXmlCharacterData : public decXmlElement{
+class DE_DLL_EXPORT decXmlCharacterData : public decXmlElement{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<decXmlCharacterData> Ref;

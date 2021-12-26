@@ -30,7 +30,7 @@
 /**
  * \brief Base archive container peer.
  */
-class deBaseArchiveContainer{
+class DE_DLL_EXPORT deBaseArchiveContainer{
 private:
 	decBaseFileReader *pReader;
 	

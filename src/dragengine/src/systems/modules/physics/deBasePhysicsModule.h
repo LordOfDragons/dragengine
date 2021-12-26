@@ -59,7 +59,7 @@ class deSmokeEmitter;
  * 
  * The physics module provides physical simulations on colliders.
  */
-class deBasePhysicsModule : public deBaseModule{
+class DE_DLL_EXPORT deBasePhysicsModule : public deBaseModule{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

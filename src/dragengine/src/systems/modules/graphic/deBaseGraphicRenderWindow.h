@@ -22,11 +22,13 @@
 #ifndef _DEBASEGRAPHICRENDERWINDOW_H_
 #define _DEBASEGRAPHICRENDERWINDOW_H_
 
+#include "../../../dragengine_export.h"
+
 
 /**
  * \brief Graphic module render window peer.
  */
-class deBaseGraphicRenderWindow{
+class DE_DLL_EXPORT deBaseGraphicRenderWindow{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

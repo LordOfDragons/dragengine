@@ -139,7 +139,7 @@ class decShape;
  * to have rectangular shaped lights whereas spot lights are always symmetrical. The
  * angle parameters define the width and height of the pyramid.
  */
-class deLight : public deResource{
+class DE_DLL_EXPORT deLight : public deResource{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<deLight> Ref;

@@ -45,7 +45,7 @@ class deBaseScriptingParticleEmitterInstance;
  * \brief Particle Emitter Instance.
  * Instance of a particle emitter.
  */
-class deParticleEmitterInstance : public deResource{
+class DE_DLL_EXPORT deParticleEmitterInstance : public deResource{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<deParticleEmitterInstance> Ref;

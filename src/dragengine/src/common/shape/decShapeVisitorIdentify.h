@@ -28,7 +28,7 @@
 /**
  * \brief Visitor for identifying analytic shapes.
  */
-class decShapeVisitorIdentify : public decShapeVisitor{
+class DE_DLL_EXPORT decShapeVisitorIdentify : public decShapeVisitor{
 public:
 	/** \brief Shape types. */
 	enum eShapeTypes{

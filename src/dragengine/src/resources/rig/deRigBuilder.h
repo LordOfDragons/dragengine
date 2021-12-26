@@ -22,6 +22,8 @@
 #ifndef _DERIGBUILDER_H_
 #define _DERIGBUILDER_H_
 
+#include "../../dragengine_export.h"
+
 class deRig;
 
 
@@ -33,7 +35,7 @@ class deRig;
  * Usually used by editors to create rig resources from an in-editor
  * representation of a rig.
  */
-class deRigBuilder{
+class DE_DLL_EXPORT deRigBuilder{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

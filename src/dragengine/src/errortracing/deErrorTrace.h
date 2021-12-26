@@ -35,7 +35,7 @@ class deLogger;
  * An Error Trace object contains a list of Error Trace Point objects.
  * describing the path of an error that occurred in the engine.
  */
-class deErrorTrace{
+class DE_DLL_EXPORT deErrorTrace{
 private:
 	decString pError;
 	deErrorTracePoint **pPoints;

@@ -22,6 +22,8 @@
 #ifndef _DEOBJECTREFERENCE_H_
 #define _DEOBJECTREFERENCE_H_
 
+#include "dragengine_export.h"
+
 
 class deObject;
 
@@ -36,7 +38,7 @@ class deObject;
  *       it as pointer and memory allocate it. For this reason the destructor
  *       is on purpose not virtual.
  */
-class deObjectReference{
+class DE_DLL_EXPORT deObjectReference{
 private:
 	deObject *pObject;
 	

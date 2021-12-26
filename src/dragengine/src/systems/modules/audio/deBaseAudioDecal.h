@@ -22,12 +22,14 @@
 #ifndef _DEBASEAUDIODECAL_H_
 #define _DEBASEAUDIODECAL_H_
 
+#include "../../../dragengine_export.h"
+
 
 
 /**
  * \brief Audio Module Decal Peer.
  */
-class deBaseAudioDecal{
+class DE_DLL_EXPORT deBaseAudioDecal{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

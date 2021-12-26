@@ -53,7 +53,7 @@ class deWorld;
  * right direction in the camera view. By default billboards are axis
  * oriented with a world-up axis and are spherical.
  */
-class deBillboard : public deResource{
+class DE_DLL_EXPORT deBillboard : public deResource{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<deBillboard> Ref;

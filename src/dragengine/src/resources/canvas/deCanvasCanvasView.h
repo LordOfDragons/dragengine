@@ -34,7 +34,7 @@
  * well as managing the life-time of the rendered content. This is
  * the only allowed way to reuse a canvas view in different places.
  */
-class deCanvasCanvasView : public deCanvas{
+class DE_DLL_EXPORT deCanvasCanvasView : public deCanvas{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<deCanvasCanvasView> Ref;

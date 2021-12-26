@@ -22,6 +22,8 @@
 #ifndef _DECOBJECTDICTIONARYEXT_H_
 #define _DECOBJECTDICTIONARYEXT_H_
 
+#include "../../dragengine_export.h"
+
 class deObject;
 class decObjectList;
 class decPointerList;
@@ -32,7 +34,7 @@ class decPointerList;
  * 
  * Extended version of decObjectDictionary using pointer keys with custom hash.
  */
-class decObjectDictionaryExt{
+class DE_DLL_EXPORT decObjectDictionaryExt{
 private:
 	struct sDictEntry{
 		unsigned int hash;

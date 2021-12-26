@@ -34,7 +34,7 @@ class deVideoAudioDecoder;
 /**
  * \brief Video resource manager.
  */
-class deVideoManager : public deFileResourceManager{
+class DE_DLL_EXPORT deVideoManager : public deFileResourceManager{
 private:
 	deFileResourceList pVideos;
 	

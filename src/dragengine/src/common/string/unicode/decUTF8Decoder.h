@@ -22,13 +22,15 @@
 #ifndef _DECUTF8DECODER_H_
 #define _DECUTF8DECODER_H_
 
+#include "../../../dragengine_export.h"
+
 
 /**
  * \brief UTF8 Decoder.
  * Utility class for decoding a utf8 encoded character stream. Works with
  * simply a pointer to the character data so no copying is required.
  */
-class decUTF8Decoder{
+class DE_DLL_EXPORT decUTF8Decoder{
 private:
 	const char *pString;
 	int pLength;

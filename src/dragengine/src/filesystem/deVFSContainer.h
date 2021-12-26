@@ -51,7 +51,7 @@ class decBaseFileWriter;
  * path. This allows to add special containers that should not be easily
  * visible to game scripts unless the path is known.
  */
-class deVFSContainer : public deObject{
+class DE_DLL_EXPORT deVFSContainer : public deObject{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<deVFSContainer> Ref;

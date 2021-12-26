@@ -32,7 +32,7 @@ class deAnimatorInstance;
 /**
  * \brief Animator Instance Resource Manager.
  */
-class deAnimatorInstanceManager : public deResourceManager{
+class DE_DLL_EXPORT deAnimatorInstanceManager : public deResourceManager{
 private:
 	deResourceList pInstances;
 	

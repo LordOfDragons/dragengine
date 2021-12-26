@@ -34,7 +34,7 @@ class deLoadableModule;
  * An Error Trace object contains a list of Error Trace Point objects.
  * describing the path of an error that occurred in the engine.
  */
-class deErrorTracePoint{
+class DE_DLL_EXPORT deErrorTracePoint{
 private:
 	deLoadableModule * const pSourceModule;
 	const decString pSourceFunc;

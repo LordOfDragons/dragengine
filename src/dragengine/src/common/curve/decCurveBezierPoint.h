@@ -28,7 +28,7 @@
 /**
  * \brief Bezier Curve Point.
  */
-class decCurveBezierPoint{
+class DE_DLL_EXPORT decCurveBezierPoint{
 private:
 	decVector2 pPoint;
 	decVector2 pHandle1;

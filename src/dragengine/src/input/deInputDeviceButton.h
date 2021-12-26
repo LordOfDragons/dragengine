@@ -35,7 +35,7 @@
  * Buttons have a pressed or not pressed state. Pressure sensitive input
  * elements are handled as axes not buttons.
  */
-class deInputDeviceButton{
+class DE_DLL_EXPORT deInputDeviceButton{
 public:
 	/** \brief Button types. */
 	enum eButtonTypes{

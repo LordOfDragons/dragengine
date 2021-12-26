@@ -29,7 +29,7 @@
 /**
  * \brief Write occlusionMesh resource loader task.
  */
-class deRLTaskWriteOcclusionMesh : public deResourceLoaderTask {
+class DE_DLL_EXPORT deRLTaskWriteOcclusionMesh : public deResourceLoaderTask {
 private:
 	deOcclusionMeshReference pOcclusionMesh;
 	bool pSucceeded;

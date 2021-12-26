@@ -36,7 +36,7 @@
  * value  of feedback can be requested to be changed. The input module itself decides if the
  * request is honored or not. The current value of the feedback can be read any time.
  */
-class deInputDeviceFeedback{
+class DE_DLL_EXPORT deInputDeviceFeedback{
 public:
 	/** \brief Feedback types. */
 	enum eFeedbackTypes{

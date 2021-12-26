@@ -24,7 +24,7 @@
  * \brief 3 Component Double precision Vector.
  * The difference to the other vector class is just that this class uses double instead of float.
  */
-class decDVector{
+class DE_DLL_EXPORT decDVector{
 public:
 	/** \brief X Component of vector. */
 	double x;

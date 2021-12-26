@@ -32,7 +32,7 @@ class deSynthesizerEffectVisitor;
 /**
  * \brief Synthesizer effect.
  */
-class deSynthesizerEffect : public deObject{
+class DE_DLL_EXPORT deSynthesizerEffect : public deObject{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<deSynthesizerEffect> Ref;

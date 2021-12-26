@@ -60,7 +60,7 @@ class NSEvent;
 /**
  * \brief Base Input Module.
  */
-class deBaseInputModule : public deBaseModule{
+class DE_DLL_EXPORT deBaseInputModule : public deBaseModule{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

@@ -38,7 +38,7 @@
  * half way between the two arm/shoulder bones in proximity of the pad bone.
  * For each scaling factor a controller link can be provided.
  */
-class deAnimatorRuleForeignState : public deAnimatorRule{
+class DE_DLL_EXPORT deAnimatorRuleForeignState : public deAnimatorRule{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<deAnimatorRuleForeignState> Ref;

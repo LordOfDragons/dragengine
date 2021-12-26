@@ -32,7 +32,7 @@
  * Used with deVirtualFileSystem::SearchFiles() call. Stores visited directories.
  * Does recursion into directories by default.
  */
-class deCollectDirectorySearchVisitor : public deFileSearchVisitor{
+class DE_DLL_EXPORT deCollectDirectorySearchVisitor : public deFileSearchVisitor{
 private:
 	bool pRecursion;
 	dePathList pDirectories;

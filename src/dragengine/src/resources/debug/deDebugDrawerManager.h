@@ -33,7 +33,7 @@ class deDebugDrawer;
  * \brief Debug Drawer Resource Manager.
  *
  */
-class deDebugDrawerManager : public deResourceManager{
+class DE_DLL_EXPORT deDebugDrawerManager : public deResourceManager{
 private:
 	deResourceList pDebugDrawers;
 	

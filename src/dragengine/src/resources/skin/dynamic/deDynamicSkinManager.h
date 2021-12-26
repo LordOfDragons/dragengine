@@ -33,7 +33,7 @@ class deDynamicSkin;
  *
  * Manages dynamic skin resources.
  */
-class deDynamicSkinManager : public deResourceManager{
+class DE_DLL_EXPORT deDynamicSkinManager : public deResourceManager{
 private:
 	deResourceList pSkins;
 	

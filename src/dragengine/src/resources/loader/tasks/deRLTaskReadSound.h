@@ -29,7 +29,7 @@
 /**
  * \brief Read sound resource loader task.
  */
-class deRLTaskReadSound : public deResourceLoaderTask {
+class DE_DLL_EXPORT deRLTaskReadSound : public deResourceLoaderTask {
 private:
 	deSoundReference pSound;
 	bool pSucceeded;

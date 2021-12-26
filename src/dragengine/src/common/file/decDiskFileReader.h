@@ -30,7 +30,7 @@
 /**
  * \brief Reads data from files stored on disc.
  */
-class decDiskFileReader : public decBaseFileReader{
+class DE_DLL_EXPORT decDiskFileReader : public decBaseFileReader{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<decDiskFileReader> Ref;

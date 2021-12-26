@@ -22,11 +22,13 @@
 #ifndef _DEBASEAUDIOVIDEOPLAYER_H_
 #define _DEBASEAUDIOVIDEOPLAYER_H_
 
+#include "../../../dragengine_export.h"
+
 
 /**
  * \brief Audio Module Video Player Peer.
  */
-class deBaseAudioVideoPlayer{
+class DE_DLL_EXPORT deBaseAudioVideoPlayer{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

@@ -49,7 +49,7 @@ class decUnicodeArgumentList;
  * Parameters are required to be error safe. If a certain value is not
  * accepted it has to be converted to the nearest feasible one.
  */
-class deBaseModule{
+class DE_DLL_EXPORT deBaseModule{
 private:
 	deLoadableModule &pLoadableModule; // loadable module hosting us
 	deVirtualFileSystem *pVFS;

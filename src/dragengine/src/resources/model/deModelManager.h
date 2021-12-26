@@ -33,7 +33,7 @@ class deModelBuilder;
 /**
  * \brief Model Resourse Manager.
  */
-class deModelManager : public deFileResourceManager{
+class DE_DLL_EXPORT deModelManager : public deFileResourceManager{
 private:
 	deFileResourceList pModels;
 	

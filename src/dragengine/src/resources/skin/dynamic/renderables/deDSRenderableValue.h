@@ -34,7 +34,7 @@
  * Type Skin Property the dimension of the texture is undefined but
  * usually very small ( possibly down to 1x1 ).
  */
-class deDSRenderableValue : public deDSRenderable{
+class DE_DLL_EXPORT deDSRenderableValue : public deDSRenderable{
 private:
 	float pValue;
 	

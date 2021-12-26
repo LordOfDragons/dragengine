@@ -30,7 +30,7 @@ class deSound;
 /**
  * \brief Synthesizer source using another synthesizer.
  */
-class deSynthesizerSourceSynthesizer : public deSynthesizerSource{
+class DE_DLL_EXPORT deSynthesizerSourceSynthesizer : public deSynthesizerSource{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<deSynthesizerSourceSynthesizer> Ref;

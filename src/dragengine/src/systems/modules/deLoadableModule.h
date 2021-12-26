@@ -45,7 +45,7 @@ class deBaseModule;
  * Provided are two ways to work with subclasses one being a visitor and
  * the other safe casting.
  */
-class deLoadableModule : public deObject{
+class DE_DLL_EXPORT deLoadableModule : public deObject{
 public:
 	/** \brief Error Codes. */
 	enum eErrorCodes{

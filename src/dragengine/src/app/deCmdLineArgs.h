@@ -29,7 +29,7 @@
  * 
  * Basically wraps a string list with some additional helper methods.
  */
-class deCmdLineArgs{
+class DE_DLL_EXPORT deCmdLineArgs{
 private:
 	decStringList pArguments;
 	

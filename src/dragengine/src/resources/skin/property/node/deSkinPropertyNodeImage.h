@@ -31,7 +31,7 @@ class deImage;
 /**
  * \brief Skin property image node for constructed texture property.
  */
-class deSkinPropertyNodeImage : public deSkinPropertyNode{
+class DE_DLL_EXPORT deSkinPropertyNodeImage : public deSkinPropertyNode{
 private:
 	decString pPath;
 	deImage *pImage;

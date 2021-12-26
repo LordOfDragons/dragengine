@@ -29,7 +29,7 @@
 /**
  * \brief Exception class.
  */
-class deException{
+class DE_DLL_EXPORT deException{
 private:
 	decString pName;
 	decString pDescription;

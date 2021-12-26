@@ -31,7 +31,7 @@
  *
  * Universally unique identifier using randomness.
  */
-class decUuid{
+class DE_DLL_EXPORT decUuid{
 private:
 	uint8_t pValues[ 16 ];
 	

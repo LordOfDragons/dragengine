@@ -31,7 +31,7 @@
  * Error Trace Value objects contain additional information about the values in
  * use by the failing function.
  */
-class deErrorTraceValue{
+class DE_DLL_EXPORT deErrorTraceValue{
 private:
 	decString pName;
 	decString pValue;

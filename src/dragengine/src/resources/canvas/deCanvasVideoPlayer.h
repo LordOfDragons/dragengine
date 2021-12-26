@@ -29,7 +29,7 @@
 /**
  * \brief Canvas rendering a video.
  */
-class deCanvasVideoPlayer : public deCanvas{
+class DE_DLL_EXPORT deCanvasVideoPlayer : public deCanvas{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<deCanvasVideoPlayer> Ref;

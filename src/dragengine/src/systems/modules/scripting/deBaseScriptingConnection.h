@@ -24,6 +24,8 @@
 
 #include <stdint.h>
 
+#include "../../../dragengine_export.h"
+
 class deNetworkState;
 class deNetworkMessage;
 
@@ -31,7 +33,7 @@ class deNetworkMessage;
 /**
  * \brief Scripting Module Connection Peer.
  */
-class deBaseScriptingConnection{
+class DE_DLL_EXPORT deBaseScriptingConnection{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

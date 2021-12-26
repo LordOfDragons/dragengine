@@ -39,7 +39,7 @@ class deResource;
  * \note Resources removed from the list are marked leaking. Basically this
  * clears their resource manager. 
  */
-class deResourceList{
+class DE_DLL_EXPORT deResourceList{
 private:
 	deResource *pRoot;
 	deResource *pTail;

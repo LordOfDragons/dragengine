@@ -22,11 +22,13 @@
 #ifndef _DEBASESYNTHESIZERSYNTHESIZERINSTANCE_H_
 #define _DEBASESYNTHESIZERSYNTHESIZERINSTANCE_H_
 
+#include "../../../dragengine_export.h"
+
 
 /**
  * \brief Synthesizer module synthesizer instance peer.
  */
-class deBaseSynthesizerSynthesizerInstance{
+class DE_DLL_EXPORT deBaseSynthesizerSynthesizerInstance{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

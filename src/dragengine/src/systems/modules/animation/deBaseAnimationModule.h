@@ -33,7 +33,7 @@ class deAnimation;
 /**
  * \brief Base animation module providing load/save support for animations.
  */
-class deBaseAnimationModule : public deBaseModule{
+class DE_DLL_EXPORT deBaseAnimationModule : public deBaseModule{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

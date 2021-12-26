@@ -32,7 +32,7 @@
  * Defines a vector-3 network value. Vectors are tuples with float
  * components. The Vector-3 contains three components.
  */
-class deNetworkValueVector3 : public deNetworkValue{
+class DE_DLL_EXPORT deNetworkValueVector3 : public deNetworkValue{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<deNetworkValueVector3> Ref;

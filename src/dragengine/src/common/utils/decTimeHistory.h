@@ -32,7 +32,7 @@
  * Stores a list of N time entries using two rotating pointers. Also supports calculating
  * the minimum, maximum and average time.
  */
-class decTimeHistory{
+class DE_DLL_EXPORT decTimeHistory{
 private:
 	float *pEntries;
 	float *pSorted;

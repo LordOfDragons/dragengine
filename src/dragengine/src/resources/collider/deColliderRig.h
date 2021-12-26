@@ -44,7 +44,7 @@ class deRigConstraint;
  * body able to collide with all other bones in the rig except the
  * direct parent bone.
  */
-class deColliderRig : public deCollider{
+class DE_DLL_EXPORT deColliderRig : public deCollider{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<deColliderRig> Ref;

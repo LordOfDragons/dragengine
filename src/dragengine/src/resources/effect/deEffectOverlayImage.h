@@ -36,7 +36,7 @@
  * you can specify an additional transparency yourself. Furthermore additional
  * effects can be applied to this image ( effect chaining ) before applying it.
  */
-class deEffectOverlayImage : public deEffect{
+class DE_DLL_EXPORT deEffectOverlayImage : public deEffect{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<deEffectOverlayImage> Ref;

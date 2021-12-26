@@ -32,7 +32,7 @@ class deArchiveContainer;
 /**
  * \brief Archive resource manager.
  */
-class deArchiveManager : public deFileResourceManager{
+class DE_DLL_EXPORT deArchiveManager : public deFileResourceManager{
 private:
 	deFileResourceList pArchives;
 	

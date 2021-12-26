@@ -22,6 +22,8 @@
 #ifndef _DEREADLOCKGUARD_H_
 #define _DEREADLOCKGUARD_H_
 
+#include "../dragengine_export.h"
+
 class deReadWriteLock;
 
 
@@ -30,7 +32,7 @@ class deReadWriteLock;
  *
  * Exception safe automatic read locking and unlocking.
  */
-class deReadLockGuard{
+class DE_DLL_EXPORT deReadLockGuard{
 private:
 	deReadWriteLock &pRWLock;
 	bool pLocked;

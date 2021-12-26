@@ -30,7 +30,7 @@ class deCanvasView;
 /**
  * \brief Canvas identify visitor.
  */
-class deCanvasVisitorIdentify : public deCanvasVisitor{
+class DE_DLL_EXPORT deCanvasVisitorIdentify : public deCanvasVisitor{
 public:
 	/** \brief Canvas types. */
 	enum eCanvasTypes{

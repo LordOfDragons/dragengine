@@ -36,7 +36,7 @@ class deSkinVisitor;
  * defining the material properties for rendering. Furthermore audio related
  * properties are stored as well as physics properties.
  */
-class deSkinTexture{
+class DE_DLL_EXPORT deSkinTexture{
 private:
 	const decString pName;
 	

@@ -28,7 +28,7 @@
 /**
  * \brief XML CD Section.
  */
-class decXmlCDSect : public decXmlCharacterData{
+class DE_DLL_EXPORT decXmlCDSect : public decXmlCharacterData{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<decXmlCDSect> Ref;

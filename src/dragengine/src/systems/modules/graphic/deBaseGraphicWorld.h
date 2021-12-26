@@ -22,6 +22,8 @@
 #ifndef _DEBASEGRAPHICWORLD_H_
 #define _DEBASEGRAPHICWORLD_H_
 
+#include "../../../dragengine_export.h"
+
 class deBillboard;
 class deCamera;
 class deComponent;
@@ -40,7 +42,7 @@ class deSkyInstance;
  * \brief Graphic Module World Peer.
  *
  */
-class deBaseGraphicWorld{
+class DE_DLL_EXPORT deBaseGraphicWorld{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

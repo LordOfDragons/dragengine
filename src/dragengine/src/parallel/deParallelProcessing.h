@@ -37,7 +37,7 @@ class deBaseModule;
 /**
  * \brief Parallel task processing.
  */
-class deParallelProcessing{
+class DE_DLL_EXPORT deParallelProcessing{
 private:
 	deEngine &pEngine;
 	int pCoreCount;

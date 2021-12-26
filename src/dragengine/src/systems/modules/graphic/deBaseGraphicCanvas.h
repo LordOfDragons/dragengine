@@ -22,10 +22,12 @@
 #ifndef _DEBASEGRAPHICCANVAS_H_
 #define _DEBASEGRAPHICCANVAS_H_
 
+#include "../../../dragengine_export.h"
+
 /**
  * \brief Graphic module canvas peer.
  */
-class deBaseGraphicCanvas{
+class DE_DLL_EXPORT deBaseGraphicCanvas{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

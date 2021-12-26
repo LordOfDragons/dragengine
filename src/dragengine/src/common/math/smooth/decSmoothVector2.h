@@ -29,7 +29,7 @@
  * 
  * Distance over time is used as change speed.
  */
-class decSmoothVector2{
+class DE_DLL_EXPORT decSmoothVector2{
 private:
 	decVector2 pValue;
 	decVector2 pGoal;

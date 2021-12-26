@@ -61,7 +61,7 @@ class deBaseScriptingSpeaker;
  * If the range becomes small it might be required to alter the roll-off to compensate. Usually
  * though there is no need to change the roll-off value.
  */
-class deSpeaker : public deResource{
+class DE_DLL_EXPORT deSpeaker : public deResource{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<deSpeaker> Ref;

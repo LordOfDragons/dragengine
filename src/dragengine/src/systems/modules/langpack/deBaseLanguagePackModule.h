@@ -32,7 +32,7 @@ class deLanguagePack;
 /**
  * \brief Base language pack module providing load/save support for language packs.
  */
-class deBaseLanguagePackModule : public deBaseModule{
+class DE_DLL_EXPORT deBaseLanguagePackModule : public deBaseModule{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

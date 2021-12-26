@@ -34,7 +34,7 @@ class deArchive;
  * read-write if the underlaying Archive Module supports writing to the archive
  * file. In general archive containers are read-only.
  */
-class deArchiveContainer : public deVFSContainer{
+class DE_DLL_EXPORT deArchiveContainer : public deVFSContainer{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<deArchiveContainer> Ref;

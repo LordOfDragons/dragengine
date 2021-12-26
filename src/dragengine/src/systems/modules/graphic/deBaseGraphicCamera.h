@@ -22,6 +22,8 @@
 #ifndef _DEBASEGRAPHICCAMERA_H_
 #define _DEBASEGRAPHICCAMERA_H_
 
+#include "../../../dragengine_export.h"
+
 class deEffect;
 
 
@@ -29,7 +31,7 @@ class deEffect;
  * \brief Graphic Module Camera Peer.
  *
  */
-class deBaseGraphicCamera{
+class DE_DLL_EXPORT deBaseGraphicCamera{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

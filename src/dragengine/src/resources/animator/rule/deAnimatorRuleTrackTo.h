@@ -36,7 +36,7 @@
  * the up-axis is taken from the up-controller vector. In addition one bone-axis
  * can be locked to obtain a locked track.
  */
-class deAnimatorRuleTrackTo : public deAnimatorRule{
+class DE_DLL_EXPORT deAnimatorRuleTrackTo : public deAnimatorRule{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<deAnimatorRuleTrackTo> Ref;

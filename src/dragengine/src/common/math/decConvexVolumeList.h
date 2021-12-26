@@ -52,7 +52,7 @@ class decConvexVolumeFace;
  * better place. The extraction functions allow you to remove
  * convex volumes without deleting them.
  */
-class decConvexVolumeList{
+class DE_DLL_EXPORT decConvexVolumeList{
 private:
 	decConvexVolume **pVolumes;
 	int pVolumeCount;

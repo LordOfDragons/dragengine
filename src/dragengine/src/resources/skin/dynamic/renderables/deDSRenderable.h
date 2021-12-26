@@ -39,7 +39,7 @@ class deDSRenderableVisitor;
  * destination object apply. Renderables have an optional name useful
  * to attach multiple renderables to one target object.
  */
-class deDSRenderable{
+class DE_DLL_EXPORT deDSRenderable{
 private:
 	decString pName;
 	

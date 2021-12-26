@@ -32,7 +32,7 @@ class deCamera;
 /**
  * \brief Scene Camera Resource Manager.
  */
-class deCameraManager : public deResourceManager{
+class DE_DLL_EXPORT deCameraManager : public deResourceManager{
 private:
 	deResourceList pCameras;
 	

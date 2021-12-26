@@ -54,7 +54,7 @@ class deVideoManager;
  * do any reference counting inside the subclass. If a resource is ready
  * to be freed it will tell you by calling RemoveResource.
  */
-class deResourceManager{
+class DE_DLL_EXPORT deResourceManager{
 public:
 	/** \brief Possible type of a resource manager. */
 	enum eResourceType{

@@ -37,7 +37,7 @@
  * object category and the filter to all categories the object is
  * allowed to collide with.
  */
-class decCollisionFilter{
+class DE_DLL_EXPORT decCollisionFilter{
 private:
 	decLayerMask pCategory;
 	decLayerMask pFilter;

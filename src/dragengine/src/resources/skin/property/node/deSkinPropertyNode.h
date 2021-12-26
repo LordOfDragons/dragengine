@@ -30,7 +30,7 @@ class deSkinPropertyNodeVisitor;
 /**
  * \brief Skin property node for constructed texture property.
  */
-class deSkinPropertyNode{
+class DE_DLL_EXPORT deSkinPropertyNode{
 public:
 	/**
 	 * \brief Combine modes indicating how the canvas is combined with the content below.

@@ -42,7 +42,7 @@
  * Furthermore a color including transparency can be defined which
  * is multiplied component wise with the image pixels.
  */
-class deSkyLayerBody{
+class DE_DLL_EXPORT deSkyLayerBody{
 private:
 	decQuaternion pOrientation;
 	decVector2 pSize;

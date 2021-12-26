@@ -22,6 +22,8 @@
 #ifndef _DECTHREADSAFEOBJECTORDEREDSET_H_
 #define _DECTHREADSAFEOBJECTORDEREDSET_H_
 
+#include "../../dragengine_export.h"
+
 class deThreadSafeObject;
 
 
@@ -31,7 +33,7 @@ class deThreadSafeObject;
  * All objects including NULL are allowed. Objects can be included
  * only once in the set.
  */
-class decThreadSafeObjectOrderedSet{
+class DE_DLL_EXPORT decThreadSafeObjectOrderedSet{
 private:
 	deThreadSafeObject **pObjects;
 	int pObjectCount;

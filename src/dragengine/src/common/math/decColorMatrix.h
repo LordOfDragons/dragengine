@@ -28,7 +28,7 @@
  * to be done in linear color space. With gamma corrected colors certain
  * transformation functions can yield wrong results.
  */
-class decColorMatrix{
+class DE_DLL_EXPORT decColorMatrix{
 public:
 	float a11, a12, a13, a14, a15;
 	float a21, a22, a23, a24, a25;

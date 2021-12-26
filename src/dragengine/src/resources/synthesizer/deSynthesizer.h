@@ -41,7 +41,7 @@ class deBaseSynthesizerSynthesizer;
  * for to actually produce sounds using individual parameters. Multiple
  * synthesizer instances can share the same synthesizer.
  */
-class deSynthesizer : public deResource{
+class DE_DLL_EXPORT deSynthesizer : public deResource{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<deSynthesizer> Ref;

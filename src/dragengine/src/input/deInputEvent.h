@@ -22,6 +22,7 @@
 #ifndef _DEINPUTEVENT_H_
 #define _DEINPUTEVENT_H_
 
+#include "../dragengine_export.h"
 #include "../dragengine_configuration.h"
 
 #ifdef OS_W32_VS
@@ -38,7 +39,7 @@
  * game engine event queue. The <em>script module</em> then reads those events
  * and processes them.
  */
-class deInputEvent{
+class DE_DLL_EXPORT deInputEvent{
 public:
 	/** \brief Event Codes. */
 	enum eEvents{

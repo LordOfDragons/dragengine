@@ -55,7 +55,7 @@
  * in that they have no limited range. The returned value is always the last change in
  * position reported which can be larger than 1.
  */
-class deInputDeviceAxis{
+class DE_DLL_EXPORT deInputDeviceAxis{
 public:
 	/** \brief Axis types. */
 	enum eAxisTypes{

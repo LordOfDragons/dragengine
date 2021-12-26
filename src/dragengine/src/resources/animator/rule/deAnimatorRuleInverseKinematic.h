@@ -42,7 +42,7 @@
  * point located reference-offset from the tail bone ( this imaginary point would be
  * the finger tip ). There are no additional controllers in this rule.
  */
-class deAnimatorRuleInverseKinematic : public deAnimatorRule{
+class DE_DLL_EXPORT deAnimatorRuleInverseKinematic : public deAnimatorRule{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<deAnimatorRuleInverseKinematic> Ref;

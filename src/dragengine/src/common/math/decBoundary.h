@@ -23,7 +23,7 @@
 /**
  * \brief 4 Component Boundary for rectangular areas.
  */
-class decBoundary{
+class DE_DLL_EXPORT decBoundary{
 public:
 	/** \brief Top Left corner X coordinate. */
 	int x1;

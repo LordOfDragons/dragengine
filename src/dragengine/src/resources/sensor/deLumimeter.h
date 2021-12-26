@@ -47,7 +47,7 @@ class deWorld;
  * PI or above. Lumimeters store the luminance as well as the
  * color.
  */
-class deLumimeter : public deResource{
+class DE_DLL_EXPORT deLumimeter : public deResource{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<deLumimeter> Ref;

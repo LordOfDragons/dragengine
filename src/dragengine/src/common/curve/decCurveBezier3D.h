@@ -30,7 +30,7 @@ class decCurveBezier3DPoint;
 /**
  * \brief 3D Bezier Curve.
  */
-class decCurveBezier3D{
+class DE_DLL_EXPORT decCurveBezier3D{
 public:
 	/** \brief Interpolation modes. */
 	enum eInterpolationModes{

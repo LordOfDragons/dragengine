@@ -24,7 +24,7 @@
  * \brief 4x4 Component Matrix double precision.
  * Same as the decDMatrix class but with double precision.
  */
-class decDMatrix{
+class DE_DLL_EXPORT decDMatrix{
 public:
 	/**
 	 * \name Cells

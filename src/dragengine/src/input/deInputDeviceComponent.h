@@ -36,7 +36,7 @@
  * down) and feedbacks (rumbling). Using components enables the user to relate these
  * input features.
  */
-class deInputDeviceComponent{
+class DE_DLL_EXPORT deInputDeviceComponent{
 public:
 	/** \brief Component types. */
 	enum eComponentTypes{

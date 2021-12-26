@@ -43,7 +43,7 @@ class deVirtualFileSystem;
  * do any reference counting inside the subclass. If a resource is ready
  * to be freed it will tell you by calling RemoveResource.
  */
-class deFileResourceManager : public deResourceManager{
+class DE_DLL_EXPORT deFileResourceManager : public deResourceManager{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

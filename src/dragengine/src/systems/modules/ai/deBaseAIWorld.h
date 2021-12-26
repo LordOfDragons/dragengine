@@ -22,6 +22,8 @@
 #ifndef _DEBASEAIWORLD_H_
 #define _DEBASEAIWORLD_H_
 
+#include "../../../dragengine_export.h"
+
 class deNavigationBlocker;
 class deNavigationSpace;
 class deNavigator;
@@ -31,7 +33,7 @@ class deNavigator;
 /**
  * \brief AI Module World Peer.
  */
-class deBaseAIWorld{
+class DE_DLL_EXPORT deBaseAIWorld{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

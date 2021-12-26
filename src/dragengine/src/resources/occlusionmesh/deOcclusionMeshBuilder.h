@@ -22,13 +22,15 @@
 #ifndef _DEOCCLUSIONMESHBUILDER_H_
 #define _DEOCCLUSIONMESHBUILDER_H_
 
+#include "../../dragengine_export.h"
+
 class deOcclusionMesh;
 
 
 /**
  * \brief Occlusion Mesh Builder.
  */
-class deOcclusionMeshBuilder{
+class DE_DLL_EXPORT deOcclusionMeshBuilder{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

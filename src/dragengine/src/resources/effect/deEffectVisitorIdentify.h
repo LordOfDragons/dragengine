@@ -34,7 +34,7 @@
  * Furthermore save casting is provided. If the cast is not valid an
  * exception is raised.
  */
-class deEffectVisitorIdentify : public deEffectVisitor{
+class DE_DLL_EXPORT deEffectVisitorIdentify : public deEffectVisitor{
 public:
 	enum eEffects{
 		eetUnknown,

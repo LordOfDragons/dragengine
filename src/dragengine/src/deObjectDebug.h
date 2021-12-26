@@ -22,6 +22,8 @@
 #ifndef _DEOBJECTDEBUG_H_
 #define _DEOBJECTDEBUG_H_
 
+#include "dragengine_export.h"
+
 
 /**
  * \brief Debug version of deObject.
@@ -31,7 +33,7 @@
  * 
  * \warning This is a pure debug class. Do not use unless you know what you are doing!
  */
-class deObjectDebug{
+class DE_DLL_EXPORT deObjectDebug{
 private:
 	int pRefCount;
 	const char *pLogName;

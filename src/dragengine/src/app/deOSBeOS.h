@@ -38,7 +38,7 @@ class BMessage;
 /**
  * \brief BeOS operating system.
  */
-class deOSBeOS : public deOS{
+class DE_DLL_EXPORT deOSBeOS : public deOS{
 private:
 	int pScreenWidth;
 	int pScreenHeight;

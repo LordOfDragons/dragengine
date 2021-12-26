@@ -34,7 +34,7 @@
  * Furthermore save casting is provided. If the cast is not valid an exception
  * is raised.
  */
-class deDSRenderableVisitorIdentify : public deDSRenderableVisitor{
+class DE_DLL_EXPORT deDSRenderableVisitorIdentify : public deDSRenderableVisitor{
 public:
 	/** \brief Renderable types. */
 	enum eRenderableTypes{

@@ -40,7 +40,7 @@
  * rotation is used. If a controller is specified it is used to
  * modulate the rotation from a minimum to a maximum rotation.
  */
-class deAnimatorRuleBoneTransformator : public deAnimatorRule{
+class DE_DLL_EXPORT deAnimatorRuleBoneTransformator : public deAnimatorRule{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<deAnimatorRuleBoneTransformator> Ref;

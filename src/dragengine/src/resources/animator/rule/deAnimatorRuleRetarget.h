@@ -38,7 +38,7 @@
  * existing animation to a new bone. Bones without such a matching
  * are assumed to stay the same but with different rest poses.
  */
-class deAnimatorRuleRetarget : public deAnimatorRule{
+class DE_DLL_EXPORT deAnimatorRuleRetarget : public deAnimatorRule{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<deAnimatorRuleRetarget> Ref;

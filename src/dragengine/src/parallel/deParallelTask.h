@@ -58,7 +58,7 @@ class deBaseModule;
  * 
  * Use SetFinishAfterRun() to set the appropriate behavior.
  */
-class deParallelTask : public deThreadSafeObject{
+class DE_DLL_EXPORT deParallelTask : public deThreadSafeObject{
 private:
 	deBaseModule *pOwner;
 	

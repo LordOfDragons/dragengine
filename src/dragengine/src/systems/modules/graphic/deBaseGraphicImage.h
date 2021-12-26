@@ -22,11 +22,13 @@
 #ifndef _DEBASEGRAPHICIMAGE_H_
 #define _DEBASEGRAPHICIMAGE_H_
 
+#include "../../../dragengine_export.h"
+
 
 /**
  * \brief Graphic module image peer.
  */
-class deBaseGraphicImage{
+class DE_DLL_EXPORT deBaseGraphicImage{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

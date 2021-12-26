@@ -51,7 +51,7 @@ class deWorld;
  * of the shape. By default the edge is set to white fully opaque and the fill is
  * set to white fully transparent.
  */
-class deDebugDrawer : public deResource{
+class DE_DLL_EXPORT deDebugDrawer : public deResource{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<deDebugDrawer> Ref;

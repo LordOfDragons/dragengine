@@ -34,7 +34,7 @@ class deRLTaskReadFontInternal2;
  * 
  * \warning For internal use only.
  */
-class deRLTaskReadFontInternal : public deResourceLoaderTask {
+class DE_DLL_EXPORT deRLTaskReadFontInternal : public deResourceLoaderTask {
 private:
 	deFontReference pFont;
 	bool pSucceeded;

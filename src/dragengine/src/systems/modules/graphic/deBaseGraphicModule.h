@@ -90,7 +90,7 @@ class deWorld;
  * \brief Base Graphic Module.
  *
  */
-class deBaseGraphicModule : public deBaseModule{
+class DE_DLL_EXPORT deBaseGraphicModule : public deBaseModule{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

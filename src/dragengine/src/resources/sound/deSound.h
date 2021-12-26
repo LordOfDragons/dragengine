@@ -39,7 +39,7 @@ class deBaseSynthesizerSound;
  * modules if they deem the sound file short enough to cache in memory or if they
  * use the samples in a streaming way.
  */
-class deSound : public deFileResource{
+class DE_DLL_EXPORT deSound : public deFileResource{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<deSound> Ref;

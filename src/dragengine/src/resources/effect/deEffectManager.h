@@ -37,7 +37,7 @@ class deEffectDistortImage;
  * \brief Effect Resource Manager.
  *
  */
-class deEffectManager : public deResourceManager{
+class DE_DLL_EXPORT deEffectManager : public deResourceManager{
 private:
 	deResourceList pEffects;
 	

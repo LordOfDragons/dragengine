@@ -30,7 +30,7 @@ class deReadWriteLock;
  *
  * Exception safe automatic write locking and unlocking.
  */
-class deWriteLockGuard{
+class DE_DLL_EXPORT deWriteLockGuard{
 private:
 	deReadWriteLock &pRWLock;
 	bool pLocked;

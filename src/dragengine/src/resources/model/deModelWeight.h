@@ -22,6 +22,8 @@
 #ifndef _DEMODELWEIGHT_H_
 #define _DEMODELWEIGHT_H_
 
+#include "../../dragengine_export.h"
+
 
 /**
  * \brief Model Bone Weight.
@@ -29,7 +31,7 @@
  * A single weight in a weight set. The bone index has to be 0 or larger, the weight
  * in the range from 0 to 1.
  */
-class deModelWeight{
+class DE_DLL_EXPORT deModelWeight{
 private:
 	int pBone;
 	float pWeight;

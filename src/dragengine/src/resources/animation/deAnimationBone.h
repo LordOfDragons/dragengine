@@ -22,7 +22,6 @@
 #ifndef _DEANIMATIONBONE_H_
 #define _DEANIMATIONBONE_H_
 
-
 #include "../../common/string/decString.h"
 
 class deAnimation;
@@ -33,7 +32,7 @@ class deAnimation;
  *
  * Defines a bone in the animation.
  */
-class deAnimationBone{
+class DE_DLL_EXPORT deAnimationBone{
 friend class deAnimation;
 private:
 	decString pName;

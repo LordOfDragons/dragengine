@@ -29,7 +29,7 @@
 /**
  * \brief Write model resource loader task.
  */
-class deRLTaskWriteModel : public deResourceLoaderTask {
+class DE_DLL_EXPORT deRLTaskWriteModel : public deResourceLoaderTask {
 private:
 	deModelReference pModel;
 	bool pSucceeded;

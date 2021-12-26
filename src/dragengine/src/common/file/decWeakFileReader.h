@@ -33,7 +33,7 @@
  * all future operations to fail. This is used for readers created by engine modules
  * to avoid problems if the engine module is unloaded while the reader is still held.
  */
-class decWeakFileReader : public decBaseFileReader{
+class DE_DLL_EXPORT decWeakFileReader : public decBaseFileReader{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<decWeakFileReader> Ref;

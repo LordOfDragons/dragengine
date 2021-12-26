@@ -37,7 +37,7 @@ class deImage;
  * it as pointer and memory allocate it. For this reason the destructor
  * is on purpose not virtual.
  */
-class deImageReference : protected deObjectReference {
+class DE_DLL_EXPORT deImageReference : protected deObjectReference {
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

@@ -28,7 +28,7 @@
 /**
  * \brief Identify collider visitor.
  */
-class deColliderVisitorIdentify : public deColliderVisitor{
+class DE_DLL_EXPORT deColliderVisitorIdentify : public deColliderVisitor{
 public:
 	/** \brief Collider types. */
 	enum eColliderTypes{

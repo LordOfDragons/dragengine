@@ -29,7 +29,7 @@
 /**
  * \brief Occlusion Mesh Bone.
  */
-class deOcclusionMeshBone{
+class DE_DLL_EXPORT deOcclusionMeshBone{
 private:
 	decString pName;
 	int pParent;

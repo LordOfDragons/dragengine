@@ -42,7 +42,7 @@ class deBaseGraphicEffect;
  * or alter the state of some objects. Various effects can be
  * combined to achieve all sorts of complex effects.
  */
-class deEffect : public deResource{
+class DE_DLL_EXPORT deEffect : public deResource{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<deEffect> Ref;

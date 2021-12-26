@@ -33,7 +33,7 @@
  * X is any kind of extension including additional periods. There is no
  * '*' in front of the pattern.
  */
-class dePatternList{
+class DE_DLL_EXPORT dePatternList{
 private:
 	decStringList pPatterns;
 	

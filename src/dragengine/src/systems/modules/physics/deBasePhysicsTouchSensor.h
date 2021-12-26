@@ -34,7 +34,7 @@ class deBaseScriptingCollider;
  *
  * Touch sensor peer for the pyhsics module.
  */
-class deBasePhysicsTouchSensor{
+class DE_DLL_EXPORT deBasePhysicsTouchSensor{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

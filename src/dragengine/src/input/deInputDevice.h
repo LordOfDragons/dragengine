@@ -61,7 +61,7 @@ class deInputDeviceComponent;
  * configuration is indicated using an enumeration type. This ensures a consistent bone
  * configuration developers can rely upon.
  */
-class deInputDevice : public deObject{
+class DE_DLL_EXPORT deInputDevice : public deObject{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<deInputDevice> Ref;

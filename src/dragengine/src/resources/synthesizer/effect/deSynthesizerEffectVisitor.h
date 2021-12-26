@@ -29,7 +29,7 @@ class deSynthesizerEffectStretch;
 /**
  * \brief Synthesizer effect visitor.
  */
-class deSynthesizerEffectVisitor{
+class DE_DLL_EXPORT deSynthesizerEffectVisitor{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

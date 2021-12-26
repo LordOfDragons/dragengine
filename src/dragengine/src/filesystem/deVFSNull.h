@@ -32,7 +32,7 @@
  * immediately forgotten. Useful as dummy container for volatile data directories
  * where no permanent storage is desired or possible.
  */
-class deVFSNull : public deVFSContainer{
+class DE_DLL_EXPORT deVFSNull : public deVFSContainer{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<deVFSNull> Ref;

@@ -37,7 +37,7 @@
  * 
  * \note Logger buffer is thread safe.
  */
-class deLoggerBuffer : public deLogger{
+class DE_DLL_EXPORT deLoggerBuffer : public deLogger{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<deLoggerBuffer> Ref;
@@ -58,7 +58,7 @@ public:
 	};
 	
 	/** \brief Logger buffer entry. */
-	struct sEntry{
+	struct DE_DLL_EXPORT sEntry{
 		/** \brief Type. */
 		eMessageTypes type;
 		

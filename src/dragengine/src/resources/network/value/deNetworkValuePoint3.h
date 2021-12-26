@@ -32,7 +32,7 @@
  * Defines a point-3 network value. Points are tuples with integer
  * components. The Point-3 contains three components.
  */
-class deNetworkValuePoint3 : public deNetworkValue{
+class DE_DLL_EXPORT deNetworkValuePoint3 : public deNetworkValue{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<deNetworkValuePoint3> Ref;

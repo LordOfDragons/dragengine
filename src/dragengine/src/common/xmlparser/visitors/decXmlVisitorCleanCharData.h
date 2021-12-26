@@ -28,7 +28,7 @@
 /**
  * \brief Visitor cleaning character data in element tags.
  */
-class decXmlVisitorCleanCharData : public decXmlVisitor{
+class DE_DLL_EXPORT decXmlVisitorCleanCharData : public decXmlVisitor{
 private:
 	bool pIsFirstElement;
 	bool pIsLastElement;

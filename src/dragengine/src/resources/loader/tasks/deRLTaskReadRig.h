@@ -30,7 +30,7 @@
 /**
  * \brief Read rig resource loader task.
  */
-class deRLTaskReadRig : public deResourceLoaderTask {
+class DE_DLL_EXPORT deRLTaskReadRig : public deResourceLoaderTask {
 private:
 	deRigReference pRig;
 	bool pSucceeded;

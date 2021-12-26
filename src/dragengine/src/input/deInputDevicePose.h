@@ -29,7 +29,7 @@
  * \brief Input device pose.
  * \version 1.6
  */
-class deInputDevicePose{
+class DE_DLL_EXPORT deInputDevicePose{
 private:
 	/** \brief Position in meters. */
 	decVector pPosition;

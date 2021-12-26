@@ -22,14 +22,14 @@
 #ifndef _DEBASEGRAPHICEFFECT_H_
 #define _DEBASEGRAPHICEFFECT_H_
 
-
+#include "../../../dragengine_export.h"
 
 
 /**
  * \brief Graphic Module Effect Peer.
  *
  */
-class deBaseGraphicEffect{
+class DE_DLL_EXPORT deBaseGraphicEffect{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

@@ -22,6 +22,8 @@
 #ifndef _DEANIMATIONBUILDER_H_
 #define _DEANIMATIONBUILDER_H_
 
+#include "../../dragengine_export.h"
+
 class deAnimation;
 
 
@@ -33,7 +35,7 @@ class deAnimation;
  * Usually used by editors to create animation resources from an in-editor
  * representation of a animation.
  */
-class deAnimationBuilder{
+class DE_DLL_EXPORT deAnimationBuilder{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

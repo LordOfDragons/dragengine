@@ -61,7 +61,7 @@ class deBaseAIHeightTerrain;
  *
  * Defines a height terrain.
  */
-class deHeightTerrain : public deResource{
+class DE_DLL_EXPORT deHeightTerrain : public deResource{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<deHeightTerrain> Ref;

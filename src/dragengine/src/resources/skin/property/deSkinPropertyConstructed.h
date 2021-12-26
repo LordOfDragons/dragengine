@@ -31,7 +31,7 @@ class deSkinPropertyNodeGroup;
 /**
  * \brief Skin texture constructed property.
  */
-class deSkinPropertyConstructed : public deSkinProperty{
+class DE_DLL_EXPORT deSkinPropertyConstructed : public deSkinProperty{
 private:
 	deSkinPropertyNodeGroup *pContent;
 	decColor pColor;

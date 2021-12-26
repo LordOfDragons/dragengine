@@ -36,7 +36,7 @@
  * each object is assigned a reference count of 1 so you do not have to
  * add a refernece after creating an object.
  */
-class deObject{
+class DE_DLL_EXPORT deObject{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<deObject> Ref;

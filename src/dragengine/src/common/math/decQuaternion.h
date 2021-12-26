@@ -23,7 +23,7 @@
 /**
  * \brief 4 Component Quaternion.
  */
-class decQuaternion{
+class DE_DLL_EXPORT decQuaternion{
 public:
 	/** \brief X Component of quaternion. */
 	float x;

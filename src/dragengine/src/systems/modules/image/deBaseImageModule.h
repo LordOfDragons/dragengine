@@ -33,7 +33,7 @@ class deImage;
 /**
  * \brief Base image module providing load/save support for images.
  */
-class deBaseImageModule : public deBaseModule{
+class DE_DLL_EXPORT deBaseImageModule : public deBaseModule{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

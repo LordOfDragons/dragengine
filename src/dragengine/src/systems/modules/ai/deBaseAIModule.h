@@ -41,7 +41,7 @@ class deWorld;
 /**
  * \brief Base AI module interface.
  */
-class deBaseAIModule : public deBaseModule{
+class DE_DLL_EXPORT deBaseAIModule : public deBaseModule{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

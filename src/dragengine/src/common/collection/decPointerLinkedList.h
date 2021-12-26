@@ -22,6 +22,8 @@
 #ifndef _DECPOINTERLINKEDLIST_H_
 #define _DECPOINTERLINKEDLIST_H_
 
+#include "../../dragengine_export.h"
+
 
 /**
  * \brief Double linked list of pointers.
@@ -48,13 +50,13 @@
  * The constructor call links the cListEntry to the owner class and allows to retrieve the owner
  * class put in the list from a list entry.
  */
-class decPointerLinkedList{
+class DE_DLL_EXPORT decPointerLinkedList{
 public:
 	/**
 	 * \brief List entry.
 	 * \warning Use only on stack! Never use it with new allocator!
 	 */
-	class cListEntry{
+	class DE_DLL_EXPORT cListEntry{
 	private:
 		void *pOwner;
 		cListEntry *pPrev;
@@ -134,7 +136,7 @@ public:
 	 * }
 	 * \endcode
 	 */
-	class cIterator{
+	class DE_DLL_EXPORT cIterator{
 	private:
 		decPointerLinkedList &pList;
 		void *pEntry;

@@ -30,7 +30,7 @@
 /**
  * \brief Skin texture image property.
  */
-class deSkinPropertyImage : public deSkinProperty{
+class DE_DLL_EXPORT deSkinPropertyImage : public deSkinProperty{
 private:
 	decString pPath;
 	deImageReference pImage;

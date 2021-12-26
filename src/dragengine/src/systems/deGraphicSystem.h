@@ -105,7 +105,7 @@ class deWorld;
  * render target manager. This is a bad situation and will be changed in the
  * future. The render target becomes an own resource type and a manager.
  */
-class deGraphicSystem : public deBaseSystem{
+class DE_DLL_EXPORT deGraphicSystem : public deBaseSystem{
 private:
 	deBaseGraphicModule *pActiveModule;
 	deRenderWindowReference pRenderWindow;

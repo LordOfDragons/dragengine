@@ -31,7 +31,7 @@ class deNavigationSpace;
 /**
  * \brief Navigation Space Manager.
  */
-class deNavigationSpaceManager : public deResourceManager{
+class DE_DLL_EXPORT deNavigationSpaceManager : public deResourceManager{
 private:
 	deResourceList pNavSpaces;
 	

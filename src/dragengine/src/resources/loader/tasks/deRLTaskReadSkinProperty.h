@@ -41,7 +41,7 @@ class deVirtualFileSystem;
  * If a resource is already present loading is skiped. This can be used by
  * deSkinBuilder users to use already loaded resources.
  */
-class deRLTaskReadSkinProperty : public deSkinPropertyVisitor{
+class DE_DLL_EXPORT deRLTaskReadSkinProperty : public deSkinPropertyVisitor{
 private:
 	deResourceLoader &pResourceLoader;
 	deRLTaskReadSkinInternal &pTask;

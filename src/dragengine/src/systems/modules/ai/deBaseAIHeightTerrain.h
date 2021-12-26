@@ -31,7 +31,7 @@ class deHeightTerrainSector;
 /**
  * \brief AI module height terrain peer.
  */
-class deBaseAIHeightTerrain{
+class DE_DLL_EXPORT deBaseAIHeightTerrain{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

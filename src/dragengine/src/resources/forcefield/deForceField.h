@@ -89,7 +89,7 @@ class deWorld;
  * fields have no effect on objects along the force direction if a
  * non-dynamic colliders is crossed? (bool pBlocked?)
  */
-class deForceField : public deResource{
+class DE_DLL_EXPORT deForceField : public deResource{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<deForceField> Ref;

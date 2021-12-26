@@ -34,7 +34,7 @@ class deDSRenderableCamera;
 /**
  * \brief Visitor for dynamic skin renderables.
  */
-class deDSRenderableVisitor{
+class DE_DLL_EXPORT deDSRenderableVisitor{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

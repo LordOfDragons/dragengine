@@ -28,7 +28,7 @@
 /**
  * \brief Sky controller target.
  */
-class deSkyControllerTarget{
+class DE_DLL_EXPORT deSkyControllerTarget{
 private:
 	decIntList pLinks;
 	

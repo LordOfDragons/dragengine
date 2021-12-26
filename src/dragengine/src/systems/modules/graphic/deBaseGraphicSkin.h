@@ -22,14 +22,14 @@
 #ifndef _DEBASEGRAPHICSKIN_H_
 #define _DEBASEGRAPHICSKIN_H_
 
-
+#include "../../../dragengine_export.h"
 
 
 /**
  * \brief Graphic Module Skin Peer.
  *
  */
-class deBaseGraphicSkin{
+class DE_DLL_EXPORT deBaseGraphicSkin{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

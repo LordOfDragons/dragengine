@@ -38,7 +38,7 @@ class deImage;
  * The position is the upper left corner of the height modifier which is
  * on the negative X and positive Z side if looked from the terrain.
  */
-class deTerrainHeightModifier{
+class DE_DLL_EXPORT deTerrainHeightModifier{
 private:
 	deImage *pHeightImage;
 	decPoint pPosition;

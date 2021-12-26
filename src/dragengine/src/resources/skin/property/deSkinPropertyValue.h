@@ -30,7 +30,7 @@
  *
  * Defines a value property of a skin texture.
  */
-class deSkinPropertyValue : public deSkinProperty{
+class DE_DLL_EXPORT deSkinPropertyValue : public deSkinProperty{
 private:
 	float pValue;
 	

@@ -31,7 +31,7 @@ class decShapeVisitor;
  *
  * Provides support for visiting the shapes in the list.
  */
-class decShapeList{
+class DE_DLL_EXPORT decShapeList{
 private:
 	decShape **pShapes;
 	int pCount;

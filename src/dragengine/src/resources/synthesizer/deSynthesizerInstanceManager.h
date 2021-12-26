@@ -32,7 +32,7 @@ class deSynthesizerInstance;
 /**
  * \brief Synthesizer Instance Resource Manager.
  */
-class deSynthesizerInstanceManager : public deResourceManager{
+class DE_DLL_EXPORT deSynthesizerInstanceManager : public deResourceManager{
 private:
 	deResourceList pInstances;
 	

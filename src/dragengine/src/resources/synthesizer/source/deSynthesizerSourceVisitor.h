@@ -33,7 +33,7 @@ class deSynthesizerSourceWave;
 /**
  * \brief Synthesizer source visitor.
  */
-class deSynthesizerSourceVisitor{
+class DE_DLL_EXPORT deSynthesizerSourceVisitor{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

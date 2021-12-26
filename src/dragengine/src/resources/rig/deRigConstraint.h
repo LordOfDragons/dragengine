@@ -49,7 +49,7 @@
  * to translate these settings into a useful simulation configuration and can vary.
  * By default a degree of freedom does not break.
  */
-class deRigConstraint{
+class DE_DLL_EXPORT deRigConstraint{
 private:
 	decVector pRefPosition;
 	decQuaternion pRefOrientation;

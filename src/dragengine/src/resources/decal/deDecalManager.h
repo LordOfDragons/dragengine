@@ -33,7 +33,7 @@ class deDecal;
  * \brief Decal Resourse Manager.
  *
  */
-class deDecalManager : public deResourceManager{
+class DE_DLL_EXPORT deDecalManager : public deResourceManager{
 private:
 	deResourceList pDecals;
 	

@@ -22,10 +22,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
 #include "decStringList.h"
-
 #include "../exceptions.h"
+#include "../../dragengine_configuration.h"
 
 
 
@@ -314,7 +313,7 @@ decString decStringList::Join( const char *separator ) const{
 		DETHROW( deeInvalidParam );
 	}
 	
-	const int separatorLength = strlen( separator );
+	const int separatorLength = ( int )strlen( separator );
 	decString joined;
 	int i;
 	
@@ -331,14 +330,22 @@ decString decStringList::Join( const char *separator ) const{
 	char *next = ( char* )joined.GetString();
 	for( i=0; i<pStringCount; i++ ){
 		if( i > 0 && separatorLength > 0 ){
-			strcpy( next, separator );
+			#ifdef OS_W32_VS
+				strcpy_s( next, separatorLength, separator );
+			#else
+				strcpy( next, separator );
+			#endif
 			next += separatorLength;
 		}
 		
 		const int stringLength = pStrings[ i ]->GetLength();
 		
 		if( stringLength > 0 ){
-			strncpy( next, pStrings[ i ]->GetString(), stringLength );
+			#ifdef OS_W32_VS
+				strncpy_s( next, stringLength, pStrings[ i ]->GetString(), stringLength );
+			#else
+				strncpy( next, pStrings[ i ]->GetString(), stringLength );
+			#endif
 			next += stringLength;
 		}
 	}

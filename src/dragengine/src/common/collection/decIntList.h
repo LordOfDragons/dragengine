@@ -22,11 +22,13 @@
 #ifndef _DECINTLIST_H_
 #define _DECINTLIST_H_
 
+#include "../../dragengine_export.h"
+
 
 /**
  * \brief List of integer values.
  */
-class decIntList{
+class DE_DLL_EXPORT decIntList{
 private:
 	int *pValues;
 	int pValueCount;

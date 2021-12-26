@@ -30,7 +30,7 @@ class decMemoryFile;
 /**
  * \brief Read memory file.
  */
-class decMemoryFileReader : public decBaseFileReader{
+class DE_DLL_EXPORT decMemoryFileReader : public decBaseFileReader{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<decMemoryFileReader> Ref;

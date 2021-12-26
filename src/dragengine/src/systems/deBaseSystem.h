@@ -59,7 +59,7 @@ class deException;
  * individually during engine-break time. What modules are used depends
  * on the file type to handle.
  */
-class deBaseSystem{
+class DE_DLL_EXPORT deBaseSystem{
 private:
 	const decString pSystemName;
 	deEngine * const pEngine;

@@ -22,12 +22,14 @@
 #ifndef _DECINTSET_H_
 #define _DECINTSET_H_
 
+#include "../../dragengine_export.h"
+
 
 /**
  * \brief Int Set.
  * Set of int values.
  */
-class decIntSet{
+class DE_DLL_EXPORT decIntSet{
 private:
 	int *pValues;
 	int pValueCount;

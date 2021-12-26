@@ -22,6 +22,8 @@
 #ifndef _DEBASENETWORKCONNECTION_H_
 #define _DEBASENETWORKCONNECTION_H_
 
+#include "../../../dragengine_export.h"
+
 
 class deNetworkMessage;
 class deNetworkState;
@@ -30,7 +32,7 @@ class deNetworkState;
 /**
  * \brief Network Pipe Module Connection Peer.
  */
-class deBaseNetworkConnection{
+class DE_DLL_EXPORT deBaseNetworkConnection{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

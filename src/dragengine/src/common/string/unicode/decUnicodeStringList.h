@@ -30,7 +30,7 @@
  * 
  * The unicode strings in the list are allowed the be duplicates of each other but can not be NULL.
  */
-class decUnicodeStringList{
+class DE_DLL_EXPORT decUnicodeStringList{
 private:
 	decUnicodeString **pStrings;
 	int pStringCount;

@@ -46,7 +46,7 @@ class deHeightTerrain;
  * The Audio System is a single type system providing the output functions
  * of the engine in the audio direction.
  */
-class deAudioSystem : public deBaseSystem{
+class DE_DLL_EXPORT deAudioSystem : public deBaseSystem{
 private:
 	deBaseAudioModule *pActiveModule;
 	deMicrophone *pActiveMic;

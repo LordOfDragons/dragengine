@@ -27,7 +27,7 @@
  * color and 1 indicates full luminance. The color also contains an alpha component
  * where 0 indicates completly transparent and 1 indicates completly opaque.
  */
-class decColor{
+class DE_DLL_EXPORT decColor{
 public:
 	/** \brief Red Component of color. */
 	float r;

@@ -22,6 +22,8 @@
 #ifndef _DEBASEGRAPHICSMOKEEMITTER_H_
 #define _DEBASEGRAPHICSMOKEEMITTER_H_
 
+#include "../../../dragengine_export.h"
+
 
 class deSmokeEmitter;
 
@@ -31,7 +33,7 @@ class deSmokeEmitter;
  *
  * Peer for the smoke emitter resource used by graphic modules.
  */
-class deBaseGraphicSmokeEmitter{
+class DE_DLL_EXPORT deBaseGraphicSmokeEmitter{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

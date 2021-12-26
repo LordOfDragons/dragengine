@@ -39,7 +39,7 @@ class deEngine;
  * 
  * The individual entries can be color coded.
  */
-class deDebugBlockInfo{
+class DE_DLL_EXPORT deDebugBlockInfo{
 private:
 	struct sEntry{
 		decString label;

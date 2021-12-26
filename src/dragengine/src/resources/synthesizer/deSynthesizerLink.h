@@ -40,7 +40,7 @@
  * Using repeat values larger than 1 the curve is repeated along the Y axis.
  * 
  */
-class deSynthesizerLink : public deObject{
+class DE_DLL_EXPORT deSynthesizerLink : public deObject{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<deSynthesizerLink> Ref;

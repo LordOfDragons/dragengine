@@ -43,7 +43,7 @@
  * be used to resize the buffer to at last a given length before reading
  * the data into the messagchare.
  */
-class deNetworkMessage : public deObject{
+class DE_DLL_EXPORT deNetworkMessage : public deObject{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<deNetworkMessage> Ref;

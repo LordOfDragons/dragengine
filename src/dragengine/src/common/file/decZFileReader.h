@@ -40,7 +40,7 @@
  * read the compressed file content. This way pointers are handled properly and the
  * z-reader can be transparently used everywhere a file reader is used.
  */
-class decZFileReader : public decBaseFileReader{
+class DE_DLL_EXPORT decZFileReader : public decBaseFileReader{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<decZFileReader> Ref;

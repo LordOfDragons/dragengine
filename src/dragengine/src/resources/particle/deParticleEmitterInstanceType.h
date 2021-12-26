@@ -30,9 +30,9 @@
 /**
  * \brief Particle Emitter Instance Type.
  */
-class deParticleEmitterInstanceType{
+class DE_DLL_EXPORT deParticleEmitterInstanceType{
 public:
-	struct sParticle{ // sizeCast = 6 bytes, sizeDynamic = 22 bytes, sizeTotal = 28 bytes
+	struct DE_DLL_EXPORT sParticle{ // sizeCast = 6 bytes, sizeDynamic = 22 bytes, sizeTotal = 28 bytes
 		float lifetime; // unsigned char possible (1 frame accuracy for 5s particle at 60Hz)
 		float positionX; // short possible (~1m accuracy on 50m)
 		float positionY; // short possible (~1m accuracy on 50m)

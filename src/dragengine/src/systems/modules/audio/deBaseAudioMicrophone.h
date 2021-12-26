@@ -22,6 +22,8 @@
 #ifndef _DEBASEAUDIOMICROPHONE_H_
 #define _DEBASEAUDIOMICROPHONE_H_
 
+#include "../../../dragengine_export.h"
+
 class deSpeaker;
 
 
@@ -29,7 +31,7 @@ class deSpeaker;
 /**
  * \brief Audio Module Microphone Peer.
  */
-class deBaseAudioMicrophone{
+class DE_DLL_EXPORT deBaseAudioMicrophone{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

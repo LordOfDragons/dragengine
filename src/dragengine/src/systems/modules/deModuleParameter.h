@@ -40,7 +40,7 @@
  * user. The selection parameter provides a list of values. The index into this
  * list is the value returned.
  */
-class deModuleParameter{
+class DE_DLL_EXPORT deModuleParameter{
 public:
 	/** \brief Parameter types. */
 	enum eParameterTypes{
@@ -90,7 +90,7 @@ public:
 	};
 	
 	/** \brief Selection entry. */
-	struct SelectionEntry{
+	struct DE_DLL_EXPORT SelectionEntry{
 		decString value;
 		decString displayName;
 		decString description;

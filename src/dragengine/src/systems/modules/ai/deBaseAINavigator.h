@@ -32,7 +32,7 @@ class deNavigatorPath;
 /**
  * \brief AI module navigator peer.
  */
-class deBaseAINavigator{
+class DE_DLL_EXPORT deBaseAINavigator{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

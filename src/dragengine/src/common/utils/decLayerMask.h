@@ -24,6 +24,8 @@
 
 #include <stdint.h>
 
+#include "../../dragengine_export.h"
+
 class decString;
 class decBaseFileReader;
 class decBaseFileWriter;
@@ -35,7 +37,7 @@ class decBaseFileWriter;
  * Objects can be located on multiple layers depending on the bits set.
  * A maximum of 64 layers can be used.
  */
-class decLayerMask{
+class DE_DLL_EXPORT decLayerMask{
 private:
 	uint64_t pMask;
 	

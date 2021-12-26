@@ -22,11 +22,13 @@
 #ifndef _DEBASEPHYSICSDECAL_H_
 #define _DEBASEPHYSICSDECAL_H_
 
+#include "../../../dragengine_export.h"
+
 
 /**
  * \brief Physics Module Decal Peer.
  */
-class deBasePhysicsDecal{
+class DE_DLL_EXPORT deBasePhysicsDecal{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

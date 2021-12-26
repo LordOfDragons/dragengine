@@ -22,13 +22,15 @@
 #ifndef _DEBASENETWORKWORLD_H_
 #define _DEBASENETWORKWORLD_H_
 
+#include "../../../dragengine_export.h"
+
 class deNetworkState;
 
 
 /**
  * \brief Network Module World Peer.
  */
-class deBaseNetworkWorld{
+class DE_DLL_EXPORT deBaseNetworkWorld{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

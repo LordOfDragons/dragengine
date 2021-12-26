@@ -36,7 +36,7 @@ class deColliderComponent;
  * \brief World Collider Resource Manager.
  *
  */
-class deColliderManager : public deResourceManager{
+class DE_DLL_EXPORT deColliderManager : public deResourceManager{
 private:
 	deResourceList pColliders;
 	

@@ -30,7 +30,7 @@
 /**
  * \brief Canvas rendering a text.
  */
-class deCanvasText : public deCanvas{
+class DE_DLL_EXPORT deCanvasText : public deCanvas{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<deCanvasText> Ref;

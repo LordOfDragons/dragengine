@@ -38,7 +38,7 @@
  * use the same move an additional flag can be set so you only
  * have to set the move of the leading state to set both moves.
  */
-class deAnimatorRuleAnimationDifference : public deAnimatorRule{
+class DE_DLL_EXPORT deAnimatorRuleAnimationDifference : public deAnimatorRule{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<deAnimatorRuleAnimationDifference> Ref;

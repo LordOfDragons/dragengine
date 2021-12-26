@@ -22,6 +22,8 @@
 #ifndef _DEPROPFIELDGROUND_H_
 #define _DEPROPFIELDGROUND_H_
 
+#include "../../dragengine_export.h"
+
 
 class deComponent;
 class deHeightTerrain;
@@ -40,7 +42,7 @@ class deHeightTerrain;
  * this object is designed to live only for a short time no
  * reference counting is used.
  */
-class dePropFieldGround{
+class DE_DLL_EXPORT dePropFieldGround{
 private:
 	deHeightTerrain *pHeightTerrain;
 	

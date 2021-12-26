@@ -33,7 +33,7 @@
  * from a unix file system used by the engine or native file system used by the
  * operating system below.
  */
-class decPath{
+class DE_DLL_EXPORT decPath{
 private:
 	decStringList pComponents;
 	decString pPrefix;

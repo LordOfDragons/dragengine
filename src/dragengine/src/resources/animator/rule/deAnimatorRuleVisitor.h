@@ -41,7 +41,7 @@ class deAnimatorRuleLimit;
 /**
  * \brief Animator rule visitor.
  */
-class deAnimatorRuleVisitor{
+class DE_DLL_EXPORT deAnimatorRuleVisitor{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

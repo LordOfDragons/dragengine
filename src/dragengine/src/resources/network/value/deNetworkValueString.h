@@ -31,7 +31,7 @@
  *
  * Defines a string network value.
  */
-class deNetworkValueString : public deNetworkValue{
+class DE_DLL_EXPORT deNetworkValueString : public deNetworkValue{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<deNetworkValueString> Ref;

@@ -45,7 +45,7 @@ class deCollisionInfo;
  * instead of the Model object providing more a optimized
  * collision volume.
  */
-class deColliderComponent : public deColliderRig{
+class DE_DLL_EXPORT deColliderComponent : public deColliderRig{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<deColliderComponent> Ref;

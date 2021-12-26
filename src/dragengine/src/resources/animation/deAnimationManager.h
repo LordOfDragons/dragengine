@@ -34,7 +34,7 @@ class deAnimationBuilder;
  * \brief Animation Resource Manager.
  *
  */
-class deAnimationManager : public deFileResourceManager{
+class DE_DLL_EXPORT deAnimationManager : public deFileResourceManager{
 private:
 	deFileResourceList pAnimations;
 	

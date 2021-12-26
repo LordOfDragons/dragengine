@@ -41,7 +41,7 @@ class deEffectVisitor;
  * counted in any way the user class is responsible to free the effect
  * chain itself once the user class is destroyed.
  */
-class deEffectChain{
+class DE_DLL_EXPORT deEffectChain{
 private:
 	deEffect **pEffects;
 	int pEffectCount, pEffectSize;

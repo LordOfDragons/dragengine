@@ -35,7 +35,7 @@
  * 
  * \note Logger color console is thread safe.
  */
-class deLoggerConsoleColor : public deLogger{
+class DE_DLL_EXPORT deLoggerConsoleColor : public deLogger{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<deLoggerConsoleColor> Ref;

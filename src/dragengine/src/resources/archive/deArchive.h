@@ -41,7 +41,7 @@ class deBaseArchiveContainer;
  * underlaying Archive Module supports writing to the archive file. In general
  * archive containers are read-only.
  */
-class deArchive : public deFileResource{
+class DE_DLL_EXPORT deArchive : public deFileResource{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<deArchive> Ref;

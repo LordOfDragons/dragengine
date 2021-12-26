@@ -22,12 +22,18 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "../dragengine_configuration.h"
+
+#ifndef OS_W32_VS
 #include <unistd.h>
 #include <dirent.h>
-#ifdef OS_UNIX
+#endif
+
+#if defined OS_UNIX
 #	include <errno.h>
 #	include <fnmatch.h>
-#elif defined(OS_W32)
+#elif defined OS_W32
+#	include <stdio.h>
 #	include "../app/deOSWindows.h"
 #	include "../app/include_windows.h"
 #endif
@@ -390,11 +396,15 @@ void deVFSCacheDiskDirectory::UpdateCache(){
 		DEBUG_PRINT( "%s", "UpdateCache: removing old files..." );
 		while( pCacheSize > pMaxCacheSize && FindOldestFiles( oldestFile, oldestFileSize ) ){
 			DEBUG_PRINT( "UpdateCache: remove '%s'(%i)", oldestFile.GetPathNative(), ( int )oldestFileSize );
+			#ifdef OS_W32
+			if( _unlink( oldestFile.GetPathNative() ) != 0 ){
+			#else
 			if( unlink( oldestFile.GetPathNative() ) != 0 ){
+			#endif
 				DETHROW_INFO( deeWriteFile, oldestFile.GetPathNative() );
 			}
 			
-			pCacheSize -= oldestFileSize / 1000;
+			pCacheSize -= ( int )( oldestFileSize / 1000 );
 			if( pCacheSize < 0 ){
 				pCacheSize = 0;
 			}
@@ -411,7 +421,7 @@ decBaseFileWriter *deVFSCacheDiskDirectory::OpenFileForWriting( const decPath &p
 
 void deVFSCacheDiskDirectory::DeleteFile( const decPath &path ){
 	try{
-		pCacheSize -= GetFileSize( path ) / 1000;
+		pCacheSize -= ( int )( GetFileSize( path ) / 1000 );
 		
 	}catch( const deException & ){
 		// consider it 0 size

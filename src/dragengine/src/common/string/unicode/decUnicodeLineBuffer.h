@@ -22,6 +22,8 @@
 #ifndef _DECUNICODELINEBUFFER_H_
 #define _DECUNICODELINEBUFFER_H_
 
+#include "../../../dragengine_export.h"
+
 class decUnicodeString;
 
 
@@ -34,7 +36,7 @@ class decUnicodeString;
  * beyond are removed. Best example for this are consoles which hold
  * the most recent lines.
  */
-class decUnicodeLineBuffer{
+class DE_DLL_EXPORT decUnicodeLineBuffer{
 private:
 	decUnicodeString **pLines;
 	int pLineCount, pBufferSize;

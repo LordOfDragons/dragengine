@@ -29,7 +29,7 @@
 /**
  * \brief Model Bone.
  */
-class deModelBone{
+class DE_DLL_EXPORT deModelBone{
 private:
 	decString pName;
 	int pParent;

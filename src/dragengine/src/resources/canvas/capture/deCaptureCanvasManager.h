@@ -32,7 +32,7 @@ class deEngine;
 /**
  * \brief Capture canvas resource manager
  */
-class deCaptureCanvasManager : public deResourceManager{
+class DE_DLL_EXPORT deCaptureCanvasManager : public deResourceManager{
 private:
 	deResourceList pCaptureCanvas;
 	

@@ -28,7 +28,7 @@
 /**
  * \brief Invalid parameter exception.
  */
-class deeInvalidParam : public deException{
+class DE_DLL_EXPORT deeInvalidParam : public deException{
 public:
 	/**
 	 * \brief Create a new exception object.
@@ -42,7 +42,7 @@ public:
 /**
  * \brief Out of memory exception.
  */
-class deeOutOfMemory : public deException{
+class DE_DLL_EXPORT deeOutOfMemory : public deException{
 public:
 	/**
 	 * \brief Create a new exception object.
@@ -56,7 +56,7 @@ public:
 /**
  * \brief Out of Boundary Exception.
  */
-class deeOutOfBoundary : public deException{
+class DE_DLL_EXPORT deeOutOfBoundary : public deException{
 public:
 	/**
 	 * \brief Create a new exception object.
@@ -70,7 +70,7 @@ public:
 /**
  * \brief Empty Stack Exception.
  */
-class deeStackEmpty : public deException{
+class DE_DLL_EXPORT deeStackEmpty : public deException{
 public:
 	/**
 	 * \brief Create a new exception object.
@@ -84,7 +84,7 @@ public:
 /**
  * \brief Stack Overflow Exception.
  */
-class deeStackOverflow : public deException{
+class DE_DLL_EXPORT deeStackOverflow : public deException{
 public:
 	/**
 	 * \brief Create a new exception object.
@@ -98,7 +98,7 @@ public:
 /**
  * \brief Division by Zero Exception.
  */
-class deeDivisionByZero : public deException{
+class DE_DLL_EXPORT deeDivisionByZero : public deException{
 public:
 	/**
 	 * \brief Create a new exception object.
@@ -112,7 +112,7 @@ public:
 /**
  * \brief Null Pointer Exception.
  */
-class deeNullPointer : public deException{
+class DE_DLL_EXPORT deeNullPointer : public deException{
 public:
 	/**
 	 * \brief Create a new exception object.
@@ -126,7 +126,7 @@ public:
 /**
  * \brief Invalid Action Exception.
  */
-class deeInvalidAction : public deException{
+class DE_DLL_EXPORT deeInvalidAction : public deException{
 public:
 	/**
 	 * \brief Create a new exception object.
@@ -140,7 +140,7 @@ public:
 /**
  * \brief Invalid Format Exception.
  */
-class deeInvalidFormat : public deException{
+class DE_DLL_EXPORT deeInvalidFormat : public deException{
 public:
 	/**
 	 * \brief Create a new exception object.
@@ -154,7 +154,7 @@ public:
 /**
  * \brief File not found Exception.
  */
-class deeFileNotFound : public deException{
+class DE_DLL_EXPORT deeFileNotFound : public deException{
 public:
 	/**
 	 * \brief Create a new exception object.
@@ -171,7 +171,7 @@ private:
 /**
  * \brief File does already exist Exception.
  */
-class deeFileExists : public deException{
+class DE_DLL_EXPORT deeFileExists : public deException{
 public:
 	/**
 	 * \brief Create a new exception object.
@@ -188,7 +188,7 @@ private:
 /**
  * \brief File can not be opened Exception.
  */
-class deeOpenFile : public deException{
+class DE_DLL_EXPORT deeOpenFile : public deException{
 public:
 	/**
 	 * \brief Create a new exception object.
@@ -205,7 +205,7 @@ private:
 /**
  * \brief File can not be read Exception.
  */
-class deeReadFile : public deException{
+class DE_DLL_EXPORT deeReadFile : public deException{
 public:
 	/**
 	 * \brief Create a new exception object.
@@ -222,7 +222,7 @@ private:
 /**
  * \brief File can not be written Exception.
  */
-class deeWriteFile : public deException{
+class DE_DLL_EXPORT deeWriteFile : public deException{
 public:
 	/**
 	 * \brief Create a new exception object.
@@ -239,7 +239,7 @@ private:
 /**
  * \brief Invalid File Format Exception.
  */
-class deeInvalidFileFormat : public deException{
+class DE_DLL_EXPORT deeInvalidFileFormat : public deException{
 public:
 	/**
 	 * \brief Create a new exception object.
@@ -256,7 +256,7 @@ private:
 /**
  * \brief Directory not found Exception.
  */
-class deeDirectoryNotFound : public deException{
+class DE_DLL_EXPORT deeDirectoryNotFound : public deException{
 public:
 	/**
 	 * \brief Create a new exception object.
@@ -270,7 +270,7 @@ public:
 /**
  * \brief Can not read directory Exception.
  */
-class deeDirectoryRead : public deException{
+class DE_DLL_EXPORT deeDirectoryRead : public deException{
 public:
 	/**
 	 * \brief Create a new exception object.
@@ -284,7 +284,7 @@ public:
 /**
  * \brief Invalid Syntax Exception.
  */
-class deeInvalidSyntax : public deException{
+class DE_DLL_EXPORT deeInvalidSyntax : public deException{
 public:
 	/**
 	 * \brief Create a new exception object.
@@ -298,7 +298,7 @@ public:
 /**
  * \brief Script Error Exception.
  */
-class deeScriptError : public deException{
+class DE_DLL_EXPORT deeScriptError : public deException{
 public:
 	/**
 	 * \brief Create a new exception object.
@@ -312,7 +312,7 @@ public:
 /**
  * \brief No Module Found Exception.
  */
-class deeNoModuleFound : public deException{
+class DE_DLL_EXPORT deeNoModuleFound : public deException{
 public:
 	/**
 	 * \brief Create a new exception object.
@@ -326,7 +326,7 @@ public:
 /**
  * \brief Test failed Exception.
  */
-class deeTestFailed : public deException{
+class DE_DLL_EXPORT deeTestFailed : public deException{
 public:
 	/**
 	 * \brief Create a new exception object.
@@ -340,7 +340,7 @@ public:
 /**
  * \brief Assertion Exception.
  */
-class deeAssertion : public deException{
+class DE_DLL_EXPORT deeAssertion : public deException{
 public:
 	/**
 	 * \brief Create a new exception object.

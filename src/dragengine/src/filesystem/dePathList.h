@@ -22,13 +22,15 @@
 #ifndef _DEPATHLIST_H_
 #define _DEPATHLIST_H_
 
+#include "../dragengine_export.h"
+
 class decPath;
 
 
 /**
  * \brief List of path.
  */
-class dePathList{
+class DE_DLL_EXPORT dePathList{
 private:
 	decPath **pPath;
 	int pPathCount;

@@ -32,6 +32,7 @@
 #endif
 #define _WIN32_WINNT _WIN32_WINNT_WIN7
 
+
 // required before shlobj.h or FOLDERID_* constants are not present
 #ifndef INITKNOWNFOLDERS
 #define INITKNOWNFOLDERS
@@ -68,52 +69,73 @@ pCurWindow( NULL )
 	pScreenWidth = GetSystemMetrics( SM_CXFULLSCREEN );
 	pScreenHeight = GetSystemMetrics( SM_CYFULLSCREEN );
 	
+	#ifndef OS_W32_APPSTORE
 	const char *value;
+	#endif
 	decPath path;
 	
+	#ifdef OS_W32_APPSTORE
+	pPathEngineBase = GetRegistryValue( "SOFTWARE\\Drag[en]gine", "PathEngine", "" );
+	if( pPathEngineBase.IsEmpty() ){
+		DETHROW_INFO( deeInvalidParam, "PathEngine registry value is not set" );
+	}
+	#else
 	pPathEngineBase = GetRegistryValue( "SOFTWARE\\Drag[en]gine", "PathEngine", DE_ENGINE_BASE_PATH );
+	#endif
 	
 	pPathEngine = pPathEngineBase + "\\Data";
+	#ifndef OS_W32_APPSTORE
 	value = getenv( "DE_ENGINE_PATH" );
 	if( value ){
 		pPathEngine = value;
 	}
+	#endif
 	pPathEngine = ParseNativePath( pPathEngine );
 	
 	//pPathShare = GetRegistryValue( "SOFTWARE\\Drag[en]gine", "PathEngineShare", DE_SHARE_PATH );
 	pPathShare = pPathEngineBase + "\\Share";
+	#ifndef OS_W32_APPSTORE
 	value = getenv( "DE_SHARE_PATH" );
 	if( value ){
 		pPathShare = value;
 	}
+	#endif
 	pPathShare = ParseNativePath( pPathShare );
 	
 	pPathSystemConfig = pPathEngineBase + "\\Config";
+	#ifndef OS_W32_APPSTORE
 	value = getenv( "DE_CONFIG_PATH" );
 	if( value ){
 		pPathSystemConfig = value;
 	}
+	#endif
 	pPathSystemConfig = ParseNativePath( pPathSystemConfig );
 	
 	pPathUserConfig = "@RoamingAppData\\Dragengine\\Config";
+	#ifndef OS_W32_APPSTORE
 	value = getenv( "DE_CONFIG_PATH" );
 	if( value ){
 		pPathUserConfig = value;
 	}
+	#endif
 	pPathUserConfig = ParseNativePath( pPathUserConfig );
 	
 	pPathUserCache = "@LocalAppData\\Dragengine\\Cache";
+	#ifndef OS_W32_APPSTORE
 	value = getenv( "DE_CACHE_PATH" );
 	if( value ){
 		pPathUserCache = value;
 	}
+	#endif
 	pPathUserCache = ParseNativePath( pPathUserCache );
 	
 	pPathUserCapture = "@LocalAppData\\Dragengine\\Capture";
+	#ifndef OS_W32_APPSTORE
 	value = getenv( "DE_CAPTURE_PATH" );
 	if( value ){
 		pPathUserCapture = value;
 	}
+	#endif
 	pPathUserCapture = ParseNativePath( pPathUserCapture );
 }
 
@@ -409,7 +431,7 @@ void deOSWindows::SetRegistryValue( const char *key, const char *entry, const ch
 		DETHROW( deeInvalidAction );
 	}
 	
-	if( RegSetValueExA( hKey, entry, 0, REG_SZ, ( BYTE* )value, strlen( value ) ) != ERROR_SUCCESS ){
+	if( RegSetValueExA( hKey, entry, 0, REG_SZ, ( BYTE* )value, ( DWORD )strlen( value ) ) != ERROR_SUCCESS ){
 		RegCloseKey( hKey );
 		DETHROW( deeInvalidAction );
 	}

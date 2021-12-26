@@ -33,7 +33,7 @@
  * tapering is multiplied with the x and z half extends at the top of
  * the box.
  */
-class decShapeBox : public decShape{
+class DE_DLL_EXPORT decShapeBox : public decShape{
 private:
 	decVector pHalfExtends;
 	decVector2 pTapering;

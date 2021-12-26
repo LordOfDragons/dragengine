@@ -42,7 +42,7 @@
  * cover textures with lower decal offset.
  * 
  */
-class deModelTexture{
+class DE_DLL_EXPORT deModelTexture{
 private:
 	decString pName;
 	int pWidth;

@@ -35,7 +35,7 @@
  * result of the entire group of rules. Usefule to compose a
  * state using various rules and to apply them as a whole.
  */
-class deAnimatorRuleGroup : public deAnimatorRule{
+class DE_DLL_EXPORT deAnimatorRuleGroup : public deAnimatorRule{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<deAnimatorRuleGroup> Ref;

@@ -40,7 +40,7 @@ class deDynamicSkin;
  * itself is used. Otherwise the first texture in the assigned skin is used to
  * replace the texture.
  */
-class deComponentTexture{
+class DE_DLL_EXPORT deComponentTexture{
 private:
 	deSkin *pSkin;
 	int pTexture;

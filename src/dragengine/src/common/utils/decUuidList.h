@@ -30,7 +30,7 @@
  * 
  * The uuids in the list are allowed the be duplicates of each other but can not be NULL.
  */
-class decUuidList{
+class DE_DLL_EXPORT decUuidList{
 private:
 	decUuid *pUuids;
 	int pUuidCount;

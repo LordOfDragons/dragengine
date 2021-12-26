@@ -38,7 +38,7 @@ class deFileResourceManager;
  * Asynchron resources exist in a thread alongside the main thread and can require
  * special treatment in single type modules.
  */
-class deFileResource : public deResource{
+class DE_DLL_EXPORT deFileResource : public deResource{
 private:
 	deVirtualFileSystem *pVirtualFileSystem;
 	decString pFilename;

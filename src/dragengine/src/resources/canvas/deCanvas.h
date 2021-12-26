@@ -49,7 +49,7 @@ class deCanvasView;
  * This uncouples the render ordering from the actual ordering of the canvas objects
  * in a deCanvasView. If two canvas have the same order the render order is undefined.
  */
-class deCanvas : public deResource{
+class DE_DLL_EXPORT deCanvas : public deResource{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<deCanvas> Ref;

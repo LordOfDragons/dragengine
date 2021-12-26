@@ -30,7 +30,7 @@
 /**
  * \brief Video information.
  */
-class deBaseVideoInfo{
+class DE_DLL_EXPORT deBaseVideoInfo{
 private:
 	int pWidth;
 	int pHeight;

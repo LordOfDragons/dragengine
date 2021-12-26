@@ -32,7 +32,7 @@
  * been visited. Provides also save casting. If the cast is not valid an exception
  * is raised.
  */
-class deSkinPropertyVisitorIdentify : public deSkinPropertyVisitor{
+class DE_DLL_EXPORT deSkinPropertyVisitorIdentify : public deSkinPropertyVisitor{
 public:
 	/** \brief Property types. */
 	enum ePropertyTypes{

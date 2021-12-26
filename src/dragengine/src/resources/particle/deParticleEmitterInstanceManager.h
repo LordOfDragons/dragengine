@@ -32,7 +32,7 @@ class deParticleEmitterInstance;
 /**
  * \brief Particle Emitter Instance Manager.
  */
-class deParticleEmitterInstanceManager : public deResourceManager{
+class DE_DLL_EXPORT deParticleEmitterInstanceManager : public deResourceManager{
 private:
 	deResourceList pInstances;
 	

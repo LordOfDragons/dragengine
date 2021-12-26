@@ -32,7 +32,7 @@ class deSoundLevelMeter;
 /**
  * \brief Sound level meter resourse manager.
  */
-class deSoundLevelMeterManager : public deResourceManager{
+class DE_DLL_EXPORT deSoundLevelMeterManager : public deResourceManager{
 private:
 	deResourceList pSoundLevelMeters;
 	

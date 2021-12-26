@@ -75,7 +75,7 @@ class deRenderWindowManager;
  * carry over the value. The OS specific functions are convenient if you work
  * with only one OS or you need specific code anyways.
  */
-class deRenderWindow : public deResource{
+class DE_DLL_EXPORT deRenderWindow : public deResource{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<deRenderWindow> Ref;

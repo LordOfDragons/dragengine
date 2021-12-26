@@ -31,7 +31,7 @@ class deColliderComponent;
 /**
  * \brief Collider visitor.
  */
-class deColliderVisitor{
+class DE_DLL_EXPORT deColliderVisitor{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

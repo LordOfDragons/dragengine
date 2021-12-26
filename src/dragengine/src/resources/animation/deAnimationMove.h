@@ -33,7 +33,7 @@ class deAnimationKeyframeList;
  * \brief Animation Move.
  *
  */
-class deAnimationMove{
+class DE_DLL_EXPORT deAnimationMove{
 private:
 	decString pName;
 	float pPlaytime;

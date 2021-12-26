@@ -33,7 +33,7 @@ class deParticleEmitter;
  * \brief Particle Emitter Manager.
  * Manages a list of particle emitters.
  */
-class deParticleEmitterManager : public deResourceManager{
+class DE_DLL_EXPORT deParticleEmitterManager : public deResourceManager{
 private:
 	deResourceList pParticleEmitters;
 	

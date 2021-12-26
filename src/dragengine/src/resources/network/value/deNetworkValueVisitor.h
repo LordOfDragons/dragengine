@@ -37,7 +37,7 @@ class deNetworkValueQuaternion;
 /**
  * \brief Network Value Visitor Class.
  */
-class deNetworkValueVisitor{
+class DE_DLL_EXPORT deNetworkValueVisitor{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

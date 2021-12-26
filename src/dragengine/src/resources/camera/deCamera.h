@@ -71,7 +71,7 @@ class deBaseGraphicCamera;
  *    texture properties and especially works well with canvas systems since it is an
  *    image with depth 1 as most other images are
  */
-class deCamera : public deResource{
+class DE_DLL_EXPORT deCamera : public deResource{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<deCamera> Ref;

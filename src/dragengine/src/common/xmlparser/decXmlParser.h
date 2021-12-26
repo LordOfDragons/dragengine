@@ -51,7 +51,7 @@ class deLogger;
  * }
  * \endcode
  */
-class decXmlParser{
+class DE_DLL_EXPORT decXmlParser{
 private:
 	decBaseFileReader *pFile;
 	int pLine;

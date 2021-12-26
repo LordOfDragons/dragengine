@@ -50,7 +50,7 @@ class deWorld;
  * set in the meter. Furthermore meters can be enabled and disabled to stop measuring while
  * not in use without needing to remove and add the meter from the game all the time.
  */
-class deSoundLevelMeter : public deResource{
+class DE_DLL_EXPORT deSoundLevelMeter : public deResource{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<deSoundLevelMeter> Ref;
@@ -72,7 +72,7 @@ public:
 	/**
 	 * \brief Audible speaker.
 	 */
-	class cAudibleSpeaker {
+	class DE_DLL_EXPORT cAudibleSpeaker {
 	private:
 		deSpeakerReference pSpeaker;
 		float pVolume;

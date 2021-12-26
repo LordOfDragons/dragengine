@@ -34,7 +34,7 @@
  * decoder exists. The user decides if the data is read synchronous or asynchronous.
  * The sound information is not replicated in the decoder but found in the source video resource.
  */
-class deBaseVideoAudioDecoder{
+class DE_DLL_EXPORT deBaseVideoAudioDecoder{
 private:
 	decBaseFileReaderReference pFile;
 	

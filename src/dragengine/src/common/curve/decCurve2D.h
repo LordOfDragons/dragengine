@@ -41,7 +41,7 @@
  * this requires storing point parameters for evaluation and
  * doing this for each evaluation of a point is slow.
  */
-class decCurve2D{
+class DE_DLL_EXPORT decCurve2D{
 private:
 	decVector2 *pPoints;
 	int pPointCount;

@@ -59,7 +59,7 @@ class deSpeaker;
  * input system writes to and that the scripting system retrieves from.
  * Conversion of events has to be done anyways.
  */
-class deScriptingSystem : public deBaseSystem{
+class DE_DLL_EXPORT deScriptingSystem : public deBaseSystem{
 private:
 	decString pScriptDirectory;
 	decString pGameObject;

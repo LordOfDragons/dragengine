@@ -41,7 +41,7 @@
  * you have to detach and reattach it again and update the
  * connections again.
  */
-class deAnimatorRuleSubAnimator : public deAnimatorRule{
+class DE_DLL_EXPORT deAnimatorRuleSubAnimator : public deAnimatorRule{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<deAnimatorRuleSubAnimator> Ref;

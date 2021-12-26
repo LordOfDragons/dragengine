@@ -37,7 +37,7 @@ class deEffectDistortImage;
  *
  * Visits effects.
  */
-class deEffectVisitor{
+class DE_DLL_EXPORT deEffectVisitor{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

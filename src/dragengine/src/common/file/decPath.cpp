@@ -25,6 +25,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "../../dragengine_configuration.h"
+
 #ifdef OS_W32
 	#include <direct.h>
 	#include "../string/unicode/decUnicodeString.h"

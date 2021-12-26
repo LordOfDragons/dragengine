@@ -22,11 +22,13 @@
 #ifndef _DEBASEGRAPHICVIDEOPLAYER_H_
 #define _DEBASEGRAPHICVIDEOPLAYER_H_
 
+#include "../../../dragengine_export.h"
+
 
 /**
  * \brief Graphic Module Video Player Peer.
  */
-class deBaseGraphicVideoPlayer{
+class DE_DLL_EXPORT deBaseGraphicVideoPlayer{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

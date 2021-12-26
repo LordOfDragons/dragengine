@@ -22,12 +22,14 @@
 #ifndef _DEBASEPHYSICSRIG_H_
 #define _DEBASEPHYSICSRIG_H_
 
+#include "../../../dragengine_export.h"
+
 
 /**
  * \brief Physics Module Rig Peer.
  *
  */
-class deBasePhysicsRig{
+class DE_DLL_EXPORT deBasePhysicsRig{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

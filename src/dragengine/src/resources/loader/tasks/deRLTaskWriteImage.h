@@ -29,7 +29,7 @@
 /**
  * \brief Write image resource loader task.
  */
-class deRLTaskWriteImage : public deResourceLoaderTask {
+class DE_DLL_EXPORT deRLTaskWriteImage : public deResourceLoaderTask {
 private:
 	deImageReference pImage;
 	bool pSucceeded;

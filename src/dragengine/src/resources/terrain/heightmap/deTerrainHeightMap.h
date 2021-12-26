@@ -57,7 +57,7 @@ class deImage;
  * influence physics or audio propagation. If the height map is missing all grid
  * points take on the height of the offset parameter.
  */
-class deTerrainHeightMap{
+class DE_DLL_EXPORT deTerrainHeightMap{
 private:
 	decPoint pPointCount;
 	decVector2 pSize;

@@ -29,7 +29,7 @@
 /**
  * \brief Synthesizer sound source.
  */
-class deSynthesizerSourceSound : public deSynthesizerSource{
+class DE_DLL_EXPORT deSynthesizerSourceSound : public deSynthesizerSource{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<deSynthesizerSourceSound> Ref;

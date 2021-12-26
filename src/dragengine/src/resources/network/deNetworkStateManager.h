@@ -32,7 +32,7 @@ class deNetworkState;
 /**
  * \brief Network State Resource Manager.
  */
-class deNetworkStateManager : public deResourceManager{
+class DE_DLL_EXPORT deNetworkStateManager : public deResourceManager{
 private:
 	deResourceList pStates;
 	

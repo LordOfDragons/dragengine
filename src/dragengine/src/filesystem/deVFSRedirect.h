@@ -36,7 +36,7 @@ class deVirtualFileSystem;
  * not possible for them to detect cycling path links resulting in stack
  * overflows.
  */
-class deVFSRedirect : public deVFSContainer{
+class DE_DLL_EXPORT deVFSRedirect : public deVFSContainer{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<deVFSRedirect> Ref;

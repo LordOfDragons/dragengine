@@ -37,7 +37,7 @@ class deAnimator;
  * it as pointer and memory allocate it. For this reason the destructor
  * is on purpose not virtual.
  */
-class deAnimatorReference : protected deObjectReference {
+class DE_DLL_EXPORT deAnimatorReference : protected deObjectReference {
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

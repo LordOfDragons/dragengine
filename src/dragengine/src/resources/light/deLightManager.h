@@ -33,7 +33,7 @@ class deLight;
  * \brief Scene Light Resource Manager.
  *
  */
-class deLightManager : public deResourceManager{
+class DE_DLL_EXPORT deLightManager : public deResourceManager{
 private:
 	deResourceList pLights;
 	

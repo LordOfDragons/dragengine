@@ -34,7 +34,7 @@ class deDecal;
  *
  * Peer for the height terrain resource used by graphic modules.
  */
-class deBaseAudioHeightTerrain{
+class DE_DLL_EXPORT deBaseAudioHeightTerrain{
 private:
 	
 public:

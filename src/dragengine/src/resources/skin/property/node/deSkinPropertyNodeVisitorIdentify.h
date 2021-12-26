@@ -28,7 +28,7 @@
 /**
  * \brief Skin constructed property node identify visitor.
  */
-class deSkinPropertyNodeVisitorIdentify : public deSkinPropertyNodeVisitor{
+class DE_DLL_EXPORT deSkinPropertyNodeVisitorIdentify : public deSkinPropertyNodeVisitor{
 public:
 	/** \brief Node types. */
 	enum eNodeTypes{

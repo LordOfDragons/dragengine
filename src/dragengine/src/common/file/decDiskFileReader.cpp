@@ -26,6 +26,7 @@
 
 #include "decDiskFileReader.h"
 #include "../exceptions.h"
+#include "../../dragengine_configuration.h"
 
 #ifdef OS_W32
 #include "../../app/deOSWindows.h"
@@ -60,8 +61,12 @@ decDiskFileReader::decDiskFileReader( const char *filename ){
 			DETHROW_INFO( deeFileNotFound, filename );
 		}
 		
+		#ifdef OS_W32_VS
+		if( _wfopen_s( &pFile, widePath, L"rb" ) ){
+		#else
 		pFile = _wfopen( widePath, L"rb" );
 		if( ! pFile ){
+		#endif
 			DETHROW_INFO( deeFileNotFound, filename );
 		}
 		

@@ -39,7 +39,7 @@ class deDebugDrawerShapeFace;
  * fill is set to white fully transparent. Both shapes and faces can be
  * used at the same time. If none of them are present nothing is drawn.
  */
-class deDebugDrawerShape{
+class DE_DLL_EXPORT deDebugDrawerShape{
 private:
 	decVector pPosition;
 	decQuaternion pOrientation;

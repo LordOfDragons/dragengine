@@ -22,6 +22,8 @@
 #ifndef _DECPOINTERLIST_H_
 #define _DECPOINTERLIST_H_
 
+#include "../../dragengine_export.h"
+
 
 /**
  * \brief List of pointers.
@@ -29,7 +31,7 @@
  * All pointers including NULL are allowed. Pointers can be included
  * multiple times in the list.
  */
-class decPointerList{
+class DE_DLL_EXPORT decPointerList{
 private:
 	void **pPointers;
 	int pPointerCount;

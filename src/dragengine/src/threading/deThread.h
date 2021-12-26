@@ -38,7 +38,7 @@
  * Runs a thread. Thin layer over the operating system thread support.
  * Subclass to add your own run function.
  */
-class deThread{
+class DE_DLL_EXPORT deThread{
 private:
 #if defined OS_UNIX || defined OS_BEOS
 	pthread_t pThread;

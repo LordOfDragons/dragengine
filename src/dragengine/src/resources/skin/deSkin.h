@@ -46,7 +46,7 @@ class deBasePhysicsSkin;
  * you reference them using their name from inside your code. Renderables
  * can be shared which is why they are stored outside the data trees.
  */
-class deSkin : public deFileResource{
+class DE_DLL_EXPORT deSkin : public deFileResource{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<deSkin> Ref;

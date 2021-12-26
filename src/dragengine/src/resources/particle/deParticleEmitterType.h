@@ -48,7 +48,7 @@
  * particle bounces off the surface if it is not set to be destroyed. Values in between blend
  * linear between these two directions. The default value is 0 hence along the collision normal.
  */
-class deParticleEmitterType{
+class DE_DLL_EXPORT deParticleEmitterType{
 public:
 	/** \brief Particle parameters. */
 	enum eParameters{

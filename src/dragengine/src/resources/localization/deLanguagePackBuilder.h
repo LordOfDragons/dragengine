@@ -22,6 +22,8 @@
 #ifndef _DELANGUAGEPACKBUILDER_H_
 #define _DELANGUAGEPACKBUILDER_H_
 
+#include "../../dragengine_export.h"
+
 class deLanguagePack;
 
 
@@ -32,7 +34,7 @@ class deLanguagePack;
  * from a file in the file system. Usually used by editors to create language pack resources
  * from the edited data.
  */
-class deLanguagePackBuilder{
+class DE_DLL_EXPORT deLanguagePackBuilder{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

@@ -127,7 +127,7 @@ class decTimer;
  * crashes. Wrapping all in an try-catch clause should
  * be enough for testing to be safe.
  */
-class deEngine{
+class DE_DLL_EXPORT deEngine{
 private:
 	// application
 	deCmdLineArgs *pArgs;

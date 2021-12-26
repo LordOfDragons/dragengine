@@ -28,7 +28,7 @@
  * translation part. For more complex transformations a 4x4 matrix
  * can be used too.
  */
-class decTexMatrix{
+class DE_DLL_EXPORT decTexMatrix{
 public:
 	/**
 	 * \name Cells

@@ -34,7 +34,7 @@ class deSkin;
 /**
  * \brief Scene Component Resource Manager.
  */
-class deComponentManager : public deResourceManager{
+class DE_DLL_EXPORT deComponentManager : public deResourceManager{
 private:
 	deResourceList pComponents;
 	

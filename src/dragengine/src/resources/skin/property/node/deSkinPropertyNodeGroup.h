@@ -32,7 +32,7 @@
  * 
  * Contains a list of nodes applied from first to last.
  */
-class deSkinPropertyNodeGroup : public deSkinPropertyNode{
+class DE_DLL_EXPORT deSkinPropertyNodeGroup : public deSkinPropertyNode{
 private:
 	decPointerList pNodes;
 	
