@@ -22,6 +22,8 @@
 #ifndef _DECSHAPELIST_H_
 #define _DECSHAPELIST_H_
 
+#include "../../dragengine_export.h"
+
 class decShape;
 class decShapeVisitor;
 
