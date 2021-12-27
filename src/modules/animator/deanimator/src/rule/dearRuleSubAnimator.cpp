@@ -21,7 +21,6 @@
 
 #include <stdio.h>
 #include <string.h>
-#include <unistd.h>
 
 #include "dearRuleSubAnimator.h"
 #include "dearCreateRuleVisitor.h"
@@ -317,7 +316,7 @@ void dearRuleSubAnimator::pCreateRules( const decIntList &controllerMapping ){
 				link = NULL;
 			}
 			
-		}catch( const deException &exception ){
+		}catch( const deException & ){
 			if( link ){
 				delete link;
 			}

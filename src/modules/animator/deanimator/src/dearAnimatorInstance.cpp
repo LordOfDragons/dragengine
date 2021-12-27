@@ -21,7 +21,6 @@
 
 #include <stdio.h>
 #include <string.h>
-#include <unistd.h>
 
 #include "dearAnimator.h"
 #include "dearAnimatorInstance.h"
@@ -656,7 +655,7 @@ void dearAnimatorInstance::pAddAnimatorLinks(){
 				link = NULL;
 			}
 			
-		}catch( const deException &exception ){
+		}catch( const deException & ){
 			if( link ){
 				delete link;
 			}

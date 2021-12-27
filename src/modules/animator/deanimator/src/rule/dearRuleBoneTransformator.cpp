@@ -22,7 +22,6 @@
 #include <math.h>
 #include <stdio.h>
 #include <string.h>
-#include <unistd.h>
 
 #include "dearRuleBoneTransformator.h"
 #include "../dearBoneState.h"

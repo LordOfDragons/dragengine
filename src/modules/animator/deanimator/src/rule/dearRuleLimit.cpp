@@ -22,7 +22,6 @@
 #include <math.h>
 #include <stdio.h>
 #include <string.h>
-#include <unistd.h>
 
 #include "dearRuleLimit.h"
 #include "../dearBoneState.h"
