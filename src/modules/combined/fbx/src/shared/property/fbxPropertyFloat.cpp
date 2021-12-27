@@ -71,11 +71,11 @@ bool fbxPropertyFloat::GetValueAsBool() const{
 }
 
 int fbxPropertyFloat::GetValueAsInt() const{
-	return pValue;
+	return ( int )pValue;
 }
 
 int64_t fbxPropertyFloat::GetValueAsLong() const{
-	return pValue;
+	return ( int64_t )pValue;
 }
 
 float fbxPropertyFloat::GetValueAsFloat() const{

@@ -38,7 +38,7 @@
  * \warning Do not use template instances in public library interfaces.
  *          Template ABIs are \b not stable by design.
  */
-template<class T> class DE_DLL_EXPORT deTObjectReference{
+template<class T> class deTObjectReference{
 private:
 	T *pObject;
 	

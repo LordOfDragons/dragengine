@@ -123,7 +123,7 @@ int64_t fbxPropertyArrayInteger::GetValueAtAsLong( int index ) const{
 }
 
 float fbxPropertyArrayInteger::GetValueAtAsFloat( int index ) const{
-	return GetValueAt( index );
+	return ( float )GetValueAt( index );
 }
 
 double fbxPropertyArrayInteger::GetValueAtAsDouble( int index ) const{

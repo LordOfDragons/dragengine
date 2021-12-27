@@ -372,43 +372,43 @@ void fbxScene::Prepare( deBaseModule &module ){
 		
 		switch( upAxis ){
 		case 0:
-			pTransformation.a12 = upAxisSign; pTransformation.a22 = 0.0f; pTransformation.a32 = 0.0f;
+			pTransformation.a12 = ( float )upAxisSign; pTransformation.a22 = 0.0f; pTransformation.a32 = 0.0f;
 			break;
 			
 		case 1:
-			pTransformation.a12 = 0.0f; pTransformation.a22 = upAxisSign; pTransformation.a32 = 0.0f;
+			pTransformation.a12 = 0.0f; pTransformation.a22 = ( float )upAxisSign; pTransformation.a32 = 0.0f;
 			break;
 			
 		case 2:
-			pTransformation.a12 = 0.0f; pTransformation.a22 = 0.0f; pTransformation.a32 = upAxisSign;
+			pTransformation.a12 = 0.0f; pTransformation.a22 = 0.0f; pTransformation.a32 = ( float )upAxisSign;
 			break;
 		}
 		
 		switch( frontAxis ){
 		case 0:
-			pTransformation.a13 = frontAxisSign; pTransformation.a23 = 0.0f; pTransformation.a33 = 0.0f;
+			pTransformation.a13 = ( float )frontAxisSign; pTransformation.a23 = 0.0f; pTransformation.a33 = 0.0f;
 			break;
 			
 		case 1:
-			pTransformation.a13 = 0.0f; pTransformation.a23 = frontAxisSign; pTransformation.a33 = 0.0f;
+			pTransformation.a13 = 0.0f; pTransformation.a23 = ( float )frontAxisSign; pTransformation.a33 = 0.0f;
 			break;
 			
 		case 2:
-			pTransformation.a13 = 0.0f; pTransformation.a23 = 0.0f; pTransformation.a33 = frontAxisSign;
+			pTransformation.a13 = 0.0f; pTransformation.a23 = 0.0f; pTransformation.a33 = ( float )frontAxisSign;
 			break;
 		}
 		
 		switch( coordAxis ){
 		case 0:
-			pTransformation.a11 = coordAxisSign; pTransformation.a21 = 0.0f; pTransformation.a31 = 0.0f;
+			pTransformation.a11 = ( float )coordAxisSign; pTransformation.a21 = 0.0f; pTransformation.a31 = 0.0f;
 			break;
 			
 		case 1:
-			pTransformation.a11 = 0.0f; pTransformation.a21 = coordAxisSign; pTransformation.a31 = 0.0f;
+			pTransformation.a11 = 0.0f; pTransformation.a21 = ( float )coordAxisSign; pTransformation.a31 = 0.0f;
 			break;
 			
 		case 2:
-			pTransformation.a11 = 0.0f; pTransformation.a21 = 0.0f; pTransformation.a31 = coordAxisSign;
+			pTransformation.a11 = 0.0f; pTransformation.a21 = 0.0f; pTransformation.a31 = ( float )coordAxisSign;
 			break;
 		}
 	}
