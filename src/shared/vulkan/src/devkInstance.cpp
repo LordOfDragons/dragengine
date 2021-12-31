@@ -133,6 +133,14 @@ devkDevice::Ref devkInstance::CreateDeviceHeadlessComputeOnly( int index ){
 	return CreateDevice( index, config );
 }
 
+devkDevice::Ref devkInstance::CreateDeviceHeadlessGraphic( int index ){
+	devkDevice::DeviceConfig config;
+	config.graphicQueueCount = 1;
+	config.computeQueueCount = 1;
+	config.transferQueueCount = 1;
+	return CreateDevice( index, config );
+}
+
 
 
 

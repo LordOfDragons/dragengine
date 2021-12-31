@@ -60,14 +60,10 @@ devkPipeline( device, configuration )
 		specializationInfo.pMapEntries = specialization->GetEntries();
 	}
 	
-	pipelineInfo.stage.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
-	pipelineInfo.stage.stage = VK_SHADER_STAGE_COMPUTE_BIT;
-	pipelineInfo.stage.module = configuration.GetShaderCompute()->GetModule();
-	pipelineInfo.stage.pName = "main";
+	VkSpecializationInfo * const useSpecialization = specialization ? &specializationInfo : nullptr;
 	
-	if( specialization ){
-		pipelineInfo.stage.pSpecializationInfo = &specializationInfo;
-	}
+	pInitShaderStage( pipelineInfo.stage, VK_SHADER_STAGE_COMPUTE_BIT,
+		*configuration.GetShaderCompute(), useSpecialization );
 	
 	VK_CHECK( vulkan, pDevice.vkCreateComputePipelines( device.GetDevice(),
 		pCache, 1, &pipelineInfo, VK_NULL_HANDLE, &pPipeline ) );

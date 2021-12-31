@@ -19,50 +19,44 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef _DEVKPIPELINE_H_
-#define _DEVKPIPELINE_H_
+#ifndef _DEVKRENDERPASS_H_
+#define _DEVKRENDERPASS_H_
 
-#include "devkPipelineConfiguration.h"
+#include "devkRenderPassConfiguration.h"
 #include "../devkBasics.h"
 
 #include <dragengine/deObject.h>
 
 class devkDevice;
-class devkDescriptorSetLayout;
-class devkShaderModule;
-class decPath;
 
 
 /**
- * Vulkan pipeline.
+ * Vulkan render pass.
  */
-class devkPipeline : public deObject{
+class devkRenderPass : public deObject{
 public:
 	/** Reference. */
-	typedef deTObjectReference<devkPipeline> Ref;
+	typedef deTObjectReference<devkRenderPass> Ref;
 	
 	
 	
 protected:
 	devkDevice &pDevice;
-	const devkPipelineConfiguration pConfiguration;
+	const devkRenderPassConfiguration pConfiguration;
 	
-	VkPipelineBindPoint pBindPoint;
-	
-	VkPipelineLayout pLayout;
-	VkPipeline pPipeline;
-	VkPipelineCache pCache;
-	bool pSaveCache;
+	VkRenderPass pRenderPass;
 	
 	
-protected:
+	
+public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create pipeline. */
-	devkPipeline( devkDevice &device, const devkPipelineConfiguration &configuration );
+	devkRenderPass( devkDevice &device, const devkRenderPassConfiguration &configuration );
 	
+protected:
 	/** Clean up pipeline. */
-	virtual ~devkPipeline();
+	virtual ~devkRenderPass();
 	/*@}*/
 	
 	
@@ -74,31 +68,16 @@ public:
 	inline devkDevice &GetDevice() const{ return pDevice; }
 	
 	/** Configuration. */
-	inline const devkPipelineConfiguration &GetConfiguration() const{ return pConfiguration; }
+	inline const devkRenderPassConfiguration &GetConfiguration() const{ return pConfiguration; }
 	
-	/** Bind point. */
-	inline VkPipelineBindPoint GetBindPoint() const{ return pBindPoint; }
-	
-	/** Pipeline layout. */
-	inline VkPipelineLayout GetLayout() const{ return pLayout; }
-	
-	/** Pipeline. */
-	inline VkPipeline GetPipeline() const{ return pPipeline; }
+	/** RenderPass. */
+	inline VkRenderPass GetRenderPass() const{ return pRenderPass; }
 	/*@}*/
-	
-	
-	
-protected:
-	void pInitShaderStage( VkPipelineShaderStageCreateInfo &info,
-		VkShaderStageFlagBits stage, devkShaderModule &module,
-		const VkSpecializationInfo *specialization = nullptr );
 	
 	
 	
 private:
 	void pCleanUp();
-	decPath pCachePath() const;
-	void pDropCache();
 };
 
 #endif

@@ -139,14 +139,9 @@ const devkDescriptorSetLayoutConfiguration &configuration ) const{
 		return false;
 	}
 	
-	int i;
-	for( i=0; i<pLayoutBindingCount; i++ ){
-		if( pLayoutBindings[ i ].binding != configuration.pLayoutBindings[ i ].binding
-		|| pLayoutBindings[ i ].descriptorCount != configuration.pLayoutBindings[ i ].descriptorCount
-		|| pLayoutBindings[ i ].descriptorType != configuration.pLayoutBindings[ i ].descriptorType
-		|| pLayoutBindings[ i ].stageFlags != configuration.pLayoutBindings[ i ].stageFlags ){
-			return false;
-		}
+	if( pLayoutBindingCount > 0 && memcmp( pLayoutBindings, configuration.pLayoutBindings,
+	sizeof( VkDescriptorSetLayoutBinding ) * pLayoutBindingCount ) ){
+		return false;
 	}
 	
 	return true;
@@ -158,9 +153,9 @@ const devkDescriptorSetLayoutConfiguration &configuration ){
 	pShaderStageFlags = configuration.pShaderStageFlags;
 	
 	SetLayoutBindingCount( configuration.pLayoutBindingCount );
-	int i;
-	for( i=0; i<configuration.pLayoutBindingCount; i++ ){
-		pLayoutBindings[ i ] = configuration.pLayoutBindings[ i ];
+	if( pLayoutBindingCount > 0 ){
+		memcpy( pLayoutBindings, configuration.pLayoutBindings,
+			sizeof( VkDescriptorSetLayoutBinding ) * pLayoutBindingCount );
 	}
 	
 	return *this;

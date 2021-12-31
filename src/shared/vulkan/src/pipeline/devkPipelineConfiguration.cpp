@@ -48,7 +48,20 @@ pShaderMiss( nullptr ),
 pShaderIntersection( nullptr ),
 pShaderCallable( nullptr ),
 pShaderTask( nullptr ),
-pShaderMesh( nullptr ){
+pShaderMesh( nullptr ),
+pTopology( VK_PRIMITIVE_TOPOLOGY_TRIANGLE_FAN ),
+pCulling( VK_CULL_MODE_NONE ),
+pBlendColor( ebDisable ),
+pBlendAlpha( ebDisable ),
+pDepthWriteMask( false ),
+pDepthFunction( VK_COMPARE_OP_LESS_OR_EQUAL ),
+pDepthTest( false ),
+pStencilTest( false )
+{
+	pColorWriteMask[ 0 ] = true;
+	pColorWriteMask[ 1 ] = true;
+	pColorWriteMask[ 2 ] = true;
+	pColorWriteMask[ 3 ] = true;
 }
 
 devkPipelineConfiguration::devkPipelineConfiguration( const devkPipelineConfiguration &configuration ) :
@@ -67,8 +80,20 @@ pShaderMiss( nullptr ),
 pShaderIntersection( nullptr ),
 pShaderCallable( nullptr ),
 pShaderTask( nullptr ),
-pShaderMesh( nullptr )
+pShaderMesh( nullptr ),
+pTopology( VK_PRIMITIVE_TOPOLOGY_TRIANGLE_FAN ),
+pCulling( VK_CULL_MODE_NONE ),
+pBlendColor( ebDisable ),
+pBlendAlpha( ebDisable ),
+pDepthWriteMask( false ),
+pDepthFunction( VK_COMPARE_OP_LESS_OR_EQUAL ),
+pDepthTest( false ),
+pStencilTest( false )
 {
+	pColorWriteMask[ 0 ] = true;
+	pColorWriteMask[ 1 ] = true;
+	pColorWriteMask[ 2 ] = true;
+	pColorWriteMask[ 3 ] = true;
 	*this = configuration;
 }
 
@@ -87,6 +112,11 @@ void devkPipelineConfiguration::SetType( eType type ){
 void devkPipelineConfiguration::SetDescriptorSetLayout( devkDescriptorSetLayout *layout ){
 	pDescriptorSetLayout = layout;
 }
+
+void devkPipelineConfiguration::SetRenderPass( devkRenderPass *renderPass ){
+	pRenderPass = renderPass;
+}
+
 
 
 void devkPipelineConfiguration::SetShaderVertex( devkShaderModule *shader ){
@@ -158,12 +188,79 @@ void devkPipelineConfiguration::SetSpecialization( devkSpecialization *specializ
 
 
 
+void devkPipelineConfiguration::SetTopology( VkPrimitiveTopology topology ){
+	pTopology = topology;
+}
+
+void devkPipelineConfiguration::SetCulling( VkCullModeFlagBits culling ){
+	pCulling = culling;
+}
+
+void devkPipelineConfiguration::SetBlendColor( eBlending blending ){
+	pBlendColor = blending;
+}
+
+void devkPipelineConfiguration::SetBlendAlpha( eBlending blending ){
+	pBlendAlpha = blending;
+}
+
+void devkPipelineConfiguration::SetBlending( eBlending blending ){
+	pBlendColor = blending;
+	pBlendAlpha = blending;
+}
+
+bool devkPipelineConfiguration::GetColorWriteMaskAt( int component ) const{
+	if( component < 0 ){
+		DETHROW_INFO( deeInvalidParam, "component < 0" );
+	}
+	if( component > 3 ){
+		DETHROW_INFO( deeInvalidParam, "component > 3" );
+	}
+	return pColorWriteMask[ component ];
+}
+
+void devkPipelineConfiguration::SetColorWriteMaskAt( int component, bool enable ){
+	if( component < 0 ){
+		DETHROW_INFO( deeInvalidParam, "component < 0" );
+	}
+	if( component > 3 ){
+		DETHROW_INFO( deeInvalidParam, "component > 3" );
+	}
+	pColorWriteMask[ component ] = enable;
+}
+
+void devkPipelineConfiguration::SetColorWriteMask( bool red, bool green, bool blue, bool alpha ){
+	pColorWriteMask[ 0 ] = red;
+	pColorWriteMask[ 1 ] = green;
+	pColorWriteMask[ 2 ] = blue;
+	pColorWriteMask[ 3 ] = alpha;
+}
+
+void devkPipelineConfiguration::SetDepthWriteMask( bool enable ){
+	pDepthWriteMask = enable;
+}
+
+void devkPipelineConfiguration::SetDepthFunction( VkCompareOp function ){
+	pDepthFunction = function;
+}
+
+void devkPipelineConfiguration::SetDepthTest( bool enable ){
+	pDepthTest = enable;
+}
+
+void devkPipelineConfiguration::SetStencilTest( bool enable ){
+	pStencilTest = enable;
+}
+
+
+
 // Operators
 //////////////
 
 bool devkPipelineConfiguration::operator==( const devkPipelineConfiguration &configuration ) const{
 	return pType == configuration.pType
 	&& pDescriptorSetLayout == configuration.pDescriptorSetLayout
+	&& pRenderPass == configuration.pRenderPass
 	&& pShaderVertex == configuration.pShaderVertex
 	&& pShaderTessellationControl == configuration.pShaderTessellationControl
 	&& pShaderTessellationEvaluation == configuration.pShaderTessellationEvaluation
@@ -178,12 +275,25 @@ bool devkPipelineConfiguration::operator==( const devkPipelineConfiguration &con
 	&& pShaderCallable == configuration.pShaderCallable
 	&& pShaderTask == configuration.pShaderTask
 	&& pShaderMesh == configuration.pShaderMesh
-	&& pSpecialization == configuration.pSpecialization;
+	&& pSpecialization == configuration.pSpecialization
+	&& pTopology == configuration.pTopology
+	&& pCulling == configuration.pCulling
+	&& pBlendColor == configuration.pBlendColor
+	&& pBlendAlpha == configuration.pBlendAlpha
+	&& pColorWriteMask[ 0 ] == configuration.pColorWriteMask[ 0 ]
+	&& pColorWriteMask[ 1 ] == configuration.pColorWriteMask[ 1 ]
+	&& pColorWriteMask[ 2 ] == configuration.pColorWriteMask[ 2 ]
+	&& pColorWriteMask[ 3 ] == configuration.pColorWriteMask[ 3 ]
+	&& pDepthWriteMask == configuration.pDepthWriteMask
+	&& pDepthFunction == configuration.pDepthFunction
+	&& pDepthTest == configuration.pDepthTest
+	&& pStencilTest == configuration.pStencilTest;
 }
 
 devkPipelineConfiguration &devkPipelineConfiguration::operator=( const devkPipelineConfiguration &configuration ){
 	pType = configuration.pType;
 	pDescriptorSetLayout = configuration.pDescriptorSetLayout;
+	pRenderPass = configuration.pRenderPass;
 	pShaderVertex = configuration.pShaderVertex;
 	pShaderTessellationControl = configuration.pShaderTessellationControl;
 	pShaderTessellationEvaluation = configuration.pShaderTessellationEvaluation;
@@ -199,5 +309,17 @@ devkPipelineConfiguration &devkPipelineConfiguration::operator=( const devkPipel
 	pShaderTask = configuration.pShaderTask;
 	pShaderMesh = configuration.pShaderMesh;
 	pSpecialization = configuration.pSpecialization;
+	pTopology = configuration.pTopology;
+	pCulling = configuration.pCulling;
+	pBlendColor = configuration.pBlendColor;
+	pBlendAlpha = configuration.pBlendAlpha;
+	pColorWriteMask[ 0 ] = configuration.pColorWriteMask[ 0 ];
+	pColorWriteMask[ 1 ] = configuration.pColorWriteMask[ 1 ];
+	pColorWriteMask[ 2 ] = configuration.pColorWriteMask[ 2 ];
+	pColorWriteMask[ 3 ] = configuration.pColorWriteMask[ 3 ];
+	pDepthWriteMask = configuration.pDepthWriteMask;
+	pDepthFunction = configuration.pDepthFunction;
+	pDepthTest = configuration.pDepthTest;
+	pStencilTest = configuration.pStencilTest;
 	return *this;
 }

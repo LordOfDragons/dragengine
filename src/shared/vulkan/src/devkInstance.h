@@ -148,6 +148,9 @@ public:
 	
 	/** Create headless device for compute use only. */
 	devkDevice::Ref CreateDeviceHeadlessComputeOnly( int index );
+	
+	/** Create headless device for graphic use. */
+	devkDevice::Ref CreateDeviceHeadlessGraphic( int index );
 	/*@}*/
 	
 	

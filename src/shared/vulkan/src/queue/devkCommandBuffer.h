@@ -35,6 +35,9 @@ class devkBuffer;
 class devkPipeline;
 class devkDescriptorSet;
 class devkQueue;
+class devkRenderPass;
+class devkFramebuffer;
+class devkImage;
 
 
 /**
@@ -53,6 +56,7 @@ private:
 	VkCommandBuffer pBuffer;
 	bool pRecording;
 	devkPipeline *pBoundPipeline;
+	devkRenderPass *pActiveRenderPass;
 	
 	VkFence pFence;
 	bool pFenceActive;
@@ -100,6 +104,19 @@ public:
 	/** Add buffer memory barrier between transfer writing and host reading. */
 	void BarrierTransferHost( devkBuffer *buffer );
 	
+	/** Add image memory barrier. */
+	void Barrier( devkImage *image, VkAccessFlags sourceAccessMask, VkAccessFlags destAccessMask,
+		VkPipelineStageFlags sourceStageMask, VkPipelineStageFlags destStageMask );
+	
+	/** Add image memory barrier between host writing and shader reading. */
+	void BarrierHostShader( devkImage *image, VkPipelineStageFlags destStageMask );
+	
+	/** Add image memory barrier between shader writing and transfer reading. */
+	void BarrierShaderTransfer( devkImage *image, VkPipelineStageFlags srcStageMask );
+	
+	/** Add image memory barrier between transfer writing and host reading. */
+	void BarrierTransferHost( devkImage *image );
+	
 	/** Bind pipeline. */
 	void BindPipeline( devkPipeline *pipeline );
 	
@@ -110,11 +127,26 @@ public:
 	void DispatchCompute( const decPoint3 &group );
 	void DispatchCompute( int groupX, int groupY, int groupZ );
 	
+	/** Begin render pass. */
+	void BeginRenderPass( devkRenderPass *renderPass, devkFramebuffer *framebuffer );
+	
+	void BeginRenderPass( devkRenderPass *renderPass, devkFramebuffer *framebuffer,
+		const decPoint &position, const decPoint &size );
+	
+	/** Draw. */
+	void Draw( int vertexCount, int instanceCount, int firstVertex = 0, int firstInstance = 0 );
+	
+	/** End render pass. */
+	void EndRenderPass();
+	
 	/** Write buffer data from host memory to device memory. */
 	void WriteBuffer( devkBuffer *buffer );
 	
 	/** Read buffer data from device memory to host memory. */
 	void ReadBuffer( devkBuffer *buffer );
+	
+	/** Read image data from device memory to host memory. */
+	void ReadImage( devkImage *image );
 	
 	/** End recording command buffer. */
 	void End();

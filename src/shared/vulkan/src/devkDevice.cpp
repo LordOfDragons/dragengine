@@ -28,6 +28,7 @@
 #include "devkGlobalFunctions.h"
 
 #include <dragengine/common/exceptions.h>
+#include <dragengine/common/math/decMath.h>
 #include <dragengine/systems/modules/deBaseModule.h>
 
 
@@ -223,14 +224,36 @@ void devkDevice::pCreateDevice(){
 	int queueCompute = -1;
 	int queueTransfer = -1;
 	
+	// this is messy here due to the way vulkan defines things. the queue family index is not
+	// allowed to be used multiple times. but graphic queues are required to support also compute
+	// and transfer queues. so we have to do some juggling here to fix this mess.
+	int allowGraphicQueueCount = 0;
+	int allowComputeQueueCount = 0;
+	int allowTransferQueueCount = 0;
+	
 	if( pConfig.graphicQueueCount > 0 ){
+		allowGraphicQueueCount = pConfig.graphicQueueCount;
 		queueGraphic = requiredQueueCount++;
 	}
+	
 	if( pConfig.computeQueueCount > 0 ){
-		queueCompute = requiredQueueCount++;
+		allowComputeQueueCount = pConfig.computeQueueCount;
+		if( pConfig.graphicQueueCount > 0 ){
+			allowComputeQueueCount = decMath::max( allowComputeQueueCount - pConfig.graphicQueueCount, 0 );
+		}
+		if( allowComputeQueueCount > 0 ){
+			queueCompute = requiredQueueCount++;
+		}
 	}
+	
 	if( pConfig.transferQueueCount > 0 ){
-		queueTransfer = requiredQueueCount++;
+		allowTransferQueueCount = pConfig.transferQueueCount;
+		if( pConfig.graphicQueueCount > 0 ){
+			allowTransferQueueCount = decMath::max( allowTransferQueueCount - pConfig.graphicQueueCount, 0 );
+		}
+		if( allowTransferQueueCount > 0 ){
+			queueTransfer = requiredQueueCount++;
+		}
 	}
 	
 	for( i=0; i<(int)queueFamilyCount; i++ ){
@@ -238,25 +261,27 @@ void devkDevice::pCreateDevice(){
 		&& pFamilyIndexGraphic == 0 && queueGraphic != -1 ){
 			queueCreateInfo[ queueGraphic ].sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
 			queueCreateInfo[ queueGraphic ].queueFamilyIndex = i;
-			queueCreateInfo[ queueGraphic ].queueCount = pConfig.graphicQueueCount;
+			queueCreateInfo[ queueGraphic ].queueCount = allowGraphicQueueCount;
 			queueCreateInfo[ queueGraphic ].pQueuePriorities = &defaultQueuePriority;
 			pFamilyIndexGraphic = i;
 		}
 		
-		if( ( queueFamilyProperties[ i ].queueFlags & VK_QUEUE_COMPUTE_BIT ) == VK_QUEUE_COMPUTE_BIT
+		if( ( queueFamilyProperties[ i ].queueFlags
+			& ( VK_QUEUE_COMPUTE_BIT | VK_QUEUE_GRAPHICS_BIT ) ) == VK_QUEUE_COMPUTE_BIT
 		&& pFamilyIndexCompute == 0 && queueCompute != -1 ){
 			queueCreateInfo[ queueCompute ].sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
 			queueCreateInfo[ queueCompute ].queueFamilyIndex = i;
-			queueCreateInfo[ queueCompute ].queueCount = pConfig.computeQueueCount;
+			queueCreateInfo[ queueCompute ].queueCount = allowComputeQueueCount;
 			queueCreateInfo[ queueCompute ].pQueuePriorities = &defaultQueuePriority;
 			pFamilyIndexCompute = i;
 		}
 		
-		if( ( queueFamilyProperties[ i ].queueFlags & VK_QUEUE_TRANSFER_BIT ) == VK_QUEUE_TRANSFER_BIT
+		if( ( queueFamilyProperties[ i ].queueFlags
+			& ( VK_QUEUE_TRANSFER_BIT | VK_QUEUE_GRAPHICS_BIT ) ) == VK_QUEUE_TRANSFER_BIT
 		&& pFamilyIndexTransfer == 0 && queueTransfer != -1 ){
 			queueCreateInfo[ queueTransfer ].sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
 			queueCreateInfo[ queueTransfer ].queueFamilyIndex = i;
-			queueCreateInfo[ queueTransfer ].queueCount = pConfig.transferQueueCount;
+			queueCreateInfo[ queueTransfer ].queueCount = allowTransferQueueCount;
 			queueCreateInfo[ queueTransfer ].pQueuePriorities = &defaultQueuePriority;
 			pFamilyIndexTransfer = i;
 		}
@@ -267,15 +292,15 @@ void devkDevice::pCreateDevice(){
 	}
 	
 	if( queueGraphic != -1
-	&& queueCreateInfo[ queueGraphic ].queueCount != ( uint32_t )pConfig.graphicQueueCount ){
+	&& queueCreateInfo[ queueGraphic ].queueCount != ( uint32_t )allowGraphicQueueCount ){
 		DETHROW_INFO( deeInvalidAction, "graphic queue count mismatch"  );
 	}
 	if( queueCompute != -1
-	&& queueCreateInfo[ queueCompute ].queueCount != ( uint32_t )pConfig.computeQueueCount ){
+	&& queueCreateInfo[ queueCompute ].queueCount != ( uint32_t )allowComputeQueueCount ){
 		DETHROW_INFO( deeInvalidAction, "compute queue count mismatch"  );
 	}
 	if( queueTransfer != -1
-	&& queueCreateInfo[ queueTransfer ].queueCount != ( uint32_t )pConfig.transferQueueCount ){
+	&& queueCreateInfo[ queueTransfer ].queueCount != ( uint32_t )allowTransferQueueCount ){
 		DETHROW_INFO( deeInvalidAction, "transfer queue count mismatch"  );
 	}
 	
@@ -299,6 +324,7 @@ void devkDevice::pCreateDevice(){
 		
 		int nextQueue = 0;
 		
+		// graphic queues
 		for( i=0; i<pConfig.graphicQueueCount; i++ ){
 			VkQueue queue = VK_NULL_HANDLE;
 			vkGetDeviceQueue( pDevice, pFamilyIndexGraphic, i, &queue );
@@ -308,7 +334,12 @@ void devkDevice::pCreateDevice(){
 			pQueues[ nextQueue++ ].TakeOver( new devkQueue( *this, pFamilyIndexGraphic, queue ) );
 		}
 		
-		for( i=0; i<pConfig.computeQueueCount; i++ ){
+		// compute queues
+		for( i=0; i<decMath::min(pConfig.graphicQueueCount, pConfig.computeQueueCount); i++ ){
+			pQueues[ nextQueue++ ] = pQueues[ i ]; // shared
+		}
+		
+		for( i=0; i<allowComputeQueueCount; i++ ){
 			VkQueue queue = VK_NULL_HANDLE;
 			vkGetDeviceQueue( pDevice, pFamilyIndexCompute, i, &queue );
 			if( ! queue ){
@@ -317,7 +348,12 @@ void devkDevice::pCreateDevice(){
 			pQueues[ nextQueue++ ].TakeOver( new devkQueue( *this, pFamilyIndexCompute, queue ) );
 		}
 		
-		for( i=0; i<pConfig.transferQueueCount; i++ ){
+		// transfer queues
+		for( i=0; i<decMath::min(pConfig.graphicQueueCount, pConfig.transferQueueCount); i++ ){
+			pQueues[ nextQueue++ ] = pQueues[ i ]; // shared
+		}
+		
+		for( i=0; i<allowTransferQueueCount; i++ ){
 			VkQueue queue = VK_NULL_HANDLE;
 			vkGetDeviceQueue( pDevice, pFamilyIndexTransfer, i, &queue );
 			if( ! queue ){

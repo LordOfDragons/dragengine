@@ -23,6 +23,7 @@
 #include <string.h>
 
 #include "devkPipelineCompute.h"
+#include "devkPipelineGraphic.h"
 #include "devkPipelineManager.h"
 
 #include <dragengine/common/exceptions.h>
@@ -69,7 +70,8 @@ const devkPipelineConfiguration &configuration ){
 	
 	switch( configuration.GetType() ){
 	case devkPipelineConfiguration::etGraphics:
-		DETHROW( deeInvalidParam );
+		layout.TakeOver( new devkPipelineGraphic( pDevice, configuration ) );
+		break;
 		
 	case devkPipelineConfiguration::etCompute:
 		layout.TakeOver( new devkPipelineCompute( pDevice, configuration ) );

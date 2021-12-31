@@ -19,9 +19,10 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef _DEVKBUFFER_H_
-#define _DEVKBUFFER_H_
+#ifndef _DEVKIMAGE_H_
+#define _DEVKIMAGE_H_
 
+#include "devkImageConfiguration.h"
 #include "../devkBasics.h"
 #include "../queue/devkCommandPool.h"
 
@@ -32,24 +33,22 @@ class devkQueue;
 
 
 /**
- * Vulkan device buffer. Supports staging data in host memory to transfer to device memory
- * as well as fetching data from device memory into host memory. Buffers can not be resized
- * once created.
+ * Vulkan render pass.
  */
-class devkBuffer : public deObject{
+class devkImage : public deObject{
 public:
 	/** Reference. */
-	typedef deTObjectReference<devkBuffer> Ref;
+	typedef deTObjectReference<devkImage> Ref;
 	
 	
 	
-private:
+protected:
 	devkDevice &pDevice;
+	const devkImageConfiguration pConfiguration;
 	
-	uint32_t pSize;
-	
-	VkBuffer pBuffer;
-	VkDeviceMemory pBufferMemory;
+	VkImage pImage;
+	VkDeviceSize pImageSize;
+	VkDeviceMemory pMemory;
 	
 	VkBuffer pBufferHost;
 	VkDeviceMemory pBufferHostMemory;
@@ -64,12 +63,12 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Create queue. */
-	devkBuffer( devkDevice &device, VkDeviceSize size );
+	/** Create pipeline. */
+	devkImage( devkDevice &device, const devkImageConfiguration &configuration );
 	
 protected:
-	/** Clean up queue. */
-	virtual ~devkBuffer();
+	/** Clean up pipeline. */
+	virtual ~devkImage();
 	/*@}*/
 	
 	
@@ -80,14 +79,16 @@ public:
 	/** Device. */
 	inline devkDevice &GetDevice() const{ return pDevice; }
 	
-	/** Buffer. */
-	inline VkBuffer GetBuffer() const{ return pBuffer; }
+	/** Configuration. */
+	inline const devkImageConfiguration &GetConfiguration() const{ return pConfiguration; }
 	
-	/** Host buffer. */
+	/** Image. */
+	inline VkImage GetImage() const{ return pImage; }
+	
+	/** Host buffer or VK_NULL_HANDLE. */
 	inline VkBuffer GetBufferHost() const{ return pBufferHost; }
 	
-	/** Size. */
-	inline uint32_t GetSize() const{ return pSize; }
+	
 	
 	/** Copy data to host memory. */
 	void SetData( const void *data );
@@ -113,6 +114,12 @@ public:
 	 * \param[in] reset If true reset fence and set it inactive after wait finished.
 	 */
 	void Wait( bool reset = false );
+	
+	/** Drop resources used to transfer data if present. */
+	void DropTransferResources();
+	
+	/** Ensure host buffer exists. */
+	void EnsureHostBuffer();
 	/*@}*/
 	
 	
@@ -122,6 +129,8 @@ private:
 	
 	void pCreateBuffer( VkBufferUsageFlags usage, VkMemoryPropertyFlags memoryProperty,
 		VkBuffer *buffer, VkDeviceMemory *memory, VkDeviceSize size );
+	
+	void pCreateFence();
 };
 
 #endif

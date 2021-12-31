@@ -27,6 +27,7 @@
 #include "../devkInstance.h"
 #include "../deSharedVulkan.h"
 #include "../descriptor/devkDescriptorSetLayout.h"
+#include "../shader/devkShaderModule.h"
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decBaseFileReader.h>
@@ -66,15 +67,18 @@ pSaveCache( false )
 		
 		deSharedVulkan &vulkan = device.GetInstance().GetVulkan();
 		
-		const VkDescriptorSetLayout layouts[ 1 ] = {
-			configuration.GetDescriptorSetLayout()->GetLayout()
-		};
+		VkDescriptorSetLayout layouts;
 		
 		VkPipelineLayoutCreateInfo layoutInfo;
 		memset( &layoutInfo, 0, sizeof( layoutInfo ) );
 		layoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-		layoutInfo.setLayoutCount = 1;
-		layoutInfo.pSetLayouts = layouts;
+		
+		if( configuration.GetDescriptorSetLayout() ){
+			layouts = configuration.GetDescriptorSetLayout()->GetLayout();
+			
+			layoutInfo.setLayoutCount = 1;
+			layoutInfo.pSetLayouts = &layouts;
+		}
 		
 		VK_CHECK( vulkan, device.vkCreatePipelineLayout(
 			device.GetDevice(), &layoutInfo, VK_NULL_HANDLE, &pLayout ) );
@@ -147,6 +151,21 @@ devkPipeline::~devkPipeline(){
 
 // Management
 ///////////////
+
+
+
+// Protected Functions
+////////////////////////
+
+void devkPipeline::pInitShaderStage( VkPipelineShaderStageCreateInfo &info,
+VkShaderStageFlagBits stage, devkShaderModule &module,
+const VkSpecializationInfo *specialization ){
+	info.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+	info.stage = stage;
+	info.module = module.GetModule();
+	info.pName = "main";
+	info.pSpecializationInfo = specialization;
+}
 
 
 

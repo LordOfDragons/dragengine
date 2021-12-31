@@ -29,7 +29,9 @@
 #include "../descriptor/devkDescriptorSetLayout.h"
 #include "../descriptor/devkDescriptorSetLayoutConfiguration.h"
 #include "../descriptor/devkDescriptorSet.h"
+#include "../framebuffer/devkFramebuffer.h"
 #include "../pipeline/devkPipeline.h"
+#include "../renderpass/devkRenderPass.h"
 #include "../queue/devkQueue.h"
 #include "../queue/devkCommandBuffer.h"
 
@@ -45,6 +47,7 @@ pPool( pool ),
 pBuffer( VK_NULL_HANDLE ),
 pRecording( false ),
 pBoundPipeline( nullptr ),
+pActiveRenderPass( nullptr ),
 pFence( VK_NULL_HANDLE ),
 pFenceActive( false ),
 pLLPool( this )
@@ -97,6 +100,7 @@ void devkCommandBuffer::Begin(){
 		pPool.GetDevice().vkBeginCommandBuffer( pBuffer, &beginInfo ) );
 	
 	pBoundPipeline = nullptr;
+	pActiveRenderPass = nullptr;
 	pRecording = true;
 }
 
@@ -113,8 +117,6 @@ VkPipelineStageFlags sourceStageMask, VkPipelineStageFlags destStageMask ){
 	VkBufferMemoryBarrier barrier;
 	memset( &barrier, 0, sizeof( barrier ) );
 	barrier.sType = VK_STRUCTURE_TYPE_BUFFER_MEMORY_BARRIER;
-	barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-	barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
 	barrier.buffer = useDeviceBuffer ? buffer->GetBuffer() : buffer->GetBufferHost();
 	barrier.size = VK_WHOLE_SIZE;
 	barrier.srcAccessMask = sourceAccessMask;
@@ -138,6 +140,60 @@ void devkCommandBuffer::BarrierShaderTransfer( devkBuffer *buffer, VkPipelineSta
 
 void devkCommandBuffer::BarrierTransferHost( devkBuffer *buffer ){
 	Barrier( buffer, false, VK_ACCESS_TRANSFER_WRITE_BIT, VK_ACCESS_HOST_READ_BIT,
+		VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_HOST_BIT );
+}
+
+void devkCommandBuffer::Barrier( devkImage *image, VkAccessFlags sourceAccessMask,
+VkAccessFlags destAccessMask, VkPipelineStageFlags sourceStageMask, VkPipelineStageFlags destStageMask ){
+	if( ! pRecording ){
+		DETHROW_INFO( deeInvalidAction, "not recording" );
+	}
+	if( ! image ){
+		DETHROW_INFO( deeNullPointer, "image" );
+	}
+	
+	VkImageMemoryBarrier barrier;
+	memset( &barrier, 0, sizeof( barrier ) );
+	
+	barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+	barrier.image = image->GetImage();
+	barrier.srcAccessMask = sourceAccessMask;
+	barrier.dstAccessMask = destAccessMask;
+	barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+	barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+	barrier.oldLayout = VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL;
+	barrier.newLayout = VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL;
+	
+	if( image->GetConfiguration().GetFlags() & VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT ){
+		barrier.subresourceRange.aspectMask |= VK_IMAGE_ASPECT_DEPTH_BIT;
+		barrier.subresourceRange.aspectMask |= VK_IMAGE_ASPECT_STENCIL_BIT;
+		
+	}else{
+		barrier.subresourceRange.aspectMask |= VK_IMAGE_ASPECT_COLOR_BIT;
+	}
+	
+	barrier.subresourceRange.baseMipLevel = 0;
+	barrier.subresourceRange.levelCount = image->GetConfiguration().GetMipMapCount();
+	
+	barrier.subresourceRange.baseArrayLayer = 0;
+	barrier.subresourceRange.layerCount = image->GetConfiguration().GetLayerCount();
+	
+	pPool.GetDevice().vkCmdPipelineBarrier( pBuffer, sourceStageMask, destStageMask,
+		0, 0, VK_NULL_HANDLE, 0, VK_NULL_HANDLE, 1, &barrier );
+}
+
+void devkCommandBuffer::BarrierHostShader( devkImage *image, VkPipelineStageFlags destStageMask ){
+	Barrier( image, VK_ACCESS_HOST_WRITE_BIT, VK_ACCESS_SHADER_READ_BIT,
+		VK_PIPELINE_STAGE_HOST_BIT, destStageMask );
+}
+
+void devkCommandBuffer::BarrierShaderTransfer( devkImage *image, VkPipelineStageFlags srcStageMask ){
+	Barrier( image, VK_ACCESS_SHADER_WRITE_BIT, VK_ACCESS_TRANSFER_READ_BIT,
+		srcStageMask, VK_PIPELINE_STAGE_TRANSFER_BIT );
+}
+
+void devkCommandBuffer::BarrierTransferHost( devkImage *image ){
+	Barrier( image, VK_ACCESS_TRANSFER_WRITE_BIT, VK_ACCESS_HOST_READ_BIT,
 		VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_HOST_BIT );
 }
 
@@ -188,7 +244,91 @@ void devkCommandBuffer::DispatchCompute( int groupX, int groupY, int groupZ ){
 	pPool.GetDevice().vkCmdDispatch( pBuffer, groupX, groupY, groupZ );
 }
 
+void devkCommandBuffer::BeginRenderPass( devkRenderPass *renderPass, devkFramebuffer *framebuffer ){
+	if( ! framebuffer ){
+		DETHROW_INFO( deeNullPointer, "framebuffer" );
+	}
+	
+	BeginRenderPass( renderPass, framebuffer, decPoint(), framebuffer->GetConfiguration().GetSize() );
+}
+
+void devkCommandBuffer::BeginRenderPass( devkRenderPass *renderPass, devkFramebuffer *framebuffer,
+const decPoint &position, const decPoint &size ){
+	if( ! pRecording ){
+		DETHROW_INFO( deeInvalidAction, "not recording" );
+	}
+	if( pActiveRenderPass ){
+		DETHROW_INFO( deeInvalidAction, "another render pass is active" );
+	}
+	if( ! renderPass ){
+		DETHROW_INFO( deeNullPointer, "renderPass" );
+	}
+	if( ! framebuffer ){
+		DETHROW_INFO( deeNullPointer, "framebuffer" );
+	}
+	
+	VkRenderPassBeginInfo beginInfo;
+	memset( &beginInfo, 0, sizeof( beginInfo ) );
+	beginInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+	beginInfo.renderPass = renderPass->GetRenderPass();
+	beginInfo.framebuffer = framebuffer->GetFramebuffer();
+	beginInfo.renderArea.offset.x = ( int32_t )position.x;
+	beginInfo.renderArea.offset.y = ( int32_t )position.y;
+	beginInfo.renderArea.extent.width = ( uint32_t )size.x;
+	beginInfo.renderArea.extent.height = ( uint32_t )size.y;
+	beginInfo.clearValueCount = renderPass->GetConfiguration().GetAttachmentCount();
+	beginInfo.pClearValues = renderPass->GetConfiguration().GetClearValues();
+	
+	pPool.GetDevice().vkCmdBeginRenderPass( pBuffer, &beginInfo, VK_SUBPASS_CONTENTS_INLINE );
+	pActiveRenderPass = renderPass;
+	
+	VkViewport viewport;
+	viewport.x = ( float )position.x;
+	viewport.y = ( float )position.y;
+	viewport.width = ( float )size.x;
+	viewport.height = ( float )size.y;
+	viewport.minDepth = 0.0f;
+	viewport.maxDepth = 1.0f;
+	
+	pPool.GetDevice().vkCmdSetViewport( pBuffer, 0, 1, &viewport );
+	
+	VkRect2D scissor = beginInfo.renderArea;
+	
+	pPool.GetDevice().vkCmdSetScissor( pBuffer, 0, 1, &scissor );
+}
+
+void devkCommandBuffer::Draw( int vertexCount, int instanceCount, int firstVertex, int firstInstance ){
+	if( ! pRecording ){
+		DETHROW_INFO( deeInvalidAction, "not recording" );
+	}
+	if( ! pBoundPipeline ){
+		DETHROW_INFO( deeInvalidAction, "no pipeline bound" );
+	}
+	if( ! pActiveRenderPass ){
+		DETHROW_INFO( deeInvalidAction, "no active render pass" );
+	}
+	
+	pPool.GetDevice().vkCmdDraw( pBuffer, vertexCount, instanceCount, firstVertex, firstInstance );
+}
+
+void devkCommandBuffer::EndRenderPass(){
+	if( ! pActiveRenderPass ){
+		DETHROW_INFO( deeInvalidAction, "no active render pass" );
+	}
+	if( ! pRecording ){
+		DETHROW_INFO( deeInvalidAction, "not recording" );
+	}
+	
+	pPool.GetDevice().vkCmdEndRenderPass( pBuffer );
+	
+	pActiveRenderPass = nullptr;
+}
+
 void devkCommandBuffer::WriteBuffer( devkBuffer *buffer ){
+	if( ! buffer ){
+		DETHROW_INFO( deeNullPointer, "buffer" );
+	}
+	
 	VkBufferCopy copy;
 	memset( &copy, 0, sizeof( copy ) );
 	copy.size = buffer->GetSize();
@@ -196,15 +336,61 @@ void devkCommandBuffer::WriteBuffer( devkBuffer *buffer ){
 }
 
 void devkCommandBuffer::ReadBuffer( devkBuffer *buffer ){
+	if( ! buffer ){
+		DETHROW_INFO( deeNullPointer, "buffer" );
+	}
+	
 	VkBufferCopy copy;
 	memset( &copy, 0, sizeof( copy ) );
 	copy.size = buffer->GetSize();
 	pPool.GetDevice().vkCmdCopyBuffer( pBuffer, buffer->GetBuffer(), buffer->GetBufferHost(), 1, &copy );
 }
 
+void devkCommandBuffer::ReadImage( devkImage *image ){
+	if( ! image ){
+		DETHROW_INFO( deeNullPointer, "image" );
+	}
+	
+	const devkImageConfiguration &config = image->GetConfiguration();
+	VkBufferImageCopy copy;
+	memset( &copy, 0, sizeof( copy ) );
+	
+	copy.bufferOffset = 0;
+	copy.bufferRowLength = 0;
+	copy.bufferImageHeight = 0;
+	
+	if( config.GetFlags() & VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT ){
+		copy.imageSubresource.aspectMask |= VK_IMAGE_ASPECT_DEPTH_BIT;
+		copy.imageSubresource.aspectMask |= VK_IMAGE_ASPECT_STENCIL_BIT;
+		
+	}else{
+		copy.imageSubresource.aspectMask |= VK_IMAGE_ASPECT_COLOR_BIT;
+	}
+	
+	copy.imageSubresource.mipLevel = 0;
+	copy.imageSubresource.baseArrayLayer = 0;
+	copy.imageSubresource.layerCount = config.GetLayerCount();
+	
+	copy.imageOffset.x = 0;
+	copy.imageOffset.y = 0;
+	copy.imageOffset.z = 0;
+	copy.imageExtent.width = config.GetSize().x;
+	copy.imageExtent.height = config.GetSize().y;
+	copy.imageExtent.depth = config.GetSize().z;
+	
+	image->EnsureHostBuffer();
+	
+	pPool.GetDevice().vkCmdCopyImageToBuffer( pBuffer, image->GetImage(),
+		VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, image->GetBufferHost(), 1, &copy );
+}
+
 void devkCommandBuffer::End(){
 	if( ! pRecording ){
 		DETHROW_INFO( deeInvalidAction, "not recording" );
+	}
+	
+	if( pActiveRenderPass ){
+		EndRenderPass();
 	}
 	
 	VK_CHECK( pPool.GetDevice().GetInstance().GetVulkan(), pPool.GetDevice().vkEndCommandBuffer( pBuffer ) );

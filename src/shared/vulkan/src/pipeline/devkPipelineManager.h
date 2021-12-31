@@ -27,6 +27,7 @@
 class devkDevice;
 class devkPipeline;
 class devkPipelineConfiguration;
+class devkRenderPass;
 
 
 /**

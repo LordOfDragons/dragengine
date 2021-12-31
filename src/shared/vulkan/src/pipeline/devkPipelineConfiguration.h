@@ -24,6 +24,7 @@
 
 #include "devkSpecialization.h"
 #include "../devkBasics.h"
+#include "../renderpass/devkRenderPass.h"
 
 class devkDescriptorSetLayout;
 class devkShaderModule;
@@ -41,11 +42,21 @@ public:
 		etRaytracing
 	};
 	
+	/** Blending. */
+	enum eBlending{
+		ebDisable,
+		ebBlend,
+		ebAdd,
+		ebMax,
+		ebMin
+	};
+	
 	
 	
 private:
 	eType pType;
 	devkDescriptorSetLayout *pDescriptorSetLayout;
+	devkRenderPass::Ref pRenderPass;
 	
 	devkShaderModule *pShaderVertex;
 	devkShaderModule *pShaderTessellationControl;
@@ -66,6 +77,16 @@ private:
 	devkShaderModule *pShaderMesh;
 	
 	devkSpecialization::Ref pSpecialization;
+	
+	VkPrimitiveTopology pTopology;
+	VkCullModeFlagBits pCulling;
+	eBlending pBlendColor;
+	eBlending pBlendAlpha;
+	bool pColorWriteMask[ 4 ];
+	bool pDepthWriteMask;
+	VkCompareOp pDepthFunction;
+	bool pDepthTest;
+	bool pStencilTest;
 	
 	
 	
@@ -97,6 +118,12 @@ public:
 	
 	/** Set descriptor set layout. */
 	void SetDescriptorSetLayout( devkDescriptorSetLayout *layout );
+	
+	/** Render pass. */
+	inline devkRenderPass *GetRenderPass() const{ return pRenderPass; }
+	
+	/** Set render pass. */
+	void SetRenderPass( devkRenderPass *renderPass );
 	
 	
 	
@@ -197,6 +224,72 @@ public:
 	
 	/** Set specialization. */
 	void SetSpecialization( devkSpecialization *specialization );
+	
+	
+	
+	/** Topology. */
+	inline VkPrimitiveTopology GetTopology() const{ return pTopology; }
+	
+	/** Set topology. */
+	void SetTopology( VkPrimitiveTopology topology );
+	
+	/** Culling. */
+	inline VkCullModeFlagBits GetCulling() const{ return pCulling; }
+	
+	/** Set culling. */
+	void SetCulling( VkCullModeFlagBits culling );
+	
+	
+	
+	/** Color blending. */
+	inline eBlending GetBlendColor() const{ return pBlendColor; }
+	
+	/** Set color blending. */
+	void SetBlendColor( eBlending blending );
+	
+	/** Alpha blending. */
+	inline eBlending GetBlendAlpha() const{ return pBlendAlpha; }
+	
+	/** Set alpha blending. */
+	void SetBlendAlpha( eBlending blending );
+	
+	/** Set color and alpha blending. */
+	void SetBlending( eBlending blending );
+	
+	
+	
+	/** Color write mask. */
+	bool GetColorWriteMaskAt( int component ) const;
+	
+	/** Set color write mask. */
+	void SetColorWriteMaskAt( int component, bool enable );
+	
+	/** Set color write mask. */
+	void SetColorWriteMask( bool red, bool green, bool blue, bool alpha );
+	
+	/** Depth write mask. */
+	inline bool GetDepthWriteMask() const{ return pDepthWriteMask; }
+	
+	/** Set depth write mask. */
+	void SetDepthWriteMask( bool enable );
+	
+	/** Depth function. */
+	inline VkCompareOp GetDepthFunction() const{ return pDepthFunction; }
+	
+	/** Set depth function. */
+	void SetDepthFunction( VkCompareOp function );
+	
+	/** Depth test. */
+	inline bool GetDepthTest() const{ return pDepthTest; }
+	
+	/** Set depth test. */
+	void SetDepthTest( bool enable );
+	
+	/** Stencil test. */
+	inline bool GetStencilTest() const{ return pStencilTest; }
+	
+	/** Set stencil test. */
+	void SetStencilTest( bool enable );
 	/*@}*/
 	
 	
