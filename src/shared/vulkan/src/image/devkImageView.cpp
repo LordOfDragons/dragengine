@@ -44,7 +44,7 @@ pImageView( VK_NULL_HANDLE )
 	}
 	
 	try{
-		deSharedVulkan &vulkan = image->GetDevice().GetInstance().GetVulkan();
+		VK_IF_CHECK( deSharedVulkan &vulkan = image->GetDevice().GetInstance().GetVulkan() )
 		const devkImageConfiguration &config = image->GetConfiguration();
 		
 		VkImageViewCreateInfo imageViewInfo;
@@ -135,7 +135,7 @@ pImageView( VK_NULL_HANDLE )
 	}
 	
 	try{
-		deSharedVulkan &vulkan = image->GetDevice().GetInstance().GetVulkan();
+		VK_IF_CHECK( deSharedVulkan &vulkan = image->GetDevice().GetInstance().GetVulkan() )
 		
 		VkImageViewCreateInfo imageViewInfo;
 		memset( &imageViewInfo, 0, sizeof( imageViewInfo ) );
@@ -224,7 +224,7 @@ pImageView( VK_NULL_HANDLE )
 	}
 	
 	try{
-		deSharedVulkan &vulkan = image->GetDevice().GetInstance().GetVulkan();
+		VK_IF_CHECK( deSharedVulkan &vulkan = image->GetDevice().GetInstance().GetVulkan() )
 		
 		VkImageViewCreateInfo imageViewInfo;
 		memset( &imageViewInfo, 0, sizeof( imageViewInfo ) );

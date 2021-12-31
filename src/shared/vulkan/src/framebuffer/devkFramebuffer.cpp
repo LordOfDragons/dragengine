@@ -51,7 +51,7 @@ pFramebuffer( VK_NULL_HANDLE )
 	
 	try{
 		devkDevice &device = renderPass->GetDevice();
-		deSharedVulkan &vulkan = device.GetInstance().GetVulkan();
+		VK_IF_CHECK( deSharedVulkan &vulkan = device.GetInstance().GetVulkan() )
 		
 		VkFramebufferCreateInfo framebufferInfo;
 		memset( &framebufferInfo, 0, sizeof( framebufferInfo ) );
