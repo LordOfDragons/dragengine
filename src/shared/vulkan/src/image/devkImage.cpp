@@ -48,7 +48,7 @@ pFenceActive( false ),
 pCommand( VK_NULL_HANDLE )
 {
 	try{
-		VK_IF_CHECK( deSharedVulkan &vulkan = device.GetInstance().GetVulkan() )
+		VK_IF_CHECK( deSharedVulkan &vulkan = device.GetInstance().GetVulkan(); )
 		
 		VkImageCreateInfo imageInfo;
 		memset( &imageInfo, 0, sizeof( imageInfo ) );

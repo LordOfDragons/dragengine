@@ -85,7 +85,7 @@ pRenderPass( VK_NULL_HANDLE )
 	int *attRetain = nullptr;
 	
 	try{
-		VK_IF_CHECK( deSharedVulkan &vulkan = device.GetInstance().GetVulkan() )
+		VK_IF_CHECK( deSharedVulkan &vulkan = device.GetInstance().GetVulkan(); )
 		
 		VkRenderPassCreateInfo renderPassInfo;
 		memset( &renderPassInfo, 0, sizeof( renderPassInfo ) );
