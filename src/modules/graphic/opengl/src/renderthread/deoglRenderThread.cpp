@@ -908,6 +908,7 @@ void deoglRenderThread::pInitThreadPhase3(){
 }
 
 // #define DO_VULKAN_TEST
+
 #ifdef DO_VULKAN_TEST
 #include <queue/devkCommandPool.h>
 #include <buffer/devkBuffer.h>
@@ -919,12 +920,16 @@ void deoglRenderThread::pInitThreadPhase3(){
 #include <pipeline/devkPipelineConfiguration.h>
 #include <queue/devkCommandBuffer.h>
 #include <shader/devkShaderModule.h>
+#include <renderpass/devkRenderPass.h>
+#include <renderpass/devkRenderPassConfiguration.h>
+#include <image/devkImage.h>
+#include <image/devkImageConfiguration.h>
+#include <image/devkImageView.h>
+#include <framebuffer/devkFramebuffer.h>
+#include <framebuffer/devkFramebufferConfiguration.h>
 #include <dragengine/common/file/decMemoryFile.h>
-#include <dragengine/common/file/decMemoryFileReference.h>
 #include <dragengine/common/file/decMemoryFileReader.h>
 #include <dragengine/common/file/decMemoryFileWriter.h>
-#include <dragengine/common/file/decBaseFileReaderReference.h>
-#include <dragengine/common/file/decBaseFileWriterReference.h>
 #endif
 
 void deoglRenderThread::pInitThreadPhase4(){
@@ -1038,7 +1043,11 @@ void deoglRenderThread::pInitThreadPhase4(){
 	// load vulkan and create device if supported
 	try{
 		pVulkan.TakeOver( new deSharedVulkan( pOgl ) );
+		#ifdef DO_VULKAN_TEST
+		pVulkanDevice = pVulkan->GetInstance().CreateDeviceHeadlessGraphic( 0 );
+		#else
 		pVulkanDevice = pVulkan->GetInstance().CreateDeviceHeadlessComputeOnly( 0 );
+		#endif
 		
 	}catch( const deException &e ){
 		pLogger->LogException( e );
@@ -1131,20 +1140,12 @@ void deoglRenderThread::pInitThreadPhase4(){
 			0x00000023,0x00000022,0x0000001f,0x00060041,0x00000020,0x00000024,0x0000001b,0x0000001d,
 			0x0000001e,0x0003003e,0x00000024,0x00000023,0x000100fd,0x00010038
 		};
-		decMemoryFileReference mfshader;
-		mfshader.TakeOver( new decMemoryFile( "/shaders/vulkantest.spv" ) );
-		{
-			decBaseFileWriterReference mfwriter;
-			mfwriter.TakeOver( new decMemoryFileWriter( mfshader, false ) );
-			mfwriter->Write( test1_spv_data, sizeof( test1_spv_data ) );
-		}
+		decMemoryFile::Ref mfshader( decMemoryFile::Ref::New( new decMemoryFile( "/shaders/vulkantest.spv" ) ) );
+		decBaseFileWriter::Ref::New( new decMemoryFileWriter( mfshader, false ) )->Write( test1_spv_data, sizeof( test1_spv_data ) );
 		
 		devkShaderModule::Ref shader;
-		{
-			decBaseFileReaderReference mfreader;
-			mfreader.TakeOver( new decMemoryFileReader( mfshader ) );
-			VKTLOG( shader.TakeOver( new devkShaderModule( pVulkanDevice, "/shaders/vulkantest.spv", mfreader ) ), "LoadShader");
-		}
+		VKTLOG( shader.TakeOver( new devkShaderModule( pVulkanDevice, "/shaders/vulkantest.spv",
+			decBaseFileReader::Ref::New( new decMemoryFileReader( mfshader ) ) ) ), "LoadShader");
 		
 		devkPipelineConfiguration pipelineConfig;
 		pipelineConfig.SetDescriptorSetLayout( dslSSBO );
@@ -1160,8 +1161,8 @@ void deoglRenderThread::pInitThreadPhase4(){
 		specialization->SetEntryUIntAt( 0, 0, offsetof( ShaderConfig, valueCount ) );
 		pipelineConfig.SetSpecialization( specialization );
 		
-		VKTLOG( devkPipeline * const pipeline = pVulkanDevice->GetPipelineManager().GetWith( pipelineConfig ), "PipelineCompute")
-		(void)pipeline;
+		devkPipeline *pipeline;
+		VKTLOG( pipeline = pVulkanDevice->GetPipelineManager().GetWith( pipelineConfig ), "PipelineCompute")
 		
 		devkCommandBuffer::Ref cmdbuf( commandPool->GetCommandBuffer() );
 		VKTLOG( cmdbuf->Begin(), "CmdBuf Begin")
@@ -1184,6 +1185,172 @@ void deoglRenderThread::pInitThreadPhase4(){
 		}
 		string.Append( "]" );
 		pLogger->LogInfo( string );
+		
+		// graphic test
+		devkRenderPassConfiguration renPassConfig;
+		
+		renPassConfig.SetAttachmentCount( 1 );
+		renPassConfig.SetColorAttachmentAt( 0, VK_FORMAT_R8G8B8A8_UNORM /* VK_FORMAT_R8G8B8_UNORM not working? */,
+			devkRenderPassConfiguration::eitClear, devkRenderPassConfiguration::eotReadBack );
+		renPassConfig.SetClearValueColorFloatAt( 0, 0, 0, 0, 0 );
+		
+		renPassConfig.SetSubPassCount( 1 );
+		renPassConfig.SetSubPassAt( 0, -1, 0 );
+		
+		devkRenderPass::Ref renderPass;
+		VKTLOG( renderPass.TakeOver( new devkRenderPass( pVulkanDevice, renPassConfig ) ), "Create Render Pass" )
+		
+		devkImageConfiguration imageConfig;
+		imageConfig.Set2D( decPoint( 64, 32 ), VK_FORMAT_R8G8B8A8_UNORM );
+		imageConfig.EnableColorAttachment( true );
+		imageConfig.EnableTransferSource( true );
+		devkImage::Ref image;
+		VKTLOG( image.TakeOver( new devkImage( pVulkanDevice, imageConfig ) ), "Create Image" )
+		
+		devkImageView::Ref imageView;
+		VKTLOG( imageView.TakeOver( new devkImageView( image ) ), "Create Image View" )
+		
+		devkFramebufferConfiguration framebufferConfig;
+		framebufferConfig.SetAttachmentCount( 1 );
+		framebufferConfig.SetAttachmentAt( 0, imageView );
+		framebufferConfig.SetSize( decPoint( 64, 32 ) );
+		
+		devkFramebuffer::Ref framebuffer;
+		VKTLOG( framebuffer.TakeOver( new devkFramebuffer( renderPass, framebufferConfig ) ), "Create Framebuffer" )
+		
+		const uint32_t test2_vert_spv_data[] = {
+			0x07230203,0x00010000,0x0008000a,0x00000029,0x00000000,0x00020011,0x00000001,0x0006000b,
+			0x00000002,0x4c534c47,0x6474732e,0x3035342e,0x00000000,0x0003000e,0x00000000,0x00000001,
+			0x0007000f,0x00000000,0x00000005,0x6e69616d,0x00000000,0x0000000e,0x0000001c,0x00050007,
+			0x00000001,0x74736574,0x65762e32,0x00007472,0x00680003,0x00000002,0x000001c2,0x00000001,
+			0x4f202f2f,0x646f4d70,0x50656c75,0x65636f72,0x64657373,0x746e6520,0x702d7972,0x746e696f,
+			0x69616d20,0x2f2f0a6e,0x4d704f20,0x6c75646f,0x6f725065,0x73736563,0x64206465,0x6e696665,
+			0x616d2d65,0x206f7263,0x544c554d,0x494c5049,0x323d5245,0x202f2f0a,0x6f4d704f,0x656c7564,
+			0x636f7250,0x65737365,0x6c632064,0x746e6569,0x6c757620,0x316e616b,0x2f0a3030,0x704f202f,
+			0x75646f4d,0x7250656c,0x7365636f,0x20646573,0x67726174,0x652d7465,0x7620766e,0x616b6c75,
+			0x302e316e,0x202f2f0a,0x6f4d704f,0x656c7564,0x636f7250,0x65737365,0x6e652064,0x2d797274,
+			0x6e696f70,0x616d2074,0x230a6e69,0x656e696c,0x230a3120,0x73726576,0x206e6f69,0x0a303534,
+			0x696f760a,0x616d2064,0x29286e69,0x63090a7b,0x74736e6f,0x63657620,0x6f702033,0x69746973,
+			0x5b736e6f,0x5d203320,0x76203d20,0x5b336365,0x5d203320,0x09090a28,0x33636576,0x2c312028,
+			0x202c3120,0x2c292030,0x7609090a,0x28336365,0x2c312d20,0x202c3120,0x2c292030,0x7609090a,
+			0x28336365,0x202c3020,0x202c312d,0x0a292030,0x0a3b2909,0x67090a09,0x6f505f6c,0x69746973,
+			0x3d206e6f,0x63657620,0x70202834,0x7469736f,0x736e6f69,0x6c67205b,0x7265565f,0x49786574,
+			0x7865646e,0x202c5d20,0x3b292031,0x000a7d0a,0x00040005,0x00000005,0x6e69616d,0x00000000,
+			0x00060005,0x0000000c,0x505f6c67,0x65567265,0x78657472,0x00000000,0x00060006,0x0000000c,
+			0x00000000,0x505f6c67,0x7469736f,0x006e6f69,0x00070006,0x0000000c,0x00000001,0x505f6c67,
+			0x746e696f,0x657a6953,0x00000000,0x00070006,0x0000000c,0x00000002,0x435f6c67,0x4470696c,
+			0x61747369,0x0065636e,0x00070006,0x0000000c,0x00000003,0x435f6c67,0x446c6c75,0x61747369,
+			0x0065636e,0x00030005,0x0000000e,0x00000000,0x00060005,0x0000001c,0x565f6c67,0x65747265,
+			0x646e4978,0x00007865,0x00050005,0x0000001f,0x65646e69,0x6c626178,0x00000065,0x00050048,
+			0x0000000c,0x00000000,0x0000000b,0x00000000,0x00050048,0x0000000c,0x00000001,0x0000000b,
+			0x00000001,0x00050048,0x0000000c,0x00000002,0x0000000b,0x00000003,0x00050048,0x0000000c,
+			0x00000003,0x0000000b,0x00000004,0x00030047,0x0000000c,0x00000002,0x00040047,0x0000001c,
+			0x0000000b,0x0000002a,0x00020013,0x00000003,0x00030021,0x00000004,0x00000003,0x00030016,
+			0x00000007,0x00000020,0x00040017,0x00000008,0x00000007,0x00000004,0x00040015,0x00000009,
+			0x00000020,0x00000000,0x0004002b,0x00000009,0x0000000a,0x00000001,0x0004001c,0x0000000b,
+			0x00000007,0x0000000a,0x0006001e,0x0000000c,0x00000008,0x00000007,0x0000000b,0x0000000b,
+			0x00040020,0x0000000d,0x00000003,0x0000000c,0x0004003b,0x0000000d,0x0000000e,0x00000003,
+			0x00040015,0x0000000f,0x00000020,0x00000001,0x0004002b,0x0000000f,0x00000010,0x00000000,
+			0x00040017,0x00000011,0x00000007,0x00000003,0x0004002b,0x00000009,0x00000012,0x00000003,
+			0x0004001c,0x00000013,0x00000011,0x00000012,0x0004002b,0x00000007,0x00000014,0x3f800000,
+			0x0004002b,0x00000007,0x00000015,0x00000000,0x0006002c,0x00000011,0x00000016,0x00000014,
+			0x00000014,0x00000015,0x0004002b,0x00000007,0x00000017,0xbf800000,0x0006002c,0x00000011,
+			0x00000018,0x00000017,0x00000014,0x00000015,0x0006002c,0x00000011,0x00000019,0x00000015,
+			0x00000017,0x00000015,0x0006002c,0x00000013,0x0000001a,0x00000016,0x00000018,0x00000019,
+			0x00040020,0x0000001b,0x00000001,0x0000000f,0x0004003b,0x0000001b,0x0000001c,0x00000001,
+			0x00040020,0x0000001e,0x00000007,0x00000013,0x00040020,0x00000020,0x00000007,0x00000011,
+			0x00040020,0x00000027,0x00000003,0x00000008,0x00050036,0x00000003,0x00000005,0x00000000,
+			0x00000004,0x000200f8,0x00000006,0x0004003b,0x0000001e,0x0000001f,0x00000007,0x00040008,
+			0x00000001,0x0000000a,0x00000000,0x0004003d,0x0000000f,0x0000001d,0x0000001c,0x0003003e,
+			0x0000001f,0x0000001a,0x00050041,0x00000020,0x00000021,0x0000001f,0x0000001d,0x0004003d,
+			0x00000011,0x00000022,0x00000021,0x00050051,0x00000007,0x00000023,0x00000022,0x00000000,
+			0x00050051,0x00000007,0x00000024,0x00000022,0x00000001,0x00050051,0x00000007,0x00000025,
+			0x00000022,0x00000002,0x00070050,0x00000008,0x00000026,0x00000023,0x00000024,0x00000025,
+			0x00000014,0x00050041,0x00000027,0x00000028,0x0000000e,0x00000010,0x0003003e,0x00000028,
+			0x00000026,0x000100fd,0x00010038
+		};
+		
+		mfshader.TakeOver( decMemoryFile::Ref::New( new decMemoryFile( "/shaders/vulkantest2_vert.spv" ) ) );
+		decBaseFileWriter::Ref::New( new decMemoryFileWriter( mfshader, false ) )->Write( test2_vert_spv_data, sizeof( test2_vert_spv_data ) );
+		
+		devkShaderModule::Ref shaderVert;
+		VKTLOG( shaderVert.TakeOver( new devkShaderModule( pVulkanDevice, "/shaders/vulkantest2_vert.spv",
+			decBaseFileReader::Ref::New( new decMemoryFileReader( mfshader ) ) ) ), "LoadShader");
+		
+		const uint32_t test2_frag_spv_data[] = {
+			0x07230203,0x00010000,0x0008000a,0x00000017,0x00000000,0x00020011,0x00000001,0x0006000b,
+			0x00000002,0x4c534c47,0x6474732e,0x3035342e,0x00000000,0x0003000e,0x00000000,0x00000001,
+			0x0007000f,0x00000004,0x00000005,0x6e69616d,0x00000000,0x0000000a,0x0000000c,0x00030010,
+			0x00000005,0x00000007,0x00050007,0x00000001,0x74736574,0x72662e32,0x00006761,0x00710003,
+			0x00000002,0x000001c2,0x00000001,0x4f202f2f,0x646f4d70,0x50656c75,0x65636f72,0x64657373,
+			0x746e6520,0x702d7972,0x746e696f,0x69616d20,0x2f2f0a6e,0x4d704f20,0x6c75646f,0x6f725065,
+			0x73736563,0x64206465,0x6e696665,0x616d2d65,0x206f7263,0x544c554d,0x494c5049,0x323d5245,
+			0x202f2f0a,0x6f4d704f,0x656c7564,0x636f7250,0x65737365,0x6c632064,0x746e6569,0x6c757620,
+			0x316e616b,0x2f0a3030,0x704f202f,0x75646f4d,0x7250656c,0x7365636f,0x20646573,0x67726174,
+			0x652d7465,0x7620766e,0x616b6c75,0x302e316e,0x202f2f0a,0x6f4d704f,0x656c7564,0x636f7250,
+			0x65737365,0x6e652064,0x2d797274,0x6e696f70,0x616d2074,0x230a6e69,0x656e696c,0x230a3120,
+			0x73726576,0x206e6f69,0x0a303534,0x79616c0a,0x2074756f,0x636f6c28,0x6f697461,0x203d206e,
+			0x6f202930,0x76207475,0x20346365,0x4374756f,0x726f6c6f,0x760a0a3b,0x2064696f,0x6e69616d,
+			0x7b202928,0x2f2f090a,0x4374756f,0x726f6c6f,0x76203d20,0x28346365,0x5f6c6720,0x67617246,
+			0x726f6f43,0x20782e64,0x3336202f,0x6c67202c,0x6172465f,0x6f6f4367,0x792e6472,0x33202f20,
+			0x30202c31,0x2031202c,0x090a3b29,0x4374756f,0x726f6c6f,0x76203d20,0x28346365,0x5f6c6720,
+			0x67617246,0x726f6f43,0x20792e64,0x3133202f,0x2c30202c,0x202c3020,0x3b292031,0x2f2f090a,
+			0x4374756f,0x726f6c6f,0x76203d20,0x28346365,0x30202c31,0x2c30202c,0x3b293120,0x000a7d0a,
+			0x00040005,0x00000005,0x6e69616d,0x00000000,0x00050005,0x0000000a,0x4374756f,0x726f6c6f,
+			0x00000000,0x00060005,0x0000000c,0x465f6c67,0x43676172,0x64726f6f,0x00000000,0x00040047,
+			0x0000000a,0x0000001e,0x00000000,0x00040047,0x0000000c,0x0000000b,0x0000000f,0x00020013,
+			0x00000003,0x00030021,0x00000004,0x00000003,0x00030016,0x00000007,0x00000020,0x00040017,
+			0x00000008,0x00000007,0x00000004,0x00040020,0x00000009,0x00000003,0x00000008,0x0004003b,
+			0x00000009,0x0000000a,0x00000003,0x00040020,0x0000000b,0x00000001,0x00000008,0x0004003b,
+			0x0000000b,0x0000000c,0x00000001,0x00040015,0x0000000d,0x00000020,0x00000000,0x0004002b,
+			0x0000000d,0x0000000e,0x00000001,0x00040020,0x0000000f,0x00000001,0x00000007,0x0004002b,
+			0x00000007,0x00000012,0x41f80000,0x0004002b,0x00000007,0x00000014,0x00000000,0x0004002b,
+			0x00000007,0x00000015,0x3f800000,0x00050036,0x00000003,0x00000005,0x00000000,0x00000004,
+			0x000200f8,0x00000006,0x00040008,0x00000001,0x00000007,0x00000000,0x00050041,0x0000000f,
+			0x00000010,0x0000000c,0x0000000e,0x0004003d,0x00000007,0x00000011,0x00000010,0x00050088,
+			0x00000007,0x00000013,0x00000011,0x00000012,0x00070050,0x00000008,0x00000016,0x00000013,
+			0x00000014,0x00000014,0x00000015,0x0003003e,0x0000000a,0x00000016,0x000100fd,0x00010038
+		};
+		
+		mfshader.TakeOver( decMemoryFile::Ref::New( new decMemoryFile( "/shaders/vulkantest2_frag.spv" ) ) );
+		decBaseFileWriter::Ref::New( new decMemoryFileWriter( mfshader, false ) )->Write( test2_frag_spv_data, sizeof( test2_frag_spv_data ) );
+		
+		devkShaderModule::Ref shaderFrag;
+		VKTLOG( shaderFrag.TakeOver( new devkShaderModule( pVulkanDevice, "/shaders/vulkantest2_frag.spv",
+			decBaseFileReader::Ref::New( new decMemoryFileReader( mfshader ) ) ) ), "LoadShader");
+		
+		pipelineConfig = devkPipelineConfiguration();
+		pipelineConfig.SetType( devkPipelineConfiguration::etGraphics );
+		pipelineConfig.SetRenderPass( renderPass );
+		pipelineConfig.SetShaderVertex( shaderVert );
+		pipelineConfig.SetShaderFragment( shaderFrag );
+		
+		VKTLOG( pipeline = pVulkanDevice->GetPipelineManager().GetWith( pipelineConfig ), "PipelineGraphic" )
+		
+		VKTLOG( cmdbuf->Begin(), "CmdBuf Begin")
+		VKTLOG( cmdbuf->BeginRenderPass( renderPass, framebuffer ), "CmdBuf BeginRenderPass")
+		VKTLOG( cmdbuf->BindPipeline( pipeline ), "CmdBuf BindPipeline")
+		VKTLOG( cmdbuf->Draw( 3, 1 ), "CmdBuf Draw")
+		VKTLOG( cmdbuf->EndRenderPass(), "CmdBuf EndRenderPass")
+		VKTLOG( cmdbuf->BarrierShaderTransfer( image, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT ), "CmdBuf BarrierHost")
+		VKTLOG( cmdbuf->ReadImage( image ), "CmdBuf ReadImage")
+		VKTLOG( cmdbuf->BarrierTransferHost( image ), "CmdBuf BarrierTransferHost")
+		VKTLOG( cmdbuf->End(), "CmdBuf End")
+		VKTLOG( cmdbuf->Submit( queue ), "CmdBuf Submit")
+		
+		VKTLOG( cmdbuf->Wait(), "CmdBuf Wait")
+		
+		oglRGBA imgdata[ 64 * 32 ];
+		VKTLOG( image->GetData( imgdata ), "Image GetData" )
+		int x, y;
+		for( y=0; y<32; y++ ){
+			decString string( "Drawn: [" );
+			for( x=0; x<64; x++ ){
+				string.AppendCharacter( 'a' + ( int )imgdata[ 64 * y + x ].r * 25 / 255 );
+			}
+			string.Append( "]" );
+			pLogger->LogInfo( string );
+		}
 	}
 #endif
 	
