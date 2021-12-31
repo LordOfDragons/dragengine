@@ -56,7 +56,11 @@ pBlendAlpha( ebDisable ),
 pDepthWriteMask( false ),
 pDepthFunction( VK_COMPARE_OP_LESS_OR_EQUAL ),
 pDepthTest( false ),
-pStencilTest( false )
+pStencilTest( false ),
+pBindingCount( 0 ),
+pBindings( nullptr ),
+pAttributeCount( 0 ),
+pAttributes( nullptr )
 {
 	pColorWriteMask[ 0 ] = true;
 	pColorWriteMask[ 1 ] = true;
@@ -88,7 +92,11 @@ pBlendAlpha( ebDisable ),
 pDepthWriteMask( false ),
 pDepthFunction( VK_COMPARE_OP_LESS_OR_EQUAL ),
 pDepthTest( false ),
-pStencilTest( false )
+pStencilTest( false ),
+pBindingCount( 0 ),
+pBindings( nullptr ),
+pAttributeCount( 0 ),
+pAttributes( nullptr )
 {
 	pColorWriteMask[ 0 ] = true;
 	pColorWriteMask[ 1 ] = true;
@@ -254,10 +262,196 @@ void devkPipelineConfiguration::SetStencilTest( bool enable ){
 
 
 
+void devkPipelineConfiguration::SetBindingCount( int count ){
+	if( count < 0 ){
+		DETHROW_INFO( deeInvalidParam, "count < 0" );
+	}
+	
+	if( pBindings ){
+		delete [] pBindings;
+		pBindings = nullptr;
+		pBindingCount = 0;
+	}
+	
+	if( count == 0 ){
+		return;
+	}
+	
+	pBindings = new VkVertexInputBindingDescription[ count ];
+	pBindingCount = count;
+}
+
+const VkVertexInputBindingDescription &devkPipelineConfiguration::GetBindingAt( int index ) const{
+	if( index < 0 ){
+		DETHROW_INFO( deeInvalidParam, "index < 0" );
+	}
+	if( index >= pBindingCount ){
+		DETHROW_INFO( deeInvalidParam, "index >= bindingCount" );
+	}
+	
+	return pBindings[ index ];
+}
+
+void devkPipelineConfiguration::SetBindingAt( int index, const VkVertexInputBindingDescription &binding ){
+	if( index < 0 ){
+		DETHROW_INFO( deeInvalidParam, "index < 0" );
+	}
+	if( index >= pBindingCount ){
+		DETHROW_INFO( deeInvalidParam, "index >= bindingCount" );
+	}
+	
+	memcpy( pBindings + index, &binding, sizeof( binding ) );
+}
+
+void devkPipelineConfiguration::SetBindingAt( int index, int binding, int stride, VkVertexInputRate inputRate ){
+	VkVertexInputBindingDescription description;
+	description.binding = ( uint32_t )binding;
+	description.stride = ( uint32_t )stride;
+	description.inputRate = inputRate;
+	SetBindingAt( index, description );
+}
+
+
+
+void devkPipelineConfiguration::SetAttributeCount( int count ){
+	if( count < 0 ){
+		DETHROW_INFO( deeInvalidParam, "count < 0" );
+	}
+	
+	if( pAttributes ){
+		delete [] pAttributes;
+		pAttributes = nullptr;
+		pAttributeCount = 0;
+	}
+	
+	if( count == 0 ){
+		return;
+	}
+	
+	pAttributes = new VkVertexInputAttributeDescription[ count ];
+	pAttributeCount = count;
+}
+
+const VkVertexInputAttributeDescription &devkPipelineConfiguration::GetAttributeAt( int index ) const{
+	if( index < 0 ){
+		DETHROW_INFO( deeInvalidParam, "index < 0" );
+	}
+	if( index >= pAttributeCount ){
+		DETHROW_INFO( deeInvalidParam, "index >= attributeCount" );
+	}
+	
+	return pAttributes[ index ];
+}
+
+void devkPipelineConfiguration::SetAttributeAt( int index, const VkVertexInputAttributeDescription &attribute ){
+	if( index < 0 ){
+		DETHROW_INFO( deeInvalidParam, "index < 0" );
+	}
+	if( index >= pAttributeCount ){
+		DETHROW_INFO( deeInvalidParam, "index >= attributeCount" );
+	}
+	
+	memcpy( pAttributes + index, &attribute, sizeof( attribute ) );
+}
+
+void devkPipelineConfiguration::SetAttributeAt( int index, int location, int binding,
+eAttributeFormat format, int offset ){
+	VkVertexInputAttributeDescription description;
+	description.location = ( uint32_t )location;
+	description.binding = ( uint32_t )binding;
+	description.offset = ( uint32_t )offset;
+	
+	switch( format ){
+	case eafHalfFloat1:
+		description.format = VK_FORMAT_R16_SFLOAT;
+		break;
+		
+	case eafHalfFloat2:
+		description.format = VK_FORMAT_R16G16_SFLOAT;
+		break;
+		
+	case eafHalfFloat4:
+		description.format = VK_FORMAT_R16G16B16A16_SFLOAT;
+		break;
+		
+	case eafFloat1:
+		description.format = VK_FORMAT_R32_SFLOAT;
+		break;
+		
+	case eafFloat2:
+		description.format = VK_FORMAT_R32G32_SFLOAT;
+		break;
+		
+	case eafFloat3:
+		description.format = VK_FORMAT_R32G32B32_SFLOAT;
+		break;
+		
+	case eafFloat4:
+		description.format = VK_FORMAT_R32G32B32A32_SFLOAT;
+		break;
+		
+	case eafUFloatB10G11R11:
+		description.format = VK_FORMAT_B10G11R11_UFLOAT_PACK32;
+		break;
+		
+	case eafIntNormA8B8G8R8:
+		description.format = VK_FORMAT_A8B8G8R8_SNORM_PACK32;
+		break;
+		
+	case eafUIntNormA8B8G8R8:
+		description.format = VK_FORMAT_A8B8G8R8_UNORM_PACK32;
+		break;
+		
+	case eafIntA8B8G8R8:
+		description.format = VK_FORMAT_A8B8G8R8_SINT_PACK32;
+		break;
+		
+	case eafUIntA8B8G8R8:
+		description.format = VK_FORMAT_A8B8G8R8_UINT_PACK32;
+		break;
+		
+	case eafIntNormA2B10G10R10:
+		description.format = VK_FORMAT_A2B10G10R10_SNORM_PACK32;
+		break;
+		
+	case eafUIntNormA2B10G10R10:
+		description.format = VK_FORMAT_A2B10G10R10_UNORM_PACK32;
+		break;
+		
+	case eafIntA2B10G10R10:
+		description.format = VK_FORMAT_A2B10G10R10_SINT_PACK32;
+		break;
+		
+	case eafUIntA2B10G10R10:
+		description.format = VK_FORMAT_A2B10G10R10_UINT_PACK32;
+		break;
+	}
+	
+	SetAttributeAt( index, description );
+}
+
+
+
 // Operators
 //////////////
 
 bool devkPipelineConfiguration::operator==( const devkPipelineConfiguration &configuration ) const{
+	if( pBindingCount != configuration.pBindingCount ){
+		return false;
+	}
+	if( pBindingCount > 0 && memcmp( pBindings, configuration.pBindings,
+	sizeof( VkVertexInputBindingDescription ) * pBindingCount ) ){
+		return false;
+	}
+	
+	if( pAttributeCount != configuration.pAttributeCount ){
+		return false;
+	}
+	if( pAttributeCount > 0 && memcmp( pAttributes, configuration.pAttributes,
+	sizeof( VkVertexInputAttributeDescription ) * pAttributeCount ) ){
+		return false;
+	}
+	
 	return pType == configuration.pType
 	&& pDescriptorSetLayout == configuration.pDescriptorSetLayout
 	&& pRenderPass == configuration.pRenderPass
@@ -321,5 +515,18 @@ devkPipelineConfiguration &devkPipelineConfiguration::operator=( const devkPipel
 	pDepthFunction = configuration.pDepthFunction;
 	pDepthTest = configuration.pDepthTest;
 	pStencilTest = configuration.pStencilTest;
+	
+	SetBindingCount( configuration.pBindingCount );
+	if( pBindingCount > 0 ){
+		memcpy( pBindings, configuration.pBindings,
+			sizeof( VkVertexInputBindingDescription ) * pBindingCount );
+	}
+	
+	SetAttributeCount( configuration.pAttributeCount );
+	if( pAttributeCount > 0 ){
+		memcpy( pAttributes, configuration.pAttributes,
+			sizeof( VkVertexInputAttributeDescription ) * pAttributeCount );
+	}
+
 	return *this;
 }

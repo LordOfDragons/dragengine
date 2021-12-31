@@ -47,6 +47,7 @@ private:
 	devkDevice &pDevice;
 	
 	uint32_t pSize;
+	VkBufferUsageFlagBits pUsage;
 	
 	VkBuffer pBuffer;
 	VkDeviceMemory pBufferMemory;
@@ -64,8 +65,19 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Create queue. */
-	devkBuffer( devkDevice &device, VkDeviceSize size );
+	/**
+	 * Create buffer.
+	 * 
+	 * Typical usages:
+	 * - VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT : UBO
+	 * - VK_BUFFER_USAGE_STORAGE_BUFFER_BIT : SSBO
+	 * - VK_BUFFER_USAGE_INDEX_BUFFER_BIT : IBO
+	 * - VK_BUFFER_USAGE_VERTEX_BUFFER_BIT : VBO
+	 * - VK_BUFFER_USAGE_INDIRECT_BUFFER_BIT
+	 * - VK_BUFFER_USAGE_UNIFORM_TEXEL_BUFFER_BIT : ?
+	 * - VK_BUFFER_USAGE_STORAGE_TEXEL_BUFFER_BIT : ?
+	 */
+	devkBuffer( devkDevice &device, VkDeviceSize size, VkBufferUsageFlagBits usage );
 	
 protected:
 	/** Clean up queue. */
@@ -88,6 +100,9 @@ public:
 	
 	/** Size. */
 	inline uint32_t GetSize() const{ return pSize; }
+	
+	/** Usage. */
+	inline VkBufferUsageFlagBits GetUsage() const{ return pUsage; }
 	
 	/** Copy data to host memory. */
 	void SetData( const void *data );

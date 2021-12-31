@@ -108,8 +108,10 @@ devkPipeline( device, configuration )
 	memset( &vertexInputInfo, 0, sizeof( vertexInputInfo ) );
 	
 	vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
-	vertexInputInfo.vertexBindingDescriptionCount = 0;
-	vertexInputInfo.vertexAttributeDescriptionCount = 0;
+	vertexInputInfo.vertexBindingDescriptionCount = configuration.GetBindingCount();
+	vertexInputInfo.pVertexBindingDescriptions = configuration.GetBindings();
+	vertexInputInfo.vertexAttributeDescriptionCount = configuration.GetAttributeCount();
+	vertexInputInfo.pVertexAttributeDescriptions = configuration.GetAttributes();
 	
 	pipelineInfo.pVertexInputState = &vertexInputInfo;
 	

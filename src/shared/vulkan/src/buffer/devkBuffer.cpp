@@ -35,9 +35,10 @@
 // class devkBuffer
 /////////////////////
 
-devkBuffer::devkBuffer( devkDevice &device, VkDeviceSize size ) :
+devkBuffer::devkBuffer( devkDevice &device, VkDeviceSize size, VkBufferUsageFlagBits usage ) :
 pDevice( device ),
 pSize( size ),
+pUsage( usage ),
 pBuffer( VK_NULL_HANDLE ),
 pBufferHost( VK_NULL_HANDLE ),
 pFence( VK_NULL_HANDLE ),
@@ -52,8 +53,7 @@ pCommand( VK_NULL_HANDLE )
 		pCreateBuffer( VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
 			VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT, &pBufferHost, &pBufferHostMemory, size );
 		
-		pCreateBuffer( VK_BUFFER_USAGE_STORAGE_BUFFER_BIT
-			| VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
+		pCreateBuffer( usage | VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
 			VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, &pBuffer, &pBufferMemory, size );
 		
 		VK_IF_CHECK( deSharedVulkan &vulkan = device.GetInstance().GetVulkan() );

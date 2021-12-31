@@ -51,6 +51,26 @@ public:
 		ebMin
 	};
 	
+	/** Attribute format. */
+	enum eAttributeFormat{
+		eafHalfFloat1,
+		eafHalfFloat2,
+		eafHalfFloat4,
+		eafFloat1,
+		eafFloat2,
+		eafFloat3,
+		eafFloat4,
+		eafUFloatB10G11R11,
+		eafIntNormA8B8G8R8,
+		eafUIntNormA8B8G8R8,
+		eafIntA8B8G8R8,
+		eafUIntA8B8G8R8,
+		eafIntNormA2B10G10R10,
+		eafUIntNormA2B10G10R10,
+		eafIntA2B10G10R10,
+		eafUIntA2B10G10R10
+	};
+	
 	
 	
 private:
@@ -87,6 +107,12 @@ private:
 	VkCompareOp pDepthFunction;
 	bool pDepthTest;
 	bool pStencilTest;
+	
+	int pBindingCount;
+	VkVertexInputBindingDescription *pBindings;
+	
+	int pAttributeCount;
+	VkVertexInputAttributeDescription *pAttributes;
 	
 	
 	
@@ -290,6 +316,47 @@ public:
 	
 	/** Set stencil test. */
 	void SetStencilTest( bool enable );
+	
+	
+	
+	/** Binding count. */
+	inline int GetBindingCount() const{ return pBindingCount; }
+	
+	/** Set binding count. */
+	void SetBindingCount( int count );
+	
+	/** Binding at index. */
+	const VkVertexInputBindingDescription &GetBindingAt( int index ) const;
+	
+	/** Set binding at index. */
+	void SetBindingAt( int index, const VkVertexInputBindingDescription &binding );
+	
+	/** Set binding at index. */
+	void SetBindingAt( int index, int binding, int stride,
+		VkVertexInputRate inputRate = VK_VERTEX_INPUT_RATE_VERTEX );
+	
+	/** Internal use only. */
+	inline const VkVertexInputBindingDescription *GetBindings() const{ return pBindings; }
+	
+	
+	
+	/** Attribute count. */
+	inline int GetAttributeCount() const{ return pAttributeCount; }
+	
+	/** Set attribute count. */
+	void SetAttributeCount( int count );
+	
+	/** Attribute at index. */
+	const VkVertexInputAttributeDescription &GetAttributeAt( int index ) const;
+	
+	/** Set attribute at index. */
+	void SetAttributeAt( int index, const VkVertexInputAttributeDescription &attribute );
+	
+	/** Set attribute at index. */
+	void SetAttributeAt( int index, int location, int binding, eAttributeFormat format, int offset );
+	
+	/** Internal use only. */
+	inline const VkVertexInputAttributeDescription *GetAttributes() const{ return pAttributes; }
 	/*@}*/
 	
 	
