@@ -370,7 +370,7 @@ class OBJECT_OT_ImportAnimation(bpy.types.Operator, ImportHelper):
 			if self.import_mode == '0' or moveName == self.import_move:
 				action = bpy.data.actions.new("imported " + moveName)
 				action.dragengine_export = False
-				action.dragengine_exportname = moveName
+				action.dragengine_exportname = "" # moveName
 				action.use_fake_user=True
 				
 				if not self.armature.object.animation_data:
