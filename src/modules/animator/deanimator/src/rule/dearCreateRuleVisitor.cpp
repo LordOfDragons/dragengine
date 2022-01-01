@@ -35,7 +35,6 @@
 #include "dearRuleForeignState.h"
 #include "dearRuleGroup.h"
 #include "dearRuleSubAnimator.h"
-#include "dearRuleRetarget.h"
 #include "dearRuleTrackTo.h"
 #include "dearRuleLimit.h"
 #include "../dearAnimatorInstance.h"
@@ -52,7 +51,6 @@
 #include <dragengine/resources/animator/rule/deAnimatorRuleForeignState.h>
 #include <dragengine/resources/animator/rule/deAnimatorRuleGroup.h>
 #include <dragengine/resources/animator/rule/deAnimatorRuleSubAnimator.h>
-#include <dragengine/resources/animator/rule/deAnimatorRuleRetarget.h>
 #include <dragengine/resources/animator/rule/deAnimatorRuleTrackTo.h>
 #include <dragengine/resources/animator/rule/deAnimatorRuleLimit.h>
 #include <dragengine/common/exceptions.h>
@@ -143,10 +141,6 @@ void dearCreateRuleVisitor::VisitGroup( deAnimatorRuleGroup &rule ){
 
 void dearCreateRuleVisitor::VisitSubAnimator( deAnimatorRuleSubAnimator &rule ){
 	pCreatedRule = new dearRuleSubAnimator( pInstance, pFirstLink, rule, pControllerMapping );
-}
-
-void dearCreateRuleVisitor::VisitRetarget( deAnimatorRuleRetarget &rule ){
-	pCreatedRule = new dearRuleRetarget( pInstance, pFirstLink, rule );
 }
 
 void dearCreateRuleVisitor::VisitTrackTo( deAnimatorRuleTrackTo &rule ){

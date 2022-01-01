@@ -48,7 +48,6 @@ public:
 		ertForeignState,
 		ertGroup,
 		ertSubAnimator,
-		ertRetarget,
 		ertTrackTo,
 		ertLimit
 	};
@@ -108,9 +107,6 @@ public:
 	
 	/** \brief Rule is a sub animator rule. */
 	inline bool IsSubAnimator() const{ return pType == ertSubAnimator; }
-	
-	/** \brief Rule is a retarget rule. */
-	inline bool IsRetarget() const{ return pType == ertRetarget; }
 	
 	/** \brief Rule is a track to rule. */
 	inline bool IsTrackTo() const{ return pType == ertTrackTo; }
@@ -179,12 +175,6 @@ public:
 	deAnimatorRuleSubAnimator &CastToSubAnimator() const;
 	
 	/**
-	 * \brief Cast to retarget rule.
-	 * \throws deeInvalidParam Type of rule is not deAnimatorRuleVisitorIdentify::ertRetarget.
-	 */
-	deAnimatorRuleRetarget &CastToRetarget() const;
-	
-	/**
 	 * \brief Cast to track to rule.
 	 * \throws deeInvalidParam Type of rule is not deAnimatorRuleVisitorIdentify::ertTrackTo.
 	 */
@@ -236,9 +226,6 @@ public:
 	
 	/** \brief Visit sub animator rule. */
 	virtual void VisitSubAnimator( deAnimatorRuleSubAnimator &rule );
-	
-	/** \brief Visit retarget rule. */
-	virtual void VisitRetarget( deAnimatorRuleRetarget &rule );
 	
 	/** \brief Visit track to rule. */
 	virtual void VisitTrackTo( deAnimatorRuleTrackTo &rule );

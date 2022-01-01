@@ -108,9 +108,6 @@ public:
 	/** \brief Visit sub animator rule. */
 	virtual void VisitSubAnimator( deAnimatorRuleSubAnimator &rule );
 	
-	/** \brief Visit retarget rule. */
-	virtual void VisitRetarget( deAnimatorRuleRetarget &rule );
-	
 	/** \brief Visit track to rule. */
 	virtual void VisitTrackTo( deAnimatorRuleTrackTo &rule );
 	

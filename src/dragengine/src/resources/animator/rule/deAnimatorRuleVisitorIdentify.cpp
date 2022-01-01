@@ -33,7 +33,6 @@
 #include "deAnimatorRuleForeignState.h"
 #include "deAnimatorRuleGroup.h"
 #include "deAnimatorRuleSubAnimator.h"
-#include "deAnimatorRuleRetarget.h"
 #include "deAnimatorRuleTrackTo.h"
 #include "deAnimatorRuleVisitorIdentify.h"
 #include "deAnimatorRuleLimit.h"
@@ -131,13 +130,6 @@ deAnimatorRuleSubAnimator &deAnimatorRuleVisitorIdentify::CastToSubAnimator() co
 	return *( ( deAnimatorRuleSubAnimator* )pRule );
 }
 
-deAnimatorRuleRetarget &deAnimatorRuleVisitorIdentify::CastToRetarget() const{
-	if( pType != ertRetarget ){
-		DETHROW( deeInvalidParam );
-	}
-	return *( ( deAnimatorRuleRetarget* )pRule );
-}
-
 deAnimatorRuleTrackTo &deAnimatorRuleVisitorIdentify::CastToTrackTo() const{
 	if( pType != ertTrackTo ){
 		DETHROW( deeInvalidParam );
@@ -215,11 +207,6 @@ void deAnimatorRuleVisitorIdentify::VisitGroup( deAnimatorRuleGroup &rule ){
 void deAnimatorRuleVisitorIdentify::VisitSubAnimator( deAnimatorRuleSubAnimator &rule ){
 	pRule = &rule;
 	pType = ertSubAnimator;
-}
-
-void deAnimatorRuleVisitorIdentify::VisitRetarget( deAnimatorRuleRetarget &rule ){
-	pRule = &rule;
-	pType = ertRetarget;
 }
 
 void deAnimatorRuleVisitorIdentify::VisitTrackTo( deAnimatorRuleTrackTo &rule ){

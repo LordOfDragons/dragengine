@@ -33,7 +33,6 @@
 #include "deAnimatorRuleForeignState.h"
 #include "deAnimatorRuleGroup.h"
 #include "deAnimatorRuleSubAnimator.h"
-#include "deAnimatorRuleRetarget.h"
 #include "deAnimatorRuleVisitor.h"
 #include "deAnimatorRuleTrackTo.h"
 #include "deAnimatorRuleLimit.h"
@@ -99,10 +98,6 @@ void deAnimatorRuleVisitor::VisitGroup( deAnimatorRuleGroup &rule ){
 }
 
 void deAnimatorRuleVisitor::VisitSubAnimator( deAnimatorRuleSubAnimator &rule ){
-	VisitRule( rule );
-}
-
-void deAnimatorRuleVisitor::VisitRetarget( deAnimatorRuleRetarget &rule ){
 	VisitRule( rule );
 }
 
