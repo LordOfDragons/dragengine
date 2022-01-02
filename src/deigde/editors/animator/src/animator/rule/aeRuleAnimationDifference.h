@@ -30,6 +30,9 @@
  * \brief Animator rule animation difference.
  */
 class aeRuleAnimationDifference : public aeRule{
+public:
+	typedef deTObjectReference<aeRuleAnimationDifference> Ref;
+	
 private:
 	decString pMove1Name;
 	float pMove1Time;
@@ -93,8 +96,11 @@ public:
 	
 	/** \brief Retrieve the leading move time target. */
 	inline aeControllerTarget &GetTargetLeadingMoveTime(){ return pTargetLeadMoveTime; }
+	inline const aeControllerTarget &GetTargetLeadingMoveTime() const{ return pTargetLeadMoveTime; }
+	
 	/** \brief Retrieve the reference move time target. */
 	inline aeControllerTarget &GetTargetReferenceMoveTime(){ return pTargetRefMoveTime; }
+	inline const aeControllerTarget &GetTargetReferenceMoveTime() const{ return pTargetRefMoveTime; }
 	
 	/** \brief Creates an engine animator rule. */
 	virtual deAnimatorRule *CreateEngineRule();

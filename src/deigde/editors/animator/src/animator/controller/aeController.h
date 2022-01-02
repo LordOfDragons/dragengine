@@ -41,6 +41,10 @@ class deAnimatorController;
  * Working object for an animator controller.
  */
 class aeController : public deObject{
+public:
+	typedef deTObjectReference<aeController> Ref;
+	
+	
 private:
 	aeAnimator *pAnimator;
 	int pEngControllerIndex;

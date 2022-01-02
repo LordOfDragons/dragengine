@@ -129,6 +129,7 @@ public:
 	
 	/** \brief Retrieve the source factor target. */
 	inline aeControllerTarget &GetTargetBlendFactor(){ return pTargetBlendFactor; }
+	inline const aeControllerTarget &GetTargetBlendFactor() const{ return pTargetBlendFactor; }
 	
 	/** \brief List all links of all rule targets. */
 	virtual void ListLinks( aeLinkList& list );

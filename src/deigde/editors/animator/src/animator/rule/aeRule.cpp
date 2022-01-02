@@ -37,6 +37,7 @@
 #include "aeRuleStateSnapshot.h"
 #include "aeRuleSubAnimator.h"
 #include "aeRuleTrackTo.h"
+#include "aeRuleMirror.h"
 #include "../aeAnimator.h"
 #include "../link/aeLinkList.h"
 
@@ -70,9 +71,6 @@ pType( type ),
 pBlendMode( deAnimatorRule::ebmBlend ),
 pBlendFactor( 1.0f ),
 pEnabled( true ){
-	if( type < deAnimatorRuleVisitorIdentify::ertAnimation || type > deAnimatorRuleVisitorIdentify::ertLimit ){
-		DETHROW( deeInvalidParam );
-	}
 }
 
 aeRule::aeRule( const aeRule &copy ) :
@@ -359,9 +357,6 @@ aeRule *aeRule::CreateRuleFromType( deAnimatorRuleVisitorIdentify::eRuleTypes ty
 	case deAnimatorRuleVisitorIdentify::ertLimit:
 		return new aeRuleLimit;
 		
-//	case deAnimatorRuleVisitorIdentify::ertRetarget:
-//		return new aeRuleRetarget;
-		
 	case deAnimatorRuleVisitorIdentify::ertStateManipulator:
 		return new aeRuleStateManipulator;
 		
@@ -373,6 +368,9 @@ aeRule *aeRule::CreateRuleFromType( deAnimatorRuleVisitorIdentify::eRuleTypes ty
 		
 	case deAnimatorRuleVisitorIdentify::ertTrackTo:
 		return new aeRuleTrackTo;
+		
+	case deAnimatorRuleVisitorIdentify::ertMirror:
+		return aeRuleMirror::CreateDefault();
 		
 	default:
 		DETHROW( deeInvalidParam );

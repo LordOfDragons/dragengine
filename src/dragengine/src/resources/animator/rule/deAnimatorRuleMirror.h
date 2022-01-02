@@ -59,13 +59,13 @@ public:
 	/** \brief Match name type. */
 	enum eMatchNameType{
 		/** \brief Match at begin of bone name. */
-		etBegin,
+		emntFirst,
 		
 		/** \brief Match at end of bone name. */
-		etEnd,
+		emntLast,
 		
 		/** \brief Match in the middle of bone name. */
-		etMiddle
+		emntMiddle
 	};
 	
 	/** \brief Match name. */

@@ -30,6 +30,9 @@
  * \brief Animator rule state snapshot.
  */
 class aeRuleStateSnapshot : public aeRule{
+public:
+	typedef deTObjectReference<aeRuleStateSnapshot> Ref;
+	
 private:
 	bool pUseLastState;
 	int pID;

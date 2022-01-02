@@ -695,7 +695,7 @@ class LoadAnimator extends BaseXmlLoader
 			elif tagName.equals("matchName")
 				var String first = element.getAttributeNamed("first")
 				var String second = element.getAttributeNamed("second")
-				var ARMirrorMatchNameType type = ARMirrorMatchNameType.named(element.getFirstCData())
+				var ARMirrorMatchNameType type = ARMirrorMatchNameType.named(element.getAttributeNamed("type"))
 				if type == null
 					logInvalidValue( element, element.getFirstCData() )
 					throw EInvalidParam.new()

@@ -39,6 +39,7 @@
 #include "../animator/rule/aeRuleSubAnimator.h"
 #include "../animator/rule/aeRuleTrackTo.h"
 #include "../animator/rule/aeRuleLimit.h"
+#include "../animator/rule/aeRuleMirror.h"
 #include "../animator/rule/aeRuleGroup.h"
 #include "../animator/wakeboard/aeWakeboard.h"
 #include "../configuration/aeConfiguration.h"
@@ -412,6 +413,9 @@ igdeIcon *aeWindowMain::GetRuleIcon( deAnimatorRuleVisitorIdentify::eRuleTypes t
 		
 	case deAnimatorRuleVisitorIdentify::ertLimit:
 		return pIconRuleLimit;
+		
+	case deAnimatorRuleVisitorIdentify::ertMirror:
+		return pIconRuleMirror;
 		
 	default:
 		return NULL;
@@ -1099,6 +1103,7 @@ void aeWindowMain::pLoadIcons(){
 	pIconRuleStateSnapshot.TakeOver( igdeIcon::LoadPNG( GetEditorModule(), "icons/rule_state_snapshot.png" ) );
 	pIconRuleSubAnimator.TakeOver( igdeIcon::LoadPNG( GetEditorModule(), "icons/rule_sub_animator.png" ) );
 	pIconRuleTrackTo.TakeOver( igdeIcon::LoadPNG( GetEditorModule(), "icons/rule_track_to.png" ) );
+	pIconRuleMirror.TakeOver( igdeIcon::LoadPNG( GetEditorModule(), "icons/rule_mirror.png" ) );
 }
 
 void aeWindowMain::pCreateActions(){
@@ -1155,6 +1160,8 @@ void aeWindowMain::pCreateActions(){
 		false, "Track To", pIconRuleTrackTo, "Add a track to rule" ) );
 	pActionRuleAddLimit.TakeOver( new cActionRuleAdd( *this, deAnimatorRuleVisitorIdentify::ertLimit,
 		false, "Limit", pIconRuleLimit, "Add a limit rule" ) );
+	pActionRuleAddMirror.TakeOver( new cActionRuleAdd( *this, deAnimatorRuleVisitorIdentify::ertMirror,
+		false, "Mirror", pIconRuleMirror, "Add a mirror rule" ) );
 	
 	pActionRuleAddIntoGroupAnim.TakeOver( new cActionRuleAddIntoGroup( *this, deAnimatorRuleVisitorIdentify::ertAnimation,
 		false, "Animation", pIconRuleAnimation, "Add an animation rule" ) );
@@ -1180,6 +1187,8 @@ void aeWindowMain::pCreateActions(){
 		false, "Track To", pIconRuleTrackTo, "Add a track to rule" ) );
 	pActionRuleAddIntoGroupLimit.TakeOver( new cActionRuleAddIntoGroup( *this, deAnimatorRuleVisitorIdentify::ertLimit,
 		false, "Limit", pIconRuleLimit, "Add a limit rule" ) );
+	pActionRuleAddIntoGroupMirror.TakeOver( new cActionRuleAddIntoGroup( *this, deAnimatorRuleVisitorIdentify::ertMirror,
+		false, "Mirror", pIconRuleMirror, "Add a mirror rule" ) );
 	
 	pActionRuleInsertAnim.TakeOver( new cActionRuleAdd( *this, deAnimatorRuleVisitorIdentify::ertAnimation,
 		true, "Animation", pIconRuleAnimation, "Insert an animation rule" ) );
@@ -1205,6 +1214,8 @@ void aeWindowMain::pCreateActions(){
 		true, "Track To", pIconRuleTrackTo, "Insert a track to rule" ) );
 	pActionRuleInsertLimit.TakeOver( new cActionRuleAdd( *this, deAnimatorRuleVisitorIdentify::ertLimit,
 		true, "Limit", pIconRuleLimit, "Insert a limit rule" ) );
+	pActionRuleInsertMirror.TakeOver( new cActionRuleAdd( *this, deAnimatorRuleVisitorIdentify::ertMirror,
+		true, "Mirror", pIconRuleMirror, "Insert a mirror rule" ) );
 	
 	pActionRuleRemove.TakeOver( new cActionRuleRemove( *this ) );
 	pActionRuleUp.TakeOver( new cActionRuleUp( *this ) );
@@ -1250,6 +1261,7 @@ void aeWindowMain::pCreateActions(){
 	AddUpdateAction( pActionRuleAddSubAnimator );
 	AddUpdateAction( pActionRuleAddTrackTo );
 	AddUpdateAction( pActionRuleAddLimit );
+	AddUpdateAction( pActionRuleAddMirror );
 	
 	AddUpdateAction( pActionRuleInsertAnim );
 	AddUpdateAction( pActionRuleInsertAnimDiff );
@@ -1263,6 +1275,7 @@ void aeWindowMain::pCreateActions(){
 	AddUpdateAction( pActionRuleInsertSubAnimator );
 	AddUpdateAction( pActionRuleInsertTrackTo );
 	AddUpdateAction( pActionRuleInsertLimit );
+	AddUpdateAction( pActionRuleInsertMirror );
 	
 	AddUpdateAction( pActionRuleRemove );
 	AddUpdateAction( pActionRuleUp );
@@ -1307,6 +1320,7 @@ void aeWindowMain::pCreateToolBarEdit(){
 	helper.ToolBarButton( pTBEdit, pActionRuleAddSubAnimator );
 	helper.ToolBarButton( pTBEdit, pActionRuleAddTrackTo );
 	helper.ToolBarButton( pTBEdit, pActionRuleAddLimit );
+	helper.ToolBarButton( pTBEdit, pActionRuleAddMirror );
 	
 	AddSharedToolBar( pTBEdit );
 }
@@ -1402,6 +1416,7 @@ void aeWindowMain::pCreateMenuRule( igdeMenuCascade &menu ){
 	helper.MenuCommand( subMenu, pActionRuleAddSubAnimator );
 	helper.MenuCommand( subMenu, pActionRuleAddTrackTo );
 	helper.MenuCommand( subMenu, pActionRuleAddLimit );
+	helper.MenuCommand( subMenu, pActionRuleAddMirror );
 	
 	subMenu.TakeOver( new igdeMenuCascade( GetEnvironment(), "Insert", deInputEvent::ekcI ) );
 	menu.AddChild( subMenu );
@@ -1417,6 +1432,7 @@ void aeWindowMain::pCreateMenuRule( igdeMenuCascade &menu ){
 	helper.MenuCommand( subMenu, pActionRuleInsertSubAnimator );
 	helper.MenuCommand( subMenu, pActionRuleInsertTrackTo );
 	helper.MenuCommand( subMenu, pActionRuleInsertLimit );
+	helper.MenuCommand( subMenu, pActionRuleInsertMirror );
 	
 	helper.MenuCommand( subMenu, pActionRuleRemove );
 	helper.MenuCommand( subMenu, pActionRuleUp );

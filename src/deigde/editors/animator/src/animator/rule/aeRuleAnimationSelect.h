@@ -32,6 +32,9 @@
  * \brief Animator rule animation select.
  */
 class aeRuleAnimationSelect : public aeRule{
+public:
+	typedef deTObjectReference<aeRuleAnimationSelect> Ref;
+	
 private:
 	decStringList pMoves;
 	
@@ -91,9 +94,11 @@ public:
 	
 	/** \brief Move time target. */
 	inline aeControllerTarget &GetTargetMoveTime(){ return pTargetMoveTime; }
+	inline const aeControllerTarget &GetTargetMoveTime() const{ return pTargetMoveTime; }
 	
 	/** \brief Select target. */
 	inline aeControllerTarget &GetTargetSelect(){ return pTargetSelect; }
+	inline const aeControllerTarget &GetTargetSelect() const{ return pTargetSelect; }
 	
 	
 	

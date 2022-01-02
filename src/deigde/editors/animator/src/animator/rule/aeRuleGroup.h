@@ -33,6 +33,9 @@
  * \brief Group animator rule.
  */
 class aeRuleGroup : public aeRule{
+public:
+	typedef deTObjectReference<aeRuleGroup> Ref;
+	
 private:
 	aeRuleList pRules;
 	
@@ -99,6 +102,7 @@ public:
 	
 	/** \brief Retrieve the select target. */
 	inline aeControllerTarget &GetTargetSelect(){ return pTargetSelect; }
+	inline const aeControllerTarget &GetTargetSelect() const{ return pTargetSelect; }
 	
 	/** \brief Create an engine animator rule. */
 	virtual deAnimatorRule *CreateEngineRule();

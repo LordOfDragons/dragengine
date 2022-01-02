@@ -30,6 +30,9 @@
  * \brief Animator rule inverse kinematic.
  */
 class aeRuleInverseKinematic : public aeRule{
+public:
+	typedef deTObjectReference<aeRuleInverseKinematic> Ref;
+	
 private:
 	decVector pGoalPosition;
 	decVector pGoalOrientation;

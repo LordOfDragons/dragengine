@@ -62,6 +62,7 @@
 #include <dragengine/resources/animator/rule/deAnimatorRuleLimit.h>
 #include <dragengine/resources/animator/rule/deAnimatorRuleGroup.h>
 #include <dragengine/resources/animator/rule/deAnimatorRuleTrackTo.h>
+#include <dragengine/resources/animator/rule/deAnimatorRuleMirror.h>
 #include <dragengine/resources/rig/deRig.h>
 #include <dragengine/resources/rig/deRigManager.h>
 
@@ -352,6 +353,9 @@ const char *basePath, deAnimator &animator ){
 		
 	}else if( strcmp( root.GetName(), "ruleLimit" ) == 0 ){
 		return pReadRuleLimit( root, animator );
+		
+	}else if( strcmp( root.GetName(), "ruleMirror" ) == 0 ){
+		return pReadRuleMirror( root, animator );
 		
 	}else{
 		return NULL;
@@ -982,6 +986,86 @@ deAnimatorRule * igdeLoadAnimator::pReadRuleForeignState( const decXmlElementTag
 			rule->FreeReference();
 		}
 		throw;
+	}
+	
+	return rule;
+}
+
+deAnimatorRule * igdeLoadAnimator::pReadRuleMirror( const decXmlElementTag &root, deAnimator &animator ){
+	const deAnimatorRuleMirror::Ref rule( deAnimatorRuleMirror::Ref::New( new deAnimatorRuleMirror ) );
+	const int elementCount = root.GetElementCount();
+	decVector vector;
+	int i;
+	
+	for( i=0; i<elementCount; i++ ){
+		const decXmlElementTag * const tag = root.GetElementIfTag( i );
+		if( ! tag ){
+			continue;
+		}
+		
+		if( tag->GetName() == "enablePosition" ){
+			rule->SetEnablePosition( GetCDataBool( *tag ) );
+			
+		}else if( tag->GetName() == "enableOrientation" ){
+			rule->SetEnableOrientation( GetCDataBool( *tag ) );
+			
+		}else if( tag->GetName() == "enableSize" ){
+			rule->SetEnableSize( GetCDataBool( *tag ) );
+			
+		}else if( tag->GetName() == "mirrorAxis" ){
+			const decString &name = tag->GetFirstData()->GetData();
+			
+			if( name == "x" ){
+				rule->SetMirrorAxis( deAnimatorRuleMirror::emaX );
+				
+			}else if( name == "y" ){
+				rule->SetMirrorAxis( deAnimatorRuleMirror::emaY );
+				
+			}else if( name == "z" ){
+				rule->SetMirrorAxis( deAnimatorRuleMirror::emaZ );
+				
+			}else{
+				LogErrorUnknownValue( *tag, name );
+			}
+			
+		}else if( strcmp( tag->GetName(), "mirrorBone" ) == 0 ){
+			rule->SetMirrorBone( GetCDataString( *tag ) );
+			
+		}else if( strcmp( tag->GetName(), "matchName" ) == 0 ){
+			const decString &first = GetAttributeString( *tag, "first" );
+			const decString &second = GetAttributeString( *tag, "second" );
+			const decString &strType = GetAttributeString( *tag, "type" );
+			
+			deAnimatorRuleMirror::eMatchNameType type;
+			if( strType == "first" ){
+				type = deAnimatorRuleMirror::emntFirst;
+				
+			}else if( strType == "last" ){
+				type = deAnimatorRuleMirror::emntLast;
+				
+			}else if( strType == "middle" ){
+				type = deAnimatorRuleMirror::emntMiddle;
+				
+			}else{
+				LogErrorUnknownValue( *tag, strType );
+				DETHROW( deeInvalidParam ); // LogErrorUnknownValue does throw but compiler does not see it
+			}
+			
+			rule->AddMatchName( first, second, type );
+			
+		}else if( strcmp( tag->GetName(), "target" ) == 0 ){
+			const decString &name = GetAttributeString( *tag, "name" );
+			
+			if( name == "blendFactor" ){
+				pReadControllerTarget( *tag, animator, rule->GetTargetBlendFactor() );
+				
+			}else{
+				LogErrorUnknownValue( *tag, name );
+			}
+			
+		}else{
+			pReadRuleCommon( *tag, animator, *rule );
+		}
 	}
 	
 	return rule;

@@ -38,6 +38,10 @@ class deAnimatorLink;
  * \brief Animator link.
  */
 class aeLink : public deObject{
+public:
+	typedef deTObjectReference<aeLink> Ref;
+	
+	
 private:
 	aeAnimator *pAnimator;
 	

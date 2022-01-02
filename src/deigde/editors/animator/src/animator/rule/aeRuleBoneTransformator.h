@@ -33,7 +33,6 @@
  */
 class aeRuleBoneTransformator : public aeRule{
 public:
-	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<aeRuleBoneTransformator> Ref;
 	
 	
@@ -148,10 +147,15 @@ public:
 	
 	/** Retrieve the translation target. */
 	inline aeControllerTarget &GetTargetTranslation(){ return pTargetTranslation; }
+	inline const aeControllerTarget &GetTargetTranslation() const{ return pTargetTranslation; }
+	
 	/** Retrieve the rotation target. */
 	inline aeControllerTarget &GetTargetRotation(){ return pTargetRotation; }
+	inline const aeControllerTarget &GetTargetRotation() const{ return pTargetRotation; }
+	
 	/** Retrieve the scaling target. */
 	inline aeControllerTarget &GetTargetScaling(){ return pTargetScaling; }
+	inline const aeControllerTarget &GetTargetScaling() const{ return pTargetScaling; }
 	
 	/** Creates an engine animator rule. */
 	virtual deAnimatorRule *CreateEngineRule();

@@ -105,6 +105,7 @@ private:
 	deAnimatorRule *pReadRuleSubAnimator( const decXmlElementTag &root, const char *basePath, deAnimator &animator );
 	deAnimatorRule *pReadRuleLimit( const decXmlElementTag &root, deAnimator &animator );
 	deAnimatorRule *pReadRuleTrackTo( const decXmlElementTag &root, deAnimator &animator );
+	deAnimatorRule *pReadRuleMirror( const decXmlElementTag &root, deAnimator &animator );
 	bool pReadRuleCommon( const decXmlElementTag &root, deAnimator &animator, deAnimatorRule &rule );
 	void pReadControllerTarget( const decXmlElementTag &root, deAnimator &animator, deAnimatorControllerTarget &target );
 };

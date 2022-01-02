@@ -39,6 +39,7 @@
 #include "panels/aeWPAPanelRuleTrackTo.h"
 #include "panels/aeWPAPanelRuleLimit.h"
 #include "panels/aeWPAPanelRuleGroup.h"
+#include "panels/aeWPAPanelRuleMirror.h"
 #include "../aeWindowMain.h"
 #include "../../animator/aeAnimator.h"
 #include "../../animator/rule/aeRule.h"
@@ -289,6 +290,7 @@ public:
 		helper.MenuCommand( submenu, windowMain.GetActionRuleAddSubAnimator() );
 		helper.MenuCommand( submenu, windowMain.GetActionRuleAddTrackTo() );
 		helper.MenuCommand( submenu, windowMain.GetActionRuleAddLimit() );
+		helper.MenuCommand( submenu, windowMain.GetActionRuleAddMirror() );
 		menu.AddChild( submenu );
 		
 		submenu.TakeOver( new igdeMenuCascade( menu.GetEnvironment(), "Add Into Group" ) );
@@ -304,6 +306,7 @@ public:
 		helper.MenuCommand( submenu, windowMain.GetActionRuleAddIntoGroupSubAnimator() );
 		helper.MenuCommand( submenu, windowMain.GetActionRuleAddIntoGroupTrackTo() );
 		helper.MenuCommand( submenu, windowMain.GetActionRuleAddIntoGroupLimit() );
+		helper.MenuCommand( submenu, windowMain.GetActionRuleAddIntoGroupMirror() );
 		menu.AddChild( submenu );
 		
 		submenu.TakeOver( new igdeMenuCascade( menu.GetEnvironment(), "Insert" ) );
@@ -319,6 +322,7 @@ public:
 		helper.MenuCommand( submenu, windowMain.GetActionRuleInsertSubAnimator() );
 		helper.MenuCommand( submenu, windowMain.GetActionRuleInsertTrackTo() );
 		helper.MenuCommand( submenu, windowMain.GetActionRuleInsertLimit() );
+		helper.MenuCommand( submenu, windowMain.GetActionRuleInsertMirror() );
 		menu.AddChild( submenu );
 		
 		helper.MenuCommand( menu, windowMain.GetActionRuleRemove() );
@@ -362,6 +366,7 @@ pPanelSSnapshot( NULL ),
 pPanelSubAnimator( NULL ),
 pPanelTrackTo( NULL ),
 pPanelLimit( NULL ),
+pPanelMirror( nullptr ),
 pActivePanel( NULL )
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
@@ -420,6 +425,9 @@ pActivePanel( NULL )
 	pSwitcher->AddChild( panel );
 	
 	panel.TakeOver( pPanelLimit = new aeWPAPanelRuleLimit( *this ) );
+	pSwitcher->AddChild( panel );
+	
+	panel.TakeOver( pPanelMirror = new aeWPAPanelRuleMirror( *this ) );
 	pSwitcher->AddChild( panel );
 	
 	pSwitcher->SetCurrent( 0 );  // empty
@@ -641,6 +649,10 @@ void aeWPRule::ShowActiveSourcePanel(){
 	}else if( type == pPanelLimit->GetRequiredType() ){
 		pSwitcher->SetCurrent( 12 );
 		pActivePanel = pPanelLimit;
+		
+	}else if( type == pPanelMirror->GetRequiredType() ){
+		pSwitcher->SetCurrent( 13 );
+		pActivePanel = pPanelMirror;
 		
 	}else{
 		pSwitcher->SetCurrent( 0 );  // empty
