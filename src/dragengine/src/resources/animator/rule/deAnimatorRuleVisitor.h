@@ -37,6 +37,7 @@ class deAnimatorRuleGroup;
 class deAnimatorRuleSubAnimator;
 class deAnimatorRuleTrackTo;
 class deAnimatorRuleLimit;
+class deAnimatorRuleMirror;
 
 
 /**
@@ -95,6 +96,12 @@ public:
 	
 	/** \brief Visit limit rule. */
 	virtual void VisitLimit( deAnimatorRuleLimit &rule );
+	
+	/**
+	 * \brief Visit mirror rule.
+	 * \version 1.9
+	 */
+	virtual void VisitMirror( deAnimatorRuleMirror &rule );
 	/*@}*/
 };
 

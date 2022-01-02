@@ -237,6 +237,9 @@ class LoadAnimator extends BaseXmlLoader
 		elif tagName.equals( "ruleForeignState" )
 			return this.pParseRuleForeignState( root, animator )
 			
+		elif tagName.equals( "ruleMirror" )
+			return this.pParseRuleMirror( root, animator )
+			
 		elif tagName.equals( "ruleSubAnimator" )
 			return this.pParseRuleSubAnimator( root, animator, basePath )
 			
@@ -658,6 +661,62 @@ class LoadAnimator extends BaseXmlLoader
 				this.pParseRuleCommon( element, animator, rule )
 			end
 		end )
+		
+		return rule
+	end
+	
+	/** Parse mirror rule tag. */
+	private func ADRule pParseRuleMirror(EasyXMLElement root, AnimatorDefinition animator)
+		var ADRuleMirror rule = ADRuleMirror.new()
+		
+		root.forEachTag(block EasyXMLElement element, String tagName
+			if tagName.equals("enablePosition")
+				rule.setEnablePosition(element.getFirstCDataBool())
+				
+			elif tagName.equals("enableOrientation")
+				rule.setEnableOrientation(element.getFirstCDataBool())
+				
+			elif tagName.equals("enableSize")
+				rule.setEnableSize(element.getFirstCDataBool())
+				
+			elif tagName.equals("mirrorAxis")
+				var ARMirrorMirrorAxis axis = ARMirrorMirrorAxis.named(element.getFirstCData())
+				if axis != null
+					rule.setMirrorAxis(axis)
+					
+				else
+					logInvalidValue(element, element.getFirstCData())
+					throw EInvalidParam.new()
+				end
+				
+			elif tagName.equals("mirrorBone")
+				rule.setMirrorBone(element.getFirstCData())
+				
+			elif tagName.equals("matchName")
+				var String first = element.getAttributeNamed("first")
+				var String second = element.getAttributeNamed("second")
+				var ARMirrorMatchNameType type = ARMirrorMatchNameType.named(element.getFirstCData())
+				if type == null
+					logInvalidValue( element, element.getFirstCData() )
+					throw EInvalidParam.new()
+				end
+				
+				rule.addMatchName(first, second, type)
+				
+			elif tagName.equals("target")
+				var ARMirrorTarget target = ARMirrorTarget.named(element.getAttributeNamed("name"))
+				if target != null
+					pParseTarget(element, animator, rule, target)
+					
+				else
+					logInvalidValue(element, element.getAttributeNamed("name"))
+					throw EInvalidParam.new()
+				end
+				
+			else
+				pParseRuleCommon(element, animator, rule)
+			end
+		end)
 		
 		return rule
 	end

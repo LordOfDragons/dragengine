@@ -113,6 +113,12 @@ public:
 	
 	/** \brief Visit limit rule. */
 	virtual void VisitLimit( deAnimatorRuleLimit &rule );
+	
+	/**
+	 * \brief Visit mirror rule.
+	 * \version 1.9
+	 */
+	virtual void VisitMirror( deAnimatorRuleMirror &rule );
 	/*@}*/
 };
 

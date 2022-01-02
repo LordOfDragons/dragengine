@@ -37,6 +37,7 @@
 #include "dearRuleSubAnimator.h"
 #include "dearRuleTrackTo.h"
 #include "dearRuleLimit.h"
+#include "dearRuleMirror.h"
 #include "../dearAnimatorInstance.h"
 
 #include <dragengine/resources/animator/deAnimator.h>
@@ -53,6 +54,7 @@
 #include <dragengine/resources/animator/rule/deAnimatorRuleSubAnimator.h>
 #include <dragengine/resources/animator/rule/deAnimatorRuleTrackTo.h>
 #include <dragengine/resources/animator/rule/deAnimatorRuleLimit.h>
+#include <dragengine/resources/animator/rule/deAnimatorRuleMirror.h>
 #include <dragengine/common/exceptions.h>
 
 
@@ -149,4 +151,8 @@ void dearCreateRuleVisitor::VisitTrackTo( deAnimatorRuleTrackTo &rule ){
 
 void dearCreateRuleVisitor::VisitLimit( deAnimatorRuleLimit &rule ){
 	pCreatedRule = new dearRuleLimit( pInstance, pFirstLink, rule );
+}
+
+void dearCreateRuleVisitor::VisitMirror( deAnimatorRuleMirror &rule ){
+	pCreatedRule = new dearRuleMirror( pInstance, pFirstLink, rule );
 }

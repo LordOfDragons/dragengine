@@ -46,6 +46,7 @@ class deClassARForeignState;
 class deClassARGroup;
 class deClassARInverseKinematic;
 class deClassARLimit;
+class deClassARMirror;
 class deClassARStateManipulator;
 class deClassARStateSnapshot;
 class deClassARSubAnimator;
@@ -249,10 +250,11 @@ private:
 	deClassARAnimationDifference *pClsARAnimDiff;
 	deClassARAnimationSelect *pClsARAnimSelect;
 	deClassARBoneTransformator *pClsARBoneTrans;
-	deClassARForeignState *pClsFSta;
+	deClassARForeignState *pClsARFSta;
 	deClassARGroup *pClsARGroup;
 	deClassARInverseKinematic *pClsARIK;
 	deClassARLimit *pClsARLimit;
+	deClassARMirror *pClsARMirror;
 	deClassARStateManipulator *pClsARStaM;
 	deClassARStateSnapshot *pClsARSnap;
 	deClassARSubAnimator *pClsARSubA;
@@ -550,7 +552,8 @@ public:
 	inline deClassARAnimationDifference *GetClassARAnimationDifference() const{ return pClsARAnimDiff; }
 	inline deClassARAnimationSelect *GetClassARAnimationSelect() const{ return pClsARAnimSelect; }
 	inline deClassARBoneTransformator *GetClassARBoneTransformator() const{ return pClsARBoneTrans; }
-	inline deClassARForeignState *GetClassARForeignState() const{ return pClsFSta; }
+	inline deClassARForeignState *GetClassARForeignState() const{ return pClsARFSta; }
+	inline deClassARMirror *GetClassARMirror() const{ return pClsARMirror; }
 	inline deClassARGroup *GetClassARGroup() const{ return pClsARGroup; }
 	inline deClassARInverseKinematic *GetClassARInverseKinematic() const{ return pClsARIK; }
 	inline deClassARLimit *GetClassARLimit() const{ return pClsARLimit; }

@@ -36,6 +36,7 @@
 #include "deAnimatorRuleTrackTo.h"
 #include "deAnimatorRuleVisitorIdentify.h"
 #include "deAnimatorRuleLimit.h"
+#include "deAnimatorRuleMirror.h"
 
 #include "../../../common/exceptions.h"
 
@@ -144,6 +145,13 @@ deAnimatorRuleLimit &deAnimatorRuleVisitorIdentify::CastToLimit() const{
 	return *( ( deAnimatorRuleLimit* )pRule );
 }
 
+deAnimatorRuleMirror &deAnimatorRuleVisitorIdentify::CastToMirror() const{
+	if( pType != ertMirror ){
+		DETHROW( deeInvalidParam );
+	}
+	return *( ( deAnimatorRuleMirror* )pRule );
+}
+
 void deAnimatorRuleVisitorIdentify::Reset(){
 	pRule = NULL;
 	pType = ertUnknown;
@@ -217,4 +225,9 @@ void deAnimatorRuleVisitorIdentify::VisitTrackTo( deAnimatorRuleTrackTo &rule ){
 void deAnimatorRuleVisitorIdentify::VisitLimit( deAnimatorRuleLimit &rule ){
 	pRule = &rule;
 	pType = ertLimit;
+}
+
+void deAnimatorRuleVisitorIdentify::VisitMirror( deAnimatorRuleMirror &rule ){
+	pRule = &rule;
+	pType = ertMirror;
 }

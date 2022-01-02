@@ -36,6 +36,7 @@
 #include "deAnimatorRuleVisitor.h"
 #include "deAnimatorRuleTrackTo.h"
 #include "deAnimatorRuleLimit.h"
+#include "deAnimatorRuleMirror.h"
 
 #include "../../../common/exceptions.h"
 
@@ -58,7 +59,7 @@ deAnimatorRuleVisitor::~deAnimatorRuleVisitor(){
 // Visiting
 /////////////
 
-void deAnimatorRuleVisitor::VisitRule( deAnimatorRule &rule ){
+void deAnimatorRuleVisitor::VisitRule( deAnimatorRule& ){
 }
 
 void deAnimatorRuleVisitor::VisitAnimation( deAnimatorRuleAnimation &rule ){
@@ -106,5 +107,9 @@ void deAnimatorRuleVisitor::VisitTrackTo( deAnimatorRuleTrackTo &rule ){
 }
 
 void deAnimatorRuleVisitor::VisitLimit( deAnimatorRuleLimit &rule ){
+	VisitRule( rule );
+}
+
+void deAnimatorRuleVisitor::VisitMirror( deAnimatorRuleMirror &rule ){
 	VisitRule( rule );
 }

@@ -70,6 +70,7 @@
 #include "classes/animation/rules/deClassARStateSnapshot.h"
 #include "classes/animation/rules/deClassARSubAnimator.h"
 #include "classes/animation/rules/deClassARTrackTo.h"
+#include "classes/animation/rules/deClassARMirror.h"
 
 #include "classes/cachedveg/deClassCachedVegetation.h"
 
@@ -329,7 +330,7 @@ deBaseScriptingModule( loadableModule ){
 	pClsARAnimSelect = NULL;
 	pClsARBoneTrans = NULL;
 	pClsAnimatorSystem = NULL;
-	pClsFSta = NULL;
+	pClsARFSta = NULL;
 	pClsARGroup = NULL; 
 	pClsARIK = NULL;
 	pClsARLimit = NULL;
@@ -337,6 +338,7 @@ deBaseScriptingModule( loadableModule ){
 	pClsARSnap = NULL;
 	pClsARSubA = NULL;
 	pClsARTrack = NULL;
+	pClsARMirror = NULL;
 	pClsAudSys = NULL;
 	pClsCVeg = NULL;
 	pClsCam = NULL;
@@ -1183,7 +1185,7 @@ void deScriptingDragonScript::pLoadBasicPackage(){
 		package->AddHostClass( pClsARAnimDiff = new deClassARAnimationDifference( *this ) );
 		package->AddHostClass( pClsARAnimSelect = new deClassARAnimationSelect( *this ) );
 		package->AddHostClass( pClsARBoneTrans = new deClassARBoneTransformator( *this ) );
-		package->AddHostClass( pClsFSta = new deClassARForeignState( *this ) );
+		package->AddHostClass( pClsARFSta = new deClassARForeignState( *this ) );
 		package->AddHostClass( pClsARGroup = new deClassARGroup( *this ) );
 		package->AddHostClass( pClsARIK = new deClassARInverseKinematic( *this ) );
 		package->AddHostClass( pClsARLimit = new deClassARLimit( *this ) );
@@ -1191,6 +1193,7 @@ void deScriptingDragonScript::pLoadBasicPackage(){
 		package->AddHostClass( pClsARSnap = new deClassARStateSnapshot( *this ) );
 		package->AddHostClass( pClsARSubA = new deClassARSubAnimator( *this ) );
 		package->AddHostClass( pClsARTrack = new deClassARTrackTo( *this ) );
+		package->AddHostClass( pClsARMirror = new deClassARMirror( *this ) );
 		package->AddHostClass( pClsCI = new deClassCollisionInfo( engine, this ) );
 		package->AddHostClass( pClsCT = new deClassCollisionTester( *this ) );
 		package->AddHostClass( pClsSkin = new deClassSkin( *this ) );

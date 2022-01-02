@@ -49,7 +49,10 @@ public:
 		ertGroup,
 		ertSubAnimator,
 		ertTrackTo,
-		ertLimit
+		ertLimit,
+		
+		/** \version 1.9 */
+		ertMirror
 	};
 	
 	
@@ -113,6 +116,12 @@ public:
 	
 	/** \brief Rule is a limit rule. */
 	inline bool IsLimit() const{ return pType == ertLimit; }
+	
+	/**
+	 * \brief Rule is a mirror rule.
+	 * \version 1.9
+	 */
+	inline bool IsMirror() const{ return pType == ertMirror; }
 	
 	/**
 	 * \brief Cast to animation rule.
@@ -186,6 +195,12 @@ public:
 	 */
 	deAnimatorRuleLimit &CastToLimit() const;
 	
+	/**
+	 * \brief Cast to mirror rule.
+	 * \throws deeInvalidParam Type of rule is not deAnimatorRuleVisitorIdentify::ertMirror.
+	 */
+	deAnimatorRuleMirror &CastToMirror() const;
+	
 	/** \brief Reset visitor. */
 	void Reset();
 	/*@}*/
@@ -232,6 +247,12 @@ public:
 	
 	/** \brief Visit limit rule. */
 	virtual void VisitLimit( deAnimatorRuleLimit &rule );
+	
+	/**
+	 * \brief Visit mirror rule.
+	 * \version 1.9
+	 */
+	virtual void VisitMirror( deAnimatorRuleMirror &rule );
 	/*@}*/
 };
 
