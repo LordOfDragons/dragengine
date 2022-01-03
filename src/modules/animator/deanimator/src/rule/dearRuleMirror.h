@@ -41,6 +41,7 @@ private:
 	const deAnimatorRuleMirror &pMirror;
 	
 	int pMirrorBone;
+	decMatrix pMirrorMatrix;
 	sBonePair *pBonePairs;
 	int pBonePairCount;
 	
