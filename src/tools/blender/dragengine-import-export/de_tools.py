@@ -820,9 +820,9 @@ class OBJECT_PT_DragengineArmatureAction(bpy.types.Panel):
 		row.prop(rd, "dragengine_export", expand=True, toggle=True)
 		
 		if rd.dragengine_export:
-			row = col.row(align=False)
-			row.prop(rd, "dragengine_exportname", expand=True)
-			row.prop(rd, "dragengine_timescaling", expand=True, toggle=True)
+			col = layout.column(align=True)
+			col.row(align=True).prop(rd, "dragengine_exportname", expand=True)
+			col.row(align=True).prop(rd, "dragengine_timescaling", expand=True, toggle=True)
 			
 			col = layout.column(align=True)
 			row = col.row(align=False)

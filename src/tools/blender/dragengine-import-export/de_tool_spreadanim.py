@@ -63,7 +63,7 @@ class OBJECT_OT_DEToolSpreadAnimation(bpy.types.Operator):
 			return {'FINISHED'}
 		
 		reTarget = re.compile(context.scene.dragengine_spreadanimtarget)
-		targets = [x for x in bpy.data.actions if reTarget.match(x.name)]
+		targets = [x for x in bpy.data.actions if not x == action and reTarget.match(x.name)]
 		
 		for bone in selectedBones:
 			if not bone.name in action.groups:

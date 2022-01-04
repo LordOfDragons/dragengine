@@ -51,6 +51,8 @@ class ProgressDisplay:
 		if self.operator:
 			self.operator.report({'INFO'}, infotext)
 		#print(infotext)
+		
+		#bpy.ops.wm.redraw_timer(type='DRAW_WIN_SWAP', iterations=1) # not working
 	
 	## Advance progress by 1 and update progress
 	def advance(self, text=''):

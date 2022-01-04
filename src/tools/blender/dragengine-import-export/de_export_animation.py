@@ -40,6 +40,7 @@ from .de_math import vector_by_matrix, matrixToEuler, vecLength, vecSub, quatDot
 from .de_configuration import Configuration
 from .de_resources import Mesh, Armature
 from .de_porting import registerClass, matmul
+from .de_helpers import ProgressDisplay
 
 
 class OBJECT_OT_ExportAnimation( bpy.types.Operator, ExportHelper ):
@@ -188,6 +189,7 @@ class OBJECT_OT_ExportAnimation( bpy.types.Operator, ExportHelper ):
 		finally:
 			f.close()
 		self.printInfos( context )
+		bpy.ops.wm.redraw_timer(type='DRAW_WIN_SWAP', iterations=1)
 		return result
 	
 	def initFindMeshArmRef( self, context ):
@@ -300,6 +302,8 @@ class OBJECT_OT_ExportAnimation( bpy.types.Operator, ExportHelper ):
 		if not self.scanMoves():
 			return False
 		
+		self.prepareProgress(context)
+		
 		if not self.writeHeader( f ):
 			return False
 		
@@ -378,6 +382,11 @@ class OBJECT_OT_ExportAnimation( bpy.types.Operator, ExportHelper ):
 				return False
 			self.moves.append( Armature.Move( action ) )
 		return True
+	
+	def prepareProgress(self, context):
+		self.progress = ProgressDisplay(len(self.moves) + 1, self)
+		self.progress.show()
+		self.progress.update(0, "Preparations...")
 	
 	def writeHeader( self, f ):
 		f.write( bytes( "Drag[en]gine Animation  ", 'UTF-8' ) )
@@ -479,6 +488,10 @@ class OBJECT_OT_ExportAnimation( bpy.types.Operator, ExportHelper ):
 		for move in self.moves:
 			self.report( { 'INFO' }, "%i/%i (%.2f%%): Writing Move %s..." % ( progressCounter, \
 				len( self.moves ), float( progressCounter ) / float( countMoves ), move.name ) )
+			print("{}/{} ({:.2f}): Writing Move {}...".format(progressCounter, len(self.moves),
+				float(progressCounter) / float(countMoves), move.name))
+			self.progress.advance("Export {}...".format(move.name))
+			
 			"""bgl.glColor3f( 0.34, 0.50, 0.76 )
 			blf.position( 0, 0, 0, 0 )
 			blf.draw( 0, move.name )"""
