@@ -40,6 +40,7 @@ from .de_tool_texturefill import OBJECT_OT_ToolTextureFill
 from .de_tool_transferuv import OBJECT_OT_ToolTransferUV
 from .de_tool_treebranchunwrap import OBJECT_OT_ToolTreeBranchUnwrap
 from .de_tool_fixactiongroups import OBJECT_OT_DEToolFixActionGroups
+from .de_tool_spreadanim import OBJECT_OT_DEToolSpreadAnimation
 from .de_porting import registerClass
 
 
@@ -190,7 +191,7 @@ class VIEW3D_PT_Dragengine(bpy.types.Panel):
 		if context.active_object.type == 'MESH':
 			self.drawMeshTools(context)
 		if context.active_object.type == 'ARMATURE':
-			self.drawArmatureTools(context.active_object)
+			self.drawArmatureTools(context)
 		if len(context.selected_objects) > 0:
 			self.drawCommonTools(context)
 	
@@ -267,15 +268,21 @@ class VIEW3D_PT_Dragengine(bpy.types.Panel):
 		row = col.row(align=True)
 		row.operator(operator="dragengine.export_model", text="Model")
 		row.operator(operator="dragengine.export_rig", text="Rig")
+		row = col.row(align=True)
 		row.operator(operator="dragengine.export_occmesh", text="OccMesh")
 		row.operator(operator="dragengine.export_navspace", text="NavMesh")
 		
-	def drawArmatureTools(self, object):
+	def drawArmatureTools(self, context):
 		layout = self.layout
 		row = layout.row(align=True)
 		row.operator(operator="dragengine.mirroranimation", text="Mirror Animation")
 		row = layout.row(align=True)
 		row.operator(operator="dragengine.fixactiongroups", text="Fix Action Groups")
+		
+		# spread animation
+		col = layout.column(align=True)
+		col.row(align=True).operator(operator="dragengine.spreadanim", text="Spread Animation")
+		col.row(align=True).prop(context.scene, "dragengine_spreadanimtarget", expand=True)
 		
 		# export
 		layout.row(align=True).label(text="Export:")
