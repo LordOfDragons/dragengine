@@ -177,4 +177,4 @@ class Timer:
 		
 	def log(self, text, peek=False):
 		e = self.elapsed(peek)
-		print('[{: 4d}.{:01d}] {}'.format(int(e), int(e * 10) % 10, text))
+		print('[{:4d}.{:01d}] {}'.format(int(e), int(e * 10) % 10, text))
