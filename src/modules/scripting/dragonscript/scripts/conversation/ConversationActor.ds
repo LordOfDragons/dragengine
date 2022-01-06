@@ -235,7 +235,7 @@ class ConversationActor
 	 * \brief Actor speech has been started by CActionActorSpeak.
 	 * \version 1.9
 	 * 
-	 * Called after setting up actor speech and after advancing conversation playback.
+	 * Called after setting up actor speech and before advancing conversation playback.
 	 * Allows sub class to apply additional game actions at begin of actor speech started
 	 * by instance of CActionActorSpeak. This method is always called no matter if the
 	 * action set up any speech parameters or not. Use the action parameter to figure out

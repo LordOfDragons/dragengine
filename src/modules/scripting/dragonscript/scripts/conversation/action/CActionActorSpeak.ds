@@ -341,9 +341,9 @@ class CActionActorSpeak extends ConversationAction
 			actor.setRemainingSpeechTime(speechTime)
 		end
 		
-		playback.advanceToNextAction()
-		
 		actor.beginActorSpeech(this)
+		
+		playback.advanceToNextAction()
 	end
 	
 	/**
