@@ -41,12 +41,12 @@ class CActionActorSpeak extends ConversationAction
 		public func new()
 		end
 		
-		public func Persistable readObjectFromFile( PersistencyEnvironment env, FileReader reader )
-			return CActionActorSpeak.new( env, reader )
+		public func Persistable readObjectFromFile(PersistencyEnvironment env, FileReader reader)
+			return CActionActorSpeak.new(env, reader)
 		end
 		
-		public static func void registerFactory( Persistency persistency )
-			persistency.addFactory( NAME, Factory.new() )
+		public static func void registerFactory(Persistency persistency)
+			persistency.addFactory(NAME, Factory.new())
 		end
 	end
 	
@@ -70,73 +70,73 @@ class CActionActorSpeak extends ConversationAction
 	
 	/** \brief Create conversation action. */
 	public func new()
-		this.pWords = Array.new()
-		this.pFacePoses = Array.new()
-		this.pGestures = Array.new()
-		this.pBodyLookAts = Array.new()
-		this.pHeadLookAts = Array.new()
-		this.pEyesLookAts = Array.new()
-		this.pUseSpeechAnimation = true
-		this.pMinSpeechTime = 0.0
+		pWords = Array.new()
+		pFacePoses = Array.new()
+		pGestures = Array.new()
+		pBodyLookAts = Array.new()
+		pHeadLookAts = Array.new()
+		pEyesLookAts = Array.new()
+		pUseSpeechAnimation = true
+		pMinSpeechTime = 0.0
 	end
 	
 	/** \brief Read from file. */
-	public func new( PersistencyEnvironment env, FileReader reader ) super( env, reader )
+	public func new(PersistencyEnvironment env, FileReader reader) super(env, reader)
 		select reader.readByte() // version
 		case 0
-			var PersistencyFlags flags = PersistencyFlags.new( 1, reader )
-			this.pUseSpeechAnimation = flags.getAt( 0 )
+			var PersistencyFlags flags = PersistencyFlags.new(1, reader)
+			pUseSpeechAnimation = flags.getAt(0)
 			
-			this.pActorID = env.readStringIDOrNullIfEmpty( reader )
+			pActorID = env.readStringIDOrNullIfEmpty(reader)
 			
 			var String text = reader.readString16()
 			if not text.empty()
-				this.pTextBoxText = UnicodeString.newFromUTF8( text )
+				pTextBoxText = UnicodeString.newFromUTF8(text)
 			end
 			
-			this.pTextBoxTextStyle = env.readStringIDOrNullIfEmpty( reader )
-			this.pPathSound = env.readString16OrNullIfEmpty( reader )
+			pTextBoxTextStyle = env.readStringIDOrNullIfEmpty(reader)
+			pPathSound = env.readString16OrNullIfEmpty(reader)
 			
 			var int i, count = reader.readUShort()
-			this.pWords = Array.new()
+			pWords = Array.new()
 			for i = 0 to count
-				this.pWords.add( ConversationStrip.readFromFile( reader ) )
+				pWords.add(ConversationStrip.readFromFile(reader))
 			end
 			
 			count = reader.readUShort()
-			this.pFacePoses = Array.new()
+			pFacePoses = Array.new()
 			for i = 0 to count
-				this.pFacePoses.add( ConversationStrip.readFromFile( reader ) )
+				pFacePoses.add(ConversationStrip.readFromFile(reader))
 			end
 			
 			count = reader.readUShort()
-			this.pGestures = Array.new()
+			pGestures = Array.new()
 			for i = 0 to count
-				this.pGestures.add( ConversationStrip.readFromFile( reader ) )
+				pGestures.add(ConversationStrip.readFromFile(reader))
 			end
 			
 			count = reader.readUShort()
-			this.pBodyLookAts = Array.new()
+			pBodyLookAts = Array.new()
 			for i = 0 to count
-				this.pBodyLookAts.add( ConversationStrip.readFromFile( reader ) )
+				pBodyLookAts.add(ConversationStrip.readFromFile(reader))
 			end
 			
 			count = reader.readUShort()
-			this.pHeadLookAts = Array.new()
+			pHeadLookAts = Array.new()
 			for i = 0 to count
-				this.pHeadLookAts.add( ConversationStrip.readFromFile( reader ) )
+				pHeadLookAts.add(ConversationStrip.readFromFile(reader))
 			end
 			
 			count = reader.readUShort()
-			this.pEyesLookAts = Array.new()
+			pEyesLookAts = Array.new()
 			for i = 0 to count
-				this.pEyesLookAts.add( ConversationStrip.readFromFile( reader ) )
+				pEyesLookAts.add(ConversationStrip.readFromFile(reader))
 			end
 			
-			this.pMinSpeechTime = reader.readFloat()
+			pMinSpeechTime = reader.readFloat()
 			
 		else
-			throw EInvalidParam.new( "unsupported version" )
+			throw EInvalidParam.new("unsupported version")
 		end
 	end
 	
@@ -144,167 +144,167 @@ class CActionActorSpeak extends ConversationAction
 	
 	/** \brief Sound file loading it if not loaded already. */
 	public func Sound getSound()
-		if this.pSound == null and this.pPathSound != null
-			this.pSound = Sound.new( this.pPathSound )
+		if pSound == null and pPathSound != null
+			pSound = Sound.new(pPathSound)
 		end
 		
-		return this.pSound
+		return pSound
 	end
 	
 	/** \brief Actor ID or null if not set. */
 	public func StringID getActorID()
-		return this.pActorID
+		return pActorID
 	end
 	
 	/** \brief Set actor ID or null if not set. */
-	public func void setActorID( StringID id )
-		this.pActorID = id
+	public func void setActorID(StringID id)
+		pActorID = id
 	end
 	
 	/** \brief Text box text or null to not set the text. */
 	public func UnicodeString getTextBoxText()
-		return this.pTextBoxText
+		return pTextBoxText
 	end
 	
 	/** \brief Set text box text or null to not set the text. */
-	public func void setTextBoxText( UnicodeString text )
-		this.pTextBoxText = text
+	public func void setTextBoxText(UnicodeString text)
+		pTextBoxText = text
 	end
 	
 	/** \brief Text box text style id. */
 	public func StringID getTextBoxTextStyle()
-		return this.pTextBoxTextStyle
+		return pTextBoxTextStyle
 	end
 	
 	/** \brief Set text box text style. */
-	public func void setTextBoxTextStyle( StringID styleID )
-		this.pTextBoxTextStyle = styleID
+	public func void setTextBoxTextStyle(StringID styleID)
+		pTextBoxTextStyle = styleID
 	end
 	
 	/** \brief Path to the sound file or null to not play sound. */
 	public func String getPathSound()
-		return this.pPathSound
+		return pPathSound
 	end
 	
 	/** \brief Set path to the sound file or null to not play sound. */
-	public func void setPathSound( String path )
-		this.pPathSound = path
+	public func void setPathSound(String path)
+		pPathSound = path
 	end
 	
 	/** \brief Speech animation is used for this action. */
 	public func bool getUseSpeechAnimation()
-		return this.pUseSpeechAnimation
+		return pUseSpeechAnimation
 	end
 	
 	/** \brief Set if speech animation is used for this action. */
-	public func void setUseSpeechAnimation( bool useSpeechAnimation )
-		this.pUseSpeechAnimation = useSpeechAnimation
+	public func void setUseSpeechAnimation(bool useSpeechAnimation)
+		pUseSpeechAnimation = useSpeechAnimation
 	end
 	
 	/** \brief Minimum time the actor is speaking. */
 	public func float getMinSpeechTime()
-		return this.pMinSpeechTime
+		return pMinSpeechTime
 	end
 	
 	/** \brief Set minimum time the actor is speaking. */
-	public func void setMinSpeechTime( float minSpeechTime )
-		this.pMinSpeechTime = DEMath.max( minSpeechTime, 0.0 )
+	public func void setMinSpeechTime(float minSpeechTime)
+		pMinSpeechTime = DEMath.max(minSpeechTime, 0.0)
 	end
 	
 	
 	
 	/** \brief Visits all words. */
-	public func void forEachWord( Block aBlock )
-		this.pWords.forEach( aBlock )
+	public func void forEachWord(Block aBlock)
+		pWords.forEach(aBlock)
 	end
 	
 	/** \brief Add word. */
-	public func void addWord( ConversationStrip word )
+	public func void addWord(ConversationStrip word)
 		if word == null
 			throw EInvalidParam.new()
 		end
-		this.pWords.add( word )
+		pWords.add(word)
 	end
 	
 	
 	
 	/** \brief Visits all face poses. */
-	public func void forEachFacePose( Block aBlock )
-		this.pFacePoses.forEach( aBlock )
+	public func void forEachFacePose(Block aBlock)
+		pFacePoses.forEach(aBlock)
 	end
 	
 	/** \brief Add face pose. */
-	public func void addFacePose( ConversationStrip facePose )
+	public func void addFacePose(ConversationStrip facePose)
 		if facePose == null
 			throw EInvalidParam.new()
 		end
-		this.pFacePoses.add( facePose )
+		pFacePoses.add(facePose)
 	end
 	
 	
 	
 	/** \brief Visits all gestures. */
-	public func void forEachGesture( Block aBlock )
-		this.pGestures.forEach( aBlock )
+	public func void forEachGesture(Block aBlock)
+		pGestures.forEach(aBlock)
 	end
 	
 	/** \brief Adds a gesture. */
-	public func void addGesture( ConversationStrip gesture )
+	public func void addGesture(ConversationStrip gesture)
 		if gesture == null
 			throw EInvalidParam.new()
 		end
-		this.pGestures.add( gesture )
+		pGestures.add(gesture)
 	end
 	
 	
 	
 	/** \brief Visits all body look-ats. */
-	public func void forEachBodyLookAt( Block aBlock )
-		this.pBodyLookAts.forEach( aBlock )
+	public func void forEachBodyLookAt(Block aBlock)
+		pBodyLookAts.forEach(aBlock)
 	end
 	
 	/** \brief Adds a body look-at. */
-	public func void addBodyLookAt( ConversationStrip lookAt )
+	public func void addBodyLookAt(ConversationStrip lookAt)
 		if lookAt == null
 			throw EInvalidParam.new()
 		end
-		this.pBodyLookAts.add( lookAt )
+		pBodyLookAts.add(lookAt)
 	end
 	
 	
 	
 	/** \brief Visits all head look-ats. */
-	public func void forEachHeadLookAt( Block aBlock )
-		this.pHeadLookAts.forEach( aBlock )
+	public func void forEachHeadLookAt(Block aBlock)
+		pHeadLookAts.forEach(aBlock)
 	end
 	
 	/** \brief Adds a head look-at. */
-	public func void addHeadLookAt( ConversationStrip lookAt )
+	public func void addHeadLookAt(ConversationStrip lookAt)
 		if lookAt == null
 			throw EInvalidParam.new()
 		end
-		this.pHeadLookAts.add( lookAt )
+		pHeadLookAts.add(lookAt)
 	end
 	
 	
 	
 	/** \brief Visits all eyes look-ats. */
-	public func void forEachEyesLookAt( Block aBlock )
-		this.pEyesLookAts.forEach( aBlock )
+	public func void forEachEyesLookAt(Block aBlock)
+		pEyesLookAts.forEach(aBlock)
 	end
 	
 	/** \brief Adds a eyes look-at. */
-	public func void addEyesLookAt( ConversationStrip lookAt )
+	public func void addEyesLookAt(ConversationStrip lookAt)
 		if lookAt == null
 			throw EInvalidParam.new()
 		end
-		this.pEyesLookAts.add( lookAt )
+		pEyesLookAts.add(lookAt)
 	end
 	
 	
 	
 	/** \brief Play back a sound file as voice of a conversation actor. */
-	public func void playVoiceAudio( ConversationActor actor, Sound sound )
+	public func void playVoiceAudio(ConversationActor actor, Sound sound)
 		var Speaker speaker = actor.getVoiceSpeaker()
 		
 		if speaker == null
@@ -312,7 +312,7 @@ class CActionActorSpeak extends ConversationAction
 		end
 		
 		speaker.stop()
-		speaker.setSound( sound )
+		speaker.setSound(sound)
 		
 		if sound != null
 			speaker.play()
@@ -320,39 +320,41 @@ class CActionActorSpeak extends ConversationAction
 	end
 	
 	/** \brief Execute action. */
-	public func void execute( ConversationPlayback playback )
-		var ConversationActor actor = playback.getActorMatching( this.pActorID )
+	public func void execute(ConversationPlayback playback)
+		var ConversationActor actor = playback.getActorMatching(pActorID)
 		if actor == null
 			playback.advanceToNextAction()
 			return
 		end
 		
-		var float speechTime = this.pMinSpeechTime
+		var float speechTime = pMinSpeechTime
 		
-		speechTime = DEMath.max( this.executeVoiceSound( playback, actor ), speechTime )
-		speechTime = DEMath.max( this.executeSpeechAnimation( playback, actor ), speechTime )
-		this.executeSubTitle( playback, actor, speechTime )
-		this.executeGesture( playback, actor )
-		this.executeFacePose( playback, actor )
-		this.executeHeadLookAt( playback, actor )
-		this.executeEyesLookAt( playback, actor )
+		speechTime = DEMath.max(executeVoiceSound(playback, actor), speechTime)
+		speechTime = DEMath.max(executeSpeechAnimation(playback, actor), speechTime)
+		executeSubTitle(playback, actor, speechTime)
+		executeGesture(playback, actor)
+		executeFacePose(playback, actor)
+		executeHeadLookAt(playback, actor)
+		executeEyesLookAt(playback, actor)
 		
-		if speechTime > 0.0
-			actor.setRemainingSpeechTime( speechTime )
+		if speechTime > 0
+			actor.setRemainingSpeechTime(speechTime)
 		end
 		
 		playback.advanceToNextAction()
+		
+		actor.beginActorSpeech(this)
 	end
 	
 	/**
 	 * \brief Execute voice sound.
 	 * \returns speech time or 0 if no sound is played.
 	 */
-	public func float executeVoiceSound( ConversationPlayback playback, ConversationActor actor )
+	public func float executeVoiceSound(ConversationPlayback playback, ConversationActor actor)
 		var Sound sound
 		
 		try
-			sound = this.getSound()
+			sound = getSound()
 			
 		catch Exception e
 			// playback.getConsole()...
@@ -362,7 +364,7 @@ class CActionActorSpeak extends ConversationAction
 			return 0.0
 		end
 		
-		this.playVoiceAudio( actor, sound )
+		playVoiceAudio(actor, sound)
 		return sound.getPlayTime()
 	end
 	
@@ -370,8 +372,8 @@ class CActionActorSpeak extends ConversationAction
 	 * \brief Execute speech animation.
 	 * \returns speech time or 0 if no sound is played.
 	 */
-	public func float executeSpeechAnimation( ConversationPlayback playback, ConversationActor actor )
-		if this.pWords.getCount() == 0
+	public func float executeSpeechAnimation(ConversationPlayback playback, ConversationActor actor)
+		if pWords.getCount() == 0
 			return 0.0
 		end
 		
@@ -379,11 +381,11 @@ class CActionActorSpeak extends ConversationAction
 		var float sanimLength = 0.0
 		
 		if speechPlayback == null or speechPlayback.getSpeechAnimation() == null
-			var int count = this.pWords.getCount()
+			var int count = pWords.getCount()
 			var int i
 			
 			for i = 0 to count
-				var ConversationStrip strip = this.pWords.getAt( i ) cast ConversationStrip
+				var ConversationStrip strip = pWords.getAt(i) cast ConversationStrip
 				sanimLength += strip.getPause()
 				sanimLength += strip.getDuration()
 			end
@@ -401,12 +403,12 @@ class CActionActorSpeak extends ConversationAction
 			
 			speechPlayback.removeAllPhonemes()
 			
-			if this.pWords.getCount() > 0
-				wordFirst = this.pWords.getAt( 0 ) cast ConversationStrip
-				wordLast = this.pWords.getAt( -1 ) cast ConversationStrip
+			if pWords.getCount() > 0
+				wordFirst = pWords.getAt(0) cast ConversationStrip
+				wordLast = pWords.getAt(-1) cast ConversationStrip
 			end
 			
-			this.pWords.forEach( block ConversationStrip word
+			pWords.forEach(block ConversationStrip word
 				pauseLen = word.getPause()
 				
 				if pauseLen > 0.01
@@ -417,32 +419,32 @@ class CActionActorSpeak extends ConversationAction
 					if word == wordFirst
 						if pauseLen > 0.15
 							// protection at end of pause
-							speechPlayback.addPhoneme( null, pauseLen - 0.1 )
-							speechPlayback.addPhoneme( null, 0.1 )
+							speechPlayback.addPhoneme(null, pauseLen - 0.1)
+							speechPlayback.addPhoneme(null, 0.1)
 							
 						else
-							speechPlayback.addPhoneme( null, pauseLen )
+							speechPlayback.addPhoneme(null, pauseLen)
 						end
 						
 					elif word == wordLast
 						if pauseLen > 0.15
 							// protection at beginning of pause
-							speechPlayback.addPhoneme( null, 0.1 )
-							speechPlayback.addPhoneme( null, pauseLen - 0.1 )
+							speechPlayback.addPhoneme(null, 0.1)
+							speechPlayback.addPhoneme(null, pauseLen - 0.1)
 							
 						else
-							speechPlayback.addPhoneme( null, pauseLen )
+							speechPlayback.addPhoneme(null, pauseLen)
 						end
 						
 					else
 						if pauseLen > 0.25
 							// protection at both ends of pause
-							speechPlayback.addPhoneme( null, 0.1 )
-							speechPlayback.addPhoneme( null, pauseLen - 0.2 )
-							speechPlayback.addPhoneme( null, 0.1 )
+							speechPlayback.addPhoneme(null, 0.1)
+							speechPlayback.addPhoneme(null, pauseLen - 0.2)
+							speechPlayback.addPhoneme(null, 0.1)
 							
 						else
-							speechPlayback.addPhoneme( null, pauseLen )
+							speechPlayback.addPhoneme(null, pauseLen)
 						end
 					end
 				end
@@ -451,11 +453,11 @@ class CActionActorSpeak extends ConversationAction
 					saword = null
 					
 				else
-					saword = sanimation.getWordNamed( word.getID() )
+					saword = sanimation.getWordNamed(word.getID())
 				end
 				
 				if saword == null
-					speechPlayback.addPhoneme( null, word.getDuration() )
+					speechPlayback.addPhoneme(null, word.getDuration())
 					
 				else
 					phonetics = saword.getPhonetics()
@@ -463,7 +465,7 @@ class CActionActorSpeak extends ConversationAction
 					scaling = 0.0
 					
 					for i = 0 to length
-						saphoneme = sanimation.getPhonemeWithIPA( phonetics.getCharacterAt( i ) )
+						saphoneme = sanimation.getPhonemeWithIPA(phonetics.getCharacterAt(i))
 						
 						if saphoneme == null
 							scaling += 0.08
@@ -477,21 +479,21 @@ class CActionActorSpeak extends ConversationAction
 					end
 					
 					for i = 0 to length
-						saphoneme = sanimation.getPhonemeWithIPA( phonetics.getCharacterAt( i ) )
+						saphoneme = sanimation.getPhonemeWithIPA(phonetics.getCharacterAt(i))
 						
 						if saphoneme == null
-							speechPlayback.addPhoneme( null, 0.08 * scaling )
+							speechPlayback.addPhoneme(null, 0.08 * scaling)
 							
 						else
-							speechPlayback.addPhoneme( saphoneme, saphoneme.getLength() * scaling )
+							speechPlayback.addPhoneme(saphoneme, saphoneme.getLength() * scaling)
 						end
 					end
 				end
-			end )
+			end)
 			
 			sanimLength = speechPlayback.getDuration()
 			
-			if not this.pUseSpeechAnimation
+			if not pUseSpeechAnimation
 				speechPlayback.removeAllPhonemes()
 			end
 		end
@@ -500,8 +502,8 @@ class CActionActorSpeak extends ConversationAction
 	end
 	
 	/** \brief Execute sub title. */
-	public func void executeSubTitle( ConversationPlayback playback, ConversationActor actor, float speechTime )
-		if this.pTextBoxText == null or this.pTextBoxText.getLength() == 0
+	public func void executeSubTitle(ConversationPlayback playback, ConversationActor actor, float speechTime)
+		if pTextBoxText == null or pTextBoxText.getLength() == 0
 			return
 		end
 		
@@ -510,16 +512,16 @@ class CActionActorSpeak extends ConversationAction
 			return
 		end
 		
-		var SubTitleBoxText text = actor.createSubTitleText( this.pTextBoxText, this.pTextBoxTextStyle )
-		subTitle.addSubTitleText( text.subtitleWidget() )
-		actor.setSubTitleText( text )
+		var SubTitleBoxText text = actor.createSubTitleText(pTextBoxText, pTextBoxTextStyle)
+		subTitle.addSubTitleText(text.subtitleWidget())
+		actor.setSubTitleText(text)
 		
-		text.hideSubtitleAfter( speechTime + 2.0 ) // 1-3s?
+		text.hideSubtitleAfter(speechTime + 2.0) // 1-3s?
 	end
 	
 	/** \brief Execute gesture. */
-	public func void executeGesture( ConversationPlayback playback, ConversationActor actor )
-		if this.pGestures.getCount() == 0
+	public func void executeGesture(ConversationPlayback playback, ConversationActor actor)
+		if pGestures.getCount() == 0
 			return
 		end
 		
@@ -533,15 +535,15 @@ class CActionActorSpeak extends ConversationAction
 		// be kept up to after the pause time of the first defined gesture. For the first
 		// gesture the addGestureFromNow() method takes care of this for us. For all other
 		// gesture we use addGesture().
-		var ConversationStrip firstGesture = this.pGestures.getAt( 0 ) cast ConversationStrip
+		var ConversationStrip firstGesture = pGestures.getAt(0) cast ConversationStrip
 		
-		this.pGestures.forEach( block ConversationStrip gesture
+		pGestures.forEach(block ConversationStrip gesture
 			var StringID animatorID
 			var bool hold = false
 			
 			if gesture.getID() != null
 				var ConversationGesture conversationGesture = \
-					playback.getConversation().getGestureNamed( gesture.getID() )
+					playback.getConversation().getGestureNamed(gesture.getID())
 				
 				if conversationGesture != null
 					animatorID = conversationGesture.getAnimator()
@@ -550,17 +552,17 @@ class CActionActorSpeak extends ConversationAction
 			end
 			
 			if gesture == firstGesture
-				gesturePlayback.addGestureFromNow( animatorID, hold, gesture )
+				gesturePlayback.addGestureFromNow(animatorID, hold, gesture)
 				
 			else
-				gesturePlayback.addGesture( animatorID, hold, gesture )
+				gesturePlayback.addGesture(animatorID, hold, gesture)
 			end
-		end )
+		end)
 	end
 	
 	/** \brief Execute face pose. */
-	public func void executeFacePose( ConversationPlayback playback, ConversationActor actor )
-		if this.pFacePoses.getCount() == 0
+	public func void executeFacePose(ConversationPlayback playback, ConversationActor actor)
+		if pFacePoses.getCount() == 0
 			return
 		end
 		
@@ -574,28 +576,28 @@ class CActionActorSpeak extends ConversationAction
 		
 		facePosePlayback.removeAllPoses()
 		
-		this.pFacePoses.forEach( block ConversationStrip each
+		pFacePoses.forEach(block ConversationStrip each
 			var Array playbackPose
 			
 			if each.getID() != null
-				var ConversationFacePose facePose = conversation.getFacePoseNamed( each.getID() )
+				var ConversationFacePose facePose = conversation.getFacePoseNamed(each.getID())
 				
 				if facePose != null
 					playbackPose = Array.new()
-					facePose.forEachController( block ConversationControllerValue each2
-						playbackPose.add( ConversationFacePosePlayback.FacePoseController.new( \
-							each2.getController(), each2.getValue() ) )
-					end )
+					facePose.forEachController(block ConversationControllerValue each2
+						playbackPose.add(ConversationFacePosePlayback.FacePoseController.new(\
+							each2.getController(), each2.getValue()))
+					end)
 				end
 			end
 			
-			facePosePlayback.addPose( playbackPose, each )
-		end )
+			facePosePlayback.addPose(playbackPose, each)
+		end)
 	end
 	
 	/** \brief Execute head look-at. */
-	public func void executeHeadLookAt( ConversationPlayback playback, ConversationActor actor )
-		if this.pHeadLookAts.getCount() == 0
+	public func void executeHeadLookAt(ConversationPlayback playback, ConversationActor actor)
+		if pHeadLookAts.getCount() == 0
 			return
 		end
 		
@@ -609,18 +611,18 @@ class CActionActorSpeak extends ConversationAction
 		
 		headPlayback.removeAllLookAts()
 		
-		this.pHeadLookAts.forEach( block ConversationStrip each
+		pHeadLookAts.forEach(block ConversationStrip each
 			var ConversationPlaybackLookAt charLookAt
 			
 			if each.getID() != null
-				var ConversationTarget target = conversation.getTargetNamed( each.getID() )
+				var ConversationTarget target = conversation.getTargetNamed(each.getID())
 				if target != null
-					charLookAt = ConversationPlaybackLookAt.new( playback, target )
+					charLookAt = ConversationPlaybackLookAt.new(playback, target)
 				end
 			end
 			
-			headPlayback.addLookAt( charLookAt, each )
-		end )
+			headPlayback.addLookAt(charLookAt, each)
+		end)
 	end
 	
 	/**
@@ -628,8 +630,8 @@ class CActionActorSpeak extends ConversationAction
 	 * 
 	 * If no eyes look-ats are present uses head look-ats.
 	 */
-	public func void executeEyesLookAt( ConversationPlayback playback, ConversationActor actor )
-		var Array lookAts = this.pEyesLookAts.getCount() > 0 if this.pEyesLookAts else this.pHeadLookAts
+	public func void executeEyesLookAt(ConversationPlayback playback, ConversationActor actor)
+		var Array lookAts = pEyesLookAts.getCount() > 0 if pEyesLookAts else pHeadLookAts
 		if lookAts.getCount() == 0
 			return
 		end
@@ -643,18 +645,18 @@ class CActionActorSpeak extends ConversationAction
 		
 		eyesPlayback.removeAllLookAts()
 		
-		lookAts.forEach( block ConversationStrip each
+		lookAts.forEach(block ConversationStrip each
 			var ConversationPlaybackLookAt charLookAt
 			
 			if each.getID() != null
-				var ConversationTarget target = conversation.getTargetNamed( each.getID() )
+				var ConversationTarget target = conversation.getTargetNamed(each.getID())
 				if target != null
-					charLookAt = ConversationPlaybackLookAt.new( playback, target )
+					charLookAt = ConversationPlaybackLookAt.new(playback, target)
 				end
 			end
 			
-			eyesPlayback.addLookAt( charLookAt, each )
-		end )
+			eyesPlayback.addLookAt(charLookAt, each)
+		end)
 	end
 	
 	
@@ -674,52 +676,52 @@ class CActionActorSpeak extends ConversationAction
 	end
 	
 	/** \brief Write object to file writer. */
-	public func void writeObjectToFile( PersistencyEnvironment env, FileWriter writer )
-		super.writeObjectToFile( env, writer )
+	public func void writeObjectToFile(PersistencyEnvironment env, FileWriter writer)
+		super.writeObjectToFile(env, writer)
 		
-		writer.writeByte( 0 ) // version
+		writer.writeByte(0) // version
 		
-		var PersistencyFlags flags = PersistencyFlags.new( 1 )
-		flags.setAt( 0, this.pUseSpeechAnimation )
-		flags.writeToFile( writer )
+		var PersistencyFlags flags = PersistencyFlags.new(1)
+		flags.setAt(0, pUseSpeechAnimation)
+		flags.writeToFile(writer)
 		
-		env.writeStringIDOrEmptyIfNull( writer, this.pActorID )
+		env.writeStringIDOrEmptyIfNull(writer, pActorID)
 		
-		writer.writeString16( this.pTextBoxText != null if this.pTextBoxText.toString() else "" )
+		writer.writeString16(pTextBoxText != null if pTextBoxText.toString() else "")
 		
-		env.writeStringIDOrEmptyIfNull( writer, this.pTextBoxTextStyle )
-		env.writeString16OrEmptyIfNull( writer, this.pPathSound )
+		env.writeStringIDOrEmptyIfNull(writer, pTextBoxTextStyle)
+		env.writeString16OrEmptyIfNull(writer, pPathSound)
 		
-		writer.writeUShort( this.pWords.getCount() )
-		this.pWords.forEach( block ConversationStrip each
-			each.writeToFile( writer )
-		end )
+		writer.writeUShort(pWords.getCount())
+		pWords.forEach(block ConversationStrip each
+			each.writeToFile(writer)
+		end)
 		
-		writer.writeUShort( this.pFacePoses.getCount() )
-		this.pFacePoses.forEach( block ConversationStrip each
-			each.writeToFile( writer )
-		end )
+		writer.writeUShort(pFacePoses.getCount())
+		pFacePoses.forEach(block ConversationStrip each
+			each.writeToFile(writer)
+		end)
 		
-		writer.writeUShort( this.pGestures.getCount() )
-		this.pGestures.forEach( block ConversationStrip each
-			each.writeToFile( writer )
-		end )
+		writer.writeUShort(pGestures.getCount())
+		pGestures.forEach(block ConversationStrip each
+			each.writeToFile(writer)
+		end)
 		
-		writer.writeUShort( this.pBodyLookAts.getCount() )
-		this.pBodyLookAts.forEach( block ConversationStrip each
-			each.writeToFile( writer )
-		end )
+		writer.writeUShort(pBodyLookAts.getCount())
+		pBodyLookAts.forEach(block ConversationStrip each
+			each.writeToFile(writer)
+		end)
 		
-		writer.writeUShort( this.pHeadLookAts.getCount() )
-		this.pHeadLookAts.forEach( block ConversationStrip each
-			each.writeToFile( writer )
-		end )
+		writer.writeUShort(pHeadLookAts.getCount())
+		pHeadLookAts.forEach(block ConversationStrip each
+			each.writeToFile(writer)
+		end)
 		
-		writer.writeUShort( this.pEyesLookAts.getCount() )
-		this.pEyesLookAts.forEach( block ConversationStrip each
-			each.writeToFile( writer )
-		end )
+		writer.writeUShort(pEyesLookAts.getCount())
+		pEyesLookAts.forEach(block ConversationStrip each
+			each.writeToFile(writer)
+		end)
 		
-		writer.writeFloat( this.pMinSpeechTime )
+		writer.writeFloat(pMinSpeechTime)
 	end
 end
