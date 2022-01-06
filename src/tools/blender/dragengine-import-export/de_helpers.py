@@ -23,6 +23,7 @@
 #
 
 import bpy
+import time
 
 
 
@@ -161,3 +162,19 @@ class ActionFCurvesBuilder:
 		self.fcurveScaleX.build()
 		self.fcurveScaleY.build()
 		self.fcurveScaleZ.build()
+
+
+class Timer:
+	def __init__(self):
+		self.timer = time.time()
+		
+	def elapsed(self, peek=False):
+		timer = time.time()
+		diff = timer - self.timer
+		if not peek:
+			self.timer = timer
+		return diff
+		
+	def log(self, text, peek=False):
+		e = self.elapsed(peek)
+		print('[{: 4d}.{:01d}] {}'.format(int(e), int(e * 10) % 10, text))

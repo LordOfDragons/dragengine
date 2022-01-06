@@ -28,7 +28,6 @@ import bgl
 import os
 import re
 import math
-import time
 import struct
 import mathutils
 
@@ -40,7 +39,7 @@ from .de_math import vector_by_matrix, matrixToEuler, vecLength, vecSub, quatDot
 from .de_configuration import Configuration
 from .de_resources import Mesh, Armature
 from .de_porting import registerClass, matmul
-from .de_helpers import ProgressDisplay
+from .de_helpers import ProgressDisplay, Timer
 
 
 class OBJECT_OT_ExportAnimation( bpy.types.Operator, ExportHelper ):
@@ -168,9 +167,11 @@ class OBJECT_OT_ExportAnimation( bpy.types.Operator, ExportHelper ):
 		return { 'FINISHED' }
 	
 	def export( self, context ):
+		self.timer = Timer()
 		self.initExporterObjects( context )
 		if not self.checkInitState( context ):
 			return False
+		self.timer.log("prepare export", peek=True)
 		
 		retainContent = None
 		if self.exportMode == 1:
@@ -182,12 +183,14 @@ class OBJECT_OT_ExportAnimation( bpy.types.Operator, ExportHelper ):
 					f.close()
 			else:
 				retainContent = []
+			self.timer.log("load retained actions", peek=True)
 		
 		f = open( self.filepath, "wb" )
 		try:
 			result = self.safeExport( context, f, retainContent )
 		finally:
 			f.close()
+		self.timer.log("finished", peek=True)
 		self.printInfos( context )
 		bpy.ops.wm.redraw_timer(type='DRAW_WIN_SWAP', iterations=1)
 		return result
@@ -316,6 +319,7 @@ class OBJECT_OT_ExportAnimation( bpy.types.Operator, ExportHelper ):
 			
 			if not self.writeBones( f ):
 				return False
+		self.timer.log("prepare and write up to moves", peek=True)
 		
 		if not self.writeMoves( f, retainContent ):
 			return False
@@ -488,8 +492,8 @@ class OBJECT_OT_ExportAnimation( bpy.types.Operator, ExportHelper ):
 		for move in self.moves:
 			self.report( { 'INFO' }, "%i/%i (%.2f%%): Writing Move %s..." % ( progressCounter, \
 				len( self.moves ), float( progressCounter ) / float( countMoves ), move.name ) )
-			print("{}/{} ({:.2f}): Writing Move {}...".format(progressCounter, len(self.moves),
-				float(progressCounter) / float(countMoves), move.name))
+			self.timer.log("{}/{} ({:.2f}): Writing Move {}...".format(progressCounter, len(self.moves),
+				float(progressCounter) / float(countMoves), move.name), peek=True)
 			self.progress.advance("Export {}...".format(move.name))
 			
 			"""bgl.glColor3f( 0.34, 0.50, 0.76 )
@@ -583,10 +587,12 @@ class OBJECT_OT_ExportAnimation( bpy.types.Operator, ExportHelper ):
 			
 			# fix flipping for example when constraint bones cause negated quaterions
 			#self.fixQuaternionFlipping( moveBones )
+			self.timer.log("- build keyframe list", peek=True)
 			
 			# optimize the keyframes by dropping keyframes inside linear changes
 			#for DUMMY in moveBone.keyframes: print( DUMMY )
 			self.optimizeKeyframes( moveBones )
+			self.timer.log("- optimize keyframe list", peek=True)
 			
 			if self.debugLevel > 0:
 				print( "- move", move.name, "playtime", float( playtime ) * self.timeScale )
@@ -671,6 +677,7 @@ class OBJECT_OT_ExportAnimation( bpy.types.Operator, ExportHelper ):
 			
 			# next round
 			progressCounter = progressCounter + 1
+			self.timer.log("- write keyframes", peek=True)
 		return True
 	
 	# write trailer
