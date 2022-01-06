@@ -759,6 +759,11 @@ const ceCASetActorParameter &action ){
 }
 
 void cePlaybackProcessAction::ProcessActorCommand( ceConversation &conversation, const ceCAActorCommand &action ){
+	if( conversation.GetPlayback()->GetAutoAdvanceCommands() ){
+		conversation.GetPlayback()->AdvanceToNextAction();
+		return;
+	}
+	
 	const decString &actorID = action.GetActor();
 	
 	// show information
@@ -772,6 +777,11 @@ void cePlaybackProcessAction::ProcessActorCommand( ceConversation &conversation,
 }
 
 void cePlaybackProcessAction::ProcessGameCommand( ceConversation &conversation, const ceCAGameCommand &action ){
+	if( conversation.GetPlayback()->GetAutoAdvanceCommands() ){
+		conversation.GetPlayback()->AdvanceToNextAction();
+		return;
+	}
+	
 	ceConversationInfoBox &infobox = conversation.GetInfoBox();
 	decString text;
 	
@@ -824,11 +834,21 @@ void cePlaybackProcessAction::ProcessTrigger( ceConversation &conversation, cons
 		text.Format( "Action Trigger fully resetting trigger '%s'", action.GetName().GetString() );
 	}
 	
+	if( conversation.GetPlayback()->GetAutoAdvanceCommands() ){
+		conversation.GetPlayback()->AdvanceToNextAction();
+		return;
+	}
+	
 	infobox.SetBackgroundColor( decColor( 1.0f, 0.5f, 0.0f, 0.5f ) );
 	infobox.SetText( text );
 }
 
 void cePlaybackProcessAction::ProcessActorAdd( ceConversation &conversation, const ceCAActorAdd &action ){
+	if( conversation.GetPlayback()->GetAutoAdvanceCommands() ){
+		conversation.GetPlayback()->AdvanceToNextAction();
+		return;
+	}
+	
 	ceConversationInfoBox &infobox = conversation.GetInfoBox();
 	decString text;
 	
@@ -845,6 +865,11 @@ void cePlaybackProcessAction::ProcessActorAdd( ceConversation &conversation, con
 }
 
 void cePlaybackProcessAction::ProcessActorRemove( ceConversation &conversation, const ceCAActorRemove &action ){
+	if( conversation.GetPlayback()->GetAutoAdvanceCommands() ){
+		conversation.GetPlayback()->AdvanceToNextAction();
+		return;
+	}
+	
 	ceConversationInfoBox &infobox = conversation.GetInfoBox();
 	decString text;
 	
@@ -855,6 +880,11 @@ void cePlaybackProcessAction::ProcessActorRemove( ceConversation &conversation, 
 }
 
 void cePlaybackProcessAction::ProcessCoordSystemAdd( ceConversation &conversation, const ceCACoordSystemAdd &action ){
+	if( conversation.GetPlayback()->GetAutoAdvanceCommands() ){
+		conversation.GetPlayback()->AdvanceToNextAction();
+		return;
+	}
+	
 	ceConversationInfoBox &infobox = conversation.GetInfoBox();
 	decString text;
 	
@@ -871,6 +901,11 @@ void cePlaybackProcessAction::ProcessCoordSystemAdd( ceConversation &conversatio
 }
 
 void cePlaybackProcessAction::ProcessCoordSystemRemove( ceConversation &conversation, const ceCACoordSystemRemove &action ){
+	if( conversation.GetPlayback()->GetAutoAdvanceCommands() ){
+		conversation.GetPlayback()->AdvanceToNextAction();
+		return;
+	}
+	
 	ceConversationInfoBox &infobox = conversation.GetInfoBox();
 	decString text;
 	

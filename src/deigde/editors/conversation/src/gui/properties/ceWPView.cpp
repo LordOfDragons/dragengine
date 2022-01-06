@@ -1314,6 +1314,22 @@ public:
 	}
 };
 
+class cActionPlaybackAutoAdvanceCommands : public cBaseAction{
+public:
+	cActionPlaybackAutoAdvanceCommands( ceWPView &panel ) : cBaseAction( panel, "Auto Advance",
+	nullptr, "Auto advance certain commands (game/actor commands, trigger, add/remove actor/coordsystem)" ){ }
+	
+	virtual igdeUndo *OnAction( ceConversation *conversation ){
+		conversation->GetPlayback()->SetAutoAdvanceCommands( ! conversation->GetPlayback()->GetAutoAdvanceCommands() );
+		return NULL;
+	}
+	
+	virtual void Update( const ceConversation &conversation ){
+		SetEnabled( true );
+		SetSelected( conversation.GetPlayback()->GetAutoAdvanceCommands() );
+	}
+};
+
 class cComboPlaybackCameraHandling : public cBaseComboBoxListener{
 public:
 	cComboPlaybackCameraHandling( ceWPView &panel ) : cBaseComboBoxListener( panel ){ }
@@ -1778,8 +1794,11 @@ pConversation( NULL )
 	helper.FormLine( form, "", "", formLine );
 	helper.Button( formLine, pBtnPlaybackSelectTopic, new cActionPlaybackSelectTopic( *this ), true );
 	helper.Button( formLine, pBtnPlaybackRewind, new cActionPlaybackRewind( *this ), true );
+	
+	helper.FormLine( form, "", "", formLine );
 	helper.CheckBoxOnly( formLine, pChkPlaybackRunning, new cActionPlaybackRunning( *this ), true );
 	helper.CheckBoxOnly( formLine, pChkPlaybackPaused, new cActionPlaybackPaused( *this ), true );
+	helper.CheckBoxOnly( formLine, pChkPlaybackAutoAdvanceCommands, new cActionPlaybackAutoAdvanceCommands( *this ), true );
 	
 	helper.ComboBox( form, "Camera Handling:", "How camera is handled",
 		pCBPlaybackCameraHandling, new cComboPlaybackCameraHandling( *this ) );
@@ -2329,6 +2348,7 @@ void ceWPView::UpdatePlayback(){
 	
 	pChkPlaybackRunning->GetAction()->Update();
 	pChkPlaybackPaused->GetAction()->Update();
+	pChkPlaybackAutoAdvanceCommands->GetAction()->Update();
 }
 
 void ceWPView::UpdatePlaybackCommands(){
