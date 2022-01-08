@@ -799,6 +799,7 @@ void projTestRunner::pSendLaunchParameters(){
 	WriteString16ToPipe( path.GetPathNative() );
 	
 	WriteString16ToPipe( pProfile->GetScriptDirectory() );
+	WriteString16ToPipe( project.GetScriptModuleVersion() );
 	WriteString16ToPipe( pProfile->GetGameObject() );
 	WriteString16ToPipe( pProfile->GetPathConfig() );
 	WriteString16ToPipe( pProfile->GetPathCapture() );

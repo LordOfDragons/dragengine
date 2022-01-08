@@ -73,6 +73,7 @@ private:
 	decString pScriptDirectory;
 	decString pGameObject;
 	decString pScriptModule;
+	decString pScriptModuleVersion;
 	decPoint pWindowSize;
 	dellFileFormatList pFileFormatList;
 	
@@ -167,6 +168,8 @@ public:
 	inline const decString &GetScriptModule() const{ return pScriptModule; }
 	/** Sets the script module. */
 	void SetScriptModule( const char *module );
+	inline const decString &GetScriptModuleVersion() const{ return pScriptModuleVersion; }
+	void SetScriptModuleVersion( const char *version );
 	/** Retrieves the file format list. */
 	inline dellFileFormatList &GetFileFormatList(){ return pFileFormatList; }
 	inline const dellFileFormatList &GetFileFormatList() const{ return pFileFormatList; }

@@ -275,6 +275,7 @@
 #include <dragengine/common/file/decBaseFileReader.h>
 #include <dragengine/common/exceptions/deException.h>
 #include <dragengine/logger/deLogger.h>
+#include <dragengine/systems/deScriptingSystem.h>
 #include <dragengine/systems/modules/deLoadableModule.h>
 
 #include <libdscript/exceptions.h>
@@ -313,9 +314,21 @@ deBaseModule *DSCreateModule( deLoadableModule *loadableModule ){
 // class deScriptingDragonScript
 //////////////////////////////////
 
+deScriptingDragonScript::sModuleVersion::sModuleVersion() : major( 0 ), minor( 0 ), patch( 0 ){
+}
+
+void deScriptingDragonScript::sModuleVersion::SetVersion( const char *version ){
+	this->version = version;
+	const decStringList parts( this->version.Split( '.' ) );
+	major = parts.GetAt( 0 ).ToInt();
+	minor = parts.GetAt( 1 ).ToInt();
+	patch = parts.GetCount() > 2 ? parts.GetAt( 2 ).ToInt() : 0;
+}
+
 // constructor, destructor
 deScriptingDragonScript::deScriptingDragonScript( deLoadableModule &loadableModule ) :
-deBaseScriptingModule( loadableModule ){
+deBaseScriptingModule( loadableModule )
+{
 	pScriptEngine = NULL;
 	
 	pClsAISys = NULL;
@@ -506,6 +519,9 @@ deBaseScriptingModule( loadableModule ){
 	pColInfo = NULL;
 	pColliderListenerClosest = NULL;
 	pColliderListenerAdaptor = NULL;
+	
+	// module version
+	pModuleVersion.SetVersion( DS_MODULE_VERSION );
 }
 deScriptingDragonScript::~deScriptingDragonScript(){
 	ShutDown();
@@ -528,6 +544,10 @@ bool deScriptingDragonScript::Init( const char *scriptDirectory, const char *gam
 	deDSEngineManager *dsmanager = NULL;
 	
 	try{
+		pCompatibleVersion.SetVersion( GetGameEngine()->GetScriptingSystem()->GetScriptVersion() );
+		LogInfoFormat( "Requested compatible script version: %s", pCompatibleVersion.version.GetString() );
+		LogInfoFormat( "Module version: %s", pModuleVersion.version.GetString() );
+		
 		// create lock manager
 	//	pLockManager = new dedsLockManager;
 	//	if( ! pLockManager ) return false;

@@ -195,6 +195,90 @@ void deClassEngine::nfGetScriptModuleStats::RunFunction( dsRunTime *rt, dsValue*
 
 
 
+// public static func String getCompatibleVersion()
+deClassEngine::nfGetCompatibleVersion::nfGetCompatibleVersion( const sInitData &init ) :
+dsFunction( init.clsEngine, "getCompatibleVersion", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsString ){
+}
+void deClassEngine::nfGetCompatibleVersion::RunFunction( dsRunTime *rt, dsValue* ){
+	const deScriptingDragonScript &ds = ( ( deClassEngine* )GetOwnerClass() )->GetDS();
+	rt->PushString( ds.GetCompatibleVersion().version );
+}
+
+// public static func int getCompatibleVersionMajor()
+deClassEngine::nfGetCompatibleVersionMajor::nfGetCompatibleVersionMajor( const sInitData &init ) :
+dsFunction( init.clsEngine, "getCompatibleVersionMajor", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsInteger ){
+}
+void deClassEngine::nfGetCompatibleVersionMajor::RunFunction( dsRunTime *rt, dsValue* ){
+	const deScriptingDragonScript &ds = ( ( deClassEngine* )GetOwnerClass() )->GetDS();
+	rt->PushInt( ds.GetCompatibleVersion().major );
+}
+
+// public static func int getCompatibleVersionMinor()
+deClassEngine::nfGetCompatibleVersionMinor::nfGetCompatibleVersionMinor( const sInitData &init ) :
+dsFunction( init.clsEngine, "getCompatibleVersionMinor", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsInteger ){
+}
+void deClassEngine::nfGetCompatibleVersionMinor::RunFunction( dsRunTime *rt, dsValue* ){
+	const deScriptingDragonScript &ds = ( ( deClassEngine* )GetOwnerClass() )->GetDS();
+	rt->PushInt( ds.GetCompatibleVersion().minor );
+}
+
+// public static func int getCompatibleVersionPatch()
+deClassEngine::nfGetCompatibleVersionPatch::nfGetCompatibleVersionPatch( const sInitData &init ) :
+dsFunction( init.clsEngine, "getCompatibleVersionPatch", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsInteger ){
+}
+void deClassEngine::nfGetCompatibleVersionPatch::RunFunction( dsRunTime *rt, dsValue* ){
+	const deScriptingDragonScript &ds = ( ( deClassEngine* )GetOwnerClass() )->GetDS();
+	rt->PushInt( ds.GetCompatibleVersion().patch );
+}
+
+
+// public static func String getModuleVersion()
+deClassEngine::nfGetModuleVersion::nfGetModuleVersion( const sInitData &init ) :
+dsFunction( init.clsEngine, "getModuleVersion", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsString ){
+}
+void deClassEngine::nfGetModuleVersion::RunFunction( dsRunTime *rt, dsValue* ){
+	const deScriptingDragonScript &ds = ( ( deClassEngine* )GetOwnerClass() )->GetDS();
+	rt->PushString( ds.GetModuleVersion().version );
+}
+
+// public static func int getModuleVersionMajor()
+deClassEngine::nfGetModuleVersionMajor::nfGetModuleVersionMajor( const sInitData &init ) :
+dsFunction( init.clsEngine, "getModuleVersionMajor", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsInteger ){
+}
+void deClassEngine::nfGetModuleVersionMajor::RunFunction( dsRunTime *rt, dsValue* ){
+	const deScriptingDragonScript &ds = ( ( deClassEngine* )GetOwnerClass() )->GetDS();
+	rt->PushInt( ds.GetModuleVersion().major );
+}
+
+// public static func int getModuleVersionMinor()
+deClassEngine::nfGetModuleVersionMinor::nfGetModuleVersionMinor( const sInitData &init ) :
+dsFunction( init.clsEngine, "getModuleVersionMinor", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsInteger ){
+}
+void deClassEngine::nfGetModuleVersionMinor::RunFunction( dsRunTime *rt, dsValue* ){
+	const deScriptingDragonScript &ds = ( ( deClassEngine* )GetOwnerClass() )->GetDS();
+	rt->PushInt( ds.GetModuleVersion().minor );
+}
+
+// public static func int getModuleVersionPatch()
+deClassEngine::nfGetModuleVersionPatch::nfGetModuleVersionPatch( const sInitData &init ) :
+dsFunction( init.clsEngine, "getModuleVersionPatch", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsInteger ){
+}
+void deClassEngine::nfGetModuleVersionPatch::RunFunction( dsRunTime *rt, dsValue* ){
+	const deScriptingDragonScript &ds = ( ( deClassEngine* )GetOwnerClass() )->GetDS();
+	rt->PushInt( ds.GetModuleVersion().patch );
+}
+
+
+
+
 // static public func bool getDefaultEnableGI()
 deClassEngine::nfGetDefaultEnableGI::nfGetDefaultEnableGI( const sInitData &init ) :
 dsFunction( init.clsEngine, "getDefaultEnableGI", DSFT_FUNCTION,
@@ -265,6 +349,16 @@ void deClassEngine::CreateClassMembers(dsEngine *engine){
 	AddFunction( new nfLoadingResourceCount( init ) );
 	AddFunction( new nfLog( init ) );
 	AddFunction( new nfGetScriptModuleStats( init ) );
+	
+	AddFunction( new nfGetCompatibleVersion( init ) );
+	AddFunction( new nfGetCompatibleVersionMajor( init ) );
+	AddFunction( new nfGetCompatibleVersionMinor( init ) );
+	AddFunction( new nfGetCompatibleVersionPatch( init ) );
+	
+	AddFunction( new nfGetModuleVersion( init ) );
+	AddFunction( new nfGetModuleVersionMajor( init ) );
+	AddFunction( new nfGetModuleVersionMinor( init ) );
+	AddFunction( new nfGetModuleVersionPatch( init ) );
 	
 	AddFunction( new nfGetDefaultEnableGI( init ) );
 	AddFunction( new nfSetDefaultEnableGI( init ) );

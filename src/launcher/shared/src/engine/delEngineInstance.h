@@ -222,8 +222,18 @@ public:
 	void CreateRenderWindow( int width, int height, bool fullScreen,
 		const char *windowTitle, const char *iconPath );
 	
-	/** \brief Start game. */
+	/**
+	 * \brief Start game.
+	 * \deprecated Use StartGame(const char*, const char*, const char*, delGPModuleList*).
+	 */
 	void StartGame( const char *scriptDirectory, const char *gameObject,
+		delGPModuleList *collectChangedParams = NULL );
+	
+	/**
+	 * \brief Start game.
+	 * \version 1.9
+	 */
+	void StartGame( const char *scriptDirectory, const char *scriptVersion, const char *gameObject,
 		delGPModuleList *collectChangedParams = NULL );
 	
 	/** \brief Stop game. */

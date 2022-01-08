@@ -89,5 +89,73 @@ fixed class Engine
 	 */
 	public static func void setDefaultEnableGI(bool enable)
 	end
+	
+	
+	
+	/**
+	 * \brief Compatible script version as set in project files.
+	 * \version 1.9
+	 */
+	public static func String getCompatibleVersion()
+		return null
+	end
+	
+	/**
+	 * \brief Compatible script version as set in project files.
+	 * \version 1.9
+	 */
+	public static func int getCompatibleVersionMajor()
+		return 0
+	end
+	
+	/**
+	 * \brief Compatible script version as set in project files.
+	 * \version 1.9
+	 */
+	public static func int getCompatibleVersionMinor()
+		return 0
+	end
+	
+	/**
+	 * \brief Compatible script version as set in project files.
+	 * \version 1.9
+	 */
+	public static func int getCompatibleVersionPatch()
+		return 0
+	end
+	
+	
+	
+	/**
+	 * \brief Module version.
+	 * \version 1.9
+	 */
+	public static func String getModuleVersion()
+		return null
+	end
+	
+	/**
+	 * \brief Module version.
+	 * \version 1.9
+	 */
+	public static func int getModuleVersionMajor()
+		return 0
+	end
+	
+	/**
+	 * \brief Module version.
+	 * \version 1.9
+	 */
+	public static func int getModuleVersionMinor()
+		return 0
+	end
+	
+	/**
+	 * \brief Module version.
+	 * \version 1.9
+	 */
+	public static func int getModuleVersionPatch()
+		return 0
+	end
 	/*@}*/
 end

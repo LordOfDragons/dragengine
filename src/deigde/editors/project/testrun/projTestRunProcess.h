@@ -64,6 +64,7 @@ public:
 		decString pathCapture;
 		
 		decString scriptDirectory;
+		decString scriptVersion;
 		decString gameObject;
 		decString vfsPathConfig;
 		decString vfsPathCapture;

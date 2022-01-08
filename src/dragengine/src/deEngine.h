@@ -508,6 +508,12 @@ public:
 	/*@{*/
 	/**
 	 * \brief Run game engine.
+	 * \deprecated Use Run(const char*, const char*, const char*);
+	 */
+	bool Run( const char *scriptDirectory, const char *gameObject );
+	
+	/**
+	 * \brief Run game engine.
 	 * 
 	 * Calling this function the control is handed over to the game engine. The scripts in the
 	 * specified directory ( relative to the data directory ) are parsed and executed. This
@@ -517,12 +523,13 @@ public:
 	 * is no need to enclose it in a try-catch block.
 	 *
 	 * \param scriptDir Directory relative to data directory containing the script files for your game.
+	 * \param scriptVersion Script version the application has been written against.
 	 * \param gameObject Initial game object to create. Script module specific value.
 	 *                   Usually a class or function name to use to create the game object
 	 * \returns true if the game engine exited under normal circumstances or false if an
 	 *          unrecoverable error occurred
 	 */
-	bool Run( const char *scriptDirectory, const char *gameObject );
+	bool Run( const char *scriptDirectory, const char *scriptVersion, const char *gameObject );
 	
 	/**
 	 * \brief Reset elapsed time counter.

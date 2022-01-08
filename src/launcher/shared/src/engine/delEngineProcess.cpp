@@ -1085,10 +1085,12 @@ void delEngineProcess::CommandStartGame(){
 	
 	// prepare for running game. this part sends back the result through the pipe
 	decString scriptDirectory;
+	decString scriptVersion;
 	decString gameObject;
 	
 	try{
 		ReadString16FromPipe( scriptDirectory );
+		ReadString16FromPipe( scriptVersion );
 		ReadString16FromPipe( gameObject );
 		
 		// create a thread processing the in pipe while we are spinning the game loop
@@ -1101,8 +1103,8 @@ void delEngineProcess::CommandStartGame(){
 		
 	}catch( const deException &e ){
 		pLogger->LogErrorFormat( pLogSource, "EngineProcess.CommandStartGame "
-			"failed with exception (scriptDir=%s, gameObject=%s):",
-			scriptDirectory.GetString(), gameObject.GetString() );
+			"failed with exception (scriptDir='%s', scriptVersion='%s', gameObject='%s'):",
+			scriptDirectory.GetString(), scriptVersion.GetString(), gameObject.GetString() );
 		pLogger->LogException( pLogSource, e );
 		
 		if( pRunGame ){
@@ -1151,7 +1153,7 @@ void delEngineProcess::CommandStartGame(){
 		pRunGame->Start();
 		
 		pLogger->LogInfo( pLogSource, "EngineProcess.CommandStartGame launching game" );
-		pEngine->Run( scriptDirectory, gameObject );
+		pEngine->Run( scriptDirectory, scriptVersion, gameObject );
 		
 		// when we get here this can be either because the player quit the game or
 		// because we received a quit request from the launcher. either way stop the
@@ -1164,8 +1166,8 @@ void delEngineProcess::CommandStartGame(){
 		
 	}catch( const deException &e ){
 		pLogger->LogErrorFormat( pLogSource, "EngineProcess.CommandStartGame "
-			"failed with exception (scriptDir=%s, gameObject=%s):",
-			scriptDirectory.GetString(), gameObject.GetString() );
+			"failed with exception (scriptDir='%s', scriptVersion='%s', gameObject='%s'):",
+			scriptDirectory.GetString(), scriptVersion.GetString(), gameObject.GetString() );
 		pLogger->LogException( pLogSource, e );
 		if( pRunGame ){
 			pRunGame->Stop();

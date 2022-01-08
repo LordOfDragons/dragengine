@@ -308,6 +308,7 @@ void igdeEngineController::StartEngine(){
 		
 		// set script module directory
 		pEngine->GetScriptingSystem()->SetScriptDirectory( scriptDirectory );
+		pEngine->GetScriptingSystem()->SetScriptVersion( "1.0" );
 		pEngine->GetScriptingSystem()->SetGameObject( gameObject );
 		
 		// bring up the crash recovery module. this module is required to ensure

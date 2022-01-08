@@ -92,6 +92,9 @@ public:
 	 * See the individual manuals of the scripting modules to learn about
 	 * those requirements. After the Init function has exited the scripting
 	 * module is ready to operate the game.
+	 * 
+	 * The sript version to be compatible against can be queried using
+	 * deScriptingSystem::GetScriptVersion().
 	 */
 	virtual bool Init( const char *scriptDirectory, const char *gameObject ) = 0;
 	

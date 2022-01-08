@@ -419,7 +419,7 @@ void projTestRunEngine::Run(){
 	const projTestRunProcess::sRunParameters &runParameters = pProcess.GetRunParameters();
 	
 	pProcess.GetLogger()->LogInfo( LOGSOURCE, "Handing control over to game" );
-	pEngine->Run( runParameters.scriptDirectory, runParameters.gameObject );
+	pEngine->Run( runParameters.scriptDirectory, runParameters.scriptVersion, runParameters.gameObject );
 	pProcess.GetLogger()->LogInfo( LOGSOURCE, "Game exited" );
 }
 

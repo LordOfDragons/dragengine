@@ -966,16 +966,22 @@ const char *windowTitle, const char *iconPath ){
 
 void delEngineInstance::StartGame( const char *scriptDirectory, const char *gameObject,
 delGPModuleList *collectChangedParams ){
-	if( ! scriptDirectory ){
+	StartGame( scriptDirectory, "", gameObject, collectChangedParams );
+}
+
+void delEngineInstance::StartGame( const char *scriptDirectory, const char *scriptVersion,
+const char *gameObject, delGPModuleList *collectChangedParams ){
+	if( ! scriptDirectory || ! scriptVersion ){
 		DETHROW_INFO( deeNullPointer, "scriptDirectory" );
 	}
 	
 	pLauncher.GetLogger()->LogInfoFormat( pLauncher.GetLogSource(), "Sending eccStartGame("
-		"scriptDirectory='%s' gameObject='%s') to process %i", scriptDirectory,
-		gameObject, ( int )pProcessID );
+		"scriptDirectory='%s' scriptVersion='%s' gameObject='%s') to process %i",
+		scriptDirectory, scriptVersion, gameObject, ( int )pProcessID );
 	
 	WriteUCharToPipe( delEngineProcess::eccStartGame );
 	WriteString16ToPipe( scriptDirectory );
+	WriteString16ToPipe( scriptVersion );
 	WriteString16ToPipe( gameObject );
 	
 	if( ReadUCharFromPipe() != delEngineProcess::ercSuccess ){

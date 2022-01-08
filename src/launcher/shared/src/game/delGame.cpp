@@ -406,7 +406,8 @@ void delGame::StartGame( const delGameRunParams &runParams ){
 		pCollectChangedParamsProfile.TakeOver( pLauncher.CreateGameProfile( runParams.GetGameProfile() ) );
 		
 		// start game
-		pEngineInstance->StartGame( pScriptDirectory, pGameObject, &pCollectChangedParams );
+		pEngineInstance->StartGame( pScriptDirectory, pScriptModuleVersion,
+			pGameObject, &pCollectChangedParams );
 		
 	}catch( const deException &e ){
 		logger.LogErrorFormat( pLauncher.GetLogSource(),

@@ -62,6 +62,7 @@ class deSpeaker;
 class DE_DLL_EXPORT deScriptingSystem : public deBaseSystem{
 private:
 	decString pScriptDirectory;
+	decString pScriptVersion;
 	decString pGameObject;
 	deBaseScriptingModule *pActiveModule;
 	bool pEditMode;
@@ -91,6 +92,18 @@ public:
 	
 	/** \brief Set directory relative to the game directory where the scripts are located. */
 	void SetScriptDirectory( const char *scriptDirectory );
+	
+	/**
+	 * \brief Script version for compatibility.
+	 * \version 1.9
+	 */
+	inline const decString &GetScriptVersion() const{ return pScriptVersion; }
+	
+	/**
+	 * \brief Set script version for compatibility.
+	 * \version 1.9
+	 */
+	void SetScriptVersion( const char *scriptVersion );
 	
 	/** \brief Initial game object to create. */
 	inline const decString &GetGameObject() const{ return pGameObject; }

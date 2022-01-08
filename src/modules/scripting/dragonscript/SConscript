@@ -31,6 +31,8 @@ envModule.Append(LINKFLAGS = parent_env['MODULE_LINKFLAGS'])
 if parent_targets['lib_dragonscript']['runtimedata']:
 	envModule.Append(CXXFLAGS = ['-DUSE_INTERNAL_DSCRIPT'])
 
+envModule.Append(CXXFLAGS = ['-DDS_MODULE_VERSION=\\"{}\\"'.format(versionString)])
+
 # setup the builders
 sources = []
 headers = []

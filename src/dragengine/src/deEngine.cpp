@@ -671,15 +671,15 @@ void deEngine::SetCacheAppID( const char *cacheAppID ){
 	pCacheAppID = cacheAppID;
 }
 
-void deEngine::SetPathOverlay( const char* path ){
+void deEngine::SetPathOverlay( const char *path ){
 	pPathOverlay = path;
 }
 
-void deEngine::SetPathCapture( const char* path ){
+void deEngine::SetPathCapture( const char *path ){
 	pPathCapture = path;
 }
 
-void deEngine::SetPathConfig( const char* path ){
+void deEngine::SetPathConfig( const char *path ){
 	pPathConfig = path;
 }
 
@@ -719,7 +719,11 @@ static decTimer timer;
 
 
 bool deEngine::Run( const char *scriptDirectory, const char *gameObject ){
-	if( ! scriptDirectory ){
+	return Run( scriptDirectory, "", gameObject );
+}
+
+bool deEngine::Run( const char *scriptDirectory, const char *scriptVersion, const char *gameObject ){
+	if( ! scriptDirectory || ! scriptVersion ){
 		DETHROW( deeInvalidParam );
 	}
 	
@@ -755,6 +759,7 @@ bool deEngine::Run( const char *scriptDirectory, const char *gameObject ){
 	
 	// set script module directory and game object
 	scrSys.SetScriptDirectory( scriptDirectory );
+	scrSys.SetScriptVersion( scriptVersion );
 	scrSys.SetGameObject( gameObject );
 	
 	// start systems

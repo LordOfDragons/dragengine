@@ -226,7 +226,7 @@ class deErrorTraceValue;
 
 // scripting dragonscript class
 class deScriptingDragonScript : public deBaseScriptingModule{
-private:
+public:
 	enum eKeyEventIdentifiers{
 		eeiKeyPress,
 		eeiKeyRelease,
@@ -236,8 +236,21 @@ private:
 		eeiMouseMove,
 		eeiCount, // no value, just count of entries
 	};
-
+	
+	struct sModuleVersion{
+		decString version;
+		int major;
+		int minor;
+		int patch;
+		
+		sModuleVersion();
+		void SetVersion( const char *version );
+	};
+	
 private:
+	sModuleVersion pCompatibleVersion;
+	sModuleVersion pModuleVersion;
+	
 	deClassAISystem *pClsAISys;
 	deClassAnimation *pClsAnim;
 	deClassAnimationBuilder *pClsAnimBuilder;
@@ -516,6 +529,12 @@ public:
 	 * Default implementation calls deEngine.Quit().
 	 */
 	virtual void UserRequestQuit();
+	
+	/** Requested compatible module version. */
+	inline const sModuleVersion &GetModuleVersion() const{ return pModuleVersion; }
+	
+	/** Module version. */
+	inline const sModuleVersion &GetCompatibleVersion() const{ return pCompatibleVersion; }
 	/*@}*/
 	
 	

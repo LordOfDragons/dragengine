@@ -143,6 +143,10 @@ void dellGame::SetScriptModule( const char *module ){
 	pScriptModule = module;
 }
 
+void dellGame::SetScriptModuleVersion( const char *version ){
+	pScriptModuleVersion = version;
+}
+
 
 
 void dellGame::VerifyRequirements(){

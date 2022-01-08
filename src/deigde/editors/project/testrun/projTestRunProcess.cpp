@@ -264,6 +264,7 @@ void projTestRunProcess::pReadRunParameters(){
 	pRunParameters.pathCapture = ReadString16FromPipe();
 	
 	pRunParameters.scriptDirectory = ReadString16FromPipe();
+	pRunParameters.scriptVersion = ReadString16FromPipe();
 	pRunParameters.gameObject = ReadString16FromPipe();
 	pRunParameters.vfsPathConfig = ReadString16FromPipe();
 	pRunParameters.vfsPathCapture = ReadString16FromPipe();
@@ -331,6 +332,8 @@ void projTestRunProcess::pLogConfiguration(){
 	
 	pLogger->LogInfoFormat( LOGSOURCE, "- Script Directory: %s",
 		pRunParameters.scriptDirectory.GetString() );
+	pLogger->LogInfoFormat( LOGSOURCE, "- Script Version: %s",
+		pRunParameters.scriptVersion.GetString() );
 	pLogger->LogInfoFormat( LOGSOURCE, "- Game Object: %s",
 		pRunParameters.gameObject.GetString() );
 	pLogger->LogInfoFormat( LOGSOURCE, "- VFS Path Config: %s",

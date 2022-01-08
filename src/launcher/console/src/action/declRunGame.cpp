@@ -1019,7 +1019,7 @@ void declRunGame::Run(){
 		
 		// run game
 		logger.LogInfo( LOGSOURCE, "Launching Game ( now I'm no more responsible ;=) )" );
-		engine.Run( pGame->GetScriptDirectory(), pGame->GetGameObject() );
+		engine.Run( pGame->GetScriptDirectory(), pGame->GetScriptModuleVersion(), pGame->GetGameObject() );
 		
 		logger.LogInfo( LOGSOURCE, "Game finished. Cleaning up" );
 		

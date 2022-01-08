@@ -101,6 +101,16 @@ private:
 	DEF_NATFUNC( nfLog );
 	DEF_NATFUNC( nfGetScriptModuleStats );
 	
+	DEF_NATFUNC( nfGetCompatibleVersion );
+	DEF_NATFUNC( nfGetCompatibleVersionMajor );
+	DEF_NATFUNC( nfGetCompatibleVersionMinor );
+	DEF_NATFUNC( nfGetCompatibleVersionPatch );
+	
+	DEF_NATFUNC( nfGetModuleVersion );
+	DEF_NATFUNC( nfGetModuleVersionMajor );
+	DEF_NATFUNC( nfGetModuleVersionMinor );
+	DEF_NATFUNC( nfGetModuleVersionPatch );
+	
 	DEF_NATFUNC( nfGetDefaultEnableGI );
 	DEF_NATFUNC( nfSetDefaultEnableGI );
 #undef DEF_NATFUNC

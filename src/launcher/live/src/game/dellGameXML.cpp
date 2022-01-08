@@ -144,6 +144,7 @@ void dellGameXML::pReadGame( const decXmlElementTag &root, dellGame &game ){
 				
 			}else if( strcmp( tag->GetName(), "scriptModule" ) == 0 ){
 				game.SetScriptModule( pGetCDataString( *tag ) );
+				game.SetScriptModuleVersion( pGetAttributeString( *tag, "version" ) );
 				
 			}else if( strcmp( tag->GetName(), "windowSize" ) == 0 ){
 				game.SetWindowSize( decPoint( pGetAttributeInt( *tag, "x" ),
