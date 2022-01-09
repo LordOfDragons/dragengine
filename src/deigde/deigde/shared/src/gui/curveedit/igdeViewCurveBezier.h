@@ -93,6 +93,13 @@ public:
 		virtual void OnAction();
 	};
 	
+	class cActionSetDefaultConstant : public igdeAction{
+		igdeViewCurveBezier &pView;
+	public:
+		cActionSetDefaultConstant( igdeViewCurveBezier &view );
+		virtual void OnAction();
+	};
+	
 	class cActionSetDefaultLinear : public igdeAction{
 		igdeViewCurveBezier &pView;
 	public:
@@ -104,6 +111,20 @@ public:
 		igdeViewCurveBezier &pView;
 	public:
 		cActionSetDefaultBezier( igdeViewCurveBezier &view );
+		virtual void OnAction();
+	};
+	
+	class cActionInvertCurveX : public igdeAction{
+		igdeViewCurveBezier &pView;
+	public:
+		cActionInvertCurveX( igdeViewCurveBezier &view );
+		virtual void OnAction();
+	};
+	
+	class cActionInvertCurveY : public igdeAction{
+		igdeViewCurveBezier &pView;
+	public:
+		cActionInvertCurveY( igdeViewCurveBezier &view );
 		virtual void OnAction();
 	};
 	
@@ -174,6 +195,19 @@ public:
 	
 	/** \brief Clear curve. */
 	void ClearCurve();
+	
+	/** \brief Invert curve along X axis. */
+	void InvertCurveX();
+	
+	/** \brief Invert curve along Y axis. */
+	void InvertCurveY();
+	
+	/**
+	 * \brief Set curve to default constant curve.
+	 * \details Fits curve into clamp minimum/maximum range.
+	 * \version 1.9
+	 */
+	void SetDefaultConstant();
 	
 	/**
 	 * \brief Set curve to default linear curve.

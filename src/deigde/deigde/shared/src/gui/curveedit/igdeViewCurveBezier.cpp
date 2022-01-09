@@ -203,6 +203,20 @@ void igdeViewCurveBezier::cActionClearCurve::OnAction(){
 
 
 
+// class igdeViewCurveBezier::cActionSetDefaultConstant
+/////////////////////////////////////////////////////////
+
+igdeViewCurveBezier::cActionSetDefaultConstant::cActionSetDefaultConstant( igdeViewCurveBezier &view ) :
+igdeAction( "Set to Default Constant", nullptr, "Set curve to constant interpolation switching from 0 to 1 at 0.5" ),
+pView( view ){
+}
+
+void igdeViewCurveBezier::cActionSetDefaultConstant::OnAction(){
+	pView.SetDefaultConstant();
+}
+
+
+
 // class igdeViewCurveBezier::cActionSetDefaultLinear
 ///////////////////////////////////////////////////////
 
@@ -227,6 +241,34 @@ pView( view ){
 
 void igdeViewCurveBezier::cActionSetDefaultBezier::OnAction(){
 	pView.SetDefaultBezier();
+}
+
+
+
+// class igdeViewCurveBezier::cActionInvertCurveX
+///////////////////////////////////////////////////
+
+igdeViewCurveBezier::cActionInvertCurveX::cActionInvertCurveX( igdeViewCurveBezier &view ) :
+igdeAction( "Invert curve along X axis", NULL, "Invert curve along X axis" ),
+pView( view ){
+}
+
+void igdeViewCurveBezier::cActionInvertCurveX::OnAction(){
+	pView.InvertCurveX();
+}
+
+
+
+// class igdeViewCurveBezier::cActionInvertCurveY
+///////////////////////////////////////////////////
+
+igdeViewCurveBezier::cActionInvertCurveY::cActionInvertCurveY( igdeViewCurveBezier &view ) :
+igdeAction( "Invert curve along Y axis", NULL, "Invert curve along Y axis" ),
+pView( view ){
+}
+
+void igdeViewCurveBezier::cActionInvertCurveY::OnAction(){
+	pView.InvertCurveY();
 }
 
 
@@ -326,6 +368,63 @@ void igdeViewCurveBezier::SetCurve( const decCurveBezier &curve, bool changing )
 void igdeViewCurveBezier::ClearCurve(){
 	SetCurve( decCurveBezier() );
 	FitViewToCurve();
+}
+
+void igdeViewCurveBezier::InvertCurveX(){
+	decCurveBezier curve;
+	curve.SetInterpolationMode( pCurve.GetInterpolationMode() );
+	
+	const int count = pCurve.GetPointCount();
+	const float l = pClampMin.x;
+	const float r = pClampMax.x;
+	int i;
+	
+	for( i=count-1; i>=0; i-- ){
+		const decCurveBezierPoint &point = pCurve.GetPointAt( i );
+		const decVector2 &p = point.GetPoint();
+		const decVector2 &h1 = point.GetHandle1();
+		const decVector2 &h2 = point.GetHandle2();
+		
+		curve.AddPoint( decCurveBezierPoint( \
+			decVector2( decMath::linearStep( p.x, l, r, r, l ), p.y ),
+			decVector2( decMath::linearStep( h2.x, l, r, r, l ), h2.y ),
+			decVector2( decMath::linearStep( h1.x, l, r, r, l ), h1.y ) ) );
+	}
+	SetCurve( curve );
+}
+
+void igdeViewCurveBezier::InvertCurveY(){
+	decCurveBezier curve;
+	curve.SetInterpolationMode( pCurve.GetInterpolationMode() );
+	
+	const int count = pCurve.GetPointCount();
+	const float l = pClampMin.y;
+	const float u = pClampMax.y;
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		const decCurveBezierPoint &point = pCurve.GetPointAt( i );
+		const decVector2 &p = point.GetPoint();
+		const decVector2 &h1 = point.GetHandle1();
+		const decVector2 &h2 = point.GetHandle2();
+		
+		curve.AddPoint( decCurveBezierPoint( \
+			decVector2( p.x, decMath::linearStep( p.y, l, u, u, l ) ),
+			decVector2( h1.x, decMath::linearStep( h1.y, l, u, u, l ) ),
+			decVector2( h2.x, decMath::linearStep( h2.y, l, u, u, l ) ) ) );
+	}
+	SetCurve( curve );
+}
+
+void igdeViewCurveBezier::SetDefaultConstant(){
+	const decVector2 center( ( pClampMin + pClampMax ) * 0.5f );
+	decCurveBezier curve;
+	curve.AddPoint( decCurveBezierPoint( pClampMin ) );
+	curve.AddPoint( decCurveBezierPoint( decVector2( center.x, pClampMax.y ) ) );
+	curve.SetInterpolationMode( decCurveBezier::eimConstant );
+	SetCurve( curve );
+	
+	ResetView();
 }
 
 void igdeViewCurveBezier::SetDefaultLinear(){
@@ -438,8 +537,13 @@ void igdeViewCurveBezier::ShowContextMenu( const decPoint &position ){
 	
 	helper.MenuSeparator( menu );
 	helper.MenuCommand( menu, new cActionClearCurve( *this ), true );
+	helper.MenuCommand( menu, new cActionSetDefaultConstant( *this ), true );
 	helper.MenuCommand( menu, new cActionSetDefaultLinear( *this ), true );
 	helper.MenuCommand( menu, new cActionSetDefaultBezier( *this ), true );
+	
+	helper.MenuSeparator( menu );
+	helper.MenuCommand( menu, new cActionInvertCurveX( *this ), true );
+	helper.MenuCommand( menu, new cActionInvertCurveY( *this ), true );
 	
 	helper.MenuSeparator( menu );
 	helper.MenuCommand( menu, new cActionEditClamp( *this ), true );
