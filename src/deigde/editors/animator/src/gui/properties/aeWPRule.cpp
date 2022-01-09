@@ -205,8 +205,9 @@ public:
 
 class cActionPasteIntoGroup : public cActionPaste{
 public:
-	cActionPasteIntoGroup( aeWPRule &panel, const char *name, igdeIcon *icon,
-		const char *description, bool insert ) : cActionPaste( panel, name, icon, description, insert ){ }
+	cActionPasteIntoGroup( aeWPRule &panel ) : cActionPaste( panel, "Paste Into Group",
+		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiPaste ),
+		"Paste rules from clipboard into group", false ){ }
 	
 	virtual igdeUndo *OnAction( aeAnimator*, aeRule *rule ){
 		aeClipboardDataRule * const cdata = ( aeClipboardDataRule* )pPanel.GetWindowProperties()
@@ -217,31 +218,14 @@ public:
 		
 		aeRuleGroup * const group = ( aeRuleGroup* )rule;
 		const aeRuleList &list = group->GetRules();
-		return new aeURuleGroupPasteRule( group, cdata->GetRules(),
-			pInsert ? list.IndexOf( rule ) : list.GetCount() );
+		return new aeURuleGroupPasteRule( group, cdata->GetRules(), list.GetCount() );
 	}
 	
 	virtual void Update( const aeAnimator & , const aeRule &rule ){
-		SetSelected( rule.GetType() == deAnimatorRuleVisitorIdentify::ertGroup
+		SetEnabled( rule.GetType() == deAnimatorRuleVisitorIdentify::ertGroup
 			&& pPanel.GetWindowProperties().GetWindowMain().GetClipboard()
 				.GetWithTypeName( aeClipboardDataRule::TYPE_NAME ) );
 	}
-};
-
-class cActionPasteIntoGroupAppend : public cActionPasteIntoGroup{
-public:
-	cActionPasteIntoGroupAppend( aeWPRule &panel ) : cActionPasteIntoGroup( panel,
-		"Paste Into Group Append",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiPaste ),
-		"Paste and append rule from clipboard into group", false ){ }
-};
-
-class cActionPasteIntoGroupInsert : public cActionPasteIntoGroup{
-public:
-	cActionPasteIntoGroupInsert( aeWPRule &panel ) : cActionPasteIntoGroup( panel,
-		"Paste Into Group Insert",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiPaste ),
-		"Paste and insert rule from clipboard into group", true ){ }
 };
 
 class cTreeRules : public igdeTreeListListener{
@@ -334,8 +318,7 @@ public:
 		helper.MenuCommand( menu, new cActionCut( pPanel ), true );
 		helper.MenuCommand( menu, new cActionPasteAppend( pPanel ), true );
 		helper.MenuCommand( menu, new cActionPasteInsert( pPanel ), true );
-		helper.MenuCommand( menu, new cActionPasteIntoGroupAppend( pPanel ), true );
-		helper.MenuCommand( menu, new cActionPasteIntoGroupInsert( pPanel ), true );
+		helper.MenuCommand( menu, new cActionPasteIntoGroup( pPanel ), true );
 	}
 };
 
