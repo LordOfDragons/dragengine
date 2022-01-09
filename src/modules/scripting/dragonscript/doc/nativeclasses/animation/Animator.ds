@@ -51,7 +51,7 @@ class Animator
 	end
 	
 	/** \brief Set rig or \em null if not set. */
-	public func void setRig( Rig rig )
+	public func void setRig(Rig rig)
 	end
 	
 	/** \brief Animation or \em null if not set. */
@@ -60,7 +60,7 @@ class Animator
 	end
 	
 	/** \brief Set animation or null if not set. */
-	public func void setAnimation( Animation animation )
+	public func void setAnimation(Animation animation)
 	end
 	
 	/**
@@ -72,7 +72,7 @@ class Animator
 	 * If \em animator1 or \em animator2 is \em null \em false is returned. If both are
 	 * \em null \em true is returned.
 	 */
-	public static func bool equals( Animator animator1, Animator animator2 )
+	public static func bool equals(Animator animator1, Animator animator2)
 		return false
 	end
 	/*@}*/
@@ -90,7 +90,7 @@ class Animator
 	 * \brief Set number of controllers.
 	 * \throws EInvalidParam \em count is less than 0.
 	 */
-	public func void setControllerCount( int count )
+	public func void setControllerCount(int count)
 	end
 	
 	/**
@@ -104,7 +104,7 @@ class Animator
 	 * \throws EOutOfBoundary \em controller is less than -getControllerCount() or larger
 	 *                        than or equal to getControllerCount().
 	 */
-	public func AnimatorController getControllerAt( int index )
+	public func AnimatorController getControllerAt(int index)
 		return null
 	end
 	
@@ -117,12 +117,12 @@ class Animator
 	 * \param name Name of controller. If no controller with this name is present
 	 *             \em null is returned.
 	 */
-	public func AnimatorController getControllerNamed( String name )
+	public func AnimatorController getControllerNamed(String name)
 		return null
 	end
 	
 	/** \brief Index of named controller or -1 if not found. */
-	public func int indexOfControllerNamed( String name )
+	public func int indexOfControllerNamed(String name)
 		return 0
 	end
 	/*@}*/
@@ -141,7 +141,7 @@ class Animator
 	 * \details If the controller does not exist the link uses 0 as input value during calculations.
 	 * \returns Index of added link.
 	 */
-	public func int addLink( int controller )
+	public func int addLink(int controller)
 		return 0
 	end
 	
@@ -154,21 +154,21 @@ class Animator
 	 * \details If the controller does not exist the link uses 0 as input value during calculations.
 	 * \throws EOutOfBoundary \em link is less than 0 or large than or equal to getLinkCount().
 	 */
-	public func void setLinkController( int link, int controller )
+	public func void setLinkController(int link, int controller)
 	end
 	
 	/**
 	 * \brief Set repeat count along X axis of link.
 	 * \throws EInvalidParam \em repeat is less than 1.
 	 */
-	public func void setLinkRepeat( int link, int repeat )
+	public func void setLinkRepeat(int link, int repeat)
 	end
 	
 	/**
 	 * \brief Set link curve.
 	 * \throws EOutOfBoundary \em link is less than 0 or large than or equal to getLinkCount().
 	 */
-	public func void setLinkCurve( int link, CurveBezier curve )
+	public func void setLinkCurve(int link, CurveBezier curve)
 	end
 	
 	/**
@@ -176,7 +176,7 @@ class Animator
 	 * \version 1.6
 	 * \throws EOutOfBoundary \em link is less than 0 or large than or equal to getLinkCount().
 	 */
-	public func void setLinkBone( int link, String bone )
+	public func void setLinkBone(int link, String bone)
 	end
 	
 	/**
@@ -184,7 +184,7 @@ class Animator
 	 * \version 1.6
 	 * \throws EOutOfBoundary \em link is less than 0 or large than or equal to getLinkCount().
 	 */
-	public func void setLinkBoneParameter( int link, AnimatorLinkBoneParameter parameter )
+	public func void setLinkBoneParameter(int link, AnimatorLinkBoneParameter parameter)
 	end
 	
 	/**
@@ -192,7 +192,7 @@ class Animator
 	 * \version 1.6
 	 * \throws EOutOfBoundary \em link is less than 0 or large than or equal to getLinkCount().
 	 */
-	public func void setLinkBoneValueRange( int link, float minimum, float maximum )
+	public func void setLinkBoneValueRange(int link, float minimum, float maximum)
 	end
 	
 	/**
@@ -200,7 +200,15 @@ class Animator
 	 * \version 1.6
 	 * \throws EOutOfBoundary \em link is less than 0 or large than or equal to getLinkCount().
 	 */
-	public func void setLinkBoneValueRangeRotation( int link, float minimum, float maximum )
+	public func void setLinkBoneValueRangeRotation(int link, float minimum, float maximum)
+	end
+	
+	/**
+	 * \brief Set to wrap Y value instead of clamping.
+	 * \version 1.9
+	 * \throws EOutOfBoundary \em link is less than 0 or large than or equal to getLinkCount().
+	 */
+	public func void setLinkWrapY(int link, bool wrap)
 	end
 	/*@}*/
 	
@@ -214,14 +222,14 @@ class Animator
 	end
 	
 	/** \brief Add rule. */
-	public func void addRule( AnimatorRule rule )
+	public func void addRule(AnimatorRule rule)
 	end
 	
 	/**
 	 * \brief Rule at index.
 	 * \throws EOutOfBoundary \em index is less than 0 or large than or equal to getRuleCount().
 	 */
-	public func AnimatorRule getRuleAt( int index )
+	public func AnimatorRule getRuleAt(int index)
 		return null
 	end
 	
@@ -235,7 +243,7 @@ class Animator
 	/** \name Bones */
 	/*@{*/
 	/** \brief Add bone. */
-	public func void addBone( String bone )
+	public func void addBone(String bone)
 	end
 	
 	/** \brief Remove all bones. */

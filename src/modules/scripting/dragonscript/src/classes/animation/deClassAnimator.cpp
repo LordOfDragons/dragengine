@@ -400,6 +400,21 @@ void deClassAnimator::nfSetLinkBoneValueRangeRotation::RunFunction( dsRunTime *r
 	animator.NotifyLinkChangedAt( index );
 }
 
+// public func void setLinkWrapY( int link, bool wrap );
+deClassAnimator::nfSetLinkWrapY::nfSetLinkWrapY( const sInitData &init ) :
+dsFunction( init.clsAr, "setLinkWrapY", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsInt ); // link
+	p_AddParameter( init.clsBool ); // wrap
+}
+void deClassAnimator::nfSetLinkWrapY::RunFunction( dsRunTime *rt, dsValue *myself ){
+	deAnimator &animator = *( ( ( sArNatDat* )p_GetNativeData( myself ) )->animator );
+	
+	const int index = rt->GetValue( 0 )->GetInt();
+	animator.GetLinkAt( index )->SetWrapY( rt->GetValue( 1 )->GetBool() );
+	
+	animator.NotifyLinkChangedAt( index );
+}
+
 
 
 // public func int getRuleCount()
@@ -614,6 +629,7 @@ void deClassAnimator::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfSetLinkBoneParameter( init ) );
 	AddFunction( new nfSetLinkBoneValueRange( init ) );
 	AddFunction( new nfSetLinkBoneValueRangeRotation( init ) );
+	AddFunction( new nfSetLinkWrapY( init ) );
 	
 	AddFunction( new nfGetRuleCount( init ) );
 	AddFunction( new nfAddRule( init ) );

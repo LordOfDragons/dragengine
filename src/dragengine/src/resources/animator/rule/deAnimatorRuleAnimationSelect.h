@@ -29,7 +29,7 @@
 /**
  * \brief Animator animation select rule.
  * 
- * Apply animation state from an animation move selected from a list of animation movers.
+ * Apply animation state from an animation move selected from a list of animation moves.
  * 
  * The animation move to use is selected using a link. The animation moves are distributed
  * evenly across the 0 to 1 link value range in the order they are defined. The closest

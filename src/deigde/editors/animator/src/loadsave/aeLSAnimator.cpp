@@ -500,6 +500,10 @@ void aeLSAnimator::pSaveLink( decXmlWriter &writer, const aeAnimator &animator, 
 		writer.WriteOpeningTagEnd( true );
 	}
 	
+	if( link.GetWrapY() ){
+		writer.WriteDataTagBool( "wrapY", link.GetWrapY() );
+	}
+	
 	const decCurveBezier &curve = link.GetCurve();
 	if( curve.GetInterpolationMode() != decCurveBezier::eimLinear || curve.GetPointCount() != 2
 	|| ! curve.GetPointAt( 0 ).GetPoint().IsEqualTo( decVector2( 0.0f, 0.0f ) )
@@ -1843,6 +1847,9 @@ void aeLSAnimator::pLoadLink( decXmlElementTag *root, aeAnimator &animator ){
 		}else if( tag->GetName() == "boneLimits" ){
 			link->SetBoneMinimum( GetAttributeFloat( *tag, "min" ) );
 			link->SetBoneMaximum( GetAttributeFloat( *tag, "max" ) );
+			
+		}else if( tag->GetName() == "wrapY" ){
+			link->SetWrapY( GetCDataBool( *tag ) );
 			
 		}else{
 			logger.LogWarnFormat( LOGSOURCE, "%s(%i:%i): Unknown Tag %s, ignoring",

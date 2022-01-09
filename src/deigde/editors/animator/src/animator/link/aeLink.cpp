@@ -48,7 +48,8 @@ pController( NULL ),
 pRepeat( 1 ),
 pBoneParameter( deAnimatorLink::ebpPositionZ ),
 pBoneMinimum( 0.0f ),
-pBoneMaximum( 1.0f )
+pBoneMaximum( 1.0f ),
+pWrapY( false )
 {
 	pCurve.SetDefaultLinear();
 }
@@ -63,7 +64,8 @@ pCurve( copy.pCurve ),
 pBone( copy.pBone ),
 pBoneParameter( copy.pBoneParameter ),
 pBoneMinimum( copy.pBoneMinimum ),
-pBoneMaximum( copy.pBoneMaximum )
+pBoneMaximum( copy.pBoneMaximum ),
+pWrapY( copy.pWrapY )
 {
 	pController = copy.pController;
 	if( pController ){
@@ -116,6 +118,7 @@ void aeLink::SetAnimator( aeAnimator *animator ){
 		pEngLink->SetRepeat( pRepeat );
 		pEngLink->SetBone( pBone );
 		pEngLink->SetBoneParameter( pBoneParameter );
+		pEngLink->SetWrapY( pWrapY );
 		pUpdateBoneLimits();
 		
 		NotifyLinkChanged();
@@ -262,6 +265,23 @@ void aeLink::SetBoneMaximum( float value ){
 	}
 }
 
+void aeLink::SetWrapY( bool wrap ){
+	if( wrap == pWrapY ){
+		return;
+	}
+	
+	pWrapY = wrap;
+	
+	if( pEngLink ){
+		pEngLink->SetWrapY( wrap );
+		NotifyLinkChanged();
+	}
+	
+	if( pAnimator ){
+		pAnimator->NotifyLinkChanged( this );
+	}
+}
+
 
 
 void aeLink::NotifyLinkChanged(){
@@ -305,6 +325,7 @@ aeLink &aeLink::operator=( const aeLink &copy ){
 	pBoneParameter = copy.pBoneParameter;
 	pBoneMinimum = copy.pBoneMinimum;
 	pBoneMaximum = copy.pBoneMaximum;
+	pWrapY = copy.pWrapY;
 	return *this;
 }
 

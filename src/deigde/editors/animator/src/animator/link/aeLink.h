@@ -57,6 +57,7 @@ private:
 	deAnimatorLink::eBoneParameter pBoneParameter;
 	float pBoneMinimum;
 	float pBoneMaximum;
+	bool pWrapY;
 	
 	
 	
@@ -166,6 +167,18 @@ public:
 	 * \version 1.6
 	 */
 	void SetBoneMaximum( float value );
+	
+	/**
+	 * \brief Wrap Y value instead of clamping.
+	 * \version 1.9
+	 */
+	inline bool GetWrapY() const{ return pWrapY; }
+	
+	/**
+	 * \brief Set to wrap Y value instead of clamping.
+	 * \version 1.9
+	 */
+	void SetWrapY( bool wrap );
 	
 	
 	

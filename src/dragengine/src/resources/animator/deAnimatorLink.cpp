@@ -39,7 +39,8 @@ pController( -1 ),
 pRepeat( 1 ),
 pBoneParameter( ebpPositionZ ),
 pBoneMinValue( 0.0f ),
-pBoneMaxValue( 1.0f )
+pBoneMaxValue( 1.0f ),
+pWrapY( false )
 {
 	pCurve.SetDefaultLinear();
 }
@@ -51,7 +52,8 @@ pRepeat( copy.pRepeat ),
 pBone( copy.pBone ),
 pBoneParameter( copy.pBoneParameter ),
 pBoneMinValue( copy.pBoneMinValue ),
-pBoneMaxValue( copy.pBoneMaxValue ){
+pBoneMaxValue( copy.pBoneMaxValue ),
+pWrapY( copy.pWrapY ){
 }
 
 deAnimatorLink::~deAnimatorLink(){
@@ -93,6 +95,10 @@ void deAnimatorLink::SetBoneValueRange( float minimum, float maximum ){
 	pBoneMaxValue = maximum;
 }
 
+void deAnimatorLink::SetWrapY( bool wrap ){
+	pWrapY = wrap;
+}
+
 
 
 // Operators
@@ -106,5 +112,6 @@ deAnimatorLink &deAnimatorLink::operator=( const deAnimatorLink &copy ){
 	pBoneParameter = copy.pBoneParameter;
 	pBoneMinValue = copy.pBoneMinValue;
 	pBoneMaxValue = copy.pBoneMaxValue;
+	pWrapY = copy.pWrapY;
 	return *this;
 }

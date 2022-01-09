@@ -37,10 +37,11 @@ class dearControllerStates;
  */
 class dearLink{
 private:
-	dearAnimatorInstance &pInstance;
+	const dearAnimatorInstance &pInstance;
 	deAnimatorLink pLink;
-	decCurveBezierEvaluator pEvaluator;
+	const decCurveBezierEvaluator pEvaluator;
 	int pBoneIndex;
+	const bool pWrapY;
 	
 	
 	

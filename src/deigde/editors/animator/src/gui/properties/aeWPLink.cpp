@@ -40,11 +40,13 @@
 #include "../../undosys/link/aeULinkSetBoneParameter.h"
 #include "../../undosys/link/aeULinkSetBoneMinimum.h"
 #include "../../undosys/link/aeULinkSetBoneMaximum.h"
+#include "../../undosys/link/aeULinkToggleWrapY.h"
 
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeButton.h>
+#include <deigde/gui/igdeCheckBox.h>
 #include <deigde/gui/igdeContainerReference.h>
 #include <deigde/gui/igdeComboBox.h>
 #include <deigde/gui/igdeComboBoxFilter.h>
@@ -395,6 +397,21 @@ public:
 	}
 };
 
+
+class cCheckWrapY : public cBaseAction{
+public:
+	cCheckWrapY( aeWPLink &panel ) : cBaseAction( panel, "Wrap Y", nullptr,
+		"Wrap Y value instead of clamping" ){ }
+	
+	virtual igdeUndo *OnAction( aeAnimator*, aeLink *link ){
+		return new aeULinkToggleWrapY( link );
+	}
+	
+	virtual void Update( const aeAnimator &animator, const aeLink &link ){
+		cBaseAction::Update( animator, link );
+		SetSelected( link.GetWrapY() );
+	}
+};
 }
 
 
@@ -460,6 +477,8 @@ pPreventUpdate( false )
 		pEditBoneMinimum, new cTextBoneMinimum( *this ) );
 	helper.EditFloat( groupBox, "Bone Maximum Value:", "Maximum bone value",
 		pEditBoneMaximum, new cTextBoneMaximum( *this ) );
+	
+	helper.CheckBox( groupBox, pChkWrapY, new cCheckWrapY( *this ), true );
 	
 	
 	helper.GroupBoxFlow( content, groupBox, "Link Curve:" );
@@ -573,6 +592,8 @@ void aeWPLink::UpdateLink(){
 	pEditBoneMinimum->SetEnabled( enabled );
 	pEditBoneMaximum->SetEnabled( enabled );
 	pEditCurve->SetEnabled( enabled );
+	
+	pChkWrapY->GetAction()->Update();
 }
 
 void aeWPLink::UpdateRigBoneList(){

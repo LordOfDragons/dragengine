@@ -23,6 +23,7 @@
 #define _AEWPLINK_H_
 
 #include <deigde/gui/igdeButtonReference.h>
+#include <deigde/gui/igdeCheckBoxReference.h>
 #include <deigde/gui/igdeComboBoxReference.h>
 #include <deigde/gui/igdeComboBoxFilterReference.h>
 #include <deigde/gui/igdeListBoxReference.h>
@@ -58,6 +59,7 @@ private:
 	igdeComboBoxReference pCBBoneParameter;
 	igdeTextFieldReference pEditBoneMinimum;
 	igdeTextFieldReference pEditBoneMaximum;
+	igdeCheckBoxReference pChkWrapY;
 	
 	bool pPreventUpdate;
 	

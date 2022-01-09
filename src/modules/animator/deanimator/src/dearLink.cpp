@@ -46,7 +46,8 @@ dearLink::dearLink( dearAnimatorInstance &instance, const deAnimatorLink &link,
 pInstance( instance ),
 pLink( link ),
 pEvaluator( link.GetCurve() ),
-pBoneIndex( -1 )
+pBoneIndex( -1 ),
+pWrapY( link.GetWrapY() )
 {
 	const int controller = pLink.GetController();
 	if( controller != -1 ){
@@ -149,6 +150,10 @@ float dearLink::GetValue( float defaultValue ) const{
 	
 	if( pEvaluator.GetCurve().GetPointCount() > 0 ){
 		value = pEvaluator.EvaluateAt( value );
+	}
+	
+	if( pWrapY ){
+		value -= floorf( value );
 	}
 	
 	return value;

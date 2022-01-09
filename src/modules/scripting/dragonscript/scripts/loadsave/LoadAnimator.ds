@@ -42,625 +42,628 @@ class LoadAnimator extends BaseXmlLoader
 	
 	
 	/** \brief Create loader. */
-	public func new( Console console ) this( console, "LoadAnimator" )
+	public func new(Console console) this(console, "LoadAnimator")
 	end
 	
 	/** \brief Create new loader. */
-	public func new( Console console, String name ) super( console, name )
-		this.pAnimators = Dictionary.new()
+	public func new(Console console, String name) super(console, name)
+		pAnimators = Dictionary.new()
 	end
 	
 	
 	
 	/** \brief Load animator from file. */
-	public func Animator loadFromFile( String filename )
-		var Animator animator = this.pAnimators.getAt( filename, null ) cast Animator
+	public func Animator loadFromFile(String filename)
+		var Animator animator = pAnimators.getAt(filename, null) cast Animator
 		if animator != null
 			return animator
 		end
 		
-		return this.loadAndParseRootTag( filename, "animator", block EasyXMLElement root
-			var AnimatorDefinition definition = AnimatorDefinition.new( filename )
-			this.pParseAnimatorDefinition( root, definition, File.new( filename ).getParent().getPath() )
+		return loadAndParseRootTag(filename, "animator", block EasyXMLElement root
+			var AnimatorDefinition definition = AnimatorDefinition.new(filename)
+			pParseAnimatorDefinition(root, definition, File.new(filename).getParent().getPath())
 			
 			animator = Animator.new()
-			definition.buildAnimator( animator )
-			this.pAnimators.setAt( filename, animator )
+			definition.buildAnimator(animator)
+			pAnimators.setAt(filename, animator)
 			return animator
-		end ) cast Animator
+		end) cast Animator
 	end
 	
 	
 	
 	/** Parse animator tag. */
-	private func void pParseAnimatorDefinition( EasyXMLElement root, \
-	AnimatorDefinition animator, String basePath )
+	private func void pParseAnimatorDefinition(EasyXMLElement root, \
+	AnimatorDefinition animator, String basePath)
 		var String filename
 		
-		root.forEachTag( block EasyXMLElement element, String tagName
-			if tagName.equals( "rig" )
+		root.forEachTag(block EasyXMLElement element, String tagName
+			if tagName.equals("rig")
 				filename = element.getFirstCData()
 				
 				if not filename.empty()
 					try
-						animator.setRig( Rig.new( \
-							File.absolutePath( filename, basePath ).getPath() ) )
+						animator.setRig(Rig.new(\
+							File.absolutePath(filename, basePath).getPath()))
 						
 					catch Exception e
-						this.logLoadFileFailed( element, filename )
+						logLoadFileFailed(element, filename)
 					end
 				end
 				
-			elif tagName.equals( "animation" )
+			elif tagName.equals("animation")
 				filename = element.getFirstCData()
 				
 				if not filename.empty()
 					try
-						animator.setAnimation( Animation.new( \
-							File.absolutePath( filename, basePath ).getPath() ) )
+						animator.setAnimation(Animation.new(\
+							File.absolutePath(filename, basePath).getPath()))
 						
 					catch Exception e
-						this.logLoadFileFailed( element, filename )
+						logLoadFileFailed(element, filename)
 					end
 				end
 				
-			elif tagName.equals( "controller" )
-				this.pParseController( element, animator )
+			elif tagName.equals("controller")
+				pParseController(element, animator)
 				
-			elif tagName.equals( "link" )
-				this.pParseLink( element, animator )
+			elif tagName.equals("link")
+				pParseLink(element, animator)
 				
-			elif tagName.equals( "bone" )
-				animator.addBone( element.getFirstCData() )
+			elif tagName.equals("bone")
+				animator.addBone(element.getFirstCData())
 				
 			else
-				var ADRule rule = this.pParseRule( element, animator, basePath )
+				var ADRule rule = pParseRule(element, animator, basePath)
 				if rule != null
-					animator.addRule( rule )
+					animator.addRule(rule)
 				end
 			end
-		end )
+		end)
 	end
 	
 	/** Parse controller tag. */
-	private func void pParseController( EasyXMLElement root, AnimatorDefinition animator )
+	private func void pParseController(EasyXMLElement root, AnimatorDefinition animator)
 		var ADController controller = ADController.new()
 		
-		root.forEachTag( block EasyXMLElement element, String tagName
-			if tagName.equals( "name" )
-				controller.setName( element.getFirstCData() )
+		root.forEachTag(block EasyXMLElement element, String tagName
+			if tagName.equals("name")
+				controller.setName(element.getFirstCData())
 				
-			elif tagName.equals( "clamp" )
-				controller.setClamp( element.getFirstCDataBool() )
+			elif tagName.equals("clamp")
+				controller.setClamp(element.getFirstCDataBool())
 				
-			elif tagName.equals( "frozen" )
-				controller.setFrozen( element.getFirstCDataBool() )
+			elif tagName.equals("frozen")
+				controller.setFrozen(element.getFirstCDataBool())
 				
-			elif tagName.equals( "limits" )
-				controller.setMinimum( element.getAttributeFloatNamed( "min" ) )
-				controller.setMaximum( element.getAttributeFloatNamed( "max" ) )
+			elif tagName.equals("limits")
+				controller.setMinimum(element.getAttributeFloatNamed("min"))
+				controller.setMaximum(element.getAttributeFloatNamed("max"))
 				
-			elif tagName.equals( "vector" )
-				controller.setVector( this.readVector( element ) )
+			elif tagName.equals("vector")
+				controller.setVector(readVector(element))
 			end
-		end )
+		end)
 		
-		animator.addController( controller )
+		animator.addController(controller)
 	end
 	
 	/** Parse link tag. */
-	private func void pParseLink( EasyXMLElement root, AnimatorDefinition animator )
+	private func void pParseLink(EasyXMLElement root, AnimatorDefinition animator)
 		var ADLink link = ADLink.new()
 		var int index
 		
-		root.forEachTag( block EasyXMLElement element, String tagName
-			if tagName.equals( "controller" )
+		root.forEachTag(block EasyXMLElement element, String tagName
+			if tagName.equals("controller")
 				index = element.getFirstCDataInt()
 				
 				if index >= 0 and index < animator.getControllerCount()
-					link.setController( animator.getControllerAt( index ) )
+					link.setController(animator.getControllerAt(index))
 				end
 				
-			elif tagName.equals( "repeat" )
-				link.setRepeat( element.getFirstCDataInt() )
+			elif tagName.equals("repeat")
+				link.setRepeat(element.getFirstCDataInt())
 				
-			elif tagName.equals( "curve" )
-				link.setCurve( this.readCurveBezier( element ) )
+			elif tagName.equals("curve")
+				link.setCurve(readCurveBezier(element))
 				
-			elif tagName.equals( "bone" )
-				link.setBone( element.getFirstCData() )
+			elif tagName.equals("bone")
+				link.setBone(element.getFirstCData())
 				
-			elif tagName.equals( "boneParameter" )
-				link.setBoneParameter( AnimatorLinkBoneParameter.named( element.getFirstCData() ) )
+			elif tagName.equals("boneParameter")
+				link.setBoneParameter(AnimatorLinkBoneParameter.named(element.getFirstCData()))
 				
-			elif tagName.equals( "boneLimits" )
-				link.setBoneMinimum( element.getAttributeFloatNamed( "min" ) )
-				link.setBoneMaximum( element.getAttributeFloatNamed( "max" ) )
+			elif tagName.equals("boneLimits")
+				link.setBoneMinimum(element.getAttributeFloatNamed("min"))
+				link.setBoneMaximum(element.getAttributeFloatNamed("max"))
+				
+			elif tagName.equals("wrapY")
+				link.setWrapY(element.getFirstCDataBool())
 			end
-		end )
+		end)
 		
-		animator.addLink( link )
+		animator.addLink(link)
 	end
 	
 	/** Parse common rule tag. */
-	private func void pParseRuleCommon( EasyXMLElement element, AnimatorDefinition animator, ADRule rule )
+	private func void pParseRuleCommon(EasyXMLElement element, AnimatorDefinition animator, ADRule rule)
 		var String tagName = element.getTagName()
 		
-		if tagName.equals( "name" )
-			rule.setName( element.getFirstCData() )
+		if tagName.equals("name")
+			rule.setName(element.getFirstCData())
 			
-		elif tagName.equals( "enabled" )
-			rule.setEnabled( element.getFirstCDataBool() )
+		elif tagName.equals("enabled")
+			rule.setEnabled(element.getFirstCDataBool())
 			
-		elif tagName.equals( "blendMode" )
-			var AnimatorRuleBlendMode blendMode = AnimatorRuleBlendMode.named( element.getFirstCData() )
+		elif tagName.equals("blendMode")
+			var AnimatorRuleBlendMode blendMode = AnimatorRuleBlendMode.named(element.getFirstCData())
 			if blendMode != null
-				rule.setBlendMode( blendMode )
+				rule.setBlendMode(blendMode)
 				
 			else
-				this.logInvalidValue( element, element.getFirstCData() )
+				logInvalidValue(element, element.getFirstCData())
 			end
 			
-		elif tagName.equals( "blendFactor" )
-			rule.setBlendFactor( element.getFirstCDataFloat() )
+		elif tagName.equals("blendFactor")
+			rule.setBlendFactor(element.getFirstCDataFloat())
 			
-		elif tagName.equals( "bone" )
-			rule.addBone( element.getFirstCData() )
+		elif tagName.equals("bone")
+			rule.addBone(element.getFirstCData())
 		end
 	end
 	
 	/** Parse animator tag. */
-	private func ADRule pParseRule( EasyXMLElement root, AnimatorDefinition animator, String basePath )
+	private func ADRule pParseRule(EasyXMLElement root, AnimatorDefinition animator, String basePath)
 		var String tagName = root.getTagName()
 		
-		if tagName.equals( "ruleAnimation" )
-			return this.pParseRuleAnimation( root, animator )
+		if tagName.equals("ruleAnimation")
+			return pParseRuleAnimation(root, animator)
 			
-		elif tagName.equals( "ruleAnimationDifference" )
-			return this.pParseRuleAnimationDifference( root, animator )
+		elif tagName.equals("ruleAnimationDifference")
+			return pParseRuleAnimationDifference(root, animator)
 			
-		elif tagName.equals( "ruleAnimationSelect" )
-			return this.pParseRuleAnimationSelect( root, animator )
+		elif tagName.equals("ruleAnimationSelect")
+			return pParseRuleAnimationSelect(root, animator)
 			
-		elif tagName.equals( "ruleBoneTransformator" )
-			return this.pParseRuleBoneTransformator( root, animator )
+		elif tagName.equals("ruleBoneTransformator")
+			return pParseRuleBoneTransformator(root, animator)
 			
-		elif tagName.equals( "ruleStateManipulator" )
-			return this.pParseRuleStateManipulator( root, animator )
+		elif tagName.equals("ruleStateManipulator")
+			return pParseRuleStateManipulator(root, animator)
 			
-		elif tagName.equals( "ruleStateSnapshot" )
-			return this.pParseRuleStateShapshot( root, animator )
+		elif tagName.equals("ruleStateSnapshot")
+			return pParseRuleStateShapshot(root, animator)
 			
-		elif tagName.equals( "ruleInverseKinematic" )
-			return this.pParseRuleInverseKinematic( root, animator )
+		elif tagName.equals("ruleInverseKinematic")
+			return pParseRuleInverseKinematic(root, animator)
 			
-		elif tagName.equals( "ruleForeignState" )
-			return this.pParseRuleForeignState( root, animator )
+		elif tagName.equals("ruleForeignState")
+			return pParseRuleForeignState(root, animator)
 			
-		elif tagName.equals( "ruleMirror" )
-			return this.pParseRuleMirror( root, animator )
+		elif tagName.equals("ruleMirror")
+			return pParseRuleMirror(root, animator)
 			
-		elif tagName.equals( "ruleSubAnimator" )
-			return this.pParseRuleSubAnimator( root, animator, basePath )
+		elif tagName.equals("ruleSubAnimator")
+			return pParseRuleSubAnimator(root, animator, basePath)
 			
-		elif tagName.equals( "ruleTrackTo" )
-			return this.pParseRuleTrackTo( root, animator )
+		elif tagName.equals("ruleTrackTo")
+			return pParseRuleTrackTo(root, animator)
 			
-		elif tagName.equals( "ruleLimit" )
-			return this.pParseRuleLimit( root, animator )
+		elif tagName.equals("ruleLimit")
+			return pParseRuleLimit(root, animator)
 			
-		elif tagName.equals( "ruleGroup" )
-			return this.pParseRuleGroup( root, animator, basePath )
+		elif tagName.equals("ruleGroup")
+			return pParseRuleGroup(root, animator, basePath)
 		end
 		
 		return null
 	end
 	
 	/** Parse animation rule tag. */
-	private func ADRule pParseRuleAnimation( EasyXMLElement root, AnimatorDefinition animator )
+	private func ADRule pParseRuleAnimation(EasyXMLElement root, AnimatorDefinition animator)
 		var ADRuleAnimation rule = ADRuleAnimation.new()
 		
-		root.forEachTag( block EasyXMLElement element, String tagName
-			if tagName.equals( "moveName" )
-				rule.setMoveName( element.getFirstCData() )
+		root.forEachTag(block EasyXMLElement element, String tagName
+			if tagName.equals("moveName")
+				rule.setMoveName(element.getFirstCData())
 				
-			elif tagName.equals( "moveTime" )
-				rule.setMoveTime( element.getFirstCDataFloat() )
+			elif tagName.equals("moveTime")
+				rule.setMoveTime(element.getFirstCDataFloat())
 				
-			elif tagName.equals( "enablePosition" )
-				rule.setEnablePosition( element.getFirstCDataBool() )
+			elif tagName.equals("enablePosition")
+				rule.setEnablePosition(element.getFirstCDataBool())
 				
-			elif tagName.equals( "enableOrientation" )
-				rule.setEnableOrientation( element.getFirstCDataBool() )
+			elif tagName.equals("enableOrientation")
+				rule.setEnableOrientation(element.getFirstCDataBool())
 				
-			elif tagName.equals( "enableSize" )
-				rule.setEnableSize( element.getFirstCDataBool() )
+			elif tagName.equals("enableSize")
+				rule.setEnableSize(element.getFirstCDataBool())
 				
-			elif tagName.equals( "target" )
-				var ARAnimationTarget target = ARAnimationTarget.named( element.getAttributeNamed( "name" ) )
+			elif tagName.equals("target")
+				var ARAnimationTarget target = ARAnimationTarget.named(element.getAttributeNamed("name"))
 				if target != null
-					this.pParseTarget( element, animator, rule, target )
+					pParseTarget(element, animator, rule, target)
 					
 				else
-					this.logInvalidValue( element, element.getAttributeNamed( "name" ) )
+					logInvalidValue(element, element.getAttributeNamed("name"))
 					throw EInvalidParam.new()
 				end
 				
 			else
-				this.pParseRuleCommon( element, animator, rule )
+				pParseRuleCommon(element, animator, rule)
 			end
-		end )
+		end)
 		
 		return rule
 	end
 	
 	/** Parse animation difference rule tag. */
-	private func ADRule pParseRuleAnimationDifference( EasyXMLElement root, AnimatorDefinition animator )
+	private func ADRule pParseRuleAnimationDifference(EasyXMLElement root, AnimatorDefinition animator)
 		var ADRuleAnimationDifference rule = ADRuleAnimationDifference.new()
 		
-		root.forEachTag( block EasyXMLElement element, String tagName
-			if tagName.equals( "leadingMoveName" )
-				rule.setLeadingMoveName( element.getFirstCData() )
+		root.forEachTag(block EasyXMLElement element, String tagName
+			if tagName.equals("leadingMoveName")
+				rule.setLeadingMoveName(element.getFirstCData())
 				
-			elif tagName.equals( "leadingMoveTime" )
-				rule.setLeadingMoveTime( element.getFirstCDataFloat() )
+			elif tagName.equals("leadingMoveTime")
+				rule.setLeadingMoveTime(element.getFirstCDataFloat())
 				
-			elif tagName.equals( "referenceMoveName" )
-				rule.setReferenceMoveName( element.getFirstCData() )
+			elif tagName.equals("referenceMoveName")
+				rule.setReferenceMoveName(element.getFirstCData())
 				
-			elif tagName.equals( "referenceMoveTime" )
-				rule.setReferenceMoveTime( element.getFirstCDataFloat() )
+			elif tagName.equals("referenceMoveTime")
+				rule.setReferenceMoveTime(element.getFirstCDataFloat())
 				
-			elif tagName.equals( "enablePosition" )
-				rule.setEnablePosition( element.getFirstCDataBool() )
+			elif tagName.equals("enablePosition")
+				rule.setEnablePosition(element.getFirstCDataBool())
 				
-			elif tagName.equals( "enableOrientation" )
-				rule.setEnableOrientation( element.getFirstCDataBool() )
+			elif tagName.equals("enableOrientation")
+				rule.setEnableOrientation(element.getFirstCDataBool())
 				
-			elif tagName.equals( "enableSize" )
-				rule.setEnableSize( element.getFirstCDataBool() )
+			elif tagName.equals("enableSize")
+				rule.setEnableSize(element.getFirstCDataBool())
 				
-			elif tagName.equals( "target" )
-				var ARAnimationDifferenceTarget target = ARAnimationDifferenceTarget.named( element.getAttributeNamed( "name" ) )
+			elif tagName.equals("target")
+				var ARAnimationDifferenceTarget target = ARAnimationDifferenceTarget.named(element.getAttributeNamed("name"))
 				if target != null
-					this.pParseTarget( element, animator, rule, target )
+					pParseTarget(element, animator, rule, target)
 					
 				else
-					this.logInvalidValue( element, element.getAttributeNamed( "name" ) )
+					logInvalidValue(element, element.getAttributeNamed("name"))
 					throw EInvalidParam.new()
 				end
 				
 			else
-				this.pParseRuleCommon( element, animator, rule )
+				pParseRuleCommon(element, animator, rule)
 			end
-		end )
+		end)
 		
 		return rule
 	end
 	
 	/** \brief Parse animation select rule tag. */
-	private func ADRule pParseRuleAnimationSelect( EasyXMLElement root, AnimatorDefinition animator )
+	private func ADRule pParseRuleAnimationSelect(EasyXMLElement root, AnimatorDefinition animator)
 		var ADRuleAnimationSelect rule = ADRuleAnimationSelect.new()
 		
-		root.forEachTag( block EasyXMLElement element, String tagName
-			if tagName.equals( "move" )
-				rule.addMove( element.getFirstCData() )
+		root.forEachTag(block EasyXMLElement element, String tagName
+			if tagName.equals("move")
+				rule.addMove(element.getFirstCData())
 				
-			elif tagName.equals( "enablePosition" )
-				rule.setEnablePosition( element.getFirstCDataBool() )
+			elif tagName.equals("enablePosition")
+				rule.setEnablePosition(element.getFirstCDataBool())
 				
-			elif tagName.equals( "enableOrientation" )
-				rule.setEnableOrientation( element.getFirstCDataBool() )
+			elif tagName.equals("enableOrientation")
+				rule.setEnableOrientation(element.getFirstCDataBool())
 				
-			elif tagName.equals( "enableSize" )
-				rule.setEnableSize( element.getFirstCDataBool() )
+			elif tagName.equals("enableSize")
+				rule.setEnableSize(element.getFirstCDataBool())
 				
-			elif tagName.equals( "target" )
-				var ARAnimationSelectTarget target = ARAnimationSelectTarget.named( element.getAttributeNamed( "name" ) )
+			elif tagName.equals("target")
+				var ARAnimationSelectTarget target = ARAnimationSelectTarget.named(element.getAttributeNamed("name"))
 				if target != null
-					this.pParseTarget( element, animator, rule, target )
+					pParseTarget(element, animator, rule, target)
 					
 				else
-					this.logInvalidValue( element, element.getAttributeNamed( "name" ) )
+					logInvalidValue(element, element.getAttributeNamed("name"))
 					throw EInvalidParam.new()
 				end
 				
 			else
-				this.pParseRuleCommon( element, animator, rule )
+				pParseRuleCommon(element, animator, rule)
 			end
-		end )
+		end)
 		
 		return rule
 	end
 	
 	/** Parse bone transformator rule tag. */
-	private func ADRule pParseRuleBoneTransformator( EasyXMLElement root, AnimatorDefinition animator )
+	private func ADRule pParseRuleBoneTransformator(EasyXMLElement root, AnimatorDefinition animator)
 		var ADRuleBoneTransformator rule = ADRuleBoneTransformator.new()
 		
-		root.forEachTag( block EasyXMLElement element, String tagName
-			if tagName.equals( "minimumTranslation" )
-				rule.setMinimumTranslation( this.readVector( element ) )
+		root.forEachTag(block EasyXMLElement element, String tagName
+			if tagName.equals("minimumTranslation")
+				rule.setMinimumTranslation(readVector(element))
 				
-			elif tagName.equals( "maximumTranslation" )
-				rule.setMaximumTranslation( this.readVector( element ) )
+			elif tagName.equals("maximumTranslation")
+				rule.setMaximumTranslation(readVector(element))
 				
-			elif tagName.equals( "minimumRotation" )
-				rule.setMinimumRotation( this.readVector( element ) )
+			elif tagName.equals("minimumRotation")
+				rule.setMinimumRotation(readVector(element))
 				
-			elif tagName.equals( "maximumRotation" )
-				rule.setMaximumRotation( this.readVector( element ) )
+			elif tagName.equals("maximumRotation")
+				rule.setMaximumRotation(readVector(element))
 				
-			elif tagName.equals( "minimumScaling" )
-				rule.setMinimumScaling( this.readVector( element ) )
+			elif tagName.equals("minimumScaling")
+				rule.setMinimumScaling(readVector(element))
 				
-			elif tagName.equals( "maximumScaling" )
-				rule.setMaximumScaling( this.readVector( element ) )
+			elif tagName.equals("maximumScaling")
+				rule.setMaximumScaling(readVector(element))
 				
-			elif tagName.equals( "axis" )
-				rule.setAxis( this.readVector( element ) )
+			elif tagName.equals("axis")
+				rule.setAxis(readVector(element))
 				
-			elif tagName.equals( "minimumAngle" )
-				rule.setMinimumAngle( element.getFirstCDataFloat() )
+			elif tagName.equals("minimumAngle")
+				rule.setMinimumAngle(element.getFirstCDataFloat())
 				
-			elif tagName.equals( "maximumAngle" )
-				rule.setMaximumAngle( element.getFirstCDataFloat() )
+			elif tagName.equals("maximumAngle")
+				rule.setMaximumAngle(element.getFirstCDataFloat())
 				
-			elif tagName.equals( "cframe" )
-				var ARBoneTransformatorCFrame cframe = ARBoneTransformatorCFrame.named( element.getFirstCData() )
+			elif tagName.equals("cframe")
+				var ARBoneTransformatorCFrame cframe = ARBoneTransformatorCFrame.named(element.getFirstCData())
 				if cframe != null
-					rule.setCoordinateFrame( cframe )
+					rule.setCoordinateFrame(cframe)
 					
 				else
-					this.logInvalidValue( element, element.getFirstCData() )
+					logInvalidValue(element, element.getFirstCData())
 					throw EInvalidParam.new()
 				end
 				
-			elif tagName.equals( "enablePosition" )
-				rule.setEnablePosition( element.getFirstCDataBool() )
+			elif tagName.equals("enablePosition")
+				rule.setEnablePosition(element.getFirstCDataBool())
 				
-			elif tagName.equals( "enableOrientation" )
-				rule.setEnableOrientation( element.getFirstCDataBool() )
+			elif tagName.equals("enableOrientation")
+				rule.setEnableOrientation(element.getFirstCDataBool())
 				
-			elif tagName.equals( "enableSize" )
-				rule.setEnableSize( element.getFirstCDataBool() )
+			elif tagName.equals("enableSize")
+				rule.setEnableSize(element.getFirstCDataBool())
 				
-			elif tagName.equals( "useAxis" )
-				rule.setUseAxis( element.getFirstCDataBool() )
+			elif tagName.equals("useAxis")
+				rule.setUseAxis(element.getFirstCDataBool())
 				
-			elif tagName.equals( "targetBone" )
-				rule.setTargetBone( element.getFirstCData() )
+			elif tagName.equals("targetBone")
+				rule.setTargetBone(element.getFirstCData())
 				
-			elif tagName.equals( "useAxis" )
-				rule.setUseAxis( element.getFirstCDataBool() )
+			elif tagName.equals("useAxis")
+				rule.setUseAxis(element.getFirstCDataBool())
 				
-			elif tagName.equals( "axis" )
-				rule.setAxis( this.readVector( element ) )
+			elif tagName.equals("axis")
+				rule.setAxis(readVector(element))
 				
-			elif tagName.equals( "minimumAngle" )
-				rule.setMinimumAngle( element.getFirstCDataFloat() )
+			elif tagName.equals("minimumAngle")
+				rule.setMinimumAngle(element.getFirstCDataFloat())
 				
-			elif tagName.equals( "maximumAngle" )
-				rule.setMaximumAngle( element.getFirstCDataFloat() )
+			elif tagName.equals("maximumAngle")
+				rule.setMaximumAngle(element.getFirstCDataFloat())
 				
-			elif tagName.equals( "target" )
-				var ARBoneTransformatorTarget target = ARBoneTransformatorTarget.named( element.getAttributeNamed( "name" ) )
+			elif tagName.equals("target")
+				var ARBoneTransformatorTarget target = ARBoneTransformatorTarget.named(element.getAttributeNamed("name"))
 				if target != null
-					this.pParseTarget( element, animator, rule, target )
+					pParseTarget(element, animator, rule, target)
 					
 				else
-					this.logInvalidValue( element, element.getAttributeNamed( "name" ) )
+					logInvalidValue(element, element.getAttributeNamed("name"))
 					throw EInvalidParam.new()
 				end
 				
 			else
-				this.pParseRuleCommon( element, animator, rule )
+				pParseRuleCommon(element, animator, rule)
 			end
-		end )
+		end)
 		
 		return rule
 	end
 	
 	/** Parse state manipulator rule tag. */
-	private func ADRule pParseRuleStateManipulator( EasyXMLElement root, AnimatorDefinition animator )
+	private func ADRule pParseRuleStateManipulator(EasyXMLElement root, AnimatorDefinition animator)
 		var ADRuleStateManipulator rule = ADRuleStateManipulator.new()
 		
-		root.forEachTag( block EasyXMLElement element, String tagName
-			if tagName.equals( "positionMinimum" )
-				rule.setMinimumPosition( this.readVector( element ) )
+		root.forEachTag(block EasyXMLElement element, String tagName
+			if tagName.equals("positionMinimum")
+				rule.setMinimumPosition(readVector(element))
 				
-			elif tagName.equals( "positionMaximum" )
-				rule.setMaximumPosition( this.readVector( element ) )
+			elif tagName.equals("positionMaximum")
+				rule.setMaximumPosition(readVector(element))
 				
-			elif tagName.equals( "rotationMinimum" )
-				rule.setMinimumRotation( this.readVector( element ) )
+			elif tagName.equals("rotationMinimum")
+				rule.setMinimumRotation(readVector(element))
 				
-			elif tagName.equals( "rotationMaximum" )
-				rule.setMaximumRotation( this.readVector( element ) )
+			elif tagName.equals("rotationMaximum")
+				rule.setMaximumRotation(readVector(element))
 				
-			elif tagName.equals( "sizeMinimum" )
-				rule.setMinimumSize( this.readVector( element ) )
+			elif tagName.equals("sizeMinimum")
+				rule.setMinimumSize(readVector(element))
 				
-			elif tagName.equals( "sizeMaximum" )
-				rule.setMaximumSize( this.readVector( element ) )
+			elif tagName.equals("sizeMaximum")
+				rule.setMaximumSize(readVector(element))
 				
-			elif tagName.equals( "enablePosition" )
-				rule.setEnablePosition( element.getFirstCDataBool() )
+			elif tagName.equals("enablePosition")
+				rule.setEnablePosition(element.getFirstCDataBool())
 				
-			elif tagName.equals( "enableOrientation" )
-				rule.setEnableOrientation( element.getFirstCDataBool() )
+			elif tagName.equals("enableOrientation")
+				rule.setEnableOrientation(element.getFirstCDataBool())
 				
-			elif tagName.equals( "enableSize" )
-				rule.setEnableSize( element.getFirstCDataBool() )
+			elif tagName.equals("enableSize")
+				rule.setEnableSize(element.getFirstCDataBool())
 				
-			elif tagName.equals( "target" )
-				var ARStateManipulatorTarget target = ARStateManipulatorTarget.named( element.getAttributeNamed( "name" ) )
+			elif tagName.equals("target")
+				var ARStateManipulatorTarget target = ARStateManipulatorTarget.named(element.getAttributeNamed("name"))
 				if target != null
-					this.pParseTarget( element, animator, rule, target )
+					pParseTarget(element, animator, rule, target)
 					
 				else
-					this.logInvalidValue( element, element.getAttributeNamed( "name" ) )
+					logInvalidValue(element, element.getAttributeNamed("name"))
 					throw EInvalidParam.new()
 				end
 				
 			else
-				this.pParseRuleCommon( element, animator, rule )
+				pParseRuleCommon(element, animator, rule)
 			end
-		end )
+		end)
 		
 		return rule
 	end
 	
 	/** Parse state snapshot rule tag. */
-	private func ADRule pParseRuleStateShapshot( EasyXMLElement root, AnimatorDefinition animator )
+	private func ADRule pParseRuleStateShapshot(EasyXMLElement root, AnimatorDefinition animator)
 		var ADRuleStateSnapshot rule = ADRuleStateSnapshot.new()
 		
-		root.forEachTag( block EasyXMLElement element, String tagName
-			if tagName.equals( "useLastState" )
-				rule.setUseLastState( element.getFirstCDataBool() )
+		root.forEachTag(block EasyXMLElement element, String tagName
+			if tagName.equals("useLastState")
+				rule.setUseLastState(element.getFirstCDataBool())
 				
-			elif tagName.equals( "id" )
-				rule.setID( element.getFirstCDataInt() )
+			elif tagName.equals("id")
+				rule.setID(element.getFirstCDataInt())
 				
-			elif tagName.equals( "enablePosition" )
-				rule.setEnablePosition( element.getFirstCDataBool() )
+			elif tagName.equals("enablePosition")
+				rule.setEnablePosition(element.getFirstCDataBool())
 				
-			elif tagName.equals( "enableOrientation" )
-				rule.setEnableOrientation( element.getFirstCDataBool() )
+			elif tagName.equals("enableOrientation")
+				rule.setEnableOrientation(element.getFirstCDataBool())
 				
-			elif tagName.equals( "enableSize" )
-				rule.setEnableSize( element.getFirstCDataBool() )
+			elif tagName.equals("enableSize")
+				rule.setEnableSize(element.getFirstCDataBool())
 				
-			elif tagName.equals( "target" )
-				var ARStateSnapshotTarget target = ARStateSnapshotTarget.named( element.getAttributeNamed( "name" ) )
+			elif tagName.equals("target")
+				var ARStateSnapshotTarget target = ARStateSnapshotTarget.named(element.getAttributeNamed("name"))
 				if target != null
-					this.pParseTarget( element, animator, rule, target )
+					pParseTarget(element, animator, rule, target)
 					
 				else
-					this.logInvalidValue( element, element.getAttributeNamed( "name" ) )
+					logInvalidValue(element, element.getAttributeNamed("name"))
 					throw EInvalidParam.new()
 				end
 				
 			else
-				this.pParseRuleCommon( element, animator, rule )
+				pParseRuleCommon(element, animator, rule)
 			end
-		end )
+		end)
 		
 		return rule
 	end
 	
 	/** Parse inverse kinematic rule tag. */
-	private func ADRule pParseRuleInverseKinematic( EasyXMLElement root, AnimatorDefinition animator )
+	private func ADRule pParseRuleInverseKinematic(EasyXMLElement root, AnimatorDefinition animator)
 		var ADRuleInverseKinematic rule = ADRuleInverseKinematic.new()
 		
-		root.forEachTag( block EasyXMLElement element, String tagName
-			if tagName.equals( "goalPosition" )
-				rule.setGoalPosition( this.readVector( element ) )
+		root.forEachTag(block EasyXMLElement element, String tagName
+			if tagName.equals("goalPosition")
+				rule.setGoalPosition(readVector(element))
 				
-			elif tagName.equals( "goalOrientation" )
-				rule.setGoalOrientation( this.readVector( element ) )
+			elif tagName.equals("goalOrientation")
+				rule.setGoalOrientation(readVector(element))
 				
-			elif tagName.equals( "localPosition" )
-				rule.setLocalPosition( this.readVector( element ) )
+			elif tagName.equals("localPosition")
+				rule.setLocalPosition(readVector(element))
 				
-			elif tagName.equals( "localOrientation" )
-				rule.setLocalOrientation( this.readVector( element ) )
+			elif tagName.equals("localOrientation")
+				rule.setLocalOrientation(readVector(element))
 				
-			elif tagName.equals( "adjustOrientation" )
-				rule.setAdjustOrientation( element.getFirstCDataBool() )
+			elif tagName.equals("adjustOrientation")
+				rule.setAdjustOrientation(element.getFirstCDataBool())
 				
-			elif tagName.equals( "solverBone" )
-				rule.setSolverBone( element.getFirstCData() )
+			elif tagName.equals("solverBone")
+				rule.setSolverBone(element.getFirstCData())
 				
-			elif tagName.equals( "useSolverBone" )
-				rule.setUseSolverBone( element.getFirstCDataBool() )
+			elif tagName.equals("useSolverBone")
+				rule.setUseSolverBone(element.getFirstCDataBool())
 				
-			elif tagName.equals( "reachRange" )
-				rule.setReachRange( element.getFirstCDataFloat() )
+			elif tagName.equals("reachRange")
+				rule.setReachRange(element.getFirstCDataFloat())
 				
-			elif tagName.equals( "reachBone" )
-				rule.setReachBone( element.getFirstCData() )
+			elif tagName.equals("reachBone")
+				rule.setReachBone(element.getFirstCData())
 				
-			elif tagName.equals( "reachCenter" )
-				rule.setReachCenter( this.readVector( element ) )
+			elif tagName.equals("reachCenter")
+				rule.setReachCenter(readVector(element))
 				
-			elif tagName.equals( "target" )
-				var ARInverseKinematicTarget target = ARInverseKinematicTarget.named( element.getAttributeNamed( "name" ) )
+			elif tagName.equals("target")
+				var ARInverseKinematicTarget target = ARInverseKinematicTarget.named(element.getAttributeNamed("name"))
 				if target != null
-					this.pParseTarget( element, animator, rule, target )
+					pParseTarget(element, animator, rule, target)
 					
 				else
-					this.logInvalidValue( element, element.getAttributeNamed( "name" ) )
+					logInvalidValue(element, element.getAttributeNamed("name"))
 					throw EInvalidParam.new()
 				end
 				
 			else
-				this.pParseRuleCommon( element, animator, rule )
+				pParseRuleCommon(element, animator, rule)
 			end
-		end )
+		end)
 		
 		return rule
 	end
 	
 	/** Parse foreign state rule tag. */
-	private func ADRule pParseRuleForeignState( EasyXMLElement root, AnimatorDefinition animator )
+	private func ADRule pParseRuleForeignState(EasyXMLElement root, AnimatorDefinition animator)
 		var ADRuleForeignState rule = ADRuleForeignState.new()
 		
-		root.forEachTag( block EasyXMLElement element, String tagName
-			if tagName.equals( "scalePosition" )
-				rule.setScalePosition( element.getFirstCDataFloat() )
+		root.forEachTag(block EasyXMLElement element, String tagName
+			if tagName.equals("scalePosition")
+				rule.setScalePosition(element.getFirstCDataFloat())
 				
-			elif tagName.equals( "scaleOrientation" )
-				rule.setScaleOrientation( element.getFirstCDataFloat() )
+			elif tagName.equals("scaleOrientation")
+				rule.setScaleOrientation(element.getFirstCDataFloat())
 				
-			elif tagName.equals( "scaleSize" )
-				rule.setScaleSize( element.getFirstCDataFloat() )
+			elif tagName.equals("scaleSize")
+				rule.setScaleSize(element.getFirstCDataFloat())
 				
-			elif tagName.equals( "enablePosition" )
-				rule.setEnablePosition( element.getFirstCDataBool() )
+			elif tagName.equals("enablePosition")
+				rule.setEnablePosition(element.getFirstCDataBool())
 				
-			elif tagName.equals( "enableOrientation" )
-				rule.setEnableOrientation( element.getFirstCDataBool() )
+			elif tagName.equals("enableOrientation")
+				rule.setEnableOrientation(element.getFirstCDataBool())
 				
-			elif tagName.equals( "enableSize" )
-				rule.setEnableSize( element.getFirstCDataBool() )
+			elif tagName.equals("enableSize")
+				rule.setEnableSize(element.getFirstCDataBool())
 				
-			elif tagName.equals( "foreignBone" )
-				rule.setForeignBone( element.getFirstCData() )
+			elif tagName.equals("foreignBone")
+				rule.setForeignBone(element.getFirstCData())
 				
-			elif tagName.equals( "srcCFrame" )
-				var ARForeignStateCFrame cframe = ARForeignStateCFrame.named( element.getFirstCData() )
+			elif tagName.equals("srcCFrame")
+				var ARForeignStateCFrame cframe = ARForeignStateCFrame.named(element.getFirstCData())
 				if cframe != null
-					rule.setSourceCoordinateFrame( cframe )
+					rule.setSourceCoordinateFrame(cframe)
 					
 				else
-					this.logInvalidValue( element, element.getFirstCData() )
+					logInvalidValue(element, element.getFirstCData())
 					throw EInvalidParam.new()
 				end
 				
-			elif tagName.equals( "destCFrame" )
-				var ARForeignStateCFrame cframe = ARForeignStateCFrame.named( element.getFirstCData() )
+			elif tagName.equals("destCFrame")
+				var ARForeignStateCFrame cframe = ARForeignStateCFrame.named(element.getFirstCData())
 				if cframe != null
-					rule.setDestinationCoordinateFrame( cframe )
+					rule.setDestinationCoordinateFrame(cframe)
 					
 				else
-					this.logInvalidValue( element, element.getFirstCData() )
+					logInvalidValue(element, element.getFirstCData())
 					throw EInvalidParam.new()
 				end
 				
-			elif tagName.equals( "target" )
-				var ARForeignStateTarget target = ARForeignStateTarget.named( element.getAttributeNamed( "name" ) )
+			elif tagName.equals("target")
+				var ARForeignStateTarget target = ARForeignStateTarget.named(element.getAttributeNamed("name"))
 				if target != null
-					this.pParseTarget( element, animator, rule, target )
+					pParseTarget(element, animator, rule, target)
 					
 				else
-					this.logInvalidValue( element, element.getAttributeNamed( "name" ) )
+					logInvalidValue(element, element.getAttributeNamed("name"))
 					throw EInvalidParam.new()
 				end
 				
 			else
-				this.pParseRuleCommon( element, animator, rule )
+				pParseRuleCommon(element, animator, rule)
 			end
-		end )
+		end)
 		
 		return rule
 	end
@@ -697,7 +700,7 @@ class LoadAnimator extends BaseXmlLoader
 				var String second = element.getAttributeNamed("second")
 				var ARMirrorMatchNameType type = ARMirrorMatchNameType.named(element.getAttributeNamed("type"))
 				if type == null
-					logInvalidValue( element, element.getFirstCData() )
+					logInvalidValue(element, element.getFirstCData())
 					throw EInvalidParam.new()
 				end
 				
@@ -722,288 +725,288 @@ class LoadAnimator extends BaseXmlLoader
 	end
 	
 	/** Parse sub animator rule tag. */
-	private func ADRule pParseRuleSubAnimator( EasyXMLElement root, \
-	AnimatorDefinition animator, String basePath )
+	private func ADRule pParseRuleSubAnimator(EasyXMLElement root, \
+	AnimatorDefinition animator, String basePath)
 		var ADRuleSubAnimator rule = ADRuleSubAnimator.new()
 		
-		root.forEachTag( block EasyXMLElement element, String tagName
-			if tagName.equals( "pathAnimator" )
+		root.forEachTag(block EasyXMLElement element, String tagName
+			if tagName.equals("pathAnimator")
 				var String target = element.getFirstCData()
 				
 				if not target.empty()
 					try
-						rule.setSubAnimator( this.loadFromFile( \
-							File.absolutePath( target, basePath ).getPath() ) )
+						rule.setSubAnimator(loadFromFile(\
+							File.absolutePath(target, basePath).getPath()))
 						
 					catch Exception e
-						this.logLoadFileFailed( element, target )
+						logLoadFileFailed(element, target)
 						e.printTrace()
 					end
 				end
 				
-			elif tagName.equals( "connection" )
-				rule.addConnection( element.getFirstCData(), element.getAttributeIntNamed( "controller" ) )
+			elif tagName.equals("connection")
+				rule.addConnection(element.getFirstCData(), element.getAttributeIntNamed("controller"))
 				
-			elif tagName.equals( "enablePosition" )
-				rule.setEnablePosition( element.getFirstCDataBool() )
+			elif tagName.equals("enablePosition")
+				rule.setEnablePosition(element.getFirstCDataBool())
 				
-			elif tagName.equals( "enableOrientation" )
-				rule.setEnableOrientation( element.getFirstCDataBool() )
+			elif tagName.equals("enableOrientation")
+				rule.setEnableOrientation(element.getFirstCDataBool())
 				
-			elif tagName.equals( "enableSize" )
-				rule.setEnableSize( element.getFirstCDataBool() )
+			elif tagName.equals("enableSize")
+				rule.setEnableSize(element.getFirstCDataBool())
 				
-			elif tagName.equals( "target" )
-				var ARSubAnimatorTarget target = ARSubAnimatorTarget.named( element.getAttributeNamed( "name" ) )
+			elif tagName.equals("target")
+				var ARSubAnimatorTarget target = ARSubAnimatorTarget.named(element.getAttributeNamed("name"))
 				if target != null
-					this.pParseTarget( element, animator, rule, target )
+					pParseTarget(element, animator, rule, target)
 					
 				else
-					this.logInvalidValue( element, element.getAttributeNamed( "name" ) )
+					logInvalidValue(element, element.getAttributeNamed("name"))
 					throw EInvalidParam.new()
 				end
 				
 			else
-				this.pParseRuleCommon( element, animator, rule )
+				pParseRuleCommon(element, animator, rule)
 			end
-		end )
+		end)
 		
 		return rule
 	end
 	
 	/** Parse track to rule tag. */
-	private func ADRule pParseRuleTrackTo( EasyXMLElement root, AnimatorDefinition animator )
+	private func ADRule pParseRuleTrackTo(EasyXMLElement root, AnimatorDefinition animator)
 		var ADRuleTrackTo rule = ADRuleTrackTo.new()
 		
-		root.forEachTag( block EasyXMLElement element, String tagName
-			if tagName.equals( "trackBone" )
-				rule.setTrackBone( element.getFirstCData() )
+		root.forEachTag(block EasyXMLElement element, String tagName
+			if tagName.equals("trackBone")
+				rule.setTrackBone(element.getFirstCData())
 				
-			elif tagName.equals( "trackAxis" )
-				var ARTrackToAxis axis = ARTrackToAxis.named( element.getFirstCData() )
+			elif tagName.equals("trackAxis")
+				var ARTrackToAxis axis = ARTrackToAxis.named(element.getFirstCData())
 				if axis != null
-					rule.setTrackAxis( axis )
+					rule.setTrackAxis(axis)
 					
 				else
-					this.logInvalidValue( element, element.getFirstCData() )
+					logInvalidValue(element, element.getFirstCData())
 					throw EInvalidParam.new()
 				end
 				
-			elif tagName.equals( "upAxis" )
+			elif tagName.equals("upAxis")
 				var String axis = element.getFirstCData()
 				
-				if axis.equals( "posX" )
-					rule.setUpAxis( ARTrackToAxis.posX )
+				if axis.equals("posX")
+					rule.setUpAxis(ARTrackToAxis.posX)
 					
-				elif axis.equals( "posY" )
-					rule.setUpAxis( ARTrackToAxis.posY )
+				elif axis.equals("posY")
+					rule.setUpAxis(ARTrackToAxis.posY)
 					
-				elif axis.equals( "posZ" )
-					rule.setUpAxis( ARTrackToAxis.posZ )
+				elif axis.equals("posZ")
+					rule.setUpAxis(ARTrackToAxis.posZ)
 					
-				elif axis.equals( "negX" )
-					rule.setUpAxis( ARTrackToAxis.negX )
+				elif axis.equals("negX")
+					rule.setUpAxis(ARTrackToAxis.negX)
 					
-				elif axis.equals( "negY" )
-					rule.setUpAxis( ARTrackToAxis.negY )
+				elif axis.equals("negY")
+					rule.setUpAxis(ARTrackToAxis.negY)
 					
-				elif axis.equals( "negZ" )
-					rule.setUpAxis( ARTrackToAxis.negZ )
+				elif axis.equals("negZ")
+					rule.setUpAxis(ARTrackToAxis.negZ)
 					
 				else
-					this.logInvalidValue( element, axis )
+					logInvalidValue(element, axis)
 					throw EInvalidParam.new()
 				end
 				
-			elif tagName.equals( "upTarget" )
-				var ARTrackToUp target = ARTrackToUp.named( element.getFirstCData() )
+			elif tagName.equals("upTarget")
+				var ARTrackToUp target = ARTrackToUp.named(element.getFirstCData())
 				if target != null
-					rule.setUpTarget( target )
+					rule.setUpTarget(target)
 					
 				else
-					this.logInvalidValue( element, element.getFirstCData() )
+					logInvalidValue(element, element.getFirstCData())
 					throw EInvalidParam.new()
 				end
 				
-			elif tagName.equals( "lockedAxis" )
-				var ARTrackToLocked locked = ARTrackToLocked.named( element.getFirstCData() )
+			elif tagName.equals("lockedAxis")
+				var ARTrackToLocked locked = ARTrackToLocked.named(element.getFirstCData())
 				if locked != null
-					rule.setLockedAxis( locked )
+					rule.setLockedAxis(locked)
 					
 				else
-					this.logInvalidValue( element, element.getFirstCData() )
+					logInvalidValue(element, element.getFirstCData())
 					throw EInvalidParam.new()
 				end
 				
-			elif tagName.equals( "target" )
-				var ARTrackToTarget target = ARTrackToTarget.named( element.getAttributeNamed( "name" ) )
+			elif tagName.equals("target")
+				var ARTrackToTarget target = ARTrackToTarget.named(element.getAttributeNamed("name"))
 				if target != null
-					this.pParseTarget( element, animator, rule, target )
+					pParseTarget(element, animator, rule, target)
 					
 				else
-					this.logInvalidValue( element, element.getAttributeNamed( "name" ) )
+					logInvalidValue(element, element.getAttributeNamed("name"))
 					throw EInvalidParam.new()
 				end
 				
 			else
-				this.pParseRuleCommon( element, animator, rule )
+				pParseRuleCommon(element, animator, rule)
 			end
-		end )
+		end)
 		
 		return rule
 	end
 	
 	/** Parse limit rule tag. */
-	private func ADRule pParseRuleLimit( EasyXMLElement root, AnimatorDefinition animator )
+	private func ADRule pParseRuleLimit(EasyXMLElement root, AnimatorDefinition animator)
 		var ADRuleLimit rule = ADRuleLimit.new()
 		
-		root.forEachTag( block EasyXMLElement element, String tagName
-			if tagName.equals( "minimumPosition" )
-				rule.setMinimumPosition( this.readVector( element ) )
+		root.forEachTag(block EasyXMLElement element, String tagName
+			if tagName.equals("minimumPosition")
+				rule.setMinimumPosition(readVector(element))
 				
-			elif tagName.equals( "maximumPosition" )
-				rule.setMaximumPosition( this.readVector( element ) )
+			elif tagName.equals("maximumPosition")
+				rule.setMaximumPosition(readVector(element))
 				
-			elif tagName.equals( "minimumRotation" )
-				rule.setMinimumRotation( this.readVector( element ) )
+			elif tagName.equals("minimumRotation")
+				rule.setMinimumRotation(readVector(element))
 				
-			elif tagName.equals( "maximumRotation" )
-				rule.setMaximumRotation( this.readVector( element ) )
+			elif tagName.equals("maximumRotation")
+				rule.setMaximumRotation(readVector(element))
 				
-			elif tagName.equals( "minimumScaling" )
-				rule.setMinimumScaling( this.readVector( element ) )
+			elif tagName.equals("minimumScaling")
+				rule.setMinimumScaling(readVector(element))
 				
-			elif tagName.equals( "maximumScaling" )
-				rule.setMaximumScaling( this.readVector( element ) )
+			elif tagName.equals("maximumScaling")
+				rule.setMaximumScaling(readVector(element))
 				
-			elif tagName.equals( "cframe" )
-				var ARLimitCFrame cframe = ARLimitCFrame.named( element.getFirstCData() )
+			elif tagName.equals("cframe")
+				var ARLimitCFrame cframe = ARLimitCFrame.named(element.getFirstCData())
 				if cframe != null
-					rule.setCoordinateFrame( cframe )
+					rule.setCoordinateFrame(cframe)
 					
 				else
-					this.logInvalidValue( element, element.getFirstCData() )
+					logInvalidValue(element, element.getFirstCData())
 					throw EInvalidParam.new()
 				end
 				
-			elif tagName.equals( "enablePosMin" )
-				rule.setEnablePosXMin( element.getAttributeBoolNamed( "x" ) )
-				rule.setEnablePosYMin( element.getAttributeBoolNamed( "y" ) )
-				rule.setEnablePosZMin( element.getAttributeBoolNamed( "z" ) )
+			elif tagName.equals("enablePosMin")
+				rule.setEnablePosXMin(element.getAttributeBoolNamed("x"))
+				rule.setEnablePosYMin(element.getAttributeBoolNamed("y"))
+				rule.setEnablePosZMin(element.getAttributeBoolNamed("z"))
 				
-			elif tagName.equals( "enablePosMax" )
-				rule.setEnablePosXMax( element.getAttributeBoolNamed( "x" ) )
-				rule.setEnablePosYMax( element.getAttributeBoolNamed( "y" ) )
-				rule.setEnablePosZMax( element.getAttributeBoolNamed( "z" ) )
+			elif tagName.equals("enablePosMax")
+				rule.setEnablePosXMax(element.getAttributeBoolNamed("x"))
+				rule.setEnablePosYMax(element.getAttributeBoolNamed("y"))
+				rule.setEnablePosZMax(element.getAttributeBoolNamed("z"))
 				
-			elif tagName.equals( "enableRotMin" )
-				rule.setEnableRotXMin( element.getAttributeBoolNamed( "x" ) )
-				rule.setEnableRotYMin( element.getAttributeBoolNamed( "y" ) )
-				rule.setEnableRotZMin( element.getAttributeBoolNamed( "z" ) )
+			elif tagName.equals("enableRotMin")
+				rule.setEnableRotXMin(element.getAttributeBoolNamed("x"))
+				rule.setEnableRotYMin(element.getAttributeBoolNamed("y"))
+				rule.setEnableRotZMin(element.getAttributeBoolNamed("z"))
 				
-			elif tagName.equals( "enableRotMax" )
-				rule.setEnableRotXMax( element.getAttributeBoolNamed( "x" ) )
-				rule.setEnableRotYMax( element.getAttributeBoolNamed( "y" ) )
-				rule.setEnableRotZMax( element.getAttributeBoolNamed( "z" ) )
+			elif tagName.equals("enableRotMax")
+				rule.setEnableRotXMax(element.getAttributeBoolNamed("x"))
+				rule.setEnableRotYMax(element.getAttributeBoolNamed("y"))
+				rule.setEnableRotZMax(element.getAttributeBoolNamed("z"))
 				
-			elif tagName.equals( "enableScaleMin" )
-				rule.setEnableScaleXMin( element.getAttributeBoolNamed( "x" ) )
-				rule.setEnableScaleYMin( element.getAttributeBoolNamed( "y" ) )
-				rule.setEnableScaleZMin( element.getAttributeBoolNamed( "z" ) )
+			elif tagName.equals("enableScaleMin")
+				rule.setEnableScaleXMin(element.getAttributeBoolNamed("x"))
+				rule.setEnableScaleYMin(element.getAttributeBoolNamed("y"))
+				rule.setEnableScaleZMin(element.getAttributeBoolNamed("z"))
 				
-			elif tagName.equals( "enableScaleMax" )
-				rule.setEnableScaleXMax( element.getAttributeBoolNamed( "x" ) )
-				rule.setEnableScaleYMax( element.getAttributeBoolNamed( "y" ) )
-				rule.setEnableScaleZMax( element.getAttributeBoolNamed( "z" ) )
+			elif tagName.equals("enableScaleMax")
+				rule.setEnableScaleXMax(element.getAttributeBoolNamed("x"))
+				rule.setEnableScaleYMax(element.getAttributeBoolNamed("y"))
+				rule.setEnableScaleZMax(element.getAttributeBoolNamed("z"))
 				
-			elif tagName.equals( "targetBone" )
-				rule.setTargetBone( element.getFirstCData() )
+			elif tagName.equals("targetBone")
+				rule.setTargetBone(element.getFirstCData())
 				
-			elif tagName.equals( "target" )
-				var ARLimitTarget target = ARLimitTarget.named( element.getAttributeNamed( "name" ) )
+			elif tagName.equals("target")
+				var ARLimitTarget target = ARLimitTarget.named(element.getAttributeNamed("name"))
 				if target != null
-					this.pParseTarget( element, animator, rule, target )
+					pParseTarget(element, animator, rule, target)
 					
 				else
-					this.logInvalidValue( element, element.getAttributeNamed( "name" ) )
+					logInvalidValue(element, element.getAttributeNamed("name"))
 					throw EInvalidParam.new()
 				end
 				
 			else
-				this.pParseRuleCommon( element, animator, rule )
+				pParseRuleCommon(element, animator, rule)
 			end
-		end )
+		end)
 		
 		return rule
 	end
 	
 	/** Parse group rule tag. */
-	private func ADRule pParseRuleGroup( EasyXMLElement root, \
-	AnimatorDefinition animator, String basePath )
+	private func ADRule pParseRuleGroup(EasyXMLElement root, \
+	AnimatorDefinition animator, String basePath)
 		var ADRuleGroup rule = ADRuleGroup.new()
 		
-		root.forEachTag( block EasyXMLElement element, String tagName
-			if tagName.equals( "applicationType" )
-				var ARGroupApplication applicationType = ARGroupApplication.named( element.getFirstCData() )
+		root.forEachTag(block EasyXMLElement element, String tagName
+			if tagName.equals("applicationType")
+				var ARGroupApplication applicationType = ARGroupApplication.named(element.getFirstCData())
 				if applicationType != null
-					rule.setApplicationType( applicationType )
+					rule.setApplicationType(applicationType)
 					
 				else
-					this.logInvalidValue( element, element.getFirstCData() )
+					logInvalidValue(element, element.getFirstCData())
 					throw EInvalidParam.new()
 				end
 				
-			elif tagName.equals( "useCurrentState" )
-				rule.setUseCurrentState( element.getFirstCDataBool() )
+			elif tagName.equals("useCurrentState")
+				rule.setUseCurrentState(element.getFirstCDataBool())
 				
-			elif tagName.equals( "enablePosition" )
-				rule.setEnablePosition( element.getFirstCDataBool() )
+			elif tagName.equals("enablePosition")
+				rule.setEnablePosition(element.getFirstCDataBool())
 				
-			elif tagName.equals( "enableOrientation" )
-				rule.setEnableOrientation( element.getFirstCDataBool() )
+			elif tagName.equals("enableOrientation")
+				rule.setEnableOrientation(element.getFirstCDataBool())
 				
-			elif tagName.equals( "enableSize" )
-				rule.setEnableSize( element.getFirstCDataBool() )
+			elif tagName.equals("enableSize")
+				rule.setEnableSize(element.getFirstCDataBool())
 				
-			elif tagName.equals( "target" )
-				var ARGroupTarget target = ARGroupTarget.named( element.getAttributeNamed( "name" ) )
+			elif tagName.equals("target")
+				var ARGroupTarget target = ARGroupTarget.named(element.getAttributeNamed("name"))
 				if target != null
-					this.pParseTarget( element, animator, rule, target )
+					pParseTarget(element, animator, rule, target)
 					
 				else
-					this.logInvalidValue( element, element.getAttributeNamed( "name" ) )
+					logInvalidValue(element, element.getAttributeNamed("name"))
 					throw EInvalidParam.new()
 				end
 				
 			else
-				var ADRule srule = this.pParseRule( element, animator, basePath )
+				var ADRule srule = pParseRule(element, animator, basePath)
 				
 				if srule != null
-					rule.addRule( srule )
+					rule.addRule(srule)
 					
 				else
-					this.pParseRuleCommon( element, animator, rule )
+					pParseRuleCommon(element, animator, rule)
 				end
 			end
-		end )
+		end)
 		
 		return rule
 	end
 	
 	/** Parse target tag. */
-	private func void pParseTarget( EasyXMLElement root, AnimatorDefinition animator, \
-	ADRule rule, Enumeration target )
+	private func void pParseTarget(EasyXMLElement root, AnimatorDefinition animator, \
+	ADRule rule, Enumeration target)
 		var int index
 		
-		root.forEachTag( block EasyXMLElement element, String tagName
-			if tagName.equals( "link" )
+		root.forEachTag(block EasyXMLElement element, String tagName
+			if tagName.equals("link")
 				index = element.getFirstCDataInt()
-				rule.addTargetLink( ADRuleTargetLink.new( target, animator.getLinkAt( index ) ) )
+				rule.addTargetLink(ADRuleTargetLink.new(target, animator.getLinkAt(index)))
 				
 			else
-				this.logUnknownTag( element )
+				logUnknownTag(element)
 				throw EInvalidParam.new()
 			end
-		end )
+		end)
 	end
 end

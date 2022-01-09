@@ -306,6 +306,9 @@ void igdeLoadAnimator::pReadLink( const decXmlElementTag &root, deAnimator &anim
 				
 			}else if( tag->GetName() == "boneLimits" ){
 				link->SetBoneValueRange( GetAttributeFloat( *tag, "min" ), GetAttributeFloat( *tag, "max" ) );
+				
+			}else if( tag->GetName() == "wrapY" ){
+				link->SetWrapY( GetCDataBool( *tag ) );
 			}
 		}
 		
