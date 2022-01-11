@@ -22,101 +22,101 @@ fixed class Matrix4
 	end
 	
 	/** \brief Create matrix from values. */
-	public func new( float a11, float a12, float a13, float a14, float a21, float a22, float a23, float a24, float a31, float a32, float a33, float a34, float a41, float a42, float a43, float a44 )
+	public func new(float a11, float a12, float a13, float a14, float a21, float a22, float a23, float a24, float a31, float a32, float a33, float a34, float a41, float a42, float a43, float a44)
 	end
 	
 	/** \brief Create translation matrix. */
-	public static func Matrix4 newTranslation( Vector translation )
+	public static func Matrix4 newTranslation(Vector translation)
 		return null
 	end
 	
 	/** \brief Create translation matrix. */
-	public static func Matrix4 newTranslation( float tx, float ty, float tz )
+	public static func Matrix4 newTranslation(float tx, float ty, float tz)
 		return null
 	end
 	
 	/** \brief Create scaling matrix. */
-	public static func Matrix4 newScaling( Vector scaling )
+	public static func Matrix4 newScaling(Vector scaling)
 		return null
 	end
 	
 	/** \brief Create scaling matrix. */
-	public static func Matrix4 newScaling( float sx, float sy, float sz )
+	public static func Matrix4 newScaling(float sx, float sy, float sz)
 		return null
 	end
 	
 	/** \brief Create rotation around the x axis matrix. */
-	public static func Matrix4 newRotationX( float rotation )
+	public static func Matrix4 newRotationX(float rotation)
 		return null
 	end
 	
 	/** \brief Create rotation around the y axis matrix. */
-	public static func Matrix4 newRotationY( float rotation )
+	public static func Matrix4 newRotationY(float rotation)
 		return null
 	end
 	
 	/** \brief Create rotation around the z axis matrix. */
-	public static func Matrix4 newRotationZ( float rotation )
+	public static func Matrix4 newRotationZ(float rotation)
 		return null
 	end
 	
 	/** \brief Create rotation matrix. */
-	public static func Matrix4 newRotation( Vector rotation )
+	public static func Matrix4 newRotation(Vector rotation)
 		return null
 	end
 	
 	/** \brief Create rotation matrix. */
-	public static func Matrix4 newRotation( float rx, float ry, float rz )
+	public static func Matrix4 newRotation(float rx, float ry, float rz)
 		return null
 	end
 	
 	/** \brief Create scaling-rotation-translation matrix composing of a scaling followed by a rotation and a translation. */
-	public static func Matrix4 newSRT( Vector scaling, Vector rotation, Vector translation )
+	public static func Matrix4 newSRT(Vector scaling, Vector rotation, Vector translation)
 		return null
 	end
 	
 	/** \brief Create rotation-translation matrix composing of a rotation followed by a translation. */
-	public static func Matrix4 newRT( Vector rotation, Vector translation )
+	public static func Matrix4 newRT(Vector rotation, Vector translation)
 		return null
 	end
 	
 	/** \brief Create scale-view-up-translation matrix composing of a rotation followed by a world matrix. */
-	public static func Matrix4 newSVUT( Vector scaling, Vector view, Vector up, Vector translation )
+	public static func Matrix4 newSVUT(Vector scaling, Vector view, Vector up, Vector translation)
 		return null
 	end
 	
 	/** \brief Create view-up matrix. */
-	public static func Matrix4 newVU( Vector view, Vector up )
+	public static func Matrix4 newVU(Vector view, Vector up)
 		return null
 	end
 	
 	/** \brief Create camera matrix. */
-	public static func Matrix4 newCamera( Vector position, Vector view, Vector up )
+	public static func Matrix4 newCamera(Vector position, Vector view, Vector up)
 		return null
 	end
 	
 	/** \brief Create world matrix. */
-	public static func Matrix4 newWorld( Vector position, Vector view, Vector up )
+	public static func Matrix4 newWorld(Vector position, Vector view, Vector up)
 		return null
 	end
 	
 	/** \brief Create world matrix. */
-	public static func Matrix4 newWorld( Vector position, Quaternion quaternion )
+	public static func Matrix4 newWorld(Vector position, Quaternion orientation)
 		return null
 	end
 	
 	/** \brief Create projection matrix. */
-	public static func Matrix4 newProjection( int width, int height, float fov, float fovRatio, float znear, float zfar )
+	public static func Matrix4 newProjection(int width, int height, float fov, float fovRatio, float znear, float zfar)
 		return null
 	end
 	
 	/** \brief Create an orthogonal matrix. */
-	public static func Matrix4 newOrtho( int left, int right, int top, int bottom, int znear, int zfar )
+	public static func Matrix4 newOrtho(int left, int right, int top, int bottom, int znear, int zfar)
 		return null
 	end
 	
 	/** \brief Create rotation matrix from the given quaternion. */
-	public static func Matrix4 newFromQuaternion( Quaternion quaternion )
+	public static func Matrix4 newFromQuaternion(Quaternion quaternion)
 		return null
 	end
 	/*@}*/
@@ -130,7 +130,7 @@ fixed class Matrix4
 	 * \throws EInvalidParam \em row is less than 0 or larger than 3.
 	 * \throws EInvalidParam \em col is less than 0 or larger than 3.
 	 */
-	public func float getAt( int row, int col )
+	public func float getAt(int row, int col)
 		return 0.0
 	end
 	
@@ -235,7 +235,7 @@ fixed class Matrix4
 	end
 	
 	/** \brief Transform normal by matrix. */
-	public func Vector transformNormal( Vector normal )
+	public func Vector transformNormal(Vector normal)
 		return null
 	end
 	
@@ -294,7 +294,7 @@ fixed class Matrix4
 	 * \details Implements Object.equals(Object).
 	 * \returns \em true if \em other is of type Matrix4 and components are equal.
 	*/
-	public func bool equals( Object other )
+	public func bool equals(Object other)
 		return false
 	end
 	
@@ -322,7 +322,7 @@ fixed class Matrix4
 	 * \param precision Precision in digits in the range from 0 to 9 inclusive.
 	 * \throws EInvalidParam precision is less than 0 or larger than 9.
 	 */
-	public func String toString( int precision )
+	public func String toString(int precision)
 		return null
 	end
 	/*@}*/
@@ -332,12 +332,12 @@ fixed class Matrix4
 	/** \name File Handling */
 	/*@{*/
 	/** \brief Read matrix from a file reader. */
-	static public func Matrix4 readFromFile( FileReader reader )
+	static public func Matrix4 readFromFile(FileReader reader)
 		return null
 	end
 	
 	/** \brief Write matrix to a file writer. */
-	public func void writeToFile( FileWriter writer )
+	public func void writeToFile(FileWriter writer)
 	end
 	/*@}*/
 	
@@ -346,17 +346,17 @@ fixed class Matrix4
 	/** \name Operators */
 	/*@{*/
 	/** \brief Sum of matrix with another Matrix4. */
-	public func Matrix4 +( Matrix4 matrix )
+	public func Matrix4 +(Matrix4 matrix)
 		return null
 	end
 	
 	/** \brief Difference of matrix and another Matrix4. */
-	public func Matrix4 -( Matrix4 matrix )
+	public func Matrix4 -(Matrix4 matrix)
 		return null
 	end
 	
 	/** \brief Matrix4 multiplied by a factor. */
-	public func Matrix4 *( float k )
+	public func Matrix4 *(float k)
 		return null
 	end
 	
@@ -364,17 +364,17 @@ fixed class Matrix4
 	 * \brief Matrix4 divided by a factor.
 	 * \throws EDivisionByZero \em scalar is \em 0.
 	 */
-	public func Matrix4 /( float k )
+	public func Matrix4 /(float k)
 		return null
 	end
 	
 	/** \brief Matrix4 multiplied by another Matrix4. */
-	public func Matrix4 *( Matrix4 matrix )
+	public func Matrix4 *(Matrix4 matrix)
 		return null
 	end
 	
 	/** \brief Vector transformed by matrix. */
-	public func Vector *( Vector vector )
+	public func Vector *(Vector vector)
 		return null
 	end
 	/*@}*/
