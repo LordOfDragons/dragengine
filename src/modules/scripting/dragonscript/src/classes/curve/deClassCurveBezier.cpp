@@ -62,6 +62,21 @@ void deClassCurveBezier::nfNew::RunFunction( dsRunTime *rt, dsValue *myself ){
 	if( ! nd.curve ) DSTHROW( dueOutOfMemory );
 }
 
+// public func new(CurveBezier curve)
+deClassCurveBezier::nfNewCopy::nfNewCopy( const sInitData &init ) :
+dsFunction( init.clsCBe, DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsCBe );
+}
+void deClassCurveBezier::nfNewCopy::RunFunction( dsRunTime *rt, dsValue *myself ){
+	sCBeNatDat &nd = *( ( sCBeNatDat* )p_GetNativeData( myself ) );
+	const deClassCurveBezier &clsCBe = *( ( deClassCurveBezier* )GetOwnerClass() );
+	
+	nd.curve = NULL;
+	
+	nd.curve = new decCurveBezier( clsCBe.GetCurve( rt->GetValue( 0 )->GetRealObject() ) );
+}
+
 // public static func newDefaultLinear()
 deClassCurveBezier::nfNewDefaultLinear::nfNewDefaultLinear( const sInitData &init ) :
 dsFunction( init.clsCBe, "newDefaultLinear", DSFT_FUNCTION,

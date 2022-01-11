@@ -30,6 +30,13 @@ class CurveBezier
 	end
 	
 	/**
+	 * \brief Create copy of bezier curve.
+	 * \version 1.9
+	 */
+	public func new(CurveBezier bezier)
+	end
+	
+	/**
 	 * \brief Create bezier curve set to linear mapping from (0,0) to (1,1).
 	 */
 	public static func CurveBezier newDefaultLinear()

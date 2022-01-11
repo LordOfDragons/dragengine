@@ -79,6 +79,7 @@ private:
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
 	DEF_NATFUNC( nfNew );
+	DEF_NATFUNC( nfNewCopy );
 	DEF_NATFUNC( nfNewDefaultLinear );
 	DEF_NATFUNC( nfNewDefaultBezier );
 	DEF_NATFUNC( nfDestructor );
