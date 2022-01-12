@@ -86,6 +86,8 @@ private:
 	
 	DEF_NATFUNC( nfGetPointCount );
 	DEF_NATFUNC( nfGetPointAt );
+	DEF_NATFUNC( nfGetHandle1At );
+	DEF_NATFUNC( nfGetHandle2At );
 	DEF_NATFUNC( nfFindPointPriorTo );
 	DEF_NATFUNC( nfAddPoint );
 	DEF_NATFUNC( nfAddPoint2 );

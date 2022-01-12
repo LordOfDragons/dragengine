@@ -64,7 +64,25 @@ class CurveBezier
 	 * \brief Point at position.
 	 * \throws EOutOfBoundary \em position is less than 0 or larger than or equal to getPointCount().
 	 */
-	public func Vector2 getPointAt( int position )
+	public func Vector2 getPointAt(int position)
+		return null
+	end
+	
+	/**
+	 * \brief First handle at position.
+	 * \version 1.9
+	 * \throws EOutOfBoundary \em position is less than 0 or larger than or equal to getPointCount().
+	 */
+	public func Vector2 getHandle1At(int position)
+		return null
+	end
+	
+	/**
+	 * \brief Second handle at position.
+	 * \version 1.9
+	 * \throws EOutOfBoundary \em position is less than 0 or larger than or equal to getPointCount().
+	 */
+	public func Vector2 getHandle2At(int position)
 		return null
 	end
 	
@@ -73,27 +91,27 @@ class CurveBezier
 	 * \details This method can be used to find the interval a point is located in by returning the
 	 *          most prior point. Returns -1 if there are no points satisfying this criteria.
 	 */
-	public func int findPointPriorTo( float coordinate )
+	public func int findPointPriorTo(float coordinate)
 		return 0
 	end
 	
 	/** \brief Add point returning index where it has been added. */
-	public func int addPoint( Vector2 point, Vector2 handle1, Vector2 handle2 )
+	public func int addPoint(Vector2 point, Vector2 handle1, Vector2 handle2)
 		return 0
 	end
 	
 	/** \brief Add point returning index where it has been added. */
-	public func int addPoint( float pointX, float pointY, float handle1X, float handle1Y, float handle2X, float handle2Y )
+	public func int addPoint(float pointX, float pointY, float handle1X, float handle1Y, float handle2X, float handle2Y)
 		return 0
 	end
 	
 	/** \brief Add point returning index where it has been added. */
-	public func int addPoint( Vector2 point )
+	public func int addPoint(Vector2 point)
 		return 0
 	end
 	
 	/** \brief Add point returning index where it has been added. */
-	public func int addPoint( float pointX, float pointY )
+	public func int addPoint(float pointX, float pointY)
 		return 0
 	end
 	
@@ -101,7 +119,7 @@ class CurveBezier
 	 * \brief Remove point from position.
 	 * \throws EOutOfBoundary \em position is less than 0 or larger than or equal to getPointCount().
 	 */
-	public func void removePointFrom( int position )
+	public func void removePointFrom(int position)
 	end
 	
 	/** \brief Remove all points. */
@@ -117,7 +135,7 @@ class CurveBezier
 	 * \brief Set interpolation mode.
 	 * \throws EInvalidParam \em mode is not a valid value.
 	 */
-	public func void setInterpolationMode( CurveBezierInterpolation mode )
+	public func void setInterpolationMode(CurveBezierInterpolation mode)
 	end
 	
 	/**
@@ -135,7 +153,7 @@ class CurveBezier
 	
 	
 	/** \brief Evaluates curve at position. */
-	public func float evaluateAt( float x )
+	public func float evaluateAt(float x)
 		return 0.0
 	end
 	/*@}*/
