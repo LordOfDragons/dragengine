@@ -107,6 +107,7 @@ class Armature:
 			self.matrix = matrix
 			
 			(loc,rot,scale) = self.matrix.decompose()
+			scale = Vector([self.object.dimensions[0], self.object.dimensions[2], self.object.dimensions[1]])
 			self.matrix = matmul(Matrix.Translation(loc), rot.to_matrix().to_4x4())
 			
 			self.position = vector_by_matrix(matmul(scalePosition, self.matrix), Vector())
