@@ -34,7 +34,7 @@ from bpy_extras.io_utils import ExportHelper
 from mathutils import Vector, Matrix
 
 from .de_math import transformPosition, transformBonePosition, convertMatrix, convertMatrixBone
-from .de_math import vector_by_matrix, vecAdd, vecMul, vecDiv, matrixToEuler, ONE_PI
+from .de_math import vector_by_matrix, axis_by_matrix, vecAdd, vecMul, vecDiv, matrixToEuler, ONE_PI
 from .de_configuration import Configuration
 from .de_resources import Mesh, Armature
 from .de_porting import registerClass, matmul
@@ -167,6 +167,8 @@ class OBJECT_OT_ExportRig(bpy.types.Operator, ExportHelper):
 		pos = volume.position
 		rot = volume.rotation
 		hext = Vector((volume.scaling.x * 0.5, volume.scaling.y * 0.5, volume.scaling.z * 0.5))
+		topRadius = hext.x * volume.topRadiusScale
+		bottomRadius = hext.x * volume.bottomRadiusScale
 		
 		rbshape = ''
 		if volume.object.rigid_body:
@@ -190,23 +192,33 @@ class OBJECT_OT_ExportRig(bpy.types.Operator, ExportHelper):
 			f.write("{}</box>\n".format(indention))
 			
 		elif rbshape == 'CYLINDER' or volume.object.dragengine_physics == 'CYLINDER':
+			shapePos = vecAdd(pos, axis_by_matrix(volume.matrix, (0, (bottomRadius - topRadius) * 0.5, 0)))
 			f.write("{}<cylinder>\n".format(indention))
-			f.write("{}\t<position x='{:.4g}' y='{:.4g}' z='{:.4g}'/>\n".format(indention, pos.x, pos.y, pos.z))
+			f.write("{}\t<position x='{:.4g}' y='{:.4g}' z='{:.4g}'/>\n".format(indention, *shapePos))
 			f.write("{}\t<rotation x='{:.3g}' y='{:.3g}' z='{:.3g}'/>\n".format(indention, rot.x, rot.y, rot.z))
 			f.write("{}\t<halfHeight>{:.4g}</halfHeight>\n".format(indention, hext.y))
-			f.write("{}\t<radius>{:.4g}</radius>\n".format(indention, hext.x))
+			if volume.unitRadii:
+				f.write("{}\t<radius>{:.4g}</radius>\n".format(indention, hext.x))
+			else:
+				f.write("{}\t<topRadius>{:.4g}</topRadius>\n".format(indention, topRadius))
+				f.write("{}\t<bottomRadius>{:.4g}</bottomRadius>\n".format(indention, bottomRadius))
 			if volume.object.dragengine_shapeproperty:
 				f.write("{}\t<property>{}</property>\n".format(indention, volume.object.dragengine_shapeproperty))
 			f.write("{}</cylinder>\n".format(indention))
 			
 		elif rbshape == 'CAPSULE' or volume.object.dragengine_physics == 'CAPSULE':
+			shapePos = vecAdd(pos, axis_by_matrix(volume.matrix, (0, (bottomRadius - topRadius) * 0.5, 0)))
 			radius = hext.x
-			halfHeight = max(hext.y - radius, 0)
+			halfHeight = max((hext.y * 2 - topRadius - bottomRadius) / 2, 0)
 			f.write("{}<capsule>\n".format(indention))
-			f.write("{}\t<position x='{:.4g}' y='{:.4g}' z='{:.4g}'/>\n".format(indention, pos.x, pos.y, pos.z))
+			f.write("{}\t<position x='{:.4g}' y='{:.4g}' z='{:.4g}'/>\n".format(indention, *shapePos))
 			f.write("{}\t<rotation x='{:.3g}' y='{:.3g}' z='{:.3g}'/>\n".format(indention, rot.x, rot.y, rot.z))
 			f.write("{}\t<halfHeight>{:.4g}</halfHeight>\n".format(indention, halfHeight))
-			f.write("{}\t<radius>{:.4g}</radius>\n".format(indention, radius))
+			if volume.unitRadii:
+				f.write("{}\t<radius>{:.4g}</radius>\n".format(indention, radius))
+			else:
+				f.write("{}\t<topRadius>{:.4g}</topRadius>\n".format(indention, topRadius))
+				f.write("{}\t<bottomRadius>{:.4g}</bottomRadius>\n".format(indention, bottomRadius))
 			if volume.object.dragengine_shapeproperty:
 				f.write("{}\t<property>{}</property>\n".format(indention, volume.object.dragengine_shapeproperty))
 			f.write("{}</capsule>\n".format(indention))

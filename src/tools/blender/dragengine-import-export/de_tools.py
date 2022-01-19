@@ -634,6 +634,24 @@ bpy.types.Object.dragengine_physics = bpy.props.EnumProperty(items = (
 bpy.types.Object.dragengine_shapeproperty = bpy.props.StringProperty(
 	name="Property", description="Shape property string", default="")
 
+bpy.types.Object.dragengine_shapetopradiusscale = bpy.props.FloatProperty(
+	name="Top Radius Scale", description="Top Radius scaling (capsule/cylinder)",
+	precision=3, default=1, min=0, soft_max=1)
+
+bpy.types.Object.dragengine_shapebottomradiusscale = bpy.props.FloatProperty(
+	name="Bottom Radius Scale", description="Bottom radius scaling (capsule/cylinder)",
+	precision=3, default=1, min=0, soft_max=1)
+
+"""
+bpy.types.Object.dragengine_shapetopaxisscale = bpy.props.FloatVectorProperty(
+	name="Top Axis Scale", description="Top Axis scaling (tapered capsule/cylinder)",
+	size=2, precision=3, default=(1, 1), min=0, soft_max=1)
+
+bpy.types.Object.dragengine_shapebottomaxisscale = bpy.props.FloatVectorProperty(
+	name="Bottom Axis Scale", description="Bottom axis scaling (tapered capsule/cylinder)",
+	size=2, precision=3, default=(1, 1), min=0, soft_max=1)
+"""
+
 
 class OBJECT_PT_DragenginePhysics(bpy.types.Panel):
 	bl_space_type = 'PROPERTIES'
@@ -648,10 +666,16 @@ class OBJECT_PT_DragenginePhysics(bpy.types.Panel):
 	def draw(self, context):
 		layout = self.layout
 		rd = context.active_object
-		row = layout.row(align=True)
-		row.prop(rd, "dragengine_physics", expand = False)
-		row = layout.row(align=True)
-		row.prop(rd, "dragengine_shapeproperty", expand = False)
+		layout.row(align=True).prop(rd, "dragengine_physics", expand=False)
+		layout.row(align=True).prop(rd, "dragengine_shapeproperty", expand=False)
+		
+		col = layout.column(align=True)
+		col.label(text="Capsule/Cylinder Radius Scale")
+		row = col.row(align=True)
+		row.column(align=True).prop(rd, "dragengine_shapetopradiusscale", text="Top", expand=False)
+		row.column(align=True).prop(rd, "dragengine_shapebottomradiusscale", text="Bottom", expand=False)
+		#layout.row(align=True).prop(rd, "dragengine_shapetopaxisscale", expand=False)
+		#layout.row(align=True).prop(rd, "dragengine_shapebottomaxisscale", expand=False)
 registerClass(OBJECT_PT_DragenginePhysics)
 
 

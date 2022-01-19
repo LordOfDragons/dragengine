@@ -88,6 +88,9 @@ class Armature:
 		def __init__(self, object, scalePosition):
 			self.object = object
 			self.bone = None
+			self.topRadiusScale = object.dragengine_shapetopradiusscale
+			self.bottomRadiusScale = object.dragengine_shapebottomradiusscale
+			self.unitRadii = math.fabs(self.topRadiusScale - 1) < 0.001 and math.fabs(self.bottomRadiusScale - 1) < 0.001
 			
 			self.matrix = object.matrix_world
 			if object.parent:
