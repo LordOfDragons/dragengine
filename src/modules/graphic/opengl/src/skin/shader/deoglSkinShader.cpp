@@ -1671,68 +1671,68 @@ void deoglSkinShader::GenerateShader(){
 
 void deoglSkinShader::GenerateDefines( deoglShaderDefines &defines ){
 	// general definitions
-	defines.AddDefine( "HIGH_PRECISION", "1" );
+	defines.AddDefine( "HIGH_PRECISION", true );
 	defines.AddDefine( "HIGHP", "highp" ); // if not supported by GPU medp
 	
 	if( pglUniformBlockBinding ){
-		defines.AddDefine( "UBO", "1" );
+		defines.AddDefine( "UBO", true );
 		
 		if( pRenderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Broken() ){
-			defines.AddDefine( "UBO_IDMATACCBUG", "1" );
+			defines.AddDefine( "UBO_IDMATACCBUG", true );
 		}
 		if( pRenderThread.GetCapabilities().GetUBODirectLinkDeadloop().Broken() ){
-			defines.AddDefine( "BUG_UBO_DIRECT_LINK_DEAD_LOOP", "1" );
+			defines.AddDefine( "BUG_UBO_DIRECT_LINK_DEAD_LOOP", true );
 		}
 	}
 	
 	// tessellation
 	if( pConfig.GetTessellationMode() != deoglSkinShaderConfig::etmNone ){
-		defines.AddDefine( "HAS_TESSELLATION_SHADER", "1" );
+		defines.AddDefine( "HAS_TESSELLATION_SHADER", true );
 		
 		if( pConfig.GetTessellationMode() == deoglSkinShaderConfig::etmLinear ){
-			defines.AddDefine( "TESSELLATION_LINEAR", "1" );
+			defines.AddDefine( "TESSELLATION_LINEAR", true );
 		}
 	}
 	
 	// geometry type definitions
 	if( pConfig.GetGeometryMode() == deoglSkinShaderConfig::egmPropField ){
-		defines.AddDefine( "PROP_FIELD", "1" );
+		defines.AddDefine( "PROP_FIELD", true );
 		
 	}else if( pConfig.GetGeometryMode() == deoglSkinShaderConfig::egmHeightMap ){
-		defines.AddDefine( "HEIGHT_MAP", "1" );
+		defines.AddDefine( "HEIGHT_MAP", true );
 		
 	}else if( pConfig.GetGeometryMode() == deoglSkinShaderConfig::egmParticle ){
-		defines.AddDefine( "PARTICLE", "1" );
+		defines.AddDefine( "PARTICLE", true );
 		
 		if( pConfig.GetParticleMode() == deoglSkinShaderConfig::epmRibbon ){
-			defines.AddDefine( "PARTICLE_RIBBON", "1" );
+			defines.AddDefine( "PARTICLE_RIBBON", true );
 			
 		}else if( pConfig.GetParticleMode() == deoglSkinShaderConfig::epmBeam ){
-			defines.AddDefine( "PARTICLE_BEAM", "1" );
+			defines.AddDefine( "PARTICLE_BEAM", true );
 		}
 		
 	}else if( pConfig.GetGeometryMode() == deoglSkinShaderConfig::egmDecal ){
-		defines.AddDefine( "DECAL", "1" );
+		defines.AddDefine( "DECAL", true );
 	}
 	
 	// depth definitions
 	if( pConfig.GetDepthMode() == deoglSkinShaderConfig::edmOrthogonal ){
-		defines.AddDefine( "DEPTH_ORTHOGONAL", "1" );
-		defines.AddDefine( "DEPTH_OFFSET", "1" );
+		defines.AddDefine( "DEPTH_ORTHOGONAL", true );
+		defines.AddDefine( "DEPTH_OFFSET", true );
 		
 	}else if( pConfig.GetDepthMode() == deoglSkinShaderConfig::edmDistance ){
-		defines.AddDefine( "DEPTH_DISTANCE", "1" );
-		defines.AddDefine( "DEPTH_OFFSET", "1" );
+		defines.AddDefine( "DEPTH_DISTANCE", true );
+		defines.AddDefine( "DEPTH_OFFSET", true );
 	}
 	
 	// shading configuration definitions
 	switch( pConfig.GetMaterialNormalModeDec() ){
 	case deoglSkinShaderConfig::emnmIntBasic:
-		defines.AddDefine( "MATERIAL_NORMAL_DEC_INTBASIC", "1" );
+		defines.AddDefine( "MATERIAL_NORMAL_DEC_INTBASIC", true );
 		break;
 		
 	case deoglSkinShaderConfig::emnmSpheremap:
-		defines.AddDefine( "MATERIAL_NORMAL_DEC_SPHEREMAP", "1" );
+		defines.AddDefine( "MATERIAL_NORMAL_DEC_SPHEREMAP", true );
 		break;
 		
 	default:
@@ -1741,11 +1741,11 @@ void deoglSkinShader::GenerateDefines( deoglShaderDefines &defines ){
 	
 	switch( pConfig.GetMaterialNormalModeEnc() ){
 	case deoglSkinShaderConfig::emnmIntBasic:
-		defines.AddDefine( "MATERIAL_NORMAL_ENC_INTBASIC", "1" );
+		defines.AddDefine( "MATERIAL_NORMAL_ENC_INTBASIC", true );
 		break;
 		
 	case deoglSkinShaderConfig::emnmSpheremap:
-		defines.AddDefine( "MATERIAL_NORMAL_ENC_SPHEREMAP", "1" );
+		defines.AddDefine( "MATERIAL_NORMAL_ENC_SPHEREMAP", true );
 		break;
 		
 	default:
@@ -1754,96 +1754,96 @@ void deoglSkinShader::GenerateDefines( deoglShaderDefines &defines ){
 	
 	// texture usage definitions
 	if( pConfig.GetTextureColor() ){
-		defines.AddDefine( "TEXTURE_COLOR", "1" );
+		defines.AddDefine( "TEXTURE_COLOR", true );
 	}
 	if( pConfig.GetTextureColorTintMask() ){
-		defines.AddDefine( "TEXTURE_COLOR_TINT_MASK", "1" );
+		defines.AddDefine( "TEXTURE_COLOR_TINT_MASK", true );
 	}
 	if( pConfig.GetTextureTransparency() ){
-		defines.AddDefine( "TEXTURE_TRANSPARENCY", "1" );
+		defines.AddDefine( "TEXTURE_TRANSPARENCY", true );
 	}
 	if( pConfig.GetTextureSolidity() ){
-		defines.AddDefine( "TEXTURE_SOLIDITY", "1" );
+		defines.AddDefine( "TEXTURE_SOLIDITY", true );
 	}
 	if( pConfig.GetTextureNormal() ){
-		defines.AddDefine( "TEXTURE_NORMAL", "1" );
+		defines.AddDefine( "TEXTURE_NORMAL", true );
 	}
 	if( pConfig.GetTextureHeight() ){
-		defines.AddDefine( "TEXTURE_HEIGHT", "1" );
+		defines.AddDefine( "TEXTURE_HEIGHT", true );
 	}
 	if( pConfig.GetTextureReflectivity() ){
-		defines.AddDefine( "TEXTURE_REFLECTIVITY", "1" );
+		defines.AddDefine( "TEXTURE_REFLECTIVITY", true );
 	}
 	if( pConfig.GetTextureRoughness() ){
-		defines.AddDefine( "TEXTURE_ROUGHNESS", "1" );
+		defines.AddDefine( "TEXTURE_ROUGHNESS", true );
 	}
 	if( pConfig.GetTextureEnvMap() ){
-		defines.AddDefine( "TEXTURE_ENVMAP", "1" );
+		defines.AddDefine( "TEXTURE_ENVMAP", true );
 		
 		if( pConfig.GetTextureEnvMapEqui() ){
-			defines.AddDefine( "TEXTURE_ENVMAP_EQUI", "1" );
+			defines.AddDefine( "TEXTURE_ENVMAP_EQUI", true );
 		}
 		
 		if( REFLECTION_TEST_MODE < 2 ){
-			defines.AddDefine( "TEXTURE_ENVMAP_FADE", "1" );
+			defines.AddDefine( "TEXTURE_ENVMAP_FADE", true );
 		}
 	}
 	if( pConfig.GetTextureEmissivity() ){
-		defines.AddDefine( "TEXTURE_EMISSIVITY", "1" );
+		defines.AddDefine( "TEXTURE_EMISSIVITY", true );
 	}
 	if( pConfig.GetTextureAbsorption() ){
-		defines.AddDefine( "TEXTURE_ABSORPTION", "1" );
+		defines.AddDefine( "TEXTURE_ABSORPTION", true );
 	}
 	if( pConfig.GetTextureRenderColor() ){
-		defines.AddDefine( "TEXTURE_RENDERCOLOR", "1" );
+		defines.AddDefine( "TEXTURE_RENDERCOLOR", true );
 	}
 	if( pConfig.GetTextureRefractionDistort() ){
-		defines.AddDefine( "TEXTURE_REFRACTION_DISTORT", "1" );
+		defines.AddDefine( "TEXTURE_REFRACTION_DISTORT", true );
 	}
 	if( pConfig.GetTextureAO() ){
-		defines.AddDefine( "TEXTURE_AO", "1" );
+		defines.AddDefine( "TEXTURE_AO", true );
 	}
 	if( pConfig.GetTextureEnvRoom() ){
-		defines.AddDefine( "TEXTURE_ENVROOM", "1" );
+		defines.AddDefine( "TEXTURE_ENVROOM", true );
 	}
 	if( pConfig.GetTextureEnvRoomMask() ){
-		defines.AddDefine( "TEXTURE_ENVROOM_MASK", "1" );
+		defines.AddDefine( "TEXTURE_ENVROOM_MASK", true );
 	}
 	if( pConfig.GetTextureEnvRoomEmissivity() ){
-		defines.AddDefine( "TEXTURE_ENVROOM_EMISSIVITY", "1" );
+		defines.AddDefine( "TEXTURE_ENVROOM_EMISSIVITY", true );
 	}
 	if( pConfig.GetTextureRimEmissivity() ){
-		defines.AddDefine( "TEXTURE_RIM_EMISSIVITY", "1" );
+		defines.AddDefine( "TEXTURE_RIM_EMISSIVITY", true );
 	}
 	
 	// shading definitions
 	if( pConfig.GetMaskedSolidity() ){
-		defines.AddDefine( "MASKED_SOLIDITY", "1" );
+		defines.AddDefine( "MASKED_SOLIDITY", true );
 	}
 	
 	if( pConfig.GetDepthTestMode() == deoglSkinShaderConfig::edtmLarger ){
-		defines.AddDefine( "DEPTH_TEST", "1" );
-		defines.AddDefine( "DEPTH_TEST_LARGER", "1" );
+		defines.AddDefine( "DEPTH_TEST", true );
+		defines.AddDefine( "DEPTH_TEST_LARGER", true );
 		
 	}else if( pConfig.GetDepthTestMode() == deoglSkinShaderConfig::edtmSmaller ){
-		defines.AddDefine( "DEPTH_TEST", "1" );
-		defines.AddDefine( "DEPTH_TEST_SMALLER", "1" );
+		defines.AddDefine( "DEPTH_TEST", true );
+		defines.AddDefine( "DEPTH_TEST_SMALLER", true );
 	}
 	
 	if( pConfig.GetClipPlane() ){
-		defines.AddDefine( "CLIP_PLANE", "1" );
+		defines.AddDefine( "CLIP_PLANE", true );
 	}
 	if( pConfig.GetNoZClip() ){
-		defines.AddDefine( "NO_ZCLIP", "1" );
+		defines.AddDefine( "NO_ZCLIP", true );
 	}
 	if( pConfig.GetDecodeInDepth() ){
-		defines.AddDefine( "DECODE_IN_DEPTH", "1" );
+		defines.AddDefine( "DECODE_IN_DEPTH", true );
 	}
 	if( pConfig.GetEncodeOutDepth() ){
-		defines.AddDefine( "ENCODE_OUT_DEPTH", "1" );
+		defines.AddDefine( "ENCODE_OUT_DEPTH", true );
 	}
 	if( pConfig.GetInverseDepth() ){
-		defines.AddDefine( "INVERSE_DEPTH", "1" );
+		defines.AddDefine( "INVERSE_DEPTH", true );
 	}
 	
 	if( pConfig.GetGSRenderCube() ){
@@ -1851,11 +1851,11 @@ void deoglSkinShader::GenerateDefines( deoglShaderDefines &defines ){
 			DETHROW( deeInvalidParam );
 		}
 		
-		defines.AddDefine( "GS_RENDER_CUBE", "1" );
-		defines.AddDefine( "GS_RENDER_CUBE_CULLING", "1" );
+		defines.AddDefine( "GS_RENDER_CUBE", true );
+		defines.AddDefine( "GS_RENDER_CUBE_CULLING", true );
 		
 		if( pRenderThread.GetExtensions().SupportsGSInstancing() ){
-			defines.AddDefine( "GS_RENDER_CUBE_INSTANCING", "1" );
+			defines.AddDefine( "GS_RENDER_CUBE_INSTANCING", true );
 		}
 		
 	}else if( pConfig.GetGSRenderCascaded() ){
@@ -1863,10 +1863,10 @@ void deoglSkinShader::GenerateDefines( deoglShaderDefines &defines ){
 			DETHROW( deeInvalidParam );
 		}
 		
-		defines.AddDefine( "GS_RENDER_CASCADED", "1" );
+		defines.AddDefine( "GS_RENDER_CASCADED", true );
 		
 		if( pRenderThread.GetExtensions().SupportsGSInstancing() ){
-			defines.AddDefine( "GS_RENDER_CASCADED_INSTANCING", "1" );
+			defines.AddDefine( "GS_RENDER_CASCADED_INSTANCING", true );
 		}
 	}
 	
@@ -1874,7 +1874,7 @@ void deoglSkinShader::GenerateDefines( deoglShaderDefines &defines ){
 	const deoglRTBufferObject &bo = pRenderThread.GetBufferObject();
 	
 	if( pRenderThread.GetChoices().GetSharedSPBUseSSBO() ){
-		defines.AddDefine( "SHARED_SPB_USE_SSBO", "1" );
+		defines.AddDefine( "SHARED_SPB_USE_SSBO", true );
 		
 		if( bo.GetLayoutSkinInstanceSSBO()->GetOffsetPadding() >= 16 ){
 			defines.AddDefine( "SHARED_SPB_PADDING", bo.GetLayoutSkinInstanceSSBO()->GetOffsetPadding() / 16 );
@@ -1902,7 +1902,7 @@ void deoglSkinShader::GenerateDefines( deoglShaderDefines &defines ){
 	}
 	
 	if( pConfig.GetSharedSPB() ){ // affects only instance parameters
-		defines.AddDefine( "SHARED_SPB", "1" );
+		defines.AddDefine( "SHARED_SPB", true );
 		if( bo.GetInstanceArraySizeUBO() > 0 ){
 			defines.AddDefine( "SPB_INSTANCE_ARRAY_SIZE", bo.GetInstanceArraySizeUBO() );
 		}
@@ -1910,147 +1910,147 @@ void deoglSkinShader::GenerateDefines( deoglShaderDefines &defines ){
 	
 	// output definitions
 	if( pRenderThread.GetCapabilities().GetMaxDrawBuffers() < 8 ){
-		defines.AddDefine( "OUTPUT_LIMITBUFFERS", "1" );
+		defines.AddDefine( "OUTPUT_LIMITBUFFERS", true );
 	}
 	
 	if( pConfig.GetOutputConstant() ){
-		defines.AddDefine( "OUTPUT_CONSTANT", "1" );
+		defines.AddDefine( "OUTPUT_CONSTANT", true );
 		
 	}else if( pConfig.GetOutputColor() ){
-		defines.AddDefine( "OUTPUT_COLOR", "1" );
+		defines.AddDefine( "OUTPUT_COLOR", true );
 	}
 	if( ! pConfig.GetLuminanceOnly() ){
 		if( pConfig.GetGeometryMode() != deoglSkinShaderConfig::egmParticle
 		|| GetRenderThread().GetChoices().GetRealTransparentParticles() ){
-			defines.AddDefine( "OUTPUT_MATERIAL_PROPERTIES", "1" );
+			defines.AddDefine( "OUTPUT_MATERIAL_PROPERTIES", true );
 		}
 	}
 	
 	// texture property usage definitions
-	defines.AddDefine( "TP_NORMAL_STRENGTH", "1" ); // needs an option to select if this is required or not
-	defines.AddDefine( "TP_ROUGHNESS_REMAP", "1" ); // needs an option to select if this is required or not
+	defines.AddDefine( "TP_NORMAL_STRENGTH", true ); // needs an option to select if this is required or not
+	defines.AddDefine( "TP_ROUGHNESS_REMAP", true ); // needs an option to select if this is required or not
 	
 	if( pConfig.GetUseNormalRoughnessCorrection() ){
-		defines.AddDefine( "USE_NORMAL_ROUGHNESS_CORRECTION", "1" );
+		defines.AddDefine( "USE_NORMAL_ROUGHNESS_CORRECTION", true );
 	}
 	
 	if( pConfig.GetAmbientLightProbe() ){
-		defines.AddDefine( "AMBIENT_LIGHT_PROBE", "1" );
+		defines.AddDefine( "AMBIENT_LIGHT_PROBE", true );
 	}
 	
 	if( pConfig.GetBillboard() ){
-		defines.AddDefine( "BILLBOARD", "1" );
+		defines.AddDefine( "BILLBOARD", true );
 	}
 	
 	if( pConfig.GetSkinReflections() ){
-		defines.AddDefine( "SKIN_REFLECTIONS", "1" );
+		defines.AddDefine( "SKIN_REFLECTIONS", true );
 	}
 	
 	if( pConfig.GetFadeOutRange() ){
-		defines.AddDefine( "FADEOUT_RANGE", "1" );
+		defines.AddDefine( "FADEOUT_RANGE", true );
 	}
 	
 	if( pConfig.GetVariations() ){
-		defines.AddDefine( "WITH_VARIATIONS", "1" );
+		defines.AddDefine( "WITH_VARIATIONS", true );
 	}
 	
 	if( pConfig.GetOutline() ){
-		defines.AddDefine( "WITH_OUTLINE", "1" );
+		defines.AddDefine( "WITH_OUTLINE", true );
 	}
 	if( pConfig.GetOutlineThicknessScreen() ){
-		defines.AddDefine( "WITH_OUTLINE_THICKNESS_SCREEN", "1" );
+		defines.AddDefine( "WITH_OUTLINE_THICKNESS_SCREEN", true );
 	}
 	if( pConfig.GetLuminanceOnly() ){
-		defines.AddDefine( "LUMINANCE_ONLY", "1" );
+		defines.AddDefine( "LUMINANCE_ONLY", true );
 	}
 	
 	// dynamic texture property usage definitions
 	if( pConfig.GetDynamicColorTint() ){
-		defines.AddDefine( "DYNAMIC_COLOR_TINT", "1" );
+		defines.AddDefine( "DYNAMIC_COLOR_TINT", true );
 	}
 	if( pConfig.GetDynamicColorGamma() ){
-		defines.AddDefine( "DYNAMIC_COLOR_GAMMA", "1" );
+		defines.AddDefine( "DYNAMIC_COLOR_GAMMA", true );
 	}
 	if( pConfig.GetDynamicColorSolidityMultiplier() ){
-		defines.AddDefine( "DYNAMIC_COLOR_SOLIDITY_MULTIPLIER", "1" );
+		defines.AddDefine( "DYNAMIC_COLOR_SOLIDITY_MULTIPLIER", true );
 	}
 	if( pConfig.GetDynamicAmbientOcclusionSolidityMultiplier() ){
-		defines.AddDefine( "DYNAMIC_AO_SOLIDITY_MULTIPLIER", "1" );
+		defines.AddDefine( "DYNAMIC_AO_SOLIDITY_MULTIPLIER", true );
 	}
 	if( pConfig.GetDynamicTransparencyMultiplier() ){
-		defines.AddDefine( "DYNAMIC_TRANSPARENCY_MULTIPLIER", "1" );
+		defines.AddDefine( "DYNAMIC_TRANSPARENCY_MULTIPLIER", true );
 	}
 	if( pConfig.GetDynamicSolidityMultiplier() ){
-		defines.AddDefine( "DYNAMIC_SOLIDITY_MULTIPLIER", "1" );
+		defines.AddDefine( "DYNAMIC_SOLIDITY_MULTIPLIER", true );
 	}
 	if( pConfig.GetDynamicHeightRemap() ){
-		defines.AddDefine( "DYNAMIC_HEIGHT_REMAP", "1" );
+		defines.AddDefine( "DYNAMIC_HEIGHT_REMAP", true );
 	}
 	if( pConfig.GetDynamicNormalStrength() ){
-		defines.AddDefine( "DYNAMIC_NORMAL_STRENGTH", "1" );
+		defines.AddDefine( "DYNAMIC_NORMAL_STRENGTH", true );
 	}
 	if( pConfig.GetDynamicNormalSolidityMultiplier() ){
-		defines.AddDefine( "DYNAMIC_NORMAL_SOLIDITY_MULTIPLIER", "1" );
+		defines.AddDefine( "DYNAMIC_NORMAL_SOLIDITY_MULTIPLIER", true );
 	}
 	if( pConfig.GetDynamicRoughnessRemap() ){
-		defines.AddDefine( "DYNAMIC_ROUGHNESS_REMAP", "1" );
+		defines.AddDefine( "DYNAMIC_ROUGHNESS_REMAP", true );
 	}
 	if( pConfig.GetDynamicRoughnessGamma() ){
-		defines.AddDefine( "DYNAMIC_ROUGHNESS_GAMMA", "1" );
+		defines.AddDefine( "DYNAMIC_ROUGHNESS_GAMMA", true );
 	}
 	if( pConfig.GetDynamicRoughnessSolidityMultiplier() ){
-		defines.AddDefine( "DYNAMIC_ROUGHNESS_SOLIDITY_MULTIPLIER", "1" );
+		defines.AddDefine( "DYNAMIC_ROUGHNESS_SOLIDITY_MULTIPLIER", true );
 	}
 	if( pConfig.GetDynamicReflectivitySolidityMultiplier() ){
-		defines.AddDefine( "DYNAMIC_REFLECTIVITY_SOLIDITY_MULTIPLIER", "1" );
+		defines.AddDefine( "DYNAMIC_REFLECTIVITY_SOLIDITY_MULTIPLIER", true );
 	}
 	if( pConfig.GetDynamicReflectivityMultiplier() ){
-		defines.AddDefine( "DYNAMIC_REFLECTIVITY_MULTIPLIER", "1" );
+		defines.AddDefine( "DYNAMIC_REFLECTIVITY_MULTIPLIER", true );
 	}
 	if( pConfig.GetDynamicRefractionDistortStrength() ){
-		defines.AddDefine( "DYNAMIC_REFRACTION_DISTORT_STRENGTH", "1" );
+		defines.AddDefine( "DYNAMIC_REFRACTION_DISTORT_STRENGTH", true );
 	}
 	if( pConfig.GetDynamicEmissivityIntensity() || pConfig.GetDynamicEmissivityTint() ){
-		defines.AddDefine( "DYNAMIC_EMISSIVITY_INTENSITY", "1" );
+		defines.AddDefine( "DYNAMIC_EMISSIVITY_INTENSITY", true );
 	}
 	if( pConfig.GetDynamicEnvRoomSize() ){
-		defines.AddDefine( "DYNAMIC_ENVROOM_SIZE", "1" );
+		defines.AddDefine( "DYNAMIC_ENVROOM_SIZE", true );
 	}
 	if( pConfig.GetDynamicEnvRoomOffset() ){
-		defines.AddDefine( "DYNAMIC_ENVROOM_OFFSET", "1" );
+		defines.AddDefine( "DYNAMIC_ENVROOM_OFFSET", true );
 	}
 	if( pConfig.GetDynamicEnvRoomEmissivityIntensity() || pConfig.GetDynamicEnvRoomEmissivityTint() ){
-		defines.AddDefine( "DYNAMIC_ENVROOM_EMISSIVITY_INTENSITY", "1" );
+		defines.AddDefine( "DYNAMIC_ENVROOM_EMISSIVITY_INTENSITY", true );
 	}
 	if( pConfig.GetDynamicVariation() ){
-		defines.AddDefine( "DYNAMIC_VARIATION", "1" );
+		defines.AddDefine( "DYNAMIC_VARIATION", true );
 	}
 	if( pConfig.GetDynamicRimEmissivityIntensity() || pConfig.GetDynamicRimEmissivityTint() ){
-		defines.AddDefine( "DYNAMIC_RIM_EMISSIVITY_INTENSITY", "1" );
+		defines.AddDefine( "DYNAMIC_RIM_EMISSIVITY_INTENSITY", true );
 	}
 	if( pConfig.GetDynamicRimAngle() ){
-		defines.AddDefine( "DYNAMIC_RIM_ANGLE", "1" );
+		defines.AddDefine( "DYNAMIC_RIM_ANGLE", true );
 	}
 	if( pConfig.GetDynamicRimExponent() ){
-		defines.AddDefine( "DYNAMIC_RIM_EXPONENT", "1" );
+		defines.AddDefine( "DYNAMIC_RIM_EXPONENT", true );
 	}
 	if( pConfig.GetDynamicOutlineColor() ){
-		defines.AddDefine( "DYNAMIC_OUTLINE_COLOR", "1" );
+		defines.AddDefine( "DYNAMIC_OUTLINE_COLOR", true );
 	}
 	if( pConfig.GetDynamicOutlineColorTint() ){
-		defines.AddDefine( "DYNAMIC_OUTLINE_COLOR_TINT", "1" );
+		defines.AddDefine( "DYNAMIC_OUTLINE_COLOR_TINT", true );
 	}
 	if( pConfig.GetDynamicOutlineThickness() ){
-		defines.AddDefine( "DYNAMIC_OUTLINE_THICKNESS", "1" );
+		defines.AddDefine( "DYNAMIC_OUTLINE_THICKNESS", true );
 	}
 	if( pConfig.GetDynamicOutlineSolidity() ){
-		defines.AddDefine( "DYNAMIC_OUTLINE_SOLIDITY", "1" );
+		defines.AddDefine( "DYNAMIC_OUTLINE_SOLIDITY", true );
 	}
 	if( pConfig.GetDynamicOutlineEmissivity() ){
-		defines.AddDefine( "DYNAMIC_OUTLINE_EMISSIVITY", "1" );
+		defines.AddDefine( "DYNAMIC_OUTLINE_EMISSIVITY", true );
 	}
 	if( pConfig.GetDynamicOutlineEmissivityTint() ){
-		defines.AddDefine( "DYNAMIC_OUTLINE_EMISSIVITY_TINT", "1" );
+		defines.AddDefine( "DYNAMIC_OUTLINE_EMISSIVITY_TINT", true );
 	}
 	
 	
