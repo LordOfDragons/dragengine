@@ -665,7 +665,7 @@ void deoglEnvironmentMap::RenderEnvCubeMap( deoglRenderPlan &parentPlan ){
 		deoglFramebuffer &fboMaterial = pRenderThread.GetFramebuffer().GetEnvMapMaterial();
 		const GLfloat clearPosition[ 4 ] = { 0.0f, 0.0f, 0.0f, 0.0f };
 		const GLfloat clearDiffuse[ 4 ] = { 0.0f, 0.0f, 0.0f, 0.0f };
-		const GLfloat clearNormal[ 4 ] = { 0.0f, 0.0f, 0.0f, 0.0f };
+		const GLfloat clearNormal[ 4 ] = { 0.0f, 0.0f, 0.0f, 0.0f }; // int-shifted
 		
 		pRenderThread.GetFramebuffer().Activate( &fboMaterial );
 		fboMaterial.DetachAllImages();

@@ -38,6 +38,7 @@ out vec4 outColor;
 
 #ifdef WITH_GI
 	#include "v130/shared/defren/light/gi_illuminate.glsl"
+	#include "v130/shared/normal.glsl"
 #endif
 
 
@@ -54,7 +55,7 @@ void main( void ){
 		// if normal is 0 length pixel value has not been written to
 		vec3 position = texelFetch( texPosition, tc, 0 ).xyz;
 		vec3 diffuse = texelFetch( texDiffuse, tc, 0 ).rgb;
-		vec3 normal = texelFetch( texNormal, tc, 0 ).rgb;
+		vec3 normal = normalLoadShiftedInt( texNormal, tc );
 		
 		if( length( normal ) > 0 ){
 			outColor.rgb += giIlluminate( position, normal, normal ) * diffuse;

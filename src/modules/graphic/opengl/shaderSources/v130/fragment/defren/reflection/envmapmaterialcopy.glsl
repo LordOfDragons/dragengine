@@ -40,7 +40,8 @@ void main( void ){
 	
 	outDiffuse = vec3( diffuse );
 	
-	// normal is in camera space. we need it though in world space.
-	// reverse multiplication order does transpose()
+	// normal is in camera space (framebuffer normal encoding, usually float).
+	// we need it though in world space. reverse multiplication order does transpose().
+	// envmap normal is in shift-int format
 	outNormal = normalEncodeShiftedInt( normalize( normalLoadMaterial( texNormal, vTexCoord ) * pMatrixNormal ) );
 }

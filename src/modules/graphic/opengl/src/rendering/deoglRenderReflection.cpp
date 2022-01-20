@@ -378,7 +378,6 @@ deoglRenderBase( renderThread )
 		if( config.GetDefRenEncDepth() ){
 			defines.AddDefine( "DECODE_IN_DEPTH", true );
 		}
-		defines.AddDefine( "MATERIAL_NORMAL_DEC_INTBASIC", true );
 		if( pUseEquiEnvMap ){
 			defines.AddDefine( "ENVMAP_EQUI", true );
 		}
@@ -442,6 +441,7 @@ deoglRenderBase( renderThread )
 		
 		
 		
+		// input is framebuffer normal format (usually float). output is hard-coded shifted-int
 		sources = shaderManager.GetSourcesNamed( "DefRen EnvMap Material Copy" );
 		pShaderCopyMaterial = shaderManager.GetProgramWith( sources, defines );
 		
@@ -478,7 +478,6 @@ deoglRenderBase( renderThread )
 		if( defren.GetUseInverseDepth() ){
 			defines.AddDefine( "INVERSE_DEPTH", true );
 		}
-		defines.AddDefine( "MATERIAL_NORMAL_DEC_INTBASIC", true );
 		pShaderReflection = shaderManager.GetProgramWith( sources, defines );
 		defines.RemoveAllDefines();
 		
@@ -2232,7 +2231,7 @@ void deoglRenderReflection::RenderGIEnvMaps( deoglRenderPlan &plan ){
 		
 		tsmgr.EnableArrayTexture( 0, *envmap->GetEnvironmentMapPosition(), GetSamplerClampNearest() );
 		tsmgr.EnableArrayTexture( 1, *envmap->GetEnvironmentMapDiffuse(), GetSamplerClampNearest() );
-		tsmgr.EnableArrayTexture( 2, *envmap->GetEnvironmentMapNormal(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 2, *envmap->GetEnvironmentMapNormal(), GetSamplerClampNearest() ); // int-shifted
 		tsmgr.EnableArrayTexture( 3, *envmap->GetEnvironmentMapEmissive(), GetSamplerClampNearest() );
 		
 		renderGI.PrepareUBORenderLight( *giState, envmap->GetPosition() );

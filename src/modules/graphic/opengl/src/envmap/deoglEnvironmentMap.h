@@ -282,7 +282,10 @@ public:
 	/** Environment diffuse map or NULL. */
 	inline deoglArrayTexture *GetEnvironmentMapDiffuse() const{ return pEnvMapDiffuse; }
 	
-	/** Environment normal map or NULL. */
+	/**
+	 * Environment normal map or NULL.
+	 * \warning This is Int-Shifted format.
+	 */
 	inline deoglArrayTexture *GetEnvironmentMapNormal() const{ return pEnvMapNormal; }
 	
 	/** Environment GI map or NULL. */
