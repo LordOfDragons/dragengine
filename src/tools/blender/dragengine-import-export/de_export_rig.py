@@ -177,7 +177,7 @@ class OBJECT_OT_ExportRig(bpy.types.Operator, ExportHelper):
 		if rbshape == 'SPHERE' or volume.object.dragengine_physics == 'SPHERE':
 			f.write("{}<sphere>\n".format(indention))
 			f.write("{}\t<position x='{:.4g}' y='{:.4g}' z='{:.4g}'/>\n".format(indention, pos.x, pos.y, pos.z))
-			f.write("{}\t<radius>{:.4g}</radius>\n".format(indention, scaling.x))
+			f.write("{}\t<radius>{:.4g}</radius>\n".format(indention, hext.x))
 			if volume.object.dragengine_shapeproperty:
 				f.write("{}\t<property>{}</property>\n".format(indention, volume.object.dragengine_shapeproperty))
 			f.write("{}</sphere>\n".format(indention))
@@ -458,24 +458,24 @@ class OBJECT_OT_ExportRig(bpy.types.Operator, ExportHelper):
 						f.write("\t\t\t</angularX>\n")
 					
 					if rbc.use_limit_ang_y and (rbc.limit_ang_y_lower != 0 or rbc.limit_ang_y_upper != 0):
-						f.write("\t\t\t<angularZ>\n")
+						f.write("\t\t\t<angularY>\n")
 						f.write("\t\t\t\t<limitLower>{:.3g}</limitLower>\n".format(rbc.limit_ang_y_lower / ONE_PI))
 						f.write("\t\t\t\t<limitUpper>{:.3g}</limitUpper>\n".format(rbc.limit_ang_y_upper / ONE_PI))
 						#f.write("\t\t\t\t<staticFriction>{}</staticFriction>\n")
 						#f.write("\t\t\t\t<kinematicFriction>{}</kinematicFriction>\n")
 						if rbc.use_spring_ang_y:
 							f.write("\t\t\t\t<springStiffness>{:.3g}</springStiffness>\n".format(rbc.spring_stiffness_ang_y))
-						f.write("\t\t\t</angularZ>\n")
+						f.write("\t\t\t</angularY>\n")
 					
 					if rbc.use_limit_ang_z and (rbc.limit_ang_z_lower != 0 or rbc.limit_ang_z_upper != 0):
-						f.write("\t\t\t<angularY>\n")
+						f.write("\t\t\t<angularZ>\n")
 						f.write("\t\t\t\t<limitLower>{:.3g}</limitLower>\n".format(rbc.limit_ang_z_lower / ONE_PI))
 						f.write("\t\t\t\t<limitUpper>{:.3g}</limitUpper>\n".format(rbc.limit_ang_z_upper / ONE_PI))
 						#f.write("\t\t\t\t<staticFriction>{}</staticFriction>\n")
 						#f.write("\t\t\t\t<kinematicFriction>{}</kinematicFriction>\n")
 						if rbc.use_spring_ang_z:
 							f.write("\t\t\t\t<springStiffness>{:.3g}</springStiffness>\n".format(rbc.spring_stiffness_ang_z))
-						f.write("\t\t\t</angularY>\n")
+						f.write("\t\t\t</angularZ>\n")
 					
 					if rbc.use_limit_lin_x and (rbc.limit_lin_x_lower != 0 or rbc.limit_lin_x_upper != 0):
 						f.write("\t\t\t<linearX>\n")
@@ -488,24 +488,24 @@ class OBJECT_OT_ExportRig(bpy.types.Operator, ExportHelper):
 						f.write("\t\t\t</linearX>\n")
 					
 					if rbc.use_limit_lin_y and (rbc.limit_lin_y_lower != 0 or rbc.limit_lin_y_upper != 0):
-						f.write("\t\t\t<linearZ>\n")
+						f.write("\t\t\t<linearY>\n")
 						f.write("\t\t\t\t<limitLower>{:.4g}</limitLower>\n".format(rbc.limit_lin_y_lower))
 						f.write("\t\t\t\t<limitUpper>{:.4g}</limitUpper>\n".format(rbc.limit_lin_y_upper))
 						#f.write("\t\t\t\t<staticFriction>{}</staticFriction>\n")
 						#f.write("\t\t\t\t<kinematicFriction>{}</kinematicFriction>\n")
 						if rbc.use_spring_y:
 							f.write("\t\t\t\t<springStiffness>{:.3g}</springStiffness>\n".format(rbc.spring_stiffness_y))
-						f.write("\t\t\t</linearZ>\n")
+						f.write("\t\t\t</linearY>\n")
 					
 					if rbc.use_limit_lin_z and (rbc.limit_lin_z_lower != 0 or rbc.limit_lin_z_upper != 0):
-						f.write("\t\t\t<linearY>\n")
+						f.write("\t\t\t<linearZ>\n")
 						f.write("\t\t\t\t<limitLower>{:.4g}</limitLower>\n".format(rbc.limit_lin_z_lower))
 						f.write("\t\t\t\t<limitUpper>{:.4g}</limitUpper>\n".format(rbc.limit_lin_z_upper))
 						#f.write("\t\t\t\t<staticFriction>{}</staticFriction>\n")
 						#f.write("\t\t\t\t<kinematicFriction>{}</kinematicFriction>\n")
 						if rbc.use_spring_z:
 							f.write("\t\t\t\t<springStiffness>{:.3g}</springStiffness>\n".format(rbc.spring_stiffness_z))
-						f.write("\t\t\t</linearY>\n")
+						f.write("\t\t\t</linearZ>\n")
 						
 					f.write("\t\t</constraint>\n")
 				
