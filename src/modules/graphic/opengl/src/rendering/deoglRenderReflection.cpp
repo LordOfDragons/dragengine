@@ -418,7 +418,6 @@ deoglRenderBase( renderThread )
 		if( config.GetDefRenEncDepth() ){
 			defines.AddDefine( "DECODE_IN_DEPTH", true );
 		}
-		defines.AddDefine( "MATERIAL_NORMAL_DEC_INTBASIC", true );
 		if( pUseEquiEnvMap ){
 			defines.AddDefine( "ENVMAP_EQUI", true );
 		}
