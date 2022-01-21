@@ -58,10 +58,11 @@ pin Dragengine.Utils
  * \code{.ds}
  * class MyElement extends BehaviorElementClass
  *    public func new()
- *       ECBehaviorComponent.new(this)
- *       var DynamicSkin dynamicSkin = ECBehaviorDynamicSkin.new(this)
- *       var ECBehaviorCamera camera1 = ECBehaviorCamera.new(this, "camera1")
- *       var ECBehaviorCamera camera2 = ECBehaviorCamera.new(this, "camera2")
+ *       var ECBehaviorComponent component = ECBehaviorComponent.new(this, null)
+ *       var ECBehaviorCollider collider = ECBehaviorCollider.new(this, component)
+ *       var DynamicSkin dynamicSkin = ECBehaviorDynamicSkin.new(this, component)
+ *       var ECBehaviorCamera camera1 = ECBehaviorCamera.new(this, collider, "camera1")
+ *       var ECBehaviorCamera camera2 = ECBehaviorCamera.new(this, collider, "camera2")
  *       
  *       var ECBehaviorRenderableCamera behavior = ECBehaviorRenderableCamera.new(this, dynamicSkin, camera1)
  *       behavior.getRenderable().setValue("camera1")
