@@ -1,0 +1,532 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2022, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.LoadSave
+pin Dragengine.Preloading
+pin Dragengine.Utils
+
+
+/**
+ * \brief Behavior element behavior adding support to define grab spot for actors.
+ * \version 1.9
+ * 
+ * Defines position and orientation where the actor can grab the owner element. Grab spots
+ * are typically used for physics interaction like VR hand use but can be used also with
+ * mouse interaction. The actual grabbing interaction, exact grab location and orientation
+ * as well as attaching logic is handled by other behaviors using listening. This behavior
+ * also tracks if an actor is grabbing the grab spot. Hence at most one actor can grab an
+ * grab spot at each time.
+ * 
+ * Elements able to grab a grab spot have to use the ECBehaviorGrabber behavior. Both the
+ * grab spot and the grabber have to persist the other behavior. During restoring no
+ * notifications are triggered this way.
+ * 
+ * Element class properties have the prefix "grabSpot{(id)}.".
+ * 
+ * This behavior uses no other behaviors.
+ * 
+ * This behavior does require the element class to be persistable (setPersistable).
+ */
+class ECBehaviorGrabSpot extends DefaultECBehavior
+	/** \brief Listener for behavior instance events. */
+	interface Listener
+		/** \brief Grabber has grabbed spot. */
+		func void spotGrabbed(Instance instance, ECBehaviorGrabber.Instance grabber)
+		
+		/** \brief Grabber has release spot. */
+		func void spotReleased(Instance instance, ECBehaviorGrabber.Instance grabber)
+	end
+	
+	/** \brief Default implementation of behavior instance listener. */
+	class DefaultListener implements Listener
+		/** \brief Create default listener. */
+		public func new()
+		end
+		
+		/** \brief Grabber has grabbed spot. */
+		public func void spotGrabbed(Instance instance, ECBehaviorGrabber.Instance grabber)
+		end
+		
+		/** \brief Grabber has release spot. */
+		public func void spotReleased(Instance instance, ECBehaviorGrabber.Instance grabber)
+		end
+	end
+	
+	/** \brief Factory creating listeners. */
+	interface ListenerFactory
+		/** \brief Create listener. */
+		func Listener createListener(Instance instance)
+	end
+	
+	/** \brief Factory creating listeners using block. */
+	class BlockListenerFactory implements ListenerFactory
+		private var Block pBlock
+		
+		/** \brief Create factory using block receiving Instance as parameter returning Listener. */
+		public func new(Block blockFactory)
+			if blockFactory == null
+				throw ENullPointer.new("blockFactory")
+			end
+			pBlock = blockFactory
+		end
+		
+		/** \brief Create listener. */
+		public func Listener createListener(Instance instance)
+			return pBlock.run(instance) cast Listener
+		end
+	end
+	
+	
+	
+	/** \brief Behavior instance. */
+	class Instance extends DefaultECBehaviorInstance
+		private var ECBehaviorGrabSpot pECBehavior
+		private var ECBehaviorComponent.Instance pComponent
+		private var Vector pPosition
+		private var Quaternion pOrientation
+		private var String pBone
+		private var ECBehaviorGrabber.Instance pGrabber
+		private var ElementResolver pElementResolver
+		private var Array pListeners
+		
+		
+		
+		/** \brief Create element. */
+		public func new(ECBehaviorGrabSpot ecbehavior, BehaviorElement element) super(element)
+			pECBehavior = ecbehavior
+			pListeners = Array.new()
+			
+			if ecbehavior.getComponent() != null
+				pComponent = ecbehavior.getComponent().instance(element)
+			end
+		end
+		
+		/** \brief Dispose of behavior instance. */
+		public func void dispose()
+			release()
+			
+			pListeners = null
+			pElementResolver = null
+			pComponent = null
+			
+			super.dispose()
+		end
+		
+		
+		
+		/** \brief Initialize element from stub. */
+		public func void init(StubElement stub)
+			var CodecPropertyString codec = getElement().getClass().getCodecPropertyString()
+			pPosition = pECBehavior.getPosition().getVector(stub, codec)
+			pOrientation = Quaternion.newFromEuler(pECBehavior.getOrientation().getVector(stub, codec))
+			pBone = pECBehavior.getBone().getValue(stub)
+			
+			pECBehavior.createListeners(this)
+		end
+		
+		
+		
+		/** \brief Behavior. */
+		public func ECBehaviorGrabSpot getECBehavior()
+			return pECBehavior
+		end
+		
+		/** \brief Component behavior instance or null. */
+		public func ECBehaviorComponent.Instance getComponent()
+			return pComponent
+		end
+		
+		/** \brief Interaction position. */
+		public func Vector getPosition()
+			return pPosition
+		end
+		
+		/** \brief Interaction orientation. */
+		public func Quaternion getOrientation()
+			return pOrientation
+		end
+		
+		/** \brief Name of bone the position is relative to or empty string if not used. */
+		public func String getBone()
+			return pBone
+		end
+		
+		/** \brief Grab matrix relative to element. */
+		public func Matrix getMatrix()
+			var Matrix matrix = Matrix.newWorld(pPosition, pOrientation)
+			if not pBone.empty() and pComponent != null and pComponent.getComponent() != null
+				matrix = matrix * pComponent.getComponent().getBoneMatrix(pBone)
+			end
+			return matrix
+		end
+		
+		/** \brief Inverse grab matrix relative to element. */
+		public func Matrix getInverseMatrix()
+			return getMatrix().getInverse()
+		end
+		
+		/** \brief Grab matrix in world space. */
+		public func DMatrix getWorldMatrix()
+			return getMatrix().toDMatrix() * getElement().getElementMatrix()
+		end
+		
+		/** \brief Inverse grab matrix in world space. */
+		public func DMatrix getInverseWorldMatrix()
+			return getWorldMatrix().getInverse()
+		end
+		
+		/** \brief Element resolver used during loading or \em null if not set. */
+		public func ElementResolver getElementResolver()
+			return pElementResolver
+		end
+		
+		
+		
+		/** \brief Grabber or \em null. */
+		public func ECBehaviorGrabber.Instance getGrabber()
+			return pGrabber
+		end
+		
+		/** \brief Spot is not grabbed. */
+		public func bool isNotGrabbed()
+			return pGrabber == null
+		end
+		
+		/** \brief Spot is grabbed. */
+		public func bool isGrabbed()
+			return pGrabber != null
+		end
+		
+		/** \brief Element is grabbing spot. */
+		public func bool isGrabbing(BehaviorElement element)
+			return pGrabber != null and pGrabber.getElement() == element
+		end
+		
+		/** \brief Element is not grabbing spot. */
+		public func bool isNotGrabbing(BehaviorElement element)
+			return pGrabber == null or pGrabber.getElement() != element
+		end
+		
+		/**
+		 * \brief Grabber can grab spot.
+		 * \retval false Spot is not grabbed.
+		 * \retval false Grabber is already grabbing another spot.
+		 * \retval true Grabbing is possible
+		 */
+		public func bool canGrab(ECBehaviorGrabber.Instance grabber)
+			return pGrabber == null and not grabber.isGrabbing()
+		end
+		
+		
+		/**
+		 * \brief Grab spot.
+		 * \throws EInvalidParam \em grabber is \em null.
+		 * \throws EInvalidParam Spot is not grabbed.
+		 * \throws EInvalidParam \em grabber is already grabbing  another spot.
+		 */
+		public func void grab(ECBehaviorGrabber.Instance grabber)
+			if pGrabber != null
+				throw ENullPointer.new("grabber")
+			end
+			if grabber.isGrabbing()
+				throw EInvalidParam.new("grabber is grabbing  another grab slot")
+			end
+			
+			grabber.setGrabSpot(this)
+			pGrabber = grabber
+			
+			pListeners.forEach(block Listener each
+				each.spotGrabbed(this, grabber)
+			end)
+		end
+		
+		/** \brief Release spot if grabbed. */
+		public func void release()
+			if pGrabber == null
+				return
+			end
+			
+			var ECBehaviorGrabber.Instance grabber = pGrabber
+			grabber.setGrabSpot(null)
+			pGrabber = null
+			
+			pListeners.forEach(block Listener each
+				each.spotReleased(this, grabber)
+			end)
+		end
+		
+		
+		
+		/** \brief Add listener. */
+		public func void addListener(Listener listener)
+			if listener == null
+				throw ENullPointer.new("listener")
+			end
+			pListeners.add(listener)
+		end
+		
+		/** \brief Remove listener. */
+		public func void removeListener(Listener listener)
+			pListeners.remove(listener)
+		end
+		
+		
+		
+		/** \brief Frame update started. */
+		public func void enterFrame()
+			if pElementResolver != null
+				pElementResolver.resolve(getElement().getGameWorld())
+				pElementResolver = null
+			end
+		end
+		
+		
+		
+		/** \brief Read element from file. */
+		public func void readFromFile(PersistencyEnvironment env, FileReader reader)
+			select reader.readByte() // version
+			case 0
+				var PersistencyFlags flags = PersistencyFlags.new(1, reader)
+				
+				if flags.getAt(0)
+					pElementResolver = ElementResolver.new()
+					pElementResolver.addBehavior(reader, block ECBehaviorGrabber.Instance grabber
+						pGrabber = grabber
+					end)
+					setRequiresEnterFrame(true)
+				end
+				
+			else
+				throw EInvalidParam.new("unsupported version")
+			end
+		end
+		
+		/** \brief Write element to file. */
+		public func void writeToFile(PersistencyEnvironment env, FileWriter writer)
+			writer.writeByte(0) // version
+			
+			var PersistencyFlags flags = PersistencyFlags.new(1)
+			flags.setAt(0, pGrabber != null)
+			flags.writeToFile(writer)
+			
+			if pGrabber != null
+				ElementResolver.writeToFileBehavior(writer, pGrabber)
+			end
+		end
+	end
+	
+	
+	
+	private var ECBehaviorComponent pComponent
+	private var ECPVector pPosition
+	private var ECPVector pOrientation
+	private var ECPString pBone
+	private var Array pListenerFactories
+	
+	
+	
+	/**
+	 * \brief Create behavior element class.
+	 * 
+	 * Component behavior is optional and only required if bone is to be used.
+	 */
+	public func new(BehaviorElementClass eclass, ECBehaviorComponent component) this(eclass, component, "")
+	end
+	
+	public func new(BehaviorElementClass eclass, ECBehaviorComponent component, String id) \
+	this(eclass, component, id, id.empty() if "grabSpot." else "grabSpot(" + id + ").")
+	end
+	
+	public func new(BehaviorElementClass eclass, ECBehaviorComponent component,\
+	String id, String prefix) super(eclass, id)
+		pComponent = component
+		pListenerFactories = Array.new()
+		
+		pPosition = ECPVector.new(prefix + "position")
+		eclass.addProperty(pPosition)
+		
+		pOrientation = ECPVector.new(prefix + "orientation")
+		eclass.addProperty(pOrientation)
+		
+		pBone = ECPString.new(prefix + "bone", "")
+		eclass.addProperty(pBone)
+		
+		eclass.addBehavior(this)
+	end
+	
+	/** \brief Dispose of behavior. */
+	public func void dispose()
+		pListenerFactories = null
+		pComponent = null
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief Component behavior or null. */
+	public func ECBehaviorComponent getComponent()
+		return pComponent
+	end
+	
+	/** \brief Set component behavior or null. */
+	public func void setComponent(ECBehaviorComponent component)
+		pComponent = component
+	end
+	
+	/** \brief Interaction position. */
+	public func ECPVector getPosition()
+		return pPosition
+	end
+	
+	/** \brief Interaction orientation. */
+	public func ECPVector getOrientation()
+		return pOrientation
+	end
+	
+	/** \brief Name of bone the position is relative to or empty string if not used. */
+	public func ECPString getBone()
+		return pBone
+	end
+	
+	/** \brief Add listener factory. */
+	public func void addListenerFactory(ListenerFactory factory)
+		if factory == null
+			throw ENullPointer.new("factory")
+		end
+		pListenerFactories.add(factory)
+	end
+	
+	/**
+	 * \brief Add listener factory using block.
+	 * 
+	 * Block receives as parameter Instance and returns Listener.
+	 */
+	public func void addListenerFactory(Block blockFactory)
+		pListenerFactories.add(BlockListenerFactory.new(blockFactory))
+	end
+	
+	/** \brief Visit listener factories with block with argument ListenerFactory. */
+	public func void forEachListenerFactory(Block ablock)
+		pListenerFactories.forEach(ablock)
+	end
+	
+	/** \brief Create listeners from factories adding them to behavior instance. */
+	public func void createListeners(Instance instance)
+		pListenerFactories.forEach(block ListenerFactory each
+			instance.addListener(each.createListener(instance))
+		end)
+	end
+	
+	
+	
+	/** \brief Get instance in element from owner element class. */
+	public func Instance instance(BehaviorElement element)
+		return element.getInstanceAt(getInstanceIndex()) cast Instance
+	end
+	
+	
+	
+	/**
+	 * \brief Get behavior in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorComponent.
+	 */
+	static public func ECBehaviorGrabSpot getBehaviorIn(BehaviorElementClass eclass)
+		return eclass.findBehavior(block ECBehaviorGrabSpot each
+			return true
+		end) cast ECBehaviorGrabSpot
+	end
+	
+	/**
+	 * \brief Get behavior with id in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorGrabSpot with specific identifier.
+	 */
+	static public func ECBehaviorGrabSpot getBehaviorIn(BehaviorElementClass eclass, String id)
+		return eclass.findBehavior(block ECBehaviorGrabSpot each
+			return each.getID().equals(id)
+		end) cast ECBehaviorGrabSpot
+	end
+	
+	/**
+	 * \brief Get list of all behaviors in element.
+	 * 
+	 * Returns list contains ECBehaviorGrabSpot behaviors in the order they have
+	 * been created in the element.
+	 */
+	static public func Array getAllBehaviorsIn(BehaviorElementClass eclass)
+		return eclass.collectBehaviors(block ECBehaviorGrabSpot each
+			return true
+		end)
+	end
+	
+	
+	
+	/**
+	 * \brief Get instance in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorGrabSpot.Instance . If more than one instance is present returns
+	 * the first instance.
+	 */
+	static public func Instance getInstanceIn(BehaviorElement element)
+		return element.findInstance(block Instance each
+			return true
+		end) cast Instance
+	end
+	
+	/**
+	 * \brief Get instance with id in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorGrabSpot.Instance with specific identifier.
+	 */
+	static public func Instance getInstanceIn(BehaviorElement element, String id)
+		return element.findInstance(block Instance each
+			return each.getECBehavior().getID().equals(id)
+		end) cast Instance
+	end
+	
+	/**
+	 * \brief Get list of all instances in element.
+	 * 
+	 * Returns list contains ECBehaviorGrabSpot.Instance instances in the order they have
+	 * been created in the element.
+	 */
+	static public func Array getAllInstancesIn(BehaviorElement element)
+		return element.collectInstances(block Instance each
+			return true
+		end)
+	end
+	
+	
+	
+	/** \brief Create Behavior instance. */
+	public func ECBehaviorInstance createInstance(BehaviorElement element)
+		return Instance.new(this, element)
+	end
+end
