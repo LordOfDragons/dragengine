@@ -23,6 +23,7 @@
 namespace Dragengine.Scenery
 
 pin Dragengine.Gui
+pin Dragengine.LoadSave
 pin Dragengine.Preloading
 pin Dragengine.Utils
 pin Dragengine.Scenery
@@ -238,6 +239,48 @@ class ECBehaviorOccupier extends DefaultECBehavior
 			pListeners.remove(listener)
 		end
 		
+		
+		
+		/** \brief Frame update started. */
+		public func void enterFrame()
+			if pElementResolver != null
+				pElementResolver.resolve(getElement().getGameWorld())
+				pElementResolver = null
+			end
+		end
+		
+		
+		
+		/** \brief Read element from file. */
+		public func void readFromFile(PersistencyEnvironment env, FileReader reader)
+			select reader.readByte() // version
+			case 0
+				var PersistencyFlags flags = PersistencyFlags.new(1, reader)
+				
+				if flags.getAt(0)
+					pElementResolver = ElementResolver.new()
+					pElementResolver.addBehavior(reader, block ECBehaviorInteractionSpot.Instance spot
+						pInteractionSpot = spot
+					end)
+					setRequiresEnterFrame(true)
+				end
+				
+			else
+				throw EInvalidParam.new("unsupported version")
+			end
+		end
+		
+		/** \brief Write element to file. */
+		public func void writeToFile(PersistencyEnvironment env, FileWriter writer)
+			writer.writeByte(0) // version
+			
+			var PersistencyFlags flags = PersistencyFlags.new(1)
+			flags.setAt(0, pInteractionSpot != null)
+			flags.writeToFile(writer)
+			
+			if pInteractionSpot != null
+				ElementResolver.writeToFileBehavior(writer, pInteractionSpot)
+			end
 		end
 	end
 	

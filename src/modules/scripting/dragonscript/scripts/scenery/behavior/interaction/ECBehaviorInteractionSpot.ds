@@ -308,15 +308,15 @@ class ECBehaviorInteractionSpot extends DefaultECBehavior
 		public func void readFromFile(PersistencyEnvironment env, FileReader reader)
 			select reader.readByte() // version
 			case 0
-				if not env.readBool( reader )
-					return
-				end
+				var PersistencyFlags flags = PersistencyFlags.new(1, reader)
 				
-				this.pElementResolver = ElementResolver.new()
-				this.pElementResolver.addBehavior( reader, block ECBehaviorOccupier.Instance occupier
-					this.claim( occupier )
-				end )
-				this.setRequiresEnterFrame( true )
+				if flags.getAt(0)
+					pElementResolver = ElementResolver.new()
+					pElementResolver.addBehavior(reader, block ECBehaviorOccupier.Instance occupier
+						pOccupier = occupier
+					end)
+					setRequiresEnterFrame(true)
+				end
 				
 			else
 				throw EInvalidParam.new("unsupported version")
@@ -327,10 +327,12 @@ class ECBehaviorInteractionSpot extends DefaultECBehavior
 		public func void writeToFile(PersistencyEnvironment env, FileWriter writer)
 			writer.writeByte(0) // version
 			
+			var PersistencyFlags flags = PersistencyFlags.new(1)
+			flags.setAt(0, pOccupier != null)
+			flags.writeToFile(writer)
 			
-			env.writeBool( writer, this.pOccupier != null )
-			if this.pOccupier != null
-				ElementResolver.writeToFileBehavior( writer, this.pOccupier )
+			if pOccupier != null
+				ElementResolver.writeToFileBehavior(writer, pOccupier)
 			end
 		end
 	end
