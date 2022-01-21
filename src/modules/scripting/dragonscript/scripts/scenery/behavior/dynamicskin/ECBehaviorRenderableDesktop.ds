@@ -90,6 +90,36 @@ pin Dragengine.Utils
  * This behavior does not require the element class to be persistable (setPersistable).
  */
 class ECBehaviorRenderableDesktop extends DefaultECBehavior
+	/**
+	 * \brief Create renderable desktop content.
+	 * \version 1.9
+	 */
+	interface ContentCreator
+		/** \brief Create content. */
+		func void createContent(Instance instance)
+	end
+	
+	/**
+	 * \brief Factory creating renderable content using block.
+	 * \version 1.9
+	 */
+	class BlockContentCreator implements ContentCreator
+		private var Block pBlock
+		
+		/** \brief Create content using block receiving Instance as parameter. */
+		public func new(Block blockFactory)
+			if blockFactory == null
+				throw ENullPointer.new()
+			end
+			pBlock = blockFactory
+		end
+		
+		/** \brief Create content. */
+		public func void createContent(Instance instance)
+			pBlock.run(instance)
+		end
+	end
+	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
 		private var ECBehaviorRenderableDesktop pECBehavior
@@ -163,6 +193,9 @@ class ECBehaviorRenderableDesktop extends DefaultECBehavior
 			pRenderableSolidity = dynamicSkin.getRenderableCount()
 			dynamicSkin.addRenderable(renderableName, DynamicSkinRenderableType.canvas)
 			dynamicSkin.setCanvasAt(pRenderableSolidity, pCanvasViewSolidity, 1)
+			
+			// create content using content creators
+			pECBehavior.createContent(this)
 		end
 		
 		
@@ -196,6 +229,7 @@ class ECBehaviorRenderableDesktop extends DefaultECBehavior
 	private var ECPGuiTheme pGuiTheme
 	private var ECPString pDesignerSelector
 	private var ECPString pRenderableSolidity
+	private var Array pContentCreators
 	
 	
 	
@@ -223,6 +257,7 @@ class ECBehaviorRenderableDesktop extends DefaultECBehavior
 		end
 		
 		pDynamicSkin = dynamicSkin
+		pContentCreators = Array.new()
 		
 		pRenderable = ECPString.new(prefix + "renderable", "")
 		eclass.addProperty(pRenderable)
@@ -245,6 +280,7 @@ class ECBehaviorRenderableDesktop extends DefaultECBehavior
 	
 	/** \brief Dispose of behavior. */
 	public func void dispose()
+		pContentCreators = null
 		pDynamicSkin = null
 		super.dispose()
 	end
@@ -285,6 +321,47 @@ class ECBehaviorRenderableDesktop extends DefaultECBehavior
 	 */
 	public func ECPString getRenderableSolidity()
 		return pRenderableSolidity
+	end
+	
+	
+	
+	/**
+	 * \brief Add content creator.
+	 * \version 1.9
+	 */
+	public func void addContentCreator(ContentCreator creator)
+		if creator == null
+			throw ENullPointer.new("creator")
+		end
+		pContentCreators.add(creator)
+	end
+	
+	/**
+	 * \brief Add content creator using block.
+	 * \version 1.9
+	 * 
+	 * Block receives as parameter Instance.
+	 */
+	public func void addContentCreator(Block blockCreator)
+		pContentCreators.add(BlockContentCreator.new(blockCreator))
+	end
+	
+	/**
+	 * \brief Visit content creators with block with argument ContentCreator.
+	 * \version 1.9
+	 */
+	public func void forEachContentCreator(Block ablock)
+		pContentCreators.forEach(ablock)
+	end
+	
+	/**
+	 * \brief Create content using creators.
+	 * \version 1.9
+	 */
+	public func void createContent(Instance instance)
+		pContentCreators.forEach(block ContentCreator each
+			each.createContent(instance)
+		end)
 	end
 	
 	
