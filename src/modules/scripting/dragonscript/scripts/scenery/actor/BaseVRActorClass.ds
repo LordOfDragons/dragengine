@@ -43,6 +43,8 @@ class BaseVRActorClass extends BaseActorClass
 	private var ECBehaviorVRHandPointAt pVRLeftHandPointAt
 	private var ECBehaviorVRHandLaserPointer pVRRightHandLaserPointer
 	private var ECBehaviorVRHandLaserPointer pVRLeftHandLaserPointer
+	private var ECBehaviorGrabber pVRRightHandGrabber
+	private var ECBehaviorGrabber pVRLeftHandGrabber
 	
 	
 	
@@ -91,6 +93,10 @@ class BaseVRActorClass extends BaseActorClass
 		// add support for laser pointers on hand controllers
 		pVRRightHandLaserPointer = ECBehaviorVRHandLaserPointer.new(this, pVRRightHandPointAt, "right")
 		pVRLeftHandLaserPointer = ECBehaviorVRHandLaserPointer.new(this, pVRLeftHandPointAt, "left")
+		
+		// add support for grabbing grab slots using hand controllers
+		pVRRightHandGrabber = ECBehaviorGrabber.new(this, "vrHandRight")
+		pVRLeftHandGrabber = ECBehaviorGrabber.new(this, "vrHandLeft")
 	end
 	
 	
@@ -145,6 +151,22 @@ class BaseVRActorClass extends BaseActorClass
 	 */
 	public func ECBehaviorVRHandLaserPointer getVRLeftHandLaserPointer()
 		return pVRLeftHandLaserPointer
+	end
+	
+	/**
+	 * \brief VR Right Hand Controller Grabber.
+	 * \version 1.9
+	 */
+	public func ECBehaviorGrabber getVRRightHandGrabber()
+		return pVRRightHandGrabber
+	end
+	
+	/**
+	 * \brief VR Left Hand Controller Grabber.
+	 * \version 1.9
+	 */
+	public func ECBehaviorGrabber getVRLeftHandGrabber()
+		return pVRLeftHandGrabber
 	end
 	
 	

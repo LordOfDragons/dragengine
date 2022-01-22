@@ -104,6 +104,18 @@ class BAAFirstPersonVR extends BAAFirstPerson
 	 */
 	protected var ECBehaviorVRHandLaserPointer.Instance vrLeftHandLaserPointer
 	
+	/**
+	 * \brief VR Right Hand Controller Grabber behavior.
+	 * \version 1.9
+	 */
+	protected var ECBehaviorGrabber.Instance vrRightHandGrabber
+	
+	/**
+	 * \brief VR Left Hand Controller Grabber behavior.
+	 * \version 1.9
+	 */
+	protected var ECBehaviorGrabber.Instance vrLeftHandGrabber
+	
 	
 	
 	/** \brief Create actor action. */
@@ -154,6 +166,7 @@ class BAAFirstPersonVR extends BAAFirstPerson
 	
 	/**
 	 * \brief VR Right Hand Controller Laser Pointer.
+	 * \version 1.7
 	 */
 	public func ECBehaviorVRHandLaserPointer.Instance getVRRightHandLaserPointer()
 		return vrRightHandLaserPointer
@@ -165,6 +178,22 @@ class BAAFirstPersonVR extends BAAFirstPerson
 	 */
 	public func ECBehaviorVRHandLaserPointer.Instance getVRLeftHandLaserPointer()
 		return vrLeftHandLaserPointer
+	end
+	
+	/**
+	 * \brief VR Right Hand Controller Grabber.
+	 * \version 1.9
+	 */
+	public func ECBehaviorGrabber.Instance getVRRightHandGrabber()
+		return vrRightHandGrabber
+	end
+	
+	/**
+	 * \brief VR Left Hand Controller Grabber.
+	 * \version 1.9
+	 */
+	public func ECBehaviorGrabber.Instance getVRLeftHandGrabber()
+		return vrLeftHandGrabber
 	end
 	
 	
@@ -230,6 +259,8 @@ class BAAFirstPersonVR extends BAAFirstPerson
 			vrLeftHandPointAt = vrActor.getVRLeftHandPointAt()
 			vrRightHandLaserPointer = vrActor.getVRRightHandLaserPointer()
 			vrLeftHandLaserPointer = vrActor.getVRLeftHandLaserPointer()
+			vrRightHandGrabber = vrActor.getVRRightHandGrabber()
+			vrLeftHandGrabber = vrActor.getVRLeftHandGrabber()
 			
 		else
 			vrPlayspace = ECBehaviorVRPlayspace.getInstanceIn(actor)
@@ -240,6 +271,8 @@ class BAAFirstPersonVR extends BAAFirstPerson
 			vrLeftHandPointAt = ECBehaviorVRHandPointAt.getInstanceIn(actor, "left")
 			vrRightHandLaserPointer = ECBehaviorVRHandLaserPointer.getInstanceIn(actor, "right")
 			vrLeftHandLaserPointer = ECBehaviorVRHandLaserPointer.getInstanceIn(actor, "left")
+			vrRightHandGrabber = ECBehaviorGrabber.getInstanceIn(actor, "vrHandRight")
+			vrLeftHandGrabber = ECBehaviorGrabber.getInstanceIn(actor, "vrHandLeft")
 		end
 	end
 	
