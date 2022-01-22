@@ -23,25 +23,28 @@
 namespace Dragengine.Scenery
 
 pin Dragengine.Gui
+pin Dragengine.LoadSave
 pin Dragengine.Preloading
 pin Dragengine.Utils
 pin Dragengine.Scenery
 
 
 /**
- * \brief Behavior element behavior adding support to uccipy an ECBehaviorGrabSpot.
+ * \brief Behavior element behavior adding support to grab an ECBehaviorGrabSpot.
  * \version 1.9
  * 
- * Defines position and orientation where the actor can grab the owner element. Grab spots
- * are typically used for physics interaction like VR hand use but can be used also with
- * mouse interaction. The actual grabbing interaction, exact grab location and orientation
- * as well as attaching logic is handled by other behaviors using listening. This behavior
- * also tracks if an actor is grabbing the grab spot. Hence at most one actor can grab an
- * grab spot at each time.
+ * Grab spots are typically used for physics interaction like VR hand use but can be used
+ * also with mouse interaction. The actual grabbing interaction, exact grab location and
+ * orientation as well as attaching logic is handled by other behaviors using listening.
+ * This behavior also tracks if what grab spot an actor is grabbing. Hence at most one
+ * grab spot can be grabbed by this behavior at each time.
  * 
- * Elements able to grab a grab spot have to use the ECBehaviorGrabber behavior. Both the
+ * Elements able to be grabbed have to use the ECBehaviorGrabSpot behavior. Both the
  * grab spot and the grabber have to persist the other behavior. During restoring no
  * notifications are triggered this way.
+ * 
+ * Do detect grab spots a touch sensor is added with a default sphere shape. By default
+ * the touch sensor is disabled and has to be enabled if the game logic allows grabbing.
  * 
  * Element class properties have the prefix "grabber{(id)}.".
  * 
@@ -57,6 +60,22 @@ class ECBehaviorGrabber extends DefaultECBehavior
 		
 		/** \brief Grabber released grab spot. */
 		func void spotReleased(Instance instance, ECBehaviorGrabSpot.Instance grabSpot)
+		
+		/** \brief Start touching grab spot. */
+		func void touchGrabSpot(Instance instance, ECBehaviorGrabSpot.Instance grabSpot)
+		
+		/** \brief Stop touching grab spot. */
+		func void untouchGrabSpot(Instance instance, ECBehaviorGrabSpot.Instance grabSpot)
+		
+		/**
+		 * \brief Grab spot can be touched.
+		 * 
+		 * Grab spot can be touched if all listeners return true.
+		 */
+		func bool canTouchGrabSpot(Instance instance, ECBehaviorGrabSpot.Instance grabSpot)
+		
+		/** \brief Grabber enabled changed. */
+		func void enabledChanged(Instance instance)
 	end
 	
 	/** \brief Default implementation of behavior instance listener. */
@@ -71,6 +90,28 @@ class ECBehaviorGrabber extends DefaultECBehavior
 		
 		/** \brief Grabber released grab spot. */
 		public func void spotReleased(Instance instance, ECBehaviorGrabSpot.Instance grabSpot)
+		end
+		
+		/** \brief Start touching grab spot. */
+		public func void touchGrabSpot(Instance instance, ECBehaviorGrabSpot.Instance grabSpot)
+		end
+		
+		/** \brief Stop touching grab spot. */
+		public func void untouchGrabSpot(Instance instance, ECBehaviorGrabSpot.Instance grabSpot)
+		end
+		
+		/**
+		 * \brief Grab spot can be touched.
+		 * 
+		 * Grab spot can be touched if all listeners return true.
+		 * Default implementation returns true.
+		 */
+		public func bool canTouchGrabSpot(Instance instance, ECBehaviorGrabSpot.Instance grabSpot)
+			return true
+		end
+		
+		/** \brief Grabber enabled changed. */
+		public func void enabledChanged(Instance instance)
 		end
 	end
 	
@@ -101,23 +142,38 @@ class ECBehaviorGrabber extends DefaultECBehavior
 	
 	
 	/** \brief Behavior instance. */
-	class Instance extends DefaultECBehaviorInstance
+	class Instance extends DefaultECBehaviorInstance implements TouchSensorListener
 		private var ECBehaviorGrabber pECBehavior
+		private var ECBehaviorCollider.Instance pCollider
+		private var ECBehaviorVRHand.Instance pVRHand
 		private var ECBehaviorGrabSpot.Instance pGrabSpot
+		private var TouchSensor pTouchSensor
+		private var Array pTouchingGrabSpots
 		private var Array pListeners
+		private var bool pEnabled
 		
 		
 		
 		/** \brief Create element. */
 		public func new(ECBehaviorGrabber ecbehavior, BehaviorElement element) super(element)
 			pECBehavior = ecbehavior
+			pTouchingGrabSpots = Array.new()
 			pListeners = Array.new()
 		end
 		
 		/** \brief Dispose of claim spot. */
 		public func void dispose()
 			release()
+			
+			if pTouchSensor != null
+				pTouchSensor.setListener(null)
+				pTouchSensor = null
+			end
+			pTouchingGrabSpots = null
+			pVRHand = null
+			pCollider = null
 			pListeners = null
+			
 			super.dispose()
 		end
 		
@@ -125,7 +181,57 @@ class ECBehaviorGrabber extends DefaultECBehavior
 		
 		/** \brief Initialize behavior from stub. */
 		public func void init(StubElement stub)
+			pTouchSensor = createTouchSensor(stub)
+			
+			if pECBehavior.getVRHand() != null
+				pVRHand = pECBehavior.getVRHand().instance(getElement())
+				
+			elif pECBehavior.getCollider() != null
+				pCollider = pECBehavior.getCollider().instance(getElement())
+			end
+			
+			if pVRHand != null and pVRHand.getCollider() != null
+				attachTouchSensor(stub, pVRHand)
+				
+			elif pCollider != null and pCollider.getCollider() != null
+				attachTouchSensor(stub, pCollider)
+			end
+			
+			pTouchSensor.setListener(this)
+			
 			pECBehavior.createListeners(this)
+		end
+		
+		/** \brief Create touch sensor. */
+		protected func TouchSensor createTouchSensor(StubElement stub)
+			var TouchSensor touchSensor = TouchSensor.new()
+			
+			touchSensor.setPosition(getElement().getPosition())
+			touchSensor.setOrientation(getElement().getOrientation())
+			touchSensor.setCollisionFilter(pECBehavior.getCollisionFilter().getCollisionFilter())
+			touchSensor.setTrackEnterLeave(true)
+			touchSensor.setShape(pECBehavior.getShape().getShapeList(stub))
+			touchSensor.setEnabled(pEnabled)
+			
+			return touchSensor
+		end
+		
+		/**
+		 * \brief Attach touch sensor to VR hand.
+		 * 
+		 * Default implementation calls ECComposeAttachResource.attach().
+		 */
+		protected func void attachTouchSensor(StubElement stub, ECBehaviorVRHand.Instance vrHand)
+			pECBehavior.getAttach().attach(vrHand.getCollider(), pTouchSensor, stub)
+		end
+		
+		/**
+		 * \brief Attach touch sensor to collider.
+		 * 
+		 * Default implementation calls ECComposeAttachResource.attach().
+		 */
+		protected func void attachTouchSensor(StubElement stub, ECBehaviorCollider.Instance collider)
+			pECBehavior.getAttach().attach(collider.getCollider(), pTouchSensor, stub)
 		end
 		
 		
@@ -134,6 +240,44 @@ class ECBehaviorGrabber extends DefaultECBehavior
 		public func ECBehaviorGrabber getECBehavior()
 			return pECBehavior
 		end
+		
+		/** \brief VR Hand behavior instance or null if not used. */
+		public func ECBehaviorVRHand.Instance getVRHand()
+			return pVRHand
+		end
+		
+		/** \brief Collider behavior instance or null if not used. */
+		public func ECBehaviorCollider.Instance getCollider()
+			return pCollider
+		end
+		
+		/** \brief Touch sensor. */
+		public func TouchSensor getTouchSensor()
+			return pTouchSensor
+		end
+		
+		
+		
+		/** \brief Enable grabber. */
+		public func bool getEnabled()
+			return pEnabled
+		end
+		
+		/** \brief Enable/disable grabber. */
+		public func void setEnabled(bool enabled)
+			if enabled == pEnabled
+				return
+			end
+			
+			pEnabled = enabled
+			pTouchSensor.setEnabled(enabled)
+			
+			pListeners.forEach(block Listener each
+				each.enabledChanged(this)
+			end)
+		end
+		
+		
 		
 		/** \brief Grabbed grab spot or \em null. */
 		public func ECBehaviorGrabSpot.Instance getGrabSpot()
@@ -215,6 +359,91 @@ class ECBehaviorGrabber extends DefaultECBehavior
 		
 		
 		
+		/** \brief Count of touching grab spots. */
+		public func int getTouchingGrabSpotCount()
+			return this.pTouchingGrabSpots.getCount()
+		end
+		
+		/** \brief Touching grab spots at index. */
+		public func ECBehaviorGrabSpot.Instance getTouchingGrabSpotAt(int index)
+			return pTouchingGrabSpots.getAt(index) cast ECBehaviorGrabSpot.Instance
+		end
+		
+		/** \brief Grab spot is touching. */
+		public func bool isGrabSpotTouching(ECBehaviorGrabSpot.Instance grabSpot)
+			return pTouchingGrabSpots.has(grabSpot)
+		end
+		
+		/** \brief Add touching grab spot. */
+		protected func void addTouchingGrabSpot(ECBehaviorGrabSpot.Instance grabSpot)
+			pTouchingGrabSpots.add(grabSpot)
+		end
+		
+		/** \brief Remove touching grab spot. */
+		protected func void removeTouchingGrabSpot(ECBehaviorGrabSpot.Instance grabSpot)
+			pTouchingGrabSpots.remove(grabSpot)
+		end
+		
+		/** \brief Remove all touching grab spots. */
+		protected func void removeAllTouchingGrabSpots()
+			pTouchingGrabSpots.removeAll()
+		end
+		
+		/**
+		 * \brief Visit touching grab spots with block.
+		 * 
+		 * Block is called with signature (ECBehaviorGrabSpot.Instance)
+		 * or (int index, ECBehaviorGrabSpot.Instance).
+		 */
+		public func void forEachTouchingGrabSpot(Block ablock)
+			pTouchingGrabSpots.forEach(ablock)
+		end
+		
+		/**
+		 * \brief Find touching grab spot with block.
+		 * 
+		 * Block is called with signature (ECBehaviorGrabSpot.Instance)
+		 * or (int index, ECBehaviorGrabSpot.Instance) both returning true if found
+		 * or false to continue searching.
+		 * 
+		 * Returns null if no matching grab spot is found.
+		 */
+		public func ECBehaviorGrabSpot.Instance findTouchingGrabSpot(Block ablock)
+			return pTouchingGrabSpots.find(ablock) cast ECBehaviorGrabSpot.Instance
+		end
+		
+		/** \brief Touched grab spot closes to position or null if not found. */
+		public func ECBehaviorGrabSpot.Instance touchingGrabSpotClosestTo(DVector position)
+			var int i, count = pTouchingGrabSpots.getCount()
+			var ECBehaviorGrabSpot.Instance closestGrabSpot, grabSpot
+			var float closestDistance = 0, distance
+			
+			for i = 0 to count
+				grabSpot = pTouchingGrabSpots.getAt(i) cast ECBehaviorGrabSpot.Instance
+				distance = (grabSpot.getWorldMatrix().getPosition() - position).getLength()
+				
+				if closestGrabSpot == null or distance < closestDistance
+					closestGrabSpot = grabSpot
+					closestDistance = distance
+				end
+			end
+			
+			return closestGrabSpot
+		end
+		
+		/**
+		 * \brief Determine if grab spot can be touched by this grabber.
+		 * 
+		 * Calls canTouchGrabSpot() on all listeners.
+		 */
+		public func bool canTouchGrabSpot(ECBehaviorGrabSpot.Instance grabSpot)
+			return pListeners.find(block Listener each
+				return not each.canTouchGrabSpot(this, grabSpot)
+			end) == null
+		end
+		
+		
+		
 		/** \brief Add listener. */
 		public func void addListener(Listener listener)
 			if listener == null
@@ -227,33 +456,184 @@ class ECBehaviorGrabber extends DefaultECBehavior
 		public func void removeListener(Listener listener)
 			pListeners.remove(listener)
 		end
+		
+		
+		
+		/** \brief Add element to game world. */
+		public func void addToGameWorld()
+			getElement().getGameWorld().getWorld().addTouchSensor(pTouchSensor)
+		end
+		
+		/** \brief Remove element from game world. */
+		public func void removeFromGameWorld()
+			while pTouchingGrabSpots.getCount() > 0
+				var int index = pTouchingGrabSpots.getCount() - 1
+				var ECBehaviorGrabSpot.Instance grabSpot = \
+					pTouchingGrabSpots.getAt(index) cast ECBehaviorGrabSpot.Instance
+				pTouchingGrabSpots.removeFrom(index)
+				
+				pListeners.forEach(block Listener each
+					each.untouchGrabSpot(this, grabSpot)
+				end)
+			end
+			
+			getElement().getGameWorld().getWorld().removeTouchSensor(pTouchSensor)
+		end
+		
+		
+		
+		/** \brief Collider entered sensor shape. */
+		public func void colliderEntered(Collider collider)
+			var Object owner = collider.getOwner()
+			if not owner castable BehaviorElement
+				return
+			end
+			
+			(owner cast BehaviorElement).forEachInstance(block ECBehaviorGrabSpot.Instance grabSpot
+				if canTouchGrabSpot(grabSpot) and not pTouchingGrabSpots.has(grabSpot)
+					pTouchingGrabSpots.add(grabSpot)
+					
+					pListeners.forEach(block Listener each
+						each.touchGrabSpot(this, grabSpot)
+					end )
+				end
+			end)
+		end
+		
+		/** \brief Collider left sensor shape. */
+		public func void colliderLeft(Collider collider)
+			var Object owner = collider.getOwner()
+			if not owner castable BehaviorElement
+				return
+			end
+			
+			(owner cast BehaviorElement).forEachInstance(block ECBehaviorGrabSpot.Instance grabSpot
+				if pTouchingGrabSpots.has(grabSpot)
+					pTouchingGrabSpots.remove(grabSpot)
+					
+					pListeners.forEach(block Listener each
+						each.untouchGrabSpot(this, grabSpot)
+					end)
+				end
+			end)
+		end
+		
+		
+		
+		/** \brief Read element from file. */
+		public func void readFromFile(PersistencyEnvironment env, FileReader reader)
+			select reader.readByte() // version
+			case 0
+				var PersistencyFlags flags = PersistencyFlags.new(1, reader)
+				
+				pEnabled = flags.getAt(0)
+				pTouchSensor.setEnabled(pEnabled)
+				
+			else
+				throw EInvalidParam.new("unsupported version")
+			end
+		end
+		
+		/** \brief Write element to file. */
+		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+			writer.writeByte( 0 ) // version
+			
+			var PersistencyFlags flags = PersistencyFlags.new(1)
+			flags.setAt(0, pEnabled)
+			flags.writeToFile(writer)
+		end
 	end
 	
 	
 	
+	private var ECBehaviorVRHand pVRHand
+	private var ECBehaviorCollider pCollider
+	private var ECComposeCollisionFilter pCollisionFilter
+	private var ECPShapeList pShape
+	private var ECComposeAttachResource pAttach
 	private var Array pListenerFactories
 	
 	
 	
 	/** \brief Create behavior element class. */
-	public func new(BehaviorElementClass eclass) this(eclass, "grabber.")
+	public func new(BehaviorElementClass eclass, ECBehaviorVRHand vrHand)\
+	this(eclass, vrHand, "grabber.")
 	end
 	
 	/** \brief Create behavior element class. */
-	public func new(BehaviorElementClass eclass, String id) \
-	this(eclass, id, id.empty() if "grabber." else "grabber(" + id + ").")
+	public func new(BehaviorElementClass eclass, ECBehaviorCollider collider)\
+	this(eclass, collider, "grabber.")
 	end
 	
-	public func new(BehaviorElementClass eclass, String id, String prefix) super(eclass, id)
+	/** \brief Create behavior element class. */
+	public func new(BehaviorElementClass eclass, ECBehaviorVRHand vrHand, String id) \
+	this(eclass, vrHand, null, id, id.empty() if "grabber." else "grabber(" + id + ").")
+	end
+	
+	/** \brief Create behavior element class. */
+	public func new(BehaviorElementClass eclass, ECBehaviorCollider collider, String id) \
+	this(eclass, null, collider, id, id.empty() if "grabber." else "grabber(" + id + ").")
+	end
+	
+	/**
+	 * \brief Create behavior element class.
+	 * 
+	 * These behavior can be null:
+	 * - vrHand
+	 * - collider
+	 */
+	public func new(BehaviorElementClass eclass, ECBehaviorVRHand vrHand,\
+	ECBehaviorCollider collider, String id, String prefix) super(eclass, id)
+		pVRHand = vrHand
+		pCollider = collider
 		pListenerFactories = Array.new()
+		
+		pShape = ECPShapeList.new(prefix + "shape", eclass.getCodecPropertyString())
+		eclass.addProperty(pShape)
+		
+		pCollisionFilter = ECComposeCollisionFilter.new()
+		pCollisionFilter.setCollisionFilter(CollisionFilter.new( \
+			LayerMask.newWith(BaseGameApp.CollisionFilterBit.trigger), \
+			LayerMask.newWith(BaseGameApp.CollisionFilterBit.actorAI)))
+		
+		pAttach = ECComposeAttachResource.new(eclass, prefix)
 		
 		eclass.addBehavior(this)
 	end
 	
 	/** \brief Dispose of behavior. */
 	public func void dispose()
+		pVRHand = null
+		pCollider = null
 		pListenerFactories = null
 		super.dispose()
+	end
+	
+	
+	
+	/** \brief VR Hand behavior or null if not used. */
+	public func ECBehaviorVRHand getVRHand()
+		return pVRHand
+	end
+	
+	/** \brief Collider behavior or null if not used. */
+	public func ECBehaviorCollider getCollider()
+		return pCollider
+	end
+	
+	/** \brief Attach resource. */
+	public func ECComposeAttachResource getAttach()
+		return pAttach
+	end
+	
+	/** \brief Collision filter. */
+	public func ECComposeCollisionFilter getCollisionFilter()
+		return pCollisionFilter
+	end
+	
+	/** \brief Touch shape. */
+	public func ECPShapeList getShape()
+		return pShape
 	end
 	
 	
