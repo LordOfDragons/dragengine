@@ -245,10 +245,6 @@ class ECBehaviorGrabber extends DefaultECBehavior
 	end
 	
 	public func new(BehaviorElementClass eclass, String id, String prefix) super(eclass, id)
-		if getBehaviorIn(eclass) != null
-			throw BEMultipleInstanceException.new(eclass, this)
-		end
-		
 		pListenerFactories = Array.new()
 		
 		eclass.addBehavior(this)
