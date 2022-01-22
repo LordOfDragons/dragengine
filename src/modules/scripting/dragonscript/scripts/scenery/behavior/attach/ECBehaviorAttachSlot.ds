@@ -446,8 +446,6 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 			end
 		end
 		
-		
-		
 		/** \brief State changed (visble, touchable). */
 		public func void stateChanged()
 			if pAttachable == null
@@ -460,8 +458,6 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 			attached.setVisible(element.getVisible())
 			attached.setTouchable(element.getTouchable())
 		end
-		
-		
 		
 		/** \brief Add element to game world. */
 		public func void addToGameWorld()
@@ -488,18 +484,20 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 		public func void readFromFile(PersistencyEnvironment env, FileReader reader)
 			select reader.readByte() // version
 			case 0
-				if not env.readBool(reader)
-					return
+				var PersistencyFlags flags = PersistencyFlags.new(1, reader)
+				if flags.getAt(0)
+					var Vector position = Vector.readFromFile(reader)
+					var Quaternion orientation = Quaternion.readFromFile(reader)
+					
+					pElementResolver = ElementResolver.new()
+					pElementResolver.addBehavior(reader, block ECBehaviorAttachable.Instance attachable
+						attachAttachable(attachable, position, orientation)
+						pAttachable = attachable
+						pAttachablePosition = position
+						pAttachableOrientation = orientation
+					end)
+					setRequiresEnterFrame(true)
 				end
-				
-				var Vector position = Vector.readFromFile(reader)
-				var Quaternion orientation = Quaternion.readFromFile(reader)
-				
-				pElementResolver = ElementResolver.new()
-				pElementResolver.addBehavior(reader, block ECBehaviorAttachable.Instance attachable
-					attach(attachable, position, orientation)
-				end)
-				setRequiresEnterFrame(true)
 				
 			else
 				throw EInvalidParam.new("unsupported version")
@@ -510,14 +508,15 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 		public func void writeToFile(PersistencyEnvironment env, FileWriter writer)
 			writer.writeByte(0) // version
 			
-			env.writeBool(writer, pAttachable != null)
-			if pAttachable == null
-				return
-			end
+			var PersistencyFlags flags = PersistencyFlags.new(1)
+			flags.setAt(0, pAttachable != null)
+			flags.writeToFile(writer)
 			
-			pAttachablePosition.writeToFile(writer)
-			pAttachableOrientation.writeToFile(writer)
-			ElementResolver.writeToFileBehavior(writer, pAttachable)
+			if pAttachable != null
+				pAttachablePosition.writeToFile(writer)
+				pAttachableOrientation.writeToFile(writer)
+				ElementResolver.writeToFileBehavior(writer, pAttachable)
+			end
 		end
 	end
 	

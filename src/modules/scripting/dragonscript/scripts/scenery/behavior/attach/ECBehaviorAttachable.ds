@@ -23,6 +23,7 @@
 namespace Dragengine.Scenery
 
 pin Dragengine.Gui
+pin Dragengine.LoadSave
 pin Dragengine.Preloading
 pin Dragengine.Utils
 pin Dragengine.Scenery
@@ -100,6 +101,7 @@ class ECBehaviorAttachable extends DefaultECBehavior
 		private var ECBehaviorCollider.Instance pCollider
 		private var ECBehaviorAttachSlot.Instance pAttachSlot
 		private var Array pListeners
+		private var ElementResolver pElementResolver
 		
 		
 		
@@ -116,6 +118,7 @@ class ECBehaviorAttachable extends DefaultECBehavior
 			detach()
 			pListeners = null
 			pCollider = null
+			pElementResolver = null
 			super.dispose()
 		end
 		
@@ -142,6 +145,16 @@ class ECBehaviorAttachable extends DefaultECBehavior
 		public func ECBehaviorAttachSlot.Instance getAttachSlot()
 			return pAttachSlot
 		end
+		
+		/**
+		 * \brief Element resolver used during loading or \em null if not set.
+		 * \version 1.9
+		 */
+		public func ElementResolver getElementResolver()
+			return pElementResolver
+		end
+		
+		
 		
 		/**
 		 * \brief Set attach slot.
@@ -251,6 +264,50 @@ class ECBehaviorAttachable extends DefaultECBehavior
 		/** \brief Remove listener. */
 		public func void removeListener(Listener listener)
 			pListeners.remove(listener)
+		end
+		
+		
+		
+		/** \brief Frame update started. */
+		public func void enterFrame()
+			if pElementResolver != null
+				pElementResolver.resolve(getElement().getGameWorld())
+				pElementResolver = null
+			end
+		end
+		
+		
+		
+		/** \brief Read element from file. */
+		public func void readFromFile(PersistencyEnvironment env, FileReader reader)
+			select reader.readByte() // version
+			case 0
+				var PersistencyFlags flags = PersistencyFlags.new(1, reader)
+				if flags.getAt(0)
+					pElementResolver = ElementResolver.new()
+					pElementResolver.addBehavior(reader, block ECBehaviorAttachSlot.Instance slot
+						pAttachSlot = slot
+						getElement().setParent(slot.getElement())
+					end)
+					setRequiresEnterFrame(true)
+				end
+				
+			else
+				throw EInvalidParam.new("unsupported version")
+			end
+		end
+		
+		/** \brief Write element to file. */
+		public func void writeToFile(PersistencyEnvironment env, FileWriter writer)
+			writer.writeByte(0) // version
+			
+			var PersistencyFlags flags = PersistencyFlags.new(1)
+			flags.setAt(0, pAttachSlot != null)
+			flags.writeToFile(writer)
+			
+			if pAttachSlot != null
+				ElementResolver.writeToFileBehavior(writer, pAttachSlot)
+			end
 		end
 	end
 	
