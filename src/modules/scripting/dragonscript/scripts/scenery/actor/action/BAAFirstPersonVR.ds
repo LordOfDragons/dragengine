@@ -105,6 +105,18 @@ class BAAFirstPersonVR extends BAAFirstPerson
 	protected var ECBehaviorVRHandLaserPointer.Instance vrLeftHandLaserPointer
 	
 	/**
+	 * \brief VR Right Hand Controller Attach Slot behavior.
+	 * \version 1.9
+	 */
+	protected var ECBehaviorAttachSlot.Instance vrRightHandAttachSlot
+	
+	/**
+	 * \brief VR Left Hand Controller Attach Slot behavior.
+	 * \version 1.9
+	 */
+	protected var ECBehaviorAttachSlot.Instance vrLeftHandAttachSlot
+	
+	/**
 	 * \brief VR Right Hand Controller Grabber behavior.
 	 * \version 1.9
 	 */
@@ -178,6 +190,22 @@ class BAAFirstPersonVR extends BAAFirstPerson
 	 */
 	public func ECBehaviorVRHandLaserPointer.Instance getVRLeftHandLaserPointer()
 		return vrLeftHandLaserPointer
+	end
+	
+	/**
+	 * \brief VR Right Hand Controller Attach Slot.
+	 * \version 1.9
+	 */
+	public func ECBehaviorAttachSlot.Instance getVRRightHandAttachSlot()
+		return vrRightHandAttachSlot
+	end
+	
+	/**
+	 * \brief VR Left Hand Controller Attach Slot.
+	 * \version 1.9
+	 */
+	public func ECBehaviorAttachSlot.Instance getVRLeftHandAttachSlot()
+		return vrLeftHandAttachSlot
 	end
 	
 	/**
@@ -259,6 +287,8 @@ class BAAFirstPersonVR extends BAAFirstPerson
 			vrLeftHandPointAt = vrActor.getVRLeftHandPointAt()
 			vrRightHandLaserPointer = vrActor.getVRRightHandLaserPointer()
 			vrLeftHandLaserPointer = vrActor.getVRLeftHandLaserPointer()
+			vrRightHandAttachSlot = vrActor.getVRRightHandAttachSlot()
+			vrLeftHandAttachSlot = vrActor.getVRLeftHandAttachSlot()
 			vrRightHandGrabber = vrActor.getVRRightHandGrabber()
 			vrLeftHandGrabber = vrActor.getVRLeftHandGrabber()
 			
@@ -271,6 +301,8 @@ class BAAFirstPersonVR extends BAAFirstPerson
 			vrLeftHandPointAt = ECBehaviorVRHandPointAt.getInstanceIn(actor, "left")
 			vrRightHandLaserPointer = ECBehaviorVRHandLaserPointer.getInstanceIn(actor, "right")
 			vrLeftHandLaserPointer = ECBehaviorVRHandLaserPointer.getInstanceIn(actor, "left")
+			vrRightHandAttachSlot = ECBehaviorAttachSlot.getInstanceIn(actor, "vrHandRight")
+			vrLeftHandAttachSlot = ECBehaviorAttachSlot.getInstanceIn(actor, "vrHandLeft")
 			vrRightHandGrabber = ECBehaviorGrabber.getInstanceIn(actor, "vrHandRight")
 			vrLeftHandGrabber = ECBehaviorGrabber.getInstanceIn(actor, "vrHandLeft")
 		end

@@ -43,6 +43,8 @@ class BaseVRActor extends BaseActor
 	private var ECBehaviorVRHandPointAt.Instance pVRLeftHandPointAt
 	private var ECBehaviorVRHandLaserPointer.Instance pVRRightHandLaserPointer
 	private var ECBehaviorVRHandLaserPointer.Instance pVRLeftHandLaserPointer
+	private var ECBehaviorAttachSlot.Instance pVRRightHandAttachSlot
+	private var ECBehaviorAttachSlot.Instance pVRLeftHandAttachSlot
 	private var ECBehaviorGrabber.Instance pVRRightHandGrabber
 	private var ECBehaviorGrabber.Instance pVRLeftHandGrabber
 	
@@ -58,7 +60,9 @@ class BaseVRActor extends BaseActor
 		pVRLeftHandPointAt = eclass.getVRLeftHandPointAt().instance(this)
 		pVRRightHandLaserPointer = eclass.getVRRightHandLaserPointer().instance(this)
 		pVRRightHandLaserPointer = eclass.getVRRightHandLaserPointer().instance(this)
-		pVRLeftHandGrabber = eclass.getVRLeftHandGrabber().instance(this)
+		pVRRightHandAttachSlot = eclass.getVRRightHandAttachSlot().instance(this)
+		pVRLeftHandAttachSlot = eclass.getVRLeftHandAttachSlot().instance(this)
+		pVRRightHandGrabber = eclass.getVRRightHandGrabber().instance(this)
 		pVRLeftHandGrabber = eclass.getVRLeftHandGrabber().instance(this)
 	end
 	
@@ -102,6 +106,22 @@ class BaseVRActor extends BaseActor
 	/** \brief VR Left Hand Controller Laser Pointer. */
 	public func ECBehaviorVRHandLaserPointer.Instance getVRLeftHandLaserPointer()
 		return pVRLeftHandLaserPointer
+	end
+	
+	/**
+	 * \brief VR Right Hand Controller Attach Slot.
+	 * \version 1.9
+	 */
+	public func ECBehaviorAttachSlot.Instance getVRRightHandAttachSlot()
+		return pVRRightHandAttachSlot
+	end
+	
+	/**
+	 * \brief VR Left Hand Controller Attach Slot.
+	 * \version 1.9
+	 */
+	public func ECBehaviorAttachSlot.Instance getVRLeftHandAttachSlot()
+		return pVRLeftHandAttachSlot
 	end
 	
 	/**

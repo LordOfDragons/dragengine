@@ -45,6 +45,8 @@ class BaseVRActorClass extends BaseActorClass
 	private var ECBehaviorVRHandLaserPointer pVRLeftHandLaserPointer
 	private var ECBehaviorGrabber pVRRightHandGrabber
 	private var ECBehaviorGrabber pVRLeftHandGrabber
+	private var ECBehaviorAttachSlot pVRRightHandAttachSlot
+	private var ECBehaviorAttachSlot pVRLeftHandAttachSlot
 	
 	
 	
@@ -94,9 +96,24 @@ class BaseVRActorClass extends BaseActorClass
 		pVRRightHandLaserPointer = ECBehaviorVRHandLaserPointer.new(this, pVRRightHandPointAt, "right")
 		pVRLeftHandLaserPointer = ECBehaviorVRHandLaserPointer.new(this, pVRLeftHandPointAt, "left")
 		
-		// add support for grabbing grab slots using hand controllers
-		pVRRightHandGrabber = ECBehaviorGrabber.new(this, "vrHandRight")
-		pVRLeftHandGrabber = ECBehaviorGrabber.new(this, "vrHandLeft")
+		// add attach slot for attaching objects to the hands
+		pVRRightHandAttachSlot = ECBehaviorAttachSlot.new(this, null, pVRRightHand,\
+			"vrHandRight", "attachSlot(vrHandRight).")
+		
+		pVRLeftHandAttachSlot = ECBehaviorAttachSlot.new(this, null, pVRLeftHand,\
+			"vrHandLeft", "attachSlot(vrHandLeft).")
+		
+		// add support for grabbing grab slots using hand controllers. hand controllers usually
+		// have the device position at the controller tip pointing 45 degrees upwards. to fix
+		// this the shpere is moved 5cm along the -Z axis to end up at the palm center
+		var ShapeList shape = ShapeList.new()
+		shape.addSphere(Vector.new(0, 0, -0.05), 0.05)
+		
+		pVRRightHandGrabber = ECBehaviorGrabber.new(this, pVRRightHand, "vrHandRight")
+		pVRRightHandGrabber.getShape().setShapeList(shape)
+		
+		pVRLeftHandGrabber = ECBehaviorGrabber.new(this, pVRLeftHand, "vrHandLeft")
+		pVRLeftHandGrabber.getShape().setShapeList(shape)
 	end
 	
 	
@@ -151,6 +168,22 @@ class BaseVRActorClass extends BaseActorClass
 	 */
 	public func ECBehaviorVRHandLaserPointer getVRLeftHandLaserPointer()
 		return pVRLeftHandLaserPointer
+	end
+	
+	/**
+	 * \brief VR Right Hand Controller Attach Slot.
+	 * \version 1.9
+	 */
+	public func ECBehaviorAttachSlot getVRRightHandAttachSlot()
+		return pVRRightHandAttachSlot
+	end
+	
+	/**
+	 * \brief VR Left Hand Controller Attach Slot.
+	 * \version 1.9
+	 */
+	public func ECBehaviorAttachSlot getVRLeftHandAttachSlot()
+		return pVRLeftHandAttachSlot
 	end
 	
 	/**
