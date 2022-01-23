@@ -35,6 +35,58 @@ pin Dragengine.Utils
  * Extends BaseActorClass with VR behaviors.
  */
 class BaseVRActorClass extends BaseActorClass
+	/**
+	 * \brief Behavior ID used for right hand controller behaviors.
+	 * \version 1.9
+	 * 
+	 * Used for behaviors:
+	 * - ECBehaviorVRHand
+	 * - ECBehaviorVRHandPointAt
+	 * - ECBehaviorVRHandLaserPointer
+	 * 
+	 * Value is "right".
+	 */
+	public static fixed var String idVRRightHand = "right"
+	
+	/**
+	 * \brief Behavior ID used for left hand controller behaviors.
+	 * \version 1.9
+	 * 
+	 * Used for behaviors:
+	 * - ECBehaviorVRHand
+	 * - ECBehaviorVRHandPointAt
+	 * - ECBehaviorVRHandLaserPointer
+	 * 
+	 * Value is "left".
+	 */
+	public static fixed var String idVRLeftHand = "left"
+	
+	/**
+	 * \brief Behavior ID used for non-VR based behaviors for right hand controller behaviors.
+	 * \version 1.9
+	 * 
+	 * Used for behaviors:
+	 * - ECBehaviorAttachSlot
+	 * - ECBehaviorGrabber
+	 * 
+	 * Value is "vrHandRight".
+	 */
+	public static fixed var String idNonVRRightHand = "vrHandRight"
+	
+	/**
+	 * \brief Behavior ID used for non-VR based behaviors for left hand controller behaviors.
+	 * \version 1.9
+	 * 
+	 * Used for behaviors:
+	 * - ECBehaviorAttachSlot
+	 * - ECBehaviorGrabber
+	 * 
+	 * Value is "vrHandLeft".
+	 */
+	public static fixed var String idNonVRLeftHand = "vrHandLeft"
+	
+	
+	
 	private var ECBehaviorVRPlayspace pVRPlayspace
 	private var ECBehaviorVRHMD pVRHMD
 	private var ECBehaviorVRHand pVRRightHand
@@ -43,10 +95,10 @@ class BaseVRActorClass extends BaseActorClass
 	private var ECBehaviorVRHandPointAt pVRLeftHandPointAt
 	private var ECBehaviorVRHandLaserPointer pVRRightHandLaserPointer
 	private var ECBehaviorVRHandLaserPointer pVRLeftHandLaserPointer
-	private var ECBehaviorGrabber pVRRightHandGrabber
-	private var ECBehaviorGrabber pVRLeftHandGrabber
 	private var ECBehaviorAttachSlot pVRRightHandAttachSlot
 	private var ECBehaviorAttachSlot pVRLeftHandAttachSlot
+	private var ECBehaviorGrabber pVRRightHandGrabber
+	private var ECBehaviorGrabber pVRLeftHandGrabber
 	
 	
 	
@@ -80,12 +132,12 @@ class BaseVRActorClass extends BaseActorClass
 		pVRHMD = ECBehaviorVRHMD.new(this, pVRPlayspace)
 		
 		// add right and left hand controllers
-		pVRRightHand = ECBehaviorVRHand.new(this, pVRPlayspace, InputDeviceType.vrRightHand, "right")
-		pVRLeftHand = ECBehaviorVRHand.new(this, pVRPlayspace, InputDeviceType.vrLeftHand, "left")
+		pVRRightHand = ECBehaviorVRHand.new(this, pVRPlayspace, InputDeviceType.vrRightHand, idVRRightHand)
+		pVRLeftHand = ECBehaviorVRHand.new(this, pVRPlayspace, InputDeviceType.vrLeftHand, idVRLeftHand)
 		
 		// add support to know what element hand controllers point at
-		pVRRightHandPointAt = ECBehaviorVRHandPointAt.new(this, pVRRightHand, "right")
-		pVRLeftHandPointAt = ECBehaviorVRHandPointAt.new(this, pVRLeftHand, "left")
+		pVRRightHandPointAt = ECBehaviorVRHandPointAt.new(this, pVRRightHand, idVRRightHand)
+		pVRLeftHandPointAt = ECBehaviorVRHandPointAt.new(this, pVRLeftHand, idVRLeftHand)
 		
 		// ignore actor collider for point at behaviors. this avoids problems if the actor
 		// has a full body collider touching the hands
@@ -93,27 +145,30 @@ class BaseVRActorClass extends BaseActorClass
 		pVRLeftHandPointAt.setIgnoreCollider(getCollider())
 		
 		// add support for laser pointers on hand controllers
-		pVRRightHandLaserPointer = ECBehaviorVRHandLaserPointer.new(this, pVRRightHandPointAt, "right")
-		pVRLeftHandLaserPointer = ECBehaviorVRHandLaserPointer.new(this, pVRLeftHandPointAt, "left")
-		
-		// add attach slot for attaching objects to the hands
-		pVRRightHandAttachSlot = ECBehaviorAttachSlot.new(this, null, pVRRightHand,\
-			"vrHandRight", "attachSlot(vrHandRight).")
-		
-		pVRLeftHandAttachSlot = ECBehaviorAttachSlot.new(this, null, pVRLeftHand,\
-			"vrHandLeft", "attachSlot(vrHandLeft).")
+		pVRRightHandLaserPointer = ECBehaviorVRHandLaserPointer.new(this, pVRRightHandPointAt, idVRRightHand)
+		pVRLeftHandLaserPointer = ECBehaviorVRHandLaserPointer.new(this, pVRLeftHandPointAt, idVRLeftHand)
 		
 		// add support for grabbing grab slots using hand controllers. hand controllers usually
 		// have the device position at the controller tip pointing 45 degrees upwards. to fix
-		// this the shpere is moved 5cm along the -Z axis to end up at the palm center
+		// this the shpere is moved 11cm along the -Z axis to end up at the palm center
 		var ShapeList shape = ShapeList.new()
-		shape.addSphere(Vector.new(0, 0, -0.05), 0.05)
+		var Vector offset = Vector.new(0, 0, -0.11)
+		shape.addSphere(Vector.new(), 0.05)
 		
-		pVRRightHandGrabber = ECBehaviorGrabber.new(this, pVRRightHand, "vrHandRight")
+		pVRRightHandGrabber = ECBehaviorGrabber.new(this, pVRRightHand, idNonVRRightHand)
 		pVRRightHandGrabber.getShape().setShapeList(shape)
+		pVRRightHandGrabber.getAttach().getPosition().setVector(offset)
 		
-		pVRLeftHandGrabber = ECBehaviorGrabber.new(this, pVRLeftHand, "vrHandLeft")
+		pVRLeftHandGrabber = ECBehaviorGrabber.new(this, pVRLeftHand, idNonVRLeftHand)
 		pVRLeftHandGrabber.getShape().setShapeList(shape)
+		pVRLeftHandGrabber.getAttach().getPosition().setVector(offset)
+		
+		// add attach slot for attaching objects to the hands
+		pVRRightHandAttachSlot = ECBehaviorAttachSlot.new(this, null, pVRRightHand,\
+			idNonVRRightHand, "attachSlot(" + idNonVRRightHand + ").")
+		
+		pVRLeftHandAttachSlot = ECBehaviorAttachSlot.new(this, null, pVRLeftHand,\
+			idNonVRLeftHand, "attachSlot(" + idNonVRLeftHand + ").")
 	end
 	
 	

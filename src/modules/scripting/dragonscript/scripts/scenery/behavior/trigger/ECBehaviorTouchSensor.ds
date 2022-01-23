@@ -199,7 +199,7 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 		end
 		
 		/**
-		 * \brief Create sound level meter.
+		 * \brief Create touch sensor.
 		 */
 		protected func TouchSensor createTouchSensor( StubElement stub )
 			var TouchSensor touchSensor = TouchSensor.new()
@@ -222,7 +222,7 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 		end
 		
 		/**
-		 * \brief Attach sound level meter to collider.
+		 * \brief Attach touch sensor to collider.
 		 * 
 		 * Default implementation calls ECComposeAttachResource.attach().
 		 */

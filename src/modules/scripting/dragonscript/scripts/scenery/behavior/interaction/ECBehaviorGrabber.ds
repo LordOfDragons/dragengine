@@ -45,6 +45,8 @@ pin Dragengine.Scenery
  * 
  * Do detect grab spots a touch sensor is added with a default sphere shape. By default
  * the touch sensor is disabled and has to be enabled if the game logic allows grabbing.
+ * The collision filter category is set to BaseGameApp.CollisionFilterBit.trigger and the
+ * collision filter mask is set to BaseGameApp.CollisionFilterBit.dynamic.
  * 
  * Element class properties have the prefix "grabber{(id)}.".
  * 
@@ -270,7 +272,9 @@ class ECBehaviorGrabber extends DefaultECBehavior
 			end
 			
 			pEnabled = enabled
-			pTouchSensor.setEnabled(enabled)
+			if pTouchSensor != null
+				pTouchSensor.setEnabled(enabled)
+			end
 			
 			pListeners.forEach(block Listener each
 				each.enabledChanged(this)
@@ -344,7 +348,7 @@ class ECBehaviorGrabber extends DefaultECBehavior
 		 * 
 		 * \note If the current grab spot is the same as the new grab spot nothing is done.
 		 */
-		public func void claimOther(ECBehaviorGrabSpot.Instance grabSpot)
+		public func void grabOther(ECBehaviorGrabSpot.Instance grabSpot)
 			if grabSpot == pGrabSpot
 				return
 			end
@@ -412,7 +416,24 @@ class ECBehaviorGrabber extends DefaultECBehavior
 			return pTouchingGrabSpots.find(ablock) cast ECBehaviorGrabSpot.Instance
 		end
 		
-		/** \brief Touched grab spot closes to position or null if not found. */
+		/**
+		 * \brief Closest touched grab spot closest or null if not found.
+		 * 
+		 * Uses the grab slot touch collider position and grabber touch sensor position
+		 * to calculate distance.
+		 */
+		public func ECBehaviorGrabSpot.Instance closestTouchingGrabSpot()
+			if pTouchSensor == null
+				return null
+			end
+			return touchingGrabSpotClosestTo(pTouchSensor.getPosition())
+		end
+		
+		/**
+		 * \brief Touched grab spot closest to position or null if not found.
+		 * 
+		 * Uses the grab slot touch collider position to calculate distance.
+		 */
 		public func ECBehaviorGrabSpot.Instance touchingGrabSpotClosestTo(DVector position)
 			var int i, count = pTouchingGrabSpots.getCount()
 			var ECBehaviorGrabSpot.Instance closestGrabSpot, grabSpot
@@ -420,7 +441,7 @@ class ECBehaviorGrabber extends DefaultECBehavior
 			
 			for i = 0 to count
 				grabSpot = pTouchingGrabSpots.getAt(i) cast ECBehaviorGrabSpot.Instance
-				distance = (grabSpot.getWorldMatrix().getPosition() - position).getLength()
+				distance = (grabSpot.getTouchCollider().getPosition() - position).getLength()
 				
 				if closestGrabSpot == null or distance < closestDistance
 					closestGrabSpot = grabSpot
@@ -434,10 +455,10 @@ class ECBehaviorGrabber extends DefaultECBehavior
 		/**
 		 * \brief Determine if grab spot can be touched by this grabber.
 		 * 
-		 * Calls canTouchGrabSpot() on all listeners.
+		 * Calls canTouchGrabSpot() on all listeners and checks grab spot enabled state.
 		 */
 		public func bool canTouchGrabSpot(ECBehaviorGrabSpot.Instance grabSpot)
-			return pListeners.find(block Listener each
+			return grabSpot.getEnabled() and pListeners.find(block Listener each
 				return not each.canTouchGrabSpot(this, grabSpot)
 			end) == null
 		end
@@ -477,7 +498,9 @@ class ECBehaviorGrabber extends DefaultECBehavior
 				end)
 			end
 			
-			getElement().getGameWorld().getWorld().removeTouchSensor(pTouchSensor)
+			if pTouchSensor != null
+				getElement().getGameWorld().getWorld().removeTouchSensor(pTouchSensor)
+			end
 		end
 		
 		
@@ -527,7 +550,9 @@ class ECBehaviorGrabber extends DefaultECBehavior
 				var PersistencyFlags flags = PersistencyFlags.new(1, reader)
 				
 				pEnabled = flags.getAt(0)
-				pTouchSensor.setEnabled(pEnabled)
+				if pTouchSensor != null
+					pTouchSensor.setEnabled(pEnabled)
+				end
 				
 			else
 				throw EInvalidParam.new("unsupported version")
@@ -594,7 +619,7 @@ class ECBehaviorGrabber extends DefaultECBehavior
 		pCollisionFilter = ECComposeCollisionFilter.new()
 		pCollisionFilter.setCollisionFilter(CollisionFilter.new( \
 			LayerMask.newWith(BaseGameApp.CollisionFilterBit.trigger), \
-			LayerMask.newWith(BaseGameApp.CollisionFilterBit.actorAI)))
+			LayerMask.newWith(BaseGameApp.CollisionFilterBit.dynamic)))
 		
 		pAttach = ECComposeAttachResource.new(eclass, prefix)
 		

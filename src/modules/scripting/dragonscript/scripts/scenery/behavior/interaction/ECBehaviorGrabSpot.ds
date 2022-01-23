@@ -57,6 +57,9 @@ class ECBehaviorGrabSpot extends DefaultECBehavior
 		
 		/** \brief Grabber has release spot. */
 		func void spotReleased(Instance instance, ECBehaviorGrabber.Instance grabber)
+		
+		/** \brief Grab spot enabled changed. */
+		func void enabledChanged(Instance instance)
 	end
 	
 	/** \brief Default implementation of behavior instance listener. */
@@ -71,6 +74,10 @@ class ECBehaviorGrabSpot extends DefaultECBehavior
 		
 		/** \brief Grabber has release spot. */
 		public func void spotReleased(Instance instance, ECBehaviorGrabber.Instance grabber)
+		end
+		
+		/** \brief Grab spot enabled changed. */
+		public func void enabledChanged(Instance instance)
 		end
 	end
 	
@@ -103,12 +110,11 @@ class ECBehaviorGrabSpot extends DefaultECBehavior
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
 		private var ECBehaviorGrabSpot pECBehavior
-		private var ECBehaviorComponent.Instance pComponent
-		private var Vector pPosition
-		private var Quaternion pOrientation
-		private var String pBone
+		private var ECBehaviorCollider.Instance pCollider
 		private var ECBehaviorGrabber.Instance pGrabber
 		private var ElementResolver pElementResolver
+		private var Collider pTouchCollider
+		private var bool pEnabled
 		private var Array pListeners
 		
 		
@@ -116,11 +122,8 @@ class ECBehaviorGrabSpot extends DefaultECBehavior
 		/** \brief Create element. */
 		public func new(ECBehaviorGrabSpot ecbehavior, BehaviorElement element) super(element)
 			pECBehavior = ecbehavior
+			pEnabled = true
 			pListeners = Array.new()
-			
-			if ecbehavior.getComponent() != null
-				pComponent = ecbehavior.getComponent().instance(element)
-			end
 		end
 		
 		/** \brief Dispose of behavior instance. */
@@ -128,8 +131,15 @@ class ECBehaviorGrabSpot extends DefaultECBehavior
 			release()
 			
 			pListeners = null
+			if pTouchCollider != null
+				pTouchCollider.setColliderListener(null)
+				pTouchCollider.setOwner(null)
+				pTouchCollider.removeAllCollisionTests()
+				pTouchCollider.removeAllIgnoreColliders()
+				//pTouchCollider = null // not doing this prevents depending behaviors fail while disposing
+			end
 			pElementResolver = null
-			pComponent = null
+			pCollider = null
 			
 			super.dispose()
 		end
@@ -138,12 +148,47 @@ class ECBehaviorGrabSpot extends DefaultECBehavior
 		
 		/** \brief Initialize element from stub. */
 		public func void init(StubElement stub)
-			var CodecPropertyString codec = getElement().getClass().getCodecPropertyString()
-			pPosition = pECBehavior.getPosition().getVector(stub, codec)
-			pOrientation = Quaternion.newFromEuler(pECBehavior.getOrientation().getVector(stub, codec))
-			pBone = pECBehavior.getBone().getValue(stub)
+			var BehaviorElement element = getElement()
+			
+			if pECBehavior.getCollider() != null
+				pCollider = pECBehavior.getCollider().instance(element)
+			end
+			
+			// create collider
+			pTouchCollider = createTouchCollider(stub)
+			//pTouchCollider.setColliderListener(this)
+			pTouchCollider.setOwner(element)
+			pTouchCollider.setGeometry(element.getPosition(), element.getOrientation(), element.getScaling())
+			
+			// attach collider if not rig attached already
+			if pCollider != null and pCollider.getCollider() != null
+				attachTouchCollider(stub, pCollider)
+			end
 			
 			pECBehavior.createListeners(this)
+			
+			updateTouchColliderEnabled()
+		end
+		
+		/** \brief Create collider. */
+		protected func Collider createTouchCollider(StubElement stub)
+			var BehaviorElement element = getElement()
+			var Collider collider
+			
+			if collider == null
+				collider = pECBehavior.getTouchCollider().createCollider(element, stub)
+			end
+			
+			return collider
+		end
+		
+		/**
+		 * \brief Attach touch collider to element collider.
+		 * 
+		 * Default implementation calls ECComposeAttachResource.attach().
+		 */
+		protected func void attachTouchCollider(StubElement stub, ECBehaviorCollider.Instance collider)
+			pECBehavior.getAttachTouchCollider().attach(collider.getCollider(), pTouchCollider, stub)
 		end
 		
 		
@@ -153,53 +198,30 @@ class ECBehaviorGrabSpot extends DefaultECBehavior
 			return pECBehavior
 		end
 		
-		/** \brief Component behavior instance or null. */
-		public func ECBehaviorComponent.Instance getComponent()
-			return pComponent
+		/** \brief Collider behavior instance or null. */
+		public func ECBehaviorCollider.Instance getCollider()
+			return pCollider
 		end
 		
-		/** \brief Interaction position. */
-		public func Vector getPosition()
-			return pPosition
+		
+		
+		/** \brief Enable grab spot. */
+		public func bool getEnabled()
+			return pEnabled
 		end
 		
-		/** \brief Interaction orientation. */
-		public func Quaternion getOrientation()
-			return pOrientation
-		end
-		
-		/** \brief Name of bone the position is relative to or empty string if not used. */
-		public func String getBone()
-			return pBone
-		end
-		
-		/** \brief Grab matrix relative to element. */
-		public func Matrix getMatrix()
-			var Matrix matrix = Matrix.newWorld(pPosition, pOrientation)
-			if not pBone.empty() and pComponent != null and pComponent.getComponent() != null
-				matrix = matrix * pComponent.getComponent().getBoneMatrix(pBone)
+		/** \brief Enable/disable grab spot. */
+		public func void setEnabled(bool enabled)
+			if enabled == pEnabled
+				return
 			end
-			return matrix
-		end
-		
-		/** \brief Inverse grab matrix relative to element. */
-		public func Matrix getInverseMatrix()
-			return getMatrix().getInverse()
-		end
-		
-		/** \brief Grab matrix in world space. */
-		public func DMatrix getWorldMatrix()
-			return getMatrix().toDMatrix() * getElement().getElementMatrix()
-		end
-		
-		/** \brief Inverse grab matrix in world space. */
-		public func DMatrix getInverseWorldMatrix()
-			return getWorldMatrix().getInverse()
-		end
-		
-		/** \brief Element resolver used during loading or \em null if not set. */
-		public func ElementResolver getElementResolver()
-			return pElementResolver
+			
+			pEnabled = enabled
+			updateTouchColliderEnabled()
+			
+			pListeners.forEach(block Listener each
+				each.enabledChanged(this)
+			end)
 		end
 		
 		
@@ -279,6 +301,18 @@ class ECBehaviorGrabSpot extends DefaultECBehavior
 		
 		
 		
+		/** \brief Touch collider. */
+		public func Collider getTouchCollider()
+			return pTouchCollider
+		end
+		
+		/** \brief Element resolver used during loading or \em null if not set. */
+		public func ElementResolver getElementResolver()
+			return pElementResolver
+		end
+		
+		
+		
 		/** \brief Add listener. */
 		public func void addListener(Listener listener)
 			if listener == null
@@ -294,6 +328,16 @@ class ECBehaviorGrabSpot extends DefaultECBehavior
 		
 		
 		
+		/** \brief Element has been added to game world. Start tracking device. */
+		public func void addToGameWorld()
+			getElement().getGameWorld().getWorld().addCollider(pTouchCollider)
+		end
+		
+		/** \brief Element has been removed from game world. Stop tracking device. */
+		public func void removeFromGameWorld()
+			getElement().getGameWorld().getWorld().removeCollider(pTouchCollider)
+		end
+		
 		/** \brief Frame update started. */
 		public func void enterFrame()
 			if pElementResolver != null
@@ -302,15 +346,29 @@ class ECBehaviorGrabSpot extends DefaultECBehavior
 			end
 		end
 		
+		/** \brief Element state changed like visible. */
+		public func void stateChanged()
+			updateTouchColliderEnabled()
+		end
+		
+		/** \brief Update collider enabled state. */
+		protected func void updateTouchColliderEnabled()
+			var BehaviorElement element = getElement()
+			pTouchCollider.setEnabled(pEnabled and element.getVisible() and element.getTouchable())
+		end
+		
 		
 		
 		/** \brief Read element from file. */
 		public func void readFromFile(PersistencyEnvironment env, FileReader reader)
 			select reader.readByte() // version
 			case 0
-				var PersistencyFlags flags = PersistencyFlags.new(1, reader)
+				var PersistencyFlags flags = PersistencyFlags.new(2, reader)
 				
-				if flags.getAt(0)
+				pEnabled = flags.getAt(0)
+				updateTouchColliderEnabled()
+				
+				if flags.getAt(1)
 					pElementResolver = ElementResolver.new()
 					pElementResolver.addBehavior(reader, block ECBehaviorGrabber.Instance grabber
 						pGrabber = grabber
@@ -327,8 +385,9 @@ class ECBehaviorGrabSpot extends DefaultECBehavior
 		public func void writeToFile(PersistencyEnvironment env, FileWriter writer)
 			writer.writeByte(0) // version
 			
-			var PersistencyFlags flags = PersistencyFlags.new(1)
-			flags.setAt(0, pGrabber != null)
+			var PersistencyFlags flags = PersistencyFlags.new(2)
+			flags.setAt(0, pEnabled)
+			flags.setAt(1, pGrabber != null)
 			flags.writeToFile(writer)
 			
 			if pGrabber != null
@@ -339,10 +398,9 @@ class ECBehaviorGrabSpot extends DefaultECBehavior
 	
 	
 	
-	private var ECBehaviorComponent pComponent
-	private var ECPVector pPosition
-	private var ECPVector pOrientation
-	private var ECPString pBone
+	private var ECBehaviorCollider pCollider
+	private var ECComposeCollider pTouchCollider
+	private var ECComposeAttachResource pAttachTouchCollider
 	private var Array pListenerFactories
 	
 	
@@ -350,28 +408,30 @@ class ECBehaviorGrabSpot extends DefaultECBehavior
 	/**
 	 * \brief Create behavior element class.
 	 * 
-	 * Component behavior is optional and only required if bone is to be used.
+	 * These behaviors can be null:
+	 * - collider
 	 */
-	public func new(BehaviorElementClass eclass, ECBehaviorComponent component) this(eclass, component, "")
+	public func new(BehaviorElementClass eclass, ECBehaviorCollider collider) this(eclass, collider, "")
 	end
 	
-	public func new(BehaviorElementClass eclass, ECBehaviorComponent component, String id) \
-	this(eclass, component, id, id.empty() if "grabSpot." else "grabSpot(" + id + ").")
+	public func new(BehaviorElementClass eclass, ECBehaviorCollider collider, String id) \
+	this(eclass, collider, id, id.empty() if "grabSpot." else "grabSpot(" + id + ").")
 	end
 	
-	public func new(BehaviorElementClass eclass, ECBehaviorComponent component,\
+	public func new(BehaviorElementClass eclass, ECBehaviorCollider collider,\
 	String id, String prefix) super(eclass, id)
-		pComponent = component
+		pCollider = collider
+		
 		pListenerFactories = Array.new()
 		
-		pPosition = ECPVector.new(prefix + "position")
-		eclass.addProperty(pPosition)
+		pTouchCollider = ECComposeCollider.new(eclass, prefix + "touchCollider")
+		pTouchCollider.getPhysicsType().setEnumeration(CollisionResponse.kinematic)
+		pTouchCollider.getLocalGravity().setVector(Vector.new())
+		pTouchCollider.setCollisionFilter(CollisionFilter.new( \
+			LayerMask.newWith(BaseGameApp.CollisionFilterBit.dynamic), \
+			LayerMask.newWith(BaseGameApp.CollisionFilterBit.trigger)))
 		
-		pOrientation = ECPVector.new(prefix + "orientation")
-		eclass.addProperty(pOrientation)
-		
-		pBone = ECPString.new(prefix + "bone", "")
-		eclass.addProperty(pBone)
+		pAttachTouchCollider = ECComposeAttachResource.new(eclass, prefix)
 		
 		eclass.addBehavior(this)
 	end
@@ -379,36 +439,28 @@ class ECBehaviorGrabSpot extends DefaultECBehavior
 	/** \brief Dispose of behavior. */
 	public func void dispose()
 		pListenerFactories = null
-		pComponent = null
+		pCollider = null
 		super.dispose()
 	end
 	
 	
 	
-	/** \brief Component behavior or null. */
-	public func ECBehaviorComponent getComponent()
-		return pComponent
+	/** \brief Collider behavior or null. */
+	public func ECBehaviorCollider getCollider()
+		return pCollider
 	end
 	
-	/** \brief Set component behavior or null. */
-	public func void setComponent(ECBehaviorComponent component)
-		pComponent = component
+	/** \brief Composeable touch collider. */
+	public func ECComposeCollider getTouchCollider()
+		return pTouchCollider
 	end
 	
-	/** \brief Interaction position. */
-	public func ECPVector getPosition()
-		return pPosition
+	/** \brief Attach touch collider. */
+	public func ECComposeAttachResource getAttachTouchCollider()
+		return pAttachTouchCollider
 	end
 	
-	/** \brief Interaction orientation. */
-	public func ECPVector getOrientation()
-		return pOrientation
-	end
 	
-	/** \brief Name of bone the position is relative to or empty string if not used. */
-	public func ECPString getBone()
-		return pBone
-	end
 	
 	/** \brief Add listener factory. */
 	public func void addListenerFactory(ListenerFactory factory)
@@ -452,7 +504,7 @@ class ECBehaviorGrabSpot extends DefaultECBehavior
 	 * \brief Get behavior in element class or \em null if absent.
 	 * 
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
-	 * of type ECBehaviorComponent.
+	 * of type ECBehaviorGrabSpot.
 	 */
 	static public func ECBehaviorGrabSpot getBehaviorIn(BehaviorElementClass eclass)
 		return eclass.findBehavior(block ECBehaviorGrabSpot each
