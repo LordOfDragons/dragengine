@@ -209,6 +209,18 @@ class ECBehaviorAttachable extends DefaultECBehavior
 			slot.attach(this, position, orientation)
 		end
 		
+		/**
+		 * \brief Attach to attachment slot using current world position.
+		 * \version 1.9
+		 * \throws EInvalidParam \em slot is \em null.
+		 * \throws EInvalidParam Already attached to an attachment slot.
+		 * \throws EInvalidParam Owner Element.getParent() is not null.
+		 * \throws EInvalidParam \em slot is not empty.
+		 */
+		public func void attachWorld(ECBehaviorAttachSlot.Instance slot)
+			slot.attachWorld(this)
+		end
+		
 		/** \brief Detaches from slot if attached. */
 		public func void detach()
 			if pAttachSlot != null
@@ -251,6 +263,29 @@ class ECBehaviorAttachable extends DefaultECBehavior
 			detach()
 			attach(slot, position, orientation)
 		end
+		
+		/**
+		 * \brief Safely reattaches to a different attachment slot using current world position.
+		 * 
+		 * Convenience method for calling detach() then attach() but checking problems before
+		 * calling detach(). This ensures the attachable stays attached to the old slot in
+		 * case something is wrong.
+		 * 
+		 * \note If the current attach slot is the same as the new attach slot nothing is done.
+		 */
+		public func void reattachWorld(ECBehaviorAttachSlot.Instance slot)
+			if slot == pAttachSlot
+				return
+			end
+			
+			if slot.isNotEmpty()
+				throw EInvalidParam.new()
+			end
+			
+			detach()
+			attachWorld(slot)
+		end
+		
 		
 		
 		/** \brief Add listener. */

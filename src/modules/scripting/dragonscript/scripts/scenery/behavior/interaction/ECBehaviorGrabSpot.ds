@@ -261,7 +261,6 @@ class ECBehaviorGrabSpot extends DefaultECBehavior
 			return pGrabber == null and not grabber.isGrabbing()
 		end
 		
-		
 		/**
 		 * \brief Grab spot.
 		 * \throws EInvalidParam \em grabber is \em null.

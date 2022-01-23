@@ -151,24 +151,32 @@ class BaseVRActorClass extends BaseActorClass
 		// add support for grabbing grab slots using hand controllers. hand controllers usually
 		// have the device position at the controller tip pointing 45 degrees upwards. to fix
 		// this the shpere is moved 11cm along the -Z axis to end up at the palm center
+		var Vector position = Vector.new(0, 0, -0.11)
+		var Vector rotation = Vector.new(-45, 0, 0)
+		
 		var ShapeList shape = ShapeList.new()
-		var Vector offset = Vector.new(0, 0, -0.11)
 		shape.addSphere(Vector.new(), 0.05)
 		
 		pVRRightHandGrabber = ECBehaviorGrabber.new(this, pVRRightHand, idNonVRRightHand)
 		pVRRightHandGrabber.getShape().setShapeList(shape)
-		pVRRightHandGrabber.getAttach().getPosition().setVector(offset)
+		pVRRightHandGrabber.getAttach().getPosition().setVector(position)
+		pVRRightHandGrabber.getAttach().getOrientation().setVector(rotation)
 		
 		pVRLeftHandGrabber = ECBehaviorGrabber.new(this, pVRLeftHand, idNonVRLeftHand)
 		pVRLeftHandGrabber.getShape().setShapeList(shape)
-		pVRLeftHandGrabber.getAttach().getPosition().setVector(offset)
+		pVRLeftHandGrabber.getAttach().getPosition().setVector(position)
+		pVRLeftHandGrabber.getAttach().getOrientation().setVector(rotation)
 		
 		// add attach slot for attaching objects to the hands
 		pVRRightHandAttachSlot = ECBehaviorAttachSlot.new(this, null, pVRRightHand,\
 			idNonVRRightHand, "attachSlot(" + idNonVRRightHand + ").")
+		pVRRightHandAttachSlot.getPosition().setVector(position)
+		pVRRightHandAttachSlot.getOrientation().setVector(rotation)
 		
 		pVRLeftHandAttachSlot = ECBehaviorAttachSlot.new(this, null, pVRLeftHand,\
 			idNonVRLeftHand, "attachSlot(" + idNonVRLeftHand + ").")
+		pVRLeftHandAttachSlot.getPosition().setVector(position)
+		pVRLeftHandAttachSlot.getOrientation().setVector(rotation)
 	end
 	
 	

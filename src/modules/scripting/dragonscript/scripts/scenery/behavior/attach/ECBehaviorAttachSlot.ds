@@ -202,7 +202,7 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 			return pOrientation
 		end
 		
-		/** \brief Attach slot matrix relative to element. */
+		/** \brief Attach slot matrix relative to element or bone. */
 		public func Matrix getMatrix()
 			if pMatrix == null
 				pMatrix = Matrix.newWorld(pPosition, pOrientation)
@@ -210,7 +210,7 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 			return pMatrix
 		end
 		
-		/** \brief Inversse attach slot matrix relative to element. */
+		/** \brief Inverse attach slot matrix relative to element or bone. */
 		public func Matrix getInverseMatrix()
 			if pInverseMatrix == null
 				pInverseMatrix = getMatrix().getInverse()
@@ -218,9 +218,65 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 			return pInverseMatrix
 		end
 		
+		/**
+		 * \brief Attach slot matrix in world space.
+		 * \version 1.9
+		 */
+		public func DMatrix getWorldMatrix()
+			var DMatrix matrix = DMatrix.newWorld(DVector.new(pPosition), pOrientation)
+			
+			var Collider collider = getSlotCollider()
+			if collider == null
+				return matrix * getElement().getElementMatrix()
+			end
+			
+			if pBone.empty() or not collider castable ColliderRig
+				return matrix * collider.getMatrix()
+			end
+			
+			var ColliderRig colrig = collider cast ColliderRig
+			var int index = colrig.getRig().indexOfBoneNamed(pBone)
+			if index == -1
+				return matrix * collider.getMatrix()
+			end
+			
+			if collider.getResponseType() != CollisionResponse.dynamic\
+			and collider castable ColliderComponent
+				(collider cast ColliderComponent).copyStateFromComponent(index)
+			end
+			
+			return matrix * colrig.boneGetMatrix(index)
+		end
+		
+		/**
+		 * \brief Inverse attach slot matrix in world space.
+		 * \version 1.9
+		 */
+		public func DMatrix getInverseWorldMatrix()
+			return getWorldMatrix().getInverse()
+		end
+		
 		/** \brief Element resolver used during loading or \em null if not set. */
 		public func ElementResolver getElementResolver()
 			return pElementResolver
+		end
+		
+		/**
+		 * \brief Collider resource to use for slot.
+		 * \version 1.9
+		 * 
+		 * Can be ECBehaviorCollider collider, ECBehaviorVRHand collider or null.
+		 */
+		public func Collider getSlotCollider()
+			if pVRHand != null
+				return pVRHand.getCollider()
+				
+			elif pCollider != null
+				return pCollider.getCollider()
+				
+			else
+				return null
+			end
 		end
 		
 		
@@ -322,9 +378,8 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 		 * \throws EInvalidParam \em attachable Element.getParent() is not null.
 		 */
 		public func void attachWorld(ECBehaviorAttachable.Instance attachable)
-			var Matrix matrix = (attachable.getElement().getElementMatrix() \
-				* getElement().getInverseElementMatrix()).toMatrix() \
-				* getInverseMatrix()
+			var Matrix matrix = (attachable.getElement().getElementMatrix()\
+				* getInverseWorldMatrix()).toMatrix()
 			attach(attachable, matrix.getPosition(), matrix.toQuaternion())
 		end
 		
@@ -354,23 +409,16 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 		 */
 		protected func void attachAttachable(ECBehaviorAttachable.Instance attachable, \
 		Vector position, Quaternion orientation)
-			var Matrix matrix = Matrix.newWorld(position, orientation) * getMatrix()
+			var Collider colliderSlot = getSlotCollider()
 			
-			if pCollider == null and pVRHand == null
-				var DMatrix worldMatrix = matrix.toDMatrix() * getElement().getElementMatrix()
-				attachable.getElement().setGeometry(worldMatrix.getPosition(), worldMatrix.toQuaternion())
+			if colliderSlot == null
+				var DMatrix matrix = DMatrix.newWorld(DVector.new(position), orientation) * getWorldMatrix()
+				attachable.getElement().setGeometry(matrix.getPosition(), matrix.toQuaternion())
 				return
 			end
 			
 			var Collider colliderAttachable = attachable.getCollider().getCollider()
-			var Collider colliderSlot
-			
-			if pVRHand != null
-				colliderSlot = pVRHand.getCollider()
-				
-			else
-				colliderSlot = pCollider.getCollider()
-			end
+			var Matrix matrix = Matrix.newWorld(position, orientation) * getMatrix()
 			
 			if pBone.empty()
 				if colliderSlot castable ColliderRig
