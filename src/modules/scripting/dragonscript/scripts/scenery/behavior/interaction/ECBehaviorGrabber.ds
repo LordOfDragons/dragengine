@@ -348,7 +348,7 @@ class ECBehaviorGrabber extends DefaultECBehavior
 		 * 
 		 * \note If the current grab spot is the same as the new grab spot nothing is done.
 		 */
-		public func void grabOther(ECBehaviorGrabSpot.Instance grabSpot)
+		public func void regrab(ECBehaviorGrabSpot.Instance grabSpot)
 			if grabSpot == pGrabSpot
 				return
 			end
