@@ -511,6 +511,29 @@ class DefaultListModel implements ListModel
 	end
 	
 	/**
+	 * \brief Get selected element or null.
+	 * 
+	 * If getSelected() is -1 returns null. If getSelected() is not -1 this method
+	 * behaves the same as calling getAt(getSelected()).
+	 */
+	public func Object getSelectedElement()
+		if pSelected != -1
+			return pElements.getAt(pSelected)
+		end
+		return null
+	end
+	
+	/**
+	 * \brief Set selected element.
+	 * \version 1.9
+	 * 
+	 * Behaves the same as calling setSelected(indexOf(element)).
+	 */
+	public func void setSelectedElement(Object element)
+		setSelected(pElements.indexOf(element))
+	end
+	
+	/**
 	 * \brief Automatically select items.
 	 * \version 1.5
 	 * 
@@ -602,5 +625,19 @@ class DefaultListModel implements ListModel
 				each.selectionChanged(this)
 			end)
 		end
+	end
+	
+	/**
+	 * \brief Notify all content of element in model changed.
+	 * \version 1.9
+	 * 
+	 * Behaves the same as calling notifyContentChanged(index, index).
+	 * 
+	 * \param index Index of element that changed.
+	 */
+	public func void notifyElementChanged(int index)
+		pListeners.forEach(block ListModelListener each
+			each.contentChanged(this, index, index)
+		end)
 	end
 end
