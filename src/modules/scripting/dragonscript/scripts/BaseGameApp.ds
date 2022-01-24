@@ -546,6 +546,9 @@ class BaseGameApp extends Game
 		pSkinAnnotations = null
 		pGlobalEvents = null
 		pLoaders = null
+		
+		TimerManager.giveUpAllTimersDefault()
+		
 		pConsole = null
 		
 		pApp = null
