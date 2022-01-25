@@ -50,232 +50,232 @@ class ToggleButton extends Button implements ToggleModelListener
 	
 	
 	/** \brief Create toggle button. */
-	public func new() this( DefaultToggleModel.new() )
+	public func new() this(DefaultToggleModel.new())
 	end
 	
 	/** \brief Create text toggle button. */
-	public func new( String text ) this( DefaultToggleModel.new(), text )
+	public func new(String text) this(DefaultToggleModel.new(), text)
 	end
 	
 	/** \brief Create text and image toggle button. */
-	public func new( String text, Image image ) this( DefaultToggleModel.new(), text, image )
+	public func new(String text, Image image) this(DefaultToggleModel.new(), text, image)
 	end
 	
 	/** \brief Create toggle button. */
-	public func new( ToggleModel model )
-		this.initToggleModel( model )
+	public func new(ToggleModel model)
+		initToggleModel(model)
 	end
 	
 	/** \brief Create text toggle button. */
-	public func new( ToggleModel model, String text ) super( text )
-		this.initToggleModel( model )
+	public func new(ToggleModel model, String text) super(text)
+		initToggleModel(model)
 	end
 	
 	/** \brief Create text and image toggle button. */
-	public func new( ToggleModel model, String text, Image image ) super( text, image )
-		this.initToggleModel( model )
+	public func new(ToggleModel model, String text, Image image) super(text, image)
+		initToggleModel(model)
 	end
 	
 	/** \brief Create text toggle button. */
-	public func new( String text, ActionListener action ) this( text )
-		this.addActionListener( action )
+	public func new(String text, ActionListener action) this(text)
+		addActionListener(action)
 	end
 	
 	/** \brief Create text and image toggle button. */
-	public func new( String text, Image image, ActionListener action ) this( text, image )
-		this.addActionListener( action )
+	public func new(String text, Image image, ActionListener action) this(text, image)
+		addActionListener(action)
 	end
 	
 	/** \brief Create text toggle button. */
-	public func new( ToggleModel model, String text, ActionListener action ) this( model, text )
-		this.addActionListener( action )
+	public func new(ToggleModel model, String text, ActionListener action) this(model, text)
+		addActionListener(action)
 	end
 	
 	/** \brief Create text and image toggle button. */
-	public func new( ToggleModel model, String text, Image image, ActionListener action ) this( model, text, image )
-		this.addActionListener( action )
+	public func new(ToggleModel model, String text, Image image, ActionListener action) this(model, text, image)
+		addActionListener(action)
 	end
 	
 	/** \brief Dispose of widget cleaning references. */
 	public func void dispose()
-		this.setButtonGroup( null )
-		this.pToggleModel.removeListener( this )
-		this.pToggleModel = null
+		setButtonGroup(null)
+		pToggleModel.removeListener(this)
+		pToggleModel = null
 		super.dispose()
 	end
 	
 	/** \brief Init toggle model. */
-	private func void initToggleModel( ToggleModel model )
+	private func void initToggleModel(ToggleModel model)
 		if model == null
 			throw EInvalidParam.new()
 		end
-		this.pToggleModel = model
-		this.pToggleModel.addListener( this )
+		pToggleModel = model
+		pToggleModel.addListener(this)
 	end
 	
 	
 	
 	/** \brief Toggle model. */
 	public func ToggleModel getToggleModel()
-		return this.pToggleModel
+		return pToggleModel
 	end
 	
 	/** \brief Set list model. */
-	public func void setToggleModel( ToggleModel model )
+	public func void setToggleModel(ToggleModel model)
 		if model == null
 			throw EInvalidParam.new()
 		end
 		
-		if model == this.pToggleModel
+		if model == pToggleModel
 			return
 		end
 		
-		this.pToggleModel.removeListener( this )
-		this.pToggleModel = model
-		this.pToggleModel.addListener( this )
+		pToggleModel.removeListener(this)
+		pToggleModel = model
+		pToggleModel.addListener(this)
 		
-		this.setToggled( this.pToggleModel.getToggled() )
+		setToggled(pToggleModel.getToggled())
 	end
 	
 	/** \brief Button is toggled. */
 	public func bool getToggled()
-		return this.pToggleModel.getToggled()
+		return pToggleModel.getToggled()
 	end
 	
 	/** \brief Set if button is toggled. */
-	public func void setToggled( bool toggled )
-		this.pToggleModel.setToggled( toggled )
+	public func void setToggled(bool toggled)
+		pToggleModel.setToggled(toggled)
 	end
 	
 	/** \brief Button stays toggled. */
 	public func bool getStickyToggled()
-		return this.pStickyToggled
+		return pStickyToggled
 	end
 	
 	/** \brief Set if button stays toggled. */
-	public func void setStickyToggled( bool stickyToggled )
-		this.pStickyToggled = stickyToggled
+	public func void setStickyToggled(bool stickyToggled)
+		pStickyToggled = stickyToggled
 	end
 	
 	/** \brief Button group or null. */
 	public func ToggleButtonGroup getButtonGroup()
-		return this.pButtonGroup
+		return pButtonGroup
 	end
 	
 	/** \brief Set button group or null. */
-	public func void setButtonGroup( ToggleButtonGroup buttonGroup )
-		if buttonGroup == this.pButtonGroup
+	public func void setButtonGroup(ToggleButtonGroup buttonGroup)
+		if buttonGroup == pButtonGroup
 			return
 		end
 		
-		if this.pButtonGroup != null
-			this.pButtonGroup.remove( this )
+		if pButtonGroup != null
+			pButtonGroup.remove(this)
 		end
 		
-		this.pButtonGroup = buttonGroup
+		pButtonGroup = buttonGroup
 		
 		if buttonGroup != null
-			buttonGroup.add( this )
+			buttonGroup.add(this)
 		end
 	end
 	
 	
 	
 	/** \brief Key on the keyboard has been pressed. */
-	public func void onKeyPress( KeyEvent event )
+	public func void onKeyPress(KeyEvent event)
 		if event.getKeyCode() == InputEventKey.enter
-			if not ( this.pStickyToggled and this.pToggleModel.getToggled() )
-				this.setPressed( not this.getPressed() )
-				this.setToggled( not this.pToggleModel.getToggled() )
-				this.fireAction( 0 )
+			if not (pStickyToggled and pToggleModel.getToggled())
+				setPressed(not getPressed())
+				setToggled(not pToggleModel.getToggled())
+				fireAction(0)
 			end
 			
 		elif event.getKeyCode() == InputEventKey.space
-			if not ( this.pStickyToggled and this.pToggleModel.getToggled() )
-				this.setPressed( true )
+			if not (pStickyToggled and pToggleModel.getToggled())
+				setPressed(true)
 			end
 		end
 		
-		this.sendEventToListeners( event, false )
+		sendEventToListeners(event, false)
 	end
 	
 	/** \brief Key on the keyboard has been released. */
-	public func void onKeyRelease( KeyEvent event )
+	public func void onKeyRelease(KeyEvent event)
 		if event.getKeyCode() == InputEventKey.space
-			if not ( this.pStickyToggled and this.pToggleModel.getToggled() )
-				this.setToggled( not this.pToggleModel.getToggled() )
-				this.setPressed( this.pToggleModel.getToggled() )
-				this.fireAction( 0 )
+			if not (pStickyToggled and pToggleModel.getToggled())
+				setToggled(not pToggleModel.getToggled())
+				setPressed(pToggleModel.getToggled())
+				fireAction(0)
 			end
 		end
 		
-		this.sendEventToListeners( event, false )
+		sendEventToListeners(event, false)
 	end
 	
 	/** Mouse button has been pressed. */
-	public func void onButtonPress( MouseEvent event )
+	public func void onButtonPress(MouseEvent event)
 		if event.getButton() == InputEventMouseButton.left
-			if not ( this.pStickyToggled and this.pToggleModel.getToggled() )
-				if this.getCanFocus()
-					this.grabFocus()
+			if not (pStickyToggled and pToggleModel.getToggled())
+				if getCanFocus()
+					grabFocus()
 				end
 				
-				this.captureMouse()
-				this.pHasGrab = true
-				this.setPressed( true )
+				captureMouse()
+				pHasGrab = true
+				setPressed(true)
 			end
 			
-			this.sendEventToListeners( event, false )
+			sendEventToListeners(event, false)
 			
 		else
-			super.onButtonPress( event )
+			super.onButtonPress(event)
 		end
 	end
 	
 	/** \brief Mouse button has been released. */
-	public func void onButtonRelease( MouseEvent event )
+	public func void onButtonRelease(MouseEvent event)
 		if event.getButton() == InputEventMouseButton.left
-			if not ( this.pStickyToggled and this.pToggleModel.getToggled() )
-				this.pHasGrab = false
-				this.releaseMouse()
+			if not (pStickyToggled and pToggleModel.getToggled())
+				pHasGrab = false
+				releaseMouse()
 				
-				if this.isPointInside( event.getPosition() )
-					this.setToggled( not this.pToggleModel.getToggled() )
-					this.setPressed( this.pToggleModel.getToggled() )
-					this.fireAction( event.getModifiers() )
+				if isPointInside(event.getPosition())
+					setToggled(not pToggleModel.getToggled())
+					setPressed(pToggleModel.getToggled())
+					fireAction(event.getModifiers())
 					
 				else
-					this.setPressed( this.pToggleModel.getToggled() )
+					setPressed(pToggleModel.getToggled())
 				end
 			end
 			
-			this.sendEventToListeners( event, false )
+			sendEventToListeners(event, false)
 			
 		else
-			super.onButtonRelease( event )
+			super.onButtonRelease(event)
 		end
 	end
 	
 	/** \brief Mouse has moved. */
-	public func void onMouseMove( MouseEvent event )
-		if this.pHasGrab
-			this.setPressed( this.isPointInside( event.getPosition() ) )
-			this.sendEventToListeners( event, false )
+	public func void onMouseMove(MouseEvent event)
+		if pHasGrab
+			setPressed(isPointInside(event.getPosition()))
+			sendEventToListeners(event, false)
 			
 		else
-			super.onMouseMove( event )
+			super.onMouseMove(event)
 		end
 	end
 	
 	
 	
 	/** \brief Toggled state changed. */
-	public func void toggledChanged( ToggleModel model )
-		this.runWhileBlockingLayout( block
-			this.setPressed( model.getToggled() )
-			this.notifyBorderParametersChanged()
-			this.onStateChanged( StateChangeEvent.new( this, StateChangeEvent.idStateChanged ) )
-		end )
-		this.doLayoutIfBlocked()
+	public func void toggledChanged(ToggleModel model)
+		runWhileBlockingLayout(block
+			setPressed(model.getToggled())
+			notifyBorderParametersChanged()
+			onStateChanged(StateChangeEvent.new(this, StateChangeEvent.idStateChanged))
+		end)
+		doLayoutIfBlocked()
 	end
 end
