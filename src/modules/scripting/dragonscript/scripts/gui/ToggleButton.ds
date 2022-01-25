@@ -236,10 +236,11 @@ class ToggleButton extends Button implements ToggleModelListener
 	public func void onButtonRelease(MouseEvent event)
 		if event.getButton() == InputEventMouseButton.left
 			if not (pStickyToggled and pToggleModel.getToggled())
+				var bool canFireAction = pHasGrab
 				pHasGrab = false
 				releaseMouse()
 				
-				if isPointInside(event.getPosition())
+				if canFireAction and isPointInside(event.getPosition())
 					setToggled(not pToggleModel.getToggled())
 					setPressed(pToggleModel.getToggled())
 					fireAction(event.getModifiers())
