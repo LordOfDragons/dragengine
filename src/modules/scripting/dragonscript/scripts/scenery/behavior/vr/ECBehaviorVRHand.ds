@@ -313,7 +313,7 @@ class ECBehaviorVRHand extends DefaultECBehavior
 		end
 		
 		/** \brief Set use vendor model. */
-		protected func void setUseVendorModel(bool useVendorModel)
+		public func void setUseVendorModel(bool useVendorModel)
 			if useVendorModel == pUseVendorModel
 				return
 			end
@@ -328,7 +328,7 @@ class ECBehaviorVRHand extends DefaultECBehavior
 		end
 		
 		/** \brief Set show hand. */
-		protected func void setShowHand(bool showHand)
+		public func void setShowHand(bool showHand)
 			if showHand == pShowHand
 				return
 			end
