@@ -45,19 +45,20 @@
 #include "../../deScriptingDragonScript.h"
 #include "../../deClassPathes.h"
 
+#include <dragengine/deEngine.h>
 #include <dragengine/resources/component/deComponent.h>
 #include <dragengine/resources/component/deComponentBone.h>
 #include <dragengine/resources/component/deComponentManager.h>
 #include <dragengine/resources/component/deComponentTexture.h>
 #include <dragengine/resources/decal/deDecal.h>
 #include <dragengine/resources/model/deModel.h>
+#include <dragengine/resources/model/deModelTexture.h>
 #include <dragengine/resources/rig/deRig.h>
 #include <dragengine/resources/rig/deRigBone.h>
 #include <dragengine/resources/skin/deSkin.h>
 #include <dragengine/resources/skin/dynamic/deDynamicSkin.h>
 #include <dragengine/resources/image/deImage.h>
 #include <dragengine/resources/occlusionmesh/deOcclusionMesh.h>
-#include <dragengine/deEngine.h>
 
 #include <libdscript/exceptions.h>
 #include <libdscript/packages/default/dsClassBlock.h>
@@ -844,6 +845,23 @@ void deClassComponent::nfGetTextureCount::RunFunction( dsRunTime *rt, dsValue *m
 	rt->PushInt( component.GetTextureCount() );
 }
 
+// public func String getTextureNameAt(int index)
+deClassComponent::nfGetTextureNameAt::nfGetTextureNameAt( const sInitData &init ) :
+dsFunction( init.clsCom, "getTextureNameAt", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsStr ){
+	p_AddParameter( init.clsInt ); // index
+}
+void deClassComponent::nfGetTextureNameAt::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const deComponent &component = *( ( ( sCompNatDat* )p_GetNativeData( myself ) )->component );
+	const int index = rt->GetValue( 0 )->GetInt();
+	
+	const deModel * const model = component.GetModel();
+	if( ! model ){
+		DSTHROW_INFO( dueNullPointer, "model" );
+	}
+	
+	rt->PushString( model->GetTextureAt( index )->GetName() );
+}
+
 // public func Skin getTextureSkinAt( int index )
 deClassComponent::nfGetTextureSkinAt::nfGetTextureSkinAt( const sInitData &init ) : dsFunction( init.clsCom,
 "getTextureSkinAt", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsSkin ){
@@ -1231,6 +1249,7 @@ void deClassComponent::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfIndexOfTextureNamed( init ) );
 	AddFunction( new nfIndexOfTextureClosedTo( init ) );
 	AddFunction( new nfGetTextureCount( init ) );
+	AddFunction( new nfGetTextureNameAt( init ) );
 	AddFunction( new nfGetTextureSkinAt( init ) );
 	AddFunction( new nfGetTextureTextureAt( init ) );
 	AddFunction( new nfSetTextureSkinAt( init ) );

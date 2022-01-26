@@ -188,6 +188,15 @@ class Component
 	end
 	
 	/**
+	 * \brief Name of texture.
+	 * \version 1.9
+	 * \throws EOutOfBoundary \em texture is less than 0 or greater than or equal to getTextureCount().
+	 */
+	public func String getTextureNameAt(int texture)
+		return null
+	end
+	
+	/**
 	 * \brief Skin of texture or \em null if not used.
 	 * \throws EOutOfBoundary \em texture is less than 0 or greater than or equal to getTextureCount().
 	 */
