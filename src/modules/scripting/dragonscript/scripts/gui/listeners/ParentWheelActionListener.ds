@@ -30,22 +30,71 @@ pin Dragengine.Gui.Events
  * 
  * Adding mouse listeners to widgets prevents events being send to the parent. If you just
  * want to react to a mouse click this also prevents mouse wheel events from being send
- * to the parent. Add also this listener to rectify this.
+ * to the parent. Add also this listener to rectify 
  */
 class ParentWheelActionListener extends DefaultMouseListener
-	/** \brief Create mouse listener. */
+	private var Container pParent
+	
+	
+	
+	/**
+	 * \brief Create mouse listener.
+	 * \deprecated Use new(Container) otherwise event loops can happen if event source
+	 *             is a child widget of the widget this listener is added to.
+	 */
 	public func new()
+	end
+	
+	/**
+	 * \brief Create mouse listener sending wheel event to container
+	 * \version 1.9
+	 * \throws ENullPointer parent is null.
+	 */
+	public func new(Container parent)
+		setParent(parent)
 	end
 	
 	
 	
+	/**
+	 * \brief Parent widget to send events to.
+	 * \version 1.9
+	 */
+	public func Container getParent()
+		return pParent
+	end
+	
+	/**
+	 * \brief Set parent widget to send events to.
+	 * \version 1.9
+	 * \throws ENullPointer parent is null.
+	 */
+	public func void setParent(Container parent)
+		if parent == null
+			throw ENullPointer.new("parent")
+		end
+		pParent = parent
+	end
+	 
+	
+	
 	/** \brief Mouse wheel has moved. */
-	public func void onMouseWheel( MouseEvent event )
+	public func void onMouseWheel(MouseEvent event)
+		if pParent != null
+			pParent.sendEvent(event)
+			
+		else
+			deprecatedOnMouseWheel(event)
+		end
+	end
+	
+	/** Deprecated behavior: Version < 1.9 . */
+	private func void deprecatedOnMouseWheel(MouseEvent event)
 		var Object source = event.getSource()
 		if source castable Widget
-			var Container parent = ( source cast Widget ).getParent()
+			var Container parent = (source cast Widget).getParent()
 			if parent != null
-				parent.sendEvent( event )
+				parent.sendEvent(event)
 			end
 		end
 	end
