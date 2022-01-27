@@ -259,6 +259,39 @@ class ECBehaviorControlDesktop extends DefaultECBehavior
 		end
 		
 		/**
+		 * \brief Calculate virtual plane coordinates for world ray intersection with plan.
+		 * \version 1.9
+		 * 
+		 * Calculates the intersection point of the ray with the plane. Returns position
+		 * similar to planePositionEverywhere without clamping.
+		 */
+		public func Vector2 planePositionRay(DVector origin, DVector direction)
+			var DMatrix matrix = getWorldMatrix()
+			
+			var DVector lowerLeft = matrix * DVector.new(pLowerLeft)
+			var DVector lowerRight = matrix * DVector.new(pLowerRight)
+			var DVector upperLeft = matrix * DVector.new(pUpperLeft)
+			
+			var DVector axisX = lowerRight - lowerLeft
+			var DVector axisY = upperLeft - lowerLeft
+			
+			var DVector axisZ = (axisY.normalize() % axisX.normalize()).normalize()
+			var float denom = axisZ * direction
+			if DEMath.fabs(denom) < 0.0001
+				return planePositionEverywhere(origin)
+			end
+			
+			var float numer = axisZ * (origin - lowerLeft)
+			var float distance = -(numer / denom)
+			
+			var DVector localPosition = origin + direction * distance - lowerLeft
+			
+			return Vector2.new(\
+				localPosition * (axisX / axisX.getLengthSquared()), \
+				localPosition * (axisY / axisY.getLengthSquared()))
+		end
+		
+		/**
 		 * \brief Calculate desktop position from virtual plane coordinates.
 		 * 
 		 * Virtual plane Y axis runs from bottom (0) to top(1). Desktop Y axis runs from
@@ -296,6 +329,17 @@ class ECBehaviorControlDesktop extends DefaultECBehavior
 			return planeToDesktop(planePositionEverywhere(worldPosition))
 		end
 		
+		/**
+		 * \brief Calculate desktop position for world ray intersection.
+		 * \version 1.9
+		 * 
+		 * Same as desktopPoint() but returns desktop position also if the world position
+		 * is outside the virtual plane. The returned position is clamped to the desktop size.
+		 */
+		public func Point desktopPointRay(DVector origin, DVector direction)
+			return planeToDesktop(planePositionRay(origin, direction))
+		end
+		
 		/** \brief Move desktop mouse to new position. */
 		public func void moveMouse(Point position)
 			pRenderableDesktop.getDesktop().warpMousePointer(position)
@@ -324,7 +368,17 @@ class ECBehaviorControlDesktop extends DefaultECBehavior
 		 * Same as moveMouse(DVector) but applies also if world position is outside virtual plane.
 		 */
 		public func void moveMouseEverywhere(DVector worldPosition)
-			moveMouse(desktopPoint(worldPosition))
+			moveMouse(desktopPointEverywhere(worldPosition))
+		end
+		
+		/**
+		 * \brief Move mouse position.
+		 * \version 1.9
+		 * 
+		 * Same as moveMouse(DVector) but applies also if world position is outside virtual plane.
+		 */
+		public func void moveMouseRay(DVector origin, DVector direction)
+			moveMouse(desktopPointRay(origin, direction))
 		end
 		
 		/**
