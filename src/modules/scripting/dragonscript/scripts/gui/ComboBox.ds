@@ -256,7 +256,10 @@ class ComboBox extends Container implements ListModelListener
 		pPanelSelectedElement = null
 		pWidgetButtonDropDown = null
 		
-		pListBox = null // no remove listener since popwindow does this on dispose
+		if pListBox != null
+			pListBox.getModel().removeListener(this)
+			pListBox = null // no remove listener since popwindow does this on dispose
+		end
 		
 		if pDropDown != null
 			pDropDown.close()
@@ -275,7 +278,13 @@ class ComboBox extends Container implements ListModelListener
 	
 	/** \brief Set list model. */
 	public func void setModel(ListModel model)
+		if model == null
+			throw ENullPointer.new("model")
+		end
+		
+		pListBox.getModel().removeListener(this)
 		pListBox.setModel(model)
+		model.addListener(this)
 	end
 	
 	/** \brief List element renderer. */
