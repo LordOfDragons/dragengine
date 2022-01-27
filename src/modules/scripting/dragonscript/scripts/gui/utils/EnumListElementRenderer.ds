@@ -1,0 +1,117 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2022, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui
+
+pin Dragengine.Gui.Events
+pin Dragengine.Gui.Listeners
+pin Dragengine.Scenery
+pin Dragengine.Utils
+
+
+/**
+ * \brief List element renderer showing a pre-define name for enumeration values.
+ * \version 1.9
+ * 
+ * Simple way to display a ListModel of Enumeration values with nice looking names.
+ * If an enumeration constant has no name assigned the value name without the class
+ * name is displayed.
+ */
+class EnumListElementRenderer extends DefaultListElementRenderer
+	private var Dictionary pMap
+	
+	
+	
+	/**
+	 * \brief Create list element renderer.
+	 */
+	public func new()
+		pMap = Dictionary.new()
+	end
+	
+	
+	
+	/** \brief Set name for enumeration value. */
+	public func void setNameFor(Enumeration value, String name)
+		if value == null
+			throw ENullPointer.new("value")
+		end
+		if name == null
+			throw ENullPointer.new("name")
+		end
+		
+		pMap.setAt(value, name)
+	end
+	
+	/** \brief Remove name for enumeration value if present. */
+	public func void removeNameFor(Enumeration value)
+		pMap.removeIfExisting(value)
+	end
+	
+	/** \brief Remove all enumeration value names. */
+	public func void removeAllNames()
+		pMap.removeAll()
+	end
+	
+	/** \brief Name for enumeration value or null if not set. */
+	public func String nameFor(Enumeration value)
+		if value == null
+			return null
+		end
+		return pMap.getAt(value, null) cast String
+	end
+	
+	/**
+	 * \brief Visit name mappings with block.
+	 * 
+	 * Block receives as first argument Enumeration value and as second argument String name.
+	 */
+	public func void forEachName(Block ablock)
+		pMap.forEach(ablock)
+	end
+	
+	
+	
+	/** \brief Update renderer value. */
+	public func void updateRenderer(ListBox listBox, Widget renderer, Object element, bool selected, bool focused)
+		var Enumeration value = element cast Enumeration
+		var String text
+		
+		if value != null
+			text = nameFor(value)
+			
+			if text == null
+				text = value.name()
+				
+				var int index = text.findReverse('.')
+				if index != -1
+					text = text.substring(index + 1)
+				end
+			end
+			
+		else
+			text = "<null>"
+		end
+		
+		super.updateRenderer(listBox, renderer, text, selected, focused)
+	end
+end
