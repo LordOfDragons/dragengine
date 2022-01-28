@@ -171,7 +171,16 @@ bool deglLauncher::RunCommandLineGame(){
 	}
 	
 	if( game->GetCanRun() ){
-		delGameProfile * const profile = game->GetProfileToUse();
+		delGameProfile *profile = game->GetProfileToUse();
+		
+		if( ! pRunProfileName.IsEmpty() ){
+			profile = GetGameManager().GetProfiles().GetNamed( pRunProfileName );
+			if( ! profile ){
+				FXMessageBox::error( pWindowMain->getApp(), MBOX_OK, "Run Game",
+					"No profile found named '%s'", pRunProfileName.GetString() );
+				return false;
+			}
+		}
 		
 		if( profile->GetValid() ){
 			delGameRunParams runParams;
@@ -261,6 +270,13 @@ void deglLauncher::pParseArguments(){
 	const int argumentCount = pArguments.GetArgumentCount();
 	int argumentIndex = 0;
 	
+	// windows URI scheme support
+	#ifdef OS_W32
+	if( pParseWindowsURIScheme() ){
+		return;
+	}
+	#endif
+	
 	// check for options. they all start with a dash.
 	while( argumentIndex < argumentCount ){
 		const decString argument( pArguments.GetArgumentAt( argumentIndex )->ToUTF8() );
@@ -341,4 +357,60 @@ void deglLauncher::pParseArguments(){
 		pRunGameArgList.AddArgument( *pArguments.GetArgumentAt( argumentIndex ) );
 		argumentIndex++;
 	}
+}
+
+bool deglLauncher::pParseWindowsURIScheme(){
+	// check if this is a windows URI scheme
+	const int argumentCount = pArguments.GetArgumentCount();
+	if( argumentCount == 0 ){
+		return false;
+	}
+	
+	decString urischeme( pArguments.GetArgumentAt( 0 )->ToUTF8() );
+	if( ! urischeme.BeginsWith( "delauncher:" ) ){
+		return false;
+	}
+	
+	// convert the arguments into a single string just to be on the safe side
+	int i;
+	for( i=1; i<argumentCount; i++ ){
+		urischeme.AppendCharacter( ' ' );
+		urischeme += pArguments.GetArgumentAt( i )->ToUTF8();
+	}
+	
+	// parse URI scheme
+	urischeme = urischeme.GetMiddle( 11 );
+	
+	if( urischeme.BeginsWith( "run?" ) ){
+		const decStringList parameters( urischeme.GetMiddle( 4 ).Split( '&' ) );
+		const int parameterCount = parameters.GetCount();
+		
+		for( i=0; i<parameterCount; i++ ){
+			const decString &parameter = parameters.GetAt( i );
+			
+			if( parameter.BeginsWith( "file=" ) ){
+				pRunGame = parameter.GetMiddle( 5 );
+				
+			}else if( parameter.BeginsWith( "profile=" ) ){
+				pRunProfileName = parameter.GetMiddle( 8 );
+				
+			}else if( parameter.BeginsWith( "argument=" ) ){
+				pRunGameArgList.AddArgument( decUnicodeString::NewFromUTF8( parameter.GetMiddle( 9 ) ) );
+			}
+		}
+		
+	}else if( urischeme.BeginsWith( "install?" ) ){
+		const decStringList parameters( urischeme.GetMiddle( 8 ).Split( '&' ) );
+		const int parameterCount = parameters.GetCount();
+		
+		for( i=0; i<parameterCount; i++ ){
+			const decString &parameter = parameters.GetAt( i );
+			
+			if( parameter.BeginsWith( "file=" ) ){
+				pCmdLineInstallDelga = parameter.GetMiddle( 5 );
+			}
+		}
+	}
+	
+	return true;
 }

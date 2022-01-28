@@ -102,6 +102,7 @@ public:
 	
 private:
 	void pParseArguments();
+	bool pParseWindowsURIScheme();
 	void pInitLogger();
 };
 
