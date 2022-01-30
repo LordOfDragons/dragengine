@@ -295,16 +295,16 @@ class BAAFirstPersonVR extends BAAFirstPerson
 		else
 			vrPlayspace = ECBehaviorVRPlayspace.getInstanceIn(actor)
 			vrHMD = ECBehaviorVRHMD.getInstanceIn(actor)
-			vrRightHand = ECBehaviorVRHand.getInstanceIn(actor, "right")
-			vrLeftHand = ECBehaviorVRHand.getInstanceIn(actor, "left")
-			vrRightHandPointAt = ECBehaviorVRHandPointAt.getInstanceIn(actor, "right")
-			vrLeftHandPointAt = ECBehaviorVRHandPointAt.getInstanceIn(actor, "left")
-			vrRightHandLaserPointer = ECBehaviorVRHandLaserPointer.getInstanceIn(actor, "right")
-			vrLeftHandLaserPointer = ECBehaviorVRHandLaserPointer.getInstanceIn(actor, "left")
-			vrRightHandAttachSlot = ECBehaviorAttachSlot.getInstanceIn(actor, "vrHandRight")
-			vrLeftHandAttachSlot = ECBehaviorAttachSlot.getInstanceIn(actor, "vrHandLeft")
-			vrRightHandGrabber = ECBehaviorGrabber.getInstanceIn(actor, "vrHandRight")
-			vrLeftHandGrabber = ECBehaviorGrabber.getInstanceIn(actor, "vrHandLeft")
+			vrRightHand = ECBehaviorVRHand.getInstanceIn(actor, BaseVRActorClass.idVRRightHand)
+			vrLeftHand = ECBehaviorVRHand.getInstanceIn(actor, BaseVRActorClass.idVRLeftHand)
+			vrRightHandPointAt = ECBehaviorVRHandPointAt.getInstanceIn(actor, BaseVRActorClass.idVRRightHand)
+			vrLeftHandPointAt = ECBehaviorVRHandPointAt.getInstanceIn(actor, BaseVRActorClass.idVRLeftHand)
+			vrRightHandLaserPointer = ECBehaviorVRHandLaserPointer.getInstanceIn(actor, BaseVRActorClass.idVRRightHand)
+			vrLeftHandLaserPointer = ECBehaviorVRHandLaserPointer.getInstanceIn(actor, BaseVRActorClass.idVRLeftHand)
+			vrRightHandAttachSlot = ECBehaviorAttachSlot.getInstanceIn(actor, BaseVRActorClass.idNonVRRightHand)
+			vrLeftHandAttachSlot = ECBehaviorAttachSlot.getInstanceIn(actor, BaseVRActorClass.idNonVRLeftHand)
+			vrRightHandGrabber = ECBehaviorGrabber.getInstanceIn(actor, BaseVRActorClass.idNonVRRightHand)
+			vrLeftHandGrabber = ECBehaviorGrabber.getInstanceIn(actor, BaseVRActorClass.idNonVRLeftHand)
 		end
 	end
 	
