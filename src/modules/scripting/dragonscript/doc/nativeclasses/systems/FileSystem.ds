@@ -150,5 +150,14 @@ fixed class FileSystem
 	 */
 	public static func Array getFileExtensions(ResourceLoaderType type)
 	end
+	
+	/**
+	 * \brief Open URL using user defined application.
+	 * \version 1.9
+	 * 
+	 * Calling this function switches the focus to another application.
+	 */
+	public static func void openUrl(String url)
+	end
 	/*@}*/
 end

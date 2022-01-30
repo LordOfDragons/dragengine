@@ -529,6 +529,17 @@ void deClassFileSystem::nfGetFileExtensions::RunFunction( dsRunTime *rt, dsValue
 	}
 }
 
+// public static func void openUrl(String url)
+deClassFileSystem::nfOpenUrl::nfOpenUrl( const sInitData &init ) :
+dsFunction( init.clsFileSys, "openUrl", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsVoid ){
+	p_AddParameter( init.clsStr ); // url
+}
+void deClassFileSystem::nfOpenUrl::RunFunction( dsRunTime *rt, dsValue* ){
+	const deClassFileSystem &clsFileSys = *( ( deClassFileSystem* )GetOwnerClass() );
+	clsFileSys.OpenUrl( rt->GetValue( 0 )->GetString() );
+}
+
 
 
 // Class deClassFileSystem
@@ -600,6 +611,7 @@ void deClassFileSystem::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfBrowseCapture( init ) );
 	AddFunction( new nfBrowseConfig( init ) );
 	AddFunction( new nfGetFileExtensions( init ) );
+	AddFunction( new nfOpenUrl( init ) );
 	
 	CalcMemberOffsets();
 }
@@ -627,6 +639,24 @@ void deClassFileSystem::BrowseNativeDirectory( const decPath& path ) const{
 	if( fork() == 0 ){
 		// GetString() is required otherwise execlp fails to run correctly
 		execlp( appname, appname, path.GetPathUnix().GetString(), nullptr );
+		pDS->LogErrorFormat( "Failed running '%s' (error %d)\n", appname, errno );
+		exit( 0 );
+	}
+	#endif
+}
+
+void deClassFileSystem::OpenUrl( const char *url ) const{
+	#ifdef OS_W32
+	wchar_t wideUrl[ 512 ];
+	deOSWindows::Utf8ToWide( url, wideUrl, 512 );
+	ShellExecute( NULL, L"open", wideUrl, NULL, NULL, SW_SHOWDEFAULT );
+	
+	#else
+	const char * const appname = "xdg-open";
+	
+	if( fork() == 0 ){
+		// GetString() is required otherwise execlp fails to run correctly
+		execlp( appname, appname, url, nullptr );
 		pDS->LogErrorFormat( "Failed running '%s' (error %d)\n", appname, errno );
 		exit( 0 );
 	}

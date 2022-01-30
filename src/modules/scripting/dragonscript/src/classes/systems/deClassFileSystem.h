@@ -71,6 +71,7 @@ public:
 	inline dsValue *GetTypeSpecial() const{ return pTypeSpecial; }
 	
 	void BrowseNativeDirectory( const decPath &path ) const;
+	void OpenUrl( const char *url ) const;
 	/*@}*/
 	
 private:
@@ -110,6 +111,7 @@ private:
 	DEF_NATFUNC( nfBrowseCapture );
 	DEF_NATFUNC( nfBrowseConfig );
 	DEF_NATFUNC( nfGetFileExtensions );
+	DEF_NATFUNC( nfOpenUrl );
 #undef DEF_NATFUNC
 };
 
