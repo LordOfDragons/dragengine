@@ -178,6 +178,11 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 			pOrigin = pECBehavior.getOrigin().getVector(stub, codec)
 			pRotation = pECBehavior.getRotation().getVector(stub, codec)
 			
+			pShape = pECBehavior.getShape().getShapeList(stub)
+			if pShape != null and pShape.getCount() == 0
+				pShape = null
+			end
+			
 			// ignore collisions with collider if present. this helps to avoid actor geometry
 			// blocking point-at collision testing. collision tests use the ignore collider
 			// settings of the collider they are attached to. hence the collider to ignore
@@ -260,7 +265,7 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 		/**
 		 * \brief Set test collider using shape.
 		 * 
-		 * By default no test collider is set in which case ra-ytesting is used. Using shapes
+		 * By default no test collider is set in which case ray-testing is used. Using shapes
 		 * like a sphere is useful to enlarge the hit area for example with 3rd person views.
 		 */
 		public func void setTestCollider(ShapeList shape)
@@ -594,6 +599,7 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 	private var ECPFloat pRange
 	private var ECPVector pOrigin
 	private var ECPVector pRotation
+	private var ECPShapeList pShape
 	private var ECPString pTestBone
 	private var ECComposeCollisionFilter pCollisionFilter
 	private var Array pListenerFactories
@@ -623,6 +629,9 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 		
 		pRotation = ECPVector.new(prefix + "rotation", Vector.new(-45, 0, 0))
 		eclass.addProperty(pRotation)
+		
+		pShape = ECPShapeList.new(prefix + "shape", eclass.getCodecPropertyString())
+		eclass.addProperty(pShape)
 		
 		pTestBone = ECPString.new(prefix + "bone", null)
 		eclass.addProperty(pTestBone)
@@ -677,6 +686,14 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 	/** \brief Test direction rotation. */
 	public func ECPVector getRotation()
 		return pRotation
+	end
+	
+	/**
+	 * \brief Test shape.
+	 * \version 1.9
+	 */
+	public func ECPShapeList getShape()
+		return pShape
 	end
 	
 	/** \brief Test bone. */
