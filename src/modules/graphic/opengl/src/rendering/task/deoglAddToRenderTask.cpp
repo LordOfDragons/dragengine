@@ -362,11 +362,18 @@ const deoglModelLOD &modelLod, int texture, const deoglRenderTaskSharedVAO *rtva
 		#endif
 	
 	// obtain render task vao and add faces
-	pGetTaskVAO( pSkinShaderType, componentTexture.GetUseSkinTexture(),
-		componentTexture.GetTUCForShaderType( pSkinShaderType ), rtvao->GetVAO() )->
-			AddInstance( componentTexture.GetSharedSPBRTIGroup( lod.GetLODIndex() ).GetRTSInstance() )->
-			AddSubInstance( componentTexture.GetSharedSPBElement()->GetIndex(), specialFlags );
-	
+	try{
+		pGetTaskVAO( pSkinShaderType, componentTexture.GetUseSkinTexture(),
+			componentTexture.GetTUCForShaderType( pSkinShaderType ), rtvao->GetVAO() )->
+				AddInstance( componentTexture.GetSharedSPBRTIGroup( lod.GetLODIndex() ).GetRTSInstance() )->
+				AddSubInstance( componentTexture.GetSharedSPBElement()->GetIndex(), specialFlags );
+		
+	}catch( const deException & ){
+		// TODO temporary hack. ignore this problem for the time being. it happens if
+		// objects are rendered through remote views and are not properly initialized
+		// yet. needs a proper fix for this. this hack prevents the error at the cost
+		// of not rendering faces
+	}
 #if 0
 	const deoglRenderTaskSharedShader * const rts = componentTexture.GetUseSkinTexture()->
 		GetShaderFor( pSkinShaderType )->GetShader()->GetRTSShader();
