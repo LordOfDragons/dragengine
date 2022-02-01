@@ -8,7 +8,7 @@
          xmlns:desktop='http://schemas.microsoft.com/appx/manifest/desktop/windows10'
          IgnorableNamespaces='uap uap2 uap3 uap10 rescap desktop'>
 	<Identity Name='DragonDreams.Dragengine.GameEngine'
-	          Version='1.8.1.0'
+	          Version='1.9.0.0'
 	          Publisher='CN=E95CA5DA-8C21-47A7-9FC7-7DDEFAE1B9E5'
 	          ProcessorArchitecture='x64'/>
 	<Properties>
