@@ -333,7 +333,7 @@ class OBJECT_OT_ImportAnimation(bpy.types.Operator, ImportHelper):
 						# read keyframes
 						for j in range(countKeyframes):
 							kfFrame = struct.unpack("<H", f.read(2))[0]
-							keyframe = Armature.Keyframe(kfFrame, Vector(), Vector(), Vector((1,1,1)))
+							keyframe = Armature.Keyframe(kfFrame + 1, Vector(), Vector(), Vector((1,1,1)))
 							
 							# if we have a variable position read it. if short format is used encoded as signed 16-bit.
 							if hasVarPos:
