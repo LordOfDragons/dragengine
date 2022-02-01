@@ -791,17 +791,24 @@ const deoglRCanvasRenderWorld &canvas ){
 	shader.SetParameterTexMatrix3x2( spcTCTransformMask, context.GetTransformMask() );
 	
 	// color correction from configuration applied over canvas color transformation
-	const deoglConfiguration &config = renderThread.GetConfiguration();
-	const float gamma = 1.0f / ( OGL_RENDER_GAMMA * config.GetGammaCorrection() );
-	
-	const decColorMatrix colorTransform(
-		decColorMatrix::CreateContrast( config.GetContrast() ) *
-		decColorMatrix::CreateBrightness( config.GetBrightness() ) *
-		decColorMatrix::CreateScaling( 1.0f, 1.0f, 1.0f, transparency ) *
-		context.GetColorTransform() );
-	
-	shader.SetParameterColorMatrix5x4( spcColorTransform, spcColorTransform2, colorTransform );
-	shader.SetParameterFloat( spcGamma, gamma, gamma, gamma, 1.0f );
+	if( vr ){
+		// vr is already color corrected
+		shader.SetParameterColorMatrix5x4( spcColorTransform, spcColorTransform2, decColorMatrix() );
+		shader.SetParameterFloat( spcGamma, 1.0f, 1.0f, 1.0f, 1.0f );
+		
+	}else{
+		const deoglConfiguration &config = renderThread.GetConfiguration();
+		const float gamma = 1.0f / ( OGL_RENDER_GAMMA * config.GetGammaCorrection() );
+		
+		const decColorMatrix colorTransform(
+			decColorMatrix::CreateContrast( config.GetContrast() ) *
+			decColorMatrix::CreateBrightness( config.GetBrightness() ) *
+			decColorMatrix::CreateScaling( 1.0f, 1.0f, 1.0f, transparency ) *
+			context.GetColorTransform() );
+		
+		shader.SetParameterColorMatrix5x4( spcColorTransform, spcColorTransform2, colorTransform );
+		shader.SetParameterFloat( spcGamma, gamma, gamma, gamma, 1.0f );
+	}
 	
 	// set clipping
 	shader.SetParameterFloat( spcClipRect,
