@@ -46,6 +46,13 @@ void scatter( in vec2 tc, in vec3 position, in vec3 scatterScale, inout vec3 sum
 	#else
 		vec3 spos = vec3( textureLod( texDepth, tc, 0.0 ).r );
 	#endif
+	
+	// the position to sample can happen to be at z-far. in this case the denominator
+	// becomes 0 causing inf/nan values. skip such pixels altogether
+	if( pPosTransform.y == spos.z ){
+		return;
+	}
+	
 	spos.z = pPosTransform.x / ( pPosTransform.y - spos.z );
 	spos.xy = tc * pTCTransform.xy + pTCTransform.zw; // convert to -1..1 range
 	spos.xy = ( spos.xy + pPosTransform2 ) * pPosTransform.zw * spos.zz;
