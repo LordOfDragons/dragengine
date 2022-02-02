@@ -25,9 +25,11 @@
 	</Resources>
 	<Dependencies>
 		<TargetDeviceFamily Name='Windows.Desktop' MinVersion='10.0.17763.0' MaxVersionTested='10.0.22000.1'/>
+		<!-- disabled until microsoft provides a solution for this problem
 		<PackageDependency Name='DragonDreams.Dragengine.GameEngine'
 		                   MinVersion='1.9.0.0'
 		                   Publisher='CN=E95CA5DA-8C21-47A7-9FC7-7DDEFAE1B9E5'/>
+		-->
 	</Dependencies>
 	<Capabilities>
 		<Capability Name='internetClientServer'/>

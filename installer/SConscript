@@ -92,6 +92,10 @@ elif envInstaller['OSWindows']:
 		
 	if envInstaller['installer_name_igde']:
 		copied = []
+		# copied until microsoft provides a solution for this problem
+		copyArchiveFiles(copied, 'archive-engine', 'msix/deigde')
+		copyDataFiles(copied, 'msix-data/dragengine', 'msix/deigde')
+		# end of microsoft hack
 		copyArchiveFiles(copied, 'archive-igde', 'msix/deigde')
 		copyDataFiles(copied, 'msix-data/deigde', 'msix/deigde')
 		msix = envInstaller.Command('{}.msix'.format(envInstaller['installer_name_igde']),
