@@ -745,9 +745,8 @@ deoglEnvironmentMap &envmap ){
 	plan.SetCameraAdaptedIntensity( 1.0f ); // only sky rendered. actual value not used
 	plan.SetViewport( size, size );
 	
-	plan.SetWorld( NULL ); // little hack since we only want the projection matrix to be updated
-	plan.PrepareRender( nullptr );
 	plan.SetWorld( &world );
+	plan.PrepareRenderSkyOnly();
 	
 	//defren.Resize( size, size );
 	

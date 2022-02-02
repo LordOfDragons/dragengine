@@ -2279,7 +2279,7 @@ void deoglRenderReflection::CopyEnvMap( deoglArrayTexture &source, deoglCubeMap 
 	
 	OGL_CHECK( renderThread, glViewport( 0, 0, target.GetSize(), target.GetSize() ) );
 	
-	tsmgr.EnableArrayTexture( 0, source, GetSamplerClampNearest() );
+	tsmgr.EnableArrayTexture( 3, source, GetSamplerClampNearest() ); // texEmissive
 	
 	defren.RenderFSQuadVAO();
 	

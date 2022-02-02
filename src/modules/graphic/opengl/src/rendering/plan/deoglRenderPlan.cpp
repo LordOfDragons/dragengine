@@ -311,6 +311,11 @@ void deoglRenderPlan::PrepareRender( const deoglRenderPlanMasked *mask ){
 	pIsRendering = false;
 }
 
+void deoglRenderPlan::PrepareRenderSkyOnly(){
+	UpdateRefPosCameraMatrix(); // this is required for rendering but not updating world ref pos
+	pPlanCameraProjectionMatrix();
+}
+
 // #define DO_SPECIAL_TIMING 1
 #ifdef DO_SPECIAL_TIMING
 #include <dragengine/common/utils/decTimer.h>

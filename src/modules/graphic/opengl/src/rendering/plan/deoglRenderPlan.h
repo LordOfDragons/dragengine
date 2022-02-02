@@ -252,6 +252,9 @@ public:
 	/** Prepare plan for rendering. */
 	void PrepareRender( const deoglRenderPlanMasked *mask );
 	
+	/** Prepare plan for sky only rendering. */
+	void PrepareRenderSkyOnly();
+	
 	/**
 	 * Prepare whatever can be prepared for a one turn of rendering.
 	 * 
