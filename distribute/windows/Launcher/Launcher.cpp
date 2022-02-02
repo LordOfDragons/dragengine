@@ -102,8 +102,8 @@ void Launcher::pExitApplication(){
 
 void Launcher::pLaunchDelga(){
     Windows::System::LauncherOptions options;
-    options.PreferredApplicationPackageFamilyName(L"DragonDreams.Dragengine.GameEngine");
-    options.PreferredApplicationDisplayName(L"Drag[en]gine GUI Launcher");
+    options.PreferredApplicationPackageFamilyName(L"DragonDreams.Dragengine.GameEngine_14hw6vre8sh8m");
+    options.PreferredApplicationDisplayName(L"Drag[en]gine Game Engine");
     options.DesiredRemainingView(ViewSizePreference::UseNone);
     options.TreatAsUntrusted(false);
 
