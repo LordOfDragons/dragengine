@@ -33,7 +33,7 @@ class Launcher{
 private:
 	const HINSTANCE pInstance;
 	std::unique_ptr<WindowSplash> pWindowSplash;
-	std::wstring pWorkingDirectory;
+	std::wstring pLauncherDirectory;
 	std::unique_ptr<LauncherIni> pLauncherIni;
 
 	static Launcher *pTheLauncher;

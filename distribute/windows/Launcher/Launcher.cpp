@@ -50,12 +50,18 @@ Launcher::~Launcher(){
 int Launcher::Run(){
     //pWindowSplash = std::make_unique<WindowSplash>();
     //return pRunMessageLoop();
+    
+    wchar_t executablePath[MAX_PATH];
+    GetModuleFileNameW(pInstance, executablePath, MAX_PATH);
 
-    wchar_t currentDirectory[MAX_PATH];
-    GetCurrentDirectoryW(MAX_PATH, currentDirectory);
-    pWorkingDirectory = currentDirectory;
+    pLauncherDirectory = executablePath;
+    
+    const std::wstring::size_type pathSeparator = pLauncherDirectory.rfind(L'\\');
+    if(pathSeparator != std::wstring::npos){
+        pLauncherDirectory = pLauncherDirectory.substr(0, pathSeparator);
+    }
 
-    pLauncherIni = std::make_unique<LauncherIni>(pWorkingDirectory + L"\\Launcher.ini");
+    pLauncherIni = std::make_unique<LauncherIni>(pLauncherDirectory + L"\\Launcher.ini");
 
     pLaunchDelga();
     
@@ -102,7 +108,7 @@ void Launcher::pLaunchDelga(){
     options.TreatAsUntrusted(false);
 
     std::wstring uriString{L"delauncher:run?file="};
-    uriString += pWorkingDirectory;
+    uriString += pLauncherDirectory;
     uriString += L"\\";
     uriString += ToWString(pLauncherIni->Get("File"));
 
