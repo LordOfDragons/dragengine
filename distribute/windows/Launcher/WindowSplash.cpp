@@ -85,8 +85,8 @@ pWindow(NULL)
 {
 	RegisterWindowClass();
     CreateSplashWindow();
-    ShowWindow(pWindow, SW_SHOWDEFAULT);
-    UpdateWindow(pWindow);
+    //ShowWindow(pWindow, SW_SHOWDEFAULT);
+    //UpdateWindow(pWindow);
 }
 
 WindowSplash::~WindowSplash(){

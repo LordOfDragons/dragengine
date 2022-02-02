@@ -65,7 +65,13 @@ int Launcher::Run(){
 
     pLaunchDelga();
     
+    // just long enough for the dialog to show then we can close. if we close
+    // too quickly the dialog is not shown. 3 seconds should be enough especially
+    // since we show no window and thus are invisible
+    SleepEx(3000, true);
+
     return 0;
+    //return pRunMessageLoop();
 }
 
 std::wstring Launcher::ToWString(const std::string& string){
