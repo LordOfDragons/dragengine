@@ -37,7 +37,7 @@
 		<rescap:Capability Name='runFullTrust'/>
 	</Capabilities>
 	<Applications>
-		<Application Id='DELauncherGUI'
+		<Application Id='DEIGDE'
 		             Executable='VFS\ProgramFilesX64\DEIGDE\Bin\deigde.exe'
 		             EntryPoint='Windows.FullTrustApplication'>
 			<uap3:VisualElements BackgroundColor='transparent'
