@@ -29,11 +29,13 @@
 #include <dragengine/systems/modules/vr/deBaseVRModule.h>
 #include <dragengine/threading/deMutex.h>
 
+#include "deoxrInstance.h"
 
 /** input module device identifier prefix. */
 #define OXR_DEVID_PREFIX "OXR_"
 
 class deInputEvent;
+class deoxrLoader;
 
 
 /**
@@ -73,8 +75,8 @@ public:
 	
 	
 private:
-	bool pRuntimeInstalled;
-	decString pPathRuntime;
+	deoxrLoader *pLoader;
+	deoxrInstance::Ref pInstance;
 	
 	deCamera::Ref pCamera;
 	

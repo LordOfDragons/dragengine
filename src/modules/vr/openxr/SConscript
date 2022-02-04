@@ -18,8 +18,12 @@ pathConfig = os.path.join(envModule.subst(envModule['path_de_config']), 'modules
 pathModule = os.path.join(envModule.subst(envModule['path_de_data']), 'modules', 'vr', 'openxr', versionString)
 pathShared = os.path.join(envModule.subst(envModule['path_de_share']), 'modules', 'vr', 'openxr', versionString)
 
+envModule.Append(CXXFLAGS = ['-DOXR_MODULE_VERSION=\\"{}\\"'.format(versionString)])
+
 envModule.Append(CPPFLAGS = parent_env['MODULE_CPPFLAGS'])
 envModule.Append(LINKFLAGS = parent_env['MODULE_LINKFLAGS'])
+
+envModule.Append(CPPPATH = ['extern/include'])
 
 # setup the builders
 sources = []

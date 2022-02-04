@@ -23,6 +23,7 @@
 #include <string.h>
 
 #include "deVROpenXR.h"
+#include "deoxrLoader.h"
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
@@ -64,7 +65,7 @@ deBaseModule *OpenXRCreateModule( deLoadableModule *loadableModule ){
 
 deVROpenXR::deVROpenXR( deLoadableModule &loadableModule ) :
 deBaseVRModule( loadableModule ),
-pRuntimeInstalled( false )
+pLoader( nullptr )
 {
 }
 
@@ -83,12 +84,41 @@ deVROpenXR::~deVROpenXR(){
 //////////////////////
 
 bool deVROpenXR::Init(){
-	return false;
+	const bool enableDebug = true;
+	
+	try{
+		pLoader = new deoxrLoader( *this );
+		pInstance.TakeOver( new deoxrInstance( *this, enableDebug ) );
+		
+	}catch( const deException &e ){
+		LogException( e );
+		pInstance = nullptr;
+		if( pLoader ){
+			delete pLoader;
+			pLoader = nullptr;
+		}
+	}
+	
+	LogInfoFormat( "Runtime Installed: %s", pInstance ? "Yes" : "No" );
+	
+	if( pLoader ){
+		LogInfoFormat( "Runtime Config File: %s", pLoader->GetRuntimeConfigFile().GetString() );
+		LogInfoFormat( "Runtime Library: %s", pLoader->GetRuntimeLibraryPath().GetString() );
+	}
+	
+// 	LogInfoFormat( "HMD Present: %s", vr::VR_IsHmdPresent() ? "Yes" : "No" );
+	return true;
 }
 
 void deVROpenXR::CleanUp(){
 	StopRuntime();
 	SetCamera( nullptr );
+	
+	pInstance = nullptr;
+	if( pLoader ){
+		delete pLoader;
+		pLoader = nullptr;
+	}
 }
 
 
@@ -97,11 +127,11 @@ void deVROpenXR::CleanUp(){
 ////////////
 
 bool deVROpenXR::RuntimeUsable(){
-	return pRuntimeInstalled;
+	return pInstance;
 }
 
 void deVROpenXR::StartRuntime(){
-	if( ! pRuntimeInstalled ){
+	if( ! pInstance ){
 		DETHROW_INFO( deeInvalidAction, "runtime not found" );
 	}
 	
