@@ -282,6 +282,16 @@ pPreprocessor( renderThread )
 			// ext.GetGLESVersion() < deoglExtensions::evgles3p2
 			pGLSLExtensions.Add( "GL_ARB_shader_storage_buffer_object" );
 		}
+		
+		// required for intel drivers. keyword "readonly" is added in
+		// GL_ARB_shader_image_load_store extension. if extension is not
+		// included intel drivers can fail to compile shader
+		// core since: 4.2 , in core: 4.6
+		if( ext.GetHasExtension( deoglExtensions::ext_ARB_shader_image_load_store )
+		&& GLSL_EXT_CHECK( ext.GetGLVersion(), evgl4p2, evgl4p6 ) ){
+			// ext.GetGLESVersion() < deoglExtensions::evgles3p2
+			pGLSLExtensions.Add( "GL_ARB_shader_image_load_store" );
+		}
 	}
 }
 
