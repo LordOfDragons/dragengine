@@ -23,7 +23,6 @@
 #define _DEVKINSTANCE_H_
 
 #include "devkBasics.h"
-#include "devkInstance.h"
 #include "devkDevice.h"
 #include "devkDebug.h"
 
