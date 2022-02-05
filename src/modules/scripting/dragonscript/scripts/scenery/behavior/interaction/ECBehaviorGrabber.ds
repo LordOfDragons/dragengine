@@ -153,6 +153,7 @@ class ECBehaviorGrabber extends DefaultECBehavior
 		private var Array pTouchingGrabSpots
 		private var Array pListeners
 		private var bool pEnabled
+		private var ElementResolver pElementResolver
 		
 		
 		
@@ -175,6 +176,7 @@ class ECBehaviorGrabber extends DefaultECBehavior
 			pVRHand = null
 			pCollider = null
 			pListeners = null
+			pElementResolver = null
 			
 			super.dispose()
 		end
@@ -465,6 +467,13 @@ class ECBehaviorGrabber extends DefaultECBehavior
 		
 		
 		
+		/** \brief Element resolver used during loading or \em null if not set. */
+		public func ElementResolver getElementResolver()
+			return pElementResolver
+		end
+		
+		
+		
 		/** \brief Add listener. */
 		public func void addListener(Listener listener)
 			if listener == null
@@ -500,6 +509,14 @@ class ECBehaviorGrabber extends DefaultECBehavior
 			
 			if pTouchSensor != null
 				getElement().getGameWorld().getWorld().removeTouchSensor(pTouchSensor)
+			end
+		end
+		
+		/** \brief Frame update started. */
+		public func void enterFrame()
+			if pElementResolver != null
+				pElementResolver.resolve(getElement().getGameWorld())
+				pElementResolver = null
 			end
 		end
 		
@@ -547,11 +564,19 @@ class ECBehaviorGrabber extends DefaultECBehavior
 		public func void readFromFile(PersistencyEnvironment env, FileReader reader)
 			select reader.readByte() // version
 			case 0
-				var PersistencyFlags flags = PersistencyFlags.new(1, reader)
+				var PersistencyFlags flags = PersistencyFlags.new(2, reader)
 				
 				pEnabled = flags.getAt(0)
 				if pTouchSensor != null
 					pTouchSensor.setEnabled(pEnabled)
+				end
+				
+				if flags.getAt(1)
+					pElementResolver = ElementResolver.new()
+					pElementResolver.addBehavior(reader, block ECBehaviorGrabSpot.Instance grabSpot
+						pGrabSpot = grabSpot
+					end)
+					setRequiresEnterFrame(true)
 				end
 				
 			else
@@ -563,9 +588,14 @@ class ECBehaviorGrabber extends DefaultECBehavior
 		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
 			writer.writeByte( 0 ) // version
 			
-			var PersistencyFlags flags = PersistencyFlags.new(1)
+			var PersistencyFlags flags = PersistencyFlags.new(2)
 			flags.setAt(0, pEnabled)
+			flags.setAt(1, pGrabSpot != null)
 			flags.writeToFile(writer)
+			
+			if pGrabSpot != null
+				ElementResolver.writeToFileBehavior(writer, pGrabSpot)
+			end
 		end
 	end
 	
