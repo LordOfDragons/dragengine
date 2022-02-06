@@ -189,6 +189,7 @@ public:
 	
 private:
 	void pGetParameters( deoglRenderThread &renderThread );
+	void pLogParameters( deoglRenderThread &renderThread  );
 	void pRenderLeftEye( deoglRenderThread &renderThread );
 	void pRenderRightEye( deoglRenderThread &renderThread );
 	int pCalcTargetFPS( float frameTime ) const;

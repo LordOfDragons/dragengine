@@ -23,6 +23,7 @@
 #define _DEOGLRRENDERTARGET_H_
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/math/decMath.h>
 
 class deoglRenderThread;
 class deoglFramebuffer;
@@ -44,10 +45,8 @@ public:
 private:
 	deoglRenderThread &pRenderThread;
 	
-	int pWidth;
-	int pHeight;
-	int pTextureWidth;
-	int pTextureHeight;
+	decPoint pSize;
+	decPoint pTextureSize;
 	float pAspectRatio;
 	int pBitCount;
 	int pComponentCount;
@@ -62,7 +61,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render render target. */
-	deoglRenderTarget( deoglRenderThread &renderThread, int width, int height, int componentCount, int bitCount );
+	deoglRenderTarget( deoglRenderThread &renderThread, const decPoint &size, int componentCount, int bitCount );
 	
 	/** Clean up render render target. */
 	virtual ~deoglRenderTarget();
@@ -72,11 +71,8 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** Width. */
-	inline int GetWidth() const{ return pWidth; }
-	
-	/** Height. */
-	inline int GetHeight() const{ return pHeight; }
+	/** Size. */
+	inline const decPoint &GetSize() const{ return pSize; }
 	
 	/** Aspect ratio. */
 	inline float GetAspectRatio() const{ return pAspectRatio; }
@@ -88,7 +84,7 @@ public:
 	inline int GetComponentCount() const{ return pComponentCount; }
 	
 	/** Set size. */
-	void SetSize( int width, int height );
+	void SetSize( const decPoint &size );
 	
 	
 	
@@ -111,8 +107,7 @@ public:
 	
 	// texture management
 	inline deoglTexture *GetTexture() const{ return pTexture; }
-	inline int GetTextureWidth() const{ return pTextureWidth; }
-	inline int GetTextureHeight() const{ return pTextureHeight; }
+	inline const decPoint &GetTextureSize() const{ return pTextureSize; }
 	/*@}*/
 };
 

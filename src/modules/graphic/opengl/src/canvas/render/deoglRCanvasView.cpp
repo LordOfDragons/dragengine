@@ -117,22 +117,18 @@ int componentCount, int bitCount ){
 	if( pRenderTarget && pRenderTarget->GetComponentCount() == componentCount
 	&& pRenderTarget->GetBitCount() == bitCount ){
 		if( pResizeRenderTarget ){
-			const int width = ( int )( GetSize().x + 0.5f );
-			const int height = ( int )( GetSize().y + 0.5f );
-			pRenderTarget->SetSize( width, height );
+			pRenderTarget->SetSize( decVector2( GetSize() ).Round() );
 			pResizeRenderTarget = false;
 		}
 		
 	}else{
-		const int width = ( int )( GetSize().x + 0.5f );
-		const int height = ( int )( GetSize().y + 0.5f );
-		
 		if( pRenderTarget ){
 			pRenderTarget->FreeReference();
 			pRenderTarget = nullptr;
 		}
 		
-		pRenderTarget = new deoglRenderTarget( GetRenderThread(), width, height, componentCount, bitCount );
+		pRenderTarget = new deoglRenderTarget( GetRenderThread(),
+			decVector2( GetSize() ).Round(), componentCount, bitCount );
 		pResizeRenderTarget = false;
 	}
 	
@@ -145,10 +141,8 @@ int componentCount, int bitCount ){
 		pRenderTarget->PrepareFramebuffer();
 		
 		// render content
-		const decPoint viewportSize( pRenderTarget->GetWidth(), pRenderTarget->GetHeight() );
-		
 		deoglRenderCanvasContext context( *this, pRenderTarget->GetFBO(),
-			decPoint(), viewportSize, false, renderPlanMask );
+			decPoint(), pRenderTarget->GetSize(), false, renderPlanMask );
 		// for rendering into the render target the canvas position and transform has to be negated.
 		// this way rendering with the position and transform as used for regular rendering cancels
 		// each other out resulting in an identity transformation. this way no second code path is

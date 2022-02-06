@@ -135,10 +135,10 @@ void deoglRCanvas::PrepareForRender( const deoglRenderPlanMasked *renderPlanMask
 		const int height = ( int )( GetSize().y + 0.5f );
 		
 		if( pMaskRenderTarget ){
-			pMaskRenderTarget->SetSize( width, height );
+			pMaskRenderTarget->SetSize( decPoint( width, height ) );
 			
 		}else{
-			pMaskRenderTarget = new deoglRenderTarget( GetRenderThread(), width, height, 1, 8 );
+			pMaskRenderTarget = new deoglRenderTarget( GetRenderThread(), decPoint( width, height ), 1, 8 );
 		}
 		
 		if( pMaskRenderTarget->GetTextureDirty() ){
@@ -146,10 +146,8 @@ void deoglRCanvas::PrepareForRender( const deoglRenderPlanMasked *renderPlanMask
 			
 			pMaskRenderTarget->PrepareFramebuffer();
 			
-			const decPoint viewportSize( pMaskRenderTarget->GetWidth(), pMaskRenderTarget->GetHeight() );
-			
 			deoglRenderCanvasContext context( *pMask, pMaskRenderTarget->GetFBO(),
-				decPoint(), viewportSize, false, renderPlanMask );
+				decPoint(), pMaskRenderTarget->GetSize(), false, renderPlanMask );
 			
 			// for rendering into the render target the canvas position and transform has
 			// to be negated. this way rendering with the position and transform as used

@@ -186,15 +186,32 @@ void deoglVR::UpdateTargetFPS( float elapsed ){
 
 
 void deoglVR::BeginFrame(){
-	// NOTE not done during constructor since this is called from the main thread
-	if( ! pTargetRightEye ){
-		deoglRenderThread &renderThread = pCamera.GetRenderThread();
-		
-		pGetParameters( renderThread );
+	// NOTE not done during constructor since constructor is called from main thread
+	
+	// parameters are queried every frame update. this is required since some VR runtimes
+	// can change these parameters on the fly or can provide them at all times. resources
+	// are recreated if parameters changed
+	deoglRenderThread &renderThread = pCamera.GetRenderThread();
+	pGetParameters( renderThread );
+	
+	if( ! pTargetRightEye or pTargetSize != pTargetLeftEye->GetTextureSize() ){
+		renderThread.GetLogger().LogInfo( "VR: Parameters Changed" );
+		pLogParameters( renderThread );
 		
 		// examples on the internet use RGBA8
-		pTargetLeftEye.TakeOver( new deoglRenderTarget( renderThread, pTargetSize.x, pTargetSize.y, 4, 8 ) );
-		pTargetRightEye.TakeOver( new deoglRenderTarget( renderThread, pTargetSize.x, pTargetSize.y, 4, 8 ) );
+		if( pTargetLeftEye ){
+			pTargetLeftEye->SetSize( pTargetSize );
+			
+		}else{
+			pTargetLeftEye.TakeOver( new deoglRenderTarget( renderThread, pTargetSize, 4, 8 ) );
+		}
+		
+		if( pTargetRightEye ){
+			pTargetRightEye->SetSize( pTargetSize );
+			
+		}else{
+			pTargetRightEye.TakeOver( new deoglRenderTarget( renderThread, pTargetSize, 4, 8 ) );
+		}
 	}
 	
 	// begin VR frame
@@ -322,7 +339,9 @@ void deoglVR::pGetParameters( deoglRenderThread &renderThread ){
 	
 	pHiddenMeshRight = module.GetHiddenArea( deBaseVRModule::evreRight );
 	pHiddenRMeshRight = pHiddenMeshRight ? ( ( deoglModel* )pHiddenMeshRight->GetPeerGraphic() )->GetRModel() : nullptr;
-	
+}
+
+void deoglVR::pLogParameters( deoglRenderThread &renderThread ){
 	renderThread.GetLogger().LogInfoFormat( "VR: size=(%d,%d) fov=(%.1f,%.1f)",
 		pTargetSize.x, pTargetSize.y, pFovX * RAD2DEG, pFovY * RAD2DEG );
 	
