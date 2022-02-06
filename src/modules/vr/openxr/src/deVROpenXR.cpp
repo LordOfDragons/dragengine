@@ -67,6 +67,7 @@ deVROpenXR::deVROpenXR( deLoadableModule &loadableModule ) :
 deBaseVRModule( loadableModule ),
 pLoader( nullptr )
 {
+	memset( pActions, 0, sizeof( pActions ) );
 }
 
 deVROpenXR::~deVROpenXR(){
@@ -89,9 +90,12 @@ bool deVROpenXR::Init(){
 	try{
 		pLoader = new deoxrLoader( *this );
 		pInstance.TakeOver( new deoxrInstance( *this, enableDebug ) );
+		pCreateActionSet();
+		pSuggestBindings();
 		
 	}catch( const deException &e ){
 		LogException( e );
+		pActionSet = nullptr;
 		pInstance = nullptr;
 		if( pLoader ){
 			delete pLoader;
@@ -114,6 +118,8 @@ void deVROpenXR::CleanUp(){
 	StopRuntime();
 	SetCamera( nullptr );
 	
+	memset( pActions, 0, sizeof( pActions ) );
+	pActionSet = nullptr;
 	pInstance = nullptr;
 	if( pLoader ){
 		delete pLoader;
@@ -138,6 +144,8 @@ void deVROpenXR::StartRuntime(){
 	LogInfo( "Start Runtime" );
 	
 	try{
+		pSystem.TakeOver( new deoxrSystem( pInstance ) );
+		pSession.TakeOver( new deoxrSession( pSystem ) );
 		
 	}catch( const deException &e ){
 		LogException( e );
@@ -148,6 +156,8 @@ void deVROpenXR::StartRuntime(){
 
 void deVROpenXR::StopRuntime(){
 	LogInfo( "Shutdown runtime" );
+	pSession = nullptr;
+	pSystem = nullptr;
 }
 
 void deVROpenXR::SetCamera( deCamera *camera ){
@@ -234,6 +244,75 @@ void deVROpenXR::GetDeviceBonePose( int device, int bone, bool withController, d
 ///////////
 
 void deVROpenXR::ProcessEvents(){
+	if( ! pInstance ){
+		return;
+	}
+	
+	XrEventDataBuffer event;
+	memset( &event, 0, sizeof( event ) );
+	event.type = XR_TYPE_EVENT_DATA_BUFFER;
+	
+	deoxrInstance &instance = pInstance;
+	
+	while( true ){
+		const XrResult result = instance.xrPollEvent( instance.GetInstance(), &event );
+		if( result == XR_EVENT_UNAVAILABLE ){
+			break;
+			
+		}else if( result != XR_SUCCESS ){
+			#ifdef WITH_DEBUG
+			OXR_CHECK( *this, result );
+			#endif
+			break;
+		}
+		
+// 		LogInfoFormat("Event: %x", event.type);
+		
+		switch( event.type ){
+		case XR_TYPE_EVENT_DATA_SESSION_STATE_CHANGED: {
+// 			const XrEventDataSessionStateChanged& session_state_changed_event =
+// 				( XrEventDataSessionStateChanged& )event;
+			}break;
+			
+		case XR_TYPE_EVENT_DATA_INSTANCE_LOSS_PENDING: {
+// 			const XrEventDataInstanceLossPending& instance_loss_pending_event =
+// 				( XrEventDataInstanceLossPending& )event;
+			StopRuntime();
+			// according to documentation we could try restarting the runtime (recreating
+			// XrInstance) after some time:
+			// - lossTime is the absolute time at which the indicated instance will
+			//   be considered lost and become unusable
+			// After the application has destroyed all of its instances and their children
+			// and waited past the specified time, it may then re-try xrCreateInstance in
+			// a loop waiting for whatever maintenance the runtime is performing to complete.
+			// The runtime will return XR_ERROR_RUNTIME_UNAVAILABLE from xrCreateInstance
+			// as long as it is unable to create the instance.
+			}break;
+			
+		case XR_TYPE_EVENT_DATA_INTERACTION_PROFILE_CHANGED:{
+			// pfft... what a great design. this event only tells us "something" changed but
+			// not "what" changed. we have to check all known top level path to figure out
+			// if they changed (and thus connected or disconnected) using
+			// 
+			// xrGetCurrentInteractionProfile(XrSession session, XrPath topLevelUserPath,
+			//    XrInteractionProfileState* interactionProfile);
+			// 
+			// so "/user/head", "/user/hand/left" and "/user/hand/right" we have to manually
+			// track while trackers at least tells us their path but then we still have to
+			// manually track them. lots of overhead due to bad design.
+			// 
+			}break;
+			
+		case XR_TYPE_EVENT_DATA_VIVE_TRACKER_CONNECTED_HTCX:{
+			const XrEventDataViveTrackerConnectedHTCX &connected = ( XrEventDataViveTrackerConnectedHTCX& )event;
+			(void)connected.paths->persistentPath;
+			(void)connected.paths->rolePath;
+			}break;
+			
+		default:
+			break;
+		}
+	}
 }
 
 
@@ -271,4 +350,520 @@ const decVector2 &tcTo, bool distortionApplied ){
 }
 
 void deVROpenXR::EndFrame(){
+}
+
+
+
+// Private Functions
+//////////////////////
+
+void deVROpenXR::pCreateActionSet(){
+	pActionSet.TakeOver( new deoxrActionSet( pInstance ) );
+	
+	pActionSet->AddAction( deoxrAction::etInputBool, "trigger_press", "Press Trigger" );
+	pActionSet->AddAction( deoxrAction::etInputBool, "trigger_touch", "Touch Trigger" );
+	pActionSet->AddAction( deoxrAction::etInputFloat, "trigger_analog", "Pull Trigger" );
+	pActionSet->AddAction( deoxrAction::etOutputVibration, "trigger_haptic", "Trigger Haptic" );
+	
+	pActionSet->AddAction( deoxrAction::etInputBool, "button_primary_press", "Press Primary Button" );
+	pActionSet->AddAction( deoxrAction::etInputBool, "button_primary_touch", "Touch Button Primary" );
+	
+	pActionSet->AddAction( deoxrAction::etInputBool, "button_secondary_press", "Press Secondary Button" );
+	pActionSet->AddAction( deoxrAction::etInputBool, "button_secondary_touch", "Touch Button Secondary" );
+	
+	pActionSet->AddAction( deoxrAction::etInputBool, "joystick_press", "Press Joystick" );
+	pActionSet->AddAction( deoxrAction::etInputBool, "joystick_touch", "Touch Joystick" );
+	pActionSet->AddAction( deoxrAction::etInputVector2, "joystick_analog", "Joystick Analog" );
+	
+	pActionSet->AddAction( deoxrAction::etInputBool, "trackpad_press", "Press TrackPad" );
+	pActionSet->AddAction( deoxrAction::etInputBool, "trackpad_touch", "Touch TrackPad" );
+	pActionSet->AddAction( deoxrAction::etInputVector2, "trackpad_analog", "TrackPad Analog" );
+	
+	pActionSet->AddAction( deoxrAction::etInputBool, "grip_press", "Squeeze Grip" );
+	pActionSet->AddAction( deoxrAction::etInputBool, "grip_touch", "Touch Grip" );
+	pActionSet->AddAction( deoxrAction::etInputFloat, "grip_grab", "Grip Grab" );
+	pActionSet->AddAction( deoxrAction::etInputFloat, "grip_squeeze", "Grip Squeeze" );
+	pActionSet->AddAction( deoxrAction::etInputFloat, "grip_pinch", "Grip Pinch" );
+	pActionSet->AddAction( deoxrAction::etOutputVibration, "grip_haptic", "Haptic Grip" );
+	
+	pActionSet->AddAction( deoxrAction::etInputPose, "pose", "Pose" );
+	pActionSet->AddAction( deoxrAction::etInputPose, "skeleton_hand_right", "Skeleton Hand Right" ); // "skeleton": "/skeleton/hand/right"
+	pActionSet->AddAction( deoxrAction::etInputPose, "skeleton_hand_left", "Skeleton Hand Left" ); // "skeleton": "/skeleton/hand/left"
+	
+	// store actions for quick retrieval
+	int i;
+	for( i=0; i<InputActionCount; i++ ){
+		pActions[ i ] = pActionSet->GetActionAt( i );
+	}
+}
+
+void deVROpenXR::pSuggestBindings(){
+	pSuggestBindingsSimpleController();
+	pSuggestBindingsDaydreamController();
+	pSuggestBindingsHTCViveController();
+	pSuggestBindingsHTCVivePro();
+	pSuggestBindingsMicrosoftMixedRealityMotionController();
+	pSuggestBindingsMicrosoftXboxController();
+	pSuggestBindingsOculusGoController();
+	pSuggestBindingsOculusTouchController();
+	pSuggestBindingsValveIndexController();
+	
+	if( pInstance->SupportsExtension( deoxrInstance::extEXTEyeGazeInteraction ) ){
+		pSuggestBindingsEyeGazeInput();
+	}
+// 	if( pInstance->SupportsExtension( deoxrInstance::extHPMixedRealityController ) ){
+// 		pSuggestBindingsHPMixedRealityController();
+// 	}
+// 	if( pInstance->SupportsExtension( deoxrInstance::extEXTSamsungOdysseyController ) ){
+// 		pSuggestBindingsSamsungOdysseyController();
+// 	}
+// 	if( pInstance->SupportsExtension( deoxrInstance::extHTCVveCosmosControllerInteraction ) ){
+// 		pSuggestBindingsHTCVveCosmosControllerInteraction();
+// 	}
+// 	if( pInstance->SupportsExtension( deoxrInstance::extHTCViveFocus3ControllerInteraction ) ){
+// 		pSuggestBindingsHTCViveFocus3ControllerInteraction();
+// 	}
+// 	if( pInstance->SupportsExtension( deoxrInstance::extHUAWEIControllerInteraction ) ){
+// 		pSuggestBindingsHUAWEIControllerInteraction();
+// 	}
+// 	if( pInstance->SupportsExtension( deoxrInstance::extMSFTHandInteraction ) ){
+// 		pSuggestBindingsMSFTHandInteraction();
+// 	}
+	if( pInstance->SupportsExtension( deoxrInstance::extHTCXViveTrackerInteraction ) ){
+		pSuggestBindingsHTCXViveTrackerInteraction();
+	}
+}
+
+void deVROpenXR::pSuggestBindingsSimpleController(){
+	// Valid for user paths:
+	// - /user/hand/left
+	// - /user/hand/right
+	// 
+	// Supported component paths:
+	// - /input/select/click
+	// - /input/menu/click
+	// - /input/grip/pose
+	// - /input/aim/pose
+	// - /output/haptic
+	
+	deoxrInstance::sSuggestBinding bindings[ 12 ];
+	deoxrInstance::sSuggestBinding *b = bindings;
+	
+	( b++ )->Set( pActions[ eiaGripHaptic ], "/user/hand/right/output/haptic" );
+	( b++ )->Set( pActions[ eiaGripHaptic ], "/user/hand/left/output/haptic" );
+	
+	( b++ )->Set( pActions[ eiaTriggerTouch ], "/user/hand/left/input/select/click" );
+	( b++ )->Set( pActions[ eiaTriggerPress ], "/user/hand/left/input/select/click" );
+	( b++ )->Set( pActions[ eiaTriggerAnalog ], "/user/hand/left/input/select/click" );
+	
+	( b++ )->Set( pActions[ eiaTriggerTouch ], "/user/hand/right/input/select/click" );
+	( b++ )->Set( pActions[ eiaTriggerPress ], "/user/hand/right/input/select/click" );
+	( b++ )->Set( pActions[ eiaTriggerAnalog ], "/user/hand/right/input/select/click" );
+	
+	( b++ )->Set( pActions[ eiaButtonPrimaryPress ], "/user/hand/left/input/menu/click" );
+	( b++ )->Set( pActions[ eiaButtonPrimaryTouch ], "/user/hand/left/input/menu/click" );
+	
+	( b++ )->Set( pActions[ eiaButtonPrimaryPress ], "/user/hand/right/input/menu/click" );
+	( b++ )->Set( pActions[ eiaButtonPrimaryTouch ], "/user/hand/right/input/menu/click" );
+	
+	pInstance->SuggestBindings( "/interaction_profiles/khr/simple_controller", bindings, 12 );
+}
+
+void deVROpenXR::pSuggestBindingsDaydreamController(){
+	// Path: /interaction_profiles/google/daydream_controller
+	// 
+	// Valid for user paths:
+	// - /user/hand/left
+	// - /user/hand/right
+	// 
+	// Supported component paths:
+	// - /input/select/click
+	// - /input/trackpad/x
+	// - /input/trackpad/y
+	// - /input/trackpad/click
+	// - /input/trackpad/touch
+	// - /input/grip/pose
+	// - /input/aim/pose
+}
+
+void deVROpenXR::pSuggestBindingsHTCViveController(){
+	// Path: /interaction_profiles/htc/vive_controller
+	// 
+	// Valid for user paths:
+	// - /user/hand/left
+	// - /user/hand/right
+	// 
+	// Supported component paths:
+	// - /input/system/click (may not be available for application use)
+	// - /input/squeeze/click
+	// - /input/menu/click
+	// - /input/trigger/click
+	// - /input/trigger/value
+	// - /input/trackpad/x
+	// - /input/trackpad/y
+	// - /input/trackpad/click
+	// - /input/trackpad/touch
+	// - /input/grip/pose
+	// - /input/aim/pose
+	// - /output/haptic
+}
+
+void deVROpenXR::pSuggestBindingsHTCVivePro(){
+	// Path: /interaction_profiles/htc/vive_pro
+	// 
+	// Valid for user paths:
+	// - /user/head
+	// 
+	// Supported component paths:
+	// - /input/system/click (may not be available for application use)
+	// - /input/volume_up/click
+	// - /input/volume_down/click
+	// - /input/mute_mic/click
+}
+
+void deVROpenXR::pSuggestBindingsMicrosoftMixedRealityMotionController(){
+	// Path: /interaction_profiles/microsoft/motion_controller
+	// 
+	// Valid for user paths:
+	// - /user/hand/left
+	// - /user/hand/right
+	// 
+	// Supported component paths:
+	// - /input/menu/click
+	// - /input/squeeze/click
+	// - /input/trigger/value
+	// - /input/thumbstick/x
+	// - /input/thumbstick/y
+	// - /input/thumbstick/click
+	// - /input/trackpad/x
+	// - /input/trackpad/y
+	// - /input/trackpad/click
+	// - /input/trackpad/touch
+	// - /input/grip/pose
+	// - /input/aim/pose
+	// - /output/haptic
+}
+
+void deVROpenXR::pSuggestBindingsMicrosoftXboxController(){
+	// Path: /interaction_profiles/microsoft/xbox_controller
+	// 
+	// Valid for user paths:
+	// - /user/gamepad
+	// 
+	// Supported component paths:
+	// - /input/menu/click
+	// - /input/view/click
+	// - /input/a/click
+	// - /input/b/click
+	// - /input/x/click
+	// - /input/y/click
+	// - /input/dpad_down/click
+	// - /input/dpad_right/click
+	// - /input/dpad_up/click
+	// - /input/dpad_left/click
+	// - /input/shoulder_left/click
+	// - /input/shoulder_right/click
+	// - /input/thumbstick_left/click
+	// - /input/thumbstick_right/click
+	// - /input/trigger_left/value
+	// - /input/trigger_right/value
+	// - /input/thumbstick_left/x
+	// - /input/thumbstick_left/y
+	// - /input/thumbstick_right/x
+	// - /input/thumbstick_right/y
+	// - /output/haptic_left
+	// - /output/haptic_right
+	// - /output/haptic_left_trigger
+	// - /output/haptic_right_trigger
+}
+
+void deVROpenXR::pSuggestBindingsOculusGoController(){
+	// Path: /interaction_profiles/oculus/go_controller
+	// 
+	// Valid for user paths:
+	// - /user/hand/left
+	// - /user/hand/right
+	// 
+	// Supported component paths:
+	// - /input/system/click (may not be available for application use)
+	// - /input/trigger/click
+	// - /input/back/click
+	// - /input/trackpad/x
+	// - /input/trackpad/y
+	// - /input/trackpad/click
+	// - /input/trackpad/touch
+	// - /input/grip/pose
+	// - /input/aim/pose
+}
+
+void deVROpenXR::pSuggestBindingsOculusTouchController(){
+	// Path: /interaction_profiles/oculus/touch_controller
+	// 
+	// Valid for user paths:
+	// - /user/hand/left
+	// - /user/hand/right
+	// 
+	// Supported component paths:
+	// On /user/hand/left only:
+	// - /input/x/click
+	// - /input/x/touch
+	// - /input/y/click
+	// - /input/y/touch
+	// - /input/menu/click
+	// 
+	// On /user/hand/right only:
+	// - /input/a/click
+	// - /input/a/touch
+	// - /input/b/click
+	// - /input/b/touch
+	// - /input/system/click (may not be available for application use)
+	// 
+	// Both hands:
+	// - /input/squeeze/value
+	// - /input/trigger/value
+	// - /input/trigger/touch
+	// - /input/thumbstick/x
+	// - /input/thumbstick/y
+	// - /input/thumbstick/click
+	// - /input/thumbstick/touch
+	// - /input/thumbrest/touch
+	// - /input/grip/pose
+	// - /input/aim/pose
+	// - /output/haptic
+}
+
+void deVROpenXR::pSuggestBindingsValveIndexController(){
+	// Path: /interaction_profiles/valve/index_controller
+	// 
+	// Valid for user paths:
+	// - /user/hand/left
+	// - /user/hand/right
+	// 
+	// Supported component paths:
+	// - /input/system/click (may not be available for application use)
+	// - /input/system/touch (may not be available for application use)
+	// - /input/a/click
+	// - /input/a/touch
+	// - /input/b/click
+	// - /input/b/touch
+	// - /input/squeeze/value
+	// - /input/squeeze/force
+	// - /input/trigger/click
+	// - /input/trigger/value
+	// - /input/trigger/touch
+	// - /input/thumbstick/x
+	// - /input/thumbstick/y
+	// - /input/thumbstick/click
+	// - /input/thumbstick/touch
+	// - /input/trackpad/x
+	// - /input/trackpad/y
+	// - /input/trackpad/force
+	// - /input/trackpad/touch
+	// - /input/grip/pose
+	// - /input/aim/pose
+	// - /output/haptic
+}
+
+void deVROpenXR::pSuggestBindingsEyeGazeInput(){
+	// Extension: XR_EXT_eye_gaze_interaction
+	// Path: /interaction_profiles/ext/eye_gaze_interaction
+	// 
+	// Valid for user path:
+	// - /user/eyes_ext
+	// 
+	// Supported component paths:
+	// - /input/gaze_ext/pose
+}
+
+void deVROpenXR::pSuggestBindingsHPMixedRealityController(){
+	// Extension: XR_EXT_hp_mixed_reality_controller
+	// Path: /interaction_profiles/hp/mixed_reality_controller
+	// 
+	// Valid for the user paths:
+	// - /user/hand/left
+	// - /user/hand/right
+	// 
+	// Supported component paths:
+	// On /user/hand/left only
+	// - /input/x/click
+	// - /input/y/click
+	// 
+	// On /user/hand/right only:
+	// - /input/a/click
+	// - /input/b/click
+	// 
+	// On both hands:
+	// - /input/menu/click
+	// - /input/squeeze/value
+	// - /input/trigger/value
+	// - /input/thumbstick/x
+	// - /input/thumbstick/y
+	// - /input/thumbstick/click
+	// - /input/grip/pose
+	// - /input/aim/pose
+	// - /output/haptic
+}
+
+void deVROpenXR::pSuggestBindingsSamsungOdysseyController(){
+	// Extension: XR_EXT_samsung_odyssey_controller
+	// Path: /interaction_profiles/samsung/odyssey_controller
+	// Same as /interaction_profiles/microsoft/motion_controller
+}
+
+void deVROpenXR::pSuggestBindingsHTCViveCosmosControllerInteraction(){
+	// Extension: XR_HTC_vive_cosmos_controller_interaction
+	// Path: /interaction_profiles/htc/vive_cosmos_controller
+	// 
+	// Valid for user paths:
+	// - /user/hand/left
+	// - /user/hand/right
+	// 
+	// Supported component paths:
+	// On /user/hand/left only:
+	// - /input/x/click
+	// - /input/y/click
+	// - /input/menu/click
+	// 
+	// On /user/hand/right only:
+	// - /input/a/click
+	// - /input/b/click
+	// - /input/system/click (may not be available for application use)
+	// 
+	// On Both Hands:
+	// - /input/shoulder/click
+	// - /input/squeeze/click
+	// - /input/trigger/click
+	// - /input/trigger/value
+	// - /input/thumbstick/x
+	// - /input/thumbstick/y
+	// - /input/thumbstick/click
+	// - /input/thumbstick/touch
+	// - /input/grip/pose
+	// - /input/aim/pose
+	// - /output/haptic
+}
+
+void deVROpenXR::pSuggestBindingsHTCViveFocus3ControllerInteraction(){
+	// Extension: XR_HTC_vive_focus3_controller_interaction
+	// Path: /interaction_profiles/htc/vive_focus3_controller
+	// 
+	// Valid for user paths:
+	// - /user/hand/left
+	// - /user/hand/right
+	// 
+	// Supported component paths:
+	// On /user/hand/left only:
+	// - /input/x/click
+	// - /input/y/click
+	// - /input/menu/click
+	// 
+	// On /user/hand/right only:
+	// - /input/a/click
+	// - /input/b/click
+	// - /input/system/click (may not be available for application use)
+	// 
+	// On Both Hands:
+	// - /input/squeeze/click
+	// - /input/squeeze/touch
+	// - /input/trigger/click
+	// - /input/trigger/touch
+	// - /input/trigger/value
+	// - /input/thumbstick/x
+	// - /input/thumbstick/y
+	// - /input/thumbstick/click
+	// - /input/thumbstick/touch
+	// - /input/thumbrest/touch
+	// - /input/grip/pose
+	// - /input/aim/pose
+	// - /output/haptic
+}
+
+void deVROpenXR::pSuggestBindingsHUAWEIControllerInteraction(){
+	// Extension: XR_HUAWEI_controller_interaction
+	// Path: /interaction_profiles/huawei/controller
+	// 
+	// Valid for user paths:
+	// - /user/hand/left
+	// - /user/hand/right
+	// 
+	// Supported component paths:
+	// - /input/home/click
+	// - /input/back/click
+	// - /input/volume_up/click
+	// - /input/volume_down/click
+	// - /input/trigger/value
+	// - /input/trigger/click
+	// - /input/trackpad/x
+	// - /input/trackpad/y
+	// - /input/trackpad/click
+	// - /input/trackpad/touch
+	// - /input/aim/pose
+	// - /input/grip/pose
+	// - /output/haptic
+}
+
+void deVROpenXR::pSuggestBindingsMSFTHandInteraction(){
+	// Extension: XR_MSFT_hand_interaction
+	// Path: /interaction_profiles/microsoft/hand_interaction
+	// 
+	// Valid for top level user path:
+	// - /user/hand/left
+	// - /user/hand/right
+	// 
+	// Supported component paths:
+	// - /input/select/value
+	// - /input/squeeze/value
+	// - /input/aim/pose
+	// - /input/grip/pose
+}
+
+void deVROpenXR::pSuggestBindingsHTCXViveTrackerInteraction(){
+	// Extension: XR_HTCX_vive_tracker_interaction
+	// Path: /interaction_profiles/htc/vive_tracker_htcx
+	// 
+	// Valid for top level user path:
+	// - VIVE tracker persistent path (unspecified format, enumerate)
+	// - /user/vive_tracker_htcx/role/<role-type> (find by assigned role)
+	//   - XR_NULL_PATH
+	//   - handheld_object
+	//   - left_foot
+	//   - right_foot
+	//   - left_shoulder
+	//   - right_shoulder
+	//   - left_elbow
+	//   - right_elbow
+	//   - left_knee
+	//   - right_knee
+	//   - waist
+	//   - chest
+	//   - camera
+	//   - keyboard
+	// 
+	// Supported component paths:
+	// - /input/system/click (may not be available for application use)
+	// - /input/menu/click
+	// - /input/trigger/click
+	// - /input/squeeze/click
+	// - /input/trigger/value
+	// - /input/trackpad/x
+	// - /input/trackpad/y
+	// - /input/trackpad/click
+	// - /input/trackpad/touch
+	// - /input/grip/pose
+	// - /output/haptic
+	// 
+	// Enumeration support:
+	// typedef struct XrViveTrackerPathsHTCX {
+	//    XrStructureType    type;
+	//    void*              next;
+	//    XrPath             persistentPath;
+	//    XrPath             rolePath;
+	// } XrViveTrackerPathsHTCX;
+	// 
+	// xrEnumerateViveTrackerPathsHTCX(
+	//    XrInstance                                  instance,
+	//    uint32_t                                    pathCapacityInput, /* use 0 to get required count in pathCountOutput */
+	//    uint32_t*                                   pathCountOutput,
+	//    XrViveTrackerPathsHTCX*                     paths);
+	
 }

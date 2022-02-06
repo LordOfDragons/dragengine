@@ -23,6 +23,9 @@ envModule.Append(CXXFLAGS = ['-DOXR_MODULE_VERSION=\\"{}\\"'.format(versionStrin
 envModule.Append(CPPFLAGS = parent_env['MODULE_CPPFLAGS'])
 envModule.Append(LINKFLAGS = parent_env['MODULE_LINKFLAGS'])
 
+if envModule['with_debug']:
+	envModule.Append(CPPFLAGS = ['-DWITH_DEBUG'])
+
 envModule.Append(CPPPATH = ['extern/include'])
 
 # setup the builders

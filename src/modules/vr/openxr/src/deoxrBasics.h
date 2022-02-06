@@ -27,8 +27,21 @@
 #define XR_NO_PROTOTYPES
 #define XR_USE_GRAPHICS_API_OPENGL
 
-#ifdef OS_W32
-#define XR_USE_PLATFORM_WIN32
+#ifdef OS_UNIX
+// 	#include <X11/Xlib.h>
+// 	#include <X11/Xutil.h>
+	typedef struct _XDisplay Display;
+	typedef unsigned long GLXDrawable;
+	typedef void *GLXFBConfig;
+	typedef void *GLXContext;
+	
+	#define XR_USE_PLATFORM_XLIB
+
+#elif defined OS_W32
+	typedef struct HDC__ *HDC;
+	typedef struct HGLRC__ *HGLRC;
+	
+	#define XR_USE_PLATFORM_WIN32
 #endif
 
 #include <openxr/openxr.h>
@@ -37,11 +50,11 @@
 class deVROpenXR;
 
 #ifdef WITH_DEBUG
-#define OXR_CHECKCOMMANDS 1
+	#define OXR_CHECKCOMMANDS 1
 #endif
 
 #ifdef OXR_CHECKCOMMANDS
-	void deoxrDebugCheckCommand( VkResult result, deVROpenXR &oxr, const char *file, int line );
+	void deoxrDebugCheckCommand( XrResult result, deVROpenXR &oxr, const char *file, int line );
 	#define OXR_CHECK(oxr,cmd) deoxrDebugCheckCommand( cmd, oxr, __FILE__, __LINE__ )
 	#define OXR_IF_CHECK(cmd) cmd
 	

@@ -30,12 +30,16 @@
 #include <dragengine/threading/deMutex.h>
 
 #include "deoxrInstance.h"
+#include "deoxrSystem.h"
+#include "deoxrSession.h"
+#include "deoxrActionSet.h"
 
 /** input module device identifier prefix. */
 #define OXR_DEVID_PREFIX "OXR_"
 
 class deInputEvent;
 class deoxrLoader;
+class deoxrAction;
 
 
 /**
@@ -77,6 +81,11 @@ public:
 private:
 	deoxrLoader *pLoader;
 	deoxrInstance::Ref pInstance;
+	deoxrSystem::Ref pSystem;
+	deoxrSession::Ref pSession;
+	deoxrActionSet::Ref pActionSet;
+	
+	deoxrAction *pActions[ InputActionCount ];
 	
 	deCamera::Ref pCamera;
 	
@@ -248,6 +257,25 @@ public:
 	
 	
 private:
+	void pCreateActionSet();
+	void pSuggestBindings();
+	void pSuggestBindingsSimpleController();
+	void pSuggestBindingsDaydreamController();
+	void pSuggestBindingsHTCViveController();
+	void pSuggestBindingsHTCVivePro();
+	void pSuggestBindingsMicrosoftMixedRealityMotionController();
+	void pSuggestBindingsMicrosoftXboxController();
+	void pSuggestBindingsOculusGoController();
+	void pSuggestBindingsOculusTouchController();
+	void pSuggestBindingsValveIndexController();
+	void pSuggestBindingsEyeGazeInput();
+	void pSuggestBindingsHPMixedRealityController();
+	void pSuggestBindingsSamsungOdysseyController();
+	void pSuggestBindingsHTCViveCosmosControllerInteraction();
+	void pSuggestBindingsHTCViveFocus3ControllerInteraction();
+	void pSuggestBindingsHUAWEIControllerInteraction();
+	void pSuggestBindingsMSFTHandInteraction();
+	void pSuggestBindingsHTCXViveTrackerInteraction();
 };
 
 #endif

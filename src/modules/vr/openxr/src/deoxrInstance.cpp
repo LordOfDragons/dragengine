@@ -22,9 +22,10 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "deoxrInstance.h"
 #include "deVROpenXR.h"
+#include "deoxrAction.h"
 #include "deoxrGlobalFunctions.h"
+#include "deoxrInstance.h"
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/systems/modules/deBaseModule.h>
@@ -32,6 +33,11 @@
 
 // class deoxrInstance
 ////////////////////////
+
+void deoxrInstance::sSuggestBinding::Set( const deoxrAction *action, const char *binding ){
+	this->action = action;
+	this->binding = binding;
+}
 
 deoxrInstance::deoxrInstance( deVROpenXR &oxr, bool enableDebug ) :
 pOxr( oxr ),
@@ -64,6 +70,7 @@ pInstance( XR_NULL_HANDLE )
 	pSupportsExtension[ extFBSpaceWarp ].name = XR_FB_SPACE_WARP_EXTENSION_NAME;
 	pSupportsExtension[ extFBTriangleMesh ].name = XR_FB_TRIANGLE_MESH_EXTENSION_NAME;
 	pSupportsExtension[ extHTCFacialTracking ].name = XR_HTC_FACIAL_TRACKING_EXTENSION_NAME;
+	pSupportsExtension[ extHTCXViveTrackerInteraction ].name = XR_HTCX_VIVE_TRACKER_INTERACTION_EXTENSION_NAME;
 	pSupportsExtension[ extMNDHeadless ].name = XR_MND_HEADLESS_EXTENSION_NAME;
 	pSupportsExtension[ extEXTDebugUtils ].name = XR_EXT_DEBUG_UTILS_EXTENSION_NAME;
 	
@@ -121,6 +128,43 @@ uint32_t deoxrInstance::LayerVersion( eLayer layer ) const{
 	return pSupportsLayer[ layer ].layerVersion;
 }
 
+void deoxrInstance::SuggestBindings( const char *profile, const sSuggestBinding *bindings, int count ){
+	if( ! profile ){
+		DETHROW_INFO( deeNullPointer, "profile" );
+	}
+	if( ! bindings ){
+		DETHROW_INFO( deeNullPointer, "bindings" );
+	}
+	if( count < 1 ){
+		DETHROW_INFO( deeInvalidParam, "count < 1" );
+	}
+	
+	XrActionSuggestedBinding * const xrbindings = new XrActionSuggestedBinding[ count ];
+	
+	try{
+		int i;
+		for( i=0; i<count; i++ ){
+			xrbindings[ i ].action = bindings[ i ].action->GetAction();
+			OXR_CHECK( pOxr, xrStringToPath( pInstance, bindings[ i ].binding, &xrbindings[ i ].binding ) );
+		}
+		
+		XrInteractionProfileSuggestedBinding psb;
+		memset( &psb, 0, sizeof( psb ) );
+		psb.type = XR_TYPE_INTERACTION_PROFILE_SUGGESTED_BINDING;
+		OXR_CHECK( pOxr, xrStringToPath( pInstance, profile, &psb.interactionProfile ) );
+		psb.suggestedBindings = xrbindings;
+		psb.countSuggestedBindings = count;
+		OXR_CHECK( pOxr, xrSuggestInteractionProfileBindings( pInstance, &psb ) );
+		
+		delete [] xrbindings;
+		
+	}catch( const deException & ){
+		if( xrbindings ){
+			delete [] xrbindings;
+		}
+		throw;
+	}
+}
 
 
 

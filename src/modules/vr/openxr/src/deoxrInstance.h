@@ -29,6 +29,7 @@
 #include <dragengine/deObject.h>
 
 class deVROpenXR;
+class deoxrAction;
 
 
 /**
@@ -36,6 +37,9 @@ class deVROpenXR;
  */
 class deoxrInstance : public deObject{
 public:
+	/** Reference. */
+	typedef deTObjectReference<deoxrInstance> Ref;
+	
 	/** Extension. */
 	enum eExtension{	
 		extKHROpenglEnable, //<! XR_KHR_opengl_enable
@@ -59,6 +63,7 @@ public:
 		extFBSpaceWarp, //<! XR_FB_space_warp
 		extFBTriangleMesh, //<! XR_FB_triangle_mesh
 		extHTCFacialTracking, //<! XR_HTC_facial_tracking
+		extHTCXViveTrackerInteraction, //<! XR_HTCX_vive_tracker_interaction
 		extMNDHeadless, //<! XR_MND_headless
 		extEXTDebugUtils //<! XR_EXT_debug_utils
 	};
@@ -72,8 +77,12 @@ public:
 	
 	static const int LayerCount = layerLunarCoreValidation + 1;
 	
-	/** Reference. */
-	typedef deTObjectReference<deoxrInstance> Ref;
+	/** Suggest binding. */
+	struct sSuggestBinding{
+		const deoxrAction *action;
+		const char *binding;
+		void Set( const deoxrAction *action, const char *binding );
+	};
 	
 	
 	
@@ -139,6 +148,9 @@ public:
 	
 	/** Instance. */
 	inline XrInstance GetInstance() const{ return pInstance; }
+	
+	/** Suggest input bindings. */
+	void SuggestBindings( const char *profile, const sSuggestBinding *bindings, int count );
 	/*@}*/
 	
 	
