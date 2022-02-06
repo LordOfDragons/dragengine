@@ -112,6 +112,7 @@
 #include "propfield/deoglPropField.h"
 
 #include "window/deoglRenderWindow.h"
+#include "window/deoglRRenderWindow.h"
 
 #include "sensor/deoglLumimeter.h"
 
@@ -524,6 +525,38 @@ deBaseGraphicVideoPlayer *deGraphicOpenGl::CreateVideoPlayer( deVideoPlayer *vid
 deBaseGraphicWorld *deGraphicOpenGl::CreateWorld( deWorld *world ){
 	return new deoglWorld( *this, *world );
 }
+
+void deGraphicOpenGl::GetGraphicApiConnection( sGraphicApiConnection &connection ){
+	// WARNING should be only called from callback triggered by render thread in other modules
+	OGL_ON_RENDER_THREAD
+	
+	memset( &connection, 0, sizeof( connection ) );
+	
+	if( ! pRenderThread->HasContext() ){
+		return;
+	}
+	
+	const deoglRTContext &context = pRenderThread->GetContext();
+	
+	#ifdef OS_UNIX
+	connection.opengl.display = context.GetDisplay();
+	connection.opengl.visualid = context.GetVisualInfo()->visualid;
+	connection.opengl.glxFBConfig = context.GetBestFBConfig();
+	connection.opengl.glxContext = context.GetContext();
+	
+	if( context.GetActiveRRenderWindow() ){
+		connection.opengl.glxDrawable = context.GetActiveRRenderWindow()->GetWindow();
+	}
+	
+	#elif defined OS_W32
+	connection.opengl.hGLRC = context.GetContext();
+	
+	if( context.GetActiveRRenderWindow() ){
+		connection.opengl.hDC = context.GetActiveRRenderWindow()->GetWindowDC();
+	}
+	#endif
+}
+
 
 
 

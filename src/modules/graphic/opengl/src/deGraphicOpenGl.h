@@ -208,6 +208,9 @@ public:
 	
 	/** Create a peer for the given world. */
 	virtual deBaseGraphicWorld *CreateWorld( deWorld *world );
+	
+	/** Get graphic api connection parameters. */
+	virtual void GetGraphicApiConnection( sGraphicApiConnection &connection );
 	/*@}*/
 	
 	

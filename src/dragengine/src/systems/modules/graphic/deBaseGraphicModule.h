@@ -22,7 +22,10 @@
 #ifndef _DEBASEGRAPHICMODULE_H_
 #define _DEBASEGRAPHICMODULE_H_
 
+#include <stdint.h>
+
 #include "../deBaseModule.h"
+#include "../../../dragengine_configuration.h"
 #include "../../../common/math/decMath.h"
 
 class deBaseGraphicBillboard;
@@ -244,6 +247,52 @@ public:
 	
 	/** \brief Create peer for world. */
 	virtual deBaseGraphicWorld *CreateWorld( deWorld *world ) = 0;
+	/*@}*/
+	
+	
+	
+	/**
+	 * \name Inter Module Connection.
+	 * \warning For inter-module use only! Do not use if you dont know what you are doing!
+	 */
+	/*@{*/
+	/**
+	 * \brief Graphic API connection parameters.
+	 * \warning For inter-module use only! Do not use if you dont know what you are doing!
+	 */
+	struct sGraphicApiConnection{
+		// OpenGL
+		struct sGraphicApiConnectionOpenGl{
+			#ifdef OS_UNIX
+			void *display; //<! X11: Display*
+			uint32_t visualid; //<! X11: uint32_t
+			void *glxFBConfig; //<! GLXFBConfig
+			unsigned long glxDrawable; //<! GLXDrawable
+			void *glxContext; //<! GLXContext
+			
+			#elif defined OS_W32
+			void *hDC; // Windows: HDC
+			void *hGLRC; // Windows: HGLRC
+			#endif
+		} opengl;
+		
+		// Vulkan
+		struct sGraphicApiConnectionVulkan{
+			void *instance; //<! Vulkan: VkInstance
+			void *physicalDevice; //<! Vulkan: VkPhysicalDevice
+			void *device; //<! Vulkan: VkDevice
+			uint32_t queueFamilyIndex; //<! Vulkan: uint32_t
+			uint32_t queueIndex; //<! Vulkan: uint32_t
+		} vulkan;
+	};
+	
+	/**
+	 * \brief Get graphic api connection parameters.
+	 * \warning For inter-module use only! Do not call nor implement if you dont know what you are doing!
+	 * 
+	 * Default implementation sets all parameters to invalid.
+	 */
+	virtual void GetGraphicApiConnection( sGraphicApiConnection &connection );
 	/*@}*/
 };
 

@@ -214,6 +214,7 @@ public:
 	
 	/** \brief Unix best framebuffer configuration. */
 	inline GLXFBConfig &GetBestFBConfig(){ return pBestFBConfig; }
+	inline const GLXFBConfig &GetBestFBConfig() const{ return pBestFBConfig; }
 	
 	/** \brief Context. */
 	inline GLXContext GetContext() const{ return pContext; }
