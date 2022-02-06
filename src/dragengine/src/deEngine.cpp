@@ -1198,7 +1198,7 @@ void deEngine::pCleanUp(){
 	// free systems
 	if( pSystems ){
 		pLogger->LogInfoFormat( LOGGING_NAME, "Free Systems" );
-		for( i=0; i<esSystemCount; i++ ){
+		for( i=esSystemCount-1; i>=0; i-- ){
 			if( pSystems[ i ] ){
 				delete pSystems[ i ];
 			}
@@ -1265,7 +1265,7 @@ bool deEngine::pClearPermanents(){
 	int i;
 	
 	// clear permanents
-	for( i=0; i<esSystemCount; i++ ){
+	for( i=esSystemCount-1; i>=0; i-- ){
 		try{
 			pSystems[ i ]->ClearPermanents();
 			
@@ -1304,7 +1304,7 @@ bool deEngine::pStopSystems(){
 	}
 	
 	// shut down all systems logging all errors to the console
-	for( i=0; i<esSystemCount; i++ ){
+	for( i=esSystemCount-1; i>=0; i-- ){
 		try{
 			if( pSystems[ i ]->GetIsRunning() ){
 				pSystems[ i ]->Stop();
