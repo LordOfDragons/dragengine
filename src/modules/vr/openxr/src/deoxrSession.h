@@ -22,8 +22,8 @@
 #ifndef _DEOXRSESSION_H_
 #define _DEOXRSESSION_H_
 
-#include "deoxrActionSet.h"
 #include "deoxrBasics.h"
+#include "action/deoxrActionSet.h"
 
 #include <dragengine/deObject.h>
 

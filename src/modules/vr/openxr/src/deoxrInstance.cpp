@@ -23,9 +23,9 @@
 #include <string.h>
 
 #include "deVROpenXR.h"
-#include "deoxrAction.h"
 #include "deoxrGlobalFunctions.h"
 #include "deoxrInstance.h"
+#include "action/deoxrAction.h"
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/systems/modules/deBaseModule.h>

@@ -101,6 +101,15 @@ public:
 	/** Same path. */
 	inline bool operator==( const deoxrPath &path ) const{ return pPath == path.pPath; }
 	
+	/** Same path. */
+	inline bool operator==( XrPath path ) const{ return pPath == path; }
+	
+	/** Same path. */
+	inline bool operator==( const decString &path ) const{ return pName == path; }
+	
+	/** Same path. */
+	inline bool operator==( const char *path ) const{ return pName == path; }
+	
 	/** Different path. */
 	inline bool operator!=( const deoxrPath &path ) const{ return pPath != path.pPath; }
 	

@@ -22,10 +22,10 @@
 #ifndef _DEOXRACTION_H_
 #define _DEOXRACTION_H_
 
-#include "deoxrBasics.h"
+#include "../deoxrBasics.h"
 
-#include <dragengine/common/string/decString.h>
 #include <dragengine/deObject.h>
+#include <dragengine/common/string/decString.h>
 
 class deoxrActionSet;
 

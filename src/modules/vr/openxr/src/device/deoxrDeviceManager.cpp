@@ -1,0 +1,297 @@
+/* 
+ * Drag[en]gine OpenXR VR Module
+ *
+ * Copyright (C) 2022, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+#include <ctype.h>
+#include <stdio.h>
+#include <string.h>
+#include <unistd.h>
+
+#include "deoxrDevice.h"
+#include "deoxrDeviceAxis.h"
+#include "deoxrDeviceButton.h"
+#include "deoxrDeviceFeedback.h"
+#include "deoxrDeviceComponent.h"
+#include "deoxrDeviceManager.h"
+#include "../deVROpenXR.h"
+
+#include <dragengine/deEngine.h>
+#include <dragengine/common/exceptions.h>
+#include <dragengine/input/deInputEvent.h>
+#include <dragengine/input/deInputEventQueue.h>
+#include <dragengine/systems/deVRSystem.h>
+
+
+
+// Class deoxrDeviceManager
+/////////////////////////////
+
+// Constructor, destructor
+////////////////////////////
+
+deoxrDeviceManager::deoxrDeviceManager( deVROpenXR &oxr ) :
+pOxr( oxr ){
+}
+
+deoxrDeviceManager::~deoxrDeviceManager(){
+}
+
+
+
+// Management
+///////////////
+
+void deoxrDeviceManager::Clear(){
+	deInputEvent event;
+	event.SetType( deInputEvent::eeDeviceDetached );
+	event.SetSource( deInputEvent::esVR );
+	pOxr.InputEventSetTimestamp( event );
+	
+	int count = pDevices.GetCount();
+	
+	while( count > 0 ){
+		count--;
+		event.SetDevice( count );
+		pOxr.GetGameEngine()->GetVRSystem()->GetEventQueue().AddEvent( event );
+	}
+	
+	pDevices.RemoveAll();
+}
+
+
+
+int deoxrDeviceManager::GetCount() const{
+	return pDevices.GetCount();
+}
+
+deoxrDevice *deoxrDeviceManager::GetAt( int index ) const{
+	return ( deoxrDevice* )pDevices.GetAt( index );
+}
+
+deoxrDevice *deoxrDeviceManager::GetWithID( const char *id ) const{
+	const int count = pDevices.GetCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		deoxrDevice * const device = ( deoxrDevice* )pDevices.GetAt( i );
+		if( device->GetID() == id ){
+			return device;
+		}
+	}
+	
+	return nullptr;
+}
+
+int deoxrDeviceManager::IndexOfWithID( const char *id ) const{
+	const int count = pDevices.GetCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		deoxrDevice * const device = ( deoxrDevice* )pDevices.GetAt( i );
+		if( device->GetID() == id ){
+			return i;
+		}
+	}
+	
+	return -1;
+}
+
+void deoxrDeviceManager::Add( deoxrDevice *device ){
+	if( ! device ){
+		DETHROW_INFO( deeNullPointer, "device" );
+	}
+	
+	device->SetIndex( pDevices.GetCount() );
+	pDevices.Add( device );
+	
+	pOxr.LogInfoFormat( "Input Device Added: id='%s' type=%d axes=%d buttons=%d feedbacks=%d",
+		device->GetID().GetString(), device->GetType(), device->GetAxisCount(),
+		device->GetButtonCount(), device->GetFeedbackCount() );
+	
+	deInputEvent event;
+	event.SetType( deInputEvent::eeDeviceAttached );
+	event.SetSource( deInputEvent::esVR );
+	event.SetDevice( device->GetIndex() );
+	pOxr.InputEventSetTimestamp( event );
+	pOxr.GetGameEngine()->GetVRSystem()->GetEventQueue().AddEvent( event );
+}
+
+void deoxrDeviceManager::Remove( deoxrDevice *device ){
+	const int index = pDevices.IndexOf( device );
+	if( index == -1 ){
+		DETHROW_INFO( deeInvalidParam, "device not in list" );
+	}
+	
+	pOxr.LogInfoFormat( "Input Device Removed: id='%s'", device->GetID().GetString() );
+	
+	pDevices.RemoveFrom( index );
+	
+	const int count = pDevices.GetCount();
+	int i;
+	for( i=index; i<count; i++ ){
+		GetAt( i )->SetIndex( i );
+	}
+	
+	deInputEvent event;
+	event.SetType( deInputEvent::eeDeviceDetached );
+	event.SetSource( deInputEvent::esVR );
+	event.SetDevice( index );
+	pOxr.InputEventSetTimestamp( event );
+	pOxr.GetGameEngine()->GetVRSystem()->GetEventQueue().AddEvent( event );
+}
+
+/*
+void deoxrDeviceManager::UpdateParameters( vr::TrackedDeviceIndex_t index ){
+	const int realIndex = IndexOfWithIndex( index );
+	if( realIndex == -1 ){
+		return;
+	}
+	
+	deoxrDevice &device = *GetAt( index );
+	device.UpdateParameters();
+	
+	if( device.GetType() == deInputDevice::edtGeneric ){
+		Remove( index );
+		return;
+	}
+	
+	deInputEvent event;
+	event.SetType( deInputEvent::eeDeviceParamsChanged );
+	event.SetSource( deInputEvent::esVR );
+	event.SetDevice( realIndex );
+	pOxr.InputEventSetTimestamp( event );
+	pOxr.GetGameEngine()->GetVRSystem()->GetEventQueue().AddEvent( event );
+}
+
+int deoxrDeviceManager::NextNameNumber( vr::TrackedDeviceClass deviceClass ) const{
+	const int count = pDevices.GetCount();
+	int i, nameNumber = 1;
+	
+	while( true ){
+		for( i=0; i<count; i++ ){
+			const deoxrDevice &device = *GetAt( i );
+			if( device.GetDeviceClass() == deviceClass && device.GetNameNumber() == nameNumber ){
+				break;
+			}
+		}
+		if( i == count ){
+			return nameNumber;
+		}
+		nameNumber++;
+	}
+}
+*/
+
+void deoxrDeviceManager::TrackDeviceStates(){
+// 	float photonsFromNow = 0.0f;
+// 	pOxr.GetVRSystem().GetDeviceToAbsoluteTrackingPose( vr::TrackingUniverseStanding,
+// 		photonsFromNow, pDevicePoses, vr::k_unMaxTrackedDeviceCount );
+	
+// 	pOxr.CopyDevicesPoses( pDevicePoses );
+	
+	const int count = pDevices.GetCount();
+	int i;
+	for( i=0; i<count; i++ ){
+		GetAt( i )->TrackStates();
+	}
+}
+
+
+
+void deoxrDeviceManager::LogDevices(){
+	const int count = pDevices.GetCount();
+	int i, j;
+	
+	pOxr.LogInfo( "Input Devices:" );
+	
+	for( i=0; i<count; i++ ){
+		const deoxrDevice &device = *( ( deoxrDevice* )pDevices.GetAt( i ) );
+		pOxr.LogInfoFormat( "- '%s' (%s) [%d]", device.GetName().GetString(),
+			device.GetID().GetString(), device.GetType() );
+		
+		const int componentCount = device.GetComponentCount();
+		if( componentCount > 0 ){
+			pOxr.LogInfo( "  Components:" );
+			for( j=0; j<componentCount; j++ ){
+				const deoxrDeviceComponent &component = *device.GetComponentAt( j );
+				pOxr.LogInfoFormat( "    - '%s' (%s)", component.GetName().GetString(),
+					component.GetID().GetString() );
+			}
+		}
+		
+		const int axisCount = device.GetAxisCount();
+		if( axisCount > 0 ){
+			pOxr.LogInfo( "  Axes:" );
+			for( j=0; j<axisCount; j++ ){
+				const deoxrDeviceAxis &axis = *device.GetAxisAt( j );
+				pOxr.LogInfoFormat( "    - '%s' (%s) [%s]", axis.GetName().GetString(),
+					axis.GetID().GetString(), axis.GetInputDeviceComponent()
+						? axis.GetInputDeviceComponent()->GetID().GetString() : "" );
+			}
+		}
+		
+		const int buttonCount = device.GetButtonCount();
+		if( buttonCount > 0 ){
+			pOxr.LogInfo( "  Buttons:" );
+			for( j=0; j<buttonCount; j++ ){
+				const deoxrDeviceButton &button = *device.GetButtonAt( j );
+				pOxr.LogInfoFormat( "    - '%s' (%s) [%s] => %d",
+					button.GetName().GetString(), button.GetID().GetString(), button.GetInputDeviceComponent()
+						? button.GetInputDeviceComponent()->GetID().GetString() : "", j );
+			}
+		}
+	}
+}
+
+
+
+decString deoxrDeviceManager::NormalizeID( const char *id ){
+	if( ! id ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	const int len = strlen( id );
+	if( len == 0 ){
+		return decString();
+	}
+	
+	decString nid;
+	nid.Set( ' ', len );
+	
+	int i;
+	for( i=0; i<len; i++ ){
+		if( ( id[ i ]  >= 'A' && id[ i ] <= 'Z' )
+		|| ( id[ i ] >= 'a' && id[ i ] <= 'z' )
+		|| ( id[ i ] >= '0' && id[ i ] <= '9' )
+		|| id[ i ] == '_' ){
+			nid[ i ] = id[ i ];
+			
+		}else{
+			nid[ i ] = '_';
+		}
+	}
+	
+	return nid;
+}
+
+
+
+// Private functions
+//////////////////////

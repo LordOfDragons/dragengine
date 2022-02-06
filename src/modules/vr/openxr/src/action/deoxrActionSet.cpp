@@ -23,9 +23,9 @@
 #include <string.h>
 
 #include "deoxrActionSet.h"
-#include "deoxrInstance.h"
-#include "deoxrBasics.h"
-#include "deVROpenXR.h"
+#include "../deVROpenXR.h"
+#include "../deoxrBasics.h"
+#include "../deoxrInstance.h"
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/systems/modules/deBaseModule.h>
@@ -97,6 +97,26 @@ deoxrAction *deoxrActionSet::AddAction( deoxrAction::eType type, const char *nam
 	const deoxrAction::Ref action( deoxrAction::Ref::New( new deoxrAction( *this, type, name, localizedName ) ) );
 	pActions.Add( action );
 	return action;
+}
+
+deoxrAction *deoxrActionSet::AddBoolAction( const char *name, const char *localizedName ){
+	return AddAction( deoxrAction::etInputBool, name, localizedName );
+}
+
+deoxrAction *deoxrActionSet::AddFloatAction( const char *name, const char *localizedName ){
+	return AddAction( deoxrAction::etInputFloat, name, localizedName );
+}
+
+deoxrAction *deoxrActionSet::AddVector2Action( const char *name, const char *localizedName ){
+	return AddAction( deoxrAction::etInputVector2, name, localizedName );
+}
+
+deoxrAction *deoxrActionSet::AddPoseAction( const char *name, const char *localizedName ){
+	return AddAction( deoxrAction::etInputPose, name, localizedName );
+}
+
+deoxrAction *deoxrActionSet::AddVibrationAction( const char *name, const char *localizedName ){
+	return AddAction( deoxrAction::etOutputVibration, name, localizedName );
 }
 
 

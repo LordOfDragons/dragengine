@@ -23,11 +23,11 @@
 #include <string.h>
 
 #include "deVROpenXR.h"
-#include "deoxrActionSet.h"
 #include "deoxrBasics.h"
 #include "deoxrInstance.h"
 #include "deoxrSession.h"
 #include "deoxrSystem.h"
+#include "action/deoxrActionSet.h"
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>

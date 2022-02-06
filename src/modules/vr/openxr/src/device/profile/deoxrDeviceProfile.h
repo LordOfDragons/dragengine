@@ -19,49 +19,47 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef _DEOXRACTIONSET_H_
-#define _DEOXRACTIONSET_H_
+#ifndef _DEOXRDEVICEPROFILE_H_
+#define _DEOXRDEVICEPROFILE_H_
 
-#include "deoxrBasics.h"
-#include "deoxrAction.h"
+#include "../../deoxrBasics.h"
+#include "../../deoxrInstance.h"
+#include "../../deoxrPath.h"
+#include "../../deVROpenXR.h"
 
-#include <dragengine/common/collection/decObjectOrderedSet.h>
-#include <dragengine/common/string/decString.h>
 #include <dragengine/deObject.h>
+#include <dragengine/common/string/decString.h>
 
 class deoxrInstance;
 
 
 /**
- * Oxr action set.
+ * Oxr device profile.
  */
-class deoxrActionSet : public deObject{
+class deoxrDeviceProfile : public deObject{
 public:
 	/** Reference. */
-	typedef deTObjectReference<deoxrActionSet> Ref;
+	typedef deTObjectReference<deoxrDeviceProfile> Ref;
 	
 	
 	
 private:
 	deoxrInstance &pInstance;
 	
+	const deoxrPath pPath;
 	const decString pName;
-	const decString pLocalizedName;
-	XrActionSet pActionSet;
-	decObjectOrderedSet pActions;
 	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Create action set. */
-	deoxrActionSet( deoxrInstance &instance, const char *name = "dragengine",
-		const char *localizedName = "Drag[en]gine" );
+	/** Create device profile. */
+	deoxrDeviceProfile( deoxrInstance &instance, const deoxrPath &path, const char *name );
 	
 protected:
-	/** Clean up space. */
-	virtual ~deoxrActionSet();
+	/** Clean up device profile. */
+	virtual ~deoxrDeviceProfile();
 	/*@}*/
 	
 	
@@ -72,32 +70,21 @@ public:
 	/** Instance. */
 	inline deoxrInstance &GetInstance() const{ return pInstance; }
 	
+	/** Path. */
+	inline const deoxrPath &GetPath() const{ return pPath; }
+	
 	/** Name. */
 	inline const decString &GetName() const{ return pName; }
 	
-	/** Localized name. */
-	inline const decString &GetLocalizedName() const{ return pLocalizedName; }
-	
-	/** ActionSet. */
-	inline XrActionSet GetActionSet() const{ return pActionSet; }
-	
-	/** Count of actions. */
-	int GetActionCount() const;
-	
-	/** Action at index. */
-	deoxrAction *GetActionAt( int index ) const;
-	
-	/** Named action or nullptr. */
-	deoxrAction *GetActionNamed( const char *name ) const;
-	
-	/** Add action. */
-	deoxrAction *AddAction( deoxrAction::eType, const char *name, const char *localizedName );
+	/** Suggest bindings. */
+	virtual void SuggestBindings() = 0;
 	/*@}*/
 	
 	
 	
-private:
-	void pCleanUp();
+protected:
+	void pAdd( deoxrInstance::sSuggestBinding *&bindings,
+		deVROpenXR::eInputActions inputAction, const char *path ) const;
 };
 
 #endif

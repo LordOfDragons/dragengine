@@ -32,7 +32,9 @@
 #include "deoxrInstance.h"
 #include "deoxrSystem.h"
 #include "deoxrSession.h"
-#include "deoxrActionSet.h"
+#include "action/deoxrActionSet.h"
+#include "device/deoxrDeviceManager.h"
+#include "device/profile/deoxrDeviceProfileManager.h"
 
 /** input module device identifier prefix. */
 #define OXR_DEVID_PREFIX "OXR_"
@@ -79,6 +81,9 @@ public:
 	
 	
 private:
+	deoxrDeviceProfileManager pDeviceProfiles;
+	deoxrDeviceManager pDevices;
+	
 	deoxrLoader *pLoader;
 	deoxrInstance::Ref pInstance;
 	deoxrSystem::Ref pSystem;
@@ -88,7 +93,7 @@ private:
 	deoxrAction *pActions[ InputActionCount ];
 	
 	deCamera::Ref pCamera;
-	deMutex pMutexState;
+	deMutex pMutexOpenXR;
 	bool pFocused;
 	
 	
@@ -107,6 +112,14 @@ public:
 	
 	/** \name Management */
 	/*@{*/
+	/** Action. */
+	inline deoxrAction *GetAction( eInputActions inputAction ) const{ return pActions[ inputAction ]; }
+	
+	/** Send event. */
+	void SendEvent( const deInputEvent &event );
+	
+	/** Set input event timestamp. */
+	void InputEventSetTimestamp( deInputEvent &event ) const;
 	/*@}*/
 	
 	
@@ -260,10 +273,9 @@ public:
 	
 private:
 	void pCreateActionSet();
+	void pCreateDeviceProfiles();
 	void pSuggestBindings();
-	void pSuggestBindingsSimpleController();
 	void pSuggestBindingsDaydreamController();
-	void pSuggestBindingsHTCViveController();
 	void pSuggestBindingsHTCVivePro();
 	void pSuggestBindingsMicrosoftMixedRealityMotionController();
 	void pSuggestBindingsMicrosoftXboxController();

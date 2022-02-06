@@ -25,11 +25,19 @@
 #include "deVROpenXR.h"
 #include "deoxrLoader.h"
 #include "deoxrPath.h"
+#include "device/deoxrDevice.h"
+#include "device/deoxrDeviceAxis.h"
+#include "device/deoxrDeviceButton.h"
+#include "device/deoxrDeviceFeedback.h"
+#include "device/profile/deoxrDPSimpleController.h"
+#include "device/profile/deoxrDPHTCViveController.h"
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decPath.h>
+#include <dragengine/common/utils/decDateTime.h>
 #include <dragengine/input/deInputEvent.h>
+#include <dragengine/input/deInputDevice.h>
 #include <dragengine/systems/deVRSystem.h>
 #include <dragengine/systems/modules/graphic/deBaseGraphicCamera.h>
 #include <dragengine/threading/deMutexGuard.h>
@@ -66,6 +74,7 @@ deBaseModule *OpenXRCreateModule( deLoadableModule *loadableModule ){
 
 deVROpenXR::deVROpenXR( deLoadableModule &loadableModule ) :
 deBaseVRModule( loadableModule ),
+pDevices( *this ),
 pLoader( nullptr ),
 pFocused( false )
 {
@@ -81,6 +90,18 @@ deVROpenXR::~deVROpenXR(){
 // Management
 ///////////////
 
+void deVROpenXR::SendEvent( const deInputEvent &event ){
+	GetGameEngine()->GetVRSystem()->GetEventQueue().AddEvent( event );
+}
+
+void deVROpenXR::InputEventSetTimestamp( deInputEvent &event ) const{
+	#ifdef OS_W32
+	event.SetTime( { ( long )decDateTime().ToSystemTime(), 0 } );
+	#else
+	event.SetTime( { decDateTime().ToSystemTime(), 0 } );
+	#endif
+}
+
 
 
 // Module Management
@@ -93,6 +114,7 @@ bool deVROpenXR::Init(){
 		pLoader = new deoxrLoader( *this );
 		pInstance.TakeOver( new deoxrInstance( *this, enableDebug ) );
 		pCreateActionSet();
+		pCreateDeviceProfiles();
 		pSuggestBindings();
 		
 	}catch( const deException &e ){
@@ -118,11 +140,18 @@ bool deVROpenXR::Init(){
 
 void deVROpenXR::CleanUp(){
 	StopRuntime();
+	
+	const deMutexGuard lock( pMutexOpenXR );
 	SetCamera( nullptr );
+	
+	pDevices.Clear();
+	pDeviceProfiles.RemoveAll();
 	
 	memset( pActions, 0, sizeof( pActions ) );
 	pActionSet = nullptr;
+	
 	pInstance = nullptr;
+	
 	if( pLoader ){
 		delete pLoader;
 		pLoader = nullptr;
@@ -146,8 +175,8 @@ void deVROpenXR::StartRuntime(){
 	LogInfo( "Start Runtime" );
 	
 	try{
+		const deMutexGuard lock( pMutexOpenXR );
 		pSystem.TakeOver( new deoxrSystem( pInstance ) );
-// 		pSession.TakeOver( new deoxrSession( pSystem ) );
 		
 	}catch( const deException &e ){
 		LogException( e );
@@ -158,6 +187,7 @@ void deVROpenXR::StartRuntime(){
 
 void deVROpenXR::StopRuntime(){
 	LogInfo( "Shutdown runtime" );
+	const deMutexGuard lock( pMutexOpenXR );
 	pSession = nullptr;
 	pFocused = false;
 	pSystem = nullptr;
@@ -185,60 +215,64 @@ void deVROpenXR::SetCamera( deCamera *camera ){
 ////////////
 
 int deVROpenXR::GetDeviceCount(){
-	return 0;
+	return pDevices.GetCount();
 }
 
 deInputDevice *deVROpenXR::GetDeviceAt( int index ){
-	DETHROW( deeInvalidParam );
+	deInputDevice::Ref device( deInputDevice::Ref::New( new deInputDevice ) );
+	pDevices.GetAt( index )->GetInfo( *device );
+	
+	device->AddReference(); // caller takes over reference
+	return device;
 }
 
 int deVROpenXR::IndexOfDeviceWithID( const char *id ){
-	return -1;
+	return pDevices.IndexOfWithID( id );
 }
 
 
 int deVROpenXR::IndexOfButtonWithID( int device, const char *id ){
-	return -1;
+	return pDevices.GetAt( device )->IndexOfButtonWithID( id );
 }
 
 int deVROpenXR::IndexOfAxisWithID( int device, const char *id ){
-	return -1;
+	return pDevices.GetAt( device )->IndexOfAxisWithID( id );
 }
 
 int deVROpenXR::IndexOfFeedbackWithID( int device, const char *id ){
-	return -1;
+	return pDevices.GetAt( device )->IndexOfFeedbackWithID( id );
 }
 
 int deVROpenXR::IndexOfComponentWithID( int device, const char *id ){
-	return -1;
+	return pDevices.GetAt( device )->IndexOfComponentWithID( id );
 }
 
 bool deVROpenXR::GetButtonPressed( int device, int button ){
-	DETHROW( deeInvalidParam );
+	return pDevices.GetAt( device )->GetButtonAt( button )->GetPressed();
 }
 
 bool deVROpenXR::GetButtonTouched( int device, int button ){
-	DETHROW( deeInvalidParam );
+	return pDevices.GetAt( device )->GetButtonAt( button )->GetTouched();
 }
 
 float deVROpenXR::GetAxisValue( int device, int axis ){
-	DETHROW( deeInvalidParam );
+	return pDevices.GetAt( device )->GetAxisAt( axis )->GetValue();
 }
 
 float deVROpenXR::GetFeedbackValue( int device, int feedback ){
-	DETHROW( deeInvalidParam );
+	return pDevices.GetAt( device )->GetFeedbackAt( feedback )->GetValue();
 }
 
 void deVROpenXR::SetFeedbackValue( int device, int feedback, float value ){
-	DETHROW( deeInvalidParam );
+	pDevices.GetAt( device )->GetFeedbackAt( feedback )->SetValue( value );
 }
 
 void deVROpenXR::GetDevicePose( int device, deInputDevicePose &pose ){
-	DETHROW( deeInvalidParam );
+	pDevices.GetAt( device )->GetDevicePose( pose );
 }
 
 void deVROpenXR::GetDeviceBonePose( int device, int bone, bool withController, deInputDevicePose &pose ){
-	DETHROW( deeInvalidParam );
+	pDevices.GetAt( device )->GetBonePose( bone, withController, pose );
 }
 
 
@@ -251,11 +285,12 @@ void deVROpenXR::ProcessEvents(){
 		return;
 	}
 	
+	const deMutexGuard lock( pMutexOpenXR );
+	deoxrInstance &instance = pInstance;
+	
 	XrEventDataBuffer event;
 	memset( &event, 0, sizeof( event ) );
 	event.type = XR_TYPE_EVENT_DATA_BUFFER;
-	
-	deoxrInstance &instance = pInstance;
 	
 	while( true ){
 		const XrResult result = instance.xrPollEvent( instance.GetInstance(), &event );
@@ -368,6 +403,12 @@ void deVROpenXR::ProcessEvents(){
 			break;
 		}
 	}
+	
+	if( pFocused ){
+		pSession->SyncActions();
+// 		pDevices.TrackDeviceStates();
+			// copy state from mutex protected to non mutex protected memory
+	}
 }
 
 
@@ -398,6 +439,7 @@ deImage *deVROpenXR::GetDistortionMap( eEye eye ){
 }
 
 void deVROpenXR::BeginFrame(){
+	const deMutexGuard lock( pMutexOpenXR );
 	if( ! pSystem ){
 		return;
 	}
@@ -413,22 +455,19 @@ void deVROpenXR::BeginFrame(){
 		}
 	}
 	
-	const deMutexGuard lock( pMutexState );
 	pSession->BeginFrame();
-	
-	if( pFocused ){
-		pSession->SyncActions();
-	}
 }
 
 void deVROpenXR::SubmitOpenGLTexture2D( eEye eye, void *texture, const decVector2 &tcFrom,
 const decVector2 &tcTo, bool distortionApplied ){
+	const deMutexGuard lock( pMutexOpenXR );
 	if( ! pSession ){
 		return;
 	}
 }
 
 void deVROpenXR::EndFrame(){
+	const deMutexGuard lock( pMutexOpenXR );
 	if( ! pSession ){
 		return;
 	}
@@ -444,35 +483,35 @@ void deVROpenXR::EndFrame(){
 void deVROpenXR::pCreateActionSet(){
 	pActionSet.TakeOver( new deoxrActionSet( pInstance ) );
 	
-	pActionSet->AddAction( deoxrAction::etInputBool, "trigger_press", "Press Trigger" );
-	pActionSet->AddAction( deoxrAction::etInputBool, "trigger_touch", "Touch Trigger" );
-	pActionSet->AddAction( deoxrAction::etInputFloat, "trigger_analog", "Pull Trigger" );
-	pActionSet->AddAction( deoxrAction::etOutputVibration, "trigger_haptic", "Trigger Haptic" );
+	pActionSet->AddBoolAction( "trigger_press", "Press Trigger" );
+	pActionSet->AddBoolAction( "trigger_touch", "Touch Trigger" );
+	pActionSet->AddFloatAction( "trigger_analog", "Pull Trigger" );
+	pActionSet->AddVibrationAction( "trigger_haptic", "Trigger Haptic" );
 	
-	pActionSet->AddAction( deoxrAction::etInputBool, "button_primary_press", "Press Primary Button" );
-	pActionSet->AddAction( deoxrAction::etInputBool, "button_primary_touch", "Touch Button Primary" );
+	pActionSet->AddBoolAction( "button_primary_press", "Press Primary Button" );
+	pActionSet->AddBoolAction( "button_primary_touch", "Touch Button Primary" );
 	
-	pActionSet->AddAction( deoxrAction::etInputBool, "button_secondary_press", "Press Secondary Button" );
-	pActionSet->AddAction( deoxrAction::etInputBool, "button_secondary_touch", "Touch Button Secondary" );
+	pActionSet->AddBoolAction( "button_secondary_press", "Press Secondary Button" );
+	pActionSet->AddBoolAction( "button_secondary_touch", "Touch Button Secondary" );
 	
-	pActionSet->AddAction( deoxrAction::etInputBool, "joystick_press", "Press Joystick" );
-	pActionSet->AddAction( deoxrAction::etInputBool, "joystick_touch", "Touch Joystick" );
-	pActionSet->AddAction( deoxrAction::etInputVector2, "joystick_analog", "Joystick Analog" );
+	pActionSet->AddBoolAction( "joystick_press", "Press Joystick" );
+	pActionSet->AddBoolAction( "joystick_touch", "Touch Joystick" );
+	pActionSet->AddVector2Action( "joystick_analog", "Joystick Analog" );
 	
-	pActionSet->AddAction( deoxrAction::etInputBool, "trackpad_press", "Press TrackPad" );
-	pActionSet->AddAction( deoxrAction::etInputBool, "trackpad_touch", "Touch TrackPad" );
-	pActionSet->AddAction( deoxrAction::etInputVector2, "trackpad_analog", "TrackPad Analog" );
+	pActionSet->AddBoolAction( "trackpad_press", "Press TrackPad" );
+	pActionSet->AddBoolAction( "trackpad_touch", "Touch TrackPad" );
+	pActionSet->AddVector2Action( "trackpad_analog", "TrackPad Analog" );
 	
-	pActionSet->AddAction( deoxrAction::etInputBool, "grip_press", "Squeeze Grip" );
-	pActionSet->AddAction( deoxrAction::etInputBool, "grip_touch", "Touch Grip" );
-	pActionSet->AddAction( deoxrAction::etInputFloat, "grip_grab", "Grip Grab" );
-	pActionSet->AddAction( deoxrAction::etInputFloat, "grip_squeeze", "Grip Squeeze" );
-	pActionSet->AddAction( deoxrAction::etInputFloat, "grip_pinch", "Grip Pinch" );
-	pActionSet->AddAction( deoxrAction::etOutputVibration, "grip_haptic", "Haptic Grip" );
+	pActionSet->AddBoolAction( "grip_press", "Squeeze Grip" );
+	pActionSet->AddBoolAction( "grip_touch", "Touch Grip" );
+	pActionSet->AddFloatAction( "grip_grab", "Grip Grab" );
+	pActionSet->AddFloatAction( "grip_squeeze", "Grip Squeeze" );
+	pActionSet->AddFloatAction( "grip_pinch", "Grip Pinch" );
+	pActionSet->AddVibrationAction( "grip_haptic", "Haptic Grip" );
 	
-	pActionSet->AddAction( deoxrAction::etInputPose, "pose", "Pose" );
-	pActionSet->AddAction( deoxrAction::etInputPose, "skeleton_hand_right", "Skeleton Hand Right" ); // "skeleton": "/skeleton/hand/right"
-	pActionSet->AddAction( deoxrAction::etInputPose, "skeleton_hand_left", "Skeleton Hand Left" ); // "skeleton": "/skeleton/hand/left"
+	pActionSet->AddPoseAction( "pose", "Pose" );
+	pActionSet->AddPoseAction( "skeleton_hand_right", "Skeleton Hand Right" ); // "skeleton": "/skeleton/hand/right"
+	pActionSet->AddPoseAction( "skeleton_hand_left", "Skeleton Hand Left" ); // "skeleton": "/skeleton/hand/left"
 	
 	// store actions for quick retrieval
 	int i;
@@ -481,10 +520,21 @@ void deVROpenXR::pCreateActionSet(){
 	}
 }
 
+void deVROpenXR::pCreateDeviceProfiles(){
+	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPSimpleController( pInstance ) ) );
+	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPHTCViveController( pInstance ) ) );
+}
+
 void deVROpenXR::pSuggestBindings(){
-	pSuggestBindingsSimpleController();
+	const int count = pDeviceProfiles.GetCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		pDeviceProfiles.GetAt( i )->SuggestBindings();
+	}
+	
+	/*
 	pSuggestBindingsDaydreamController();
-	pSuggestBindingsHTCViveController();
 	pSuggestBindingsHTCVivePro();
 	pSuggestBindingsMicrosoftMixedRealityMotionController();
 	pSuggestBindingsMicrosoftXboxController();
@@ -516,41 +566,7 @@ void deVROpenXR::pSuggestBindings(){
 	if( pInstance->SupportsExtension( deoxrInstance::extHTCXViveTrackerInteraction ) ){
 		pSuggestBindingsHTCXViveTrackerInteraction();
 	}
-}
-
-void deVROpenXR::pSuggestBindingsSimpleController(){
-	// Valid for user paths:
-	// - /user/hand/left
-	// - /user/hand/right
-	// 
-	// Supported component paths:
-	// - /input/select/click
-	// - /input/menu/click
-	// - /input/grip/pose
-	// - /input/aim/pose
-	// - /output/haptic
-	
-	deoxrInstance::sSuggestBinding bindings[ 12 ];
-	deoxrInstance::sSuggestBinding *b = bindings;
-	
-	( b++ )->Set( pActions[ eiaGripHaptic ], deoxrPath( pInstance, "/user/hand/right/output/haptic" ) );
-	( b++ )->Set( pActions[ eiaGripHaptic ], deoxrPath( pInstance, "/user/hand/left/output/haptic" ) );
-	
-	( b++ )->Set( pActions[ eiaTriggerTouch ], deoxrPath( pInstance, "/user/hand/left/input/select/click" ) );
-	( b++ )->Set( pActions[ eiaTriggerPress ], deoxrPath( pInstance, "/user/hand/left/input/select/click" ) );
-	( b++ )->Set( pActions[ eiaTriggerAnalog ], deoxrPath( pInstance, "/user/hand/left/input/select/click" ) );
-	
-	( b++ )->Set( pActions[ eiaTriggerTouch ], deoxrPath( pInstance, "/user/hand/right/input/select/click" ) );
-	( b++ )->Set( pActions[ eiaTriggerPress ], deoxrPath( pInstance, "/user/hand/right/input/select/click" ) );
-	( b++ )->Set( pActions[ eiaTriggerAnalog ], deoxrPath( pInstance, "/user/hand/right/input/select/click" ) );
-	
-	( b++ )->Set( pActions[ eiaButtonPrimaryPress ], deoxrPath( pInstance, "/user/hand/left/input/menu/click" ) );
-	( b++ )->Set( pActions[ eiaButtonPrimaryTouch ], deoxrPath( pInstance, "/user/hand/left/input/menu/click" ) );
-	
-	( b++ )->Set( pActions[ eiaButtonPrimaryPress ], deoxrPath( pInstance, "/user/hand/right/input/menu/click" ) );
-	( b++ )->Set( pActions[ eiaButtonPrimaryTouch ], deoxrPath( pInstance, "/user/hand/right/input/menu/click" ) );
-	
-	pInstance->SuggestBindings( deoxrPath( pInstance, "/interaction_profiles/khr/simple_controller" ), bindings, 12 );
+	*/
 }
 
 void deVROpenXR::pSuggestBindingsDaydreamController(){
@@ -569,29 +585,6 @@ void deVROpenXR::pSuggestBindingsDaydreamController(){
 	// - /input/grip/pose
 	// - /input/aim/pose
 }
-
-void deVROpenXR::pSuggestBindingsHTCViveController(){
-	// Path: /interaction_profiles/htc/vive_controller
-	// 
-	// Valid for user paths:
-	// - /user/hand/left
-	// - /user/hand/right
-	// 
-	// Supported component paths:
-	// - /input/system/click (may not be available for application use)
-	// - /input/squeeze/click
-	// - /input/menu/click
-	// - /input/trigger/click
-	// - /input/trigger/value
-	// - /input/trackpad/x
-	// - /input/trackpad/y
-	// - /input/trackpad/click
-	// - /input/trackpad/touch
-	// - /input/grip/pose
-	// - /input/aim/pose
-	// - /output/haptic
-}
-
 void deVROpenXR::pSuggestBindingsHTCVivePro(){
 	// Path: /interaction_profiles/htc/vive_pro
 	// 
