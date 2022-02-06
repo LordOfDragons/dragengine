@@ -145,7 +145,7 @@ void deVROpenXR::StartRuntime(){
 	
 	try{
 		pSystem.TakeOver( new deoxrSystem( pInstance ) );
-		pSession.TakeOver( new deoxrSession( pSystem ) );
+// 		pSession.TakeOver( new deoxrSession( pSystem ) );
 		
 	}catch( const deException &e ){
 		LogException( e );
@@ -266,12 +266,53 @@ void deVROpenXR::ProcessEvents(){
 			break;
 		}
 		
-// 		LogInfoFormat("Event: %x", event.type);
+		LogInfoFormat( "Event: %d", event.type );
 		
 		switch( event.type ){
 		case XR_TYPE_EVENT_DATA_SESSION_STATE_CHANGED: {
-// 			const XrEventDataSessionStateChanged& session_state_changed_event =
-// 				( XrEventDataSessionStateChanged& )event;
+			const XrEventDataSessionStateChanged& state = ( XrEventDataSessionStateChanged& )event;
+			switch( state.state ){
+			case XR_SESSION_STATE_IDLE:
+				LogInfo( "Session State Changed: idle" );
+				break;
+				
+			case XR_SESSION_STATE_READY:
+				LogInfo( "Session State Changed: ready" );
+				if( pSession ){
+					pSession->Begin();
+				}
+				break;
+				
+			case XR_SESSION_STATE_SYNCHRONIZED:
+				LogInfo( "Session State Changed: synchronized" );
+				break;
+				
+			case XR_SESSION_STATE_VISIBLE:
+				LogInfo( "Session State Changed: visible" );
+				break;
+				
+			case XR_SESSION_STATE_FOCUSED:
+				LogInfo( "Session State Changed: focused" );
+				break;
+				
+			case XR_SESSION_STATE_STOPPING:
+				LogInfo( "Session State Changed: stopping" );
+				if( pSession ){
+					pSession->End();
+				}
+				break;
+				
+			case XR_SESSION_STATE_LOSS_PENDING:
+				LogInfo( "Session State Changed: loss pending" );
+				break;
+				
+			case XR_SESSION_STATE_EXITING:
+				LogInfo( "Session State Changed: exiting" );
+				break;
+				
+			default:
+				break;
+			}
 			}break;
 			
 		case XR_TYPE_EVENT_DATA_INSTANCE_LOSS_PENDING: {
@@ -343,13 +384,33 @@ deImage *deVROpenXR::GetDistortionMap( eEye eye ){
 }
 
 void deVROpenXR::BeginFrame(){
+	if( ! pSystem ){
+		return;
+	}
+	
+	if( ! pSession ){
+		LogInfo( "BeginFrame: Create Session" );
+		try{
+			pSession.TakeOver( new deoxrSession( pSystem ) );
+			
+		}catch( const deException &e ){
+			LogException( e );
+			return;
+		}
+	}
 }
 
 void deVROpenXR::SubmitOpenGLTexture2D( eEye eye, void *texture, const decVector2 &tcFrom,
 const decVector2 &tcTo, bool distortionApplied ){
+	if( ! pSession ){
+		return;
+	}
 }
 
 void deVROpenXR::EndFrame(){
+	if( ! pSession ){
+		return;
+	}
 }
 
 

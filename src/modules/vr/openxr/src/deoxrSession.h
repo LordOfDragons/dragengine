@@ -43,6 +43,7 @@ private:
 	deoxrSystem &pSystem;
 	
 	XrSession pSession;
+	bool pRunning;
 	
 	
 	
@@ -67,6 +68,15 @@ public:
 	
 	/** Session. */
 	inline XrSession GetSession() const{ return pSession; }
+	
+	/** Session is running. */
+	inline bool GetRunning() const{ return pRunning; }
+	
+	/** Begin. */
+	void Begin();
+	
+	/** End. */
+	void End();
 	/*@}*/
 	
 	
