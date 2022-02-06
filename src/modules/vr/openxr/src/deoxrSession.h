@@ -22,11 +22,13 @@
 #ifndef _DEOXRSESSION_H_
 #define _DEOXRSESSION_H_
 
+#include "deoxrActionSet.h"
 #include "deoxrBasics.h"
 
 #include <dragengine/deObject.h>
 
 class deoxrSystem;
+class deoxrActionSet;
 
 
 /**
@@ -44,6 +46,12 @@ private:
 	
 	XrSession pSession;
 	bool pRunning;
+	
+	XrTime pPredictedDisplayTime;
+	XrDuration pPredictedDisplayPeriod;
+	bool pShouldRender;
+	bool pFrameRunning;
+	deoxrActionSet::Ref pAttachedActionSet;
 	
 	
 	
@@ -72,11 +80,29 @@ public:
 	/** Session is running. */
 	inline bool GetRunning() const{ return pRunning; }
 	
-	/** Begin. */
+	/** Begin session. */
 	void Begin();
 	
-	/** End. */
+	/** End session. */
 	void End();
+	
+	/** Attach action set. */
+	void AttachActionSet( deoxrActionSet *actionSet );
+	
+	/** Begin frame. */
+	void BeginFrame();
+	
+	/** End frame. */
+	void EndFrame();
+	
+	/** Frame is running. */
+	inline bool GetFrameRunning() const{ return pFrameRunning; }
+	
+	/** Runtime request rendering. */
+	inline bool GetShouldRender() const{ return pShouldRender; }
+	
+	/** Sync actions. */
+	void SyncActions();
 	/*@}*/
 	
 	

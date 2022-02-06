@@ -24,6 +24,7 @@
 
 #include "deVROpenXR.h"
 #include "deoxrLoader.h"
+#include "deoxrPath.h"
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
@@ -65,7 +66,8 @@ deBaseModule *OpenXRCreateModule( deLoadableModule *loadableModule ){
 
 deVROpenXR::deVROpenXR( deLoadableModule &loadableModule ) :
 deBaseVRModule( loadableModule ),
-pLoader( nullptr )
+pLoader( nullptr ),
+pFocused( false )
 {
 	memset( pActions, 0, sizeof( pActions ) );
 }
@@ -157,6 +159,7 @@ void deVROpenXR::StartRuntime(){
 void deVROpenXR::StopRuntime(){
 	LogInfo( "Shutdown runtime" );
 	pSession = nullptr;
+	pFocused = false;
 	pSystem = nullptr;
 }
 
@@ -274,29 +277,36 @@ void deVROpenXR::ProcessEvents(){
 			switch( state.state ){
 			case XR_SESSION_STATE_IDLE:
 				LogInfo( "Session State Changed: idle" );
+				pFocused = false;
 				break;
 				
 			case XR_SESSION_STATE_READY:
 				LogInfo( "Session State Changed: ready" );
+				pFocused = false;
 				if( pSession ){
 					pSession->Begin();
+					pSession->AttachActionSet( pActionSet );
 				}
 				break;
 				
 			case XR_SESSION_STATE_SYNCHRONIZED:
 				LogInfo( "Session State Changed: synchronized" );
+				pFocused = false;
 				break;
 				
 			case XR_SESSION_STATE_VISIBLE:
 				LogInfo( "Session State Changed: visible" );
+				pFocused = false;
 				break;
 				
 			case XR_SESSION_STATE_FOCUSED:
 				LogInfo( "Session State Changed: focused" );
+				pFocused = true;
 				break;
 				
 			case XR_SESSION_STATE_STOPPING:
 				LogInfo( "Session State Changed: stopping" );
+				pFocused = false;
 				if( pSession ){
 					pSession->End();
 				}
@@ -304,10 +314,12 @@ void deVROpenXR::ProcessEvents(){
 				
 			case XR_SESSION_STATE_LOSS_PENDING:
 				LogInfo( "Session State Changed: loss pending" );
+				pFocused = false;
 				break;
 				
 			case XR_SESSION_STATE_EXITING:
 				LogInfo( "Session State Changed: exiting" );
+				pFocused = false;
 				break;
 				
 			default:
@@ -346,8 +358,10 @@ void deVROpenXR::ProcessEvents(){
 			
 		case XR_TYPE_EVENT_DATA_VIVE_TRACKER_CONNECTED_HTCX:{
 			const XrEventDataViveTrackerConnectedHTCX &connected = ( XrEventDataViveTrackerConnectedHTCX& )event;
-			(void)connected.paths->persistentPath;
-			(void)connected.paths->rolePath;
+			const deoxrPath path( pInstance, connected.paths->persistentPath );
+			const deoxrPath pathRole( pInstance, connected.paths->rolePath );
+			LogInfoFormat( "VIVE Tracker Connected: path='%s' rolePath='%s'",
+				path.GetName().GetString(), pathRole.GetName().GetString() );
 			}break;
 			
 		default:
@@ -398,6 +412,13 @@ void deVROpenXR::BeginFrame(){
 			return;
 		}
 	}
+	
+	const deMutexGuard lock( pMutexState );
+	pSession->BeginFrame();
+	
+	if( pFocused ){
+		pSession->SyncActions();
+	}
 }
 
 void deVROpenXR::SubmitOpenGLTexture2D( eEye eye, void *texture, const decVector2 &tcFrom,
@@ -411,6 +432,8 @@ void deVROpenXR::EndFrame(){
 	if( ! pSession ){
 		return;
 	}
+	
+	pSession->EndFrame();
 }
 
 
@@ -510,24 +533,24 @@ void deVROpenXR::pSuggestBindingsSimpleController(){
 	deoxrInstance::sSuggestBinding bindings[ 12 ];
 	deoxrInstance::sSuggestBinding *b = bindings;
 	
-	( b++ )->Set( pActions[ eiaGripHaptic ], "/user/hand/right/output/haptic" );
-	( b++ )->Set( pActions[ eiaGripHaptic ], "/user/hand/left/output/haptic" );
+	( b++ )->Set( pActions[ eiaGripHaptic ], deoxrPath( pInstance, "/user/hand/right/output/haptic" ) );
+	( b++ )->Set( pActions[ eiaGripHaptic ], deoxrPath( pInstance, "/user/hand/left/output/haptic" ) );
 	
-	( b++ )->Set( pActions[ eiaTriggerTouch ], "/user/hand/left/input/select/click" );
-	( b++ )->Set( pActions[ eiaTriggerPress ], "/user/hand/left/input/select/click" );
-	( b++ )->Set( pActions[ eiaTriggerAnalog ], "/user/hand/left/input/select/click" );
+	( b++ )->Set( pActions[ eiaTriggerTouch ], deoxrPath( pInstance, "/user/hand/left/input/select/click" ) );
+	( b++ )->Set( pActions[ eiaTriggerPress ], deoxrPath( pInstance, "/user/hand/left/input/select/click" ) );
+	( b++ )->Set( pActions[ eiaTriggerAnalog ], deoxrPath( pInstance, "/user/hand/left/input/select/click" ) );
 	
-	( b++ )->Set( pActions[ eiaTriggerTouch ], "/user/hand/right/input/select/click" );
-	( b++ )->Set( pActions[ eiaTriggerPress ], "/user/hand/right/input/select/click" );
-	( b++ )->Set( pActions[ eiaTriggerAnalog ], "/user/hand/right/input/select/click" );
+	( b++ )->Set( pActions[ eiaTriggerTouch ], deoxrPath( pInstance, "/user/hand/right/input/select/click" ) );
+	( b++ )->Set( pActions[ eiaTriggerPress ], deoxrPath( pInstance, "/user/hand/right/input/select/click" ) );
+	( b++ )->Set( pActions[ eiaTriggerAnalog ], deoxrPath( pInstance, "/user/hand/right/input/select/click" ) );
 	
-	( b++ )->Set( pActions[ eiaButtonPrimaryPress ], "/user/hand/left/input/menu/click" );
-	( b++ )->Set( pActions[ eiaButtonPrimaryTouch ], "/user/hand/left/input/menu/click" );
+	( b++ )->Set( pActions[ eiaButtonPrimaryPress ], deoxrPath( pInstance, "/user/hand/left/input/menu/click" ) );
+	( b++ )->Set( pActions[ eiaButtonPrimaryTouch ], deoxrPath( pInstance, "/user/hand/left/input/menu/click" ) );
 	
-	( b++ )->Set( pActions[ eiaButtonPrimaryPress ], "/user/hand/right/input/menu/click" );
-	( b++ )->Set( pActions[ eiaButtonPrimaryTouch ], "/user/hand/right/input/menu/click" );
+	( b++ )->Set( pActions[ eiaButtonPrimaryPress ], deoxrPath( pInstance, "/user/hand/right/input/menu/click" ) );
+	( b++ )->Set( pActions[ eiaButtonPrimaryTouch ], deoxrPath( pInstance, "/user/hand/right/input/menu/click" ) );
 	
-	pInstance->SuggestBindings( "/interaction_profiles/khr/simple_controller", bindings, 12 );
+	pInstance->SuggestBindings( deoxrPath( pInstance, "/interaction_profiles/khr/simple_controller" ), bindings, 12 );
 }
 
 void deVROpenXR::pSuggestBindingsDaydreamController(){

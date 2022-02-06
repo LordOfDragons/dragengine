@@ -37,12 +37,9 @@
 deoxrActionSet::deoxrActionSet( deoxrInstance &instance, const char *name, const char *localizedName ) :
 pInstance( instance ),
 pName( name ),
+pLocalizedName( localizedName ),
 pActionSet( XR_NULL_HANDLE )
 {
-	if( ! localizedName ){
-		DETHROW_INFO( deeNullPointer, "localizedName" );
-	}
-	
 	try{
 		XrActionSetCreateInfo createInfo;
 		memset( &createInfo, 0, sizeof( createInfo ) );

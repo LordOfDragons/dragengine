@@ -25,6 +25,7 @@
 #include "deoxrBasics.h"
 // #include "deoxrDevice.h"
 #include "deoxrDebug.h"
+#include "deoxrPath.h"
 
 #include <dragengine/deObject.h>
 
@@ -79,9 +80,9 @@ public:
 	
 	/** Suggest binding. */
 	struct sSuggestBinding{
-		const deoxrAction *action;
-		const char *binding;
-		void Set( const deoxrAction *action, const char *binding );
+		deoxrAction *action;
+		deoxrPath binding;
+		void Set( deoxrAction *action, const deoxrPath &binding );
 	};
 	
 	
@@ -150,7 +151,7 @@ public:
 	inline XrInstance GetInstance() const{ return pInstance; }
 	
 	/** Suggest input bindings. */
-	void SuggestBindings( const char *profile, const sSuggestBinding *bindings, int count );
+	void SuggestBindings( const deoxrPath &profile, const sSuggestBinding *bindings, int count );
 	/*@}*/
 	
 	

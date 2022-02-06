@@ -88,6 +88,8 @@ private:
 	deoxrAction *pActions[ InputActionCount ];
 	
 	deCamera::Ref pCamera;
+	deMutex pMutexState;
+	bool pFocused;
 	
 	
 	

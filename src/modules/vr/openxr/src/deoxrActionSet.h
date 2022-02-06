@@ -46,6 +46,7 @@ private:
 	deoxrInstance &pInstance;
 	
 	const decString pName;
+	const decString pLocalizedName;
 	XrActionSet pActionSet;
 	decObjectOrderedSet pActions;
 	
@@ -54,7 +55,7 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Create session. */
+	/** Create action set. */
 	deoxrActionSet( deoxrInstance &instance, const char *name = "dragengine",
 		const char *localizedName = "Drag[en]gine" );
 	
@@ -70,6 +71,12 @@ public:
 	/*@{*/
 	/** Instance. */
 	inline deoxrInstance &GetInstance() const{ return pInstance; }
+	
+	/** Name. */
+	inline const decString &GetName() const{ return pName; }
+	
+	/** Localized name. */
+	inline const decString &GetLocalizedName() const{ return pLocalizedName; }
 	
 	/** ActionSet. */
 	inline XrActionSet GetActionSet() const{ return pActionSet; }

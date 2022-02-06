@@ -34,7 +34,7 @@
 // class deoxrInstance
 ////////////////////////
 
-void deoxrInstance::sSuggestBinding::Set( const deoxrAction *action, const char *binding ){
+void deoxrInstance::sSuggestBinding::Set( deoxrAction *action, const deoxrPath &binding ){
 	this->action = action;
 	this->binding = binding;
 }
@@ -128,7 +128,7 @@ uint32_t deoxrInstance::LayerVersion( eLayer layer ) const{
 	return pSupportsLayer[ layer ].layerVersion;
 }
 
-void deoxrInstance::SuggestBindings( const char *profile, const sSuggestBinding *bindings, int count ){
+void deoxrInstance::SuggestBindings( const deoxrPath &profile, const sSuggestBinding *bindings, int count ){
 	if( ! profile ){
 		DETHROW_INFO( deeNullPointer, "profile" );
 	}
@@ -145,13 +145,13 @@ void deoxrInstance::SuggestBindings( const char *profile, const sSuggestBinding 
 		int i;
 		for( i=0; i<count; i++ ){
 			xrbindings[ i ].action = bindings[ i ].action->GetAction();
-			OXR_CHECK( pOxr, xrStringToPath( pInstance, bindings[ i ].binding, &xrbindings[ i ].binding ) );
+			xrbindings[ i ].binding = bindings[ i ].binding;
 		}
 		
 		XrInteractionProfileSuggestedBinding psb;
 		memset( &psb, 0, sizeof( psb ) );
 		psb.type = XR_TYPE_INTERACTION_PROFILE_SUGGESTED_BINDING;
-		OXR_CHECK( pOxr, xrStringToPath( pInstance, profile, &psb.interactionProfile ) );
+		psb.interactionProfile = profile;
 		psb.suggestedBindings = xrbindings;
 		psb.countSuggestedBindings = count;
 		OXR_CHECK( pOxr, xrSuggestInteractionProfileBindings( pInstance, &psb ) );

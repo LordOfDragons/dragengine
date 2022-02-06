@@ -22,11 +22,12 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "deVROpenXR.h"
+#include "deoxrActionSet.h"
+#include "deoxrBasics.h"
 #include "deoxrInstance.h"
 #include "deoxrSession.h"
 #include "deoxrSystem.h"
-#include "deVROpenXR.h"
-#include "deoxrBasics.h"
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
@@ -47,7 +48,8 @@
 deoxrSession::deoxrSession( deoxrSystem &system ) :
 pSystem( system ),
 pSession( 0 ),
-pRunning( false )
+pRunning( false ),
+pFrameRunning( false )
 {
 	const deoxrInstance &instance = system.GetInstance();
 	deVROpenXR &oxr = instance.GetOxr();
@@ -158,9 +160,103 @@ void deoxrSession::End(){
 	const deoxrInstance &instance = pSystem.GetInstance();
 	instance.GetOxr().LogInfoFormat( "End Session" );
 	
+	EndFrame();
+	pAttachedActionSet = nullptr;
+	
 	OXR_CHECK( instance.GetOxr(), instance.xrEndSession( pSession ) );
 	
 	pRunning = false;
+	pPredictedDisplayTime = 0;
+	pPredictedDisplayPeriod = 0;
+	pShouldRender = false;
+}
+
+void deoxrSession::AttachActionSet( deoxrActionSet *actionSet ){
+	if( ! actionSet ){
+		DETHROW_INFO( deeNullPointer, "actionSet" );
+	}
+	
+	const deoxrInstance &instance = pSystem.GetInstance();
+	instance.GetOxr().LogInfoFormat( "Attach Action Set: %s", actionSet->GetLocalizedName().GetString() );
+	
+	XrSessionActionSetsAttachInfo attachInfo;
+	memset( &attachInfo, 0, sizeof( attachInfo ) );
+	attachInfo.type = XR_TYPE_SESSION_ACTION_SETS_ATTACH_INFO;
+	
+	XrActionSet actionSets[ 1 ] = { actionSet->GetActionSet() };
+	attachInfo.countActionSets = 1;
+	attachInfo.actionSets = actionSets;
+	
+	OXR_CHECK( instance.GetOxr(), instance.xrAttachSessionActionSets( pSession, &attachInfo ) );
+	
+	pAttachedActionSet = actionSet;
+}
+
+void deoxrSession::BeginFrame(){
+	if( ! pRunning || pFrameRunning ){
+		return;
+	}
+	
+	const deoxrInstance &instance = pSystem.GetInstance();
+	
+	// synchronization
+	XrFrameState state;
+	memset( &state, 0, sizeof( state ) );
+	state.type = XR_TYPE_FRAME_STATE;
+	
+	OXR_CHECK( instance.GetOxr(), instance.xrWaitFrame( pSession, nullptr, &state ) );
+	
+	pPredictedDisplayTime = state.predictedDisplayTime;
+	pPredictedDisplayPeriod = state.predictedDisplayPeriod;
+	pShouldRender = state.shouldRender;
+	
+	// begin frame
+	OXR_CHECK( instance.GetOxr(), instance.xrBeginFrame( pSession, nullptr ) );
+}
+
+void deoxrSession::EndFrame(){
+	if( ! pRunning || ! pFrameRunning ){
+		return;
+	}
+	
+	const deoxrInstance &instance = pSystem.GetInstance();
+	
+	// end frame
+	XrFrameEndInfo endInfo;
+	memset( &endInfo, 0, sizeof( endInfo ) );
+	
+	endInfo.type = XR_TYPE_FRAME_END_INFO;
+	endInfo.environmentBlendMode = XR_ENVIRONMENT_BLEND_MODE_OPAQUE;
+	
+	if( pShouldRender ){
+		endInfo.layerCount = 0;
+		
+	}else{
+		endInfo.layerCount = 0;
+	}
+	
+	OXR_CHECK( instance.GetOxr(), instance.xrEndFrame( pSession, nullptr ) );
+}
+
+void deoxrSession::SyncActions(){
+	if( ! pRunning || ! pAttachedActionSet ){
+		return;
+	}
+	
+	const deoxrInstance &instance = pSystem.GetInstance();
+	
+	XrActionsSyncInfo syncInfo;
+	memset( &syncInfo, 0, sizeof( syncInfo ) );
+	
+	syncInfo.type = XR_TYPE_ACTIONS_SYNC_INFO;
+	
+	XrActiveActionSet activeActionSets[ 1 ] = {
+		{ pAttachedActionSet->GetActionSet(), XR_NULL_PATH }
+	};
+	syncInfo.countActiveActionSets = 1;
+	syncInfo.activeActionSets = activeActionSets;
+	
+	OXR_CHECK( instance.GetOxr(), instance.xrSyncActions( pSession, nullptr ) );
 }
 
 
@@ -175,7 +271,12 @@ void deoxrSession::pCleanUp(){
 		
 		OXR_CHECK( instance.GetOxr(), instance.xrRequestExitSession( pSession ) );
 		pRunning = false;
+		pPredictedDisplayTime = 0;
+		pPredictedDisplayPeriod = 0;
+		pShouldRender = false;
 	}
+	
+	pAttachedActionSet = nullptr;
 	
 	if( pSession ){
 		pSystem.GetInstance().xrDestroySession( pSession );
