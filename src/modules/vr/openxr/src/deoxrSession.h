@@ -39,10 +39,18 @@ public:
 	/** Reference. */
 	typedef deTObjectReference<deoxrSession> Ref;
 	
+	/** Graphic Api. */
+	enum eGraphicApi{
+		egaHeadless,
+		egaOpenGL
+	};
+	
 	
 	
 private:
 	deoxrSystem &pSystem;
+	
+	eGraphicApi pGraphicApi;
 	
 	XrSession pSession;
 	bool pRunning;
@@ -52,6 +60,9 @@ private:
 	bool pShouldRender;
 	bool pFrameRunning;
 	deoxrActionSet::Ref pAttachedActionSet;
+	
+	int64_t *pSwapchainFormats;
+	int pSwapchainFormatCount;
 	
 	
 	
@@ -73,6 +84,9 @@ public:
 	/*@{*/
 	/** System. */
 	inline deoxrSystem &GetSystem() const{ return pSystem; }
+	
+	/** Graphic api. */
+	inline eGraphicApi GetGraphicApi() const{ return pGraphicApi; }
 	
 	/** Session. */
 	inline XrSession GetSession() const{ return pSession; }
@@ -109,6 +123,7 @@ public:
 	
 private:
 	void pCleanUp();
+	void pEnumSwapchainFormats();
 };
 
 #endif

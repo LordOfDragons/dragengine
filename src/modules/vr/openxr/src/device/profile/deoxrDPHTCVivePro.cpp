@@ -21,7 +21,7 @@
 
 #include <stdlib.h>
 
-#include "deoxrDPSimpleController.h"
+#include "deoxrDPHTCVivePro.h"
 #include "../../deVROpenXR.h"
 #include "../../deoxrInstance.h"
 
@@ -29,20 +29,20 @@
 
 
 
-// Class deoxrDPSimpleController
-//////////////////////////////////
+// Class deoxrDPHTCVivePro
+////////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
 
-deoxrDPSimpleController::deoxrDPSimpleController( deoxrInstance &instance ) :
+deoxrDPHTCVivePro::deoxrDPHTCVivePro( deoxrInstance &instance ) :
 deoxrDeviceProfile( instance,
-	deoxrPath( instance, "/interaction_profiles/khr/simple_controller" ),
-	"Simple Controller" )
+	deoxrPath( instance, "/interaction_profiles/htc/vive_pro" ),
+	"HTC VIVE Pro HMD" )
 {
 }
 
-deoxrDPSimpleController::~deoxrDPSimpleController(){
+deoxrDPHTCVivePro::~deoxrDPHTCVivePro(){
 }
 
 
@@ -50,38 +50,24 @@ deoxrDPSimpleController::~deoxrDPSimpleController(){
 // Management
 ///////////////
 
-void deoxrDPSimpleController::SuggestBindings(){
+void deoxrDPHTCVivePro::SuggestBindings(){
 	// Valid for user paths:
-	// - /user/hand/left
-	// - /user/hand/right
+	// - /user/head
 	// 
 	// Supported component paths:
-	// - /input/select/click
-	// - /input/menu/click
-	// - /input/grip/pose
-	// - /input/aim/pose
-	// - /output/haptic
+	// - /input/system/click (may not be available for application use)
+	// - /input/volume_up/click
+	// - /input/volume_down/click
+	// - /input/mute_mic/click
 	
-	const int bindingCount = 5 * 2;
+	const int bindingCount = 1;
 	deoxrInstance::sSuggestBinding bindings[ bindingCount ];
 	deoxrInstance::sSuggestBinding *b = bindings;
 	
 	
-	const decString basePathList[ 2 ] = { "/user/hand/left", "/user/hand/right" };
-	int i;
+	const decString basePath( "/user/head" );
 	
-	for( i=0; i<2; i++ ){
-		const decString &basePath = basePathList[ i ];
-		
-		pAdd( b, deVROpenXR::eiaPose, basePath + "/input/aim/pose" );
-		
-		pAdd( b, deVROpenXR::eiaTriggerPress, basePath + "/input/select/click" );
-		pAdd( b, deVROpenXR::eiaTriggerAnalog, basePath + "/input/select/click" );
-		
-		pAdd( b, deVROpenXR::eiaButtonPrimaryPress, basePath + "/input/menu/click" );
-		
-		pAdd( b, deVROpenXR::eiaGripHaptic, basePath + "/output/haptic" );
-	}
+	pAdd( b, deVROpenXR::eiaButtonPrimaryPress, basePath + "/input/system/click" );
 	
 	
 	GetInstance().SuggestBindings( GetPath(), bindings, bindingCount );

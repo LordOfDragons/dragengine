@@ -47,9 +47,12 @@
 
 deoxrSession::deoxrSession( deoxrSystem &system ) :
 pSystem( system ),
+pGraphicApi( egaHeadless ),
 pSession( 0 ),
 pRunning( false ),
-pFrameRunning( false )
+pFrameRunning( false ),
+pSwapchainFormats( nullptr ),
+pSwapchainFormatCount( 0 )
 {
 	const deoxrInstance &instance = system.GetInstance();
 	deVROpenXR &oxr = instance.GetOxr();
@@ -95,6 +98,8 @@ pFrameRunning( false )
 					gbopengl.glxFBConfig = ( GLXFBConfig )gacon.opengl.glxFBConfig;
 					gbopengl.glxDrawable = ( GLXDrawable )gacon.opengl.glxDrawable;
 					gbopengl.glxContext = ( GLXContext )gacon.opengl.glxContext;
+					
+					pGraphicApi = egaOpenGL;
 					graphicBinding = &gbopengl;
 					oxr.LogInfo( "Create Session: Using OpenGL on Xlib" );
 				}
@@ -105,6 +110,8 @@ pFrameRunning( false )
 					gbopengl.type = XR_TYPE_GRAPHICS_BINDING_OPENGL_WIN32_KHR;
 					gbopengl.hDC = ( HDC )gacon.opengl.hDC;
 					gbopengl.hGLRC = ( HGLRC )gacon.opengl.hGLRC;
+					
+					pGraphicApi = egaOpenGL;
 					graphicBinding = &gbopengl;
 					oxr.LogInfo( "Create Session: Using OpenGL on Windows" );
 				}
@@ -119,6 +126,8 @@ pFrameRunning( false )
 		
 		OXR_CHECK( system.GetInstance().GetOxr(), system.GetInstance().xrCreateSession(
 			system.GetInstance().GetInstance(), &createInfo, &pSession ) );
+		
+		pEnumSwapchainFormats();
 		
 	}catch( const deException & ){
 		pCleanUp();
@@ -212,6 +221,7 @@ void deoxrSession::BeginFrame(){
 	
 	// begin frame
 	OXR_CHECK( instance.GetOxr(), instance.xrBeginFrame( pSession, nullptr ) );
+	pFrameRunning = true;
 }
 
 void deoxrSession::EndFrame(){
@@ -227,15 +237,54 @@ void deoxrSession::EndFrame(){
 	
 	endInfo.type = XR_TYPE_FRAME_END_INFO;
 	endInfo.environmentBlendMode = XR_ENVIRONMENT_BLEND_MODE_OPAQUE;
+	endInfo.displayTime = pPredictedDisplayTime;
+	
+	XrCompositionLayerProjection layerProjection;
+	memset( &layerProjection, 0, sizeof( layerProjection ) );
+	layerProjection.type = XR_TYPE_COMPOSITION_LAYER_PROJECTION;
+	
+	XrCompositionLayerProjectionView views[ 2 ];
+	memset( &views, 0, sizeof( views ) );
+	views[ 0 ].type = XR_TYPE_COMPOSITION_LAYER_PROJECTION_VIEW;
+	views[ 1 ].type = XR_TYPE_COMPOSITION_LAYER_PROJECTION_VIEW;
+	
+	XrCompositionLayerBaseHeader *layers[ 1 ];
 	
 	if( pShouldRender ){
-		endInfo.layerCount = 0;
+		views[ 0 ].subImage.swapchain = instance.GetOxr().GetSwapchainLeftEye()->GetSwapchain();
+		views[ 0 ].subImage.imageRect.extent.width = 1668;
+		views[ 0 ].subImage.imageRect.extent.height = 1856;
+		views[ 0 ].subImage.imageRect.offset.x = 0;
+		views[ 0 ].subImage.imageRect.offset.y = 0;
+		views[ 0 ].pose.position;
+		views[ 0 ].pose.orientation;
+		
+		views[ 1 ].subImage.swapchain = instance.GetOxr().GetSwapchainRightEye()->GetSwapchain();
+		views[ 1 ].subImage.imageRect.extent.width = 1668;
+		views[ 1 ].subImage.imageRect.extent.height = 1856;
+		views[ 1 ].subImage.imageRect.offset.x = 0;
+		views[ 1 ].subImage.imageRect.offset.y = 0;
+		views[ 1 ].pose.position;
+		views[ 1 ].pose.orientation;
+		
+		layerProjection.layerFlags = 0;
+		layerProjection.space = instance.GetOxr().GetSpace()->GetSpace();
+		layerProjection.viewCount = 2;
+		layerProjection.views = views;
+		
+		layers[ 0 ] = ( XrCompositionLayerBaseHeader* )&layerProjection;
+		
+		endInfo.layerCount = 1;
+		endInfo.layers = layers;
+		
+			/* temp */ endInfo.layerCount = 0;
 		
 	}else{
 		endInfo.layerCount = 0;
 	}
 	
-	OXR_CHECK( instance.GetOxr(), instance.xrEndFrame( pSession, nullptr ) );
+	OXR_CHECK( instance.GetOxr(), instance.xrEndFrame( pSession, &endInfo ) );
+	pFrameRunning = false;
 }
 
 void deoxrSession::SyncActions(){
@@ -282,4 +331,42 @@ void deoxrSession::pCleanUp(){
 		pSystem.GetInstance().xrDestroySession( pSession );
 		pSession = 0;
 	}
+	
+	if( pSwapchainFormats ){
+		delete [] pSwapchainFormats;
+	}
+}
+
+void deoxrSession::pEnumSwapchainFormats(){
+	const deoxrInstance &instance = pSystem.GetInstance();
+	instance.GetOxr().LogInfoFormat( "Enumerate Swapchain Formats:" );
+	
+	uint32_t count;
+	OXR_CHECK( instance.GetOxr(), instance.xrEnumerateSwapchainFormats(
+		pSession, 0, &count, nullptr ) );
+	if( count == 0 ){
+		return;
+	}
+	
+	pSwapchainFormats = new int64_t[ count ];
+	OXR_CHECK( instance.GetOxr(), instance.xrEnumerateSwapchainFormats(
+		pSession, count, &count, pSwapchainFormats ) );
+	
+	uint32_t i;
+	for( i=0; i<count; i++ ){
+		const int format = ( int )pSwapchainFormats[ i ];
+		instance.GetOxr().LogInfoFormat( "- %d (0x%x)", format, format );
+	}
+	
+	/*
+	Enumerate Swapchain Formats:
+	- 32859 (0x805b) => GL_RGBA16_EXT
+	- 34842 (0x881a) => GL_RGBA16F
+	- 34843 (0x881b) => GL_RGB16F
+	- 35905 (0x8c41) => GL_SRGB8_EXT
+	- 35907 (0x8c43) => GL_SRGB8_ALPHA8_EXT
+	- 33189 (0x81a5) => GL_DEPTH_COMPONENT16_SGIX
+	- 33190 (0x81a6) => GL_DEPTH_COMPONENT24_SGIX
+	- 33191 (0x81a7) => GL_DEPTH_COMPONENT32_SGIX
+	*/
 }

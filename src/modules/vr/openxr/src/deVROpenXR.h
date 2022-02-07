@@ -32,6 +32,8 @@
 #include "deoxrInstance.h"
 #include "deoxrSystem.h"
 #include "deoxrSession.h"
+#include "deoxrSpace.h"
+#include "deoxrSwapchain.h"
 #include "action/deoxrActionSet.h"
 #include "device/deoxrDeviceManager.h"
 #include "device/profile/deoxrDeviceProfileManager.h"
@@ -88,7 +90,10 @@ private:
 	deoxrInstance::Ref pInstance;
 	deoxrSystem::Ref pSystem;
 	deoxrSession::Ref pSession;
+	deoxrSpace::Ref pSpace;
 	deoxrActionSet::Ref pActionSet;
+	deoxrSwapchain::Ref pSwapchainLeftEye;
+	deoxrSwapchain::Ref pSwapchainRightEye;
 	
 	deoxrAction *pActions[ InputActionCount ];
 	
@@ -112,6 +117,27 @@ public:
 	
 	/** \name Management */
 	/*@{*/
+	/** Instance or nullptr. */
+	inline deoxrInstance *GetInstance() const{ return pInstance; }
+	
+	/** System or nullptr. */
+	inline deoxrSystem *GetSystem() const{ return pSystem; }
+	
+	/** Session or nullptr. */
+	inline deoxrSession *GetSession() const{ return pSession; }
+	
+	/** Space or nullptr. */
+	inline deoxrSpace *GetSpace() const{ return pSpace; }
+	
+	/** Action set or nullptr. */
+	inline deoxrActionSet *GetActionSet() const{ return pActionSet; }
+	
+	/** Left eye swapchain or nullptr. */
+	inline deoxrSwapchain *GetSwapchainLeftEye() const{ return pSwapchainLeftEye; }
+	
+	/** Right eye swapchain or nullptr. */
+	inline deoxrSwapchain *GetSwapchainRightEye() const{ return pSwapchainRightEye; }
+	
 	/** Action. */
 	inline deoxrAction *GetAction( eInputActions inputAction ) const{ return pActions[ inputAction ]; }
 	
@@ -275,13 +301,7 @@ private:
 	void pCreateActionSet();
 	void pCreateDeviceProfiles();
 	void pSuggestBindings();
-	void pSuggestBindingsDaydreamController();
-	void pSuggestBindingsHTCVivePro();
-	void pSuggestBindingsMicrosoftMixedRealityMotionController();
-	void pSuggestBindingsMicrosoftXboxController();
-	void pSuggestBindingsOculusGoController();
 	void pSuggestBindingsOculusTouchController();
-	void pSuggestBindingsValveIndexController();
 	void pSuggestBindingsEyeGazeInput();
 	void pSuggestBindingsHPMixedRealityController();
 	void pSuggestBindingsSamsungOdysseyController();
@@ -289,7 +309,6 @@ private:
 	void pSuggestBindingsHTCViveFocus3ControllerInteraction();
 	void pSuggestBindingsHUAWEIControllerInteraction();
 	void pSuggestBindingsMSFTHandInteraction();
-	void pSuggestBindingsHTCXViveTrackerInteraction();
 };
 
 #endif

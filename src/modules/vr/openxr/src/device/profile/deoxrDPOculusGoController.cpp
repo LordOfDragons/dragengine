@@ -21,7 +21,7 @@
 
 #include <stdlib.h>
 
-#include "deoxrDPSimpleController.h"
+#include "deoxrDPOculusGoController.h"
 #include "../../deVROpenXR.h"
 #include "../../deoxrInstance.h"
 
@@ -29,20 +29,20 @@
 
 
 
-// Class deoxrDPSimpleController
-//////////////////////////////////
+// Class deoxrDPOculusGoController
+////////////////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
 
-deoxrDPSimpleController::deoxrDPSimpleController( deoxrInstance &instance ) :
+deoxrDPOculusGoController::deoxrDPOculusGoController( deoxrInstance &instance ) :
 deoxrDeviceProfile( instance,
-	deoxrPath( instance, "/interaction_profiles/khr/simple_controller" ),
-	"Simple Controller" )
+	deoxrPath( instance, "/interaction_profiles/oculus/go_controller" ),
+	"Oculus Go Controller" )
 {
 }
 
-deoxrDPSimpleController::~deoxrDPSimpleController(){
+deoxrDPOculusGoController::~deoxrDPOculusGoController(){
 }
 
 
@@ -50,19 +50,23 @@ deoxrDPSimpleController::~deoxrDPSimpleController(){
 // Management
 ///////////////
 
-void deoxrDPSimpleController::SuggestBindings(){
+void deoxrDPOculusGoController::SuggestBindings(){
 	// Valid for user paths:
 	// - /user/hand/left
 	// - /user/hand/right
 	// 
 	// Supported component paths:
-	// - /input/select/click
-	// - /input/menu/click
+	// - /input/system/click (may not be available for application use)
+	// - /input/trigger/click
+	// - /input/back/click
+	// - /input/trackpad/x
+	// - /input/trackpad/y
+	// - /input/trackpad/click
+	// - /input/trackpad/touch
 	// - /input/grip/pose
 	// - /input/aim/pose
-	// - /output/haptic
 	
-	const int bindingCount = 5 * 2;
+	const int bindingCount = 9 * 2;
 	deoxrInstance::sSuggestBinding bindings[ bindingCount ];
 	deoxrInstance::sSuggestBinding *b = bindings;
 	
@@ -75,12 +79,17 @@ void deoxrDPSimpleController::SuggestBindings(){
 		
 		pAdd( b, deVROpenXR::eiaPose, basePath + "/input/aim/pose" );
 		
-		pAdd( b, deVROpenXR::eiaTriggerPress, basePath + "/input/select/click" );
-		pAdd( b, deVROpenXR::eiaTriggerAnalog, basePath + "/input/select/click" );
+		pAdd( b, deVROpenXR::eiaTriggerPress, basePath + "/input/trigger/click" );
+		pAdd( b, deVROpenXR::eiaTriggerAnalog, basePath + "/input/trigger/click" );
 		
-		pAdd( b, deVROpenXR::eiaButtonPrimaryPress, basePath + "/input/menu/click" );
+		pAdd( b, deVROpenXR::eiaButtonPrimaryPress, basePath + "/input/back/click" );
 		
-		pAdd( b, deVROpenXR::eiaGripHaptic, basePath + "/output/haptic" );
+		pAdd( b, deVROpenXR::eiaButtonSecondaryPress, basePath + "/input/system/click" );
+		
+		pAdd( b, deVROpenXR::eiaTrackpadAnalog, basePath + "/input/trackpad/x" );
+		pAdd( b, deVROpenXR::eiaTrackpadAnalog, basePath + "/input/trackpad/y" );
+		pAdd( b, deVROpenXR::eiaTrackpadPress, basePath + "/input/trackpad/click" );
+		pAdd( b, deVROpenXR::eiaTrackpadTouch, basePath + "/input/trackpad/touch" );
 	}
 	
 	

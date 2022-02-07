@@ -21,7 +21,7 @@
 
 #include <stdlib.h>
 
-#include "deoxrDPHTCViveController.h"
+#include "deoxrDPValveIndexController.h"
 #include "../../deVROpenXR.h"
 #include "../../deoxrInstance.h"
 
@@ -29,20 +29,20 @@
 
 
 
-// Class deoxrDPHTCViveController
-///////////////////////////////////
+// Class deoxrDPValveIndexController
+//////////////////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
 
-deoxrDPHTCViveController::deoxrDPHTCViveController( deoxrInstance &instance ) :
+deoxrDPValveIndexController::deoxrDPValveIndexController( deoxrInstance &instance ) :
 deoxrDeviceProfile( instance,
-	deoxrPath( instance, "/interaction_profiles/htc/vive_controller" ),
-	"HTC VIVE Controller" )
+	deoxrPath( instance, "/interaction_profiles/valve/index_controller" ),
+	"Valve Index Controller" )
 {
 }
 
-deoxrDPHTCViveController::~deoxrDPHTCViveController(){
+deoxrDPValveIndexController::~deoxrDPValveIndexController(){
 }
 
 
@@ -50,26 +50,36 @@ deoxrDPHTCViveController::~deoxrDPHTCViveController(){
 // Management
 ///////////////
 
-void deoxrDPHTCViveController::SuggestBindings(){
+void deoxrDPValveIndexController::SuggestBindings(){
 	// Valid for user paths:
 	// - /user/hand/left
 	// - /user/hand/right
 	// 
 	// Supported component paths:
 	// - /input/system/click (may not be available for application use)
-	// - /input/squeeze/click
-	// - /input/menu/click
+	// - /input/system/touch (may not be available for application use)
+	// - /input/a/click
+	// - /input/a/touch
+	// - /input/b/click
+	// - /input/b/touch
+	// - /input/squeeze/value
+	// - /input/squeeze/force
 	// - /input/trigger/click
 	// - /input/trigger/value
+	// - /input/trigger/touch
+	// - /input/thumbstick/x
+	// - /input/thumbstick/y
+	// - /input/thumbstick/click
+	// - /input/thumbstick/touch
 	// - /input/trackpad/x
 	// - /input/trackpad/y
-	// - /input/trackpad/click
+	// - /input/trackpad/force
 	// - /input/trackpad/touch
 	// - /input/grip/pose
 	// - /input/aim/pose
 	// - /output/haptic
 	
-	const int bindingCount = 11 * 2;
+	const int bindingCount = 18 * 2;
 	deoxrInstance::sSuggestBinding bindings[ bindingCount ];
 	deoxrInstance::sSuggestBinding *b = bindings;
 	
@@ -82,18 +92,26 @@ void deoxrDPHTCViveController::SuggestBindings(){
 		
 		pAdd( b, deVROpenXR::eiaPose, basePath + "/input/aim/pose" );
 		
-		pAdd( b, deVROpenXR::eiaGripSqueeze, basePath + "/input/squeeze/click" );
+		pAdd( b, deVROpenXR::eiaGripSqueeze, basePath + "/input/squeeze/value" );
 		
 		pAdd( b, deVROpenXR::eiaTriggerPress, basePath + "/input/trigger/click" );
 		pAdd( b, deVROpenXR::eiaTriggerAnalog, basePath + "/input/trigger/value" );
+		pAdd( b, deVROpenXR::eiaTriggerTouch, basePath + "/input/trigger/touch" );
 		
-		pAdd( b, deVROpenXR::eiaButtonPrimaryPress, basePath + "/input/menu/click" );
+		pAdd( b, deVROpenXR::eiaButtonPrimaryPress, basePath + "/input/a/click" );
+		pAdd( b, deVROpenXR::eiaButtonPrimaryTouch, basePath + "/input/a/touch" );
 		
-		pAdd( b, deVROpenXR::eiaButtonSecondaryPress, basePath + "/input/system/click" );
+		pAdd( b, deVROpenXR::eiaButtonSecondaryPress, basePath + "/input/b/click" );
+		pAdd( b, deVROpenXR::eiaButtonSecondaryTouch, basePath + "/input/b/touch" );
+		
+		pAdd( b, deVROpenXR::eiaJoystickAnalog, basePath + "/input/thumbstick/x" );
+		pAdd( b, deVROpenXR::eiaJoystickAnalog, basePath + "/input/thumbstick/y" );
+		pAdd( b, deVROpenXR::eiaJoystickPress, basePath + "/input/thumbstick/click" );
+		pAdd( b, deVROpenXR::eiaJoystickTouch, basePath + "/input/thumbstick/touch" );
 		
 		pAdd( b, deVROpenXR::eiaTrackpadAnalog, basePath + "/input/trackpad/x" );
 		pAdd( b, deVROpenXR::eiaTrackpadAnalog, basePath + "/input/trackpad/y" );
-		pAdd( b, deVROpenXR::eiaTrackpadPress, basePath + "/input/trackpad/click" );
+		pAdd( b, deVROpenXR::eiaTrackpadPress, basePath + "/input/trackpad/force" );
 		pAdd( b, deVROpenXR::eiaTrackpadTouch, basePath + "/input/trackpad/touch" );
 		
 		pAdd( b, deVROpenXR::eiaGripHaptic, basePath + "/output/haptic" );

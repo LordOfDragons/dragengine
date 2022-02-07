@@ -21,7 +21,7 @@
 
 #include <stdlib.h>
 
-#include "deoxrDPSimpleController.h"
+#include "deoxrDPMicrosoftMixedRealityMotionController.h"
 #include "../../deVROpenXR.h"
 #include "../../deoxrInstance.h"
 
@@ -29,20 +29,20 @@
 
 
 
-// Class deoxrDPSimpleController
-//////////////////////////////////
+// Class deoxrDPMicrosoftMixedRealityMotionController
+///////////////////////////////////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
 
-deoxrDPSimpleController::deoxrDPSimpleController( deoxrInstance &instance ) :
+deoxrDPMicrosoftMixedRealityMotionController::deoxrDPMicrosoftMixedRealityMotionController( deoxrInstance &instance ) :
 deoxrDeviceProfile( instance,
-	deoxrPath( instance, "/interaction_profiles/khr/simple_controller" ),
-	"Simple Controller" )
+	deoxrPath( instance, "/interaction_profiles/microsoft/motion_controller" ),
+	"Microsoft Mixed Reality Motion Controller" )
 {
 }
 
-deoxrDPSimpleController::~deoxrDPSimpleController(){
+deoxrDPMicrosoftMixedRealityMotionController::~deoxrDPMicrosoftMixedRealityMotionController(){
 }
 
 
@@ -50,19 +50,27 @@ deoxrDPSimpleController::~deoxrDPSimpleController(){
 // Management
 ///////////////
 
-void deoxrDPSimpleController::SuggestBindings(){
+void deoxrDPMicrosoftMixedRealityMotionController::SuggestBindings(){
 	// Valid for user paths:
 	// - /user/hand/left
 	// - /user/hand/right
 	// 
 	// Supported component paths:
-	// - /input/select/click
 	// - /input/menu/click
+	// - /input/squeeze/click
+	// - /input/trigger/value
+	// - /input/thumbstick/x
+	// - /input/thumbstick/y
+	// - /input/thumbstick/click
+	// - /input/trackpad/x
+	// - /input/trackpad/y
+	// - /input/trackpad/click
+	// - /input/trackpad/touch
 	// - /input/grip/pose
 	// - /input/aim/pose
 	// - /output/haptic
 	
-	const int bindingCount = 5 * 2;
+	const int bindingCount = 13 * 2;
 	deoxrInstance::sSuggestBinding bindings[ bindingCount ];
 	deoxrInstance::sSuggestBinding *b = bindings;
 	
@@ -75,10 +83,21 @@ void deoxrDPSimpleController::SuggestBindings(){
 		
 		pAdd( b, deVROpenXR::eiaPose, basePath + "/input/aim/pose" );
 		
-		pAdd( b, deVROpenXR::eiaTriggerPress, basePath + "/input/select/click" );
-		pAdd( b, deVROpenXR::eiaTriggerAnalog, basePath + "/input/select/click" );
+		pAdd( b, deVROpenXR::eiaGripSqueeze, basePath + "/input/squeeze/click" );
+		
+		pAdd( b, deVROpenXR::eiaTriggerPress, basePath + "/input/trigger/value" );
+		pAdd( b, deVROpenXR::eiaTriggerAnalog, basePath + "/input/trigger/value" );
 		
 		pAdd( b, deVROpenXR::eiaButtonPrimaryPress, basePath + "/input/menu/click" );
+		
+		pAdd( b, deVROpenXR::eiaJoystickAnalog, basePath + "/input/thumbstick/x" );
+		pAdd( b, deVROpenXR::eiaJoystickAnalog, basePath + "/input/thumbstick/y" );
+		pAdd( b, deVROpenXR::eiaJoystickPress, basePath + "/input/thumbstick/click" );
+		
+		pAdd( b, deVROpenXR::eiaTrackpadAnalog, basePath + "/input/trackpad/x" );
+		pAdd( b, deVROpenXR::eiaTrackpadAnalog, basePath + "/input/trackpad/y" );
+		pAdd( b, deVROpenXR::eiaTrackpadPress, basePath + "/input/trackpad/click" );
+		pAdd( b, deVROpenXR::eiaTrackpadTouch, basePath + "/input/trackpad/touch" );
 		
 		pAdd( b, deVROpenXR::eiaGripHaptic, basePath + "/output/haptic" );
 	}

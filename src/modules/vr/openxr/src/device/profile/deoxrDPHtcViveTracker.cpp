@@ -21,7 +21,7 @@
 
 #include <stdlib.h>
 
-#include "deoxrDPSimpleController.h"
+#include "deoxrDPHtcViveTracker.h"
 #include "../../deVROpenXR.h"
 #include "../../deoxrInstance.h"
 
@@ -29,20 +29,20 @@
 
 
 
-// Class deoxrDPSimpleController
-//////////////////////////////////
+// Class deoxrDPHtcViveTracker
+////////////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
 
-deoxrDPSimpleController::deoxrDPSimpleController( deoxrInstance &instance ) :
+deoxrDPHtcViveTracker::deoxrDPHtcViveTracker( deoxrInstance &instance ) :
 deoxrDeviceProfile( instance,
-	deoxrPath( instance, "/interaction_profiles/khr/simple_controller" ),
-	"Simple Controller" )
+	deoxrPath( instance, "/interaction_profiles/htc/vive_tracker_htcx" ),
+	"HTC VIVE Tracker" )
 {
 }
 
-deoxrDPSimpleController::~deoxrDPSimpleController(){
+deoxrDPHtcViveTracker::~deoxrDPHtcViveTracker(){
 }
 
 
@@ -50,18 +50,57 @@ deoxrDPSimpleController::~deoxrDPSimpleController(){
 // Management
 ///////////////
 
-void deoxrDPSimpleController::SuggestBindings(){
-	// Valid for user paths:
-	// - /user/hand/left
-	// - /user/hand/right
+void deoxrDPHtcViveTracker::SuggestBindings(){
+	if( ! GetInstance().SupportsExtension( deoxrInstance::extHTCXViveTrackerInteraction ) ){
+		return;
+	}
+	
+	// Valid for top level user path:
+	// - VIVE tracker persistent path (unspecified format, enumerate)
+	// - /user/vive_tracker_htcx/role/<role-type> (find by assigned role)
+	//   - XR_NULL_PATH
+	//   - handheld_object
+	//   - left_foot
+	//   - right_foot
+	//   - left_shoulder
+	//   - right_shoulder
+	//   - left_elbow
+	//   - right_elbow
+	//   - left_knee
+	//   - right_knee
+	//   - waist
+	//   - chest
+	//   - camera
+	//   - keyboard
 	// 
 	// Supported component paths:
-	// - /input/select/click
+	// - /input/system/click (may not be available for application use)
 	// - /input/menu/click
+	// - /input/trigger/click
+	// - /input/squeeze/click
+	// - /input/trigger/value
+	// - /input/trackpad/x
+	// - /input/trackpad/y
+	// - /input/trackpad/click
+	// - /input/trackpad/touch
 	// - /input/grip/pose
-	// - /input/aim/pose
 	// - /output/haptic
+	// 
+	// Enumeration support:
+	// typedef struct XrViveTrackerPathsHTCX {
+	//    XrStructureType    type;
+	//    void*              next;
+	//    XrPath             persistentPath;
+	//    XrPath             rolePath;
+	// } XrViveTrackerPathsHTCX;
+	// 
+	// xrEnumerateViveTrackerPathsHTCX(
+	//    XrInstance                                  instance,
+	//    uint32_t                                    pathCapacityInput, /* use 0 to get required count in pathCountOutput */
+	//    uint32_t*                                   pathCountOutput,
+	//    XrViveTrackerPathsHTCX*                     paths);
 	
+	/*
 	const int bindingCount = 5 * 2;
 	deoxrInstance::sSuggestBinding bindings[ bindingCount ];
 	deoxrInstance::sSuggestBinding *b = bindings;
@@ -85,4 +124,5 @@ void deoxrDPSimpleController::SuggestBindings(){
 	
 	
 	GetInstance().SuggestBindings( GetPath(), bindings, bindingCount );
+	*/
 }
