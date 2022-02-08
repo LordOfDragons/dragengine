@@ -80,19 +80,23 @@ public:
 	/*@{*/
 	/**
 	 * \brief Camera assigned to HMD.
-	 * \version 1.6.
+	 * \version 1.6
+	 * 
+	 * Called from main thread.
 	 */
 	virtual void VRAssignedToHMD();
 	
 	/**
 	 * \brief Camera resigned from HMD.
-	 * \version 1.6.
+	 * \version 1.6
+	 * 
+	 * Called from main thread.
 	 */
 	virtual void VRResignedFromHMD();
 	
 	/**
-	 * \brief VR Render parameters changed.
-	 * \version 1.6.
+	 * \version 1.6
+	 * \deprecated Not used.
 	 */
 	virtual void VRRenderParametersChanged();
 	/*@}*/

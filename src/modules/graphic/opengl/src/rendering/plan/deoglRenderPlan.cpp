@@ -551,14 +551,13 @@ void deoglRenderPlan::pPlanCameraProjectionMatrix(){
 	// VR modifies the matrices
 	if( pCamera && pCamera->GetVR() && pRenderVR != ervrNone){
 		const deoglVR &vr = *pCamera->GetVR();
-		const deoglVR::sProjection &projection = pRenderVR == ervrLeftEye
-			? vr.GetProjectionLeftEye() : vr.GetProjectionRightEye();
+		const deoglVREye &vreye = pRenderVR == ervrLeftEye ? vr.GetLeftEye() : vr.GetRightEye();
 		
 		pCameraFov = vr.GetCameraFov();
 		pCameraFovRatio = vr.GetCameraFovRatio();
 		
-		pProjectionMatrix = vr.CreateProjectionDMatrix( projection, pCameraImageDistance, pCameraViewDistance );
-		pFrustumMatrix = vr.CreateFrustumDMatrix( projection, pCameraImageDistance, pCameraViewDistance );
+		pProjectionMatrix = vreye.CreateProjectionDMatrix( pCameraImageDistance, pCameraViewDistance );
+		pFrustumMatrix = vreye.CreateFrustumDMatrix( pCameraImageDistance, pCameraViewDistance );
 		
 		pDepthToPosition.z = 1.0f / pProjectionMatrix.a11;
 		pDepthToPosition.w = 1.0f / pProjectionMatrix.a22;

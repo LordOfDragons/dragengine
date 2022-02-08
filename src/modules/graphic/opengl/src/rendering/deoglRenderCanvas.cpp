@@ -758,7 +758,7 @@ const deoglRCanvasRenderWorld &canvas ){
 	
 	// render finalize pass into canvas space with all the bells and whistles
 	if( vr ){
-		tsmgr.EnableTexture( 0, *vr->GetTargetLeftEye()->GetTexture(), GetSamplerClampLinear() );
+		tsmgr.EnableTexture( 0, *vr->GetLeftEye().GetRenderTarget()->GetTexture(), GetSamplerClampLinear() );
 		
 	}else{
 		tsmgr.EnableTexture( 0, *defren.GetPostProcessTexture(), GetSamplerClampLinear() );
@@ -778,8 +778,8 @@ const deoglRCanvasRenderWorld &canvas ){
 	shader.SetParameterTexMatrix3x2( spcTransform, billboardTransform * context.GetTransform() );
 	
 	if( vr ){
-		const decVector2 &from = vr->GetCanvasTCFromLeftEye();
-		const decVector2 &to = vr->GetCanvasTCToLeftEye();
+		const decVector2 &from = vr->GetLeftEye().GetCanvasTCFrom();
+		const decVector2 &to = vr->GetLeftEye().GetCanvasTCTo();
 		shader.SetParameterTexMatrix3x2( spcTCTransform, decTexMatrix2::CreateST(
 			to.x - from.x, from.y - to.y, from.x, 1.0 - from.y ) );
 		

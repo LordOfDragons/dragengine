@@ -87,13 +87,13 @@ void deoglRenderVR::RenderHiddenArea( deoglRenderPlan &plan ){
 	switch( plan.GetRenderVR() ){
 	case deoglRenderPlan::ervrLeftEye:
 		if( plan.GetCamera() && plan.GetCamera()->GetVR() ){
-			model = plan.GetCamera()->GetVR()->GetHiddenMeshLeft();
+			model = plan.GetCamera()->GetVR()->GetLeftEye().GetHiddenMesh();
 		}
 		break;
 		
 	case deoglRenderPlan::ervrRightEye:
 		if( plan.GetCamera() && plan.GetCamera()->GetVR() ){
-			model = plan.GetCamera()->GetVR()->GetHiddenMeshRight();
+			model = plan.GetCamera()->GetVR()->GetRightEye().GetHiddenMesh();
 		}
 		break;
 		

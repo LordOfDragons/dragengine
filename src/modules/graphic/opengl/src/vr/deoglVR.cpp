@@ -54,9 +54,11 @@
 
 deoglVR::deoglVR( deoglRCamera &camera ) :
 pCamera( camera ),
+pLeftEye( *this, deBaseVRModule::evreLeft ),
+pRightEye( *this, deBaseVRModule::evreRight ),
 pCameraFov( 1.0f ),
 pCameraFovRatio( 1.0f ),
-pState( esRender ),
+pState( esBeginFrame ),
 pTimeHistoryFrame( 9, 2 ),
 pTargetFPS( 90 ),
 pTargetFPSHysteresis( 0.1f ) // 0.2f
@@ -73,85 +75,6 @@ deoglVR::~deoglVR(){
 
 // Management
 ///////////////
-
-decDMatrix deoglVR::CreateProjectionDMatrix( const sProjection &projection, float znear, float zfar ) const{
-	if( znear <= 0.0f || znear >= zfar ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	// infinite projective matrix. works for both the inverse depth case and the fallback
-	// non-inverse depth case. for fallback it is slightly better than non-infinite thus
-	// the same infinite projection matrix can be used for both cases
-	const double idx = 1.0 / ( projection.right - projection.left );
-	const double idy = 1.0 / ( projection.bottom - projection.top );
-	const double sx = projection.right + projection.left;
-	const double sy = projection.bottom + projection.top;
-	decDMatrix m;
-	
-	m.a11 = 2.0 * idx;
-	m.a12 = 0.0;
-	m.a13 = -sx * idx;
-	m.a14 = 0.0;
-	
-	m.a21 = 0.0;
-	m.a22 = 2.0 * idy;
-	m.a23 = -sy * idy;
-	m.a24 = 0.0;
-	
-	m.a31 = 0.0;
-	m.a32 = 0.0;
-	
-	if( pCamera.GetRenderThread().GetDeferredRendering().GetUseInverseDepth() ){
-		// due to inverse depth changing z-clamping
-		m.a33 = 0.0;
-		m.a34 = znear;
-		
-	}else{
-		m.a33 = 1.0;
-		m.a34 = -2.0 * znear;
-	}
-	
-	m.a41 = 0.0;
-	m.a42 = 0.0;
-	m.a43 = 1.0;
-	m.a44 = 0.0;
-	
-	return m;
-}
-
-decDMatrix deoglVR::CreateFrustumDMatrix( const sProjection &projection, float znear, float zfar ) const{
-	// frustum matrix is always non-infinite otherwise SetFrustum calls fail
-	const double idx = 1.0 / ( projection.right - projection.left );
-	const double idy = 1.0 / ( projection.bottom - projection.top );
-	const double idz = 1.0 / ( double )( zfar - znear );
-	const double sx = projection.right + projection.left;
-	const double sy = projection.bottom + projection.top;
-	decDMatrix m;
-	
-	m.a11 = 2.0 * idx;
-	m.a12 = 0.0;
-	m.a13 = -sx * idx;
-	m.a14 = 0.0;
-	
-	m.a21 = 0.0;
-	m.a22 = 2.0 * idy;
-	m.a23 = -sy * idy;
-	m.a24 = 0.0;
-	
-	m.a31 = 0.0;
-	m.a32 = 0.0;
-	m.a33 = ( zfar + znear ) * idz;
-	m.a34 = -2.0 * zfar * znear * idz;
-	
-	m.a41 = 0.0;
-	m.a42 = 0.0;
-	m.a43 = 1.0;
-	m.a44 = 0.0;
-	
-	return m;
-}
-
-
 
 void deoglVR::UpdateTargetFPS( float elapsed ){
 	const int forceFPS = pCamera.GetRenderThread().GetConfiguration().GetVRForceFrameRate();
@@ -186,72 +109,39 @@ void deoglVR::UpdateTargetFPS( float elapsed ){
 
 
 void deoglVR::BeginFrame(){
-	// NOTE not done during constructor since constructor is called from main thread
-	
-	// parameters are queried every frame update. this is required since some VR runtimes
-	// can change these parameters on the fly or can provide them at all times. resources
-	// are recreated if parameters changed
-	deoglRenderThread &renderThread = pCamera.GetRenderThread();
-	pGetParameters( renderThread );
-	
-	if( ! pTargetRightEye or pTargetSize != pTargetLeftEye->GetTextureSize() ){
-		renderThread.GetLogger().LogInfo( "VR: Parameters Changed" );
-		pLogParameters( renderThread );
-		
-		// examples on the internet use RGBA8
-		if( pTargetLeftEye ){
-			pTargetLeftEye->SetSize( pTargetSize );
-			
-		}else{
-			pTargetLeftEye.TakeOver( new deoglRenderTarget( renderThread, pTargetSize, 4, 8 ) );
-		}
-		
-		if( pTargetRightEye ){
-			pTargetRightEye->SetSize( pTargetSize );
-			
-		}else{
-			pTargetRightEye.TakeOver( new deoglRenderTarget( renderThread, pTargetSize, 4, 8 ) );
-		}
-	}
-	
-	// begin VR frame
-	deBaseVRModule * const module = pCamera.GetRenderThread().GetOgl().GetGameEngine()->GetVRSystem()->GetActiveModule();
-	if( module ){
-		module->BeginFrame();
-	}
-}
-
-void deoglVR::Render(){
-	if( pState != esRender || ! pCamera.GetPlan().GetWorld() ){
+	if( pState != esBeginFrame ){
 		return;
 	}
 	
+	// NOTE not done during constructor since constructor is called from main thread
+	
 	deoglRenderThread &renderThread = pCamera.GetRenderThread();
-	const deoglConfiguration &config = renderThread.GetConfiguration();
-	
-	pRenderSize = ( decVector2( pTargetSize ) * config.GetVRRenderScale() ).Round();
-	
-	// OpenVR uses blitting which is very slow with scaling. use up scaling instead
-	deoglRenderPlan &plan = pCamera.GetPlan();
-	plan.SetViewport( pRenderSize.x, pRenderSize.y );
-	plan.SetUpscaleSize( pTargetSize.x, pTargetSize.y );
-	plan.SetUseUpscaling( pRenderSize != pTargetSize );
-	plan.SetUpsideDown( true );
-	
-	try{
-		pRenderLeftEye( renderThread );
-		pRenderRightEye( renderThread );
-		
-	}catch( const deException & ){
-		plan.SetFBOTarget( nullptr );
-		plan.SetRenderVR( deoglRenderPlan::ervrNone );
-		throw;
+	deBaseVRModule * const vrmodule = renderThread.GetOgl().GetGameEngine()->GetVRSystem()->GetActiveModule();
+	if( ! vrmodule ){
+		return;
 	}
 	
-	plan.SetFBOTarget( nullptr );
-	plan.SetRenderVR( deoglRenderPlan::ervrNone );
+	pLeftEye.BeginFrame( *vrmodule );
+	pRightEye.BeginFrame( *vrmodule );
+	
+	pGetParameters(); // has to come after eye begin frame calls
+	
+	vrmodule->BeginFrame();
+	
+	pState = esRender;
+}
+
+void deoglVR::Render(){
+	if( pState != esRender ){
+		return;
+	}
 	
 	pState = esSubmit;
+	
+	if( pCamera.GetPlan().GetWorld() ){
+		pLeftEye.Render();
+		pRightEye.Render();
+	}
 }
 
 void deoglVR::Submit(){
@@ -261,17 +151,10 @@ void deoglVR::Submit(){
 	
 	pState = esRender;
 	
-	deBaseVRModule * const module = pCamera.GetRenderThread().GetOgl().GetGameEngine()->GetVRSystem()->GetActiveModule();
-	if( ! module ){
+	deBaseVRModule * const vrmodule = pCamera.GetRenderThread().GetOgl().GetGameEngine()->GetVRSystem()->GetActiveModule();
+	if( ! vrmodule ){
 		return;
 	}
-	
-	// OpenVR uses blitting which is very slow with scaling
-	const decVector2 tcFrom( 0.0f, 0.0f );
-	const decVector2 tcTo( 1.0f, 1.0f );
-// 	const decVector2 tcTo( ( float )pRenderSize.x / ( float )pTargetSize.x,
-// 		( float )pRenderSize.y / ( float )pTargetSize.y );
-// 	pCamera.GetRenderThread().GetLogger().LogInfoFormat("tcTo (%g,%g)", tcTo.x, tcTo.y );
 	
 	// NOTE OpenVR does not disable GL_SCISSOR_TEST. this causes the glBlitFramebuffer used
 	//      inside OpenVR to use whatever scissor parameters are in effect by the last call
@@ -279,14 +162,17 @@ void deoglVR::Submit(){
 	//      GL_SCISSOR_TEST fixes this problem. this is also save if OpenVR is fixed
 	OGL_CHECK( pCamera.GetRenderThread(), glDisable( GL_SCISSOR_TEST ) );
 	
-	module->SubmitOpenGLTexture2D( deBaseVRModule::evreLeft,
-		( void* )( intptr_t )pTargetLeftEye->GetTexture()->GetTexture(), tcFrom, tcTo, false );
-	
-	module->SubmitOpenGLTexture2D( deBaseVRModule::evreRight,
-		( void* )( intptr_t )pTargetRightEye->GetTexture()->GetTexture(), tcFrom, tcTo, false );
+	pLeftEye.Submit( *vrmodule );
+	pRightEye.Submit( *vrmodule );
 }
 
 void deoglVR::EndFrame(){
+	if( pState != esRender ){
+		return;
+	}
+	
+	pState = esBeginFrame;
+	
 	deBaseVRModule * const module = pCamera.GetRenderThread().GetOgl().GetGameEngine()->GetVRSystem()->GetActiveModule();
 	if( module ){
 		module->EndFrame();
@@ -298,34 +184,20 @@ void deoglVR::EndFrame(){
 // Private Functions
 //////////////////////
 
-void deoglVR::pGetParameters( deoglRenderThread &renderThread ){
-	deBaseVRModule &module = *renderThread.GetOgl().GetGameEngine()->GetVRSystem()->GetActiveModule();
-	pTargetSize = module.GetRenderSize();
+void deoglVR::pGetParameters(){
+	const float pl[ 4 ] = {
+		fabsf( ( float )pLeftEye.GetProjectionLeft() ),
+		fabsf( ( float )pLeftEye.GetProjectionRight() ),
+		fabsf( ( float )pLeftEye.GetProjectionTop() ),
+		fabsf( ( float )pLeftEye.GetProjectionBottom() )
+	};
 	
-	float p[ 4 ];
-	module.GetProjectionParameters( deBaseVRModule::evreLeft, p[ 0 ], p[ 1 ], p[ 2 ], p[ 3 ] );
-	const float pl[ 4 ] = { fabsf( p[ 0 ] ), fabsf( p[ 1 ] ), fabsf( p[ 2 ] ), fabsf( p[ 3 ] ) };
-	pProjectionLeftEye.left = p[ 0 ];
-	pProjectionLeftEye.right = p[ 1 ];
-	pProjectionLeftEye.top = p[ 2 ];
-	pProjectionLeftEye.bottom = p[ 3 ];
-	
-	module.GetProjectionParameters( deBaseVRModule::evreRight, p[ 0 ], p[ 1 ], p[ 2 ], p[ 3 ] );
-	const float pr[ 4 ] = { fabsf( p[ 0 ] ), fabsf( p[ 1 ] ), fabsf( p[ 2 ] ), fabsf( p[ 3 ] ) };
-	pProjectionRightEye.left = p[ 0 ];
-	pProjectionRightEye.right = p[ 1 ];
-	pProjectionRightEye.top = p[ 2 ];
-	pProjectionRightEye.bottom = p[ 3 ];
-	
-	pMatrixViewToLeftEye = module.GetMatrixViewEye( deBaseVRModule::evreLeft );
-	pMatrixViewToRightEye = module.GetMatrixViewEye( deBaseVRModule::evreRight );
-	
-	pMatrixRightToLeftEye = pMatrixViewToRightEye.QuickInvert().QuickMultiply( pMatrixViewToLeftEye );
-	
-	pCanvasTCFromLeftEye.Set( 0.0f, 0.0f );
-	pCanvasTCToLeftEye.Set( 1.0f, 1.0f );
-	pCanvasTCFromRightEye.Set( 0.0f, 0.0f );
-	pCanvasTCToRightEye.Set( 1.0f, 1.0f );
+	const float pr[ 4 ] = {
+		fabsf( ( float )pRightEye.GetProjectionRight() ),
+		fabsf( ( float )pRightEye.GetProjectionRight() ),
+		fabsf( ( float )pRightEye.GetProjectionTop() ),
+		fabsf( ( float )pRightEye.GetProjectionBottom() )
+	};
 	
 	// tangent values are negative left/top but maybe not always so using max and fabs to be safe
 	pFovX = atanf( decMath::max( pl[ 0 ], pr[ 0 ] ) ) + atanf( decMath::max( pl[ 1 ], pr[ 1 ] ) );
@@ -333,82 +205,6 @@ void deoglVR::pGetParameters( deoglRenderThread &renderThread ){
 	
 	pCameraFov = pFovY;
 	pCameraFovRatio = pFovX / pFovY;
-	
-	pHiddenMeshLeft = module.GetHiddenArea( deBaseVRModule::evreLeft );
-	pHiddenRMeshLeft = pHiddenMeshLeft ? ( ( deoglModel* )pHiddenMeshLeft->GetPeerGraphic() )->GetRModel() : nullptr;
-	
-	pHiddenMeshRight = module.GetHiddenArea( deBaseVRModule::evreRight );
-	pHiddenRMeshRight = pHiddenMeshRight ? ( ( deoglModel* )pHiddenMeshRight->GetPeerGraphic() )->GetRModel() : nullptr;
-}
-
-void deoglVR::pLogParameters( deoglRenderThread &renderThread ){
-	renderThread.GetLogger().LogInfoFormat( "VR: size=(%d,%d) fov=(%.1f,%.1f)",
-		pTargetSize.x, pTargetSize.y, pFovX * RAD2DEG, pFovY * RAD2DEG );
-	
-	renderThread.GetLogger().LogInfoFormat( "VR: view left eye\n[%g,%g,%g,%g]\n[%g,%g,%g,%g]\n[%g,%g,%g,%g]",
-		pMatrixViewToLeftEye.a11, pMatrixViewToLeftEye.a12, pMatrixViewToLeftEye.a13, pMatrixViewToLeftEye.a14,
-		pMatrixViewToLeftEye.a21, pMatrixViewToLeftEye.a22, pMatrixViewToLeftEye.a23, pMatrixViewToLeftEye.a24,
-		pMatrixViewToLeftEye.a31, pMatrixViewToLeftEye.a32, pMatrixViewToLeftEye.a33, pMatrixViewToLeftEye.a34);
-	
-	renderThread.GetLogger().LogInfoFormat( "VR: view right eye\n[%g,%g,%g,%g]\n[%g,%g,%g,%g]\n[%g,%g,%g,%g]",
-		pMatrixViewToRightEye.a11, pMatrixViewToRightEye.a12, pMatrixViewToRightEye.a13, pMatrixViewToRightEye.a14,
-		pMatrixViewToRightEye.a21, pMatrixViewToRightEye.a22, pMatrixViewToRightEye.a23, pMatrixViewToRightEye.a24,
-		pMatrixViewToRightEye.a31, pMatrixViewToRightEye.a32, pMatrixViewToRightEye.a33, pMatrixViewToRightEye.a34);
-	
-	renderThread.GetLogger().LogInfoFormat( "VR: projection left=(%g,%g,%g,%g)",
-		pProjectionLeftEye.left, pProjectionLeftEye.right, pProjectionLeftEye.top, pProjectionLeftEye.bottom);
-	
-	renderThread.GetLogger().LogInfoFormat( "VR: projection right=(%g,%g,%g,%g)",
-		pProjectionRightEye.left, pProjectionRightEye.right, pProjectionRightEye.top, pProjectionRightEye.bottom);
-}
-
-void deoglVR::pRenderLeftEye( deoglRenderThread &renderThread ){
-	// prepare render target and fbo
-// 	pTargetLeftEye->SetSize( pTargetSize.x, pTargetSize.y );
-	pTargetLeftEye->PrepareFramebuffer();
-	
-	// render using render plan
-	deoglRenderPlan &plan = pCamera.GetPlan();
-	
-	plan.SetRenderVR( deoglRenderPlan::ervrLeftEye );
-	plan.SetCameraMatrix( pCamera.GetCameraMatrix().QuickMultiply( pMatrixViewToLeftEye ) );
-	plan.SetFBOTarget( pTargetLeftEye->GetFBO() );
-	
-	const deoglDeveloperMode &devmode = renderThread.GetDebug().GetDeveloperMode();
-	plan.SetDebugTiming( devmode.GetEnabled() && devmode.GetShowDebugInfo() );
-	
-	plan.PrepareRender( nullptr );
-	
-	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
-	defren.Resize( pRenderSize.x, pRenderSize.y );
-	plan.Render();
-	renderThread.GetRenderers().GetWorld().RenderFinalizeFBO( plan, true );
-	// set render target dirty?
-}
-
-void deoglVR::pRenderRightEye( deoglRenderThread &renderThread ){
-	// prepare render target and fbo
-// 	pTargetRightEye->SetSize( pTargetSize.x, pTargetSize.y );
-	pTargetRightEye->PrepareFramebuffer();
-	
-	// render using render plan
-	deoglRenderPlan &plan = pCamera.GetPlan();
-	
-	plan.SetRenderVR( deoglRenderPlan::ervrRightEye );
-	plan.SetCameraMatrix( pCamera.GetCameraMatrix().QuickMultiply( pMatrixViewToRightEye ) );
-	plan.SetCameraCorrectionMatrix( pMatrixRightToLeftEye );
-	plan.SetFBOTarget( pTargetRightEye->GetFBO() );
-	
-	const deoglDeveloperMode &devmode = renderThread.GetDebug().GetDeveloperMode();
-	plan.SetDebugTiming( devmode.GetEnabled() && devmode.GetShowDebugInfo() );
-	
-	plan.PrepareRender( nullptr );
-	
-	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
-	defren.Resize( pRenderSize.x, pRenderSize.y );
-	plan.Render();
-	renderThread.GetRenderers().GetWorld().RenderFinalizeFBO( plan, true );
-	// set render target dirty?
 }
 
 int deoglVR::pCalcTargetFPS( float frameTime ) const{

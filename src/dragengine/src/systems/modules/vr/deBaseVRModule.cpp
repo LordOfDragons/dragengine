@@ -20,6 +20,7 @@
  */
 
 #include "deBaseVRModule.h"
+#include "../../../common/exceptions.h"
 
 
 // Class deBaseVRModule
@@ -30,4 +31,30 @@ deBaseModule( loadableModule ){
 }
 
 deBaseVRModule::~deBaseVRModule(){
+}
+
+
+
+// Management
+///////////////
+
+int deBaseVRModule::GetEyeViewImages( eEye, int count, void** ){
+	if( count == 0 ){
+		return 0;
+		
+	}else{
+		DETHROW_INFO( deeInvalidParam, "count > 0" );
+	}
+}
+
+void deBaseVRModule::GetEyeViewRenderTexCoords( eEye, decVector2& tcFrom, decVector2& tcTo){
+	tcFrom.Set( 0.0f, 0.0f );
+	tcTo.Set( 1.0f, 1.0f );
+}
+
+int deBaseVRModule::AcquireEyeViewImage( eEye ){
+	return -1;
+}
+
+void deBaseVRModule::ReleaseEyeViewImage( eEye ){
 }

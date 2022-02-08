@@ -201,29 +201,86 @@ public:
 	
 	/**
 	 * \brief VR render hidden area model or nullptr if not supported.
+	 * \warning For Graphic Module use only.
 	 * 
 	 * If model is returned it contains a flat mesh (z=0) with one single lod containing
 	 * one single double sided texture. Texture coordinates (x,y) are in the range from
 	 * (0,0) to (1,1). Dummy texture coordinates are present since models require them.
-	 * 
-	 * \warning For Graphic Module use only.
 	 */
 	virtual deModel *GetHiddenArea( eEye eye ) = 0;
 	
 	/**
 	 * \brief VR render distortion image or nullptr if not supported.
+	 * \warning For Graphic Module use only.
 	 * 
 	 * Distortion image can be of any size with depth of 2. Z=0 is the U texture coordinate
 	 * for the respective color and Z=1 the V texture coordinate.
-	 * \warning For Graphic Module use only.
 	 */
 	virtual deImage *GetDistortionMap( eEye eye ) = 0;
 	
 	/**
+	 * \brief Get eye view images to use for rendering.
+	 * \version 1.10
+	 * \warning For Graphic Module use only.
+	 * 
+	 * If \em count is 0 returns the count of eye view images.
+	 * 
+	 * If \em count is larger than 0 \em views is filled with the eye view image handles
+	 * up to \em count entries. If \em count is larger than 0 but smaller than the
+	 * required count an exception is thrown. Returns the count of entries written.
+	 * 
+	 * \param[in] eye Eye to get view images for.
+	 * \param[in] count Size of \em views array. Use 0 to query the required size.
+	 * \param[out] views Array of eye view images. Pointers have to be cast to graphic api
+	 *                  specific object instances. Can be nullptr if \em count is 0.
+	 */
+	virtual int GetEyeViewImages( eEye eye, int count, void **views );
+	
+	/**
+	 * \brief Get eye view render texture coordinates.
+	 * \version 1.10
+	 * \warning For Graphic Module use only.
+	 * \param[in] eye Eye to get render texture coordinates for.
+	 * \param[out] tcFrom Bottom left texture coordinates (range 0 to 1).
+	 * \param[out] tcTo Top right texture coordinates (range 0 to 1).
+	 */
+	virtual void GetEyeViewRenderTexCoords( eEye eye, decVector2 &tcFrom, decVector2 &tcTo );
+	
+	/**
 	 * \brief Begin frame.
 	 * \warning For Graphic Module use only.
+	 * 
+	 * Graphic module has to check after this function returns if render parameters changed.
 	 */
 	virtual void BeginFrame() = 0;
+	
+	/**
+	 * \brief Acquire eye view image to render into.
+	 * \version 1.10
+	 * \warning For Graphic Module use only.
+	 * 
+	 * If the VR module requires the graphic module to provide the rendered image so the
+	 * VR module can do the eye view update -1 is returned.
+	 * 
+	 * The VR module acquires the next image to use from the list of eye view images.
+	 * This list is send by notification to the graphic module. The returned index matches
+	 * this list. The area to render to is also defined while sending the list and applies
+	 * to all eye view images.
+	 * 
+	 * If -1 is returned the VR module does not support the graphic module rendering into
+	 * eye images. The graphic module has to submit the images instead.
+	 * 
+	 * Only one image can be acquired for each eye view at the same time. The list of
+	 * available eye view images is send by notification to the graphic module earlier.
+	 */
+	virtual int AcquireEyeViewImage( eEye eye );
+	
+	/**
+	 * \brief Release eye view image after render into.
+	 * \warning For Graphic Module use only.
+	 * \version 1.10
+	 */
+	virtual void ReleaseEyeViewImage( eEye eye );
 	
 	/**
 	 * \brief Submit OpenGL rendered image to the HMD.

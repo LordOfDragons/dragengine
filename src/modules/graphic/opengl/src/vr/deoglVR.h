@@ -22,6 +22,8 @@
 #ifndef _DEOGLVR_H_
 #define _DEOGLVR_H_
 
+#include "deoglVREye.h"
+#include "../deoglBasics.h"
 #include "../model/deoglRModel.h"
 #include "../target/deoglRenderTarget.h"
 
@@ -36,46 +38,23 @@ class deoglRCamera;
  * VR Support.
  */
 class deoglVR{
-public:
-	struct sProjection{
-		double left;
-		double right;
-		double top;
-		double bottom;
-	};
-	
-	
-	
 private:
 	enum eState{
+		esBeginFrame,
 		esRender,
 		esSubmit
 	};
 	
 	deoglRCamera &pCamera;
 	
-	decPoint pTargetSize;
-	decPoint pRenderSize;
-	sProjection pProjectionLeftEye;
-	sProjection pProjectionRightEye;
-	decDMatrix pMatrixViewToLeftEye;
-	decDMatrix pMatrixViewToRightEye;
-	decDMatrix pMatrixRightToLeftEye;
+	deoglVREye pLeftEye;
+	deoglVREye pRightEye;
+	
 	float pFovX;
 	float pFovY;
 	float pCameraFov;
 	float pCameraFovRatio;
-	deModel::Ref pHiddenMeshLeft;
-	deModel::Ref pHiddenMeshRight;
-	deoglRModel::Ref pHiddenRMeshLeft;
-	deoglRModel::Ref pHiddenRMeshRight;
 	
-	deoglRenderTarget::Ref pTargetLeftEye;
-	deoglRenderTarget::Ref pTargetRightEye;
-	decVector2 pCanvasTCFromLeftEye;
-	decVector2 pCanvasTCToLeftEye;
-	decVector2 pCanvasTCFromRightEye;
-	decVector2 pCanvasTCToRightEye;
 	eState pState;
 	
 	decTimeHistory pTimeHistoryFrame;
@@ -101,23 +80,13 @@ public:
 	/** Camera owning the VR. */
 	inline deoglRCamera &GetCamera() const{ return pCamera; }
 	
-	/** Render size. */
-	inline const decPoint &GetRenderSize() const{ return pTargetSize; }
+	/** Left eye. */
+	inline deoglVREye &GetLeftEye(){ return pLeftEye; }
+	inline const deoglVREye &GetLeftEye() const{ return pLeftEye; }
 	
-	/** Projection parameters for left eye. */
-	inline const sProjection &GetProjectionLeftEye() const{ return pProjectionLeftEye; }
-	
-	/** Projection parameters for right eye. */
-	inline const sProjection &GetProjectionRightEye() const{ return pProjectionRightEye; }
-	
-	/** Matrix transforming from view space to left eye space. */
-	inline const decDMatrix &GetMatrixViewToLeftEye() const{ return pMatrixViewToLeftEye; }
-	
-	/** Matrix transforming from view space to right eye space. */
-	inline const decDMatrix &GetMatrixViewToRightEye() const{ return pMatrixViewToRightEye; }
-	
-	/** Matrix transforming from right eye space to left eye space. */
-	inline const decDMatrix &GetMatrixRightToLeftEye() const{ return pMatrixRightToLeftEye; }
+	/** Right eye. */
+	inline deoglVREye &GetRightEye(){ return pRightEye; }
+	inline const deoglVREye &GetRightEye() const{ return pRightEye; }
 	
 	/** Horizontal field of view. */
 	inline float GetFovX() const{ return pFovX; }
@@ -131,24 +100,6 @@ public:
 	/** Camera field of view ratio. */
 	inline float GetCameraFovRatio() const{ return pCameraFovRatio; }
 	
-	/** Hidden area mesh for the left eye or nullptr. */
-	inline deoglRModel *GetHiddenMeshLeft() const{ return pHiddenRMeshLeft; }
-	
-	/** Hidden area mesh for the right eye or nullptr. */
-	inline deoglRModel *GetHiddenMeshRight() const{ return pHiddenRMeshRight; }
-	
-	/**
-	 * Create projection matrix matching depth usage mode. Depending on the inverse depth
-	 * mode used the projection matrix is either infinite or non-infinite.
-	 */
-	decDMatrix CreateProjectionDMatrix( const sProjection &projection, float znear, float zfar ) const;
-	
-	/**
-	 * Create frustum matrix. This is the same as CreateProjectionDMatrix but always
-	 * creates a non-infinite projection matrix.
-	 */
-	decDMatrix CreateFrustumDMatrix( const sProjection &projection, float znear, float zfar ) const;
-	
 	
 	
 	/** Update target frame rate. */
@@ -158,19 +109,6 @@ public:
 	inline int GetTargetFPS() const{ return pTargetFPS; }
 	
 	
-	/** Left eye render target. */
-	inline deoglRenderTarget *GetTargetLeftEye() const{ return pTargetLeftEye; }
-	
-	/** Right eye render target. */
-	inline deoglRenderTarget *GetTargetRightEye() const{ return pTargetRightEye; }
-	
-	/** Texture coordinates to use to render from left eye render target to canvas. */
-	inline const decVector2 &GetCanvasTCFromLeftEye() const{ return pCanvasTCFromLeftEye; }
-	inline const decVector2 &GetCanvasTCToLeftEye() const{ return pCanvasTCToLeftEye; }
-	
-	/** Texture coordinates to use to render from right eye render target to canvas. */
-	inline const decVector2 &GetCanvasTCFromRightEye() const{ return pCanvasTCFromRightEye; }
-	inline const decVector2 &GetCanvasTCToRightEye() const{ return pCanvasTCToRightEye; }
 	
 	/** Begin frame. */
 	void BeginFrame();
@@ -188,10 +126,7 @@ public:
 	
 	
 private:
-	void pGetParameters( deoglRenderThread &renderThread );
-	void pLogParameters( deoglRenderThread &renderThread  );
-	void pRenderLeftEye( deoglRenderThread &renderThread );
-	void pRenderRightEye( deoglRenderThread &renderThread );
+	void pGetParameters();
 	int pCalcTargetFPS( float frameTime ) const;
 };
 
