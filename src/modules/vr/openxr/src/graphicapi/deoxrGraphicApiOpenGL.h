@@ -86,12 +86,16 @@ private:
 	
 	void *pFuncGetCurrentDrawable;
 	void *pFuncMakeCurrent;
+	void *pFuncGetIntegerv;
+	void *pFuncEnable;
+	void *pFuncDisable;
+	void *pFuncIsEnabled;
+	
 	void *pFuncGenFramebuffers;
 	void *pFuncBindFramebuffer;
 	void *pFuncDeleteFramebuffers;
 	void *pFuncBlitFramebuffer;
 	void *pFuncFramebufferTexture2D;
-	void *pFuncGetIntegerv;
 	void *pFuncDrawBuffers;
 	
 	
@@ -124,7 +128,6 @@ public:
 	
 	/** Make current. */
 	void MakeCurrent( Display *dpy, GLXDrawable drawable, GLXContext ctx );
-	
 	/*@}*/
 	
 	
@@ -134,6 +137,7 @@ private:
 	void pLoadLibrary();
 	void pGetFunctions();
 	void *pGetFunction( const char *name );
+	void pEnable( uint32_t capability, bool enable );
 };
 
 #endif

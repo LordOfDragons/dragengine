@@ -99,10 +99,10 @@ pSupportsPositionTracking( false )
 		pLeftEyeViewMaxSize.x = viewConfViews[ 0 ].maxImageRectWidth;
 		pLeftEyeViewMaxSize.y = viewConfViews[ 0 ].maxImageRectHeight;
 		
-		pRightEyeViewSize.x = viewConfViews[ 0 ].recommendedImageRectWidth;
-		pRightEyeViewSize.y = viewConfViews[ 0 ].recommendedImageRectHeight;
-		pRightEyeViewMaxSize.x = viewConfViews[ 0 ].maxImageRectWidth;
-		pRightEyeViewMaxSize.y = viewConfViews[ 0 ].maxImageRectHeight;
+		pRightEyeViewSize.x = viewConfViews[ 1 ].recommendedImageRectWidth;
+		pRightEyeViewSize.y = viewConfViews[ 1 ].recommendedImageRectHeight;
+		pRightEyeViewMaxSize.x = viewConfViews[ 1 ].maxImageRectWidth;
+		pRightEyeViewMaxSize.y = viewConfViews[ 1 ].maxImageRectHeight;
 		
 		// use the largest view size as render size to request from the graphic module
 		pRenderSize = pLeftEyeViewSize.Largest( pRightEyeViewSize );

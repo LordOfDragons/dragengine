@@ -37,8 +37,12 @@
 typedef unsigned int GLuint;
 typedef unsigned int GLenum;
 typedef unsigned int GLbitfield;
+typedef unsigned char GLboolean;
 typedef int GLsizei;
 typedef int GLint;
+
+#define GL_FRONT 0x0404
+#define GL_BACK 0x0405
 
 #define GL_FRAMEBUFFER_BINDING 0x8CA6
 #define GL_FRAMEBUFFER 0x8D40
@@ -49,6 +53,11 @@ typedef int GLint;
 
 typedef GLXDrawable ( *PFNGLXGETCURRENTDRAWABLE )();
 typedef Bool ( *PFNGLXMAKECURRENT )( Display *dpy, GLXDrawable drawable, GLXContext ctx );
+typedef void ( *PFNGLGET )( GLenum mode );
+typedef void ( *PFNGLENABLE )( GLenum cap );
+typedef void ( *PFNGLDISABLE )( GLenum cap );
+typedef GLboolean ( *PFNGLISENABLED )( GLenum cap );
+
 typedef void ( *PFNGLBINDFRAMEBUFFERPROC )( GLenum target, GLuint framebuffer );
 typedef void ( *PFNGLDELETEFRAMEBUFFERSPROC )( GLsizei n, const GLuint *framebuffers );
 typedef void ( *PFNGLGENFRAMEBUFFERSPROC )( GLsizei n, GLuint *framebuffers );
@@ -99,12 +108,16 @@ pLibHandle( nullptr ),
 #endif
 pFuncGetCurrentDrawable( nullptr ),
 pFuncMakeCurrent( nullptr ),
+pFuncGetIntegerv( nullptr ),
+pFuncEnable( nullptr ),
+pFuncDisable( nullptr ),
+pFuncIsEnabled( nullptr ),
+
 pFuncGenFramebuffers( nullptr ),
 pFuncBindFramebuffer( nullptr ),
 pFuncDeleteFramebuffers( nullptr ),
 pFuncBlitFramebuffer( nullptr ),
 pFuncFramebufferTexture2D( nullptr ),
-pFuncGetIntegerv( nullptr ),
 pFuncDrawBuffers( nullptr )
 {
 }
@@ -203,13 +216,17 @@ void deoxrGraphicApiOpenGL::pLoadLibrary(){
 void deoxrGraphicApiOpenGL::pGetFunctions(){
 	pFuncGetCurrentDrawable = pGetFunction( "glXGetCurrentDrawable" );
 	pFuncMakeCurrent = pGetFunction( "glXMakeCurrent" );
-	pFuncGenFramebuffers = pGetFunction( "glGenFramebuffers" );
-	pFuncBindFramebuffer = pGetFunction( "glBindFramebuffer" );
-	pFuncDeleteFramebuffers = pGetFunction( "glDeleteFramebuffers" );
-	pFuncBlitFramebuffer = pGetFunction( "glBlitFramebuffer" );
-	pFuncFramebufferTexture2D = pGetFunction( "glFramebufferTexture2D" );
 	pFuncGetIntegerv = pGetFunction( "glGetIntegerv" );
-	pFuncDrawBuffers = pGetFunction( "glDrawBuffers" );
+	pFuncEnable = pGetFunction( "glEnable" );
+	pFuncDisable = pGetFunction( "glDisable" );
+	pFuncIsEnabled = pGetFunction( "glIsEnabled" );
+	
+// 	pFuncGenFramebuffers = pGetFunction( "glGenFramebuffers" );
+// 	pFuncBindFramebuffer = pGetFunction( "glBindFramebuffer" );
+// 	pFuncDeleteFramebuffers = pGetFunction( "glDeleteFramebuffers" );
+// 	pFuncBlitFramebuffer = pGetFunction( "glBlitFramebuffer" );
+// 	pFuncFramebufferTexture2D = pGetFunction( "glFramebufferTexture2D" );
+// 	pFuncDrawBuffers = pGetFunction( "glDrawBuffers" );
 }
 
 void *deoxrGraphicApiOpenGL::pGetFunction( const char *name ){
@@ -231,4 +248,19 @@ void *deoxrGraphicApiOpenGL::pGetFunction( const char *name ){
 	}
 	
 	return func;
+}
+
+void deoxrGraphicApiOpenGL::pEnable( uint32_t capability, bool enable ){
+	if( enable ){
+		if( ! pFuncEnable ){
+			DETHROW( deeInvalidParam );
+		}
+		( ( PFNGLENABLE )pFuncEnable )( capability );
+		
+	}else{
+		if( ! pFuncDisable ){
+			DETHROW( deeInvalidParam );
+		}
+		( ( PFNGLDISABLE )pFuncDisable )( capability );
+	}
 }

@@ -479,14 +479,16 @@ decPoint deVROpenXR::GetRenderSize(){
 }
 
 void deVROpenXR::GetProjectionParameters( eEye eye, float &left, float &right, float &top, float &bottom ){
+	// returned values are used directly in projection matrix. these values are also
+	// half tan angles from center. hence calculating the tan of the angles works
 	switch( eye ){
 	case deBaseVRModule::evreLeft:
 		if( pSession ){
 			const XrFovf &fov = pSession->GetLeftEyeFov();
-			left = fov.angleLeft;
-			right = fov.angleRight;
-			top = fov.angleUp;
-			bottom = fov.angleDown;
+			left = tanf( fov.angleLeft );
+			right = tanf( fov.angleRight );
+			top = tanf( -fov.angleUp );
+			bottom = tanf( -fov.angleDown );
 			
 		}else{
 			left = -1.39863f;
@@ -499,10 +501,10 @@ void deVROpenXR::GetProjectionParameters( eEye eye, float &left, float &right, f
 	case deBaseVRModule::evreRight:
 		if( pSession ){
 			const XrFovf &fov = pSession->GetRightEyeFov();
-			left = fov.angleLeft;
-			right = fov.angleRight;
-			top = fov.angleUp;
-			bottom = fov.angleDown;
+			left = tanf( fov.angleLeft );
+			right = tanf( fov.angleRight );
+			top = tanf( -fov.angleUp );
+			bottom = tanf( -fov.angleDown );
 			
 		}else{
 			left = -1.24382;
@@ -622,19 +624,7 @@ void deVROpenXR::ReleaseEyeViewImage( eEye eye ){
 	}
 }
 
-void deVROpenXR::SubmitOpenGLTexture2D( eEye eye, void *texture, const decVector2 &tcFrom,
-const decVector2 &tcTo, bool distortionApplied ){
-	const deMutexGuard lock( pMutexOpenXR );
-	deoxrSwapchain * const swapchain = GetEyeSwapchain( eye );
-	if( ! swapchain || ! pSession->GetShouldRender() ){
-		return;
-	}
-	
-	swapchain->AcquireImage();
-	
-	// blit
-	
-	swapchain->ReleaseImage();
+void deVROpenXR::SubmitOpenGLTexture2D( eEye, void*, const decVector2&, const decVector2&, bool ){
 }
 
 void deVROpenXR::EndFrame(){

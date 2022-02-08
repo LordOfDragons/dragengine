@@ -415,7 +415,6 @@ void deoxrDevice::TrackStates(){
 	if( pType == deInputDevice::edtVRHMD ){
 		deoxrSession * const session = pOxr.GetSession();
 		if( session ){
-			pOxr.LogInfoFormat( "HMD Position: (%g,%g,%g)", session->GetHeadPosition().x, session->GetHeadPosition().y, session->GetHeadPosition().z );
 			pPoseDevice.SetPosition( session->GetHeadPosition() );
 			pPoseDevice.SetOrientation( session->GetHeadOrientation() );
 			pPoseDevice.SetLinearVelocity( session->GetHeadLinearVelocity() );

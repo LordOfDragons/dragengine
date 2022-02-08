@@ -68,15 +68,17 @@ pGACOpenGLContext( nullptr )
 	// initial values based on a vive hmd. graphic modules should not query the perspective
 	// value before BeginFrame() has been called but in case this happens these values are
 	// used to not be too far away from the actual values
-	pLeftEyeFov.angleLeft = -1.39863f;
-	pLeftEyeFov.angleRight = 1.24906f;
-	pLeftEyeFov.angleUp = -1.47526f;
-	pLeftEyeFov.angleDown = 1.46793f;
+	// 
+	// NOTE OpenXR flips up/down and uses angles not projection matrix values
+	pLeftEyeFov.angleLeft = atanf( -1.39863f );
+	pLeftEyeFov.angleRight = atanf( 1.24906f );
+	pLeftEyeFov.angleUp = atanf( 1.47526f );
+	pLeftEyeFov.angleDown = atanf( -1.46793f );
 	
-	pRightEyeFov.angleLeft = -1.24382f;
-	pRightEyeFov.angleRight = 1.39166f;
-	pRightEyeFov.angleUp = -1.47029f;
-	pRightEyeFov.angleDown = 1.45786f;
+	pRightEyeFov.angleLeft = atanf( -1.24382f );
+	pRightEyeFov.angleRight = atanf( 1.39166f );
+	pRightEyeFov.angleUp = atanf( 1.47029f );
+	pRightEyeFov.angleDown = atanf( -1.45786f );
 	
 	try{
 		// query graphic api connection parameters
