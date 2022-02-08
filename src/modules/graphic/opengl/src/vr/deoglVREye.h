@@ -39,9 +39,9 @@ class deBaseVRModule;
  */
 class deoglVREye{
 public:
-	struct sEyeViewImage{
+	struct sViewImage {
 		deoglFramebuffer *fbo;
-		GLint texture;
+		GLuint texture;
 	};
 	
 	
@@ -66,7 +66,10 @@ private:
 	decVector2 pCanvasTCFrom;
 	decVector2 pCanvasTCTo;
 	
-	sEyeViewImage *pVRViewImages;
+	GLuint *pVRGetViewsBuffer;
+	int pVRGetViewsBufferSize;
+	
+	   sViewImage *pVRViewImages;
 	int pVRViewImageCount;
 	decVector2 pVRViewTCFrom;
 	decVector2 pVRViewTCTo;
@@ -135,8 +138,10 @@ public:
 	
 	
 private:
-	void pGetParameters( deBaseVRModule &vrmodule  );
+	void pGetParameters( deBaseVRModule &vrmodule );
 	void pLogParameters( deoglRenderThread &renderThread );
+	void pUpdateEyeViews( deBaseVRModule &vrmodule );
+	void pDestroyEyeViews();
 	void pRender( deoglRenderThread &renderThread );
 };
 

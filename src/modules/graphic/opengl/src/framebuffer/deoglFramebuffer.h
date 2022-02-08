@@ -182,6 +182,10 @@ public:
 	void AttachColorArrayTextureLayerLevel( int index, deoglArrayTexture *texture, int layer, int level );
 	/** Attach a color render buffer. */
 	void AttachColorRenderbuffer( int index, const deoglRenderbuffer &renderbuffer );
+	
+	/** Attach color texture. */
+	void AttachColorTextureLevel( int index, GLuint texture, int level );
+	
 	/** Detach a color image if attached. */
 	void DetachColorImage( int index );
 	/** Detaches all color images in this and all higher attachment points if they are attached. */

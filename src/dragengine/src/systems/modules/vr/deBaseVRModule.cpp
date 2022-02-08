@@ -38,7 +38,7 @@ deBaseVRModule::~deBaseVRModule(){
 // Management
 ///////////////
 
-int deBaseVRModule::GetEyeViewImages( eEye, int count, void** ){
+int deBaseVRModule::GetEyeViewImages( eEye, int count, void* ){
 	if( count == 0 ){
 		return 0;
 		

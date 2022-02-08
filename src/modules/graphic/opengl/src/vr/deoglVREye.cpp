@@ -59,12 +59,19 @@ pProjectionLeft( -1.0f ),
 pProjectionRight( 1.0f ),
 pProjectionTop( 1.0f ),
 pProjectionBottom( -1.0f ),
+pVRGetViewsBuffer( nullptr ),
+pVRGetViewsBufferSize( 0 ),
 pVRViewImages( nullptr ),
 pVRViewImageCount( 0 ),
 pAcquiredVRViewImage( -1 ){
 }
 
 deoglVREye::~deoglVREye(){
+	pDestroyEyeViews();
+	
+	if( pVRGetViewsBuffer ){
+		delete [] pVRGetViewsBuffer;
+	}
 }
 
 
@@ -167,6 +174,8 @@ void deoglVREye::BeginFrame( deBaseVRModule &vrmodule ){
 			pRenderTarget.TakeOver( new deoglRenderTarget( renderThread, pTargetSize, 4, 8 ) );
 		}
 	}
+	
+	pUpdateEyeViews( vrmodule );
 }
 
 void deoglVREye::Render(){
@@ -262,6 +271,88 @@ void deoglVREye::pLogParameters( deoglRenderThread &renderThread ){
 	
 	renderThread.GetLogger().LogInfoFormat( "%s: projection=(%g,%g,%g,%g)", prefix,
 		pProjectionLeft, pProjectionRight, pProjectionTop, pProjectionBottom);
+}
+
+void deoglVREye::pUpdateEyeViews( deBaseVRModule &vrmodule ){
+	const int count = vrmodule.GetEyeViewImages( pEye, 0, nullptr );
+	
+	if( count > 0 ){
+		if( count > pVRGetViewsBufferSize ){
+			if( pVRGetViewsBuffer ){
+				delete [] pVRGetViewsBuffer;
+				pVRGetViewsBuffer = nullptr;
+				pVRGetViewsBufferSize = 0;
+			}
+			
+			pVRGetViewsBuffer = new GLuint[ count ];
+			pVRGetViewsBufferSize = count;
+		}
+		
+		if( vrmodule.GetEyeViewImages( pEye, count, pVRGetViewsBuffer ) != count ){
+			DETHROW( deeInvalidAction );
+		}
+	}
+	
+	bool same = count == pVRViewImageCount;
+	if( same ){
+		int i;
+		for( i=0; i<count; i++ ){
+			if( pVRViewImages[ i ].texture != pVRGetViewsBuffer[ i ] ){
+				same = false;
+				break;
+			}
+		}
+	}
+	
+	if( same ){
+		return;
+	}
+	
+	pDestroyEyeViews();
+	
+	if( count == 0 ){
+		return;
+	}
+	
+	deoglRenderThread &renderThread = pVR.GetCamera().GetRenderThread();
+	deoglFramebuffer * const oldFbo = renderThread.GetFramebuffer().GetActive();
+	
+	pVRViewImages = new sViewImage[ count ];
+	
+	for( pVRViewImageCount=0; pVRViewImageCount<count; pVRViewImageCount++ ){
+		sViewImage &viewImage = pVRViewImages[ pVRViewImageCount ];
+		viewImage.texture = pVRGetViewsBuffer[ pVRViewImageCount ];
+		
+		viewImage.fbo = new deoglFramebuffer( renderThread, false );
+		renderThread.GetFramebuffer().Activate( viewImage.fbo );
+		
+		viewImage.fbo->AttachColorTextureLevel( 0, viewImage.texture, 0 );
+		
+		const GLenum buffers[ 1 ] = { GL_COLOR_ATTACHMENT0 };
+		OGL_CHECK( renderThread, pglDrawBuffers( 1, buffers ) );
+		OGL_CHECK( renderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
+		
+		viewImage.fbo->Verify();
+	}
+	
+	renderThread.GetFramebuffer().Activate( oldFbo );
+}
+
+void deoglVREye::pDestroyEyeViews(){
+	if( ! pVRViewImages ){
+		return;
+	}
+	
+	int i;
+	for( i=0; i<pVRViewImageCount; i++ ){
+		if( pVRViewImages[ i ].fbo ){
+			delete pVRViewImages[ i ].fbo;
+		}
+	}
+	
+	delete [] pVRViewImages;
+	pVRViewImages = nullptr;
+	pVRViewImageCount = 0;
 }
 
 void deoglVREye::pRender( deoglRenderThread &renderThread ){

@@ -231,10 +231,10 @@ public:
 	 * 
 	 * \param[in] eye Eye to get view images for.
 	 * \param[in] count Size of \em views array. Use 0 to query the required size.
-	 * \param[out] views Array of eye view images. Pointers have to be cast to graphic api
-	 *                  specific object instances. Can be nullptr if \em count is 0.
+	 * \param[out] views Array of eye view images. Pointer has to be cast to graphic api
+	 *                  specific object instance pointer. Can be nullptr if \em count is 0.
 	 */
-	virtual int GetEyeViewImages( eEye eye, int count, void **views );
+	virtual int GetEyeViewImages( eEye eye, int count, void *views );
 	
 	/**
 	 * \brief Get eye view render texture coordinates.

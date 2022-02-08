@@ -248,24 +248,7 @@ void deoglFramebuffer::AttachColorTextureLevel( int index, deoglTexture *texture
 	if( pPrimary || index < 0 || index >= FBO_MAX_ATTACHMENT_COUNT || ! texture ){
 		DETHROW( deeInvalidParam );
 	}
-	
-	const GLuint image = texture->GetTexture();
-	
-	if( pAttColor[ index ].DoesNotMatch( image, eatTexture, level ) ){
-		DetachColorImage( index );
-		
-		if( pglFramebufferTexture
-		&& pRenderThread.GetCapabilities().GetFramebufferTextureSingle().Working() ){
-			OGL_CHECK( pRenderThread, pglFramebufferTexture( GL_FRAMEBUFFER,
-				GL_COLOR_ATTACHMENT0 + index, image, level ) );
-			
-		}else{
-			OGL_CHECK( pRenderThread, pglFramebufferTexture2D( GL_FRAMEBUFFER,
-				GL_COLOR_ATTACHMENT0 + index, GL_TEXTURE_2D, image, level ) );
-		}
-		
-		pAttColor[ index ].Set( image, eatTexture, level );
-	}
+	AttachColorTextureLevel( index, texture->GetTexture(), level );
 }
 
 void deoglFramebuffer::AttachColorTexture1D( int index, deoglTexture1D *texture ){
@@ -433,6 +416,28 @@ void deoglFramebuffer::AttachColorRenderbuffer( int index, const deoglRenderbuff
 			GL_COLOR_ATTACHMENT0 + index, GL_RENDERBUFFER, image ) );
 		
 		pAttColor[ index ].Set( image, eatRenderbuffer );
+	}
+}
+
+void deoglFramebuffer::AttachColorTextureLevel( int index, GLuint texture, int level ){
+	if( pPrimary || index < 0 || index >= FBO_MAX_ATTACHMENT_COUNT ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	if( pAttColor[ index ].DoesNotMatch( texture, eatTexture, level ) ){
+		DetachColorImage( index );
+		
+		if( pglFramebufferTexture
+		&& pRenderThread.GetCapabilities().GetFramebufferTextureSingle().Working() ){
+			OGL_CHECK( pRenderThread, pglFramebufferTexture( GL_FRAMEBUFFER,
+				GL_COLOR_ATTACHMENT0 + index, texture, level ) );
+			
+		}else{
+			OGL_CHECK( pRenderThread, pglFramebufferTexture2D( GL_FRAMEBUFFER,
+				GL_COLOR_ATTACHMENT0 + index, GL_TEXTURE_2D, texture, level ) );
+		}
+		
+		pAttColor[ index ].Set( texture, eatTexture, level );
 	}
 }
 
