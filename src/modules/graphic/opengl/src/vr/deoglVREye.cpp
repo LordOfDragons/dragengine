@@ -205,15 +205,55 @@ void deoglVREye::Render(){
 }
 
 void deoglVREye::Submit( deBaseVRModule &vrmodule ){
-	// OpenVR uses blitting which is very slow with scaling
-	const decVector2 tcFrom( 0.0f, 0.0f );
-	const decVector2 tcTo( 1.0f, 1.0f );
-// 	const decVector2 tcTo( ( float )pRenderSize.x / ( float )pTargetSize.x,
-// 		( float )pRenderSize.y / ( float )pTargetSize.y );
-// 	pVR.GetCamera().GetRenderThread().GetLogger().LogInfoFormat("tcTo (%g,%g)", tcTo.x, tcTo.y );
-	
-	vrmodule.SubmitOpenGLTexture2D( pEye,
-		( void* )( intptr_t )pRenderTarget->GetTexture()->GetTexture(), tcFrom, tcTo, false );
+	if( pVRViewImageCount > 0 ){
+		const int acquiredImageIndex = vrmodule.AcquireEyeViewImage( pEye );
+		if( acquiredImageIndex == -1 ){
+			// do not render. perhaps we can honor this earlier but right now it is not
+			// known if somebody else than the VR headset requires the rendered image.
+			// so for the time being we render but we do not submit
+			return;
+		}
+		
+		try{
+			// we use blitting to copy the image. if we would be using shaders for
+			// this we could avoid the up-sampling during rendering. this way we could
+			// use a smaller render target which saves memory and allows other users
+			// to operate on a sharp image instead of an upscaled one
+			deoglRenderThread &renderThread = pVR.GetCamera().GetRenderThread();
+			
+			deoglFramebuffer * const fboView = pVRViewImages[ acquiredImageIndex ].fbo;
+			renderThread.GetFramebuffer().Activate( fboView );
+			
+			OGL_CHECK( renderThread, pglBindFramebuffer(
+				GL_READ_FRAMEBUFFER, pRenderTarget->GetFBO()->GetFBO() ) );
+			
+			const decPoint src1( 0, 0 );
+			const decPoint &src2 = pTargetSize;
+			
+			const decPoint dest1( pVRViewTCFrom.Multiply( decVector2( pTargetSize ) ).Round() );
+			const decPoint dest2( pVRViewTCTo.Multiply( decVector2( pTargetSize ) ).Round() );
+			
+			OGL_CHECK( renderThread, pglBlitFramebuffer( src1.x, src1.y, src2.x, src2.y,
+				dest1.x, dest1.y, dest2.x, dest2.y, GL_COLOR_BUFFER_BIT, GL_NEAREST ) );
+			
+			vrmodule.ReleaseEyeViewImage( pEye );
+			
+		}catch( const deException & ){
+			vrmodule.ReleaseEyeViewImage( pEye );
+			throw;
+		}
+		
+	}else{
+		// OpenVR uses blitting which is very slow with scaling
+		const decVector2 tcFrom( 0.0f, 0.0f );
+		const decVector2 tcTo( 1.0f, 1.0f );
+	// 	const decVector2 tcTo( ( float )pRenderSize.x / ( float )pTargetSize.x,
+	// 		( float )pRenderSize.y / ( float )pTargetSize.y );
+	// 	pVR.GetCamera().GetRenderThread().GetLogger().LogInfoFormat("tcTo (%g,%g)", tcTo.x, tcTo.y );
+		
+		vrmodule.SubmitOpenGLTexture2D( pEye,
+			( void* )( intptr_t )pRenderTarget->GetTexture()->GetTexture(), tcFrom, tcTo, false );
+	}
 }
 
 
@@ -233,8 +273,8 @@ void deoglVREye::pGetParameters( deBaseVRModule &vrmodule ){
 	
 	pMatrixViewToEye = vrmodule.GetMatrixViewEye( pEye );
 	
-	pCanvasTCFrom.Set( 0.0f, 0.0f );
-	pCanvasTCTo.Set( 1.0f, 1.0f );
+	vrmodule.GetEyeViewRenderTexCoords( pEye, pVRViewTCFrom, pVRViewTCTo );
+	
 	pCanvasTCFrom.Set( 0.0f, 0.0f );
 	pCanvasTCTo.Set( 1.0f, 1.0f );
 	
@@ -249,18 +289,7 @@ void deoglVREye::pGetParameters( deBaseVRModule &vrmodule ){
 }
 
 void deoglVREye::pLogParameters( deoglRenderThread &renderThread ){
-	const char *prefix = "";
-	
-	switch( pEye ){
-	case deBaseVRModule::evreLeft:
-		prefix = "VR Left Eye";
-		break;
-		
-	case deBaseVRModule::evreRight:
-		prefix = "VR Right Eye";
-		break;
-	}
-	
+	const char * const prefix = LogPrefix();
 	renderThread.GetLogger().LogInfoFormat( "%s: size=(%d,%d)", prefix, pTargetSize.x, pTargetSize.y );
 	
 	renderThread.GetLogger().LogInfoFormat(
@@ -310,11 +339,13 @@ void deoglVREye::pUpdateEyeViews( deBaseVRModule &vrmodule ){
 	
 	pDestroyEyeViews();
 	
+	deoglRenderThread &renderThread = pVR.GetCamera().GetRenderThread();
+	
 	if( count == 0 ){
+		renderThread.GetLogger().LogInfoFormat( "%s: view images 0", LogPrefix() );
 		return;
 	}
 	
-	deoglRenderThread &renderThread = pVR.GetCamera().GetRenderThread();
 	deoglFramebuffer * const oldFbo = renderThread.GetFramebuffer().GetActive();
 	
 	pVRViewImages = new sViewImage[ count ];
@@ -336,6 +367,8 @@ void deoglVREye::pUpdateEyeViews( deBaseVRModule &vrmodule ){
 	}
 	
 	renderThread.GetFramebuffer().Activate( oldFbo );
+	
+	renderThread.GetLogger().LogInfoFormat( "%s: view images %d", LogPrefix(), pVRViewImageCount );
 }
 
 void deoglVREye::pDestroyEyeViews(){
@@ -384,7 +417,22 @@ void deoglVREye::pRender( deoglRenderThread &renderThread ){
 	
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	defren.Resize( pRenderSize.x, pRenderSize.y );
+	
+	
 	plan.Render();
 	renderThread.GetRenderers().GetWorld().RenderFinalizeFBO( plan, true );
 	// set render target dirty?
+}
+
+const char *deoglVREye::LogPrefix() const{
+	switch( pEye ){
+	case deBaseVRModule::evreLeft:
+		return "VREye Left";
+		
+	case deBaseVRModule::evreRight:
+		return "VREye Right";
+		
+	default:
+		return "VREye";
+	}
 }

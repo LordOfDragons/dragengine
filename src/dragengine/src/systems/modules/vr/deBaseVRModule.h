@@ -189,6 +189,9 @@ public:
 	/**
 	 * \brief VR render projection matrix parameters.
 	 * \warning For Graphic Module use only.
+	 * 
+	 * Values are to be used directly in the projection matrix. The values also represent
+	 * the half tan angles from center.
 	 */
 	virtual void GetProjectionParameters( eEye eye, float &left,
 		float &right, float &top, float &bottom ) = 0;

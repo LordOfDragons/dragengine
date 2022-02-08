@@ -594,6 +594,7 @@ decPoint deVROpenVR::GetRenderSize(){
 }
 
 void deVROpenVR::GetProjectionParameters( eEye eye, float &left, float &right, float &top, float &bottom ){
+	// GetProjectionRaw is the half tan angles from center
 	GetVRSystem().GetProjectionRaw( ConvertEye( eye ), &left, &right, &top, &bottom );
 }
 

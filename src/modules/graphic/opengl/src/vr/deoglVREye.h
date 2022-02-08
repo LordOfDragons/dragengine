@@ -143,6 +143,7 @@ private:
 	void pUpdateEyeViews( deBaseVRModule &vrmodule );
 	void pDestroyEyeViews();
 	void pRender( deoglRenderThread &renderThread );
+	const char *LogPrefix() const;
 };
 
 #endif

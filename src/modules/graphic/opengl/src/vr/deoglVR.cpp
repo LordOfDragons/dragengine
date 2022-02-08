@@ -162,8 +162,12 @@ void deoglVR::Submit(){
 	//      GL_SCISSOR_TEST fixes this problem. this is also save if OpenVR is fixed
 	OGL_CHECK( pCamera.GetRenderThread(), glDisable( GL_SCISSOR_TEST ) );
 	
+	deoglFramebuffer * const oldFbo = pCamera.GetRenderThread().GetFramebuffer().GetActive();
+	
 	pLeftEye.Submit( *vrmodule );
 	pRightEye.Submit( *vrmodule );
+	
+	pCamera.GetRenderThread().GetFramebuffer().Activate( oldFbo );
 }
 
 void deoglVR::EndFrame(){
