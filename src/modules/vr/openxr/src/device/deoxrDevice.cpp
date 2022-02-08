@@ -74,6 +74,14 @@ void deoxrDevice::SetIndex( int index ){
 	pIndex = index;
 }
 
+void deoxrDevice::SetActionPose( deoxrAction *action ){
+	pActionPose = action;
+}
+
+void deoxrDevice::SetActionHandPose( deoxrAction *action ){
+	pActionHandPose = action;
+}
+
 void deoxrDevice::SetType( deInputDevice::eDeviceTypes type ){
 	pType = type;
 }
@@ -404,6 +412,17 @@ void deoxrDevice::UpdateParameters(){
 }
 
 void deoxrDevice::TrackStates(){
+	if( pType == deInputDevice::edtVRHMD ){
+		deoxrSession * const session = pOxr.GetSession();
+		if( session ){
+			pOxr.LogInfoFormat( "HMD Position: (%g,%g,%g)", session->GetHeadPosition().x, session->GetHeadPosition().y, session->GetHeadPosition().z );
+			pPoseDevice.SetPosition( session->GetHeadPosition() );
+			pPoseDevice.SetOrientation( session->GetHeadOrientation() );
+			pPoseDevice.SetLinearVelocity( session->GetHeadLinearVelocity() );
+			pPoseDevice.SetAngularVelocity( session->GetHeadAngularVelocity() );
+		}
+	}
+	
 #if 0
 	if( pInputValueHandle == vr::k_ulInvalidInputValueHandle ){
 		ResetStates();
@@ -487,6 +506,7 @@ void deoxrDevice::TrackStates(){
 			}
 		}
 	}
+#endif
 	
 	int i, count = pButtons.GetCount();
 	for( i=0; i<count; i++ ){
@@ -497,7 +517,6 @@ void deoxrDevice::TrackStates(){
 	for( i=0; i<count; i++ ){
 		GetAxisAt( i )->TrackState();
 	}
-#endif
 }
 
 void deoxrDevice::ResetStates(){

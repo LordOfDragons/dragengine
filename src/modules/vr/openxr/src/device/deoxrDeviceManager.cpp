@@ -200,12 +200,6 @@ int deoxrDeviceManager::NextNameNumber( vr::TrackedDeviceClass deviceClass ) con
 */
 
 void deoxrDeviceManager::TrackDeviceStates(){
-// 	float photonsFromNow = 0.0f;
-// 	pOxr.GetVRSystem().GetDeviceToAbsoluteTrackingPose( vr::TrackingUniverseStanding,
-// 		photonsFromNow, pDevicePoses, vr::k_unMaxTrackedDeviceCount );
-	
-// 	pOxr.CopyDevicesPoses( pDevicePoses );
-	
 	const int count = pDevices.GetCount();
 	int i;
 	for( i=0; i<count; i++ ){

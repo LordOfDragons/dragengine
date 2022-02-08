@@ -1,5 +1,5 @@
 /* 
- * Drag[en]gine OpenXR VR Module
+ * Drag[en]gine OpenXR
  *
  * Copyright (C) 2022, Roland Plüss (roland@rptd.ch)
  * 
@@ -19,53 +19,51 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef _DEOXRDEVICEPROFILEMANAGER_H_
-#define _DEOXRDEVICEPROFILEMANAGER_H_
+#ifndef _DEOXRDPHMD_H_
+#define _DEOXRDPHMD_H_
 
-#include <dragengine/common/collection/decObjectOrderedSet.h>
-
-class deoxrDeviceProfile;
+#include "deoxrDeviceProfile.h"
+#include "../deoxrDevice.h"
 
 
 /**
- * VR device manager.
+ * HMD profile.
  */
-class deoxrDeviceProfileManager{
+class deoxrDPHMD : public deoxrDeviceProfile{
 private:
-	decObjectOrderedSet pProfiles;
+	deoxrDevice::Ref pDevice;
 	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Create device profile list. */
-	deoxrDeviceProfileManager();
+	/** Create device profile. */
+	deoxrDPHMD( deoxrInstance &instance );
 	
-	/** Clean up device profile list. */
-	~deoxrDeviceProfileManager();
+protected:
+	/** Clean up device profile. */
+	virtual ~deoxrDPHMD();
 	/*@}*/
 	
 	
 	
-	/** \name Module Management */
+public:
+	/** \name Management */
 	/*@{*/
-	/** Count of devices. */
-	int GetCount() const;
+	/** Check attached. */
+	virtual void CheckAttached();
 	
-	/** Profile at index. */
-	deoxrDeviceProfile *GetAt( int index ) const;
-	
-	/** Add profile. */
-	void Add( deoxrDeviceProfile *profile );
-	
-	/** Remove all profiles. */
-	void RemoveAll();
-	
-	/** Check attached state for all profiles. */
-	void CheckAllAttached();
+	/** Suggest bindings. */
+	virtual void SuggestBindings();
 	/*@}*/
+	
+	
+	
+protected:
+	void pAddDevice();
+	void pRemoveDevice();
 };
 
 #endif
- 
+

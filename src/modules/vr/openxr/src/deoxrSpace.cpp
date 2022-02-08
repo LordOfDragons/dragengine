@@ -22,9 +22,10 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "deVROpenXR.h"
 #include "deoxrSpace.h"
 #include "deoxrSession.h"
-#include "deVROpenXR.h"
+#include "deoxrUtils.h"
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/systems/modules/deBaseModule.h>
@@ -33,15 +34,17 @@
 // class deoxrSpace
 //////////////////////
 
-deoxrSpace::deoxrSpace( deoxrSession &session ) :
+deoxrSpace::deoxrSpace( deoxrSession &session, XrReferenceSpaceType type ) :
 pSession( session ),
-pSpace( 0 )
+pType( type ),
+pSpace( XR_NULL_HANDLE )
 {
 	try{
 		XrReferenceSpaceCreateInfo createInfo;
 		memset( &createInfo, 0, sizeof( createInfo ) );
 		createInfo.type = XR_TYPE_REFERENCE_SPACE_CREATE_INFO;
-		createInfo.referenceSpaceType = XR_REFERENCE_SPACE_TYPE_STAGE;
+		createInfo.referenceSpaceType = type;
+		createInfo.poseInReferenceSpace.orientation.w = 1.0f;
 		
 		OXR_CHECK( session.GetSystem().GetInstance().GetOxr(),
 			session.GetSystem().GetInstance().xrCreateReferenceSpace(
@@ -63,6 +66,64 @@ deoxrSpace::~deoxrSpace(){
 
 // Management
 ///////////////
+
+void deoxrSpace::LocateSpace( const deoxrSpace &space, XrTime time,
+decVector &position, decQuaternion &orientation ) const{
+	const deoxrInstance &instance = pSession.GetSystem().GetInstance();
+	
+	XrSpaceLocation location;
+	memset( &location, 0, sizeof( location ) );
+	location.type = XR_TYPE_SPACE_LOCATION;
+	
+	//OXR_CHECK( instance.GetOxr(), instance.xrLocateSpace( pSpace, space.pSpace, time, &location ) );
+	if( ! XR_SUCCEEDED( instance.xrLocateSpace( pSpace, space.pSpace, time, &location ) ) ){
+		return;
+	}
+	
+	if( ( location.locationFlags & XR_SPACE_LOCATION_POSITION_VALID_BIT ) != 0 ){
+		position = deoxrUtils::Convert( location.pose.position );
+	}
+	
+	if( ( location.locationFlags & XR_SPACE_LOCATION_ORIENTATION_VALID_BIT ) != 0 ){
+		orientation = deoxrUtils::Convert( location.pose.orientation );
+	}
+}
+
+void deoxrSpace::LocateSpace( const deoxrSpace &space, XrTime time, decVector &position,
+decQuaternion &orientation, decVector &linearVelocity, decVector &angularVelocity ) const{
+	const deoxrInstance &instance = pSession.GetSystem().GetInstance();
+	
+	XrSpaceVelocity velocity;
+	memset( &velocity, 0, sizeof( velocity ) );
+	velocity.type = XR_TYPE_SPACE_VELOCITY;
+	
+	XrSpaceLocation location;
+	memset( &location, 0, sizeof( location ) );
+	location.type = XR_TYPE_SPACE_LOCATION;
+	location.pose.orientation.w = 1.0f;
+	location.next = &velocity;
+	
+	//OXR_CHECK( instance.GetOxr(), instance.xrLocateSpace( pSpace, space.pSpace, time, &location ) );
+	if( ! XR_SUCCEEDED( instance.xrLocateSpace( pSpace, space.pSpace, time, &location ) ) ){
+		return;
+	}
+	
+	if( ( location.locationFlags & XR_SPACE_LOCATION_POSITION_VALID_BIT ) != 0 ){
+		position = deoxrUtils::Convert( location.pose.position );
+	}
+	
+	if( ( location.locationFlags & XR_SPACE_LOCATION_ORIENTATION_VALID_BIT ) != 0 ){
+		orientation = deoxrUtils::Convert( location.pose.orientation );
+	}
+	
+	if( ( velocity.velocityFlags & XR_SPACE_VELOCITY_LINEAR_VALID_BIT ) != 0 ){
+		linearVelocity = deoxrUtils::Convert( velocity.linearVelocity );
+	}
+	
+	if( ( velocity.velocityFlags & XR_SPACE_VELOCITY_ANGULAR_VALID_BIT ) != 0 ){
+		angularVelocity = deoxrUtils::Convert( velocity.angularVelocity );
+	}
+}
 
 
 

@@ -76,6 +76,9 @@ public:
 	/** Name. */
 	inline const decString &GetName() const{ return pName; }
 	
+	/** Check attached. */
+	virtual void CheckAttached();
+	
 	/** Suggest bindings. */
 	virtual void SuggestBindings() = 0;
 	/*@}*/

@@ -25,6 +25,7 @@
 #include "deoxrBasics.h"
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/math/decMath.h>
 
 class deoxrSession;
 
@@ -42,6 +43,7 @@ public:
 private:
 	deoxrSession &pSession;
 	
+	const XrReferenceSpaceType pType;
 	XrSpace pSpace;
 	
 	
@@ -50,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create space. */
-	deoxrSpace( deoxrSession &session );
+	deoxrSpace( deoxrSession &session, XrReferenceSpaceType type );
 	
 protected:
 	/** Clean up space. */
@@ -67,6 +69,20 @@ public:
 	
 	/** Space. */
 	inline XrSpace GetSpace() const{ return pSpace; }
+	
+	/**
+	 * Transform relative to another space. If time is not valid or data is not present
+	 * \em matrix is not changed.
+	 */
+	void LocateSpace( const deoxrSpace &space, XrTime time,
+		decVector &position, decQuaternion &orientation ) const;
+	
+	/**
+	 * Transform relative to another space with velocities. If time is not valid or data
+	 * is not present \em matrix, \em linearVelocity and \em angularVelocity are not changed.
+	 */
+	void LocateSpace( const deoxrSpace &space, XrTime time, decVector &position,
+		decQuaternion &orientation, decVector &linearVelocity, decVector &angularVelocity ) const;
 	/*@}*/
 	
 	

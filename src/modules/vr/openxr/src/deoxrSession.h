@@ -23,9 +23,12 @@
 #define _DEOXRSESSION_H_
 
 #include "deoxrBasics.h"
+#include "deoxrSpace.h"
+#include "deoxrSwapchain.h"
 #include "action/deoxrActionSet.h"
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/math/decMath.h>
 
 class deoxrSystem;
 class deoxrActionSet;
@@ -61,8 +64,33 @@ private:
 	bool pFrameRunning;
 	deoxrActionSet::Ref pAttachedActionSet;
 	
+	deoxrSpace::Ref pSpaceStage;
+	deoxrSpace::Ref pSpaceView;
+	
 	int64_t *pSwapchainFormats;
 	int pSwapchainFormatCount;
+	
+	deoxrSwapchain::Ref pSwapchainLeftEye;
+	deoxrSwapchain::Ref pSwapchainRightEye;
+	
+	XrPosef pLeftEyePose;
+	XrFovf pLeftEyeFov;
+	
+	XrPosef pRightEyePose;
+	XrFovf pRightEyeFov;
+	
+	decVector pHeadPosition;
+	decQuaternion pHeadOrientation;
+	decVector pHeadLinearVelocity;
+	decVector pHeadAngularVelocity;
+	decMatrix pLeftEyeMatrix;
+	decMatrix pRightEyeMatrix;
+	
+	// graphic api connection
+	bool pIsGACOpenGL;
+	Display *pGACOpenGLDisplay;
+	GLXDrawable pGACOpenGLDrawable;
+	GLXContext pGACOpenGLContext;
 	
 	
 	
@@ -117,6 +145,51 @@ public:
 	
 	/** Sync actions. */
 	void SyncActions();
+	
+	/** Space. */
+	inline deoxrSpace *GetSpace() const{ return pSpaceStage; }
+	
+	/** Left eye swapchain. */
+	inline deoxrSwapchain *GetSwapchainLeftEye() const{ return pSwapchainLeftEye; }
+	
+	/** Right eye swapchain. */
+	inline deoxrSwapchain *GetSwapchainRightEye() const{ return pSwapchainRightEye; }
+	
+	/** Left eye pose. */
+	inline const XrPosef &GetLeftEyePose() const{ return pLeftEyePose; }
+	
+	/** Left eye fov. */
+	inline const XrFovf &GetLeftEyeFov() const{ return pLeftEyeFov; }
+	
+	/** Right eye pose. */
+	inline const XrPosef &GetRightEyePose() const{ return pRightEyePose; }
+	
+	/** Right eye fov. */
+	inline const XrFovf &GetRightEyeFov() const{ return pRightEyeFov; }
+	
+	/** Head position in stage coordinate system. */
+	inline const decVector &GetHeadPosition() const{ return pHeadPosition; }
+	
+	/** Head orientation in stage coordinate system. */
+	inline const decQuaternion &GetHeadOrientation() const{ return pHeadOrientation; }
+	
+	/** Head linear velocity in stage coordinate system. */
+	inline const decVector &GetHeadLinearVelocity() const{ return pHeadLinearVelocity; }
+	
+	/** Head angular velocity in stage coordinate system. */
+	inline const decVector &GetHeadAngularVelocity() const{ return pHeadAngularVelocity; }
+	
+	/** Left eye matrix relative to head. */
+	inline const decMatrix &GetLeftEyeMatrix() const{ return pLeftEyeMatrix; }
+	
+	/** Right eye matrix relative to head. */
+	inline const decMatrix &GetRightEyeMatrix() const{ return pRightEyeMatrix; }
+	
+	/** Graphic connection is OpenGL. */
+	inline bool GetIsGACOpenGL() const{ return pIsGACOpenGL; }
+	
+	/** Restore OpenGL current. */
+	void RestoreOpenGLCurrent();
 	/*@}*/
 	
 	

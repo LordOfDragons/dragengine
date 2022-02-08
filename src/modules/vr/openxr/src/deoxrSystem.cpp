@@ -40,21 +40,23 @@ pMaxLayerCount( 0 ),
 pSupportsOrientationTracking( false ),
 pSupportsPositionTracking( false )
 {
+	deVROpenXR &oxr = instance.GetOxr();
+	
 	try{
+		// create system
 		XrSystemGetInfo getInfo;
 		memset( &getInfo, 0, sizeof( getInfo ) );
 		getInfo.type = XR_TYPE_SYSTEM_GET_INFO;
 		getInfo.formFactor = XR_FORM_FACTOR_HEAD_MOUNTED_DISPLAY;
 		
-		OXR_CHECK( instance.GetOxr(), instance.xrGetSystem(
-			instance.GetInstance(), &getInfo, &pSystemId ) );
+		OXR_CHECK( oxr, instance.xrGetSystem( instance.GetInstance(), &getInfo, &pSystemId ) );
 		
+		// get system properties
 		XrSystemProperties sysProps;
 		memset( &sysProps, 0, sizeof( sysProps ) );
 		sysProps.type = XR_TYPE_SYSTEM_PROPERTIES;
 		
-		OXR_CHECK( instance.GetOxr(), instance.xrGetSystemProperties(
-			instance.GetInstance(), pSystemId, &sysProps ) );
+		OXR_CHECK( oxr, instance.xrGetSystemProperties( instance.GetInstance(), pSystemId, &sysProps ) );
 		
 		pMaxRenderImageSize.x = sysProps.graphicsProperties.maxSwapchainImageWidth;
 		pMaxRenderImageSize.y = sysProps.graphicsProperties.maxSwapchainImageHeight;
@@ -70,6 +72,40 @@ pSupportsPositionTracking( false )
 			pSupportsOrientationTracking ? "yes" : "no" );
 		instance.GetOxr().LogInfoFormat( "Supports position tracking: %s",
 			pSupportsOrientationTracking ? "yes" : "no" );
+		
+		// get view configuration properties
+		XrViewConfigurationProperties viewConfProp;
+		memset( &viewConfProp, 0, sizeof( viewConfProp ) );
+		viewConfProp.type = XR_TYPE_VIEW_CONFIGURATION_PROPERTIES;
+		
+		OXR_CHECK( oxr, instance.xrGetViewConfigurationProperties( instance.GetInstance(),
+			pSystemId, XR_VIEW_CONFIGURATION_TYPE_PRIMARY_STEREO, &viewConfProp ) );
+		
+		(void) viewConfProp.fovMutable;
+		
+		// enumerate view configuration views
+		XrViewConfigurationView viewConfViews[ 2 ];
+		memset( &viewConfViews, 0, sizeof( viewConfViews ) );
+		viewConfViews[ 0 ].type = XR_TYPE_VIEW_CONFIGURATION_VIEW;
+		viewConfViews[ 1 ].type = XR_TYPE_VIEW_CONFIGURATION_VIEW;
+		
+		uint32_t viewCount;
+		
+		OXR_CHECK( oxr, instance.xrEnumerateViewConfigurationViews( instance.GetInstance(),
+			pSystemId, XR_VIEW_CONFIGURATION_TYPE_PRIMARY_STEREO, 2, &viewCount, viewConfViews ) );
+		
+		pLeftEyeViewSize.x = viewConfViews[ 0 ].recommendedImageRectWidth;
+		pLeftEyeViewSize.y = viewConfViews[ 0 ].recommendedImageRectHeight;
+		pLeftEyeViewMaxSize.x = viewConfViews[ 0 ].maxImageRectWidth;
+		pLeftEyeViewMaxSize.y = viewConfViews[ 0 ].maxImageRectHeight;
+		
+		pRightEyeViewSize.x = viewConfViews[ 0 ].recommendedImageRectWidth;
+		pRightEyeViewSize.y = viewConfViews[ 0 ].recommendedImageRectHeight;
+		pRightEyeViewMaxSize.x = viewConfViews[ 0 ].maxImageRectWidth;
+		pRightEyeViewMaxSize.y = viewConfViews[ 0 ].maxImageRectHeight;
+		
+		// use the largest view size as render size to request from the graphic module
+		pRenderSize = pLeftEyeViewSize.Largest( pRightEyeViewSize );
 		
 	}catch( const deException & ){
 		pCleanUp();

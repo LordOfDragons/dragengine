@@ -32,11 +32,10 @@
 #include "deoxrInstance.h"
 #include "deoxrSystem.h"
 #include "deoxrSession.h"
-#include "deoxrSpace.h"
-#include "deoxrSwapchain.h"
 #include "action/deoxrActionSet.h"
 #include "device/deoxrDeviceManager.h"
 #include "device/profile/deoxrDeviceProfileManager.h"
+#include "graphicapi/deoxrGraphicApiOpenGL.h"
 
 /** input module device identifier prefix. */
 #define OXR_DEVID_PREFIX "OXR_"
@@ -44,6 +43,7 @@
 class deInputEvent;
 class deoxrLoader;
 class deoxrAction;
+class deoxrSwapchain;
 
 
 /**
@@ -86,20 +86,19 @@ private:
 	deoxrDeviceProfileManager pDeviceProfiles;
 	deoxrDeviceManager pDevices;
 	
+	deoxrGraphicApiOpenGL pGraphicApiOpenGL;
+	
 	deoxrLoader *pLoader;
 	deoxrInstance::Ref pInstance;
 	deoxrSystem::Ref pSystem;
 	deoxrSession::Ref pSession;
-	deoxrSpace::Ref pSpace;
 	deoxrActionSet::Ref pActionSet;
-	deoxrSwapchain::Ref pSwapchainLeftEye;
-	deoxrSwapchain::Ref pSwapchainRightEye;
 	
 	deoxrAction *pActions[ InputActionCount ];
 	
 	deCamera::Ref pCamera;
 	deMutex pMutexOpenXR;
-	bool pFocused;
+	XrSessionState pSessionState;
 	
 	
 	
@@ -117,6 +116,14 @@ public:
 	
 	/** \name Management */
 	/*@{*/
+	/** Device profiles manager. */
+	inline deoxrDeviceProfileManager &GetDeviceProfiles(){ return pDeviceProfiles; }
+	inline const deoxrDeviceProfileManager &GetDeviceProfiles() const{ return pDeviceProfiles; }
+	
+	/** Device manager. */
+	inline deoxrDeviceManager &GetDevices(){ return pDevices; }
+	inline const deoxrDeviceManager &GetDevices() const{ return pDevices; }
+	
 	/** Instance or nullptr. */
 	inline deoxrInstance *GetInstance() const{ return pInstance; }
 	
@@ -126,17 +133,8 @@ public:
 	/** Session or nullptr. */
 	inline deoxrSession *GetSession() const{ return pSession; }
 	
-	/** Space or nullptr. */
-	inline deoxrSpace *GetSpace() const{ return pSpace; }
-	
 	/** Action set or nullptr. */
 	inline deoxrActionSet *GetActionSet() const{ return pActionSet; }
-	
-	/** Left eye swapchain or nullptr. */
-	inline deoxrSwapchain *GetSwapchainLeftEye() const{ return pSwapchainLeftEye; }
-	
-	/** Right eye swapchain or nullptr. */
-	inline deoxrSwapchain *GetSwapchainRightEye() const{ return pSwapchainRightEye; }
 	
 	/** Action. */
 	inline deoxrAction *GetAction( eInputActions inputAction ) const{ return pActions[ inputAction ]; }
@@ -146,6 +144,16 @@ public:
 	
 	/** Set input event timestamp. */
 	void InputEventSetTimestamp( deInputEvent &event ) const;
+	
+	/** Graphic api OpenGL. */
+	inline deoxrGraphicApiOpenGL &GetGraphicApiOpenGL(){ return pGraphicApiOpenGL; }
+	inline const deoxrGraphicApiOpenGL &GetGraphicApiOpenGL() const{ return pGraphicApiOpenGL; }
+	
+	/** Wait until ready exit. */
+	void WaitUntilReadyExit();
+	
+	/** Session swapchain for eye or nullptr. */
+	deoxrSwapchain *GetEyeSwapchain( eEye eye ) const;
 	/*@}*/
 	
 	
@@ -284,8 +292,20 @@ public:
 	/** VR render distortion image or nullptr if not supported. */
 	virtual deImage *GetDistortionMap( eEye eye );
 	
+	/** Get eye view images to use for rendering. */
+	virtual int GetEyeViewImages( eEye eye, int count, void *views );
+	
+	/** \brief Get eye view render texture coordinates. */
+	virtual void GetEyeViewRenderTexCoords( eEye eye, decVector2 &tcFrom, decVector2 &tcTo );
+	
 	/** Begin frame. */
 	virtual void BeginFrame();
+	
+	/** \brief Acquire eye view image to render into. */
+	virtual int AcquireEyeViewImage( eEye eye );
+	
+	/** Release eye view image after render into. */
+	virtual void ReleaseEyeViewImage( eEye eye );
 	
 	/** Submit OpenGL rendered image to the HMD. */
 	virtual void SubmitOpenGLTexture2D( eEye eye, void *texture, const decVector2 &tcFrom,

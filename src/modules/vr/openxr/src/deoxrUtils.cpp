@@ -1,5 +1,5 @@
 /* 
- * Drag[en]gine OpenXR VR Module
+ * Drag[en]gine OpenXR
  *
  * Copyright (C) 2022, Roland Plüss (roland@rptd.ch)
  * 
@@ -19,43 +19,28 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include <stdlib.h>
-
-#include "deoxrDeviceProfile.h"
+#include "deoxrUtils.h"
 
 #include <dragengine/common/exceptions.h>
 
 
+// class deoxrUtils
+/////////////////////
 
-// Class deoxrDeviceProfile
-/////////////////////////////
+deoxrUtils::deoxrUtils(){}
+deoxrUtils::~deoxrUtils(){}
 
-// Constructor, destructor
-////////////////////////////
+// Utils
+//////////
 
-deoxrDeviceProfile::deoxrDeviceProfile( deoxrInstance &instance, const deoxrPath &path, const char *name ) :
-pInstance( instance ),
-pPath( path ),
-pName( name ){
+decVector deoxrUtils::Convert( const XrVector3f &vector ){
+	return decVector( vector.x, vector.y, -vector.z );
 }
 
-deoxrDeviceProfile::~deoxrDeviceProfile(){
+decQuaternion deoxrUtils::Convert( const XrQuaternionf &quaternion ){
+	return decQuaternion( quaternion.x, quaternion.y, -quaternion.z, -quaternion.w );
 }
 
-
-
-// Management
-///////////////
-
-void deoxrDeviceProfile::CheckAttached(){
-}
-
-
-
-// Protected Functions
-////////////////////////
-
-void deoxrDeviceProfile::pAdd( deoxrInstance::sSuggestBinding *&bindings,
-deVROpenXR::eInputActions inputAction, const char *path ) const{
-	( bindings++ )->Set( pInstance.GetOxr().GetAction( inputAction ), deoxrPath( pInstance, path ) );
+decMatrix deoxrUtils::Convert( const XrPosef &pose ){
+	return decMatrix::CreateWorld( Convert( pose.position ), Convert( pose.orientation ) );
 }

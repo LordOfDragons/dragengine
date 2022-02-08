@@ -29,6 +29,7 @@
 #include "device/deoxrDeviceAxis.h"
 #include "device/deoxrDeviceButton.h"
 #include "device/deoxrDeviceFeedback.h"
+#include "device/profile/deoxrDPHMD.h"
 #include "device/profile/deoxrDPSimpleController.h"
 #include "device/profile/deoxrDPHTCViveController.h"
 #include "device/profile/deoxrDPGoogleDaydreamController.h"
@@ -82,8 +83,9 @@ deBaseModule *OpenXRCreateModule( deLoadableModule *loadableModule ){
 deVROpenXR::deVROpenXR( deLoadableModule &loadableModule ) :
 deBaseVRModule( loadableModule ),
 pDevices( *this ),
+pGraphicApiOpenGL( *this ),
 pLoader( nullptr ),
-pFocused( false )
+pSessionState( XR_SESSION_STATE_UNKNOWN )
 {
 	memset( pActions, 0, sizeof( pActions ) );
 }
@@ -109,6 +111,46 @@ void deVROpenXR::InputEventSetTimestamp( deInputEvent &event ) const{
 	#endif
 }
 
+void deVROpenXR::WaitUntilReadyExit(){
+	if( ! pInstance || pSessionState == XR_SESSION_STATE_EXITING ){
+		return;
+	}
+	
+	deoxrInstance &instance = pInstance;
+	
+	XrEventDataBuffer event;
+	memset( &event, 0, sizeof( event ) );
+	event.type = XR_TYPE_EVENT_DATA_BUFFER;
+	
+	while( pSessionState != XR_SESSION_STATE_EXITING ){
+		const XrResult result = instance.xrPollEvent( instance.GetInstance(), &event );
+		if( result == XR_SUCCESS ){
+			LogInfoFormat( "WaitUntilReadyExit: Event %d", event.type );
+			if( event.type == XR_TYPE_EVENT_DATA_SESSION_STATE_CHANGED ){
+				pSessionState = ( ( XrEventDataSessionStateChanged& )event ).state;
+				LogInfoFormat( "WaitUntilReadyExit: Session State Changed %d", pSessionState );
+			}
+		}
+	}
+}
+
+deoxrSwapchain *deVROpenXR::GetEyeSwapchain( eEye eye ) const{
+	if( ! pSession ){
+		return nullptr;
+	}
+	
+	switch( eye ){
+	case deBaseVRModule::evreLeft:
+		return pSession->GetSwapchainLeftEye();
+		
+	case deBaseVRModule::evreRight:
+		return pSession->GetSwapchainRightEye();
+		
+	default:
+		return nullptr;
+	}
+}
+
 
 
 // Module Management
@@ -116,6 +158,8 @@ void deVROpenXR::InputEventSetTimestamp( deInputEvent &event ) const{
 
 bool deVROpenXR::Init(){
 	const bool enableDebug = true;
+	
+	pSessionState = XR_SESSION_STATE_UNKNOWN;
 	
 	try{
 		pLoader = new deoxrLoader( *this );
@@ -163,6 +207,10 @@ void deVROpenXR::CleanUp(){
 		delete pLoader;
 		pLoader = nullptr;
 	}
+	
+	pGraphicApiOpenGL.Unload();
+	
+	pSessionState = XR_SESSION_STATE_UNKNOWN;
 }
 
 
@@ -195,12 +243,10 @@ void deVROpenXR::StartRuntime(){
 void deVROpenXR::StopRuntime(){
 	LogInfo( "Shutdown runtime" );
 	const deMutexGuard lock( pMutexOpenXR );
-	pSwapchainLeftEye = nullptr;
-	pSwapchainRightEye = nullptr;
-	pSpace = nullptr;
 	pSession = nullptr;
-	pFocused = false;
 	pSystem = nullptr;
+	
+	pDeviceProfiles.CheckAllAttached();
 }
 
 void deVROpenXR::SetCamera( deCamera *camera ){
@@ -319,51 +365,47 @@ void deVROpenXR::ProcessEvents(){
 		switch( event.type ){
 		case XR_TYPE_EVENT_DATA_SESSION_STATE_CHANGED: {
 			const XrEventDataSessionStateChanged& state = ( XrEventDataSessionStateChanged& )event;
-			switch( state.state ){
+			pSessionState = state.state;
+			
+			switch( pSessionState ){
 			case XR_SESSION_STATE_IDLE:
 				LogInfo( "Session State Changed: idle" );
-				pFocused = false;
 				break;
 				
 			case XR_SESSION_STATE_READY:
 				LogInfo( "Session State Changed: ready" );
-				pFocused = false;
 				if( pSession ){
 					pSession->Begin();
+					pDeviceProfiles.CheckAllAttached();
 				}
 				break;
 				
 			case XR_SESSION_STATE_SYNCHRONIZED:
 				LogInfo( "Session State Changed: synchronized" );
-				pFocused = false;
 				break;
 				
 			case XR_SESSION_STATE_VISIBLE:
 				LogInfo( "Session State Changed: visible" );
-				pFocused = false;
 				break;
 				
 			case XR_SESSION_STATE_FOCUSED:
 				LogInfo( "Session State Changed: focused" );
-				pFocused = true;
 				break;
 				
 			case XR_SESSION_STATE_STOPPING:
 				LogInfo( "Session State Changed: stopping" );
-				pFocused = false;
 				if( pSession ){
 					pSession->End();
+					pDeviceProfiles.CheckAllAttached();
 				}
 				break;
 				
 			case XR_SESSION_STATE_LOSS_PENDING:
 				LogInfo( "Session State Changed: loss pending" );
-				pFocused = false;
 				break;
 				
 			case XR_SESSION_STATE_EXITING:
 				LogInfo( "Session State Changed: exiting" );
-				pFocused = false;
 				break;
 				
 			default:
@@ -398,6 +440,7 @@ void deVROpenXR::ProcessEvents(){
 			// track while trackers at least tells us their path but then we still have to
 			// manually track them. lots of overhead due to bad design.
 			// 
+			pDeviceProfiles.CheckAllAttached();
 			}break;
 			
 		case XR_TYPE_EVENT_DATA_VIVE_TRACKER_CONNECTED_HTCX:{
@@ -413,17 +456,12 @@ void deVROpenXR::ProcessEvents(){
 		}
 	}
 	
-	if( pFocused ){
+	// according to OpenXR documentation sync action is only allowed in focused state.
+	// SteamVR crashes if you try to do it earlier instead of returning an error
+	if( pSessionState == XR_SESSION_STATE_FOCUSED ){
 		pSession->SyncActions();
-// 		pDevices.TrackDeviceStates();
+		pDevices.TrackDeviceStates();
 			// copy state from mutex protected to non mutex protected memory
-		
-		XrInteractionProfileState state;
-		memset( &state, 0, sizeof( state ) );
-		state.type = XR_TYPE_INTERACTION_PROFILE_STATE;
-		OXR_CHECK( *this, pInstance->xrGetCurrentInteractionProfile( pSession->GetSession(),
-			deoxrPath( pInstance, "/user/hand/right" ), &state ) );
-		LogInfoFormat( "State Hand Right: %s", deoxrPath( pInstance, state.interactionProfile ).GetName().GetString() );
 	}
 }
 
@@ -433,39 +471,66 @@ void deVROpenXR::ProcessEvents(){
 ////////////////////////////
 
 decPoint deVROpenXR::GetRenderSize(){
-	uint32_t width, height;
-	width = 1668; height = 1856;
-	return decPoint( ( int )width, ( int )height );
+	if( ! pSystem ){
+		return decPoint( 1024, 1024 );
+	}
+	
+	return pSystem->GetRenderSize();
 }
 
 void deVROpenXR::GetProjectionParameters( eEye eye, float &left, float &right, float &top, float &bottom ){
 	switch( eye ){
 	case deBaseVRModule::evreLeft:
-		left = -1.39863;
-		right = 1.24906;
-		top = -1.47526;
-		bottom = 1.46793;
+		if( pSession ){
+			const XrFovf &fov = pSession->GetLeftEyeFov();
+			left = fov.angleLeft;
+			right = fov.angleRight;
+			top = fov.angleUp;
+			bottom = fov.angleDown;
+			
+		}else{
+			left = -1.39863f;
+			right = 1.24906f;
+			top = -1.47526f;
+			bottom = 1.46793f;
+		}
 		break;
 		
 	case deBaseVRModule::evreRight:
-		left = -1.24382;
-		right = 1.39166;
-		top = -1.47029;
-		bottom = 1.45786;
+		if( pSession ){
+			const XrFovf &fov = pSession->GetRightEyeFov();
+			left = fov.angleLeft;
+			right = fov.angleRight;
+			top = fov.angleUp;
+			bottom = fov.angleDown;
+			
+		}else{
+			left = -1.24382;
+			right = 1.39166;
+			top = -1.47029;
+			bottom = 1.45786;
+		}
 		break;
-		
-	default:
-		left = -1; right = 1; top = -1; bottom = 1;
 	}
 }
 
 decMatrix deVROpenXR::GetMatrixViewEye( eEye eye ){
 	switch( eye ){
 	case deBaseVRModule::evreLeft:
-		return decMatrix::CreateTranslation(0.0303, 0, 0.015);
+		if( pSession ){
+			return pSession->GetLeftEyeMatrix();
+			
+		}else{
+			return decMatrix::CreateTranslation(0.0303, 0, 0.015);
+		}
 		
 	case deBaseVRModule::evreRight:
-		return decMatrix::CreateTranslation(-0.0303, 0, 0.015);
+		if( pSession ){
+			return pSession->GetRightEyeMatrix();
+			
+		}else{
+			return decMatrix::CreateTranslation(-0.0303, 0, 0.015);
+		}
 	}
 	
 	return decMatrix();
@@ -477,6 +542,44 @@ deModel *deVROpenXR::GetHiddenArea( eEye eye ){
 
 deImage *deVROpenXR::GetDistortionMap( eEye eye ){
 	return nullptr;
+}
+
+int deVROpenXR::GetEyeViewImages( eEye eye, int count, void *views ){
+	deoxrSwapchain * const swapchain = GetEyeSwapchain( eye );
+	if( ! swapchain ){
+		return 0;
+	}
+	
+	const int imageCount = swapchain->GetImageCount();
+	if( count == 0 ){
+		return imageCount;
+	}
+	
+	if( ! views ){
+		DETHROW_INFO( deeNullPointer, "images" );
+	}
+	if( count < imageCount ){
+		DETHROW_INFO( deeInvalidParam, "count < imageCount" );
+	}
+	
+	if( pSession->GetIsGACOpenGL() ){
+		uint32_t * const viewOpenGL = ( uint32_t* )views;
+		int i;
+		
+		for( i=0; i<imageCount; i++ ){
+			viewOpenGL[ i ] = swapchain->GetImageAt( i ).openglImage;
+		}
+		
+	}else{
+		DETHROW_INFO( deeInvalidAction, "not implemented yet" );
+	}
+	
+	return imageCount;
+}
+
+void deVROpenXR::GetEyeViewRenderTexCoords( eEye eye, decVector2 &tcFrom, decVector2 &tcTo ){
+	tcFrom.Set( 0.0f, 0.0f );
+	tcTo.Set( 1.0f, 1.0f );
 }
 
 void deVROpenXR::BeginFrame(){
@@ -497,66 +600,41 @@ void deVROpenXR::BeginFrame(){
 		}
 	}
 	
-	if( ! pSpace ){
-		LogInfo( "BeginFrame: Create Space" );
-		try{
-			pSpace.TakeOver( new deoxrSpace( pSession ) );
-			
-		}catch( const deException &e ){
-			LogException( e );
-			return;
-		}
-	}
-	
-	if( ! pSwapchainLeftEye ){
-		LogInfo( "BeginFrame: Create Left Eye Swapchain" );
-		try{
-			pSwapchainLeftEye.TakeOver( new deoxrSwapchain( pSession ) );
-			
-		}catch( const deException &e ){
-			LogException( e );
-			return;
-		}
-	}
-	
-	if( ! pSwapchainRightEye ){
-		LogInfo( "BeginFrame: Create Right Eye Swapchain" );
-		try{
-			pSwapchainRightEye.TakeOver( new deoxrSwapchain( pSession ) );
-			
-		}catch( const deException &e ){
-			LogException( e );
-			return;
-		}
-	}
-	
 	pSession->BeginFrame();
+}
+
+int deVROpenXR::AcquireEyeViewImage( eEye eye ){
+	const deMutexGuard lock( pMutexOpenXR );
+	deoxrSwapchain * const swapchain = GetEyeSwapchain( eye );
+	if( ! swapchain ){
+		return -1;
+	}
+	
+	swapchain->AcquireImage();
+	return ( int )swapchain->GetAcquiredImage();
+}
+
+void deVROpenXR::ReleaseEyeViewImage( eEye eye ){
+	const deMutexGuard lock( pMutexOpenXR );
+	deoxrSwapchain * const swapchain = GetEyeSwapchain( eye );
+	if( swapchain ){
+		swapchain->ReleaseImage();
+	}
 }
 
 void deVROpenXR::SubmitOpenGLTexture2D( eEye eye, void *texture, const decVector2 &tcFrom,
 const decVector2 &tcTo, bool distortionApplied ){
 	const deMutexGuard lock( pMutexOpenXR );
-	if( ! pSession ){
+	deoxrSwapchain * const swapchain = GetEyeSwapchain( eye );
+	if( ! swapchain || ! pSession->GetShouldRender() ){
 		return;
 	}
 	
-	switch( eye ){
-	case deBaseVRModule::evreLeft:
-		if( pSwapchainLeftEye ){
-			pSwapchainLeftEye->AcquireImage();
-			// blit
-			pSwapchainLeftEye->ReleaseImage();
-		}
-		break;
-		
-	case deBaseVRModule::evreRight:
-		if( pSwapchainRightEye ){
-			pSwapchainRightEye->AcquireImage();
-			// blit
-			pSwapchainRightEye->ReleaseImage();
-		}
-		break;
-	}
+	swapchain->AcquireImage();
+	
+	// blit
+	
+	swapchain->ReleaseImage();
 }
 
 void deVROpenXR::EndFrame(){
@@ -614,6 +692,8 @@ void deVROpenXR::pCreateActionSet(){
 }
 
 void deVROpenXR::pCreateDeviceProfiles(){
+	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPHMD( pInstance ) ) );
+	
 	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPSimpleController( pInstance ) ) );
 	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPHTCViveController( pInstance ) ) );
 	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPGoogleDaydreamController( pInstance ) ) );

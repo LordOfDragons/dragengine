@@ -33,8 +33,9 @@
 // class deoxrSwapchain
 /////////////////////////
 
-deoxrSwapchain::deoxrSwapchain( deoxrSession &session ) :
+deoxrSwapchain::deoxrSwapchain( deoxrSession &session, const decPoint &size ) :
 pSession( session ),
+pSize( size ),
 pSwapchain( XR_NULL_HANDLE ),
 pImages( nullptr ),
 pImageCount( 0 )
@@ -46,8 +47,8 @@ pImageCount( 0 )
 		createInfo.createFlags = 0;
 		createInfo.usageFlags = XR_SWAPCHAIN_USAGE_TRANSFER_DST_BIT;
 		createInfo.sampleCount = 1;
-		createInfo.width = 1668;
-		createInfo.height = 1856;
+		createInfo.width = size.x;
+		createInfo.height = size.y;
 		createInfo.faceCount = 1;
 		createInfo.arraySize = 1;
 		createInfo.mipCount = 1;
@@ -82,6 +83,13 @@ deoxrSwapchain::~deoxrSwapchain(){
 // Management
 ///////////////
 
+const deoxrSwapchain::sImage &deoxrSwapchain::GetImageAt( int index ) const{
+	if( index < 0 || index >= pImageCount ){
+		DETHROW( deeInvalidParam );
+	}
+	return pImages[ index ];
+}
+
 void deoxrSwapchain::AcquireImage(){
 	deoxrInstance &instance = pSession.GetSystem().GetInstance();
 	
@@ -95,12 +103,32 @@ void deoxrSwapchain::AcquireImage(){
 	waitInfo.timeout = XR_INFINITE_DURATION;
 	
 	OXR_CHECK( instance.GetOxr(), instance.xrWaitSwapchainImage( pSwapchain, &waitInfo ) );
+	
+	if( pSession.GetIsGACOpenGL() ){
+		// WARNING SteamVR messes with the current context state causing all future OpenGL
+		//         calls to fail. not sure why SteamVR unsets the current context but it
+		//         breaks everything. i dont know if the spec would actually requires
+		//         runtimes to restore current context if they change it but to work
+		//         around such annoying runtimes the current context is restored to the
+		//         parameters provided by the graphic module
+		pSession.RestoreOpenGLCurrent();
+	}
 }
 
 void deoxrSwapchain::ReleaseImage(){
 	deoxrInstance &instance = pSession.GetSystem().GetInstance();
 	
 	OXR_CHECK( instance.GetOxr(), instance.xrReleaseSwapchainImage( pSwapchain, nullptr ) );
+	
+	if( pSession.GetIsGACOpenGL() ){
+		// WARNING SteamVR messes with the current context state causing all future OpenGL
+		//         calls to fail. not sure why SteamVR unsets the current context but it
+		//         breaks everything. i dont know if the spec would actually requires
+		//         runtimes to restore current context if they change it but to work
+		//         around such annoying runtimes the current context is restored to the
+		//         parameters provided by the graphic module
+		pSession.RestoreOpenGLCurrent();
+	}
 }
 
 
@@ -121,9 +149,10 @@ void deoxrSwapchain::pCleanUp(){
 
 void deoxrSwapchain::pGetImages(){
 	deoxrInstance &instance = pSession.GetSystem().GetInstance();
+	deVROpenXR &oxr = instance.GetOxr();
 	
 	uint32_t count, i;
-	OXR_CHECK( instance.GetOxr(), instance.xrEnumerateSwapchainImages(
+	OXR_CHECK( oxr, instance.xrEnumerateSwapchainImages(
 		pSwapchain, 0, &count, nullptr ) );
 	
 	if( count == 0 ){
@@ -140,11 +169,13 @@ void deoxrSwapchain::pGetImages(){
 				images[ i ].type = XR_TYPE_SWAPCHAIN_IMAGE_OPENGL_KHR;
 			}
 			
-			OXR_CHECK( instance.GetOxr(), instance.xrEnumerateSwapchainImages(
-				pSwapchain, count, &count, ( XrSwapchainImageBaseHeader* )images ) );
+			OXR_CHECK( oxr, instance.xrEnumerateSwapchainImages( pSwapchain,
+				count, &count, ( XrSwapchainImageBaseHeader* )images ) );
 			
 			for( i=0; i<count; i++ ){
 				pImages[ i ].openglImage = images[ i ].image;
+// 				pImages[ i ].openglFbo.TakeOver( new deoxrGraphicApiOpenGL::Framebuffer(
+// 					oxr.GetGraphicApiOpenGL(), images[ i ].image ) );
 			}
 			pImageCount = ( int )count;
 			

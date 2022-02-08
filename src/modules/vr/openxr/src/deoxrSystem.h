@@ -50,6 +50,15 @@ private:
 	bool pSupportsOrientationTracking;
 	bool pSupportsPositionTracking;
 	
+	decPoint pLeftEyeViewSize;
+	decPoint pLeftEyeViewMaxSize;
+	
+	decPoint pRightEyeViewSize;
+	decPoint pRightEyeViewMaxSize;
+	
+	decPoint pRenderSize;
+	
+	
 	
 public:
 	/** \name Constructors and Destructors */
@@ -84,6 +93,21 @@ public:
 	
 	/** Supports position tracking. */
 	inline bool GetSupportsPositionTracking() const{ return pSupportsPositionTracking; }
+	
+	/** Left eye recommended view size. */
+	inline const decPoint &GetLeftEyeViewSize() const{ return pLeftEyeViewSize; }
+	
+	/** Left eye maximum view size. */
+	inline const decPoint &GetLeftEyeViewMaxSize() const{ return pLeftEyeViewMaxSize; }
+	
+	/** Right eye recommended view size. */
+	inline const decPoint &GetRightEyeViewSize() const{ return pRightEyeViewSize; }
+	
+	/** Right eye maximum view size. */
+	inline const decPoint &GetRightEyeViewMaxSize() const{ return pRightEyeViewMaxSize; }
+	
+	/** Render size. */
+	inline const decPoint &GetRenderSize() const{ return pRenderSize; }
 	/*@}*/
 	
 	

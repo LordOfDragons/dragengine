@@ -61,3 +61,12 @@ void deoxrDeviceProfileManager::Add( deoxrDeviceProfile *profile ){
 void deoxrDeviceProfileManager::RemoveAll(){
 	pProfiles.RemoveAll();
 }
+
+void deoxrDeviceProfileManager::CheckAllAttached(){
+	const int count = pProfiles.GetCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		( ( deoxrDeviceProfile* )pProfiles.GetAt( i ) )->CheckAttached();
+	}
+}

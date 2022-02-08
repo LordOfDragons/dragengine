@@ -23,8 +23,10 @@
 #define _DEOXRSWAPCHAIN_H_
 
 #include "deoxrBasics.h"
+#include "graphicapi/deoxrGraphicApiOpenGL.h"
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/math/decMath.h>
 
 class deoxrSession;
 
@@ -37,14 +39,18 @@ public:
 	/** Reference. */
 	typedef deTObjectReference<deoxrSwapchain> Ref;
 	
+	/** Image. */
+	struct sImage{
+		uint32_t openglImage;
+		deoxrGraphicApiOpenGL::Framebuffer::Ref openglFbo;
+	};
+	
 	
 	
 private:
-	struct sImage{
-		uint32_t openglImage;
-	};
-	
 	deoxrSession &pSession;
+	
+	decPoint pSize;
 	
 	XrSwapchain pSwapchain;
 	
@@ -59,7 +65,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create space. */
-	deoxrSwapchain( deoxrSession &session );
+	deoxrSwapchain( deoxrSession &session, const decPoint &size );
 	
 protected:
 	/** Clean up space. */
@@ -74,14 +80,26 @@ public:
 	/** Session. */
 	inline deoxrSession &GetSession() const{ return pSession; }
 	
+	/** Size. */
+	inline const decPoint &GetSize() const{ return pSize; }
+	
 	/** Swapchain. */
 	inline XrSwapchain GetSwapchain() const{ return pSwapchain; }
+	
+	/** Count of images. */
+	inline int GetImageCount() const{ return pImageCount; }
+	
+	/** Image at index. */
+	const sImage &GetImageAt( int index ) const;
 	
 	/** Acquire image. */
 	void AcquireImage();
 	
 	/** Release image. */
 	void ReleaseImage();
+	
+	/** Acquired image. */
+	inline uint32_t GetAcquiredImage() const{ return pAcquiredImage; }
 	/*@}*/
 	
 	

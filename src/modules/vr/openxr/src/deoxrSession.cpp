@@ -27,6 +27,7 @@
 #include "deoxrInstance.h"
 #include "deoxrSession.h"
 #include "deoxrSystem.h"
+#include "deoxrUtils.h"
 #include "action/deoxrActionSet.h"
 
 #include <dragengine/deEngine.h>
@@ -50,17 +51,41 @@ pSystem( system ),
 pGraphicApi( egaHeadless ),
 pSession( 0 ),
 pRunning( false ),
+pPredictedDisplayTime( 0 ),
+pPredictedDisplayPeriod( 0 ),
+pShouldRender( false ),
 pFrameRunning( false ),
 pSwapchainFormats( nullptr ),
-pSwapchainFormatCount( 0 )
+pSwapchainFormatCount( 0 ),
+pIsGACOpenGL( false ),
+pGACOpenGLDisplay( nullptr ),
+pGACOpenGLDrawable( 0 ),
+pGACOpenGLContext( nullptr )
 {
 	const deoxrInstance &instance = system.GetInstance();
 	deVROpenXR &oxr = instance.GetOxr();
+	
+	// initial values based on a vive hmd. graphic modules should not query the perspective
+	// value before BeginFrame() has been called but in case this happens these values are
+	// used to not be too far away from the actual values
+	pLeftEyeFov.angleLeft = -1.39863f;
+	pLeftEyeFov.angleRight = 1.24906f;
+	pLeftEyeFov.angleUp = -1.47526f;
+	pLeftEyeFov.angleDown = 1.46793f;
+	
+	pRightEyeFov.angleLeft = -1.24382f;
+	pRightEyeFov.angleRight = 1.39166f;
+	pRightEyeFov.angleUp = -1.47029f;
+	pRightEyeFov.angleDown = 1.45786f;
 	
 	try{
 		// query graphic api connection parameters
 		deBaseGraphicModule::sGraphicApiConnection gacon;
 		oxr.GetGameEngine()->GetGraphicSystem()->GetActiveModule()->GetGraphicApiConnection( gacon );
+		
+		pGACOpenGLDisplay = ( Display* )gacon.opengl.display;
+		pGACOpenGLDrawable = ( GLXDrawable )gacon.opengl.glxDrawable;
+		pGACOpenGLContext = ( GLXContext )gacon.opengl.glxContext;
 		
 		// create session info struct depending on what the graphic module supports
 		XrSessionCreateInfo createInfo;
@@ -91,21 +116,26 @@ pSwapchainFormatCount( 0 )
 			#ifdef OS_UNIX
 				if( gacon.opengl.display && gacon.opengl.display
 				&& gacon.opengl.glxFBConfig && gacon.opengl.glxDrawable ){
+					oxr.GetGraphicApiOpenGL().Load();
+					
 					memset( &gbopengl, 0, sizeof( gbopengl ) );
 					gbopengl.type = XR_TYPE_GRAPHICS_BINDING_OPENGL_XLIB_KHR;
-					gbopengl.xDisplay = ( Display* )gacon.opengl.display;
+					gbopengl.xDisplay = pGACOpenGLDisplay;
 					gbopengl.visualid = gacon.opengl.visualid;
 					gbopengl.glxFBConfig = ( GLXFBConfig )gacon.opengl.glxFBConfig;
-					gbopengl.glxDrawable = ( GLXDrawable )gacon.opengl.glxDrawable;
-					gbopengl.glxContext = ( GLXContext )gacon.opengl.glxContext;
+					gbopengl.glxDrawable = pGACOpenGLDrawable;
+					gbopengl.glxContext = pGACOpenGLContext;
 					
 					pGraphicApi = egaOpenGL;
 					graphicBinding = &gbopengl;
+					pIsGACOpenGL = true;
 					oxr.LogInfo( "Create Session: Using OpenGL on Xlib" );
 				}
 				
 			#elif defined OS_W32
 				if( gacon.opengl.hDC && gacon.opengl.hGLRC ){
+					oxr.GetGraphicApiOpenGL().Load();
+					
 					memset( &gbopengl, 0, sizeof( gbopengl ) );
 					gbopengl.type = XR_TYPE_GRAPHICS_BINDING_OPENGL_WIN32_KHR;
 					gbopengl.hDC = ( HDC )gacon.opengl.hDC;
@@ -113,6 +143,7 @@ pSwapchainFormatCount( 0 )
 					
 					pGraphicApi = egaOpenGL;
 					graphicBinding = &gbopengl;
+					pIsGACOpenGL = true;
 					oxr.LogInfo( "Create Session: Using OpenGL on Windows" );
 				}
 			#endif
@@ -124,10 +155,29 @@ pSwapchainFormatCount( 0 )
 		
 		createInfo.next = graphicBinding;
 		
-		OXR_CHECK( system.GetInstance().GetOxr(), system.GetInstance().xrCreateSession(
-			system.GetInstance().GetInstance(), &createInfo, &pSession ) );
+		// create session
+		OXR_CHECK( oxr, instance.xrCreateSession( instance.GetInstance(), &createInfo, &pSession ) );
 		
+		// create spaces
+		pSpaceStage.TakeOver( new deoxrSpace( *this, XR_REFERENCE_SPACE_TYPE_STAGE ) );
+		pSpaceView.TakeOver( new deoxrSpace( *this, XR_REFERENCE_SPACE_TYPE_VIEW ) );
+		
+		// enumerate swapchain formats
 		pEnumSwapchainFormats();
+		
+		// create swap chains
+		pSwapchainLeftEye.TakeOver( new deoxrSwapchain( *this, pSystem.GetLeftEyeViewSize() ) );
+		pSwapchainRightEye.TakeOver( new deoxrSwapchain( *this, pSystem.GetRightEyeViewSize() ) );
+		
+		if( pIsGACOpenGL ){
+			// WARNING SteamVR messes with the current context state causing all future OpenGL
+			//         calls to fail. not sure why SteamVR unsets the current context but it
+			//         breaks everything. i dont know if the spec would actually requires
+			//         runtimes to restore current context if they change it but to work
+			//         around such annoying runtimes the current context is restored to the
+			//         parameters provided by the graphic module
+			RestoreOpenGLCurrent();
+		}
 		
 	}catch( const deException & ){
 		pCleanUp();
@@ -222,6 +272,67 @@ void deoxrSession::BeginFrame(){
 	// begin frame
 	OXR_CHECK( instance.GetOxr(), instance.xrBeginFrame( pSession, nullptr ) );
 	pFrameRunning = true;
+	
+	// locate views
+	XrViewState viewState;
+	memset( &viewState, 0, sizeof( viewState ) );
+	viewState.type = XR_TYPE_VIEW_STATE;
+	
+	XrView views[ 2 ];
+	memset( &views, 0, sizeof( views ) );
+	views[ 0 ].type = XR_TYPE_VIEW;
+	views[ 1 ].type = XR_TYPE_VIEW;
+	
+	XrViewLocateInfo viewLocateInfo;
+	memset( &viewLocateInfo, 0, sizeof( viewLocateInfo ) );
+	viewLocateInfo.type = XR_TYPE_VIEW_LOCATE_INFO;
+	viewLocateInfo.displayTime = pPredictedDisplayTime;
+	viewLocateInfo.space = pSpaceStage->GetSpace();
+	
+	uint32_t viewCount;
+	OXR_CHECK( instance.GetOxr(), instance.xrLocateViews( pSession,
+		&viewLocateInfo, &viewState, 2, &viewCount, views ) );
+	
+	pLeftEyePose = views[ 0 ].pose;
+	pLeftEyeFov = views[ 0 ].fov;
+	
+	pRightEyePose = views[ 1 ].pose;
+	pRightEyeFov = views[ 1 ].fov;
+	
+	// locate hmd
+	if( pPredictedDisplayTime > 0 ){
+		pSpaceView->LocateSpace( pSpaceStage, pPredictedDisplayTime,
+			pHeadPosition, pHeadOrientation, pHeadLinearVelocity, pHeadAngularVelocity );
+		
+		/*
+		instance.GetOxr().LogInfoFormat( "Locate HMD: pos=(%g,%g,%g) rot=(%g,%g,%g) lv=(%g,%g,%g) av=(%g,%g,%g)",
+			pHeadMatrix.GetPosition().x, pHeadMatrix.GetPosition().y, pHeadMatrix.GetPosition().z,
+			pHeadMatrix.GetEulerAngles().x * RAD2DEG, pHeadMatrix.GetEulerAngles().y * RAD2DEG,
+				pHeadMatrix.GetEulerAngles().z * RAD2DEG,
+			pHeadLinearVelocity.x, pHeadLinearVelocity.y, pHeadLinearVelocity.z,
+			pHeadAngularVelocity.x * RAD2DEG, pHeadAngularVelocity.y * RAD2DEG,
+				pHeadAngularVelocity.z * RAD2DEG );
+		*/
+		
+		// calculate eye matrices transforming from camera space to eye space. we have to do
+		// this calculation since OpenXR does not provide this information. this happens
+		// though once each frame update so not a performance problem
+		const decMatrix headMatrix( decMatrix::CreateWorld( pHeadPosition, pHeadOrientation ) );
+		pLeftEyeMatrix = headMatrix.QuickMultiply( deoxrUtils::Convert( pLeftEyePose ).QuickInvert() );
+		pRightEyeMatrix = headMatrix.QuickMultiply( deoxrUtils::Convert( pRightEyePose ).QuickInvert() );
+		
+		/*
+		instance.GetOxr().LogInfoFormat( "- Left Eye: pos=(%g,%g,%g) rot=(%g,%g,%g)",
+			pLeftEyeMatrix.GetPosition().x, pLeftEyeMatrix.GetPosition().y, pLeftEyeMatrix.GetPosition().z,
+			pLeftEyeMatrix.GetEulerAngles().x * RAD2DEG, pLeftEyeMatrix.GetEulerAngles().y * RAD2DEG,
+				pLeftEyeMatrix.GetEulerAngles().z * RAD2DEG );
+		
+		instance.GetOxr().LogInfoFormat( "- Right Eye: pos=(%g,%g,%g) rot=(%g,%g,%g)",
+			pRightEyeMatrix.GetPosition().x, pRightEyeMatrix.GetPosition().y, pRightEyeMatrix.GetPosition().z,
+			pRightEyeMatrix.GetEulerAngles().x * RAD2DEG, pRightEyeMatrix.GetEulerAngles().y * RAD2DEG,
+				pRightEyeMatrix.GetEulerAngles().z * RAD2DEG );
+		*/
+	}
 }
 
 void deoxrSession::EndFrame(){
@@ -231,7 +342,8 @@ void deoxrSession::EndFrame(){
 	
 	const deoxrInstance &instance = pSystem.GetInstance();
 	
-	// end frame
+	// end frame. views have to be submitted even if not rendered too otherwise runtimes
+	// like SteamVR can crash entire OpenGL
 	XrFrameEndInfo endInfo;
 	memset( &endInfo, 0, sizeof( endInfo ) );
 	
@@ -239,52 +351,55 @@ void deoxrSession::EndFrame(){
 	endInfo.environmentBlendMode = XR_ENVIRONMENT_BLEND_MODE_OPAQUE;
 	endInfo.displayTime = pPredictedDisplayTime;
 	
-	XrCompositionLayerProjection layerProjection;
-	memset( &layerProjection, 0, sizeof( layerProjection ) );
-	layerProjection.type = XR_TYPE_COMPOSITION_LAYER_PROJECTION;
-	
 	XrCompositionLayerProjectionView views[ 2 ];
 	memset( &views, 0, sizeof( views ) );
+	
 	views[ 0 ].type = XR_TYPE_COMPOSITION_LAYER_PROJECTION_VIEW;
+	views[ 0 ].subImage.swapchain = pSwapchainLeftEye->GetSwapchain();
+	views[ 0 ].subImage.imageRect.extent.width = pSwapchainLeftEye->GetSize().x;
+	views[ 0 ].subImage.imageRect.extent.height = pSwapchainLeftEye->GetSize().y;
+	views[ 0 ].subImage.imageRect.offset.x = 0;
+	views[ 0 ].subImage.imageRect.offset.y = 0;
+	views[ 0 ].pose = pLeftEyePose;
+	views[ 0 ].fov = pLeftEyeFov;
+	
 	views[ 1 ].type = XR_TYPE_COMPOSITION_LAYER_PROJECTION_VIEW;
+	views[ 1 ].subImage.swapchain = pSwapchainRightEye->GetSwapchain();
+	views[ 1 ].subImage.imageRect.extent.width = pSwapchainRightEye->GetSize().x;
+	views[ 1 ].subImage.imageRect.extent.height = pSwapchainRightEye->GetSize().y;
+	views[ 1 ].subImage.imageRect.offset.x = 0;
+	views[ 1 ].subImage.imageRect.offset.y = 0;
+	views[ 1 ].pose = pRightEyePose;
+	views[ 1 ].fov = pRightEyeFov;
+	
+	XrCompositionLayerProjection layerProjection;
+	memset( &layerProjection, 0, sizeof( layerProjection ) );
+	
+	layerProjection.type = XR_TYPE_COMPOSITION_LAYER_PROJECTION;
+// 	layerProjection.layerFlags = XR_COMPOSITION_LAYER_BLEND_TEXTURE_SOURCE_ALPHA_BIT;
+	layerProjection.layerFlags = 0;
+	layerProjection.space = pSpaceStage->GetSpace();
+	layerProjection.viewCount = 2;
+	layerProjection.views = views;
 	
 	XrCompositionLayerBaseHeader *layers[ 1 ];
+	layers[ 0 ] = ( XrCompositionLayerBaseHeader* )&layerProjection;
 	
-	if( pShouldRender ){
-		views[ 0 ].subImage.swapchain = instance.GetOxr().GetSwapchainLeftEye()->GetSwapchain();
-		views[ 0 ].subImage.imageRect.extent.width = 1668;
-		views[ 0 ].subImage.imageRect.extent.height = 1856;
-		views[ 0 ].subImage.imageRect.offset.x = 0;
-		views[ 0 ].subImage.imageRect.offset.y = 0;
-		views[ 0 ].pose.position;
-		views[ 0 ].pose.orientation;
-		
-		views[ 1 ].subImage.swapchain = instance.GetOxr().GetSwapchainRightEye()->GetSwapchain();
-		views[ 1 ].subImage.imageRect.extent.width = 1668;
-		views[ 1 ].subImage.imageRect.extent.height = 1856;
-		views[ 1 ].subImage.imageRect.offset.x = 0;
-		views[ 1 ].subImage.imageRect.offset.y = 0;
-		views[ 1 ].pose.position;
-		views[ 1 ].pose.orientation;
-		
-		layerProjection.layerFlags = 0;
-		layerProjection.space = instance.GetOxr().GetSpace()->GetSpace();
-		layerProjection.viewCount = 2;
-		layerProjection.views = views;
-		
-		layers[ 0 ] = ( XrCompositionLayerBaseHeader* )&layerProjection;
-		
-		endInfo.layerCount = 1;
-		endInfo.layers = layers;
-		
-			/* temp */ endInfo.layerCount = 0;
-		
-	}else{
-		endInfo.layerCount = 0;
-	}
+	endInfo.layerCount = 1;
+	endInfo.layers = layers;
 	
 	OXR_CHECK( instance.GetOxr(), instance.xrEndFrame( pSession, &endInfo ) );
 	pFrameRunning = false;
+	
+	if( pIsGACOpenGL ){
+		// WARNING SteamVR messes with the current context state causing all future OpenGL
+		//         calls to fail. not sure why SteamVR unsets the current context but it
+		//         breaks everything. i dont know if the spec would actually requires
+		//         runtimes to restore current context if they change it but to work
+		//         around such annoying runtimes the current context is restored to the
+		//         parameters provided by the graphic module
+		RestoreOpenGLCurrent();
+	}
 }
 
 void deoxrSession::SyncActions(){
@@ -299,13 +414,24 @@ void deoxrSession::SyncActions(){
 	
 	syncInfo.type = XR_TYPE_ACTIONS_SYNC_INFO;
 	
-	XrActiveActionSet activeActionSets[ 1 ] = {
-		{ pAttachedActionSet->GetActionSet(), XR_NULL_PATH }
-	};
+	XrActiveActionSet activeActionSets[ 1 ];
+	activeActionSets[ 0 ].actionSet = pAttachedActionSet->GetActionSet();
+	activeActionSets[ 0 ].subactionPath = XR_NULL_PATH;
+	
 	syncInfo.countActiveActionSets = 1;
 	syncInfo.activeActionSets = activeActionSets;
 	
-	OXR_CHECK( instance.GetOxr(), instance.xrSyncActions( pSession, nullptr ) );
+	OXR_CHECK( instance.GetOxr(), instance.xrSyncActions( pSession, &syncInfo ) );
+}
+
+void deoxrSession::RestoreOpenGLCurrent(){
+	#ifdef OS_UNIX
+		pSystem.GetInstance().GetOxr().GetGraphicApiOpenGL().MakeCurrent(
+			pGACOpenGLDisplay, pGACOpenGLDrawable, pGACOpenGLContext );
+		
+	#elif defined OS_W32
+		#error Add Implementation
+	#endif
 }
 
 
@@ -323,17 +449,31 @@ void deoxrSession::pCleanUp(){
 		pPredictedDisplayTime = 0;
 		pPredictedDisplayPeriod = 0;
 		pShouldRender = false;
+		
+		// wait until ready to exit
+		/*
+		instance.GetOxr().LogInfoFormat( "Waiting for exit request to be acknowledged" );
+		pSystem.GetInstance().GetOxr().WaitUntilReadyExit();
+		
+		instance.GetOxr().LogInfoFormat( "Exit request acknowledged" );
+		*/
+		End();
 	}
 	
 	pAttachedActionSet = nullptr;
 	
+	pSwapchainLeftEye = nullptr;
+	pSwapchainRightEye = nullptr;
+	   pSpaceStage = nullptr;
+	
 	if( pSession ){
 		pSystem.GetInstance().xrDestroySession( pSession );
-		pSession = 0;
+		pSession = XR_NULL_HANDLE;
 	}
 	
 	if( pSwapchainFormats ){
 		delete [] pSwapchainFormats;
+		pSwapchainFormats = nullptr;
 	}
 }
 

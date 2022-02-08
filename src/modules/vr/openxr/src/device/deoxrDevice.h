@@ -116,11 +116,17 @@ public:
 	/** Profile. */
 	inline const deoxrDeviceProfile &GetProfile() const{ return pProfile; }
 	
-	/** Pose action handle. */
+	/** Pose action. */
 	inline deoxrAction *GetActionPose() const{ return pActionPose; }
+	
+	/** Set pose action. */
+	void SetActionPose( deoxrAction *action );
 	
 	/** Hand pose action handle. */
 	inline deoxrAction *GetActionHandPose() const{ return pActionHandPose; }
+	
+	/** Set hand pose action handle. */
+	void SetActionHandPose( deoxrAction *action );
 	
 	
 	
