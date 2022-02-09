@@ -224,7 +224,12 @@ void deoxrSession::End(){
 	EndFrame();
 	pAttachedActionSet = nullptr;
 	
-	OXR_CHECK( instance.GetOxr(), instance.xrEndSession( pSession ) );
+	if( ! instance.GetOxr().GetPreventDeletion() ){
+		// prevent deletion of graphic api resources that are typically linked to another
+		// thread. this will cause memory leaks but better leak than crash if the runtime
+		// is buggy or not very resiliant (like SteamVR for example)
+		OXR_CHECK( instance.GetOxr(), instance.xrEndSession( pSession ) );
+	}
 	
 	pRunning = false;
 	pPredictedDisplayTime = 0;
@@ -253,7 +258,7 @@ void deoxrSession::AttachActionSet( deoxrActionSet *actionSet ){
 	pAttachedActionSet = actionSet;
 }
 
-void deoxrSession::BeginFrame(){
+void deoxrSession::WaitFrame(){
 	if( ! pRunning || pFrameRunning ){
 		return;
 	}
@@ -270,6 +275,14 @@ void deoxrSession::BeginFrame(){
 	pPredictedDisplayTime = state.predictedDisplayTime;
 	pPredictedDisplayPeriod = state.predictedDisplayPeriod;
 	pShouldRender = state.shouldRender;
+}
+
+void deoxrSession::BeginFrame(){
+	if( ! pRunning || pFrameRunning ){
+		return;
+	}
+	
+	const deoxrInstance &instance = pSystem.GetInstance();
 	
 	// begin frame
 	OXR_CHECK( instance.GetOxr(), instance.xrBeginFrame( pSession, nullptr ) );

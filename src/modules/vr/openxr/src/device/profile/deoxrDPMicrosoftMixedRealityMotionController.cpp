@@ -70,7 +70,7 @@ void deoxrDPMicrosoftMixedRealityMotionController::SuggestBindings(){
 	// - /input/aim/pose
 	// - /output/haptic
 	
-	const int bindingCount = 13 * 2;
+	const int bindingCount = 11 * 2;
 	deoxrInstance::sSuggestBinding bindings[ bindingCount ];
 	deoxrInstance::sSuggestBinding *b = bindings;
 	
@@ -90,12 +90,10 @@ void deoxrDPMicrosoftMixedRealityMotionController::SuggestBindings(){
 		
 		pAdd( b, deVROpenXR::eiaButtonPrimaryPress, basePath + "/input/menu/click" );
 		
-		pAdd( b, deVROpenXR::eiaJoystickAnalog, basePath + "/input/thumbstick/x" );
-		pAdd( b, deVROpenXR::eiaJoystickAnalog, basePath + "/input/thumbstick/y" );
+		pAdd( b, deVROpenXR::eiaJoystickAnalog, basePath + "/input/thumbstick" );
 		pAdd( b, deVROpenXR::eiaJoystickPress, basePath + "/input/thumbstick/click" );
 		
-		pAdd( b, deVROpenXR::eiaTrackpadAnalog, basePath + "/input/trackpad/x" );
-		pAdd( b, deVROpenXR::eiaTrackpadAnalog, basePath + "/input/trackpad/y" );
+		pAdd( b, deVROpenXR::eiaTrackpadAnalog, basePath + "/input/trackpad" );
 		pAdd( b, deVROpenXR::eiaTrackpadPress, basePath + "/input/trackpad/click" );
 		pAdd( b, deVROpenXR::eiaTrackpadTouch, basePath + "/input/trackpad/touch" );
 		

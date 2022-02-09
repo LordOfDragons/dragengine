@@ -38,12 +38,24 @@ public:
 	/** Reference. */
 	typedef deTObjectReference<deoxrSystem> Ref;
 	
+	/** System. */
+	enum eSystem{
+		/** Unknown system. */
+		esUnknown,
+		
+		/** SteamVR. */
+		esSteamVR
+	};
+	
 	
 	
 private:
 	deoxrInstance &pInstance;
 	
 	XrSystemId pSystemId;
+	
+	decString pSystemName;
+	eSystem pSystem;
 	
 	decPoint pMaxRenderImageSize;
 	int pMaxLayerCount;
@@ -81,6 +93,12 @@ public:
 	
 	/** System Id. */
 	inline XrSystemId GetSystemId() const{ return pSystemId; }
+	
+	/** System name. */
+	inline const decString &GetSystemName() const{ return pSystemName; }
+	
+	/** System. */
+	inline eSystem GetSystem() const{ return pSystem; }
 	
 	/** Maximum render image size (swap chain image size). */
 	inline const decPoint &GetMaxRenderImageSize() const{ return pMaxRenderImageSize; }

@@ -99,6 +99,9 @@ private:
 	deCamera::Ref pCamera;
 	deMutex pMutexOpenXR;
 	XrSessionState pSessionState;
+	bool pShutdownRequested;
+	bool pPreventDeletion;
+	deoxrSystem::eSystem pLastDetectedSystem;
 	
 	
 	
@@ -154,6 +157,18 @@ public:
 	
 	/** Session swapchain for eye or nullptr. */
 	deoxrSwapchain *GetEyeSwapchain( eEye eye ) const;
+	
+	/** Session state. */
+	inline XrSessionState GetSessionState() const{ return pSessionState; }
+	
+	/** Shutdown requested. */
+	inline bool GetShutdownRequested() const{ return pShutdownRequested; }
+	
+	/** Prevent deletion. */
+	inline bool GetPreventDeletion() const{ return pPreventDeletion; }
+	
+	/** Last detected system. */
+	deoxrSystem::eSystem GetLastDetectedSystem() const{ return pLastDetectedSystem; }
 	/*@}*/
 	
 	
@@ -318,6 +333,7 @@ public:
 	
 	
 private:
+	void pRealShutdown();
 	void pCreateActionSet();
 	void pCreateDeviceProfiles();
 	void pSuggestBindings();

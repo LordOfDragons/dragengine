@@ -101,12 +101,10 @@ void deoxrDPMicrosoftXboxController::SuggestBindings(){
 		
 		pAdd( b, deVROpenXR::eiaButtonPrimaryPress, basePath + "/input/menu/click" );
 		
-		pAdd( b, deVROpenXR::eiaJoystickAnalog, basePath + "/input/thumbstick/x" );
-		pAdd( b, deVROpenXR::eiaJoystickAnalog, basePath + "/input/thumbstick/y" );
+		pAdd( b, deVROpenXR::eiaJoystickAnalog, basePath + "/input/thumbstick" );
 		pAdd( b, deVROpenXR::eiaJoystickPress, basePath + "/input/thumbstick/click" );
 		
-		pAdd( b, deVROpenXR::eiaTrackpadAnalog, basePath + "/input/trackpad/x" );
-		pAdd( b, deVROpenXR::eiaTrackpadAnalog, basePath + "/input/trackpad/y" );
+		pAdd( b, deVROpenXR::eiaTrackpadAnalog, basePath + "/input/trackpad" );
 		pAdd( b, deVROpenXR::eiaTrackpadPress, basePath + "/input/trackpad/click" );
 		pAdd( b, deVROpenXR::eiaTrackpadTouch, basePath + "/input/trackpad/touch" );
 		

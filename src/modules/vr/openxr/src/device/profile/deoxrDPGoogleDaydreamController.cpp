@@ -64,7 +64,7 @@ void deoxrDPGoogleDaydreamController::SuggestBindings(){
 	// - /input/grip/pose
 	// - /input/aim/pose
 	
-	const int bindingCount = 7 * 2;
+	const int bindingCount = 6 * 2;
 	deoxrInstance::sSuggestBinding bindings[ bindingCount ];
 	deoxrInstance::sSuggestBinding *b = bindings;
 	
@@ -80,8 +80,7 @@ void deoxrDPGoogleDaydreamController::SuggestBindings(){
 		pAdd( b, deVROpenXR::eiaTriggerPress, basePath + "/input/select/click" );
 		pAdd( b, deVROpenXR::eiaTriggerAnalog, basePath + "/input/select/click" );
 		
-		pAdd( b, deVROpenXR::eiaTrackpadAnalog, basePath + "/input/trackpad/x" );
-		pAdd( b, deVROpenXR::eiaTrackpadAnalog, basePath + "/input/trackpad/y" );
+		pAdd( b, deVROpenXR::eiaTrackpadAnalog, basePath + "/input/trackpad" );
 		pAdd( b, deVROpenXR::eiaTrackpadPress, basePath + "/input/trackpad/click" );
 		pAdd( b, deVROpenXR::eiaTrackpadTouch, basePath + "/input/trackpad/touch" );
 	}

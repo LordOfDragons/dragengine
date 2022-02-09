@@ -66,7 +66,7 @@ void deoxrDPOculusGoController::SuggestBindings(){
 	// - /input/grip/pose
 	// - /input/aim/pose
 	
-	const int bindingCount = 9 * 2;
+	const int bindingCount = 8 * 2;
 	deoxrInstance::sSuggestBinding bindings[ bindingCount ];
 	deoxrInstance::sSuggestBinding *b = bindings;
 	
@@ -86,8 +86,7 @@ void deoxrDPOculusGoController::SuggestBindings(){
 		
 		pAdd( b, deVROpenXR::eiaButtonSecondaryPress, basePath + "/input/system/click" );
 		
-		pAdd( b, deVROpenXR::eiaTrackpadAnalog, basePath + "/input/trackpad/x" );
-		pAdd( b, deVROpenXR::eiaTrackpadAnalog, basePath + "/input/trackpad/y" );
+		pAdd( b, deVROpenXR::eiaTrackpadAnalog, basePath + "/input/trackpad" );
 		pAdd( b, deVROpenXR::eiaTrackpadPress, basePath + "/input/trackpad/click" );
 		pAdd( b, deVROpenXR::eiaTrackpadTouch, basePath + "/input/trackpad/touch" );
 	}

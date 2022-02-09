@@ -101,6 +101,14 @@ deoxrLoader::~deoxrLoader(){
 //////////////////////
 
 void deoxrLoader::pCleanUp(){
+	if( pOxr.GetLastDetectedSystem() == deoxrSystem::esSteamVR ){
+		// SteamVR hangs in a dead-loop on pthrad condition releasing. there is no
+		// known workaround for this bug. not calling dlclose pushes the deadlock
+		// further back but does not work. when will they fix this mess?
+// 		pOxr.LogWarnFormat( "SteamVR Bug Workaround: Not closing library to avoid deadlock" );
+// 		return;
+	}
+	
 	if( pLibHandle ){
 		#ifdef OS_BEOS
 		unload_add_on( pLibHandle );

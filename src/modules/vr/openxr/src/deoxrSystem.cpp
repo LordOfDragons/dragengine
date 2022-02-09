@@ -36,6 +36,7 @@
 deoxrSystem::deoxrSystem( deoxrInstance &instance ) :
 pInstance( instance ),
 pSystemId( XR_NULL_SYSTEM_ID ),
+pSystem( esUnknown ),
 pMaxLayerCount( 0 ),
 pSupportsOrientationTracking( false ),
 pSupportsPositionTracking( false )
@@ -58,13 +59,21 @@ pSupportsPositionTracking( false )
 		
 		OXR_CHECK( oxr, instance.xrGetSystemProperties( instance.GetInstance(), pSystemId, &sysProps ) );
 		
+		pSystemName = sysProps.systemName;
 		pMaxRenderImageSize.x = sysProps.graphicsProperties.maxSwapchainImageWidth;
 		pMaxRenderImageSize.y = sysProps.graphicsProperties.maxSwapchainImageHeight;
 		pMaxLayerCount = sysProps.graphicsProperties.maxLayerCount;
 		pSupportsOrientationTracking = sysProps.trackingProperties.orientationTracking;
 		pSupportsPositionTracking = sysProps.trackingProperties.positionTracking;
 		
-		instance.GetOxr().LogInfoFormat( "System name: %s", sysProps.systemName );
+		if( pSystemName.FindString( "SteamVR" ) != -1 ){
+			pSystem = esSteamVR;
+			
+		}else{
+			pSystem = esUnknown;
+		}
+		
+		instance.GetOxr().LogInfoFormat( "System name: %s", pSystemName.GetString() );
 		instance.GetOxr().LogInfoFormat( "Maximum render image size: %d x %d",
 			pMaxRenderImageSize.x, pMaxRenderImageSize.y );
 		instance.GetOxr().LogInfoFormat( "Maximum layer count: %d", pMaxLayerCount);

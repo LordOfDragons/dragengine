@@ -85,7 +85,10 @@ deBaseVRModule( loadableModule ),
 pDevices( *this ),
 pGraphicApiOpenGL( *this ),
 pLoader( nullptr ),
-pSessionState( XR_SESSION_STATE_UNKNOWN )
+pSessionState( XR_SESSION_STATE_UNKNOWN ),
+pShutdownRequested( false ),
+pPreventDeletion( false ),
+pLastDetectedSystem( deoxrSystem::esUnknown )
 {
 	memset( pActions, 0, sizeof( pActions ) );
 }
@@ -160,6 +163,8 @@ bool deVROpenXR::Init(){
 	const bool enableDebug = true;
 	
 	pSessionState = XR_SESSION_STATE_UNKNOWN;
+	pShutdownRequested = false;
+	pPreventDeletion = false;
 	
 	try{
 		pLoader = new deoxrLoader( *this );
@@ -185,7 +190,6 @@ bool deVROpenXR::Init(){
 		LogInfoFormat( "Runtime Library: %s", pLoader->GetRuntimeLibraryPath().GetString() );
 	}
 	
-// 	LogInfoFormat( "HMD Present: %s", vr::VR_IsHmdPresent() ? "Yes" : "No" );
 	return true;
 }
 
@@ -195,12 +199,20 @@ void deVROpenXR::CleanUp(){
 	const deMutexGuard lock( pMutexOpenXR );
 	SetCamera( nullptr );
 	
+	pDeviceProfiles.RemoveAll(); // has to come before clearing devices
 	pDevices.Clear();
-	pDeviceProfiles.RemoveAll();
 	
 	memset( pActions, 0, sizeof( pActions ) );
 	pActionSet = nullptr;
 	
+	// prevent deletion of graphic api resources that are typically linked to another
+	// thread. this will cause memory leaks but better leak than crash if the runtime
+	// is buggy or not very resiliant (like SteamVR for example)
+	pPreventDeletion = true;
+	pSession = nullptr;
+	
+	// everything below here should be safe
+	pSystem = nullptr;
 	pInstance = nullptr;
 	
 	if( pLoader ){
@@ -223,30 +235,37 @@ bool deVROpenXR::RuntimeUsable(){
 }
 
 void deVROpenXR::StartRuntime(){
+	deMutexGuard lock( pMutexOpenXR );
 	if( ! pInstance ){
 		DETHROW_INFO( deeInvalidAction, "runtime not found" );
 	}
 	
 	LogInfo( "Start Runtime" );
+	pShutdownRequested = false;
 	
 	try{
-		const deMutexGuard lock( pMutexOpenXR );
 		pSystem.TakeOver( new deoxrSystem( pInstance ) );
+		pLastDetectedSystem = pSystem->GetSystem();
 		
 	}catch( const deException &e ){
 		LogException( e );
+		lock.Unlock(); // StopRuntime does lock
 		StopRuntime();
 		throw;
 	}
 }
 
 void deVROpenXR::StopRuntime(){
-	LogInfo( "Shutdown runtime" );
+	// we have to delay this since this is the main thread and destroying session
+	// does destroy graphic api resources which typically are linked to another thread
+	LogInfo( "Shutdown runtime requested" );
 	const deMutexGuard lock( pMutexOpenXR );
-	pSession = nullptr;
-	pSystem = nullptr;
 	
-	pDeviceProfiles.CheckAllAttached();
+	pActionSet = nullptr;
+	
+	if( pSession ){
+		pShutdownRequested = true;
+	}
 }
 
 void deVROpenXR::SetCamera( deCamera *camera ){
@@ -605,13 +624,20 @@ void deVROpenXR::BeginFrame(){
 		}
 	}
 	
-	pSession->BeginFrame();
+	pSession->WaitFrame();
+	
+	if( pShutdownRequested ){
+		pRealShutdown();
+		
+	}else{
+		pSession->BeginFrame();
+	}
 }
 
 int deVROpenXR::AcquireEyeViewImage( eEye eye ){
 	const deMutexGuard lock( pMutexOpenXR );
 	deoxrSwapchain * const swapchain = GetEyeSwapchain( eye );
-	if( ! swapchain ){
+	if( ! swapchain || ! pSession->GetFrameRunning() ){
 		return -1;
 	}
 	
@@ -622,7 +648,7 @@ int deVROpenXR::AcquireEyeViewImage( eEye eye ){
 void deVROpenXR::ReleaseEyeViewImage( eEye eye ){
 	const deMutexGuard lock( pMutexOpenXR );
 	deoxrSwapchain * const swapchain = GetEyeSwapchain( eye );
-	if( swapchain ){
+	if( swapchain || ! pSession->GetFrameRunning() ){
 		swapchain->ReleaseImage();
 	}
 }
@@ -643,6 +669,18 @@ void deVROpenXR::EndFrame(){
 
 // Private Functions
 //////////////////////
+
+void deVROpenXR::pRealShutdown(){
+	// WARNING caller has to hold mutex lock while calling function
+	LogInfo( "Shutdown runtime" );
+	
+	pSession = nullptr;
+	pSystem = nullptr;
+	
+	pDeviceProfiles.CheckAllAttached();
+	
+	pShutdownRequested = false;
+}
 
 void deVROpenXR::pCreateActionSet(){
 	pActionSet.TakeOver( new deoxrActionSet( pInstance ) );

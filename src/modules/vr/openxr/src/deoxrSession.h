@@ -131,6 +131,9 @@ public:
 	/** Attach action set. */
 	void AttachActionSet( deoxrActionSet *actionSet );
 	
+	/** Wait frame. */
+	void WaitFrame();
+	
 	/** Begin frame. */
 	void BeginFrame();
 	
