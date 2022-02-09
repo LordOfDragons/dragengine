@@ -460,9 +460,12 @@ void deVROpenXR::ProcessEvents(){
 	// SteamVR crashes if you try to do it earlier instead of returning an error
 	if( pSessionState == XR_SESSION_STATE_FOCUSED ){
 		pSession->SyncActions();
-		pDevices.TrackDeviceStates();
-			// copy state from mutex protected to non mutex protected memory
 	}
+	
+	// but we still want to be able to receive head movement. requires tracking the
+	// device states even though actions are not allowed to be synced
+	pDevices.TrackDeviceStates();
+		// copy state from mutex protected to non mutex protected memory
 }
 
 
