@@ -32,8 +32,10 @@
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/common/file/decDiskFileReader.h>
+#include <dragengine/common/utils/decTimer.h>
 #include <dragengine/filesystem/deVFSDiskDirectory.h>
 #include <dragengine/systems/modules/deBaseModule.h>
+#include <dragengine/threading/deThread.h>
 
 #ifdef OS_W32
 #include <dragengine/app/deOSWindows.h>
@@ -105,8 +107,34 @@ void deoxrLoader::pCleanUp(){
 		// SteamVR hangs in a dead-loop on pthrad condition releasing. there is no
 		// known workaround for this bug. not calling dlclose pushes the deadlock
 		// further back but does not work. when will they fix this mess?
-// 		pOxr.LogWarnFormat( "SteamVR Bug Workaround: Not closing library to avoid deadlock" );
-// 		return;
+#if 0
+#ifdef HAS_LIB_DL
+		if( pLibHandle ){
+			pOxr.LogWarnFormat( "SteamVR dlcose Bug Workaround" );
+// 			return;
+			class SteamVRdlcloseBugWorkaround : public deThread{
+				void *pLibrary;
+				
+			public:
+				SteamVRdlcloseBugWorkaround( void *library ) : pLibrary( library ){}
+				
+				void Run(){
+					try{
+						dlclose( pLibrary );
+					}catch( ... ){}
+				}
+			} workaround( pLibHandle );
+			
+			workaround.Start();
+			
+			decTimer timer;
+			while( workaround.IsRunning() && timer.GetElapsedTime() > 1.5f );
+			try{
+				workaround.Stop();
+			}catch( ... ){}
+		}
+#endif
+#endif
 	}
 	
 	if( pLibHandle ){
