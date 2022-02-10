@@ -20,6 +20,7 @@
  */
 
 #include <stdlib.h>
+#include <string.h>
 
 #include "deoxrDevice.h"
 #include "deoxrDeviceAxis.h"
@@ -172,6 +173,9 @@ void deoxrDeviceAxis::UpdateValue( float value ){
 }
 
 void deoxrDeviceAxis::TrackState(){
+	const deoxrInstance &instance = pDevice.GetOxr().GetInstance();
+	const deoxrSession &session = pDevice.GetOxr().GetSession();
+	
 	switch( pType ){
 	case deInputDeviceAxis::eatFingerBend:
 // 		UpdateValue( decMath::linearStep( pDevice.GetSkeletalSummaryData().flFingerCurl[ pFinger ],
@@ -183,24 +187,29 @@ void deoxrDeviceAxis::TrackState(){
 // 			pMinimum, pMaximum, -1.0f, 1.0f ) );
 		break;
 		
-	default:{
-		/*
-		vr::IVRInput &vrinput = pDevice.GetOvr().GetVRInput();
+	case deInputDeviceAxis::eatStick:
+	case deInputDeviceAxis::eatTouchPad:
+		// has to be read as Vector2f
+		break;
 		
-		vr::InputAnalogActionData_t dataAnalog;
-		vr::EVRInputError error = vrinput.GetAnalogActionData( pActionAnalogHandle,
-			&dataAnalog, sizeof( dataAnalog ), pDevice.GetInputValueHandle() );
-		
-		if( error == vr::VRInputError_None ){
-			UpdateValue( decMath::linearStep( ( &dataAnalog.x )[ pComponent ],
-				pMinimum, pMaximum, -1.0f, 1.0f ) );
+	default:
+		if( pActionAnalog ){
+			XrActionStateGetInfo getInfo;
+			memset( &getInfo, 0, sizeof( getInfo ) );
+			getInfo.type = XR_TYPE_ACTION_STATE_GET_INFO;
+			getInfo.action = pActionAnalog->GetAction();
+			getInfo.subactionPath = pDevice.GetSubactionPath();
 			
-		}else{
-			//UpdateValue( pCenterValue );
-			// keep the last known value
+			XrActionStateFloat state;
+			memset( &state, 0, sizeof( state ) );
+			state.type = XR_TYPE_ACTION_STATE_FLOAT;
+			
+			if( XR_SUCCEEDED( instance.xrGetActionStateFloat( session.GetSession(), &getInfo, &state ) )
+			&& state.isActive ){
+				UpdateValue( decMath::linearStep( state.currentState, pMinimum, pMaximum, -1.0f, 1.0f ) );
+			}
 		}
-		*/
-		}break;
+		break;
 	}
 }
 

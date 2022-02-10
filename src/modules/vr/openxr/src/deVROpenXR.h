@@ -128,16 +128,16 @@ public:
 	inline const deoxrDeviceManager &GetDevices() const{ return pDevices; }
 	
 	/** Instance or nullptr. */
-	inline deoxrInstance *GetInstance() const{ return pInstance; }
+	inline const deoxrInstance::Ref &GetInstance() const{ return pInstance; }
 	
 	/** System or nullptr. */
-	inline deoxrSystem *GetSystem() const{ return pSystem; }
+	inline const deoxrSystem::Ref &GetSystem() const{ return pSystem; }
 	
 	/** Session or nullptr. */
-	inline deoxrSession *GetSession() const{ return pSession; }
+	inline const deoxrSession::Ref &GetSession() const{ return pSession; }
 	
 	/** Action set or nullptr. */
-	inline deoxrActionSet *GetActionSet() const{ return pActionSet; }
+	inline const deoxrActionSet::Ref &GetActionSet() const{ return pActionSet; }
 	
 	/** Action. */
 	inline deoxrAction *GetAction( eInputActions inputAction ) const{ return pActions[ inputAction ]; }

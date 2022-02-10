@@ -82,6 +82,10 @@ void deoxrDevice::SetActionHandPose( deoxrAction *action ){
 	pActionHandPose = action;
 }
 
+void deoxrDevice::SetSubactionPath( const deoxrPath &path ){
+	pSubactionPath = path;
+}
+
 void deoxrDevice::SetType( deInputDevice::eDeviceTypes type ){
 	pType = type;
 }
@@ -140,6 +144,22 @@ void deoxrDevice::AddButton( deoxrDeviceButton *button ){
 	pButtons.Add( button );
 }
 
+void deoxrDevice::AddButton( deInputDeviceButton::eButtonTypes type, deoxrDeviceComponent *component,
+deVROpenXR::eInputActions actionPress, deVROpenXR::eInputActions actionTouch,
+const char *name, const char *id, const char *displayText ){
+	const deoxrDeviceButton::Ref button( deoxrDeviceButton::Ref::New( new deoxrDeviceButton( *this ) ) );
+	button->SetID( id );
+	button->SetName( name );
+	button->SetType( type );
+	button->SetDisplayText( displayText );
+	button->SetInputDeviceComponent( component );
+	button->SetActionPress( pOxr.GetAction( actionPress ) );
+	button->SetActionTouch( pOxr.GetAction( actionTouch ) );
+	
+	button->SetIndex( pButtons.GetCount() );
+	pButtons.Add( button );
+}
+
 deoxrDeviceButton *deoxrDevice::GetButtonAt( int index ) const{
 	return ( deoxrDeviceButton* )pButtons.GetAt( index );
 }
@@ -183,6 +203,88 @@ void deoxrDevice::AddAxis( deoxrDeviceAxis *axis ){
 		DETHROW( deeNullPointer );
 	}
 	pAxes.Add( axis );
+}
+
+void deoxrDevice::AddAxisTrigger( deInputDeviceAxis::eAxisTypes type, deoxrDeviceComponent *component,
+deVROpenXR::eInputActions actionAnalog, const char *name, const char *id, const char *displayText ){
+	const deoxrDeviceAxis::Ref axis( deoxrDeviceAxis::Ref::New( new deoxrDeviceAxis( *this ) ) );
+	axis->SetActionAnalog( pOxr.GetAction( actionAnalog ) );
+	axis->SetType( type );
+	axis->SetRange( 0.0f, 1.0f );
+	axis->SetCenter( -1.0f );
+	axis->SetValue( -1.0f );
+	axis->SetName( name );
+	axis->SetID( id );
+	axis->SetDisplayText( displayText );
+	axis->SetIndex( pAxes.GetCount() );
+	axis->SetInputDeviceComponent( component );
+	pAxes.Add( axis );
+}
+
+void deoxrDevice::AddAxisFinger( deInputDeviceAxis::eAxisTypes type, deoxrDeviceComponent *component,
+int finger, const char *name, const char *id, const char *displayText ){
+	const deoxrDeviceAxis::Ref axis( deoxrDeviceAxis::Ref::New( new deoxrDeviceAxis( *this ) ) );
+	axis->SetType( type );
+	axis->SetRange( 0.0f, 1.0f );
+	axis->SetCenter( -1.0f );
+	axis->SetValue( -1.0f );
+	axis->SetName( name );
+	axis->SetID( id );
+	axis->SetDisplayText( displayText );
+	axis->SetIndex( pAxes.GetCount() );
+	axis->SetFinger( finger );
+	axis->SetInputDeviceComponent( component );
+	pAxes.Add( axis );
+}
+
+void deoxrDevice::AddAxesJoystick( deoxrDeviceComponent *component,
+deVROpenXR::eInputActions actionAnalog, const char *name, const char *id, const char *displayText ){
+	static const char *nameAxis[ 2 ] = { "X", "Y" };
+	static const char *idAxis[ 2 ] = { "x", "y" };
+	deoxrDeviceAxis::Ref axis;
+	decString text;
+	int i;
+	
+	for( i=0; i<2; i++ ){
+		axis.TakeOver( deoxrDeviceAxis::Ref::New( new deoxrDeviceAxis( *this ) ) );
+		axis->SetActionAnalog( pOxr.GetAction( actionAnalog ) );
+		axis->SetType( deInputDeviceAxis::eatStick );
+		axis->SetComponent( i );
+		text.Format( "%s %s", name, nameAxis[ i ] );
+		axis->SetName( text );
+		text.Format( "%s%s", id, idAxis[ i ] );
+		axis->SetID( text );
+		axis->SetDisplayText( displayText );
+		axis->SetIndex( pAxes.GetCount() );
+		axis->SetDeadZone( axis->GetResolution() );
+		axis->SetInputDeviceComponent( component );
+		pAxes.Add( axis );
+	}
+}
+
+void deoxrDevice::AddAxesTrackpad( deoxrDeviceComponent *component,
+deVROpenXR::eInputActions actionAnalog, const char *name, const char *id, const char *displayText ){
+	static const char *nameAxis[ 2 ] = { "X", "Y" };
+	static const char *idAxis[ 2 ] = { "x", "y" };
+	deoxrDeviceAxis::Ref axis;
+	decString text;
+	int i;
+	
+	for( i=0; i<2; i++ ){
+		axis.TakeOver( deoxrDeviceAxis::Ref::New( new deoxrDeviceAxis( *this ) ) );
+		axis->SetActionAnalog( pOxr.GetAction( actionAnalog ) );
+		axis->SetType( deInputDeviceAxis::eatTouchPad );
+		axis->SetComponent( i );
+		text.Format( "%s %s", name, nameAxis[ i ] );
+		axis->SetName( text );
+		text.Format( "%s%s", id, idAxis[ i ] );
+		axis->SetID( text );
+		axis->SetDisplayText( displayText );
+		axis->SetIndex( pAxes.GetCount() );
+		axis->SetDeadZone( axis->GetResolution() );
+		axis->SetInputDeviceComponent( component );
+		pAxes.Add( axis );
+	}
 }
 
 deoxrDeviceAxis *deoxrDevice::GetAxisAt( int index ) const{
@@ -256,6 +358,18 @@ void deoxrDevice::AddComponent( deoxrDeviceComponent *component ){
 		DETHROW( deeNullPointer );
 	}
 	pComponents.Add( component );
+}
+
+deoxrDeviceComponent *deoxrDevice::AddComponent( deInputDeviceComponent::eComponentTypes type,
+const char *name, const char *id, const char *displayText ){
+	const deoxrDeviceComponent::Ref component( deoxrDeviceComponent::Ref::New( new deoxrDeviceComponent( *this ) ) );
+	component->SetID( id );
+	component->SetName( name );
+	component->SetType( type );
+	component->SetDisplayText( displayText );
+	component->SetIndex( pComponents.GetCount() );
+	pComponents.Add( component );
+	return component;
 }
 
 deoxrDeviceComponent *deoxrDevice::GetComponentAt( int index ) const{
@@ -420,6 +534,18 @@ void deoxrDevice::TrackStates(){
 			pPoseDevice.SetLinearVelocity( session->GetHeadLinearVelocity() );
 			pPoseDevice.SetAngularVelocity( session->GetHeadAngularVelocity() );
 		}
+	}
+	
+	if( pActionPose ){
+		/*
+		XrActionStateGetInfo getInfo;
+		memset( &getInfo, 0, sizeof( getInfo ) );
+		getInfo.type = XR_TYPE_ACTION_STATE_GET_INFO;
+		getInfo.action = pActionPose->GetAction();
+		getInfo.subactionPath = pSubactionPath;
+		
+		hrmp... we need an ActionSpace to get the pose... more complicated things
+		*/
 	}
 	
 #if 0
@@ -781,176 +907,6 @@ void deoxrDevice::pUpdateParametersTracker(){
 	pOxr.GetVRInput().GetInputSourceHandle( pInputValuePath, &pInputValueHandle );
 	//pOxr.LogInfoFormat("Tracker: path(%s) handle(%lu) error(%d)", pInputValuePath.GetString(), pInputValueHandle, inputError );
 #endif
-}
-
-deoxrDeviceComponent *deoxrDevice::pAddComponent( deInputDeviceComponent::eComponentTypes type,
-const char *name, const char *id, const char *displayText ){
-	const deoxrDeviceComponent::Ref component( deoxrDeviceComponent::Ref::New( new deoxrDeviceComponent( *this ) ) );
-	component->SetID( id );
-	component->SetName( name );
-	component->SetType( type );
-	component->SetDisplayText( displayText );
-	component->SetIndex( pComponents.GetCount() );
-	pComponents.Add( component );
-	return component;
-}
-
-int deoxrDevice::pAddButton( deInputDeviceButton::eButtonTypes type, deoxrDeviceComponent *component,
-deVROpenXR::eInputActions actionPress, deVROpenXR::eInputActions actionTouch,
-const char *name, const char *id, const char *displayText ){
-	/*
-	vr::IVRInput &vrinput = pOxr.GetVRInput();
-	vr::VRActionHandle_t actionHandle = pOxr.GetActionHandle( actionPress );
-	vr::InputDigitalActionData_t dataDigital;
-	
-	vr::EVRInputError inputError = vrinput.GetDigitalActionData( actionHandle,
-		&dataDigital, sizeof( dataDigital ), pInputValueHandle );
-	if( inputError != vr::VRInputError_None ){
-		return -1;
-	}
-	*/
-	
-	const deoxrDeviceButton::Ref button( deoxrDeviceButton::Ref::New( new deoxrDeviceButton( *this ) ) );
-	button->SetID( id );
-	/*
-	button->SetActionPressHandle( actionHandle );
-	
-	actionHandle = pOxr.GetActionHandle( actionTouch );
-	inputError = vrinput.GetDigitalActionData( actionHandle,
-		&dataDigital, sizeof( dataDigital ), pInputValueHandle );
-	if( inputError == vr::VRInputError_None ){
-		button->SetActionTouchHandle( actionHandle );
-	}
-	*/
-	
-	button->SetName( name );
-	button->SetType( type );
-	button->SetDisplayText( displayText );
-	button->SetInputDeviceComponent( component );
-	
-	button->SetIndex( pButtons.GetCount() );
-	pButtons.Add( button );
-	return pButtons.GetCount() - 1;
-}
-
-int deoxrDevice::pAddAxisTrigger( deInputDeviceAxis::eAxisTypes type,
-deVROpenXR::eInputActions actionAnalog, const char *name, const char *id, const char *displayText ){
-	/*
-	vr::IVRInput &vrinput = pOxr.GetVRInput();
-	vr::VRActionHandle_t actionHandle = pOxr.GetActionHandle( actionAnalog );
-	
-	vr::InputAnalogActionData_t dataAnalog;
-	vr::EVRInputError inputError = vrinput.GetAnalogActionData( actionHandle,
-		&dataAnalog, sizeof( dataAnalog ), pInputValueHandle );
-	if( inputError != vr::VRInputError_None ){
-		return -1;
-	}
-	*/
-	
-	const deoxrDeviceAxis::Ref axis( deoxrDeviceAxis::Ref::New( new deoxrDeviceAxis( *this ) ) );
-// 	axis->SetActionAnalogHandle( actionHandle );
-	axis->SetType( type );
-	axis->SetRange( 0.0f, 1.0f );
-	axis->SetCenter( -1.0f );
-	axis->SetValue( -1.0f );
-	axis->SetName( name );
-	axis->SetID( id );
-	axis->SetDisplayText( displayText );
-	axis->SetIndex( pAxes.GetCount() );
-	pAxes.Add( axis );
-	return pAxes.GetCount() - 1;
-}
-
-void deoxrDevice::pAddAxisFinger( deInputDeviceAxis::eAxisTypes type, deoxrDeviceComponent *component,
-int finger, const char *name, const char *id, const char *displayText ){
-	const deoxrDeviceAxis::Ref axis( deoxrDeviceAxis::Ref::New( new deoxrDeviceAxis( *this ) ) );
-	axis->SetType( type );
-	axis->SetRange( 0.0f, 1.0f );
-	axis->SetCenter( -1.0f );
-	axis->SetValue( -1.0f );
-	axis->SetName( name );
-	axis->SetID( id );
-	axis->SetDisplayText( displayText );
-	axis->SetIndex( pAxes.GetCount() );
-	axis->SetFinger( finger );
-	axis->SetInputDeviceComponent( component );
-	pAxes.Add( axis );
-}
-
-int deoxrDevice::pAddAxesJoystick( deVROpenXR::eInputActions actionAnalog,
-const char *name, const char *id, const char *displayText ){
-	/*
-	vr::IVRInput &vrinput = pOxr.GetVRInput();
-	vr::VRActionHandle_t actionHandle = pOxr.GetActionHandle( actionAnalog );
-	vr::InputAnalogActionData_t dataAnalog;
-	
-	vr::EVRInputError inputError = vrinput.GetAnalogActionData( actionHandle,
-		&dataAnalog, sizeof( dataAnalog ), pInputValueHandle );
-	if( inputError != vr::VRInputError_None ){
-		return -1;
-	}
-	*/
-	
-	static const char *nameAxis[ 2 ] = { "X", "Y" };
-	static const char *idAxis[ 2 ] = { "x", "y" };
-	deoxrDeviceAxis::Ref axis;
-	decString text;
-	int i;
-	
-	for( i=0; i<2; i++ ){
-		axis.TakeOver( deoxrDeviceAxis::Ref::New( new deoxrDeviceAxis( *this ) ) );
-// 		axis->SetActionAnalogHandle( actionHandle );
-		axis->SetType( deInputDeviceAxis::eatStick );
-		axis->SetComponent( i );
-		text.Format( "%s %s", name, nameAxis[ i ] );
-		axis->SetName( text );
-		text.Format( "%s%s", id, idAxis[ i ] );
-		axis->SetID( text );
-		axis->SetDisplayText( displayText );
-		axis->SetIndex( pAxes.GetCount() );
-		axis->SetDeadZone( axis->GetResolution() );
-		pAxes.Add( axis );
-	}
-	
-	return pAxes.GetCount() - 2;
-}
-
-int deoxrDevice::pAddAxesTrackpad( deVROpenXR::eInputActions actionAnalog,
-const char *name, const char *id, const char *displayText ){
-	/*
-	vr::IVRInput &vrinput = pOxr.GetVRInput();
-	vr::VRActionHandle_t actionHandle = pOxr.GetActionHandle( actionAnalog );
-	vr::InputAnalogActionData_t dataAnalog;
-	
-	vr::EVRInputError inputError = vrinput.GetAnalogActionData( actionHandle,
-		&dataAnalog, sizeof( dataAnalog ), pInputValueHandle );
-	if( inputError != vr::VRInputError_None ){
-		return -1;
-	}
-	*/
-	
-	static const char *nameAxis[ 2 ] = { "X", "Y" };
-	static const char *idAxis[ 2 ] = { "x", "y" };
-	deoxrDeviceAxis::Ref axis;
-	decString text;
-	int i;
-	
-	for( i=0; i<2; i++ ){
-		axis.TakeOver( deoxrDeviceAxis::Ref::New( new deoxrDeviceAxis( *this ) ) );
-// 		axis->SetActionAnalogHandle( actionHandle );
-		axis->SetType( deInputDeviceAxis::eatTouchPad );
-		axis->SetComponent( i );
-		text.Format( "%s %s", name, nameAxis[ i ] );
-		axis->SetName( text );
-		text.Format( "%s%s", id, idAxis[ i ] );
-		axis->SetID( text );
-		axis->SetDisplayText( displayText );
-		axis->SetIndex( pAxes.GetCount() );
-		axis->SetDeadZone( axis->GetResolution() );
-		pAxes.Add( axis );
-	}
-	
-	return pAxes.GetCount() - 2;
 }
 
 /*

@@ -41,6 +41,8 @@ pName( name ),
 pLocalizedName( localizedName ),
 pAction( XR_NULL_HANDLE )
 {
+	deoxrInstance &instance = actionSet.GetInstance();
+	
 	try{
 		XrActionCreateInfo createInfo;
 		memset( &createInfo, 0, sizeof( createInfo ) );
@@ -74,7 +76,11 @@ pAction( XR_NULL_HANDLE )
 			DETHROW( deeInvalidAction );
 		}
 		
-		OXR_CHECK( actionSet.GetInstance().GetOxr(), actionSet.GetInstance().xrCreateAction(
+		const XrPath subactionPaths[ 2 ] = { instance.GetPathHandLeft(), instance.GetPathHandRight() };
+		createInfo.subactionPaths = subactionPaths;
+		createInfo.countSubactionPaths = 2;
+		
+		OXR_CHECK( instance.GetOxr(), instance.xrCreateAction(
 			actionSet.GetActionSet(), &createInfo, &pAction ) );
 		
 	}catch( const deException & ){

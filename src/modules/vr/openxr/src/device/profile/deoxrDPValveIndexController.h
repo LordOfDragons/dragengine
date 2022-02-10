@@ -23,12 +23,20 @@
 #define _DEOXRDPVALVEINDEXCONTROLLER_H_
 
 #include "deoxrDeviceProfile.h"
+#include "../deoxrDevice.h"
+#include "../../deoxrPath.h"
 
 
 /**
  * Valve index controller profile.
  */
 class deoxrDPValveIndexController : public deoxrDeviceProfile{
+private:
+	deoxrDevice::Ref pDeviceLeft;
+	deoxrDevice::Ref pDeviceRight;
+	
+	
+	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
@@ -45,9 +53,18 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
+	/** Check attached. */
+	virtual void CheckAttached();
+	
 	/** Suggest bindings. */
 	virtual void SuggestBindings();
 	/*@}*/
+	
+	
+	
+protected:
+	void pAddDevice( bool left );
+	void pRemoveDevice( bool left );
 };
 
 #endif

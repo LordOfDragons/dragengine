@@ -20,6 +20,7 @@
  */
 
 #include <stdlib.h>
+#include <string.h>
 
 #include "deoxrDeviceProfile.h"
 
@@ -54,6 +55,24 @@ void deoxrDeviceProfile::CheckAttached(){
 
 // Protected Functions
 ////////////////////////
+
+deoxrSession *deoxrDeviceProfile::pGetSession() const{
+	return GetInstance().GetOxr().GetSession();
+}
+
+bool deoxrDeviceProfile::pMatchesProfile( const deoxrPath &path ) const{
+	const deoxrSession * const session = pInstance.GetOxr().GetSession();
+	if( ! session ){
+		return false;
+	}
+	
+	XrInteractionProfileState state;
+	memset( &state, 0, sizeof( state ) );
+	state.type = XR_TYPE_INTERACTION_PROFILE_STATE;
+	
+	return XR_SUCCEEDED( pInstance.xrGetCurrentInteractionProfile(session->GetSession(), path, &state ) )
+		&& pPath == state.interactionProfile;
+}
 
 void deoxrDeviceProfile::pAdd( deoxrInstance::sSuggestBinding *&bindings,
 deVROpenXR::eInputActions inputAction, const char *path ) const{

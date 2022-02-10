@@ -50,18 +50,7 @@ deoxrDPHMD::~deoxrDPHMD(){
 ///////////////
 
 void deoxrDPHMD::CheckAttached(){
-	const deoxrInstance &instance = GetInstance();
-	deVROpenXR &oxr = instance.GetOxr();
-	deoxrSession * const session = oxr.GetSession();
-	
-	if( session ){
-		XrInteractionProfileState state;
-		memset( &state, 0, sizeof( state ) );
-		state.type = XR_TYPE_INTERACTION_PROFILE_STATE;
-		OXR_CHECK( oxr, instance.xrGetCurrentInteractionProfile( session->GetSession(),
-			deoxrPath( instance, "/user/head" ), &state ) );
-		oxr.LogInfoFormat( "State HMD: %s", deoxrPath( instance, state.interactionProfile ).GetName().GetString() );
-	}
+	deoxrSession * const session = GetInstance().GetOxr().GetSession();
 	
 	if( session ){
 		pAddDevice();

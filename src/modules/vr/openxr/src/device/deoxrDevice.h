@@ -64,7 +64,7 @@ private:
 	
 	deoxrAction::Ref pActionPose;
 	deoxrAction::Ref pActionHandPose;
-	decString pSerialNumber;
+	deoxrPath pSubactionPath;
 	
 	deInputDevice::eDeviceTypes pType;
 	deInputDevice::eBoneConfigurations pBoneConfiguration;
@@ -128,6 +128,12 @@ public:
 	/** Set hand pose action handle. */
 	void SetActionHandPose( deoxrAction *action );
 	
+	/** Subaction path. */
+	inline const deoxrPath &GetSubactionPath() const{ return pSubactionPath; }
+	
+	/** Set subaction path. */
+	void SetSubactionPath( const deoxrPath &path );
+	
 	
 	
 	/** Device type. */
@@ -180,6 +186,11 @@ public:
 	/** Add button. */
 	void AddButton( deoxrDeviceButton *button );
 	
+	/** Add button. */
+	void AddButton( deInputDeviceButton::eButtonTypes type, deoxrDeviceComponent *component,
+		deVROpenXR::eInputActions actionPress, deVROpenXR::eInputActions actionTouch,
+		const char *name, const char *id, const char *displayText );
+	
 	/** Button at index. */
 	deoxrDeviceButton *GetButtonAt( int index ) const;
 	
@@ -196,6 +207,23 @@ public:
 	
 	/** Add axis. */
 	void AddAxis( deoxrDeviceAxis *axis );
+	
+	/** Add trigger axis. */
+	void AddAxisTrigger( deInputDeviceAxis::eAxisTypes type, deoxrDeviceComponent *component,
+		deVROpenXR::eInputActions actionAnalog, const char *name,
+		const char *id, const char *displayText );
+	
+	/** Add finger axis. */
+	void AddAxisFinger( deInputDeviceAxis::eAxisTypes type, deoxrDeviceComponent *component,
+		int finger, const char *name, const char *id, const char *displayText );
+	
+	/** Add joystick axis. */
+	void AddAxesJoystick( deoxrDeviceComponent *component, deVROpenXR::eInputActions actionAnalog,
+		const char *name, const char *id, const char *displayText );
+	
+	/** Add trackpad axis. */
+	void AddAxesTrackpad( deoxrDeviceComponent *component, deVROpenXR::eInputActions actionAnalog,
+		const char *name, const char *id, const char *displayText );
 	
 	/** Axis at index. */
 	deoxrDeviceAxis *GetAxisAt( int index ) const;
@@ -227,6 +255,10 @@ public:
 	
 	/** Add component. */
 	void AddComponent( deoxrDeviceComponent *component );
+	
+	/** Add component. */
+	deoxrDeviceComponent *AddComponent( deInputDeviceComponent::eComponentTypes type,
+		const char *name, const char *id, const char *displayText );
 	
 	/** Component at index. */
 	deoxrDeviceComponent *GetComponentAt( int index ) const;
@@ -262,25 +294,6 @@ private:
 	void pUpdateParametersController();
 	void pUpdateParametersHandPose();
 	void pUpdateParametersTracker();
-	
-	deoxrDeviceComponent *pAddComponent( deInputDeviceComponent::eComponentTypes type,
-		const char *name, const char *id, const char *displayText );
-	
-	int pAddButton( deInputDeviceButton::eButtonTypes type, deoxrDeviceComponent *component,
-		deVROpenXR::eInputActions actionPress, deVROpenXR::eInputActions actionTouch,
-		const char *name, const char *id, const char *displayText );
-	
-	int pAddAxisTrigger( deInputDeviceAxis::eAxisTypes type, deVROpenXR::eInputActions actionAnalog,
-		const char *name, const char *id, const char *displayText );
-	
-	void pAddAxisFinger( deInputDeviceAxis::eAxisTypes type, deoxrDeviceComponent *component,
-		int finger, const char *name, const char *id, const char *displayText );
-	
-	int pAddAxesJoystick( deVROpenXR::eInputActions actionAnalog,
-		const char *name, const char *id, const char *displayText );
-	
-	int pAddAxesTrackpad( deVROpenXR::eInputActions actionAnalog,
-		const char *name, const char *id, const char *displayText );
 	
 // 	void pUpdatePose( const vr::TrackedDevicePose_t &in, deInputDevicePose &out ) const;
 // 	void pUpdatePose( const vr::VRBoneTransform_t &in, deInputDevicePose &out ) const;

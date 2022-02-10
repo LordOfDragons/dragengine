@@ -20,6 +20,7 @@
  */
 
 #include <stdlib.h>
+#include <string.h>
 
 #include "deoxrDevice.h"
 #include "deoxrDeviceButton.h"
@@ -178,18 +179,29 @@ void deoxrDeviceButton::GetInfo( deInputDeviceButton &info ) const{
 }
 
 void deoxrDeviceButton::TrackState(){
-	/*
-	vr::IVRInput &vrinput = pDevice.GetOxr().GetVRInput();
+	const deoxrInstance &instance = pDevice.GetOxr().GetInstance();
+	const deoxrSession &session = pDevice.GetOxr().GetSession();
 	
-	vr::InputDigitalActionData_t dataDigital;
-	vr::EVRInputError error = vrinput.GetDigitalActionData( pActionPress,
-		&dataDigital, sizeof( dataDigital ), pDevice.GetInputValueHandle() );
-	UpdatePressed( error == vr::VRInputError_None ? dataDigital.bState : false );
+	XrActionStateGetInfo getInfo;
+	memset( &getInfo, 0, sizeof( getInfo ) );
+	getInfo.type = XR_TYPE_ACTION_STATE_GET_INFO;
+	getInfo.subactionPath = pDevice.GetSubactionPath();
 	
-	if( pActionTouch != vr::k_ulInvalidActionHandle ){
-		vr::EVRInputError error = vrinput.GetDigitalActionData( pActionTouch,
-			&dataDigital, sizeof( dataDigital ), pDevice.GetInputValueHandle() );
-		UpdateTouched( error == vr::VRInputError_None ? dataDigital.bState : false );
+	XrActionStateBoolean state;
+	memset( &state, 0, sizeof( state ) );
+	state.type = XR_TYPE_ACTION_STATE_BOOLEAN;
+	
+	if( pActionPress ){
+		getInfo.action = pActionPress->GetAction();
+		UpdatePressed(
+			XR_SUCCEEDED( instance.xrGetActionStateBoolean( session.GetSession(), &getInfo, &state ) )
+			&& state.isActive && state.currentState );
 	}
-	*/
+	
+	if( pActionTouch ){
+		getInfo.action = pActionTouch->GetAction();
+		UpdateTouched(
+			XR_SUCCEEDED( instance.xrGetActionStateBoolean( session.GetSession(), &getInfo, &state ) )
+			&& state.isActive && state.currentState );
+	}
 }

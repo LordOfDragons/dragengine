@@ -106,6 +106,10 @@ private:
 	sExtension pSupportsExtension[ ExtensionCount ];
 	sLayer pSupportsLayer[ LayerCount ];
 	
+	deoxrPath pPathHandRight;
+	deoxrPath pPathHandLeft;
+	
+	
 	
 public:
 	/** \name Constructors and Destructors */
@@ -150,6 +154,12 @@ public:
 	/** Instance. */
 	inline XrInstance GetInstance() const{ return pInstance; }
 	
+	/** Right hand path. */
+	inline const deoxrPath &GetPathHandRight() const{ return pPathHandRight; }
+	
+	/** Left hand path. */
+	inline const deoxrPath &GetPathHandLeft() const{ return pPathHandLeft; }
+	
 	/** Suggest input bindings. */
 	void SuggestBindings( const deoxrPath &profile, const sSuggestBinding *bindings, int count );
 	/*@}*/
@@ -172,7 +182,6 @@ private:
 	void pDetectLayers();
 	void pCreateInstance( bool enableValidationLayers );
 	void pLoadFunctions();
-	void pFindDevices();
 };
 
 #endif

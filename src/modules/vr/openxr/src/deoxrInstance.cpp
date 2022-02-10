@@ -95,7 +95,8 @@ pInstance( XR_NULL_HANDLE )
 			pDebug.SetEnabled( enableDebug );
 		#endif
 		
-		pFindDevices();
+		pPathHandLeft = deoxrPath( *this, "/user/hand/left" );
+		pPathHandRight = deoxrPath( *this, "/user/hand/right" );
 		
 	}catch( const deException & ){
 		pCleanUp();
@@ -380,37 +381,4 @@ void deoxrInstance::pLoadFunctions(){
 		}
 	
 	#include "deoxrFunctionNames.h"
-}
-
-void deoxrInstance::pFindDevices(){
-	/*
-	uint32_t deviceCount = 0;
-	OXR_CHECK( pOxr, vkEnumeratePhysicalDevices( pInstance, &deviceCount, XR_NULL_HANDLE ) );
-	
-	if( deviceCount > 0 ){
-		pPhysicalDevices = new VkPhysicalDevice[ deviceCount ];
-		OXR_CHECK( pOxr, vkEnumeratePhysicalDevices( pInstance, &deviceCount, pPhysicalDevices ) );
-		pPhysicalDeviceCount = deviceCount;
-	}
-	
-	pOxr.LogInfo( "OpenXR Devices:" );
-	
-	VkPhysicalDeviceProperties properties;
-	int i;
-	
-	for( i=0; i<pPhysicalDeviceCount; i++ ){
-		memset( &properties, 0, sizeof( properties ) );
-		vkGetPhysicalDeviceProperties( pPhysicalDevices[ i ], &properties );
-		pOxr.LogInfoFormat( "- %s (id=%d vendor=%d version=%d.%d.%d.%d api=%d.%d.%d.%d)",
-			properties.deviceName, properties.deviceID, properties.vendorID,
-			XR_VERSION_MAJOR( properties.driverVersion ),
-			XR_VERSION_MINOR( properties.driverVersion ),
-			XR_VERSION_PATCH( properties.driverVersion ),
-			XR_API_VERSION_VARIANT( properties.driverVersion ),
-			XR_VERSION_MAJOR( properties.apiVersion ),
-			XR_VERSION_MINOR( properties.apiVersion ),
-			XR_VERSION_PATCH( properties.apiVersion ),
-			XR_API_VERSION_VARIANT( properties.apiVersion ) );
-	}
-	*/
 }

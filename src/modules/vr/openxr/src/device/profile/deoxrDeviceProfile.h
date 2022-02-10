@@ -31,6 +31,7 @@
 #include <dragengine/common/string/decString.h>
 
 class deoxrInstance;
+class deoxrSession;
 
 
 /**
@@ -86,6 +87,10 @@ public:
 	
 	
 protected:
+	deoxrSession *pGetSession() const;
+	
+	bool pMatchesProfile( const deoxrPath &path ) const;
+	
 	void pAdd( deoxrInstance::sSuggestBinding *&bindings,
 		deVROpenXR::eInputActions inputAction, const char *path ) const;
 };
