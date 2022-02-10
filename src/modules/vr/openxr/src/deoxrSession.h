@@ -25,6 +25,7 @@
 #include "deoxrBasics.h"
 #include "deoxrSpace.h"
 #include "deoxrSwapchain.h"
+#include "deoxrHiddenMesh.h"
 #include "action/deoxrActionSet.h"
 
 #include <dragengine/deObject.h>
@@ -78,6 +79,9 @@ private:
 	
 	XrPosef pRightEyePose;
 	XrFovf pRightEyeFov;
+	
+	deoxrHiddenMesh::Ref pLeftEyeHiddenMesh;
+	deoxrHiddenMesh::Ref pRightEyeHiddenMesh;
 	
 	decVector pHeadPosition;
 	decQuaternion pHeadOrientation;
@@ -169,6 +173,18 @@ public:
 	
 	/** Right eye fov. */
 	inline const XrFovf &GetRightEyeFov() const{ return pRightEyeFov; }
+	
+	/** Left eye hidden mesh or null. */
+	inline deoxrHiddenMesh *GetLeftEyeHiddenMesh() const{ return pLeftEyeHiddenMesh; }
+	
+	/** Right eye hidden mesh or nullptr. */
+	inline deoxrHiddenMesh *GetRightEyeHiddenMesh() const{ return pRightEyeHiddenMesh; }
+	
+	/** Update left eye hidden mesh. */
+	void UpdateLeftEyeHiddenMesh();
+	
+	/** Update right eye hidden mesh. */
+	void UpdateRightEyeHiddenMesh();
 	
 	/** Head position in stage coordinate system. */
 	inline const decVector &GetHeadPosition() const{ return pHeadPosition; }

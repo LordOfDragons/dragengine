@@ -462,6 +462,23 @@ void deVROpenXR::ProcessEvents(){
 			pDeviceProfiles.CheckAllAttached();
 			}break;
 			
+		case XR_TYPE_EVENT_DATA_VISIBILITY_MASK_CHANGED_KHR:
+			if( pSession && pInstance->SupportsExtension( deoxrInstance::extKHRVisibilityMask ) ){
+				const XrEventDataVisibilityMaskChangedKHR &changed = ( XrEventDataVisibilityMaskChangedKHR& )event;
+				if( changed.viewConfigurationType == XR_VIEW_CONFIGURATION_TYPE_PRIMARY_STEREO ){
+					switch( changed.viewIndex ){
+					case 0:
+						pSession->UpdateLeftEyeHiddenMesh();
+						break;
+						
+					case 1:
+						pSession->UpdateRightEyeHiddenMesh();
+						break;
+					}
+				}
+			}
+			break;
+			
 		case XR_TYPE_EVENT_DATA_VIVE_TRACKER_CONNECTED_HTCX:{
 			const XrEventDataViveTrackerConnectedHTCX &connected = ( XrEventDataViveTrackerConnectedHTCX& )event;
 			const deoxrPath path( pInstance, connected.paths->persistentPath );
@@ -561,10 +578,26 @@ decMatrix deVROpenXR::GetMatrixViewEye( eEye eye ){
 }
 
 deModel *deVROpenXR::GetHiddenArea( eEye eye ){
-	return nullptr;
+	if( ! pSession ){
+		return nullptr;
+	}
+	
+	const deoxrHiddenMesh *hiddenMesh = nullptr;
+	
+	switch( eye ){
+	case deBaseVRModule::evreLeft:
+		hiddenMesh = pSession->GetLeftEyeHiddenMesh();
+		break;
+		
+	case deBaseVRModule::evreRight:
+		hiddenMesh = pSession->GetRightEyeHiddenMesh();
+		break;
+	}
+	
+	return hiddenMesh ? hiddenMesh->GetModel() : nullptr;
 }
 
-deImage *deVROpenXR::GetDistortionMap( eEye eye ){
+deImage *deVROpenXR::GetDistortionMap( eEye ){
 	return nullptr;
 }
 

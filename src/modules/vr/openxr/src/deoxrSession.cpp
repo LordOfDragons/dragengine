@@ -314,6 +314,23 @@ void deoxrSession::BeginFrame(){
 	pRightEyePose = views[ 1 ].pose;
 	pRightEyeFov = views[ 1 ].fov;
 	
+	// if hidden mesh are supported but not existing create and update them. this is done
+	// only once unless an event is received the images changed. theoretically if the fov
+	// changes the mask could change too but this is nigh impossible to ever happen
+	if( instance.SupportsExtension( deoxrInstance::extKHRVisibilityMask ) ){
+		if( ! pLeftEyeHiddenMesh ){
+			pLeftEyeHiddenMesh.TakeOver( new deoxrHiddenMesh( *this,
+				XR_VIEW_CONFIGURATION_TYPE_PRIMARY_STEREO, 0 ) );
+			UpdateLeftEyeHiddenMesh();
+		}
+		
+		if( ! pRightEyeHiddenMesh ){
+			pRightEyeHiddenMesh.TakeOver( new deoxrHiddenMesh( *this,
+				XR_VIEW_CONFIGURATION_TYPE_PRIMARY_STEREO, 1 ) );
+			UpdateRightEyeHiddenMesh();
+		}
+	}
+	
 	// locate hmd
 	if( pPredictedDisplayTime > 0 ){
 		pSpaceView->LocateSpace( pSpaceStage, pPredictedDisplayTime,
@@ -437,6 +454,16 @@ void deoxrSession::SyncActions(){
 	syncInfo.activeActionSets = activeActionSets;
 	
 	OXR_CHECK( instance.GetOxr(), instance.xrSyncActions( pSession, &syncInfo ) );
+}
+
+void deoxrSession::UpdateLeftEyeHiddenMesh(){
+	pLeftEyeHiddenMesh->SetFov( pLeftEyeFov );
+	pLeftEyeHiddenMesh->UpdateModel();
+}
+
+void deoxrSession::UpdateRightEyeHiddenMesh(){
+	pRightEyeHiddenMesh->SetFov( pRightEyeFov );
+	pRightEyeHiddenMesh->UpdateModel();
 }
 
 void deoxrSession::RestoreOpenGLCurrent(){
