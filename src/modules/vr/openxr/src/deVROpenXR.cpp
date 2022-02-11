@@ -39,6 +39,13 @@
 #include "device/profile/deoxrDPOculusGoController.h"
 #include "device/profile/deoxrDPValveIndexController.h"
 #include "device/profile/deoxrDPHtcViveTracker.h"
+#include "device/profile/deoxrDPOculusTouchController.h"
+#include "device/profile/deoxrDPHPMixedRealityController.h"
+#include "device/profile/deoxrDPSamsungOdysseyController.h"
+#include "device/profile/deoxrDPHTCViveCosmosControllerInteraction.h"
+#include "device/profile/deoxrDPHTCViveFocus3ControllerInteraction.h"
+#include "device/profile/deoxrDPHUAWEIControllerInteraction.h"
+#include "device/profile/deoxrDPMSFTHandInteraction.h"
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
@@ -169,13 +176,12 @@ bool deVROpenXR::Init(){
 	try{
 		pLoader = new deoxrLoader( *this );
 		pInstance.TakeOver( new deoxrInstance( *this, enableDebug ) );
-		pCreateActionSet();
 		pCreateDeviceProfiles();
-		pSuggestBindings();
 		
 	}catch( const deException &e ){
 		LogException( e );
-		pActionSet = nullptr;
+		pDeviceProfiles.ClearActions();
+		pDestroyActionSet();
 		pInstance = nullptr;
 		if( pLoader ){
 			delete pLoader;
@@ -200,10 +206,10 @@ void deVROpenXR::CleanUp(){
 	SetCamera( nullptr );
 	
 	pDeviceProfiles.RemoveAll(); // has to come before clearing devices
+	
 	pDevices.Clear();
 	
-	memset( pActions, 0, sizeof( pActions ) );
-	pActionSet = nullptr;
+	pDestroyActionSet();
 	
 	// prevent deletion of graphic api resources that are typically linked to another
 	// thread. this will cause memory leaks but better leak than crash if the runtime
@@ -260,8 +266,6 @@ void deVROpenXR::StopRuntime(){
 	// does destroy graphic api resources which typically are linked to another thread
 	LogInfo( "Shutdown runtime requested" );
 	const deMutexGuard lock( pMutexOpenXR );
-	
-	pActionSet = nullptr;
 	
 	if( pSession ){
 		pShutdownRequested = true;
@@ -347,7 +351,12 @@ void deVROpenXR::GetDevicePose( int device, deInputDevicePose &pose ){
 }
 
 void deVROpenXR::GetDeviceBonePose( int device, int bone, bool withController, deInputDevicePose &pose ){
-	pDevices.GetAt( device )->GetBonePose( bone, withController, pose );
+	// with controller not yet supported
+	(void)withController;
+	deoxrHandTracker * const handTracker = pDevices.GetAt( device )->GetHandTracker();
+	if( handTracker ){
+		pose = handTracker->GetPoseBoneAt( bone );
+	}
 }
 
 
@@ -480,11 +489,14 @@ void deVROpenXR::ProcessEvents(){
 			break;
 			
 		case XR_TYPE_EVENT_DATA_VIVE_TRACKER_CONNECTED_HTCX:{
+			/*
 			const XrEventDataViveTrackerConnectedHTCX &connected = ( XrEventDataViveTrackerConnectedHTCX& )event;
 			const deoxrPath path( pInstance, connected.paths->persistentPath );
 			const deoxrPath pathRole( pInstance, connected.paths->rolePath );
 			LogInfoFormat( "VIVE Tracker Connected: path='%s' rolePath='%s'",
 				path.GetName().GetString(), pathRole.GetName().GetString() );
+			*/
+			pDeviceProfiles.CheckAllAttached();
 			}break;
 			
 		default:
@@ -492,16 +504,19 @@ void deVROpenXR::ProcessEvents(){
 		}
 	}
 	
-	// according to OpenXR documentation sync action is only allowed in focused state.
-	// SteamVR crashes if you try to do it earlier instead of returning an error
-	if( pSessionState == XR_SESSION_STATE_FOCUSED ){
-		pSession->SyncActions();
+	// state tracking needs a session
+	if( pSession ){
+		// according to OpenXR documentation sync action is only allowed in focused state.
+		// SteamVR crashes if you try to do it earlier instead of returning an error
+		if( pSessionState == XR_SESSION_STATE_FOCUSED ){
+			pSession->SyncActions();
+		}
+		
+		// but we still want to be able to receive head movement. requires tracking the
+		// device states even though actions are not allowed to be synced
+		pDevices.TrackDeviceStates();
+			// ^=- copies state from mutex protected to non mutex protected memory
 	}
-	
-	// but we still want to be able to receive head movement. requires tracking the
-	// device states even though actions are not allowed to be synced
-	pDevices.TrackDeviceStates();
-		// copy state from mutex protected to non mutex protected memory
 }
 
 
@@ -646,13 +661,29 @@ void deVROpenXR::BeginFrame(){
 	}
 	
 	if( ! pSession ){
+		if( pShutdownRequested ){
+			pRealShutdown();
+			return;
+		}
+		
 		LogInfo( "BeginFrame: Create Session" );
 		try{
 			pSession.TakeOver( new deoxrSession( pSystem ) );
+			
+			pCreateActionSet();
+			pSuggestBindings();
+			
 			pSession->AttachActionSet( pActionSet );
 			
 		}catch( const deException &e ){
 			LogException( e );
+			
+			LogError( "Runtime failed during BeginFrame. Shutting down runtime. Restart runtime to continue." );
+			pDeviceProfiles.ClearActions();
+			pDestroyActionSet();
+			pSession = nullptr;
+			
+			pRealShutdown();
 			return;
 		}
 	}
@@ -707,10 +738,11 @@ void deVROpenXR::pRealShutdown(){
 	// WARNING caller has to hold mutex lock while calling function
 	LogInfo( "Shutdown runtime" );
 	
+	pDeviceProfiles.ClearActions();
+	
 	pSession = nullptr;
 	pSystem = nullptr;
-	
-	pDeviceProfiles.CheckAllAttached();
+	pDestroyActionSet();
 	
 	pShutdownRequested = false;
 }
@@ -724,10 +756,16 @@ void deVROpenXR::pCreateActionSet(){
 	pActionSet->AddVibrationAction( "trigger_haptic", "Trigger Haptic" );
 	
 	pActionSet->AddBoolAction( "button_primary_press", "Press Primary Button" );
-	pActionSet->AddBoolAction( "button_primary_touch", "Touch Button Primary" );
+	pActionSet->AddBoolAction( "button_primary_touch", "Touch Primary Button" );
 	
 	pActionSet->AddBoolAction( "button_secondary_press", "Press Secondary Button" );
-	pActionSet->AddBoolAction( "button_secondary_touch", "Touch Button Secondary" );
+	pActionSet->AddBoolAction( "button_secondary_touch", "Touch Secondary Button" );
+	
+	pActionSet->AddBoolAction( "button_auxiliary1_press", "Press Auxiliary Button 1" );
+	pActionSet->AddBoolAction( "button_auxiliary1_touch", "Touch Auxiliary Button 1" );
+	
+	pActionSet->AddBoolAction( "button_auxiliary2_press", "Press Auxiliary Button 2" );
+	pActionSet->AddBoolAction( "button_auxiliary2_touch", "Touch Auxiliary Button 2" );
 	
 	pActionSet->AddBoolAction( "joystick_press", "Press Joystick" );
 	pActionSet->AddBoolAction( "joystick_touch", "Touch Joystick" );
@@ -737,6 +775,8 @@ void deVROpenXR::pCreateActionSet(){
 	pActionSet->AddBoolAction( "trackpad_touch", "Touch TrackPad" );
 	pActionSet->AddVector2Action( "trackpad_analog", "TrackPad Analog" );
 	
+	pActionSet->AddBoolAction( "thumbrest_touch", "Touch Thumbrest" );
+	
 	pActionSet->AddBoolAction( "grip_press", "Squeeze Grip" );
 	pActionSet->AddBoolAction( "grip_touch", "Touch Grip" );
 	pActionSet->AddFloatAction( "grip_grab", "Grip Grab" );
@@ -745,27 +785,48 @@ void deVROpenXR::pCreateActionSet(){
 	pActionSet->AddVibrationAction( "grip_haptic", "Haptic Grip" );
 	
 	pActionSet->AddPoseAction( "pose", "Pose" );
-	pActionSet->AddPoseAction( "skeleton_hand_right", "Skeleton Hand Right" ); // "skeleton": "/skeleton/hand/right"
+	pActionSet->AddPoseAction( "pose_left", "Pose Left" );
+	pActionSet->AddPoseAction( "pose_right", "Pose Right" );
 	pActionSet->AddPoseAction( "skeleton_hand_left", "Skeleton Hand Left" ); // "skeleton": "/skeleton/hand/left"
+	pActionSet->AddPoseAction( "skeleton_hand_right", "Skeleton Hand Right" ); // "skeleton": "/skeleton/hand/right"
+	
+	// allow device profiles to add actions
+	const int count = pDeviceProfiles.GetCount();
+	int i;
+	for( i=0; i<count; i++ ){
+		pDeviceProfiles.GetAt( i )->CreateActions( pActionSet );
+	}
 	
 	// store actions for quick retrieval
-	int i;
 	for( i=0; i<InputActionCount; i++ ){
 		pActions[ i ] = pActionSet->GetActionAt( i );
 	}
 }
 
+void deVROpenXR::pDestroyActionSet(){
+	memset( pActions, 0, sizeof( pActions ) );
+	pActionSet = nullptr;
+}
+
 void deVROpenXR::pCreateDeviceProfiles(){
 	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPHMD( pInstance ) ) );
+	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPHTCVivePro( pInstance ) ) );
 	
 	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPSimpleController( pInstance ) ) );
-	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPHTCViveController( pInstance ) ) );
 	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPGoogleDaydreamController( pInstance ) ) );
-	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPHTCVivePro( pInstance ) ) );
+	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPHPMixedRealityController( pInstance ) ) );
+	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPHTCViveController( pInstance ) ) );
+	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPHTCViveCosmosControllerInteraction( pInstance ) ) );
+	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPHTCViveFocus3ControllerInteraction( pInstance ) ) );
+	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPHUAWEIControllerInteraction( pInstance ) ) );
 	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPMicrosoftMixedRealityMotionController( pInstance ) ) );
 	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPMicrosoftXboxController( pInstance ) ) );
+	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPMSFTHandInteraction( pInstance ) ) );
 	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPOculusGoController( pInstance ) ) );
+	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPOculusTouchController( pInstance ) ) );
+	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPSamsungOdysseyController( pInstance ) ) );
 	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPValveIndexController( pInstance ) ) );
+	
 	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPHtcViveTracker( pInstance ) ) );
 }
 
@@ -774,72 +835,26 @@ void deVROpenXR::pSuggestBindings(){
 	int i;
 	
 	for( i=0; i<count; i++ ){
-		pDeviceProfiles.GetAt( i )->SuggestBindings();
+		deoxrDeviceProfile &profile = *pDeviceProfiles.GetAt( i );
+		
+		try{
+			profile.SuggestBindings();
+			
+		}catch( const deException &e ){
+			LogException( e );
+			LogWarnFormat( "Device profile '%s' failed suggesting bindings. "
+				"Ignoring device profile", profile.GetPath().GetName().GetString() );
+		}
 	}
 	
 	/*
-	pSuggestBindingsOculusGoController();
-	pSuggestBindingsOculusTouchController();
-	
 	if( pInstance->SupportsExtension( deoxrInstance::extEXTEyeGazeInteraction ) ){
 		pSuggestBindingsEyeGazeInput();
 	}
-// 	if( pInstance->SupportsExtension( deoxrInstance::extHPMixedRealityController ) ){
-// 		pSuggestBindingsHPMixedRealityController();
-// 	}
-// 	if( pInstance->SupportsExtension( deoxrInstance::extEXTSamsungOdysseyController ) ){
-// 		pSuggestBindingsSamsungOdysseyController();
-// 	}
-// 	if( pInstance->SupportsExtension( deoxrInstance::extHTCVveCosmosControllerInteraction ) ){
-// 		pSuggestBindingsHTCVveCosmosControllerInteraction();
-// 	}
-// 	if( pInstance->SupportsExtension( deoxrInstance::extHTCViveFocus3ControllerInteraction ) ){
-// 		pSuggestBindingsHTCViveFocus3ControllerInteraction();
-// 	}
-// 	if( pInstance->SupportsExtension( deoxrInstance::extHUAWEIControllerInteraction ) ){
-// 		pSuggestBindingsHUAWEIControllerInteraction();
-// 	}
-// 	if( pInstance->SupportsExtension( deoxrInstance::extMSFTHandInteraction ) ){
-// 		pSuggestBindingsMSFTHandInteraction();
-// 	}
 	*/
 }
 
-void deVROpenXR::pSuggestBindingsOculusTouchController(){
-	// Path: /interaction_profiles/oculus/touch_controller
-	// 
-	// Valid for user paths:
-	// - /user/hand/left
-	// - /user/hand/right
-	// 
-	// Supported component paths:
-	// On /user/hand/left only:
-	// - /input/x/click
-	// - /input/x/touch
-	// - /input/y/click
-	// - /input/y/touch
-	// - /input/menu/click
-	// 
-	// On /user/hand/right only:
-	// - /input/a/click
-	// - /input/a/touch
-	// - /input/b/click
-	// - /input/b/touch
-	// - /input/system/click (may not be available for application use)
-	// 
-	// Both hands:
-	// - /input/squeeze/value
-	// - /input/trigger/value
-	// - /input/trigger/touch
-	// - /input/thumbstick/x
-	// - /input/thumbstick/y
-	// - /input/thumbstick/click
-	// - /input/thumbstick/touch
-	// - /input/thumbrest/touch
-	// - /input/grip/pose
-	// - /input/aim/pose
-	// - /output/haptic
-}
+#if 0
 
 void deVROpenXR::pSuggestBindingsEyeGazeInput(){
 	// Extension: XR_EXT_eye_gaze_interaction
@@ -852,144 +867,4 @@ void deVROpenXR::pSuggestBindingsEyeGazeInput(){
 	// - /input/gaze_ext/pose
 }
 
-void deVROpenXR::pSuggestBindingsHPMixedRealityController(){
-	// Extension: XR_EXT_hp_mixed_reality_controller
-	// Path: /interaction_profiles/hp/mixed_reality_controller
-	// 
-	// Valid for the user paths:
-	// - /user/hand/left
-	// - /user/hand/right
-	// 
-	// Supported component paths:
-	// On /user/hand/left only
-	// - /input/x/click
-	// - /input/y/click
-	// 
-	// On /user/hand/right only:
-	// - /input/a/click
-	// - /input/b/click
-	// 
-	// On both hands:
-	// - /input/menu/click
-	// - /input/squeeze/value
-	// - /input/trigger/value
-	// - /input/thumbstick/x
-	// - /input/thumbstick/y
-	// - /input/thumbstick/click
-	// - /input/grip/pose
-	// - /input/aim/pose
-	// - /output/haptic
-}
-
-void deVROpenXR::pSuggestBindingsSamsungOdysseyController(){
-	// Extension: XR_EXT_samsung_odyssey_controller
-	// Path: /interaction_profiles/samsung/odyssey_controller
-	// Same as /interaction_profiles/microsoft/motion_controller
-}
-
-void deVROpenXR::pSuggestBindingsHTCViveCosmosControllerInteraction(){
-	// Extension: XR_HTC_vive_cosmos_controller_interaction
-	// Path: /interaction_profiles/htc/vive_cosmos_controller
-	// 
-	// Valid for user paths:
-	// - /user/hand/left
-	// - /user/hand/right
-	// 
-	// Supported component paths:
-	// On /user/hand/left only:
-	// - /input/x/click
-	// - /input/y/click
-	// - /input/menu/click
-	// 
-	// On /user/hand/right only:
-	// - /input/a/click
-	// - /input/b/click
-	// - /input/system/click (may not be available for application use)
-	// 
-	// On Both Hands:
-	// - /input/shoulder/click
-	// - /input/squeeze/click
-	// - /input/trigger/click
-	// - /input/trigger/value
-	// - /input/thumbstick/x
-	// - /input/thumbstick/y
-	// - /input/thumbstick/click
-	// - /input/thumbstick/touch
-	// - /input/grip/pose
-	// - /input/aim/pose
-	// - /output/haptic
-}
-
-void deVROpenXR::pSuggestBindingsHTCViveFocus3ControllerInteraction(){
-	// Extension: XR_HTC_vive_focus3_controller_interaction
-	// Path: /interaction_profiles/htc/vive_focus3_controller
-	// 
-	// Valid for user paths:
-	// - /user/hand/left
-	// - /user/hand/right
-	// 
-	// Supported component paths:
-	// On /user/hand/left only:
-	// - /input/x/click
-	// - /input/y/click
-	// - /input/menu/click
-	// 
-	// On /user/hand/right only:
-	// - /input/a/click
-	// - /input/b/click
-	// - /input/system/click (may not be available for application use)
-	// 
-	// On Both Hands:
-	// - /input/squeeze/click
-	// - /input/squeeze/touch
-	// - /input/trigger/click
-	// - /input/trigger/touch
-	// - /input/trigger/value
-	// - /input/thumbstick/x
-	// - /input/thumbstick/y
-	// - /input/thumbstick/click
-	// - /input/thumbstick/touch
-	// - /input/thumbrest/touch
-	// - /input/grip/pose
-	// - /input/aim/pose
-	// - /output/haptic
-}
-
-void deVROpenXR::pSuggestBindingsHUAWEIControllerInteraction(){
-	// Extension: XR_HUAWEI_controller_interaction
-	// Path: /interaction_profiles/huawei/controller
-	// 
-	// Valid for user paths:
-	// - /user/hand/left
-	// - /user/hand/right
-	// 
-	// Supported component paths:
-	// - /input/home/click
-	// - /input/back/click
-	// - /input/volume_up/click
-	// - /input/volume_down/click
-	// - /input/trigger/value
-	// - /input/trigger/click
-	// - /input/trackpad/x
-	// - /input/trackpad/y
-	// - /input/trackpad/click
-	// - /input/trackpad/touch
-	// - /input/aim/pose
-	// - /input/grip/pose
-	// - /output/haptic
-}
-
-void deVROpenXR::pSuggestBindingsMSFTHandInteraction(){
-	// Extension: XR_MSFT_hand_interaction
-	// Path: /interaction_profiles/microsoft/hand_interaction
-	// 
-	// Valid for top level user path:
-	// - /user/hand/left
-	// - /user/hand/right
-	// 
-	// Supported component paths:
-	// - /input/select/value
-	// - /input/squeeze/value
-	// - /input/aim/pose
-	// - /input/grip/pose
-}
+#endif

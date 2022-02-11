@@ -24,6 +24,8 @@
 
 #include "../deVROpenXR.h"
 #include "../deoxrPath.h"
+#include "../deoxrSpace.h"
+#include "../deoxrHandTracker.h"
 #include "../action/deoxrAction.h"
 
 #include <dragengine/deObject.h>
@@ -62,9 +64,16 @@ private:
 	
 	const deoxrDeviceProfile &pProfile;
 	
-	deoxrAction::Ref pActionPose;
-	deoxrAction::Ref pActionHandPose;
 	deoxrPath pSubactionPath;
+	deoxrAction::Ref pActionPose;
+	
+	deoxrSpace::Ref pSpacePose;
+	decVector pPosePosition;
+	decQuaternion pPoseOrientation;
+	decVector pPoseLinearVelocity;
+	decVector pPoseAngularVelocity;
+	
+	deoxrAction::Ref pActionHandPose;
 	
 	deInputDevice::eDeviceTypes pType;
 	deInputDevice::eBoneConfigurations pBoneConfiguration;
@@ -80,11 +89,9 @@ private:
 	decObjectOrderedSet pFeedbacks;
 	decObjectOrderedSet pComponents;
 	
-	int pBoneCount;
-	
 	deInputDevicePose pPoseDevice;
-	deInputDevicePose *pPoseBones;
-	int pPoseBoneCount;
+	
+	deoxrHandTracker::Ref pHandTracker;
 	
 	
 	
@@ -117,13 +124,19 @@ public:
 	inline const deoxrDeviceProfile &GetProfile() const{ return pProfile; }
 	
 	/** Pose action. */
-	inline deoxrAction *GetActionPose() const{ return pActionPose; }
+	inline const deoxrAction::Ref &GetActionPose() const{ return pActionPose; }
 	
 	/** Set pose action. */
 	void SetActionPose( deoxrAction *action );
 	
+	/** Pose space. */
+	inline const deoxrSpace::Ref &GetSpacePose() const{ return pSpacePose; }
+	
+	/** Set pose space. */
+	void SetSpacePose( deoxrSpace *space );
+	
 	/** Hand pose action handle. */
-	inline deoxrAction *GetActionHandPose() const{ return pActionHandPose; }
+	inline const deoxrAction &GetActionHandPose() const{ return pActionHandPose; }
 	
 	/** Set hand pose action handle. */
 	void SetActionHandPose( deoxrAction *action );
@@ -268,6 +281,14 @@ public:
 	
 	
 	
+	/** Hand tracker or nullptr. */
+	inline const deoxrHandTracker::Ref &GetHandTracker() const{ return pHandTracker; }
+	
+	/** Set hand tracker or nullptr. */
+	void SetHandTracker( deoxrHandTracker *handTracker );
+	
+	
+	
 	/** Update engine input device information. */
 	void GetInfo( deInputDevice &info ) const;
 	
@@ -282,21 +303,7 @@ public:
 	
 	/** Get device pose. */
 	void GetDevicePose( deInputDevicePose &pose );
-	
-	/** Get bone pose. */
-	void GetBonePose( int bone, bool withController, deInputDevicePose &pose );
 	/*@}*/
-	
-	
-	
-private:
-	void pUpdateParametersHMD();
-	void pUpdateParametersController();
-	void pUpdateParametersHandPose();
-	void pUpdateParametersTracker();
-	
-// 	void pUpdatePose( const vr::TrackedDevicePose_t &in, deInputDevicePose &out ) const;
-// 	void pUpdatePose( const vr::VRBoneTransform_t &in, deInputDevicePose &out ) const;
 };
 
 #endif

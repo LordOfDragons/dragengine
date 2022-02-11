@@ -20,8 +20,13 @@
  */
 
 #include <stdlib.h>
+#include <string.h>
 
-#include "deoxrDPOculusGoController.h"
+#include "deoxrDPHUAWEIControllerInteraction.h"
+#include "../deoxrDeviceAxis.h"
+#include "../deoxrDeviceButton.h"
+#include "../deoxrDeviceComponent.h"
+#include "../deoxrDeviceFeedback.h"
 #include "../../deVROpenXR.h"
 #include "../../deoxrInstance.h"
 
@@ -29,20 +34,20 @@
 
 
 
-// Class deoxrDPOculusGoController
-////////////////////////////////////
+// Class deoxrDPHUAWEIControllerInteraction
+/////////////////////////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
 
-deoxrDPOculusGoController::deoxrDPOculusGoController( deoxrInstance &instance ) :
+deoxrDPHUAWEIControllerInteraction::deoxrDPHUAWEIControllerInteraction( deoxrInstance &instance ) :
 deoxrDPBaseTwoHandController( instance,
-	deoxrPath( instance, "/interaction_profiles/oculus/go_controller" ),
-	"Oculus Go Controller" )
+	deoxrPath( instance, "/interaction_profiles/huawei/controller" ),
+	"HUAWEI Controller" )
 {
 }
 
-deoxrDPOculusGoController::~deoxrDPOculusGoController(){
+deoxrDPHUAWEIControllerInteraction::~deoxrDPHUAWEIControllerInteraction(){
 }
 
 
@@ -50,23 +55,27 @@ deoxrDPOculusGoController::~deoxrDPOculusGoController(){
 // Private Functions
 //////////////////////
 
-void deoxrDPOculusGoController::pSuggestBindings(){
+void deoxrDPHUAWEIControllerInteraction::pSuggestBindings(){
 	// Valid for user paths:
 	// - /user/hand/left
 	// - /user/hand/right
 	// 
 	// Supported component paths:
-	// - /input/system/click (may not be available for application use)
-	// - /input/trigger/click
+	// - /input/home/click
 	// - /input/back/click
+	// - /input/volume_up/click
+	// - /input/volume_down/click
+	// - /input/trigger/value
+	// - /input/trigger/click
 	// - /input/trackpad/x
 	// - /input/trackpad/y
 	// - /input/trackpad/click
 	// - /input/trackpad/touch
-	// - /input/grip/pose
 	// - /input/aim/pose
+	// - /input/grip/pose
+	// - /output/haptic
 	
-	const int bindingCount = 7 * 2;
+	const int bindingCount = 11 * 2;
 	deoxrInstance::sSuggestBinding bindings[ bindingCount ];
 	deoxrInstance::sSuggestBinding *b = bindings;
 	
@@ -74,39 +83,51 @@ void deoxrDPOculusGoController::pSuggestBindings(){
 	const decString basePathList[ 2 ] = { "/user/hand/left", "/user/hand/right" };
 	int i;
 	
+	// both hands
 	for( i=0; i<2; i++ ){
 		const decString &basePath = basePathList[ i ];
 		
 		pAdd( b, pGripPoseAction( i == 0 ), basePath + "/input/aim/pose" );
 		
+		pAdd( b, deVROpenXR::eiaButtonPrimaryPress, basePath + "/input/home/click" );
+		pAdd( b, deVROpenXR::eiaButtonSecondaryPress, basePath + "/input/back/click" );
+		pAdd( b, deVROpenXR::eiaButtonAuxiliary1Press, basePath + "/input/volume_up/click" );
+		pAdd( b, deVROpenXR::eiaButtonAuxiliary2Press, basePath + "/input/volume_down/click" );
+		
 		pAdd( b, deVROpenXR::eiaTriggerPress, basePath + "/input/trigger/click" );
-		
-		pAdd( b, deVROpenXR::eiaButtonPrimaryPress, basePath + "/input/back/click" );
-		
-		pAdd( b, deVROpenXR::eiaButtonSecondaryPress, basePath + "/input/system/click" );
+		pAdd( b, deVROpenXR::eiaTriggerAnalog, basePath + "/input/trigger/value" );
 		
 		pAdd( b, deVROpenXR::eiaTrackpadAnalog, basePath + "/input/trackpad" );
 		pAdd( b, deVROpenXR::eiaTrackpadPress, basePath + "/input/trackpad/click" );
 		pAdd( b, deVROpenXR::eiaTrackpadTouch, basePath + "/input/trackpad/touch" );
+		
+		pAdd( b, deVROpenXR::eiaGripHaptic, basePath + "/output/haptic" );
 	}
 	
 	
 	GetInstance().SuggestBindings( GetPath(), bindings, bindingCount );
 }
 
-void deoxrDPOculusGoController::pAddDevice( bool left ){
+bool deoxrDPHUAWEIControllerInteraction::pProfileEnabled() const{
+	return GetInstance().SupportsExtension( deoxrInstance::extHUAWEIControllerInteraction );
+}
+
+void deoxrDPHUAWEIControllerInteraction::pAddDevice( bool left ){
 	deoxrDevice::Ref &device = left ? pDeviceLeft : pDeviceRight;
 	if( device ){
 		return;
 	}
 	
-	pCreateDevice( device, left, "ogc_", decVector( 45.0f, 0.0f, 0.0f ) );
+	pCreateDevice( device, left, "hci_", decVector( 45.0f, 0.0f, 0.0f ) );
 	
 	deoxrDeviceComponent * const trigger = pAddComponentTrigger( device );
+	pAddAxisTrigger( device, trigger );
 	pAddButtonTrigger( device, trigger, false ); // has to be button 0
 	
-	pAddButton( device, ebaPrimary, eblBack, false ); // has to be button 1
-	pAddButton( device, ebaSecondary, eblSystem, false ); // has to be button 2
+	pAddButton( device, ebaPrimary, eblHome, false ); // has to be button 1
+	pAddButton( device, ebaSecondary, eblBack, false ); // has to be button 2
+	pAddButton( device, ebaAuxiliary1, eblVolumeUp, false ); // has to be button 3
+	pAddButton( device, ebaAuxiliary2, eblVolumeDown, false ); // has to be button 4
 	
 	deoxrDeviceComponent * const trackpad = pAddComponentTrackpad( device );
 	pAddAxesTrackpad( device, trackpad );

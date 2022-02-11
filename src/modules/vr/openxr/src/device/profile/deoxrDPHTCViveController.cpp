@@ -36,7 +36,7 @@
 ////////////////////////////
 
 deoxrDPHTCViveController::deoxrDPHTCViveController( deoxrInstance &instance ) :
-deoxrDeviceProfile( instance,
+deoxrDPBaseTwoHandController( instance,
 	deoxrPath( instance, "/interaction_profiles/htc/vive_controller" ),
 	"HTC VIVE Controller" )
 {
@@ -46,11 +46,10 @@ deoxrDPHTCViveController::~deoxrDPHTCViveController(){
 }
 
 
+// Private Functions
+//////////////////////
 
-// Management
-///////////////
-
-void deoxrDPHTCViveController::SuggestBindings(){
+void deoxrDPHTCViveController::pSuggestBindings(){
 	// Valid for user paths:
 	// - /user/hand/left
 	// - /user/hand/right
@@ -80,9 +79,9 @@ void deoxrDPHTCViveController::SuggestBindings(){
 	for( i=0; i<2; i++ ){
 		const decString &basePath = basePathList[ i ];
 		
-		pAdd( b, deVROpenXR::eiaPose, basePath + "/input/aim/pose" );
+		pAdd( b, pGripPoseAction( i == 0 ), basePath + "/input/aim/pose" );
 		
-		pAdd( b, deVROpenXR::eiaGripSqueeze, basePath + "/input/squeeze/click" );
+		pAdd( b, deVROpenXR::eiaGripPress, basePath + "/input/squeeze/click" );
 		
 		pAdd( b, deVROpenXR::eiaTriggerPress, basePath + "/input/trigger/click" );
 		pAdd( b, deVROpenXR::eiaTriggerAnalog, basePath + "/input/trigger/value" );
@@ -100,4 +99,30 @@ void deoxrDPHTCViveController::SuggestBindings(){
 	
 	
 	GetInstance().SuggestBindings( GetPath(), bindings, bindingCount );
+}
+
+void deoxrDPHTCViveController::pAddDevice( bool left ){
+	deoxrDevice::Ref &device = left ? pDeviceLeft : pDeviceRight;
+	if( device ){
+		return;
+	}
+	
+	pCreateDevice( device, left, "vc_", decVector( 45.0f, 0.0f, 0.0f ) );
+	
+	deoxrDeviceComponent * const trigger = pAddComponentTrigger( device );
+	pAddAxisTrigger( device, trigger );
+	pAddButtonTrigger( device, trigger, false ); // has to be button 0
+	
+	pAddButton( device, ebaPrimary, eblHome, false ); // has to be button 1
+	pAddButton( device, ebaSecondary, eblSystem, false ); // has to be button 2
+	
+	deoxrDeviceComponent * const trackpad = pAddComponentTrackpad( device );
+	pAddAxesTrackpad( device, trackpad );
+	pAddButtonTrackpad( device, trackpad, true, true );
+	
+	deoxrDeviceComponent * const grip = pAddComponentGrip( device );
+	pAddButtonGrip( device, grip, false );
+	
+	// add device
+	GetInstance().GetOxr().GetDevices().Add( device );
 }

@@ -22,13 +22,13 @@
 #ifndef _DEOXRDPSIMPLECONTROLLER_H_
 #define _DEOXRDPSIMPLECONTROLLER_H_
 
-#include "deoxrDeviceProfile.h"
+#include "deoxrDPBaseTwoHandController.h"
 
 
 /**
  * Simple controller profile.
  */
-class deoxrDPSimpleController : public deoxrDeviceProfile{
+class deoxrDPSimpleController : public deoxrDPBaseTwoHandController{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
@@ -41,13 +41,9 @@ protected:
 	/*@}*/
 	
 	
-	
-public:
-	/** \name Management */
-	/*@{*/
-	/** Suggest bindings. */
-	virtual void SuggestBindings();
-	/*@}*/
+protected:
+	virtual void pSuggestBindings();
+	virtual void pAddDevice( bool left );
 };
 
 #endif

@@ -124,6 +124,7 @@ void deoxrDeviceManager::Add( deoxrDevice *device ){
 	pOxr.LogInfoFormat( "Input Device Added: id='%s' type=%d axes=%d buttons=%d feedbacks=%d",
 		device->GetID().GetString(), device->GetType(), device->GetAxisCount(),
 		device->GetButtonCount(), device->GetFeedbackCount() );
+	LogDevice( *device );
 	
 	deInputEvent event;
 	event.SetType( deInputEvent::eeDeviceAttached );
@@ -250,6 +251,44 @@ void deoxrDeviceManager::LogDevices(){
 					button.GetName().GetString(), button.GetID().GetString(), button.GetInputDeviceComponent()
 						? button.GetInputDeviceComponent()->GetID().GetString() : "", j );
 			}
+		}
+	}
+}
+
+void deoxrDeviceManager::LogDevice( const deoxrDevice &device ){
+	pOxr.LogInfoFormat( "- '%s' (%s) [%d]", device.GetName().GetString(),
+		device.GetID().GetString(), device.GetType() );
+	
+	const int componentCount = device.GetComponentCount();
+	int i;
+	if( componentCount > 0 ){
+		pOxr.LogInfo( "  Components:" );
+		for( i=0; i<componentCount; i++ ){
+			const deoxrDeviceComponent &component = *device.GetComponentAt( i );
+			pOxr.LogInfoFormat( "    - '%s' (%s)", component.GetName().GetString(),
+				component.GetID().GetString() );
+		}
+	}
+	
+	const int axisCount = device.GetAxisCount();
+	if( axisCount > 0 ){
+		pOxr.LogInfo( "  Axes:" );
+		for( i=0; i<axisCount; i++ ){
+			const deoxrDeviceAxis &axis = *device.GetAxisAt( i );
+			pOxr.LogInfoFormat( "    - '%s' (%s) [%s]", axis.GetName().GetString(),
+				axis.GetID().GetString(), axis.GetInputDeviceComponent()
+					? axis.GetInputDeviceComponent()->GetID().GetString() : "" );
+		}
+	}
+	
+	const int buttonCount = device.GetButtonCount();
+	if( buttonCount > 0 ){
+		pOxr.LogInfo( "  Buttons:" );
+		for( i=0; i<buttonCount; i++ ){
+			const deoxrDeviceButton &button = *device.GetButtonAt( i );
+			pOxr.LogInfoFormat( "    - '%s' (%s) [%s] => %d",
+				button.GetName().GetString(), button.GetID().GetString(), button.GetInputDeviceComponent()
+					? button.GetInputDeviceComponent()->GetID().GetString() : "", i );
 		}
 	}
 }

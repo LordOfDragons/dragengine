@@ -19,31 +19,32 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef _DEOXRDPGOOGLEDAYDREAMCONTROLLER_H_
-#define _DEOXRDPGOOGLEDAYDREAMCONTROLLER_H_
+#ifndef _DEOXRDPHTCVIVEFOCUS3CONTROLLERINTERACTION_H_
+#define _DEOXRDPHTCVIVEFOCUS3CONTROLLERINTERACTION_H_
 
 #include "deoxrDPBaseTwoHandController.h"
 
 
 /**
- * Google daydream controller controller profile.
+ * HTC Vive Focus3 Controller profile.
  */
-class deoxrDPGoogleDaydreamController : public deoxrDPBaseTwoHandController{
+class deoxrDPHTCViveFocus3ControllerInteraction : public deoxrDPBaseTwoHandController{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create device profile. */
-	deoxrDPGoogleDaydreamController( deoxrInstance &instance );
+	deoxrDPHTCViveFocus3ControllerInteraction( deoxrInstance &instance );
 	
 protected:
 	/** Clean up device profile. */
-	virtual ~deoxrDPGoogleDaydreamController();
+	virtual ~deoxrDPHTCViveFocus3ControllerInteraction();
 	/*@}*/
 	
 	
 protected:
-	virtual void pAddDevice( bool left );
+	virtual bool pProfileEnabled() const;
 	virtual void pSuggestBindings();
+	virtual void pAddDevice( bool left );
 };
 
 #endif

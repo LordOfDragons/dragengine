@@ -89,12 +89,26 @@ deoxrAction *deoxrActionSet::GetActionNamed( const char *name ) const{
 	return nullptr;
 }
 
-deoxrAction *deoxrActionSet::AddAction( deoxrAction::eType type, const char *name, const char *localizedName ){
+deoxrAction *deoxrActionSet::AddAction( deoxrAction::eType type,
+const char *name, const char *localizedName ){
 	if( GetActionNamed( name ) ){
 		DETHROW_INFO( deeInvalidParam, decString( "duplicate action: " ) + name );
 	}
 	
-	const deoxrAction::Ref action( deoxrAction::Ref::New( new deoxrAction( *this, type, name, localizedName ) ) );
+	const deoxrAction::Ref action( deoxrAction::Ref::New(
+		new deoxrAction( *this, type, name, localizedName ) ) );
+	pActions.Add( action );
+	return action;
+}
+
+deoxrAction *deoxrActionSet::AddAction( deoxrAction::eType type, const char *name,
+const char *localizedName, const XrPath *subactionPath, int subactionPathCount ){
+	if( GetActionNamed( name ) ){
+		DETHROW_INFO( deeInvalidParam, decString( "duplicate action: " ) + name );
+	}
+	
+	const deoxrAction::Ref action( deoxrAction::Ref::New( new deoxrAction(
+		*this, type, name, localizedName, subactionPath, subactionPathCount ) ) );
 	pActions.Add( action );
 	return action;
 }

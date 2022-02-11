@@ -22,13 +22,13 @@
 #ifndef _DEOXRDPOCULUSGOCONTROLLER_H_
 #define _DEOXRDPOCULUSGOCONTROLLER_H_
 
-#include "deoxrDeviceProfile.h"
+#include "deoxrDPBaseTwoHandController.h"
 
 
 /**
  * Oculus Go Controller profile.
  */
-class deoxrDPOculusGoController : public deoxrDeviceProfile{
+class deoxrDPOculusGoController : public deoxrDPBaseTwoHandController{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
@@ -41,13 +41,9 @@ protected:
 	/*@}*/
 	
 	
-	
-public:
-	/** \name Management */
-	/*@{*/
-	/** Suggest bindings. */
-	virtual void SuggestBindings();
-	/*@}*/
+protected:
+	virtual void pSuggestBindings();
+	virtual void pAddDevice( bool left );
 };
 
 #endif

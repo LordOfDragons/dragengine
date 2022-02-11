@@ -23,6 +23,7 @@
 #include <string.h>
 
 #include "deoxrLoader.h"
+#include "deoxrApiLayer.h"
 #include "deVROpenXR.h"
 #include "deoxrGlobalFunctions.h"
 #include "deoxrBasics.h"
@@ -33,6 +34,8 @@
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/common/file/decDiskFileReader.h>
 #include <dragengine/common/utils/decTimer.h>
+#include <dragengine/filesystem/deContainerFileSearch.h>
+#include <dragengine/filesystem/dePathList.h>
 #include <dragengine/filesystem/deVFSDiskDirectory.h>
 #include <dragengine/systems/modules/deBaseModule.h>
 #include <dragengine/threading/deThread.h>
@@ -81,6 +84,9 @@ pLibHandle( NULL )
 		pLoadFunctions();
 		oxr.LogInfo( "OpenXR functions loaded" );
 		
+		// find api layers
+		pFindApiLayers();
+		
 	}catch( const deException & ){
 		pCleanUp();
 		throw;
@@ -96,6 +102,13 @@ deoxrLoader::~deoxrLoader(){
 // Management
 ///////////////
 
+int deoxrLoader::GetApiLayerCount() const{
+	return pApiLayers.GetCount();
+}
+
+deoxrApiLayer *deoxrLoader::GetApiLayerAt( int index ) const{
+	return ( deoxrApiLayer* )pApiLayers.GetAt( index );
+}
 
 
 
@@ -136,6 +149,8 @@ void deoxrLoader::pCleanUp(){
 #endif
 #endif
 	}
+	
+	pApiLayers.RemoveAll();
 	
 	if( pLibHandle ){
 		#ifdef OS_BEOS
@@ -320,6 +335,81 @@ void deoxrLoader::pNegotiate(){
 	
 	OXR_CHECK( pOxr, fNegotiate( &loaderInfo, &runtimeRequest ) );
 	xrGetInstanceProcAddr = runtimeRequest.getInstanceProcAddr;
+}
+
+void deoxrLoader::pFindApiLayers(){
+	class cLoadApiLayer : public deContainerFileSearch{
+		deVROpenXR &pOxr;
+		const decPath pBasePath;
+		decObjectOrderedSet &pApiLayers;
+		
+	public:
+		cLoadApiLayer( deVROpenXR &oxr, const decPath &basePath, decObjectOrderedSet &apiLayers ) :
+			pOxr( oxr ), pBasePath( basePath ), pApiLayers( apiLayers ){}
+		
+		void Add( const char *name, deVFSContainer::eFileTypes type ){
+			if( type != deVFSContainer::eftRegularFile ){
+				return;
+			}
+			
+			decPath path( pBasePath );
+			path.AddUnixPath( name );
+			
+			const decString filename( path.GetPathNative() );
+			pOxr.LogInfoFormat( "Loading API layer config file: %s", filename.GetString() );
+			try{
+				pApiLayers.Add( deoxrApiLayer::Ref::New( new deoxrApiLayer( pOxr, filename ) ) );
+				
+			}catch( const deException &e ){
+				pOxr.LogException( e );
+			}
+		}
+		
+		void Remove( const char * ){}
+	};
+	
+	#ifdef OS_UNIX
+	const decPath home( decPath::CreatePathUnix( pGetHomeDirectory() ) );
+	decStringList directories;
+	
+	const char *envPath = getenv( "XDG_CONFIG_HOME" );
+	if( envPath ){
+		directories += decString( envPath ).Split( ':' );
+	}
+	
+	envPath = getenv( "XDG_CONFIG_DIRS" );
+	if( envPath ){
+		directories += decString( envPath ).Split( ':' );
+	}
+	
+	directories += "~/.config";
+	directories += "/etc";
+	
+	const int count = directories.GetCount();
+	const deVFSDiskDirectory::Ref container( deVFSDiskDirectory::Ref::New( new deVFSDiskDirectory(
+		decPath::CreatePathUnix( "/" ), decPath::CreatePathUnix( "/" ), true ) ) );
+	const decPath childPath( decPath::CreatePathUnix( "openxr/1/api_layers/explicit.d" ) );
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		decPath path( decPath::CreatePathUnix( directories.GetAt( i ) ) );
+		if( path.GetComponentCount() > 0 && path.GetComponentAt( 0 ) == "~" ){
+			path.RemoveComponentFrom( 0 );
+			path = home + path;
+		}
+		
+		path += childPath;
+		
+		if( container->ExistsFile( path ) ){
+			cLoadApiLayer loadApiLayer( pOxr, path, pApiLayers );
+			container->SearchFiles( path, loadApiLayer );
+		}
+	}
+	
+	#elif defined OS_W32
+	// HKEY_LOCAL_MACHINE\SOFTWARE\Khronos\OpenXR\1
+	// string value "ActiveRuntime" is path to json file
+	#endif
 }
 
 #ifdef OS_UNIX

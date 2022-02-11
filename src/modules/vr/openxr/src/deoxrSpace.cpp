@@ -34,16 +34,15 @@
 // class deoxrSpace
 //////////////////////
 
-deoxrSpace::deoxrSpace( deoxrSession &session, XrReferenceSpaceType type ) :
+deoxrSpace::deoxrSpace( deoxrSession &session, XrReferenceSpaceType referenceType ) :
 pSession( session ),
-pType( type ),
 pSpace( XR_NULL_HANDLE )
 {
 	try{
 		XrReferenceSpaceCreateInfo createInfo;
 		memset( &createInfo, 0, sizeof( createInfo ) );
 		createInfo.type = XR_TYPE_REFERENCE_SPACE_CREATE_INFO;
-		createInfo.referenceSpaceType = type;
+		createInfo.referenceSpaceType = referenceType;
 		createInfo.poseInReferenceSpace.orientation.w = 1.0f;
 		
 		OXR_CHECK( session.GetSystem().GetInstance().GetOxr(),
@@ -51,6 +50,50 @@ pSpace( XR_NULL_HANDLE )
 				session.GetSession(), &createInfo, &pSpace ) );
 		
 		// xrGetReferenceSpaceBoundsRect : get chaperone
+		
+	}catch( const deException & ){
+		pCleanUp();
+		throw;
+	}
+}
+
+deoxrSpace::deoxrSpace( deoxrSession &session, const deoxrAction &action,
+	const deoxrPath &subactionPath, const decVector &poseRotation ) :
+pSession( session ),
+pSpace( XR_NULL_HANDLE )
+{
+	try{
+		XrActionSpaceCreateInfo createInfo;
+		memset( &createInfo, 0, sizeof( createInfo ) );
+		createInfo.type = XR_TYPE_ACTION_SPACE_CREATE_INFO;
+		createInfo.action = action.GetAction();
+		createInfo.subactionPath = subactionPath;
+		deoxrUtils::Convert( poseRotation, createInfo.poseInActionSpace.orientation );
+		
+		OXR_CHECK( session.GetSystem().GetInstance().GetOxr(),
+			session.GetSystem().GetInstance().xrCreateActionSpace(
+				session.GetSession(), &createInfo, &pSpace ) );
+		
+	}catch( const deException & ){
+		pCleanUp();
+		throw;
+	}
+}
+
+deoxrSpace::deoxrSpace( deoxrSession &session, const deoxrAction &action ) :
+pSession( session ),
+pSpace( XR_NULL_HANDLE )
+{
+	try{
+		XrActionSpaceCreateInfo createInfo;
+		memset( &createInfo, 0, sizeof( createInfo ) );
+		createInfo.type = XR_TYPE_ACTION_SPACE_CREATE_INFO;
+		createInfo.action = action.GetAction();
+		createInfo.poseInActionSpace.orientation.w = 1.0f;
+		
+		OXR_CHECK( session.GetSystem().GetInstance().GetOxr(),
+			session.GetSystem().GetInstance().xrCreateActionSpace(
+				session.GetSession(), &createInfo, &pSpace ) );
 		
 	}catch( const deException & ){
 		pCleanUp();

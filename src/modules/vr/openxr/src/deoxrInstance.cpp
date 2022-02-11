@@ -25,6 +25,8 @@
 #include "deVROpenXR.h"
 #include "deoxrGlobalFunctions.h"
 #include "deoxrInstance.h"
+#include "deoxrLoader.h"
+#include "deoxrApiLayer.h"
 #include "action/deoxrAction.h"
 
 #include <dragengine/common/exceptions.h>
@@ -73,9 +75,15 @@ pInstance( XR_NULL_HANDLE )
 	pSupportsExtension[ extHTCXViveTrackerInteraction ].name = XR_HTCX_VIVE_TRACKER_INTERACTION_EXTENSION_NAME;
 	pSupportsExtension[ extMNDHeadless ].name = XR_MND_HEADLESS_EXTENSION_NAME;
 	pSupportsExtension[ extEXTDebugUtils ].name = XR_EXT_DEBUG_UTILS_EXTENSION_NAME;
+	pSupportsExtension[ extEXTHPMixedRealityController ].name = XR_EXT_HP_MIXED_REALITY_CONTROLLER_EXTENSION_NAME;
+	pSupportsExtension[ extEXTSamsungOdysseyController ].name = XR_EXT_SAMSUNG_ODYSSEY_CONTROLLER_EXTENSION_NAME;
+	pSupportsExtension[ extHTCViveCosmosControllerInteraction ].name = XR_HTC_VIVE_COSMOS_CONTROLLER_INTERACTION_EXTENSION_NAME;
+	pSupportsExtension[ extHTCViveFocus3ControllerInteraction ].name = XR_HTC_VIVE_FOCUS3_CONTROLLER_INTERACTION_EXTENSION_NAME;
+	pSupportsExtension[ extHUAWEIControllerInteraction ].name = XR_HUAWEI_CONTROLLER_INTERACTION_EXTENSION_NAME;
+	pSupportsExtension[ extMSFTHandInteraction ].name = XR_MSFT_HAND_INTERACTION_EXTENSION_NAME;
 	
 	memset( &pSupportsLayer, 0, sizeof( pSupportsLayer ) );
-	pSupportsLayer[ layerLunarCoreValidation ].name = "XR_LUNARG_core_validation";
+	pSupportsLayer[ layerLunarCoreValidation ].name = "XR_APILAYER_LUNARG_core_validation";
 	
 	#define INSTANCE_LEVEL_OPENXR_FUNCTION( name ) name = XR_NULL_HANDLE;
 	#define INSTANCE_LEVEL_OPENXR_FUNCTION_FROM_EXTENSION( name, extension ) name = XR_NULL_HANDLE;
@@ -236,21 +244,61 @@ void deoxrInstance::pDetectExtensions(){
 }
 
 void deoxrInstance::pDetectLayers(){
-	uint32_t count = 0;
-	if( xrEnumerateApiLayerProperties ){ // if missing VR RunTime is broken
-		OXR_CHECK( pOxr, xrEnumerateApiLayerProperties( 0, &count, XR_NULL_HANDLE ) );
+	/*
+	the OpenXR-SDK loader does not use this method but searches for libraries directly
+	
+	// linux
+	#define OPENXR_RELATIVE_PATH "openxr/"
+	#define OPENXR_IMPLICIT_API_LAYER_RELATIVE_PATH "/api_layers/implicit.d"
+	#define OPENXR_EXPLICIT_API_LAYER_RELATIVE_PATH "/api_layers/explicit.d"
+	
+	// windows
+	#define OPENXR_REGISTRY_LOCATION "SOFTWARE\\Khronos\\OpenXR\\"
+	#define OPENXR_IMPLICIT_API_LAYER_REGISTRY_LOCATION "\\ApiLayers\\Implicit"
+	#define OPENXR_EXPLICIT_API_LAYER_REGISTRY_LOCATION "\\ApiLayers\\Explicit"
+	
+	 */
+	uint32_t runtimeCount = 0;
+	if( xrEnumerateApiLayerProperties ){
+		OXR_CHECK( pOxr, xrEnumerateApiLayerProperties( 0, &runtimeCount, XR_NULL_HANDLE ) );
 	}
+	
+	const uint32_t loaderCount = pOxr.GetLoader()->GetApiLayerCount();
+	uint32_t i, count = runtimeCount;
 	
 	XrApiLayerProperties *layers = nullptr;
 	try{
-		if( count > 0 ){
-			layers = new XrApiLayerProperties[ count ];
-			OXR_CHECK( pOxr, xrEnumerateApiLayerProperties( count, &count, layers ) );
+		if( runtimeCount + loaderCount > 0 ){
+			layers = new XrApiLayerProperties[ runtimeCount + loaderCount ];
+			memset( layers, 0, sizeof( XrApiLayerProperties ) * ( runtimeCount + loaderCount ) );
+			for( i=0; i<runtimeCount+loaderCount; i++ ){
+				layers[ i ].type = XR_TYPE_API_LAYER_PROPERTIES;
+			}
+			
+			if( xrEnumerateApiLayerProperties ){
+				OXR_CHECK( pOxr, xrEnumerateApiLayerProperties( runtimeCount, &runtimeCount, layers ) );
+			}
+		}
+		
+		// load api layers the loader found
+		for( i=0; i<loaderCount; i++ ){
+			deoxrApiLayer &apiLayer = *pOxr.GetLoader()->GetApiLayerAt( i );
+			try{
+				apiLayer.LoadLibrary();
+				if( apiLayer.IsLoaded() ){
+					XrApiLayerProperties &next = layers[ count++ ];
+					strncpy( next.layerName, apiLayer.GetName(), sizeof( next.layerName ) - 1 );
+					strncpy( next.description, apiLayer.GetName(), sizeof( next.layerName ) - 1 );
+					next.layerVersion = 1;
+					next.specVersion = XR_MAKE_VERSION( 1, 0, 0 );
+				}
+				
+			}catch( const deException &e ){
+				pOxr.LogException( e );
+			}
 		}
 		
 		// report all layers for debug purpose
-		uint32_t i;
-		
 		pOxr.LogInfo( "Layers:" );
 		for( i=0; i<count; i++ ){
 			pOxr.LogInfoFormat( "- %s: %d (%d.%d.%d) [%s]",
@@ -335,7 +383,7 @@ void deoxrInstance::pCreateInstance( bool enableValidationLayers ){
 	const char *layers[ LayerCount ];
 	uint32_t layerCount = 0;
 	
-	if( enableValidationLayers && SupportsExtension( extEXTDebugUtils ) ){
+	if( enableValidationLayers /* && SupportsExtension( extEXTDebugUtils ) */ ){
 		if( SupportsLayer( layerLunarCoreValidation ) ){
 			layers[ layerCount++ ] = pSupportsLayer[ layerLunarCoreValidation ].name;
 		}

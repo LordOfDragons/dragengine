@@ -19,31 +19,31 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef _DEOXRDPGOOGLEDAYDREAMCONTROLLER_H_
-#define _DEOXRDPGOOGLEDAYDREAMCONTROLLER_H_
+#ifndef _DEOXRDPOCULUSTOUCHCONTROLLER_H_
+#define _DEOXRDPOCULUSTOUCHCONTROLLER_H_
 
 #include "deoxrDPBaseTwoHandController.h"
 
 
 /**
- * Google daydream controller controller profile.
+ * Occulus touch controller profile.
  */
-class deoxrDPGoogleDaydreamController : public deoxrDPBaseTwoHandController{
+class deoxrDPOculusTouchController : public deoxrDPBaseTwoHandController{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create device profile. */
-	deoxrDPGoogleDaydreamController( deoxrInstance &instance );
+	deoxrDPOculusTouchController( deoxrInstance &instance );
 	
 protected:
 	/** Clean up device profile. */
-	virtual ~deoxrDPGoogleDaydreamController();
+	virtual ~deoxrDPOculusTouchController();
 	/*@}*/
 	
 	
 protected:
-	virtual void pAddDevice( bool left );
 	virtual void pSuggestBindings();
+	virtual void pAddDevice( bool left );
 };
 
 #endif

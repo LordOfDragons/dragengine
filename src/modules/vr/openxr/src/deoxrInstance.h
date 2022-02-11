@@ -66,6 +66,12 @@ public:
 		extHTCFacialTracking, //<! XR_HTC_facial_tracking
 		extHTCXViveTrackerInteraction, //<! XR_HTCX_vive_tracker_interaction
 		extMNDHeadless, //<! XR_MND_headless
+		extEXTHPMixedRealityController, // <! XR_EXT_hp_mixed_reality_controller
+		extEXTSamsungOdysseyController, // <! XR_EXT_samsung_odyssey_controller
+		extHTCViveCosmosControllerInteraction, // <! XR_HTC_vive_cosmos_controller_interaction
+		extHTCViveFocus3ControllerInteraction, // <! XR_HTC_vive_focus3_controller_interaction
+		extHUAWEIControllerInteraction, // <! XR_HUAWEI_controller_interaction
+		extMSFTHandInteraction, // <! XR_MSFT_hand_interaction
 		extEXTDebugUtils //<! XR_EXT_debug_utils
 	};
 	
@@ -73,7 +79,7 @@ public:
 	
 	/** Layers. */
 	enum eLayer{
-		layerLunarCoreValidation, //<! XR_LUNARG_core_validation
+		layerLunarCoreValidation, //<! XR_APILAYER_LUNARG_core_validation
 	};
 	
 	static const int LayerCount = layerLunarCoreValidation + 1;

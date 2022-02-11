@@ -63,6 +63,10 @@ void deoxrDPHMD::CheckAttached(){
 void deoxrDPHMD::SuggestBindings(){
 }
 
+void deoxrDPHMD::ClearActions(){
+	pRemoveDevice();
+}
+
 
 
 // Protected

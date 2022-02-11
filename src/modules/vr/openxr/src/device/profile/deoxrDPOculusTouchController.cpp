@@ -22,7 +22,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "deoxrDPValveIndexController.h"
+#include "deoxrDPOculusTouchController.h"
 #include "../deoxrDeviceAxis.h"
 #include "../deoxrDeviceButton.h"
 #include "../deoxrDeviceComponent.h"
@@ -34,20 +34,20 @@
 
 
 
-// Class deoxrDPValveIndexController
+// Class deoxrDPOculusTouchController
 //////////////////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
 
-deoxrDPValveIndexController::deoxrDPValveIndexController( deoxrInstance &instance ) :
+deoxrDPOculusTouchController::deoxrDPOculusTouchController( deoxrInstance &instance ) :
 deoxrDPBaseTwoHandController( instance,
-	deoxrPath( instance, "/interaction_profiles/valve/index_controller" ),
-	"Valve Index Controller" )
+	deoxrPath( instance, "/interaction_profiles/oculus/touch_controller" ),
+	"Occulus Touch Controller" )
 {
 }
 
-deoxrDPValveIndexController::~deoxrDPValveIndexController(){
+deoxrDPOculusTouchController::~deoxrDPOculusTouchController(){
 }
 
 
@@ -55,36 +55,40 @@ deoxrDPValveIndexController::~deoxrDPValveIndexController(){
 // Private Functions
 //////////////////////
 
-void deoxrDPValveIndexController::pSuggestBindings(){
+void deoxrDPOculusTouchController::pSuggestBindings(){
 	// Valid for user paths:
 	// - /user/hand/left
 	// - /user/hand/right
 	// 
 	// Supported component paths:
-	// - /input/system/click (may not be available for application use)
-	// - /input/system/touch (may not be available for application use)
+	// On /user/hand/left only:
+	// - /input/x/click
+	// - /input/x/touch
+	// - /input/y/click
+	// - /input/y/touch
+	// - /input/menu/click
+	// 
+	// On /user/hand/right only:
 	// - /input/a/click
 	// - /input/a/touch
 	// - /input/b/click
 	// - /input/b/touch
+	// - /input/system/click (may not be available for application use)
+	// 
+	// Both hands:
 	// - /input/squeeze/value
-	// - /input/squeeze/force
-	// - /input/trigger/click
 	// - /input/trigger/value
 	// - /input/trigger/touch
 	// - /input/thumbstick/x
 	// - /input/thumbstick/y
 	// - /input/thumbstick/click
 	// - /input/thumbstick/touch
-	// - /input/trackpad/x
-	// - /input/trackpad/y
-	// - /input/trackpad/force
-	// - /input/trackpad/touch
+	// - /input/thumbrest/touch
 	// - /input/grip/pose
 	// - /input/aim/pose
 	// - /output/haptic
 	
-	const int bindingCount = 18 * 2;
+	const int bindingCount = 11 * 2 + 5 + 5;
 	deoxrInstance::sSuggestBinding bindings[ bindingCount ];
 	deoxrInstance::sSuggestBinding *b = bindings;
 	
@@ -92,6 +96,7 @@ void deoxrDPValveIndexController::pSuggestBindings(){
 	const decString basePathList[ 2 ] = { "/user/hand/left", "/user/hand/right" };
 	int i;
 	
+	// both hands
 	for( i=0; i<2; i++ ){
 		const decString &basePath = basePathList[ i ];
 		
@@ -99,81 +104,75 @@ void deoxrDPValveIndexController::pSuggestBindings(){
 		
 		pAdd( b, deVROpenXR::eiaGripPress, basePath + "/input/squeeze/value" );
 		pAdd( b, deVROpenXR::eiaGripGrab, basePath + "/input/squeeze/value" );
-		pAdd( b, deVROpenXR::eiaGripSqueeze, basePath + "/input/squeeze/force" );
 		
-		pAdd( b, deVROpenXR::eiaTriggerPress, basePath + "/input/trigger/click" );
+		pAdd( b, deVROpenXR::eiaTriggerPress, basePath + "/input/trigger/value" );
 		pAdd( b, deVROpenXR::eiaTriggerAnalog, basePath + "/input/trigger/value" );
 		pAdd( b, deVROpenXR::eiaTriggerTouch, basePath + "/input/trigger/touch" );
-		
-		pAdd( b, deVROpenXR::eiaButtonPrimaryPress, basePath + "/input/a/click" );
-		pAdd( b, deVROpenXR::eiaButtonPrimaryTouch, basePath + "/input/a/touch" );
-		
-		pAdd( b, deVROpenXR::eiaButtonSecondaryPress, basePath + "/input/b/click" );
-		pAdd( b, deVROpenXR::eiaButtonSecondaryTouch, basePath + "/input/b/touch" );
 		
 		pAdd( b, deVROpenXR::eiaJoystickAnalog, basePath + "/input/thumbstick" );
 		pAdd( b, deVROpenXR::eiaJoystickPress, basePath + "/input/thumbstick/click" );
 		pAdd( b, deVROpenXR::eiaJoystickTouch, basePath + "/input/thumbstick/touch" );
 		
-		pAdd( b, deVROpenXR::eiaTrackpadAnalog, basePath + "/input/trackpad" );
-		pAdd( b, deVROpenXR::eiaTrackpadPress, basePath + "/input/trackpad/force" );
-		pAdd( b, deVROpenXR::eiaTrackpadTouch, basePath + "/input/trackpad/touch" );
+		pAdd( b, deVROpenXR::eiaThumbrestTouch, basePath + "/input/thumbrest/touch" );
 		
 		pAdd( b, deVROpenXR::eiaGripHaptic, basePath + "/output/haptic" );
 	}
+	
+	// left hand
+	pAdd( b, deVROpenXR::eiaButtonPrimaryPress, "/user/hand/left/input/x/click" );
+	pAdd( b, deVROpenXR::eiaButtonPrimaryTouch, "/user/hand/left/input/x/touch" );
+	
+	pAdd( b, deVROpenXR::eiaButtonSecondaryPress, "/user/hand/left/input/y/click" );
+	pAdd( b, deVROpenXR::eiaButtonSecondaryTouch, "/user/hand/left/input/y/touch" );
+	
+	pAdd( b, deVROpenXR::eiaButtonAuxiliary1Press, "/user/hand/left/input/menu/click" );
+	
+	// right hand
+	pAdd( b, deVROpenXR::eiaButtonPrimaryPress, "/user/hand/right/input/a/click" );
+	pAdd( b, deVROpenXR::eiaButtonPrimaryTouch, "/user/hand/right/input/a/touch" );
+	
+	pAdd( b, deVROpenXR::eiaButtonSecondaryPress, "/user/hand/right/input/b/click" );
+	pAdd( b, deVROpenXR::eiaButtonSecondaryTouch, "/user/hand/right/input/b/touch" );
+	
+	pAdd( b, deVROpenXR::eiaButtonAuxiliary1Press, "/user/hand/right/input/system/click" );
 	
 	
 	GetInstance().SuggestBindings( GetPath(), bindings, bindingCount );
 }
 
-void deoxrDPValveIndexController::pAddDevice( bool left ){
+void deoxrDPOculusTouchController::pAddDevice( bool left ){
 	deoxrDevice::Ref &device = left ? pDeviceLeft : pDeviceRight;
 	if( device ){
 		return;
 	}
 	
-	pCreateDevice( device, left, "ic_", decVector( 45.0f, 0.0f, 0.0f ) );
+	pCreateDevice( device, left, "otc_", decVector( 45.0f, 0.0f, 0.0f ) );
 	
 	deoxrDeviceComponent * const trigger = pAddComponentTrigger( device );
 	pAddAxisTrigger( device, trigger );
 	pAddButtonTrigger( device, trigger, true ); // has to be button 0
 	
-	pAddButton( device, ebaPrimary, eblA, true ); // has to be button 1
-	pAddButton( device, ebaSecondary, eblB, true ); // has to be button 2
+	if( left ){
+		pAddButton( device, ebaPrimary, eblX, true ); // has to be button 1
+		pAddButton( device, ebaSecondary, eblY, true ); // has to be button 2
+		pAddButton( device, ebaAuxiliary1, eblHome, false ); // has to be button 3
+		
+	}else{
+		pAddButton( device, ebaPrimary, eblA, true ); // has to be button 1
+		pAddButton( device, ebaSecondary, eblB, true ); // has to be button 2
+		pAddButton( device, ebaAuxiliary1, eblSystem, false ); // has to be button 3
+	}
 	
 	deoxrDeviceComponent * const joystick = pAddComponentJoystick( device );
 	pAddAxesJoystick( device, joystick );
 	pAddButtonJoystick( device, joystick, true, true );
 	
-	deoxrDeviceComponent * const trackpad = pAddComponentTrackpad( device );
-	pAddAxesTrackpad( device, trackpad );
-	pAddButtonTrackpad( device, trackpad, true, true );
+	deoxrDeviceComponent * const thumbrest = pAddComponentThumbrest( device );
+	pAddButtonThumbrest( device, thumbrest );
 	
 	deoxrDeviceComponent * const grip = pAddComponentGrip( device );
 	pAddAxesGripGrab( device, grip );
-	pAddAxesGripSqueeze( device, grip );
-// 	pAddAxesGripPinch( device, grip );
 	pAddButtonGrip( device, grip, false );
-	
-	// finger bending and spreading
-	pAddHandTracker( device, left );
-	
-	/*
-	deoxrDeviceComponent * const compHand = device->AddComponent(
-		deInputDeviceComponent::ectGeneric, "Hand Pose", "handPose", "Hand Pose" );
-	
-	// ?? /input/finger/index {middle,ring,pinky}
-	device->AddAxisFinger( deInputDeviceAxis::eatFingerBend, compHand, 0, "Bend Thumb", "fb1", "FB1" );
-	device->AddAxisFinger( deInputDeviceAxis::eatFingerBend, compHand, 1, "Bend Index Finger", "fb2", "FB2" );
-	device->AddAxisFinger( deInputDeviceAxis::eatFingerBend, compHand, 2, "Bend Middle Finger", "fb3", "FB3" );
-	device->AddAxisFinger( deInputDeviceAxis::eatFingerBend, compHand, 3, "Bend Ring Finger", "fb4", "FB4" );
-	device->AddAxisFinger( deInputDeviceAxis::eatFingerBend, compHand, 4, "Bend Pinky Finger", "fb5", "FB5" );
-	
-	device->AddAxisFinger( deInputDeviceAxis::eatFingerSpread, compHand, 0, "Spread Thumb Index Finger", "fs1", "FS1" );
-	device->AddAxisFinger( deInputDeviceAxis::eatFingerSpread, compHand, 1, "Spread Index Middle Finger", "fs2", "FS2" );
-	device->AddAxisFinger( deInputDeviceAxis::eatFingerSpread, compHand, 2, "Spread Middle Ring Finger", "fs3", "FS3" );
-	device->AddAxisFinger( deInputDeviceAxis::eatFingerSpread, compHand, 3, "Spread Ring Pinky Finger", "fs4", "FS4" );
-	*/
 	
 	// add device
 	GetInstance().GetOxr().GetDevices().Add( device );

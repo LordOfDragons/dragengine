@@ -19,31 +19,32 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef _DEOXRDPGOOGLEDAYDREAMCONTROLLER_H_
-#define _DEOXRDPGOOGLEDAYDREAMCONTROLLER_H_
+#ifndef _DEOXRDPMSFTHANDINTERACTION_H_
+#define _DEOXRDPMSFTHANDINTERACTION_H_
 
 #include "deoxrDPBaseTwoHandController.h"
 
 
 /**
- * Google daydream controller controller profile.
+ * MSFT Hand Interaction profile.
  */
-class deoxrDPGoogleDaydreamController : public deoxrDPBaseTwoHandController{
+class deoxrDPMSFTHandInteraction : public deoxrDPBaseTwoHandController{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create device profile. */
-	deoxrDPGoogleDaydreamController( deoxrInstance &instance );
+	deoxrDPMSFTHandInteraction( deoxrInstance &instance );
 	
 protected:
 	/** Clean up device profile. */
-	virtual ~deoxrDPGoogleDaydreamController();
+	virtual ~deoxrDPMSFTHandInteraction();
 	/*@}*/
 	
 	
 protected:
-	virtual void pAddDevice( bool left );
+	virtual bool pProfileEnabled() const;
 	virtual void pSuggestBindings();
+	virtual void pAddDevice( bool left );
 };
 
 #endif

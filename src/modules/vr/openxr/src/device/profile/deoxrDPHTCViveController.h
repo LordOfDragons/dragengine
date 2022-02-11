@@ -22,13 +22,13 @@
 #ifndef _DEOXRDPHTCVIVECONTROLLER_H_
 #define _DEOXRDPHTCVIVECONTROLLER_H_
 
-#include "deoxrDeviceProfile.h"
+#include "deoxrDPBaseTwoHandController.h"
 
 
 /**
  * HTC Vive Controller profile.
  */
-class deoxrDPHTCViveController : public deoxrDeviceProfile{
+class deoxrDPHTCViveController : public deoxrDPBaseTwoHandController{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
@@ -41,13 +41,9 @@ protected:
 	/*@}*/
 	
 	
-	
-public:
-	/** \name Management */
-	/*@{*/
-	/** Suggest bindings. */
-	virtual void SuggestBindings();
-	/*@}*/
+protected:
+	virtual void pSuggestBindings();
+	virtual void pAddDevice( bool left );
 };
 
 #endif

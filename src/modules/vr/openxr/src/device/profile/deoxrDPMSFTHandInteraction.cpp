@@ -21,7 +21,7 @@
 
 #include <stdlib.h>
 
-#include "deoxrDPOculusGoController.h"
+#include "deoxrDPMSFTHandInteraction.h"
 #include "../../deVROpenXR.h"
 #include "../../deoxrInstance.h"
 
@@ -29,20 +29,20 @@
 
 
 
-// Class deoxrDPOculusGoController
-////////////////////////////////////
+// Class deoxrDPMSFTHandInteraction
+/////////////////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
 
-deoxrDPOculusGoController::deoxrDPOculusGoController( deoxrInstance &instance ) :
+deoxrDPMSFTHandInteraction::deoxrDPMSFTHandInteraction( deoxrInstance &instance ) :
 deoxrDPBaseTwoHandController( instance,
-	deoxrPath( instance, "/interaction_profiles/oculus/go_controller" ),
-	"Oculus Go Controller" )
+	deoxrPath( instance, "/interaction_profiles/microsoft/hand_interaction" ),
+	"MSFT Hand Controller" )
 {
 }
 
-deoxrDPOculusGoController::~deoxrDPOculusGoController(){
+deoxrDPMSFTHandInteraction::~deoxrDPMSFTHandInteraction(){
 }
 
 
@@ -50,23 +50,18 @@ deoxrDPOculusGoController::~deoxrDPOculusGoController(){
 // Private Functions
 //////////////////////
 
-void deoxrDPOculusGoController::pSuggestBindings(){
-	// Valid for user paths:
+void deoxrDPMSFTHandInteraction::pSuggestBindings(){
+	// Valid for top level user path:
 	// - /user/hand/left
 	// - /user/hand/right
 	// 
 	// Supported component paths:
-	// - /input/system/click (may not be available for application use)
-	// - /input/trigger/click
-	// - /input/back/click
-	// - /input/trackpad/x
-	// - /input/trackpad/y
-	// - /input/trackpad/click
-	// - /input/trackpad/touch
-	// - /input/grip/pose
+	// - /input/select/value
+	// - /input/squeeze/value
 	// - /input/aim/pose
+	// - /input/grip/pose
 	
-	const int bindingCount = 7 * 2;
+	const int bindingCount = 5 * 2;
 	deoxrInstance::sSuggestBinding bindings[ bindingCount ];
 	deoxrInstance::sSuggestBinding *b = bindings;
 	
@@ -79,38 +74,36 @@ void deoxrDPOculusGoController::pSuggestBindings(){
 		
 		pAdd( b, pGripPoseAction( i == 0 ), basePath + "/input/aim/pose" );
 		
-		pAdd( b, deVROpenXR::eiaTriggerPress, basePath + "/input/trigger/click" );
+		pAdd( b, deVROpenXR::eiaGripPress, basePath + "/input/squeeze/value" );
+		pAdd( b, deVROpenXR::eiaGripGrab, basePath + "/input/squeeze/value" );
 		
-		pAdd( b, deVROpenXR::eiaButtonPrimaryPress, basePath + "/input/back/click" );
-		
-		pAdd( b, deVROpenXR::eiaButtonSecondaryPress, basePath + "/input/system/click" );
-		
-		pAdd( b, deVROpenXR::eiaTrackpadAnalog, basePath + "/input/trackpad" );
-		pAdd( b, deVROpenXR::eiaTrackpadPress, basePath + "/input/trackpad/click" );
-		pAdd( b, deVROpenXR::eiaTrackpadTouch, basePath + "/input/trackpad/touch" );
+		pAdd( b, deVROpenXR::eiaTriggerAnalog, basePath + "/input/select/value" );
+		pAdd( b, deVROpenXR::eiaTriggerPress, basePath + "/input/select/value" );
 	}
 	
 	
 	GetInstance().SuggestBindings( GetPath(), bindings, bindingCount );
 }
 
-void deoxrDPOculusGoController::pAddDevice( bool left ){
+bool deoxrDPMSFTHandInteraction::pProfileEnabled() const{
+	return GetInstance().SupportsExtension( deoxrInstance::extMSFTHandInteraction );
+}
+
+void deoxrDPMSFTHandInteraction::pAddDevice( bool left ){
 	deoxrDevice::Ref &device = left ? pDeviceLeft : pDeviceRight;
 	if( device ){
 		return;
 	}
 	
-	pCreateDevice( device, left, "ogc_", decVector( 45.0f, 0.0f, 0.0f ) );
+	pCreateDevice( device, left, "msfthc_", decVector( 45.0f, 0.0f, 0.0f ) );
 	
 	deoxrDeviceComponent * const trigger = pAddComponentTrigger( device );
+	pAddAxisTrigger( device, trigger );
 	pAddButtonTrigger( device, trigger, false ); // has to be button 0
 	
-	pAddButton( device, ebaPrimary, eblBack, false ); // has to be button 1
-	pAddButton( device, ebaSecondary, eblSystem, false ); // has to be button 2
-	
-	deoxrDeviceComponent * const trackpad = pAddComponentTrackpad( device );
-	pAddAxesTrackpad( device, trackpad );
-	pAddButtonTrackpad( device, trackpad, true, true );
+	deoxrDeviceComponent * const grip = pAddComponentGrip( device );
+	pAddAxesGripGrab( device, grip );
+	pAddButtonGrip( device, grip, false );
 	
 	// add device
 	GetInstance().GetOxr().GetDevices().Add( device );

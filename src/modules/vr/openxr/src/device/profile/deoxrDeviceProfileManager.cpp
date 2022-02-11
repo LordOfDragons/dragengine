@@ -70,3 +70,12 @@ void deoxrDeviceProfileManager::CheckAllAttached(){
 		( ( deoxrDeviceProfile* )pProfiles.GetAt( i ) )->CheckAttached();
 	}
 }
+
+void deoxrDeviceProfileManager::ClearActions(){
+	const int count = pProfiles.GetCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		( ( deoxrDeviceProfile* )pProfiles.GetAt( i ) )->ClearActions();
+	}
+}

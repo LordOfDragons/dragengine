@@ -64,6 +64,9 @@ public:
 	
 	/** Check attached state for all profiles. */
 	void CheckAllAttached();
+	
+	/** Clear actions. */
+	void ClearActions();
 	/*@}*/
 };
 

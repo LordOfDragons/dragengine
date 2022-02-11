@@ -22,6 +22,9 @@
 #ifndef _DEOXRDEVICEPROFILE_H_
 #define _DEOXRDEVICEPROFILE_H_
 
+#include "../deoxrDevice.h"
+#include "../deoxrDeviceComponent.h"
+#include "../deoxrDeviceButton.h"
 #include "../../deoxrBasics.h"
 #include "../../deoxrInstance.h"
 #include "../../deoxrPath.h"
@@ -32,6 +35,8 @@
 
 class deoxrInstance;
 class deoxrSession;
+class deoxrHandTracker;
+class deoxrActionSet;
 
 
 /**
@@ -41,6 +46,29 @@ class deoxrDeviceProfile : public deObject{
 public:
 	/** Reference. */
 	typedef deTObjectReference<deoxrDeviceProfile> Ref;
+	
+	
+	
+protected:
+	enum eButtonLabel{
+		eblA,
+		eblB,
+		eblX,
+		eblY,
+		eblHome,
+		eblSystem,
+		eblShoulder,
+		eblBack,
+		eblVolumeUp,
+		eblVolumeDown
+	};
+	
+	enum eButtonAction{
+		ebaPrimary,
+		ebaSecondary,
+		ebaAuxiliary1,
+		ebaAuxiliary2
+	};
 	
 	
 	
@@ -77,11 +105,17 @@ public:
 	/** Name. */
 	inline const decString &GetName() const{ return pName; }
 	
+	/** Create actions for action set. */
+	virtual void CreateActions( deoxrActionSet &actionSet );
+	
 	/** Check attached. */
 	virtual void CheckAttached();
 	
 	/** Suggest bindings. */
 	virtual void SuggestBindings() = 0;
+	
+	/** Clear actions. */
+	virtual void ClearActions();
 	/*@}*/
 	
 	
@@ -89,10 +123,50 @@ public:
 protected:
 	deoxrSession *pGetSession() const;
 	
-	bool pMatchesProfile( const deoxrPath &path ) const;
+	deVROpenXR::eInputActions pGripPoseAction( bool left ) const;
 	
 	void pAdd( deoxrInstance::sSuggestBinding *&bindings,
 		deVROpenXR::eInputActions inputAction, const char *path ) const;
+	
+	bool pMatchesProfile( const deoxrPath &path ) const;
+	
+	/** Add device with basic parameters for left or right hand. */
+	void pCreateDevice( deoxrDevice::Ref &device, bool leftHand, const char *idPrefix,
+		const decVector &poseRotation );
+	
+	/** Add component. */
+	deoxrDeviceComponent *pAddComponent( deoxrDevice &device,
+		deInputDeviceComponent::eComponentTypes type,
+		const char *name, const char *id, const char *displayText );
+	
+	deoxrDeviceComponent *pAddComponentTrigger( deoxrDevice &device );
+	void pAddAxisTrigger( deoxrDevice &device, deoxrDeviceComponent *component );
+	void pAddButtonTrigger( deoxrDevice &device, deoxrDeviceComponent *component, bool withTouch );
+	
+	deoxrDeviceComponent *pAddComponentTrackpad( deoxrDevice &device );
+	void pAddAxesTrackpad( deoxrDevice &device, deoxrDeviceComponent *component );
+	void pAddButtonTrackpad( deoxrDevice &device, deoxrDeviceComponent *component, bool withPress, bool withTouch );
+	
+	deoxrDeviceComponent *pAddComponentJoystick( deoxrDevice &device );
+	void pAddAxesJoystick( deoxrDevice &device, deoxrDeviceComponent *component );
+	void pAddButtonJoystick( deoxrDevice &device, deoxrDeviceComponent *component, bool withPress, bool withTouch );
+	
+	deoxrDeviceComponent *pAddComponentThumbrest( deoxrDevice &device );
+	void pAddButtonThumbrest( deoxrDevice &device, deoxrDeviceComponent *component );
+	
+	deoxrDeviceComponent *pAddComponentGrip( deoxrDevice &device );
+	void pAddAxesGripGrab( deoxrDevice &device, deoxrDeviceComponent *component );
+	void pAddAxesGripSqueeze( deoxrDevice &device, deoxrDeviceComponent *component );
+	void pAddAxesGripPinch( deoxrDevice &device, deoxrDeviceComponent *component );
+	void pAddButtonGrip( deoxrDevice &device, deoxrDeviceComponent *component, bool withTouch );
+	
+	void pAddButton( deoxrDevice &device, eButtonAction action, eButtonLabel label, bool withTouch );
+	
+	const char *pButtonName( eButtonLabel label ) const;
+	const char *pButtonId( eButtonLabel label ) const;
+	const char *pButtonDisplayText( eButtonLabel label ) const;
+	
+	deoxrHandTracker *pAddHandTracker( deoxrDevice &device, bool leftHand );
 };
 
 #endif

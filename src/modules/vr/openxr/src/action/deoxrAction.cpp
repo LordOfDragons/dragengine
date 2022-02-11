@@ -35,7 +35,7 @@
 /////////////////////////
 
 deoxrAction::deoxrAction( deoxrActionSet &actionSet, eType type, const char *name, const char *localizedName ) :
-pActionSet( actionSet ),
+pActionSet( nullptr ),
 pType( type ),
 pName( name ),
 pLocalizedName( localizedName ),
@@ -83,6 +83,65 @@ pAction( XR_NULL_HANDLE )
 		OXR_CHECK( instance.GetOxr(), instance.xrCreateAction(
 			actionSet.GetActionSet(), &createInfo, &pAction ) );
 		
+		pActionSet = &actionSet;
+		
+	}catch( const deException & ){
+		pCleanUp();
+		throw;
+	}
+}
+
+deoxrAction::deoxrAction( deoxrActionSet &actionSet, eType type, const char *name,
+	const char *localizedName, const XrPath *subactionPath, int subactionPathCount ) :
+pActionSet( nullptr ),
+pType( type ),
+pName( name ),
+pLocalizedName( localizedName ),
+pAction( XR_NULL_HANDLE )
+{
+	deoxrInstance &instance = actionSet.GetInstance();
+	
+	try{
+		XrActionCreateInfo createInfo;
+		memset( &createInfo, 0, sizeof( createInfo ) );
+		createInfo.type = XR_TYPE_ACTION_CREATE_INFO;
+		strncpy( createInfo.actionName, name, sizeof( createInfo.actionName ) - 1 );
+		strncpy( createInfo.localizedActionName, localizedName,
+			sizeof( createInfo.localizedActionName ) - 1 );
+		
+		switch( type ){
+		case etInputBool:
+			createInfo.actionType = XR_ACTION_TYPE_BOOLEAN_INPUT;
+			break;
+			
+		case etInputFloat:
+			createInfo.actionType = XR_ACTION_TYPE_FLOAT_INPUT;
+			break;
+			
+		case etInputVector2:
+			createInfo.actionType = XR_ACTION_TYPE_VECTOR2F_INPUT;
+			break;
+			
+		case etInputPose:
+			createInfo.actionType = XR_ACTION_TYPE_POSE_INPUT;
+			break;
+			
+		case etOutputVibration:
+			createInfo.actionType = XR_ACTION_TYPE_VIBRATION_OUTPUT;
+			break;
+			
+		default:
+			DETHROW( deeInvalidAction );
+		}
+		
+		createInfo.subactionPaths = subactionPath;
+		createInfo.countSubactionPaths = subactionPathCount;
+		
+		OXR_CHECK( instance.GetOxr(), instance.xrCreateAction(
+			actionSet.GetActionSet(), &createInfo, &pAction ) );
+		
+		pActionSet = &actionSet;
+		
 	}catch( const deException & ){
 		pCleanUp();
 		throw;
@@ -98,6 +157,11 @@ deoxrAction::~deoxrAction(){
 // Management
 ///////////////
 
+void deoxrAction::DropActionSet(){
+	pActionSet = nullptr;
+	pAction = nullptr;
+}
+
 
 
 // Private Functions
@@ -105,7 +169,10 @@ deoxrAction::~deoxrAction(){
 
 void deoxrAction::pCleanUp(){
 	if( pAction ){
-		pActionSet.GetInstance().xrDestroyAction( pAction );
-		pAction = XR_NULL_HANDLE;
+		if( pActionSet ){
+			pActionSet->GetInstance().xrDestroyAction( pAction );
+			pActionSet = nullptr;
+		}
+		pAction = nullptr;
 	}
 }

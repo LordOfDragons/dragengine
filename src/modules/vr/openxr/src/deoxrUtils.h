@@ -46,8 +46,17 @@ public:
 	/** Convert XrVector3f to decVector. */
 	static decVector Convert( const XrVector3f &vector );
 	
+	/** Convert euler XrVector3f to decVector. */
+	static decVector ConvertEuler( const XrVector3f &vector );
+	
 	/** Convert XrQuaternionf to decQuaternion. */
 	static decQuaternion Convert( const XrQuaternionf &quaternion );
+	
+	/** Convert decQuaternion to XrQuaternionf. */
+	static void Convert( const decQuaternion &quaternion, XrQuaternionf &xrquat );
+	
+	/** Convert decVector to XrQuaternionf. */
+	static void Convert( const decVector &rotation, XrQuaternionf &xrquat );
 	
 	/** Convert XrPosef to decMatrix. */
 	static decMatrix Convert( const XrPosef &pose );

@@ -51,18 +51,10 @@ deoxrDevice::deoxrDevice( deVROpenXR &oxr, const deoxrDeviceProfile &profile ) :
 pOxr( oxr ),
 pProfile( profile ),
 pBoneConfiguration( deInputDevice::ebcNone ),
-pNameNumber( -1 ),
-pBoneCount( 0 ),
-pPoseBones( nullptr ),
-pPoseBoneCount( 0 )
-{
-	UpdateParameters();
+pNameNumber( -1 ){
 }
 
 deoxrDevice::~deoxrDevice(){
-	if( pPoseBones ){
-		delete [] pPoseBones;
-	}
 }
 
 
@@ -76,6 +68,10 @@ void deoxrDevice::SetIndex( int index ){
 
 void deoxrDevice::SetActionPose( deoxrAction *action ){
 	pActionPose = action;
+}
+
+void deoxrDevice::SetSpacePose( deoxrSpace *space ){
+	pSpacePose = space;
 }
 
 void deoxrDevice::SetActionHandPose( deoxrAction *action ){
@@ -391,6 +387,12 @@ int deoxrDevice::IndexOfComponentWithID( const char *id ) const{
 
 
 
+void deoxrDevice::SetHandTracker( deoxrHandTracker *handTracker ){
+	pHandTracker = handTracker;
+}
+
+
+
 void deoxrDevice::GetInfo( deInputDevice &info ) const{
 	int i;
 	
@@ -481,41 +483,10 @@ void deoxrDevice::UpdateParameters(){
 	
 	// init device dependingon class
 	switch( pDeviceClass ){
-	case vr::TrackedDeviceClass_HMD:
-		pUpdateParametersHMD();
-		break;
-		
-	case vr::TrackedDeviceClass_Controller:
-		pUpdateParametersController();
-		break;
-		
 	case vr::TrackedDeviceClass_GenericTracker:
 		pUpdateParametersTracker();
 		break;
-		
-	case vr::TrackedDeviceClass_TrackingReference:
-		pType = deInputDevice::edtVRBaseStation;
-		pName.Format( "Base Station %d", pNameNumber );
-// 		pDisplayText.Format( "%d", );
-		pID.Format( "%sbs", OVR_DEVID_PREFIX );
-		break;
-		
-	default:
-		pType = deInputDevice::edtGeneric;
-		pName.Empty();
-		pID.Empty();
-		return;
 	}
-	
-	// display name. seems to always return "lighthouse". how stupid is that :(
-	/*
-	pOxr.GetSystem().GetStringTrackedDeviceProperty( pDeviceIndex,
-		vr::Prop_TrackingSystemName_String, buffer, 256, &error );
-	if( error != vr::TrackedProp_Success ){
-		DETHROW_INFO( deeInvalidParam, "GetStringTrackedDeviceProperty failed" );
-	}
-	pName = buffer;
-	*/
 	
 	// append serial number to id to make it unique (hopefully)
 	pID += "_";
@@ -526,64 +497,50 @@ void deoxrDevice::UpdateParameters(){
 }
 
 void deoxrDevice::TrackStates(){
+	const deoxrInstance &instance = pOxr.GetInstance();
+	const deoxrSession &session = pOxr.GetSession();
+	
 	if( pType == deInputDevice::edtVRHMD ){
-		deoxrSession * const session = pOxr.GetSession();
-		if( session ){
-			pPoseDevice.SetPosition( session->GetHeadPosition() );
-			pPoseDevice.SetOrientation( session->GetHeadOrientation() );
-			pPoseDevice.SetLinearVelocity( session->GetHeadLinearVelocity() );
-			pPoseDevice.SetAngularVelocity( session->GetHeadAngularVelocity() );
-		}
+		pPosePosition = session.GetHeadPosition();
+		pPoseOrientation = session.GetHeadOrientation();
+		pPoseLinearVelocity = session.GetHeadLinearVelocity();
+		pPoseAngularVelocity = session.GetHeadAngularVelocity();
+		
+		pPoseDevice.SetPosition( pPosePosition );
+		pPoseDevice.SetOrientation( pPoseOrientation );
+		pPoseDevice.SetLinearVelocity( pPoseLinearVelocity );
+		pPoseDevice.SetAngularVelocity( pPoseAngularVelocity );
 	}
 	
-	if( pActionPose ){
-		/*
+	if( pActionPose && pSpacePose ){
 		XrActionStateGetInfo getInfo;
 		memset( &getInfo, 0, sizeof( getInfo ) );
 		getInfo.type = XR_TYPE_ACTION_STATE_GET_INFO;
 		getInfo.action = pActionPose->GetAction();
 		getInfo.subactionPath = pSubactionPath;
 		
-		hrmp... we need an ActionSpace to get the pose... more complicated things
-		*/
+		XrActionStatePose state;
+		memset( &state, 0, sizeof( state ) );
+		state.type = XR_TYPE_ACTION_STATE_POSE;
+		
+		if( XR_SUCCEEDED( instance.xrGetActionStatePose( session.GetSession(), &getInfo, &state ) )
+		&& state.isActive ){
+			pSpacePose->LocateSpace( session.GetSpace(), session.GetPredictedDisplayTime(),
+				pPosePosition, pPoseOrientation, pPoseLinearVelocity, pPoseAngularVelocity );
+			
+			pPoseDevice.SetPosition( pPosePosition );
+			pPoseDevice.SetOrientation( pPoseOrientation );
+			pPoseDevice.SetLinearVelocity( pPoseLinearVelocity );
+			pPoseDevice.SetAngularVelocity( pPoseAngularVelocity );
+		}
+	}
+	
+	if( pHandTracker ){
+		pHandTracker->Locate();
+// 		pHandTracker->LogPoseBones( "" );
 	}
 	
 #if 0
-	if( pInputValueHandle == vr::k_ulInvalidInputValueHandle ){
-		ResetStates();
-		pUpdatePose( pOxr.GetDevices().GetDevicePoseAt( pDeviceIndex ), pPoseDevice );
-		return;
-	}
-	
-	vr::EVRInputError error;
-	
-	if( pActionPose != vr::k_ulInvalidActionHandle ){
-		error = pOxr.GetVRInput().GetPoseActionDataForNextFrame( pActionPose,
-			vr::TrackingUniverseStanding, &pDevicePoseData, sizeof( pDevicePoseData), pInputValueHandle );
-		if( error != vr::VRInputError_None ){
-			//pOxr.LogErrorFormat( "GetPoseActionDataForNextFrame failed: %d", error );
-			// spams logs if data is lost
-			//DETHROW_INFO( deeInvalidParam, "GetPoseActionDataForNextFrame failed" );
-			// can be VRInputError_NoData which is fine. better wrong data than fail
-		}
-		
-		if( pDevicePoseData.bActive ){
-			pUpdatePose( pDevicePoseData.pose, pPoseDevice );
-			
-		}else{
-			//pPoseDevice = deInputDevicePose();
-			// reset pose is not good since this can snap the HMD around. a possible solution
-			// is to use the last linear and angular velocity to estimate the next position
-			// while reducing velocites to 0 over a short time. when getting back correct
-			// results this would require smoothly blending over to the correct state to
-			// make the lost tracking not so nauseaing
-		}
-		
-	}else{
-		// track devices not having an input assignment like the HMD
-		pUpdatePose( pOxr.GetDevices().GetDevicePoseAt( pDeviceIndex ), pPoseDevice );
-	}
-	
 	if( pActionHandPose != vr::k_ulInvalidActionHandle ){
 		// skeletal pose can not be limited to a device
 		error = pOxr.GetVRInput().GetSkeletalSummaryData( pActionHandPose,
@@ -657,6 +614,7 @@ void deoxrDevice::GetDevicePose( deInputDevicePose &pose ){
 	pose = pPoseDevice;
 }
 
+#if 0
 void deoxrDevice::GetBonePose( int bone, bool withController, deInputDevicePose &pose ){
 	if( bone < 0 || bone >= pBoneCount ){
 		pose = deInputDevicePose();
@@ -672,181 +630,12 @@ void deoxrDevice::GetBonePose( int bone, bool withController, deInputDevicePose 
 	}
 	*/
 }
+#endif
 
 
 
 // Private Functions
 //////////////////////
-
-void deoxrDevice::pUpdateParametersHMD(){
-	/*
-	pType = deInputDevice::edtVRHMD;
-	pName = "HMD";
-	pID.Format( "%shmd", OVR_DEVID_PREFIX );
-	pInputValuePath = "/user/head";
-// 	pActionPose = pOxr.GetActionHandle( deVROpenXR::eiaPose ); // not working
-	
-	// input source handle
-	vr::EVRInputError inputError = pOxr.GetVRInput().GetInputSourceHandle( pInputValuePath, &pInputValueHandle );
-	if( inputError != vr::VRInputError_None ){
-		pOxr.LogErrorFormat( "Failed retrieving input source handle: %d", inputError );
-		DETHROW_INFO( deeInvalidAction, "Failed retrieving input source handle" );
-	}
-	*/
-}
-
-void deoxrDevice::pUpdateParametersController(){
-	/*
-	//pControllerRole = pOxr.GetSystem().GetControllerRoleForTrackedDeviceIndex( pDeviceIndex );
-	// ^= old input system. unreliable using new system. resorting to device property
-	
-	vr::ETrackedPropertyError propError;
-	pControllerRole = ( vr::ETrackedControllerRole )pOxr.GetVRSystem().GetInt32TrackedDeviceProperty(
-		pDeviceIndex, vr::Prop_ControllerRoleHint_Int32, &propError );
-	if( propError != vr::TrackedProp_Success ){
-		DETHROW_INFO( deeInvalidParam, "Prop_ControllerRoleHint_Int32 failed" );
-	}
-	
-	vr::VRActionHandle_t actionHandPose = vr::k_ulInvalidActionHandle;
-	
-	switch( pControllerRole ){
-	case vr::TrackedControllerRole_LeftHand:
-		pType = deInputDevice::edtVRLeftHand;
-		pName = "Left Hand";
-		pNameNumber = -1;
-		pID.Format( "%scl", OVR_DEVID_PREFIX );
-		pInputValuePath = "/user/hand/left";
-		pActionPose = pOxr.GetActionHandle( deVROpenXR::eiaPose );
-		actionHandPose = pOxr.GetActionHandle( deVROpenXR::eiaSkeletonHandLeft );
-		break;
-		
-	case vr::TrackedControllerRole_RightHand:
-		pType = deInputDevice::edtVRRightHand;
-		pName = "Right Hand";
-		pNameNumber = -1;
-		pID.Format( "%scr", OVR_DEVID_PREFIX );
-		pInputValuePath = "/user/hand/right";
-		pActionPose = pOxr.GetActionHandle( deVROpenXR::eiaPose );
-		actionHandPose = pOxr.GetActionHandle( deVROpenXR::eiaSkeletonHandRight );
-		break;
-		
-	case vr::TrackedControllerRole_Treadmill:
-		pType = deInputDevice::edtVRTreadmill;
-		pName.Format( "Treadmill %d", pNameNumber );
-		pID.Format( "%sct", OVR_DEVID_PREFIX );
-		break;
-		
-	case vr::TrackedControllerRole_Stylus:
-		pType = deInputDevice::edtVRStylus;
-		pName.Format( "Stylus %d", pNameNumber );
-		pID.Format( "%scs", OVR_DEVID_PREFIX );
-		pActionPose = pOxr.GetActionHandle( deVROpenXR::eiaPose );
-		break;
-		
-	default:
-		pType = deInputDevice::edtVRController;
-		pName.Format( "Controller %d", pNameNumber );
-		pActionPose = pOxr.GetActionHandle( deVROpenXR::eiaPose );
-		pID.Format( "%scg", OVR_DEVID_PREFIX );
-	}
-	
-	// input source handle
-	if( ! pInputValuePath.IsEmpty() ){
-		vr::EVRInputError inputError = pOxr.GetVRInput().GetInputSourceHandle( pInputValuePath, &pInputValueHandle );
-		if( inputError != vr::VRInputError_None ){
-			pOxr.LogErrorFormat( "Failed retrieving input source handle: %d", inputError );
-			DETHROW_INFO( deeInvalidAction, "Failed retrieving input source handle" );
-		}
-	}
-	
-	// input data can be only retrieved with a handle
-	if( pInputValueHandle == vr::k_ulInvalidInputValueHandle ){
-		return;
-	}
-	
-	// axes and components
-	const int axisTrigger = pAddAxisTrigger( deInputDeviceAxis::eatTrigger, deVROpenXR::eiaTriggerAnalog, "Trigger", "trig", "Tri" );
-	deoxrDeviceComponent *compTrigger = nullptr;
-	if( axisTrigger != -1 ){
-		compTrigger = pAddComponent( deInputDeviceComponent::ectTrigger, "Trigger", "trigger", "Trigger" );
-		GetAxisAt( axisTrigger )->SetInputDeviceComponent( compTrigger );
-	}
-	
-	const int axisJoystick = pAddAxesJoystick( deVROpenXR::eiaJoystickAnalog, "Joystick", "js", "Joy" );
-	deoxrDeviceComponent *compJoystick = nullptr;
-	if( axisJoystick != -1 ){
-		compJoystick = pAddComponent( deInputDeviceComponent::ectJoystick, "Joystick", "joystick", "Joystick" );
-		GetAxisAt( axisJoystick )->SetInputDeviceComponent( compJoystick );
-		GetAxisAt( axisJoystick + 1 )->SetInputDeviceComponent( compJoystick );
-	}
-	
-	const int axisTrackpad = pAddAxesTrackpad( deVROpenXR::eiaTrackpadAnalog, "TrackPad", "tp", "Pad" );
-	deoxrDeviceComponent *compTrackpad = nullptr;
-	if( axisTrackpad != -1 ){
-		compTrackpad = pAddComponent( deInputDeviceComponent::ectTouchPad, "TrackPad", "trackpad", "TrackPad" );
-		GetAxisAt( axisTrackpad )->SetInputDeviceComponent( compTrackpad );
-		GetAxisAt( axisTrackpad + 1 )->SetInputDeviceComponent( compTrackpad );
-	}
-	
-	const int axisGripGrab = pAddAxisTrigger( deInputDeviceAxis::eatGripGrab,
-		deVROpenXR::eiaGripGrab, "Grab", "gg", "Grab" );
-	const int axisGripSqueeze = pAddAxisTrigger( deInputDeviceAxis::eatGripSqueeze,
-		deVROpenXR::eiaGripSqueeze, "Squeeze", "gs", "Squ" );
-	const int axisGripPinch = pAddAxisTrigger( deInputDeviceAxis::eatGripPinch,
-		deVROpenXR::eiaGripPinch, "Pinch", "gp", "Pin" );
-	deoxrDeviceComponent *compGrip = nullptr;
-	if( axisGripGrab != -1 || axisGripSqueeze != -1 || axisGripPinch != -1 ){
-		compGrip = pAddComponent( deInputDeviceComponent::ectGeneric, "Grip", "grip", "Grip" );
-		if( axisGripGrab != -1 ){
-			GetAxisAt( axisGripGrab )->SetInputDeviceComponent( compGrip );
-		}
-		if( axisGripSqueeze != -1 ){
-			GetAxisAt( axisGripSqueeze )->SetInputDeviceComponent( compGrip );
-		}
-		if( axisGripPinch != -1 ){
-			GetAxisAt( axisGripPinch )->SetInputDeviceComponent( compGrip );
-		}
-	}
-	
-	// buttons
-	if( compTrigger ){
-		pAddButton( deInputDeviceButton::ebtTrigger, compTrackpad, deVROpenXR::eiaTriggerPress,
-			deVROpenXR::eiaTriggerTouch, "Trigger", "trig", "Tri" );
-	}
-	
-	const int btnA = pAddButton( deInputDeviceButton::ebtAction, nullptr,
-		deVROpenXR::eiaButtonPrimaryPress, deVROpenXR::eiaButtonPrimaryTouch, "A", "a", "A" );
-	if( btnA != -1 ){
-		GetButtonAt( btnA )->SetInputDeviceComponent( pAddComponent( deInputDeviceComponent::ectButton, "A", "a", "A" ) );
-	}
-	
-	const int btnB = pAddButton( deInputDeviceButton::ebtAction, nullptr,
-		deVROpenXR::eiaButtonSecondaryPress, deVROpenXR::eiaButtonSecondaryTouch, "B", "b", "B" );
-	if( btnB != -1 ){
-		GetButtonAt( btnB )->SetInputDeviceComponent( pAddComponent( deInputDeviceComponent::ectButton, "B", "b", "B" ) );
-	}
-	
-	if( compJoystick ){
-		pAddButton( deInputDeviceButton::ebtStick, compJoystick, deVROpenXR::eiaJoystickPress,
-			deVROpenXR::eiaJoystickTouch, "Joystick", "js", "Joy" );
-	}
-	
-	if( compTrackpad ){
-		pAddButton( deInputDeviceButton::ebtTouchPad, compTrackpad, deVROpenXR::eiaTrackpadPress,
-			deVROpenXR::eiaTrackpadTouch, "TrackPad", "tp", "Pad" );
-	}
-	
-	if( compGrip ){
-		pAddButton( deInputDeviceButton::ebtTrigger, compGrip, deVROpenXR::eiaGripPress,
-			deVROpenXR::eiaGripTouch, "Grip", "grip", "Grip" );
-	}
-	
-	// hand pose
-	if( actionHandPose != vr::k_ulInvalidActionHandle ){
-		pUpdateParametersHandPose( actionHandPose );
-	}
-	*/
-}
 
 /*
 void deoxrDevice::pUpdateParametersHandPose( vr::VRActionHandle_t actionHandle ){
@@ -891,8 +680,8 @@ void deoxrDevice::pUpdateParametersHandPose( vr::VRActionHandle_t actionHandle )
 }
 */
 
-void deoxrDevice::pUpdateParametersTracker(){
 #if 0
+void deoxrDevice::pUpdateParametersTracker(){
 	pType = deInputDevice::edtVRTracker;
 	pName.Format( "Tracker %d", pNameNumber );
 	pID.Format( "%str", OVR_DEVID_PREFIX );
@@ -906,42 +695,5 @@ void deoxrDevice::pUpdateParametersTracker(){
 	/*vr::EVRInputError inputError = */
 	pOxr.GetVRInput().GetInputSourceHandle( pInputValuePath, &pInputValueHandle );
 	//pOxr.LogInfoFormat("Tracker: path(%s) handle(%lu) error(%d)", pInputValuePath.GetString(), pInputValueHandle, inputError );
+}
 #endif
-}
-
-/*
-void deoxrDevice::pUpdatePose( const vr::TrackedDevicePose_t &in, deInputDevicePose &out ) const{
-	// OpenVR is right handed: right=x, up=y, forward=-z
-	// to transform the matrix apply the conversion (-z) for both the row vectors and
-	// the column vectors
-	if( ! in.bPoseIsValid ){
-		out = deInputDevicePose();
-	}
-	
-	const decMatrix m( pOxr.ConvertMatrix( in.mDeviceToAbsoluteTracking ) );
-	out.SetPosition( m.GetPosition() );
-	out.SetOrientation( m.ToQuaternion() );
-	
-	const vr::HmdVector3_t &lv = in.vVelocity;
-	out.SetLinearVelocity( decVector( lv.v[ 0 ], lv.v[ 1 ], -lv.v[ 2 ] ) );
-	
-	// angular velocity is rotationAxis * rotationAngle. rotationAxis has to be converted
-	// by flipping z coordinate. going from right handed to left handed coordinate frame
-	// requires flipping the rotationAngle, hence all coordinates
-	const vr::HmdVector3_t &av = in.vAngularVelocity;
-	out.SetAngularVelocity( decVector( -av.v[ 0 ], -av.v[ 1 ], av.v[ 2 ] ) );
-}
-*/
-
-/*
-void deoxrDevice::pUpdatePose( const vr::VRBoneTransform_t &in, deInputDevicePose &out ) const{
-	const vr::HmdVector4_t &p = in.position;
-	out.SetPosition( decVector( p.v[ 0 ], p.v[ 1 ], -p.v[ 2 ] ) );
-	
-	const vr::HmdQuaternionf_t &o = in.orientation;
-	out.SetOrientation( decQuaternion( -o.x, -o.y, o.z, -o.w ) );
-	
-	out.SetLinearVelocity( decVector() );
-	out.SetAngularVelocity( decVector() );
-}
-*/

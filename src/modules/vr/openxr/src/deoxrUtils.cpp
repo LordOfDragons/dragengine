@@ -37,8 +37,23 @@ decVector deoxrUtils::Convert( const XrVector3f &vector ){
 	return decVector( vector.x, vector.y, -vector.z );
 }
 
+decVector deoxrUtils::ConvertEuler( const XrVector3f &vector ){
+	return decVector( vector.x, vector.y, -vector.z );
+}
+
 decQuaternion deoxrUtils::Convert( const XrQuaternionf &quaternion ){
 	return decQuaternion( quaternion.x, quaternion.y, -quaternion.z, -quaternion.w );
+}
+
+void deoxrUtils::Convert( const decQuaternion &quaternion, XrQuaternionf &xrquat ){
+	xrquat.x = quaternion.x;
+	xrquat.y = quaternion.y;
+	xrquat.z = -quaternion.z;
+	xrquat.w = -quaternion.w;
+}
+
+void deoxrUtils::Convert( const decVector &rotation, XrQuaternionf &xrquat ){
+	Convert( decQuaternion::CreateFromEuler( rotation ), xrquat );
 }
 
 decMatrix deoxrUtils::Convert( const XrPosef &pose ){

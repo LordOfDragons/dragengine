@@ -19,31 +19,58 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef _DEOXRDPGOOGLEDAYDREAMCONTROLLER_H_
-#define _DEOXRDPGOOGLEDAYDREAMCONTROLLER_H_
+#ifndef _DEOXRDPDPBASETWOHANDCONTROLLER_H_
+#define _DEOXRDPDPBASETWOHANDCONTROLLER_H_
 
-#include "deoxrDPBaseTwoHandController.h"
+#include "deoxrDeviceProfile.h"
+#include "../deoxrDevice.h"
 
 
 /**
- * Google daydream controller controller profile.
+ * Base class for two hand controller profile.
  */
-class deoxrDPGoogleDaydreamController : public deoxrDPBaseTwoHandController{
+class deoxrDPBaseTwoHandController : public deoxrDeviceProfile{
+protected:
+	deoxrDevice::Ref pDeviceLeft;
+	deoxrDevice::Ref pDeviceRight;
+	
+	
+	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create device profile. */
-	deoxrDPGoogleDaydreamController( deoxrInstance &instance );
+	deoxrDPBaseTwoHandController( deoxrInstance &instance, const deoxrPath &path, const char *name );
 	
 protected:
 	/** Clean up device profile. */
-	virtual ~deoxrDPGoogleDaydreamController();
+	virtual ~deoxrDPBaseTwoHandController();
 	/*@}*/
 	
 	
+	
+public:
+	/** \name Management */
+	/*@{*/
+	/** Check attached. */
+	virtual void CheckAttached();
+	
+	/** Suggest bindings. */
+	virtual void SuggestBindings();
+	
+	/** Clear actions. */
+	virtual void ClearActions();
+	/*@}*/
+	
+	
+	
 protected:
-	virtual void pAddDevice( bool left );
-	virtual void pSuggestBindings();
+	virtual bool pProfileEnabled() const;
+	virtual void pSuggestBindings() = 0;
+	
+	virtual void pAddDevice( bool left ) = 0;
+	
+	void pRemoveDevice( bool left );
 };
 
 #endif

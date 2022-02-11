@@ -22,13 +22,13 @@
 #ifndef _DEOXRDPMICROSOFTMIXEDREALITYMOTIONCONTROLLER_H_
 #define _DEOXRDPMICROSOFTMIXEDREALITYMOTIONCONTROLLER_H_
 
-#include "deoxrDeviceProfile.h"
+#include "deoxrDPBaseTwoHandController.h"
 
 
 /**
  * Microsoft mixed reality motion controller profile.
  */
-class deoxrDPMicrosoftMixedRealityMotionController : public deoxrDeviceProfile{
+class deoxrDPMicrosoftMixedRealityMotionController : public deoxrDPBaseTwoHandController{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
@@ -36,18 +36,19 @@ public:
 	deoxrDPMicrosoftMixedRealityMotionController( deoxrInstance &instance );
 	
 protected:
+	/** Create device profile. */
+	deoxrDPMicrosoftMixedRealityMotionController(
+		deoxrInstance &instance, const deoxrPath &path, const char *name );
+	
 	/** Clean up device profile. */
 	virtual ~deoxrDPMicrosoftMixedRealityMotionController();
 	/*@}*/
 	
 	
-	
-public:
-	/** \name Management */
-	/*@{*/
-	/** Suggest bindings. */
-	virtual void SuggestBindings();
-	/*@}*/
+protected:
+	virtual const char *pDeviceIdPrefix() const;
+	virtual void pSuggestBindings();
+	virtual void pAddDevice( bool left );
 };
 
 #endif

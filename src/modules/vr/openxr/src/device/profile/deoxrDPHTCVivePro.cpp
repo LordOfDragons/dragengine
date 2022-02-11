@@ -60,6 +60,7 @@ void deoxrDPHTCVivePro::SuggestBindings(){
 	// - /input/volume_down/click
 	// - /input/mute_mic/click
 	
+#if 0
 	const int bindingCount = 1;
 	deoxrInstance::sSuggestBinding bindings[ bindingCount ];
 	deoxrInstance::sSuggestBinding *b = bindings;
@@ -71,4 +72,5 @@ void deoxrDPHTCVivePro::SuggestBindings(){
 	
 	
 	GetInstance().SuggestBindings( GetPath(), bindings, bindingCount );
+#endif
 }

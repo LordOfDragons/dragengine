@@ -19,8 +19,8 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef _DEOXRLOADER_H_
-#define _DEOXRLOADER_H_
+#ifndef _DEOXRAPILAYER_H_
+#define _DEOXRAPILAYER_H_
 
 #include <dragengine/dragengine_configuration.h>
 
@@ -39,22 +39,30 @@
 #include <dragengine/app/include_windows.h>
 #endif
 
-#include <dragengine/common/collection/decObjectOrderedSet.h>
 #include <dragengine/common/string/decString.h>
+#include <dragengine/deObject.h>
 
 
 class deVROpenXR;
-class deoxrApiLayer;
+class decStringList;
+class decPath;
 
 
 /**
- * OpenXR library loader. Supports loading the OpenXR library as well as retrieving functions.
+ * OpenXR api layer. Supports loading and unloading the layer library.
  */
-class deoxrLoader{
+class deoxrApiLayer : public deObject{
+public:
+	/** Reference. */
+	typedef deTObjectReference<deoxrApiLayer> Ref;
+	
+	
+	
 private:
 	deVROpenXR &pOxr;
-	decString pRuntimeConfigFile;
-	decString pRuntimeLibraryPath;
+	decString pConfigFile;
+	decString pName;
+	decString pLibraryPath;
 	
 	#ifdef OS_BEOS
 	image_id pLibHandle;
@@ -68,51 +76,48 @@ private:
 	HMODULE pLibHandle;
 	#endif
 	
-	decObjectOrderedSet pApiLayers;
-	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create loader. */
-	deoxrLoader( deVROpenXR &oxr );
+	deoxrApiLayer( deVROpenXR &oxr, const char *configFile );
 	
 	/** Clean up loader. */
-	~deoxrLoader();
+	virtual ~deoxrApiLayer();
 	/*@}*/
 	
 	
 	
 	/** \name Management */
 	/*@{*/
-	/** Runtime configuration file or empty string if not found. */
-	inline const decString &GetRuntimeConfigFile() const{ return pRuntimeConfigFile; }
+	/** Configuration file. */
+	inline const decString &GetConfigFile() const{ return pConfigFile; }
 	
-	/** Runtime library path or empty string if not found. */
-	inline const decString &GetRuntimeLibraryPath() const{ return pRuntimeLibraryPath; }
+	/** Name. */
+	inline const decString &GetName() const{ return pName; }
 	
-	/** Count of api layers. */
-	int GetApiLayerCount() const;
+	/** Library path. */
+	inline const decString &GetLibraryPath() const{ return pLibraryPath; }
 	
-	/** API layer at index. */
-	deoxrApiLayer *GetApiLayerAt( int index ) const;
+	/** Library is loaded. */
+	bool IsLoaded() const;
+	
+	/** Load library if not loaded. */
+	void LoadLibrary();
+	
+	/** Unload library if loaded. */
+	void UnloadLibrary();
 	/*@}*/
 	
 	
 	
 private:
 	void pCleanUp();
-	void pLoadOpenXR();
-	void pLoadFunctions();
-	void pFindRuntimeConfigFile();
+	void pLoadLibrary();
 	void pReadConfig();
 	void pNegotiate();
-	void pFindApiLayers();
-	
-	#ifdef OS_UNIX
-	decString pGetHomeDirectory() const;
-	#endif
 };
 
 #endif

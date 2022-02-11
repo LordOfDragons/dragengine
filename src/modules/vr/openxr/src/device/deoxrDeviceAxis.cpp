@@ -189,7 +189,30 @@ void deoxrDeviceAxis::TrackState(){
 		
 	case deInputDeviceAxis::eatStick:
 	case deInputDeviceAxis::eatTouchPad:
-		// has to be read as Vector2f
+		if( pActionAnalog ){
+			XrActionStateGetInfo getInfo;
+			memset( &getInfo, 0, sizeof( getInfo ) );
+			getInfo.type = XR_TYPE_ACTION_STATE_GET_INFO;
+			getInfo.action = pActionAnalog->GetAction();
+			getInfo.subactionPath = pDevice.GetSubactionPath();
+			
+			XrActionStateVector2f state;
+			memset( &state, 0, sizeof( state ) );
+			state.type = XR_TYPE_ACTION_STATE_VECTOR2F;
+			
+			if( XR_SUCCEEDED( instance.xrGetActionStateVector2f( session.GetSession(), &getInfo, &state ) )
+			&& state.isActive ){
+				switch( pComponent ){
+				case 0:
+					UpdateValue( decMath::linearStep( state.currentState.x, pMinimum, pMaximum, -1.0f, 1.0f ) );
+					break;
+					
+				case 1:
+					UpdateValue( decMath::linearStep( state.currentState.y, pMinimum, pMaximum, -1.0f, 1.0f ) );
+					break;
+				}
+			}
+		}
 		break;
 		
 	default:

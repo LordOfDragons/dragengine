@@ -19,31 +19,32 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef _DEOXRDPGOOGLEDAYDREAMCONTROLLER_H_
-#define _DEOXRDPGOOGLEDAYDREAMCONTROLLER_H_
+#ifndef _DEOXRDPHPMIXEDREALITYCONTROLLER_H_
+#define _DEOXRDPHPMIXEDREALITYCONTROLLER_H_
 
 #include "deoxrDPBaseTwoHandController.h"
 
 
 /**
- * Google daydream controller controller profile.
+ * HP Mixed Reality Controller profile.
  */
-class deoxrDPGoogleDaydreamController : public deoxrDPBaseTwoHandController{
+class deoxrDPHPMixedRealityController : public deoxrDPBaseTwoHandController{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create device profile. */
-	deoxrDPGoogleDaydreamController( deoxrInstance &instance );
+	deoxrDPHPMixedRealityController( deoxrInstance &instance );
 	
 protected:
 	/** Clean up device profile. */
-	virtual ~deoxrDPGoogleDaydreamController();
+	virtual ~deoxrDPHPMixedRealityController();
 	/*@}*/
 	
 	
 protected:
-	virtual void pAddDevice( bool left );
+	virtual bool pProfileEnabled() const;
 	virtual void pSuggestBindings();
+	virtual void pAddDevice( bool left );
 };
 
 #endif

@@ -49,18 +49,18 @@
 
 class deVROpenXR;
 
-#ifdef WITH_DEBUG
-	#define OXR_CHECKCOMMANDS 1
-#endif
+// #ifdef WITH_DEBUG
+// 	#define OXR_CHECKCOMMANDS 1
+// #endif
 
-#ifdef OXR_CHECKCOMMANDS
+// #ifdef OXR_CHECKCOMMANDS
 	void deoxrDebugCheckCommand( XrResult result, deVROpenXR &oxr, const char *file, int line );
 	#define OXR_CHECK(oxr,cmd) deoxrDebugCheckCommand( cmd, oxr, __FILE__, __LINE__ )
 	#define OXR_IF_CHECK(cmd) cmd
-	
-#else
-	#define OXR_CHECK(oxr,cmd) cmd
-	#define OXR_IF_CHECK(cmd)
-#endif
+// 	
+// #else
+// 	#define OXR_CHECK(oxr,cmd) cmd
+// 	#define OXR_IF_CHECK(cmd)
+// #endif
 
 #endif

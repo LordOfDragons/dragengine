@@ -126,6 +126,9 @@ public:
 	/** Session is running. */
 	inline bool GetRunning() const{ return pRunning; }
 	
+	/** Predicted display time. */
+	inline XrTime GetPredictedDisplayTime() const{ return pPredictedDisplayTime; }
+	
 	/** Begin session. */
 	void Begin();
 	
@@ -154,7 +157,7 @@ public:
 	void SyncActions();
 	
 	/** Space. */
-	inline deoxrSpace *GetSpace() const{ return pSpaceStage; }
+	inline const deoxrSpace::Ref &GetSpace() const{ return pSpaceStage; }
 	
 	/** Left eye swapchain. */
 	inline deoxrSwapchain *GetSwapchainLeftEye() const{ return pSwapchainLeftEye; }

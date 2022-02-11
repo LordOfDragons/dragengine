@@ -26,13 +26,13 @@
 #include <dragengine/systems/modules/deBaseModule.h>
 
 
-#ifdef OXR_CHECKCOMMANDS
+// #ifdef OXR_CHECKCOMMANDS
 
 void deoxrDebugCheckCommand( XrResult result, deVROpenXR &oxr, const char *file, int line ){
 	#define CASE_ERROR(e) \
 		case e: \
-			oxr.LogException( deeInvalidAction( file, line, #e ) ); \
-			break;
+			/* oxr.LogException( deeInvalidAction( file, line, #e ) ); */ \
+			throw deeInvalidAction( file, line, #e );
 	
 	switch( result ){
 	case XR_SUCCESS:
@@ -125,11 +125,12 @@ void deoxrDebugCheckCommand( XrResult result, deVROpenXR &oxr, const char *file,
 	default:{
 		decString message;
 		message.Format( "Error %x (%d)", result, result );
-		oxr.LogException( deeInvalidAction( __FILE__, __LINE__, message ) );
+		//oxr.LogException( deeInvalidAction( file, line, message ) );
+		throw deeInvalidAction( file, line, message );
 		}
 	}
 	
 	#undef CASE_ERROR
 }
 
-#endif
+// #endif

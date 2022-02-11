@@ -39,7 +39,8 @@ pSystemId( XR_NULL_SYSTEM_ID ),
 pSystem( esUnknown ),
 pMaxLayerCount( 0 ),
 pSupportsOrientationTracking( false ),
-pSupportsPositionTracking( false )
+pSupportsPositionTracking( false ),
+pSupportsHandTracking( false )
 {
 	deVROpenXR &oxr = instance.GetOxr();
 	
@@ -56,6 +57,16 @@ pSupportsPositionTracking( false )
 		XrSystemProperties sysProps;
 		memset( &sysProps, 0, sizeof( sysProps ) );
 		sysProps.type = XR_TYPE_SYSTEM_PROPERTIES;
+		void **next = &sysProps.next;
+		
+		XrSystemHandTrackingPropertiesEXT sysHTProps;
+		
+		if( instance.SupportsExtension( deoxrInstance::extEXTHandTracking ) ){
+			memset( &sysHTProps, 0, sizeof( sysHTProps ) );
+			sysHTProps.type = XR_TYPE_SYSTEM_HAND_TRACKING_PROPERTIES_EXT;
+			*next = &sysHTProps;
+			next = &sysHTProps.next;
+		}
 		
 		OXR_CHECK( oxr, instance.xrGetSystemProperties( instance.GetInstance(), pSystemId, &sysProps ) );
 		
@@ -73,6 +84,10 @@ pSupportsPositionTracking( false )
 			pSystem = esUnknown;
 		}
 		
+		if( instance.SupportsExtension( deoxrInstance::extEXTHandTracking ) ){
+			pSupportsHandTracking = sysHTProps.supportsHandTracking;
+		}
+		
 		instance.GetOxr().LogInfoFormat( "System name: %s", pSystemName.GetString() );
 		instance.GetOxr().LogInfoFormat( "Maximum render image size: %d x %d",
 			pMaxRenderImageSize.x, pMaxRenderImageSize.y );
@@ -81,6 +96,8 @@ pSupportsPositionTracking( false )
 			pSupportsOrientationTracking ? "yes" : "no" );
 		instance.GetOxr().LogInfoFormat( "Supports position tracking: %s",
 			pSupportsOrientationTracking ? "yes" : "no" );
+		instance.GetOxr().LogInfoFormat( "Supports hand tracking: %s",
+			pSupportsHandTracking ? "yes" : "no" );
 		
 		// get view configuration properties
 		XrViewConfigurationProperties viewConfProp;

@@ -23,11 +23,13 @@
 #define _DEOXRSPACE_H_
 
 #include "deoxrBasics.h"
+#include "deoxrPath.h"
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
 
 class deoxrSession;
+class deoxrAction;
 
 
 /**
@@ -43,7 +45,6 @@ public:
 private:
 	deoxrSession &pSession;
 	
-	const XrReferenceSpaceType pType;
 	XrSpace pSpace;
 	
 	
@@ -51,8 +52,15 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Create space. */
-	deoxrSpace( deoxrSession &session, XrReferenceSpaceType type );
+	/** Create reference space. */
+	deoxrSpace( deoxrSession &session, XrReferenceSpaceType referenceType );
+	
+	/** Create action space. */
+	deoxrSpace( deoxrSession &session, const deoxrAction &action,
+		const deoxrPath &subactionPath, const decVector &rotation );
+	
+	/** Create action space. */
+	deoxrSpace( deoxrSession &session, const deoxrAction &action );
 	
 protected:
 	/** Clean up space. */

@@ -56,6 +56,9 @@ public:
 	
 	/** Suggest bindings. */
 	virtual void SuggestBindings();
+	
+	/** Clear actions. */
+	virtual void ClearActions();
 	/*@}*/
 	
 	

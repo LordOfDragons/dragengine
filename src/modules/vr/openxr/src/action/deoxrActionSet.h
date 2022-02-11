@@ -91,7 +91,14 @@ public:
 	deoxrAction *GetActionNamed( const char *name ) const;
 	
 	/** Add action. */
+	void AddAction( deoxrAction *action );
+	
+	/** Add action. */
 	deoxrAction *AddAction( deoxrAction::eType, const char *name, const char *localizedName );
+	
+	/** Add action. */
+	deoxrAction *AddAction( deoxrAction::eType, const char *name, const char *localizedName,
+		const XrPath *subactionPath, int subactionPathCount );
 	
 	/** Add boolean action. */
 	deoxrAction *AddBoolAction( const char *name, const char *localizedName );

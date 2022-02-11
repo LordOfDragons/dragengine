@@ -50,7 +50,7 @@ public:
 	
 	
 private:
-	deoxrActionSet &pActionSet;
+	deoxrActionSet *pActionSet;
 	
 	const eType pType;
 	const decString pName;
@@ -65,6 +65,10 @@ public:
 	/** Create session. */
 	deoxrAction( deoxrActionSet &actionSet, eType type, const char *name, const char *localizedName );
 	
+	/** Create session. */
+	deoxrAction( deoxrActionSet &actionSet, eType type, const char *name,
+		const char *localizedName, const XrPath *subactionPath, int subactionPathCount );
+	
 protected:
 	/** Clean up space. */
 	virtual ~deoxrAction();
@@ -75,8 +79,8 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** Action set. */
-	inline deoxrActionSet &GetActionSet() const{ return pActionSet; }
+	/** Action set or nullptr if dropped. */
+	inline deoxrActionSet *GetActionSet() const{ return pActionSet; }
 	
 	/** Type. */
 	inline eType GetType() const{ return pType; }
@@ -87,8 +91,11 @@ public:
 	/** Localized name. */
 	inline const decString &GetLocalizedName() const{ return pLocalizedName; }
 	
-	/** Action. */
+	/** Action or XR_NULL_HANDLE if dropped. */
 	inline XrAction GetAction() const{ return pAction; }
+	
+	/** Drop action set. */
+	void DropActionSet();
 	/*@}*/
 	
 	

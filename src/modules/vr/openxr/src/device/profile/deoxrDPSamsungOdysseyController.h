@@ -19,31 +19,32 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef _DEOXRDPGOOGLEDAYDREAMCONTROLLER_H_
-#define _DEOXRDPGOOGLEDAYDREAMCONTROLLER_H_
+#ifndef _DEOXRDPSAMSUNGODYSSEYCONTROLLER_H_
+#define _DEOXRDPSAMSUNGODYSSEYCONTROLLER_H_
 
-#include "deoxrDPBaseTwoHandController.h"
+#include "deoxrDPMicrosoftMixedRealityMotionController.h"
 
 
 /**
- * Google daydream controller controller profile.
+ * Samsung Odyssey Controller profile.
  */
-class deoxrDPGoogleDaydreamController : public deoxrDPBaseTwoHandController{
+class deoxrDPSamsungOdysseyController : public deoxrDPMicrosoftMixedRealityMotionController{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create device profile. */
-	deoxrDPGoogleDaydreamController( deoxrInstance &instance );
+	deoxrDPSamsungOdysseyController( deoxrInstance &instance );
 	
 protected:
 	/** Clean up device profile. */
-	virtual ~deoxrDPGoogleDaydreamController();
+	virtual ~deoxrDPSamsungOdysseyController();
 	/*@}*/
 	
 	
+	
 protected:
-	virtual void pAddDevice( bool left );
-	virtual void pSuggestBindings();
+	virtual bool pProfileEnabled() const;
+	virtual const char *pDeviceIdPrefix() const;
 };
 
 #endif

@@ -36,7 +36,7 @@
 ////////////////////////////
 
 deoxrDPSimpleController::deoxrDPSimpleController( deoxrInstance &instance ) :
-deoxrDeviceProfile( instance,
+deoxrDPBaseTwoHandController( instance,
 	deoxrPath( instance, "/interaction_profiles/khr/simple_controller" ),
 	"Simple Controller" )
 {
@@ -47,10 +47,10 @@ deoxrDPSimpleController::~deoxrDPSimpleController(){
 
 
 
-// Management
-///////////////
+// Private Functions
+//////////////////////
 
-void deoxrDPSimpleController::SuggestBindings(){
+void deoxrDPSimpleController::pSuggestBindings(){
 	// Valid for user paths:
 	// - /user/hand/left
 	// - /user/hand/right
@@ -62,7 +62,7 @@ void deoxrDPSimpleController::SuggestBindings(){
 	// - /input/aim/pose
 	// - /output/haptic
 	
-	const int bindingCount = 5 * 2;
+	const int bindingCount = 4 * 2;
 	deoxrInstance::sSuggestBinding bindings[ bindingCount ];
 	deoxrInstance::sSuggestBinding *b = bindings;
 	
@@ -73,10 +73,9 @@ void deoxrDPSimpleController::SuggestBindings(){
 	for( i=0; i<2; i++ ){
 		const decString &basePath = basePathList[ i ];
 		
-		pAdd( b, deVROpenXR::eiaPose, basePath + "/input/aim/pose" );
+		pAdd( b, pGripPoseAction( i == 0 ), basePath + "/input/aim/pose" );
 		
 		pAdd( b, deVROpenXR::eiaTriggerPress, basePath + "/input/select/click" );
-		pAdd( b, deVROpenXR::eiaTriggerAnalog, basePath + "/input/select/click" );
 		
 		pAdd( b, deVROpenXR::eiaButtonPrimaryPress, basePath + "/input/menu/click" );
 		
@@ -85,4 +84,21 @@ void deoxrDPSimpleController::SuggestBindings(){
 	
 	
 	GetInstance().SuggestBindings( GetPath(), bindings, bindingCount );
+}
+
+void deoxrDPSimpleController::pAddDevice( bool left ){
+	deoxrDevice::Ref &device = left ? pDeviceLeft : pDeviceRight;
+	if( device ){
+		return;
+	}
+	
+	pCreateDevice( device, left, "sc_", decVector( 45.0f, 0.0f, 0.0f ) );
+	
+	deoxrDeviceComponent * const trigger = pAddComponentTrigger( device );
+	pAddButtonTrigger( device, trigger, false ); // has to be button 0
+	
+	pAddButton( device, ebaPrimary, eblHome, false ); // has to be button 1
+	
+	// add device
+	GetInstance().GetOxr().GetDevices().Add( device );
 }

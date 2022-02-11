@@ -94,6 +94,9 @@ public:
 	/** Log list of input devices. */
 	void LogDevices();
 	
+	/** Log input device. */
+	void LogDevice( const deoxrDevice &device );
+	
 	
 	
 	/** Normalize identifier. */

@@ -24,11 +24,31 @@
 
 #include "deoxrDeviceProfile.h"
 
+#include <dragengine/common/collection/decObjectOrderedSet.h>
+
 
 /**
  * Vive Tracker profile.
  */
 class deoxrDPHtcViveTracker : public deoxrDeviceProfile{
+private:
+	class Tracker : public deObject{
+	public:
+		typedef deTObjectReference<Tracker> Ref;
+		
+		const deoxrPath path;
+		deoxrDevice::Ref device;
+		deoxrAction::Ref action;
+		int number;
+		
+		Tracker( const deoxrPath &path, int number );
+		virtual ~Tracker();
+	};
+	
+	decObjectOrderedSet pTrackers;
+	
+	
+	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
@@ -45,9 +65,30 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
+	/** Check attached. */
+	virtual void CheckAttached();
+	
+	/** Create actions for action set. */
+	virtual void CreateActions( deoxrActionSet &actionSet );
+	
 	/** Suggest bindings. */
 	virtual void SuggestBindings();
+	
+	/** Clear actions. */
+	virtual void ClearActions();
 	/*@}*/
+	
+	
+	
+private:
+	Tracker *pGetTrackerWith( deoxrDevice *device ) const;
+	Tracker *pGetTrackerWith( XrPath path ) const;
+	decString pSerialFromPath( const deoxrPath &path ) const;
+	void pRemoveAllDevices();
+	void pLoadTrackerDatabase();
+	void pSaveTrackerDatabase();
+	
+	void pAddDevice( Tracker &tracker );
 };
 
 #endif

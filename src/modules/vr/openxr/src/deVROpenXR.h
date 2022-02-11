@@ -22,8 +22,6 @@
 #ifndef _DEVROPENXR_H_
 #define _DEVROPENXR_H_
 
-#include <dragengine/common/collection/decObjectDictionary.h>
-#include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/resources/camera/deCamera.h>
 #include <dragengine/systems/modules/vr/deBaseVRModule.h>
@@ -61,12 +59,17 @@ public:
 		eiaButtonPrimaryTouch,
 		eiaButtonSecondaryPress,
 		eiaButtonSecondaryTouch,
+		eiaButtonAuxiliary1Press,
+		eiaButtonAuxiliary1Touch,
+		eiaButtonAuxiliary2Press,
+		eiaButtonAuxiliary2Touch,
 		eiaJoystickPress,
 		eiaJoystickTouch,
 		eiaJoystickAnalog,
 		eiaTrackpadPress,
 		eiaTrackpadTouch,
 		eiaTrackpadAnalog,
+		eiaThumbrestTouch,
 		eiaGripPress,
 		eiaGripTouch,
 		eiaGripGrab,
@@ -74,8 +77,10 @@ public:
 		eiaGripPinch,
 		eiaGripHaptic,
 		eiaPose,
-		eiaSkeletonHandRight,
-		eiaSkeletonHandLeft
+		eiaPoseLeft,
+		eiaPoseRight,
+		eiaSkeletonHandLeft,
+		eiaSkeletonHandRight
 	};
 	
 	static const int InputActionCount = eiaSkeletonHandLeft + 1;
@@ -119,6 +124,9 @@ public:
 	
 	/** \name Management */
 	/*@{*/
+	/** Loader. */
+	inline deoxrLoader *GetLoader() const{ return pLoader; }
+	
 	/** Device profiles manager. */
 	inline deoxrDeviceProfileManager &GetDeviceProfiles(){ return pDeviceProfiles; }
 	inline const deoxrDeviceProfileManager &GetDeviceProfiles() const{ return pDeviceProfiles; }
@@ -335,16 +343,9 @@ public:
 private:
 	void pRealShutdown();
 	void pCreateActionSet();
+	void pDestroyActionSet();
 	void pCreateDeviceProfiles();
 	void pSuggestBindings();
-	void pSuggestBindingsOculusTouchController();
-	void pSuggestBindingsEyeGazeInput();
-	void pSuggestBindingsHPMixedRealityController();
-	void pSuggestBindingsSamsungOdysseyController();
-	void pSuggestBindingsHTCViveCosmosControllerInteraction();
-	void pSuggestBindingsHTCViveFocus3ControllerInteraction();
-	void pSuggestBindingsHUAWEIControllerInteraction();
-	void pSuggestBindingsMSFTHandInteraction();
 };
 
 #endif

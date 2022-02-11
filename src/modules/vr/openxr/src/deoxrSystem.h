@@ -70,6 +70,8 @@ private:
 	
 	decPoint pRenderSize;
 	
+	bool pSupportsHandTracking;
+	
 	
 	
 public:
@@ -126,6 +128,9 @@ public:
 	
 	/** Render size. */
 	inline const decPoint &GetRenderSize() const{ return pRenderSize; }
+	
+	/** Supports hand tracking. */
+	inline bool GetSupportsHandTracking() const{ return pSupportsHandTracking; }
 	/*@}*/
 	
 	
