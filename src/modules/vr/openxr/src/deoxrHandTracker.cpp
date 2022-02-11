@@ -56,8 +56,7 @@ pMapBoneXrToDe( nullptr )
 		createInfo.hand = hand;
 		createInfo.handJointSet = XR_HAND_JOINT_SET_DEFAULT_EXT;
 		
-		OXR_CHECK( instance.GetOxr(), instance.xrCreateHandTrackerEXT(
-				session.GetSession(), &createInfo, &pHandTracker ) );
+		OXR_CHECK( instance.xrCreateHandTrackerEXT( session.GetSession(), &createInfo, &pHandTracker ) );
 		
 		// create arrays to store joint locations and velocities
 		pJointLocations = new XrHandJointLocationEXT[ XR_HAND_JOINT_COUNT_EXT ];

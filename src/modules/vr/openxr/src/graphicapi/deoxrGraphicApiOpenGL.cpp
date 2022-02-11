@@ -51,8 +51,12 @@ typedef int GLint;
 #define GL_COLOR_ATTACHMENT0 0x8CE0
 #define GL_TEXTURE_2D 0x0DE1
 
-typedef GLXDrawable ( *PFNGLXGETCURRENTDRAWABLE )();
-typedef Bool ( *PFNGLXMAKECURRENT )( Display *dpy, GLXDrawable drawable, GLXContext ctx );
+#ifdef OS_UNIX
+	typedef GLXDrawable ( *PFNGLXGETCURRENTDRAWABLE )();
+	typedef Bool ( *PFNGLXMAKECURRENT )( Display *dpy, GLXDrawable drawable, GLXContext ctx );
+#elif defined OS_W32
+	typedef BOOL ( *PFNWGLMAKECURRENTPROC )( HDC hDc, HGLRC newContext );
+#endif
 typedef void ( *PFNGLGET )( GLenum mode );
 typedef void ( *PFNGLENABLE )( GLenum cap );
 typedef void ( *PFNGLDISABLE )( GLenum cap );
@@ -159,6 +163,7 @@ void deoxrGraphicApiOpenGL::Unload(){
 #endif
 }
 
+#ifdef OS_UNIX
 GLXDrawable deoxrGraphicApiOpenGL::GetCurrentDrawable(){
 	if( ! pFuncGetCurrentDrawable ){
 		DETHROW( deeInvalidParam );
@@ -172,6 +177,15 @@ void deoxrGraphicApiOpenGL::MakeCurrent( Display *dpy, GLXDrawable drawable, GLX
 	}
 	( ( PFNGLXMAKECURRENT )pFuncMakeCurrent )( dpy, drawable, ctx );
 }
+
+#elif defined OS_W32
+void deoxrGraphicApiOpenGL::MakeCurrent( HDC hDc, HGLRC context ){
+	if( ! pFuncMakeCurrent ){
+		DETHROW( deeInvalidParam );
+	}
+	( ( PFNWGLMAKECURRENTPROC )pFuncMakeCurrent )( hDc, context );
+}
+#endif
 
 
 
@@ -197,7 +211,7 @@ void deoxrGraphicApiOpenGL::pLoadLibrary(){
 	}
 	
 #elif defined OS_W32
-	pLibHandle = LoadLibrary( "OpenGL32" );
+	pLibHandle = LoadLibrary( L"OpenGL32" );
 	if( ! pLibHandle ){
 		int err = GetLastError();
 		wchar_t messageBuffer[ 251 ];
@@ -214,8 +228,12 @@ void deoxrGraphicApiOpenGL::pLoadLibrary(){
 }
 
 void deoxrGraphicApiOpenGL::pGetFunctions(){
-	pFuncGetCurrentDrawable = pGetFunction( "glXGetCurrentDrawable" );
-	pFuncMakeCurrent = pGetFunction( "glXMakeCurrent" );
+	#ifdef OS_UNIX
+		pFuncGetCurrentDrawable = pGetFunction( "glXGetCurrentDrawable" );
+		pFuncMakeCurrent = pGetFunction( "glXMakeCurrent" );
+	#elif defined OS_W32
+		pFuncMakeCurrent = pGetFunction( "wglMakeCurrent" );
+	#endif
 	pFuncGetIntegerv = pGetFunction( "glGetIntegerv" );
 	pFuncEnable = pGetFunction( "glEnable" );
 	pFuncDisable = pGetFunction( "glDisable" );
@@ -240,7 +258,7 @@ void *deoxrGraphicApiOpenGL::pGetFunction( const char *name ){
 	func = dlsym( pLibHandle, name );
 	
 #elif defined OS_W32
-	func = GetProcAddress( pLibHandle, name );
+	func = ( LPVOID )GetProcAddress( pLibHandle, name );
 #endif
 	
 	if( ! func ){

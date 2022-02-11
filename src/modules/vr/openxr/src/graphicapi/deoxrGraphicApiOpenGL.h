@@ -123,11 +123,17 @@ public:
 	/** Unload. */
 	void Unload();
 	
+#ifdef OS_UNIX
 	/** Get current drawable. */
 	GLXDrawable GetCurrentDrawable();
 	
 	/** Make current. */
 	void MakeCurrent( Display *dpy, GLXDrawable drawable, GLXContext ctx );
+	
+#elif defined OS_W32
+	/** Make current. */
+	void MakeCurrent( HDC hDc, HGLRC context );
+#endif
 	/*@}*/
 	
 	

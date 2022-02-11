@@ -382,9 +382,7 @@ void deVROpenXR::ProcessEvents(){
 			break;
 			
 		}else if( result != XR_SUCCESS ){
-			#ifdef WITH_DEBUG
-			OXR_CHECK( *this, result );
-			#endif
+			OXR_CHECK( result );
 			break;
 		}
 		

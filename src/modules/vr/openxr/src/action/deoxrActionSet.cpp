@@ -49,8 +49,7 @@ pActionSet( XR_NULL_HANDLE )
 			sizeof( createInfo.localizedActionSetName ) - 1 );
 		createInfo.priority = 0;
 		
-		OXR_CHECK( instance.GetOxr(), instance.xrCreateActionSet(
-			instance.GetInstance(), &createInfo, &pActionSet ) );
+		OXR_CHECK( instance.xrCreateActionSet( instance.GetInstance(), &createInfo, &pActionSet ) );
 		
 	}catch( const deException & ){
 		pCleanUp();

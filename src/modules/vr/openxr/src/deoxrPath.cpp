@@ -43,12 +43,12 @@ pPath( path )
 	
 	uint32_t bufferCountOutput;
 	
-	OXR_CHECK( instance.GetOxr(), instance.xrPathToString( instance.GetInstance(),
+	OXR_CHECK( instance.xrPathToString( instance.GetInstance(),
 		path, 0, &bufferCountOutput, nullptr ) );
 	
 	pName.Set( ' ', bufferCountOutput );
 	
-	OXR_CHECK( instance.GetOxr(), instance.xrPathToString( instance.GetInstance(),
+	OXR_CHECK( instance.xrPathToString( instance.GetInstance(),
 		path, bufferCountOutput, &bufferCountOutput, ( char* )pName.GetString() ) );
 }
 
@@ -56,7 +56,7 @@ deoxrPath::deoxrPath( const deoxrInstance &instance, const char *name ) :
 pPath( XR_NULL_PATH ),
 pName( name )
 {
-	OXR_CHECK( instance.GetOxr(), instance.xrStringToPath( instance.GetInstance(), name, &pPath ) );
+	OXR_CHECK( instance.xrStringToPath( instance.GetInstance(), name, &pPath ) );
 }
 
 deoxrPath::deoxrPath( const deoxrPath &path ) :

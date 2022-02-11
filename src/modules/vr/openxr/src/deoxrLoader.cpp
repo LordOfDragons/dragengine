@@ -169,7 +169,7 @@ void deoxrLoader::pCleanUp(){
 
 void deoxrLoader::pLoadOpenXR(){
 	#ifdef OS_BEOS
-	pLibHandle = load_add_on( "oxr" );
+	pLibHandle = load_add_on( "openxr" );
 	
 	if( pLibHandle < 0 ){
 		DETHROW_INFO( deeInvalidAction, "Load OpenXR image failed" );
@@ -256,8 +256,10 @@ void deoxrLoader::pFindRuntimeConfigFile(){
 	}
 	
 	#elif defined OS_W32
-	// HKEY_LOCAL_MACHINE\SOFTWARE\Khronos\OpenXR\1
-	// string value "ActiveRuntime" is path to json file
+	pRuntimeConfigFile = deOSWindows::GetRegistryValueCurrentUser( "SOFTWARE\\Khronos\\OpenXR\\1", "ActiveRuntime", "" );
+	if( pRuntimeConfigFile.IsEmpty() ){
+		pRuntimeConfigFile = deOSWindows::GetRegistryValue( "SOFTWARE\\Khronos\\OpenXR\\1", "ActiveRuntime", "" );
+	}
 	#endif
 }
 
@@ -333,11 +335,12 @@ void deoxrLoader::pNegotiate(){
 	runtimeRequest.structVersion = XR_RUNTIME_INFO_STRUCT_VERSION;
 	runtimeRequest.structSize = sizeof( runtimeRequest );
 	
-	OXR_CHECK( pOxr, fNegotiate( &loaderInfo, &runtimeRequest ) );
+	OXR_CHECK( fNegotiate( &loaderInfo, &runtimeRequest ) );
 	xrGetInstanceProcAddr = runtimeRequest.getInstanceProcAddr;
 }
 
 void deoxrLoader::pFindApiLayers(){
+	#ifdef OS_UNIX
 	class cLoadApiLayer : public deContainerFileSearch{
 		deVROpenXR &pOxr;
 		const decPath pBasePath;
@@ -368,7 +371,6 @@ void deoxrLoader::pFindApiLayers(){
 		void Remove( const char * ){}
 	};
 	
-	#ifdef OS_UNIX
 	const decPath home( decPath::CreatePathUnix( pGetHomeDirectory() ) );
 	decStringList directories;
 	
@@ -407,8 +409,21 @@ void deoxrLoader::pFindApiLayers(){
 	}
 	
 	#elif defined OS_W32
-	// HKEY_LOCAL_MACHINE\SOFTWARE\Khronos\OpenXR\1
-	// string value "ActiveRuntime" is path to json file
+	// TODO
+	// enum DWORD keys under: HKEY_LOCAL_MACHINE\SOFTWARE\Khronos\OpenXR\1\ApiLayers\Explicit
+	// enum DWORD keys under: HKEY_CURRENT_USER\SOFTWARE\Khronos\OpenXR\1\ApiLayers\Explicit
+	// each key looks like this: "C:\vendor a\layer_a.json"=dword:00000000
+	// key name is file name and key value is 0 to enable layer and 1 to disable
+	
+	// HKEY hKey;
+	// RegOpenKeyExA( HKEY_CURRENT_USER, key, 0, KEY_READ, &hKey )
+	
+	/*
+	pRuntimeConfigFile = deOSWindows::GetRegistryValueCurrentUser( "SOFTWARE\\Khronos\\OpenXR\\1", "ActiveRuntime", "" );
+	if( pRuntimeConfigFile.IsEmpty() ){
+		pRuntimeConfigFile = deOSWindows::GetRegistryValue( "SOFTWARE\\Khronos\\OpenXR\\1", "ActiveRuntime", "" );
+	}
+	*/
 	#endif
 }
 

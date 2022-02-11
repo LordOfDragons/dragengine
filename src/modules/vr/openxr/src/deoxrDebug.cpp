@@ -94,8 +94,7 @@ void deoxrDebug::pRegisterReportCallback(){
 	info.userCallback = ( PFN_xrDebugUtilsMessengerCallbackEXT )DebugMessageCallback;
 	info.userData = this;
 	
-	OXR_CHECK( pInstance.GetOxr(), pInstance.xrCreateDebugUtilsMessengerEXT(
-		pInstance.GetInstance(), &info, &pMessenger ) );
+	OXR_CHECK( pInstance.xrCreateDebugUtilsMessengerEXT( pInstance.GetInstance(), &info, &pMessenger ) );
 	
 	pInstance.GetOxr().LogInfo( "Debug: Message Callback Registered" );
 }

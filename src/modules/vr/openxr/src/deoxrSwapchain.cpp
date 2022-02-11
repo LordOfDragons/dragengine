@@ -62,9 +62,8 @@ pImageCount( 0 )
 			DETHROW_INFO( deeInvalidParam, "no graphic api" );
 		}
 		
-		OXR_CHECK( session.GetSystem().GetInstance().GetOxr(),
-			session.GetSystem().GetInstance().xrCreateSwapchain(
-				session.GetSession(), &createInfo, &pSwapchain ) );
+		OXR_CHECK( session.GetSystem().GetInstance().xrCreateSwapchain(
+			session.GetSession(), &createInfo, &pSwapchain ) );
 		
 		pGetImages();
 		
@@ -94,7 +93,7 @@ void deoxrSwapchain::AcquireImage(){
 	deoxrInstance &instance = pSession.GetSystem().GetInstance();
 	
 	// acquire image
-	OXR_CHECK( instance.GetOxr(), instance.xrAcquireSwapchainImage( pSwapchain, nullptr, &pAcquiredImage ) );
+	OXR_CHECK( instance.xrAcquireSwapchainImage( pSwapchain, nullptr, &pAcquiredImage ) );
 	
 	// wait for image
 	XrSwapchainImageWaitInfo waitInfo;
@@ -102,7 +101,7 @@ void deoxrSwapchain::AcquireImage(){
 	waitInfo.type = XR_TYPE_SWAPCHAIN_IMAGE_WAIT_INFO;
 	waitInfo.timeout = XR_INFINITE_DURATION;
 	
-	OXR_CHECK( instance.GetOxr(), instance.xrWaitSwapchainImage( pSwapchain, &waitInfo ) );
+	OXR_CHECK( instance.xrWaitSwapchainImage( pSwapchain, &waitInfo ) );
 	
 	if( pSession.GetIsGACOpenGL() ){
 		// WARNING SteamVR messes with the current context state causing all future OpenGL
@@ -118,7 +117,7 @@ void deoxrSwapchain::AcquireImage(){
 void deoxrSwapchain::ReleaseImage(){
 	deoxrInstance &instance = pSession.GetSystem().GetInstance();
 	
-	OXR_CHECK( instance.GetOxr(), instance.xrReleaseSwapchainImage( pSwapchain, nullptr ) );
+	OXR_CHECK( instance.xrReleaseSwapchainImage( pSwapchain, nullptr ) );
 	
 	if( pSession.GetIsGACOpenGL() ){
 		// WARNING SteamVR messes with the current context state causing all future OpenGL
@@ -149,11 +148,9 @@ void deoxrSwapchain::pCleanUp(){
 
 void deoxrSwapchain::pGetImages(){
 	deoxrInstance &instance = pSession.GetSystem().GetInstance();
-	deVROpenXR &oxr = instance.GetOxr();
 	
 	uint32_t count, i;
-	OXR_CHECK( oxr, instance.xrEnumerateSwapchainImages(
-		pSwapchain, 0, &count, nullptr ) );
+	OXR_CHECK( instance.xrEnumerateSwapchainImages( pSwapchain, 0, &count, nullptr ) );
 	
 	if( count == 0 ){
 		return;
@@ -169,7 +166,7 @@ void deoxrSwapchain::pGetImages(){
 				images[ i ].type = XR_TYPE_SWAPCHAIN_IMAGE_OPENGL_KHR;
 			}
 			
-			OXR_CHECK( oxr, instance.xrEnumerateSwapchainImages( pSwapchain,
+			OXR_CHECK( instance.xrEnumerateSwapchainImages( pSwapchain,
 				count, &count, ( XrSwapchainImageBaseHeader* )images ) );
 			
 			for( i=0; i<count; i++ ){

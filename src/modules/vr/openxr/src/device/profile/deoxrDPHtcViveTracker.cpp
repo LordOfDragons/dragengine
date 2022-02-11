@@ -89,8 +89,7 @@ void deoxrDPHtcViveTracker::CheckAttached(){
 	uint32_t count, i;
 	int t;
 	
-	OXR_CHECK( instance.GetOxr(), instance.xrEnumerateViveTrackerPathsHTCX(
-		instance.GetInstance(), 0, &count, nullptr ) );
+	OXR_CHECK( instance.xrEnumerateViveTrackerPathsHTCX( instance.GetInstance(), 0, &count, nullptr ) );
 	
 	XrViveTrackerPathsHTCX *trackerPaths = nullptr;
 	
@@ -102,7 +101,7 @@ void deoxrDPHtcViveTracker::CheckAttached(){
 				trackerPaths[ i ].type = XR_TYPE_VIVE_TRACKER_PATHS_HTCX;
 			}
 			
-			OXR_CHECK( instance.GetOxr(), instance.xrEnumerateViveTrackerPathsHTCX(
+			OXR_CHECK( instance.xrEnumerateViveTrackerPathsHTCX(
 				instance.GetInstance(), count, &count, trackerPaths ) );
 			
 			for( i=0; i<count; i++ ){

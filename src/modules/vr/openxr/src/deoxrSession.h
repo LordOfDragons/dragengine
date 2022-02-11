@@ -92,9 +92,14 @@ private:
 	
 	// graphic api connection
 	bool pIsGACOpenGL;
+#ifdef OS_UNIX
 	Display *pGACOpenGLDisplay;
 	GLXDrawable pGACOpenGLDrawable;
 	GLXContext pGACOpenGLContext;
+#elif defined OS_W32
+	HDC pGACOpenGLHDC;
+	HGLRC pGACOpenGLContext;
+#endif
 	
 	
 	

@@ -28,10 +28,9 @@
 
 // #ifdef OXR_CHECKCOMMANDS
 
-void deoxrDebugCheckCommand( XrResult result, deVROpenXR &oxr, const char *file, int line ){
+void deoxrDebugCheckCommand( XrResult result, const char *file, int line ){
 	#define CASE_ERROR(e) \
 		case e: \
-			/* oxr.LogException( deeInvalidAction( file, line, #e ) ); */ \
 			throw deeInvalidAction( file, line, #e );
 	
 	switch( result ){
@@ -125,7 +124,6 @@ void deoxrDebugCheckCommand( XrResult result, deVROpenXR &oxr, const char *file,
 	default:{
 		decString message;
 		message.Format( "Error %x (%d)", result, result );
-		//oxr.LogException( deeInvalidAction( file, line, message ) );
 		throw deeInvalidAction( file, line, message );
 		}
 	}

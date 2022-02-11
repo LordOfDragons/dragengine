@@ -45,9 +45,8 @@ pSpace( XR_NULL_HANDLE )
 		createInfo.referenceSpaceType = referenceType;
 		createInfo.poseInReferenceSpace.orientation.w = 1.0f;
 		
-		OXR_CHECK( session.GetSystem().GetInstance().GetOxr(),
-			session.GetSystem().GetInstance().xrCreateReferenceSpace(
-				session.GetSession(), &createInfo, &pSpace ) );
+		OXR_CHECK( session.GetSystem().GetInstance().xrCreateReferenceSpace(
+			session.GetSession(), &createInfo, &pSpace ) );
 		
 		// xrGetReferenceSpaceBoundsRect : get chaperone
 		
@@ -70,9 +69,8 @@ pSpace( XR_NULL_HANDLE )
 		createInfo.subactionPath = subactionPath;
 		deoxrUtils::Convert( poseRotation, createInfo.poseInActionSpace.orientation );
 		
-		OXR_CHECK( session.GetSystem().GetInstance().GetOxr(),
-			session.GetSystem().GetInstance().xrCreateActionSpace(
-				session.GetSession(), &createInfo, &pSpace ) );
+		OXR_CHECK( session.GetSystem().GetInstance().xrCreateActionSpace(
+			session.GetSession(), &createInfo, &pSpace ) );
 		
 	}catch( const deException & ){
 		pCleanUp();
@@ -91,9 +89,8 @@ pSpace( XR_NULL_HANDLE )
 		createInfo.action = action.GetAction();
 		createInfo.poseInActionSpace.orientation.w = 1.0f;
 		
-		OXR_CHECK( session.GetSystem().GetInstance().GetOxr(),
-			session.GetSystem().GetInstance().xrCreateActionSpace(
-				session.GetSession(), &createInfo, &pSpace ) );
+		OXR_CHECK( session.GetSystem().GetInstance().xrCreateActionSpace(
+			session.GetSession(), &createInfo, &pSpace ) );
 		
 	}catch( const deException & ){
 		pCleanUp();
@@ -118,7 +115,6 @@ decVector &position, decQuaternion &orientation ) const{
 	memset( &location, 0, sizeof( location ) );
 	location.type = XR_TYPE_SPACE_LOCATION;
 	
-	//OXR_CHECK( instance.GetOxr(), instance.xrLocateSpace( pSpace, space.pSpace, time, &location ) );
 	if( ! XR_SUCCEEDED( instance.xrLocateSpace( pSpace, space.pSpace, time, &location ) ) ){
 		return;
 	}
@@ -146,7 +142,6 @@ decQuaternion &orientation, decVector &linearVelocity, decVector &angularVelocit
 	location.pose.orientation.w = 1.0f;
 	location.next = &velocity;
 	
-	//OXR_CHECK( instance.GetOxr(), instance.xrLocateSpace( pSpace, space.pSpace, time, &location ) );
 	if( ! XR_SUCCEEDED( instance.xrLocateSpace( pSpace, space.pSpace, time, &location ) ) ){
 		return;
 	}

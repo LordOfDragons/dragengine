@@ -58,9 +58,14 @@ pFrameRunning( false ),
 pSwapchainFormats( nullptr ),
 pSwapchainFormatCount( 0 ),
 pIsGACOpenGL( false ),
-pGACOpenGLDisplay( nullptr ),
-pGACOpenGLDrawable( 0 ),
-pGACOpenGLContext( nullptr )
+#ifdef OS_UNIX
+	pGACOpenGLDisplay( nullptr ),
+	pGACOpenGLDrawable( 0 ),
+	pGACOpenGLContext( nullptr )
+#elif defined OS_W32
+	pGACOpenGLHDC( NULL ),
+	pGACOpenGLContext( NULL )
+#endif
 {
 	const deoxrInstance &instance = system.GetInstance();
 	deVROpenXR &oxr = instance.GetOxr();
@@ -85,9 +90,14 @@ pGACOpenGLContext( nullptr )
 		deBaseGraphicModule::sGraphicApiConnection gacon;
 		oxr.GetGameEngine()->GetGraphicSystem()->GetActiveModule()->GetGraphicApiConnection( gacon );
 		
-		pGACOpenGLDisplay = ( Display* )gacon.opengl.display;
-		pGACOpenGLDrawable = ( GLXDrawable )gacon.opengl.glxDrawable;
-		pGACOpenGLContext = ( GLXContext )gacon.opengl.glxContext;
+		#ifdef OS_UNIX
+			pGACOpenGLDisplay = ( Display* )gacon.opengl.display;
+			pGACOpenGLDrawable = ( GLXDrawable )gacon.opengl.glxDrawable;
+			pGACOpenGLContext = ( GLXContext )gacon.opengl.glxContext;
+		#elif defined OS_W32
+			pGACOpenGLHDC = ( HDC )gacon.opengl.hDC;
+			pGACOpenGLContext = ( HGLRC )gacon.opengl.hGLRC;
+		#endif
 		
 		// create session info struct depending on what the graphic module supports
 		XrSessionCreateInfo createInfo;
@@ -158,7 +168,7 @@ pGACOpenGLContext( nullptr )
 		createInfo.next = graphicBinding;
 		
 		// create session
-		OXR_CHECK( oxr, instance.xrCreateSession( instance.GetInstance(), &createInfo, &pSession ) );
+		OXR_CHECK( instance.xrCreateSession( instance.GetInstance(), &createInfo, &pSession ) );
 		
 		// create spaces
 		pSpaceStage.TakeOver( new deoxrSpace( *this, XR_REFERENCE_SPACE_TYPE_STAGE ) );
@@ -208,7 +218,7 @@ void deoxrSession::Begin(){
 	memset( &beginInfo, 0, sizeof( beginInfo ) );
 	beginInfo.primaryViewConfigurationType = XR_VIEW_CONFIGURATION_TYPE_PRIMARY_STEREO;
 	
-	OXR_CHECK( instance.GetOxr(), instance.xrBeginSession( pSession, &beginInfo ) );
+	OXR_CHECK( instance.xrBeginSession( pSession, &beginInfo ) );
 	
 	pRunning = true;
 }
@@ -228,7 +238,7 @@ void deoxrSession::End(){
 		// prevent deletion of graphic api resources that are typically linked to another
 		// thread. this will cause memory leaks but better leak than crash if the runtime
 		// is buggy or not very resiliant (like SteamVR for example)
-		OXR_CHECK( instance.GetOxr(), instance.xrEndSession( pSession ) );
+		OXR_CHECK( instance.xrEndSession( pSession ) );
 	}
 	
 	pRunning = false;
@@ -253,7 +263,7 @@ void deoxrSession::AttachActionSet( deoxrActionSet *actionSet ){
 	attachInfo.countActionSets = 1;
 	attachInfo.actionSets = actionSets;
 	
-	OXR_CHECK( instance.GetOxr(), instance.xrAttachSessionActionSets( pSession, &attachInfo ) );
+	OXR_CHECK( instance.xrAttachSessionActionSets( pSession, &attachInfo ) );
 	
 	pAttachedActionSet = actionSet;
 }
@@ -270,7 +280,7 @@ void deoxrSession::WaitFrame(){
 	memset( &state, 0, sizeof( state ) );
 	state.type = XR_TYPE_FRAME_STATE;
 	
-	OXR_CHECK( instance.GetOxr(), instance.xrWaitFrame( pSession, nullptr, &state ) );
+	OXR_CHECK( instance.xrWaitFrame( pSession, nullptr, &state ) );
 	
 	pPredictedDisplayTime = state.predictedDisplayTime;
 	pPredictedDisplayPeriod = state.predictedDisplayPeriod;
@@ -285,7 +295,7 @@ void deoxrSession::BeginFrame(){
 	const deoxrInstance &instance = pSystem.GetInstance();
 	
 	// begin frame
-	OXR_CHECK( instance.GetOxr(), instance.xrBeginFrame( pSession, nullptr ) );
+	OXR_CHECK( instance.xrBeginFrame( pSession, nullptr ) );
 	pFrameRunning = true;
 	
 	// locate views
@@ -305,8 +315,7 @@ void deoxrSession::BeginFrame(){
 	viewLocateInfo.space = pSpaceStage->GetSpace();
 	
 	uint32_t viewCount;
-	OXR_CHECK( instance.GetOxr(), instance.xrLocateViews( pSession,
-		&viewLocateInfo, &viewState, 2, &viewCount, views ) );
+	OXR_CHECK( instance.xrLocateViews( pSession, &viewLocateInfo, &viewState, 2, &viewCount, views ) );
 	
 	pLeftEyePose = views[ 0 ].pose;
 	pLeftEyeFov = views[ 0 ].fov;
@@ -420,7 +429,7 @@ void deoxrSession::EndFrame(){
 	endInfo.layerCount = 1;
 	endInfo.layers = layers;
 	
-	OXR_CHECK( instance.GetOxr(), instance.xrEndFrame( pSession, &endInfo ) );
+	OXR_CHECK( instance.xrEndFrame( pSession, &endInfo ) );
 	pFrameRunning = false;
 	
 	if( pIsGACOpenGL ){
@@ -453,7 +462,7 @@ void deoxrSession::SyncActions(){
 	syncInfo.countActiveActionSets = 1;
 	syncInfo.activeActionSets = activeActionSets;
 	
-	OXR_CHECK( instance.GetOxr(), instance.xrSyncActions( pSession, &syncInfo ) );
+	OXR_CHECK( instance.xrSyncActions( pSession, &syncInfo ) );
 }
 
 void deoxrSession::UpdateLeftEyeHiddenMesh(){
@@ -472,7 +481,8 @@ void deoxrSession::RestoreOpenGLCurrent(){
 			pGACOpenGLDisplay, pGACOpenGLDrawable, pGACOpenGLContext );
 		
 	#elif defined OS_W32
-		#error Add Implementation
+		pSystem.GetInstance().GetOxr().GetGraphicApiOpenGL().MakeCurrent(
+			pGACOpenGLHDC, pGACOpenGLContext );
 	#endif
 }
 
@@ -486,7 +496,7 @@ void deoxrSession::pCleanUp(){
 		const deoxrInstance &instance = pSystem.GetInstance();
 		instance.GetOxr().LogInfoFormat( "Exit Session due to shuting down" );
 		
-		OXR_CHECK( instance.GetOxr(), instance.xrRequestExitSession( pSession ) );
+		OXR_CHECK( instance.xrRequestExitSession( pSession ) );
 		pRunning = false;
 		pPredictedDisplayTime = 0;
 		pPredictedDisplayPeriod = 0;
@@ -524,15 +534,13 @@ void deoxrSession::pEnumSwapchainFormats(){
 	instance.GetOxr().LogInfoFormat( "Enumerate Swapchain Formats:" );
 	
 	uint32_t count;
-	OXR_CHECK( instance.GetOxr(), instance.xrEnumerateSwapchainFormats(
-		pSession, 0, &count, nullptr ) );
+	OXR_CHECK( instance.xrEnumerateSwapchainFormats( pSession, 0, &count, nullptr ) );
 	if( count == 0 ){
 		return;
 	}
 	
 	pSwapchainFormats = new int64_t[ count ];
-	OXR_CHECK( instance.GetOxr(), instance.xrEnumerateSwapchainFormats(
-		pSession, count, &count, pSwapchainFormats ) );
+	OXR_CHECK( instance.xrEnumerateSwapchainFormats( pSession, count, &count, pSwapchainFormats ) );
 	
 	uint32_t i;
 	for( i=0; i<count; i++ ){

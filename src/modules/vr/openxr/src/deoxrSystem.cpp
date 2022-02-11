@@ -42,8 +42,6 @@ pSupportsOrientationTracking( false ),
 pSupportsPositionTracking( false ),
 pSupportsHandTracking( false )
 {
-	deVROpenXR &oxr = instance.GetOxr();
-	
 	try{
 		// create system
 		XrSystemGetInfo getInfo;
@@ -51,7 +49,7 @@ pSupportsHandTracking( false )
 		getInfo.type = XR_TYPE_SYSTEM_GET_INFO;
 		getInfo.formFactor = XR_FORM_FACTOR_HEAD_MOUNTED_DISPLAY;
 		
-		OXR_CHECK( oxr, instance.xrGetSystem( instance.GetInstance(), &getInfo, &pSystemId ) );
+		OXR_CHECK( instance.xrGetSystem( instance.GetInstance(), &getInfo, &pSystemId ) );
 		
 		// get system properties
 		XrSystemProperties sysProps;
@@ -68,7 +66,7 @@ pSupportsHandTracking( false )
 			next = &sysHTProps.next;
 		}
 		
-		OXR_CHECK( oxr, instance.xrGetSystemProperties( instance.GetInstance(), pSystemId, &sysProps ) );
+		OXR_CHECK( instance.xrGetSystemProperties( instance.GetInstance(), pSystemId, &sysProps ) );
 		
 		pSystemName = sysProps.systemName;
 		pMaxRenderImageSize.x = sysProps.graphicsProperties.maxSwapchainImageWidth;
@@ -104,7 +102,7 @@ pSupportsHandTracking( false )
 		memset( &viewConfProp, 0, sizeof( viewConfProp ) );
 		viewConfProp.type = XR_TYPE_VIEW_CONFIGURATION_PROPERTIES;
 		
-		OXR_CHECK( oxr, instance.xrGetViewConfigurationProperties( instance.GetInstance(),
+		OXR_CHECK( instance.xrGetViewConfigurationProperties( instance.GetInstance(),
 			pSystemId, XR_VIEW_CONFIGURATION_TYPE_PRIMARY_STEREO, &viewConfProp ) );
 		
 		(void) viewConfProp.fovMutable;
@@ -117,7 +115,7 @@ pSupportsHandTracking( false )
 		
 		uint32_t viewCount;
 		
-		OXR_CHECK( oxr, instance.xrEnumerateViewConfigurationViews( instance.GetInstance(),
+		OXR_CHECK( instance.xrEnumerateViewConfigurationViews( instance.GetInstance(),
 			pSystemId, XR_VIEW_CONFIGURATION_TYPE_PRIMARY_STEREO, 2, &viewCount, viewConfViews ) );
 		
 		pLeftEyeViewSize.x = viewConfViews[ 0 ].recommendedImageRectWidth;

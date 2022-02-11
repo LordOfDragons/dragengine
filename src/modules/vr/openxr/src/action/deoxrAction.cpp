@@ -80,8 +80,7 @@ pAction( XR_NULL_HANDLE )
 		createInfo.subactionPaths = subactionPaths;
 		createInfo.countSubactionPaths = 2;
 		
-		OXR_CHECK( instance.GetOxr(), instance.xrCreateAction(
-			actionSet.GetActionSet(), &createInfo, &pAction ) );
+		OXR_CHECK( instance.xrCreateAction( actionSet.GetActionSet(), &createInfo, &pAction ) );
 		
 		pActionSet = &actionSet;
 		
@@ -137,8 +136,7 @@ pAction( XR_NULL_HANDLE )
 		createInfo.subactionPaths = subactionPath;
 		createInfo.countSubactionPaths = subactionPathCount;
 		
-		OXR_CHECK( instance.GetOxr(), instance.xrCreateAction(
-			actionSet.GetActionSet(), &createInfo, &pAction ) );
+		OXR_CHECK( instance.xrCreateAction( actionSet.GetActionSet(), &createInfo, &pAction ) );
 		
 		pActionSet = &actionSet;
 		

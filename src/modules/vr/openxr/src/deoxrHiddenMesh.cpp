@@ -182,10 +182,9 @@ void deoxrHiddenMesh::UpdateModel(){
 
 void deoxrHiddenMesh::pFetchData( XrVisibilityMaskKHR &mask ) const{
 	deoxrInstance &instance = pSession.GetSystem().GetInstance();
-	deVROpenXR &oxr = instance.GetOxr();
 	
 	// get counts
-	OXR_CHECK( oxr, instance.xrGetVisibilityMaskKHR( pSession.GetSession(),
+	OXR_CHECK( instance.xrGetVisibilityMaskKHR( pSession.GetSession(),
 		pViewConfig, pViewIndex, XR_VISIBILITY_MASK_TYPE_HIDDEN_TRIANGLE_MESH_KHR, &mask ) );
 	
 	if( mask.vertexCountOutput == 0 || mask.indexCountOutput == 0 ){
@@ -199,7 +198,7 @@ void deoxrHiddenMesh::pFetchData( XrVisibilityMaskKHR &mask ) const{
 	mask.vertexCapacityInput = mask.vertexCountOutput;
 	mask.indexCapacityInput = mask.indexCountOutput;
 	
-	OXR_CHECK( oxr, instance.xrGetVisibilityMaskKHR( pSession.GetSession(),
+	OXR_CHECK( instance.xrGetVisibilityMaskKHR( pSession.GetSession(),
 		pViewConfig, pViewIndex, XR_VISIBILITY_MASK_TYPE_HIDDEN_TRIANGLE_MESH_KHR, &mask ) );
 }
 

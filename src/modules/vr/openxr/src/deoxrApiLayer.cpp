@@ -145,7 +145,7 @@ void deoxrApiLayer::pLoadLibrary(){
 	#ifdef OS_W32
 	wchar_t widePath[ MAX_PATH ];
 	deOSWindows::Utf8ToWide( pLibraryPath, widePath, MAX_PATH );
-	pLibHandle = LoadLibrary( widePath );
+	pLibHandle = ::LoadLibrary( widePath );
 	
 	if( ! pLibHandle ){
 		int err = GetLastError();
@@ -232,7 +232,7 @@ void deoxrApiLayer::pNegotiate(){
 	#endif
 	
 	#ifdef OS_W32
-	fNegotiate = ( PFN_xrNegotiateLoaderRuntimeInterface )GetProcAddress( pLibHandle, "xrNegotiateLoaderApiLayerInterface" );
+	fNegotiate = ( PFN_xrNegotiateLoaderApiLayerInterface )GetProcAddress( pLibHandle, "xrNegotiateLoaderApiLayerInterface" );
 	#endif
 	
 	if( ! fNegotiate ){
@@ -257,7 +257,7 @@ void deoxrApiLayer::pNegotiate(){
 	layerRequest.structVersion = XR_API_LAYER_INFO_STRUCT_VERSION;
 	layerRequest.structSize = sizeof( layerRequest );
 	
-	OXR_CHECK( pOxr, fNegotiate( &loaderInfo, pName, &layerRequest ) );
+	OXR_CHECK( fNegotiate( &loaderInfo, pName, &layerRequest ) );
 	if( ! layerRequest.getInstanceProcAddr ){
 		DETHROW_INFO( deeNullPointer, "negotiate.getInstanceProcAddr" );
 	}

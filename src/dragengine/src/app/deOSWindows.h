@@ -269,6 +269,9 @@ public:
 	static decString GetRegistryValue( const char *key,
 		const char *entry, const char *defaultValue );
 	
+	static decString GetRegistryValueCurrentUser( const char *key,
+		const char *entry, const char *defaultValue );
+	
 	/** \brief Set registry value. */
 	static void SetRegistryValue( const char *key,
 		const char *entry, const char *value );

@@ -424,6 +424,32 @@ decString deOSWindows::GetRegistryValue( const char *key, const char *entry, con
 	return returnValue;
 }
 
+decString deOSWindows::GetRegistryValueCurrentUser( const char *key, const char *entry, const char *defaultValue ){
+	HKEY hKey;
+	if( RegOpenKeyExA( HKEY_CURRENT_USER, key, 0, KEY_READ, &hKey ) != ERROR_SUCCESS ){
+		return defaultValue;
+	}
+	
+	DWORD bufferSize = 0;
+	if( RegQueryValueExA( hKey, entry, 0, NULL, NULL, &bufferSize ) != ERROR_SUCCESS ){
+		RegCloseKey( hKey );
+		return defaultValue;
+	}
+	
+	CHAR * const buffer = new CHAR[ bufferSize ];
+	if( RegQueryValueExA( hKey, entry, 0, NULL, ( LPBYTE )buffer, &bufferSize ) != ERROR_SUCCESS ){
+		delete [] buffer;
+		RegCloseKey( hKey );
+		return defaultValue;
+	}
+	
+	const decString returnValue( buffer );
+	delete [] buffer;
+	RegCloseKey( hKey );
+	
+	return returnValue;
+}
+
 void deOSWindows::SetRegistryValue( const char *key, const char *entry, const char *value ){
 	HKEY hKey;
 	if( RegCreateKeyExA( HKEY_LOCAL_MACHINE, key, 0, NULL, 0, KEY_SET_VALUE, NULL, &hKey, NULL )

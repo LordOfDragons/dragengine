@@ -163,7 +163,7 @@ void deoxrInstance::SuggestBindings( const deoxrPath &profile, const sSuggestBin
 		psb.interactionProfile = profile;
 		psb.suggestedBindings = xrbindings;
 		psb.countSuggestedBindings = count;
-		OXR_CHECK( pOxr, xrSuggestInteractionProfileBindings( pInstance, &psb ) );
+		OXR_CHECK( xrSuggestInteractionProfileBindings( pInstance, &psb ) );
 		
 		delete [] xrbindings;
 		
@@ -190,14 +190,14 @@ void deoxrInstance::pCleanUp(){
 
 void deoxrInstance::pDetectExtensions(){
 	uint32_t count = 0;
-	OXR_CHECK( pOxr, xrEnumerateInstanceExtensionProperties( XR_NULL_HANDLE, 0, &count, XR_NULL_HANDLE ) );
+	OXR_CHECK( xrEnumerateInstanceExtensionProperties( XR_NULL_HANDLE, 0, &count, XR_NULL_HANDLE ) );
 	if( count == 0 ){
 		return;
 	}
 	
 	XrExtensionProperties * const extensions = new XrExtensionProperties[ count ];
 	try{
-		OXR_CHECK( pOxr, xrEnumerateInstanceExtensionProperties( XR_NULL_HANDLE, count, &count, extensions ) );
+		OXR_CHECK( xrEnumerateInstanceExtensionProperties( XR_NULL_HANDLE, count, &count, extensions ) );
 		
 		// report all extensions for debug purpose
 		uint32_t i;
@@ -260,7 +260,7 @@ void deoxrInstance::pDetectLayers(){
 	 */
 	uint32_t runtimeCount = 0;
 	if( xrEnumerateApiLayerProperties ){
-		OXR_CHECK( pOxr, xrEnumerateApiLayerProperties( 0, &runtimeCount, XR_NULL_HANDLE ) );
+		OXR_CHECK( xrEnumerateApiLayerProperties( 0, &runtimeCount, XR_NULL_HANDLE ) );
 	}
 	
 	const uint32_t loaderCount = pOxr.GetLoader()->GetApiLayerCount();
@@ -276,7 +276,7 @@ void deoxrInstance::pDetectLayers(){
 			}
 			
 			if( xrEnumerateApiLayerProperties ){
-				OXR_CHECK( pOxr, xrEnumerateApiLayerProperties( runtimeCount, &runtimeCount, layers ) );
+				OXR_CHECK( xrEnumerateApiLayerProperties( runtimeCount, &runtimeCount, layers ) );
 			}
 		}
 		
@@ -414,7 +414,7 @@ void deoxrInstance::pCreateInstance( bool enableValidationLayers ){
 	}
 	
 	// create device
-	OXR_CHECK( pOxr, xrCreateInstance( &instanceCreateInfo, &pInstance ) );
+	OXR_CHECK( xrCreateInstance( &instanceCreateInfo, &pInstance ) );
 }
 
 void deoxrInstance::pLoadFunctions(){

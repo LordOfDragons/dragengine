@@ -38,6 +38,7 @@
 	#define XR_USE_PLATFORM_XLIB
 
 #elif defined OS_W32
+	#include <dragengine/app/include_windows.h>
 	typedef struct HDC__ *HDC;
 	typedef struct HGLRC__ *HGLRC;
 	
@@ -47,20 +48,7 @@
 #include <openxr/openxr.h>
 #include <openxr/openxr_platform.h>
 
-class deVROpenXR;
-
-// #ifdef WITH_DEBUG
-// 	#define OXR_CHECKCOMMANDS 1
-// #endif
-
-// #ifdef OXR_CHECKCOMMANDS
-	void deoxrDebugCheckCommand( XrResult result, deVROpenXR &oxr, const char *file, int line );
-	#define OXR_CHECK(oxr,cmd) deoxrDebugCheckCommand( cmd, oxr, __FILE__, __LINE__ )
-	#define OXR_IF_CHECK(cmd) cmd
-// 	
-// #else
-// 	#define OXR_CHECK(oxr,cmd) cmd
-// 	#define OXR_IF_CHECK(cmd)
-// #endif
+void deoxrDebugCheckCommand( XrResult result, const char *file, int line );
+#define OXR_CHECK(cmd) deoxrDebugCheckCommand( cmd, __FILE__, __LINE__ )
 
 #endif
