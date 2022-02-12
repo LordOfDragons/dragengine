@@ -26,6 +26,7 @@
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/input/deInputDevice.h>
 #include <dragengine/input/deInputDevicePose.h>
 
 class deoxrSession;
@@ -110,7 +111,7 @@ public:
 	
 private:
 	void pCleanUp();
-	void pSetBoneMapping( int index, int to, int from );
+	void pSetBoneMapping( int index, deInputDevice::eHandBones to, XrHandJointEXT from );
 };
 
 #endif

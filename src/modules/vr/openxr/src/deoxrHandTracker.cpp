@@ -28,7 +28,6 @@
 #include "deoxrUtils.h"
 
 #include <dragengine/common/exceptions.h>
-#include <dragengine/input/deInputDevice.h>
 #include <dragengine/systems/modules/deBaseModule.h>
 
 
@@ -233,7 +232,7 @@ void deoxrHandTracker::pCleanUp(){
 	}
 }
 
-void deoxrHandTracker::pSetBoneMapping( int index, int from, int to ){
+void deoxrHandTracker::pSetBoneMapping( int index, deInputDevice::eHandBones to, XrHandJointEXT from ){
 	pMapBoneXrToDe[ index ].location = pJointLocations + from;
 	pMapBoneXrToDe[ index ].velocity = pJointVelocities + from;
 	pMapBoneXrToDe[ index ].bone = pPoseBones + to;
