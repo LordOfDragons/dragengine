@@ -96,8 +96,9 @@ deModelBuilder &builder ){
 		// the filename is not empty in which case an unnamed model is created
 		if( filename[ 0 ] != '\0' ){
 			findModel = ( deModel* )pModels.GetWithFilename( vfs, filename );
-			if( findModel && ! findModel->GetOutdated() ){
-				DETHROW( deeInvalidParam );
+			if( findModel ){
+				findModel->MarkOutdated();
+				findModel = NULL;
 			}
 		}
 		

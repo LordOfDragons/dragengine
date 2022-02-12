@@ -674,7 +674,7 @@ void deovrDevice::pUpdateParametersController(){
 	
 	// buttons
 	if( compTrigger ){
-		pAddButton( deInputDeviceButton::ebtTrigger, compTrackpad, deVROpenVR::eiaTriggerPress,
+		pAddButton( deInputDeviceButton::ebtTrigger, compTrigger, deVROpenVR::eiaTriggerPress,
 			deVROpenVR::eiaTriggerTouch, "Trigger", "trig", "Tri" );
 	}
 	

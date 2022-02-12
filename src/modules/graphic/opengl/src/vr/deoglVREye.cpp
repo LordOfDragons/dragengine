@@ -279,13 +279,13 @@ void deoglVREye::pGetParameters( deBaseVRModule &vrmodule ){
 	pCanvasTCTo.Set( 1.0f, 1.0f );
 	
 	deModel * const hiddenMesh = vrmodule.GetHiddenArea( pEye );
-	if( hiddenMesh != pHiddenMesh ){
+// 	if( hiddenMesh != pHiddenMesh ){
 		pHiddenMesh = hiddenMesh;
 		pHiddenRMesh = nullptr;
 		if( pHiddenMesh ){
 			pHiddenRMesh = ( ( deoglModel* )pHiddenMesh->GetPeerGraphic() )->GetRModel();
 		}
-	}
+// 	}
 }
 
 void deoglVREye::pLogParameters( deoglRenderThread &renderThread ){
