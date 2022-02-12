@@ -168,6 +168,8 @@ void deoxrLoader::pCleanUp(){
 }
 
 void deoxrLoader::pLoadOpenXR(){
+	pOxr.LogInfoFormat( "Loading runtime: %s", pRuntimeLibraryPath.GetString() );
+	
 	#ifdef OS_BEOS
 	pLibHandle = load_add_on( "openxr" );
 	
@@ -264,6 +266,8 @@ void deoxrLoader::pFindRuntimeConfigFile(){
 }
 
 void deoxrLoader::pReadConfig(){
+	pOxr.LogInfoFormat( "Reading runtime configuration: %s", pRuntimeConfigFile.GetString() );
+	
 	const decDiskFileReader::Ref reader( decDiskFileReader::Ref::New(
 		new decDiskFileReader( pRuntimeConfigFile ) ) );
 	const int contentLength = reader->GetLength();
@@ -291,7 +295,12 @@ void deoxrLoader::pReadConfig(){
 		DETHROW_INFO( deeInvalidFileFormat, "invalid config file format" );
 	}
 	
-	pRuntimeLibraryPath = content.GetMiddle( index + 1, index2 );
+	// library file can be absolute or relative
+	decPath configDir( decPath::CreatePathNative( pRuntimeConfigFile ) );
+	configDir.RemoveLastComponent();
+	
+	pRuntimeLibraryPath = decPath::CreatePathNative( content.GetMiddle( index + 1, index2 ) ).
+		AbsolutePath( configDir ).GetPathNative();
 }
 
 void deoxrLoader::pNegotiate(){

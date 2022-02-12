@@ -213,7 +213,12 @@ void deoxrApiLayer::pReadConfig(){
 		DETHROW_INFO( deeInvalidFileFormat, "invalid config file format" );
 	}
 	
-	pLibraryPath = content.GetMiddle( index + 1, index2 );
+	// library file can be absolute or relative
+	decPath configDir( decPath::CreatePathNative( pConfigFile ) );
+	configDir.RemoveLastComponent();
+	
+	pLibraryPath = decPath::CreatePathNative( content.GetMiddle( index + 1, index2 ) ).
+		AbsolutePath( configDir ).GetPathNative();
 }
 
 void deoxrApiLayer::pNegotiate(){

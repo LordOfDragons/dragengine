@@ -386,7 +386,7 @@ void deVROpenXR::ProcessEvents(){
 			break;
 		}
 		
-		LogInfoFormat( "Event: %d", event.type );
+// 		LogInfoFormat( "Event: %d", event.type );
 		
 		switch( event.type ){
 		case XR_TYPE_EVENT_DATA_SESSION_STATE_CHANGED: {
@@ -440,6 +440,7 @@ void deVROpenXR::ProcessEvents(){
 			}break;
 			
 		case XR_TYPE_EVENT_DATA_INSTANCE_LOSS_PENDING: {
+			LogInfo( "Instance loss pending. Shutting down runtime" );
 // 			const XrEventDataInstanceLossPending& instance_loss_pending_event =
 // 				( XrEventDataInstanceLossPending& )event;
 			StopRuntime();
@@ -466,11 +467,13 @@ void deVROpenXR::ProcessEvents(){
 			// track while trackers at least tells us their path but then we still have to
 			// manually track them. lots of overhead due to bad design.
 			// 
+			LogInfo( "Interaction profile changed. Updating devices." );
 			pDeviceProfiles.CheckAllAttached();
 			}break;
 			
 		case XR_TYPE_EVENT_DATA_VISIBILITY_MASK_CHANGED_KHR:
 			if( pSession && pInstance->SupportsExtension( deoxrInstance::extKHRVisibilityMask ) ){
+				LogInfo( "Visibility mask changed. Updating hidden meshes" );
 				const XrEventDataVisibilityMaskChangedKHR &changed = ( XrEventDataVisibilityMaskChangedKHR& )event;
 				if( changed.viewConfigurationType == XR_VIEW_CONFIGURATION_TYPE_PRIMARY_STEREO ){
 					switch( changed.viewIndex ){
@@ -494,6 +497,7 @@ void deVROpenXR::ProcessEvents(){
 			LogInfoFormat( "VIVE Tracker Connected: path='%s' rolePath='%s'",
 				path.GetName().GetString(), pathRole.GetName().GetString() );
 			*/
+			LogInfo( "VIVE Tracker connected. Updating devices" );
 			pDeviceProfiles.CheckAllAttached();
 			}break;
 			
