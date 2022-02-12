@@ -68,6 +68,7 @@ private:
 	int pPoseBoneCount;
 	
 	sBoneMapping *pMapBoneXrToDe;
+	int pMapBoneXrToDeCount;
 	
 	
 	

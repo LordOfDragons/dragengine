@@ -106,7 +106,6 @@ const char *idPrefix, const decVector &poseRotation ){
 		device->SetName( "Left Hand" );
 		id.Format( "%s%scl", OXR_DEVID_PREFIX, idPrefix );
 		device->SetSubactionPath( GetInstance().GetPathHandLeft() );
-		device->SetActionPose( oxr.GetAction( deVROpenXR::eiaPoseLeft ) );
 // 		device->SetActionHandPose( oxr.GetAction( deVROpenXR::eiaSkeletonHandLeft ) );
 		
 	}else{
@@ -114,10 +113,10 @@ const char *idPrefix, const decVector &poseRotation ){
 		device->SetName( "Right Hand" );
 		id.Format( "%s%scr", OXR_DEVID_PREFIX, idPrefix );
 		device->SetSubactionPath( GetInstance().GetPathHandRight() );
-		device->SetActionPose( oxr.GetAction( deVROpenXR::eiaPoseRight ) );
 // 		device->SetActionHandPose( oxr.GetAction( deVROpenXR::eiaSkeletonHandRight ) );
 	}
 	
+	device->SetActionPose( oxr.GetAction( pGripPoseAction( leftHand ) ) );
 	device->SetID( id );
 	
 	device->SetSpacePose( deoxrSpace::Ref::New( new deoxrSpace(
@@ -501,10 +500,9 @@ const char *deoxrDeviceProfile::pButtonDisplayText( eButtonLabel label ) const{
 
 deoxrHandTracker *deoxrDeviceProfile::pAddHandTracker( deoxrDevice &device, bool leftHand ){
 	deoxrSession &session = pInstance.GetOxr().GetSession();
-	deoxrHandTracker::Ref handTracker;
 	
-	handTracker.TakeOver( new deoxrHandTracker( session,
-		leftHand ? XR_HAND_LEFT_EXT : XR_HAND_LEFT_EXT ) );
+	const deoxrHandTracker::Ref handTracker( deoxrHandTracker::Ref::New(
+		new deoxrHandTracker( session, leftHand ? XR_HAND_LEFT_EXT : XR_HAND_LEFT_EXT ) ) );
 	
 	device.SetHandTracker( handTracker );
 	

@@ -43,7 +43,8 @@ pJointVelocities( nullptr ),
 pJointCount( 0 ),
 pPoseBones( nullptr ),
 pPoseBoneCount( 0 ),
-pMapBoneXrToDe( nullptr )
+pMapBoneXrToDe( nullptr ),
+pMapBoneXrToDeCount( 0 )
 {
 	deoxrInstance &instance = session.GetSystem().GetInstance();
 	
@@ -138,6 +139,8 @@ pMapBoneXrToDe( nullptr )
 		pSetBoneMapping( 18, deInputDevice::ehbPinky2, XR_HAND_JOINT_LITTLE_INTERMEDIATE_EXT );
 		pSetBoneMapping( 19, deInputDevice::ehbPinky3, XR_HAND_JOINT_LITTLE_DISTAL_EXT );
 		
+		pMapBoneXrToDeCount = 20;
+		
 	}catch( const deException & ){
 		pCleanUp();
 		throw;
@@ -166,7 +169,7 @@ void deoxrHandTracker::Locate(){
 	}
 	
 	int i;
-	for( i=0; i<pPoseBoneCount; i++ ){
+	for( i=0; i<pMapBoneXrToDeCount; i++ ){
 		const sBoneMapping &mapping = pMapBoneXrToDe[ i ];
 		
 		mapping.bone->SetPosition( deoxrUtils::Convert( mapping.location->pose.position ) );
