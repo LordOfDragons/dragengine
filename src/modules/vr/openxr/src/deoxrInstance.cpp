@@ -25,9 +25,9 @@
 #include "deVROpenXR.h"
 #include "deoxrGlobalFunctions.h"
 #include "deoxrInstance.h"
-#include "deoxrLoader.h"
-// #include "deoxrApiLayer.h"
 #include "action/deoxrAction.h"
+#include "loader/deoxrLoader.h"
+#include "loader/deoxrApiLayer.h"
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/systems/modules/deBaseModule.h>
@@ -264,23 +264,28 @@ void deoxrInstance::pDetectLayers(){
 	uint32_t runtimeCount = 0;
 	OXR_CHECK( xrEnumerateApiLayerProperties( 0, &runtimeCount, XR_NULL_HANDLE ) );
 	
-// 	const uint32_t loaderCount = pOxr.GetLoader()->GetApiLayerCount();
+	#ifdef INTERNAL_XR_LOADER
+	const uint32_t loaderCount = pOxr.GetLoader()->GetApiLayerCount();
+	#else
+	const uint32_t loaderCount = 0;
+	#endif
+	
 	uint32_t i, count = runtimeCount;
 	
 	XrApiLayerProperties *layers = nullptr;
 	try{
-		if( runtimeCount /* + loaderCount */ > 0 ){
-			layers = new XrApiLayerProperties[ runtimeCount /* + loaderCount */ ];
-			memset( layers, 0, sizeof( XrApiLayerProperties ) * ( runtimeCount /* + loaderCount */ ) );
-			for( i=0; i<runtimeCount/*+loaderCount*/; i++ ){
+		if( runtimeCount + loaderCount > 0 ){
+			layers = new XrApiLayerProperties[ runtimeCount + loaderCount ];
+			memset( layers, 0, sizeof( XrApiLayerProperties ) * ( runtimeCount + loaderCount ) );
+			for( i=0; i<runtimeCount+loaderCount; i++ ){
 				layers[ i ].type = XR_TYPE_API_LAYER_PROPERTIES;
 			}
 			
 			OXR_CHECK( xrEnumerateApiLayerProperties( runtimeCount, &runtimeCount, layers ) );
 		}
 		
+		#ifdef INTERNAL_XR_LOADER
 		// load api layers the loader found
-#if 0
 		for( i=0; i<loaderCount; i++ ){
 			deoxrApiLayer &apiLayer = *pOxr.GetLoader()->GetApiLayerAt( i );
 			try{
@@ -297,7 +302,7 @@ void deoxrInstance::pDetectLayers(){
 				pOxr.LogException( e );
 			}
 		}
-#endif
+		#endif // INTERNAL_XR_LOADER
 		
 		// report all layers for debug purpose
 		pOxr.LogInfo( "Layers:" );

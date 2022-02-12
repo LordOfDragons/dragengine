@@ -24,7 +24,10 @@
 
 #include <dragengine/dragengine_configuration.h>
 
-// #define XR_NO_PROTOTYPES
+#ifdef INTERNAL_XR_LOADER
+#define XR_NO_PROTOTYPES
+#endif
+
 #define XR_USE_GRAPHICS_API_OPENGL
 
 #ifdef OS_UNIX

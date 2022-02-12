@@ -23,10 +23,9 @@
 #include <string.h>
 
 #include "deoxrApiLayer.h"
-#include "deVROpenXR.h"
-#include "deoxrBasics.h"
-
-#include <openxr/loader_interfaces.h>
+#include "loader_interfaces.h"
+#include "../deVROpenXR.h"
+#include "../deoxrBasics.h"
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decPath.h>

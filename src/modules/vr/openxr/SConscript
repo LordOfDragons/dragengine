@@ -6,8 +6,13 @@ Import('parent_env parent_targets parent_report')
 # setup the environment matching the OS
 envModule = parent_env.Clone()
 
+useInternalLoader = False
+
 if envModule['OSBeOS']:
 	Return()
+
+if envModule['OSWindows']:
+	useInternalLoader = True
 
 # fetch values in expanded form for later use
 versionString = '1.8'
@@ -25,6 +30,9 @@ envModule.Append(LINKFLAGS = parent_env['MODULE_LINKFLAGS'])
 
 if envModule['with_debug']:
 	envModule.Append(CPPFLAGS = ['-DWITH_DEBUG'])
+
+if useInternalLoader:
+	envModule.Append(CPPFLAGS = ['-DINTERNAL_XR_LOADER'])
 
 # setup the builders
 sources = []

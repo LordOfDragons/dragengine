@@ -24,7 +24,8 @@
 
 #include "deoxrBasics.h"
 
-#if 0
+#ifdef INTERNAL_XR_LOADER
+
 #define EXPORTED_OPENXR_FUNCTION( name ) extern PFN_##name name;
 #define GLOBAL_LEVEL_OPENXR_FUNCTION( name ) extern PFN_##name name;
 #define GLOBAL_LEVEL_OPENXR_FUNCTION_WARN( name ) extern PFN_##name name;
@@ -34,7 +35,8 @@
 #undef EXPORTED_OPENXR_FUNCTION
 #undef GLOBAL_LEVEL_OPENXR_FUNCTION
 #undef GLOBAL_LEVEL_OPENXR_FUNCTION_WARN
-#endif
+
+#endif // INTERNAL_XR_LOADER
 
 #endif
 

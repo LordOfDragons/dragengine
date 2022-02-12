@@ -21,10 +21,12 @@
 
 #include "deoxrGlobalFunctions.h"
 
-#if 0
+#ifdef INTERNAL_XR_LOADER
+
 #define EXPORTED_OPENXR_FUNCTION( name ) PFN_##name name = XR_NULL_HANDLE;
 #define GLOBAL_LEVEL_OPENXR_FUNCTION( name ) PFN_##name name = XR_NULL_HANDLE;
 #define GLOBAL_LEVEL_OPENXR_FUNCTION_WARN( name ) PFN_##name name = XR_NULL_HANDLE;
-#endif
+
+#endif // INTERNAL_XR_LOADER
 
 #include "deoxrFunctionNames.h"

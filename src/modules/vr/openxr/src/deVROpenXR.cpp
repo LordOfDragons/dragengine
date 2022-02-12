@@ -23,7 +23,6 @@
 #include <string.h>
 
 #include "deVROpenXR.h"
-#include "deoxrLoader.h"
 #include "deoxrPath.h"
 #include "device/deoxrDevice.h"
 #include "device/deoxrDeviceAxis.h"
@@ -46,6 +45,7 @@
 #include "device/profile/deoxrDPHTCViveFocus3ControllerInteraction.h"
 #include "device/profile/deoxrDPHUAWEIControllerInteraction.h"
 #include "device/profile/deoxrDPMSFTHandInteraction.h"
+#include "loader/deoxrLoader.h"
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>

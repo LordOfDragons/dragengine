@@ -614,24 +614,6 @@ void deoxrDevice::GetDevicePose( deInputDevicePose &pose ){
 	pose = pPoseDevice;
 }
 
-#if 0
-void deoxrDevice::GetBonePose( int bone, bool withController, deInputDevicePose &pose ){
-	if( bone < 0 || bone >= pBoneCount ){
-		pose = deInputDevicePose();
-		return;
-	}
-	
-	/*
-	if( withController ){
-		pUpdatePose( pBoneTransformData[ pBoneCount + bone ], pose );
-		
-	}else{
-		pUpdatePose( pBoneTransformData[ bone ], pose );
-	}
-	*/
-}
-#endif
-
 
 
 // Private Functions

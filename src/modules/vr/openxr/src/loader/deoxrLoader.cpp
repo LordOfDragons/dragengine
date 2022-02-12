@@ -23,12 +23,10 @@
 #include <string.h>
 
 #include "deoxrLoader.h"
-// #include "deoxrApiLayer.h"
-#include "deVROpenXR.h"
-#include "deoxrGlobalFunctions.h"
-#include "deoxrBasics.h"
-
-// #include <openxr/loader_interfaces.h>
+#include "deoxrApiLayer.h"
+#include "../deVROpenXR.h"
+#include "../deoxrBasics.h"
+#include "../deoxrGlobalFunctions.h"
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decPath.h>
@@ -44,23 +42,23 @@
 #include <dragengine/app/deOSWindows.h>
 #endif
 
+// has to come last to avoid openxr.h being loaded without special defines set if needed
+#include "loader_interfaces.h"
+
 
 
 // class deoxrLoader
 /////////////////////
 
 deoxrLoader::deoxrLoader( deVROpenXR &oxr ) :
-pOxr( oxr )
-#if 0
-,
+pOxr( oxr ),
 #ifdef OS_BEOS
 pLibHandle( 0 )
 #else
 pLibHandle( NULL )
 #endif
-#endif
 {
-#if 0
+#ifdef INTERNAL_XR_LOADER
 	xrGetInstanceProcAddr = nullptr;
 	
 	try{
@@ -95,7 +93,7 @@ pLibHandle( NULL )
 		pCleanUp();
 		throw;
 	}
-#endif
+#endif // INTERNAL_XR_LOADER
 }
 
 deoxrLoader::~deoxrLoader(){
@@ -107,7 +105,6 @@ deoxrLoader::~deoxrLoader(){
 // Management
 ///////////////
 
-#if 0
 int deoxrLoader::GetApiLayerCount() const{
 	return pApiLayers.GetCount();
 }
@@ -115,7 +112,6 @@ int deoxrLoader::GetApiLayerCount() const{
 deoxrApiLayer *deoxrLoader::GetApiLayerAt( int index ) const{
 	return ( deoxrApiLayer* )pApiLayers.GetAt( index );
 }
-#endif
 
 
 
@@ -123,11 +119,11 @@ deoxrApiLayer *deoxrLoader::GetApiLayerAt( int index ) const{
 //////////////////////
 
 void deoxrLoader::pCleanUp(){
+#ifdef INTERNAL_XR_LOADER
 	if( pOxr.GetLastDetectedSystem() == deoxrSystem::esSteamVR ){
 		// SteamVR hangs in a dead-loop on pthrad condition releasing. there is no
 		// known workaround for this bug. not calling dlclose pushes the deadlock
 		// further back but does not work. when will they fix this mess?
-#if 0
 #ifdef HAS_LIB_DL
 		if( pLibHandle ){
 			pOxr.LogWarnFormat( "SteamVR dlcose Bug Workaround" );
@@ -153,11 +149,10 @@ void deoxrLoader::pCleanUp(){
 				workaround.Stop();
 			}catch( ... ){}
 		}
-#endif
-#endif
+#endif // HAS_LIB_DL
 	}
+#endif // INTERNAL_XR_LOADER
 	
-#if 0
 	pApiLayers.RemoveAll();
 	
 	if( pLibHandle ){
@@ -173,10 +168,8 @@ void deoxrLoader::pCleanUp(){
 		FreeLibrary( pLibHandle );
 		#endif
 	}
-#endif
 }
 
-#if 0
 void deoxrLoader::pLoadOpenXR(){
 	pOxr.LogInfoFormat( "Loading runtime: %s", pRuntimeLibraryPath.GetString() );
 	
@@ -217,6 +210,7 @@ void deoxrLoader::pLoadOpenXR(){
 }
 
 void deoxrLoader::pLoadFunctions(){
+#ifdef INTERNAL_XR_LOADER
 	#define GLOBAL_LEVEL_OPENXR_FUNCTION( name ) \
 		if( xrGetInstanceProcAddr( XR_NULL_HANDLE, #name, ( PFN_xrVoidFunction* )&name ) != XR_SUCCESS ){ \
 			DETHROW_INFO( deeInvalidAction, "Function " #name " not found" ); \
@@ -226,7 +220,8 @@ void deoxrLoader::pLoadFunctions(){
 			pOxr.LogInfoFormat( "Function " #name " not found! Broken VR Runtime!" ); \
 		}
 	
-	#include "deoxrFunctionNames.h"
+	#include "../deoxrFunctionNames.h"
+#endif
 }
 
 void deoxrLoader::pFindRuntimeConfigFile(){
@@ -336,6 +331,7 @@ void deoxrLoader::pNegotiate(){
 		DETHROW_INFO( deeInvalidAction, "Function xrNegotiateLoaderRuntimeInterface not found" );
 	}
 	
+#ifdef INTERNAL_XR_LOADER
 	// negotiate
 	// https://www.khronos.org/registry/OpenXR/specs/1.0/loader.html#loader-runtime-interface-negotiation
 	XrNegotiateLoaderInfo loaderInfo;
@@ -356,6 +352,7 @@ void deoxrLoader::pNegotiate(){
 	
 	OXR_CHECK( fNegotiate( &loaderInfo, &runtimeRequest ) );
 	xrGetInstanceProcAddr = runtimeRequest.getInstanceProcAddr;
+#endif
 }
 
 void deoxrLoader::pFindApiLayers(){
@@ -465,5 +462,4 @@ decString deoxrLoader::pGetHomeDirectory() const{
 	
 	DETHROW_INFO( deeInvalidParam, "home directory not found" );
 }
-#endif
 #endif
