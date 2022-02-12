@@ -1,0 +1,42 @@
+diff -rupN org_OpenXR-SDK-release-1.0.22/CMakeLists.txt OpenXR-SDK-release-1.0.22/CMakeLists.txt
+--- org_OpenXR-SDK-release-1.0.22/CMakeLists.txt	2022-01-13 00:01:56.000000000 +0100
++++ OpenXR-SDK-release-1.0.22/CMakeLists.txt	2022-02-12 21:57:02.542821812 +0100
+@@ -101,6 +101,12 @@ elseif(NOT ANDROID)
+     include(GNUInstallDirs)
+ endif()
+ 
++# Fix for cross compilation
++option(MINGW_STDTHREADS_GENERATE_STDHEADERS "" OFF)
++if(MINGW_STDTHREADS_GENERATE_STDHEADERS)
++    add_subdirectory(mingw_stdthreads)
++endif()
++
+ add_subdirectory(include)
+ add_subdirectory(src)
+ 
+diff -rupN org_OpenXR-SDK-release-1.0.22/src/loader/CMakeLists.txt OpenXR-SDK-release-1.0.22/src/loader/CMakeLists.txt
+--- org_OpenXR-SDK-release-1.0.22/src/loader/CMakeLists.txt	2022-01-13 00:01:56.000000000 +0100
++++ OpenXR-SDK-release-1.0.22/src/loader/CMakeLists.txt	2022-02-12 22:27:03.306738056 +0100
+@@ -131,6 +131,10 @@ if(ANDROID)
+         ${ANDROID_LOG_LIBRARY})
+ endif()
+ 
++if(MINGW_STDTHREADS_GENERATE_STDHEADERS)
++    target_link_libraries(openxr_loader PRIVATE mingw_stdthreads)
++endif()
++
+ target_compile_definitions(openxr_loader PRIVATE API_NAME="OpenXR")
+ openxr_add_filesystem_utils(openxr_loader)
+ 
+@@ -301,6 +305,11 @@ else()
+     set(TARGET_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/openxr/)
+ endif()
+ 
++if(MINGW_STDTHREADS_GENERATE_STDHEADERS)
++    install(TARGETS mingw_stdthreads EXPORT openxr_loader_export)
++    install(TARGETS cmake_stdheaders_generator EXPORT openxr_loader_export)
++endif()
++
+ install(
+     EXPORT openxr_loader_export
+     FILE OpenXRTargets.cmake

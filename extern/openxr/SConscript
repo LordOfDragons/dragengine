@@ -22,6 +22,13 @@ if envLibrary['OSWindows']:
 	libLinkName = 'libopenxr_loader'
 	libpath = [envLibrary.Dir('lib')]
 	
+	# openxr reacts badly to these
+	if '-Wl,--nxcompat' in envLibrary['CROSSCOMPILE_LINKFLAGS']:
+		envLibrary['CROSSCOMPILE_LINKFLAGS'].remove('-Wl,--nxcompat')
+	
+	if '-Wl,--dynamicbase' in envLibrary['CROSSCOMPILE_LINKFLAGS']:
+		envLibrary['CROSSCOMPILE_LINKFLAGS'].remove('-Wl,--dynamicbase')
+	
 elif envLibrary['OSBeOS']:
 	Return()
 else:
@@ -33,10 +40,14 @@ def openxrBuild(target, source, env):
 	buildDir = target[0].get_dir().up()
 	
 	untarArchive(buildDir.abspath, source[ 0 ].abspath)
+	untarArchive(buildDir.Dir(srcdir).abspath,
+		env.File('#extern/mingw/mingw_stdthreads.tar.bz2').abspath)
 	
 	script = createScriptHeader(env)
-	
 	script.append('cd "{}" || exit 1'.format(buildDir.Dir(srcdir).abspath))
+	
+	for p in env['PATCHES']:
+		script.append('patch -p1 <{} || exit 1'.format(p.srcnode().abspath))
 	
 	cmdline = ['cmake']
 	cmdline.append('-DCMAKE_INSTALL_PREFIX="{}"'.format(buildDir.abspath))
@@ -80,15 +91,20 @@ def openxrBuild(target, source, env):
 	if not env.RunExternalCommand(script):
 		raise Exception('Failed building OpenXR')
 
+patches = [] # create with 'diff -rupN original_sources patches_sources'
+globFiles(envLibrary, 'patches/{}'.format(openxrVersion), '*.patch', patches, recursive=False)
+envLibrary.Append(PATCHES = [envLibrary.File(x) for x in sorted(patches)])
+
 if buildStaticLinking:
 	targets = [staticFileName]
 else:
 	targets = [libFileName]
 
-targets.append('include/openxr/openxr_platform_defines.h')
-targets.append('include/openxr/openxr_platform.h')
-targets.append('include/openxr/openxr_reflection.h')
-targets.append('include/openxr/openxr.h')
+targets.extend([
+	'include/openxr/openxr_platform_defines.h',
+	'include/openxr/openxr_platform.h',
+	'include/openxr/openxr_reflection.h',
+	'include/openxr/openxr.h'])
 
 library = envLibrary.Command(targets, '{}.tar.bz2'.format(srcdir),
 	envLibrary.Action(openxrBuild, 'Build OpenXR'))
