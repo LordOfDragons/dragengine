@@ -22,6 +22,8 @@
 #include "deoxrBasics.h"
 #include "deVROpenXR.h"
 
+#include <stdio.h>
+
 #include <dragengine/common/exceptions.h>
 #include <dragengine/systems/modules/deBaseModule.h>
 

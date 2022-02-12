@@ -163,10 +163,16 @@ void deoxrHandTracker::Locate(){
 	
 	if( ! XR_SUCCEEDED( instance.xrLocateHandJointsEXT( pHandTracker, &pLocateInfo, &pLocations ) )
 	|| ! pLocations.isActive ){
-// 		deVROpenXR &oxr = pSession.GetSystem().GetInstance().GetOxr();
-// 		oxr.LogInfoFormat("FAIL %d", pLocations.isActive);
 		return;
 	}
+	
+	/*
+	const XrResult result = instance.xrLocateHandJointsEXT( pHandTracker, &pLocateInfo, &pLocations );
+	if( ! XR_SUCCEEDED( result ) || ! pLocations.isActive ){
+		pSession.GetSystem().GetInstance().GetOxr().LogWarnFormat("xrLocateHandJointsEXT res=%d isActive=%d", result, pLocations.isActive);
+		return;
+	}
+	*/
 	
 	int i;
 	for( i=0; i<pMapBoneXrToDeCount; i++ ){

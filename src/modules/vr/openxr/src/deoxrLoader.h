@@ -44,7 +44,7 @@
 
 
 class deVROpenXR;
-class deoxrApiLayer;
+// class deoxrApiLayer;
 
 
 /**
@@ -53,6 +53,8 @@ class deoxrApiLayer;
 class deoxrLoader{
 private:
 	deVROpenXR &pOxr;
+	
+#if 0
 	decString pRuntimeConfigFile;
 	decString pRuntimeLibraryPath;
 	
@@ -69,6 +71,7 @@ private:
 	#endif
 	
 	decObjectOrderedSet pApiLayers;
+#endif
 	
 	
 	
@@ -86,6 +89,7 @@ public:
 	
 	/** \name Management */
 	/*@{*/
+#if 0
 	/** Runtime configuration file or empty string if not found. */
 	inline const decString &GetRuntimeConfigFile() const{ return pRuntimeConfigFile; }
 	
@@ -97,12 +101,14 @@ public:
 	
 	/** API layer at index. */
 	deoxrApiLayer *GetApiLayerAt( int index ) const;
+#endif
 	/*@}*/
 	
 	
 	
 private:
 	void pCleanUp();
+#if 0
 	void pLoadOpenXR();
 	void pLoadFunctions();
 	void pFindRuntimeConfigFile();
@@ -113,6 +119,7 @@ private:
 	#ifdef OS_UNIX
 	decString pGetHomeDirectory() const;
 	#endif
+#endif
 };
 
 #endif

@@ -21,8 +21,10 @@
 
 #include "deoxrGlobalFunctions.h"
 
+#if 0
 #define EXPORTED_OPENXR_FUNCTION( name ) PFN_##name name = XR_NULL_HANDLE;
 #define GLOBAL_LEVEL_OPENXR_FUNCTION( name ) PFN_##name name = XR_NULL_HANDLE;
 #define GLOBAL_LEVEL_OPENXR_FUNCTION_WARN( name ) PFN_##name name = XR_NULL_HANDLE;
+#endif
 
 #include "deoxrFunctionNames.h"

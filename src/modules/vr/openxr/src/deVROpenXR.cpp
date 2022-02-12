@@ -191,10 +191,12 @@ bool deVROpenXR::Init(){
 	
 	LogInfoFormat( "Runtime Installed: %s", pInstance ? "Yes" : "No" );
 	
+	/*
 	if( pLoader ){
 		LogInfoFormat( "Runtime Config File: %s", pLoader->GetRuntimeConfigFile().GetString() );
 		LogInfoFormat( "Runtime Library: %s", pLoader->GetRuntimeLibraryPath().GetString() );
 	}
+	*/
 	
 	return true;
 }
@@ -374,9 +376,11 @@ void deVROpenXR::ProcessEvents(){
 	
 	XrEventDataBuffer event;
 	memset( &event, 0, sizeof( event ) );
-	event.type = XR_TYPE_EVENT_DATA_BUFFER;
 	
 	while( true ){
+		// WARNING it is important to set type before every call to xrPollEvent or things turn sour
+		event.type = XR_TYPE_EVENT_DATA_BUFFER;
+		
 		const XrResult result = instance.xrPollEvent( instance.GetInstance(), &event );
 		if( result == XR_EVENT_UNAVAILABLE ){
 			break;

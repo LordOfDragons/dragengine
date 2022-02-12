@@ -734,6 +734,7 @@ extdirs.append( 'extern/libopenhmd' )
 extdirs.append( 'extern/fftw' )
 extdirs.append( 'extern/soundtouch' )
 extdirs.append( 'extern/libwebp' )
+extdirs.append( 'extern/openxr' )
 
 for extdir in extdirs:
 	SConscript( dirs=extdir, variant_dir='{}/build'.format( extdir ),

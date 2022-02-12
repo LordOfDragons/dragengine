@@ -161,6 +161,8 @@ void deoxrSwapchain::pGetImages(){
 	switch( pSession.GetGraphicApi() ){
 	case deoxrSession::egaOpenGL:{
 		XrSwapchainImageOpenGLKHR *images = new XrSwapchainImageOpenGLKHR[ count ];
+		memset( images, 0, sizeof( XrSwapchainImageOpenGLKHR ) * count );
+		
 		try{
 			for( i=0; i<count; i++ ){
 				images[ i ].type = XR_TYPE_SWAPCHAIN_IMAGE_OPENGL_KHR;

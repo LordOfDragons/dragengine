@@ -216,6 +216,7 @@ void deoxrSession::Begin(){
 	
 	XrSessionBeginInfo beginInfo;
 	memset( &beginInfo, 0, sizeof( beginInfo ) );
+	beginInfo.type = XR_TYPE_SESSION_BEGIN_INFO;
 	beginInfo.primaryViewConfigurationType = XR_VIEW_CONFIGURATION_TYPE_PRIMARY_STEREO;
 	
 	OXR_CHECK( instance.xrBeginSession( pSession, &beginInfo ) );
@@ -313,6 +314,7 @@ void deoxrSession::BeginFrame(){
 	viewLocateInfo.type = XR_TYPE_VIEW_LOCATE_INFO;
 	viewLocateInfo.displayTime = pPredictedDisplayTime;
 	viewLocateInfo.space = pSpaceStage->GetSpace();
+	viewLocateInfo.viewConfigurationType = XR_VIEW_CONFIGURATION_TYPE_PRIMARY_STEREO;
 	
 	uint32_t viewCount;
 	OXR_CHECK( instance.xrLocateViews( pSession, &viewLocateInfo, &viewState, 2, &viewCount, views ) );

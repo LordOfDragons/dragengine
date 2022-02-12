@@ -26,7 +26,7 @@
 #include "deoxrGlobalFunctions.h"
 #include "deoxrInstance.h"
 #include "deoxrLoader.h"
-#include "deoxrApiLayer.h"
+// #include "deoxrApiLayer.h"
 #include "action/deoxrAction.h"
 
 #include <dragengine/common/exceptions.h>
@@ -145,7 +145,7 @@ void deoxrInstance::SuggestBindings( const deoxrPath &profile, const sSuggestBin
 		DETHROW_INFO( deeNullPointer, "bindings" );
 	}
 	if( count < 1 ){
-		DETHROW_INFO( deeInvalidParam, "count < 1" );
+		return;
 	}
 	
 	XrActionSuggestedBinding * const xrbindings = new XrActionSuggestedBinding[ count ];
@@ -189,19 +189,22 @@ void deoxrInstance::pCleanUp(){
 }
 
 void deoxrInstance::pDetectExtensions(){
-	uint32_t count = 0;
+	uint32_t i, count = 0;
 	OXR_CHECK( xrEnumerateInstanceExtensionProperties( XR_NULL_HANDLE, 0, &count, XR_NULL_HANDLE ) );
 	if( count == 0 ){
 		return;
 	}
 	
 	XrExtensionProperties * const extensions = new XrExtensionProperties[ count ];
+	memset( extensions, 0, sizeof( XrExtensionProperties ) * count );
+	for( i=0; i<count; i++ ){
+		extensions[ i ].type = XR_TYPE_EXTENSION_PROPERTIES;
+	}
+	
 	try{
 		OXR_CHECK( xrEnumerateInstanceExtensionProperties( XR_NULL_HANDLE, count, &count, extensions ) );
 		
 		// report all extensions for debug purpose
-		uint32_t i;
-		
 		pOxr.LogInfo( "Extensions:" );
 		for( i=0; i<count; i++ ){
 			pOxr.LogInfoFormat( "- %s: %d", extensions[ i ].extensionName, extensions[ i ].extensionVersion );
@@ -259,28 +262,25 @@ void deoxrInstance::pDetectLayers(){
 	
 	 */
 	uint32_t runtimeCount = 0;
-	if( xrEnumerateApiLayerProperties ){
-		OXR_CHECK( xrEnumerateApiLayerProperties( 0, &runtimeCount, XR_NULL_HANDLE ) );
-	}
+	OXR_CHECK( xrEnumerateApiLayerProperties( 0, &runtimeCount, XR_NULL_HANDLE ) );
 	
-	const uint32_t loaderCount = pOxr.GetLoader()->GetApiLayerCount();
+// 	const uint32_t loaderCount = pOxr.GetLoader()->GetApiLayerCount();
 	uint32_t i, count = runtimeCount;
 	
 	XrApiLayerProperties *layers = nullptr;
 	try{
-		if( runtimeCount + loaderCount > 0 ){
-			layers = new XrApiLayerProperties[ runtimeCount + loaderCount ];
-			memset( layers, 0, sizeof( XrApiLayerProperties ) * ( runtimeCount + loaderCount ) );
-			for( i=0; i<runtimeCount+loaderCount; i++ ){
+		if( runtimeCount /* + loaderCount */ > 0 ){
+			layers = new XrApiLayerProperties[ runtimeCount /* + loaderCount */ ];
+			memset( layers, 0, sizeof( XrApiLayerProperties ) * ( runtimeCount /* + loaderCount */ ) );
+			for( i=0; i<runtimeCount/*+loaderCount*/; i++ ){
 				layers[ i ].type = XR_TYPE_API_LAYER_PROPERTIES;
 			}
 			
-			if( xrEnumerateApiLayerProperties ){
-				OXR_CHECK( xrEnumerateApiLayerProperties( runtimeCount, &runtimeCount, layers ) );
-			}
+			OXR_CHECK( xrEnumerateApiLayerProperties( runtimeCount, &runtimeCount, layers ) );
 		}
 		
 		// load api layers the loader found
+#if 0
 		for( i=0; i<loaderCount; i++ ){
 			deoxrApiLayer &apiLayer = *pOxr.GetLoader()->GetApiLayerAt( i );
 			try{
@@ -297,6 +297,7 @@ void deoxrInstance::pDetectLayers(){
 				pOxr.LogException( e );
 			}
 		}
+#endif
 		
 		// report all layers for debug purpose
 		pOxr.LogInfo( "Layers:" );

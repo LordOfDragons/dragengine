@@ -23,12 +23,12 @@
 #include <string.h>
 
 #include "deoxrLoader.h"
-#include "deoxrApiLayer.h"
+// #include "deoxrApiLayer.h"
 #include "deVROpenXR.h"
 #include "deoxrGlobalFunctions.h"
 #include "deoxrBasics.h"
 
-#include <openxr/loader_interfaces.h>
+// #include <openxr/loader_interfaces.h>
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decPath.h>
@@ -50,13 +50,17 @@
 /////////////////////
 
 deoxrLoader::deoxrLoader( deVROpenXR &oxr ) :
-pOxr( oxr ),
+pOxr( oxr )
+#if 0
+,
 #ifdef OS_BEOS
 pLibHandle( 0 )
 #else
 pLibHandle( NULL )
 #endif
+#endif
 {
+#if 0
 	xrGetInstanceProcAddr = nullptr;
 	
 	try{
@@ -91,6 +95,7 @@ pLibHandle( NULL )
 		pCleanUp();
 		throw;
 	}
+#endif
 }
 
 deoxrLoader::~deoxrLoader(){
@@ -102,6 +107,7 @@ deoxrLoader::~deoxrLoader(){
 // Management
 ///////////////
 
+#if 0
 int deoxrLoader::GetApiLayerCount() const{
 	return pApiLayers.GetCount();
 }
@@ -109,6 +115,7 @@ int deoxrLoader::GetApiLayerCount() const{
 deoxrApiLayer *deoxrLoader::GetApiLayerAt( int index ) const{
 	return ( deoxrApiLayer* )pApiLayers.GetAt( index );
 }
+#endif
 
 
 
@@ -150,6 +157,7 @@ void deoxrLoader::pCleanUp(){
 #endif
 	}
 	
+#if 0
 	pApiLayers.RemoveAll();
 	
 	if( pLibHandle ){
@@ -165,8 +173,10 @@ void deoxrLoader::pCleanUp(){
 		FreeLibrary( pLibHandle );
 		#endif
 	}
+#endif
 }
 
+#if 0
 void deoxrLoader::pLoadOpenXR(){
 	pOxr.LogInfoFormat( "Loading runtime: %s", pRuntimeLibraryPath.GetString() );
 	
@@ -455,4 +465,5 @@ decString deoxrLoader::pGetHomeDirectory() const{
 	
 	DETHROW_INFO( deeInvalidParam, "home directory not found" );
 }
+#endif
 #endif

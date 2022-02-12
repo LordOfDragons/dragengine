@@ -201,11 +201,11 @@ void deoxrDPHtcViveTracker::SuggestBindings(){
 	//   - keyboard
 	// 
 	// Supported component paths:
-	// - /input/system/click (may not be available for application use)  [throws error if used]
-	// - /input/menu/click  [throws error if used]
-	// - /input/trigger/click  [throws error if used]
+	// - /input/system/click (may not be available for application use)
+	// - /input/menu/click
+	// - /input/trigger/click
 	// - /input/squeeze/click
-	// - /input/trigger/value  [throws error if used]
+	// - /input/trigger/value
 	// - /input/trackpad/x
 	// - /input/trackpad/y
 	// - /input/trackpad/click
@@ -230,8 +230,8 @@ void deoxrDPHtcViveTracker::SuggestBindings(){
 		const Tracker &tracker = *( ( Tracker* )pTrackers.GetAt( i ) );
 		const decString basePath( tracker.path.GetName() );
 		
-// 		( b++ )->Set( tracker.action, deoxrPath( instance, basePath + "/input/aim/pose" ) );
-		( b++ )->Set( tracker.action, deoxrPath( instance, "/devices/htc" ) );
+// 		( b++ )->Set( tracker.action, deoxrPath( instance, basePath + "/input/grip/pose" ) );
+		( b++ )->Set( tracker.action, deoxrPath( instance, "/user/vive_tracker_htcx/role/chest/input/grip/pose" ) );
 		
 // 		pAdd( b, deVROpenXR::eiaTriggerPress, basePath + "/input/trigger/click" );
 // 		pAdd( b, deVROpenXR::eiaTriggerAnalog, basePath + "/input/trigger/value" );
@@ -244,32 +244,6 @@ void deoxrDPHtcViveTracker::SuggestBindings(){
 	
 	GetInstance().SuggestBindings( GetPath(), bindings, bindingCount );
 #endif
-	
-	/*
-	const int bindingCount = 5 * 2;
-	deoxrInstance::sSuggestBinding bindings[ bindingCount ];
-	deoxrInstance::sSuggestBinding *b = bindings;
-	
-	
-	const decString basePathList[ 2 ] = { "/user/hand/left", "/user/hand/right" };
-	int i;
-	
-	for( i=0; i<2; i++ ){
-		const decString &basePath = basePathList[ i ];
-		
-		pAdd( b, deVROpenXR::eiaPose, basePath + "/input/aim/pose" );
-		
-		pAdd( b, deVROpenXR::eiaTriggerPress, basePath + "/input/select/click" );
-		pAdd( b, deVROpenXR::eiaTriggerAnalog, basePath + "/input/select/click" );
-		
-		pAdd( b, deVROpenXR::eiaButtonPrimaryPress, basePath + "/input/menu/click" );
-		
-		pAdd( b, deVROpenXR::eiaGripHaptic, basePath + "/output/haptic" );
-	}
-	
-	
-	GetInstance().SuggestBindings( GetPath(), bindings, bindingCount );
-	*/
 }
 
 void deoxrDPHtcViveTracker::ClearActions(){
