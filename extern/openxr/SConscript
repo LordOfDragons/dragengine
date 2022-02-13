@@ -32,9 +32,9 @@ if envLibrary['OSWindows']:
 elif envLibrary['OSBeOS']:
 	Return()
 else:
-	staticFileName = envLibrary.subst('lib64/${LIBPREFIX}openxr_loader${LIBSUFFIX}')
+	staticFileName = envLibrary.subst('lib/${LIBPREFIX}openxr_loader${LIBSUFFIX}')
 	libLinkName = 'libopenxr_loader'
-	libpath = [envLibrary.Dir('lib64')]
+	libpath = [envLibrary.Dir('lib')]
 
 def openxrBuild(target, source, env):
 	buildDir = target[0].get_dir().up()
@@ -51,6 +51,11 @@ def openxrBuild(target, source, env):
 	
 	cmdline = ['cmake']
 	cmdline.append('-DCMAKE_INSTALL_PREFIX="{}"'.format(buildDir.abspath))
+	
+	# this is required to force output into the lib-dir we want. otherwise on some platforms the library
+	# is written to 'lib' directory, on others to 'lib64'. this makes it impossible to write an SConscript
+	# that properly tracks this library. using --libdir we force the 'lib' directory name and all is fine
+	cmdline.append('-DCMAKE_INSTALL_LIBDIR="{}"'.format(buildDir.Dir('lib').abspath))
 	
 	if env['OSWindows'] and not env['CROSSCOMPILE_CLANG']:
 		cmdline.append('-DMINGW_STDTHREADS_GENERATE_STDHEADERS=ON')
