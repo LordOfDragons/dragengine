@@ -29,7 +29,7 @@
 #include "game/deglGameIcon.h"
 #include "gui/deglWindowMain.h"
 
-#include <delauncher/engine/delEngineInstance.h>
+#include <delauncher/engine/delEngineInstanceThreaded.h>
 #include <delauncher/game/delGameRunParams.h>
 
 #include <dragengine/common/exceptions.h>
@@ -55,12 +55,12 @@ pCmdLineGame( NULL )
 		DETHROW( deeInvalidParam );
 	}
 	
-	// also log to "/log/delauncher-gui.log"
+	// also log to "/logs/delauncher-gui.log"
 	AddFileLogger( "delauncher-gui" );
 	
 	// set default engine instance executable (windows only)
 	#ifdef OS_W32
-	delEngineInstance::SetDefaultExecutableName( "delauncher-gui-engine" );
+	delEngineInstanceThreaded::SetDefaultExecutableName( "delauncher-gui-engine" );
 	#endif
 	
 	// build argument list
@@ -112,10 +112,11 @@ bool deglLauncher::RunCommandLineGame(){
 		delGameList list;
 		
 		try{
-			delEngineInstance instance( *this, GetEngine().GetLogFile() );
+			const delEngineInstance::Ref instance( delEngineInstance::Ref::New(
+				GetEngineInstanceFactory().CreateEngineInstance( *this, GetEngine().GetLogFile() ) ) );
 			
-			instance.StartEngine();
-			instance.LoadModules();
+			instance->StartEngine();
+			instance->LoadModules();
 			
 			GetGameManager().LoadGameFromDisk( instance, pRunGame, list );
 			
@@ -198,8 +199,6 @@ bool deglLauncher::RunCommandLineGame(){
 			}else{
 				runParams.SetRunArguments( game->GetRunArguments() + " " + profile->GetRunArguments() );
 			}
-			
-			//runParams.SetRunArguments( runParams.GetRunArguments() + " " + pRunGameArgList );
 			
 			runParams.SetFullScreen( profile->GetFullScreen() );
 			runParams.SetWidth( profile->GetWidth() );

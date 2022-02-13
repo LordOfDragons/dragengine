@@ -45,6 +45,7 @@
 
 delEngineModule::delEngineModule() :
 pType( deModuleSystem::emtUnknown ),
+pPriority( 0 ),
 pIsFallback( false ),
 pStatus( emsNotTested ),
 pErrorCode( 0 ),
@@ -90,6 +91,10 @@ void delEngineModule::SetDirectoryName( const char *dirname ){
 
 void delEngineModule::SetPattern( const char *pattern ){
 	pPattern = pattern;
+}
+
+void delEngineModule::SetPriority( int priority ){
+	pPriority = priority;
 }
 
 void delEngineModule::SetIsFallback( bool isFallback ){

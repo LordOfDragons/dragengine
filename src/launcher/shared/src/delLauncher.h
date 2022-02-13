@@ -23,6 +23,7 @@
 #define _DELLAUNCHER_H_
 
 #include "engine/delEngine.h"
+#include "engine/delEngineInstance.h"
 #include "game/delGameManager.h"
 #include "game/patch/delPatchManager.h"
 #include "logger/delLoggerHistory.h"
@@ -59,6 +60,7 @@ private:
 	delEngine pEngine;
 	delGameManager pGameManager;
 	delPatchManager pPatchManager;
+	delEngineInstance::Factory::Ref pEngineInstanceFactory;
 	
 	
 	
@@ -135,6 +137,18 @@ public:
 	/** \brief Patch manager. */
 	inline delPatchManager &GetPatchManager(){ return pPatchManager; }
 	inline const delPatchManager &GetPatchManager() const{ return pPatchManager; }
+	
+	/**
+	 * \brief Engine instance factory.
+	 * \version 1.10
+	 */
+	inline delEngineInstance::Factory &GetEngineInstanceFactory() const{ return pEngineInstanceFactory; }
+	
+	/**
+	 * \brief Set engine instance factory.
+	 * \version 1.10
+	 */
+	void SetEngineInstanceFactory( delEngineInstance::Factory *factory );
 	
 	/**
 	 * \brief Prepares launcher loading engine, games and patches.

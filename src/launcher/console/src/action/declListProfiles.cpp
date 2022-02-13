@@ -26,16 +26,17 @@
 #include "declListProfiles.h"
 #include "../declLauncher.h"
 #include "../config/declConfiguration.h"
-#include "../engine/declEngine.h"
-#include "../game/declGame.h"
-#include "../game/declGameManager.h"
-#include "../game/patch/declPatchManager.h"
+
+#include <delauncher/engine/delEngine.h>
+#include <delauncher/game/delGame.h>
+#include <delauncher/game/delGameManager.h>
+#include <delauncher/game/patch/delPatchManager.h>
+#include <delauncher/game/profile/delGameProfile.h>
 
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/unicode/decUnicodeString.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/logger/deLogger.h>
-#include "../game/profile/declGameProfile.h"
 
 
 
@@ -47,17 +48,13 @@
 
 
 // Class declListProfiles
-////////////////////////
+///////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
 
-declListProfiles::declListProfiles( declLauncher *launcher ){
-	if( ! launcher ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	pLauncher = launcher;
+declListProfiles::declListProfiles( declLauncher &launcher ) :
+pLauncher( launcher ){
 }
 
 declListProfiles::~declListProfiles(){
@@ -85,36 +82,18 @@ void declListProfiles::PrintSyntax(){
 void declListProfiles::ParseArguments(){
 }
 
-void declListProfiles::InitLauncher(){
-	pLauncher->GetEngine()->LoadModuleList();
-	pLauncher->GetEngine()->LoadConfig();
-	
-	pLauncher->GetEngine()->Start( pLauncher->GetEngineLogger(), "" );
-	try{
-		pLauncher->GetGameManager()->LoadGameList();
-		pLauncher->GetPatchManager().LoadPatchList();
-		pLauncher->GetGameManager()->LoadGameConfigs();
-		
-	}catch( const deException & ){
-		pLauncher->GetEngine()->Stop();
-		throw;
-	}
-	pLauncher->GetEngine()->Stop();
-}
-
 void declListProfiles::Run(){
 	ParseArguments();
 	
-	InitLauncher();
+	pLauncher.Prepare();
 	
-	const declGameManager &gameManager = *pLauncher->GetGameManager();
-	const declGameProfileList &profiles = gameManager.GetProfileList();
+	const delGameProfileList &profiles = pLauncher.GetGameManager().GetProfiles();
 	int i, count;
 	
 	printf( "Available Game Profiles:\n" );
 	count = profiles.GetCount();
 	for( i=0; i<count; i++ ){
-		const declGameProfile &profile = *profiles.GetAt( i );
+		const delGameProfile &profile = *profiles.GetAt( i );
 		printf( "- '%s'\n", profile.GetName().GetString() );
 	}
 }

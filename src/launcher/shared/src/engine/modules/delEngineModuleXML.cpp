@@ -126,6 +126,9 @@ void delEngineModuleXML::pReadModule( const decXmlElementTag &root, delEngineMod
 		}else if( tag->GetName() == "fallback" ){
 			module.SetIsFallback( true );
 			
+		}else if( tag->GetName() == "priority" ){
+			module.SetPriority( GetCDataInt( *tag ) );
+			
 		}else{
 // 			ErrorUnknownTag( root, *tag );
 		}

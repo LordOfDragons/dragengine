@@ -54,8 +54,8 @@ if envLauncher['OSMacOS']:
 
 objects = [envLauncher.StaticObject(s) for s in sources]
 
-appendLibrary(envLauncher, parent_targets['dragengine'], libs)
-libs.extend(parent_targets['dragengine']['binlibs'])
+appendLibrary(envLauncher, parent_targets['delauncher'], libs)
+libs.extend(parent_targets['delauncher']['binlibs'])
 
 if envLauncher['OSBeOS']:
 	program = envLauncher.Program(target='delauncher-console-org', source=objects, LIBS=libs)

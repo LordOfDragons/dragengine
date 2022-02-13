@@ -360,7 +360,7 @@ void deLibraryModule::pParseXML( const char *filename, decBaseFileReader &reader
 		
 		tag = element->CastToElementTag();
 		
-		if( strcmp( tag->GetName(), "name" ) == 0 ){
+		if( tag->GetName() == "name" ){
 			if( tag->GetFirstData() ){
 				SetName( tag->GetFirstData()->GetData() );
 				
@@ -368,7 +368,7 @@ void deLibraryModule::pParseXML( const char *filename, decBaseFileReader &reader
 				SetName( "" );
 			}
 			
-		}else if( strcmp( tag->GetName(), "description" ) == 0 ){
+		}else if( tag->GetName() == "description" ){
 			if( tag->GetFirstData() ){
 				SetDescription( tag->GetFirstData()->GetData() );
 				
@@ -376,7 +376,7 @@ void deLibraryModule::pParseXML( const char *filename, decBaseFileReader &reader
 				SetDescription( "" );
 			}
 			
-		}else if( strcmp( tag->GetName(), "author" ) == 0 ){
+		}else if( tag->GetName() == "author" ){
 			if( tag->GetFirstData() ){
 				SetAuthor( tag->GetFirstData()->GetData() );
 				
@@ -384,7 +384,7 @@ void deLibraryModule::pParseXML( const char *filename, decBaseFileReader &reader
 				SetAuthor( "" );
 			}
 			
-		}else if( strcmp( tag->GetName(), "version" ) == 0 ){
+		}else if( tag->GetName() == "version" ){
 			if( tag->GetFirstData() ){
 				SetVersion( tag->GetFirstData()->GetData() );
 				
@@ -392,7 +392,7 @@ void deLibraryModule::pParseXML( const char *filename, decBaseFileReader &reader
 				SetVersion( "" );
 			}
 			
-		}else if( strcmp( tag->GetName(), "type" ) == 0 ){
+		}else if( tag->GetName() == "type" ){
 			if( tag->GetFirstData() ){
 				SetType( deModuleSystem::GetTypeFromString( tag->GetFirstData()->GetData() ) );
 				
@@ -400,12 +400,12 @@ void deLibraryModule::pParseXML( const char *filename, decBaseFileReader &reader
 				SetType( deModuleSystem::emtUnknown );
 			}
 			
-		}else if( strcmp( tag->GetName(), "pattern" ) == 0 ){
+		}else if( tag->GetName() == "pattern" ){
 			if( tag->GetFirstData() ){
 				patternList.Add( tag->GetFirstData()->GetData() );
 			}
 			
-		}else if( strcmp( tag->GetName(), "defaultExtension" ) == 0 ){
+		}else if( tag->GetName() == "defaultExtension" ){
 			if( tag->GetFirstData() ){
 				SetDefaultExtension( tag->GetFirstData()->GetData() );
 				
@@ -413,7 +413,7 @@ void deLibraryModule::pParseXML( const char *filename, decBaseFileReader &reader
 				SetDefaultExtension( "" );
 			}
 			
-		}else if( strcmp( tag->GetName(), "library" ) == 0 ){
+		}else if( tag->GetName() == "library" ){
 			for( j=0; j<tag->GetElementCount(); j++ ){
 				element = tag->GetElementAt( j );
 				if( ! element->CanCastToElementTag() ){
@@ -471,7 +471,7 @@ void deLibraryModule::pParseXML( const char *filename, decBaseFileReader &reader
 				}
 			}
 			
-		}else if( strcmp( tag->GetName(), "data" ) == 0 ){
+		}else if( tag->GetName() == "data" ){
 			/*
 			for( j=0; j<tag->GetElementCount(); j++ ){
 				element = tag->GetElementAt( j );
@@ -483,11 +483,16 @@ void deLibraryModule::pParseXML( const char *filename, decBaseFileReader &reader
 			}
 			*/
 			
-		}else if( strcmp( tag->GetName(), "fallback" ) == 0 ){
+		}else if( tag->GetName() == "fallback" ){
 			SetIsFallback( true );
 			
-		}else if( strcmp( tag->GetName(), "noSaving" ) == 0 ){
+		}else if( tag->GetName() == "noSaving" ){
 			SetNoSaving( true );
+			
+		}else if( tag->GetName() == "priority" ){
+			if( tag->GetFirstData() ){
+				SetPriority( tag->GetFirstData()->GetData().ToInt() );
+			}
 		}
 	}
 	

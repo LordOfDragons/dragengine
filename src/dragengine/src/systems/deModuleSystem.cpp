@@ -340,17 +340,22 @@ deLoadableModule *deModuleSystem::FindMatching( eModuleTypes type, const char *f
 		const int patternCount = patternList.GetCount();
 		
 		for( j=0; j<patternCount; j++ ){
-			if( ! MatchesPattern( filename, patternList.GetAt( j ) ) || ! module->GetEnabled() ){
+			if( ! module->GetEnabled() ){
+				continue;
+			}
+			if( ! MatchesPattern( filename, patternList.GetAt( j ) ) ){
 				continue;
 			}
 			
-			if( latestModule && module->GetName() != latestModule->GetName() ){
-				// in case different modules match same pattern stick with the same
-				// module for version checking
-				continue;
-			}
-			
-			if( ! latestModule || CompareVersion( module->GetVersion(), latestModule->GetVersion() ) > 0 ){
+			if( ! latestModule ){
+				latestModule = module;
+				
+			}else if( module->GetName() != latestModule->GetName() ){
+				if( module->GetPriority() > latestModule->GetPriority() ){
+					latestModule = module;
+				}
+				
+			}else if( CompareVersion( module->GetVersion(), latestModule->GetVersion() ) > 0 ){
 				latestModule = module;
 			}
 		}

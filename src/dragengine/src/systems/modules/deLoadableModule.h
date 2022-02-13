@@ -74,6 +74,7 @@ private:
 	decStringList pPatternList;
 	decString pDefaultExtension;
 	
+	int pPriority;
 	bool pFallback;
 	bool pNoSaving;
 	
@@ -159,6 +160,20 @@ public:
 	
 	/** \brief Set directory name for this module. */
 	void SetDirectoryName( const char *dirName );
+	
+	/**
+	 * \brief Priority of module.
+	 * 
+	 * Used to find best module. Higher priority takes precedence.
+	 */
+	inline int GetPriority() const{ return pPriority; }
+	
+	/**
+	 * \brief Set module priority.
+	 * 
+	 * Used to find best module. Higher priority takes precedence.
+	 */
+	void SetPriority( int priority );
 	
 	/** \brief Determines if this module is a fallback module. */
 	inline bool GetIsFallback() const{ return pFallback; }

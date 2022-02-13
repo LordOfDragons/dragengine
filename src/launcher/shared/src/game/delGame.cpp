@@ -62,8 +62,6 @@
 delGame::delGame( delLauncher &launcher ) :
 pLauncher( launcher ),
 
-pEngineInstance( nullptr ),
-
 pAllFormatsSupported( false ),
 pScriptModuleFound( false ),
 pGameUpToDate( false ),
@@ -150,14 +148,6 @@ bool delGame::HasEngineInstance() const{
 }
 
 void delGame::SetEngineInstance( delEngineInstance *engineInstance ){
-	if( engineInstance == pEngineInstance ){
-		return;
-	}
-	
-	if( pEngineInstance ){
-		delete pEngineInstance;
-	}
-	
 	pEngineInstance = engineInstance;
 }
 
@@ -287,10 +277,14 @@ void delGame::SetUseCustomPatch( const decUuid &patch ){
 
 
 bool delGame::IsRunning() const{
-	return pEngineInstance != NULL;
+	return pEngineInstance;
 }
 
 void delGame::StartGame( const delGameRunParams &runParams ){
+	StartGame( runParams, pLauncher.GetEngineInstanceFactory() );
+}
+
+void delGame::StartGame( const delGameRunParams &runParams, delEngineInstance::Factory &factory ){
 	decPath filePath;
 	
 	if( IsRunning()  ){
@@ -326,7 +320,7 @@ void delGame::StartGame( const delGameRunParams &runParams ){
 	
 	try{
 		// create engine instance and start engine
-		pEngineInstance = new delEngineInstance( pLauncher, logfile );
+		pEngineInstance.TakeOver( factory.CreateEngineInstance( pLauncher, logfile ) );
 		pEngineInstance->StartEngine();
 		pEngineInstance->SetCacheAppID( pIdentifier.ToHexString( false ) );
 		pEngineInstance->LoadModules();
@@ -416,6 +410,9 @@ void delGame::StartGame( const delGameRunParams &runParams ){
 		StopGame();
 		throw;
 	}
+	
+	// it is possible to game is now stopped. this can happen if a direct engine instance
+	PulseChecking();
 }
 
 void delGame::StopGame(){
@@ -444,7 +441,7 @@ void delGame::KillGame(){
 	
 	logger.LogInfoFormat( pLauncher.GetLogSource(), "Killing game '%s'", pTitle.ToUTF8().GetString() );
 	
-	pEngineInstance->KillProcess();
+	pEngineInstance->KillEngine();
 	SetEngineInstance( nullptr );
 	
 	logger.LogInfoFormat( pLauncher.GetLogSource(), "Game '%s' killed", pTitle.ToUTF8().GetString() );
@@ -627,35 +624,7 @@ void delGame::pStoreCustomConfig(){
 	}
 	
 	// update custom profile
-	delGPModuleList &modules = pCustomProfile->GetModules();
-	const int moduleCount = pCollectChangedParams.GetCount();
-	int i, j;
-	
-	for( i=0; i<moduleCount; i++ ){
-		const delGPModule &moduleChanges = *pCollectChangedParams.GetAt ( i );
-		delGPModule * const module = modules.GetNamed ( moduleChanges.GetName() );
-		
-		if( module ){
-			delGPMParameterList &parameters = module->GetParameters();
-			const delGPMParameterList &paramsChanges = moduleChanges.GetParameters();
-			const int paramCount = paramsChanges.GetCount();
-			
-			for( j=0; j<paramCount; j++ ){
-				const delGPMParameter &paramChanges = *paramsChanges.GetAt ( j );
-				delGPMParameter * const parameter = parameters.GetNamed ( paramChanges.GetName() );
-				
-				if( parameter ){
-					parameter->SetValue( paramChanges.GetValue() );
-					
-				}else{
-					parameters.Add ( delGPMParameter::Ref::New( new delGPMParameter( paramChanges ) ) );
-				}
-			}
-			
-		}else{
-			modules.Add ( delGPModule::Ref::New( new delGPModule( moduleChanges ) ) );
-		}
-	}
+	pCustomProfile->GetModules().Update( pCollectChangedParams );
 	
 	// if game wants window mode adjust the profile to have the same values
 	if( pWindowSize != decPoint() ){

@@ -22,8 +22,8 @@
 #ifndef _DECLACTIONDELGAHELPER_H_
 #define _DECLACTIONDELGAHELPER_H_
 
-#include "../game/declGameList.h"
-#include "../game/patch/declPatchList.h"
+#include <delauncher/game/delGameList.h>
+#include <delauncher/game/patch/delPatchList.h>
 
 #include <dragengine/common/string/unicode/decUnicodeArgumentList.h>
 #include <dragengine/common/string/decString.h>
@@ -37,8 +37,8 @@ class declActionDelgaHelper{
 private:
 	declLauncher &pLauncher;
 	decString pFilename;
-	declGameList pGames;
-	declPatchList pPatches;
+	delGameList pGames;
+	delPatchList pPatches;
 	
 	
 public:
@@ -62,10 +62,10 @@ public:
 	inline const decString &GetFilename() const{ return pFilename; }
 	
 	/** \brief Games. */
-	inline const declGameList &GetGames() const{ return pGames; }
+	inline const delGameList &GetGames() const{ return pGames; }
 	
 	/** \brief Patches. */
-	inline const declPatchList &GetPatches() const{ return pPatches; }
+	inline const delPatchList &GetPatches() const{ return pPatches; }
 	
 	/** \brief Load delga file. */
 	void Load();

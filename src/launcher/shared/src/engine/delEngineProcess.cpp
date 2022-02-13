@@ -1246,14 +1246,15 @@ void delEngineProcess::CommandGetDisplayResolutions(){
 		display = ReadUCharFromPipe();
 		count = ReadUCharFromPipe();
 		
-		const int resolutionCount = decMath::min(
-			pEngine->GetOS()->GetDisplayResolutionCount( display ), 255 );
+		const int resolutionCount = pEngine->GetOS()->GetDisplayResolutionCount( display );
 		
 		if( count == 0 ){
 			WriteUCharToPipe( ercSuccess );
 			WriteUCharToPipe( resolutionCount );
 			return;
 		}
+		
+		DEASSERT_TRUE( count <= resolutionCount )
 		
 		resolutions = new decPoint[ resolutionCount ];
 		int i;
@@ -1495,14 +1496,9 @@ void delEngineProcess::pCreateLogger( const char *logfile ){
 	
 	diskPath.RemoveLastComponent();
 	
-	deVFSDiskDirectory::Ref diskDir( deVFSDiskDirectory::Ref::New( new deVFSDiskDirectory( diskPath ) ) );
-	/*
-	if( diskDir->ExistsFile( filePath ) ){
-		//fileWriter = new decDiskFileWriter( logfile, true );
-		
-	}else{
-		fileWriter = diskDir->OpenFileForWriting( filePath );
-	}
-	*/
-	pLogger = new deLoggerFile( decBaseFileWriter::Ref::New( diskDir->OpenFileForWriting( filePath ) ) );
+	const deVFSDiskDirectory::Ref diskDir(
+		deVFSDiskDirectory::Ref::New( new deVFSDiskDirectory( diskPath ) ) );
+	
+	pLogger.TakeOver( new deLoggerFile(
+		decBaseFileWriter::Ref::New( diskDir->OpenFileForWriting( filePath ) ) ) );
 }

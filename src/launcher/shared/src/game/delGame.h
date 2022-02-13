@@ -26,6 +26,7 @@
 #include "fileformat/delFileFormatList.h"
 #include "profile/delGameProfile.h"
 #include "profile/delGPModuleList.h"
+#include "../engine/delEngineInstance.h"
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/file/decMemoryFile.h>
@@ -35,7 +36,6 @@
 #include <dragengine/common/utils/decUuid.h>
 
 
-class delEngineInstance;
 class delGameRunParams;
 class delGPModuleList;
 class delLauncher;
@@ -91,7 +91,7 @@ private:
 	decString pPathConfig;
 	decString pPathCapture;
 	
-	delEngineInstance *pEngineInstance;
+	delEngineInstance::Ref pEngineInstance;
 	delGPModuleList pCollectChangedParams;
 	delGameProfile::Ref pCollectChangedParamsProfile;
 	
@@ -243,7 +243,7 @@ public:
 	bool HasEngineInstance() const;
 	
 	/** \brief Engine instance or nullptr. */
-	inline delEngineInstance *GetEngineInstance() const{ return pEngineInstance; }
+	inline const delEngineInstance::Ref &GetEngineInstance() const{ return pEngineInstance; }
 	
 	/** \brief Set engine instance or nullptr. */
 	void SetEngineInstance( delEngineInstance *engineInstance );
@@ -333,6 +333,12 @@ public:
 	
 	/** \brief Start game. */
 	void StartGame( const delGameRunParams &runParams );
+	
+	/**
+	 * \brief Start game.
+	 * \version 1.10
+	 */
+	void StartGame( const delGameRunParams &runParams, delEngineInstance::Factory &factory );
 	
 	/** \brief Stop game. */
 	void StopGame();

@@ -79,6 +79,9 @@ public:
 	
 	/** \brief Remove all modules. */
 	void RemoveAll();
+	
+	/** \brief Update module list with another. */
+	void Update( const delGPModuleList &list );
 	/*@}*/
 };
 

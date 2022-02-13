@@ -48,7 +48,8 @@ pType( deModuleSystem::emtUnknown ),
 pDescription( "No description" ),
 pAuthor( "Unknown" ),
 pVersion( "1.0" ),
-	
+
+pPriority( 0 ),
 pFallback( false ),
 pNoSaving( false ),
 
@@ -117,6 +118,10 @@ void deLoadableModule::SetDefaultExtension( const char *extension ){
 
 void deLoadableModule::SetDirectoryName( const char *dirName ){
 	pDirName = dirName;
+}
+
+void deLoadableModule::SetPriority( int priority ){
+	pPriority = priority;
 }
 
 void deLoadableModule::SetIsFallback( bool fallback ){

@@ -66,6 +66,7 @@ private:
 	decString pVersion;
 	decString pDirName;
 	decString pPattern;
+	int pPriority;
 	bool pIsFallback;
 	eModuleStatus pStatus;
 	int pErrorCode;
@@ -138,6 +139,20 @@ public:
 	
 	/** \brief Set pattern. */
 	void SetPattern( const char *pattern );
+	
+	/**
+	 * \brief Priority of module.
+	 * 
+	 * Used to find best module. Higher priority takes precedence.
+	 */
+	inline int GetPriority() const{ return pPriority; }
+	
+	/**
+	 * \brief Set module priority.
+	 * 
+	 * Used to find best module. Higher priority takes precedence.
+	 */
+	void SetPriority( int priority );
 	
 	/** \brief Fallback module. */
 	inline bool GetIsFallback() const{ return pIsFallback; }

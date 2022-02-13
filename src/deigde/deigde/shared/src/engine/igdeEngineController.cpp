@@ -606,20 +606,30 @@ deLoadableModule *igdeEngineController::GetBestModuleForType( deModuleSystem::eM
 	for( i=0; i<count; i++ ){
 		deLoadableModule * const module = modsys.GetModuleAt( i );
 		
-		if( module->GetType() != moduleType || module->GetErrorCode() != deLoadableModule::eecSuccess ){
+		if( module->GetType() != moduleType ){
+			continue;
+		}
+		if( module->GetErrorCode() != deLoadableModule::eecSuccess ){
 			continue;
 		}
 		
-		// non-fallback > fallback > none
-		if( module->GetIsFallback() ){
-			if( ! bestModule ){
+		// no best module found. use this module
+		if( ! bestModule ){
+			bestModule = module;
+			
+		// best module has been found and this module is fallback. skip module
+		}else if( module->GetIsFallback() ){
+			
+		// best module has same name as this module
+		}else if( module->GetName() == bestModule->GetName() ){
+			// use this module if it has higher version than the best module
+			if( deModuleSystem::CompareVersion( module->GetVersion(), bestModule->GetVersion() ) > 0 ){
 				bestModule = module;
 			}
 			
-		// for non-fallback pick the highest version of the first module
-		}else if( ! bestModule || bestModule->GetIsFallback()
-		|| ( module->GetName() == bestModule->GetName()
-		&& deModuleSystem::CompareVersion( module->GetVersion(), bestModule->GetVersion() ) > 0 ) ){
+		// best module has different name than this module. use this module if
+		// it has higher priority than the best module
+		}else if( module->GetPriority() > bestModule->GetPriority() ){
 			bestModule = module;
 		}
 	}

@@ -22,7 +22,8 @@
 #ifndef _DECLRUNGAME_H_
 #define _DECLRUNGAME_H_
 
-#include "../game/patch/declPatchList.h"
+#include <delauncher/game/delGame.h>
+#include <delauncher/game/delGameRunParams.h>
 
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/unicode/decUnicodeArgumentList.h>
@@ -30,89 +31,81 @@
 #include <dragengine/systems/deModuleSystem.h>
 
 class declLauncher;
-class declGame;
-class declGameProfile;
-class declGPModuleList;
+class delGameProfile;
+class delGPModuleList;
 
 
 /**
- * @brief Run Game Action.
+ * Game Action.
  */
 class declRunGame{
 private:
-	declLauncher *pLauncher;
+	declLauncher &pLauncher;
 	
 	decString pGameIdentifier;
 	decString pGameDefFile;
 	decString pProfileName;
 	bool pUseConsole;
 	bool pLogAllToConsole;
+	decUnicodeArgumentList pGameArgs;
 	
-	declGame *pGame;
-	declGameProfile *pProfile;
-	declGPModuleList *pModuleParameters;
+	delGame::Ref pGame;
+	delGPModuleList *pModuleParameters;
 	decUuid pPatchIdentifier;
 	bool pHasPatchIdentifier;
-	declPatchList pPatches;
-	decString pRunArguments;
-	int pRunWidth;
-	int pRunHeight;
-	bool pRunFullScreen;
-	decString pWindowTitle;
-	decUnicodeArgumentList pGameArgs;
+	delGameRunParams pRunParams;
 	
 	
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Creates a new action. */
-	declRunGame( declLauncher *launcher );
-	/** Cleans up the action. */
+	/** Create action. */
+	declRunGame( declLauncher &launcher );
+	
+	/** Clean up action. */
 	~declRunGame();
 	/*@}*/
 	
-	/** @name Management */
+	
+	
+	/** \name Management */
 	/*@{*/
-	/** Retrieves the launcher. */
-	inline declLauncher *GetLauncher() const{ return pLauncher; }
+	/** Launcher. */
+	inline declLauncher &GetLauncher() const{ return pLauncher; }
 	
 	/** Print syntax. */
 	void PrintSyntax();
+	
 	/** Parse arguments. */
 	bool ParseArguments();
+	
 	/** Parse module parameter argument. */
 	bool ParseModuleParameter( const decString &value );
-	/** Init launcher. */
-	void InitLauncher();
+	
 	/** Locate game to run. */
 	bool LocateGame();
-	/** \brief Locate and test profile to run and update parameters. */
+	
+	/** Locate and test profile to run and update parameters. */
 	bool LocateProfile();
 	
-	/** \brief Locate patches to apply. */
-	bool LocatePatches();
+	/** Update run arguments. */
+	void UpdateRunArguments();
+	
+	/** Apply custom module parameters. */
+	void ApplyCustomModuleParameters();
 	
 	/** Print the problems with the game. */
 	void PrintGameProblems();
+	
 	/** Print the problems with the profile. */
-	void PrintProfileProblems();
+	void PrintProfileProblems( const delGameProfile &profile );
+	
 	/** Print module problem if there are any. */
 	void PrintModuleProblem( const char *moduleName, deModuleSystem::eModuleTypes moduleType );
-	/** Activate script module. */
-	void ActivateScriptModule();
-	/** Add disk directory to virtual file system. */
-	void VFSAddDiskDir( const char *pathRoot, const char *pathDisk, bool readOnly );
-	/** Add containers to the engine virtual file system. */
-	void InitVFS();
-	/** Copy game arguments to engine argument list. */
-	void CopyGameArguments();
 	
 	/** Run action. */
 	void Run();
-	
-	/** \brief Process module parameter changes. */
-	void StoreCustomConfig( const declGPModuleList &changedModules );
 	/*@}*/
 };
 

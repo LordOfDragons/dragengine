@@ -23,7 +23,7 @@
 #include <string.h>
 
 #include "delLauncher.h"
-#include "engine/delEngineInstance.h"
+#include "engine/delEngineInstanceThreaded.h"
 #include "game/delGame.h"
 #include "game/icon/delGameIcon.h"
 #include "game/profile/delGameProfile.h"
@@ -50,7 +50,8 @@ pLoggerHistory( delLoggerHistory::Ref::New( new delLoggerHistory ) ),
 pLogSource ( loggerSource ),
 pEngine( *this, engineLogFileTitle ),
 pGameManager( *this ),
-pPatchManager( *this )
+pPatchManager( *this ),
+pEngineInstanceFactory( delEngineInstance::Factory::Ref::New( new delEngineInstanceThreaded::Factory ) )
 {
 	try{
 		pLogger.TakeOver( new deLoggerChain );
@@ -90,6 +91,13 @@ void delLauncher::AddFileLogger( const char *filetitle ){
 		pVFS->OpenFileForWriting( decPath::CreatePathUnix( filename ) ) ) ) ) );
 }
 
+void delLauncher::SetEngineInstanceFactory( delEngineInstance::Factory *factory ){
+	if( ! factory ){
+		DETHROW_INFO( deeNullPointer, "factory" );
+	}
+	pEngineInstanceFactory = factory;
+}
+
 void delLauncher::Prepare(){
 	pLogger->LogInfoFormat( pLogSource, "System config path: %s", pPathConfigSystem.GetString() );
 	pLogger->LogInfoFormat( pLogSource, "User config path: %s", pPathConfigUser.GetString() );
@@ -98,9 +106,10 @@ void delLauncher::Prepare(){
 	pLogger->LogInfoFormat( pLogSource, "Logs path: %s", pPathLogs.GetString() );
 	
 	{
-	delEngineInstance instance( *this, pEngine.GetLogFile() );
-	instance.StartEngine();
-	instance.LoadModules();
+	const delEngineInstance::Ref instance( delEngineInstance::Ref::New(
+		pEngineInstanceFactory->CreateEngineInstance( *this, pEngine.GetLogFile() ) ) );
+	instance->StartEngine();
+	instance->LoadModules();
 	
 	pEngine.PutEngineIntoVFS( instance );
 	

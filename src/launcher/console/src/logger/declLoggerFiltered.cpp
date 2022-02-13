@@ -35,21 +35,9 @@
 ////////////////////////////
 
 declLoggerFiltered::declLoggerFiltered(){
-	pLoggerInfo = NULL;
-	pLoggerWarn = NULL;
-	pLoggerError = NULL;
 }
 
 declLoggerFiltered::~declLoggerFiltered(){
-	if( pLoggerError ){
-		pLoggerError->FreeReference();
-	}
-	if( pLoggerWarn ){
-		pLoggerWarn->FreeReference();
-	}
-	if( pLoggerInfo ){
-		pLoggerInfo->FreeReference();
-	}
 }
 
 
@@ -58,45 +46,15 @@ declLoggerFiltered::~declLoggerFiltered(){
 ///////////////
 
 void declLoggerFiltered::SetLoggerInfo( deLogger *logger ){
-	if( logger != pLoggerInfo ){
-		if( pLoggerInfo ){
-			pLoggerInfo->FreeReference();
-		}
-		
-		pLoggerInfo = logger;
-		
-		if( logger ){
-			logger->AddReference();
-		}
-	}
+	pLoggerInfo = logger;
 }
 
 void declLoggerFiltered::SetLoggerWarning( deLogger *logger ){
-	if( logger != pLoggerWarn ){
-		if( pLoggerWarn ){
-			pLoggerWarn->FreeReference();
-		}
-		
-		pLoggerWarn = logger;
-		
-		if( logger ){
-			logger->AddReference();
-		}
-	}
+	pLoggerWarn = logger;
 }
 
 void declLoggerFiltered::SetLoggerError( deLogger *logger ){
-	if( logger != pLoggerError ){
-		if( pLoggerError ){
-			pLoggerError->FreeReference();
-		}
-		
-		pLoggerError = logger;
-		
-		if( logger ){
-			logger->AddReference();
-		}
-	}
+	pLoggerError = logger;
 }
 
 

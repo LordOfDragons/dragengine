@@ -22,93 +22,85 @@
 #ifndef _DECLLAUNCHER_H_
 #define _DECLLAUNCHER_H_
 
-#include "game/patch/declPatchManager.h"
+#include "logger/declLoggerFiltered.h"
 
-#include <dragengine/common/string/unicode/decUnicodeArgumentList.h>
+#include <delauncher/delLauncher.h>
+
 #include <dragengine/common/string/decString.h>
-#include <dragengine/filesystem/deVirtualFileSystemReference.h>
-#include <dragengine/logger/deLoggerReference.h>
+#include <dragengine/common/string/unicode/decUnicodeArgumentList.h>
+#include <dragengine/logger/deLogger.h>
 
 class declConfiguration;
-class declEngine;
-class declGameManager;
-
 
 
 /**
- * @brief Main Launcher Class.
+ * Main Launcher Class.
  */
-class declLauncher{
+class declLauncher : public delLauncher{
 private:
 	decUnicodeArgumentList pArgList;
-	deVirtualFileSystemReference pFileSystem;
 	declConfiguration *pConfiguration;
-	declEngine *pEngine;
-	declGameManager *pGameManager;
-	declPatchManager pPatchManager;
-	deLoggerReference pLogger;
-	deLoggerReference pEngineLogger;
-	deLoggerReference pEngineLoggerDebug;
+	deLogger::Ref pEngineLogger;
+	deLogger::Ref pEngineLoggerDebug;
 	
 	decString pXMLFile;
 	decUnicodeArgumentList pGameArgs;
 	decString pWindowTitle;
 	
+	
+	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Creates a new launcher. */
+	/** Create launcher. */
 	declLauncher();
-	/** Cleans up the launcher. */
-	~declLauncher();
+	
+	/** Clean up launcher. */
+	virtual ~declLauncher();
 	/*@}*/
 	
-	/** @name Management */
+	
+	
+	/** \name Management */
 	/*@{*/
-	/** Retrieves the command line arguments. */
+	/** Command line arguments. */
 	inline const decUnicodeArgumentList &GetArgumentList() const{ return pArgList; }
+	
 	/** Add argument to the command line argument list. */
 	void AddArgument( const decUnicodeString &argument );
 	
-	/** Retrieves the file system. */
-	inline deVirtualFileSystem *GetFileSystem() const{ return pFileSystem; }
-	/** Retrieves the configuration. */
-	inline declConfiguration *GetConfiguration() const{ return pConfiguration; }
-	/** Retrieves the engine. */
-	inline declEngine *GetEngine() const{ return pEngine; }
-	/** Retrieves the game manager. */
-	inline declGameManager *GetGameManager() const{ return pGameManager; }
+	/** Configuration. */
+	inline declConfiguration &GetConfiguration() const{ return *pConfiguration; }
 	
-	/** \brief Game patch manager. */
-	inline declPatchManager &GetPatchManager(){ return pPatchManager; }
-	inline const declPatchManager &GetPatchManager() const{ return pPatchManager; }
+	/** Engine logger. */
+	inline const deLogger::Ref &GetEngineLogger() const{ return pEngineLogger; }
 	
-	/** Retrieves the logger. */
-	inline deLogger *GetLogger() const{ return pLogger; }
-	/** Retrieves the engine logger. */
-	inline deLogger *GetEngineLogger() const{ return pEngineLogger; }
-	/** Retrieves the engine debug logger. */
-	inline deLogger *GetEngineLoggerDebug() const{ return pEngineLoggerDebug; }
+	/** Engine logger debug. */
+	inline const deLogger::Ref &GetEngineLoggerDebug() const{ return pEngineLoggerDebug; }
 	
 	/** Print syntax. */
 	void PrintSyntax();
 	
 	/** Init. */
 	void Init();
+	
 	/** Run. */
 	int Run();
+	
 	/** Clean up. */
 	void CleanUp();
 	
-	/** \brief Read input from user. */
+	/** Read input from user. */
 	decString ReadInput() const;
 	
-	/** \brief Read input from user returning true if 'y' or 'Y'. */
+	/** Read input from user returning true if 'y' or 'Y'. */
 	bool ReadInputConfirm() const;
 	
-	/** \brief Read input from user converting to integer number if valid else -1. */
+	/** Read input from user converting to integer number if valid else -1. */
 	int ReadInputSelection() const;
 	/*@}*/
+	
+	
 	
 private:
 	void pInitLogger();

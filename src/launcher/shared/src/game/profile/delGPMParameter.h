@@ -25,9 +25,6 @@
 #include <dragengine/deObject.h>
 #include <dragengine/common/string/decString.h>
 
-class delEngineInstance;
-class delLauncher;
-
 
 /**
  * \brief Game Profile Module Parameter.

@@ -433,7 +433,8 @@ void deoxrDPHtcViveTracker::pAddDevice( Tracker &tracker ){
 	tracker.device->SetName( name );
 	tracker.device->SetActionPose( tracker.action );
 	tracker.device->SetID( id );
-	tracker.device->SetSpacePose( deoxrSpace::Ref::New( new deoxrSpace( *pGetSession(), tracker.action ) ) );
+	tracker.device->SetSpacePose( deoxrSpace::Ref::New( new deoxrSpace(
+		*pGetSession(), tracker.action, tracker.path, decVector() ) ) );
 	
 	GetInstance().GetOxr().GetDevices().Add( tracker.device );
 }

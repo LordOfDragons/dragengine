@@ -300,10 +300,12 @@ bool deglWindowMain::QuitRequest(){
 
 void deglWindowMain::ReloadGamesAndPatches(){
 	{
-	delEngine &engine = pLauncher->GetEngine();
-	delEngineInstance instance( *pLauncher, engine.GetLogFile() );
-	instance.StartEngine();
-	instance.LoadModules();
+	const delEngineInstance::Ref instance( delEngineInstance::Ref::New(
+		pLauncher->GetEngineInstanceFactory().CreateEngineInstance(
+			*pLauncher, pLauncher->GetEngine().GetLogFile() ) ) );
+	instance->StartEngine();
+	instance->LoadModules();
+	
 	pLauncher->GetGameManager().LoadGames( instance );
 	pLauncher->GetPatchManager().LoadPatches( instance );
 	}

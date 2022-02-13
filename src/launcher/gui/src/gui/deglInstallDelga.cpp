@@ -194,9 +194,12 @@ bool deglInstallDelga::Run( const char *forceFilename ){
 	delGameList games;
 	
 	try{
-		delEngineInstance instance( launcher, launcher.GetEngine().GetLogFile() );
-		instance.StartEngine();
-		instance.LoadModules();
+		const delEngineInstance::Ref instance( delEngineInstance::Ref::New(
+			launcher.GetEngineInstanceFactory().CreateEngineInstance(
+				launcher, launcher.GetEngine().GetLogFile() ) ) );
+		instance->StartEngine();
+		instance->LoadModules();
+		
 		launcher.GetGameManager().LoadGameFromDisk( instance, filename, games );
 		launcher.GetPatchManager().LoadPatchFromDisk( instance, filename, patches );
 		

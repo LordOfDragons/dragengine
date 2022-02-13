@@ -58,9 +58,6 @@ public:
 	/** \brief Print syntax. */
 	void PrintSyntax();
 	
-	/** \brief Init launcher. */
-	void InitLauncher();
-	
 	/** \brief Run action. */
 	int Run();
 	/*@}*/
