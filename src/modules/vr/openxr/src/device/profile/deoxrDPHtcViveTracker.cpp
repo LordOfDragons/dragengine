@@ -218,9 +218,15 @@ void deoxrDPHtcViveTracker::SuggestBindings(){
 		return;
 	}
 	
+	// WARNING if an action is assigned SteamVR starts spamming connection events at high
+	//         frequency alternating between connect/remove tracker. this causes devices
+	//         to be added/removed many times per frame update causing slow-down and other
+	//         problems. there is no remedy against this since steam reports to us
+	//         connect/disconnect in short succession so we can not protect against this bug
+	
 #if 0
 	const deoxrInstance &instance = GetInstance();
-	const int bindingCount = 1 * count;
+	const int bindingCount = 1/*10*/ * count;
 	deoxrInstance::sSuggestBinding bindings[ bindingCount ];
 	deoxrInstance::sSuggestBinding *b = bindings;
 	decString name;
@@ -228,18 +234,26 @@ void deoxrDPHtcViveTracker::SuggestBindings(){
 	int i;
 	for( i=0; i<pTrackers.GetCount(); i++ ){
 		const Tracker &tracker = *( ( Tracker* )pTrackers.GetAt( i ) );
-		const decString basePath( tracker.path.GetName() );
+		//const decString basePath( tracker.path.GetName() );
+		const decString basePath( "/user/vive_tracker_htcx/role/handheld_object" );
 		
-// 		( b++ )->Set( tracker.action, deoxrPath( instance, basePath + "/input/grip/pose" ) );
-		( b++ )->Set( tracker.action, deoxrPath( instance, "/user/vive_tracker_htcx/role/chest/input/grip/pose" ) );
+		( b++ )->Set( tracker.action, deoxrPath( instance, basePath + "/input/grip/pose" ) );
 		
-// 		pAdd( b, deVROpenXR::eiaTriggerPress, basePath + "/input/trigger/click" );
-// 		pAdd( b, deVROpenXR::eiaTriggerAnalog, basePath + "/input/trigger/value" );
+		/*
+		pAdd( b, deVROpenXR::eiaGripPress, basePath + "/input/squeeze/click" );
 		
-// 		pAdd( b, deVROpenXR::eiaButtonPrimaryPress, basePath + "/input/menu/click" );
-// 		pAdd( b, deVROpenXR::eiaButtonPrimaryPress, basePath + "/input/system/click" );
+		pAdd( b, deVROpenXR::eiaTriggerPress, basePath + "/input/trigger/click" );
+		pAdd( b, deVROpenXR::eiaTriggerAnalog, basePath + "/input/trigger/value" );
 		
-// 		pAdd( b, deVROpenXR::eiaGripHaptic, basePath + "/output/haptic" );
+		pAdd( b, deVROpenXR::eiaButtonPrimaryPress, basePath + "/input/menu/click" );
+		pAdd( b, deVROpenXR::eiaButtonSecondaryPress, basePath + "/input/system/click" );
+		
+		pAdd( b, deVROpenXR::eiaTrackpadAnalog, basePath + "/input/trackpad" );
+		pAdd( b, deVROpenXR::eiaTrackpadPress, basePath + "/input/trackpad/click" );
+		pAdd( b, deVROpenXR::eiaTrackpadTouch, basePath + "/input/trackpad/touch" );
+		
+		pAdd( b, deVROpenXR::eiaGripHaptic, basePath + "/output/haptic" );
+		*/
 	}
 	
 	GetInstance().SuggestBindings( GetPath(), bindings, bindingCount );
@@ -435,6 +449,22 @@ void deoxrDPHtcViveTracker::pAddDevice( Tracker &tracker ){
 	tracker.device->SetID( id );
 	tracker.device->SetSpacePose( deoxrSpace::Ref::New( new deoxrSpace(
 		*pGetSession(), tracker.action, tracker.path, decVector() ) ) );
+	
+	/*
+	deoxrDeviceComponent * const trigger = pAddComponentTrigger( tracker.device );
+	pAddAxisTrigger( tracker.device, trigger );
+	pAddButtonTrigger( tracker.device, trigger, false ); // has to be button 0
+	
+	pAddButton( tracker.device, ebaPrimary, eblHome, false ); // has to be button 1
+	pAddButton( tracker.device, ebaSecondary, eblSystem, false ); // has to be button 2
+	
+	deoxrDeviceComponent * const grip = pAddComponentGrip( tracker.device );
+	pAddButtonGrip( tracker.device, grip, false );
+	
+	deoxrDeviceComponent * const trackpad = pAddComponentTrackpad( tracker.device );
+	pAddAxesTrackpad( tracker.device, trackpad );
+	pAddButtonTrackpad( tracker.device, trackpad, true, true );
+	*/
 	
 	GetInstance().GetOxr().GetDevices().Add( tracker.device );
 }

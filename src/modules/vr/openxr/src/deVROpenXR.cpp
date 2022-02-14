@@ -494,14 +494,13 @@ void deVROpenXR::ProcessEvents(){
 			break;
 			
 		case XR_TYPE_EVENT_DATA_VIVE_TRACKER_CONNECTED_HTCX:{
-			/*
-			const XrEventDataViveTrackerConnectedHTCX &connected = ( XrEventDataViveTrackerConnectedHTCX& )event;
+			const XrEventDataViveTrackerConnectedHTCX &connected =
+				( XrEventDataViveTrackerConnectedHTCX& )event;
 			const deoxrPath path( pInstance, connected.paths->persistentPath );
 			const deoxrPath pathRole( pInstance, connected.paths->rolePath );
-			LogInfoFormat( "VIVE Tracker Connected: path='%s' rolePath='%s'",
+			LogInfoFormat( "VIVE Tracker Connected, updating devices: path='%s' rolePath='%s'",
 				path.GetName().GetString(), pathRole.GetName().GetString() );
-			*/
-			LogInfo( "VIVE Tracker connected. Updating devices" );
+			//LogInfo( "VIVE Tracker connected. Updating devices" );
 			pDeviceProfiles.CheckAllAttached();
 			}break;
 			
