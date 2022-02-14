@@ -78,12 +78,10 @@ public:
 		eiaGripHaptic,
 		eiaPose,
 		eiaPoseLeft,
-		eiaPoseRight,
-		eiaSkeletonHandLeft,
-		eiaSkeletonHandRight
+		eiaPoseRight
 	};
 	
-	static const int InputActionCount = eiaSkeletonHandLeft + 1;
+	static const int InputActionCount = eiaPoseRight + 1;
 	
 	
 	

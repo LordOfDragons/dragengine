@@ -76,7 +76,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create hand tracker. */
-	deoxrHandTracker( deoxrSession &session, XrHandEXT hand );
+	deoxrHandTracker( deoxrSession &session, XrHandEXT hand, deoxrSpace &space );
 	
 protected:
 	/** Clean up space. */

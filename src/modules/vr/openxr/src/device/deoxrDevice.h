@@ -65,15 +65,13 @@ private:
 	const deoxrDeviceProfile &pProfile;
 	
 	deoxrPath pSubactionPath;
-	deoxrAction::Ref pActionPose;
 	
+	deoxrAction::Ref pActionPose;
 	deoxrSpace::Ref pSpacePose;
 	decVector pPosePosition;
 	decQuaternion pPoseOrientation;
 	decVector pPoseLinearVelocity;
 	decVector pPoseAngularVelocity;
-	
-	deoxrAction::Ref pActionHandPose;
 	
 	deInputDevice::eDeviceTypes pType;
 	deInputDevice::eBoneConfigurations pBoneConfiguration;
@@ -123,6 +121,12 @@ public:
 	/** Profile. */
 	inline const deoxrDeviceProfile &GetProfile() const{ return pProfile; }
 	
+	/** Subaction path. */
+	inline const deoxrPath &GetSubactionPath() const{ return pSubactionPath; }
+	
+	/** Set subaction path. */
+	void SetSubactionPath( const deoxrPath &path );
+	
 	/** Pose action. */
 	inline const deoxrAction::Ref &GetActionPose() const{ return pActionPose; }
 	
@@ -134,18 +138,6 @@ public:
 	
 	/** Set pose space. */
 	void SetSpacePose( deoxrSpace *space );
-	
-	/** Hand pose action handle. */
-	inline const deoxrAction &GetActionHandPose() const{ return pActionHandPose; }
-	
-	/** Set hand pose action handle. */
-	void SetActionHandPose( deoxrAction *action );
-	
-	/** Subaction path. */
-	inline const deoxrPath &GetSubactionPath() const{ return pSubactionPath; }
-	
-	/** Set subaction path. */
-	void SetSubactionPath( const deoxrPath &path );
 	
 	
 	

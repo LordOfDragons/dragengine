@@ -34,7 +34,7 @@
 // class deoxrHandTracker
 //////////////////////
 
-deoxrHandTracker::deoxrHandTracker( deoxrSession &session, XrHandEXT hand ) :
+deoxrHandTracker::deoxrHandTracker( deoxrSession &session, XrHandEXT hand, deoxrSpace &space ) :
 pSession( session ),
 pHand( hand ),
 pHandTracker( XR_NULL_HANDLE ),
@@ -73,7 +73,7 @@ pMapBoneXrToDeCount( 0 )
 		// initialize structures used to fetch joints
 		memset( &pLocateInfo, 0, sizeof( pLocateInfo ) );
 		pLocateInfo.type = XR_TYPE_HAND_JOINTS_LOCATE_INFO_EXT;
-		pLocateInfo.baseSpace = pSession.GetSpace()->GetSpace();
+		pLocateInfo.baseSpace = space.GetSpace();
 		
 		memset( &pLocations, 0, sizeof( pLocations ) );
 		pLocations.type = XR_TYPE_HAND_JOINT_LOCATIONS_EXT;
@@ -163,6 +163,9 @@ void deoxrHandTracker::Locate(){
 	
 	if( ! XR_SUCCEEDED( instance.xrLocateHandJointsEXT( pHandTracker, &pLocateInfo, &pLocations ) )
 	|| ! pLocations.isActive ){
+		const XrHandJointLocationEXT &j = pJointLocations[XR_HAND_JOINT_INDEX_INTERMEDIATE_EXT];
+		pSession.GetSystem().GetInstance().GetOxr().LogWarnFormat("xrLocateHandJointsEXT isActive=%d flags=%d pos(%g,%g,%g) r=%g",
+			pLocations.isActive, (int)j.locationFlags, j.pose.position.x, j.pose.position.y, j.pose.position.z, j.radius);
 		return;
 	}
 	

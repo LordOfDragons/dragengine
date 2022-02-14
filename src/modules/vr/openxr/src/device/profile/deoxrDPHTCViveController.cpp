@@ -87,7 +87,6 @@ void deoxrDPHTCViveController::pSuggestBindings(){
 		pAdd( b, deVROpenXR::eiaTriggerAnalog, basePath + "/input/trigger/value" );
 		
 		pAdd( b, deVROpenXR::eiaButtonPrimaryPress, basePath + "/input/menu/click" );
-		
 		pAdd( b, deVROpenXR::eiaButtonSecondaryPress, basePath + "/input/system/click" );
 		
 		pAdd( b, deVROpenXR::eiaTrackpadAnalog, basePath + "/input/trackpad" );

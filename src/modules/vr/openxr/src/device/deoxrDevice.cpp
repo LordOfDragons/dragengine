@@ -66,20 +66,16 @@ void deoxrDevice::SetIndex( int index ){
 	pIndex = index;
 }
 
+void deoxrDevice::SetSubactionPath( const deoxrPath &path ){
+	pSubactionPath = path;
+}
+
 void deoxrDevice::SetActionPose( deoxrAction *action ){
 	pActionPose = action;
 }
 
 void deoxrDevice::SetSpacePose( deoxrSpace *space ){
 	pSpacePose = space;
-}
-
-void deoxrDevice::SetActionHandPose( deoxrAction *action ){
-	pActionHandPose = action;
-}
-
-void deoxrDevice::SetSubactionPath( const deoxrPath &path ){
-	pSubactionPath = path;
 }
 
 void deoxrDevice::SetType( deInputDevice::eDeviceTypes type ){
