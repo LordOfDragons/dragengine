@@ -215,12 +215,14 @@ bool deglLauncher::RunCommandLineGame(){
 		
 	}else if( ! game->GetAllFormatsSupported() ){
 		FXMessageBox::error( pWindowMain->getApp(), MBOX_OK, "Can not run game",
-			"One or more File Formats required by the game are not working." );
+			"One or more File Formats required by the game are not working.\n\n"
+			"Try updating Drag[en]gine to the latest version");
 		return false;
 		
 	}else{
 		FXMessageBox::error( pWindowMain->getApp(), MBOX_OK, "Can not run game",
-			"Game related properties are incorrect." );
+			"Game related properties are incorrect.\n\n"
+			"Try updating Drag[en]gine to the latest version" );
 		return false;
 	}
 	

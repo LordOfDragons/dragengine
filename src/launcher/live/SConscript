@@ -38,8 +38,8 @@ if envLauncher['OSWindows']:
 	# - https://stackoverflow.com/questions/22138105/windows-hooking-and-dll-loading
 	# - https://docs.microsoft.com/en-us/cpp/build/reference/understanding-the-helper-function?redirectedfrom=MSDN&view=vs-2019
 
-appendLibrary(envLauncher, parent_targets['dragengine'], libs)
-libs.extend(parent_targets['dragengine']['binlibs'])
+appendLibrary(envLauncher, parent_targets['delauncher'], libs)
+libs.extend(parent_targets['delauncher']['binlibs'])
 
 if envLauncher['OSPosix']:
 	def buildPatchRunTime(env, source, target):

@@ -22,8 +22,7 @@
 #ifndef _DELLLAUNCHER_H_
 #define _DELLLAUNCHER_H_
 
-#include "game/dellGameManager.h"
-#include "engine/dellEngine.h"
+#include <delauncher/delLauncher.h>
 
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/common/string/decString.h>
@@ -36,32 +35,38 @@ class dellEngine;
 
 
 /**
- * \brief Launcher.
+ * Live launcher.
  */
 class dellLauncher{
+public:
+	class Launcher : public delLauncher{
+	public:
+		Launcher();
+		virtual ~Launcher();
+	};
+	
+	
+	
 private:
 	decUnicodeArgumentList pArguments;
 	decPath pWorkingDir;
 	decPath pPathConfigUser;
 	decStringList pEnvParamsStore;
-	deVirtualFileSystemReference pFileSystem;
-	deLoggerReference pLogger;
-	dellEngine pEngine;
-	dellGameManager pGameManager;
+	
+	Launcher *pLauncher;
 	
 	decString pDelgaFile;
 	decUnicodeArgumentList pGameArgs;
-	decString pWindowTitle;
 	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create launcher. */
+	/** Create launcher. */
 	dellLauncher();
 	
-	/** \brief Clean up launcher. */
+	/** Clean up launcher. */
 	~dellLauncher();
 	/*@}*/
 	
@@ -69,41 +74,25 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Command line arguments. */
+	/** Command line arguments. */
 	inline const decUnicodeArgumentList &GetArguments() const{ return pArguments; }
 	
-	/** \brief Add argument to the command line argument list. */
+	/** Add argument to the command line argument list. */
 	void AddArgument( const decUnicodeString &argument );
 	
-	/** \brief File system. */
-	inline deVirtualFileSystem *GetFileSystem() const{ return pFileSystem; }
-	
-	/** \brief Engine. */
-	inline dellEngine &GetEngine(){ return pEngine; }
-	inline const dellEngine &GetEngine() const{ return pEngine; }
-	
-	/** \brief Game manager. */
-	inline dellGameManager &GetGameManager(){ return pGameManager; }
-	inline const dellGameManager &GetGameManager() const{ return pGameManager; }
-	
-	/** \brief Logger. */
-	inline deLogger *GetLogger() const{ return pLogger; }
-	
-	/** \brief Working directory. */
+	/** Working directory. */
 	inline const decPath GetWorkingDirectory() const{ return pWorkingDir; }
 	
-	/** \brief Init. */
-	void Init();
+	/** Launcher. */
+	inline Launcher &GetLauncher() const{ return *pLauncher; }
 	
-	/** \brief Run. */
+	/** Run. */
 	void Run();
 	/*@}*/
 	
 	
 	
 private:
-	void pInitVFS();
-	void pInitLogger();
 	void pUpdateEnvironment();
 };
 
