@@ -33,6 +33,7 @@ if envModule['with_debug']:
 
 if useInternalLoader:
 	envModule.Append(CPPFLAGS = ['-DINTERNAL_XR_LOADER'])
+	envModule.Append(CPPPATH = ['extern/include'])
 
 # setup the builders
 sources = []
