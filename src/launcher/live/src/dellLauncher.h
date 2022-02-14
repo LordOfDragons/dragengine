@@ -24,6 +24,7 @@
 
 #include <delauncher/delLauncher.h>
 
+#include <dragengine/common/collection/decObjectSet.h>
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/unicode/decUnicodeArgumentList.h>
@@ -45,6 +46,15 @@ public:
 		virtual ~Launcher();
 	};
 	
+#ifdef OS_UNIX
+	class PreloadLibrary : public deObject{
+		void * const pHandle;
+	public:
+		PreloadLibrary( const decPath &basePath, const char *filename );
+		virtual ~PreloadLibrary();
+	};
+#endif
+	
 	
 	
 private:
@@ -52,6 +62,10 @@ private:
 	decPath pWorkingDir;
 	decPath pPathConfigUser;
 	decStringList pEnvParamsStore;
+	
+#ifdef OS_UNIX
+	decObjectSet pPreloadLibraries;
+#endif
 	
 	Launcher *pLauncher;
 	

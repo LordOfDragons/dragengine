@@ -31,6 +31,10 @@
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/string/unicode/decUnicodeString.h>
 
+#ifdef OS_UNIX
+#include <dlfcn.h>
+#endif
+
 
 // Definitions
 ////////////////
@@ -49,6 +53,24 @@ delLauncher( "LauncherLive", "launcher" ){
 
 dellLauncher::Launcher::~Launcher(){
 }
+
+
+// Class dellLauncher::PreloadLibrary
+///////////////////////////////////////
+
+#ifdef OS_UNIX
+
+dellLauncher::PreloadLibrary::PreloadLibrary( const decPath &basePath, const char *filename ) :
+pHandle( dlopen( ( basePath + decPath::CreatePathUnix( filename ) ).GetPathNative(), RTLD_LAZY ) ){
+}
+
+dellLauncher::PreloadLibrary::~PreloadLibrary(){
+	if( pHandle ){
+		dlclose( pHandle );
+	}
+}
+
+#endif
 
 
 // Class dellLauncher
@@ -137,8 +159,7 @@ void dellLauncher::pUpdateEnvironment(){
 	pEnvParamsStore.Add( decString( "DELAUNCHER_LOGS=" ) + pathLogs.GetPathNative() );
 	
 	#ifdef OS_UNIX
-	const decPath pathPreload( pathBase + decPath::CreatePathUnix( "lib" ) );
-	pEnvParamsStore.Add( decString( "LD_LIBRARY_PATH=" ) + pathPreload.GetPathNative() );
+	pPreloadLibraries.Add( deObject::Ref::New( new PreloadLibrary( pathBase, "lib/libDEFOX-1.7.so" ) ) );
 	#endif
 	
 	const int count = pEnvParamsStore.GetCount();

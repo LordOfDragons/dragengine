@@ -54,6 +54,8 @@ if envLauncher['OSPosix']:
 		if os.system('\n'.join(script)):
 			raise Exception('Failed to run patchelf')
 	
+	libs.append('dl')
+	
 	envLauncher.Append(LINKFLAGS = ['-Wl,-rpath,\'$$ORIGIN/linux64/lib\''])
 	program = envLauncher.Program(target='launchLinux64', source=objects, LIBS=libs)
 	
