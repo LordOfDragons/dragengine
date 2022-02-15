@@ -6,6 +6,7 @@
 	<version>VERSION</version>
 	<type>Audio</type>
 	<fallback/>
+	<priority>0</priority>
 	<library>
 		<file>FILENAME</file>
 		<size>FILESIZE</size>

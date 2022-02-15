@@ -262,8 +262,8 @@ delEngineModule *delEngine::GetBestModuleForType( deModuleSystem::eModuleTypes m
 			}
 			
 		// best module has different name than this module. use this module if
-		// it has higher priority than the best module
-		}else if( module->GetPriority() > bestModule->GetPriority() ){
+		// it has higher priority than the best module or best module is fallback
+		}else if( module->GetPriority() > bestModule->GetPriority() || bestModule->GetIsFallback() ){
 			bestModule = module;
 		}
 	}

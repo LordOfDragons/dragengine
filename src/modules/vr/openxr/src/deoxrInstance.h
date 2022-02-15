@@ -80,9 +80,10 @@ public:
 	/** Layers. */
 	enum eLayer{
 		layerLunarCoreValidation, //<! XR_APILAYER_LUNARG_core_validation
+		layerApiDump, //<! XR_APILAYER_LUNARG_api_dump
 	};
 	
-	static const int LayerCount = layerLunarCoreValidation + 1;
+	static const int LayerCount = layerApiDump + 1;
 	
 	/** Suggest binding. */
 	struct sSuggestBinding{

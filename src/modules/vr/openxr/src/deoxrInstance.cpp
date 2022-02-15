@@ -84,6 +84,7 @@ pInstance( XR_NULL_HANDLE )
 	
 	memset( &pSupportsLayer, 0, sizeof( pSupportsLayer ) );
 	pSupportsLayer[ layerLunarCoreValidation ].name = "XR_APILAYER_LUNARG_core_validation";
+	pSupportsLayer[ layerApiDump ].name = "XR_APILAYER_LUNARG_api_dump";
 	
 	#define INSTANCE_LEVEL_OPENXR_FUNCTION( name ) name = XR_NULL_HANDLE;
 	#define INSTANCE_LEVEL_OPENXR_FUNCTION_FROM_EXTENSION( name, extension ) name = XR_NULL_HANDLE;
@@ -373,13 +374,14 @@ void deoxrInstance::pCreateInstance( bool enableValidationLayers ){
 	}
 	
 	strcpy( instanceCreateInfo.applicationInfo.applicationName, "Drag[en]gine" );
-	instanceCreateInfo.applicationInfo.applicationVersion = XR_MAKE_VERSION(
-		moduleVersion.GetAt( 0 ).ToInt(), moduleVersion.GetAt( 1 ).ToInt(),
-		moduleVersion.GetAt( 2 ).ToInt() );
+	instanceCreateInfo.applicationInfo.applicationVersion = 
+		( ( moduleVersion.GetAt( 0 ).ToInt() & 0xffff ) << 16 )
+		| ( ( moduleVersion.GetAt( 1 ).ToInt() & 0xff ) << 8 )
+		| ( moduleVersion.GetAt( 2 ).ToInt() & 0xff );
 	strcpy( instanceCreateInfo.applicationInfo.engineName, "Drag[en]gine" );
 	instanceCreateInfo.applicationInfo.engineVersion =
 		instanceCreateInfo.applicationInfo.applicationVersion;
-	instanceCreateInfo.applicationInfo.apiVersion = XR_MAKE_VERSION( 1, 0, 0 );
+	instanceCreateInfo.applicationInfo.apiVersion = XR_CURRENT_API_VERSION;
 	
 	// detect extensions and layers
 	pDetectExtensions();
@@ -393,6 +395,9 @@ void deoxrInstance::pCreateInstance( bool enableValidationLayers ){
 		if( SupportsLayer( layerLunarCoreValidation ) ){
 			layers[ layerCount++ ] = pSupportsLayer[ layerLunarCoreValidation ].name;
 		}
+// 		if( SupportsLayer( layerApiDump ) ){
+// 			layers[ layerCount++ ] = pSupportsLayer[ layerApiDump ].name;
+// 		}
 	}
 	
 	// enable extensions

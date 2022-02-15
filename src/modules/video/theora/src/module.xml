@@ -6,6 +6,7 @@
 	<version>VERSION</version>
 	<type>Video</type>
 	<pattern>.ogv</pattern>
+	<priority>1</priority>
 	<library>
 		<file>FILENAME</file>
 		<size>FILESIZE</size>

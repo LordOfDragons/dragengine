@@ -242,20 +242,34 @@ const char *name, const char *version ){
 		// find best module
 		for( i=0; i<count; i++ ){
 			deLoadableModule * const module2 = moduleSystem.GetModuleAt( i );
-			if( ! module2->IsLoaded() || ! module2->GetEnabled() || module2->GetType() != type ){
+			
+			if( ! module2->IsLoaded() || ! module2->GetEnabled() ){
+				continue;
+			}
+			if( module2->GetType() != type ){
+				continue;
+			}
+			if( module2->GetErrorCode() != deLoadableModule::eecSuccess ){
 				continue;
 			}
 			
-			// non-fallback > fallback > none
-			if( module2->GetIsFallback() ){
-				if( ! module ){
+			// no best module found. use this module
+			if( ! module ){
+				module = module2;
+				
+			// best module has been found and this module is fallback. skip module
+			}else if( module2->GetIsFallback() ){
+				
+			// best module has same name as this module
+			}else if( module2->GetName() == module->GetName() ){
+				// use this module if it has higher version than the best module
+				if( deModuleSystem::CompareVersion( module2->GetVersion(), module->GetVersion() ) > 0 ){
 					module = module2;
 				}
 				
-			// for non-fallback pick the highest version of the first module
-			}else if( ! module || module->GetIsFallback()
-			|| ( module2->GetName() == module->GetName()
-			&& deModuleSystem::CompareVersion( module2->GetVersion(), module->GetVersion() ) > 0 ) ){
+			// best module has different name than this module. use this module if
+			// it has higher priority than the best module or best module is fallback
+			}else if( module2->GetPriority() > module->GetPriority() || module->GetIsFallback() ){
 				module = module2;
 			}
 		}

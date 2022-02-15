@@ -6,6 +6,7 @@
 	<version>VERSION</version>
 	<type>OcclusionMesh</type>
 	<pattern>.deoccmesh</pattern>
+	<priority>1</priority>
 	<library>
 		<file>FILENAME</file>
 		<size>FILESIZE</size>

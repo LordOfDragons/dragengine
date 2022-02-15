@@ -347,15 +347,23 @@ deLoadableModule *deModuleSystem::FindMatching( eModuleTypes type, const char *f
 				continue;
 			}
 			
+			// no latest module found. use this module
 			if( ! latestModule ){
 				latestModule = module;
 				
-			}else if( module->GetName() != latestModule->GetName() ){
-				if( module->GetPriority() > latestModule->GetPriority() ){
+			// latest module has been found and this module is fallback. skip module
+			}else if( module->GetIsFallback() ){
+				
+			// latest module has same name as this module
+			}else if( module->GetName() == latestModule->GetName() ){
+				// use this module if it has higher version than the latest module
+				if( CompareVersion( module->GetVersion(), latestModule->GetVersion() ) > 0 ){
 					latestModule = module;
 				}
 				
-			}else if( CompareVersion( module->GetVersion(), latestModule->GetVersion() ) > 0 ){
+			// latest module has different name than this module. use this module if
+			// it has higher priority than the latest module or latest module is fallback
+			}else if( module->GetPriority() > latestModule->GetPriority() || latestModule->GetIsFallback() ){
 				latestModule = module;
 			}
 		}

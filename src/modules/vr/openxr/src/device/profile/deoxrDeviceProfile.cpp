@@ -500,8 +500,8 @@ deoxrHandTracker *deoxrDeviceProfile::pAddHandTracker( deoxrDevice &device, bool
 	deoxrSession &session = pInstance.GetOxr().GetSession();
 	
 	const deoxrHandTracker::Ref handTracker( deoxrHandTracker::Ref::New(
-		new deoxrHandTracker( session, leftHand ? XR_HAND_LEFT_EXT : XR_HAND_LEFT_EXT,
-			session.GetSpace() /* device.GetSpacePose() */ ) ) );
+		new deoxrHandTracker( session, leftHand ? XR_HAND_LEFT_EXT : XR_HAND_RIGHT_EXT,
+			device.GetSpacePose() ) ) );
 	
 	device.SetHandTracker( handTracker );
 	
