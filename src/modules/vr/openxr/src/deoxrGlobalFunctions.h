@@ -28,13 +28,15 @@
 
 #define EXPORTED_OPENXR_FUNCTION( name ) extern PFN_##name name;
 #define GLOBAL_LEVEL_OPENXR_FUNCTION( name ) extern PFN_##name name;
-#define GLOBAL_LEVEL_OPENXR_FUNCTION_WARN( name ) extern PFN_##name name;
 
 #include "deoxrFunctionNames.h"
 
+extern XRAPI_ATTR XrResult XRAPI_CALL xrEnumerateApiLayerProperties(
+	uint32_t propertyCapacityInput, uint32_t *propertyCountOutput,
+	XrApiLayerProperties *properties );
+
 #undef EXPORTED_OPENXR_FUNCTION
 #undef GLOBAL_LEVEL_OPENXR_FUNCTION
-#undef GLOBAL_LEVEL_OPENXR_FUNCTION_WARN
 
 #endif // INTERNAL_XR_LOADER
 

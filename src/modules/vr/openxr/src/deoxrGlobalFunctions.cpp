@@ -25,7 +25,12 @@
 
 #define EXPORTED_OPENXR_FUNCTION( name ) PFN_##name name = XR_NULL_HANDLE;
 #define GLOBAL_LEVEL_OPENXR_FUNCTION( name ) PFN_##name name = XR_NULL_HANDLE;
-#define GLOBAL_LEVEL_OPENXR_FUNCTION_WARN( name ) PFN_##name name = XR_NULL_HANDLE;
+
+XRAPI_ATTR XrResult XRAPI_CALL xrEnumerateApiLayerProperties( uint32_t propertyCapacityInput,
+uint32_t *propertyCountOutput, XrApiLayerProperties *properties ){
+	*propertyCountOutput = 0;
+	return XR_SUCCESS;
+}
 
 #endif // INTERNAL_XR_LOADER
 
