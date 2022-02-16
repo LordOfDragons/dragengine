@@ -143,7 +143,9 @@ void delGameXML::pReadGame( const decXmlElementTag &root, delGame &game ){
 			
 		}else if( tag->GetName() == "scriptModule" ){
 			game.SetScriptModule( GetCDataString( *tag ) );
-			game.SetScriptModuleVersion( GetAttributeString( *tag, "version" ) );
+			if( HasAttribute( *tag, "version" ) ){
+				game.SetScriptModuleVersion( GetAttributeString( *tag, "version" ) );
+			}
 			
 		}else if( tag->GetName() == "windowSize" ){
 			game.SetWindowSize( decPoint( GetAttributeInt( *tag, "x" ), GetAttributeInt( *tag, "y" ) ) );

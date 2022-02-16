@@ -544,7 +544,12 @@ bool deScriptingDragonScript::Init( const char *scriptDirectory, const char *gam
 	deDSEngineManager *dsmanager = NULL;
 	
 	try{
-		pCompatibleVersion.SetVersion( GetGameEngine()->GetScriptingSystem()->GetScriptVersion() );
+		decString version( GetGameEngine()->GetScriptingSystem()->GetScriptVersion() );
+		if( version.IsEmpty() ){
+			version = "1.8"; // added in version 1.9
+		}
+		
+		pCompatibleVersion.SetVersion( version );
 		LogInfoFormat( "Requested compatible script version: %s", pCompatibleVersion.version.GetString() );
 		LogInfoFormat( "Module version: %s", pModuleVersion.version.GetString() );
 		
