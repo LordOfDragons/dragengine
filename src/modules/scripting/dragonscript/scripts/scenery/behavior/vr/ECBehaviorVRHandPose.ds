@@ -33,9 +33,12 @@ pin Dragengine.Utils
  * \version 1.7
  * 
  * Behavior queries VR hand device for bone poses and applies them to the VR hand component.
+ * 
  * Creates an animator to apply the states. This allows to chain other animators like
  * ECBehaviorActorAnimated for best performance. The bone names can be modified to adjust
- * to rigs using different names. The default bone names are these:
+ * to rigs using different names.
+ * 
+ * The default bone names are these:
  * - Origin set to VR Hand: origin
  * - Wrist: hand
  * - Thumb: thumb1, thumb2, thumb3
@@ -44,6 +47,17 @@ pin Dragengine.Utils
  * - Ring: ring1, ring2, ring3, ring4
  * - Pinky: pinky1, pinky2, pinky3, pinky4
  * 
+ * Models of varying size can be used. The behavior scales the input data to fit the model
+ * size. For this process to wor you have to measure the distance from the middle finger
+ * tip bone to the wrist bone. Use the base of these bones not their tails (in Blender3D).
+ * Set this values as the "fingerTipDistance" element class property:
+ * 
+ * \code{.ds}
+ * getFingerTipDistance().setValue(0.165)
+ * \endcode
+ * 
+ * The default distance is 0.165 which is a measuring of a typical VR hand model.
+ * 
  * Requires these behaviors to be present:
  * - ECBehaviorVRHand
  */
@@ -51,45 +65,42 @@ class ECBehaviorVRHandPose extends DefaultECBehavior
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
 		class Bone
-			private var String pBone
-			private var int pPoseIndex
-			private var String pNamePrefix
-			private var AnimatorController pControllerPosition
-			private var AnimatorController pControllerOrientation
+			public var String bone
+			public var int poseIndex
+			public var String namePrefix
+			public var AnimatorController controllerPosition
+			public var AnimatorController controllerOrientation
+			public var Vector posePosition
+			public var Quaternion poseOrientation
 			
 			public func new(String bone, int poseIndex, String namePrefix)
-				pBone = bone
-				pPoseIndex = poseIndex
-				pNamePrefix = namePrefix
+				this.bone = bone
+				this.poseIndex = poseIndex
+				this.namePrefix = namePrefix
 			end
-			
-			public func String getBone()
-				return pBone
-			end
-			
-			public func int getPoseIndex()
-				return pPoseIndex
-			end
-			
-			public func String getNamePrefix()
-				return pNamePrefix
-			end
-			
-			public func AnimatorController getControllerPosition()
-				return pControllerPosition
-			end
-			
-			public func AnimatorController getControllerOrientation()
-				return pControllerOrientation
-			end
-			
-			public func void setControllerPosition(AnimatorController controller)
-				pControllerPosition = controller
-			end
-			
-			public func void setControllerOrientation(AnimatorController controller)
-				pControllerOrientation = controller
-			end
+		end
+		
+		enum BoneEntry
+			wrist
+			thumb1
+			thumb2
+			thumb3
+			index1
+			index2
+			index3
+			index4
+			middle1
+			middle2
+			middle3
+			middle4
+			ring1
+			ring2
+			ring3
+			ring4
+			pinky1
+			pinky2
+			pinky3
+			pinky4
 		end
 		
 		
@@ -103,12 +114,17 @@ class ECBehaviorVRHandPose extends DefaultECBehavior
 		private var AnimatorInstance pAnimatorInstance
 		private var AnimatorController pControllerEnableBones
 		
+		private var Matrix pHandScale
+		private var float pModelFingerTipDistance
+		private var float pPoseFingerTipDistance
+		
 		
 		
 		/** \brief Create element. */
 		public func new(ECBehaviorVRHandPose ecbehavior, BehaviorElement element) super(element)
 			pECBehavior = ecbehavior
 			pBones = Array.new()
+			pHandScale = Matrix.new()
 			
 			pVRHand = ecbehavior.getVRHand().instance(element)
 		end
@@ -124,6 +140,9 @@ class ECBehaviorVRHandPose extends DefaultECBehavior
 		
 		/** \brief Initialize element from stub. */
 		public func void init(StubElement stub)
+			pModelFingerTipDistance = pECBehavior.getFingerTipDistance().getValue(stub)
+			pPoseFingerTipDistance = pModelFingerTipDistance
+			
 			// add bones
 			pBoneOrigin = pECBehavior.getBoneOrigin().getValue(stub)
 			
@@ -150,7 +169,7 @@ class ECBehaviorVRHandPose extends DefaultECBehavior
 			
 			// collect bones to animate
 			pAnimateBones = pBones.collect(block Bone each
-				return not each.getBone().empty()
+				return not each.bone.empty()
 			end)
 			
 			// create animator instance
@@ -164,8 +183,8 @@ class ECBehaviorVRHandPose extends DefaultECBehavior
 			
 			// get controllers for animate bones
 			pAnimateBones.forEach(block int index, Bone bone
-				bone.setControllerPosition(pAnimatorInstance.getControllerAt(index * 2))
-				bone.setControllerOrientation(pAnimatorInstance.getControllerAt(index * 2 + 1))
+				bone.controllerPosition = pAnimatorInstance.getControllerAt(index * 2)
+				bone.controllerOrientation = pAnimatorInstance.getControllerAt(index * 2 + 1)
 			end)
 			
 			pControllerEnableBones = pAnimatorInstance.getControllerAt(pAnimateBones.getCount() * 2)
@@ -182,7 +201,7 @@ class ECBehaviorVRHandPose extends DefaultECBehavior
 				animator.addBone(pBoneOrigin)
 			end
 			pAnimateBones.forEach(block Bone each
-				animator.addBone(each.getBone())
+				animator.addBone(each.bone)
 			end)
 			
 			// add controllers
@@ -190,7 +209,7 @@ class ECBehaviorVRHandPose extends DefaultECBehavior
 			
 			animator.setControllerCount(controllerCount + 1)
 			pAnimateBones.forEach(block int index, Bone bone
-				var String namePrefix = bone.getNamePrefix()
+				var String namePrefix = bone.namePrefix
 				animator.getControllerAt(index * 2).setName(namePrefix + " position")
 				animator.getControllerAt(index * 2 + 1).setName(namePrefix + " orientation")
 			end)
@@ -215,7 +234,7 @@ class ECBehaviorVRHandPose extends DefaultECBehavior
 				ruleReset.addBone(pBoneOrigin)
 			end
 			pAnimateBones.forEach(block Bone each
-				ruleReset.addBone(each.getBone())
+				ruleReset.addBone(each.bone)
 			end)
 			animator.addRule(ruleReset)
 			
@@ -224,7 +243,7 @@ class ECBehaviorVRHandPose extends DefaultECBehavior
 				var ARInverseKinematic ruleBone = ARInverseKinematic.new()
 				ruleBone.setAdjustOrientation(true)
 				ruleBone.setAdjustPosition(true)
-				ruleBone.addBone(bone.getBone())
+				ruleBone.addBone(bone.bone)
 				ruleBone.targetAddLink(ARInverseKinematicTarget.goalPosition, index * 2)
 				ruleBone.targetAddLink(ARInverseKinematicTarget.goalOrientation, index * 2 + 1)
 				ruleBone.targetAddLink(ARInverseKinematicTarget.blendFactor, controllerCount)
@@ -233,6 +252,16 @@ class ECBehaviorVRHandPose extends DefaultECBehavior
 			
 			// finished
 			return animator
+		end
+		
+		/** \brief Bone entry. */
+		protected func Bone getBone(BoneEntry entry)
+			return pBones.getAt(entry.order()) cast Bone
+		end
+		
+		/** \brief Bone entry. */
+		protected func Bone getBoneAt(int index)
+			return pBones.getAt(index) cast Bone
 		end
 		
 		
@@ -251,6 +280,7 @@ class ECBehaviorVRHandPose extends DefaultECBehavior
 		
 		/** \brief Update controllers. */
 		public func void updateControllers()
+			// get device and check if values can be fetched
 			var InputDevice device = pVRHand.getInputDevice()
 			
 			if device == null\
@@ -260,21 +290,83 @@ class ECBehaviorVRHandPose extends DefaultECBehavior
 				return
 			end
 			
+			// fetch values
 			pAnimateBones.forEach(block Bone bone
-				var int poseIndex = bone.getPoseIndex()
-				
-				bone.getControllerPosition().setVector(\
-					device.getDeviceBonePosePosition(poseIndex, false))
-				
-				bone.getControllerOrientation().setRotation(\
-					device.getDeviceBonePoseOrientation(poseIndex, false).getEulerAngles())
+				bone.posePosition = device.getDeviceBonePosePosition(bone.poseIndex, false)
+				bone.poseOrientation = device.getDeviceBonePoseOrientation(bone.poseIndex, false)
 			end)
+			
+			// update hand scale
+			calcPoseFingerTipDistance()
+			updateHandScale()
+			
+			// update controllers with transformed poses
+			pAnimateBones.forEach(block Bone bone
+				bone.controllerPosition.setVector(pHandScale * bone.posePosition)
+				bone.controllerOrientation.setRotation(bone.poseOrientation.getEulerAngles())
+			end)
+			
 			pControllerEnableBones.setValue(1)
 		end
 		
 		/** \brief Apply animations. */
 		public func void applyAnimations()
 			pAnimatorInstance.apply()
+		end
+		
+		/** \brief Calculate pose finger tip distance. */
+		protected func void calcPoseFingerTipDistance()
+			pPoseFingerTipDistance = pModelFingerTipDistance
+			
+			var Vector last = getBone(BoneEntry.wrist).posePosition
+			if last == null
+				return
+			end
+			
+			pPoseFingerTipDistance = 0
+			
+			var Vector next = getBone(BoneEntry.middle1).posePosition
+			if next != null
+				pPoseFingerTipDistance += (next - last).getLength()
+				last = next
+			end
+			
+			next = getBone(BoneEntry.middle2).posePosition
+			if next != null
+				pPoseFingerTipDistance += (next - last).getLength()
+				last = next
+			end
+			
+			next = getBone(BoneEntry.middle3).posePosition
+			if next != null
+				pPoseFingerTipDistance += (next - last).getLength()
+				last = next
+			end
+			
+			next = getBone(BoneEntry.middle4).posePosition
+			if next != null
+				pPoseFingerTipDistance += (next - last).getLength()
+			end
+			
+			if pPoseFingerTipDistance == 0
+				pPoseFingerTipDistance = pModelFingerTipDistance
+			end
+		end
+		
+		/** \brief Calculate hand scaling. */
+		protected func void updateHandScale()
+			var Vector wrist = getBone(BoneEntry.wrist).posePosition
+			if wrist == null
+				pHandScale = Matrix.new()
+				return
+			end
+			
+			var float scale = pModelFingerTipDistance / pPoseFingerTipDistance
+// 			BaseGameApp.getApp().getConsole().addMessage("HandScale: pd={:.3f} md={:.3f} s={:.3f}"\
+// 				.format(Array.newWith(pPoseFingerTipDistance, pModelFingerTipDistance, scale)))
+			pHandScale = Matrix.newTranslation(-wrist)\
+				* Matrix.newScaling(scale, scale, scale)\
+				* Matrix.newTranslation(wrist)
 		end
 	end
 	
@@ -302,6 +394,7 @@ class ECBehaviorVRHandPose extends DefaultECBehavior
 	private var ECPString pBonePinky2
 	private var ECPString pBonePinky3
 	private var ECPString pBonePinky4
+	private var ECPFloat pFingerTipDistance
 	
 	
 	
@@ -386,6 +479,10 @@ class ECBehaviorVRHandPose extends DefaultECBehavior
 		
 		pBonePinky4 = ECPString.new(prefix + "bonePinky4", "pinky4")
 		eclass.addProperty(pBonePinky4)
+		
+		// properties
+		pFingerTipDistance = ECPFloat.new(prefix + "fingerTipDistance", 0.165, 0.01)
+		eclass.addProperty(pFingerTipDistance)
 		
 		// add to class
 		eclass.addBehavior(this)
@@ -493,6 +590,13 @@ class ECBehaviorVRHandPose extends DefaultECBehavior
 	
 	public func ECPString getBonePinky4()
 		return pBonePinky4
+	end
+	
+	
+	
+	/** \brief Distance between middle finger tip and wrist in fully stretched pose. */
+	public func ECPFloat getFingerTipDistance()
+		return pFingerTipDistance
 	end
 	
 	
