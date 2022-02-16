@@ -124,6 +124,22 @@ fixed class Engine
 		return 0
 	end
 	
+	/**
+	 * \brief Compatible script version is older than given version.
+	 * \version 1.10
+	 */
+	public static func bool isCompatibleVersionOlder(int major, int minor)
+		return false
+	end
+	
+	/**
+	 * \brief Compatible script version is newer than given version.
+	 * \version 1.10
+	 */
+	public static func bool isCompatibleVersionNewer(int major, int minor)
+		return false
+	end
+	
 	
 	
 	/**
@@ -156,6 +172,22 @@ fixed class Engine
 	 */
 	public static func int getModuleVersionPatch()
 		return 0
+	end
+	
+	/**
+	 * \brief Module script version is older than given version.
+	 * \version 1.10
+	 */
+	public static func bool isModuleVersionOlder(int major, int minor)
+		return false
+	end
+	
+	/**
+	 * \brief Module script version is newer than given version.
+	 * \version 1.10
+	 */
+	public static func bool isModuleVersionNewer(int major, int minor)
+		return false
 	end
 	/*@}*/
 end

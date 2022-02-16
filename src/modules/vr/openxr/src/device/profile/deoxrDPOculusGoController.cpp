@@ -100,7 +100,7 @@ void deoxrDPOculusGoController::pAddDevice( bool left ){
 		return;
 	}
 	
-	pCreateDevice( device, left, "ogc_", decVector( 45.0f, 0.0f, 0.0f ) );
+	pCreateDevice( device, left, "ogc_" );
 	
 	deoxrDeviceComponent * const trigger = pAddComponentTrigger( device );
 	pAddButtonTrigger( device, trigger, false ); // has to be button 0

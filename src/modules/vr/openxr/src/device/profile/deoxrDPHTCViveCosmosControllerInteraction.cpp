@@ -135,7 +135,7 @@ void deoxrDPHTCViveCosmosControllerInteraction::pAddDevice( bool left ){
 		return;
 	}
 	
-	pCreateDevice( device, left, "htcvcc_", decVector( 45.0f, 0.0f, 0.0f ) );
+	pCreateDevice( device, left, "htcvcc_" );
 	
 	deoxrDeviceComponent * const trigger = pAddComponentTrigger( device );
 	pAddAxisTrigger( device, trigger );

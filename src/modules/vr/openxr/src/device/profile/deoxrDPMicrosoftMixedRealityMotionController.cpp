@@ -119,7 +119,7 @@ void deoxrDPMicrosoftMixedRealityMotionController::pAddDevice( bool left ){
 		return;
 	}
 	
-	pCreateDevice( device, left, pDeviceIdPrefix(), decVector( 45.0f, 0.0f, 0.0f ) );
+	pCreateDevice( device, left, pDeviceIdPrefix() );
 	
 	deoxrDeviceComponent * const trigger = pAddComponentTrigger( device );
 	pAddAxisTrigger( device, trigger );

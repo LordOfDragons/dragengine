@@ -47,6 +47,10 @@ class BaseVRActor extends BaseActor
 	private var ECBehaviorAttachSlot.Instance pVRLeftHandAttachSlot
 	private var ECBehaviorGrabber.Instance pVRRightHandGrabber
 	private var ECBehaviorGrabber.Instance pVRLeftHandGrabber
+	private var ECBehaviorVRHandPose.Instance pVRRightHandPose
+	private var ECBehaviorVRHandPose.Instance pVRLeftHandPose
+	private var ECBehaviorActorAnimated.Instance pVRRightHandAnimated
+	private var ECBehaviorActorAnimated.Instance pVRLeftHandAnimated
 	
 	
 	
@@ -64,6 +68,10 @@ class BaseVRActor extends BaseActor
 		pVRLeftHandAttachSlot = eclass.getVRLeftHandAttachSlot().instance(this)
 		pVRRightHandGrabber = eclass.getVRRightHandGrabber().instance(this)
 		pVRLeftHandGrabber = eclass.getVRLeftHandGrabber().instance(this)
+		pVRRightHandPose = eclass.getVRRightHandPose().instance(this)
+		pVRLeftHandPose = eclass.getVRLeftHandPose().instance(this)
+		pVRRightHandAnimated = eclass.getVRRightHandAnimated().instance(this)
+		pVRLeftHandAnimated = eclass.getVRLeftHandAnimated().instance(this)
 	end
 	
 	
@@ -138,6 +146,38 @@ class BaseVRActor extends BaseActor
 	 */
 	public func ECBehaviorGrabber.Instance getVRLeftHandGrabber()
 		return pVRLeftHandGrabber
+	end
+	
+	/**
+	 * \brief VR Right Hand Pose.
+	 * \version 1.10
+	 */
+	public func ECBehaviorVRHandPose.Instance getVRRightHandPose()
+		return pVRRightHandPose
+	end
+	
+	/**
+	 * \brief VR Left Hand Pose.
+	 * \version 1.10
+	 */
+	public func ECBehaviorVRHandPose.Instance getVRLeftHandPose()
+		return pVRLeftHandPose
+	end
+	
+	/**
+	 * \brief VR Right Hand Animated.
+	 * \version 1.10
+	 */
+	public func ECBehaviorActorAnimated.Instance getVRRightHandAnimated()
+		return pVRRightHandAnimated
+	end
+	
+	/**
+	 * \brief VR Left Hand Animated.
+	 * \version 1.10
+	 */
+	public func ECBehaviorActorAnimated.Instance getVRLeftHandAnimated()
+		return pVRLeftHandAnimated
 	end
 	
 	

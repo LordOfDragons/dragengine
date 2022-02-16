@@ -130,7 +130,7 @@ void deoxrDPHPMixedRealityController::pAddDevice( bool left ){
 		return;
 	}
 	
-	pCreateDevice( device, left, "hpmrc_", decVector( 45.0f, 0.0f, 0.0f ) );
+	pCreateDevice( device, left, "hpmrc_" );
 	
 	deoxrDeviceComponent * const trigger = pAddComponentTrigger( device );
 	pAddAxisTrigger( device, trigger );

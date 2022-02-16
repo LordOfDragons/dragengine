@@ -627,7 +627,7 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 		pOrigin = ECPVector.new(prefix + "origin", Vector.new())
 		eclass.addProperty(pOrigin)
 		
-		pRotation = ECPVector.new(prefix + "rotation", Vector.new(-45, 0, 0))
+		pRotation = ECPVector.new(prefix + "rotation", Vector.new())
 		eclass.addProperty(pRotation)
 		
 		pShape = ECPShapeList.new(prefix + "shape", eclass.getCodecPropertyString())

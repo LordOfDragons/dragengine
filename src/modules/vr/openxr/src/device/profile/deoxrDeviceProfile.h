@@ -78,6 +78,8 @@ private:
 	const deoxrPath pPath;
 	const decString pName;
 	
+	decVector pDeviceRotation;
+	
 	
 	
 public:
@@ -105,6 +107,12 @@ public:
 	/** Name. */
 	inline const decString &GetName() const{ return pName; }
 	
+	/** Device rotation. */
+	inline const decVector &GetDeviceRotation() const{ return pDeviceRotation; }
+	
+	/** Set device rotation. */
+	void SetDeviceRotation( const decVector &rotation );
+	
 	/** Create actions for action set. */
 	virtual void CreateActions( deoxrActionSet &actionSet );
 	
@@ -131,8 +139,7 @@ protected:
 	bool pMatchesProfile( const deoxrPath &path ) const;
 	
 	/** Add device with basic parameters for left or right hand. */
-	void pCreateDevice( deoxrDevice::Ref &device, bool leftHand, const char *idPrefix,
-		const decVector &poseRotation );
+	void pCreateDevice( deoxrDevice::Ref &device, bool leftHand, const char *idPrefix );
 	
 	/** Add component. */
 	deoxrDeviceComponent *pAddComponent( deoxrDevice &device,

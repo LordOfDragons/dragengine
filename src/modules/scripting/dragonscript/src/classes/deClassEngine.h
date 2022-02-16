@@ -105,11 +105,15 @@ private:
 	DEF_NATFUNC( nfGetCompatibleVersionMajor );
 	DEF_NATFUNC( nfGetCompatibleVersionMinor );
 	DEF_NATFUNC( nfGetCompatibleVersionPatch );
+	DEF_NATFUNC( nfIsCompatibleVersionOlder );
+	DEF_NATFUNC( nfIsCompatibleVersionNewer );
 	
 	DEF_NATFUNC( nfGetModuleVersion );
 	DEF_NATFUNC( nfGetModuleVersionMajor );
 	DEF_NATFUNC( nfGetModuleVersionMinor );
 	DEF_NATFUNC( nfGetModuleVersionPatch );
+	DEF_NATFUNC( nfIsModuleVersionOlder );
+	DEF_NATFUNC( nfIsModuleVersionNewer );
 	
 	DEF_NATFUNC( nfGetDefaultEnableGI );
 	DEF_NATFUNC( nfSetDefaultEnableGI );

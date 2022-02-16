@@ -118,7 +118,7 @@ void deoxrDPHUAWEIControllerInteraction::pAddDevice( bool left ){
 		return;
 	}
 	
-	pCreateDevice( device, left, "hci_", decVector( 45.0f, 0.0f, 0.0f ) );
+	pCreateDevice( device, left, "hci_" );
 	
 	deoxrDeviceComponent * const trigger = pAddComponentTrigger( device );
 	pAddAxisTrigger( device, trigger );

@@ -99,6 +99,10 @@ class BaseVRActorClass extends BaseActorClass
 	private var ECBehaviorAttachSlot pVRLeftHandAttachSlot
 	private var ECBehaviorGrabber pVRRightHandGrabber
 	private var ECBehaviorGrabber pVRLeftHandGrabber
+	private var ECBehaviorVRHandPose pVRRightHandPose
+	private var ECBehaviorVRHandPose pVRLeftHandPose
+	private var ECBehaviorActorAnimated pVRRightHandAnimated
+	private var ECBehaviorActorAnimated pVRLeftHandAnimated
 	
 	
 	
@@ -148,11 +152,12 @@ class BaseVRActorClass extends BaseActorClass
 		pVRRightHandLaserPointer = ECBehaviorVRHandLaserPointer.new(this, pVRRightHandPointAt, idVRRightHand)
 		pVRLeftHandLaserPointer = ECBehaviorVRHandLaserPointer.new(this, pVRLeftHandPointAt, idVRLeftHand)
 		
-		// add support for grabbing grab slots using hand controllers. hand controllers usually
-		// have the device position at the controller tip pointing 45 degrees upwards. to fix
-		// this the shpere is moved 11cm along the -Z axis to end up at the palm center
-		var Vector position = Vector.new(0, 0, -0.11)
-		var Vector rotation = Vector.new(-45, 0, 0)
+		// add support for grabbing grab slots using hand controllers. the aim pose for
+		// controllers is located above and in front of the hand. move the grab position
+		// into the hand. this is a static offset. users can instead use a hand model
+		// bone to attach objects to which is better
+		var Vector position = Vector.new(0, -0.078, -0.078) // -11cm along grab orientation
+		var Vector rotation = Vector.new(0, 0, 0)
 		
 		var ShapeList shape = ShapeList.new()
 		shape.addSphere(Vector.new(), 0.05)
@@ -177,6 +182,24 @@ class BaseVRActorClass extends BaseActorClass
 			idNonVRLeftHand, "attachSlot(" + idNonVRLeftHand + ").")
 		pVRLeftHandAttachSlot.getPosition().setVector(position)
 		pVRLeftHandAttachSlot.getOrientation().setVector(rotation)
+		
+		// add hand pose support
+		pVRRightHandPose = ECBehaviorVRHandPose.new(this, pVRRightHand, idNonVRRightHand,\
+			"vrHandPose(" + idNonVRRightHand + ").")
+		
+		pVRLeftHandPose = ECBehaviorVRHandPose.new(this, pVRLeftHand, idNonVRLeftHand,\
+			"vrHandPose(" + idNonVRLeftHand + ").")
+		
+		// add animation support to hands
+		pVRRightHandAnimated = ECBehaviorActorAnimated.new(this, pVRRightHand.getComponent(),\
+			getLocomotion(), idNonVRRightHand, "actorAnimated(" + idNonVRRightHand + ").")
+		pVRRightHandAnimated.getControllerMapping().setAt("idle", LocomotionAttribute.elapsedTime)
+		pVRRightHandAnimated.getControllerMapping().setAt("interaction", LocomotionAttribute.elapsedTime)
+		
+		pVRLeftHandAnimated = ECBehaviorActorAnimated.new(this, pVRLeftHand.getComponent(),\
+			getLocomotion(), idNonVRLeftHand, "actorAnimated(" + idNonVRLeftHand + ").")
+		pVRLeftHandAnimated.getControllerMapping().setAt("idle", LocomotionAttribute.elapsedTime)
+		pVRLeftHandAnimated.getControllerMapping().setAt("interaction", LocomotionAttribute.elapsedTime)
 	end
 	
 	
@@ -263,6 +286,38 @@ class BaseVRActorClass extends BaseActorClass
 	 */
 	public func ECBehaviorGrabber getVRLeftHandGrabber()
 		return pVRLeftHandGrabber
+	end
+	
+	/**
+	 * \brief VR Right Hand Pose.
+	 * \version 1.10
+	 */
+	public func ECBehaviorVRHandPose getVRRightHandPose()
+		return pVRRightHandPose
+	end
+	
+	/**
+	 * \brief VR Left Hand Pose.
+	 * \version 1.10
+	 */
+	public func ECBehaviorVRHandPose getVRLeftHandPose()
+		return pVRLeftHandPose
+	end
+	
+	/**
+	 * \brief VR Right Hand Animated.
+	 * \version 1.10
+	 */
+	public func ECBehaviorActorAnimated getVRRightHandAnimated()
+		return pVRRightHandAnimated
+	end
+	
+	/**
+	 * \brief VR Left Hand Animated.
+	 * \version 1.10
+	 */
+	public func ECBehaviorActorAnimated getVRLeftHandAnimated()
+		return pVRLeftHandAnimated
 	end
 	
 	

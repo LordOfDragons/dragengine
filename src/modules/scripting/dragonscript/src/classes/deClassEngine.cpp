@@ -235,6 +235,37 @@ void deClassEngine::nfGetCompatibleVersionPatch::RunFunction( dsRunTime *rt, dsV
 	rt->PushInt( ds.GetCompatibleVersion().patch );
 }
 
+// public static func bool isCompatibleVersionOlder(int major, int minor)
+deClassEngine::nfIsCompatibleVersionOlder::nfIsCompatibleVersionOlder( const sInitData &init ) :
+dsFunction( init.clsEngine, "isCompatibleVersionOlder", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsBoolean ){
+	p_AddParameter( init.clsInteger );
+	p_AddParameter( init.clsInteger );
+}
+void deClassEngine::nfIsCompatibleVersionOlder::RunFunction( dsRunTime *rt, dsValue* ){
+	const deScriptingDragonScript &ds = ( ( deClassEngine* )GetOwnerClass() )->GetDS();
+	const deScriptingDragonScript::sModuleVersion &version = ds.GetCompatibleVersion();
+	const int major = rt->GetValue( 0 )->GetInt();
+	const int minor = rt->GetValue( 1 )->GetInt();
+	rt->PushBool( version.major < major || ( version.major == major && version.minor < minor ) );
+}
+
+// public static func bool isCompatibleVersionNewer(int major, int minor)
+deClassEngine::nfIsCompatibleVersionNewer::nfIsCompatibleVersionNewer( const sInitData &init ) :
+dsFunction( init.clsEngine, "isCompatibleVersionNewer", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsBoolean ){
+	p_AddParameter( init.clsInteger );
+	p_AddParameter( init.clsInteger );
+}
+void deClassEngine::nfIsCompatibleVersionNewer::RunFunction( dsRunTime *rt, dsValue* ){
+	const deScriptingDragonScript &ds = ( ( deClassEngine* )GetOwnerClass() )->GetDS();
+	const deScriptingDragonScript::sModuleVersion &version = ds.GetCompatibleVersion();
+	const int major = rt->GetValue( 0 )->GetInt();
+	const int minor = rt->GetValue( 1 )->GetInt();
+	rt->PushBool( version.major > major || ( version.major == major && version.minor > minor ) );
+}
+
+
 
 // public static func String getModuleVersion()
 deClassEngine::nfGetModuleVersion::nfGetModuleVersion( const sInitData &init ) :
@@ -274,6 +305,36 @@ DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsInteger ){
 void deClassEngine::nfGetModuleVersionPatch::RunFunction( dsRunTime *rt, dsValue* ){
 	const deScriptingDragonScript &ds = ( ( deClassEngine* )GetOwnerClass() )->GetDS();
 	rt->PushInt( ds.GetModuleVersion().patch );
+}
+
+// public static func bool isModuleVersionOlder(int major, int minor)
+deClassEngine::nfIsModuleVersionOlder::nfIsModuleVersionOlder( const sInitData &init ) :
+dsFunction( init.clsEngine, "isModuleVersionOlder", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsBoolean ){
+	p_AddParameter( init.clsInteger );
+	p_AddParameter( init.clsInteger );
+}
+void deClassEngine::nfIsModuleVersionOlder::RunFunction( dsRunTime *rt, dsValue* ){
+	const deScriptingDragonScript &ds = ( ( deClassEngine* )GetOwnerClass() )->GetDS();
+	const deScriptingDragonScript::sModuleVersion &version = ds.GetModuleVersion();
+	const int major = rt->GetValue( 0 )->GetInt();
+	const int minor = rt->GetValue( 1 )->GetInt();
+	rt->PushBool( version.major < major || ( version.major == major && version.minor < minor ) );
+}
+
+// public static func bool isModuleVersionNewer(int major, int minor)
+deClassEngine::nfIsModuleVersionNewer::nfIsModuleVersionNewer( const sInitData &init ) :
+dsFunction( init.clsEngine, "isModuleVersionNewer", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsBoolean ){
+	p_AddParameter( init.clsInteger );
+	p_AddParameter( init.clsInteger );
+}
+void deClassEngine::nfIsModuleVersionNewer::RunFunction( dsRunTime *rt, dsValue* ){
+	const deScriptingDragonScript &ds = ( ( deClassEngine* )GetOwnerClass() )->GetDS();
+	const deScriptingDragonScript::sModuleVersion &version = ds.GetModuleVersion();
+	const int major = rt->GetValue( 0 )->GetInt();
+	const int minor = rt->GetValue( 1 )->GetInt();
+	rt->PushBool( version.major > major || ( version.major == major && version.minor > minor ) );
 }
 
 
@@ -354,11 +415,15 @@ void deClassEngine::CreateClassMembers(dsEngine *engine){
 	AddFunction( new nfGetCompatibleVersionMajor( init ) );
 	AddFunction( new nfGetCompatibleVersionMinor( init ) );
 	AddFunction( new nfGetCompatibleVersionPatch( init ) );
+	AddFunction( new nfIsCompatibleVersionOlder( init ) );
+	AddFunction( new nfIsCompatibleVersionNewer( init ) );
 	
 	AddFunction( new nfGetModuleVersion( init ) );
 	AddFunction( new nfGetModuleVersionMajor( init ) );
 	AddFunction( new nfGetModuleVersionMinor( init ) );
 	AddFunction( new nfGetModuleVersionPatch( init ) );
+	AddFunction( new nfIsModuleVersionOlder( init ) );
+	AddFunction( new nfIsModuleVersionNewer( init ) );
 	
 	AddFunction( new nfGetDefaultEnableGI( init ) );
 	AddFunction( new nfSetDefaultEnableGI( init ) );

@@ -41,7 +41,10 @@
 deoxrDeviceProfile::deoxrDeviceProfile( deoxrInstance &instance, const deoxrPath &path, const char *name ) :
 pInstance( instance ),
 pPath( path ),
-pName( name ){
+pName( name )
+{
+	// if using raw device pose
+// 	pDeviceRotation.Set( 45.0f, 0.0f, 0.0f );
 }
 
 deoxrDeviceProfile::~deoxrDeviceProfile(){
@@ -51,6 +54,10 @@ deoxrDeviceProfile::~deoxrDeviceProfile(){
 
 // Management
 ///////////////
+
+void deoxrDeviceProfile::SetDeviceRotation( const decVector &rotation ){
+	pDeviceRotation = rotation;
+}
 
 void deoxrDeviceProfile::CreateActions( deoxrActionSet& ){
 }
@@ -94,8 +101,7 @@ bool deoxrDeviceProfile::pMatchesProfile( const deoxrPath &path ) const{
 		&& pPath == state.interactionProfile;
 }
 
-void deoxrDeviceProfile::pCreateDevice( deoxrDevice::Ref &device, bool leftHand,
-const char *idPrefix, const decVector &poseRotation ){
+void deoxrDeviceProfile::pCreateDevice( deoxrDevice::Ref &device, bool leftHand, const char *idPrefix ){
 	deVROpenXR &oxr = GetInstance().GetOxr();
 	device.TakeOver( new deoxrDevice( oxr, *this ) );
 	
@@ -118,7 +124,7 @@ const char *idPrefix, const decVector &poseRotation ){
 	device->SetID( id );
 	
 	device->SetSpacePose( deoxrSpace::Ref::New( new deoxrSpace( *pGetSession(),
-		device->GetActionPose(), device->GetSubactionPath(), poseRotation ) ) );
+		device->GetActionPose(), device->GetSubactionPath(), pDeviceRotation ) ) );
 }
 
 deoxrDeviceComponent *deoxrDeviceProfile::pAddComponent( deoxrDevice &device,
@@ -504,6 +510,60 @@ deoxrHandTracker *deoxrDeviceProfile::pAddHandTracker( deoxrDevice &device, bool
 			device.GetSpacePose() ) ) );
 	
 	device.SetHandTracker( handTracker );
+	device.SetBoneConfiguration( deInputDevice::ebcHand );
+	
+	// finger bending and spreading
+	deoxrDeviceComponent * const componentHand = device.AddComponent(
+		deInputDeviceComponent::ectGeneric, "Hand Pose", "handPose", "Hand Pose" );
+	
+	struct Data{
+		const char *id;
+		const char *name;
+		const char *description;
+	};
+	const Data bendData[ 5 ] = {
+		{ "Bend Thumb", "fb1", "FB1" },
+		{ "Bend Index Finger", "fb2", "FB2" },
+		{ "Bend Middle Finger", "fb3", "FB3" },
+		{ "Bend Ring Finger", "fb4", "FB4" },
+		{ "Bend Pinky Finger", "fb5", "FB5" } };
+	int i;
+	
+	for( i=0; i<5; i++ ){
+		const deoxrDeviceAxis::Ref axis( deoxrDeviceAxis::Ref::New( new deoxrDeviceAxis( device ) ) );
+		axis->SetType( deInputDeviceAxis::eatFingerBend );
+		axis->SetRange( 0.0f, 1.0f );
+		axis->SetCenter( -1.0f );
+		axis->SetValue( -1.0f );
+		axis->SetName( bendData[ i ].name );
+		axis->SetID( bendData[ i ].id );
+		axis->SetDisplayText( bendData[ i ].description );
+		axis->SetIndex( device.GetAxisCount() );
+		axis->SetFinger( i );
+		axis->SetInputDeviceComponent( componentHand );
+		device.AddAxis( axis );
+	}
+	
+	const Data bendSpread[ 4 ] = {
+		{ "Spread Thumb Index Finger", "fs1", "FS1" },
+		{ "Spread Index Middle Finger", "fs2", "FS2" },
+		{ "Spread Middle Ring Finger", "fs3", "FS3" },
+		{ "Spread Ring Pinky Finger", "fs4", "FS4" } };
+	
+	for( i=0; i<4; i++ ){
+		const deoxrDeviceAxis::Ref axis( deoxrDeviceAxis::Ref::New( new deoxrDeviceAxis( device ) ) );
+		axis->SetType( deInputDeviceAxis::eatFingerSpread );
+		axis->SetRange( 0.0f, 1.0f );
+		axis->SetCenter( -1.0f );
+		axis->SetValue( -1.0f );
+		axis->SetName( bendSpread[ i ].name );
+		axis->SetID( bendSpread[ i ].id );
+		axis->SetDisplayText( bendSpread[ i ].description );
+		axis->SetIndex( device.GetAxisCount() );
+		axis->SetFinger( i );
+		axis->SetInputDeviceComponent( componentHand );
+		device.AddAxis( axis );
+	}
 	
 	return handTracker;
 }

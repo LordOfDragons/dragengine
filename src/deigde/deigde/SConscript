@@ -116,7 +116,6 @@ else:
 	print(envIGDELib.subst('$LINKFLAGS'), libsLib)
 """
 appendLibrary(envIGDELib, parent_targets['delauncher'], libsLib)
-appendLibrary(envIGDELib, parent_targets['dragengine'], libsLib)
 libsLib.extend(parent_targets['delauncher']['binlibs'])
 
 if envIGDELib['igde_toolkit'] == 'fox':

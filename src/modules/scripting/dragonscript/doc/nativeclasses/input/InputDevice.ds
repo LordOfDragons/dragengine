@@ -172,7 +172,7 @@ class InputDevice
 	end
 	
 	/**
-	 * \brief Model to represent the device in VR environments or NULL if not set.
+	 * \brief Model to represent the device in VR environments or null if not set.
 	 * \version 1.6
 	 */
 	public func Model getVRModel()
@@ -180,7 +180,7 @@ class InputDevice
 	end
 	
 	/**
-	 * \brief Skin for VR model or NULL if not set.
+	 * \brief Skin for VR model or null if not set.
 	 * \version 1.6
 	 */
 	public func Skin getVRSkin()

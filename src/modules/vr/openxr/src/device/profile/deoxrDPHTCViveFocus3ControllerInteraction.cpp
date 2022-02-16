@@ -140,7 +140,7 @@ void deoxrDPHTCViveFocus3ControllerInteraction::pAddDevice( bool left ){
 		return;
 	}
 	
-	pCreateDevice( device, left, "htcvfc_", decVector( 45.0f, 0.0f, 0.0f ) );
+	pCreateDevice( device, left, "htcvfc_" );
 	
 	deoxrDeviceComponent * const trigger = pAddComponentTrigger( device );
 	pAddAxisTrigger( device, trigger );

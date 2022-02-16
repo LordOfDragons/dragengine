@@ -440,6 +440,19 @@ void deovrDevice::TrackStates(){
 		if( pDevicePoseData.bActive ){
 			pUpdatePose( pDevicePoseData.pose, pPoseDevice );
 			
+			switch( pControllerRole ){
+			case vr::TrackedControllerRole_LeftHand:
+			case vr::TrackedControllerRole_RightHand:{
+				const decMatrix correction( decMatrix::CreateRotationX( -45.0f * DEG2RAD )
+					* decMatrix::CreateFromQuaternion( pPoseDevice.GetOrientation() ) );
+				pPoseDevice.SetOrientation( correction.ToQuaternion() );
+				pPoseDevice.SetLinearVelocity( correction * pPoseDevice.GetLinearVelocity() );
+				}break;
+				
+			default:
+				break;
+			}
+			
 		}else{
 			//pPoseDevice = deInputDevicePose();
 			// reset pose is not good since this can snap the HMD around. a possible solution
@@ -742,7 +755,7 @@ void deovrDevice::pUpdateParametersHandPose( vr::VRActionHandle_t actionHandle )
 	uint32_t boneCount;
 	inputError = vrinput.GetBoneCount( actionHandle, &boneCount );
 	if( inputError == vr::VRInputError_None && boneCount > 0 ){
-		pBoneConfiguration = deInputDevice::ebcHand;
+// 		pBoneConfiguration = deInputDevice::ebcHand;
 		
 		pBoneTransformData = new vr::VRBoneTransform_t[ boneCount * 2 ];
 		pBoneCount = ( int )boneCount;

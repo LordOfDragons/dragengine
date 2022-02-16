@@ -95,7 +95,7 @@ void deoxrDPMSFTHandInteraction::pAddDevice( bool left ){
 		return;
 	}
 	
-	pCreateDevice( device, left, "msfthc_", decVector( 45.0f, 0.0f, 0.0f ) );
+	pCreateDevice( device, left, "msfthc_" );
 	
 	deoxrDeviceComponent * const trigger = pAddComponentTrigger( device );
 	pAddAxisTrigger( device, trigger );

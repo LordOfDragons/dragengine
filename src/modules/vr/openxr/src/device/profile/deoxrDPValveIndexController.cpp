@@ -132,7 +132,7 @@ void deoxrDPValveIndexController::pAddDevice( bool left ){
 		return;
 	}
 	
-	pCreateDevice( device, left, "ic_", decVector( 45.0f, 0.0f, 0.0f ) );
+	pCreateDevice( device, left, "ic_" );
 	
 	deoxrDeviceComponent * const trigger = pAddComponentTrigger( device );
 	pAddAxisTrigger( device, trigger );
@@ -155,26 +155,7 @@ void deoxrDPValveIndexController::pAddDevice( bool left ){
 // 	pAddAxesGripPinch( device, grip );
 	pAddButtonGrip( device, grip, false );
 	
-	// finger bending and spreading
 	pAddHandTracker( device, left );
 	
-	/*
-	deoxrDeviceComponent * const compHand = device->AddComponent(
-		deInputDeviceComponent::ectGeneric, "Hand Pose", "handPose", "Hand Pose" );
-	
-	// ?? /input/finger/index {middle,ring,pinky}
-	device->AddAxisFinger( deInputDeviceAxis::eatFingerBend, compHand, 0, "Bend Thumb", "fb1", "FB1" );
-	device->AddAxisFinger( deInputDeviceAxis::eatFingerBend, compHand, 1, "Bend Index Finger", "fb2", "FB2" );
-	device->AddAxisFinger( deInputDeviceAxis::eatFingerBend, compHand, 2, "Bend Middle Finger", "fb3", "FB3" );
-	device->AddAxisFinger( deInputDeviceAxis::eatFingerBend, compHand, 3, "Bend Ring Finger", "fb4", "FB4" );
-	device->AddAxisFinger( deInputDeviceAxis::eatFingerBend, compHand, 4, "Bend Pinky Finger", "fb5", "FB5" );
-	
-	device->AddAxisFinger( deInputDeviceAxis::eatFingerSpread, compHand, 0, "Spread Thumb Index Finger", "fs1", "FS1" );
-	device->AddAxisFinger( deInputDeviceAxis::eatFingerSpread, compHand, 1, "Spread Index Middle Finger", "fs2", "FS2" );
-	device->AddAxisFinger( deInputDeviceAxis::eatFingerSpread, compHand, 2, "Spread Middle Ring Finger", "fs3", "FS3" );
-	device->AddAxisFinger( deInputDeviceAxis::eatFingerSpread, compHand, 3, "Spread Ring Pinky Finger", "fs4", "FS4" );
-	*/
-	
-	// add device
 	GetInstance().GetOxr().GetDevices().Add( device );
 }
