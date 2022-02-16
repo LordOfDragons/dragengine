@@ -1148,12 +1148,13 @@ int delEngineInstanceThreaded::GetDisplayResolutions( int display, decPoint *res
 	}
 	
 	const int sendResolutionCount = ReadUCharFromPipe();
-	if( sendResolutionCount > resolutionCount ){
-		DETHROW( deeInvalidAction );
-	}
-	
-	if( sendResolutionCount > 0 ){
-		ReadFromPipe( resolutions, sizeof( decPoint ) * sendResolutionCount );
+	if( resolutionCount > 0 ){
+		if( sendResolutionCount > resolutionCount ){
+			DETHROW( deeInvalidAction );
+		}
+		if( sendResolutionCount > 0 ){
+			ReadFromPipe( resolutions, sizeof( decPoint ) * sendResolutionCount );
+		}
 	}
 	
 	return sendResolutionCount;
