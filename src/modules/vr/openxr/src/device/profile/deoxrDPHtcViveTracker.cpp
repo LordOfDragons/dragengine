@@ -65,7 +65,7 @@ deoxrDeviceProfile( instance,
 	deoxrPath( instance, "/interaction_profiles/htc/vive_tracker_htcx" ),
 	"HTC VIVE Tracker" )
 {
-	pLoadTrackerDatabase();
+// 	pLoadTrackerDatabase();
 }
 
 deoxrDPHtcViveTracker::~deoxrDPHtcViveTracker(){
@@ -92,6 +92,7 @@ void deoxrDPHtcViveTracker::CheckAttached(){
 	OXR_CHECK( instance.xrEnumerateViveTrackerPathsHTCX( instance.GetInstance(), 0, &count, nullptr ) );
 	
 	XrViveTrackerPathsHTCX *trackerPaths = nullptr;
+	instance.GetOxr().LogInfo( "VIVE Trackers:" );
 	
 	if( count > 0 ){
 		try{
@@ -107,7 +108,7 @@ void deoxrDPHtcViveTracker::CheckAttached(){
 			for( i=0; i<count; i++ ){
 				const deoxrPath path( instance, trackerPaths[ i ].persistentPath );
 				const deoxrPath pathRole( instance, trackerPaths[ i ].rolePath );
-				instance.GetOxr().LogInfoFormat( "VIVE Tracker %d: path='%s' rolePath='%s'",
+				instance.GetOxr().LogInfoFormat( "- %d: path='%s' rolePath='%s'",
 					i, path.GetName().GetString(), pathRole.GetName().GetString() );
 			}
 			
@@ -134,21 +135,57 @@ void deoxrDPHtcViveTracker::CheckAttached(){
 			for( i=0; i<count; i++ ){
 				Tracker * const tracker = pGetTrackerWith( trackerPaths[ i ].persistentPath );
 				if( tracker ){
-					if( ! tracker->device ){
-						pAddDevice( *tracker );
+					// tracker is known
+					if( tracker->pathRole || tracker->pathRole != trackerPaths[ i ].rolePath ){
+						// tracker role path is known. the device has been seen before the
+						// session started and a device can be created for it. this happens
+						// if the device has been activated before the engine started or
+						// the session had been restarted after the device has been activated
+						// 
+						// do not add device if the session is about to restart
+						if( ! tracker->device && ! instance.GetOxr().GetRestartSession() ){
+							pAddDevice( *tracker );
+						}
+						
+					}else{
+						// tracker role path is unknown. the device has not been seen before
+						// the session started and has been activated. we have to store the
+						// role and restart the session to properly use it
+						if( tracker->pathRole ){
+							instance.GetOxr().LogInfoFormat(
+								"VIVE Tracker role changed, request session restart: path='%s' rolePath='%s'",
+								tracker->path.GetName().GetString(), tracker->pathRole.GetName().GetString() );
+							
+						}else{
+							instance.GetOxr().LogInfoFormat(
+								"VIVE Tracker role previous unknown, request session restart: path='%s' rolePath='%s'",
+								tracker->path.GetName().GetString(), tracker->pathRole.GetName().GetString() );
+						}
+						
+						tracker->pathRole = deoxrPath( instance, trackerPaths[ i ].rolePath );
+						
+						instance.GetOxr().RequestRestartSession();
 					}
 					
 				}else{
 					// we have never seen this tracker before. we have to add the tracker and
 					// save the database to file. then we have to restart the VR system to
 					// add the new action for the tracker
-					pTrackers.Add( Tracker::Ref::New( new Tracker(
+					const Tracker::Ref newTracker( Tracker::Ref::New( new Tracker(
 						deoxrPath( instance, trackerPaths[ i ].persistentPath ),
 						pTrackers.GetCount() + 1 ) ) );
-					pSaveTrackerDatabase();
-					// instance.GetOxr().RequiresRestart();
 					
-					/* temp */ pAddDevice(*pGetTrackerWith(trackerPaths[i].persistentPath));
+					newTracker->pathRole = deoxrPath( instance, trackerPaths[ i ].rolePath );
+					
+					pTrackers.Add( newTracker );
+					
+// 					pSaveTrackerDatabase();
+					
+					instance.GetOxr().LogInfoFormat(
+						"VIVE Tracker first time seen, request session restart: path='%s' rolePath='%s'",
+						newTracker->path.GetName().GetString(), newTracker->pathRole.GetName().GetString() );
+					
+					instance.GetOxr().RequestRestartSession();
 				}
 			}
 			
@@ -172,10 +209,15 @@ void deoxrDPHtcViveTracker::CreateActions( deoxrActionSet &actionSet ){
 	for( i=0; i<count; i++ ){
 		Tracker &tracker = *( ( Tracker* )pTrackers.GetAt( i ) );
 		
+		if( ! tracker.pathRole ){
+			continue;
+		}
+		
 		name.Format( "pose_tracker_%d", tracker.number );
 		localizedName.Format( "Tracker %d", tracker.number );
 		
-		const XrPath subactionPath[ 1 ] = { tracker.path };
+// 		const XrPath subactionPath[ 1 ] = { tracker.path };
+		const XrPath subactionPath[ 1 ] = { tracker.pathRole };
 		tracker.action = actionSet.AddAction( deoxrAction::etInputPose,
 			name, localizedName, subactionPath, 1 );
 	}
@@ -224,22 +266,43 @@ void deoxrDPHtcViveTracker::SuggestBindings(){
 	//         problems. there is no remedy against this since steam reports to us
 	//         connect/disconnect in short succession so we can not protect against this bug
 	
-#if 0
+#if 1
 	const deoxrInstance &instance = GetInstance();
-	const int bindingCount = 1/*10*/ * count;
+	
+	/*
+	const int roleCount = 13;
+	const char * const roles[ roleCount ] = { "handheld_object", "left_foot", "right_foot",
+		"left_shoulder", "right_shoulder", "left_elbow", "right_elbow", "left_knee",
+		"right_knee", "waist", "chest", "camera", "keyboard" };
+	*/
+	
+	const int bindingCount = 10 * count;
+// 	const int bindingCount = roleCount * count;
 	deoxrInstance::sSuggestBinding bindings[ bindingCount ];
 	deoxrInstance::sSuggestBinding *b = bindings;
-	decString name;
+	
+	int realBindingCount = 0;
 	
 	int i;
 	for( i=0; i<pTrackers.GetCount(); i++ ){
 		const Tracker &tracker = *( ( Tracker* )pTrackers.GetAt( i ) );
-		//const decString basePath( tracker.path.GetName() );
-		const decString basePath( "/user/vive_tracker_htcx/role/handheld_object" );
+		
+		if( ! tracker.action ){
+			continue;
+		}
+		
+		const decString basePath( tracker.pathRole.GetName() );
+// 		const decString basePath( "/user/vive_tracker_htcx/role/" );
+		
+		/*
+		int j;
+		for( j=0; j<roleCount; j++ ){
+			( b++ )->Set( tracker.action, deoxrPath( instance, basePath + roles[ j ] + "/input/grip/pose" ) );
+		}
+		*/
 		
 		( b++ )->Set( tracker.action, deoxrPath( instance, basePath + "/input/grip/pose" ) );
 		
-		/*
 		pAdd( b, deVROpenXR::eiaGripPress, basePath + "/input/squeeze/click" );
 		
 		pAdd( b, deVROpenXR::eiaTriggerPress, basePath + "/input/trigger/click" );
@@ -253,10 +316,11 @@ void deoxrDPHtcViveTracker::SuggestBindings(){
 		pAdd( b, deVROpenXR::eiaTrackpadTouch, basePath + "/input/trackpad/touch" );
 		
 		pAdd( b, deVROpenXR::eiaGripHaptic, basePath + "/output/haptic" );
-		*/
+		
+		realBindingCount += 10;
 	}
 	
-	GetInstance().SuggestBindings( GetPath(), bindings, bindingCount );
+	GetInstance().SuggestBindings( GetPath(), bindings, realBindingCount );
 #endif
 }
 
@@ -391,7 +455,8 @@ void deoxrDPHtcViveTracker::pLoadTrackerDatabase(){
 				}
 				
 				if( ! path || ! number ){
-					DETHROW( deeInvalidFileFormat );
+					oxr.LogWarnFormat( "Invalid entry in tracker database. Ignoring entry" );
+					continue;
 				}
 				
 				pTrackers.Add( Tracker::Ref::New( new Tracker( path, number ) ) );
@@ -424,6 +489,7 @@ void deoxrDPHtcViveTracker::pSaveTrackerDatabase(){
 			const Tracker &tracker = *( ( Tracker* )pTrackers.GetAt( i ) );
 			writer.WriteOpeningTag( "viveTracker" );
 			writer.WriteDataTagString( "path", tracker.path.GetName() );
+			writer.WriteDataTagString( "patRole", tracker.pathRole.GetName() );
 			writer.WriteDataTagInt( "number", tracker.number );
 			writer.WriteClosingTag( "viveTracker" );
 		}
@@ -436,6 +502,10 @@ void deoxrDPHtcViveTracker::pSaveTrackerDatabase(){
 }
 
 void deoxrDPHtcViveTracker::pAddDevice( Tracker &tracker ){
+	if( ! tracker.action || ! tracker.pathRole ){
+		return;
+	}
+	
 	deVROpenXR &oxr = GetInstance().GetOxr();
 	tracker.device.TakeOver( new deoxrDevice( oxr, *this ) );
 	
@@ -448,9 +518,11 @@ void deoxrDPHtcViveTracker::pAddDevice( Tracker &tracker ){
 	tracker.device->SetActionPose( tracker.action );
 	tracker.device->SetID( id );
 	tracker.device->SetSpacePose( deoxrSpace::Ref::New( new deoxrSpace(
-		*pGetSession(), tracker.action, tracker.path, decVector() ) ) );
+		*pGetSession(), tracker.action, tracker.pathRole, decVector() ) ) );
+// 	tracker.device->SetSpacePose( deoxrSpace::Ref::New( new deoxrSpace(
+// 		*pGetSession(), tracker.action, tracker.path, decVector() ) ) );
+// 	tracker.device->SetSpacePose( deoxrSpace::Ref::New( new deoxrSpace( *pGetSession(), tracker.action ) ) );
 	
-	/*
 	deoxrDeviceComponent * const trigger = pAddComponentTrigger( tracker.device );
 	pAddAxisTrigger( tracker.device, trigger );
 	pAddButtonTrigger( tracker.device, trigger, false ); // has to be button 0
@@ -464,7 +536,6 @@ void deoxrDPHtcViveTracker::pAddDevice( Tracker &tracker ){
 	deoxrDeviceComponent * const trackpad = pAddComponentTrackpad( tracker.device );
 	pAddAxesTrackpad( tracker.device, trackpad );
 	pAddButtonTrackpad( tracker.device, trackpad, true, true );
-	*/
 	
 	GetInstance().GetOxr().GetDevices().Add( tracker.device );
 }

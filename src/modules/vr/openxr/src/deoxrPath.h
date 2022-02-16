@@ -113,6 +113,15 @@ public:
 	/** Different path. */
 	inline bool operator!=( const deoxrPath &path ) const{ return pPath != path.pPath; }
 	
+	/** Different path. */
+	inline bool operator!=( XrPath path ) const{ return pPath != path; }
+	
+	/** Different path. */
+	inline bool operator!=( const decString &path ) const{ return pName != path; }
+	
+	/** Different path. */
+	inline bool operator!=( const char *path ) const{ return pName != path; }
+	
 	/** Assign. */
 	deoxrPath &operator=( const deoxrPath &path );
 	/*@}*/

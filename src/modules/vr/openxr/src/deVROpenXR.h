@@ -104,6 +104,8 @@ private:
 	XrSessionState pSessionState;
 	bool pShutdownRequested;
 	bool pPreventDeletion;
+	bool pRestartSession;
+	bool pForceAttachCheck;
 	deoxrSystem::eSystem pLastDetectedSystem;
 	
 	
@@ -173,8 +175,14 @@ public:
 	/** Prevent deletion. */
 	inline bool GetPreventDeletion() const{ return pPreventDeletion; }
 	
+	/** Session restart is pending. */
+	inline bool GetRestartSession() const{ return pRestartSession; }
+	
+	/** Request session restart the next time possible. */
+	void RequestRestartSession();
+	
 	/** Last detected system. */
-	deoxrSystem::eSystem GetLastDetectedSystem() const{ return pLastDetectedSystem; }
+	inline deoxrSystem::eSystem GetLastDetectedSystem() const{ return pLastDetectedSystem; }
 	/*@}*/
 	
 	

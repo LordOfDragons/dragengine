@@ -95,6 +95,8 @@ pLoader( nullptr ),
 pSessionState( XR_SESSION_STATE_UNKNOWN ),
 pShutdownRequested( false ),
 pPreventDeletion( false ),
+pRestartSession( false ),
+pForceAttachCheck( false ),
 pLastDetectedSystem( deoxrSystem::esUnknown )
 {
 	memset( pActions, 0, sizeof( pActions ) );
@@ -161,6 +163,10 @@ deoxrSwapchain *deVROpenXR::GetEyeSwapchain( eEye eye ) const{
 	}
 }
 
+void deVROpenXR::RequestRestartSession(){
+	pRestartSession = true;
+}
+
 
 
 // Module Management
@@ -172,6 +178,7 @@ bool deVROpenXR::Init(){
 	pSessionState = XR_SESSION_STATE_UNKNOWN;
 	pShutdownRequested = false;
 	pPreventDeletion = false;
+	pRestartSession = false;
 	
 	try{
 		pLoader = new deoxrLoader( *this );
@@ -420,6 +427,7 @@ void deVROpenXR::ProcessEvents(){
 				
 			case XR_SESSION_STATE_FOCUSED:
 				LogInfo( "Session State Changed: focused" );
+				pForceAttachCheck = true;
 				break;
 				
 			case XR_SESSION_STATE_STOPPING:
@@ -515,6 +523,11 @@ void deVROpenXR::ProcessEvents(){
 		// SteamVR crashes if you try to do it earlier instead of returning an error
 		if( pSessionState == XR_SESSION_STATE_FOCUSED ){
 			pSession->SyncActions();
+			
+			if( pForceAttachCheck ){
+				pForceAttachCheck = false;
+				pDeviceProfiles.CheckAllAttached();
+			}
 		}
 		
 		// but we still want to be able to receive head movement. requires tracking the
@@ -665,6 +678,15 @@ void deVROpenXR::BeginFrame(){
 		return;
 	}
 	
+	if( pSession && pRestartSession ){
+		LogInfo( "Restarting session (somebody requested this)" );
+		pDeviceProfiles.ClearActions();
+		pSession = nullptr;
+		pDestroyActionSet();
+		
+		pRestartSession = false;
+	}
+	
 	if( ! pSession ){
 		if( pShutdownRequested ){
 			pRealShutdown();
@@ -672,9 +694,11 @@ void deVROpenXR::BeginFrame(){
 		}
 		
 		LogInfo( "BeginFrame: Create Session" );
+		pRestartSession = false;
 		try{
 			pSession.TakeOver( new deoxrSession( pSystem ) );
 			
+			pDeviceProfiles.CheckAllAttached();
 			pCreateActionSet();
 			pSuggestBindings();
 			

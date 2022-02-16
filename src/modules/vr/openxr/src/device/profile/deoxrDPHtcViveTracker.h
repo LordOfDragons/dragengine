@@ -37,6 +37,7 @@ private:
 		typedef deTObjectReference<Tracker> Ref;
 		
 		const deoxrPath path;
+		deoxrPath pathRole;
 		deoxrDevice::Ref device;
 		deoxrAction::Ref action;
 		int number;
