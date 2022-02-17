@@ -186,21 +186,21 @@ class ECBehaviorVRHandPose extends DefaultECBehavior
 			pAnimatorInstance.setComponent(component)
 			if component != null and component.getRig() != null
 				pAnimatorInstance.setAnimator(createAnimator(stub, component))
-			end
-			
-			// get controllers and store them for later use
-			pAnimateBones.forEach(block Bone bone
-				bone.controllerOrientation = pAnimatorInstance.getControllerAt(bone.adControllerOrientation.getIndex())
-				bone.adControllerOrientation = null
 				
-				if bone.adControllerPosition != null
-					bone.controllerPosition = pAnimatorInstance.getControllerAt(bone.adControllerPosition.getIndex())
-					bone.adControllerPosition = null
-				end
-			end)
-			
-			pControllerEnableFingers = pAnimatorInstance.getControllerAt(pADControllerEnableFingers.getIndex())
-			pADControllerEnableFingers = null
+				// get controllers and store them for later use
+				pAnimateBones.forEach(block Bone bone
+					bone.controllerOrientation = pAnimatorInstance.getControllerAt(bone.adControllerOrientation.getIndex())
+					bone.adControllerOrientation = null
+					
+					if bone.adControllerPosition != null
+						bone.controllerPosition = pAnimatorInstance.getControllerAt(bone.adControllerPosition.getIndex())
+						bone.adControllerPosition = null
+					end
+				end)
+				
+				pControllerEnableFingers = pAnimatorInstance.getControllerAt(pADControllerEnableFingers.getIndex())
+				pADControllerEnableFingers = null
+			end
 		end
 		
 		/** Create animator definition. */
@@ -328,7 +328,9 @@ class ECBehaviorVRHandPose extends DefaultECBehavior
 			if device == null\
 			or device.getBoneConfiguration() != InputDeviceBoneConfiguration.hand\
 			or device.getDeviceBonePoseCount() != 21
-				pControllerEnableFingers.setValue(0)
+				if pControllerEnableFingers != null
+					pControllerEnableFingers.setValue(0)
+				end
 				return
 			end
 			
