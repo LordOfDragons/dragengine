@@ -383,7 +383,8 @@ class ECBehaviorVRHandLaserPointer extends DefaultECBehavior
 		
 		pVRHandPointAt = vrHandPointAt
 		
-		pParticleEmitter = ECBehaviorParticleEmitter.new(eclass, null, subID)
+		pParticleEmitter = ECBehaviorParticleEmitter.new(eclass, null,\
+			BaseGameApp.getApp().getLoaders(), null, subID, prefix + "particleEmitter.")
 		pParticleEmitter.getParticleEmitter().getCasting().setValue(false)
 		pParticleEmitter.getParticleEmitter().getCollisionFilter().setCollisionFilter(\
 			vrHandPointAt.getCollisionFilter().getCollisionFilter())

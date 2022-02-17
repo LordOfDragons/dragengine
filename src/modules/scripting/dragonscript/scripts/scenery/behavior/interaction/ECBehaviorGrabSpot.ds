@@ -423,7 +423,7 @@ class ECBehaviorGrabSpot extends DefaultECBehavior
 		
 		pListenerFactories = Array.new()
 		
-		pTouchCollider = ECComposeCollider.new(eclass, prefix + "touchCollider")
+		pTouchCollider = ECComposeCollider.new(eclass, prefix + "touchCollider.")
 		pTouchCollider.getPhysicsType().setEnumeration(CollisionResponse.kinematic)
 		pTouchCollider.getLocalGravity().setVector(Vector.new())
 		pTouchCollider.setCollisionFilter(CollisionFilter.new( \

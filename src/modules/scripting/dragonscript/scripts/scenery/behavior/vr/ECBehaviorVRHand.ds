@@ -746,7 +746,7 @@ class ECBehaviorVRHand extends DefaultECBehavior
 		pVRPlayspace = vrPlayspace
 		pListenerFactories = Array.new()
 		
-		pComponent = ECBehaviorComponent.new(eclass, null, subID, prefix + "component")
+		pComponent = ECBehaviorComponent.new(eclass, null, subID, prefix + "component.")
 		
 		pUseVendorModel = ECPBoolean.new(prefix + "useVendorModel", true)
 		eclass.addProperty(pUseVendorModel)
@@ -754,7 +754,7 @@ class ECBehaviorVRHand extends DefaultECBehavior
 		pShowHand = ECPBoolean.new(prefix + "showHand", true)
 		eclass.addProperty(pShowHand)
 		
-		pCollider = ECComposeCollider.new(eclass, prefix + "collider")
+		pCollider = ECComposeCollider.new(eclass, prefix + "collider.")
 		setGhost()
 		
 		eclass.addBehavior(this)
