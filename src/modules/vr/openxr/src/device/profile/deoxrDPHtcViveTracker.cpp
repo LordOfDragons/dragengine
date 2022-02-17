@@ -509,7 +509,53 @@ void deoxrDPHtcViveTracker::pAddDevice( Tracker &tracker ){
 	tracker.device.TakeOver( new deoxrDevice( oxr, *this ) );
 	
 	decString id, name;
-	name.Format( "Tracker %d", tracker.number );
+	
+	if( tracker.pathRole.GetName().EndsWith( "handheld_object" ) ){
+		name = "Tracker Hand Held";
+		
+	}else if( tracker.pathRole.GetName().EndsWith( "left_foot" ) ){
+		name = "Tracker Left Foot";
+		
+	}else if( tracker.pathRole.GetName().EndsWith( "right_foot" ) ){
+		name = "Tracker Right Foot";
+		
+	}else if( tracker.pathRole.GetName().EndsWith( "left_shoulder" ) ){
+		name = "Tracker Left Shoulder";
+		
+	}else if( tracker.pathRole.GetName().EndsWith( "right_shoulder" ) ){
+		name = "Tracker Right Shoulder";
+		
+	}else if( tracker.pathRole.GetName().EndsWith( "left_elbow" ) ){
+		name = "Tracker Left Elbow";
+		
+	}else if( tracker.pathRole.GetName().EndsWith( "right_elbow" ) ){
+		name = "Tracker Right Elbow";
+		
+	}else if( tracker.pathRole.GetName().EndsWith( "left_knee" ) ){
+		name = "Tracker Left Knee";
+		
+	}else if( tracker.pathRole.GetName().EndsWith( "right_knee" ) ){
+		name = "Tracker Right Knee";
+		
+	}else if( tracker.pathRole.GetName().EndsWith( "waist" ) ){
+		name = "Tracker Waist";
+		
+	}else if( tracker.pathRole.GetName().EndsWith( "chest" ) ){
+		name = "Tracker Chest";
+		
+	}else if( tracker.pathRole.GetName().EndsWith( "camera" ) ){
+		name = "Tracker Camera";
+		
+	}else if( tracker.pathRole.GetName().EndsWith( "keyboard" ) ){
+		name = "Tracker Keyboard";
+		
+	}else if( tracker.path.IsNotEmpty() ){
+		name.Format( "Tracker %s", pSerialFromPath( tracker.path ).GetString() );
+		
+	}else{
+		name.Format( "Tracker #%d", tracker.number );
+	}
+	
 	id.Format( "%str_%s", OXR_DEVID_PREFIX, pSerialFromPath( tracker.path ).GetString() );
 	
 	tracker.device->SetType( deInputDevice::edtVRTracker );
