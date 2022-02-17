@@ -116,6 +116,12 @@ public:
 	/** Create actions for action set. */
 	virtual void CreateActions( deoxrActionSet &actionSet );
 	
+	/** On actions synced. */
+	virtual void OnActionsSynced();
+	
+	/** On session state changed. */
+	virtual void OnSessionStateChanged();
+	
 	/** Check attached. */
 	virtual void CheckAttached();
 	

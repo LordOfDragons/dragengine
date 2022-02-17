@@ -96,7 +96,6 @@ pSessionState( XR_SESSION_STATE_UNKNOWN ),
 pShutdownRequested( false ),
 pPreventDeletion( false ),
 pRestartSession( false ),
-pForceAttachCheck( false ),
 pLastDetectedSystem( deoxrSystem::esUnknown )
 {
 	memset( pActions, 0, sizeof( pActions ) );
@@ -427,7 +426,6 @@ void deVROpenXR::ProcessEvents(){
 				
 			case XR_SESSION_STATE_FOCUSED:
 				LogInfo( "Session State Changed: focused" );
-				pForceAttachCheck = true;
 				break;
 				
 			case XR_SESSION_STATE_STOPPING:
@@ -449,6 +447,8 @@ void deVROpenXR::ProcessEvents(){
 			default:
 				break;
 			}
+			
+			pDeviceProfiles.AllOnSessionStateChanged();
 			}break;
 			
 		case XR_TYPE_EVENT_DATA_INSTANCE_LOSS_PENDING: {
@@ -514,11 +514,7 @@ void deVROpenXR::ProcessEvents(){
 		// SteamVR crashes if you try to do it earlier instead of returning an error
 		if( pSessionState == XR_SESSION_STATE_FOCUSED ){
 			pSession->SyncActions();
-			
-			if( pForceAttachCheck ){
-				pForceAttachCheck = false;
-				pDeviceProfiles.CheckAllAttached();
-			}
+			pDeviceProfiles.AllOnActionsSynced();
 		}
 		
 		// but we still want to be able to receive head movement. requires tracking the

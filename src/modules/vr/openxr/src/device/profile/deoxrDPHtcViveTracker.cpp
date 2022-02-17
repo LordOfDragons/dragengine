@@ -63,7 +63,8 @@ deoxrDPHtcViveTracker::Tracker::~Tracker(){
 deoxrDPHtcViveTracker::deoxrDPHtcViveTracker( deoxrInstance &instance ) :
 deoxrDeviceProfile( instance,
 	deoxrPath( instance, "/interaction_profiles/htc/vive_tracker_htcx" ),
-	"HTC VIVE Tracker" )
+	"HTC VIVE Tracker" ),
+pTimeoutCheckAttached( 3.0f )
 {
 // 	pLoadTrackerDatabase();
 }
@@ -75,6 +76,27 @@ deoxrDPHtcViveTracker::~deoxrDPHtcViveTracker(){
 
 // Management
 ///////////////
+
+void deoxrDPHtcViveTracker::OnSessionStateChanged(){
+	if( GetInstance().GetOxr().GetSessionState() == XR_SESSION_STATE_FOCUSED ){
+		pTimerCheckAttached.Reset();
+		pTimeoutCheckAttached = 1.0f;
+	}
+}
+
+void deoxrDPHtcViveTracker::OnActionsSynced(){
+	if( GetInstance().GetOxr().GetSessionState() != XR_SESSION_STATE_FOCUSED ){
+		return;
+	}
+	
+	pTimeoutCheckAttached -= pTimerCheckAttached.GetElapsedTime();
+	if( pTimeoutCheckAttached > 0.0f ){
+		return;
+	}
+	
+	pTimeoutCheckAttached = 1e6f; // 3.0f;
+	CheckAttached();
+}
 
 void deoxrDPHtcViveTracker::CheckAttached(){
 	const deoxrInstance &instance = GetInstance();

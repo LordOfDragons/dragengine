@@ -62,6 +62,24 @@ void deoxrDeviceProfileManager::RemoveAll(){
 	pProfiles.RemoveAll();
 }
 
+void deoxrDeviceProfileManager::AllOnActionsSynced(){
+	const int count = pProfiles.GetCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		( ( deoxrDeviceProfile* )pProfiles.GetAt( i ) )->OnActionsSynced();
+	}
+}
+
+void deoxrDeviceProfileManager::AllOnSessionStateChanged(){
+	const int count = pProfiles.GetCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		( ( deoxrDeviceProfile* )pProfiles.GetAt( i ) )->OnSessionStateChanged();
+	}
+}
+
 void deoxrDeviceProfileManager::CheckAllAttached(){
 	const int count = pProfiles.GetCount();
 	int i;

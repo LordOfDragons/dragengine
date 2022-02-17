@@ -62,6 +62,12 @@ void deoxrDeviceProfile::SetDeviceRotation( const decVector &rotation ){
 void deoxrDeviceProfile::CreateActions( deoxrActionSet& ){
 }
 
+void deoxrDeviceProfile::OnSessionStateChanged(){
+}
+
+void deoxrDeviceProfile::OnActionsSynced(){
+}
+
 void deoxrDeviceProfile::CheckAttached(){
 }
 

@@ -25,6 +25,7 @@
 #include "deoxrDeviceProfile.h"
 
 #include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/utils/decTimer.h>
 
 
 /**
@@ -47,6 +48,8 @@ private:
 	};
 	
 	decObjectOrderedSet pTrackers;
+	decTimer pTimerCheckAttached;
+	float pTimeoutCheckAttached;
 	
 	
 	
@@ -66,6 +69,12 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
+	/** On session state changed. */
+	virtual void OnSessionStateChanged();
+	
+	/** On actions synced. */
+	virtual void OnActionsSynced();
+	
 	/** Check attached. */
 	virtual void CheckAttached();
 	

@@ -105,7 +105,6 @@ private:
 	bool pShutdownRequested;
 	bool pPreventDeletion;
 	bool pRestartSession;
-	bool pForceAttachCheck;
 	deoxrSystem::eSystem pLastDetectedSystem;
 	
 	

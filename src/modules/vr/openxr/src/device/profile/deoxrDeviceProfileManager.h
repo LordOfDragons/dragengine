@@ -62,6 +62,12 @@ public:
 	/** Remove all profiles. */
 	void RemoveAll();
 	
+	/** On actions synced. */
+	void AllOnActionsSynced();
+	
+	/** On session state changed. */
+	void AllOnSessionStateChanged();
+	
 	/** Check attached state for all profiles. */
 	void CheckAllAttached();
 	
