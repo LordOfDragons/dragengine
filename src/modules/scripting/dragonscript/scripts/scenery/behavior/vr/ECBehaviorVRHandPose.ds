@@ -22,6 +22,7 @@
 
 namespace Dragengine.Scenery
 
+pin Dragengine.Animators
 pin Dragengine.Gui
 pin Dragengine.LoadSave
 pin Dragengine.Preloading
@@ -68,6 +69,8 @@ class ECBehaviorVRHandPose extends DefaultECBehavior
 			public var String bone
 			public var int poseIndex
 			public var String namePrefix
+			public var ADController adControllerPosition
+			public var ADController adControllerOrientation
 			public var AnimatorController controllerPosition
 			public var AnimatorController controllerOrientation
 			public var Vector posePosition
@@ -108,11 +111,13 @@ class ECBehaviorVRHandPose extends DefaultECBehavior
 		private var ECBehaviorVRHandPose pECBehavior
 		private var ECBehaviorVRHand.Instance pVRHand
 		
+		private var bool pOnlyRotation
 		private var String pBoneOrigin
 		private var Array pBones
 		private var Array pAnimateBones
 		private var AnimatorInstance pAnimatorInstance
-		private var AnimatorController pControllerEnableBones
+		private var ADController pADControllerEnableFingers
+		private var AnimatorController pControllerEnableFingers
 		
 		private var Matrix pHandScale
 		private var float pModelFingerTipDistance
@@ -140,6 +145,8 @@ class ECBehaviorVRHandPose extends DefaultECBehavior
 		
 		/** \brief Initialize element from stub. */
 		public func void init(StubElement stub)
+			pOnlyRotation = pECBehavior.getOnlyRotation().getValue(stub)
+			
 			pModelFingerTipDistance = pECBehavior.getFingerTipDistance().getValue(stub)
 			pPoseFingerTipDistance = pModelFingerTipDistance
 			
@@ -181,87 +188,103 @@ class ECBehaviorVRHandPose extends DefaultECBehavior
 				pAnimatorInstance.setAnimator(createAnimator(stub, component))
 			end
 			
-			// get controllers for animate bones
-			pAnimateBones.forEach(block int index, Bone bone
-				bone.controllerPosition = pAnimatorInstance.getControllerAt(index * 2)
-				bone.controllerOrientation = pAnimatorInstance.getControllerAt(index * 2 + 1)
+			// get controllers and store them for later use
+			pAnimateBones.forEach(block Bone bone
+				bone.controllerOrientation = pAnimatorInstance.getControllerAt(bone.adControllerOrientation.getIndex())
+				bone.adControllerOrientation = null
+				
+				if bone.adControllerPosition != null
+					bone.controllerPosition = pAnimatorInstance.getControllerAt(bone.adControllerPosition.getIndex())
+					bone.adControllerPosition = null
+				end
 			end)
 			
-			pControllerEnableBones = pAnimatorInstance.getControllerAt(pAnimateBones.getCount() * 2)
+			pControllerEnableFingers = pAnimatorInstance.getControllerAt(pADControllerEnableFingers.getIndex())
+			pADControllerEnableFingers = null
 		end
 		
-		/** Create animator. */
-		protected func Animator createAnimator(StubElement stub, Component component)
-			// create animator
-			var Animator animator = Animator.new()
-			animator.setRig(component.getRig())
+		/** Create animator definition. */
+		protected func AnimatorDefinition createAnimatorDefinition(StubElement stub, Component component)
+			// create animator definition
+			var AnimatorDefinition definition = AnimatorDefinition.new("hand pose")
+			definition.setRig(component.getRig())
 			
 			// add bones
 			if not pBoneOrigin.empty()
-				animator.addBone(pBoneOrigin)
+				definition.addBone(pBoneOrigin)
 			end
 			pAnimateBones.forEach(block Bone each
-				animator.addBone(each.bone)
+				definition.addBone(each.bone)
 			end)
-			
-			// add controllers
-			var int controllerCount = pAnimateBones.getCount() * 2
-			
-			animator.setControllerCount(controllerCount + 1)
-			pAnimateBones.forEach(block int index, Bone bone
-				var String namePrefix = bone.namePrefix
-				animator.getControllerAt(index * 2).setName(namePrefix + " position")
-				animator.getControllerAt(index * 2 + 1).setName(namePrefix + " orientation")
-			end)
-			
-			var AnimatorController controller = animator.getControllerAt(controllerCount)
-			controller.setName("enable bones")
-			controller.setRange(0, 1)
-			controller.setClamp(true)
-			
-			// add links
-			var int i
-			
-			for i = 0 to controllerCount
-				animator.addLink(i)
-			end
-			
-			animator.setLinkCurve(animator.addLink(controllerCount), CurveBezier.newDefaultLinear())
 			
 			// add reset rule
-			var ARStateManipulator ruleReset = ARStateManipulator.new()
+			var ADRuleStateManipulator ruleReset = ADRuleStateManipulator.new()
 			if not pBoneOrigin.empty()
 				ruleReset.addBone(pBoneOrigin)
 			end
 			pAnimateBones.forEach(block Bone each
 				ruleReset.addBone(each.bone)
 			end)
-			animator.addRule(ruleReset)
+			definition.addRule(ruleReset)
 			
-			// add bone rules
+			// add controllers, links and rules for bones
+			pADControllerEnableFingers = ADController.new()
+			pADControllerEnableFingers.setName("enable fingers")
+			pADControllerEnableFingers.setMinimum(0)
+			pADControllerEnableFingers.setMaximum(1)
+			pADControllerEnableFingers.setClamp(true)
+			definition.addController(pADControllerEnableFingers)
+			
+			var ADLink linkEnableFingers = ADLink.new()
+			linkEnableFingers.setController(pADControllerEnableFingers)
+			linkEnableFingers.setCurve(CurveBezier.newDefaultLinear())
+			definition.addLink(linkEnableFingers)
+			
 			pAnimateBones.forEach(block int index, Bone bone
-				var ARInverseKinematic ruleBone = ARInverseKinematic.new()
-				ruleBone.setAdjustOrientation(true)
-				ruleBone.setAdjustPosition(true)
-				ruleBone.addBone(bone.bone)
-				ruleBone.targetAddLink(ARInverseKinematicTarget.goalPosition, index * 2)
-				ruleBone.targetAddLink(ARInverseKinematicTarget.goalOrientation, index * 2 + 1)
-				ruleBone.targetAddLink(ARInverseKinematicTarget.blendFactor, controllerCount)
-				animator.addRule(ruleBone)
+				bone.adControllerOrientation = ADController.new()
+				bone.adControllerOrientation.setName(bone.namePrefix + " orientation")
+				definition.addController(bone.adControllerOrientation)
+				
+				var ADLink linkOrientation = ADLink.new()
+				linkOrientation.setController(bone.adControllerOrientation)
+				definition.addLink(linkOrientation)
+				
+				var ADRuleInverseKinematic rule = ADRuleInverseKinematic.new()
+				rule.setName(bone.namePrefix)
+				rule.setAdjustOrientation(true)
+				rule.setAdjustPosition(false)
+				rule.addBone(bone.bone)
+				rule.addTargetLink(ADRuleTargetLink.new(\
+					ARInverseKinematicTarget.goalOrientation, linkOrientation))
+				rule.addTargetLink(ADRuleTargetLink.new(\
+					ARInverseKinematicTarget.blendFactor, linkEnableFingers))
+				
+				if bone.poseIndex == InputDeviceHandBone.wrist or not pOnlyRotation
+					bone.adControllerPosition = ADController.new()
+					bone.adControllerPosition.setName(bone.namePrefix + " position")
+					definition.addController(bone.adControllerPosition)
+					
+					var ADLink linkPosition = ADLink.new()
+					linkPosition.setController(bone.adControllerPosition)
+					definition.addLink(linkPosition)
+					
+					rule.setAdjustPosition(true)
+					rule.addTargetLink(ADRuleTargetLink.new(\
+						ARInverseKinematicTarget.goalPosition, linkPosition))
+				end
+				
+				definition.addRule(rule)
 			end)
 			
 			// finished
+			return definition
+		end
+		
+		/** Create animator using definition created using createAnimatorDefinition(). */
+		protected func Animator createAnimator(StubElement stub, Component component)
+			var Animator animator = Animator.new()
+			createAnimatorDefinition(stub, component).buildAnimator(animator)
 			return animator
-		end
-		
-		/** \brief Bone entry. */
-		protected func Bone getBone(BoneEntry entry)
-			return pBones.getAt(entry.order()) cast Bone
-		end
-		
-		/** \brief Bone entry. */
-		protected func Bone getBoneAt(int index)
-			return pBones.getAt(index) cast Bone
 		end
 		
 		
@@ -278,6 +301,25 @@ class ECBehaviorVRHandPose extends DefaultECBehavior
 		
 		
 		
+		/** \brief Apply only rotation instead of position and rotation. */
+		public func bool getOnlyRotation()
+			return pOnlyRotation
+		end
+		
+		
+		
+		/** \brief Bone entry. */
+		protected func Bone getBone(BoneEntry entry)
+			return pBones.getAt(entry.order()) cast Bone
+		end
+		
+		/** \brief Bone entry. */
+		protected func Bone getBoneAt(int index)
+			return pBones.getAt(index) cast Bone
+		end
+		
+		
+		
 		/** \brief Update controllers. */
 		public func void updateControllers()
 			// get device and check if values can be fetched
@@ -286,27 +328,32 @@ class ECBehaviorVRHandPose extends DefaultECBehavior
 			if device == null\
 			or device.getBoneConfiguration() != InputDeviceBoneConfiguration.hand\
 			or device.getDeviceBonePoseCount() != 21
-				pControllerEnableBones.setValue(0)
+				pControllerEnableFingers.setValue(0)
 				return
 			end
 			
 			// fetch values
 			pAnimateBones.forEach(block Bone bone
-				bone.posePosition = device.getDeviceBonePosePosition(bone.poseIndex, false)
 				bone.poseOrientation = device.getDeviceBonePoseOrientation(bone.poseIndex, false)
+				bone.posePosition = device.getDeviceBonePosePosition(bone.poseIndex, false)
 			end)
 			
 			// update hand scale
-			calcPoseFingerTipDistance()
-			updateHandScale()
+			if not pOnlyRotation
+				calcPoseFingerTipDistance()
+				updateHandScale()
+			end
 			
 			// update controllers with transformed poses
 			pAnimateBones.forEach(block Bone bone
-				bone.controllerPosition.setVector(pHandScale * bone.posePosition)
 				bone.controllerOrientation.setRotation(bone.poseOrientation.getEulerAngles())
+				
+				if bone.controllerPosition != null
+					bone.controllerPosition.setVector(pHandScale * bone.posePosition)
+				end
 			end)
 			
-			pControllerEnableBones.setValue(1)
+			pControllerEnableFingers.setValue(1)
 		end
 		
 		/** \brief Apply animations. */
@@ -395,6 +442,7 @@ class ECBehaviorVRHandPose extends DefaultECBehavior
 	private var ECPString pBonePinky3
 	private var ECPString pBonePinky4
 	private var ECPFloat pFingerTipDistance
+	private var ECPBoolean pOnlyRotation
 	
 	
 	
@@ -483,6 +531,9 @@ class ECBehaviorVRHandPose extends DefaultECBehavior
 		// properties
 		pFingerTipDistance = ECPFloat.new(prefix + "fingerTipDistance", 0.165, 0.01)
 		eclass.addProperty(pFingerTipDistance)
+		
+		pOnlyRotation = ECPBoolean.new(prefix + "onlyRotation", false)
+		eclass.addProperty(pOnlyRotation)
 		
 		// add to class
 		eclass.addBehavior(this)
@@ -597,6 +648,11 @@ class ECBehaviorVRHandPose extends DefaultECBehavior
 	/** \brief Distance between middle finger tip and wrist in fully stretched pose. */
 	public func ECPFloat getFingerTipDistance()
 		return pFingerTipDistance
+	end
+	
+	/** \brief Apply only rotation instead of position and rotation. */
+	public func ECPBoolean getOnlyRotation()
+		return pOnlyRotation
 	end
 	
 	
