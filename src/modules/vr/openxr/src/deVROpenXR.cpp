@@ -468,17 +468,8 @@ void deVROpenXR::ProcessEvents(){
 			}break;
 			
 		case XR_TYPE_EVENT_DATA_INTERACTION_PROFILE_CHANGED:{
-			// pfft... what a great design. this event only tells us "something" changed but
-			// not "what" changed. we have to check all known top level path to figure out
-			// if they changed (and thus connected or disconnected) using
-			// 
-			// xrGetCurrentInteractionProfile(XrSession session, XrPath topLevelUserPath,
-			//    XrInteractionProfileState* interactionProfile);
-			// 
-			// so "/user/head", "/user/hand/left" and "/user/hand/right" we have to manually
-			// track while trackers at least tells us their path but then we still have to
-			// manually track them. lots of overhead due to bad design.
-			// 
+			// "something" changed but we do not know what. the spec requires us to check
+			// all known top level path to figure out if something changed
 			LogInfo( "Interaction profile changed. Updating devices." );
 			pDeviceProfiles.CheckAllAttached();
 			}break;
