@@ -169,8 +169,7 @@ void deoxrDPHtcViveTracker::CheckAttached(){
 					
 				}else{
 					// we have never seen this tracker before. we have to add the tracker and
-					// save the database to file. then we have to restart the VR system to
-					// add the new action for the tracker
+					// restart the VR system to add the new action for the tracker
 					const Tracker::Ref newTracker( Tracker::Ref::New( new Tracker(
 						deoxrPath( instance, trackerPaths[ i ].persistentPath ),
 						pTrackers.GetCount() + 1 ) ) );
@@ -260,11 +259,11 @@ void deoxrDPHtcViveTracker::SuggestBindings(){
 		return;
 	}
 	
-	// WARNING if an action is assigned SteamVR starts spamming connection events at high
-	//         frequency alternating between connect/remove tracker. this causes devices
-	//         to be added/removed many times per frame update causing slow-down and other
-	//         problems. there is no remedy against this since steam reports to us
-	//         connect/disconnect in short succession so we can not protect against this bug
+	// NOTE if two or more trackers are assigned to the same role or trackers are set to
+	//      disabled SteamVR starts spamming connection events at high frequency alternating
+	//      between connect/remove tracker. this causes devices to be added/removed many
+	//      times per frame update causing slow-down and other problems. there is no
+	//      protection against this behavior
 	
 #if 1
 	const deoxrInstance &instance = GetInstance();
@@ -286,15 +285,15 @@ void deoxrDPHtcViveTracker::SuggestBindings(){
 	int i;
 	for( i=0; i<pTrackers.GetCount(); i++ ){
 		const Tracker &tracker = *( ( Tracker* )pTrackers.GetAt( i ) );
-		
 		if( ! tracker.action ){
 			continue;
 		}
 		
+// 		const decString basePath( tracker.path.GetName() );
 		const decString basePath( tracker.pathRole.GetName() );
-// 		const decString basePath( "/user/vive_tracker_htcx/role/" );
 		
 		/*
+		const decString basePath( "/user/vive_tracker_htcx/role/" );
 		int j;
 		for( j=0; j<roleCount; j++ ){
 			( b++ )->Set( tracker.action, deoxrPath( instance, basePath + roles[ j ] + "/input/grip/pose" ) );
