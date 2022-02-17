@@ -543,6 +543,7 @@ void deVROpenXR::ProcessEvents(){
 ////////////////////////////
 
 decPoint deVROpenXR::GetRenderSize(){
+	const deMutexGuard lock( pMutexOpenXR );
 	if( ! pSystem ){
 		return decPoint( 1024, 1024 );
 	}
@@ -551,6 +552,7 @@ decPoint deVROpenXR::GetRenderSize(){
 }
 
 void deVROpenXR::GetProjectionParameters( eEye eye, float &left, float &right, float &top, float &bottom ){
+	const deMutexGuard lock( pMutexOpenXR );
 	// returned values are used directly in projection matrix. these values are also
 	// half tan angles from center. hence calculating the tan of the angles works
 	switch( eye ){
@@ -589,6 +591,7 @@ void deVROpenXR::GetProjectionParameters( eEye eye, float &left, float &right, f
 }
 
 decMatrix deVROpenXR::GetMatrixViewEye( eEye eye ){
+	const deMutexGuard lock( pMutexOpenXR );
 	switch( eye ){
 	case deBaseVRModule::evreLeft:
 		if( pSession ){
@@ -611,6 +614,7 @@ decMatrix deVROpenXR::GetMatrixViewEye( eEye eye ){
 }
 
 deModel *deVROpenXR::GetHiddenArea( eEye eye ){
+	const deMutexGuard lock( pMutexOpenXR );
 	if( ! pSession ){
 		return nullptr;
 	}
