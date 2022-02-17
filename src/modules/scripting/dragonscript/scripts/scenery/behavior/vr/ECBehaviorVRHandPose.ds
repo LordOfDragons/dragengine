@@ -48,10 +48,16 @@ pin Dragengine.Utils
  * - Ring: ring1, ring2, ring3, ring4
  * - Pinky: pinky1, pinky2, pinky3, pinky4
  * 
- * Models of varying size can be used. The behavior scales the input data to fit the model
- * size. For this process to wor you have to measure the distance from the middle finger
- * tip bone to the wrist bone. Use the base of these bones not their tails (in Blender3D).
- * Set this values as the "fingerTipDistance" element class property:
+ * Models of varying size can be used.
+ * 
+ * By default only rotation of bones are used. If you want to use also positions you have
+ * first to set "onlyRotation" element class property to false. Using models with position
+ * transfer requires some additional care to work properly. In particular the model rig
+ * has to match as closely as possible the rig used by the VR runtime except for scaling.
+ * The behavior scales the input data to fit the model size. For this process to wor you
+ * have to measure the distance from the middle finger tip bone to the wrist bone.
+ * Use the base of these bones not their tails (in Blender3D). Set this values as the
+ * "fingerTipDistance" element class property:
  * 
  * \code{.ds}
  * getFingerTipDistance().setValue(0.165)
@@ -534,7 +540,7 @@ class ECBehaviorVRHandPose extends DefaultECBehavior
 		pFingerTipDistance = ECPFloat.new(prefix + "fingerTipDistance", 0.165, 0.01)
 		eclass.addProperty(pFingerTipDistance)
 		
-		pOnlyRotation = ECPBoolean.new(prefix + "onlyRotation", false)
+		pOnlyRotation = ECPBoolean.new(prefix + "onlyRotation", true)
 		eclass.addProperty(pOnlyRotation)
 		
 		// add to class
