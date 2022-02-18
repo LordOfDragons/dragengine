@@ -523,9 +523,9 @@ deoxrHandTracker *deoxrDeviceProfile::pAddHandTracker( deoxrDevice &device, bool
 		deInputDeviceComponent::ectGeneric, "Hand Pose", "handPose", "Hand Pose" );
 	
 	struct Data{
-		const char *description;
-		const char *id;
 		const char *name;
+		const char *id;
+		const char *displayText;
 	};
 	const Data bendData[ 5 ] = {
 		{ "Bend Thumb", "fb1", "FB1" },
@@ -543,7 +543,7 @@ deoxrHandTracker *deoxrDeviceProfile::pAddHandTracker( deoxrDevice &device, bool
 		axis->SetValue( -1.0f );
 		axis->SetName( bendData[ i ].name );
 		axis->SetID( bendData[ i ].id );
-		axis->SetDisplayText( bendData[ i ].description );
+		axis->SetDisplayText( bendData[ i ].displayText );
 		axis->SetIndex( device.GetAxisCount() );
 		axis->SetFinger( i );
 		axis->SetInputDeviceComponent( componentHand );
@@ -564,7 +564,7 @@ deoxrHandTracker *deoxrDeviceProfile::pAddHandTracker( deoxrDevice &device, bool
 		axis->SetValue( -1.0f );
 		axis->SetName( bendSpread[ i ].name );
 		axis->SetID( bendSpread[ i ].id );
-		axis->SetDisplayText( bendSpread[ i ].description );
+		axis->SetDisplayText( bendSpread[ i ].displayText );
 		axis->SetIndex( device.GetAxisCount() );
 		axis->SetFinger( i );
 		axis->SetInputDeviceComponent( componentHand );
