@@ -178,13 +178,17 @@ void deoxrDeviceAxis::TrackState(){
 	
 	switch( pType ){
 	case deInputDeviceAxis::eatFingerBend:
-// 		UpdateValue( decMath::linearStep( pDevice.GetSkeletalSummaryData().flFingerCurl[ pFinger ],
-// 			pMinimum, pMaximum, -1.0f, 1.0f ) );
+		if( pDevice.GetHandTracker() ){
+			UpdateValue( decMath::linearStep( pDevice.GetHandTracker()->GetBendFingerAt( pFinger ),
+				pMinimum, pMaximum, -1.0f, 1.0f ) );
+		}
 		break;
 		
 	case deInputDeviceAxis::eatFingerSpread:
-// 		UpdateValue( decMath::linearStep( pDevice.GetSkeletalSummaryData().flFingerSplay[ pFinger ],
-// 			pMinimum, pMaximum, -1.0f, 1.0f ) );
+		if( pDevice.GetHandTracker() ){
+			UpdateValue( decMath::linearStep( pDevice.GetHandTracker()->GetSpreadFingerAt( pFinger ),
+				pMinimum, pMaximum, -1.0f, 1.0f ) );
+		}
 		break;
 		
 	case deInputDeviceAxis::eatStick:
