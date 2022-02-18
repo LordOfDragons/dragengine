@@ -421,11 +421,15 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 			var Matrix matrix = Matrix.newWorld(position, orientation) * getMatrix()
 			
 			if pBone.empty()
-				if colliderSlot castable ColliderRig
+				if colliderSlot castable ColliderRig and colliderAttachable castable ColliderRig
 					var ColliderRig colliderRig = colliderSlot cast ColliderRig
+					var ColliderRig attachableColliderRig = colliderAttachable cast ColliderRig
 					var Rig rig = colliderRig.getRig()
-					if rig != null and rig.getBoneCount() > 0
-						colliderRig.attachRig(colliderAttachable cast ColliderRig)
+					var Rig attachableRig = attachableColliderRig.getRig()
+					
+					if rig != null and rig.getBoneCount() > 0\
+					and attachableRig != null and attachableRig.getBoneCount() > 0
+						colliderRig.attachRig(attachableColliderRig)
 						
 					else
 						colliderRig.attachStatic(colliderAttachable, matrix.getPosition(), matrix.toQuaternion())
