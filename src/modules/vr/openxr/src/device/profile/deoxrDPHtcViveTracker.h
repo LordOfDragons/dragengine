@@ -94,6 +94,9 @@ private:
 	Tracker *pGetTrackerWith( deoxrDevice *device ) const;
 	Tracker *pGetTrackerWith( XrPath path ) const;
 	decString pSerialFromPath( const deoxrPath &path ) const;
+	decString pNameForTracker( const Tracker &tracker ) const;
+	decString pLocalizedNameForTracker( const Tracker &tracker ) const;
+	
 	void pRemoveAllDevices();
 	void pLoadTrackerDatabase();
 	void pSaveTrackerDatabase();

@@ -497,7 +497,7 @@ void deVROpenXR::ProcessEvents(){
 				( XrEventDataViveTrackerConnectedHTCX& )event;
 			const deoxrPath path( pInstance, connected.paths->persistentPath );
 			const deoxrPath pathRole( pInstance, connected.paths->rolePath );
-			LogInfoFormat( "VIVE Tracker Connected, updating devices: path='%s' rolePath='%s'",
+			LogInfoFormat( "VIVE Tracker Connected Event, updating devices: path='%s' rolePath='%s'",
 				path.GetName().GetString(), pathRole.GetName().GetString() );
 			//LogInfo( "VIVE Tracker connected. Updating devices" );
 			pDeviceProfiles.CheckAllAttached();

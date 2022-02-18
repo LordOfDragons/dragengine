@@ -134,7 +134,7 @@ void deoxrDPHtcViveTracker::CheckAttached(){
 					i, path.GetName().GetString(), pathRole.GetName().GetString() );
 			}
 			
-			// remove devices of no more connected trackers
+			// remove devices of no more connected trackers or trackers having changed role
 			for( t=0; t<pTrackers.GetCount(); t++ ){
 				Tracker &tracker = *( ( Tracker* )pTrackers.GetAt( t ) );
 				if( ! tracker.device ){
@@ -147,51 +147,44 @@ void deoxrDPHtcViveTracker::CheckAttached(){
 					}
 				}
 				
-				if( i == count ){
+				if( i == count || tracker.pathRole != trackerPaths[ i ].rolePath ){
 					devices.Remove( tracker.device );
 					tracker.device = nullptr;
-				}
-			}
-			
-			// add devices for newly connected trackers
-			for( i=0; i<count; i++ ){
-				Tracker * const tracker = pGetTrackerWith( trackerPaths[ i ].persistentPath );
-				if( tracker ){
-					// tracker is known
-					if( tracker->pathRole || tracker->pathRole != trackerPaths[ i ].rolePath ){
-						// tracker role path is known. the device has been seen before the
-						// session started and a device can be created for it. this happens
-						// if the device has been activated before the engine started or
-						// the session had been restarted after the device has been activated
-						// 
-						// do not add device if the session is about to restart
-						if( ! tracker->device && ! instance.GetOxr().GetRestartSession() ){
-							pAddDevice( *tracker );
-						}
-						
-					}else{
-						// tracker role path is unknown. the device has not been seen before
-						// the session started and has been activated. we have to store the
-						// role and restart the session to properly use it
-						if( tracker->pathRole ){
-							instance.GetOxr().LogInfoFormat(
-								"VIVE Tracker role changed, request session restart: path='%s' rolePath='%s'",
-								tracker->path.GetName().GetString(), tracker->pathRole.GetName().GetString() );
-							
-						}else{
-							instance.GetOxr().LogInfoFormat(
-								"VIVE Tracker role previous unknown, request session restart: path='%s' rolePath='%s'",
-								tracker->path.GetName().GetString(), tracker->pathRole.GetName().GetString() );
-						}
-						
-						tracker->pathRole = deoxrPath( instance, trackerPaths[ i ].rolePath );
+					
+					if( i < count && tracker.pathRole != trackerPaths[ i ].rolePath ){
+						instance.GetOxr().LogInfoFormat(
+							"VIVE Tracker changed role, request session restart: path='%s' rolePath='%s'",
+							tracker.path.GetName().GetString(), tracker.pathRole.GetName().GetString() );
 						
 						instance.GetOxr().RequestRestartSession();
 					}
+				}
+			}
+			
+			// add devices for newly connected trackers or trackers having change role path
+			for( i=0; i<count; i++ ){
+				Tracker * const tracker = pGetTrackerWith( trackerPaths[ i ].persistentPath );
+				if( tracker ){
+					// tracker is known and a device can be created for it. this happens if
+					// the device has been activated before the engine started or the session
+					// had been restarted after the device has been activated
+					if( tracker->pathRole != trackerPaths[ i ].rolePath ){
+						tracker->pathRole = deoxrPath( instance, trackerPaths[ i ].rolePath );
+					}
 					
+					if( ! tracker->device ){
+						// do not add device if the session is about to restart
+						if( instance.GetOxr().GetRestartSession() ){
+							continue;
+						}
+						
+						pAddDevice( *tracker );
+					}
+				
 				}else{
-					// we have never seen this tracker before. we have to add the tracker and
-					// restart the VR system to add the new action for the tracker
+					// tracker has not been seen before the session started and has
+					// been activated. we have to store the role and restart the
+					// session to properly use it
 					const Tracker::Ref newTracker( Tracker::Ref::New( new Tracker(
 						deoxrPath( instance, trackerPaths[ i ].persistentPath ),
 						pTrackers.GetCount() + 1 ) ) );
@@ -203,7 +196,7 @@ void deoxrDPHtcViveTracker::CheckAttached(){
 // 					pSaveTrackerDatabase();
 					
 					instance.GetOxr().LogInfoFormat(
-						"VIVE Tracker first time seen, request session restart: path='%s' rolePath='%s'",
+						"VIVE Tracker first seen, request session restart: path='%s' rolePath='%s'",
 						newTracker->path.GetName().GetString(), newTracker->pathRole.GetName().GetString() );
 					
 					instance.GetOxr().RequestRestartSession();
@@ -224,23 +217,22 @@ void deoxrDPHtcViveTracker::CheckAttached(){
 
 void deoxrDPHtcViveTracker::CreateActions( deoxrActionSet &actionSet ){
 	const int count = pTrackers.GetCount();
-	decString name, localizedName;
+	decString name;
 	int i;
 	
 	for( i=0; i<count; i++ ){
 		Tracker &tracker = *( ( Tracker* )pTrackers.GetAt( i ) );
 		
-		if( ! tracker.pathRole ){
-			continue;
-		}
+// 		if( ! tracker.pathRole ){
+// 			continue;
+// 		}
 		
-		name.Format( "pose_tracker_%d", tracker.number );
-		localizedName.Format( "Tracker %d", tracker.number );
+		name.Format( "pose_tracker_%s", pSerialFromPath( tracker.path ).GetString() );
 		
-// 		const XrPath subactionPath[ 1 ] = { tracker.path };
-		const XrPath subactionPath[ 1 ] = { tracker.pathRole };
-		tracker.action = actionSet.AddAction( deoxrAction::etInputPose,
-			name, localizedName, subactionPath, 1 );
+		const XrPath subactionPath[ 2 ] = { tracker.path, tracker.pathRole };
+		
+		tracker.action = actionSet.AddAction( deoxrAction::etInputPose, name,
+			pLocalizedNameForTracker( tracker ), subactionPath, tracker.pathRole ? 2 : 1 );
 	}
 }
 
@@ -309,6 +301,10 @@ void deoxrDPHtcViveTracker::SuggestBindings(){
 		const Tracker &tracker = *( ( Tracker* )pTrackers.GetAt( i ) );
 		if( ! tracker.action ){
 			continue;
+		}
+		
+		if( ! tracker.pathRole ){
+			continue; // persistent path not accepted by SteamVR. returns unsupported path error
 		}
 		
 // 		const decString basePath( tracker.path.GetName() );
@@ -394,6 +390,71 @@ decString deoxrDPHtcViveTracker::pSerialFromPath( const deoxrPath &path ) const{
 	// the serial in OpenVR had been reported as "lhr-{8-digits}"
 	// we simply take the last 12 characters
 	return path.GetName().GetRight( 12 );
+}
+
+decString deoxrDPHtcViveTracker::pNameForTracker( const Tracker &tracker ) const{
+	if( tracker.pathRole.GetName().EndsWith( "handheld_object" ) ){
+		return "Tracker Hand Held";
+		
+	}else if( tracker.pathRole.GetName().EndsWith( "left_foot" ) ){
+		return "Tracker Left Foot";
+		
+	}else if( tracker.pathRole.GetName().EndsWith( "right_foot" ) ){
+		return "Tracker Right Foot";
+		
+	}else if( tracker.pathRole.GetName().EndsWith( "left_shoulder" ) ){
+		return "Tracker Left Shoulder";
+		
+	}else if( tracker.pathRole.GetName().EndsWith( "right_shoulder" ) ){
+		return "Tracker Right Shoulder";
+		
+	}else if( tracker.pathRole.GetName().EndsWith( "left_elbow" ) ){
+		return "Tracker Left Elbow";
+		
+	}else if( tracker.pathRole.GetName().EndsWith( "right_elbow" ) ){
+		return "Tracker Right Elbow";
+		
+	}else if( tracker.pathRole.GetName().EndsWith( "left_knee" ) ){
+		return "Tracker Left Knee";
+		
+	}else if( tracker.pathRole.GetName().EndsWith( "right_knee" ) ){
+		return "Tracker Right Knee";
+		
+	}else if( tracker.pathRole.GetName().EndsWith( "waist" ) ){
+		return "Tracker Waist";
+		
+	}else if( tracker.pathRole.GetName().EndsWith( "chest" ) ){
+		return "Tracker Chest";
+		
+	}else if( tracker.pathRole.GetName().EndsWith( "camera" ) ){
+		return "Tracker Camera";
+		
+	}else if( tracker.pathRole.GetName().EndsWith( "keyboard" ) ){
+		return "Tracker Keyboard";
+		
+	}else if( tracker.path.IsNotEmpty() ){
+		decString name;
+		name.Format( "Tracker %s", pSerialFromPath( tracker.path ).GetString() );
+		return name;
+		
+	}else{
+		decString name;
+		name.Format( "Tracker #%d", tracker.number );
+		return name;
+	}
+}
+
+decString deoxrDPHtcViveTracker::pLocalizedNameForTracker( const Tracker &tracker ) const{
+	decString name;
+	
+	if( tracker.path.IsNotEmpty() ){
+		name.Format( "Tracker %s", pSerialFromPath( tracker.path ).GetString() );
+		
+	}else{
+		name.Format( "Tracker #%d", tracker.number );
+	}
+	
+	return name;
 }
 
 void deoxrDPHtcViveTracker::pRemoveAllDevices(){
@@ -523,71 +584,24 @@ void deoxrDPHtcViveTracker::pSaveTrackerDatabase(){
 }
 
 void deoxrDPHtcViveTracker::pAddDevice( Tracker &tracker ){
-	if( ! tracker.action || ! tracker.pathRole ){
+	if( ! tracker.action /* || ! tracker.pathRole */ ){
 		return;
 	}
 	
 	deVROpenXR &oxr = GetInstance().GetOxr();
 	tracker.device.TakeOver( new deoxrDevice( oxr, *this ) );
 	
-	decString id, name;
-	
-	if( tracker.pathRole.GetName().EndsWith( "handheld_object" ) ){
-		name = "Tracker Hand Held";
-		
-	}else if( tracker.pathRole.GetName().EndsWith( "left_foot" ) ){
-		name = "Tracker Left Foot";
-		
-	}else if( tracker.pathRole.GetName().EndsWith( "right_foot" ) ){
-		name = "Tracker Right Foot";
-		
-	}else if( tracker.pathRole.GetName().EndsWith( "left_shoulder" ) ){
-		name = "Tracker Left Shoulder";
-		
-	}else if( tracker.pathRole.GetName().EndsWith( "right_shoulder" ) ){
-		name = "Tracker Right Shoulder";
-		
-	}else if( tracker.pathRole.GetName().EndsWith( "left_elbow" ) ){
-		name = "Tracker Left Elbow";
-		
-	}else if( tracker.pathRole.GetName().EndsWith( "right_elbow" ) ){
-		name = "Tracker Right Elbow";
-		
-	}else if( tracker.pathRole.GetName().EndsWith( "left_knee" ) ){
-		name = "Tracker Left Knee";
-		
-	}else if( tracker.pathRole.GetName().EndsWith( "right_knee" ) ){
-		name = "Tracker Right Knee";
-		
-	}else if( tracker.pathRole.GetName().EndsWith( "waist" ) ){
-		name = "Tracker Waist";
-		
-	}else if( tracker.pathRole.GetName().EndsWith( "chest" ) ){
-		name = "Tracker Chest";
-		
-	}else if( tracker.pathRole.GetName().EndsWith( "camera" ) ){
-		name = "Tracker Camera";
-		
-	}else if( tracker.pathRole.GetName().EndsWith( "keyboard" ) ){
-		name = "Tracker Keyboard";
-		
-	}else if( tracker.path.IsNotEmpty() ){
-		name.Format( "Tracker %s", pSerialFromPath( tracker.path ).GetString() );
-		
-	}else{
-		name.Format( "Tracker #%d", tracker.number );
-	}
-	
+	decString id;
 	id.Format( "%str_%s", OXR_DEVID_PREFIX, pSerialFromPath( tracker.path ).GetString() );
 	
 	tracker.device->SetType( deInputDevice::edtVRTracker );
-	tracker.device->SetName( name );
+	tracker.device->SetName( pNameForTracker( tracker ) );
 	tracker.device->SetActionPose( tracker.action );
 	tracker.device->SetID( id );
-	tracker.device->SetSpacePose( deoxrSpace::Ref::New( new deoxrSpace(
-		*pGetSession(), tracker.action, tracker.pathRole, decVector() ) ) );
 // 	tracker.device->SetSpacePose( deoxrSpace::Ref::New( new deoxrSpace(
-// 		*pGetSession(), tracker.action, tracker.path, decVector() ) ) );
+// 		*pGetSession(), tracker.action, tracker.pathRole, decVector() ) ) );
+	tracker.device->SetSpacePose( deoxrSpace::Ref::New( new deoxrSpace(
+		*pGetSession(), tracker.action, tracker.path, decVector() ) ) );
 // 	tracker.device->SetSpacePose( deoxrSpace::Ref::New( new deoxrSpace( *pGetSession(), tracker.action ) ) );
 	
 	deoxrDeviceComponent * const trigger = pAddComponentTrigger( tracker.device );
