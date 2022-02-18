@@ -523,9 +523,9 @@ deoxrHandTracker *deoxrDeviceProfile::pAddHandTracker( deoxrDevice &device, bool
 		deInputDeviceComponent::ectGeneric, "Hand Pose", "handPose", "Hand Pose" );
 	
 	struct Data{
+		const char *description;
 		const char *id;
 		const char *name;
-		const char *description;
 	};
 	const Data bendData[ 5 ] = {
 		{ "Bend Thumb", "fb1", "FB1" },
