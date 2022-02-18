@@ -159,6 +159,10 @@ class ECBehaviorVRHandPose extends DefaultECBehavior
 			// add bones
 			pBoneOrigin = pECBehavior.getBoneOrigin().getValue(stub)
 			
+			if not pECBehavior.getEnabled().getValue(stub)
+				return
+			end
+			
 			pBones.add(Bone.new(pECBehavior.getBoneWrist().getValue(stub), InputDeviceHandBone.wrist, "wrist"))
 			pBones.add(Bone.new(pECBehavior.getBoneThumb1().getValue(stub), InputDeviceHandBone.thumb0, "thumb1"))
 			pBones.add(Bone.new(pECBehavior.getBoneThumb2().getValue(stub), InputDeviceHandBone.thumb1, "thumb2"))
@@ -366,7 +370,9 @@ class ECBehaviorVRHandPose extends DefaultECBehavior
 		
 		/** \brief Apply animations. */
 		public func void applyAnimations()
-			pAnimatorInstance.apply()
+			if pAnimatorInstance != null
+				pAnimatorInstance.apply()
+			end
 		end
 		
 		/** \brief Calculate pose finger tip distance. */
@@ -450,6 +456,7 @@ class ECBehaviorVRHandPose extends DefaultECBehavior
 	private var ECPString pBonePinky3
 	private var ECPString pBonePinky4
 	private var ECPFloat pFingerTipDistance
+	private var ECPBoolean pEnabled
 	private var ECPBoolean pOnlyRotation
 	
 	
@@ -539,6 +546,9 @@ class ECBehaviorVRHandPose extends DefaultECBehavior
 		// properties
 		pFingerTipDistance = ECPFloat.new(prefix + "fingerTipDistance", 0.165, 0.01)
 		eclass.addProperty(pFingerTipDistance)
+		
+		pEnabled = ECPBoolean.new(prefix + "enabled", true)
+		eclass.addProperty(pEnabled)
 		
 		pOnlyRotation = ECPBoolean.new(prefix + "onlyRotation", true)
 		eclass.addProperty(pOnlyRotation)
@@ -656,6 +666,11 @@ class ECBehaviorVRHandPose extends DefaultECBehavior
 	/** \brief Distance between middle finger tip and wrist in fully stretched pose. */
 	public func ECPFloat getFingerTipDistance()
 		return pFingerTipDistance
+	end
+	
+	/** \brief Enable hand pose. */
+	public func ECPBoolean getEnabled()
+		return pEnabled
 	end
 	
 	/** \brief Apply only rotation instead of position and rotation. */
