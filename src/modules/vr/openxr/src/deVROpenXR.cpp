@@ -172,8 +172,6 @@ void deVROpenXR::RequestRestartSession(){
 //////////////////////
 
 bool deVROpenXR::Init(){
-	const bool enableDebug = true;
-	
 	pSessionState = XR_SESSION_STATE_UNKNOWN;
 	pShutdownRequested = false;
 	pPreventDeletion = false;
@@ -181,21 +179,16 @@ bool deVROpenXR::Init(){
 	
 	try{
 		pLoader = new deoxrLoader( *this );
-		pInstance.TakeOver( new deoxrInstance( *this, enableDebug ) );
-		pCreateDeviceProfiles();
 		
 	}catch( const deException &e ){
 		LogException( e );
-		pDeviceProfiles.ClearActions();
-		pDestroyActionSet();
-		pInstance = nullptr;
 		if( pLoader ){
 			delete pLoader;
 			pLoader = nullptr;
 		}
 	}
 	
-	LogInfoFormat( "Runtime Installed: %s", pInstance ? "Yes" : "No" );
+// 	LogInfoFormat( "Runtime Installed: %s", pInstance ? "Yes" : "No" );
 	
 	/*
 	if( pLoader ){
@@ -214,7 +207,6 @@ void deVROpenXR::CleanUp(){
 	SetCamera( nullptr );
 	
 	pDeviceProfiles.RemoveAll(); // has to come before clearing devices
-	
 	pDevices.Clear();
 	
 	pDestroyActionSet();
@@ -245,19 +237,22 @@ void deVROpenXR::CleanUp(){
 ////////////
 
 bool deVROpenXR::RuntimeUsable(){
-	return pInstance;
+	return true; //pInstance;
 }
 
 void deVROpenXR::StartRuntime(){
 	deMutexGuard lock( pMutexOpenXR );
-	if( ! pInstance ){
-		DETHROW_INFO( deeInvalidAction, "runtime not found" );
-	}
+	
+	const bool enableDebug = true;
 	
 	LogInfo( "Start Runtime" );
 	pShutdownRequested = false;
+	pDeviceProfiles.RemoveAll();
 	
 	try{
+		pInstance.TakeOver( new deoxrInstance( *this, enableDebug ) );
+		pCreateDeviceProfiles();
+		
 		pSystem.TakeOver( new deoxrSystem( pInstance ) );
 		pLastDetectedSystem = pSystem->GetSystem();
 		
@@ -763,6 +758,8 @@ void deVROpenXR::pRealShutdown(){
 	pSession = nullptr;
 	pSystem = nullptr;
 	pDestroyActionSet();
+	
+	pInstance = nullptr;
 	
 	pShutdownRequested = false;
 }
