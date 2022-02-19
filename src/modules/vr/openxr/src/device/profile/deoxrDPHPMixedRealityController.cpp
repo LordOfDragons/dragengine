@@ -155,6 +155,7 @@ void deoxrDPHPMixedRealityController::pAddDevice( bool left ){
 	pAddAxesGripGrab( device, grip );
 	pAddButtonGrip( device, grip, false );
 	
-	// add device
+	pAddHandTracker( device, left );
+	
 	GetInstance().GetOxr().GetDevices().Add( device );
 }

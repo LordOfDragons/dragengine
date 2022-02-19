@@ -45,6 +45,7 @@
 #include "device/profile/deoxrDPHTCViveFocus3ControllerInteraction.h"
 #include "device/profile/deoxrDPHUAWEIControllerInteraction.h"
 #include "device/profile/deoxrDPMSFTHandInteraction.h"
+#include "device/profile/deoxrDPNoControllerHands.h"
 #include "loader/deoxrLoader.h"
 
 #include <dragengine/deEngine.h>
@@ -843,6 +844,9 @@ void deVROpenXR::pCreateDeviceProfiles(){
 	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPValveIndexController( pInstance ) ) );
 	
 	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPHtcViveTracker( pInstance ) ) );
+	
+	// has to come last since it adds a device only if no other controller provides hand tracking
+	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPNoControllerHands( pInstance ) ) );
 }
 
 void deVROpenXR::pSuggestBindings(){

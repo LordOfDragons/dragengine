@@ -167,6 +167,7 @@ void deoxrDPHTCViveFocus3ControllerInteraction::pAddDevice( bool left ){
 	deoxrDeviceComponent * const grip = pAddComponentGrip( device );
 	pAddButtonGrip( device, grip, true );
 	
-	// add device
+	pAddHandTracker( device, left );
+	
 	GetInstance().GetOxr().GetDevices().Add( device );
 }

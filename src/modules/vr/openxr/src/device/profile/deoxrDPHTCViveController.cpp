@@ -122,6 +122,7 @@ void deoxrDPHTCViveController::pAddDevice( bool left ){
 	deoxrDeviceComponent * const grip = pAddComponentGrip( device );
 	pAddButtonGrip( device, grip, false );
 	
-	// add device
+	pAddHandTracker( device, left );
+	
 	GetInstance().GetOxr().GetDevices().Add( device );
 }

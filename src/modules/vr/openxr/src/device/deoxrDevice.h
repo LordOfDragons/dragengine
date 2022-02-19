@@ -90,6 +90,7 @@ private:
 	deInputDevicePose pPoseDevice;
 	
 	deoxrHandTracker::Ref pHandTracker;
+	decMatrix pMatrixWristToDevice;
 	
 	
 	
@@ -278,6 +279,12 @@ public:
 	
 	/** Set hand tracker or nullptr. */
 	void SetHandTracker( deoxrHandTracker *handTracker );
+	
+	/** Matrix transforming from wrist space to device space. */
+	inline const decMatrix &GetMatrixWristToDevice() const{ return pMatrixWristToDevice; }
+	
+	/** Set matrix transforming from wrist space to device space. */
+	void SetMatrixWristToDevice( const decMatrix &matrix );
 	
 	
 	

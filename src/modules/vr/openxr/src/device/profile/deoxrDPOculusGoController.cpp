@@ -112,6 +112,7 @@ void deoxrDPOculusGoController::pAddDevice( bool left ){
 	pAddAxesTrackpad( device, trackpad );
 	pAddButtonTrackpad( device, trackpad, true, true );
 	
-	// add device
+	pAddHandTracker( device, left );
+	
 	GetInstance().GetOxr().GetDevices().Add( device );
 }

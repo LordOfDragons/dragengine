@@ -107,6 +107,9 @@ public:
 	/** Session. */
 	inline deoxrSession &GetSession() const{ return pSession; }
 	
+	/** Hand. */
+	inline const XrHandEXT GetHand() const{ return pHand; }
+	
 	/** HandTracker. */
 	inline XrHandTrackerEXT GetHandTracker() const{ return pHandTracker; }
 	

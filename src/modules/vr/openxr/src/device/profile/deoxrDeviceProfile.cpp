@@ -509,11 +509,18 @@ const char *deoxrDeviceProfile::pButtonDisplayText( eButtonLabel label ) const{
 }
 
 deoxrHandTracker *deoxrDeviceProfile::pAddHandTracker( deoxrDevice &device, bool leftHand ){
+	if( ! pInstance.SupportsExtension( deoxrInstance::extEXTHandTracking ) ){
+		return nullptr;
+	}
+	
 	deoxrSession &session = pInstance.GetOxr().GetSession();
+	if( ! session.GetSystem().GetSupportsHandTracking() ){
+		return nullptr;
+	}
 	
 	const deoxrHandTracker::Ref handTracker( deoxrHandTracker::Ref::New(
 		new deoxrHandTracker( session, leftHand ? XR_HAND_LEFT_EXT : XR_HAND_RIGHT_EXT,
-			device.GetSpacePose() ) ) );
+			device.GetSpacePose() ? *device.GetSpacePose() : *session.GetSpace() ) ) );
 	
 	device.SetHandTracker( handTracker );
 	device.SetBoneConfiguration( deInputDevice::ebcHand );

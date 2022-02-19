@@ -41,6 +41,24 @@ class deoxrActionSet;
 
 /**
  * Oxr device profile.
+ * 
+ * Used device prefixes:
+ * - gdc : deoxrDPGoogleDaydreamController
+ * - hci : deoxrDPHUAWEIControllerInteraction
+ * - hmd : deoxrDPHMD
+ * - hpmrc : deoxrDPHPMixedRealityController
+ * - htcvcc : deoxrDPHTCViveCosmosControllerInteraction
+ * - htcvfc : deoxrDPHTCViveFocus3ControllerInteraction
+ * - ic : deoxrDPValveIndexController
+ * - mmrmc : deoxrDPMicrosoftMixedRealityMotionController
+ * - msfthc : deoxrDPMSFTHandInteraction
+ * - nch : deoxrDPNoControllerHands
+ * - ogc : deoxrDPOculusGoController
+ * - otc : deoxrDPOculusTouchController
+ * - sc : deoxrDPSimpleController
+ * - soc : deoxrDPSamsungOdysseyController
+ * - tr : deoxrDPHtcViveTracker
+ * - vc : deoxrDPHTCViveController
  */
 class deoxrDeviceProfile : public deObject{
 public:

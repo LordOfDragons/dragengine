@@ -387,6 +387,10 @@ void deoxrDevice::SetHandTracker( deoxrHandTracker *handTracker ){
 	pHandTracker = handTracker;
 }
 
+void deoxrDevice::SetMatrixWristToDevice( const decMatrix &matrix ){
+	pMatrixWristToDevice = matrix;
+}
+
 
 
 void deoxrDevice::GetInfo( deInputDevice &info ) const{
@@ -431,67 +435,6 @@ void deoxrDevice::GetInfo( deInputDevice &info ) const{
 	}
 }
 
-void deoxrDevice::UpdateParameters(){
-#if 0
-	const vr::TrackedDeviceClass oldDeviceClass = pDeviceClass;
-	pDeviceClass = pOxr.GetVRSystem().GetTrackedDeviceClass( pDeviceIndex );
-	
-	if( pDeviceClass != oldDeviceClass || pNameNumber == -1 ){
-		pNameNumber = -1; // required so we do not block ourselves
-		pNameNumber = pOxr.GetDevices().NextNameNumber( pDeviceClass );
-	}
-	
-	pControllerRole = vr::TrackedControllerRole_Invalid;
-	pInputValuePath.Empty();
-	pInputValueHandle = vr::k_ulInvalidInputValueHandle;
-	pPoseDevice = deInputDevicePose();
-	pRenderModel = nullptr;
-	pTextureMap = nullptr;
-	
-	if( pPoseBones ){
-		delete [] pPoseBones;
-		pPoseBones = nullptr;
-		pPoseBoneCount = 0;
-	}
-	if( pBoneTransformData ){
-		delete [] pBoneTransformData;
-		pBoneTransformData = nullptr;
-		pBoneCount = 0;
-	}
-	
-	// serial number
-	vr::ETrackedPropertyError error;
-	char buffer[ 256 ];
-	pOxr.GetVRSystem().GetStringTrackedDeviceProperty( pDeviceIndex,
-		vr::Prop_SerialNumber_String, buffer, 256, &error );
-	if( error != vr::TrackedProp_Success ){
-		DETHROW_INFO( deeInvalidParam, "Prop_SerialNumber_String failed" );
-	}
-	pSerialNumber = buffer;
-	
-	// render model
-	pOxr.GetVRSystem().GetStringTrackedDeviceProperty( pDeviceIndex,
-		vr::Prop_RenderModelName_String, buffer, 256, &error );
-	if( error == vr::TrackedProp_Success ){
-		pRenderModel = pOxr.GetRenderModelNamed( buffer );
-		pTextureMap = pOxr.GetTextureMapWithID( pRenderModel->GetTextureID() );
-	}
-	
-	// init device dependingon class
-	switch( pDeviceClass ){
-	case vr::TrackedDeviceClass_GenericTracker:
-		pUpdateParametersTracker();
-		break;
-	}
-	
-	// append serial number to id to make it unique (hopefully)
-	pID += "_";
-	pID += pOxr.GetDevices().NormalizeID( pSerialNumber );
-	
-	// controller only: Prop_AttachedDeviceId_String
-#endif
-}
-
 void deoxrDevice::TrackStates(){
 	const deoxrInstance &instance = pOxr.GetInstance();
 	const deoxrSession &session = pOxr.GetSession();
@@ -533,6 +476,33 @@ void deoxrDevice::TrackStates(){
 	
 	if( pHandTracker ){
 		pHandTracker->Locate();
+		
+		// if no space pose exists use hand tracker wrist position to calculate a reasonable
+		// device location which is at a similar location of true controller hand poses
+		if( ! pSpacePose ){
+			deInputDevicePose &wrist = pHandTracker->GetPoseBoneAt( deInputDevice::ehbWrist );
+			
+			const decMatrix wristMatrix( decMatrix::CreateWorld( wrist.GetPosition(), wrist.GetOrientation() ) );
+			const decMatrix matrix( pMatrixWristToDevice * wristMatrix );
+			const decMatrix invMatrix( matrix.QuickInvert() );
+			const decQuaternion invQuat( invMatrix.ToQuaternion() );
+			
+			pPoseDevice.SetPosition( matrix.GetPosition() );
+			pPoseDevice.SetOrientation( matrix.ToQuaternion() );
+			
+			const decMatrix velocityMatrix( wristMatrix.QuickInvert() * pMatrixWristToDevice * wristMatrix );
+			pPoseDevice.SetLinearVelocity( velocityMatrix.TransformNormal( wrist.GetLinearVelocity() ) );
+			pPoseDevice.SetAngularVelocity( velocityMatrix.TransformNormal( wrist.GetAngularVelocity() ) );
+			
+			int i;
+			for( i=0; i<deInputDevice::HandBoneCount; i++ ){
+				deInputDevicePose &pose = pHandTracker->GetPoseBoneAt( i );
+				pose.SetPosition( invMatrix * pose.GetPosition() );
+				pose.SetOrientation( pose.GetOrientation() * invQuat );
+				pose.SetLinearVelocity( invMatrix.TransformNormal( pose.GetLinearVelocity() ) );
+				pose.SetAngularVelocity( invMatrix.TransformNormal( pose.GetAngularVelocity() ) );
+			}
+		}
 	}
 	
 	int i, count = pButtons.GetCount();
