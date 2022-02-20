@@ -591,7 +591,7 @@ class DefaultBindingHelper
 	/*@{*/
 	
 	/**
-	 * \brief VR hand controller device is present.
+	 * \brief One or more VR hand controller device is present.
 	 * \version 1.6
 	 * \param rightHand True to check right hand controller otherwise left hand controller.
 	 */
@@ -600,7 +600,7 @@ class DefaultBindingHelper
 	end
 	
 	/**
-	 * \brief VR hand controller device or null.
+	 * \brief First VR hand controller device or null.
 	 * \version 1.6
 	 * \param rightHand True for right hand controller otherwise left hand controller.
 	 */
@@ -609,19 +609,30 @@ class DefaultBindingHelper
 	end
 	
 	/**
+	 * \brief All VR hand controller devices as Array of InputDevice.
+	 * \version 1.10
+	 * \param rightHand True for right hand controller otherwise left hand controller.
+	 */
+	public func Array getAllVRHands(bool rightHand)
+		var InputDeviceType type = rightHand if InputDeviceType.vrRightHand else InputDeviceType.vrLeftHand
+		return pBindingManager.collectDevices(block InputDevice each
+			return each.getType() == type
+		end)
+	end
+	
+	/**
 	 * \brief Remove all VR hand controller bindings.
 	 * \version 1.6
 	 * \param rightHand True for right hand controller otherwise left hand controller.
 	 */
 	public func void vrHandClear(bool rightHand)
-		var InputDevice device = getVRHand(rightHand)
-		if device != null
-			removeAllDeviceBindings(device)
-		end
+		getAllVRHands(rightHand).forEach(block InputDevice each
+			removeAllDeviceBindings(each)
+		end)
 	end
 	
 	/**
-	 * \brief Bind command to VR hand controller trigger.
+	 * \brief Bind command to all VR hand controller trigger.
 	 * \version 1.6
 	 * \param rightHand True for right hand controller otherwise left hand controller.
 	 * \param type Type of axis. Use InputDeviceAxisType.trigger, InputDeviceAxisType.gripGrab,
@@ -629,14 +640,16 @@ class DefaultBindingHelper
 	 *             InputDeviceAxisType.fingerBend or InputDeviceAxisType.fingerSpread .
 	 * \param trigger Number of trigger of given type.
 	 * \param name Name of command to bind to horizontal movement or null.
-	 * \returns true if controller is present and command has been bound.
+	 * \returns true if at least one controller is present with command bound.
 	 */
 	public func bool vrHandBindTrigger(bool rightHand, InputDeviceAxisType type, int trigger, String name)
-		return bindTrigger(getVRHand(rightHand), type, trigger, name)
+		return getAllVRHands(rightHand).collect(block InputDevice each
+			return bindTrigger(each, type, trigger, name)
+		end).getCount() > 0
 	end
 	
 	/**
-	 * \brief Bind command to VR hand controller trigger.
+	 * \brief Bind command to all VR hand controller trigger.
 	 * \version 1.6
 	 * \param rightHand True for right hand controller otherwise left hand controller.
 	 * \param type Type of axis. Use InputDeviceAxisType.trigger, InputDeviceAxisType.gripGrab,
@@ -645,30 +658,34 @@ class DefaultBindingHelper
 	 * \param axis Number of axis of given type.
 	 * \param pull Name of command to bind to pull movement or null.
 	 * \param release Name of command to bind to release movement or null.
-	 * \returns true if controller is present and all commands have been bound.
+	 * \returns true if at least one controller is present with command bound.
 	 */
 	public func bool vrHandBindTrigger(bool rightHand, InputDeviceAxisType type, \
 	int trigger, String pull, String release)
-		return bindTrigger(getVRHand(rightHand), type, trigger, pull, release)
+		return getAllVRHands(rightHand).collect(block InputDevice each
+			return bindTrigger(each, type, trigger, pull, release)
+		end).getCount() > 0
 	end
 	
 	/**
-	 * \brief Bind command to VR hand controller joystick or trackpad.
+	 * \brief Bind command to all VR hand controller joystick or trackpad.
 	 * \version 1.6
 	 * \param rightHand True for right hand controller otherwise left hand controller.
 	 * \param type Type of stick. Use InputDeviceAxisType.stick or InputDeviceAxis.touchPad .
 	 * \param stick Number of stick of given type.
 	 * \param horizontal Name of command to bind to horizontal movement or null.
 	 * \param vertical Name of command to bind to vertical movement or null.
-	 * \returns true if vrLeftHand is present and all commands have been bound.
+	 * \returns true if at least one controller is present with command bound.
 	 */
 	public func bool vrHandBindStick(bool rightHand, InputDeviceAxisType type, \
 	int stick , String horizontal, String vertical)
-		return bindStick(getVRHand(rightHand), type, stick, horizontal, vertical, false)
+		return getAllVRHands(rightHand).collect(block InputDevice each
+			return bindStick(each, type, stick, horizontal, vertical, false)
+		end).getCount() > 0
 	end
 	
 	/**
-	 * \brief Bind command to VR hand controller joystick or trackpad.
+	 * \brief Bind command to all VR hand controller joystick or trackpad.
 	 * \version 1.6
 	 * \param rightHand True for right hand controller otherwise left hand controller.
 	 * \param type Type of stick. Use InputDeviceAxisType.stick or InputDeviceAxis.touchPad .
@@ -677,11 +694,13 @@ class DefaultBindingHelper
 	 * \param right Name of command to bind to right movement or null.
 	 * \param up Name of command to bind to up movement or null.
 	 * \param down Name of command to bind to down movement or null.
-	 * \returns true if vrLeftHand is present and all commands have been bound.
+	 * \returns true if at least one controller is present with command bound.
 	 */
 	public func bool vrHandBindStick(bool rightHand, InputDeviceAxisType type, int stick, \
 	String left, String right, String up, String down)
-		return bindStick(getVRHand(rightHand), type, stick, left, right, up, down, false)
+		return getAllVRHands(rightHand).collect(block InputDevice each
+			return bindStick(each, type, stick, left, right, up, down, false)
+		end).getCount() > 0
 	end
 	
 	/**
@@ -697,12 +716,9 @@ class DefaultBindingHelper
 			throw EInvalidParam.new()
 		end
 		
-		var InputDevice device = getVRHand(rightHand)
-		if device == null or command == null
-			return false
-		end
-		
-		return bindButton(device, button, command)
+		return command != null and getAllVRHands(rightHand).collect(block InputDevice each
+			return bindButton(each, button, command)
+		end).getCount() > 0
 	end
 	
 	/**
@@ -718,12 +734,9 @@ class DefaultBindingHelper
 			throw EInvalidParam.new()
 		end
 		
-		var InputDevice device = getVRHand(rightHand)
-		if device == null or command == null
-			return false
-		end
-		
-		return bindButton(device, type, button, command)
+		return command != null and getAllVRHands(rightHand).collect(block InputDevice each
+			return bindButton(each, type, button, command)
+		end).getCount() > 0
 	end
 	
 	/*@}*/
