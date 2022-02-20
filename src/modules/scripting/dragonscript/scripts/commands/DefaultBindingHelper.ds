@@ -198,8 +198,6 @@ class DefaultBindingHelper
 				end
 			end
 		end)
-		
-		logBindings(BaseGameApp.getApp().getConsole())
 	end
 	/*@}*/
 	
