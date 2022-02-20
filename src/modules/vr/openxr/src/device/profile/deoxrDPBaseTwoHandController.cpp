@@ -59,6 +59,7 @@ void deoxrDPBaseTwoHandController::CheckAttached(){
 	const bool enabled = pProfileEnabled();
 	
 	if( enabled && pMatchesProfile( GetInstance().GetPathHandLeft() ) ){
+		GetInstance().GetOxr().GetDeviceProfiles().RemoveDevice( deInputDevice::edtVRLeftHand );
 		pAddDevice( true );
 		
 	}else{
@@ -66,6 +67,7 @@ void deoxrDPBaseTwoHandController::CheckAttached(){
 	}
 	
 	if( enabled && pMatchesProfile( GetInstance().GetPathHandRight() ) ){
+		GetInstance().GetOxr().GetDeviceProfiles().RemoveDevice( deInputDevice::edtVRRightHand );
 		pAddDevice( false );
 		
 	}else{
@@ -82,6 +84,15 @@ void deoxrDPBaseTwoHandController::SuggestBindings(){
 void deoxrDPBaseTwoHandController::ClearActions(){
 	pRemoveDevice( true );
 	pRemoveDevice( false );
+}
+
+void deoxrDPBaseTwoHandController::RemoveDevice( deInputDevice::eDeviceTypes type ){
+	if( type == deInputDevice::edtVRLeftHand && pDeviceLeft ){
+		pRemoveDevice( true );
+	}
+	if( type == deInputDevice::edtVRRightHand && pDeviceRight ){
+		pRemoveDevice( false );
+	}
 }
 
 

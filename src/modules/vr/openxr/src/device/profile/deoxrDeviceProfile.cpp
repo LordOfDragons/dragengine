@@ -74,6 +74,9 @@ void deoxrDeviceProfile::CheckAttached(){
 void deoxrDeviceProfile::ClearActions(){
 }
 
+void deoxrDeviceProfile::RemoveDevice( deInputDevice::eDeviceTypes ){
+}
+
 
 
 // Protected Functions

@@ -97,3 +97,12 @@ void deoxrDeviceProfileManager::ClearActions(){
 		( ( deoxrDeviceProfile* )pProfiles.GetAt( i ) )->ClearActions();
 	}
 }
+
+void deoxrDeviceProfileManager::RemoveDevice( deInputDevice::eDeviceTypes type ){
+	const int count = pProfiles.GetCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		( ( deoxrDeviceProfile* )pProfiles.GetAt( i ) )->RemoveDevice( type );
+	}
+}

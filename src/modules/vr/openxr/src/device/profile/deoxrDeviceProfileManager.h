@@ -23,6 +23,7 @@
 #define _DEOXRDEVICEPROFILEMANAGER_H_
 
 #include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/input/deInputDevice.h>
 
 class deoxrDeviceProfile;
 
@@ -73,6 +74,9 @@ public:
 	
 	/** Clear actions. */
 	void ClearActions();
+	
+	/** Remove device if matching type. */
+	void RemoveDevice( deInputDevice::eDeviceTypes type );
 	/*@}*/
 };
 

@@ -58,6 +58,9 @@ public:
 	
 	/** Clear actions. */
 	virtual void ClearActions();
+	
+	/** Remove device if matching type. */
+	virtual void RemoveDevice( deInputDevice::eDeviceTypes type );
 	/*@}*/
 	
 	

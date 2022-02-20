@@ -108,6 +108,15 @@ void deoxrDPNoControllerHands::ClearActions(){
 	pRemoveDevice( false );
 }
 
+void deoxrDPNoControllerHands::RemoveDevice( deInputDevice::eDeviceTypes type ){
+	if( type == deInputDevice::edtVRLeftHand && pDeviceLeft ){
+		pRemoveDevice( true );
+	}
+	if( type == deInputDevice::edtVRRightHand && pDeviceRight ){
+		pRemoveDevice( false );
+	}
+}
+
 
 
 // Private Functions
