@@ -946,9 +946,10 @@ bool deScriptingDragonScript::SendEvent( deInputEvent *event ){
 	}
 	
 	switch( event->GetType() ){
-	case deInputEvent::eeDeviceAttached:
-	case deInputEvent::eeDeviceDetached:
+	//case deInputEvent::eeDeviceAttached: // deprecated
+	//case deInputEvent::eeDeviceDetached: // deprecated
 	case deInputEvent::eeDeviceParamsChanged:
+	case deInputEvent::eeDevicesAttachedDetached:
 		switch( event->GetSource() ){
 		case deInputEvent::esInput:
 			pClsInpSys->InvalidCachedDevices();

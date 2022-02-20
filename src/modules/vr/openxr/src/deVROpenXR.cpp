@@ -208,7 +208,9 @@ void deVROpenXR::CleanUp(){
 	SetCamera( nullptr );
 	
 	pDeviceProfiles.RemoveAll(); // has to come before clearing devices
+	
 	pDevices.Clear();
+	pDevices.CheckNotifyAttachedDetached();
 	
 	pDestroyActionSet();
 	
@@ -504,6 +506,8 @@ void deVROpenXR::ProcessEvents(){
 		}
 	}
 	
+	pDevices.CheckNotifyAttachedDetached();
+	
 	// state tracking needs a session
 	if( pSession ){
 		// according to OpenXR documentation sync action is only allowed in focused state.
@@ -686,6 +690,8 @@ void deVROpenXR::BeginFrame(){
 			pSession.TakeOver( new deoxrSession( pSystem ) );
 			
 			pDeviceProfiles.CheckAllAttached();
+			// no CheckNotifyAttachedDetached call here since we potentially outside main thread
+			
 			pCreateActionSet();
 			pSuggestBindings();
 			

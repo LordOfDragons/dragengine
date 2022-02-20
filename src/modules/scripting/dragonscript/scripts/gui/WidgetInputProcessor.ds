@@ -112,8 +112,7 @@ class WidgetInputProcessor extends DefaultInputProcessor
 				GamepadEvent.idGamepadButtonReleased, event.getSource(), event.getDevice(), \
 				event.getCode(), event.getState() ) )
 			
-		//case InputEventType.deviceAttached
-		//case InputEventType.deviceDetached
+		//case InputEventType.deviceAttachedDetached
 		//case InputEventType.deviceParamsChanged
 			//not used
 		end

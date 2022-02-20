@@ -37,6 +37,7 @@ private:
 	deVROpenXR &pOxr;
 	
 	decObjectOrderedSet pDevices;
+	bool pNotifyAttachedDetached;
 	
 	
 	
@@ -88,6 +89,9 @@ public:
 	
 	/** Track device states. */
 	void TrackDeviceStates();
+	
+	/** Check if devices have been added or removed sending event to game engine. */
+	void CheckNotifyAttachedDetached();
 	
 	
 	

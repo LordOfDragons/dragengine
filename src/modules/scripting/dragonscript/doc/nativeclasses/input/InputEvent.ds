@@ -55,9 +55,8 @@ class InputEvent
 	 * | InputEventType.axisMove | Index of axis in device |
 	 * | InputEventType.buttonPress | Index of button in device |
 	 * | InputEventType.buttonRelease | Index of button in device |
-	 * | InputEventType.deviceAttached | 0 |
-	 * | InputEventType.deviceDetached | 0 |
-	 * | InputEventType.deviceParamsChanged | 0 |
+	 * | InputEventType.deviceAttachedDetached | not used |
+	 * | InputEventType.deviceParamsChanged | not used |
 	 */
 	public func int getCode()
 		return 0

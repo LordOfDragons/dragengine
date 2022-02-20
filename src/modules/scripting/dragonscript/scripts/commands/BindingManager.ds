@@ -81,31 +81,32 @@ class BindingManager
 	 */
 	public func void checkInputEvent(InputEvent event)
 		select event.getType()
-		case InputEventType.deviceAttached
-			reloadDevices()
-			
-			var InputDevice device = findDevice(block InputDevice each
-				return each.getSource() == event.getSource() and each.getIndex() == event.getDevice()
-			end)
-			
-			if device != null
-				pListeners.forEach(block BindingManagerListener each
-					each.deviceAttached(this, device)
-				end)
-			end
-			
-		case InputEventType.deviceDetached
-			var InputDevice device = findDevice(block InputDevice each
-				return each.getSource() == event.getSource() and each.getIndex() == event.getDevice()
-			end)
+		case InputEventType.deviceAttachedDetached
+			var Array oldDevices = Array.new(pDevices)
 			
 			reloadDevices()
 			
-			if device != null
-				pListeners.forEach(block BindingManagerListener each
-					each.deviceDetached(this, device)
-				end)
-			end
+			// notify listeners about removed devices
+			oldDevices.forEach(block InputDevice oldDevice
+				if pDevices.find(block InputDevice newDevice
+					return newDevice.getID().equals(oldDevice.getID())
+				end) == null
+					pListeners.forEach(block BindingManagerListener each
+						each.deviceDetached(this, oldDevice)
+					end)
+				end
+			end)
+			
+			// notify listeners about added devices
+			pDevices.forEach(block InputDevice newDevice
+				if oldDevices.find(block InputDevice oldDevice
+					return oldDevice.getID().equals(newDevice.getID())
+				end) == null
+					pListeners.forEach(block BindingManagerListener each
+						each.deviceAttached(this, newDevice)
+					end)
+				end
+			end)
 			
 		case InputEventType.deviceParamsChanged
 			reloadDevices()

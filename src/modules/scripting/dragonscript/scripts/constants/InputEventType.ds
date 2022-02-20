@@ -54,10 +54,10 @@ enum InputEventType
 	/** \brief Device button released. */
 	buttonRelease
 	
-	/** \brief Input device has been attached to host system. */
+	/** \deprecated Use deviceAttachedDetached. */
 	deviceAttached
 	
-	/** \brief Input device has been detatched from host system. */
+	/** \deprecated Use deviceAttachedDetached. */
 	deviceDetached
 	
 	/** \brief Input device parameters changed. */
@@ -74,4 +74,13 @@ enum InputEventType
 	 * \version 1.6
 	 */
 	buttonUntouch
+	
+	/**
+	 * \brief Devices have been attached or detached.
+	 * \version 1.10
+	 * 
+	 * Device list has been refreshed in the engine systems. Listeners have to synchronize
+	 * devices and device lists held.
+	 */
+	deviceAttachedDetached
 end

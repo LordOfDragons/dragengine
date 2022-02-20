@@ -61,20 +61,17 @@ deovrDeviceManager::~deovrDeviceManager(){
 ///////////////
 
 void deovrDeviceManager::Clear(){
-	deInputEvent event;
-	event.SetType( deInputEvent::eeDeviceDetached );
-	event.SetSource( deInputEvent::esVR );
-	pOvr.InputEventSetTimestamp( event );
-	
-	int count = pDevices.GetCount();
-	
-	while( count > 0 ){
-		count--;
-		event.SetDevice( count );
-		pOvr.GetGameEngine()->GetVRSystem()->GetEventQueue().AddEvent( event );
-	}
+	const bool hasDevices = pDevices.GetCount() > 0;
 	
 	pDevices.RemoveAll();
+	
+	if( hasDevices ){
+		deInputEvent event;
+		event.SetType( deInputEvent::eeDevicesAttachedDetached );
+		event.SetSource( deInputEvent::esVR );
+		pOvr.InputEventSetTimestamp( event );
+		pOvr.GetGameEngine()->GetVRSystem()->GetEventQueue().AddEvent( event );
+	}
 }
 
 void deovrDeviceManager::InitDevices(){
@@ -82,11 +79,6 @@ void deovrDeviceManager::InitDevices(){
 	deovrDevice::Ref device;
 	
 	Clear();
-	
-	deInputEvent event;
-	event.SetType( deInputEvent::eeDeviceAttached );
-	event.SetSource( deInputEvent::esVR );
-	pOvr.InputEventSetTimestamp( event );
 	
 	for( index=0; index<vr::k_unMaxTrackedDeviceCount; index++ ){
 		if( ! pOvr.GetVRSystem().IsTrackedDeviceConnected( index ) ){
@@ -102,41 +94,16 @@ void deovrDeviceManager::InitDevices(){
 		
 		device->SetIndex( pDevices.GetCount() );
 		pDevices.Add( device );
-		
-		event.SetDevice( device->GetIndex() );
+	}
+	
+	if( pDevices.GetCount() > 0 ){
+		deInputEvent event;
+		event.SetType( deInputEvent::eeDevicesAttachedDetached );
+		event.SetSource( deInputEvent::esVR );
+		pOvr.InputEventSetTimestamp( event );
 		pOvr.GetGameEngine()->GetVRSystem()->GetEventQueue().AddEvent( event );
 	}
 }
-
-/*
-void deovrDeviceManager::UpdateDeviceList(){
-	deInputEventQueue &queue = pOvr.GetGameEngine()->GetVRSystem()->GetEventQueue();
-	const timeval now = { decDateTime().ToSystemTime(), 0 };
-	
-	// remove all devices not connected anymore
-	int i = pDevices.GetCount();
-	while( i > 0 ){
-		i--;
-		deovrDevice &device = *( ( deovrDevice* )pDevices.GetAt( i ) );
-		device.UpdateParameters();
-		if( device.GetType() != deInputDevice::edtGeneric ){
-			continue;
-		}
-		
-		pDevices.RemoveFrom( i );
-		
-		deInputEvent event;
-		event.SetType( deInputEvent::eeDeviceDetached );
-		event.SetSource( deInputEvent::esVR );
-		event.SetDevice( i );
-		event.SetTime( now );
-		queue.AddEvent( event );
-	}
-	
-	// 
-}
-*/
-
 
 int deovrDeviceManager::GetCount() const{
 	return pDevices.GetCount();
@@ -207,7 +174,6 @@ void deovrDeviceManager::Add( vr::TrackedDeviceIndex_t index ){
 		return;
 	}
 	
-	const int realIndex  = pDevices.GetCount();
 	const deovrDevice::Ref device( deovrDevice::Ref::New( new deovrDevice( pOvr, index ) ) );
 	device->SetIndex( pDevices.GetCount() );
 	pDevices.Add( device );
@@ -215,13 +181,6 @@ void deovrDeviceManager::Add( vr::TrackedDeviceIndex_t index ){
 	pOvr.LogInfoFormat( "Input Device Added: id='%s' type=%d axes=%d buttons=%d feedbacks=%d",
 		device->GetID().GetString(), device->GetType(), device->GetAxisCount(),
 		device->GetButtonCount(), device->GetFeedbackCount() );
-	
-	deInputEvent event;
-	event.SetType( deInputEvent::eeDeviceAttached );
-	event.SetSource( deInputEvent::esVR );
-	event.SetDevice( realIndex );
-	pOvr.InputEventSetTimestamp( event );
-	pOvr.GetGameEngine()->GetVRSystem()->GetEventQueue().AddEvent( event );
 }
 
 void deovrDeviceManager::Remove( vr::TrackedDeviceIndex_t index ){
@@ -239,13 +198,6 @@ void deovrDeviceManager::Remove( vr::TrackedDeviceIndex_t index ){
 	for( i=realIndex; i<count; i++ ){
 		GetAt( i )->SetIndex( i );
 	}
-	
-	deInputEvent event;
-	event.SetType( deInputEvent::eeDeviceDetached );
-	event.SetSource( deInputEvent::esVR );
-	event.SetDevice( realIndex );
-	pOvr.InputEventSetTimestamp( event );
-	pOvr.GetGameEngine()->GetVRSystem()->GetEventQueue().AddEvent( event );
 }
 
 void deovrDeviceManager::UpdateParameters( vr::TrackedDeviceIndex_t index ){

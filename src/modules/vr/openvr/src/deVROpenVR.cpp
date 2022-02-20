@@ -489,17 +489,21 @@ void deVROpenVR::ProcessEvents(){
 		return;
 	}
 	
+	bool devicesAttachedDetached = false;
+	
 	vr::VREvent_t event;
 	while( pVRSystem->PollNextEvent( &event, sizeof( event ) ) ){
 		switch( ( vr::EVREventType )event.eventType ){
 		case vr::VREvent_TrackedDeviceActivated:
 			LogInfoFormat( "ProcessEvents: Tracked device activated %d", event.trackedDeviceIndex );
 			pDevices.Add( event.trackedDeviceIndex );
+			devicesAttachedDetached = true;
 			break;
 			
 		case vr::VREvent_TrackedDeviceDeactivated:
 			LogInfoFormat( "ProcessEvents: Tracked device deactivated %d", event.trackedDeviceIndex );
 			pDevices.Remove( event.trackedDeviceIndex );
+			devicesAttachedDetached = true;
 			break;
 			
 		case vr::VREvent_TrackedDeviceUpdated:
@@ -565,6 +569,14 @@ void deVROpenVR::ProcessEvents(){
 				pVRSystem->GetEventTypeNameFromEnum( ( vr::EVREventType )event.eventType ) );
 			break;
 		}
+	}
+	
+	if( devicesAttachedDetached ){
+		deInputEvent event;
+		event.SetType( deInputEvent::eeDevicesAttachedDetached );
+		event.SetSource( deInputEvent::esVR );
+		InputEventSetTimestamp( event );
+		GetGameEngine()->GetVRSystem()->GetEventQueue().AddEvent( event );
 	}
 	
 	vr::VRActiveActionSet_t actionSet;

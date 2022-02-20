@@ -27,9 +27,6 @@ pin Dragengine.Utils
 
 /**
  * \brief Run command matching binding from binding manager.
- * 
- * Calls BindingManager.onInputDevicesChanged() if InputEventType.deviceAttached,
- * InputEventType.deviceDetached or InputEventType.deviceParamsChanged is processed.
  */
 class BindingInputProcessor extends DefaultInputProcessor
 	/** \brief Binding manager */

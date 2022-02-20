@@ -22,6 +22,8 @@
 
 namespace Dragengine.Commands
 
+pin Dragengine.Utils
+
 
 /**
  * \brief Generate default bindings.
@@ -146,6 +148,7 @@ class DefaultBindingHelper
 	 *              overwrite found bindings leaving other bindings intact.
 	 */
 	public func void updateBindingManager(bool clear)
+		BaseGameApp.getApp().getConsole().addMessage("updateBindingManager: " + clear)
 		if clear
 			pBindingManager.removeAllAxisBindings()
 			pBindingManager.removeAllButtonBindings()
@@ -176,6 +179,7 @@ class DefaultBindingHelper
 	 */
 	public func void updateBindingManager(InputDevice device)
 		var String id = device.getID()
+		BaseGameApp.getApp().getConsole().addMessage("updateBindingManager: " + id)
 		
 		pAxisBindings.forEach(block Binding each
 			if each.getDeviceID().equals(id)
@@ -194,6 +198,8 @@ class DefaultBindingHelper
 				end
 			end
 		end)
+		
+		logBindings(BaseGameApp.getApp().getConsole())
 	end
 	/*@}*/
 	
@@ -1005,6 +1011,24 @@ class DefaultBindingHelper
 		end)
 	end
 	
+	/**
+	 * \brief Log bindings.
+	 * \version 1.10
+	 */
+	public func void logBindings(Console console)
+		console.addMessage("Axis Bindings:")
+		pAxisBindings.forEach(block Binding each
+			console.addMessage("- deviceId={} sourceId={} inverseAxis={} simulatePressed={} command={}".format(\
+				Array.newWith(each.getDeviceID(), each.getSourceID(), each.getInverseAxis(),\
+					each.getSimulateAxisPressed(), each.getCommand().getName())))
+		end)
+		
+		console.addMessage("Button Bindings:")
+		pButtonBindings.forEach(block Binding each
+			console.addMessage("- deviceId={} sourceId={} command={}".format(Array.newWith(\
+				each.getDeviceID(), each.getSourceID(), each.getCommand().getName())))
+		end)
+	end
 	/*@}*/
 	
 	

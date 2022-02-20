@@ -47,7 +47,8 @@
 ////////////////////////////
 
 deoxrDeviceManager::deoxrDeviceManager( deVROpenXR &oxr ) :
-pOxr( oxr ){
+pOxr( oxr ),
+pNotifyAttachedDetached( false ){
 }
 
 deoxrDeviceManager::~deoxrDeviceManager(){
@@ -59,17 +60,8 @@ deoxrDeviceManager::~deoxrDeviceManager(){
 ///////////////
 
 void deoxrDeviceManager::Clear(){
-	deInputEvent event;
-	event.SetType( deInputEvent::eeDeviceDetached );
-	event.SetSource( deInputEvent::esVR );
-	pOxr.InputEventSetTimestamp( event );
-	
-	int count = pDevices.GetCount();
-	
-	while( count > 0 ){
-		count--;
-		event.SetDevice( count );
-		pOxr.GetGameEngine()->GetVRSystem()->GetEventQueue().AddEvent( event );
+	if( pDevices.GetCount() > 0 ){
+		pNotifyAttachedDetached = true;
 	}
 	
 	pDevices.RemoveAll();
@@ -126,12 +118,7 @@ void deoxrDeviceManager::Add( deoxrDevice *device ){
 		device->GetButtonCount(), device->GetFeedbackCount() );
 	LogDevice( *device );
 	
-	deInputEvent event;
-	event.SetType( deInputEvent::eeDeviceAttached );
-	event.SetSource( deInputEvent::esVR );
-	event.SetDevice( device->GetIndex() );
-	pOxr.InputEventSetTimestamp( event );
-	pOxr.GetGameEngine()->GetVRSystem()->GetEventQueue().AddEvent( event );
+	pNotifyAttachedDetached = true;
 }
 
 void deoxrDeviceManager::Remove( deoxrDevice *device ){
@@ -150,55 +137,8 @@ void deoxrDeviceManager::Remove( deoxrDevice *device ){
 		GetAt( i )->SetIndex( i );
 	}
 	
-	deInputEvent event;
-	event.SetType( deInputEvent::eeDeviceDetached );
-	event.SetSource( deInputEvent::esVR );
-	event.SetDevice( index );
-	pOxr.InputEventSetTimestamp( event );
-	pOxr.GetGameEngine()->GetVRSystem()->GetEventQueue().AddEvent( event );
+	pNotifyAttachedDetached = true;
 }
-
-/*
-void deoxrDeviceManager::UpdateParameters( vr::TrackedDeviceIndex_t index ){
-	const int realIndex = IndexOfWithIndex( index );
-	if( realIndex == -1 ){
-		return;
-	}
-	
-	deoxrDevice &device = *GetAt( index );
-	device.UpdateParameters();
-	
-	if( device.GetType() == deInputDevice::edtGeneric ){
-		Remove( index );
-		return;
-	}
-	
-	deInputEvent event;
-	event.SetType( deInputEvent::eeDeviceParamsChanged );
-	event.SetSource( deInputEvent::esVR );
-	event.SetDevice( realIndex );
-	pOxr.InputEventSetTimestamp( event );
-	pOxr.GetGameEngine()->GetVRSystem()->GetEventQueue().AddEvent( event );
-}
-
-int deoxrDeviceManager::NextNameNumber( vr::TrackedDeviceClass deviceClass ) const{
-	const int count = pDevices.GetCount();
-	int i, nameNumber = 1;
-	
-	while( true ){
-		for( i=0; i<count; i++ ){
-			const deoxrDevice &device = *GetAt( i );
-			if( device.GetDeviceClass() == deviceClass && device.GetNameNumber() == nameNumber ){
-				break;
-			}
-		}
-		if( i == count ){
-			return nameNumber;
-		}
-		nameNumber++;
-	}
-}
-*/
 
 void deoxrDeviceManager::TrackDeviceStates(){
 	const int count = pDevices.GetCount();
@@ -206,6 +146,20 @@ void deoxrDeviceManager::TrackDeviceStates(){
 	for( i=0; i<count; i++ ){
 		GetAt( i )->TrackStates();
 	}
+}
+
+void deoxrDeviceManager::CheckNotifyAttachedDetached(){
+	if( ! pNotifyAttachedDetached ){
+		return;
+	}
+	
+	pNotifyAttachedDetached = false;
+	
+	deInputEvent event;
+	event.SetType( deInputEvent::eeDevicesAttachedDetached );
+	event.SetSource( deInputEvent::esVR );
+	pOxr.InputEventSetTimestamp( event );
+	pOxr.GetGameEngine()->GetVRSystem()->GetEventQueue().AddEvent( event );
 }
 
 

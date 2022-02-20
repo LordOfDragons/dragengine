@@ -70,10 +70,10 @@ public:
 		/** \brief Device button released. */
 		eeButtonRelease,
 		
-		/** \brief Input device has been attached to host system. */
+		/** \deprecated Use eeDevicesAttachedDetached. */
 		eeDeviceAttached,
 		
-		/** \brief Input device has been detatched from host system. */
+		/** \deprecated Use eeDevicesAttachedDetached. */
 		eeDeviceDetached,
 		
 		/** \brief Input device parameters changed. */
@@ -89,7 +89,15 @@ public:
 		 * \brief Device button untouched.
 		 * \version 1.6
 		 */
-		eeButtonUntouch
+		eeButtonUntouch,
+		
+		/**
+		 * \brief Devices have been attached or detached.
+		 * \version 1.10
+		 * 
+		 * Modules have to query the entire list of devices to detect changes.
+		 */
+		eeDevicesAttachedDetached
 	};
 	
 	/** \brief State modifiers. */
