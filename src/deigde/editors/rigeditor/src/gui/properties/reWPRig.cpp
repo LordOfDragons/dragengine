@@ -211,6 +211,16 @@ public:
 	}
 };
 
+class cEditMass : public cBaseTextFieldListener{
+public:
+	cEditMass( reWPRig &panel ) : cBaseTextFieldListener( panel ){ }
+	
+	virtual igdeUndo *OnChanged( igdeTextField *textField, reRig *rig ){
+		rig->SetMass( textField->GetFloat() );
+		return nullptr;
+	}
+};
+
 }
 
 
@@ -252,6 +262,7 @@ pListener( NULL )
 	
 	helper.GroupBox( content, groupBox, "Simulation:" );
 	helper.CheckBox( groupBox, pChkDynamic, new cCheckDynamic( *this ), true );
+	helper.EditFloat( groupBox, "Mass:", "Mass in kg.", pEditMass, new cEditMass( *this ) );
 }
 
 reWPRig::~reWPRig(){
@@ -318,17 +329,19 @@ void reWPRig::UpdateRig(){
 		pEditCentralMassPoint->SetVector( pRig->GetCentralMassPoint() );
 		pChkModelCollision->SetChecked( pRig->GetModelCollision() );
 		pChkDynamic->SetChecked( pRig->GetDynamic() );
+		pEditMass->SetFloat( pRig->GetMass() );
 		
 	}else{
 		pCBRootBone->SetSelection( -1 );
 		pEditCentralMassPoint->SetVector( decVector() );
 		pChkModelCollision->SetChecked( false );
 		pChkDynamic->SetChecked( false );
+		pEditMass->ClearText();
 	}
 	
 	const bool enabled = pRig != NULL;
 	pCBRootBone->SetEnabled( enabled );
 	pEditCentralMassPoint->SetEnabled( enabled );
 	pChkModelCollision->SetEnabled( enabled );
-	pChkDynamic->SetEnabled( enabled );
+	pEditMass->SetEnabled( enabled );
 }
