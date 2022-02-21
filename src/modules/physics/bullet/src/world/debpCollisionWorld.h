@@ -81,6 +81,8 @@ public:
 	 * returned by the callback.
 	 * 
 	 * Protects btCollisionWorld::rayTest by locking delayed operations.
+	 * 
+	 * \note no code seems to be using this.
 	 */
 	void safeRayTest( const btVector3 &rayFromWorld, const btVector3 &rayToWorld,
 		RayResultCallback &resultCallback ) const;
@@ -93,6 +95,8 @@ public:
 	 * on the value return by the callback.
 	 * 
 	 * Protects btCollisionWorld::convexSweepTest by locking delayed operations.
+	 * 
+	 * \note used by debpSweepCollisionTest.
 	 */
 	void safeConvexSweepTest( const btConvexShape *castShape, const btTransform &from,
 		const btTransform &to, ConvexResultCallback &resultCallback,
@@ -106,6 +110,8 @@ public:
 	 * for every overlapping object (including the one with deepest penetration).
 	 * 
 	 * Protects btCollisionWorld::contactTest by locking delayed operations.
+	 * 
+	 * \note no code seems to be using this.
 	 */
 	void safeContactTest( btCollisionObject *colObj, ContactResultCallback &resultCallback );
 	
@@ -117,6 +123,8 @@ public:
 	 * (including the one with deepest penetration)
 	 * 
 	 * Protects btCollisionWorld::contactPairTest by locking delayed operations.
+	 * 
+	 * \note used by debpTouchSensor.
 	 */
 	void safeContactPairTest( btCollisionObject *colObjA, btCollisionObject *colObjB,
 		ContactResultCallback& resultCallback );
@@ -126,6 +134,8 @@ public:
 	 * 
 	 * Modified version of safeContactPairTest returning only true or false. This version
 	 * avoids juggling contact points not required for a quick test.
+	 * 
+	 * \note used by debpTouchSensor.
 	 */
 	bool safeContactPairTest( btCollisionObject *colObjA, btCollisionObject *colObjB );
 	
@@ -133,10 +143,15 @@ public:
 	
 	/**
 	 * \brief Performs a swept convex cast on all objects in the debpCollisionWorld calling resultCallback.
-	 * \details Allows for several queries: first hit, all hits, any hit, dependent on the value return by
-	 *          the callback. Shadows convexSweepTest in btCollisionWorld to use faster collision
-	 *          detection algorithms in certain cases. The shadowed call only works through debpCollisionWorld
-	 *          since convexSweepTest in btCollisionWorld is unfortunately static.
+	 * 
+	 * Allows for several queries: first hit, all hits, any hit, dependent on the value return by
+	 * the callback. Shadows convexSweepTest in btCollisionWorld to use faster collision
+	 * detection algorithms in certain cases. The shadowed call only works through debpCollisionWorld
+	 * since convexSweepTest in btCollisionWorld is unfortunately static.
+	 * 
+	 * \note hides function btCollisionWorld::convexSweepTest which is not virtual.
+	 * 
+	 * \note used by debpParticleEmitterInstanceType
 	 */
 	void convexSweepTest( const btConvexShape *castShape, const btTransform &from, const btTransform &to,
 	ConvexResultCallback &resultCallback,  btScalar allowedCcdPenetration = ( btScalar )0.0 );
@@ -145,9 +160,14 @@ public:
 	
 	/**
 	 * \brief Performs a collision detection query and calls the resultCallback.
-	 * \details Used internally by rayTest and convexSweepTest. Shadows objectQuerySingle in btCollisionWorld
-	 *          to use faster collision detection algorithms in certain cases. The shadowed call only works
-	 *          through debpCollisionWorld since objectQuerySingle in btCollisionWorld is unfortunately static.
+	 * 
+	 * Used internally by rayTest and convexSweepTest. Shadows objectQuerySingle in btCollisionWorld
+	 * to use faster collision detection algorithms in certain cases. The shadowed call only works
+	 * through debpCollisionWorld since objectQuerySingle in btCollisionWorld is unfortunately static.
+	 * 
+	 * \note hides function btCollisionWorld::objectQuerySingle which is not virtual.
+	 * 
+	 * \note used by debpSweepCollisionTest.
 	 */
 	void objectQuerySingle( const btConvexShape *castShape, const btTransform &convexFromTrans,
 	const btTransform &convexToTrans, btCollisionObject *collisionObject,
@@ -167,6 +187,10 @@ public:
 	 *          btCollisionWorld::contactTest. For this reason the method is also implemented to shadow
 	 *          btCollisionWorld::contactTest. This way the temporary hack is transparent and can be removed
 	 *          or altered once bullet does this kind of collision testing fast.
+	 * 
+	 * \note hides function btCollisionWorld::contactTest which is not virtual.
+	 * 
+	 * \note used by debpCollisionWorld::SingleSweepCallback.
 	 */
 	void contactTest( btCollisionObject *colObj, ContactResultCallback &resultCallback );
 	
