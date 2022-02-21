@@ -813,14 +813,38 @@ class ECBehaviorVRHand extends DefaultECBehavior
 	 * \brief Set up collider as ghost collider.
 	 * \version 1.7
 	 * 
-	 * Ghost colliders have empty collision filter and a small sphere shape. They collide with
-	 * nothing and are useful to attach elements composing only of resources like ECBehaviorLight. 
+	 * Ghost colliders have empty collision filter and kinematic collision response. They collide
+	 * with nothing and are useful to interact with the game world without physically pushing
+	 * objects by accident. 
 	 */
 	public func void setGhost()
 		pCollider.getPhysicsType().setEnumeration(CollisionResponse.kinematic)
 		pCollider.getLocalGravity().setVector(Vector.new())
 		pCollider.getWeight().setValue(1)
 		pCollider.setCollisionFilter(CollisionFilter.new())
+	end
+	
+	/**
+	 * \brief Set up collider as kinematic collider.
+	 * \version 1.10
+	 * 
+	 * Kinematic colliders have kinematic collision response, collision category
+	 * BaseGameApp.CollisionFilterBit.geometry and filter BaseGameApp.CollisionFilterBit.dynamic
+	 * and BaseGameApp.CollisionFilterBit.particle. They collide with PhysicsElementClass and
+	 * SimpleElementClass and allow hands to physically push objects.
+	 */
+	public func void setPhysics()
+		pCollider.getPhysicsType().setEnumeration(CollisionResponse.kinematic)
+		pCollider.getLocalGravity().setVector(null)
+		pCollider.getWeight().setValue(1)
+		
+		var LayerMask lmCategory = LayerMask.newWith(BaseGameApp.CollisionFilterBit.geometry)
+		
+		var LayerMask lmFilter = LayerMask.new()
+		lmFilter.setBit(BaseGameApp.CollisionFilterBit.dynamic)
+		lmFilter.setBit(BaseGameApp.CollisionFilterBit.particle)
+		
+		pCollider.setCollisionFilter(CollisionFilter.new(lmCategory, lmFilter))
 	end
 	
 	
