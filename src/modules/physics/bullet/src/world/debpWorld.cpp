@@ -64,6 +64,9 @@
 #include "BulletSoftBody/btSoftBodyRigidBodyCollisionConfiguration.h"
 #include "BulletSoftBody/btDefaultSoftBodySolver.h"
 #include "BulletSoftBody/btSoftBody.h"
+#ifndef BT_NO_PROFILE
+	#include "LinearMath/btQuickprof.h"
+#endif
 
 #include <dragengine/parallel/deParallelProcessing.h>
 #include <dragengine/resources/collider/deCollider.h>
@@ -615,12 +618,14 @@ DEBUG_PRINT_TIMER( "Prepare For Step" );
 	}else{
 		pDynWorld->stepSimulation( elapsed, 6, 1.0f / 60.0f ); // erwin mentioned up to (10, 1/240)
 	}
-	#if defined DO_TIMING && ! defined BT_NO_PROFILE
-		//CProfileManager::dumpAll();
+	#ifndef BT_NO_PROFILE
+		#ifdef DO_TIMING
+			//CProfileManager::dumpAll();
+		#endif
+		if( pBullet.GetDebug().GetEnabled() ){
+			CProfileManager::dumpAll();
+		}
 	#endif
-	if( pBullet.GetDebug().GetEnabled() ){
-		CProfileManager::dumpAll();
-	}
 	pDynWorld->MarkAllAABBValid();
 	pDirtyDynWorldAABB = false;
 DEBUG_PRINT_TIMER( "Step Simulation" );

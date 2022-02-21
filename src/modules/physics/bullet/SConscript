@@ -48,8 +48,11 @@ envModule.Append(CPPFLAGS = ['-I{}/Bullet'.format(pathSConscript)])
 	envModule.Append( CPPFLAGS = '-DBULLET_USE_DEBUG_SNAPSHOT' )"""
 
 # bullet misses user-provided default constructors in some structs
-envModule.Append(CFLAGS = ['-fpermissive'])
 envModule.Append(CPPFLAGS = ['-fpermissive'])
+
+# make bullet use internal opencl headers. this avoids dependency on system opencl
+# ... and again something that does not compile/work in bullet U_U
+#envModule.Append(CPPFLAGS = ['-DB3_USE_CLEW'])
 
 """
 if envModule['with_debug'] and envModule['with_sanitize']:
@@ -115,13 +118,6 @@ headersBullet = []
 globFiles( envModule, 'Bullet', '*.cpp', sourcesBullet )
 globFiles( envModule, 'Bullet', '*.h', headersBullet )
 
-sourcesBulletExtras = []
-headersBulletExtras = []
-if useDebugSnapshot and False:
-	globFiles( envModule, 'BulletExtras', '*.cpp', sourcesBulletExtras )
-	globFiles( envModule, 'BulletExtras', '*.c', sourcesBulletExtras )
-	globFiles( envModule, 'BulletExtras', '*.h', headersBulletExtras )
-
 # setup the builders
 objects = [ envModule.SharedObject( s ) for s in sources ]
 
@@ -132,19 +128,9 @@ if envModule['OSWindows']:
 	libgroup1 = envModule.StaticLibrary( target='objgroup1', source=objgroup1 )
 	objects.append( libgroup1 )
 	
-	"""if useDebugSnapshot:
-		objgroup2 = []
-		for s in sourcesBulletExtras:
-			objgroup2.append( envSpecialBulletExtras.SharedObject( s ) )
-		libgroup2 = envModule.StaticLibrary( target='objgroup2', source=objgroup2 )
-		objects.append( libgroup2 )"""
-	
 else:
 	for s in sourcesBullet:
 		objects.append( envSpecialBullet.SharedObject( s ) )
-	"""if useDebugSnapshot:
-		for s in sourcesBulletExtras:
-			objects.append( envSpecialBulletExtras.SharedObject( s ) )"""
 
 appendLibrary( envModule, parent_targets[ 'dragengine' ], libs )
 
