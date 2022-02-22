@@ -148,7 +148,6 @@ class DefaultBindingHelper
 	 *              overwrite found bindings leaving other bindings intact.
 	 */
 	public func void updateBindingManager(bool clear)
-		BaseGameApp.getApp().getConsole().addMessage("updateBindingManager: " + clear)
 		if clear
 			pBindingManager.removeAllAxisBindings()
 			pBindingManager.removeAllButtonBindings()
@@ -179,7 +178,6 @@ class DefaultBindingHelper
 	 */
 	public func void updateBindingManager(InputDevice device)
 		var String id = device.getID()
-		BaseGameApp.getApp().getConsole().addMessage("updateBindingManager: " + id)
 		
 		pAxisBindings.forEach(block Binding each
 			if each.getDeviceID().equals(id)
