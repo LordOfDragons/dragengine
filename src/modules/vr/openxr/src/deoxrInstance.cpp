@@ -149,10 +149,18 @@ void deoxrInstance::SuggestBindings( const deoxrPath &profile, const sSuggestBin
 		return;
 	}
 	
+	int i;
+	
+// 	pOxr.LogInfoFormat( "SuggestBindings: profile %s", profile.GetName().GetString() );
+// 	for( i=0; i<count; i++ ){
+// 		pOxr.LogInfoFormat( "- %s => %s",
+// 			bindings[ i ].action->GetName().GetString(),
+// 			bindings[ i ].binding.GetName().GetString() );
+// 	}
+	
 	XrActionSuggestedBinding * const xrbindings = new XrActionSuggestedBinding[ count ];
 	
 	try{
-		int i;
 		for( i=0; i<count; i++ ){
 			xrbindings[ i ].action = bindings[ i ].action->GetAction();
 			xrbindings[ i ].binding = bindings[ i ].binding;

@@ -47,7 +47,19 @@ private:
 		virtual ~Tracker();
 	};
 	
+	class RoleAction : public deObject{
+	public:
+		typedef deTObjectReference<RoleAction> Ref;
+		
+		const deoxrPath path;
+		const deoxrAction::Ref action;
+		
+		RoleAction( const deoxrPath &path, const deoxrAction::Ref &action );
+		virtual ~RoleAction();
+	};
+	
 	decObjectOrderedSet pTrackers;
+	decObjectOrderedSet pRoleActions;
 	decTimer pTimerCheckAttached;
 	float pTimeoutCheckAttached;
 	
@@ -91,8 +103,12 @@ public:
 	
 	
 private:
+	void pAddRoleAction( deoxrActionSet &actionSet, const char *roleType, const char *localizedNameSuffix );
+	const RoleAction *pGetRoleActionWith( const deoxrPath &path ) const;
+	
 	Tracker *pGetTrackerWith( deoxrDevice *device ) const;
 	Tracker *pGetTrackerWith( XrPath path ) const;
+	Tracker *pGetTrackerWithRole( XrPath path ) const;
 	decString pSerialFromPath( const deoxrPath &path ) const;
 	decString pNameForTracker( const Tracker &tracker ) const;
 	decString pLocalizedNameForTracker( const Tracker &tracker ) const;
