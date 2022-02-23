@@ -85,7 +85,10 @@ class OBJECT_OT_ExportModel(bpy.types.Operator, ExportHelper):
 		return { 'FINISHED' }
 	
 	def export(self, context):
-		self.initFindMeshArmRef(context)
+		if not self.initFindMeshArmRef(context):
+			return False
+		if not self.initChecksEarly(context):
+			return False
 		self.prepareProgress(context)
 		try:
 			self.initExporterObjects(context)
@@ -108,12 +111,14 @@ class OBJECT_OT_ExportModel(bpy.types.Operator, ExportHelper):
 					self.armature = Armature(object)
 		if self.mesh and self.armature:
 			self.mesh.armature = self.armature
-		self.initLODs(context)
+		return self.initLODs(context)
 	
 	def initLODs(self, context):
 		if self.mesh:
 			loopProtection = [self.mesh.object.name]
 			testmesh = self.mesh
+			prevLodLevelHasLodError = False
+			predLodError = 0
 			while testmesh and testmesh.object and testmesh.object.dragengine_lodmesh in bpy.data.objects:
 				if testmesh.object.dragengine_lodmesh in loopProtection:
 					self.report({ 'INFO', 'ERROR' }, "Loop in LOD meshes!")
@@ -124,6 +129,16 @@ class OBJECT_OT_ExportModel(bpy.types.Operator, ExportHelper):
 				
 				if testmesh.lodMesh.object.dragengine_hasloderror:
 					testmesh.lodMesh.lodError = testmesh.lodMesh.object.dragengine_loderror
+					prevLodLevelHasLodError = True
+					if testmesh.lodMesh.lodError < predLodError:
+						self.report({'INFO', 'ERROR'}, ("LOD mesh '{}' has lower custom LOD error "
+							+ "than previous LOD mesh!").format(testmesh.object.name))
+						return False
+					predLodError = testmesh.lodMesh.lodError
+				elif prevLodLevelHasLodError:
+					self.report({'INFO', 'ERROR'}, ("LOD mesh '{}' has custom LOD error disabled "
+						+ "but previous LOD mesh has LOD error enabled!").format(testmesh.object.name))
+					return False
 				
 				if testmesh.lodMesh.object.parent:
 					if (testmesh.lodMesh.object.parent.type == 'ARMATURE'
@@ -133,6 +148,7 @@ class OBJECT_OT_ExportModel(bpy.types.Operator, ExportHelper):
 				testmesh.lodMesh.armature = self.armature
 				
 				testmesh = testmesh.lodMesh
+		return True
 	
 	def initExporterObjects(self, context):
 		class Timer:
@@ -203,6 +219,23 @@ class OBJECT_OT_ExportModel(bpy.types.Operator, ExportHelper):
 		self.progress = ProgressDisplay(pm, self)
 		self.progress.show()
 	
+	def initChecksEarly(self, context):
+		if any(x.type == 'MIRROR' for x in self.mesh.object.modifiers):
+			self.report({'INFO', 'ERROR'}, ("Mirror modifier found on object '{}'."
+				+ " Apply mirror before export otherwise only one half is exported.").format(self.mesh.object.name))
+			return False
+		
+		lodMesh = self.mesh.lodMesh
+		while lodMesh:
+			if any(x.type == 'MIRROR' for x in lodMesh.object.modifiers):
+				self.report({'INFO', 'ERROR'}, ("LOD Mesh '{}': Mirror modifier."
+					+ " Apply mirror before export otherwise only one half is exported.").format(lodMesh.object.name))
+				return False
+			
+			lodMesh = lodMesh.lodMesh
+		
+		return True
+	
 	def checkInitState(self, context):
 		if not self.mesh:
 			self.report({ 'INFO', 'ERROR' }, "There is no Mesh selected. Select at last a Mesh and optional an Armature")
@@ -241,11 +274,6 @@ class OBJECT_OT_ExportModel(bpy.types.Operator, ExportHelper):
 			or len(self.mesh.faces) > 65000
 			or any(len(tcs.texCoords) > 65000 for tcs in self.mesh.texCoordSets))
 		
-		if any(x.type == 'MIRROR' for x in self.mesh.object.modifiers):
-			self.report({'INFO', 'ERROR'}, ("Mirror modifier found on object '{}'."
-				+ " Apply mirror before export otherwise only one half is exported.").format(self.mesh.object.name))
-			return False
-		
 		lodMesh = self.mesh.lodMesh
 		while lodMesh:
 			if lodMesh.multiFoldMesh:
@@ -281,11 +309,6 @@ class OBJECT_OT_ExportModel(bpy.types.Operator, ExportHelper):
 			if not lodMesh.hasUVSeams and not lodMesh.object.dragengine_hasnoseams:
 				self.report({'INFO', 'ERROR'}, ("LOD Mesh '{}': No UV-Seams. Add at least"
 					+ " one UV-Seam for Tanget-Calculation to work.").format(lodMesh.object.name))
-				return False
-			
-			if any(x.type == 'MIRROR' for x in lodMesh.object.modifiers):
-				self.report({'INFO', 'ERROR'}, ("LOD Mesh '{}': Mirror modifier."
-					+ " Apply mirror before export otherwise only one half is exported.").format(lodMesh.object.name))
 				return False
 			
 			lodMesh = lodMesh.lodMesh
