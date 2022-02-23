@@ -248,6 +248,24 @@ void deoxrSession::End(){
 	pShouldRender = false;
 }
 
+void deoxrSession::ForceEnd(){
+	if( ! pRunning ){
+		return;
+	}
+	
+	const deoxrInstance &instance = pSystem.GetInstance();
+	instance.GetOxr().LogInfoFormat( "Force End Session" );
+	ForceEndFrame();
+	pAttachedActionSet = nullptr;
+	if( ! instance.GetOxr().GetPreventDeletion() ){
+		instance.xrEndSession( pSession );
+	}
+	pRunning = false;
+	pPredictedDisplayTime = 0;
+	pPredictedDisplayPeriod = 0;
+	pShouldRender = false;
+}
+
 void deoxrSession::AttachActionSet( deoxrActionSet *actionSet ){
 	if( ! actionSet ){
 		DETHROW_INFO( deeNullPointer, "actionSet" );
@@ -443,6 +461,21 @@ void deoxrSession::EndFrame(){
 		//         parameters provided by the graphic module
 		RestoreOpenGLCurrent();
 	}
+}
+
+void deoxrSession::ForceEndFrame(){
+	if( ! pRunning || ! pFrameRunning ){
+		return;
+	}
+	
+	XrFrameEndInfo endInfo;
+	memset( &endInfo, 0, sizeof( endInfo ) );
+	endInfo.type = XR_TYPE_FRAME_END_INFO;
+	endInfo.environmentBlendMode = XR_ENVIRONMENT_BLEND_MODE_OPAQUE;
+	endInfo.displayTime = pPredictedDisplayTime;
+	endInfo.layerCount = 0;
+	pSystem.GetInstance().xrEndFrame( pSession, &endInfo );
+	pFrameRunning = false;
 }
 
 void deoxrSession::SyncActions(){

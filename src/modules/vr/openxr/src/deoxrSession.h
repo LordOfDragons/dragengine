@@ -140,6 +140,9 @@ public:
 	/** End session. */
 	void End();
 	
+	/** Force end session ignoring errors. */
+	void ForceEnd();
+	
 	/** Attach action set. */
 	void AttachActionSet( deoxrActionSet *actionSet );
 	
@@ -151,6 +154,9 @@ public:
 	
 	/** End frame. */
 	void EndFrame();
+	
+	/** Force end frame ignoring errors. */
+	void ForceEndFrame();
 	
 	/** Frame is running. */
 	inline bool GetFrameRunning() const{ return pFrameRunning; }

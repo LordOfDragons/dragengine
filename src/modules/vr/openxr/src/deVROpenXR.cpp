@@ -136,12 +136,69 @@ void deVROpenXR::WaitUntilReadyExit(){
 	
 	while( pSessionState != XR_SESSION_STATE_EXITING ){
 		const XrResult result = instance.xrPollEvent( instance.GetInstance(), &event );
-		if( result == XR_SUCCESS ){
-			LogInfoFormat( "WaitUntilReadyExit: Event %d", event.type );
-			if( event.type == XR_TYPE_EVENT_DATA_SESSION_STATE_CHANGED ){
-				pSessionState = ( ( XrEventDataSessionStateChanged& )event ).state;
-				LogInfoFormat( "WaitUntilReadyExit: Session State Changed %d", pSessionState );
+		if( result != XR_SUCCESS ){
+			continue;
+		}
+		
+		LogInfoFormat( "WaitUntilReadyExit: Event %d", event.type );
+		switch( event.type ){
+		case XR_TYPE_EVENT_DATA_SESSION_STATE_CHANGED:
+			pSessionState = ( ( XrEventDataSessionStateChanged& )event ).state;
+			
+			switch( pSessionState ){
+			case XR_SESSION_STATE_IDLE:
+				LogInfo( "WaitUntilReadyExit: Session State Changed: idle" );
+				if( pSession ){
+					pInstance->xrRequestExitSession( pSession->GetSession() );
+					pSession = nullptr;
+					pDeviceProfiles.CheckAllAttached();
+				}
+				break;
+				
+			case XR_SESSION_STATE_READY:
+				LogInfo( "WaitUntilReadyExit: Session State Changed: ready" );
+				break;
+				
+			case XR_SESSION_STATE_SYNCHRONIZED:
+				LogInfo( "WaitUntilReadyExit: Session State Changed: synchronized" );
+				break;
+				
+			case XR_SESSION_STATE_VISIBLE:
+				LogInfo( "WaitUntilReadyExit: Session State Changed: visible" );
+				if( pSession ){
+					pSession->ForceEnd();
+				}
+				break;
+				
+			case XR_SESSION_STATE_FOCUSED:
+				LogInfo( "WaitUntilReadyExit: Session State Changed: focused" );
+				if( pSession ){
+					pSession->ForceEnd();
+				}
+				break;
+				
+			case XR_SESSION_STATE_STOPPING:
+				LogInfo( "WaitUntilReadyExit: Session State Changed: stopping" );
+				if( pSession ){
+					pSession->ForceEnd();
+				}
+				break;
+				
+			case XR_SESSION_STATE_LOSS_PENDING:
+				LogInfo( "WaitUntilReadyExit: Session State Changed: loss pending" );
+				break;
+				
+			case XR_SESSION_STATE_EXITING:
+				LogInfo( "WaitUntilReadyExit: Session State Changed: exiting" );
+				break;
+				
+			default:
+				break;
 			}
+			break;
+			
+		default:
+			break;
 		}
 	}
 }
@@ -202,11 +259,15 @@ bool deVROpenXR::Init(){
 }
 
 void deVROpenXR::CleanUp(){
-	StopRuntime();
-	
+	{
 	const deMutexGuard lock( pMutexOpenXR );
 	SetCamera( nullptr );
+	}
 	
+	StopRuntime();
+// 	WaitUntilReadyExit();
+	
+	const deMutexGuard lock( pMutexOpenXR );
 	pDeviceProfiles.RemoveAll(); // has to come before clearing devices
 	
 	pDevices.Clear();
