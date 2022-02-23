@@ -606,7 +606,7 @@ void debpPhysicsBody::pCreateRigidBody(){
 	//cinfo.m_rollingFriction = 0.0f; // default 0, objects roll away and accelerate
 	
 	cinfo.m_restitution = 0.0f; // default 0
-	cinfo.m_spinningFriction = 0.0f; // default 0
+	cinfo.m_spinningFriction = 0.1f; // default 0
 	
 	pRigidBody = new btRigidBody( cinfo );
 	

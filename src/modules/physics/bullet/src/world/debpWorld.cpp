@@ -144,9 +144,12 @@ pUpdateOctreeColliders( NULL ),
 pUpdateOctreeColliderCount( 0 ),
 pUpdateOctreeColliderSize( 0 ),
 
+// max steps = max time (0.1s) divided by frquency (1/60) = 6
 // erwin mentioned up to (10, 1/240)
-pSimMaxSubStep( 500 ),
-pSimTimeStep( 1.0f / 60.0f ),
+// pSimMaxSubStep( 6 ),
+// pSimTimeStep( 1.0f / 60.0f ),
+pSimMaxSubStep( 8 ),
+pSimTimeStep( 1.0f / 120.0f ),
 
 pDynCollisionVelocityThreshold( 0.0f )
 {
@@ -610,13 +613,12 @@ DEBUG_PRINT_TIMER( "Prepare For Step" );
 	if( pBullet.GetDebug().GetEnabled() ){
 		debpDebugInformation &debugInfo = *pBullet.GetDebug().GetDIWorldStepSimulation();
 		decTimer timer;
-		// max steps = max time (0.1s) divided by frquency (1/60) = 6
-		pDynWorld->stepSimulation( elapsed, 6, 1.0f / 60.0f ); // erwin mentioned up to (10, 1/240)
+		pDynWorld->stepSimulation( elapsed, pSimMaxSubStep, pSimTimeStep );
 		debugInfo.IncrementElapsedTime( timer.GetElapsedTime() );
 		debugInfo.IncrementCounter( 1 );
 		
 	}else{
-		pDynWorld->stepSimulation( elapsed, 6, 1.0f / 60.0f ); // erwin mentioned up to (10, 1/240)
+		pDynWorld->stepSimulation( elapsed, pSimMaxSubStep, pSimTimeStep );
 	}
 	
 	#ifndef BT_NO_PROFILE
