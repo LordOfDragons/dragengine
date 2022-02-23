@@ -575,15 +575,8 @@ void debpCollisionWorld::CheckDynamicCollisions( btScalar timeStep ){
 			colinfo->SetOwnerBone( colObj0.GetOwnerBone() );
 			colinfo->SetOwnerShape( shape0 );
 			
-			collider.AddReference(); // safe-guard to avoid collider being removed while in use
-			try{
-				collider.GetPeerScripting()->CollisionResponse( &collider, colinfo ); // can potentially remove collider
-				
-			}catch( const deException & ){
-				collider.FreeReference(); // give up safe-guard
-				throw;
-			}
-			collider.FreeReference(); // give up safe-guard
+			const deCollider::Ref guard( &collider ); // script can potentially remove collider
+			collider.GetPeerScripting()->CollisionResponse( &collider, colinfo );
 		}
 		
 		// call collision response on second collider if dynamic and not removed by the first collider
@@ -606,15 +599,8 @@ void debpCollisionWorld::CheckDynamicCollisions( btScalar timeStep ){
 			colinfo->SetOwnerBone( colObj1Safe.GetOwnerBone() );
 			colinfo->SetOwnerShape( shape1 );
 			
-			collider.AddReference(); // safe-guard to avoid collider being removed while in use
-			try{
-				collider.GetPeerScripting()->CollisionResponse( &collider, colinfo ); // can potentially remove collider
-				
-			}catch( const deException & ){
-				collider.FreeReference(); // give up safe-guard
-				throw;
-			}
-			collider.FreeReference(); // give up safe-guard
+			const deCollider::Ref guard( &collider ); // script can potentially remove collider
+			collider.GetPeerScripting()->CollisionResponse( &collider, colinfo );
 		}
 		
 		if( debugInfo ){
