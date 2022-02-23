@@ -575,13 +575,9 @@ void debpPhysicsBody::pCleanUp(){
 }
 
 void debpPhysicsBody::pCreateRigidBody(){
-	if( pRigidBody || ! pEnabled || ! pDynWorld || ! pShape ){
+	if( pRigidBody || ! pEnabled || ! pDynWorld || ! pShape || ! pShape->GetShape() ){
 		return;
 	}
-	
-	btVector3 localInertia( 0.0f, 0.0f, 0.0f );
-	float mass = 0.0f;
-	int c;
 	
 	SetDirtyAABB( true );
 	
@@ -590,18 +586,34 @@ void debpPhysicsBody::pCreateRigidBody(){
 	pMotionState->SetOrientation( pOrientation );
 	
 	// create rigid body
+	btCollisionShape * const shape = pShape->GetShape();
+	btVector3 localInertia( 0.0f, 0.0f, 0.0f );
+	float mass = 0.0f;
+	
 	if( pResponseType == ertDynamic ){
 		mass = pMass;
-		pShape->GetShape()->calculateLocalInertia( mass, localInertia );
+		shape->calculateLocalInertia( mass, localInertia );
 	}
 	
-	pRigidBody = new btRigidBody( mass, pMotionState, pShape->GetShape(), localInertia );
+	btRigidBody::btRigidBodyConstructionInfo cinfo( mass, pMotionState, shape, localInertia );
+	cinfo.m_linearDamping = 0.01f; /*0.001f, 0.3f*/ // default 0
+	cinfo.m_angularDamping = 0.1f; /*0.01f, 0.3f*/ // default 0
+	
+	cinfo.m_friction = 0.5f; // default 0.5
+	
+	cinfo.m_rollingFriction = 0.1f; // this solves the rolling issue but totally breaks physics
+	                                // unless anisotropic rolling friction below is also used
+	//cinfo.m_rollingFriction = 0.0f; // default 0, objects roll away and accelerate
+	
+	cinfo.m_restitution = 0.0f; // default 0
+	cinfo.m_spinningFriction = 0.0f; // default 0
+	
+	pRigidBody = new btRigidBody( cinfo );
+	
+	pRigidBody->setAnisotropicFriction( shape->getAnisotropicRollingFrictionDirection(),
+		btCollisionObject::CF_ANISOTROPIC_ROLLING_FRICTION );
 	
 	// set parameters
-	pRigidBody->setDamping( 0.01f /*0.001f, 0.3f*/, 0.1f /*0.01f, 0.3f*/ );
-	pRigidBody->setFriction( 0.5f ); // 0.5f
-	pRigidBody->setRollingFriction( 0.1f ); // 0.0f
-	pRigidBody->setRestitution( 0.0f );
 	pRigidBody->setGravity( btVector3( pGravity.x, pGravity.y, pGravity.z ) );
 	pRigidBody->setFlags( pRigidBody->getFlags() | BT_DISABLE_WORLD_GRAVITY );
 	
@@ -647,8 +659,9 @@ void debpPhysicsBody::pCreateRigidBody(){
 	}
 	
 	// notify all constraints that the rigid body has been created
-	for( c=0; c<pConstraintCount; c++ ){
-		pConstraints[ c ]->RigidBodyCreated( this );
+	int i;
+	for( i=0; i<pConstraintCount; i++ ){
+		pConstraints[ i ]->RigidBodyCreated( this );
 	}
 }
 
