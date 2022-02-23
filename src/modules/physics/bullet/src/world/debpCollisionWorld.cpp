@@ -23,6 +23,7 @@
 #include <stdlib.h>
 
 #include "debpCollisionWorld.h"
+#include "debpConstraintSolver.h"
 #include "debpDelayedOperation.h"
 #include "../dePhysicsBullet.h"
 #include "../debpCollisionObject.h"
@@ -282,9 +283,9 @@ static void cbPostTick( btDynamicsWorld *world, btScalar timeStep ){
 #include "BulletSoftBody/btSoftBodyRigidBodyCollisionConfiguration.h"
 
 debpCollisionWorld::debpCollisionWorld( debpWorld &world, btDispatcher *dispatcher,
-btBroadphaseInterface *pairCache, btMultiBodyConstraintSolver *constraintSolver,
+btBroadphaseInterface *pairCache, debpConstraintSolver *constraintSolver,
 btCollisionConfiguration *collisionConfiguration, btSoftBodySolver *softBodySolver ) :
-btSoftMultiBodyDynamicsWorld( dispatcher, pairCache, constraintSolver, collisionConfiguration, softBodySolver ),
+btSoftRigidDynamicsWorld( dispatcher, pairCache, constraintSolver, collisionConfiguration, softBodySolver ),
 pWorld( world ),
 pDelayedOperation( NULL )
 {
@@ -980,7 +981,7 @@ void debpCollisionWorld::contactTest( btCollisionObject *colObj, btCollisionWorl
 
 
 void debpCollisionWorld::solveConstraints( btContactSolverInfo &solverInfo ){
-	btSoftMultiBodyDynamicsWorld::solveConstraints( solverInfo );
+	btSoftRigidDynamicsWorld::solveConstraints( solverInfo );
 }
 
 
@@ -1001,7 +1002,7 @@ void debpCollisionWorld::internalSingleStepSimulation( btScalar timeStep ){
 	pDelayedOperation->Lock();
 	
 	try{
-		btSoftMultiBodyDynamicsWorld::internalSingleStepSimulation( timeStep );
+		btSoftRigidDynamicsWorld::internalSingleStepSimulation( timeStep );
 		
 		// NOTE For btSoftMultiBodyDynamicsWorld::internalSingleStepSimulation the pre and post tick
 		//      callback are called right at the start and end of the function. For btSoftRigidDynamicsWorld

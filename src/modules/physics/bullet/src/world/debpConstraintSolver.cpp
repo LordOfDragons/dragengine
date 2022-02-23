@@ -46,11 +46,14 @@ debpConstraintSolver::~debpConstraintSolver(){
 // Overloads
 //////////////
 
+// #define BASE_CLASS btMultiBodyConstraintSolver
+#define BASE_CLASS btSequentialImpulseConstraintSolver
+
 btScalar debpConstraintSolver::solveGroupCacheFriendlySetup(
 btCollisionObject **bodies, int numBodies, btPersistentManifold **manifoldPtr,
 int numManifolds, btTypedConstraint **constraints, int numConstraints,
 const btContactSolverInfo &infoGlobal, btIDebugDraw *debugDrawer ){
-	return btMultiBodyConstraintSolver::solveGroupCacheFriendlySetup( bodies, numBodies,
+	return BASE_CLASS::solveGroupCacheFriendlySetup( bodies, numBodies,
 		manifoldPtr, numManifolds, constraints, numConstraints, infoGlobal, debugDrawer );
 	
 #if 0
@@ -198,7 +201,7 @@ btScalar debpConstraintSolver::solveSingleIteration( int iteration,
 btCollisionObject **bodies, int numBodies, btPersistentManifold **manifoldPtr,
 int numManifolds, btTypedConstraint **constraints, int numConstraints,
 const btContactSolverInfo &infoGlobal, btIDebugDraw *debugDrawer ){
-	return btMultiBodyConstraintSolver::solveSingleIteration( iteration, bodies, numBodies,
+	return BASE_CLASS::solveSingleIteration( iteration, bodies, numBodies,
 		manifoldPtr, numManifolds, constraints, numConstraints, infoGlobal, debugDrawer );
 	
 #if 0
@@ -245,5 +248,5 @@ btScalar debpConstraintSolver::solveGroupCacheFriendlyFinish(
 btCollisionObject **bodies, int numBodies, const btContactSolverInfo &infoGlobal ){
 	//pPoolSolverConstraintFriction.resizeNoInitialize( 0 );
 	
-	return btMultiBodyConstraintSolver::solveGroupCacheFriendlyFinish( bodies, numBodies, infoGlobal );
+	return BASE_CLASS::solveGroupCacheFriendlyFinish( bodies, numBodies, infoGlobal );
 }

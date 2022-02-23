@@ -22,14 +22,15 @@
 #ifndef _DEBPCONSTRAINTSOLVER_H_
 #define _DEBPCONSTRAINTSOLVER_H_
 
-#include "BulletDynamics/Featherstone/btMultiBodyConstraintSolver.h"
+// #include "BulletDynamics/Featherstone/btMultiBodyConstraintSolver.h"
+#include "BulletDynamics/ConstraintSolver/btSequentialImpulseConstraintSolver.h"
 
 
 
 /**
  * \brief Enhances btMultiBodyConstraintSolver to support constraint frictions.
  */
-class debpConstraintSolver : public btMultiBodyConstraintSolver{
+class debpConstraintSolver : public btSequentialImpulseConstraintSolver{
 private:
 	btAlignedObjectArray<int> pPoolSolverConstraintFrictionSizes;
 	btConstraintArray pPoolSolverConstraintFriction;

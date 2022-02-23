@@ -618,6 +618,7 @@ DEBUG_PRINT_TIMER( "Prepare For Step" );
 	}else{
 		pDynWorld->stepSimulation( elapsed, 6, 1.0f / 60.0f ); // erwin mentioned up to (10, 1/240)
 	}
+	
 	#ifndef BT_NO_PROFILE
 		#ifdef DO_TIMING
 			//CProfileManager::dumpAll();

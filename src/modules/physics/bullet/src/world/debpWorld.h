@@ -38,11 +38,11 @@ class debpOverlapFilterCallback;
 class debpUnstuckCollider;
 class debpCollider;
 class debpSharedCollisionFiltering;
+class debpConstraintSolver;
 
 class btDynamicsWorld;
 class btBroadphaseInterface;
 class btCollisionDispatcher;
-class btMultiBodyConstraintSolver;
 class btCollisionConfiguration;
 struct btSoftBodyWorldInfo;
 class btSoftBodySolver;
@@ -65,7 +65,7 @@ private:
 	debpCollisionWorld *pDynWorld;
 	btBroadphaseInterface *pBroadPhase;
 	btCollisionDispatcher *pColDisp;
-	btMultiBodyConstraintSolver *pConstraintSolver;
+	debpConstraintSolver *pConstraintSolver;
 	btSoftBodySolver *pSoftBodySolver;
 	btCollisionConfiguration *pColConfig;
 	btSoftBodyWorldInfo	*pSoftBodyWorldInfo;

@@ -22,20 +22,21 @@
 #ifndef _DEBPCOLLISIONWORLD_H_
 #define _DEBPCOLLISIONWORLD_H_
 
-#include "BulletSoftBody/btSoftMultiBodyDynamicsWorld.h"
+#include "BulletSoftBody/btSoftRigidDynamicsWorld.h"
 #include "../coldet/debpBulletShapeCollision.h"
 
 #include <dragengine/common/utils/decTimer.h>
 
 class debpDelayedOperation;
 class debpWorld;
+class debpConstraintSolver;
 
 
 
 /**
  * \brief Bullet btSoftMultiBodyDynamicsWorld with some additions.
  */
-class debpCollisionWorld : public btSoftMultiBodyDynamicsWorld{
+class debpCollisionWorld : public btSoftRigidDynamicsWorld{
 private:
 	debpWorld &pWorld;
 	debpDelayedOperation *pDelayedOperation;
@@ -48,7 +49,7 @@ public:
 	/*@{*/
 	/** \brief Creates a new collision world. */
 	debpCollisionWorld( debpWorld &world, btDispatcher *dispatcher, btBroadphaseInterface *pairCache,
-		btMultiBodyConstraintSolver *constraintSolver, btCollisionConfiguration *collisionConfiguration,
+		debpConstraintSolver *constraintSolver, btCollisionConfiguration *collisionConfiguration,
 		btSoftBodySolver *softBodySolver );
 	/** \brief Cleans up the collision world. */
 	virtual ~debpCollisionWorld();
