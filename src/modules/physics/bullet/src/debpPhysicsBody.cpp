@@ -32,6 +32,7 @@
 #include "collider/debpColliderComponent.h"
 #include "world/debpCollisionWorld.h"
 #include "world/debpDelayedOperation.h"
+#include "world/debpWorld.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -181,10 +182,15 @@ void debpPhysicsBody::SetPosition( const decDVector &position ){
 	
 	if( ! pPreventUpdate ){
 		pMotionState->SetPosition( position );
-		pUpdateTransform();
 		
-		if( pRigidBody && pResponseType == ertKinematic ){
-			pRigidBody->activate( true );
+		if( pRigidBody ){
+			if( ! pDynWorld->GetWorld().GetProcessingPhysics() ){
+				pUpdateTransform();
+			}
+			
+			if( pResponseType == ertKinematic ){
+				pRigidBody->activate( true );
+			}
 		}
 	}
 	
@@ -202,10 +208,15 @@ void debpPhysicsBody::SetOrientation( const decQuaternion &orientation ){
 	
 	if( ! pPreventUpdate ){
 		pMotionState->SetOrientation( orientation );
-		pUpdateTransform();
 		
-		if( pRigidBody && pResponseType == ertKinematic ){
-			pRigidBody->activate( true );
+		if( pRigidBody ){
+			if( ! pDynWorld->GetWorld().GetProcessingPhysics() ){
+				pUpdateTransform();
+			}
+			
+			if( pResponseType == ertKinematic ){
+				pRigidBody->activate( true );
+			}
 		}
 	}
 	
