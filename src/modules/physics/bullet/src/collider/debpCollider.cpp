@@ -630,6 +630,16 @@ void debpCollider::UpdateDebugDrawer(){
 				colorEdge = debpDebugDrawerColors::colliderLowEdge;
 			}
 			
+		}else if( devmode.GetHighlightDeactivation() ){
+			if( GetRigidBodyDeactivated() ){
+				colorFill = debpDebugDrawerColors::colliderLowFill;
+				colorEdge = debpDebugDrawerColors::colliderLowEdge;
+				
+			}else{
+				colorFill = debpDebugDrawerColors::colliderFill;
+				colorEdge = debpDebugDrawerColors::colliderEdge;
+			}
+			
 		}else{
 			colorFill = debpDebugDrawerColors::colliderFill;
 			colorEdge = debpDebugDrawerColors::colliderEdge;
@@ -657,6 +667,10 @@ void debpCollider::UpdateDebugDrawer(){
 }
 
 void debpCollider::UpdateDDSShape(){
+}
+
+bool debpCollider::GetRigidBodyDeactivated() const{
+	return true;
 }
 
 

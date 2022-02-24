@@ -616,6 +616,10 @@ void debpColliderVolume::UpdateCollisionObjectAABBs(){
 // 	}
 }
 
+bool debpColliderVolume::GetRigidBodyDeactivated() const{
+	return ! pPhyBody || ! pPhyBody->GetRigidBody() || ! pPhyBody->GetRigidBody()->isActive();
+}
+
 
 
 void debpColliderVolume::UpdateShapes(){

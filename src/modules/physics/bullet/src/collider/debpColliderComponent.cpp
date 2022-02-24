@@ -654,6 +654,26 @@ void debpColliderComponent::DetectCustomCollision( float elapsed ){
 	}
 }
 
+bool debpColliderComponent::GetRigidBodyDeactivated() const{
+	if( pSimplePhyBody && pSimplePhyBody->GetRigidBody() ){
+		return ! pSimplePhyBody->GetRigidBody()->isActive();
+	}
+	if( pBones && pBones->GetBoneCount() > 0 ){
+		const int count = pBones->GetBoneCount();
+		int i;
+		for( i=0; i<count; i++ ){
+			const debpColliderBone * const bone = pBones->GetBoneAt( i );
+			if( bone ){
+				debpPhysicsBody * const phyBody = bone->GetPhysicsBody();
+				if( phyBody && phyBody->GetRigidBody() && phyBody->GetRigidBody()->isActive() ){
+					return false;
+				}
+			}
+		}
+	}
+	return true;
+}
+
 void debpColliderComponent::ApplyGravity( float elapsed ){
 	pLinVelo += pGravity * elapsed;
 }

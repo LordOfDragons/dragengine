@@ -134,13 +134,13 @@ public:
 	inline debpWorld *GetParentWorld() const{ return pParentWorld; }
 	inline int GetIndex() const{ return pIndex; }
 	
-	/** \brief Requires update. */
+	/** Requires update. */
 	inline bool GetRequiresUpdate() const{ return pRequiresUpdate; }
 	
-	/** \brief Requires update. */
+	/** Requires update. */
 	void RequiresUpdate();
 	
-	/** \brief Clear requires update. */
+	/** Clear requires update. */
 	void ClearRequiresUpdate();
 	
 	inline bool GetIsMoving() const{ return pIsMoving; }
@@ -159,10 +159,10 @@ public:
 	void MarkMatrixDirty();
 	void MarkDirtyOctree();
 	
-	/** \brief Two collider can collide. */
+	/** Two collider can collide. */
 	bool Collides( const debpCollider &collider ) const;
 	
-	/** \brief Two collider can not collide. */
+	/** Two collider can not collide. */
 	bool CollidesNot( const debpCollider &collider ) const;
 	
 	/** Create physics body if not existing already. */
@@ -185,7 +185,7 @@ public:
 	/** Finished the collision detection updating the collider and send notifications. */
 	virtual void FinishDetection();
 	
-	/** \brief Updates the collision object aabbs if dirty. */
+	/** Updates the collision object aabbs if dirty. */
 	virtual void UpdateCollisionObjectAABBs();
 	
 	/** Retrieves the dynamics world or NULL. */
@@ -216,105 +216,105 @@ public:
 	void SetShapeExtends( const decDVector &minExtend, const decDVector &maxExtend );
 	
 	/**
-	 * \brief Prepare constraints for next detection step.
+	 * Prepare constraints for next detection step.
 	 * \details Required to deal with advanced features like joint frictions.
 	 */
 	void PrepareConstraintsForStep();
 	
-	/** \brief Check if collider constraints broke and notify the scripting module if required. */
+	/** Check if collider constraints broke and notify the scripting module if required. */
 	void CheckColliderConstraintsBroke();
 	
-	/** \brief Process collider collision tests. */
+	/** Process collider collision tests. */
 	void ProcessColliderCollisionTests();
 	
 	
 	
-	/** \brief Register for prepare collision detection if not registered yet. */
+	/** Register for prepare collision detection if not registered yet. */
 	void RegisterColDetPrepare();
 	
-	/** \brief Unregister for prepare collision detection if registered. */
+	/** Unregister for prepare collision detection if registered. */
 	void UnregisterColDetPrepare();
 	
-	/** \brief Prepare collision detection index or -1 if not registered. */
+	/** Prepare collision detection index or -1 if not registered. */
 	inline int GetColDetPrepareIndex() const{ return pColDetPrepareIndex; }
 	
-	/** \brief Set prepare collision detection index or -1 if not registered. */
+	/** Set prepare collision detection index or -1 if not registered. */
 	void SetColDetPrepareIndex( int index );
 	
-	/** \brief Automatically re-registered for collision detection prepare. */
+	/** Automatically re-registered for collision detection prepare. */
 	inline bool GetAutoColDetPrepare() const{ return pAutoColDetPrepare; }
 	
-	/** \brief Set automatically re-registered for collision detection prepare. */
+	/** Set automatically re-registered for collision detection prepare. */
 	void SetAutoColDetPrepare( bool autoColDetPrepare );
 	
-	/** \brief Calculate auto collision detection re-register value. */
+	/** Calculate auto collision detection re-register value. */
 	virtual bool CalcAutoColDetPrepare();
 	
 	
 	
-	/** \brief Register for finish collision detection if not registered yet. */
+	/** Register for finish collision detection if not registered yet. */
 	void RegisterColDetFinish();
 	
-	/** \brief Unregister for finish collision detection if registered. */
+	/** Unregister for finish collision detection if registered. */
 	void UnregisterColDetFinish();
 	
-	/** \brief Finish collision detection index or -1 if not registered. */
+	/** Finish collision detection index or -1 if not registered. */
 	inline int GetColDetFinishIndex() const{ return pColDetFinishIndex; }
 	
-	/** \brief Set finish collision detection index or -1 if not registered. */
+	/** Set finish collision detection index or -1 if not registered. */
 	void SetColDetFinishIndex( int index );
 	
-	/** \brief Automatically re-registered for collision detection finish. */
+	/** Automatically re-registered for collision detection finish. */
 	inline bool GetAutoColDetFinish() const{ return pAutoColDetFinish; }
 	
-	/** \brief Set automatically re-registered for collision detection finish. */
+	/** Set automatically re-registered for collision detection finish. */
 	void SetAutoColDetFinish( bool autoColDetFinish );
 	
-	/** \brief Calculate auto collision detection re-register value. */
+	/** Calculate auto collision detection re-register value. */
 	virtual bool CalcAutoColDetFinish();
 	
 	
 	
-	/** \brief Register for post physics collision processing not registered yet. */
+	/** Register for post physics collision processing not registered yet. */
 	void RegisterPPCProcessing();
 	
-	/** \brief Unregister for post physics collision processing if registered. */
+	/** Unregister for post physics collision processing if registered. */
 	void UnregisterPPCProcessing();
 	
-	/** \brief Post physics collision processing index or -1 if not registered. */
+	/** Post physics collision processing index or -1 if not registered. */
 	inline int GetPPCProcessingIndex() const{ return pPPCTColliderIndex; }
 	
-	/** \brief Set post physics collision processing index or -1 if not registered. */
+	/** Set post physics collision processing index or -1 if not registered. */
 	void SetPPCProcessingIndex( int index );
 	
 	
 	
-	/** \brief Register for update octree processing not registered yet. */
+	/** Register for update octree processing not registered yet. */
 	void RegisterUpdateOctree();
 	
-	/** \brief Unregister for update octree processing if registered. */
+	/** Unregister for update octree processing if registered. */
 	void UnregisterUpdateOctree();
 	
-	/** \brief Update octree processing index or -1 if not registered. */
+	/** Update octree processing index or -1 if not registered. */
 	inline int GetUpdateOctreeIndex() const{ return pUpdateOctreeIndex; }
 	
-	/** \brief Set update octree processing index or -1 if not registered. */
+	/** Set update octree processing index or -1 if not registered. */
 	void SetUpdateOctreeIndex( int index );
 	
 	
 	
 	/** @name Attachments */
 	/*@{*/
-	/** \brief Retrieves the number of attachments. */
+	/** Retrieves the number of attachments. */
 	inline int GetAttachmentCount() const{ return pAttachmentCount; }
-	/** \brief Retrieves an attachment. */
+	/** Retrieves an attachment. */
 	debpColliderAttachment *GetAttachmentAt( int index ) const;
 	
 	/** Retrieves the list of colliders this collider is attached to. */
 	inline decPointerSet &GetAttachedToList(){ return pAttachedToList; }
 	inline const decPointerSet &GetAttachedToList() const{ return pAttachedToList; }
 	
-	/** \brief List of touch sensors tracking this collider. */
+	/** List of touch sensors tracking this collider. */
 	inline decPointerSet &GetTrackingTouchSensors(){ return pTrackingTouchSensors; }
 	inline const decPointerSet &GetTrackingTouchSensors() const{ return pTrackingTouchSensors; }
 	/*@}*/
@@ -333,10 +333,10 @@ public:
 	
 	/** \name Post physics collision tests */
 	/*@{*/
-	/** \brief Number of post physics collision tests. */
+	/** Number of post physics collision tests. */
 	int GetCollisionTestCount() const;
 	
-	/** \brief Post physics collision test at index. */
+	/** Post physics collision test at index. */
 	debpColliderCollisionTest *GetCollisionTestAt( int index ) const;
 	/*@}*/
 	
@@ -344,36 +344,39 @@ public:
 	
 	/** \name Debugging */
 	/*@{*/
-	/** \brief Debug drawer or \em NULL if not activated .*/
+	/** Debug drawer or \em NULL if not activated .*/
 	inline deDebugDrawer *GetDebugDrawer() const{ return pDebugDrawer; }
 	
-	/** \brief Debug drawer shape or \em NULL if not ativated. */
+	/** Debug drawer shape or \em NULL if not ativated. */
 	inline deDebugDrawerShape *GetDDSShape() const{ return pDDSShape; }
 	
-	/** \brief Update debug drawer if developer mode is enabled. */
+	/** Update debug drawer if developer mode is enabled. */
 	virtual void UpdateDebugDrawer();
 	
 	/**
-	 * \brief Update debug drawer shape shape.
+	 * Update debug drawer shape shape.
 	 * \details Called after creating debug drawer or if the collider subclass requires an update.
 	 */
 	virtual void UpdateDDSShape();
+	
+	/** Rigid body deactivated state. */
+	virtual bool GetRigidBodyDeactivated() const;
 	/*@}*/
 	
 	
 	
 	/** @name Notifications */
 	/*@{*/
-	/** \brief Position changed. */
+	/** Position changed. */
 	virtual void PositionChanged();
 	
-	/** \brief Orientation changed. */
+	/** Orientation changed. */
 	virtual void OrientationChanged();
 	
-	/** \brief Scale changed. */
+	/** Scale changed. */
 	virtual void ScaleChanged();
 	
-	/** \brief Position or orientation changed. */
+	/** Position or orientation changed. */
 	virtual void GeometryChanged();
 	
 	/** Linear velocity changed. */
@@ -389,13 +392,13 @@ public:
 	/** Response type changed. */
 	virtual void ResponseTypeChanged();
 	
-	/** \brief Collision filter changed. */
+	/** Collision filter changed. */
 	virtual void CollisionFilterChanged();
 	
-	/** \brief Ignore colliders changed. */
+	/** Ignore colliders changed. */
 	virtual void IgnoreCollidersChanged();
 	
-	/** \brief Force field factor changed. */
+	/** Force field factor changed. */
 	virtual void ForceFieldChanged();
 	
 	/** Attachment added. */
@@ -418,19 +421,19 @@ public:
 	
 	
 	
-	/** \brief Post physics collision test added. */
+	/** Post physics collision test added. */
 	virtual void CollisionTestAdded( int index );
 	
-	/** \brief Post physics collision test changed. */
+	/** Post physics collision test changed. */
 	virtual void CollisionTestChanged( int index );
 	
-	/** \brief Post physics collision test enabled changed. */
+	/** Post physics collision test enabled changed. */
 	virtual void CollisionTestEnabledChanged( int index );
 	
-	/** \brief Post physics collision test removed. */
+	/** Post physics collision test removed. */
 	virtual void CollisionTestRemoved( int index );
 	
-	/** \brief All post physics collision tests removed. */
+	/** All post physics collision tests removed. */
 	virtual void AllCollisionTestsRemoved();
 	/*@}*/
 	

@@ -157,6 +157,7 @@ public:
 	/** \brief Updates the collision object aabbs if dirty. */
 	virtual void UpdateCollisionObjectAABBs();
 	
+	virtual bool GetRigidBodyDeactivated() const;
 	
 	
 	/** \name Debugging */
