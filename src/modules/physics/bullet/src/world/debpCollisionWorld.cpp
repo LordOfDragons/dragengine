@@ -293,11 +293,14 @@ pDelayedOperation( NULL )
 	
 	pDelayedOperation = new debpDelayedOperation( *this );
 	
+	solverInfo.m_timeStep = world.GetSimulationTimeStep();
+	
 	// more iterations will allow the solver to converge to the actual solution better.
 	// default 10
 	// notes: 20 improves. 100 makes the head case work well. 1000 even more close.
 	// tail case gets worse but once converged it works well even with less.
-	solverInfo.m_numIterations = 20; // 25 seems a nice value
+	// notes: bullet demos use 50, 100 or even 150
+	solverInfo.m_numIterations = 100; //20; // 25 seems a nice value
 	
 	// global non-contact constraint damping. determines percentage of relative velocity to use.
 	// hence 1 is no damping and everything below damps the velocity.

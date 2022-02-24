@@ -148,7 +148,7 @@ pUpdateOctreeColliderSize( 0 ),
 // erwin mentioned up to (10, 1/240)
 // pSimMaxSubStep( 6 ),
 // pSimTimeStep( 1.0f / 60.0f ),
-pSimMaxSubStep( 8 ),
+pSimMaxSubStep( 10 ),
 pSimTimeStep( 1.0f / 120.0f ),
 
 pDynCollisionVelocityThreshold( 0.0f )

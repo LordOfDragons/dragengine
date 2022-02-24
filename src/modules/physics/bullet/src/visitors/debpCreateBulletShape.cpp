@@ -63,7 +63,7 @@ pBulletCompoundShape( NULL ),
 pCcdThreshold( 0.001f ),
 pCcdRadius( 0.001f ),
 pScale( 1.0f, 1.0f, 1.0f ),
-pNoMargin( false ),
+pNoMargin( true /*false*/ ),
 pHasScale( false ),
 pShapeIndex( -1 ){
 }

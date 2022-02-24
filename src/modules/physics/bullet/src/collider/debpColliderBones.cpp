@@ -512,12 +512,12 @@ void debpColliderBones::PrepareForDetection( float elapsed ){
 		}
 		goalMatrix = goalMatrix.QuickMultiply( colMatrix );
 		
+		const decDMatrix diffMatrix( goalMatrix.QuickMultiply(
+			decDMatrix::CreateWorld( colbone.GetPosition(), colbone.GetOrientation() ).QuickInvert() ) );
+		
 		colbone.SetPosition( goalMatrix.GetPosition() );
 		colbone.SetOrientation( goalMatrix.ToQuaternion() );
 		colbone.UpdateMatrix();
-		
-		const decDMatrix diffMatrix( goalMatrix.QuickMultiply(
-			decDMatrix::CreateWorld( colbone.GetPosition(), colbone.GetOrientation() ).QuickInvert() ) );
 		
 		colbone.SetLinearVelocity( diffMatrix.GetPosition().ToVector() * factor );
 		colbone.SetAngularVelocity( diffMatrix.GetEulerAngles().ToVector() * factor );
