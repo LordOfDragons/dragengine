@@ -220,17 +220,23 @@ class OBJECT_OT_ExportModel(bpy.types.Operator, ExportHelper):
 		self.progress.show()
 	
 	def initChecksEarly(self, context):
-		if any(x.type == 'MIRROR' for x in self.mesh.object.modifiers):
-			self.report({'INFO', 'ERROR'}, ("Mirror modifier found on object '{}'."
-				+ " Apply mirror before export otherwise only one half is exported.").format(self.mesh.object.name))
-			return False
+		modifiers = [['MIRROR', 'Mirror'], ['SUBSURF', 'Subdivision']]
+		
+		for m in modifiers:
+			if any(x.type == m[0] for x in self.mesh.object.modifiers):
+				self.report({'INFO', 'ERROR'}, ("{} modifier found on object '{}'."
+					+ " Apply modifier before export otherwise only one half is exported.").format(\
+						m[1], self.mesh.object.name))
+				return False
 		
 		lodMesh = self.mesh.lodMesh
 		while lodMesh:
-			if any(x.type == 'MIRROR' for x in lodMesh.object.modifiers):
-				self.report({'INFO', 'ERROR'}, ("LOD Mesh '{}': Mirror modifier."
-					+ " Apply mirror before export otherwise only one half is exported.").format(lodMesh.object.name))
-				return False
+			for m in modifiers:
+				if any(x.type == m[0] for x in lodMesh.object.modifiers):
+					self.report({'INFO', 'ERROR'}, ("LOD Mesh '{}': {} modifier."
+						+ " Apply modifier before export otherwise only one half is exported.").format(\
+							lodMesh.object.name, m[1]))
+					return False
 			
 			lodMesh = lodMesh.lodMesh
 		
