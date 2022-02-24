@@ -559,7 +559,6 @@ void debpWorld::ProcessPhysics( float elapsed ){
 	
 DEBUG_RESET_TIMERS;
 	try{
-		pProcessingPhysics = true;
 		pProcessPhysics( elapsed );
 		pProcessingPhysics = false;
 		
@@ -1054,6 +1053,13 @@ void debpWorld::pCleanUp(){
 
 
 void debpWorld::pProcessPhysics( float elapsed ){
+	// prevent rigid bodies from updating transforms. updating transform is required
+	// for teleporting objects without causing the displacement to be considered a
+	// huge velocity. updating transforms though causes dynamic bodies to not be
+	// moved if in contact with moving kinematic bodies. hence calls to
+	// DetectCustomCollision until stepSimulation have to be protected
+	pProcessingPhysics = true;
+	
 	// prepare for detection
 	pPrepareDetection( elapsed );
 DEBUG_PRINT_TIMER( "Prepare Detection" );
@@ -1129,6 +1135,9 @@ DEBUG_PRINT_TIMER( "Prepare For Step" );
 	pDynWorld->MarkAllAABBValid();
 	pDirtyDynWorldAABB = false;
 DEBUG_PRINT_TIMER( "Step Simulation" );
+	
+	// now updating rigid body transforms can be enabled again
+	pProcessingPhysics = false;
 	
 	// update positions
 	pUpdateFromBody();
