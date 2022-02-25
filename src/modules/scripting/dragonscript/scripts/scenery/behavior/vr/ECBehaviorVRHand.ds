@@ -179,6 +179,8 @@ class ECBehaviorVRHand extends DefaultECBehavior
 		private var InputDevice pInputDevice
 		private var Vector pPosition
 		private var Quaternion pOrientation
+		private var Vector pLinearVelocity
+		private var Vector pAngularVelocity
 		private var Array pListeners
 		private var AttachDetachListener pAttachDetachListener
 		private var Collider pCollider
@@ -193,6 +195,8 @@ class ECBehaviorVRHand extends DefaultECBehavior
 			pShowHand = true
 			pPosition = Vector.new()
 			pOrientation = Quaternion.new()
+			pLinearVelocity = Vector.new()
+			pAngularVelocity = Vector.new()
 			pListeners = Array.new()
 			pAttachDetachListener = AttachDetachListener.new(this)
 			pCollisionListeners = Array.new()
@@ -452,6 +456,52 @@ class ECBehaviorVRHand extends DefaultECBehavior
 		 */
 		public func Matrix getInverseMatrixPlayspace()
 			return getMatrixPlayspace().getInverse()
+		end
+		
+		
+		
+		/**
+		 * \brief Linear velocity.
+		 * \version 1.10
+		 * \note Linear velocity is queried each time the function is called.
+		 */
+		public func Vector getLinearVelocity()
+			return pVRPlayspace.getMatrix().transformNormal(\
+				DVector.new(getLinearVelocityPlayspace())).toVector()
+		end
+		
+		/**
+		 * \brief Playspace local linear velocity.
+		 * \version 1.10
+		 * \note Linear velocity is queried each time the function is called.
+		 */
+		public func Vector getLinearVelocityPlayspace()
+			if pInputDevice != null
+				pLinearVelocity = pInputDevice.getDevicePoseLinearVelocity()
+			end
+			return pLinearVelocity
+		end
+		
+		/**
+		 * \brief Angular velocity.
+		 * \version 1.10
+		 * \note Angular velocity is queried each time the function is called.
+		 */
+		public func Vector getAngularVelocity()
+			return pVRPlayspace.getMatrix().transformNormal(\
+				DVector.new(getAngularVelocityPlayspace())).toVector()
+		end
+		
+		/**
+		 * \brief Playspace local angular velocity.
+		 * \version 1.10
+		 * \note Angular velocity is queried each time the function is called.
+		 */
+		public func Vector getAngularVelocityPlayspace()
+			if pInputDevice != null
+				pAngularVelocity = pInputDevice.getDevicePoseAngularVelocity()
+			end
+			return pAngularVelocity
 		end
 		
 		
