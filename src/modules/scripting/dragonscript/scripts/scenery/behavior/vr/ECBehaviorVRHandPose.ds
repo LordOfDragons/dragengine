@@ -680,6 +680,45 @@ class ECBehaviorVRHandPose extends DefaultECBehavior
 	
 	
 	
+	/**
+	 * \brief Set finger names to default names with hand prefix.
+	 * \version 1.10
+	 * 
+	 * For example "wrist" becomes "wrist.r" if rightHand is true otherwise "wrist.l"
+	 */
+	public func void setHandBoneNames(bool rightHand)
+		var String suffix = rightHand if ".r" else ".l"
+		
+		pBoneOrigin.setValue("origin" + suffix)
+		pBoneWrist.setValue("wrist" + suffix)
+		
+		pBoneThumb1.setValue("thumb1" + suffix)
+		pBoneThumb2.setValue("thumb2" + suffix)
+		pBoneThumb3.setValue("thumb3" + suffix)
+		
+		pBoneIndex1.setValue("index1" + suffix)
+		pBoneIndex2.setValue("index2" + suffix)
+		pBoneIndex3.setValue("index3" + suffix)
+		pBoneIndex4.setValue("index4" + suffix)
+		
+		pBoneMiddle1.setValue("middle1" + suffix)
+		pBoneMiddle2.setValue("middle2" + suffix)
+		pBoneMiddle3.setValue("middle3" + suffix)
+		pBoneMiddle4.setValue("middle4" + suffix)
+		
+		pBoneRing1.setValue("ring1" + suffix)
+		pBoneRing2.setValue("ring2" + suffix)
+		pBoneRing3.setValue("ring3" + suffix)
+		pBoneRing4.setValue("ring4" + suffix)
+		
+		pBonePinky1.setValue("pinky1" + suffix)
+		pBonePinky2.setValue("pinky2" + suffix)
+		pBonePinky3.setValue("pinky3" + suffix)
+		pBonePinky4.setValue("pinky4" + suffix)
+	end
+	
+	
+	
 	/** \brief Get instance in element from owner element class. */
 	public func Instance instance(BehaviorElement element)
 		return element.getInstanceAt(getInstanceIndex()) cast Instance
