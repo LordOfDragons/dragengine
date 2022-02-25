@@ -338,6 +338,21 @@ void deClassVector::nfRound2::RunFunction( dsRunTime *rt, dsValue *myself ){
 	clsVector.PushVector( rt, vector );
 }
 
+// public func Vector mix(Vector vector, float factor)
+deClassVector::nfMix::nfMix( const sInitData &init ) :
+dsFunction( init.clsVec, "mix", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVec ){
+	p_AddParameter( init.clsVec ); // vector
+	p_AddParameter( init.clsFlt ); // factor
+}
+void deClassVector::nfMix::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const decVector &vector = ( ( sVecNatDat* )p_GetNativeData( myself ) )->vector;
+	deClassVector &clsVector = *( ( deClassVector* )GetOwnerClass() );
+	const decVector &other = clsVector.GetVector( rt->GetValue( 0 )->GetRealObject() );
+	const float factor = rt->GetValue( 1 )->GetFloat();
+	
+	clsVector.PushVector( rt, vector.Mix( other, factor ) );
+}
+
 
 
 // testing
@@ -699,6 +714,7 @@ void deClassVector::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfClamped( init ) );
 	AddFunction( new nfRound( init ) );
 	AddFunction( new nfRound2( init ) );
+	AddFunction( new nfMix( init ) );
 	
 	AddFunction( new nfIsEqualTo( init ) );
 	AddFunction( new nfIsAtLeast( init ) );

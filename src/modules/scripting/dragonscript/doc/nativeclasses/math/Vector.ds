@@ -24,11 +24,11 @@ fixed class Vector
 	end
 	
 	/** \brief Create vector using the specified components. */
-	public func new( float x, float y, float z )
+	public func new(float x, float y, float z)
 	end
 	
 	/** \brief Create DVetor from Vector. */
-	public func new( Vector v )
+	public func new(Vector v)
 	end
 	/*@}*/
 	
@@ -51,8 +51,8 @@ fixed class Vector
 		return 0.0
 	end
 	
-	/** \brief Component (0=X, 1=Y, 2=Z ). */
-	public func float get( int component )
+	/** \brief Component (0=X, 1=Y, 2=Z). */
+	public func float get(int component)
 		return 0.0
 	end
 	
@@ -80,17 +80,17 @@ fixed class Vector
 	end
 	
 	/** \brief Component wise multiplication. */
-	public func Vector compMultiply( Vector v )
+	public func Vector compMultiply(Vector v)
 		return null
 	end
 	
 	/** \brief Component wise division. */
-	public func Vector compDivide( Vector v )
+	public func Vector compDivide(Vector v)
 		return null
 	end
 	
 	/** \brief Vector with components set to true copied while all others are set to 0. */
-	public func Vector compSelect( bool x, bool y, bool z )
+	public func Vector compSelect(bool x, bool y, bool z)
 		return null
 	end
 	
@@ -98,22 +98,22 @@ fixed class Vector
 	 * \brief Combine selected components of this vector with another.
 	 * \details For each component use this vector if value is \em true otherwise use \em vector component.
 	 */
-	public func Vector combine( Vector vector, bool x, bool y, bool z )
+	public func Vector combine(Vector vector, bool x, bool y, bool z)
 		return null
 	end
 	
 	/** \brief Vector with all components set to the smallest value of two vectors. */
-	public func Vector smallest( Vector v )
+	public func Vector smallest(Vector v)
 		return null
 	end
 	
 	/** \brief Vector with all components set to the largest value of two vectors. */
-	public func Vector largest( Vector v )
+	public func Vector largest(Vector v)
 		return null
 	end
 	
 	/** \brief Vector with all components clamped to a range of two vectors. */
-	public func Vector clamped( Vector min, Vector max )
+	public func Vector clamped(Vector min, Vector max)
 		return null
 	end
 	
@@ -133,20 +133,30 @@ fixed class Vector
 		return null
 	end
 	
+	/**
+	 * \brief Mix vector with another component wise.
+	 * \version 1.10
+	 * 
+	 * Factor 0 uses this vector, factor 1 the other vector.
+	 */
+	public func Vector mix(Vector other, float factor)
+		return null
+	end
+	
 	
 	
 	/** \brief Two vectors are equal. */
-	public func bool isEqualTo( Vector v, float delta )
+	public func bool isEqualTo(Vector v, float delta)
 		return false
 	end
 	
 	/** \brief All coordinates are at least of a minimal value. */
-	public func bool isAtLeast( float value )
+	public func bool isAtLeast(float value)
 		return false
 	end
 	
 	/** \brief All coordinates are at most of a maximal value. */
-	public func bool isAtMost( float value )
+	public func bool isAtMost(float value)
 		return false
 	end
 	
@@ -162,7 +172,7 @@ fixed class Vector
 	 * \details Implements Object.equals(Object).
 	 * \returns \em true if \em other is of type Vector and components are equal.
 	*/
-	public func bool equals( Object other )
+	public func bool equals(Object other)
 		return false
 	end
 	
@@ -190,7 +200,7 @@ fixed class Vector
 	 * \param precision Precision in digits in the range from 0 to 9 inclusive.
 	 * \throws EInvalidParam precision is less than 0 or larger than 9.
 	 */
-	public func String toString( int precision )
+	public func String toString(int precision)
 		return null
 	end
 	/*@}*/
@@ -200,12 +210,12 @@ fixed class Vector
 	/** \name File Handling */
 	/*@{*/
 	/** \brief Read vector from a file reader. */
-	static public func Vector readFromFile( FileReader reader )
+	static public func Vector readFromFile(FileReader reader)
 		return null
 	end
 	
 	/** \brief Write vector to a file writer. */
-	public func void writeToFile( FileWriter writer )
+	public func void writeToFile(FileWriter writer)
 	end
 	/*@}*/
 	
@@ -219,17 +229,17 @@ fixed class Vector
 	end
 	
 	/** \brief Sum of two vectors. */
-	public func Vector +( Vector v )
+	public func Vector +(Vector v)
 		return null
 	end
 	
 	/** \brief Difference of two vectors. */
-	public func Vector -( Vector v )
+	public func Vector -(Vector v)
 		return null
 	end
 	
 	/** \brief Vector scaled by scalar. */
-	public func Vector *( float scalar )
+	public func Vector *(float scalar)
 		return null
 	end
 	
@@ -237,37 +247,37 @@ fixed class Vector
 	 * \brief Vector with each component divided by a value.
 	 * \throws EDivisionByZero \em scalar is \em 0.
 	 */
-	public func Vector /( float scalar )
+	public func Vector /(float scalar)
 		return null
 	end
 	
 	/** \brief Dot-Product between two vectors. */
-	public func float *( Vector v )
+	public func float *(Vector v)
 		return 0.0
 	end
 	
 	/** \brief Cross-Product between two vectors. */
-	public func Vector %( Vector v )
+	public func Vector %(Vector v)
 		return null
 	end
 	
 	/** \brief Vector is less than another vector in all components. */
-	public func bool <( Vector v )
+	public func bool <(Vector v)
 		return false
 	end
 	
 	/** \brief Vector is less than or equal to another vector in all components. */
-	public func bool <=( Vector v )
+	public func bool <=(Vector v)
 		return false
 	end
 	
 	/** \brief Vector is greater than another vector in all components. */
-	public func bool >( Vector v )
+	public func bool >(Vector v)
 		return false
 	end
 	
 	/** \brief Vector is greater than or equal to another vector in all components. */
-	public func bool >=( Vector v )
+	public func bool >=(Vector v)
 		return false
 	end
 	/*@}*/

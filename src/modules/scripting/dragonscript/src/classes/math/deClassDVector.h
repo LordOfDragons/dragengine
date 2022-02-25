@@ -90,6 +90,7 @@ private:
 	DEF_NATFUNC( nfClamped );
 	DEF_NATFUNC( nfRound );
 	DEF_NATFUNC( nfRound2 );
+	DEF_NATFUNC( nfMix );
 	
 	DEF_NATFUNC( nfIsEqualTo );
 	DEF_NATFUNC( nfIsAtLeast );

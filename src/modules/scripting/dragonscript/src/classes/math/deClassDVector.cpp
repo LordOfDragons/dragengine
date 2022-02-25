@@ -373,6 +373,21 @@ void deClassDVector::nfRound2::RunFunction( dsRunTime *rt, dsValue *myself ){
 	clsDVector.PushDVector( rt, vector );
 }
 
+// public func DVector mix(DVector vector, float factor)
+deClassDVector::nfMix::nfMix( const sInitData &init ) :
+dsFunction( init.clsDVec, "mix", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsDVec ){
+	p_AddParameter( init.clsDVec ); // vector
+	p_AddParameter( init.clsFlt ); // factor
+}
+void deClassDVector::nfMix::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const decDVector &vector = ( ( sDVecNatDat* )p_GetNativeData( myself ) )->vector;
+	deClassDVector &clsDVector = *( ( deClassDVector* )GetOwnerClass() );
+	const decDVector &other = clsDVector.GetDVector( rt->GetValue( 0 )->GetRealObject() );
+	const float factor = rt->GetValue( 1 )->GetFloat();
+	
+	clsDVector.PushDVector( rt, vector.Mix( other, factor ) );
+}
+
 // public func Vector toVector()
 deClassDVector::nfToVector::nfToVector( const sInitData &init ) : dsFunction( init.clsDVec,
 "toVector", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVec ){
@@ -785,6 +800,7 @@ void deClassDVector::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfClamped( init ) );
 	AddFunction( new nfRound( init ) );
 	AddFunction( new nfRound2( init ) );
+	AddFunction( new nfMix( init ) );
 	AddFunction( new nfToVector( init ) );
 	
 	AddFunction( new nfIsEqualTo( init ) );

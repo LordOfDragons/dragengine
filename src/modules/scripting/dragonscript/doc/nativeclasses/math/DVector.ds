@@ -142,6 +142,16 @@ fixed class DVector
 		return null
 	end
 	
+	/**
+	 * \brief Mix vector with another component wise.
+	 * \version 1.10
+	 * 
+	 * Factor 0 uses this vector, factor 1 the other vector.
+	 */
+	public func DVector mix(DVector other, float factor)
+		return null
+	end
+	
 	
 	
 	/** \brief Two vectors are equal. */
