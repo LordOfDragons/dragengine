@@ -714,6 +714,38 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 		return pOrientation
 	end
 	
+	
+	
+	/**
+	 * \brief Set attach parameters for static attaching.
+	 * \version 1.10
+	 */
+	public func void setAttachStatic(Vector position, Vector rotation)
+		pBone.setValue("")
+		pPosition.setVector(position)
+		pOrientation.setVector(rotation)
+	end
+	
+	/**
+	 * \brief Set attach parameters for bone attaching using zero position and rotation.
+	 * \version 1.10
+	 */
+	public func void setAttachBone(String bone)
+		setAttachBone(bone, Vector.new(), Vector.new())
+	end
+	
+	/**
+	 * \brief Set attach parameters for bone attaching.
+	 * \version 1.10
+	 */
+	public func void setAttachBone(String bone, Vector position, Vector rotation)
+		pBone.setValue(bone)
+		pPosition.setVector(position)
+		pOrientation.setVector(rotation)
+	end
+	
+	
+	
 	/** \brief Add listener factory. */
 	public func void addListenerFactory(ListenerFactory factory)
 		if factory == null
