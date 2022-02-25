@@ -1,0 +1,184 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2022, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Commands
+
+pin Dragengine.Scenery
+
+
+/**
+ * \brief Commands for player controlled BaseActor with BAAVRGrab action.
+ * 
+ * Contains various commands as sub classes. A static helper method adds instances of each
+ * command to the command manager of a BaseGameApp.
+ */
+class CommandsBAAVRGrab
+	/** \brief Base class operating only on actors with BAAVRGrab action. */
+	public class Base extends Command
+		protected var ECBehaviorPlayerControllable.Tracker pTracker
+		protected var bool pRightHand
+		
+		public func new(ECBehaviorPlayerControllable.Tracker tracker, String name, \
+		String description, bool rightHand) super(name, description)
+			if tracker == null
+				throw ENullPointer.new("tracker")
+			end
+			pTracker = tracker
+			pRightHand = rightHand
+		end
+		
+		protected func ECBehaviorPlayerControllable.Tracker getTracker()
+			return pTracker
+		end
+		
+		protected func BAAVRGrab getGrab()
+			var ECBehaviorPlayerControllable.Instance actor = pTracker.getActor()
+			if actor == null
+				return null
+			end
+			
+			var ECBehaviorVRHandAction.Instance action
+			
+			if pRightHand
+				action = ECBehaviorVRHandAction.getInstanceIn(actor.getElement(), BaseVRActorClass.idVRRightHand)
+				
+			else
+				action = ECBehaviorVRHandAction.getInstanceIn(actor.getElement(), BaseVRActorClass.idVRLeftHand)
+			end
+			
+			if action != null and action.getAction() castable BAAVRGrab
+				return action.getAction() cast BAAVRGrab
+				
+			else
+				return null
+			end
+		end
+		
+		public func void start()
+			var BAAVRGrab cinput = getGrab()
+			if cinput != null
+				press(cinput)
+			end
+		end
+		
+		public func void stop()
+			var BAAVRGrab cinput = getGrab()
+			if cinput != null
+				release(cinput)
+			end
+		end
+		
+		public func void analogAbsolute(float value)
+			var BAAVRGrab cinput = getGrab()
+			if cinput != null
+				analogAbsolute(cinput, value)
+			end
+		end
+		
+		
+		/** \brief Pressed. */
+		public func void press(BAAVRGrab action)
+		end
+		
+		/** \brief Released. */
+		public func void release(BAAVRGrab action)
+		end
+		
+		/** \brief Analog absolute. */
+		public func void analogAbsolute(BAAVRGrab action, float value)
+		end
+	end
+	
+	
+	
+	/** \brief Grab action. */
+	public class GrabAction extends Base
+		public func new(ECBehaviorPlayerControllable.Tracker tracker, String name, \
+		String description, bool rightHand) super(tracker, name, description, rightHand)
+		end
+		
+		public func void press(BAAVRGrab action)
+			action.grab()
+		end
+		
+		public func void release(BAAVRGrab action)
+			action.ungrab()
+		end
+		
+		public func void analogAbsolute(BAAVRGrab action, float value)
+			action.grabAnalog(value)
+		end
+	end
+	
+	/** \brief Squeeze action. */
+	public class SqueezeAction extends Base
+		public func new(ECBehaviorPlayerControllable.Tracker tracker, String name, \
+		String description, bool rightHand) super(tracker, name, description, rightHand)
+		end
+		
+		public func void analogAbsolute(BAAVRGrab action, float value)
+			action.squeeze(value)
+		end
+	end
+	
+	
+	
+	/**
+	 * \brief Add commands to command manager.
+	 * 
+	 * Adds these commands:
+	 * - grabRight: Grab using right hand
+	 * - grabLeft: Grab using left hand
+	 * - squeezeRight: Squeeze right hand
+	 * - squeezeLeft: Squeeze left hand
+	 */
+	public static func void addCommands(CommandManager commands, ECBehaviorPlayerControllable.Tracker tracker)
+		commands.add(GrabAction.new(tracker, "grabRight", "Grab Right Hand", true))
+		commands.add(SqueezeAction.new(tracker, "squeezeRight", "Squeeze Right Hand", true))
+		
+		commands.add(GrabAction.new(tracker, "grabLeft", "Grab Left Hand", false))
+		commands.add(SqueezeAction.new(tracker, "squeezeLeft", "Squeeze Left Hand", false))
+	end
+	
+	
+	
+	/**
+	 * \brief Add default bindings for commands.
+	 * 
+	 * Adds bindings for these commands if present in binding manager:
+	 * - "grabRight"
+	 * - "grabLeft"
+	 * - "squeezeRight"
+	 * - "squeezeLeft"
+	 */
+	public static func void addDefaultBindings(DefaultBindingHelper helper)
+		if helper.hasVRHand(true)
+			helper.vrHandBindTrigger(true, InputDeviceAxisType.gripGrab, 0, "grabRight")
+			helper.vrHandBindTrigger(true, InputDeviceAxisType.gripSqueeze, 0, "squeezeRight")
+		end
+		
+		if helper.hasVRHand(false)
+			helper.vrHandBindTrigger(false, InputDeviceAxisType.gripGrab, 0, "grabLeft")
+			helper.vrHandBindTrigger(false, InputDeviceAxisType.gripSqueeze, 0, "squeezeLeft")
+		end
+	end
+end

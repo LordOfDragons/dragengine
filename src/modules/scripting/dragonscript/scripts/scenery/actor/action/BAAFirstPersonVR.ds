@@ -128,30 +128,6 @@ class BAAFirstPersonVR extends BAAFirstPerson
 	 */
 	protected var ECBehaviorGrabber.Instance vrLeftHandGrabber
 	
-	/**
-	 * \brief VR Right Hand Animated Pose.
-	 * \version 1.10
-	 */
-	protected var ECBehaviorVRHandPose.Instance vrRightHandPose
-	
-	/**
-	 * \brief VR Left Hand Pose behavior.
-	 * \version 1.10
-	 */
-	protected var ECBehaviorVRHandPose.Instance vrLeftHandPose
-	
-	/**
-	 * \brief VR Right Hand Animated behavior.
-	 * \version 1.10
-	 */
-	protected var ECBehaviorActorAnimated.Instance vrRightHandAnimated
-	
-	/**
-	 * \brief VR Left Hand Animated behavior.
-	 * \version 1.10
-	 */
-	protected var ECBehaviorActorAnimated.Instance vrLeftHandAnimated
-	
 	
 	
 	/** \brief Create actor action. */
@@ -248,38 +224,6 @@ class BAAFirstPersonVR extends BAAFirstPerson
 		return vrLeftHandGrabber
 	end
 	
-	/**
-	 * \brief VR Right Hand Pose.
-	 * \version 1.10
-	 */
-	public func ECBehaviorVRHandPose.Instance getVRRightHandPose()
-		return vrRightHandPose
-	end
-	
-	/**
-	 * \brief VR Left Hand Pose.
-	 * \version 1.10
-	 */
-	public func ECBehaviorVRHandPose.Instance getVRLeftHandPose()
-		return vrLeftHandPose
-	end
-	
-	/**
-	 * \brief VR Right Hand Animated.
-	 * \version 1.10
-	 */
-	public func ECBehaviorActorAnimated.Instance getVRRightHandAnimated()
-		return vrRightHandAnimated
-	end
-	
-	/**
-	 * \brief VR Left Hand Animated.
-	 * \version 1.10
-	 */
-	public func ECBehaviorActorAnimated.Instance getVRLeftHandAnimated()
-		return vrLeftHandAnimated
-	end
-	
 	
 	
 	/** \brief Start looking up. */
@@ -347,10 +291,6 @@ class BAAFirstPersonVR extends BAAFirstPerson
 			vrLeftHandAttachSlot = vrActor.getVRLeftHandAttachSlot()
 			vrRightHandGrabber = vrActor.getVRRightHandGrabber()
 			vrLeftHandGrabber = vrActor.getVRLeftHandGrabber()
-			vrRightHandPose = vrActor.getVRRightHandPose()
-			vrLeftHandPose = vrActor.getVRLeftHandPose()
-			vrRightHandAnimated = vrActor.getVRRightHandAnimated()
-			vrLeftHandAnimated = vrActor.getVRLeftHandAnimated()
 			
 		else
 			vrPlayspace = ECBehaviorVRPlayspace.getInstanceIn(actor)
@@ -365,10 +305,6 @@ class BAAFirstPersonVR extends BAAFirstPerson
 			vrLeftHandAttachSlot = ECBehaviorAttachSlot.getInstanceIn(actor, BaseVRActorClass.idNonVRLeftHand)
 			vrRightHandGrabber = ECBehaviorGrabber.getInstanceIn(actor, BaseVRActorClass.idNonVRRightHand)
 			vrLeftHandGrabber = ECBehaviorGrabber.getInstanceIn(actor, BaseVRActorClass.idNonVRLeftHand)
-			vrRightHandPose = ECBehaviorVRHandPose.getInstanceIn(actor, BaseVRActorClass.idNonVRRightHand)
-			vrLeftHandPose = ECBehaviorVRHandPose.getInstanceIn(actor, BaseVRActorClass.idNonVRLeftHand)
-			vrRightHandAnimated = ECBehaviorActorAnimated.getInstanceIn(actor, BaseVRActorClass.idNonVRRightHand)
-			vrLeftHandAnimated = ECBehaviorActorAnimated.getInstanceIn(actor, BaseVRActorClass.idNonVRLeftHand)
 		end
 	end
 	
@@ -428,52 +364,6 @@ class BAAFirstPersonVR extends BAAFirstPerson
 		
 		playerInputCrouch.updateLocomotion(elapsed)
 		playerInputMove.updateLocomotion(elapsed)
-	end
-	
-	/**
-	 * \brief Update animator controllers.
-	 * 
-	 * Extends base class implementation to update VR hand animators.
-	 */
-	protected func void updateAnimator( float elapsed )
-		super.updateAnimator(elapsed)
-		
-		if this.vrRightHandPose != null
-			this.vrRightHandPose.updateControllers()
-		end
-		if this.vrLeftHandPose != null
-			this.vrLeftHandPose.updateControllers()
-		end
-		
-		if this.vrRightHandAnimated != null
-			this.vrRightHandAnimated.notifyControllersChanged( elapsed )
-		end
-		if this.vrLeftHandAnimated != null
-			this.vrLeftHandAnimated.notifyControllersChanged( elapsed )
-		end
-	end
-	
-	/**
-	 * \brief Apply animations.
-	 * 
-	 * Extends base class implementation to apply VR hand animators.
-	 */
-	protected func void applyAnimations()
-		super.applyAnimations()
-		
-		if this.vrRightHandPose != null
-			this.vrRightHandPose.applyAnimations()
-		end
-		if this.vrLeftHandPose != null
-			this.vrLeftHandPose.applyAnimations()
-		end
-		
-		if this.vrRightHandAnimated != null
-			this.vrRightHandAnimated.applyAnimations()
-		end
-		if this.vrLeftHandAnimated != null
-			this.vrLeftHandAnimated.applyAnimations()
-		end
 	end
 	
 	

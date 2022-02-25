@@ -51,6 +51,8 @@ class BaseVRActor extends BaseActor
 	private var ECBehaviorVRHandPose.Instance pVRLeftHandPose
 	private var ECBehaviorActorAnimated.Instance pVRRightHandAnimated
 	private var ECBehaviorActorAnimated.Instance pVRLeftHandAnimated
+	private var ECBehaviorVRHandAction.Instance pVRRightHandAction
+	private var ECBehaviorVRHandAction.Instance pVRLeftHandAction
 	
 	
 	
@@ -72,6 +74,8 @@ class BaseVRActor extends BaseActor
 		pVRLeftHandPose = eclass.getVRLeftHandPose().instance(this)
 		pVRRightHandAnimated = eclass.getVRRightHandAnimated().instance(this)
 		pVRLeftHandAnimated = eclass.getVRLeftHandAnimated().instance(this)
+		pVRRightHandAction = eclass.getVRRightHandAction().instance(this)
+		pVRLeftHandAction = eclass.getVRLeftHandAction().instance(this)
 	end
 	
 	
@@ -178,6 +182,22 @@ class BaseVRActor extends BaseActor
 	 */
 	public func ECBehaviorActorAnimated.Instance getVRLeftHandAnimated()
 		return pVRLeftHandAnimated
+	end
+	
+	/**
+	 * \brief VR Right Hand Action.
+	 * \version 1.10
+	 */
+	public func ECBehaviorVRHandAction.Instance getVRRightHandAction()
+		return pVRRightHandAction
+	end
+	
+	/**
+	 * \brief VR Left Hand Action.
+	 * \version 1.10
+	 */
+	public func ECBehaviorVRHandAction.Instance getVRLeftHandAction()
+		return pVRLeftHandAction
 	end
 	
 	

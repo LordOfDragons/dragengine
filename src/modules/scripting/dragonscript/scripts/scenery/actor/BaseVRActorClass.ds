@@ -103,6 +103,8 @@ class BaseVRActorClass extends BaseActorClass
 	private var ECBehaviorVRHandPose pVRLeftHandPose
 	private var ECBehaviorActorAnimated pVRRightHandAnimated
 	private var ECBehaviorActorAnimated pVRLeftHandAnimated
+	private var ECBehaviorVRHandAction pVRRightHandAction
+	private var ECBehaviorVRHandAction pVRLeftHandAction
 	
 	
 	
@@ -200,6 +202,12 @@ class BaseVRActorClass extends BaseActorClass
 			getLocomotion(), idNonVRLeftHand, "actorAnimated(" + idNonVRLeftHand + ").")
 		pVRLeftHandAnimated.getControllerMapping().setAt("idle", LocomotionAttribute.elapsedTime)
 		pVRLeftHandAnimated.getControllerMapping().setAt("interaction", LocomotionAttribute.elapsedTime)
+		
+		// add action support to both hands
+		pVRRightHandAction = ECBehaviorVRHandAction.new(this, pVRRightHand,\
+			getConversationActor(), idVRRightHand)
+		pVRLeftHandAction = ECBehaviorVRHandAction.new(this, pVRLeftHand,\
+			getConversationActor(), idVRLeftHand)
 	end
 	
 	
@@ -318,6 +326,22 @@ class BaseVRActorClass extends BaseActorClass
 	 */
 	public func ECBehaviorActorAnimated getVRLeftHandAnimated()
 		return pVRLeftHandAnimated
+	end
+	
+	/**
+	 * \brief VR Right Hand Action.
+	 * \version 1.10
+	 */
+	public func ECBehaviorVRHandAction getVRRightHandAction()
+		return pVRRightHandAction
+	end
+	
+	/**
+	 * \brief VR Left Hand Action.
+	 * \version 1.10
+	 */
+	public func ECBehaviorVRHandAction getVRLeftHandAction()
+		return pVRLeftHandAction
 	end
 	
 	
