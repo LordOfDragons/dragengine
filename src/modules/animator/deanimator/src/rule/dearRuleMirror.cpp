@@ -221,11 +221,6 @@ void dearRuleMirror::pUpdateBones(){
 		return;
 	}
 	
-	const int count = pMirror.GetMatchNameCount();
-	if( count == 0 ){
-		return;
-	}
-	
 	struct sBone{
 		int index;
 		decString name;
@@ -261,6 +256,7 @@ void dearRuleMirror::pUpdateBones(){
 	
 	pBonePairs = new sBonePair[ mappingCount ];
 	
+	const int count = pMirror.GetMatchNameCount();
 	int j, k, index;
 	
 	for( i=0; i<count; i++ ){
