@@ -264,12 +264,15 @@ class ECBehaviorGrabSpot extends DefaultECBehavior
 		/**
 		 * \brief Grab spot.
 		 * \throws EInvalidParam \em grabber is \em null.
-		 * \throws EInvalidParam Spot is not grabbed.
-		 * \throws EInvalidParam \em grabber is already grabbing  another spot.
+		 * \throws EInvalidParam Spot is grabbed.
+		 * \throws EInvalidParam \em grabber is already grabbing another spot.
 		 */
 		public func void grab(ECBehaviorGrabber.Instance grabber)
-			if pGrabber != null
+			if grabber == null
 				throw ENullPointer.new("grabber")
+			end
+			if pGrabber != null
+				throw EInvalidParam.new("grab spot is grabbed by another grabber")
 			end
 			if grabber.isGrabbing()
 				throw EInvalidParam.new("grabber is grabbing  another grab slot")
