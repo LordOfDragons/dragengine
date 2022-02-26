@@ -91,6 +91,7 @@ private:
 	bool pIsPrepared;
 	
 	bool pMarked;
+	bool pTouchSensorMarked;
 	
 	int pColDetPrepareIndex;
 	bool pAutoColDetPrepare;
@@ -195,6 +196,9 @@ public:
 	inline bool GetMarked() const{ return pMarked; }
 	/** Sets the marked flag. */
 	inline void SetMarked( bool marked ){ pMarked = marked; }
+	
+	inline bool GetTouchSensorMarked() const{ return pTouchSensorMarked; }
+	inline void SetTouchSensorMarked( bool marked ){ pTouchSensorMarked = marked; }
 	
 	/** Determines if this collider has to be simulated using kinematics. */
 	inline bool GetUseKinematicSimulation() const{ return pUseKinematicSim; }

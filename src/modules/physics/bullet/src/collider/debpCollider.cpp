@@ -87,6 +87,7 @@ pCollider( collider )
 	pIsPrepared = false;
 	
 	pMarked = false;
+	pTouchSensorMarked = false;
 	
 	pColDetPrepareIndex = -1;
 	pAutoColDetPrepare = false;
