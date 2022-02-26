@@ -65,7 +65,7 @@ class BaseVRActor extends BaseActor
 		pVRRightHandPointAt = eclass.getVRRightHandPointAt().instance(this)
 		pVRLeftHandPointAt = eclass.getVRLeftHandPointAt().instance(this)
 		pVRRightHandLaserPointer = eclass.getVRRightHandLaserPointer().instance(this)
-		pVRRightHandLaserPointer = eclass.getVRRightHandLaserPointer().instance(this)
+		pVRLeftHandLaserPointer = eclass.getVRLeftHandLaserPointer().instance(this)
 		pVRRightHandAttachSlot = eclass.getVRRightHandAttachSlot().instance(this)
 		pVRLeftHandAttachSlot = eclass.getVRLeftHandAttachSlot().instance(this)
 		pVRRightHandGrabber = eclass.getVRRightHandGrabber().instance(this)
