@@ -616,11 +616,13 @@ void debpPhysicsBody::pCreateRigidBody(){
 	
 	cinfo.m_friction = 0.5f; // default 0.5
 	
-	cinfo.m_rollingFriction = 0.1f; // this solves the rolling issue but totally breaks physics
+// 	cinfo.m_rollingFriction = 0.1f; // this solves the rolling issue but totally breaks physics
 	                                // unless anisotropic rolling friction below is also used
+	cinfo.m_rollingFriction = 0.001f;
 	//cinfo.m_rollingFriction = 0.0f; // default 0, objects roll away and accelerate
 	
-	cinfo.m_spinningFriction = 0.1f; // default 0
+// 	cinfo.m_spinningFriction = 0.1f; // default 0
+	cinfo.m_spinningFriction = 0.001f; // default 0
 	
 	cinfo.m_restitution = 0.0f; // default 0
 	
