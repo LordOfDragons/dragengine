@@ -367,7 +367,7 @@ class ECBehaviorGrabber extends DefaultECBehavior
 		
 		/** \brief Count of touching grab spots. */
 		public func int getTouchingGrabSpotCount()
-			return this.pTouchingGrabSpots.getCount()
+			return pTouchingGrabSpots.getCount()
 		end
 		
 		/** \brief Touching grab spots at index. */
@@ -432,6 +432,21 @@ class ECBehaviorGrabber extends DefaultECBehavior
 		end
 		
 		/**
+		 * \brief Closest touched grab spot closest or null if not found.
+		 * \version 1.10
+		 * 
+		 * Same as closestTouchingGrabSpot() but allows to filter grab spots using a block.
+		 * Block is called with signature (ECBehaviorGrabSpot.Instance) and has to return
+		 * true to consider the grab spot or false to ignore it.
+		 */
+		public func ECBehaviorGrabSpot.Instance closestTouchingGrabSpot(Block ablock)
+			if pTouchSensor == null
+				return null
+			end
+			return touchingGrabSpotClosestTo(pTouchSensor.getPosition(), ablock)
+		end
+		
+		/**
 		 * \brief Touched grab spot closest to position or null if not found.
 		 * 
 		 * Uses the grab slot touch collider position to calculate distance.
@@ -443,6 +458,36 @@ class ECBehaviorGrabber extends DefaultECBehavior
 			
 			for i = 0 to count
 				grabSpot = pTouchingGrabSpots.getAt(i) cast ECBehaviorGrabSpot.Instance
+				distance = (grabSpot.getTouchCollider().getPosition() - position).getLength()
+				
+				if closestGrabSpot == null or distance < closestDistance
+					closestGrabSpot = grabSpot
+					closestDistance = distance
+				end
+			end
+			
+			return closestGrabSpot
+		end
+		
+		/**
+		 * \brief Touched grab spot closest to position or null if not found.
+		 * \version 1.10
+		 * 
+		 * Same as touchingGrabSpotClosestTo(DVector) but allows to filter grab spots using a block.
+		 * Block is called with signature (ECBehaviorGrabSpot.Instance) and has to return
+		 * true to consider the grab spot or false to ignore it.
+		 */
+		public func ECBehaviorGrabSpot.Instance touchingGrabSpotClosestTo(DVector position, Block ablock)
+			var int i, count = pTouchingGrabSpots.getCount()
+			var ECBehaviorGrabSpot.Instance closestGrabSpot, grabSpot
+			var float closestDistance = 0, distance
+			
+			for i = 0 to count
+				grabSpot = pTouchingGrabSpots.getAt(i) cast ECBehaviorGrabSpot.Instance
+				if not ablock.run(grabSpot) cast bool
+					continue
+				end
+				
 				distance = (grabSpot.getTouchCollider().getPosition() - position).getLength()
 				
 				if closestGrabSpot == null or distance < closestDistance
