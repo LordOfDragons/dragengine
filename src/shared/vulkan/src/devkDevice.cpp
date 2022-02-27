@@ -169,13 +169,15 @@ devkQueue &devkDevice::GetTransferQueueAt( int index ) const{
 
 void devkDevice::pCleanUp(){
 	// ensure all queues are idle before releasing them
-	const int queueCount = pConfig.graphicQueueCount + pConfig.computeQueueCount + pConfig.transferQueueCount;
-	int i;
-	for( i=0; i<queueCount; i++ ){
-		pQueues[ i ]->WaitIdle();
+	if( pQueues ){
+		const int queueCount = pConfig.graphicQueueCount + pConfig.computeQueueCount + pConfig.transferQueueCount;
+		int i;
+		for( i=0; i<queueCount; i++ ){
+			pQueues[ i ]->WaitIdle();
+		}
 	}
 	
-	// not it is save to release queues
+	// now it is save to release queues
 	if( pQueues ){
 		delete [] pQueues;
 	}
