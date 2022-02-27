@@ -101,6 +101,7 @@ def jpegBuild(target, source, env):
 	
 	if env['with_debug']:
 		cmdline.append('-DCMAKE_BUILD_TYPE=Debug')
+		cmdline.append('-DCMAKE_POSITION_INDEPENDENT_CODE=True')
 	else:
 		cmdline.append('-DCMAKE_BUILD_TYPE=Release')
 	
