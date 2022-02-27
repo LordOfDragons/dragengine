@@ -75,6 +75,9 @@ def jpegBuild(target, source, env):
 	if env['platform_android'] != 'no' and int(env['apilevel']) < 21:
 		cppflags.extend(['-DSIZE_MAX=4294967295U'])  # defined in stdint.h but android somehow messes this up
 	
+	if env['with_debug']:
+		cppflags.append('-fPIC')
+	
 	script = createScriptHeader(env, cppflags=cppflags)
 	
 	script.append('cd "{}" || exit 1'.format(cmakeBuildDir))
