@@ -17,7 +17,7 @@ pathShared = '{}/modules/rig'.format( envEditor.subst( envEditor[ 'path_igde_sha
 envEditor.Append( CPPFLAGS = parent_env[ 'MODULE_CPPFLAGS' ] )
 envEditor.Append( LINKFLAGS = parent_env[ 'MODULE_LINKFLAGS' ] )
 
-versionString = '1.8'
+versionString = '1.10'
 if envEditor['force_version']:
 	versionString = envEditor['force_version']
 

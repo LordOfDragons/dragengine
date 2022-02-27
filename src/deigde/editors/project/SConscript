@@ -16,7 +16,7 @@ appendLibrary(envEditor, parent_targets['lib_zlib'], libs)
 if envEditor[ 'OSBeOS' ]:
 	libs.append( [ 'root', 'be' ] )
 
-versionString = '1.9'
+versionString = '1.10'
 if envEditor['force_version']:
 	versionString = envEditor['force_version']
 
