@@ -75,9 +75,6 @@ def jpegBuild(target, source, env):
 	if env['platform_android'] != 'no' and int(env['apilevel']) < 21:
 		cppflags.extend(['-DSIZE_MAX=4294967295U'])  # defined in stdint.h but android somehow messes this up
 	
-	if env['with_debug']:
-		cppflags.append('-fPIC')
-	
 	script = createScriptHeader(env, cppflags=cppflags)
 	
 	script.append('cd "{}" || exit 1'.format(cmakeBuildDir))
@@ -102,7 +99,11 @@ def jpegBuild(target, source, env):
 		pass
 		#cmdline.append('-DWITH_SIMD=0') # otherwise fails to compile on 64-bit
 	
-	cmdline.append('-DCMAKE_BUILD_TYPE=Release')
+	if env['with_debug']:
+		cmdline.append('-DCMAKE_BUILD_TYPE=Debug')
+	else:
+		cmdline.append('-DCMAKE_BUILD_TYPE=Release')
+	
 	cmdline.append('-DCMAKE_INSTALL_PREFIX="{}"'.format(buildDir.abspath))
 	
 	# this is required otherwise depending on the platform the install
