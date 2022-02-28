@@ -420,7 +420,7 @@ void deoglVREye::pRender( deoglRenderThread &renderThread ){
 	
 	
 	plan.Render();
-	renderThread.GetRenderers().GetWorld().RenderFinalizeFBO( plan, true );
+	renderThread.GetRenderers().GetWorld().RenderFinalizeFBO( plan, true, false );
 	// set render target dirty?
 }
 

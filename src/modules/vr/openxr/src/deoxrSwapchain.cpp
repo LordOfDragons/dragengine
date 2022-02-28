@@ -55,7 +55,8 @@ pImageCount( 0 )
 		
 		switch( session.GetGraphicApi() ){
 		case deoxrSession::egaOpenGL:
-			createInfo.format = 0x881a; // GL_RGBA16F;
+			createInfo.format = 0x881a; // GL_RGBA16F
+// 			createInfo.format = 0x8c43; // GL_SRGB8_ALPHA8_EXT
 			break;
 			
 		default:

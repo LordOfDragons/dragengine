@@ -753,7 +753,7 @@ void deoglEnvironmentMap::RenderEnvCubeMap( deoglRenderPlan &parentPlan ){
 			fbo.Verify();
 			
 			plan.Render();
-			pRenderThread.GetRenderers().GetWorld().RenderFinalizeFBO( plan, false );
+			pRenderThread.GetRenderers().GetWorld().RenderFinalizeFBO( plan, false, false );
 			pRenderThread.GetRenderers().GetReflection().RenderEnvMapMask( plan, *this, vCubeFaces[ cmf ] );
 			renderTime[ cmf ] = ( int )( timer.GetElapsedTime() * 1000000.0 );
 			renderTime[ 7 ] += renderTime[ cmf ];

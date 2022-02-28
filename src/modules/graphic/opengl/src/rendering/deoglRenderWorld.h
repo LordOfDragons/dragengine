@@ -121,7 +121,7 @@ public:
 	void RenderAntiAliasingPass();
 	
 	/** Render finalize pass to an FBO without color correction. */
-	void RenderFinalizeFBO( deoglRenderPlan &plan, bool withColorCorrection );
+	void RenderFinalizeFBO( deoglRenderPlan &plan, bool withColorCorrection, bool withGammaCorrection );
 	
 	/** Render finalize pass to active graphics context with color correction. */
 	void RenderFinalizeContext( deoglRenderPlan &plan );
