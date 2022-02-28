@@ -599,6 +599,28 @@ decPoint deVROpenXR::GetRenderSize(){
 	return pSystem->GetRenderSize();
 }
 
+deBaseVRModule::eVRRenderFormat deVROpenXR::GetRenderFormat(){
+	// WARNING
+	// 
+	// SteamVR has a huge problem. under windows their OpenXR implementation expects the
+	// rendered images in linear space. under linux though their OpenXR implementation
+	// expects rendered images in gamma corrected space. this is a huge problem since we
+	// can not use the same code for both systems. furthermore non-SteamVR runtimes can
+	// potentially not show such deviating behavior at all.
+	// 
+	// there is no automatic workaround for this problem since OpenXR does not provide
+	// any indication of the behavior used. the only thing we can do is trying to detect
+	// the one failing case, which is SteamVR under Linux. this is far from being a nice
+	// solution but it should keep us running until this mess is fixed or OpenXR obtains
+	// a method to reliably determine what we have to do
+	#ifdef OS_UNIX
+	if( pSystem && pSystem->GetSystem() == deoxrSystem::esSteamVR ){
+		return evrrfSRGBA8;
+	}
+	#endif
+	return evrrfRGBA16;
+}
+
 void deVROpenXR::GetProjectionParameters( eEye eye, float &left, float &right, float &top, float &bottom ){
 	const deMutexGuard lock( pMutexOpenXR );
 	// returned values are used directly in projection matrix. these values are also

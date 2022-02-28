@@ -178,6 +178,19 @@ public:
 		evreRight
 	};
 	
+	/**
+	 * \brief VR render format.
+	 * \warning For Graphic Module use only.
+	 */
+	enum eVRRenderFormat{
+		evrrfRGBA16,
+		evrrfRGB16,
+		evrrfRGBA8,
+		evrrfRGB8,
+		evrrfSRGBA8,
+		evrrfSRGB8
+	};
+	
 	
 	
 	/**
@@ -185,6 +198,13 @@ public:
 	 * \warning For Graphic Module use only.
 	 */
 	virtual decPoint GetRenderSize() = 0;
+	
+	/**
+	 * \brief VR required render format.
+	 * \version 1.10
+	 * \warning For Graphic Module use only.
+	 */
+	virtual eVRRenderFormat GetRenderFormat();
 	
 	/**
 	 * \brief VR render projection matrix parameters.

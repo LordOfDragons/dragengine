@@ -38,6 +38,10 @@ deBaseVRModule::~deBaseVRModule(){
 // Management
 ///////////////
 
+deBaseVRModule::eVRRenderFormat deBaseVRModule::GetRenderFormat(){
+	DETHROW( deeInvalidParam );
+}
+
 int deBaseVRModule::GetEyeViewImages( eEye, int count, void* ){
 	if( count == 0 ){
 		return 0;

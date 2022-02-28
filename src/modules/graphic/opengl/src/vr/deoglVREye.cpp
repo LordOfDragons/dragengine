@@ -55,6 +55,7 @@
 deoglVREye::deoglVREye( deoglVR &vr, deBaseVRModule::eEye eye ) :
 pVR( vr ),
 pEye( eye ),
+pRenderFormat( deBaseVRModule::evrrfRGB16 ),
 pProjectionLeft( -1.0f ),
 pProjectionRight( 1.0f ),
 pProjectionTop( 1.0f ),
@@ -63,7 +64,8 @@ pVRGetViewsBuffer( nullptr ),
 pVRGetViewsBufferSize( 0 ),
 pVRViewImages( nullptr ),
 pVRViewImageCount( 0 ),
-pAcquiredVRViewImage( -1 ){
+pAcquiredVRViewImage( -1 ),
+pUseGammaCorrection( false ){
 }
 
 deoglVREye::~deoglVREye(){
@@ -263,6 +265,17 @@ void deoglVREye::Submit( deBaseVRModule &vrmodule ){
 
 void deoglVREye::pGetParameters( deBaseVRModule &vrmodule ){
 	pTargetSize = vrmodule.GetRenderSize();
+	pRenderFormat = vrmodule.GetRenderFormat();
+	
+	switch( pRenderFormat ){
+	case deBaseVRModule::evrrfSRGB8:
+	case deBaseVRModule::evrrfSRGBA8:
+		pUseGammaCorrection = true;
+		break;
+		
+	default:
+		pUseGammaCorrection = false;
+	}
 	
 	float p[ 4 ];
 	vrmodule.GetProjectionParameters( pEye, p[ 0 ], p[ 1 ], p[ 2 ], p[ 3 ] );
@@ -290,7 +303,8 @@ void deoglVREye::pGetParameters( deBaseVRModule &vrmodule ){
 
 void deoglVREye::pLogParameters( deoglRenderThread &renderThread ){
 	const char * const prefix = LogPrefix();
-	renderThread.GetLogger().LogInfoFormat( "%s: size=(%d,%d)", prefix, pTargetSize.x, pTargetSize.y );
+	renderThread.GetLogger().LogInfoFormat( "%s: size=(%d,%d) format=%d useGamma=%d",
+		prefix, pTargetSize.x, pTargetSize.y, pRenderFormat, pUseGammaCorrection );
 	
 	renderThread.GetLogger().LogInfoFormat(
 		"%s: matrix view to eye:\n[%g,%g,%g,%g]\n[%g,%g,%g,%g]\n[%g,%g,%g,%g]", prefix,
@@ -420,7 +434,7 @@ void deoglVREye::pRender( deoglRenderThread &renderThread ){
 	
 	
 	plan.Render();
-	renderThread.GetRenderers().GetWorld().RenderFinalizeFBO( plan, true, false );
+	renderThread.GetRenderers().GetWorld().RenderFinalizeFBO( plan, true, pUseGammaCorrection );
 	// set render target dirty?
 }
 

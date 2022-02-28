@@ -53,6 +53,7 @@ private:
 	decPoint pSize;
 	
 	XrSwapchain pSwapchain;
+	int64_t pImageFormat;
 	
 	sImage *pImages;
 	int pImageCount;
@@ -85,6 +86,9 @@ public:
 	
 	/** Swapchain. */
 	inline XrSwapchain GetSwapchain() const{ return pSwapchain; }
+	
+	/** Image format. */
+	inline int64_t GetImageFormat() const{ return pImageFormat; }
 	
 	/** Count of images. */
 	inline int GetImageCount() const{ return pImageCount; }

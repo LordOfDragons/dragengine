@@ -52,6 +52,7 @@ private:
 	
 	decPoint pTargetSize;
 	decPoint pRenderSize;
+	deBaseVRModule::eVRRenderFormat pRenderFormat;
 	
 	double pProjectionLeft;
 	double pProjectionRight;
@@ -69,11 +70,13 @@ private:
 	GLuint *pVRGetViewsBuffer;
 	int pVRGetViewsBufferSize;
 	
-	   sViewImage *pVRViewImages;
+	sViewImage *pVRViewImages;
 	int pVRViewImageCount;
 	decVector2 pVRViewTCFrom;
 	decVector2 pVRViewTCTo;
 	int pAcquiredVRViewImage;
+	
+	bool pUseGammaCorrection;
 	
 	
 	
@@ -112,6 +115,9 @@ public:
 	/** Texture coordinates to use to render from render target to canvas. */
 	inline const decVector2 &GetCanvasTCFrom() const{ return pCanvasTCFrom; }
 	inline const decVector2 &GetCanvasTCTo() const{ return pCanvasTCTo; }
+	
+	/** Use gamma correction. */
+	inline bool GetUseGammaCorrection() const{ return pUseGammaCorrection; }
 	
 	/**
 	 * Create projection matrix matching depth usage mode. Depending on the inverse depth

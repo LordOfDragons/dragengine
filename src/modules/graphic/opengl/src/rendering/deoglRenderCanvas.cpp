@@ -796,7 +796,6 @@ const deoglRCanvasRenderWorld &canvas ){
 	decColorMatrix colorTransform;
 	
 	if( ! vr ){
-		// vr is already color corrected (brightness, contrast) but not gamma
 		colorTransform *= decColorMatrix::CreateContrast( config.GetContrast() );
 		colorTransform *= decColorMatrix::CreateBrightness( config.GetBrightness() );
 	}
@@ -804,8 +803,13 @@ const deoglRCanvasRenderWorld &canvas ){
 	colorTransform *= decColorMatrix::CreateScaling( 1.0f, 1.0f, 1.0f, transparency );
 	colorTransform *= context.GetColorTransform();
 	
-	shader.SetParameterColorMatrix5x4( spcColorTransform, spcColorTransform2, colorTransform );
-	shader.SetParameterFloat( spcGamma, gamma, gamma, gamma, 1.0f );
+	if( ! vr || ! vr->GetLeftEye().GetUseGammaCorrection() ){
+		shader.SetParameterColorMatrix5x4( spcColorTransform, spcColorTransform2, colorTransform );
+		shader.SetParameterFloat( spcGamma, gamma, gamma, gamma, 1.0f );
+		
+	}else{
+		shader.SetParameterFloat( spcGamma, 1.0f, 1.0f, 1.0f, 1.0f );
+	}
 	
 	// set clipping
 	shader.SetParameterFloat( spcClipRect,

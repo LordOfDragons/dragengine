@@ -605,6 +605,14 @@ decPoint deVROpenVR::GetRenderSize(){
 	return decPoint( ( int )width, ( int )height );
 }
 
+deBaseVRModule::eVRRenderFormat deVROpenVR::GetRenderFormat(){
+	// see deVROpenXR::GetRenderFormat for the reason for this workaround
+	#ifdef OS_UNIX
+	return evrrfSRGBA8;
+	#endif
+	return evrrfRGBA8;
+}
+
 void deVROpenVR::GetProjectionParameters( eEye eye, float &left, float &right, float &top, float &bottom ){
 	// GetProjectionRaw is the half tan angles from center
 	GetVRSystem().GetProjectionRaw( ConvertEye( eye ), &left, &right, &top, &bottom );

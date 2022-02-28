@@ -283,6 +283,9 @@ public:
 	/** VR recommended render target size. */
 	virtual decPoint GetRenderSize();
 	
+	/** \brief VR required render format. */
+	virtual eVRRenderFormat GetRenderFormat();
+	
 	/** VR render projection matrix parameters. */
 	virtual void GetProjectionParameters( eEye eye, float &left,
 		float &right, float &top, float &bottom );
