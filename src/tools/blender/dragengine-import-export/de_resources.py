@@ -116,7 +116,7 @@ class Armature:
 			self.position = vector_by_matrix(matmul(scalePosition, self.matrix), Vector())
 			self.rotation = matrixToEuler(self.matrix)
 			
-			self.scaling = scale  # dimensions is already in scaled #vector_by_matrix(scalePosition, scale)
+			self.scaling = vector_by_matrix(scalePosition, scale)
 			self.scaling = Vector([math.fabs(self.scaling.x), math.fabs(self.scaling.y), math.fabs(self.scaling.z)])
 	
 	# constructor
