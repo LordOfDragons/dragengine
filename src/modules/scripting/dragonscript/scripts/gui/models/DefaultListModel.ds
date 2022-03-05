@@ -276,6 +276,58 @@ class DefaultListModel implements ListModel
 	end
 	
 	/**
+	 * \brief Move element to new location.
+	 * \version 1.11
+	 * 
+	 * Same as calling remove(Object) and insert(int,Object) but sending only one change
+	 * notification for the entire range of content between the two positions.
+	 */
+	public func void move(Object object, int index)
+		if index < 0
+			throw EInvalidParam.new("index < 0")
+		end
+		if index > pElements.getCount()
+			throw EInvalidParam.new("index > count")
+		end
+		
+		var int indexFrom = pElements.indexOf(object)
+		if indexFrom == -1
+			throw EInvalidParam.new("object absent")
+		end
+		
+		if indexFrom == index
+			return
+		end
+		
+		pElements.move(indexFrom, index)
+		
+		if index > indexFrom
+			notifyContentChanged(indexFrom, index)
+			
+			if pSelected != -1
+				if pSelected == indexFrom
+					setSelected(index)
+					
+				elif pSelected > indexFrom and pSelected <= index
+					setSelected(pSelected - 1)
+				end
+			end
+			
+		else
+			notifyContentChanged(index, indexFrom)
+			
+			if pSelected != -1
+				if pSelected == indexFrom
+					setSelected(index)
+					
+				elif pSelected >= index and pSelected < indexFrom
+					setSelected(pSelected + 1)
+				end
+			end
+		end
+	end
+	
+	/**
 	 * \brief Remove element.
 	 * 
 	 * After removing a content changed event is send to listeners. If you have to remove
@@ -469,17 +521,32 @@ class DefaultListModel implements ListModel
 	
 	
 	/**
-	 * \brief Visit content with block with parameter Object.
+	 * \brief Visit content with block.
+	 * 
+	 * Block is called with argument Object.
 	 */
 	public func void forEach(Block ablock)
 		pElements.forEach(ablock)
 	end
 	
 	/**
-	 * \brief Find object with block with parameter Object returning bool.
+	 * \brief Find first object for which block returns true.
+	 * 
+	 * Block is called with argument Object and has to return bool.
 	 */
 	public func Object find(Block ablock)
 		return pElements.find(ablock)
+	end
+	
+	/**
+	 * \brief Return array with content for which block returns true.
+	 * \version 1.11
+	 * 
+	 * Block is called with argument Object and has to return bool.
+	 * Returns Array of Object.
+	 */
+	public func Array collect(Block ablock)
+		return pElements.collect(ablock)
 	end
 	
 	
