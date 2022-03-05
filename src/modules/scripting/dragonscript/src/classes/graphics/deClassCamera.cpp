@@ -520,7 +520,7 @@ void deClassCamera::nfGetParentWorld::RunFunction( dsRunTime *rt, dsValue *mysel
 
 // public func DMatrix getMatrix()
 deClassCamera::nfGetMatrix::nfGetMatrix( const sInitData &init ) :
-dsFunction( init.clsWorld, "getMatrix", DSFT_FUNCTION,
+dsFunction( init.clsCamera, "getMatrix", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsDMatrix ){
 }
 void deClassCamera::nfGetMatrix::RunFunction( dsRunTime *rt, dsValue *myself ){
