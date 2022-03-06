@@ -600,6 +600,10 @@ void deVROpenVR::ProcessEvents(){
 ////////////////////////////
 
 decPoint deVROpenVR::GetRenderSize(){
+	if( ! pVRSystem ){
+		return decPoint( 1024, 1024 );
+	}
+	
 	uint32_t width, height;
 	GetVRSystem().GetRecommendedRenderTargetSize( &width, &height );
 	return decPoint( ( int )width, ( int )height );
@@ -614,17 +618,49 @@ deBaseVRModule::eVRRenderFormat deVROpenVR::GetRenderFormat(){
 }
 
 void deVROpenVR::GetProjectionParameters( eEye eye, float &left, float &right, float &top, float &bottom ){
+	if( ! pVRSystem ){
+		switch( eye ){
+		case deBaseVRModule::evreLeft:
+			left = -1.39863f;
+			right = 1.24906f;
+			top = -1.47526f;
+			bottom = 1.46793f;
+			return;
+			
+		case deBaseVRModule::evreRight:
+			left = -1.24382;
+			right = 1.39166;
+			top = -1.47029;
+			bottom = 1.45786;
+			return;
+		}
+	}
+	
 	// GetProjectionRaw is the half tan angles from center
 	GetVRSystem().GetProjectionRaw( ConvertEye( eye ), &left, &right, &top, &bottom );
 }
 
 decMatrix deVROpenVR::GetMatrixViewEye( eEye eye ){
+	if( ! pVRSystem ){
+		switch( eye ){
+		case deBaseVRModule::evreLeft:
+			return decMatrix::CreateTranslation(0.0303, 0, 0.015);
+			
+		case deBaseVRModule::evreRight:
+			return decMatrix::CreateTranslation(-0.0303, 0, 0.015);
+		}
+	}
+	
 	// NOTE openvr documentation states transformation is "Model * View * Eye^-1 * Projection".
 	//      what we need is thus the inverse of the eye matrix
 	return ConvertMatrix( GetVRSystem().GetEyeToHeadTransform( ConvertEye( eye ) ) ).QuickInvert();
 }
 
 deModel *deVROpenVR::GetHiddenArea( eEye eye ){
+	if( ! pVRSystem ){
+		return nullptr;
+	}
+	
 	switch( eye ){
 	case deBaseVRModule::evreLeft:
 		if( ! pHiddenMeshLeftEye ){
