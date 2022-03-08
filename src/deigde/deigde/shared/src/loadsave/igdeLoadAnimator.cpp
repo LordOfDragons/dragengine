@@ -819,7 +819,6 @@ deAnimatorRule * igdeLoadAnimator::pReadRuleInverseKinematic( const decXmlElemen
 	const int elementCount = root.GetElementCount();
 	deAnimatorRuleInverseKinematic *rule = NULL;
 	decVector vector;
-	const char *name;
 	int e;
 	
 	try{
@@ -831,52 +830,87 @@ deAnimatorRule * igdeLoadAnimator::pReadRuleInverseKinematic( const decXmlElemen
 				continue;
 			}
 			
-			if( strcmp( tag->GetName(), "goalPosition" ) == 0 ){
+			const decString &tagName = tag->GetName();
+			if( tagName == "goalPosition" ){
 				vector.SetZero();
 				ReadVector( *tag, vector );
 				rule->SetGoalPosition( vector );
 				
-			}else if( strcmp( tag->GetName(), "goalOrientation" ) == 0 ){
+			}else if( tagName == "goalOrientation" ){
 				vector.SetZero();
 				ReadVector( *tag, vector );
 				rule->SetGoalOrientation( decMatrix::CreateRotation( vector * DEG2RAD ).ToQuaternion() );
 				
-			}else if( strcmp( tag->GetName(), "localPosition" ) == 0 ){
+			}else if( tagName == "localPosition" ){
 				vector.SetZero();
 				ReadVector( *tag, vector );
 				rule->SetLocalPosition( vector );
 				
-			}else if( strcmp( tag->GetName(), "localOrientation" ) == 0 ){
+			}else if( tagName == "localOrientation" ){
 				vector.SetZero();
 				ReadVector( *tag, vector );
 				rule->SetLocalOrientation( decMatrix::CreateRotation( vector * DEG2RAD ).ToQuaternion() );
 				
-			}else if( strcmp( tag->GetName(), "adjustOrientation" ) == 0 ){
+			}else if( tagName == "adjustOrientation" ){
 				rule->SetAdjustOrientation( GetCDataBool( *tag ) );
 				
-			}else if( strcmp( tag->GetName(), "solverBone" ) == 0 ){
+			}else if( tagName == "solverBone" ){
 				rule->SetSolverBone( GetCDataString( *tag ) );
 				
-			}else if( strcmp( tag->GetName(), "useSolverBone" ) == 0 ){
+			}else if( tagName == "useSolverBone" ){
 				rule->SetUseSolverBone( GetCDataBool( *tag ) );
 				
-			}else if( strcmp( tag->GetName(), "target" ) == 0 ){
-				name = GetAttributeString( *tag, "name" );
+			}else if( tagName == "reachRange" ){
+				rule->SetReachRange( GetCDataFloat( *tag ) );
 				
-				if( strcmp( name, "blendFactor" ) == 0 ){
+			}else if( tagName == "reachBone" ){
+				rule->SetReachBone( GetCDataString( *tag ) );
+				
+			}else if ( tagName == "reachCenter" ){
+				vector.SetZero();
+				ReadVector( *tag, vector );
+				rule->SetReachCenter( vector );
+				
+			}else if( tagName == "guidePosition" ){
+				vector.SetZero();
+				ReadVector( *tag, vector );
+				rule->SetGuidePosition( vector );
+				
+			}else if( tagName == "guideBone" ){
+				rule->SetGuideBone( GetCDataString( *tag ) );
+				
+			}else if( tagName == "useGuideSolverBone" ){
+				rule->SetUseGuideSolverBone( GetCDataBool( *tag ) );
+				
+			}else if( tagName == "guideSolverBone" ){
+				rule->SetGuideSolverBone( GetCDataString( *tag ) );
+				
+			}else if( tagName == "target" ){
+				const decString &name = GetAttributeString( *tag, "name" );
+				
+				if( name == "blendFactor" ){
 					pReadControllerTarget( *tag, animator, rule->GetTargetBlendFactor() );
 					
-				}else if( strcmp( name, "goalPosition" ) == 0 ){
+				}else if( name == "goalPosition" ){
 					pReadControllerTarget( *tag, animator, rule->GetTargetGoalPosition() );
 					
-				}else if( strcmp( name, "goalOrientation" ) == 0 ){
+				}else if( name == "goalOrientation" ){
 					pReadControllerTarget( *tag, animator, rule->GetTargetGoalOrientation() );
 					
-				}else if( strcmp( name, "localPosition" ) == 0 ){
+				}else if( name == "localPosition" ){
 					pReadControllerTarget( *tag, animator, rule->GetTargetLocalPosition() );
 					
-				}else if( strcmp( name, "localOrientation" ) == 0 ){
+				}else if( name == "localOrientation" ){
 					pReadControllerTarget( *tag, animator, rule->GetTargetLocalOrientation() );
+					
+				}else if( name == "reachRange" ){
+					pReadControllerTarget( *tag, animator, rule->GetTargetReachRange() );
+					
+				}else if( name == "reachCenter" ){
+					pReadControllerTarget( *tag, animator, rule->GetTargetReachCenter() );
+					
+				}else if( name == "guidePosition" ){
+					pReadControllerTarget( *tag, animator, rule->GetTargetGuidePosition() );
 					
 				}else{
 					LogErrorUnknownValue( *tag, name );

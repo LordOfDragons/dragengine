@@ -64,12 +64,18 @@ private:
 	decString pReachBone;
 	decVector pReachCenter;
 	
+	decVector pGuidePosition;
+	decString pGuideBone;
+	bool pUseGuideSolverBone;
+	decString pGuideSolverBone;
+	
 	deAnimatorControllerTarget pTargetGoalPosition;
 	deAnimatorControllerTarget pTargetGoalOrientation;
 	deAnimatorControllerTarget pTargetLocalPosition;
 	deAnimatorControllerTarget pTargetLocalOrientation;
 	deAnimatorControllerTarget pTargetReachRange;
 	deAnimatorControllerTarget pTargetReachCenter;
+	deAnimatorControllerTarget pTargetGuidePosition;
 	
 	
 	
@@ -175,6 +181,56 @@ public:
 	
 	
 	
+	/**
+	 * \brief Guide position.
+	 * \version 1.11
+	 */
+	inline const decVector &GetGuidePosition() const{ return pGuidePosition; }
+	
+	/**
+	 * \brief Set guide position.
+	 * \version 1.1
+	 */
+	void SetGuidePosition( const decVector &position );
+	
+	/**
+	 * \brief Guide bone or empty string to not use.
+	 * \version 1.11
+	 */
+	inline const decString &GetGuideBone() const{ return pGuideBone; }
+	
+	/**
+	 * \brief Set guide bone or empty string to not use.
+	 * \version 1.11
+	 */
+	void SetGuideBone( const char *boneName );
+	
+	/**
+	 * \brief Use guide solver bone.
+	 * \version 1.11
+	 */
+	inline bool GetUseGuideSolverBone() const{ return pUseGuideSolverBone; }
+	
+	/**
+	 * \brief Set if guide solver bone is used.
+	 * \version 1.11
+	 */
+	void SetUseGuideSolverBone( bool useGuideSolverBone );
+	
+	/**
+	 * \brief Name of guide solver bone.
+	 * \version 1.11
+	 */
+	inline const decString &GetGuideSolverBone() const{ return pGuideSolverBone; }
+	
+	/**
+	 * \brief Set name of guide solver bone.
+	 * \version 1.11
+	 */
+	void SetGuideSolverBone( const char *boneName );
+	
+	
+	
 	/** \brief Goal position target. */
 	inline deAnimatorControllerTarget &GetTargetGoalPosition(){ return pTargetGoalPosition; }
 	inline const deAnimatorControllerTarget &GetTargetGoalPosition() const{ return pTargetGoalPosition; }
@@ -198,6 +254,13 @@ public:
 	/** \brief Reach center target. */
 	inline deAnimatorControllerTarget &GetTargetReachCenter(){ return pTargetReachCenter; }
 	inline const deAnimatorControllerTarget &GetTargetReachCenter() const{ return pTargetReachCenter; }
+	
+	/**
+	 * \brief Guide position target.
+	 * \version 1.11
+	 */
+	inline deAnimatorControllerTarget &GetTargetGuidePosition(){ return pTargetGuidePosition; }
+	inline const deAnimatorControllerTarget &GetTargetGuidePosition() const{ return pTargetGuidePosition; }
 	/*@}*/
 	
 	

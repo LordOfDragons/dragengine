@@ -50,7 +50,8 @@ public:
 		etLocalPosition,
 		etLocalOrientation,
 		etReachRange,
-		etReachCenter
+		etReachCenter,
+		etGuidePosition
 	};
 	
 private:
@@ -118,6 +119,10 @@ private:
 	DEF_NATFUNC( nfSetReachRange );
 	DEF_NATFUNC( nfSetReachBone );
 	DEF_NATFUNC( nfSetReachCenter );
+	DEF_NATFUNC( nfSetGuidePosition );
+	DEF_NATFUNC( nfSetGuideBone );
+	DEF_NATFUNC( nfSetUseGuideSolverBone );
+	DEF_NATFUNC( nfSetGuideSolverBone );
 #undef DEF_NATFUNC
 };
 

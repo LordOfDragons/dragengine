@@ -38,6 +38,10 @@
 #include "../../../undosys/rule/ik/aeURuleIKSetReachCenter.h"
 #include "../../../undosys/rule/ik/aeURuleIKSetReachRange.h"
 #include "../../../undosys/rule/ik/aeURuleIKSetReachBone.h"
+#include "../../../undosys/rule/ik/aeURuleIKSetGuidePosition.h"
+#include "../../../undosys/rule/ik/aeURuleIKSetGuideBone.h"
+#include "../../../undosys/rule/ik/aeURuleIKSetUseGuideSolverBone.h"
+#include "../../../undosys/rule/ik/aeURuleIKSetGuideSolverBone.h"
 
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeCommonDialogs.h>
@@ -302,6 +306,53 @@ public:
 	}
 };
 
+
+class cEditGuidePosition : public cBaseEditVectorListener{
+public:
+	cEditGuidePosition( aeWPAPanelRuleInverseKinematic &panel ) : cBaseEditVectorListener( panel ){ }
+	
+	virtual igdeUndo *OnChanged( igdeEditVector *editVector, aeAnimator*, aeRuleInverseKinematic *rule ){
+		return ! editVector->GetVector().IsEqualTo( rule->GetGuidePosition() )
+			? new aeURuleIKSetGuidePosition( rule, editVector->GetVector() ) : NULL;
+	}
+};
+
+class cComboGuideBone : public cBaseComboBoxListener{
+public:
+	cComboGuideBone( aeWPAPanelRuleInverseKinematic &panel ) : cBaseComboBoxListener( panel ){ }
+	
+	virtual igdeUndo *OnChanged( igdeComboBox *comboBox, aeAnimator*, aeRuleInverseKinematic *rule ){
+		return comboBox->GetText() != rule->GetGuideBone()
+			? new aeURuleIKSetGuideBone( rule, comboBox->GetText() ) : NULL;
+	}
+};
+
+class cActionUseGuideSolverBone : public cBaseAction{
+public:
+	cActionUseGuideSolverBone( aeWPAPanelRuleInverseKinematic &panel ) :
+	cBaseAction( panel, "Use guide solver bone", NULL,
+		"Determines if bone is used as position for guiding inverse kinematic solver" ){ }
+	
+	virtual igdeUndo *OnAction( aeAnimator*, aeRuleInverseKinematic *rule ){
+		return new aeURuleIKSetUseGuideSolverBone( rule );
+	}
+	
+	virtual void Update( const aeAnimator & , const aeRuleInverseKinematic &rule ){
+		SetEnabled( true );
+		SetSelected( rule.GetUseGuideSolverBone() );
+	}
+};
+
+class cComboGuideSolverBone : public cBaseComboBoxListener{
+public:
+	cComboGuideSolverBone( aeWPAPanelRuleInverseKinematic &panel ) : cBaseComboBoxListener( panel ){ }
+	
+	virtual igdeUndo *OnChanged( igdeComboBox *comboBox, aeAnimator*, aeRuleInverseKinematic *rule ){
+		return comboBox->GetText() != rule->GetGuideSolverBone()
+			? new aeURuleIKSetGuideSolverBone( rule, comboBox->GetText() ) : NULL;
+	}
+};
+
 }
 
 
@@ -356,6 +407,23 @@ aeWPAPanelRule( wpRule, deAnimatorRuleVisitorIdentify::ertInverseKinematic )
 	
 	helper.EditVector( groupBox, "Center:", "Center to use for reach calculation if bone is not set",
 		pEditReachCenter, new cEditReachCenter( *this ) );
+	
+	
+	// guide
+	helper.GroupBox( *this, groupBox, "Guide:", true );
+	
+	helper.EditVector( groupBox, "Guide Position:", "Set position to guide inverse kinematic solver",
+		pEditGuidePosition, new cEditGuidePosition( *this ) );
+	
+	helper.ComboBoxFilter( groupBox, "Guide Bone:", true, "Set bone to use to guide inverse kinematic solver",
+		pCBGuideBone, new cComboGuideBone( *this ) );
+	pCBGuideBone->SetDefaultSorter();
+	
+	helper.ComboBoxFilter( groupBox, "Guide Solver Bone:", true,
+		"Set bone to use to get position for guiding inverse kinematic solver",
+		pCBGuideSolverBone, new cComboGuideSolverBone( *this ) );
+	pCBGuideSolverBone->SetDefaultSorter();
+	helper.CheckBox( groupBox, pChkUseGuideSolverBone, new cActionUseGuideSolverBone( *this ), true );
 }
 
 aeWPAPanelRuleInverseKinematic::~aeWPAPanelRuleInverseKinematic(){
@@ -371,9 +439,13 @@ void aeWPAPanelRuleInverseKinematic::UpdateRigBoneList(){
 	
 	const decString selectionSolver( pCBSolverBone->GetText() );
 	const decString selectionReach( pCBReachBone->GetText() );
+	const decString selectionGuide( pCBGuideBone->GetText() );
+	const decString selectionGuideSolver( pCBGuideSolverBone->GetText() );
 	
 	pCBSolverBone->RemoveAllItems();
 	pCBReachBone->RemoveAllItems();
+	pCBGuideBone->RemoveAllItems();
+	pCBGuideSolverBone->RemoveAllItems();
 	
 	if( GetAnimator() ){
 		const deRig * const rig = GetAnimator()->GetEngineRig();
@@ -383,10 +455,14 @@ void aeWPAPanelRuleInverseKinematic::UpdateRigBoneList(){
 			for( i=0; i<count; i++ ){
 				pCBSolverBone->AddItem( rig->GetBoneAt( i ).GetName() );
 				pCBReachBone->AddItem( rig->GetBoneAt( i ).GetName() );
+				pCBGuideBone->AddItem( rig->GetBoneAt( i ).GetName() );
+				pCBGuideSolverBone->AddItem( rig->GetBoneAt( i ).GetName() );
 			}
 		}
 		pCBSolverBone->SortItems();
 		pCBReachBone->SortItems();
+		pCBGuideBone->SortItems();
+		pCBGuideSolverBone->SortItems();
 	}
 	
 	pCBSolverBone->StoreFilterItems();
@@ -394,6 +470,12 @@ void aeWPAPanelRuleInverseKinematic::UpdateRigBoneList(){
 	
 	pCBReachBone->StoreFilterItems();
 	pCBReachBone->SetText( selectionReach );
+	
+	pCBGuideBone->StoreFilterItems();
+	pCBGuideBone->SetText( selectionGuide );
+	
+	pCBGuideSolverBone->StoreFilterItems();
+	pCBGuideSolverBone->SetText( selectionGuideSolver );
 }
 
 void aeWPAPanelRuleInverseKinematic::UpdateRule(){
@@ -410,6 +492,9 @@ void aeWPAPanelRuleInverseKinematic::UpdateRule(){
 		pEditReachRange->SetFloat( rule->GetReachRange() );
 		pEditReachCenter->SetVector( rule->GetReachCenter() );
 		pCBReachBone->SetText( rule->GetReachBone() );
+		pEditGuidePosition->SetVector( rule->GetGuidePosition() );
+		pCBGuideBone->SetText( rule->GetGuideBone() );
+		pCBGuideSolverBone->SetText( rule->GetGuideSolverBone() );
 		
 	}else{
 		pEditGoalPos->SetVector( decVector() );
@@ -420,6 +505,9 @@ void aeWPAPanelRuleInverseKinematic::UpdateRule(){
 		pEditReachRange->ClearText();
 		pEditReachCenter->SetVector( decVector() );
 		pCBReachBone->ClearText();
+		pEditGuidePosition->SetVector( decVector() );
+		pCBGuideBone->ClearText();
+		pCBGuideSolverBone->ClearText();
 	}
 	
 	const bool enabled = rule;
@@ -431,9 +519,13 @@ void aeWPAPanelRuleInverseKinematic::UpdateRule(){
 	pEditReachRange->SetEnabled( enabled );
 	pEditReachCenter->SetEnabled( enabled );
 	pCBReachBone->SetEnabled( enabled );
+	pEditGuidePosition->SetEnabled( enabled );
+	pCBGuideBone->SetEnabled( enabled );
+	pCBGuideSolverBone->SetEnabled( enabled );
 	
 	pChkAdjustRotation->GetAction()->Update();
 	pChkUseSolverBone->GetAction()->Update();
+	pChkUseGuideSolverBone->GetAction()->Update();
 }
 
 void aeWPAPanelRuleInverseKinematic::UpdateTargetList(){
@@ -447,5 +539,6 @@ void aeWPAPanelRuleInverseKinematic::UpdateTargetList(){
 		AddTarget( "Local Orientation", &rule->GetTargetLocalOrientation() );
 		AddTarget( "Reach Range", &rule->GetTargetReachRange() );
 		AddTarget( "Reach Center", &rule->GetTargetReachCenter() );
+		AddTarget( "Guide Position", &rule->GetTargetGuidePosition() );
 	}
 }

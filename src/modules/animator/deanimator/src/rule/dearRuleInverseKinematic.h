@@ -38,21 +38,24 @@ private:
 	dearIKWorkState *pChain;
 	int pChainCount;
 	
-	int pSolverBone;
-	
 	dearControllerTarget pTargetGoalPosition;
 	dearControllerTarget pTargetGoalOrientation;
 	dearControllerTarget pTargetLocalPosition;
 	dearControllerTarget pTargetLocalOrientation;
-	
 	dearControllerTarget pTargetReachRange;
 	dearControllerTarget pTargetReachCenter;
+	dearControllerTarget pTargetGuidePosition;
 	
+	int pSolverBone;
 	int pReachBone;
+	int pGuideBone;
+	int pGuideSolverBone;
+	int pChainIndexGuide;
 	
 	const bool pAdjustPosition;
 	const bool pAdjustOrientation;
 	const bool pUseSolverBone;
+	const bool pUseGuideSolverBone;
 	
 	const decVector pGoalPosition;
 	const decQuaternion pGoalOrientation;
@@ -61,6 +64,8 @@ private:
 	
 	const float pReachRange;
 	const decVector pReachCenter;
+	
+	const decVector pGuidePosition;
 	
 public:
 	/** \name Constructors and Destructors */

@@ -28,245 +28,318 @@ pin Dragengine.Utils
 
 
 /**
- * Definition of a inverse kinematic animator rule. Once defined a rule can be
- * added to an animator using the stored definition.
+ * \brief Definition of a inverse kinematic animator rule.
+ * 
+ * Once defined a rule can be added to an animator using the stored definition.
  */
 class ADRuleInverseKinematic extends ADRule
-	/** Goal position. */
-	private var Vector pGoalPos
-	
-	/** Goal orientation. */
-	private var Vector pGoalOrient
-	
-	/** Local position. */
-	private var Vector pLocalPos
-	
-	/** Local orientation. */
-	private var Vector pLocalOrient
-	
-	/** Adjust position. */
+	private var Vector pGoalPosition
+	private var Vector pGoalOrientation
+	private var Vector pLocalPosition
+	private var Vector pLocalOrientation
 	private var bool pAdjustPosition
-	
-	/** Adjust orientation. */
 	private var bool pAdjustOrientation
-	
-	/** Name of the solver bone. */
 	private var String pSolverBone
-	
-	/** Determines if the solver bone is used. */
 	private var bool pUseSolverBone
 	
-	
-	
-	/** Limit reach in meters. 0 disables reach limit. */
 	private var float pReachRange
-	
-	/** Bone to use as reach origin. */
 	private var String pReachBone
-	
-	/** Reach center if no bone is used. */
 	private var Vector pReachCenter
 	
+	private var Vector pGuidePosition
+	private var String pGuideBone
+	private var bool pUseGuideSolverBone
+	private var String pGuideSolverBone
 	
 	
-	/** Creates a new animation rule definition. */
+	
+	/** \brief Create animation rule definition. */
 	public func new()
-		this.pGoalPos = Vector.new()
-		this.pGoalOrient = Vector.new()
-		this.pLocalPos = Vector.new()
-		this.pLocalOrient = Vector.new()
-		this.pAdjustPosition = true
-		this.pAdjustOrientation = false
-		this.pSolverBone = ""
-		this.pUseSolverBone = false
+		pGoalPosition = Vector.new()
+		pGoalOrientation = Vector.new()
+		pLocalPosition = Vector.new()
+		pLocalOrientation = Vector.new()
+		pAdjustPosition = true
+		pAdjustOrientation = false
+		pSolverBone = ""
+		pUseSolverBone = false
 		
-		this.pReachRange = 0.0
-		this.pReachBone = ""
-		this.pReachCenter = Vector.new()
+		pReachRange = 0.0
+		pReachBone = ""
+		pReachCenter = Vector.new()
+		
+		pGuidePosition = Vector.new()
+		pGuideBone = ""
+		pUseGuideSolverBone = false
+		pGuideSolverBone = ""
 	end
 	
 	
 	
-	/** Retrieves the goal position. */
+	/** \brief Goal position. */
 	public func Vector getGoalPosition()
-		return this.pGoalPos
+		return pGoalPosition
 	end
 	
-	/** Sets the goal position. */
-	public func void setGoalPosition( Vector position )
+	/** \brief Set goal position. */
+	public func void setGoalPosition(Vector position)
 		if position == null
-			throw EInvalidParam.new()
+			throw ENullPointer.new("position")
 		end
-		
-		this.pGoalPos = position
+		pGoalPosition = position
 	end
 		
-	/** Retrieves the goal orientation. */
+	/** \brief Goal orientation. */
 	public func Vector getGoalOrientation()
-		return this.pGoalOrient
+		return pGoalOrientation
 	end
 	
-	/** Sets the goal orientation. */
-	public func void setGoalOrientation( Vector orientation )
+	/** \brief Set goal orientation. */
+	public func void setGoalOrientation(Vector orientation)
 		if orientation == null
-			throw EInvalidParam.new()
+			throw ENullPointer.new("orientation")
 		end
-		
-		this.pGoalOrient = orientation
+		pGoalOrientation = orientation
 	end
 	
-	/** Retrieves the local position. */
+	/** \brief Local position. */
 	public func Vector getLocalPosition()
-		return this.pLocalPos
+		return pLocalPosition
 	end
 	
-	/** Sets the local position. */
-	public func void setLocalPosition( Vector position )
+	/** \brief Set local position. */
+	public func void setLocalPosition(Vector position)
 		if position == null
-			throw EInvalidParam.new()
+			throw ENullPointer.new("position")
 		end
-		
-		this.pLocalPos = position
+		pLocalPosition = position
 	end
 		
-	/** Retrieves the local orientation. */
+	/** \brief Local orientation. */
 	public func Vector getLocalOrientation()
-		return this.pLocalOrient
+		return pLocalOrientation
 	end
 	
-	/** Sets the local orientation. */
-	public func void setLocalOrientation( Vector orientation )
+	/** \brief Set local orientation. */
+	public func void setLocalOrientation(Vector orientation)
 		if orientation == null
-			throw EInvalidParam.new()
+			throw ENullPointer.new("orientation")
 		end
-		
-		this.pLocalOrient = orientation
+		pLocalOrientation = orientation
 	end
 	
 	/**
-	 * \brief Determines if bone position is adjusted.
+	 * \brief Bone position is adjusted.
 	 * \version 1.6
 	 */
 	public func bool getAdjustPosition()
-		return this.pAdjustPosition
+		return pAdjustPosition
 	end
 	
 	/**
 	 * \brief Set if bone position is adjusted.
 	 * \version 1.6
 	 */
-	public func void setAdjustPosition( bool adjust )
-		this.pAdjustPosition = adjust
+	public func void setAdjustPosition(bool adjust)
+		pAdjustPosition = adjust
 	end
 	
-	/** Determines if the bone orientation is adjusted. */
+	/** \brief Bone orientation is adjusted. */
 	public func bool getAdjustOrientation()
-		return this.pAdjustOrientation
+		return pAdjustOrientation
 	end
 	
-	/** Sets if the bone orientation is adjusted. */
-	public func void setAdjustOrientation( bool adjust )
-		this.pAdjustOrientation = adjust
+	/** \brief Set if bone orientation is adjusted. */
+	public func void setAdjustOrientation(bool adjust)
+		pAdjustOrientation = adjust
 	end
 	
 	
 	
-	/** Retrieves the solver bone name. */
+	/** \brief Solver bone name. */
 	public func String getSolverBone()
-		return this.pSolverBone
+		return pSolverBone
 	end
 	
-	/** Sets the solver bone name. */
-	public func void setSolverBone( String bone )
+	/** \brief Set solver bone name. */
+	public func void setSolverBone(String bone)
 		if bone == null
 			throw EInvalidParam.new()
 		end
 		
-		this.pSolverBone = bone
+		pSolverBone = bone
 	end
 	
-	/** Determines if the solver bone is used. */
+	/** \brief Solver bone is used. */
 	public func bool getUseSolverBone()
-		return this.pUseSolverBone
+		return pUseSolverBone
 	end
 	
-	/** Sets if the solver bone is used. */
-	public func void setUseSolverBone( bool useSolverBone )
-		this.pUseSolverBone = useSolverBone
+	/** \brief Set if solver bone is used. */
+	public func void setUseSolverBone(bool useSolverBone)
+		pUseSolverBone = useSolverBone
 	end
 	
 	
 	
-	/** Limit reach in meters. 0 disables reach limit. */
+	/**
+	 * \brief Limit reach in meters.
+	 * 
+	 * 0 disables reach limit.
+	 */
 	public func float getReachRange()
-		return this.pReachRange
+		return pReachRange
 	end
 	
-	/** Set limit reach in meters. 0 disables reach limit. */
-	public func void setReachRange( float range )
-		this.pReachRange = DEMath.max( range, 0.0 )
+	/**
+	 * \brief Set limit reach in meters.
+	 * 
+	 * 0 disables reach limit.
+	 */
+	public func void setReachRange(float range)
+		pReachRange = DEMath.max(range, 0.0)
 	end
 	
-	/** Bone to use as reach origin or an empty string to use a constant position. */
+	/** \brief Bone to use as reach origin or an empty string to use a constant position. */
 	public func String getReachBone()
-		return this.pReachBone
+		return pReachBone
 	end
 	
-	/** Set bone to use as reach origin or an empty string to use a constant position. */
-	public func void setReachBone( String bone )
+	/** \brief Set bone to use as reach origin or an empty string to use a constant position. */
+	public func void setReachBone(String bone)
 		if bone == null
-			throw EInvalidParam.new()
+			throw ENullPointer.new("bone")
 		end
-		this.pReachBone = bone
+		pReachBone = bone
 	end
 	
 	/** Reach center if no bone is used. */
 	public func Vector getReachCenter()
-		return this.pReachCenter
+		return pReachCenter
 	end
 	
 	/** Set reach center if no bone is used. */
-	public func void setReachCenter( Vector center )
+	public func void setReachCenter(Vector center)
 		if center == null
-			throw EInvalidParam.new()
+			throw ENullPointer.new("center")
 		end
-		this.pReachCenter = center
+		pReachCenter = center
 	end
 	
 	
 	
-	/** Build engine animator rule using the stored definition. */
-	public func AnimatorRule buildRule( Animator animator )
+	/**
+	 * \brief Guide position.
+	 * \version 1.11
+	 */
+	public func Vector getGuidePosition()
+		return pGuidePosition
+	end
+	
+	/**
+	 * \brief Set guide position.
+	 * \version 1.11
+	 */
+	public func void setGuidePosition(Vector position)
+		if position == null
+			throw ENullPointer.new("position")
+		end
+		pGuidePosition = position
+	end
+	
+	/**
+	 * \brief Guide bone or empty string if not used.
+	 * \version 1.11
+	 */
+	public func String getGuideBone()
+		return pGuideBone
+	end
+	
+	/**
+	 * \brief Set guide bone or empty string if not used.
+	 * \version 1.11
+	 */
+	public func void setGuideBone(String bone)
+		if bone == null
+			throw ENullPointer.new("bone")
+		end
+		pGuideBone = bone
+	end
+	
+	/**
+	 * \brief Use guide solver bone.
+	 * \version 1.11
+	 */
+	public func bool getUseGuideSolverBone()
+		return pUseGuideSolverBone
+	end
+	
+	/**
+	 * \brief Set to use guide solver bone.
+	 * \version 1.11
+	 */
+	public func void setUseGuideSolverBone(bool useGuideSolverBone)
+		pUseGuideSolverBone = useGuideSolverBone
+	end
+	
+	/**
+	 * \brief Guide solver bone name.
+	 * \version 1.11
+	 */
+	public func String getGuideSolverBone()
+		return pGuideSolverBone
+	end
+	
+	/**
+	 * \brief Set guide solver bone name.
+	 * \version 1.11
+	 */
+	public func void setGuideSolverBone(String bone)
+		if bone == null
+			throw ENullPointer.new("bone")
+		end
+		pGuideSolverBone = bone
+	end
+	
+	
+	
+	/** \brief Build engine animator rule using the stored definition. */
+	public func AnimatorRule buildRule(Animator animator)
 		var ARInverseKinematic rule = ARInverseKinematic.new()
 		
-		this.buildRuleCommon( rule )
+		buildRuleCommon(rule)
 		
-		this.forEachTarget( block ADRuleTargetLink each
-			rule.targetAddLink( each.getTarget() cast ARInverseKinematicTarget, each.getLink().getIndex() )
-		end )
+		forEachTarget(block ADRuleTargetLink each
+			rule.targetAddLink(each.getTarget() cast ARInverseKinematicTarget, each.getLink().getIndex())
+		end)
 		
-		rule.setGoalPosition( this.pGoalPos )
-		rule.setGoalOrientation( this.pGoalOrient )
-		rule.setLocalPosition( this.pLocalPos )
-		rule.setLocalOrientation( this.pLocalOrient )
-		rule.setAdjustPosition( this.pAdjustPosition )
-		rule.setAdjustOrientation( this.pAdjustOrientation )
-		rule.setSolverBone( this.pSolverBone )
-		rule.setUseSolverBone( this.pUseSolverBone )
+		rule.setGoalPosition(pGoalPosition)
+		rule.setGoalOrientation(pGoalOrientation)
+		rule.setLocalPosition(pLocalPosition)
+		rule.setLocalOrientation(pLocalOrientation)
+		rule.setAdjustPosition(pAdjustPosition)
+		rule.setAdjustOrientation(pAdjustOrientation)
+		rule.setSolverBone(pSolverBone)
+		rule.setUseSolverBone(pUseSolverBone)
 		
-		rule.setReachRange( this.pReachRange )
-		rule.setReachBone( this.pReachBone )
-		rule.setReachCenter( this.pReachCenter )
+		rule.setReachRange(pReachRange)
+		rule.setReachBone(pReachBone)
+		rule.setReachCenter(pReachCenter)
+		
+		rule.setGuidePosition(pGuidePosition)
+		rule.setGuideBone(pGuideBone)
+		rule.setUseGuideSolverBone(pUseGuideSolverBone)
+		rule.setGuideSolverBone(pGuideSolverBone)
 		
 		return rule
 	end
 	
 	
 	
-	public func void debug( Console console )
-		console.addMessage( this.debugCommon( "Inverse Kinematic" ) + \
-			" gpos=" + this.pGoalPos + " gorient" + this.pGoalOrient + " lpos=" + this.pLocalPos + \
-			" lorient" + this.pLocalOrient + " adjpos=" + this.pAdjustPosition + \
-			" adjorient=" + this.pAdjustOrientation + " )" )
+	public func void debug(Console console)
+		console.addMessage(debugCommon("Inverse Kinematic") + \
+			" gpos=" + pGoalPosition + " gorient" + pGoalOrientation + " lpos=" + pLocalPosition + \
+			" lorient" + pLocalOrientation + " adjpos=" + pAdjustPosition + \
+			" adjorient=" + pAdjustOrientation + ")")
 	end
 end

@@ -932,11 +932,31 @@ const aeRuleInverseKinematic &rule ){
 	}
 	
 	const decVector &reachCenter = rule.GetReachCenter();
-	writer.WriteOpeningTagStart( "reachCenter" );
-	writer.WriteAttributeFloat( "x", reachCenter.x );
-	writer.WriteAttributeFloat( "y", reachCenter.y );
-	writer.WriteAttributeFloat( "z", reachCenter.z );
-	writer.WriteOpeningTagEnd( true );
+	if( ! reachCenter.IsZero() ){
+		writer.WriteOpeningTagStart( "reachCenter" );
+		writer.WriteAttributeFloat( "x", reachCenter.x );
+		writer.WriteAttributeFloat( "y", reachCenter.y );
+		writer.WriteAttributeFloat( "z", reachCenter.z );
+		writer.WriteOpeningTagEnd( true );
+	}
+	
+	const decVector &guidePosition = rule.GetGuidePosition();
+	if( ! guidePosition.IsZero() ){
+		writer.WriteOpeningTagStart( "guidePosition" );
+		writer.WriteAttributeFloat( "x", guidePosition.x );
+		writer.WriteAttributeFloat( "y", guidePosition.y );
+		writer.WriteAttributeFloat( "z", guidePosition.z );
+		writer.WriteOpeningTagEnd( true );
+	}
+	if( ! rule.GetGuideBone().IsEmpty() ){
+		writer.WriteDataTagString( "guideBone", rule.GetGuideBone() );
+	}
+	if( rule.GetUseGuideSolverBone() ){
+		writer.WriteDataTagBool( "useGuideSolverBone", rule.GetUseGuideSolverBone() );
+	}
+	if( ! rule.GetGuideSolverBone().IsEmpty() ){
+		writer.WriteDataTagString( "guideSolverBone", rule.GetGuideSolverBone() );
+	}
 	
 	pSaveControllerTarget( writer, animator, rule.GetTargetGoalPosition(), "goalPosition" );
 	pSaveControllerTarget( writer, animator, rule.GetTargetGoalOrientation(), "goalOrientation" );
@@ -944,6 +964,7 @@ const aeRuleInverseKinematic &rule ){
 	pSaveControllerTarget( writer, animator, rule.GetTargetLocalOrientation(), "localOrientation" );
 	pSaveControllerTarget( writer, animator, rule.GetTargetReachRange(), "reachRange" );
 	pSaveControllerTarget( writer, animator, rule.GetTargetReachCenter(), "reachCenter" );
+	pSaveControllerTarget( writer, animator, rule.GetTargetGuidePosition(), "guidePosition" );
 	
 	writer.WriteClosingTag( "ruleInverseKinematic" );
 }
@@ -2432,6 +2453,20 @@ aeRule *aeLSAnimator::pLoadRuleInverseKinematic( decXmlElementTag *root, aeAnima
 					pLoadVector( tag, vector );
 					rule->SetReachCenter( vector );
 					
+				}else if( strcmp( tag->GetName(), "guidePosition" ) == 0 ){
+					vector.SetZero();
+					pLoadVector( tag, vector );
+					rule->SetGuidePosition( vector );
+					
+				}else if( strcmp( tag->GetName(), "guideBone" ) == 0 ){
+					rule->SetGuideBone( GetCDataString( *tag ) );
+					
+				}else if( strcmp( tag->GetName(), "useGuideSolverBone" ) == 0 ){
+					rule->SetUseGuideSolverBone( GetCDataBool( *tag ) );
+					
+				}else if( strcmp( tag->GetName(), "guideSolverBone" ) == 0 ){
+					rule->SetGuideSolverBone( GetCDataString( *tag ) );
+					
 				}else if( strcmp( tag->GetName(), "target" ) == 0 ){
 					name = pGetAttributeString( tag, "name" );
 					
@@ -2455,6 +2490,9 @@ aeRule *aeLSAnimator::pLoadRuleInverseKinematic( decXmlElementTag *root, aeAnima
 						
 					}else if( strcmp( name, "reachCenter" ) == 0 ){
 						pLoadControllerTarget( tag, animator, rule->GetTargetReachCenter() );
+						
+					}else if( strcmp( name, "guidePosition" ) == 0 ){
+						pLoadControllerTarget( tag, animator, rule->GetTargetGuidePosition() );
 						
 					}else if( strcmp( name, "position" ) == 0 ){ // deprecated
 						pLoadControllerTarget( tag, animator, rule->GetTargetGoalPosition() );

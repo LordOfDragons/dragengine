@@ -63,12 +63,18 @@ pReachRange( copy.pReachRange ),
 pReachBone( copy.pReachBone ),
 pReachCenter( copy.pReachCenter ),
 
+pGuidePosition( copy.pGuidePosition ),
+pGuideBone( copy.pGuideBone ),
+pUseGuideSolverBone( copy.pUseGuideSolverBone ),
+pGuideSolverBone( copy.pGuideSolverBone ),
+
 pTargetGoalPosition( copy.pTargetGoalPosition ),
 pTargetGoalOrientation( copy.pTargetGoalOrientation ),
 pTargetLocalPosition( copy.pTargetLocalPosition ),
 pTargetLocalOrientation( copy.pTargetLocalOrientation ),
 pTargetReachRange( copy.pTargetReachRange ),
-pTargetReachCenter( copy.pTargetReachCenter ){
+pTargetReachCenter( copy.pTargetReachCenter ),
+pTargetGuidePosition( copy.pTargetGuidePosition ){
 }
 
 aeRuleInverseKinematic::~aeRuleInverseKinematic(){
@@ -226,6 +232,68 @@ void aeRuleInverseKinematic::SetReachCenter( const decVector &center ){
 
 
 
+void aeRuleInverseKinematic::SetGuidePosition( const decVector &position ){
+	if( position.IsEqualTo( pGuidePosition ) ){
+		return;
+	}
+	
+	pGuidePosition = position;
+	
+	deAnimatorRuleInverseKinematic * const engRule = ( deAnimatorRuleInverseKinematic* )GetEngineRule();
+	if( engRule ){
+		engRule->SetGuidePosition( position );
+	}
+	
+	NotifyRuleChanged();
+}
+
+void aeRuleInverseKinematic::SetGuideBone( const char *boneName ){
+	if( pGuideBone == boneName ){
+		return;
+	}
+	
+	pGuideBone = boneName;
+	
+	deAnimatorRuleInverseKinematic * const engRule = ( deAnimatorRuleInverseKinematic* )GetEngineRule();
+	if( engRule ){
+		engRule->SetGuideBone( boneName );
+	}
+	
+	NotifyRuleChanged();
+}
+
+void aeRuleInverseKinematic::SetUseGuideSolverBone( bool useGuideSolverBone ){
+	if( useGuideSolverBone == pUseGuideSolverBone ){
+		return;
+	}
+	
+	pUseGuideSolverBone = useGuideSolverBone;
+	
+	deAnimatorRuleInverseKinematic * const engRule = ( deAnimatorRuleInverseKinematic* )GetEngineRule();
+	if( engRule ){
+		engRule->SetUseGuideSolverBone( useGuideSolverBone );
+	}
+	
+	NotifyRuleChanged();
+}
+
+void aeRuleInverseKinematic::SetGuideSolverBone( const char *boneName ){
+	if( pGuideSolverBone == boneName ){
+		return;
+	}
+	
+	pGuideSolverBone = boneName;
+	
+	deAnimatorRuleInverseKinematic * const engRule = ( deAnimatorRuleInverseKinematic* )GetEngineRule();
+	if( engRule ){
+		engRule->SetGuideSolverBone( boneName );
+	}
+	
+	NotifyRuleChanged();
+}
+
+
+
 void aeRuleInverseKinematic::UpdateTargets(){
 	deAnimatorRuleInverseKinematic *engRule = ( deAnimatorRuleInverseKinematic* )GetEngineRule();
 	
@@ -240,6 +308,7 @@ void aeRuleInverseKinematic::UpdateTargets(){
 		pTargetLocalOrientation.UpdateEngineTarget( animator, engRule->GetTargetLocalOrientation() );
 		pTargetReachRange.UpdateEngineTarget( animator, engRule->GetTargetReachRange() );
 		pTargetReachCenter.UpdateEngineTarget( animator, engRule->GetTargetReachCenter() );
+		pTargetGuidePosition.UpdateEngineTarget( animator, engRule->GetTargetGuidePosition() );
 	}
 }
 
@@ -262,6 +331,9 @@ int aeRuleInverseKinematic::CountLinkUsage( aeLink *link ) const{
 		usageCount++;
 	}
 	if( pTargetReachCenter.HasLink( link ) ){
+		usageCount++;
+	}
+	if( pTargetGuidePosition.HasLink( link ) ){
 		usageCount++;
 	}
 	
@@ -289,6 +361,9 @@ void aeRuleInverseKinematic::RemoveLinkFromTargets( aeLink *link ){
 	if( pTargetReachCenter.HasLink( link ) ){
 		pTargetReachCenter.RemoveLink( link );
 	}
+	if( pTargetGuidePosition.HasLink( link ) ){
+		pTargetGuidePosition.RemoveLink( link );
+	}
 	
 	UpdateTargets();
 }
@@ -302,6 +377,7 @@ void aeRuleInverseKinematic::RemoveLinksFromAllTargets(){
 	pTargetLocalOrientation.RemoveAllLinks();
 	pTargetReachRange.RemoveAllLinks();
 	pTargetReachCenter.RemoveAllLinks();
+	pTargetGuidePosition.RemoveAllLinks();
 	
 	UpdateTargets();
 }
@@ -327,11 +403,16 @@ deAnimatorRule *aeRuleInverseKinematic::CreateEngineRule(){
 		engRule->SetAdjustOrientation( pAdjustOrientation );
 		
 		engRule->SetUseSolverBone( pUseSolverBone );
-		engRule->SetSolverBone( pSolverBone.GetString() );
+		engRule->SetSolverBone( pSolverBone );
 		
 		engRule->SetReachRange( pReachRange );
-		engRule->SetReachBone( pReachBone );
 		engRule->SetReachCenter( pReachCenter );
+		engRule->SetReachBone( pReachBone );
+		
+		engRule->SetGuidePosition( pGuidePosition );
+		engRule->SetGuideBone( pGuideBone );
+		engRule->SetUseGuideSolverBone( pUseGuideSolverBone );
+		engRule->SetGuideSolverBone( pGuideSolverBone );
 		
 		pTargetGoalPosition.UpdateEngineTarget( animator, engRule->GetTargetGoalPosition() );
 		pTargetGoalOrientation.UpdateEngineTarget( animator, engRule->GetTargetGoalOrientation() );
@@ -339,6 +420,7 @@ deAnimatorRule *aeRuleInverseKinematic::CreateEngineRule(){
 		pTargetLocalOrientation.UpdateEngineTarget( animator, engRule->GetTargetLocalOrientation() );
 		pTargetReachRange.UpdateEngineTarget( animator, engRule->GetTargetReachRange() );
 		pTargetReachCenter.UpdateEngineTarget( animator, engRule->GetTargetReachCenter() );
+		pTargetGuidePosition.UpdateEngineTarget( animator, engRule->GetTargetGuidePosition() );
 		
 	}catch( const deException & ){
 		if( engRule ){
@@ -359,10 +441,13 @@ aeRule *aeRuleInverseKinematic::CreateCopy() const{
 
 void aeRuleInverseKinematic::ListLinks( aeLinkList &list ){
 	aeRule::ListLinks( list );
-	pTargetGoalOrientation.AddLinksToList( list );
 	pTargetGoalPosition.AddLinksToList( list );
-	pTargetLocalOrientation.AddLinksToList( list );
+	pTargetGoalOrientation.AddLinksToList( list );
 	pTargetLocalPosition.AddLinksToList( list );
+	pTargetLocalOrientation.AddLinksToList( list );
+	pTargetReachRange.AddLinksToList( list );
+	pTargetReachCenter.AddLinksToList( list );
+	pTargetGuidePosition.AddLinksToList( list );
 }
 
 
@@ -378,10 +463,20 @@ aeRuleInverseKinematic &aeRuleInverseKinematic::operator=( const aeRuleInverseKi
 	SetAdjustOrientation( copy.pAdjustOrientation );
 	SetUseSolverBone( copy.pUseSolverBone );
 	SetSolverBone( copy.pSolverBone );
+	SetReachRange( copy.pReachRange );
+	SetReachCenter( copy.pReachCenter );
+	SetReachBone( copy.pReachBone );
+	SetGuidePosition( copy.pGuidePosition );
+	SetGuideBone( copy.pGuideBone );
+	SetUseGuideSolverBone( copy.pUseGuideSolverBone );
+	SetGuideSolverBone( copy.pGuideSolverBone );
 	pTargetGoalPosition = copy.pTargetGoalPosition;
 	pTargetGoalOrientation = copy.pTargetGoalOrientation;
 	pTargetLocalPosition = copy.pTargetLocalPosition;
 	pTargetLocalOrientation = copy.pTargetLocalOrientation;
+	pTargetReachRange = copy.pTargetReachRange;
+	pTargetReachCenter = copy.pTargetReachCenter;
+	pTargetGuidePosition = copy.pTargetGuidePosition;
 	aeRule::operator=( copy );
 	return *this;
 }
