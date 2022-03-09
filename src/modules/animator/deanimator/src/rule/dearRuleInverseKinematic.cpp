@@ -539,13 +539,13 @@ DEBUG_tipposition2[ i ] = tipPosition;
 			const decVector basePosition( baseMatrix.GetPosition() );
 			decVector rotationAxis( tipPosition - basePosition );
 			
-			if( ! rotationAxis.IsZero( 0.001f) ){
+			if( ! rotationAxis.IsZero() ){
 				rotationAxis.Normalize();
 				
 				const decVector baseView( baseMatrix.TransformView() );
 				const decVector planeNormal( rotationAxis % baseView );
 				
-				if( ! planeNormal.IsZero( 0.001f ) ){
+				if( ! planeNormal.IsZero() ){
 					planeNormal.Normalized();
 					
 					const decVector planeRight( planeNormal % rotationAxis );
@@ -559,7 +559,8 @@ DEBUG_tipposition2[ i ] = tipPosition;
 						.QuickMultiply( decMatrix::CreateTranslation( basePosition ) );
 					
 					const int last = pAdjustOrientation ? pChainCount - 1 : pChainCount;
-					for( i=pChainIndexGuide; i<last; i++ ){ // do not rotate tip bone
+					
+					for( i=pChainIndexGuide; i<last; i++ ){
 						pChain[ i ].SetGlobalMatrix( pChain[ i ].GetGlobalMatrix().
 							QuickMultiply( rotationMatrix ) );
 					}
