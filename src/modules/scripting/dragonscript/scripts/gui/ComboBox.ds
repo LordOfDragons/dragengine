@@ -256,15 +256,12 @@ class ComboBox extends Container implements ListModelListener
 		pPanelSelectedElement = null
 		pWidgetButtonDropDown = null
 		
-		if pListBox != null
-			pListBox.getModel().removeListener(this)
-			pListBox = null // no remove listener since popwindow does this on dispose
-		end
-		
 		if pDropDown != null
 			pDropDown.close()
 			pDropDown = null
 		end
+		
+		pListBox = null // no remove listener since pDropDown disposes pListBox
 		
 		super.dispose()
 	end
