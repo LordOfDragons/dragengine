@@ -256,12 +256,23 @@ class ComboBox extends Container implements ListModelListener
 		pPanelSelectedElement = null
 		pWidgetButtonDropDown = null
 		
+		if pListBox != null
+			// pDropDown disposing of pListBox removes listeners but only if model has
+			// been created by pListBox. hence we need to remove ourself from listener
+			// here but only if the model still exists. this catches the situation of
+			// the listbox being disposed early. this should actually not be possible
+			// but better safe than sorry
+			var ListModel model = pListBox.getModel()
+			if model != null
+				model.removeListener(this)
+			end
+			pListBox = null
+		end
+		
 		if pDropDown != null
 			pDropDown.close()
 			pDropDown = null
 		end
-		
-		pListBox = null // no remove listener since pDropDown disposes pListBox
 		
 		super.dispose()
 	end
