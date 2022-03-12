@@ -352,7 +352,7 @@ class OBJECT_OT_ExportRig(bpy.types.Operator, ExportHelper):
 							f.write("\t\t\t<resistance>%g</resistance>\n" % (poseBone.ik_stiffness_x))
 							f.write("\t\t\t<locked>0</locked>\n")
 						else:
-							f.write("\t\t\t<lower>1</lower>\n")
+							f.write("\t\t\t<lower>360</lower>\n")
 							f.write("\t\t\t<upper>0</upper>\n")
 							f.write("\t\t\t<resistance>%g</resistance>\n" % (poseBone.ik_stiffness_x))
 							f.write("\t\t\t<locked>0</locked>\n")
@@ -371,7 +371,7 @@ class OBJECT_OT_ExportRig(bpy.types.Operator, ExportHelper):
 							f.write("\t\t\t<resistance>%g</resistance>\n" % (poseBone.ik_stiffness_z))
 							f.write("\t\t\t<locked>0</locked>\n")
 						else:
-							f.write("\t\t\t<lower>1</lower>\n")
+							f.write("\t\t\t<lower>360</lower>\n")
 							f.write("\t\t\t<upper>0</upper>\n")
 							f.write("\t\t\t<resistance>%g</resistance>\n" % (poseBone.ik_stiffness_z))
 							f.write("\t\t\t<locked>0</locked>\n")
@@ -390,7 +390,7 @@ class OBJECT_OT_ExportRig(bpy.types.Operator, ExportHelper):
 							f.write("\t\t\t<resistance>%g</resistance>\n" % (poseBone.ik_stiffness_y))
 							f.write("\t\t\t<locked>0</locked>\n")
 						else:
-							f.write("\t\t\t<lower>1</lower>\n")
+							f.write("\t\t\t<lower>360</lower>\n")
 							f.write("\t\t\t<upper>0</upper>\n")
 							f.write("\t\t\t<resistance>%g</resistance>\n" % (poseBone.ik_stiffness_y))
 							f.write("\t\t\t<locked>0</locked>\n")

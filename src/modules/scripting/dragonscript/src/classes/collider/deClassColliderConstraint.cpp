@@ -263,7 +263,7 @@ void deClassColliderConstraint::nfGetLowerLimitFor::RunFunction( dsRunTime *rt, 
 	case deColliderConstraint::edofAngularX:
 	case deColliderConstraint::edofAngularY:
 	case deColliderConstraint::edofAngularZ:
-		rt->PushFloat( constraint->GetDof( dof ).GetLowerLimit() / DEG2RAD );
+		rt->PushFloat( constraint->GetDof( dof ).GetLowerLimit() * RAD2DEG );
 		break;
 		
 	case deColliderConstraint::edofLinearX:
@@ -296,7 +296,7 @@ void deClassColliderConstraint::nfGetUpperLimitFor::RunFunction( dsRunTime *rt, 
 	case deColliderConstraint::edofAngularX:
 	case deColliderConstraint::edofAngularY:
 	case deColliderConstraint::edofAngularZ:
-		rt->PushFloat( constraint->GetDof( dof ).GetUpperLimit() / DEG2RAD );
+		rt->PushFloat( constraint->GetDof( dof ).GetUpperLimit() * RAD2DEG );
 		break;
 		
 	case deColliderConstraint::edofLinearX:
@@ -440,9 +440,9 @@ void deClassColliderConstraint::nfGetAngularLowerLimits::RunFunction( dsRunTime 
 	deClassColliderConstraint *clsCCon = ( deClassColliderConstraint* )GetOwnerClass();
 	
 	clsCCon->GetClassVector()->PushVector( rt, decVector(
-		constraint->GetDofAngularX().GetLowerLimit() / DEG2RAD,
-		constraint->GetDofAngularY().GetLowerLimit() / DEG2RAD,
-		constraint->GetDofAngularZ().GetLowerLimit() / DEG2RAD ) );
+		constraint->GetDofAngularX().GetLowerLimit() * RAD2DEG,
+		constraint->GetDofAngularY().GetLowerLimit() * RAD2DEG,
+		constraint->GetDofAngularZ().GetLowerLimit() * RAD2DEG ) );
 }
 
 // public func Vector getAngularUpperLimits()
@@ -454,9 +454,9 @@ void deClassColliderConstraint::nfGetAngularUpperLimits::RunFunction( dsRunTime 
 	deClassColliderConstraint *clsCCon = ( deClassColliderConstraint* )GetOwnerClass();
 	
 	clsCCon->GetClassVector()->PushVector( rt, decVector(
-		constraint->GetDofAngularX().GetUpperLimit() / DEG2RAD,
-		constraint->GetDofAngularY().GetUpperLimit() / DEG2RAD,
-		constraint->GetDofAngularZ().GetUpperLimit() / DEG2RAD ) );
+		constraint->GetDofAngularX().GetUpperLimit() * RAD2DEG,
+		constraint->GetDofAngularY().GetUpperLimit() * RAD2DEG,
+		constraint->GetDofAngularZ().GetUpperLimit() * RAD2DEG ) );
 }
 
 // public func void setAngularLimits( Vector lowerLimits, Vector upperLimits )

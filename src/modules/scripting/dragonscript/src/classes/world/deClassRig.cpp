@@ -265,7 +265,7 @@ void deClassRig::nfBoneGetIKLimitsLower::RunFunction( dsRunTime *rt, dsValue *my
 	const deScriptingDragonScript &ds = *( ( ( deClassRig* )GetOwnerClass() )->GetDS() );
 	const int bone = rt->GetValue( 0 )->GetInt();
 	
-	ds.GetClassVector()->PushVector( rt, rig.GetBoneAt( bone ).GetIKLimitsLower() );
+	ds.GetClassVector()->PushVector( rt, rig.GetBoneAt( bone ).GetIKLimitsLower() * RAD2DEG );
 }
 
 // public func Vector boneGetIKLimitsUpper( int bone )
@@ -278,7 +278,7 @@ void deClassRig::nfBoneGetIKLimitsUpper::RunFunction( dsRunTime *rt, dsValue *my
 	const deScriptingDragonScript &ds = *( ( ( deClassRig* )GetOwnerClass() )->GetDS() );
 	const int bone = rt->GetValue( 0 )->GetInt();
 	
-	ds.GetClassVector()->PushVector( rt, rig.GetBoneAt( bone ).GetIKLimitsUpper() );
+	ds.GetClassVector()->PushVector( rt, rig.GetBoneAt( bone ).GetIKLimitsUpper() * RAD2DEG );
 }
 
 // public func Vector boneGetIKResistance( int bone )

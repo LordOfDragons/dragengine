@@ -55,7 +55,7 @@
 ////////////////////////////
 
 reRigBone::reRigBone( deEngine *engine ) :
-pIKLimitsLower( 1.0f, 1.0f, 1.0f ),
+pIKLimitsLower( TWO_PI, TWO_PI, TWO_PI ),
 pIKLimitsUpper( 0.0f, 0.0f, 0.0f ),
 pIKResistance( 0.0f, 0.0f, 0.0f )
 {
