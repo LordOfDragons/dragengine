@@ -179,6 +179,19 @@ void deClassRig::nfBoneGetOrientation::RunFunction( dsRunTime *rt, dsValue *myse
 	ds.GetClassQuaternion()->PushQuaternion( rt, decQuaternion::CreateFromEuler( rig.GetBoneAt( bone ).GetRotation() ) );
 }
 
+// public func Vector boneGetRotation(int bone)
+deClassRig::nfBoneGetRotation::nfBoneGetRotation( const sInitData &init ) : dsFunction( init.clsRig,
+"boneGetRotation", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVec ){
+	p_AddParameter( init.clsInt ); // bone
+}
+void deClassRig::nfBoneGetRotation::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const deRig &rig = *( ( ( sRigNatDat* )p_GetNativeData( myself ) )->rig );
+	const deScriptingDragonScript &ds = *( ( ( deClassRig* )GetOwnerClass() )->GetDS() );
+	const int bone = rt->GetValue( 0 )->GetInt();
+	
+	ds.GetClassVector()->PushVector( rt, rig.GetBoneAt( bone ).GetRotation() * RAD2DEG );
+}
+
 // public func Matrix getBoneMatrix( int bone )
 deClassRig::nfBoneGetMatrix::nfBoneGetMatrix( const sInitData &init ) : dsFunction( init.clsRig,
 "getBoneMatrix", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsMat ){
@@ -373,6 +386,51 @@ void deClassRig::nfBoneGetConstraintAt::RunFunction( dsRunTime *rt, dsValue *mys
 	}
 }
 
+// public func Vector boneConstraintGetReferencePosition(int bone, int constraint)
+deClassRig::nfBoneConstraintGetReferencePosition::nfBoneConstraintGetReferencePosition( const sInitData &init ) :
+dsFunction( init.clsRig, "boneConstraintGetReferencePosition", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVec ){
+	p_AddParameter( init.clsInt ); // bone
+	p_AddParameter( init.clsInt ); // constraint
+}
+void deClassRig::nfBoneConstraintGetReferencePosition::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const deRig &rig = *( ( ( sRigNatDat* )p_GetNativeData( myself ) )->rig );
+	const deScriptingDragonScript &ds = *( ( ( deClassRig* )GetOwnerClass() )->GetDS() );
+	const int bone = rt->GetValue( 0 )->GetInt();
+	const int constraint = rt->GetValue( 1 )->GetInt();
+	
+	ds.GetClassVector()->PushVector( rt, rig.GetBoneAt( bone ).GetConstraintAt( constraint ).GetReferencePosition() );
+}
+
+// public func Quaternion boneConstraintGetReferenceOrientation(int bone, int constraint)
+deClassRig::nfBoneConstraintGetReferenceOrientation::nfBoneConstraintGetReferenceOrientation( const sInitData &init ) :
+dsFunction( init.clsRig, "boneConstraintGetReferenceOrientation", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsQuat ){
+	p_AddParameter( init.clsInt ); // bone
+	p_AddParameter( init.clsInt ); // constraint
+}
+void deClassRig::nfBoneConstraintGetReferenceOrientation::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const deRig &rig = *( ( ( sRigNatDat* )p_GetNativeData( myself ) )->rig );
+	const deScriptingDragonScript &ds = *( ( ( deClassRig* )GetOwnerClass() )->GetDS() );
+	const int bone = rt->GetValue( 0 )->GetInt();
+	const int constraint = rt->GetValue( 1 )->GetInt();
+	
+	ds.GetClassQuaternion()->PushQuaternion( rt, rig.GetBoneAt( bone ).GetConstraintAt( constraint ).GetReferenceOrientation() );
+}
+
+// public func Vector boneConstraintGetBoneOffset(int bone, int constraint)
+deClassRig::nfBoneConstraintGetBoneOffset::nfBoneConstraintGetBoneOffset( const sInitData &init ) :
+dsFunction( init.clsRig, "boneConstraintGetBoneOffset", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVec ){
+	p_AddParameter( init.clsInt ); // bone
+	p_AddParameter( init.clsInt ); // constraint
+}
+void deClassRig::nfBoneConstraintGetBoneOffset::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const deRig &rig = *( ( ( sRigNatDat* )p_GetNativeData( myself ) )->rig );
+	const deScriptingDragonScript &ds = *( ( ( deClassRig* )GetOwnerClass() )->GetDS() );
+	const int bone = rt->GetValue( 0 )->GetInt();
+	const int constraint = rt->GetValue( 1 )->GetInt();
+	
+	ds.GetClassVector()->PushVector( rt, rig.GetBoneAt( bone ).GetConstraintAt( constraint ).GetBoneOffset() );
+}
+
 // public func ShapeList boneGetShapes( int bone )
 deClassRig::nfBoneGetShapes::nfBoneGetShapes( const sInitData &init ) : dsFunction( init.clsRig,
 "boneGetShapes", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsShapeList ){
@@ -412,6 +470,15 @@ void deClassRig::nfBoneGetParent::RunFunction( dsRunTime *rt, dsValue *myself ){
 	rt->PushInt( rig.GetBoneAt( bone ).GetParent() );
 }
 
+// public func int getRootBone()
+deClassRig::nfGetRootBone::nfGetRootBone( const sInitData &init ) : dsFunction( init.clsRig,
+"getRootBone", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt ){
+}
+void deClassRig::nfGetRootBone::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const deRig &rig = *( ( ( sRigNatDat* )p_GetNativeData( myself ) )->rig );
+	rt->PushInt( rig.GetRootBone() );
+}
+
 
 
 // public func ShapeList getShapes()
@@ -435,6 +502,17 @@ void deClassRig::nfShapeGetProperty::RunFunction( dsRunTime *rt, dsValue *myself
 	const int shape = rt->GetValue( 0 )->GetInt();
 	
 	rt->PushString( rig.GetShapeProperties().GetAt( shape ) );
+}
+
+// public func Vector getCentralMassPoint()
+deClassRig::nfGetCentralMassPoint::nfGetCentralMassPoint( const sInitData &init ) :
+dsFunction( init.clsRig, "getCentralMassPoint", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVec ){
+}
+void deClassRig::nfGetCentralMassPoint::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const deScriptingDragonScript &ds = *( ( ( deClassRig* )GetOwnerClass() )->GetDS() );
+	const deRig &rig = *( ( ( sRigNatDat* )p_GetNativeData( myself ) )->rig );
+	
+	ds.GetClassVector()->PushVector( rt, rig.GetCentralMassPoint() );
 }
 
 
@@ -555,6 +633,7 @@ void deClassRig::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfBoneGetName( init ) );
 	AddFunction( new nfBoneGetPosition( init ) );
 	AddFunction( new nfBoneGetOrientation( init ) );
+	AddFunction( new nfBoneGetRotation( init ) );
 	AddFunction( new nfBoneGetMatrix( init ) );
 	AddFunction( new nfBoneGetInverseMatrix( init ) );
 	AddFunction( new nfBoneGetCentralMassPoint( init ) );
@@ -566,12 +645,17 @@ void deClassRig::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfBoneGetIKLocked( init ) );
 	AddFunction( new nfBoneGetConstraintCount( init ) );
 	AddFunction( new nfBoneGetConstraintAt( init ) );
+	AddFunction( new nfBoneConstraintGetReferencePosition( init ) );
+	AddFunction( new nfBoneConstraintGetReferenceOrientation( init ) );
+	AddFunction( new nfBoneConstraintGetBoneOffset( init ) );
 	AddFunction( new nfBoneGetShapes( init ) );
 	AddFunction( new nfBoneShapeGetProperty( init ) );
 	AddFunction( new nfBoneGetParent( init ) );
 	
+	AddFunction( new nfGetRootBone( init ) );
 	AddFunction( new nfGetShapes( init ) );
 	AddFunction( new nfShapeGetProperty( init ) );
+	AddFunction( new nfGetCentralMassPoint( init ) );
 	
 	AddFunction( new nfSave( init ) );
 	

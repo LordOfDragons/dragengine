@@ -279,14 +279,16 @@ void deClassRigBuilder::nfSetBoneShapeProperties::RunFunction( dsRunTime *rt, ds
 	bone.SetShapeProperties( properties );
 }
 
-// protected func void addBoneConstraint( int bone, Vector referencePosition, Vector boneOffset,
-// float linearDamping, float angularDamping, float springDamping, bool isRope,
+// protected func void addBoneConstraint( int bone, Vector referencePosition,
+// Quaternion referenceOrientation, Vector boneOffset, float linearDamping,
+// float angularDamping, float springDamping, bool isRope,
 // float breakingThreshold, int parentBone )
 deClassRigBuilder::nfAddBoneConstraint::nfAddBoneConstraint( const sInitData &init ) :
 dsFunction( init.clsRigBuilder, "addBoneConstraint", DSFT_FUNCTION,
 DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid ){
 	p_AddParameter( init.clsInteger ); // bone
 	p_AddParameter( init.clsVector ); // referencePosition
+	p_AddParameter( init.clsQuaternion ); // referenceOrientation
 	p_AddParameter( init.clsVector ); // boneOffset
 	p_AddParameter( init.clsFloat ); // linearDamping
 	p_AddParameter( init.clsFloat ); // angularDamping

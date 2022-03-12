@@ -54,7 +54,7 @@ abstract class RigBuilder
 	 * resource with content. Once finished the build method returns the ready to use
 	 * rig resource. Otherwise an exception is thrown.
 	 */
-	public func Rig build( String filename )
+	public func Rig build(String filename)
 		return null
 	end
 	
@@ -71,13 +71,13 @@ abstract class RigBuilder
 	/**
 	 * \brief Set central mass point position.
 	 */
-	protected func void setCentralMassPoint( Vector cmp )
+	protected func void setCentralMassPoint(Vector cmp)
 	end
 	
 	/**
 	 * \brief Set if component model is used for collision instead of shapes if present.
 	 */
-	protected func void setModelCollision( bool modelCollision )
+	protected func void setModelCollision(bool modelCollision)
 	end
 	
 	/**
@@ -85,9 +85,9 @@ abstract class RigBuilder
 	 * 
 	 * Resets all bone shape properties to empty string.
 	 */
-	protected func void addBone( String name, int parent, Vector position, Vector rotation, \
+	protected func void addBone(String name, int parent, Vector position, Vector rotation, \
 	Vector centralMassPoint, bool dynamic, float mass, Vector ikLimitsLower, Vector ikLimitsUpper, \
-	Vector ikResistance, bool ikLockedX, bool ikLockedY, bool ikLockedZ, ShapeList shapes )
+	Vector ikResistance, bool ikLockedX, bool ikLockedY, bool ikLockedZ, ShapeList shapes)
 	end
 	
 	/**
@@ -98,27 +98,28 @@ abstract class RigBuilder
 	 * should contain strings but any object supporting an appropriate toString()
 	 * implementation is valid too.
 	 */
-	protected func void setBoneShapeProperties( int index, Array properties )
+	protected func void setBoneShapeProperties(int index, Array properties)
 	end
 	
 	/**
 	 * \brief Add bone constraint.
 	 */
-	protected func void addBoneConstraint( int bone, Vector referencePosition, Vector boneOffset, \
-	float linearDamping, float angularDamping, float springDamping, bool isRope, float breakingThreshold, int parentBone )
+	protected func void addBoneConstraint(int bone, Vector referencePosition,\
+	Quaternion referenceOrientation, Vector boneOffset, float linearDamping,\
+	float angularDamping, float springDamping, bool isRope, float breakingThreshold, int parentBone)
 	end
 	
 	/**
 	 * \brief Set bone constraint dof.
 	 */
-	protected func void setBoneConstraintDof( int bone, int constraint, ColliderConstraintDof dof, \
-	float lowerLimit, float upperLimit, float staticFriction, float kinematicFriction, float springStiffness )
+	protected func void setBoneConstraintDof(int bone, int constraint, ColliderConstraintDof dof, \
+	float lowerLimit, float upperLimit, float staticFriction, float kinematicFriction, float springStiffness)
 	end
 	
 	/**
 	 * \brief Set root bone.
 	 */
-	protected func void setRootBone( int bone )
+	protected func void setRootBone(int bone)
 	end
 	
 	/**
@@ -126,7 +127,7 @@ abstract class RigBuilder
 	 * 
 	 * Resets all shape properties to empty string.
 	 */
-	protected func void setShapes( ShapeList shapes )
+	protected func void setShapes(ShapeList shapes)
 	end
 	
 	/**
@@ -137,7 +138,7 @@ abstract class RigBuilder
 	 * should contain strings but any object supporting an appropriate toString()
 	 * implementation is valid too.
 	 */
-	protected func void setShapeProperties( Array properties )
+	protected func void setShapeProperties(Array properties)
 	end
 	/*@}*/
 end
