@@ -151,7 +151,6 @@ class Desktop extends Container
 	public func Widget getHoverWidget()
 		if pHoverWidget != null
 			if pHoverWidget.getParent() == null /* removed or disposed while active */ \
-			or not pHoverWidget.getEnabled() \
 			or not pHoverWidget.getVisible()
 				pHoverWidget = null
 			end
