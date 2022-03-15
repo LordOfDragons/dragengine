@@ -81,7 +81,7 @@ class ADRuleForeignState extends ADRule
 		this.pModifyX = true
 		this.pModifyY = true
 		this.pModifyZ = true
-		this.pEnablePosition = false
+		this.pEnablePosition = true
 		this.pEnableOrientation = true
 		this.pEnableSize = false
 	end

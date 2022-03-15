@@ -871,20 +871,6 @@ deAnimatorRule * igdeLoadAnimator::pReadRuleInverseKinematic( const decXmlElemen
 				ReadVector( *tag, vector );
 				rule->SetReachCenter( vector );
 				
-			}else if( tagName == "guidePosition" ){
-				vector.SetZero();
-				ReadVector( *tag, vector );
-				rule->SetGuidePosition( vector );
-				
-			}else if( tagName == "guideBone" ){
-				rule->SetGuideBone( GetCDataString( *tag ) );
-				
-			}else if( tagName == "useGuideSolverBone" ){
-				rule->SetUseGuideSolverBone( GetCDataBool( *tag ) );
-				
-			}else if( tagName == "guideSolverBone" ){
-				rule->SetGuideSolverBone( GetCDataString( *tag ) );
-				
 			}else if( tagName == "target" ){
 				const decString &name = GetAttributeString( *tag, "name" );
 				
@@ -908,9 +894,6 @@ deAnimatorRule * igdeLoadAnimator::pReadRuleInverseKinematic( const decXmlElemen
 					
 				}else if( name == "reachCenter" ){
 					pReadControllerTarget( *tag, animator, rule->GetTargetReachCenter() );
-					
-				}else if( name == "guidePosition" ){
-					pReadControllerTarget( *tag, animator, rule->GetTargetGuidePosition() );
 					
 				}else{
 					LogErrorUnknownValue( *tag, name );

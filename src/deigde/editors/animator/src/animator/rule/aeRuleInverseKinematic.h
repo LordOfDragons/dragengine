@@ -47,18 +47,12 @@ private:
 	decString pReachBone;
 	decVector pReachCenter;
 	
-	decVector pGuidePosition;
-	decString pGuideBone;
-	bool pUseGuideSolverBone;
-	decString pGuideSolverBone;
-	
 	aeControllerTarget pTargetGoalPosition;
 	aeControllerTarget pTargetGoalOrientation;
 	aeControllerTarget pTargetLocalPosition;
 	aeControllerTarget pTargetLocalOrientation;
 	aeControllerTarget pTargetReachRange;
 	aeControllerTarget pTargetReachCenter;
-	aeControllerTarget pTargetGuidePosition;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -142,32 +136,6 @@ public:
 	
 	
 	
-	/** Guide position. */
-	inline const decVector &GetGuidePosition() const{ return pGuidePosition; }
-	
-	/** Set guide position. */
-	void SetGuidePosition( const decVector &position );
-	
-	/** Guide bone or empty string if not used. */
-	inline const decString &GetGuideBone() const{ return pGuideBone; }
-	
-	/** Set guide bone or empty string if not used. */
-	void SetGuideBone( const char *boneName );
-	
-	/** Use guide solver bone to. */
-	inline bool GetUseGuideSolverBone() const{ return pUseGuideSolverBone; }
-	
-	/** Set use guide solver bone. */
-	void SetUseGuideSolverBone( bool useGuideSolverBone );
-	
-	/** Name of guide solver bone. */
-	inline const decString &GetGuideSolverBone() const{ return pGuideSolverBone; }
-	
-	/** Set name of guide solver bone. */
-	void SetGuideSolverBone( const char *boneName );
-	
-	
-	
 	/** Goal position target. */
 	inline aeControllerTarget &GetTargetGoalPosition(){ return pTargetGoalPosition; }
 	inline const aeControllerTarget &GetTargetGoalPosition() const{ return pTargetGoalPosition; }
@@ -191,10 +159,6 @@ public:
 	/** Reach center target. */
 	inline aeControllerTarget &GetTargetReachCenter(){ return pTargetReachCenter; }
 	inline const aeControllerTarget &GetTargetReachCenter() const{ return pTargetReachCenter; }
-	
-	/** Guide position target. */
-	inline aeControllerTarget &GetTargetGuidePosition(){ return pTargetGuidePosition; }
-	inline const aeControllerTarget &GetTargetGuidePosition() const{ return pTargetGuidePosition; }
 	
 	
 	

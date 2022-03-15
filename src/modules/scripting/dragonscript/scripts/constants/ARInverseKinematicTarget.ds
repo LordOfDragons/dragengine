@@ -47,10 +47,4 @@ enum ARInverseKinematicTarget
 	
 	/** \brief Reach center target. */
 	reachCenter
-	
-	/**
-	 * \brief Guide position target.
-	 * \version 1.11
-	 */
-	guidePosition
 end

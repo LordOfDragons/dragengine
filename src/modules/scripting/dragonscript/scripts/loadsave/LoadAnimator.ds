@@ -586,18 +586,6 @@ class LoadAnimator extends BaseXmlLoader
 			elif tagName.equals("reachCenter")
 				rule.setReachCenter(readVector(element))
 				
-			elif tagName.equals("guidePosition")
-				rule.setGuidePosition(readVector(element))
-				
-			elif tagName.equals("guideBone")
-				rule.setGuideBone(element.getFirstCData())
-				
-			elif tagName.equals("useGuideSolverBone")
-				rule.setUseGuideSolverBone(element.getFirstCDataBool())
-				
-			elif tagName.equals("guideSolverBone")
-				rule.setGuideSolverBone(element.getFirstCData())
-				
 			elif tagName.equals("target")
 				var ARInverseKinematicTarget target = ARInverseKinematicTarget.named(element.getAttributeNamed("name"))
 				if target != null

@@ -84,18 +84,13 @@ pTargetLocalPosition( rule.GetTargetLocalPosition(), firstLink ),
 pTargetLocalOrientation( rule.GetTargetLocalOrientation(), firstLink ),
 pTargetReachRange( rule.GetTargetReachRange(), firstLink ),
 pTargetReachCenter( rule.GetTargetReachCenter(), firstLink ),
-pTargetGuidePosition( rule.GetTargetGuidePosition(), firstLink ),
 
 pSolverBone( -1 ),
 pReachBone( -1 ),
-pGuideBone( -1 ),
-pGuideSolverBone( -1 ),
-pChainIndexGuide( -1 ),
 
 pAdjustPosition( rule.GetAdjustPosition() ),
 pAdjustOrientation( rule.GetAdjustOrientation() ),
 pUseSolverBone( rule.GetUseSolverBone() ),
-pUseGuideSolverBone( rule.GetUseGuideSolverBone() ),
 
 pGoalPosition( rule.GetGoalPosition() ),
 pGoalOrientation( rule.GetGoalOrientation() ),
@@ -103,9 +98,7 @@ pLocalPosition( rule.GetLocalPosition() ),
 pLocalOrientation( rule.GetLocalOrientation() ),
 
 pReachRange( rule.GetReachRange() ),
-pReachCenter( rule.GetReachCenter() ),
-
-pGuidePosition( rule.GetGuidePosition() )
+pReachCenter( rule.GetReachCenter() )
 {
 	RuleChanged();
 }
@@ -525,49 +518,6 @@ DEBUG_tipposition2[ i ] = tipPosition;
 			*/
 		}
 		
-		if( pGuideBone != -1 && pChainIndexGuide != -1 ){
-			decVector guidePosition( pGuidePosition );
-			pTargetGuidePosition.GetVector( instance, guidePosition );
-			
-			if( pUseGuideSolverBone && pGuideSolverBone != -1 ){
-				dearBoneState &boneState = *stalist.GetStateAt( pGuideSolverBone );
-				boneState.UpdateMatrices();
-				guidePosition = boneState.GetGlobalMatrix() * guidePosition;
-			}
-			
-			const decMatrix &baseMatrix = pChain[ pChainIndexGuide ].GetGlobalMatrix();
-			const decVector basePosition( baseMatrix.GetPosition() );
-			decVector rotationAxis( tipPosition - basePosition );
-			
-			if( ! rotationAxis.IsZero() ){
-				rotationAxis.Normalize();
-				
-				const decVector baseView( baseMatrix.TransformView() );
-				const decVector planeNormal( rotationAxis % baseView );
-				
-				if( ! planeNormal.IsZero() ){
-					planeNormal.Normalized();
-					
-					const decVector planeRight( planeNormal % rotationAxis );
-					const decVector direction( guidePosition - basePosition );
-					const float dirX = planeRight * direction;
-					const float dirY = planeNormal * direction;
-					const float angle = atan2f( dirY, dirX );
-					
-					rotationMatrix = decMatrix::CreateTranslation( -basePosition )
-						.QuickMultiply( decMatrix::CreateRotationAxis( rotationAxis, -angle ) )
-						.QuickMultiply( decMatrix::CreateTranslation( basePosition ) );
-					
-					const int last = pAdjustOrientation ? pChainCount - 1 : pChainCount;
-					
-					for( i=pChainIndexGuide; i<last; i++ ){
-						pChain[ i ].SetGlobalMatrix( pChain[ i ].GetGlobalMatrix().
-							QuickMultiply( rotationMatrix ) );
-					}
-				}
-			}
-		}
-		
 		// update the bone state from our work state
 		for( i=0; i<pChainCount; i++ ){
 			const decMatrix &globalMatrix = pChain[ i ].GetGlobalMatrix();
@@ -753,21 +703,6 @@ void dearRuleInverseKinematic::pUpdateChain(){
 	
 	// solver bone
 	pSolverBone = GetInstance().GetBoneStateList().IndexOfStateNamed( pInverseKinematic.GetSolverBone() );
-	
-	// guide bones
-	pChainIndexGuide = -1;
-	pGuideBone = GetInstance().GetBoneStateList().IndexOfStateNamed( pInverseKinematic.GetGuideBone() );
-	pGuideSolverBone = GetInstance().GetBoneStateList().IndexOfStateNamed( pInverseKinematic.GetGuideSolverBone() );
-	
-	if( pGuideBone != -1 ){
-		int i;
-		for( i=0; i<pChainCount; i++ ){
-			if( pChain[ i ].GetBoneStateIndex() == pGuideBone ){
-				pChainIndexGuide = i;
-				break;
-			}
-		}
-	}
 }
 
 void dearRuleInverseKinematic::pSetChainCount( int count ){

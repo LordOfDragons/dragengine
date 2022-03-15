@@ -142,103 +142,104 @@ DEBUG_RESET_TIMERS;
 	}
 	
 	// determine the up vector to align the bone rotations to
+	deAnimatorRuleTrackTo::eTrackAxis upAxis = pUpAxis;
 	decVector alignUpVector;
 	
-	switch( pUpTarget ){
-	case deAnimatorRuleTrackTo::eutWorldX:
-		if( GetInstance().GetComponent() ){
-			alignUpVector = GetInstance().GetComponent()->GetMatrix().TransformRight();
+	if( pLockedAxis == deAnimatorRuleTrackTo::elaNone ){
+		switch( pUpTarget ){
+		case deAnimatorRuleTrackTo::eutWorldX:
+			if( GetInstance().GetComponent() ){
+				alignUpVector = GetInstance().GetComponent()->GetMatrix().TransformRight();
+				
+			}else{
+				alignUpVector.Set( 1.0f, 0.0f, 0.0f );
+			}
+			break;
 			
-		}else{
+		case deAnimatorRuleTrackTo::eutWorldY:
+			if( GetInstance().GetComponent() ){
+				alignUpVector = GetInstance().GetComponent()->GetMatrix().TransformUp();
+				
+			}else{
+				alignUpVector.Set( 0.0f, 1.0f, 0.0f );
+			}
+			break;
+			
+		case deAnimatorRuleTrackTo::eutWorldZ:
+			if( GetInstance().GetComponent() ){
+				alignUpVector = GetInstance().GetComponent()->GetMatrix().TransformView();
+				
+			}else{
+				alignUpVector.Set( 0.0f, 0.0f, 1.0f );
+			}
+			break;
+			
+		case deAnimatorRuleTrackTo::eutComponentX:
 			alignUpVector.Set( 1.0f, 0.0f, 0.0f );
-		}
-		break;
-		
-	case deAnimatorRuleTrackTo::eutWorldY:
-		if( GetInstance().GetComponent() ){
-			alignUpVector = GetInstance().GetComponent()->GetMatrix().TransformUp();
+			break;
 			
-		}else{
+		case deAnimatorRuleTrackTo::eutComponentY:
 			alignUpVector.Set( 0.0f, 1.0f, 0.0f );
-		}
-		break;
-		
-	case deAnimatorRuleTrackTo::eutWorldZ:
-		if( GetInstance().GetComponent() ){
-			alignUpVector = GetInstance().GetComponent()->GetMatrix().TransformView();
+			break;
 			
-		}else{
+		case deAnimatorRuleTrackTo::eutComponentZ:
 			alignUpVector.Set( 0.0f, 0.0f, 1.0f );
-		}
-		break;
-		
-	case deAnimatorRuleTrackTo::eutComponentX:
-		alignUpVector.Set( 1.0f, 0.0f, 0.0f );
-		break;
-		
-	case deAnimatorRuleTrackTo::eutComponentY:
-		alignUpVector.Set( 0.0f, 1.0f, 0.0f );
-		break;
-		
-	case deAnimatorRuleTrackTo::eutComponentZ:
-		alignUpVector.Set( 0.0f, 0.0f, 1.0f );
-		break;
-		
-	case deAnimatorRuleTrackTo::eutTrackBoneX:
-		if( pTrackBone == -1 ){
-			alignUpVector.Set( 1.0f, 0.0f, 0.0f );
+			break;
 			
-		}else{
-			alignUpVector = stalist.GetStateAt( pTrackBone )->GetGlobalMatrix().TransformRight();
-		}
-		break;
-		
-	case deAnimatorRuleTrackTo::eutTrackBoneY:
-		if( pTrackBone == -1 ){
-			alignUpVector.Set( 0.0f, 1.0f, 0.0f );
+		case deAnimatorRuleTrackTo::eutTrackBoneX:
+			if( pTrackBone == -1 ){
+				alignUpVector.Set( 1.0f, 0.0f, 0.0f );
+				
+			}else{
+				alignUpVector = stalist.GetStateAt( pTrackBone )->GetGlobalMatrix().TransformRight();
+			}
+			break;
 			
-		}else{
-			alignUpVector = stalist.GetStateAt( pTrackBone )->GetGlobalMatrix().TransformUp();
-		}
-		break;
-		
-	case deAnimatorRuleTrackTo::eutTrackBoneZ:
-		if( pTrackBone == -1 ){
-			alignUpVector.Set( 0.0f, 0.0f, 1.0f );
+		case deAnimatorRuleTrackTo::eutTrackBoneY:
+			if( pTrackBone == -1 ){
+				alignUpVector.Set( 0.0f, 1.0f, 0.0f );
+				
+			}else{
+				alignUpVector = stalist.GetStateAt( pTrackBone )->GetGlobalMatrix().TransformUp();
+			}
+			break;
 			
-		}else{
-			alignUpVector = stalist.GetStateAt( pTrackBone )->GetGlobalMatrix().TransformView();
-		}
-		break;
-		
-	case deAnimatorRuleTrackTo::eutController:{
-		alignUpVector = up;
-		
-		const float vlen = alignUpVector.Length();
-		if( vlen < 1e-5f ){
-			alignUpVector.Set( 0.0f, 1.0f, 0.0f );
+		case deAnimatorRuleTrackTo::eutTrackBoneZ:
+			if( pTrackBone == -1 ){
+				alignUpVector.Set( 0.0f, 0.0f, 1.0f );
+				
+			}else{
+				alignUpVector = stalist.GetStateAt( pTrackBone )->GetGlobalMatrix().TransformView();
+			}
+			break;
 			
-		}else{
-			alignUpVector /= vlen;
+		case deAnimatorRuleTrackTo::eutController:{
+			alignUpVector = up;
+			
+			const float vlen = alignUpVector.Length();
+			if( vlen < 1e-5f ){
+				alignUpVector.Set( 0.0f, 1.0f, 0.0f );
+				
+			}else{
+				alignUpVector /= vlen;
+			}
+			}break;
 		}
-		}break;
-	}
-	
-	// if the up axis is a negative axis this is the same as using the respective positive axis
-	// but using the negated align up vector. removes a bunch of lines of code
-	deAnimatorRuleTrackTo::eTrackAxis upAxis = pUpAxis;
-	
-	if( upAxis == deAnimatorRuleTrackTo::etaNegX ){
-		upAxis = deAnimatorRuleTrackTo::etaPosX;
-		alignUpVector = -alignUpVector;
 		
-	}else if( upAxis == deAnimatorRuleTrackTo::etaNegY ){
-		upAxis = deAnimatorRuleTrackTo::etaPosY;
-		alignUpVector = -alignUpVector;
-		
-	}else if( upAxis == deAnimatorRuleTrackTo::etaNegZ ){
-		upAxis = deAnimatorRuleTrackTo::etaPosZ;
-		alignUpVector = -alignUpVector;
+		// if the up axis is a negative axis this is the same as using the respective positive axis
+		// but using the negated align up vector. removes a bunch of lines of code
+		if( upAxis == deAnimatorRuleTrackTo::etaNegX ){
+			upAxis = deAnimatorRuleTrackTo::etaPosX;
+			alignUpVector = -alignUpVector;
+			
+		}else if( upAxis == deAnimatorRuleTrackTo::etaNegY ){
+			upAxis = deAnimatorRuleTrackTo::etaPosY;
+			alignUpVector = -alignUpVector;
+			
+		}else if( upAxis == deAnimatorRuleTrackTo::etaNegZ ){
+			upAxis = deAnimatorRuleTrackTo::etaPosZ;
+			alignUpVector = -alignUpVector;
+		}
 	}
 	
 	// rotate bones
@@ -270,68 +271,232 @@ DEBUG_RESET_TIMERS;
 		decVector axisY;
 		decVector axisZ;
 		
-		if( trackAxis == deAnimatorRuleTrackTo::etaPosX ){
-			axisX = axisTrack;
-			
-			if( upAxis == deAnimatorRuleTrackTo::etaPosX ){
-				continue; // invalid axis combination, no tracking possible
+		if( pLockedAxis == deAnimatorRuleTrackTo::elaNone ){
+			if( trackAxis == deAnimatorRuleTrackTo::etaPosX ){
+				axisX = axisTrack;
 				
-			}else if( upAxis == deAnimatorRuleTrackTo::etaPosY ){
-				axisZ = axisX % alignUpVector;
-				if( axisZ.Length() < 1e-5f ){
-					continue; // pole situation, no tracking possible
+				if( upAxis == deAnimatorRuleTrackTo::etaPosX ){
+					continue; // no valid tracking configuration
+					
+				}else if( upAxis == deAnimatorRuleTrackTo::etaPosY ){
+					axisZ = axisX % alignUpVector;
+					const float vlen2 = axisZ.Length();
+					if( vlen2 < 1e-5f ){
+						continue; // no valid tracking configuration
+					}
+					axisZ /= vlen2;
+					
+					axisY = axisZ % axisX;
+					const float vlen3 = axisY.Length();
+					if( vlen3 < 1e-5f ){
+						continue; // no valid tracking configuration
+					}
+					axisY /= vlen3;
+					
+				}else if( upAxis == deAnimatorRuleTrackTo::etaPosZ ){
+					axisY = alignUpVector % axisX;
+					const float vlen2 = axisY.Length();
+					if( vlen2 < 1e-5f ){
+						continue; // no valid tracking configuration
+					}
+					axisY /= vlen2;
+					
+					axisZ = axisX % axisY;
+					const float vlen3 = axisZ.Length();
+					if( vlen3 < 1e-5f ){
+						continue; // no valid tracking configuration
+					}
+					axisZ /= vlen3;
 				}
+				
+			}else if( trackAxis == deAnimatorRuleTrackTo::etaPosY ){
+				axisY = axisTrack;
+				
+				if( upAxis == deAnimatorRuleTrackTo::etaPosX ){
+					axisZ = alignUpVector % axisY;
+					const float vlen2 = axisZ.Length();
+					if( vlen2 < 1e-5f ){
+						continue; // no valid tracking configuration
+					}
+					axisZ /= vlen2;
+					
+					axisX = axisY % axisZ;
+					const float vlen3 = axisX.Length();
+					if( vlen3 < 1e-5f ){
+						continue; // no valid tracking configuration
+					}
+					axisX /= vlen3;
+					
+				}else if( upAxis == deAnimatorRuleTrackTo::etaPosY ){
+					continue; // no valid tracking configuration
+					
+				}else if( upAxis == deAnimatorRuleTrackTo::etaPosZ ){
+					axisX = axisY % alignUpVector;
+					const float vlen2 = axisX.Length();
+					if( vlen2 < 1e-5f ){
+						continue; // no valid tracking configuration
+					}
+					axisX /= vlen2;
+					
+					axisZ = axisX % axisY;
+					const float vlen3 = axisZ.Length();
+					if( vlen3 < 1e-5f ){
+						continue; // no valid tracking configuration
+					}
+					axisZ /= vlen3;
+				}
+				
+			}else if( trackAxis == deAnimatorRuleTrackTo::etaPosZ ){
+				axisZ = axisTrack;
+				
+				if( upAxis == deAnimatorRuleTrackTo::etaPosX ){
+					axisY = axisZ % alignUpVector;
+					const float vlen2 = axisY.Length();
+					if( vlen2 < 1e-5f ){
+						continue; // no valid tracking configuration
+					}
+					axisY /= vlen2;
+					
+					axisX = axisY % axisZ;
+					const float vlen3 = axisX.Length();
+					if( vlen3 < 1e-5f ){
+						continue; // no valid tracking configuration
+					}
+					axisX /= vlen3;
+					
+				}else if( upAxis == deAnimatorRuleTrackTo::etaPosY ){
+					axisX = alignUpVector % axisZ;
+					const float vlen2 = axisX.Length();
+					if( vlen2 < 1e-5f ){
+						continue; // no valid tracking configuration
+					}
+					axisX /= vlen2;
+					
+					axisY = axisZ % axisX;
+					const float vlen3 = axisY.Length();
+					if( vlen3 < 1e-5f ){
+						continue; // no valid tracking configuration
+					}
+					axisY /= vlen3;
+					
+				}else if( upAxis == deAnimatorRuleTrackTo::etaPosZ ){
+					continue; // no valid tracking configuration
+				}
+			}
+			
+		}else if( pLockedAxis == deAnimatorRuleTrackTo::elaX ){
+			axisX = bstate.GetGlobalMatrix().TransformRight();
+			
+			if( trackAxis == deAnimatorRuleTrackTo::etaPosY ){
+				axisZ = axisX % axisTrack;
+				const float vlen2 = axisZ.Length();
+				if( vlen2 < 1e-5f ){
+					continue; // no valid tracking configuration
+				}
+				axisZ /= vlen2;
+				
 				axisY = axisZ % axisX;
-				
-			}else if( upAxis == deAnimatorRuleTrackTo::etaPosZ ){
-				axisY = alignUpVector % axisX;
-				if( axisY.Length() < 1e-5f ){
-					continue; // pole situation, no tracking possible
+				const float vlen3 = axisY.Length();
+				if( vlen3 < 1e-5f ){
+					continue; // no valid tracking configuration
 				}
+				axisY /= vlen3;
+				
+			}else if( trackAxis == deAnimatorRuleTrackTo::etaPosZ ){
+				axisY = axisTrack % axisX;
+				const float vlen2 = axisY.Length();
+				if( vlen2 < 1e-5f ){
+					continue; // no valid tracking configuration
+				}
+				axisY /= vlen2;
+				
 				axisZ = axisX % axisY;
+				const float vlen3 = axisZ.Length();
+				if( vlen3 < 1e-5f ){
+					continue; // no valid tracking configuration
+				}
+				axisZ /= vlen3;
+				
+			}else{
+				continue; // no valid tracking configuration
 			}
 			
-		}else if( trackAxis == deAnimatorRuleTrackTo::etaPosY ){
-			axisY = axisTrack;
+		}else if( pLockedAxis == deAnimatorRuleTrackTo::elaY ){
+			axisY = bstate.GetGlobalMatrix().TransformUp();
 			
-			if( upAxis == deAnimatorRuleTrackTo::etaPosX ){
-				axisZ = alignUpVector % axisY;
-				if( axisZ.Length() < 1e-5f ){
-					continue; // pole situation, no tracking possible
+			if( trackAxis == deAnimatorRuleTrackTo::etaPosX ){
+				axisZ = axisTrack % axisY;
+				const float vlen2 = axisZ.Length();
+				if( vlen2 < 1e-5f ){
+					continue; // no valid tracking configuration
 				}
+				axisZ /= vlen2;
+				
 				axisX = axisY % axisZ;
-				
-			}else if( upAxis == deAnimatorRuleTrackTo::etaPosY ){
-				continue; // invalid axis combination, no tracking possible
-				
-			}else if( upAxis == deAnimatorRuleTrackTo::etaPosZ ){
-				axisX = axisY % alignUpVector;
-				if( axisX.Length() < 1e-5f ){
-					continue; // pole situation, no tracking possible
+				const float vlen3 = axisX.Length();
+				if( vlen3 < 1e-5f ){
+					continue; // no valid tracking configuration
 				}
+				axisX /= vlen3;
+				
+			}else if( trackAxis == deAnimatorRuleTrackTo::etaPosZ ){
+				axisX = axisY % axisTrack;
+				const float vlen2 = axisX.Length();
+				if( vlen2 < 1e-5f ){
+					continue; // no valid tracking configuration
+				}
+				axisX /= vlen2;
+				
 				axisZ = axisX % axisY;
+				const float vlen3 = axisZ.Length();
+				if( vlen3 < 1e-5f ){
+					continue; // no valid tracking configuration
+				}
+				axisZ /= vlen3;
+				
+			}else{
+				continue; // no valid tracking configuration
 			}
 			
-		}else if( trackAxis == deAnimatorRuleTrackTo::etaPosZ ){
-			axisZ = axisTrack;
+		}else if( pLockedAxis == deAnimatorRuleTrackTo::elaZ ){
+			axisZ = bstate.GetGlobalMatrix().TransformView();
 			
-			if( upAxis == deAnimatorRuleTrackTo::etaPosX ){
-				axisY = axisZ % alignUpVector;
-				if( axisY.Length() < 1e-5f ){
-					continue; // pole situation, no tracking possible
+			if( trackAxis == deAnimatorRuleTrackTo::etaPosX ){
+				axisY = axisZ % axisTrack;
+				const float vlen2 = axisY.Length();
+				if( vlen2 < 1e-5f ){
+					continue; // no valid tracking configuration
 				}
-				axisX = axisY % axisZ;
+				axisY /= vlen2;
 				
-			}else if( upAxis == deAnimatorRuleTrackTo::etaPosY ){
-				axisX = alignUpVector % axisZ;
-				if( axisX.Length() < 1e-5f ){
-					continue; // pole situation, no tracking possible
+				axisX = axisY % axisZ;
+				const float vlen3 = axisX.Length();
+				if( vlen3 < 1e-5f ){
+					continue; // no valid tracking configuration
 				}
+				axisX /= vlen3;
+				
+			}else if( trackAxis == deAnimatorRuleTrackTo::etaPosY ){
+				axisX = axisTrack % axisZ;
+				const float vlen2 = axisX.Length();
+				if( vlen2 < 1e-5f ){
+					continue; // no valid tracking configuration
+				}
+				axisX /= vlen2;
+				
 				axisY = axisZ % axisX;
+				const float vlen3 = axisY.Length();
+				if( vlen3 < 1e-5f ){
+					continue; // no valid tracking configuration
+				}
+				axisY /= vlen3;
 				
-			}else if( upAxis == deAnimatorRuleTrackTo::etaPosZ ){
-				continue; // invalid axis combination, no tracking possible
+			}else{
+				continue; // no valid tracking configuration
 			}
+			
+		}else{
+			continue; // no valid tracking configuration
 		}
 		
 		// calculate the bone parameters for the new coordinate system

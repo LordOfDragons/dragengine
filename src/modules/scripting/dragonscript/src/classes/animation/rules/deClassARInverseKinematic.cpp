@@ -149,10 +149,6 @@ void deClassARInverseKinematic::nfTargetAddLink::RunFunction( dsRunTime *rt, dsV
 		nd.rule->GetTargetReachRange().AddLink( link );
 		break;
 		
-	case deClassARInverseKinematic::etGuidePosition:
-		nd.rule->GetTargetGuidePosition().AddLink( link );
-		break;
-		
 	default:
 		DSTHROW( dueInvalidParam );
 	}
@@ -204,10 +200,6 @@ void deClassARInverseKinematic::nfTargetRemoveAllLinks::RunFunction( dsRunTime *
 		
 	case deClassARInverseKinematic::etReachRange:
 		nd.rule->GetTargetReachRange().RemoveAllLinks();
-		break;
-		
-	case deClassARInverseKinematic::etGuidePosition:
-		nd.rule->GetTargetGuidePosition().RemoveAllLinks();
 		break;
 		
 	default:
@@ -417,68 +409,6 @@ void deClassARInverseKinematic::nfSetReachCenter::RunFunction( dsRunTime *rt, ds
 	}
 }
 
-// public func void setGuidePosition(Vector position)
-deClassARInverseKinematic::nfSetGuidePosition::nfSetGuidePosition( const sInitData &init ) :
-dsFunction( init.clsARIK, "setGuidePosition", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsVec ); // position
-}
-void deClassARInverseKinematic::nfSetGuidePosition::RunFunction( dsRunTime *rt, dsValue *myself ){
-	sARIKNatDat &nd = *( ( sARIKNatDat* )p_GetNativeData( myself ) );
-	deClassARInverseKinematic *clsARIK = ( deClassARInverseKinematic* )GetOwnerClass();
-	deClassVector *clsVec = clsARIK->GetDS().GetClassVector();
-	
-	nd.rule->SetGuidePosition( clsVec->GetVector( rt->GetValue( 0 )->GetRealObject() ) );
-	
-	if( nd.animator ){
-		nd.animator->NotifyRulesChanged();
-	}
-}
-
-// public func void setGuideBone(String guideBone)
-deClassARInverseKinematic::nfSetGuideBone::nfSetGuideBone( const sInitData &init ) :
-dsFunction( init.clsARIK, "setGuideBone", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsStr ); // guideBone
-}
-void deClassARInverseKinematic::nfSetGuideBone::RunFunction( dsRunTime *rt, dsValue *myself ){
-	sARIKNatDat &nd = *( ( sARIKNatDat* )p_GetNativeData( myself ) );
-	
-	nd.rule->SetGuideBone( rt->GetValue( 0 )->GetString() );
-	
-	if( nd.animator ){
-		nd.animator->NotifyRulesChanged();
-	}
-}
-
-// public func void setUseGuideSolverBone(bool useGuideSolverBone)
-deClassARInverseKinematic::nfSetUseGuideSolverBone::nfSetUseGuideSolverBone( const sInitData &init ) :
-dsFunction( init.clsARIK, "setUseGuideSolverBone", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsBool ); // useGuideSolverBone
-}
-void deClassARInverseKinematic::nfSetUseGuideSolverBone::RunFunction( dsRunTime *rt, dsValue *myself ){
-	sARIKNatDat &nd = *( ( sARIKNatDat* )p_GetNativeData( myself ) );
-	
-	nd.rule->SetUseGuideSolverBone( rt->GetValue( 0 )->GetBool() );
-	
-	if( nd.animator ){
-		nd.animator->NotifyRulesChanged();
-	}
-}
-
-// public func void setGuideSolverBone(String bone)
-deClassARInverseKinematic::nfSetGuideSolverBone::nfSetGuideSolverBone( const sInitData &init ) :
-dsFunction( init.clsARIK, "setGuideSolverBone", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsStr ); // bone
-}
-void deClassARInverseKinematic::nfSetGuideSolverBone::RunFunction( dsRunTime *rt, dsValue *myself ){
-	sARIKNatDat &nd = *( ( sARIKNatDat* )p_GetNativeData( myself ) );
-	
-	nd.rule->SetGuideSolverBone( rt->GetValue( 0 )->GetString() );
-	
-	if( nd.animator ){
-		nd.animator->NotifyRulesChanged();
-	}
-}
-
 
 
 // Class deClassARInverseKinematic
@@ -537,10 +467,6 @@ void deClassARInverseKinematic::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfSetReachRange( init ) );
 	AddFunction( new nfSetReachBone( init ) );
 	AddFunction( new nfSetReachCenter( init ) );
-	AddFunction( new nfSetGuidePosition( init ) );
-	AddFunction( new nfSetGuideBone( init ) );
-	AddFunction( new nfSetUseGuideSolverBone( init ) );
-	AddFunction( new nfSetGuideSolverBone( init ) );
 	
 	AddFunction( new nfTargetAddLink( init ) );
 	AddFunction( new nfTargetRemoveAllLinks( init ) );

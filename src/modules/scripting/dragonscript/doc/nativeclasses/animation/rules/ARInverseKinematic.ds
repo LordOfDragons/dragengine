@@ -75,36 +75,6 @@ class ARInverseKinematic extends AnimatorRule
 	
 	
 	/**
-	 * \brief Set guide position.
-	 * \version 1.11
-	 */
-	public func void setGuidePosition(Vector position)
-	end
-	
-	/**
-	 * \brief Set guide bone.
-	 * \version 1.11
-	 */
-	public func void setGuideBone(String bone)
-	end
-	
-	/**
-	 * \brief Set use guide solver bone.
-	 * \version 1.11
-	 */
-	public func void setUseGuideSolverBone(bool useGuideSolverBone)
-	end
-	
-	/**
-	 * \brief Set guide solver bone.
-	 * \version 1.11
-	 */
-	public func void setGuideSolverBone(String bone)
-	end
-	
-	
-	
-	/**
 	 * \brief Add link to target.
 	 * \throws EInvalidParam \em target is not a valid value.
 	 */

@@ -46,11 +46,6 @@ class ADRuleInverseKinematic extends ADRule
 	private var String pReachBone
 	private var Vector pReachCenter
 	
-	private var Vector pGuidePosition
-	private var String pGuideBone
-	private var bool pUseGuideSolverBone
-	private var String pGuideSolverBone
-	
 	
 	
 	/** \brief Create animation rule definition. */
@@ -67,11 +62,6 @@ class ADRuleInverseKinematic extends ADRule
 		pReachRange = 0.0
 		pReachBone = ""
 		pReachCenter = Vector.new()
-		
-		pGuidePosition = Vector.new()
-		pGuideBone = ""
-		pUseGuideSolverBone = false
-		pGuideSolverBone = ""
 	end
 	
 	
@@ -228,81 +218,6 @@ class ADRuleInverseKinematic extends ADRule
 	
 	
 	
-	/**
-	 * \brief Guide position.
-	 * \version 1.11
-	 */
-	public func Vector getGuidePosition()
-		return pGuidePosition
-	end
-	
-	/**
-	 * \brief Set guide position.
-	 * \version 1.11
-	 */
-	public func void setGuidePosition(Vector position)
-		if position == null
-			throw ENullPointer.new("position")
-		end
-		pGuidePosition = position
-	end
-	
-	/**
-	 * \brief Guide bone or empty string if not used.
-	 * \version 1.11
-	 */
-	public func String getGuideBone()
-		return pGuideBone
-	end
-	
-	/**
-	 * \brief Set guide bone or empty string if not used.
-	 * \version 1.11
-	 */
-	public func void setGuideBone(String bone)
-		if bone == null
-			throw ENullPointer.new("bone")
-		end
-		pGuideBone = bone
-	end
-	
-	/**
-	 * \brief Use guide solver bone.
-	 * \version 1.11
-	 */
-	public func bool getUseGuideSolverBone()
-		return pUseGuideSolverBone
-	end
-	
-	/**
-	 * \brief Set to use guide solver bone.
-	 * \version 1.11
-	 */
-	public func void setUseGuideSolverBone(bool useGuideSolverBone)
-		pUseGuideSolverBone = useGuideSolverBone
-	end
-	
-	/**
-	 * \brief Guide solver bone name.
-	 * \version 1.11
-	 */
-	public func String getGuideSolverBone()
-		return pGuideSolverBone
-	end
-	
-	/**
-	 * \brief Set guide solver bone name.
-	 * \version 1.11
-	 */
-	public func void setGuideSolverBone(String bone)
-		if bone == null
-			throw ENullPointer.new("bone")
-		end
-		pGuideSolverBone = bone
-	end
-	
-	
-	
 	/** \brief Build engine animator rule using the stored definition. */
 	public func AnimatorRule buildRule(Animator animator)
 		var ARInverseKinematic rule = ARInverseKinematic.new()
@@ -325,11 +240,6 @@ class ADRuleInverseKinematic extends ADRule
 		rule.setReachRange(pReachRange)
 		rule.setReachBone(pReachBone)
 		rule.setReachCenter(pReachCenter)
-		
-		rule.setGuidePosition(pGuidePosition)
-		rule.setGuideBone(pGuideBone)
-		rule.setUseGuideSolverBone(pUseGuideSolverBone)
-		rule.setGuideSolverBone(pGuideSolverBone)
 		
 		return rule
 	end

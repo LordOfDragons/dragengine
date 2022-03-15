@@ -44,11 +44,6 @@ private:
 	igdeComboBoxFilterReference pCBReachBone;
 	igdeEditVectorReference pEditReachCenter;
 	
-	igdeEditVectorReference pEditGuidePosition;
-	igdeComboBoxFilterReference pCBGuideBone;
-	igdeCheckBoxReference pChkUseGuideSolverBone;
-	igdeComboBoxFilterReference pCBGuideSolverBone;
-	
 	
 	
 public:

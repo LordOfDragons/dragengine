@@ -40,8 +40,7 @@ deAnimatorRuleInverseKinematic::deAnimatorRuleInverseKinematic() :
 pAdjustPosition( true ),
 pAdjustOrientation( false ),
 pUseSolverBone( false ),
-pReachRange( 0.0f ),
-pUseGuideSolverBone( false ){
+pReachRange( 0.0f ){
 }
 
 deAnimatorRuleInverseKinematic::~deAnimatorRuleInverseKinematic(){
@@ -97,24 +96,6 @@ void deAnimatorRuleInverseKinematic::SetReachBone( const char *bone ){
 
 void deAnimatorRuleInverseKinematic::SetReachCenter( const decVector &center ){
 	pReachCenter = center;
-}
-
-
-
-void deAnimatorRuleInverseKinematic::SetGuidePosition( const decVector &position ){
-	pGuidePosition = position;
-}
-
-void deAnimatorRuleInverseKinematic::SetGuideBone( const char *boneName ){
-	pGuideBone = boneName;
-}
-
-void deAnimatorRuleInverseKinematic::SetUseGuideSolverBone( bool useGuideSolverBone ){
-	pUseGuideSolverBone = useGuideSolverBone;
-}
-
-void deAnimatorRuleInverseKinematic::SetGuideSolverBone( const char *boneName ){
-	pGuideSolverBone = boneName;
 }
 
 

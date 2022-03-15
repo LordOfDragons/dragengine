@@ -153,9 +153,6 @@ aeULinkRemove::aeULinkRemove( aeLink *link ){
 					if( ruleIK->GetTargetReachCenter().HasLink( link ) ){
 						pAddTarget( targetCount, rule, &ruleIK->GetTargetReachCenter() );
 					}
-					if( ruleIK->GetTargetGuidePosition().HasLink( link ) ){
-						pAddTarget( targetCount, rule, &ruleIK->GetTargetGuidePosition() );
-					}
 					
 				}else if( type == deAnimatorRuleVisitorIdentify::ertStateManipulator ){
 					ruleSManip = ( aeRuleStateManipulator* )rule;
