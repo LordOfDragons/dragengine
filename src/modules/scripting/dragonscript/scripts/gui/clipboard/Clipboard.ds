@@ -63,6 +63,15 @@ class Clipboard
 		end)
 	end
 	
+	/**
+	 * \brief Set clip with data.
+	 * 
+	 * Convenience method to call setClip(ClipboardClip.newWith(data)).
+	 */
+	public func void setClipWith(Object data)
+		setClip(ClipboardClip.newWith(data))
+	end
+	
 	/** \brief Clear clipboard. */
 	public func void clear()
 		setClip(null)

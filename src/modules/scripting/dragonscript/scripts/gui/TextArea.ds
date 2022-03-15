@@ -1157,8 +1157,7 @@ class TextArea extends TextWidget implements RangeModelListener
 			return
 		end
 		
-		clipboard.setClip(ClipboardClip.new(getModel().getText().substring(\
-			pSelection.getX(), pSelection.getY())))
+		clipboard.setClipWith(getModel().getText().substring(pSelection.getX(), pSelection.getY()))
 	end
 	
 	/**

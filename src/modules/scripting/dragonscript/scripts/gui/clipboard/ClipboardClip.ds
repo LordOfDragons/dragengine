@@ -25,29 +25,44 @@ namespace Dragengine.Gui
 /**
  * \brief Clipboard clip storing data in multiple formats.
  * \version 1.11
+ * 
+ * Data is added in the order of the most specific object class to the most generic.
+ * Adding String as last entry for non-String objects is not required since the clip
+ * consumer has to call toString() on the last data entry if he wants to consume any
+ * type of object as string.
+ * 
+ * Immutable class.
  */
 class ClipboardClip
 	private var Array pData
 	
 	
 	
-	/** \brief Create clipboard clip. */
-	public func new()
-		pData = Array.new()
+	/**
+	 * \brief Create clipboard clip with data.
+	 * \throws ENullPointer data or entry in data is null.
+	 * \throws EInvalidParam data is empty.
+	 */
+	public func new(Array data)
+		if data.getCount() == 0
+			throw EInvalidParam.new("data is empty")
+		end
+		
+		data.forEach(block int index, Object each
+			if each == null
+				throw ENullPointer.new("data is null at " + index)
+			end
+		end)
+		
+		pData = Array.new(data)
 	end
 	
 	/** \brief Create clipboard clip with data. */
-	public func new(Object data) this()
-		add(data)
-	end
-	
-	/**
-	 * \brief Create copy of clipboard clip.
-	 * 
-	 * Creates shallow copy of data. Data objects are assumed to be immutable by nature.
-	 */
-	public func new(ClipboardClip clip)
-		pData = Array.new(clip.pData)
+	public static func ClipboardClip newWith(Object data)
+		if data == null
+			throw ENullPointer.new("data")
+		end
+		return ClipboardClip.new(Array.newWith(data))
 	end
 	
 	
@@ -60,6 +75,11 @@ class ClipboardClip
 	/** \brief Data at index. */
 	public func Object getAt(int index)
 		return pData.getAt(index)
+	end
+	
+	/** \brief Last data. */
+	public func Object last()
+		return pData.getAt(-1)
 	end
 	
 	/** \brief Visit data with block receiving object as argument. */
@@ -112,18 +132,5 @@ class ClipboardClip
 	 */
 	public func Array collectCastable(Block ablock)
 		return pData.collectCastable(ablock)
-	end
-	
-	
-	
-	/**
-	 * \brief Add data.
-	 */
-	public func void add(Object data)
-		if data == null
-			throw ENullPointer.new("data")
-		end
-		
-		pData.add(data)
 	end
 end
