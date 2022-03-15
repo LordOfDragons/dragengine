@@ -281,6 +281,7 @@ class TextWidget extends Widget implements TextModelListener
 			end
 			
 			super.onKeyPress(event)
+			return
 			
 		case InputEventKey.tab
 			if pAddTabToText
@@ -295,14 +296,32 @@ class TextWidget extends Widget implements TextModelListener
 			else
 				super.onKeyPress(event)
 			end
+			return
 			
-		else
-			if not pReadOnly and event.getKeyChar() > 0
-				onKeyType(event)
+		case InputEventKey.c
+			if (event.getModifiers() & InputEventModifier.control) == InputEventModifier.control
+				onClipboardCopy()
+				return
 			end
 			
-			super.onKeyPress(event)
+		case InputEventKey.x
+			if (event.getModifiers() & InputEventModifier.control) == InputEventModifier.control
+				onClipboardCut()
+				return
+			end
+			
+		case InputEventKey.v
+			if (event.getModifiers() & InputEventModifier.control) == InputEventModifier.control
+				onClipboardPaste()
+				return
+			end
 		end
+		
+		if not pReadOnly and event.getKeyChar() > 0
+			onKeyType(event)
+		end
+		
+		super.onKeyPress(event)
 	end
 	
 	/** \brief Widget lost focus. */
@@ -320,5 +339,26 @@ class TextWidget extends Widget implements TextModelListener
 	 * \vrsion 1.7
 	 */
 	public func void onReadOnlyChanged()
+	end
+	
+	/**
+	 * \brief Copy to clipboard requested.
+	 * \version 1.11
+	 */
+	public func void onClipboardCopy()
+	end
+	
+	/**
+	 * \brief Cut to clipboard requested.
+	 * \version 1.11
+	 */
+	public func void onClipboardCut()
+	end
+	
+	/**
+	 * \brief Paste from clipboard requested.
+	 * \version 1.11
+	 */
+	public func void onClipboardPaste()
 	end
 end

@@ -235,18 +235,21 @@ class TextArea extends TextWidget implements RangeModelListener
 	end
 	
 	/** Sets the selection or clears it. */
-	public func void setSelection( Point selection )
+	public func void setSelection(Point selection)
 		if selection != null
-			if selection.getX() < 0 or selection.getY() > this.getModel().getText().getLength() \
-			or selection.getX() > selection.getY()
+			if selection.getX() < 0 or selection.getY() > this.getModel().getText().getLength()
 				throw EInvalidParam.new()
+			end
+			
+			if selection.getX() == selection.getY()
+				selection = null
 			end
 		end
 		
-		this.pSelection = selection
-		this.pSelXOffsets = null
-		this.pNeedsUpdate = true
-		this.updateCanvasText()
+		pSelection = selection
+		pSelXOffsets = null
+		pNeedsUpdate = true
+		updateCanvasText()
 	end
 	
 	/** Sets the selection to the entire text. */
@@ -478,46 +481,150 @@ class TextArea extends TextWidget implements RangeModelListener
 		case InputEventKey.arrowUp
 			// move cursor up
 			if line > 0
-				this.pCursorPos = this.bestCharNear( line - 1, this.getRefXPos() )
+				var int nextCursorPos = bestCharNear(line - 1, getRefXPos())
+				
+				// select text
+				if (event.getModifiers() & InputEventModifier.shift) == InputEventModifier.shift
+					if pSelection == null
+						pSelection = Point.new(nextCursorPos, pCursorPos)
+						
+					elif pSelection.getY() == pCursorPos
+						pSelection = Point.new(pSelection.getX(), nextCursorPos)
+						
+					elif pSelection.getX() == pCursorPos
+						pSelection = Point.new(nextCursorPos, pSelection.getY())
+						
+					else
+						pSelection = Point.new(nextCursorPos, pCursorPos)
+					end
+					
+					if pSelection.getX() == pSelection.getY()
+						pSelection = null
+						
+					elif pSelection.getX() > pSelection.getY()
+						pSelection = Point.new(pSelection.getY(), pSelection.getX())
+					end
+					
+				else
+					pSelection = null
+				end
+				
+				// move cursor left
+				pCursorPos = nextCursorPos
 				update = true
 			end
 			
 		case InputEventKey.arrowDown
 			// move cursor down
-			if line < this.getLineCount() - 1
-				this.pCursorPos = this.bestCharNear( line + 1, this.getRefXPos() )
+			if line < getLineCount() - 1
+				var int nextCursorPos = bestCharNear(line + 1, getRefXPos())
+				
+				// select text
+				if (event.getModifiers() & InputEventModifier.shift) == InputEventModifier.shift
+					if pSelection == null
+						pSelection = Point.new(pCursorPos, nextCursorPos)
+						
+					elif pSelection.getY() == pCursorPos
+						pSelection = Point.new(pSelection.getX(), nextCursorPos)
+						
+					elif pSelection.getX() == pCursorPos
+						pSelection = Point.new(nextCursorPos, pSelection.getY())
+						
+					else
+						pSelection = Point.new(pCursorPos, nextCursorPos)
+					end
+					
+					if pSelection.getX() == pSelection.getY()
+						pSelection = null
+						
+					elif pSelection.getX() > pSelection.getY()
+						pSelection = Point.new(pSelection.getY(), pSelection.getX())
+					end
+					
+				else
+					pSelection = null
+				end
+				
+				// move cursor left
+				pCursorPos = nextCursorPos
 				update = true
 			end
 			
 		case InputEventKey.arrowLeft
-			// move cursor left
-			if this.pCursorPos > 0
-				this.pCursorPos--
-				this.pRefXPosDirty = true
+			if pCursorPos > 0
+				// select text
+				if (event.getModifiers() & InputEventModifier.shift) == InputEventModifier.shift
+					if pSelection == null
+						pSelection = Point.new(pCursorPos - 1, pCursorPos)
+						
+					elif pSelection.getY() == pCursorPos
+						pSelection = Point.new(pSelection.getX(), pCursorPos - 1)
+						if pSelection.getX() == pSelection.getY()
+							pSelection = null
+						end
+						
+					elif pSelection.getX() == pCursorPos
+						pSelection = Point.new(pCursorPos - 1, pSelection.getY())
+						
+					else
+						pSelection = Point.new(pCursorPos - 1, pCursorPos)
+					end
+					
+				else
+					pSelection = null
+				end
+				
+				// move cursor left
+				pCursorPos--
+				pRefXPosDirty = true
 				update = true
 			end
 			
 		case InputEventKey.arrowRight
-			// move cursor right
-			if this.pCursorPos < this.getModel().getText().getLength()
-				this.pCursorPos++
-				this.pRefXPosDirty = true
+			if pCursorPos < getModel().getText().getLength()
+				// select text
+				if (event.getModifiers() & InputEventModifier.shift) == InputEventModifier.shift
+					if pSelection == null
+						pSelection = Point.new(pCursorPos, pCursorPos + 1)
+						
+					elif pSelection.getY() == pCursorPos
+						pSelection = Point.new(pSelection.getX(), pCursorPos + 1)
+						
+					elif pSelection.getX() == pCursorPos
+						pSelection = Point.new(pCursorPos + 1, pSelection.getY())
+						if pSelection.getX() == pSelection.getY()
+							pSelection = null
+						end
+						
+					else
+						pSelection = Point.new(pCursorPos, pCursorPos + 1)
+					end
+					
+				else
+					pSelection = null
+				end
+				
+				// move cursor right
+				pCursorPos++
+				pRefXPosDirty = true
 				update = true
 			end
 			
 		case InputEventKey.home
 			// move to the beginning of the line
-			if this.pCursorPos != first
-				this.pCursorPos = first
-				this.pRefXPosDirty = true
+			if pCursorPos != first
+				pCursorPos = first
+				pRefXPosDirty = true
+				pSelection = null
 				update = true
 			end
 			
 		case InputEventKey.last
 			// move to the end of the line
-			if this.pCursorPos != first + count
-				this.pCursorPos = first + count
-				this.pRefXPosDirty = true
+			if pCursorPos != first + count
+				pCursorPos = first + count
+				pRefXPosDirty = true
+				pSelection = null
 				update = true
 			end
 			
@@ -536,11 +643,10 @@ class TextArea extends TextWidget implements RangeModelListener
 		
 		// update if needed
 		if update
-			this.pCaret = null
-			this.pSelection = null
-			this.pSelXOffsets = null
-			this.ensureCursorVisible()
-			this.updateCanvasText()
+			pCaret = null
+			pSelXOffsets = null
+			ensureCursorVisible()
+			updateCanvasText()
 		end
 	end
 	
@@ -957,22 +1063,7 @@ class TextArea extends TextWidget implements RangeModelListener
 			end
 			
 		case InputEventKey.enter
-			// new line
-			this.deleteSelectedText()
-			curText = this.getModel().getText()
-			textLen = curText.getLength()
-			if this.pCursorPos > 0
-				newText = newText + curText.substring( 0, this.pCursorPos )
-			end
-			newText = newText + '\n'
-			if textLen - this.pCursorPos > 0
-				newText = newText + curText.substring( this.pCursorPos )
-			end
-			if this.getValidator() == null or this.getValidator().validates( newText )
-				this.pCursorPos++
-				setHasTyped(true)
-				this.getModel().setText( newText )
-			end
+			insertText("\n")
 			
 		else
 			// TEMPORARY HACK UNTIL WIDGET CAN HANDLE UTF8
@@ -981,22 +1072,8 @@ class TextArea extends TextWidget implements RangeModelListener
 			end
 			
 			// otherwise add character to string
-			if this.getFont().getCharAdvance( event.getKeyChar() ) > 0.0
-				this.deleteSelectedText()
-				curText = this.getModel().getText()
-				textLen = curText.getLength()
-				if this.pCursorPos > 0
-					newText = newText + curText.substring( 0, this.pCursorPos )
-				end
-				newText = newText + event.getKeyChar() cast byte
-				if textLen - this.pCursorPos > 0
-					newText = newText + curText.substring( this.pCursorPos )
-				end
-				if this.getValidator() == null or this.getValidator().validates( newText )
-					this.pCursorPos++
-					setHasTyped(true)
-					this.getModel().setText( newText )
-				end
+			if getFont().getCharAdvance(event.getKeyChar()) > 0
+				insertText((event.getKeyChar() cast byte).toString())
 			end
 		end
 	end
@@ -1035,5 +1112,91 @@ class TextArea extends TextWidget implements RangeModelListener
 	/** Send if the value has changed. */
 	public func void valueChanged( RangeModel rangeModel )
 		this.updateCanvasText()
+	end
+	
+	
+	/**
+	 * \brief Insert text at cursor deleting selected text if present.
+	 * \version 1.11
+	 */
+	public func void insertText(String text)
+		if text == null
+			throw ENullPointer.new("text")
+		end
+		
+		deleteSelectedText()
+		
+		var String curText = getModel().getText()
+		var int textLen = curText.getLength()
+		var String newText = ""
+		
+		if pCursorPos > 0
+			newText = newText + curText.substring(0, pCursorPos)
+		end
+		
+		newText = newText + text
+		
+		if textLen - pCursorPos > 0
+			newText = newText + curText.substring(pCursorPos)
+		end
+		
+		if getValidator() == null or getValidator().validates(newText)
+			pCursorPos += text.getLength()
+			setHasTyped(true)
+			getModel().setText(newText)
+		end
+	end
+	
+	/**
+	 * \brief Copy to clipboard requested.
+	 * \version 1.11
+	 */
+	public func void onClipboardCopy()
+		var Clipboard clipboard = getClipboard()
+		if clipboard == null or pSelection == null or pSelection.getX() == pSelection.getY()
+			return
+		end
+		
+		clipboard.setClip(ClipboardClip.new(getModel().getText().substring(\
+			pSelection.getX(), pSelection.getY())))
+	end
+	
+	/**
+	 * \brief Cut to clipboard requested.
+	 * \version 1.11
+	 */
+	public func void onClipboardCut()
+		var Clipboard clipboard = getClipboard()
+		if clipboard == null or pSelection == null or pSelection.getX() == pSelection.getY()
+			return
+		end
+		
+		onClipboardCopy()
+		deleteSelectedText()
+	end
+	
+	/**
+	 * \brief Paste from clipboard requested.
+	 * \version 1.11
+	 */
+	public func void onClipboardPaste()
+		var Clipboard clipboard = getClipboard()
+		if clipboard == null or clipboard.isEmpty()
+			return
+		end
+		
+		var ClipboardClip clip = clipboard.getClip()
+		if clip.getCount() == 0
+			return
+		end
+		
+		if clip.findCastable(block String data
+			insertText(data)
+			return true
+		end) != null
+			return
+		end
+		
+		insertText(clip.getAt(0).toString())
 	end
 end

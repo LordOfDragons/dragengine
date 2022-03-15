@@ -1,0 +1,95 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2022, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+namespace Dragengine.Gui
+
+
+/**
+ * \brief Clipboard storing data clip.
+ * \version 1.11
+ */
+class Clipboard
+	private var ClipboardClip pClip
+	private var Array pListeners
+	
+	
+	
+	/** \brief Create clipboard. */
+	public func new()
+		pListeners = Array.new()
+	end
+	
+	/** \brief Dispose of clipboard. */
+	public func void dispose()
+		pListeners.removeAll()
+		pClip = null
+	end
+	
+	
+	
+	/** \brief Get clip or null if not set. */
+	public func ClipboardClip getClip()
+		return pClip
+	end
+	
+	/** \brief Set clip or null to clear. */
+	public func void setClip(ClipboardClip clip)
+		if clip == pClip
+			return
+		end
+		
+		pClip = clip
+		
+		pListeners.forEach(block ClipboardListener each
+			each.clipChanged(this)
+		end)
+	end
+	
+	/** \brief Clear clipboard. */
+	public func void clear()
+		setClip(null)
+	end
+	
+	/** \brief Clip is present. */
+	public func bool hasClip()
+		return pClip != null
+	end
+	
+	/** \brief Clip is absent. */
+	public func bool isEmpty()
+		return pClip == null
+	end
+	
+	
+	
+	/** \brief Add listener. */
+	public func void addListener(ClipboardListener listener)
+		if listener == null
+			throw ENullPointer.new("listener")
+		end
+		pListeners.add(listener)
+	end
+	
+	/** \brief Remove listener. */
+	public func void removeListener(ClipboardListener listener)
+		pListeners.remove(listener)
+	end
+end

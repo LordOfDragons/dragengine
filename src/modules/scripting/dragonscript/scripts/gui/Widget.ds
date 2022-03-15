@@ -128,6 +128,8 @@ class Widget
 	
 	private var Object pToolTip
 	
+	private var Clipboard pClipboard
+	
 	
 	
 	/** \brief Create widget. */
@@ -2104,6 +2106,32 @@ class Widget
 				vk.popdown()
 			end
 		end
+	end
+	
+	
+	
+	/**
+	 * \brief Clipboard or null to use parent clipboard.
+	 * \version 1.11
+	 */
+	public func Clipboard getClipboard()
+		if pClipboard != null
+			return pClipboard
+			
+		elif pParent != null
+			return pParent.getClipboard()
+			
+		else
+			return null
+		end
+	end
+	
+	/**
+	 * \brief Set clipboard or null to use parent clipboard.
+	 * \version 1.11
+	 */
+	public func void setClipboard(Clipboard clipboard)
+		pClipboard = clipboard
 	end
 	
 	
