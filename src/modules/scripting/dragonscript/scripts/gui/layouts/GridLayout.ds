@@ -32,125 +32,119 @@ pin Dragengine.Gui.Borders
  * row count is calculated depending on the visible number of widgets.
  * 
  * If row and column constraint are not 0 the axis defines if widgets are arranges first
- * in rows (LayoutAxis.y) or columns (LayoutAxis.x). If row count is 0 axis is ignore and LayoutAxis.y
- * arrangement is used. If column count is 0 axis is ignored and LayoutAxis.x arrangement is used.
+ * in rows (LayoutAxis.y or LayoutAxis.inverseY) or columns (LayoutAxis.x or LayoutAxis.inverseX).
+ * If row count is 0 axis is ignore and LayoutAxis.y or LayoutAxis.inverseY arrangement
+ * is used. If column count is 0 axis is ignored and LayoutAxis.x or LayoutAxis.inverseX
+ * arrangement is used. If reverse or not reverse is used depends on the layout axis
+ * set in the constructor.
  * 
  * Instances of this layout can be shared by multiple widgets.
  */
 class GridLayout implements Layout
-	/** \brief Number of columns or 0 to choose automatically. */
 	private var int pColumCount
-	
-	/** \brief Number of rows or 0 to choose automatically. */
 	private var int pRowCount
-	
-	/** \brief Gap between widgets. */
 	private var int pGap
-	
-	/** \brief Arrange direction if both row and column count is not 0. */
 	private var LayoutAxis pAxis
-	
-	/** \brief Actual axis to use for layout. */
 	private var LayoutAxis pUsedAxis
 	
 	
 	
 	/** \brief Create GridLayout with no gap between widgets. */
-	public func new( int columnCount, int rowCount ) this( columnCount, rowCount, 0, LayoutAxis.y )
+	public func new(int columnCount, int rowCount) this(columnCount, rowCount, 0, LayoutAxis.y)
 	end
 	
 	/** \brief Create GridLayout. */
-	public func new( int columnCount, int rowCount, int gap ) this( columnCount, rowCount, gap, LayoutAxis.y )
+	public func new(int columnCount, int rowCount, int gap) this(columnCount, rowCount, gap, LayoutAxis.y)
 	end
 	
 	/** \brief Create GridLayout. */
-	public func new( int columnCount, int rowCount, int gap, LayoutAxis axis )
-		this.setColumnCount( columnCount )
-		this.setRowCount( rowCount )
-		this.setGap( gap )
-		this.setAxis( axis )
+	public func new(int columnCount, int rowCount, int gap, LayoutAxis axis)
+		setGap(gap)
+		setAxis(axis)
+		setColumnCount(columnCount) // requires axis to be set
+		setRowCount(rowCount) // requires axis to be set
 	end
 	
 	
 	
 	/** \brief Number of columns or 0 to choose automatically. */
 	public func int getColumnCount()
-		return this.pColumCount
+		return pColumCount
 	end
 	
 	/** \brief Set number of columns or 0 to choose automatically. */
-	public func void setColumnCount( int count )
+	public func void setColumnCount(int count)
 		if count < 0
-			throw EInvalidParam.new()
+			throw EInvalidParam.new("count < 0")
 		end
 		
-		this.pColumCount = count
-		this.updateUsedAxis()
+		pColumCount = count
+		updateUsedAxis()
 	end
 	
 	/** \brief Number of rows or 0 to choose automatically. */
 	public func int getRowCount()
-		return this.pRowCount
+		return pRowCount
 	end
 	
 	/** \brief Set number of rows or 0 to choose automatically. */
-	public func void setRowCount( int count )
+	public func void setRowCount(int count)
 		if count < 0
-			throw EInvalidParam.new()
+			throw EInvalidParam.new("count < 0")
 		end
 		
-		this.pRowCount = count
-		this.updateUsedAxis()
+		pRowCount = count
+		updateUsedAxis()
 	end
 	
 	/** \brief Size of gap between widgets. */
 	public func int getGap()
-		return this.pGap
+		return pGap
 	end
 	
 	/** \brief Set size of gap between widgets. */
-	public func void setGap( int gap )
-		this.pGap = gap
+	public func void setGap(int gap)
+		pGap = gap
 	end
 	
 	/** \brief Arrange direction if both row and column count is not 0. */
 	public func LayoutAxis getAxis()
-		return this.pAxis
+		return pAxis
 	end
 	
 	/** \brief Set arrange direction if both row and column count is not 0. */
-	public func void setAxis( LayoutAxis axis )
-		this.pAxis = axis
-		this.updateUsedAxis()
+	public func void setAxis(LayoutAxis axis)
+		pAxis = axis
+		updateUsedAxis()
 	end
 	
 	
 	
 	/** \brief Add widget to Layout. */
-	public func void addWidget( Widget widget, Object settings )
+	public func void addWidget(Widget widget, Object settings)
 	end
 	
 	/** \brief Remove widget from layout. */
-	public func void removeWidget( Widget widget )
+	public func void removeWidget(Widget widget)
 	end
 	
 	
 	
 	/** \brief Lay out widgets. */
-	public func void doLayout( Container container )
-		if this.pColumCount == 0 and this.pRowCount == 0
+	public func void doLayout(Container container)
+		if pColumCount == 0 and pRowCount == 0
 			throw EInvalidParam.new()
 		end
 		
 		// determine cell size and the number of columns and rows to use
-		var int columnCount = this.pColumCount
-		var int rowCount = this.pRowCount
+		var int columnCount = pColumCount
+		var int rowCount = pRowCount
 		
 		if columnCount == 0
-			columnCount = this.getRequiredColumnCount( container )
+			columnCount = getRequiredColumnCount(container)
 			
 		elif rowCount == 0
-			rowCount = this.getRequiredRowCount( container )
+			rowCount = getRequiredRowCount(container)
 		end
 		
 		if columnCount == 0 or rowCount == 0
@@ -158,33 +152,39 @@ class GridLayout implements Layout
 		end
 		
 		// lay out widgets using appropriate method
-		select this.pUsedAxis
-		case LayoutAxis.x, LayoutAxis.inverseX
-			this.layoutXAxis( container, columnCount, rowCount )
+		select pUsedAxis
+		case LayoutAxis.x
+			layoutXAxis(container, columnCount, rowCount, false)
 			
-		case LayoutAxis.y, LayoutAxis.inverseY
-			this.layoutYAxis( container, columnCount, rowCount )
+		case LayoutAxis.inverseX
+			layoutXAxis(container, columnCount, rowCount, true)
+			
+		case LayoutAxis.y
+			layoutYAxis(container, columnCount, rowCount, false)
+			
+		case LayoutAxis.inverseY
+			layoutYAxis(container, columnCount, rowCount, true)
 		end
 	end
 	
 	
 	
 	/** \brief Minimal size required for layout in container. */
-	public func Point getMinimumSize( Container container )
-		return this.getMinimumSizeFor( container, \
-			container.getContainerWidth(), container.getContainerHeight() )
+	public func Point getMinimumSize(Container container)
+		return getMinimumSizeFor(container, \
+			container.getContainerWidth(), container.getContainerHeight())
 	end
 	
 	/** \brief Minimum size of layout using reference width and variable height. */
-	public func Point getMinimumSizeForWidth( Container container, int width )
-		return this.getMinimumSizeFor( container, \
-			DEMath.max( 0, width - container.getPadding().getWidth() ), container.getContainerHeight() )
+	public func Point getMinimumSizeForWidth(Container container, int width)
+		return getMinimumSizeFor(container, \
+			DEMath.max(0, width - container.getPadding().getWidth()), container.getContainerHeight())
 	end
 	
 	/** \brief Minimum size of layout using reference widget height and variable width. */
-	public func Point getMinimumSizeForHeight( Container container, int height )
-		return this.getMinimumSizeFor( container, \
-			container.getContainerWidth(), DEMath.max( 0, height - container.getPadding().getHeight() ) )
+	public func Point getMinimumSizeForHeight(Container container, int height)
+		return getMinimumSizeFor(container, \
+			container.getContainerWidth(), DEMath.max(0, height - container.getPadding().getHeight()))
 	end
 	
 	
@@ -194,24 +194,46 @@ class GridLayout implements Layout
 	 * \details Actual axis depends on row and column count before axis.
 	 */
 	protected func void updateUsedAxis()
-		if this.pColumCount == 0
-			this.pUsedAxis = LayoutAxis.x
+		if pColumCount == 0
+			select pAxis
+			case LayoutAxis.x, LayoutAxis.y
+				pUsedAxis = LayoutAxis.x
+				
+			else
+				pUsedAxis = LayoutAxis.inverseX
+			end
 			
-		elif this.pRowCount == 0
-			this.pUsedAxis = LayoutAxis.y
+		elif pRowCount == 0
+			select pAxis
+			case LayoutAxis.x, LayoutAxis.y
+				pUsedAxis = LayoutAxis.y
+				
+			else
+				pUsedAxis = LayoutAxis.inverseY
+			end
 			
 		else
-			this.pUsedAxis = this.pAxis
+			pUsedAxis = pAxis
 		end
 	end
 	
 	
 	
+	/** \deprecated use layoutYAxis(Container,int,int,bool). */
+	protected func void layoutYAxis(Container container, int columnCount, int rowCount)
+		layoutYAxis(container, columnCount, rowCount, false)
+	end
+	
+	/** \deprecated Use layoutXAxis(Container,int,int,bool). */
+	protected func void layoutXAxis(Container container, int columnCount, int rowCount)
+		layoutXAxis(container, columnCount, rowCount, false)
+	end
+	
 	/** \brief Lay out widgets rows first. */
-	protected func void layoutYAxis( Container container, int columnCount, int rowCount )
+	protected func void layoutYAxis(Container container, int columnCount, int rowCount, bool inverse)
 		// lay out widgets
-		var int containerWidth = container.getContainerWidth() + this.pGap
-		var int containerHeight = container.getContainerHeight() + this.pGap
+		var int containerWidth = container.getContainerWidth() + pGap
+		var int containerHeight = container.getContainerHeight() + pGap
 		var int left = container.getPadding().getLeft()
 		var int top = container.getPadding().getTop()
 		
@@ -220,12 +242,11 @@ class GridLayout implements Layout
 		var int columnRight = left
 		var int rowTop = top
 		var int rowBottom = top + containerHeight / rowCount
-		var int rowHeight = rowBottom - rowTop - this.pGap
+		var int rowHeight = rowBottom - rowTop - pGap
 		var int column = 0
 		var int row = 0
 		var Point childSize
 		var Widget child
-		var int i
 		
 		var BorderSize borderSize
 		var int borderHeight
@@ -233,8 +254,23 @@ class GridLayout implements Layout
 		var int borderLeft
 		var int borderTop
 		
-		for i = 0 to count
-			child = container.getWidget( i )
+		var int nextIndex, endIndex, stepIndex
+		
+		if inverse
+			nextIndex = count - 1
+			endIndex = -1
+			stepIndex = -1
+			
+		else
+			nextIndex = 0
+			endIndex = count
+			stepIndex = 1
+		end
+		
+		while nextIndex != endIndex
+			child = container.getWidget(nextIndex)
+			nextIndex += stepIndex
+			
 			if not child.getVisible()
 				continue
 			end
@@ -264,8 +300,8 @@ class GridLayout implements Layout
 				row++
 				columnLeft = left
 				rowTop = rowBottom
-				rowBottom = top + containerHeight * ( row + 1 ) / rowCount
-				rowHeight = rowBottom - rowTop - this.pGap
+				rowBottom = top + containerHeight * (row + 1) / rowCount
+				rowHeight = rowBottom - rowTop - pGap
 				
 			else
 				column++
@@ -274,16 +310,18 @@ class GridLayout implements Layout
 			
 			columnRight = left + containerWidth * column / columnCount
 			
-			child.setPosition( Point.new( columnLeft + borderLeft, rowTop + borderTop ) )
-			child.setSize( Point.new( columnRight - columnLeft - this.pGap - borderWidth, rowHeight - borderHeight ) )
+			child.setPosition(Point.new(columnLeft + borderLeft, rowTop + borderTop))
+			child.setSize(Point.new(columnRight - columnLeft - pGap - borderWidth, rowHeight - borderHeight))
 		end
 	end
 	
-	/** \brief Lay out widgets columns first. */
-	protected func void layoutXAxis( Container container, int columnCount, int rowCount )
-		// lay out widgets
-		var int containerWidth = container.getContainerWidth() + this.pGap
-		var int containerHeight = container.getContainerHeight() + this.pGap
+	/**
+	 * \brief Lay out widgets columns first.
+	 * \brief 1.11
+	 */
+	protected func void layoutXAxis(Container container, int columnCount, int rowCount, bool inverse)
+		var int containerWidth = container.getContainerWidth() + pGap
+		var int containerHeight = container.getContainerHeight() + pGap
 		var int left = container.getPadding().getLeft()
 		var int top = container.getPadding().getTop()
 		
@@ -292,12 +330,11 @@ class GridLayout implements Layout
 		var int rowBottom = top
 		var int columnLeft = left
 		var int columnRight = left + containerWidth / columnCount
-		var int columnWidth = columnRight - columnLeft - this.pGap
+		var int columnWidth = columnRight - columnLeft - pGap
 		var int column = 0
 		var int row = 0
 		var Point childSize
 		var Widget child
-		var int i
 		
 		var BorderSize borderSize
 		var int borderHeight
@@ -305,8 +342,23 @@ class GridLayout implements Layout
 		var int borderLeft
 		var int borderTop
 		
-		for i = 0 to count
-			child = container.getWidget( i )
+		var int nextIndex, endIndex, stepIndex
+		
+		if inverse
+			nextIndex = count - 1
+			endIndex = -1
+			stepIndex = -1
+			
+		else
+			nextIndex = 0
+			endIndex = count
+			stepIndex = 1
+		end
+		
+		while nextIndex != endIndex
+			child = container.getWidget(nextIndex)
+			nextIndex += stepIndex
+			
 			if not child.getVisible()
 				continue
 			end
@@ -336,8 +388,8 @@ class GridLayout implements Layout
 				column++
 				rowTop = top
 				columnLeft = columnRight
-				columnRight = left + containerWidth * ( column + 1 ) / columnCount
-				columnWidth = columnRight - columnLeft - this.pGap
+				columnRight = left + containerWidth * (column + 1) / columnCount
+				columnWidth = columnRight - columnLeft - pGap
 				
 			else
 				row++
@@ -346,44 +398,44 @@ class GridLayout implements Layout
 			
 			rowBottom = top + containerHeight * row / rowCount
 			
-			child.setPosition( Point.new( columnLeft + borderLeft, rowTop + borderTop ) )
-			child.setSize( Point.new( columnWidth - borderWidth, rowBottom - rowTop - this.pGap - borderHeight ) )
+			child.setPosition(Point.new(columnLeft + borderLeft, rowTop + borderTop))
+			child.setSize(Point.new(columnWidth - borderWidth, rowBottom - rowTop - pGap - borderHeight))
 		end
 	end
 	
 	
 	
 	/** \brief Minimal cell size. */
-	protected func Point getMinimumCellSize( Container container, int width, int height )
+	protected func Point getMinimumCellSize(Container container, int width, int height)
 		var int count = container.getWidgetCount()
 		var Point minSize = Point.new()
 		var Point childSize
 		var Widget child
 		var int i
 		
-		select this.pUsedAxis
+		select pUsedAxis
 		case LayoutAxis.x, LayoutAxis.inverseX
 			for i = 0 to count
-				child = container.getWidget( i )
+				child = container.getWidget(i)
 				if child.getVisible()
-					minSize = minSize.largest( child.getMinimumSizeWithBorderForHeight( height ) )
+					minSize = minSize.largest(child.getMinimumSizeWithBorderForHeight(height))
 				end
 			end
 			
 		case LayoutAxis.y, LayoutAxis.inverseY
 			for i = 0 to count
-				child = container.getWidget( i )
+				child = container.getWidget(i)
 				if child.getVisible()
-					minSize = minSize.largest( child.getMinimumSizeWithBorderForWidth( width ) )
+					minSize = minSize.largest(child.getMinimumSizeWithBorderForWidth(width))
 				end
 			end
 		end
 		
-		return Point.new().largest( minSize )
+		return Point.new().largest(minSize)
 	end
 	
 	/** \brief Required row count. */
-	protected func int getRequiredRowCount( Container container )
+	protected func int getRequiredRowCount(Container container)
 		var int count = container.getWidgetCount()
 		var int rowWidgetCount = 0
 		var int rowCount = 1
@@ -391,12 +443,12 @@ class GridLayout implements Layout
 		var int i
 		
 		for i = 0 to count
-			child = container.getWidget( i )
+			child = container.getWidget(i)
 			if not child.getVisible()
 				continue
 			end
 			
-			if rowWidgetCount == this.pColumCount
+			if rowWidgetCount == pColumCount
 				rowCount++
 				rowWidgetCount = 0
 			end
@@ -412,7 +464,7 @@ class GridLayout implements Layout
 	end
 	
 	/** \brief Required colunm count. */
-	protected func int getRequiredColumnCount( Container container )
+	protected func int getRequiredColumnCount(Container container)
 		var int count = container.getWidgetCount()
 		var int columnWidgetCount = 0
 		var int columnCount = 1
@@ -420,12 +472,12 @@ class GridLayout implements Layout
 		var int i
 		
 		for i = 0 to count
-			child = container.getWidget( i )
+			child = container.getWidget(i)
 			if not child.getVisible()
 				continue
 			end
 			
-			if columnWidgetCount == this.pRowCount
+			if columnWidgetCount == pRowCount
 				columnCount++
 				columnWidgetCount = 0
 			end
@@ -441,29 +493,29 @@ class GridLayout implements Layout
 	end
 	
 	/** \brief Minimal size child widgets need. */
-	protected func Point getMinimumSizeFor( Container container, int width, int height )
-		if this.pColumCount == 0 and this.pRowCount == 0
+	protected func Point getMinimumSizeFor(Container container, int width, int height)
+		if pColumCount == 0 and pRowCount == 0
 			throw EInvalidParam.new()
 		end
 		
-		var Point cellSize = this.getMinimumCellSize( container, width, height )
-		var int columnCount = this.pColumCount
-		var int rowCount = this.pRowCount
+		var Point cellSize = getMinimumCellSize(container, width, height)
+		var int columnCount = pColumCount
+		var int rowCount = pRowCount
 		
 		if columnCount == 0
-			columnCount = this.getRequiredColumnCount( container )
+			columnCount = getRequiredColumnCount(container)
 			
 		elif rowCount == 0
-			rowCount = this.getRequiredRowCount( container )
+			rowCount = getRequiredRowCount(container)
 		end
 		
-		var bool usePadding = container.findWidget( block Widget each
+		var bool usePadding = container.findWidget(block Widget each
 			return each.getVisible()
-		end ) != null
+		end) != null
 		
-		var Point size = Point.new().largest( \
-			cellSize.getX() * columnCount + this.pGap * DEMath.max( 0, columnCount - 1 ), \
-			cellSize.getY() * rowCount + this.pGap * DEMath.max( 0, rowCount - 1 ) )
+		var Point size = Point.new().largest(\
+			cellSize.getX() * columnCount + pGap * DEMath.max(0, columnCount - 1), \
+			cellSize.getY() * rowCount + pGap * DEMath.max(0, rowCount - 1))
 		if usePadding
 			size = size + container.getPadding().getSize()
 		end
