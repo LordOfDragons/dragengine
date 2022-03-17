@@ -92,6 +92,14 @@ class ReorderListMouseListener extends DefaultMouseListener
 		return pModel
 	end
 	
+	/** \brief Set model to use for reordering. */
+	public func void setModel(DefaultListModel model)
+		if model == null
+			throw ENullPointer.new("model")
+		end
+		pModel = model
+	end
+	
 	/** \brief List box to use for reordering. */
 	public func ListBox getListBox()
 		return pListBox
