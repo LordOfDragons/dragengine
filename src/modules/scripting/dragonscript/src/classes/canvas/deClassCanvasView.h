@@ -89,6 +89,7 @@ private:
 	DEF_NATFUNC( nfGetCanvasCount );
 	DEF_NATFUNC( nfGetCanvasAt );
 	DEF_NATFUNC( nfAddCanvas );
+	DEF_NATFUNC( nfHasCanvas );
 	DEF_NATFUNC( nfRemoveCanvas );
 	DEF_NATFUNC( nfRemoveAllCanvas );
 	

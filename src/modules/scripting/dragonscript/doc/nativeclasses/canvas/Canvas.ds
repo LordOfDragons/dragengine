@@ -119,6 +119,22 @@ class Canvas
 	public func void setMask( Canvas mask )
 	end
 	
+	/**
+	 * \brief Parent canvas view or null.
+	 * \version 1.11
+	 */
+	public func CanvasView getParentView()
+		return null
+	end
+	
+	/**
+	 * \brief Parent canvas mask or null.
+	 * \version 1.11
+	 */
+	public func Canvas getParentMask()
+		return null
+	end
+	
 	
 	
 	/**

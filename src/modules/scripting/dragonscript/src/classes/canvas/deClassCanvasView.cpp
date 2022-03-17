@@ -134,6 +134,22 @@ void deClassCanvasView::nfAddCanvas::RunFunction( dsRunTime *rt, dsValue *myself
 	nd.canvas->AddCanvas( child );
 }
 
+// public func bool hasCanvas(Canvas canvas)
+deClassCanvasView::nfHasCanvas::nfHasCanvas( const sInitData &init ) :
+dsFunction( init.clsCView, "hasCanvas", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool ){
+	p_AddParameter( init.clsCanvas ); // canvas
+}
+void deClassCanvasView::nfHasCanvas::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const sCViewNatDat &nd = *( ( sCViewNatDat* )p_GetNativeData( myself ) );
+	const deScriptingDragonScript &ds = ( ( deClassCanvasView* )GetOwnerClass() )->GetDS();
+	
+	deCanvas * const child = ds.GetClassCanvas()->GetCanvas( rt->GetValue( 0 )->GetRealObject() );
+	if( ! child ){
+		DSTHROW_INFO( dueNullPointer, "canvas" );
+	}
+	rt->PushBool( child->GetParentView() == nd.canvas );
+}
+
 // public func void removeCanvas( Canvas canvas )
 deClassCanvasView::nfRemoveCanvas::nfRemoveCanvas( const sInitData &init ) : dsFunction( init.clsCView,
 "removeCanvas", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
@@ -232,6 +248,7 @@ void deClassCanvasView::CreateClassMembers( dsEngine *engine ){
 	
 	AddFunction( new nfGetCanvasCount( init ) );
 	AddFunction( new nfGetCanvasAt( init ) );
+	AddFunction( new nfHasCanvas( init ) );
 	AddFunction( new nfAddCanvas( init ) );
 	AddFunction( new nfRemoveCanvas( init ) );
 	AddFunction( new nfRemoveAllCanvas( init ) );

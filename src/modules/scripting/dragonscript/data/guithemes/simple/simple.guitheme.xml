@@ -307,6 +307,14 @@
 		</canvasCreator>
 	</designer>
 	
+	<!-- ReorderListMouseListener -->
+	<designer name='ReorderListBoxDrop' type='Widget'>
+		<canvasCreator parameter='normal.canvas' type='Rectangle'>
+			<color parameter='colorLine' r='1' g='0' b='0'/>
+			<color parameter='colorFill' r='0' g='0' b='0' a='0'/>
+		</canvasCreator>
+	</designer>
+	
 	<!-- WindowGameWorld -->
 	<designer name='WindowGameWorld' type='Window'>
 		<canvasCreator parameter='normal.canvas' type='Rectangle'>

@@ -379,6 +379,11 @@
 		</canvasCreator>
 	</designer>
 	
+	<!-- ReorderListMouseListener -->
+	<designer name='ReorderListBoxDrop' type='Widget'>
+		<canvasCreator parameter='normal.canvas' extend='framed/focused.ccreator.xml'/>
+	</designer>
+	
 	<!-- WindowGameWorld -->
 	<designer name='WindowGameWorld' type='Window'>
 		<canvasCreator parameter='normal.canvas' type='Rectangle'>

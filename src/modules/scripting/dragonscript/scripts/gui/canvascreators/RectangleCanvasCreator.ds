@@ -30,74 +30,69 @@ pin Dragengine.Scenery
  * \brief Canvas creator creating a canvas with a paint only simple rectangle fill and line color.
  */
 class RectangleCanvasCreator extends DefaultCanvasCreator
-	/** \brief Fill color. */
 	private var Color pColorFill
-	
-	/** \brief Line color or \em null to use fill color. */
 	private var Color pColorLine
-	
-	/** \brief Line thickness. */
 	private var float pThickness
 	
 	
 	
 	/** \brief Create canvas creator. */
 	public func new()
-		this.pColorFill = Color.white
-		this.pThickness = 1.0
+		pColorFill = Color.white
+		pThickness = 1
 	end
 	
 	/** \brief Create canvas creator. */
-	public func new( Color colorFill )
-		this.setColorFill( colorFill )
+	public func new(Color colorFill) this()
+		setColorFill(colorFill)
 	end
 	
 	/** \brief Create canvas creator. */
-	public func new( Color colorFill, Color colorLine )
-		this.setColorFill( colorFill )
-		this.setColorLine( colorLine )
+	public func new(Color colorFill, Color colorLine) this()
+		setColorFill(colorFill)
+		setColorLine(colorLine)
 	end
 	
 	/** \brief Create copy of canvas creator. */
-	public func new( RectangleCanvasCreator creator ) super( creator )
-		this.pColorFill = creator.pColorFill
-		this.pColorLine = creator.pColorLine
-		this.pThickness = creator.pThickness
+	public func new(RectangleCanvasCreator creator) super(creator)
+		pColorFill = creator.pColorFill
+		pColorLine = creator.pColorLine
+		pThickness = creator.pThickness
 	end
 	
 	
 	
 	/** \brief Fill color. */
 	public func Color getColorFill()
-		return this.pColorFill
+		return pColorFill
 	end
 	
 	/** \brief Set fill color. */
-	public func void setColorFill( Color color )
+	public func void setColorFill(Color color)
 		if color == null
 			throw EInvalidParam.new()
 		end
-		this.pColorFill = color
+		pColorFill = color
 	end
 	
 	/** \brief Line color or \em null to use fill color. */
 	public func Color getColorLine()
-		return this.pColorLine
+		return pColorLine
 	end
 	
 	/** \brief Set line color or \em null to use fill color. */
-	public func void setColorLine( Color color )
-		this.pColorLine = color
+	public func void setColorLine(Color color)
+		pColorLine = color
 	end
 	
 	/** \brief Line thickness. */
 	public func float getThickness()
-		return this.pThickness
+		return pThickness
 	end
 	
 	/** \brief Set line thickness. */
-	public func void setThickness( float thickness )
-		this.pThickness = DEMath.max( thickness, 0.0 )
+	public func void setThickness(float thickness)
+		pThickness = DEMath.max(thickness, 0.0)
 	end
 	
 	
@@ -111,15 +106,15 @@ class RectangleCanvasCreator extends DefaultCanvasCreator
 	 * | colorLine | Color | setColorLine |
 	 * | thickness | float | setThickness |
 	 */
-	public func void setParameter( String name, Object value )
-		if name.equals( "colorFill" )
-			this.setColorFill( value cast Color )
+	public func void setParameter(String name, Object value)
+		if name.equals("colorFill")
+			setColorFill(value cast Color)
 			
-		elif name.equals( "colorLine" )
-			this.setColorLine( value cast Color )
+		elif name.equals("colorLine")
+			setColorLine(value cast Color)
 			
-		elif name.equals( "thickness" )
-			this.setThickness( value cast float )
+		elif name.equals("thickness")
+			setThickness(value cast float)
 			
 		else
 			throw EInvalidParam.new()
@@ -128,27 +123,27 @@ class RectangleCanvasCreator extends DefaultCanvasCreator
 	
 	/** \brief Create copy of canvas creator. */
 	public func CanvasCreator copyCanvasCreator()
-		return RectangleCanvasCreator.new( this )
+		return RectangleCanvasCreator.new(this)
 	end
 	
 	
 	
 	/** \brief Create canvas for a specific widget size. */
-	public func Canvas createCanvas( Point size )
+	public func Canvas createCanvas(Point size)
 		var CanvasPaint canvas = CanvasPaint.new()
-		canvas.setShapeType( CanvasPaintShape.rectangle )
+		canvas.setShapeType(CanvasPaintShape.rectangle)
 		
-		canvas.setFillColor( this.pColorFill )
+		canvas.setFillColor(pColorFill)
 		
-		if this.pColorLine == null
-			canvas.setThickness( 0.0 )
+		if pColorLine == null
+			canvas.setThickness(0.0)
 			
 		else
-			canvas.setThickness( this.pThickness )
-			canvas.setLineColor( this.pColorLine )
+			canvas.setThickness(pThickness)
+			canvas.setLineColor(pColorLine)
 		end
 		
-		canvas.setSize( size )
+		canvas.setSize(size)
 		
 		return canvas
 	end

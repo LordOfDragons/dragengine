@@ -709,6 +709,7 @@ class Desktop extends Container
 		end
 		
 		pCaptureWidget = widget
+		updateHoverWidget()
 		
 		return true
 	end
@@ -723,7 +724,6 @@ class Desktop extends Container
 		end
 		
 		pCaptureWidget = null
-		
 		updateHoverWidget()
 		
 		return true

@@ -364,6 +364,35 @@ void deClassCanvas::nfSetMask::RunFunction( dsRunTime *rt, dsValue *myself ){
 	nd.canvas->SetMask( clsCanvas.GetCanvas( rt->GetValue( 0 )->GetRealObject() ) );
 }
 
+// public func CanvasView getParentView()
+deClassCanvas::nfGetParentView::nfGetParentView( const sInitData &init ) :
+dsFunction( init.clsCanvas, "getParentView", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsCanvasView ){
+}
+void deClassCanvas::nfGetParentView::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const sCanvasNatDat &nd = *( ( sCanvasNatDat* )p_GetNativeData( myself ) );
+	if( ! nd.canvas ){
+		DSTHROW( dueNullPointer );
+	}
+	
+	const deScriptingDragonScript &ds = ( ( deClassCanvas* )GetOwnerClass() )->GetDS();
+	ds.GetClassCanvasView()->PushCanvas( rt, nd.canvas->GetParentView() );
+}
+
+// public func Canvas getParentMask()
+deClassCanvas::nfGetParentMask::nfGetParentMask( const sInitData &init ) :
+dsFunction( init.clsCanvas, "getParentMask", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsCanvas ){
+}
+void deClassCanvas::nfGetParentMask::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const sCanvasNatDat &nd = *( ( sCanvasNatDat* )p_GetNativeData( myself ) );
+	if( ! nd.canvas ){
+		DSTHROW( dueNullPointer );
+	}
+	
+	( ( deClassCanvas* )GetOwnerClass() )->PushCanvas( rt, nd.canvas->GetParentMask() );
+}
+
 
 
 // public func int hashCode()
@@ -436,6 +465,7 @@ void deClassCanvas::CreateClassMembers( dsEngine *engine ){
 	init.clsTexMat2 = pDS.GetClassTexMatrix2();
 	init.clsClrMat = pDS.GetClassColorMatrix();
 	init.clsCanvasBlendMode = pClsCanvasBlendMode;
+	init.clsCanvasView = pDS.GetClassCanvasView();
 	
 	// add functions
 	AddFunction( new nfNew( init ) );
@@ -459,6 +489,8 @@ void deClassCanvas::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfSetBlendMode( init ) );
 	AddFunction( new nfGetMask( init ) );
 	AddFunction( new nfSetMask( init ) );
+	AddFunction( new nfGetParentView( init ) );
+	AddFunction( new nfGetParentMask( init ) );
 	
 	AddFunction( new nfEquals( init ) );
 	AddFunction( new nfHashCode( init ) );

@@ -224,11 +224,11 @@ class DefaultListModel implements ListModel
 			return
 		end
 		
-		var int fromIndex = pElements.getCount()
+		var int indexFrom = pElements.getCount()
 		
 		pElements.addAll(content)
 		
-		notifyElementsAdded(fromIndex, fromIndex + count - 1)
+		notifyElementsAdded(indexFrom, indexFrom + count - 1)
 	end
 	
 	/**
@@ -283,44 +283,56 @@ class DefaultListModel implements ListModel
 	 * notification for the entire range of content between the two positions.
 	 */
 	public func void move(Object object, int index)
-		if index < 0
-			throw EInvalidParam.new("index < 0")
+		moveIndex(pElements.indexOf(object), index)
+	end
+	
+	/**
+	 * \brief Move element to new location.
+	 * \version 1.11
+	 * 
+	 * Same as calling remove(Object) and insert(int,Object) but sending only one change
+	 * notification for the entire range of content between the two positions.
+	 */
+	public func void moveIndex(int indexFrom, int indexTo)
+		if indexFrom < 0
+			throw EInvalidParam.new("indexFrom < 0")
 		end
-		if index > pElements.getCount()
-			throw EInvalidParam.new("index > count")
+		if indexFrom >= pElements.getCount()
+			throw EInvalidParam.new("indexFrom >= count")
+		end
+		if indexTo < 0
+			throw EInvalidParam.new("indexTo < 0")
+		end
+		if indexTo > pElements.getCount()
+			throw EInvalidParam.new("indexTo > count")
 		end
 		
-		var int indexFrom = pElements.indexOf(object)
-		if indexFrom == -1
-			throw EInvalidParam.new("object absent")
-		end
-		
-		if indexFrom == index
+		if indexFrom == indexTo
 			return
 		end
 		
-		pElements.move(indexFrom, index)
+		pElements.move(indexFrom, indexTo)
 		
-		if index > indexFrom
-			notifyContentChanged(indexFrom, index)
+		if indexTo > indexFrom
+			notifyContentChanged(indexFrom, indexTo)
 			
 			if pSelected != -1
 				if pSelected == indexFrom
-					setSelected(index)
+					setSelected(indexTo)
 					
-				elif pSelected > indexFrom and pSelected <= index
+				elif pSelected > indexFrom and pSelected <= indexTo
 					setSelected(pSelected - 1)
 				end
 			end
 			
 		else
-			notifyContentChanged(index, indexFrom)
+			notifyContentChanged(indexTo, indexFrom)
 			
 			if pSelected != -1
 				if pSelected == indexFrom
-					setSelected(index)
+					setSelected(indexTo)
 					
-				elif pSelected >= index and pSelected < indexFrom
+				elif pSelected >= indexTo and pSelected < indexFrom
 					setSelected(pSelected + 1)
 				end
 			end
@@ -637,45 +649,45 @@ class DefaultListModel implements ListModel
 	
 	/**
 	 * \brief Notify all that the content of the model in the given range changed.
-	 * \param fromIndex Index of first element that changed
-	 * \param toIndex Index of last element that changed
+	 * \param indexFrom Index of first element that changed
+	 * \param indexTo Index of last element that changed
 	 */
-	public func void notifyContentChanged(int fromIndex, int toIndex)
+	public func void notifyContentChanged(int indexFrom, int indexTo)
 		pListeners.forEach(block ListModelListener each
-			each.contentChanged(this, fromIndex, toIndex)
+			each.contentChanged(this, indexFrom, indexTo)
 		end)
 	end
 	
 	/**
 	 * \brief Notify all elements have been added.
-	 * \param fromIndex Index of first added element.
-	 * \param toIndex Index of last added element.
+	 * \param indexFrom Index of first added element.
+	 * \param indexTo Index of last added element.
 	 */
-	public func void notifyElementsAdded(int fromIndex, int toIndex)
+	public func void notifyElementsAdded(int indexFrom, int indexTo)
 		pListeners.forEach(block ListModelListener each
-			each.elementsAdded(this, fromIndex, toIndex)
+			each.elementsAdded(this, indexFrom, indexTo)
 		end)
 		
 		if pSelected == -1 and pAutoSelect
-			setSelected(fromIndex)
+			setSelected(indexFrom)
 		end
 	end
 	
 	/**
 	 * \brief Notify all elements have been removed.
-	 * \param fromIndex Index of first removed element.
-	 * \param toIndex Index of last removed element.
+	 * \param indexFrom Index of first removed element.
+	 * \param indexTo Index of last removed element.
 	 */
-	public func void notifyElementsRemoved(int fromIndex, int toIndex)
+	public func void notifyElementsRemoved(int indexFrom, int indexTo)
 		var bool notifySelectedChanged
 		
-		if pSelected > toIndex
-			pSelected -= toIndex - fromIndex + 1
+		if pSelected > indexTo
+			pSelected -= indexTo - indexFrom + 1
 			//notifySelectedChanged = true // same selection but different index
 			
-		elif pSelected >= fromIndex
+		elif pSelected >= indexFrom
 			if pAutoSelect
-				pSelected = DEMath.min(fromIndex, pElements.getCount() - 1)
+				pSelected = DEMath.min(indexFrom, pElements.getCount() - 1)
 				
 			else
 				pSelected = -1
@@ -684,7 +696,7 @@ class DefaultListModel implements ListModel
 		end
 		
 		pListeners.forEach(block ListModelListener each
-			each.elementsRemoved(this, fromIndex, toIndex)
+			each.elementsRemoved(this, indexFrom, indexTo)
 		end)
 		
 		if notifySelectedChanged
