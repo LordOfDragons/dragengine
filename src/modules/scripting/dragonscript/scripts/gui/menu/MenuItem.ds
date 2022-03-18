@@ -1,0 +1,339 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2022, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui
+
+pin Dragengine.Gui.Events
+pin Dragengine.Gui.Layouts
+
+
+/**
+ * \brief Base class for items in a menu panel.
+ * \version 1.11
+ * 
+ * Menu items are containers. They contain the menu item content and optionally 1 or more
+ * icons on the left side. Each menu item has a list of icons it wants to show as well as
+ * well as a parameter indicating how many icons have to be shown. The parent MenuPanel
+ * object sets the shown icon count on each menu item to the maximum icon count of all
+ * children menu items. If the shown icon count is larger than the provided icon count
+ * empty icons have to be drawn to properly align the content. Icons are added added
+ * from right to left with empty space on the left side.
+ */
+class MenuItem extends Container
+	/** \brief Mouse listener fireing MenuItem action. */
+	protected class FireActionClickListener extends DefaultMouseListener
+		private var MenuItem pMenuItem
+		
+		public func new(MenuItem menuItem)
+			if menuItem == null
+				throw ENullPointer.new("menuItem")
+			end
+			pMenuItem = menuItem
+		end
+		
+		public func void onButtonRelease(MouseEvent event)
+			pMenuItem.fireAction(0)
+		end
+	end
+	
+	
+	
+	private var Array pIcons
+	private var int pShowIconCount
+	private var Panel pPanelIcons
+	private var Array pActionListeners
+	
+	
+	
+	/** \brief Create menu item. */
+	public func new()
+		pIcons = Array.new()
+		pActionListeners = Array.new()
+		
+		setLayout(BorderLayout.new(5))
+		setStateChangeNotifyChildren(true)
+		
+		pPanelIcons = Panel.new(GridLayout.new(0, 1, 5, LayoutAxis.inverseX))
+		addWidget(pPanelIcons, BorderLayout.Area.left)
+		
+		setDesignerSelector("MenuItem")
+	end
+	
+	/**
+	 * \brief Create menu item calling block to add content.
+	 * 
+	 * Block receives MenuItem as argument. Block call is wrapped inside runWhileBlockingLayout()
+	 * for efficiency. doLayout() will be called after leaving the block.
+	 */
+	public func new(Block blockAddContent) this()
+		blockAddContent.run(this)
+	end
+	
+	/** \brief Dispose of menu item. */
+	public func void dispose()
+		pIcons.forEach(block Widget each
+			each.safeDispose()
+		end)
+		pIcons = null
+		
+		pPanelIcons = null
+		pActionListeners = null
+		
+		super.dispose()
+	end
+	
+	
+	/** \brief Count of icons. */
+	public func int getIconCount()
+		return pIcons.getCount()
+	end
+	
+	/** \brief Icon at index. */
+	protected func Widget getIconAt(int index)
+		return pIcons.getAt(index) cast Widget
+	end
+	
+	/** \brief Add icon. */
+	protected func void addIcon(Widget icon)
+		if icon == null
+			throw ENullPointer.new("icon")
+		end
+		pIcons.add(icon)
+		
+		runWhileBlockingLayout(block
+			readdIconWidgets()
+		end)
+	end
+	
+	/** \brief Add icon before index. */
+	protected func void insertIcon(Widget icon, int index)
+		if icon == null
+			throw ENullPointer.new("icon")
+		end
+		if index < 0
+			throw EInvalidParam.new("index < 0")
+		end
+		if index > pIcons.getCount()
+			throw  EInvalidParam.new("index > icons.count")
+		end
+		
+		pIcons.insert(index, icon)
+		
+		runWhileBlockingLayout(block
+			readdIconWidgets()
+		end)
+	end
+	
+	/** \brief Set icon at index. */
+	protected func void setIconAt(int index, Widget icon)
+		if icon == null
+			throw ENullPointer.new("icon")
+		end
+		if index < 0
+			throw EInvalidParam.new("index < 0")
+		end
+		if index >= pIcons.getCount()
+			throw  EInvalidParam.new("index >= icons.count")
+		end
+		
+		runWhileBlockingLayout(block
+			(pIcons.getAt(index) cast Widget).safeDispose()
+			
+			pIcons.setAt(index, icon)
+			
+			readdIconWidgets()
+		end)
+	end
+	
+	/** \brief Remove icon. */
+	protected func void removeIcon(Widget icon)
+		var int index = pIcons.indexOf(icon)
+		if index == -1
+			throw EInvalidParam.new("icon absent")
+		end
+		
+		runWhileBlockingLayout(block
+			(pIcons.getAt(index) cast Widget).safeDispose()
+			
+			pIcons.removeFrom(index)
+			
+			readdIconWidgets()
+		end)
+	end
+	
+	/** \brief Remove all icons. */
+	protected func void removeAllIcons()
+		if pIcons.getCount() == 0
+			return
+		end
+		
+		runWhileBlockingLayout(block
+			pIcons.forEach(block Widget each
+				each.safeDispose()
+			end)
+			pIcons.removeAll()
+		end)
+	end
+	
+	
+	
+	/**
+	 * \brief Count of icons the menu item has to show.
+	 * 
+	 * Count of icons to show can be different than the count if icons present.
+	 */
+	public func int getShowIconCount()
+		return pShowIconCount
+	end
+	
+	/**
+	 * \brief Set count of icons the menu item has to show.
+	 * 
+	 * Count of icons to show can be different than the count if icons present.
+	 */
+	public func void setShowIconCount(int count)
+		if count < 0
+			throw EInvalidParam.new("count < 0")
+		end
+		
+		if count == pShowIconCount
+			return
+		end
+		
+		pShowIconCount = count
+		
+		runWhileBlockingLayout(block
+			readdIconWidgets()
+		end)
+	end
+	
+	
+	
+	/** \brief Fire action. */
+	public func void fireAction(int modifiers)
+		fireActionListeners(modifiers)
+	end
+	
+	/** \brief Close top level MenuPopup. */
+	public func void closeMenuPopup()
+		var MenuPopup menu = getTopLevelMenuPopup()
+		if menu != null
+			menu.popdown()
+		end
+	end
+	
+	/** \brief Parent MenuPopup or null. */
+	public func MenuPopup getParentMenuPopup()
+		var Container container = getParent()
+		while container != null
+			if container castable MenuPopup
+				return container cast MenuPopup
+			end
+			container = container.getParent()
+		end
+		return null
+	end
+	
+	/** \brief Top level MenuPopup or null. */
+	public func MenuPopup getTopLevelMenuPopup()
+		var MenuPopup menu = getParentMenuPopup()
+		// TODO
+		return menu
+	end
+	
+	
+	
+	/** \brief Add action listener. */
+	public func void addActionListener(ActionListener listener)
+		if listener == null
+			throw EInvalidParam.new()
+		end
+		pActionListeners.add(listener)
+	end
+	
+	/** \brief Remove action listener. */
+	public func void removeActionListener(ActionListener listener)
+		pActionListeners.remove(listener)
+	end
+	
+	
+	
+	/** \brief Key on the keyboard has been released. */
+	public func void onKeyRelease(KeyEvent event)
+		select event.getKeyCode()
+		case InputEventKey.enter
+			sendEventToListeners(event, false)
+			fireAction(0)
+			
+		else
+			super.onKeyRelease(event)
+		end
+	end
+	
+	/** \brief Mouse button has been released. */
+	public func void onButtonRelease(MouseEvent event)
+		if event.getButton() == InputEventMouseButton.left
+			sendEventToListeners(event, false)
+			fireAction(event.getModifiers())
+			
+		else
+			super.onButtonRelease(event)
+		end
+	end
+	
+	
+	
+	/** \brief Fire action listeners. */
+	protected func void fireActionListeners(int modifiers)
+		if pActionListeners != null
+			var ActionEvent event = ActionEvent.new(this, ActionEvent.idAction, modifiers)
+			pActionListeners.forEach(block ActionListener each
+				each.onAction(event)
+			end)
+		end
+	end
+	
+	/** \brief Remove all icons then add them again. */
+	protected func void readdIconWidgets()
+		while pPanelIcons.getWidgetCount() > 0
+			pPanelIcons.removeWidget(pPanelIcons.getWidget(0))
+		end
+		
+		pIcons.forEach(block int index, Widget icon
+			if index < pShowIconCount
+				pPanelIcons.addWidget(icon)
+			end
+		end)
+		
+		var int i
+		for i = pIcons.getCount() to pShowIconCount
+			pPanelIcons.addWidget(createIconPlaceholderWidget())
+		end
+	end
+	
+	/** \brief Create icon placeholder widget. */
+	protected func Widget createIconPlaceholderWidget()
+		var Widget icon = Widget.new()
+		icon.setDesignerSelector("IconPlaceholder." + getDesignerSelector())
+		return icon
+	end
+end

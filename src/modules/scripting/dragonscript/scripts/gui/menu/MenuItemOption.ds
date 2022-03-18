@@ -1,0 +1,90 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2022, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui
+
+pin Dragengine.Gui.Events
+pin Dragengine.Gui.Layouts
+
+
+/**
+ * \brief Option box menu item.
+ * \version 1.11
+ * 
+ * Shows label and option box and optionally an icon. Option box reflects state of ToggleModel.
+ * Toggles model if clicked.
+ */
+class MenuItemOption extends MenuItemCommand
+	private var OptionBox pOptionBox
+	
+	
+	
+	/** \brief Create menu item command. */
+	public func new(String text) this(DefaultToggleModel.new(), text)
+	end
+	
+	/** \brief Create menu item command. */
+	public func new(Image icon, String text) this(DefaultToggleModel.new(), icon, text)
+	end
+	
+	/** \brief Create menu item command. */
+	public func new(ToggleModel model, String text) this(model, null, text)
+	end
+	
+	/** \brief Create menu item command. */
+	public func new(ToggleModel model, Image icon, String text) super(icon, text)
+		if icon == null
+			addIcon(createIconPlaceholderWidget())
+		end
+		
+		pOptionBox = OptionBox.new(model)
+		pOptionBox.setDesignerSelector(pOptionBox.getDesignerSelector() + ".MenuItemOption")
+		pOptionBox.addMouseListener(FireActionClickListener.new(this))
+		addIcon(pOptionBox)
+	end
+	
+	/** \brief Dispose of menu item. */
+	public func void dispose()
+		pOptionBox = null
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief Option box. */
+	public func OptionBox getOptionBox()
+		return pOptionBox
+	end
+	
+	/** \brief Toggle model. */
+	public func ToggleModel getToggleModel()
+		return pOptionBox.getToggleModel()
+	end
+	
+	
+	
+	/** \brief Fire action. */
+	public func void fireAction(int modifiers)
+		getToggleModel().setToggled(not getToggleModel().getToggled())
+		super.fireAction(modifiers)
+	end
+end

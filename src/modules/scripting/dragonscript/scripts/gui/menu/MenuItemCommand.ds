@@ -1,0 +1,137 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2022, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui
+
+pin Dragengine.Gui.Events
+pin Dragengine.Gui.Layouts
+
+
+/**
+ * \brief Command menu item.
+ * \version 1.11
+ * 
+ * Shows label and optionally an icon. Fires action if clicked.
+ */
+class MenuItemCommand extends MenuItem
+	private var String pText
+	private var Image pIcon
+	
+	private var Label pWidgetText
+	private var DisplayImage pWidgetIcon
+	
+	
+	
+	/** \brief Create menu item command. */
+	public func new(String text)
+		pText = ""
+		
+		setDesignerSelector("MenuItem.Command")
+		
+		pWidgetText = Label.new(text, "Label." + getDesignerSelector())
+		addWidget(pWidgetText, BorderLayout.Area.content)
+	end
+	
+	/** \brief Create menu item command. */
+	public func new(Image icon, String text) this(text)
+		pIcon = icon
+		
+		if icon != null
+			addIcon(Panel.new(CentrizedBoxLayout.new(LayoutAxis.y), block Panel p
+				p.setDesignerSelector("PanelIcon." + getDesignerSelector())
+				pWidgetIcon = DisplayImage.new(icon, "Image." + getDesignerSelector())
+				p.addWidget(pWidgetIcon)
+			end))
+		end
+	end
+	
+	/** \brief Create menu item command. */
+	public func new(Image icon, String text, ActionListener action) this(icon, text)
+		addActionListener(action)
+	end
+	
+	/** \brief Dispose of menu item. */
+	public func void dispose()
+		pWidgetIcon = null
+		pWidgetText = null
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief Text. */
+	public func String getText()
+		return pText
+	end
+	
+	/** \brief Set text. */
+	public func void setText(String text)
+		if text.equals(pText)
+			return
+		end
+		
+		pText = text
+		pWidgetText.setText(text)
+	end
+	
+	/** \brief Icon. */
+	public func Image getIcon()
+		return pIcon
+	end
+	
+	/**
+	 * \brief Set icon.
+	 * 
+	 * Has no effect if no icon has been set in the constructor.
+	 */
+	public func void setIcon(Image icon)
+		if icon == pIcon
+			return
+		end
+		
+		pIcon = icon
+		
+		if pWidgetIcon != null
+			pWidgetIcon.setImage(icon)
+		end
+	end
+	
+	
+	
+	/** \brief Designer selector changed. */
+	public func void onDesignerSelectorChanged()
+		if pWidgetIcon != null
+			pWidgetIcon.setDesignerSelector("Image." + getDesignerSelector())
+		end
+		if pWidgetText != null
+			pWidgetText.setDesignerSelector("Label." + getDesignerSelector())
+		end
+	end
+	
+	
+	
+	/** \brief Fire action. */
+	public func void fireAction(int modifiers)
+		super.fireAction(modifiers)
+		closeMenuPopup()
+	end
+end

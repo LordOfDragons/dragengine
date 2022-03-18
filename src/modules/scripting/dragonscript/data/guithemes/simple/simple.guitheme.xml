@@ -307,6 +307,8 @@
 		</canvasCreator>
 	</designer>
 	
+	<!-- Menu -->
+	
 	<!-- ReorderListMouseListener -->
 	<designer name='ReorderListBoxDrop' type='Widget'>
 		<canvasCreator parameter='normal.canvas' type='Rectangle'>

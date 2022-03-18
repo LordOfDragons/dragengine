@@ -1,0 +1,84 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2022, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Gui
+
+pin Dragengine.Gui.Events
+pin Dragengine.Gui.Layouts
+
+
+/**
+ * \brief Popup menu with MenuItem subclass instances.
+ * \version 1.11
+ */
+class MenuPopup extends WindowPopup
+	/** \brief Create popup menu. */
+	public func new()
+		setDesignerSelector("MenuPopup")
+	end
+	
+	
+	
+	/** \brief Add widget. */
+	public func void addWidget(Widget widget)
+		super.addWidget(widget)
+		
+		if getVisible()
+			fitToContent()
+		end
+	end
+	
+	/** \brief Add widget. */
+	public func void addWidget(Widget widget, Object settings)
+		super.addWidget(widget, settings)
+		
+		if getVisible()
+			fitToContent()
+		end
+	end
+	
+	
+	
+	/** \brief Fit to content. Modified to update show icon count before fitting. */
+	public func void fitToContent()
+		updateShowIconCount()
+		super.fitToContent()
+	end
+	
+	
+	
+	/** \brief Update menu items show icon count. */
+	protected func void updateShowIconCount()
+		var int showIconCount = injectWidget(0, block int count, Widget widget
+			if widget castable MenuItem
+				return DEMath.max(count, (widget cast MenuItem).getIconCount())
+			end
+			return count
+		end) cast int
+		
+		forEachWidget(block Widget widget
+			if widget castable MenuItem
+				(widget cast MenuItem).setShowIconCount(showIconCount)
+			end
+		end)
+	end
+end
