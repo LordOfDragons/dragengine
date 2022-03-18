@@ -334,7 +334,9 @@ class Container extends Widget
 		widget.getCanvasWidget().setOrder( ( this.pChildren.getCount() - 1 ) cast float )
 	end
 	
-	/** Removes a widget from this container. */
+	/**
+	 * \brief Remove widget without disposing.
+	 */
 	public func void removeWidget( Widget widget )
 		if not this.pChildren.has( widget )
 			throw EInvalidParam.new()
@@ -351,7 +353,9 @@ class Container extends Widget
 		this.doLayout()
 	end
 	
-	/** Removes all widgets from this container. */
+	/**
+	 * \brief Remove and dispose all widgets.
+	 */
 	public func void removeAllWidgets()
 		// forEach with a block is not used here since it is possible a child widget removes
 		// another child widget during setParent() or dispose()

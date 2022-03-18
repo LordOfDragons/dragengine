@@ -35,6 +35,7 @@ pin Dragengine.Scenery
 class CheckBox extends ToggleButton
 	private var Widget pWidgetCheckBox
 	private var Widget pWidgetCheck
+	private var Panel pPanelCheckTextImage
 	private var Panel pPanelCheckBox
 	private var Panel pPanelCheck
 	
@@ -79,6 +80,7 @@ class CheckBox extends ToggleButton
 		pWidgetCheck = null
 		pPanelCheckBox = null
 		pPanelCheck = null
+		pPanelCheckTextImage = null
 		
 		super.dispose()
 	end
@@ -164,6 +166,7 @@ class CheckBox extends ToggleButton
 		pWidgetCheck = null
 		pPanelCheckBox = null
 		pPanelCheck = null
+		pPanelCheckTextImage = null
 		
 		removeAllWidgets()
 		setWidgetImage(null)
@@ -181,7 +184,7 @@ class CheckBox extends ToggleButton
 		end), BorderLayout.Area.left)
 		
 		// image and text
-		addWidget(Panel.new(FlowLayout.new(LayoutAxis.x), block Panel p
+		pPanelCheckTextImage = Panel.new(FlowLayout.new(LayoutAxis.x), block Panel p
 			var DisplayImage widgetImage = DisplayImage.new(null, "Image." + getDesignerSelector())
 			widgetImage.setEnabled(enabled)
 			p.addWidget(widgetImage)
@@ -193,6 +196,21 @@ class CheckBox extends ToggleButton
 			p.addWidget(widgetText)
 			widgetText.setVisible(not text.empty())
 			setWidgetText(widgetText)
-		end), BorderLayout.Area.content)
+			
+			p.setVisible(not text.empty())
+		end)
+		addWidget(pPanelCheckTextImage, BorderLayout.Area.content)
+	end
+	
+	/** \brief Set text of the button. */
+	public func void setText(String text)
+		super.setText(text)
+		pPanelCheckTextImage.setVisible(getWidgetText().getVisible() or getWidgetImage().getVisible())
+	end
+	
+	/** \brief Update image to display depending on current button state. */
+	public func void updateWidgetImage()
+		super.updateWidgetImage()
+		pPanelCheckTextImage.setVisible(getWidgetText().getVisible() or getWidgetImage().getVisible())
 	end
 end
