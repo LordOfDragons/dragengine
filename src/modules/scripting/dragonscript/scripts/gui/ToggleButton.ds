@@ -110,7 +110,8 @@ class ToggleButton extends Button implements ToggleModelListener
 			throw EInvalidParam.new()
 		end
 		pToggleModel = model
-		pToggleModel.addListener(this)
+		model.addListener(this)
+		setPressed(model.getToggled())
 	end
 	
 	
