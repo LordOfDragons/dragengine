@@ -29,330 +29,134 @@ pin Dragengine.Gui.Events
  * \brief Option group model.
  * \version 1.11
  * 
- * Ensures at most one option in the group of options is toggled at each time. This class
- * behaves like ListModel. For each added option a ToggleModel is created. The added options
- * are typically Enumeration type instances but any object can be used. Most of the time
- * though this class is used to let the user select one Enumeration value from a list of
- * supported enumeration values. The toggle models can then be used with widgets supporting
- * toggling like OptionBox or MenuItemOption.
+ * Links a ToggleModel to a ListModel entry. If the list model entry is selected the toggle
+ * model is toggled otherwise untoggled. If the toggle model is toggled while untoggled
+ * the respective element in the list model is selected.
  */
-class OptionGroupModel implements ListModel
+class OptionGroupModel extends DefaultToggleModel
 	/**
-	 * \brief Toggle changed listener.
+	 * \brief List changed listener.
 	 * 
-	 * Class is required to avoid leaking.
+	 * Separate class is used to avoid leak problems.
 	 */
-	private class OptionModelListener extends DefaultToggleModelListener
-		private var WeakReference pGroup
+	private class ListChangedListener extends DefaultListModelListener
+		private var WeakReference pOwner
 		
-		public func new(OptionGroupModel group)
-			pGroup = WeakReference.new(group)
+		public func new(OptionGroupModel owner)
+			pOwner = WeakReference.new(owner)
 		end
 		
-		public func void toggledChanged(ToggleModel model)
-			var OptionGroupModel group = pGroup.get() cast OptionGroupModel
-			if group == null
+		public func void elementsAdded(ListModel listModel, int fromIndex, int toIndex)
+			var OptionGroupModel owner = pOwner.get() cast OptionGroupModel
+			if owner == null
 				return
 			end
 			
-			var int index = group.indexOfWith(model)
-			if index == -1
+			var int index = owner.getIndexElement()
+			if index >= fromIndex
+				owner.setIndexElement(index + (toIndex - fromIndex + 1))
+			end
+		end
+		
+		public func void elementsRemoved(ListModel listModel, int fromIndex, int toIndex)
+			var OptionGroupModel owner = pOwner.get() cast OptionGroupModel
+			if owner == null
 				return
 			end
 			
-			if model.getToggled()
-				group.setSelected(index)
+			var int index = owner.getIndexElement()
+			if index >= fromIndex and index <= toIndex
+				// element lost
+				owner.setIndexElement(-1)
+				owner.setToggled(false)
 				
-			elif index == group.getSelected()
-				model.setToggled(true)
+			elif index > toIndex
+				owner.setIndexElement(index - (toIndex - fromIndex + 1))
 			end
 		end
-	end
-	
-	
-	
-	private var Array pOptions
-	private var Array pModels
-	private var Array pListeners
-	private var int pSelected
-	private var OptionModelListener pOptionModelListener
-	
-	
-	
-	/** \brief Create option group model. */
-	public func new()
-		pOptions = Array.new()
-		pModels = Array.new()
-		pListeners = Array.new()
-		pSelected = -1
-		pOptionModelListener = OptionModelListener.new(this)
-	end
-	
-	
-	
-	/** \brief Add listener. */
-	public func void addListener(ListModelListener listener)
-		if listener == null
-			throw EInvalidParam.new()
+		
+		public func void selectionChanged(ListModel listModel)
+			var OptionGroupModel owner = pOwner.get() cast OptionGroupModel
+			if owner == null
+				return
+			end
+			
+			var int index = owner.getIndexElement()
+			owner.setToggled(index != -1 and listModel.getSelected() == index)
 		end
-		pListeners.add(listener)
-	end
-	
-	/** \brief Remove listener. */
-	public func void removeListener(ListModelListener listener)
-		pListeners.remove(listener)
 	end
 	
 	
 	
-	/** \brief Count of options. */
-	public func int getCount()
-		return pOptions.getCount()
-	end
-	
-	/** \brief Option at index. */
-	public func Object getAt(int index)
-		return pOptions.getAt(index)
-	end
-	
-	/** \brief Index of option or -1 if absent. */
-	public func int indexOf(Object element)
-		return pOptions.indexOf(element)
-	end
-	
-	/** \brief Option is present. */
-	public func bool has(Object element)
-		return pOptions.has(element)
-	end
+	private var ListModel pListModel
+	private var int pIndexElement
 	
 	
 	
-	/** \brief Toggle model at index. */
-	public func ToggleModel getModelAt(int index)
-		return pModels.getAt(index) cast ToggleModel
-	end
-	
-	/** \brief Toggle model for option. */
-	public func ToggleModel getModelFor(Object option)
-		return pModels.getAt(indexOf(option)) cast ToggleModel
-	end
-	
-	/** \brief Index of option with model or -1 if absent. */
-	public func int indexOfWith(ToggleModel model)
-		return pModels.indexOf(model)
-	end
-	
-	
-	
-	/**
-	 * \brief Add option.
-	 * \returns ToggleModel of created option.
-	 */
-	public func ToggleModel add(Object option)
-		var int index = pOptions.getCount()
-		pOptions.add(option)
+	/** \brief Create option group model linked to ListModel element at index. */
+	public func new(ListModel listModel, int indexElement)
+		if listModel == null
+			throw ENullPointer.new("listModel")
+		end
+		if indexElement < 0
+			throw EInvalidParam.new("indexElement < 0")
+		end
+		if indexElement >= listModel.getCount()
+			throw EInvalidParam.new("indexElement >= listModel.count")
+		end
 		
-		var DefaultToggleModel model = DefaultToggleModel.new()
-		model.addListener(pOptionModelListener)
-		pModels.add(model)
+		pListModel = listModel
+		pIndexElement = indexElement
 		
-		notifyOptionAdded(index, index)
+		setToggled(listModel.getSelected() == indexElement)
 		
-		return model
+		listModel.addListener(ListChangedListener.new(this))
+	end
+	
+	/** \brief Create option group model linked to ListModel element. */
+	public static func OptionGroupModel newFor(ListModel listModel, Object element)
+		return new(listModel, listModel.indexOf(element))
+	end
+	
+	
+	
+	/** \brief List model. */
+	public func ListModel getListModel()
+		return pListModel
+	end
+	
+	/** \brief List model element index or -1 if lost. */
+	public func int getIndexElement()
+		return pIndexElement
 	end
 	
 	/**
-	 * \brief Insert option at index.
-	 * \throws EOutOfBounds \em index is less than 0 or larger than getCount().
-	 * \returns ToggleModel of created option.
+	 * \brief Set list model element index or -1 if lost.
+	 * \warning For internal use only.
 	 */
-	public func ToggleModel insert(int index, Object option)
-		pOptions.insert(index, option)
-		
-		var DefaultToggleModel model = DefaultToggleModel.new()
-		model.addListener(pOptionModelListener)
-		pModels.insert(index, model)
-		
-		notifyOptionAdded(index, index)
-		
-		return model
-	end
-	
-	/** \brief Remove option. */
-	public func void remove(Object option)
-		var int index = indexOf(option)
-		if index == -1
-			throw EInvalidParam.new("option is absent")
+	public func void setIndexElement(int indexElement)
+		if indexElement < -1
+			throw EInvalidParam.new("indexElement < -1")
+		end
+		if indexElement >= pListModel.getCount()
+			throw EInvalidParam.new("indexElement >= listModel.count")
 		end
 		
-		(pModels.getAt(index) cast ToggleModel).removeListener(pOptionModelListener)
-		pModels.removeFrom(index)
-		
-		pOptions.removeFrom(index)
-		
-		notifyOptionsRemoved(index, index)
+		pIndexElement = indexElement
 	end
 	
-	/** \brief Remove all options. */
-	public func void removeAll()
-		var int count = pOptions.getCount()
-		if count == 0
+	
+	
+	/** \brief Set toggled state. */
+	public func void setToggled(bool toggled)
+		if toggled == getToggled()
 			return
 		end
 		
-		pModels.forEach(block ToggleModel each
-			each.removeListener(pOptionModelListener)
-		end)
-		pModels.removeAll()
+		super.setToggled(toggled)
 		
-		pOptions.removeAll()
-		
-		notifyOptionsRemoved(0, count - 1)
-	end
-	
-	/**
-	 * \brief Visit options with block.
-	 * 
-	 * Block receives as arguments (Object) or (int,Object)
-	 */
-	public func void forEach(Block ablock)
-		pOptions.forEach(ablock)
-	end
-	
-	
-	
-	/**
-	 * \brief Index of the selected option or -1 if there is no selected option.
-	 */
-	public func int getSelected()
-		return pSelected
-	end
-	
-	/**
-	 * \brief Set index of selected option or -1 if none is no selected option.
-	 */
-	public func void setSelected(int index)
-		if index < -1 or index >= pOptions.getCount()
-			throw EInvalidParam.new()
+		if getToggled() and pIndexElement != -1
+			pListModel.setSelected(pIndexElement)
 		end
-		
-		if index == pSelected
-			return
-		end
-		
-		pSelected = index
-		updateToggleModels()
-		
-		pListeners.forEach(block ListModelListener each
-			each.selectionChanged(this)
-		end)
-	end
-	
-	/**
-	 * \brief Get selected option or null.
-	 * 
-	 * If getSelected() is -1 returns null. If getSelected() is not -1 this method
-	 * behaves the same as calling getAt(getSelected()).
-	 */
-	public func Object getSelectedOption()
-		if pSelected != -1
-			return pOptions.getAt(pSelected)
-		end
-		return null
-	end
-	
-	/**
-	 * \brief Set selected option.
-	 * 
-	 * Behaves the same as calling setSelected(indexOf(option)).
-	 */
-	public func void setSelectedOption(Object option)
-		setSelected(pOptions.indexOf(option))
-	end
-	
-	
-	
-	/**
-	 * \brief Notify all that the content of the model in the given range changed.
-	 * \param fromIndex Index of first element that changed
-	 * \param toIndex Index of last element that changed
-	 */
-	public func void notifyContentChanged(int fromIndex, int toIndex)
-		var bool notifySelectedChanged
-		var int count = pOptions.getCount()
-		
-		if count > 0
-			if pSelected >= count
-				pSelected = count - 1
-				notifySelectedChanged = true
-			end
-			
-		elif pSelected != -1
-			pSelected = -1
-			notifySelectedChanged = true
-		end
-		
-		pListeners.forEach(block ListModelListener each
-			each.contentChanged(this, fromIndex, toIndex)
-		end)
-		
-		if notifySelectedChanged
-			updateToggleModels()
-			pListeners.forEach(block ListModelListener each
-				each.selectionChanged(this)
-			end)
-		end
-	end
-	
-	/**
-	 * \brief Notify all options have been added.
-	 * \param fromIndex Index of first added option.
-	 * \param toIndex Index of last added option.
-	 */
-	public func void notifyOptionAdded(int fromIndex, int toIndex)
-		pListeners.forEach(block ListModelListener each
-			each.elementsAdded(this, fromIndex, toIndex)
-		end)
-		
-		if pSelected == -1
-			setSelected(0)
-		end
-	end
-	
-	/**
-	 * \brief Notify all options have been removed.
-	 * \param fromIndex Index of first removed option.
-	 * \param toIndex Index of last removed option.
-	 */
-	public func void notifyOptionsRemoved(int fromIndex, int toIndex)
-		var bool notifySelectedChanged
-		
-		if pSelected > toIndex
-			pSelected -= toIndex - fromIndex + 1
-			notifySelectedChanged = true
-			
-		elif pSelected >= fromIndex
-			pSelected = DEMath.min(fromIndex, pOptions.getCount() - 1)
-			notifySelectedChanged = true
-		end
-		
-		pListeners.forEach(block ListModelListener each
-			each.elementsRemoved(this, fromIndex, toIndex)
-		end)
-		
-		if notifySelectedChanged
-			pListeners.forEach(block ListModelListener each
-				each.selectionChanged(this)
-			end)
-		end
-	end
-	
-	
-	
-	/** \brief Update toggle models. */
-	protected func void updateToggleModels()
-		pModels.forEach(block int index, ToggleModel model
-			model.setToggled(index == pSelected)
-		end)
 	end
 end
