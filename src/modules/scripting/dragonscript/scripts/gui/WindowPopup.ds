@@ -38,8 +38,8 @@ pin Dragengine.Gui.Decorations
  * Supports designing using designer selector "WindowPopup".
  */
 class WindowPopup extends Window
-	/** \brief Close on popdown. */
 	private var bool pCloseOnPopDown
+	private var Widget pHoverWidget
 	
 	
 	
@@ -64,6 +64,12 @@ class WindowPopup extends Window
 			setLayout(FlowLayout.new(LayoutAxis.y))
 			setDesignerSelector("WindowPopup")
 		end)
+	end
+	
+	/** \brief Dispose of widget. */
+	public func void dispose()
+		pHoverWidget = null
+		super.dispose()
 	end
 	
 	
@@ -125,6 +131,76 @@ class WindowPopup extends Window
 	
 	
 	
+	/** \brief Widget the mouse hovers above or \em null. */
+	public func Widget getHoverWidget()
+		if pHoverWidget != null
+			if pHoverWidget.getParent() == null or not pHoverWidget.getVisible()
+				pHoverWidget = null
+			end
+		end
+		return pHoverWidget != null if pHoverWidget else this
+	end
+	
+	/**
+	 * \brief Set widget the mouse hovers above.
+	 * 
+	 * If widget is different than the old one enter and leave messages are send.
+	 */
+	protected func void setHoverWidget(Widget widget, MouseEvent event)
+		var Widget hoverWidget = getHoverWidget()
+		if widget == hoverWidget
+			return
+		end
+		
+		var Widget leaveWidget = hoverWidget
+		
+		pHoverWidget = widget
+		
+		if leaveWidget != null
+			runWhileBlockingLayout(block
+				leaveWidget.sendEvent(MouseEvent.new(leaveWidget, MouseEvent.idMouseLeave, \
+					event.getButton(), event.getModifiers(), event.getSystem(), event.getDevice()))
+			end)
+		end
+		
+		var Desktop desktop = getDesktop()
+		if desktop != null
+			if widget == null
+				desktop.setActiveMousePointer(getFirstMousePointer())
+				
+			else
+				desktop.setActiveMousePointer(widget.getFirstMousePointer())
+				widget.sendEvent(MouseEvent.new(widget, MouseEvent.idMouseEnter, \
+					event.getButton(), event.getModifiers(), event.getSystem(), event.getDevice()))
+			end
+		end
+	end
+	
+	/**
+	 * \brief Update hover widget.
+	 * 
+	 * Call if the hover widget is removed from the desktop.
+	 */
+	public func void updateHoverWidget()
+		var Desktop desktop = getDesktop()
+		if desktop != null
+			var Widget widget = getWidgetAt(desktop.getMouseLocation() - getScreenPosition())
+			if widget != getHoverWidget()
+				setHoverWidget(widget, MouseEvent.new(widget, MouseEvent.idMouseMoved, 0, 0, Point.new(), -1))
+			end
+		end
+	end
+	
+	/** \brief Clear hover widget. */
+	protected func void clearHoverWidget()
+		var Widget widget = getHoverWidget()
+		if widget != null
+			setHoverWidget(null, MouseEvent.new(widget, MouseEvent.idMouseLeave, 0, 0, -1))
+		end
+	end
+	
+	
+	
 	/** \brief Send event to the widget. */
 	public func void sendEvent(Event event)
 		// a child widget did not handle its event. ignore it
@@ -154,37 +230,42 @@ class WindowPopup extends Window
 		
 		// otherwise send event to widget under cursor if this is a mouse event
 		if not MouseEvent.isMouseEvent(ident)
+			sendEventToListeners(event, false)
 			return
 		end
 		
 		var MouseEvent mouseEvent = event cast MouseEvent
 		
 		if ident == MouseEvent.idMouseWheeled
-			var Point mouseLocation = getDesktop().getMouseLocation()
-			var Point windowPosition = getPosition()
-			var Widget hoverWidget = getWidgetAt(mouseLocation - windowPosition)
-			
-			if hoverWidget == null or hoverWidget == this
-				return
+			updateHoverWidget()
+			var Widget widget = getHoverWidget()
+			if widget != null
+				widget.sendEvent(MouseEvent.new(widget, ident,\
+					mouseEvent.getButton(), mouseEvent.getModifiers(),\
+					mouseEvent.getPosition() - widget.getWindowPosition(),\
+					mouseEvent.getSystem(), mouseEvent.getDevice()))
 			end
-			
-			hoverWidget.sendEvent(MouseEvent.new(hoverWidget, ident, \
-				mouseEvent.getButton(), mouseEvent.getModifiers(), \
-				mouseEvent.getPosition(), mouseEvent.getSystem(), mouseEvent.getDevice()))
 			
 		else
-			var Widget hoverWidget = getWidgetAt(mouseEvent.getPosition())
+			var Widget widget = getWidgetAt(mouseEvent.getPosition())
 			
-			if hoverWidget == null or hoverWidget == this
-				return
+			if widget == this
+				sendEventToListeners(event, false)
+				
+			else
+				setHoverWidget(widget, mouseEvent)
+				
+				if widget != null
+					widget.sendEvent(MouseEvent.new(widget, ident,\
+						mouseEvent.getButton(), mouseEvent.getModifiers(),\
+						mouseEvent.getPosition() - widget.getWindowPosition(),\
+						mouseEvent.getSystem(), mouseEvent.getDevice()))
+				end
 			end
-			
-			hoverWidget.sendEvent(MouseEvent.new(hoverWidget, ident, \
-				mouseEvent.getButton(), mouseEvent.getModifiers(), \
-				mouseEvent.getPosition() - hoverWidget.getWindowPosition(), \
-				mouseEvent.getSystem(), mouseEvent.getDevice()))
 		end
 	end
+	
+	
 	
 	/**
 	 * \brief Grab focus if possible.
@@ -200,19 +281,26 @@ class WindowPopup extends Window
 	
 	/**
 	 * \brief Request to release mouse capture.
-	 * \details Returns true if the request has been accepted. If the request is
-	 *          granted follow up with grabing capturing the mouse ourself. If
-	 *          somebody else did capture the mouse instead of us he is responsible
-	 *          to capture the mouse himself using an MouseListener on the child
-	 *          widget releasing the mouse.
+	 * 
+	 * Returns true if the request has been accepted. If the request is
+	 * granted follow up with grabing capturing the mouse ourself. If
+	 * somebody else did capture the mouse instead of us he is responsible
+	 * to capture the mouse himself using an MouseListener on the child
+	 * widget releasing the mouse.
 	 */
 	public func bool requestReleaseMouse(Widget widget)
-		var bool result = super.requestReleaseMouse(widget)
-		
-		if result
+		if super.requestReleaseMouse(widget)
 			captureMouse()
+			return true
+			
+		else
+			return false
 		end
-		
-		return result
+	end
+	
+	/** \brief Release mouse capture. */
+	public func void releaseMouse()
+		clearHoverWidget()
+		super.releaseMouse()
 	end
 end

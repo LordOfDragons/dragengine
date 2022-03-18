@@ -177,7 +177,7 @@ class Container extends Widget
 		
 		var Desktop desktop = this.getDesktop()
 		if desktop != null
-			var Widget hoverWidget = desktop.getHoverWidget()
+			var Widget hoverWidget = getHoverWidget()
 			if hoverWidget != null and hoverWidget.hasParent( this )
 				desktop.setActiveMousePointer( hoverWidget.getFirstMousePointer() )
 			end
@@ -734,16 +734,12 @@ class Container extends Widget
 	
 	/**
 	 * \brief Mouse is hovering over this widget.
-	 * \details Tests if the hover widget of the parent desktop is this widget.
+	 * 
+	 * Tests if the hover widget is this widget.
 	 */
 	public func bool isMouseInside()
-		var Desktop desktop = this.getDesktop()
-		if desktop == null
-			return false
-		end
-		
-		var Widget hoverWidget = desktop.getHoverWidget()
-		return hoverWidget == this or ( hoverWidget != null and hoverWidget.hasParent( this ) )
+		var Widget hoverWidget = getHoverWidget()
+		return hoverWidget == this or (hoverWidget != null and hoverWidget.hasParent(this))
 	end
 	
 	

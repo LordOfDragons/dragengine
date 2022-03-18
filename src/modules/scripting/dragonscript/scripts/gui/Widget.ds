@@ -820,7 +820,7 @@ class Widget
 		pToolTip = toolTip
 		
 		var Desktop desktop = getDesktop()
-		if desktop != null and desktop.getHoverWidget() == this and desktop.getToolTipManager() != null
+		if desktop != null and getHoverWidget() == this and desktop.getToolTipManager() != null
 			desktop.getToolTipManager().update()
 		end
 	end
@@ -849,7 +849,7 @@ class Widget
 		pMousePointer = mousePointer
 		
 		var Desktop desktop = getDesktop()
-		if desktop != null and desktop.getHoverWidget() == this
+		if desktop != null and getHoverWidget() == this
 			desktop.setActiveMousePointer(getFirstMousePointer())
 		end
 		
@@ -1117,12 +1117,26 @@ class Widget
 	
 	
 	/**
+	 * \brief Widget the mouse hovers above or null.
+	 * \version 1.11
+	 * 
+	 * Asks parent for hover widget otherwise returns null.
+	 */
+	public func Widget getHoverWidget()
+		if pParent != null
+			return pParent.getHoverWidget()
+		end
+		return null
+	end
+	
+	
+	
+	/**
 	 * \brief Mouse is hovering over this widget.
 	 * \details Tests if the hover widget of the parent desktop is this widget.
 	 */
 	public func bool isMouseInside()
-		var Desktop desktop = getDesktop()
-		return desktop != null and desktop.getHoverWidget() == this
+		return getHoverWidget() == this
 	end
 	
 	
