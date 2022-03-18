@@ -32,6 +32,43 @@ pin Dragengine.Gui.Events
  * Links a ToggleModel to a ListModel entry. If the list model entry is selected the toggle
  * model is toggled otherwise untoggled. If the toggle model is toggled while untoggled
  * the respective element in the list model is selected.
+ * 
+ * Example of how to use this model:
+ * \code{.ds}
+ * class MyClass
+ *    enum MyEnum
+ *       option1
+ *       option2
+ *       option3
+ *    end
+ *    
+ *    private var DefaultListModel modelOptions
+ *    
+ *    private func createUI(Container container)
+ *       // create model containing the options
+ *       modelOptions = DefaultListModel.new(MyEnum.all())
+ *       modelOptions.setSelectedElement(MyEnum.option2)
+ *       
+ *       // create and add option boxes for each option. the toggled state of the
+ *       // option boxes is synchronized with the list model selection
+ *       container.addWidget(OptionBox.new(OptionGroupModel.newFor(modelOptions, MyEnum.option1), "Option 1"))
+ *       container.addWidget(OptionBox.new(OptionGroupModel.newFor(modelOptions, MyEnum.option2), "Option 2"))
+ *       container.addWidget(OptionBox.new(OptionGroupModel.newFor(modelOptions, MyEnum.option3), "Option 3"))
+ *       
+ *       // you could also use direct indices instead of looking up list elements.
+ *       // looking up list elements is safer. using indices can be useful if you
+ *       // want to add options by iterating of the list model elements
+ *       // 
+ *       // container.addWidget(OptionBox.new(OptionGroupModel.new(modelOptions, 0), "Option 1"))
+ *       // ...
+ *       
+ *       // you can use this class for all instance accepting toggle models.
+ *       // for example to add an option menu entry you can do this:
+ *       // 
+ *       // menuPanel.addWidget(MenuItemOption.new(OptionGroupModel.new(modelOptions, 0), "Option 1"))
+ *    end
+ * end
+ * \endcode
  */
 class OptionGroupModel extends DefaultToggleModel
 	/**
