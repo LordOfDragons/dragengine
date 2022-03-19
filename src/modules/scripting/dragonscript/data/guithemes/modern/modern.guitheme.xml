@@ -399,6 +399,16 @@
 		</canvasCreator>
 	</designer>
 	
+	<designer name='MenuItem.Toggle' type='MenuItemToggle'>
+		<canvasCreator parameter='normal.canvas' type='Default'/>
+		<color parameter='normal.textColor' r='0' g='0' b='0'/>
+		<borderSize parameter='normal.padding' left='5' top='2' right='5' bottom='2'/>
+		
+		<canvasCreator parameter='hover.canvas' type='Rectangle'>
+			<color parameter='colorFill' r='0.2' g='0.2' b='0.5' a='0.15'/>
+		</canvasCreator>
+	</designer>
+	
 	<designer name='PanelIcon.MenuItem' type='Widget'>
 		<point parameter='normal.minimumSize' x='18' y='18'/>
 	</designer>
@@ -411,16 +421,16 @@
 		<string parameter='normal.alignment'>left,middle</string>
 	</designer>
 	
-	<designer name='CheckBox.MenuItemCheck' type='CheckBox'>
+	<designer name='MenuItem.Check' extendNamed='MenuItem.Toggle'>
 		<image parameter='normal.imageBox'>checkbox/checkbox_normal.png</image>
-		<image parameter='normal.imageCheck'>checkbox/checked_normal.png</image>
-		<image parameter='disabled.imageCheck'>checkbox/checked_disabled.png</image>
+		<image parameter='normal.imageMark'>checkbox/checked_normal.png</image>
+		<image parameter='disabled.imageMark'>checkbox/checked_disabled.png</image>
 	</designer>
 	
-	<designer name='OptionBox.MenuItemOption' type='OptionBox'>
+	<designer name='MenuItem.Option' extendNamed='MenuItem.Toggle'>
 		<image parameter='normal.imageBox'>optionbox/optionbox_normal.png</image>
-		<image parameter='normal.imageSelect'>optionbox/selected_normal.png</image>
-		<image parameter='disabled.imageSelect'>optionbox/selected_disabled.png</image>
+		<image parameter='normal.imageMark'>optionbox/selected_normal.png</image>
+		<image parameter='disabled.imageMark'>optionbox/selected_disabled.png</image>
 	</designer>
 	
 	<!-- ReorderListMouseListener -->

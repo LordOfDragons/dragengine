@@ -42,52 +42,53 @@ class WidgetDesigners
 	
 	/** \brief Create widget designer factories. */
 	public func new()
-		this.pDesigners = Dictionary.new()
+		pDesigners = Dictionary.new()
 	end
 	
 	
 	
 	/** \brief Add designer. */
-	public func void add( String name, WidgetDesigner designer )
-		this.pDesigners.setAt( name, designer )
+	public func void add(String name, WidgetDesigner designer)
+		pDesigners.setAt(name, designer)
 	end
 	
 	/** \brief Named designer or \em null if not found. */
-	public func WidgetDesigner getNamed( String name )
-		return this.pDesigners.getAt( name, null ) cast WidgetDesigner
+	public func WidgetDesigner getNamed(String name)
+		return pDesigners.getAt(name, null) cast WidgetDesigner
 	end
 	
 	/** \brief Remove designer if present. */
-	public func void removeNamed( String name )
-		this.pDesigners.removeIfExisting( name )
+	public func void removeNamed(String name)
+		pDesigners.removeIfExisting(name)
 	end
 	
 	/** \brief Remove all factories. */
 	public func void removeAll()
-		this.pDesigners.removeAll()
+		pDesigners.removeAll()
 	end
 	
 	
 	
 	/** \brief Add default factories. */
 	public func void addDefaultDesigners()
-		this.add( "Button", DefaultButtonDesigner.new() )
-		this.add( "ButtonWidget", DefaultButtonWidgetDesigner.new() )
-		this.add( "CheckBox", DefaultCheckBoxDesigner.new() )
-		this.add( "ComboBox", DefaultComboBoxDesigner.new() )
-		this.add( "Desktop", DefaultWidgetDesigner.new() )
-		this.add( "Image", DefaultImageDesigner.new() )
-		this.add( "Label", DefaultLabelDesigner.new() )
-		this.add( "ListBox", DefaultWidgetDesigner.new() )
-		this.add( "OptionBox", DefaultOptionBoxDesigner.new() )
-		this.add( "PlayerChoiceEntry", DefaultLabelDesigner.new() )
-		this.add( "ProgressBar", DefaultProgressBarDesigner.new() )
-		this.add( "ScrollBar", DefaultScrollBarDesigner.new() )
-		this.add( "SpinButton", DefaultSpinButtonDesigner.new() )
-		this.add( "TextArea", DefaultWidgetDesigner.new() )
-		this.add( "TextField", DefaultWidgetDesigner.new() )
-		this.add( "Video", DefaultVideoDesigner.new() )
-		this.add( "Widget", DefaultWidgetDesigner.new() )
-		this.add( "Window", DefaultWindowDesigner.new() )
+		add("Button", DefaultButtonDesigner.new())
+		add("ButtonWidget", DefaultButtonWidgetDesigner.new())
+		add("CheckBox", DefaultCheckBoxDesigner.new())
+		add("ComboBox", DefaultComboBoxDesigner.new())
+		add("Desktop", DefaultWidgetDesigner.new())
+		add("Image", DefaultImageDesigner.new())
+		add("Label", DefaultLabelDesigner.new())
+		add("ListBox", DefaultWidgetDesigner.new())
+		add("OptionBox", DefaultOptionBoxDesigner.new())
+		add("PlayerChoiceEntry", DefaultLabelDesigner.new())
+		add("ProgressBar", DefaultProgressBarDesigner.new())
+		add("ScrollBar", DefaultScrollBarDesigner.new())
+		add("SpinButton", DefaultSpinButtonDesigner.new())
+		add("TextArea", DefaultWidgetDesigner.new())
+		add("TextField", DefaultWidgetDesigner.new())
+		add("Video", DefaultVideoDesigner.new())
+		add("Widget", DefaultWidgetDesigner.new())
+		add("Window", DefaultWindowDesigner.new())
+		add("MenuItemToggle", DefaultMenuItemToggleDesigner.new())
 	end
 end

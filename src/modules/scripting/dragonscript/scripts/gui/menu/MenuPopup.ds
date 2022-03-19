@@ -75,10 +75,13 @@ class MenuPopup extends WindowPopup
 			return count
 		end) cast int
 		
-		forEachWidget(block Widget widget
-			if widget castable MenuItem
-				(widget cast MenuItem).setShowIconCount(showIconCount)
-			end
+		runWhileBlockingLayout(block
+			forEachWidget(block Widget widget
+				if widget castable MenuItem
+					(widget cast MenuItem).setShowIconCount(showIconCount)
+				end
+			end)
 		end)
+		doLayoutIfBlocked()
 	end
 end

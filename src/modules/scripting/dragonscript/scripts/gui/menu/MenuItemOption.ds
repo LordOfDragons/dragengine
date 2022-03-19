@@ -33,76 +33,28 @@ pin Dragengine.Gui.Layouts
  * Shows label and option box and optionally an icon. Option box reflects state of ToggleModel.
  * Toggles model if clicked.
  */
-class MenuItemOption extends MenuItemCommand
-	/** \brief OptionBox with mouse handling modified. */
-	private class ModifiedOptionBox extends OptionBox
-		private var MenuItemOption pMenuItem
-		
-		public func new(MenuItemOption menuItem, ToggleModel model) super(model)
-			pMenuItem = menuItem
-			setDesignerSelector(getDesignerSelector() + ".MenuItemOption")
-		end
-		
-		public func void onButtonPress(MouseEvent event)
-			sendEventToListeners(event, true)
-		end
-		
-		public func void onButtonRelease(MouseEvent event)
-			pMenuItem.fireAction(0)
-		end
-	end
-	
-	
-	
-	private var ModifiedOptionBox pOptionBox
-	
-	
-	
+class MenuItemOption extends MenuItemToggle
 	/** \brief Create menu item command. */
-	public func new(String text) this(DefaultToggleModel.new(), text)
+	public func new(String text) super(text)
+		setStickyToggled(true)
+		setDesignerSelector("MenuItem.Option")
 	end
 	
 	/** \brief Create menu item command. */
-	public func new(Image icon, String text) this(DefaultToggleModel.new(), icon, text)
+	public func new(Image icon, String text) super(icon, text)
+		setStickyToggled(true)
+		setDesignerSelector("MenuItem.Option")
 	end
 	
 	/** \brief Create menu item command. */
-	public func new(ToggleModel model, String text) this(model, null, text)
+	public func new(ToggleModel model, String text) super(model, null, text)
+		setStickyToggled(true)
+		setDesignerSelector("MenuItem.Option")
 	end
 	
 	/** \brief Create menu item command. */
-	public func new(ToggleModel model, Image icon, String text) super(icon, text)
-		if icon == null
-			addIcon(createIconPlaceholderWidget())
-		end
-		
-		pOptionBox = ModifiedOptionBox.new(this, model)
-		addIcon(pOptionBox)
-	end
-	
-	/** \brief Dispose of menu item. */
-	public func void dispose()
-		pOptionBox = null
-		super.dispose()
-	end
-	
-	
-	
-	/** \brief Option box. */
-	public func OptionBox getOptionBox()
-		return pOptionBox
-	end
-	
-	/** \brief Toggle model. */
-	public func ToggleModel getToggleModel()
-		return pOptionBox.getToggleModel()
-	end
-	
-	
-	
-	/** \brief Fire action. */
-	public func void fireAction(int modifiers)
-		getToggleModel().setToggled(not getToggleModel().getToggled())
-		super.fireAction(modifiers)
+	public func new(ToggleModel model, Image icon, String text) super(model, icon, text)
+		setStickyToggled(true)
+		setDesignerSelector("MenuItem.Option")
 	end
 end

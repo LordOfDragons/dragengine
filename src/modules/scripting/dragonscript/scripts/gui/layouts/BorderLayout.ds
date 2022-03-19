@@ -411,7 +411,7 @@ class BorderLayout implements Layout
 		if hasRight
 			childSize = pRightWidget.getMinimumSizeWithBorderForHeight(height)
 			cx += childSize.getX()
-			if hasLeft or hasContent
+			if hasContent
 				cx += pGap
 			end
 			if childSize.getY() > cy
@@ -426,7 +426,7 @@ class BorderLayout implements Layout
 				cx = childSize.getX()
 			end
 			cy += childSize.getY()
-			if hasContent or hasTop
+			if hasContent
 				cy += pGap
 			end
 			usePadding = true

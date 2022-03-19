@@ -308,6 +308,58 @@
 	</designer>
 	
 	<!-- Menu -->
+	<designer name='MenuPopup' type='Window'>
+		<canvasCreator parameter='normal.canvas' type='Bevel'>
+			<color parameter='colorHighlight' r='1' g='1' b='1'/>
+			<color parameter='colorShadow' r='0.6' g='0.6' b='0.6'/>
+			<color parameter='colorBackground' r='0.85' g='0.82' b='0.82'/>
+		</canvasCreator>
+		<borderSize parameter='normal.padding' all='1'/>
+	</designer>
+	
+	<designer name='MenuItem' type='Widget'>
+		<canvasCreator parameter='normal.canvas' type='Default'/>
+		<color parameter='normal.textColor' r='0' g='0' b='0'/>
+		<borderSize parameter='normal.padding' left='5' top='2' right='5' bottom='2'/>
+		
+		<canvasCreator parameter='hover.canvas' type='Rectangle'>
+			<color parameter='colorFill' r='0.2' g='0.2' b='0.5' a='0.15'/>
+		</canvasCreator>
+	</designer>
+	
+	<designer name='MenuItem.Toggle' type='MenuItemToggle'>
+		<canvasCreator parameter='normal.canvas' type='Default'/>
+		<color parameter='normal.textColor' r='0' g='0' b='0'/>
+		<borderSize parameter='normal.padding' left='5' top='2' right='5' bottom='2'/>
+		
+		<canvasCreator parameter='hover.canvas' type='Rectangle'>
+			<color parameter='colorFill' r='0.2' g='0.2' b='0.5' a='0.15'/>
+		</canvasCreator>
+	</designer>
+	
+	<designer name='PanelIcon.MenuItem' type='Widget'>
+		<point parameter='normal.minimumSize' x='18' y='18'/>
+	</designer>
+	
+	<designer name='IconPlaceholder.MenuItem' type='Widget'>
+		<point parameter='normal.minimumSize' x='18' y='18'/>
+	</designer>
+	
+	<designer name='Label.MenuItem' extendNamed='Label'>
+		<string parameter='normal.alignment'>left,middle</string>
+	</designer>
+	
+	<designer name='MenuItem.Check' extendNamed='MenuItem.Toggle'>
+		<image parameter='normal.imageBox'>../modern/checkbox/checkbox_normal.png</image>
+		<image parameter='normal.imageMark'>../modern/checkbox/checked_normal.png</image>
+		<image parameter='disabled.imageMark'>../modern/checkbox/checked_disabled.png</image>
+	</designer>
+	
+	<designer name='MenuItem.Option' extendNamed='MenuItem.Toggle'>
+		<image parameter='normal.imageBox'>../modern/optionbox/optionbox_normal.png</image>
+		<image parameter='normal.imageMark'>../modern/optionbox/selected_normal.png</image>
+		<image parameter='disabled.imageMark'>../modern/optionbox/selected_disabled.png</image>
+	</designer>
 	
 	<!-- ReorderListMouseListener -->
 	<designer name='ReorderListBoxDrop' type='Widget'>

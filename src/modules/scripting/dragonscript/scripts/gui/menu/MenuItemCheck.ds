@@ -33,76 +33,24 @@ pin Dragengine.Gui.Layouts
  * Shows label and check box and optionally an icon. Check box reflects state of ToggleModel.
  * Toggles model if clicked.
  */
-class MenuItemCheck extends MenuItemCommand
-	/** \brief CheckBox with mouse handling modified. */
-	private class ModifiedCheckBox extends CheckBox
-		private var MenuItemCheck pMenuItem
-		
-		public func new(MenuItemCheck menuItem, ToggleModel model) super(model)
-			pMenuItem = menuItem
-			setDesignerSelector(getDesignerSelector() + ".MenuItemCheck")
-		end
-		
-		public func void onButtonPress(MouseEvent event)
-			sendEventToListeners(event, true)
-		end
-		
-		public func void onButtonRelease(MouseEvent event)
-			pMenuItem.fireAction(0)
-		end
-	end
-	
-	
-	
-	private var ModifiedCheckBox pCheckBox
-	
-	
-	
+class MenuItemCheck extends MenuItemToggle
 	/** \brief Create menu item command. */
-	public func new(String text) this(DefaultToggleModel.new(), text)
+	public func new(String text) super(text)
+		setDesignerSelector("MenuItem.Check")
 	end
 	
 	/** \brief Create menu item command. */
-	public func new(Image icon, String text) this(DefaultToggleModel.new(), icon, text)
+	public func new(Image icon, String text) super(icon, text)
+		setDesignerSelector("MenuItem.Check")
 	end
 	
 	/** \brief Create menu item command. */
-	public func new(ToggleModel model, String text) this(model,  null, text)
+	public func new(ToggleModel model, String text) super(model,  null, text)
+		setDesignerSelector("MenuItem.Check")
 	end
 	
 	/** \brief Create menu item command. */
-	public func new(ToggleModel model, Image icon, String text) super(icon, text)
-		if icon == null
-			addIcon(createIconPlaceholderWidget())
-		end
-		
-		pCheckBox = ModifiedCheckBox.new(this, model)
-		addIcon(pCheckBox)
-	end
-	
-	/** \brief Dispose of menu item. */
-	public func void dispose()
-		pCheckBox = null
-		super.dispose()
-	end
-	
-	
-	
-	/** \brief Check box. */
-	public func CheckBox getCheckBox()
-		return pCheckBox
-	end
-	
-	/** \brief Toggle model. */
-	public func ToggleModel getToggleModel()
-		return pCheckBox.getToggleModel()
-	end
-	
-	
-	
-	/** \brief Fire action. */
-	public func void fireAction(int modifiers)
-		getToggleModel().setToggled(not getToggleModel().getToggled())
-		super.fireAction(modifiers)
+	public func new(ToggleModel model, Image icon, String text) super(model, icon, text)
+		setDesignerSelector("MenuItem.Check")
 	end
 end
