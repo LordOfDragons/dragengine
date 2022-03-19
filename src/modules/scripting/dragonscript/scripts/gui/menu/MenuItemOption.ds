@@ -34,7 +34,27 @@ pin Dragengine.Gui.Layouts
  * Toggles model if clicked.
  */
 class MenuItemOption extends MenuItemCommand
-	private var OptionBox pOptionBox
+	/** \brief OptionBox with mouse handling modified. */
+	private class ModifiedOptionBox extends OptionBox
+		private var MenuItemOption pMenuItem
+		
+		public func new(MenuItemOption menuItem, ToggleModel model) super(model)
+			pMenuItem = menuItem
+			setDesignerSelector(getDesignerSelector() + ".MenuItemOption")
+		end
+		
+		public func void onButtonPress(MouseEvent event)
+			sendEventToListeners(event, true)
+		end
+		
+		public func void onButtonRelease(MouseEvent event)
+			pMenuItem.fireAction(0)
+		end
+	end
+	
+	
+	
+	private var ModifiedOptionBox pOptionBox
 	
 	
 	
@@ -56,9 +76,7 @@ class MenuItemOption extends MenuItemCommand
 			addIcon(createIconPlaceholderWidget())
 		end
 		
-		pOptionBox = OptionBox.new(model)
-		pOptionBox.setDesignerSelector(pOptionBox.getDesignerSelector() + ".MenuItemOption")
-		pOptionBox.addMouseListener(FireActionClickListener.new(this))
+		pOptionBox = ModifiedOptionBox.new(this, model)
 		addIcon(pOptionBox)
 	end
 	
