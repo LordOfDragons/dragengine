@@ -73,6 +73,8 @@ class MenuItem extends Container
 		pIconsRight = Array.new()
 		pActionListeners = Array.new()
 		
+		setCanFocus(false)
+		
 		setLayout(BorderLayout.new(5))
 		setStateChangeNotifyChildren(true)
 		

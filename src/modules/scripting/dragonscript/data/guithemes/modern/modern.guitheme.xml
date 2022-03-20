@@ -445,6 +445,14 @@
 		<image parameter='disabled.imageMark'>optionbox/selected_disabled.png</image>
 	</designer>
 	
+	<designer name='MenuItem.Separator' type='Widget'>
+		<canvasCreator parameter='normal.canvas' extend='divider/normal.ccreator.xml'/>
+		<border parameter='normal.border' type='Empty'>
+			<borderSize parameter='size' left='0' top='2' right='0' bottom='0'/>
+		</border>
+		<point parameter='normal.minimumSize' x='0' y='2'/>
+	</designer>
+	
 	<!-- ReorderListMouseListener -->
 	<designer name='ReorderListBoxDrop' type='Widget'>
 		<canvasCreator parameter='normal.canvas' extend='framed/focused.ccreator.xml'/>
