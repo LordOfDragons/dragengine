@@ -122,8 +122,7 @@ class OptionBox extends ToggleButton
 		end
 		
 		if pWidgetOptionBox != null
-			pPanelOptionBox.removeWidget(pWidgetOptionBox)
-			pWidgetOptionBox.dispose()
+			pWidgetOptionBox.safeDispose()
 		end
 		
 		pWidgetOptionBox = widget
@@ -151,8 +150,7 @@ class OptionBox extends ToggleButton
 		end
 		
 		if pWidgetSelected != null
-			pPanelSelected.removeWidget(pWidgetSelected)
-			pWidgetSelected.dispose()
+			pWidgetSelected.safeDispose()
 		end
 		
 		pWidgetSelected = widget

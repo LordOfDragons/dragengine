@@ -1146,7 +1146,6 @@ class ListBox extends Container implements RangeModelListener, ListModelListener
 				var int elementCount = this.pListModel.getCount()
 				var int firstElement = this.getFirstElement()
 				var int i, elementIndex
-				var Widget widget
 				
 				// set position
 				this.pPanelVisibleElements.setPosition( Point.new( \
@@ -1164,9 +1163,7 @@ class ListBox extends Container implements RangeModelListener, ListModelListener
 				
 				while widgetCount > visibleElementCount
 					widgetCount--
-					widget = this.pPanelVisibleElements.getWidget( widgetCount )
-					this.pPanelVisibleElements.removeWidget( widget )
-					widget.dispose()
+					this.pPanelVisibleElements.getWidget( widgetCount ).safeDispose()
 				end
 				
 				select this.pType

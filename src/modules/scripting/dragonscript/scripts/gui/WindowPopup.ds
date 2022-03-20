@@ -219,10 +219,7 @@ class WindowPopup extends Window
 			end
 			
 		case MouseEvent.idMousePressed
-			var MouseEvent mouseEvent = event cast MouseEvent
-			var Point position = mouseEvent.getPosition()
-			
-			if not (position.isAtLeast(0) and position <= getSize())
+			if not isPointInside((event cast MouseEvent).getPosition())
 				popdown()
 				return
 			end

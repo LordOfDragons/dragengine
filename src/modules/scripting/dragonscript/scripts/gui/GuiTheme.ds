@@ -71,6 +71,7 @@ class GuiTheme
 		pWidgetDesigners.setAt("Video", DefaultVideoDesigner.new())
 		pWidgetDesigners.setAt("Window", DefaultWindowDesigner.new())
 		pWidgetDesigners.setAt("MenuItemToggle", DefaultMenuItemToggleDesigner.new())
+		pWidgetDesigners.setAt("MenuItemSubMenu", DefaultMenuItemSubMenuDesigner.new())
 		
 		pNamedGuiThemes = Dictionary.new()
 	end

@@ -105,7 +105,7 @@ class CheckBox extends ToggleButton
 		end
 		
 		if pWidgetCheckBox != null
-			pPanelCheckBox.removeWidget(pWidgetCheckBox)
+			pWidgetCheckBox.safeDispose()
 		end
 		
 		pWidgetCheckBox = widget
@@ -133,7 +133,7 @@ class CheckBox extends ToggleButton
 		end
 		
 		if pWidgetCheck != null
-			pPanelCheck.removeWidget(pWidgetCheck)
+			pWidgetCheck.safeDispose()
 		end
 		
 		pWidgetCheck = widget

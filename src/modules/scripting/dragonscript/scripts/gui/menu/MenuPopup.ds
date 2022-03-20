@@ -31,9 +31,23 @@ pin Dragengine.Gui.Layouts
  * \version 1.11
  */
 class MenuPopup extends WindowPopup
+	private var MenuItemSubMenu pParentMenuItem
+	private var MenuItemSubMenu pOpenSubMenu
+	private var MenuPopupEventHandler pMenuPopupEventHandler
+	
+	
+	
 	/** \brief Create popup menu. */
 	public func new()
 		setDesignerSelector("MenuPopup")
+	end
+	
+	/** \brief Dispose of widget. */
+	public func void dispose()
+		setOpenSubMenu(null)
+		pParentMenuItem = null
+		pMenuPopupEventHandler = null
+		super.dispose()
 	end
 	
 	
@@ -64,13 +78,36 @@ class MenuPopup extends WindowPopup
 		super.fitToContent()
 	end
 	
+	/** \brief Capture mouse. */
+	public func void captureMouse()
+		// capture mouse only if this is the top level popup menu
+		if pParentMenuItem == null
+			super.captureMouse()
+		end
+	end
+	
+	/** \brief Release mouse capture. */
+	public func void releaseMouse()
+		// capture mouse only if this is the top level popup menu
+		if pParentMenuItem == null
+			super.releaseMouse()
+		end
+	end
+	
 	
 	
 	/** \brief Update menu items show icon count. */
 	protected func void updateShowIconCount()
-		var int showIconCount = injectWidget(0, block int count, Widget widget
+		var int showLeftIconCount = injectWidget(0, block int count, Widget widget
 			if widget castable MenuItem
-				return DEMath.max(count, (widget cast MenuItem).getIconCount())
+				return DEMath.max(count, (widget cast MenuItem).getLeftIconCount())
+			end
+			return count
+		end) cast int
+		
+		var int showRightIconCount = injectWidget(0, block int count, Widget widget
+			if widget castable MenuItem
+				return DEMath.max(count, (widget cast MenuItem).getRightIconCount())
 			end
 			return count
 		end) cast int
@@ -78,10 +115,190 @@ class MenuPopup extends WindowPopup
 		runWhileBlockingLayout(block
 			forEachWidget(block Widget widget
 				if widget castable MenuItem
-					(widget cast MenuItem).setShowIconCount(showIconCount)
+					var MenuItem menuItem = widget cast MenuItem
+					menuItem.setShowLeftIconCount(showLeftIconCount)
+					menuItem.setShowRightIconCount(showRightIconCount)
 				end
 			end)
 		end)
 		doLayoutIfBlocked()
+	end
+	
+	
+	
+	/** \brief Parent menu item or null. */
+	public func MenuItemSubMenu getParentMenuItem()
+		return pParentMenuItem
+	end
+	
+	/** \brief Set parent menu item or null. */
+	public func void setParentMenuItem(MenuItemSubMenu menuItem)
+		pParentMenuItem = menuItem
+	end
+	
+	/** \brief Open sub menu item or null. */
+	public func MenuItemSubMenu getOpenSubMenu()
+		return pOpenSubMenu
+	end
+	
+	/**
+	 * \brief Set open sub menu or null.
+	 * 
+	 * If null hides sub menu. If not null shows submenu.
+	 */
+	public func void setOpenSubMenu(MenuItemSubMenu subMenu)
+		if subMenu == pOpenSubMenu
+			return
+		end
+		
+		if pOpenSubMenu != null
+			pOpenSubMenu.hideSubMenu()
+		end
+		
+		pOpenSubMenu = subMenu
+		
+		if subMenu != null
+			subMenu.showSubMenu()
+		end
+	end
+	
+	
+	
+	/** \brief Array of MenuPopup in parent desktop owned by this menu popup. */
+	public func Array getAllChildMenuPopups()
+		var Array list = Array.new()
+		
+		var Desktop desktop = getDesktop()
+		if desktop != null
+			desktop.forEachWidget(block Widget each
+				if each castable MenuPopup
+					var MenuPopup menu = each cast MenuPopup
+					if menu.getParentMenuItem() != null and menu.getParentMenuItem().getParentMenuPopup() == this
+						list.add(menu)
+					end
+				end
+			end)
+		end
+		
+		return list
+	end
+	
+	/** \brief Close all menu popups in parent desktop owned by this menu popup. */
+	public func void closeAllChildMenuPopups()
+		getAllChildMenuPopups().forEach(block MenuPopup each
+			each.popdown()
+		end)
+	end
+	
+	/** \brief Set hover widget in parent menus to open sub menu. */
+	public func void parentMenusSetHoverOpenSubMenu()
+		if pOpenSubMenu != null
+			setHoverWidget(pOpenSubMenu, MouseEvent.new(pOpenSubMenu,\
+				MouseEvent.idMouseMoved, 0, 0, Point.new(), -1))
+		end
+		
+		if pParentMenuItem != null
+			var MenuPopup menu = pParentMenuItem.getParentMenuPopup()
+			if menu != null
+				menu.parentMenusSetHoverOpenSubMenu()
+			end
+		end
+	end
+	
+	/** \brief Clear hover widget on open sub menus. */
+	public func void openSubMenusClearHover()
+		if pOpenSubMenu != null
+			var MenuPopup menu = pOpenSubMenu.getSubMenu()
+			if menu != null
+				menu.clearHoverWidget()
+				menu.openSubMenusClearHover()
+			end
+		end
+	end
+	
+	
+	
+	/**
+	 * \brief Pop down window.
+	 * 
+	 * Release mouse and hide window. If close on popdown is true close() is called too.
+	 */
+	public func void popdown()
+		setOpenSubMenu(null)
+		super.popdown()
+	end
+	
+	/** \brief Send event to the widget. */
+	public func void sendEvent(Event event)
+		if event.getSource() != this
+			return // child widget did not handle event
+		end
+		
+		if pMenuPopupEventHandler == null
+			pMenuPopupEventHandler = MenuPopupEventHandler.new()
+		end
+		
+		if not pMenuPopupEventHandler.handleEvent(event, this, this)
+			return
+		end
+		
+		super.sendEvent(event)
+		/*
+		// check if we have to intercept the event
+		var int ident = event.getIdentifier()
+		if ident == KeyEvent.idKeyPressed and (event cast KeyEvent).getKeyCode() == InputEventKey.escape
+			popdown()
+			return
+		end
+		
+		// otherwise send event to widget under cursor if this is a mouse event
+		if not MouseEvent.isMouseEvent(ident)
+			sendEventToListeners(event, false)
+			return
+		end
+		
+		var MouseEvent mouseEvent = event cast MouseEvent
+		
+		select ident
+		case MouseEvent.idMousePressed
+			if not isPointInside(mouseEvent.getPosition())
+				popdown()
+				return
+			end
+			
+		case MouseEvent.idMouseWheeled
+			updateHoverWidget()
+			var Widget widget = getHoverWidget()
+			if widget != null
+				widget.sendEvent(MouseEvent.new(widget, ident,\
+					mouseEvent.getButton(), mouseEvent.getModifiers(),\
+					mouseEvent.getPosition() - widget.getWindowPosition(),\
+					mouseEvent.getSystem(), mouseEvent.getDevice()))
+			end
+			
+		else
+			if ident == mouseEvent.idMouseMoved
+				if not isPointInside(mouseEvent.getPosition())
+					clearHoverWidget()
+					return
+				end
+				
+			var Widget widget = getWidgetAt(mouseEvent.getPosition())
+			
+			if widget == this
+				sendEventToListeners(event, false)
+				
+			else
+				setHoverWidget(widget, mouseEvent)
+				
+				if widget != null
+					widget.sendEvent(MouseEvent.new(widget, ident,\
+						mouseEvent.getButton(), mouseEvent.getModifiers(),\
+						mouseEvent.getPosition() - widget.getWindowPosition(),\
+						mouseEvent.getSystem(), mouseEvent.getDevice()))
+				end
+			end
+		end
+		*/
 	end
 end

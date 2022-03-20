@@ -56,7 +56,7 @@ class MenuItemCommand extends MenuItem
 		pIcon = icon
 		
 		if icon != null
-			addIcon(Panel.new(CentrizedBoxLayout.new(LayoutAxis.y), block Panel p
+			addLeftIcon(Panel.new(CentrizedBoxLayout.new(LayoutAxis.y), block Panel p
 				p.setDesignerSelector("PanelIcon." + getDesignerSelector())
 				pWidgetIcon = DisplayImage.new(icon, "Image." + getDesignerSelector())
 				p.addWidget(pWidgetIcon)

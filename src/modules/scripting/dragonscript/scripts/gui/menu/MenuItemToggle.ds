@@ -71,10 +71,10 @@ class MenuItemToggle extends MenuItemCommand
 			setDesignerSelector("MenuItem.Toggle")
 			
 			if icon == null
-				addIcon(createIconPlaceholderWidget())
+				addLeftIcon(createIconPlaceholderWidget())
 			end
 			
-			addIcon(Panel.new(StackLayout.new(), block Panel p
+			addLeftIcon(Panel.new(StackLayout.new(), block Panel p
 				pPanelBox = Panel.new(CentrizedBoxLayout.new(LayoutAxis.y))
 				p.addWidget(pPanelBox)
 				
@@ -158,7 +158,7 @@ class MenuItemToggle extends MenuItemCommand
 		end
 		
 		if pWidgetBox != null
-			pPanelBox.removeWidget(pWidgetBox)
+			pWidgetBox.safeDispose()
 		end
 		
 		pWidgetBox = widget
@@ -186,7 +186,7 @@ class MenuItemToggle extends MenuItemCommand
 		end
 		
 		if pWidgetMark != null
-			pPanelMark.removeWidget(pWidgetMark)
+			pWidgetMark.safeDispose()
 		end
 		
 		pWidgetMark = widget

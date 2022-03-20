@@ -90,5 +90,6 @@ class WidgetDesigners
 		add("Widget", DefaultWidgetDesigner.new())
 		add("Window", DefaultWindowDesigner.new())
 		add("MenuItemToggle", DefaultMenuItemToggleDesigner.new())
+		add("MenuItemSubMenu", DefaultMenuItemSubMenuDesigner.new())
 	end
 end

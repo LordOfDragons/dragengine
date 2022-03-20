@@ -57,23 +57,30 @@ class MenuItem extends Container
 	
 	
 	
-	private var Array pIcons
-	private var int pShowIconCount
-	private var Panel pPanelIcons
+	private var Array pIconsLeft
+	private var Array pIconsRight
+	private var int pShowLeftIconCount
+	private var int pShowRightIconCount
+	private var Panel pPanelIconsLeft
+	private var Panel pPanelIconsRight
 	private var Array pActionListeners
 	
 	
 	
 	/** \brief Create menu item. */
 	public func new()
-		pIcons = Array.new()
+		pIconsLeft = Array.new()
+		pIconsRight = Array.new()
 		pActionListeners = Array.new()
 		
 		setLayout(BorderLayout.new(5))
 		setStateChangeNotifyChildren(true)
 		
-		pPanelIcons = Panel.new(GridLayout.new(0, 1, 5, LayoutAxis.inverseX))
-		addWidget(pPanelIcons, BorderLayout.Area.left)
+		pPanelIconsLeft = Panel.new(GridLayout.new(0, 1, 5, LayoutAxis.inverseX))
+		addWidget(pPanelIconsLeft, BorderLayout.Area.left)
+		
+		pPanelIconsRight = Panel.new(GridLayout.new(0, 1, 5, LayoutAxis.x))
+		addWidget(pPanelIconsRight, BorderLayout.Area.right)
 		
 		setDesignerSelector("MenuItem")
 	end
@@ -90,139 +97,273 @@ class MenuItem extends Container
 	
 	/** \brief Dispose of menu item. */
 	public func void dispose()
-		pIcons.forEach(block Widget each
+		pIconsLeft.forEach(block Widget each
 			each.safeDispose()
 		end)
-		pIcons = null
+		pIconsLeft = null
 		
-		pPanelIcons = null
+		pIconsRight.forEach(block Widget each
+			each.safeDispose()
+		end)
+		pIconsRight = null
+		
+		pPanelIconsLeft = null
+		pPanelIconsRight = null
+		
 		pActionListeners = null
 		
 		super.dispose()
 	end
 	
 	
-	/** \brief Count of icons. */
-	public func int getIconCount()
-		return pIcons.getCount()
+	
+	/** \brief Count of left side icons. */
+	public func int getLeftIconCount()
+		return pIconsLeft.getCount()
 	end
 	
-	/** \brief Icon at index. */
-	protected func Widget getIconAt(int index)
-		return pIcons.getAt(index) cast Widget
+	/** \brief Left side icon at index. */
+	protected func Widget getLeftIconAt(int index)
+		return pIconsLeft.getAt(index) cast Widget
 	end
 	
-	/** \brief Add icon. */
-	protected func void addIcon(Widget icon)
+	/** \brief Add left side icon. */
+	protected func void addLeftIcon(Widget icon)
 		if icon == null
 			throw ENullPointer.new("icon")
 		end
-		pIcons.add(icon)
+		pIconsLeft.add(icon)
 		
 		runWhileBlockingLayout(block
-			readdIconWidgets()
+			readdLeftIconWidgets()
 		end)
 	end
 	
-	/** \brief Add icon before index. */
-	protected func void insertIcon(Widget icon, int index)
+	/** \brief Add left side icon before index. */
+	protected func void insertLeftIcon(Widget icon, int index)
 		if icon == null
 			throw ENullPointer.new("icon")
 		end
 		if index < 0
 			throw EInvalidParam.new("index < 0")
 		end
-		if index > pIcons.getCount()
+		if index > pIconsLeft.getCount()
 			throw  EInvalidParam.new("index > icons.count")
 		end
 		
-		pIcons.insert(index, icon)
+		pIconsLeft.insert(index, icon)
 		
 		runWhileBlockingLayout(block
-			readdIconWidgets()
+			readdLeftIconWidgets()
 		end)
 	end
 	
-	/** \brief Set icon at index. */
-	protected func void setIconAt(int index, Widget icon)
+	/** \brief Set left side icon at index. */
+	protected func void setLeftIconAt(int index, Widget icon)
 		if icon == null
 			throw ENullPointer.new("icon")
 		end
 		if index < 0
 			throw EInvalidParam.new("index < 0")
 		end
-		if index >= pIcons.getCount()
+		if index >= pIconsLeft.getCount()
 			throw  EInvalidParam.new("index >= icons.count")
 		end
 		
 		runWhileBlockingLayout(block
-			(pIcons.getAt(index) cast Widget).safeDispose()
+			(pIconsLeft.getAt(index) cast Widget).safeDispose()
 			
-			pIcons.setAt(index, icon)
+			pIconsLeft.setAt(index, icon)
 			
-			readdIconWidgets()
+			readdLeftIconWidgets()
 		end)
 	end
 	
-	/** \brief Remove icon. */
-	protected func void removeIcon(Widget icon)
-		var int index = pIcons.indexOf(icon)
+	/** \brief Remove left icon. */
+	protected func void removeLeftIcon(Widget icon)
+		var int index = pIconsLeft.indexOf(icon)
 		if index == -1
 			throw EInvalidParam.new("icon absent")
 		end
 		
 		runWhileBlockingLayout(block
-			(pIcons.getAt(index) cast Widget).safeDispose()
+			(pIconsLeft.getAt(index) cast Widget).safeDispose()
 			
-			pIcons.removeFrom(index)
+			pIconsLeft.removeFrom(index)
 			
-			readdIconWidgets()
+			readdLeftIconWidgets()
 		end)
 	end
 	
-	/** \brief Remove all icons. */
-	protected func void removeAllIcons()
-		if pIcons.getCount() == 0
+	/** \brief Remove all left side icons. */
+	protected func void removeAllLeftIcons()
+		if pIconsLeft.getCount() == 0
 			return
 		end
 		
 		runWhileBlockingLayout(block
-			pIcons.forEach(block Widget each
+			pIconsLeft.forEach(block Widget each
 				each.safeDispose()
 			end)
-			pIcons.removeAll()
+			pIconsLeft.removeAll()
+		end)
+	end
+	
+	
+	
+	/** \brief Count of right side icons. */
+	public func int getRightIconCount()
+		return pIconsRight.getCount()
+	end
+	
+	/** \brief Right side icon at index. */
+	protected func Widget getRightIconAt(int index)
+		return pIconsRight.getAt(index) cast Widget
+	end
+	
+	/** \brief Add right side icon. */
+	protected func void addRightIcon(Widget icon)
+		if icon == null
+			throw ENullPointer.new("icon")
+		end
+		pIconsRight.add(icon)
+		
+		runWhileBlockingLayout(block
+			readdRightIconWidgets()
+		end)
+	end
+	
+	/** \brief Add right side icon before index. */
+	protected func void insertRightIcon(Widget icon, int index)
+		if icon == null
+			throw ENullPointer.new("icon")
+		end
+		if index < 0
+			throw EInvalidParam.new("index < 0")
+		end
+		if index > pIconsRight.getCount()
+			throw  EInvalidParam.new("index > icons.count")
+		end
+		
+		pIconsRight.insert(index, icon)
+		
+		runWhileBlockingLayout(block
+			readdRightIconWidgets()
+		end)
+	end
+	
+	/** \brief Set right side icon at index. */
+	protected func void setRightIconAt(int index, Widget icon)
+		if icon == null
+			throw ENullPointer.new("icon")
+		end
+		if index < 0
+			throw EInvalidParam.new("index < 0")
+		end
+		if index >= pIconsRight.getCount()
+			throw  EInvalidParam.new("index >= icons.count")
+		end
+		
+		runWhileBlockingLayout(block
+			(pIconsRight.getAt(index) cast Widget).safeDispose()
+			
+			pIconsRight.setAt(index, icon)
+			
+			readdRightIconWidgets()
+		end)
+	end
+	
+	/** \brief Remove right icon. */
+	protected func void removeRightIcon(Widget icon)
+		var int index = pIconsRight.indexOf(icon)
+		if index == -1
+			throw EInvalidParam.new("icon absent")
+		end
+		
+		runWhileBlockingLayout(block
+			(pIconsRight.getAt(index) cast Widget).safeDispose()
+			
+			pIconsRight.removeFrom(index)
+			
+			readdRightIconWidgets()
+		end)
+	end
+	
+	/** \brief Remove all right side icons. */
+	protected func void removeAllRightIcons()
+		if pIconsRight.getCount() == 0
+			return
+		end
+		
+		runWhileBlockingLayout(block
+			pIconsRight.forEach(block Widget each
+				each.safeDispose()
+			end)
+			pIconsRight.removeAll()
 		end)
 	end
 	
 	
 	
 	/**
-	 * \brief Count of icons the menu item has to show.
+	 * \brief Count of left side icons the menu item has to show.
 	 * 
-	 * Count of icons to show can be different than the count if icons present.
+	 * Count of left side icons to show can be different than the count if icons present.
 	 */
-	public func int getShowIconCount()
-		return pShowIconCount
+	public func int getShowLeftIconCount()
+		return pShowLeftIconCount
 	end
 	
 	/**
-	 * \brief Set count of icons the menu item has to show.
+	 * \brief Set count of left side icons the menu item has to show.
 	 * 
-	 * Count of icons to show can be different than the count if icons present.
+	 * Count of left side icons to show can be different than the count if icons present.
 	 */
-	public func void setShowIconCount(int count)
+	public func void setShowLeftIconCount(int count)
 		if count < 0
 			throw EInvalidParam.new("count < 0")
 		end
 		
-		if count == pShowIconCount
+		if count == pShowLeftIconCount
 			return
 		end
 		
-		pShowIconCount = count
+		pShowLeftIconCount = count
 		
 		runWhileBlockingLayout(block
-			readdIconWidgets()
+			readdLeftIconWidgets()
+		end)
+	end
+	
+	
+	
+	/**
+	 * \brief Count of right side icons the menu item has to show.
+	 * 
+	 * Count of right side icons to show can be different than the count if icons present.
+	 */
+	public func int getShowRightIconCount()
+		return pShowRightIconCount
+	end
+	
+	/**
+	 * \brief Set count of right side icons the menu item has to show.
+	 * 
+	 * Count of right side icons to show can be different than the count if icons present.
+	 */
+	public func void setShowRightIconCount(int count)
+		if count < 0
+			throw EInvalidParam.new("count < 0")
+		end
+		
+		if count == pShowRightIconCount
+			return
+		end
+		
+		pShowRightIconCount = count
+		
+		runWhileBlockingLayout(block
+			readdRightIconWidgets()
 		end)
 	end
 	
@@ -256,7 +397,9 @@ class MenuItem extends Container
 	/** \brief Top level MenuPopup or null. */
 	public func MenuPopup getTopLevelMenuPopup()
 		var MenuPopup menu = getParentMenuPopup()
-		// TODO
+		if menu.getParentMenuItem() != null
+			return menu.getParentMenuItem().getTopLevelMenuPopup()
+		end
 		return menu
 	end
 	
@@ -300,7 +443,16 @@ class MenuItem extends Container
 		end
 	end
 	
-	
+	/** \brief Mouse moved. */
+	public func void onMouseMove(MouseEvent event)
+		super.onMouseMove(event)
+		
+		var MenuPopup menu = getParentMenuPopup()
+		if menu != null
+			menu.parentMenusSetHoverOpenSubMenu()
+			menu.openSubMenusClearHover()
+		end
+	end
 	
 	/** \brief Fire action listeners. */
 	protected func void fireActionListeners(int modifiers)
@@ -312,21 +464,39 @@ class MenuItem extends Container
 		end
 	end
 	
-	/** \brief Remove all icons then add them again. */
-	protected func void readdIconWidgets()
-		while pPanelIcons.getWidgetCount() > 0
-			pPanelIcons.removeWidget(pPanelIcons.getWidget(0))
+	/** \brief Remove all left side icons then add them again. */
+	protected func void readdLeftIconWidgets()
+		while pPanelIconsLeft.getWidgetCount() > 0
+			pPanelIconsLeft.removeWidget(pPanelIconsLeft.getWidget(0))
 		end
 		
-		pIcons.forEach(block int index, Widget icon
-			if index < pShowIconCount
-				pPanelIcons.addWidget(icon)
+		pIconsLeft.forEach(block int index, Widget icon
+			if index < pShowLeftIconCount
+				pPanelIconsLeft.addWidget(icon)
 			end
 		end)
 		
 		var int i
-		for i = pIcons.getCount() to pShowIconCount
-			pPanelIcons.addWidget(createIconPlaceholderWidget())
+		for i = pIconsLeft.getCount() to pShowLeftIconCount
+			pPanelIconsLeft.addWidget(createIconPlaceholderWidget())
+		end
+	end
+	
+	/** \brief Remove all right side icons then add them again. */
+	protected func void readdRightIconWidgets()
+		while pPanelIconsRight.getWidgetCount() > 0
+			pPanelIconsRight.removeWidget(pPanelIconsRight.getWidget(0))
+		end
+		
+		pIconsRight.forEach(block int index, Widget icon
+			if index < pShowRightIconCount
+				pPanelIconsRight.addWidget(icon)
+			end
+		end)
+		
+		var int i
+		for i = pIconsRight.getCount() to pShowRightIconCount
+			pPanelIconsRight.addWidget(createIconPlaceholderWidget())
 		end
 	end
 	
