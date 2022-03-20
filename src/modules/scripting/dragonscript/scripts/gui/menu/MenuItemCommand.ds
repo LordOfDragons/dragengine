@@ -65,6 +65,11 @@ class MenuItemCommand extends MenuItem
 	end
 	
 	/** \brief Create menu item command. */
+	public func new(String text, ActionListener action) this(text)
+		addActionListener(action)
+	end
+	
+	/** \brief Create menu item command. */
 	public func new(Image icon, String text, ActionListener action) this(icon, text)
 		addActionListener(action)
 	end
