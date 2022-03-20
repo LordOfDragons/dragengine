@@ -187,6 +187,7 @@ class ReorderListMouseListener extends DefaultMouseListener
 		pDropWidget = createDropWidget()
 		listBoxAddDropWidgetCanvas()
 		updateDropWidget()
+		pDropWidget.setVisible(false)
 		
 		onStartDrag()
 		
@@ -211,6 +212,7 @@ class ReorderListMouseListener extends DefaultMouseListener
 		end
 		
 		pDropIndex = index
+		pDropWidget.setVisible(true)
 		updateDropWidget()
 		
 		onUpdateDrag()
