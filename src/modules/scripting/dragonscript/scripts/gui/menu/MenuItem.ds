@@ -39,24 +39,6 @@ pin Dragengine.Gui.Layouts
  * from right to left with empty space on the left side.
  */
 class MenuItem extends Container
-	/** \brief Mouse listener fireing MenuItem action. */
-	protected class FireActionClickListener extends DefaultMouseListener
-		private var MenuItem pMenuItem
-		
-		public func new(MenuItem menuItem)
-			if menuItem == null
-				throw ENullPointer.new("menuItem")
-			end
-			pMenuItem = menuItem
-		end
-		
-		public func void onButtonRelease(MouseEvent event)
-			pMenuItem.fireAction(0)
-		end
-	end
-	
-	
-	
 	private var Array pIconsLeft
 	private var Array pIconsRight
 	private var int pShowLeftIconCount

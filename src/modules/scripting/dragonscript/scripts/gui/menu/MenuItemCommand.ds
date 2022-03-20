@@ -43,7 +43,7 @@ class MenuItemCommand extends MenuItem
 	
 	/** \brief Create menu item command. */
 	public func new(String text)
-		pText = ""
+		pText = text
 		
 		setDesignerSelector("MenuItem.Command")
 		

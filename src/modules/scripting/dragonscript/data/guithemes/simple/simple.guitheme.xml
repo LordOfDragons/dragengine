@@ -381,6 +381,16 @@
 		<point parameter='normal.minimumSize' x='0' y='2'/>
 	</designer>
 	
+	<designer name='MenuBarItem' type='Widget'>
+		<canvasCreator parameter='normal.canvas' type='Default'/>
+		<color parameter='normal.textColor' r='0' g='0' b='0'/>
+		<borderSize parameter='normal.padding' left='8' top='2' right='8' bottom='2'/>
+		
+		<canvasCreator parameter='hover.canvas' type='Rectangle'>
+			<color parameter='colorFill' r='0.2' g='0.2' b='0.5' a='0.15'/>
+		</canvasCreator>
+	</designer>
+	
 	<!-- ReorderListMouseListener -->
 	<designer name='ReorderListBoxDrop' type='Widget'>
 		<canvasCreator parameter='normal.canvas' type='Rectangle'>
