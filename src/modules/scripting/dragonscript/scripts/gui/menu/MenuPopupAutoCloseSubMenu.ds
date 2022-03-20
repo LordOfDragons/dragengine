@@ -51,43 +51,57 @@ public class MenuPopupAutoCloseSubMenu extends FrameUpdateListener
 	
 	/** \brief Frame update. */
 	public func void frameUpdate(float elapsed)
-		pElapsed += elapsed
-		
-		if isMouseInSubMenu()
-			pElapsed = 0
-		end
-		
-		if pElapsed >= pTimeout
-			pMenuPopup.setOpenSubMenu(null)
-		end
-	end
-	
-	
-	
-	/** \brief Mouse cursor is located in any sub menu. */
-	protected func bool isMouseInSubMenu()
+		// missing desktop should never happen. close all sub menus
 		var Desktop desktop = pMenuPopup.getDesktop()
 		if desktop == null
-			return false
+			pMenuPopup.setOpenSubMenu(null)
+			return
 		end
 		
+		// increment elapsed time
+		pElapsed += elapsed
+		
+		// find lowest sub menu
+		var MenuPopup subMenu = pMenuPopup.getLowestOpenSubMenu()
+		
+		// if mouse pointer is in lowest sub menu reset elapsed time to keep it open
 		var Point mouseLocation = desktop.getMouseLocation()
-		var MenuPopup menuPopup = pMenuPopup
-		var MenuItemSubMenu subMenu
-		
-		while menuPopup != null
-			if menuPopup.isPointInside(mouseLocation - menuPopup.getDesktopPosition())
-				return true
-			end
-			
-			subMenu = menuPopup.getOpenSubMenu()
-			if subMenu == null
-				return false
-			end
-			
-			menuPopup = subMenu.getSubMenu()
+		if subMenu != null and subMenu.isPointInside(mouseLocation - subMenu.getDesktopPosition())
+			pElapsed = 0
+			return
 		end
 		
-		return false
+		// mouse pointer is not in lowest sub menu. wait until timeout elapsed
+		if pElapsed < pTimeout
+			return
+		end
+		
+		// timeout elapsed. reset elapsed time then walk up parent popup menus to find
+		// highest level sub menu to keep open
+		pElapsed = 0
+		
+		while subMenu != null
+			// get parent menu item if present
+			var MenuItemSubMenu menuItemSubMenu = subMenu.getParentMenuItem()
+			if menuItemSubMenu == null
+				break
+			end
+			
+			// if mouse pointer is inside menu item keep sub menu open but close child sub menu
+			if menuItemSubMenu.isPointInside(mouseLocation - menuItemSubMenu.getDesktopPosition())
+				subMenu.setOpenSubMenu(null)
+				return
+			end
+			
+			// if mouse pointer is inside parent menu close sub menu
+			subMenu = menuItemSubMenu.getParentMenuPopup()
+			if subMenu.isPointInside(mouseLocation - subMenu.getDesktopPosition())
+				subMenu.setOpenSubMenu(null)
+				return
+			end
+		end
+		
+		// mouse pointer is outside top level menu. close top level sub menu
+		pMenuPopup.setOpenSubMenu(null)
 	end
 end

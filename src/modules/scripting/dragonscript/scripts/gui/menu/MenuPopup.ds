@@ -175,30 +175,24 @@ class MenuPopup extends WindowPopup
 	
 	
 	
-	/** \brief Array of MenuPopup in parent desktop owned by this menu popup. */
-	public func Array getAllChildMenuPopups()
-		var Array list = Array.new()
-		
-		var Desktop desktop = getDesktop()
-		if desktop != null
-			desktop.forEachWidget(block Widget each
-				if each castable MenuPopup
-					var MenuPopup menu = each cast MenuPopup
-					if menu.getParentMenuItem() != null and menu.getParentMenuItem().getParentMenuPopup() == this
-						list.add(menu)
-					end
-				end
-			end)
+	/** \brief Lowest level open sub menu or null. */
+	public func MenuPopup getLowestOpenSubMenu()
+		if pOpenSubMenu == null
+			return null
 		end
 		
-		return list
-	end
-	
-	/** \brief Close all menu popups in parent desktop owned by this menu popup. */
-	public func void closeAllChildMenuPopups()
-		getAllChildMenuPopups().forEach(block MenuPopup each
-			each.popdown()
-		end)
+		var MenuPopup subMenu = pOpenSubMenu.getSubMenu()
+		if subMenu == null
+			return null
+		end
+		
+		subMenu = subMenu.getLowestOpenSubMenu()
+		if subMenu != null
+			return subMenu
+			
+		else
+			return pOpenSubMenu.getSubMenu()
+		end
 	end
 	
 	/** \brief Set hover widget in parent menus to open sub menu. */
