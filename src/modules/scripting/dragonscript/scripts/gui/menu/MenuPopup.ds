@@ -24,6 +24,7 @@ namespace Dragengine.Gui
 
 pin Dragengine.Gui.Events
 pin Dragengine.Gui.Layouts
+pin Dragengine.Utils
 
 
 /**
@@ -34,6 +35,7 @@ class MenuPopup extends WindowPopup
 	private var MenuItemSubMenu pParentMenuItem
 	private var MenuItemSubMenu pOpenSubMenu
 	private var MenuPopupEventHandler pMenuPopupEventHandler
+	private var MenuPopupAutoCloseSubMenu pAutoCloseSubMenu
 	
 	
 	
@@ -152,6 +154,11 @@ class MenuPopup extends WindowPopup
 		end
 		
 		if pOpenSubMenu != null
+			if pAutoCloseSubMenu != null
+				pAutoCloseSubMenu.giveUp()
+				pAutoCloseSubMenu = null
+			end
+			
 			pOpenSubMenu.hideSubMenu()
 		end
 		
@@ -159,6 +166,10 @@ class MenuPopup extends WindowPopup
 		
 		if subMenu != null
 			subMenu.showSubMenu()
+			
+			if pParentMenuItem == null and pAutoCloseSubMenu == null
+				pAutoCloseSubMenu = MenuPopupAutoCloseSubMenu.new(this, 0.5)
+			end
 		end
 	end
 	
@@ -243,62 +254,12 @@ class MenuPopup extends WindowPopup
 		end
 		
 		super.sendEvent(event)
-		/*
-		// check if we have to intercept the event
-		var int ident = event.getIdentifier()
-		if ident == KeyEvent.idKeyPressed and (event cast KeyEvent).getKeyCode() == InputEventKey.escape
-			popdown()
-			return
-		end
+	end
+	
+	
+	
+	/** \brief Frame update. */
+	public func void onFrameUpdate(float elapsed)
 		
-		// otherwise send event to widget under cursor if this is a mouse event
-		if not MouseEvent.isMouseEvent(ident)
-			sendEventToListeners(event, false)
-			return
-		end
-		
-		var MouseEvent mouseEvent = event cast MouseEvent
-		
-		select ident
-		case MouseEvent.idMousePressed
-			if not isPointInside(mouseEvent.getPosition())
-				popdown()
-				return
-			end
-			
-		case MouseEvent.idMouseWheeled
-			updateHoverWidget()
-			var Widget widget = getHoverWidget()
-			if widget != null
-				widget.sendEvent(MouseEvent.new(widget, ident,\
-					mouseEvent.getButton(), mouseEvent.getModifiers(),\
-					mouseEvent.getPosition() - widget.getWindowPosition(),\
-					mouseEvent.getSystem(), mouseEvent.getDevice()))
-			end
-			
-		else
-			if ident == mouseEvent.idMouseMoved
-				if not isPointInside(mouseEvent.getPosition())
-					clearHoverWidget()
-					return
-				end
-				
-			var Widget widget = getWidgetAt(mouseEvent.getPosition())
-			
-			if widget == this
-				sendEventToListeners(event, false)
-				
-			else
-				setHoverWidget(widget, mouseEvent)
-				
-				if widget != null
-					widget.sendEvent(MouseEvent.new(widget, ident,\
-						mouseEvent.getButton(), mouseEvent.getModifiers(),\
-						mouseEvent.getPosition() - widget.getWindowPosition(),\
-						mouseEvent.getSystem(), mouseEvent.getDevice()))
-				end
-			end
-		end
-		*/
 	end
 end

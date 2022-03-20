@@ -120,7 +120,15 @@ class MenuItemSubMenu extends MenuItemCommand
 			getDesktop().addWindow(pSubMenu)
 		end
 		
-		pSubMenu.popup(position.getX() + size.getX() - 5, position.getY() - 5)
+		var Point popupPosition = Point.new(position.getX() + size.getX() - 5, position.getY() - 5)
+		pSubMenu.popup(popupPosition)
+		
+		var Point realPosition = pSubMenu.getPosition()
+		if realPosition.getX() >= popupPosition.getX()
+			return
+		end
+		
+		pSubMenu.setX(DEMath.max(position.getX() + 5 - pSubMenu.getWidth(), 0))
 	end
 	
 	/** \brief Hide sub menu if visible. */

@@ -1,0 +1,93 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2022, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+namespace Dragengine.Gui
+
+pin Dragengine.Gui.Events
+pin Dragengine.Gui.Layouts
+pin Dragengine.Utils
+
+
+/**
+ * \brief Auto close sub menu after delay if mouse cursor is not inside.
+ * \version 1.11
+ */
+public class MenuPopupAutoCloseSubMenu extends FrameUpdateListener
+	private var MenuPopup pMenuPopup
+	private var float pTimeout
+	private var float pElapsed
+	
+	
+	
+	/** \brief Create auto close sub menu. */
+	public func new(MenuPopup menuPopup, float timeout)
+		if menuPopup == null
+			throw ENullPointer.new("menuPopup")
+		end
+		
+		pMenuPopup = menuPopup
+		pTimeout = DEMath.max(timeout, 0.0)
+	end
+	
+	
+	
+	/** \brief Frame update. */
+	public func void frameUpdate(float elapsed)
+		pElapsed += elapsed
+		
+		if isMouseInSubMenu()
+			pElapsed = 0
+		end
+		
+		if pElapsed >= pTimeout
+			pMenuPopup.setOpenSubMenu(null)
+		end
+	end
+	
+	
+	
+	/** \brief Mouse cursor is located in any sub menu. */
+	protected func bool isMouseInSubMenu()
+		var Desktop desktop = pMenuPopup.getDesktop()
+		if desktop == null
+			return false
+		end
+		
+		var Point mouseLocation = desktop.getMouseLocation()
+		var MenuPopup menuPopup = pMenuPopup
+		var MenuItemSubMenu subMenu
+		
+		while menuPopup != null
+			if menuPopup.isPointInside(mouseLocation - menuPopup.getDesktopPosition())
+				return true
+			end
+			
+			subMenu = menuPopup.getOpenSubMenu()
+			if subMenu == null
+				return false
+			end
+			
+			menuPopup = subMenu.getSubMenu()
+		end
+		
+		return false
+	end
+end
