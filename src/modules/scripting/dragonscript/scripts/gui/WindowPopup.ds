@@ -237,9 +237,8 @@ class WindowPopup extends Window
 			updateHoverWidget()
 			var Widget widget = getHoverWidget()
 			if widget != null
-				widget.sendEvent(MouseEvent.new(widget, ident,\
-					mouseEvent.getButton(), mouseEvent.getModifiers(),\
-					mouseEvent.getPosition() - widget.getWindowPosition(),\
+				widget.sendEvent(MouseEvent.new(widget, ident, mouseEvent.getButton(),\
+					mouseEvent.getModifiers(), mouseEvent.getPosition(),\
 					mouseEvent.getSystem(), mouseEvent.getDevice()))
 			end
 			

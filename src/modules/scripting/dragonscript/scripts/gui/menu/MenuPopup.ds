@@ -300,6 +300,7 @@ class MenuPopup extends WindowPopup
 		// check if mouse pointer is hovering above a sub menu
 		var Point mouseLocation = desktop.getMouseLocation()
 		var int i, count = desktop.getWidgetCount()
+		var int ident = event.getIdentifier()
 		var Point localPosition
 		var Window window
 		var Widget widget
@@ -321,13 +322,20 @@ class MenuPopup extends WindowPopup
 				return false
 			end
 			
-			window.sendEvent(MouseEvent.new(window, event.getIdentifier(), \
-				event.getButton(), event.getModifiers(), \
-				localPosition, event.getSystem(), event.getDevice()))
+			if ident == MouseEvent.idMouseWheeled
+				window.sendEvent(MouseEvent.new(window, ident,\
+					event.getButton(), event.getModifiers(),\
+					event.getPosition(), event.getSystem(), event.getDevice()))
+				
+			else
+				window.sendEvent(MouseEvent.new(window, ident, \
+					event.getButton(), event.getModifiers(), \
+					localPosition, event.getSystem(), event.getDevice()))
+			end
 			return true
 		end
 		
-		select event.getIdentifier()
+		select ident
 		case MouseEvent.idMouseMoved
 			openSubMenusClearHover()
 			
@@ -349,7 +357,7 @@ class MenuPopup extends WindowPopup
 						and each castable MenuBarItem
 				end) cast MenuBarItem
 				
-				select event.getIdentifier()
+				select ident
 				case MouseEvent.idMouseMoved
 					if item != null
 						// open sub menu. after this call we are popped down so stop processing event
