@@ -671,6 +671,74 @@ class WindowDialog extends WindowModal
 	end
 	
 	/**
+	 * \brief Show reorder message box dialog using list box.
+	 * \version 1.11
+	 * \param window Window to block while dialog window is shown.
+	 * \param title Title of the dialog window.
+	 * \param message Message to show above the option boxes.
+	 * \param image Image to show next to the message or \em null to show none.
+	 * \param elements List to reorder.
+	 * \param renderer List element renderer to use.
+	 * \param buttonAccept Button configuration for accept button or \em null to use "Accept".
+	 * \param buttonCancel Button configuration for cancel button or \em null to use "Cancel".
+	 * \param listener Listener to call closing message box.
+	 * 
+	 * Result send to listener is true if reorder accepted or false if cancelled.
+	 */
+	public static func WindowDialog reorderList(Window window, String title, String message,\
+	Image image, DefaultListModel elements, ListElementRenderer renderer,\
+	ButtonConfiguration buttonAccept, ButtonConfiguration buttonCancel, ResultListener listener)
+		if elements.getCount() == 0
+			throw EInvalidParam.new()
+		end
+		
+		var WindowDialog dialog = WindowDialog.new(0, 0, 400, 250)
+		
+		dialog.runWhileBlockingLayout(block
+			dialog.setGuiTheme(window.getGuiTheme())
+			dialog.setLayout(BorderLayout.new())
+			dialog.setTitle(title)
+			dialog.setResult(false) // result for closing window without button
+			dialog.setResultListener(listener)
+			
+			// message with list box
+			var Panel panelContent = Panel.new()
+			panelContent.setLayout(FlowLayout.new(LayoutAxis.y, 5, FlowLayout.Stretch.last))
+			
+			var Label label = Label.new(message)
+			label.setDesignerSelector("Label.WindowDialog")
+			label.setWordWrap(true)
+			panelContent.addWidget(label)
+			
+			var ListBox listBox = ListBox.new(elements, renderer)
+			listBox.setNumberDisplayLines(DEMath.min(elements.getCount(), 15))
+			listBox.addMouseListener(ReorderListMouseListener.new(elements, listBox))
+			panelContent.addWidget(ScrollPanel.new(listBox))
+			dialog.addWidget(panelContent, BorderLayout.Area.content)
+			
+			// image
+			if image != null
+				var Panel panelImage = Panel.new()
+				panelImage.setDesignerSelector("Panel.WindowDialogImage")
+				panelImage.setLayout(CentrizedBoxLayout.new(LayoutAxis.y))
+				panelImage.addWidget(DisplayImage.new(image))
+				dialog.addWidget(panelImage, BorderLayout.Area.left)
+			end
+			
+			// panel with accept and cancel button
+			var ObjectReference acceptWidget = ObjectReference.new()
+			dialog.addWidget( createButtonsAcceptCancel(buttonAccept, buttonCancel,\
+				CloseDialog.new(dialog, true), CloseDialog.new(dialog, false), acceptWidget),\
+					BorderLayout.Area.bottom)
+			dialog.setAcceptWidget(acceptWidget.get() cast Widget)
+		end )
+		
+		// show dialog
+		dialog.show(window, true, WindowModal.Placement.window)
+		return dialog
+	end
+	
+	/**
 	 * \brief Show selection message box dialog using check boxes.
 	 * \details Result send to listener is an Array of indices of selected elements
 	 *          in the array or \em null if the dialog has been cancelled.
