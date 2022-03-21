@@ -10,7 +10,7 @@ if envModule['OSBeOS']:
 	Return()
 
 # fetch values in expanded form for later use
-versionString = '1.10'
+versionString = '1.11'
 if envModule['force_version']:
 	versionString = envModule['force_version']
 
