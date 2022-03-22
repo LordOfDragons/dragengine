@@ -87,9 +87,16 @@ class ScrollBar extends Container implements RangeModelListener
 	 */
 	abstract class ActionScroll extends DefaultActionListener
 		protected var ScrollBar pScrollBar
+		protected var bool pIsWheelAction
 		
 		public func new(ScrollBar scrollBar)
 			pScrollBar = scrollBar
+		end
+		
+		/** \version 1.11 */
+		public func new(ScrollBar scrollBar, bool isWheelAction)
+			pScrollBar = scrollBar
+			pIsWheelAction = isWheelAction
 		end
 		
 		public func void onAction(ActionEvent event)
@@ -121,8 +128,12 @@ class ScrollBar extends Container implements RangeModelListener
 		public func new(ScrollBar scrollBar) super(scrollBar)
 		end
 		
+		/** \version 1.11 */
+		public func new(ScrollBar scrollBar, bool isWheelAction) super(scrollBar, isWheelAction)
+		end
+		
 		protected func bool increaseValue()
-			return pScrollBar.getReverseWheel()
+			return pIsWheelAction if pScrollBar.getReverseWheel() else false
 		end
 	end
 	
@@ -131,8 +142,12 @@ class ScrollBar extends Container implements RangeModelListener
 		public func new(ScrollBar scrollBar) super(scrollBar)
 		end
 		
+		/** \version 1.11 */
+		public func new(ScrollBar scrollBar, bool isWheelAction) super(scrollBar, isWheelAction)
+		end
+		
 		protected func bool increaseValue()
-			return not pScrollBar.getReverseWheel()
+			return pIsWheelAction if not pScrollBar.getReverseWheel() else true
 		end
 	end
 	
@@ -251,7 +266,7 @@ class ScrollBar extends Container implements RangeModelListener
 		enableDirectionButtons()
 		
 		addMouseListener(WheelActionMouseListener.new(\
-			ActionScrollUpLeft.new(this), ActionScrollDownRight.new(this)))
+			ActionScrollUpLeft.new(this, true), ActionScrollDownRight.new(this, true)))
 	end
 	
 	/** \brief Create scroll bar widget with model. */
@@ -562,7 +577,7 @@ class ScrollBar extends Container implements RangeModelListener
 		
 		// wheel listener reused across widgets
 		var MouseListener wheelListener = WheelActionMouseListener.new(\
-			ActionScrollUpLeft.new(this), ActionScrollDownRight.new(this))
+			ActionScrollUpLeft.new(this, true), ActionScrollDownRight.new(this, true))
 		
 		// remove all widgets
 		pButtonLeftUp = null
@@ -596,7 +611,7 @@ class ScrollBar extends Container implements RangeModelListener
 		pButtonLeftUp.setCanFocus(false)
 		pButtonLeftUp.addMouseListener(wheelListener)
 		var ScrollButtonStateListener scrollListener = \
-			ScrollButtonStateListener.new(ActionScrollUpLeft.new(this))
+			ScrollButtonStateListener.new(ActionScrollUpLeft.new(this, false))
 		pDisposeScrollButtonStateListeners.add(scrollListener)
 		pButtonLeftUp.addStateChangeListener(scrollListener)
 		
@@ -611,7 +626,7 @@ class ScrollBar extends Container implements RangeModelListener
 		pButtonRightDown = designer.createButtonRightDown(this)
 		pButtonRightDown.setCanFocus(false)
 		pButtonRightDown.addMouseListener(wheelListener)
-		scrollListener = ScrollButtonStateListener.new(ActionScrollDownRight.new(this))
+		scrollListener = ScrollButtonStateListener.new(ActionScrollDownRight.new(this, false))
 		pDisposeScrollButtonStateListeners.add(scrollListener)
 		pButtonRightDown.addStateChangeListener(scrollListener)
 		
