@@ -166,7 +166,7 @@ void deoglSCAmbient::ResetLastUseStatic(){
 
 
 
-deoglTexture *deoglSCAmbient::ObtainDynamicMapWithSize( int size ){
+deoglTexture *deoglSCAmbient::ObtainDynamicMapWithSize( int size, bool useFloat ){
 	if( size < 1 ){
 		DETHROW( deeInvalidParam );
 	}
@@ -184,7 +184,7 @@ deoglTexture *deoglSCAmbient::ObtainDynamicMapWithSize( int size ){
 	}
 	
 	pDynamicMap = new deoglTexture( pRenderThread );
-	pDynamicMap->SetDepthFormat( false, false );
+	pDynamicMap->SetDepthFormat( false, useFloat );
 	pDynamicMap->SetSize( size, size );
 	pDynamicMap->CreateTexture();
 	pMemUseDynMap = pDynamicMap->GetMemoryConsumption().Total();
@@ -257,7 +257,7 @@ void deoglSCAmbient::SetDirtyDynamic( bool dirty ){
 
 
 
-deoglRenderableDepthTexture *deoglSCAmbient::ObtainTemporaryMapWithSize( int size ){
+deoglRenderableDepthTexture *deoglSCAmbient::ObtainTemporaryMapWithSize( int size, bool useFloat ){
 	if( size < 1 ){
 		DETHROW( deeInvalidParam );
 	}
@@ -271,7 +271,7 @@ deoglRenderableDepthTexture *deoglSCAmbient::ObtainTemporaryMapWithSize( int siz
 	}
 	
 	pTemporaryMap = pRenderThread.GetTexture().GetRenderableDepthTexture()
-		.GetTextureWith( size, size, false, false );
+		.GetTextureWith( size, size, false, useFloat );
 	
 	return pTemporaryMap;
 }

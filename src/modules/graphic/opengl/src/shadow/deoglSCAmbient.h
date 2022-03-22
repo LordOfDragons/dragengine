@@ -111,7 +111,7 @@ public:
 	inline deoglTexture *GetDynamicMap() const{ return pDynamicMap; }
 	
 	/** Obtain dynamic map with size if absent. */
-	deoglTexture *ObtainDynamicMapWithSize( int size );
+	deoglTexture *ObtainDynamicMapWithSize( int size, bool useFloat );
 	
 	/** Dynamic shadow cube map if present or \em NULL otherwise. */
 	inline deoglCubeMap *GetDynamicCubeMap() const{ return pDynamicCubeMap; }
@@ -143,7 +143,7 @@ public:
 	inline deoglRenderableDepthTexture *GetTemporaryMap() const{ return pTemporaryMap; }
 	
 	/** Obtain temporary map with size if absent. */
-	deoglRenderableDepthTexture *ObtainTemporaryMapWithSize( int size );
+	deoglRenderableDepthTexture *ObtainTemporaryMapWithSize( int size, bool useFloat );
 	
 	/** Temporary shadow cube map if present or \em NULL otherwise. */
 	inline deoglRenderableDepthCubeMap *GetTemporaryCubeMap() const{ return pTemporaryCubeMap; }

@@ -1326,12 +1326,12 @@ const decDMatrix &matrixProjection, bool transparentStaticShadow, bool transpare
 			// ambient map
 			if( useAmbient ){
 				if( useTemporary ){
-					shadowMapper.SetForeignAmbientTexture(
-						scambient.ObtainTemporaryMapWithSize( dynamicAmbientMapSize )->GetTexture() );
+					shadowMapper.SetForeignAmbientTexture( scambient.ObtainTemporaryMapWithSize(
+						dynamicAmbientMapSize, defren.GetUseInverseDepth() )->GetTexture() );
 					
 				}else{
-					shadowMapper.SetForeignAmbientTexture(
-						scambient.ObtainDynamicMapWithSize( dynamicAmbientMapSize ) );
+					shadowMapper.SetForeignAmbientTexture( scambient.ObtainDynamicMapWithSize(
+						dynamicAmbientMapSize, defren.GetUseInverseDepth() ) );
 				}
 				
 				RenderAmbientMap( planLight, matrixCamera, matrixProjection, shadowMapper,
