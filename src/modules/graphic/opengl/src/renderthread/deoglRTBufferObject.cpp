@@ -274,7 +274,6 @@ void deoglRTBufferObject::pCreateLayoutOccMeshInstance(){
 	pLayoutOccMeshInstanceUBO->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtFloat, 4, 3, 1 ); // mat4x3 pMatrixModel
 	
 	pLayoutOccMeshInstanceUBO->MapToStd140();
-	pLayoutOccMeshInstanceUBO->CalculateOffsetPadding();
 	pLayoutOccMeshInstanceUBO->SetElementCount( decMath::min( maxUBOIndexCount,
 		uboMaxSize / pLayoutOccMeshInstanceUBO->GetElementStride() ) );
 	pLayoutOccMeshInstanceUBO->SetBindingPoint( deoglSkinShader::eubInstanceParameters );
@@ -295,7 +294,6 @@ void deoglRTBufferObject::pCreateLayoutOccMeshInstance(){
 		pLayoutOccMeshInstanceSSBO->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtFloat, 4, 3, 1 ); // mat4x3 pMatrixModel
 		
 		pLayoutOccMeshInstanceSSBO->MapToStd140();
-		pLayoutOccMeshInstanceSSBO->CalculateOffsetPadding();
 		pLayoutOccMeshInstanceSSBO->SetBindingPoint( deoglSkinShader::essboInstanceParameters );
 		
 		pLayoutOccMeshInstanceSSBO->SetElementCount( decMath::min( maxSSBOIndexCount,

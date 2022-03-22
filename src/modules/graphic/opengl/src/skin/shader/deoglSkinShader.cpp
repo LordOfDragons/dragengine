@@ -684,7 +684,6 @@ deoglSPBlockUBO *deoglSkinShader::CreateLayoutSkinInstanceUBO( deoglRenderThread
 		}
 		
 		ubo->MapToStd140();
-		ubo->CalculateOffsetPadding();
 		ubo->SetBindingPoint( eubInstanceParameters );
 		
 	}catch( const deException & ){
@@ -712,7 +711,6 @@ deoglSPBlockSSBO *deoglSkinShader::CreateLayoutSkinInstanceSSBO( deoglRenderThre
 		}
 		
 		ssbo->MapToStd140();
-		ssbo->CalculateOffsetPadding();
 		ssbo->SetBindingPoint( essboInstanceParameters );
 		
 	}catch( const deException & ){

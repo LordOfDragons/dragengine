@@ -25,6 +25,7 @@
 
 #include "deoglSPBlockSSBO.h"
 #include "../deoglShaderCompiled.h"
+#include "../../capabilities/deoglCapabilities.h"
 #include "../../delayedoperation/deoglDelayedOperations.h"
 #include "../../extensions/deoglExtensions.h"
 #include "../../renderthread/deoglRenderThread.h"
@@ -248,6 +249,10 @@ void deoglSPBlockSSBO::UnmapBuffer(){
 	OGL_CHECK( GetRenderThread(), pglBindBuffer( GL_SHADER_STORAGE_BUFFER, 0 ) );
 	
 	pClearMapped();
+}
+
+int deoglSPBlockSSBO::GetAlignmentRequirements() const{
+	return GetRenderThread().GetCapabilities().GetUBOOffsetAlignment();
 }
 
 void deoglSPBlockSSBO::MapToStd430(){

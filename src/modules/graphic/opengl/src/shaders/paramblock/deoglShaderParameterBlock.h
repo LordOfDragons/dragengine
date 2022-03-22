@@ -34,7 +34,7 @@ class deoglSPBParameter;
 
 
 /**
- * \brief OpenGL shader parameter block.
+ * OpenGL shader parameter block.
  * 
  * Subclasses provide the actual implementation depending on the chosen backend.
  */
@@ -61,14 +61,14 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create shader storage buffer object. */
+	/** Create shader storage buffer object. */
 	deoglShaderParameterBlock( deoglRenderThread &renderThread );
 	
-	/** \brief Create copy of shader storage buffer object. */
+	/** Create copy of shader storage buffer object. */
 	deoglShaderParameterBlock( const deoglShaderParameterBlock &paramBlock );
 	
 protected:
-	/** \brief Clean up shader storage buffer object. */
+	/** Clean up shader storage buffer object. */
 	virtual ~deoglShaderParameterBlock();
 	/*@}*/
 	
@@ -77,84 +77,84 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Render thread. */
+	/** Render thread. */
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
-	/** \brief Number of parameters. */
+	/** Number of parameters. */
 	inline int GetParameterCount() const{ return pParameterCount; }
 	
-	/** \brief Set number of parameters. */
+	/** Set number of parameters. */
 	void SetParameterCount( int count );
 	
-	/** \brief Parameter at index. */
+	/** Parameter at index. */
 	deoglSPBParameter &GetParameterAt( int index ) const;
 	
-	/** \brief Matrices are stored in row-major order. */
+	/** Matrices are stored in row-major order. */
 	inline bool GetRowMajor() const{ return pRowMajor; }
 	
-	/** \brief Set if matrices are stored in row-major order. */
+	/** Set if matrices are stored in row-major order. */
 	void SetRowMajor( bool rowMajor );
 	
-	/** \brief Number of elements. */
+	/** Number of elements. */
 	inline int GetElementCount() const{ return pElementCount; }
 	
-	/** \brief Set number of elements. */
+	/** Set number of elements. */
 	void SetElementCount( int count );
 	
-	/** \brief Map the parameter block definition to a shader uniform block using std140 layout. */
+	/** Map the parameter block definition to a shader uniform block using std140 layout. */
 	void MapToStd140();
 	
 	
 	
-	/** \brief Activate parameter block. */
+	/** Activate parameter block. */
 	virtual void Activate() const = 0;
 	
-	/** \brief Activate buffer overriding binding point. */
+	/** Activate buffer overriding binding point. */
 	virtual void Activate( int bindingPoint ) const = 0;
 	
-	/** \brief Deactivate parameter block. */
+	/** Deactivate parameter block. */
 	virtual void Deactivate() const = 0;
 	
-	/** \brief Deactivate buffer overriding binding point. */
+	/** Deactivate buffer overriding binding point. */
 	virtual void Deactivate( int bindingPoint ) const = 0;
 	
 	
 	
-	/** \brief Element stride. */
+	/** Element stride. */
 	inline int GetElementStride() const{ return pElementStride; }
 	
-	/** \brief Buffer offset padding required as multiple of 4. */
+	/** Buffer offset padding required as multiple of 4. */
 	inline int GetOffsetPadding() const{ return pOffsetPadding; }
 	
-	/** \brief Calculate buffer offset padding and adjust element stride. */
-	void CalculateOffsetPadding();
+	/** Get platform alignment requirements. */
+	virtual int GetAlignmentRequirements() const;
 	
-	/** \brief Buffer size. */
+	/** Buffer size. */
 	inline int GetBufferSize() const{ return pBufferSize; }
 	
-	/** \brief Mapped buffer pointer or \em NULL if not mapped. */
+	/** Mapped buffer pointer or \em NULL if not mapped. */
 	inline char *GetMappedBuffer() const{ return pMapped; }
 	
-	/** \brief Buffer is mapped. */
+	/** Buffer is mapped. */
 	bool IsBufferMapped() const;
 	
-	/** \brief Map buffer discarding content. */
+	/** Map buffer discarding content. */
 	virtual void MapBuffer() = 0;
 	
 	/**
-	 * \brief Map buffer for specific element discarding content.
+	 * Map buffer for specific element discarding content.
 	 * 
 	 * Data outside the element range is retained. Any attempt to call SetParameter* with
 	 * an element index other than the one used for mapping throws an exception.
 	 */
 	virtual void MapBuffer( int element ) = 0;
 	
-	/** \brief Unmap buffer uploading data to GPU. */
+	/** Unmap buffer uploading data to GPU. */
 	virtual void UnmapBuffer() = 0;
 	
 	
 	
-	/** \brief Set data for float type parameter. */
+	/** Set data for float type parameter. */
 	void SetParameterDataFloat( int parameter, float value );
 	
 	void SetParameterDataVec2( int parameter, float value1, float value2 );
@@ -190,7 +190,7 @@ public:
 	void SetParameterDataMat4x4( int parameter, const decMatrix &matrix );
 	void SetParameterDataMat4x4( int parameter, const decDMatrix &matrix );
 	
-	/** \brief Set data for int type parameter. */
+	/** Set data for int type parameter. */
 	void SetParameterDataInt( int parameter, int value );
 	void SetParameterDataIVec2( int parameter, int value1, int value2 );
 	void SetParameterDataIVec2( int parameter, const decPoint &point );
@@ -198,19 +198,19 @@ public:
 	void SetParameterDataIVec3( int parameter, const decPoint3 &value );
 	void SetParameterDataIVec4( int parameter, int value1, int value2, int value3, int value4 );
 	
-	/** \brief Set data for int type parameter. */
+	/** Set data for int type parameter. */
 	void SetParameterDataUInt( int parameter, unsigned int value );
 	void SetParameterDataUVec2( int parameter, unsigned int value1, unsigned int value2 );
 	void SetParameterDataUVec3( int parameter, unsigned int value1, unsigned int value2, unsigned int value3 );
 	void SetParameterDataUVec4( int parameter, unsigned int value1, unsigned int value2, unsigned int value3, unsigned int value4 );
 	
-	/** \brief Set data for bool type parameter. */
+	/** Set data for bool type parameter. */
 	void SetParameterDataBool( int parameter, bool value );
 	void SetParameterDataBVec2( int parameter, bool value1, bool value2 );
 	void SetParameterDataBVec3( int parameter, bool value1, bool value2, bool value3 );
 	void SetParameterDataBVec4( int parameter, bool value1, bool value2, bool value3, bool value4 );
 	
-	/** \brief Set data for array float type parameter. */
+	/** Set data for array float type parameter. */
 	void SetParameterDataArrayFloat( int parameter, int index, float value );
 	
 	void SetParameterDataArrayVec2( int parameter, int index, float value1, float value2 );
@@ -252,7 +252,7 @@ public:
 	
 	void SetParameterDataArrayFloat( int parameter, float *values, int count );
 	
-	/** \brief Set data for an array int type parameter. */
+	/** Set data for an array int type parameter. */
 	void SetParameterDataArrayInt( int parameter, int index, int value );
 	void SetParameterDataArrayIVec2( int parameter, int index, int value1, int value2 );
 	void SetParameterDataArrayIVec3( int parameter, int index,
@@ -261,7 +261,7 @@ public:
 		int value1, int value2, int value3, int value4 );
 	void SetParameterDataArrayInt( int parameter, int *values, int count );
 	
-	/** \brief Set data for an array int type parameter. */
+	/** Set data for an array int type parameter. */
 	void SetParameterDataArrayUInt( int parameter, int index, unsigned int value );
 	void SetParameterDataArrayUVec2( int parameter, int index, unsigned int value1, unsigned int value2 );
 	void SetParameterDataArrayUVec3( int parameter, int index,
@@ -270,7 +270,7 @@ public:
 		unsigned int value1, unsigned int value2, unsigned int value3, unsigned int value4 );
 	void SetParameterDataArrayUInt( int parameter, unsigned int *values, int count );
 	
-	/** \brief Set data for a array bool type parameter. */
+	/** Set data for a array bool type parameter. */
 	void SetParameterDataArrayBool( int parameter, int index, bool value );
 	void SetParameterDataArrayBVec2( int parameter, int index, bool value1, bool value2 );
 	void SetParameterDataArrayBVec3( int parameter, int index,
@@ -281,7 +281,7 @@ public:
 	
 	
 	
-	/** \brief Set data for float type parameter. */
+	/** Set data for float type parameter. */
 	void SetParameterDataFloat( int parameter, int element, float value );
 	
 	void SetParameterDataVec2( int parameter, int element, float value1, float value2 );
@@ -318,7 +318,7 @@ public:
 	void SetParameterDataMat4x4( int parameter, int element, const decMatrix &matrix );
 	void SetParameterDataMat4x4( int parameter, int element, const decDMatrix &matrix );
 	
-	/** \brief Set data for int type parameter. */
+	/** Set data for int type parameter. */
 	void SetParameterDataInt( int parameter, int element, int value );
 	void SetParameterDataIVec2( int parameter, int element, int value1, int value2 );
 	void SetParameterDataIVec3( int parameter, int element,
@@ -327,7 +327,7 @@ public:
 	void SetParameterDataIVec4( int parameter, int element,
 		int value1, int value2, int value3, int value4 );
 	
-	/** \brief Set data for int type parameter. */
+	/** Set data for int type parameter. */
 	void SetParameterDataUInt( int parameter, int element, unsigned int value );
 	void SetParameterDataUVec2( int parameter, int element, unsigned int value1, unsigned int value2 );
 	void SetParameterDataUVec3( int parameter, int element,
@@ -335,7 +335,7 @@ public:
 	void SetParameterDataUVec4( int parameter, int element,
 		unsigned int value1, unsigned int value2, unsigned int value3, unsigned int value4 );
 	
-	/** \brief Set data for bool type parameter. */
+	/** Set data for bool type parameter. */
 	void SetParameterDataBool( int parameter, int element, bool value );
 	void SetParameterDataBVec2( int parameter, int element, bool value1, bool value2 );
 	void SetParameterDataBVec3( int parameter, int element,
@@ -343,7 +343,7 @@ public:
 	void SetParameterDataBVec4( int parameter, int element,
 		bool value1, bool value2, bool value3, bool value4 );
 	
-	/** \brief Set data for array float type parameter. */
+	/** Set data for array float type parameter. */
 	void SetParameterDataArrayFloat( int parameter, int element, int index, float value );
 	
 	void SetParameterDataArrayVec2( int parameter, int element, int index,
@@ -411,7 +411,7 @@ public:
 	
 	void SetParameterDataArrayFloat( int parameter, int element, float *values, int count );
 	
-	/** \brief Set data for an array int type parameter. */
+	/** Set data for an array int type parameter. */
 	void SetParameterDataArrayInt( int parameter, int element, int index, int value );
 	void SetParameterDataArrayIVec2( int parameter, int element, int index,
 		int value1, int value2 );
@@ -421,7 +421,7 @@ public:
 		int value1, int value2, int value3, int value4 );
 	void SetParameterDataArrayInt( int parameter, int element, int *values, int count );
 	
-	/** \brief Set data for an array int type parameter. */
+	/** Set data for an array int type parameter. */
 	void SetParameterDataArrayUInt( int parameter, int element, int index, unsigned int value );
 	void SetParameterDataArrayUVec2( int parameter, int element, int index,
 		unsigned int value1, unsigned int value2 );
@@ -431,7 +431,7 @@ public:
 		unsigned int value1, unsigned int value2, unsigned int value3, unsigned int value4 );
 	void SetParameterDataArrayUInt( int parameter, int element, unsigned int *values, int count );
 	
-	/** \brief Set data for a array bool type parameter. */
+	/** Set data for a array bool type parameter. */
 	void SetParameterDataArrayBool( int parameter, int element, int index, bool value );
 	void SetParameterDataArrayBVec2( int parameter, int element, int index,
 		bool value1, bool value2 );

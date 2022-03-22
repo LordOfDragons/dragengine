@@ -98,6 +98,9 @@ public:
 	/** Unmap buffer uploading data to GPU. */
 	virtual void UnmapBuffer();
 	
+	/** Get platform alignment requirements. */
+	virtual int GetAlignmentRequirements() const;
+	
 	/** Debug print configuration. */
 	void DebugPrintConfig( const char *name );
 	/*@}*/

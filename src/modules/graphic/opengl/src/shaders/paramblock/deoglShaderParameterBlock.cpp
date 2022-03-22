@@ -225,10 +225,8 @@ void deoglShaderParameterBlock::SetElementCount( int count ){
 	pUpdateBufferSize();
 }
 
-void deoglShaderParameterBlock::CalculateOffsetPadding(){
-	const int alignment = GetRenderThread().GetCapabilities().GetUBOOffsetAlignment();
-	pOffsetPadding = ( alignment - ( pElementStride % alignment ) ) % alignment;
-	pSetElementStride( pElementStride + pOffsetPadding );
+int deoglShaderParameterBlock::GetAlignmentRequirements() const{
+	return 16;
 }
 
 void deoglShaderParameterBlock::MapToStd140(){
@@ -284,8 +282,9 @@ void deoglShaderParameterBlock::MapToStd140(){
 	}
 	
 	// element stride is aligned like arrays to 16-byte boundary
-	adjust = ( 16 - ( elementStride % 16 ) ) % 16;
-	pSetElementStride( elementStride + adjust );
+	alignment = decMath::max( 16, GetAlignmentRequirements() );
+	pOffsetPadding = ( alignment - ( elementStride % alignment ) ) % alignment;
+	pSetElementStride( elementStride + pOffsetPadding );
 }
 
 
