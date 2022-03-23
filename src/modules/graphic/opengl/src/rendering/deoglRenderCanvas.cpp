@@ -803,8 +803,9 @@ const deoglRCanvasRenderWorld &canvas ){
 	colorTransform *= decColorMatrix::CreateScaling( 1.0f, 1.0f, 1.0f, transparency );
 	colorTransform *= context.GetColorTransform();
 	
+	shader.SetParameterColorMatrix5x4( spcColorTransform, spcColorTransform2, colorTransform );
+	
 	if( ! vr || ! vr->GetLeftEye().GetUseGammaCorrection() ){
-		shader.SetParameterColorMatrix5x4( spcColorTransform, spcColorTransform2, colorTransform );
 		shader.SetParameterFloat( spcGamma, gamma, gamma, gamma, 1.0f );
 		
 	}else{
