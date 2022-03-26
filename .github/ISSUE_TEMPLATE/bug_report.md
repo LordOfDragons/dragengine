@@ -34,8 +34,8 @@ Drag[en]gine related (playing games, developing games):
 IGDE related (developing games):
 - Linux: ~/.config/deigde/logs
 - Windows: "%LocalAppData%\DEIGDE\Logs" (enter without quotes into Explorer or LaunchBar)
-
-When installed from App Store the directory can be located in a different place due to OS restrictions: "%LocalAppData%\Packages\DragonDreams.Dragengine.IGDE_14hw6vre8sh8m\LocalCache\Local\DEIGDE\Logs"
+  
+  When installed from App Store the directory can be located in a different place due to OS restrictions: "%LocalAppData%\Packages\DragonDreams.Dragengine.IGDE_14hw6vre8sh8m\LocalCache\Local\DEIGDE\Logs"
 
 **Screenshots**
 If applicable, add screenshots to help explain your problem.
