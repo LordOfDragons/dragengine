@@ -45,6 +45,25 @@ function uninstall_files()
 	rm -rf /usr/share/deigde
 }
 
+function remove_old_files()
+{
+	echo ">>> Removing old files if present"
+	rm -f /usr/bin/deigde
+	rm -f /usr/lib/libdeigdeshared.so
+	rm -f /usr/lib/libdeigdeshared.so.*
+	rm -f /usr/share/applications/dragengine-deigde.desktop
+	rm -f /usr/share/icons/hicolor/*/apps/dragengine-deigde.png
+	rm -f /usr/share/icons/hicolor/*/mimetypes/dragengine-deigde.png
+	rm -f /usr/share/katepart5/syntax/dragonscript.xml
+	rm -f /usr/share/man/man1/deigde.1
+	rm -f /usr/share/mime/packages/dragengine-deigde.xml
+	rm -f /usr/share/mime/packages/dragonscript-dragonscript.xml
+	rm -f /usr/share/pixmaps/dragengine-deigde.png
+	
+	rm -rf /usr/lib/deigde
+	rm -rf /usr/share/deigde
+}
+
 
 echo -e "\e[32m\e[1m*************************************************"
 echo -e "***        Drag[en]gine IGDE Installer        ***"
@@ -99,6 +118,7 @@ else
 	read -p "Install IGDE? [y/n] " ans
 	if [[ "${ans:0:1}" == "y" || "${ans:0:1}" == "Y" ]]; then
 		unpack_payload
+		remove_old_files
 		register_mimetypes
 		echo ""
 		echo -e "\e[93m\e[1m>>> Finished Successfully\e[39m\e[0m"
