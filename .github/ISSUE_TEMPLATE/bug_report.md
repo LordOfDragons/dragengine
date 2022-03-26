@@ -28,8 +28,8 @@ You find the log files in these locations (all log files have the extension ".lo
 Drag[en]gine related (playing games, developing games):
 - Linux: ~/.config/delauncher/logs
 - Windows: "%LocalAppData%\DELaunchers\Logs" (enter without quotes into Explorer or LaunchBar)
-
-When installed from App Store the directory can be located in a different place due to OS restrictions: "%LocalAppData%\Packages\DragonDreams.Dragengine.GameEngine_14hw6vre8sh8m\LocalCache\Local\DELaunchers\Logs"
+  
+  When installed from App Store the directory can be located in a different place due to OS restrictions: "%LocalAppData%\Packages\DragonDreams.Dragengine.GameEngine_14hw6vre8sh8m\LocalCache\Local\DELaunchers\Logs"
 
 IGDE related (developing games):
 - Linux: ~/.config/deigde/logs
