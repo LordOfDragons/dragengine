@@ -1,0 +1,29 @@
+import os, fnmatch
+
+env = Environment()
+env.Tool('runExternalCommand')
+
+env.Append(LINKFLAGS=['-static'])
+
+sources = []
+sources.append('src/Launcher.cpp')
+sources.append('src/LauncherIni.cpp')
+sources.append('src/String.cpp')
+sources.append('src/File.cpp')
+sources.append('src/Exception.cpp')
+
+temp = env.Program('launch64_temp', sources)
+
+def stripBuild(target, source, env):
+	src = source[0].abspath
+	trg = target[0].abspath
+	
+	script = []
+	script.append('cp "{}" "{}" || exit 1'.format(src, trg))
+	script.append('strip "{}" || exit 1'.format(trg))
+	if not env.RunExternalCommand(script):
+		raise Exception('Failed running strip')
+
+app = env.Command('launch64', temp, env.Action(stripBuild, 'Strip $TARGET'))
+
+Default(app)
