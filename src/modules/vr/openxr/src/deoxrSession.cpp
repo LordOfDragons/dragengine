@@ -90,7 +90,9 @@ pIsGACOpenGL( false ),
 		deBaseGraphicModule::sGraphicApiConnection gacon;
 		oxr.GetGameEngine()->GetGraphicSystem()->GetActiveModule()->GetGraphicApiConnection( gacon );
 		
-		#ifdef OS_UNIX
+		#ifdef OS_BEOS
+			#error Unsupported
+		#elif defined OS_UNIX
 			pGACOpenGLDisplay = ( Display* )gacon.opengl.display;
 			pGACOpenGLDrawable = ( GLXDrawable )gacon.opengl.glxDrawable;
 			pGACOpenGLContext = ( GLXContext )gacon.opengl.glxContext;

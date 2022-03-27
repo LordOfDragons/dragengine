@@ -263,7 +263,10 @@ public:
 	struct sGraphicApiConnection{
 		// OpenGL
 		struct sGraphicApiConnectionOpenGl{
-			#ifdef OS_UNIX
+			#ifdef OS_BEOS
+			void *dummy; //<! avoid empty struct
+			
+			#elif defined OS_UNIX
 			void *display; //<! X11: Display*
 			uint32_t visualid; //<! X11: uint32_t
 			void *glxFBConfig; //<! GLXFBConfig

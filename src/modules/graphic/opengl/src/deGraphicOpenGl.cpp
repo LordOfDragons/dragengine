@@ -538,7 +538,10 @@ void deGraphicOpenGl::GetGraphicApiConnection( sGraphicApiConnection &connection
 	
 	const deoglRTContext &context = pRenderThread->GetContext();
 	
-	#ifdef OS_UNIX
+	#ifdef OS_BEOS
+	connection.opengl.dummy = nullptr;
+	
+	#elif defined OS_UNIX
 	connection.opengl.display = context.GetDisplay();
 	connection.opengl.visualid = context.GetVisualInfo()->visualid;
 	connection.opengl.glxFBConfig = context.GetBestFBConfig();
