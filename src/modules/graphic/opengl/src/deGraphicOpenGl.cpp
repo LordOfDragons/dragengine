@@ -536,7 +536,7 @@ void deGraphicOpenGl::GetGraphicApiConnection( sGraphicApiConnection &connection
 		return;
 	}
 	
-	const deoglRTContext &context = pRenderThread->GetContext();
+	OGL_IF_CHECK( const deoglRTContext &context = pRenderThread->GetContext(); )
 	
 	#ifdef OS_BEOS
 	connection.opengl.dummy = nullptr;
