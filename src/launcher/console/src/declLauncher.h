@@ -30,6 +30,10 @@
 #include <dragengine/common/string/unicode/decUnicodeArgumentList.h>
 #include <dragengine/logger/deLogger.h>
 
+#ifdef OS_BEOS
+#include <delauncher/game/delGame.h>
+#endif
+
 class declConfiguration;
 
 
@@ -98,6 +102,11 @@ public:
 	
 	/** Read input from user converting to integer number if valid else -1. */
 	int ReadInputSelection() const;
+	
+#ifdef OS_BEOS
+	/** Running game or nullptr. */
+	delGame::Ref runningGame;
+#endif
 	/*@}*/
 	
 	

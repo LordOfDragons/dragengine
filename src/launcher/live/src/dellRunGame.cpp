@@ -353,5 +353,19 @@ void dellRunGame::Run(){
 	
 	// run game. blocks until finished since we use a direct engine instance. this method
 	// does all the heavy lifting including storing game configuration if changed
+#ifdef OS_BEOS
+	/** Running game or nullptr. */
+	pLauncher.runningGame = pGame;
+	try{
+#endif
+	
 	pGame->StartGame( pRunParams );
+	
+#ifdef OS_BEOS
+		pLauncher.runningGame = nullptr;
+	}catch( const deException & ){
+		pLauncher.runningGame = nullptr;
+		throw;
+	}
+#endif
 }

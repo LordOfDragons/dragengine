@@ -828,3 +828,11 @@ const decStringList &filenames, decObjectOrderedSet &filesContent ){
 		filesContent.Add( content );
 	}
 }
+
+#ifdef OS_BEOS
+void delEngineInstanceDirect::BeosMessageReceived( BMessage *message ){
+	if( pEngine ){
+		pEngine->GetOS()->CastToOSBeOS()->MessageReceived( message );
+	}
+}
+#endif

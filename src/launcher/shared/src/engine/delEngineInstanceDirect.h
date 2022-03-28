@@ -237,7 +237,16 @@ public:
 	 */
 	virtual void ReadDelgaFiles( const char *delgaFile, const decStringList &filenames,
 		decObjectOrderedSet &filesContent );
-	/*@}*/
+
+	
+#ifdef OS_BEOS
+	/**
+	 * \brief Message received.
+	 * 
+	 * Required for direct engine instance on BeOS only.
+	 */
+	virtual void BeosMessageReceived( BMessage *message );
+#endif	/*@}*/
 };
 
 #endif

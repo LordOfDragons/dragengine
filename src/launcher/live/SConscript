@@ -6,6 +6,10 @@ Import('parent_env parent_targets parent_report')
 if not parent_env['OSPosix'] and not parent_env['OSWindows']:
 	Return()
 
+if parent_env['OSBeOS']:
+	# no patchelf support. need to investigate how this can work out
+	Return()
+
 envLauncher = parent_env.Clone()
 
 libs = []

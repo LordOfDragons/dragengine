@@ -31,7 +31,9 @@
 #include <dragengine/filesystem/deVirtualFileSystemReference.h>
 #include <dragengine/logger/deLoggerReference.h>
 
-class dellEngine;
+#ifdef OS_BEOS
+#include <delauncher/game/delGame.h>
+#endif
 
 
 
@@ -102,6 +104,10 @@ public:
 	
 	/** Run. */
 	void Run();
+
+#ifdef OS_BEOS
+	delGame::Ref runningGame;
+#endif
 	/*@}*/
 	
 	

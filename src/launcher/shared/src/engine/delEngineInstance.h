@@ -26,6 +26,10 @@
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 
+#ifdef OS_BEOS
+#include <MessageQueue.h>
+#endif
+
 class delEngineModule;
 class delLauncher;
 class decStringList;
@@ -229,6 +233,15 @@ public:
 	 */
 	virtual void ReadDelgaFiles( const char *delgaFile, const decStringList &filenames,
 		decObjectOrderedSet &filesContent ) = 0;
+	
+#ifdef OS_BEOS
+	/**
+	 * \brief Message received.
+	 * 
+	 * Required for direct engine instance on BeOS only.
+	 */
+	virtual void BeosMessageReceived( BMessage *message );
+#endif
 	/*@}*/
 };
 

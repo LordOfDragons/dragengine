@@ -48,3 +48,13 @@ pLogFile( logfile ){
 
 delEngineInstance::~delEngineInstance(){
 }
+
+
+
+// Management
+///////////////
+
+#ifdef OS_BEOS
+void delEngineInstance::BeosMessageReceived( BMessage *message ){
+}
+#endif
