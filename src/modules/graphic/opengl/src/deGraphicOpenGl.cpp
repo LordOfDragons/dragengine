@@ -536,12 +536,12 @@ void deGraphicOpenGl::GetGraphicApiConnection( sGraphicApiConnection &connection
 		return;
 	}
 	
-	OGL_IF_CHECK( const deoglRTContext &context = pRenderThread->GetContext(); )
-	
 	#ifdef OS_BEOS
 	connection.opengl.dummy = nullptr;
 	
 	#elif defined OS_UNIX
+	const deoglRTContext &context = pRenderThread->GetContext();
+	
 	connection.opengl.display = context.GetDisplay();
 	connection.opengl.visualid = context.GetVisualInfo()->visualid;
 	connection.opengl.glxFBConfig = context.GetBestFBConfig();
@@ -552,6 +552,8 @@ void deGraphicOpenGl::GetGraphicApiConnection( sGraphicApiConnection &connection
 	}
 	
 	#elif defined OS_W32
+	const deoglRTContext &context = pRenderThread->GetContext();
+	
 	connection.opengl.hGLRC = context.GetContext();
 	
 	if( context.GetActiveRRenderWindow() ){
