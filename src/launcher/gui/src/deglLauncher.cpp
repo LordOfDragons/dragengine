@@ -193,12 +193,24 @@ bool deglLauncher::RunCommandLineGame(){
 				return false;
 			}
 			
-			if( profile->GetReplaceRunArguments() ){
-				runParams.SetRunArguments( profile->GetRunArguments() );
-				
-			}else{
-				runParams.SetRunArguments( game->GetRunArguments() + " " + profile->GetRunArguments() );
+			decString arguments( profile->GetRunArguments() );
+			
+			if( ! profile->GetReplaceRunArguments() ){
+				arguments = game->GetRunArguments() + " " + arguments;
 			}
+			
+			const int argCount = pRunGameArgList.GetArgumentCount();
+			int i;
+			for( i=0; i<argCount; i++ ){
+				arguments.Append( " " );
+				decString argument( pRunGameArgList.GetArgumentAt( i )->ToUTF8() );
+				if( argument.Find( ' ' ) != -1 ){
+					argument = decString( "\"" ) + argument + decString( "\"" );
+				}
+				arguments.Append( argument );
+			}
+			
+			runParams.SetRunArguments( arguments );
 			
 			runParams.SetFullScreen( profile->GetFullScreen() );
 			runParams.SetWidth( profile->GetWidth() );
