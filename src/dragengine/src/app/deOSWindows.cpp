@@ -310,6 +310,36 @@ decString deOSWindows::ParseNativePath( const char *path ){
 		index = spath.GetLength();
 	}
 	
+	// windows causes troubles with path resolving if used inside packaged application
+	// which means store application. certain path are redirected and writing to them
+	// does not always seem to yield the same path as reading them. this can cause
+	// accessing directories to not work since the path is suddenly somewhere else.
+	// using flags it is possible to disable redirecting
+	// 
+	// furthermore windows deletes certain redirected (packaged) directories if the
+	// game engine is uninstalled. this would potentially delete all saves, configs
+	// and data of all games which would be very bad. by avoiding redirection we can
+	// assure the data is not deleted.
+	// 
+	// unfortunately according to documentation packaged applications can not escape
+	// being redirected unless writing directly to the documents directory which is
+	// not a good thing to do. we are thus stuck with the redirection and have to
+	// put the blame on lost files on microsoft.
+	// 
+	// that said we still have the problem that accessing path for example for
+	// opening a directory is not going to show the packaged location but the non
+	// redirected directory. using a flag we can at least fix this problem.
+	// the redirection problem has to be solved somehow else but no idea yet how
+	// 
+	// these flags exist but are not defined in the windows headers for some reason
+	// 
+	// KF_FLAG_NO_PACKAGE_REDIRECTION = 0x00010000
+	//   do not redirect path
+	// 
+	// KF_FLAG_RETURN_FILTER_REDIRECTION_TARGET = 0x00040000
+	//   returned redirected (real) path
+	DWORD dwFlags = 0x00040000;
+	
 	const decString special( spath.GetMiddle( 1, index ) );
 	GUID nFolder;
 	
@@ -348,7 +378,7 @@ decString deOSWindows::ParseNativePath( const char *path ){
 	}
 	
 	PWCHAR folderPath = NULL;
-	if( SHGetKnownFolderPath( nFolder, 0, NULL, &folderPath ) != S_OK ){
+	if( SHGetKnownFolderPath( nFolder, dwFlags, NULL, &folderPath ) != S_OK ){
 		DETHROW( deeInvalidParam );
 	}
 	
