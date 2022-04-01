@@ -94,7 +94,6 @@ class ECBehaviorVRHandPointedAt extends DefaultECBehavior
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
 		private var ECBehaviorVRHandPointedAt pECBehavior
-		private var ElementResolver pElementResolver
 		private var Array pPointingHands
 		private var Array pListeners
 		
@@ -111,7 +110,6 @@ class ECBehaviorVRHandPointedAt extends DefaultECBehavior
 		public func void dispose()
 			pListeners = null
 			pPointingHands = null
-			pElementResolver = null
 			super.dispose()
 		end
 		
@@ -250,32 +248,21 @@ class ECBehaviorVRHandPointedAt extends DefaultECBehavior
 		
 		
 		
-		/** \brief Frame update started. */
-		public func void enterFrame()
-			if pElementResolver != null
-				pElementResolver.resolve(getElement().getGameWorld())
-				pElementResolver = null
-			end
-		end
-		
-		
-		
 		/** \brief Read element from file. */
 		public func void readFromFile(PersistencyEnvironment env, FileReader reader)
 			select reader.readByte() // version
 			case 0
+				// 1.11.1 save/restore removed since this makes no sense
 				var int i, count = reader.readUShort()
 				if count == 0
 					return
 				end
 				
-				pElementResolver = ElementResolver.new()
+				var ElementResolver resolver = ElementResolver.new()
 				for i = 0 to count
-					pElementResolver.addBehavior(reader, block ECBehaviorVRHandPointAt.Instance instance
-						pPointingHands.add(instance)
+					resolver.addBehavior(reader, block ECBehaviorVRHandPointAt.Instance instance
 					end)
 				end
-				setRequiresEnterFrame(true)
 				
 			else
 				throw EInvalidParam.new("unsupported version")
@@ -286,10 +273,7 @@ class ECBehaviorVRHandPointedAt extends DefaultECBehavior
 		public func void writeToFile(PersistencyEnvironment env, FileWriter writer)
 			writer.writeByte(0) // version
 			
-			writer.writeUShort(pPointingHands.getCount())
-			pPointingHands.forEach(block ECBehaviorVRHandPointAt.Instance each
-				ElementResolver.writeToFileBehavior(writer, each)
-			end)
+			writer.writeUShort(0) // save/restore removed since this makes no sense
 		end
 	end
 	
