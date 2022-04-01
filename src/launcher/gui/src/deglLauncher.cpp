@@ -110,6 +110,8 @@ bool deglLauncher::RunCommandLineGame(){
 		// always used even if a game with the same identifier is already installed. running a
 		// game by explicit game file overrides the installed one. otherwise it is difficult
 		// for the user to understand why something else happens than he indented
+		GetLogger()->LogInfoFormat( GetLogSource(), "Run Game: '%s'", pRunGame.GetString() );
+		
 		delGameList list;
 		
 		try{
@@ -127,8 +129,10 @@ bool deglLauncher::RunCommandLineGame(){
 		}
 		
 		if( list.GetCount() == 0 ){
-			GetLogger()->LogInfo( GetLogSource(), "No valid game definition found." );
-			FXMessageBox::error( pWindowMain, MBOX_OK, "Run Game", "No game definition found" );
+			decString message;
+			message.Format( "No game definition found: %s", pRunGame.GetString() );
+			GetLogger()->LogInfo( GetLogSource(), message );
+			FXMessageBox::error( pWindowMain, MBOX_OK, "Run Game", "%s", message.GetString() );
 			return false;
 		}
 		
@@ -168,7 +172,7 @@ bool deglLauncher::RunCommandLineGame(){
 	
 	if( ! game ){
 		FXMessageBox::error( pWindowMain->getApp(), MBOX_OK, "Run Game",
-			"No game found with identifier '%s'", pRunGame.GetString() );
+			"Game not found: %s", pRunGame.GetString() );
 		return false;
 	}
 	
@@ -283,6 +287,15 @@ delGameIcon *deglLauncher::CreateGameIcon( int size, const char* path ){
 void deglLauncher::pParseArguments(){
 	const int argumentCount = pArguments.GetArgumentCount();
 	int argumentIndex = 0;
+	
+	// log command line
+	GetLogger()->LogInfo( GetLogSource(), "Command line arguments:" );
+	for( argumentIndex=0; argumentIndex<argumentCount; argumentIndex++ ){
+		GetLogger()->LogInfoFormat( GetLogSource(), "- '%s'",
+			pArguments.GetArgumentAt( argumentIndex )->ToUTF8().GetString() );
+	}
+	
+	argumentIndex = 0;
 	
 	// windows URI scheme support
 	#ifdef OS_W32
