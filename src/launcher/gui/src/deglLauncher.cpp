@@ -22,6 +22,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 
 #include "deglLauncher.h"
 #include "config/deglConfiguration.h"
@@ -384,7 +385,8 @@ bool deglLauncher::pParseWindowsURIScheme(){
 		return false;
 	}
 	
-	// convert the arguments into a single string just to be on the safe side
+	// convert the arguments into a single string just to be on the safe side.
+	// only required if the caller did not encode the URL properly
 	int i;
 	for( i=1; i<argumentCount; i++ ){
 		urischeme.AppendCharacter( ' ' );
@@ -402,13 +404,13 @@ bool deglLauncher::pParseWindowsURIScheme(){
 			const decString &parameter = parameters.GetAt( i );
 			
 			if( parameter.BeginsWith( "file=" ) ){
-				pRunGame = parameter.GetMiddle( 5 );
+				pRunGame = pUrlDecode( parameter.GetMiddle( 5 ) );
 				
 			}else if( parameter.BeginsWith( "profile=" ) ){
-				pRunProfileName = parameter.GetMiddle( 8 );
+				pRunProfileName = pUrlDecode( parameter.GetMiddle( 8 ) );
 				
 			}else if( parameter.BeginsWith( "argument=" ) ){
-				pRunGameArgList.AddArgument( decUnicodeString::NewFromUTF8( parameter.GetMiddle( 9 ) ) );
+				pRunGameArgList.AddArgument( decUnicodeString::NewFromUTF8( pUrlDecode( parameter.GetMiddle( 9 ) ) ) );
 			}
 		}
 		
@@ -420,10 +422,30 @@ bool deglLauncher::pParseWindowsURIScheme(){
 			const decString &parameter = parameters.GetAt( i );
 			
 			if( parameter.BeginsWith( "file=" ) ){
-				pCmdLineInstallDelga = parameter.GetMiddle( 5 );
+				pCmdLineInstallDelga = pUrlDecode( parameter.GetMiddle( 5 ) );
 			}
 		}
 	}
 	
 	return true;
+}
+
+decString deglLauncher::pUrlDecode( const char *url ){
+	const char *walker = url;
+	decString decoded;
+	
+	while( *walker ){
+		if( walker[ 0 ] == '%'
+		&&  walker[ 1 ] && isxdigit( walker[ 1 ] )
+		&&  walker[ 2 ] && isxdigit( walker[ 2 ] ) ){
+			const char hex[ 3 ] = { walker[ 1 ], walker[ 2 ], 0 };
+			decoded.AppendCharacter( ( char )strtol( hex, nullptr, 16 ) );
+			walker += 3;
+			
+		}else{
+			decoded.AppendCharacter( *( walker++ ) );
+		}
+	}
+	
+	return decoded;
 }

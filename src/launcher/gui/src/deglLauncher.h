@@ -104,6 +104,7 @@ private:
 	void pParseArguments();
 	bool pParseWindowsURIScheme();
 	void pInitLogger();
+	static decString pUrlDecode( const char *url );
 };
 
 #endif
