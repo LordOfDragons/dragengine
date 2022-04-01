@@ -122,30 +122,14 @@ public:
 	
 	
 private:
-	/** \brief Button identifier unique in the parent device. */
 	decString pID;
-	
-	/** \brief Display name. */
 	decString pName;
-	
-	/** \brief Button type. */
 	eButtonTypes pType;
-	
-	/** \brief Identifier of component or empty string. */
 	decString pComponent;
-	
-	/**
-	 * \brief Image to represent the button in 2D user interfaces or NULL if not set.
-	 * 
-	 * Large image of 128 pixels squared or larger.
-	 */
 	deImageReference pDisplayImage;
-	
-	/** \brief List of small icons of different size for use in binding displays. */
 	decObjectOrderedSet pDisplayIcons;
-	
-	/** \brief Text to display centered across display image or icon. */
 	decString pDisplayText;
+	bool pTouchable;
 	
 	
 	
@@ -244,6 +228,18 @@ public:
 	
 	/** \brief Set text to display centered across display image or icon. */
 	void SetDisplayText( const char *text );
+	
+	/**
+	 * \brief Button supports sending touch/untouch events.
+	 * \version 1.11.1
+	 */
+	inline bool GetTouchable() const{ return pTouchable; }
+	
+	/**
+	 * \brief Set if button supports sending touch/untouch events.
+	 * \version 1.11.1
+	 */
+	void SetTouchable( bool touchable );
 	/*@}*/
 	
 	

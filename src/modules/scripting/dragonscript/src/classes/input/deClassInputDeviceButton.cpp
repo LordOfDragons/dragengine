@@ -254,9 +254,20 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsString ){
 }
 void deClassInputDeviceButton::nfGetDisplayText::RunFunction( dsRunTime *rt, dsValue *myself ){
 	const sIDButtonNatDat &nd = *( ( const sIDButtonNatDat* )p_GetNativeData( myself ) );
-	const deInputDeviceButton &axis = nd.device->GetDevice()->GetButtonAt( nd.buttonIndex );
+	const deInputDeviceButton &button = nd.device->GetDevice()->GetButtonAt( nd.buttonIndex );
 	
-	rt->PushString( axis.GetDisplayText() );
+	rt->PushString( button.GetDisplayText() );
+}
+
+// public func bool getTouchable()
+deClassInputDeviceButton::nfGetTouchable::nfGetTouchable( const sInitData &init ) :
+dsFunction( init.clsIDButton, "getTouchable", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool ){
+}
+void deClassInputDeviceButton::nfGetTouchable::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const sIDButtonNatDat &nd = *( ( const sIDButtonNatDat* )p_GetNativeData( myself ) );
+	const deInputDeviceButton &button = nd.device->GetDevice()->GetButtonAt( nd.buttonIndex );
+	
+	rt->PushBool( button.GetTouchable() );
 }
 
 
@@ -394,6 +405,7 @@ void deClassInputDeviceButton::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfGetLargestDisplayIconX( init ) );
 	AddFunction( new nfGetLargestDisplayIconY( init ) );
 	AddFunction( new nfGetDisplayText( init ) );
+	AddFunction( new nfGetTouchable( init ) );
 	
 	AddFunction( new nfIsPressed( init ) );
 	AddFunction( new nfIsTouched( init ) );

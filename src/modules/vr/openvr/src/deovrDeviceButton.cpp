@@ -169,6 +169,7 @@ void deovrDeviceButton::GetInfo( deInputDeviceButton &info ) const{
 	info.SetName( pName );
 	info.SetType( pType );
 	info.SetComponent( pInputDeviceComponent ? pInputDeviceComponent->GetID() : "" );
+	info.SetTouchable( pActionTouchHandle != vr::k_ulInvalidActionHandle );
 	
 	info.SetDisplayImage( pDisplayImage );
 	

@@ -58,7 +58,7 @@ class ECBehaviorVRHand extends DefaultECBehavior
 		/** \brief Hand controller attached and ready to use. */
 		func void controllerAttached(Instance instance)
 		
-		/** \brief Hand controller detached and no more usableuse. */
+		/** \brief Hand controller detached and no more usable. */
 		func void controllerDetached(Instance instance)
 	end
 	
@@ -72,7 +72,7 @@ class ECBehaviorVRHand extends DefaultECBehavior
 		public func void controllerAttached(Instance instance)
 		end
 		
-		/** \brief Hand controller detached and no more usableuse. */
+		/** \brief Hand controller detached and no more usable. */
 		public func void controllerDetached(Instance instance)
 		end
 	end

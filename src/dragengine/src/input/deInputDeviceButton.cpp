@@ -31,7 +31,8 @@
 //////////////////////////////
 
 deInputDeviceButton::deInputDeviceButton() :
-pType( ebtGeneric ){
+pType( ebtGeneric ),
+pTouchable( false ){
 }
 
 deInputDeviceButton::deInputDeviceButton( const deInputDeviceButton &button ) :
@@ -40,7 +41,8 @@ pName( button.pName ),
 pType( button.pType ),
 pDisplayImage( button.pDisplayImage ),
 pDisplayIcons( button.pDisplayIcons ),
-pDisplayText( button.pDisplayText ){
+pDisplayText( button.pDisplayText ),
+pTouchable( button.pTouchable ){
 }
 
 deInputDeviceButton::~deInputDeviceButton(){
@@ -90,6 +92,10 @@ void deInputDeviceButton::SetDisplayText( const char *text ){
 	pDisplayText = text;
 }
 
+void deInputDeviceButton::SetTouchable( bool touchable ){
+	pTouchable = touchable;
+}
+
 
 
 // Operators
@@ -103,5 +109,6 @@ deInputDeviceButton &deInputDeviceButton::operator=( const deInputDeviceButton &
 	pDisplayImage = button.pDisplayImage;
 	pDisplayIcons = button.pDisplayIcons;
 	pDisplayText = button.pDisplayText;
+	pTouchable = button.pTouchable;
 	return *this;
 }

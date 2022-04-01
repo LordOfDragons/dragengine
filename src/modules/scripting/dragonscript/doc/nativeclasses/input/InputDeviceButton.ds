@@ -134,6 +134,14 @@ class InputDeviceButton
 		return null
 	end
 	
+	/**
+	 * \brief Button can send touch/untouch events.
+	 * \version 1.11.1
+	 */
+	public func bool getTouchable()
+		return false
+	end
+	
 	
 	
 	/**

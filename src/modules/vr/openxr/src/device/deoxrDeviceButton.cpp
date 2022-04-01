@@ -168,6 +168,7 @@ void deoxrDeviceButton::GetInfo( deInputDeviceButton &info ) const{
 	info.SetName( pName );
 	info.SetType( pType );
 	info.SetComponent( pInputDeviceComponent ? pInputDeviceComponent->GetID() : "" );
+	info.SetTouchable( pActionTouch );
 	
 	info.SetDisplayImage( pDisplayImage );
 	
