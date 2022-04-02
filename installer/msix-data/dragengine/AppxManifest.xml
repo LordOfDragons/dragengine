@@ -60,7 +60,7 @@
 					</uap3:AppExecutionAlias>
 				</uap3:Extension>
 				<uap:Extension Category='windows.protocol'>
-					<uap:Protocol Name='delauncher' ReturnResults='optional'>
+					<uap:Protocol Name='delauncher' ReturnResults='none'>
 						<uap:Logo>Assets\icon-delauncher-gui-150x150.png</uap:Logo>
 						<uap:DisplayName>Drag[en]gine GUI Launcher URI Scheme</uap:DisplayName>
 					</uap:Protocol>
