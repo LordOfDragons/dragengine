@@ -102,10 +102,20 @@ bool deglLauncher::RunCommandLineGame(){
 	// just in case this somehow is called multiple times, which should never happen
 	pCmdLineGame = nullptr;
 	
-	// locate the game to run
+	// locate the game to run. we can not use MatchesPattern() to figure out if this
+	// is a *.delga or *.degame file since this call fails if relative path is used
+	// which begins with ../ . instead use string matching which works too
 	delGame::Ref game;
 	
-	if( pRunGame.MatchesPattern( "*.delga" ) or pRunGame.MatchesPattern( "*.degame" ) ){
+	//if( pRunGame.MatchesPattern( "*.delga" ) || pRunGame.MatchesPattern( "*.degame" ) ){
+	if( pRunGame.EndsWith( ".delga" ) || pRunGame.EndsWith( ".degame" ) ){
+		// make the path absolute if relative
+		if( ! decPath::IsNativePathAbsolute( pRunGame ) ){
+			decPath path( decPath::CreateWorkingDirectory() );
+			path.AddNativePath( pRunGame );
+			pRunGame = path.GetPathNative();
+		}
+		
 		// the game definition file is not required to be installed if defined by file. It is
 		// always used even if a game with the same identifier is already installed. running a
 		// game by explicit game file overrides the installed one. otherwise it is difficult
