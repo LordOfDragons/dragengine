@@ -52,6 +52,8 @@ private:
 	decString pRunProfileName;
 	decString pCmdLineInstallDelga;
 	
+	bool pCmdLineQuitNow;
+	
 	
 	
 public:
@@ -92,6 +94,10 @@ public:
 	
 	/** Pulse checking. */
 	void PulseChecking();
+	
+	/** Quit now requested from the command line. */
+	inline bool GetCmdLineQuitNow() const{ return pCmdLineQuitNow; }
+	
 	
 	
 	/** Create game icon instance. */

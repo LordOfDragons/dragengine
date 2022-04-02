@@ -83,6 +83,10 @@ deglWindowMain::deglWindowMain(){ }
 void deglWindowMain::create(){
 	FXMainWindow::create();
 	
+	if( pLauncher && pLauncher->GetCmdLineQuitNow() ){
+		return;
+	}
+	
 	pIconValidSmall->create();
 	pIconInvalidSmall->create();
 	pIconButtonInfo->create();
@@ -113,6 +117,10 @@ FXMainWindow( app, "Drag[en]gine Launcher", nullptr, nullptr, DECOR_ALL, 10, 50,
 	
 	// create launcher
 	pLauncher = new deglLauncher( this, argc, argv );
+	
+	if( pLauncher->GetCmdLineQuitNow() ){
+		return;
+	}
 	
 	// set window from configuration
 	const deglConfigWindow &configWindow = pLauncher->GetConfiguration().GetWindowMain();
@@ -194,6 +202,10 @@ deglWindowMain::~deglWindowMain(){
 ///////////////
 
 bool deglWindowMain::RunCommandLineActions(){
+	if( pLauncher->GetCmdLineQuitNow() ){
+		return false;
+	}
+	
 	if( ! pLauncher->GetCommandLineInstallDelga().IsEmpty() ){
 		show();
 		try{

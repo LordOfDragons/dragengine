@@ -108,13 +108,14 @@ void deglConfiguration::LoadConfiguration(){
 }
 
 void deglConfiguration::SaveConfiguration(){
-	const decString &logSource = pLauncher.GetLogSource();
-	deLogger &logger = *pLauncher.GetLogger();
-	
 	if( ! pCanSave ){
-		logger.LogWarn( logSource, "Loading configuration failed. Not writing configuration to not corrupt it." );
+		// this can happen due to loading error or due to an early quite requested.
+		// for this reason no warning is logged
 		return;
 	}
+	
+	const decString &logSource = pLauncher.GetLogSource();
+	deLogger &logger = *pLauncher.GetLogger();
 	
 	deglConfigXML configXML( pLauncher.GetLogger(), logSource );
 	deVirtualFileSystem &vfs = *pLauncher.GetVFS();

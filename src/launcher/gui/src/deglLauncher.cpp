@@ -50,7 +50,8 @@ pConfiguration( *this ),
 
 pWindowMain( windowMain ),
 
-pCmdLineGame( NULL )
+pCmdLineGame( NULL ),
+pCmdLineQuitNow( false )
 {
 	if( ! windowMain ){
 		DETHROW( deeInvalidParam );
@@ -70,6 +71,11 @@ pCmdLineGame( NULL )
 		pArguments.AddArgument( decUnicodeString::NewFromUTF8( argv[ i ] ) );
 	}
 	pParseArguments();
+	
+	// quit if requested. special use case
+	if( pCmdLineQuitNow ){
+		return;
+	}
 	
 	// load configuration
 	pConfiguration.LoadConfiguration();
@@ -448,6 +454,10 @@ bool deglLauncher::pParseWindowsURIScheme(){
 				pCmdLineInstallDelga = pUrlDecode( parameter.GetMiddle( 5 ) );
 			}
 		}
+		
+	}else if( urischeme == "ready" ){
+		// special command used only for installing without launching. immediately quit
+		pCmdLineQuitNow = true;
 	}
 	
 	return true;
