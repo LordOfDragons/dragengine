@@ -240,9 +240,10 @@ void deoxrDeviceManager::LogDevice( const deoxrDevice &device ){
 		pOxr.LogInfo( "  Buttons:" );
 		for( i=0; i<buttonCount; i++ ){
 			const deoxrDeviceButton &button = *device.GetButtonAt( i );
-			pOxr.LogInfoFormat( "    - '%s' (%s) [%s] => %d",
+			pOxr.LogInfoFormat( "    - '%s' (%s) [%s]%s => %d",
 				button.GetName().GetString(), button.GetID().GetString(), button.GetInputDeviceComponent()
-					? button.GetInputDeviceComponent()->GetID().GetString() : "", i );
+					? button.GetInputDeviceComponent()->GetID().GetString() : "",
+					button.GetActionTouch() ? " {touchable}" : "", i );
 		}
 	}
 }
