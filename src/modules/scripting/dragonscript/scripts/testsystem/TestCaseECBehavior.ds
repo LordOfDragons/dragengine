@@ -173,6 +173,39 @@ abstract class TestCaseECBehavior extends TestCase
 		assertNotNull(elementClass.getPropertyNamed(name))
 	end
 	
+	/**
+	 * \brief Assert element class float property.
+	 * \version 1.12
+	 */
+	protected func void assertFloatProperty(ECPFloat property, float value)
+		assertEquals(property.getValue(), value)
+		assertFalse(property.getEnableLimitLower())
+		assertFalse(property.getEnableLimitUpper())
+	end
+	
+	/**
+	 * \brief Assert element class float property.
+	 * \version 1.12
+	 */
+	protected func void assertFloatProperty(ECPFloat property, float value, float limitLower)
+		assertEquals(property.getValue(), value)
+		assertTrue(property.getEnableLimitLower())
+		assertEquals(property.getLimitLower(), limitLower)
+		assertFalse(property.getEnableLimitUpper())
+	end
+	
+	/**
+	 * \brief Assert element class float property.
+	 * \version 1.12
+	 */
+	protected func void assertFloatProperty(ECPFloat property, float value, float limitLower, float limitUpper)
+		assertEquals(property.getValue(), value)
+		assertTrue(property.getEnableLimitLower())
+		assertEquals(property.getLimitLower(), limitLower)
+		assertTrue(property.getEnableLimitUpper())
+		assertEquals(property.getLimitUpper(), limitUpper)
+	end
+	
 	
 	
 	/**
