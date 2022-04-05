@@ -206,6 +206,20 @@ abstract class TestCaseECBehavior extends TestCase
 		assertEquals(property.getLimitUpper(), limitUpper)
 	end
 	
+	/**
+	 * \brief Assert element class enumeration property.
+	 * \version 1.12
+	 */
+	protected func void assertEnumProperty(ECPEnumeration property, Enumeration value, Set enumerationValues)
+		assertEquals(property.getEnumeration(), value)
+		var Dictionary propertyEnums = property.getMapping()
+		assertEquals(propertyEnums.getCount(), enumerationValues.getCount())
+		enumerationValues.forEach(block Enumeration each
+			assertTrue(propertyEnums.has(each.name()))
+			assertEquals(propertyEnums.getAt(each.name()), each)
+		end)
+	end
+	
 	
 	
 	/**
