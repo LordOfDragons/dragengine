@@ -208,7 +208,13 @@ class WindowTesting extends Window
 		end
 	end
 	
-	/** \brief Test runner listener logging to console. */
+	/**
+	 * \brief Test runner listener logging to console.
+	 * 
+	 * \par Changes 1.12
+	 * 
+	 * Only start of test and failures are logged. Full logs are written to file.
+	 */
 	protected class LogConsoleListener extends DefaultTestRunnerListener
 		private var WindowTesting window
 		public func new(WindowTesting window)
@@ -226,30 +232,111 @@ class WindowTesting extends Window
 				Array.newWith(countTests - countFailed, countFailed)))
 		end
 		
+		public func void testSuiteFinished(TestRunner testRunner, TestSuite testSuite)
+			var int countFailed = testSuite.failedTestCases().getCount()
+			if countFailed == 0
+				return
+			end
+			
+			var int countTests = testSuite.getTestCaseCount()
+			window.addLogs("Finished testing test suite: {} ({}): {} cases PASSED, {} cases FAILED".format(\
+				Array.newWith(testSuite.getName(), testSuite.getID(), countTests - countFailed, countFailed)))
+		end
+		
+		public func void testCaseFinished(TestRunner testRunner, TestSuite testSuite, TestCase testCase)
+			if testCase.getState() == TestCase.State.passed
+				return
+			end
+			
+			window.addLogs("Finished testing test case: {} ({}): FAILED".format(\
+				Array.newWith(testCase.getName(), testCase.getID())))
+			
+			if testCase.getException() != null
+				var String text = " => " + testCase.getException().getReason()
+				var int i, count = testCase.getException().getTraceCount()
+				
+				for i = 0 to count
+					text = text + "\n{}) {}.{}(): {}".format(Array.newWith(i + 1, \
+						testCase.getException().getTraceClass(i), \
+						testCase.getException().getTraceFunction(i), \
+						testCase.getException().getTraceLine(i)))
+				end
+				
+				window.addLogs(text)
+			end
+		end
+	end
+		
+	/**
+	 * \brief Test runner listener logging to file.
+	 * \version 1.12
+	 * 
+	 * Calls WindowTesting.getLogFilePath() to obtain path to write log file to.
+	 * If getLogFilePath() returns empty string no log file is written for test run.
+	 */
+	protected class LogFileListener extends DefaultTestRunnerListener
+		private var WindowTesting window
+		private var FileWriter writer
+		
+		public func new(WindowTesting window)
+			this.window = window
+		end
+		
+		public func void runnerStarted(TestRunner testRunner)
+			writer = null
+			
+			var String path = window.getLogFilePath()
+			if not path.empty()
+				writer = FileWriter.new(path)
+				window.addLogs("Test Results File: " + path)
+			end
+			
+			logToFile("===================")
+			logToFile("Start running tests")
+			logToFile("===================")
+		end
+		
+		public func void runnerFinished(TestRunner testRunner)
+			var int countTests = testRunner.getTestSuiteCount()
+			var int countFailed = testRunner.failedTestSuites().getCount()
+			logToFile("")
+			logToFile("======================================================================")
+			logToFile("Finished running tests: {} suites PASSED, {} suites FAILED".format(\
+				Array.newWith(countTests - countFailed, countFailed)))
+			logToFile("======================================================================")
+			
+			writer = null
+		end
+		
 		public func void testSuiteStarted(TestRunner testRunner, TestSuite testSuite)
-			window.addLogs("Start testing test suite: {} ({})".format(\
+			logToFile("")
+			logToFile("----------------------------------------------------------------------")
+			logToFile("Start testing test suite: {} ({})".format(\
 				Array.newWith(testSuite.getName(), testSuite.getID())))
+			logToFile("----------------------------------------------------------------------")
 		end
 		
 		public func void testSuiteFinished(TestRunner testRunner, TestSuite testSuite)
 			var int countTests = testSuite.getTestCaseCount()
 			var int countFailed = testSuite.failedTestCases().getCount()
-			window.addLogs("Finished testing test suite: {} ({}): {} cases PASSED, {} cases FAILED".format(\
+			logToFile("----------------------------------------------------------------------")
+			logToFile("Finished testing test suite: {} ({}): {} cases PASSED, {} cases FAILED".format(\
 				Array.newWith(testSuite.getName(), testSuite.getID(), countTests - countFailed, countFailed)))
+			logToFile("----------------------------------------------------------------------")
 		end
 		
 		public func void testCaseStarted(TestRunner testRunner, TestSuite testSuite, TestCase testCase)
-			window.addLogs("Start testing test case: {} ({})".format(\
+			logToFile("Start testing test case: {} ({})".format(\
 				Array.newWith(testCase.getName(), testCase.getID())))
 		end
 		
 		public func void testCaseFinished(TestRunner testRunner, TestSuite testSuite, TestCase testCase)
 			if testCase.getState() == TestCase.State.passed
-				window.addLogs("Finished testing test case: {} ({}): PASSED".format(\
+				logToFile("Finished testing test case: {} ({}): PASSED".format(\
 					Array.newWith(testCase.getName(), testCase.getID())))
 				
 			else
-				window.addLogs("Finished testing test case: {} ({}): FAILED".format(\
+				logToFile("Finished testing test case: {} ({}): FAILED".format(\
 					Array.newWith(testCase.getName(), testCase.getID())))
 				if testCase.getException() != null
 					var String text = " => " + testCase.getException().getReason()
@@ -262,12 +349,19 @@ class WindowTesting extends Window
 							testCase.getException().getTraceLine(i)))
 					end
 					
-					window.addLogs(text)
+					logToFile(text)
 				end
 			end
 		end
+		
+		public func void logToFile(String message)
+			if writer != null
+				writer.writeString(message)
+				writer.writeByte('\n')
+			end
+		end
 	end
-	
+
 	/** \brief Start running tests action. */
 	protected class StartTestingAll implements ActionListener
 		private var WindowTesting window
@@ -343,6 +437,7 @@ class WindowTesting extends Window
 		desktop.addWindow(this)
 		
 		testRunner = TestRunner.new()
+		testRunner.addListener(LogFileListener.new(this))
 		testRunner.addListener(LogConsoleListener.new(this))
 		testRunner.addListener(UpdateUIListener.new(this))
 		
@@ -604,4 +699,14 @@ class WindowTesting extends Window
 			model.setValue(model.getMaximum())
 		end
 	end
+	
+	/**
+	 * \brief Filename for test run to write log file to or empty string to not write log file.
+	 * \version 1.12
+	 * 
+	 * Default implementation returs path "/testresults/{timestamp}".
+	 */
+	 public func String getLogFilePath()
+		return "/testresults/" + TimeDate.new().format("%Y-%m-%dT%H:%M:%S.log")
+	 end
 end
