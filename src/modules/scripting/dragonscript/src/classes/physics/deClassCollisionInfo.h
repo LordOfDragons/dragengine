@@ -67,7 +67,6 @@ private:
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
 	DEF_NATFUNC( nfNew );
-	DEF_NATFUNC( nfNewCopy );
 	DEF_NATFUNC( nfDestructor );
 	
 	DEF_NATFUNC( nfGetOwnerBone );

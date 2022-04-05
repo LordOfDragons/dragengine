@@ -17,7 +17,7 @@ class CollisionInfo
 	/** \name Constructors */
 	/*@{*/
 	/** \brief Create collision information. */
-	public func new()
+	private func new()
 	end
 	/*@}*/
 	
