@@ -116,6 +116,7 @@ abstract class TestCaseECBehavior extends TestCase
 	private var BehaviorElement element
 	private var PreloadCounter preloadCounter
 	private var GameWorld gameWorld
+	private var bool pCreateAndAddElementShouldFail
 	
 	
 	
@@ -148,6 +149,22 @@ abstract class TestCaseECBehavior extends TestCase
 	/** \brief Game world to use for testing. */
 	protected func GameWorld getGameWorld()
 		return gameWorld
+	end
+	
+	/**
+	 * \brief Calling createAndAddElement() on element stub should fail by throwing an exception.
+	 * \version 1.12
+	 */
+	public func bool getCreateAndAddElementShouldFail()
+		return pCreateAndAddElementShouldFail
+	end
+	
+	/**
+	 * \brief Set calling createAndAddElement() on element stub should fail by throwing an exception.
+	 * \version 1.12
+	 */
+	public func void setCreateAndAddElementShouldFail(bool shouldFail)
+		pCreateAndAddElementShouldFail = shouldFail
 	end
 	
 	
@@ -264,7 +281,22 @@ abstract class TestCaseECBehavior extends TestCase
 			setStubProperties()
 			
 			// create element. assert element has been created and has been added to game world
-			stubElement.createAndAddElement(gameWorld)
+			if pCreateAndAddElementShouldFail
+				var bool failed
+				
+				try
+					stubElement.createAndAddElement(gameWorld)
+					
+				catch Exception e
+					failed = true
+				end
+				
+				assertTrue(failed)
+				return false
+				
+			else
+				stubElement.createAndAddElement(gameWorld)
+			end
 			//assertNotNull(element)
 			//assertEquals(element.getGameWorld(), gameWorld)
 			
