@@ -230,7 +230,7 @@ abstract class TestCase
 	end
 	
 	/** \brief Fail test if vectors are not equal within range of 1mm. */
-	protected func void assertDVector(DVector expected, DVector found)
+	protected func void assertDVector(DVector found, DVector expected)
 		if found.isEqualTo(expected, 0.001)
 			return
 		end
@@ -238,7 +238,7 @@ abstract class TestCase
 	end
 	
 	/** \brief Fail test if vectors are not equal within range. */
-	protected func void assertDVector(DVector expected, DVector found, float range)
+	protected func void assertDVector(DVector found, DVector expected, float range)
 		if found.isEqualTo(expected, range)
 			return
 		end
@@ -246,7 +246,7 @@ abstract class TestCase
 	end
 	
 	/** \brief Fail test if vectors are not equal within range of 1mm. */
-	protected func void assertVector(Vector expected, Vector found)
+	protected func void assertVector(Vector found, Vector expected)
 		if found.isEqualTo(expected, 0.001)
 			return
 		end
@@ -254,7 +254,7 @@ abstract class TestCase
 	end
 	
 	/** \brief Fail test if vectors are not equal within range. */
-	protected func void assertVector(DVector expected, DVector found, float range)
+	protected func void assertVector(DVector found, DVector expected, float range)
 		if found.isEqualTo(expected, range)
 			return
 		end
@@ -262,7 +262,7 @@ abstract class TestCase
 	end
 	
 	/** \brief Fail test if quaternions are not equal within range of 1mm. */
-	protected func void assertQuaternion(Quaternion expected, Quaternion found)
+	protected func void assertQuaternion(Quaternion found, Quaternion expected)
 		if found.isEqualTo(expected, 0.001)
 			return
 		end
@@ -270,7 +270,7 @@ abstract class TestCase
 	end
 	
 	/** \brief Fail test if quaternions are not equal within range. */
-	protected func void assertQuaternion(Quaternion expected, Quaternion found, float range)
+	protected func void assertQuaternion(Quaternion found, Quaternion expected, float range)
 		if found.isEqualTo(expected, range)
 			return
 		end
@@ -278,7 +278,7 @@ abstract class TestCase
 	end
 	
 	/** \brief Fail test if colors are not equal within range. */
-	protected func void assertColor(Color expected, Color found, float range)
+	protected func void assertColor(Color found, Color expected, float range)
 		if found.isEqual(expected, range)
 			return
 		end
