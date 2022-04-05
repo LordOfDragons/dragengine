@@ -117,6 +117,7 @@ abstract class TestCaseECBehavior extends TestCase
 	private var PreloadCounter preloadCounter
 	private var GameWorld gameWorld
 	private var bool pCreateAndAddElementShouldFail
+	private var bool pPreloadShouldFail
 	
 	
 	
@@ -165,6 +166,22 @@ abstract class TestCaseECBehavior extends TestCase
 	 */
 	public func void setCreateAndAddElementShouldFail(bool shouldFail)
 		pCreateAndAddElementShouldFail = shouldFail
+	end
+	
+	/**
+	 * \brief Preloading on element class should fail.
+	 * \version 1.12
+	 */
+	public func bool getPreloadShouldFail()
+		return pPreloadShouldFail
+	end
+	
+	/**
+	 * \brief Set preloading on element class should fail.
+	 * \version 1.12
+	 */
+	public func void setPreloadShouldFail(bool shouldFail)
+		pPreloadShouldFail = shouldFail
 	end
 	
 	
@@ -275,6 +292,12 @@ abstract class TestCaseECBehavior extends TestCase
 			
 			// preloading finished
 			preloadCounter = null
+			
+			var Console console = Console.new(1)
+			elementClass.forEachProperty(block ElementClassProperty each
+				assertEquals(each.logPreloadProblems(elementClass, console), pPreloadShouldFail)
+			end)
+			assertFalse(pPreloadShouldFail and elementClass.getPropertyCount() == 0)
 			
 			// create element stub
 			stubElement = StubElement.new(elementClass, UniqueID.new(123))

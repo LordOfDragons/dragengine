@@ -159,7 +159,7 @@ class ElementClassList
 	public func bool logPreloadProblems(Console console)
 		return pClasses.injectValue(false, block bool hasProblems, ElementClass elementClass
 			return elementClass.injectProperty(hasProblems, block bool hasProblems, ElementClassProperty property
-				return property.logPreloadProblems(elementClass, console) | hasProblems
+				return property.logPreloadProblems(elementClass, console) or hasProblems
 			end)
 		end) cast bool
 	end
