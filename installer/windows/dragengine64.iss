@@ -1,11 +1,7 @@
-#define AppId "{870ACA91-F55D-415A-9EB0-5F7F7E4DE2CA}"
-#define AppName "Drag[en]gine Game Engine"
-#define AppVersion "1.11.2"
-
 [Setup]
-AppId={#AppId}
-AppName={#AppName}
-AppVersion={#AppVersion}
+AppId={{870ACA91-F55D-415A-9EB0-5F7F7E4DE2CA}
+AppName=Drag[en]gine Game Engine
+AppVersion=1.11.2
 AppPublisher=Dragon Dreams
 AppPublisherURL=https://dragondreams.ch
 AppSupportURL=https://dragondreams.ch
@@ -64,7 +60,7 @@ Root: "HKLM"; Subkey: "SOFTWARE\Drag[en]gine"; ValueType: string; ValueName: "Pa
 Root: "HKLM"; Subkey: "SOFTWARE\Drag[en]gine"; ValueType: string; ValueName: "PathLauncherGames"; ValueData: "{app}\Launchers\Games"
 
 [CustomMessages]
-english.NewerVersionExists=A newer version of {#AppName} is already installed.%n%nInstaller version: {#AppVersion}%nCurrent version: 
+english.NewerVersionExists=A newer version of {#SetupSetting("AppName")} is already installed.%n%nInstaller version: {#SetupSetting("AppVersion")}%nCurrent version: 
 
 [Code]
 // check if command line argument is present
@@ -86,10 +82,10 @@ end;
 function InitializeSetup: Boolean;
 var Version: String;
 begin
-  if RegValueExists(HKEY_LOCAL_MACHINE,'Software\Microsoft\Windows\CurrentVersion\Uninstall\{#AppId}_is1', 'DisplayVersion') then
+  if RegValueExists(HKEY_LOCAL_MACHINE,'Software\Microsoft\Windows\CurrentVersion\Uninstall\{#SetupSetting("AppId")}_is1', 'DisplayVersion') then
     begin
-      RegQueryStringValue(HKEY_LOCAL_MACHINE,'Software\Microsoft\Windows\CurrentVersion\Uninstall\{#AppId}_is1', 'DisplayVersion', Version);
-      if Version > '{#AppVersion}' then
+      RegQueryStringValue(HKEY_LOCAL_MACHINE,'Software\Microsoft\Windows\CurrentVersion\Uninstall\{#SetupSetting("AppId")}_is1', 'DisplayVersion', Version);
+      if Version > '{#SetupSetting("AppVersion")}' then
         begin
           if not WizardSilent then
             begin
