@@ -257,7 +257,7 @@ void deClassDecal::nfSetTexture::RunFunction( dsRunTime *rt, dsValue *myself ){
 
 // public func DynamicSkin getDynamicSkin()
 deClassDecal::nfGetDynamicSkin::nfGetDynamicSkin( const sInitData &init ) :
-dsFunction( init.clsDecal, "getDynamicSkinSkin", DSFT_FUNCTION,
+dsFunction( init.clsDecal, "getDynamicSkin", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsDynamicSkin ){
 }
 void deClassDecal::nfGetDynamicSkin::RunFunction( dsRunTime *rt, dsValue *myself ){

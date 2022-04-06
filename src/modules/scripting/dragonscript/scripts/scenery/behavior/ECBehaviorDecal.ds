@@ -69,57 +69,48 @@ class ECBehaviorDecal extends DefaultECBehavior
 		
 		
 		/** \brief Create element. */
-		public func new( ECBehaviorDecal ecbehavior, BehaviorElement element ) super( element )
-			this.pECBehavior = ecbehavior
-			this.pComponent = ecbehavior.getComponent().instance( element )
+		public func new(ECBehaviorDecal ecbehavior, BehaviorElement element) super(element)
+			pECBehavior = ecbehavior
+			pComponent = ecbehavior.getComponent().instance(element)
 		end
 		
 		/** \brief Dispose of behavior instance. */
 		public func void dispose()
-			this.pComponent = null
+			pComponent = null
 			super.dispose()
 		end
 		
 		
 		
 		/** \brief Initialize element from stub. */
-		public func void init( StubElement stub )
-			this.pDecal = Decal.new()
-			this.pDecal.setPosition( this.pECBehavior.getPosition().getVector() )
-			this.pDecal.setOrientation( Quaternion.newFromEuler( this.pECBehavior.getOrientation().getVector() ) )
-			this.pDecal.setSize( this.pECBehavior.getSize().getVector() )
+		public func void init(StubElement stub)
+			var ElementClass eclass = getElement().getClass()
+			var CodecPropertyString codec = eclass.getCodecPropertyString()
 			
-			var String value = stub.getPropertyValueFor( this.pECBehavior.getSkin().getName(), "" )
-			if value.empty()
-				this.pDecal.setSkin( this.pECBehavior.getSkin().getSkin() )
-				
-			else
-				try
-					this.pDecal.setSkin( Skin.new( value ) )
-					
-				catch Exception e
-					throw ELoadResourceFailed.new( value, this.getElement().getClass().getClassname() )
-				end
-			end
+			pDecal = Decal.new()
+			pDecal.setPosition(pECBehavior.getPosition().getVector(stub, codec))
+			pDecal.setOrientation(Quaternion.newFromEuler(pECBehavior.getOrientation().getVector(stub, codec)))
+			pDecal.setSize(pECBehavior.getSize().getVector(stub, codec))
+			pDecal.setSkin(pECBehavior.getSkin().getSkin(stub, eclass))
 			
-			this.pComponent.getComponent().addDecal( this.pDecal )
+			pComponent.getComponent().addDecal(pDecal)
 		end
 		
 		
 		
 		/** \brief Behavior. */
 		public func ECBehaviorDecal getECBehavior()
-			return this.pECBehavior
+			return pECBehavior
 		end
 		
 		/** \brief Component behavior instance. */
 		public func ECBehaviorComponent.Instance getComponent()
-			return this.pComponent
+			return pComponent
 		end
 		
 		/** \brief Decal. */
 		public func Decal getDecal()
-			return this.pDecal
+			return pDecal
 		end
 	end
 	
@@ -134,40 +125,40 @@ class ECBehaviorDecal extends DefaultECBehavior
 	
 	
 	/** \brief Create behavior element class. */
-	public func new( BehaviorElementClass eclass, ECBehaviorComponent component ) \
-	this( eclass, component, "" )
+	public func new(BehaviorElementClass eclass, ECBehaviorComponent component) \
+	this(eclass, component, "")
 	end
 	
-	public func new( BehaviorElementClass eclass, ECBehaviorComponent component, String id ) \
-	this( eclass, component, id, id.empty() if "decal." else "decal(" + id + ")." )
+	public func new(BehaviorElementClass eclass, ECBehaviorComponent component, String id) \
+	this(eclass, component, id, id.empty() if "decal." else "decal(" + id + ").")
 	end
 	
-	public func new( BehaviorElementClass eclass, ECBehaviorComponent component, \
-	String id, String prefix ) super( eclass, id )
+	public func new(BehaviorElementClass eclass, ECBehaviorComponent component, \
+	String id, String prefix) super(eclass, id)
 		if component == null
-			throw ENullPointer.new( "component" )
+			throw ENullPointer.new("component")
 		end
 		
-		this.pComponent = component
+		pComponent = component
 		
-		this.pPosition = ECPVector.new( prefix + "position", Vector.new() )
-		eclass.addProperty( this.pPosition )
+		pPosition = ECPVector.new(prefix + "position")
+		eclass.addProperty(pPosition)
 		
-		this.pOrientation = ECPVector.new( prefix + "orientation", Vector.new() )
-		eclass.addProperty( this.pOrientation )
+		pOrientation = ECPVector.new(prefix + "orientation")
+		eclass.addProperty(pOrientation)
 		
-		this.pSize = ECPVector.new( prefix + "orientation", Vector.new( 0.1, 0.1, 0.1 ) )
-		eclass.addProperty( this.pSize )
+		pSize = ECPVector.new(prefix + "size", Vector.new(0.1, 0.1, 0.1))
+		eclass.addProperty(pSize)
 		
-		this.pSkin = ECPSkin.new( prefix + "skin" )
-		eclass.addProperty( this.pSkin )
+		pSkin = ECPSkin.new(prefix + "skin")
+		eclass.addProperty(pSkin)
 		
-		eclass.addBehavior( this )
+		eclass.addBehavior(this)
 	end
 	
 	/** \brief Dispose of behavior. */
 	public func void dispose()
-		this.pComponent = null
+		pComponent = null
 		super.dispose()
 	end
 	
@@ -175,34 +166,34 @@ class ECBehaviorDecal extends DefaultECBehavior
 	
 	/** \brief Component behavior to apply decal to. */
 	public func ECBehaviorComponent getComponent()
-		return this.pComponent
+		return pComponent
 	end
 	
 	/** \brief Position to project decal from. */
 	public func ECPVector getPosition()
-		return this.pPosition
+		return pPosition
 	end
 	
 	/** \brief Orientation to project decal from. */
 	public func ECPVector getOrientation()
-		return this.pOrientation
+		return pOrientation
 	end
 	
 	/** \brief Size of decal to project. */
 	public func ECPVector getSize()
-		return this.pSize
+		return pSize
 	end
 	
 	/** \brief Skin to apply to decal. */
 	public func ECPSkin getSkin()
-		return this.pSkin
+		return pSkin
 	end
 	
 	
 	
 	/** \brief Get instance in element from owner element class. */
-	public func Instance instance( BehaviorElement element )
-		return element.getInstanceAt( this.getInstanceIndex() ) cast Instance
+	public func Instance instance(BehaviorElement element)
+		return element.getInstanceAt(getInstanceIndex()) cast Instance
 	end
 	
 	
@@ -213,10 +204,10 @@ class ECBehaviorDecal extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorCollider.
 	 */
-	static public func ECBehaviorDecal getBehaviorIn( BehaviorElementClass eclass )
-		return eclass.findBehavior( block ECBehaviorDecal each
+	static public func ECBehaviorDecal getBehaviorIn(BehaviorElementClass eclass)
+		return eclass.findBehavior(block ECBehaviorDecal each
 			return true
-		end ) cast ECBehaviorDecal
+		end) cast ECBehaviorDecal
 	end
 	
 	/**
@@ -225,10 +216,10 @@ class ECBehaviorDecal extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorDecal with specific identifier.
 	 */
-	static public func ECBehaviorDecal getBehaviorIn( BehaviorElementClass eclass, String id )
-		return eclass.findBehavior( block ECBehaviorDecal each
-			return each.getID().equals( id )
-		end ) cast ECBehaviorDecal
+	static public func ECBehaviorDecal getBehaviorIn(BehaviorElementClass eclass, String id)
+		return eclass.findBehavior(block ECBehaviorDecal each
+			return each.getID().equals(id)
+		end) cast ECBehaviorDecal
 	end
 	
 	/**
@@ -237,10 +228,10 @@ class ECBehaviorDecal extends DefaultECBehavior
 	 * Returns list contains ECBehaviorDecal behaviors in the order they have
 	 * been created in the element.
 	 */
-	static public func Array getAllBehaviorsIn( BehaviorElementClass eclass )
-		return eclass.collectBehaviors( block ECBehaviorDecal each
+	static public func Array getAllBehaviorsIn(BehaviorElementClass eclass)
+		return eclass.collectBehaviors(block ECBehaviorDecal each
 			return true
-		end )
+		end)
 	end
 	
 	
@@ -252,10 +243,10 @@ class ECBehaviorDecal extends DefaultECBehavior
 	 * of type ECBehaviorDecal.Instance . If more than one instance is present returns
 	 * the first instance.
 	 */
-	static public func Instance getInstanceIn( BehaviorElement element )
-		return element.findInstance( block Instance each
+	static public func Instance getInstanceIn(BehaviorElement element)
+		return element.findInstance(block Instance each
 			return true
-		end ) cast Instance
+		end) cast Instance
 	end
 	
 	/**
@@ -264,10 +255,10 @@ class ECBehaviorDecal extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElement contains a behavior instance
 	 * of type ECBehaviorDecal.Instance with specific identifier.
 	 */
-	static public func Instance getInstanceIn( BehaviorElement element, String id )
-		return element.findInstance( block Instance each
-			return each.getECBehavior().getID().equals( id )
-		end ) cast Instance
+	static public func Instance getInstanceIn(BehaviorElement element, String id)
+		return element.findInstance(block Instance each
+			return each.getECBehavior().getID().equals(id)
+		end) cast Instance
 	end
 	
 	/**
@@ -276,16 +267,16 @@ class ECBehaviorDecal extends DefaultECBehavior
 	 * Returns list contains ECBehaviorDecal.Instance instances in the order they have
 	 * been created in the element.
 	 */
-	static public func Array getAllInstancesIn( BehaviorElement element )
-		return element.collectInstances( block Instance each
+	static public func Array getAllInstancesIn(BehaviorElement element)
+		return element.collectInstances(block Instance each
 			return true
-		end )
+		end)
 	end
 	
 	
 	
 	/** \brief Create Behavior instance. */
-	public func ECBehaviorInstance createInstance( BehaviorElement element )
-		return Instance.new( this, element )
+	public func ECBehaviorInstance createInstance(BehaviorElement element)
+		return Instance.new(this, element)
 	end
 end
