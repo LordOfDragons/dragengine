@@ -52,6 +52,9 @@ Root: "HKCR"; Subkey: "Drag[en]gine DELGA\shell\install\command"; ValueType: str
 Root: "HKLM"; Subkey: "SOFTWARE\Drag[en]gine"; ValueType: string; ValueName: "PathEngine"; ValueData: "{app}"
 Root: "HKLM"; Subkey: "SOFTWARE\Drag[en]gine"; ValueType: string; ValueName: "PathLauncherGames"; ValueData: "{app}\Launchers\Games"
 
+[Languages]
+Name: "english"; MessagesFile: "compiler:Default.isl"
+
 [CustomMessages]
 english.NewerVersionExists=A newer version of {#SetupSetting("AppName")} is already installed.%n%nInstaller version: {#SetupSetting("AppVersion")}%nCurrent version: 
 

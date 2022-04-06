@@ -51,6 +51,9 @@ Root: "HKCR"; Subkey: "Drag[en]gine Game Project\DefaultIcon"; ValueType: string
 Root: "HKCR"; Subkey: "Drag[en]gine Game Project\shell\open\command"; ValueType: string; ValueData: """{app}\Bin\deigde.exe"" ""%1"""; Flags: uninsdeletekey
 Root: "HKLM"; Subkey: "SOFTWARE\Drag[en]gine"; ValueType: string; ValueName: "PathIgde"; ValueData: "{app}"
 
+[Languages]
+Name: "english"; MessagesFile: "compiler:Default.isl"
+
 [CustomMessages]
 english.NewerVersionExists=A newer version of {#SetupSetting("AppName")} is already installed.%n%nInstaller version: {#SetupSetting("AppVersion")}%nCurrent version: 
 
