@@ -85,7 +85,7 @@ begin
           if not WizardSilent then
             begin
               MsgBox(ExpandConstant('{cm:NewerVersionExists} '+Version), mbInformation, MB_OK);
-            end
+            end;
           Result := False;
         end
       else
