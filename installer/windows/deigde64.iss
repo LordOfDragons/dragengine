@@ -1,7 +1,11 @@
+#define AppId "{636641D2-B432-415A-AE7F-6BB0AF42A86E}"
+#define AppName "Drag[en]gine IGDE"
+#define AppVersion "1.11.2"
+
 [Setup]
-AppId={{636641D2-B432-415A-AE7F-6BB0AF42A86E}
-AppName=Drag[en]gine IGDE
-AppVersion=1.11.2
+AppId={#AppId}
+AppName={#AppName}
+AppVersion={#AppVersion}
 AppPublisher=Dragon Dreams
 AppPublisherURL=https://dragondreams.ch
 AppSupportURL=https://dragondreams.ch
