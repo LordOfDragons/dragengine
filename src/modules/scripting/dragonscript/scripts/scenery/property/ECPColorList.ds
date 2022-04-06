@@ -64,48 +64,48 @@ class ECPColorList extends ElementClassProperty
 	
 	
 	/** \brief Create property. */
-	public func new( String name, CodecPropertyString codec ) super( name )
-		this.pCodec = codec
-		this.pColorList = Array.new()
+	public func new(String name, CodecPropertyString codec) super(name)
+		pCodec = codec
+		pColorList = Array.new()
 	end
 	
 	/** \brief Create property with initial path. */
-	public func new( String name, CodecPropertyString codec, Array colors ) super( name )
-		this.pCodec = codec
-		this.pColorList = colors
+	public func new(String name, CodecPropertyString codec, Array colors) super(name)
+		pCodec = codec
+		pColorList = colors
 	end
 	
 	
 	
 	/** \brief Coded used to decode color string. */
 	public func CodecPropertyString getCodec()
-		return this.pCodec
+		return pCodec
 	end
 	
 	/** \brief Colors as Array of Color. */
 	public func Array getColors()
-		return this.pColorList
+		return pColorList
 	end
 	
 	/** \brief Set colors as Array of Color. */
-	public func void setColors( Array colors )
-		this.pColorList = colors
+	public func void setColors(Array colors)
+		pColorList = colors
 	end
 	
 	/** \brief Count of colors. */
 	public func int getColorCount()
-		return this.pColorList.getCount()
+		return pColorList.getCount()
 	end
 	
 	/** \brief Color at index. */
-	public func Color getColorAt( int index )
-		return this.pColorList.getAt( index ) cast Color
+	public func Color getColorAt(int index)
+		return pColorList.getAt(index) cast Color
 	end
 	
 	/** \brief Random color or null if list is empty. */
 	public func Color randomColor()
-		if this.pColorList.getCount() > 0
-			return this.pColorList.random() cast Color
+		if pColorList.getCount() > 0
+			return pColorList.random() cast Color
 			
 		else
 			return null
@@ -113,32 +113,32 @@ class ECPColorList extends ElementClassProperty
 	end
 	
 	/** \brief Add color. */
-	public func void addColor( Color color )
+	public func void addColor(Color color)
 		if color == null
-			throw ENullPointer.new( "color" )
+			throw ENullPointer.new("color")
 		end
-		this.pColorList.add( color )
+		pColorList.add(color)
 	end
 	
 	/** \brief Color list string. */
 	public func String getColorsString()
-		return this.pCodec.encodeStringList( this.pColorList.map( block Color each
-			return this.pCodec.encodeColor3( each )
-		end ) )
+		return pCodec.encodeStringList(pColorList.map(block Color each
+			return pCodec.encodeColor3(each)
+		end))
 	end
 	
 	/** \brief Set color list from color string. */
-	public func void setColorsFromString( String string )
-		this.pColorList = this.pCodec.decodeStringList( string ).map( block String each
-			this.pCodec.decodeColor3( each )
-		end )
+	public func void setColorsFromString(String string)
+		pColorList = pCodec.decodeStringList(string).map(block String each
+			return pCodec.decodeColor3(each)
+		end)
 	end
 	
 	
 	
 	/** \brief Set value of property from XML decoded value. */
-	public func void setValue( Object value )
-		this.setColorsFromString( value cast String )
+	public func void setValue(Object value)
+		setColorsFromString(value cast String)
 	end
 	
 	
@@ -151,8 +151,8 @@ class ECPColorList extends ElementClassProperty
 	 * 
 	 * Uses the stored property name as stub property name.
 	 */
-	public func Array getColors( StubWithProperties stub )
-		return this.getColors( stub, this.getName() )
+	public func Array getColors(StubWithProperties stub)
+		return getColors(stub, getName())
 	end
 	
 	/**
@@ -161,15 +161,15 @@ class ECPColorList extends ElementClassProperty
 	 * If named stub property is not present the stored color list is returned. If the named
 	 * stub property is present it is decoded using the stored decoder and the result returned.
 	 */
-	public func Array getColors( StubWithProperties stub, String name )
-		var String value = stub.getPropertyValueFor( name, null )
+	public func Array getColors(StubWithProperties stub, String name)
+		var String value = stub.getPropertyValueFor(name, null)
 		if value != null
-			return this.pCodec.decodeStringList( value ).map( block String each
-				this.pCodec.decodeColor3( each )
-			end )
+			return pCodec.decodeStringList(value).map(block String each
+				return pCodec.decodeColor3(each)
+			end)
 			
 		else
-			return this.pColorList
+			return pColorList
 		end
 	end
 end
