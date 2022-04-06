@@ -361,7 +361,7 @@ class WindowTesting extends Window
 			end
 		end
 	end
-
+	
 	/** \brief Start running tests action. */
 	protected class StartTestingAll implements ActionListener
 		private var WindowTesting window
@@ -401,6 +401,25 @@ class WindowTesting extends Window
 		
 		public func void onAction(ActionEvent event)
 			window.stopTesting()
+		end
+	end
+	
+	/**
+	 * \brief Show test result directory action.
+	 * \version 1.12
+	 */
+	protected class ShowTestResultDirectory implements ActionListener
+		private var WindowTesting window
+		
+		public func new(WindowTesting window)
+			this.window = window
+		end
+		
+		public func void onAction(ActionEvent event)
+			var String path = window.getLogFilePath()
+			if path != null
+				FileSystem.browseOverlay(File.new(path).getParent().getPath())
+			end
 		end
 	end
 	
@@ -585,11 +604,19 @@ class WindowTesting extends Window
 			// button panel at the bottom
 			addWidget(Panel.new(GridLayout.new(0, 1, 5), block Panel p
 				p.addWidget(buttonRunAll = Button.new("Run All", StartTestingAll.new(this)))
+				buttonRunAll.setToolTip("Run all test suites")
+				
 				p.addWidget(buttonRunSelected = Button.new("Run Selected", StartTestingSelected.new(this)))
+				buttonRunSelected.setToolTip("Run only selected test suite")
+				
 				p.addWidget(buttonStop = Button.new("Stop", StopTesting.new(this)))
-				p.addWidget(Button.new("Quit", BlockActionListener.new(block ActionEvent event
-					Engine.quit()
-				end)))
+				buttonStop.setToolTip("Stop running tests")
+				
+				var Button button = Button.new("Results", ShowTestResultDirectory.new(this))
+				button.setToolTip("Open file system browser in directory containing test results")
+				p.addWidget(button)
+				
+				p.addWidget(Button.new("Quit", QuitGameActionListener.new()))
 			end), BorderLayout.Area.bottom)
 		end)
 		doLayout()
