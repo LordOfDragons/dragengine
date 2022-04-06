@@ -50,3 +50,48 @@ Root: "HKCR"; Subkey: "Drag[en]gine Game Project"; ValueType: string; ValueData:
 Root: "HKCR"; Subkey: "Drag[en]gine Game Project\DefaultIcon"; ValueType: string; ValueData: "{app}\Bin\deigde.exe,0"
 Root: "HKCR"; Subkey: "Drag[en]gine Game Project\shell\open\command"; ValueType: string; ValueData: """{app}\Bin\deigde.exe"" ""%1"""; Flags: uninsdeletekey
 Root: "HKLM"; Subkey: "SOFTWARE\Drag[en]gine"; ValueType: string; ValueName: "PathIgde"; ValueData: "{app}"
+
+[CustomMessages]
+english.NewerVersionExists=A newer version of {#AppName} is already installed.%n%nInstaller version: {#AppVersion}%nCurrent version: 
+
+[Code]
+// check if command line argument is present
+// if CmdLineParamExists('/PARAM') then
+function CmdLineParamExists(const Value: string): Boolean;
+var
+  I: Integer;  
+begin
+  Result := False;
+  for I := 1 to ParamCount do
+    if CompareText(ParamStr(I), Value) = 0 then
+    begin
+      Result := True;
+      Exit;
+    end;
+end;
+
+// find current version before installation
+function InitializeSetup: Boolean;
+var Version: String;
+begin
+  if RegValueExists(HKEY_LOCAL_MACHINE,'Software\Microsoft\Windows\CurrentVersion\Uninstall\{#AppId}_is1', 'DisplayVersion') then
+    begin
+      RegQueryStringValue(HKEY_LOCAL_MACHINE,'Software\Microsoft\Windows\CurrentVersion\Uninstall\{#AppId}_is1', 'DisplayVersion', Version);
+      if Version > '{#AppVersion}' then
+        begin
+          if not WizardSilent then
+            begin
+              MsgBox(ExpandConstant('{cm:NewerVersionExists} '+Version), mbInformation, MB_OK);
+            end
+          Result := False;
+        end
+      else
+        begin
+          Result := True;
+        end
+    end
+  else
+    begin
+      Result := True;
+    end
+end;

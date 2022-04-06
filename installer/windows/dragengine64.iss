@@ -35,6 +35,11 @@ Source: "unpacked\@System\dragengine.dll"; DestDir: "{sys}"
 Source: "unpacked\@System\delauncher.dll"; DestDir: "{sys}"
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
+; [InstallDelete]
+; Make sure previous installed modules are deleted before installing new ones.
+; Type: filesandordirs; Name: "{app}\Data\modules"
+; Type: filesandordirs; Name: "{app}\Share\modules"
+
 [Icons]
 Name: "{group}\Drag[en]gine GUI Launcher"; Filename: "{app}\Launchers\Bin\delauncher-gui.exe"
 Name: "{group}\{cm:UninstallProgram,Drag[en]gine GUI Launcher}"; Filename: "{uninstallexe}"
@@ -53,3 +58,48 @@ Root: "HKCR"; Subkey: "Drag[en]gine DELGA\shell\install"; ValueType: string; Val
 Root: "HKCR"; Subkey: "Drag[en]gine DELGA\shell\install\command"; ValueType: string; ValueData: """{app}\Launchers\Bin\delauncher-gui.exe"" --install ""%1"""
 Root: "HKLM"; Subkey: "SOFTWARE\Drag[en]gine"; ValueType: string; ValueName: "PathEngine"; ValueData: "{app}"
 Root: "HKLM"; Subkey: "SOFTWARE\Drag[en]gine"; ValueType: string; ValueName: "PathLauncherGames"; ValueData: "{app}\Launchers\Games"
+
+[CustomMessages]
+english.NewerVersionExists=A newer version of {#AppName} is already installed.%n%nInstaller version: {#AppVersion}%nCurrent version: 
+
+[Code]
+// check if command line argument is present
+// if CmdLineParamExists('/PARAM') then
+function CmdLineParamExists(const Value: string): Boolean;
+var
+  I: Integer;  
+begin
+  Result := False;
+  for I := 1 to ParamCount do
+    if CompareText(ParamStr(I), Value) = 0 then
+    begin
+      Result := True;
+      Exit;
+    end;
+end;
+
+// find current version before installation
+function InitializeSetup: Boolean;
+var Version: String;
+begin
+  if RegValueExists(HKEY_LOCAL_MACHINE,'Software\Microsoft\Windows\CurrentVersion\Uninstall\{#AppId}_is1', 'DisplayVersion') then
+    begin
+      RegQueryStringValue(HKEY_LOCAL_MACHINE,'Software\Microsoft\Windows\CurrentVersion\Uninstall\{#AppId}_is1', 'DisplayVersion', Version);
+      if Version > '{#AppVersion}' then
+        begin
+          if not WizardSilent then
+            begin
+              MsgBox(ExpandConstant('{cm:NewerVersionExists} '+Version), mbInformation, MB_OK);
+            end
+          Result := False;
+        end
+      else
+        begin
+          Result := True;
+        end
+    end
+  else
+    begin
+      Result := True;
+    end
+end;
