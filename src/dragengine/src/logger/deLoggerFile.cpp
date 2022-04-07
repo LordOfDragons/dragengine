@@ -83,7 +83,7 @@ void deLoggerFile::LogPrefix( const char *source, const char *message, const cha
 	decString string;
 	
 	string.Format( "%s[%s] [%4d-%02d-%02d %02d:%02d:%02d] %s%s", prefix, source,
-		timestamp.GetYear(), timestamp.GetMonth(), timestamp.GetDay(),
+		timestamp.GetYear(), timestamp.GetMonth() + 1, timestamp.GetDay() + 1,
 		timestamp.GetHour(), timestamp.GetMinute(), timestamp.GetSecond(),
 		message, ( len == 0 || message[ len - 1 ] != '\n' ) ? "\n" : "" );
 	

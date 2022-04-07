@@ -302,13 +302,13 @@ char lineEnd ) const {
 	//if( attribute == etaDefault && colorForeground == etcWhite && colorBackground == etcBlack ){
 	if( attribute == etaDefault && colorForeground == etcDefault && colorBackground == etcDefault ){
 		printf( "[%s] [%4d-%02d-%02d %02d:%02d:%02d] %s%c", source,
-			timestamp.GetYear(), timestamp.GetMonth(), timestamp.GetDay(),
+			timestamp.GetYear(), timestamp.GetMonth() + 1, timestamp.GetDay() + 1,
 			timestamp.GetHour(), timestamp.GetMinute(), timestamp.GetSecond(), message, lineEnd );
 		
 	}else{
 		printf( "\033[%d;%d;%dm[%s] [%4d-%02d-%02d %02d:%02d:%02d] %s\33[0;0;0m%c", attribute,
 			vColorTableForeground[ colorForeground ], vColorTableBackground[ colorBackground ],
-			source, timestamp.GetYear(), timestamp.GetMonth(), timestamp.GetDay(),
+			source, timestamp.GetYear(), timestamp.GetMonth() + 1, timestamp.GetDay() + 1,
 			timestamp.GetHour(), timestamp.GetMinute(), timestamp.GetSecond(), message, lineEnd );
 	}
 }
