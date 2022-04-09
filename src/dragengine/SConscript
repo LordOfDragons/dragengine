@@ -100,30 +100,6 @@ if envDragengine['OSPosix'] or envDragengine['OSMacOS']:
 
 conf.Finish()
 
-# write the configuration file required by a few source files
-def buildWriteConfig(source, target, env):
-	configFilePath = target[0].abspath
-	configFileDefines = {}
-	configFileDefines['OS_UNIX'] = env['OSPosix']
-	configFileDefines['OS_W32'] = env['OSWindows']
-	configFileDefines['OS_BEOS'] = env['OSBeOS']
-	configFileDefines['OS_MACOS'] = env['OSMacOS']
-	configFileDefines['OS_ANDROID'] = env['platform_android'] != 'no'
-	if env['OSPosix'] or env['OSMacOS']:
-		configFileDefines['HAS_LIB_X11'] = hasX11
-		configFileDefines['HAS_LIB_PTHREAD'] = hasPThreads
-		configFileDefines['HAS_LIB_DL'] = hasDL
-		# android specific problems
-		#configFileDefines['HAS_FUNC_UTIMENSAT'] = hasUtimensat
-		configFileDefines['HAS_FUNC_PTRHEAD_CANCEL'] = hasPthreadCancel
-	
-	if WriteConfigFile(configFilePath, configFileDefines, env):
-		raise Exception('Writing configuration file failed')
-
-targetConfig = envDragengine.Command(
-	envDragengine.File('src/dragengine_configuration.h').srcnode(),
-	'SConscript', buildWriteConfig)
-
 # fetch values in expanded form for later use
 pathLib = envDragengine.subst(envDragengine['path_de_lib'])
 pathInclude = envDragengine.subst(envDragengine['path_de_include'])
@@ -143,6 +119,31 @@ if envDragengine['force_version']:
 libVersionString = versionString
 if len(libVersionString.split('.')) < 3:
 	libVersionString = '{}.0'.format(libVersionString)
+
+# write the configuration file required by a few source files
+def buildWriteConfig(source, target, env):
+	configFilePath = target[0].abspath
+	configFileDefines = {}
+	configFileDefines['DE_VERSION'] = versionString
+	configFileDefines['OS_UNIX'] = env['OSPosix']
+	configFileDefines['OS_W32'] = env['OSWindows']
+	configFileDefines['OS_BEOS'] = env['OSBeOS']
+	configFileDefines['OS_MACOS'] = env['OSMacOS']
+	configFileDefines['OS_ANDROID'] = env['platform_android'] != 'no'
+	if env['OSPosix'] or env['OSMacOS']:
+		configFileDefines['HAS_LIB_X11'] = hasX11
+		configFileDefines['HAS_LIB_PTHREAD'] = hasPThreads
+		configFileDefines['HAS_LIB_DL'] = hasDL
+		# android specific problems
+		#configFileDefines['HAS_FUNC_UTIMENSAT'] = hasUtimensat
+		configFileDefines['HAS_FUNC_PTRHEAD_CANCEL'] = hasPthreadCancel
+	
+	if WriteConfigFile(configFilePath, configFileDefines, env):
+		raise Exception('Writing configuration file failed')
+
+targetConfig = envDragengine.Command(
+	envDragengine.File('src/dragengine_configuration.h').srcnode(),
+	'SConscript', buildWriteConfig)
 
 # update the compile flags
 # envDragengine.Append(CXXFLAGS=' -D__DEBUG__')

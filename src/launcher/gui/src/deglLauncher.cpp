@@ -304,6 +304,17 @@ void deglLauncher::pParseArguments(){
 	const int argumentCount = pArguments.GetArgumentCount();
 	int argumentIndex = 0;
 	
+	// check some special arguments first which require uncluttered output
+	if( argumentCount > 0 ){
+		const decString argument( pArguments.GetArgumentAt( argumentIndex )->ToUTF8() );
+		
+		if( argument == "--version" ){
+			printf( "%s", DE_VERSION );
+			pCmdLineQuitNow = true;
+			return;
+		}
+	}
+	
 	// log command line
 	GetLogger()->LogInfo( GetLogSource(), "Command line arguments:" );
 	for( argumentIndex=0; argumentIndex<argumentCount; argumentIndex++ ){

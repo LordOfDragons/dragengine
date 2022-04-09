@@ -123,6 +123,10 @@ int declLauncher::Run(){
 	if( actionName == "help" ){
 		declActionHelp( *this ).Run();
 		
+	}else if( actionName == "version" ){
+		printf( "%s", DE_VERSION );
+		return 0;
+		
 	}else if( actionName == "run" ){
 		Init();
 		declRunGame( *this ).Run();
