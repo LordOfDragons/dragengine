@@ -6,7 +6,7 @@ function unpack_payload()
 	
 	match=$(grep --text --line-number '^PAYLOAD:$' $0 | cut -d ':' -f 1)
 	payload_start=$((match + 1))
-	tail -n +$payload_start $0 | tar -C "$1" -xjf -
+	tail -n +$payload_start $0 | tar -C "$1" -xjvf -
 }
 
 function register_mimetypes()
@@ -162,8 +162,8 @@ elif [ "$1" == "--unpack" ]; then
 else
 	read -p "Install Game Engine? [y/n] " ans
 	if [[ "${ans:0:1}" == "y" || "${ans:0:1}" == "Y" ]]; then
-		unpack_payload "/"
 		remove_old_files
+		unpack_payload "/"
 		register_mimetypes
 		ensure_group_games_exists
 		create_games_directory
