@@ -6,7 +6,7 @@ function unpack_payload()
 	
 	match=$(grep --text --line-number '^PAYLOAD:$' $0 | cut -d ':' -f 1)
 	payload_start=$((match + 1))
-	tail -n +$payload_start $0 | tar -C "$1" -xjvf -
+	tail -n +$payload_start $0 | tar -C "$1" -xjf -
 }
 
 function register_mimetypes()
