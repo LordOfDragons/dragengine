@@ -87,10 +87,12 @@ if envLauncher['OSWindows']:
 
 program = envLauncher.Program(target='delauncher-gui', source=objects, LIBS=libs)
 programs.append(program)
-targetBuild = parent_env.Alias('launcher_gui_build', programs)
 
 if envLauncher['OSPosix']:
 	linkProgram = envLauncher.SymLink(envLauncher.File('delauncher'), program)
+	programs.append(linkProgram)
+
+targetBuild = parent_env.Alias('launcher_gui_build', programs)
 
 install = []
 archive = {}
