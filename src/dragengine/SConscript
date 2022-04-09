@@ -112,7 +112,7 @@ if envDragengine['OSWindows']:
 	pathSysLib = envDragengine.subst(envDragengine['systemroot'])
 	#pathSysLib = envDragengine.subst(envDragengine['path_de'])
 
-versionString = '1.11'
+versionString = '1.11.3'
 if envDragengine['force_version']:
 	versionString = envDragengine['force_version']
 
