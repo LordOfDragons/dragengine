@@ -106,7 +106,7 @@ if envLauncher['OSPosix']:
 		target = os.path.join(pathBin, 'delauncher')
 		installSandbox = GetOption('install_sandbox')
 		if installSandbox:
-			target = os.path.join(installSandbox, target)
+			target = os.path.join(installSandbox, SCons.Util.make_path_relative(target))
 		source = l
 		install.append(envLauncher.Command(target, l, Copy('$TARGET', '$SOURCE')))
 		
