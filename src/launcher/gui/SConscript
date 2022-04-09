@@ -104,6 +104,9 @@ for p in program:
 if envLauncher['OSPosix']:
 	for l in linkProgram:
 		target = os.path.join(pathBin, 'delauncher')
+		installSandbox = GetOption('install_sandbox')
+		if installSandbox:
+			target = os.path.join(installSandbox, target)
 		source = l
 		install.append(envLauncher.Command(target, l, Copy('$TARGET', '$SOURCE')))
 		
