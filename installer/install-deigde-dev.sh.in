@@ -1,5 +1,43 @@
 #!/bin/bash
 
+autoAnswerYes=0
+
+function confirm_user()
+{
+	prompt=""
+	default="y"
+	
+	for arg in "$@"
+	do
+		case "$arg" in
+		prompt=*)
+			prompt="${arg:7}"
+			;;
+		default=*)
+			default="${arg:8}"
+			;;
+		*) ;;
+		esac
+	done
+	
+	if [[ ${autoAnswerYes} == 1 ]] ; then
+		echo "${prompt} [y/n] (auto yes)"
+		return 0
+	fi
+	
+	read -p "${prompt} [y/n] " ans
+	
+	if [[ "${ans}" == "" ]]; then
+		ans="${default}"
+	fi
+	
+	if [[ "${ans:0:1}" == "y" || "${ans:0:1}" == "Y" ]]; then
+		return 0
+	else
+		return 1
+	fi
+}
+
 function unpack_payload()
 {
 	echo ">>> Copy files..."
@@ -24,14 +62,17 @@ echo ""
 if [ "$1" == "--help" ] || [ "$1" == "-h" ]; then
 	echo "Syntax:"
 	echo ""
-	echo "./install-deigde-dev.sh"
+	echo "./install-deigde-dev.sh [{--yes | -y}]"
 	echo "   install igde development"
 	echo ""
 	echo "./install-deigde-dev.sh {--help | -h}"
 	echo "   this help information"
 	echo ""
-	echo "./install-deigde-dev.sh --uninstall"
+	echo "./install-deigde-dev.sh --uninstall [{--yes | -y}]"
 	echo "   uninstall igde development"
+	echo ""
+	echo "options:"
+	echo "--yes: answer questions with yes"
 	exit 0
 fi
 
@@ -51,19 +92,25 @@ if [[ ! $(builtin type -P "tar") ]]; then
 fi
 
 if [ "$1" == "--uninstall" ]; then
+	if [[ "$2" == "--yes" || "$2" == "-y" ]]; then
+		autoAnswerYes=1
+	fi
+	
 	echo -e "\e[93mAttention: Uninstalling requested!\e[39m"
 	echo -e "\e[93mNote: User content will not be removed.\e[39m"
 	echo ""
-	read -p "Uninstall IGDE Development? [y/n] " ans
-	if [[ "${ans:0:1}" == "y" || "${ans:0:1}" == "Y" ]]; then
+	if confirm_user prompt="Uninstall IGDE Development? [y/n] " ; then
 		uninstall_files
 		echo ""
 		echo -e "\e[93m\e[1m>>> Finished Successfully\e[39m\e[0m"
 	fi
 	
 else
-	read -p "Install IGDE Development? [y/n] " ans
-	if [[ "${ans:0:1}" == "y" || "${ans:0:1}" == "Y" ]]; then
+	if [[ "$1" == "--yes" || "$1" == "-y" ]]; then
+		autoAnswerYes=1
+	fi
+	
+	if confirm_user prompt="Install IGDE Development? [y/n] " ; then
 		unpack_payload
 		echo ""
 		echo -e "\e[93m\e[1m>>> Finished Successfully\e[39m\e[0m"
