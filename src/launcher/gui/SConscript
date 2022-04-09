@@ -3,6 +3,7 @@ from SConsCommon import *
 Import('parent_env parent_targets parent_report')
 
 envLauncher = parent_env.Clone()
+envLauncher.Tool('symlink')
 
 buildLauncher = envLauncher['build_guilauncher'] != TernaryVariableNo
 
@@ -88,12 +89,23 @@ program = envLauncher.Program(target='delauncher-gui', source=objects, LIBS=libs
 programs.append(program)
 targetBuild = parent_env.Alias('launcher_gui_build', programs)
 
+if envLauncher['OSPosix']:
+	linkProgram = envLauncher.SymLink(envLauncher.File('delauncher'), program)
+
 install = []
 archive = {}
 
 install.append(envLauncher.Install(pathBin, program))
 for p in program:
 	archive[os.path.join(pathBin, p.name)] = p
+
+if envLauncher['OSPosix']:
+	for l in linkProgram:
+		target = os.path.join(pathBin, 'delauncher')
+		source = l
+		install.append(envLauncher.Command(target, l, Copy('$TARGET', '$SOURCE')))
+		
+		archive[os.path.join(pathBin, l.name)] = l
 
 if envLauncher['OSWindows']:
 	install.append(envEngine.Install(pathBin, programEngine))

@@ -24,6 +24,8 @@ def normalizePath(path):
 	match = reWindowsDrive.match(path)
 	if match:
 		path = path[match.end():]
+	elif path[0] == '/':
+		path = path[1:]  # no root path in archives
 	
 	return path
 

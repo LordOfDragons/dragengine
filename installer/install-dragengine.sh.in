@@ -6,7 +6,7 @@ function unpack_payload()
 	
 	match=$(grep --text --line-number '^PAYLOAD:$' $0 | cut -d ':' -f 1)
 	payload_start=$((match + 1))
-	tail -n +$payload_start $0 | tar -C / -xjf -
+	tail -n +$payload_start $0 | tar -C "$1" -xjf -
 }
 
 function register_mimetypes()
@@ -52,6 +52,7 @@ function uninstall_files()
 	fi
 	
 	echo ">>> Removing files"
+	rm -f /usr/bin/delauncher
 	rm -f /usr/bin/delauncher-console
 	rm -f /usr/bin/delauncher-gui
 	rm -f /usr/lib/libDEFOX-*.so
@@ -75,6 +76,7 @@ function uninstall_files()
 function remove_old_files()
 {
 	echo ">>> Removing old files if present"
+	rm -f /usr/bin/delauncher
 	rm -f /usr/bin/delauncher-console
 	rm -f /usr/bin/delauncher-gui
 	rm -f /usr/lib/libDEFOX-*.so
@@ -111,6 +113,9 @@ if [ "$1" == "--help" ] || [ "$1" == "-h" ]; then
 	echo ""
 	echo "./install-dragengine.sh --uninstall"
 	echo "   uninstall game engine"
+	echo ""
+	echo "./install-dragengine.sh --unpack directory"
+	echo "   unpack game engine into directory"
 	exit 0
 fi
 
@@ -144,10 +149,20 @@ if [ "$1" == "--uninstall" ]; then
 		echo -e "\e[93m\e[1m>>> Finished Successfully\e[39m\e[0m"
 	fi
 	
+elif [ "$1" == "--unpack" ]; then
+	if [ "$2" == "" ]; then
+		echo -e "\e[31m\e[1mUnpacking requires target to be specified\e[39m\e[0m"
+		exit -1
+	fi
+	
+	unpack_payload "$2"
+	echo ""
+	echo -e "\e[93m\e[1m>>> Finished Successfully\e[39m\e[0m"
+	
 else
 	read -p "Install Game Engine? [y/n] " ans
 	if [[ "${ans:0:1}" == "y" || "${ans:0:1}" == "Y" ]]; then
-		unpack_payload
+		unpack_payload "/"
 		remove_old_files
 		register_mimetypes
 		ensure_group_games_exists
