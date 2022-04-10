@@ -94,7 +94,7 @@ elif envInstaller['OSWindows']:
 		
 		msixUpdated = envInstaller.Command(
 			'msix/dragengine/AppxManifest.xml',
-			'msix/dragengine/AppxManifest.xml.in',
+			'msix-data/dragengine/AppxManifest.xml.in',
 			Action(UpdateModuleManifest),
 			ManifestUpdates=[{'action': 'text', 'value': versionMsix, 'keyword': '%VERSION%'}] )
 		
@@ -113,7 +113,7 @@ elif envInstaller['OSWindows']:
 		
 		msixUpdated = envInstaller.Command(
 			'msix/deigde/AppxManifest.xml',
-			'msix/deigde/AppxManifest.xml.in',
+			'msix-data/deigde/AppxManifest.xml.in',
 			Action(UpdateModuleManifest),
 			ManifestUpdates=[{'action': 'text', 'value': versionMsix, 'keyword': '%VERSION%'}] )
 		
