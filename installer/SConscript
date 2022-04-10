@@ -1,6 +1,7 @@
 from SConsCommon import *
 
 import os
+import fnmatch
 
 Import('parent_env parent_targets parent_report')
 
@@ -66,6 +67,7 @@ elif envInstaller['OSWindows']:
 	def copyDataFiles(copied, directory, basePath):
 		dataFiles = []
 		globFiles(envInstaller, directory, '*', dataFiles)
+		dataFiles = [x for x in dataFiles if not fnmatch.fnmatch(x, '*.in')]
 		
 		cutLen = len(directory.split('/'))
 		for f in dataFiles:
