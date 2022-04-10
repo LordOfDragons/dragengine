@@ -80,13 +80,24 @@ elif envInstaller['OSWindows']:
 		if not env.RunExternalCommand(script):
 			raise Exception('Failed building MSIX')
 	
+	versionMsix = envInstaller['version']
+	while len(versionMsix.split('.')) < 4:
+		versionMsix = '{}.0'.format(versionMsix)
+	
 	if envInstaller['installer_name_engine']:
 		copied = []
 		copyArchiveFiles(copied, 'archive-engine', 'msix/dragengine')
 		copyArchiveFiles(copied, 'archive-launcher', 'msix/dragengine')
 		copyDataFiles(copied, 'msix-data/dragengine', 'msix/dragengine')
+		
+		msixUpdated = envInstaller.Command(
+			envInstaller.File('msix/dragengine/AppxManifest.xml').srcnode(),
+			'msix/dragengine/AppxManifest.xml.in',
+			Action(UpdateModuleManifest),
+			ManifestUpdates=[{'action': 'text', 'value': versionMsix, 'keyword': '%VERSION%'}] )
+		
 		msix = envInstaller.Command('{}.msix'.format(envInstaller['installer_name_engine']),
-			'msix/dragengine/AppxManifest.xml', envInstaller.Action(msixBuild, 'Build MSIX $TARGET'))
+			msixUpdated, envInstaller.Action(msixBuild, 'Build MSIX $TARGET'))
 		envInstaller.Depends(msix, copied)
 		installers.append(msix)
 		
@@ -97,8 +108,15 @@ elif envInstaller['OSWindows']:
 		# end of microsoft hack
 		copyArchiveFiles(copied, 'archive-igde', 'msix/deigde')
 		copyDataFiles(copied, 'msix-data/deigde', 'msix/deigde')
+		
+		msixUpdated = envInstaller.Command(
+			envInstaller.File('msix/deigde/AppxManifest.xml').srcnode(),
+			'msix/deigde/AppxManifest.xml.in',
+			Action(UpdateModuleManifest),
+			ManifestUpdates=[{'action': 'text', 'value': versionMsix, 'keyword': '%VERSION%'}] )
+		
 		msix = envInstaller.Command('{}.msix'.format(envInstaller['installer_name_igde']),
-			'msix/deigde/AppxManifest.xml', envInstaller.Action(msixBuild, 'Build MSIX $TARGET'))
+			msixUpdated, envInstaller.Action(msixBuild, 'Build MSIX $TARGET'))
 		envInstaller.Depends(msix, copied)
 		installers.append(msix)
 
