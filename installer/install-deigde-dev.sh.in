@@ -88,7 +88,7 @@ fi
 if [[ ! $(builtin type -P "tar") ]]; then
 	echo -e "\e[31m\e[1mMissing tar binary in path.\e[39m\e[0m"
 	echo -e "\e[93m(Reason: Required to unpack archive)\e[39m"
-	exit 2
+	exit 3
 fi
 
 if [ "$1" == "--uninstall" ]; then
@@ -103,6 +103,10 @@ if [ "$1" == "--uninstall" ]; then
 		uninstall_files
 		echo ""
 		echo -e "\e[93m\e[1m>>> Finished Successfully\e[39m\e[0m"
+		exit 0
+		
+	else
+		exit 1
 	fi
 	
 else
@@ -114,7 +118,11 @@ else
 		unpack_payload
 		echo ""
 		echo -e "\e[93m\e[1m>>> Finished Successfully\e[39m\e[0m"
+		exit 0
+		
+	else
+		exit 1
 	fi
 fi
 
-exit 1
+exit 2

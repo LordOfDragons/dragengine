@@ -171,13 +171,13 @@ fi
 if [[ ! $(builtin type -P "tar") ]]; then
 	echo -e "\e[31m\e[1mMissing tar binary in path.\e[39m\e[0m"
 	echo -e "\e[93m(Reason: Required to unpack archive)\e[39m"
-	exit 2
+	exit 3
 fi
 
 if [[ ! $(builtin type -P "xdg-mime") ]]; then
 	echo -e "\e[31m\e[1mMissing xdg-mime in path .\e[39m\e[0m"
 	echo -e "\e[93m(Reason: Required to install mime-types)\e[39m"
-	exit 2
+	exit 3
 fi
 
 if [ "$1" == "--uninstall" ]; then
@@ -192,17 +192,22 @@ if [ "$1" == "--uninstall" ]; then
 		uninstall_files
 		echo ""
 		echo -e "\e[93m\e[1m>>> Finished Successfully\e[39m\e[0m"
+		exit 0
+		
+	else
+		exit 1
 	fi
 	
 elif [ "$1" == "--unpack" ]; then
 	if [ "$2" == "" ]; then
 		echo -e "\e[31m\e[1mUnpacking requires target to be specified\e[39m\e[0m"
-		exit 3
+		exit 4
 	fi
 	
 	unpack_payload "$2"
 	echo ""
 	echo -e "\e[93m\e[1m>>> Finished Successfully\e[39m\e[0m"
+	exit 0
 	
 else
 	if [[ "$1" == "--yes" || "$1" == "-y" ]]; then
@@ -217,7 +222,11 @@ else
 		create_games_directory
 		echo ""
 		echo -e "\e[93m\e[1m>>> Finished Successfully\e[39m\e[0m"
+		exit 0
+		
+	else
+		exit 1
 	fi
 fi
 
-exit 1
+exit 2
