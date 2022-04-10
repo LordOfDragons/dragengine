@@ -112,7 +112,7 @@ if envDragengine['OSWindows']:
 	pathSysLib = envDragengine.subst(envDragengine['systemroot'])
 	#pathSysLib = envDragengine.subst(envDragengine['path_de'])
 
-versionString = '1.11.3'
+versionString = envDragengine['version']
 if envDragengine['force_version']:
 	versionString = envDragengine['force_version']
 
@@ -289,8 +289,12 @@ targetInstall = envDragengine.Alias('dragengine', [targetInstallRuntime, targetI
 srcdir = Dir('src').srcnode().abspath
 
 # doxygen
+doxyfile = envDragengine.Command(envDragengine.File('Doxyfile').srcnode(), 'Doxyfile.in',
+	Action(UpdateModuleManifest),
+	ManifestUpdates=[{'action': 'text', 'value': versionString, 'keyword': '%VERSION%'}] )
+
 targetDoxygen = envDragengine.Alias('dragengine_doc', envDragengine.Command(
-	'doc/html/index.html', 'Doxyfile', 'cd {} && doxygen ../Doxyfile'.format(srcdir)))
+	'doc/html/index.html', doxyfile, 'cd {} && doxygen ../Doxyfile'.format(srcdir)))
 #parent_targets['dragengine_doc'] = ['Drag[en]gine Documentation', targetDoxygen]
 
 # cloc

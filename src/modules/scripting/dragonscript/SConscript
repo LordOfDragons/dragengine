@@ -165,11 +165,19 @@ targetInstall = envModule.Alias('scr_dragonscript', install)
 srcdir = Dir('.').srcnode().abspath
 
 # doxygen
+doxyfileModule = envModule.Command(envModule.File('doxyfile_module').srcnode(), 'doxyfile_module.in',
+	Action(UpdateModuleManifest),
+	ManifestUpdates=[{'action': 'text', 'value': versionString, 'keyword': '%VERSION%'}] )
+
 buildDoxygenModule = envModule.Alias('scr_dragonscript_doc_module', envModule.Command(
-	'doc/module/html/index.html', 'doxyfile_module', 'cd {} && doxygen doxyfile_module'.format(srcdir)))
+	'doc/module/html/index.html', doxyfileModule, 'cd {} && doxygen doxyfile_module'.format(srcdir)))
+
+doxyfileScript = envModule.Command(envModule.File('doxyfile_script').srcnode(), 'doxyfile_script.in',
+	Action(UpdateModuleManifest),
+	ManifestUpdates=[{'action': 'text', 'value': versionString, 'keyword': '%VERSION%'}] )
 
 buildDoxygenScript = envModule.Alias('scr_dragonscript_doc_script', envModule.Command(
-	'doc/script/html/index.html', 'doxyfile_script', 'cd {} && doxygen doxyfile_script'.format(srcdir)))
+	'doc/script/html/index.html', doxyfileScript, 'cd {} && doxygen doxyfile_script'.format(srcdir)))
 
 buildDoxygen = envModule.Alias('scr_dragonscript_doc', [buildDoxygenModule, buildDoxygenScript])
 

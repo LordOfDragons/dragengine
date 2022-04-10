@@ -14,9 +14,9 @@ pathLib = envLibrary.subst(envLibrary['path_de_lib'])
 if envLibrary['OSWindows']:
 	pathSysLib = envLibrary.subst(envLibrary['systemroot'])
 
-versionString = '1.11.3'
+versionString = envLibrary['version']
 if envLibrary['force_version']:
-	versionString = envModule['force_version']
+	versionString = envLibrary['force_version']
 
 libVersionString = versionString
 if len(libVersionString.split('.')) < 3:
@@ -128,8 +128,12 @@ targetDoxygen = envLibrary.Alias('delauncher_doc', envLibrary.Command(
 srcdir = Dir('.').srcnode().abspath
 
 # doxygen
+doxyfile = envLibrary.Command(envLibrary.File('Doxyfile').srcnode(), 'Doxyfile.in',
+	Action(UpdateModuleManifest),
+	ManifestUpdates=[{'action': 'text', 'value': versionString, 'keyword': '%VERSION%'}] )
+
 targetDoxygen = envLibrary.Alias('delauncher_doc', envLibrary.Command(
-	'doc/html/index.html', 'Doxyfile', 'cd {} && doxygen Doxyfile'.format(srcdir)))
+	'doc/html/index.html', doxyfile, 'cd {} && doxygen Doxyfile'.format(srcdir)))
 
 # cloc
 buildClocBare = BuildCLOC(envLibrary,

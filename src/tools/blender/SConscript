@@ -18,7 +18,7 @@ def archiveZip(env, target, source):
 		for path, node in archiveFiles.items():
 			arcfile.write(node.srcnode().abspath, path)
 
-versionString = '1.11.3'
+versionString = envAddon['version']
 if envAddon['force_version']:
         versionString = envAddon['force_version']
 

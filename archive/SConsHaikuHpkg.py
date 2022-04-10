@@ -58,7 +58,7 @@ def createHaikuHpkg(env, target, source):
 	shutil.rmtree(dirCollect)
 
 # fetch values in expanded form for later use
-versionString = '1.11'
+versionString = envPackage['version']
 if envPackage['force_version']:
 	versionString = envPackage['force_version']
 

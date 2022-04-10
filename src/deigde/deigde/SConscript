@@ -37,9 +37,9 @@ pathShare = envIGDELib.subst(envIGDELib['path_igde_share'])
 if envIGDELib['OSWindows']:
 	pathSysLib = envIGDELib.subst(envIGDELib['systemroot'])
 
-versionString = '1.11.3'
+versionString = envIGDELib['version']
 if envIGDELib['force_version']:
-	versionString = envModule['force_version']
+	versionString = envIGDELib['force_version']
 
 libVersionString = versionString
 if len(libVersionString.split('.')) < 3:
@@ -217,8 +217,12 @@ linklibs.extend(parent_targets['dragengine']['libs'])
 #if not envIGDELib['OSWindows']:
 #	linklibs.extend(parent_targets['lib_fox']['libs'])
 
+doxyfile = envIGDELib.Command(envIGDELib.File('Doxyfile').srcnode(), 'Doxyfile.in',
+	Action(UpdateModuleManifest),
+	ManifestUpdates=[{'action': 'text', 'value': versionString, 'keyword': '%VERSION%'}] )
+
 targetDoxygen = envIGDELib.Alias('deigde_shared_doc', envIGDELib.Command(
-	'doc/html/index.html', 'Doxyfile', 'cd "{}" && doxygen ../../Doxyfile'.format(
+	'doc/html/index.html', doxyfile, 'cd "{}" && doxygen ../../Doxyfile'.format(
 		Dir('shared/src').srcnode().abspath)))
 
 parent_targets['deigde_shared'] = {

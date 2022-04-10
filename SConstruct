@@ -159,6 +159,7 @@ params.Add( BoolVariable( 'with_warnerrors', 'Treat warnings as errors ( dev-bui
 params.Add( BoolVariable( 'with_sanitize', 'Enable sanitizing (dev-builds)', False ) )
 params.Add( BoolVariable( 'with_sanitize_thread', 'Enable thread sanitizing (dev-builds)', False ) )
 params.Add( BoolVariable( 'with_verbose', 'Verbose compilation showing command lines( dev-builds )', False ) )
+params.Add(StringVariable('version', 'Version', '9999'))
 params.Add(StringVariable('force_version', 'Force version (empty to disable)', ''))
 params.Add(StringVariable('with_threads', 'Count of threads to use for building external packages', '1'))
 
@@ -706,6 +707,7 @@ parent_report[ 'treat warnings as errors' ] = 'yes' if parent_env[ 'with_warnerr
 parent_report[ 'build with debug symbols' ] = 'yes' if parent_env[ 'with_debug' ] else 'no'
 parent_report[ 'build with sanitizing' ] = 'yes' if parent_env[ 'with_sanitize' ] else 'no'
 parent_report[ 'build with thread sanitizing' ] = 'yes' if parent_env[ 'with_sanitize_thread' ] else 'no'
+parent_report['version'] = parent_env['version']
 
 
 
