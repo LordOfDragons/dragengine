@@ -91,7 +91,7 @@ elif envInstaller['OSWindows']:
 		copyDataFiles(copied, 'msix-data/dragengine', 'msix/dragengine')
 		
 		msixUpdated = envInstaller.Command(
-			envInstaller.File('msix/dragengine/AppxManifest.xml').srcnode(),
+			'msix/dragengine/AppxManifest.xml',
 			'msix/dragengine/AppxManifest.xml.in',
 			Action(UpdateModuleManifest),
 			ManifestUpdates=[{'action': 'text', 'value': versionMsix, 'keyword': '%VERSION%'}] )
@@ -110,7 +110,7 @@ elif envInstaller['OSWindows']:
 		copyDataFiles(copied, 'msix-data/deigde', 'msix/deigde')
 		
 		msixUpdated = envInstaller.Command(
-			envInstaller.File('msix/deigde/AppxManifest.xml').srcnode(),
+			'msix/deigde/AppxManifest.xml',
 			'msix/deigde/AppxManifest.xml.in',
 			Action(UpdateModuleManifest),
 			ManifestUpdates=[{'action': 'text', 'value': versionMsix, 'keyword': '%VERSION%'}] )
