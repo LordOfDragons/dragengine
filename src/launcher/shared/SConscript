@@ -120,10 +120,6 @@ linklibs.extend(parent_targets['dragengine']['libs'])
 binlibs = []
 binlibs.extend(parent_targets['dragengine']['libs'])
 
-targetDoxygen = envLibrary.Alias('delauncher_doc', envLibrary.Command(
-	'doc/html/index.html', 'Doxyfile', 'cd "{}" && doxygen ../../Doxyfile'.format(
-		Dir('shared/src').srcnode().abspath)))
-
 # source directory required for special commands
 srcdir = Dir('.').srcnode().abspath
 
