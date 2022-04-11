@@ -98,11 +98,13 @@ private:
 	struct sExtension{
 		const char *name;
 		uint32_t version;
+		bool enableIfSupported;
 	};
 	struct sLayer{
 		const char *name;
 		uint32_t version;
 		uint32_t layerVersion;
+		bool enableIfSupported;
 	};
 	
 	deVROpenXR &pOxr;

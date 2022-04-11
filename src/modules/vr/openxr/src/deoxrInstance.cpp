@@ -82,6 +82,37 @@ pInstance( XR_NULL_HANDLE )
 	pSupportsExtension[ extHUAWEIControllerInteraction ].name = XR_HUAWEI_CONTROLLER_INTERACTION_EXTENSION_NAME;
 	pSupportsExtension[ extMSFTHandInteraction ].name = XR_MSFT_HAND_INTERACTION_EXTENSION_NAME;
 	
+	pSupportsExtension[ extKHROpenglEnable ].enableIfSupported = true;
+	pSupportsExtension[ extKHRVisibilityMask ].enableIfSupported = true;
+// 	pSupportsExtension[ extEXTEyeGazeInteraction ].enableIfSupported = true;
+	pSupportsExtension[ extEXTHandJointsMotionRange ].enableIfSupported = true;
+	pSupportsExtension[ extEXTHandTracking ].enableIfSupported = true;
+// 	pSupportsExtension[ extEXTPerformanceSettings ].enableIfSupported = true;
+// 	pSupportsExtension[ extEXTViewConfigurationDepthRange ].enableIfSupported = true;
+// 	pSupportsExtension[ extEPICViewConfigurationFov ].enableIfSupported = true;
+// 	pSupportsExtension[ extFBDisplayRefreshRate ].enableIfSupported = true;
+// 	pSupportsExtension[ extFBFoveation ].enableIfSupported = true;
+// 	pSupportsExtension[ extFBFoveationConfiguration ].enableIfSupported = true;
+// 	pSupportsExtension[ extFBHandTrackingAim ].enableIfSupported = true;
+// 	pSupportsExtension[ extFBHandTrackingCapsules ].enableIfSupported = true;
+// 	pSupportsExtension[ extFBHandTrackingMesh ].enableIfSupported = true;
+// 	pSupportsExtension[ extFBKeyboardTracking ].enableIfSupported = true;
+// 	pSupportsExtension[ extFBPassthrough ].enableIfSupported = true;
+// 	pSupportsExtension[ extFBPassthroughKeyboardHands ].enableIfSupported = true;
+// 	pSupportsExtension[ extFBRenderModel ].enableIfSupported = true;
+// 	pSupportsExtension[ extFBSpaceWarp ].enableIfSupported = true;
+// 	pSupportsExtension[ extFBTriangleMesh ].enableIfSupported = true;
+// 	pSupportsExtension[ extHTCFacialTracking ].enableIfSupported = true;
+	pSupportsExtension[ extHTCXViveTrackerInteraction ].enableIfSupported = true;
+// 	extMNDHeadless: do not enable. this causes HMD to not work anymore
+	pSupportsExtension[ extEXTDebugUtils ].enableIfSupported = true;
+	pSupportsExtension[ extEXTHPMixedRealityController ].enableIfSupported = true;
+	pSupportsExtension[ extEXTSamsungOdysseyController ].enableIfSupported = true;
+	pSupportsExtension[ extHTCViveCosmosControllerInteraction ].enableIfSupported = true;
+	pSupportsExtension[ extHTCViveFocus3ControllerInteraction ].enableIfSupported = true;
+	pSupportsExtension[ extHUAWEIControllerInteraction ].enableIfSupported = true;
+	pSupportsExtension[ extMSFTHandInteraction ].enableIfSupported = true;
+	
 	memset( &pSupportsLayer, 0, sizeof( pSupportsLayer ) );
 	pSupportsLayer[ layerLunarCoreValidation ].name = "XR_APILAYER_LUNARG_core_validation";
 	pSupportsLayer[ layerApiDump ].name = "XR_APILAYER_LUNARG_api_dump";
@@ -233,7 +264,7 @@ void deoxrInstance::pDetectExtensions(){
 		// report support extensions
 		pOxr.LogInfo( "Supported Extensions:" );
 		for( i=0; i<ExtensionCount; i++ ){
-			if( pSupportsExtension[ i ].version ){
+			if( pSupportsExtension[ i ].version && pSupportsExtension[ i ].enableIfSupported ){
 				pOxr.LogInfoFormat( "- %s: %d", pSupportsExtension[ i ].name,
 					pSupportsExtension[ i ].version );
 			}
@@ -242,7 +273,7 @@ void deoxrInstance::pDetectExtensions(){
 		// report support extensions
 		pOxr.LogInfo( "Not upported Extensions:" );
 		for( i=0; i<ExtensionCount; i++ ){
-			if( ! pSupportsExtension[ i ].version ){
+			if( ! pSupportsExtension[ i ].version && pSupportsExtension[ i ].enableIfSupported ){
 				pOxr.LogInfoFormat( "- %s", pSupportsExtension[ i ].name );
 			}
 		}
@@ -370,6 +401,9 @@ void deoxrInstance::pDetectLayers(){
 void deoxrInstance::pCreateInstance( bool enableValidationLayers ){
 	pOxr.LogInfo( "Create OpenXR Instance" );
 	
+	pSupportsLayer[ layerLunarCoreValidation ].enableIfSupported = enableValidationLayers;
+	pSupportsLayer[ layerApiDump ].enableIfSupported = false; //enableValidationLayers;
+	
 	// create instance
 	XrInstanceCreateInfo instanceCreateInfo;
 	memset( &instanceCreateInfo, 0, sizeof( instanceCreateInfo ) );
@@ -397,30 +431,32 @@ void deoxrInstance::pCreateInstance( bool enableValidationLayers ){
 	
 	// enable layers
 	const char *layers[ LayerCount ];
-	uint32_t layerCount = 0;
+	uint32_t i, layerCount = 0;
 	
-	if( enableValidationLayers /* && SupportsExtension( extEXTDebugUtils ) */ ){
-		if( SupportsLayer( layerLunarCoreValidation ) ){
-			layers[ layerCount++ ] = pSupportsLayer[ layerLunarCoreValidation ].name;
-		}
-// 		if( SupportsLayer( layerApiDump ) ){
-// 			layers[ layerCount++ ] = pSupportsLayer[ layerApiDump ].name;
-// 		}
-	}
-	
-	// enable extensions
-	const char *extensions[ ExtensionCount ];
-	uint32_t i, extensionCount = 0;
-	
-	for( i=0; i<ExtensionCount; i++ ){
-		if( pSupportsExtension[ i ].version ){
-			extensions[ extensionCount++ ] = pSupportsExtension[ i ].name;
+	for( i=0; i<LayerCount; i++ ){
+		if( pSupportsLayer[ i ].version && pSupportsLayer[ i ].enableIfSupported ){
+			layers[ layerCount++ ] = pSupportsLayer[ i ].name;
 		}
 	}
 	
 	pOxr.LogInfo( "Enable Layers:" );
 	for( i=0; i<layerCount; i++ ){
 		pOxr.LogInfoFormat( "- %s", layers[ i ] );
+	}
+	
+	// enable extensions
+	const char *extensions[ ExtensionCount ];
+	uint32_t extensionCount = 0;
+	
+	for( i=0; i<ExtensionCount; i++ ){
+		if( pSupportsExtension[ i ].version && pSupportsExtension[ i ].enableIfSupported ){
+			extensions[ extensionCount++ ] = pSupportsExtension[ i ].name;
+		}
+	}
+	
+	pOxr.LogInfo( "Enable Extensions:" );
+	for( i=0; i<extensionCount; i++ ){
+		pOxr.LogInfoFormat( "- %s", extensions[ i ] );
 	}
 	
 	if( layerCount > 0 ){
