@@ -288,6 +288,11 @@ void deoxrDPHtcViveTracker::CheckAttached(){
 }
 
 void deoxrDPHtcViveTracker::CreateActions( deoxrActionSet &actionSet ){
+	const deoxrInstance &instance = GetInstance();
+	if( ! instance.SupportsExtension( deoxrInstance::extHTCXViveTrackerInteraction ) ){
+		return;
+	}
+	
 #ifdef PER_TRACKER_ACTIONS
 	const int count = pTrackers.GetCount();
 	decString name;
