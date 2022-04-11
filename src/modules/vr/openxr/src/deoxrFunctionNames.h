@@ -64,6 +64,7 @@ INSTANCE_LEVEL_OPENXR_FUNCTION( xrAcquireSwapchainImage )
 INSTANCE_LEVEL_OPENXR_FUNCTION( xrWaitSwapchainImage )
 INSTANCE_LEVEL_OPENXR_FUNCTION( xrReleaseSwapchainImage )
 
+INSTANCE_LEVEL_OPENXR_FUNCTION( xrEnumerateViewConfigurations )
 INSTANCE_LEVEL_OPENXR_FUNCTION( xrGetViewConfigurationProperties )
 INSTANCE_LEVEL_OPENXR_FUNCTION( xrEnumerateViewConfigurationViews )
 INSTANCE_LEVEL_OPENXR_FUNCTION( xrLocateViews )

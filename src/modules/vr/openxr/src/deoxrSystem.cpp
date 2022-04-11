@@ -98,12 +98,68 @@ pSupportsHandTracking( false )
 			pSupportsHandTracking ? "yes" : "no" );
 		
 		// get view configuration properties
-		XrViewConfigurationProperties viewConfProp;
-		memset( &viewConfProp, 0, sizeof( viewConfProp ) );
-		viewConfProp.type = XR_TYPE_VIEW_CONFIGURATION_PROPERTIES;
+		uint32_t viewConfigCount;
+		OXR_CHECK( instance.xrEnumerateViewConfigurations( instance.GetInstance(),
+			pSystemId, 0, &viewConfigCount, nullptr ) );
+		instance.GetOxr().LogInfoFormat( "View configurations: %d", viewConfigCount );
 		
-		OXR_CHECK( instance.xrGetViewConfigurationProperties( instance.GetInstance(),
-			pSystemId, XR_VIEW_CONFIGURATION_TYPE_PRIMARY_STEREO, &viewConfProp ) );
+		XrViewConfigurationProperties viewConfProp;
+		bool viewConfFound = false;
+		
+		XrViewConfigurationType *viewConfigs = nullptr;
+		if( viewConfigCount > 0 ){
+			viewConfigs = new XrViewConfigurationType[ viewConfigCount ];
+			try{
+				OXR_CHECK( instance.xrEnumerateViewConfigurations( instance.GetInstance(),
+					pSystemId, viewConfigCount, &viewConfigCount, viewConfigs ) );
+				
+				XrViewConfigurationProperties props;
+				memset( &props, 0, sizeof( props ) );
+				props.type = XR_TYPE_VIEW_CONFIGURATION_PROPERTIES;
+				
+				uint32_t i;
+				for( i=0; i<viewConfigCount; i++ ){
+					OXR_CHECK( instance.xrGetViewConfigurationProperties(
+						instance.GetInstance(), pSystemId, viewConfigs[ i ], &props ) );
+					
+					switch( viewConfigs[ i ] ){
+					case XR_VIEW_CONFIGURATION_TYPE_PRIMARY_STEREO:
+						instance.GetOxr().LogInfoFormat( "- %d: Primary Stereo", i );
+						
+						if( ! viewConfFound ){
+							memcpy( &viewConfProp, &props, sizeof( viewConfFound ) );
+							viewConfFound = true;
+						}
+						break;
+						
+					case XR_VIEW_CONFIGURATION_TYPE_PRIMARY_MONO:
+						instance.GetOxr().LogInfoFormat( "- %d: Primary Mono", i );
+						break;
+						
+					case XR_VIEW_CONFIGURATION_TYPE_PRIMARY_QUAD_VARJO:
+						instance.GetOxr().LogInfoFormat( "- %d: Primary Quad Varjo", i );
+						break;
+						
+					case XR_VIEW_CONFIGURATION_TYPE_SECONDARY_MONO_FIRST_PERSON_OBSERVER_MSFT:
+						instance.GetOxr().LogInfoFormat( "- %d: Secondary Mono FP Observer", i );
+						break;
+						
+					default:
+						instance.GetOxr().LogInfoFormat( "- %d: Unknown type 0x%x", i, viewConfigs[ i ] );
+					}
+				}
+				
+				delete [] viewConfigs;
+				
+			}catch( const deException & ){
+				delete [] viewConfigs;
+				throw;
+			}
+		}
+		
+		if( ! viewConfFound ){
+			DETHROW_INFO( deeInvalidAction, "required view configuration not found" );
+		}
 		
 		(void) viewConfProp.fovMutable;
 		
@@ -130,6 +186,10 @@ pSupportsHandTracking( false )
 		
 		// use the largest view size as render size to request from the graphic module
 		pRenderSize = pLeftEyeViewSize.Largest( pRightEyeViewSize );
+		
+		if( pRenderSize == decPoint() ){
+			DETHROW_INFO( deeInvalidParam, "openxr runtime requested 0-size view" );
+		}
 		
 	}catch( const deException & ){
 		pCleanUp();
