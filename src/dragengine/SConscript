@@ -117,7 +117,7 @@ if envDragengine['force_version']:
 	versionString = envDragengine['force_version']
 
 libVersionString = versionString
-if len(libVersionString.split('.')) < 3:
+while len(libVersionString.split('.')) < 3:
 	libVersionString = '{}.0'.format(libVersionString)
 
 # write the configuration file required by a few source files

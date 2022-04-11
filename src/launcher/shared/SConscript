@@ -19,7 +19,7 @@ if envLibrary['force_version']:
 	versionString = envLibrary['force_version']
 
 libVersionString = versionString
-if len(libVersionString.split('.')) < 3:
+while len(libVersionString.split('.')) < 3:
 	libVersionString = '{}.0'.format(libVersionString)
 
 envLibrary.Replace(WINDOWS_INSERT_DEF = 1) # generated .def file if dll is build

@@ -42,7 +42,7 @@ if envIGDELib['force_version']:
 	versionString = envIGDELib['force_version']
 
 libVersionString = versionString
-if len(libVersionString.split('.')) < 3:
+while len(libVersionString.split('.')) < 3:
 	libVersionString = '{}.0'.format(libVersionString)
 
 # update the compile flags
