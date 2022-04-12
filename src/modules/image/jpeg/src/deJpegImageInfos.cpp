@@ -56,8 +56,6 @@ pReader( NULL )
 	memset( &pDecompress, '\0', sizeof( pDecompress ) );
 	pDecompress.client_data = this;
 	pDecompress.err = &pErrorMgr;
-	
-	SetIsCompressed( true );
 }
 
 deJpegImageInfo::~deJpegImageInfo(){

@@ -31,12 +31,3 @@ deBaseModule( loadableModule ){
 
 deBaseLanguagePackModule::~deBaseLanguagePackModule(){
 }
-
-
-
-// Management
-///////////////
-
-bool deBaseLanguagePackModule::IsCompressed( decBaseFileReader& ){
-	return false;
-}

@@ -19,6 +19,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+// includes
 #include "deBaseFontModule.h"
 
 // Class deBaseFontModule
@@ -29,12 +30,4 @@ deBaseModule( loadableModule ){
 }
 
 deBaseFontModule::~deBaseFontModule(){
-}
-
-
-// Management
-///////////////
-
-bool deBaseFontModule::IsCompressed( decBaseFileReader& ){
-	return false;
 }

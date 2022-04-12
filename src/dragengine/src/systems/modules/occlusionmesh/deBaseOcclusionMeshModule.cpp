@@ -30,11 +30,3 @@ deBaseModule( loadableModule ){
 
 deBaseOcclusionMeshModule::~deBaseOcclusionMeshModule(){
 }
-
-
-// Management
-///////////////
-
-bool deBaseOcclusionMeshModule::IsCompressed( decBaseFileReader& ){
-	return false;
-}

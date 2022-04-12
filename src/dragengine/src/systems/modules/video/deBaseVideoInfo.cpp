@@ -34,7 +34,6 @@ pHeight( 1 ),
 pPixelFormat( deVideo::epf444 ),
 pFrameCount( 0 ),
 pFrameRate( 30 ),
-pIsCompressed( false ),
 
 pBytesPerSample( 0 ),
 pSampleCount( 0 ),
@@ -87,10 +86,6 @@ void deBaseVideoInfo::SetFrameRate( int frameRate ){
 
 void deBaseVideoInfo::SetColorConversionMatrix( const decColorMatrix3 &matrix ){
 	pColorConversionMatrix = matrix;
-}
-
-void deBaseVideoInfo::SetIsCompressed( bool isCompressed ){
-	pIsCompressed = isCompressed;
 }
 
 

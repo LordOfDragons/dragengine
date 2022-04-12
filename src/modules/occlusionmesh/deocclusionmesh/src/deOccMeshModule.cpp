@@ -105,10 +105,6 @@ void deOccMeshModule::SaveOcclusionMesh( decBaseFileWriter &file, const deOcclus
 	DETHROW( deeInvalidAction );
 }
 
-bool deOccMeshModule::IsCompressed( decBaseFileReader& ){
-	return false;
-}
-
 
 
 // Private Functions

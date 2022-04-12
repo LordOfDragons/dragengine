@@ -52,13 +52,6 @@ public:
 	
 	/** \brief Save skin. */
 	virtual void SaveSkin( decBaseFileWriter &writer, const deSkin &skin ) = 0;
-	
-	/**
-	 * \brief File is compressed.
-	 * \version 1.12
-	 * \note Call has to be thread safe.
-	 */
-	virtual bool IsCompressed( decBaseFileReader &reader );
 	/*@}*/
 };
 

@@ -64,13 +64,6 @@ public:
 	
 	/** \brief Save occlusion mesh. */
 	virtual void SaveOcclusionMesh( decBaseFileWriter &writer, const deOcclusionMesh &occlusionMesh );
-	
-	/**
-	 * \brief File is compressed.
-	 * \version 1.12
-	 * \note Call has to be thread safe.
-	 */
-	virtual bool IsCompressed( decBaseFileReader &reader );
 	/*@}*/
 	
 private:

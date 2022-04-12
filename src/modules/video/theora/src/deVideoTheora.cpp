@@ -94,7 +94,6 @@ void deVideoTheora::InitLoadVideo( decBaseFileReader &reader, deBaseVideoInfo &i
 	info.SetFrameCount( oggInfo.GetFrameCount() );
 	info.SetFrameRate( oggInfo.GetFrameRate() );
 	info.SetColorConversionMatrix( oggInfo.GetColorConversionMatrix() );
-	info.SetIsCompressed( true );
 	
 	reader.SetPosition( 0 );
 	dethVideoAudioDecoder audioDecoder( *this, reader );

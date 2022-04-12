@@ -38,9 +38,7 @@ deIesImageInfo::deIesImageInfo() :
 pWidth( 0 ),
 pHeight( 0 ),
 pDepth( 1 ),
-pCurLine( 0 )
-{
-	SetIsCompressed( false );
+pCurLine( 0 ){
 }
 
 deIesImageInfo::~deIesImageInfo(){

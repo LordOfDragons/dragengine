@@ -34,11 +34,6 @@
  * in a subclasses object.
  */
 class DE_DLL_EXPORT deBaseImageInfo{
-private:
-	bool pIsCompressed;
-	
-	
-	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
@@ -67,18 +62,6 @@ public:
 	
 	/** \brief Retrieves the bit count of each component. */
 	virtual int GetBitCount() = 0;
-	
-	/**
-	 * \brief File is compressed.
-	 * \version 1.12
-	 */
-	inline bool GetIsCompressed() const{ return pIsCompressed; }
-	
-	/**
-	 * \brief Set file is compressed.
-	 * \version 1.12
-	 */
-	void SetIsCompressed( bool isCompressed );
 	/*@}*/
 };
 

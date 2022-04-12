@@ -39,8 +39,6 @@ dePng3DImageInfo::dePng3DImageInfo( const char *nfilename ){
 	if( ! nfilename ) DETHROW( deeInvalidParam );
 	
 	filename = nfilename;
-	
-	SetIsCompressed( true );
 }
 dePng3DImageInfo::~dePng3DImageInfo(){
 }

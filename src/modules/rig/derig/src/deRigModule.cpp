@@ -123,10 +123,6 @@ void deRigModule::SaveRig( decBaseFileWriter &file, const deRig &rig ){
 	pWriteRig( writer, rig );
 }
 
-bool deRigModule::IsCompressed( decBaseFileReader& ){
-	return false;
-}
-
 
 
 // Private functions

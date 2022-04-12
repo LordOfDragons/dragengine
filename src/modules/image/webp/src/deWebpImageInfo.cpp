@@ -44,8 +44,6 @@ pWidth( 0 ),
 pHeight( 0 ),
 pHasAlpha( false )
 {
-	SetIsCompressed( true );
-	
 	const int size = reader.GetLength();
 	pData.TakeOver( new decMemoryFile( "data" ) );
 	pData->Resize( size );

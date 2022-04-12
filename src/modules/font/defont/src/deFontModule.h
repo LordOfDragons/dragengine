@@ -60,13 +60,6 @@ public:
 	
 	/** \brief Save font. */
 	virtual void SaveFont( decBaseFileWriter &writer, const deFont &font );
-	
-	/**
-	 * \brief File is compressed.
-	 * \version 1.12
-	 * \note Call has to be thread safe.
-	 */
-	virtual bool IsCompressed( decBaseFileReader &reader );
 	/*@}*/
 
 private:

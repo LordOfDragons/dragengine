@@ -109,10 +109,6 @@ void deLangPackModule::SaveLanguagePack( decBaseFileWriter &file, const deLangua
 	pWriteLangPack( xmlWriter, languagePack );
 }
 
-bool deLangPackModule::IsCompressed( decBaseFileReader& ){
-	return false;
-}
-
 
 
 // Private functions
