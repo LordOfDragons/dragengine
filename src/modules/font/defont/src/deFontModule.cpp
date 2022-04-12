@@ -114,6 +114,10 @@ void deFontModule::SaveFont( decBaseFileWriter &file, const deFont &font ) {
 	pWriteFont( writer, font );
 }
 
+bool deFontModule::IsCompressed( decBaseFileReader& ){
+	return false;
+}
+
 
 
 // Private functions

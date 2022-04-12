@@ -127,6 +127,10 @@ void deSkinModule::SaveSkin(decBaseFileWriter &file, const deSkin &skin){
 	pWriteSkin( xmlWriter, skin );
 }
 
+bool deSkinModule::IsCompressed( decBaseFileReader& ){
+	return false;
+}
+
 
 
 // Private functions

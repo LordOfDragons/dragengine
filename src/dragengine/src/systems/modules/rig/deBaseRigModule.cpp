@@ -19,7 +19,6 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-// includes
 #include "deBaseRigModule.h"
 
 // Class deBaseRigModule
@@ -30,4 +29,12 @@ deBaseModule( loadableModule ){
 }
 
 deBaseRigModule::~deBaseRigModule(){
+}
+
+
+// Management
+///////////////
+
+bool deBaseRigModule::IsCompressed( decBaseFileReader& ){
+	return false;
 }

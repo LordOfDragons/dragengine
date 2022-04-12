@@ -38,6 +38,7 @@ private:
 	int pFrameCount;
 	int pFrameRate;
 	decColorMatrix3 pColorConversionMatrix;
+	bool pIsCompressed;
 	
 	int pBytesPerSample;
 	int pSampleCount;
@@ -95,6 +96,18 @@ public:
 	
 	/** \brief Set color conversion matrix. */
 	void SetColorConversionMatrix( const decColorMatrix3 &matrix );
+	
+	/**
+	 * \brief File is compressed.
+	 * \version 1.12
+	 */
+	inline bool GetIsCompressed() const{ return pIsCompressed; }
+	
+	/**
+	 * \brief File is compressed.
+	 * \version 1.12
+	 */
+	void SetIsCompressed( bool isCompressed );
 	/*@}*/
 	
 	

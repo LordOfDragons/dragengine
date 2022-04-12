@@ -151,6 +151,10 @@ void deModelModule::SaveModel(decBaseFileWriter &writer, const deModel &model){
 	pSaveModel( writer, model );
 }
 
+bool deModelModule::IsCompressed( decBaseFileReader& ){
+	return false;
+}
+
 
 
 // Private Functions

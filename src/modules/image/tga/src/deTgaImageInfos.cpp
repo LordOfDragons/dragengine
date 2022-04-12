@@ -30,7 +30,9 @@
 //////////////////////////
 
 // constructor, destructor
-deTgaImageInfo::deTgaImageInfo(){ }
+deTgaImageInfo::deTgaImageInfo(){
+	SetIsCompressed( false );
+}
 deTgaImageInfo::~deTgaImageInfo(){ }
 
 // management

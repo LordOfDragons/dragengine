@@ -25,8 +25,17 @@
 // Class deBaseImageInfo
 //////////////////////////
 
-deBaseImageInfo::deBaseImageInfo(){
+deBaseImageInfo::deBaseImageInfo() :
+pIsCompressed( false ){
 }
 
 deBaseImageInfo::~deBaseImageInfo(){
+}
+
+
+// Management
+///////////////
+
+void deBaseImageInfo::SetIsCompressed( bool isCompressed ){
+	pIsCompressed = isCompressed;
 }

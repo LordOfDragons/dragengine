@@ -80,6 +80,13 @@ public:
 	
 	/** \brief Save model. */
 	virtual void SaveModel( decBaseFileWriter &writer, const deModel &model );
+	
+	/**
+	 * \brief File is compressed.
+	 * \version 1.12
+	 * \note Call has to be thread safe.
+	 */
+	virtual bool IsCompressed( decBaseFileReader &reader );
 	/*@}*/
 	
 private:

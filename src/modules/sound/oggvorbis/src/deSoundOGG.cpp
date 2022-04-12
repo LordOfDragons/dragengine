@@ -170,6 +170,7 @@ void deSoundOGG::InitLoadSound( decBaseFileReader &file, deBaseSoundInfo &info )
 		info.SetSampleRate( fileInfos->rate );
 		info.SetSampleCount( sampleCount );
 		info.SetChannelCount( fileInfos->channels );
+		info.SetIsCompressed( true );
 		
 		// close the file
 		ov_clear( &oggFile );

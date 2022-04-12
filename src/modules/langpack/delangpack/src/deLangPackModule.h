@@ -53,6 +53,13 @@ public:
 	
 	/** \brief Save language pack. */
 	virtual void SaveLanguagePack( decBaseFileWriter &writer, const deLanguagePack &languagePack );
+	
+	/**
+	 * \brief File is compressed.
+	 * \version 1.12
+	 * \note Call has to be thread safe.
+	 */
+	virtual bool IsCompressed( decBaseFileReader &reader );
 	/*@}*/
 	
 private:

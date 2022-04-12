@@ -19,7 +19,6 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-// includes
 #include "deBaseSkinModule.h"
 
 // Class deBaseSkinModule
@@ -30,4 +29,12 @@ deBaseModule( loadableModule ){
 }
 
 deBaseSkinModule::~deBaseSkinModule(){
+}
+
+
+// Management
+///////////////
+
+bool deBaseSkinModule::IsCompressed( decBaseFileReader& ){
+	return false;
 }

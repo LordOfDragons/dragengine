@@ -31,7 +31,8 @@ deBaseSoundInfo::deBaseSoundInfo() :
 pBytesPerSample( 1 ),
 pSampleCount( 0 ),
 pSampleRate( 44100 ),
-pChannelCount( 1 ){
+pChannelCount( 1 ),
+pIsCompressed( false ){
 }
 
 deBaseSoundInfo::~deBaseSoundInfo(){
@@ -68,4 +69,8 @@ void deBaseSoundInfo::SetChannelCount( int channelCount ){
 		DETHROW( deeInvalidParam );
 	}
 	pChannelCount = channelCount;
+}
+
+void deBaseSoundInfo::SetIsCompressed( bool isCompressed ){
+	pIsCompressed = isCompressed;
 }

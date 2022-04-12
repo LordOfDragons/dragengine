@@ -84,6 +84,7 @@ void deVideoApng::InitLoadVideo( decBaseFileReader &reader, deBaseVideoInfo &inf
 	info.SetPixelFormat( apngReader.GetPixelFormat() );
 	info.SetFrameCount( apngReader.GetFrameCount() );
 	info.SetFrameRate( apngReader.GetFrameRate() );
+	info.SetIsCompressed( true );
 }
 
 void deVideoApng::SaveVideo( decBaseFileWriter &reader, const deVideo &video ){

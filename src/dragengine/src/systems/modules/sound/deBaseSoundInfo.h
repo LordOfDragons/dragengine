@@ -38,6 +38,7 @@ private:
 	int pSampleCount;
 	int pSampleRate;
 	int pChannelCount;
+	bool pIsCompressed;
 	
 	
 	
@@ -78,6 +79,18 @@ public:
 	
 	/** \brief Set sample rate. */
 	void SetSampleRate( int sampleRate );
+	
+	/**
+	 * \brief File is compressed.
+	 * \version 1.12
+	 */
+	inline bool GetIsCompressed() const{ return pIsCompressed; }
+	
+	/**
+	 * \brief Set file is compressed.
+	 * \version 1.12
+	 */
+	void SetIsCompressed( bool isCompressed );
 	/*@}*/
 };
 

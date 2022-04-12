@@ -19,7 +19,6 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-// includes
 #include "deBaseModelModule.h"
 
 // Class deBaseModelModule
@@ -30,4 +29,12 @@ deBaseModule( loadableModule ){
 }
 
 deBaseModelModule::~deBaseModelModule(){
+}
+
+
+// Management
+///////////////
+
+bool deBaseModelModule::IsCompressed( decBaseFileReader& ){
+	return false;
 }

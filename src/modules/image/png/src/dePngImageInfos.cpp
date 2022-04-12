@@ -40,6 +40,8 @@ dePngImageInfo::dePngImageInfo(const char *aFilename){
 	filename = new char[strlen(aFilename)+1];
 	if(!filename) DETHROW(deeOutOfMemory);
 	strcpy(filename, aFilename);
+	
+	SetIsCompressed( true );
 }
 dePngImageInfo::~dePngImageInfo(){
 	if(readStruct){
