@@ -489,6 +489,9 @@ void deLibraryModule::pParseXML( const char *filename, decBaseFileReader &reader
 		}else if( tag->GetName() == "noSaving" ){
 			SetNoSaving( true );
 			
+		}else if( tag->GetName() == "noCompress" ){
+			SetNoCompress( true );
+			
 		}else if( tag->GetName() == "priority" ){
 			if( tag->GetFirstData() ){
 				SetPriority( tag->GetFirstData()->GetData().ToInt() );

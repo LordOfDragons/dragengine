@@ -77,6 +77,7 @@ private:
 	int pPriority;
 	bool pFallback;
 	bool pNoSaving;
+	bool pNoCompress;
 	
 	bool pEnabled;
 	
@@ -186,6 +187,18 @@ public:
 	
 	/** \brief Set if module does not support saving. */
 	void SetNoSaving( bool noSaving );
+	
+	/**
+	 * \brief Files are compressed.
+	 * \version 1.12
+	 */
+	inline bool GetNoCompress() const{ return pNoCompress; }
+	
+	/**
+	 * \brief Set if files are compressed.
+	 * \version 1.12
+	 */
+	void SetNoCompress( bool noCompress );
 	
 	/**
 	 * \brief Determines if the module is enabled.

@@ -8,6 +8,7 @@
 	<version>VERSION</version>
 	<type>Image</type>
 	<pattern>.png3d</pattern>
+	<noCompress/>
 	<priority>1</priority>
 	<library>
 		<file>FILENAME</file>

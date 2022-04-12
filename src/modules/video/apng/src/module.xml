@@ -6,6 +6,7 @@
 	<version>VERSION</version>
 	<type>Video</type>
 	<pattern>.apng</pattern>
+	<noCompress/>
 	<priority>1</priority>
 	<library>
 		<file>FILENAME</file>
