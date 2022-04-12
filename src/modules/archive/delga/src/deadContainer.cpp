@@ -153,11 +153,11 @@ bool deadContainer::CanReadFile( const decPath &path ){
 	return result;
 }
 
-bool deadContainer::CanWriteFile( const decPath &path ){
+bool deadContainer::CanWriteFile( const decPath & ){
 	return false;
 }
 
-bool deadContainer::CanDeleteFile( const decPath &path ){
+bool deadContainer::CanDeleteFile( const decPath & ){
 	return false;
 }
 
@@ -188,16 +188,16 @@ decBaseFileReader *deadContainer::OpenFileForReading( const decPath &path ){
 	return result;
 }
 
-decBaseFileWriter *deadContainer::OpenFileForWriting( const decPath &path ){
+decBaseFileWriter *deadContainer::OpenFileForWriting( const decPath & ){
 	// not supported for the time being
 	DETHROW( deeInvalidParam );
 }
 
-void deadContainer::DeleteFile( const decPath &path ){
+void deadContainer::DeleteFile( const decPath & ){
 	DETHROW( deeInvalidParam );
 }
 
-void deadContainer::TouchFile( const decPath &path ){
+void deadContainer::TouchFile( const decPath & ){
 	DETHROW( deeInvalidParam );
 }
 
