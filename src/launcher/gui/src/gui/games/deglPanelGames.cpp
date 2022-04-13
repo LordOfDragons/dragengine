@@ -298,11 +298,13 @@ long deglPanelGames::onListGamesRDown( FXObject*, FXSelector, void *data ){
 			
 			menuCommand = new FXMenuCommand( popup, "Show Logs", nullptr, this, ID_PU_GAME_SHOWLOGS );
 			
+			/*
 			new FXSeparator( popup );
 			menuCommand = new FXMenuCommand( popup, "Uninstall Game", nullptr, this, ID_PU_GAME_UNINSTALL );
 			if( running ){
 				menuCommand->disable();
 			}
+			*/
 			
 			popup->create();
 			

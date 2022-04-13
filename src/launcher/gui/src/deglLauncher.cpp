@@ -345,6 +345,8 @@ void deglLauncher::pParseArguments(){
 			}
 			
 		}else if( argument == "--install" ){
+			// deprecated
+			/*
 			if( argumentCount - argumentIndex > 0 ){
 				pCmdLineInstallDelga = pArguments.GetArgumentAt( ++argumentIndex )->ToUTF8();
 				
@@ -352,6 +354,7 @@ void deglLauncher::pParseArguments(){
 				GetLogger()->LogError( GetLogSource(), "Missing filename after --install" );
 				DETHROW_INFO( deeInvalidParam, "Missing filename after --install" );
 			}
+			*/
 			
 		}else if( argument.GetLength() > 0 ){
 			if( argument[ 0 ] == '-' ){
@@ -455,6 +458,8 @@ bool deglLauncher::pParseWindowsURIScheme(){
 		}
 		
 	}else if( urischeme.BeginsWith( "install?" ) ){
+		// deprecated
+		/*
 		const decStringList parameters( urischeme.GetMiddle( 8 ).Split( '&' ) );
 		const int parameterCount = parameters.GetCount();
 		
@@ -465,6 +470,7 @@ bool deglLauncher::pParseWindowsURIScheme(){
 				pCmdLineInstallDelga = pUrlDecode( parameter.GetMiddle( 5 ) );
 			}
 		}
+		*/
 		
 	}else if( urischeme == "ready" ){
 		// special command used only for installing without launching. immediately quit

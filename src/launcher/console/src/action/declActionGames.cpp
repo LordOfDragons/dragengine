@@ -88,12 +88,14 @@ void declActionGames::PrintSyntax(){
 	printf( "   Queries if game with identifier or alias is installed\n" );
 	printf( "   Return code 0: Game is installed\n" );
 	printf( "   Return code 1: Game is not installed\n" );
+	/*
 	printf( "\n" );
 	printf( "delauncher-console games uninstall (<identifier> | <alias>)\n" );
 	printf( "   Uninstall game. If game is not installed or multiple games match the call fails.\n" );
 	printf( "   Game patches and local files (like saves or caches) are not uninstalled.\n" );
 	printf( "   Return code 0: Game uninstalled successfully\n" );
 	printf( "   Return code 1: Uninstalling game failed\n" );
+	*/
 }
 
 int declActionGames::Run(){
@@ -109,9 +111,11 @@ int declActionGames::Run(){
 		pLauncher.Prepare();
 		return pIsInstalled();
 		
+		/*
 	}else if( action == "uninstall" ){
 		pLauncher.Prepare();
 		return pUninstall();
+		*/
 		
 	}else{
 		PrintSyntax();

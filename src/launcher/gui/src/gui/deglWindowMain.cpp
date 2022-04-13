@@ -140,7 +140,7 @@ FXMainWindow( app, "Drag[en]gine Launcher", nullptr, nullptr, DECOR_ALL, 10, 50,
 	FXMenuPane *menuFile = new FXMenuPane( this );
 	new FXMenuTitle( pMenuBar, "&File", nullptr, menuFile );
 	
-	new FXMenuCommand( menuFile, "Install...\t\tInstall game/patch *.delga file", nullptr, this, ID_FILE_INSTALL );
+// 	new FXMenuCommand( menuFile, "Install...\t\tInstall game/patch *.delga file", nullptr, this, ID_FILE_INSTALL );
 	
 	new FXMenuSeparator( menuFile );
 	new FXMenuCommand( menuFile, "&Quit\t\tQuits the launcher", nullptr, this, ID_FILE_QUIT );

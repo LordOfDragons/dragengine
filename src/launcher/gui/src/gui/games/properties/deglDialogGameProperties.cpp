@@ -297,7 +297,7 @@ pCalcSizePending( true )
 	guiBuilder.CreateLabel( block, "Patch:", toolTip );
 	frameLine = guiBuilder.CreateHFrame( block );
 	pCBPatches = guiBuilder.CreateComboBox( frameLine, this, ID_CB_PATCHES, toolTip, false, 20, 8, false );
-	pBtnPatches = guiBuilder.CreateButton( frameLine, "...", nullptr, this, ID_BTN_PATCHES, "Manage Patches" );
+// 	pBtnPatches = guiBuilder.CreateButton( frameLine, "...", nullptr, this, ID_BTN_PATCHES, "Manage Patches" );
 	
 	
 	

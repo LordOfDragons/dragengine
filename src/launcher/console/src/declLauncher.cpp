@@ -95,10 +95,10 @@ void declLauncher::PrintSyntax(){
 	printf( "   <action> can be one or more of the following:\n" );
 	printf( "      help       Print syntax of an action.\n" );
 	printf( "      run        Run games.\n" );
-	printf( "      delga      Manage DELGA files (view content, install).\n" );
-	printf( "      games      Manage games (list, uninstall).\n" );
-	printf( "      profiles   Manage profiles (list).\n" );
-	printf( "      patches    Manage patches (list, uninstall).\n" );
+	printf( "      delga      Manage DELGA files.\n" );
+	printf( "      games      Manage games.\n" );
+	printf( "      profiles   Manage profiles.\n" );
+	printf( "      patches    Manage patches.\n" );
 	printf( "\n" );
 }
 

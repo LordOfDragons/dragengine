@@ -88,12 +88,14 @@ void declActionPatches::PrintSyntax(){
 	printf( "   Queries if patch with identifier or alias is installed\n" );
 	printf( "   Return code 0: Patch is installed\n" );
 	printf( "   Return code 1: Patch is not installed\n" );
+	/*
 	printf( "\n" );
 	printf( "delauncher-console patches uninstall (<identifier> | <alias>)\n" );
 	printf( "   Uninstall patch. If patch is not installed or multiple patches match the call fails.\n" );
 	printf( "   Patch game is not uninstalled.\n" );
 	printf( "   Return code 0: Patch uninstalled successfully\n" );
 	printf( "   Return code 1: Uninstalling patch failed\n" );
+	*/
 }
 
 int declActionPatches::Run(){
@@ -109,9 +111,11 @@ int declActionPatches::Run(){
 		pLauncher.Prepare();
 		return pIsInstalled();
 		
+		/*
 	}else if( action == "uninstall" ){
 		pLauncher.Prepare();
 		return pUninstall();
+		*/
 		
 	}else{
 		PrintSyntax();

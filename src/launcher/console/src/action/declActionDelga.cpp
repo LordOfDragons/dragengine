@@ -80,11 +80,13 @@ void declActionDelga::PrintSyntax(){
 	printf( "Syntax:\n" );
 	printf( "delauncher-console delga content <filename>\n" );
 	printf( "   List content of DELGA file\n" );
+	/*
 	printf( "\n" );
 	printf( "delauncher-console delga install <filename>\n" );
 	printf( "   Install DELGA file. If content is already installed the call fails.\n" );
 	printf( "   Return code 0: DELGA installed successfully\n" );
 	printf( "   Return code 1: Installing DELGA failed\n" );
+	*/
 }
 
 
@@ -102,9 +104,11 @@ int declActionDelga::Run(){
 		pLauncher.Prepare();
 		return pContent();
 		
+		/*
 	}else if( action == "install" ){
 		pLauncher.Prepare();
 		return pInstall();
+		*/
 		
 	}else{
 		PrintSyntax();
