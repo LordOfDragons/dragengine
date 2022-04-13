@@ -26,6 +26,8 @@
 #include "delPatch.h"
 #include "delPatchXML.h"
 #include "delPatchManager.h"
+#include "../delGame.h"
+#include "../delGameManager.h"
 #include "../../delLauncher.h"
 #include "../../engine/delEngine.h"
 
@@ -67,16 +69,36 @@ delPatchManager::~delPatchManager(){
 void delPatchManager::LoadPatches( delEngineInstance &instance ){
 	pLauncher.GetLogger()->LogInfo( pLauncher.GetLogSource(), "Loading patch list" );
 	
-	deVirtualFileSystem::Ref vfs;
-	vfs.TakeOver( new deVirtualFileSystem );
-	
-	deVFSDiskDirectory::Ref container;
+	deVirtualFileSystem::Ref vfs( deVirtualFileSystem::Ref::New( new deVirtualFileSystem ) );
 	const decPath pathRoot( decPath::CreatePathUnix( "/" ) );
-	const decPath pathDisk( decPath::CreatePathNative( pLauncher.GetPathGames() ) );
-	container.TakeOver( new deVFSDiskDirectory( pathRoot, pathDisk ) );
-	vfs->AddContainer( container );
+	decPath pathDisk;
 	
 	pPatches.RemoveAll();
+	
+	// load patches from known delga directories
+	const delGameList &games = pLauncher.GetGameManager().GetGames();
+	const int gameCount = games.GetCount();
+	decPath pathSearch;
+	int i;
+	
+	for( i=0; i<gameCount; i++ ){
+		const delGame &game = *games.GetAt( i );
+		if( game.GetDelgaFile().IsEmpty() ){
+			continue;
+		}
+		
+		vfs->RemoveAllContainers();
+		pathDisk.SetFromNative( game.GetDelgaFile() );
+		pathDisk.RemoveLastComponent();
+		
+		vfs->AddContainer( deVFSDiskDirectory::Ref::New( new deVFSDiskDirectory( pathRoot, pathDisk ) ) );
+		pScanPatchDefFiles( instance, vfs, pathDisk, pathRoot );
+	}
+	
+	// load patches from install games directory (deprecated)
+	vfs->RemoveAllContainers();
+	pathDisk.SetFromNative( pLauncher.GetPathGames() );
+	vfs->AddContainer( deVFSDiskDirectory::Ref::New( new deVFSDiskDirectory( pathRoot, pathDisk ) ) );
 	pScanPatchDefFiles( instance, vfs, pathDisk, pathRoot );
 }
 
@@ -154,8 +176,8 @@ void delPatchManager::pProcessFoundFiles( delEngineInstance &instance, const dec
 	for( i=0; i<count; i++ ){
 		delPatch * const patch = list.GetAt( i );
 		if( pPatches.HasWithID( patch->GetIdentifier() ) ){
-			pLauncher.GetLogger()->LogWarnFormat( pLauncher.GetLogSource(), "Ignore duplicate game patch '%s'",
-				patch->GetIdentifier().ToHexString( false ).GetString() );
+// 			pLauncher.GetLogger()->LogWarnFormat( pLauncher.GetLogSource(), "Ignore duplicate game patch '%s'",
+// 				patch->GetIdentifier().ToHexString( false ).GetString() );
 			continue;
 		}
 		

@@ -287,6 +287,8 @@ void delGame::StartGame( const delGameRunParams &runParams ){
 void delGame::StartGame( const delGameRunParams &runParams, delEngineInstance::Factory &factory ){
 	decPath filePath;
 	
+	SaveConfig(); // ensure game profile exists
+	
 	if( IsRunning()  ){
 		DETHROW_INFO( deeInvalidAction, "game is running" );
 	}
@@ -468,7 +470,7 @@ void delGame::PulseChecking(){
 }
 
 void delGame::LoadConfig(){
-	delGameConfigXML configXML( pLauncher.GetLogger(), pLauncher.GetLogSource(), pLauncher.GetGameManager() );
+	delGameConfigXML configXML( pLauncher );
 	deVirtualFileSystem &vfs = *pLauncher.GetVFS();
 	deLogger &logger = *pLauncher.GetLogger();
 	decPath pathFile;
@@ -503,7 +505,7 @@ void delGame::LoadConfig(){
 }
 
 void delGame::SaveConfig(){
-	delGameConfigXML configXML( pLauncher.GetLogger(), pLauncher.GetLogSource(), pLauncher.GetGameManager() );
+	delGameConfigXML configXML( pLauncher );
 	deVirtualFileSystem &vfs = *pLauncher.GetVFS();
 	deLogger &logger = *pLauncher.GetLogger();
 	decPath pathFile;

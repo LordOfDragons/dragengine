@@ -41,6 +41,7 @@
 #include <dragengine/filesystem/deVFSDiskDirectory.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/filesystem/deCollectFileSearchVisitor.h>
+#include <dragengine/filesystem/deCollectDirectorySearchVisitor.h>
 #include <dragengine/logger/deLogger.h>
 #include <dragengine/systems/deModuleSystem.h>
 
@@ -68,14 +69,59 @@ delGameManager::~delGameManager(){
 void delGameManager::LoadGames ( delEngineInstance &instance ){
 	pLauncher.GetLogger()->LogInfo( pLauncher.GetLogSource(), "Loading game list" );
 	
-	const deVirtualFileSystem::Ref vfs( deVirtualFileSystem::Ref::New( new deVirtualFileSystem ) );
+	// clear games list
+	pGames.RemoveAll();
 	
+	// load from known game profiles
+	deVirtualFileSystem &vfs = *pLauncher.GetVFS();
+	deCollectDirectorySearchVisitor collect;
+	vfs.SearchFiles( decPath::CreatePathUnix( "/config/user/games" ), collect );
+	
+	const dePathList &directories = collect.GetDirectories();
+	const int count = directories.GetCount();
+	delGame::Ref game;
+	delGameList list;
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		game.TakeOver( pLauncher.CreateGame() );
+		game->SetIdentifier( decUuid( directories.GetAt( i ).GetLastComponent(), false ) );
+		game->LoadConfig();
+		
+		if( ! game->GetDelgaFile().IsEmpty() ){
+			list.RemoveAll();
+			try{
+				LoadGameFromDisk( instance, game->GetDelgaFile(), list );
+				
+			}catch( const deException &e ){
+				pLauncher.GetLogger()->LogException( pLauncher.GetLogSource(), e );
+				continue;
+			}
+			
+			delGame * const matchingGame = list.GetWithID( game->GetIdentifier() );
+			if( matchingGame ){
+				game = matchingGame;
+			}
+		}
+		
+		if( game->GetTitle().IsEmpty() ){
+			game->SetTitle( decUnicodeString::NewFromUTF8( game->GetIdentifier().ToHexString( false ) ) );
+		}
+		
+		if( ! pGames.HasWithID( game->GetIdentifier() ) ){
+			pGames.Add( game );
+		}
+	}
+	
+	// load from installed games directory (deprecated)
 	const decPath pathRoot( decPath::CreatePathUnix( "/" ) );
 	const decPath pathDisk( decPath::CreatePathNative( pLauncher.GetPathGames() ) );
-	vfs->AddContainer( deVFSDiskDirectory::Ref::New( new deVFSDiskDirectory( pathRoot, pathDisk ) ) );
 	
-	pGames.RemoveAll();
-	pScanGameDefFiles( instance, vfs, pathDisk, pathRoot );
+	const deVirtualFileSystem::Ref vfs2( deVirtualFileSystem::Ref::New( new deVirtualFileSystem ) );
+	vfs2->RemoveAllContainers();
+	vfs2->AddContainer( deVFSDiskDirectory::Ref::New( new deVFSDiskDirectory( pathRoot, pathDisk ) ) );
+	
+	pScanGameDefFiles( instance, vfs2, pathDisk, pathRoot );
 }
 
 void delGameManager::Verify(){
@@ -339,8 +385,8 @@ void delGameManager::pProcessFoundFiles( delEngineInstance &instance, const decP
 	for( i=0; i<count; i++ ){
 		delGame * const game = list.GetAt( i );
 		if( pGames.HasWithID( game->GetIdentifier() ) ){
-			pLauncher.GetLogger()->LogWarnFormat( pLauncher.GetLogSource(), "Ignore duplicate game '%s'",
-				game->GetIdentifier().ToHexString( false ).GetString() );
+// 			pLauncher.GetLogger()->LogWarnFormat( pLauncher.GetLogSource(), "Ignore duplicate game '%s'",
+// 				game->GetIdentifier().ToHexString( false ).GetString() );
 			continue;
 		}
 		

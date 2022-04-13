@@ -25,11 +25,9 @@
 #include "../utils/delSharedConfigXML.h"
 
 class delGame;
-class delGameProfile;
-class delGPModule;
 class decBaseFileReader;
 class decBaseFileWriter;
-class delGameManager;
+class delLauncher;
 
 
 /**
@@ -37,7 +35,7 @@ class delGameManager;
  */
 class delGameConfigXML : public delSharedConfigXML{
 private:
-	delGameManager &pGameManager;
+	delLauncher &pLauncher;
 	
 	
 	
@@ -45,7 +43,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create game config xml read/save. */
-	delGameConfigXML( deLogger *logger, const char *loggingSource, delGameManager &gameManager );
+	delGameConfigXML( delLauncher &launcher );
 	
 	/** \brief Clean up game config xml read/save. */
 	virtual ~delGameConfigXML();
