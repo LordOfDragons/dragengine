@@ -122,6 +122,14 @@ class ECComposeEnvMapProbe
 		this.pLayerMask = layerMask
 	end
 	
+	/**
+	 * \brief Property prefix.
+	 * \version 1.12
+	 */
+	public func String getPrefix()
+		return this.pPrefix
+	end
+	
 	
 	
 	/** \brief Initialize light for element from stub. */

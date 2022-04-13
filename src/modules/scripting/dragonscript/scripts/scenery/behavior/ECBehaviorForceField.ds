@@ -434,7 +434,7 @@ class ECBehaviorForceField extends DefaultECBehavior
 	
 	public func new( BehaviorElementClass eclass, ECBehaviorCollider collider, \
 	TSTriggerTable triggerTable, String id ) this( eclass, collider, triggerTable, \
-	id, id.empty() if "force field" else "forceField(" + id + ")" )
+	id, id.empty() if "forceField" else "forceField(" + id + ")" )
 	end
 	
 	public func new( BehaviorElementClass eclass, ECBehaviorCollider collider, \

@@ -241,6 +241,39 @@ abstract class TestCaseECBehavior extends TestCase
 	end
 	
 	/**
+	 * \brief Assert element class integer property.
+	 * \version 1.12
+	 */
+	protected func void assertIntegerProperty(ECPInteger property, int value)
+		assertEquals(property.getValue(), value)
+		assertFalse(property.getEnableLimitLower())
+		assertFalse(property.getEnableLimitUpper())
+	end
+	
+	/**
+	 * \brief Assert element class integer property.
+	 * \version 1.12
+	 */
+	protected func void assertIntegerProperty(ECPInteger property, int value, int limitLower)
+		assertEquals(property.getValue(), value)
+		assertTrue(property.getEnableLimitLower())
+		assertEquals(property.getLimitLower(), limitLower)
+		assertFalse(property.getEnableLimitUpper())
+	end
+	
+	/**
+	 * \brief Assert element class integer property.
+	 * \version 1.12
+	 */
+	protected func void assertIntegerProperty(ECPInteger property, int value, int limitLower, int limitUpper)
+		assertEquals(property.getValue(), value)
+		assertTrue(property.getEnableLimitLower())
+		assertEquals(property.getLimitLower(), limitLower)
+		assertTrue(property.getEnableLimitUpper())
+		assertEquals(property.getLimitUpper(), limitUpper)
+	end
+	
+	/**
 	 * \brief Assert element class enumeration property.
 	 * \version 1.12
 	 */
