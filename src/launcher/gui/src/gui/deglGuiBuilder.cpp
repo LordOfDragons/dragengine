@@ -289,8 +289,8 @@ const char *toolTip, bool fixedSizeX, bool fixedSizeY ) const{
 	FXText *textArea;
 	FXint options = 0;
 	
-	if( ! fixedSizeX ) options |= LAYOUT_FILL_X;
-	if( ! fixedSizeY ) options |= LAYOUT_FILL_Y;
+	if( ! fixedSizeX ) options |= LAYOUT_FILL_X | LAYOUT_FILL_COLUMN;
+	if( ! fixedSizeY ) options |= LAYOUT_FILL_Y | LAYOUT_FILL_ROW;
 	
 	frame = new FXPacker( container, FRAME_SUNKEN | options, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 );
 	

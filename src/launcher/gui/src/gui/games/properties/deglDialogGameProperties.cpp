@@ -174,7 +174,7 @@ pCalcSizePending( true )
 	pLabStatusDelgaFile = new FXLabel( frameLine, "", windowMain->GetIconValidSmall(), LABEL_NORMAL, 0, 0, 0, 0, 0, 0, 0, 0 );
 	pEditDelgaFile = guiBuilder.CreateTextField( frameLine, nullptr, 0, toolTip, false );
 	pEditDelgaFile->setEditable( false );
-	pLabProblemDelgaFile = new FXLabel( frameRight, "", nullptr, LABEL_NORMAL | LAYOUT_FILL_X );
+	pLabProblemDelgaFile = new FXLabel( frameRight, "", nullptr, LABEL_NORMAL | LAYOUT_FILL_X | LAYOUT_FILL_COLUMN );
 	pLabProblemDelgaFile->setJustify( JUSTIFY_LEFT | JUSTIFY_TOP );
 	pLabProblemDelgaFile->setBackColor( configuration.GetBackColorProblem() );
 	pLabProblemDelgaFile->setTextColor( configuration.GetTextColorProblem() );
@@ -188,7 +188,7 @@ pCalcSizePending( true )
 	pLabStatusGameDir = new FXLabel( frameLine, "", windowMain->GetIconValidSmall(), LABEL_NORMAL, 0, 0, 0, 0, 0, 0, 0, 0 );
 	pEditGameDir = guiBuilder.CreateTextField( frameLine, nullptr, 0, toolTip, false );
 	pEditGameDir->setEditable( false );
-	pLabProblemGameDir = new FXLabel( frameRight, "", nullptr, LABEL_NORMAL | LAYOUT_FILL_X );
+	pLabProblemGameDir = new FXLabel( frameRight, "", nullptr, LABEL_NORMAL | LAYOUT_FILL_X | LAYOUT_FILL_COLUMN );
 	if( ! pLabProblemGameDir ) DETHROW( deeOutOfMemory );
 	pLabProblemGameDir->setJustify( JUSTIFY_LEFT | JUSTIFY_TOP );
 	pLabProblemGameDir->setBackColor( configuration.GetBackColorProblem() );
@@ -203,7 +203,7 @@ pCalcSizePending( true )
 	pLabStatusDataDir = new FXLabel( frameLine, "", windowMain->GetIconValidSmall(), LABEL_NORMAL, 0, 0, 0, 0, 0, 0, 0, 0 );
 	pEditDataDir = guiBuilder.CreateTextField( frameLine, nullptr, 0, toolTip, false );
 	pEditDataDir->setEditable( false );
-	pLabProblemDataDir = new FXLabel( frameRight, "", nullptr, LABEL_NORMAL | LAYOUT_FILL_X );
+	pLabProblemDataDir = new FXLabel( frameRight, "", nullptr, LABEL_NORMAL | LAYOUT_FILL_X | LAYOUT_FILL_COLUMN );
 	if( ! pLabProblemDataDir ) DETHROW( deeOutOfMemory );
 	pLabProblemDataDir->setJustify( JUSTIFY_LEFT | JUSTIFY_TOP );
 	pLabProblemDataDir->setBackColor( configuration.GetBackColorProblem() );
@@ -218,7 +218,7 @@ pCalcSizePending( true )
 	pLabStatusScriptDir = new FXLabel( frameLine, "", windowMain->GetIconValidSmall(), LABEL_NORMAL, 0, 0, 0, 0, 0, 0, 0, 0 );
 	pEditScriptDir = guiBuilder.CreateTextField( frameLine, nullptr, 0, toolTip, false );
 	pEditScriptDir->setEditable( false );
-	pLabProblemScriptDir = new FXLabel( frameRight, "", nullptr, LABEL_NORMAL | LAYOUT_FILL_X );
+	pLabProblemScriptDir = new FXLabel( frameRight, "", nullptr, LABEL_NORMAL | LAYOUT_FILL_X | LAYOUT_FILL_COLUMN );
 	if( ! pLabProblemScriptDir ) DETHROW( deeOutOfMemory );
 	pLabProblemScriptDir->setJustify( JUSTIFY_LEFT | JUSTIFY_TOP );
 	pLabProblemScriptDir->setBackColor( configuration.GetBackColorProblem() );
@@ -238,7 +238,7 @@ pCalcSizePending( true )
 	pEditScriptModuleVersion->setEditable( false );
 	pBtnScriptModuleInfo = guiBuilder.CreateButton( frameLine, "", windowMain->GetIconButtonInfo(), this, ID_BTN_SCRMODINFO, "Show module information" );
 	pBtnScriptModuleInfo->setLayoutHints( pBtnScriptModuleInfo->getLayoutHints() | LAYOUT_FILL_Y );
-	pLabProblemScriptModule = new FXLabel( frameRight, "", nullptr, LABEL_NORMAL | LAYOUT_FILL_X );
+	pLabProblemScriptModule = new FXLabel( frameRight, "", nullptr, LABEL_NORMAL | LAYOUT_FILL_X | LAYOUT_FILL_COLUMN );
 	if( ! pLabProblemScriptModule ) DETHROW( deeOutOfMemory );
 	pLabProblemScriptModule->setJustify( JUSTIFY_LEFT | JUSTIFY_TOP );
 	pLabProblemScriptModule->setBackColor( configuration.GetBackColorProblem() );
