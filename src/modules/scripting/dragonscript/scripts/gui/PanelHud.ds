@@ -67,6 +67,10 @@ pin Dragengine.Gui.Layouts
  * By using setDesignerSelector() not only the HUD panel designer selector itself is changed
  * but all area designer selectors are changed too. In the list above "Panel.PanelHud" is
  * replaced with the designer selector used in the most recent call to setDesignerSelector().
+ * 
+ * \version 1.12
+ * 
+ * Support added to set PanelHUD to prevent mouse from hovering over itself or any content inside.
  */
 class PanelHud extends Panel
 	private var Panel pTop
@@ -90,6 +94,8 @@ class PanelHud extends Panel
 	private var Panel pRightBottom
 	
 	private var Panel pCenter
+	
+	private var bool pPreventHover
 	
 	
 	
@@ -246,6 +252,24 @@ class PanelHud extends Panel
 	
 	
 	/**
+	 * \brief Prevent hovering.
+	 * \version 1.12
+	 */
+	public func bool getPreventHover()
+		return pPreventHover
+	end
+	
+	/**
+	 * \brief Set prevent hovering.
+	 * \version 1.12
+	 */
+	public func void setPreventHover(bool preventHover)
+		pPreventHover = preventHover
+	end
+	
+	
+	
+	/**
 	 * \brief Designer selector changed.
 	 * 
 	 * Default implementation changes all area designer selectors as outlined in the class
@@ -329,5 +353,30 @@ class PanelHud extends Panel
 		addWidget(pCenter, BorderLayout.Area.content)
 		
 		setDesignerSelector("Panel.PanelHud")
+	end
+	
+	
+	
+	/**
+	 * \brief Widget at coordinates or \em null if not found.
+	 * \version 1.12
+	 * 
+	 * If getPreventHover() is true prevents this widget from hovering. Keep this
+	 * in mind if you try to call this method. It might not work. If you need original
+	 * getWidgetAt behavior from super class use realGetWidgetAt().
+	 */
+	public func Widget getWidgetAt(Point position)
+		if pPreventHover
+			return null
+		end
+		return super.getWidgetAt(position)
+	end
+	
+	/**
+	 * \brief Super class getWidgetAt without overwritten behavior.
+	 * \version 1.12
+	 */
+	public func Widget realGetWidgetAt(Point position)
+		return super.getWidgetAt(position)
 	end
 end

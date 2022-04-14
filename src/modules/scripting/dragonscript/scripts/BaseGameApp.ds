@@ -431,7 +431,7 @@ class BaseGameApp extends Game
 			
 			pPanelHud = createPanelHud()
 			if pPanelHud != null
-				pWindowGameWorld.addWidget(pPanelHud)
+				pWindowGameWorld.getPanelStack().addWidget(pPanelHud)
 			end
 		end
 		

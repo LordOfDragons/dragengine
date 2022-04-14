@@ -407,6 +407,12 @@
 		<mousePointer parameter='normal.mousePointer' type='Default'/>
 	</designer>
 	
+	<designer name='WorldRenderer' type='Widget'>
+		<canvasCreator parameter='normal.canvas' type='Rectangle'>
+			<color parameter='colorFill' r='0' g='0' b='0'/>
+		</canvasCreator>
+	</designer>
+	
 	<!-- WindowLoading -->
 	<designer name='WindowLoading' type='Window'>
 		<canvasCreator parameter='normal.canvas' type='Rectangle'>

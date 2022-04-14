@@ -332,6 +332,8 @@ class Container extends Widget
 		
 		this.getCanvasContent().addCanvas( widget.getCanvasWidget() )
 		widget.getCanvasWidget().setOrder( ( this.pChildren.getCount() - 1 ) cast float )
+		
+		doLayout()
 	end
 	
 	/**
