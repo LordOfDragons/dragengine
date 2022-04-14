@@ -144,6 +144,7 @@ bool declRunGame::ParseArguments(){
 			
 			if( argumentCount - argumentIndex > 0 ){
 				pGameDefFile = argumentList.GetArgumentAt( argumentIndex )->ToUTF8();
+				argumentIndex++;
 				break;
 				
 			}else{
@@ -199,6 +200,7 @@ bool declRunGame::ParseArguments(){
 						
 						if( argumentCount - argumentIndex > 0 ){
 							pGameDefFile = argumentList.GetArgumentAt( argumentIndex )->ToUTF8();
+							argumentIndex++;
 							break;
 							
 						}else{
