@@ -54,6 +54,29 @@ pin Dragengine.Preloading
  * 
  * Window can be styled using designer named "WindowGameWorld". The default style makes the
  * window borderless with no mouse pointer suitable for full screen use.
+ * 
+ * \par Version 1.12
+ * 
+ * The layout is enhanced like this to allow for more possibilities:
+ * 
+ * - WindowGameWorld (StackLayout, designer selector "WindowGameWorld")
+ *   - Panel (BorderLayout, getPanelBorder())
+ *     - Panel (StackLayout, getPanelStack())
+ *       - WorldRenderer (designer selector "WorldRenderer.WindowGameWorld")
+ * 
+ * The window stack layout allows to stack widgets over the world render panels which should
+ * cover the entire window. Typically these are UI widgets not directly interacting with the
+ * world renderer panel content.
+ * 
+ * The getPanelBorder() allows to add UI widgets at the borders of the window to create the
+ * UI layouts typically used for games where the world renderer is part of a UI interface
+ * the player interacts with (hence not first person shooter type games). Using this panel
+ * makes the world renderer and widgets stacked over it to occupy the empty space.
+ * 
+ * The getPanelStack() allows to add stack widgets over the world renderer itself. These
+ * widgets have the same size as the world renderer in contrary to being added to the window
+ * itself. This is useful for adding widgets that should only cover the world renderer like
+ * targeting reticules or damage indicators.
  */
 class WindowGameWorld extends Window
 	/**
@@ -142,6 +165,8 @@ class WindowGameWorld extends Window
 	private var bool pUpdateGameWorld
 	private var bool pUpdateCameraDirector
 	private var bool pActivateMicrophone
+	private var Panel pPanelBorder
+	private var Panel pPanelStack
 	
 	
 	
@@ -170,6 +195,8 @@ class WindowGameWorld extends Window
 		pMicrophone = Microphone.new()
 		pMicrophone.setLayerMask(LayerMask.newWith(BaseGameApp.WorldLayerBit.audio))
 		
+		pPanelBorder = Panel.new(BorderLayout.new())
+		pPanelStack = Panel.new(StackLayout.new())
 		pWorldRenderer = WorldRenderer.new()
 		
 		setDesignerSelector("WindowGameWorld")
@@ -190,6 +217,8 @@ class WindowGameWorld extends Window
 		setCameraDirector(null)
 		
 		pWorldRenderer = null
+		pPanelStack = null
+		pPanelBorder = null
 		pMicrophone = null
 		pCamera = null
 		pConsole = null
@@ -282,6 +311,32 @@ class WindowGameWorld extends Window
 	/** \brief World renderer. */
 	public func WorldRenderer getWorldRenderer()
 		return pWorldRenderer
+	end
+	
+	/**
+	 * \brief Panel with BorderLayout containing world render content.
+	 * \version 1.12
+	 * 
+	 * Allows to add UI widgets at the borders of the window to create the UI layouts typically
+	 * used for games where the world renderer is part of a UI interface the player interacts
+	 * with (hence not first person shooter type games). Using this panel makes the world
+	 * renderer and widgets stacked over it to occupy the empty space.
+	 */
+	public func Panel getPanelBorder()
+		return pPanelBorder
+	end
+	
+	/**
+	 * \brief Panel with StackLayout containing world render.
+	 * \version 1.12
+	 * 
+	 * Allows to add stack widgets over the world renderer itself. These widgets have the same
+	 * size as the world renderer in contrary to being added to the window itself. This is
+	 * useful for adding widgets that should only cover the world renderer like targeting
+	 * reticules or damage indicators.
+	 */
+	public func Panel getPanelStack()
+		return pPanelStack
 	end
 	
 	/** \brief Game camera. */
@@ -419,6 +474,19 @@ class WindowGameWorld extends Window
 	public func void onGameWorldChanged()
 	end
 	
+	/**
+	 * \brief Designer selector changed.
+	 * 
+	 * Updates world renderer widget designer selector to "WorldRenderer.{selector}".
+	 */
+	public func void onDesignerSelectorChanged()
+		super.onDesignerSelectorChanged()
+		
+		if pWorldRenderer != null
+			pWorldRenderer.setDesignerSelector("WorldRenderer." + getDesignerSelector())
+		end
+	end
+	
 	
 	
 	/**
@@ -428,7 +496,11 @@ class WindowGameWorld extends Window
 	 * getWorldRenderer() as only widget.
 	 */
 	protected func void createContent()
-		setLayout(StackLayout.new())
-		addWidget(pWorldRenderer)
+		runWhileBlockingLayout(block
+			setLayout(StackLayout.new())
+			pPanelStack.addWidget(pWorldRenderer)
+			pPanelBorder.addWidget(pPanelStack, BorderLayout.Area.content)
+			addWidget(pPanelBorder)
+		end)
 	end
 end

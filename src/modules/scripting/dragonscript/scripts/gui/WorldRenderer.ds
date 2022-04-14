@@ -43,6 +43,7 @@ class WorldRenderer extends Widget
 	public func new()
 		pCanvasRenderWorld = CanvasRenderWorld.new()
 		getCanvasContent().addCanvas(pCanvasRenderWorld)
+		setDesignerSelector("WorldRenderer")
 	end
 	
 	/** \brief Create world renderer. */
@@ -53,6 +54,7 @@ class WorldRenderer extends Widget
 		getCanvasContent().addCanvas(pCanvasRenderWorld)
 		
 		updateCanvasRenderWorld()
+		setDesignerSelector("WorldRenderer")
 	end
 	
 	
