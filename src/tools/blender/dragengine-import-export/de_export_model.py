@@ -252,9 +252,6 @@ class OBJECT_OT_ExportModel(bpy.types.Operator, ExportHelper):
 		if self.mesh.degeneratedFaces:
 			self.report({ 'INFO', 'ERROR' }, "Degenerated Faces found.")
 			return False
-		if self.mesh.ngons:
-			self.report({ 'INFO', 'ERROR' }, "NGon faces found.")
-			return False
 		if not self.mesh.textures:
 			self.report({ 'INFO', 'ERROR' }, "No materials found. Add at last one material.")
 			return False
@@ -273,11 +270,18 @@ class OBJECT_OT_ExportModel(bpy.types.Operator, ExportHelper):
 			self.report({ 'INFO', 'ERROR' }, "No UV-Seams found. Add at least one UV-Seam for Tanget-Calculation to work.")
 			return False
 		
+		self.mesh.realTriCount = len(self.mesh.triangles)
+		self.mesh.realQuadCount = len(self.mesh.quads)
+		for face in self.mesh.ngons:
+			count = len(face.vertices)
+			self.mesh.realQuadCount += (count - 2) // 2
+			self.mesh.realTriCount += (count - 2) % 2
+		
 		self.mesh.largeModel = (self.mesh.normalCount > 65000
 			or self.mesh.tangentCount > 65000
 			or len(self.mesh.weights) > 65000
 			or len(self.mesh.vertices) > 65000
-			or len(self.mesh.faces) > 65000
+			or self.mesh.realTriCount + self.mesh.realQuadCount > 65000
 			or any(len(tcs.texCoords) > 65000 for tcs in self.mesh.texCoordSets))
 		
 		lodMesh = self.mesh.lodMesh
@@ -291,10 +295,6 @@ class OBJECT_OT_ExportModel(bpy.types.Operator, ExportHelper):
 				self.report({'INFO', 'ERROR'}, "LOD Mesh '{}': Degenerated Faces found.".format(lodMesh.object.name))
 				return False
 			
-			if lodMesh.ngons:
-				self.report({'INFO', 'ERROR'}, "LOD Mesh '{}': NGon faces found.".format(lodMesh.object.name))
-				return False
-			
 			if not self.checkLODMeshSameTextures(lodMesh):
 				self.report({'INFO', 'ERROR'}, "LOD Mesh '{}': Textures do not match base mesh '{}' textures.".format(
 					lodMesh.object.name, self.mesh.object.name))
@@ -305,11 +305,18 @@ class OBJECT_OT_ExportModel(bpy.types.Operator, ExportHelper):
 					+ " match base mesh '{}' texture coordinate sets.").format(lodMesh.object.name, self.mesh.object.name))
 				return False
 			
+			lodMesh.realTriCount = len(lodMesh.triangles)
+			lodMesh.realQuadCount = len(lodMesh.quads)
+			for face in lodMesh.ngons:
+				count = len(face.vertices)
+				lodMesh.realQuadCount += (count - 2) // 2
+				lodMesh.realTriCount += (count - 2) % 2
+			
 			lodMesh.largeModel = (lodMesh.normalCount > 65000
 				or lodMesh.tangentCount > 65000
 				or len(lodMesh.weights) > 65000
 				or len(lodMesh.vertices) > 65000
-				or len(lodMesh.faces) > 65000
+				or lodMesh.realTriCount + lodMesh.realQuadCount > 65000
 				or any(len(tcs.texCoords) > 65000 for tcs in lodMesh.texCoordSets))
 			
 			if not lodMesh.hasUVSeams and not lodMesh.object.dragengine_hasnoseams:
@@ -466,7 +473,7 @@ class OBJECT_OT_ExportModel(bpy.types.Operator, ExportHelper):
 		
 		f.write(struct.pack(("i" if mesh.largeModel else "H")*6,
 			mesh.normalCount, mesh.tangentCount, len(mesh.weights),
-			len(mesh.vertices), len(mesh.triangles), len(mesh.quads)))
+			len(mesh.vertices), mesh.realTriCount, mesh.realQuadCount))
 		return True
 	
 	# write weights
@@ -511,26 +518,45 @@ class OBJECT_OT_ExportModel(bpy.types.Operator, ExportHelper):
 			print("saving faces...")
 		fmt = "iii" if mesh.largeModel else "HHH"
 		for face in mesh.triangles:
-			"""if self.debugLevel > 1:
-				print("- tri %i: %i %i %i" % (face.face.material_index, face.vertices[0], face.vertices[1], face.vertices[2]))"""
-			f.write(struct.pack("<H", face.face.material_index))
-			f.write(struct.pack(fmt, face.vertices[2], face.vertices[1], face.vertices[0]))
-			f.write(struct.pack(fmt, face.normals[2], face.normals[1], face.normals[0]))
-			f.write(struct.pack(fmt, face.tangents[2], face.tangents[1], face.tangents[0]))
-			for tcs in face.texCoordSets:
-				f.write(struct.pack(fmt, tcs[2].index, tcs[1].index, tcs[0].index))
+			self.writeTriangle(f, mesh, face, fmt, 0, 1, 2)
+		
+		for face in mesh.ngons:
+			if (len(face.vertices) - 2) % 2:
+				self.writeTriangle(f, mesh, face, fmt, 0, -2, -1)
 		
 		fmt = "iiii" if mesh.largeModel else "HHHH"
 		for face in mesh.quads:
-			"""if self.debugLevel > 1:
-				print("- quad %i: %i %i %i %i" % (face.face.material_index, face.vertices[3], face.vertices[2], face.vertices[1], face.vertices[0]))"""
-			f.write(struct.pack("<H", face.face.material_index))
-			f.write(struct.pack(fmt, face.vertices[3], face.vertices[2], face.vertices[1], face.vertices[0]))
-			f.write(struct.pack(fmt, face.normals[3], face.normals[2], face.normals[1], face.normals[0]))
-			f.write(struct.pack(fmt, face.tangents[3], face.tangents[2], face.tangents[1], face.tangents[0]))
-			for tcs in face.texCoordSets:
-				f.write(struct.pack(fmt, tcs[3].index, tcs[2].index, tcs[1].index, tcs[0].index))
+			self.writeQuad(f, mesh, face, fmt, 0, 1, 2, 3)
+		
+		for face in mesh.ngons:
+			for i in range(2, len(face.vertices) - 1, 2):  # (len()-2)+1 since range skips last index
+				self.writeQuad(f, mesh, face, fmt, 0, i - 1, i, i + 1)
 		
 		self.progress.advance("Writing faces: '{}'".format(mesh.object.name))
 		return True
+	
+	def writeTriangle(self, f, mesh, face, fmt, i1, i2, i3):
+		"""
+		if self.debugLevel > 1:
+			print("- tri {}: {} {} {}".format(face.face.material_index, face.vertices[i1], face.vertices[i2], face.vertices[i3]))
+		"""
+		f.write(struct.pack("<H", face.face.material_index))
+		f.write(struct.pack(fmt, face.vertices[i3], face.vertices[i2], face.vertices[i1]))
+		f.write(struct.pack(fmt, face.normals[i3], face.normals[i2], face.normals[i1]))
+		f.write(struct.pack(fmt, face.tangents[i3], face.tangents[i2], face.tangents[i1]))
+		for tcs in face.texCoordSets:
+			f.write(struct.pack(fmt, tcs[i3].index, tcs[i2].index, tcs[i1].index))
+	
+	def writeQuad(self, f, mesh, face, fmt, i1, i2, i3, i4):
+		"""
+		if self.debugLevel > 1:
+			print("- quad {}: {} {} {} {}".format(face.face.material_index, face.vertices[3], face.vertices[2], face.vertices[1], face.vertices[0]))
+		"""
+		f.write(struct.pack("<H", face.face.material_index))
+		f.write(struct.pack(fmt, face.vertices[i4], face.vertices[i3], face.vertices[i2], face.vertices[i1]))
+		f.write(struct.pack(fmt, face.normals[i4], face.normals[i3], face.normals[i2], face.normals[i1]))
+		f.write(struct.pack(fmt, face.tangents[i4], face.tangents[i3], face.tangents[i2], face.tangents[i1]))
+		for tcs in face.texCoordSets:
+			f.write(struct.pack(fmt, tcs[i4].index, tcs[i3].index, tcs[i2].index, tcs[i1].index))
+	
 registerClass(OBJECT_OT_ExportModel)
