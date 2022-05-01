@@ -434,7 +434,12 @@ DBG_ENTER_PARAM3("RenderDepthPass", "%p", mask, "%d", solid, "%d", maskedOnly)
 				addToRenderTask.SetSkinShaderType( deoglSkinTexture::estComponentDepth );
 			}
 		}
+		addToRenderTask.SetFilterDecal( true );
+		addToRenderTask.SetDecal( false );
+		
 		addToRenderTask.AddComponents( collideList );
+		
+		addToRenderTask.SetFilterDecal( false );
 		
 		// billboards
 		if( mask && mask->GetUseClipPlane() ){
