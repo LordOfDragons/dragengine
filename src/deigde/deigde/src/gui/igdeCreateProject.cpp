@@ -261,7 +261,7 @@ void igdeCreateProject::pCopyDefaultFiles(){
 	
 	const char * const extensions[] = {
 		// images
-		"apng", "jpg", "jpeg", "png", "png3d", "tga", "exr", "gif",
+		"apng", "jpg", "jpeg", "png", "png3d", "tga", "exr", "gif", "webp",
 		// vector graphics
 		"svg", "svgz",
 		// videos
