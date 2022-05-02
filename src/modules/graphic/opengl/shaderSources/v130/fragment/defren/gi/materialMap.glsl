@@ -44,6 +44,12 @@
 #ifdef TEXTURE_ENVROOM_EMISSIVITY
 	uniform mediump samplerCube texEnvRoomEmissivity;
 #endif
+#ifdef TEXTURE_NONPBR_ALBEDO
+	uniform lowp SAMPLER_2D texNonPbrAlbedo;
+#endif
+#ifdef TEXTURE_NONPBR_METALNESS
+	uniform lowp SAMPLER_2D texNonPbrMetalness;
+#endif
 
 
 
@@ -62,12 +68,32 @@ out vec4 outEmissivity; // emissivity=rgb, solidity=a
 
 
 
+#if defined TEXTURE_NONPBR_ALBEDO || defined TEXTURE_NONPBR_METALNESS
+	#include "v130/shared/defren/skin/nonpbr_metalness.glsl"
+#endif
+
+
+
 // Main Function
 //////////////////
 
 void main( void ){
+	#if defined TEXTURE_NONPBR_ALBEDO || defined TEXTURE_NONPBR_METALNESS
+		vec3 nonpbrAlbedo = vec3( 0 );
+		#ifdef TEXTURE_NONPBR_ALBEDO
+			nonpbrAlbedo = TEXTURE( texNonPbrAlbedo, vTexCoord ).rgb;
+		#endif
+		
+		float nonpbrMetalness = 0;
+		#ifdef TEXTURE_NONPBR_METALNESS
+			nonpbrMetalness = TEXTURE( texNonPbrMetalness, vTexCoord ).r;
+		#endif
+	#endif
+	
 	// texture property "color"
-	#ifdef TEXTURE_COLOR
+	#if defined TEXTURE_NONPBR_ALBEDO || defined TEXTURE_NONPBR_METALNESS
+		outDiffuse.rgb = nonpbrMetalnessToColor( nonpbrAlbedo, nonpbrMetalness );
+	#elif defined TEXTURE_COLOR
 		#ifdef TEXTURE_TRANSPARENCY
 			outDiffuse.rgb = TEXTURE( texColor, vTexCoord ).rgb;
 			//outDiffuse.a = TEXTURE( texTransparency, vTexCoord ).r;
@@ -92,7 +118,9 @@ void main( void ){
 	#endif
 	
 	// texture property "reflectivity"
-	#ifdef TEXTURE_REFLECTIVITY
+	#if defined TEXTURE_NONPBR_ALBEDO || defined TEXTURE_NONPBR_METALNESS
+		outReflectivity.rgb = nonpbrMetalnessToReflectivity( nonpbrAlbedo, nonpbrMetalness );
+	#elif defined TEXTURE_REFLECTIVITY
 		outReflectivity.rgb = TEXTURE( texReflectivity, vTexCoord ).rgb;
 	#else
 		outReflectivity.rgb = vec3( 0.0 );

@@ -211,6 +211,8 @@ public:
 	bool pTextureEnvRoomMask;
 	bool pTextureEnvRoomEmissivity;
 	bool pTextureRimEmissivity;
+	bool pTextureNonPbrAlbedo;
+	bool pTextureNonPbrMetalness;
 	
 	
 	
@@ -732,6 +734,12 @@ public:
 	
 	/** Set if rim emissivity texture is used. */
 	void SetTextureRimEmissivity( bool useTexture );
+	
+	inline bool GetTextureNonPbrAlbedo() const{ return pTextureNonPbrAlbedo; }
+	void SetTextureNonPbrAlbedo( bool texture );
+	
+	inline bool GetTextureNonPbrMetalness() const{ return pTextureNonPbrMetalness; }
+	void SetTextureNonPbrMetalness( bool texture );
 	/*@}*/
 	
 	

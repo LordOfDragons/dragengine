@@ -87,6 +87,12 @@
 #ifdef TEXTURE_RIM_EMISSIVITY
 	uniform mediump SAMPLER_2D texRimEmissivity;
 #endif
+#ifdef TEXTURE_NONPBR_ALBEDO
+	uniform lowp SAMPLER_2D texNonPbrAlbedo;
+#endif
+#ifdef TEXTURE_NONPBR_METALNESS
+	uniform lowp SAMPLER_2D texNonPbrMetalness;
+#endif
 #ifdef DEPTH_TEST
 	uniform HIGHP sampler2D texDepthTest;
 #endif
@@ -187,6 +193,10 @@ NODE_FRAGMENT_OUTPUTS
 
 #if defined TEXTURE_ENVROOM || defined TEXTURE_ENVROOM_EMISSIVITY
 	#include "v130/shared/defren/skin/environment_room.glsl"
+#endif
+
+#if defined TEXTURE_NONPBR_ALBEDO || defined TEXTURE_NONPBR_METALNESS
+	#include "v130/shared/defren/skin/nonpbr_metalness.glsl"
 #endif
 
 
@@ -373,23 +383,32 @@ void main( void ){
 	
 	// get texture properties from textures
 	#ifndef LUMINANCE_ONLY
-		vec4 color;
-		#ifdef TEXTURE_COLOR
+		#if defined TEXTURE_NONPBR_ALBEDO || defined TEXTURE_NONPBR_METALNESS
+			vec3 nonpbrAlbedo = vec3( 0 );
+			#ifdef TEXTURE_NONPBR_ALBEDO
+				nonpbrAlbedo = TEXTURE( texNonPbrAlbedo, tcColor ).rgb;
+			#endif
+			
+			float nonpbrMetalness = 0;
+			#ifdef TEXTURE_NONPBR_METALNESS
+				nonpbrMetalness = TEXTURE( texNonPbrMetalness, tcReflectivity ).r;
+			#endif
+		#endif
+		
+		vec4 color = vec4( 0, 0, 0, 1 );
+		#ifdef TEXTURE_TRANSPARENCY
+			color.a = TEXTURE( texTransparency, tcColor ).r;
+		#endif
+		#if defined TEXTURE_NONPBR_ALBEDO || defined TEXTURE_NONPBR_METALNESS
+			color.rgb = nonpbrMetalnessToColor( nonpbrAlbedo, nonpbrMetalness );
+		#elif defined TEXTURE_COLOR
 			#ifdef TEXTURE_TRANSPARENCY
-				color = vec4( TEXTURE( texColor, tcColor ).rgb, TEXTURE( texTransparency, tcColor ).r );
+				color.rgb = TEXTURE( texColor, tcColor ).rgb;
 			#else
 				color = TEXTURE( texColor, tcColor );
 			#endif
-		#else
-			#ifdef TEXTURE_TRANSPARENCY
-				color = vec4( 0.0, 0.0, 0.0, TEXTURE( texTransparency, tcColor ).r );
-			#else
-				#ifdef WITH_OUTLINE
-					color = vec4( pOutlineColor * pOutlineColorTint, 1.0 );
-				#else
-					color = vec4( 0.0, 0.0, 0.0, 1.0 );
-				#endif
-			#endif
+		#elif defined WITH_OUTLINE
+			color.rgb = pOutlineColor * pOutlineColorTint;
 		#endif
 		color.a *= pTransparencyMultiplier; // add an #ifdef to avoid this calculation?
 		
@@ -422,7 +441,9 @@ void main( void ){
 		#endif
 		
 		vec3 reflectivity;
-		#ifdef TEXTURE_REFLECTIVITY
+		#if defined TEXTURE_NONPBR_ALBEDO || defined TEXTURE_NONPBR_METALNESS
+			reflectivity = nonpbrMetalnessToReflectivity( nonpbrAlbedo, nonpbrMetalness );
+		#elif defined TEXTURE_REFLECTIVITY
 			reflectivity = TEXTURE( texReflectivity, tcReflectivity ).rgb * vec3( pReflectivityMultiplier );
 		#else
 			reflectivity = vec3( 0.0 );

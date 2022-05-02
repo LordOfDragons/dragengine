@@ -69,6 +69,8 @@ public:
 		ettEnvRoomEmissivity,
 		ettAbsorption,
 		ettRimEmissivity,
+		ettNonPbrAlbedo,
+		ettNonPbrMetalness,
 		ettDepth,
 		ettDepthTest,
 		ettSamples,

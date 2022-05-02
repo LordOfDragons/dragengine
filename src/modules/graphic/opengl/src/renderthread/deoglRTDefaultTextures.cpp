@@ -50,6 +50,7 @@ pEmissivity( NULL ),
 pAO( NULL ),
 pSolidity( NULL ),
 pEnvRoomMask( NULL ),
+pNonPbrMetalness( nullptr ),
 pShadowMap( NULL ),
 pShadowMapInverseDepth( NULL ),
 pShadowMapColor( NULL ),
@@ -70,7 +71,8 @@ pRoughnessArray( NULL ),
 pEmissivityArray( NULL ),
 pAOArray( NULL ),
 pSolidityArray( NULL ),
-pEnvRoomMaskArray( NULL )
+pEnvRoomMaskArray( NULL ),
+pNonPbrMetalnessArray( nullptr )
 {
 	try{
 		pCreateDefaultTextures( renderThread );
@@ -101,6 +103,9 @@ deoglRTDefaultTextures::~deoglRTDefaultTextures(){
 //////////////////////
 
 void deoglRTDefaultTextures::pCleanUp(){
+	if( pNonPbrMetalnessArray ){
+		delete pNonPbrMetalnessArray;
+	}
 	if( pEnvRoomMaskArray ){
 		delete pEnvRoomMaskArray;
 	}
@@ -159,6 +164,9 @@ void deoglRTDefaultTextures::pCleanUp(){
 	}
 	if( pShadowMapInverseDepth ){
 		delete pShadowMapInverseDepth;
+	}
+	if( pNonPbrMetalness ){
+		delete pNonPbrMetalness;
 	}
 	if( pEnvRoomMask ){
 		delete pEnvRoomMask;
@@ -272,6 +280,13 @@ void deoglRTDefaultTextures::pCreateDefaultTextures( deoglRenderThread &renderTh
 	pEnvMap->SetSize( 1 );
 	pEnvMap->SetMapingFormat( 3, true, false );
 	pEnvMap->SetPixels( pixelBuffer2 );
+	
+	// non-pbr metalness: metalness, n/a, n/a, n/a
+	pixelBuffer1.SetToIntColor( 0, 0, 0, 0 );
+	pNonPbrMetalness = new deoglTexture( renderThread );
+	pNonPbrMetalness->SetSize( 1, 1 );
+	pNonPbrMetalness->SetMapingFormat( 4, false, false );
+	pNonPbrMetalness->SetPixels( pixelBuffer1 );
 }
 
 void deoglRTDefaultTextures::pCreateDefaultTexturesArray( deoglRenderThread &renderThread ){
@@ -346,6 +361,13 @@ void deoglRTDefaultTextures::pCreateDefaultTexturesArray( deoglRenderThread &ren
 	pEnvRoomMaskArray->SetSize( 1, 1, 1 );
 	pEnvRoomMaskArray->SetMapingFormat( 4, false, false );
 	pEnvRoomMaskArray->SetPixels( pixelBuffer1 );
+	
+	// non-pbr metalness: metalness, n/a, n/a, n/a
+	pixelBuffer1.SetToIntColor( 0, 0, 0, 0 );
+	pNonPbrMetalnessArray = new deoglArrayTexture( renderThread );
+	pNonPbrMetalnessArray->SetSize( 1, 1, 1 );
+	pNonPbrMetalnessArray->SetMapingFormat( 4, false, false );
+	pNonPbrMetalnessArray->SetPixels( pixelBuffer1 );
 }
 
 void deoglRTDefaultTextures::pCreateWeightsTexture( deoglRenderThread &renderThread ){

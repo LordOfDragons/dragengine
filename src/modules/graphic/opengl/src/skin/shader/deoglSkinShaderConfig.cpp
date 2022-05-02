@@ -133,6 +133,8 @@ void deoglSkinShaderConfig::Reset(){
 	pTextureEnvRoomMask = false;
 	pTextureEnvRoomEmissivity = false;
 	pTextureRimEmissivity = false;
+	pTextureNonPbrAlbedo = false;
+	pTextureNonPbrMetalness = false;
 }
 
 
@@ -471,6 +473,14 @@ void deoglSkinShaderConfig::SetTextureRimEmissivity( bool useTexture ){
 	pTextureRimEmissivity = useTexture;
 }
 
+void deoglSkinShaderConfig::SetTextureNonPbrAlbedo( bool texture ){
+	pTextureNonPbrAlbedo = texture;
+}
+
+void deoglSkinShaderConfig::SetTextureNonPbrMetalness( bool texture ){
+	pTextureNonPbrMetalness = texture;
+}
+
 
 
 // Debug
@@ -762,6 +772,13 @@ void deoglSkinShaderConfig::DebugGetConfigString( decString &string ) const{
 		string.Append( " texRimEmis" );
 	}
 	
+	if( pTextureNonPbrAlbedo ){
+		string.Append( " texNPAlb" );
+	}
+	if( pTextureNonPbrMetalness ){
+		string.Append( " texNPMet" );
+	}
+	
 	string.Append( ")" );
 }
 
@@ -856,6 +873,8 @@ deoglSkinShaderConfig &deoglSkinShaderConfig::operator=( const deoglSkinShaderCo
 	pTextureEnvRoomMask = config.pTextureEnvRoomMask;
 	pTextureEnvRoomEmissivity = config.pTextureEnvRoomEmissivity;
 	pTextureRimEmissivity = config.pTextureRimEmissivity;
+	pTextureNonPbrAlbedo = config.pTextureNonPbrAlbedo;
+	pTextureNonPbrMetalness = config.pTextureNonPbrMetalness;
 	
 	return *this;
 }
@@ -945,5 +964,7 @@ bool deoglSkinShaderConfig::operator==( const deoglSkinShaderConfig &config ) co
 		&& pTextureEnvRoom == config.pTextureEnvRoom
 		&& pTextureEnvRoomMask == config.pTextureEnvRoomMask
 		&& pTextureEnvRoomEmissivity == config.pTextureEnvRoomEmissivity
-		&& pTextureRimEmissivity == config.pTextureRimEmissivity;
+		&& pTextureRimEmissivity == config.pTextureRimEmissivity
+		&& pTextureNonPbrAlbedo == config.pTextureNonPbrAlbedo
+		&& pTextureNonPbrMetalness == config.pTextureNonPbrMetalness;
 }

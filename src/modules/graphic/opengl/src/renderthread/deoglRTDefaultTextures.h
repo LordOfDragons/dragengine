@@ -44,6 +44,7 @@ private:
 	deoglTexture *pAO;
 	deoglTexture *pSolidity;
 	deoglTexture *pEnvRoomMask;
+	deoglTexture *pNonPbrMetalness;
 	deoglTexture *pShadowMap;
 	deoglTexture *pShadowMapInverseDepth;
 	deoglTexture *pShadowMapColor;
@@ -65,6 +66,7 @@ private:
 	deoglArrayTexture *pAOArray;
 	deoglArrayTexture *pSolidityArray;
 	deoglArrayTexture *pEnvRoomMaskArray;
+	deoglArrayTexture *pNonPbrMetalnessArray;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -109,6 +111,8 @@ public:
 	
 	/** Default environment room mask texture. */
 	inline deoglTexture *GetEnvRoomMask() const{ return pEnvRoomMask; }
+	
+	inline deoglTexture *GetNonPbrMetalness() const{ return pNonPbrMetalness; }
 	
 	/** Default shadow map. */
 	inline deoglTexture *GetShadowMap() const{ return pShadowMap; }
@@ -170,6 +174,8 @@ public:
 	
 	/** Default environment room mask array texture. */
 	inline deoglArrayTexture *GetEnvRoomMaskArray() const{ return pEnvRoomMaskArray; }
+	
+	inline deoglArrayTexture *GetNonPbrMetalnessArray() const{ return pNonPbrMetalnessArray; }
 	/*@}*/
 	
 private:

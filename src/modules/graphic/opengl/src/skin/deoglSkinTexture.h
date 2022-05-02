@@ -105,6 +105,8 @@ public:
 		empRimEmissivityIntensity,
 		empRimAngle,
 		empRimExponent,
+		empNonPbrAlbedo,
+		empNonPbrMetalness,
 		EMP_COUNT
 	};
 	
@@ -309,6 +311,9 @@ private:
 	float pRimEmissivityIntensity;
 	float pRimAngle;
 	float pRimExponent;
+	
+	decColor pNonPbrAlbedo;
+	float pNonPbrMetalness;
 	
 	bool pQuickTransp;
 	
@@ -818,6 +823,16 @@ public:
 	
 	/** Set outline emissivity intensity. */
 	void SetOutlineEmissivityIntensity( float intensity );
+	
+	
+	
+	inline const decColor &GetNonPbrAlbeod() const{ return pNonPbrAlbedo; }
+	void SetNonPbrAlbedo( const decColor &albedo );
+	
+	inline float GetNonPbrMetalness() const{ return pNonPbrMetalness; }
+	void SetNonPbrMetalness( float metalness );
+	
+	
 	
 	/** Has outline. */
 	inline bool GetHasOutline() const{ return pHasOutline; }

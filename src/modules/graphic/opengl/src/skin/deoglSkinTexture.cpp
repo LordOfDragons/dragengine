@@ -451,6 +451,9 @@ pSharedSPBElement( NULL )
 	pRimAngle = 0.0f;
 	pRimExponent = 1.0f;
 	
+	pNonPbrAlbedo.Set( 0.0f, 0.0f, 0.0f );
+	pNonPbrMetalness = 0.0f;
+	
 	pMirror = false;
 	pRendered = false;
 	pReflects = false;
@@ -766,6 +769,8 @@ bool deoglSkinTexture::GetShaderConfigFor( eShaderTypes shaderType, deoglSkinSha
 			config.SetTextureEnvRoom( hasChanTex[ deoglSkinChannel::ectEnvironmentRoom ] );
 			config.SetTextureEnvRoomMask( hasChanTex[ deoglSkinChannel::ectEnvironmentRoomMask ] );
 			config.SetTextureEnvRoomEmissivity( hasChanTex[ deoglSkinChannel::ectEnvironmentRoomEmissivity ] );
+			config.SetTextureNonPbrAlbedo( hasChanTex[ deoglSkinChannel::ectNonPbrAlbedo ] );
+			config.SetTextureNonPbrMetalness( hasChanTex[ deoglSkinChannel::ectNonPbrMetalness ] );
 			/*
 			config.SetDynamicColorTint( pMaterialProperties[ empColorTint ].IsDynamic() );
 			config.SetDynamicColorGamma( pMaterialProperties[ empColorGamma ].IsDynamic() );
@@ -846,6 +851,9 @@ bool deoglSkinTexture::GetShaderConfigFor( eShaderTypes shaderType, deoglSkinSha
 			config.SetTextureEnvRoomMask( hasChanTex[ deoglSkinChannel::ectEnvironmentRoomMask ] );
 			config.SetTextureEnvRoomEmissivity( hasChanTex[ deoglSkinChannel::ectEnvironmentRoomEmissivity ] );
 			config.SetTextureAbsorption( hasChanTex[ deoglSkinChannel::ectAbsorption ] );
+			
+			config.SetTextureNonPbrAlbedo( hasChanTex[ deoglSkinChannel::ectNonPbrAlbedo ] );
+			config.SetTextureNonPbrMetalness( hasChanTex[ deoglSkinChannel::ectNonPbrMetalness ] );
 			
 			if( ! isParticle ){
 				config.SetDynamicColorTint(
@@ -1811,6 +1819,8 @@ void deoglSkinTexture::pCreateMipMaps(){
 		case deoglSkinChannel::ectEnvironmentRoomEmissivity:
 		case deoglSkinChannel::ectAbsorption:
 		case deoglSkinChannel::ectRimEmissivity:
+		case deoglSkinChannel::ectNonPbrAlbedo:
+		case deoglSkinChannel::ectNonPbrMetalness:
 			pbMipMap->CreateMipMaps();
 			break;
 			
@@ -2398,6 +2408,14 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 			pIsOutlineEmissive = pOutlineEmissivityIntensity != 0.0f || ! property.GetRenderable().IsEmpty();
 			break;
 			
+		case deoglSkinPropertyMap::eptNonPbrAlbedo:
+			pNonPbrAlbedo.Set( value, value, value );
+			break;
+			
+		case deoglSkinPropertyMap::eptNonPbrMetalness:
+			pNonPbrMetalness = value;
+			break;
+			
 		default:
 			break;
 		}
@@ -2493,6 +2511,10 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 			
 		case deoglSkinPropertyMap::eptOutlineEmissivityTint:
 			pOutlineEmissivityTint = color;
+			break;
+			
+		case deoglSkinPropertyMap::eptNonPbrAlbedo:
+			pNonPbrAlbedo = color;
 			break;
 			
 		default:
@@ -2750,6 +2772,16 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 		case deoglSkinPropertyMap::eptOutlineEmissivityIntensity:
 			materialProperty = pMaterialProperties + empOutlineEmissivityIntensity;
 			pIsOutlineEmissive = true;
+			break;
+			
+		case deoglSkinPropertyMap::eptNonPbrAlbedo:
+			materialProperty = pMaterialProperties + empNonPbrAlbedo;
+			requiresTexture = true;
+			break;
+			
+		case deoglSkinPropertyMap::eptNonPbrMetalness:
+			materialProperty = pMaterialProperties + empNonPbrMetalness;
+			requiresTexture = true;
 			break;
 			
 		default:
@@ -3038,6 +3070,16 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 			
 		case deoglSkinPropertyMap::eptOutlineEmissivityIntensity:
 			pMaterialProperties[ empOutlineEmissivityIntensity ].SetRenderable( skin.AddRenderable( renderable ) );
+			break;
+			
+		case deoglSkinPropertyMap::eptNonPbrAlbedo:
+			pMaterialProperties[ empNonPbrAlbedo ].SetRenderable( skin.AddRenderable( renderable ) );
+			skin.GetRenderableAt( pMaterialProperties[ empNonPbrAlbedo ].GetRenderable() ).SetRequiresTexture( true );
+			break;
+			
+		case deoglSkinPropertyMap::eptNonPbrMetalness:
+			pMaterialProperties[ empNonPbrMetalness ].SetRenderable( skin.AddRenderable( renderable ) );
+			skin.GetRenderableAt( pMaterialProperties[ empNonPbrMetalness ].GetRenderable() ).SetRequiresTexture( true );
 			break;
 			
 		default:

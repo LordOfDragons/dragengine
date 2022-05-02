@@ -81,6 +81,8 @@ static const char *vTextureTargetNames[ deoglSkinShader::ETT_COUNT ] = {
 	"texEnvRoomEmissivity", // ettEnvRoomEmissivity
 	"texAbsorption", // ettAbsorption
 	"texRimEmissivity", // ettRimEmissivity
+	"texNonPbrAlbedo", // ettNonPbrAlbedo
+	"texNonPbrMetalness", // ettNonPbrMetalness
 	"texDepth", // ettDepth
 	"texDepthTest", // ettDepthTest
 	"texSamples", // ettSamples
@@ -1397,6 +1399,32 @@ deoglSkinState *skinState, deoglRDynamicSkin *dynamicSkin ){
 		}
 	}
 	
+	if( pTextureTargets[ ettNonPbrAlbedo ] != -1 ){
+		if( pConfig.GetVariations() ){
+			units[ pTextureTargets[ ettNonPbrAlbedo ] ].EnableArrayTextureFromChannel( pRenderThread,
+				skinTexture, deoglSkinChannel::ectNonPbrAlbedo, skinState, dynamicSkin,
+				pRenderThread.GetDefaultTextures().GetColorArray() );
+			
+		}else{
+			units[ pTextureTargets[ ettNonPbrAlbedo ] ].EnableTextureFromChannel( pRenderThread,
+				skinTexture, deoglSkinChannel::ectNonPbrAlbedo, skinState, dynamicSkin,
+				pRenderThread.GetDefaultTextures().GetColor() );
+		}
+	}
+	
+	if( pTextureTargets[ ettNonPbrMetalness ] != -1 ){
+		if( pConfig.GetVariations() ){
+			units[ pTextureTargets[ ettNonPbrMetalness ] ].EnableArrayTextureFromChannel( pRenderThread,
+				skinTexture, deoglSkinChannel::ectNonPbrMetalness, skinState, dynamicSkin,
+				pRenderThread.GetDefaultTextures().GetNonPbrMetalnessArray() );
+			
+		}else{
+			units[ pTextureTargets[ ettNonPbrMetalness ] ].EnableTextureFromChannel( pRenderThread,
+				skinTexture, deoglSkinChannel::ectNonPbrMetalness, skinState, dynamicSkin,
+				pRenderThread.GetDefaultTextures().GetNonPbrMetalness() );
+		}
+	}
+	
 	// depth buffers
 	if( pTextureTargets[ ettDepth ] != -1 ){
 		units[ pTextureTargets[ ettDepth ] ].EnableSpecial( deoglTexUnitConfig::estPrevDepth,
@@ -1812,6 +1840,12 @@ void deoglSkinShader::GenerateDefines( deoglShaderDefines &defines ){
 	}
 	if( pConfig.GetTextureRimEmissivity() ){
 		defines.AddDefine( "TEXTURE_RIM_EMISSIVITY", true );
+	}
+	if( pConfig.GetTextureNonPbrAlbedo() ){
+		defines.AddDefine( "TEXTURE_NONPBR_ALBEDO", true );
+	}
+	if( pConfig.GetTextureNonPbrMetalness() ){
+		defines.AddDefine( "TEXTURE_NONPBR_METALNESS", true );
 	}
 	
 	// shading definitions
@@ -2295,6 +2329,12 @@ void deoglSkinShader::UpdateTextureTargets(){
 	}
 	if( pConfig.GetTextureRimEmissivity() ){
 		pTextureTargets[ ettRimEmissivity ] = textureUnitNumber++;
+	}
+	if( pConfig.GetTextureNonPbrAlbedo() ){
+		pTextureTargets[ ettNonPbrAlbedo ] = textureUnitNumber++;
+	}
+	if( pConfig.GetTextureNonPbrMetalness() ){
+		pTextureTargets[ ettNonPbrMetalness ] = textureUnitNumber++;
 	}
 	
 	if( pConfig.GetDepthTestMode() != deoglSkinShaderConfig::edtmNone ){

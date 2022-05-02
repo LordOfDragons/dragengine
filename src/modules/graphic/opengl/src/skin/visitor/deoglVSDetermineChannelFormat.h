@@ -147,6 +147,12 @@ private:
 	void pProcessPropertyValue( const deoglSkinPropertyMap::ePropertyTypes channelType );
 	void pProcessPropertyConstructed( const deSkinPropertyConstructed &property,
 		const deoglSkinPropertyMap::ePropertyTypes channelType );
+	
+	void pSetFromNoSize( int requiredComponentCount, int requiredDepth = 1 );
+	void pSetFromImage( const deSkinPropertyImage &property, deoglRImage *image, int requiredComponentCount = 1 );
+	void pSetFromImageCube( const deSkinPropertyImage &property, deoglRImage *image, int requiredComponentCount = 1 );
+	void pSetFromConstructed( const deSkinPropertyConstructed &property, int requiredComponentCount );
+	void pSetFromConstructedCube( const deSkinPropertyConstructed &property, int requiredComponentCount );
 };
 
 #endif

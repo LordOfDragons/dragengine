@@ -337,6 +337,12 @@ bool deoglVSDetermineChannelFormat::pChannelMatches( const deoglSkinPropertyMap:
 	case deoglSkinPropertyMap::eptRimEmissivity:
 		return pOglChanType == deoglSkinChannel::ectRimEmissivity;
 		
+	case deoglSkinPropertyMap::eptNonPbrAlbedo:
+		return pOglChanType == deoglSkinChannel::ectNonPbrAlbedo;
+		
+	case deoglSkinPropertyMap::eptNonPbrMetalness:
+		return pOglChanType == deoglSkinChannel::ectNonPbrMetalness;
+		
 	default:
 		return false;
 	}
@@ -349,9 +355,6 @@ const deoglSkinPropertyMap::ePropertyTypes channelType ){
 		return;
 	}
 	
-	const int componentCount = image->GetComponentCount();
-	const bool requiresFloat = ( image->GetBitCount() > 8 );
-	const decPoint3 imageSize( image->GetWidth(), image->GetHeight(), image->GetDepth() );
 	deoglRImage * const rimage = ( ( deoglImage* )image->GetPeerGraphic() )->GetRImage();
 	
 	// WARNING! the required component count is adjusted to the image component count not the
@@ -363,384 +366,41 @@ const deoglSkinPropertyMap::ePropertyTypes channelType ){
 	//          components are accessed in shaders
 	switch( channelType ){
 	case deoglSkinPropertyMap::eptColor:
-		if( SetRequiredSize( imageSize ) ){
-			SetSharedImage( rimage );
-			pIsDefined = true;
-			if( pRequiredComponentCount < componentCount ){
-				pRequiredComponentCount = componentCount;
-			}
-			if( requiresFloat && ! pRequiresFloat ){
-				pRequiresFloat = true;
-			}
-			
-		}else{
-			WarnImageIncompatibleSize( property );
-		}
+	case deoglSkinPropertyMap::eptColorOmnidirEquirect:
+	case deoglSkinPropertyMap::eptColorTintMask:
+	case deoglSkinPropertyMap::eptSolidity:
+	case deoglSkinPropertyMap::eptEmissivity:
+	case deoglSkinPropertyMap::eptNormal:
+	case deoglSkinPropertyMap::eptRefractionDistort:
+	case deoglSkinPropertyMap::eptReflectivity:
+	case deoglSkinPropertyMap::eptAmbientOcclusion:
+	case deoglSkinPropertyMap::eptEnvironmentRoomMask:
+	case deoglSkinPropertyMap::eptAbsorption:
+	case deoglSkinPropertyMap::eptRimEmissivity:
+	case deoglSkinPropertyMap::eptNonPbrAlbedo:
+	case deoglSkinPropertyMap::eptNonPbrMetalness:
+		pSetFromImage( property, rimage );
+		break;
+		
+	case deoglSkinPropertyMap::eptHeight: // room for cone map appended to it
+		pSetFromImage( property, rimage, 2 );
 		break;
 		
 	case deoglSkinPropertyMap::eptColorOmnidir:
-		if( imageSize.z == 6 ){
-			if( image->GetWidth() != image->GetHeight() ){
-				WarnImageNotSquareSize( property );
-				
-			}else if( SetRequiredSize( imageSize ) ){
-				SetSharedImage( rimage );
-				pIsDefined = true;
-				if( pRequiredComponentCount < componentCount ){
-					pRequiredComponentCount = componentCount;
-				}
-				if( requiresFloat && ! pRequiresFloat ){
-					pRequiresFloat = true;
-				}
-				
-			}else{
-				WarnImageIncompatibleSize( property );
-			}
-			
-		}else{
-			WarnImageNotOmnidirectional( property );
-		}
-		break;
-		
-	case deoglSkinPropertyMap::eptColorOmnidirEquirect:
-		if( SetRequiredSize( imageSize ) ){
-			SetSharedImage( rimage );
-			pIsDefined = true;
-			if( pRequiredComponentCount < componentCount ){
-				pRequiredComponentCount = componentCount;
-			}
-			if( requiresFloat && ! pRequiresFloat ){
-				pRequiresFloat = true;
-			}
-			
-		}else{
-			WarnImageIncompatibleSize( property );
-		}
+	case deoglSkinPropertyMap::eptEnvironmentMap:
+	case deoglSkinPropertyMap::eptEnvironmentRoom:
+	case deoglSkinPropertyMap::eptEnvironmentRoomEmissivity:
+		pSetFromImageCube( property, rimage );
 		break;
 		
 	case deoglSkinPropertyMap::eptTransparency:
-		/*
-		// if combined with color
-		if( componentCount == 1 ){
-			if( SetRequiredSize( imageSize ) ){
-				SetSharedImage( rimage );
-				pIsDefined = true;
-				pRequiredComponentCount = 4;
-				if( requiresFloat && ! pRequiresFloat ){
-					pRequiresFloat = true;
-				}
-				
-			}else{
-				WarnImageIncompatibleSize( property );
-			}
-			
-		}else{
-			WarnImageIncompatibleComponentCount( property, componentCount );
-		}
-		*/
-		if( SetRequiredSize( imageSize ) ){
-			SetSharedImage( rimage );
-			pIsDefined = true;
-			if( pRequiredComponentCount < componentCount ){
-				pRequiredComponentCount = componentCount;
-			}
-			if( requiresFloat && ! pRequiresFloat ){
-				pRequiresFloat = true;
-			}
-			
-		}else{
-			WarnImageIncompatibleSize( property );
-		}
-		break;
-		
-	case deoglSkinPropertyMap::eptColorTintMask:
-		if( SetRequiredSize( imageSize ) ){
-			SetSharedImage( rimage );
-			pIsDefined = true;
-			if( pRequiredComponentCount < componentCount ){
-				pRequiredComponentCount = componentCount;
-			}
-			if( requiresFloat && ! pRequiresFloat ){
-				pRequiresFloat = true;
-			}
-			
-		}else{
-			WarnImageIncompatibleSize( property );
-		}
-		break;
-		
-	case deoglSkinPropertyMap::eptSolidity:
-		if( SetRequiredSize( imageSize ) ){
-			SetSharedImage( rimage );
-			pIsDefined = true;
-			if( pRequiredComponentCount < componentCount ){
-				pRequiredComponentCount = componentCount;
-			}
-			if( requiresFloat && ! pRequiresFloat ){
-				pRequiresFloat = true;
-			}
-			
-		}else{
-			WarnImageIncompatibleSize( property );
-		}
-		break;
-		
-	case deoglSkinPropertyMap::eptNormal:
-		if( SetRequiredSize( imageSize ) ){
-			SetSharedImage( rimage );
-			pIsDefined = true;
-			if( pRequiredComponentCount < componentCount ){
-				pRequiredComponentCount = componentCount;
-			}
-			if( requiresFloat && ! pRequiresFloat ){
-				pRequiresFloat = true;
-			}
-			
-		}else{
-			WarnImageIncompatibleSize( property );
-		}
-		break;
-		
-	case deoglSkinPropertyMap::eptHeight:
-		if( SetRequiredSize( imageSize ) ){
-			SetSharedImage( rimage );
-			pIsDefined = true;
-			if( pRequiredComponentCount < componentCount ){
-				pRequiredComponentCount = componentCount;
-			}
-			if( pRequiredComponentCount < 2 ){ // room for cone map appended to it
-				pRequiredComponentCount = 2;
-			}
-			if( requiresFloat && ! pRequiresFloat ){
-				pRequiresFloat = true;
-			}
-			
-		}else{
-			WarnImageIncompatibleSize( property );
-		}
-		break;
-		
-	case deoglSkinPropertyMap::eptEmissivity:
-		if( SetRequiredSize( imageSize ) ){
-			SetSharedImage( rimage );
-			pIsDefined = true;
-			
-			if( pRequiredComponentCount < componentCount ){
-				pRequiredComponentCount = componentCount;
-			}
-			if( requiresFloat && ! pRequiresFloat ){
-				pRequiresFloat = true;
-			}
-			
-		}else{
-			WarnImageIncompatibleSize( property );
-		}
-		break;
-		
-	case deoglSkinPropertyMap::eptRefractionDistort:
-		if( SetRequiredSize( imageSize ) ){
-			SetSharedImage( rimage );
-			pIsDefined = true;
-			if( pRequiredComponentCount < componentCount ){
-				pRequiredComponentCount = componentCount;
-			}
-			if( requiresFloat && ! pRequiresFloat ){
-				pRequiresFloat = true;
-			}
-			
-		}else{
-			WarnImageIncompatibleSize( property );
-		}
-		break;
-		
-	case deoglSkinPropertyMap::eptReflectivity:
-		if( SetRequiredSize( imageSize ) ){
-			SetSharedImage( rimage );
-			pIsDefined = true;
-			
-			if( pRequiredComponentCount < componentCount ){
-				pRequiredComponentCount = componentCount;
-			}
-			if( requiresFloat && ! pRequiresFloat ){
-				pRequiresFloat = true;
-			}
-			
-		}else{
-			WarnImageIncompatibleSize( property );
-		}
+// 		pSetFromImage( property, rimage, 4 ); // if combined with color
+		pSetFromImage( property, rimage );
 		break;
 		
 	case deoglSkinPropertyMap::eptRoughness:
-		/*
-		// if combined with reflectivity
-		if( componentCount < 4 ){
-			if( SetRequiredSize( imageSize ) ){
-				SetSharedImage( rimage );
-				pIsDefined = true;
-				pRequiredComponentCount = 4;
-				if( requiresFloat && ! pRequiresFloat ){
-					pRequiresFloat = true;
-				}
-				
-			}else{
-				WarnImageIncompatibleSize( property );
-			}
-			
-		}else{
-			WarnImageIncompatibleComponentCount( property, componentCount );
-		}
-		*/
-		if( SetRequiredSize( imageSize ) ){
-			SetSharedImage( rimage );
-			pIsDefined = true;
-			if( pRequiredComponentCount < componentCount ){
-				pRequiredComponentCount = componentCount;
-			}
-			if( requiresFloat && ! pRequiresFloat ){
-				pRequiresFloat = true;
-			}
-			
-		}else{
-			WarnImageIncompatibleSize( property );
-		}
-		break;
-		
-	case deoglSkinPropertyMap::eptAmbientOcclusion:
-		if( SetRequiredSize( imageSize ) ){
-			SetSharedImage( rimage );
-			pIsDefined = true;
-			if( pRequiredComponentCount < componentCount ){
-				pRequiredComponentCount = componentCount;
-			}
-			if( requiresFloat && ! pRequiresFloat ){
-				pRequiresFloat = true;
-			}
-			
-		}else{
-			WarnImageIncompatibleSize( property );
-		}
-		break;
-		
-	case deoglSkinPropertyMap::eptEnvironmentMap:
-		if( imageSize.z == 6 ){
-			if( image->GetWidth() != image->GetHeight() ){
-				WarnImageNotSquareSize( property );
-				
-			}else if( SetRequiredSize( imageSize ) ){
-				SetSharedImage( rimage );
-				pIsDefined = true;
-				if( pRequiredComponentCount < componentCount ){
-					pRequiredComponentCount = componentCount;
-				}
-				if( requiresFloat && ! pRequiresFloat ){
-					pRequiresFloat = true;
-				}
-				
-			}else{
-				WarnImageIncompatibleSize( property );
-			}
-			
-		}else{
-			WarnImageNotOmnidirectional( property );
-		}
-		break;
-		
-	case deoglSkinPropertyMap::eptEnvironmentRoom:
-		if( imageSize.z == 6 ){
-			if( image->GetWidth() != image->GetHeight() ){
-				WarnImageNotSquareSize( property );
-				
-			}else if( SetRequiredSize( imageSize ) ){
-				SetSharedImage( rimage );
-				pIsDefined = true;
-				if( pRequiredComponentCount < componentCount ){
-					pRequiredComponentCount = componentCount;
-				}
-				if( requiresFloat && ! pRequiresFloat ){
-					pRequiresFloat = true;
-				}
-				
-			}else{
-				WarnImageIncompatibleSize( property );
-			}
-			
-		}else{
-			WarnImageNotOmnidirectional( property );
-		}
-		break;
-		
-	case deoglSkinPropertyMap::eptEnvironmentRoomMask:
-		if( SetRequiredSize( imageSize ) ){
-			SetSharedImage( rimage );
-			pIsDefined = true;
-			if( pRequiredComponentCount < componentCount ){
-				pRequiredComponentCount = componentCount;
-			}
-			if( requiresFloat && ! pRequiresFloat ){
-				pRequiresFloat = true;
-			}
-			
-		}else{
-			WarnImageIncompatibleSize( property );
-		}
-		break;
-		
-	case deoglSkinPropertyMap::eptEnvironmentRoomEmissivity:
-		if( imageSize.z == 6 ){
-			if( image->GetWidth() != image->GetHeight() ){
-				WarnImageNotSquareSize( property );
-				
-			}else if( SetRequiredSize( imageSize ) ){
-				SetSharedImage( rimage );
-				pIsDefined = true;
-				if( pRequiredComponentCount < componentCount ){
-					pRequiredComponentCount = componentCount;
-				}
-				if( requiresFloat && ! pRequiresFloat ){
-					pRequiresFloat = true;
-				}
-				
-			}else{
-				WarnImageIncompatibleSize( property );
-			}
-			
-		}else{
-			WarnImageNotOmnidirectional( property );
-		}
-		break;
-		
-	case deoglSkinPropertyMap::eptAbsorption:
-		if( SetRequiredSize( imageSize ) ){
-			SetSharedImage( rimage );
-			pIsDefined = true;
-			if( pRequiredComponentCount < componentCount ){
-				pRequiredComponentCount = componentCount;
-			}
-			
-			if( requiresFloat && ! pRequiresFloat ){
-				pRequiresFloat = true;
-			}
-			
-		}else{
-			WarnImageIncompatibleSize( property );
-		}
-		break;
-		
-	case deoglSkinPropertyMap::eptRimEmissivity:
-		if( SetRequiredSize( imageSize ) ){
-			SetSharedImage( rimage );
-			pIsDefined = true;
-			
-			if( pRequiredComponentCount < componentCount ){
-				pRequiredComponentCount = componentCount;
-			}
-			if( requiresFloat && ! pRequiresFloat ){
-				pRequiresFloat = true;
-			}
-			
-		}else{
-			WarnImageIncompatibleSize( property );
-		}
+// 		pSetFromImage( property, rimage, 4 ); // if combined with reflectivity
+		pSetFromImage( property, rimage );
 		break;
 		
 	default:
@@ -750,132 +410,45 @@ const deoglSkinPropertyMap::ePropertyTypes channelType ){
 
 void deoglVSDetermineChannelFormat::pProcessPropertyColorVideo( const deoglSkinPropertyMap::ePropertyTypes channelType ){
 	switch( channelType ){
+	case deoglSkinPropertyMap::eptColorTintMask:
+	case deoglSkinPropertyMap::eptSolidity:
+	case deoglSkinPropertyMap::eptAmbientOcclusion:
+	case deoglSkinPropertyMap::eptEnvironmentRoomMask:
+	case deoglSkinPropertyMap::eptNonPbrMetalness:
+		pSetFromNoSize( 1 );
+		break;
+		
+	case deoglSkinPropertyMap::eptHeight: // cone map appended
+	case deoglSkinPropertyMap::eptRefractionDistort:
+		pSetFromNoSize( 2 );
+		break;
+		
 	case deoglSkinPropertyMap::eptColor:
-		pSharedImage = NULL;
-		pIsDefined = true;
-		if( pRequiredComponentCount < 3 ){
-			pRequiredComponentCount = 3;
-		}
+	case deoglSkinPropertyMap::eptColorOmnidirEquirect:
+	case deoglSkinPropertyMap::eptNormal:
+	case deoglSkinPropertyMap::eptEmissivity:
+	case deoglSkinPropertyMap::eptReflectivity:
+	case deoglSkinPropertyMap::eptAbsorption:
+	case deoglSkinPropertyMap::eptRimEmissivity:
+	case deoglSkinPropertyMap::eptNonPbrAlbedo:
+		pSetFromNoSize( 3 );
 		break;
 		
 	case deoglSkinPropertyMap::eptColorOmnidir:
-		pSharedImage = NULL;
-		pIsDefined = true;
-		pRequiredComponentCount = 3;
-		pRequiredSize.z = 6;
-		break;
-		
-	case deoglSkinPropertyMap::eptColorOmnidirEquirect:
-		pSharedImage = NULL;
-		pIsDefined = true;
-		pRequiredComponentCount = 3;
+	case deoglSkinPropertyMap::eptEnvironmentMap:
+	case deoglSkinPropertyMap::eptEnvironmentRoom:
+	case deoglSkinPropertyMap::eptEnvironmentRoomEmissivity:
+		pSetFromNoSize( 3, 6 );
 		break;
 		
 	case deoglSkinPropertyMap::eptTransparency:
-		pSharedImage = NULL;
-		pIsDefined = true;
-		//pRequiredComponentCount = 4; // if combined with color
-		pRequiredComponentCount = 1;
-		break;
-		
-	case deoglSkinPropertyMap::eptColorTintMask:
-		pSharedImage = NULL;
-		pIsDefined = true;
-		pRequiredComponentCount = 1;
-		break;
-		
-	case deoglSkinPropertyMap::eptSolidity:
-		pSharedImage = NULL;
-		pIsDefined = true;
-		pRequiredComponentCount = 1;
-		break;
-		
-	case deoglSkinPropertyMap::eptNormal:
-		pSharedImage = NULL;
-		pIsDefined = true;
-		if( pRequiredComponentCount < 3 ){
-			pRequiredComponentCount = 3;
-		}
-		break;
-		
-	case deoglSkinPropertyMap::eptHeight:
-		pSharedImage = NULL;
-		pIsDefined = true;
-		pRequiredComponentCount = 2; // cone map appended
-		break;
-		
-	case deoglSkinPropertyMap::eptEmissivity:
-		pSharedImage = NULL;
-		pIsDefined = true;
-		pRequiredComponentCount = 3;
-		break;
-		
-	case deoglSkinPropertyMap::eptRefractionDistort:
-		pSharedImage = NULL;
-		pIsDefined = true;
-		pRequiredComponentCount = 2;
-		break;
-		
-	case deoglSkinPropertyMap::eptReflectivity:
-		pSharedImage = NULL;
-		pIsDefined = true;
-		if( pRequiredComponentCount < 3 ){
-			pRequiredComponentCount = 3;
-		}
+// 		pSetFromNoSize( 4 ); // if combined with color
+		pSetFromNoSize( 1 );
 		break;
 		
 	case deoglSkinPropertyMap::eptRoughness:
-		pSharedImage = NULL;
-		pIsDefined = true;
-		//pRequiredComponentCount = 4; // if usinb combined
-		pRequiredComponentCount = 1;
-		break;
-		
-	case deoglSkinPropertyMap::eptAmbientOcclusion:
-		pSharedImage = NULL;
-		pIsDefined = true;
-		pRequiredComponentCount = 1;
-		break;
-		
-	case deoglSkinPropertyMap::eptEnvironmentMap:
-		pSharedImage = NULL;
-		pIsDefined = true;
-		pRequiredComponentCount = 3;
-		pRequiredSize.z = 6;
-		break;
-		
-	case deoglSkinPropertyMap::eptEnvironmentRoom:
-		pSharedImage = NULL;
-		pIsDefined = true;
-		pRequiredComponentCount = 3;
-		pRequiredSize.z = 6;
-		break;
-		
-	case deoglSkinPropertyMap::eptEnvironmentRoomMask:
-		pSharedImage = NULL;
-		pIsDefined = true;
-		pRequiredComponentCount = 1;
-		break;
-		
-	case deoglSkinPropertyMap::eptEnvironmentRoomEmissivity:
-		pSharedImage = NULL;
-		pIsDefined = true;
-		pRequiredComponentCount = 3;
-		pRequiredSize.z = 6;
-		break;
-		
-	case deoglSkinPropertyMap::eptAbsorption:
-		pSharedImage = NULL;
-		pIsDefined = true;
-		if( pRequiredComponentCount < 3 ){
-			pRequiredComponentCount = 3;
-		}
-		break;
-		
-	case deoglSkinPropertyMap::eptRimEmissivity:
-		pSharedImage = NULL;
-		pIsDefined = true;
-		pRequiredComponentCount = 3;
+// 		pSetFromNoSize( 4 ); // if using combined
+		pSetFromNoSize( 1 );
 		break;
 		
 	default:
@@ -885,130 +458,45 @@ void deoglVSDetermineChannelFormat::pProcessPropertyColorVideo( const deoglSkinP
 
 void deoglVSDetermineChannelFormat::pProcessPropertyValue( const deoglSkinPropertyMap::ePropertyTypes channelType ){
 	switch( channelType ){
+	case deoglSkinPropertyMap::eptColorTintMask:
+	case deoglSkinPropertyMap::eptSolidity:
+	case deoglSkinPropertyMap::eptEmissivity:
+	case deoglSkinPropertyMap::eptAmbientOcclusion:
+	case deoglSkinPropertyMap::eptEnvironmentRoomMask:
+	case deoglSkinPropertyMap::eptRimEmissivity:
+	case deoglSkinPropertyMap::eptNonPbrMetalness:
+		pSetFromNoSize( 1 );
+		break;
+		
+	case deoglSkinPropertyMap::eptHeight: // cone map appended
+	case deoglSkinPropertyMap::eptRefractionDistort:
+		pSetFromNoSize( 2 );
+		break;
+		
 	case deoglSkinPropertyMap::eptColor:
-		pSharedImage = NULL;
-		pIsDefined = true;
-		if( pRequiredComponentCount < 3 ){
-			pRequiredComponentCount = 3;
-		}
+	case deoglSkinPropertyMap::eptColorOmnidirEquirect:
+	case deoglSkinPropertyMap::eptNormal:
+	case deoglSkinPropertyMap::eptReflectivity:
+	case deoglSkinPropertyMap::eptAbsorption:
+	case deoglSkinPropertyMap::eptNonPbrAlbedo:
+		pSetFromNoSize( 3 );
 		break;
 		
 	case deoglSkinPropertyMap::eptColorOmnidir:
-		pSharedImage = NULL;
-		pIsDefined = true;
-		pRequiredComponentCount = 3;
-		pRequiredSize.z = 6;
-		break;
-		
-	case deoglSkinPropertyMap::eptColorOmnidirEquirect:
-		pSharedImage = NULL;
-		pIsDefined = true;
-		pRequiredComponentCount = 3;
+	case deoglSkinPropertyMap::eptEnvironmentMap:
+	case deoglSkinPropertyMap::eptEnvironmentRoom:
+	case deoglSkinPropertyMap::eptEnvironmentRoomEmissivity:
+		pSetFromNoSize( 3, 6 );
 		break;
 		
 	case deoglSkinPropertyMap::eptTransparency:
-		pSharedImage = NULL;
-		pIsDefined = true;
-		//pRequiredComponentCount = 4; // if combined with color
-		pRequiredComponentCount = 1;
-		break;
-		
-	case deoglSkinPropertyMap::eptColorTintMask:
-		pSharedImage = NULL;
-		pIsDefined = true;
-		pRequiredComponentCount = 1;
-		break;
-		
-	case deoglSkinPropertyMap::eptSolidity:
-		pSharedImage = NULL;
-		pIsDefined = true;
-		pRequiredComponentCount = 1;
-		break;
-		
-	case deoglSkinPropertyMap::eptNormal:
-		pSharedImage = NULL;
-		pIsDefined = true;
-		if( pRequiredComponentCount < 3 ){
-			pRequiredComponentCount = 3;
-		}
-		break;
-		
-	case deoglSkinPropertyMap::eptHeight:
-		pSharedImage = NULL;
-		pIsDefined = true;
-		pRequiredComponentCount = 2; // cone map appended
-		break;
-		
-	case deoglSkinPropertyMap::eptEmissivity:
-		pSharedImage = NULL;
-		pIsDefined = true;
-		pRequiredComponentCount = 1;
-		break;
-		
-	case deoglSkinPropertyMap::eptRefractionDistort:
-		pSharedImage = NULL;
-		pIsDefined = true;
-		pRequiredComponentCount = 2;
-		break;
-		
-	case deoglSkinPropertyMap::eptReflectivity:
-		pSharedImage = NULL;
-		pIsDefined = true;
-		if( pRequiredComponentCount < 3 ){
-			pRequiredComponentCount = 3;
-		}
+// 		pSetFromNoSize( 4 ); // if combined with color
+		pSetFromNoSize( 1 );
 		break;
 		
 	case deoglSkinPropertyMap::eptRoughness:
-		pSharedImage = NULL;
-		pIsDefined = true;
-		//pRequiredComponentCount = 4; // if using combined
-		pRequiredComponentCount = 1;
-		break;
-		
-	case deoglSkinPropertyMap::eptAmbientOcclusion:
-		pSharedImage = NULL;
-		pIsDefined = true;
-		pRequiredComponentCount = 1;
-		break;
-		
-	case deoglSkinPropertyMap::eptEnvironmentMap:
-		pSharedImage = NULL;
-		pIsDefined = true;
-		pRequiredComponentCount = 3;
-		pRequiredSize.z = 6;
-		break;
-		
-	case deoglSkinPropertyMap::eptEnvironmentRoom:
-		pSharedImage = NULL;
-		pIsDefined = true;
-		pRequiredComponentCount = 3;
-		pRequiredSize.z = 6;
-		break;
-		
-	case deoglSkinPropertyMap::eptEnvironmentRoomMask:
-		pSharedImage = NULL;
-		pIsDefined = true;
-		pRequiredComponentCount = 1;
-		break;
-		
-	case deoglSkinPropertyMap::eptEnvironmentRoomEmissivity:
-		pSharedImage = NULL;
-		pIsDefined = true;
-		pRequiredComponentCount = 3;
-		pRequiredSize.z = 6;
-		break;
-		
-	case deoglSkinPropertyMap::eptAbsorption:
-		pSharedImage = NULL;
-		pIsDefined = true;
-		pRequiredComponentCount = 3;
-		break;
-		
-	case deoglSkinPropertyMap::eptRimEmissivity:
-		pSharedImage = NULL;
-		pIsDefined = true;
-		pRequiredComponentCount = 1;
+// 		pSetFromNoSize( 4 ); // if using combined
+		pSetFromNoSize( 1 );
 		break;
 		
 	default:
@@ -1019,55 +507,41 @@ void deoglVSDetermineChannelFormat::pProcessPropertyValue( const deoglSkinProper
 void deoglVSDetermineChannelFormat::pProcessPropertyConstructed( const deSkinPropertyConstructed &property,
 const deoglSkinPropertyMap::ePropertyTypes channelType ){
 	const decPoint3 &size = property.GetContent().GetSize();
-	const bool requiresFloat = property.GetBitCount() > 8;
 	
 	switch( channelType ){
-	case deoglSkinPropertyMap::eptColor:
-		if( SetRequiredSize( size ) ){
-			pSharedImage = NULL;
-			pIsDefined = true;
-			if( pRequiredComponentCount < 3 ){
-				pRequiredComponentCount = 3;
-			}
-			pRequiresFloat |= requiresFloat;
-			
-		}else{
-			WarnImageIncompatibleSize( property );
-		}
+	case deoglSkinPropertyMap::eptColorTintMask:
+	case deoglSkinPropertyMap::eptSolidity:
+	case deoglSkinPropertyMap::eptAmbientOcclusion:
+	case deoglSkinPropertyMap::eptEnvironmentRoomMask:
+	case deoglSkinPropertyMap::eptNonPbrMetalness:
+		pSetFromConstructed( property, 1 );
+		break;
 		
+	case deoglSkinPropertyMap::eptHeight: // room for cone map appended to it
+	case deoglSkinPropertyMap::eptRefractionDistort:
+		pSetFromConstructed( property, 2 );
+		break;
+		
+	case deoglSkinPropertyMap::eptColor:
+	case deoglSkinPropertyMap::eptNormal:
+	case deoglSkinPropertyMap::eptEmissivity:
+	case deoglSkinPropertyMap::eptReflectivity:
+	case deoglSkinPropertyMap::eptAbsorption:
+	case deoglSkinPropertyMap::eptRimEmissivity:
+	case deoglSkinPropertyMap::eptNonPbrAlbedo:
+		pSetFromConstructed( property, 3 );
 		break;
 		
 	case deoglSkinPropertyMap::eptColorOmnidir:
-		if( size.z == 6 ){
-			if( size.x != size.y ){
-				WarnImageNotSquareSize( property );
-				
-			}else if( SetRequiredSize( size ) ){
-				pSharedImage = NULL;
-				pIsDefined = true;
-				pRequiredComponentCount = 3;
-				pRequiresFloat |= requiresFloat;
-				
-			}else{
-				WarnImageIncompatibleSize( property );
-			}
-			
-		}else{
-			WarnImageNotOmnidirectional( property );
-		}
+	case deoglSkinPropertyMap::eptEnvironmentMap:
+	case deoglSkinPropertyMap::eptEnvironmentRoom:
+	case deoglSkinPropertyMap::eptEnvironmentRoomEmissivity:
+		pSetFromConstructedCube( property, 3 );
 		break;
 		
 	case deoglSkinPropertyMap::eptColorOmnidirEquirect:
 		if( size.z == 1 ){
-			if( SetRequiredSize( size ) ){
-				pSharedImage = NULL;
-				pIsDefined = true;
-				pRequiredComponentCount = 3;
-				pRequiresFloat |= requiresFloat;
-				
-			}else{
-				WarnImageIncompatibleSize( property );
-			}
+			pSetFromConstructed( property, 3 );
 			
 		}else{
 			WarnImageNotOmnidirectional( property );
@@ -1075,239 +549,95 @@ const deoglSkinPropertyMap::ePropertyTypes channelType ){
 		break;
 		
 	case deoglSkinPropertyMap::eptTransparency:
-		/*
-		// if combined with color
-		if( SetRequiredSize( size ) ){
-			pSharedImage = NULL;
-			pIsDefined = true;
-			pRequiredComponentCount = 4;
-			pRequiresFloat |= requiresFloat;
-			
-		}else{
-			WarnImageIncompatibleSize( property );
-		}
-		*/
-		if( SetRequiredSize( size ) ){
-			pSharedImage = NULL;
-			pIsDefined = true;
-			pRequiredComponentCount = 1;
-			pRequiresFloat |= requiresFloat;
-			
-		}else{
-			WarnImageIncompatibleSize( property );
-		}
-		break;
-		
-	case deoglSkinPropertyMap::eptColorTintMask:
-		if( SetRequiredSize( size ) ){
-			pSharedImage = NULL;
-			pIsDefined = true;
-			pRequiredComponentCount = 1;
-			pRequiresFloat |= requiresFloat;
-			
-		}else{
-			WarnImageIncompatibleSize( property );
-		}
-		break;
-		
-	case deoglSkinPropertyMap::eptSolidity:
-		if( SetRequiredSize( size ) ){
-			pSharedImage = NULL;
-			pIsDefined = true;
-			pRequiredComponentCount = 1;
-			pRequiresFloat |= requiresFloat;
-			
-		}else{
-			WarnImageIncompatibleSize( property );
-		}
-		break;
-		
-	case deoglSkinPropertyMap::eptNormal:
-		if( SetRequiredSize( size ) ){
-			pSharedImage = NULL;
-			pIsDefined = true;
-			if( pRequiredComponentCount < 3 ){
-				pRequiredComponentCount = 3;
-			}
-			pRequiresFloat |= requiresFloat;
-			
-		}else{
-			WarnImageIncompatibleSize( property );
-		}
-		break;
-		
-	case deoglSkinPropertyMap::eptHeight:
-		if( SetRequiredSize( size ) ){
-			pSharedImage = NULL;
-			pIsDefined = true;
-			pRequiredComponentCount = 2; // room for cone map appended to it
-			pRequiresFloat |= requiresFloat;
-			
-		}else{
-			WarnImageIncompatibleSize( property );
-		}
-		break;
-		
-	case deoglSkinPropertyMap::eptEmissivity:
-		if( SetRequiredSize( size ) ){
-			pSharedImage = NULL;
-			pIsDefined = true;
-			pRequiredComponentCount = 3;
-			pRequiresFloat |= requiresFloat;
-			
-		}else{
-			WarnImageIncompatibleSize( property );
-		}
-		break;
-		
-	case deoglSkinPropertyMap::eptRefractionDistort:
-		if( SetRequiredSize( size ) ){
-			pSharedImage = NULL;
-			pIsDefined = true;
-			pRequiredComponentCount = 2;
-			pRequiresFloat |= requiresFloat;
-			
-		}else{
-			WarnImageIncompatibleSize( property );
-		}
-		break;
-		
-	case deoglSkinPropertyMap::eptReflectivity:
-		if( SetRequiredSize( size ) ){
-			pSharedImage = NULL;
-			pIsDefined = true;
-			if( pRequiredComponentCount < 3 ){
-				pRequiredComponentCount = 3;
-			}
-			pRequiresFloat |= requiresFloat;
-			
-		}else{
-			WarnImageIncompatibleSize( property );
-		}
+// 		pSetFromConstructed( property, 4 ); // if combined with color
+		pSetFromConstructed( property, 1 );
 		break;
 		
 	case deoglSkinPropertyMap::eptRoughness:
-		if( SetRequiredSize( size ) ){
-			pSharedImage = NULL;
-			pIsDefined = true;
-			//pRequiredComponentCount = 4; // if using combined
-			pRequiredComponentCount = 1;
-			pRequiresFloat |= requiresFloat;
-			
-		}else{
-			WarnImageIncompatibleSize( property );
-		}
-		break;
-		
-	case deoglSkinPropertyMap::eptAmbientOcclusion:
-		if( SetRequiredSize( size ) ){
-			pSharedImage = NULL;
-			pIsDefined = true;
-			pRequiredComponentCount = 1;
-			pRequiresFloat |= requiresFloat;
-			
-		}else{
-			WarnImageIncompatibleSize( property );
-		}
-		break;
-		
-	case deoglSkinPropertyMap::eptEnvironmentMap:
-		if( size.z == 6 ){
-			if( size.x != size.y ){
-				WarnImageNotSquareSize( property );
-				
-			}else if( SetRequiredSize( size ) ){
-				pSharedImage = NULL;
-				pIsDefined = true;
-				pRequiredComponentCount = 3;
-				pRequiresFloat |= requiresFloat;
-				
-			}else{
-				WarnImageIncompatibleSize( property );
-			}
-			
-		}else{
-			WarnImageNotOmnidirectional( property );
-		}
-		break;
-		
-	case deoglSkinPropertyMap::eptEnvironmentRoom:
-		if( size.z == 6 ){
-			if( size.x != size.y ){
-				WarnImageNotSquareSize( property );
-				
-			}else if( SetRequiredSize( size ) ){
-				pSharedImage = NULL;
-				pIsDefined = true;
-				pRequiredComponentCount = 3;
-				pRequiresFloat |= requiresFloat;
-				
-			}else{
-				WarnImageIncompatibleSize( property );
-			}
-			
-		}else{
-			WarnImageNotOmnidirectional( property );
-		}
-		break;
-		
-	case deoglSkinPropertyMap::eptEnvironmentRoomMask:
-		if( SetRequiredSize( size ) ){
-			pSharedImage = NULL;
-			pIsDefined = true;
-			pRequiredComponentCount = 1;
-			pRequiresFloat |= requiresFloat;
-			
-		}else{
-			WarnImageIncompatibleSize( property );
-		}
-		break;
-		
-	case deoglSkinPropertyMap::eptEnvironmentRoomEmissivity:
-		if( size.z == 6 ){
-			if( size.x != size.y ){
-				WarnImageNotSquareSize( property );
-				
-			}else if( SetRequiredSize( size ) ){
-				pSharedImage = NULL;
-				pIsDefined = true;
-				pRequiredComponentCount = 3;
-				pRequiresFloat |= requiresFloat;
-				
-			}else{
-				WarnImageIncompatibleSize( property );
-			}
-			
-		}else{
-			WarnImageNotOmnidirectional( property );
-		}
-		break;
-		
-	case deoglSkinPropertyMap::eptAbsorption:
-		if( SetRequiredSize( size ) ){
-			pSharedImage = NULL;
-			pIsDefined = true;
-			pRequiredComponentCount = 3;
-			pRequiresFloat |= requiresFloat;
-			
-		}else{
-			WarnImageIncompatibleSize( property );
-		}
-		break;
-		
-	case deoglSkinPropertyMap::eptRimEmissivity:
-		if( SetRequiredSize( size ) ){
-			pSharedImage = NULL;
-			pIsDefined = true;
-			pRequiredComponentCount = 3;
-			pRequiresFloat |= requiresFloat;
-			
-		}else{
-			WarnImageIncompatibleSize( property );
-		}
+// 		pSetFromConstructed( property, 4 ); // if using combines
+		pSetFromConstructed( property, 1 );
 		break;
 		
 	default:
 		break;
+	}
+}
+
+void deoglVSDetermineChannelFormat::pSetFromNoSize( int requiredComponentCount, int requiredDepth ){
+	pSharedImage = nullptr;
+	pIsDefined = true;
+	if( pRequiredComponentCount < requiredComponentCount ){
+		pRequiredComponentCount = requiredComponentCount;
+	}
+	if( pRequiredSize.z < requiredDepth ){
+		pRequiredSize.z = requiredDepth;
+	}
+}
+
+void deoglVSDetermineChannelFormat::pSetFromImage( const deSkinPropertyImage &property,
+deoglRImage *image, int requiredComponentCount ){
+	if( SetRequiredSize( decPoint3( image->GetWidth(), image->GetHeight(), image->GetDepth() ) ) ){
+		SetSharedImage( image );
+		pIsDefined = true;
+		
+		const int componentCount = image->GetComponentCount();
+		if( pRequiredComponentCount < componentCount ){
+			pRequiredComponentCount = componentCount;
+		}
+		if( pRequiredComponentCount < requiredComponentCount ){
+			pRequiredComponentCount = requiredComponentCount;
+		}
+		if( image->GetBitCount() > 8 && ! pRequiresFloat ){
+			pRequiresFloat = true;
+		}
+		
+	}else{
+		WarnImageIncompatibleSize( property );
+	}
+}
+
+void deoglVSDetermineChannelFormat::pSetFromImageCube( const deSkinPropertyImage &property,
+deoglRImage* image, int requiredComponentCount ){
+	if( image->GetDepth() == 6 ){
+		if( image->GetWidth() != image->GetHeight() ){
+			WarnImageNotSquareSize( property );
+			
+		}else{
+			pSetFromImage( property, image, requiredComponentCount );
+		}
+		
+	}else{
+		WarnImageNotOmnidirectional( property );
+	}
+}
+
+void deoglVSDetermineChannelFormat::pSetFromConstructed(
+const deSkinPropertyConstructed &property, int requiredComponentCount ){
+	if( SetRequiredSize( property.GetContent().GetSize() ) ){
+		pSharedImage = nullptr;
+		pIsDefined = true;
+		if( pRequiredComponentCount < requiredComponentCount ){
+			pRequiredComponentCount = requiredComponentCount;
+		}
+		pRequiresFloat |= property.GetBitCount() > 8;
+		
+	}else{
+		WarnImageIncompatibleSize( property );
+	}
+}
+
+void deoglVSDetermineChannelFormat::pSetFromConstructedCube(
+const deSkinPropertyConstructed &property, int requiredComponentCount ){
+	const decPoint3 &size = property.GetContent().GetSize();
+	if( size.z == 6 ){
+		if( size.x != size.y ){
+			WarnImageNotSquareSize( property );
+			
+		}else{
+			pSetFromConstructed( property, requiredComponentCount );
+		}
+		
+	}else{
+		WarnImageNotOmnidirectional( property );
 	}
 }
