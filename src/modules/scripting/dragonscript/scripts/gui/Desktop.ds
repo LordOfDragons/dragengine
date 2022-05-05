@@ -216,6 +216,9 @@ class Desktop extends Container
 				if not window.getVisible()
 					continue
 				end
+				if not window.getEnabled()
+					break
+				end
 				
 				widget = window.getWidgetAt(pMouseLocation - window.getPosition())
 				if widget == null
