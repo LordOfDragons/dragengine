@@ -1354,6 +1354,14 @@ void deoglRWorld::GIStatesNotifyComponentChangedLayerMask( deoglRComponent *comp
 	}
 }
 
+void deoglRWorld::GIStatesNotifyComponentBecameVisible( deoglRComponent *component ){
+	const int count = pGIStates.GetCount();
+	int i;
+	for( i=0; i<count; i++ ){
+		( ( deoglGIState* )pGIStates.GetAt( i ) )->ComponentBecameVisible( component );
+	}
+}
+
 
 
 // Private Functions

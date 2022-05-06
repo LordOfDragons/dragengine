@@ -71,6 +71,9 @@ public:
 	
 	/** Movement hint changed. */
 	virtual void MovementHintChanged( deoglRComponent &component );
+	
+	/** Visibility changed. */
+	virtual void VisibilityChanged( deoglRComponent &component );
 	/*@}*/
 };
 

@@ -431,6 +431,10 @@ void deoglGIState::ComponentChangedLayerMask( deoglRComponent *component ){
 	pInstances.AddComponent( component, true );
 }
 
+void deoglGIState::ComponentBecameVisible( deoglRComponent *component ){
+	ComponentEnteredWorld( component );
+}
+
 
 
 // Private Functions

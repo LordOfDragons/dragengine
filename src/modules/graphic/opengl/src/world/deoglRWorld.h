@@ -514,6 +514,9 @@ public:
 	
 	/** Notify GI states component changed layer mask. */
 	void GIStatesNotifyComponentChangedLayerMask( deoglRComponent *component );
+	
+	/** Notify GI states component became visible. */
+	void GIStatesNotifyComponentBecameVisible( deoglRComponent *component );
 	/*@}*/
 	
 	

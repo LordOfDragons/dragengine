@@ -655,6 +655,9 @@ public:
 	
 	/** Notify skies about changes potentially requiring an update. */
 	void NotifySkiesUpdateStatic();
+	
+	/** Notify visibility changed. */
+	void NotifyVisibilityChanged();
 	/*@}*/
 	
 	

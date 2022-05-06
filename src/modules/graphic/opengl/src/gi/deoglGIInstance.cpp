@@ -143,6 +143,12 @@ void deoglGIInstance::cComponentListener::MovementHintChanged( deoglRComponent& 
 	pLink.DynamicChanged();
 }
 
+void deoglGIInstance::cComponentListener::VisibilityChanged( deoglRComponent &component ){
+	if( ! component.GetVisible() ){
+		pLink.RemoveInstance();
+	}
+}
+
 
 // Class deoglGIInstance::cDecalListener
 //////////////////////////////////////////

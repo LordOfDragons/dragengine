@@ -74,6 +74,7 @@ private:
 		virtual void TexturesChanged( deoglRComponent &component );
 		virtual void RenderStaticChanged( deoglRComponent &component );
 		virtual void MovementHintChanged( deoglRComponent &component );
+		virtual void VisibilityChanged( deoglRComponent &component);
 	};
 	
 	class cDecalListener : public deoglDecalListener{

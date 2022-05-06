@@ -286,7 +286,16 @@ void deoglRComponent::UpdateOctreeNode(){
 
 
 void deoglRComponent::SetVisible( bool visible ){
+	if( visible == pVisible ){
+		return;
+	}
+	
 	pVisible = visible;
+	
+	if( visible && pParentWorld ){
+		pParentWorld->GIStatesNotifyComponentBecameVisible( this );
+	}
+	NotifyVisibilityChanged();
 }
 
 void deoglRComponent::SetMovementHint( deComponent::eMovementHints hint ){
@@ -1587,6 +1596,14 @@ void deoglRComponent::NotifyLightsDirtyLightVolume(){
 void deoglRComponent::NotifySkiesUpdateStatic(){
 	if( pParentWorld && ! pFirstRender ){
 		pParentWorld->SkiesNotifyUpdateStaticComponent( this );
+	}
+}
+
+void deoglRComponent::NotifyVisibilityChanged(){
+	pListenerIndex = 0;
+	while( pListenerIndex < pListeners.GetCount() ){
+		( ( deoglComponentListener* )pListeners.GetAt( pListenerIndex ) )->VisibilityChanged( *this );
+		pListenerIndex++;
 	}
 }
 

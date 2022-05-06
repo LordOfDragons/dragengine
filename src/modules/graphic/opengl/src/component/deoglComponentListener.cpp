@@ -66,3 +66,6 @@ void deoglComponentListener::TUCChanged( deoglRComponent& ){
 
 void deoglComponentListener::MovementHintChanged( deoglRComponent& ){
 }
+
+void deoglComponentListener::VisibilityChanged( deoglRComponent& ){
+}

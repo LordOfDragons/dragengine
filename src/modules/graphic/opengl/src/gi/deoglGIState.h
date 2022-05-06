@@ -307,6 +307,9 @@ public:
 	/** Notification component changed layer mask. */
 	void ComponentChangedLayerMask( deoglRComponent *component );
 	
+	/** Notification component became visible. */
+	void ComponentBecameVisible( deoglRComponent *component );
+	
 	
 	
 	/** Instances. */
