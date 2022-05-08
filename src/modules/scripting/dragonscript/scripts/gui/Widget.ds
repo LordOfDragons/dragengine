@@ -191,7 +191,9 @@ class Widget
 		// can be expensive if every widget calls it although there is no really use case
 		// in sight. if this really becomes necessary somewhere down the line add an option
 		// to enable this notification only where required. until then disabled
-		//sendEvent(WidgetEvent.new(this, WidgetEvent.idWidgetDispose))
+		if pWidgetListeners.getCount() > 0
+			onDispose(WidgetEvent.new(this, WidgetEvent.idWidgetDispose))
+		end
 		
 		stopRepeatEventTimer()
 		stopFrameUpdater()
@@ -1991,7 +1993,9 @@ class Widget
 	
 	/**
 	 * \brief Window is disposing.
-	 * \details Sends event to listeners.
+	 * 
+	 * Sends event to listeners of this widget only. Method is only
+	 * called if widget listeners are present.
 	 */
 	public func void onDispose(WidgetEvent event)
 		sendEventToListeners(event, false)
