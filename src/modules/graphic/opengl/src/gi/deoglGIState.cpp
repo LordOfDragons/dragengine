@@ -468,12 +468,14 @@ void deoglGIState::pCleanUp(){
 void deoglGIState::pInitCascades(){
 	pCascades = new deoglGICascade*[ 4 ];
 	
-	const decVector smallestSpacing( 1.0f, 1.0f, 1.0f );
-	const decVector largestSpacing( pSize.x / ( float )pGridCoordClamp.x,
-		pSize.y / ( float )pGridCoordClamp.y, pSize.z / ( float )pGridCoordClamp.z );
 	const float scaleFactor2nd = 2.0f;
 	const float offsetFactor2nd = 0.0f; // 0.25f; <= when using 5th cascade offset by 0.5
 	const float scaleFactor3rd = 1.0f / 3.0f;
+	
+	decVector largestSpacing( pSize.x / ( float )pGridCoordClamp.x,
+		pSize.y / ( float )pGridCoordClamp.y, pSize.z / ( float )pGridCoordClamp.z );
+	
+	decVector smallestSpacing( decVector( 1.0f, 1.0f, 1.0f ).Smallest( largestSpacing / 8.0f ) );
 	
 	pCascades[ 0 ] = new deoglGICascade( *this, 0, smallestSpacing, decVector() );
 	pCascades[ 0 ]->SetFillUpUpdatesWithExpensiveProbes( true );
