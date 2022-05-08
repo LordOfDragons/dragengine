@@ -46,7 +46,7 @@ class WidgetEvent extends Event
 	
 	/** \brief Event identifier is a widget event identifier. */
 	public static func bool isWidgetEvent( int identifier )
-		return identifier >= idWidgetShown and identifier <= idWidgetResized
+		return identifier >= idWidgetShown and identifier <= idWidgetDispose
 	end
 	
 	

@@ -33,7 +33,7 @@ pin Dragengine.TriggerSystem
  * \brief Behavior element behavior adding day time sky support.
  * 
  * Updates day time controller of a day time supporting sky assigned to ECBehaviorSky.
- * To use ass ECBehaviorSky and ECBehaviorDayTimeSky to behavior element then call
+ * To use add ECBehaviorSky and ECBehaviorDayTimeSky to behavior element then call
  * setDayTime() to adjust the day time to show.
  * 
  * This behavior can be present only once in the behavior element.

@@ -188,6 +188,10 @@ class Widget
 	
 	/** Disposes of the widget cleaning references. */
 	public func void dispose()
+		if pWidgetListeners == null
+			return // already disposed
+		end
+		
 		// can be expensive if every widget calls it although there is no really use case
 		// in sight. if this really becomes necessary somewhere down the line add an option
 		// to enable this notification only where required. until then disabled
