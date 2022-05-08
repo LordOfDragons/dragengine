@@ -31,13 +31,13 @@ pin Dragengine.Utils
 /**
  * \brief Behavior element behavior matching renderable to light intensity.
  * 
- * This behavior is useful for model with an emissiive texture where the emissivity intensity
+ * This behavior is useful for model with an emissive texture where the emissivity intensity
  * should be synchronized to light intensity. A typical example for this is a flashlight where
  * the front side texture lights up if the flashlight is switched on.
  * 
  * To use this behavior add an ECBehaviorDynamicSkin and an ECBehaviorLight to the element
  * class before adding this behavior. Create ECBehaviorRenderableLight behavior and set
- * the dynamic skin and light identifier. Both are set to empty string by default.
+ * the dynamic skin and light identifier.
  * 
  * The current light intensity and color can be used for the renderable. If the respective
  * renderable name is not empty string the value is applied. Each one adds an individual
