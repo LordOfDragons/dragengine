@@ -238,12 +238,7 @@ void gdeGameDefinition::SetScriptModule( const char *identifier ){
 
 
 void gdeGameDefinition::SetBaseGameDefinitionIDList( const decStringList &ids ){
-	if( ids == pBaseGameDefinitionIDList ){
-		return;
-	}
-	
 	pBaseGameDefinitionIDList = ids;
-	NotifyBaseGameDefinitionsChanged();
 }
 
 void gdeGameDefinition::UpdateBaseGameDefinitions( gdeLoadSaveSystem &loadSaveSystem ){
@@ -307,6 +302,8 @@ void gdeGameDefinition::UpdateBaseGameDefinitions( gdeLoadSaveSystem &loadSaveSy
 	
 	pBaseGameDefinitions = list;
 	pClassNameList.RemoveAll();
+	
+	NotifyBaseGameDefinitionsChanged();
 }
 
 int gdeGameDefinition::GetBaseGameDefinitionCount() const{

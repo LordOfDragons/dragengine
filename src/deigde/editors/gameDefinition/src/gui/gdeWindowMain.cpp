@@ -309,6 +309,20 @@ void gdeWindowMain::LoadGameProject( bool silentErrors ){
 	gameDefinition->SetSaved( true );
 	
 	pLastPathGameDef = gameDefinition->GetFilePath();
+	
+	// this is a big of a hack but it works. the game definition file gets the project
+	// base game definitions set as soon at it is loaded. not nice but it works
+	if( project->GetBaseGameDefinitionIDList() != gameDefinition->GetBaseGameDefinitionIDList() ){
+		try{
+			gameDefinition->SetBaseGameDefinitionIDList( project->GetBaseGameDefinitionIDList() );
+			gameDefinition->UpdateBaseGameDefinitions( *pLoadSaveSystem );
+			
+		}catch( const deException &e ){
+			if( ! silentErrors ){
+				DisplayException( e );
+			}
+		}
+	}
 }
 
 void gdeWindowMain::SaveGameDefinition( const char *filename ){

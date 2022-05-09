@@ -494,18 +494,22 @@ public:
 		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ), "Add inherit" ){ }
 	
 	virtual igdeUndo *OnActionObjectClass( gdeObjectClass *objectClass ){
-		const gdeObjectClassList &objectClasses = pPanel.GetGameDefinition()->GetObjectClasses();
-		const int count = objectClasses.GetCount();
+		const decStringSet &classNames = pPanel.GetGameDefinition()->GetClassNameList();
+		const int count = classNames.GetCount();
 		decStringList proposals;
 		int i;
 		for( i=0; i<count; i++ ){
-			proposals.Add( objectClasses.GetAt( i )->GetName() );
+			proposals.Add( classNames.GetAt( i ) );
 		}
 		proposals.SortAscending();
 		
 		decString name( "Name" );
 		if( ! igdeCommonDialogs::GetString( pPanel.GetParentWindow(), "Add Inherit", "Name:", name, proposals ) ){
-			return NULL;
+			return nullptr;
+		}
+		if( objectClass->IsOrInheritsFrom( name ) ){
+			igdeCommonDialogs::Error( &pPanel, "Add Inherit", "Inheritance loop" );
+			return nullptr;
 		}
 		
 		deObjectReference objRef;
@@ -563,7 +567,12 @@ public:
 	virtual igdeUndo *OnChanged( igdeComboBox &comboBox, gdeObjectClass *objectClass ){
 		gdeOCInherit * const inherit = pPanel.GetInherit();
 		if( ! inherit || inherit->GetName() == comboBox.GetText() ){
-			return NULL;
+			return nullptr;
+		}
+		if( objectClass->IsOrInheritsFrom( comboBox.GetText() ) ){
+			igdeCommonDialogs::Error( &pPanel, "Set Inherit Name", "Inheritance loop" );
+			comboBox.SetText( inherit->GetName() );
+			return nullptr;
 		}
 		return new gdeUOCInheritSetName( objectClass, inherit, comboBox.GetText() );
 	}

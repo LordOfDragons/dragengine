@@ -310,22 +310,20 @@ void igdeCreateProject::pCreateGameDefinition(){
 	pSharedGameDefContentReplace();
 	
 	// save project game definition
-	decBaseFileWriterReference writer;
 	
 	decPath path( pNativePathProject );
 	path.AddUnixPath( pPathGameDefProject );
 	
-	writer.TakeOver( new decDiskFileWriter( path.GetPathNative(), false ) );
-	writer->Write( pSharedGameDefContent.GetString(), pSharedGameDefContent.GetLength() );
+	( decDiskFileWriter::Ref::New( new decDiskFileWriter( path.GetPathNative(), false ) ) )
+		->Write( pSharedGameDefContent.GetString(), pSharedGameDefContent.GetLength() );
 }
 
 void igdeCreateProject::pLoadSharedGameDefContent(){
-	decBaseFileReaderReference reader;
 	decPath path;
-	
 	path.SetFromNative( pWindowMain.GetConfiguration().GetPathShares() );
 	path.AddComponent( "newproject.degd" );
-	reader.TakeOver( new decDiskFileReader( path.GetPathNative() ) );
+	const decDiskFileReader::Ref reader( decDiskFileReader::Ref::New(
+		new decDiskFileReader( path.GetPathNative() ) ) );
 	
 	const int contentLen = reader->GetLength();
 	pSharedGameDefContent.Set( ' ', contentLen );

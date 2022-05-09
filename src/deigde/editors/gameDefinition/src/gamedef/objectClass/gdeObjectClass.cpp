@@ -340,6 +340,29 @@ void gdeObjectClass::SetDefaultInheritPropertyPrefix( const char *propertyName )
 	}
 }
 
+bool gdeObjectClass::InheritsFrom( const gdeObjectClass *objectClass ) const{
+	const int count = pInherits.GetCount();
+	int i;
+	for( i=0; i<count; i++ ){
+		const gdeOCInherit &inherit = *pInherits.GetAt( i );
+		const gdeObjectClass * const inheritOC = pGameDefinition->FindObjectClass( inherit.GetName() );
+		if( inheritOC && inheritOC->IsOrInheritsFrom( objectClass ) ){
+			return true;
+		}
+	}
+	return false;
+}
+
+bool gdeObjectClass::IsOrInheritsFrom( const gdeObjectClass *objectClass ) const{
+	return this == objectClass || InheritsFrom( objectClass );
+}
+
+bool gdeObjectClass::IsOrInheritsFrom( const char *name ) const{
+	const gdeObjectClass * const objectClass = pGameDefinition->FindObjectClass( name );
+	return objectClass && IsOrInheritsFrom( objectClass );
+}
+
+
 void gdeObjectClass::NotifyBillboardsChanged(){
 	if( pGameDefinition ){
 		pGameDefinition->NotifyOCBillboardsChanged( this );
