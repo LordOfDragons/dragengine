@@ -496,19 +496,28 @@ void deoglPropFieldCluster::pUpdateRTSInstances(){
 		return;
 	}
 	
-	const deoglModelLOD &modelLod = pPropFieldType.GetModel()->GetLODAt( 0 );
-	const deoglSharedVBOBlock &vboBlock = *modelLod.GetVBOBlock();
-	const deoglModelTexture &modelTexture = modelLod.GetTextureAt( 0 );
-	
 	pRTSInstance->SetParameterBlock( pPropFieldType.GetParamBlock() );
 	pRTSInstance->SetParameterBlockSpecial( NULL );
-	pRTSInstance->SetFirstPoint( vboBlock.GetOffset() );
 	pRTSInstance->SetPointCount( 0 );
-	pRTSInstance->SetFirstIndex( vboBlock.GetIndexOffset() + modelTexture.GetFirstFace() * 3 );
-	pRTSInstance->SetIndexCount( modelTexture.GetFaceCount() * 3 );
-	pRTSInstance->SetSubInstanceCount( pInstanceCount );
-	pRTSInstance->SetDoubleSided( modelTexture.GetDoubleSided() );
 	pRTSInstance->SetPrimitiveType( GL_TRIANGLES );
+	
+	const deoglModelLOD &modelLod = pPropFieldType.GetModel()->GetLODAt( 0 );
+	
+	const deoglModelTexture &modelTexture = modelLod.GetTextureAt( 0 );
+	pRTSInstance->SetIndexCount( modelTexture.GetFaceCount() * 3 );
+	pRTSInstance->SetDoubleSided( modelTexture.GetDoubleSided() );
+	
+	if( modelLod.GetVBOBlock() ){
+		const deoglSharedVBOBlock &vboBlock = *modelLod.GetVBOBlock();
+		pRTSInstance->SetFirstPoint( vboBlock.GetOffset() );
+		pRTSInstance->SetFirstIndex( vboBlock.GetIndexOffset() + modelTexture.GetFirstFace() * 3 );
+		pRTSInstance->SetSubInstanceCount( pInstanceCount );
+		
+	}else{
+		pRTSInstance->SetFirstPoint( 0 );
+		pRTSInstance->SetFirstIndex( 0 );
+		pRTSInstance->SetSubInstanceCount( 0 );
+	}
 	
 	/*
 	// for imposters

@@ -97,7 +97,7 @@ deoglROcclusionMesh::~deoglROcclusionMesh(){
 ///////////////
 
 void deoglROcclusionMesh::PrepareVBOBlock(){
-	if( pVBOBlock ){
+	if( pVBOBlock || pVertexCount == 0 ){
 		return;
 	}
 	

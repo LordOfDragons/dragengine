@@ -148,20 +148,18 @@ deoglRComponentLOD::~deoglRComponentLOD(){
 int deoglRComponentLOD::GetPointOffset() const{
 	if( pVAO ){
 		return 0;
-		
-	}else{
-		if( ! pVBOBlock ){
-			DETHROW( deeInvalidParam );
-		}
-		return pVBOBlock->GetOffset();
 	}
+	if( ! pVBOBlock ){
+		return 0;
+	}
+	return pVBOBlock->GetOffset();
 }
 
 int deoglRComponentLOD::GetIndexOffset() const{
 	if( pVAO ){
 		if( pComponent.GetRenderThread().GetChoices().GetSharedVBOUseBaseVertex() ){
 			if( ! pVBOBlock ){
-				DETHROW( deeInvalidParam );
+				return 0;
 			}
 			return pVBOBlock->GetIndexOffset();
 			
@@ -171,14 +169,20 @@ int deoglRComponentLOD::GetIndexOffset() const{
 		
 	}else{
 		if( ! pVBOBlock ){
-			DETHROW( deeInvalidParam );
+			return 0;
 		}
 		return pVBOBlock->GetIndexOffset();
 	}
 }
 
 deoglVAO *deoglRComponentLOD::GetUseVAO() const{
-	return pVAO ? pVAO : GetModelLODRef().GetVBOBlock()->GetVBO()->GetVAO();
+	if( pVAO ){
+		return pVAO;
+	}
+	if( GetModelLODRef().GetVBOBlock() ){
+		return GetModelLODRef().GetVBOBlock()->GetVBO()->GetVAO();
+	}
+	return nullptr;
 }
 
 void deoglRComponentLOD::InvalidateVAO(){
@@ -357,7 +361,7 @@ void deoglRComponentLOD::GPUTransformVertices(){
 	deoglModelLOD &modelLOD = pComponent.GetModel()->GetLODAt( pLODIndex );
 	const int positionCount = modelLOD.GetPositionCount();
 	
-	if( positionCount > 0 ){
+	if( positionCount > 0 && modelLOD.GetVBOBlockPositionWeight() ){
 		deoglRenderThread &renderThread = pComponent.GetRenderThread();
 		
 		deoglSharedVBOBlock &vboBlock = *modelLOD.GetVBOBlockPositionWeight();
@@ -398,7 +402,7 @@ void deoglRComponentLOD::GPUCalcNormalTangents(){
 	deoglModelLOD &modelLOD = pComponent.GetModel()->GetLODAt( pLODIndex );
 	const int positionCount = modelLOD.GetPositionCount();
 	
-	if( positionCount > 0 ){
+	if( positionCount > 0 && modelLOD.GetVBOBlockCalcNormalTangent() ){
 		deoglRenderThread &renderThread = pComponent.GetRenderThread();
 		
 		const int positionCount = modelLOD.GetPositionCount();
@@ -515,7 +519,7 @@ void deoglRComponentLOD::GPUWriteRenderVBO(){
 	deoglModelLOD &modelLOD = pComponent.GetModel()->GetLODAt( pLODIndex );
 	const int positionCount = modelLOD.GetPositionCount();
 	
-	if( positionCount > 0 ){
+	if( positionCount > 0 && modelLOD.GetVBOBlockWriteSkinnedVBO() ){
 		deoglRenderThread &renderThread = pComponent.GetRenderThread();
 		const int normalCount = modelLOD.GetNormalCount();
 		const int pointCount = modelLOD.GetVertexCount();
@@ -609,7 +613,7 @@ void deoglRComponentLOD::GPUApproxTransformVNT(){
 	deoglModelLOD &modelLOD = pComponent.GetModel()->GetLODAt( pLODIndex );
 	const int pointCount = modelLOD.GetVertexCount();
 	
-	if( pointCount > 0 ){
+	if( pointCount > 0 && modelLOD.GetVBOBlockWithWeight() ){
 		deoglRenderThread &renderThread = pComponent.GetRenderThread();
 		
 		deoglSharedVBOBlock &vboBlock = *modelLOD.GetVBOBlockWithWeight();
@@ -1226,7 +1230,7 @@ void deoglRComponentLOD::pWriteVBOData( const deoglModelLOD &modelLOD ){
 }
 
 void deoglRComponentLOD::pUpdateVAO( deoglModelLOD &modelLOD ){
-	if( pVAO || ! pVBO ){
+	if( pVAO || ! pVBO || ! modelLOD.GetVBOBlock() ){
 		return;
 	}
 	

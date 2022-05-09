@@ -655,9 +655,13 @@ int deoglRComponent::GetPointOffset( int lodLevel ) const{
 	}
 	
 	if( ! pModel ){
-		DETHROW( deeInvalidParam );
+		return 0;
 	}
-	return pModel->GetLODAt( lodLevel ).GetVBOBlock()->GetOffset();
+	deoglSharedVBOBlock * const block = pModel->GetLODAt( lodLevel ).GetVBOBlock();
+	if( block ){
+		return block->GetOffset();
+	}
+	return 0;
 }
 
 int deoglRComponent::GetIndexOffset( int lodLevel ) const{
@@ -668,9 +672,13 @@ int deoglRComponent::GetIndexOffset( int lodLevel ) const{
 	}
 	
 	if( ! pModel ){
-		DETHROW( deeInvalidParam );
+		return 0;
 	}
-	return pModel->GetLODAt( lodLevel ).GetVBOBlock()->GetIndexOffset();
+	deoglSharedVBOBlock * const block = pModel->GetLODAt( lodLevel ).GetVBOBlock();
+	if( block ){
+		return block->GetIndexOffset();
+	}
+	return 0;
 }
 
 deoglVAO *deoglRComponent::GetVAO( int lodLevel ) const{
@@ -678,7 +686,11 @@ deoglVAO *deoglRComponent::GetVAO( int lodLevel ) const{
 	if( lod.GetVAO() ){
 		return lod.GetVAO();
 	}
-	return GetModelRef().GetLODAt( lodLevel ).GetVBOBlock()->GetVBO()->GetVAO();
+	deoglSharedVBOBlock * const block = GetModelRef().GetLODAt( lodLevel ).GetVBOBlock();
+	if( block ){
+		return block->GetVBO()->GetVAO();
+	}
+	return nullptr;
 }
 
 void deoglRComponent::InvalidateVAO(){

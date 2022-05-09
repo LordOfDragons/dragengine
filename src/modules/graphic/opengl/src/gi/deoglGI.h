@@ -28,7 +28,6 @@
 #include "../shaders/paramblock/deoglSPBlockUBO.h"
 
 class deoglRenderThread;
-class deoglROcclusionMesh;
 
 #define GI_USE_RAY_CACHE 1
 

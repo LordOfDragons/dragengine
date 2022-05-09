@@ -227,8 +227,13 @@ const deoglRComponent &component, int texture, int firstFace, int faceCount, int
 	}
 	
 	// obtain render task vao and add faces
+	deoglVAO * const vao = component.GetVAO( lodLevel );
+	if( ! vao ){
+		return;
+	}
+	
 	deoglPersistentRenderTaskVAO * const rtvao = pGetTaskVAO( pSkinShaderType, *skinTexture,
-		componentTexture.GetTUCForShaderType( pSkinShaderType ), component.GetVAO( lodLevel ) );
+		componentTexture.GetTUCForShaderType( pSkinShaderType ), vao );
 	
 	const deoglSharedSPBElement &spbElement = *componentTexture.GetSharedSPBElement();
 	const deoglSharedSPBRTIGroup &group = componentTexture.GetSharedSPBRTIGroup( lodLevel );

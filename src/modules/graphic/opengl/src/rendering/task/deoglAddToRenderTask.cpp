@@ -529,6 +529,10 @@ const deoglRPropFieldType &propFieldType, bool imposters ){
 	}
 	
 	const deoglModelLOD &modelLOD = propFieldType.GetModel()->GetLODAt( 0 );
+	if( ! modelLOD.GetVBOBlock() ){
+		return;
+	}
+	
 	const deoglModelTexture &modelTex = modelLOD.GetTextureAt( 0 );
 	
 	if( pFilterDecal && pDecal != modelTex.GetDecal() ){

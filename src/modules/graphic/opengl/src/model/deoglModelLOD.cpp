@@ -233,7 +233,7 @@ deoglModelLOD::~deoglModelLOD(){
 
 
 void deoglModelLOD::PrepareVBOBlock(){
-	if( pVBOBlock ){
+	if( pVBOBlock || pFaceCount == 0 ){
 		return;
 	}
 	
@@ -263,7 +263,7 @@ void deoglModelLOD::PrepareVBOBlock(){
 }
 
 void deoglModelLOD::PrepareVBOBlockPositionWeight(){
-	if( pVBOBlockPositionWeight ){
+	if( pVBOBlockPositionWeight || pPositionCount == 0 ){
 		return;
 	}
 	
@@ -284,7 +284,7 @@ void deoglModelLOD::PrepareVBOBlockPositionWeight(){
 }
 
 void deoglModelLOD::PrepareVBOBlockCalcNormalTangent(){
-	if( pVBOBlockCalcNormalTangent ){
+	if( pVBOBlockCalcNormalTangent || pFaceCount == 0 ){
 		return;
 	}
 	
@@ -305,7 +305,7 @@ void deoglModelLOD::PrepareVBOBlockCalcNormalTangent(){
 }
 
 void deoglModelLOD::PrepareVBOBlockWriteSkinnedVBO(){
-	if( pVBOBlockWriteSkinnedVBO ){
+	if( pVBOBlockWriteSkinnedVBO || pVertexCount == 0 ){
 		return;
 	}
 	
@@ -326,7 +326,7 @@ void deoglModelLOD::PrepareVBOBlockWriteSkinnedVBO(){
 }
 
 void deoglModelLOD::PrepareVBOBlockWithWeight(){
-	if( pVBOBlockWithWeight ){
+	if( pVBOBlockWithWeight || pVertexCount == 0 ){
 		return;
 	}
 	

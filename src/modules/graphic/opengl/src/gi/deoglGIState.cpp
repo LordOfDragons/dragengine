@@ -34,7 +34,6 @@
 #include "../delayedoperation/deoglDelayedOperations.h"
 #include "../model/deoglRModel.h"
 #include "../model/deoglModelLOD.h"
-#include "../rendering/deoglRenderOcclusion.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTLogger.h"
 #include "../renderthread/deoglRTFramebuffer.h"
