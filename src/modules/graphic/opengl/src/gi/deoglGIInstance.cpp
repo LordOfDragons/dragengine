@@ -273,25 +273,19 @@ void deoglGIInstance::SetComponent( deoglRComponent *component, bool dynamic ){
 	if( dynamic ){
 		lod.PrepareGIDynamicBVH();
 		pGIBVHDynamic = lod.GetGIBVHDynamic();
-		if( ! pGIBVHDynamic ){
-			return;
+		if( pGIBVHDynamic ){
+			pGIBVHDynamic->AddBlockUsage();
 		}
-		
-		pGIBVHDynamic->AddBlockUsage();
 		
 	}else{
 		deoglModelLOD * const modelLOD = lod.GetModelLOD();
-		if( ! modelLOD ){
-			return;
+		if( modelLOD ){
+			modelLOD->PrepareGILocalBVH();
+			pGIBVHLocal = modelLOD->GetGIBVHLocal();
+			if( pGIBVHLocal ){
+				pGIBVHLocal->AddBlockUsage();
+			}
 		}
-		
-		modelLOD->PrepareGILocalBVH();
-		pGIBVHLocal = modelLOD->GetGIBVHLocal();
-		if( ! pGIBVHLocal ){
-			return;
-		}
-		
-		pGIBVHLocal->AddBlockUsage();
 	}
 	
 	pInitParameters();
@@ -592,5 +586,11 @@ void deoglGIInstance::pInitParameters(){
 		pHasBVHNodes = pGIBVHDynamic->GetGIBVHLocal().GetBVH().GetRootNode() != NULL;
 		pBVHMinExtend = pGIBVHDynamic->GetMinimumExtend();
 		pBVHMaxExtend = pGIBVHDynamic->GetMaximumExtend();
+		
+	}else{
+		pIndexNodes = 0;
+		pIndexFaces = 0;
+		pIndexVertices = 0;
+		pHasBVHNodes = false;
 	}
 }

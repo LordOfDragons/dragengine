@@ -406,6 +406,11 @@ void deoglGIState::ComponentEnteredWorld( deoglRComponent *component ){
 		return;
 	}
 	
+	// this is unfortunately required and not cheap. but this happens rarely
+	if( pInstances.GetInstanceWithComponent( component ) ){
+		return;
+	}
+	
 	// components entering game world can be anywhere and thus need to invalidate probes
 // 		const decDVector p( component->GetMatrix().GetPosition() );
 // 		pRenderThread.GetLogger().LogInfoFormat( "ComponentEnteredWorld: (%g,%g,%g) %s", p.x, p.y, p.z,
