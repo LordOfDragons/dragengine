@@ -113,7 +113,9 @@ void deoglCanvasImage::ContentChanged(){
 	
 	if( pCanvasImage.GetImage() ){
 		pImage = ( deoglImage* )pCanvasImage.GetImage()->GetPeerGraphic();
-		pImage->GetNotifyCanvas().Add( this );
+		if( pImage ){
+			pImage->GetNotifyCanvas().Add( this );
+		}
 		
 	}else{
 		pImage = NULL;
