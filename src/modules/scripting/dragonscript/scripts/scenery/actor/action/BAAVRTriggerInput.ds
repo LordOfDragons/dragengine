@@ -1,0 +1,54 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2022, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Scenery
+
+
+/**
+ * \brief Interface for VR trigger interaction support with base actor actions.
+ * \version 1.12
+ * 
+ * Implementing actions provide touch, untouch, pull, release and analog actions.
+ * 
+ * The touch, untouch, pull and release actions are binary actions. If the VR controller
+ * supports analog trigger input the pull and release actions are triggered if a controller
+ * defined threshold value is reached. Not all controllers support touch and untouch.
+ * 
+ * The analog trigger action is a gradual value in the range from 0 (released) to 1 (pulled).
+ * Not all VR controllers support analog trigger input. If not supported the value is always 0.
+ */
+interface BAAVRTriggerInput
+	/** \brief Trigger is touched. */
+	func void triggerTouch()
+	
+	/** \brief Trigger has been untouched. */
+	func void triggerUntouch()
+	
+	/** \brief Trigger is pulled. */
+	func void triggerPull()
+	
+	/** \brief Trigger has been released. */
+	func void triggerRelease()
+	
+	/** \brief Analog trigger value changed in the range from 0 to 1. */
+	func void triggerAnalog(float value)
+end

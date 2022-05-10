@@ -1,0 +1,145 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2022, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+namespace Dragengine.Commands
+
+pin Dragengine.Scenery
+
+
+/**
+ * \brief Commands for player controlled BaseActor with BAAVRTriggerInput action.
+ * \version 1.12
+ * 
+ * Contains various commands as sub classes. A static helper method adds instances of each
+ * command to the command manager of a BaseGameApp.
+ */
+class CommandsBAAVRTriggerInput
+	/** \brief Base class operating only on actors with BAAVRTriggerInput action. */
+	public class TriggerAction extends Command
+		protected var ECBehaviorPlayerControllable.Tracker pTracker
+		protected var bool pRightHand
+		
+		public func new(ECBehaviorPlayerControllable.Tracker tracker, String name, \
+		String description, bool rightHand) super(name, description)
+			if tracker == null
+				throw ENullPointer.new("tracker")
+			end
+			pTracker = tracker
+			pRightHand = rightHand
+		end
+		
+		protected func ECBehaviorPlayerControllable.Tracker getTracker()
+			return pTracker
+		end
+		
+		protected func BAAVRTriggerInput getInterface()
+			var ECBehaviorPlayerControllable.Instance actor = pTracker.getActor()
+			if actor == null
+				return null
+			end
+			
+			var ECBehaviorVRHandAction.Instance action
+			
+			if pRightHand
+				action = ECBehaviorVRHandAction.getInstanceIn(actor.getElement(), BaseVRActorClass.idVRRightHand)
+				
+			else
+				action = ECBehaviorVRHandAction.getInstanceIn(actor.getElement(), BaseVRActorClass.idVRLeftHand)
+			end
+			
+			if action != null and action.getAction() castable BAAVRTriggerInput
+				return action.getAction() cast BAAVRTriggerInput
+				
+			else
+				return null
+			end
+		end
+		
+		public func void touch()
+			var BAAVRTriggerInput iface = getInterface()
+			if iface != null
+				iface.triggerTouch()
+			end
+		end
+		
+		public func void untouch()
+			var BAAVRTriggerInput iface = getInterface()
+			if iface != null
+				iface.triggerUntouch()
+			end
+		end
+		
+		public func void start()
+			var BAAVRTriggerInput iface = getInterface()
+			if iface != null
+				iface.triggerPull()
+			end
+		end
+		
+		public func void stop()
+			var BAAVRTriggerInput iface = getInterface()
+			if iface != null
+				iface.triggerRelease()
+			end
+		end
+		
+		public func void analogAbsolute(float value)
+			var BAAVRTriggerInput iface = getInterface()
+			if iface != null
+				iface.triggerAnalog(value)
+			end
+		end
+	end
+	
+	
+	
+	/**
+	 * \brief Add commands to command manager.
+	 * 
+	 * Adds these commands:
+	 * - triggerRight: Right hand trigger
+	 * - triggerLeft: Left hand trigger
+	 */
+	public static func void addCommands(CommandManager commands, ECBehaviorPlayerControllable.Tracker tracker)
+		commands.add(TriggerAction.new(tracker, "triggerRight", "Trigger Right Hand", true))
+		commands.add(TriggerAction.new(tracker, "triggerLeft", "Trigger Left Hand", false))
+	end
+	
+	
+	
+	/**
+	 * \brief Add default bindings for commands.
+	 * 
+	 * Adds bindings for these commands if present in binding manager:
+	 * - "triggerRight"
+	 * - "triggerLeft"
+	 */
+	public static func void addDefaultBindings(DefaultBindingHelper helper)
+		if helper.hasVRHand(true)
+			helper.vrHandBindTrigger(true, InputDeviceAxisType.trigger, 0, "triggerRight")
+		end
+		
+		if helper.hasVRHand(false)
+			helper.vrHandBindTrigger(false, InputDeviceAxisType.trigger, 0, "triggerLeft")
+		end
+	end
+end
