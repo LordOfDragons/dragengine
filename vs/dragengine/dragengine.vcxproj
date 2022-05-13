@@ -1,0 +1,1509 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\src\dragengine\src\app\deCmdLineArgs.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\app\deOS.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\app\deOSBeOS.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\app\deOSWindows.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\collection\decIntDictionary.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\collection\decIntList.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\collection\decIntOrderedSet.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\collection\decIntSet.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\collection\decObjectDictionary.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\collection\decObjectDictionaryExt.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\collection\decObjectLinkedList.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\collection\decObjectList.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\collection\decObjectOrderedSet.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\collection\decObjectSet.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\collection\decPointerDictionary.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\collection\decPointerDictionaryExt.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\collection\decPointerLinkedList.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\collection\decPointerList.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\collection\decPointerOrderedSet.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\collection\decPointerSet.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\collection\decThreadSafeObjectOrderedSet.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\curve\decCurve2D.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\curve\decCurveBezier.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\curve\decCurveBezier3D.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\curve\decCurveBezier3DEvaluator.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\curve\decCurveBezier3DPoint.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\curve\decCurveBezierEvaluator.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\curve\decCurveBezierPoint.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\curve\decCurveDistanceMapping.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\exceptions\deException.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\exceptions\exceptions.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\file\decBaseFileReader.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\file\decBaseFileReaderReference.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\file\decBaseFileWriter.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\file\decBaseFileWriterReference.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\file\decDiskFileReader.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\file\decDiskFileWriter.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\file\decMemoryFile.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\file\decMemoryFileReader.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\file\decMemoryFileReference.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\file\decMemoryFileWriter.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\file\decNullFileWriter.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\file\decPath.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\file\decWeakFileReader.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\file\decWeakFileWriter.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\file\decZFileReader.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\file\decZFileWriter.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\math\decBoundary.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\math\decColor.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\math\decColorMatrix.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\math\decColorMatrix3.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\math\decConvexVolume.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\math\decConvexVolumeFace.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\math\decConvexVolumeList.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\math\decDMatrix.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\math\decDVector.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\math\decDVector4.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\math\decMath.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\math\decMatrix.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\math\decPoint.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\math\decPoint3.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\math\decQuaternion.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\math\decTexMatrix.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\math\decTexMatrix2.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\math\decVector.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\math\decVector2.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\math\decVector4.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\math\smooth\decSmoothDouble.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\math\smooth\decSmoothDVector.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\math\smooth\decSmoothFloat.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\math\smooth\decSmoothVector.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\math\smooth\decSmoothVector2.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\shape\decShape.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\shape\decShapeBox.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\shape\decShapeCapsule.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\shape\decShapeCylinder.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\shape\decShapeHull.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\shape\decShapeList.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\shape\decShapeSphere.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\shape\decShapeVisitor.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\shape\decShapeVisitorIdentify.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\string\decString.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\string\decStringDictionary.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\string\decStringList.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\string\decStringSet.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\string\unicode\decUnicodeArgumentList.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\string\unicode\decUnicodeLineBuffer.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\string\unicode\decUnicodeString.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\string\unicode\decUnicodeStringDictionary.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\string\unicode\decUnicodeStringList.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\string\unicode\decUnicodeStringSet.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\string\unicode\decUTF8Decoder.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\utils\decCollisionFilter.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\utils\decDateTime.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\utils\decLayerMask.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\utils\decPRNG.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\utils\decTimeHistory.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\utils\decTimer.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\utils\decUniqueID.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\utils\decUuid.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\utils\decUuidList.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\utils\decUuidSet.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\utils\decXpmImage.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\xmlparser\decXmlAttValue.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\xmlparser\decXmlCDSect.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\xmlparser\decXmlCharacterData.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\xmlparser\decXmlCharReference.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\xmlparser\decXmlComment.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\xmlparser\decXmlContainer.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\xmlparser\decXmlDocument.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\xmlparser\decXmlDocumentReference.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\xmlparser\decXmlElement.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\xmlparser\decXmlElementReference.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\xmlparser\decXmlElementTag.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\xmlparser\decXmlEntityReference.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\xmlparser\decXmlNamespace.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\xmlparser\decXmlParser.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\xmlparser\decXmlPI.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\xmlparser\decXmlVisitor.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\xmlparser\decXmlWriter.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\xmlparser\visitors\decXmlVisitorCleanCharData.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\xmlparser\visitors\decXmlVisitorStripComments.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\xmlparser\visitors\decXmlVisitorWriter.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\debug\debugfont.c" />
+    <ClCompile Include="..\..\src\dragengine\src\debug\deDebugBlockInfo.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\deEngine.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\deObject.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\deObjectDebug.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\deObjectReference.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\errortracing\deErrorTrace.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\errortracing\deErrorTracePoint.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\errortracing\deErrorTraceValue.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\extern\sha1\sha1.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\filesystem\deCacheHelper.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\filesystem\deCollectDirectorySearchVisitor.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\filesystem\deCollectFileSearchVisitor.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\filesystem\deContainerFileSearch.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\filesystem\deFileSearchVisitor.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\filesystem\dePathList.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\filesystem\dePatternList.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\filesystem\deVFSCacheDiskDirectory.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\filesystem\deVFSContainer.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\filesystem\deVFSContainerReference.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\filesystem\deVFSDiskDirectory.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\filesystem\deVFSMemoryFiles.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\filesystem\deVFSNull.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\filesystem\deVFSRedirect.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\filesystem\deVirtualFileSystem.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\filesystem\deVirtualFileSystemReference.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\input\deInputDevice.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\input\deInputDeviceAxis.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\input\deInputDeviceButton.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\input\deInputDeviceComponent.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\input\deInputDeviceFeedback.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\input\deInputDevicePose.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\input\deInputEvent.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\input\deInputEventQueue.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\logger\deLogger.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\logger\deLoggerBuffer.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\logger\deLoggerChain.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\logger\deLoggerConsole.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\logger\deLoggerConsoleColor.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\logger\deLoggerFile.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\logger\deLoggerReference.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\parallel\deParallelProcessing.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\parallel\deParallelTask.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\parallel\deParallelTaskReference.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\parallel\deParallelThread.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\animation\deAnimation.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\animation\deAnimationBone.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\animation\deAnimationBuilder.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\animation\deAnimationKeyframe.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\animation\deAnimationKeyframeList.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\animation\deAnimationManager.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\animation\deAnimationMove.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\animation\deAnimationReference.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\animator\controller\deAnimatorController.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\animator\controller\deAnimatorControllerTarget.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\animator\deAnimator.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\animator\deAnimatorInstance.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\animator\deAnimatorInstanceManager.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\animator\deAnimatorInstanceReference.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\animator\deAnimatorLink.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\animator\deAnimatorManager.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\animator\deAnimatorReference.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\animator\rule\deAnimatorRule.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\animator\rule\deAnimatorRuleAnimation.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\animator\rule\deAnimatorRuleAnimationDifference.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\animator\rule\deAnimatorRuleAnimationSelect.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\animator\rule\deAnimatorRuleBoneTransformator.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\animator\rule\deAnimatorRuleForeignState.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\animator\rule\deAnimatorRuleGroup.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\animator\rule\deAnimatorRuleInverseKinematic.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\animator\rule\deAnimatorRuleLimit.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\animator\rule\deAnimatorRuleReference.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\animator\rule\deAnimatorRuleRetarget.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\animator\rule\deAnimatorRuleStateManipulator.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\animator\rule\deAnimatorRuleStateSnapshot.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\animator\rule\deAnimatorRuleSubAnimator.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\animator\rule\deAnimatorRuleTrackTo.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\animator\rule\deAnimatorRuleVisitor.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\animator\rule\deAnimatorRuleVisitorIdentify.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\archive\deArchive.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\archive\deArchiveContainer.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\archive\deArchiveManager.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\archive\deArchiveReference.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\billboard\deBillboard.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\billboard\deBillboardManager.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\billboard\deBillboardReference.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\camera\deCamera.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\camera\deCameraManager.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\camera\deCameraReference.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\canvas\capture\deCaptureCanvas.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\canvas\capture\deCaptureCanvasManager.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\canvas\capture\deCaptureCanvasReference.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\canvas\deCanvas.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\canvas\deCanvasCanvasView.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\canvas\deCanvasCanvasViewReference.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\canvas\deCanvasImage.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\canvas\deCanvasImageReference.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\canvas\deCanvasManager.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\canvas\deCanvasPaint.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\canvas\deCanvasPaintReference.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\canvas\deCanvasReference.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\canvas\deCanvasRenderWorld.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\canvas\deCanvasRenderWorldReference.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\canvas\deCanvasText.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\canvas\deCanvasTextReference.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\canvas\deCanvasVideoPlayer.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\canvas\deCanvasVideoPlayerReference.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\canvas\deCanvasView.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\canvas\deCanvasViewReference.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\canvas\deCanvasVisitor.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\canvas\deCanvasVisitorIdentify.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\collider\deCollider.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\collider\deColliderAttachment.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\collider\deColliderBone.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\collider\deColliderCollisionTest.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\collider\deColliderCollisionTestReference.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\collider\deColliderComponent.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\collider\deColliderConstraint.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\collider\deColliderConstraintDof.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\collider\deColliderManager.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\collider\deColliderReference.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\collider\deColliderRig.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\collider\deColliderVisitor.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\collider\deColliderVisitorIdentify.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\collider\deColliderVolume.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\collider\deCollisionInfo.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\component\deComponent.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\component\deComponentBone.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\component\deComponentManager.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\component\deComponentReference.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\component\deComponentTexture.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\debug\deDebugDrawer.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\debug\deDebugDrawerManager.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\debug\deDebugDrawerReference.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\debug\deDebugDrawerShape.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\debug\deDebugDrawerShapeFace.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\decal\deDecal.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\decal\deDecalBoneState.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\decal\deDecalList.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\decal\deDecalManager.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\decal\deDecalReference.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\deFileResource.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\deFileResourceList.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\deFileResourceManager.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\deResource.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\deResourceList.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\deResourceManager.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\deResourceReference.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\effect\deEffect.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\effect\deEffectChain.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\effect\deEffectColorMatrix.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\effect\deEffectDistortImage.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\effect\deEffectFilterKernel.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\effect\deEffectManager.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\effect\deEffectOverlayImage.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\effect\deEffectReference.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\effect\deEffectVisitor.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\effect\deEffectVisitorIdentify.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\font\deFont.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\font\deFontBuilder.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\font\deFontGlyph.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\font\deFontManager.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\font\deFontReference.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\forcefield\deForceField.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\forcefield\deForceFieldManager.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\forcefield\deForceFieldReference.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\image\deImage.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\image\deImageManager.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\image\deImageReference.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\light\deLight.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\light\deLightManager.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\light\deLightReference.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\loader\deResourceLoader.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\loader\deResourceLoaderInfo.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\loader\tasks\deResourceLoaderTask.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\loader\tasks\deRLTaskReadAnimation.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\loader\tasks\deRLTaskReadFont.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\loader\tasks\deRLTaskReadFontInternal.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\loader\tasks\deRLTaskReadFontInternal2.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\loader\tasks\deRLTaskReadImage.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\loader\tasks\deRLTaskReadLanguagePack.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\loader\tasks\deRLTaskReadModel.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\loader\tasks\deRLTaskReadOcclusionMesh.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\loader\tasks\deRLTaskReadRig.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\loader\tasks\deRLTaskReadSkin.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\loader\tasks\deRLTaskReadSkinInternal.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\loader\tasks\deRLTaskReadSkinProperty.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\loader\tasks\deRLTaskReadSkinPropertyNode.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\loader\tasks\deRLTaskReadSound.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\loader\tasks\deRLTaskReadVideo.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\loader\tasks\deRLTaskWriteAnimation.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\loader\tasks\deRLTaskWriteImage.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\loader\tasks\deRLTaskWriteModel.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\loader\tasks\deRLTaskWriteOcclusionMesh.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\loader\tasks\deRLTaskWriteRig.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\localization\deLanguagePack.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\localization\deLanguagePackBuilder.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\localization\deLanguagePackEntry.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\localization\deLanguagePackManager.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\localization\deLanguagePackReference.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\model\deModel.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\model\deModelBone.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\model\deModelBuilder.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\model\deModelFace.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\model\deModelLOD.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\model\deModelManager.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\model\deModelReference.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\model\deModelTexture.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\model\deModelTextureCoordinatesSet.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\model\deModelVertex.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\model\deModelWeight.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\navigation\blocker\deNavigationBlocker.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\navigation\blocker\deNavigationBlockerManager.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\navigation\blocker\deNavigationBlockerReference.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\navigation\navigator\deNavigator.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\navigation\navigator\deNavigatorManager.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\navigation\navigator\deNavigatorPath.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\navigation\navigator\deNavigatorReference.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\navigation\navigator\deNavigatorType.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\navigation\space\deNavigationSpace.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\navigation\space\deNavigationSpaceCorner.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\navigation\space\deNavigationSpaceEdge.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\navigation\space\deNavigationSpaceFace.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\navigation\space\deNavigationSpaceManager.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\navigation\space\deNavigationSpaceReference.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\navigation\space\deNavigationSpaceRoom.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\navigation\space\deNavigationSpaceWall.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\network\deConnection.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\network\deConnectionManager.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\network\deConnectionReference.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\network\deNetworkMessage.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\network\deNetworkMessageReader.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\network\deNetworkMessageReference.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\network\deNetworkMessageWriter.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\network\deNetworkState.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\network\deNetworkStateManager.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\network\deNetworkStateReference.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\network\deServer.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\network\deServerManager.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\network\deServerReference.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\network\value\deNetworkValue.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\network\value\deNetworkValueData.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\network\value\deNetworkValueFloat.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\network\value\deNetworkValueInteger.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\network\value\deNetworkValuePoint2.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\network\value\deNetworkValuePoint3.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\network\value\deNetworkValueQuaternion.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\network\value\deNetworkValueReference.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\network\value\deNetworkValueString.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\network\value\deNetworkValueVector2.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\network\value\deNetworkValueVector3.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\network\value\deNetworkValueVisitor.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\network\value\deNetworkValueVisitorIdentify.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\occlusionmesh\deOcclusionMesh.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\occlusionmesh\deOcclusionMeshBone.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\occlusionmesh\deOcclusionMeshBuilder.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\occlusionmesh\deOcclusionMeshManager.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\occlusionmesh\deOcclusionMeshReference.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\occlusionmesh\deOcclusionMeshVertex.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\occlusionmesh\deOcclusionMeshWeight.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\particle\deParticleEmitter.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\particle\deParticleEmitterController.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\particle\deParticleEmitterInstance.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\particle\deParticleEmitterInstanceManager.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\particle\deParticleEmitterInstanceReference.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\particle\deParticleEmitterInstanceType.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\particle\deParticleEmitterManager.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\particle\deParticleEmitterParameter.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\particle\deParticleEmitterReference.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\particle\deParticleEmitterType.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\probe\deEnvMapProbe.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\probe\deEnvMapProbeManager.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\probe\deEnvMapProbeReference.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\propfield\dePropField.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\propfield\dePropFieldBendState.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\propfield\dePropFieldGround.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\propfield\dePropFieldInstance.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\propfield\dePropFieldManager.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\propfield\dePropFieldReference.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\propfield\dePropFieldType.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\rendering\deRenderWindow.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\rendering\deRenderWindowManager.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\rendering\deRenderWindowReference.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\rig\deRig.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\rig\deRigBone.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\rig\deRigBuilder.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\rig\deRigConstraint.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\rig\deRigManager.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\rig\deRigReference.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\sensor\deLumimeter.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\sensor\deLumimeterManager.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\sensor\deLumimeterReference.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\sensor\deSoundLevelMeter.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\sensor\deSoundLevelMeterManager.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\sensor\deSoundLevelMeterReference.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\sensor\deTouchSensor.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\sensor\deTouchSensorManager.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\sensor\deTouchSensorReference.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\skin\deSkin.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\skin\deSkinBuilder.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\skin\deSkinManager.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\skin\deSkinReference.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\skin\deSkinTexture.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\skin\dynamic\deDynamicSkin.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\skin\dynamic\deDynamicSkinManager.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\skin\dynamic\deDynamicSkinReference.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\skin\dynamic\renderables\deDSRenderable.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\skin\dynamic\renderables\deDSRenderableCamera.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\skin\dynamic\renderables\deDSRenderableCanvas.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\skin\dynamic\renderables\deDSRenderableColor.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\skin\dynamic\renderables\deDSRenderableImage.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\skin\dynamic\renderables\deDSRenderableValue.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\skin\dynamic\renderables\deDSRenderableVideoFrame.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\skin\dynamic\renderables\deDSRenderableVisitor.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\skin\dynamic\renderables\deDSRenderableVisitorIdentify.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\skin\property\deSkinProperty.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\skin\property\deSkinPropertyColor.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\skin\property\deSkinPropertyConstructed.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\skin\property\deSkinPropertyImage.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\skin\property\deSkinPropertyMapped.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\skin\property\deSkinPropertyValue.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\skin\property\deSkinPropertyVideo.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\skin\property\deSkinPropertyVisitor.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\skin\property\deSkinPropertyVisitorIdentify.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\skin\property\deSkinPropertyVisitorLoad.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\skin\property\node\deSkinPropertyNode.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\skin\property\node\deSkinPropertyNodeGroup.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\skin\property\node\deSkinPropertyNodeImage.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\skin\property\node\deSkinPropertyNodeShape.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\skin\property\node\deSkinPropertyNodeText.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\skin\property\node\deSkinPropertyNodeVisitor.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\skin\property\node\deSkinPropertyNodeVisitorIdentify.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\skin\property\node\deSkinPropertyNodeVisitorLoad.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\sky\deSky.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\sky\deSkyController.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\sky\deSkyControllerTarget.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\sky\deSkyInstance.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\sky\deSkyInstanceManager.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\sky\deSkyInstanceReference.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\sky\deSkyLayer.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\sky\deSkyLayerBody.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\sky\deSkyLink.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\sky\deSkyManager.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\sky\deSkyReference.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\smoke\deSmokeEmitter.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\smoke\deSmokeEmitterManager.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\sound\deMicrophone.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\sound\deMicrophoneManager.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\sound\deMicrophoneReference.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\sound\deSound.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\sound\deSoundDecoder.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\sound\deSoundDecoderReference.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\sound\deSoundManager.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\sound\deSoundReference.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\sound\deSpeaker.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\sound\deSpeakerManager.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\sound\deSpeakerReference.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\synthesizer\deSynthesizer.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\synthesizer\deSynthesizerController.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\synthesizer\deSynthesizerControllerTarget.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\synthesizer\deSynthesizerInstance.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\synthesizer\deSynthesizerInstanceManager.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\synthesizer\deSynthesizerInstanceReference.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\synthesizer\deSynthesizerLink.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\synthesizer\deSynthesizerManager.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\synthesizer\deSynthesizerReference.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\synthesizer\effect\deSynthesizerEffect.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\synthesizer\effect\deSynthesizerEffectStretch.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\synthesizer\effect\deSynthesizerEffectVisitor.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\synthesizer\effect\deSynthesizerEffectVisitorIdentify.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\synthesizer\source\deSynthesizerSource.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\synthesizer\source\deSynthesizerSourceChain.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\synthesizer\source\deSynthesizerSourceGroup.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\synthesizer\source\deSynthesizerSourceSound.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\synthesizer\source\deSynthesizerSourceSynthesizer.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\synthesizer\source\deSynthesizerSourceVisitor.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\synthesizer\source\deSynthesizerSourceVisitorIdentify.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\synthesizer\source\deSynthesizerSourceWave.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\terrain\heightmap\deHeightTerrain.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\terrain\heightmap\deHeightTerrainManager.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\terrain\heightmap\deHeightTerrainNavSpace.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\terrain\heightmap\deHeightTerrainNavSpaceEdge.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\terrain\heightmap\deHeightTerrainSector.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\terrain\heightmap\deHeightTerrainTexture.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\terrain\heightmap\deTerrainHeightMap.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\terrain\heightmap\deTerrainHeightModifier.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\video\deVideo.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\video\deVideoAudioDecoder.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\video\deVideoAudioDecoderReference.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\video\deVideoDecoder.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\video\deVideoDecoderReference.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\video\deVideoManager.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\video\deVideoPlayer.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\video\deVideoPlayerManager.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\video\deVideoPlayerReference.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\video\deVideoReference.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\world\deWorld.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\world\deWorldManager.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\world\deWorldReference.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\deAISystem.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\deAnimatorSystem.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\deAudioSystem.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\deBaseSystem.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\deCrashRecoverySystem.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\deGraphicSystem.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\deInputSystem.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\deModuleSystem.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\deNetworkSystem.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\dePhysicsSystem.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\deScriptingSystem.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\deSynthesizerSystem.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\deVRSystem.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\ai\deBaseAIHeightTerrain.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\ai\deBaseAILocomotion.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\ai\deBaseAIModule.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\ai\deBaseAINavigationBlocker.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\ai\deBaseAINavigationSpace.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\ai\deBaseAINavigator.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\ai\deBaseAIWorld.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\animation\deBaseAnimationModule.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\animator\deBaseAnimatorAnimation.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\animator\deBaseAnimatorAnimator.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\animator\deBaseAnimatorAnimatorInstance.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\animator\deBaseAnimatorComponent.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\animator\deBaseAnimatorModule.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\archive\deBaseArchiveContainer.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\archive\deBaseArchiveModule.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\audio\deBaseAudioComponent.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\audio\deBaseAudioDecal.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\audio\deBaseAudioHeightTerrain.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\audio\deBaseAudioMicrophone.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\audio\deBaseAudioModel.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\audio\deBaseAudioModule.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\audio\deBaseAudioSkin.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\audio\deBaseAudioSound.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\audio\deBaseAudioSoundLevelMeter.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\audio\deBaseAudioSpeaker.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\audio\deBaseAudioSynthesizerInstance.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\audio\deBaseAudioVideoPlayer.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\audio\deBaseAudioWorld.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\crashrecovery\deBaseCrashRecoveryModule.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\deBaseModule.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\deInternalModule.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\deLibraryModule.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\deLoadableModule.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\deLoadableModuleVisitor.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\deModuleParameter.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\font\deBaseFontModule.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\graphic\deBaseGraphicBillboard.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\graphic\deBaseGraphicCamera.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\graphic\deBaseGraphicCanvas.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\graphic\deBaseGraphicCaptureCanvas.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\graphic\deBaseGraphicComponent.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\graphic\deBaseGraphicDebugDrawer.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\graphic\deBaseGraphicDecal.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\graphic\deBaseGraphicDynamicSkin.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\graphic\deBaseGraphicEffect.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\graphic\deBaseGraphicEnvMapProbe.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\graphic\deBaseGraphicFont.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\graphic\deBaseGraphicHeightTerrain.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\graphic\deBaseGraphicImage.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\graphic\deBaseGraphicLight.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\graphic\deBaseGraphicLumimeter.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\graphic\deBaseGraphicModel.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\graphic\deBaseGraphicModule.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\graphic\deBaseGraphicOcclusionMesh.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\graphic\deBaseGraphicParticleEmitter.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\graphic\deBaseGraphicParticleEmitterInstance.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\graphic\deBaseGraphicPropField.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\graphic\deBaseGraphicRenderWindow.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\graphic\deBaseGraphicSkin.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\graphic\deBaseGraphicSky.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\graphic\deBaseGraphicSkyInstance.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\graphic\deBaseGraphicSmokeEmitter.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\graphic\deBaseGraphicVideo.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\graphic\deBaseGraphicVideoPlayer.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\graphic\deBaseGraphicWorld.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\image\deBaseImageInfo.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\image\deBaseImageModule.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\input\deBaseInputModule.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\langpack\deBaseLanguagePackModule.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\model\deBaseModelModule.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\network\deBaseNetworkConnection.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\network\deBaseNetworkModule.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\network\deBaseNetworkServer.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\network\deBaseNetworkState.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\network\deBaseNetworkWorld.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\occlusionmesh\deBaseOcclusionMeshModule.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\physics\deBasePhysicsCollider.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\physics\deBasePhysicsComponent.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\physics\deBasePhysicsDecal.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\physics\deBasePhysicsForceField.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\physics\deBasePhysicsHeightTerrain.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\physics\deBasePhysicsModel.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\physics\deBasePhysicsModule.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\physics\deBasePhysicsParticleEmitter.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\physics\deBasePhysicsParticleEmitterInstance.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\physics\deBasePhysicsPropField.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\physics\deBasePhysicsRig.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\physics\deBasePhysicsSkin.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\physics\deBasePhysicsSmokeEmitter.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\physics\deBasePhysicsTouchSensor.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\physics\deBasePhysicsWorld.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\rig\deBaseRigModule.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\scripting\deBaseScriptingCollider.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\scripting\deBaseScriptingConnection.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\scripting\deBaseScriptingModule.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\scripting\deBaseScriptingNetworkState.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\scripting\deBaseScriptingParticleEmitterInstance.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\scripting\deBaseScriptingPropField.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\scripting\deBaseScriptingServer.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\scripting\deBaseScriptingSoundLevelMeter.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\scripting\deBaseScriptingSpeaker.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\scripting\deBaseScriptingTouchSensor.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\skin\deBaseSkinModule.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\sound\deBaseSoundDecoder.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\sound\deBaseSoundInfo.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\sound\deBaseSoundModule.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\synthesizer\deBaseSynthesizerModule.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\synthesizer\deBaseSynthesizerSound.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\synthesizer\deBaseSynthesizerSynthesizer.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\synthesizer\deBaseSynthesizerSynthesizerInstance.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\video\deBaseVideoAudioDecoder.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\video\deBaseVideoDecoder.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\video\deBaseVideoInfo.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\video\deBaseVideoModule.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\vr\deBaseVRModule.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\threading\deBarrier.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\threading\deMutex.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\threading\deMutexGuard.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\threading\deReadLockGuard.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\threading\deReadWriteLock.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\threading\deSemaphore.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\threading\deThread.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\threading\deThreadSafeObject.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\threading\deThreadSafeObjectReference.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\threading\deWriteLockGuard.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\src\dragengine\src\app\deCmdLineArgs.h" />
+    <ClInclude Include="..\..\src\dragengine\src\app\deOS.h" />
+    <ClInclude Include="..\..\src\dragengine\src\app\deOSBeOS.h" />
+    <ClInclude Include="..\..\src\dragengine\src\app\deOSWindows.h" />
+    <ClInclude Include="..\..\src\dragengine\src\app\include_windows.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\collection\decIntDictionary.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\collection\decIntList.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\collection\decIntOrderedSet.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\collection\decIntSet.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\collection\decObjectDictionary.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\collection\decObjectDictionaryExt.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\collection\decObjectLinkedList.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\collection\decObjectList.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\collection\decObjectOrderedSet.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\collection\decObjectSet.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\collection\decPointerDictionary.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\collection\decPointerDictionaryExt.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\collection\decPointerLinkedList.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\collection\decPointerList.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\collection\decPointerOrderedSet.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\collection\decPointerSet.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\collection\decThreadSafeObjectOrderedSet.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\curve\decCurve2D.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\curve\decCurveBezier.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\curve\decCurveBezier3D.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\curve\decCurveBezier3DEvaluator.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\curve\decCurveBezier3DPoint.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\curve\decCurveBezierEvaluator.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\curve\decCurveBezierPoint.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\curve\decCurveDistanceMapping.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\exceptions.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\exceptions\deException.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\file\decBaseFileReader.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\file\decBaseFileReaderReference.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\file\decBaseFileWriter.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\file\decBaseFileWriterReference.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\file\decDiskFileReader.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\file\decDiskFileWriter.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\file\decMemoryFile.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\file\decMemoryFileReader.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\file\decMemoryFileReference.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\file\decMemoryFileWriter.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\file\decNullFileWriter.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\file\decPath.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\file\decWeakFileReader.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\file\decWeakFileWriter.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\file\decZFileReader.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\file\decZFileWriter.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\math\decBoundary.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\math\decColor.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\math\decColorMatrix.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\math\decColorMatrix3.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\math\decConvexVolume.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\math\decConvexVolumeFace.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\math\decConvexVolumeList.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\math\decDMatrix.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\math\decDVector.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\math\decDVector4.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\math\decMath.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\math\decMatrix.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\math\decPoint.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\math\decPoint3.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\math\decQuaternion.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\math\decTexMatrix.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\math\decTexMatrix2.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\math\decVector.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\math\decVector2.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\math\decVector4.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\math\smooth\decSmoothDouble.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\math\smooth\decSmoothDVector.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\math\smooth\decSmoothFloat.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\math\smooth\decSmoothVector.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\math\smooth\decSmoothVector2.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\shape\decShape.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\shape\decShapeBox.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\shape\decShapeCapsule.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\shape\decShapeCylinder.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\shape\decShapeHull.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\shape\decShapeList.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\shape\decShapeSphere.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\shape\decShapeVisitor.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\shape\decShapeVisitorIdentify.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\string\decString.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\string\decStringDictionary.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\string\decStringList.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\string\decStringSet.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\string\unicode\decUnicodeArgumentList.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\string\unicode\decUnicodeLineBuffer.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\string\unicode\decUnicodeString.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\string\unicode\decUnicodeStringDictionary.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\string\unicode\decUnicodeStringList.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\string\unicode\decUnicodeStringSet.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\string\unicode\decUTF8Decoder.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\utils\decCollisionFilter.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\utils\decDateTime.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\utils\decLayerMask.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\utils\decPRNG.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\utils\decTimeHistory.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\utils\decTimer.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\utils\decUniqueID.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\utils\decUuid.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\utils\decUuidList.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\utils\decUuidSet.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\utils\decXpmImage.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\xmlparser\decXmlAttValue.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\xmlparser\decXmlCDSect.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\xmlparser\decXmlCharacterData.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\xmlparser\decXmlCharReference.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\xmlparser\decXmlComment.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\xmlparser\decXmlContainer.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\xmlparser\decXmlDocument.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\xmlparser\decXmlDocumentReference.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\xmlparser\decXmlElement.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\xmlparser\decXmlElementReference.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\xmlparser\decXmlElementTag.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\xmlparser\decXmlEntityReference.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\xmlparser\decXmlNamespace.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\xmlparser\decXmlParser.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\xmlparser\decXmlPI.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\xmlparser\decXmlVisitor.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\xmlparser\decXmlWriter.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\xmlparser\visitors\decXmlVisitorCleanCharData.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\xmlparser\visitors\decXmlVisitorStripComments.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\xmlparser\visitors\decXmlVisitorWriter.h" />
+    <ClInclude Include="..\..\src\dragengine\src\debug\deDebugBlockInfo.h" />
+    <ClInclude Include="..\..\src\dragengine\src\deEngine.h" />
+    <ClInclude Include="..\..\src\dragengine\src\deObject.h" />
+    <ClInclude Include="..\..\src\dragengine\src\deObjectDebug.h" />
+    <ClInclude Include="..\..\src\dragengine\src\deObjectReference.h" />
+    <ClInclude Include="..\..\src\dragengine\src\deTObjectReference.h" />
+    <ClInclude Include="..\..\src\dragengine\src\doxy_main.h" />
+    <ClInclude Include="..\..\src\dragengine\src\dragengine_configuration.h" />
+    <ClInclude Include="..\..\src\dragengine\src\dragengine_export.h" />
+    <ClInclude Include="..\..\src\dragengine\src\errortracing\deErrorTrace.h" />
+    <ClInclude Include="..\..\src\dragengine\src\errortracing\deErrorTracePoint.h" />
+    <ClInclude Include="..\..\src\dragengine\src\errortracing\deErrorTraceValue.h" />
+    <ClInclude Include="..\..\src\dragengine\src\extern\sha1\sha1.h" />
+    <ClInclude Include="..\..\src\dragengine\src\filesystem\deCacheHelper.h" />
+    <ClInclude Include="..\..\src\dragengine\src\filesystem\deCollectDirectorySearchVisitor.h" />
+    <ClInclude Include="..\..\src\dragengine\src\filesystem\deCollectFileSearchVisitor.h" />
+    <ClInclude Include="..\..\src\dragengine\src\filesystem\deContainerFileSearch.h" />
+    <ClInclude Include="..\..\src\dragengine\src\filesystem\deFileSearchVisitor.h" />
+    <ClInclude Include="..\..\src\dragengine\src\filesystem\dePathList.h" />
+    <ClInclude Include="..\..\src\dragengine\src\filesystem\dePatternList.h" />
+    <ClInclude Include="..\..\src\dragengine\src\filesystem\deVFSCacheDiskDirectory.h" />
+    <ClInclude Include="..\..\src\dragengine\src\filesystem\deVFSContainer.h" />
+    <ClInclude Include="..\..\src\dragengine\src\filesystem\deVFSContainerReference.h" />
+    <ClInclude Include="..\..\src\dragengine\src\filesystem\deVFSDiskDirectory.h" />
+    <ClInclude Include="..\..\src\dragengine\src\filesystem\deVFSMemoryFiles.h" />
+    <ClInclude Include="..\..\src\dragengine\src\filesystem\deVFSNull.h" />
+    <ClInclude Include="..\..\src\dragengine\src\filesystem\deVFSRedirect.h" />
+    <ClInclude Include="..\..\src\dragengine\src\filesystem\deVirtualFileSystem.h" />
+    <ClInclude Include="..\..\src\dragengine\src\filesystem\deVirtualFileSystemReference.h" />
+    <ClInclude Include="..\..\src\dragengine\src\input\deInputDevice.h" />
+    <ClInclude Include="..\..\src\dragengine\src\input\deInputDeviceAxis.h" />
+    <ClInclude Include="..\..\src\dragengine\src\input\deInputDeviceButton.h" />
+    <ClInclude Include="..\..\src\dragengine\src\input\deInputDeviceComponent.h" />
+    <ClInclude Include="..\..\src\dragengine\src\input\deInputDeviceFeedback.h" />
+    <ClInclude Include="..\..\src\dragengine\src\input\deInputDevicePose.h" />
+    <ClInclude Include="..\..\src\dragengine\src\input\deInputEvent.h" />
+    <ClInclude Include="..\..\src\dragengine\src\input\deInputEventQueue.h" />
+    <ClInclude Include="..\..\src\dragengine\src\logger\deLogger.h" />
+    <ClInclude Include="..\..\src\dragengine\src\logger\deLoggerBuffer.h" />
+    <ClInclude Include="..\..\src\dragengine\src\logger\deLoggerChain.h" />
+    <ClInclude Include="..\..\src\dragengine\src\logger\deLoggerConsole.h" />
+    <ClInclude Include="..\..\src\dragengine\src\logger\deLoggerConsoleColor.h" />
+    <ClInclude Include="..\..\src\dragengine\src\logger\deLoggerFile.h" />
+    <ClInclude Include="..\..\src\dragengine\src\logger\deLoggerReference.h" />
+    <ClInclude Include="..\..\src\dragengine\src\parallel\deParallelProcessing.h" />
+    <ClInclude Include="..\..\src\dragengine\src\parallel\deParallelTask.h" />
+    <ClInclude Include="..\..\src\dragengine\src\parallel\deParallelTaskReference.h" />
+    <ClInclude Include="..\..\src\dragengine\src\parallel\deParallelThread.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\animation\deAnimation.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\animation\deAnimationBone.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\animation\deAnimationBuilder.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\animation\deAnimationKeyframe.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\animation\deAnimationKeyframeList.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\animation\deAnimationManager.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\animation\deAnimationMove.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\animation\deAnimationReference.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\animator\controller\deAnimatorController.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\animator\controller\deAnimatorControllerTarget.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\animator\deAnimator.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\animator\deAnimatorInstance.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\animator\deAnimatorInstanceManager.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\animator\deAnimatorInstanceReference.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\animator\deAnimatorLink.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\animator\deAnimatorManager.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\animator\deAnimatorReference.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\animator\rule\deAnimatorRule.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\animator\rule\deAnimatorRuleAnimation.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\animator\rule\deAnimatorRuleAnimationDifference.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\animator\rule\deAnimatorRuleAnimationSelect.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\animator\rule\deAnimatorRuleBoneTransformator.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\animator\rule\deAnimatorRuleForeignState.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\animator\rule\deAnimatorRuleGroup.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\animator\rule\deAnimatorRuleInverseKinematic.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\animator\rule\deAnimatorRuleLimit.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\animator\rule\deAnimatorRuleReference.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\animator\rule\deAnimatorRuleRetarget.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\animator\rule\deAnimatorRuleStateManipulator.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\animator\rule\deAnimatorRuleStateSnapshot.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\animator\rule\deAnimatorRuleSubAnimator.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\animator\rule\deAnimatorRuleTrackTo.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\animator\rule\deAnimatorRuleVisitor.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\animator\rule\deAnimatorRuleVisitorIdentify.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\archive\deArchive.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\archive\deArchiveContainer.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\archive\deArchiveManager.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\archive\deArchiveReference.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\billboard\deBillboard.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\billboard\deBillboardManager.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\billboard\deBillboardReference.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\camera\deCamera.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\camera\deCameraManager.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\camera\deCameraReference.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\canvas\capture\deCaptureCanvas.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\canvas\capture\deCaptureCanvasManager.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\canvas\capture\deCaptureCanvasReference.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\canvas\deCanvas.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\canvas\deCanvasCanvasView.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\canvas\deCanvasCanvasViewReference.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\canvas\deCanvasImage.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\canvas\deCanvasImageReference.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\canvas\deCanvasManager.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\canvas\deCanvasPaint.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\canvas\deCanvasPaintReference.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\canvas\deCanvasReference.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\canvas\deCanvasRenderWorld.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\canvas\deCanvasRenderWorldReference.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\canvas\deCanvasText.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\canvas\deCanvasTextReference.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\canvas\deCanvasVideoPlayer.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\canvas\deCanvasVideoPlayerReference.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\canvas\deCanvasView.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\canvas\deCanvasViewReference.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\canvas\deCanvasVisitor.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\canvas\deCanvasVisitorIdentify.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\collider\deCollider.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\collider\deColliderAttachment.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\collider\deColliderBone.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\collider\deColliderCollisionTest.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\collider\deColliderCollisionTestReference.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\collider\deColliderComponent.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\collider\deColliderConstraint.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\collider\deColliderConstraintDof.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\collider\deColliderManager.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\collider\deColliderReference.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\collider\deColliderRig.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\collider\deColliderVisitor.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\collider\deColliderVisitorIdentify.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\collider\deColliderVolume.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\collider\deCollisionInfo.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\component\deComponent.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\component\deComponentBone.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\component\deComponentManager.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\component\deComponentReference.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\component\deComponentTexture.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\debug\deDebugDrawer.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\debug\deDebugDrawerManager.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\debug\deDebugDrawerReference.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\debug\deDebugDrawerShape.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\debug\deDebugDrawerShapeFace.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\decal\deDecal.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\decal\deDecalBoneState.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\decal\deDecalList.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\decal\deDecalManager.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\decal\deDecalReference.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\deFileResource.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\deFileResourceList.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\deFileResourceManager.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\deResource.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\deResourceList.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\deResourceManager.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\deResourceReference.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\effect\deEffect.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\effect\deEffectChain.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\effect\deEffectColorMatrix.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\effect\deEffectDistortImage.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\effect\deEffectFilterKernel.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\effect\deEffectManager.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\effect\deEffectOverlayImage.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\effect\deEffectReference.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\effect\deEffectVisitor.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\effect\deEffectVisitorIdentify.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\font\deFont.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\font\deFontBuilder.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\font\deFontGlyph.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\font\deFontManager.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\font\deFontReference.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\forcefield\deForceField.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\forcefield\deForceFieldManager.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\forcefield\deForceFieldReference.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\image\deImage.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\image\deImageManager.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\image\deImageReference.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\light\deLight.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\light\deLightManager.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\light\deLightReference.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\loader\deResourceLoader.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\loader\deResourceLoaderInfo.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\loader\tasks\deResourceLoaderTask.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\loader\tasks\deRLTaskReadAnimation.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\loader\tasks\deRLTaskReadFont.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\loader\tasks\deRLTaskReadFontInternal.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\loader\tasks\deRLTaskReadFontInternal2.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\loader\tasks\deRLTaskReadImage.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\loader\tasks\deRLTaskReadLanguagePack.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\loader\tasks\deRLTaskReadModel.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\loader\tasks\deRLTaskReadOcclusionMesh.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\loader\tasks\deRLTaskReadRig.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\loader\tasks\deRLTaskReadSkin.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\loader\tasks\deRLTaskReadSkinInternal.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\loader\tasks\deRLTaskReadSkinProperty.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\loader\tasks\deRLTaskReadSkinPropertyNode.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\loader\tasks\deRLTaskReadSound.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\loader\tasks\deRLTaskReadVideo.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\loader\tasks\deRLTaskWriteAnimation.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\loader\tasks\deRLTaskWriteImage.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\loader\tasks\deRLTaskWriteModel.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\loader\tasks\deRLTaskWriteOcclusionMesh.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\loader\tasks\deRLTaskWriteRig.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\localization\deLanguagePack.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\localization\deLanguagePackBuilder.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\localization\deLanguagePackEntry.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\localization\deLanguagePackManager.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\localization\deLanguagePackReference.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\model\deModel.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\model\deModelBone.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\model\deModelBuilder.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\model\deModelFace.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\model\deModelLOD.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\model\deModelManager.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\model\deModelReference.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\model\deModelTexture.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\model\deModelTextureCoordinatesSet.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\model\deModelVertex.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\model\deModelWeight.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\navigation\blocker\deNavigationBlocker.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\navigation\blocker\deNavigationBlockerManager.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\navigation\blocker\deNavigationBlockerReference.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\navigation\navigator\deNavigator.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\navigation\navigator\deNavigatorManager.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\navigation\navigator\deNavigatorPath.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\navigation\navigator\deNavigatorReference.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\navigation\navigator\deNavigatorType.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\navigation\space\deNavigationSpace.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\navigation\space\deNavigationSpaceCorner.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\navigation\space\deNavigationSpaceEdge.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\navigation\space\deNavigationSpaceFace.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\navigation\space\deNavigationSpaceManager.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\navigation\space\deNavigationSpaceReference.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\navigation\space\deNavigationSpaceRoom.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\navigation\space\deNavigationSpaceWall.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\network\deConnection.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\network\deConnectionManager.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\network\deConnectionReference.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\network\deNetworkMessage.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\network\deNetworkMessageReader.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\network\deNetworkMessageReference.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\network\deNetworkMessageWriter.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\network\deNetworkState.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\network\deNetworkStateManager.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\network\deNetworkStateReference.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\network\deServer.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\network\deServerManager.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\network\deServerReference.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\network\value\deNetworkValue.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\network\value\deNetworkValueData.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\network\value\deNetworkValueFloat.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\network\value\deNetworkValueInteger.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\network\value\deNetworkValuePoint2.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\network\value\deNetworkValuePoint3.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\network\value\deNetworkValueQuaternion.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\network\value\deNetworkValueReference.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\network\value\deNetworkValueString.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\network\value\deNetworkValueVector2.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\network\value\deNetworkValueVector3.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\network\value\deNetworkValueVisitor.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\network\value\deNetworkValueVisitorIdentify.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\occlusionmesh\deOcclusionMesh.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\occlusionmesh\deOcclusionMeshBone.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\occlusionmesh\deOcclusionMeshBuilder.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\occlusionmesh\deOcclusionMeshManager.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\occlusionmesh\deOcclusionMeshReference.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\occlusionmesh\deOcclusionMeshVertex.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\occlusionmesh\deOcclusionMeshWeight.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\particle\deParticleEmitter.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\particle\deParticleEmitterController.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\particle\deParticleEmitterInstance.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\particle\deParticleEmitterInstanceManager.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\particle\deParticleEmitterInstanceReference.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\particle\deParticleEmitterInstanceType.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\particle\deParticleEmitterManager.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\particle\deParticleEmitterOffsets.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\particle\deParticleEmitterParameter.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\particle\deParticleEmitterReference.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\particle\deParticleEmitterType.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\probe\deEnvMapProbe.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\probe\deEnvMapProbeManager.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\probe\deEnvMapProbeReference.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\propfield\dePropField.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\propfield\dePropFieldBendState.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\propfield\dePropFieldGround.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\propfield\dePropFieldInstance.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\propfield\dePropFieldManager.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\propfield\dePropFieldReference.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\propfield\dePropFieldType.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\rendering\deRenderWindow.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\rendering\deRenderWindowManager.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\rendering\deRenderWindowReference.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\rig\deRig.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\rig\deRigBone.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\rig\deRigBuilder.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\rig\deRigConstraint.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\rig\deRigManager.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\rig\deRigReference.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\sensor\deLumimeter.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\sensor\deLumimeterManager.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\sensor\deLumimeterReference.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\sensor\deSoundLevelMeter.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\sensor\deSoundLevelMeterManager.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\sensor\deSoundLevelMeterReference.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\sensor\deTouchSensor.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\sensor\deTouchSensorManager.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\sensor\deTouchSensorReference.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\skin\deSkin.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\skin\deSkinBuilder.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\skin\deSkinManager.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\skin\deSkinReference.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\skin\deSkinTexture.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\skin\dynamic\deDynamicSkin.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\skin\dynamic\deDynamicSkinManager.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\skin\dynamic\deDynamicSkinReference.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\skin\dynamic\renderables\deDSRenderable.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\skin\dynamic\renderables\deDSRenderableCamera.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\skin\dynamic\renderables\deDSRenderableCanvas.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\skin\dynamic\renderables\deDSRenderableColor.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\skin\dynamic\renderables\deDSRenderableImage.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\skin\dynamic\renderables\deDSRenderableValue.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\skin\dynamic\renderables\deDSRenderableVideoFrame.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\skin\dynamic\renderables\deDSRenderableVisitor.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\skin\dynamic\renderables\deDSRenderableVisitorIdentify.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\skin\property\deSkinProperty.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\skin\property\deSkinPropertyColor.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\skin\property\deSkinPropertyConstructed.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\skin\property\deSkinPropertyImage.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\skin\property\deSkinPropertyMapped.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\skin\property\deSkinPropertyValue.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\skin\property\deSkinPropertyVideo.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\skin\property\deSkinPropertyVisitor.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\skin\property\deSkinPropertyVisitorIdentify.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\skin\property\deSkinPropertyVisitorLoad.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\skin\property\node\deSkinPropertyNode.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\skin\property\node\deSkinPropertyNodeGroup.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\skin\property\node\deSkinPropertyNodeImage.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\skin\property\node\deSkinPropertyNodeShape.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\skin\property\node\deSkinPropertyNodeText.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\skin\property\node\deSkinPropertyNodeVisitor.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\skin\property\node\deSkinPropertyNodeVisitorIdentify.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\skin\property\node\deSkinPropertyNodeVisitorLoad.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\sky\deSky.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\sky\deSkyController.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\sky\deSkyControllerTarget.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\sky\deSkyInstance.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\sky\deSkyInstanceManager.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\sky\deSkyInstanceReference.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\sky\deSkyLayer.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\sky\deSkyLayerBody.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\sky\deSkyLink.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\sky\deSkyManager.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\sky\deSkyReference.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\smoke\deSmokeEmitter.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\smoke\deSmokeEmitterManager.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\sound\deMicrophone.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\sound\deMicrophoneManager.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\sound\deMicrophoneReference.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\sound\deSound.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\sound\deSoundDecoder.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\sound\deSoundDecoderReference.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\sound\deSoundManager.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\sound\deSoundReference.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\sound\deSpeaker.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\sound\deSpeakerManager.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\sound\deSpeakerReference.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\synthesizer\deSynthesizer.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\synthesizer\deSynthesizerController.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\synthesizer\deSynthesizerControllerTarget.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\synthesizer\deSynthesizerInstance.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\synthesizer\deSynthesizerInstanceManager.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\synthesizer\deSynthesizerInstanceReference.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\synthesizer\deSynthesizerLink.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\synthesizer\deSynthesizerManager.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\synthesizer\deSynthesizerReference.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\synthesizer\effect\deSynthesizerEffect.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\synthesizer\effect\deSynthesizerEffectStretch.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\synthesizer\effect\deSynthesizerEffectVisitor.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\synthesizer\effect\deSynthesizerEffectVisitorIdentify.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\synthesizer\source\deSynthesizerSource.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\synthesizer\source\deSynthesizerSourceChain.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\synthesizer\source\deSynthesizerSourceGroup.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\synthesizer\source\deSynthesizerSourceSound.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\synthesizer\source\deSynthesizerSourceSynthesizer.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\synthesizer\source\deSynthesizerSourceVisitor.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\synthesizer\source\deSynthesizerSourceVisitorIdentify.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\synthesizer\source\deSynthesizerSourceWave.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\terrain\heightmap\deHeightTerrain.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\terrain\heightmap\deHeightTerrainManager.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\terrain\heightmap\deHeightTerrainNavSpace.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\terrain\heightmap\deHeightTerrainNavSpaceEdge.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\terrain\heightmap\deHeightTerrainSector.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\terrain\heightmap\deHeightTerrainTexture.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\terrain\heightmap\deTerrainHeightMap.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\terrain\heightmap\deTerrainHeightModifier.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\video\deVideo.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\video\deVideoAudioDecoder.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\video\deVideoAudioDecoderReference.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\video\deVideoDecoder.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\video\deVideoDecoderReference.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\video\deVideoManager.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\video\deVideoPlayer.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\video\deVideoPlayerManager.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\video\deVideoPlayerReference.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\video\deVideoReference.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\world\deWorld.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\world\deWorldManager.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\world\deWorldReference.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\deAISystem.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\deAnimatorSystem.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\deAudioSystem.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\deBaseSystem.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\deCrashRecoverySystem.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\deGraphicSystem.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\deInputSystem.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\deModuleSystem.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\deNetworkSystem.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\dePhysicsSystem.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\deScriptingSystem.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\deSynthesizerSystem.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\deVRSystem.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\ai\deBaseAIHeightTerrain.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\ai\deBaseAILocomotion.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\ai\deBaseAIModule.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\ai\deBaseAINavigationBlocker.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\ai\deBaseAINavigationSpace.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\ai\deBaseAINavigator.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\ai\deBaseAIWorld.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\animation\deBaseAnimationModule.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\animator\deBaseAnimatorAnimation.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\animator\deBaseAnimatorAnimator.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\animator\deBaseAnimatorAnimatorInstance.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\animator\deBaseAnimatorComponent.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\animator\deBaseAnimatorModule.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\archive\deBaseArchiveContainer.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\archive\deBaseArchiveModule.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\audio\deBaseAudioComponent.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\audio\deBaseAudioDecal.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\audio\deBaseAudioHeightTerrain.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\audio\deBaseAudioMicrophone.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\audio\deBaseAudioModel.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\audio\deBaseAudioModule.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\audio\deBaseAudioSkin.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\audio\deBaseAudioSound.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\audio\deBaseAudioSoundLevelMeter.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\audio\deBaseAudioSpeaker.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\audio\deBaseAudioSynthesizerInstance.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\audio\deBaseAudioVideoPlayer.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\audio\deBaseAudioWorld.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\crashrecovery\deBaseCrashRecoveryModule.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\deBaseModule.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\deInternalModule.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\deLibraryModule.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\deLoadableModule.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\deLoadableModuleVisitor.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\deModuleParameter.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\font\deBaseFontModule.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\graphic\deBaseGraphicBillboard.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\graphic\deBaseGraphicCamera.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\graphic\deBaseGraphicCanvas.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\graphic\deBaseGraphicCaptureCanvas.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\graphic\deBaseGraphicComponent.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\graphic\deBaseGraphicDebugDrawer.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\graphic\deBaseGraphicDecal.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\graphic\deBaseGraphicDynamicSkin.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\graphic\deBaseGraphicEffect.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\graphic\deBaseGraphicEnvMapProbe.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\graphic\deBaseGraphicFont.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\graphic\deBaseGraphicHeightTerrain.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\graphic\deBaseGraphicImage.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\graphic\deBaseGraphicLight.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\graphic\deBaseGraphicLumimeter.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\graphic\deBaseGraphicModel.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\graphic\deBaseGraphicModule.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\graphic\deBaseGraphicOcclusionMesh.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\graphic\deBaseGraphicParticleEmitter.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\graphic\deBaseGraphicParticleEmitterInstance.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\graphic\deBaseGraphicPropField.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\graphic\deBaseGraphicRenderWindow.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\graphic\deBaseGraphicSkin.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\graphic\deBaseGraphicSky.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\graphic\deBaseGraphicSkyInstance.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\graphic\deBaseGraphicSmokeEmitter.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\graphic\deBaseGraphicVideo.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\graphic\deBaseGraphicVideoPlayer.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\graphic\deBaseGraphicWorld.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\image\deBaseImageInfo.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\image\deBaseImageModule.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\input\deBaseInputModule.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\langpack\deBaseLanguagePackModule.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\model\deBaseModelModule.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\network\deBaseNetworkConnection.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\network\deBaseNetworkModule.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\network\deBaseNetworkServer.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\network\deBaseNetworkState.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\network\deBaseNetworkWorld.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\occlusionmesh\deBaseOcclusionMeshModule.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\physics\deBasePhysicsCollider.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\physics\deBasePhysicsComponent.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\physics\deBasePhysicsDecal.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\physics\deBasePhysicsForceField.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\physics\deBasePhysicsHeightTerrain.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\physics\deBasePhysicsModel.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\physics\deBasePhysicsModule.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\physics\deBasePhysicsParticleEmitter.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\physics\deBasePhysicsParticleEmitterInstance.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\physics\deBasePhysicsPropField.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\physics\deBasePhysicsRig.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\physics\deBasePhysicsSkin.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\physics\deBasePhysicsSmokeEmitter.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\physics\deBasePhysicsTouchSensor.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\physics\deBasePhysicsWorld.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\rig\deBaseRigModule.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\scripting\deBaseScriptingCollider.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\scripting\deBaseScriptingConnection.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\scripting\deBaseScriptingModule.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\scripting\deBaseScriptingNetworkState.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\scripting\deBaseScriptingParticleEmitterInstance.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\scripting\deBaseScriptingPropField.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\scripting\deBaseScriptingServer.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\scripting\deBaseScriptingSoundLevelMeter.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\scripting\deBaseScriptingSpeaker.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\scripting\deBaseScriptingTouchSensor.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\skin\deBaseSkinModule.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\sound\deBaseSoundDecoder.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\sound\deBaseSoundInfo.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\sound\deBaseSoundModule.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\synthesizer\deBaseSynthesizerModule.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\synthesizer\deBaseSynthesizerSound.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\synthesizer\deBaseSynthesizerSynthesizer.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\synthesizer\deBaseSynthesizerSynthesizerInstance.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\video\deBaseVideoAudioDecoder.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\video\deBaseVideoDecoder.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\video\deBaseVideoInfo.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\video\deBaseVideoModule.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\vr\deBaseVRModule.h" />
+    <ClInclude Include="..\..\src\dragengine\src\threading\deBarrier.h" />
+    <ClInclude Include="..\..\src\dragengine\src\threading\deMutex.h" />
+    <ClInclude Include="..\..\src\dragengine\src\threading\deMutexGuard.h" />
+    <ClInclude Include="..\..\src\dragengine\src\threading\deReadLockGuard.h" />
+    <ClInclude Include="..\..\src\dragengine\src\threading\deReadWriteLock.h" />
+    <ClInclude Include="..\..\src\dragengine\src\threading\deSemaphore.h" />
+    <ClInclude Include="..\..\src\dragengine\src\threading\deThread.h" />
+    <ClInclude Include="..\..\src\dragengine\src\threading\deThreadSafeObject.h" />
+    <ClInclude Include="..\..\src\dragengine\src\threading\deThreadSafeObjectReference.h" />
+    <ClInclude Include="..\..\src\dragengine\src\threading\deWriteLockGuard.h" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{f9098b91-18fa-4754-b089-e3d613b13b71}</ProjectGuid>
+    <RootNamespace>dragengine</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+    <PublicIncludeDirectories>$(SolutionDir)include</PublicIncludeDirectories>
+    <AllProjectIncludesArePublic>true</AllProjectIncludesArePublic>
+    <AllProjectBMIsArePublic>true</AllProjectBMIsArePublic>
+    <PublicModuleDirectories>$(SolutionDir)include</PublicModuleDirectories>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <PublicIncludeDirectories>$(SolutionDir)include</PublicIncludeDirectories>
+    <AllProjectIncludesArePublic>true</AllProjectIncludesArePublic>
+    <AllProjectBMIsArePublic>true</AllProjectBMIsArePublic>
+    <PublicModuleDirectories>$(SolutionDir)include</PublicModuleDirectories>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;DRAGENGINE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;DRAGENGINE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;DRAGENGINE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);DE_COMPILE_DLL;DE_ENGINE_BASE_PATH="C:\\Program Files\\Dragengine\\"</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <IgnoreSpecificDefaultLibraries>LIBCMT;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;DRAGENGINE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);DE_COMPILE_DLL;DE_ENGINE_BASE_PATH="C:\\Program Files\\Dragengine"</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <IgnoreSpecificDefaultLibraries>LIBCMT;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+    <Import Project="..\packages\zlib-vc140-static-64.1.2.11\build\native\zlib-vc140-static-64.targets" Condition="Exists('..\packages\zlib-vc140-static-64.1.2.11\build\native\zlib-vc140-static-64.targets')" />
+  </ImportGroup>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\zlib-vc140-static-64.1.2.11\build\native\zlib-vc140-static-64.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\zlib-vc140-static-64.1.2.11\build\native\zlib-vc140-static-64.targets'))" />
+  </Target>
+</Project>

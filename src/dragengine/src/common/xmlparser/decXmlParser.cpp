@@ -41,6 +41,7 @@
 #include "../exceptions.h"
 #include "../file/decBaseFileReader.h"
 #include "../../logger/deLogger.h"
+#include "../../dragengine_configuration.h"
 
 
 
@@ -609,7 +610,7 @@ void decXmlParser::ParseAttValue( decXmlAttValue *value ){
 }
 
 bool decXmlParser::ParseToken( const char *expected ){
-	int i, nextChar, expLen = strlen( expected );
+	int i, nextChar, expLen = ( int )strlen( expected );
 	for( i=0; i<expLen; i++ ){
 		nextChar = GetTokenAt( i );
 		if( nextChar == DEXP_EOF || nextChar != expected[ i ] ) return false;
@@ -763,7 +764,7 @@ bool decXmlParser::ParsePI( decXmlContainer *container ){
 }
 
 bool decXmlParser::TestToken( int offset, const char *expected ){
-	int i, nextChar, expLen = strlen( expected );
+	int i, nextChar, expLen = ( int )strlen( expected );
 	for( i=0; i<expLen; i++ ){
 		nextChar = GetTokenAt( offset + i );
 		if( nextChar == DEXP_EOF || nextChar != expected[ i ] ) return false;
@@ -997,7 +998,11 @@ void decXmlParser::SetCleanString( int length ){
 		pCleanString = newStr;
 		pCleanStringSize = length;
 	}
-	strncpy( pCleanString, pToken, length );
+	#ifdef OS_W32_VS
+		strncpy_s( pCleanString, length, pToken, length );
+	#else
+		strncpy( pCleanString, pToken, length );
+	#endif
 	pCleanString[ length ] = '\0';
 }
 
@@ -1040,7 +1045,13 @@ void decXmlParser::pGrowToken(){
 	char *newToken = new char[ newSize + 1 ];
 	if( ! newToken ) DETHROW( deeOutOfMemory );
 	if( pToken ){
-		if( pTokenLen > 0 ) strncpy( newToken, pToken, pTokenLen );
+		if( pTokenLen > 0 ){
+			#ifdef OS_W32_VS
+				strncpy_s( newToken, pTokenLen, pToken, pTokenLen );
+			#else
+				strncpy( newToken, pToken, pTokenLen );
+			#endif
+		}
 		newToken[ pTokenLen ] = '\0';
 		delete [] pToken;
 	}

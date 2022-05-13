@@ -6,3 +6,6 @@ __pycache__
 cloc*.csv
 custom.py
 *.log
+/packages/Microsoft.Windows.CppWinRT.2.0.210806.1
+/.vs
+/vs/.vs/vs
