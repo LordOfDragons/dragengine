@@ -1491,6 +1491,10 @@ float shadowScale, float shadowOffset, bool debugSolid ){
 		clist2->UpdateCubeFaceMasks( cubePosition );
 	}
 	
+	// TODO use deoglLODCalculator to use highest possible LOD mesh to speed up rendering.
+	//      requires a 1 pixel error margin. can this be done in a sane way?
+	//      sky uses config.GetLODMaxPixelError() which is 2 by default
+	
 	// configuration
 	const bool bugClearEntireCubeMap = renderThread.GetCapabilities().GetClearEntireCubeMap().Broken();
 	const bool useGSRenderCube = renderThread.GetExtensions().SupportsGeometryShader()
