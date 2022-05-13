@@ -1,0 +1,14 @@
+.debhelper
+*.substvars
+dragengine
+libdragengine1
+libdragengine-dev
+delauncher-console
+delauncher-gui
+libdeigdeshared1
+libdeigdeshared-dev
+deigde
+deigde-data
+*.log
+debhelper-build-stamp
+files

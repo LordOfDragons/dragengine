@@ -1,0 +1,115 @@
+#!/usr/bin/make -f
+
+DEB_VERSION := $(shell dpkg-parsechangelog | egrep '^Version:' | cut -f 2 -d ' ' | cut -f 1 -d '-')
+
+DESTDIR_LIBDE := $(shell realpath debian/libdragengine1)
+DESTDIR_LIBDE_DEV := $(shell realpath debian/libdragengine-dev)
+DESTDIR_LAUNCH_CON := $(shell realpath debian/delauncher-console)
+DESTDIR_LAUNCH_GUI := $(shell realpath debian/delauncher-gui)
+DESTDIR_LIBIGDE := $(shell realpath debian/libdeigdeshared1)
+DESTDIR_LIBIGDE_DEV := $(shell realpath debian/libdeigdeshared-dev)
+DESTDIR_IGDE := $(shell realpath debian/deigde)
+DESTDIR_IGDE_DATA := $(shell realpath debian/deigde-data)
+DESTDIR_LIBLAUNCH := $(shell realpath debian/libdelauncher1)
+DESTDIR_LIBLAUNCH_DEV := $(shell realpath debian/libdelauncher-dev)
+
+SANDBOX_LIBDE := --install-sandbox="$(DESTDIR_LIBDE)"
+SANDBOX_LIBDE_DEV := --install-sandbox="$(DESTDIR_LIBDE_DEV)"
+SANDBOX_LAUNCH_CON := --install-sandbox="$(DESTDIR_LAUNCH_CON)"
+SANDBOX_LAUNCH_GUI := --install-sandbox="$(DESTDIR_LAUNCH_GUI)"
+SANDBOX_LIBIGDE := --install-sandbox="$(DESTDIR_LIBIGDE)"
+SANDBOX_LIBIGDE_DEV := --install-sandbox="$(DESTDIR_LIBIGDE_DEV)"
+SANDBOX_IGDE := --install-sandbox="$(DESTDIR_IGDE)"
+SANDBOX_IGDE_DATA := --install-sandbox="$(DESTDIR_IGDE_DATA)"
+SANDBOX_LIBLAUNCH := --install-sandbox="$(DESTDIR_LIBLAUNCH)"
+SANDBOX_LIBLAUNCH_DEV := --install-sandbox="$(DESTDIR_LIBLAUNCH_DEV)"
+
+SCONS_OPTIONS := --logstdout=off version="$(DEB_VERSION)"
+
+%:
+	dh $@
+
+override_dh_auto_clean:
+	scons $(SCONS_OPTIONS) --config=force build -c
+	find -type d -name "__pycache__" | xargs -- rm -rf
+	rm -f config.log
+
+override_dh_auto_configure:
+	
+override_dh_auto_build:
+	scons $(SCONS_OPTIONS) --config=force build
+
+override_dh_auto_test:
+	
+override_dh_auto_install:
+	scons $(SCONS_OPTIONS) --config=cache $(SANDBOX_LIBDE) install_engine_runtime
+	scons $(SCONS_OPTIONS) --config=cache $(SANDBOX_LIBDE_DEV) dragengine_develop
+	scons $(SCONS_OPTIONS) --config=cache $(SANDBOX_LAUNCH_CON) launcher_console
+	scons $(SCONS_OPTIONS) --config=cache $(SANDBOX_LAUNCH_GUI) launcher_gui
+	scons $(SCONS_OPTIONS) --config=cache $(SANDBOX_LIBIGDE) deigde_shared_runtime
+	scons $(SCONS_OPTIONS) --config=cache $(SANDBOX_LIBIGDE_DEV) deigde_shared_develop
+	scons $(SCONS_OPTIONS) --config=cache $(SANDBOX_IGDE) install_deigde_runtime
+	scons $(SCONS_OPTIONS) --config=cache $(SANDBOX_IGDE_DATA) deigde_data
+	scons $(SCONS_OPTIONS) --config=cache $(SANDBOX_LIBLAUNCH) delauncher_runtime
+	scons $(SCONS_OPTIONS) --config=cache $(SANDBOX_LIBLAUNCH_DEV) delauncher_develop
+	
+	# under debian the games group is known at package build time. we can create
+	# the required directories. this is not done in scons since the generic build
+	# is made for systems where the games group potentially does not exist and
+	# thus it is not possible to create this directory at package time.
+	#
+	# NOTE according to debian policy group writable should have permission 2775
+	#mkdir "$(DESTDIR_LIBDE)"/usr/share/games/delauncher
+	#chgrp games "$(DESTDIR_LIBDE)"/usr/share/games/delauncher
+	#chmod 2775 "$(DESTDIR_LIBDE)"/usr/share/games/delauncher
+	#
+	#mkdir "$(DESTDIR_LIBDE)"/usr/share/games/delauncher/games
+	#chgrp games "$(DESTDIR_LIBDE)"/usr/share/games/delauncher/games
+	#chmod 2775 "$(DESTDIR_LIBDE)"/usr/share/games/delauncher/games
+	
+	# non-dev-pkg-with-shlib-symlink
+	mkdir -p "$(DESTDIR_LIBDE_DEV)"/usr/lib
+	mv "$(DESTDIR_LIBDE)"/usr/lib/libdragengine.so "$(DESTDIR_LIBDE_DEV)"/usr/lib/libdragengine.so
+	
+	mkdir -p "$(DESTDIR_LIBIGDE_DEV)"/usr/lib
+	mv "$(DESTDIR_LIBIGDE)"/usr/lib/libdeigdeshared.so "$(DESTDIR_LIBIGDE_DEV)"/usr/lib/libdeigdeshared.so
+	
+	mkdir -p "$(DESTDIR_LIBLAUNCH_DEV)"/usr/lib
+	mv "$(DESTDIR_LIBLAUNCH)"/usr/lib/libdelauncher.so "$(DESTDIR_LIBLAUNCH_DEV)"/usr/lib/libdelauncher.so
+	
+	# temporary fix until FOX toolkit can be used from package
+	mv "$(DESTDIR_LAUNCH_GUI)"/usr/lib/libDEFOX-1.7.so "$(DESTDIR_LIBDE)"/usr/lib/libDEFOX-1.7.so
+	
+	# ubuntu seems to dislike it if build files are still around after this point in time
+	scons $(SCONS_OPTIONS) --config=cache build -c
+
+override_dh_shlibdeps:
+	# debian seems to modify *.so files after being installed override_dh_auto_install.
+	# this is very bad since during building and installing module file manifests are
+	# updated with modification detection values. due to the modifications of debian
+	# the game engine rejects all modules as non-genuine. to solve this we have to
+	# fix all module manifests. since it is unknown what step causes these problems
+	# the fix is placed here until better knowing
+	for f in `find "$(DESTDIR_LIBDE)"/usr/lib/games/dragengine/modules -type f -name "module.xml"`; do \
+		/usr/bin/python3 debianFixManifests.py "$$f"; \
+	done
+	for f in `find "$(DESTDIR_IGDE)"/usr/lib/games/deigde/modules -type f -name "module.xml"`; do \
+		/usr/bin/python3 debianFixManifests.py "$$f"; \
+	done
+	
+	dh_shlibdeps
+	# -XlibDEFOX
+	#dh_shlibdeps -Xlibscrdscript -Xdsinstall \
+	#  -l`find debian/dragengine/usr/lib/dragengine/modules -name "*.so" -printf "%h:"`\
+	#    `find debian/deigde/usr/lib/deigde/modules -name "*.so" -printf "%h:"`
+
+#override_dh_fixperms:
+#	# avoid fix perms messing with our special permissions
+#	dh_fixperms --exclude "$(DESTDIR_LIBDE)"/usr/share/games/delauncher*
+#	
+#	# fix permissions from above
+#	chgrp games "$(DESTDIR_LIBDE)"/usr/share/games/delauncher
+#	chmod 2775 "$(DESTDIR_LIBDE)"/usr/share/games/delauncher
+#	
+#	chgrp games "$(DESTDIR_LIBDE)"/usr/share/games/delauncher/games
+#	chmod 2775 "$(DESTDIR_LIBDE)"/usr/share/games/delauncher/games

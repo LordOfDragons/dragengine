@@ -1,8 +1,16 @@
 from SConsCommon import *
 from SConsPlatformAndroid import androidUpdateEnv
+import shlex
 
 # create environment
 tools = ARGUMENTS.get( 'tools', '' )
+
+applyEnvVars = []
+applyEnvVars.append('CFLAGS')
+applyEnvVars.append('CPPFLAGS')
+applyEnvVars.append('CXXFLAGS')
+applyEnvVars.append('LDFLAGS')
+
 if tools:
 	if tools == 'mingw64':
 		import os, shutil
@@ -92,9 +100,12 @@ elif sys.platform == 'win32':
 	#parent_env.Append(WINDOWS_LIBS = ['kernel32', 'user32', 'gdi32', 'winmm', 'wsock32', 'advapi32'])
 	
 else:
-	parent_env = Environment( CPPPATH='.', LIBPATH='.' )
+	parent_env = Environment(CPPPATH='.', LIBPATH='.')
 	parent_env[ 'OS_NAME' ] = os.name
 	parent_env[ 'SYS_PLATFORM' ] = sys.platform
+	
+	applyEnvVars.append('CC')
+	applyEnvVars.append('CXX')
 
 if not 'CROSSCOMPILE_CLANG' in parent_env:
 	parent_env['CROSSCOMPILE_CLANG'] = False
@@ -121,14 +132,17 @@ if parent_env['OSBeOS']:
 	parent_env.Tool('beosResource')
 
 # append flags
-parent_env.Replace( MODULE_CPPFLAGS = [] )
-parent_env.Replace( MODULE_LINKFLAGS = [] )
+parent_env.Replace(MODULE_CPPFLAGS = [])
+parent_env.Replace(MODULE_LINKFLAGS = [])
 
-if 'CPPFLAGS' in os.environ:
-	parent_env.Append( CPPFLAGS = os.environ[ 'CPPFLAGS' ] )
+for x in applyEnvVars:
+	if x in os.environ:
+		parent_env.MergeFlags({x: shlex.split(os.environ[x])})
 
-if 'LDFLAGS' in os.environ:
-	parent_env.Append( LINKFLAGS = os.environ[ 'LDFLAGS' ] )
+if 'CPPFLAGS' in applyEnvVars and 'CPPFLAGS' in os.environ:
+	parent_env.Append(MODULE_CPPFLAGS = shlex.split(os.environ['CPPFLAGS']))
+if 'LDFLAGS' in applyEnvVars and 'LDFLAGS' in os.environ:
+	parent_env.Append(MODULE_LINKFLAGS = shlex.split(os.environ['LDFLAGS']))
 
 if parent_env['OSPosix']:
 	parent_env.Append( CPPFLAGS = [ '-DOS_UNIX' ] )
@@ -936,8 +950,8 @@ parent_targets['install_engine_runtime'] = {
 	'name' : 'Install Engine Runtime (no development files)',
 	'target' : targetInstallEngineRuntime }
 
-targetInstallIgdeRuntime = parent_env.Alias('install_igde_runtime', installIgdeRuntime)
-parent_targets['install_igde_runtime'] = {
+targetInstallIgdeRuntime = parent_env.Alias('install_deigde_runtime', installIgdeRuntime)
+parent_targets['install_deigde_runtime'] = {
 	'name' : 'Install IGDE Runtime (no development files)',
 	'target' : targetInstallIgdeRuntime }
 

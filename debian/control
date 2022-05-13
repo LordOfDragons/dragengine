@@ -1,0 +1,122 @@
+Source: dragengine
+Section: games
+Priority: optional
+Maintainer: Roland Plüss <roland@rptd.ch>
+Build-Depends: debhelper-compat (= 12), scons, libdscript-dev, cmake, autoconf, libtool, nasm, libx11-dev, libxrandr-dev, libgl-dev, libxi-dev, libpulse-dev, libasound2-dev, portaudio19-dev, libxft-dev, libjpeg-dev, libopenal-dev, libogg-dev, libvorbis-dev, libtheora-dev, libhidapi-dev, libopenhmd-dev, patchelf, libevdev-dev, libsoundtouch-dev, libwebp-dev
+Standards-Version: 4.1.3
+Homepage: https://dragondreams.ch
+Rules-Requires-Root: no
+
+Package: dragengine
+Depends: delauncher-gui, ${misc:Depends}
+Architecture: all
+Description: Drag[en]gine Game Engine
+ Required to play games using the Drag[en]gine Game Engine (*.delga).
+ .
+ This is a meta package installing the package "delauncher-gui".
+ .
+ Games present as packages should depend on the package "delauncher"
+ instead of this one.
+
+Package: delauncher-console
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Provides: delauncher
+Description: Drag[en]gine Game Engine Console Launcher
+ Required to play games using the Drag[en]gine Game Engine (*.delga).
+ .
+ The "delauncher-console" is for advanced users prefering running
+ games from the console or using them in scripts. The console launcher
+ supports similar features than the GUI launcher but can not create,
+ edit or delete Game Profiles.
+ .
+ Game Profiles are used to configure the Drag[en]gine Game Engine.
+ To run games creating profiles is not required. Defaults are used
+ in that case. Creating profiles though can help to optimize running
+ games as well as solving potential problems.
+
+Package: delauncher-gui
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Provides: delauncher
+Description: Drag[en]gine Game Engine GUI Launcher
+ Required to play games using the Drag[en]gine Game Engine (*.delga).
+ .
+ For most users running "delauncher-gui" is preferred. This shows a GUI
+ with the installed games. The GUI launcher supports:
+   - Installing games and patches from *.delga files
+   - Uninstalling games and patches
+   - Running installed games
+   - Create, edit and delete Game Profiles
+ .
+ Game Profiles are used to configure the Drag[en]gine Game Engine.
+ To run games creating profiles is not required. Defaults are used
+ in that case. Creating profiles though can help to optimize running
+ games as well as solving potential problems.
+
+Package: libdragengine1
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Drag[en]gine Game Engine Library
+ Required to play games using the Drag[en]gine Game Engine (*.delga) or
+ developing games using the Drag[en]gine Game Engine.
+
+Package: libdragengine-dev
+Architecture: any
+Depends: libdragengine1 (= ${binary:Version}), ${misc:Depends}
+Description: Drag[en]gine Game Engine Development
+ Development files required to create Drag[en]gine Modules. This package
+ is not required to create games using the Drag[en]gine Game Engine.
+ It is only required for developers intending to create game engine
+ modules for the public use.
+
+Package: deigde
+Architecture: any
+Depends: deigde-data (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}
+Description: Drag[en]gine Game Development Environment
+ Provides support to develop games using the Drag[en]gine Game Engine.
+ Developing games does not required source code access so you do not
+ need to install *-dev packages (especially not dragengine-dev or
+ deigde-dev) unless the Scripting Module of your choice requires some.
+ .
+ Run deigde to start the editor. Creating, developing, test running
+ and deploying games is done from inside the editor.
+ .
+ For information on developing using the Drag[en]gine Game Engine
+ see the "Developer Wiki" at https://developer.dragondreams.ch/wiki/doku.php
+ or stop by with your questions at the "Developer Forum" at
+ https://developer.dragondreams.ch/forum .
+
+Package: libdeigdeshared1
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Drag[en]gine IGDE Shared Library
+ Shared library used by Drag[en]gine IGDE and all supported editors.
+
+Package: deigde-data
+Architecture: any
+Depends: ${misc:Depends}
+Description: Drag[en]gine IGDE Data
+ Architecture independent data files required by Drag[en]gine IGDE
+ and all supported editors.
+
+Package: libdeigdeshared-dev
+Architecture: any
+Depends: libdeigdeshared1 (= ${binary:Version}), ${misc:Depends}
+Description: Drag[en]gine IGDE Development
+ Development files required to create Drag[en]gine IGDE Editors.
+ This package is not required to create games using the Drag[en]gine
+ Game Engine. It is only required for developers intending to create
+ IGDE Editors for the public use.
+
+Package: libdelauncher1
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Drag[en]gine Launcher Shared Library
+ Shared library used by Drag[en]gine Launchers.
+
+Package: libdelauncher-dev
+Architecture: any
+Depends: libdelauncher1 (= ${binary:Version}), ${misc:Depends}
+Description: Drag[en]gine Launcher Shared Library Development
+ Development files required to use Drag[en]gine Launcher Shared Library.

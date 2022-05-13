@@ -1,0 +1,54 @@
+diff -Naur dragonscript-1.1-orig/SConstruct dragonscript-1.1/SConstruct
+--- dragonscript-1.1-orig/SConstruct	2020-09-14 18:44:10.704132114 +0200
++++ dragonscript-1.1/SConstruct	2020-09-14 18:42:54.297144077 +0200
+@@ -2,6 +2,7 @@
+ from glob_files import globFiles
+ import os
+ import sys
++import shlex
+ 
+ # create parent environment and load tools
+ globalEnv = Environment()
+@@ -12,6 +13,12 @@
+ globalEnv.Tool('build_verbose')
+ globalEnv.Tool('archive_builder')
+ 
++applyEnvVars = []
++applyEnvVars.append('CFLAGS')
++applyEnvVars.append('CPPFLAGS')
++applyEnvVars.append('CXXFLAGS')
++applyEnvVars.append('LDFLAGS')
++
+ # move to platform tool
+ params = Variables(globalEnv['PARAMETER_SOURCE'], ARGUMENTS)
+ params.Add(EnumVariable('target_platform', 'Target platform', 'auto',
+@@ -62,6 +69,9 @@
+ 	params.Add(PathVariable('sysconfdir', 'System configuration', '/etc', PathVariable.PathAccept))
+ 	params.Add(PathVariable('execdir', 'System binaries', '${prefix}/bin', PathVariable.PathAccept))
+ 	params.Add(PathVariable('sysvardir', 'System var', '/var', PathVariable.PathAccept))
++	
++	applyEnvVars.append('CC')
++	applyEnvVars.append('CXX')
+ 
+ elif globalEnv['TARGET_PLATFORM'] == 'windows':
+ 	params.Add(PathVariable('prefix', 'System path', '/usr', PathVariable.PathAccept))
+@@ -93,11 +103,15 @@
+ params.Update(globalEnv)
+ 
+ # set global construction variables
+-if 'CPPFLAGS' in os.environ:
+-	globalEnv.Append(CPPFLAGS = os.environ['CPPFLAGS'])
++for x in applyEnvVars:
++	if x in os.environ:
++		globalEnv.Append(x = shlex.split(os.environ[x]))
++
++if 'CPPFLAGS' in applyEnvVars and 'CPPFLAGS' in os.environ:
++	globalEnv.Append(MODULE_CPPFLAGS = shlex.split(os.environ['CPPFLAGS']))
+ 
+-if 'LDFLAGS' in os.environ:
+-	globalEnv.Append(LINKFLAGS = os.environ['LDFLAGS'])
++if 'LDFLAGS' in applyEnvVars and 'LDFLAGS' in os.environ:
++	globalEnv.Append(MODULE_LINKFLAGS = shlex.split(os.environ['LDFLAGS']))
+ 
+ if globalEnv['with_debug']:
+ 	globalEnv.Append(CPPFLAGS = ['-g', '-fno-omit-frame-pointer'])

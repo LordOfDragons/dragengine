@@ -96,6 +96,7 @@ if envLauncher['OSWindows'] and envLauncher['CROSSCOMPILE_CLANG'] and envLaunche
 	install.append(envLauncher.Install(pathBin, 'delauncher-console.pdb'))
 	archive['{}/delauncher-console.pdb'.format(pathBin)] = envLauncher.File('delauncher-console.pdb')
 
+
 targetInstall = envLauncher.Alias('launcher_console', install)
 
 # source directory required for special commands
@@ -112,7 +113,7 @@ parent_targets['launcher_console'] = {
 	'name' : 'Drag[en]gine Console Launcher',
 	'build' : targetBuild,
 	'install' : targetInstall,
-	'install-engine-runtime' : targetInstall,
+	'install-runtime' : targetInstall,
 	'archive-launcher' : archive,
 	'cloc' : buildCloc,
 	'clocReport' : '{}/clocreport.csv'.format(srcdir)}
