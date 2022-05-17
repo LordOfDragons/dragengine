@@ -186,6 +186,9 @@ private:
 	int pStencilPrevRefValue;
 	int pStencilWriteMask;
 	
+	int pLodMaxPixelError;
+	int pLodLevelOffset;
+	
 	deoglOcclusionMap *pOcclusionMap;
 	deoglOcclusionTest *pOcclusionTest;
 	int pOcclusionMapBaseLevel;
@@ -595,6 +598,14 @@ public:
 	
 	/** Set stencil write mask. */
 	void SetStencilWriteMask( int writeMask );
+	
+	
+	
+	inline int GetLodMaxPixelError() const{ return pLodMaxPixelError; }
+	void SetLodMaxPixelError( int error );
+	
+	inline int GetLodLevelOffset() const{ return pLodLevelOffset; }
+	void SetLodLevelOffset( int offset );
 	
 	
 	

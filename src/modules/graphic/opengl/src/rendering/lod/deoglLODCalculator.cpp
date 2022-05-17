@@ -42,7 +42,8 @@
 ////////////////////////////
 
 deoglLODCalculator::deoglLODCalculator() :
-pMaxPixelError( 2 ){
+pMaxPixelError( 2 ),
+pLodOffset( 0 ){
 }
 
 deoglLODCalculator::~deoglLODCalculator(){
@@ -57,9 +58,13 @@ void deoglLODCalculator::SetMaxPixelError( int maxPixelError ){
 	pMaxPixelError = decMath::max( maxPixelError, 1 );
 }
 
+void deoglLODCalculator::SetLodOffset( int offset ){
+	pLodOffset = offset;
+}
 
 
-void deoglLODCalculator::SetComponentLOD0( deoglCollideList &collideList ){
+
+void deoglLODCalculator::SetComponentLOD0( const deoglCollideList &collideList ){
 	const int count = collideList.GetComponentCount();
 	int i;
 	
@@ -68,7 +73,7 @@ void deoglLODCalculator::SetComponentLOD0( deoglCollideList &collideList ){
 	}
 }
 
-void deoglLODCalculator::SetComponentLODMax( deoglCollideList &collideList ){
+void deoglLODCalculator::SetComponentLODMax( const deoglCollideList &collideList ){
 	const int count = collideList.GetComponentCount();
 	int i;
 	
@@ -77,7 +82,7 @@ void deoglLODCalculator::SetComponentLODMax( deoglCollideList &collideList ){
 	}
 }
 
-void deoglLODCalculator::SetComponentLODProjection( deoglCollideList &collideList, const decDVector &position,
+void deoglLODCalculator::SetComponentLODProjection( const deoglCollideList &collideList, const decDVector &position,
 const decDVector &view, float fovX, float fovY, int screenWidth, int screenHeight ){
 	// test lod levels starting with the smallest one for the first lod level which still
 	// yields an error on screen not larger than the maximum pixel error.
@@ -128,6 +133,8 @@ const decDVector &view, float fovX, float fovY, int screenWidth, int screenHeigh
 						
 						lodLevel = j;
 					}
+					
+					lodLevel = decMath::clamp( lodLevel + pLodOffset, 0, lodLevelCount - 1 );
 				}
 			}
 		}
@@ -137,7 +144,7 @@ const decDVector &view, float fovX, float fovY, int screenWidth, int screenHeigh
 	}
 }
 
-void deoglLODCalculator::SetComponentLODOrtho( deoglCollideList &collideList, float boxWidth, float boxHeight,
+void deoglLODCalculator::SetComponentLODOrtho( const deoglCollideList &collideList, float boxWidth, float boxHeight,
 int screenWidth, int screenHeight ){
 	// test lod levels starting with the smallest one for the first lod level which still
 	// yields an error on screen not larger than the maximum pixel error. in contrary to
@@ -195,7 +202,7 @@ int screenWidth, int screenHeight ){
 		}
 		
 		//lodLevel = 0;
-		clistComponent.SetLODLevel( lodLevel );
+		clistComponent.SetLODLevel( decMath::clamp( lodLevel + pLodOffset, 0, lodLevelCount - 1 ) );
 	}
 }
 
@@ -233,5 +240,53 @@ float boxWidth, float boxHeight, int screenWidth, int screenHeight ){
 		lodLevel = i;
 	}
 	
-	clistComponent.SetLODLevel( lodLevel );
+	clistComponent.SetLODLevel( decMath::clamp( lodLevel + pLodOffset, 0, lodLevelCount - 1 ) );
+}
+
+void deoglLODCalculator::SetComponentLODOmniDir( const deoglCollideList &collideList,
+const decDVector &position, int size ){
+	const int componentCount = collideList.GetComponentCount();
+	const float factor = ( float )pMaxPixelError / ( float )size;
+	int i, j;
+	
+	for( i=0; i<componentCount; i++ ){
+		deoglCollideListComponent &clistComponent = *collideList.GetComponentAt( i );
+		const deoglRComponent &component = *clistComponent.GetComponent();
+		int lodLevel = 0;
+		
+		if( component.GetModel() ){
+			const deoglRModel &model = *component.GetModel();
+			const int lodLevelCount = model.GetLODCount();
+			
+			if( lodLevelCount > 1 ){
+				// calculate a sphere around the component extends. this causes the lod
+				// calculation to be very cautious but this can be compensated with better
+				// calculation later on for components with elongated box shapes
+				const decDVector &minExtend = component.GetMinimumExtend();
+				const decDVector &maxExtend = component.GetMaximumExtend();
+				const decDVector center( ( minExtend + maxExtend ) * 0.5 );
+				const float radius = ( float )( ( maxExtend - minExtend ).Length() * 0.5 );
+				const float componentDistance = ( float )( ( center - position ).Length() ) - radius;
+				
+				if( componentDistance > 1.0f ){
+					const float errorScaling = component.GetLODErrorScaling();
+					const float maxAllowedError = factor * componentDistance;
+					
+					for( j=1; j<lodLevelCount; j++ ){
+						const deoglModelLOD &lod = model.GetLODAt( j );
+						
+						if( lod.GetMaxError() * errorScaling > maxAllowedError ){
+							break;
+						}
+						
+						lodLevel = j;
+					}
+					
+					lodLevel = decMath::clamp( lodLevel + pLodOffset, 0, lodLevelCount - 1 );
+				}
+			}
+		}
+		
+		clistComponent.SetLODLevel( lodLevel );
+	}
 }

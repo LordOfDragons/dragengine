@@ -712,6 +712,7 @@ const deoglRCanvasRenderWorld &canvas ){
 	deoglRenderThread &renderThread = GetRenderThread();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
+	const deoglConfiguration &config = renderThread.GetConfiguration();
 	const decVector2 &size = canvas.GetSize();
 	deoglVR * const vr = camera->GetVR();
 	
@@ -740,6 +741,8 @@ const deoglRCanvasRenderWorld &canvas ){
 		plan.SetUpscaleSize( intSize.x, intSize.y );
 		plan.SetUseUpscaling( rwidth != intSize.x || rheight != intSize.y );
 		plan.SetUpsideDown( false );
+		plan.SetLodMaxPixelError( config.GetLODMaxPixelError() );
+		plan.SetLodLevelOffset( 0 );
 		
 		const deoglDeveloperMode &devmode = renderThread.GetDebug().GetDeveloperMode();
 		plan.SetDebugTiming( ! context.GetFBO() && devmode.GetEnabled() && devmode.GetShowDebugInfo() );
@@ -791,7 +794,6 @@ const deoglRCanvasRenderWorld &canvas ){
 	shader.SetParameterTexMatrix3x2( spcTCTransformMask, context.GetTransformMask() );
 	
 	// color correction from configuration applied over canvas color transformation
-	const deoglConfiguration &config = renderThread.GetConfiguration();
 	const float gamma = 1.0f / ( OGL_RENDER_GAMMA * config.GetGammaCorrection() );
 	decColorMatrix colorTransform;
 	

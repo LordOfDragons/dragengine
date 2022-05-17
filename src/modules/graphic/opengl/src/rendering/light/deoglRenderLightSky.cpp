@@ -607,7 +607,6 @@ void deoglRenderLightSky::RenderShadowMap( deoglRenderPlanSkyLight &plan, deoglS
 // 	deoglAddToRenderTask &addToRenderTask = renderThread.GetRenderers().GetLight().GetAddToRenderTask();
 // 	deoglRenderTask &renderTask = renderThread.GetRenderers().GetLight().GetRenderTask();
 	const decDVector &referencePosition = world.GetReferencePosition();
-	const deoglConfiguration &config = renderThread.GetConfiguration();
 	deoglRenderGeometry &rengeom = renderThread.GetRenderers().GetGeometry();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	deoglRSkyInstanceLayer &skyLayer = *plan.GetLayer();
@@ -889,8 +888,7 @@ void deoglRenderLightSky::RenderShadowMap( deoglRenderPlanSkyLight &plan, deoglS
 		const float lodBoxHeight = sl.maxExtend.y - sl.minExtend.y;
 		
 		deoglLODCalculator lodCalculator;
-		
-		lodCalculator.SetMaxPixelError( config.GetLODMaxPixelError() );
+		lodCalculator.SetMaxPixelError( 2 );
 		
 		lodCalculator.SetComponentLODOrtho( *pColList2, lodBoxWidth, lodBoxHeight, shadowMapSize, shadowMapSize );
 		DebugTimer4Sample( plan.GetPlan(), *pDebugInfoSolidShadowSplitLODLevels, false );
