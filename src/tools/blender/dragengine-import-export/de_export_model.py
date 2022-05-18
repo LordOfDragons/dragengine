@@ -162,6 +162,8 @@ class OBJECT_OT_ExportModel(bpy.types.Operator, ExportHelper):
 				self.timer = timer
 		timer = Timer()
 		
+		self.depsgraph = context.evaluated_depsgraph_get()
+		
 		if self.armature:
 			self.armature.ignoreBones = self.ignoreBones
 			self.armature.initAddBones()
@@ -170,6 +172,10 @@ class OBJECT_OT_ExportModel(bpy.types.Operator, ExportHelper):
 		
 		mesh = self.mesh
 		while mesh:
+			# get object with modifiers applied. original object can be found at mesh.object.original
+			mesh.object = mesh.object.evaluated_get(self.depsgraph)
+			mesh.mesh = mesh.object.data
+			
 			self.lodMeshCount = self.lodMeshCount + 1
 			
 			mesh.initAddTextures()
@@ -191,6 +197,10 @@ class OBJECT_OT_ExportModel(bpy.types.Operator, ExportHelper):
 			mesh.initAddFaces()
 			timer.logTime('mesh.initAddFaces')
 			self.progress.advance("Prepare faces")
+			
+			mesh.applyAutoSmooth()
+			timer.logTime('mesh.applyAutoSmooth')
+			self.progress.advance("Apply auto-smoothing")
 			
 			mesh.initCalcCornerNormals()
 			timer.logTime('mesh.initCalcCornerNormals')
@@ -214,30 +224,23 @@ class OBJECT_OT_ExportModel(bpy.types.Operator, ExportHelper):
 		pm = 3  # bones, textures, tex-coord-sets
 		mesh = self.mesh
 		while mesh:
-			pm = pm + 11  # weights, vertices, faces, prepare(8)
+			pm = pm + 12  # weights, vertices, faces, prepare(9)
 			mesh = mesh.lodMesh
 		self.progress = ProgressDisplay(pm, self)
 		self.progress.show()
 	
 	def initChecksEarly(self, context):
-		modifiers = [['MIRROR', 'Mirror'], ['SUBSURF', 'Subdivision']]
-		
-		for m in modifiers:
-			if any(x.type == m[0] for x in self.mesh.object.modifiers):
-				self.report({'INFO', 'ERROR'}, ("{} modifier found on object '{}'."
-					+ " Apply modifier before export otherwise only one half is exported.").format(\
-						m[1], self.mesh.object.name))
-				return False
+		if self.mesh.mesh.use_auto_smooth and any(x.type == 'EDGE_SPLIT' for x in self.mesh.object.modifiers):
+			self.report({'INFO', 'ERROR'}, ("Edge Split modifier found on object '{}'"
+				+ " while Auto-Smooth is enabled.".format(self.mesh.object.name)))
+			return False
 		
 		lodMesh = self.mesh.lodMesh
 		while lodMesh:
-			for m in modifiers:
-				if any(x.type == m[0] for x in lodMesh.object.modifiers):
-					self.report({'INFO', 'ERROR'}, ("LOD Mesh '{}': {} modifier."
-						+ " Apply modifier before export otherwise only one half is exported.").format(\
-							lodMesh.object.name, m[1]))
-					return False
-			
+			if lodMesh.mesh.use_auto_smooth and any(x.type == 'EDGE_SPLIT' for x in lodMesh.object.modifiers):
+				self.report({'INFO', 'ERROR'}, ("Edge Split modifier found on object '{}'"
+					+ " while Auto-Smooth is enabled.".format(lodMesh.object.name)))
+				return False
 			lodMesh = lodMesh.lodMesh
 		
 		return True
