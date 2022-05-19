@@ -321,8 +321,11 @@ void deoalASpeaker::PrepareProcessAudio(){
 				}
 			}
 		}
-		
 		return;
+	}
+	
+	if( pPlayFinished ){
+		return; // will be reset by pStartPlaySource
 	}
 	
 	if( pDirtyPlayPosition ){
