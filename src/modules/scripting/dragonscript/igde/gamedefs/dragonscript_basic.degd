@@ -1093,6 +1093,16 @@
 			<type>float</type>
 			<default>0</default>
 		</property>
+		<property name='timeoutSpread'>
+			<description>Timeout spread is added to regular timeout. Timeout is chosen randomly between -spread to spread seconds. Hence random timeout spreads the chosen time above and below the regular timeout up to "spread" seconds.</description>
+			<type>float</type>
+			<default>0</default>
+		</property>
+		<property name='timeoutRearm'>
+			<description>Rearm trigger on timeout if still enabled.</description>
+			<type>boolean</type>
+			<default>0</default>
+		</property>
 		<property name='fireOnTimeout'>
 			<description>Trigger is fired (true) or reset (false) on timeout.</description>
 			<type>boolean</type>
