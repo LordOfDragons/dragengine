@@ -81,6 +81,7 @@ private:
 	float pRange;
 	float pAttenuationRefDist;
 	float pAttenuationRolloff;
+	float pAttenuationDistanceOffset;
 	decLayerMask pLayerMask;
 	const deoalATRayTracing::sConfigSoundTracing *pRTConfig;
 	
@@ -154,8 +155,11 @@ public:
 	/** \brief Attenuation rolloff. */
 	inline float GetAttenuationRolloff() const{ return pAttenuationRolloff; }
 	
+	/** \brief Attenuation distance offset. */
+	inline float GetAttenuationDistanceOffset() const{ return pAttenuationDistanceOffset; }
+	
 	/** \brief Set attenuation parameters. */
-	void SetAttenuation( float refDist, float rolloff );
+	void SetAttenuation( float refDist, float rolloff, float distanceOffset );
 	
 	/** \brief Layer mask. */
 	inline const decLayerMask &GetLayerMask() const{ return pLayerMask; }

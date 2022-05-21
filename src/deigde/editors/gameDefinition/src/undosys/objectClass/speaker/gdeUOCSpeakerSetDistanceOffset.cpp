@@ -23,7 +23,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include "gdeUOCSpeakerSetRollOff.h"
+#include "gdeUOCSpeakerSetDistanceOffset.h"
 #include "../../../gamedef/objectClass/gdeObjectClass.h"
 #include "../../../gamedef/objectClass/speaker/gdeOCSpeaker.h"
 
@@ -31,13 +31,13 @@
 
 
 
-// Class gdeUOCSpeakerSetRollOff
-//////////////////////////////////////
+// Class gdeUOCSpeakerSetDistanceOffset
+/////////////////////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCSpeakerSetRollOff::gdeUOCSpeakerSetRollOff( gdeObjectClass *objectClass,
+gdeUOCSpeakerSetDistanceOffset::gdeUOCSpeakerSetDistanceOffset( gdeObjectClass *objectClass,
 gdeOCSpeaker *speaker, float newValue ) :
 pObjectClass( NULL ),
 pSpeaker( NULL )
@@ -46,9 +46,9 @@ pSpeaker( NULL )
 		DETHROW( deeInvalidParam );
 	}
 	
-	SetShortInfo( "Speaker set roll off" );
+	SetShortInfo( "Speaker set distance offset" );
 	
-	pOldValue = speaker->GetRollOff();
+	pOldValue = speaker->GetDistanceOffset();
 	pNewValue = newValue;
 	
 	pSpeaker = speaker;
@@ -58,7 +58,7 @@ pSpeaker( NULL )
 	objectClass->AddReference();
 }
 
-gdeUOCSpeakerSetRollOff::~gdeUOCSpeakerSetRollOff(){
+gdeUOCSpeakerSetDistanceOffset::~gdeUOCSpeakerSetDistanceOffset(){
 	if( pSpeaker ){
 		pSpeaker->FreeReference();
 	}
@@ -72,12 +72,12 @@ gdeUOCSpeakerSetRollOff::~gdeUOCSpeakerSetRollOff(){
 // Management
 ///////////////
 
-void gdeUOCSpeakerSetRollOff::Undo(){
-	pSpeaker->SetRollOff( pOldValue );
+void gdeUOCSpeakerSetDistanceOffset::Undo(){
+	pSpeaker->SetDistanceOffset( pOldValue );
 	pObjectClass->NotifySpeakerChanged( pSpeaker );
 }
 
-void gdeUOCSpeakerSetRollOff::Redo(){
-	pSpeaker->SetRollOff( pNewValue );
+void gdeUOCSpeakerSetDistanceOffset::Redo(){
+	pSpeaker->SetDistanceOffset( pNewValue );
 	pObjectClass->NotifySpeakerChanged( pSpeaker );
 }

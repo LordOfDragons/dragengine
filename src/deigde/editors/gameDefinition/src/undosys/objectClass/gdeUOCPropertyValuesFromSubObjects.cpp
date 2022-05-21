@@ -363,6 +363,11 @@ igdeCodecPropertyString codec, const gdeOCSpeaker &speaker ){
 		values.SetAt( speaker.GetPropertyName( gdeOCSpeaker::epRollOff ), string );
 	}
 	
+	if( speaker.IsPropertySet( gdeOCSpeaker::epDistanceOffset ) ){
+		string.Format( "%.1f", speaker.GetDistanceOffset() );
+		values.SetAt( speaker.GetPropertyName( gdeOCSpeaker::epDistanceOffset ), string );
+	}
+	
 	if( speaker.IsPropertySet( gdeOCSpeaker::epPlaySpeed ) ){
 		string.Format( "%.3f", speaker.GetPlaySpeed() );
 		values.SetAt( speaker.GetPropertyName( gdeOCSpeaker::epPlaySpeed ), string );

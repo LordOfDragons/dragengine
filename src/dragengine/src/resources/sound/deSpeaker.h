@@ -110,6 +110,7 @@ private:
 	float pVolume;
 	float pRange;
 	float pRollOff;
+	float pDistanceOffset;
 	decShapeList pShape;
 	decLayerMask pLayerMask;
 	
@@ -247,6 +248,26 @@ public:
 	 * apply weaker attenuation.
 	 */
 	void SetRollOff( float rollOff );
+	
+	/**
+	 * \brief Distance offset for attenuation calculation.
+	 * \version 1.12
+	 * 
+	 * For use by distance sounds. Offsets the true distance to the sound source for attenuation
+	 * calculation to make the sound appear coming from far away. Requires increasing the volume
+	 * to compensate for the distance increased attenuation.
+	 */
+	inline float GetDistanceOffset() const{ return pDistanceOffset; }
+	
+	/**
+	 * \brief Set distance offset for attenuation calculation.
+	 * \version 1.12
+	 * 
+	 * For use by distance sounds. Offsets the true distance to the sound source for attenuation
+	 * calculation to make the sound appear coming from far away. Requires increasing the volume
+	 * to compensate for the distance increased attenuation.
+	 */
+	void SetDistanceOffset( float distanceOffset );
 	
 	/** \brief Sound shape. */
 	inline const decShapeList &GetShape() const{ return pShape; }

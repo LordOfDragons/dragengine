@@ -140,6 +140,7 @@ void deoalDevMode::ClearCaptureSpeakerClosestDirect(){
 void deoalDevMode::pCmdHelp( const decUnicodeArgumentList &, decUnicodeString &answer ){
 	answer.SetFromUTF8( "dm_help => Displays this help screen.\n" );
 	answer.AppendFromUTF8( "dm_log_calc_envprobe [0|1] => Log environment probe calculations.\n" );
+	answer.AppendFromUTF8( "dm_show_module_info [0|1] => Show module information.\n" );
 	answer.AppendFromUTF8( "dm_show_speaker_env_info [0|1] => Show speaker environment overlay information.\n" );
 	answer.AppendFromUTF8( "dm_show_speaker_env_info_at {off | x y z} => "
 		"Show only speaker environment overlay information at position.\n" );

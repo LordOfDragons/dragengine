@@ -1406,6 +1406,9 @@ void igdeXMLGameDefinition::pParseClassSpeaker( const decXmlElementTag &root, ig
 			}else if( tagName == "rollOff" ){
 				gdcSpeaker->SetRollOff( GetCDataFloat( *tag ) );
 				
+			}else if( tagName == "distanceOffset" ){
+				gdcSpeaker->SetDistanceOffset( GetCDataFloat( *tag ) );
+				
 			}else if( tagName == "playSpeed" ){
 				gdcSpeaker->SetPlaySpeed( GetCDataFloat( *tag ) );
 				
@@ -1429,6 +1432,9 @@ void igdeXMLGameDefinition::pParseClassSpeaker( const decXmlElementTag &root, ig
 					
 				}else if( strcmp( value, "rollOff" ) == 0 ){
 					gdcSpeaker->SetPropertyName( igdeGDCSpeaker::epRollOff, GetAttributeString( *tag, "property" ) );
+					
+				}else if( strcmp( value, "distanceOffset" ) == 0 ){
+					gdcSpeaker->SetPropertyName( igdeGDCSpeaker::epDistanceOffset, GetAttributeString( *tag, "property" ) );
 					
 				}else if( strcmp( value, "playSpeed" ) == 0 ){
 					gdcSpeaker->SetPropertyName( igdeGDCSpeaker::epPlaySpeed, GetAttributeString( *tag, "property" ) );

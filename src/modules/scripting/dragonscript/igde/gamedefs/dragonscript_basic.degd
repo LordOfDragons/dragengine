@@ -1637,13 +1637,13 @@
 		<defaultInheritPropertyPrefix>speaker.</defaultInheritPropertyPrefix>
 		<speaker>
 			<range>10</range>
-			<rollOff>1</rollOff>
 			<link target='sound' property='sound'/>
 			<link target='looping' property='looping'/>
 			<link target='playing' property='playing'/>
 			<link target='volume' property='volume'/>
 			<link target='range' property='range'/>
 			<link target='rollOff' property='rollOff'/>
+			<link target='distanceOffset' property='distanceOffset'/>
 			<link target='playSpeed' property='playSpeed'/>
 			<link target='attachPosition' property='position'/>
 			<link target='attachRotation' property='orientation'/>
@@ -1674,6 +1674,11 @@
 			<description>Roll off attenuation factor. 1 is realistic. Larger than 1 attenuates stronger. Smaller than 1 attenuates weaker.</description>
 			<type>float</type>
 			<default>1</default>
+		</property>
+		<property name='distanceOffset'>
+			<description>For use by distance sounds. Offsets the true distance to the sound source for attenuation calculation to make the sound appear coming from far away. Requires increasing the volume to compensate for the distance increased attenuation.</description>
+			<type>float</type>
+			<default>0</default>
 		</property>
 		<property name='playSpeed'>
 			<description>Playing speed relative to normal speed. A value of 1 is normal playing speed. A value of 2 plays back at double the speed while 0.5 plays back at half the speed. Negative values are allowed and play backwards.</description>
@@ -2441,10 +2446,10 @@
 		<defaultInheritPropertyPrefix>announcer.</defaultInheritPropertyPrefix>
 		<speaker>
 			<range>10</range>
-			<rollOff>1</rollOff>
 			<link target='volume' property='volume'/>
 			<link target='range' property='range'/>
 			<link target='rollOff' property='rollOff'/>
+			<link target='distanceOffset' property='distanceOffset'/>
 			<link target='attachPosition' property='position'/>
 			<link target='attachRotation' property='orientation'/>
 			<trigger target='playing' property='trigger'/>
@@ -2471,6 +2476,11 @@
 			<description>Roll off attenuation factor. 1 is realistic. Larger than 1 attenuates stronger. Smaller than 1 attenuates weaker.</description>
 			<type>float</type>
 			<default>1</default>
+		</property>
+		<property name='distanceOffset'>
+			<description>For use by distance sounds. Offsets the true distance to the sound source for attenuation calculation to make the sound appear coming from far away. Requires increasing the volume to compensate for the distance increased attenuation.</description>
+			<type>float</type>
+			<default>0</default>
 		</property>
 		<property name='trigger'>
 			<description>Trigger expression toggling playing state of speaker.</description>

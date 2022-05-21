@@ -100,6 +100,7 @@ private:
 	float pRange;
 	float pRefDist;
 	float pRollOff;
+	float pDistanceOffset;
 	bool pUseAttenuation;
 	int pFirstRay;
 	#ifndef RTPTTSR_ONE_TASK_PER_RAY
@@ -184,7 +185,7 @@ public:
 	void SetRange( float range );
 	
 	/** \brief Set attenuation parameters. */
-	void SetAttenuationParameters( float refDist, float rollOff );
+	void SetAttenuationParameters( float refDist, float rollOff, float distanceOffset );
 	
 	/** \brief Set environment probe configuration. */
 	void SetProbeConfig( const deoalRayTraceConfig *probeConfig );

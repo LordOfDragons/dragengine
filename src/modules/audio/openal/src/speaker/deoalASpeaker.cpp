@@ -122,6 +122,7 @@ pRangeSquared( 1.0f ),
 pVolume( 1.0f ),
 pAttenuationRefDist( 1.0f ),
 pAttenuationRolloff( 1.0f ),
+pAttenuationDistanceOffset( 0.0f ),
 
 pEnvironment( NULL ),
 
@@ -431,13 +432,18 @@ void deoalASpeaker::PrepareProcessAudio(){
 			
 			OAL_CHECK( pAudioThread, alSourcef( pSource->GetSource(),
 				AL_REFERENCE_DISTANCE, pAttenuationRefDist ) );
-			OAL_CHECK( pAudioThread, alSourcef( pSource->GetSource(),
-				AL_ROLLOFF_FACTOR, pAttenuationRolloff ) );
+			
+			if( pUseCustomGain() ){
+				OAL_CHECK( pAudioThread, alSourcef( pSource->GetSource(), AL_ROLLOFF_FACTOR, 0.0f ) );
+				
+			}else{
+				OAL_CHECK( pAudioThread, alSourcef( pSource->GetSource(),
+					AL_ROLLOFF_FACTOR, pAttenuationRolloff ) );
+			}
 		}
 		
 		if( pDirtyGain ){
 			pDirtyGain = false;
-			
 			pAttenuatedGain = pMuted ? 0.0f : pVolume;
 			OAL_CHECK( pAudioThread, alSourcef( pSource->GetSource(), AL_GAIN, pAttenuatedGain ) );
 		}
@@ -645,6 +651,12 @@ void deoalASpeaker::SetAttenuationRolloff( float rolloff ){
 	pUpdateAttenuation();
 }
 
+void deoalASpeaker::SetAttenuationDistanceOffset( float distanceOffset ){
+	pAttenuationDistanceOffset = distanceOffset;
+	
+	pUpdateAttenuation();
+}
+
 float deoalASpeaker::AttenuatedGain( float distance ) const{
 	// OpenAL Inverse Distance Clamped Attenuation Model:
 	// distance = max( distance, AL_REFERENCE_DISTANCE );
@@ -652,7 +664,7 @@ float deoalASpeaker::AttenuatedGain( float distance ) const{
 	// gain = AL_REFERENCE_DISTANCE / (AL_REFERENCE_DISTANCE
 	//        + AL_ROLLOFF_FACTOR * ( distance - AL_REFERENCE_DISTANCE ) );
 	return pAttenuationRefDist / ( pAttenuationRefDist + pAttenuationRolloff
-		* ( decMath::max( distance, pAttenuationRefDist ) - pAttenuationRefDist ) );
+		* ( decMath::max( distance + pAttenuationDistanceOffset - pAttenuationRefDist, 0.0f ) ) );
 }
 
 bool deoalASpeaker::AffectsActiveMicrophone() const{
@@ -1196,7 +1208,7 @@ void deoalASpeaker::pUpdateAttenuation(){
 	// 
 	// note about roll-off factor. rolloff=1 is the default and represents the physically
 	// correct solution. rolloff=0 indicates no attenuation at all. larger values indicate
-	// stronger attenuation while smaller values indicate weaker sttenuation than physically
+	// stronger attenuation while smaller values indicate weaker attenuation than physically
 	// correct.
 	// 
 	// note about reference distance. default value is 1 which means below 1m no attenuation.
@@ -1248,7 +1260,7 @@ void deoalASpeaker::pUpdateAttenuation(){
 	pAttenuationRefDist = 1.0f;
 	
 	if( pEnvironment ){
-		pEnvironment->SetAttenuation( pAttenuationRefDist, pAttenuationRolloff );
+		pEnvironment->SetAttenuation( pAttenuationRefDist, pAttenuationRolloff, pAttenuationDistanceOffset );
 		pEnvironment->SetLayerMask( pLayerMask );
 	}
 	
@@ -1367,6 +1379,8 @@ void deoalASpeaker::pUpdateAttenuatedGain(){
 		return;
 	}
 	
+	pAttenuatedGain = pVolume;
+	
 	// what we do here is fixing the problem with openal attenuation. the openal supports
 	// only an inverse-linear model without pulling to 0. this results in all real-world
 	// scenarios to end up with around 9% volume at the range instead of 0%. this in turn
@@ -1378,24 +1392,30 @@ void deoalASpeaker::pUpdateAttenuatedGain(){
 	const decDVector &microphonePos = pAudioThread.GetActiveMicrophone()->GetPosition();
 	const float distance = ( float )( microphonePos - pPosition ).Length();
 	
-// 	float gainMultiplier = decMath::linearStep( distance, pAttenuationRefDist, pRange, 1.0f, 0.0f );
+	// distance attenuation. include distance offset if present
+	pAttenuatedGain *= AttenuatedGain( distance );
 	
 	// we use squared multiplier drop here to affect the gain more towards the range and
 	// less along the large part of the distance. this prevents the sound from getting
 	// more silent in general than it should be while still yielding the pulling to 0
 	float gainMultiplier = decMath::linearStep( distance, pAttenuationRefDist, pRange );
 	gainMultiplier = 1.0f - gainMultiplier * gainMultiplier;
+	pAttenuatedGain *= gainMultiplier;
 	
+	// apply environmental effects. sound transmission and muffling will be applied
+	// using filtering to ensure reverb effect uses the right source gain
+	/*
 	if( pEnvironment && ( ! pAudioThread.GetExtensions().GetHasEFX()
 	|| ! pAudioThread.GetConfiguration().GetEnableEFX() ) ){
-		gainMultiplier *= pEnvironment->GetGainMedium();
+		OAL_CHECK( pAudioThread, alSourcef( pSource->GetSource(), AL_GAIN, pAttenuatedGain ) );
+		
+	}else{
+		OAL_CHECK( pAudioThread, alSourcef( pSource->GetSource(), AL_GAIN, pAttenuatedGain ) );
 	}
+	*/
 	
-	pAttenuatedGain = pVolume * gainMultiplier;
 	OAL_CHECK( pAudioThread, alSourcef( pSource->GetSource(), AL_GAIN, pAttenuatedGain ) );
-	
-	// NOTE: maybe it would be better to do the entire gain calculation here instead of
-	// modifying the openal one
+// 	pAudioThread.GetLogger().LogInfoFormat("AttGain: g=%f", pAttenuatedGain);
 }
 
 
@@ -1518,7 +1538,7 @@ void deoalASpeaker::pEnsureEnvironment(){
 			pEnvironment->SetWorld( pParentWorld );
 			pEnvironment->SetPosition( pPosition );
 			pEnvironment->SetRange( pRange );
-			pEnvironment->SetAttenuation( pAttenuationRefDist, pAttenuationRolloff );
+			pEnvironment->SetAttenuation( pAttenuationRefDist, pAttenuationRolloff, pAttenuationDistanceOffset );
 			pEnvironment->SetLayerMask( pLayerMask );
 		}
 		
@@ -1533,6 +1553,18 @@ void deoalASpeaker::pUpdateEnvironmentEffect(){
 	|| ! pAudioThread.GetConfiguration().GetEnableEFX() ){
 		return;
 	}
+	
+	// NOTE due to the way openal does clamping (after source/distance but before filter/effect/listener)
+	//      we would have to set the source gain to 1 and apply the volume and attenuation
+	//      to the filter. this though is not working since the bandpass filter is a mess.
+	//      it does not work if attenuation and volume is applied to it. instead the bandpass
+	//      filter has to be applied to attenuated gain. this in turn means the source gain
+	//      has to be set to the attenuted gain. this affects now effects which need to be
+	//      now relative to the attenuated gain. it is though possible the reverberance is
+	//      louder than the attenuated gain. since reverb gain is clamped to 1 we are hoased
+	//      again. what can be done is instead using AL_EAXREVERB_REFLECTIONS_GAIN and
+	//      AL_EAXREVERB_LATE_REVERB_GAIN. these parameters have a higher maximum value and
+	//      thus allow to apply such values.
 	
 	// NOTE openal has a little problem. if volume is at most 1 then filters and effects are
 	//      properly reduced in master gain if the speaker volume goes down. if the volume
@@ -1557,35 +1589,39 @@ void deoalASpeaker::pUpdateEnvironmentEffect(){
 	// direct path muffling effect using band-pass filter. the name band-pass filter is quite
 	// missleading. if GainHF is less than GainLF then the filter behaves like a low-pass filter
 	// otherwise like a high-pass filter. a real band-pass filter looks different
+	// 
+	// band pass (or sound transmission) is relative to the source gain. it does not matter if
+	// this is at the virtual or real position and thus this value can be used directly
 	const ALuint filter = pSource->GetFilter();
 	OAL_CHECK( pAudioThread, palFilteri( filter, AL_FILTER_TYPE, AL_FILTER_BANDPASS ) );
 	OAL_CHECK( pAudioThread, palFilterf( filter, AL_BANDPASS_GAIN, pEnvironment->GetBandPassGain() ) );
 	OAL_CHECK( pAudioThread, palFilterf( filter, AL_BANDPASS_GAINLF, pEnvironment->GetBandPassGainLF() ) );
 	OAL_CHECK( pAudioThread, palFilterf( filter, AL_BANDPASS_GAINHF, pEnvironment->GetBandPassGainHF() ) );
+	
 	pSource->AssignFilter();
 	
-	// indirect path reverbe using effect
+	// indirect path reverbe using effect.
+// 		pAudioThread.GetLogger().LogInfoFormat("Check: a0=%f g0=%f bpg=%f v=%f rg=(%f,%f)",
+// 			AttenuatedGain(0.0f), pVolume * AttenuatedGain(0.0f), pEnvironment->GetBandPassGain(), pVolume,
+// 			pEnvironment->GetReverbGain(), pEnvironment->GetReverbGain() * pVolume);
+	
+	const float invAttenGain = pVolume / decMath::max( pAttenuatedGain, 0.001f );
+	
 	const ALuint effect = pSource->GetSendEffect( 0 );
 	OAL_CHECK( pAudioThread, palEffecti( effect, AL_EFFECT_TYPE, AL_EFFECT_EAXREVERB ) );
 	OAL_CHECK( pAudioThread, palEffectf( effect, AL_EAXREVERB_GAIN, pEnvironment->GetReverbGain() ) );
 	OAL_CHECK( pAudioThread, palEffectf( effect, AL_EAXREVERB_GAINHF, pEnvironment->GetReverbGainHF() ) );
 	OAL_CHECK( pAudioThread, palEffectf( effect, AL_EAXREVERB_GAINLF, pEnvironment->GetReverbGainLF() ) );
-	OAL_CHECK( pAudioThread, palEffectf( effect, AL_EAXREVERB_DECAY_TIME,
-		pEnvironment->GetReverbDecayTime() ) );
-	OAL_CHECK( pAudioThread, palEffectf( effect, AL_EAXREVERB_DECAY_HFRATIO,
-		pEnvironment->GetReverbDecayHFRatio() ) );
-	OAL_CHECK( pAudioThread, palEffectf( effect, AL_EAXREVERB_DECAY_LFRATIO,
-		pEnvironment->GetReverbDecayLFRatio() ) );
-	OAL_CHECK( pAudioThread, palEffectf( effect, AL_EAXREVERB_REFLECTIONS_GAIN,
-		pEnvironment->GetReverbReflectionGain() ) );
-	OAL_CHECK( pAudioThread, palEffectf( effect, AL_EAXREVERB_REFLECTIONS_DELAY,
-		pEnvironment->GetReverbReflectionDelay() ) );
-	OAL_CHECK( pAudioThread, palEffectf( effect, AL_EAXREVERB_LATE_REVERB_GAIN,
-		pEnvironment->GetReverbLateReverbGain() ) );
-	OAL_CHECK( pAudioThread, palEffectf( effect, AL_EAXREVERB_LATE_REVERB_DELAY,
-		pEnvironment->GetReverbLateReverbDelay() ) );
-	OAL_CHECK( pAudioThread, palEffectf( effect, AL_EAXREVERB_ECHO_TIME,
-		pEnvironment->GetReverbEchoTime() ) );
+	OAL_CHECK( pAudioThread, palEffectf( effect, AL_EAXREVERB_DECAY_TIME, pEnvironment->GetReverbDecayTime() ) );
+	OAL_CHECK( pAudioThread, palEffectf( effect, AL_EAXREVERB_DECAY_HFRATIO, pEnvironment->GetReverbDecayHFRatio() ) );
+	OAL_CHECK( pAudioThread, palEffectf( effect, AL_EAXREVERB_DECAY_LFRATIO, pEnvironment->GetReverbDecayLFRatio() ) );
+	OAL_CHECK( pAudioThread, palEffectf( effect, AL_EAXREVERB_REFLECTIONS_GAIN, decMath::min(
+		pEnvironment->GetReverbReflectionGain() * invAttenGain, AL_EAXREVERB_MAX_REFLECTIONS_GAIN ) ) );
+	OAL_CHECK( pAudioThread, palEffectf( effect, AL_EAXREVERB_REFLECTIONS_DELAY, pEnvironment->GetReverbReflectionDelay() ) );
+	OAL_CHECK( pAudioThread, palEffectf( effect, AL_EAXREVERB_LATE_REVERB_GAIN, decMath::min(
+		pEnvironment->GetReverbLateReverbGain() * invAttenGain, AL_EAXREVERB_MAX_LATE_REVERB_GAIN ) ) );
+	OAL_CHECK( pAudioThread, palEffectf( effect, AL_EAXREVERB_LATE_REVERB_DELAY, pEnvironment->GetReverbLateReverbDelay() ) );
+	OAL_CHECK( pAudioThread, palEffectf( effect, AL_EAXREVERB_ECHO_TIME, pEnvironment->GetReverbEchoTime() ) );
 	
 	ALfloat alvector[ 3 ];
 	alvector[ 0 ] = ( ALfloat )pEnvironment->GetReverbReflectionPan().x;
@@ -1632,4 +1668,16 @@ void deoalASpeaker::pDropEnvProbeOctreeNodeAllSLMs(){
 	for( i=0; i<count; i++ ){
 		( ( deoalASoundLevelMeter* )pSoundLevelMeters.GetAt( i ) )->SpeakerDropEnvProbeOctreeNode( this );
 	}
+}
+
+bool deoalASpeaker::pUseCustomGain() const{
+	return pAttenuationDistanceOffset >= 0.001f && pAudioThread.GetActiveMicrophone();
+}
+
+float deoalASpeaker::pCustomGainMultiplier() const{
+	if( pUseCustomGain() ){
+		const decDVector &microphonePos = pAudioThread.GetActiveMicrophone()->GetPosition();
+		return AttenuatedGain( ( float )( microphonePos - pPosition ).Length() );
+	}
+	return 1.0f;
 }

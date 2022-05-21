@@ -517,6 +517,8 @@ void deoalRTPTListenFinish::pRun(){
 	
 	// roomPressure = 10 * log10(1 / (4 * pi * distanceSquare) + roomFactor)
 	// this is direct and reverberant combined
+	// NOTE this is not including source distance offset since it is used for delay calculation
+	//      which has to be relative to the playing source which is playing at the real position
 	const float directDistance = ( float )( ( pListenProbe ? pListenProbe->GetPosition() : pPosition )
 		- pSourceProbe->GetPosition() ).Length();
 // 	const float invFourPiDistSquared = 1.0f / ( 4.0 * PI * directDistance * directDistance );

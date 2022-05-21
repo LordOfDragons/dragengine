@@ -802,7 +802,7 @@ const deoalSoundRay &soundRay, const sSphereReceiverImpinge *firstImpinge ){
 		// the artistic values to take effect we need to apply an artificial attenuation factor.
 		// this is done by taking the ratio between the artistic attenuation curve and the
 		// realistic attenuation curve. this is (1/r')/(1/r) = aa/(1/r) = aa*r
-		float factor = dri * params.invReceiverVolume;
+		factor = dri * params.invReceiverVolume;
 		#endif
 		#endif
 		

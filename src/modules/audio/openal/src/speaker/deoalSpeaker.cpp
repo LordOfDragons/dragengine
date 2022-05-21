@@ -167,6 +167,7 @@ void deoalSpeaker::Synchronize(){
 		pASpeaker->SetMuted( pSpeaker.GetMuted() );
 		pASpeaker->SetVolume( pSpeaker.GetVolume() );
 		pASpeaker->SetAttenuationRolloff( pSpeaker.GetRollOff() );
+		pASpeaker->SetAttenuationDistanceOffset( pSpeaker.GetDistanceOffset() );
 		
 		if( pVideoPlayer ){
 			// this is required to allow video player to update internal states too
@@ -237,6 +238,7 @@ void deoalSpeaker::Synchronize(){
 	
 	if( pDirtyAttenuation ){
 		pASpeaker->SetAttenuationRolloff( pSpeaker.GetRollOff() );
+		pASpeaker->SetAttenuationDistanceOffset( pSpeaker.GetDistanceOffset() );
 		pDirtyRange = false;
 	}
 	
@@ -362,6 +364,12 @@ void deoalSpeaker::RangeChanged(){
 }
 
 void deoalSpeaker::RollOffChanged(){
+	pDirtyAttenuation = true;
+	
+	pRequiresSync();
+}
+
+void deoalSpeaker::DistanceOffsetChanged(){
 	pDirtyAttenuation = true;
 	
 	pRequiresSync();

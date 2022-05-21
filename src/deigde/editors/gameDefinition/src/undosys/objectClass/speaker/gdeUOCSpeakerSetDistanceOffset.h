@@ -20,8 +20,8 @@
  */
 
 
-#ifndef _GDEUOCSPEAKERSETROLLOFF_H_
-#define _GDEUOCSPEAKERSETROLLOFF_H_
+#ifndef _GDEUOCSPEAKERSETDISTANCEOFFSET_H_
+#define _GDEUOCSPEAKERSETDISTANCEOFFSET_H_
 
 #include <deigde/undo/igdeUndo.h>
 
@@ -31,9 +31,9 @@ class gdeObjectClass;
 
 
 /**
- * \brief Undo action object class speaker set roll off.
+ * \brief Undo action object class speaker set distance offset.
  */
-class gdeUOCSpeakerSetRollOff : public igdeUndo{
+class gdeUOCSpeakerSetDistanceOffset : public igdeUndo{
 private:
 	gdeObjectClass *pObjectClass;
 	gdeOCSpeaker *pSpeaker;
@@ -47,11 +47,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCSpeakerSetRollOff( gdeObjectClass *objectClass, gdeOCSpeaker *speaker, float newValue );
+	gdeUOCSpeakerSetDistanceOffset( gdeObjectClass *objectClass, gdeOCSpeaker *speaker, float newValue );
 	
 protected:
 	/** \brief Clean up undo action. */
-	virtual ~gdeUOCSpeakerSetRollOff();
+	virtual ~gdeUOCSpeakerSetDistanceOffset();
 	/*@}*/
 	
 	

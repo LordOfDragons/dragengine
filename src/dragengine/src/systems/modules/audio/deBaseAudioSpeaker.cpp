@@ -77,6 +77,9 @@ void deBaseAudioSpeaker::RangeChanged(){
 void deBaseAudioSpeaker::RollOffChanged(){
 }
 
+void deBaseAudioSpeaker::DistanceOffsetChanged(){
+}
+
 void deBaseAudioSpeaker::ShapeChanged(){
 }
 

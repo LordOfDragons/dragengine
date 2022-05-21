@@ -185,9 +185,10 @@ deoalRTParallelEnvProbe::~deoalRTParallelEnvProbe(){
 // #include "../../../model/deoalAModel.h"
 
 void deoalRTParallelEnvProbe::TraceSoundRays( sRoomParameters &roomParameters,
-deoalSoundRayList &soundRayList, const decDVector &position, float range, float refDist,
-float rollOff, deoalAWorld &world, deoalRTWorldBVH *rtWorldBVH,
-const decLayerMask &layerMask, const deoalATRayTracing::sConfigSoundTracing &config ){
+deoalSoundRayList &soundRayList, const decDVector &position, float range,
+float refDist, float rollOff, float distanceOffset, deoalAWorld &world,
+deoalRTWorldBVH *rtWorldBVH, const decLayerMask &layerMask,
+const deoalATRayTracing::sConfigSoundTracing &config ){
 	if( pAudioThread.GetDebug().GetLogCalcEnvProbe() ){
 		pAudioThread.GetLogger().LogInfoFormat(
 			"Parallel-TraceSoundRays: pos=(%.3f,%.3f,%.3f) range=%.3f rays=%d",
@@ -197,7 +198,7 @@ const decLayerMask &layerMask, const deoalATRayTracing::sConfigSoundTracing &con
 	pTimer.Reset();
 	
 	pRunTraceSoundRaysUsingTasks( roomParameters, soundRayList, position, range,
-		refDist, rollOff, world, rtWorldBVH, layerMask, config );
+		refDist, rollOff, distanceOffset, world, rtWorldBVH, layerMask, config );
 	#if defined WOVRAYHITSELEMENT_DO_TIMING || defined RTWOVRAYHITSELEMENT_DO_TIMING \
 	|| defined RTWOVRAYHITSCLOSEST_DO_TIMING || defined RTWOVRAYBLOCKED_DO_TIMING
 	const decPointerList wovTimingTasks( pTasksWaitTraceSoundRays );
@@ -578,8 +579,8 @@ void deoalRTParallelEnvProbe::Enable( deoalRTPTListenFinish *task ){
 
 void deoalRTParallelEnvProbe::pRunTraceSoundRaysUsingTasks( sRoomParameters &roomParameters,
 deoalSoundRayList &soundRayList, const decDVector &position, float range, float refDist,
-float rollOff, deoalAWorld &world, deoalRTWorldBVH *rtWorldBVH, const decLayerMask &layerMask,
-const deoalATRayTracing::sConfigSoundTracing &config ){
+float rollOff, float distanceOffset, deoalAWorld &world, deoalRTWorldBVH *rtWorldBVH,
+const decLayerMask &layerMask, const deoalATRayTracing::sConfigSoundTracing &config ){
 	deMutexGuard lock( pMutex );
 	
 // 	#ifdef WOVRAYHITSELEMENT_DO_TIMING
@@ -590,7 +591,7 @@ const deoalATRayTracing::sConfigSoundTracing &config ){
 // 	task.SetWorld( &world );
 // 	task.SetPosition( position );
 // 	task.SetRange( range );
-// 	task.SetAttenuationParameters( refDist, rollOff );
+// 	task.SetAttenuationParameters( refDist, rollOff, distanceOffset );
 // 	task.SetProbeConfig( config.rtConfig );
 // 	task.SetAddRayMinLength( config.addRayMinLength );
 // 	task.SetFirstRay( 0 );
@@ -636,7 +637,7 @@ const deoalATRayTracing::sConfigSoundTracing &config ){
 		task.SetWorld( &world, rtWorldBVH );
 		task.SetPosition( position );
 		task.SetRange( range );
-		task.SetAttenuationParameters( refDist, rollOff );
+		task.SetAttenuationParameters( refDist, rollOff, distanceOffset );
 		task.SetProbeConfig( config.rtConfig );
 		task.SetAddRayMinLength( config.addRayMinLength );
 		task.SetMaxBounceCount( config.maxBounceCount );

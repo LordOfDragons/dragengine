@@ -123,7 +123,8 @@ void deoalATContext::CreateContext(){
 	}
 	
 	// set default parameters
-	alDistanceModel( AL_INVERSE_DISTANCE_CLAMPED );
+// 	alDistanceModel( AL_INVERSE_DISTANCE_CLAMPED );
+	alDistanceModel( AL_NONE );
 }
 
 void deoalATContext::LogContextInfo(){
