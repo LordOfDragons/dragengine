@@ -25,7 +25,7 @@
 
 #include "deoglDebugOverlay.h"
 #include "../deGraphicOpenGl.h"
-#include "../canvas/deoglCanvas.h"
+#include "../canvas/deoglCanvasView.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTContext.h"
 
@@ -74,10 +74,10 @@ void deoglDebugOverlay::PrepareOverlay( deCanvasView &canvasView ){
 	pSortViews( canvasView );
 	pAlignViews();
 	
-	deoglCanvas &oglCanvas = *( ( deoglCanvas* )canvasView.GetPeerGraphic() );
+	deoglCanvasView &oglCanvas = *( ( deoglCanvasView* )canvasView.GetPeerGraphic() );
 	oglCanvas.SyncToRender();
 	
-	renderThread.SetCanvasDebugOverlay( oglCanvas.GetRCanvas() );
+	renderThread.SetCanvasDebugOverlay( oglCanvas.GetRCanvasView() );
 }
 
 
