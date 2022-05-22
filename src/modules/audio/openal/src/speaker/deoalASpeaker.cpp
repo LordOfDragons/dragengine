@@ -1605,21 +1605,21 @@ void deoalASpeaker::pUpdateEnvironmentEffect(){
 // 			AttenuatedGain(0.0f), pVolume * AttenuatedGain(0.0f), pEnvironment->GetBandPassGain(), pVolume,
 // 			pEnvironment->GetReverbGain(), pEnvironment->GetReverbGain() * pVolume);
 	
-	const float invAttenGain = pVolume / decMath::max( pAttenuatedGain, 0.001f );
+	const float reverbGain = pEnvironment->GetReverbGain() * pVolume / decMath::max( pAttenuatedGain, 0.001f );
 	
 	const ALuint effect = pSource->GetSendEffect( 0 );
 	OAL_CHECK( pAudioThread, palEffecti( effect, AL_EFFECT_TYPE, AL_EFFECT_EAXREVERB ) );
-	OAL_CHECK( pAudioThread, palEffectf( effect, AL_EAXREVERB_GAIN, pEnvironment->GetReverbGain() ) );
+	OAL_CHECK( pAudioThread, palEffectf( effect, AL_EAXREVERB_GAIN, 1.0f ) );
 	OAL_CHECK( pAudioThread, palEffectf( effect, AL_EAXREVERB_GAINHF, pEnvironment->GetReverbGainHF() ) );
 	OAL_CHECK( pAudioThread, palEffectf( effect, AL_EAXREVERB_GAINLF, pEnvironment->GetReverbGainLF() ) );
 	OAL_CHECK( pAudioThread, palEffectf( effect, AL_EAXREVERB_DECAY_TIME, pEnvironment->GetReverbDecayTime() ) );
 	OAL_CHECK( pAudioThread, palEffectf( effect, AL_EAXREVERB_DECAY_HFRATIO, pEnvironment->GetReverbDecayHFRatio() ) );
 	OAL_CHECK( pAudioThread, palEffectf( effect, AL_EAXREVERB_DECAY_LFRATIO, pEnvironment->GetReverbDecayLFRatio() ) );
 	OAL_CHECK( pAudioThread, palEffectf( effect, AL_EAXREVERB_REFLECTIONS_GAIN, decMath::min(
-		pEnvironment->GetReverbReflectionGain() * invAttenGain, AL_EAXREVERB_MAX_REFLECTIONS_GAIN ) ) );
+		reverbGain * pEnvironment->GetReverbReflectionGain(), AL_EAXREVERB_MAX_REFLECTIONS_GAIN ) ) );
 	OAL_CHECK( pAudioThread, palEffectf( effect, AL_EAXREVERB_REFLECTIONS_DELAY, pEnvironment->GetReverbReflectionDelay() ) );
 	OAL_CHECK( pAudioThread, palEffectf( effect, AL_EAXREVERB_LATE_REVERB_GAIN, decMath::min(
-		pEnvironment->GetReverbLateReverbGain() * invAttenGain, AL_EAXREVERB_MAX_LATE_REVERB_GAIN ) ) );
+		reverbGain * pEnvironment->GetReverbLateReverbGain(), AL_EAXREVERB_MAX_LATE_REVERB_GAIN ) ) );
 	OAL_CHECK( pAudioThread, palEffectf( effect, AL_EAXREVERB_LATE_REVERB_DELAY, pEnvironment->GetReverbLateReverbDelay() ) );
 	OAL_CHECK( pAudioThread, palEffectf( effect, AL_EAXREVERB_ECHO_TIME, pEnvironment->GetReverbEchoTime() ) );
 	

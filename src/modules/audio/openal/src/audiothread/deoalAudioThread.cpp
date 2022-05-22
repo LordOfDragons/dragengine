@@ -627,7 +627,8 @@ void deoalAudioThread::pInitThreadPhase1(){
 	pWOVCollectElements = new deoalWOVCollectElements;
 	
 	// set default parameters
-	alDistanceModel( AL_INVERSE_DISTANCE_CLAMPED );
+// 	alDistanceModel( AL_INVERSE_DISTANCE_CLAMPED );
+	alDistanceModel( AL_NONE );
 }
 
 void deoalAudioThread::pCleanUpThread(){
