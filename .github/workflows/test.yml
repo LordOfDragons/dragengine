@@ -52,10 +52,10 @@ jobs:
       - name: Unpack Windows Archives
         run: |
           sudo apt-get install -y unzip
-          unzip archive/build/dragengine-nightly-windows64.zip -d installer/windows/unpacked 
-          unzip archive/build/dragengine-sdk-nightly-windows64.zip -d installer/windows/unpacked
-          unzip archive/build/deigde-nightly-windows64.zip -d installer/windows/unpacked
-          unzip archive/build/deigde-sdk-nightly-windows64.zip -d installer/windows/unpacked
+          unzip dragengine-nightly-windows64.zip -d installer/windows/unpacked 
+          unzip dragengine-sdk-nightly-windows64.zip -d installer/windows/unpacked
+          unzip deigde-nightly-windows64.zip -d installer/windows/unpacked
+          unzip deigde-sdk-nightly-windows64.zip -d installer/windows/unpacked
       
       - name: Fix GitHub problems with wine32
         run: |
