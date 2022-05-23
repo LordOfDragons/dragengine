@@ -76,23 +76,21 @@ jobs:
         run: |
           sudo apt-get install -yqq wine-stable
           export WINE_MONO_VERSION=4.9.4
+          export DISPLAY=xserver:0
           sudo curl -SL 'https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks' -o /usr/local/bin/winetricks
           sudo chmod +x /usr/local/bin/winetricks
           sudo mkdir -p /usr/share/wine/mono
           sudo curl -SL 'https://sourceforge.net/projects/wine/files/Wine%20Mono/$WINE_MONO_VERSION/wine-mono-$WINE_MONO_VERSION.msi/download' -o /usr/share/wine/mono/wine-mono-$WINE_MONO_VERSION.msi
           sudo chmod +x /usr/share/wine/mono/wine-mono-$WINE_MONO_VERSION.msi
+          sudo cp -af ${{ github.workspace }}/.github/workflows/wine_opt_bin/* /usr/bin
           
-      - name: Prepare for running wine
+      - name: Install InnoSetup
         # see https://github.com/amake/wine/blob/master/Dockerfile
         run: |
           export WINEPREFIX=/home/runner/.wine
           export WINEARCH=win32
           export WINEDEBUG="-all,err+all"
           export DISPLAY=:99
-          sudo cp -af ${{ github.workspace }}/.github/workflows/wine_opt_bin/* /usr/bin
-          
-      - name: Install InnoSetup
-        run: |
           curl -SL "http://files.jrsoftware.org/is/5/innosetup-5.6.1-unicode.exe" -o is.exe
           wine-x11-run wine is.exe /SP- /VERYSILENT
           cd "/home/runner/.wine/drive_c/Program Files/Inno Setup 5/Languages"
