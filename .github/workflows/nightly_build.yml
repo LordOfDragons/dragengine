@@ -180,10 +180,10 @@ jobs:
         with:
           name: installers-windows
           path: |
-            install-dragengine-nightly-windows64.exe
-            install-dragengine-sdk-nightly-windows64.exe
-            install-deigde-nightly-windows64.exe
-            install-deigde-sdk-nightly-windows64.exe
+            installer/windows/build/install-dragengine-nightly-windows64.exe
+            installer/windows/build/install-dragengine-sdk-nightly-windows64.exe
+            installer/windows/build/install-deigde-nightly-windows64.exe
+            installer/windows/build/install-deigde-sdk-nightly-windows64.exe
           if-no-files-found: error
   
   build_live:
@@ -236,7 +236,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: archive-livelauncher
-          path: dragengine-live-nightly.zip
+          path: build/dragengine-live-nightly.zip
           if-no-files-found: error
 
   upload:
