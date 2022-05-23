@@ -12,7 +12,13 @@ jobs:
       
       - name: Install required packages
         run: |
-          sudo apt-get install -y --no-install-recommends procps xvfb wine curl
+          sudo apt-get install -y --no-install-recommends xauth curl unzip ca-certificates wine wine32 procps xvfb
+          sudo curl -SL 'https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks' -o /usr/local/bin/winetricks
+          sudo chmod +x /usr/local/bin/winetricks
+          sudo mkdir -p /usr/share/wine/mono
+          sudo curl -SL 'https://sourceforge.net/projects/wine/files/Wine%20Mono/$WINE_MONO_VERSION/wine-mono-$WINE_MONO_VERSION.msi/download' -o /usr/share/wine/mono/wine-mono-$WINE_MONO_VERSION.msi
+          sudo chmod +x /usr/share/wine/mono/wine-mono-$WINE_MONO_VERSION.msi
+          export WINEARCH win32
           export WINEDEBUG="-all,err+all"
           export DISPLAY=:99
           sudo cp -af ${{ github.workspace }}/.github/workflows/wine_opt_bin/* /usr/bin
