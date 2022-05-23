@@ -20,6 +20,7 @@ jobs:
         
       - name: Rename installers
         run: |
+          mkdir -p installer/windows/build
           cd ${{ github.workspace }}/installer/windows/build
           mv install-dragengine-windows64.exe install-dragengine-nightly-windows64.exe
           mv install-dragengine-sdk-windows64.exe install-dragengine-sdk-nightly-windows64.exe
