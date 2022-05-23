@@ -282,11 +282,11 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           allowUpdates: true
           artifactErrorsFailBuild: true
-          draft: true
+          draft: false
           prerelease: true
           commit: master
-          tag: 'actiontest' #'nightly'
-          name: 'Action Test' #'Drag[en]gine Game Engine Release - Nightly Build'
+          tag: 'nightly'
+          name: 'Drag[en]gine Game Engine Release - Nightly Build'
           body: |
             Continuous Nightly Build of the Drag[en]gine Game Engine.
             Created: ${{ steps.date.outputs.date }}
