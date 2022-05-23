@@ -11,10 +11,12 @@ jobs:
       - uses: actions/checkout@v2
       
       - name: Install required packages
+        # ppa:ondrej/php : https://github.com/actions/virtual-environments/issues/3339
         run: |
           sudo dpkg --add-architecture i386
+          sudo apt-add-repository "ppa:ondrej/php" -y
           sudo apt update
-          sudo apt-get install -y wine wine32
+          sudo apt-get install -y --no-install-recommends wine wine32
           sudo curl -SL 'https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks' -o /usr/local/bin/winetricks
           sudo chmod +x /usr/local/bin/winetricks
           sudo mkdir -p /usr/share/wine/mono
