@@ -73,18 +73,11 @@ jobs:
           sudo dpkg --add-architecture i386
           sudo apt-get update -qq
           
-      - name: Install required packages X11Client
-        # see https://github.com/amake/x11client/blob/master/Dockerfile
-        run: |
-          export DISPLAY=xserver:0
-          sudo xauth merge /Xauthority/xserver.xauth
-          
       - name: Install required packages Wine32
         # see https://github.com/amake/wine/blob/master/Dockerfile
         run: |
-          sudo apt-get install -yqq wine-stable
           export WINE_MONO_VERSION=4.9.4
-          export DISPLAY=xserver:0
+          sudo apt-get install -yqq wine-stable
           sudo curl -SL 'https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks' -o /usr/local/bin/winetricks
           sudo chmod +x /usr/local/bin/winetricks
           sudo mkdir -p /usr/share/wine/mono
@@ -93,8 +86,11 @@ jobs:
           sudo cp -af ${{ github.workspace }}/.github/workflows/wine_opt_bin/* /usr/bin
           
       - name: Install InnoSetup
+        # see https://github.com/amake/x11client/blob/master/Dockerfile
         # see https://github.com/amake/wine/blob/master/Dockerfile
         run: |
+          export DISPLAY=xserver:0
+          sudo xauth merge /Xauthority/xserver.xauth
           export WINEPREFIX=/home/runner/.wine
           export WINEARCH=win32
           export WINEDEBUG="-all,err+all"
@@ -105,7 +101,10 @@ jobs:
           curl -L "https://api.github.com/repos/jrsoftware/issrc/tarball/29b1e8e8ebe7cf96ca854a1d6be2ae7af7f8018d" | tar xz --strip-components=4 --wildcards "*/Files/Languages/Unofficial/*.isl"
       
       - name: Build Installers
+        # see https://github.com/amake/x11client/blob/master/Dockerfile
         run: |
+          export DISPLAY=xserver:0
+          sudo xauth merge /Xauthority/xserver.xauth
           export WINEPREFIX=/home/runner/.wine
           export WINEARCH=win32
           export WINEDEBUG="-all,err+all"
