@@ -12,7 +12,7 @@ jobs:
       
       - name: Install required packages
         run: |
-          sudo apt-get install -y --no-install-recommends xauth curl unzip ca-certificates wine wine32 procps xvfb
+          sudo apt-get install -y --no-install-recommends xauth curl unzip ca-certificates wine procps xvfb
           sudo curl -SL 'https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks' -o /usr/local/bin/winetricks
           sudo chmod +x /usr/local/bin/winetricks
           sudo mkdir -p /usr/share/wine/mono
