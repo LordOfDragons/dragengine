@@ -1,0 +1,51 @@
+name: Nightly Build
+
+on:
+  workflow_dispatch:
+
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Prepare
+        run: |
+          touch install-dragengine-nightly-linux64.sh
+          touch install-dragengine-dev-nightly-linux64.sh
+          touch install-deigde-nightly-linux64.sh
+          touch install-deigde-dev-nightly-linux64.sh
+          touch install-dragengine-nightly-windows64.exe
+          touch install-dragengine-sdk-nightly-windows64.exe
+          touch install-deigde-nightly-windows64.exe
+          touch install-deigde-sdk-nightly-windows64.exe
+          touch blender-addon-dragengine-9999.zip
+          touch dragengine-live-nightly.zip
+      
+      - name: Upload Artifacts
+        uses: ncipollo/release-action@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          allowUpdates: true
+          artifactErrorsFailBuild: true
+          draft: true
+          prerelease: true
+          commit: master
+          tag: 'actiontest' #'nightly'
+          name: 'Action Test' #'Drag[en]gine Game Engine Release - Nightly Build'
+          body: |
+            Continuous Nightly Build of the Drag[en]gine Game Engine.
+            Created: ${{ steps.date.outputs.date }}
+            Changelog: https://dragondreams.ch/?page_id=287
+            
+            Builds are potentially unstable. Use at own risk.
+          artifacts: >
+            install-dragengine-nightly-linux64.sh,
+            install-dragengine-dev-nightly-linux64.sh,
+            install-deigde-nightly-linux64.sh,
+            install-deigde-dev-nightly-linux64.sh,
+            install-dragengine-nightly-windows64.exe,
+            install-dragengine-sdk-nightly-windows64.exe,
+            install-deigde-nightly-windows64.exe,
+            install-deigde-sdk-nightly-windows64.exe,
+            blender-addon-dragengine-9999.zip,
+            dragengine-live-nightly.zip
