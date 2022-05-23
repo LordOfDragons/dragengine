@@ -42,7 +42,7 @@ jobs:
             archive/build/dragengine-dev-nightly-linux64.tar.bz2
             archive/build/deigde-nightly-linux64.tar.bz2
             archive/build/deigde-dev-nightly-linux64.tar.bz2
-        # archive/build/despecial-nightly-linux64.tar.bz2
+            archive/build/despecial-nightly-linux64.tar.bz2
         
       - name: Store Installers
         uses: actions/upload-artifact@v2
@@ -59,7 +59,7 @@ jobs:
         with:
           name: tools-crossplatform
           path: |
-            src/tools/blender/build/blender-addon-dragengine-nightly.zip
+            src/tools/blender/build/blender-addon-dragengine-9999.zip
   
   build_windows:
     runs-on: ubuntu-latest
@@ -73,7 +73,6 @@ jobs:
             patchelf libx11-dev libxrandr-dev libgl-dev libxi-dev libpulse-dev \
             libasound2-dev portaudio19-dev libxft-dev extra-cmake-modules \
             flex bison gettext mingw-w64
-          sudo apt -y install --no-install-recommends unzip procps xvfb
       
       - name: Init custom.py
         run: cp ${{ github.workspace }}/.github/workflows/nightly_custom_windows.py custom.py
@@ -86,25 +85,6 @@ jobs:
           scons tools=mingw64 -j 1 lib_openvr
           scons tools=mingw64 -j 1 lib_libjpeg
           scons tools=mingw64 -j 14 archive
-      
-  #    - name: Build Installer
-  #      env:
-  #        # get at least error information from wine
-  #        WINEDEBUG: -all,err+all
-  #        # Run virtual X buffer on this port
-  #        DISPLAY: :99
-  #
-  #      run: |
-  #        unzip archive/build/dragengine-nightly-windows64.zip -d installer/windows/unpacked
-  #        unzip archive/build/dragengine-sdk-nightly-windows64.zip -d installer/windows/unpacked
-  #        unzip archive/build/deigde-nightly-windows64.zip -d installer/windows/unpacked
-  #        unzip archive/build/deigde-sdk-nightly-windows64.zip -d installer/windows/unpacked
-  #        curl -SL "http://files.jrsoftware.org/is/5/innosetup-5.6.1-unicode.exe" -o is.exe
-  #        wine-x11-run wine is.exe /SP- /VERYSILENT
-  #      
-  #    - name: Get current date
-  #      id: date
-  #      run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
           
       - name: Store Archives
         uses: actions/upload-artifact@v2
@@ -115,21 +95,156 @@ jobs:
             archive/build/dragengine-sdk-nightly-windows64.zip
             archive/build/deigde-nightly-windows64.zip
             archive/build/deigde-sdk-nightly-windows64.zip
-        # archive/build/despecial-nightly-windows64.zip
+            archive/build/despecial-nightly-windows64.zip
+  
+  build_windows_installer:
+    runs-on: ubuntu-latest
+    needs: [build_windows]
+    
+    steps:
+      - uses: actions/checkout@v2
       
-  #    - name: Store Installers
-  #      uses: actions/upload-artifact@v2
-  #      with:
-  #        name: installers-windows
-  #        path: |
-  #          installer/build/install-dragengine-nightly-linux64.sh
-  #          installer/build/install-dragengine-dev-nightly-linux64.sh
-  #          installer/build/install-deigde-nightly-linux64.sh
-  #          installer/build/install-deigde-dev-nightly-linux64.sh
+      - name: Get Windows Archives
+        uses: actions/download-artifact@v2
+        with:
+          name: archives-windows
+      
+      - name: Unpack Windows Archives
+        run: |
+          sudo apt-get install -y unzip
+          unzip dragengine-nightly-windows64.zip -d installer/windows/unpacked 
+          unzip dragengine-sdk-nightly-windows64.zip -d installer/windows/unpacked
+          unzip deigde-nightly-windows64.zip -d installer/windows/unpacked
+          unzip deigde-sdk-nightly-windows64.zip -d installer/windows/unpacked
+      
+      - name: Fix GitHub problems with wine32
+        run: |
+          sudo rm -f /etc/apt/sources.list.d/microsoft-prod.list
+          sudo apt-get update -qq
+          sudo apt-get install -yqq --allow-downgrades libpcre2-8-0/focal libpcre2-16-0/focal libpcre2-32-0/focal libpcre2-posix2/focal
+          sudo dpkg --add-architecture i386
+          sudo apt-get update -qq
+          
+      - name: Install required packages X11Client
+        # see https://github.com/amake/x11client/blob/master/Dockerfile
+        run: |
+          export DISPLAY=xserver:0
+          sudo xauth merge /Xauthority/xserver.xauth
+          
+      - name: Install required packages Wine32
+        # see https://github.com/amake/wine/blob/master/Dockerfile
+        run: |
+          sudo apt-get install -yqq wine-stable
+          export WINE_MONO_VERSION=4.9.4
+          sudo curl -SL 'https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks' -o /usr/local/bin/winetricks
+          sudo chmod +x /usr/local/bin/winetricks
+          sudo mkdir -p /usr/share/wine/mono
+          sudo curl -SL 'https://sourceforge.net/projects/wine/files/Wine%20Mono/$WINE_MONO_VERSION/wine-mono-$WINE_MONO_VERSION.msi/download' -o /usr/share/wine/mono/wine-mono-$WINE_MONO_VERSION.msi
+          sudo chmod +x /usr/share/wine/mono/wine-mono-$WINE_MONO_VERSION.msi
+          
+      - name: Prepare for running wine
+        # see https://github.com/amake/wine/blob/master/Dockerfile
+        run: |
+          export WINEPREFIX=/home/runner/.wine
+          export WINEARCH=win32
+          export WINEDEBUG="-all,err+all"
+          export DISPLAY=:99
+          sudo cp -af ${{ github.workspace }}/.github/workflows/wine_opt_bin/* /usr/bin
+          
+      - name: Install InnoSetup
+        run: |
+          curl -SL "http://files.jrsoftware.org/is/5/innosetup-5.6.1-unicode.exe" -o is.exe
+          wine-x11-run wine is.exe /SP- /VERYSILENT
+          cd "/home/runner/.wine/drive_c/Program Files/Inno Setup 5/Languages"
+          curl -L "https://api.github.com/repos/jrsoftware/issrc/tarball/29b1e8e8ebe7cf96ca854a1d6be2ae7af7f8018d" | tar xz --strip-components=4 --wildcards "*/Files/Languages/Unofficial/*.isl"
+      
+      - name: Update ISS files
+        run: |
+          cd ${{ github.workspace }}/installer/windows
+          sed -e "s/%VERSION%/nightly/g" dragengine64.iss.in >dragengine64.iss
+          sed -e "s/%VERSION%/nightly/g" dragengine64-sdk.iss.in >dragengine64-sdk.iss
+          sed -e "s/%VERSION%/nightly/g" deigde64.iss.in >deigde64.iss
+          sed -e "s/%VERSION%/nightly/g" deigde64-sdk.iss.in >deigde64-sdk.iss
+      
+      - name: Build Installers
+        run: |
+          wine-x11-run iscc dragengine64.iss
+          wine-x11-run iscc dragengine64-sdk.iss
+          wine-x11-run iscc deigde64.iss
+          wine-x11-run iscc deigde64-sdk.iss
+        
+      - name: Rename installers
+        run: |
+          mv build/install-dragengine-windows64.exe build/install-dragengine-nightly-windows64.exe
+          mv build/install-dragengine-sdk-windows64.exe build/install-dragengine-sdk-nightly-windows64.exe
+          mv build/install-deigde-windows64.exe build/install-deigde-nightly-windows64.exe
+          mv build/install-deigde-sdk-windows64.exe build/install-deigde-sdk-nightly-windows64.exe
+        
+      - name: Store Installers
+        uses: actions/upload-artifact@v2
+        with:
+          name: installers-windows
+          path: |
+            build/install-dragengine-nightly-windows64.exe
+            build/install-dragengine-sdk-nightly-windows64.exe
+            build/install-deigde-nightly-windows64.exe
+            build/install-deigde-sdk-nightly-windows64.exe
+  
+  build_live:
+    runs-on: ubuntu-latest
+    needs: [build_linux, build_windows]
+    
+    steps:
+      - name: Get Linux Archives
+        uses: actions/download-artifact@v2
+        with:
+          name: archives-linux
+      
+      - name: Get Windows Archives
+        uses: actions/download-artifact@v2
+        with:
+          name: archives-windows
+      
+      - name: Assemble Linxu64
+        run: |
+          mkdir -p build/linux64/share
+          mkdir -p source/linux/dragengine
+          tar -xvjf dragengine-nightly-linux64.tar.bz2 -C source/linux/dragengine
+          cp -a source/linux/dragengine/usr/lib build/linux64
+          cp -a source/linux/dragengine/usr/share/dragengine build/linux64/share
+          mkdir -p source/linux/special
+          tar -xvjf despecial-nightly-linux64.tar.bz2 -C source/linux/special
+          cp -a source/linux/special/launchLinux64 build
+      
+      - name: Assemble Windows64
+        run: |
+          mkdir -p build/windows64
+          mkdir -p source/windows/dragengine
+          unzip dragengine-nightly-windows64.zip -d source/windows/dragengine
+          cp -a source/windows/dragengine/@ProgramFiles/Dragengine/Data build/windows64
+          cp -a source/windows/dragengine/@ProgramFiles/Dragengine/Share build/windows64
+          cp -a source/windows/dragengine/@System/dragengine.dll build
+          cp -a source/windows/dragengine/@System/delauncher.dll build
+          mkdir -p source/windows/special
+          unzip despecial-nightly-windows64.zip -d source/windows/special
+          cp -a source/windows/special/LaunchWindows64.exe build
+          cp -a source/windows/special/*.dll build
+      
+      - name: Build Archive
+        run: |
+          apt install zip
+          cd build
+          zip -r ../dragengine-live-nightly.zip *
+        
+      - name: Store Archive
+        uses: actions/upload-artifact@v2
+        with:
+          name: archive-livelauncher
+          path: dragengine-live-nightly.zip
 
   upload:
     runs-on: ubuntu-latest
-    needs: [build_linux, build_windows]
+    needs: [build_linux, build_windows, build_windows_installer, build_live]
     
     steps:
       - name: Get Linux Installers
@@ -137,15 +252,20 @@ jobs:
         with:
           name: installers-linux
       
-      #- name: Get Windows Installers
-      #  uses: actions/download-artifact@v2
-      #  with:
-      #    name: installers-windows
+      - name: Get Windows Installers
+        uses: actions/download-artifact@v2
+        with:
+          name: installers-windows
       
       - name: Get Crossplatform Tools
         uses: actions/download-artifact@v2
         with:
           name: tools-crossplatform
+      
+      - name: Get Live Launcher
+        uses: actions/download-artifact@v2
+        with:
+          name: archive-livelauncher
       
       - name: Get current date
         id: date
@@ -173,4 +293,9 @@ jobs:
             install-dragengine-dev-nightly-linux64.sh,
             install-deigde-nightly-linux64.sh,
             install-deigde-dev-nightly-linux64.sh,
-            blender-addon-dragengine-nightly.zip
+            install-dragengine-nightly-windows64.exe,
+            install-dragengine-sdk-nightly-windows64.exe,
+            install-deigde-nightly-windows64.exe,
+            install-deigde-sdk-nightly-windows64.exe,
+            blender-addon-dragengine-9999.zip,
+            dragengine-live-nightly.zip
