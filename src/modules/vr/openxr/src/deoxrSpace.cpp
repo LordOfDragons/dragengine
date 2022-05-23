@@ -163,6 +163,46 @@ decQuaternion &orientation, decVector &linearVelocity, decVector &angularVelocit
 	}
 }
 
+void deoxrSpace::LocateSpaceEye( const deoxrSpace &space, XrTime time, decVector &position,
+decQuaternion &orientation, decVector &linearVelocity, decVector &angularVelocity ) const{
+	const deoxrInstance &instance = pSession.GetSystem().GetInstance();
+	
+	XrEyeGazeSampleTimeEXT eyeGazeSampleTime;
+	memset( &eyeGazeSampleTime, 0, sizeof( eyeGazeSampleTime ) );
+	eyeGazeSampleTime.type = XR_TYPE_EYE_GAZE_SAMPLE_TIME_EXT;
+	
+	XrSpaceVelocity velocity;
+	memset( &velocity, 0, sizeof( velocity ) );
+	velocity.type = XR_TYPE_SPACE_VELOCITY;
+	velocity.next = &eyeGazeSampleTime;
+	
+	XrSpaceLocation location;
+	memset( &location, 0, sizeof( location ) );
+	location.type = XR_TYPE_SPACE_LOCATION;
+	location.pose.orientation.w = 1.0f;
+	location.next = &velocity;
+	
+	if( ! XR_SUCCEEDED( instance.xrLocateSpace( pSpace, space.pSpace, time, &location ) ) ){
+		return;
+	}
+	
+	if( ( location.locationFlags & XR_SPACE_LOCATION_POSITION_VALID_BIT ) != 0 ){
+		position = deoxrUtils::Convert( location.pose.position );
+	}
+	
+	if( ( location.locationFlags & XR_SPACE_LOCATION_ORIENTATION_VALID_BIT ) != 0 ){
+		orientation = deoxrUtils::Convert( location.pose.orientation );
+	}
+	
+	if( ( velocity.velocityFlags & XR_SPACE_VELOCITY_LINEAR_VALID_BIT ) != 0 ){
+		linearVelocity = deoxrUtils::Convert( velocity.linearVelocity );
+	}
+	
+	if( ( velocity.velocityFlags & XR_SPACE_VELOCITY_ANGULAR_VALID_BIT ) != 0 ){
+		angularVelocity = deoxrUtils::Convert( velocity.angularVelocity );
+	}
+}
+
 
 
 // Private Functions

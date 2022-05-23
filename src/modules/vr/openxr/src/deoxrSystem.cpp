@@ -40,7 +40,8 @@ pSystem( esUnknown ),
 pMaxLayerCount( 0 ),
 pSupportsOrientationTracking( false ),
 pSupportsPositionTracking( false ),
-pSupportsHandTracking( false )
+pSupportsHandTracking( false ),
+pSupportsEyeTracking( false )
 {
 	try{
 		// create system
@@ -66,6 +67,15 @@ pSupportsHandTracking( false )
 			next = &sysHTProps.next;
 		}
 		
+		XrSystemEyeGazeInteractionPropertiesEXT sysEGIProps;
+		
+		if( instance.SupportsExtension( deoxrInstance::extEXTEyeGazeInteraction ) ){
+			memset( &sysEGIProps, 0, sizeof( sysEGIProps ) );
+			sysEGIProps.type = XR_TYPE_SYSTEM_EYE_GAZE_INTERACTION_PROPERTIES_EXT;
+			*next = &sysEGIProps;
+			next = &sysEGIProps.next;
+		}
+		
 		OXR_CHECK( instance.xrGetSystemProperties( instance.GetInstance(), pSystemId, &sysProps ) );
 		
 		pSystemName = sysProps.systemName;
@@ -86,22 +96,24 @@ pSupportsHandTracking( false )
 			pSupportsHandTracking = sysHTProps.supportsHandTracking;
 		}
 		
-		instance.GetOxr().LogInfoFormat( "System name: %s", pSystemName.GetString() );
-		instance.GetOxr().LogInfoFormat( "Maximum render image size: %d x %d",
-			pMaxRenderImageSize.x, pMaxRenderImageSize.y );
-		instance.GetOxr().LogInfoFormat( "Maximum layer count: %d", pMaxLayerCount);
-		instance.GetOxr().LogInfoFormat( "Supports orientation tracking: %s",
-			pSupportsOrientationTracking ? "yes" : "no" );
-		instance.GetOxr().LogInfoFormat( "Supports position tracking: %s",
-			pSupportsOrientationTracking ? "yes" : "no" );
-		instance.GetOxr().LogInfoFormat( "Supports hand tracking: %s",
-			pSupportsHandTracking ? "yes" : "no" );
+		if( instance.SupportsExtension( deoxrInstance::extEXTEyeGazeInteraction ) ){
+			pSupportsEyeTracking = sysEGIProps.supportsEyeGazeInteraction;
+		}
+		
+		deVROpenXR &oxr = instance.GetOxr();
+		oxr.LogInfoFormat( "System name: %s", pSystemName.GetString() );
+		oxr.LogInfoFormat( "Maximum render image size: %d x %d", pMaxRenderImageSize.x, pMaxRenderImageSize.y );
+		oxr.LogInfoFormat( "Maximum layer count: %d", pMaxLayerCount);
+		oxr.LogInfoFormat( "Supports orientation tracking: %s", pSupportsOrientationTracking ? "yes" : "no" );
+		oxr.LogInfoFormat( "Supports position tracking: %s", pSupportsOrientationTracking ? "yes" : "no" );
+		oxr.LogInfoFormat( "Supports hand tracking: %s", pSupportsHandTracking ? "yes" : "no" );
+		oxr.LogInfoFormat( "Supports eye tracking: %s", pSupportsEyeTracking ? "yes" : "no" );
 		
 		// get view configuration properties
 		uint32_t viewConfigCount;
 		OXR_CHECK( instance.xrEnumerateViewConfigurations( instance.GetInstance(),
 			pSystemId, 0, &viewConfigCount, nullptr ) );
-		instance.GetOxr().LogInfoFormat( "View configurations: %d", viewConfigCount );
+		oxr.LogInfoFormat( "View configurations: %d", viewConfigCount );
 		
 		XrViewConfigurationProperties viewConfProp;
 		bool viewConfFound = false;

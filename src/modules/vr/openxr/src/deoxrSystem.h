@@ -71,6 +71,7 @@ private:
 	decPoint pRenderSize;
 	
 	bool pSupportsHandTracking;
+	bool pSupportsEyeTracking;
 	
 	
 	
@@ -131,6 +132,9 @@ public:
 	
 	/** Supports hand tracking. */
 	inline bool GetSupportsHandTracking() const{ return pSupportsHandTracking; }
+	
+	/** Supports eye tracking. */
+	inline bool GetSupportsEyeTracking() const{ return pSupportsEyeTracking; }
 	/*@}*/
 	
 	

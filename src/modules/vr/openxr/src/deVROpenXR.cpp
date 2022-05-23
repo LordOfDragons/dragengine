@@ -46,6 +46,7 @@
 #include "device/profile/deoxrDPHUAWEIControllerInteraction.h"
 #include "device/profile/deoxrDPMSFTHandInteraction.h"
 #include "device/profile/deoxrDPNoControllerHands.h"
+#include "device/profile/deoxrDPEyeGazeInteraction.h"
 #include "loader/deoxrLoader.h"
 
 #include <dragengine/deEngine.h>
@@ -933,6 +934,7 @@ void deVROpenXR::pCreateDeviceProfiles(){
 	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPValveIndexController( pInstance ) ) );
 	
 	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPHtcViveTracker( pInstance ) ) );
+	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPEyeGazeInteraction( pInstance ) ) );
 	
 	// has to come last since it adds a device only if no other controller provides hand tracking
 	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPNoControllerHands( pInstance ) ) );
@@ -954,25 +956,4 @@ void deVROpenXR::pSuggestBindings(){
 				"Ignoring device profile", profile.GetPath().GetName().GetString() );
 		}
 	}
-	
-	/*
-	if( pInstance->SupportsExtension( deoxrInstance::extEXTEyeGazeInteraction ) ){
-		pSuggestBindingsEyeGazeInput();
-	}
-	*/
 }
-
-#if 0
-
-void deVROpenXR::pSuggestBindingsEyeGazeInput(){
-	// Extension: XR_EXT_eye_gaze_interaction
-	// Path: /interaction_profiles/ext/eye_gaze_interaction
-	// 
-	// Valid for user path:
-	// - /user/eyes_ext
-	// 
-	// Supported component paths:
-	// - /input/gaze_ext/pose
-}
-
-#endif

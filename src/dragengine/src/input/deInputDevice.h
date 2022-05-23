@@ -141,7 +141,13 @@ public:
 		 * \brief VR Base Station.
 		 * \version 1.6
 		 */
-		edtVRBaseStation
+		edtVRBaseStation,
+		
+		/**
+		 * \brief VR Eye Tracker.
+		 * \version 1.12
+		 */
+		edtVREyeTracker
 	};
 	
 	/**

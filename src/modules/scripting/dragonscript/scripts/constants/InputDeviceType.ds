@@ -98,4 +98,10 @@ enum InputDeviceType
 	 * \version 1.6
 	 */
 	vrBaseStation
+	
+	/**
+	 * \brief VR Eye Tracker.
+	 * \version 1.12
+	 */
+	vrEyeTracker
 end
