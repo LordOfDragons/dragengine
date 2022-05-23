@@ -10,16 +10,16 @@ jobs:
     steps:
       - name: Prepare
         run: |
-          touch install-dragengine-nightly-linux64.sh
-          touch install-dragengine-dev-nightly-linux64.sh
-          touch install-deigde-nightly-linux64.sh
-          touch install-deigde-dev-nightly-linux64.sh
-          touch install-dragengine-nightly-windows64.exe
-          touch install-dragengine-sdk-nightly-windows64.exe
-          touch install-deigde-nightly-windows64.exe
-          touch install-deigde-sdk-nightly-windows64.exe
-          touch blender-addon-dragengine-9999.zip
-          touch dragengine-live-nightly.zip
+          echo "oops" >install-dragengine-nightly-linux64.sh
+          echo "oops" >install-dragengine-dev-nightly-linux64.sh
+          echo "oops" >install-deigde-nightly-linux64.sh
+          echo "oops" >install-deigde-dev-nightly-linux64.sh
+          echo "oops" >install-dragengine-nightly-windows64.exe
+          echo "oops" >install-dragengine-sdk-nightly-windows64.exe
+          echo "oops" >install-deigde-nightly-windows64.exe
+          echo "oops" >install-deigde-sdk-nightly-windows64.exe
+          echo "oops" >blender-addon-dragengine-9999.zip
+          echo "oops" >dragengine-live-nightly.zip
       
       - name: Upload Artifacts
         uses: ncipollo/release-action@v1
