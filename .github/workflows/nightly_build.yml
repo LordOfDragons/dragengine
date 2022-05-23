@@ -21,9 +21,10 @@ jobs:
         run: cp ${{ github.workspace }}/.github/workflows/nightly_custom_linux.py custom.py
       
       - name: Build
-        # openvr seems to be a problem child that like to get stuck in CMake on Ubuntu.
-        # build it first to avoid it loking up things. libjpeg is another trouble maker.
+        # certain CMake based projects are problem children that like to get stuck
+        # in CMake on Ubuntu. build them first to avoid it loking up things
         run: |
+          scons -j 1 lib_openxr
           scons -j 1 lib_openvr
           scons -j 1 lib_libjpeg
           scons -j 14 archive installer
@@ -52,6 +53,13 @@ jobs:
             installer/build/install-dragengine-dev-nightly-linux64.sh
             installer/build/install-deigde-nightly-linux64.sh
             installer/build/install-deigde-dev-nightly-linux64.sh
+        
+      - name: Store Tools
+        uses: actions/upload-artifact@v2
+        with:
+          name: tools-crossplatform
+          path: |
+            src/tools/blender/build/blender-addon-dragengine-nightly.zip
   
   build_windows:
     runs-on: ubuntu-latest
@@ -71,9 +79,10 @@ jobs:
         run: cp ${{ github.workspace }}/.github/workflows/nightly_custom_windows.py custom.py
       
       - name: Build
-        # openvr seems to be a problem child that like to get stuck in CMake on Ubuntu.
-        # build it first to avoid it loking up things. libjpeg is another trouble maker.
+        # certain CMake based projects are problem children that like to get stuck
+        # in CMake on Ubuntu. build them first to avoid it loking up things
         run: |
+          scons tools=mingw64 -j 1 lib_openxr
           scons tools=mingw64 -j 1 lib_openvr
           scons tools=mingw64 -j 1 lib_libjpeg
           scons tools=mingw64 -j 14 archive
@@ -133,6 +142,11 @@ jobs:
       #  with:
       #    name: installers-windows
       
+      - name: Get Crossplatform Tools
+        uses: actions/download-artifact@v2
+        with:
+          name: tools-crossplatform
+      
       - name: Get current date
         id: date
         run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
@@ -158,4 +172,5 @@ jobs:
             install-dragengine-nightly-linux64.sh,
             install-dragengine-dev-nightly-linux64.sh,
             install-deigde-nightly-linux64.sh,
-            install-deigde-dev-nightly-linux64.sh
+            install-deigde-dev-nightly-linux64.sh,
+            blender-addon-dragengine-nightly.zip
