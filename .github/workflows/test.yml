@@ -73,6 +73,12 @@ jobs:
           sudo dpkg --add-architecture i386
           sudo apt-get update -qq
           
+      - name: Install required packages X11Client
+        # see https://github.com/amake/x11client/blob/master/Dockerfile
+        run: |
+          export DISPLAY=xserver:0
+          sudo xauth merge /Xauthority/xserver.xauth
+          
       - name: Install required packages Wine32
         # see https://github.com/amake/wine/blob/master/Dockerfile
         run: |
@@ -86,11 +92,8 @@ jobs:
           sudo cp -af ${{ github.workspace }}/.github/workflows/wine_opt_bin/* /usr/bin
           
       - name: Install InnoSetup
-        # see https://github.com/amake/x11client/blob/master/Dockerfile
         # see https://github.com/amake/wine/blob/master/Dockerfile
         run: |
-          export DISPLAY=xserver:0
-          sudo xauth merge /Xauthority/xserver.xauth
           export WINEPREFIX=/home/runner/.wine
           export WINEARCH=win32
           export WINEDEBUG="-all,err+all"
@@ -101,14 +104,8 @@ jobs:
           curl -L "https://api.github.com/repos/jrsoftware/issrc/tarball/29b1e8e8ebe7cf96ca854a1d6be2ae7af7f8018d" | tar xz --strip-components=4 --wildcards "*/Files/Languages/Unofficial/*.isl"
       
       - name: Build Installers
-        # see https://github.com/amake/x11client/blob/master/Dockerfile
         run: |
-          export DISPLAY=xserver:0
-          sudo xauth merge /Xauthority/xserver.xauth
-          export WINEPREFIX=/home/runner/.wine
-          export WINEARCH=win32
-          export WINEDEBUG="-all,err+all"
-          export DISPLAY=:99
+          cd ${{ github.workspace }}/installer/windows
           wine-x11-run iscc dragengine64.iss
           wine-x11-run iscc dragengine64-sdk.iss
           wine-x11-run iscc deigde64.iss
@@ -116,17 +113,18 @@ jobs:
         
       - name: Rename installers
         run: |
-          mv build/install-dragengine-windows64.exe build/install-dragengine-nightly-windows64.exe
-          mv build/install-dragengine-sdk-windows64.exe build/install-dragengine-sdk-nightly-windows64.exe
-          mv build/install-deigde-windows64.exe build/install-deigde-nightly-windows64.exe
-          mv build/install-deigde-sdk-windows64.exe build/install-deigde-sdk-nightly-windows64.exe
+          cd ${{ github.workspace }}/installer/windows/build
+          mv install-dragengine-windows64.exe install-dragengine-nightly-windows64.exe
+          mv install-dragengine-sdk-windows64.exe install-dragengine-sdk-nightly-windows64.exe
+          mv install-deigde-windows64.exe install-deigde-nightly-windows64.exe
+          mv install-deigde-sdk-windows64.exe install-deigde-sdk-nightly-windows64.exe
         
       - name: Store Installers
         uses: actions/upload-artifact@v2
         with:
           name: installers-windows
           path: |
-            build/install-dragengine-nightly-windows64.exe
-            build/install-dragengine-sdk-nightly-windows64.exe
-            build/install-deigde-nightly-windows64.exe
-            build/install-deigde-sdk-nightly-windows64.exe
+            install-dragengine-nightly-windows64.exe
+            install-dragengine-sdk-nightly-windows64.exe
+            install-deigde-nightly-windows64.exe
+            install-deigde-sdk-nightly-windows64.exe
