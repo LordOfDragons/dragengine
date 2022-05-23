@@ -109,6 +109,14 @@ jobs:
         with:
           name: archives-windows
       
+      - name: Update ISS files
+        run: |
+          cd ${{ github.workspace }}/installer/windows
+          sed -e "s/%VERSION%/nightly/g" dragengine64.iss.in >dragengine64.iss
+          sed -e "s/%VERSION%/nightly/g" dragengine64-sdk.iss.in >dragengine64-sdk.iss
+          sed -e "s/%VERSION%/nightly/g" deigde64.iss.in >deigde64.iss
+          sed -e "s/%VERSION%/nightly/g" deigde64-sdk.iss.in >deigde64-sdk.iss
+      
       - name: Unpack Windows Archives
         run: |
           sudo apt-get install -y unzip
@@ -131,6 +139,19 @@ jobs:
           export DISPLAY=xserver:0
           sudo xauth merge /Xauthority/xserver.xauth
           
+      - name: Install required packages Wine32
+        # see https://github.com/amake/wine/blob/master/Dockerfile
+        run: |
+          sudo apt-get install -yqq wine-stable
+          export WINE_MONO_VERSION=4.9.4
+          export DISPLAY=xserver:0
+          sudo curl -SL 'https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks' -o /usr/local/bin/winetricks
+          sudo chmod +x /usr/local/bin/winetricks
+          sudo mkdir -p /usr/share/wine/mono
+          sudo curl -SL 'https://sourceforge.net/projects/wine/files/Wine%20Mono/$WINE_MONO_VERSION/wine-mono-$WINE_MONO_VERSION.msi/download' -o /usr/share/wine/mono/wine-mono-$WINE_MONO_VERSION.msi
+          sudo chmod +x /usr/share/wine/mono/wine-mono-$WINE_MONO_VERSION.msi
+          sudo cp -af ${{ github.workspace }}/.github/workflows/wine_opt_bin/* /usr/bin
+          
       - name: Install InnoSetup
         # see https://github.com/amake/wine/blob/master/Dockerfile
         run: |
@@ -142,24 +163,13 @@ jobs:
           wine-x11-run wine is.exe /SP- /VERYSILENT
           cd "/home/runner/.wine/drive_c/Program Files/Inno Setup 5/Languages"
           curl -L "https://api.github.com/repos/jrsoftware/issrc/tarball/29b1e8e8ebe7cf96ca854a1d6be2ae7af7f8018d" | tar xz --strip-components=4 --wildcards "*/Files/Languages/Unofficial/*.isl"
-          
-      - name: Install InnoSetup
-        run: |
-          curl -SL "http://files.jrsoftware.org/is/5/innosetup-5.6.1-unicode.exe" -o is.exe
-          wine-x11-run wine is.exe /SP- /VERYSILENT
-          cd "/home/runner/.wine/drive_c/Program Files/Inno Setup 5/Languages"
-          curl -L "https://api.github.com/repos/jrsoftware/issrc/tarball/29b1e8e8ebe7cf96ca854a1d6be2ae7af7f8018d" | tar xz --strip-components=4 --wildcards "*/Files/Languages/Unofficial/*.isl"
-      
-      - name: Update ISS files
-        run: |
-          cd ${{ github.workspace }}/installer/windows
-          sed -e "s/%VERSION%/nightly/g" dragengine64.iss.in >dragengine64.iss
-          sed -e "s/%VERSION%/nightly/g" dragengine64-sdk.iss.in >dragengine64-sdk.iss
-          sed -e "s/%VERSION%/nightly/g" deigde64.iss.in >deigde64.iss
-          sed -e "s/%VERSION%/nightly/g" deigde64-sdk.iss.in >deigde64-sdk.iss
       
       - name: Build Installers
         run: |
+          export WINEPREFIX=/home/runner/.wine
+          export WINEARCH=win32
+          export WINEDEBUG="-all,err+all"
+          export DISPLAY=:99
           wine-x11-run iscc dragengine64.iss
           wine-x11-run iscc dragengine64-sdk.iss
           wine-x11-run iscc deigde64.iss

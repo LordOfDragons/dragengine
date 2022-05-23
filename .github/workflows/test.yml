@@ -49,6 +49,14 @@ jobs:
         with:
           name: archives-windows
       
+      - name: Update ISS files
+        run: |
+          cd ${{ github.workspace }}/installer/windows
+          sed -e "s/%VERSION%/nightly/g" dragengine64.iss.in >dragengine64.iss
+          sed -e "s/%VERSION%/nightly/g" dragengine64-sdk.iss.in >dragengine64-sdk.iss
+          sed -e "s/%VERSION%/nightly/g" deigde64.iss.in >deigde64.iss
+          sed -e "s/%VERSION%/nightly/g" deigde64-sdk.iss.in >deigde64-sdk.iss
+      
       - name: Unpack Windows Archives
         run: |
           sudo apt-get install -y unzip
@@ -96,17 +104,30 @@ jobs:
           cd "/home/runner/.wine/drive_c/Program Files/Inno Setup 5/Languages"
           curl -L "https://api.github.com/repos/jrsoftware/issrc/tarball/29b1e8e8ebe7cf96ca854a1d6be2ae7af7f8018d" | tar xz --strip-components=4 --wildcards "*/Files/Languages/Unofficial/*.isl"
       
-      - name: Update ISS files
-        run: |
-          cd ${{ github.workspace }}/installer/windows
-          sed -e "s/%VERSION%/nightly/g" dragengine64.iss.in >dragengine64.iss
-          sed -e "s/%VERSION%/nightly/g" dragengine64-sdk.iss.in >dragengine64-sdk.iss
-          sed -e "s/%VERSION%/nightly/g" deigde64.iss.in >deigde64.iss
-          sed -e "s/%VERSION%/nightly/g" deigde64-sdk.iss.in >deigde64-sdk.iss
-      
       - name: Build Installers
         run: |
+          export WINEPREFIX=/home/runner/.wine
+          export WINEARCH=win32
+          export WINEDEBUG="-all,err+all"
+          export DISPLAY=:99
           wine-x11-run iscc dragengine64.iss
           wine-x11-run iscc dragengine64-sdk.iss
           wine-x11-run iscc deigde64.iss
           wine-x11-run iscc deigde64-sdk.iss
+        
+      - name: Rename installers
+        run: |
+          mv build/install-dragengine-windows64.exe build/install-dragengine-nightly-windows64.exe
+          mv build/install-dragengine-sdk-windows64.exe build/install-dragengine-sdk-nightly-windows64.exe
+          mv build/install-deigde-windows64.exe build/install-deigde-nightly-windows64.exe
+          mv build/install-deigde-sdk-windows64.exe build/install-deigde-sdk-nightly-windows64.exe
+        
+      - name: Store Installers
+        uses: actions/upload-artifact@v2
+        with:
+          name: installers-windows
+          path: |
+            build/install-dragengine-nightly-windows64.exe
+            build/install-dragengine-sdk-nightly-windows64.exe
+            build/install-deigde-nightly-windows64.exe
+            build/install-deigde-sdk-nightly-windows64.exe
