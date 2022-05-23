@@ -15,7 +15,7 @@ jobs:
           sudo apt-get install -y --no-install-recommends procps xvfb wine curl
           export WINEDEBUG="-all,err+all"
           export DISPLAY=:99
-          sudo cp -af wine_opt_bin/* /usr/bin
+          sudo cp -af ${{ github.workspace }}/.github/workflows/wine_opt_bin/* /usr/bin
           curl -SL "http://files.jrsoftware.org/is/5/innosetup-5.6.1-unicode.exe" -o is.exe
           wine-x11-run wine is.exe /SP- /VERYSILENT
           cd "~/.wine/drive_c/Program Files/Inno Setup 5/Languages"
