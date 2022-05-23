@@ -4,8 +4,42 @@ on:
   workflow_dispatch:
 
 jobs:
+  build_windows:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v2
+      
+      - name: Install required packages
+        run: |
+          sudo apt -y install build-essential scons cmake autoconf libtool nasm \
+            patchelf libx11-dev libxrandr-dev libgl-dev libxi-dev libpulse-dev \
+            libasound2-dev portaudio19-dev libxft-dev extra-cmake-modules \
+            flex bison gettext mingw-w64
+      
+      - name: Init custom.py
+        run: cp ${{ github.workspace }}/.github/workflows/nightly_custom_windows.py custom.py
+      
+      - name: Build
+        run: |
+          scons tools=mingw64 -j 1 lib_openxr
+          scons tools=mingw64 -j 1 lib_openvr
+          scons tools=mingw64 -j 1 lib_libjpeg
+          scons tools=mingw64 -j 14 archive
+          
+      - name: Store Archives
+        uses: actions/upload-artifact@v2
+        with:
+          name: archives-windows
+          path: |
+            archive/build/dragengine-nightly-windows64.zip
+            archive/build/dragengine-sdk-nightly-windows64.zip
+            archive/build/deigde-nightly-windows64.zip
+            archive/build/deigde-sdk-nightly-windows64.zip
+  
   build_windows_installer:
     runs-on: ubuntu-latest
+    needs: [build_windows]
     
     steps:
       - uses: actions/checkout@v2
