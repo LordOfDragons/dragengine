@@ -12,7 +12,7 @@ if envModule['OSBeOS']:
 	Return()
 
 if envModule['OSWindows']:
-	useInternalLoader = True
+	pass #useInternalLoader = True
 
 # fetch values in expanded form for later use
 versionString = '1.10'
