@@ -34,7 +34,7 @@ jobs:
         run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
         
       - name: Store Archives
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: archives-linux
           path: |
@@ -43,9 +43,10 @@ jobs:
             archive/build/deigde-nightly-linux64.tar.bz2
             archive/build/deigde-dev-nightly-linux64.tar.bz2
             archive/build/despecial-nightly-linux64.tar.bz2
+          if-no-files-found: error
         
       - name: Store Installers
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: installers-linux
           path: |
@@ -53,13 +54,15 @@ jobs:
             installer/build/install-dragengine-dev-nightly-linux64.sh
             installer/build/install-deigde-nightly-linux64.sh
             installer/build/install-deigde-dev-nightly-linux64.sh
+          if-no-files-found: error
         
       - name: Store Tools
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: tools-crossplatform
           path: |
             src/tools/blender/build/blender-addon-dragengine-9999.zip
+          if-no-files-found: error
   
   build_windows:
     runs-on: ubuntu-latest
@@ -87,7 +90,7 @@ jobs:
           scons tools=mingw64 -j 14 archive
           
       - name: Store Archives
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: archives-windows
           path: |
@@ -96,6 +99,7 @@ jobs:
             archive/build/deigde-nightly-windows64.zip
             archive/build/deigde-sdk-nightly-windows64.zip
             archive/build/despecial-nightly-windows64.zip
+          if-no-files-found: error
   
   build_windows_installer:
     runs-on: ubuntu-latest
@@ -105,7 +109,7 @@ jobs:
       - uses: actions/checkout@v2
       
       - name: Get Windows Archives
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: archives-windows
       
@@ -172,7 +176,7 @@ jobs:
           mv install-deigde-sdk-windows64.exe install-deigde-sdk-nightly-windows64.exe
         
       - name: Store Installers
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: installers-windows
           path: |
@@ -180,6 +184,7 @@ jobs:
             install-dragengine-sdk-nightly-windows64.exe
             install-deigde-nightly-windows64.exe
             install-deigde-sdk-nightly-windows64.exe
+          if-no-files-found: error
   
   build_live:
     runs-on: ubuntu-latest
@@ -187,12 +192,12 @@ jobs:
     
     steps:
       - name: Get Linux Archives
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: archives-linux
       
       - name: Get Windows Archives
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: archives-windows
       
@@ -228,10 +233,11 @@ jobs:
           zip -r ../dragengine-live-nightly.zip *
         
       - name: Store Archive
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: archive-livelauncher
           path: dragengine-live-nightly.zip
+          if-no-files-found: error
 
   upload:
     runs-on: ubuntu-latest
@@ -239,22 +245,22 @@ jobs:
     
     steps:
       - name: Get Linux Installers
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: installers-linux
       
       - name: Get Windows Installers
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: installers-windows
       
       - name: Get Crossplatform Tools
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: tools-crossplatform
       
       - name: Get Live Launcher
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: archive-livelauncher
       

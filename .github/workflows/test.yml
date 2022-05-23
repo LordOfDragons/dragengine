@@ -4,6 +4,39 @@ on:
   workflow_dispatch:
 
 jobs:
+  testing:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v2
+      
+      - name: Build Installers
+        run: |
+          cd ${{ github.workspace }}/installer/windows
+          touch build/install-dragengine-windows64.exe
+          touch build/install-dragengine-sdk-windows64.exe
+          touch build/install-deigde-windows64.exe
+          touch build/install-deigde-sdk-windows64.exe
+        
+      - name: Rename installers
+        run: |
+          cd ${{ github.workspace }}/installer/windows/build
+          mv install-dragengine-windows64.exe install-dragengine-nightly-windows64.exe
+          mv install-dragengine-sdk-windows64.exe install-dragengine-sdk-nightly-windows64.exe
+          mv install-deigde-windows64.exe install-deigde-nightly-windows64.exe
+          mv install-deigde-sdk-windows64.exe install-deigde-sdk-nightly-windows64.exe
+        
+      - name: Store Installers
+        uses: actions/upload-artifact@v3
+        with:
+          name: installers-windows
+          path: |
+            installer/windows/build/install-dragengine-nightly-windows64.exe
+            installer/windows/build/install-dragengine-sdk-nightly-windows64.exe
+            installer/windows/build/install-deigde-nightly-windows64.exe
+            installer/windows/build/install-deigde-sdk-nightly-windows64.exe
+          if-no-files-found: error
+
   build_windows:
     runs-on: ubuntu-latest
     
@@ -28,7 +61,7 @@ jobs:
           scons tools=mingw64 -j 14 archive
           
       - name: Store Archives
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: archives-windows
           path: |
@@ -45,7 +78,7 @@ jobs:
       - uses: actions/checkout@v2
       
       - name: Get Windows Archives
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: archives-windows
       
@@ -120,7 +153,7 @@ jobs:
           mv install-deigde-sdk-windows64.exe install-deigde-sdk-nightly-windows64.exe
         
       - name: Store Installers
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: installers-windows
           path: |
@@ -128,3 +161,4 @@ jobs:
             install-dragengine-sdk-nightly-windows64.exe
             install-deigde-nightly-windows64.exe
             install-deigde-sdk-nightly-windows64.exe
+          if-no-files-found: error
