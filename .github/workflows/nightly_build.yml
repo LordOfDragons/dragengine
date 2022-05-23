@@ -293,7 +293,7 @@ jobs:
             Changelog: https://dragondreams.ch/?page_id=287
             
             Builds are potentially unstable. Use at own risk.
-          artifacts: |
+          artifacts: >
             install-dragengine-nightly-linux64.sh,
             install-dragengine-dev-nightly-linux64.sh,
             install-deigde-nightly-linux64.sh,
