@@ -115,7 +115,7 @@ jobs:
       
       - name: Unpack Windows Archives
         run: |
-          sudo apt-get install -y unzip
+          sudo apt install -y unzip
           unzip dragengine-nightly-windows64.zip -d installer/windows/unpacked 
           unzip dragengine-sdk-nightly-windows64.zip -d installer/windows/unpacked
           unzip deigde-nightly-windows64.zip -d installer/windows/unpacked
@@ -124,10 +124,10 @@ jobs:
       - name: Fix GitHub problems with wine32
         run: |
           sudo rm -f /etc/apt/sources.list.d/microsoft-prod.list
-          sudo apt-get update -qq
-          sudo apt-get install -yqq --allow-downgrades libpcre2-8-0/focal libpcre2-16-0/focal libpcre2-32-0/focal libpcre2-posix2/focal
+          sudo apt update -qq
+          sudo apt install -yqq --allow-downgrades libpcre2-8-0/focal libpcre2-16-0/focal libpcre2-32-0/focal libpcre2-posix2/focal
           sudo dpkg --add-architecture i386
-          sudo apt-get update -qq
+          sudo apt update -qq
           
       - name: Install required packages X11Client
         # see https://github.com/amake/x11client/blob/master/Dockerfile
@@ -139,7 +139,7 @@ jobs:
         # see https://github.com/amake/wine/blob/master/Dockerfile
         run: |
           export WINE_MONO_VERSION=4.9.4
-          sudo apt-get install -yqq wine-stable
+          sudo apt install -yqq wine-stable
           sudo curl -SL 'https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks' -o /usr/local/bin/winetricks
           sudo chmod +x /usr/local/bin/winetricks
           sudo mkdir -p /usr/share/wine/mono
@@ -228,7 +228,7 @@ jobs:
       
       - name: Build Archive
         run: |
-          apt install zip
+          sudo apt install zip
           cd build
           zip -r ../dragengine-live-nightly.zip *
         
