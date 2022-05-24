@@ -106,6 +106,58 @@ void deClassVRSystem::nfSetCamera::RunFunction( dsRunTime *rt, dsValue* ){
 		ds.GetClassCamera()->GetCamera( rt->GetValue( 0 )->GetRealObject() ) );
 }
 
+// public static func bool supportsPassthrough()
+deClassVRSystem::nfSupportsPassthrough::nfSupportsPassthrough( const sInitData &init ) :
+dsFunction( init.clsVRSystem, "supportsPassthrough", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsBool ){
+}
+void deClassVRSystem::nfSupportsPassthrough::RunFunction( dsRunTime *rt, dsValue* ){
+	const deScriptingDragonScript &ds = ( ( deClassVRSystem* )GetOwnerClass() )->GetDS();
+	rt->PushBool( ds.GetGameEngine()->GetVRSystem()->SupportsPassthrough() );
+}
+
+// public static func bool getEnablePassthrough()
+deClassVRSystem::nfGetEnablePassthrough::nfGetEnablePassthrough( const sInitData &init ) :
+dsFunction( init.clsVRSystem, "getEnablePassthrough", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsBool ){
+}
+void deClassVRSystem::nfGetEnablePassthrough::RunFunction( dsRunTime *rt, dsValue* ){
+	const deScriptingDragonScript &ds = ( ( deClassVRSystem* )GetOwnerClass() )->GetDS();
+	rt->PushBool( ds.GetGameEngine()->GetVRSystem()->GetEnablePassthrough() );
+}
+
+// public static func void setEnablePassthrough(bool enable)
+deClassVRSystem::nfSetEnablePassthrough::nfSetEnablePassthrough( const sInitData &init ) :
+dsFunction( init.clsVRSystem, "setEnablePassthrough", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsVoid ){
+	p_AddParameter( init.clsBool ); // enable
+}
+void deClassVRSystem::nfSetEnablePassthrough::RunFunction( dsRunTime *rt, dsValue* ){
+	const deScriptingDragonScript &ds = ( ( deClassVRSystem* )GetOwnerClass() )->GetDS();
+	ds.GetGameEngine()->GetVRSystem()->SetEnablePassthrough( rt->GetValue( 0 )->GetBool() );
+}
+
+// public static func float getPassthroughTransparency()
+deClassVRSystem::nfGetPassthroughTransparency::nfGetPassthroughTransparency( const sInitData &init ) :
+dsFunction( init.clsVRSystem, "getPassthroughTransparency", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsFloat ){
+}
+void deClassVRSystem::nfGetPassthroughTransparency::RunFunction( dsRunTime *rt, dsValue* ){
+	const deScriptingDragonScript &ds = ( ( deClassVRSystem* )GetOwnerClass() )->GetDS();
+	rt->PushFloat( ds.GetGameEngine()->GetVRSystem()->GetPassthroughTransparency() );
+}
+
+// public static func void setPassthroughTransparency(float transparency)
+deClassVRSystem::nfSetPassthroughTransparency::nfSetPassthroughTransparency( const sInitData &init ) :
+dsFunction( init.clsVRSystem, "setPassthroughTransparency", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsVoid ){
+	p_AddParameter( init.clsFloat ); // transparency
+}
+void deClassVRSystem::nfSetPassthroughTransparency::RunFunction( dsRunTime *rt, dsValue* ){
+	const deScriptingDragonScript &ds = ( ( deClassVRSystem* )GetOwnerClass() )->GetDS();
+	ds.GetGameEngine()->GetVRSystem()->SetPassthroughTransparency( rt->GetValue( 0 )->GetFloat() );
+}
+
 
 
 // public static func int getDeviceCount()
@@ -419,18 +471,23 @@ void deClassVRSystem::CreateClassMembers( dsEngine *engine ){
 	
 	AddFunction( new nfGetCamera( init ) );
 	AddFunction( new nfSetCamera( init ) );
+	AddFunction( new nfSupportsPassthrough( init ) );
+	AddFunction( new nfGetEnablePassthrough( init ) );
+	AddFunction( new nfSetEnablePassthrough( init ) );
+	AddFunction( new nfGetPassthroughTransparency( init ) );
+	AddFunction( new nfSetPassthroughTransparency( init ) );
 	
-	AddFunction( new nfGetDeviceCount( init ) );;
-	AddFunction( new nfGetDeviceAt( init ) );;
-	AddFunction( new nfIndexOfDeviceWithID( init ) );;
-	AddFunction( new nfIndexOfButtonWithID( init ) );;
-	AddFunction( new nfIndexOfAxisWithID( init ) );;
-	AddFunction( new nfIndexOfFeedbackWithID( init ) );;
-	AddFunction( new nfGetButtonPressed( init ) );;
-	AddFunction( new nfGetButtonTouched( init ) );;
-	AddFunction( new nfGetAxisValue( init ) );;
-	AddFunction( new nfGetFeedbackValue( init ) );;
-	AddFunction( new nfSetFeedbackValue( init ) );;
+	AddFunction( new nfGetDeviceCount( init ) );
+	AddFunction( new nfGetDeviceAt( init ) );
+	AddFunction( new nfIndexOfDeviceWithID( init ) );
+	AddFunction( new nfIndexOfButtonWithID( init ) );
+	AddFunction( new nfIndexOfAxisWithID( init ) );
+	AddFunction( new nfIndexOfFeedbackWithID( init ) );
+	AddFunction( new nfGetButtonPressed( init ) );
+	AddFunction( new nfGetButtonTouched( init ) );
+	AddFunction( new nfGetAxisValue( init ) );
+	AddFunction( new nfGetFeedbackValue( init ) );
+	AddFunction( new nfSetFeedbackValue( init ) );
 	
 	AddFunction( new nfGetParameterCount( init ) );
 	AddFunction( new nfGetParameterInfo( init ) );

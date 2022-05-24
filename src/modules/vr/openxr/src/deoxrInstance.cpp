@@ -84,7 +84,7 @@ pInstance( XR_NULL_HANDLE )
 	
 	pSupportsExtension[ extKHROpenglEnable ].enableIfSupported = true;
 	pSupportsExtension[ extKHRVisibilityMask ].enableIfSupported = true;
-// 	pSupportsExtension[ extEXTEyeGazeInteraction ].enableIfSupported = true;
+	pSupportsExtension[ extEXTEyeGazeInteraction ].enableIfSupported = true;
 	pSupportsExtension[ extEXTHandJointsMotionRange ].enableIfSupported = true;
 	pSupportsExtension[ extEXTHandTracking ].enableIfSupported = true;
 // 	pSupportsExtension[ extEXTPerformanceSettings ].enableIfSupported = true;
@@ -97,12 +97,12 @@ pInstance( XR_NULL_HANDLE )
 // 	pSupportsExtension[ extFBHandTrackingCapsules ].enableIfSupported = true;
 // 	pSupportsExtension[ extFBHandTrackingMesh ].enableIfSupported = true;
 // 	pSupportsExtension[ extFBKeyboardTracking ].enableIfSupported = true;
-// 	pSupportsExtension[ extFBPassthrough ].enableIfSupported = true;
+	pSupportsExtension[ extFBPassthrough ].enableIfSupported = true;
 // 	pSupportsExtension[ extFBPassthroughKeyboardHands ].enableIfSupported = true;
 // 	pSupportsExtension[ extFBRenderModel ].enableIfSupported = true;
 // 	pSupportsExtension[ extFBSpaceWarp ].enableIfSupported = true;
 // 	pSupportsExtension[ extFBTriangleMesh ].enableIfSupported = true;
-// 	pSupportsExtension[ extHTCFacialTracking ].enableIfSupported = true;
+	pSupportsExtension[ extHTCFacialTracking ].enableIfSupported = true;
 	pSupportsExtension[ extHTCXViveTrackerInteraction ].enableIfSupported = true;
 // 	extMNDHeadless: do not enable. this causes HMD to not work anymore
 	pSupportsExtension[ extEXTDebugUtils ].enableIfSupported = true;

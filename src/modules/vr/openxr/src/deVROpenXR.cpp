@@ -151,6 +151,7 @@ void deVROpenXR::WaitUntilReadyExit(){
 				LogInfo( "WaitUntilReadyExit: Session State Changed: idle" );
 				if( pSession ){
 					pInstance->xrRequestExitSession( pSession->GetSession() );
+					pPassthrough = nullptr;
 					pSession = nullptr;
 					pDeviceProfiles.CheckAllAttached();
 				}
@@ -280,6 +281,7 @@ void deVROpenXR::CleanUp(){
 	// thread. this will cause memory leaks but better leak than crash if the runtime
 	// is buggy or not very resiliant (like SteamVR for example)
 	pPreventDeletion = true;
+	pPassthrough = nullptr;
 	pSession = nullptr;
 	
 	// everything below here should be safe
@@ -353,6 +355,22 @@ void deVROpenXR::SetCamera( deCamera *camera ){
 	
 	if( camera && camera->GetPeerGraphic() ){
 		camera->GetPeerGraphic()->VRAssignedToHMD();
+	}
+}
+
+bool deVROpenXR::SupportsPassthrough(){
+	return pPassthrough;
+}
+
+void deVROpenXR::SetEnablePassthrough( bool enable ){
+	if( pPassthrough ){
+		pPassthrough->SetEnabled( enable );
+	}
+}
+
+void deVROpenXR::SetPassthroughTransparency( float transparency ){
+	if( pPassthrough ){
+		pPassthrough->SetTransparency( transparency );
 	}
 }
 
@@ -764,6 +782,7 @@ void deVROpenXR::BeginFrame(){
 	if( pSession && pRestartSession ){
 		LogInfo( "Restarting session (somebody requested this)" );
 		pDeviceProfiles.ClearActions();
+		pPassthrough = nullptr;
 		pSession = nullptr;
 		pDestroyActionSet();
 		
@@ -789,12 +808,17 @@ void deVROpenXR::BeginFrame(){
 			
 			pSession->AttachActionSet( pActionSet );
 			
+			if( pSystem->GetSupportsPassthrough() ){
+				pPassthrough.TakeOver( new deoxrPassthrough( pSession ) );
+			}
+			
 		}catch( const deException &e ){
 			LogException( e );
 			
 			LogError( "Runtime failed during BeginFrame. Shutting down runtime. Restart runtime to continue." );
 			pDeviceProfiles.ClearActions();
 			pDestroyActionSet();
+			pPassthrough = nullptr;
 			pSession = nullptr;
 			
 			pRealShutdown();
@@ -854,6 +878,7 @@ void deVROpenXR::pRealShutdown(){
 	
 	pDeviceProfiles.ClearActions();
 	
+	pPassthrough = nullptr;
 	pSession = nullptr;
 	pSystem = nullptr;
 	pDestroyActionSet();

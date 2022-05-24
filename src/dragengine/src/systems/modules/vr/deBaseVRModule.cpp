@@ -38,7 +38,17 @@ deBaseVRModule::~deBaseVRModule(){
 // Management
 ///////////////
 
-float deBaseVRModule::GetDeviceFaceExpression( int device, int expression ){
+bool deBaseVRModule::SupportsPassthrough(){
+	return false;
+}
+
+void deBaseVRModule::SetEnablePassthrough( bool ){
+}
+
+void deBaseVRModule::SetPassthroughTransparency( float ){
+}
+
+float deBaseVRModule::GetDeviceFaceExpression( int, int ){
 	return 0.0f;
 }
 

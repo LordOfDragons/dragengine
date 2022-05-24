@@ -43,7 +43,8 @@ pSupportsPositionTracking( false ),
 pSupportsHandTracking( false ),
 pSupportsEyeGazeTracking( false ),
 pSupportsFaceEyeTracking( false ),
-pSupportsFaceLipTracking( false )
+pSupportsFaceLipTracking( false ),
+pSupportsPassthrough( false )
 {
 	try{
 		// create system
@@ -84,6 +85,14 @@ pSupportsFaceLipTracking( false )
 			next = &sysFaceTrackProps.next;
 		}
 		
+		XrSystemPassthroughPropertiesFB sysPassThroughProps;
+		if( instance.SupportsExtension( deoxrInstance::extFBPassthrough ) ){
+			memset( &sysPassThroughProps, 0, sizeof( sysPassThroughProps ) );
+			sysPassThroughProps.type = XR_TYPE_SYSTEM_PASSTHROUGH_PROPERTIES_FB;
+			*next = &sysPassThroughProps;
+			next = ( void** )&sysPassThroughProps.next;
+		}
+		
 		OXR_CHECK( instance.xrGetSystemProperties( instance.GetInstance(), pSystemId, &sysProps ) );
 		
 		pSystemName = sysProps.systemName;
@@ -92,6 +101,7 @@ pSupportsFaceLipTracking( false )
 		pMaxLayerCount = sysProps.graphicsProperties.maxLayerCount;
 		pSupportsOrientationTracking = sysProps.trackingProperties.orientationTracking;
 		pSupportsPositionTracking = sysProps.trackingProperties.positionTracking;
+		pSupportsPassthrough = sysPassThroughProps.supportsPassthrough;
 		
 		if( pSystemName.FindString( "SteamVR" ) != -1 ){
 			pSystem = esSteamVR;
@@ -123,6 +133,7 @@ pSupportsFaceLipTracking( false )
 		oxr.LogInfoFormat( "Supports eye gaze tracking: %s", pSupportsEyeGazeTracking ? "yes" : "no" );
 		oxr.LogInfoFormat( "Supports face eye tracking: %s", pSupportsFaceEyeTracking ? "yes" : "no" );
 		oxr.LogInfoFormat( "Supports face mouth tracking: %s", pSupportsFaceLipTracking ? "yes" : "no" );
+		oxr.LogInfoFormat( "Supports passthrough: %s", pSupportsPassthrough ? "yes" : "no" );
 		
 		// get view configuration properties
 		uint32_t viewConfigCount;

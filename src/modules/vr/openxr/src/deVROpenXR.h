@@ -30,6 +30,7 @@
 #include "deoxrInstance.h"
 #include "deoxrSystem.h"
 #include "deoxrSession.h"
+#include "deoxrPassthrough.h"
 #include "action/deoxrActionSet.h"
 #include "device/deoxrDeviceManager.h"
 #include "device/profile/deoxrDeviceProfileManager.h"
@@ -96,6 +97,7 @@ private:
 	deoxrSystem::Ref pSystem;
 	deoxrSession::Ref pSession;
 	deoxrActionSet::Ref pActionSet;
+	deoxrPassthrough::Ref pPassthrough;
 	
 	deoxrAction *pActions[ InputActionCount ];
 	
@@ -145,6 +147,9 @@ public:
 	
 	/** Action set or nullptr. */
 	inline const deoxrActionSet::Ref &GetActionSet() const{ return pActionSet; }
+	
+	/** Passthrough or nullptr. */
+	inline const deoxrPassthrough::Ref &GetPassthrough() const{ return pPassthrough; }
 	
 	/** Action. */
 	inline deoxrAction *GetAction( eInputActions inputAction ) const{ return pActions[ inputAction ]; }
@@ -235,6 +240,15 @@ public:
 	
 	/** Set camera to render on head mounted display. */
 	virtual void SetCamera( deCamera *camera );
+	
+	/** VR Runtime supports presenting user environment inside the rendered world. */
+	virtual bool SupportsPassthrough();
+	
+	/** Enable presenting user environment inside the rendered world. */
+	virtual void SetEnablePassthrough( bool enable );
+	
+	/** Set transparency of user environment presented inside the rendered world. */
+	virtual void SetPassthroughTransparency( float transparency );
 	/*@}*/
 	
 	

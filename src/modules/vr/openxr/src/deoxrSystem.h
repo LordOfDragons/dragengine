@@ -74,6 +74,7 @@ private:
 	bool pSupportsEyeGazeTracking;
 	bool pSupportsFaceEyeTracking;
 	bool pSupportsFaceLipTracking;
+	bool pSupportsPassthrough;
 	
 	
 	
@@ -143,6 +144,9 @@ public:
 	
 	/** Supports face mouth tracking. */
 	inline bool GetSupportsFaceLipTracking() const{ return pSupportsFaceLipTracking; }
+	
+	/** Supports passthrough. */
+	inline bool GetSupportsPassthrough() const{ return pSupportsPassthrough; }
 	/*@}*/
 	
 	

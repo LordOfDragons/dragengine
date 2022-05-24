@@ -99,6 +99,29 @@ public:
 	 * If set to nullptr fades back to safe scene as defined by VR Runtime.
 	 */
 	virtual void SetCamera( deCamera *camera ) = 0;
+	
+	/**
+	 * \brief VR Runtime supports presenting user environment inside the rendered world.
+	 * \version 1.12
+	 */
+	virtual bool SupportsPassthrough();
+	
+	/**
+	 * \brief Enable presenting user environment inside the rendered world.
+	 * \version 1.12
+	 * 
+	 * Has no effect if SupportsPassthrough() returns false.
+	 */
+	virtual void SetEnablePassthrough( bool enable );
+	
+	/**
+	 * \brief Set transparency of user environment presented inside the rendered world.
+	 * \version 1.12
+	 * 
+	 * Has no effect if SupportsPassthrough() returns false. A value of 0 hides the
+	 * environment. A value of 1 shows the environment. Values in between blend over.
+	 */
+	virtual void SetPassthroughTransparency( float transparency );
 	/*@}*/
 	
 	
