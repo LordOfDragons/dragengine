@@ -5,7 +5,7 @@ on:
 
 jobs:
   build_linux:
-    uses: ./.github/workflows/build_linux.yml@master
+    uses: ./.github/workflows/build_linux.yml
     with:
       releaseVersion: nightly
       blenderVersion: 9999
@@ -14,14 +14,14 @@ jobs:
       artifactTools: tools-crossplatform
   
   build_windows:
-    uses: ./.github/workflows/build_windows.yml@master
+    uses: ./.github/workflows/build_windows.yml
     with:
       releaseVersion: nightly
       artifactArchive: archives-windows
   
   build_windows_installer:
     needs: [build_windows]
-    uses: ./.github/workflows/build_windows_installer.yml@master
+    uses: ./.github/workflows/build_windows_installer.yml
     with:
       releaseVersion: nightly
       artifactArchive: archives-windows
@@ -29,7 +29,7 @@ jobs:
   
   build_live:
     needs: [build_linux, build_windows]
-    uses: ./.github/workflows/build_live.yml@master
+    uses: ./.github/workflows/build_live.yml
     with:
       releaseVersion: nightly
       artifactLinux: archives-linux
