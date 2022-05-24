@@ -11,7 +11,7 @@
 Example projects can be found on Development Wiki or in this repository:
 - Example Projects Repository: https://github.com/LordOfDragons/deexamples
 
-[![Nightly Build](https://github.com/LordOfDragons/dragengine/actions/workflows/nightly_build.yml/badge.svg)](https://github.com/LordOfDragons/dragengine/actions/workflows/nightly_build.yml)
+[![Nightly](https://github.com/LordOfDragons/dragengine/actions/workflows/nightly.yml/badge.svg)](https://github.com/LordOfDragons/dragengine/actions/workflows/nightly.yml)
 
 # License Information
 
