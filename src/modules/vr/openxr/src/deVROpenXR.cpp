@@ -427,6 +427,14 @@ void deVROpenXR::GetDeviceBonePose( int device, int bone, bool withController, d
 	}
 }
 
+float deVROpenXR::GetDeviceFaceExpression( int device, int expression ){
+	deoxrFaceTracker * const faceTracker = pDevices.GetAt( device )->GetFaceTracker();
+	if( faceTracker ){
+		return faceTracker->GetFaceExpressionAt( expression );
+	}
+	return 0.0f;
+}
+
 
 
 // Events

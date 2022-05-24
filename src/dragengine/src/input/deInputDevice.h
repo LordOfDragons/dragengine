@@ -215,6 +215,74 @@ public:
 	 */
 	static const int HandBoneCount = 21;
 	
+	/**
+	 * \brief Convenience enumeration for face expressions.
+	 * \version 1.12
+	 * 
+	 * See https://www.khronos.org/registry/OpenXR/specs/1.0/html/xrspec.html#XR_HTC_facial_tracking
+	 * for description and images of face expressions
+	 */
+	enum eFaceExpressions{
+		efeEyeLeftBlink,
+		efeEyeLeftWide,
+		efeEyeLeftSqueeze,
+		efeEyeLeftDown,
+		efeEyeLeftUp,
+		efeEyeLeftIn,
+		efeEyeLeftOut,
+		
+		efeEyeRightBlink,
+		efeEyeRightWide,
+		efeEyeRightSqueeze,
+		efeEyeRightDown,
+		efeEyeRightUp,
+		efeEyeRightIn,
+		efeEyeRightOut,
+		
+		efeJawRight,
+		efeJawLeft,
+		efeJawForward,
+		efeJawOpen,
+		
+		efeCheekPuffRight,
+		efeCheekPuffLeft,
+		efeCheekSuck,
+		
+		efeMouthApeShape,
+		efeMouthUpperRight,
+		efeMouthUpperLeft,
+		efeMouthUpperUpRight,
+		efeMouthUpperUpLeft,
+		efeMouthUpperOverturn,
+		efeMouthUpperInside,
+		efeMouthLowerRight,
+		efeMouthLowerLeft,
+		efeMouthLowerDownRight,
+		efeMouthLowerDownLeft,
+		efeMouthLowerOverturn,
+		efeMouthLowerInside,
+		efeMouthLowerOverlay,
+		efeMouthPout,
+		efeMouthSmileRight,
+		efeMouthSmileLeft,
+		efeMouthSadRight,
+		efeMouthSadLeft,
+		
+		efeTongueLeft,
+		efeTongueRight,
+		efeTongueUp,
+		efeTongueDown,
+		efeTongueRoll,
+		efeTongueLongStep1,
+		efeTongueLongStep2
+	};
+	
+	/**
+	 * \brief Convenience value count of face expressions.
+	 * \version 1.12
+	 */
+	static const int FaceExpressionCount = 77;
+	
 	
 	
 private:
@@ -284,6 +352,12 @@ private:
 	
 	/** \brief Hand rig if ebcHand is used. */
 	deRigReference pHandRig;
+	
+	/** \brief Device supports face eye expressions. */
+	bool pSupportsFaceEyeExpressions;
+	
+	/** \brief Device supports face mouth expressions. */
+	bool pSupportsFaceMouthExpressions;
 	
 	/** \brief Model to represent the device in VR environments or NULL if not set. */
 	deModelReference pVRModel;
@@ -432,6 +506,30 @@ public:
 	 * \version 1.6
 	 */
 	void SetHandRig( deRig *rig );
+	
+	/**
+	 * \brief Device supports face eye expressions.
+	 * \version 1.12
+	 */
+	inline bool GetSupportsFaceEyeExpressions() const{ return pSupportsFaceEyeExpressions; }
+	
+	/**
+	 * \brief Set if device supports face eye expressions.
+	 * \version 1.12
+	 */
+	void SetSupportsFaceEyeExpressions( bool supportsFaceEyeExpressions );
+	
+	/**
+	 * \brief Device supports face mouth expressions.
+	 * \version 1.12
+	 */
+	inline bool GetSupportsFaceMouthExpressions() const{ return pSupportsFaceMouthExpressions; }
+	
+	/**
+	 * \brief Set if device supports face mouth expressions.
+	 * \version 1.12
+	 */
+	void SetSupportsFaceMouthExpressions( bool supportsFaceMouthExpressions );
 	
 	/**
 	 * \brief Model to represent the device in VR environments or NULL if not set.

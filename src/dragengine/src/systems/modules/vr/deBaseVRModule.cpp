@@ -38,6 +38,10 @@ deBaseVRModule::~deBaseVRModule(){
 // Management
 ///////////////
 
+float deBaseVRModule::GetDeviceFaceExpression( int device, int expression ){
+	return 0.0f;
+}
+
 deBaseVRModule::eVRRenderFormat deBaseVRModule::GetRenderFormat(){
 	DETHROW( deeInvalidParam );
 }

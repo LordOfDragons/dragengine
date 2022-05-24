@@ -41,7 +41,9 @@ pMaxLayerCount( 0 ),
 pSupportsOrientationTracking( false ),
 pSupportsPositionTracking( false ),
 pSupportsHandTracking( false ),
-pSupportsEyeTracking( false )
+pSupportsEyeGazeTracking( false ),
+pSupportsFaceEyeTracking( false ),
+pSupportsFaceLipTracking( false )
 {
 	try{
 		// create system
@@ -58,22 +60,28 @@ pSupportsEyeTracking( false )
 		sysProps.type = XR_TYPE_SYSTEM_PROPERTIES;
 		void **next = &sysProps.next;
 		
-		XrSystemHandTrackingPropertiesEXT sysHTProps;
-		
+		XrSystemHandTrackingPropertiesEXT sysHandTrackProps;
 		if( instance.SupportsExtension( deoxrInstance::extEXTHandTracking ) ){
-			memset( &sysHTProps, 0, sizeof( sysHTProps ) );
-			sysHTProps.type = XR_TYPE_SYSTEM_HAND_TRACKING_PROPERTIES_EXT;
-			*next = &sysHTProps;
-			next = &sysHTProps.next;
+			memset( &sysHandTrackProps, 0, sizeof( sysHandTrackProps ) );
+			sysHandTrackProps.type = XR_TYPE_SYSTEM_HAND_TRACKING_PROPERTIES_EXT;
+			*next = &sysHandTrackProps;
+			next = &sysHandTrackProps.next;
 		}
 		
-		XrSystemEyeGazeInteractionPropertiesEXT sysEGIProps;
-		
+		XrSystemEyeGazeInteractionPropertiesEXT sysEyeGazeProps;
 		if( instance.SupportsExtension( deoxrInstance::extEXTEyeGazeInteraction ) ){
-			memset( &sysEGIProps, 0, sizeof( sysEGIProps ) );
-			sysEGIProps.type = XR_TYPE_SYSTEM_EYE_GAZE_INTERACTION_PROPERTIES_EXT;
-			*next = &sysEGIProps;
-			next = &sysEGIProps.next;
+			memset( &sysEyeGazeProps, 0, sizeof( sysEyeGazeProps ) );
+			sysEyeGazeProps.type = XR_TYPE_SYSTEM_EYE_GAZE_INTERACTION_PROPERTIES_EXT;
+			*next = &sysEyeGazeProps;
+			next = &sysEyeGazeProps.next;
+		}
+		
+		XrSystemFacialTrackingPropertiesHTC sysFaceTrackProps;
+		if( instance.SupportsExtension( deoxrInstance::extHTCFacialTracking ) ){
+			memset( &sysFaceTrackProps, 0, sizeof( sysFaceTrackProps ) );
+			sysFaceTrackProps.type = XR_TYPE_SYSTEM_FACIAL_TRACKING_PROPERTIES_HTC;
+			*next = &sysFaceTrackProps;
+			next = &sysFaceTrackProps.next;
 		}
 		
 		OXR_CHECK( instance.xrGetSystemProperties( instance.GetInstance(), pSystemId, &sysProps ) );
@@ -93,11 +101,16 @@ pSupportsEyeTracking( false )
 		}
 		
 		if( instance.SupportsExtension( deoxrInstance::extEXTHandTracking ) ){
-			pSupportsHandTracking = sysHTProps.supportsHandTracking;
+			pSupportsHandTracking = sysHandTrackProps.supportsHandTracking;
 		}
 		
 		if( instance.SupportsExtension( deoxrInstance::extEXTEyeGazeInteraction ) ){
-			pSupportsEyeTracking = sysEGIProps.supportsEyeGazeInteraction;
+			pSupportsEyeGazeTracking = sysEyeGazeProps.supportsEyeGazeInteraction;
+		}
+		
+		if( instance.SupportsExtension( deoxrInstance::extHTCFacialTracking ) ){
+			pSupportsFaceEyeTracking = sysFaceTrackProps.supportEyeFacialTracking;
+			pSupportsFaceLipTracking = sysFaceTrackProps.supportLipFacialTracking;
 		}
 		
 		deVROpenXR &oxr = instance.GetOxr();
@@ -107,7 +120,9 @@ pSupportsEyeTracking( false )
 		oxr.LogInfoFormat( "Supports orientation tracking: %s", pSupportsOrientationTracking ? "yes" : "no" );
 		oxr.LogInfoFormat( "Supports position tracking: %s", pSupportsOrientationTracking ? "yes" : "no" );
 		oxr.LogInfoFormat( "Supports hand tracking: %s", pSupportsHandTracking ? "yes" : "no" );
-		oxr.LogInfoFormat( "Supports eye tracking: %s", pSupportsEyeTracking ? "yes" : "no" );
+		oxr.LogInfoFormat( "Supports eye gaze tracking: %s", pSupportsEyeGazeTracking ? "yes" : "no" );
+		oxr.LogInfoFormat( "Supports face eye tracking: %s", pSupportsFaceEyeTracking ? "yes" : "no" );
+		oxr.LogInfoFormat( "Supports face mouth tracking: %s", pSupportsFaceLipTracking ? "yes" : "no" );
 		
 		// get view configuration properties
 		uint32_t viewConfigCount;

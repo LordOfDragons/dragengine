@@ -147,6 +147,12 @@ public:
 	/** \brief Device bone pose or identity if not supported. */
 	virtual void GetDeviceBonePose( int device, int bone,
 		bool withController, deInputDevicePose &pose ) = 0;
+	
+	/**
+	 * \brief Device face expression or 0 if not supported.
+	 * \version 1.12
+	 */
+	virtual float GetDeviceFaceExpression( int device, int expression );
 	/*@}*/
 	
 	

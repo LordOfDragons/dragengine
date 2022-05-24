@@ -146,6 +146,12 @@ public:
 		bool withController, deInputDevicePose &pose );
 	
 	/**
+	 * \brief Device face expression or 0 if not supported.
+	 * \version 1.12
+	 */
+	virtual float GetDeviceFaceExpression( int device, int expression );
+	
+	/**
 	 * \brief Index of button best matching key code or -1 if not found.
 	 * 
 	 * If more than one button matches the key code the input module decides which

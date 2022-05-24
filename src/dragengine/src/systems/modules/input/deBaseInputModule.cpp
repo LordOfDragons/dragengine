@@ -55,6 +55,10 @@ void deBaseInputModule::GetDeviceBonePose( int, int, bool, deInputDevicePose &po
 	pose = deInputDevicePose();
 }
 
+float deBaseInputModule::GetDeviceFaceExpression( int device, int expression ){
+	return 0.0f;
+}
+
 int deBaseInputModule::ButtonMatchingKeyCode( int device, deInputEvent::eKeyCodes keyCode,
 deInputEvent::eKeyLocation ){
 	return ButtonMatchingKeyCode( device, keyCode );

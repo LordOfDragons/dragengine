@@ -277,12 +277,15 @@ public:
 	/** Set value of feedback at index on device at index. */
 	virtual void SetFeedbackValue( int device, int feedback, float value );
 	
-	/** \brief Device pose or identity if not supported. */
+	/** Device pose or identity if not supported. */
 	virtual void GetDevicePose( int device, deInputDevicePose &pose );
 	
-	/** \brief Device bone pose or identity if not supported. */
+	/** Device bone pose or identity if not supported. */
 	virtual void GetDeviceBonePose( int device, int bone,
 		bool withController, deInputDevicePose &pose );
+	
+	/** Device face expression or 0 if not supported. */
+	virtual float GetDeviceFaceExpression( int device, int expression );
 	/*@}*/
 	
 	
@@ -308,7 +311,7 @@ public:
 	/** VR recommended render target size. */
 	virtual decPoint GetRenderSize();
 	
-	/** \brief VR required render format. */
+	/** VR required render format. */
 	virtual eVRRenderFormat GetRenderFormat();
 	
 	/** VR render projection matrix parameters. */
@@ -326,13 +329,13 @@ public:
 	/** Get eye view images to use for rendering. */
 	virtual int GetEyeViewImages( eEye eye, int count, void *views );
 	
-	/** \brief Get eye view render texture coordinates. */
+	/** Get eye view render texture coordinates. */
 	virtual void GetEyeViewRenderTexCoords( eEye eye, decVector2 &tcFrom, decVector2 &tcTo );
 	
 	/** Begin frame. */
 	virtual void BeginFrame();
 	
-	/** \brief Acquire eye view image to render into. */
+	/** Acquire eye view image to render into. */
 	virtual int AcquireEyeViewImage( eEye eye );
 	
 	/** Release eye view image after render into. */

@@ -26,6 +26,7 @@
 #include "../deoxrPath.h"
 #include "../deoxrSpace.h"
 #include "../deoxrHandTracker.h"
+#include "../deoxrFaceTracker.h"
 #include "../action/deoxrAction.h"
 
 #include <dragengine/deObject.h>
@@ -91,6 +92,8 @@ private:
 	
 	deoxrHandTracker::Ref pHandTracker;
 	decMatrix pMatrixWristToDevice;
+	
+	deoxrFaceTracker::Ref pFaceTracker;
 	
 	
 	
@@ -285,6 +288,14 @@ public:
 	
 	/** Set matrix transforming from wrist space to device space. */
 	void SetMatrixWristToDevice( const decMatrix &matrix );
+	
+	
+	
+	/** Face tracker or nullptr. */
+	inline const deoxrFaceTracker::Ref &GetFaceTracker() const{ return pFaceTracker; }
+	
+	/** Set face tracker or nullptr. */
+	void SetFaceTracker( deoxrFaceTracker *faceTracker );
 	
 	
 	
