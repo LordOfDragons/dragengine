@@ -1,0 +1,95 @@
+name: Test Nightly
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build_linux:
+    uses: ./.github/workflows/build_linux.yml@master
+    with:
+      releaseVersion: nightly
+      blenderVersion: 9999
+      artifactArchive: archives-linux
+      artifactInstaller: installers-linux
+      artifactTools: tools-crossplatform
+  
+  build_windows:
+    uses: ./.github/workflows/build_windows.yml@master
+    with:
+      releaseVersion: nightly
+      artifactArchive: archives-windows
+  
+  build_windows_installer:
+    needs: [build_windows]
+    uses: ./.github/workflows/build_windows_installer.yml@master
+    with:
+      releaseVersion: nightly
+      artifactArchive: archives-windows
+      artifactInstaller: installers-windows
+  
+  build_live:
+    needs: [build_linux, build_windows]
+    uses: ./.github/workflows/build_live.yml@master
+    with:
+      releaseVersion: nightly
+      artifactLinux: archives-linux
+      artifactWindows: archives-windows
+      artifactLauncher: archive-livelauncher
+
+  upload:
+    needs: [build_linux, build_windows, build_windows_installer, build_live]
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Get Linux Installers
+        uses: actions/download-artifact@v3
+        with:
+          name: installers-linux
+      
+      - name: Get Windows Installers
+        uses: actions/download-artifact@v3
+        with:
+          name: installers-windows
+      
+      - name: Get Crossplatform Tools
+        uses: actions/download-artifact@v3
+        with:
+          name: tools-crossplatform
+      
+      - name: Get Live Launcher
+        uses: actions/download-artifact@v3
+        with:
+          name: archive-livelauncher
+      
+      - name: Get current date
+        id: date
+        run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
+      
+      - name: Upload Artifacts
+        uses: ncipollo/release-action@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          allowUpdates: true
+          artifactErrorsFailBuild: true
+          draft: false
+          prerelease: true
+          commit: master
+          tag: 'nightly'
+          name: 'Drag[en]gine Game Engine Release - Nightly Build'
+          body: |
+            Continuous Nightly Build of the Drag[en]gine Game Engine.
+            Created: ${{ steps.date.outputs.date }}
+            Changelog: https://dragondreams.ch/?page_id=287
+            
+            Builds are potentially unstable. Use at own risk.
+          artifacts: >
+            install-dragengine-nightly-linux64.sh,
+            install-dragengine-dev-nightly-linux64.sh,
+            install-deigde-nightly-linux64.sh,
+            install-deigde-dev-nightly-linux64.sh,
+            install-dragengine-nightly-windows64.exe,
+            install-dragengine-sdk-nightly-windows64.exe,
+            install-deigde-nightly-windows64.exe,
+            install-deigde-sdk-nightly-windows64.exe,
+            blender-addon-dragengine-9999.zip,
+            dragengine-live-nightly.zip
