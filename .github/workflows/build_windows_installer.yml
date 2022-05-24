@@ -14,7 +14,7 @@ on:
         type: string
 
 jobs:
-  build_windows_installer:
+  build:
     runs-on: ubuntu-latest
     
     steps:
