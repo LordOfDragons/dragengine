@@ -1,0 +1,42 @@
+name: Build Linux
+
+on:
+  schedule:
+    - cron:  '0 3 * * 0'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v2
+      
+      - name: Install required packages
+        run: |
+          sudo apt -y install sudo build-essential dpkg-dev patchelf scons cmake autoconf \
+            libtool nasm libx11-dev libxrandr-dev libgl-dev libxi-dev libpulse-dev \
+            libasound2-dev portaudio19-dev libxft-dev libjpeg-dev libopenal-dev \
+            libogg-dev libvorbis-dev libtheora-dev libhidapi-dev libopenhmd-dev \
+            zlib1g-dev libevdev-dev libsoundtouch-dev libwebp-dev
+      
+      - name: Install DragonScript dependencies
+        run: |
+            sudo apt -y -q install software-properties-common
+            sudo add-apt-repository -y -u ppa:rpluess/dragondreams
+            sudo apt -y -q install libdscript-dev
+      
+      - name: Init custom.py
+        run: |
+          cp ${{ github.workspace }}/.github/workflows/custom_package_focal.py custom.py
+          ReleaseVersion=`dpkg-parsechangelog | egrep '^Version:' | cut -f 2 -d ' ' | cut -f 1 -d '-')`
+          sed -i -e 's/{ReleaseVersion}/${ReleaseVersion}/g' custom.py
+      
+      - name: Build
+        # certain CMake based projects are problem children that like to get stuck
+        # in CMake on Ubuntu. build them first to avoid it loking up things
+        run: |
+          scons -j 1 lib_openxr
+          scons -j 1 lib_openvr
+          scons -j 1 lib_libjpeg
+          scons -j 14 build

@@ -9,27 +9,27 @@ version = '{ReleaseVersion}'
 
 # external library configuration
 ##################################
-with_system_zlib = 'no'
-with_system_libpng = 'no'
-with_system_libapng = 'no'
-with_system_libjpeg = 'no'
-with_system_openal = 'no'
+with_system_zlib = 'yes'
+with_system_libpng = 'yes'
+with_system_libapng ='yes'
+with_system_libjpeg ='yes'
+with_system_libwebp = 'yes'
+with_system_openal = 'yes'
 with_openal_backends = ','.join(['alsa', 'pulseaudio', 'portaudio', 'oss'])
-with_system_libogg = 'no'
-with_system_libvorbis = 'no'
-with_system_libtheora = 'no'
-with_system_fox = 'no'
-with_system_dragonscript = 'no'
-with_system_libffi = 'no'
-with_system_libltdl = 'no'
-with_system_libsigsegv = 'no'
-with_system_smalltalk = 'no'
-with_system_libevdev = 'no'
-with_system_libusb = 'no'
-with_system_libhidapi = 'no'
-with_system_libopenhmd = 'no'
-with_system_fftw = 'no'
-with_system_libwebp = 'no'
+with_system_libogg ='yes'
+with_system_libvorbis ='yes'
+with_system_libtheora ='yes'
+with_system_fox ='no'               # ubuntu focal still has 1.6
+with_system_dragonscript = 'yes'
+with_system_libffi = 'no'           # smalltalk only
+with_system_libltdl = 'no'          # smalltalk only
+with_system_libsigsegv = 'no'       # smalltalk only
+with_system_smalltalk = 'no'        # smalltalk only
+with_system_libevdev = 'no'         # ubuntu package not usable
+with_system_libusb = 'no'           # ubuntu package not usable
+with_system_libhidapi = 'yes'
+with_system_libopenhmd = 'yes'
+with_system_fftw = 'no'             # not used right now
 with_opengl = 'yes'
 with_python = 'no'
 with_npapisdk = 'no'
@@ -38,7 +38,7 @@ with_pthread = 'yes'
 with_x = 'yes'
 
 # modules configuration
-#########################
+#####################
 build_audio_openal = 'yes'
 build_cr_basic = 'yes'
 build_graphics_opengl = 'yes'
