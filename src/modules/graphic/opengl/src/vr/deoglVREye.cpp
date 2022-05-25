@@ -46,6 +46,32 @@
 #include <dragengine/systems/deVRSystem.h>
 
 
+
+// #define DO_TIMING
+
+#ifdef DO_TIMING
+#include <dragengine/common/utils/decTimer.h>
+static decTimer dtimer;
+static decTimer dtimerTotal;
+
+#define DEBUG_RESET_TIMER dtimer.Reset(); dtimerTotal.Reset();
+#define DEBUG_PRINT_TIMER(what) \
+	renderThread.GetLogger().LogInfoFormat( "VREye(%s) %s = %iys",\
+		pEye == deBaseVRModule::evreRight ? "R" : "L", \
+		what, ( int )( dtimer.GetElapsedTime() * 1000000.0 ) );\
+	dtimer.Reset();
+#define DEBUG_PRINT_TIMER_TOTAL(what) \
+	renderThread.GetLogger().LogInfoFormat( "VREye(%s) %s = %iys",\
+		pEye == deBaseVRModule::evreRight ? "R" : "L", \
+		what, ( int )( dtimerTotal.GetElapsedTime() * 1000000.0 ) );\
+	dtimerTotal.Reset();
+#else
+#define DEBUG_RESET_TIMER
+#define DEBUG_PRINT_TIMER(what)
+#define DEBUG_PRINT_TIMER_TOTAL(what)
+#endif
+
+
 // Class deoglVREye
 /////////////////////
 
@@ -405,6 +431,7 @@ void deoglVREye::pDestroyEyeViews(){
 }
 
 void deoglVREye::pRender( deoglRenderThread &renderThread ){
+	DEBUG_RESET_TIMER
 	// prepare render target and fbo
 	pRenderTarget->PrepareFramebuffer();
 	
@@ -428,8 +455,10 @@ void deoglVREye::pRender( deoglRenderThread &renderThread ){
 	
 	const deoglDeveloperMode &devmode = renderThread.GetDebug().GetDeveloperMode();
 	plan.SetDebugTiming( devmode.GetEnabled() && devmode.GetShowDebugInfo() );
+	DEBUG_PRINT_TIMER( "Prepare" )
 	
 	plan.PrepareRender( nullptr );
+	DEBUG_PRINT_TIMER( "RenderPlan Prepare" )
 	
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	defren.Resize( pRenderSize.x, pRenderSize.y );
@@ -437,6 +466,7 @@ void deoglVREye::pRender( deoglRenderThread &renderThread ){
 	
 	plan.Render();
 	renderThread.GetRenderers().GetWorld().RenderFinalizeFBO( plan, true, pUseGammaCorrection );
+	DEBUG_PRINT_TIMER( "RenderWorld" )
 	// set render target dirty?
 }
 
