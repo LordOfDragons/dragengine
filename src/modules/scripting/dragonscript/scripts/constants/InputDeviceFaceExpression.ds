@@ -1,0 +1,86 @@
+/* 
+ * Drag[en]gine DragonScript Script Module
+ *
+ * Copyright (C) 2020 =  Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License =  or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful = 
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not =  write to the Free Software
+ * Foundation =  Inc. =  675 Mass Ave =  Cambridge =  MA 02139 =  USA.
+ */
+
+
+namespace Dragengine
+
+
+/**
+ * \brief Convenience enumeration for face expressions.
+ * \version 1.12
+ * 
+ * See https://www.khronos.org/registry/OpenXR/specs/1.0/html/xrspec.html#XR_HTC_facial_tracking
+ * for description and images of face expressions.
+ */
+fixed class InputDeviceFaceExpression
+	public static fixed var int eyeLeftBlink = 0
+	public static fixed var int eyeLeftWide = 1
+	public static fixed var int eyeLeftSqueeze = 2
+	public static fixed var int eyeLeftDown = 3
+	public static fixed var int eyeLeftUp = 4
+	public static fixed var int eyeLeftIn = 5
+	public static fixed var int eyeLeftOut = 6
+	
+	public static fixed var int eyeRightBlink = 7
+	public static fixed var int eyeRightWide = 8
+	public static fixed var int eyeRightSqueeze = 9
+	public static fixed var int eyeRightDown = 10
+	public static fixed var int eyeRightUp = 11
+	public static fixed var int eyeRightIn = 12
+	public static fixed var int eyeRightOut = 13
+	
+	public static fixed var int jawRight = 14
+	public static fixed var int jawLeft = 15
+	public static fixed var int jawForward = 16
+	public static fixed var int jawOpen = 17
+	
+	public static fixed var int cheekPuffRight = 18
+	public static fixed var int cheekPuffLeft = 19
+	public static fixed var int cheekSuck = 20
+	
+	public static fixed var int mouthApeShape = 21
+	public static fixed var int mouthUpperRight = 22
+	public static fixed var int mouthUpperLeft = 23
+	public static fixed var int mouthUpperUpRight = 24
+	public static fixed var int mouthUpperUpLeft = 25
+	public static fixed var int mouthUpperOverturn = 26
+	public static fixed var int mouthUpperInside = 27
+	public static fixed var int mouthLowerRight = 28
+	public static fixed var int mouthLowerLeft = 29
+	public static fixed var int mouthLowerDownRight = 30
+	public static fixed var int mouthLowerDownLeft = 31
+	public static fixed var int mouthLowerOverturn = 32
+	public static fixed var int mouthLowerInside = 33
+	public static fixed var int mouthLowerOverlay = 34
+	public static fixed var int mouthPout = 35
+	public static fixed var int mouthSmileRight = 36
+	public static fixed var int mouthSmileLeft = 37
+	public static fixed var int mouthSadRight = 38
+	public static fixed var int mouthSadLeft = 39
+	
+	public static fixed var int tongueLeft = 40
+	public static fixed var int tongueRight = 41
+	public static fixed var int tongueUp = 42
+	public static fixed var int tongueDown = 43
+	public static fixed var int tongueRoll = 44
+	public static fixed var int tongueLongStep1 = 45
+	public static fixed var int tongueLongStep2 = 46
+end

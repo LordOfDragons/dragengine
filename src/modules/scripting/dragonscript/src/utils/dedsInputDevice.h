@@ -57,6 +57,9 @@ private:
 	deInputDevicePose *pBonePoses;
 	int pBonePoseCount;
 	
+	float *pFaceExpressions;
+	int pFaceExpressionCount;
+	
 	
 	
 public:
@@ -98,6 +101,12 @@ public:
 	
 	/** Bone pose at index. */
 	const deInputDevicePose &GetBonePoseAt( int index, bool withController ) const;
+	
+	/** Count of face expressions. */
+	inline int GetFaceExpressionCount() const{ return pFaceExpressionCount; }
+	
+	/** Face expression at index. */
+	float GetFaceExpressionAt( int index ) const;
 	
 	/** Update poses. */
 	void OnFrameUpdate();

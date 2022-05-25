@@ -46,11 +46,17 @@ pDeviceSource( deInputEvent::esInput ),
 pDeviceIndex( deviceIndex ),
 pDevice( deInputDevice::Ref::New( module.GetDeviceAt( deviceIndex ) ) ),
 pBonePoses( nullptr ),
-pBonePoseCount( 0 )
+pBonePoseCount( 0 ),
+pFaceExpressions( nullptr ),
+pFaceExpressionCount( 0 )
 {
 	if( pDevice->GetBoneConfiguration() == deInputDevice::ebcHand ){
 		pBonePoses = new deInputDevicePose[ deInputDevice::HandBoneCount * 2 ];
 		pBonePoseCount = deInputDevice::HandBoneCount;
+	}
+	if( pDevice->GetSupportsFaceEyeExpressions() || pDevice->GetSupportsFaceMouthExpressions() ){
+		pFaceExpressions = new float[ deInputDevice::FaceExpressionCount ];
+		pFaceExpressionCount = deInputDevice::FaceExpressionCount;
 	}
 }
 
@@ -60,15 +66,24 @@ pDeviceSource( deInputEvent::esVR ),
 pDeviceIndex( deviceIndex ),
 pDevice( deInputDevice::Ref::New( module.GetDeviceAt( deviceIndex ) ) ),
 pBonePoses( nullptr ),
-pBonePoseCount( 0 )
+pBonePoseCount( 0 ),
+pFaceExpressions( nullptr ),
+pFaceExpressionCount( 0 )
 {
 	if( pDevice->GetBoneConfiguration() == deInputDevice::ebcHand ){
 		pBonePoses = new deInputDevicePose[ deInputDevice::HandBoneCount * 2 ];
 		pBonePoseCount = deInputDevice::HandBoneCount;
 	}
+	if( pDevice->GetSupportsFaceEyeExpressions() || pDevice->GetSupportsFaceMouthExpressions() ){
+		pFaceExpressions = new float[ deInputDevice::FaceExpressionCount ];
+		pFaceExpressionCount = deInputDevice::FaceExpressionCount;
+	}
 }
 
 dedsInputDevice::~dedsInputDevice(){
+	if( pFaceExpressions ){
+		delete [] pFaceExpressions;
+	}
 	if( pBonePoses ){
 		delete [] pBonePoses;
 	}
@@ -93,6 +108,14 @@ const deInputDevicePose &dedsInputDevice::GetBonePoseAt( int index, bool withCon
 	}
 }
 
+float dedsInputDevice::GetFaceExpressionAt( int index ) const{
+	if( index < 0 || index >= pFaceExpressionCount ){
+		return 0.0f;
+	}
+	
+	return pFaceExpressions[ index ];
+}
+
 void dedsInputDevice::OnFrameUpdate(){
 	int i;
 	
@@ -108,6 +131,10 @@ void dedsInputDevice::OnFrameUpdate(){
 		for( i=0; i<pBonePoseCount; i++ ){
 			module.GetDeviceBonePose( pDeviceIndex, i, true, pBonePoses[ pBonePoseCount + i ] );
 		}
+		
+		for( i=0; i<pFaceExpressionCount; i++ ){
+			pFaceExpressions[ i ] = module.GetDeviceFaceExpression( pDeviceIndex, i );
+		}
 		}break;
 		
 	case deInputEvent::esVR:{
@@ -120,6 +147,10 @@ void dedsInputDevice::OnFrameUpdate(){
 		}
 		for( i=0; i<pBonePoseCount; i++ ){
 			module.GetDeviceBonePose( pDeviceIndex, i, true, pBonePoses[ pBonePoseCount + i ] );
+		}
+		
+		for( i=0; i<pFaceExpressionCount; i++ ){
+			pFaceExpressions[ i ] = module.GetDeviceFaceExpression( pDeviceIndex, i );
 		}
 		}break;
 	}
@@ -144,8 +175,21 @@ void dedsInputDevice::Update( const dedsInputDevice &device ){
 		}
 		
 		if( device.pBonePoses ){
-			pBonePoses = new deInputDevicePose[ deInputDevice::HandBoneCount * 2 ];
-			pBonePoseCount = deInputDevice::HandBoneCount;
+			pBonePoses = new deInputDevicePose[ device.pBonePoseCount * 2 ];
+			pBonePoseCount = device.pBonePoseCount;
+		}
+	}
+	
+	if( pFaceExpressionCount != device.pFaceExpressionCount ){
+		if( pFaceExpressions ){
+			delete [] pFaceExpressions;
+			pFaceExpressions = nullptr;
+			pFaceExpressionCount = 0;
+		}
+		
+		if( device.pFaceExpressions ){
+			pFaceExpressions = new float[ device.pFaceExpressionCount ];
+			pFaceExpressionCount = device.pFaceExpressionCount;
 		}
 	}
 }

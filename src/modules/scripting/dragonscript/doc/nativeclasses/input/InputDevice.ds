@@ -172,6 +172,22 @@ class InputDevice
 	end
 	
 	/**
+	 * \brief Device supports face eye expressions.
+	 * \version 1.12
+	 */
+	public  func bool getSupportsFaceEyeExpressions()
+		return false
+	end
+	
+	/**
+	 * \brief Device supports face mouth expressions.
+	 * \version 1.12
+	 */
+	public  func bool getSupportsFaceMouthExpressions()
+		return false
+	end
+	
+	/**
 	 * \brief Model to represent the device in VR environments or null if not set.
 	 * \version 1.6
 	 */
@@ -390,6 +406,23 @@ class InputDevice
 	 *                       not holding the controller in hand.
 	 */
 	public func Matrix getDeviceBonePoseMatrix(int bone, bool withController)
+		return null
+	end
+	
+	
+	
+	/**
+	 * \brief Count of device face expressions.
+	 */
+	public func int getDeviceFaceExpressionCount()
+		return 0
+	end
+	
+	/**
+	 * \brief Device face expression.
+	 * \param index Index of face expression. Use InputDeviceFaceExpression constants.
+	 */
+	public func float getDeviceFaceExpressionAt(int index)
 		return null
 	end
 	/*@}*/

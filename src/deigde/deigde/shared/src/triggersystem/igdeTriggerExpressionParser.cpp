@@ -109,6 +109,7 @@ igdeTriggerExpressionParserState &state, bool requireEnd, bool initCurState, boo
 	// 2 => parse child(1..N) (negate,curState allowed)
 	// 3 => parse identical logical operator or end of group or end of expression
 	// 4 => exit parser
+	// 5 => exit parser due to exception
 	deObjectReference refComponent, child;
 	bool curState = initCurState;
 	bool negate = initNegate;
@@ -118,7 +119,7 @@ igdeTriggerExpressionParserState &state, bool requireEnd, bool initCurState, boo
 	refComponent.TakeOver( new igdeTriggerExpressionComponent );
 	igdeTriggerExpressionComponent &component = ( igdeTriggerExpressionComponent& )( deObject& )refComponent;
 	
-	while( mode != 4 && state.HasMoreCharacters() ){
+	while( mode != 4 && mode != 5 && state.HasMoreCharacters() ){
 		const int character = state.GetNextCharacter();
 		
 		if( mode == 2 && ! component.GetTargetName().IsEmpty() ){
@@ -144,7 +145,10 @@ igdeTriggerExpressionParserState &state, bool requireEnd, bool initCurState, boo
 				break;
 				
 			default:
-				DETHROW( deeInvalidParam );
+				if( pExceptionOnErrors ){
+					DETHROW( deeInvalidParam );
+				}
+				mode = 5;
 			}
 			
 		}else if( character == pSymbolCurState ){
@@ -155,12 +159,19 @@ igdeTriggerExpressionParserState &state, bool requireEnd, bool initCurState, boo
 				break;
 				
 			default:
-				DETHROW( deeInvalidParam );
+				if( pExceptionOnErrors ){
+					DETHROW( deeInvalidParam );
+				}
+				mode = 5;
 			}
 			
 		}else if( character == pSymbolGroupStart ){
 			if( curState ){
-				DETHROW( deeInvalidParam );
+				if( pExceptionOnErrors ){
+					DETHROW( deeInvalidParam );
+				}
+				mode = 5;
+				break;
 			}
 			
 			switch( mode ){
@@ -185,7 +196,10 @@ igdeTriggerExpressionParserState &state, bool requireEnd, bool initCurState, boo
 				break;
 				
 			default:
-				DETHROW( deeInvalidParam );
+				if( pExceptionOnErrors ){
+					DETHROW( deeInvalidParam );
+				}
+				mode = 5;
 			}
 			
 		}else if( character == pSymbolGroupEnd ){
@@ -198,7 +212,10 @@ igdeTriggerExpressionParserState &state, bool requireEnd, bool initCurState, boo
 				break;
 				
 			default:
-				DETHROW( deeInvalidParam );
+				if( pExceptionOnErrors ){
+					DETHROW( deeInvalidParam );
+				}
+				mode = 5;
 			}
 			break;
 			
@@ -211,13 +228,20 @@ igdeTriggerExpressionParserState &state, bool requireEnd, bool initCurState, boo
 				
 			case 3:
 				if( component.GetType() != igdeTriggerExpressionComponent::ectAnd ){
-					DETHROW( deeInvalidParam ); // and/or changed inside list
+					if( pExceptionOnErrors ){
+						DETHROW( deeInvalidParam ); // and/or changed inside list
+					}
+					mode = 5;
+					break;
 				}
 				mode = 2;
 				break;
 				
 			default:
-				DETHROW( deeInvalidParam );
+				if( pExceptionOnErrors ){
+					DETHROW( deeInvalidParam );
+				}
+				mode = 5;
 			}
 			
 		}else if( character == pSymbolOr ){
@@ -229,13 +253,20 @@ igdeTriggerExpressionParserState &state, bool requireEnd, bool initCurState, boo
 				
 			case 3:
 				if( component.GetType() != igdeTriggerExpressionComponent::ectOr ){
-					DETHROW( deeInvalidParam ); // and/or changed inside list
+					if( pExceptionOnErrors ){
+						DETHROW( deeInvalidParam ); // and/or changed inside list
+					}
+					mode = 5;
+					break;
 				}
 				mode = 2;
 				break;
 				
 			default:
-				DETHROW( deeInvalidParam );
+				if( pExceptionOnErrors ){
+					DETHROW( deeInvalidParam );
+				}
+				mode = 5;
 			}
 			
 		}else if( character == pSymbolQuote ){
@@ -267,7 +298,10 @@ igdeTriggerExpressionParserState &state, bool requireEnd, bool initCurState, boo
 				}break;
 				
 			default:
-				DETHROW( deeInvalidParam );
+				if( pExceptionOnErrors ){
+					DETHROW( deeInvalidParam );
+				}
+				mode = 5;
 			}
 			
 		// ( character >= 'a' && character <= 'z' ) || ( character >= 'A' && character <= 'Z' ) || character == '_'
@@ -301,7 +335,10 @@ igdeTriggerExpressionParserState &state, bool requireEnd, bool initCurState, boo
 				}break;
 				
 			default:
-				DETHROW( deeInvalidParam );
+				if( pExceptionOnErrors ){
+					DETHROW( deeInvalidParam );
+				}
+				mode = 5;
 			}
 			
 		//}else{
@@ -310,23 +347,37 @@ igdeTriggerExpressionParserState &state, bool requireEnd, bool initCurState, boo
 	}
 	
 	if( requireEnd && mode != 4 ){
-		DETHROW( deeInvalidParam );
+		if( pExceptionOnErrors ){
+			DETHROW( deeInvalidParam );
+		}
+		mode = 5;
 	}
 	
 	if( mode == 0 ){
-		return NULL;
+		return nullptr;
 	}
 	
-	if( component.GetChildCount() == 1 ){
-		const igdeTriggerExpressionComponent &c = *component.GetChildAt( 0 );
-		if( c.GetTargetName().IsEmpty() ){
-			refComponent = component.GetChildAt( 0 );
-			
-		}else{
-			component.SetTargetName( c.GetTargetName() );
-			component.SetNegate( c.GetNegate() );
-			component.SetCurState( c.GetCurState() );
-			component.RemoveAllChildren();
+	if( mode != 5 ){
+		if( mode == 2 ){
+			// missing target after and/or. add an empty one to allow editors to work properly
+			child.TakeOver( new igdeTriggerExpressionComponent );
+			igdeTriggerExpressionComponent &c = ( igdeTriggerExpressionComponent& )( deObject& )child;
+			c.SetNegate( negate );
+			c.SetCurState( curState );
+			component.AddChild( &c );
+		}
+		
+		if( component.GetChildCount() == 1 ){
+			const igdeTriggerExpressionComponent &c = *component.GetChildAt( 0 );
+			if( c.GetTargetName().IsEmpty() ){
+				refComponent = component.GetChildAt( 0 );
+				
+			}else{
+				component.SetTargetName( c.GetTargetName() );
+				component.SetNegate( c.GetNegate() );
+				component.SetCurState( c.GetCurState() );
+				component.RemoveAllChildren();
+			}
 		}
 	}
 	

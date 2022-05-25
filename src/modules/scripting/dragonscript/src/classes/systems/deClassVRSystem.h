@@ -107,6 +107,11 @@ private:
 	
 	DEF_NATFUNC( nfGetCamera );
 	DEF_NATFUNC( nfSetCamera );
+	DEF_NATFUNC( nfSupportsPassthrough );
+	DEF_NATFUNC( nfGetEnablePassthrough );
+	DEF_NATFUNC( nfSetEnablePassthrough );
+	DEF_NATFUNC( nfGetPassthroughTransparency );
+	DEF_NATFUNC( nfSetPassthroughTransparency );
 	
 	DEF_NATFUNC( nfGetDeviceCount );
 	DEF_NATFUNC( nfGetDeviceAt );

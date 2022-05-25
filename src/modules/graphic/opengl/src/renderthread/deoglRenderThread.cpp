@@ -42,7 +42,7 @@
 #include "../deoglPreloader.h"
 #include "../canvas/deoglCanvasView.h"
 #include "../canvas/capture/deoglRCaptureCanvas.h"
-#include "../canvas/render/deoglRCanvas.h"
+#include "../canvas/render/deoglRCanvasView.h"
 #include "../capabilities/deoglCapabilities.h"
 #include "../configuration/deoglConfiguration.h"
 #include "../debug/deoglDebugInformation.h"
@@ -247,7 +247,7 @@ void deoglRenderThread::SetVRCamera( deoglRCamera *camera ){
 	pVRCamera = camera;
 }
 
-void deoglRenderThread::SetCanvasInputOverlay( deoglRCanvas *canvas ){
+void deoglRenderThread::SetCanvasInputOverlay( deoglRCanvasView *canvas ){
 	if( canvas == pCanvasInputOverlay ){
 		return;
 	}
@@ -263,7 +263,7 @@ void deoglRenderThread::SetCanvasInputOverlay( deoglRCanvas *canvas ){
 	}
 }
 
-void deoglRenderThread::SetCanvasDebugOverlay( deoglRCanvas *canvas ){
+void deoglRenderThread::SetCanvasDebugOverlay( deoglRCanvasView *canvas ){
 	if( canvas == pCanvasDebugOverlay ){
 		return;
 	}

@@ -44,7 +44,9 @@
 deVRSystem::deVRSystem( deEngine *engine ) :
 deBaseSystem( engine, "VR", deModuleSystem::emtVR ),
 pActiveModule( nullptr ),
-pEventQueue( 100 ){
+pEventQueue( 100 ),
+pEnablePassthrough( false ),
+pPassthroughTransparency( 1.0f ){
 }
 
 deVRSystem::~deVRSystem(){
@@ -75,6 +77,10 @@ void deVRSystem::StartRuntime(){
 	}
 	
 	pActiveModule->StartRuntime();
+	
+	pActiveModule->SetCamera( pCamera );
+	pActiveModule->SetEnablePassthrough( pEnablePassthrough );
+	pActiveModule->SetPassthroughTransparency( pPassthroughTransparency );
 }
 
 void deVRSystem::StopRuntime(){
@@ -86,12 +92,53 @@ void deVRSystem::StopRuntime(){
 }
 
 void deVRSystem::SetCamera( deCamera *camera ){
+	if( ! GetIsRunning() ){
+		DETHROW_INFO( deeInvalidAction, "Module not running" );
+	}
+	
 	if( camera == pCamera ){
 		return;
 	}
 	
 	pCamera = camera;
+	
 	pActiveModule->SetCamera( camera );
+}
+
+bool deVRSystem::SupportsPassthrough(){
+	if( ! GetIsRunning() ){
+		DETHROW_INFO( deeInvalidAction, "Module not running" );
+	}
+	
+	return pActiveModule->SupportsPassthrough();
+}
+
+void deVRSystem::SetEnablePassthrough( bool enable ){
+	if( GetIsRunning() ){
+		DETHROW_INFO( deeInvalidAction, "Module not running" );
+	}
+	
+	if( enable == pEnablePassthrough ){
+		return;
+	}
+	
+	pEnablePassthrough = enable;
+	
+	pActiveModule->SetEnablePassthrough( enable );
+}
+
+void deVRSystem::SetPassthroughTransparency( float transparency ){
+	if( GetIsRunning() ){
+		DETHROW_INFO( deeInvalidAction, "Module not running" );
+	}
+	
+	if( fabsf( transparency - pPassthroughTransparency ) < FLOAT_SAFE_EPSILON ){
+		return;
+	}
+	
+	pPassthroughTransparency = transparency;
+	
+	pActiveModule->SetPassthroughTransparency( transparency );
 }
 
 
@@ -107,12 +154,16 @@ void deVRSystem::ClearPermanents(){
 }
 
 void deVRSystem::PostStart(){
-	if( ! pActiveModule->Init() ){
+	if( ! pActiveModule || ! pActiveModule->Init() ){
 		DETHROW( deeInvalidAction );
 	}
 }
 
 void deVRSystem::PreStop(){
+	if( ! pActiveModule ){
+		return;
+	}
+	
 	// remove all parallel tasks if present
 	GetEngine()->GetParallelProcessing().FinishAndRemoveTasksOwnedBy( pActiveModule );
 	

@@ -49,7 +49,7 @@ class deoglExtensions;
 class deoglGI;
 class deoglLightBoundaryMap;
 class deoglOcclusionQueryManager;
-class deoglRCanvas;
+class deoglRCanvasView;
 class deoglRRenderWindow;
 class deoglShadowMapper;
 class deoglTriangleSorter;
@@ -112,8 +112,8 @@ private:
 	deoglMemoryManager pMemoryManager;
 	decObjectOrderedSet pRRenderWindowList;
 	decObjectOrderedSet pRCaptureCanvasList;
-	deoglRCanvas *pCanvasInputOverlay;
-	deoglRCanvas *pCanvasDebugOverlay;
+	deoglRCanvasView *pCanvasInputOverlay;
+	deoglRCanvasView *pCanvasDebugOverlay;
 	
 	deoglRTChoices *pChoices;
 	deoglRTBufferObject *pBufferObject;
@@ -257,16 +257,16 @@ public:
 	inline decObjectOrderedSet &GetRCaptureCanvasList(){ return pRCaptureCanvasList; }
 	
 	/** Input overlay canvas view or \em NULL if not present. */
-	inline deoglRCanvas *GetCanvasInputOverlay() const{ return pCanvasInputOverlay; }
+	inline deoglRCanvasView *GetCanvasInputOverlay() const{ return pCanvasInputOverlay; }
 	
 	/** Set input overlay canvas view or \em NULL if not present. */
-	void SetCanvasInputOverlay( deoglRCanvas *canvas );
+	void SetCanvasInputOverlay( deoglRCanvasView *canvas );
 	
 	/** Debug overlay canvas view or \em NULL if not present. */
-	inline deoglRCanvas *GetCanvasDebugOverlay() const{ return pCanvasDebugOverlay; }
+	inline deoglRCanvasView *GetCanvasDebugOverlay() const{ return pCanvasDebugOverlay; }
 	
 	/** Set debug overlay canvas view or \em NULL if not present. */
-	void SetCanvasDebugOverlay( deoglRCanvas *canvas );
+	void SetCanvasDebugOverlay( deoglRCanvasView *canvas );
 	
 	
 	

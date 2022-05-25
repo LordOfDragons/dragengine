@@ -117,6 +117,8 @@ pUseGIState( false ),
 pUseConstGIState( NULL ),
 pRenderVR( ervrNone ),
 pSkyLightCount( 0 ),
+pLodMaxPixelError( 0 ),
+pLodLevelOffset( 0 ),
 pOcclusionMap( NULL ),
 pOcclusionTest( NULL ),
 pGIState( NULL ),
@@ -836,9 +838,9 @@ void deoglRenderPlan::pPlanLODLevels(){
 		pHTView->UpdateLODLevels( pCameraPosition.ToVector() );
 	}
 	
-	const deoglConfiguration &config = pRenderThread.GetConfiguration();
 	deoglLODCalculator lodCalculator;
-	lodCalculator.SetMaxPixelError( config.GetLODMaxPixelError() );
+	lodCalculator.SetMaxPixelError( pLodMaxPixelError );
+	lodCalculator.SetLodOffset( pLodLevelOffset );
 	
 	lodCalculator.SetComponentLODProjection( pCollideList, pCameraPosition,
 		pCameraInverseMatrix.TransformView(), pCameraFov, pCameraFov * pCameraFovRatio,
@@ -1729,6 +1731,14 @@ void deoglRenderPlan::SetStencilPrevRefValue( int refValue ){
 
 void deoglRenderPlan::SetStencilWriteMask( int writeMask ){
 	pStencilWriteMask = writeMask;
+}
+
+void deoglRenderPlan::SetLodMaxPixelError( int error ){
+	pLodMaxPixelError = decMath::max( error, 0 );
+}
+
+void deoglRenderPlan::SetLodLevelOffset( int offset ){
+	pLodLevelOffset = offset;
 }
 
 void deoglRenderPlan::SetOcclusionMap( deoglOcclusionMap *occlusionMap ){

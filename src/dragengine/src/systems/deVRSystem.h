@@ -24,10 +24,9 @@
 
 #include "deBaseSystem.h"
 #include "../input/deInputEventQueue.h"
-#include "../resources/camera/deCameraReference.h"
+#include "../resources/camera/deCamera.h"
 
 class deBaseVRModule;
-class deCamera;
 
 
 /**
@@ -38,7 +37,9 @@ class DE_DLL_EXPORT deVRSystem : public deBaseSystem{
 private:
 	deBaseVRModule *pActiveModule;
 	deInputEventQueue pEventQueue;
-	deCameraReference pCamera;
+	deCamera::Ref pCamera;
+	bool pEnablePassthrough;
+	float pPassthroughTransparency;
 	
 	
 	
@@ -110,6 +111,46 @@ public:
 	 * If set to nullptr fades back to safe scene as defined by VR Runtime.
 	 */
 	void SetCamera( deCamera *camera );
+	
+	/**
+	 * \brief VR Runtime supports presenting user environment inside the rendered world.
+	 * \version 1.12
+	 */
+	bool SupportsPassthrough();
+	
+	/**
+	 * \brief Presenting user environment inside the rendered world is enabled.
+	 * \version 1.12
+	 * 
+	 * Has no effect if SupportsPassthrough() returns false.
+	 */
+	inline bool GetEnablePassthrough() const{ return pEnablePassthrough; }
+	
+	/**
+	 * \brief Enable presenting user environment inside the rendered world.
+	 * \version 1.12
+	 * 
+	 * Has no effect if SupportsPassthrough() returns false.
+	 */
+	void SetEnablePassthrough( bool enable );
+	
+	/**
+	 * \brief Transparency of user environment presented inside the rendered world.
+	 * \version 1.12
+	 * 
+	 * Has no effect if SupportsPassthrough() returns false. A value of 0 hides the
+	 * environment. A value of 1 shows the environment. Values in between blend over.
+	 */
+	inline float GetPassthroughTransparency() const{ return pPassthroughTransparency; }
+	
+	/**
+	 * \brief Set transparency of user environment presented inside the rendered world.
+	 * \version 1.12
+	 * 
+	 * Has no effect if SupportsPassthrough() returns false. A value of 0 hides the
+	 * environment. A value of 1 shows the environment. Values in between blend over.
+	 */
+	void SetPassthroughTransparency( float transparency );
 	/*@}*/
 	
 	

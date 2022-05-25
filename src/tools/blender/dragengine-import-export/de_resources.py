@@ -527,6 +527,20 @@ class Mesh:
 			self.mesh.edges[edge].select = True
 		self.faces[fi].edges[c1] = edge
 	
+	# apply auto smoothing
+	def applyAutoSmooth(self):
+		if not self.mesh.use_auto_smooth:
+			return
+		angle = self.mesh.auto_smooth_angle
+		
+		for edge in self.edges:
+			if edge.faces[0] != -1 and edge.faces[1] != -1:
+				f1 = self.faces[edge.faces[0]]
+				f2 = self.faces[edge.faces[1]]
+				if f1.face.normal.angle(f2.face.normal, 0) > angle:
+					edge.sharp = True
+					edge.hard = True
+	
 	# calculate corner normals
 	def initCalcCornerNormals(self):
 		self.normalCount = 0

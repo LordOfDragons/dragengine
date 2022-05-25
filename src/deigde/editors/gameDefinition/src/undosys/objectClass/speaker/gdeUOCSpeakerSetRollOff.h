@@ -20,8 +20,8 @@
  */
 
 
-#ifndef _GDEUOCSPEAKERSETHALFVOLDIST_H_
-#define _GDEUOCSPEAKERSETHALFVOLDIST_H_
+#ifndef _GDEUOCSPEAKERSETROLLOFF_H_
+#define _GDEUOCSPEAKERSETROLLOFF_H_
 
 #include <deigde/undo/igdeUndo.h>
 
@@ -31,7 +31,7 @@ class gdeObjectClass;
 
 
 /**
- * \brief Undo action object class speaker set half-volume distance.
+ * \brief Undo action object class speaker set roll off.
  */
 class gdeUOCSpeakerSetRollOff : public igdeUndo{
 private:

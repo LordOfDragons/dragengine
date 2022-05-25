@@ -123,6 +123,8 @@ private:
 	DEF_NATFUNC( nfSetRange );
 	DEF_NATFUNC( nfGetRollOff );
 	DEF_NATFUNC( nfSetRollOff );
+	DEF_NATFUNC( nfGetDistanceOffset );
+	DEF_NATFUNC( nfSetDistanceOffset );
 	DEF_NATFUNC( nfGetShape );
 	DEF_NATFUNC( nfSetShape );
 	DEF_NATFUNC( nfGetLayerMask );

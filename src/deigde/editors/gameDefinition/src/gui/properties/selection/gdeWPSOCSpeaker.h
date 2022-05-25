@@ -59,6 +59,7 @@ private:
 	igdeTextFieldReference pEditVolume;
 	igdeTextFieldReference pEditRange;
 	igdeTextFieldReference pEditRollOff;
+	igdeTextFieldReference pEditDistanceOffset;
 	igdeTextFieldReference pEditPlaySpeed;
 	
 	igdeComboBoxReference pCBPropertyNames;

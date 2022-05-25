@@ -217,6 +217,10 @@ ALuint deoalSource::GetSendEffect( int index ){
 void deoalSource::AssignSendEffect( int index ){
 	if( pSendEffect ){
 		const ALuint slot = GetSendSlot( index );
+		
+		// prevent reverb effects apply distance based statistics model
+		OAL_CHECK( pAudioThread, palAuxiliaryEffectSloti( slot, AL_EFFECTSLOT_AUXILIARY_SEND_AUTO, AL_FALSE ) );
+		
 		OAL_CHECK( pAudioThread, palAuxiliaryEffectSloti( slot, AL_EFFECTSLOT_EFFECT, pSendEffect ) );
 		OAL_CHECK( pAudioThread, alSource3i( pSource, AL_AUXILIARY_SEND_FILTER,
 			slot, 0/*index*/, AL_FILTER_NULL ) );

@@ -280,6 +280,9 @@ void igdeWOSOSpeaker::pUpdateSpeaker(){
 	pSpeaker->SetRollOff( GetFloatProperty(
 		pGDSpeaker.GetPropertyName( igdeGDCSpeaker::epRollOff ),
 		pGDSpeaker.GetRollOff() ) );
+	pSpeaker->SetDistanceOffset( GetFloatProperty(
+		pGDSpeaker.GetPropertyName( igdeGDCSpeaker::epDistanceOffset ),
+		pGDSpeaker.GetDistanceOffset() ) );
 	pSpeaker->SetPlaySpeed( GetFloatProperty(
 		pGDSpeaker.GetPropertyName( igdeGDCSpeaker::epPlaySpeed ),
 		pGDSpeaker.GetPlaySpeed() ) );

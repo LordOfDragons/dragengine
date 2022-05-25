@@ -344,9 +344,9 @@ void deGraphicOpenGl::RenderWindows(){
 	// synchronize overlay canvas view if present
 	deCanvasView * const inputOverlayCanvas = GetGameEngine()->GetGraphicSystem()->GetInputOverlayCanvas();
 	if( inputOverlayCanvas ){
-		deoglCanvas &oglCanvas = *( ( deoglCanvas* )inputOverlayCanvas->GetPeerGraphic() );
+		deoglCanvasView &oglCanvas = *( ( deoglCanvasView* )inputOverlayCanvas->GetPeerGraphic() );
 		oglCanvas.SyncToRender();
-		pRenderThread->SetCanvasInputOverlay( oglCanvas.GetRCanvas() );
+		pRenderThread->SetCanvasInputOverlay( oglCanvas.GetRCanvasView() );
 	}
 	
 	pDebugOverlay.PrepareOverlay( *GetGameEngine()->GetGraphicSystem()->GetDebugOverlayCanvas() );

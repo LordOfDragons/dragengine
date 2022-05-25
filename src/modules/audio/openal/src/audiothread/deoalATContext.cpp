@@ -121,9 +121,6 @@ void deoalATContext::CreateContext(){
 		logger.LogError( "alcMakeContextCurrent failed" );
 		DETHROW( deeInvalidParam );
 	}
-	
-	// set default parameters
-	alDistanceModel( AL_INVERSE_DISTANCE_CLAMPED );
 }
 
 void deoalATContext::LogContextInfo(){

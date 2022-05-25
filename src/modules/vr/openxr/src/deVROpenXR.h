@@ -30,6 +30,7 @@
 #include "deoxrInstance.h"
 #include "deoxrSystem.h"
 #include "deoxrSession.h"
+#include "deoxrPassthrough.h"
 #include "action/deoxrActionSet.h"
 #include "device/deoxrDeviceManager.h"
 #include "device/profile/deoxrDeviceProfileManager.h"
@@ -96,6 +97,7 @@ private:
 	deoxrSystem::Ref pSystem;
 	deoxrSession::Ref pSession;
 	deoxrActionSet::Ref pActionSet;
+	deoxrPassthrough::Ref pPassthrough;
 	
 	deoxrAction *pActions[ InputActionCount ];
 	
@@ -145,6 +147,9 @@ public:
 	
 	/** Action set or nullptr. */
 	inline const deoxrActionSet::Ref &GetActionSet() const{ return pActionSet; }
+	
+	/** Passthrough or nullptr. */
+	inline const deoxrPassthrough::Ref &GetPassthrough() const{ return pPassthrough; }
 	
 	/** Action. */
 	inline deoxrAction *GetAction( eInputActions inputAction ) const{ return pActions[ inputAction ]; }
@@ -235,6 +240,15 @@ public:
 	
 	/** Set camera to render on head mounted display. */
 	virtual void SetCamera( deCamera *camera );
+	
+	/** VR Runtime supports presenting user environment inside the rendered world. */
+	virtual bool SupportsPassthrough();
+	
+	/** Enable presenting user environment inside the rendered world. */
+	virtual void SetEnablePassthrough( bool enable );
+	
+	/** Set transparency of user environment presented inside the rendered world. */
+	virtual void SetPassthroughTransparency( float transparency );
 	/*@}*/
 	
 	
@@ -277,12 +291,15 @@ public:
 	/** Set value of feedback at index on device at index. */
 	virtual void SetFeedbackValue( int device, int feedback, float value );
 	
-	/** \brief Device pose or identity if not supported. */
+	/** Device pose or identity if not supported. */
 	virtual void GetDevicePose( int device, deInputDevicePose &pose );
 	
-	/** \brief Device bone pose or identity if not supported. */
+	/** Device bone pose or identity if not supported. */
 	virtual void GetDeviceBonePose( int device, int bone,
 		bool withController, deInputDevicePose &pose );
+	
+	/** Device face expression or 0 if not supported. */
+	virtual float GetDeviceFaceExpression( int device, int expression );
 	/*@}*/
 	
 	
@@ -308,7 +325,7 @@ public:
 	/** VR recommended render target size. */
 	virtual decPoint GetRenderSize();
 	
-	/** \brief VR required render format. */
+	/** VR required render format. */
 	virtual eVRRenderFormat GetRenderFormat();
 	
 	/** VR render projection matrix parameters. */
@@ -326,13 +343,13 @@ public:
 	/** Get eye view images to use for rendering. */
 	virtual int GetEyeViewImages( eEye eye, int count, void *views );
 	
-	/** \brief Get eye view render texture coordinates. */
+	/** Get eye view render texture coordinates. */
 	virtual void GetEyeViewRenderTexCoords( eEye eye, decVector2 &tcFrom, decVector2 &tcTo );
 	
 	/** Begin frame. */
 	virtual void BeginFrame();
 	
-	/** \brief Acquire eye view image to render into. */
+	/** Acquire eye view image to render into. */
 	virtual int AcquireEyeViewImage( eEye eye );
 	
 	/** Release eye view image after render into. */

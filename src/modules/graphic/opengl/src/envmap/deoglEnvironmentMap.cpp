@@ -600,6 +600,9 @@ void deoglEnvironmentMap::RenderEnvCubeMap( deoglRenderPlan &parentPlan ){
 	plan.SetUseLayerMask( true );
 	plan.SetLayerMask( pLayerMask );
 	
+	plan.SetLodMaxPixelError( 2 );
+	plan.SetLodLevelOffset( 1 );
+	
 	// use the parent plan gi state but without modifying it. allows to use GI with
 	// no extra cost and witout messing up parent GI state
 	plan.SetUseConstGIState( NULL );//parentPlan.GetRenderGIState() );

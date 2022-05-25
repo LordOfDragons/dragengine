@@ -38,6 +38,20 @@ deBaseVRModule::~deBaseVRModule(){
 // Management
 ///////////////
 
+bool deBaseVRModule::SupportsPassthrough(){
+	return false;
+}
+
+void deBaseVRModule::SetEnablePassthrough( bool ){
+}
+
+void deBaseVRModule::SetPassthroughTransparency( float ){
+}
+
+float deBaseVRModule::GetDeviceFaceExpression( int, int ){
+	return 0.0f;
+}
+
 deBaseVRModule::eVRRenderFormat deBaseVRModule::GetRenderFormat(){
 	DETHROW( deeInvalidParam );
 }

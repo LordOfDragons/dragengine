@@ -77,6 +77,54 @@ fixed class VRSystem
 	 */
 	public static func void setCamera( Camera camera )
 	end
+	
+	/**
+	 * \brief VR Runtime supports presenting user environment inside the rendered world.
+	 * \version 1.12
+	 */
+	public static func bool supportsPassthrough()
+		return false
+	end
+	
+	/**
+	 * \brief Presenting user environment inside the rendered world is enabled.
+	 * \version 1.12
+	 * 
+	 * Returns false if SupportsPassthrough() returns false.
+	 */
+	public static func bool getEnablePassthrough()
+		return false
+	end
+	
+	/**
+	 * \brief Enable presenting user environment inside the rendered world.
+	 * \version 1.12
+	 * 
+	 * Has no effect if SupportsPassthrough() returns false.
+	 */
+	public static func void setEnablePassthrough(bool enable)
+	end
+	
+	/**
+	 * \brief Transparency of user environment presented inside the rendered world.
+	 * \version 1.12
+	 * 
+	 * Has no effect if SupportsPassthrough() returns false. A value of 0 hides the
+	 * environment. A value of 1 shows the environment. Values in between blend over.
+	 */
+	public static func float getPassthroughTransparency()
+		return 0.0
+	end
+	
+	/**
+	 * \brief Set transparency of user environment presented inside the rendered world.
+	 * \version 1.12
+	 * 
+	 * Has no effect if SupportsPassthrough() returns false. A value of 0 hides the
+	 * environment. A value of 1 shows the environment. Values in between blend over.
+	 */
+	public static func void setPassthroughTransparency(float transparency)
+	end
 	/*@}*/
 	
 	

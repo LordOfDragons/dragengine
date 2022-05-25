@@ -393,6 +393,12 @@ void deoxrDevice::SetMatrixWristToDevice( const decMatrix &matrix ){
 
 
 
+void deoxrDevice::SetFaceTracker( deoxrFaceTracker *faceTracker ){
+	pFaceTracker = faceTracker;
+}
+
+
+
 void deoxrDevice::GetInfo( deInputDevice &info ) const{
 	int i;
 	
@@ -503,6 +509,10 @@ void deoxrDevice::TrackStates(){
 				pose.SetAngularVelocity( invMatrix.TransformNormal( pose.GetAngularVelocity() ) );
 			}
 		}
+	}
+	
+	if( pFaceTracker ){
+		pFaceTracker->Update();
 	}
 	
 	int i, count = pButtons.GetCount();

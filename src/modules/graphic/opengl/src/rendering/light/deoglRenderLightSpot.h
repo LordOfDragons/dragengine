@@ -52,9 +52,43 @@ public:
 		deoglTexture *shadow2TranspColor;
 		deoglTexture *shadow1Ambient;
 		deoglTexture *shadow2Ambient;
+		
 		sShadowDepthMaps();
 	};
 	
+	struct sShadowParams{
+		decDVector lightPosition;
+		decVector lightView;
+		decDMatrix matrixCamera;
+		decDMatrix matrixProjection;
+		bool solid;
+		bool transparentStaticShadow;
+		bool transparentDynamicShadow;
+		const deoglCollideList *collideList1;
+		const deoglCollideList *collideList2;
+		int solidShadowMapSize;
+		int transpShadowMapSize;
+		int ambientMapSize;
+		bool withTransparent;
+		
+		/**
+		 * Maximum pixel error. If the rendered mesh and the mesh used for shadow calculation
+		 * differ shadow artifacts can happen. By definition lod meshes should be conservative
+		 * which means they should not stick outside the silhouette if possible. This has the
+		 * following consequences. If the render mesh has lower lod level than the shadow mesh
+		 * shadow artifacts appear since the rendered mesh faces are inside the higher lod mesh.
+		 * This also means if the shadow mesh is using a higher lod level than the rendered
+		 * mesh shadow artifacts should not appear. Increasing the lod level though makes the
+		 * silhouette of the cast shadow more edgy but also makes rendering the shadow maps
+		 * faster. It's difficult to find a good solution for this.
+		 */
+		int lodMaxPixelError;
+		int lodOffset;
+		int lodFovX;
+		int lodFovY;
+		
+		sShadowParams();
+	};
 	
 	
 private:
@@ -120,19 +154,15 @@ public:
 		const sShadowDepthMaps &shadowDepthMaps );
 	
 	/** \brief Render shadow maps. */
-	void RenderShadows( deoglRenderPlanLight &planLight, bool solid, const decDMatrix &matrixProjection,
-		bool transparentStaticShadow, bool transparentDynamicShadow );
+	void RenderShadows( deoglRenderPlanLight &planLight, sShadowParams &shadowParams );
 	
 	/** \brief Render shadow map. */
-	void RenderShadowMap( deoglRenderPlanLight &planLight, const decDMatrix &matrixCamera,
-		const decDMatrix &matrixProjection, deoglShadowMapper &shadowMapper,
-		const deoglCollideList *clist1, const deoglCollideList *clist2, int solidShadowMapSize,
-		int transpShadowMapSize, bool withTransparent, bool debugSolid );
+	void RenderShadowMap( deoglRenderPlanLight &planLight,
+		deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams );
 	
 	/** \brief Render ambient map. */
-	void RenderAmbientMap( deoglRenderPlanLight &planLight, const decDMatrix &matrixCamera,
-		const decDMatrix &matrixProjection, deoglShadowMapper &shadowMapper,
-		const deoglCollideList *clist1, const deoglCollideList *clist2, int ambientMapSize );
+	void RenderAmbientMap( deoglRenderPlanLight &planLight,
+		deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams );
 	
 	/** \brief Update light shader parameter block. */
 	void UpdateLightParamBlock( deoglLightShader &lightShader, deoglSPBlockUBO &paramBlock,

@@ -192,6 +192,8 @@ void deoglVREye::Render(){
 	plan.SetUpscaleSize( pTargetSize.x, pTargetSize.y );
 	plan.SetUseUpscaling( pRenderSize != pTargetSize );
 	plan.SetUpsideDown( true );
+	plan.SetLodMaxPixelError( config.GetLODMaxPixelError() );
+	plan.SetLodLevelOffset( 0 );
 	
 	try{
 		pRender( renderThread );

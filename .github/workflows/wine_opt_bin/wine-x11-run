@@ -1,0 +1,11 @@
+#!/bin/sh
+
+Xvfb $DISPLAY &
+tokill=$!
+wine wineboot --init
+waitonprocess wineserver
+"$@"
+retval=$?
+kill -15 $tokill
+wine wineboot --shutdown
+return $retval

@@ -1463,6 +1463,9 @@ void gdeLoadSaveGameDefinition::pReadObjectClassSpeaker( const decXmlElementTag 
 		}else if( tagName == "rollOff" ){
 			speaker.SetRollOff( GetCDataFloat( *tag ) );
 			
+		}else if( tagName == "distanceOffset" ){
+			speaker.SetDistanceOffset( GetCDataFloat( *tag ) );
+			
 		}else if( tagName == "playSpeed" ){
 			speaker.SetPlaySpeed( GetCDataFloat( *tag ) );
 			
@@ -1487,6 +1490,9 @@ void gdeLoadSaveGameDefinition::pReadObjectClassSpeaker( const decXmlElementTag 
 				
 			}else if( value == "rollOff" ){
 				speaker.SetPropertyName( gdeOCSpeaker::epRollOff, property );
+				
+			}else if( value == "distanceOffset" ){
+				speaker.SetPropertyName( gdeOCSpeaker::epDistanceOffset, property );
 				
 			}else if( value == "playSpeed" ){
 				speaker.SetPropertyName( gdeOCSpeaker::epPlaySpeed, property );
@@ -3113,6 +3119,9 @@ decXmlWriter &writer, const gdeOCSpeaker &speaker ){
 	if( fabsf( speaker.GetRollOff() - 0.1f ) > FLOAT_SAFE_EPSILON ){
 		writer.WriteDataTagFloat( "rollOff", speaker.GetRollOff() );
 	}
+	if( fabsf( speaker.GetDistanceOffset() - 0.1f ) > FLOAT_SAFE_EPSILON ){
+		writer.WriteDataTagFloat( "distanceOffset", speaker.GetDistanceOffset() );
+	}
 	if( fabsf( speaker.GetPlaySpeed() - 1.0f ) > FLOAT_SAFE_EPSILON ){
 		writer.WriteDataTagFloat( "playSpeed", speaker.GetPlaySpeed() );
 	}
@@ -3129,6 +3138,8 @@ decXmlWriter &writer, const gdeOCSpeaker &speaker ){
 		"link", "range" );
 	pWriteLink( writer, speaker.GetPropertyName( gdeOCSpeaker::epRollOff ),
 		"link", "rollOff" );
+	pWriteLink( writer, speaker.GetPropertyName( gdeOCSpeaker::epDistanceOffset ),
+		"link", "distanceOffset" );
 	pWriteLink( writer, speaker.GetPropertyName( gdeOCSpeaker::epPlaySpeed ),
 		"link", "playSpeed" );
 	pWriteLink( writer, speaker.GetPropertyName( gdeOCSpeaker::epAttachPosition ),
