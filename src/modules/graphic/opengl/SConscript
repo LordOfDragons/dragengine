@@ -86,7 +86,7 @@ if envModule['with_debug']:
 appendLibrary(envModule, parent_targets['shared_vulkan'], libs)
 
 # fetch values in expanded form for later use
-versionString = '1.10'
+versionString = '1.12'
 if envModule['force_version']:
 	versionString = envModule['force_version']
 

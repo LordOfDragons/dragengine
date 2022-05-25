@@ -10,7 +10,7 @@ jobs:
     uses: ./.github/workflows/build_linux.yml
     with:
       releaseVersion: nightly
-      blenderVersion: 9999
+      buildVersion: 9999
       artifactArchive: archives-linux
       artifactInstaller: installers-linux
       artifactTools: tools-crossplatform
@@ -19,6 +19,7 @@ jobs:
     uses: ./.github/workflows/build_windows.yml
     with:
       releaseVersion: nightly
+      buildVersion: 9999
       artifactArchive: archives-windows
   
   build_windows_installer:
