@@ -6,7 +6,7 @@ on:
       releaseVersion:
         required: true
         type: string
-      blenderVersion:
+      buildVersion:
         required: true
         type: string
       artifactArchive:
@@ -40,6 +40,7 @@ jobs:
         run: |
           cp ${{ github.workspace }}/.github/workflows/custom_linux.py custom.py
           sed -i -e 's/{ReleaseVersion}/${{ inputs.releaseVersion }}/g' custom.py
+          sed -i -e 's/{BuildVersion}/${{ inputs.buildVersion }}/g' custom.py
       
       - name: Build
         # certain CMake based projects are problem children that like to get stuck
@@ -82,5 +83,5 @@ jobs:
         with:
           name: ${{ inputs.artifactTools }}
           path: |
-            src/tools/blender/build/blender-addon-dragengine-${{ inputs.blenderVersion }}.zip
+            src/tools/blender/build/blender-addon-dragengine-${{ inputs.buildVersion }}.zip
           if-no-files-found: error

@@ -6,6 +6,9 @@ on:
       releaseVersion:
         required: true
         type: string
+      buildVersion:
+        required: true
+        type: string
       artifactArchive:
         required: true
         type: string
@@ -31,6 +34,7 @@ jobs:
         run: |
           cp ${{ github.workspace }}/.github/workflows/custom_windows.py custom.py
           sed -i -e 's/{ReleaseVersion}/${{ inputs.releaseVersion }}/g' custom.py
+          sed -i -e 's/{BuildVersion}/${{ inputs.buildVersion }}/g' custom.py
       
       - name: Build
         # certain CMake based projects are problem children that like to get stuck

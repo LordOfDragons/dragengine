@@ -5,7 +5,7 @@ with_warnerrors = 'yes'
 with_debug = 'no'
 with_verbose = 'no'
 with_threads = '14'
-version = '{ReleaseVersion}'
+version = '{BuildVersion}'
 
 # external library configuration
 ##################################
