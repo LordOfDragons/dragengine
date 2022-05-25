@@ -29,7 +29,7 @@ jobs:
       - name: Init custom.py
         run: |
           cp ${{ github.workspace }}/.github/workflows/custom_package_focal.py custom.py
-          ReleaseVersion=`dpkg-parsechangelog | egrep '^Version:' | cut -f 2 -d ' ' | cut -f 1 -d '-')`
+          ReleaseVersion=`dpkg-parsechangelog | egrep '^Version:' | cut -f 2 -d ' ' | cut -f 1 -d '-'`
           sed -i -e 's/{ReleaseVersion}/${ReleaseVersion}/g' custom.py
       
       - name: Build
