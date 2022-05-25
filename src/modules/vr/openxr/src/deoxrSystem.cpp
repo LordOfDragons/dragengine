@@ -101,7 +101,6 @@ pSupportsPassthrough( false )
 		pMaxLayerCount = sysProps.graphicsProperties.maxLayerCount;
 		pSupportsOrientationTracking = sysProps.trackingProperties.orientationTracking;
 		pSupportsPositionTracking = sysProps.trackingProperties.positionTracking;
-		pSupportsPassthrough = sysPassThroughProps.supportsPassthrough;
 		
 		if( pSystemName.FindString( "SteamVR" ) != -1 ){
 			pSystem = esSteamVR;
@@ -121,6 +120,10 @@ pSupportsPassthrough( false )
 		if( instance.SupportsExtension( deoxrInstance::extHTCFacialTracking ) ){
 			pSupportsFaceEyeTracking = sysFaceTrackProps.supportEyeFacialTracking;
 			pSupportsFaceLipTracking = sysFaceTrackProps.supportLipFacialTracking;
+		}
+		
+		if( instance.SupportsExtension( deoxrInstance::extFBPassthrough ) ){
+			pSupportsPassthrough = sysPassThroughProps.supportsPassthrough;
 		}
 		
 		deVROpenXR &oxr = instance.GetOxr();
