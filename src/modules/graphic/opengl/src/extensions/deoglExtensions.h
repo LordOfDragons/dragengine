@@ -230,6 +230,8 @@ public:
 		 * Version 4.3 .
 		 * <li>ARB_shader_storage_buffer_object</li>
 		 * <li>ARB_program_interface_query</li>
+		 * <li>ARB_draw_indirect</li>
+		 * <li>ARB_multi_draw_indirect</li>
 		 */
 		evgl4p3,
 		
@@ -248,6 +250,7 @@ public:
 		 * Version 4.6 .
 		 * <ul>
 		 * <li>GL_ARB_shader_image_load_store</li>
+		 * <li>ARB_indirect_parameters</li>
 		 * </ul>
 		 */
 		evgl4p6,
@@ -318,6 +321,10 @@ public:
 		ext_ARB_program_interface_query,
 		ext_ARB_shader_image_load_store,
 		ext_ARB_compute_shader,
+		ext_ARB_draw_indirect,
+		ext_ARB_multi_draw_indirect,
+		ext_ARB_indirect_parameters,
+		ext_ARB_bindless_texture,
 		
 		ext_EXT_bindable_uniform,
 		ext_EXT_blend_equation_separate,

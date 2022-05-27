@@ -711,10 +711,34 @@ extern GLAPI PFNGLDISPATCHCOMPUTEINDIRECTPROC pglDispatchComputeIndirect;
 
 
 
+// GL_ARB_draw_indirect : opengl version 4.3
+//////////////////////////////////////////////
+
+extern GLAPI PFNGLDRAWARRAYSINDIRECTPROC pglDrawArraysIndirect;
+extern GLAPI PFNGLDRAWELEMENTSINDIRECTPROC pglDrawElementsIndirect;
+
+
+
+// GL_ARB_multi_draw_indirect : opengl version 4.3
+////////////////////////////////////////////////////
+
+extern GLAPI PFNGLMULTIDRAWARRAYSINDIRECTPROC pglMultiDrawArraysIndirect;
+extern GLAPI PFNGLMULTIDRAWELEMENTSINDIRECTPROC pglMultiDrawElementsIndirect;
+
+
+
 // GL_ARB_clip_control : opengl version 4.5
 /////////////////////////////////////////////
 
 extern GLAPI PFNGLCLIPCONTROLPROC pglClipControl;
+
+
+
+// GL_ARB_indirect_parameters : opengl version 4.6
+////////////////////////////////////////////////////
+
+extern GLAPI PFNGLMULTIDRAWARRAYSINDIRECTCOUNTARBPROC pglMultiDrawArraysIndirectCountARB;
+extern GLAPI PFNGLMULTIDRAWELEMENTSINDIRECTCOUNTARBPROC pglMultiDrawElementsIndirectCountARB;
 
 
 
@@ -924,5 +948,25 @@ extern GLAPI PFNGLGETINTEGER64VPROC pglGetInteger64v;
 //////////////////////////////////////////////
 
 extern GLAPI PFNGLTEXTUREBARRIERNVPROC pglTextureBarrier;
+
+
+
+// GL_ARB_bindless_texture : no opengl version
+////////////////////////////////////////////////
+
+extern GLAPI PFNGLGETTEXTUREHANDLEARBPROC pglGetTextureHandleARB;
+extern GLAPI PFNGLGETTEXTURESAMPLERHANDLEARBPROC pglGetTextureSamplerHandleARB;
+extern GLAPI PFNGLMAKETEXTUREHANDLERESIDENTARBPROC pglMakeTextureHandleResidentARB;
+extern GLAPI PFNGLMAKETEXTUREHANDLENONRESIDENTARBPROC pglMakeTextureHandleNonResidentARB;
+extern GLAPI PFNGLGETIMAGEHANDLEARBPROC pglGetImageHandleARB;
+extern GLAPI PFNGLMAKEIMAGEHANDLERESIDENTARBPROC pglMakeImageHandleResidentARB;
+extern GLAPI PFNGLMAKEIMAGEHANDLENONRESIDENTARBPROC pglMakeImageHandleNonResidentARB;
+extern GLAPI PFNGLUNIFORMHANDLEUI64ARBPROC pglUniformHandleui64ARB;
+extern GLAPI PFNGLUNIFORMHANDLEUI64VARBPROC pglUniformHandleui64vARB;
+extern GLAPI PFNGLPROGRAMUNIFORMHANDLEUI64ARBPROC pglProgramUniformHandleui64ARB;
+extern GLAPI PFNGLPROGRAMUNIFORMHANDLEUI64VARBPROC pglProgramUniformHandleui64vARB;
+extern GLAPI PFNGLVERTEXATTRIBL1UI64ARBPROC pglVertexAttribL1ui64ARB;
+extern GLAPI PFNGLVERTEXATTRIBL1UI64VARBPROC pglVertexAttribL1ui64vARB;
+extern GLAPI PFNGLGETVERTEXATTRIBLUI64VARBPROC pglGetVertexAttribLui64vARB;
 
 #endif

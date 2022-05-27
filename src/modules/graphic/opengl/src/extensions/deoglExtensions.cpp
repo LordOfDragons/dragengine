@@ -137,6 +137,10 @@ static const char * const vExtensionNames[ deoglExtensions::EXT_COUNT ] = {
 	"GL_ARB_program_interface_query",
 	"GL_ARB_shader_image_load_store",
 	"GL_ARB_compute_shader",
+	"GL_ARB_draw_indirect",
+	"GL_ARB_multi_draw_indirect",
+	"GL_ARB_indirect_parameters",
+	"GL_ARB_bindless_texture",
 	
 	"GL_EXT_bindable_uniform",
 	"GL_EXT_blend_equation_separate",
@@ -995,9 +999,27 @@ void deoglExtensions::pFetchOptionalFunctions(){
 		#endif
 	}
 	
+	// GL_ARB_draw_indirect : opengl version 4.3
+	if( pHasExtension[ ext_ARB_draw_indirect ] ){
+		pGetOptionalFunction( (void**)&pglDrawArraysIndirect, "glDrawArraysIndirect", ext_ARB_draw_indirect );
+		pGetOptionalFunction( (void**)&pglDrawElementsIndirect, "glDrawElementsIndirect", ext_ARB_draw_indirect );
+	}
+	
+	// GL_ARB_multi_draw_indirect : opengl version 4.3
+	if( pHasExtension[ ext_ARB_multi_draw_indirect ] ){
+		pGetOptionalFunction( (void**)&pglMultiDrawArraysIndirect, "glMultiDrawArraysIndirect", ext_ARB_multi_draw_indirect );
+		pGetOptionalFunction( (void**)&pglMultiDrawElementsIndirect, "glMultiDrawElementsIndirect", ext_ARB_multi_draw_indirect );
+	}
+	
 	// GL_ARB_clip_control : opengl version 4.5
 	if( pHasExtension[ ext_ARB_clip_control ] ){
 		pGetOptionalFunction( (void**)&pglClipControl, "glClipControl", ext_ARB_clip_control );
+	}
+	
+	// GL_ARB_indirect_parameters : opengl version 4.6
+	if( pHasExtension[ ext_ARB_indirect_parameters ] ){
+		pGetOptionalFunction( (void**)&pglMultiDrawArraysIndirectCountARB, "glMultiDrawArraysIndirectCountARB", ext_ARB_indirect_parameters );
+		pGetOptionalFunction( (void**)&pglMultiDrawElementsIndirectCountARB, "glMultiDrawElementsIndirectCountARB", ext_ARB_indirect_parameters );
 	}
 	
 	// GL_ARB_geometry_shader4 : no opengl version
@@ -1107,6 +1129,24 @@ void deoglExtensions::pFetchOptionalFunctions(){
 	// OpenGL 3.2 : no extension
 	if( pGLVersion >= evgl3p2 || pGLESVersion >= evgles3p0 ){
 		pGetRequiredFunction( (void**)&pglGetInteger64v, "glGetInteger64v" );
+	}
+	
+	// GL_ARB_bindless_texture : opengl version 4.6
+	if( pHasExtension[ ext_ARB_bindless_texture ] ){
+		pGetOptionalFunction( (void**)&pglGetTextureHandleARB, "glGetTextureHandleARB", ext_ARB_bindless_texture );
+		pGetOptionalFunction( (void**)&pglGetTextureSamplerHandleARB, "glGetTextureSamplerHandleARB", ext_ARB_bindless_texture );
+		pGetOptionalFunction( (void**)&pglMakeTextureHandleResidentARB, "glMakeTextureHandleResidentARB", ext_ARB_bindless_texture );
+		pGetOptionalFunction( (void**)&pglMakeTextureHandleNonResidentARB, "glMakeTextureHandleNonResidentARB", ext_ARB_bindless_texture );
+		pGetOptionalFunction( (void**)&pglGetImageHandleARB, "glGetImageHandleARB", ext_ARB_bindless_texture );
+		pGetOptionalFunction( (void**)&pglMakeImageHandleResidentARB, "glMakeImageHandleResidentARB", ext_ARB_bindless_texture );
+		pGetOptionalFunction( (void**)&pglMakeImageHandleNonResidentARB, "glMakeImageHandleNonResidentARB", ext_ARB_bindless_texture );
+		pGetOptionalFunction( (void**)&pglUniformHandleui64ARB, "glUniformHandleui64ARB", ext_ARB_bindless_texture );
+		pGetOptionalFunction( (void**)&pglUniformHandleui64vARB, "glUniformHandleui64vARB", ext_ARB_bindless_texture );
+		pGetOptionalFunction( (void**)&pglProgramUniformHandleui64ARB, "glProgramUniformHandleui64ARB", ext_ARB_bindless_texture );
+		pGetOptionalFunction( (void**)&pglProgramUniformHandleui64vARB, "glProgramUniformHandleui64vARB", ext_ARB_bindless_texture );
+		pGetOptionalFunction( (void**)&pglVertexAttribL1ui64ARB, "glVertexAttribL1ui64ARB", ext_ARB_bindless_texture );
+		pGetOptionalFunction( (void**)&pglVertexAttribL1ui64vARB, "glVertexAttribL1ui64vARB", ext_ARB_bindless_texture );
+		pGetOptionalFunction( (void**)&pglGetVertexAttribLui64vARB, "glGetVertexAttribLui64vARB", ext_ARB_bindless_texture );
 	}
 }
 
