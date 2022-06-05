@@ -129,12 +129,12 @@ public:
 	
 	/** \name Events */
 	/*@{*/
-	long onTitleLeftMouseDown( FXObject *sender, FXSelector selector, void *data );
-	long onTitleLeftMouseUp( FXObject *sender, FXSelector selector, void *data );
-	long onTitleMouseMove( FXObject *sender, FXSelector selector, void *data );
-	long onRightMousePress( FXObject *sender, FXSelector selector, void *data );
-	long onRightMouseRelease( FXObject *sender, FXSelector selector, void *data );
-	long onChildLayoutFlags( FXObject *sender, FXSelector selector, void *data );
+	long onTitleLeftMouseDown( FXObject*, FXSelector, void* );
+	long onTitleLeftMouseUp( FXObject*, FXSelector, void* );
+	long onTitleMouseMove( FXObject*, FXSelector, void* );
+	long onRightMousePress( FXObject*, FXSelector, void* );
+	long onRightMouseRelease( FXObject*, FXSelector, void* );
+	long onChildLayoutFlags( FXObject*, FXSelector, void* );
 	/*@}*/
 };
 

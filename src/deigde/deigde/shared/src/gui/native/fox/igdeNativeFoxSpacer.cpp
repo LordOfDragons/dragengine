@@ -52,9 +52,9 @@ FXIMPLEMENT( igdeNativeFoxSpacer, FXFrame, igdeNativeFoxSpacerMap, ARRAYNUMBER( 
 igdeNativeFoxSpacer::igdeNativeFoxSpacer(){
 }
 
-igdeNativeFoxSpacer::igdeNativeFoxSpacer( igdeSpacer &owner, FXComposite *parent, int childFlags ) :
-FXFrame( parent, LayoutFlags( childFlags ), 0, 0, owner.GetSize().x, owner.GetSize().y ),
-pOwner( &owner ),
+igdeNativeFoxSpacer::igdeNativeFoxSpacer( igdeSpacer &powner, FXComposite *pparent, int childFlags ) :
+FXFrame( pparent, LayoutFlags( childFlags ), 0, 0, powner.GetSize().x, powner.GetSize().y ),
+pOwner( &powner ),
 pWidth( width ),
 pHeight( height ){
 }
@@ -63,22 +63,22 @@ igdeNativeFoxSpacer::~igdeNativeFoxSpacer(){
 	pOwner = NULL;
 }
 
-igdeNativeFoxSpacer *igdeNativeFoxSpacer::CreateNativeWidget( igdeSpacer &owner ){
-	if( ! owner.GetParent() ){
+igdeNativeFoxSpacer *igdeNativeFoxSpacer::CreateNativeWidget( igdeSpacer &powner ){
+	if( ! powner.GetParent() ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	FXComposite * const parent = ( FXComposite* )owner.GetParent()->GetNativeContainer();
-	if( ! parent ){
+	FXComposite * const pparent = ( FXComposite* ) powner.GetParent()->GetNativeContainer();
+	if( ! pparent ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	return new igdeNativeFoxSpacer( owner, parent, igdeUIFoxHelper::GetChildLayoutFlags( &owner ) );
+	return new igdeNativeFoxSpacer( powner, pparent, igdeUIFoxHelper::GetChildLayoutFlags( &powner ) );
 }
 
 void igdeNativeFoxSpacer::PostCreateNativeWidget(){
-	FXComposite &parent = *( ( FXComposite* )pOwner->GetParent()->GetNativeContainer() );
-	if( parent.id() ){
+	FXComposite &pparent = *( ( FXComposite* )pOwner->GetParent()->GetNativeContainer() );
+	if( pparent.id() ){
 		create();
 	}
 }
@@ -92,10 +92,10 @@ void igdeNativeFoxSpacer::DestroyNativeWidget(){
 // Management
 ///////////////
 
-void igdeNativeFoxSpacer::SetSize( int width, int height ){
-	pWidth = width;
-	pHeight = height;
-	resize( width, height );
+void igdeNativeFoxSpacer::SetSize( int wwidth, int hheight ){
+	pWidth = wwidth;
+	pHeight = hheight;
+	resize( wwidth, hheight );
 }
 
 int igdeNativeFoxSpacer::getDefaultWidth(){

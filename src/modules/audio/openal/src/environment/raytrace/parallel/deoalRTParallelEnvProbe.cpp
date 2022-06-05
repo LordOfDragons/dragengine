@@ -689,7 +689,6 @@ const decLayerMask &layerMask, const deoalATRayTracing::sConfigSoundTracing &con
 	}catch( const deException & ){
 		// do NOT call RemoveAllDependsOn! we are asynchronous and the task could have started!
 		pBarrierTask = NULL;
-		int i;
 		for( i=0; i<pTasksRunningTraceSoundRays.GetCount(); i++ ){
 			( ( deParallelTask* )pTasksRunningTraceSoundRays.GetAt( i ) )->Cancel();
 		}
@@ -791,7 +790,6 @@ deoalRTWorldBVH *rtWorldBVH, const decLayerMask &layerMask, const decDVector &po
 	}catch( const deException & ){
 		// do NOT call RemoveAllDependsOn! we are asynchronous and the task could have started!
 		pBarrierTask = NULL;
-		int i;
 		for( i=0; i<pTasksRunningListen.GetCount(); i++ ){
 			( ( deParallelTask* )pTasksRunningListen.GetAt( i ) )->Cancel();
 		}
@@ -992,7 +990,6 @@ const deoalRayTraceConfig &probeConfig ){
 	}catch( const deException & ){
 		// do NOT call RemoveAllDependsOn! we are asynchronous and the task could have started!
 		pBarrierTask = NULL;
-		int i;
 		for( i=0; i<pTasksRunningRoomEstimate.GetCount(); i++ ){
 			( ( deParallelTask* )pTasksRunningRoomEstimate.GetAt( i ) )->Cancel();
 		}

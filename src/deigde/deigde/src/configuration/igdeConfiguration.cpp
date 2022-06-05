@@ -442,72 +442,53 @@ void igdeConfiguration::LocatePath(){
 
 void igdeConfiguration::InitVirtualFileSystem(){
 	deVirtualFileSystem &vfs = *pWindowMain.GetVirtualFileSystem();
-	deVFSDiskDirectory *diskDir = NULL;
 	decPath pathRootDir, pathDiskDir;
+	deVFSDiskDirectory::Ref diskDir;
 	
 	// add the found path to the virtual file system. this makes it easier
 	// to find the files later on without having to deal with file system
 	// specific quirks.
-	try{
-		// add the configuration containers. the containers are added in
-		// separate locations as we want to read the config files one
-		// by one and mapping both containers to the same path would
-		// shadow the system config files.
-		if( ! pPathConfigSystem.IsEmpty() ){
-			pathRootDir.SetFromUnix( "/config/system" );
-			pathDiskDir.SetFromNative( pPathConfigSystem.GetString() );
-			diskDir = new deVFSDiskDirectory( pathRootDir, pathDiskDir );
-			if( ! diskDir ) DETHROW( deeOutOfMemory );
-			diskDir->SetReadOnly( true );
-			vfs.AddContainer( diskDir );
-			diskDir->FreeReference();
-			diskDir = NULL;
-		}
-		
-		if( ! pPathConfigUser.IsEmpty() ){
-			pathRootDir.SetFromUnix( "/config/user" );
-			pathDiskDir.SetFromNative( pPathConfigUser.GetString() );
-			diskDir = new deVFSDiskDirectory( pathRootDir, pathDiskDir );
-			if( ! diskDir ) DETHROW( deeOutOfMemory );
-			diskDir->SetReadOnly( false );
-			vfs.AddContainer( diskDir );
-			diskDir->FreeReference();
-			diskDir = NULL;
-		}
-		
-		// add the data directory. currently there exists only one which
-		// is the system shares directory. a user one could be layered
-		// on top of it though if required later on. the shares container
-		// is set to read-write as the launcher has to potentiall install
-		// new games or uninstall them.
-		if( ! pPathShares.IsEmpty() ){
-			pathRootDir.SetFromUnix( "/data" );
-			pathDiskDir.SetFromNative( pPathShares.GetString() );
-			diskDir = new deVFSDiskDirectory( pathRootDir, pathDiskDir );
-			if( ! diskDir ) DETHROW( deeOutOfMemory );
-			diskDir->SetReadOnly( false );
-			vfs.AddContainer( diskDir );
-			diskDir->FreeReference();
-			diskDir = NULL;
-		}
-		
-		// add the logs directory. this is read-write
-		if( ! pPathLogs.IsEmpty() ){
-			pathRootDir.SetFromUnix( "/logs" );
-			pathDiskDir.SetFromNative( pPathLogs.GetString() );
-			diskDir = new deVFSDiskDirectory( pathRootDir, pathDiskDir );
-			if( ! diskDir ) DETHROW( deeOutOfMemory );
-			diskDir->SetReadOnly( false );
-			vfs.AddContainer( diskDir );
-			diskDir->FreeReference();
-			diskDir = NULL;
-		}
-		
-	}catch( const deException & ){
-		if( diskDir ){
-			diskDir->FreeReference();
-		}
-		throw;
+	
+	// add the configuration containers. the containers are added in
+	// separate locations as we want to read the config files one
+	// by one and mapping both containers to the same path would
+	// shadow the system config files.
+	if( ! pPathConfigSystem.IsEmpty() ){
+		pathRootDir.SetFromUnix( "/config/system" );
+		pathDiskDir.SetFromNative( pPathConfigSystem );
+		diskDir.TakeOver( new deVFSDiskDirectory( pathRootDir, pathDiskDir ) );
+		diskDir->SetReadOnly( true );
+		vfs.AddContainer( diskDir );
+	}
+	
+	if( ! pPathConfigUser.IsEmpty() ){
+		pathRootDir.SetFromUnix( "/config/user" );
+		pathDiskDir.SetFromNative( pPathConfigUser );
+		diskDir.TakeOver( new deVFSDiskDirectory( pathRootDir, pathDiskDir ) );
+		diskDir->SetReadOnly( false );
+		vfs.AddContainer( diskDir );
+	}
+	
+	// add the data directory. currently there exists only one which
+	// is the system shares directory. a user one could be layered
+	// on top of it though if required later on. the shares container
+	// is set to read-write as the launcher has to potentiall install
+	// new games or uninstall them.
+	if( ! pPathShares.IsEmpty() ){
+		pathRootDir.SetFromUnix( "/data" );
+		pathDiskDir.SetFromNative( pPathShares );
+		diskDir.TakeOver( new deVFSDiskDirectory( pathRootDir, pathDiskDir ) );
+		diskDir->SetReadOnly( false );
+		vfs.AddContainer( diskDir );
+	}
+	
+	// add the logs directory. this is read-write
+	if( ! pPathLogs.IsEmpty() ){
+		pathRootDir.SetFromUnix( "/logs" );
+		pathDiskDir.SetFromNative( pPathLogs );
+		diskDir.TakeOver( new deVFSDiskDirectory( pathRootDir, pathDiskDir ) );
+		diskDir->SetReadOnly( false );
+		vfs.AddContainer( diskDir );
 	}
 }
 

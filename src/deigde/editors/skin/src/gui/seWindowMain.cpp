@@ -794,12 +794,12 @@ public:
 			pathChange.SetFrom( importSkinPath );
 			
 		}else{
-			const decPath skinPath( decPath::CreatePathUnix( skin->GetDirectoryPath() ) );
+			const decPath skinPath2( decPath::CreatePathUnix( skin->GetDirectoryPath() ) );
 			decPath comparePath;
 			
 			// add conmponents until both path are no more equal. that is the common base
-			for( i=0; i<skinPath.GetComponentCount(); i++ ){
-				pathChange.AddComponent( skinPath.GetComponentAt( i ) );
+			for( i=0; i<skinPath2.GetComponentCount(); i++ ){
+				pathChange.AddComponent( skinPath2.GetComponentAt( i ) );
 				comparePath.AddComponent( importSkinPath.GetComponentAt( i ) );
 				if( pathChange != comparePath ){
 					break;
@@ -810,7 +810,7 @@ public:
 			const int baseComponentCount = i;
 			
 			pathChange.SetEmpty();
-			for( i=baseComponentCount; i<skinPath.GetComponentCount(); i++ ){
+			for( i=baseComponentCount; i<skinPath2.GetComponentCount(); i++ ){
 				pathChange.AddComponent( ".." );
 			}
 			for( i=baseComponentCount; i<importSkinPath.GetComponentCount(); i++ ){

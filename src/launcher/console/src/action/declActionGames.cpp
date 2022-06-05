@@ -248,11 +248,11 @@ int declActionGames::pUninstall(){
 			continue;
 		}
 		
-		const delGame * const game = pLauncher.GetGameManager().GetGames().GetWithID( checkPatch.GetGameID() );
+		const delGame * const pgame = pLauncher.GetGameManager().GetGames().GetWithID( checkPatch.GetGameID() );
 		printf( "Patch '%s'(%s) for game '%s' shares the same *.delga file.\n",
 			checkPatch.GetName().ToUTF8().GetString(),
 			checkPatch.GetIdentifier().ToHexString( false ).GetString(),
-			game ? game->GetTitle().ToUTF8().GetString() : "?" );
+			pgame ? pgame->GetTitle().ToUTF8().GetString() : "?" );
 		hasSharedGamesPatches = true;
 	}
 	

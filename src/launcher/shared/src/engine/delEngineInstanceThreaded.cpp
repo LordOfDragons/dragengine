@@ -472,8 +472,8 @@ void delEngineInstanceThreaded::WriteUShortToPipe( int value ){
 	if( value < 0 || value > 0xffff ){
 		DETHROW( deeInvalidParam );
 	}
-	const uint16_t ushort = ( uint16_t )value;
-	WriteToPipe( &ushort, sizeof( uint16_t ) );
+	const uint16_t vushort = ( uint16_t )value;
+	WriteToPipe( &vushort, sizeof( uint16_t ) );
 }
 
 void delEngineInstanceThreaded::WriteFloatToPipe( float value ){
@@ -514,9 +514,9 @@ int delEngineInstanceThreaded::ReadUCharFromPipe(){
 }
 
 int delEngineInstanceThreaded::ReadUShortFromPipe(){
-	uint16_t ushort;
-	ReadFromPipe( &ushort, sizeof( uint16_t ) );
-	return ushort;
+	uint16_t vushort;
+	ReadFromPipe( &vushort, sizeof( uint16_t ) );
+	return vushort;
 }
 
 int delEngineInstanceThreaded::ReadIntFromPipe(){

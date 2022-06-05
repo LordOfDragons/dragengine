@@ -194,9 +194,9 @@ static FXint fSortListItemByVersion( const FXListItem *item1, const FXListItem *
 
 deglDialogProfileList::deglDialogProfileList(){ }
 
-deglDialogProfileList::deglDialogProfileList( deglWindowMain *windowMain, FXWindow *owner,
+deglDialogProfileList::deglDialogProfileList( deglWindowMain *windowMain, FXWindow *powner,
 	delGameProfile *selectProfile ) :
-FXDialogBox( owner, "Profiles", DECOR_TITLE | DECOR_BORDER | DECOR_RESIZE | DECOR_CLOSE,
+FXDialogBox( powner, "Profiles", DECOR_TITLE | DECOR_BORDER | DECOR_RESIZE | DECOR_CLOSE,
 0, 0, 1100, 600, 10, 10, 10, 5 ){
 	const deglGuiBuilder &guiBuilder = *windowMain->GetGuiBuilder();
 	FXHorizontalFrame *frameSuper, *frameTabHorz, *frameLine, *frameLine2;
@@ -1584,7 +1584,7 @@ long deglDialogProfileList::onMPParameterLabelLMRelease( FXObject*, FXSelector, 
 	return 1;
 }
 
-long deglDialogProfileList::onMPParameterLabelRMPress( FXObject *sender, FXSelector, void* data){
+long deglDialogProfileList::onMPParameterLabelRMPress( FXObject *sender, FXSelector, void* pdata){
 	const int count = pMPParameters.GetCount();
 	int i;
 	
@@ -1594,7 +1594,7 @@ long deglDialogProfileList::onMPParameterLabelRMPress( FXObject *sender, FXSelec
 			continue;
 		}
 		
-		const FXEvent &event = *( ( const FXEvent * )data );
+		const FXEvent &event = *( ( const FXEvent * )pdata );
 		FXMenuPane *popup = nullptr;
 		int x = event.root_x;
 		int y = event.root_y;
@@ -1691,12 +1691,12 @@ long deglDialogProfileList::onChkReplaceRunArgsChanged( FXObject*, FXSelector, v
 
 long deglDialogProfileList::onEditWidthChanged( FXObject*, FXSelector, void* ){
 	if( pGetSelectedProfile() ){
-		int width = pEditWidth->getText().toInt();
-		if( width < 1 ){
+		int wwidth = pEditWidth->getText().toInt();
+		if( wwidth < 1 ){
 			pEditWidth->setText( "1" );
-			width = 1;
+			wwidth = 1;
 		}
-		pGetSelectedProfile()->GetEdit()->SetWidth( width );
+		pGetSelectedProfile()->GetEdit()->SetWidth( wwidth );
 	}
 	return 1;
 }
@@ -1723,12 +1723,12 @@ long deglDialogProfileList::onCBFullScreenResolutionsChanged( FXObject*, FXSelec
 
 long deglDialogProfileList::onEditHeightChanged( FXObject*, FXSelector, void* ){
 	if( pGetSelectedProfile() ){
-		int height = pEditHeight->getText().toInt();
-		if( height < 1 ){
+		int hheight = pEditHeight->getText().toInt();
+		if( hheight < 1 ){
 			pEditHeight->setText( "1" );
-			height = 1;
+			hheight = 1;
 		}
-		pGetSelectedProfile()->GetEdit()->SetHeight( height );
+		pGetSelectedProfile()->GetEdit()->SetHeight( hheight );
 	}
 	return 1;
 }

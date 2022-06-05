@@ -48,32 +48,32 @@ FXIMPLEMENT( igdeNativeFoxContainerFixed, FXPacker,
 
 igdeNativeFoxContainerFixed::igdeNativeFoxContainerFixed(){ }
 
-igdeNativeFoxContainerFixed::igdeNativeFoxContainerFixed( igdeContainerFixed &owner,
-	FXComposite *parent, int layoutFlags ) :
-FXPacker( parent, layoutFlags, 0, 0, 0, 0, 0, 0, 0, 0 ),
-pOwner( &owner ){
+igdeNativeFoxContainerFixed::igdeNativeFoxContainerFixed( igdeContainerFixed &powner,
+	FXComposite *pparent, int layoutFlags ) :
+FXPacker( pparent, layoutFlags, 0, 0, 0, 0, 0, 0, 0, 0 ),
+pOwner( &powner ){
 }
 
 igdeNativeFoxContainerFixed::~igdeNativeFoxContainerFixed(){
 }
 
-igdeNativeFoxContainerFixed *igdeNativeFoxContainerFixed::CreateNativeWidget( igdeContainerFixed &owner ){
-	if( ! owner.GetParent() ){
+igdeNativeFoxContainerFixed *igdeNativeFoxContainerFixed::CreateNativeWidget( igdeContainerFixed &powner ){
+	if( ! powner.GetParent() ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	FXComposite * const parent = ( FXComposite* )owner.GetParent()->GetNativeContainer();
-	if( ! parent ){
+	FXComposite * const pparent = ( FXComposite* ) powner.GetParent()->GetNativeContainer();
+	if( ! pparent ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	return new igdeNativeFoxContainerFixed( owner, parent,
-		igdeUIFoxHelper::GetChildLayoutFlags( &owner ) );
+	return new igdeNativeFoxContainerFixed( powner, pparent,
+		igdeUIFoxHelper::GetChildLayoutFlags( &powner ) );
 }
 
 void igdeNativeFoxContainerFixed::PostCreateNativeWidget(){
-	FXComposite &parent = *( ( FXComposite* )pOwner->GetParent()->GetNativeContainer() );
-	if( parent.id() ){
+	FXComposite &pparent = *( ( FXComposite* )pOwner->GetParent()->GetNativeContainer() );
+	if( pparent.id() ){
 		create();
 	}
 }
@@ -87,8 +87,8 @@ void igdeNativeFoxContainerFixed::DestroyNativeWidget(){
 // Events
 ///////////
 
-long igdeNativeFoxContainerFixed::onChildLayoutFlags( FXObject *sender, FXSelector selector, void *data ){
-	igdeUIFoxHelper::sChildLayoutFlags &clflags = *( ( igdeUIFoxHelper::sChildLayoutFlags* )data );
+long igdeNativeFoxContainerFixed::onChildLayoutFlags( FXObject*, FXSelector, void *pdata ){
+	igdeUIFoxHelper::sChildLayoutFlags &clflags = *( ( igdeUIFoxHelper::sChildLayoutFlags* )pdata );
 	clflags.flags = 0;
 	clflags.canResizeHorizontal = true;
 	clflags.canResizeVertical = true;

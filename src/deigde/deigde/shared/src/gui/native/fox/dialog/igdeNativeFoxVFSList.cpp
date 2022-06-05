@@ -118,8 +118,8 @@ private:
 	const char * const pColumnPattern;
 	
 public:
-	igdeNativeFoxVFSListFind( igdeNativeFoxVFSList &owner, const char * const columnPattern ) :
-	pOwner( owner ), pColumnPattern( columnPattern ){
+	igdeNativeFoxVFSListFind( igdeNativeFoxVFSList &powner, const char * const columnPattern ) :
+	pOwner( powner ), pColumnPattern( columnPattern ){
 	}
 	
 	virtual bool VisitFile( const deVirtualFileSystem &vfs, const decPath &path ){
@@ -319,8 +319,8 @@ void igdeNativeFoxVFSList::destroy(){
 // Events
 ///////////
 
-long igdeNativeFoxVFSList::onHeaderClicked( FXObject*, FXSelector, void *data ){
-	const int column = ( int )( intptr_t )data;
+long igdeNativeFoxVFSList::onHeaderClicked( FXObject*, FXSelector, void *pdata ){
+	const int column = ( int )( intptr_t )pdata;
 	
 	if( column == 0 ){ // sort by name
 		if( pSorting == esNameAsc ){

@@ -295,7 +295,7 @@ void igdeXMLGameDefinition::pParseClass( const decXmlElementTag &root, igdeGameD
 				ReadMultilineString( *tag ) );
 			
 		}else if( tagName == "textureProperty" ){
-			igdeGDProperty *property = NULL;
+			property = NULL;
 			
 			try{
 				property = new igdeGDProperty( GetAttributeString( *tag, "name" ) );

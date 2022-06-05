@@ -72,9 +72,9 @@ private:
 		eOpenGLObjectType type;
 		GLuint name;
 		
-		inline void Set( eOpenGLObjectType type, GLuint name ){
-			this->type = type;
-			this->name = name;
+		inline void Set( eOpenGLObjectType ptype, GLuint pname ){
+			type = ptype;
+			name = pname;
 		}
 	};
 	

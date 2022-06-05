@@ -96,11 +96,11 @@ FXIMPLEMENT( igdeNativeFoxViewCurveBezierView, FXFrame,
 
 igdeNativeFoxViewCurveBezierView::igdeNativeFoxViewCurveBezierView(){ }
 
-igdeNativeFoxViewCurveBezierView::igdeNativeFoxViewCurveBezierView( igdeViewCurveBezier &owner,
-	FXComposite *parent, int layoutFlags, const igdeGuiTheme &guitheme ) :
-FXFrame( parent, layoutFlags | ViewCurveBezierFlags( owner ), 0, 0, 0, 0, 0, 0, 0, 0 ),
-pOwner( &owner ),
-pFont( ViewCurveBezierFont( owner, guitheme ) ),
+igdeNativeFoxViewCurveBezierView::igdeNativeFoxViewCurveBezierView( igdeViewCurveBezier &powner,
+	FXComposite *pparent, int layoutFlags, const igdeGuiTheme &guitheme ) :
+FXFrame( pparent, layoutFlags | ViewCurveBezierFlags( powner ), 0, 0, 0, 0, 0, 0, 0, 0 ),
+pOwner( &powner ),
+pFont( ViewCurveBezierFont( powner, guitheme ) ),
 
 pGridMin( 0.0f, 0.0f ),
 pGridMax( 1.0f, 1.0f ),
@@ -645,10 +645,10 @@ int igdeNativeFoxViewCurveBezierView::ViewCurveBezierFlags( const igdeViewCurveB
 	return FRAME_SUNKEN;
 }
 
-igdeFont *igdeNativeFoxViewCurveBezierView::ViewCurveBezierFont( const igdeViewCurveBezier &owner,
+igdeFont *igdeNativeFoxViewCurveBezierView::ViewCurveBezierFont( const igdeViewCurveBezier &powner,
 const igdeGuiTheme &guitheme ){
 	igdeFont::sConfiguration configuration;
-	owner.GetEnvironment().GetApplicationFont( configuration );
+	powner.GetEnvironment().GetApplicationFont( configuration );
 	
 	if( guitheme.HasProperty( igdeGuiThemePropertyNames::viewCurveBezierFontSizeAbsolute ) ){
 		configuration.size = guitheme.GetIntProperty(
@@ -667,7 +667,7 @@ const igdeGuiTheme &guitheme ){
 			igdeGuiThemePropertyNames::fontSize, 1.0f );
 	}
 	
-	return owner.GetEnvironment().GetSharedFont( configuration );
+	return powner.GetEnvironment().GetSharedFont( configuration );
 }
 
 
@@ -681,8 +681,8 @@ long igdeNativeFoxViewCurveBezierView::onResize( FXObject*, FXSelector, void* ){
 	return 1;
 }
 
-long igdeNativeFoxViewCurveBezierView::onPaint( FXObject*, FXSelector, void *data ){
-	FXDCWindow dc( this, ( FXEvent* )data );
+long igdeNativeFoxViewCurveBezierView::onPaint( FXObject*, FXSelector, void *pdata ){
+	FXDCWindow dc( this, ( FXEvent* )pdata );
 	
 	UpdateParameters();
 	
@@ -695,12 +695,12 @@ long igdeNativeFoxViewCurveBezierView::onPaint( FXObject*, FXSelector, void *dat
 	return 1;
 }
 
-long igdeNativeFoxViewCurveBezierView::onLeftMouseDown( FXObject*, FXSelector, void *data ){
+long igdeNativeFoxViewCurveBezierView::onLeftMouseDown( FXObject*, FXSelector, void *pdata ){
 	if( pDragMode != edmNone ){
 		return 0;
 	}
 	
-	const FXEvent &event = *( ( FXEvent* )data );
+	const FXEvent &event = *( ( FXEvent* )pdata );
 	
 	UpdateParameters();
 	
@@ -881,12 +881,12 @@ long igdeNativeFoxViewCurveBezierView::onLeftMouseDown( FXObject*, FXSelector, v
 	return 1;
 }
 
-long igdeNativeFoxViewCurveBezierView::onMouseMove( FXObject*, FXSelector, void *data ){
+long igdeNativeFoxViewCurveBezierView::onMouseMove( FXObject*, FXSelector, void *pdata ){
 	if( pDragMode == edmNone ){
 		return 1;
 	}
 	
-	const FXEvent &event = *( ( FXEvent* )data );
+	const FXEvent &event = *( ( FXEvent* )pdata );
 	bool shift = ( event.state & SHIFTMASK ) == SHIFTMASK;
 	bool control = ( event.state & CONTROLMASK ) == CONTROLMASK;
 	int dragDiffX = event.win_x - pDragOrg.x;
@@ -1097,9 +1097,9 @@ long igdeNativeFoxViewCurveBezierView::onLeftMouseUp( FXObject*, FXSelector, voi
 	return 1;
 }
 
-long igdeNativeFoxViewCurveBezierView::onRightMouseDown( FXObject*, FXSelector, void *data ){
+long igdeNativeFoxViewCurveBezierView::onRightMouseDown( FXObject*, FXSelector, void *pdata ){
 	if( pDragMode == edmNone ){
-		const FXEvent &event = *( ( FXEvent* )data );
+		const FXEvent &event = *( ( FXEvent* )pdata );
 		int x = event.win_x;
 		int y = event.win_y;
 		
@@ -1125,9 +1125,9 @@ long igdeNativeFoxViewCurveBezierView::onRightMouseUp( FXObject*, FXSelector, vo
 	return 1;
 }
 
-long igdeNativeFoxViewCurveBezierView::onMiddleMouseDown( FXObject*, FXSelector, void *data ){
+long igdeNativeFoxViewCurveBezierView::onMiddleMouseDown( FXObject*, FXSelector, void *pdata ){
 	if( pDragMode == edmNone ){
-		const FXEvent &event = *( ( FXEvent* )data );
+		const FXEvent &event = *( ( FXEvent* )pdata );
 		
 		UpdateParameters();
 		
@@ -1171,16 +1171,16 @@ long igdeNativeFoxViewCurveBezierView::onMiddleMouseUp( FXObject*, FXSelector, v
 
 void igdeNativeFoxViewCurveBezierView::UpdateParameters(){
 	if( pDirtyGridParams ){
-		int width = getWidth();
-		int height = getHeight();
-		int realWidth = width - pRulerSize.x - 10;
-		int realHeight = height - pRulerSize.y - 10;
+		int wwidth = getWidth();
+		int hheight = getHeight();
+		int realWidth = wwidth - pRulerSize.x - 10;
+		int realHeight = hheight - pRulerSize.y - 10;
 		int minUnitPixelsX = 30;
 		int minUnitPixelsY = 15;
 		float unitSize;
 		
-		pWindowCenter.x = ( width + pRulerSize.x ) / 2;
-		pWindowCenter.y = ( height - pRulerSize.y ) / 2;
+		pWindowCenter.x = ( wwidth + pRulerSize.x ) / 2;
+		pWindowCenter.y = ( hheight - pRulerSize.y ) / 2;
 		
 		if( realWidth < 10 ){
 			realWidth = 10;
@@ -1241,11 +1241,11 @@ FXIMPLEMENT( igdeNativeFoxViewCurveBezier, FXVerticalFrame,
 igdeNativeFoxViewCurveBezier::igdeNativeFoxViewCurveBezier(){ }
 
 igdeNativeFoxViewCurveBezier::igdeNativeFoxViewCurveBezier(
-	igdeViewCurveBezier &owner, FXComposite *parent,
+	igdeViewCurveBezier &powner, FXComposite *pparent,
 	const igdeUIFoxHelper::sChildLayoutFlags &layoutFlags, const igdeGuiTheme &guitheme ) :
-FXVerticalFrame( parent, layoutFlags.flags, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ),
-pView( new igdeNativeFoxViewCurveBezierView( owner, this, LAYOUT_FILL
-	| igdeNativeFoxViewCurveBezierView::ViewCurveBezierFlags( owner ), guitheme ) ),
+FXVerticalFrame( pparent, layoutFlags.flags, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ),
+pView( new igdeNativeFoxViewCurveBezierView( powner, this, LAYOUT_FILL
+	| igdeNativeFoxViewCurveBezierView::ViewCurveBezierFlags( powner ), guitheme ) ),
 pResizer( NULL )
 {
 	if( layoutFlags.canResizeVertical || ( layoutFlags.flags & LAYOUT_FILL_Y ) == 0 ){
@@ -1256,18 +1256,18 @@ pResizer( NULL )
 igdeNativeFoxViewCurveBezier::~igdeNativeFoxViewCurveBezier(){
 }
 
-igdeNativeFoxViewCurveBezier *igdeNativeFoxViewCurveBezier::CreateNativeWidget( igdeViewCurveBezier &owner ){
-	if( ! owner.GetParent() ){
+igdeNativeFoxViewCurveBezier *igdeNativeFoxViewCurveBezier::CreateNativeWidget( igdeViewCurveBezier &powner ){
+	if( ! powner.GetParent() ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	FXComposite * const nativeParent = ( FXComposite* )owner.GetParent()->GetNativeContainer();
+	FXComposite * const nativeParent = ( FXComposite* ) powner.GetParent()->GetNativeContainer();
 	if( ! nativeParent ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	return new igdeNativeFoxViewCurveBezier( owner, nativeParent,
-		igdeUIFoxHelper::GetChildLayoutFlagsAll( &owner ), *owner.GetGuiTheme() );
+	return new igdeNativeFoxViewCurveBezier( powner, nativeParent,
+		igdeUIFoxHelper::GetChildLayoutFlagsAll( &powner ), *powner.GetGuiTheme() );
 }
 
 void igdeNativeFoxViewCurveBezier::PostCreateNativeWidget(){
@@ -1283,12 +1283,12 @@ void igdeNativeFoxViewCurveBezier::DestroyNativeWidget(){
 
 
 
-long igdeNativeFoxViewCurveBezier::onResizerDrag( FXObject*, FXSelector, void *data ){
-	const int distance = igdeNativeFoxResizer::SelCommandDraggedDistance( data );
-	igdeViewCurveBezier &owner = pView->GetOwner();
-	decPoint defaultSize( owner.GetDefaultSize() );
+long igdeNativeFoxViewCurveBezier::onResizerDrag( FXObject*, FXSelector, void *pdata ){
+	const int distance = igdeNativeFoxResizer::SelCommandDraggedDistance( pdata );
+	igdeViewCurveBezier &powner = pView->GetOwner();
+	decPoint defaultSize( powner.GetDefaultSize() );
 	defaultSize.y = decMath::max( 50, defaultSize.y + distance );
-	owner.SetDefaultSize( defaultSize );
+	powner.SetDefaultSize( defaultSize );
 	return 0;
 }
 

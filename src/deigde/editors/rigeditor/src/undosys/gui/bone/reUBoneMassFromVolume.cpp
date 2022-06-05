@@ -185,11 +185,10 @@ float reUBoneMassFromVolume::pCalcVolume( const reRigBone &bone ) const{
 		case reRigShape::estHull:{
 			// this calculation is a crude approximation for the time being
 			const reRigShapeHull &hull = ( reRigShapeHull& )shape;
-			const int count = hull.GetPointCount();
+			const int pointCount = hull.GetPointCount();
 			decVector minExtend, maxExtend;
-			int i;
 			
-			for( i=0; i<count; i++ ){
+			for( i=0; i<pointCount; i++ ){
 				const decVector &point = hull.GetPointAt( i );
 				if( i == 0 ){
 					minExtend = maxExtend = point;

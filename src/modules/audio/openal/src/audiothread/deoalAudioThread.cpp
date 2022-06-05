@@ -425,8 +425,8 @@ void deoalAudioThread::Run(){
 		try{
 			pCleanUpThread();
 			
-		}catch( const deException &exception ){
-			pLogger->LogException( exception );
+		}catch( const deException &exception2 ){
+			pLogger->LogException( exception2 );
 		}
 		
 		return;

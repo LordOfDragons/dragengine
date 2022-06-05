@@ -349,12 +349,12 @@ igdeWidget *widget, int defaultFlags ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	igdeContainer * const parent = widget->GetParent();
-	if( ! parent ){
+	igdeContainer * const pparent = widget->GetParent();
+	if( ! pparent ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	FXComposite * const foxContainer = ( FXComposite* )parent->GetNativeContainer();
+	FXComposite * const foxContainer = ( FXComposite* ) pparent->GetNativeContainer();
 	if( ! foxContainer ){
 		DETHROW( deeInvalidParam );
 	}
@@ -373,12 +373,12 @@ void igdeUIFoxHelper::UpdateLayoutFlags( igdeWidget *widget ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	igdeContainer * const parent = widget->GetParent();
-	if( ! parent ){
+	igdeContainer * const pparent = widget->GetParent();
+	if( ! pparent ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	FXComposite * const foxContainer = ( FXComposite* )parent->GetNativeContainer();
+	FXComposite * const foxContainer = ( FXComposite* ) pparent->GetNativeContainer();
 	if( ! foxContainer ){
 		DETHROW( deeInvalidParam );
 	}

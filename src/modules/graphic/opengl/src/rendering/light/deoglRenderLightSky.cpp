@@ -539,7 +539,7 @@ const deoglRenderPlanMasked *mask ){
 				spbLight->Activate();
 				spbInstance->Activate();
 				
-				int target = lightShader->GetTextureTarget( deoglLightShader::ettShadow1SolidDepth );
+				target = lightShader->GetTextureTarget( deoglLightShader::ettShadow1SolidDepth );
 				if( target != -1 ){
 					tsmgr.EnableTexture( target, *texture1, GetSamplerShadowClampLinear() );
 					

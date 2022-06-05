@@ -60,8 +60,8 @@ FXIMPLEMENT( igdeNativeFoxResizer, FXWindow, igdeNativeResizerMap, ARRAYNUMBER( 
 igdeNativeFoxResizer::igdeNativeFoxResizer(){
 }
 
-igdeNativeFoxResizer::igdeNativeFoxResizer( FXComposite *parent, FXObject *target, FXSelector selector ) :
-FXWindow( parent, LAYOUT_FILL_X ),
+igdeNativeFoxResizer::igdeNativeFoxResizer( FXComposite *pparent, FXObject *ttarget, FXSelector selector ) :
+FXWindow( pparent, LAYOUT_FILL_X ),
 pIsDragging( false ),
 pCursor( NULL ),
 pGripSize( 6 ),
@@ -88,7 +88,7 @@ pActiveColor( FXRGB( 0, 0, 255 ) )
 	setDefaultCursor( getApp()->getDefaultCursor( DEF_VSPLIT_CURSOR ) );
 	setDragCursor( getDefaultCursor() );
 	
-	setTarget( target );
+	setTarget( ttarget );
 	setSelector( selector );
 	enable();
 	show();
@@ -109,8 +109,8 @@ FXint igdeNativeFoxResizer::getDefaultHeight(){
 	return pGripSize;
 }
 
-int igdeNativeFoxResizer::SelCommandDraggedDistance( void *data ){
-	return ( int )( intptr_t )data;
+int igdeNativeFoxResizer::SelCommandDraggedDistance( void *pdata ){
+	return ( int )( intptr_t )pdata;
 }
 
 
@@ -118,18 +118,18 @@ int igdeNativeFoxResizer::SelCommandDraggedDistance( void *data ){
 // Events
 ///////////
 
-long igdeNativeFoxResizer::onPaint( FXObject*, FXSelector, void *data ){
+long igdeNativeFoxResizer::onPaint( FXObject*, FXSelector, void *pdata ){
 	// nicked from FXToolBarGrip::onPaint
-	FXDCWindow dc( this, ( FXEvent* )data );
-	const int height = getHeight();
-	const int width = getWidth();
-	const int gripWidth = decMath::min( pGripWidth, decMath::max( width - 2, 0 ) );
-	const int gripHeight = decMath::max( height - 2, 0 );
-	const int left = ( width - gripWidth ) / 2;
+	FXDCWindow dc( this, ( FXEvent* )pdata );
+	const int hheight = getHeight();
+	const int wwidth = getWidth();
+	const int gripWidth = decMath::min( pGripWidth, decMath::max( wwidth - 2, 0 ) );
+	const int gripHeight = decMath::max( hheight - 2, 0 );
+	const int left = ( wwidth - gripWidth ) / 2;
 	const int right = left + gripWidth;
 	
 	dc.setForeground( getBackColor() );
-	dc.fillRectangle( 0, 0, width, height );
+	dc.fillRectangle( 0, 0, wwidth, hheight );
 	
 	dc.setForeground( getApp()->getHiliteColor() );
 	dc.fillRectangle( left, 1, 1, gripHeight - 1 );
@@ -179,12 +179,12 @@ long igdeNativeFoxResizer::onLeftMouseUp( FXObject*, FXSelector, void* ){
 	return 0;
 }
 
-long igdeNativeFoxResizer::onMouseMoved( FXObject*, FXSelector, void *data ){
+long igdeNativeFoxResizer::onMouseMoved( FXObject*, FXSelector, void *pdata ){
 	if( ! pIsDragging ){
 		return 0;
 	}
 	
-	const FXEvent &event = *( ( FXEvent* )data );
+	const FXEvent &event = *( ( FXEvent* )pdata );
 	const int center = getHeight() / 2;
 	const int distance = event.win_y - center;
 	

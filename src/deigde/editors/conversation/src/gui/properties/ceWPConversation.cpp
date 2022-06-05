@@ -1652,13 +1652,13 @@ void ceWPConversation::UpdateFPControllerList(){
 		
 		for( i=0; i<count; i++ ){
 			ceControllerValue * const entry = list.GetAt( i );
-			const int controller = entry->GetController();
+			const int controllerIndex = entry->GetController();
 			
-			if( controller >= 0 && controller < controllerNames.GetCount() ){
-				text.Format( "%i: %s", controller, controllerNames.GetAt( controller ).GetString() );
+			if( controllerIndex >= 0 && controllerIndex < controllerNames.GetCount() ){
+				text.Format( "%i: %s", controllerIndex, controllerNames.GetAt( controllerIndex ).GetString() );
 				
 			}else{
-				text.Format( "%i: -", controller );
+				text.Format( "%i: -", controllerIndex );
 			}
 			
 			pCBFPController->AddItem( text, NULL, entry );

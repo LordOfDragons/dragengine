@@ -123,17 +123,17 @@ public:
 	
 	/** \name Events */
 	/*@{*/
-	long onListCommand( FXObject *sender, FXSelector selector, void *data );
-	long onListChanged( FXObject *sender, FXSelector selector, void *data );
-	long onListSelected( FXObject *sender, FXSelector selector, void *data );
-	long onListDeselected( FXObject *sender, FXSelector selector, void *data );
-	long onListHeaderChanged( FXObject *sender, FXSelector selector, void *data );
-	long onListHeaderClicked( FXObject *sender, FXSelector selector, void *data );
-	long onListRightMouseDown( FXObject *sender, FXSelector selector, void *data );
-	long onListRightMouseUp( FXObject *sender, FXSelector selector, void *data );
-	long onListDoubleClicked( FXObject *sender, FXSelector selector, void *data );
+	long onListCommand( FXObject*, FXSelector, void* );
+	long onListChanged( FXObject*, FXSelector, void* );
+	long onListSelected( FXObject*, FXSelector, void* );
+	long onListDeselected( FXObject*, FXSelector, void* );
+	long onListHeaderChanged( FXObject*, FXSelector, void* );
+	long onListHeaderClicked( FXObject*, FXSelector, void* );
+	long onListRightMouseDown( FXObject*, FXSelector, void* );
+	long onListRightMouseUp( FXObject*, FXSelector, void* );
+	long onListDoubleClicked( FXObject*, FXSelector, void* );
 	
-	long onResizerDrag( FXObject *sender, FXSelector selector, void *data );
+	long onResizerDrag( FXObject*, FXSelector, void* );
 	/*@}*/
 };
 

@@ -57,10 +57,10 @@ igdeNativeFoxContainerForm::igdeNativeFoxContainerForm(){
 }
 
 igdeNativeFoxContainerForm::igdeNativeFoxContainerForm(
-	igdeContainerForm &owner, FXComposite *parent, int layoutFlags ) :
-FXMatrix( parent, 2, MATRIX_BY_COLUMNS | layoutFlags, 0, 0, 0, 0, 0, 0, 0, 0,
-	owner.GetColumnSpacing(), owner.GetRowSpacing() ),
-pOwner( &owner )
+	igdeContainerForm &powner, FXComposite *pparent, int layoutFlags ) :
+FXMatrix( pparent, 2, MATRIX_BY_COLUMNS | layoutFlags, 0, 0, 0, 0, 0, 0, 0, 0,
+	powner.GetColumnSpacing(), powner.GetRowSpacing() ),
+pOwner( &powner )
 {
 	if( ! pOwner->GetVisible() ){
 		hide();
@@ -70,22 +70,22 @@ pOwner( &owner )
 igdeNativeFoxContainerForm::~igdeNativeFoxContainerForm(){
 }
 
-igdeNativeFoxContainerForm *igdeNativeFoxContainerForm::CreateNativeWidget( igdeContainerForm &owner ){
-	if( ! owner.GetParent() ){
+igdeNativeFoxContainerForm *igdeNativeFoxContainerForm::CreateNativeWidget( igdeContainerForm &powner ){
+	if( ! powner.GetParent() ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	FXComposite * const parent = ( FXComposite* )owner.GetParent()->GetNativeContainer();
-	if( ! parent ){
+	FXComposite * const pparent = ( FXComposite* ) powner.GetParent()->GetNativeContainer();
+	if( ! pparent ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	return new igdeNativeFoxContainerForm( owner, parent, igdeUIFoxHelper::GetChildLayoutFlags( &owner ) );
+	return new igdeNativeFoxContainerForm( powner, pparent, igdeUIFoxHelper::GetChildLayoutFlags( &powner ) );
 }
 
 void igdeNativeFoxContainerForm::PostCreateNativeWidget(){
-	FXComposite &parent = *( ( FXComposite* )pOwner->GetParent()->GetNativeContainer() );
-	if( parent.id() ){
+	FXComposite &pparent = *( ( FXComposite* )pOwner->GetParent()->GetNativeContainer() );
+	if( pparent.id() ){
 		create();
 	}
 }
@@ -124,8 +124,8 @@ long igdeNativeFoxContainerForm::onResize( FXObject*, FXSelector, void* ){
 	return 1;
 }
 
-long igdeNativeFoxContainerForm::onChildLayoutFlags( FXObject*, FXSelector, void *data ){
-	igdeUIFoxHelper::sChildLayoutFlags &clflags = *( ( igdeUIFoxHelper::sChildLayoutFlags* )data );
+long igdeNativeFoxContainerForm::onChildLayoutFlags( FXObject*, FXSelector, void *pdata ){
+	igdeUIFoxHelper::sChildLayoutFlags &clflags = *( ( igdeUIFoxHelper::sChildLayoutFlags* )pdata );
 	clflags.flags = LAYOUT_FILL_X | LAYOUT_FILL_Y;
 	
 	const int index = pOwner->IndexOfChild( clflags.widget );

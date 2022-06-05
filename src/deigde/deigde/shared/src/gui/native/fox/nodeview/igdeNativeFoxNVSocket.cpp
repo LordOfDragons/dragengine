@@ -53,18 +53,18 @@ igdeNativeFoxNVSocket::igdeNativeFoxNVSocket(){
 	this->flags |= FLAG_ENABLED | FLAG_DROPTARGET;
 }
 
-igdeNativeFoxNVSocket::igdeNativeFoxNVSocket( FXComposite *parent, FXObject *target,
-	int selector, int flags, const igdeGuiTheme & ) :
-FXFrame( parent, flags, 0, 0, 0, 0, 0, 0, 0, 0 ),
+igdeNativeFoxNVSocket::igdeNativeFoxNVSocket( FXComposite *pparent, FXObject *ttarget,
+	int selector, int fflags, const igdeGuiTheme & ) :
+FXFrame( pparent, fflags, 0, 0, 0, 0, 0, 0, 0, 0 ),
 pChecked( false ),
 pRadius( 6 ),
 pColorFrame( FXRGB( 0, 0, 0 ) ),
 pColorFillChecked( FXRGB( 0, 0, 255 ) ),
-pColorFillUnchecked( parent->getApp()->getBackColor() ),
+pColorFillUnchecked( pparent->getApp()->getBackColor() ),
 pWindowShape( NULL )
 {
 	this->flags |= FLAG_ENABLED | FLAG_DROPTARGET;
-	this->target = target;
+	this->target = ttarget;
 	message = selector;
 	backColor = getApp()->getBackColor();
 }
@@ -159,8 +159,8 @@ long igdeNativeFoxNVSocket::onResize( FXObject*, FXSelector, void* ){
 	return 1;
 }
 
-long igdeNativeFoxNVSocket::onPaint( FXObject*, FXSelector, void *data ){
-	FXEvent * const event = ( FXEvent* )data;
+long igdeNativeFoxNVSocket::onPaint( FXObject*, FXSelector, void *pdata ){
+	FXEvent * const event = ( FXEvent* )pdata;
 	FXDCWindow dc( this, event );
 	const decPoint center( getWidth() / 2, getHeight() / 2 );
 	const decPoint position( center - decPoint( pRadius, pRadius ) );

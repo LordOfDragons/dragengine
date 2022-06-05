@@ -49,15 +49,15 @@ void *igdeNativeFoxIcon::CreateNativeIcon( deImage &image ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	const int height = image.GetHeight();
-	const int width = image.GetWidth();
+	const int hheight = image.GetHeight();
+	const int wwidth = image.GetWidth();
 	FXColor *nativeImageData = NULL;
 	FXIcon *nativeIcon = NULL;
 	
 	try{
 		// we have to create the pixel buffer the image is going to take ownership of.
 		// we have to use fox allocation routines for this to work correctly
-		if( ! FXCALLOC( &nativeImageData, FXColor, width * height ) ){
+		if( ! FXCALLOC( &nativeImageData, FXColor, wwidth * hheight ) ){
 			DETHROW( deeOutOfMemory );
 		}
 		
@@ -71,7 +71,7 @@ void *igdeNativeFoxIcon::CreateNativeIcon( deImage &image ){
 		// using IMAGE_SHMI and IMAGE_SHMP is only recommended for large images.
 		// this call produces mostly small images so no need for this
 		nativeIcon = new FXIcon( FXApp::instance(), nativeImageData,
-			FXRGB( 255, 255, 0 ), IMAGE_OWNED | IMAGE_KEEP, width, height );
+			FXRGB( 255, 255, 0 ), IMAGE_OWNED | IMAGE_KEEP, wwidth, hheight );
 		
 		// up to this point only the pixel data exists. calling create() creates the server
 		// side data actually used for rendering later on. because IMAGE_KEEP is not used
@@ -159,9 +159,9 @@ void *igdeNativeFoxIcon::CreateNativeIconPNG( decBaseFileReader &reader ){
 
 void *igdeNativeFoxIcon::DuplicateNativeIcon( void *native ){
 	const FXIcon * const sourceIcon = ( FXIcon* )native;
-	const int height = sourceIcon->getHeight();
-	const int width = sourceIcon->getWidth();
-	const int pixelCount = width * height;
+	const int hheight = sourceIcon->getHeight();
+	const int wwidth = sourceIcon->getWidth();
+	const int pixelCount = wwidth * hheight;
 	
 	FXColor *imageData = NULL;
 	if( ! FXCALLOC( &imageData, FXColor, pixelCount ) ){
@@ -169,7 +169,7 @@ void *igdeNativeFoxIcon::DuplicateNativeIcon( void *native ){
 	}
 	memcpy( imageData, sourceIcon->getData(), sizeof( FXColor ) * pixelCount );
 	
-	return new FXIcon( FXApp::instance(), imageData, 0, IMAGE_OWNED | IMAGE_KEEP, width, height );
+	return new FXIcon( FXApp::instance(), imageData, 0, IMAGE_OWNED | IMAGE_KEEP, wwidth, hheight );
 }
 
 void igdeNativeFoxIcon::DestroyNativeIcon( void *native ){
@@ -182,37 +182,37 @@ void igdeNativeFoxIcon::DestroyNativeIcon( void *native ){
 ///////////////
 
 decPoint igdeNativeFoxIcon::GetSize( void *native ){
-	const FXIcon &icon = *( ( FXIcon* )native );
-	return decPoint( icon.getWidth(), icon.getHeight() );
+	const FXIcon &iicon = *( ( FXIcon* )native );
+	return decPoint( iicon.getWidth(), iicon.getHeight() );
 }
 
 void igdeNativeFoxIcon::Scale( const decPoint &size, void *native ){
-	FXIcon &icon = *( ( FXIcon* )native );
-	const decPoint iconSize( icon.getWidth(), icon.getHeight() );
+	FXIcon &iicon = *( ( FXIcon* )native );
+	const decPoint iconSize( iicon.getWidth(), iicon.getHeight() );
 	if( ! ( iconSize == size ) ){
-		icon.scale( size.x, size.y, 1 );
+		iicon.scale( size.x, size.y, 1 );
 	}
 }
 
 void igdeNativeFoxIcon::UpdatePixels( void *native, deImage &image ){
-	FXIcon &icon = *( ( FXIcon* )native );
-	const decPoint iconSize( icon.getWidth(), icon.getHeight() );
+	FXIcon &iicon = *( ( FXIcon* )native );
+	const decPoint iconSize( iicon.getWidth(), iicon.getHeight() );
 	
 	if( image.GetWidth() != iconSize.x || image.GetHeight() != iconSize.y || image.GetBitCount() != 8 ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	CopyPixelData( image, icon.getData() ); // getData() is valid because of IMAGE_KEEP
+	CopyPixelData( image, iicon.getData() ); // getData() is valid because of IMAGE_KEEP
 	
-	icon.render();
+	iicon.render();
 }
 
 
 
 void igdeNativeFoxIcon::CopyPixelData( deImage &image, FXColor *foxData ){
-	const int height = image.GetHeight();
-	const int width = image.GetWidth();
-	const int pixelCount = width * height;
+	const int hheight = image.GetHeight();
+	const int wwidth = image.GetWidth();
+	const int pixelCount = wwidth * hheight;
 	int i;
 	
 	if( image.GetComponentCount() == 1 ){

@@ -59,30 +59,30 @@ FXIMPLEMENT( igdeNativeFoxComboBox, FXComboBox, igdeNativeFoxComboBoxMap, ARRAYN
 
 igdeNativeFoxComboBox::igdeNativeFoxComboBox(){ }
 
-igdeNativeFoxComboBox::igdeNativeFoxComboBox( igdeComboBox &owner, FXComposite *parent,
+igdeNativeFoxComboBox::igdeNativeFoxComboBox( igdeComboBox &powner, FXComposite *pparent,
 int layoutFlags, const igdeGuiTheme &guitheme ) :
-FXComboBox( parent, owner.GetColumns(), this, ID_SELF, layoutFlags | ComboBoxFlags( owner ),
+FXComboBox( pparent, powner.GetColumns(), this, ID_SELF, layoutFlags | ComboBoxFlags( powner ),
 	0, 0, 0, 0,
 	ComboBoxPadLeft( guitheme ), ComboBoxPadRight( guitheme ),
 	ComboBoxPadTop( guitheme ), ComboBoxPadBottom( guitheme ) ),
-pOwner( &owner ),
-pFont( ComboBoxFont( owner, guitheme ) ),
+pOwner( &powner ),
+pFont( ComboBoxFont( powner, guitheme ) ),
 pOrgBackColor( field->getBackColor() ),
 pInvalidBackColor( igdeUIFoxHelper::BlendColor( pOrgBackColor, FXRGB( 255, 0, 0 ), 0.25f ) )
 {
 	setFont( (FXFont*)pFont->GetNativeFont() );
 	
-	setEditable( owner.GetEditable() );
-	if( ! owner.GetEnabled() ){
+	setEditable( powner.GetEditable() );
+	if( ! powner.GetEnabled() ){
 		disable();
 	}
 	
-	setTipText( owner.GetDescription().GetString() );
-	setHelpText( owner.GetDescription().GetString() );
+	setTipText( powner.GetDescription().GetString() );
+	setHelpText( powner.GetDescription().GetString() );
 	
 	BuildList();
-	setCurrentItem( owner.GetSelection() );
-	setText( owner.GetText().GetString() );
+	setCurrentItem( powner.GetSelection() );
+	setText( powner.GetText().GetString() );
 	
 	UpdateRowCount();
 }
@@ -90,23 +90,23 @@ pInvalidBackColor( igdeUIFoxHelper::BlendColor( pOrgBackColor, FXRGB( 255, 0, 0 
 igdeNativeFoxComboBox::~igdeNativeFoxComboBox(){
 }
 
-igdeNativeFoxComboBox *igdeNativeFoxComboBox::CreateNativeWidget( igdeComboBox &owner ){
-	if( ! owner.GetParent() ){
+igdeNativeFoxComboBox *igdeNativeFoxComboBox::CreateNativeWidget( igdeComboBox &powner ){
+	if( ! powner.GetParent() ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	FXComposite * const parent = ( FXComposite* )owner.GetParent()->GetNativeContainer();
-	if( ! parent ){
+	FXComposite * const pparent = ( FXComposite* ) powner.GetParent()->GetNativeContainer();
+	if( ! pparent ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	return new igdeNativeFoxComboBox( owner, parent,
-		igdeUIFoxHelper::GetChildLayoutFlags( &owner ), *owner.GetGuiTheme() );
+	return new igdeNativeFoxComboBox( powner, pparent,
+		igdeUIFoxHelper::GetChildLayoutFlags( &powner ), *powner.GetGuiTheme() );
 }
 
 void igdeNativeFoxComboBox::PostCreateNativeWidget(){
-	FXComposite &parent = *( ( FXComposite* )pOwner->GetParent()->GetNativeContainer() );
-	if( parent.id() ){
+	FXComposite &pparent = *( ( FXComposite* )pOwner->GetParent()->GetNativeContainer() );
+	if( pparent.id() ){
 		create();
 	}
 }
@@ -241,9 +241,9 @@ int igdeNativeFoxComboBox::ComboBoxFlags( const igdeComboBox & ){
 	return FRAME_SUNKEN | COMBOBOX_NORMAL;
 }
 
-igdeFont *igdeNativeFoxComboBox::ComboBoxFont( const igdeComboBox &owner, const igdeGuiTheme &guitheme ){
+igdeFont *igdeNativeFoxComboBox::ComboBoxFont( const igdeComboBox &powner, const igdeGuiTheme &guitheme ){
 	igdeFont::sConfiguration configuration;
-	owner.GetEnvironment().GetApplicationFont( configuration );
+	powner.GetEnvironment().GetApplicationFont( configuration );
 	
 	if( guitheme.HasProperty( igdeGuiThemePropertyNames::comboBoxFontSizeAbsolute ) ){
 		configuration.size = guitheme.GetIntProperty(
@@ -262,7 +262,7 @@ igdeFont *igdeNativeFoxComboBox::ComboBoxFont( const igdeComboBox &owner, const 
 			igdeGuiThemePropertyNames::fontSize, 1.0f );
 	}
 	
-	return owner.GetEnvironment().GetSharedFont( configuration );
+	return powner.GetEnvironment().GetSharedFont( configuration );
 }
 
 int igdeNativeFoxComboBox::ComboBoxPadLeft( const igdeGuiTheme &guitheme ){

@@ -179,9 +179,9 @@ void igdeApplication::pSharedRun( decUnicodeStringList &arguments ){
 			CleanUp();
 			pMainWindow = NULL;
 			
-		}catch( const deException &e ){
-			e.PrintError();
-			( ( igdeNativeApplication* )pNativeApplication )->ShowError( e );
+		}catch( const deException &e2 ){
+			e2.PrintError();
+			( ( igdeNativeApplication* )pNativeApplication )->ShowError( e2 );
 		}
 		
 		( ( igdeNativeApplication* )pNativeApplication )->Quit();

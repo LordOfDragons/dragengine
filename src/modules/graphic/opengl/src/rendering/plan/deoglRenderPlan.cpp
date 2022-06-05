@@ -238,7 +238,6 @@ deoglRenderPlan::~deoglRenderPlan(){
 	pDirectEnvMapFader.DropAll();
 	
 	if( pEnvMaps ){
-		int i;
 		for( i=0; i<pEnvMapCount; i++ ){
 			if( pEnvMaps[ i ].GetEnvMap() ){
 				pEnvMaps[ i ].GetEnvMap()->RemovePlanUsage();

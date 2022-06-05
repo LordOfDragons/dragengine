@@ -67,10 +67,10 @@ FXIMPLEMENT( igdeNativeFoxNVNode, FXVerticalFrame,
 
 igdeNativeFoxNVNode::igdeNativeFoxNVNode(){ }
 
-igdeNativeFoxNVNode::igdeNativeFoxNVNode( igdeNVNode &owner, FXComposite *parent, const igdeGuiTheme &guitheme ) :
-FXVerticalFrame( parent, NVNodeFlags( owner ), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ),
-pOwner( &owner ),
-pFont( NVNodeFont( owner, guitheme ) ),
+igdeNativeFoxNVNode::igdeNativeFoxNVNode( igdeNVNode &powner, FXComposite *pparent, const igdeGuiTheme &guitheme ) :
+FXVerticalFrame( pparent, NVNodeFlags( powner ), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ),
+pOwner( &powner ),
+pFont( NVNodeFont( powner, guitheme ) ),
 pLabTitle( NULL ),
 pFrameTitle( NULL ),
 pFrameSlots( NULL ),
@@ -87,7 +87,7 @@ pDragControl( false )
 	pFrameTitle->setSelector( ID_FRA_TITLE );
 	pFrameTitle->enable();
 	
-	pLabTitle = new FXLabel( pFrameTitle, owner.GetTitle().GetString(), 0,
+	pLabTitle = new FXLabel( pFrameTitle, powner.GetTitle().GetString(), 0,
 		LAYOUT_FILL_X | LAYOUT_FILL_Y | JUSTIFY_CENTER_X | JUSTIFY_CENTER_Y );
 	pLabTitle->setFont( (FXFont*)pFont->GetNativeFont() );
 	pLabTitle->setTarget( this );
@@ -113,22 +113,22 @@ pDragControl( false )
 igdeNativeFoxNVNode::~igdeNativeFoxNVNode(){
 }
 
-igdeNativeFoxNVNode *igdeNativeFoxNVNode::CreateNativeWidget( igdeNVNode &owner ){
-	if( ! owner.GetParent() ){
+igdeNativeFoxNVNode *igdeNativeFoxNVNode::CreateNativeWidget( igdeNVNode &powner ){
+	if( ! powner.GetParent() ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	FXComposite * const parent = ( FXComposite* )owner.GetParent()->GetNativeContainer();
-	if( ! parent ){
+	FXComposite * const pparent = ( FXComposite* ) powner.GetParent()->GetNativeContainer();
+	if( ! pparent ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	return new igdeNativeFoxNVNode( owner, parent, *owner.GetGuiTheme() );
+	return new igdeNativeFoxNVNode( powner, pparent, *powner.GetGuiTheme() );
 }
 
 void igdeNativeFoxNVNode::PostCreateNativeWidget(){
-	FXComposite &parent = *( ( FXComposite* )pOwner->GetParent()->GetNativeContainer() );
-	if( parent.id() ){
+	FXComposite &pparent = *( ( FXComposite* )pOwner->GetParent()->GetNativeContainer() );
+	if( pparent.id() ){
 		create();
 	}
 }
@@ -173,12 +173,12 @@ void igdeNativeFoxNVNode::UpdateActive(){
 void igdeNativeFoxNVNode::UpdateColors(){
 	const bool isActive = pOwner->GetActive();
 	const FXColor bgColor = igdeUIFoxHelper::ConvertColor( pOwner->GetBgColor() );
-	const FXColor borderColor = igdeUIFoxHelper::ConvertColor( pOwner->GetBorderColor() );
+	const FXColor bborderColor = igdeUIFoxHelper::ConvertColor( pOwner->GetBorderColor() );
 	const FXColor titleBgColor = igdeUIFoxHelper::ConvertColor( isActive
 		? pOwner->GetActiveTitleBgColor() : pOwner->GetInactiveTitleBgColor() );
 	
 	setBackColor( bgColor );
-	setBorderColor( borderColor );
+	setBorderColor( bborderColor );
 	
 	pFrameTitle->setBackColor( titleBgColor );
 	
@@ -201,9 +201,9 @@ void igdeNativeFoxNVNode::UpdatePosition(){
 }
 
 void igdeNativeFoxNVNode::FitSizeToContent(){
-	const int width = FXVerticalFrame::getDefaultWidth() + 20;
-	const int height = FXVerticalFrame::getDefaultHeight();
-	resize( width, height );
+	const int wwidth = FXVerticalFrame::getDefaultWidth() + 20;
+	const int hheight = FXVerticalFrame::getDefaultHeight();
+	resize( wwidth, hheight );
 	recalc();
 }
 
@@ -217,9 +217,9 @@ int igdeNativeFoxNVNode::NVNodeFlags( const igdeNVNode & ){
 	return LAYOUT_FIX_X | LAYOUT_FIX_Y | LAYOUT_FIX_WIDTH | LAYOUT_FIX_HEIGHT | FRAME_RAISED;
 }
 
-igdeFont *igdeNativeFoxNVNode::NVNodeFont( const igdeNVNode &owner, const igdeGuiTheme &guitheme ){
+igdeFont *igdeNativeFoxNVNode::NVNodeFont( const igdeNVNode &powner, const igdeGuiTheme &guitheme ){
 	igdeFont::sConfiguration configuration;
-	owner.GetEnvironment().GetApplicationFont( configuration );
+	powner.GetEnvironment().GetApplicationFont( configuration );
 	
 	if( guitheme.HasProperty( igdeGuiThemePropertyNames::nodeViewNodeFontSizeAbsolute ) ){
 		configuration.size = guitheme.GetIntProperty(
@@ -238,7 +238,7 @@ igdeFont *igdeNativeFoxNVNode::NVNodeFont( const igdeNVNode &owner, const igdeGu
 			igdeGuiThemePropertyNames::fontSize, 1.0f );
 	}
 	
-	return owner.GetEnvironment().GetSharedFont( configuration );
+	return powner.GetEnvironment().GetSharedFont( configuration );
 }
 
 int igdeNativeFoxNVNode::NVNodePadLeft( const igdeGuiTheme &guitheme ){
@@ -262,7 +262,7 @@ int igdeNativeFoxNVNode::NVNodePadBottom( const igdeGuiTheme &guitheme ){
 // Events
 ///////////
 
-long igdeNativeFoxNVNode::onTitleLeftMouseDown( FXObject *sender, FXSelector, void *data ){
+long igdeNativeFoxNVNode::onTitleLeftMouseDown( FXObject *sender, FXSelector, void *pdata ){
 	if( pTitleIsDraging ){
 		return 1;
 	}
@@ -271,7 +271,7 @@ long igdeNativeFoxNVNode::onTitleLeftMouseDown( FXObject *sender, FXSelector, vo
 		pOwner->GetOwnerBoard()->SetActiveNode( pOwner );
 	}
 	
-	const FXEvent &event = *( ( FXEvent* )data );
+	const FXEvent &event = *( ( FXEvent* )pdata );
 	FXWindow * const widget = ( FXWindow* )sender;
 	
 	FXint px, py;
@@ -285,12 +285,12 @@ long igdeNativeFoxNVNode::onTitleLeftMouseDown( FXObject *sender, FXSelector, vo
 	return 1;
 }
 
-long igdeNativeFoxNVNode::onTitleMouseMove( FXObject *sender, FXSelector selector, void *data ){
+long igdeNativeFoxNVNode::onTitleMouseMove( FXObject*, FXSelector, void *pdata ){
 	if( ! pTitleIsDraging ){
 		return 1;
 	}
 	
-	const FXEvent &event = *( ( FXEvent* )data );
+	const FXEvent &event = *( ( FXEvent* )pdata );
 	const decPoint dragCur( event.win_x + getX(), event.win_y + getY() );
 	
 	decPoint position( dragCur - pTitleDragOffset );
@@ -322,7 +322,7 @@ long igdeNativeFoxNVNode::onTitleMouseMove( FXObject *sender, FXSelector selecto
 	return 1;
 }
 
-long igdeNativeFoxNVNode::onTitleLeftMouseUp( FXObject *sender, FXSelector selector, void *data ){
+long igdeNativeFoxNVNode::onTitleLeftMouseUp( FXObject *sender, FXSelector, void* ){
 	if( ! pTitleIsDraging ){
 		return 1;
 	}
@@ -336,12 +336,12 @@ long igdeNativeFoxNVNode::onTitleLeftMouseUp( FXObject *sender, FXSelector selec
 	return 1;
 }
 
-long igdeNativeFoxNVNode::onRightMousePress( FXObject*, FXSelector, void *data ){
+long igdeNativeFoxNVNode::onRightMousePress( FXObject*, FXSelector, void *pdata ){
 	if( pTitleIsDraging ){
 		return 1;
 	}
 	
-	const FXEvent &event = *( ( FXEvent* )data );
+	const FXEvent &event = *( ( FXEvent* )pdata );
 	pOwner->ShowContextMenu( decPoint( event.win_x, event.win_y ) );
 	return 1;
 }
@@ -350,8 +350,8 @@ long igdeNativeFoxNVNode::onRightMouseRelease( FXObject*, FXSelector, void* ){
 	return 1;
 }
 
-long igdeNativeFoxNVNode::onChildLayoutFlags( FXObject*, FXSelector, void *data ){
-	igdeUIFoxHelper::sChildLayoutFlags &clflags = *( ( igdeUIFoxHelper::sChildLayoutFlags* )data );
+long igdeNativeFoxNVNode::onChildLayoutFlags( FXObject*, FXSelector, void *pdata ){
+	igdeUIFoxHelper::sChildLayoutFlags &clflags = *( ( igdeUIFoxHelper::sChildLayoutFlags* )pdata );
 	clflags.flags = LAYOUT_FILL_X;
 	clflags.canResizeHorizontal = false;
 	clflags.canResizeVertical = false;
@@ -411,7 +411,7 @@ void meWVNode::UpdateWindowShape(){
 */
 
 /*
-long meWVNode::onPaint( FXObject *sender, FXSelector selector, void *data ){
+long meWVNode::onPaint( FXObject*, FXSelector, void* ){
 	meHTVegetationLayer *vlayer = pWindowVegetation->GetVLayer();
 	FXEvent *event = ( FXEvent* )data;
 	FXDCWindow dc( this, event );

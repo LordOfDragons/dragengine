@@ -317,9 +317,9 @@ deBaseModule *DSCreateModule( deLoadableModule *loadableModule ){
 deScriptingDragonScript::sModuleVersion::sModuleVersion() : major( 0 ), minor( 0 ), patch( 0 ){
 }
 
-void deScriptingDragonScript::sModuleVersion::SetVersion( const char *version ){
-	this->version = version;
-	const decStringList parts( this->version.Split( '.' ) );
+void deScriptingDragonScript::sModuleVersion::SetVersion( const char *pversion ){
+	version = pversion;
+	const decStringList parts( version.Split( '.' ) );
 	major = parts.GetAt( 0 ).ToInt();
 	minor = parts.GetAt( 1 ).ToInt();
 	patch = parts.GetCount() > 2 ? parts.GetAt( 2 ).ToInt() : 0;

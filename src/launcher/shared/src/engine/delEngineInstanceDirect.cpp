@@ -755,7 +755,7 @@ void delEngineInstanceDirect::ReadDelgaPatchDefs( const char *delgaFile, decStri
 	decPath pathDelgaDir( decPath::CreatePathNative( delgaFile ) );
 	const decString delgaFileTitle( pathDelgaDir.GetLastComponent() );
 	pathDelgaDir.RemoveLastComponent();
-	delgaVfs->AddContainer( new deVFSDiskDirectory( pathDelgaDir ) );
+	delgaVfs->AddContainer( deVFSDiskDirectory::Ref::New( new deVFSDiskDirectory( pathDelgaDir ) ) );
 	
 	const deArchive::Ref delgaArchive( deArchive::Ref::New( amgr.OpenArchive( delgaVfs, delgaFileTitle, "/" ) ) );
 	
@@ -805,7 +805,7 @@ const decStringList &filenames, decObjectOrderedSet &filesContent ){
 	decPath pathDelgaDir( decPath::CreatePathNative( delgaFile ) );
 	const decString delgaFileTitle( pathDelgaDir.GetLastComponent() );
 	pathDelgaDir.RemoveLastComponent();
-	delgaVfs->AddContainer( new deVFSDiskDirectory( pathDelgaDir ) );
+	delgaVfs->AddContainer( deVFSDiskDirectory::Ref::New( new deVFSDiskDirectory( pathDelgaDir ) ) );
 	
 	const deArchive::Ref delgaArchive( deArchive::Ref::New( amgr.OpenArchive( delgaVfs, delgaFileTitle, "/" ) ) );
 	

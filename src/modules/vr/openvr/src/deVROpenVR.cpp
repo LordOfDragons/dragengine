@@ -572,11 +572,11 @@ void deVROpenVR::ProcessEvents(){
 	}
 	
 	if( devicesAttachedDetached ){
-		deInputEvent event;
-		event.SetType( deInputEvent::eeDevicesAttachedDetached );
-		event.SetSource( deInputEvent::esVR );
-		InputEventSetTimestamp( event );
-		GetGameEngine()->GetVRSystem()->GetEventQueue().AddEvent( event );
+		deInputEvent ievent;
+		ievent.SetType( deInputEvent::eeDevicesAttachedDetached );
+		ievent.SetSource( deInputEvent::esVR );
+		InputEventSetTimestamp( ievent );
+		GetGameEngine()->GetVRSystem()->GetEventQueue().AddEvent( ievent );
 	}
 	
 	vr::VRActiveActionSet_t actionSet;

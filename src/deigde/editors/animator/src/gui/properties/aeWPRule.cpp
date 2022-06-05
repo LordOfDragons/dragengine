@@ -547,7 +547,7 @@ void aeWPRule::UpdateRuleTreeItem( igdeTreeItem *item, aeRule *rule ){
 		}
 		
 		for( i=0; i<count; i++ ){
-			aeRule * const rule = list.GetAt( i );
+			aeRule * const rule2 = list.GetAt( i );
 			
 			if( ! nextItem ){
 				igdeTreeItemReference newItem;
@@ -556,7 +556,7 @@ void aeWPRule::UpdateRuleTreeItem( igdeTreeItem *item, aeRule *rule ){
 				nextItem = newItem;
 			}
 			
-			UpdateRuleTreeItem( nextItem, rule );
+			UpdateRuleTreeItem( nextItem, rule2 );
 			
 			nextItem = nextItem->GetNext();
 		}

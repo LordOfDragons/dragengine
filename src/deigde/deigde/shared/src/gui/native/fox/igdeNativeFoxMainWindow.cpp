@@ -63,12 +63,12 @@ FXIMPLEMENT( igdeNativeFoxMainWindow, FXMainWindow,
 igdeNativeFoxMainWindow::igdeNativeFoxMainWindow(){
 }
 
-igdeNativeFoxMainWindow::igdeNativeFoxMainWindow( igdeMainWindow &owner ) :
-FXMainWindow( FXApp::instance(), owner.GetTitle().GetString(),
-	owner.GetIcon() ? ( FXIcon* )owner.GetIcon()->GetNativeIcon() : NULL,
-	owner.GetIcon() ? ( FXIcon* )owner.GetIcon()->GetNativeIcon() : NULL,
-	DECOR_ALL, 0, 0, owner.GetInitialSize().x, owner.GetInitialSize().y ),
-pOwner( &owner )
+igdeNativeFoxMainWindow::igdeNativeFoxMainWindow( igdeMainWindow &powner ) :
+FXMainWindow( FXApp::instance(), powner.GetTitle().GetString(),
+	powner.GetIcon() ? ( FXIcon* ) powner.GetIcon()->GetNativeIcon() : NULL,
+	powner.GetIcon() ? ( FXIcon* ) powner.GetIcon()->GetNativeIcon() : NULL,
+	DECOR_ALL, 0, 0, powner.GetInitialSize().x, powner.GetInitialSize().y ),
+pOwner( &powner )
 {
 	if( ! pOwner->GetVisible() ){
 		hide();
@@ -78,8 +78,8 @@ pOwner( &owner )
 igdeNativeFoxMainWindow::~igdeNativeFoxMainWindow(){
 }
 
-igdeNativeFoxMainWindow *igdeNativeFoxMainWindow::CreateNativeWidget( igdeMainWindow &owner ){
-	return new igdeNativeFoxMainWindow( owner );
+igdeNativeFoxMainWindow *igdeNativeFoxMainWindow::CreateNativeWidget( igdeMainWindow &powner ){
+	return new igdeNativeFoxMainWindow( powner );
 }
 
 void igdeNativeFoxMainWindow::PostCreateNativeWidget(){
@@ -203,9 +203,9 @@ void igdeNativeFoxMainWindow::UpdatePosition(){
 }
 
 void igdeNativeFoxMainWindow::UpdateIcon(){
-	FXIcon * const icon = pOwner->GetIcon() ? ( FXIcon* )pOwner->GetIcon()->GetNativeIcon() : NULL;
-	setIcon( icon );
-	setMiniIcon( icon );
+	FXIcon * const iicon = pOwner->GetIcon() ? ( FXIcon* )pOwner->GetIcon()->GetNativeIcon() : NULL;
+	setIcon( iicon );
+	setMiniIcon( iicon );
 }
 
 void igdeNativeFoxMainWindow::UpdateTitle(){
@@ -240,8 +240,8 @@ void igdeNativeFoxMainWindow::GetAppFontConfig( igdeFont::sConfiguration &config
 
 
 
-long igdeNativeFoxMainWindow::onConfigure( FXObject *sender, FXSelector selector, void *data ){
-	const int result = FXMainWindow::onConfigure( sender, selector, data );
+long igdeNativeFoxMainWindow::onConfigure( FXObject *sender, FXSelector selector, void *pdata ){
+	const int result = FXMainWindow::onConfigure( sender, selector, pdata );
 	
 	const decPoint position( getX(), getY() );
 	if( position != pOwner->GetPosition() ){
@@ -269,8 +269,8 @@ long igdeNativeFoxMainWindow::onClose( FXObject*, FXSelector, void* ){
 	return 1;
 }
 
-long igdeNativeFoxMainWindow::onChildLayoutFlags( FXObject*, FXSelector, void *data ){
-	igdeUIFoxHelper::sChildLayoutFlags &clflags = *( ( igdeUIFoxHelper::sChildLayoutFlags* )data );
+long igdeNativeFoxMainWindow::onChildLayoutFlags( FXObject*, FXSelector, void *pdata ){
+	igdeUIFoxHelper::sChildLayoutFlags &clflags = *( ( igdeUIFoxHelper::sChildLayoutFlags* )pdata );
 	clflags.flags = LAYOUT_FILL_X | LAYOUT_FILL_Y;
 	return 1;
 }

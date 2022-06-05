@@ -598,7 +598,7 @@ void deoalEnvironmentDebug::pShowEnergyHistogram( deDebugBlockInfo &debugInfo ){
 					if( height < 0 || height >= pHistogramSize.y ){
 						continue;
 					}
-					int offset = offsetBottom - pHistogramSize.x * height;
+					offset = offsetBottom - pHistogramSize.x * height;
 					sRGBA8 &pixel = bandPixels[ offset + j ];
 					if( pixel.alpha == 255 ){
 						pixel.red = ( pixel.red + 255 ) / 2;

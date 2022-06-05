@@ -58,8 +58,8 @@ FXIMPLEMENT( deglDialogRunGameWith, FXDialogBox, deglDialogRunGameWithMap, ARRAY
 
 deglDialogRunGameWith::deglDialogRunGameWith(){ }
 
-deglDialogRunGameWith::deglDialogRunGameWith( deglWindowMain *windowMain, delGame *game, FXWindow *owner ) :
-FXDialogBox( owner, "Select Profile", DECOR_TITLE | DECOR_BORDER | DECOR_RESIZE | DECOR_CLOSE,
+deglDialogRunGameWith::deglDialogRunGameWith( deglWindowMain *windowMain, delGame *game, FXWindow *powner ) :
+FXDialogBox( powner, "Select Profile", DECOR_TITLE | DECOR_BORDER | DECOR_RESIZE | DECOR_CLOSE,
 	0, 0, 600, 150, 10, 10, 10, 5 ),
 pWindowMain( windowMain ),
 pGame( game ),

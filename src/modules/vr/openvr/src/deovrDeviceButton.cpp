@@ -189,7 +189,7 @@ void deovrDeviceButton::TrackState(){
 	UpdatePressed( error == vr::VRInputError_None ? dataDigital.bState : false );
 	
 	if( pActionTouchHandle != vr::k_ulInvalidActionHandle ){
-		vr::EVRInputError error = vrinput.GetDigitalActionData( pActionTouchHandle,
+		error = vrinput.GetDigitalActionData( pActionTouchHandle,
 			&dataDigital, sizeof( dataDigital ), pDevice.GetInputValueHandle() );
 		UpdateTouched( error == vr::VRInputError_None ? dataDigital.bState : false );
 	}

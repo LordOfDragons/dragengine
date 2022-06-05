@@ -906,20 +906,20 @@ bool deSkinModule::pParsePropertyNodeCommon( const decXmlElementTag &tag, deSkin
 					break;
 				}		
 				
-				const decString tagName( tagMask->GetName() );
-				if( tagName == "group" ){
+				const decString tagName2( tagMask->GetName() );
+				if( tagName2 == "group" ){
 					nodeMask = new deSkinPropertyNodeGroup;
 					pParsePropertyNodeGroup( *tagMask, *( ( deSkinPropertyNodeGroup* )nodeMask ) );
 					
-				}else if( tagName == "image" ){
+				}else if( tagName2 == "image" ){
 					nodeMask = new deSkinPropertyNodeImage;
 					pParsePropertyNodeImage( *tagMask, *( ( deSkinPropertyNodeImage* )nodeMask ) );
 					
-				}else if( tagName == "shape" ){
+				}else if( tagName2 == "shape" ){
 					nodeMask = new deSkinPropertyNodeShape;
 					pParsePropertyNodeShape( *tagMask, *( ( deSkinPropertyNodeShape* )nodeMask ) );
 					
-				}else if( tagName == "text" ){
+				}else if( tagName2 == "text" ){
 					nodeMask = new deSkinPropertyNodeText;
 					pParsePropertyNodeText( *tagMask, *( ( deSkinPropertyNodeText* )nodeMask ) );
 					

@@ -261,18 +261,18 @@ void decrbPanelParameters::UpdateModulesList(){
 // Events
 ///////////
 
-long decrbPanelParameters::onCBModuleChanged( FXObject *sender, FXSelector selector, void *data ){
+long decrbPanelParameters::onCBModuleChanged( FXObject* , FXSelector, void* ){
 	UpdateParametersList();
 	UpdateParameter();
 	return 1;
 }
 
-long decrbPanelParameters::onCBParameterChanged( FXObject *sender, FXSelector selector, void *data ){
+long decrbPanelParameters::onCBParameterChanged( FXObject* , FXSelector, void* ){
 	UpdateParameter();
 	return 1;
 }
 
-long decrbPanelParameters::onBtnSetCommand( FXObject *sender, FXSelector selector, void *data ){
+long decrbPanelParameters::onBtnSetCommand( FXObject* , FXSelector, void* ){
 	int selection = pCBModule->getCurrentItem();
 	deBaseModule *module = NULL;
 	FXString text;
@@ -299,7 +299,7 @@ long decrbPanelParameters::onBtnSetCommand( FXObject *sender, FXSelector selecto
 	return 1;
 }
 
-long decrbPanelParameters::onBtnResetCommand( FXObject *sender, FXSelector selector, void *data ){
+long decrbPanelParameters::onBtnResetCommand( FXObject* , FXSelector, void* ){
 	int selection = pCBModule->getCurrentItem();
 	deBaseModule *module = NULL;
 	

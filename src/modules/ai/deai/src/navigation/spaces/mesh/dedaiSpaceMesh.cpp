@@ -1835,7 +1835,6 @@ void dedaiSpaceMesh::pSplitEdge( int edgeIndex, const decVector &splitVertex ){
 		const int cornerCount = nextFace.GetCornerCount();
 		const int firstCorner = nextFace.GetFirstCorner();
 		const int newFirstCorner = pCornerCount;
-		int i;
 		
 		for( i=0; i<cornerCount; i++ ){
 			dedaiSpaceMeshCorner &corner = pCorners[ firstCorner + i ]; // AddCorner invalidates reference

@@ -279,9 +279,6 @@ DEBUG_RESET_TIMERS;
 		}
 		
 		// step through all bones and apply limitation
-		const int boneCount = GetBoneMappingCount();
-		int i;
-		
 		for( i=0; i<boneCount; i++ ){
 			const int animatorBone = GetBoneMappingFor( i );
 			if( animatorBone == -1 ){

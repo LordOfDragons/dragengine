@@ -141,8 +141,8 @@ void declActionDelgaHelper::Install(){
 			if( container->ExistsFile( target ) ){
 				container->DeleteFile( target );
 			}
-		}catch( const deException &e ){
-			e.PrintError();
+		}catch( const deException &e2 ){
+			e2.PrintError();
 		}
 		throw;
 	}

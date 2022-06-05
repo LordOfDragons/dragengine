@@ -199,9 +199,9 @@ void meUHTPaintHeight::pRestoreHeights( float *heights ){
 	
 	for( s=0; s<sectorCount; s++ ){
 		htsector = hterrain->GetSectorAt( s );
-		const decPoint &scoord = htsector->GetCoordinates();
+		const decPoint &scoord2 = htsector->GetCoordinates();
 		
-		if( scoord.x >= pSector.x1 && scoord.y >= pSector.y1 && scoord.x <= pSector.x2 && scoord.y <= pSector.y2 ){
+		if( scoord2.x >= pSector.x1 && scoord2.y >= pSector.y1 && scoord2.x <= pSector.x2 && scoord2.y <= pSector.y2 ){
 			htsector->SetHeightImageChanged( true );
 			pWorld->NotifyHTSHeightChanged( htsector );
 		}
