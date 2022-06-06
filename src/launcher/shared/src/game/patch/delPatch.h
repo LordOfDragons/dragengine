@@ -25,6 +25,7 @@
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
+#include <dragengine/common/string/decStringSet.h>
 #include <dragengine/common/string/unicode/decUnicodeString.h>
 #include <dragengine/common/utils/decUuid.h>
 #include <dragengine/common/utils/decUuidSet.h>
@@ -53,6 +54,7 @@ private:
 	decUuidSet pRequiresPatches;
 	
 	decString pDelgaFile;
+	decStringSet pHiddenPath;
 	
 	
 	
@@ -124,11 +126,20 @@ public:
 	inline decUuidSet &GetRequiredPatches(){ return pRequiresPatches; }
 	inline const decUuidSet &GetRequiredPatches() const{ return pRequiresPatches; }
 	
-	/** \brief Delga file or \em NULL. */
+	/** \brief Delga file or empty string. */
 	inline const decString &GetDelgaFile() const{ return pDelgaFile; }
 	
-	/** \brief Set delga file or \em NULL. */
+	/** \brief Set delga file or empty string. */
 	void SetDelgaFile( const char *file );
+	
+	/**
+	 * \brief Set of path to hide.
+	 * 
+	 * Hidden path allows to define files deleted by a patch. Hidden path have to be
+	 * absolute path to a single file or directory. Wildcards are not supported.
+	 */
+	inline decStringSet &GetHiddenPath(){ return pHiddenPath; }
+	inline const decStringSet &GetHiddenPath() const{ return pHiddenPath; }
 	/*@}*/
 };
 

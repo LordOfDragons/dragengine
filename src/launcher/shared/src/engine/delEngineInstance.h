@@ -25,6 +25,7 @@
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
+#include <dragengine/common/string/decStringSet.h>
 
 #ifdef OS_BEOS
 #include <MessageQueue.h>
@@ -162,6 +163,13 @@ public:
 	/** \brief Add disk directory to virtual file system. */
 	virtual void VFSAddDiskDir( const char *vfsRoot, const char *nativeDirectory, bool readOnly ) = 0;
 	
+	/**
+	 * \brief Add disk directory to virtual file system hidding a set of path.
+	 * \version 1.13
+	 */
+	virtual void VFSAddDiskDir( const char *vfsRoot, const char *nativeDirectory,
+		bool readOnly, const decStringSet &hiddenPath ) = 0;
+	
 	/** \brief Add virtual file system container for module shared data. */
 	virtual void VFSAddScriptSharedDataDir() = 0;
 	
@@ -171,6 +179,15 @@ public:
 	 * Container maps the content of \em archivePath into the virtual file system.
 	 */
 	virtual void VFSAddDelgaFile( const char *delgaFile, const char *archivePath ) = 0;
+	
+	/**
+	 * \brief Add DELGA file to virtual file system as root container.
+	 * \version 1.13
+	 * 
+	 * Container maps the content of \em archivePath into the virtual file system.
+	 */
+	virtual void VFSAddDelgaFile( const char *delgaFile, const char *archivePath,
+		const decStringSet &hiddenPath ) = 0;
 	
 	/** \brief Set command line arguments. */
 	virtual void SetCmdLineArgs( const char *arguments ) = 0;
