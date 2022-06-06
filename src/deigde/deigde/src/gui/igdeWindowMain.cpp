@@ -668,19 +668,23 @@ void igdeWindowMain::ShowWindowLogger(){
 
 
 bool igdeWindowMain::ProcessCommandLine( const decUnicodeStringList &arguments ){
-	const int argCount = arguments.GetCount();
+	decUnicodeStringList args( arguments );
 	decString loadFile;
-	int i;
 	
-	for( i=0; i<argCount; i++ ){
-		const decString argument( arguments.GetAt( argCount - 1 ).ToUTF8() );
-		const int alen = argument.GetLength();
+	while( args.GetCount() > 0 ){
+		const decString arg( args.GetAt( 0 ).ToUTF8() );
+		args.RemoveFrom( 0 );
 		
-		if( argument == "--showFPS" ){
+		if( arg == "--showFPS" ){
 			pDisplayFPSInfo = true;
 			
-		}else if( ( alen > 0 && argument.GetAt( 0 ) != '-' ) || ( alen > 1 && argument.GetAt( 1 ) != '-' ) ){
-			loadFile = argument;
+		}else if( arg.BeginsWith( "--" ) || arg.BeginsWith( "-" ) ){
+			decString message;
+			message.Format( "Unknown argument '%s'", arg.GetString() );
+			DETHROW_INFO( deeInvalidParam, message );
+			
+		}else if( loadFile.IsEmpty() ){
+			loadFile = arg;
 			break;
 		}
 	}
@@ -693,7 +697,12 @@ bool igdeWindowMain::ProcessCommandLine( const decUnicodeStringList &arguments )
 	
 	GetLogger()->LogInfoFormat( LOGSOURCE, "Loading game project %s", loadFile.GetString() );
 	
-	return LoadGameProject( loadFile );
+	if( ! LoadGameProject( loadFile ) ){
+		return false;
+	}
+	
+	pAfterLoadArguments = args;
+	return true;
 }
 
 
@@ -890,6 +899,19 @@ void igdeWindowMain::ActiveModuleSharedMenusChanged(){
 
 void igdeWindowMain::ActiveModuleSharedToolBarsChanged(){
 	RebuildToolBars();
+}
+
+void igdeWindowMain::ActivateEditor( igdeEditorModule *editor ){
+	DEASSERT_NOTNULL( editor )
+	
+	const int count = pModuleManager->GetModuleCount();
+	int i;
+	for( i=0; i<count; i++ ){
+		if( pModuleManager->GetModuleAt( i )->GetModule() == editor ){
+			pModuleManager->SetActiveModule( pModuleManager->GetModuleAt( i ) );
+			break;
+		}
+	}
 }
 
 
@@ -1117,6 +1139,34 @@ void igdeWindowMain::OnAfterEngineStart(){
 	
 	// reset timer
 	pTimer->Reset();
+	
+	if( pAfterLoadArguments.GetCount() > 0 ){
+		try{
+			while( pAfterLoadArguments.GetCount() > 0 ){
+				const int argCount = pAfterLoadArguments.GetCount();
+				
+				for( i=0; i<moduleCount; i++ ){
+					igdeEditorModule * const module = pModuleManager->GetModuleAt( i )->GetModule();
+					if( module && ! module->ProcessCommandLine( pAfterLoadArguments ) ){
+						pAfterLoadArguments.RemoveAll();
+						pEnvironmentIGDE.CloseApplication();
+						return;
+					}
+				}
+				
+				if( pAfterLoadArguments.GetCount() == argCount ){
+					decString message;
+					message.Format( "Unknown argument '%s'", pAfterLoadArguments.GetAt( 0 ).ToUTF8().GetString() );
+					DETHROW_INFO( deeInvalidParam, message );
+				}
+			}
+			
+		}catch( const deException &e ){
+			pAfterLoadArguments.RemoveAll();
+			DisplayException( e );
+			pEnvironmentIGDE.CloseApplication();
+		}
+	}
 }
 
 void igdeWindowMain::OnBeforeEngineStop(){

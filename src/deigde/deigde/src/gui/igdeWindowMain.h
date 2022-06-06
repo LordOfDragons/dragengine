@@ -46,6 +46,7 @@
 #include <dragengine/common/collection/decObjectDictionary.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
+#include <dragengine/common/string/unicode/decUnicodeStringList.h>
 #include <dragengine/logger/deLoggerReference.h>
 #include <dragengine/filesystem/deVirtualFileSystemReference.h>
 #include <dragengine/resources/rig/deRigReference.h>
@@ -162,6 +163,8 @@ private:
 	bool pFirstEngineRun;
 	
 	igdeTaskSyncGameDefinition *pTaskSyncGameDefinition;
+	
+	decUnicodeStringList pAfterLoadArguments;
 	
 	
 	
@@ -282,6 +285,9 @@ public:
 	
 	/** \brief Active module shared toolbars changed. */
 	void ActiveModuleSharedToolBarsChanged();
+	
+	/** \brief Activate editor and bring it to the front. */
+	void ActivateEditor( igdeEditorModule *editor );
 	
 	/** Rebuilds the menu using the given game definition. */
 	void RebuildMenu();

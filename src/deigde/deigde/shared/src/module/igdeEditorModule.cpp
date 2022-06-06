@@ -176,6 +176,10 @@ igdeStepableTask *igdeEditorModule::OnGameDefinitionChanged(){
 	}
 }
 
+bool igdeEditorModule::ProcessCommandLine( decUnicodeStringList& ){
+	return true;
+}
+
 
 
 // Debugging

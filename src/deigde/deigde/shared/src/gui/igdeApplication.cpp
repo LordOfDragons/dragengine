@@ -164,9 +164,9 @@ void igdeApplication::CleanUp(){
 //////////////////////
 
 void igdeApplication::pSharedRun( decUnicodeStringList &arguments ){
-	( ( igdeNativeApplication* )pNativeApplication )->Initialize( arguments );
-	
 	try{
+		( ( igdeNativeApplication* )pNativeApplication )->Initialize( arguments );
+		
 		if( Initialize( arguments ) ){
 			( ( igdeNativeApplication* )pNativeApplication )->Run();
 		}

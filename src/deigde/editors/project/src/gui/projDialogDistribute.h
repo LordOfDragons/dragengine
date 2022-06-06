@@ -42,6 +42,10 @@ class projTaskDistribute;
  * is started progress information is listed below and updated as the process progresses.
  */
 class projDialogDistribute : public igdeDialog{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<projDialogDistribute> Ref;
+	
 private:
 	projWindowMain &pWindowMain;
 	projProfile *pProfile;
@@ -58,13 +62,15 @@ private:
 	projTaskDistribute *pTaskDistribute;
 	decString pLastTaskMessage;
 	
+	bool pCloseDialogOnFinished;
+	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create dialog. */
-	projDialogDistribute( projWindowMain &windowMain );
+	projDialogDistribute( projWindowMain &windowMain, projProfile *profile );
 	
 	/** \brief Clean up dialog. */
 	virtual ~projDialogDistribute();
@@ -89,6 +95,9 @@ public:
 	 * Called while the dialog is inside Run(). Can be used to do updating on a regular basis.
 	 */
 	virtual void OnFrameUpdate();
+	
+	/** \brief Close dialog once finished. */
+	void SetCloseDialogOnFinished( bool closeDialogOnFinished );
 	/*@}*/
 	
 	

@@ -52,3 +52,10 @@ void projIGDEModule::Start(){
 		SetEditorWindow( new projWindowMain( *this ) );
 	}
 }
+
+bool projIGDEModule::ProcessCommandLine( decUnicodeStringList &arguments ){
+	if( GetEditorWindow() ){
+		return ( ( projWindowMain* )GetEditorWindow() )->ProcessCommandLine( arguments );
+	}
+	return igdeEditorModule::ProcessCommandLine( arguments );
+}

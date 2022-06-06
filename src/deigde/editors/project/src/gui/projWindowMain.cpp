@@ -65,6 +65,7 @@
 #include <dragengine/common/file/decBaseFileReaderReference.h>
 #include <dragengine/common/file/decDiskFileWriter.h>
 #include <dragengine/common/file/decBaseFileWriterReference.h>
+#include <dragengine/common/string/unicode/decUnicodeStringList.h>
 #include <dragengine/filesystem/deVFSContainerReference.h>
 #include <dragengine/filesystem/deVFSDiskDirectory.h>
 #include <dragengine/logger/deLogger.h>
@@ -361,6 +362,25 @@ void projWindowMain::UpdateShowActionPath(){
 		pActionShowDelga->SetPath( "" );
 		pActionShowDelga->SetEnabled( false );
 	}
+}
+
+bool projWindowMain::ProcessCommandLine( decUnicodeStringList &arguments ){
+	while( arguments.GetCount() > 0 ){
+		const decString arg( arguments.GetAt( 0 ).ToUTF8() );
+		
+		if( arg == "--project.profile.distribute" ){
+			arguments.RemoveFrom( 0 );
+			return pCmdLineProfileDistribute( arguments );
+			
+		}else if( arg == "--project.profile.list" ){
+			arguments.RemoveFrom( 0 );
+			return pCmdLineProfileList( arguments );
+			
+		}else{
+			break;
+		}
+	}
+	return true;
 }
 
 
@@ -688,7 +708,7 @@ public:
 		}
 		
 		igdeDialogReference dialog;
-		dialog.TakeOver( new projDialogDistribute( pWindow ) );
+		dialog.TakeOver( new projDialogDistribute( pWindow, project->GetActiveProfile() ) );
 		dialog->Run( &pWindow );
 	}
 	
@@ -857,4 +877,66 @@ void projWindowMain::pCreateMenuProfile( igdeMenuCascade &menu ){
 	helper.MenuCommand( menu, pActionShowConfig );
 	helper.MenuCommand( menu, pActionShowOverlay );
 	helper.MenuCommand( menu, pActionShowCapture );
+}
+
+bool projWindowMain::pCmdLineProfileDistribute( decUnicodeStringList &arguments ){
+	// --project.profile.distribute <profile>
+	
+	DEASSERT_NOTNULL( pProject );
+	
+	projProfile *profile = nullptr;
+	
+	while( arguments.GetCount() > 0 ){
+		const decString arg( arguments.GetAt( 0 ).ToUTF8() );
+		arguments.RemoveFrom( 0 );
+		
+		if( arg.BeginsWith( "--" ) || arg.BeginsWith( "-" ) ){
+			decString message;
+			message.Format( "Unknown argument '%s'", arg.GetString() );
+			DETHROW_INFO( deeInvalidParam, message );
+			
+		}else if( ! profile ){
+			profile = pProject->GetProfiles().GetNamed( arg );
+			if( ! profile ){
+				decString message;
+				message.Format( "Unknown profile '%s'", arg.GetString() );
+				DETHROW_INFO( deeInvalidParam, message );
+			}
+			
+		}else{
+			decString message;
+			message.Format( "Unknown argument '%s'", arg.GetString() );
+			DETHROW_INFO( deeInvalidParam, message );
+		}
+	}
+	
+	GetEnvironment().ActivateEditor( &GetEditorModule() );
+	
+	const projDialogDistribute::Ref dialog( projDialogDistribute::Ref::New(
+		new projDialogDistribute( *this, profile ) ) );
+	dialog->SetCloseDialogOnFinished( true );
+	dialog->Run( this );
+	return false;
+}
+
+bool projWindowMain::pCmdLineProfileList( decUnicodeStringList &arguments ){
+	// --project.profile.list
+	
+	DEASSERT_NOTNULL( pProject );
+	
+	if( arguments.GetCount() > 0 ){
+		decString message;
+		message.Format( "Unknown argument '%s'", arguments.GetAt( 0 ).ToUTF8().GetString() );
+		DETHROW_INFO( deeInvalidParam, message );
+	}
+	
+	const int count = pProject->GetProfiles().GetCount();
+	decStringList names;
+	int i;
+	for( i=0; i<count; i++ ){
+		names.Add( pProject->GetProfiles().GetAt( i )->GetName() );
+	}
+	int selection = 0;
+	igdeCommonDialogs::SelectString( this, "Profiles", "Profiles", names, selection );
+	return false;
 }

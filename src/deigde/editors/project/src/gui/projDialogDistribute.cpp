@@ -51,16 +51,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-projDialogDistribute::projDialogDistribute( projWindowMain &windowMain ) :
+projDialogDistribute::projDialogDistribute( projWindowMain &windowMain, projProfile *profile ) :
 igdeDialog( windowMain.GetEnvironment(), "Distribute" ),
 
 pWindowMain( windowMain ),
-pProfile( windowMain.GetProject()->GetActiveProfile() ),
-pTaskDistribute( NULL )
+pProfile( profile ),
+pTaskDistribute( NULL ),
+pCloseDialogOnFinished( false )
 {
-	if( ! pProfile ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( pProfile )
 	
 	igdeEnvironment &env = windowMain.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelper();
@@ -112,7 +111,6 @@ pTaskDistribute( NULL )
 	
 	AddContent( content, buttonBar );
 	
-	
 	pStartBuilding();
 }
 
@@ -128,9 +126,7 @@ projDialogDistribute::~projDialogDistribute(){
 ///////////////
 
 void projDialogDistribute::LogMessage( const char *message ){
-	if( ! message ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( message )
 	
 	const bool atBottom = pEditLogs->GetBottomLine() == pEditLogs->GetLineCount() - 1;
 	pEditLogs->AppendText( message );
@@ -151,6 +147,10 @@ void projDialogDistribute::OnFrameUpdate(){
 			path.AddUnixPath( pProfile->GetDelgaPath() );
 			path.RemoveLastComponent();
 			pActionShowInFSManager->SetPath( path.GetPathNative() );
+			
+			if( pCloseDialogOnFinished ){
+				Cancel();
+			}
 			return;
 		}
 		
@@ -181,6 +181,10 @@ void projDialogDistribute::OnFrameUpdate(){
 		
 		pWindowMain.GetLogger()->LogException( LOGSOURCE, e );
 	}
+}
+
+void projDialogDistribute::SetCloseDialogOnFinished( bool closeDialogOnFinished ){
+	pCloseDialogOnFinished = closeDialogOnFinished;
 }
 
 

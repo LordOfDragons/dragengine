@@ -57,20 +57,26 @@ igdeWindowMain &igdeRealApplication::GetWindowMain() const{
 }
 
 bool igdeRealApplication::Initialize( const decUnicodeStringList &arguments ){
-	SetMainWindow( new igdeWindowMain( pEnvironment ), true );
-	GetWindowMain().CreateNativeWidget();
-	
-// 	if( updateWithTimer ){
-// 		//GetWindowMain().SetMinUpdateTime( 0.0f ); // timer granularity limits already
-// 		GetWindowMain().SetMinUpdateTime( 1.0f / 100.0f - 0.001f ); // 100Hz max update speed, 1ms timer granularity
-// 		
-// 	}else{
-		GetWindowMain().SetMinUpdateTime( 1.0f / 100.0f ); // 100Hz max update speed
-// 	}
-	
-	// process command line. run application only if it succeeded
-	if( ! GetWindowMain().ProcessCommandLine( arguments ) ){
-		GetWindowMain().Close();
+	try{
+		SetMainWindow( new igdeWindowMain( pEnvironment ), true );
+		GetWindowMain().CreateNativeWidget();
+		
+	// 	if( updateWithTimer ){
+	// 		//GetWindowMain().SetMinUpdateTime( 0.0f ); // timer granularity limits already
+	// 		GetWindowMain().SetMinUpdateTime( 1.0f / 100.0f - 0.001f ); // 100Hz max update speed, 1ms timer granularity
+	// 		
+	// 	}else{
+			GetWindowMain().SetMinUpdateTime( 1.0f / 100.0f ); // 100Hz max update speed
+	// 	}
+		
+		// process command line. run application only if it succeeded
+		if( ! GetWindowMain().ProcessCommandLine( arguments ) ){
+			GetWindowMain().Close();
+			return false;
+		}
+		
+	}catch( const deException &e ){
+		GetWindowMain().DisplayException( e );
 		return false;
 	}
 	
