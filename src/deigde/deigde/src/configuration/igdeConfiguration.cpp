@@ -443,7 +443,6 @@ void igdeConfiguration::LocatePath(){
 void igdeConfiguration::InitVirtualFileSystem(){
 	deVirtualFileSystem &vfs = *pWindowMain.GetVirtualFileSystem();
 	decPath pathRootDir, pathDiskDir;
-	deVFSDiskDirectory::Ref diskDir;
 	
 	// add the found path to the virtual file system. this makes it easier
 	// to find the files later on without having to deal with file system
@@ -456,17 +455,15 @@ void igdeConfiguration::InitVirtualFileSystem(){
 	if( ! pPathConfigSystem.IsEmpty() ){
 		pathRootDir.SetFromUnix( "/config/system" );
 		pathDiskDir.SetFromNative( pPathConfigSystem );
-		diskDir.TakeOver( new deVFSDiskDirectory( pathRootDir, pathDiskDir ) );
-		diskDir->SetReadOnly( true );
-		vfs.AddContainer( diskDir );
+		vfs.AddContainer( deVFSDiskDirectory::Ref::New(
+			new deVFSDiskDirectory( pathRootDir, pathDiskDir, true ) ) );
 	}
 	
 	if( ! pPathConfigUser.IsEmpty() ){
 		pathRootDir.SetFromUnix( "/config/user" );
 		pathDiskDir.SetFromNative( pPathConfigUser );
-		diskDir.TakeOver( new deVFSDiskDirectory( pathRootDir, pathDiskDir ) );
-		diskDir->SetReadOnly( false );
-		vfs.AddContainer( diskDir );
+		vfs.AddContainer( deVFSDiskDirectory::Ref::New(
+			new deVFSDiskDirectory( pathRootDir, pathDiskDir, false ) ) );
 	}
 	
 	// add the data directory. currently there exists only one which
@@ -477,18 +474,16 @@ void igdeConfiguration::InitVirtualFileSystem(){
 	if( ! pPathShares.IsEmpty() ){
 		pathRootDir.SetFromUnix( "/data" );
 		pathDiskDir.SetFromNative( pPathShares );
-		diskDir.TakeOver( new deVFSDiskDirectory( pathRootDir, pathDiskDir ) );
-		diskDir->SetReadOnly( false );
-		vfs.AddContainer( diskDir );
+		vfs.AddContainer( deVFSDiskDirectory::Ref::New(
+			new deVFSDiskDirectory( pathRootDir, pathDiskDir, false ) ) );
 	}
 	
 	// add the logs directory. this is read-write
 	if( ! pPathLogs.IsEmpty() ){
 		pathRootDir.SetFromUnix( "/logs" );
 		pathDiskDir.SetFromNative( pPathLogs );
-		diskDir.TakeOver( new deVFSDiskDirectory( pathRootDir, pathDiskDir ) );
-		diskDir->SetReadOnly( false );
-		vfs.AddContainer( diskDir );
+		vfs.AddContainer( deVFSDiskDirectory::Ref::New(
+			new deVFSDiskDirectory( pathRootDir, pathDiskDir, false ) ) );
 	}
 }
 
