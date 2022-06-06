@@ -85,7 +85,7 @@ public:
 	/**
 	 * \brief File exists.
 	 * 
-	 * Path is elative to the root path.
+	 * Path is relative to the root path.
 	 */
 	virtual bool ExistsFile( const decPath &path );
 	

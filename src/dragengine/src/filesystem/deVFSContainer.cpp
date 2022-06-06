@@ -52,3 +52,31 @@ deVFSContainer::~deVFSContainer(){
 void deVFSContainer::SetHidden( bool hidden ){
 	pHidden = hidden;
 }
+
+int deVFSContainer::GetHiddenPathCount() const{
+	return pHiddenPath.GetCount();
+}
+
+const decPath &deVFSContainer::GetHiddenPathAt( int index ) const{
+	return pHiddenPath.GetAt( index );
+}
+
+bool deVFSContainer::HasHiddenPath( const decPath &path ) const{
+	return pHiddenPath.Has( path );
+}
+
+void deVFSContainer::AddHiddenPath( const decPath &path ){
+	pHiddenPath.AddIfAbsent( path );
+}
+
+void deVFSContainer::RemoveHiddenPath( const decPath &path ){
+	pHiddenPath.RemoveIfPresent( path );
+}
+
+void deVFSContainer::RemoveAllHiddenPath(){
+	pHiddenPath.RemoveAll();
+}
+
+bool deVFSContainer::IsFileHiddenBelow( const decPath &path ){
+	return pHiddenPath.Has( path );
+}
