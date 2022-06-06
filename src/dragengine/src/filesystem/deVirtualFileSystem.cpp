@@ -108,7 +108,7 @@ bool deVirtualFileSystem::ExistsFile( const decPath &path ) const{
 		if( container.ExistsFile( relativePath ) ){
 			return true;
 		}
-		if( container.IsFileHiddenBelow( relativePath ) ){
+		if( container.IsPathHiddenBelow( relativePath ) ){
 			break;
 		}
 	}
@@ -129,7 +129,7 @@ bool deVirtualFileSystem::CanReadFile( const decPath &path ) const{
 		if( container.CanReadFile( relativePath ) ){
 			return true;
 		}
-		if( container.IsFileHiddenBelow( relativePath ) ){
+		if( container.IsPathHiddenBelow( relativePath ) ){
 			break;
 		}
 	}
@@ -150,7 +150,7 @@ bool deVirtualFileSystem::CanWriteFile( const decPath &path ) const{
 		if( container.CanWriteFile( relativePath ) ){
 			return true;
 		}
-		if( container.IsFileHiddenBelow( relativePath ) ){
+		if( container.IsPathHiddenBelow( relativePath ) ){
 			break;
 		}
 	}
@@ -171,7 +171,7 @@ bool deVirtualFileSystem::CanDeleteFile( const decPath &path ) const{
 		if( container.CanDeleteFile( relativePath ) ){
 			return true;
 		}
-		if( container.IsFileHiddenBelow( relativePath ) ){
+		if( container.IsPathHiddenBelow( relativePath ) ){
 			break;
 		}
 	}
@@ -192,7 +192,7 @@ decBaseFileReader *deVirtualFileSystem::OpenFileForReading( const decPath &path 
 		if( container.CanReadFile( relativePath ) ){
 			return container.OpenFileForReading( relativePath );
 		}
-		if( container.IsFileHiddenBelow( relativePath ) ){
+		if( container.IsPathHiddenBelow( relativePath ) ){
 			break;
 		}
 	}
@@ -213,7 +213,7 @@ decBaseFileWriter *deVirtualFileSystem::OpenFileForWriting( const decPath &path 
 		if( container.CanWriteFile( relativePath ) ){
 			return container.OpenFileForWriting( relativePath );
 		}
-		if( container.IsFileHiddenBelow( relativePath ) ){
+		if( container.IsPathHiddenBelow( relativePath ) ){
 			break;
 		}
 	}
@@ -234,7 +234,7 @@ void deVirtualFileSystem::DeleteFile( const decPath &path ) const{
 		if( container.CanDeleteFile( relativePath ) ){
 			container.DeleteFile( relativePath );
 		}
-		if( container.IsFileHiddenBelow( relativePath ) ){
+		if( container.IsPathHiddenBelow( relativePath ) ){
 			break;
 		}
 	}
@@ -253,7 +253,7 @@ void deVirtualFileSystem::TouchFile( const decPath &path ) const{
 		if( container.CanWriteFile( relativePath ) ){
 			container.TouchFile( relativePath );
 		}
-		if( container.IsFileHiddenBelow( relativePath ) ){
+		if( container.IsPathHiddenBelow( relativePath ) ){
 			break;
 		}
 	}
@@ -262,16 +262,10 @@ void deVirtualFileSystem::TouchFile( const decPath &path ) const{
 // TODO change this implementation to not use decStringSet but a structure (string, eFileTypes).
 class deVirtualFileSystemSearch : public deContainerFileSearch{
 private:
-	decStringSet pDirectories, pFiles, pSpecials;
+	decStringSet pDirectories, pFiles, pSpecials, pHidden;
 	
 public:
 	deVirtualFileSystemSearch(){
-	}
-	
-	void Clear(){
-		pDirectories.RemoveAll();
-		pFiles.RemoveAll();
-		pSpecials.RemoveAll();
 	}
 	
 	inline const decStringSet &GetDirectories() const{
@@ -286,7 +280,15 @@ public:
 		return pSpecials;
 	}
 	
+	void AddHidden( const decString &name ){
+		pHidden.Add( name );
+	}
+	
 	virtual void Add( const char *name, deVFSContainer::eFileTypes type ){
+		if( pHidden.Has( name ) ){
+			return;
+		}
+		
 		switch( type ){
 		case deVFSContainer::eftRegularFile:
 			pFiles.Add( name );
@@ -313,12 +315,25 @@ void deVirtualFileSystem::SearchFiles( const decPath &directory, deFileSearchVis
 	const int count = pContainers.GetCount();
 	deVirtualFileSystemSearch searcher;
 	decPath relativeDirectory;
-	int i;
+	int i, j;
 	
 	for( i=count-1; i>=0; i-- ){
 		deVFSContainer &container = *( ( deVFSContainer* )pContainers.GetAt( i ) );
 		if( pMatchContainer( container, directory, relativeDirectory ) ){
 			container.SearchFiles( relativeDirectory, searcher );
+			
+			const int hiddenCount = container.GetHiddenPathCount();
+			for( j=0; j<hiddenCount; j++ ){
+				const decPath &hiddenPath = container.GetHiddenPathAt( j );
+				if( hiddenPath.IsEqualOrParentOf( relativeDirectory ) ){
+					// search path hidden. stop searching
+					i = 0;
+					break;
+					
+				}else if( relativeDirectory.IsDirectParentOf( hiddenPath ) ){
+					searcher.AddHidden( hiddenPath.GetLastComponent() );
+				}
+			}
 			
 		}else if( pMatchContainerParent( container, directory ) ){
 			// this check is required to catch the situation of visiting a directory containing
@@ -329,11 +344,6 @@ void deVirtualFileSystem::SearchFiles( const decPath &directory, deFileSearchVis
 		}
 	}
 	
-	// this here is quite suboptimal but not doable otherwise. searching finds all files
-	// even those which are hidden by above layers. we can only safely filter them out
-	// after we have collected them by doing an ExistsFile() check. if a file is truely
-	// hidden it will return false. all other files should return true. this is causing
-	// extra work and slows down searching but it is the only possible way
 	const decStringSet &files = searcher.GetFiles();
 	const int fileCount = files.GetCount();
 	const decStringSet &specials = searcher.GetSpecials();
@@ -350,9 +360,6 @@ void deVirtualFileSystem::SearchFiles( const decPath &directory, deFileSearchVis
 	
 	for( i=0; i<fileCount; i++ ){
 		path.SetLastComponent( files.GetAt( i ) );
-		if( ! ExistsFile( path ) ){
-			continue;
-		}
 		if( ! visitor.VisitFile( *this, path ) ){
 			return;
 		}
@@ -360,9 +367,6 @@ void deVirtualFileSystem::SearchFiles( const decPath &directory, deFileSearchVis
 	
 	for( i=0; i<specialCount; i++ ){
 		path.SetLastComponent( specials.GetAt( i ) );
-		if( ! ExistsFile( path ) ){
-			continue;
-		}
 		if( ! visitor.VisitSpecial( *this, path ) ){
 			return;
 		}
@@ -370,9 +374,6 @@ void deVirtualFileSystem::SearchFiles( const decPath &directory, deFileSearchVis
 	
 	for( i=0; i<directoryCount; i++ ){
 		path.SetLastComponent( directories.GetAt( i ) );
-		if( ! ExistsFile( path ) ){
-			continue;
-		}
 		if( ! visitor.VisitDirectory( *this, path ) ){
 			return;
 		}
@@ -392,7 +393,7 @@ deVFSContainer::eFileTypes deVirtualFileSystem::GetFileType( const decPath& path
 		if( container.ExistsFile( relativePath ) ){
 			return container.GetFileType( relativePath );
 		}
-		if( container.IsFileHiddenBelow( relativePath ) ){
+		if( container.IsPathHiddenBelow( relativePath ) ){
 			break;
 		}
 	}
@@ -413,7 +414,7 @@ uint64_t deVirtualFileSystem::GetFileSize( const decPath &path ) const{
 		if( container.ExistsFile( relativePath ) ){
 			return container.GetFileSize( relativePath );
 		}
-		if( container.IsFileHiddenBelow( relativePath ) ){
+		if( container.IsPathHiddenBelow( relativePath ) ){
 			break;
 		}
 	}
@@ -434,7 +435,7 @@ TIME_SYSTEM deVirtualFileSystem::GetFileModificationTime( const decPath &path ) 
 		if( container.ExistsFile( relativePath ) ){
 			return container.GetFileModificationTime( relativePath );
 		}
-		if( container.IsFileHiddenBelow( relativePath ) ){
+		if( container.IsPathHiddenBelow( relativePath ) ){
 			break;
 		}
 	}

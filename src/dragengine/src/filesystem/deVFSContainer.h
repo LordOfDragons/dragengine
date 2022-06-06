@@ -188,14 +188,13 @@ public:
 	virtual bool CanDeleteFile( const decPath &path ) = 0;
 	
 	/**
-	 * \brief File is hidden for all lower containers.
+	 * \brief Path is hidden for all lower containers.
 	 * \version 1.13
 	 * 
-	 * Path is relative to the root path. Default implementation returns HasHiddenPath().
-	 * Use to hide path in containers below this container for example to remove files
-	 * while patching.
+	 * Path is relative to the root path. Use to hide path in containers below this
+	 * container for example to remove files while patching.
 	 */
-	virtual bool IsFileHiddenBelow( const decPath &path );
+	virtual bool IsPathHiddenBelow( const decPath &path );
 	
 	
 	

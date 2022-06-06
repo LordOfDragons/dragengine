@@ -77,6 +77,13 @@ void deVFSContainer::RemoveAllHiddenPath(){
 	pHiddenPath.RemoveAll();
 }
 
-bool deVFSContainer::IsFileHiddenBelow( const decPath &path ){
-	return pHiddenPath.Has( path );
+bool deVFSContainer::IsPathHiddenBelow( const decPath &path ){
+	const int count = pHiddenPath.GetCount();
+	int i;
+	for( i=0; i<count; i++ ){
+		if( pHiddenPath.GetAt( i ).IsEqualOrParentOf( path ) ){
+			return true;
+		}
+	}
+	return false;
 }
