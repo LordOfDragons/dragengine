@@ -331,7 +331,7 @@ void igdeNativeFoxRenderView::AttachRenderWindow(){
 	
 	// update window properties to match what FOX has stored for the previous window
 #ifdef OS_W32
-	SetWindowPos( hwnd, HWND_TOP, x, y, width, height, SWP_NOACTIVATE | SWP_NOCOPYBITS
+	SetWindowPos( hwnd, HWND_TOP, xx, yy, wwidth, hheight, SWP_NOACTIVATE | SWP_NOCOPYBITS
 		| SWP_NOOWNERZORDER | SWP_NOREDRAW | SWP_SHOWWINDOW );
 #else
 	if( wwidth > 0 && hheight > 0 ){
