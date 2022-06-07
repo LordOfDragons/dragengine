@@ -436,8 +436,12 @@ deRenderWindow *igdeEngineController::CreateRenderWindow( igdeWidget &hostWindow
 		DETHROW( deeNullPointer );
 	}
 	
+	#ifdef IGDE_TOOLKIT_NULL
+	return pEngine->GetRenderWindowManager()->CreateRenderWindow();
+	#else
 	return pEngine->GetRenderWindowManager()->CreateRenderWindowInside(
 		igdeNativeWidget::NativeWidgetParentID( hostWindow ) );
+	#endif
 }
 
 void igdeEngineController::UnparentMainRenderWindow(){
@@ -449,7 +453,7 @@ void igdeEngineController::UnparentMainRenderWindow(){
 	// we have to make sure the window still exists according to the graphic module. if it did
 	// already destroy it we do not attempt to modify the window. detach above works no matter
 	// if the window is still existing or not but not these calls here
-	#ifdef OS_UNIX
+	#if defined OS_UNIX && defined HAS_LIB_X11
 	if( pMainRenderWindow->GetWindow() && pMainWindow.GetNativeWidget() ){
 		Display * const display = igdeNativeWidget::GetDisplayConnection();
 		Window window = pMainRenderWindow->GetWindow();
