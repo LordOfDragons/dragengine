@@ -934,6 +934,51 @@ bool projWindowMain::pCmdLineProfileDistribute( decUnicodeStringList &arguments 
 	return false;
 }
 
+bool projWindowMain::pCmdLineProfileDistributeFile( decUnicodeStringList &arguments ){
+	// --project.profile.distribute.file <profile>
+	
+	DEASSERT_NOTNULL( pProject );
+	
+	projProfile *profile = nullptr;
+	
+	while( arguments.GetCount() > 0 ){
+		const decString arg( arguments.GetAt( 0 ).ToUTF8() );
+		arguments.RemoveFrom( 0 );
+		
+		if( arg.BeginsWith( "--" ) || arg.BeginsWith( "-" ) ){
+			decString message;
+			message.Format( "Unknown argument '%s'", arg.GetString() );
+			DETHROW_INFO( deeInvalidParam, message );
+			
+		}else if( ! profile ){
+			profile = pProject->GetProfiles().GetNamed( arg );
+			if( ! profile ){
+				decString message;
+				message.Format( "Unknown profile '%s'", arg.GetString() );
+				DETHROW_INFO( deeInvalidParam, message );
+			}
+			
+		}else{
+			decString message;
+			message.Format( "Unknown argument '%s'", arg.GetString() );
+			DETHROW_INFO( deeInvalidParam, message );
+		}
+	}
+	
+	if( ! profile ){
+		DETHROW_INFO( deeInvalidParam, "Missing argument: profile" );
+	}
+	
+	GetEnvironment().ActivateEditor( &GetEditorModule() );
+	
+	decPath path;
+	path.SetFromNative( pProject->GetDirectoryPath() );
+	path.AddUnixPath( profile->GetDelgaPath() );
+	printf( "%s\n", path.GetPathNative().GetString() );
+	
+	return false;
+}
+
 bool projWindowMain::pCmdLineProfileList( decUnicodeStringList &arguments ){
 	// --project.profile.list
 	
@@ -958,6 +1003,10 @@ void projWindowMain::pCmdLineHelp(){
 	printf( "\n" );
 	printf( "deigde <path-project.degp> --project.profile.distribute <profile>\n" );
 	printf( "   Build distribution file (*.delga) for profile in game project.\n" );
+	
+	printf( "\n" );
+	printf( "deigde <path-project.degp> --project.profile.distribute.file <profile>\n" );
+	printf( "   Absolute path to distribution file (*.delga).\n" );
 	
 	printf( "\n" );
 	printf( "deigde <path-project.degp> --project.profile.list\n" );

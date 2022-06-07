@@ -1,7 +1,6 @@
 name: Build Linux CI
 
 on:
-  workflow_dispatch:
   workflow_call:
     inputs:
       releaseVersion:

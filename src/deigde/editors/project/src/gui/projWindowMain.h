@@ -221,6 +221,7 @@ private:
 	void pCreateMenuEdit( igdeMenuCascade &menu );
 	void pCreateMenuProfile( igdeMenuCascade &menu );
 	bool pCmdLineProfileDistribute( decUnicodeStringList &arguments );
+	bool pCmdLineProfileDistributeFile( decUnicodeStringList &arguments );
 	bool pCmdLineProfileList( decUnicodeStringList &arguments );
 	void pCmdLineHelp();
 };
