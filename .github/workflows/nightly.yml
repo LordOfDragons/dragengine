@@ -48,7 +48,7 @@ jobs:
 
   upload:
     needs: [build_linux, build_windows, build_windows_installer, build_linux_ci, build_live]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     
     steps:
       - name: Get Linux Installers
