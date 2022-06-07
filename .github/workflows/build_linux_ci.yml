@@ -37,7 +37,7 @@ jobs:
       
       - name: Init custom.py
         run: |
-          cp ${{ github.workspace }}/.github/workflows/custom_linux.py custom.py
+          cp ${{ github.workspace }}/.github/workflows/custom_linux_ci.py custom.py
           sed -i -e 's/{ReleaseVersion}/${{ inputs.releaseVersion }}/g' custom.py
           sed -i -e 's/{BuildVersion}/${{ inputs.buildVersion }}/g' custom.py
       
