@@ -30,12 +30,12 @@ with_system_libhidapi = 'no'
 with_system_libopenhmd = 'no'
 with_system_fftw = 'no'
 with_system_libwebp = 'no'
-with_opengl = 'yes'
+with_opengl = 'no'
 with_python = 'no'
 with_npapisdk = 'no'
 with_dl = 'yes'
 with_pthread = 'yes'
-with_x = 'yes'
+with_x = 'no'
 
 # modules configuration
 #########################
