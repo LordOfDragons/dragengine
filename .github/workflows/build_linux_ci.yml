@@ -9,13 +9,7 @@ on:
       buildVersion:
         required: true
         type: string
-      artifactArchive:
-        required: true
-        type: string
       artifactInstaller:
-        required: true
-        type: string
-      artifactTools:
         required: true
         type: string
 
@@ -50,15 +44,6 @@ jobs:
       - name: Get current date
         id: date
         run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
-        
-      - name: Store Archives
-        uses: actions/upload-artifact@v3
-        with:
-          name: ${{ inputs.artifactArchive }}
-          path: |
-            archive/build/dragengine-ci-${{ inputs.releaseVersion }}-linux64.tar.bz2
-            archive/build/deigde-ci-${{ inputs.releaseVersion }}-linux64.tar.bz2
-          if-no-files-found: error
         
       - name: Store Installers
         uses: actions/upload-artifact@v3
