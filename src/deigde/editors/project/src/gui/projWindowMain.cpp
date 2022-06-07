@@ -377,6 +377,10 @@ bool projWindowMain::ProcessCommandLine( decUnicodeStringList &arguments ){
 			arguments.RemoveFrom( 0 );
 			return pCmdLineProfileList( arguments );
 			
+		}else if( arg == "--help" ){
+			pCmdLineHelp();
+			break;
+			
 		}else{
 			break;
 		}
@@ -944,4 +948,14 @@ bool projWindowMain::pCmdLineProfileList( decUnicodeStringList &arguments ){
 	}
 	
 	return false;
+}
+
+void projWindowMain::pCmdLineHelp(){
+	printf( "\n" );
+	printf( "<path-project.degp> --project.profile.distribute <profile>\n" );
+	printf( "   Build distribution file (*.delga) for profile in game project.\n" );
+	
+	printf( "\n" );
+	printf( "<path-project.degp> --project.profile.list\n" );
+	printf( "   List all profiles in game project. Prints each profile name on a new line.\n" );
 }

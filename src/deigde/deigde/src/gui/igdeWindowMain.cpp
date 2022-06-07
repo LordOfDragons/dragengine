@@ -687,6 +687,11 @@ bool igdeWindowMain::ProcessCommandLine( const decUnicodeStringList &arguments )
 	}
 	
 	if( loadFile.IsEmpty() ){
+		#ifdef IGDE_NULL_TOOLKIT
+		printf( "deigde <project-file.degp> {--help | ...}\n" );
+		DETHROW_INFO( deeInvalidParam, "Missing arguments" );
+		#endif
+		
 		igdeDialogReference dialog;
 		dialog.TakeOver( new igdeDialogStartUp( *this ) );
 		return dialog->Run( this );
@@ -702,6 +707,7 @@ bool igdeWindowMain::ProcessCommandLine( const decUnicodeStringList &arguments )
 	
 	#ifdef IGDE_NULL_TOOLKIT
 	if( pAfterLoadArguments.GetCount() == 0 ){
+		printf( "deigde <project-file.degp> {--help | ...}\n" );
 		DETHROW_INFO( deeInvalidParam, "Missing arguments" );
 	}
 	#endif
@@ -1281,6 +1287,12 @@ void igdeWindowMain::OnFrameUpdate(){
 				}
 				
 				if( pAfterLoadArguments.GetCount() == argCount ){
+					if( pAfterLoadArguments.GetAt( 0 ).ToUTF8() == "--help" ){
+						pAfterLoadArguments.RemoveAll();
+						pEnvironmentIGDE.CloseApplication();
+						return;
+					}
+					
 					decString message;
 					message.Format( "Unknown argument '%s'", pAfterLoadArguments.GetAt( 0 ).ToUTF8().GetString() );
 					DETHROW_INFO( deeInvalidParam, message );
@@ -1299,6 +1311,7 @@ void igdeWindowMain::OnFrameUpdate(){
 		}
 		
 		#ifdef IGDE_NULL_TOOLKIT
+		printf( "deigde <project-file.degp> {--help | ...}\n" );
 		DETHROW_INFO( deeInvalidParam, "Missing Arguments" );
 		#endif
 	}
