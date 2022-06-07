@@ -47,34 +47,6 @@ function unpack_payload()
 	tail -n +$payload_start $0 | tar -C "$1" -xjf -
 }
 
-function ensure_group_games_exists()
-{
-	echo ">>> Ensure group 'games' exists"
-	
-	if ! [ $(getent group games ) ]; then
-		echo -e "\e[93mGroup 'games' does not exist\e[39m"
-		groupadd games
-		echo "Group 'games' created."
-	fi
-	
-	echo -e "\e[93mDo not forget to add yourself to group 'games' to be able\e[39m"
-	echo -e "\e[93mto manage installed games using GUI launcher.\e[39m"
-}
-
-function create_games_directory()
-{
-	echo ">>> Create games directory"
-	
-	if [ -d /opt/delauncher/games ]; then
-		echo -e "\e[93mDirectory exists already. Skipped.\e[39m"
-		
-	else
-		mkdir -p /opt/delauncher/games
-		chgrp games /opt/delauncher /opt/delauncher/games
-		chmod 775 /opt/delauncher /opt/delauncher/games
-	fi
-}
-
 function uninstall_files()
 {
 	echo ">>> Removing files"
@@ -185,8 +157,6 @@ else
 	if confirm_user prompt="Install Game Engine?" ; then
 		remove_old_files
 		unpack_payload "/"
-		ensure_group_games_exists
-		create_games_directory
 		echo ""
 		echo -e "\e[93m\e[1m>>> Finished Successfully\e[39m\e[0m"
 		exit 0
