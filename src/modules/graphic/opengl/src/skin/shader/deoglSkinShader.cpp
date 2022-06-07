@@ -2457,7 +2457,7 @@ void deoglSkinShader::UpdateUniformTargets(){
 	// shared parameter block support
 	if( pConfig.GetSharedSPB() ){
 		// re-map instance parameters since the ordering is slightly different
-		int i, backup[ EIUT_COUNT ];
+		int backup[ EIUT_COUNT ];
 		for( i=0; i<EIUT_COUNT; i++ ){
 			backup[ i ] = pInstanceUniformTargets[ i ];
 			pInstanceUniformTargets[ i ] = -1;

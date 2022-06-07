@@ -801,9 +801,9 @@ void dedaiSpace::pUpdateExtendsNavSpace(){
 		
 		for( j=0; j<faceCount; j++ ){
 			const decConvexVolumeFace &face = *volume.GetFaceAt( j );
-			const int vertexCount = face.GetVertexCount();
+			const int faceVertexCount = face.GetVertexCount();
 			
-			for( k=0; k<vertexCount; k++ ){
+			for( k=0; k<faceVertexCount; k++ ){
 				const decDVector position = matrix * decDVector( volume.GetVertexAt( face.GetVertexAt( k ) ) );
 				pMinExtends.SetSmallest( position );
 				pMaxExtends.SetLargest( position );

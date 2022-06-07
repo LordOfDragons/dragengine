@@ -957,9 +957,9 @@ deoglLightShader &shader, const sShadowDepthMaps &shadowDepthMaps ){
 		deoglTexUnitConfig tuc;
 		
 		if( light.GetLightCanvas() ){
-			deoglRenderTarget * const target = light.GetLightCanvas()->GetRenderTarget();
-			if( target ){
-				tuc.EnableTexture( target->GetTexture(), &GetSamplerClampLinear() );
+			deoglRenderTarget * const target2 = light.GetLightCanvas()->GetRenderTarget();
+			if( target2 ){
+				tuc.EnableTexture( target2->GetTexture(), &GetSamplerClampLinear() );
 			}
 			
 		}else if( light.GetUseSkinTexture() ){
@@ -1002,9 +1002,9 @@ deoglLightShader &shader, const sShadowDepthMaps &shadowDepthMaps ){
 		deoglTexUnitConfig tuc;
 		
 		if( light.GetLightCanvas() ){
-			deoglRenderTarget * const target = light.GetLightCanvas()->GetRenderTarget();
-			if( target ){
-				tuc.EnableTexture( target->GetTexture(), &GetSamplerClampLinear() );
+			deoglRenderTarget * const target2 = light.GetLightCanvas()->GetRenderTarget();
+			if( target2 ){
+				tuc.EnableTexture( target2->GetTexture(), &GetSamplerClampLinear() );
 			}
 			
 		}else if( light.GetUseSkinTexture() ){

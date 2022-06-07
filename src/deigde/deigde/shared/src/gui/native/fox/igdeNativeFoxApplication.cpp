@@ -61,9 +61,9 @@ FXIMPLEMENT( igdeNativeFoxApplication, FXApp,
 igdeNativeFoxApplication::igdeNativeFoxApplication(){
 }
 
-igdeNativeFoxApplication::igdeNativeFoxApplication( igdeApplication &owner ) :
+igdeNativeFoxApplication::igdeNativeFoxApplication( igdeApplication &powner ) :
 FXApp( "DEIGDE", "Drag[en]gine" ),
-pOwner( &owner ),
+pOwner( &powner ),
 pToolTip( NULL ),
 pDisableModalUpdating( false ),
 pFoxArgs( NULL ),

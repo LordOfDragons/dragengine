@@ -235,6 +235,13 @@ bool deGraphicOpenGl::Init( deRenderWindow *renderWindow ){
 		LogInfo( "Init" );
 	}
 	
+	#ifdef OGL_THREAD_CHECK
+	LogWarn( "OpenGL calls only in render thread check enabled. Disable for production builds." );
+	#endif
+	#ifdef OGL_CHECKCOMMANDS
+	LogWarn( "OpenGL command failure check enabled. Disable for production builds." );
+	#endif
+	
 	try{
 		pCaches = new deoglCaches( *this );
 		

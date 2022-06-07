@@ -230,10 +230,25 @@ params.Add( TernaryVariable( 'build_script_smalltalk', 'Build Smalltalk Script M
 params.Add( TernaryVariable( 'build_sound_ogg', 'Build OGG Vorbis Sound Module' ) )
 params.Add( TernaryVariable( 'build_video_theora', 'Build Theora Video Module' ) )
 params.Add( TernaryVariable( 'build_video_apng', 'Build Animated PNG Video Module' ) )
-params.Add( TernaryVariable( 'build_igde', 'Build IGDE' ) )
 params.Add( TernaryVariable( 'build_guilauncher', 'Build GUI Launcher' ) )
 params.Add( TernaryVariable( 'build_launcher_android', 'Build Android Launcher' ) )
 params.Add( TernaryVariable( 'build_archive_delga', 'Build DELGA Archive Module' ) )
+params.Add( TernaryVariable( 'build_vr_openvr', 'Build OpenVR VR Module' ) )
+params.Add( TernaryVariable( 'build_vr_openxr', 'Build OpenXR VR Module' ) )
+
+params.Add( TernaryVariable( 'build_igde', 'Build IGDE' ) )
+params.Add( TernaryVariable( 'build_editor_animator', 'Build IGDE Animator Editor' ) )
+params.Add( TernaryVariable( 'build_editor_conversation', 'Build IGDE Conversation Editor' ) )
+params.Add( TernaryVariable( 'build_editor_font', 'Build IGDE Font Editor' ) )
+params.Add( TernaryVariable( 'build_editor_gamedefinition', 'Build IGDE Game Definition Editor' ) )
+params.Add( TernaryVariable( 'build_editor_langpack', 'Build IGDE Language Pack Editor' ) )
+params.Add( TernaryVariable( 'build_editor_particleemitter', 'Build IGDE Particle Emitter Editor' ) )
+params.Add( TernaryVariable( 'build_editor_rig', 'Build IGDE Rig Editor' ) )
+params.Add( TernaryVariable( 'build_editor_skin', 'Build IGDE Skin Editor' ) )
+params.Add( TernaryVariable( 'build_editor_sky', 'Build IGDE Sky Editor' ) )
+params.Add( TernaryVariable( 'build_editor_speechanimation', 'Build IGDE Speech Animation Editor' ) )
+params.Add( TernaryVariable( 'build_editor_synthesizer', 'Build IGDE Synthesizer Editor' ) )
+params.Add( TernaryVariable( 'build_editor_world', 'Build IGDE World Editor' ) )
 
 params.Add( EnumVariable( 'archive_format', 'Archive file format', 'tarbz2', ['tarbz2', 'zip'] ) )
 params.Add( StringVariable( 'archive_name_engine',
@@ -648,6 +663,8 @@ if parent_env['with_debug']:
 if parent_env[ 'platform_android' ] == 'no':
 	parent_env.Append( CPPFLAGS = [ '-O2' ] )  # because android platform script defines this already
 parent_env.Append( CPPFLAGS = [ '-Wall' ] )
+
+parent_env.Append(CPPFLAGS = ['-Wshadow', '-Wwrite-strings'])
 
 # disable the new (and truely stupid) new gcc 8.1 shenanigans.
 # see https://gcc.gnu.org/onlinedocs/gcc/C_002b_002b-Dialect-Options.html#index-Wclass-memaccess .

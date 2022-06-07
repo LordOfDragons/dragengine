@@ -36,9 +36,9 @@
 // class deoxrInstance
 ////////////////////////
 
-void deoxrInstance::sSuggestBinding::Set( deoxrAction *action, const deoxrPath &binding ){
-	this->action = action;
-	this->binding = binding;
+void deoxrInstance::sSuggestBinding::Set( deoxrAction *paction, const deoxrPath &pbinding ){
+	action = paction;
+	binding = pbinding;
 }
 
 deoxrInstance::deoxrInstance( deVROpenXR &oxr, bool enableDebug ) :

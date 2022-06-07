@@ -414,7 +414,6 @@ void fbxNode::Prepare( deBaseModule &module ){
 	pNodeProperties70 = FirstNodeNamedOrNull( "Properties70" );
 	if( pNodeProperties70 ){
 		const int count = pNodeProperties70->GetNodeCount();
-		int i;
 		for( i=0; i<count; i++ ){
 			const fbxNode &node = *pNodeProperties70->GetNodeAt( i );
 			if( node.GetName() != "P" ){

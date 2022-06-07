@@ -261,8 +261,8 @@ long deglPanelGames::onListGamesChanged( FXObject*, FXSelector, void* ){
 	return 1;
 }
 
-long deglPanelGames::onListGamesRDown( FXObject*, FXSelector, void *data ){
-	const FXEvent &event = *( ( const FXEvent * )data );
+long deglPanelGames::onListGamesRDown( FXObject*, FXSelector, void *pdata ){
+	const FXEvent &event = *( ( const FXEvent * )pdata );
 	delGame *game = nullptr;
 	
 	pListGames->setCurrentItem( pListGames->getItemAt( event.win_x, event.win_y ) );
@@ -326,12 +326,12 @@ long deglPanelGames::onListGamesRUp( FXObject*, FXSelector, void* ){
 	return 1;
 }
 
-long deglPanelGames::onListGamesDblClick( FXObject *sender, FXSelector selector, void *data ){
-	return onPUGameRun( sender, selector, data );
+long deglPanelGames::onListGamesDblClick( FXObject *sender, FXSelector selector, void *pdata ){
+	return onPUGameRun( sender, selector, pdata );
 }
 
-long deglPanelGames::onListGamesHeaderClicked( FXObject*, FXSelector, void *data ){
-	const int colon = ( intptr_t )data;
+long deglPanelGames::onListGamesHeaderClicked( FXObject*, FXSelector, void *pdata ){
+	const int colon = ( intptr_t )pdata;
 	
 	if( colon == 0 ){
 		if( pSortListGames == elgsTitleAsc ){

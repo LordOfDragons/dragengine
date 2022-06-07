@@ -55,12 +55,12 @@ FXIMPLEMENT( igdeNativeFoxMenuCommand, FXMenuCommand,
 
 igdeNativeFoxMenuCommand::igdeNativeFoxMenuCommand(){ }
 
-igdeNativeFoxMenuCommand::igdeNativeFoxMenuCommand( igdeMenuCommand &owner, FXComposite *parent ) :
-FXMenuCommand( parent, BuildConstrText( owner ), owner.GetIcon()
-	? ( FXIcon* )owner.GetIcon()->GetNativeIcon() : NULL, this, ID_SELF ),
-pOwner( &owner )
+igdeNativeFoxMenuCommand::igdeNativeFoxMenuCommand( igdeMenuCommand &powner, FXComposite *pparent ) :
+FXMenuCommand( pparent, BuildConstrText( powner ), powner.GetIcon()
+	? ( FXIcon* ) powner.GetIcon()->GetNativeIcon() : NULL, this, ID_SELF ),
+pOwner( &powner )
 {
-	if( ! owner.GetEnabled() ){
+	if( ! powner.GetEnabled() ){
 		disable();
 	}
 }
@@ -68,22 +68,22 @@ pOwner( &owner )
 igdeNativeFoxMenuCommand::~igdeNativeFoxMenuCommand(){
 }
 
-igdeNativeFoxMenuCommand *igdeNativeFoxMenuCommand::CreateNativeWidget( igdeMenuCommand &owner ){
-	if( ! owner.GetParent() ){
+igdeNativeFoxMenuCommand *igdeNativeFoxMenuCommand::CreateNativeWidget( igdeMenuCommand &powner ){
+	if( ! powner.GetParent() ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	FXComposite * const parent = ( FXComposite* )owner.GetParent()->GetNativeContainer();
-	if( ! parent ){
+	FXComposite * const pparent = ( FXComposite* ) powner.GetParent()->GetNativeContainer();
+	if( ! pparent ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	return new igdeNativeFoxMenuCommand( owner, parent );
+	return new igdeNativeFoxMenuCommand( powner, pparent );
 }
 
 void igdeNativeFoxMenuCommand::PostCreateNativeWidget(){
-	FXComposite &parent = *( ( FXComposite* )pOwner->GetParent()->GetNativeContainer() );
-	if( parent.id() ){
+	FXComposite &pparent = *( ( FXComposite* )pOwner->GetParent()->GetNativeContainer() );
+	if( pparent.id() ){
 		create();
 	}
 }
@@ -117,12 +117,12 @@ UpdateMnemonic:
 */
 
 void igdeNativeFoxMenuCommand::UpdateIcon(){
-	FXIcon *icon = NULL;
+	FXIcon *iicon = NULL;
 	if( pOwner->GetIcon() ){
-		icon = ( FXIcon* )pOwner->GetIcon()->GetNativeIcon();
+		iicon = ( FXIcon* )pOwner->GetIcon()->GetNativeIcon();
 	}
 	
-	setIcon( icon );
+	setIcon( iicon );
 }
 
 void igdeNativeFoxMenuCommand::UpdateEnabled(){
@@ -135,10 +135,10 @@ void igdeNativeFoxMenuCommand::UpdateEnabled(){
 }
 
 
-FXString igdeNativeFoxMenuCommand::BuildConstrText( igdeMenuCommand &owner ){
-	return igdeUIFoxHelper::MnemonizeString( owner.GetText(), owner.GetMnemonic() )
-		+ "\t" + igdeUIFoxHelper::AccelString( owner.GetHotKey() )
-		+ "\t" + owner.GetDescription().GetString();
+FXString igdeNativeFoxMenuCommand::BuildConstrText( igdeMenuCommand &powner ){
+	return igdeUIFoxHelper::MnemonizeString( powner.GetText(), powner.GetMnemonic() )
+		+ "\t" + igdeUIFoxHelper::AccelString( powner.GetHotKey() )
+		+ "\t" + powner.GetDescription().GetString();
 }
 
 
@@ -146,7 +146,7 @@ FXString igdeNativeFoxMenuCommand::BuildConstrText( igdeMenuCommand &owner ){
 // Events
 ///////////
 
-long igdeNativeFoxMenuCommand::onCommand( FXObject *sender, FXSelector selector, void *data ){
+long igdeNativeFoxMenuCommand::onCommand( FXObject*, FXSelector, void* ){
 	if( ! pOwner->GetEnabled() ){
 		return 0;
 	}
@@ -163,7 +163,7 @@ long igdeNativeFoxMenuCommand::onCommand( FXObject *sender, FXSelector selector,
 	return 1;
 }
 
-long igdeNativeFoxMenuCommand::onUpdate( FXObject *sender, FXSelector selector, void *data ){
+long igdeNativeFoxMenuCommand::onUpdate( FXObject*, FXSelector, void* ){
 	igdeAction * const action = pOwner->GetAction();
 	if( ! action ){
 		return 0;

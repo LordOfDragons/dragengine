@@ -405,7 +405,6 @@ void deoglRComponentLOD::GPUCalcNormalTangents(){
 	if( positionCount > 0 && modelLOD.GetVBOBlockCalcNormalTangent() ){
 		deoglRenderThread &renderThread = pComponent.GetRenderThread();
 		
-		const int positionCount = modelLOD.GetPositionCount();
 		const int tangentCount = modelLOD.GetTangentCount();
 		const int normalCount = modelLOD.GetNormalCount();
 		const int norTanCount = positionCount + normalCount + tangentCount;
@@ -1342,21 +1341,21 @@ void deoglRComponentLOD::pCalculateWeights( const deoglModelLOD &modelLOD ){
 			weightsEntries++;
 			
 			for( e=1; e<entryCount; e++ ){
-				const oglMatrix3x4 &boneMatrix = boneMatrices[ weightsEntries->bone ];
+				const oglMatrix3x4 &boneMatrix2 = boneMatrices[ weightsEntries->bone ];
 				factor = weightsEntries->weight;
 				
-				weightsMatrix.a11 += boneMatrix.a11 * factor;
-				weightsMatrix.a12 += boneMatrix.a12 * factor;
-				weightsMatrix.a13 += boneMatrix.a13 * factor;
-				weightsMatrix.a14 += boneMatrix.a14 * factor;
-				weightsMatrix.a21 += boneMatrix.a21 * factor;
-				weightsMatrix.a22 += boneMatrix.a22 * factor;
-				weightsMatrix.a23 += boneMatrix.a23 * factor;
-				weightsMatrix.a24 += boneMatrix.a24 * factor;
-				weightsMatrix.a31 += boneMatrix.a31 * factor;
-				weightsMatrix.a32 += boneMatrix.a32 * factor;
-				weightsMatrix.a33 += boneMatrix.a33 * factor;
-				weightsMatrix.a34 += boneMatrix.a34 * factor;
+				weightsMatrix.a11 += boneMatrix2.a11 * factor;
+				weightsMatrix.a12 += boneMatrix2.a12 * factor;
+				weightsMatrix.a13 += boneMatrix2.a13 * factor;
+				weightsMatrix.a14 += boneMatrix2.a14 * factor;
+				weightsMatrix.a21 += boneMatrix2.a21 * factor;
+				weightsMatrix.a22 += boneMatrix2.a22 * factor;
+				weightsMatrix.a23 += boneMatrix2.a23 * factor;
+				weightsMatrix.a24 += boneMatrix2.a24 * factor;
+				weightsMatrix.a31 += boneMatrix2.a31 * factor;
+				weightsMatrix.a32 += boneMatrix2.a32 * factor;
+				weightsMatrix.a33 += boneMatrix2.a33 * factor;
+				weightsMatrix.a34 += boneMatrix2.a34 * factor;
 				
 				weightsEntries++;
 			}

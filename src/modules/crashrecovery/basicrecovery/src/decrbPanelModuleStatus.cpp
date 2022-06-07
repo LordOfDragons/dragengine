@@ -390,7 +390,7 @@ void decrbPanelModuleStatus::UpdateModulesList(){
 // Events
 ///////////
 
-long decrbPanelModuleStatus::onCBModuleChanged( FXObject *sender, FXSelector selector, void *data ){
+long decrbPanelModuleStatus::onCBModuleChanged( FXObject*, FXSelector, void* ){
 	UpdateModuleStatus();
 	return 1;
 }

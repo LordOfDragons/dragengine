@@ -58,44 +58,44 @@ FXIMPLEMENT( igdeNativeFoxButton, FXButton, igdeNativeFoxButtonMap, ARRAYNUMBER(
 
 igdeNativeFoxButton::igdeNativeFoxButton(){ }
 
-igdeNativeFoxButton::igdeNativeFoxButton( igdeButton &owner, FXComposite *parent,
+igdeNativeFoxButton::igdeNativeFoxButton( igdeButton &powner, FXComposite *pparent,
 int layoutFlags, const igdeGuiTheme &guitheme ) :
-FXButton( parent, ButtonText( owner ), ButtonIcon( owner ), this, ID_SELF,
-	layoutFlags | ButtonFlags( owner ), 0, 0, 0, 0,
+FXButton( pparent, ButtonText( powner ), ButtonIcon( powner ), this, ID_SELF,
+	layoutFlags | ButtonFlags( powner ), 0, 0, 0, 0,
 	ButtonPadLeft( guitheme ), ButtonPadRight( guitheme ),
 	ButtonPadTop( guitheme ), ButtonPadBottom( guitheme ) ),
-pOwner( &owner ),
-pFont( ButtonFont( owner, guitheme ) )
+pOwner( &powner ),
+pFont( ButtonFont( powner, guitheme ) )
 {
 	setFont( (FXFont*)pFont->GetNativeFont() );
 	
-	if( ! owner.GetEnabled() ){
+	if( ! powner.GetEnabled() ){
 		disable();
 	}
-	setTipText( owner.GetDescription().GetString() );
-	setHelpText( owner.GetDescription().GetString() );
+	setTipText( powner.GetDescription().GetString() );
+	setHelpText( powner.GetDescription().GetString() );
 }
 
 igdeNativeFoxButton::~igdeNativeFoxButton(){
 }
 
-igdeNativeFoxButton *igdeNativeFoxButton::CreateNativeWidget( igdeButton &owner ){
-	if( ! owner.GetParent() ){
+igdeNativeFoxButton *igdeNativeFoxButton::CreateNativeWidget( igdeButton &powner ){
+	if( ! powner.GetParent() ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	FXComposite * const parent = ( FXComposite* )owner.GetParent()->GetNativeContainer();
-	if( ! parent ){
+	FXComposite * const pparent = ( FXComposite* ) powner.GetParent()->GetNativeContainer();
+	if( ! pparent ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	return new igdeNativeFoxButton( owner, parent,
-		igdeUIFoxHelper::GetChildLayoutFlags( &owner ), *owner.GetGuiTheme() );
+	return new igdeNativeFoxButton( powner, pparent,
+		igdeUIFoxHelper::GetChildLayoutFlags( &powner ), *powner.GetGuiTheme() );
 }
 
 void igdeNativeFoxButton::PostCreateNativeWidget(){
-	FXComposite &parent = *( ( FXComposite* )pOwner->GetParent()->GetNativeContainer() );
-	if( parent.id() ){
+	FXComposite &pparent = *( ( FXComposite* )pOwner->GetParent()->GetNativeContainer() );
+	if( pparent.id() ){
 		create();
 	}
 }
@@ -153,45 +153,45 @@ void igdeNativeFoxButton::UpdateEnabled(){
 
 
 
-const char *igdeNativeFoxButton::ButtonText( const igdeButton &owner ){
-	if( owner.GetStyle() == igdeButton::ebsToolBar ){
+const char *igdeNativeFoxButton::ButtonText( const igdeButton &powner ){
+	if( powner.GetStyle() == igdeButton::ebsToolBar ){
 		return "";
 		
 	}else{
-		return owner.GetText();
+		return powner.GetText();
 	}
 }
 
-FXIcon *igdeNativeFoxButton::ButtonIcon( const igdeButton &owner ){
-	if( owner.GetIcon() ){
-		return ( FXIcon* )owner.GetIcon()->GetNativeIcon();
+FXIcon *igdeNativeFoxButton::ButtonIcon( const igdeButton &powner ){
+	if( powner.GetIcon() ){
+		return ( FXIcon* ) powner.GetIcon()->GetNativeIcon();
 		
 	}else{
 		return NULL;
 	}
 }
 
-int igdeNativeFoxButton::ButtonFlags( const igdeButton &owner ){
-	int flags = 0;
+int igdeNativeFoxButton::ButtonFlags( const igdeButton &powner ){
+	int fflags = 0;
 	
-	if( owner.GetStyle() == igdeButton::ebsToolBar ){
-		flags = BUTTON_TOOLBAR | FRAME_RAISED;
+	if( powner.GetStyle() == igdeButton::ebsToolBar ){
+		fflags = BUTTON_TOOLBAR | FRAME_RAISED;
 		
 	}else{
-		flags = FRAME_RAISED | JUSTIFY_NORMAL | ICON_BEFORE_TEXT;
+		fflags = FRAME_RAISED | JUSTIFY_NORMAL | ICON_BEFORE_TEXT;
 		//flags = BUTTON_NORMAL;
 	}
 	
-	if( owner.GetDefault() ){
-		flags |= BUTTON_DEFAULT | BUTTON_INITIAL;
+	if( powner.GetDefault() ){
+		fflags |= BUTTON_DEFAULT | BUTTON_INITIAL;
 	}
 	
-	return flags;
+	return fflags;
 }
 
-igdeFont *igdeNativeFoxButton::ButtonFont( const igdeButton &owner, const igdeGuiTheme &guitheme ){
+igdeFont *igdeNativeFoxButton::ButtonFont( const igdeButton &powner, const igdeGuiTheme &guitheme ){
 	igdeFont::sConfiguration configuration;
-	owner.GetEnvironment().GetApplicationFont( configuration );
+	powner.GetEnvironment().GetApplicationFont( configuration );
 	
 	if( guitheme.HasProperty( igdeGuiThemePropertyNames::buttonFontSizeAbsolute ) ){
 		configuration.size = guitheme.GetIntProperty(
@@ -210,7 +210,7 @@ igdeFont *igdeNativeFoxButton::ButtonFont( const igdeButton &owner, const igdeGu
 			igdeGuiThemePropertyNames::fontSize, 1.0f );
 	}
 	
-	return owner.GetEnvironment().GetSharedFont( configuration );
+	return powner.GetEnvironment().GetSharedFont( configuration );
 }
 
 int igdeNativeFoxButton::ButtonPadLeft( const igdeGuiTheme &guitheme ){

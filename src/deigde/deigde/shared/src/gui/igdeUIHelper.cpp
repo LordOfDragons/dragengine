@@ -144,10 +144,10 @@
 // struct igdeUIHelper::sColumnHeader
 ///////////////////////////////////////
 
-igdeUIHelper::sColumnHeader::sColumnHeader( const char *title, igdeIcon *icon, int size ) :
-title( title ),
-icon( icon ),
-size( size ){
+igdeUIHelper::sColumnHeader::sColumnHeader( const char *ptitle, igdeIcon *picon, int psize ) :
+title( ptitle ),
+icon( picon ),
+size( psize ){
 }
 
 

@@ -338,6 +338,90 @@ decPath decPath::RelativePath( const decPath &baseDirectory, bool onlyBelow ) co
 	return newPath;
 }
 
+bool decPath::IsParentOf( const decPath &path ) const{
+	if( ! IsAbsolute() || ! path.IsAbsolute() || pPrefix != path.pPrefix ){
+		return false;
+	}
+	
+	const int pathDirCount = path.pComponents.GetCount();
+	const int count = pComponents.GetCount();
+	if( pathDirCount <= count ){
+		return false;
+	}
+	
+	int i;
+	for( i=0; i<count; i++ ){
+		if( path.pComponents.GetAt( i ) != pComponents.GetAt( i ) ){
+			return false;
+		}
+	}
+	
+	return true;
+}
+
+bool decPath::IsEqualOrParentOf( const decPath &path ) const{
+	if( ! IsAbsolute() || ! path.IsAbsolute() || pPrefix != path.pPrefix ){
+		return false;
+	}
+	
+	const int pathDirCount = path.pComponents.GetCount();
+	const int count = pComponents.GetCount();
+	if( pathDirCount < count ){
+		return false;
+	}
+	
+	int i;
+	for( i=0; i<count; i++ ){
+		if( path.pComponents.GetAt( i ) != pComponents.GetAt( i ) ){
+			return false;
+		}
+	}
+	
+	return true;
+}
+
+bool decPath::IsDirectParentOf( const decPath &path ) const{
+	if( ! IsAbsolute() || ! path.IsAbsolute() || pPrefix != path.pPrefix ){
+		return false;
+	}
+	
+	const int pathDirCount = path.pComponents.GetCount();
+	const int count = pComponents.GetCount();
+	if( pathDirCount != count + 1 ){
+		return false;
+	}
+	
+	int i;
+	for( i=0; i<count; i++ ){
+		if( path.pComponents.GetAt( i ) != pComponents.GetAt( i ) ){
+			return false;
+		}
+	}
+	
+	return true;
+}
+
+bool decPath::IsEqualOrDirectParentOf( const decPath &path ) const{
+	if( ! IsAbsolute() || ! path.IsAbsolute() || pPrefix != path.pPrefix ){
+		return false;
+	}
+	
+	const int pathDirCount = path.pComponents.GetCount();
+	const int count = pComponents.GetCount();
+	if( pathDirCount < count || pathDirCount > count + 1 ){
+		return false;
+	}
+	
+	int i;
+	for( i=0; i<count; i++ ){
+		if( path.pComponents.GetAt( i ) != pComponents.GetAt( i ) ){
+			return false;
+		}
+	}
+	
+	return true;
+}
+
 
 
 // Component Management

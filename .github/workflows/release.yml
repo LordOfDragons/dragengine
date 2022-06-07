@@ -39,6 +39,13 @@ jobs:
       artifactArchive: archives-windows
       artifactInstaller: installers-windows
   
+  build_linux_ci:
+    uses: ./.github/workflows/build_linux_ci.yml
+    with:
+      releaseVersion: ${{ github.event.inputs.version }}
+      buildVersion: ${{ github.event.inputs.version }}
+      artifactInstaller: installers-linux-ci
+  
   build_live:
     needs: [build_linux, build_windows]
     uses: ./.github/workflows/build_live.yml
@@ -49,7 +56,7 @@ jobs:
       artifactLauncher: archive-livelauncher
 
   upload:
-    needs: [build_linux, build_windows, build_windows_installer, build_live]
+    needs: [build_linux, build_windows, build_windows_installer, build_linux_ci, build_live]
     runs-on: ubuntu-latest
     
     steps:
@@ -67,6 +74,11 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: tools-crossplatform
+      
+      - name: Get Linux CI Installers
+        uses: actions/download-artifact@v3
+        with:
+          name: installers-linux-ci
       
       - name: Get Live Launcher
         uses: actions/download-artifact@v3
@@ -100,6 +112,10 @@ jobs:
             - install-deigde-${{ github.event.inputs.version }}-linux64.sh
             - install-deigde-${{ github.event.inputs.version }}-windows64.exe
             
+            For Continuous Integration (Build Servers):
+            - install-dragengine-ci-${{ github.event.inputs.version }}-linux64.sh
+            - install-deigde-ci-${{ github.event.inputs.version }}-linux64.sh
+            
             For Engine Module developers:
             - install-dragengine-dev-${{ github.event.inputs.version }}-linux64.sh
             - install-dragengine-dev-${{ github.event.inputs.version }}-windows64.exe
@@ -119,4 +135,6 @@ jobs:
             install-deigde-${{ github.event.inputs.version }}-windows64.exe,
             install-deigde-sdk-${{ github.event.inputs.version }}-windows64.exe,
             blender-addon-dragengine-${{ github.event.inputs.version }}.zip,
-            dragengine-live-${{ github.event.inputs.version }}.zip
+            dragengine-live-${{ github.event.inputs.version }}.zip,
+            install-dragengine-ci-${{ github.event.inputs.version }}-linux64.sh,
+            install-deigde-ci-${{ github.event.inputs.version }}-windows64.exe

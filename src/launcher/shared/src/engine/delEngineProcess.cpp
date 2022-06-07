@@ -370,8 +370,8 @@ void delEngineProcess::WriteUShortToPipe( int value ){
 	if( value < 0 || value > 0xffff ){
 		DETHROW( deeInvalidParam );
 	}
-	const uint16_t ushort = ( uint16_t )value;
-	WriteToPipe( &ushort, sizeof( uint16_t ) );
+	const uint16_t vushort = ( uint16_t )value;
+	WriteToPipe( &vushort, sizeof( uint16_t ) );
 }
 
 void delEngineProcess::WriteIntToPipe( int value ){
@@ -416,9 +416,9 @@ int delEngineProcess::ReadUCharFromPipe(){
 }
 
 int delEngineProcess::ReadUShortFromPipe(){
-	uint16_t ushort;
-	ReadFromPipe( &ushort, sizeof( uint16_t ) );
-	return ushort;
+	uint16_t vushort;
+	ReadFromPipe( &vushort, sizeof( uint16_t ) );
+	return vushort;
 }
 
 int delEngineProcess::ReadFloatFromPipe(){
@@ -930,8 +930,19 @@ void delEngineProcess::CommandVFSAddDiskDir(){
 		pathRoot.SetFromUnix( root.GetString() );
 		pathDisk.SetFromNative( disk.GetString() );
 		
-		pEngine->GetVirtualFileSystem()->AddContainer( deVFSDiskDirectory::Ref::New(
+		const deVFSDiskDirectory::Ref container( deVFSDiskDirectory::Ref::New(
 			new deVFSDiskDirectory( pathRoot, pathDisk, readOnly ) ) );
+		
+		const int hiddenPathCount = ReadUShortFromPipe();
+		decString hiddenPath;
+		int i;
+		
+		for( i=0; i<hiddenPathCount; i++ ){
+			ReadString16FromPipe( hiddenPath );
+			container->AddHiddenPath( decPath::CreatePathUnix( hiddenPath ) );
+		}
+		
+		pEngine->GetVirtualFileSystem()->AddContainer( container );
 		
 		WriteUCharToPipe( ercSuccess );
 		return;
@@ -989,10 +1000,21 @@ void delEngineProcess::CommandVFSAddDelgaFile(){
 		const deVirtualFileSystem::Ref delgaVfs( deVirtualFileSystem::Ref::New( new deVirtualFileSystem ) );
 		delgaVfs->AddContainer( deVFSDiskDirectory::Ref::New( new deVFSDiskDirectory( pathDelgaDir ) ) );
 		
-		vfs.AddContainer( deArchiveContainer::Ref::New( amgr.CreateContainer(
+		const deArchiveContainer::Ref container( amgr.CreateContainer(
 			decPath::CreatePathUnix( "/" ),
 			deArchive::Ref::New( amgr.OpenArchive( delgaVfs, delgaFileTitle, "/" ) ),
-			decPath::CreatePathUnix( archivePath ) ) ) );
+			decPath::CreatePathUnix( archivePath ) ) );
+		
+		const int hiddenPathCount = ReadUShortFromPipe();
+		decString hiddenPath;
+		int i;
+		
+		for( i=0; i<hiddenPathCount; i++ ){
+			ReadString16FromPipe( hiddenPath );
+			container->AddHiddenPath( decPath::CreatePathUnix( hiddenPath ) );
+		}
+		
+		vfs.AddContainer( container );
 		
 		WriteUCharToPipe( ercSuccess );
 		return;
@@ -1366,7 +1388,7 @@ void delEngineProcess::CommandDelgaReadPatchDefs(){
 		decPath pathDelgaDir( decPath::CreatePathNative( delgaFilename ) );
 		const decString delgaFileTitle( pathDelgaDir.GetLastComponent() );
 		pathDelgaDir.RemoveLastComponent();
-		delgaVfs->AddContainer( new deVFSDiskDirectory( pathDelgaDir ) );
+		delgaVfs->AddContainer( deVFSDiskDirectory::Ref::New( new deVFSDiskDirectory( pathDelgaDir ) ) );
 		
 		const deArchive::Ref delgaArchive( deArchive::Ref::New( amgr.OpenArchive( delgaVfs, delgaFileTitle, "/" ) ) );
 		
@@ -1438,7 +1460,7 @@ void delEngineProcess::CommandDelgaReadFiles(){
 		decPath pathDelgaDir( decPath::CreatePathNative( delgaFilename ) );
 		const decString delgaFileTitle( pathDelgaDir.GetLastComponent() );
 		pathDelgaDir.RemoveLastComponent();
-		delgaVfs->AddContainer( new deVFSDiskDirectory( pathDelgaDir ) );
+		delgaVfs->AddContainer( deVFSDiskDirectory::Ref::New( new deVFSDiskDirectory( pathDelgaDir ) ) );
 		
 		const deArchive::Ref delgaArchive( deArchive::Ref::New( amgr.OpenArchive( delgaVfs, delgaFileTitle, "/" ) ) );
 		

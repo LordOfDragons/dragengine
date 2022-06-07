@@ -50,6 +50,8 @@ envModule.Append(CPPFLAGS = ['-I{}/Bullet'.format(pathSConscript)])
 # bullet misses user-provided default constructors in some structs
 envModule.Append(CPPFLAGS = ['-fpermissive'])
 
+envModule.Append(CPPFLAGS = ['-Wno-shadow'])
+
 # make bullet use internal opencl headers. this avoids dependency on system opencl
 # ... and again something that does not compile/work in bullet U_U
 #envModule.Append(CPPFLAGS = ['-DB3_USE_CLEW'])

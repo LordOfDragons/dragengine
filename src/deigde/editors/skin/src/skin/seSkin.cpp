@@ -371,8 +371,8 @@ void seSkin::Update( float elapsed ){
 		
 	}else if( pRewindTextures == 1 ){
 		if( pEngComponent && pEngComponent->GetModel() ){
-			const int textureCount = pEngComponent->GetTextureCount();
-			for( i=0; i<textureCount; i++ ){
+			const int textureCount2 = pEngComponent->GetTextureCount();
+			for( i=0; i<textureCount2; i++ ){
 				deComponentTexture &engComponentTexture = pEngComponent->GetTextureAt( i );
 				engComponentTexture.SetSkin( NULL );
 				engComponentTexture.SetTexture( 0 );
@@ -384,7 +384,6 @@ void seSkin::Update( float elapsed ){
 		
 	}else if( pRewindTextures == 2 ){
 		if( pEngComponent && pEngComponent->GetModel() ){
-			const int textureCount = pTextureList.GetCount();
 			for( i=0; i<textureCount; i++ ){
 				pTextureList.GetAt( i )->AssignSkinToComponentTexture();
 			}

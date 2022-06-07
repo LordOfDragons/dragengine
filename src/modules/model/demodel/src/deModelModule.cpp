@@ -335,15 +335,15 @@ void deModelModule::pLoadVersion0( decBaseFileReader &reader, deModel &model ){
 		modelWeightGroups[ i ] = 0;
 		
 		for( j=0; j<weightSetCount; j++ ){
-			demdlWeightSet &weightSet = *weightSetList.GetAt( j );
+			demdlWeightSet &weightSet2 = *weightSetList.GetAt( j );
 			
-			if( weightSet.GetCount() == tempCount ){
+			if( weightSet2.GetCount() == tempCount ){
 				for( k=0; k<tempCount; k++ ){
-					modelWeights[ weightCount + k ].SetBone( weightSet.GetBoneAt( k ) );
-					modelWeights[ weightCount + k ].SetWeight( weightSet.GetWeightAt( k ) );
+					modelWeights[ weightCount + k ].SetBone( weightSet2.GetBoneAt( k ) );
+					modelWeights[ weightCount + k ].SetWeight( weightSet2.GetWeightAt( k ) );
 				}
 				
-				weightSet.SetGroupedIndex( weightSetIndex );
+				weightSet2.SetGroupedIndex( weightSetIndex );
 				
 				weightSetIndex++;
 				weightCount += tempCount;
@@ -987,15 +987,15 @@ void deModelModule::pLoadWeights( decBaseFileReader &reader, deModel &model, sMo
 		modelWeightGroups[ i ] = 0;
 		
 		for( j=0; j<weightSetCount; j++ ){
-			demdlWeightSet &weightSet = *infos.weightSetList->GetAt( j );
+			demdlWeightSet &weightSet2 = *infos.weightSetList->GetAt( j );
 			
-			if( weightSet.GetCount() == tempCount ){
+			if( weightSet2.GetCount() == tempCount ){
 				for( k=0; k<tempCount; k++ ){
-					modelWeights[ weightCount + k ].SetBone( weightSet.GetBoneAt( k ) );
-					modelWeights[ weightCount + k ].SetWeight( weightSet.GetWeightAt( k ) );
+					modelWeights[ weightCount + k ].SetBone( weightSet2.GetBoneAt( k ) );
+					modelWeights[ weightCount + k ].SetWeight( weightSet2.GetWeightAt( k ) );
 				}
 				
-				weightSet.SetGroupedIndex( weightSetIndex );
+				weightSet2.SetGroupedIndex( weightSetIndex );
 				
 				weightSetIndex++;
 				weightCount += tempCount;
@@ -1858,9 +1858,6 @@ void deModelModule::pUpdateFaceTexCoordIndices( deModel &model, sModelInfos &inf
 		cacheWriter->WriteUInt( ( unsigned int )vfs.GetFileModificationTime( cachePath ) );
 		
 		// write data
-		const int texCoordSetCount = lodMesh.GetTextureCoordinatesSetCount();
-		int i, j, count;
-		
 		count = texCoordSorter.GetTexCoordCount();
 		cacheWriter->WriteInt( count );
 		for( i=0; i<texCoordSetCount; i++ ){

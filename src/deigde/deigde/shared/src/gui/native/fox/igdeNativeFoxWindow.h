@@ -89,9 +89,9 @@ public:
 	
 	/** \name Events */
 	/*@{*/
-	long onConfigure( FXObject *sender, FXSelector selector, void *data );
-	long onClose( FXObject *sender, FXSelector selector, void *data );
-	long onChildLayoutFlags( FXObject *sender, FXSelector selector, void *data );
+	long onConfigure( FXObject*, FXSelector, void* );
+	long onClose( FXObject*, FXSelector, void* );
+	long onChildLayoutFlags( FXObject*, FXSelector, void* );
 	/*@}*/
 };
 

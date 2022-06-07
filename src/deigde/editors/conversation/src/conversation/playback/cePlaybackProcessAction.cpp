@@ -301,7 +301,6 @@ void cePlaybackProcessAction::ProcessActorSpeak( ceConversation &conversation, c
 			int saPhonemeIndex;
 			int i, j, length2;
 			ceSAWord *saWord;
-			decString word;
 			float scaling;
 			
 			speechAnimation.RemoveAllSpeakPhonemes();

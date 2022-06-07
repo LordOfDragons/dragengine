@@ -53,11 +53,11 @@ deglWindowLoggerTable::~deglWindowLoggerTable(){
 // Management
 ///////////////
 
-void deglWindowLoggerTable::SetCellTextProps( int row, int col, FXColor color, FXFont *font ){
+void deglWindowLoggerTable::SetCellTextProps( int row, int col, FXColor color, FXFont *pfont ){
 	deglWindowLoggerTableItem &item = *( ( deglWindowLoggerTableItem* )getItem( row, col ) );
 	
 	item.SetTextColor( color );
-	item.SetFont( font );
+	item.SetFont( pfont );
 	
 	updateItem( row, col );
 }

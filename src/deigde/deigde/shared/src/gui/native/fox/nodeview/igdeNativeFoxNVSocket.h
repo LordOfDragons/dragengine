@@ -109,8 +109,8 @@ public:
 	
 	/** \name Events */
 	/*@{*/
-	long onResize( FXObject *sender, FXSelector selector, void *data );
-	long onPaint( FXObject *sender, FXSelector selector, void *data );
+	long onResize( FXObject*, FXSelector, void* );
+	long onPaint( FXObject*, FXSelector, void* );
 	/*@}*/
 	
 	

@@ -1010,8 +1010,8 @@ void ceWPTopic::UpdateFileList(){
 		int i;
 		
 		for( i=0; i<count; i++ ){
-			ceConversationFile * const file = list.GetAt( i );
-			pCBFile->AddItem( file->GetID(), NULL, file );
+			ceConversationFile * const file2 = list.GetAt( i );
+			pCBFile->AddItem( file2->GetID(), NULL, file2 );
 		}
 		
 		pCBFile->SortItems();
@@ -1062,8 +1062,8 @@ void ceWPTopic::UpdateTopicList(){
 		int i;
 		
 		for( i=0; i<count; i++ ){
-			ceConversationTopic * const topic = list.GetAt( i );
-			pCBTopic->AddItem( topic->GetID(), NULL, topic );
+			ceConversationTopic * const topic2 = list.GetAt( i );
+			pCBTopic->AddItem( topic2->GetID(), NULL, topic2 );
 		}
 		
 		pCBTopic->SortItems();

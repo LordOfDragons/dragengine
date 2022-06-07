@@ -62,7 +62,7 @@ public:
 	
 	/** \name Events */
 	/*@{*/
-	long onChildLayoutFlags( FXObject *sender, FXSelector selector, void *data );
+	long onChildLayoutFlags( FXObject*, FXSelector, void* );
 	/*@}*/
 };
 

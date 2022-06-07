@@ -96,7 +96,7 @@ public:
 			
 			const int totalSize = reader->GetLength();
 			const double percentageFactor = 100.0 / ( double )totalSize;
-			char * const buffer = new char[ 8192 ];
+			buffer = new char[ 8192 ];
 			FXuint progressPercentage = 0;
 			int bytesCopied = 0;
 			

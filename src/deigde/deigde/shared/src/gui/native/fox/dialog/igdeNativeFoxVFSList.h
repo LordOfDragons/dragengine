@@ -135,7 +135,7 @@ public:
 	
 	/** \name Events */
 	/*@{*/
-	long onHeaderClicked( FXObject *sender, FXSelector selector, void *data );
+	long onHeaderClicked( FXObject*, FXSelector, void* );
 	/*@}*/
 };
 

@@ -301,26 +301,22 @@ void deoalMOVRayHitsClosest::pVisitNode( const deoalModelRTBVH &bvh, const deoal
 		float closestDistance;
 		
 		if( ( child2.center - child1.center ) * GetRayDirection() > 0.0f ){
-			const deoalModelRTBVH::sNode &child1 = bvh.GetNodes()[ node.node1 ];
 			if( pRayHitsBox( child1.center, child1.halfSize, closestDistance )
 			&& closestDistance < pLimitDistance ){
 				pVisitNode( bvh, child1 );
 			}
 			
-			const deoalModelRTBVH::sNode &child2 = bvh.GetNodes()[ node.node2 ];
 			if( pRayHitsBox( child2.center, child2.halfSize, closestDistance )
 			&& closestDistance < pLimitDistance ){
 				pVisitNode( bvh, child2 );
 			}
 			
 		}else{
-			const deoalModelRTBVH::sNode &child2 = bvh.GetNodes()[ node.node2 ];
 			if( pRayHitsBox( child2.center, child2.halfSize, closestDistance )
 			&& closestDistance < pLimitDistance ){
 				pVisitNode( bvh, child2 );
 			}
 			
-			const deoalModelRTBVH::sNode &child1 = bvh.GetNodes()[ node.node1 ];
 			if( pRayHitsBox( child1.center, child1.halfSize, closestDistance )
 			&& closestDistance < pLimitDistance ){
 				pVisitNode( bvh, child1 );

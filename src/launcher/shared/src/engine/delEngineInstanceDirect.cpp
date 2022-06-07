@@ -477,17 +477,30 @@ void delEngineInstanceDirect::SetPathConfig( const char* path ){
 }
 
 void delEngineInstanceDirect::VFSAddDiskDir( const char *vfsRoot, const char *nativeDirectory, bool readOnly ){
+	VFSAddDiskDir( vfsRoot, nativeDirectory, readOnly, decStringSet() );
+}
+
+void delEngineInstanceDirect::VFSAddDiskDir( const char *vfsRoot, const char *nativeDirectory,
+bool readOnly, const decStringSet &hiddenPath ){
 	DEASSERT_NOTNULL( vfsRoot )
 	DEASSERT_NOTNULL( nativeDirectory )
 	
 	GetLauncher().GetLogger()->LogInfoFormat( GetLauncher().GetLogSource(),
-		"Processing VFSAddDiskDir(vfsRoot='%s',nativeDirectory='%s',readOnly=%c)",
-		vfsRoot, nativeDirectory, readOnly?'y':'n' );
+		"Processing VFSAddDiskDir(vfsRoot='%s',nativeDirectory='%s',readOnly=%c,hiddenPath=%d)",
+		vfsRoot, nativeDirectory, readOnly?'y':'n', hiddenPath.GetCount() );
 	DEASSERT_NOTNULL( pEngine )
 	
-	pEngine->GetVirtualFileSystem()->AddContainer( deVFSDiskDirectory::Ref::New(
+	const deVFSDiskDirectory::Ref container( deVFSDiskDirectory::Ref::New(
 		new deVFSDiskDirectory( decPath::CreatePathUnix( vfsRoot ),
 			decPath::CreatePathNative( nativeDirectory ), readOnly ) ) );
+	
+	const int count = hiddenPath.GetCount();
+	int i;
+	for( i=0; i<count; i++ ){
+		container->AddHiddenPath( decPath::CreatePathUnix( hiddenPath.GetAt( i ) ) );
+	}
+	
+	pEngine->GetVirtualFileSystem()->AddContainer( container );
 }
 
 void delEngineInstanceDirect::VFSAddScriptSharedDataDir(){
@@ -499,11 +512,16 @@ void delEngineInstanceDirect::VFSAddScriptSharedDataDir(){
 }
 
 void delEngineInstanceDirect::VFSAddDelgaFile( const char *delgaFile, const char *archivePath ){
+	VFSAddDelgaFile( delgaFile, archivePath, decStringSet() );
+}
+
+void delEngineInstanceDirect::VFSAddDelgaFile( const char *delgaFile,
+const char *archivePath, const decStringSet &hiddenPath ){
 	DEASSERT_NOTNULL( delgaFile )
 	
 	GetLauncher().GetLogger()->LogInfoFormat( GetLauncher().GetLogSource(),
-		"Processing VFSAddDelga(delgaFile='%s', archivePath=%s)",
-		delgaFile, archivePath );
+		"Processing VFSAddDelga(delgaFile='%s', archivePath=%s, hiddenPath=%d)",
+		delgaFile, archivePath, hiddenPath.GetCount() );
 	DEASSERT_NOTNULL( pEngine )
 	
 	decPath pathDelgaDir( decPath::CreatePathNative( delgaFile ) );
@@ -516,10 +534,18 @@ void delEngineInstanceDirect::VFSAddDelgaFile( const char *delgaFile, const char
 	deVirtualFileSystem &vfs = *pEngine->GetVirtualFileSystem();
 	deArchiveManager &amgr = *pEngine->GetArchiveManager();
 	
-	vfs.AddContainer( deArchiveContainer::Ref::New( amgr.CreateContainer(
+	const deArchiveContainer::Ref container( amgr.CreateContainer(
 		decPath::CreatePathUnix( "/" ),
 		deArchive::Ref::New( amgr.OpenArchive( delgaVfs, delgaFileTitle, "/" ) ),
-		decPath::CreatePathUnix( archivePath ) ) ) );
+		decPath::CreatePathUnix( archivePath ) ) );
+	
+	const int count = hiddenPath.GetCount();
+	int i;
+	for( i=0; i<count; i++ ){
+		container->AddHiddenPath( decPath::CreatePathUnix( hiddenPath.GetAt( i ) ) );
+	}
+	
+	vfs.AddContainer( container );
 }
 
 void delEngineInstanceDirect::SetCmdLineArgs( const char *arguments ){
@@ -755,7 +781,7 @@ void delEngineInstanceDirect::ReadDelgaPatchDefs( const char *delgaFile, decStri
 	decPath pathDelgaDir( decPath::CreatePathNative( delgaFile ) );
 	const decString delgaFileTitle( pathDelgaDir.GetLastComponent() );
 	pathDelgaDir.RemoveLastComponent();
-	delgaVfs->AddContainer( new deVFSDiskDirectory( pathDelgaDir ) );
+	delgaVfs->AddContainer( deVFSDiskDirectory::Ref::New( new deVFSDiskDirectory( pathDelgaDir ) ) );
 	
 	const deArchive::Ref delgaArchive( deArchive::Ref::New( amgr.OpenArchive( delgaVfs, delgaFileTitle, "/" ) ) );
 	
@@ -805,7 +831,7 @@ const decStringList &filenames, decObjectOrderedSet &filesContent ){
 	decPath pathDelgaDir( decPath::CreatePathNative( delgaFile ) );
 	const decString delgaFileTitle( pathDelgaDir.GetLastComponent() );
 	pathDelgaDir.RemoveLastComponent();
-	delgaVfs->AddContainer( new deVFSDiskDirectory( pathDelgaDir ) );
+	delgaVfs->AddContainer( deVFSDiskDirectory::Ref::New( new deVFSDiskDirectory( pathDelgaDir ) ) );
 	
 	const deArchive::Ref delgaArchive( deArchive::Ref::New( amgr.OpenArchive( delgaVfs, delgaFileTitle, "/" ) ) );
 	

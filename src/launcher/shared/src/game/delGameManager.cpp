@@ -26,6 +26,7 @@
 #include "delGame.h"
 #include "delGameXML.h"
 #include "delGameManager.h"
+#include "patch/delPatch.h"
 #include "../delLauncher.h"
 #include "../engine/delEngine.h"
 #include "../engine/modules/delEngineModule.h"
@@ -66,7 +67,7 @@ delGameManager::~delGameManager(){
 // Management
 ///////////////
 
-void delGameManager::LoadGames ( delEngineInstance &instance ){
+void delGameManager::LoadGames( delEngineInstance &instance ){
 	pLauncher.GetLogger()->LogInfo( pLauncher.GetLogSource(), "Loading game list" );
 	
 	// clear games list
@@ -152,8 +153,7 @@ void delGameManager::ApplyProfileChanges(){
 	}
 }
 
-void delGameManager::LoadGameFromDisk( delEngineInstance &instance,
-const decString &path, delGameList &list ){
+void delGameManager::LoadGameFromDisk( delEngineInstance &instance, const decString &path, delGameList &list ){
 	deLogger &logger = *pLauncher.GetLogger();
 	delGameXML gameXML( &logger, pLauncher.GetLogSource() );
 	
@@ -214,6 +214,28 @@ const decString &path, delGameList &list ){
 		}catch( const deException & ){
 			logger.LogError( pLauncher.GetLogSource(), "Failed to read game file" );
 			throw;
+		}
+	}
+	
+	// load patches located in the same directory or below
+	decPath baseDir( decPath::CreatePathNative( path ) );
+	baseDir.RemoveLastComponent();
+	delPatchList patches;
+	pLauncher.GetPatchManager().LoadPatchesFromDisk( instance, baseDir.GetPathNative(), patches );
+	
+	const int gameCount = list.GetCount();
+	const int patchCount = patches.GetCount();
+	int i, j;
+	
+	for( i=0; i<gameCount; i++ ){
+		delGame &game = *list.GetAt( i );
+		
+		for( j=0; j<patchCount; j++ ){
+			delPatch * const patch = patches.GetAt( j );
+			
+			if( patch->GetGameID() == game.GetIdentifier() ){
+				game.GetLocalPatches().Add( patch );
+			}
 		}
 	}
 }

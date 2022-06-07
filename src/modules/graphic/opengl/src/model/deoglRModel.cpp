@@ -582,7 +582,6 @@ void deoglRModel::pSaveCached(){
 		writer->WriteVector( pWeightlessExtends.minimum );
 		writer->WriteVector( pWeightlessExtends.maximum );
 		writer->WriteByte( pHasWeightlessExtends ? 1 : 0 );
-		int i;
 		for( i=0; i<pBoneCount; i++ ){
 			writer->WriteVector( pBoneExtends[ i ].minimum );
 			writer->WriteVector( pBoneExtends[ i ].maximum );

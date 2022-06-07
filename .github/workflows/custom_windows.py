@@ -58,11 +58,29 @@ build_script_smalltalk = 'no'
 build_sound_ogg = 'yes'
 build_video_theora = 'yes'
 build_video_apng = 'yes'
-build_igde = 'yes'
 build_guilauncher = 'yes'
 build_plugin_npapi = 'no'
 build_launcher_android = 'no'
 build_archive_delga = 'yes'
+build_vr_openvr = 'yes'
+build_vr_openxr = 'yes'
+
+# IGDE
+########
+build_igde = 'yes'
+igde_toolkit = 'fox'
+build_editor_animator = 'yes'
+build_editor_conversation = 'yes'
+build_editor_font = 'yes'
+build_editor_gamedefinition = 'yes'
+build_editor_langpack = 'yes'
+build_editor_particleemitter = 'yes'
+build_editor_rig = 'yes'
+build_editor_skin = 'yes'
+build_editor_sky = 'yes'
+build_editor_speechanimation = 'yes'
+build_editor_synthesizer = 'yes'
+build_editor_world = 'yes'
 
 # archiving
 #############

@@ -72,8 +72,8 @@ void decrbWindowMain::create(){
 // Constructor, destructor
 ////////////////////////////
 
-decrbWindowMain::decrbWindowMain( FXApp* app, deCRBasic *crBasic ) :
-FXMainWindow( app, "Drag[en]gine Crash Recovery", NULL, NULL, DECOR_ALL, 0, 0, 600, 500 ){
+decrbWindowMain::decrbWindowMain( FXApp* papp, deCRBasic *crBasic ) :
+FXMainWindow( papp, "Drag[en]gine Crash Recovery", NULL, NULL, DECOR_ALL, 0, 0, 600, 500 ){
 	// prepare
 	pCRBasic = crBasic;
 	pEngine = pCRBasic->GetGameEngine();
@@ -146,7 +146,7 @@ const char *decrbWindowMain::GetTextForError( const char *error ){
 // Callbacks
 //////////////
 
-long decrbWindowMain::onClose( FXObject *sender, FXSelector selector, void *data ){
+long decrbWindowMain::onClose( FXObject*, FXSelector, void* ){
 	pCRBasic->LogInfo( "received onClose." );
 	pCRBasic->SetQuitEngine( true );
 	close();
@@ -154,14 +154,14 @@ long decrbWindowMain::onClose( FXObject *sender, FXSelector selector, void *data
 	return 1;
 }
 
-long decrbWindowMain::onBtnContinue( FXObject *sender, FXSelector selector, void *data ){
+long decrbWindowMain::onBtnContinue( FXObject*, FXSelector, void* ){
 	pCRBasic->SetQuitEngine( false );
 	close();
 	
 	return 1;
 }
 
-long decrbWindowMain::onBtnShutdown( FXObject *sender, FXSelector selector, void *data ){
+long decrbWindowMain::onBtnShutdown( FXObject*, FXSelector, void* ){
 	pCRBasic->SetQuitEngine( true );
 	close();
 	

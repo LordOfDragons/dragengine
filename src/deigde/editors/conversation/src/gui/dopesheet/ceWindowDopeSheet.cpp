@@ -391,10 +391,10 @@ pVAPreview( NULL )
 	
 	panel4.TakeOver( new igdeContainerBox( env, igdeContainerBox::eaY ) );
 	for( i=0; i<pLanes.GetCount(); i++ ){
-		const ceWDSLane &lane = *( ( ceWDSLane* )pLanes.GetAt( i ) );
+		const ceWDSLane &lane2 = *( ( ceWDSLane* )pLanes.GetAt( i ) );
 		panel5.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaY ) );
 		helper.Spacer( panel5, decPoint( 10, 2 ) );
-		helper.Label( panel5, lane.GetLabel(), lane.GetDescription(), igdeLabel::eaLeft | igdeLabel::eaMiddle );
+		helper.Label( panel5, lane2.GetLabel(), lane2.GetDescription(), igdeLabel::eaLeft | igdeLabel::eaMiddle );
 		helper.Spacer( panel5, decPoint( 10, 2 ) );
 		panel4->AddChild( panel5 );
 	}

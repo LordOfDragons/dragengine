@@ -242,12 +242,12 @@ void dearRuleMirror::pUpdateBones(){
 		int lenBefore;
 		int lenAfter;
 		
-		void Set( sBone *bone, const char *before, int lenBefore, const char *after, int lenAfter ){
-			this->bone = bone;
-			this->before = before;
-			this->lenBefore = lenBefore;
-			this->after = after;
-			this->lenAfter = lenAfter;
+		void Set( sBone *pbone, const char *pbefore, int plenBefore, const char *pafter, int plenAfter ){
+			bone = pbone;
+			before = pbefore;
+			lenBefore = plenBefore;
+			after = pafter;
+			lenAfter = plenAfter;
 		}
 	};
 	sMatch * const matchesFirst = new sMatch[ mappingCount ];

@@ -972,7 +972,7 @@ void deRigModule::pParseConstraint( decXmlElementTag *root, deRig &rig, deRigBon
 					}
 					
 				}else if( strcmp( tag->GetName(), "breakingThreshold" ) == 0 ){
-					const decXmlCharacterData * const cdata = tag->GetFirstData();
+					cdata = tag->GetFirstData();
 					if( cdata ){
 						constraint->SetBreakingThreshold( strtof( cdata->GetData(), NULL ) );
 					}

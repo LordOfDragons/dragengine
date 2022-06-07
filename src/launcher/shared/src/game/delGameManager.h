@@ -69,7 +69,7 @@ public:
 	inline const delGameList &GetGames() const{ return pGames; }
 	
 	/** \brief Load list of games from game directory. */
-	void LoadGames ( delEngineInstance &instance );
+	void LoadGames( delEngineInstance &instance );
 	
 	/** \brief Create default profile from the current engine state. */
 	void CreateDefaultProfile();

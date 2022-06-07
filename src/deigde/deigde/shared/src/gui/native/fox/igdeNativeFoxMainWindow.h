@@ -97,13 +97,13 @@ public:
 	
 	/** \name Events */
 	/*@{*/
-	long onConfigure( FXObject *sender, FXSelector selector, void *data );
-	long onMap( FXObject *sender, FXSelector selector, void *data );
-	long onClose( FXObject *sender, FXSelector selector, void *data );
-	long onChildLayoutFlags( FXObject *sender, FXSelector selector, void *data );
-	long onMinimized( FXObject *sender, FXSelector selector, void *data );
-	long onRestored( FXObject *sender, FXSelector selector, void *data );
-	long onMaximized( FXObject *sender, FXSelector selector, void *data );
+	long onConfigure( FXObject*, FXSelector, void* );
+	long onMap( FXObject*, FXSelector, void* );
+	long onClose( FXObject*, FXSelector, void* );
+	long onChildLayoutFlags( FXObject*, FXSelector, void* );
+	long onMinimized( FXObject*, FXSelector, void* );
+	long onRestored( FXObject*, FXSelector, void* );
+	long onMaximized( FXObject*, FXSelector, void* );
 	/*@}*/
 	
 private:

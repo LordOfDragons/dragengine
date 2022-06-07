@@ -42,6 +42,12 @@ class igdeLoggerHistoryListener;
  * notification lock the mutex yourself.
  */
 class igdeLoggerHistory : public deLogger{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeLoggerHistory> Ref;
+	
+	
+	
 private:
 	int pHistorySize;
 	igdeLoggerHistoryEntry *pEntries;

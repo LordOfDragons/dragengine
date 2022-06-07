@@ -1692,8 +1692,8 @@ void meWPSObject::UpdateTextureList(){
 		int i;
 		
 		for( i=0; i<count; i++ ){
-			meObjectTexture * const texture = object->GetTextureAt( i );
-			pCBTexture->AddItem( texture->GetName(), NULL, texture );
+			meObjectTexture * const texture2 = object->GetTextureAt( i );
+			pCBTexture->AddItem( texture2->GetName(), NULL, texture2 );
 		}
 		
 		pCBTexture->SortItems();

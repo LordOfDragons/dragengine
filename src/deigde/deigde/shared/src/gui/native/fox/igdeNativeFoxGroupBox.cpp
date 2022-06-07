@@ -58,20 +58,20 @@ FXIMPLEMENT( igdeNativeFoxGroupBox, FXGroupBox, igdeNativeFoxGroupBoxMap, ARRAYN
 
 igdeNativeFoxGroupBox::igdeNativeFoxGroupBox(){ }
 
-igdeNativeFoxGroupBox::igdeNativeFoxGroupBox( igdeGroupBox &owner, FXComposite *parent,
+igdeNativeFoxGroupBox::igdeNativeFoxGroupBox( igdeGroupBox &powner, FXComposite *pparent,
 int layoutFlags,const igdeGuiTheme &guitheme ) :
-FXGroupBox( parent, owner.GetTitle().GetString(), layoutFlags,
+FXGroupBox( pparent, powner.GetTitle().GetString(), layoutFlags,
 	0, 0, 0, 0,
 	GroupBoxPadLeft( guitheme ), GroupBoxPadRight( guitheme ),
 	GroupBoxPadTop( guitheme ), GroupBoxPadBottom( guitheme ) ),
-pOwner( &owner ),
+pOwner( &powner ),
 pUncollapsedFlags( layoutFlags ),
 pCollapsedFlags( layoutFlags & ~LAYOUT_FILL_Y ),
-pFont( GroupBoxFont( owner, guitheme ) )
+pFont( GroupBoxFont( powner, guitheme ) )
 {
 	setFont( (FXFont*)pFont->GetNativeFont() );
 	
-	if( owner.GetCollapsed() ){
+	if( powner.GetCollapsed() ){
 		setLayoutHints( pCollapsedFlags );
 	}
 	
@@ -82,25 +82,25 @@ pFont( GroupBoxFont( owner, guitheme ) )
 igdeNativeFoxGroupBox::~igdeNativeFoxGroupBox(){
 }
 
-igdeNativeFoxGroupBox *igdeNativeFoxGroupBox::CreateNativeWidget( igdeGroupBox &owner ){
-	if( ! owner.GetParent() ){
+igdeNativeFoxGroupBox *igdeNativeFoxGroupBox::CreateNativeWidget( igdeGroupBox &powner ){
+	if( ! powner.GetParent() ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	FXComposite * const parent = ( FXComposite* )owner.GetParent()->GetNativeContainer();
-	if( ! parent ){
+	FXComposite * const pparent = ( FXComposite* ) powner.GetParent()->GetNativeContainer();
+	if( ! pparent ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	return new igdeNativeFoxGroupBox( owner, parent,
-		igdeUIFoxHelper::GetChildLayoutFlags( &owner )
-			| igdeNativeFoxGroupBox::GroupBoxFlags( owner ),
-		*owner.GetGuiTheme() );
+	return new igdeNativeFoxGroupBox( powner, pparent,
+		igdeUIFoxHelper::GetChildLayoutFlags( &powner )
+			| igdeNativeFoxGroupBox::GroupBoxFlags( powner ),
+		*powner.GetGuiTheme() );
 }
 
 void igdeNativeFoxGroupBox::PostCreateNativeWidget(){
-	FXComposite &parent = *( ( FXComposite* )pOwner->GetParent()->GetNativeContainer() );
-	if( parent.id() ){
+	FXComposite &pparent = *( ( FXComposite* )pOwner->GetParent()->GetNativeContainer() );
+	if( pparent.id() ){
 		create();
 	}
 }
@@ -127,11 +127,11 @@ FXint igdeNativeFoxGroupBox::getDefaultHeight(){
 void igdeNativeFoxGroupBox::UpdateCollapsed(){
 	setLayoutHints( pOwner->GetCollapsed() ? pCollapsedFlags : pUncollapsedFlags );
 	
-	FXWindow *parent = getParent();
+	FXWindow *pparent = getParent();
 	update();
-	while( parent ){
-		parent->recalc();
-		parent = parent->getParent();
+	while( pparent ){
+		pparent->recalc();
+		pparent = pparent->getParent();
 	}
 }
 
@@ -154,32 +154,32 @@ void igdeNativeFoxGroupBox::UpdateStretchLast(){
 
 
 
-int igdeNativeFoxGroupBox::GroupBoxFlags( const igdeGroupBox &owner ){
-	int flags = FRAME_RIDGE;
+int igdeNativeFoxGroupBox::GroupBoxFlags( const igdeGroupBox &powner ){
+	int fflags = FRAME_RIDGE;
 	
-	switch( owner.GetTitleAlignment() ){
+	switch( powner.GetTitleAlignment() ){
 	case igdeGroupBox::etaLeft:
-		flags |= GROUPBOX_TITLE_LEFT;
+		fflags |= GROUPBOX_TITLE_LEFT;
 		break;
 		
 	case igdeGroupBox::etaRight:
-		flags |= GROUPBOX_TITLE_RIGHT;
+		fflags |= GROUPBOX_TITLE_RIGHT;
 		break;
 		
 	case igdeGroupBox::etaCenter:
-		flags |= GROUPBOX_TITLE_CENTER;
+		fflags |= GROUPBOX_TITLE_CENTER;
 		break;
 		
 	default:
-		flags |= GROUPBOX_TITLE_LEFT;
+		fflags |= GROUPBOX_TITLE_LEFT;
 	}
 	
-	return flags;
+	return fflags;
 }
 
-igdeFont *igdeNativeFoxGroupBox::GroupBoxFont( const igdeGroupBox &owner, const igdeGuiTheme &guitheme ){
+igdeFont *igdeNativeFoxGroupBox::GroupBoxFont( const igdeGroupBox &powner, const igdeGuiTheme &guitheme ){
 	igdeFont::sConfiguration configuration;
-	owner.GetEnvironment().GetApplicationFont( configuration );
+	powner.GetEnvironment().GetApplicationFont( configuration );
 	
 	if( guitheme.HasProperty( igdeGuiThemePropertyNames::groupBoxFontSizeAbsolute ) ){
 		configuration.size = guitheme.GetIntProperty(
@@ -198,7 +198,7 @@ igdeFont *igdeNativeFoxGroupBox::GroupBoxFont( const igdeGroupBox &owner, const 
 			igdeGuiThemePropertyNames::fontSize, 1.0f );
 	}
 	
-	return owner.GetEnvironment().GetSharedFont( configuration );
+	return powner.GetEnvironment().GetSharedFont( configuration );
 }
 
 int igdeNativeFoxGroupBox::GroupBoxPadLeft( const igdeGuiTheme &guitheme ){
@@ -222,12 +222,12 @@ int igdeNativeFoxGroupBox::GroupBoxPadBottom( const igdeGuiTheme &guitheme ){
 // Events
 ///////////
 
-long igdeNativeFoxGroupBox::onLeftMouseDown( FXObject *sender, FXSelector selector, void *data ){
+long igdeNativeFoxGroupBox::onLeftMouseDown( FXObject*, FXSelector, void *pdata ){
 	if( ! pOwner->GetCanCollapse() ){
 		return 0;
 	}
 	
-	const FXEvent &event = *( ( FXEvent* )data );
+	const FXEvent &event = *( ( FXEvent* )pdata );
 	const int y = event.win_y;
 	
 	// change collapsed state only if clicked in the area of the caption
@@ -240,8 +240,8 @@ long igdeNativeFoxGroupBox::onLeftMouseDown( FXObject *sender, FXSelector select
 	return 1;
 }
 
-long igdeNativeFoxGroupBox::onChildLayoutFlags( FXObject *sender, FXSelector selector, void *data ){
-	igdeUIFoxHelper::sChildLayoutFlags &clflags = *( ( igdeUIFoxHelper::sChildLayoutFlags* )data );
+long igdeNativeFoxGroupBox::onChildLayoutFlags( FXObject*, FXSelector, void *pdata ){
+	igdeUIFoxHelper::sChildLayoutFlags &clflags = *( ( igdeUIFoxHelper::sChildLayoutFlags* )pdata );
 	clflags.flags = LAYOUT_FILL_X;
 	
 	const int index = pOwner->IndexOfChild( clflags.widget );

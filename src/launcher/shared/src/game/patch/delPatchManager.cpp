@@ -92,14 +92,14 @@ void delPatchManager::LoadPatches( delEngineInstance &instance ){
 		pathDisk.RemoveLastComponent();
 		
 		vfs->AddContainer( deVFSDiskDirectory::Ref::New( new deVFSDiskDirectory( pathRoot, pathDisk ) ) );
-		pScanPatchDefFiles( instance, vfs, pathDisk, pathRoot );
+		pScanPatchDefFiles( instance, vfs, pathDisk, pathRoot, pPatches );
 	}
 	
 	// load patches from install games directory (deprecated)
 	vfs->RemoveAllContainers();
 	pathDisk.SetFromNative( pLauncher.GetPathGames() );
 	vfs->AddContainer( deVFSDiskDirectory::Ref::New( new deVFSDiskDirectory( pathRoot, pathDisk ) ) );
-	pScanPatchDefFiles( instance, vfs, pathDisk, pathRoot );
+	pScanPatchDefFiles( instance, vfs, pathDisk, pathRoot, pPatches );
 }
 
 void delPatchManager::LoadPatchFromDisk( delEngineInstance &instance, const decString &path, delPatchList &list ){
@@ -135,6 +135,15 @@ void delPatchManager::LoadPatchFromDisk( delEngineInstance &instance, const decS
 	}
 }
 
+void delPatchManager::LoadPatchesFromDisk( delEngineInstance &instance, const decString &baseDir, delPatchList &list ){
+	deVirtualFileSystem::Ref vfs( deVirtualFileSystem::Ref::New( new deVirtualFileSystem ) );
+	const decPath pathRoot( decPath::CreatePathUnix( "/" ) );
+	const decPath pathDisk( decPath::CreatePathNative( baseDir ) );
+	
+	vfs->AddContainer( deVFSDiskDirectory::Ref::New( new deVFSDiskDirectory( pathRoot, pathDisk, true ) ) );
+	pScanPatchDefFiles( instance, vfs, pathDisk, pathRoot, list );
+}
+
 void delPatchManager::Clear(){
 	pPatches.RemoveAll();
 }
@@ -144,8 +153,8 @@ void delPatchManager::Clear(){
 // Protected Functions
 ////////////////////////
 
-void delPatchManager::pScanPatchDefFiles( delEngineInstance &instance,
-deVirtualFileSystem &vfs, const decPath &baseDir, const decPath &directory ){
+void delPatchManager::pScanPatchDefFiles( delEngineInstance &instance, deVirtualFileSystem &vfs,
+const decPath &baseDir, const decPath &directory, delPatchList &list ){
 	deCollectFileSearchVisitor collect;
 	collect.AddPattern( "*.depatch" );
 	collect.AddPattern( "*.delga" );
@@ -157,30 +166,27 @@ deVirtualFileSystem &vfs, const decPath &baseDir, const decPath &directory ){
 	int i;
 	
 	for( i=0; i<count; i++ ){
-		pProcessFoundFiles( instance, baseDir + result.GetAt( i ) );
+		pProcessFoundFiles( instance, baseDir + result.GetAt( i ), list );
 	}
 }
 
-void delPatchManager::pProcessFoundFiles( delEngineInstance &instance, const decPath &path ){
-	delPatchList list;
+void delPatchManager::pProcessFoundFiles( delEngineInstance &instance,
+const decPath &path, delPatchList &list ){
+	delPatchList subList;
 	try{
-		LoadPatchFromDisk( instance, path.GetPathNative(), list );
+		LoadPatchFromDisk( instance, path.GetPathNative(), subList );
 		
 	}catch( const deException &e ){
 		pLauncher.GetLogger()->LogException( pLauncher.GetLogSource(), e );
 		return;
 	}
 	
-	const int count = list.GetCount();
+	const int count = subList.GetCount();
 	int i;
 	for( i=0; i<count; i++ ){
-		delPatch * const patch = list.GetAt( i );
-		if( pPatches.HasWithID( patch->GetIdentifier() ) ){
-// 			pLauncher.GetLogger()->LogWarnFormat( pLauncher.GetLogSource(), "Ignore duplicate game patch '%s'",
-// 				patch->GetIdentifier().ToHexString( false ).GetString() );
-			continue;
+		delPatch * const patch = subList.GetAt( i );
+		if( ! list.HasWithID( patch->GetIdentifier() ) ){
+			list.Add( patch );
 		}
-		
-		pPatches.Add( patch );
 	}
 }

@@ -81,12 +81,12 @@ FXIMPLEMENT( igdeNativeFoxTextArea, FXVerticalFrame,
 
 igdeNativeFoxTextArea::igdeNativeFoxTextArea(){ }
 
-igdeNativeFoxTextArea::igdeNativeFoxTextArea( igdeTextArea &owner, FXComposite *parent,
+igdeNativeFoxTextArea::igdeNativeFoxTextArea( igdeTextArea &powner, FXComposite *pparent,
 	const igdeUIFoxHelper::sChildLayoutFlags &layoutFlags, const igdeGuiTheme &guitheme ) :
-FXVerticalFrame( parent, layoutFlags.flags | TextAreaFlagsBorder( owner ), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ),
-pOwner( &owner ),
-pFont( TextAreaFont( owner, guitheme ) ),
-pTextArea( new FXText( this, this, ID_SELF, TextAreaFlags( owner ), 0, 0, 0, 0,
+FXVerticalFrame( pparent, layoutFlags.flags | TextAreaFlagsBorder( powner ), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ),
+pOwner( &powner ),
+pFont( TextAreaFont( powner, guitheme ) ),
+pTextArea( new FXText( this, this, ID_SELF, TextAreaFlags( powner ), 0, 0, 0, 0,
 	TextAreaPadLeft( guitheme ), TextAreaPadRight( guitheme ),
 	TextAreaPadTop( guitheme ), TextAreaPadBottom( guitheme ) ) ),
 pStyles( NULL ),
@@ -96,8 +96,8 @@ pResizer( NULL )
 		hide();
 	}
 	
-	pTextArea->setVisibleColumns( owner.GetColumns() );
-	pTextArea->setVisibleRows( owner.GetRows() );
+	pTextArea->setVisibleColumns( powner.GetColumns() );
+	pTextArea->setVisibleRows( powner.GetRows() );
 	pTextArea->setFont( (FXFont*)pFont->GetNativeFont() );
 	
 	UpdateEditable();
@@ -127,23 +127,23 @@ igdeNativeFoxTextArea::~igdeNativeFoxTextArea(){
 	}
 }
 
-igdeNativeFoxTextArea *igdeNativeFoxTextArea::CreateNativeWidget( igdeTextArea &owner ){
-	if( ! owner.GetParent() ){
+igdeNativeFoxTextArea *igdeNativeFoxTextArea::CreateNativeWidget( igdeTextArea &powner ){
+	if( ! powner.GetParent() ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	FXComposite * const parent = ( FXComposite* )owner.GetParent()->GetNativeContainer();
-	if( ! parent ){
+	FXComposite * const pparent = ( FXComposite* ) powner.GetParent()->GetNativeContainer();
+	if( ! pparent ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	return new igdeNativeFoxTextArea( owner, parent,
-		igdeUIFoxHelper::GetChildLayoutFlagsAll( &owner ), *owner.GetGuiTheme() );
+	return new igdeNativeFoxTextArea( powner, pparent,
+		igdeUIFoxHelper::GetChildLayoutFlagsAll( &powner ), *powner.GetGuiTheme() );
 }
 
 void igdeNativeFoxTextArea::PostCreateNativeWidget(){
-	FXComposite &parent = *( ( FXComposite* )pOwner->GetParent()->GetNativeContainer() );
-	if( parent.id() ){
+	FXComposite &pparent = *( ( FXComposite* )pOwner->GetParent()->GetNativeContainer() );
+	if( pparent.id() ){
 		create();
 	}
 }
@@ -309,9 +309,9 @@ int igdeNativeFoxTextArea::TextAreaFlags( const igdeTextArea & ){
 	return LAYOUT_FILL_X | LAYOUT_FILL_Y | TEXT_WORDWRAP;
 }
 
-igdeFont *igdeNativeFoxTextArea::TextAreaFont( const igdeTextArea &owner, const igdeGuiTheme &guitheme ){
+igdeFont *igdeNativeFoxTextArea::TextAreaFont( const igdeTextArea &powner, const igdeGuiTheme &guitheme ){
 	igdeFont::sConfiguration configuration;
-	owner.GetEnvironment().GetApplicationFont( configuration );
+	powner.GetEnvironment().GetApplicationFont( configuration );
 	
 	if( guitheme.HasProperty( igdeGuiThemePropertyNames::textFieldFontSizeAbsolute ) ){
 		configuration.size = guitheme.GetIntProperty(
@@ -330,7 +330,7 @@ igdeFont *igdeNativeFoxTextArea::TextAreaFont( const igdeTextArea &owner, const 
 			igdeGuiThemePropertyNames::fontSize, 1.0f );
 	}
 	
-	return owner.GetEnvironment().GetSharedFont( configuration );
+	return powner.GetEnvironment().GetSharedFont( configuration );
 }
 
 int igdeNativeFoxTextArea::TextAreaPadLeft( const igdeGuiTheme &guitheme ){
@@ -354,8 +354,8 @@ int igdeNativeFoxTextArea::TextAreaPadBottom( const igdeGuiTheme &guitheme ){
 // Events
 ///////////
 
-long igdeNativeFoxTextArea::onMouseLeftPress( FXObject*, FXSelector, void *data ){
-	const FXEvent &event = *( ( FXEvent* )data );
+long igdeNativeFoxTextArea::onMouseLeftPress( FXObject*, FXSelector, void *pdata ){
+	const FXEvent &event = *( ( FXEvent* )pdata );
 	const int position = pTextArea->getPosAt( event.win_x, event.win_y );
 	
 	const igdeTextSegment * const segment = pOwner->GetSegmentWith( position );
@@ -366,8 +366,8 @@ long igdeNativeFoxTextArea::onMouseLeftPress( FXObject*, FXSelector, void *data 
 	return 1;
 }
 
-long igdeNativeFoxTextArea::onMouseLeftRelease( FXObject*, FXSelector, void *data ){
-	const FXEvent &event = *( ( FXEvent* )data );
+long igdeNativeFoxTextArea::onMouseLeftRelease( FXObject*, FXSelector, void *pdata ){
+	const FXEvent &event = *( ( FXEvent* )pdata );
 	const int position = pTextArea->getPosAt( event.win_x, event.win_y );
 	
 	const igdeTextSegment * const segment = pOwner->GetSegmentWith( position );
@@ -426,8 +426,8 @@ long igdeNativeFoxTextArea::onChanged( FXObject*, FXSelector, void* ){
 	return 1;
 }
 
-long igdeNativeFoxTextArea::onResizerDrag( FXObject*, FXSelector, void *data ){
-	const int distance = igdeNativeFoxResizer::SelCommandDraggedDistance( data );
+long igdeNativeFoxTextArea::onResizerDrag( FXObject*, FXSelector, void *pdata ){
+	const int distance = igdeNativeFoxResizer::SelCommandDraggedDistance( pdata );
 	const int newHeight = getHeight() + distance;
 	
 	const int margin = pTextArea->getMarginTop() + pTextArea->getMarginBottom();
@@ -467,15 +467,15 @@ void igdeNativeFoxTextArea::pBuildStylesArray(){
 	// - STYLE_BOLD
 	// or 0
 	
-	const FXApp &app = *pTextArea->getApp();
+	const FXApp &aapp = *pTextArea->getApp();
 	FXHiliteStyle defaultStyle;
-	defaultStyle.normalForeColor = app.getForeColor();
-	defaultStyle.normalBackColor = app.getBackColor();
-	defaultStyle.selectForeColor = app.getSelforeColor();
-	defaultStyle.selectBackColor = app.getSelbackColor();
-	defaultStyle.hiliteForeColor = app.getHiliteColor();
-	defaultStyle.hiliteBackColor = app.getShadowColor();
-	defaultStyle.activeBackColor = app.getBackColor();
+	defaultStyle.normalForeColor = aapp.getForeColor();
+	defaultStyle.normalBackColor = aapp.getBackColor();
+	defaultStyle.selectForeColor = aapp.getSelforeColor();
+	defaultStyle.selectBackColor = aapp.getSelbackColor();
+	defaultStyle.hiliteForeColor = aapp.getHiliteColor();
+	defaultStyle.hiliteBackColor = aapp.getShadowColor();
+	defaultStyle.activeBackColor = aapp.getBackColor();
 	defaultStyle.style = 0;
 	
 	int i;

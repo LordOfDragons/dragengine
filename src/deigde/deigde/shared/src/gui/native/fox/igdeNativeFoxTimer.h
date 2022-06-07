@@ -79,7 +79,7 @@ public:
 	
 	/** \name Events */
 	/*@{*/
-	long onTimeout( FXObject *sender, FXSelector selector, void *data );
+	long onTimeout( FXObject*, FXSelector, void* );
 	/*@}*/
 };
 

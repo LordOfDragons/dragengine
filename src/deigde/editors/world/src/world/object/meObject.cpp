@@ -1955,8 +1955,8 @@ void meObject::pUpdateDDSNavSpaces(){
 		int count;
 		bool requiresReposition;
 		
-		cWOSONavSpaceVisitor( deDebugDrawer *debugDrawer, igdeWDebugDrawerShapeList &ddShapes ) :
-		debugDrawer( debugDrawer ), ddShapes( ddShapes ), count( 0 ), requiresReposition( false ){
+		cWOSONavSpaceVisitor( deDebugDrawer *ddebugDrawer, igdeWDebugDrawerShapeList &dddShapes ) :
+		debugDrawer( ddebugDrawer ), ddShapes( dddShapes ), count( 0 ), requiresReposition( false ){
 		}
 		
 		virtual ~cWOSONavSpaceVisitor(){
@@ -2152,7 +2152,7 @@ void meObject::pUpdateShapeLight(){
 		igdeWDebugDrawerShape &shape;
 		
 	public:
-		cWOSOLightVisitor( igdeWDebugDrawerShape &shape ) : shape( shape ){
+		cWOSOLightVisitor( igdeWDebugDrawerShape &sshape ) : shape( sshape ){
 			shape.RemoveAllShapes();
 			shape.RemoveAllFaces();
 		}

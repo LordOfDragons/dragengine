@@ -94,6 +94,8 @@ pNameGestureProgress( "gesture.progress" ),
 pNameGesturePlayback( "gesture.playback" ),
 pNameGestureVariation( "gesture.variation" ),
 pNameGestureBlink( "blinking" ),
+pNameGestureFadeIn( "gesture.fade.in" ),
+pNameGestureFadeOut( "gesture.fade.out" ),
 pActivePose( NULL )
 {
 	deEngine &engine = *environment.GetEngineController()->GetEngine();
@@ -1134,6 +1136,8 @@ void ceConversationActor::pUpdatePlayGesture( float elapsed ){
 		const int indexControllerProgress = pEngGestureAnimatorInstance->IndexOfControllerNamed( pNameGestureProgress );
 		const int indexControllerPlayback = pEngGestureAnimatorInstance->IndexOfControllerNamed( pNameGesturePlayback );
 		const int indexControllerVariation = pEngGestureAnimatorInstance->IndexOfControllerNamed( pNameGestureVariation );
+		const int indexControllerFadeIn = pEngGestureAnimatorInstance->IndexOfControllerNamed( pNameGestureFadeIn );
+		const int indexControllerFadeOut = pEngGestureAnimatorInstance->IndexOfControllerNamed( pNameGestureFadeOut );
 		
 		if( resetAnimation ){
 			if( indexControllerProgress != -1 ){
@@ -1160,6 +1164,15 @@ void ceConversationActor::pUpdatePlayGesture( float elapsed ){
 				pEngGestureAnimatorInstance->GetControllerAt( indexControllerPlayback ).SetCurrentValue( pPlayGestureElapsed - startTime );
 				pEngGestureAnimatorInstance->NotifyControllerChangedAt( indexControllerPlayback );
 			}
+			if( indexControllerFadeIn != -1 ){
+				pEngGestureAnimatorInstance->GetControllerAt( indexControllerFadeIn ).SetCurrentValue( pPlayGestureElapsed );
+				pEngGestureAnimatorInstance->NotifyControllerChangedAt( indexControllerFadeIn );
+			}
+			if( indexControllerFadeOut != -1 ){
+				pEngGestureAnimatorInstance->GetControllerAt( indexControllerFadeOut ).SetCurrentValue( pPlayGestureElapsed
+					- ( endTime - pEngGestureAnimatorInstance->GetControllerAt( indexControllerFadeOut ).GetMaximumValue() ) );
+				pEngGestureAnimatorInstance->NotifyControllerChangedAt( indexControllerFadeOut );
+			}
 			
 		}else{
 			if( indexControllerProgress != -1 ){
@@ -1169,6 +1182,15 @@ void ceConversationActor::pUpdatePlayGesture( float elapsed ){
 			if( indexControllerPlayback != -1 ){
 				pEngGestureAnimatorInstance->GetControllerAt( indexControllerPlayback ).IncrementCurrentValue( elapsed );
 				pEngGestureAnimatorInstance->NotifyControllerChangedAt( indexControllerPlayback );
+			}
+			if( indexControllerFadeIn != -1 ){
+				pEngGestureAnimatorInstance->GetControllerAt( indexControllerFadeIn ).IncrementCurrentValue( elapsed );
+				pEngGestureAnimatorInstance->NotifyControllerChangedAt( indexControllerFadeIn );
+			}
+			if( indexControllerFadeOut != -1 ){
+				pEngGestureAnimatorInstance->GetControllerAt( indexControllerFadeOut ).SetCurrentValue( pPlayGestureElapsed
+					- ( endTime - pEngGestureAnimatorInstance->GetControllerAt( indexControllerFadeOut ).GetMaximumValue() ) );
+				pEngGestureAnimatorInstance->NotifyControllerChangedAt( indexControllerFadeOut );
 			}
 		}
 	}

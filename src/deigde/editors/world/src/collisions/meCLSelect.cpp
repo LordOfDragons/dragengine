@@ -349,7 +349,7 @@ void meCLSelect::RunAction(){
 			meObjectSelection &selection = pWorld.GetSelectionObject();
 			const meObjectList &listSelected = selection.GetSelected();
 			meObjectList listDeselect;
-			int i, count;
+			int count;
 			
 			count = listSelected.GetCount();
 			for( i=0; i<count; i++ ){
@@ -373,7 +373,7 @@ void meCLSelect::RunAction(){
 			meObjectShapeSelection &selection = pWorld.GetSelectionObjectShape();
 			const meObjectShapeList &listSelected = selection.GetSelected();
 			meObjectShapeList listDeselect;
-			int i, count;
+			int count;
 			
 			count = listSelected.GetCount();
 			for( i=0; i<count; i++ ){

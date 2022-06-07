@@ -234,8 +234,6 @@ DEBUG_PRINT_TIMER( "Apply Temporary State" );
 	// if the animator does not exist or is not valid we apply a reference state instead
 	}else{
 		const int boneCount = GetBoneMappingCount();
-		int i;
-		
 		for( i =0; i <boneCount; i++ ){
 			const int animatorBone = GetBoneMappingFor( i );
 			if( animatorBone != -1 ){

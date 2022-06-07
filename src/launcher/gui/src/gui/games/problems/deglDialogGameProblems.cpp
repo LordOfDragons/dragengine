@@ -58,8 +58,8 @@ FXIMPLEMENT( deglDialogGameProblems, FXDialogBox,
 deglDialogGameProblems::deglDialogGameProblems(){ }
 
 deglDialogGameProblems::deglDialogGameProblems( deglWindowMain *windowMain,
-	delGame *game, delGameProfile *profile, FXWindow *owner ) :
-FXDialogBox( owner, "Game Problems", DECOR_TITLE | DECOR_BORDER | DECOR_RESIZE | DECOR_CLOSE,
+	delGame *game, delGameProfile *profile, FXWindow *powner ) :
+FXDialogBox( powner, "Game Problems", DECOR_TITLE | DECOR_BORDER | DECOR_RESIZE | DECOR_CLOSE,
 	0, 0, 600, 450, 10, 10, 10, 5 ),
 pWindowMain( windowMain ),
 

@@ -240,8 +240,8 @@ deSynthesizerSourceVisitorIdentify::eSourceTypes type, bool insert, bool group )
 		
 	}else{
 		if( group && activeSource && activeSource->GetType() == deSynthesizerSourceVisitorIdentify::estGroup ){
-			seSourceGroup *group = ( seSourceGroup* )activeSource;
-			undoGroup.TakeOver( new seUSourceGroupAddSource( group, source, group->GetSources().GetCount() ) );
+			seSourceGroup *sourceGroup = ( seSourceGroup* )activeSource;
+			undoGroup.TakeOver( new seUSourceGroupAddSource( sourceGroup, source, sourceGroup->GetSources().GetCount() ) );
 			
 		}else{
 			if( parentGroup ){
@@ -488,9 +488,9 @@ public:
 		if( igdeCommonDialogs::GetFileOpen( &pWindow, "Open Synthesizer",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
 		pWindow.GetLoadSaveSystem().GetSynthesizerFilePatterns(), filename ) ){
-			deObjectReference synthesizer;
-			synthesizer.TakeOver( pWindow.GetLoadSaveSystem().LoadSynthesizer( filename ) );
-			pWindow.SetSynthesizer( ( seSynthesizer* )( deObject* )synthesizer );
+			deObjectReference synthesizer2;
+			synthesizer2.TakeOver( pWindow.GetLoadSaveSystem().LoadSynthesizer( filename ) );
+			pWindow.SetSynthesizer( ( seSynthesizer* )( deObject* )synthesizer2 );
 			pWindow.GetRecentFiles().AddFile( filename );
 		}
 		return NULL;

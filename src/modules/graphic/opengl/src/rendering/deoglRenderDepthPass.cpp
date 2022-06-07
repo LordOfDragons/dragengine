@@ -746,7 +746,6 @@ DBG_ENTER("DownsampleDepth")
 	
 	if( renderThread.GetConfiguration().GetDebugSnapshot() == 61 ){
 		decString text;
-		int i;
 		
 		for( i=0; i<=mipMapLevelCount; i++ ){
 			text.Format( "downsample_depth-pass%i", i );

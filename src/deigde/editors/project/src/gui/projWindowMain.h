@@ -41,6 +41,7 @@ class projPanelProfiles;
 class projPanelTestRun;
 class projPanelUndoHistory;
 class projWindowMainListener;
+class decUnicodeStringList;
 
 class decStringList;
 
@@ -195,6 +196,17 @@ public:
 	
 	/** \brief Update show action path. */
 	void UpdateShowActionPath();
+	
+	/**
+	 * \brief Process command line arguments.
+	 * 
+	 * This method can be called multiple times. Module has to process arguments from the
+	 * first argument in the list and has to stop at the first unsupported argument. The
+	 * consumed arguments have to be removed from the beginning of the list. If the module
+	 * wishes to close the application it has to return false. Return true to continue
+	 * processing command line arguments.
+	 */
+	bool ProcessCommandLine( decUnicodeStringList &arguments );
 	/*@}*/
 	
 	
@@ -208,6 +220,10 @@ private:
 	void pCreateMenuDistribute( igdeMenuCascade &menu );
 	void pCreateMenuEdit( igdeMenuCascade &menu );
 	void pCreateMenuProfile( igdeMenuCascade &menu );
+	bool pCmdLineProfileDistribute( decUnicodeStringList &arguments );
+	bool pCmdLineProfileDistributeFile( decUnicodeStringList &arguments );
+	bool pCmdLineProfileList( decUnicodeStringList &arguments );
+	void pCmdLineHelp();
 };
 
 #endif

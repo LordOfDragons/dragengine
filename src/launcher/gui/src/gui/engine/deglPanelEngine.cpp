@@ -214,8 +214,8 @@ long deglPanelEngine::onListModulesChanged( FXObject*, FXSelector, void* ){
 	return 1;
 }
 
-long deglPanelEngine::onListModulesRDown( FXObject*, FXSelector, void *data ){
-	const FXEvent &event = *( ( const FXEvent * )data );
+long deglPanelEngine::onListModulesRDown( FXObject*, FXSelector, void *pdata ){
+	const FXEvent &event = *( ( const FXEvent * )pdata );
 	delEngineModule *module = nullptr;
 	FXMenuPane *popup = nullptr;
 	int x = event.root_x;
@@ -254,12 +254,12 @@ long deglPanelEngine::onListModulesRUp( FXObject*, FXSelector, void* ){
 	return 1;
 }
 
-long deglPanelEngine::onListModulesDblClick( FXObject *sender, FXSelector selector, void *data ){
-	return onPUModuleProps( sender, selector, data );
+long deglPanelEngine::onListModulesDblClick( FXObject *sender, FXSelector selector, void *pdata ){
+	return onPUModuleProps( sender, selector, pdata );
 }
 
-long deglPanelEngine::onListModulesHeaderClicked( FXObject*, FXSelector, void *data ){
-	int colon = ( intptr_t )data;
+long deglPanelEngine::onListModulesHeaderClicked( FXObject*, FXSelector, void *pdata ){
+	int colon = ( intptr_t )pdata;
 	
 	if( colon == 0 ){
 		if( pSortListModules == elmsNameAsc ){

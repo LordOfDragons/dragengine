@@ -361,7 +361,8 @@ void delGame::StartGame( const delGameRunParams &runParams, delEngineInstance::F
 				pEngineInstance->VFSAddDiskDir( "/", pathDataDir.GetPathNative(), true );
 				
 			}else{
-				pEngineInstance->VFSAddDelgaFile( patch.GetDelgaFile(), patch.GetDataDirectory() );
+				pEngineInstance->VFSAddDelgaFile( patch.GetDelgaFile(),
+					patch.GetDataDirectory(), patch.GetHiddenPath() );
 			}
 		}
 		
@@ -558,7 +559,9 @@ delGameProfile *delGame::GetProfileToUse() const{
 }
 
 void delGame::FindPatches( delPatchList &list ) const{
-	const delPatchList &patches = pLauncher.GetPatchManager().GetPatches();
+	delPatchList patches( pLauncher.GetPatchManager().GetPatches() );
+	patches.AddAll( pLocalPatches );
+	
 	const int count = patches.GetCount();
 	int i;
 	

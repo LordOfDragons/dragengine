@@ -1154,13 +1154,13 @@ void deClassEasyXMLElement::nfForEachTag::RunFunction( dsRunTime *rt, dsValue *m
 	
 	int i;
 	for( i=0; i<count; i++ ){
-		decXmlElement * const element = container.GetElementAt( i );
-		if( ! element->CanCastToElementTag() ){
+		decXmlElement * const element2 = container.GetElementAt( i );
+		if( ! element2->CanCastToElementTag() ){
 			continue;
 		}
 		
-		rt->PushString( element->CastToElementTag()->GetName() );
-		clsXmlElement.PushElement( rt, element );
+		rt->PushString( element2->CastToElementTag()->GetName() );
+		clsXmlElement.PushElement( rt, element2 );
 		rt->RunFunctionFast( valueBlock, funcIndexRun ); // Object run( Element element, String tagName )
 	}
 }

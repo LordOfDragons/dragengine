@@ -49,9 +49,9 @@
 // Class deoxrDPHtcViveTracker::Tracker
 /////////////////////////////////////////
 
-deoxrDPHtcViveTracker::Tracker::Tracker( const deoxrPath &path, int number ) :
-path( path ),
-number( number ){
+deoxrDPHtcViveTracker::Tracker::Tracker( const deoxrPath &ppath, int pnumber ) :
+path( ppath ),
+number( pnumber ){
 }
 
 deoxrDPHtcViveTracker::Tracker::~Tracker(){
@@ -62,9 +62,9 @@ deoxrDPHtcViveTracker::Tracker::~Tracker(){
 // Class deoxrDPHtcViveTracker::RoleAction
 ////////////////////////////////////////////
 
-deoxrDPHtcViveTracker::RoleAction::RoleAction( const deoxrPath &path, const deoxrAction::Ref &action ) :
-path( path ),
-action( action ){
+deoxrDPHtcViveTracker::RoleAction::RoleAction( const deoxrPath &ppath, const deoxrAction::Ref &paction ) :
+path( ppath ),
+action( paction ){
 }
 
 deoxrDPHtcViveTracker::RoleAction::~RoleAction(){

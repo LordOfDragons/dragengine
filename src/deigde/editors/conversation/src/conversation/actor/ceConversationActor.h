@@ -91,6 +91,8 @@ private:
 	decString pNameGesturePlayback;
 	decString pNameGestureVariation;
 	decString pNameGestureBlink;
+	decString pNameGestureFadeIn;
+	decString pNameGestureFadeOut;
 	
 	decString pPathModel;
 	decString pPathSkin;

@@ -34,10 +34,10 @@
 // struct void deoxrHandTracker::sFingerBending
 /////////////////////////////////////////////////
 
-void deoxrHandTracker::sFingerBending::Init( deInputDevice::eHandBones base,
-deInputDevice::eHandBones tip, float angle0, float angle1 ){
-	this->base = base;
-	this->tip = tip;
+void deoxrHandTracker::sFingerBending::Init( deInputDevice::eHandBones pbase,
+deInputDevice::eHandBones ptip, float angle0, float angle1 ){
+	base = pbase;
+	tip = ptip;
 	
 	if( angle1 > angle0 ){
 		angleLower = angle0 * DEG2RAD;

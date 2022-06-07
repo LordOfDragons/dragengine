@@ -123,8 +123,8 @@ void projTestRunProcess::WriteUShortToPipe( int value ){
 	if( value < 0 || value > 0xffff ){
 		DETHROW( deeInvalidParam );
 	}
-	const uint16_t ushort = ( uint16_t )value;
-	WriteToPipe( &ushort, sizeof( uint16_t ) );
+	const uint16_t vushort = ( uint16_t )value;
+	WriteToPipe( &vushort, sizeof( uint16_t ) );
 }
 
 void projTestRunProcess::WriteFloatToPipe( float value ){
@@ -166,9 +166,9 @@ int projTestRunProcess::ReadUCharFromPipe(){
 }
 
 int projTestRunProcess::ReadUShortFromPipe(){
-	uint16_t ushort;
-	ReadFromPipe( &ushort, sizeof( uint16_t ) );
-	return ushort;
+	uint16_t vushort;
+	ReadFromPipe( &vushort, sizeof( uint16_t ) );
+	return vushort;
 }
 
 int projTestRunProcess::ReadFloatFromPipe(){

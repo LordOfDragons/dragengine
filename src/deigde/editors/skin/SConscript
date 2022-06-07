@@ -4,7 +4,7 @@ Import( 'parent_env parent_targets parent_report' )
 
 envEditor = parent_env.Clone()
 
-buildEditor = 'deigde_shared' in parent_targets
+buildEditor = 'deigde_shared' in parent_targets and parent_env['build_editor_skin'] != TernaryVariableNo
 parent_report[ 'build IGDE Skin Editor' ] = 'yes' if buildEditor else 'no'
 if not buildEditor:
 	Return()

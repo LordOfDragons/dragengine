@@ -24,6 +24,7 @@
 
 #include "icon/delGameIconList.h"
 #include "fileformat/delFileFormatList.h"
+#include "patch/delPatchList.h"
 #include "profile/delGameProfile.h"
 #include "profile/delGPModuleList.h"
 #include "../engine/delEngineInstance.h"
@@ -39,7 +40,6 @@
 class delGameRunParams;
 class delGPModuleList;
 class delLauncher;
-class delPatchList;
 class delSharedIcon;
 
 
@@ -113,6 +113,7 @@ private:
 	
 	bool pUseLatestPatch;
 	decUuid pUseCustomPatch;
+	delPatchList pLocalPatches;
 	
 	
 	
@@ -325,6 +326,13 @@ public:
 	
 	/** \brief Set custom patch to use or empty string to use unpatched. */
 	void SetUseCustomPatch( const decUuid &patch );
+	
+	/**
+	 * \brief Patches local to the DELGA file.
+	 * \version 1.13
+	 */
+	inline delPatchList &GetLocalPatches(){ return pLocalPatches; }
+	inline const delPatchList &GetLocalPatches() const{ return pLocalPatches; }
 	
 	
 	

@@ -119,12 +119,12 @@ public:
 	
 	/** \name Events */
 	/*@{*/
-	long onMouseLeftPress( FXObject *sender, FXSelector selector, void *data );
-	long onMouseLeftRelease( FXObject *sender, FXSelector selector, void *data );
-	long onCommand( FXObject *sender, FXSelector selector, void *data );
-	long onChanged( FXObject *sender, FXSelector selector, void *data );
+	long onMouseLeftPress( FXObject*, FXSelector, void* );
+	long onMouseLeftRelease( FXObject*, FXSelector, void* );
+	long onCommand( FXObject*, FXSelector, void* );
+	long onChanged( FXObject*, FXSelector, void* );
 	
-	long onResizerDrag( FXObject *sender, FXSelector selector, void *data );
+	long onResizerDrag( FXObject*, FXSelector, void* );
 	/*@}*/
 	
 	

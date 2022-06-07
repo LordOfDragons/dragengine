@@ -478,18 +478,18 @@ deoalWorldOctree &octree, const decVector &targetPositionWorld ){
 
 
 deoalRTPTListen::sSphereReceiverParams::sSphereReceiverParams(
-	const deoalSoundRayList& soundRayList, const decVector& targetPosition,
-	deoalWorldOctree& octree, const decVector& targetPositionWorld,
-	const decVector& gainPosition, float receiverRadius,
-	float receiverRadiusSquared, float invReceiverVolume ) :
-soundRayList( soundRayList ),
-targetPosition( targetPosition ),
-octree( octree ),
-targetPositionWorld( targetPositionWorld ),
-gainPosition( gainPosition ),
-receiverRadius( receiverRadius ),
-receiverRadiusSquared( receiverRadiusSquared ),
-invReceiverVolume( invReceiverVolume ){
+	const deoalSoundRayList& psoundRayList, const decVector& ptargetPosition,
+	deoalWorldOctree& poctree, const decVector& ptargetPositionWorld,
+	const decVector& pgainPosition, float preceiverRadius,
+	float preceiverRadiusSquared, float pinvReceiverVolume ) :
+soundRayList( psoundRayList ),
+targetPosition( ptargetPosition ),
+octree( poctree ),
+targetPositionWorld( ptargetPositionWorld ),
+gainPosition( pgainPosition ),
+receiverRadius( preceiverRadius ),
+receiverRadiusSquared( preceiverRadiusSquared ),
+invReceiverVolume( pinvReceiverVolume ){
 }
 
 deoalRTPTListen::sSphereReceiverImpinge::sSphereReceiverImpinge() :

@@ -208,26 +208,22 @@ void deoalRTWOVRayHitsClosest::pVisitNode( const deoalRTWorldBVH &bvh, const deo
 		float closestDistance;
 		
 		if( ( child2.center - child1.center ) * GetRayDirection() > 0.0f ){
-			const deoalRTWorldBVH::sVisitNode &child1 = bvh.GetVisitNodes()[ node.node1 ];
 			if( pRayHitsBox( child1.center, child1.halfSize, closestDistance )
 			&& closestDistance < pLimitDistance ){
 				pVisitNode( bvh, child1 );
 			}
 			
-			const deoalRTWorldBVH::sVisitNode &child2 = bvh.GetVisitNodes()[ node.node2 ];
 			if( pRayHitsBox( child2.center, child2.halfSize, closestDistance )
 			&& closestDistance < pLimitDistance ){
 				pVisitNode( bvh, child2 );
 			}
 			
 		}else{
-			const deoalRTWorldBVH::sVisitNode &child2 = bvh.GetVisitNodes()[ node.node2 ];
 			if( pRayHitsBox( child2.center, child2.halfSize, closestDistance )
 			&& closestDistance < pLimitDistance ){
 				pVisitNode( bvh, child2 );
 			}
 			
-			const deoalRTWorldBVH::sVisitNode &child1 = bvh.GetVisitNodes()[ node.node1 ];
 			if( pRayHitsBox( child1.center, child1.halfSize, closestDistance )
 			&& closestDistance < pLimitDistance ){
 				pVisitNode( bvh, child1 );
@@ -237,13 +233,11 @@ void deoalRTWOVRayHitsClosest::pVisitNode( const deoalRTWorldBVH &bvh, const deo
 		#else
 		float closestDistance;
 		
-		const deoalRTWorldBVH::sVisitNode &child1 = bvh.GetVisitNodes()[ node.node1 ];
 		if( pRayHitsBox( child1.center, child1.halfSize, closestDistance )
 		&& closestDistance < pLimitDistance ){
 			pVisitNode( bvh, child1 );
 		}
 		
-		const deoalRTWorldBVH::sVisitNode &child2 = bvh.GetVisitNodes()[ node.node2 ];
 		if( pRayHitsBox( child2.center, child2.halfSize, closestDistance )
 		&& closestDistance < pLimitDistance ){
 			pVisitNode( bvh, child2 );

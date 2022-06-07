@@ -1025,9 +1025,9 @@ const sShadowDepthMaps &shadowDepthMaps ){
 		deoglTexUnitConfig tuc;
 		
 		if( light.GetLightCanvas() ){
-			deoglRenderTarget * const target = light.GetLightCanvas()->GetRenderTarget();
-			if( target ){
-				tuc.EnableTexture( target->GetTexture(), &GetSamplerClampLinear() );
+			deoglRenderTarget * const target2 = light.GetLightCanvas()->GetRenderTarget();
+			if( target2 ){
+				tuc.EnableTexture( target2->GetTexture(), &GetSamplerClampLinear() );
 			}
 			
 		}else if( light.GetUseSkinTexture() ){
@@ -2250,7 +2250,6 @@ deoglSPBlockUBO &paramBlock, deoglRenderPlanLight &planLight, sShadowDepthMaps &
 			// with:
 			//   param1 = 1 / GetStaticScale()
 			//   param2 = -GetStaticOffset() / GetStaticScale()
-			const deoglShadowCaster &shadowCaster = *light.GetShadowCaster();
 			const float invDepthScale = 1.0f / shadowCaster.GetStaticScale();
 			
 			paramBlock.SetParameterDataVec2( target, invDepthScale,

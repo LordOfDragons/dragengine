@@ -59,23 +59,23 @@ FXIMPLEMENT( igdeNativeFoxWindow, FXTopWindow, igdeNativeFoxWindowMap, ARRAYNUMB
 
 igdeNativeFoxWindow::igdeNativeFoxWindow(){ }
 
-igdeNativeFoxWindow::igdeNativeFoxWindow( igdeWindow &owner, const igdeGuiTheme &guitheme ) :
-FXTopWindow( FXApp::instance(), owner.GetTitle().GetString(),
-	owner.GetIcon() ? ( FXIcon* )owner.GetIcon()->GetNativeIcon() : NULL,
-	owner.GetIcon() ? ( FXIcon* )owner.GetIcon()->GetNativeIcon() : NULL,
-	WindowFlags( owner ),
-	owner.GetPosition().x, owner.GetPosition().y, owner.GetSize().x, owner.GetSize().y,
+igdeNativeFoxWindow::igdeNativeFoxWindow( igdeWindow &powner, const igdeGuiTheme &guitheme ) :
+FXTopWindow( FXApp::instance(), powner.GetTitle().GetString(),
+	powner.GetIcon() ? ( FXIcon* )powner.GetIcon()->GetNativeIcon() : NULL,
+	powner.GetIcon() ? ( FXIcon* )powner.GetIcon()->GetNativeIcon() : NULL,
+	WindowFlags( powner ),
+	powner.GetPosition().x, powner.GetPosition().y, powner.GetSize().x, powner.GetSize().y,
 	WindowPadLeft( guitheme ), WindowPadRight( guitheme ),
 	WindowPadTop( guitheme ), WindowPadBottom( guitheme ),
 	0, 0 ),
-pOwner( &owner ){
+pOwner( &powner ){
 }
 
 igdeNativeFoxWindow::~igdeNativeFoxWindow(){
 }
 
-igdeNativeFoxWindow *igdeNativeFoxWindow::CreateNativeWidget( igdeWindow &owner ){
-	return new igdeNativeFoxWindow( owner, *owner.GetGuiTheme() );
+igdeNativeFoxWindow *igdeNativeFoxWindow::CreateNativeWidget( igdeWindow &powner ){
+	return new igdeNativeFoxWindow( powner, *powner.GetGuiTheme() );
 }
 
 void igdeNativeFoxWindow::PostCreateNativeWidget(){
@@ -110,9 +110,9 @@ void igdeNativeFoxWindow::UpdatePosition(){
 }
 
 void igdeNativeFoxWindow::UpdateIcon(){
-	FXIcon * const icon = pOwner->GetIcon() ? ( FXIcon* )pOwner->GetIcon()->GetNativeIcon() : NULL;
-	setIcon( icon );
-	setMiniIcon( icon );
+	FXIcon * const iicon = pOwner->GetIcon() ? ( FXIcon* )pOwner->GetIcon()->GetNativeIcon() : NULL;
+	setIcon( iicon );
+	setMiniIcon( iicon );
 }
 
 void igdeNativeFoxWindow::UpdateTitle(){
@@ -130,14 +130,14 @@ void igdeNativeFoxWindow::RaiseAndActivate(){
 
 
 
-int igdeNativeFoxWindow::WindowFlags( const igdeWindow &owner ){
-	int flags = DECOR_TITLE | DECOR_BORDER | DECOR_CLOSE | DECOR_MENU;
+int igdeNativeFoxWindow::WindowFlags( const igdeWindow &powner ){
+	int fflags = DECOR_TITLE | DECOR_BORDER | DECOR_CLOSE | DECOR_MENU;
 	
-	if( owner.GetCanResize() ){
-		flags |=  DECOR_RESIZE; //DECOR_STRETCHABLE, DECOR_SHRINKABLE
+	if( powner.GetCanResize() ){
+		fflags |=  DECOR_RESIZE; //DECOR_STRETCHABLE, DECOR_SHRINKABLE
 	}
 	
-	return flags;
+	return fflags;
 }
 
 int igdeNativeFoxWindow::WindowPadLeft( const igdeGuiTheme &guitheme ){
@@ -161,8 +161,8 @@ int igdeNativeFoxWindow::WindowPadBottom( const igdeGuiTheme &guitheme ){
 // Events
 ///////////
 
-long igdeNativeFoxWindow::onConfigure( FXObject *sender, FXSelector selector, void *data ){
-	const int result = FXTopWindow::onConfigure( sender, selector, data );
+long igdeNativeFoxWindow::onConfigure( FXObject *sender, FXSelector selector, void *pdata ){
+	const int result = FXTopWindow::onConfigure( sender, selector, pdata );
 	pOwner->SetPosition( decPoint( getX(), getY() ) );
 	pOwner->SetSize( decPoint( getWidth(), getHeight() ) );
 	pOwner->OnResize();
@@ -173,8 +173,8 @@ long igdeNativeFoxWindow::onClose( FXObject*, FXSelector, void* ){
 	return pOwner->CloseWindow() ? 0 : 1;
 }
 
-long igdeNativeFoxWindow::onChildLayoutFlags( FXObject*, FXSelector, void *data ){
-	igdeUIFoxHelper::sChildLayoutFlags &clflags = *( ( igdeUIFoxHelper::sChildLayoutFlags* )data );
+long igdeNativeFoxWindow::onChildLayoutFlags( FXObject*, FXSelector, void *pdata ){
+	igdeUIFoxHelper::sChildLayoutFlags &clflags = *( ( igdeUIFoxHelper::sChildLayoutFlags* )pdata );
 	clflags.flags = LAYOUT_FILL_X | LAYOUT_FILL_Y;
 	return 1;
 }

@@ -52,7 +52,8 @@
 // Class deoglGIInstance::cListenerLink
 /////////////////////////////////////////
 
-deoglGIInstance::cListenerLink::cListenerLink( deoglGIInstance& instance ) : instance( instance ){
+deoglGIInstance::cListenerLink::cListenerLink( deoglGIInstance& pinstance ) :
+instance( pinstance ){
 }
 
 bool deoglGIInstance::cListenerLink::LayerMaskMatchesNot( const decLayerMask& layerMask ) const{

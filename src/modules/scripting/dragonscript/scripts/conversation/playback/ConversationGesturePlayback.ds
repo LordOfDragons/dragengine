@@ -130,9 +130,13 @@ class ConversationGesturePlayback
 	private var String pNameControllerProgress
 	private var String pNameControllerPlayback
 	private var String pNameControllerVariation
+	private var String pNameControllerFadeIn
+	private var String pNameControllerFadeOut
 	private var AnimatorController pControllerProgress
 	private var AnimatorController pControllerPlayback
 	private var AnimatorController pControllerVariation
+	private var AnimatorController pControllerFadeIn
+	private var AnimatorController pControllerFadeOut
 	
 	
 	
@@ -148,6 +152,8 @@ class ConversationGesturePlayback
 		pNameControllerProgress = "gesture.progress"
 		pNameControllerPlayback = "gesture.playback"
 		pNameControllerVariation = "gesture.variation"
+		pNameControllerFadeIn = "gesture.fade.in"
+		pNameControllerFadeOut = "gesture.fade.out"
 	end
 	
 	
@@ -306,6 +312,38 @@ class ConversationGesturePlayback
 		pNameControllerVariation = name
 	end
 	
+	/**
+	 * \brief Fade in controller name.
+	 * \version 1.13
+	 */
+	public func String getNameControllerFadeIn()
+		return pNameControllerFadeIn
+	end
+	
+	/**
+	 * \brief Set fade in controller name.
+	 * \version 1.13
+	 */
+	public func void setNameControllerFadeIn(String name)
+		pNameControllerFadeIn = name
+	end
+	
+	/**
+	 * \brief Fade out controller name.
+	 * \version 1.13
+	 */
+	public func String getNameControllerFadeOut()
+		return pNameControllerFadeOut
+	end
+	
+	/**
+	 * \brief Set fade out controller name.
+	 * \version 1.13
+	 */
+	public func void setNameControllerFadeOut(String name)
+		pNameControllerFadeOut = name
+	end
+	
 	/** \brief Progress animator controllers. */
 	public func AnimatorController getControllerProgress()
 		return pControllerProgress
@@ -319,6 +357,22 @@ class ConversationGesturePlayback
 	/** \brief Variation animator controllers. */
 	public func AnimatorController getControllerVariation()
 		return pControllerVariation
+	end
+	
+	/**
+	 * \brief Fade in animator controllers.
+	 * \version 1.13
+	 */
+	public func AnimatorController getControllerFadeIn()
+		return pControllerFadeIn
+	end
+	
+	/**
+	 * \brief Fade out animator controllers.
+	 * \version 1.13
+	 */
+	public func AnimatorController getControllerFadeOut()
+		return pControllerFadeOut
 	end
 	
 	
@@ -383,11 +437,15 @@ class ConversationGesturePlayback
 			pControllerProgress = null
 			pControllerPlayback = null
 			pControllerVariation = null
+			pControllerFadeIn = null
+			pControllerFadeOut = null
 			
 			if animator != null
 				pControllerProgress = pAnimatorInstance.getControllerNamed(pNameControllerProgress)
 				pControllerPlayback = pAnimatorInstance.getControllerNamed(pNameControllerPlayback)
 				pControllerVariation = pAnimatorInstance.getControllerNamed(pNameControllerVariation)
+				pControllerFadeIn = pAnimatorInstance.getControllerNamed(pNameControllerFadeIn)
+				pControllerFadeOut = pAnimatorInstance.getControllerNamed(pNameControllerFadeOut)
 			end
 		end
 		
@@ -401,8 +459,8 @@ class ConversationGesturePlayback
 			pAnimatorInstance.copyNamedControllerStates(poseAnimatorInstance)
 		end
 		
-		// update gesture playback. sets progress, playback and variation controller if present.
-		// also captures state with number 0 if used by animator
+		// update gesture playback. sets progress, playback, variation and fade in/out controller
+		// if present. also captures state with number 0 if used by animator
 		if resetAnimation
 			if pControllerProgress != null
 				pControllerProgress.setRange(startTime, endTime)
@@ -418,6 +476,12 @@ class ConversationGesturePlayback
 			if pControllerPlayback != null
 				pControllerPlayback.setValue(pElapsed - startTime)
 			end
+			if pControllerFadeIn != null
+				pControllerFadeIn.setValue(pElapsed)
+			end
+			if pControllerFadeOut != null
+				pControllerFadeOut.setValue(pElapsed - (endTime - pControllerFadeOut.getUpper()))
+			end
 			
 		else
 			if pControllerProgress != null
@@ -425,6 +489,12 @@ class ConversationGesturePlayback
 			end
 			if pControllerPlayback != null
 				pControllerPlayback.increment(elapsed)
+			end
+			if pControllerFadeIn != null
+				pControllerFadeIn.increment(elapsed)
+			end
+			if pControllerFadeOut != null
+				pControllerFadeOut.setValue(pElapsed - (endTime - pControllerFadeOut.getUpper()))
 			end
 		end
 		

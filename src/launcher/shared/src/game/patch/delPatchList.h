@@ -79,6 +79,12 @@ public:
 	/** \brief Add patch. */
 	void Add( delPatch *patch );
 	
+	/**
+	 * \brief Add patches.
+	 * \version 1.13
+	 */
+	void AddAll( const delPatchList &list );
+	
 	/** \brief Remove patch. */
 	void Remove( delPatch *patch );
 	
