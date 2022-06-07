@@ -373,6 +373,10 @@ bool projWindowMain::ProcessCommandLine( decUnicodeStringList &arguments ){
 			arguments.RemoveFrom( 0 );
 			return pCmdLineProfileDistribute( arguments );
 			
+		}else if( arg == "--project.profile.distribute.file" ){
+			arguments.RemoveFrom( 0 );
+			return pCmdLineProfileDistributeFile( arguments );
+			
 		}else if( arg == "--project.profile.list" ){
 			arguments.RemoveFrom( 0 );
 			return pCmdLineProfileList( arguments );
