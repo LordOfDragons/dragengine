@@ -27,6 +27,7 @@
 #include <stdint.h>
 
 #include "igdeNativeNullApplication.h"
+#include "igdeNativeNullWindow.h"
 #include "../../igdeApplication.h"
 #include "../../igdeMainWindow.h"
 #include "../../igdeWindow.h"
@@ -141,12 +142,19 @@ void igdeNativeNullApplication::ShowError( const deException &exception ) const{
 	pOwner.GetMainWindow()->GetLogger()->LogError( "IGDE", exception.FormatOutput().Join( "\n" ) );
 }
 
-void igdeNativeNullApplication::RunModalWhileShown( igdeWindow& ){
-	while( ! pQuitRequested ){
+void igdeNativeNullApplication::RunModalWhileShown( igdeWindow &window ){
+	igdeNativeNullWindow * const native = ( igdeNativeNullWindow* )window.GetNativeWidget();
+	if( ! native ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	while( ! pQuitRequested && ! native->GetIsClosed() ){
 		igdeMainWindow * const mainWindow = pOwner.GetMainWindow();
 		if( mainWindow ){
 			mainWindow->OnFrameUpdate();
 		}
+		
+		native->OnFrameUpdate();
 	}
 }
 

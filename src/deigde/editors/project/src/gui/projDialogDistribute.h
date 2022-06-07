@@ -36,14 +36,14 @@ class projTaskDistribute;
 
 
 /**
- * \brief Distribute dialog.
+ * Distribute dialog.
  * 
  * Provides a combo box for the user to select the profile to projribute. Once the process
  * is started progress information is listed below and updated as the process progresses.
  */
 class projDialogDistribute : public igdeDialog{
 public:
-	/** \brief Type holding strong reference. */
+	/** Type holding strong reference. */
 	typedef deTObjectReference<projDialogDistribute> Ref;
 	
 private:
@@ -63,16 +63,19 @@ private:
 	decString pLastTaskMessage;
 	
 	bool pCloseDialogOnFinished;
+	bool pPrintToConsole;
+	
+	bool pSuccess;
 	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create dialog. */
+	/** Create dialog. */
 	projDialogDistribute( projWindowMain &windowMain, projProfile *profile );
 	
-	/** \brief Clean up dialog. */
+	/** Clean up dialog. */
 	virtual ~projDialogDistribute();
 	/*@}*/
 	
@@ -80,24 +83,30 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Main window. */
+	/** Main window. */
 	inline projWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
-	/** \brief Profile. */
+	/** Profile. */
 	inline projProfile &GetProfile() const{ return *pProfile; }
 	
-	/** \brief Add log message. */
+	/** Add log message. */
 	void LogMessage( const char *message );
 	
 	/**
-	 * \brief Game like frame update while running modal.
+	 * Game like frame update while running modal.
 	 * 
 	 * Called while the dialog is inside Run(). Can be used to do updating on a regular basis.
 	 */
 	virtual void OnFrameUpdate();
 	
-	/** \brief Close dialog once finished. */
+	/** Close dialog once finished. */
 	void SetCloseDialogOnFinished( bool closeDialogOnFinished );
+	
+	/** Print to console in addition to loggers. */
+	void SetPrintToConsole( bool printToConsole );
+	
+	/** Success. */
+	inline bool GetSuccess() const{ return pSuccess; }
 	/*@}*/
 	
 	

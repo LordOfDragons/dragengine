@@ -8,6 +8,9 @@ envModule = parent_env.Clone()
 
 useInternalLoader = False
 
+buildModule = envModule['build_vr_openxr' ] != TernaryVariableNo
+parent_report['build OpenXR VR Module' ] = 'yes' if buildModule else 'no'
+
 if envModule['OSBeOS']:
 	Return()
 

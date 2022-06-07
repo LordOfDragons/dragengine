@@ -29,6 +29,9 @@ class igdeWindow;
  * Null window.
  */
 class igdeNativeNullWindow{
+private:
+	bool pIsClosed;
+	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
@@ -58,6 +61,10 @@ public:
 	virtual void UpdateTitle();
 	virtual void UpdateSize();
 	virtual void RaiseAndActivate();
+	
+	virtual void OnFrameUpdate();
+	inline bool GetIsClosed() const{ return pIsClosed; }
+	void SetIsClosed( bool isClosed );
 	/*@}*/
 };
 

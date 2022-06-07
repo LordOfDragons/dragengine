@@ -165,6 +165,13 @@ deoalWorld *deAudioOpenAL::GetActiveWorld() const{
 
 
 bool deAudioOpenAL::Init( deMicrophone *activeMic ){
+	#ifdef OAL_THREAD_CHECK
+	LogWarn( "OpenAL calls only in audio thread check enabled. Disable for production builds." );
+	#endif
+	#ifdef OAL_CHECKCOMMANDS
+	LogWarn( "OpenAL command failure check enabled. Disable for production builds." );
+	#endif
+	
 	try{
 		// on android set VM for the contrib android library
 		#ifdef OS_ANDROID

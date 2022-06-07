@@ -109,7 +109,6 @@ pRenderCounter( 0 )
 		// create game engine
 		logger->LogInfo( LOGSOURCE, "Creating Game Engine." );
 		pEngine = new deEngine( os );
-		if( ! pEngine ) DETHROW( deeOutOfMemory );
 		os = NULL;
 		
 		pEngine->SetLogger( logger );

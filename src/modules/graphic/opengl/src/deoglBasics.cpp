@@ -13,37 +13,6 @@
 #include <dragengine/common/string/decString.h>
 
 
-
-#if defined OGL_THREAD_CHECK || defined OGL_CHECKCOMMANDS
-#include <dragengine/logger/deLoggerConsoleColor.h>
-struct sDebugHacksEnabled{
-	sDebugHacksEnabled(){
-		deLoggerConsoleColor *logger = NULL;
-		
-		try{
-			logger = new deLoggerConsoleColor;
-			#ifdef OGL_THREAD_CHECK
-			logger->LogWarn( "OpenGL", "OpenGL calls only in render thread check enabled. Disable for production builds." );
-			#endif
-			#ifdef OGL_CHECKCOMMANDS
-			logger->LogWarn( "OpenGL", "OpenGL command failure check enabled. Disable for production builds." );
-			#endif
-			
-			logger->FreeReference();
-			
-		}catch( ... ){
-			if( logger ){
-				logger->FreeReference();
-			}
-		}
-	}
-};
-
-static sDebugHacksEnabled debugHacksEnabled;
-#endif
-
-
-
 #ifdef OGL_THREAD_CHECK
 #include <dragengine/common/exceptions.h>
 

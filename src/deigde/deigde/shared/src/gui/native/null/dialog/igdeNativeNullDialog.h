@@ -22,6 +22,8 @@
 #ifndef _IGDENATIVENULLDIALOG_H_
 #define _IGDENATIVENULLDIALOG_H_
 
+#include "../igdeNativeNullWindow.h"
+
 class igdeDialog;
 class igdeWidget;
 class igdeGuiTheme;
@@ -30,12 +32,15 @@ class igdeGuiTheme;
 /**
  * Null dialog.
  */
-class igdeNativeNullDialog{
+class igdeNativeNullDialog : public igdeNativeNullWindow{
+private:
+	igdeDialog &pOwnerDialog;
+	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create native widget. */
-	igdeNativeNullDialog();
+	igdeNativeNullDialog( igdeDialog &owner );
 	
 	/** \brief Clean up native widget. */
 	virtual ~igdeNativeNullDialog();
@@ -62,6 +67,8 @@ public:
 	virtual void ShowDialog();
 	
 	virtual void CloseDialog( bool accepted );
+	
+	virtual void OnFrameUpdate();
 	
 	static int DialogPadContent( const igdeGuiTheme &guitheme );
 	static int DialogPadButtons( const igdeGuiTheme &guitheme );

@@ -22,6 +22,7 @@
 #ifdef IGDE_TOOLKIT_NULL
 
 #include "igdeNativeNullDialog.h"
+#include "../../../dialog/igdeDialog.h"
 
 
 // Class igdeNativeNullDialog
@@ -30,14 +31,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeNativeNullDialog::igdeNativeNullDialog(){
+igdeNativeNullDialog::igdeNativeNullDialog( igdeDialog &owner ) :
+pOwnerDialog( owner ){
 }
 
 igdeNativeNullDialog::~igdeNativeNullDialog(){
 }
 
-igdeNativeNullDialog *igdeNativeNullDialog::CreateNativeWidget( igdeDialog&, igdeWidget* ){
-	return new igdeNativeNullDialog;
+igdeNativeNullDialog *igdeNativeNullDialog::CreateNativeWidget( igdeDialog &owner, igdeWidget* ){
+	return new igdeNativeNullDialog( owner );
 }
 
 void igdeNativeNullDialog::PostCreateNativeWidget(){
@@ -71,6 +73,11 @@ void igdeNativeNullDialog::ShowDialog(){
 }
 
 void igdeNativeNullDialog::CloseDialog( bool ){
+	SetIsClosed( true );
+}
+
+void igdeNativeNullDialog::OnFrameUpdate(){
+	pOwnerDialog.OnFrameUpdate();
 }
 
 int igdeNativeNullDialog::DialogPadContent ( const igdeGuiTheme & ){

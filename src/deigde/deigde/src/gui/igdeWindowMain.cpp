@@ -34,6 +34,7 @@
 #include "../template/igdeTemplate.h"
 #include "../template/igdeTemplateList.h"
 
+#include <deigde/deigde_configuration.h>
 #include <deigde/engine/igdeEngineController.h>
 #include <deigde/engine/textureProperties/igdeTextureProperty.h>
 #include <deigde/engine/textureProperties/igdeTexturePropertyList.h>
@@ -647,10 +648,6 @@ igdeWindowMain::~igdeWindowMain(){
 // Management
 ///////////////
 
-igdeLoggerHistory *igdeWindowMain::GetLoggerHistory() const{
-	return ( igdeLoggerHistory* )( deLogger* )pLoggerHistory;
-}
-
 igdeGuiTheme *igdeWindowMain::GetGuiThemeNamed( const char *name ){
 	return ( igdeGuiTheme* )pGuiThemes.GetAt( name );
 }
@@ -702,6 +699,12 @@ bool igdeWindowMain::ProcessCommandLine( const decUnicodeStringList &arguments )
 	}
 	
 	pAfterLoadArguments = args;
+	
+	#ifdef IGDE_NULL_TOOLKIT
+	if( pAfterLoadArguments.GetCount() == 0 ){
+		DETHROW_INFO( deeInvalidParam, "Missing arguments" );
+	}
+	#endif
 	return true;
 }
 
@@ -1286,9 +1289,18 @@ void igdeWindowMain::OnFrameUpdate(){
 			
 		}catch( const deException &e ){
 			pAfterLoadArguments.RemoveAll();
+			#ifdef IGDE_NULL_TOOLKIT
+			throw e;
+			#else
 			DisplayException( e );
 			pEnvironmentIGDE.CloseApplication();
+			return;
+			#endif
 		}
+		
+		#ifdef IGDE_NULL_TOOLKIT
+		DETHROW_INFO( deeInvalidParam, "Missing Arguments" );
+		#endif
 	}
 }
 
@@ -1665,55 +1677,27 @@ void igdeWindowMain::pCleanUp(){
 	}
 	
 	pWindowLogger = NULL;
-	pLoggerHistory = NULL;
 	pVFS = NULL;
 }
 
 void igdeWindowMain::pInitLogger(){
-	bool useConsole = false; //true;
-	bool useFile = true;
-	bool useHistory = true;
-	
-	// create history logger if not existing already
 	if( ! pLoggerHistory ){
 		pLoggerHistory.TakeOver( new igdeLoggerHistory );
-		( ( igdeLoggerHistory& )( deLogger& )pLoggerHistory ).SetHistorySize( 250 );
+		pLoggerHistory->SetHistorySize( 250 );
 	}
 	
-	// build the logger combining the requested loggers
+	const deLoggerChain::Ref loggerChain( deLoggerChain::Ref::New( new deLoggerChain ) );
 	
-	// create the chain logger
-	deLoggerReference loggerChainRef;
-	loggerChainRef.TakeOver( new deLoggerChain );
-	deLoggerChain &loggerChain = ( deLoggerChain& )( deLogger& )loggerChainRef;
+	loggerChain->AddLogger( pLoggerHistory );
 	
-	// add history logger if required
-	if( useHistory ){
-		loggerChain.AddLogger( pLoggerHistory );
-	}
+	//no console logging to support console use in scripts
+// 	loggerChain->AddLogger( deLoggerConsoleColor::Ref::New( new deLoggerConsoleColor ) );
 	
-	// add console logger if required
-	if( useConsole ){
-		deLoggerReference loggerConsole;
-		loggerConsole.TakeOver( new deLoggerConsoleColor );
-		loggerChain.AddLogger( loggerConsole );
-	}
+	loggerChain->AddLogger( deLoggerFile::Ref::New( new deLoggerFile(
+		decBaseFileWriter::Ref::New( pVFS->OpenFileForWriting(
+			decPath::CreatePathUnix( "/logs/deigde.log" ) ) ) ) ) );
 	
-	// add file logger if required
-	if( useFile ){
-		decBaseFileWriterReference fileWriter;
-		fileWriter.TakeOver( pVFS->OpenFileForWriting( decPath::CreatePathUnix( "/logs/deigde.log" ) ) );
-		
-		deLoggerReference loggerFile;
-		loggerFile.TakeOver( new deLoggerFile( fileWriter ) );
-		loggerChain.AddLogger( loggerFile );
-	}
-	
-	// set the logger
-	pEnvironmentIGDE.SetLogger( loggerChainRef );
-	
-	// engine does not exist yet we can not add the chain logger for it. actually needed?
-	// GetEngineController().GetEngine()->SetLogger( loggerChainRef );
+	pEnvironmentIGDE.SetLogger( loggerChain );
 }
 
 void igdeWindowMain::pLoadStockIcons(){

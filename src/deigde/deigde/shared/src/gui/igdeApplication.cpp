@@ -172,7 +172,6 @@ void igdeApplication::pSharedRun( decUnicodeStringList &arguments ){
 		}
 		
 	}catch( const deException &e ){
-		e.PrintError();
 		( ( igdeNativeApplication* )pNativeApplication )->ShowError( e );
 		
 		try{

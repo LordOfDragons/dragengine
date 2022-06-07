@@ -916,7 +916,13 @@ bool projWindowMain::pCmdLineProfileDistribute( decUnicodeStringList &arguments 
 	const projDialogDistribute::Ref dialog( projDialogDistribute::Ref::New(
 		new projDialogDistribute( *this, profile ) ) );
 	dialog->SetCloseDialogOnFinished( true );
+	dialog->SetPrintToConsole( true );
 	dialog->Run( this );
+	
+	if( ! dialog->GetSuccess() ){
+		DETHROW_INFO( deeInvalidAction, "Distribute failed" );
+	}
+	
 	return false;
 }
 
@@ -933,19 +939,9 @@ bool projWindowMain::pCmdLineProfileList( decUnicodeStringList &arguments ){
 	
 	const int count = pProject->GetProfiles().GetCount();
 	int i;
+	for( i=0; i<count; i++ ){
+		printf( "%s\n", pProject->GetProfiles().GetAt( i )->GetName().GetString() );
+	}
 	
-	#ifdef IGDE_CONSOLE_APP
-		for( i=0; i<count; i++ ){
-			printf( "%s\n", pProject->GetProfiles().GetAt( i )->GetName().GetString() );
-		}
-	#else
-		decStringList names;
-		for( i=0; i<count; i++ ){
-			names.Add( pProject->GetProfiles().GetAt( i )->GetName() );
-		}
-		int selection = 0;
-		igdeCommonDialogs::SelectString( this, "Profiles", "Profiles", names, selection );
-	#endif
-		
 	return false;
 }

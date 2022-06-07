@@ -18,7 +18,7 @@ def buildWriteConfig(source, target, env):
 	configFileDefines = {}
 	configFileDefines['OS_UNIX'] = env['OSPosix']
 	configFileDefines['OS_W32'] = env['OSWindows']
-	configFileDefines['IGDE_CONSOLE_APP'] = env['igde_toolkit'] == 'null'
+	configFileDefines['IGDE_NULL_TOOLKIT'] = env['igde_toolkit'] == 'null'
 	
 	if WriteConfigFile(configFilePath, configFileDefines, env):
 		Exit('Writing configuration file failed')
