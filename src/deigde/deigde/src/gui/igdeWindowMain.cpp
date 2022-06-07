@@ -1139,34 +1139,6 @@ void igdeWindowMain::OnAfterEngineStart(){
 	
 	// reset timer
 	pTimer->Reset();
-	
-	if( pAfterLoadArguments.GetCount() > 0 ){
-		try{
-			while( pAfterLoadArguments.GetCount() > 0 ){
-				const int argCount = pAfterLoadArguments.GetCount();
-				
-				for( i=0; i<moduleCount; i++ ){
-					igdeEditorModule * const module = pModuleManager->GetModuleAt( i )->GetModule();
-					if( module && ! module->ProcessCommandLine( pAfterLoadArguments ) ){
-						pAfterLoadArguments.RemoveAll();
-						pEnvironmentIGDE.CloseApplication();
-						return;
-					}
-				}
-				
-				if( pAfterLoadArguments.GetCount() == argCount ){
-					decString message;
-					message.Format( "Unknown argument '%s'", pAfterLoadArguments.GetAt( 0 ).ToUTF8().GetString() );
-					DETHROW_INFO( deeInvalidParam, message );
-				}
-			}
-			
-		}catch( const deException &e ){
-			pAfterLoadArguments.RemoveAll();
-			DisplayException( e );
-			pEnvironmentIGDE.CloseApplication();
-		}
-	}
 }
 
 void igdeWindowMain::OnBeforeEngineStop(){
@@ -1285,6 +1257,38 @@ void igdeWindowMain::OnFrameUpdate(){
 	if( engine.GetScriptFailed() || engine.GetSystemFailed() ){
 		engine.GetErrorTrace()->AddPoint( NULL, "igdeWindowMain::OnFrameUpdate", __LINE__ );
 		StopEngine();
+	}
+	
+	// process after start command line if present
+	if( pModuleManager->GetModuleCount() > 0 && pAfterLoadArguments.GetCount() > 0 ){
+		try{
+			const int moduleCount = pModuleManager->GetModuleCount();
+			int i;
+			
+			while( pAfterLoadArguments.GetCount() > 0 ){
+				const int argCount = pAfterLoadArguments.GetCount();
+				
+				for( i=0; i<moduleCount; i++ ){
+					igdeEditorModule * const module = pModuleManager->GetModuleAt( i )->GetModule();
+					if( module && ! module->ProcessCommandLine( pAfterLoadArguments ) ){
+						pAfterLoadArguments.RemoveAll();
+						pEnvironmentIGDE.CloseApplication();
+						return;
+					}
+				}
+				
+				if( pAfterLoadArguments.GetCount() == argCount ){
+					decString message;
+					message.Format( "Unknown argument '%s'", pAfterLoadArguments.GetAt( 0 ).ToUTF8().GetString() );
+					DETHROW_INFO( deeInvalidParam, message );
+				}
+			}
+			
+		}catch( const deException &e ){
+			pAfterLoadArguments.RemoveAll();
+			DisplayException( e );
+			pEnvironmentIGDE.CloseApplication();
+		}
 	}
 }
 

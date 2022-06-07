@@ -91,6 +91,9 @@ public:
 	
 	/** \brief Show window modal while keeping engine properly updating. */
 	void RunModalWhileShown( igdeWindow &window );
+	
+	/** \brief For internal use only. */
+	inline void *GetNativeApplication() const{ return pNativeApplication; }
 	/*@}*/
 	
 	

@@ -34,6 +34,7 @@
 #include "../undosys/profile/projUProfileAdd.h"
 #include "../undosys/profile/projUProfileRemove.h"
 
+#include <deigde/deigde_configuration.h>
 #include <deigde/gameproject/igdeGameProject.h>
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeButton.h>
@@ -931,12 +932,20 @@ bool projWindowMain::pCmdLineProfileList( decUnicodeStringList &arguments ){
 	}
 	
 	const int count = pProject->GetProfiles().GetCount();
-	decStringList names;
 	int i;
-	for( i=0; i<count; i++ ){
-		names.Add( pProject->GetProfiles().GetAt( i )->GetName() );
-	}
-	int selection = 0;
-	igdeCommonDialogs::SelectString( this, "Profiles", "Profiles", names, selection );
+	
+	#ifdef IGDE_CONSOLE_APP
+		for( i=0; i<count; i++ ){
+			printf( "%s\n", pProject->GetProfiles().GetAt( i )->GetName().GetString() );
+		}
+	#else
+		decStringList names;
+		for( i=0; i<count; i++ ){
+			names.Add( pProject->GetProfiles().GetAt( i )->GetName() );
+		}
+		int selection = 0;
+		igdeCommonDialogs::SelectString( this, "Profiles", "Profiles", names, selection );
+	#endif
+		
 	return false;
 }
