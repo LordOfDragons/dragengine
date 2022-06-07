@@ -49,7 +49,7 @@ bool igdeNativeNullWidget::HasNativeParent( const igdeWidget & ){
 	return false;
 }
 
-#ifdef OS_UNIX
+#if defined OS_UNIX && defined HAS_LIB_X11
 Window igdeNativeNullWidget::NativeWidgetID( const igdeWidget & ){
 	return 0;
 }
@@ -60,7 +60,7 @@ HWND igdeNativeNullWidget::NativeWidgetID( const igdeWidget & ){
 }
 #endif
 
-#ifdef OS_UNIX
+#if defined OS_UNIX && defined HAS_LIB_X11
 Window igdeNativeNullWidget::NativeWidgetParentID( const igdeWidget & ){
 	return 0;
 }
@@ -74,7 +74,7 @@ HWND igdeNativeNullWidget::NativeWidgetParentID( const igdeWidget & ){
 void igdeNativeNullWidget::DetachNativeWindow( const igdeWidget & ){
 }
 
-#ifdef OS_UNIX
+#if defined OS_UNIX && defined HAS_LIB_X11
 Display *igdeNativeNullWidget::GetDisplayConnection(){
 	return nullptr;
 }
