@@ -915,6 +915,10 @@ bool projWindowMain::pCmdLineProfileDistribute( decUnicodeStringList &arguments 
 		}
 	}
 	
+	if( ! profile ){
+		DETHROW_INFO( deeInvalidParam, "Missing argument: profile" );
+	}
+	
 	GetEnvironment().ActivateEditor( &GetEditorModule() );
 	
 	const projDialogDistribute::Ref dialog( projDialogDistribute::Ref::New(
@@ -952,10 +956,10 @@ bool projWindowMain::pCmdLineProfileList( decUnicodeStringList &arguments ){
 
 void projWindowMain::pCmdLineHelp(){
 	printf( "\n" );
-	printf( "<path-project.degp> --project.profile.distribute <profile>\n" );
+	printf( "deigde <path-project.degp> --project.profile.distribute <profile>\n" );
 	printf( "   Build distribution file (*.delga) for profile in game project.\n" );
 	
 	printf( "\n" );
-	printf( "<path-project.degp> --project.profile.list\n" );
+	printf( "deigde <path-project.degp> --project.profile.list\n" );
 	printf( "   List all profiles in game project. Prints each profile name on a new line.\n" );
 }
