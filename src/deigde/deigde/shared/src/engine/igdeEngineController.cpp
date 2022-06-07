@@ -103,6 +103,9 @@ pRenderCounter( 0 )
 #elif defined OS_W32
 		logger->LogInfo( LOGSOURCE, "Creating OS Windows." );
 		os = new deOSWindows();
+#else
+		logger->LogInfo( LOGSOURCE, "Creating OS Console." );
+		os = new deOSConsole();
 #endif
 		if( ! os ) DETHROW( deeOutOfMemory );
 		

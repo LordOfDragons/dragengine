@@ -63,7 +63,7 @@ public:
 	static bool HasNativeParent( const igdeWidget &widget );
 	
 	/** \brief Get OS specific native widget handle. */
-	#ifdef OS_UNIX
+	#if defined OS_UNIX && defined HAS_LIB_X11
 	static Window NativeWidgetID( const igdeWidget &widget );
 	#endif
 	#ifdef OS_W32
@@ -71,7 +71,7 @@ public:
 	#endif
 	
 	/** \brief Get OS specific native parent widget handle. */
-	#ifdef OS_UNIX
+	#if defined OS_UNIX && defined HAS_LIB_X11
 	static Window NativeWidgetParentID( const igdeWidget &widget );
 	#endif
 	#ifdef OS_W32
@@ -82,7 +82,7 @@ public:
 	static void DetachNativeWindow( const igdeWidget &widget );
 	
 	/** \brief Get display connection. */
-	#ifdef OS_UNIX
+	#if defined OS_UNIX && defined HAS_LIB_X11
 	static Display *GetDisplayConnection();
 	#endif
 	/*@}*/
