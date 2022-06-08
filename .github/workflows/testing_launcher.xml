@@ -1,0 +1,20 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<launcherConfig>
+	<profiles>
+		<profile name='TestingCI'>
+			<systems>
+				<graphic>NullGraphic</graphic>
+				<input>ConsoleInput</input>
+				<physics>Bullet</physics>
+				<animator>DEAnimator</animator>
+				<ai>DEAI</ai>
+				<crashRecovery>SimplyQuit</crashRecovery>
+				<audio>NullAudio</audio>
+				<synthesizer>DESynthesizer</synthesizer>
+				<network>BasicNetwork</network>
+				<vr>NullVR</vr>
+			</systems>
+		</profile>
+	</profiles>
+	<activeProfile>TestingCI</activeProfile>
+</launcherConfig>
