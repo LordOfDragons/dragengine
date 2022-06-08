@@ -364,6 +364,8 @@ bool declRunGame::LocateGame(){
 			pLauncher.GetEngineInstanceFactory().CreateEngineInstance(
 				pLauncher, pLauncher.GetEngine().GetLogFile() ) ) );
 		
+		instance->SetUseConsole( pUseConsole );
+		
 		instance->StartEngine();
 		instance->LoadModules();
 		

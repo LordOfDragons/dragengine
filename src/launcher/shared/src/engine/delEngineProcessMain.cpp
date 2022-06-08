@@ -100,6 +100,15 @@ int delEngineProcessMain::RunMain( int argc, char **args ){
 			DETHROW_INFO( deeInvalidParam, "reading log filename too short" );
 		}
 		
+		uint8_t flags = 0;
+		if( ! ReadFile( pipeIn, &flags, 1, &bytesRead, NULL ) ){
+			DETHROW_INFO( deeInvalidParam, "failed reading flags" );
+		}
+		if( bytesRead < 1 ){
+			DETHROW_INFO( deeInvalidParam, "reading flags too short" );
+		}
+		const bool useConsole = ( flags & 0x1 ) == 0x1;
+		
 		// send sync
 //		printf( "sending sync\n" );
 //		fflush( stdout );
@@ -114,6 +123,7 @@ int delEngineProcessMain::RunMain( int argc, char **args ){
 //		printf( "start process\n");
 //		fflush( stdout );
 		delEngineProcess process( pipeIn, pipeOut, logfile );
+		process.SetUseConsole( useConsole );
 		
 		process.Run();
 		

@@ -39,6 +39,7 @@ public:
 	class Factory : public delEngineInstance::Factory{
 	private:
 		deLogger::Ref pEngineLogger;
+		bool pUseConsole;
 		
 	public:
 		/** \brief Type holding strong reference. */
@@ -57,6 +58,12 @@ public:
 		
 		/** \brief Set logger to use for new engine instance or nullptr. */
 		void SetEngineLogger( deLogger *logger );
+		
+		/** \brief Use console. */
+		inline bool GetUseConsole() const{ return pUseConsole; }
+		
+		/** \brief Set use console. */
+		void SetUseConsole( bool useConsole );
 		
 		/** \brief Create engine instance. */
 		virtual delEngineInstance *CreateEngineInstance( delLauncher &launcher, const char *logFile );

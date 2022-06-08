@@ -74,7 +74,8 @@ public:
 	
 private:
 	delLauncher &pLauncher;
-	const decString pLogFile;
+	decString pLogFile;
+	bool pUseConsole;
 	
 	
 	
@@ -99,6 +100,15 @@ public:
 	
 	/** \brief Log file. */
 	inline const decString &GetLogFile() const{ return pLogFile; }
+	
+	/** \brief Set log file. */
+	void SetLogFile( const decString &logFile );
+	
+	/** \brief Use console. */
+	inline bool GetUseConsole() const{ return pUseConsole; }
+	
+	/** \brief Set use console. */
+	void SetUseConsole( bool useConsole );
 	
 	
 	
