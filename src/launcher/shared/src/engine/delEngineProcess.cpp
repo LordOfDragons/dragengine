@@ -158,27 +158,27 @@ void delEngineProcess::StartEngine(){
 		// create os
 		if( pUseConsole ){
 			#ifdef OS_UNIX
-			pLogger->LogError( pLogSource, "EngineProcess.StartEngine: Create OS Console (console requested)" );
+			pLogger->LogInfo( pLogSource, "EngineProcess.StartEngine: Create OS Console (console requested)" );
 			os = new deOSConsole();
 			#elif defined OS_W32
-			pLogger->LogError( pLogSource, "EngineProcess.StartEngine: Create OS Windows (console requested)" );
+			pLogger->LogInfo( pLogSource, "EngineProcess.StartEngine: Create OS Windows (console requested)" );
 			os = new deOSWindows();
 			#endif
 			
 		}else{
 			#ifdef OS_BEOS
-			pLogger->LogError( pLogSource, "EngineProcess.StartEngine: Create OS BeOS" );
+			pLogger->LogInfo( pLogSource, "EngineProcess.StartEngine: Create OS BeOS" );
 			os = new deOSBeOS();
 			#elif defined OS_UNIX
 				#ifdef HAS_LIB_X11
-				pLogger->LogError( pLogSource, "EngineProcess.StartEngine: Create OS Unix" );
+				pLogger->LogInfo( pLogSource, "EngineProcess.StartEngine: Create OS Unix" );
 				os = new deOSUnix();
 				#else
-				pLogger->LogError( pLogSource, "EngineProcess.StartEngine: Create OS Console" );
+				pLogger->LogInfo( pLogSource, "EngineProcess.StartEngine: Create OS Console" );
 				os = new deOSConsole();
 				#endif
 			#elif defined OS_W32
-			pLogger->LogError( pLogSource, "EngineProcess.StartEngine: Create OS Windows" );
+			pLogger->LogInfo( pLogSource, "EngineProcess.StartEngine: Create OS Windows" );
 			os = new deOSWindows();
 			os->CastToOSWindows()->SetInstApp( GetModuleHandle( NULL ) );
 			#endif
