@@ -35,6 +35,7 @@ jobs:
       artifactTesting: archive-testing
 
   testing:
+    needs: [build_testing]
     runs-on: ubuntu-latest
     steps:
       - name: Get Testing Archive
