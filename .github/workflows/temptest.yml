@@ -16,13 +16,15 @@ jobs:
         run: |
           wget https://github.com/LordOfDragons/dragengine/releases/download/nightly/install-dragengine-ci-nightly-linux64.sh
           wget https://github.com/LordOfDragons/dragengine/releases/download/nightly/install-deigde-nightly-linux64.sh
+          chmod 755 install-dragengine-ci-nightly-linux64.sh
+          chmod 755 install-deigde-nightly-linux64.sh
         
       - name: Store Archive
         uses: actions/upload-artifact@v3
         with:
           name: installers-linux-ci
           path: |
-            install-dragengine-ci-nightly-linux64.sh
+            install-dragengine-ci-nightly-linux64.sh,
             install-deigde-ci-nightly-linux64.sh
           if-no-files-found: error
           
