@@ -60,7 +60,7 @@ class TSECBCamera extends TestSuite
 			assertFloatProperty(behavior.getHighestIntensity(), 20, 0)
 			assertFloatProperty(behavior.getAdaptionTime(), 0.1, 0)
 			
-			assertTrue(Engine.getDefaultEnableGI())
+			assertTrue(not Engine.getDefaultEnableGI())
 			assertTrue(behavior.getEnableGI().getValue())
 			
 			assertEquals(behavior.getAttach().getPrefix(), "camera.")
