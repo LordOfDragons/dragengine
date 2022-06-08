@@ -1,0 +1,48 @@
+name: Build Testing
+
+on:
+  workflow_call:
+    inputs:
+      releaseVersion:
+        required: true
+        type: string
+      artifactInstallerCI:
+        required: true
+        type: string
+      artifactTesting:
+        required: true
+        type: string
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          lfs: true
+          submodules: recursive
+      
+      - name: Get Linux CI Installers
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ inputs.artifactInstallerCI }}
+        
+      - name: Install IGDE-CI
+        run: |
+          sudo ./install-dragengine-ci-${{ inputs.releaseVersion }}-linux64.sh --yes
+          sudo install-deigde-ci-${{ inputs.releaseVersion }}-linux64.sh --yes
+        
+      - name: Distribute
+        id: distribute
+        uses: LordOfDragons/build-delga@v1
+        with:
+          projectFile: detesting/detesting.degp
+          profile: Release
+        
+      - name: Store DELGA
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ inputs.artifactTesting }}
+          path: detesting/distribute/DETesting.delga
+          if-no-files-found: error

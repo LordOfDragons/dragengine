@@ -1,0 +1,20 @@
+name: TempTest
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build_linux_ci:
+    uses: ./.github/workflows/build_linux_ci.yml
+    with:
+      releaseVersion: nightly
+      buildVersion: 9999
+      artifactInstaller: installers-linux-ci
+  
+  build_testing:
+    needs: [build_linux_ci]
+    uses: ./.github/workflows/build_testing.yml
+    with:
+      releaseVersion: nightly
+      artifactInstallerCI: installers-linux-ci
+      artifactTesting: archive-testing
