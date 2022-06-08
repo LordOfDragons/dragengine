@@ -45,9 +45,19 @@ jobs:
       artifactLinux: archives-linux
       artifactWindows: archives-windows
       artifactLauncher: archive-livelauncher
+    
+  build_testing:
+    needs: [build_linux_ci]
+    uses: ./.github/workflows/build_testing.yml
+    with:
+      releaseVersion: nightly
+      artifactInstallerCI: installers-linux-ci
+      artifactTesting: archive-testing
 
+  # TODO: add build to run testing. requires changing scripts to run in console mode
+  
   upload:
-    needs: [build_linux, build_windows, build_windows_installer, build_linux_ci, build_live]
+    needs: [build_linux, build_windows, build_windows_installer, build_linux_ci, build_live, build_testing]
     runs-on: ubuntu-latest
     
     steps:
