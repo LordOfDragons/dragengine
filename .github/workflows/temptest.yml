@@ -50,11 +50,15 @@ jobs:
       - name: Install Game Engine
         run: |
           chmod 755 install-dragengine-nightly-linux64.sh
-          sudo ./install-dragengine-${{ inputs.releaseVersion }}-linux64.sh --yes
+          sudo ./install-dragengine-nightly-linux64.sh --yes
         
       - name: Run Tests
         run: |
           delauncher-console run -c -f DETestingCI.delga
+          if [[ $(< ~/.config/delauncher/games/9dc27c9d-b073-06f2-8da1-b7cfb5628c98/capture/CIResult) != "Success" ]]
+          then
+            exit 1
+          fi
         
       - name: Store Test Results
         uses: actions/upload-artifact@v3
