@@ -36,7 +36,7 @@ jobs:
           sudo ./install-deigde-ci-${{ inputs.releaseVersion }}-linux64.sh --yes
         
       - name: Distribute
-        run: deigde detesting/detesting.degp --project.profile.distribute Release
+        run: deigde detesting/detesting.degp --project.profile.distribute Testing
         
       - name: Store DELGA
         uses: actions/upload-artifact@v3

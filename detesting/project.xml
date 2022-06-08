@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <project>
 	<profile>
-		<name>Default</name>
-		<description>Default profile.</description>
+		<name>Testing</name>
+		<description>Testing profile.</description>
 		<scriptDirectory>/scripts</scriptDirectory>
 		<gameObject>DETestingApp</gameObject>
 		<pathConfig>/config</pathConfig>
