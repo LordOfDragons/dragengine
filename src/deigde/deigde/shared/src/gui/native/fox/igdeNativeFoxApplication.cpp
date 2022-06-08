@@ -187,6 +187,10 @@ void igdeNativeFoxApplication::Run(){
 	while( runWhileEvents() ){
 		igdeMainWindow * const mainWindow = pOwner->GetMainWindow();
 		if( mainWindow ){
+			if( ! mainWindow->GetNativeWidget() ){
+				return; // sometimes FOX manages to make us miss this event
+			}
+			
 			mainWindow->OnFrameUpdate();
 		}
 	}
