@@ -1,0 +1,655 @@
+/* 
+ * Drag[en]gine Testing
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+namespace DETesting
+
+pin Dragengine.Gui
+pin Dragengine.LoadSave
+pin Dragengine.Scenery
+pin Dragengine.Preloading
+pin Dragengine.TestSystem
+
+
+/**
+ * Test Suite for BehaviorElement.
+ */
+class TSBBehaviorElement extends TestSuite
+	/** Testing behavior. */
+	class TestBehavior1 extends DefaultECBehavior
+		class Instance extends DefaultECBehaviorInstance
+			public var int value1
+			
+			public func new(TestBehavior1 behavior, BehaviorElement element) super(element)
+				value1 = 18
+			end
+			
+			public func void readFromFile(PersistencyEnvironment env, FileReader reader)
+				if reader.readByte() != 2
+					throw EInvalidParam.new("wrong version")
+				end
+				value1 = reader.readInt()
+			end
+			
+			public func void writeToFile(PersistencyEnvironment env, FileWriter writer)
+				writer.writeByte(2)
+				writer.writeInt(value1)
+			end
+		end
+		
+		public var int value1
+		
+		public func new(BehaviorElementClass eclass, String id) super(eclass, id)
+			eclass.addBehavior(this)
+		end
+		
+		public func Instance instance(BehaviorElement element)
+			return element.getInstanceAt(getInstanceIndex()) cast Instance
+		end
+		
+		public func ECBehaviorInstance createInstance(BehaviorElement element)
+			return Instance.new(this, element)
+		end
+	end
+	
+	/** Testing behavior. */
+	class TestBehavior2 extends DefaultECBehavior
+		class Instance extends DefaultECBehaviorInstance
+			public var int value1
+			public var String value2
+			
+			public func new(TestBehavior2 behavior, BehaviorElement element) super(element)
+				value1 = 25
+				value2 = "something"
+			end
+			
+			public func void readFromFile(PersistencyEnvironment env, FileReader reader)
+				if reader.readByte() != 6
+					throw EInvalidParam.new("wrong version")
+				end
+				value1 = reader.readInt()
+				value2 = reader.readString8()
+			end
+			
+			public func void writeToFile(PersistencyEnvironment env, FileWriter writer)
+				writer.writeByte(6)
+				writer.writeInt(value1)
+				writer.writeString8(value2)
+			end
+		end
+		
+		public func new(BehaviorElementClass eclass, String id) super(eclass, id)
+			eclass.addBehavior(this)
+		end
+		
+		public func Instance instance(BehaviorElement element)
+			return element.getInstanceAt(getInstanceIndex()) cast Instance
+		end
+		
+		public func ECBehaviorInstance createInstance(BehaviorElement element)
+			return Instance.new(this, element)
+		end
+	end
+	
+	/** Testing behavior. */
+	class TestBehavior3 extends DefaultECBehavior
+		class Instance extends DefaultECBehaviorInstance
+			public var int value1
+			public var String value2
+			
+			public func new(TestBehavior3 behavior, BehaviorElement element) super(element)
+				value1 = 86
+				value2 = "enhanced"
+			end
+			
+			public func void readFromFile(PersistencyEnvironment env, FileReader reader)
+				if reader.readByte() != 12
+					throw EInvalidParam.new("wrong version")
+				end
+				value1 = reader.readInt()
+				value2 = reader.readString8()
+			end
+			
+			public func void writeToFile(PersistencyEnvironment env, FileWriter writer)
+				writer.writeByte(12)
+				writer.writeInt(value1)
+				writer.writeString8(value2)
+			end
+			
+			public func void compatReadFromFile(PersistencyEnvironment env, FileReader reader)
+				if reader.readByte() != 6
+					throw EInvalidParam.new("wrong version")
+				end
+				value1 = reader.readInt()
+				value2 = reader.readString8()
+			end
+		end
+		
+		public func new(BehaviorElementClass eclass, String id) super(eclass, id)
+			eclass.addBehavior(this)
+		end
+		
+		public func Instance instance(BehaviorElement element)
+			return element.getInstanceAt(getInstanceIndex()) cast Instance
+		end
+		
+		public func ECBehaviorInstance createInstance(BehaviorElement element)
+			return Instance.new(this, element)
+		end
+		
+		public func bool supportsBehaviorID(String identifier)
+			return identifier.equals(getBehaviorID().replaceString("TestBehavior3", "TestBehavior2"))
+		end
+		
+		public func void loadSupportedData(String identifier, PersistencyEnvironment env, \
+		FileReader reader, ECBehaviorInstance instance)
+			if identifier.equals(getBehaviorID().replaceString("TestBehavior3", "TestBehavior2"))
+				(instance cast Instance).compatReadFromFile(env, reader)
+				
+			else
+				throw EInvalidParam.new("identifier wrong: " + identifier)
+			end
+		end
+	end
+	
+	
+	
+	/**
+	 * Test configuration 1.
+	 * 
+	 * Adds two behaviors with no identifier. Typical case if nothing changes on the class.
+	 */
+	class Config1 extends TestCaseECBehaviorPersistency
+		public func new() super("config1", UnicodeString.newFromUTF8("Config #1"))
+		end
+		
+		private var TestBehavior1 behavior1
+		private var TestBehavior2 behavior2
+		
+		protected func void addBehaviors()
+			var BehaviorElementClass ec = getElementClass()
+			behavior1 = TestBehavior1.new(ec, "")
+			assertEquals(behavior1.getBehaviorID(), "TestBehavior1")
+			behavior2 = TestBehavior2.new(ec, "")
+			assertEquals(behavior2.getBehaviorID(), "TestBehavior2")
+		end
+		
+		protected func void elementCreated()
+			behavior1.instance(getElement()).value1 = 72
+			behavior2.instance(getElement()).value1 = 91
+			behavior2.instance(getElement()).value2 = "modified"
+		end
+		
+		protected func bool testBehaviors(TestSuite testSuite)
+			assertEquals(behavior1.instance(getElement()).value1, 72)
+			assertEquals(behavior2.instance(getElement()).value1, 91)
+			assertEquals(behavior2.instance(getElement()).value2, "modified")
+			return false
+		end
+	end
+	
+	/**
+	 * Test configuration 2.
+	 * 
+	 * Adds five behaviors with identifiers. Typical case if nothing changes on the class.
+	 */
+	class Config2 extends TestCaseECBehaviorPersistency
+		public func new() super("config2", UnicodeString.newFromUTF8("Config #2"))
+		end
+		
+		private var TestBehavior1 behavior1a
+		private var TestBehavior1 behavior1b
+		private var TestBehavior2 behavior2a
+		private var TestBehavior2 behavior2b
+		private var TestBehavior2 behavior2c
+		
+		protected func void addBehaviors()
+			var BehaviorElementClass ec = getElementClass()
+			behavior1a = TestBehavior1.new(ec, "id1")
+			assertEquals(behavior1a.getBehaviorID(), "TestBehavior1:id1")
+			behavior1b = TestBehavior1.new(ec, "subid2")
+			assertEquals(behavior1b.getBehaviorID(), "TestBehavior1:subid2")
+			behavior2a = TestBehavior2.new(ec, "id8")
+			assertEquals(behavior2a.getBehaviorID(), "TestBehavior2:id8")
+			behavior2b = TestBehavior2.new(ec, "subid12")
+			assertEquals(behavior2b.getBehaviorID(), "TestBehavior2:subid12")
+			behavior2c = TestBehavior2.new(ec, "superid9")
+			assertEquals(behavior2c.getBehaviorID(), "TestBehavior2:superid9")
+		end
+		
+		protected func void elementCreated()
+			behavior1a.instance(getElement()).value1 = 72
+			behavior1b.instance(getElement()).value1 = 126
+			behavior2a.instance(getElement()).value1 = 91
+			behavior2a.instance(getElement()).value2 = "modified"
+			behavior2b.instance(getElement()).value1 = 172
+			behavior2b.instance(getElement()).value2 = "moreso"
+			behavior2c.instance(getElement()).value1 = 233
+			behavior2c.instance(getElement()).value2 = "anotherthing"
+		end
+		
+		protected func bool testBehaviors(TestSuite testSuite)
+			assertEquals(behavior1a.instance(getElement()).value1, 72)
+			assertEquals(behavior1b.instance(getElement()).value1, 126)
+			assertEquals(behavior2a.instance(getElement()).value1, 91)
+			assertEquals(behavior2a.instance(getElement()).value2, "modified")
+			assertEquals(behavior2b.instance(getElement()).value1, 172)
+			assertEquals(behavior2b.instance(getElement()).value2, "moreso")
+			assertEquals(behavior2c.instance(getElement()).value1, 233)
+			assertEquals(behavior2c.instance(getElement()).value2, "anotherthing")
+			return false
+		end
+	end
+	
+	/**
+	 * Test missing behavior.
+	 * 
+	 * Adds two behaviors with no identifier. Persisted data contains only second behavior
+	 * and an unknown first behavior. The first behavior keeps default values.
+	 */
+	class MissingBehavior1 extends TestCaseECBehaviorPersistency
+		public func new() super("missingbehavior1", UnicodeString.newFromUTF8("Missing Behavior #1"))
+		end
+		
+		private var TestBehavior1 behavior1
+		private var TestBehavior2 behavior2
+		
+		protected func void addBehaviors()
+			var BehaviorElementClass ec = getElementClass()
+			behavior1 = TestBehavior1.new(ec, "")
+			assertEquals(behavior1.getBehaviorID(), "TestBehavior1")
+			behavior2 = TestBehavior2.new(ec, "")
+			assertEquals(behavior2.getBehaviorID(), "TestBehavior2")
+		end
+		
+		protected func void elementCreated()
+			behavior1.instance(getElement()).value1 = 72
+			behavior2.instance(getElement()).value1 = 91
+			behavior2.instance(getElement()).value2 = "modified"
+		end
+		
+		protected func void dataPersisted()
+			var FileWriter writer = getPersistedData().getWriter(false)
+			writer.writeByte(1) // version
+			writer.writeShort(2) // 2 behavior
+			
+			writer.writeString8("TestBehavior1:missing")
+			writer.writeInt(5) // size
+			writer.writeByte(2) // version
+			writer.writeInt(72) // value1
+			
+			writer.writeString8("TestBehavior2")
+			writer.writeInt(14) // size
+			writer.writeByte(6) // version
+			writer.writeInt(91) // value1
+			writer.writeString8("modified") // value2
+		end
+		
+		protected func bool testBehaviors(TestSuite testSuite)
+			assertEquals(behavior1.instance(getElement()).value1, 18)
+			assertEquals(behavior2.instance(getElement()).value1, 91)
+			assertEquals(behavior2.instance(getElement()).value2, "modified")
+			return false
+		end
+	end
+	
+	/**
+	 * Test missing behavior.
+	 * 
+	 * Adds two behaviors with no identifier. Persisted data contains only second behavior.
+	 * The first behavior keeps default values.
+	 */
+	class MissingBehavior2 extends TestCaseECBehaviorPersistency
+		public func new() super("missingbehavior2", UnicodeString.newFromUTF8("Missing Behavior #2"))
+		end
+		
+		private var TestBehavior1 behavior1
+		private var TestBehavior2 behavior2
+		
+		protected func void addBehaviors()
+			var BehaviorElementClass ec = getElementClass()
+			behavior1 = TestBehavior1.new(ec, "")
+			assertEquals(behavior1.getBehaviorID(), "TestBehavior1")
+			behavior2 = TestBehavior2.new(ec, "")
+			assertEquals(behavior2.getBehaviorID(), "TestBehavior2")
+		end
+		
+		protected func void elementCreated()
+			behavior1.instance(getElement()).value1 = 72
+			behavior2.instance(getElement()).value1 = 91
+			behavior2.instance(getElement()).value2 = "modified"
+		end
+		
+		protected func void dataPersisted()
+			var FileWriter writer = getPersistedData().getWriter(false)
+			writer.writeByte(1) // version
+			writer.writeShort(1) // 1 behavior
+			
+			writer.writeString8("TestBehavior2")
+			writer.writeInt(14) // size
+			writer.writeByte(6) // version
+			writer.writeInt(91) // value1
+			writer.writeString8("modified") // value2
+		end
+		
+		protected func bool testBehaviors(TestSuite testSuite)
+			assertEquals(behavior1.instance(getElement()).value1, 18)
+			assertEquals(behavior2.instance(getElement()).value1, 91)
+			assertEquals(behavior2.instance(getElement()).value2, "modified")
+			return false
+		end
+	end
+	
+	/**
+	 * Test too many behaviors.
+	 * 
+	 * Adds one behavior with no identifier. Persisted data contains second behavior as well
+	 * as an unknown behavior.
+	 */
+	class TooManyBehaviors1 extends TestCaseECBehaviorPersistency
+		public func new() super("toomanybehaviors1", UnicodeString.newFromUTF8("Too Many Behaviors #1"))
+		end
+		
+		private var TestBehavior2 behavior2
+		
+		protected func void addBehaviors()
+			var BehaviorElementClass ec = getElementClass()
+			behavior2 = TestBehavior2.new(ec, "")
+			assertEquals(behavior2.getBehaviorID(), "TestBehavior2")
+		end
+		
+		protected func void elementCreated()
+			behavior2.instance(getElement()).value1 = 91
+			behavior2.instance(getElement()).value2 = "modified"
+		end
+		
+		protected func void dataPersisted()
+			var FileWriter writer = getPersistedData().getWriter(false)
+			writer.writeByte(1) // version
+			writer.writeShort(2) // 2 behavior
+			
+			writer.writeString8("TestBehavior1")
+			writer.writeInt(5) // size
+			writer.writeByte(2) // version
+			writer.writeInt(72) // value1
+			
+			writer.writeString8("TestBehavior2")
+			writer.writeInt(14) // size
+			writer.writeByte(6) // version
+			writer.writeInt(91) // value1
+			writer.writeString8("modified") // value2
+		end
+		
+		protected func bool testBehaviors(TestSuite testSuite)
+			assertEquals(behavior2.instance(getElement()).value1, 91)
+			assertEquals(behavior2.instance(getElement()).value2, "modified")
+			return false
+		end
+	end
+	
+	/**
+	 * Test too many behavior 2.
+	 * 
+	 * Adds one behavior with no identifier. Persisted data contains two behavior not matching
+	 * the one and only behavior. The behavior has to keep default values.
+	 */
+	class TooManyBehaviors2 extends TestCaseECBehaviorPersistency
+		public func new() super("toomanybehaviors2", UnicodeString.newFromUTF8("Too Many Behaviors #2"))
+		end
+		
+		private var TestBehavior2 behavior2
+		
+		protected func void addBehaviors()
+			var BehaviorElementClass ec = getElementClass()
+			behavior2 = TestBehavior2.new(ec, "")
+			assertEquals(behavior2.getBehaviorID(), "TestBehavior2")
+		end
+		
+		protected func void elementCreated()
+			behavior2.instance(getElement()).value1 = 91
+			behavior2.instance(getElement()).value2 = "modified"
+		end
+		
+		protected func void dataPersisted()
+			var FileWriter writer = getPersistedData().getWriter(false)
+			writer.writeByte(1) // version
+			writer.writeShort(2) // 2 behavior
+			
+			writer.writeString8("TestBehavior1")
+			writer.writeInt(5) // size
+			writer.writeByte(2) // version
+			writer.writeInt(72) // value1
+			
+			writer.writeString8("TestBehavior2:missing")
+			writer.writeInt(14) // size
+			writer.writeByte(6) // version
+			writer.writeInt(91) // value1
+			writer.writeString8("modified") // value2
+		end
+		
+		protected func bool testBehaviors(TestSuite testSuite)
+			assertEquals(behavior2.instance(getElement()).value1, 25)
+			assertEquals(behavior2.instance(getElement()).value2, "something")
+			return false
+		end
+	end
+	
+	/**
+	 * Test wrong order behavior.
+	 * 
+	 * Adds two behaviors with no identifier. Persisted data contains data for the two behaviors
+	 * but not in the order they have been added to the element class.
+	 */
+	class WrongOrder1 extends TestCaseECBehaviorPersistency
+		public func new() super("wrongorder1", UnicodeString.newFromUTF8("Wrong Order #1"))
+		end
+		
+		private var TestBehavior1 behavior1
+		private var TestBehavior2 behavior2
+		
+		protected func void addBehaviors()
+			var BehaviorElementClass ec = getElementClass()
+			behavior2 = TestBehavior2.new(ec, "")
+			assertEquals(behavior2.getBehaviorID(), "TestBehavior2")
+			behavior1 = TestBehavior1.new(ec, "")
+			assertEquals(behavior1.getBehaviorID(), "TestBehavior1")
+		end
+		
+		protected func void elementCreated()
+			behavior2.instance(getElement()).value1 = 91
+			behavior2.instance(getElement()).value2 = "modified"
+			behavior1.instance(getElement()).value1 = 72
+		end
+		
+		protected func void dataPersisted()
+			var FileWriter writer = getPersistedData().getWriter(false)
+			writer.writeByte(1) // version
+			writer.writeShort(2) // 2 behavior
+			
+			writer.writeString8("TestBehavior1")
+			writer.writeInt(5) // size
+			writer.writeByte(2) // version
+			writer.writeInt(72) // value1
+			
+			writer.writeString8("TestBehavior2")
+			writer.writeInt(14) // size
+			writer.writeByte(6) // version
+			writer.writeInt(91) // value1
+			writer.writeString8("modified") // value2
+		end
+		
+		protected func bool testBehaviors(TestSuite testSuite)
+			assertEquals(behavior1.instance(getElement()).value1, 72)
+			assertEquals(behavior2.instance(getElement()).value1, 91)
+			assertEquals(behavior2.instance(getElement()).value2, "modified")
+			return false
+		end
+	end
+	
+	/**
+	 * Test wrong order behavior.
+	 * 
+	 * Adds two behaviors with no identifier. Persisted data contains data for the two behaviors
+	 * but not in the order they have been added to the element class as well as data of two
+	 * not existing behaviors which should be ignored.
+	 */
+	class WrongOrder2 extends TestCaseECBehaviorPersistency
+		public func new() super("wrongorder2", UnicodeString.newFromUTF8("Wrong Order #2"))
+		end
+		
+		private var TestBehavior1 behavior1
+		private var TestBehavior2 behavior2
+		
+		protected func void addBehaviors()
+			var BehaviorElementClass ec = getElementClass()
+			behavior2 = TestBehavior2.new(ec, "")
+			assertEquals(behavior2.getBehaviorID(), "TestBehavior2")
+			behavior1 = TestBehavior1.new(ec, "")
+			assertEquals(behavior1.getBehaviorID(), "TestBehavior1")
+		end
+		
+		protected func void elementCreated()
+			behavior2.instance(getElement()).value1 = 91
+			behavior2.instance(getElement()).value2 = "modified"
+			behavior1.instance(getElement()).value1 = 72
+		end
+		
+		protected func void dataPersisted()
+			var FileWriter writer = getPersistedData().getWriter(false)
+			writer.writeByte(1) // version
+			writer.writeShort(4) // 4 behavior
+			
+			writer.writeString8("TestBehavior1")
+			writer.writeInt(5) // size
+			writer.writeByte(2) // version
+			writer.writeInt(72) // value1
+			
+			writer.writeString8("TestBehavior2:toomany")
+			writer.writeInt(14) // size
+			writer.writeByte(6) // version
+			writer.writeInt(185) // value1
+			writer.writeString8("nothings") // value2
+			
+			writer.writeString8("TestBehavior2")
+			writer.writeInt(14) // size
+			writer.writeByte(6) // version
+			writer.writeInt(91) // value1
+			writer.writeString8("modified") // value2
+			
+			writer.writeString8("TestBehavior2:toomany2")
+			writer.writeInt(14) // size
+			writer.writeByte(6) // version
+			writer.writeInt(185) // value1
+			writer.writeString8("nothings") // value2
+		end
+		
+		protected func bool testBehaviors(TestSuite testSuite)
+			assertEquals(behavior1.instance(getElement()).value1, 72)
+			assertEquals(behavior2.instance(getElement()).value1, 91)
+			assertEquals(behavior2.instance(getElement()).value2, "modified")
+			return false
+		end
+	end
+	
+	/**
+	 * Test compatibility behavior.
+	 * 
+	 * Adds four behaviors with no identifier. Persisted data contains data for the four
+	 * behaviors but two of them for deprecated other behaviors. These behaviors have to
+	 * state they support loading the old other behaviors data.
+	 * 
+	 * This test covers the scenario of a game update replacing a behavior with another
+	 * behavior extending the behavior. Using compatibility this enhanced behavior can
+	 * load the data avoiding breaking save states.
+	 */
+	class Compatibility1 extends TestCaseECBehaviorPersistency
+		public func new() super("compatibility1", UnicodeString.newFromUTF8("Compatibility #1"))
+		end
+		
+		private var TestBehavior1 behavior1
+		private var TestBehavior3 behavior2
+		private var TestBehavior3 behavior3
+		
+		protected func void addBehaviors()
+			var BehaviorElementClass ec = getElementClass()
+			behavior1 = TestBehavior1.new(ec, "")
+			assertEquals(behavior1.getBehaviorID(), "TestBehavior1")
+			behavior2 = TestBehavior3.new(ec, "")
+			assertEquals(behavior2.getBehaviorID(), "TestBehavior3")
+			assertTrue(behavior2.supportsBehaviorID("TestBehavior2"))
+			assertFalse(behavior2.supportsBehaviorID("TestBehavior2:id1"))
+			behavior3 = TestBehavior3.new(ec, "id1")
+			assertEquals(behavior3.getBehaviorID(), "TestBehavior3:id1")
+			assertFalse(behavior3.supportsBehaviorID("TestBehavior2"))
+			assertTrue(behavior3.supportsBehaviorID("TestBehavior2:id1"))
+		end
+		
+		protected func void elementCreated()
+			behavior1.instance(getElement()).value1 = 72
+		end
+		
+		protected func void dataPersisted()
+			var FileWriter writer = getPersistedData().getWriter(false)
+			writer.writeByte(1) // version
+			writer.writeShort(3) // 3 behaviors
+			
+			writer.writeString8("TestBehavior1")
+			writer.writeInt(5) // size
+			writer.writeByte(2) // version
+			writer.writeInt(72) // value1
+			
+			writer.writeString8("TestBehavior2:id1")
+			writer.writeInt(22) // size
+			writer.writeByte(6) // version
+			writer.writeInt(136) // value1
+			writer.writeString8("modifiedEnhanced") // value2
+			
+			writer.writeString8("TestBehavior2")
+			writer.writeInt(22) // size
+			writer.writeByte(6) // version
+			writer.writeInt(165) // value1
+			writer.writeString8("enhancedModified") // value2
+		end
+		
+		protected func bool testBehaviors(TestSuite testSuite)
+			assertEquals(behavior1.instance(getElement()).value1, 72)
+			assertEquals(behavior2.instance(getElement()).value1, 165)
+			assertEquals(behavior2.instance(getElement()).value2, "enhancedModified")
+			assertEquals(behavior3.instance(getElement()).value1, 136)
+			assertEquals(behavior3.instance(getElement()).value2, "modifiedEnhanced")
+			return false
+		end
+	end
+	
+	
+	
+	/** Create test suite. */
+	public func new() super("behaviorElement", UnicodeString.newFromUTF8("BehaviorElement"))
+		addTestCase(Config1.new())
+		addTestCase(Config2.new())
+		addTestCase(MissingBehavior1.new())
+		addTestCase(MissingBehavior2.new())
+		addTestCase(TooManyBehaviors1.new())
+		addTestCase(TooManyBehaviors2.new())
+		addTestCase(WrongOrder1.new())
+		addTestCase(WrongOrder2.new())
+		addTestCase(Compatibility1.new())
+	end
+end

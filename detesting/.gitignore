@@ -1,0 +1,7 @@
+local
+cache
+distribute
+testRun.log
+*.kdev*
+*.blend[1-9]
+*.delga

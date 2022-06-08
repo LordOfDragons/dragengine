@@ -1,0 +1,312 @@
+/* 
+ * Drag[en]gine Testing
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, IncustomColor., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+namespace DETesting
+
+pin Dragengine.Gui
+pin Dragengine.Scenery
+pin Dragengine.Preloading
+pin Dragengine.TestSystem
+
+
+/**
+ * Test Suite for ECBehaviorCustomColor.
+ */
+class TSECBCustomColor extends TestSuite
+	/** Bare behavior without any resources set. */
+	class Empty extends TestCaseECBehavior
+		public func new() super("empty", UnicodeString.newFromUTF8("Empty"))
+		end
+		
+		private var ECBehaviorCustomColor behavior
+		
+		protected func void addBehaviors()
+			var BehaviorElementClass ec = getElementClass()
+			behavior = ECBehaviorCustomColor.new(ec)
+			assertEquals(ECBehaviorCustomColor.getBehaviorIn(ec), behavior)
+			assertEquals(ECBehaviorCustomColor.getBehaviorIn(ec, ""), behavior)
+			assertEquals(ECBehaviorCustomColor.getAllBehaviorsIn(ec), Array.newWith(behavior))
+		end
+		
+		protected func bool testBehaviors(TestSuite testSuite)
+			assertEquals(behavior.getID(), "")
+			
+			assertEquals(behavior.getName().getValue(), UnicodeString.new())
+			assertEquals(behavior.getDescription().getValue(), UnicodeString.new())
+			assertEquals(behavior.getAllowedColors().getColorCount(), 0)
+			assertEquals(behavior.getDefaultColor().getColor(), Color.white)
+			assertNull(behavior.getColor().getColor())
+			
+			assertHasProperty("customColor.name")
+			assertHasProperty("customColor.description")
+			assertHasProperty("customColor.allowedColors")
+			assertHasProperty("customColor.defaultColor")
+			assertHasProperty("customColor.color")
+			
+			var BehaviorElement e = getElement()
+			var ECBehaviorCustomColor.Instance customColor = behavior.instance(e)
+			assertNotNull(customColor)
+			assertEquals(customColor.getECBehavior(), behavior)
+			
+			assertEquals(customColor.getName(), UnicodeString.new())
+			assertEquals(customColor.getDescription(), UnicodeString.new())
+			assertEquals(customColor.getAllowedColors().getCount(), 0)
+			assertEquals(customColor.getDefaultColor(), Color.white)
+			assertNull(customColor.getColor())
+			assertEquals(customColor.getColorOrDefault(), Color.white)
+			
+			customColor.setColor(Color.red)
+			assertEquals(customColor.getDefaultColor(), Color.white)
+			assertEquals(customColor.getColor(), Color.red)
+			assertEquals(customColor.getColorOrDefault(), Color.red)
+			
+			customColor.resetColor()
+			assertEquals(customColor.getDefaultColor(), Color.white)
+			assertEquals(customColor.getColor(), Color.white)
+			assertEquals(customColor.getColorOrDefault(), Color.white)
+			
+			assertEquals(ECBehaviorCustomColor.getInstanceIn(e), customColor)
+			
+			assertEquals(ECBehaviorCustomColor.getAllInstancesIn(e), Array.newWith(customColor))
+			
+			return false
+		end
+	end
+	
+	/** CustomColor. */
+	class Basic extends TestCaseECBehavior
+		public func new() super("basic", UnicodeString.newFromUTF8("Basic"))
+		end
+		
+		private var ECBehaviorCustomColor behavior
+		
+		protected func void addBehaviors()
+			behavior = ECBehaviorCustomColor.new(getElementClass())
+		end
+		
+		protected func void setStubProperties()
+			var StubElement s = getStubElement()
+			s.setPropertyValueFor("customColor.name", "Color1")
+			s.setPropertyValueFor("customColor.description", "Custom Color 1")
+			s.setPropertyValueFor("customColor.defaultColor", "0 0 1")
+			s.setPropertyValueFor("customColor.color", "0 1 0")
+		end
+		
+		protected func bool testBehaviors(TestSuite testSuite)
+			var ECBehaviorCustomColor.Instance customColor = behavior.instance(getElement())
+			
+			assertEquals(customColor.getName(), UnicodeString.newFromUTF8("Color1"))
+			assertEquals(customColor.getDescription(), UnicodeString.newFromUTF8("Custom Color 1"))
+			assertEquals(customColor.getAllowedColors().getCount(), 0)
+			assertEquals(customColor.getDefaultColor(), Color.blue)
+			assertEquals(customColor.getColor(), Color.green)
+			assertEquals(customColor.getColorOrDefault(), Color.green)
+			
+			customColor.setColor(Color.red)
+			assertEquals(customColor.getDefaultColor(), Color.blue)
+			assertEquals(customColor.getColor(), Color.red)
+			assertEquals(customColor.getColorOrDefault(), Color.red)
+			
+			customColor.resetColor()
+			assertEquals(customColor.getDefaultColor(), Color.blue)
+			assertEquals(customColor.getColor(), Color.blue)
+			assertEquals(customColor.getColorOrDefault(), Color.blue)
+			
+			return false
+		end
+	end
+	
+	/** Multiple behaviors with different identifiers. */
+	class Multiple extends TestCaseECBehavior
+		public func new() super("multiple", UnicodeString.newFromUTF8("Multiple"))
+		end
+		
+		private var ECBehaviorCustomColor behavior
+		private var ECBehaviorCustomColor behavior2
+		private var ECBehaviorCustomColor behavior3
+		
+		protected func void addBehaviors()
+			var BehaviorElementClass ec = getElementClass()
+			behavior = ECBehaviorCustomColor.new(ec)
+			behavior2 = ECBehaviorCustomColor.new(ec, "sub1")
+			behavior3 = ECBehaviorCustomColor.new(ec, "sub2")
+			assertEquals(ECBehaviorCustomColor.getBehaviorIn(ec), behavior)
+			assertEquals(ECBehaviorCustomColor.getBehaviorIn(ec, ""), behavior)
+			assertEquals(ECBehaviorCustomColor.getBehaviorIn(ec, "sub1"), behavior2)
+			assertEquals(ECBehaviorCustomColor.getBehaviorIn(ec, "sub2"), behavior3)
+			assertEquals(ECBehaviorCustomColor.getAllBehaviorsIn(ec), Array.newWith(behavior, behavior2, behavior3))
+		end
+		
+		protected func bool testBehaviors(TestSuite testSuite)
+			assertEquals(behavior.getID(), "")
+			assertEquals(behavior2.getID(), "sub1")
+			assertEquals(behavior3.getID(), "sub2")
+			
+			var BehaviorElement e = getElement()
+			var ECBehaviorCustomColor.Instance customColor = behavior.instance(e)
+			var ECBehaviorCustomColor.Instance customColor2 = behavior2.instance(e)
+			var ECBehaviorCustomColor.Instance customColor3 = behavior3.instance(e)
+			assertNotNull(customColor)
+			assertNotNull(customColor2)
+			assertNotNull(customColor3)
+			assertEquals(customColor.getECBehavior(), behavior)
+			assertEquals(customColor2.getECBehavior(), behavior2)
+			assertEquals(customColor3.getECBehavior(), behavior3)
+			
+			assertEquals(ECBehaviorCustomColor.getInstanceIn(e), customColor)
+			assertEquals(ECBehaviorCustomColor.getInstanceIn(e, "sub1"), customColor2)
+			assertEquals(ECBehaviorCustomColor.getInstanceIn(e, "sub2"), customColor3)
+			
+			assertNull(ECBehaviorCustomColor.getInstanceIn(e, "nope"))
+			
+			assertEquals(ECBehaviorCustomColor.getAllInstancesIn(e), Array.newWith(customColor, customColor2, customColor3))
+			
+			assertHasProperty("customColor.name")
+			assertHasProperty("customColor.description")
+			assertHasProperty("customColor.allowedColors")
+			assertHasProperty("customColor.defaultColor")
+			assertHasProperty("customColor.color")
+			
+			assertHasProperty("customColor(sub1).name")
+			assertHasProperty("customColor(sub1).description")
+			assertHasProperty("customColor(sub1).allowedColors")
+			assertHasProperty("customColor(sub1).defaultColor")
+			assertHasProperty("customColor(sub1).color")
+			
+			assertHasProperty("customColor(sub2).name")
+			assertHasProperty("customColor(sub2).description")
+			assertHasProperty("customColor(sub2).allowedColors")
+			assertHasProperty("customColor(sub2).defaultColor")
+			assertHasProperty("customColor(sub2).color")
+			
+			return false
+		end
+	end
+	
+	class AllowedColors extends TestCaseECBehavior
+		public func new() super("allowedColors", UnicodeString.newFromUTF8("AllowedColors"))
+		end
+		
+		private var ECBehaviorCustomColor behavior
+		
+		protected func void addBehaviors()
+			behavior = ECBehaviorCustomColor.new(getElementClass())
+			behavior.getDefaultColor().setColor(Color.yellow)
+			behavior.getColor().setColor(Color.gray)
+			
+			var ECPColorList allowedColors = behavior.getAllowedColors()
+			allowedColors.addColor(Color.red)
+			allowedColors.addColor(Color.green)
+			allowedColors.addColor(Color.blue)
+			
+			assertEquals(allowedColors.getColorCount(), 3)
+			assertEquals(allowedColors.getColorAt(0), Color.red)
+			assertEquals(allowedColors.getColorAt(1), Color.green)
+			assertEquals(allowedColors.getColorAt(2), Color.blue)
+		end
+		
+		protected func void setStubProperties()
+			var StubElement s = getStubElement()
+			s.setPropertyValueFor("customColor.allowedColors", "\"0.5 0 0\" \"0 0.5 0\" \"0 0 0.5\"")
+		end
+		
+		protected func bool testBehaviors(TestSuite testSuite)
+			var ECBehaviorCustomColor.Instance customColor = behavior.instance(getElement())
+			
+			var Array allowedColors = customColor.getAllowedColors()
+			assertEquals(allowedColors.getCount(), 3)
+			assertEquals(allowedColors.getAt(0), Color.new(0.5, 0, 0))
+			assertEquals(allowedColors.getAt(1), Color.new(0, 0.5, 0))
+			assertEquals(allowedColors.getAt(2), Color.new(0, 0, 0.5))
+			
+			assertEquals(customColor.getDefaultColor(), Color.yellow)
+			assertEquals(customColor.getColor(), Color.gray)
+			
+			customColor.setColor(Color.red)
+			assertEquals(customColor.getDefaultColor(), Color.yellow)
+			assertEquals(customColor.getColor(), Color.red)
+			assertEquals(customColor.getColorOrDefault(), Color.red)
+			
+			customColor.resetColor()
+			assertEquals(customColor.getDefaultColor(), Color.yellow)
+			assertEquals(customColor.getColor(), Color.yellow)
+			assertEquals(customColor.getColorOrDefault(), Color.yellow)
+			
+			return false
+		end
+	end
+	
+	class Listening extends TestCaseECBehavior
+		class TestListener extends ECBehaviorCustomColor.DefaultListener
+			public var int trackChanged
+			
+			public func new()
+			end
+			
+			public func void colorChanged(ECBehaviorCustomColor.Instance instance)
+				trackChanged++
+			end
+		end
+		
+		
+		public func new() super("listenign", UnicodeString.newFromUTF8("Listening"))
+		end
+		
+		private var ECBehaviorCustomColor behavior
+		private var TestListener listener
+		
+		protected func void addBehaviors()
+			listener = TestListener.new()
+			
+			behavior = ECBehaviorCustomColor.new(getElementClass())
+			behavior.addListenerFactory(block ECBehaviorCustomColor.Instance instance
+				return listener
+			end)
+		end
+		
+		protected func bool testBehaviors(TestSuite testSuite)
+			var ECBehaviorCustomColor.Instance customColor = behavior.instance(getElement())
+			
+			listener.trackChanged = 0
+			customColor.setColor(Color.red)
+			assertEquals(listener.trackChanged, 1)
+			customColor.setColor(Color.red)
+			assertEquals(listener.trackChanged, 1)
+			customColor.setColor(null)
+			assertEquals(listener.trackChanged, 2)
+			customColor.setColor(Color.blue)
+			assertEquals(listener.trackChanged, 3)
+			
+			return false
+		end
+	end
+	
+	
+	
+	/** Create test suite. */
+	public func new() super("ecbehaviorCustomColor", UnicodeString.newFromUTF8("ECBehaviorCustomColor"))
+		addTestCase(Empty.new())
+		addTestCase(Basic.new())
+		addTestCase(Multiple.new())
+		addTestCase(AllowedColors.new())
+		addTestCase(Listening.new())
+	end
+end

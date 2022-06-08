@@ -1,0 +1,66 @@
+/* 
+ * Drag[en]gine Testing
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+namespace DETesting
+
+pin Dragengine.TestSystem
+
+
+/**
+ * Drag[en]gine Testing.
+ */
+class DETestingApp extends BaseGameAppTesting
+	/** Create Application. */
+	public func new()
+	end
+	
+	
+	/** \brief Init application. */
+	public func void initGame()
+		super.initGame()
+		
+		// since version 1.5 this is set from configuration.ptree.xml .
+		// by default this is false. new project template sets this to true.
+		Engine.setDefaultEnableGI(true)
+	end
+	
+	/** Add test suites to test window. */
+	protected func void addTestSuites()
+		var WindowTesting window = getWindowTesting()
+		
+		window.addTestSuite(TSFileReader.new())
+		window.addTestSuite(TSColorConversion.new())
+		
+		window.addTestSuite(TSBBehaviorElement.new())
+		window.addTestSuite(TSECBComponent.new())
+		window.addTestSuite(TSECBAnchorElement.new())
+		window.addTestSuite(TSECBAvoidedByActor.new())
+		window.addTestSuite(TSECBBillboard.new())
+		window.addTestSuite(TSECBCamera.new())
+		window.addTestSuite(TSECBCollider.new())
+		window.addTestSuite(TSECBComposed.new())
+		window.addTestSuite(TSECBConvoCoordSystem.new())
+		window.addTestSuite(TSECBCustomColor.new())
+		window.addTestSuite(TSECBDecal.new())
+		window.addTestSuite(TSECBEnvMapProbe.new())
+		window.addTestSuite(TSECBForceField.new())
+	end
+end

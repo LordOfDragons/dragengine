@@ -1,0 +1,243 @@
+/* 
+ * Drag[en]gine Testing
+ *
+ * Copyright (C) 2022, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+namespace DETesting
+
+pin Dragengine.Gui
+pin Dragengine.Scenery
+pin Dragengine.Preloading
+pin Dragengine.TestSystem
+
+
+/**
+ * Test Suite for ECBehaviorBillboard.
+ */
+class TSECBBillboard extends TestSuite
+	/** Bare behavior without any resources set. */
+	class Empty extends TestCaseECBehavior
+		public func new() super("empty", UnicodeString.newFromUTF8("Empty"))
+		end
+		
+		private var ECBehaviorBillboard behavior
+		
+		protected func void addBehaviors()
+			var BehaviorElementClass ec = getElementClass()
+			behavior = ECBehaviorBillboard.new(ec, null)
+			assertEquals(ECBehaviorBillboard.getBehaviorIn(ec), behavior)
+			assertEquals(ECBehaviorBillboard.getBehaviorIn(ec, ""), behavior)
+			assertEquals(ECBehaviorBillboard.getAllBehaviorsIn(ec), Array.newWith(behavior))
+		end
+		
+		protected func bool testBehaviors(TestSuite testSuite)
+			assertEquals(behavior.getID(), "")
+			assertNotNull(behavior.getBillboard())
+			assertNull(behavior.getCollider())
+			
+			assertEquals(behavior.getBillboard().getPrefix(), "billboard.")
+			
+			assertNull(behavior.getBillboard().getSkin().getPath())
+			assertEquals(behavior.getBillboard().getAxis().getVector(), Vector.new(0, 1, 0))
+			assertEquals(behavior.getBillboard().getOffset().getVector2(), Vector2.new())
+			assertTrue(behavior.getBillboard().getLocked().getValue())
+			assertTrue(behavior.getBillboard().getSpherical().getValue())
+			assertFalse(behavior.getBillboard().getSizeFixedToScreen().getValue())
+			assertTrue(behavior.getBillboard().getRenderEnvMap().getValue())
+			assertEquals(behavior.getBillboard().getLayerMask(), LayerMask.newWith(BaseGameApp.WorldLayerBit.default))
+			assertEquals(behavior.getBillboard().getLayerMaskRenderEnvMap(), LayerMask.newWith(BaseGameApp.WorldLayerBit.envmap))
+			
+			assertHasProperty("billboard.skin")
+			assertHasProperty("billboard.axis")
+			assertHasProperty("billboard.offset")
+			assertHasProperty("billboard.locked")
+			assertHasProperty("billboard.spherical")
+			assertHasProperty("billboard.sizeFixedToScreen")
+			assertHasProperty("billboard.renderEnvMap")
+			
+			var BehaviorElement e = getElement()
+			var ECBehaviorBillboard.Instance billboard = behavior.instance(e)
+			assertNotNull(billboard)
+			assertEquals(billboard.getECBehavior(), behavior)
+			
+			var Billboard c = billboard.getBillboard()
+			assertNotNull(c)
+			assertNull(c.getSkin())
+			assertEquals(c.getAxis(), Vector.new(0, 1, 0))
+			assertEquals(c.getOffset(), Vector2.new())
+			assertTrue(c.getLocked())
+			assertTrue(c.getSpherical())
+			assertFalse(c.getSizeFixedToScreen())
+			assertTrue(c.getVisible())
+			
+			assertEquals(ECBehaviorBillboard.getInstanceIn(e), billboard)
+			
+			assertEquals(ECBehaviorBillboard.getAllInstancesIn(e), Array.newWith(billboard))
+			
+			return false
+		end
+	end
+	
+	/** Billboard with skin and resource set. */
+	class Basic extends TestCaseECBehavior
+		public func new() super("basic", UnicodeString.newFromUTF8("Basic"))
+		end
+		
+		private var ECBehaviorBillboard behavior
+		
+		protected func void addBehaviors()
+			behavior = ECBehaviorBillboard.new(getElementClass(), null)
+			
+			var String pathSkin = "/content/model/box/box.deskin"
+			
+			var ECComposeBillboard cc = behavior.getBillboard()
+			behavior.getBillboard().getSkin().setPath(pathSkin)
+			assertEquals(cc.getSkin().getPath(), pathSkin)
+			
+			assertEquals(cc.getLayerMask(), LayerMask.newWith(BaseGameApp.WorldLayerBit.default))
+			assertEquals(cc.getLayerMaskRenderEnvMap(), LayerMask.newWith(BaseGameApp.WorldLayerBit.envmap))
+		end
+		
+		protected func void setStubProperties()
+			var StubElement s = getStubElement()
+			s.setPosition(DVector.new(2, 1, 3))
+		end
+		
+		protected func bool testBehaviors(TestSuite testSuite)
+			var ECBehaviorBillboard.Instance billboard = behavior.instance(getElement())
+			var Billboard c = billboard.getBillboard()
+			assertNotNull(c)
+			assertNotNull(c.getSkin())
+			assertEquals(c.getLayerMask(), LayerMask.newWith(\
+				BaseGameApp.WorldLayerBit.default, BaseGameApp.WorldLayerBit.envmap))
+			assertDVector(c.getPosition(), DVector.new(2, 1, 3))
+			
+			return false
+		end
+	end
+	
+	/** Multiple behaviors with different identifiers. */
+	class Multiple extends TestCaseECBehavior
+		public func new() super("multiple", UnicodeString.newFromUTF8("Multiple"))
+		end
+		
+		private var ECBehaviorBillboard behavior
+		private var ECBehaviorBillboard behavior2
+		private var ECBehaviorBillboard behavior3
+		
+		protected func void addBehaviors()
+			var BehaviorElementClass ec = getElementClass()
+			behavior = ECBehaviorBillboard.new(ec, null)
+			behavior2 = ECBehaviorBillboard.new(ec, null, "sub1")
+			behavior3 = ECBehaviorBillboard.new(ec, null, "sub2")
+			assertEquals(ECBehaviorBillboard.getBehaviorIn(ec), behavior)
+			assertEquals(ECBehaviorBillboard.getBehaviorIn(ec, ""), behavior)
+			assertEquals(ECBehaviorBillboard.getBehaviorIn(ec, "sub1"), behavior2)
+			assertEquals(ECBehaviorBillboard.getBehaviorIn(ec, "sub2"), behavior3)
+			assertEquals(ECBehaviorBillboard.getAllBehaviorsIn(ec), Array.newWith(behavior, behavior2, behavior3))
+		end
+		
+		protected func bool testBehaviors(TestSuite testSuite)
+			assertEquals(behavior.getID(), "")
+			assertEquals(behavior2.getID(), "sub1")
+			assertEquals(behavior3.getID(), "sub2")
+			
+			var BehaviorElement e = getElement()
+			var ECBehaviorBillboard.Instance billboard = behavior.instance(e)
+			var ECBehaviorBillboard.Instance billboard2 = behavior2.instance(e)
+			var ECBehaviorBillboard.Instance billboard3 = behavior3.instance(e)
+			assertNotNull(billboard)
+			assertNotNull(billboard2)
+			assertNotNull(billboard3)
+			assertEquals(billboard.getECBehavior(), behavior)
+			assertEquals(billboard2.getECBehavior(), behavior2)
+			assertEquals(billboard3.getECBehavior(), behavior3)
+			
+			assertEquals(ECBehaviorBillboard.getInstanceIn(e), billboard)
+			assertEquals(ECBehaviorBillboard.getInstanceIn(e, "sub1"), billboard2)
+			assertEquals(ECBehaviorBillboard.getInstanceIn(e, "sub2"), billboard3)
+			
+			assertNull(ECBehaviorBillboard.getInstanceIn(e, "nope"))
+			
+			assertEquals(ECBehaviorBillboard.getAllInstancesIn(e), Array.newWith(billboard, billboard2, billboard3))
+			
+			assertEquals(behavior.getBillboard().getPrefix(), "billboard.")
+			assertEquals(behavior2.getBillboard().getPrefix(), "billboard(sub1).")
+			assertEquals(behavior3.getBillboard().getPrefix(), "billboard(sub2).")
+			
+			assertHasProperty("billboard.skin")
+			assertHasProperty("billboard.axis")
+			assertHasProperty("billboard.offset")
+			assertHasProperty("billboard.locked")
+			assertHasProperty("billboard.spherical")
+			assertHasProperty("billboard.sizeFixedToScreen")
+			assertHasProperty("billboard.renderEnvMap")
+			
+			assertHasProperty("billboard(sub1).skin")
+			assertHasProperty("billboard(sub1).axis")
+			assertHasProperty("billboard(sub1).offset")
+			assertHasProperty("billboard(sub1).locked")
+			assertHasProperty("billboard(sub1).spherical")
+			assertHasProperty("billboard(sub1).sizeFixedToScreen")
+			assertHasProperty("billboard(sub1).renderEnvMap")
+			
+			assertHasProperty("billboard(sub2).skin")
+			assertHasProperty("billboard(sub2).axis")
+			assertHasProperty("billboard(sub2).offset")
+			assertHasProperty("billboard(sub2).locked")
+			assertHasProperty("billboard(sub2).spherical")
+			assertHasProperty("billboard(sub2).sizeFixedToScreen")
+			assertHasProperty("billboard(sub2).renderEnvMap")
+			
+			return false
+		end
+	end
+	
+	/** Billboard with env-map but without affects-audio. */
+	class NoEnvMap extends TestCaseECBehavior
+		public func new() super("noEnvMap", UnicodeString.newFromUTF8("No EnvMap"))
+		end
+		
+		private var ECBehaviorBillboard behavior
+		
+		protected func void addBehaviors()
+			behavior = ECBehaviorBillboard.new(getElementClass(), null)
+		end
+		
+		protected func void setStubProperties()
+			getStubElement().setPropertyBoolFor("billboard.renderEnvMap", false)
+		end
+		
+		protected func bool testBehaviors(TestSuite testSuite)
+			var Billboard c = behavior.instance(getElement()).getBillboard()
+			assertEquals(c.getLayerMask(), LayerMask.newWith(BaseGameApp.WorldLayerBit.default))
+			return false
+		end
+	end
+	
+	
+	
+	/** Create test suite. */
+	public func new() super("ecbehaviorBillboard", UnicodeString.newFromUTF8("ECBehaviorBillboard"))
+		addTestCase(Empty.new())
+		addTestCase(Basic.new())
+		addTestCase(Multiple.new())
+		addTestCase(NoEnvMap.new())
+	end
+end
