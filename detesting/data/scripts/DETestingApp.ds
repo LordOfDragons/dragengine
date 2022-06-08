@@ -33,34 +33,35 @@ class DETestingApp extends BaseGameAppTesting
 	end
 	
 	
-	/** \brief Init application. */
-	public func void initGame()
-		super.initGame()
+	/** Create test suites. */
+	protected func Array createTestSuites()
+		var Array suites = Array.new()
 		
-		// since version 1.5 this is set from configuration.ptree.xml .
-		// by default this is false. new project template sets this to true.
-		Engine.setDefaultEnableGI(true)
+		suites.add(TSFileReader.new())
+		suites.add(TSColorConversion.new())
+		
+		suites.add(TSBBehaviorElement.new())
+		suites.add(TSECBComponent.new())
+		suites.add(TSECBAnchorElement.new())
+		suites.add(TSECBAvoidedByActor.new())
+		suites.add(TSECBBillboard.new())
+		suites.add(TSECBCamera.new())
+		suites.add(TSECBCollider.new())
+		suites.add(TSECBComposed.new())
+		suites.add(TSECBConvoCoordSystem.new())
+		suites.add(TSECBCustomColor.new())
+		suites.add(TSECBDecal.new())
+		suites.add(TSECBEnvMapProbe.new())
+		suites.add(TSECBForceField.new())
+		
+		return suites
 	end
 	
 	/** Add test suites to test window. */
 	protected func void addTestSuites()
 		var WindowTesting window = getWindowTesting()
-		
-		window.addTestSuite(TSFileReader.new())
-		window.addTestSuite(TSColorConversion.new())
-		
-		window.addTestSuite(TSBBehaviorElement.new())
-		window.addTestSuite(TSECBComponent.new())
-		window.addTestSuite(TSECBAnchorElement.new())
-		window.addTestSuite(TSECBAvoidedByActor.new())
-		window.addTestSuite(TSECBBillboard.new())
-		window.addTestSuite(TSECBCamera.new())
-		window.addTestSuite(TSECBCollider.new())
-		window.addTestSuite(TSECBComposed.new())
-		window.addTestSuite(TSECBConvoCoordSystem.new())
-		window.addTestSuite(TSECBCustomColor.new())
-		window.addTestSuite(TSECBDecal.new())
-		window.addTestSuite(TSECBEnvMapProbe.new())
-		window.addTestSuite(TSECBForceField.new())
+		createTestSuites().forEach(block TestSuite each
+			window.addTestSuite(each)
+		end)
 	end
 end

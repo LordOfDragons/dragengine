@@ -36,11 +36,11 @@ jobs:
           sudo ./install-deigde-ci-${{ inputs.releaseVersion }}-linux64.sh --yes
         
       - name: Distribute
-        run: deigde detesting/detesting.degp --project.profile.distribute Testing
+        run: deigde detesting/detesting.degp --project.profile.distribute TestingCI
         
       - name: Store DELGA
         uses: actions/upload-artifact@v3
         with:
           name: ${{ inputs.artifactTesting }}
-          path: detesting/distribute/DETesting.delga
+          path: detesting/distribute/DETestingCI.delga
           if-no-files-found: error
