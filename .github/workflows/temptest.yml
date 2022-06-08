@@ -40,7 +40,7 @@ jobs:
       - name: Get Testing Archive
         uses: actions/download-artifact@v3
         with:
-          name: ${{ archive-testing }}
+          name: archive-testing
         
       - name: Fetch installers
         run: |
