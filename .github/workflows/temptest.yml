@@ -24,7 +24,7 @@ jobs:
         with:
           name: installers-linux-ci
           path: |
-            install-dragengine-ci-nightly-linux64.sh,
+            install-dragengine-ci-nightly-linux64.sh
             install-deigde-ci-nightly-linux64.sh
           if-no-files-found: error
           
