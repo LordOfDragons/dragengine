@@ -31,7 +31,7 @@ jobs:
       - name: Install IGDE-CI
         run: |
           chmod 755 install-dragengine-ci-nightly-linux64.sh
-          chmod 755 install-deigde-nightly-linux64.sh
+          chmod 755 install-deigde-ci-nightly-linux64.sh
           sudo ./install-dragengine-ci-${{ inputs.releaseVersion }}-linux64.sh --yes
           sudo ./install-deigde-ci-${{ inputs.releaseVersion }}-linux64.sh --yes
         
