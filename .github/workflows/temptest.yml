@@ -68,6 +68,7 @@ jobs:
           fi
         
       - name: Store Test Results
+        if: success() || failure()
         uses: actions/upload-artifact@v3
         with:
           name: testing-result
