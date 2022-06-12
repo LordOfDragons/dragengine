@@ -464,20 +464,7 @@ class ConversationGesturePlayback
 		if not Animator.equals(animator, pAnimatorInstance.getAnimator())
 			pAnimatorInstance.setAnimator(animator)
 			resetAnimation = true
-			
-			pControllerProgress = null
-			pControllerPlayback = null
-			pControllerVariation = null
-			pControllerFadeIn = null
-			pControllerFadeOut = null
-			
-			if animator != null
-				pControllerProgress = pAnimatorInstance.getControllerNamed(pNameControllerProgress)
-				pControllerPlayback = pAnimatorInstance.getControllerNamed(pNameControllerPlayback)
-				pControllerVariation = pAnimatorInstance.getControllerNamed(pNameControllerVariation)
-				pControllerFadeIn = pAnimatorInstance.getControllerNamed(pNameControllerFadeIn)
-				pControllerFadeOut = pAnimatorInstance.getControllerNamed(pNameControllerFadeOut)
-			end
+			findControllers(actor)
 		end
 		
 		// update animator if present
@@ -493,40 +480,10 @@ class ConversationGesturePlayback
 		// update gesture playback. sets progress, playback, variation and fade in/out controller
 		// if present. also captures state with number 0 if used by animator
 		if resetAnimation
-			if pControllerProgress != null
-				pControllerProgress.setRange(startTime, endTime)
-			end
-			if pControllerVariation != null
-				pControllerVariation.setValue(DEMath.random())
-			end
-			pAnimatorInstance.captureState(0)
-			
-			if pControllerProgress != null
-				pControllerProgress.setValue(pElapsed)
-			end
-			if pControllerPlayback != null
-				pControllerPlayback.setValue(pElapsed - startTime)
-			end
-			if pControllerFadeIn != null
-				pControllerFadeIn.setValue(pElapsed)
-			end
-			if pControllerFadeOut != null
-				pControllerFadeOut.setValue(pElapsed - (endTime - pControllerFadeOut.getUpper()))
-			end
+			initControllers(actor, startTime, endTime)
 			
 		else
-			if pControllerProgress != null
-				pControllerProgress.increment(elapsed)
-			end
-			if pControllerPlayback != null
-				pControllerPlayback.increment(elapsed)
-			end
-			if pControllerFadeIn != null
-				pControllerFadeIn.increment(elapsed)
-			end
-			if pControllerFadeOut != null
-				pControllerFadeOut.setValue(pElapsed - (endTime - pControllerFadeOut.getUpper()))
-			end
+			updateControllers(actor, elapsed, endTime)
 		end
 		
 		pRequiresApply = true
@@ -544,7 +501,7 @@ class ConversationGesturePlayback
 	end
 	
 	/** \brief Init next gesture to play. */
-	public func void initNextGesture(ConversationActor actor)
+	protected func void initNextGesture(ConversationActor actor)
 		pInitNextGesture = false
 		
 		if pPosition >= pGestures.getCount()
@@ -565,9 +522,77 @@ class ConversationGesturePlayback
 		pbgesture.setAnimator(pose.getAnimator(), pose.getPathAnimator())
 	end
 	
+	/**
+	 * \brief Find animator controllers after animator changed.
+	 * \version 1.13
+	 */
+	protected func void findControllers(ConversationActor actor)
+		pControllerProgress = null
+		pControllerPlayback = null
+		pControllerVariation = null
+		pControllerFadeIn = null
+		pControllerFadeOut = null
+		
+		if pAnimatorInstance.getAnimator() == null
+			return
+		end
+		
+		pControllerProgress = pAnimatorInstance.getControllerNamed(pNameControllerProgress)
+		pControllerPlayback = pAnimatorInstance.getControllerNamed(pNameControllerPlayback)
+		pControllerVariation = pAnimatorInstance.getControllerNamed(pNameControllerVariation)
+		pControllerFadeIn = pAnimatorInstance.getControllerNamed(pNameControllerFadeIn)
+		pControllerFadeOut = pAnimatorInstance.getControllerNamed(pNameControllerFadeOut)
+	end
+	
+	/**
+	 * \brief Initialize controllers after activating a new gesture.
+	 * \version 1.13
+	 */
+	protected func void initControllers(ConversationActor actor, float startTime, float endTime)
+		if pControllerProgress != null
+			pControllerProgress.setRange(startTime, endTime)
+		end
+		if pControllerVariation != null
+			pControllerVariation.setValue(DEMath.random())
+		end
+		pAnimatorInstance.captureState(0)
+		
+		if pControllerProgress != null
+			pControllerProgress.setValue(pElapsed)
+		end
+		if pControllerPlayback != null
+			pControllerPlayback.setValue(pElapsed - startTime)
+		end
+		if pControllerFadeIn != null
+			pControllerFadeIn.setValue(pElapsed)
+		end
+		if pControllerFadeOut != null
+			pControllerFadeOut.setValue(pElapsed - (endTime - pControllerFadeOut.getUpper()))
+		end
+	end
+	
+	/**
+	 * \brief Update controllers.
+	 * \version 1.13
+	 */
+	protected func void updateControllers(ConversationActor actor, float elapsed, float endTime)
+		if pControllerProgress != null
+			pControllerProgress.increment(elapsed)
+		end
+		if pControllerPlayback != null
+			pControllerPlayback.increment(elapsed)
+		end
+		if pControllerFadeIn != null
+			pControllerFadeIn.increment(elapsed)
+		end
+		if pControllerFadeOut != null
+			pControllerFadeOut.setValue(pElapsed - (endTime - pControllerFadeOut.getUpper()))
+		end
+	end
 	
 	
-	/** Finished playing back the gestures. Hook for subclasses. */
+	
+	/** \brief Finished playing back the gestures. Hook for subclasses. */
 	public func void onFinished()
 	end
 	
