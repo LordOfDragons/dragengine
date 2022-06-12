@@ -178,6 +178,37 @@ class ConversationGesturePlayback
 		return pRunning
 	end
 	
+	/**
+	 * \brief Last gesture is playing back.
+	 * \version 1.13
+	 * 
+	 * Returns true if getRunning() is true and getPosition() is getGestureCount() - 1.
+	 */
+	public func bool isLastGestureRunning()
+		return pRunning and pPosition == pGestures.getCount() - 1
+	end
+	
+	/**
+	 * \brief Remaining playback time of current gesture.
+	 * \version 1.13
+	 * 
+	 * If playback is no running 0 is returned. Returned playback includes pause if not elapsed.
+	 * If playing back gesture is held not elapsed pause time is returned (duration 0).
+	 */
+	public func float getRemainingGestureTime()
+		if not pRunning or pPosition != pGestures.getCount() - 1
+			return 0
+		end
+		
+		var Gesture gesture = pGestures.getAt(pPosition) cast Gesture
+		var ConversationStrip strip = gesture.getStrip()
+		var float length = strip.getPause()
+		if not gesture.getHold()
+			length += strip.getDuration()
+		end
+		return DEMath.max(length - pElapsed, 0.0)
+	end
+	
 	
 	
 	/** \brief Number of gestures. */
