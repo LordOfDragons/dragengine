@@ -60,6 +60,7 @@ private:
 	igdeButtonReference pBtnGesture;
 	igdeTextFieldReference pEditGestureAnimator;
 	igdeCheckBoxReference pChkGestureHold;
+	igdeTextFieldReference pEditGestureDuration;
 	
 	igdeComboBoxFilterReference pCBFacePose;
 	igdeButtonReference pBtnFacePose;

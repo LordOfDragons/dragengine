@@ -77,6 +77,7 @@
 #include "../../undosys/gesture/ceUCGestureSetName.h"
 #include "../../undosys/gesture/ceUCGestureSetAnimator.h"
 #include "../../undosys/gesture/ceUCGestureToggleHold.h"
+#include "../../undosys/gesture/ceUCGestureSetDuration.h"
 #include "../../undosys/target/ceUCTargetAdd.h"
 #include "../../undosys/target/ceUCTargetRemove.h"
 #include "../../undosys/target/ceUCTargetSetName.h"
@@ -1082,6 +1083,18 @@ public:
 	}
 };
 
+class cTextGestureDuration : public cBaseTextFieldListener{
+public:
+	cTextGestureDuration( ceWPConversation &panel ) : cBaseTextFieldListener( panel ){ }
+	
+	virtual igdeUndo *OnChanged( igdeTextField &textField, ceConversation* ){
+		ceGesture * const gesture = pPanel.GetGesture();
+		const float value = textField.GetFloat();
+		return gesture && fabsf( value - gesture->GetDuration() ) > FLOAT_SAFE_EPSILON
+			? new ceUCGestureSetDuration( gesture, value ) : nullptr;
+	}
+};
+
 
 
 class cComboFacePose : public cBaseComboBoxListener{
@@ -1420,6 +1433,10 @@ pConversation( NULL )
 	
 	helper.EditString( groupBox, "Animator:", "Name of the animator to use for this gesture",
 		pEditGestureAnimator, new cTextGestureAnimator( *this ) );
+	
+	helper.EditFloat( groupBox, "Duration:", "Duration of gesture. Used as default value in strips",
+		pEditGestureDuration, new cTextGestureDuration ( *this ) );
+	
 	helper.CheckBox( groupBox, pChkGestureHold, new cActionGestureHold( *this ), true );
 	
 	
@@ -1579,6 +1596,7 @@ void ceWPConversation::UpdateGesture(){
 	ceGesture * const gesture = GetGesture();
 	if( gesture ){
 		pEditGestureAnimator->SetText( gesture->GetAnimator() );
+		pEditGestureDuration->SetFloat( gesture->GetDuration() );
 	}
 	
 	pChkGestureHold->GetAction()->Update();

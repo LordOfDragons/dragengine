@@ -251,6 +251,9 @@ class LoadConversation extends BaseXmlLoader
 			elif tagName.equals( "hold" )
 				gesture.setHold( element.getFirstCDataBool() )
 				
+			elif tagName.equals("duration")
+				gesture.setDuration(element.getFirstCDataFloat())
+				
 			else
 				this.logUnknownTag( element )
 			end

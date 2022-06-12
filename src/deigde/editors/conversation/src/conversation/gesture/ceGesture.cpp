@@ -39,7 +39,8 @@
 ceGesture::ceGesture( const char *name ) :
 pConversation( NULL ),
 pName( name ),
-pHold( false ){
+pHold( false ),
+pDuration ( 2.0f ){
 }
 
 ceGesture::~ceGesture(){
@@ -88,6 +89,18 @@ void ceGesture::SetHold( bool hold ){
 	}
 	
 	pHold = hold;
+	
+	if( pConversation ){
+		pConversation->NotifyGestureChanged( this );
+	}
+}
+
+void ceGesture::SetDuration( float duration ){
+	if( fabsf( duration - pDuration ) < FLOAT_SAFE_EPSILON ){
+		return;
+	}
+	
+	pDuration = duration;
 	
 	if( pConversation ){
 		pConversation->NotifyGestureChanged( this );
