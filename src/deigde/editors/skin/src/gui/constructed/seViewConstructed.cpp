@@ -234,12 +234,12 @@ void seViewConstructed::UpdateScrollbarRanges(){
 	
 	const decPoint size( pViewNode->GetRenderAreaSize() );
 	const decPoint range( decPoint().Largest( pContentSize - size ) );
-	const decPoint pageSize( size / 4 );
+	const decPoint pageSize( decPoint( 1, 1 ).Largest( size / 4 ) );
 	
 	pScrollOffset = range / 2;
 	
-	pSBHorizontal->SetUpper( range.x + pageSize.x );
-	pSBVertical->SetUpper( range.y + pageSize.y );
+	pSBHorizontal->SetUpper( decMath::max( range.x + pageSize.x, 0) );
+	pSBVertical->SetUpper( decMath::max( range.y + pageSize.y, 0 ) );
 	
 	pSBHorizontal->SetPageSize( pageSize.x );
 	pSBVertical->SetPageSize( pageSize.y );

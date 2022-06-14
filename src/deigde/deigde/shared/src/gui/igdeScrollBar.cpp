@@ -44,7 +44,7 @@ igdeWidget( environment ),
 pOrientation( orientation ),
 pLower( 0 ),
 pUpper( 100 ),
-pPageSize( 10),
+pPageSize( 10 ),
 pValue( 0 ),
 pEnabled( true ){
 }
@@ -59,8 +59,11 @@ pPageSize( pageSize ),
 pValue( value ),
 pEnabled( true )
 {
+	if( upper < lower ){
+		DETHROW_INFO( deeInvalidParam, "upper < lower" );
+	}
 	if( pageSize < 1 ){
-		DETHROW( deeInvalidParam );
+		DETHROW_INFO( deeInvalidParam, "pageSize < 1" );
 	}
 }
 
@@ -74,39 +77,71 @@ igdeScrollBar::~igdeScrollBar(){
 ///////////////
 
 void igdeScrollBar::SetLower( int lower ){
+	if( lower > pUpper ){
+		DETHROW_INFO( deeInvalidParam, "lower > upper" );
+	}
 	if( pLower == lower ){
 		return;
 	}
 	
 	pLower = lower;
 	OnRangeChanged();
+	
+	SetValue( pValue );
 }
 
 void igdeScrollBar::SetUpper( int upper ){
+	if( upper < pLower ){
+		DETHROW_INFO( deeInvalidParam, "upper < lower" );
+	}
 	if( pUpper == upper ){
 		return;
 	}
 	
 	pUpper = upper;
 	OnRangeChanged();
+	
+	SetValue( pValue );
+}
+
+void igdeScrollBar::SetRange( int lower, int upper ){
+	if( upper < lower ){
+		DETHROW_INFO( deeInvalidParam, "upper < lower" );
+	}
+	if( pLower == lower && pUpper == upper ){
+		return;
+	}
+	
+	pLower = lower;
+	pUpper = upper;
+	OnRangeChanged();
+	
+	SetValue( pValue );
 }
 
 void igdeScrollBar::SetPageSize( int pageSize ){
+	if( pageSize < 1 ){
+		DETHROW_INFO( deeInvalidParam, "pageSize < 1" );
+	}
 	if( pPageSize == pageSize ){
 		return;
 	}
 	
 	pPageSize = pageSize;
 	OnRangeChanged();
+	
+	SetValue( pValue );
 }
 
 void igdeScrollBar::SetValue( int value ){
+	value = decMath::max( decMath::min( value, pUpper - pPageSize ), pLower );
 	if( pValue == value ){
 		return;
 	}
 	
 	pValue = value;
 	OnValueChanged();
+	NotifyValueChanged();
 }
 
 void igdeScrollBar::SetEnabled( bool enabled ){

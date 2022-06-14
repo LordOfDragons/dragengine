@@ -109,10 +109,14 @@ FXbool igdeNativeFoxScrollBar::canFocus() const{
 void igdeNativeFoxScrollBar::UpdateRange(){
 	setRange( decMath::max( pOwner->GetUpper() - pOwner->GetLower(), 0 ) );
 	setPage( pOwner->GetPageSize() );
+	UpdateValue();
 }
 
 void igdeNativeFoxScrollBar::UpdateValue(){
-	setPosition( decMath::clamp( pOwner->GetValue() - pOwner->GetLower(), 0, getRange() ) );
+	const int position = decMath::clamp( pOwner->GetValue() - pOwner->GetLower(), 0, getRange() );
+	if( position != getPosition() ){
+		setPosition( position, true );
+	}
 }
 
 void igdeNativeFoxScrollBar::UpdateEnabled(){
