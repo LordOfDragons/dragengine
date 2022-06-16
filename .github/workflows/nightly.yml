@@ -103,6 +103,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           allowUpdates: true
           artifactErrorsFailBuild: true
+          removeArtifacts: true
           draft: false
           prerelease: true
           commit: master
