@@ -23,9 +23,10 @@
 #include <string.h>
 
 #include "dearRule.h"
-#include "../dearBoneStateList.h"
 #include "../deDEAnimator.h"
+#include "../dearAnimator.h"
 #include "../dearAnimatorInstance.h"
+#include "../dearBoneStateList.h"
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
@@ -41,8 +42,10 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-dearRule::dearRule( dearAnimatorInstance &instance, int firstLink, const deAnimatorRule &rule ) :
+dearRule::dearRule( dearAnimatorInstance &instance, const dearAnimator &animator,
+	int firstLink, const deAnimatorRule &rule ) :
 pInstance( instance ),
+pAnimator( animator ),
 pRule( rule ),
 
 pBoneMappings( NULL ),
@@ -98,6 +101,10 @@ int dearRule::GetBoneMappingFor( int boneIndex ) const{
 
 float dearRule::GetBlendFactor() const{
 	return pTargetBlendFactor.GetValue( pInstance, pBlendFactor );
+}
+
+dearAnimation *dearRule::GetUseAnimation() const{
+	return pInstance.GetAnimation() ? pInstance.GetAnimation() : pAnimator.GetAnimation();
 }
 
 

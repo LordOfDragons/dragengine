@@ -27,18 +27,21 @@
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/resources/animator/rule/deAnimatorRule.h>
 
+class dearAnimator;
 class dearAnimatorInstance;
+class dearAnimation;
 class dearBoneStateList;
 class deDEAnimator;
 
 
 
 /**
- * \brief Base animator rule class.
+ * Base animator rule class.
  */
 class dearRule{
 private:
 	dearAnimatorInstance &pInstance;
+	const dearAnimator &pAnimator;
 	const deAnimatorRule &pRule;
 	int *pBoneMappings;
 	int pBoneMappingCount;
@@ -53,73 +56,78 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create rule. */
-	dearRule( dearAnimatorInstance &instance, int firstLink, const deAnimatorRule &rule );
+	/** Create rule. */
+	dearRule( dearAnimatorInstance &instance, const dearAnimator &animator,
+		int firstLink, const deAnimatorRule &rule );
 	
-	/** \brief Clean up animator. */
+	/** Clean up animator. */
 	virtual ~dearRule();
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Animator module. */
+	/** Animator module. */
 	deDEAnimator &GetModule() const;
 	
-	/** \brief Animator instance. */
+	/** Animator. */
+	inline const dearAnimator &GetAnimator() const{ return pAnimator; }
+	
+	/** Animator instance. */
 	inline dearAnimatorInstance &GetInstance(){ return pInstance; } 
 	inline const dearAnimatorInstance &GetInstance() const{ return pInstance; } 
 	
-	/** \brief Animator rule. */
+	/** Animator rule. */
 	inline const deAnimatorRule &GetRule() const{ return pRule; }
 	
-	/** \brief All bones are used or a list of bones. */
+	/** All bones are used or a list of bones. */
 	inline bool GetUseAllBones() const{ return pUseAllBones; }
 	
-	/** \brief Bone mapping count. */
+	/** Bone mapping count. */
 	int GetBoneMappingCount() const;
 	
-	/** \brief Bone mapping for bone index. */
+	/** Bone mapping for bone index. */
 	int GetBoneMappingFor( int boneIndex ) const;
 	
-	
-	
-	/** \brief Blend factor after applying a controller to it if one is set. */
+	/** Blend factor after applying a controller to it if one is set. */
 	float GetBlendFactor() const;
 	
+	/** Animation to use. */
+	dearAnimation *GetUseAnimation() const;
 	
 	
-	/** \brief Thread-safe rule blend mode. */
+	
+	/** Thread-safe rule blend mode. */
 	inline deAnimatorRule::eBlendModes GetBlendMode() const{ return pBlendMode; }
 	
-	/** \brief Thread-safe rule enabled. */
+	/** Thread-safe rule enabled. */
 	inline bool GetEnabled() const{ return pEnabled; }
 	
 	
 	
 	/**
-	 * \brief Capture animator state.
+	 * Capture animator state.
 	 * \details The default implementation throws an exception.
 	 */
 	virtual void CaptureStateInto( int identifier );
 	
 	/**
-	 * \brief Store animation frame.
+	 * Store animation frame.
 	 * \details The default implementation throws an exception.
 	 */
 	virtual void StoreFrameInto( int identifier, const char *moveName, float moveTime );
 	
 	/**
-	 * \brief Check if a full rebuild of the animator instance is required.
+	 * Check if a full rebuild of the animator instance is required.
 	 */
 	virtual bool RebuildInstance() const;
 	
-	/** \brief Apply to animator. */
+	/** Apply to animator. */
 	virtual void Apply( dearBoneStateList &stalist ) = 0;
 	
-	/** \brief Controller changed. */
+	/** Controller changed. */
 	virtual void ControllerChanged( int controller );
 	
-	/** \brief Rule changed. */
+	/** Rule changed. */
 	virtual void RuleChanged();
 	/*@}*/
 	

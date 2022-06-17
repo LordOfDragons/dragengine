@@ -61,8 +61,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create rule. */
-	dearRuleBoneTransformator( dearAnimatorInstance &instance, int firstLink,
-		const deAnimatorRuleBoneTransformator &rule );
+	dearRuleBoneTransformator( dearAnimatorInstance &instance, const dearAnimator &animator,
+		int firstLink, const deAnimatorRuleBoneTransformator &rule );
 	
 	/** \brief Clean up rule. */
 	virtual ~dearRuleBoneTransformator();

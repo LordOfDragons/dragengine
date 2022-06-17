@@ -59,8 +59,9 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-dearRuleLimit::dearRuleLimit( dearAnimatorInstance &instance, int firstLink, const deAnimatorRuleLimit &rule ) :
-dearRule( instance, firstLink, rule ),
+dearRuleLimit::dearRuleLimit( dearAnimatorInstance &instance, const dearAnimator &animator,
+	int firstLink, const deAnimatorRuleLimit &rule ) :
+dearRule( instance, animator, firstLink, rule ),
 pLimit( rule ),
 
 pEnablePositionXMin( rule.GetEnablePositionXMin() ),

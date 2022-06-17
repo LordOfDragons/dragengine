@@ -76,7 +76,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create rule. */
-	dearRuleLimit( dearAnimatorInstance &instance, int firstLink, const deAnimatorRuleLimit &rule );
+	dearRuleLimit( dearAnimatorInstance &instance, const dearAnimator &animator,
+		int firstLink, const deAnimatorRuleLimit &rule );
 	
 	/** \brief Clean up animator. */
 	virtual ~dearRuleLimit();

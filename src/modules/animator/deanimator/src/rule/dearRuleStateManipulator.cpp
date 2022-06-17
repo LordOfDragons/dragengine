@@ -58,8 +58,8 @@
 /////////////////////////////////
 
 dearRuleStateManipulator::dearRuleStateManipulator( dearAnimatorInstance &instance,
-int firstLink, const deAnimatorRuleStateManipulator &rule ) :
-dearRule( instance, firstLink, rule ),
+const dearAnimator &animator, int firstLink, const deAnimatorRuleStateManipulator &rule ) :
+dearRule( instance, animator, firstLink, rule ),
 //pStateManipulator( rule ),
 
 pTargetPosition( rule.GetTargetPosition(), firstLink ),
