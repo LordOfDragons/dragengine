@@ -70,6 +70,20 @@ class LoadAnimator extends BaseXmlLoader
 		end) cast Animator
 	end
 	
+	/**
+	 * \brief Load animator definition from file.
+	 * \version 1.13
+	 * 
+	 * Creates a new animator definition each time the function is called.
+	 */
+	public func AnimatorDefinition loadDefinitionFromFile(String filename)
+		return loadAndParseRootTag(filename, "animator", block EasyXMLElement root
+			var AnimatorDefinition definition = AnimatorDefinition.new(filename)
+			pParseAnimatorDefinition(root, definition, File.new(filename).getParent().getPath())
+			return definition
+		end) cast AnimatorDefinition
+	end
+	
 	
 	
 	/** Parse animator tag. */
