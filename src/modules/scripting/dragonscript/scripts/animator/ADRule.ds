@@ -28,170 +28,202 @@ pin Dragengine.Utils
 
 
 /**
- * Definition of an animator rule. Once defined a rule can be
- * added to an animator using the stored definition. This is the
- * base rule class with the properties shared amongst all rule
- * types.
+ * \brief Definition of animator rule.
+ * 
+ * Once defined a rule can be added to an animator using the stored definition.
+ * This is the base rule class with the properties shared amongst all rule types.
  */
 abstract class ADRule
-	/** Name of the rule. */
 	private var String pName
-	/** List of target links. */
 	private var Array pTargetLinks
-	/** List of bones. */
 	private var Array pBones
-	/** Determines if the rule is enabled. */
 	private var bool pEnabled
-	/** Blend mode. */
 	private var AnimatorRuleBlendMode pBlendMode
-	/** Blend factor. */
 	private var float pBlendFactor
 	
 	
 	
-	/** Creates a new animation rule definition. */
+	/** \brief Create animation rule definition. */
 	public func new()
-		this.pName = ""
-		this.pTargetLinks = Array.new()
-		this.pBones = Array.new()
-		this.pEnabled = true
-		this.pBlendMode = AnimatorRuleBlendMode.blend
-		this.pBlendFactor = 1.0
+		pName = ""
+		pTargetLinks = Array.new()
+		pBones = Array.new()
+		pEnabled = true
+		pBlendMode = AnimatorRuleBlendMode.blend
+		pBlendFactor = 1
 	end
 	
-	
-	
-	/** Retrieves the name of the rule. */
-	public func String getName()
-		return this.pName
-	end
-	
-	/** Sets the name of the rule. */
-	public func void setName( String name )
-		this.pName = name
-	end
-	
-	/** Retrieves the number of target links. */
-	public func int getTargetLinkCount()
-		return this.pTargetLinks.getCount()
-	end
-	
-	/** Retrieves the target link at the given index. */
-	public func ADRuleTargetLink getTargetLinkAt( int index )
-		return this.pTargetLinks.getAt( index ) cast ADRuleTargetLink
-	end
-	
-	/** Adds a target link. */
-	public func void addTargetLink( ADRuleTargetLink targetLink )
-		if targetLink == null
-			throw EInvalidParam.new()
+	/**
+	 * \brief Create copy of animation rule definition.
+	 * \version 1.13
+	 */
+	protected func new(AnimatorDefinition fromDef, AnimatorDefinition toDef, ADRule rule)
+		if fromDef == null
+			throw ENullPointer.new("fromDef")
 		end
-		
-		this.pTargetLinks.add( targetLink )
-	end
-	
-	/** \brief Visit targets with a block. */
-	public func void forEachTarget( Block ablock )
-		this.pTargetLinks.forEach( ablock )
-	end
-	
-	
-	
-	/** Retrieves the number of bones. */
-	public func int getBoneCount()
-		return this.pBones.getCount()
-	end
-	
-	/** Retrieves the bone at the given index. */
-	public func String getBoneAt( int index )
-		return this.pBones.getAt( index ) cast String
-	end
-	
-	/** Adds a bone. */
-	public func void addBone( String bone )
-		if bone == null
-			throw EInvalidParam.new()
+		if toDef == null
+			throw ENullPointer.new("toDef")
 		end
-		
-		this.pBones.add( bone )
-	end
-	
-	
-	
-	/** Determines if the rule is enabled. */
-	public func bool getEnabled()
-		return this.pEnabled
-	end
-	
-	/** Sets if the rule is enabled. */
-	public func void setEnabled( bool enabled )
-		this.pEnabled = enabled
-	end
-	
-	/** Retrieves the blend mode. */
-	public func AnimatorRuleBlendMode getBlendMode()
-		return this.pBlendMode
-	end
-	
-	/** Sets the blend mode. */
-	public func void setBlendMode( AnimatorRuleBlendMode mode )
-		this.pBlendMode = mode
-	end
-	
-	/** Retrieves the blend factor. */
-	public func float getBlendFactor()
-		return this.pBlendFactor
-	end
-	
-	/** Sets the blend factor. */
-	public func void setBlendFactor( float factor )
-		this.pBlendFactor = factor
-	end
-	
-	
-	
-	/** Build engine animator rule using the stored definition. */
-	abstract public func AnimatorRule buildRule( Animator animator )
-	
-	/** Setup common parameters for the given engine animator rule. */
-	protected func void buildRuleCommon( AnimatorRule rule )
-		var ADRuleTargetLink targetLink
-		var int i, count
-		
 		if rule == null
-			throw EInvalidParam.new()
+			throw ENullPointer.new("rule")
 		end
 		
-		rule.setEnabled( this.pEnabled )
-		rule.setBlendMode( this.pBlendMode )
-		rule.setBlendFactor( this.pBlendFactor )
+		pName = rule.pName
+		pBones = Array.new(rule.pBones)
+		pEnabled = rule.pEnabled
+		pBlendMode = rule.pBlendMode
+		pBlendFactor = rule.pBlendFactor
 		
-		count = this.pBones.getCount()
-		for i = 0 to count
-			rule.addBone( this.pBones.getAt( i ) cast String )
-		end
+		pTargetLinks = rule.pTargetLinks.map(block ADRuleTargetLink link
+			return ADRuleTargetLink.new(link.getTarget(), toDef.getLinkAt(fromDef.indexOfLink(link.getLink())))
+		end)
 	end
 	
 	
 	
-	public func void debug( Console console )
+	/** \brief Name of rule. */
+	public func String getName()
+		return pName
 	end
 	
-	protected func String debugCommon( String type )
+	/** \brief Set name of rule. */
+	public func void setName(String name)
+		pName = name
+	end
+	
+	/** \brief Count of target links. */
+	public func int getTargetLinkCount()
+		return pTargetLinks.getCount()
+	end
+	
+	/** \brief Target link at index. */
+	public func ADRuleTargetLink getTargetLinkAt(int index)
+		return pTargetLinks.getAt(index) cast ADRuleTargetLink
+	end
+	
+	/** \brief Add target link. */
+	public func void addTargetLink(ADRuleTargetLink targetLink)
+		if targetLink == null
+			throw ENullPointer.new("targetLink")
+		end
+		pTargetLinks.add(targetLink)
+	end
+	
+	/** \brief Visit target links with a block. */
+	public func void forEachTarget(Block ablock)
+		pTargetLinks.forEach(ablock)
+	end
+	
+	/**
+	 * \brief Remove all target links.
+	 * \version 1.13
+	 */
+	public func void removeAllTargetLinks()
+		pTargetLinks.removeAll()
+	end
+	
+	
+	
+	/** \brief Count of bones. */
+	public func int getBoneCount()
+		return pBones.getCount()
+	end
+	
+	/** \brief Bone at index. */
+	public func String getBoneAt(int index)
+		return pBones.getAt(index) cast String
+	end
+	
+	/** \brief Add bone. */
+	public func void addBone(String bone)
+		if bone == null
+			throw ENullPointer.new("bone")
+		end
+		pBones.add(bone)
+	end
+	
+	
+	
+	/** \brief Rule is enabled. */
+	public func bool getEnabled()
+		return pEnabled
+	end
+	
+	/** \brief Set if rule is enabled. */
+	public func void setEnabled(bool enabled)
+		pEnabled = enabled
+	end
+	
+	/** \brief Blend mode. */
+	public func AnimatorRuleBlendMode getBlendMode()
+		return pBlendMode
+	end
+	
+	/** \brief Set blend mode. */
+	public func void setBlendMode(AnimatorRuleBlendMode mode)
+		pBlendMode = mode
+	end
+	
+	/** \brief Blend factor. */
+	public func float getBlendFactor()
+		return pBlendFactor
+	end
+	
+	/** \brief Set blend factor. */
+	public func void setBlendFactor(float factor)
+		pBlendFactor = factor
+	end
+	
+	
+	
+	/** \brief Build engine animator rule using the stored definition. */
+	abstract public func AnimatorRule buildRule(Animator animator)
+	
+	/** \brief Setup common parameters for animator rule. */
+	protected func void buildRuleCommon(AnimatorRule rule)
+		if rule == null
+			throw ENullPointer.new("rule")
+		end
+		
+		rule.setEnabled(pEnabled)
+		rule.setBlendMode(pBlendMode)
+		rule.setBlendFactor(pBlendFactor)
+		
+		pBones.forEach(block String each
+			rule.addBone(each)
+		end)
+	end
+	
+	
+	
+	/**
+	 * \brief Create copy of rule.
+	 * \version 1.13
+	 */
+	public func ADRule copy(AnimatorDefinition fromDef, AnimatorDefinition toDef)
+		throw EInvalidAction.new("subclass responsibility")
+	end
+	
+	
+	
+	public func void debug(Console console)
+	end
+	
+	protected func String debugCommon(String type)
 		var ADRuleTargetLink targetLink
 		var int i, count
 		
-		var String text = "- Rule " + type + " ( name=" + this.pName + " enabled=" + this.pEnabled \
-			+ " mode=" + this.pBlendMode + " factor=" + this.pBlendFactor
+		var String text = "- Rule " + type + " (name=" + pName + " enabled=" + pEnabled \
+			+ " mode=" + pBlendMode + " factor=" + pBlendFactor
 		
-		count = this.pBones.getCount()
+		count = pBones.getCount()
 		for i = 0 to count
-			text = text + " bone=" + this.pBones.getAt( i ).toString()
+			text = text + " bone=" + pBones.getAt(i).toString()
 		end
 		
-		count = this.pTargetLinks.getCount()
+		count = pTargetLinks.getCount()
 		for i = 0 to count
-			targetLink = this.pTargetLinks.getAt( i ) cast ADRuleTargetLink
+			targetLink = pTargetLinks.getAt(i) cast ADRuleTargetLink
 			
 			text = text + " link=" + targetLink.getTarget() + ":" + targetLink.getLink().getIndex()
 		end
