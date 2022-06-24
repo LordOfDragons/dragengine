@@ -2028,6 +2028,11 @@
 			<description>Sub title style selector. Widgets in the sub title text have designer selectors like "SubTitleBoxText{.&lt;selectorId&gt;}{.&lt;style&gt;}" where "style" is used by the conversation artists (for example "think" or "shout") while "selectorId" allows per-actor variations. Empty string uses no ID.</description>
 			<type>string</type>
 		</property>
+		<property name='headRotatorBone'>
+			<description>Head rotator bone name or empty string if not used.</description>
+			<type>string</type>
+			<default/>
+		</property>
 		<property name='headRotatorOffset'>
 			<description>Head rotator offset used for Head-Look-At handling.</description>
 			<type>vector3</type>
