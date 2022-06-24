@@ -276,7 +276,7 @@ void igdeCreateProject::pCopyDefaultFiles(){
 		"odg", "ods", "odt", "pdf", "doc", "docx", "docm", "xls", "xlsx", "xlsm",
 		"ppt", "pps", "pptx", "pptm", "ppsx", "ppsm", "sldx", "sldm",
 		// dragengine specific
-		"deanimator", "denavspace", "depemit", "desky", "desynth", "depfc",
+		"denavspace", "depfc",
 		// audio editing
 		"au", "aup",
 		// 3d model editing
