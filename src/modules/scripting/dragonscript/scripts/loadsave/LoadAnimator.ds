@@ -221,6 +221,9 @@ class LoadAnimator extends BaseXmlLoader
 		elif tagName.equals("blendFactor")
 			rule.setBlendFactor(element.getFirstCDataFloat())
 			
+		elif tagName.equals("invertBlendFactor")
+			rule.setInvertBlendFactor(element.getFirstCDataBool())
+			
 		elif tagName.equals("bone")
 			rule.addBone(element.getFirstCData())
 		end

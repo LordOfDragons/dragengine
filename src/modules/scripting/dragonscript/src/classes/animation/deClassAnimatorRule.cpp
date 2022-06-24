@@ -173,6 +173,25 @@ void deClassAnimatorRule::nfSetBlendFactor::RunFunction( dsRunTime *rt, dsValue 
 	}
 }
 
+// public func void setInvertBlendFactor(bool invertBlendFactor)
+deClassAnimatorRule::nfSetInvertBlendFactor::nfSetInvertBlendFactor( const sInitData &init ) :
+dsFunction( init.clsArR, "setInvertBlendFactor", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsBool ); // invertBlendFactor
+}
+void deClassAnimatorRule::nfSetInvertBlendFactor::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const sArRNatDat &nd = *( ( sArRNatDat* )p_GetNativeData( myself ) );
+	
+	if( ! nd.rule ){
+		DSTHROW( dueNullPointer );
+	}
+	
+	nd.rule->SetInvertBlendFactor( rt->GetValue( 0 )->GetBool() );
+	
+	if( nd.animator ){
+		nd.animator->NotifyRulesChanged();
+	}
+}
+
 
 
 // public func void addBone( String boneName )
@@ -282,6 +301,7 @@ void deClassAnimatorRule::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfSetEnabled( init ) );
 	AddFunction( new nfSetBlendMode( init ) );
 	AddFunction( new nfSetBlendFactor( init ) );
+	AddFunction( new nfSetInvertBlendFactor( init ) );
 	
 	AddFunction( new nfAddBone( init ) );
 	AddFunction( new nfRemoveAllBones( init ) );

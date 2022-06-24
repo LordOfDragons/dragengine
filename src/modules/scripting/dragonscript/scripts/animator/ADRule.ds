@@ -40,6 +40,7 @@ abstract class ADRule
 	private var bool pEnabled
 	private var AnimatorRuleBlendMode pBlendMode
 	private var float pBlendFactor
+	private var bool pInvertBlendFactor
 	
 	
 	
@@ -73,6 +74,7 @@ abstract class ADRule
 		pEnabled = rule.pEnabled
 		pBlendMode = rule.pBlendMode
 		pBlendFactor = rule.pBlendFactor
+		pInvertBlendFactor = rule.pInvertBlendFactor
 		
 		pTargetLinks = rule.pTargetLinks.map(block ADRuleTargetLink link
 			return ADRuleTargetLink.new(link.getTarget(), toDef.getLinkAt(fromDef.indexOfLink(link.getLink())))
@@ -174,6 +176,22 @@ abstract class ADRule
 		pBlendFactor = factor
 	end
 	
+	/**
+	 * \brief Invert blend factor (1 - blendFactor).
+	 * \version 1.13
+	 */
+	public func bool getInvertBlendFactor()
+		return pInvertBlendFactor
+	end
+	
+	/**
+	 * \brief Set invert blend factor (1 - blendFactor).
+	 * \version 1.13
+	 */
+	public func void setInvertBlendFactor(bool invertBlendFactor)
+		pInvertBlendFactor = invertBlendFactor
+	end
+	
 	
 	
 	/** \brief Build engine animator rule using the stored definition. */
@@ -188,6 +206,7 @@ abstract class ADRule
 		rule.setEnabled(pEnabled)
 		rule.setBlendMode(pBlendMode)
 		rule.setBlendFactor(pBlendFactor)
+		rule.setInvertBlendFactor(pInvertBlendFactor)
 		
 		pBones.forEach(block String each
 			rule.addBone(each)
@@ -214,7 +233,8 @@ abstract class ADRule
 		var int i, count
 		
 		var String text = "- Rule " + type + " (name=" + pName + " enabled=" + pEnabled \
-			+ " mode=" + pBlendMode + " factor=" + pBlendFactor
+			+ " mode=" + pBlendMode + " factor=" + pBlendFactor\
+			+ " invertBlendFactor=" + pInvertBlendFactor
 		
 		count = pBones.getCount()
 		for i = 0 to count

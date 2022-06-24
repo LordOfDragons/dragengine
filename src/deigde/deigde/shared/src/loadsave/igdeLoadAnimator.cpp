@@ -1535,6 +1535,10 @@ bool igdeLoadAnimator::pReadRuleCommon( const decXmlElementTag &root, deAnimator
 		rule.SetBlendFactor( GetCDataFloat( root ) );
 		return true;
 		
+	}else if( root.GetName() == "invertBlendFactor" ){
+		rule.SetInvertBlendFactor( GetCDataBool( root ) );
+		return true;
+		
 	}else if( strcmp( root.GetName(), "bone" ) == 0 ){
 		rule.GetListBones().Add( GetCDataString( root ) );
 		return true;

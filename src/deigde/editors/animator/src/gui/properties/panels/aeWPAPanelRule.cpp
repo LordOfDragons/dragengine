@@ -42,6 +42,7 @@
 #include "../../../undosys/rule/aeURuleTargetRemoveAllLinks.h"
 #include "../../../undosys/rule/aeUSetRuleAddBone.h"
 #include "../../../undosys/rule/aeUSetRuleBlendFactor.h"
+#include "../../../undosys/rule/aeUToggleRuleInvertBlendFactor.h"
 #include "../../../undosys/rule/aeUSetRuleBlendMode.h"
 #include "../../../undosys/rule/aeUSetRuleEnabled.h"
 #include "../../../undosys/rule/aeUSetRuleName.h"
@@ -211,6 +212,21 @@ public:
 		const float factor = textField->GetFloat();
 		return fabsf( factor - rule->GetBlendFactor() ) > FLOAT_SAFE_EPSILON
 			? new aeUSetRuleBlendFactor( rule, factor ) : NULL;
+	}
+};
+
+class cActionInvertBlendFactor : public cBaseAction{
+public:
+	cActionInvertBlendFactor( aeWPAPanelRule &panel ) : cBaseAction( panel,
+		"Invert Blend Ractor", nullptr, "Use '1 - blendFactor' instead of 'blendFactor'" ){ }
+	
+	virtual igdeUndo *OnAction( aeAnimator*, aeRule *rule ){
+		return new aeUToggleRuleInvertBlendFactor( rule );
+	}
+	
+	virtual void Update( const aeAnimator &, const aeRule &rule ){
+		SetEnabled( true );
+		SetSelected( rule.GetInvertBlendFactor() );
 	}
 };
 
@@ -518,7 +534,7 @@ pTarget( NULL )
 	
 	helper.EditFloat( groupBox, "Blend Factor:", "Sets the blend factor",
 		pEditBlendFactor, new cTextBlendFactor( *this ) );
-	
+	helper.CheckBox( groupBox, pChkInvertBlendFactor, new cActionInvertBlendFactor( *this ), true );
 	helper.CheckBox( groupBox, pChkEnabled, new cActionEnabled( *this ), true );
 	
 	
@@ -688,6 +704,7 @@ void aeWPAPanelRule::UpdateRule(){
 	pEditBlendFactor->SetEnabled( enabled );
 	pListBones->SetEnabled( enabled );
 	
+	pChkInvertBlendFactor->GetAction()->Update();
 	pChkEnabled->GetAction()->Update();
 	pBtnBoneAdd->GetAction()->Update();
 	pBtnBoneDel->GetAction()->Update();

@@ -39,11 +39,11 @@ class deAnimatorRuleVisitor;
 
 
 /**
- * \brief Animator rule.
+ * Animator rule.
  */
 class aeRule : public deObject{
 public:
-	/** \brief Type holding strong reference. */
+	/** Type holding strong reference. */
 	typedef deTObjectReference<aeRule> Ref;
 	
 	
@@ -60,6 +60,7 @@ private:
 	
 	deAnimatorRule::eBlendModes pBlendMode;
 	float pBlendFactor;
+	bool pInvertBlendFactor;
 	bool pEnabled;
 	
 	aeControllerTarget pTargetBlendFactor;
@@ -67,108 +68,114 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create a new animator rule. */
+	/** Create a new animator rule. */
 	aeRule( deAnimatorRuleVisitorIdentify::eRuleTypes type );
-	/** \brief Create a copy of an animator rule. */
+	/** Create a copy of an animator rule. */
 	aeRule( const aeRule &copy );
-	/** \brief Clean up the animator rule. */
+	/** Clean up the animator rule. */
 	virtual ~aeRule();
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Retrieve the parent animator. */
+	/** Retrieve the parent animator. */
 	aeAnimator *GetAnimator() const;
-	/** \brief Set the parent animator. */
+	/** Set the parent animator. */
 	void SetAnimator( aeAnimator *animator );
 	
-	/** \brief Retrieve the engine animator rule or NULL. */
+	/** Retrieve the engine animator rule or NULL. */
 	inline deAnimatorRule *GetEngineRule() const{ return pEngRule; }
-	/** \brief Set the engine animator rule or NULL. */
+	/** Set the engine animator rule or NULL. */
 	void SetEngineRule( deAnimatorRule *rule );
-	/** \brief Create an engine animator rule. */
+	/** Create an engine animator rule. */
 	virtual deAnimatorRule *CreateEngineRule() = 0;
-	/** \brief Init the given engine rule with the default rule properties. */
+	/** Init the given engine rule with the default rule properties. */
 	void InitEngineRule( deAnimatorRule *engRule ) const;
 	
-	/** \brief Retrieve the rule type. */
+	/** Retrieve the rule type. */
 	inline deAnimatorRuleVisitorIdentify::eRuleTypes GetType() const{ return pType; }
 	
-	/** \brief Retrieve the parent group or NULL if there is none. */
+	/** Retrieve the parent group or NULL if there is none. */
 	inline aeRuleGroup *GetParentGroup() const{ return pParentGroup; }
-	/** \brief Set the parent group or NULL if there is none. */
+	/** Set the parent group or NULL if there is none. */
 	void SetParentGroup( aeRuleGroup *group );
 	
-	/** \brief Retrieve the name. */
+	/** Retrieve the name. */
 	inline const decString &GetName() const{ return pName; }
-	/** \brief Set the name. */
+	/** Set the name. */
 	void SetName( const char *filename );
 	
-	/** \brief Determine if the rule is enabled. */
+	/** Determine if the rule is enabled. */
 	inline bool GetEnabled() const{ return pEnabled; }
-	/** \brief Set if the rule is enabled. */
+	/** Set if the rule is enabled. */
 	void SetEnabled( bool enabled );
 	inline deAnimatorRule::eBlendModes GetBlendMode() const{ return pBlendMode; }
-	/** \brief \brief Set the blend mode. */
+	/** Set the blend mode. */
 	void SetBlendMode( deAnimatorRule::eBlendModes mode );
-	/** \brief \brief Retrieve the blend factor. */
+	/** Retrieve the blend factor. */
 	inline float GetBlendFactor() const{ return pBlendFactor; }
-	/** \brief \brief Set the source blend factor. */
+	/** Set the source blend factor. */
 	void SetBlendFactor( float factor );
 	
-	/** \brief Update Component and Animation. */
+	/** Invert blend factor. */
+	inline bool GetInvertBlendFactor() const{ return pInvertBlendFactor; }
+	
+	/** Set invert blend factor. */
+	void SetInvertBlendFactor( bool invert );
+	
+	/** Update Component and Animation. */
 	virtual void UpdateCompAnim();
-	/** \brief Update targets. */
+	/** Update targets. */
 	virtual void UpdateTargets();
-	/** \brief Retrieve the number of targets using a given link. */
+	/** Retrieve the number of targets using a given link. */
 	virtual int CountLinkUsage( aeLink *link ) const;
-	/** \brief Remove a link from all targets using it. */
+	/** Remove a link from all targets using it. */
 	virtual void RemoveLinkFromTargets( aeLink *link );
-	/** \brief Remove all links from all targets. */
+	/** Remove all links from all targets. */
 	virtual void RemoveLinksFromAllTargets();
 	
-	/** \brief Retrieve the source factor target. */
+	/** Retrieve the source factor target. */
 	inline aeControllerTarget &GetTargetBlendFactor(){ return pTargetBlendFactor; }
 	inline const aeControllerTarget &GetTargetBlendFactor() const{ return pTargetBlendFactor; }
 	
-	/** \brief List all links of all rule targets. */
+	/** List all links of all rule targets. */
 	virtual void ListLinks( aeLinkList& list );
 	
-	/** \brief Notify the engine that the rule changed. */
+	/** Notify the engine that the rule changed. */
 	void NotifyRuleChanged();
 	
-	/** \brief Create a copy of this rule. */
+	/** Create a copy of this rule. */
 	virtual aeRule *CreateCopy() const = 0;
 	
-	/** \brief Parent animator changed. */
+	/** Parent animator changed. */
 	virtual void OnParentAnimatorChanged();
 	/*@}*/
 	
 	/** \name Bone Management */
 	/*@{*/
-	/** \brief Retrieve the list of bones. */
+	/** Retrieve the list of bones. */
 	inline const decStringSet &GetListBones() const{ return pListBones; }
 	
-	/** \brief Set list of bones. */
+	/** Set list of bones. */
 	void SetListBones( const decStringSet &bones );
 	
-	/** \brief Add a bone. */
+	/** Add a bone. */
 	void AddBone( const char *bone );
-	/** \brief Remove the given bone. */
+	/** Remove the given bone. */
 	void RemoveBone( const char *bone );
-	/** \brief Remove all bones. */
+	/** Remove all bones. */
 	void RemoveAllBones();
 	/*@}*/
 	
 	/** \name Operators */
 	/*@{*/
-	/** \brief Copy another animator rule to this animator rule. */
+	/** Copy another animator rule to this animator rule. */
 	virtual aeRule &operator=( const aeRule &copy );
 	/*@}*/
 	
 	/** \name Helper */
 	/*@{*/
-	/** \brief Create a new rule from a rule type. */
+	/** Create a new rule from a rule type. */
 	static aeRule *CreateRuleFromType( deAnimatorRuleVisitorIdentify::eRuleTypes type );
 	/*@}*/
 };

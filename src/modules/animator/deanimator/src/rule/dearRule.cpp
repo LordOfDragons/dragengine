@@ -56,6 +56,7 @@ pTargetBlendFactor( rule.GetTargetBlendFactor(), firstLink ),
 
 pBlendMode( rule.GetBlendMode() ),
 pBlendFactor( rule.GetBlendFactor() ),
+pInvertBlendFactor( rule.GetInvertBlendFactor() ),
 pEnabled( rule.GetEnabled() )
 {
 }
@@ -100,7 +101,8 @@ int dearRule::GetBoneMappingFor( int boneIndex ) const{
 }
 
 float dearRule::GetBlendFactor() const{
-	return pTargetBlendFactor.GetValue( pInstance, pBlendFactor );
+	const float blendFactor = pTargetBlendFactor.GetValue( pInstance, pBlendFactor );
+	return pInvertBlendFactor ? 1.0f - blendFactor : blendFactor;
 }
 
 dearAnimation *dearRule::GetUseAnimation() const{

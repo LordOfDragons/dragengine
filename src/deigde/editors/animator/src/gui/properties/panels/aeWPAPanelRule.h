@@ -54,6 +54,7 @@ private:
 	igdeTextFieldReference pEditName;
 	igdeComboBoxReference pCBBlendMode;
 	igdeTextFieldReference pEditBlendFactor;
+	igdeCheckBoxReference pChkInvertBlendFactor;
 	igdeCheckBoxReference pChkEnabled;
 	
 	igdeListBoxReference pListBones;

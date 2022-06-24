@@ -70,6 +70,7 @@ pName( "Rule" ),
 pType( type ),
 pBlendMode( deAnimatorRule::ebmBlend ),
 pBlendFactor( 1.0f ),
+pInvertBlendFactor( false ),
 pEnabled( true ){
 }
 
@@ -82,6 +83,7 @@ pType( copy.pType ),
 pListBones( copy.pListBones ),
 pBlendMode( copy.pBlendMode ),
 pBlendFactor( copy.pBlendFactor ),
+pInvertBlendFactor( copy.pInvertBlendFactor ),
 pEnabled( copy.pEnabled ),
 pTargetBlendFactor( copy.pTargetBlendFactor ){
 }
@@ -131,6 +133,7 @@ void aeRule::InitEngineRule( deAnimatorRule *engRule ) const{
 	engRule->SetEnabled( pEnabled );
 	engRule->SetBlendMode( pBlendMode );
 	engRule->SetBlendFactor( pBlendFactor );
+	engRule->SetInvertBlendFactor( pInvertBlendFactor );
 	engRule->GetListBones() = pListBones;
 	
 	pTargetBlendFactor.UpdateEngineTarget( animator, engRule->GetTargetBlendFactor() );
@@ -193,6 +196,20 @@ void aeRule::SetBlendFactor( float factor ){
 		
 		NotifyRuleChanged();
 	}
+}
+
+void aeRule::SetInvertBlendFactor( bool invert ){
+	if( invert == pInvertBlendFactor ){
+		return;
+	}
+	
+	pInvertBlendFactor = invert;
+	
+	if( pEngRule ){
+		pEngRule->SetInvertBlendFactor( invert );
+	}
+	
+	NotifyRuleChanged();
 }
 
 
@@ -320,6 +337,7 @@ aeRule &aeRule::operator=( const aeRule &copy ){
 	pListBones = copy.pListBones;
 	SetBlendMode( copy.pBlendMode );
 	SetBlendFactor( copy.pBlendFactor );
+	SetInvertBlendFactor( copy.pInvertBlendFactor );
 	SetEnabled( copy.pEnabled );
 	pTargetBlendFactor = copy.pTargetBlendFactor;
 	NotifyRuleChanged();

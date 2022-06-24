@@ -51,6 +51,7 @@ private:
 	
 	const deAnimatorRule::eBlendModes pBlendMode;
 	const float pBlendFactor;
+	const bool pInvertBlendFactor;
 	const bool pEnabled;
 	
 public:
