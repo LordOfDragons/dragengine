@@ -74,6 +74,9 @@ public:
 	
 	/** \brief Animator. */
 	void SetAnimator( aeAnimator *animator );
+	
+	/** \brief Animator path changed. */
+	void OnAnimatorPathChanged();
 	/*@}*/
 };
 

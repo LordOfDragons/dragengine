@@ -116,6 +116,9 @@ public:
 	/** \brief Animator changed. */
 	virtual void OnAnimatorChanged();
 	
+	/** \brief Animator path changed. */
+	virtual void OnAnimatorPathChanged();
+	
 	/** \brief Update controller list. */
 	virtual void UpdateControllerList();
 	

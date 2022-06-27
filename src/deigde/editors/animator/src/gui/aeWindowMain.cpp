@@ -237,6 +237,7 @@ void aeWindowMain::SaveAnimator( const char *filename ){
 	pAnimator->SetFilePath( filename );
 	pAnimator->SetChanged( false );
 	pAnimator->SetSaved( true );
+	pWindowProperties->OnAnimatorPathChanged();
 	GetRecentFiles().AddFile( filename );
 }
 

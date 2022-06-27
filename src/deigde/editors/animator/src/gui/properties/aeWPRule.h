@@ -131,6 +131,9 @@ public:
 	
 	/** \brief Update the rule move list. */
 	void UpdateRuleMoveList();
+	
+	/** \brief Animator path changed. */
+	void OnAnimatorPathChanged();
 	/*@}*/
 };
 

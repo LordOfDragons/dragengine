@@ -279,6 +279,15 @@ aeWPAPanelRuleSubAnimator::~aeWPAPanelRuleSubAnimator(){
 // Management
 ///////////////
 
+void aeWPAPanelRuleSubAnimator::OnAnimatorPathChanged(){
+	if( GetAnimator() ){
+		pEditPathAnimator->SetBasePath( GetAnimator()->GetDirectoryPath() );
+		
+	}else{
+		pEditPathAnimator->SetBasePath( "" );
+	}
+}
+
 void aeWPAPanelRuleSubAnimator::UpdateConnectionList(){
 	const aeRuleSubAnimator * const rule = ( aeRuleSubAnimator* )GetRule();
 	const int selection = pCBConnection->GetSelection();

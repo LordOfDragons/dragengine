@@ -611,6 +611,8 @@ void aeWPAPanelRule::OnActivated(){
 	UpdateTargetList();
 	UpdateControllerList();
 	
+	OnAnimatorPathChanged();
+	
 	if( pCBTarget->GetItemCount() > 0 ){
 		pCBTarget->SetSelection( 0 );
 	}
@@ -618,6 +620,10 @@ void aeWPAPanelRule::OnActivated(){
 
 void aeWPAPanelRule::OnAnimatorChanged(){
 	SetTarget( NULL );
+	OnAnimatorPathChanged();
+}
+
+void aeWPAPanelRule::OnAnimatorPathChanged(){
 }
 
 

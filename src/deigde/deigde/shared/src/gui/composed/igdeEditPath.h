@@ -65,7 +65,7 @@ protected:
 	};
 	
 	/** \brief Button action. */
-	class cActionButton : public igdeActionContextMenu{
+	class cActionButton : public igdeAction{
 	protected:
 		igdeEditPath &pEditPath;
 		
@@ -73,6 +73,17 @@ protected:
 		cActionButton( igdeEditPath &editPath, const char *description );
 		virtual ~cActionButton();
 		virtual void OnAction();
+		virtual void Update();
+	};
+	
+	/** \brief Button menu action. */
+	class cActionButtonMenu : public igdeActionContextMenu{
+	protected:
+		igdeEditPath &pEditPath;
+		
+	public:
+		cActionButtonMenu( igdeEditPath &editPath, const char *description );
+		virtual ~cActionButtonMenu();
 		virtual void AddContextMenuEntries( igdeMenuCascade &contextMenu );
 		virtual void Update();
 	};
@@ -81,10 +92,13 @@ protected:
 	class cActionSelectFileDialog : public igdeActionSelectFile{
 	protected:
 		igdeEditPath &pEditPath;
+		bool pUseRelativePath;
 		
 	public:
 		cActionSelectFileDialog( igdeEditPath &editPath, igdeTextField &textField );
 		virtual ~cActionSelectFileDialog();
+		virtual void PrepareFile( decString &path );
+		virtual bool AcceptFile( decString &path );
 		virtual decString DefaultPath();
 	};
 	
@@ -99,6 +113,42 @@ protected:
 		virtual void OnAction();
 	};
 	
+	/** \brief Browse file action. */
+	class cActionBrowseFile : public igdeAction{
+	protected:
+		igdeEditPath &pEditPath;
+		
+	public:
+		cActionBrowseFile( igdeEditPath &editPath );
+		virtual ~cActionBrowseFile();
+		virtual void OnAction();
+		virtual void Update();
+	};
+	
+	/** \brief Convert to absolute path. */
+	class cActionConvertAbsolute : public igdeAction{
+	protected:
+		igdeEditPath &pEditPath;
+		
+	public:
+		cActionConvertAbsolute( igdeEditPath &editPath );
+		virtual ~cActionConvertAbsolute();
+		virtual void OnAction();
+		virtual void Update();
+	};
+	
+	/** \brief Convert to relative path. */
+	class cActionConvertRelative : public igdeAction{
+	protected:
+		igdeEditPath &pEditPath;
+		
+	public:
+		cActionConvertRelative( igdeEditPath &editPath );
+		virtual ~cActionConvertRelative();
+		virtual void OnAction();
+		virtual void Update();
+	};
+	
 	
 	
 private:
@@ -109,11 +159,14 @@ private:
 	decString pDefaultPath;
 	bool pAutoValidatePath;
 	bool pUseGameVFS;
+	decString pBasePath;
 	
-	igdeActionContextMenuReference pActionButton;
+	igdeActionReference pActionButton;
+	igdeActionContextMenuReference pActionButtonMenu;
 	
 	igdeTextFieldReference pText;
 	igdeButtonReference pButton;
+	igdeButtonReference pButtonMenu;
 	
 	decObjectOrderedSet pListeners;
 	
@@ -179,6 +232,9 @@ public:
 	/** \brief Clear path. */
 	void ClearPath();
 	
+	/** \brief Absolute path. */
+	decString GetAbsolutePath() const;
+	
 	/** \brief Widget is enabled. */
 	bool GetEnabled() const;
 	
@@ -212,6 +268,20 @@ public:
 	/** \brief Use game virtual file system or native file system. */
 	inline bool GetUseGameVFS() const{ return pUseGameVFS; }
 	
+	/**
+	 * \brief Base path or empty string.
+	 * 
+	 * If base is set relative path can be entered.
+	 */
+	inline const decString &GetBasePath() const{ return pBasePath; }
+	
+	/**
+	 * \brief Set base path or empty string.
+	 * 
+	 * If base is set relative path can be entered.
+	 */
+	void SetBasePath( const char *path );
+	
 	/** \brief Focus widget. */
 	void Focus();
 	
@@ -243,6 +313,24 @@ public:
 	 * \warning Called by the constructor.
 	 */
 	virtual void SetSelectPathActions();
+	
+	
+	
+	/**
+	 * \brief Add context menu entries.
+	 * 
+	 * Called by menu button action.
+	 */
+	virtual void AddContextMenuEntries( igdeMenuCascade &contextMenu );
+	
+	/** \brief Convert to absolute path if possible. */
+	void ToAbsolutePath();
+	
+	/** \brief Convert to relative path if possible. */
+	void ToRelativePath();
+	
+	/** \brief Open path in file system browser. */
+	void BrowsePath();
 	
 	
 	
