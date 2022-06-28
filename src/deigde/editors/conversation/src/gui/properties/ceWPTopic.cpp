@@ -1410,6 +1410,10 @@ void ceWPTopic::UpdateConvoCoordSysLists(){
 	pPanelACoordSystemRemove->UpdateConvoCoordSysIDLists();
 }
 
+void ceWPTopic::OnConversationPathChanged(){
+	pPanelAActorSpeak->OnConversationPathChanged();
+}
+
 
 
 void ceWPTopic::LocateAction( ceConversationAction *action ){

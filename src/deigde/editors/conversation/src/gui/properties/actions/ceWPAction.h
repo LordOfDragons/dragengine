@@ -80,6 +80,9 @@ public:
 	
 	/** \brief Update actor id lists. */
 	virtual void UpdateActorIDLists();
+	
+	/** \brief Conversation path changed. */
+	virtual void OnConversationPathChanged();
 	/*@}*/
 };
 

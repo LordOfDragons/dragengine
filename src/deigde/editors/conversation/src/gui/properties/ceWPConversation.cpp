@@ -1517,6 +1517,14 @@ void ceWPConversation::UpdateConversation(){
 	UpdateImportConvoPathList();
 }
 
+void ceWPConversation::OnConversationPathChanged(){
+	if( pConversation ){
+		pPathImportConvo->SetBasePath( pConversation->GetDirectoryPath() );
+		
+	}else{
+		pPathImportConvo->SetBasePath( "" );
+	}
+}
 
 
 void ceWPConversation::UpdateImportConvoPathList(){

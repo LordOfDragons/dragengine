@@ -212,6 +212,9 @@ public:
 	/** \brief Update conversation coordinate system lists. */
 	void UpdateConvoCoordSysLists();
 	
+	/** \brief Conversation path changed. */
+	void OnConversationPathChanged();
+	
 	
 	
 	/** \brief Locate action from active topic in tree and make it visible. */

@@ -936,6 +936,23 @@ void peeWPType::SetEmitter( peeEmitter *emitter ){
 	SelectActiveParameter();
 }
 
+void peeWPType::OnEmitterPathChanged(){
+	if( pEmitter ){
+		pEditSkin->SetBasePath( pEmitter->GetDirectoryPath() );
+		pEditModel->SetBasePath( pEmitter->GetDirectoryPath() );
+		pEditModelSkin->SetBasePath( pEmitter->GetDirectoryPath() );
+		pEditPathTrailEmitter->SetBasePath( pEmitter->GetDirectoryPath() );
+		pEditPathCollisionEmitter->SetBasePath( pEmitter->GetDirectoryPath() );
+		
+	}else{
+		pEditSkin->SetBasePath( "" );
+		pEditModel->SetBasePath( "" );
+		pEditModelSkin->SetBasePath( "" );
+		pEditPathTrailEmitter->SetBasePath( "" );
+		pEditPathCollisionEmitter->SetBasePath( "" );
+	}
+}
+
 peeType *peeWPType::GetType() const{
 	return pEmitter ? pEmitter->GetActiveType() : NULL;
 }

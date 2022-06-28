@@ -302,12 +302,12 @@ class LoadConversation extends BaseXmlLoader
 	end
 	
 	/** \brief Read topic tag. */
-	protected func void pReadTopic( EasyXMLElement root, ConversationTopicGroup group )
+	protected func void pReadTopic( EasyXMLElement root, ConversationTopicGroup group, String basePath )
 		var ConversationTopic topic = ConversationTopic.new( StringID.new( root.getAttributeNamed( "id" ) ) )
 		
 		root.forEachTag( block EasyXMLElement element, String tagName
 			if tagName.equals( "actions" )
-				this.pReadActions( element ).forEach( block ConversationAction each
+				this.pReadActions( element, basePath ).forEach( block ConversationAction each
 					topic.addAction( each )
 				end )
 				
@@ -320,7 +320,7 @@ class LoadConversation extends BaseXmlLoader
 	end
 	
 	/** \brief Read actions. */
-	protected func Array pReadActions( EasyXMLElement root )
+	protected func Array pReadActions( EasyXMLElement root, String basePath )
 		var Array actions = Array.new()
 		
 		root.forEachTag( block EasyXMLElement element, String tagName
@@ -331,13 +331,13 @@ class LoadConversation extends BaseXmlLoader
 				actions.add( this.pReadActionMusic( element ) )
 				
 			elif tagName.equals( "actorSpeak" )
-				actions.add( this.pReadActionActorSpeak( element ) )
+				actions.add( this.pReadActionActorSpeak( element, basePath ) )
 				
 			elif tagName.equals( "ifElse" )
-				actions.add( this.pReadActionIfElse( element ) )
+				actions.add( this.pReadActionIfElse( element, basePath ) )
 				
 			elif tagName.equals( "playerChoice" )
-				actions.add( this.pReadActionPlayerChoice( element ) )
+				actions.add( this.pReadActionPlayerChoice( element, basePath ) )
 				
 			elif tagName.equals( "stopConversation" )
 				actions.add( this.pReadActionStopConversation( element ) )
@@ -361,7 +361,7 @@ class LoadConversation extends BaseXmlLoader
 				actions.add( this.pReadActionGameCommand( element ) )
 				
 			elif tagName.equals( "wait" )
-				actions.add( this.pReadActionWait( element ) )
+				actions.add( this.pReadActionWait( element, basePath ) )
 				
 			elif tagName.equals( "trigger" )
 				actions.add( this.pReadActionTrigger( element ) )
@@ -451,7 +451,7 @@ class LoadConversation extends BaseXmlLoader
 	end
 	
 	/** \brief Read actor speak action. */
-	protected func ConversationAction pReadActionActorSpeak( EasyXMLElement root )
+	protected func ConversationAction pReadActionActorSpeak( EasyXMLElement root, String basePath )
 		var CActionActorSpeak action = CActionActorSpeak.new()
 		
 		root.forEachTag( block EasyXMLElement element, String tagName
@@ -469,7 +469,7 @@ class LoadConversation extends BaseXmlLoader
 				action.setTextBoxTextStyle( StringID.new( element.getFirstCData() ) )
 				
 			elif tagName.equals( "pathSound" )
-				action.setPathSound( element.getFirstCData() )
+				action.setPathSound( File.absolutePath( element.getFirstCData(), basePath ).getPath() )
 				
 			elif tagName.equals( "words" )
 				this.pReadStrips( element ).forEach( block ConversationStrip each
@@ -519,15 +519,15 @@ class LoadConversation extends BaseXmlLoader
 	end
 	
 	/** \brief Read if-else action. */
-	protected func ConversationAction pReadActionIfElse( EasyXMLElement root )
+	protected func ConversationAction pReadActionIfElse( EasyXMLElement root, String basePath )
 		var CActionIfElse action = CActionIfElse.new()
 		
 		root.forEachTag( block EasyXMLElement element, String tagName
 			if tagName.equals( "case" )
-				action.addCase( this.pReadActionIfElseCase( element ) )
+				action.addCase( this.pReadActionIfElseCase( element, basePath ) )
 				
 			elif tagName.equals( "else" )
-				this.pReadActions( element ).forEach( block ConversationAction each
+				this.pReadActions( element, basePath ).forEach( block ConversationAction each
 					action.addElseAction( each )
 				end )
 				
@@ -540,7 +540,7 @@ class LoadConversation extends BaseXmlLoader
 	end
 	
 	/** \brief Read if-else if-case action. */
-	protected func CActionIfElseCase pReadActionIfElseCase( EasyXMLElement root )
+	protected func CActionIfElseCase pReadActionIfElseCase( EasyXMLElement root, String basePath )
 		var CActionIfElseCase ifcase = CActionIfElseCase.new()
 		
 		root.forEachTag( block EasyXMLElement element, String tagName
@@ -548,7 +548,7 @@ class LoadConversation extends BaseXmlLoader
 				ifcase.setCondition( this.pReadSingleCondition( element ) )
 				
 			elif tagName.equals( "actions" )
-				this.pReadActions( element ).forEach( block ConversationAction each
+				this.pReadActions( element, basePath ).forEach( block ConversationAction each
 					ifcase.addAction( each )
 				end )
 				
@@ -561,7 +561,7 @@ class LoadConversation extends BaseXmlLoader
 	end
 	
 	/** \brief Read player choice action. */
-	protected func ConversationAction pReadActionPlayerChoice( EasyXMLElement root )
+	protected func ConversationAction pReadActionPlayerChoice( EasyXMLElement root, String basePath )
 		var CActionPlayerChoice action = CActionPlayerChoice.new()
 		
 		root.forEachTag( block EasyXMLElement element, String tagName
@@ -569,10 +569,10 @@ class LoadConversation extends BaseXmlLoader
 				action.setVariable( element.getFirstCData() )
 				
 			elif tagName.equals( "option" )
-				action.addOption( this.pReadActionPlayerChoiceOption( element ) )
+				action.addOption( this.pReadActionPlayerChoiceOption( elemen, basePath ) )
 				
 			elif tagName.equals( "actions" )
-				this.pReadActions( element ).forEach( block ConversationAction each
+				this.pReadActions( element, basePath ).forEach( block ConversationAction each
 					action.addAction( each )
 				end )
 				
@@ -585,7 +585,7 @@ class LoadConversation extends BaseXmlLoader
 	end
 	
 	/** \brief Read player choice option action. */
-	protected func CActionPlayerChoiceOption pReadActionPlayerChoiceOption( EasyXMLElement root )
+	protected func CActionPlayerChoiceOption pReadActionPlayerChoiceOption( EasyXMLElement root, String basePath )
 		var CActionPlayerChoiceOption option = CActionPlayerChoiceOption.new()
 		
 		root.forEachTag( block EasyXMLElement element, String tagName
@@ -596,7 +596,7 @@ class LoadConversation extends BaseXmlLoader
 				option.setCondition( this.pReadSingleCondition( element ) )
 				
 			elif tagName.equals( "actions" )
-				this.pReadActions( element ).forEach( block ConversationAction each
+				this.pReadActions( element, basePath ).forEach( block ConversationAction each
 					option.addAction( each )
 				end )
 				
@@ -782,7 +782,7 @@ class LoadConversation extends BaseXmlLoader
 	end
 	
 	/** \brief Read wait action. */
-	protected func ConversationAction pReadActionWait( EasyXMLElement root )
+	protected func ConversationAction pReadActionWait( EasyXMLElement root, String basePath )
 		var CActionWait action = CActionWait.new()
 		
 		root.forEachTag( block EasyXMLElement element, String tagName
@@ -793,7 +793,7 @@ class LoadConversation extends BaseXmlLoader
 				action.setInterval( element.getFirstCDataFloat() )
 				
 			elif tagName.equals( "actions" )
-				this.pReadActions( element ).forEach( block ConversationAction each
+				this.pReadActions( element, basePath ).forEach( block ConversationAction each
 					action.addAction( each )
 				end )
 				

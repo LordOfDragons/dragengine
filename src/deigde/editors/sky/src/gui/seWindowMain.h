@@ -129,6 +129,9 @@ public:
 	/** \brief load save system. */
 	inline seLoadSaveSystem &GetLoadSaveSystem() const{ return *pLoadSaveSystem; }
 	
+	/** Properties window. */
+	inline seWindowProperties &GetWindowProperties() const{ return *pWindowProperties; }
+	
 	
 	
 	/** \brief Sky. */

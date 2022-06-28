@@ -406,6 +406,9 @@ void seWPAPanelSource::SetSynthesizer( seSynthesizer *synthesizer ){
 	pWPEffect->SetSynthesizer( synthesizer );
 }
 
+void seWPAPanelSource::OnSynthesizerPathChanged(){
+}
+
 void seWPAPanelSource::OnActivated(){
 	UpdateLinkList();
 	UpdateTargetList();

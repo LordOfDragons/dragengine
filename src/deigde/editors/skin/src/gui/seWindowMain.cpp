@@ -254,6 +254,7 @@ void seWindowMain::LoadSkin( const char *filename ){
 	
 	// fore loading resources since the base path is now set
 	skin->UpdateResources();
+	pWindowProperties->OnSkinPathChanged();
 	
 	// determine the file title of the loaded skin
 	const int lsindex = pLoadSaveSystem->IndexOfLSSkinMatching( filename );
@@ -324,6 +325,7 @@ void seWindowMain::SaveSkin( const char *filename ){
 	// path are now different and potentially broken
 	if( basePathChanged ){
 		pSkin->UpdateResources();
+		pWindowProperties->OnSkinPathChanged();
 	}
 	GetRecentFiles().AddFile( filename );
 }

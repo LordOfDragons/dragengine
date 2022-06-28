@@ -1620,6 +1620,29 @@ void meWPHeightTerrain::SetWorld( meWorld *world ){
 	UpdateVisibilityPaint();
 }
 
+void meWPHeightTerrain::OnWorldPathChanged(){
+	if( pWorld ){
+		pEditPathHTerrain->SetBasePath( pWorld->GetDirectoryPath() );
+		pEditPathHeightImage->SetBasePath( pWorld->GetDirectoryPath() );
+		pEditPathVisImage->SetBasePath( pWorld->GetDirectoryPath() );
+		pEditTexSkin->SetBasePath( pWorld->GetDirectoryPath() );
+		pEditTexMask->SetBasePath( pWorld->GetDirectoryPath() );
+		pEditPathPFCache->SetBasePath( pWorld->GetDirectoryPath() );
+		pEditVVModel->SetBasePath( pWorld->GetDirectoryPath() );
+		pEditVVSkin->SetBasePath( pWorld->GetDirectoryPath() );
+		
+	}else{
+		pEditPathHTerrain->SetBasePath( "" );
+		pEditPathHeightImage->SetBasePath( "" );
+		pEditPathVisImage->SetBasePath( "" );
+		pEditTexSkin->SetBasePath( "" );
+		pEditTexMask->SetBasePath( "" );
+		pEditPathPFCache->SetBasePath( "" );
+		pEditVVModel->SetBasePath( "" );
+		pEditVVSkin->SetBasePath( "" );
+	}
+}
+
 meHeightTerrainSector *meWPHeightTerrain::GetSector() const{
 	if( pWorld ){
 		return pWorld->GetHeightTerrain()->GetSectorWith( decPoint() );

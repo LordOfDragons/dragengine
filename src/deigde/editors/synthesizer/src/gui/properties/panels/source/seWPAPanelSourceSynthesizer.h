@@ -62,6 +62,9 @@ public:
 	/** \brief Selected controller target. */
 	int GetCBControllerTarget() const;
 	
+	/** \brief Synthesizer path changed. */
+	virtual void OnSynthesizerPathChanged();
+	
 	/** \brief Update controller list. */
 	virtual void UpdateControllerList();
 	

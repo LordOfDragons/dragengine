@@ -423,6 +423,12 @@ seSource *seWPSource::GetSource() const{
 	return pSynthesizer ? pSynthesizer->GetActiveSource() : NULL;
 }
 
+void seWPSource::OnSynthesizerPathChanged(){
+	pPanelChain->OnSynthesizerPathChanged();
+	pPanelSound->OnSynthesizerPathChanged();
+	pPanelSynthesizer->OnSynthesizerPathChanged();
+}
+
 
 
 void seWPSource::UpdateSynthesizer(){

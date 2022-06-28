@@ -978,6 +978,17 @@ void seWPLayer::SetSky( seSky *sky ){
 	UpdateLinkList();
 }
 
+void seWPLayer::OnSkyPathChanged(){
+	if( pSky ){
+		pEditSkin->SetBasePath( pSky->GetDirectoryPath() );
+		pEditBodySkin->SetBasePath( pSky->GetDirectoryPath() );
+		
+	}else{
+		pEditSkin->SetBasePath( "" );
+		pEditBodySkin->SetBasePath( "" );
+	}
+}
+
 seLayer *seWPLayer::GetLayer() const{
 	return pSky ? pSky->GetActiveLayer(): NULL;
 }

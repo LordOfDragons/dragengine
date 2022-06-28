@@ -207,6 +207,16 @@ seWPAPanelSourceSynthesizer::~seWPAPanelSourceSynthesizer(){
 // Management
 ///////////////
 
+void seWPAPanelSourceSynthesizer::OnSynthesizerPathChanged(){
+	seSynthesizer * const synthesizer = GetSynthesizer();
+	if( synthesizer ){
+		pEditPathSynthesizer->SetBasePath( synthesizer->GetDirectoryPath() );
+		
+	}else{
+		pEditPathSynthesizer->SetBasePath( "" );
+	}
+}
+
 void seWPAPanelSourceSynthesizer::UpdateConTargetList(){
 	const seSourceSynthesizer * const source = ( seSourceSynthesizer* )GetSource();
 	const int selection = pCBConTarget->GetSelection();

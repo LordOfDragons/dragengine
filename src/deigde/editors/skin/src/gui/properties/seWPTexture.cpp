@@ -920,6 +920,17 @@ void seWPTexture::SetSkin( seSkin *skin ){
 	UpdateTextureList();
 }
 
+void seWPTexture::OnSkinPathChanged(){
+	if( pSkin ){
+		pEditPvtImagePath->SetBasePath( pSkin->GetDirectoryPath() );
+		pEditPvtVideoPath->SetBasePath( pSkin->GetDirectoryPath() );
+		
+	}else{
+		pEditPvtImagePath->SetBasePath( "" );
+		pEditPvtVideoPath->SetBasePath( "" );
+	}
+}
+
 seTexture *seWPTexture::GetTexture() const{
 	return pSkin ? pSkin->GetActiveTexture() : NULL;
 }

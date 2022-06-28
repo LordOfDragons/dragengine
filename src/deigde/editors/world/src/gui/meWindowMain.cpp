@@ -2186,6 +2186,7 @@ void meWindowMain::pUpdateLoading(){
 			}
 			
 			pWorld->ForceUpdateVegetation( false );
+			pWindowProperties->OnWorldPathChanged();
 		}
 		
 	}catch( const deException &e ){

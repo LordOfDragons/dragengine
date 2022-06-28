@@ -855,6 +855,17 @@ void seWPNode::SetSkin( seSkin *skin ){
 	UpdateOutline();
 }
 
+void seWPNode::OnSkinPathChanged(){
+	if( pSkin ){
+		pImageEditImage->SetBasePath( pSkin->GetDirectoryPath() );
+		pTextEditFont->SetBasePath( pSkin->GetDirectoryPath() );
+		
+	}else{
+		pImageEditImage->SetBasePath( "" );
+		pTextEditFont->SetBasePath( "" );
+	}
+}
+
 seTexture *seWPNode::GetTexture() const{
 	return pSkin ? pSkin->GetActiveTexture() : NULL;
 }

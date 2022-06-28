@@ -85,3 +85,8 @@ void seWindowProperties::SetSkin( seSkin *skin ){
 	( ( seWPView& )( igdeWidget& )pPanelView ).SetSkin( skin );
 	( ( seWPUndoHistory& )( igdeWidget& )pPanelUndoHistory ).SetSkin( skin );
 }
+
+void seWindowProperties::OnSkinPathChanged(){
+	( ( seWPTexture& )( igdeWidget& )pPanelTexture ).OnSkinPathChanged();
+	( ( seWPNode& )( igdeWidget& )pPanelNode ).OnSkinPathChanged();
+}

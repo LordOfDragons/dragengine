@@ -183,16 +183,19 @@ void seWindowMain::CreateSynthesizer(){
 }
 
 void seWindowMain::SaveSynthesizer( const char *filename ){
+	const decString basePath( pSynthesizer->GetDirectoryPath() );
+	
 	pLoadSaveSystem.SaveSynthesizer( pSynthesizer, filename );
 	
-	const decString dirPath( pSynthesizer->GetDirectoryPath() );
 	pSynthesizer->SetFilePath( filename );
-	if( dirPath != pSynthesizer->GetDirectoryPath() ){
-		pSynthesizer->DirectoryChanged();
-	}
-	
 	pSynthesizer->SetChanged( false );
 	pSynthesizer->SetSaved( true );
+	
+	if( pSynthesizer->GetDirectoryPath() != basePath ){
+		pSynthesizer->DirectoryChanged();
+		pViewSynthesizer->OnSynthesizerPathChanged();
+	}
+	
 	GetRecentFiles().AddFile( filename );
 }
 

@@ -133,6 +133,9 @@ public:
 	/** \brief Update conversation. */
 	void UpdateConversation();
 	
+	/** \brief Conversation path changed. */
+	void OnConversationPathChanged();
+	
 	
 	
 	/** \brief Update import conversation path list. */

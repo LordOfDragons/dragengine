@@ -347,6 +347,17 @@ void aeWPAnimator::UpdateAnimator(){
 	pBtnBoneDel->GetAction()->Update();
 }
 
+void aeWPAnimator::OnAnimatorPathChanged(){
+	if( pAnimator ){
+		pEditRigPath->SetBasePath( pAnimator->GetDirectoryPath() );
+		pEditAnimPath->SetBasePath( pAnimator->GetDirectoryPath() );
+		
+	}else{
+		pEditRigPath->SetBasePath( "" );
+		pEditAnimPath->SetBasePath( "" );
+	}
+}
+
 void aeWPAnimator::UpdateRigBoneList(){
 	const decString selection( GetCBRigBoneText() );
 	

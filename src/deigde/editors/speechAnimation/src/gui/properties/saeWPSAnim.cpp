@@ -560,6 +560,17 @@ void saeWPSAnim::SetSAnimation( saeSAnimation *sanimation ){
 	UpdateSAnimation();
 }
 
+void saeWPSAnim::OnSAnimationPathChanged(){
+	if( pSAnimation ){
+		pEditRigPath->SetBasePath( pSAnimation->GetDirectoryPath() );
+		pEditAnimPath->SetBasePath( pSAnimation->GetDirectoryPath() );
+		
+	}else{
+		pEditRigPath->SetBasePath( "" );
+		pEditAnimPath->SetBasePath( "" );
+	}
+}
+
 
 
 void saeWPSAnim::UpdateSAnimation(){
