@@ -106,7 +106,7 @@ class LoadConversation extends BaseXmlLoader
 				// deprecated
 				
 			elif tagName.equals( "group" ) or tagName.equals( "file" ) // "file" DEPRECATED
-				this.pReadTopicGroup( element, conversation )
+				this.pReadTopicGroup( element, conversation, basePath )
 				
 			elif tagName.equals( "import" )
 				var String filename = element.getFirstCData()
@@ -282,7 +282,7 @@ class LoadConversation extends BaseXmlLoader
 	end
 	
 	/** \brief Read file tag. */
-	protected func void pReadTopicGroup( EasyXMLElement root, Conversation conversation )
+	protected func void pReadTopicGroup( EasyXMLElement root, Conversation conversation, String basePath )
 		var StringID id = StringID.new( root.getAttributeNamed( "id" ) )
 		
 		var ConversationTopicGroup group = conversation.getTopicGroupWithID( id )
@@ -293,7 +293,7 @@ class LoadConversation extends BaseXmlLoader
 		
 		root.forEachTag( block EasyXMLElement element, String tagName
 			if tagName.equals( "topic" )
-				this.pReadTopic( element, group )
+				this.pReadTopic( element, group, basePath )
 				
 			else
 				this.logUnknownTag( element )
@@ -569,7 +569,7 @@ class LoadConversation extends BaseXmlLoader
 				action.setVariable( element.getFirstCData() )
 				
 			elif tagName.equals( "option" )
-				action.addOption( this.pReadActionPlayerChoiceOption( elemen, basePath ) )
+				action.addOption( this.pReadActionPlayerChoiceOption( element, basePath ) )
 				
 			elif tagName.equals( "actions" )
 				this.pReadActions( element, basePath ).forEach( block ConversationAction each

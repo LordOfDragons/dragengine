@@ -195,6 +195,22 @@
 		<image parameter='imageRightHover'>arrows/right_hover.png</image>
 	</designer>
 	
+	<designer name='Slider' type='Slider'>
+		<canvasCreator parameter='canvasBarHorizontal' extend='slider/bar-horizontal.ccreator.xml'/>
+		<canvasCreator parameter='canvasBarVertical' extend='slider/bar-vertical.ccreator.xml'/>
+		<canvasCreator parameter='canvasTickLargeHorizontal' extend='slider/tick-large-horizontal.ccreator.xml'/>
+		<canvasCreator parameter='canvasTickLargeVertical' extend='slider/tick-large-vertical.ccreator.xml'/>
+		<canvasCreator parameter='canvasTickSmallHorizontal' extend='slider/tick-small-horizontal.ccreator.xml'/>
+		<canvasCreator parameter='canvasTickSmallVertical' extend='slider/tick-small-vertical.ccreator.xml'/>
+		<integer parameter='size'>24</integer>
+		<integer parameter='knobOffset'>12</integer>
+		<integer parameter='tickSize'>2</integer>
+		
+		<image parameter='normal.imageKnob'>slider/knob/normal.png</image>
+		<image parameter='hover.imageKnob'>slider/knob/hover.png</image>
+		<image parameter='focused.imageKnob'>slider/knob/focus.png</image>
+	</designer>
+	
 	<designer name='SpinButton' type='SpinButton'>
 		<integer parameter='size'>16</integer>
 		
