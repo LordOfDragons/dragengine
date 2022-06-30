@@ -296,6 +296,7 @@ class Slider extends Container implements RangeModelListener
 	private var int pSliderSize
 	private var int pKnobOffset
 	private var int pTickSize
+	private var float pSmallTickCountRatio
 	private var RepeatActionTimer pRepeatSlideTimer
 	private var Widget pWidgetBar
 	private var Widget pWidgetKnob
@@ -314,6 +315,7 @@ class Slider extends Container implements RangeModelListener
 		pSliderSize = 24
 		pKnobOffset = 12
 		pTickSize = 2
+		pSmallTickCountRatio = 1
 		
 		runWhileBlockingLayout(block
 			setDesignerSelector("Slider")
@@ -426,6 +428,32 @@ class Slider extends Container implements RangeModelListener
 		end
 		
 		pShowTicks = showTicks
+		createTicksCanvas()
+	end
+	
+	/**
+	 * \brief Percentage of small ticks to show per large tick.
+	 * 
+	 * Value is in the range from 0 to 1. Model page size is multiplied by this value to
+	 * get the count of small ticks to show.
+	 */
+	public func float getSmallTickCountRatio()
+		return pSmallTickCountRatio
+	end
+	
+	/**
+	 * \brief Set percentage of small ticks to show per large tick.
+	 * 
+	 * Value is in the range from 0 to 1. Model page size is multiplied by this value to
+	 * get the count of small ticks to show.
+	 */
+	public func void setSmallTickCountRatio(float ratio)
+		ratio = DEMath.clamp(ratio, 0.0, 1.0)
+		if DEMath.fabs(ratio - pSmallTickCountRatio) < 0.001
+			return
+		end
+		
+		pSmallTickCountRatio = ratio
 		createTicksCanvas()
 	end
 	
@@ -752,10 +780,12 @@ class Slider extends Container implements RangeModelListener
 		
 		var int countLarge = DEMath.min((range - 1) / pageSize + 1, maxCountLarge)
 		
-		var int spacingLarge = availableSpace / countLarge
+		var int spacingLarge = DEMath.max(availableSpace / countLarge, 1)
 		var int maxCountSmall = (spacingLarge - 1) / 5 + 1
 		
-		var int countSmall = DEMath.min(pageSize, maxCountSmall)
+		pageSize = (pSmallTickCountRatio * pageSize + 0.5) cast int
+		
+		var int countSmall = DEMath.clamp(pageSize, 1, maxCountSmall)
 		
 		var int countTicks = countLarge * countSmall + 1
 		var int lastTick = countTicks - 1
