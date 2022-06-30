@@ -80,6 +80,7 @@ private:
 		dsClass *clsVector2;
 		dsClass *clsNetworkStateValueType;
 		dsClass *clsNetworkStateValueFormat;
+		dsClass *clsMemoryFile;
 	};
 #define DEF_NATFUNC(name) \
 	class name : public dsFunction{ \
@@ -115,6 +116,8 @@ private:
 	DEF_NATFUNC( nfSetValueQuaternionAt );
 	DEF_NATFUNC( nfGetValuePrecisionAt );
 	DEF_NATFUNC( nfSetValuePrecisionAt );
+	DEF_NATFUNC( nfGetValueDataAt );
+	DEF_NATFUNC( nfSetValueDataAt );
 	
 	DEF_NATFUNC( nfGetStateListener );
 	DEF_NATFUNC( nfSetStateListener );
