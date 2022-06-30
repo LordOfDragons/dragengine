@@ -32,7 +32,7 @@ public class TitledEtchedBorderFactory extends TitledTwoColorBorderFactory
 	end
 	
 	/** \brief Create copy of border factory. */
-	public func new( TitledEtchedBorderFactory factory ) super( factory )
+	public func new(TitledEtchedBorderFactory factory) super(factory)
 	end
 	
 	
@@ -41,16 +41,19 @@ public class TitledEtchedBorderFactory extends TitledTwoColorBorderFactory
 	public func Border createBorder()
 		var TitledEtchedBorder border = TitledEtchedBorder.new()
 		
-		border.setRaised( this.getRaised() )
-		border.setColorHighlight( this.getColorHighlight() )
-		border.setColorShadow( this.getColorShadow() )
-		border.setText( this.getText() )
+		border.setRaised(getRaised())
+		border.setColorHighlight(getColorHighlight())
+		border.setColorShadow(getColorShadow())
+		border.setText(getText())
+		border.setText(getText())
+		border.setFont(getFont())
+		border.setTextColor(getTextColor())
 		
 		return border
 	end
 	
 	/** \brief Create factory copy. */
 	public func BorderFactory copyFactory()
-		return TitledEtchedBorderFactory.new( this )
+		return TitledEtchedBorderFactory.new(this)
 	end
 end

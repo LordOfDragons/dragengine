@@ -117,6 +117,15 @@
 		<borderSize parameter='normal.padding' left='0' top='20' right='0' bottom='0'/>
 	</designer>
 	
+	<designer name='Panel.Titled' type='Widget'>
+		<border parameter='normal.border' type='TitledEtched'>
+			<color parameter='colorHighlight' r='1' g='1' b='1'/>
+			<color parameter='colorShadow' r='0.5' g='0.5' b='0.5'/>
+			<color parameter='textColor' r='0' g='0' b='0'/>
+			<font parameter='font' size='15'>fonts/sans15.defont</font>
+		</border>
+	</designer>
+	
 	<designer name='Label' type='Label'>
 		<color parameter='normal.textColor' r='0' g='0' b='0'/>
 		<font parameter='normal.font' size='15'>../modern/fonts/sans15.defont</font>

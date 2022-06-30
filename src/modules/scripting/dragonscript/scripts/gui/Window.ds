@@ -53,7 +53,6 @@ class Window extends Container
 	
 	
 	
-	private var String pTitle
 	private var Decoration pDecoration
 	private var WindowState pWindowState
 	private var Widget pActiveWidget
@@ -84,7 +83,6 @@ class Window extends Container
 	
 	/** \brief Create window with the given geometry. */
 	public func new( Point position, Point size ) super( position, size )
-		this.pTitle = ""
 		this.pWindowState = WindowState.normal
 		this.pCanReorder = true
 		this.pCanMove = true
@@ -134,21 +132,14 @@ class Window extends Container
 	
 	
 	
-	/** \brief Window title. */
-	public func String getTitle()
-		return this.pTitle
-	end
-	
 	/** \brief Set window title. */
-	public func void setTitle( String title )
-		if title.equals( this.pTitle )
-			return
-		end
+	public func void setTitle(String title)
+		var bool titleChanged = not title.equals(getTitle())
 		
-		this.pTitle = title
+		super.setTitle(title)
 		
-		if this.pDecoration != null
-			this.pDecoration.onWindowParametersChanged()
+		if titleChanged and pDecoration != null
+			pDecoration.onWindowParametersChanged()
 		end
 	end
 	
