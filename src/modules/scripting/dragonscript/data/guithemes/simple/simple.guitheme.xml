@@ -14,15 +14,18 @@
 		</mousePointer>
 	</designer>
 	
-	<designer name='Window' type='Window'>
+	<designer name='WindowUndecorated' type='Window'>
+		<canvasCreator parameter='normal.canvas' type='Rectangle'>
+			<color parameter='colorFill' r='0.85' g='0.82' b='0.82'/>
+		</canvasCreator>
+	</designer>
+	
+	<designer name='Window' extendNamed='WindowUndecorated'>
 		<decoration parameter='decoration' type='Simple'>
 			<font parameter='active.title.font' size='15'>../modern/fonts/sans15.defont</font>
 			<color parameter='active.title.textColor' r='0' g='0' b='0'/>
 			<color parameter='inactive.title.textColor' r='0.25' g='0.25' b='0.25'/>
 		</decoration>
-		<canvasCreator parameter='normal.canvas' type='Rectangle'>
-			<color parameter='colorFill' r='0.85' g='0.82' b='0.82'/>
-		</canvasCreator>
 	</designer>
 	
 	<designer name='WindowPopup' type='Window'>

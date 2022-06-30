@@ -13,7 +13,13 @@
 		</mousePointer>
 	</designer>
 	
-	<designer name='Window' type='Window'>
+	<designer name='WindowUndecorated' type='Window'>
+		<canvasCreator parameter='normal.canvas' type='Rectangle'>
+			<color parameter='colorFill' r='0.85' g='0.82' b='0.82'/>
+		</canvasCreator>
+	</designer>
+	
+	<designer name='Window' extendNamed='WindowUndecorated'>
 		<decoration parameter='decoration' type='CanvasCreator'>
 			<borderSize parameter='decorationSize' left='8' top='25' right='8' bottom='14'/>
 			<font parameter='active.title.font' size='15'>fonts/sans15.defont</font>
@@ -31,9 +37,6 @@
 			<image parameter='imageButtonMinimizeHover'>window/button/minimize_hover.png</image>
 			<image parameter='imageButtonMinimizePressed'>window/button/minimize_pressed.png</image>
 		</decoration>
-		<canvasCreator parameter='normal.canvas' type='Rectangle'>
-			<color parameter='colorFill' r='0.85' g='0.82' b='0.82'/>
-		</canvasCreator>
 	</designer>
 	
 	<designer name='WindowPopup' type='Window'>
