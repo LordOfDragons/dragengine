@@ -124,6 +124,7 @@
 			<color parameter='textColor' r='0' g='0' b='0'/>
 			<font parameter='font' size='15'>fonts/sans15.defont</font>
 		</border>
+		<borderSize parameter='normal.padding' all='2'/>
 	</designer>
 	
 	<designer name='Label' type='Label'>
