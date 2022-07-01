@@ -660,7 +660,12 @@ void deoglLight::pSyncSource(){
 }
 
 void deoglLight::pCheckRequiresUpdateEverySync(){
-	pRequiresUpdateEverySync |= pSkinStateController->RequiresSyncEveryFrameUpdate();
+	if( pSkinStateController->RequiresSyncEveryFrameUpdate() ){
+		pRequiresUpdateEverySync = true;
+		if( pSkinStateController->RequiresPrepareRenderables() ){
+			pRLight->DirtyPrepareSkinStateRenderables();
+		}
+	}
 }
 
 void deoglLight::pRequiresSync(){
