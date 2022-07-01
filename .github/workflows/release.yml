@@ -154,4 +154,4 @@ jobs:
             blender-addon-dragengine-${{ github.event.inputs.version }}.zip,
             dragengine-live-${{ github.event.inputs.version }}.zip,
             install-dragengine-ci-${{ github.event.inputs.version }}-linux64.sh,
-            install-deigde-ci-${{ github.event.inputs.version }}-windows64.exe
+            install-deigde-ci-${{ github.event.inputs.version }}-linux64.sh
