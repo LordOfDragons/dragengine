@@ -1410,7 +1410,7 @@ pVVariation( NULL )
 	
 	igdeFilePatternList filePatterns;
 	filePatterns.AddFilePattern( new igdeFilePattern(
-		"Drag[en]gine Height Terrain", "*.dehterrain", ".dehterrain" ) );
+		"Drag[en]gine Height Terrain", "*.deterrain", ".deterrain" ) );
 	helper.EditPath( groupBox, "Height Terrain:", "File to save height terrain to",
 		filePatterns, pEditPathHTerrain, new cEditPathHT( *this ) );
 	helper.EditFloat( groupBox, "Sector Size:", "Size of sectors along X and Z axis",
@@ -1500,7 +1500,7 @@ pVVariation( NULL )
 	
 	filePatterns.RemoveAllFilePatterns();
 	filePatterns.AddFilePattern( new igdeFilePattern(
-		"Drag[en]gine Prop Field Cache", "*.pfc", ".pfc" ) );
+		"Drag[en]gine Prop Field Cache", "*.depfc", ".depfc" ) );
 	helper.EditPath( groupBox, "Skin:", "Skin to use for the texture.",
 		filePatterns, pEditPathPFCache, new cPathPathPFCache( *this ) );
 	
