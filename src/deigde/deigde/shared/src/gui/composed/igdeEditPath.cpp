@@ -141,11 +141,11 @@ void igdeEditPath::cActionSelectFileDialog::PrepareFile( decString &path ){
 	}
 	
 	if( pEditPath.GetUseGameVFS() ){
-		pUseRelativePath = ! decPath::IsUnixPathAbsolute( path );
+		pUseRelativePath = ! path.IsEmpty() && ! decPath::IsUnixPathAbsolute( path );
 		path = decPath::AbsolutePathUnix( path, pEditPath.GetBasePath() ).GetPathUnix();
 		
 	}else{
-		pUseRelativePath = ! decPath::IsNativePathAbsolute( path );
+		pUseRelativePath = ! path.IsEmpty() && ! decPath::IsNativePathAbsolute( path );
 		path = decPath::AbsolutePathNative( path, pEditPath.GetBasePath() ).GetPathNative();
 	}
 }
@@ -435,7 +435,7 @@ bool igdeEditPath::IsPathValid() const{
 
 void igdeEditPath::ValidatePath(){
 	if( pText->GetText().IsEmpty() ){
-		pText->SetInvalidValue( true );
+		pText->SetInvalidValue( false );
 		return;
 	}
 	
@@ -449,8 +449,7 @@ void igdeEditPath::ValidatePath(){
 				path = decPath::AbsolutePathUnix( pText->GetText(), pBasePath );
 			}
 			
-			pText->SetInvalidValue( pText->GetText().IsEmpty()
-				|| ! GetEnvironment().GetFileSystemGame()->CanReadFile( path ) );
+			pText->SetInvalidValue( ! GetEnvironment().GetFileSystemGame()->CanReadFile( path ) );
 			
 		}else{
 			if( decPath::IsNativePathAbsolute( pText->GetText() ) ){

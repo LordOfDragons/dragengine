@@ -853,6 +853,7 @@ void seWPNode::SetSkin( seSkin *skin ){
 	UpdateNode();
 	ShowNodePanel();
 	UpdateOutline();
+	OnSkinPathChanged();
 }
 
 void seWPNode::OnSkinPathChanged(){

@@ -918,6 +918,7 @@ void seWPTexture::SetSkin( seSkin *skin ){
 	}
 	
 	UpdateTextureList();
+	OnSkinPathChanged();
 }
 
 void seWPTexture::OnSkinPathChanged(){

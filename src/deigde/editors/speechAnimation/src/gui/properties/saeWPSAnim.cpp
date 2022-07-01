@@ -558,6 +558,7 @@ void saeWPSAnim::SetSAnimation( saeSAnimation *sanimation ){
 	}
 	
 	UpdateSAnimation();
+	OnSAnimationPathChanged();
 }
 
 void saeWPSAnim::OnSAnimationPathChanged(){

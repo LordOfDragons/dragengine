@@ -417,6 +417,7 @@ void seWPSource::SetSynthesizer( seSynthesizer *synthesizer ){
 	UpdateSource();
 	UpdateLinkList();
 	UpdateControllerList();
+	OnSynthesizerPathChanged();
 }
 
 seSource *seWPSource::GetSource() const{

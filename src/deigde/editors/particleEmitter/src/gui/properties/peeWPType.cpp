@@ -934,6 +934,7 @@ void peeWPType::SetEmitter( peeEmitter *emitter ){
 	UpdateControllerList();
 	UpdateTypeList();
 	SelectActiveParameter();
+	OnEmitterPathChanged();
 }
 
 void peeWPType::OnEmitterPathChanged(){

@@ -1509,6 +1509,7 @@ void ceWPConversation::SetConversation( ceConversation *conversation ){
 	UpdateFacePoseList();
 	
 	UpdateActorIDLists();
+	OnConversationPathChanged();
 }
 
 

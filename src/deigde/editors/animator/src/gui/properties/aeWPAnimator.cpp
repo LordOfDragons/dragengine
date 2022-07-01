@@ -307,6 +307,7 @@ void aeWPAnimator::SetAnimator( aeAnimator *animator ){
 	
 	UpdateRigBoneList();
 	UpdateAnimator();
+	OnAnimatorPathChanged();
 }
 
 void aeWPAnimator::UpdateAnimator(){

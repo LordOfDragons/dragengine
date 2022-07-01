@@ -986,6 +986,7 @@ void ceWPTopic::SetConversation( ceConversation *conversation ){
 	UpdateFacePoseLists();
 	UpdateCameraShotLists();
 	UpdateTargetLists();
+	OnConversationPathChanged();
 }
 
 

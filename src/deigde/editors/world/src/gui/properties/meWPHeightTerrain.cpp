@@ -1618,6 +1618,7 @@ void meWPHeightTerrain::SetWorld( meWorld *world ){
 	UpdateHeightPaint();
 	UpdateMaskPaint();
 	UpdateVisibilityPaint();
+	OnWorldPathChanged();
 }
 
 void meWPHeightTerrain::OnWorldPathChanged(){

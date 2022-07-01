@@ -976,6 +976,7 @@ void seWPLayer::SetSky( seSky *sky ){
 	
 	UpdateLayerList();
 	UpdateLinkList();
+	OnSkyPathChanged();
 }
 
 void seWPLayer::OnSkyPathChanged(){
