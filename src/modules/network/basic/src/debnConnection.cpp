@@ -210,11 +210,6 @@ void debnConnection::ProcessConnectionClose( decBaseFileReader &reader ){
 void debnConnection::ProcessMessage( decBaseFileReader &reader ){
 	deBaseScriptingConnection *scrCon = pConnection->GetPeerScripting();
 	
-	// read the header
-	const int flags = reader.ReadByte();
-	(void)flags;
-	
-	// receive message
 	const int length = reader.GetLength() - reader.GetPosition();
 	
 	deNetworkMessageReference message;
