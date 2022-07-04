@@ -83,6 +83,7 @@ class WidgetDesigners
 		add("PlayerChoiceEntry", DefaultLabelDesigner.new())
 		add("ProgressBar", DefaultProgressBarDesigner.new())
 		add("ScrollBar", DefaultScrollBarDesigner.new())
+		add("Slider", DefaultSliderDesigner.new())
 		add("SpinButton", DefaultSpinButtonDesigner.new())
 		add("TextArea", DefaultWidgetDesigner.new())
 		add("TextField", DefaultWidgetDesigner.new())

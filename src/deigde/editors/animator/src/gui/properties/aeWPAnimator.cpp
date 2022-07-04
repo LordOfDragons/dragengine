@@ -307,6 +307,7 @@ void aeWPAnimator::SetAnimator( aeAnimator *animator ){
 	
 	UpdateRigBoneList();
 	UpdateAnimator();
+	OnAnimatorPathChanged();
 }
 
 void aeWPAnimator::UpdateAnimator(){
@@ -345,6 +346,17 @@ void aeWPAnimator::UpdateAnimator(){
 	
 	pBtnBoneAdd->GetAction()->Update();
 	pBtnBoneDel->GetAction()->Update();
+}
+
+void aeWPAnimator::OnAnimatorPathChanged(){
+	if( pAnimator ){
+		pEditRigPath->SetBasePath( pAnimator->GetDirectoryPath() );
+		pEditAnimPath->SetBasePath( pAnimator->GetDirectoryPath() );
+		
+	}else{
+		pEditRigPath->SetBasePath( "" );
+		pEditAnimPath->SetBasePath( "" );
+	}
 }
 
 void aeWPAnimator::UpdateRigBoneList(){

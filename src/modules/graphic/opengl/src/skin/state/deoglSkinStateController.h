@@ -93,6 +93,9 @@ public:
 	/** \brief Requires sync every frame update. */
 	bool RequiresSyncEveryFrameUpdate() const;
 	
+	/** \brief Requires prepare renderables. */
+	bool RequiresPrepareRenderables() const;
+	
 	/** \brief Init skin state. */
 	void Init( deoglSkinState &skinState, deoglRSkin *skin, deoglWorld *world );
 	

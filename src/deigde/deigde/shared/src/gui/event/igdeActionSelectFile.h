@@ -100,6 +100,13 @@ public:
 	virtual void OnAction();
 	
 	/**
+	 * \brief Prepare file to init dialog with.
+	 * 
+	 * \note Implementation is allowed to change \em path to modify the initial value.
+	 */
+	virtual void PrepareFile( decString &path );
+	
+	/**
 	 * \brief Accept file.
 	 * 
 	 * Check if selected file is a useable one. Can be used to ensure users can not select

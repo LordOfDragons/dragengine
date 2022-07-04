@@ -80,3 +80,7 @@ void peeWindowProperties::SetEmitter( peeEmitter *emitter ){
 	( ( peeWPView& )( igdeWidget& )pPanelView ).SetEmitter( emitter );
 	( ( peeWPUndoHistory& )( igdeWPUndoHistory& )pPanelUndoHistory ).SetEmitter( emitter );
 }
+
+void peeWindowProperties::OnEmitterPathChanged(){
+	( ( peeWPType& )( igdeWidget& )pPanelType ).OnEmitterPathChanged();
+}

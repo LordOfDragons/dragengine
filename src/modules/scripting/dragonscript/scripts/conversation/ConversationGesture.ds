@@ -39,44 +39,67 @@ class ConversationGesture
 	/** \brief Hold gesture after finishing it. */
 	private var bool pHold
 	
+	/**
+	 * \brief Default duration in seconds.
+	 * \version 1.13
+	 */
+	private var float pDuration
+	
 	
 	
 	/** \brief Create conversation gesture. */
-	public func new( StringID name )
+	public func new(StringID name)
 		if name == null
 			throw EInvalidParam.new()
 		end
-		this.pName = name
-		this.pHold = false
+		pName = name
+		pHold = false
+		pDuration = 2
 	end
 	
 	
 	
 	/** \brief Name. */
 	public func StringID getName()
-		return this.pName
+		return pName
 	end
 	
 	/** \brief Name of animator to use. */
 	public func StringID getAnimator()
-		return this.pAnimator
+		return pAnimator
 	end
 	
 	/** \brief Set name of animator to use. */
-	public func void setAnimator( StringID animator )
+	public func void setAnimator(StringID animator)
 		if animator == null
 			throw EInvalidParam.new()
 		end
-		this.pAnimator = animator
+		pAnimator = animator
 	end
 	
 	/** \brief Hold gesture after finishing it. */
 	public func bool getHold()
-		return this.pHold
+		return pHold
 	end
 	
 	/** \brief Set if gesture is hold after finishing it. */
-	public func void setHold( bool hold )
-		this.pHold = hold
+	public func void setHold(bool hold)
+		pHold = hold
+	end
+	
+	/**
+	 * \brief Default duration in seconds.
+	 * \version 1.13
+	 */
+	public func float getDuration()
+		return pDuration
+	end
+	
+	/**
+	 * \brief Set default duration in seconds.
+	 * \version 1.13
+	 */
+	public func void setDuration(float duration)
+		pDuration = DEMath.max(duration, 0.0)
 	end
 end

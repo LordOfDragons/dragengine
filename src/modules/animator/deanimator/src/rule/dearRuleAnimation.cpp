@@ -68,8 +68,8 @@
 /////////////////////////////////
 
 dearRuleAnimation::dearRuleAnimation( dearAnimatorInstance &instance,
-int firstLink, const deAnimatorRuleAnimation &rule ) :
-dearRule( instance, firstLink, rule ),
+const dearAnimator &animator, int firstLink, const deAnimatorRuleAnimation &rule ) :
+dearRule( instance, animator, firstLink, rule ),
 pAnimation( rule ),
 
 pMove( NULL ),
@@ -182,7 +182,7 @@ void dearRuleAnimation::pUpdateMove(){
 		pMove = NULL;
 	}
 	
-	const dearAnimation * const animation = GetInstance().GetAnimation();
+	const dearAnimation * const animation = GetUseAnimation();
 	if( animation ){
 		pMove = animation->GetMoveNamed( pAnimation.GetMoveName() );
 		if( pMove ){

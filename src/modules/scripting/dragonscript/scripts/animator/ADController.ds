@@ -45,107 +45,125 @@ class ADController
 	
 	/** \brief Create animation controller definition. */
 	public func new()
-		this.pName = ""
-		this.pFrozen = false
-		this.pClamp = true
-		this.pMinimum = 0.0
-		this.pMaximum = 1.0
-		this.pVector = Vector.new()
-		this.pIndex = 0
+		pName = ""
+		pFrozen = false
+		pClamp = true
+		pMinimum = 0
+		pMaximum = 1
+		pVector = Vector.new()
+		pIndex = 0
+	end
+	
+	/**
+	 * \brief Create copy of animation controller definition.
+	 * \version 1.13
+	 */
+	public func new(ADController controller)
+		if controller == null
+			throw ENullPointer.new("controller")
+		end
+		
+		pName = controller.pName
+		pFrozen = controller.pFrozen
+		pClamp = controller.pClamp
+		pMinimum = controller.pMinimum
+		pMaximum = controller.pMaximum
+		pVector = controller.pVector
+		pIndex = 0
 	end
 	
 	
 	
 	/** \brief Name. */
 	public func String getName()
-		return this.pName
+		return pName
 	end
 	
 	/** \brief Set name. */
-	public func void setName( String name )
-		this.pName = name
+	public func void setName(String name)
+		pName = name
 	end
 	
 	/** \brief Controller is frozen. */
 	public func bool getFrozen()
-		return this.pFrozen
+		return pFrozen
 	end
 	
 	/** \brief Set if controller is frozen. */
-	public func void setFrozen( bool frozen )
-		this.pFrozen = frozen
+	public func void setFrozen(bool frozen)
+		pFrozen = frozen
 	end
 	
 	/** \brief Controller value is clamped. */
 	public func bool getClamp()
-		return this.pClamp
+		return pClamp
 	end
 	
 	/** \brief Set if controller value is clamped. */
-	public func void setClamp( bool clamp )
-		this.pClamp = clamp
+	public func void setClamp(bool clamp)
+		pClamp = clamp
 	end
 	
 	/** \brief Minimum value. */
 	public func float getMinimum()
-		return this.pMinimum
+		return pMinimum
 	end
 	
 	/** \brief Set minimum value. */
-	public func void setMinimum( float minimum )
-		this.pMinimum = minimum
+	public func void setMinimum(float minimum)
+		pMinimum = minimum
 	end
 	
 	/** \brief Maximum value. */
 	public func float getMaximum()
-		return this.pMaximum
+		return pMaximum
 	end
 	
 	/** \brief Set maximum value. */
-	public func void setMaximum( float maximum )
-		this.pMaximum = maximum
+	public func void setMaximum(float maximum)
+		pMaximum = maximum
 	end
 	
 	/** \brief Vector value. */
 	public func Vector getVector()
-		return this.pVector
+		return pVector
 	end
 	
 	/** \brief Set vector value. */
-	public func void setVector( Vector vector )
-		this.pVector = vector
+	public func void setVector(Vector vector)
+		pVector = vector
 	end
 	
 	
 	
 	/** \brief Index of controller in animator. */
 	public func int getIndex()
-		return this.pIndex
+		return pIndex
 	end
 	
 	
 	
 	/** \brief Add controller to animator using stored definition. */
-	public func void addToAnimator( Animator animator, int index )
+	public func void addToAnimator(Animator animator, int index)
 		if animator == null
-			throw EInvalidParam.new()
+			throw ENullPointer.new("animator")
 		end
 		
-		this.pIndex = index
+		pIndex = index
 		
-		var AnimatorController controller = animator.getControllerAt( index )
-		controller.setName( this.pName )
-		controller.setClamp( this.pClamp )
-		controller.setRange( this.pMinimum, this.pMaximum )
-		controller.setVector( this.pVector )
-		controller.setFrozen( this.pFrozen )
+		var AnimatorController controller = animator.getControllerAt(index)
+		controller.setName(pName)
+		controller.setClamp(pClamp)
+		controller.setRange(pMinimum, pMaximum)
+		controller.setVector(pVector)
+		controller.setFrozen(pFrozen)
 	end
 	
 	
 	
-	public func void debug( Console console, int index )
-		console.addMessage( "- Controller '" + this.pName + "' " + index \
-			+ " ( frozen=" + this.pFrozen + " clamp=" + this.pClamp \
-			+ " min=" + this.pMinimum + " max=" + this.pMaximum + " vector=" + this.pVector )
+	public func void debug(Console console, int index)
+		console.addMessage("- Controller '" + pName + "' " + index \
+			+ " (frozen=" + pFrozen + " clamp=" + pClamp \
+			+ " min=" + pMinimum + " max=" + pMaximum + " vector=" + pVector)
 	end
 end

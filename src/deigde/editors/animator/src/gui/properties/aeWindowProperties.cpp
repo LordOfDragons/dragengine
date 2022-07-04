@@ -96,3 +96,8 @@ void aeWindowProperties::SetAnimator( aeAnimator *animator ){
 	pPropPlayground->SetAnimator( animator );
 	( ( aeWPUndoHistory& )( igdeWPUndoHistory& )pPanelUndoHistory ).SetAnimator( animator );
 }
+
+void aeWindowProperties::OnAnimatorPathChanged(){
+	pPropAnimator->OnAnimatorPathChanged();
+	pPropRule->OnAnimatorPathChanged();
+}

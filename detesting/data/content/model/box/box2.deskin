@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<skin>
+	<texture name='material1'>
+		<color property='color' r='0.8' g='0.8' b='0.8'/>
+		<value property='reflectivity'>0.23</value>
+		<value property='roughness'>0.35</value>
+	</texture>
+	<texture name='material2'>
+		<color property='color' r='0.8' g='0.8' b='0.8'/>
+		<value property='reflectivity'>0.23</value>
+		<value property='roughness'>0.35</value>
+	</texture>
+	<texture name='material3'>
+		<color property='color' r='0.8' g='0.8' b='0.8'/>
+		<value property='reflectivity'>0.23</value>
+		<value property='roughness'>0.35</value>
+	</texture>
+	<texture name='material4'>
+		<color property='color' r='0.8' g='0.8' b='0.8'/>
+		<value property='reflectivity'>0.23</value>
+		<value property='roughness'>0.35</value>
+	</texture>
+	<texture name='material5'>
+		<color property='color' r='0.8' g='0.8' b='0.8'/>
+		<value property='reflectivity'>0.23</value>
+		<value property='roughness'>0.35</value>
+	</texture>
+	<texture name='material6'>
+		<color property='color' r='0.8' g='0.8' b='0.8'/>
+		<value property='reflectivity'>0.23</value>
+		<value property='roughness'>0.35</value>
+	</texture>
+</skin>

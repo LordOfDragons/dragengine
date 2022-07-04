@@ -536,6 +536,9 @@ void aeLSAnimator::pSaveRuleCommon( decXmlWriter &writer, const aeAnimator &anim
 	if( fabsf( rule.GetBlendFactor() - 1.0f ) > FLOAT_SAFE_EPSILON ){
 		writer.WriteDataTagFloat( "blendFactor", rule.GetBlendFactor() );
 	}
+	if( rule.GetInvertBlendFactor() ){
+		writer.WriteDataTagBool( "invertBlendFactor", rule.GetInvertBlendFactor() );
+	}
 	
 	pSaveControllerTarget( writer, animator, rule.GetTargetBlendFactor(), "blendFactor" );
 	
@@ -3158,8 +3161,12 @@ bool aeLSAnimator::pLoadRuleCommon( decXmlElementTag *tag, aeAnimator&, aeRule &
 		
 		return true;
 		
-	}else if( strcmp( tag->GetName(), "blendFactor" ) == 0 ){
-		rule.SetBlendFactor( strtof( GetCDataString( *tag ), NULL ) );
+	}else if( tag->GetName() == "blendFactor" ){
+		rule.SetBlendFactor( GetCDataFloat( *tag ) );
+		return true;
+		
+	}else if( tag->GetName() == "invertBlendFactor" ){
+		rule.SetInvertBlendFactor( GetCDataBool( *tag ) );
 		return true;
 		
 	}else if( strcmp( tag->GetName(), "bone" ) == 0 ){

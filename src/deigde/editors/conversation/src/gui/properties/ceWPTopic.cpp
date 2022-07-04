@@ -986,6 +986,7 @@ void ceWPTopic::SetConversation( ceConversation *conversation ){
 	UpdateFacePoseLists();
 	UpdateCameraShotLists();
 	UpdateTargetLists();
+	OnConversationPathChanged();
 }
 
 
@@ -1408,6 +1409,10 @@ void ceWPTopic::UpdateTargetLists(){
 void ceWPTopic::UpdateConvoCoordSysLists(){
 	pPanelACoordSystemAdd->UpdateConvoCoordSysIDLists();
 	pPanelACoordSystemRemove->UpdateConvoCoordSysIDLists();
+}
+
+void ceWPTopic::OnConversationPathChanged(){
+	pPanelAActorSpeak->OnConversationPathChanged();
 }
 
 

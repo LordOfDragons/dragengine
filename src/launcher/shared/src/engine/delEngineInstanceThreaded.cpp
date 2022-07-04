@@ -224,6 +224,18 @@ bool delEngineInstanceThreaded::StartEngine(){
 				DETHROW_INFO( deeInvalidAction, "send log file name too short" );
 			}
 			
+			uint8_t flags = 0;
+			if( GetUseConsole() ){
+				flags |= 0x1;
+			}
+			
+			if( ! WriteFile( pipesInWrite, &flags, 1, &bytesWritten, NULL ) ){
+				DETHROW_INFO( deeInvalidAction, "send flags failed" );
+			}
+			if( bytesWritten < 1 ){
+				DETHROW_INFO( deeInvalidAction, "send flags too short" );
+			}
+			
 			// read sync
 //			printf( "reading sync\n" );
 			if( ! ReadFile( pipesOutRead, &sync, 1, &bytesRead, NULL ) ){
@@ -322,6 +334,7 @@ bool delEngineInstanceThreaded::StartEngine(){
 			close( pipesOut[ 0 ] );
 			
 			delEngineProcess process( pipesIn[ 0 ], pipesOut[ 1 ], logFile.GetPathNative() );
+			process.SetUseConsole( GetUseConsole() );
 			
 			process.Run();
 			exit( 0 );

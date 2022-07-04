@@ -113,7 +113,8 @@ pEngineRunning( false ),
 pStopProcess( true ),
 pRunGame( nullptr ),
 
-pLogSource( logSource )
+pLogSource( logSource ),
+pUseConsole( false )
 {
 	pCreateLogger( logfile );
 }
@@ -126,6 +127,10 @@ delEngineProcess::~delEngineProcess(){
 
 // Management
 ///////////////
+
+void delEngineProcess::SetUseConsole( bool useConsole ){
+	pUseConsole = useConsole;
+}
 
 void delEngineProcess::Run(){
 	try{
@@ -148,27 +153,32 @@ void delEngineProcess::StartEngine(){
 	}
 	
 	deOS *os = nullptr;
-	bool useConsole = false;
 	
 	try{
 		// create os
-		if( useConsole ){
+		if( pUseConsole ){
 			#ifdef OS_UNIX
+			pLogger->LogInfo( pLogSource, "EngineProcess.StartEngine: Create OS Console (console requested)" );
 			os = new deOSConsole();
 			#elif defined OS_W32
+			pLogger->LogInfo( pLogSource, "EngineProcess.StartEngine: Create OS Windows (console requested)" );
 			os = new deOSWindows();
 			#endif
 			
 		}else{
 			#ifdef OS_BEOS
+			pLogger->LogInfo( pLogSource, "EngineProcess.StartEngine: Create OS BeOS" );
 			os = new deOSBeOS();
 			#elif defined OS_UNIX
 				#ifdef HAS_LIB_X11
+				pLogger->LogInfo( pLogSource, "EngineProcess.StartEngine: Create OS Unix" );
 				os = new deOSUnix();
 				#else
+				pLogger->LogInfo( pLogSource, "EngineProcess.StartEngine: Create OS Console" );
 				os = new deOSConsole();
 				#endif
 			#elif defined OS_W32
+			pLogger->LogInfo( pLogSource, "EngineProcess.StartEngine: Create OS Windows" );
 			os = new deOSWindows();
 			os->CastToOSWindows()->SetInstApp( GetModuleHandle( NULL ) );
 			#endif
@@ -1000,10 +1010,10 @@ void delEngineProcess::CommandVFSAddDelgaFile(){
 		const deVirtualFileSystem::Ref delgaVfs( deVirtualFileSystem::Ref::New( new deVirtualFileSystem ) );
 		delgaVfs->AddContainer( deVFSDiskDirectory::Ref::New( new deVFSDiskDirectory( pathDelgaDir ) ) );
 		
-		const deArchiveContainer::Ref container( amgr.CreateContainer(
+		const deArchiveContainer::Ref container( deArchiveContainer::Ref::New( amgr.CreateContainer(
 			decPath::CreatePathUnix( "/" ),
 			deArchive::Ref::New( amgr.OpenArchive( delgaVfs, delgaFileTitle, "/" ) ),
-			decPath::CreatePathUnix( archivePath ) ) );
+			decPath::CreatePathUnix( archivePath ) ) ) );
 		
 		const int hiddenPathCount = ReadUShortFromPipe();
 		decString hiddenPath;

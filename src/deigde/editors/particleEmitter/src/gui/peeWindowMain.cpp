@@ -219,9 +219,16 @@ void peeWindowMain::SaveEmitter( const char *filename ){
 	GetEditorModule().LogInfoFormat( "Saving Emitter %s", filename );
 	pLoadSaveSystem->SaveEmitter( pEmitter, filename );
 	
+	const decString basePath( pEmitter->GetDirectoryPath() );
+	
 	pEmitter->SetFilePath( filename );
 	pEmitter->SetChanged( false );
 	pEmitter->SetSaved( true );
+	
+	if( pEmitter->GetDirectoryPath() != basePath ){
+		pWindowProperties->OnEmitterPathChanged();
+	}
+	
 	GetRecentFiles().AddFile( filename );
 }
 

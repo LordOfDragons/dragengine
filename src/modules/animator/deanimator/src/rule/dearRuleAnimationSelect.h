@@ -53,8 +53,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create rule. */
-	dearRuleAnimationSelect( dearAnimatorInstance &instance, int firstLink,
-		const deAnimatorRuleAnimationSelect &rule );
+	dearRuleAnimationSelect( dearAnimatorInstance &instance, const dearAnimator &animator,
+		int firstLink, const deAnimatorRuleAnimationSelect &rule );
 	
 	/** \brief Clean up animator. */
 	virtual ~dearRuleAnimationSelect();

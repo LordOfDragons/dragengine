@@ -65,6 +65,7 @@ class GuiTheme
 		pWidgetDesigners.setAt("PlayerChoiceEntry", DefaultWidgetDesigner.new())
 		pWidgetDesigners.setAt("ProgressBar", DefaultProgressBarDesigner.new())
 		pWidgetDesigners.setAt("ScrollBar", DefaultScrollBarDesigner.new())
+		pWidgetDesigners.setAt("Slider", DefaultSliderDesigner.new())
 		pWidgetDesigners.setAt("SpinButton", DefaultSpinButtonDesigner.new())
 		pWidgetDesigners.setAt("TextArea", DefaultWidgetDesigner.new())
 		pWidgetDesigners.setAt("TextField", DefaultWidgetDesigner.new())

@@ -35,25 +35,25 @@ class DefaultCanvasCreator implements CanvasCreator
 	end
 	
 	/** \brief Create copy of canvas creator. */
-	public func new( DefaultCanvasCreator creator )
+	public func new(DefaultCanvasCreator creator)
 	end
 	
 	
 	
 	/** \brief Set parameter. */
-	public func void setParameter( String name, Object value )
+	public func void setParameter(String name, Object value)
 		throw EInvalidParam.new()
 	end
 	
 	/** \brief Create copy of canvas creator. */
 	public func CanvasCreator copyCanvasCreator()
-		return DefaultCanvasCreator.new( this )
+		return DefaultCanvasCreator.new(this)
 	end
 	
 	
 	
 	/** \brief Create canvas for a specific widget size. */
-	public func Canvas createCanvas( Point size )
+	public func Canvas createCanvas(Point size)
 		return null
 	end
 end

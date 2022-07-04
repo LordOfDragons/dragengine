@@ -27,15 +27,21 @@ def buildInstaller(env, target, source):
 	
 	os.chmod(target[0].abspath, 0o755)
 
+withCI = envInstaller['with_ci']
+
 installers = []
+installerScriptSuffix = '-ci' if withCI else ''
+
 if envInstaller['OSPosix']:
 	if envInstaller['installer_name_engine'] and parent_targets['archive']['archiveEngine']:
 		filename = '{}.sh'.format(envInstaller['installer_name_engine'])
-		installers.append(envInstaller.Command(filename,
-			['install-dragengine.sh.in'] + parent_targets['archive']['archiveEngine'],
+		sources = []
+		sources.append('install-dragengine{}.sh.in'.format(installerScriptSuffix))
+		sources.extend(parent_targets['archive']['archiveEngine'])
+		installers.append(envInstaller.Command(filename, sources,
 			envInstaller.Action(buildInstaller, 'Building Installer {}'.format(filename))))
 	
-	if envInstaller['installer_name_engine_dev'] and parent_targets['archive']['archiveEngineDev']:
+	if not withCI and envInstaller['installer_name_engine_dev'] and parent_targets['archive']['archiveEngineDev']:
 		filename = '{}.sh'.format(envInstaller['installer_name_engine_dev'])
 		installers.append(envInstaller.Command(filename,
 			['install-dragengine-dev.sh.in'] + parent_targets['archive']['archiveEngineDev'],
@@ -43,11 +49,13 @@ if envInstaller['OSPosix']:
 	
 	if envInstaller['installer_name_igde'] and parent_targets['archive']['archiveIgde']:
 		filename = '{}.sh'.format(envInstaller['installer_name_igde'])
-		installers.append(envInstaller.Command(filename,
-			['install-deigde.sh.in'] + parent_targets['archive']['archiveIgde'],
+		sources = []
+		sources.append('install-deigde{}.sh.in'.format(installerScriptSuffix))
+		sources.extend(parent_targets['archive']['archiveIgde'])
+		installers.append(envInstaller.Command(filename, sources,
 			envInstaller.Action(buildInstaller, 'Building Installer {}'.format(filename))))
 	
-	if envInstaller['installer_name_igde_dev'] and parent_targets['archive']['archiveIgdeDev']:
+	if not withCI and envInstaller['installer_name_igde_dev'] and parent_targets['archive']['archiveIgdeDev']:
 		filename = '{}.sh'.format(envInstaller['installer_name_igde_dev'])
 		installers.append(envInstaller.Command(filename,
 			['install-deigde-dev.sh.in'] + parent_targets['archive']['archiveIgdeDev'],

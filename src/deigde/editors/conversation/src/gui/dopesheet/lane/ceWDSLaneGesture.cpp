@@ -28,6 +28,7 @@
 #include "../../../conversation/ceConversation.h"
 #include "../../../conversation/action/ceCAActorSpeak.h"
 #include "../../../conversation/gesture/ceGesture.h"
+#include "../../../conversation/strip/ceStrip.h"
 #include "../../../undosys/action/actorSpeak/gesture/ceUCAASpeakGestureAdd.h"
 #include "../../../undosys/action/actorSpeak/gesture/ceUCAASpeakGestureMove.h"
 #include "../../../undosys/action/actorSpeak/gesture/ceUCAASpeakGestureRemove.h"
@@ -87,9 +88,14 @@ void ceWDSLaneGesture::FillIDList( decStringList &list ){
 	}
 }
 
+float ceWDSLaneGesture::DefaultDuration( const decString &id ){
+	const ceGesture * const gesture = GetWindow().GetConversation()->GetGestureNamed( id );
+	return gesture ? gesture->GetDuration() : ceWDSLane::DefaultDuration( id );
+}
+
 igdeUndo *ceWDSLaneGesture::UndoStripAdd( ceStrip *strip, int index ){
 	ceCAActorSpeak * const action = GetWindow().GetActionASpeak();
-	return action ? new ceUCAASpeakGestureAdd( GetWindow().GetTopic(), action, strip, index ) : NULL;
+	return action ? new ceUCAASpeakGestureAdd( GetWindow().GetTopic(), action, strip, index ) : nullptr;
 }
 
 igdeUndo *ceWDSLaneGesture::UndoStripRemove( ceStrip *strip ){

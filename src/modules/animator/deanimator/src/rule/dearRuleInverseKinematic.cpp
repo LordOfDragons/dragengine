@@ -70,8 +70,8 @@
 /////////////////////////////////
 
 dearRuleInverseKinematic::dearRuleInverseKinematic( dearAnimatorInstance &instance,
-int firstLink, const deAnimatorRuleInverseKinematic &rule ) :
-dearRule( instance, firstLink, rule ),
+const dearAnimator &animator, int firstLink, const deAnimatorRuleInverseKinematic &rule ) :
+dearRule( instance, animator, firstLink, rule ),
 
 pInverseKinematic( rule ),
 

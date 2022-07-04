@@ -217,6 +217,12 @@ public:
 	 * \version 1.13
 	 */
 	bool IsEqualOrDirectParentOf( const decPath &path ) const;
+	
+	/**
+	 * \brief Get parent path.
+	 * \version 1.13
+	 */
+	decPath GetParent() const;
 	/*@}*/
 	
 	

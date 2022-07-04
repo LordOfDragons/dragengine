@@ -236,9 +236,9 @@ class ECBehaviorNetworkState extends DefaultECBehavior
 		private var Instance pInstance
 		private var int pIndex
 		
-		public func new( Instance instance, NetworkStateValueFormat format )
+		public func new( Instance instance )
 			this.pInstance = instance
-			this.pIndex = instance.addValue( NetworkStateValueType.string, format, this )
+			this.pIndex = instance.addValue( NetworkStateValueType.string, null, this )
 		end
 		
 		/** \brief Index of value in network state. */
@@ -259,6 +259,44 @@ class ECBehaviorNetworkState extends DefaultECBehavior
 		public func void updateValue()
 			if not this.pInstance.getReadOnly()
 				this.pInstance.getNetworkState().setValueStringAt( this.pIndex, this.getUpdateValue() )
+			end
+		end
+	end
+	
+	/** \brief Value listener for data type values. */
+	abstract class DataValue extends DefaultValueListener
+		private var Instance pInstance
+		private var int pIndex
+		private var MemoryFile pMemoryFile
+		
+		public func new(Instance instance, MemoryFile memoryFile)
+			if memoryFile == null
+				throw ENullPointer.new("memoryFile")
+			end
+			pInstance = instance
+			pIndex = instance.addValue(NetworkStateValueType.data, null, this)
+		end
+		
+		/** \brief Index of value in network state. */
+		protected func int getIndex()
+			return pIndex
+		end
+		
+		/** \brief Data value changed on link and has to be applied to the element. */
+		abstract protected func void onValueChanged()
+		
+		/** \brief Update data value by element to update link with. */
+		abstract protected func void storeUpdateValue()
+		
+		public func void valueChanged(NetworkState networkState)
+			networkState.getValueDataAt(pIndex, pMemoryFile)
+			onValueChanged()
+		end
+		
+		public func void updateValue()
+			if not pInstance.getReadOnly()
+				storeUpdateValue()
+				pInstance.getNetworkState().setValueDataAt(pIndex, pMemoryFile)
 			end
 		end
 	end
@@ -734,8 +772,9 @@ class ECBehaviorNetworkState extends DefaultECBehavior
 		 * \warning Make sure the element class on the local and remote side add values
 		 *          in the exact same order with the exact same type and format.
 		 * 
-		 * \param type Type of value with values from NetworkState.VALUE_* .
-		 * \param format Format of value with values from NetworkState.FORMAT_* .
+		 * \param type Type of value.
+		 * \param format Format of value. Use null for NetworkStateValueType.string
+		 *               and NetworkStateValueType.data
 		 * \param listener Listener called if value changes on remote side.
 		 * \returns index of value in the network state or -1 if there is no network state.
 		 */

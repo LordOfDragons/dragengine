@@ -853,6 +853,18 @@ void seWPNode::SetSkin( seSkin *skin ){
 	UpdateNode();
 	ShowNodePanel();
 	UpdateOutline();
+	OnSkinPathChanged();
+}
+
+void seWPNode::OnSkinPathChanged(){
+	if( pSkin ){
+		pImageEditImage->SetBasePath( pSkin->GetDirectoryPath() );
+		pTextEditFont->SetBasePath( pSkin->GetDirectoryPath() );
+		
+	}else{
+		pImageEditImage->SetBasePath( "" );
+		pTextEditFont->SetBasePath( "" );
+	}
 }
 
 seTexture *seWPNode::GetTexture() const{

@@ -54,10 +54,27 @@ jobs:
       artifactLinux: archives-linux
       artifactWindows: archives-windows
       artifactLauncher: archive-livelauncher
+    
+  build_testing:
+    needs: [build_linux_ci]
+    uses: ./.github/workflows/build_testing.yml
+    with:
+      releaseVersion: ${{ github.event.inputs.version }}
+      artifactInstallerCI: installers-linux-ci
+      artifactTesting: archive-testing
+    
+  testing:
+    needs: [build_linux, build_testing]
+    uses: ./.github/workflows/testing.yml
+    with:
+      releaseVersion: ${{ github.event.inputs.version }}
+      artifactArchive: installers-linux
+      artifactTesting: archive-testing
+      artifactResults: testing-results
 
   upload:
-    needs: [build_linux, build_windows, build_windows_installer, build_linux_ci, build_live]
-    runs-on: ubuntu-latest
+    needs: [build_linux, build_windows, build_windows_installer, build_linux_ci, testing]
+    runs-on: ubuntu-20.04
     
     steps:
       - name: Get Linux Installers
@@ -137,4 +154,4 @@ jobs:
             blender-addon-dragengine-${{ github.event.inputs.version }}.zip,
             dragengine-live-${{ github.event.inputs.version }}.zip,
             install-dragengine-ci-${{ github.event.inputs.version }}-linux64.sh,
-            install-deigde-ci-${{ github.event.inputs.version }}-windows64.exe
+            install-deigde-ci-${{ github.event.inputs.version }}-linux64.sh

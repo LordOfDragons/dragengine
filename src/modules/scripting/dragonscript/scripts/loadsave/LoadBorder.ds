@@ -40,41 +40,41 @@ class LoadBorder extends BaseXmlLoader
 	
 	
 	/** \brief Create loader. */
-	public func new( Console console ) this( console, "LoadBorder" )
+	public func new(Console console) this(console, "LoadBorder")
 	end
 	
 	/** \brief Create loader. */
-	public func new( Console console, String name ) super( console, name )
-		this.pLoadedFactories = Dictionary.new()
-		this.pFactories = BorderFactories.new()
-		this.pFactories.addDefaultFactories()
+	public func new(Console console, String name) super(console, name)
+		pLoadedFactories = Dictionary.new()
+		pFactories = BorderFactories.new()
+		pFactories.addDefaultFactories()
 	end
 	
 	
 	
 	/** \brief Canvas creator loader. */
 	public func LoadCanvasCreator getCanvasCreatorLoader()
-		return this.pCanvasCreatorLoader
+		return pCanvasCreatorLoader
 	end
 	
 	/** \brief Set canvas creator loader. */
-	public func void setCanvasCreatorLoader( LoadCanvasCreator loader )
-		this.pCanvasCreatorLoader = loader
+	public func void setCanvasCreatorLoader(LoadCanvasCreator loader)
+		pCanvasCreatorLoader = loader
 	end
 	
 	
 	
 	/** \brief Factories. */
 	public func BorderFactories getFactories()
-		return this.pFactories
+		return pFactories
 	end
 	
 	/** \brief Set factories. */
-	public func void setFactories( BorderFactories factories )
+	public func void setFactories(BorderFactories factories)
 		if factories == null
 			throw EInvalidParam.new()
 		end
-		this.pFactories = factories
+		pFactories = factories
 	end
 	
 	
@@ -83,30 +83,30 @@ class LoadBorder extends BaseXmlLoader
 	 * \brief Load border from xml file.
 	 * \returns Factory to create instance of the customized border.
 	 */
-	public func BorderFactory loadFromFile( String filename )
-		var BorderFactory factory = this.pLoadedFactories.getAt( filename, null ) cast BorderFactory
+	public func BorderFactory loadFromFile(String filename)
+		var BorderFactory factory = pLoadedFactories.getAt(filename, null) cast BorderFactory
 		if factory != null
 			return factory.copyFactory()
 		end
 		
-		this.logLoadingFromFile( filename )
+		logLoadingFromFile(filename)
 		
-		var EasyXML document = EasyXML.new( filename )
+		var EasyXML document = EasyXML.new(filename)
 		if document.hasParseFailed()
-			this.logParsingFailed( document.getParseLog() )
+			logParsingFailed(document.getParseLog())
 			throw EInvalidParam.new()
 		end
 		
 		var EasyXMLElement root = document.getRootElement()
-		if not root.getTagName().equals( "border" )
-			this.logUnknownTag( filename, root )
+		if not root.getTagName().equals("border")
+			logUnknownTag(filename, root)
 			throw EInvalidParam.new()
 		end
 		
-		var String basePath = File.new( filename ).getParent().getPath()
+		var String basePath = File.new(filename).getParent().getPath()
 		
-		factory = this.parseBorder( filename, root, basePath )
-		this.pLoadedFactories.setAt( filename, factory )
+		factory = parseBorder(filename, root, basePath)
+		pLoadedFactories.setAt(filename, factory)
 		return factory.copyFactory()
 	end
 	
@@ -117,32 +117,32 @@ class LoadBorder extends BaseXmlLoader
 	 * \details This is public to be used by LoadGuiTheme.
 	 * \returns Factory to create instance of the customized border.
 	 */
-	public func BorderFactory parseBorder( String filename, EasyXMLElement root, String basePath )
+	public func BorderFactory parseBorder(String filename, EasyXMLElement root, String basePath)
 		var BorderFactory factory
 		
-		if root.hasAttributeNamed( "extend" )
+		if root.hasAttributeNamed("extend")
 			try
-				factory = this.loadFromFile( File.absolutePath( \
-					root.getAttributeNamed( "extend" ), basePath ).getPath() )
+				factory = loadFromFile(File.absolutePath(\
+					root.getAttributeNamed("extend"), basePath).getPath())
 				
 			catch Exception e
-				this.printOnConsole( filename, root, "Failed loading border '" \
-					+ root.getAttributeNamed( "extend" ) + "'" )
+				printOnConsole(filename, root, "Failed loading border '" \
+					+ root.getAttributeNamed("extend") + "'")
 				throw
 			end
 			
-		elif root.hasAttributeNamed( "type" )
+		elif root.hasAttributeNamed("type")
 			try
-				factory = this.pFactories.getNamed( root.getAttributeNamed( "type" ) )
+				factory = pFactories.getNamed(root.getAttributeNamed("type"))
 				
 			catch Exception e
-				this.printOnConsole( filename, root, "Border factory type '" \
-					+ root.getAttributeNamed( "type" ) + "' not found" )
+				printOnConsole(filename, root, "Border factory type '" \
+					+ root.getAttributeNamed("type") + "' not found")
 				throw
 			end
 			
 		else
-			this.printOnConsole( filename, root, "Missing source attribute" )
+			printOnConsole(filename, root, "Missing source attribute")
 			throw EInvalidParam.new()
 		end
 		
@@ -154,7 +154,7 @@ class LoadBorder extends BaseXmlLoader
 		var String tagName
 		
 		for i = 0 to elementCount
-			element = root.getElementAt( i )
+			element = root.getElementAt(i)
 			if element.getType() != EasyXMLElementType.tag
 				continue
 			end
@@ -164,16 +164,16 @@ class LoadBorder extends BaseXmlLoader
 				isShared = false
 			end
 			
-			parameterName = element.getAttributeNamed( "parameter" )
-			parameterValue = this.parseParameter( filename, element, basePath )
+			parameterName = element.getAttributeNamed("parameter")
+			parameterValue = parseParameter(filename, element, basePath)
 			
 			try
-				factory.setParameter( parameterName, parameterValue )
+				factory.setParameter(parameterName, parameterValue)
 				
 			catch Exception e
-				this.printOnConsole( filename, element, factory.className() \
+				printOnConsole(filename, element, factory.className() \
 					+ " does not understand parameter '" + parameterName \
-					+ "' with value '" + parameterValue + "'" )
+					+ "' with value '" + parameterValue + "'")
 			end
 		end
 		
@@ -184,72 +184,81 @@ class LoadBorder extends BaseXmlLoader
 	 * \brief Parse border parameter.
 	 * \details Overwrite in subclass to extend the supported parameter types.
 	 */
-	public func Object parseParameter( String filename, EasyXMLElement element, String basePath )
+	public func Object parseParameter(String filename, EasyXMLElement element, String basePath)
 		var String tagName = element.getTagName()
 		
-		if tagName.equals( "integer" )
+		if tagName.equals("integer")
 			return element.getFirstCDataInt()
 			
-		elif tagName.equals( "float" )
+		elif tagName.equals("float")
 			return element.getFirstCDataFloat()
 			
-		elif tagName.equals( "boolean" )
+		elif tagName.equals("boolean")
 			return element.getFirstCDataBool()
 			
-		elif tagName.equals( "string" )
+		elif tagName.equals("string")
 			return element.getFirstCData()
 			
-		elif tagName.equals( "color" )
-			return this.readColor( element )
+		elif tagName.equals("color")
+			return readColor(element)
 			
-		elif tagName.equals( "borderSize" )
-			return this.readBorderSize( element )
+		elif tagName.equals("borderSize")
+			return readBorderSize(element)
 			
-		elif tagName.equals( "point" )
-			return this.readPoint( element )
+		elif tagName.equals("point")
+			return readPoint(element)
 			
-		elif tagName.equals( "colorMatrix" )
-			return this.readColorMatrix( element )
+		elif tagName.equals("colorMatrix")
+			return readColorMatrix(element)
 			
-		elif tagName.equals( "image" )
+		elif tagName.equals("image")
 			var String path = element.getFirstCData()
 			if path.empty()
 				return null
 			end
 			
 			try
-				return Image.new( File.absolutePath( path, basePath ).getPath() )
+				return Image.new(File.absolutePath(path, basePath).getPath())
 				
 			catch Exception e
-				this.printOnConsole( filename, element, "Failed loading image '" + path + "'" )
+				printOnConsole(filename, element, "Failed loading image '" + path + "'")
 				throw
 			end
 			
-		elif tagName.equals( "video" )
+		elif tagName.equals("video")
 			var String path = element.getFirstCData()
 			if path.empty()
 				return null
 			end
 			
 			try
-				return Video.new( File.absolutePath( path, basePath ).getPath() )
+				return Video.new(File.absolutePath(path, basePath).getPath())
 				
 			catch Exception e
-				this.printOnConsole( filename, element, "Failed loading video '" + path + "'" )
+				printOnConsole(filename, element, "Failed loading video '" + path + "'")
 				throw
 			end
 			
-		elif tagName.equals( "null" )
+		elif tagName.equals("font")
+			try
+				return readFont(element, basePath)
+				
+			catch Exception e
+				printOnConsole(filename, element, "Failed loading font '" + element.getFirstCData() + "'")
+				throw
+			end
+			
+		elif tagName.equals("null")
 			return null
 			
-		elif tagName.equals( "canvasCreator" )
-			return this.pCanvasCreatorLoader.parseCanvasCreator( filename, element, basePath )
+		elif tagName.equals("canvasCreator")
+			return pCanvasCreatorLoader.parseCanvasCreator(filename, element, basePath)
 			
-		elif tagName.equals( "border" )
-			return this.parseBorder( filename, element, basePath )
+		elif tagName.equals("border")
+			return parseBorder(filename, element, basePath)
 			
 		else
-			this.logUnknownTag( filename, element )
+			logUnknownTag(filename, element)
 			throw EInvalidParam.new()
 		end
 	end

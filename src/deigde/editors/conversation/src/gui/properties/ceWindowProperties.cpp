@@ -87,3 +87,8 @@ void ceWindowProperties::SetConversation( ceConversation *conversation ){
 	pPanelView->SetConversation( conversation );
 	pPanelUndoHistory->SetConversation( conversation );
 }
+
+void ceWindowProperties::OnConversationPathChanged(){
+	pPanelConversation->OnConversationPathChanged();
+	pPanelTopic->OnConversationPathChanged();
+}

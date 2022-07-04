@@ -422,6 +422,15 @@ bool decPath::IsEqualOrDirectParentOf( const decPath &path ) const{
 	return true;
 }
 
+decPath decPath::GetParent() const{
+	DEASSERT_TRUE( pComponents.GetCount() > 0 )
+	
+	decPath path;
+	path.pPrefix = pPrefix;
+	path.pComponents = pComponents.Splice( 0, -1 );
+	return path;
+}
+
 
 
 // Component Management

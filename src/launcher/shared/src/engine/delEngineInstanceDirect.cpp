@@ -99,7 +99,8 @@
 /////////////////////////////////////////////
 
 delEngineInstanceDirect::Factory::Factory( deLogger *engineLogger ) :
-pEngineLogger( engineLogger ){
+pEngineLogger( engineLogger ),
+pUseConsole( false ){
 }
 
 delEngineInstanceDirect::Factory::~Factory(){
@@ -109,10 +110,15 @@ void delEngineInstanceDirect::Factory::SetEngineLogger( deLogger *logger ){
 	pEngineLogger = logger;
 }
 
+void delEngineInstanceDirect::Factory::SetUseConsole( bool useConsole ){
+	pUseConsole = useConsole;
+}
+
 delEngineInstance *delEngineInstanceDirect::Factory::CreateEngineInstance(
 delLauncher &launcher, const char *logfile ){
 	delEngineInstanceDirect * const instance = new delEngineInstanceDirect( launcher, logfile );
 	instance->SetEngineLogger( pEngineLogger );
+	instance->SetUseConsole( pUseConsole );
 	return instance;
 }
 
@@ -161,7 +167,6 @@ bool delEngineInstanceDirect::StartEngine(){
 	}
 	
 	deOS *os = nullptr;
-	bool useConsole = false;
 	
 	try{
 		deLogger::Ref engineLogger( pEngineLogger );
@@ -183,23 +188,29 @@ bool delEngineInstanceDirect::StartEngine(){
 		}
 		
 		// create os
-		if( useConsole ){
+		if( GetUseConsole() ){
 			#ifdef OS_UNIX
+			pLogger->LogInfo( GetLauncher().GetLogSource(), "EngineProcess.StartEngine: Create OS Console (console requested)" );
 			os = new deOSConsole();
 			#elif defined OS_W32
+			pLogger->LogInfo( GetLauncher().GetLogSource(), "EngineProcess.StartEngine: Create OS Windows (console requested)" );
 			os = new deOSWindows();
 			#endif
 			
 		}else{
 			#ifdef OS_BEOS
+			pLogger->LogInfo( GetLauncher().GetLogSource(), "EngineProcess.StartEngine: Create OS BeOS" );
 			os = new deOSBeOS();
 			#elif defined OS_UNIX
 				#ifdef HAS_LIB_X11
+				pLogger->LogInfo( GetLauncher().GetLogSource(), "EngineProcess.StartEngine: Create OS Unix" );
 				os = new deOSUnix();
 				#else
+				pLogger->LogInfo( GetLauncher().GetLogSource(), "EngineProcess.StartEngine: Create OS Console" );
 				os = new deOSConsole();
 				#endif
 			#elif defined OS_W32
+			pLogger->LogInfo( GetLauncher().GetLogSource(), "EngineProcess.StartEngine: Create OS Windows" );
 			os = new deOSWindows();
 			os->CastToOSWindows()->SetInstApp( GetModuleHandle( NULL ) );
 			#endif
@@ -534,10 +545,10 @@ const char *archivePath, const decStringSet &hiddenPath ){
 	deVirtualFileSystem &vfs = *pEngine->GetVirtualFileSystem();
 	deArchiveManager &amgr = *pEngine->GetArchiveManager();
 	
-	const deArchiveContainer::Ref container( amgr.CreateContainer(
+	const deArchiveContainer::Ref container( deArchiveContainer::Ref::New( amgr.CreateContainer(
 		decPath::CreatePathUnix( "/" ),
 		deArchive::Ref::New( amgr.OpenArchive( delgaVfs, delgaFileTitle, "/" ) ),
-		decPath::CreatePathUnix( archivePath ) ) );
+		decPath::CreatePathUnix( archivePath ) ) ) );
 	
 	const int count = hiddenPath.GetCount();
 	int i;

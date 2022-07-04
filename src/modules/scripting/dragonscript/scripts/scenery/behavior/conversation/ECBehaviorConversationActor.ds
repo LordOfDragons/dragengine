@@ -494,6 +494,7 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 				// the camera is located by default
 				var ConversationHeadLookAtPlayback hlap = ConversationHeadLookAtPlayback.new()
 				hlap.setLocomotion(locomotion)
+				hlap.setBoneRotator(pECBehavior.getHeadRotatorBone().getValueOrNull(stub))
 				hlap.setRotatorMatrix(rotatorMatrix)
 				pConversationActor.setHeadLookAtPlayback(hlap)
 			end
@@ -1062,6 +1063,7 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 	private var ECPStringID pAliasId
 	private var ECPUnicodeString pName
 	private var ECPString pSubtitleSelectorId
+	private var ECPString pHeadRotatorBone
 	private var ECPVector pHeadRotatorOffset
 	private var ECPBoolean pRegisterConversationActor
 	private var ECBehaviorActorAnimated pActorAnimated
@@ -1101,6 +1103,9 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 		
 		pSubtitleSelectorId = ECPString.new(prefix + "subtitleSelector", "")
 		eclass.addProperty(pSubtitleSelectorId)
+		
+		pHeadRotatorBone = ECPString.new(prefix + "headRotatorBone", "")
+		eclass.addProperty(pHeadRotatorBone)
 		
 		pHeadRotatorOffset = ECPVector.new(prefix + "headRotatorOffset", Vector.new(0, -1.65, 0))
 		eclass.addProperty(pHeadRotatorOffset)
@@ -1142,6 +1147,11 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 	/** \brief SUb title style selector ID. */
 	public func ECPString getSubtitleSelectorId()
 		return pSubtitleSelectorId
+	end
+	
+	/** \brief Head rotator bone or empty string to not use. */
+	public func ECPString getHeadRotatorBone()
+		return pHeadRotatorBone
 	end
 	
 	/** \brief Head rotator offset used for Head-Look-At handling. */

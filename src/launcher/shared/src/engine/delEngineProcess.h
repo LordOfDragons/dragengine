@@ -188,6 +188,7 @@ private:
 	
 	deLogger::Ref pLogger;
 	decString pLogSource;
+	bool pUseConsole;
 	
 	
 	
@@ -230,6 +231,12 @@ public:
 	
 	/** \brief Logger. */
 	inline deLogger *GetLogger() const{ return pLogger; }
+	
+	/** \brief Use console. */
+	inline bool GetUseConsole() const{ return pUseConsole; }
+	
+	/** \brief Set use console. */
+	void SetUseConsole( bool useConsole );
 	
 	
 	

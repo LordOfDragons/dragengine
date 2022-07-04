@@ -38,22 +38,22 @@ class ECPString extends ElementClassProperty
 	
 	
 	/** \brief Create property. */
-	public func new( String name, String value ) super( name )
-		this.pValue = value
+	public func new(String name, String value) super(name)
+		pValue = value
 	end
 	
 	
 	
 	/** \brief Value. */
 	public func String getValue()
-		return this.pValue
+		return pValue
 	end
 	
 	
 	
 	/** \brief Set value of property from XML decoded value. */
-	public func void setValue( Object value )
-		this.pValue = value cast String
+	public func void setValue(Object value)
+		pValue = value cast String
 	end
 	
 	
@@ -61,10 +61,42 @@ class ECPString extends ElementClassProperty
 	/**
 	 * \brief String value value modified by stub property if present.
 	 * 
-	 * If named stub property is not present or empty string the stored value is returned.
+	 * If named stub property is not present stored value is returned.
 	 * If the named stub property is present it is returned.
 	 */
-	public func String getValue( StubWithProperties stub )
-		return stub.getPropertyValueFor( this.getName(), this.pValue )
+	public func String getValue(StubWithProperties stub)
+		return stub.getPropertyValueFor(getName(), pValue)
+	end
+	
+	/**
+	 * \brief String value value modified by stub property if present.
+	 * \version 1.13
+	 * 
+	 * If named stub property is not present stored value is returned.
+	 * If the named stub property is present it is returned. If the value
+	 * to be returned is empty string null is returned.
+	 */
+	public func String getValueOrNull(StubWithProperties stub)
+		var String value = getValue(stub)
+		if value != null and value.empty()
+			value = null
+		end
+		return value
+	end
+	
+	/**
+	 * \brief String value value modified by stub property if present.
+	 * \version 1.13
+	 * 
+	 * If named stub property is not present stored value is returned.
+	 * If the named stub property is present it is returned. If the value
+	 * to be returned is null empty string is returned.
+	 */
+	public func String getValueOrEmpty(StubWithProperties stub)
+		var String value = getValue(stub)
+		if value == null
+			value = ""
+		end
+		return value
 	end
 end

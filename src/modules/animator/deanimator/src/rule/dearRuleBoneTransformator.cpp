@@ -60,8 +60,8 @@
 /////////////////////////////////
 
 dearRuleBoneTransformator::dearRuleBoneTransformator( dearAnimatorInstance &instance,
-int firstLink, const deAnimatorRuleBoneTransformator &rule ) :
-dearRule( instance, firstLink, rule ),
+const dearAnimator &animator, int firstLink, const deAnimatorRuleBoneTransformator &rule ) :
+dearRule( instance, animator, firstLink, rule ),
 
 pBoneTransformator( rule ),
 

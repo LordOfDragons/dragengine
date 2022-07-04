@@ -77,6 +77,9 @@ public:
 	/** \brief Set world. */
 	void SetWorld( meWorld *world );
 	
+	/** \brief World path changed. */
+	void OnWorldPathChanged();
+	
 	/** \brief Game project changed. */
 	void OnGameProjectChanged();
 	

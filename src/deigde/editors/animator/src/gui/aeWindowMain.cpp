@@ -233,10 +233,17 @@ void aeWindowMain::SaveAnimator( const char *filename ){
 		return;
 	}
 	
+	const decString basePath( pAnimator->GetDirectoryPath() );
+	
 	pLoadSaveSystem->SaveAnimator( pAnimator, filename );
 	pAnimator->SetFilePath( filename );
 	pAnimator->SetChanged( false );
 	pAnimator->SetSaved( true );
+	
+	if( pAnimator->GetDirectoryPath() != basePath ){
+		pWindowProperties->OnAnimatorPathChanged();
+	}
+	
 	GetRecentFiles().AddFile( filename );
 }
 

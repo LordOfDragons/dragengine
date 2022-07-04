@@ -56,7 +56,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create rule. */
-	dearRuleMirror( dearAnimatorInstance &instance, int firstLink, const deAnimatorRuleMirror &rule );
+	dearRuleMirror( dearAnimatorInstance &instance, const dearAnimator &animator,
+		int firstLink, const deAnimatorRuleMirror &rule );
 	
 	/** \brief Clean up rule. */
 	virtual ~dearRuleMirror();

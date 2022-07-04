@@ -64,8 +64,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create rule. */
-	dearRuleInverseKinematic( dearAnimatorInstance &instance, int firstLink,
-		const deAnimatorRuleInverseKinematic &rule );
+	dearRuleInverseKinematic( dearAnimatorInstance &instance, const dearAnimator &animator,
+		int firstLink, const deAnimatorRuleInverseKinematic &rule );
 	
 	/** \brief Clean up rule. */
 	virtual ~dearRuleInverseKinematic();

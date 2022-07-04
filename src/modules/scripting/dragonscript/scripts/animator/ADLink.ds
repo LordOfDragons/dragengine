@@ -57,14 +57,43 @@ class ADLink
 		pWrapY = false
 	end
 	
+	/**
+	 * \brief Create copy of link definition.
+	 * \version 1.13
+	 */
+	public func new(AnimatorDefinition fromDef, AnimatorDefinition toDef, ADLink link)
+		if fromDef == null
+			throw ENullPointer.new("fromDef")
+		end
+		if toDef == null
+			throw ENullPointer.new("toDef")
+		end
+		if link == null
+			throw ENullPointer.new("link")
+		end
+		
+		pIndex = 0
+		pCurve = CurveBezier.new(link.pCurve)
+		pRepeat = link.pRepeat
+		pBone = link.pBone
+		pBoneParameter = link.pBoneParameter
+		pBoneMinimum = link.pBoneMinimum
+		pBoneMaximum = link.pBoneMaximum
+		pWrapY = link.pWrapY
+		
+		if link.pController != null
+			pController = toDef.getControllerAt(fromDef.indexOfController(link.getController()))
+		end
+	end
 	
 	
-	/** \brief Controller or \em null if not set. */
+	
+	/** \brief Controller or null if not set. */
 	public func ADController getController()
 		return pController
 	end
 	
-	/** \brief Set controller or \em null if not set. */
+	/** \brief Set controller or null if not set. */
 	public func void setController(ADController controller)
 		pController = controller
 	end
@@ -187,7 +216,7 @@ class ADLink
 	/** \brief Add link to animator using the stored definition. */
 	public func void addToAnimator(Animator animator)
 		if animator == null
-			throw EInvalidParam.new()
+			throw ENullPointer.new("animator")
 		end
 		
 		if pController == null

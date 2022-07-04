@@ -75,3 +75,7 @@ void saeWindowProperties::SetSAnimation( saeSAnimation *sanimation ){
 	( ( saeWPView& )( igdeWidget& )pPanelView ).SetSAnimation( sanimation );
 	( ( saeWPUndoHistory& )( igdeWPUndoHistory& )pPanelUndoHistory ).SetSAnimation( sanimation );
 }
+
+void saeWindowProperties::OnSAnimationPathChanged(){
+	( ( saeWPSAnim& )( igdeWidget& )pPanelSAnimation ).OnSAnimationPathChanged();
+}

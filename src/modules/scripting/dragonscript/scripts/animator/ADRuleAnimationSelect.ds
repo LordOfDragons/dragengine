@@ -28,87 +28,93 @@ pin Dragengine.Utils
 
 
 /**
- * Definition of an animation difference animator rule. Once defined a rule can be
- * added to an animator using the stored definition.
+ * \brief Definition of animation difference animator rule.
+ * 
+ * Once defined a rule can be added to an animator using the stored definition.
  */
 class ADRuleAnimationSelect extends ADRule
-	/** \brief Moves as Array of String. */
 	private var Array pMoves
-	
-	/** \brief Enable position manipulation. */
 	private var bool pEnablePosition
-	
-	/** \brief Enable orientation manipulation. */
 	private var bool pEnableOrientation
-	
-	/** \brief Enable size manipulation. */
 	private var bool pEnableSize
 	
 	
 	
 	/** \brief Create animation rule definition. */
 	public func new()
-		this.pMoves = Array.new()
-		this.pEnablePosition = true
-		this.pEnableOrientation = true
-		this.pEnableSize = false
+		pMoves = Array.new()
+		pEnablePosition = true
+		pEnableOrientation = true
+		pEnableSize = false
+	end
+	
+	/**
+	 * \brief Create copy of animation rule definition.
+	 * \version 1.13
+	 */
+	public func new(AnimatorDefinition fromDef, AnimatorDefinition toDef,\
+	ADRuleAnimationSelect rule) super(fromDef, toDef, rule)
+		pMoves = Array.new(rule.pMoves)
+		pEnablePosition = rule.pEnablePosition
+		pEnableOrientation = rule.pEnableOrientation
+		pEnableSize = rule.pEnableSize
 	end
 	
 	
 	
-	/** \brief Number of moves. */
+	/** \brief Count of moves. */
 	public func int getMoveCount()
-		return this.pMoves.getCount()
+		return pMoves.getCount()
 	end
 	
 	/** \brief Move at index. */
-	public func String getMoveAt( int index )
-		return this.pMoves.getAt( index ) cast String
+	public func String getMoveAt(int index)
+		return pMoves.getAt(index) cast String
 	end
 	
 	/** \brief Add move. */
-	public func void addMove( String move )
+	public func void addMove(String move)
 		if move == null
-			throw EInvalidParam.new()
+			throw ENullPointer.new("move")
 		end
-		this.pMoves.add( move )
+		pMoves.add(move)
 	end
 	
 	/** \brief Remove all moves. */
 	public func void removeAllMoves()
-		this.pMoves.removeAll()
+		pMoves.removeAll()
 	end
 	
 	
 	
 	/** \brief Position manipulation is enabled. */
 	public func bool getEnablePosition()
-		return this.pEnablePosition
+		return pEnablePosition
 	end
 	
 	/** \brief Set if position manipulation is enabled. */
-	public func void setEnablePosition( bool enable )
-		this.pEnablePosition = enable
+	public func void setEnablePosition(bool enable)
+		pEnablePosition = enable
 	end
 	
 	/** \brief Orientation manipulation is enabled. */
 	public func bool getEnableOrientation()
-		return this.pEnableOrientation
+		return pEnableOrientation
 	end
 	
 	/** \brief Set if orientation manipulation is enabled. */
-	public func void setEnableOrientation( bool enable )
-		this.pEnableOrientation = enable
+	public func void setEnableOrientation(bool enable)
+		pEnableOrientation = enable
 	end
 	
 	/** \brief Size manipulation is enabled. */
 	public func bool getEnableSize()
-		return this.pEnableSize
+		return pEnableSize
 	end
 	
 	/** \brief Set if size manipulation is enabled. */
-	public func void setEnableSize( bool enable )
-		this.pEnableSize = enable
+	public func void setEnableSize(bool enable)
+		pEnableSize = enable
 	end
 	
 	
@@ -116,33 +122,43 @@ class ADRuleAnimationSelect extends ADRule
 	/**
 	 * \brief Build engine animator rule using the stored definition.
 	 */
-	public func AnimatorRule buildRule( Animator animator )
+	public func AnimatorRule buildRule(Animator animator)
 		var ARAnimationSelect rule = ARAnimationSelect.new()
 		
-		this.buildRuleCommon( rule )
+		buildRuleCommon(rule)
 		
-		this.forEachTarget( block ADRuleTargetLink each
-			rule.targetAddLink( each.getTarget() cast ARAnimationSelectTarget, each.getLink().getIndex() )
-		end )
+		forEachTarget(block ADRuleTargetLink each
+			rule.targetAddLink(each.getTarget() cast ARAnimationSelectTarget, each.getLink().getIndex())
+		end)
 		
-		this.pMoves.forEach( block String each
-			rule.addMove( each )
-		end )
+		pMoves.forEach(block String each
+			rule.addMove(each)
+		end)
 		
-		rule.setEnablePosition( this.pEnablePosition )
-		rule.setEnableOrientation( this.pEnableOrientation )
-		rule.setEnableSize( this.pEnableSize )
+		rule.setEnablePosition(pEnablePosition)
+		rule.setEnableOrientation(pEnableOrientation)
+		rule.setEnableSize(pEnableSize)
 		
 		return rule
 	end
 	
 	
 	
-	public func void debug( Console console )
-		console.addMessage( this.debugCommon( "Animation Select" ) \
-			+ " moves=" + this.pMoves.getCount() \
-			+ " epos=" + this.pEnablePosition \
-			+ " eorient=" + this.pEnableOrientation \
-			+ " esize=" + this.pEnableSize + " )" )
+	/**
+	 * \brief Create copy of rule.
+	 * \version 1.13
+	 */
+	public func ADRule copy(AnimatorDefinition fromDef, AnimatorDefinition toDef)
+		return new(fromDef, toDef, this)
+	end
+	
+	
+	
+	public func void debug(Console console)
+		console.addMessage(debugCommon("Animation Select") \
+			+ " moves=" + pMoves.getCount() \
+			+ " epos=" + pEnablePosition \
+			+ " eorient=" + pEnableOrientation \
+			+ " esize=" + pEnableSize + ")")
 	end
 end

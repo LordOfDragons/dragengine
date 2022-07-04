@@ -57,9 +57,9 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-dearRuleMirror::dearRuleMirror( dearAnimatorInstance &instance,
-int firstLink, const deAnimatorRuleMirror &rule ) :
-dearRule( instance, firstLink, rule ),
+dearRuleMirror::dearRuleMirror( dearAnimatorInstance &instance, const dearAnimator &animator,
+	int firstLink, const deAnimatorRuleMirror &rule ) :
+dearRule( instance, animator, firstLink, rule ),
 
 pMirror( rule ),
 pMirrorBone( -1 ),

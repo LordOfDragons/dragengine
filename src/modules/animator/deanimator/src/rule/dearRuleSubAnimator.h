@@ -56,8 +56,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create rule. */
-	dearRuleSubAnimator( dearAnimatorInstance &instance, int firstLink,
-		const deAnimatorRuleSubAnimator &rule, const decIntList &controllerMapping );
+	dearRuleSubAnimator( dearAnimatorInstance &instance, const dearAnimator &animator,
+		int firstLink, const deAnimatorRuleSubAnimator &rule, const decIntList &controllerMapping );
 	
 	/** \brief Clean up animator. */
 	virtual ~dearRuleSubAnimator();

@@ -448,6 +448,7 @@ void aeWPRule::SetAnimator( aeAnimator *animator ){
 	
 	if( pActivePanel ){
 		pActivePanel->OnAnimatorChanged();
+		pActivePanel->OnAnimatorPathChanged();
 	}
 	
 	UpdateRuleTree();
@@ -669,5 +670,11 @@ void aeWPRule::UpdateRuleBoneList(){
 void aeWPRule::UpdateRuleMoveList(){
 	if( pActivePanel ){
 		pActivePanel->UpdateAnimMoveList();
+	}
+}
+
+void aeWPRule::OnAnimatorPathChanged(){
+	if( pActivePanel ){
+		pActivePanel->OnAnimatorPathChanged();
 	}
 }

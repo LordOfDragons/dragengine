@@ -1,0 +1,160 @@
+/* 
+ * Drag[en]gine Testing
+ *
+ * Copyright (C) 2022, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+namespace DETesting
+
+pin Dragengine.Gui
+pin Dragengine.Scenery
+pin Dragengine.Preloading
+pin Dragengine.TestSystem
+pin Dragengine.Utils
+
+
+/**
+ * Test Suite for ECBehaviorAnchorElement.
+ */
+class TSECBAnchorElement extends TestSuite
+	/** Basic behavior. */
+	class Basic extends TestCaseECBehavior
+		public func new() super("basic", UnicodeString.newFromUTF8("Basic"))
+		end
+		
+		private var ECBehaviorAnchorElement behavior
+		
+		protected func void addBehaviors()
+			var BehaviorElementClass ec = getElementClass()
+			behavior = ECBehaviorAnchorElement.new(ec)
+			assertEquals(ECBehaviorAnchorElement.getBehaviorIn(ec), behavior)
+			
+			// single use
+			assertThrows(block
+				ECBehaviorAnchorElement.new(ec)
+			end)
+		end
+		
+		protected func bool testBehaviors(TestSuite testSuite)
+			assertEquals(behavior.getID(), "")
+			
+			assertHasProperty("anchorID")
+			assertNull(behavior.getAnchorID().getValue())
+			
+			var BehaviorElement e = getElement()
+			var ECBehaviorAnchorElement.Instance instance = behavior.instance(e)
+			assertEquals(instance.getECBehavior(), behavior)
+			
+			assertNull(instance.getAnchorID())
+			assertNull(e.getGameWorld().getAnchoredElementList().find(block StringID id, Element element
+				return e == element
+			end))
+			
+			assertEquals(ECBehaviorAnchorElement.getInstanceIn(e), instance)
+			
+			return false
+		end
+	end
+	
+	/** AnchorElement with ID set. */
+	class WithIDSet extends TestCaseECBehavior
+		public func new() super("withIDSet", UnicodeString.newFromUTF8("With ID Set"))
+		end
+		
+		private var ECBehaviorAnchorElement behavior
+		
+		protected func void addBehaviors()
+			behavior = ECBehaviorAnchorElement.new(getElementClass())
+		end
+		
+		protected func void setStubProperties()
+			getStubElement().setPropertyValueFor("anchorID", "testAnchor")
+		end
+		
+		protected func bool testBehaviors(TestSuite testSuite)
+			var BehaviorElement e = getElement()
+			var ECBehaviorAnchorElement.Instance instance = behavior.instance(e)
+			var StringID anchorID = instance.getAnchorID()
+			var AnchoredElementList ael = e.getGameWorld().getAnchoredElementList()
+			
+			var Block findElement = block StringID id, Element element
+				return e == element
+			end
+			
+			assertEquals(anchorID, "testAnchor")
+			assertTrue(ael.has(anchorID))
+			assertNotNull(ael.find(findElement))
+			
+			// remove from game world. ID should be removed too
+			e.safeDispose()
+			
+			assertFalse(ael.has(anchorID))
+			assertNull(ael.find(findElement))
+			
+			return false
+		end
+	end
+	
+	/** AnchorElement with custom property name. */
+	class CustomPropertyName extends TestCaseECBehavior
+		public func new() super("customPropertyName", UnicodeString.newFromUTF8("Custom Property Name"))
+		end
+		
+		private var ECBehaviorAnchorElement behavior
+		
+		protected func void addBehaviors()
+			behavior = ECBehaviorAnchorElement.new(getElementClass(), "customAnchorId")
+		end
+		
+		protected func void setStubProperties()
+			getStubElement().setPropertyValueFor("customAnchorId", "testAnchor2")
+		end
+		
+		protected func bool testBehaviors(TestSuite testSuite)
+			var BehaviorElement e = getElement()
+			var ECBehaviorAnchorElement.Instance instance = behavior.instance(e)
+			var StringID anchorID = instance.getAnchorID()
+			var AnchoredElementList ael = e.getGameWorld().getAnchoredElementList()
+			
+			var Block findElement = block StringID id, Element element
+				return e == element
+			end
+			
+			assertEquals(anchorID, "testAnchor2")
+			assertTrue(ael.has(anchorID))
+			assertNotNull(ael.find(findElement))
+			
+			// remove from game world. ID should be removed too
+			e.safeDispose()
+			
+			assertFalse(ael.has(anchorID))
+			assertNull(ael.find(findElement))
+			
+			return false
+		end
+	end
+	
+	
+	
+	/** Create test suite. */
+	public func new() super("ecbehaviorAnchorElement", UnicodeString.newFromUTF8("ECBehaviorAnchorElement"))
+		addTestCase(Basic.new())
+		addTestCase(WithIDSet.new())
+		addTestCase(CustomPropertyName.new())
+	end
+end

@@ -828,7 +828,7 @@ class Desktop extends Container
 				updateHoverWidget()
 				eventWidget = getHoverWidget()
 			end
-			if eventWidget != null
+			if eventWidget != null and eventWidget.isFullEnabled()
 				var MouseEvent mevent = event cast MouseEvent
 				eventToSend = MouseEvent.new(eventWidget, ident, mevent.getButton(), \
 					mevent.getModifiers(), mevent.getPosition(), mevent.getSystem(), mevent.getDevice())

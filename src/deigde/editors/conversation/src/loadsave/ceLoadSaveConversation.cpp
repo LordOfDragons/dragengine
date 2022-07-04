@@ -370,6 +370,7 @@ void ceLoadSaveConversation::pWriteGesture( decXmlWriter &writer, const ceGestur
 	if( gesture.GetHold() ){
 		writer.WriteDataTagBool( "hold", gesture.GetHold() );
 	}
+	writer.WriteDataTagFloat( "duration", gesture.GetDuration() );
 	
 	writer.WriteClosingTag( "gesture" );
 }
@@ -1420,6 +1421,9 @@ void ceLoadSaveConversation::pReadGesture( const decXmlElementTag &root, ceConve
 					
 				}else if( strcmp( tag->GetName(), "hold" ) == 0 ){
 					gesture->SetHold( GetCDataBool( *tag ) );
+					
+				}else if( strcmp( tag->GetName(), "duration" ) == 0 ){
+					gesture->SetDuration ( GetCDataFloat( *tag ) );
 					
 				}else{
 					LogWarnUnknownTag( root, *tag );

@@ -64,6 +64,9 @@ public:
 	/** \brief Update synthesizer. */
 	virtual void UpdateSynthesizer();
 	
+	/** \brief Synthesizer path changed. */
+	virtual void OnSynthesizerPathChanged();
+	
 	/** \brief Update source. */
 	virtual void UpdateSource();
 	

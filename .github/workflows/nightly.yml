@@ -45,9 +45,26 @@ jobs:
       artifactLinux: archives-linux
       artifactWindows: archives-windows
       artifactLauncher: archive-livelauncher
-
+    
+  build_testing:
+    needs: [build_linux_ci]
+    uses: ./.github/workflows/build_testing.yml
+    with:
+      releaseVersion: nightly
+      artifactInstallerCI: installers-linux-ci
+      artifactTesting: archive-testing
+    
+  testing:
+    needs: [build_linux, build_testing]
+    uses: ./.github/workflows/testing.yml
+    with:
+      releaseVersion: nightly
+      artifactArchive: installers-linux
+      artifactTesting: archive-testing
+      artifactResults: testing-results
+  
   upload:
-    needs: [build_linux, build_windows, build_windows_installer, build_linux_ci, build_live]
+    needs: [build_linux, build_windows, build_windows_installer, build_linux_ci, build_live, testing]
     runs-on: ubuntu-latest
     
     steps:
@@ -86,6 +103,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           allowUpdates: true
           artifactErrorsFailBuild: true
+          removeArtifacts: true
           draft: false
           prerelease: true
           commit: master

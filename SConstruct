@@ -173,6 +173,7 @@ params.Add( BoolVariable( 'with_warnerrors', 'Treat warnings as errors ( dev-bui
 params.Add( BoolVariable( 'with_sanitize', 'Enable sanitizing (dev-builds)', False ) )
 params.Add( BoolVariable( 'with_sanitize_thread', 'Enable thread sanitizing (dev-builds)', False ) )
 params.Add( BoolVariable( 'with_verbose', 'Verbose compilation showing command lines( dev-builds )', False ) )
+params.Add( BoolVariable( 'with_ci', 'Build CI', False ) )
 params.Add(StringVariable('version', 'Version', '9999'))
 params.Add(StringVariable('force_version', 'Force version (empty to disable)', ''))
 params.Add(StringVariable('with_threads', 'Count of threads to use for building external packages', '1'))

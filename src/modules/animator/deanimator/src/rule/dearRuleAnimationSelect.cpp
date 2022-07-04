@@ -70,8 +70,8 @@
 /////////////////////////////////
 
 dearRuleAnimationSelect::dearRuleAnimationSelect( dearAnimatorInstance &instance,
-int firstLink, const deAnimatorRuleAnimationSelect &rule ) :
-dearRule( instance, firstLink, rule ),
+const dearAnimator &animator, int firstLink, const deAnimatorRuleAnimationSelect &rule ) :
+dearRule( instance, animator, firstLink, rule ),
 
 pAnimationSelect( rule ),
 
@@ -192,7 +192,7 @@ void dearRuleAnimationSelect::RuleChanged(){
 void dearRuleAnimationSelect::pUpdateMoves(){
 	pMoves.RemoveAll();
 	
-	const dearAnimation * const animation = GetInstance().GetAnimation();
+	const dearAnimation * const animation = GetUseAnimation();
 	if( ! animation ){
 		return;
 	}

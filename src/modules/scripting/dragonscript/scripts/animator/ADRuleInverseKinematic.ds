@@ -58,10 +58,28 @@ class ADRuleInverseKinematic extends ADRule
 		pAdjustOrientation = false
 		pSolverBone = ""
 		pUseSolverBone = false
-		
-		pReachRange = 0.0
+		pReachRange = 0
 		pReachBone = ""
 		pReachCenter = Vector.new()
+	end
+	
+	/**
+	 * \brief Create copy of animation rule definition.
+	 * \version 1.13
+	 */
+	public func new(AnimatorDefinition fromDef, AnimatorDefinition toDef,\
+	ADRuleInverseKinematic rule) super(fromDef, toDef, rule)
+		pGoalPosition = rule.pGoalPosition
+		pGoalOrientation = rule.pGoalOrientation
+		pLocalPosition = rule.pLocalPosition
+		pLocalOrientation = rule.pLocalOrientation
+		pAdjustPosition = rule.pAdjustPosition
+		pAdjustOrientation = rule.pAdjustOrientation
+		pSolverBone = rule.pSolverBone
+		pUseSolverBone = rule.pUseSolverBone
+		pReachRange = rule.pReachRange
+		pReachBone = rule.pReachBone
+		pReachCenter = rule.pReachCenter
 	end
 	
 	
@@ -242,6 +260,16 @@ class ADRuleInverseKinematic extends ADRule
 		rule.setReachCenter(pReachCenter)
 		
 		return rule
+	end
+	
+	
+	
+	/**
+	 * \brief Create copy of rule.
+	 * \version 1.13
+	 */
+	public func ADRule copy(AnimatorDefinition fromDef, AnimatorDefinition toDef)
+		return new(fromDef, toDef, this)
 	end
 	
 	

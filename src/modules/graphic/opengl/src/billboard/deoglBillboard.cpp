@@ -392,9 +392,11 @@ void deoglBillboard::pSyncDynamicSkin(){
 }
 
 void deoglBillboard::pCheckRequiresUpdateEverySync(){
-	pRequiresUpdateEverySync = pSkinStateController->RequiresSyncEveryFrameUpdate();
-	if( pRequiresUpdateEverySync ){
-		return;
+	if( pSkinStateController->RequiresSyncEveryFrameUpdate() ){
+		pRequiresUpdateEverySync = true;
+		if( pSkinStateController->RequiresPrepareRenderables() ){
+			pRBillboard->DirtyPrepareSkinStateRenderables();
+		}
 	}
 }
 

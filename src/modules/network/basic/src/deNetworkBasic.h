@@ -128,6 +128,15 @@ Best way to enable this is to use a protocol version V2. Adding some feature to 
 this in the existing protocol could be a problem. V1 needs to be backwards compatible.
 */
 
+/*
+
+NOTE Package Size
+
+UDP (usually) reliable package size IPv4 540 (IPv6 roughly double this). Sending longer
+packages potentially fragments them.
+
+*/
+
 enum eCommandCodes{
 	eccConnectionRequest,
 	eccConnectionAck,
