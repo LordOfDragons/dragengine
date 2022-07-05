@@ -186,7 +186,7 @@ void debnConnection::ProcessConnectionAck( decBaseFileReader &reader ){
 		}
 		
 	}else{
-		pNetBasic->LogInfo( "Invalid connection ack received." );
+// 		pNetBasic->LogInfo( "Invalid connection ack received." );
 	}
 }
 
@@ -227,7 +227,7 @@ void debnConnection::ProcessMessage( decBaseFileReader &reader ){
 void debnConnection::ProcessReliableMessage( decBaseFileReader &reader ){
 	// we process nothing if not connected
 	if( pConnectionState != ecsConnected ){
-		pNetBasic->LogInfo( "Reliable message received although not connected." );
+// 		pNetBasic->LogInfo( "Reliable message received although not connected." );
 		return;
 	}
 	
@@ -243,7 +243,7 @@ void debnConnection::ProcessReliableMessage( decBaseFileReader &reader ){
 		validNumber = number < pReliableNumberRecv + pReliableWindowSize;
 	}
 	if( ! validNumber ){
-		pNetBasic->LogInfo( "Reliable message: invalid sequence number." );
+// 		pNetBasic->LogInfo( "Reliable message: invalid sequence number." );
 		return;
 	}
 	
@@ -282,7 +282,7 @@ void debnConnection::ProcessReliableMessage( decBaseFileReader &reader ){
 void debnConnection::ProcessReliableLinkState( decBaseFileReader &reader ){
 	// we process nothing if not connected
 	if( pConnectionState != ecsConnected ){
-		pNetBasic->LogInfoFormat( "Link state: not connected." );
+// 		pNetBasic->LogInfoFormat( "Link state: not connected." );
 		return;
 	}
 	
@@ -298,7 +298,7 @@ void debnConnection::ProcessReliableLinkState( decBaseFileReader &reader ){
 		validNumber = number < pReliableNumberRecv + pReliableWindowSize;
 	}
 	if( ! validNumber ){
-		pNetBasic->LogInfo( "Link state: invalid sequence number." );
+// 		pNetBasic->LogInfo( "Link state: invalid sequence number." );
 		return;
 	}
 	
@@ -336,7 +336,7 @@ void debnConnection::ProcessReliableLinkState( decBaseFileReader &reader ){
 void debnConnection::ProcessReliableAck( decBaseFileReader &reader ){
 	// we process nothing if not connected
 	if( pConnectionState != ecsConnected ){
-		pNetBasic->LogInfo( "Reliable ack: not connected." );
+// 		pNetBasic->LogInfo( "Reliable ack: not connected." );
 		return;
 	}
 	
@@ -348,7 +348,7 @@ void debnConnection::ProcessReliableAck( decBaseFileReader &reader ){
 	// verify
 	const int index = pReliableMessagesSend->IndexOfMessageWithNumber( number );
 	if( index == -1 ){
-		pNetBasic->LogInfo( "Reliable ack: no reliable transmission with this number waiting for an ack!" );
+// 		pNetBasic->LogInfo( "Reliable ack: no reliable transmission with this number waiting for an ack!" );
 		return;
 	}
 	debnMessage * const bnMessage = pReliableMessagesSend->GetMessageAt( index );
@@ -374,7 +374,7 @@ void debnConnection::ProcessReliableAck( decBaseFileReader &reader ){
 void debnConnection::ProcessLinkUp( decBaseFileReader &reader ){
 	// we process nothing if not connected
 	if( pConnectionState != ecsConnected ){
-		pNetBasic->LogInfo( "Link up: not connected." );
+// 		pNetBasic->LogInfo( "Link up: not connected." );
 		return;
 	}
 	
@@ -384,7 +384,7 @@ void debnConnection::ProcessLinkUp( decBaseFileReader &reader ){
 	// check if a link exists with this identifier
 	debnStateLink * const stateLink = pStateLinks->GetLinkWithIdentifier( identifier );
 	if( ! stateLink || stateLink->GetLinkState() != debnStateLink::elsListening ){
-		pNetBasic->LogInfo( "Link up: link with this identifier does not exist or is not listening." );
+// 		pNetBasic->LogInfo( "Link up: link with this identifier does not exist or is not listening." );
 		return;
 	}
 	
@@ -398,7 +398,7 @@ void debnConnection::ProcessLinkUp( decBaseFileReader &reader ){
 void debnConnection::ProcessLinkDown( decBaseFileReader &reader ){
 	// we process nothing if not connected
 	if( pConnectionState != ecsConnected ){
-		pNetBasic->LogInfo( "Link down: not connected!" );
+// 		pNetBasic->LogInfo( "Link down: not connected!" );
 		return;
 	}
 	
@@ -408,7 +408,7 @@ void debnConnection::ProcessLinkDown( decBaseFileReader &reader ){
 	// check if a link exists with this identifier
 	debnStateLink * const stateLink = pStateLinks->GetLinkWithIdentifier( identifier );
 	if( ! stateLink || stateLink->GetLinkState() != debnStateLink::elsListening ){
-		pNetBasic->LogInfo( "Link down: link with this identifier does not exist or is not listening." );
+// 		pNetBasic->LogInfo( "Link down: link with this identifier does not exist or is not listening." );
 		return;
 	}
 	
@@ -421,7 +421,7 @@ void debnConnection::ProcessLinkDown( decBaseFileReader &reader ){
 
 void debnConnection::ProcessLinkUpdate( decBaseFileReader &reader ){
 	if( pConnectionState != ecsConnected ){
-		pNetBasic->LogInfo( "Link update: not connected." );
+// 		pNetBasic->LogInfo( "Link update: not connected." );
 		return;
 	}
 	
@@ -433,7 +433,7 @@ void debnConnection::ProcessLinkUpdate( decBaseFileReader &reader ){
 			
 			debnStateLink * const stateLink = pStateLinks->GetLinkWithIdentifier( identifier );
 			if( ! stateLink || stateLink->GetLinkState() != debnStateLink::elsUp ){
-				pNetBasic->LogInfo( "Invalid link identifier!" );
+// 				pNetBasic->LogInfo( "Invalid link identifier!" );
 				return;
 			}
 			
@@ -443,7 +443,7 @@ void debnConnection::ProcessLinkUpdate( decBaseFileReader &reader ){
 		}
 		
 	}catch( const deException & ){
-		pNetBasic->LogInfo( "Invalid data in the link update message!" );
+// 		pNetBasic->LogInfo( "Invalid data in the link update message!" );
 		return;
 	}
 }
@@ -575,7 +575,7 @@ void debnConnection::LinkState( deNetworkMessage *message, deNetworkState *state
 	// check if a link exists with this state already that is not broken
 	debnStateLink *stateLink = pStateLinks->GetLinkWithNetworkState( bnState );
 	if( stateLink && stateLink->GetLinkState() != debnStateLink::elsDown ){
-		pNetBasic->LogInfo( "There exists already a link to this state." );
+// 		pNetBasic->LogInfo( "There exists already a link to this state." );
 		return;
 	}
 	
@@ -860,7 +860,7 @@ void debnConnection::pProcessLinkState( int number, decBaseFileReader &reader ){
 	// check if a link exists with this identifier already that is not broken
 	debnStateLink *stateLink = pStateLinks->GetLinkWithIdentifier( identifier );
 	if( stateLink && stateLink->GetLinkState() != debnStateLink::elsDown ){
-		pNetBasic->LogInfo( "Link state: link with this identifier already exists." );
+// 		pNetBasic->LogInfo( "Link state: link with this identifier already exists." );
 		return;
 	}
 	
@@ -912,12 +912,12 @@ void debnConnection::pProcessLinkState( int number, decBaseFileReader &reader ){
 			code = eccLinkUp;
 			
 		}else{
-			pNetBasic->LogInfo( "Link state does not match the state provided." );
+// 			pNetBasic->LogInfo( "Link state does not match the state provided." );
 			code = eccLinkDown;
 		}
 		
 	}else{
-		pNetBasic->LogInfo( "No link state provided." );
+// 		pNetBasic->LogInfo( "No link state provided." );
 		code = eccLinkDown;
 	}
 	

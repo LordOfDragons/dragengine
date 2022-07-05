@@ -134,7 +134,7 @@ void debnServer::ProcessConnectionRequest( debnAddress *address, decBaseFileRead
 
 bool debnServer::ListenOn( const char *address ){
 	if( pListening ){
-		pNetBasic->LogInfo( "Already listening." );
+		pNetBasic->LogWarn( "Already listening." );
 		return false;
 	}
 	
@@ -148,7 +148,7 @@ bool debnServer::ListenOn( const char *address ){
 			useAddress = publicAddresses.GetAt( 0 );
 			
 		}else{
-			pNetBasic->LogInfo( "debnServer.ListenOn: No public address found. Using localhost" );
+			pNetBasic->LogWarn( "debnServer.ListenOn: No public address found. Using localhost" );
 			useAddress = "127.0.0.1";
 		}
 	}
