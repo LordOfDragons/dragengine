@@ -183,6 +183,10 @@ void debnServer::StopListening(){
 	}
 	
 	if( pNetBasic ){
+		if( pSocket ){
+			pNetBasic->CloseConnections( pSocket );
+		}
+		
 		pNetBasic->UnregisterServer( this );
 	}
 	

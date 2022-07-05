@@ -278,6 +278,9 @@ public:
 	/** \brief Find public addresses. */
 	void FindPublicAddresses( decStringList &list );
 	
+	/** \brief Close all connections using socket. */
+	void CloseConnections( debnSocket *bnSocket );
+	
 	/** Create a peer for the given world. */
 	virtual deBaseNetworkWorld *CreateWorld( deWorld *world );
 	/** Create a peer for the given server. */

@@ -504,6 +504,19 @@ void deNetworkBasic::FindPublicAddresses( decStringList &list ){
 	#endif
 }
 
+void deNetworkBasic::CloseConnections( debnSocket *bnSocket ){
+	debnConnection *connection = pHeadConnection;
+	
+	while( connection ){
+		debnConnection * const checkConnection = connection;
+		connection = connection->GetNextConnection();
+		
+		if( checkConnection->GetSocket() == bnSocket ){
+			checkConnection->Disconnect();
+		}
+	}
+}
+
 
 
 deBaseNetworkWorld *deNetworkBasic::CreateWorld( deWorld *world ){
