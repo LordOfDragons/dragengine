@@ -706,6 +706,8 @@ void debnConnection::pDisconnect(){
 	// clean up reliables
 	pReliableMessagesRecv->RemoveAllMessages();
 	pReliableMessagesSend->RemoveAllMessages();
+	pReliableNumberSend = 0;
+	pReliableNumberRecv = 0;
 	
 	// free the socket
 	pConnectionState = ecsDisconnected;
