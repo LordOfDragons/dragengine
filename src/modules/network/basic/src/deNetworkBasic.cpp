@@ -568,7 +568,14 @@ void deNetworkBasic::pReceiveDatagrams(){
 				debnServer * const server = pFindServer( bnSocket );
 				if( server ){
 					server->ProcessConnectionRequest( pAddressReceive, reader );
-					
+					{
+					LogWarnFormat("ConnectRequest: Incoming address: %s", pAddressReceive->ToString().GetString());
+					debnConnection *c = pHeadConnection;
+					while(c){
+						LogWarnFormat("- %s", c->GetRemoteAddress() ? c->GetRemoteAddress()->ToString().GetString() : "<null>");
+						c = c->GetNextConnection();
+					}
+					}
 				}else{
 					LogError( "Connection request for a non existing socket? how in gods name is this possible?!\n" );
 				}
@@ -616,11 +623,19 @@ void deNetworkBasic::pReceiveDatagrams(){
 					break;
 					
 				default:
-					LogWarn( "Invalid command code, rejected!\n" );
+					LogWarn( "Invalid command code, rejected!" );
 				}
 				
 			}else{
-				LogWarn( "Invalid datagram: Sender does not match any connection!\n" );
+				LogWarn( "Invalid datagram: Sender does not match any connection!" );
+				{
+				LogWarnFormat("Incoming address: %s (command %d)", pAddressReceive->ToString().GetString(), command);
+				debnConnection *c = pHeadConnection;
+				while(c){
+					LogWarnFormat("- %s", c->GetRemoteAddress() ? c->GetRemoteAddress()->ToString().GetString() : "<null>");
+					c = c->GetNextConnection();
+				}
+				}
 			}
 		}
 		
