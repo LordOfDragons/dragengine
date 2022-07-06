@@ -49,6 +49,12 @@
 #include "debnConnection.h"
 #include "debnWorld.h"
 #include "deNetworkBasic.h"
+#include "configuration/debnLoadConfiguration.h"
+#include "parameters/debug/debnPLogLevel.h"
+#include "parameters/reliability/debnPConnectResendInterval.h"
+#include "parameters/reliability/debnPConnectTimeout.h"
+#include "parameters/reliability/debnPReliableResendInterval.h"
+#include "parameters/reliability/debnPReliableTimeout.h"
 #include "states/debnState.h"
 
 #include <dragengine/deEngine.h>
@@ -118,21 +124,31 @@ static decTimer timer;
 ////////////////////////////
 
 deNetworkBasic::deNetworkBasic( deLoadableModule &loadableModule ) :
-deBaseNetworkModule( loadableModule ){
-	pHeadConnection = NULL;
-	pTailConnection = NULL;
-	pHeadServer = NULL;
-	pTailServer = NULL;
-	pHeadSocket = NULL;
-	pTailSocket = NULL;
-	
-	pDatagram = NULL;
-	pAddressReceive = NULL;
-	
-	//pMessagesSend = NULL;
-	//pMessagesReceive = NULL;
-	
-	//pMessage = NULL;
+deBaseNetworkModule( loadableModule ),
+pHeadConnection( nullptr ),
+pTailConnection( nullptr ),
+pHeadServer( nullptr ),
+pTailServer( nullptr ),
+pHeadSocket( nullptr ),
+pTailSocket( nullptr ),
+pDatagram( nullptr ),
+pAddressReceive( nullptr )
+{
+	try{
+		pParameters.AddParameter( new debnPLogLevel( *this ) );
+		/*
+		pParameters.AddParameter( new debnPConnectResendInterval( *this ) );
+		pParameters.AddParameter( new debnPConnectTimeout( *this ) );
+		pParameters.AddParameter( new debnPReliableResendInterval( *this ) );
+		pParameters.AddParameter( new debnPReliableTimeout( *this ) );
+		*/
+		
+		debnLoadConfiguration( *this ).LoadConfig( pConfiguration );
+		
+	}catch( const deException & ){
+		CleanUp();
+		throw;
+	}
 }
 
 deNetworkBasic::~deNetworkBasic(){
@@ -504,6 +520,41 @@ void deNetworkBasic::FindPublicAddresses( decStringList &list ){
 	#endif
 }
 
+void deNetworkBasic::CloseConnections( debnSocket *bnSocket ){
+	debnConnection *connection = pHeadConnection;
+	
+	while( connection ){
+		debnConnection * const checkConnection = connection;
+		connection = connection->GetNextConnection();
+		
+		if( checkConnection->GetSocket() == bnSocket ){
+			checkConnection->Disconnect();
+		}
+	}
+}
+
+
+
+int deNetworkBasic::GetParameterCount() const{
+	return pParameters.GetParameterCount();
+}
+
+void deNetworkBasic::GetParameterInfo( int index, deModuleParameter &info ) const{
+	info = pParameters.GetParameterAt( index );
+}
+
+int deNetworkBasic::IndexOfParameterNamed( const char *name ) const{
+	return pParameters.IndexOfParameterNamed( name );
+}
+
+decString deNetworkBasic::GetParameterValue( const char *name ) const{
+	return pParameters.GetParameterNamed( name ).GetParameterValue();
+}
+
+void deNetworkBasic::SetParameterValue( const char *name, const char *value ){
+	pParameters.GetParameterNamed( name ).SetParameterValue( value );
+}
+
 
 
 deBaseNetworkWorld *deNetworkBasic::CreateWorld( deWorld *world ){
@@ -562,21 +613,9 @@ void deNetworkBasic::pReceiveDatagrams(){
 			decBaseFileReaderReference reader;
 			reader.TakeOver( new deNetworkMessageReader( pDatagram ) );
 			
+			debnConnection * const connection = pFindConnection( bnSocket, pAddressReceive );
 			const eCommandCodes command = ( eCommandCodes )reader->ReadByte();
 			
-			if( command == eccConnectionRequest ){
-				debnServer * const server = pFindServer( bnSocket );
-				if( server ){
-					server->ProcessConnectionRequest( pAddressReceive, reader );
-					
-				}else{
-					LogError( "Connection request for a non existing socket? how in gods name is this possible?!\n" );
-				}
-				continue;
-				
-			}
-			
-			debnConnection * const connection = pFindConnection( bnSocket, pAddressReceive );
 			if( connection ){
 				switch( command ){
 				case eccConnectionAck:
@@ -616,11 +655,14 @@ void deNetworkBasic::pReceiveDatagrams(){
 					break;
 					
 				default:
-					LogWarn( "Invalid command code, rejected!\n" );
+					break;
 				}
 				
-			}else{
-				LogWarn( "Invalid datagram: Sender does not match any connection!\n" );
+			}else if( command == eccConnectionRequest ){
+				debnServer * const server = pFindServer( bnSocket );
+				if( server ){
+					server->ProcessConnectionRequest( pAddressReceive, reader );
+				}
 			}
 		}
 		

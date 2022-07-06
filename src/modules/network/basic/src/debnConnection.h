@@ -67,6 +67,8 @@ private:
 	debnAddress *pRemoteAddress;
 	int pConnectionState;
 	int pIdentifier;
+	float pElapsedConnectResend;
+	float pElapsedConnectTimeout;
 	
 	eProtocols pProtocol;
 	debnStateLinkManager *pStateLinks;
@@ -104,6 +106,9 @@ public:
 	
 	/** \brief Socket. */
 	inline debnSocket *GetSocket() const{ return pSocket; }
+	
+	/** \brief Remote address. */
+	inline const debnAddress *GetRemoteAddress() const{ return pRemoteAddress; }
 	
 	/** \brief Connection identifier. */
 	inline int GetIdentifier() const{ return pIdentifier; }

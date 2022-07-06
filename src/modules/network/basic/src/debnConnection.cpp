@@ -70,6 +70,8 @@ debnConnection::debnConnection( deNetworkBasic *netBasic, deConnection *connecti
 	pRemoteAddress = NULL;
 	pConnectionState = ecsDisconnected;
 	pIdentifier = -1;
+	pElapsedConnectResend = 0.0f;
+	pElapsedConnectTimeout = 0.0f;
 	
 	pStateLinks = NULL;
 	pModifiedStateLinks = NULL;
@@ -116,8 +118,8 @@ void debnConnection::SetIdentifier( int identifier ){
 }
 
 void debnConnection::Process( float elapsedTime ){
+	pUpdateTimeouts( elapsedTime );
 	if( pConnectionState == ecsConnected ){
-		pUpdateTimeouts( elapsedTime );
 		pUpdateStates();
 	}
 }
@@ -158,12 +160,17 @@ void debnConnection::AcceptConnection( debnSocket *bnSocket, debnAddress *addres
 	
 	pConnectionState = ecsConnected;
 	pProtocol = protocol;
+	pElapsedConnectResend = 0.0f;
+	pElapsedConnectTimeout = 0.0f;
 }
 
 void debnConnection::ProcessConnectionAck( decBaseFileReader &reader ){
 	deBaseScriptingConnection *scrCon = pConnection->GetPeerScripting();
 	
 	if( pConnectionState == ecsConnecting ){
+		pElapsedConnectResend = 0.0f;
+		pElapsedConnectTimeout = 0.0f;
+		
 		const eConnectionAck code = ( eConnectionAck )reader.ReadByte();
 		
 		if( code == ecaAccepted ){
@@ -186,7 +193,7 @@ void debnConnection::ProcessConnectionAck( decBaseFileReader &reader ){
 		}
 		
 	}else{
-		pNetBasic->LogInfo( "Invalid connection ack received." );
+// 		pNetBasic->LogInfo( "Invalid connection ack received." );
 	}
 }
 
@@ -227,7 +234,7 @@ void debnConnection::ProcessMessage( decBaseFileReader &reader ){
 void debnConnection::ProcessReliableMessage( decBaseFileReader &reader ){
 	// we process nothing if not connected
 	if( pConnectionState != ecsConnected ){
-		pNetBasic->LogInfo( "Reliable message received although not connected." );
+// 		pNetBasic->LogInfo( "Reliable message received although not connected." );
 		return;
 	}
 	
@@ -243,7 +250,7 @@ void debnConnection::ProcessReliableMessage( decBaseFileReader &reader ){
 		validNumber = number < pReliableNumberRecv + pReliableWindowSize;
 	}
 	if( ! validNumber ){
-		pNetBasic->LogInfo( "Reliable message: invalid sequence number." );
+// 		pNetBasic->LogInfo( "Reliable message: invalid sequence number." );
 		return;
 	}
 	
@@ -282,7 +289,7 @@ void debnConnection::ProcessReliableMessage( decBaseFileReader &reader ){
 void debnConnection::ProcessReliableLinkState( decBaseFileReader &reader ){
 	// we process nothing if not connected
 	if( pConnectionState != ecsConnected ){
-		pNetBasic->LogInfoFormat( "Link state: not connected." );
+// 		pNetBasic->LogInfoFormat( "Link state: not connected." );
 		return;
 	}
 	
@@ -298,7 +305,7 @@ void debnConnection::ProcessReliableLinkState( decBaseFileReader &reader ){
 		validNumber = number < pReliableNumberRecv + pReliableWindowSize;
 	}
 	if( ! validNumber ){
-		pNetBasic->LogInfo( "Link state: invalid sequence number." );
+// 		pNetBasic->LogInfo( "Link state: invalid sequence number." );
 		return;
 	}
 	
@@ -336,7 +343,7 @@ void debnConnection::ProcessReliableLinkState( decBaseFileReader &reader ){
 void debnConnection::ProcessReliableAck( decBaseFileReader &reader ){
 	// we process nothing if not connected
 	if( pConnectionState != ecsConnected ){
-		pNetBasic->LogInfo( "Reliable ack: not connected." );
+// 		pNetBasic->LogInfo( "Reliable ack: not connected." );
 		return;
 	}
 	
@@ -348,14 +355,13 @@ void debnConnection::ProcessReliableAck( decBaseFileReader &reader ){
 	// verify
 	const int index = pReliableMessagesSend->IndexOfMessageWithNumber( number );
 	if( index == -1 ){
-		pNetBasic->LogInfo( "Reliable ack: no reliable transmission with this number waiting for an ack!" );
+// 		pNetBasic->LogInfo( "Reliable ack: no reliable transmission with this number waiting for an ack!" );
 		return;
 	}
 	debnMessage * const bnMessage = pReliableMessagesSend->GetMessageAt( index );
 	
 	// if reliable transmission arrived succefull done the message
 	if( code == eraSuccess ){
-		// mark the message done
 		bnMessage->SetState( debnMessage::emsDone );
 		
 		// remove all done messages up to the first pending one
@@ -363,10 +369,11 @@ void debnConnection::ProcessReliableAck( decBaseFileReader &reader ){
 		
 	// otherwise resend
 	}else{
-		// reset timeout
-		bnMessage->SetSecondsSinceSend( 0.0f );
+		if( pNetBasic->GetConfiguration().GetLogLevel() >= debnConfiguration::ellDebug ){
+			pNetBasic->LogInfoFormat( "Reliable ACK failed, resend message %d", bnMessage->GetNumber() );
+		}
 		
-		// resend message
+		bnMessage->SetResendElapsed( 0.0f );
 		pSocket->SendDatagram( bnMessage->GetMessage(), pRemoteAddress );
 	}
 }
@@ -374,7 +381,7 @@ void debnConnection::ProcessReliableAck( decBaseFileReader &reader ){
 void debnConnection::ProcessLinkUp( decBaseFileReader &reader ){
 	// we process nothing if not connected
 	if( pConnectionState != ecsConnected ){
-		pNetBasic->LogInfo( "Link up: not connected." );
+// 		pNetBasic->LogInfo( "Link up: not connected." );
 		return;
 	}
 	
@@ -384,7 +391,7 @@ void debnConnection::ProcessLinkUp( decBaseFileReader &reader ){
 	// check if a link exists with this identifier
 	debnStateLink * const stateLink = pStateLinks->GetLinkWithIdentifier( identifier );
 	if( ! stateLink || stateLink->GetLinkState() != debnStateLink::elsListening ){
-		pNetBasic->LogInfo( "Link up: link with this identifier does not exist or is not listening." );
+// 		pNetBasic->LogInfo( "Link up: link with this identifier does not exist or is not listening." );
 		return;
 	}
 	
@@ -398,7 +405,7 @@ void debnConnection::ProcessLinkUp( decBaseFileReader &reader ){
 void debnConnection::ProcessLinkDown( decBaseFileReader &reader ){
 	// we process nothing if not connected
 	if( pConnectionState != ecsConnected ){
-		pNetBasic->LogInfo( "Link down: not connected!" );
+// 		pNetBasic->LogInfo( "Link down: not connected!" );
 		return;
 	}
 	
@@ -408,7 +415,7 @@ void debnConnection::ProcessLinkDown( decBaseFileReader &reader ){
 	// check if a link exists with this identifier
 	debnStateLink * const stateLink = pStateLinks->GetLinkWithIdentifier( identifier );
 	if( ! stateLink || stateLink->GetLinkState() != debnStateLink::elsListening ){
-		pNetBasic->LogInfo( "Link down: link with this identifier does not exist or is not listening." );
+// 		pNetBasic->LogInfo( "Link down: link with this identifier does not exist or is not listening." );
 		return;
 	}
 	
@@ -421,7 +428,7 @@ void debnConnection::ProcessLinkDown( decBaseFileReader &reader ){
 
 void debnConnection::ProcessLinkUpdate( decBaseFileReader &reader ){
 	if( pConnectionState != ecsConnected ){
-		pNetBasic->LogInfo( "Link update: not connected." );
+// 		pNetBasic->LogInfo( "Link update: not connected." );
 		return;
 	}
 	
@@ -433,7 +440,7 @@ void debnConnection::ProcessLinkUpdate( decBaseFileReader &reader ){
 			
 			debnStateLink * const stateLink = pStateLinks->GetLinkWithIdentifier( identifier );
 			if( ! stateLink || stateLink->GetLinkState() != debnStateLink::elsUp ){
-				pNetBasic->LogInfo( "Invalid link identifier!" );
+// 				pNetBasic->LogInfo( "Invalid link identifier!" );
 				return;
 			}
 			
@@ -443,7 +450,7 @@ void debnConnection::ProcessLinkUpdate( decBaseFileReader &reader ){
 		}
 		
 	}catch( const deException & ){
-		pNetBasic->LogInfo( "Invalid data in the link update message!" );
+// 		pNetBasic->LogInfo( "Invalid data in the link update message!" );
 		return;
 	}
 }
@@ -480,6 +487,8 @@ bool debnConnection::ConnectTo( const char *address ){
 	
 	// switch to connecting state
 	pConnectionState = ecsConnecting;
+	pElapsedConnectResend = 0.0f;
+	pElapsedConnectTimeout = 0.0f;
 	
 	// finished
 	return true;
@@ -552,12 +561,10 @@ void debnConnection::SendReliableMessage( deNetworkMessage *message ){
 	
 	// if the message fits into the window send it right now
 	if( pReliableMessagesSend->GetMessageCount() <= pReliableWindowSize ){
-		// send
 		pSocket->SendDatagram( bnMessage->GetMessage(), pRemoteAddress );
 		
-		// mark the message send
 		bnMessage->SetState( debnMessage::emsSend );
-		bnMessage->SetSecondsSinceSend( 0.0f );
+		bnMessage->ResetElapsed();
 	}
 }
 
@@ -575,7 +582,7 @@ void debnConnection::LinkState( deNetworkMessage *message, deNetworkState *state
 	// check if a link exists with this state already that is not broken
 	debnStateLink *stateLink = pStateLinks->GetLinkWithNetworkState( bnState );
 	if( stateLink && stateLink->GetLinkState() != debnStateLink::elsDown ){
-		pNetBasic->LogInfo( "There exists already a link to this state." );
+// 		pNetBasic->LogInfo( "There exists already a link to this state." );
 		return;
 	}
 	
@@ -630,12 +637,10 @@ void debnConnection::LinkState( deNetworkMessage *message, deNetworkState *state
 	
 	// if the message fits into the window send it right now
 	if( pReliableMessagesSend->GetMessageCount() <= pReliableWindowSize ){
-		// send
 		pSocket->SendDatagram( bnMessage->GetMessage(), pRemoteAddress );
 		
-		// mark the message send
 		bnMessage->SetState( debnMessage::emsSend );
-		bnMessage->SetSecondsSinceSend( 0.0f );
+		bnMessage->ResetElapsed();
 	}
 	
 	// switch the link to the listening state
@@ -706,6 +711,8 @@ void debnConnection::pDisconnect(){
 	// clean up reliables
 	pReliableMessagesRecv->RemoveAllMessages();
 	pReliableMessagesSend->RemoveAllMessages();
+	pReliableNumberSend = 0;
+	pReliableNumberRecv = 0;
 	
 	// free the socket
 	pConnectionState = ecsDisconnected;
@@ -771,31 +778,82 @@ void debnConnection::pUpdateStates(){
 }
 
 void debnConnection::pUpdateTimeouts( float elapsedTime ){
-	int i, count = pReliableMessagesSend->GetMessageCount();
-	debnMessage *bnMessage;
-	float timeout = 3.0f;
-	
-	// increase the timeouts on all send packages
-	for( i=0; i<count; i++ ){
-		bnMessage = pReliableMessagesSend->GetMessageAt( i );
+	switch( pConnectionState ){
+	case ecsConnected:{
+		const float resendInterval = pNetBasic->GetConfiguration().GetReliableResendInterval();
+		const float timeout = pNetBasic->GetConfiguration().GetReliableTimeout();
+		const int count = pReliableMessagesSend->GetMessageCount();
+		int i;
 		
-		// we are only interested in send packages
-		if( bnMessage->GetState() == debnMessage::emsSend ){
-			// increase the timeout if the package is send
-			bnMessage->IncreaseSecondsSinceSend( elapsedTime );
+		for( i=0; i<count; i++ ){
+			debnMessage * const bnMessage = pReliableMessagesSend->GetMessageAt( i );
 			
-			// if the elapsed time reaches the timeout send the message again
-			if( bnMessage->GetSecondsSinceSend() > timeout ){
-				// send the message
-				pNetBasic->LogInfoFormat( "pUpdateTimeouts: resend message %i", bnMessage->GetNumber() );
+			if( bnMessage->GetState() != debnMessage::emsSend ){
+				continue;
+			}
+			
+			bnMessage->IncrementElapsed( elapsedTime );
+			
+			if( bnMessage->GetTimeoutElapsed() > timeout ){
+				if( pNetBasic->GetConfiguration().GetLogLevel() >= debnConfiguration::ellDebug ){
+					pNetBasic->LogInfoFormat( "Send message timeout %d (%f/%f)",
+						bnMessage->GetNumber(), bnMessage->GetTimeoutElapsed(), timeout );
+				}
+				
+				pDisconnect();
+				if( pConnection->GetPeerScripting() ){
+					pConnection->GetPeerScripting()->ConnectionClosed();
+				}
+				return;
+			}
+			
+			if( bnMessage->GetResendElapsed() > resendInterval ){
+				if( pNetBasic->GetConfiguration().GetLogLevel() >= debnConfiguration::ellDebug ){
+					pNetBasic->LogInfoFormat( "Resend message %d (%f/%f)",
+						bnMessage->GetNumber(), bnMessage->GetResendElapsed(), resendInterval );
+				}
+				
+				bnMessage->SetResendElapsed( 0.0f );
 				pSocket->SendDatagram( bnMessage->GetMessage(), pRemoteAddress );
-				
-				// reset the timeout
-				bnMessage->SetSecondsSinceSend( 0.0f );
-				
-				// TODO: retry limit
 			}
 		}
+		}break;
+		
+	case ecsConnecting:
+		pElapsedConnectTimeout += elapsedTime;
+		if( pElapsedConnectTimeout > pNetBasic->GetConfiguration().GetConnectTimeout() ){
+			pNetBasic->LogErrorFormat( "Connection request timed out (%f/%f)",
+				pElapsedConnectTimeout, pNetBasic->GetConfiguration().GetConnectTimeout() );
+			
+			pDisconnect();
+			if( pConnection->GetPeerScripting() ){
+				pConnection->GetPeerScripting()->ConnectionClosed();
+			}
+			return;
+		}
+		
+		pElapsedConnectResend += elapsedTime;
+		if( pElapsedConnectResend > pNetBasic->GetConfiguration().GetConnectResendInterval() ){
+			if( pNetBasic->GetConfiguration().GetLogLevel() >= debnConfiguration::ellDebug ){
+				pNetBasic->LogInfoFormat( "Resend connection request (%f/%f)",
+					pElapsedConnectTimeout, pNetBasic->GetConfiguration().GetConnectResendInterval());
+			}
+			pElapsedConnectResend = 0.0f;
+			
+			decBaseFileWriter &sendWriter = pNetBasic->GetSharedSendDatagramWriter();
+			sendWriter.SetPosition( 0 );
+			pNetBasic->GetSharedSendDatagram()->Clear();
+			sendWriter.WriteByte( eccConnectionRequest );
+			
+			sendWriter.WriteUShort( 1 );
+			sendWriter.WriteUShort( epDENetworkProtocol );
+			
+			pSocket->SendDatagram( pNetBasic->GetSharedSendDatagram(), pRemoteAddress );
+		}
+		break;
+		
+	default:
+		break;
 	}
 }
 
@@ -858,7 +916,7 @@ void debnConnection::pProcessLinkState( int number, decBaseFileReader &reader ){
 	// check if a link exists with this identifier already that is not broken
 	debnStateLink *stateLink = pStateLinks->GetLinkWithIdentifier( identifier );
 	if( stateLink && stateLink->GetLinkState() != debnStateLink::elsDown ){
-		pNetBasic->LogInfo( "Link state: link with this identifier already exists." );
+// 		pNetBasic->LogInfo( "Link state: link with this identifier already exists." );
 		return;
 	}
 	
@@ -910,12 +968,12 @@ void debnConnection::pProcessLinkState( int number, decBaseFileReader &reader ){
 			code = eccLinkUp;
 			
 		}else{
-			pNetBasic->LogInfo( "Link state does not match the state provided." );
+// 			pNetBasic->LogInfo( "Link state does not match the state provided." );
 			code = eccLinkDown;
 		}
 		
 	}else{
-		pNetBasic->LogInfo( "No link state provided." );
+// 		pNetBasic->LogInfo( "No link state provided." );
 		code = eccLinkDown;
 	}
 	
@@ -992,12 +1050,10 @@ void debnConnection::pSendPendingReliables(){
 		// if the message is pending send it
 		bnMessage = pReliableMessagesSend->GetMessageAt( i );
 		if( bnMessage->GetState() == debnMessage::emsPending ){
-			// send
 			pSocket->SendDatagram( bnMessage->GetMessage(), pRemoteAddress );
 			
-			// mark the message send
 			bnMessage->SetState( debnMessage::emsSend );
-			bnMessage->SetSecondsSinceSend( 0.0f );
+			bnMessage->ResetElapsed();
 		}
 	}
 }
