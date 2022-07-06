@@ -1,5 +1,11 @@
 dragengine (1.13.1-ubuntu2~ubuntu20.10-ppa1) focal; urgency=medium
 
+  * Networking improvements
+
+ -- Roland Plüss <roland@rptd.ch>  Wed, 06 Jul 2022 20:00:26 +0000
+
+dragengine (1.13.1-ubuntu2~ubuntu20.10-ppa1) focal; urgency=medium
+
   * fixed broken release file
 
  -- Roland Plüss <roland@rptd.ch>  Mon, 04 Jul 2022 10:32:03 +0000
