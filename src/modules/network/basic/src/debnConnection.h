@@ -67,6 +67,8 @@ private:
 	debnAddress *pRemoteAddress;
 	int pConnectionState;
 	int pIdentifier;
+	float pElapsedConnectResend;
+	float pElapsedConnectTimeout;
 	
 	eProtocols pProtocol;
 	debnStateLinkManager *pStateLinks;

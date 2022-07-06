@@ -70,6 +70,8 @@ debnConnection::debnConnection( deNetworkBasic *netBasic, deConnection *connecti
 	pRemoteAddress = NULL;
 	pConnectionState = ecsDisconnected;
 	pIdentifier = -1;
+	pElapsedConnectResend = 0.0f;
+	pElapsedConnectTimeout = 0.0f;
 	
 	pStateLinks = NULL;
 	pModifiedStateLinks = NULL;
@@ -116,8 +118,8 @@ void debnConnection::SetIdentifier( int identifier ){
 }
 
 void debnConnection::Process( float elapsedTime ){
+	pUpdateTimeouts( elapsedTime );
 	if( pConnectionState == ecsConnected ){
-		pUpdateTimeouts( elapsedTime );
 		pUpdateStates();
 	}
 }
@@ -158,12 +160,17 @@ void debnConnection::AcceptConnection( debnSocket *bnSocket, debnAddress *addres
 	
 	pConnectionState = ecsConnected;
 	pProtocol = protocol;
+	pElapsedConnectResend = 0.0f;
+	pElapsedConnectTimeout = 0.0f;
 }
 
 void debnConnection::ProcessConnectionAck( decBaseFileReader &reader ){
 	deBaseScriptingConnection *scrCon = pConnection->GetPeerScripting();
 	
 	if( pConnectionState == ecsConnecting ){
+		pElapsedConnectResend = 0.0f;
+		pElapsedConnectTimeout = 0.0f;
+		
 		const eConnectionAck code = ( eConnectionAck )reader.ReadByte();
 		
 		if( code == ecaAccepted ){
@@ -355,7 +362,6 @@ void debnConnection::ProcessReliableAck( decBaseFileReader &reader ){
 	
 	// if reliable transmission arrived succefull done the message
 	if( code == eraSuccess ){
-		// mark the message done
 		bnMessage->SetState( debnMessage::emsDone );
 		
 		// remove all done messages up to the first pending one
@@ -363,10 +369,11 @@ void debnConnection::ProcessReliableAck( decBaseFileReader &reader ){
 		
 	// otherwise resend
 	}else{
-		// reset timeout
-		bnMessage->SetSecondsSinceSend( 0.0f );
+		if( pNetBasic->GetConfiguration().GetLogLevel() >= debnConfiguration::ellDebug ){
+			pNetBasic->LogInfoFormat( "Reliable ACK failed, resend message %d", bnMessage->GetNumber() );
+		}
 		
-		// resend message
+		bnMessage->SetResendElapsed( 0.0f );
 		pSocket->SendDatagram( bnMessage->GetMessage(), pRemoteAddress );
 	}
 }
@@ -480,6 +487,8 @@ bool debnConnection::ConnectTo( const char *address ){
 	
 	// switch to connecting state
 	pConnectionState = ecsConnecting;
+	pElapsedConnectResend = 0.0f;
+	pElapsedConnectTimeout = 0.0f;
 	
 	// finished
 	return true;
@@ -552,12 +561,10 @@ void debnConnection::SendReliableMessage( deNetworkMessage *message ){
 	
 	// if the message fits into the window send it right now
 	if( pReliableMessagesSend->GetMessageCount() <= pReliableWindowSize ){
-		// send
 		pSocket->SendDatagram( bnMessage->GetMessage(), pRemoteAddress );
 		
-		// mark the message send
 		bnMessage->SetState( debnMessage::emsSend );
-		bnMessage->SetSecondsSinceSend( 0.0f );
+		bnMessage->ResetElapsed();
 	}
 }
 
@@ -630,12 +637,10 @@ void debnConnection::LinkState( deNetworkMessage *message, deNetworkState *state
 	
 	// if the message fits into the window send it right now
 	if( pReliableMessagesSend->GetMessageCount() <= pReliableWindowSize ){
-		// send
 		pSocket->SendDatagram( bnMessage->GetMessage(), pRemoteAddress );
 		
-		// mark the message send
 		bnMessage->SetState( debnMessage::emsSend );
-		bnMessage->SetSecondsSinceSend( 0.0f );
+		bnMessage->ResetElapsed();
 	}
 	
 	// switch the link to the listening state
@@ -773,31 +778,82 @@ void debnConnection::pUpdateStates(){
 }
 
 void debnConnection::pUpdateTimeouts( float elapsedTime ){
-	int i, count = pReliableMessagesSend->GetMessageCount();
-	debnMessage *bnMessage;
-	float timeout = 3.0f;
-	
-	// increase the timeouts on all send packages
-	for( i=0; i<count; i++ ){
-		bnMessage = pReliableMessagesSend->GetMessageAt( i );
+	switch( pConnectionState ){
+	case ecsConnected:{
+		const float resendInterval = pNetBasic->GetConfiguration().GetReliableResendInterval();
+		const float timeout = pNetBasic->GetConfiguration().GetReliableTimeout();
+		const int count = pReliableMessagesSend->GetMessageCount();
+		int i;
 		
-		// we are only interested in send packages
-		if( bnMessage->GetState() == debnMessage::emsSend ){
-			// increase the timeout if the package is send
-			bnMessage->IncreaseSecondsSinceSend( elapsedTime );
+		for( i=0; i<count; i++ ){
+			debnMessage * const bnMessage = pReliableMessagesSend->GetMessageAt( i );
 			
-			// if the elapsed time reaches the timeout send the message again
-			if( bnMessage->GetSecondsSinceSend() > timeout ){
-				// send the message
-				pNetBasic->LogInfoFormat( "pUpdateTimeouts: resend message %i", bnMessage->GetNumber() );
+			if( bnMessage->GetState() != debnMessage::emsSend ){
+				continue;
+			}
+			
+			bnMessage->IncrementElapsed( elapsedTime );
+			
+			if( bnMessage->GetTimeoutElapsed() > timeout ){
+				if( pNetBasic->GetConfiguration().GetLogLevel() >= debnConfiguration::ellDebug ){
+					pNetBasic->LogInfoFormat( "Send message timeout %d (%f/%f)",
+						bnMessage->GetNumber(), bnMessage->GetTimeoutElapsed(), timeout );
+				}
+				
+				pDisconnect();
+				if( pConnection->GetPeerScripting() ){
+					pConnection->GetPeerScripting()->ConnectionClosed();
+				}
+				return;
+			}
+			
+			if( bnMessage->GetResendElapsed() > resendInterval ){
+				if( pNetBasic->GetConfiguration().GetLogLevel() >= debnConfiguration::ellDebug ){
+					pNetBasic->LogInfoFormat( "Resend message %d (%f/%f)",
+						bnMessage->GetNumber(), bnMessage->GetResendElapsed(), resendInterval );
+				}
+				
+				bnMessage->SetResendElapsed( 0.0f );
 				pSocket->SendDatagram( bnMessage->GetMessage(), pRemoteAddress );
-				
-				// reset the timeout
-				bnMessage->SetSecondsSinceSend( 0.0f );
-				
-				// TODO: retry limit
 			}
 		}
+		}break;
+		
+	case ecsConnecting:
+		pElapsedConnectTimeout += elapsedTime;
+		if( pElapsedConnectTimeout > pNetBasic->GetConfiguration().GetConnectTimeout() ){
+			pNetBasic->LogErrorFormat( "Connection request timed out (%f/%f)",
+				pElapsedConnectTimeout, pNetBasic->GetConfiguration().GetConnectTimeout() );
+			
+			pDisconnect();
+			if( pConnection->GetPeerScripting() ){
+				pConnection->GetPeerScripting()->ConnectionClosed();
+			}
+			return;
+		}
+		
+		pElapsedConnectResend += elapsedTime;
+		if( pElapsedConnectResend > pNetBasic->GetConfiguration().GetConnectResendInterval() ){
+			if( pNetBasic->GetConfiguration().GetLogLevel() >= debnConfiguration::ellDebug ){
+				pNetBasic->LogInfoFormat( "Resend connection request (%f/%f)",
+					pElapsedConnectTimeout, pNetBasic->GetConfiguration().GetConnectResendInterval());
+			}
+			pElapsedConnectResend = 0.0f;
+			
+			decBaseFileWriter &sendWriter = pNetBasic->GetSharedSendDatagramWriter();
+			sendWriter.SetPosition( 0 );
+			pNetBasic->GetSharedSendDatagram()->Clear();
+			sendWriter.WriteByte( eccConnectionRequest );
+			
+			sendWriter.WriteUShort( 1 );
+			sendWriter.WriteUShort( epDENetworkProtocol );
+			
+			pSocket->SendDatagram( pNetBasic->GetSharedSendDatagram(), pRemoteAddress );
+		}
+		break;
+		
+	default:
+		break;
 	}
 }
 
@@ -994,12 +1050,10 @@ void debnConnection::pSendPendingReliables(){
 		// if the message is pending send it
 		bnMessage = pReliableMessagesSend->GetMessageAt( i );
 		if( bnMessage->GetState() == debnMessage::emsPending ){
-			// send
 			pSocket->SendDatagram( bnMessage->GetMessage(), pRemoteAddress );
 			
-			// mark the message send
 			bnMessage->SetState( debnMessage::emsSend );
-			bnMessage->SetSecondsSinceSend( 0.0f );
+			bnMessage->ResetElapsed();
 		}
 	}
 }

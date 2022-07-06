@@ -22,6 +22,9 @@
 #ifndef _DENETWORKBASIC_H_
 #define _DENETWORKBASIC_H_
 
+#include "configuration/debnConfiguration.h"
+#include "parameters/debnParameterList.h"
+
 #include <dragengine/common/file/decBaseFileWriterReference.h>
 #include <dragengine/common/string/decStringList.h>
 #include <dragengine/resources/network/deNetworkMessageReference.h>
@@ -214,6 +217,9 @@ enum eProtocols{
  */
 class deNetworkBasic : public deBaseNetworkModule{
 private:
+	debnParameterList pParameters;
+	debnConfiguration pConfiguration;
+	
 	// objects to monitor
 	debnConnection *pHeadConnection;
 	debnConnection *pTailConnection;
@@ -259,6 +265,10 @@ public:
 	
 	/** @name Management */
 	/*@{*/
+	/** Configuration. */
+	inline debnConfiguration &GetConfiguration(){ return pConfiguration; }
+	inline const debnConfiguration &GetConfiguration() const{ return pConfiguration; }
+	
 	inline deNetworkMessage *GetSharedSendDatagram() const{ return pSharedSendDatagram; }
 	inline decBaseFileWriter &GetSharedSendDatagramWriter() const{ return pSharedSendDatagramWriter; }
 	
@@ -281,13 +291,17 @@ public:
 	/** \brief Close all connections using socket. */
 	void CloseConnections( debnSocket *bnSocket );
 	
-	/** Create a peer for the given world. */
+	
+	
+	virtual int GetParameterCount() const;
+	virtual void GetParameterInfo( int index, deModuleParameter &parameter ) const;
+	virtual int IndexOfParameterNamed( const char *name ) const;
+	virtual decString GetParameterValue( const char *name ) const;
+	virtual void SetParameterValue( const char *name, const char *value );
+	
 	virtual deBaseNetworkWorld *CreateWorld( deWorld *world );
-	/** Create a peer for the given server. */
 	virtual deBaseNetworkServer *CreateServer( deServer *server );
-	/** Create a peer for the given connection. */
 	virtual deBaseNetworkConnection *CreateConnection( deConnection *connection );
-	/** Create a peer for the given state. */
 	virtual deBaseNetworkState *CreateState( deNetworkState *state );
 	/*@}*/
 	
