@@ -752,12 +752,12 @@ void deoxrDPHtcViveTracker::pAddDevice( Tracker &tracker ){
 	tracker.device->SetType( deInputDevice::edtVRTracker );
 	tracker.device->SetName( pNameForTracker( tracker ) );
 	tracker.device->SetActionPose( tracker.action );
+	tracker.device->SetSubactionPath( tracker.pathRole );
 	tracker.device->SetID( id );
-// 	tracker.device->SetSpacePose( deoxrSpace::Ref::New( new deoxrSpace(
-// 		*pGetSession(), tracker.action, tracker.pathRole, decVector() ) ) );
 	tracker.device->SetSpacePose( deoxrSpace::Ref::New( new deoxrSpace(
-		*pGetSession(), tracker.action, tracker.path, decVector() ) ) );
-// 	tracker.device->SetSpacePose( deoxrSpace::Ref::New( new deoxrSpace( *pGetSession(), tracker.action ) ) );
+		*pGetSession(), tracker.action, tracker.pathRole, decVector() ) ) );
+// 	tracker.device->SetSpacePose( deoxrSpace::Ref::New( new deoxrSpace(
+// 		*pGetSession(), tracker.action, tracker.path, decVector() ) ) );
 	
 	deoxrDeviceComponent * const trigger = pAddComponentTrigger( tracker.device );
 	pAddAxisTrigger( tracker.device, trigger );
