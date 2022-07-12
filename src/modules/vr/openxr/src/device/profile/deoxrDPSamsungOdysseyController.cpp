@@ -36,7 +36,7 @@
 
 deoxrDPSamsungOdysseyController::deoxrDPSamsungOdysseyController( deoxrInstance &instance ) :
 deoxrDPMicrosoftMixedRealityMotionController( instance,
-	deoxrPath( instance, "/interaction_profiles/oculus/touch_controller" ),
+	deoxrPath( instance, "/interaction_profiles/samsung/odyssey_controller" ),
 	"Samsung Odyssey Controller" )
 {
 }
