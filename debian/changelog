@@ -1,3 +1,9 @@
+dragengine (1.13.3-ubuntu2~ubuntu20.10-ppa1) focal; urgency=medium
+
+  * VR tracker fix for SteamVR update
+
+ -- Roland Plüss <roland@rptd.ch>  Tue, 12 Jul 2022 16:57:08 +0000
+
 dragengine (1.13.2-ubuntu2~ubuntu20.10-ppa1) focal; urgency=medium
 
   * Networking improvements
