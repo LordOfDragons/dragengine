@@ -180,16 +180,8 @@ void deoxrInstance::SuggestBindings( const deoxrPath &profile, const sSuggestBin
 		return;
 	}
 	
-	int i;
-	
-// 	pOxr.LogInfoFormat( "SuggestBindings: profile %s", profile.GetName().GetString() );
-// 	for( i=0; i<count; i++ ){
-// 		pOxr.LogInfoFormat( "- %s => %s",
-// 			bindings[ i ].action->GetName().GetString(),
-// 			bindings[ i ].binding.GetName().GetString() );
-// 	}
-	
 	XrActionSuggestedBinding * const xrbindings = new XrActionSuggestedBinding[ count ];
+	int i;
 	
 	try{
 		for( i=0; i<count; i++ ){
@@ -211,6 +203,14 @@ void deoxrInstance::SuggestBindings( const deoxrPath &profile, const sSuggestBin
 		if( xrbindings ){
 			delete [] xrbindings;
 		}
+		
+		pOxr.LogErrorFormat( "SuggestBindings failed for profile '%s' (action -> binding)",
+			profile.GetName().GetString() );
+		for( i=0; i<count; i++ ){
+			pOxr.LogErrorFormat( "- '%s' -> '%s'", bindings[ i ].action->GetName().GetString(),
+				bindings[ i ].binding.GetName().GetString() );
+		}
+		
 		throw;
 	}
 }
