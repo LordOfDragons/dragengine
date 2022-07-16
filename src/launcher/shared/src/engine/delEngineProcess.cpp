@@ -372,16 +372,16 @@ void delEngineProcess::WriteUCharToPipe( int value ){
 	if( value < 0 || value > 0xff ){
 		DETHROW( deeInvalidParam );
 	}
-	const uint8_t uchar = ( uint8_t )value;
-	WriteToPipe( &uchar, sizeof( uint8_t ) );
+	const uint8_t wpuchar = ( uint8_t )value;
+	WriteToPipe( &wpuchar, sizeof( uint8_t ) );
 }
 
 void delEngineProcess::WriteUShortToPipe( int value ){
 	if( value < 0 || value > 0xffff ){
 		DETHROW( deeInvalidParam );
 	}
-	const uint16_t vushort = ( uint16_t )value;
-	WriteToPipe( &vushort, sizeof( uint16_t ) );
+	const uint16_t wpushort = ( uint16_t )value;
+	WriteToPipe( &wpushort, sizeof( uint16_t ) );
 }
 
 void delEngineProcess::WriteIntToPipe( int value ){
@@ -420,15 +420,15 @@ void delEngineProcess::WriteToPipe( const void *data, int length ){
 
 
 int delEngineProcess::ReadUCharFromPipe(){
-	uint8_t uchar;
-	ReadFromPipe( &uchar, sizeof( uint8_t ) );
-	return uchar;
+	uint8_t value;
+	ReadFromPipe( &value, sizeof( uint8_t ) );
+	return value;
 }
 
 int delEngineProcess::ReadUShortFromPipe(){
-	uint16_t vushort;
-	ReadFromPipe( &vushort, sizeof( uint16_t ) );
-	return vushort;
+	uint16_t value;
+	ReadFromPipe( &value, sizeof( uint16_t ) );
+	return value;
 }
 
 int delEngineProcess::ReadFloatFromPipe(){
