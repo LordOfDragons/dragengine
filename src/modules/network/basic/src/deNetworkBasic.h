@@ -22,6 +22,7 @@
 #ifndef _DENETWORKBASIC_H_
 #define _DENETWORKBASIC_H_
 
+#include "debnAddress.h"
 #include "configuration/debnConfiguration.h"
 #include "parameters/debnParameterList.h"
 
@@ -32,7 +33,6 @@
 
 class debnSocket;
 class debnServer;
-class debnAddress;
 class debnConnection;
 class deNetworkMessage;
 
@@ -160,7 +160,7 @@ private:
 	
 	// sending and receiving
 	deNetworkMessage *pDatagram;
-	debnAddress *pAddressReceive;
+	debnAddress pAddressReceive;
 	deNetworkMessageReference pSharedSendDatagram;
 	decBaseFileWriterReference pSharedSendDatagramWriter;
 	
@@ -236,7 +236,7 @@ public:
 	/*@}*/
 	
 private:
-	debnConnection *pFindConnection( const debnSocket *bnSocket, const debnAddress *address ) const;
+	debnConnection *pFindConnection( const debnSocket *bnSocket, const debnAddress &address ) const;
 	debnServer *pFindServer( const debnSocket *bnSocket ) const;
 	
 	void pReceiveDatagrams();

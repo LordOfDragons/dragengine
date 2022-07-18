@@ -19,28 +19,13 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-// includes
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/time.h>
 
-#ifdef OS_UNIX
-#include <sys/select.h>
-#include <sys/ioctl.h>
-#include <net/if.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <unistd.h>
-#endif
-
-#ifdef OS_BEOS
-#include <sys/sockio.h>
-#endif
-
 #ifdef OS_W32
 #	include <dragengine/app/include_windows.h>
-#	include <iphlpapi.h>
 #endif
 
 #include "debnServer.h"
@@ -131,8 +116,7 @@ pHeadServer( nullptr ),
 pTailServer( nullptr ),
 pHeadSocket( nullptr ),
 pTailSocket( nullptr ),
-pDatagram( nullptr ),
-pAddressReceive( nullptr )
+pDatagram( nullptr )
 {
 	try{
 		pParameters.AddParameter( new debnPLogLevel( *this ) );
@@ -168,9 +152,6 @@ bool deNetworkBasic::Init(){
 		pDatagram->SetDataLength( 1024 );
 		
 		// create receive address
-		pAddressReceive = new debnAddress;
-		if( ! pAddressReceive ) DETHROW( deeOutOfMemory );
-		
 		pSharedSendDatagram.TakeOver( new deNetworkMessage );
 		pSharedSendDatagram->SetDataLength( 50 );
 		pSharedSendDatagramWriter.TakeOver( new deNetworkMessageWriter( pSharedSendDatagram, false ) );
@@ -206,11 +187,6 @@ void deNetworkBasic::CleanUp(){
 		delete pMessagesReceive;
 		pMessagesReceive = NULL;
 	}*/
-	
-	if( pAddressReceive ){
-		delete pAddressReceive;
-		pAddressReceive = NULL;
-	}
 	
 	if( pDatagram ){
 		pDatagram->FreeReference();
@@ -394,130 +370,7 @@ void deNetworkBasic::UnregisterSocket( debnSocket *bnSocket ){
 
 
 void deNetworkBasic::FindPublicAddresses( decStringList &list ){
-	// unix version
-	#ifdef OS_UNIX
-	const int sock = socket( AF_INET, SOCK_DGRAM, 0 );
-	if( sock == -1 ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	try{
-		struct ifreq ifr;
-		int ifindex = 1;
-		memset( &ifr, 0, sizeof( ifr ) );
-		char bufferIP[ 17 ];
-		
-		while( true ){
-			#ifdef OS_BEOS
-			ifr.ifr_index = ifindex++;
-			#else
-			ifr.ifr_ifindex = ifindex++;
-			#endif
-			if( ioctl( sock, SIOCGIFNAME, &ifr ) ){
-				break;
-			}
-			
-			if( ioctl( sock, SIOCGIFADDR, &ifr ) ){
-				continue; // something failed, ignore the interface
-			}
-			const struct in_addr saddr = ( ( struct sockaddr_in & )ifr.ifr_addr ).sin_addr;
-			
-			/*
-			if( ioctl( sock, SIOCGIFNETMASK, &ifr ) ){
-				continue; // something failed, ignore the interface
-			}
-			const struct in_addr &saddrNetMask = ( ( struct sockaddr_in & )ifr.ifr_netmask ).sin_addr;
-			*/
-			
-			if( ! inet_ntop( AF_INET, &saddr, bufferIP, 16 ) ){
-				continue;
-			}
-			
-			if( strcmp( bufferIP, "127.0.0.1" ) == 0 ){
-				continue; // ignore localhost
-			}
-			
-			LogInfoFormat( "Found public address: %s", bufferIP );
-			list.Add( bufferIP );
-			// ifr.ifr_name  => device name
-		}
-		close( sock );
-		
-	}catch( const deException & ){
-		close( sock );
-		throw;
-	}
-	#endif
-	
-	// beos version
-	#ifdef OS_BEOS
-	(void)list;
-	DETHROW_INFO( deeInvalidParam, "TODO Implement this using BeOS means" );
-	#endif
-	
-	// windows version
-	#ifdef OS_W32
-	// get size and allocate buffer
-	PIP_ADAPTER_INFO pAdapterInfo = ( IP_ADAPTER_INFO* )HeapAlloc( GetProcessHeap(), 0, sizeof( IP_ADAPTER_INFO ) );
-	if( ! pAdapterInfo ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	try{
-		ULONG ulOutBufLen = sizeof( IP_ADAPTER_INFO );
-		if( GetAdaptersInfo( pAdapterInfo, &ulOutBufLen ) == ERROR_BUFFER_OVERFLOW ){
-			HeapFree( GetProcessHeap(), 0, pAdapterInfo );
-			pAdapterInfo = ( IP_ADAPTER_INFO* )HeapAlloc( GetProcessHeap(), 0, ulOutBufLen );
-			if( ! pAdapterInfo ){
-				DETHROW( deeInvalidParam );
-			}
-		}
-		
-		if( GetAdaptersInfo( pAdapterInfo, &ulOutBufLen ) != NO_ERROR ){
-			DETHROW( deeInvalidParam );
-		}
-		
-		// evaluate
-		PIP_ADAPTER_INFO pAdapter = pAdapterInfo;
-		while( pAdapter ){
-			// NOTE: IP_ADDR_STRING is a linked list and can potentially contain more than one address
-			
-			const unsigned long ulAddr = inet_addr( pAdapter->IpAddressList.IpAddress.String );
-			if( ulAddr == INADDR_NONE || ulAddr == 0 /*0.0.0.0*/ ){
-				pAdapter = pAdapter->Next;
-				continue;
-			}
-			
-			const unsigned long ulNetMask = inet_addr( pAdapter->IpAddressList.IpMask.String );
-			if(ulNetMask == INADDR_NONE || ulNetMask == 0 /*0.0.0.0*/){
-				pAdapter = pAdapter->Next;
-				continue;
-			}
-			
-			if( strcmp( pAdapter->IpAddressList.IpAddress.String, "127.0.0.1" ) == 0 ){
-				pAdapter = pAdapter->Next;
-				continue; // ignore localhost
-			}
-			
-			LogInfoFormat( "Found public address: %s", pAdapter->IpAddressList.IpAddress.String );
-			
-			list.Add( pAdapter->IpAddressList.IpAddress.String );
-			// pAdapter->AdapterName  => device name
-			// (uint32_t)ulAddr   => address in in_addr format
-			// (uint32_t)ulNetMask   => netmask in in_addr format
-			
-			pAdapter = pAdapter->Next;
-		}
-		
-		HeapFree( GetProcessHeap(), 0, pAdapterInfo );
-		
-	}catch( const deException & ){
-		if( pAdapterInfo ){
-			HeapFree( GetProcessHeap(), 0, pAdapterInfo );
-		}
-		throw;
-	}
-	#endif
+	debnSocket::FindAddresses( list, true );
 }
 
 void deNetworkBasic::CloseConnections( debnSocket *bnSocket ){
@@ -579,16 +432,15 @@ deBaseNetworkState *deNetworkBasic::CreateState( deNetworkState *state ){
 // Private Functions
 //////////////////////
 
-debnConnection *deNetworkBasic::pFindConnection( const debnSocket *bnSocket, const debnAddress *address ) const{
+debnConnection *deNetworkBasic::pFindConnection( const debnSocket *bnSocket, const debnAddress &address ) const{
 	debnConnection *connection = pHeadConnection;
-	
 	while( connection ){
-		if( connection->Matches( bnSocket, address ) ) return connection;
-		
+		if( connection->Matches( bnSocket, address ) ){
+			return connection;
+		}
 		connection = connection->GetNextConnection();
 	}
-	
-	return NULL;
+	return nullptr;
 }
 
 debnServer *deNetworkBasic::pFindServer( const debnSocket *bnSocket ) const{
@@ -609,7 +461,7 @@ void deNetworkBasic::pReceiveDatagrams(){
 	debnSocket *bnSocket = pHeadSocket;
 	
 	while( bnSocket ){
-		while( bnSocket->ReceiveDatagram( pDatagram, pAddressReceive ) ){
+		while( bnSocket->ReceiveDatagram( *pDatagram, pAddressReceive ) ){
 			decBaseFileReaderReference reader;
 			reader.TakeOver( new deNetworkMessageReader( pDatagram ) );
 			
