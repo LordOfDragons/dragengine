@@ -301,7 +301,11 @@ void debnAddress::SetFromString( const char *address ){
 	int retcode = getaddrinfo( node, nullptr, &hints, &result );
 	if( retcode ){
 		decString message;
+#ifdef OS_W32
 		message.Format( "getaddrinfo: %s (%d)", gai_strerrorA( retcode ), retcode );
+#else
+		message.Format( "getaddrinfo: %s (%d)", gai_strerror( retcode ), retcode );
+#endif
 		DETHROW_INFO( deeInvalidParam, message );
 	}
 	
