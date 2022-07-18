@@ -24,29 +24,6 @@
 #include <string.h>
 #include <unistd.h>
 
-#ifdef OS_UNIX
-#	include <errno.h>
-#	include <netdb.h>
-#	include <arpa/inet.h>
-#	include <sys/types.h>
-#	include <sys/socket.h>
-#	include <netinet/in.h>
-#	include <sys/poll.h>
-#	include <ifaddrs.h>
-#include <net/if.h>
-#endif
-
-#ifdef OS_BEOS
-#	include <sys/sockio.h>
-#endif
-
-#ifdef OS_W32
-#	include <dragengine/app/include_windows.h>
-#	include <iphlpapi.h>
-#	include <WS2tcpip.h>
-typedef int socklen_t;
-#endif
-
 #include "debnSocket.h"
 #include "debnServer.h"
 #include "debnAddress.h"
@@ -54,6 +31,23 @@ typedef int socklen_t;
 
 #include <dragengine/resources/network/deNetworkMessage.h>
 #include <dragengine/common/exceptions.h>
+
+#ifdef OS_UNIX
+#	include <errno.h>
+#	include <netdb.h>
+#	include <sys/poll.h>
+#	include <ifaddrs.h>
+#	include <net/if.h>
+#endif
+
+#ifdef OS_BEOS
+#	include <sys/sockio.h>
+#endif
+
+#ifdef OS_W32
+#	include <iphlpapi.h>
+typedef int socklen_t;
+#endif
 
 
 

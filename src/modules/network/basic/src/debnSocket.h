@@ -22,7 +22,13 @@
 #ifndef _DEBNSOCKET_H_
 #define _DEBNSOCKET_H_
 
+#include <stdint.h>
+
 #include "debnAddress.h"
+
+#ifdef OS_W32
+#	include <iphlpapi.h>
+#endif
 
 #include <dragengine/deObject.h>
 

@@ -22,14 +22,23 @@
 #ifndef _DEBNADDRESS_H_
 #define _DEBNADDRESS_H_
 
+#include <dragengine/dragengine_configuration.h>
+
 #include <dragengine/common/string/decString.h>
+
 #ifdef OS_UNIX
 #	include <arpa/inet.h>
 #	include <sys/types.h>
 #	include <sys/socket.h>
 #	include <netinet/in.h>
 #endif
+
 #ifdef OS_W32
+#	ifdef _WIN32_WINNT
+#		undef _WIN32_WINNT
+#	endif
+#	define _WIN32_WINNT _WIN32_WINNT_WIN7
+#	include <ws2tcpip.h>
 #	include <dragengine/app/include_windows.h>
 #endif
 

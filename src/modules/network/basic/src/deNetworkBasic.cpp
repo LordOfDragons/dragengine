@@ -24,10 +24,6 @@
 #include <string.h>
 #include <sys/time.h>
 
-#ifdef OS_W32
-#	include <dragengine/app/include_windows.h>
-#endif
-
 #include "debnServer.h"
 #include "debnSocket.h"
 #include "debnAddress.h"

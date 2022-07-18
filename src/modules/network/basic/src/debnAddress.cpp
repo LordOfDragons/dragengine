@@ -23,22 +23,19 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <stdint.h>
+
+#include "debnAddress.h"
+
+#include <dragengine/common/exceptions.h>
 
 #ifdef OS_UNIX
 #	include <netdb.h>
-#	include <arpa/inet.h>
-#	include <sys/types.h>
-#	include <sys/socket.h>
-#	include <netinet/in.h>
 #endif
 
 #ifdef OS_W32
-#	include <dragengine/app/include_windows.h>
-typedef unsigned int uint32_t;
+#	include <iphlpapi.h>
 #endif
-
-#include "debnAddress.h"
-#include <dragengine/common/exceptions.h>
 
 
 
@@ -203,8 +200,8 @@ void debnAddress::SetIPv6FromSocket( const sockaddr_in6 &address ){
 	
 	for( i=0; i<16; i+=2 ){
 		const uint16_t &in = sa16[ i / 2 ];
-		socketAddress.values[ i ] = ( uint8_t )( ( in >> 8 ) & 0xff );
-		socketAddress.values[ i + 1 ] = ( uint8_t )( in & 0xff );
+		pValues[ i ] = ( uint8_t )( ( in >> 8 ) & 0xff );
+		pValues[ i + 1 ] = ( uint8_t )( in & 0xff );
 	}
 	
 #else
@@ -304,7 +301,7 @@ void debnAddress::SetFromString( const char *address ){
 	int retcode = getaddrinfo( node, nullptr, &hints, &result );
 	if( retcode ){
 		decString message;
-		message.Format( "getaddrinfo: %s (%d)", gai_strerror( retcode ), retcode );
+		message.Format( "getaddrinfo: %s (%d)", gai_strerrorA( retcode ), retcode );
 		DETHROW_INFO( deeInvalidParam, message );
 	}
 	
