@@ -43,6 +43,8 @@ jobs:
           unzip dragengine-sdk-${{ inputs.releaseVersion }}-windows64.zip -d installer/windows/unpacked
           unzip deigde-${{ inputs.releaseVersion }}-windows64.zip -d installer/windows/unpacked
           unzip deigde-sdk-${{ inputs.releaseVersion }}-windows64.zip -d installer/windows/unpacked
+          mkdir installer/windows/build
+          chmod 777 installer/windows/build
           
       - name: Build Installers
         uses: addnab/docker-run-action@v3
