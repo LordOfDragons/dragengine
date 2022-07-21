@@ -819,8 +819,6 @@ deoglLightShaderConfig &config ){
 		break;
 	}
 	
-	config.SetDecodeInDepth( oglconfig.GetDefRenEncDepth() );
-	
 	switch( shaderType ){
 	case estNoShadow:
 	case estGIRayNoShadow:

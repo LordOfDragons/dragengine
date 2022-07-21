@@ -482,7 +482,24 @@ void deoglSkinShader::PrepareShader(){
 
 
 
-deoglSPBlockUBO *deoglSkinShader::CreateSPBRender( deoglRenderThread &renderThread, bool cubeMap, bool cascaded ){
+deoglSPBlockUBO *deoglSkinShader::CreateSPBRender( deoglRenderThread &renderThread ){
+	return CreateSPBRender( renderThread, 1, 1 );
+}
+
+deoglSPBlockUBO *deoglSkinShader::CreateSPBRenderCubeMap( deoglRenderThread &renderThread ){
+	return CreateSPBRender( renderThread, 6, 1 );
+}
+
+deoglSPBlockUBO *deoglSkinShader::CreateSPBRenderCascaded( deoglRenderThread &renderThread ){
+	return CreateSPBRender( renderThread, 4, 4 );
+}
+
+deoglSPBlockUBO *deoglSkinShader::CreateSPBRenderStereo( deoglRenderThread &renderThread ){
+	return CreateSPBRender( renderThread, 2, 1 );
+}
+
+deoglSPBlockUBO *deoglSkinShader::CreateSPBRender( deoglRenderThread &renderThread,
+int matrixLayerCount, int depthOffsetLayerCount ){
 	if( ! pglUniformBlockBinding ){
 		DETHROW( deeInvalidParam );
 	}
@@ -492,17 +509,6 @@ deoglSPBlockUBO *deoglSkinShader::CreateSPBRender( deoglRenderThread &renderThre
 	// method is a static method not an regular method
 	
 	deoglSPBlockUBO *spb = NULL;
-	
-	int matrixLayerCount = 1;
-	int depthOffsetLayerCount = 1;
-	
-	if( cubeMap ){
-		matrixLayerCount = 6;
-		
-	}else if( cascaded ){
-		matrixLayerCount = 4;
-		depthOffsetLayerCount = 4;
-	}
 	
 	try{
 		spb = new deoglSPBlockUBO( renderThread );
@@ -1887,7 +1893,7 @@ void deoglSkinShader::GenerateDefines( deoglShaderDefines &defines ){
 		defines.AddDefine( "GS_RENDER_CUBE_CULLING", true );
 		
 		if( pRenderThread.GetExtensions().SupportsGSInstancing() ){
-			defines.AddDefine( "GS_RENDER_CUBE_INSTANCING", true );
+			defines.AddDefine( "GS_INSTANCING", true );
 		}
 		
 	}else if( pConfig.GetGSRenderCascaded() ){
@@ -1898,7 +1904,18 @@ void deoglSkinShader::GenerateDefines( deoglShaderDefines &defines ){
 		defines.AddDefine( "GS_RENDER_CASCADED", true );
 		
 		if( pRenderThread.GetExtensions().SupportsGSInstancing() ){
-			defines.AddDefine( "GS_RENDER_CASCADED_INSTANCING", true );
+			defines.AddDefine( "GS_INSTANCING", true );
+		}
+		
+	}else if( pConfig.GetGSRenderStereo() ){
+		if( ! pRenderThread.GetExtensions().SupportsGeometryShader() ){
+			DETHROW( deeInvalidParam );
+		}
+		
+		defines.AddDefine( "GS_RENDER_STEREO", true );
+		
+		if( pRenderThread.GetExtensions().SupportsGSInstancing() ){
+			defines.AddDefine( "GS_INSTANCING", true );
 		}
 	}
 	
@@ -2164,7 +2181,7 @@ void deoglSkinShader::GenerateGeometrySC(){
 		break;
 		
 	default:
-		if( pConfig.GetGSRenderCube() || pConfig.GetGSRenderCascaded() ){
+		if( pConfig.GetGSRenderCube() || pConfig.GetGSRenderCascaded() || pConfig.GetGSRenderStereo() ){
 			switch( pConfig.GetShaderMode() ){
 			case deoglSkinShaderConfig::esmDepth:
 				unitSourceCodePath = deoglSkinShaderManager::euscpGeometryDepth;

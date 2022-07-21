@@ -114,6 +114,7 @@ pIsRendering( false ),
 pLevel( 0 ),
 
 pUseGIState( false ),
+pStereoRender( false ),
 pUseConstGIState( NULL ),
 pRenderVR( ervrNone ),
 pSkyLightCount( 0 ),
@@ -1623,6 +1624,10 @@ void deoglRenderPlan::SetUseGIState( bool useGIState ){
 
 void deoglRenderPlan::SetUseConstGIState( deoglGIState *giState ){
 	pUseConstGIState = giState;
+}
+
+void deoglRenderPlan::SetStereoRender( bool stereoRender ){
+	pStereoRender = stereoRender;
 }
 
 void deoglRenderPlan::SetRenderVR( eRenderVR renderVR ){

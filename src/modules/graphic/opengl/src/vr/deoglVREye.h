@@ -97,6 +97,9 @@ public:
 	/** VR. */
 	inline deoglVR &GetVR() const{ return pVR; }
 	
+	/** Target size. */
+	inline const decPoint &GetTargetSize() const{ return pTargetSize; }
+	
 	/** Projection. */
 	inline double GetProjectionLeft() const{ return pProjectionLeft; }
 	inline double GetProjectionRight() const{ return pProjectionRight; }

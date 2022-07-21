@@ -138,7 +138,7 @@ void deoglREffectColorMatrix::Render( deoglRenderPlan &plan ){
 	// set attachments
 	defren.SwapPostProcessTarget();
 	defren.ActivatePostProcessFBO( false );
-	tsmgr.EnableTexture( 0, *defren.GetPostProcessTexture(),
+	tsmgr.EnableArrayTexture( 0, *defren.GetPostProcessTexture(),
 		*rtshader.GetTexSamplerConfig( deoglRTShader::etscClampNearest ) );
 	
 	// set states

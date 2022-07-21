@@ -127,9 +127,6 @@ pTBORenderRectangle2( NULL )
 	
 	try{
 		sources = shaderManager.GetSourcesNamed( "DefRen Debug Color-Only" );
-		if( defren.GetUseEncodedDepth() ){
-			defines.AddDefine( "ENCODE_DEPTH", "1" );
-		}
 		if( defren.GetUseInverseDepth() ){
 			defines.AddDefine( "INVERSE_DEPTH", "1" );
 		}
@@ -356,7 +353,7 @@ void deoglRenderDebug::RenderComponentsStatic( sRenderParameters &params ){
 	OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
 	
 	// prepare depth testing
-	tsmgr.EnableTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
+	tsmgr.EnableArrayTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
 	
 	// render component boxes
 	componentCount = clist.GetComponentCount();
@@ -393,7 +390,7 @@ void deoglRenderDebug::RenderComponentBox( sRenderParameters &params, deoglRComp
 	OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
 	
 	// prepare depth testing
-	tsmgr.EnableTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
+	tsmgr.EnableArrayTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
 	
 	// select shader
 	renderThread.GetShader().ActivateShader( pShaderXRay );

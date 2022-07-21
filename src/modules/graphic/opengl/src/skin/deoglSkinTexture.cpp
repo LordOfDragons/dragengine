@@ -738,7 +738,6 @@ bool deoglSkinTexture::GetShaderConfigFor( eShaderTypes shaderType, deoglSkinSha
 	config.SetBillboard( shaderConfigInfo.billboard );
 	
 	config.SetMaterialNormalModeEnc( deoglSkinShaderConfig::emnmFloat );
-	config.SetDecodeInDepth( defren.GetUseEncodedDepth() );
 	config.SetInverseDepth( defren.GetUseInverseDepth() );
 	if( ! luminanceOnly && ! giMaterial ){
 		config.SetMaskedSolidity( pSolidityMasked || pHasZeroSolidity );
@@ -941,7 +940,6 @@ bool deoglSkinTexture::GetShaderConfigFor( eShaderTypes shaderType, deoglSkinSha
 		
 	case esctDepth:
 		config.SetFadeOutRange( defren.GetUseFadeOutRange() );
-		config.SetEncodeOutDepth( defren.GetUseEncodedDepth() );
 		config.SetClipPlane( shaderConfigInfo.clipPlane );
 		
 		if( pSolid ){
@@ -1095,7 +1093,6 @@ bool deoglSkinTexture::GetShaderConfigFor( eShaderTypes shaderType, deoglSkinSha
 		config.SetOutline( true );
 		config.SetOutlineThicknessScreen( pOutlineThicknessScreen );
 		config.SetFadeOutRange( defren.GetUseFadeOutRange() );
-		config.SetEncodeOutDepth( defren.GetUseEncodedDepth() );
 		config.SetClipPlane( shaderConfigInfo.clipPlane );
 		
 		if( pIsOutlineSolid ){

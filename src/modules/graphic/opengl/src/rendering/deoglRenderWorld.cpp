@@ -67,8 +67,9 @@
 #include "../sky/deoglRSky.h"
 #include "../sky/deoglRSkyInstance.h"
 #include "../sky/deoglRSkyLayer.h"
-#include "../texture/texture2d/deoglTexture.h"
 #include "../texture/deoglTextureStageManager.h"
+#include "../texture/arraytexture/deoglArrayTexture.h"
+#include "../texture/texture2d/deoglTexture.h"
 #include "../world/deoglRCamera.h"
 #include "../world/deoglRWorld.h"
 
@@ -157,8 +158,9 @@ deoglRenderWorld::deoglRenderWorld( deoglRenderThread &renderThread ) :
 deoglRenderBase( renderThread ),
 
 pRenderPB( NULL ),
-pRenderLuminancePB( NULL ),
-pRenderCubePB( NULL ),
+pRenderLuminancePB( nullptr ),
+pRenderCubePB( nullptr ),
+pRenderStereoPB( nullptr ),
 pRenderTask( NULL ),
 pAddToRenderTask( NULL ),
 pParticleSorter( NULL ),
@@ -172,9 +174,10 @@ pDebugInfo( renderThread )
 	deoglShaderDefines defines;
 	
 	try{
-		pRenderPB = deoglSkinShader::CreateSPBRender( renderThread, false, false );
-		pRenderLuminancePB = deoglSkinShader::CreateSPBRender( renderThread, false, false );
-		pRenderCubePB = deoglSkinShader::CreateSPBRender( renderThread, true, false );
+		pRenderPB = deoglSkinShader::CreateSPBRender( renderThread );
+		pRenderLuminancePB = deoglSkinShader::CreateSPBRender( renderThread );
+		pRenderCubePB = deoglSkinShader::CreateSPBRenderCubeMap( renderThread );
+		pRenderStereoPB = deoglSkinShader::CreateSPBRenderStereo( renderThread );
 		
 		pRenderTask = new deoglRenderTask( renderThread );
 		pAddToRenderTask = new deoglAddToRenderTask( renderThread, *pRenderTask );
@@ -482,7 +485,7 @@ DEBUG_RESET_TIMER
 			OGL_CHECK( renderThread, glEnable( GL_SCISSOR_TEST ) );
 			
 			defren.ActivateFBOTemporary2( false );
-			tsmgr.EnableTexture( 0, *defren.GetTextureColor(), GetSamplerClampNearest() );
+			tsmgr.EnableArrayTexture( 0, *defren.GetTextureColor(), GetSamplerClampNearest() );
 			
 			renderThread.GetShader().ActivateShader( pShaderFinalize );
 			shader = pShaderFinalize->GetCompiled();
@@ -660,6 +663,59 @@ DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 	}
 	pRenderPB->UnmapBuffer();
 	
+	// fill the parameter block parameters with the found values. only used parameters are set
+	pRenderStereoPB->MapBuffer();
+	try{
+		pRenderStereoPB->SetParameterDataVec4( deoglSkinShader::erutAmbient, ambient, 1.0f );
+		pRenderStereoPB->SetParameterDataMat4x4( deoglSkinShader::erutMatrixP, matrixProjection );
+		pRenderStereoPB->SetParameterDataMat3x3( deoglSkinShader::erutMatrixEnvMap, matrixEnvMap );
+		
+		pRenderStereoPB->SetParameterDataArrayMat4x3( deoglSkinShader::erutMatrixV, 0, matrixCamera );
+		pRenderStereoPB->SetParameterDataArrayMat4x4( deoglSkinShader::erutMatrixVP, 0, matrixCamera * matrixProjection );
+		pRenderStereoPB->SetParameterDataArrayMat3x3( deoglSkinShader::erutMatrixVn, 0, matrixCamera.GetRotationMatrix().Invert() );
+		
+		pRenderStereoPB->SetParameterDataArrayMat4x3( deoglSkinShader::erutMatrixV, 1, matrixCamera );
+		pRenderStereoPB->SetParameterDataArrayMat4x4( deoglSkinShader::erutMatrixVP, 1, matrixCamera * matrixProjection );
+		pRenderStereoPB->SetParameterDataArrayMat3x3( deoglSkinShader::erutMatrixVn, 1, matrixCamera.GetRotationMatrix().Invert() );
+		
+		pRenderStereoPB->SetParameterDataFloat( deoglSkinShader::erutEnvMapLodLevel, envMapLodLevel );
+		pRenderStereoPB->SetParameterDataFloat( deoglSkinShader::erutNorRoughCorrStrength, config.GetNormalRoughnessCorrectionStrength() );
+		
+		pRenderStereoPB->SetParameterDataBool( deoglSkinShader::erutSkinDoesReflections, ! config.GetSSREnable() );
+		pRenderStereoPB->SetParameterDataBool( deoglSkinShader::erutFlipCulling, plan.GetFlipCulling() );
+		
+		defren.SetShaderViewport( *pRenderStereoPB, deoglSkinShader::erutViewport, true );
+		
+		pRenderStereoPB->SetParameterDataVec4( deoglSkinShader::erutClipPlane, clipPlaneNormal, clipPlaneDistance );
+		pRenderStereoPB->SetParameterDataVec4( deoglSkinShader::erutScreenSpace,
+			defren.GetScalingU(), defren.GetScalingV(), defren.GetPixelSizeU(), defren.GetPixelSizeV() );
+		pRenderStereoPB->SetParameterDataVec4( deoglSkinShader::erutDepthOffset, 0.0f, 0.0f, 0.0f, 0.0f );
+		
+		pRenderStereoPB->SetParameterDataVec3( deoglSkinShader::erutParticleLightHack, particleLight );
+		
+		pRenderStereoPB->SetParameterDataFloat( deoglSkinShader::erutBillboardZScale, tanf( plan.GetCameraFov() * 0.5f ) );
+		
+		if( plan.GetCamera() ){
+			pRenderStereoPB->SetParameterDataFloat( deoglSkinShader::erutCameraAdaptedIntensity,
+				plan.GetCamera()->GetLastAverageLuminance() / config.GetHDRRSceneKey() );
+			
+		}else{
+			pRenderStereoPB->SetParameterDataFloat( deoglSkinShader::erutCameraAdaptedIntensity,
+				plan.GetCameraAdaptedIntensity() );
+		}
+		
+		const float znear = plan.GetCameraImageDistance();
+		const float zfar = plan.GetCameraViewDistance();
+		const float fadeRange = ( zfar - znear ) * 0.001f; // for example 1m on 1km
+		pRenderStereoPB->SetParameterDataVec3( deoglSkinShader::erutFadeRange, zfar - fadeRange, zfar, 1.0f / fadeRange );
+		
+	}catch( const deException & ){
+		pRenderStereoPB->UnmapBuffer();
+		throw;
+	}
+	
+	pRenderStereoPB->UnmapBuffer();
+	
 	// luminance parameter block is the same except screen space differs
 	pRenderLuminancePB->MapBuffer();
 	try{
@@ -700,6 +756,7 @@ DBG_ENTER_PARAM("PrepareRenderParamBlock", "%p", mask)
 		pRenderLuminancePB->UnmapBuffer();
 		throw;
 	}
+	
 	pRenderLuminancePB->UnmapBuffer();
 DBG_EXIT("PrepareRenderParamBlock")
 }
@@ -915,7 +972,7 @@ DBG_ENTER("RenderFinalizeFBO")
 		sampler = &GetSamplerClampNearest();
 	}
 	
-	tsmgr.EnableTexture( 0, *defren.GetPostProcessTexture(), *sampler );
+	tsmgr.EnableArrayTexture( 0, *defren.GetPostProcessTexture(), *sampler );
 	
 	// set states
 	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
@@ -1013,7 +1070,7 @@ DBG_ENTER("RenderFinalizeContext")
 		sampler = &GetSamplerClampNearest();
 	}
 	
-	tsmgr.EnableTexture( 0, *defren.GetPostProcessTexture(), *sampler );
+	tsmgr.EnableArrayTexture( 0, *defren.GetPostProcessTexture(), *sampler );
 	
 	// set states
 	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
@@ -1096,6 +1153,9 @@ void deoglRenderWorld::pCleanUp(){
 	}
 	if( pRenderTask ){
 		delete pRenderTask;
+	}
+	if( pRenderStereoPB ){
+		pRenderStereoPB->FreeReference();
 	}
 	if( pRenderCubePB ){
 		pRenderCubePB->FreeReference();

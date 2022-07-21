@@ -122,6 +122,7 @@ private:
 	bool pNoReflections;
 	bool pNoAmbientLight;
 	bool pUseGIState;
+	bool pStereoRender;
 	deoglGIState *pUseConstGIState;
 	eRenderVR pRenderVR;
 	
@@ -465,6 +466,12 @@ public:
 	
 	/** Set use const GI state. */
 	void SetUseConstGIState( deoglGIState *giState );
+	
+	/** Use stereo rendering. */
+	inline bool GetStereoRender() const{ return pStereoRender; }
+	
+	/** Set use stereo rendering. */
+	void SetStereoRender( bool stereoRender );
 	
 	/** Render VR. */
 	inline eRenderVR GetRenderVR() const{ return pRenderVR; }

@@ -6,7 +6,7 @@ precision highp int;
 #ifdef WITH_SHADOWMAP
 	#include "v130/shared/defren/skin/ubo_render_parameters.glsl"
 	
-	#if defined GS_RENDER_CUBE || defined GS_RENDER_CASCADED
+	#if defined GS_RENDER_CUBE || defined GS_RENDER_CASCADED || defined GS_RENDER_STEREO
 		#define MATRIX_VP_0 pMatrixVP[0]
 		#define MATRIX_V_0 pMatrixV[0]
 		#define TRANSFORM_Z_0 pTransformZ[0]
@@ -38,7 +38,7 @@ precision highp int;
 
 in vec3 inPosition;
 
-#if defined PERSPECTIVE_TO_LINEAR && ! defined GS_RENDER_CUBE && ! defined GS_RENDER_CASCADED
+#if defined PERSPECTIVE_TO_LINEAR && ! defined GS_RENDER_CUBE && ! defined GS_RENDER_CASCADED && ! defined GS_RENDER_STEREO
 out float vDepth;
 #endif
 #ifdef DEPTH_DISTANCE
@@ -48,7 +48,7 @@ out vec3 vPosition;
 out vec3 vClipCoord;
 #endif
 
-#if defined GS_RENDER_CUBE || defined GS_RENDER_CASCADED
+#if defined GS_RENDER_CUBE || defined GS_RENDER_CASCADED || defined GS_RENDER_STEREO
 	flat out int vSPBIndex;
 #endif
 #if defined GS_RENDER_CUBE && defined GS_RENDER_CUBE_CULLING
@@ -61,7 +61,7 @@ void main( void ){
 	#include "v130/shared/defren/skin/shared_spb_index2.glsl"
 	
 	vec4 position = vec4( pMatrixModel * vec4( inPosition, 1.0 ), 1.0 );
-	#if defined GS_RENDER_CUBE || defined GS_RENDER_CASCADED
+	#if defined GS_RENDER_CUBE || defined GS_RENDER_CASCADED || defined GS_RENDER_STEREO
 		gl_Position = sanitizePosition( position );
 	#else
 		gl_Position = sanitizePosition( MATRIX_VP_0 * position );
@@ -73,7 +73,7 @@ void main( void ){
 		#endif
 	#endif
 	
-	#if defined GS_RENDER_CUBE || defined GS_RENDER_CASCADED
+	#if defined GS_RENDER_CUBE || defined GS_RENDER_CASCADED || defined GS_RENDER_STEREO
 		vSPBIndex = spbIndex;
 	#endif
 	#if defined GS_RENDER_CUBE && defined GS_RENDER_CUBE_CULLING

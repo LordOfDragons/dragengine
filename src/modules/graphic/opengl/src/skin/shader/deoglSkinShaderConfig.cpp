@@ -73,6 +73,7 @@ void deoglSkinShaderConfig::Reset(){
 	pUseNormalRoughnessCorrection = true;
 	pGSRenderCube = false;
 	pGSRenderCascaded = false;
+	pGSRenderStereo = false;
 	pSharedSPB = false;
 	pOutline = false;
 	pOutlineThicknessScreen = false;
@@ -235,6 +236,10 @@ void deoglSkinShaderConfig::SetGSRenderCube( bool gsRenderCube ){
 
 void deoglSkinShaderConfig::SetGSRenderCascaded( bool gsRenderCascaded ){
 	pGSRenderCascaded = gsRenderCascaded;
+}
+
+void deoglSkinShaderConfig::SetGSRenderStereo( bool gsRenderStereo ){
+	pGSRenderStereo = gsRenderStereo;
 }
 
 void deoglSkinShaderConfig::SetSharedSPB( bool sharedSPB ){
@@ -595,6 +600,9 @@ void deoglSkinShaderConfig::DebugGetConfigString( decString &string ) const{
 	if( pGSRenderCascaded ){
 		string.Append( " gsRenderCascaded" );
 	}
+	if( pGSRenderStereo ){
+		string.Append( " gsRenderStereo" );
+	}
 	if( pSharedSPB ){
 		string.Append( " sharedSPB" );
 	}
@@ -813,6 +821,7 @@ deoglSkinShaderConfig &deoglSkinShaderConfig::operator=( const deoglSkinShaderCo
 	pUseNormalRoughnessCorrection = config.pUseNormalRoughnessCorrection;
 	pGSRenderCube = config.pGSRenderCube;
 	pGSRenderCascaded = config.pGSRenderCascaded;
+	pGSRenderStereo = config.pGSRenderStereo;
 	pSharedSPB = config.pSharedSPB;
 	pOutline = config.pOutline;
 	pOutlineThicknessScreen = config.pOutlineThicknessScreen;
@@ -905,6 +914,7 @@ bool deoglSkinShaderConfig::operator==( const deoglSkinShaderConfig &config ) co
 		&& pUseNormalRoughnessCorrection == config.pUseNormalRoughnessCorrection
 		&& pGSRenderCube == config.pGSRenderCube
 		&& pGSRenderCascaded == config.pGSRenderCascaded
+		&& pGSRenderStereo == config.pGSRenderStereo
 		&& pSharedSPB == config.pSharedSPB
 		&& pOutline == config.pOutline
 		&& pOutlineThicknessScreen == config.pOutlineThicknessScreen

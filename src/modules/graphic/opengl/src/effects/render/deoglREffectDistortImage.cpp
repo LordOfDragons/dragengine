@@ -150,7 +150,7 @@ void deoglREffectDistortImage::Render( deoglRenderPlan &plan ){
 	// swap render texture
 	defren.SwapPostProcessTarget();
 	defren.ActivatePostProcessFBO( false );
-	tsmgr.EnableTexture( 0, *defren.GetPostProcessTexture(), *rtshader.GetTexSamplerConfig( deoglRTShader::etscClampLinear ) );
+	tsmgr.EnableArrayTexture( 0, *defren.GetPostProcessTexture(), *rtshader.GetTexSamplerConfig( deoglRTShader::etscClampLinear ) );
 	tsmgr.EnableTexture( 1, *texture, *rtshader.GetTexSamplerConfig( deoglRTShader::etscClampLinear ) );
 	
 	// set states

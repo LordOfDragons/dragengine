@@ -1,4 +1,4 @@
-#if defined GS_RENDER_CUBE_INSTANCING && ! defined ANDROID
+#if defined GS_INSTANCING && ! defined ANDROID
 	#extension GL_ARB_gpu_shader5 : require
 #endif
 
@@ -7,7 +7,7 @@ precision highp int;
 
 // layout definitions
 #ifdef GS_RENDER_CUBE
-	#ifdef GS_RENDER_CUBE_INSTANCING
+	#ifdef GS_INSTANCING
 		layout( triangles, invocations=6 ) in;
 		layout( triangle_strip, max_vertices=3 ) out;
 	#else
@@ -84,7 +84,7 @@ void emitCorner( in int face, in vec4 position ){
 void main( void ){
 	int i, face;
 	
-	#ifdef GS_RENDER_CUBE_INSTANCING
+	#ifdef GS_INSTANCING
 	face = gl_InvocationID;
 	#else
 	for( face=0; face<6; face++ ){
@@ -109,7 +109,7 @@ void main( void ){
 		}
 		#endif
 		
-	#ifndef GS_RENDER_CUBE_INSTANCING
+	#ifndef GS_INSTANCING
 	}
 	#endif
 }

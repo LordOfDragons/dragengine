@@ -242,12 +242,6 @@ void deoglLSConfiguration::pLoadConfigOpenGL( deoglConfiguration &configuration,
 				}else if( strcmp( name, "useTextureCompression" ) == 0 ){
 					configuration.SetUseTextureCompression( strtol( tag->GetFirstData()->GetData(), NULL, 10 ) != 0 );
 					
-				}else if( strcmp( name, "defRenEncDepth" ) == 0 ){
-					configuration.SetDefRenEncDepth( strtol( tag->GetFirstData()->GetData(), NULL, 10 ) != 0 );
-					
-				}else if( strcmp( name, "defRenUsePOTs" ) == 0 ){
-					configuration.SetDefRenUsePOTs( strtol( tag->GetFirstData()->GetData(), NULL, 10 ) != 0 );
-					
 				}else if( strcmp( name, "defRenSizeLimit" ) == 0 ){
 					configuration.SetDefRenSizeLimit( (int)strtol( tag->GetFirstData()->GetData(), NULL, 10 ) );
 					

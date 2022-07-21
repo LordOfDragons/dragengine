@@ -49,6 +49,8 @@ deoglCapabilities::deoglCapabilities( deoglRenderThread &renderThread ) :
 pRenderThread( renderThread ),
 pFormats( *this ),
 
+pMaxTextureSize( 1024 ),
+pMax3DTextureSize( 1024 ),
 pMaxDrawBuffers( 4 ),
 pUBOMaxSize( 0 ),
 pTBOMaxSize( 0 ),
@@ -143,6 +145,12 @@ void deoglCapabilities::DetectCapabilities(){
 		pFormats.DetectFormats( fbo );
 		
 		// test important hardware limits
+		OGL_CHECK( pRenderThread, glGetIntegerv( GL_MAX_TEXTURE_SIZE, &resultsInt[ 0 ] ) );
+		pMaxTextureSize = ( int )resultsInt[ 0 ];
+		
+		OGL_CHECK( pRenderThread, glGetIntegerv( GL_MAX_3D_TEXTURE_SIZE, &resultsInt[ 0 ] ) );
+		pMax3DTextureSize = ( int )resultsInt[ 0 ];
+		
 		OGL_CHECK( pRenderThread, glGetIntegerv( GL_MAX_DRAW_BUFFERS, &resultsInt[ 0 ] ) );
 		pMaxDrawBuffers = ( int )resultsInt[ 0 ];
 		
@@ -190,6 +198,8 @@ void deoglCapabilities::DetectCapabilities(){
 		// report capabilities
 		if( true ){
 			logger.LogInfo( "Capabilities:" );
+			logger.LogInfoFormat( "- Maximum texture size = %d", pMaxTextureSize );
+			logger.LogInfoFormat( "- Maximum 3D texture size = %d", pMax3DTextureSize );
 			logger.LogInfoFormat( "- Maximum draw buffers = %d", pMaxDrawBuffers );
 			logger.LogInfoFormat( "- UBO Maximum Bindings = %d", maxUBOBindings );
 			logger.LogInfoFormat( "- UBO Maximum Block Size = %d", pUBOMaxSize );

@@ -2147,18 +2147,11 @@ void deoglRenderThread::pSyncConfiguration(){
 	// the configuration over to the render thread configuration and set both
 	// configurations non-dirty
 	if( config.GetDirty() ){
-		const bool needResize = ( config.GetDefRenUsePOTs() != pConfiguration.GetDefRenUsePOTs() );
-		
 		pConfiguration = config;
 		pConfigChanged = true;
 		
 		pConfiguration.SetDirty( false );
 		config.SetDirty( false );
-		
-		pDeferredRendering->SetUseEncodedDepth( pConfiguration.GetUseEncodeDepth() );
-		if( needResize ){
-			pDeferredRendering->ForceResize();
-		}
 		
 		pUpdateConfigFrameLimiter();
 		

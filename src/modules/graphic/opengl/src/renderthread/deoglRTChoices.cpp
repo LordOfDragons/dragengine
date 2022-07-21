@@ -41,17 +41,19 @@
 ////////////////////////////
 
 deoglRTChoices::deoglRTChoices( deoglRenderThread &renderThread ){
+	const deoglExtensions &ext = renderThread.GetExtensions();
+	
+	#define HASEXT(e) ext.GetHasExtension(deoglExtensions::e)
+	
 	// base-vertex allows to render Shared-VBO instances without needing to pre-offset indices
 	// using the first point of a VBO block. using base-vertex reduces the amount of VBO required.
 	// 
 	// NOTE shared-SPB is not affected by this since it uses instancing.
-	pSharedVBOUseBaseVertex = renderThread.GetExtensions().GetHasExtension(
-		deoglExtensions::ext_ARB_draw_elements_base_vertex );
+	pSharedVBOUseBaseVertex = HASEXT( ext_ARB_draw_elements_base_vertex );
 	//pSharedVBOUseBaseVertex = false;
 	
 	// Using SSBOs allows to use a larger number of parameter block per shared SPB than using UBO
-	pSharedSPBUseSSBO = renderThread.GetExtensions().GetHasExtension(
-			deoglExtensions::ext_ARB_shader_storage_buffer_object );
+	pSharedSPBUseSSBO = HASEXT( ext_ARB_shader_storage_buffer_object );
 	
 	// use global shared SPB lists for SSBO. for UBO it is not favorable
 	pGlobalSharedSPBLists = pSharedSPBUseSSBO;
@@ -61,6 +63,9 @@ deoglRTChoices::deoglRTChoices( deoglRenderThread &renderThread ){
 	
 	// GI move using probes using ray cache instead of all rays
 	pGIMoveUsingCache = true;
+	
+	// use render stereo rendering for VR
+	pVRRenderStereo = true;
 	
 	// transform component vertices on the GPU
 	#ifdef OS_ANDROID
@@ -81,29 +86,34 @@ deoglRTChoices::deoglRTChoices( deoglRenderThread &renderThread ){
 	#else
 		pGPUTransformVertices = egputvApproximate;
 	#endif
-		
+	
+	#undef HASEXT
+	
 	// log choices
-	renderThread.GetLogger().LogInfo( "Render Thread Choices:" );
-	renderThread.GetLogger().LogInfoFormat( "- Shared VBO Use Base Vertex: %s", pSharedVBOUseBaseVertex ? "Yes" : "No" );
-	renderThread.GetLogger().LogInfoFormat( "- Shared SPB Use SSBO: %s", pSharedSPBUseSSBO ? "Yes" : "No" );
-	renderThread.GetLogger().LogInfoFormat( "- Global Shared SPB Lists: %s", pGlobalSharedSPBLists ? "Yes" : "No" );
-	renderThread.GetLogger().LogInfoFormat( "- Real Transparent Particles: %s", pRealTransparentParticles ? "Yes" : "No" );
+	deoglRTLogger &l = renderThread.GetLogger();
+	
+	l.LogInfo( "Render Thread Choices:" );
+	l.LogInfoFormat( "- Shared VBO Use Base Vertex: %s", pSharedVBOUseBaseVertex ? "Yes" : "No" );
+	l.LogInfoFormat( "- Shared SPB Use SSBO: %s", pSharedSPBUseSSBO ? "Yes" : "No" );
+	l.LogInfoFormat( "- Global Shared SPB Lists: %s", pGlobalSharedSPBLists ? "Yes" : "No" );
+	l.LogInfoFormat( "- Real Transparent Particles: %s", pRealTransparentParticles ? "Yes" : "No" );
 	
 	switch( pGPUTransformVertices ){
 	case egputvAccurate:
-		renderThread.GetLogger().LogInfo( "- GPU Transform Vertices: Accurate" );
+		l.LogInfo( "- GPU Transform Vertices: Accurate" );
 		break;
 		
 	case egputvApproximate:
-		renderThread.GetLogger().LogInfo( "- GPU Transform Vertices: Approximate" );
+		l.LogInfo( "- GPU Transform Vertices: Approximate" );
 		break;
 		
 	case egputvNone:
-		renderThread.GetLogger().LogInfo( "- GPU Transform Vertices: None" );
+		l.LogInfo( "- GPU Transform Vertices: None" );
 		break;
 	}
 	
-	renderThread.GetLogger().LogInfoFormat( "- GI Move Using Cache: %s", pGIMoveUsingCache ? "Yes" : "No" );
+	l.LogInfoFormat( "- GI Move Using Cache: %s", pGIMoveUsingCache ? "Yes" : "No" );
+	l.LogInfoFormat( "- VR Render Stereo: %s", pVRRenderStereo ? "Yes" : "No" );
 }
 
 deoglRTChoices::~deoglRTChoices(){

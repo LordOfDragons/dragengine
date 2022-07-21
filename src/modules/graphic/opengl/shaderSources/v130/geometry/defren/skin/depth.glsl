@@ -1,4 +1,4 @@
-#if defined GS_RENDER_CUBE_INSTANCING || defined GS_RENDER_CASCADED_INSTANCING
+#ifdef GS_INSTANCING
 	#extension GL_ARB_gpu_shader5 : require
 #endif
 
@@ -6,7 +6,7 @@
 
 // layout definitions
 #ifdef GS_RENDER_CUBE
-	#ifdef GS_RENDER_CUBE_INSTANCING
+	#ifdef GS_INSTANCING
 		layout( triangles, invocations=6 ) in;
 		layout( triangle_strip, max_vertices=3 ) out;
 	#else
@@ -15,12 +15,21 @@
 	#endif
 	
 #elif defined GS_RENDER_CASCADED
-	#ifdef GS_RENDER_CASCADED_INSTANCING
+	#ifdef GS_INSTANCING
 		layout( triangles, invocations=4 ) in;
 		layout( triangle_strip, max_vertices=3 ) out;
 	#else
 		layout( triangles ) in;
 		layout( triangle_strip, max_vertices=12 ) out;
+	#endif
+	
+#elif defined GS_RENDER_STEREO
+	#ifdef GS_INSTANCING
+		layout( triangles, invocations=2 ) in;
+		layout( triangle_strip, max_vertices=3 ) out;
+	#else
+		layout( triangles ) in;
+		layout( triangle_strip, max_vertices=6 ) out;
 	#endif
 #endif
 
@@ -116,7 +125,7 @@ flat out int vLayer;
 // Layered rendering
 //////////////////////
 
-#if defined GS_RENDER_CUBE || defined GS_RENDER_CASCADED
+#if defined GS_RENDER_CUBE || defined GS_RENDER_CASCADED || defined GS_RENDER_STEREO
 
 void emitCorner( in int layer, in int corner, in vec4 position, in vec4 preTransformedPosition ){
 	gl_Position = preTransformedPosition;
@@ -172,7 +181,7 @@ void emitCorner( in int layer, in int corner, in vec4 position, in vec4 preTrans
 		#ifdef BILLBOARD
 			vFadeZ = position.z;
 		#else
-			vFadeZ = ( pMatrixV[ layer ] * position.z;
+			vFadeZ = pMatrixV[ layer ] * position.z;
 		#endif
 	#endif
 	
@@ -212,7 +221,7 @@ void emitCorner( in int layer, in int corner, in vec4 position ){
 void main( void ){
 	int face;
 	
-	#ifdef GS_RENDER_CUBE_INSTANCING
+	#ifdef GS_INSTANCING
 	face = gl_InvocationID;
 	#else
 	for( face=0; face<6; face++ ){
@@ -270,7 +279,7 @@ void main( void ){
 		}
 		#endif
 		
-	#ifndef GS_RENDER_CUBE_INSTANCING
+	#ifndef GS_INSTANCING
 	}
 	#endif
 }
@@ -287,7 +296,7 @@ void main( void ){
 void main( void ){
 	int cascade;
 	
-	#ifdef GS_RENDER_CASCADED_INSTANCING
+	#ifdef GS_INSTANCING
 	cascade = gl_InvocationID;
 	#else
 	for( cascade=0; cascade<4; cascade++ ){
@@ -359,9 +368,39 @@ void main( void ){
 		}
 		
 		
-	#ifndef GS_RENDER_CASCADED_INSTANCING
+	#ifndef GS_INSTANCING
 	}
 	#endif
 }
 
 #endif // GS_RENDER_CASCADED
+
+
+
+// Dual Viewport Rendering
+////////////////////////////
+
+#ifdef GS_RENDER_STEREO
+
+void main( void ){
+	int eye;
+	
+	#ifdef GS_INSTANCING
+	eye = gl_InvocationID;
+	#else
+	for( eye=0; eye<2; eye++ ){
+	#endif
+		
+		// emit triangle
+		int i;
+		for( i=0; i<3; i++ ){
+			emitCorner( eye, i, gl_in[ i ].gl_Position );
+		}
+		EndPrimitive();
+		
+	#ifndef GS_INSTANCING
+	}
+	#endif
+}
+
+#endif // GS_RENDER_STEREO

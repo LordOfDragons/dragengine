@@ -186,7 +186,7 @@ void emitCorner( in int corner, in vec3 offset, in vec2 tc ){
 	#ifdef CLIP_PLANE
 		vClipCoord = position.xyz;
 	#endif
-	#if ! defined GS_RENDER_CUBE && ! defined GS_RENDER_CASCADED
+	#if ! defined GS_RENDER_CUBE && ! defined GS_RENDER_CASCADED && ! defined GS_RENDER_STEREO
 		#ifdef DEPTH_ORTHOGONAL
 			#ifdef NO_ZCLIP
 				vZCoord = gl_Position.z * 0.5 + 0.5; // we have to do the normalization ourself

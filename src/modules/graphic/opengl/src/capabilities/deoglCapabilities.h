@@ -57,6 +57,8 @@ private:
 	
 	deoglCapsFmtSupport pFormats;
 	
+	int pMaxTextureSize;
+	int pMax3DTextureSize;
 	int pMaxDrawBuffers;
 	int pUBOMaxSize;
 	int pTBOMaxSize;
@@ -100,6 +102,12 @@ public:
 	inline const deoglCapsFmtSupport &GetFormats() const{ return pFormats; }
 	
 	
+	
+	/** Maximum texture size. */
+	inline int GetMaxTextureSize() const{ return pMaxTextureSize; }
+	
+	/** Maximum 3D texture size. */
+	inline int GetMax3DTextureSize() const{ return pMax3DTextureSize; }
 	
 	/**
 	 * Maximum number of draw buffers available by the hardware.

@@ -188,7 +188,7 @@ void deoglREffectFilterKernel::Render( deoglRenderPlan &plan ){
 	
 	// source texture in case downsampling is required
 	defren.SwapPostProcessTarget();
-	deoglTexture *sourceTexture = defren.GetPostProcessTexture();
+	deoglArrayTexture *sourceTexture = defren.GetPostProcessTexture();
 	
 	// down sample if required
 	int height = defren.GetHeight();
@@ -210,7 +210,7 @@ void deoglREffectFilterKernel::Render( deoglRenderPlan &plan ){
 		defren.SetShaderParamFSQuad( shaderDownsample, spedsQuadParams );
 		
 		for( i=0; i<downsampleCount; i++ ){
-			tsmgr.EnableTexture( 0, *sourceTexture, *rtshader.GetTexSamplerConfig( deoglRTShader::etscClampNearest ) );
+			tsmgr.EnableArrayTexture( 0, *sourceTexture, *rtshader.GetTexSamplerConfig( deoglRTShader::etscClampNearest ) );
 			
 			if( ( i % 2 ) == 0 ){
 				defren.ActivateFBOReflectivity( false );
@@ -253,7 +253,7 @@ void deoglREffectFilterKernel::Render( deoglRenderPlan &plan ){
 	
 	// set shader program
 	defren.ActivatePostProcessFBO( false );
-	tsmgr.EnableTexture( 0, *sourceTexture, *rtshader.GetTexSamplerConfig( deoglRTShader::etscClampLinear ) );
+	tsmgr.EnableArrayTexture( 0, *sourceTexture, *rtshader.GetTexSamplerConfig( deoglRTShader::etscClampLinear ) );
 	
 	// set program
 	deoglShaderProgram * const shaderProgram = GetShader();

@@ -299,14 +299,14 @@ public:
 	/** Shader. */
 	inline deoglShaderProgram *GetShader() const{ return pShader; }
 	
-	/**
-	 * Create render skin shader shader parameter block.
-	 * 
-	 * If \em cubeMap is \em true the created shader parameter block has transformation
-	 * matrices changed to a 6-element array.
-	 */
+	/** Create render skin shader shader parameter block. */
+	static deoglSPBlockUBO *CreateSPBRender( deoglRenderThread &renderThread );
+	static deoglSPBlockUBO *CreateSPBRenderCubeMap( deoglRenderThread &renderThread );
+	static deoglSPBlockUBO *CreateSPBRenderCascaded( deoglRenderThread &renderThread );
+	static deoglSPBlockUBO *CreateSPBRenderStereo( deoglRenderThread &renderThread );
+	
 	static deoglSPBlockUBO *CreateSPBRender( deoglRenderThread &renderThread,
-		bool cubeMap, bool cascaded );
+		int matrixLayerCount, int depthOffsetLayerCount );
 	
 	/** Create occlusion map shader parameter block. */
 	static deoglSPBlockUBO *CreateSPBOccMap( deoglRenderThread &renderThread );

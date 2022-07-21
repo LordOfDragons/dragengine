@@ -61,6 +61,8 @@ private:
 	int pTargetFPS;
 	float pTargetFPSHysteresis;
 	
+	bool pUseRenderStereo;
+	
 	
 	
 public:
@@ -107,6 +109,9 @@ public:
 	
 	/** Target frame rate. */
 	inline int GetTargetFPS() const{ return pTargetFPS; }
+	
+	/** Use render stereo rendering. */
+	inline bool GetUseRenderStereo() const{ return pUseRenderStereo; }
 	
 	
 	

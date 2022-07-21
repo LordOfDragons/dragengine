@@ -24,6 +24,7 @@
 
 #include "deoglVR.h"
 #include "../deGraphicOpenGl.h"
+#include "../capabilities/deoglCapabilities.h"
 #include "../delayedoperation/deoglDelayedOperations.h"
 #include "../devmode/deoglDeveloperMode.h"
 #include "../framebuffer/deoglFramebuffer.h"
@@ -37,6 +38,7 @@
 #include "../renderthread/deoglRTFramebuffer.h"
 #include "../renderthread/deoglRTLogger.h"
 #include "../renderthread/deoglRTRenderers.h"
+#include "../renderthread/deoglRTChoices.h"
 #include "../texture/texture2d/deoglTexture.h"
 #include "../world/deoglRCamera.h"
 
@@ -61,7 +63,8 @@ pCameraFovRatio( 1.0f ),
 pState( esBeginFrame ),
 pTimeHistoryFrame( 9, 2 ),
 pTargetFPS( 90 ),
-pTargetFPSHysteresis( 0.1f ) // 0.2f
+pTargetFPSHysteresis( 0.1f ), // 0.2f
+pUseRenderStereo( false )
 {
 	// WARNING called from main thread.
 	// 
@@ -125,6 +128,8 @@ void deoglVR::BeginFrame(){
 	pRightEye.BeginFrame( *vrmodule );
 	
 	pGetParameters(); // has to come after eye begin frame calls
+	
+	pUseRenderStereo = renderThread.GetChoices().GetVRRenderStereo();
 	
 	vrmodule->BeginFrame();
 	

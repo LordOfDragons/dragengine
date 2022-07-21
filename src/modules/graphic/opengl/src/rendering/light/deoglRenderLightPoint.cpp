@@ -371,7 +371,7 @@ pDebugInfoTransparentLight( NULL )
 			defines.AddDefine( "GS_RENDER_CUBE", "1" );
 			defines.AddDefine( "GS_RENDER_CUBE_CULLING", "1" );
 			if( renderThread.GetExtensions().SupportsGSInstancing() ){
-				defines.AddDefine( "GS_RENDER_CUBE_INSTANCING", "1" );
+				defines.AddDefine( "GS_INSTANCING", "1" );
 			}
 			
 			pShaderOccMapCube = shaderManager.GetProgramWith( sources, defines );

@@ -358,8 +358,6 @@ bool deoglRParticleEmitterType::GetShaderConfigFor( int shaderType, deoglLightSh
 	config.SetShadowTapMode( deoglLightShaderConfig::estmPcf9 );
 	config.SetTextureNoise( false );
 	
-	config.SetDecodeInDepth( oglconfig.GetDefRenEncDepth() );
-	
 	config.SetTextureShadow1Solid( false );
 	config.SetTextureShadow1Transparent( false );
 	config.SetTextureShadow2Solid( false );

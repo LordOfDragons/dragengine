@@ -1,6 +1,6 @@
 // normal transformation. the result is written to vNormal. if a normal map exists vTangent and vBitangent
 // are also calculated and written.
-#if defined HAS_TESSELLATION_SHADER || defined GS_RENDER_CUBE || defined GS_RENDER_CASCADED
+#if defined HAS_TESSELLATION_SHADER || defined GS_RENDER_CUBE || defined GS_RENDER_CASCADED || defined GS_RENDER_STEREO
 	#define NO_TRANSFORMATION 1
 #endif
 

@@ -86,9 +86,6 @@ deoglRenderDebugDrawer::deoglRenderDebugDrawer( deoglRenderThread &renderThread 
 	try{
 		sources = shaderManager.GetSourcesNamed( "DefRen Shape" );
 		defines.AddDefine( "WITH_SELECTOR", "1" );
-		if( defren.GetUseEncodedDepth() ){
-			defines.AddDefine( "ENCODE_DEPTH", "1" );
-		}
 		if( defren.GetUseInverseDepth() ){
 			defines.AddDefine( "INVERSE_DEPTH", "1" );
 		}
@@ -100,9 +97,6 @@ deoglRenderDebugDrawer::deoglRenderDebugDrawer( deoglRenderThread &renderThread 
 		
 		
 		
-		if( defren.GetUseEncodedDepth() ){
-			defines.AddDefine( "ENCODE_DEPTH", "1" );
-		}
 		if( defren.GetUseInverseDepth() ){
 			defines.AddDefine( "INVERSE_DEPTH", "1" );
 		}
@@ -155,7 +149,7 @@ void deoglRenderDebugDrawer::RenderDebugDrawers( deoglRenderPlan &plan ){
 	const double depthShift = -1.0f / ( double )( 1 << 21 ); // 24bits minus 3 bits
 	
 	// prepare depth testing
-	tsmgr.EnableTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
+	tsmgr.EnableArrayTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
 	
 	// render debug drawers
 	const decDMatrix matrixCP( plan.GetCameraMatrix() * decDMatrix( plan.GetProjectionMatrix() )

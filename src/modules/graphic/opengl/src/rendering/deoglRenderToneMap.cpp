@@ -45,6 +45,7 @@
 #include "../sky/deoglRSkyInstance.h"
 #include "../texture/cubemap/deoglCubeMap.h"
 #include "../texture/deoglTextureStageManager.h"
+#include "../texture/arraytexture/deoglArrayTexture.h"
 #include "../texture/texture2d/deoglTexture.h"
 #include "../vao/deoglVAO.h"
 #include "../world/deoglRCamera.h"
@@ -185,9 +186,10 @@ enum eSPLumPrepare{
 // Debug Checks
 /////////////////
 
-static void DebugNanCheck( deoglRenderThread &renderThread, deoglDeferredRendering &defren, const deoglTexture &texture ){
+static void DebugNanCheck( deoglRenderThread &renderThread, deoglDeferredRendering &defren, const deoglArrayTexture &texture ){
 	const int defrenHeight = defren.GetHeight();
 	const int defrenWidth = defren.GetWidth();
+	const int defrenLayers = defren.GetLayerCount();
 	const int texHeight = texture.GetHeight();
 	const int texWidth = texture.GetWidth();
 	
@@ -206,43 +208,45 @@ static void DebugNanCheck( deoglRenderThread &renderThread, deoglDeferredRenderi
 	int infCulpritsG = 0;
 	int infCulpritsB = 0;
 	int infCulpritsA = 0;
-	int x, y;
+	int x, y, l;
 	
-	for( y=0; y<defrenHeight; y++ ){
-		for( x=0; x<defrenWidth; x++ ){
-			const int i = ( texHeight - 1 - y ) * texWidth + x;
-			
-			if( isnan( dummy[i].r ) ){
-				nanCulpritsR++;
-			}
-			if( isnan( dummy[i].g ) ){
-				nanCulpritsG++;
-			}
-			if( isnan( dummy[i].b ) ){
-				nanCulpritsB++;
-			}
-			if( isnan( dummy[i].a ) ){
-				nanCulpritsA++;
-			}
-			
-			if( isinf( dummy[i].r ) ){
-				infCulpritsR++;
-			}
-			if( isinf( dummy[i].g ) ){
-				infCulpritsG++;
-			}
-			if( isinf( dummy[i].b ) ){
-				infCulpritsB++;
-			}
-			if( isinf( dummy[i].a ) ){
-				infCulpritsA++;
-			}
-			
-			if( isnan( dummy[i].r ) || isnan( dummy[i].g ) || isnan( dummy[i].b ) || isnan( dummy[i].a ) ){
-				nanCulprits++;
-			}
-			if( isinf( dummy[i].r ) || isinf( dummy[i].g ) || isinf( dummy[i].b ) || isinf( dummy[i].a ) ){
-				infCulprits++;
+	for( l=0; l<defrenLayers; l++ ){
+		for( y=0; y<defrenHeight; y++ ){
+			for( x=0; x<defrenWidth; x++ ){
+				const int i = ( texWidth * texHeight ) * l + ( texHeight - 1 - y ) * texWidth + x;
+				
+				if( isnan( dummy[i].r ) ){
+					nanCulpritsR++;
+				}
+				if( isnan( dummy[i].g ) ){
+					nanCulpritsG++;
+				}
+				if( isnan( dummy[i].b ) ){
+					nanCulpritsB++;
+				}
+				if( isnan( dummy[i].a ) ){
+					nanCulpritsA++;
+				}
+				
+				if( isinf( dummy[i].r ) ){
+					infCulpritsR++;
+				}
+				if( isinf( dummy[i].g ) ){
+					infCulpritsG++;
+				}
+				if( isinf( dummy[i].b ) ){
+					infCulpritsB++;
+				}
+				if( isinf( dummy[i].a ) ){
+					infCulpritsA++;
+				}
+				
+				if( isnan( dummy[i].r ) || isnan( dummy[i].g ) || isnan( dummy[i].b ) || isnan( dummy[i].a ) ){
+					nanCulprits++;
+				}
+				if( isinf( dummy[i].r ) || isinf( dummy[i].g ) || isinf( dummy[i].b ) || isinf( dummy[i].a ) ){
+					infCulprits++;
+				}
 			}
 		}
 	}
@@ -254,7 +258,7 @@ static void DebugNanCheck( deoglRenderThread &renderThread, deoglDeferredRenderi
 	delete [] dummy;
 }
 
-static void DebugAvgSceneColor( deoglRenderThread &renderThread, const deoglTexture &texture, int width, int height ){
+static void DebugAvgSceneColor( deoglRenderThread &renderThread, const deoglArrayTexture &texture, int width, int height ){
 	const int texHeight = texture.GetHeight();
 	const int texWidth = texture.GetWidth();
 	int totallyBlack = 0;
@@ -390,7 +394,7 @@ DEBUG_RESET_TIMERS;
 	
 	OGL_CHECK( renderThread, glViewport( 0, 0, width, height ) );
 	OGL_CHECK( renderThread, glScissor( 0, 0, width, height ) );
-	tsmgr.EnableTexture( 0, *defren.GetTextureColor(), GetSamplerClampNearest() );
+	tsmgr.EnableArrayTexture( 0, *defren.GetTextureColor(), GetSamplerClampNearest() );
 	
 	renderThread.GetShader().ActivateShader( pShaderLumPrepare );
 	deoglShaderCompiled &shader = *pShaderLumPrepare->GetCompiled();
@@ -454,8 +458,8 @@ void deoglRenderToneMap::CalculateSceneKey( deoglRenderPlan &plan ){
 	}
 	
 	if( config.GetDebugSnapshot() == DEBUG_SNAPSHOT_TONEMAP ){
-// 		renderThread.GetDebug().GetDebugSaveTexture().SaveTexture( *defren.GetTextureColor(), "tonemap_input_color" );
-		renderThread.GetDebug().GetDebugSaveTexture().SaveTexture( *defren.GetTextureLuminance(), "tonemap_input_luminance" );
+// 		renderThread.GetDebug().GetDebugSaveTexture().SaveArrayTexture( *defren.GetTextureColor(), "tonemap_input_color" );
+		renderThread.GetDebug().GetDebugSaveTexture().SaveArrayTexture( *defren.GetTextureLuminance(), "tonemap_input_luminance" );
 	}
 	
 	// convert color to log luminance. to allow for proper averaging the output image is reduced
@@ -503,7 +507,7 @@ void deoglRenderToneMap::CalculateSceneKey( deoglRenderPlan &plan ){
 	OGL_CHECK( renderThread, glViewport( 0, 0, curWidth, curHeight ) );
 	OGL_CHECK( renderThread, glScissor( 0, 0, curWidth, curHeight ) );
 // 	tsmgr.EnableTexture( 0, *defren.GetTextureColor(), GetSamplerClampLinear() );
-	tsmgr.EnableTexture( 0, *defren.GetTextureLuminance(), GetSamplerClampNearest() );
+	tsmgr.EnableArrayTexture( 0, *defren.GetTextureLuminance(), GetSamplerClampNearest() );
 	
 	renderThread.GetShader().ActivateShader( pShaderColor2LogLum );
 	shader = pShaderColor2LogLum->GetCompiled();
@@ -516,7 +520,7 @@ void deoglRenderToneMap::CalculateSceneKey( deoglRenderPlan &plan ){
 	OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
 	
 	if( config.GetDebugSnapshot() == DEBUG_SNAPSHOT_TONEMAP ){
-		renderThread.GetDebug().GetDebugSaveTexture().SaveTextureLevelConversion( *defren.GetTextureTemporary1(),
+		renderThread.GetDebug().GetDebugSaveTexture().SaveArrayTextureLevelConversion( *defren.GetTextureTemporary1(),
 			0, "tonemap_loglum", deoglDebugSaveTexture::ecLogIntensity );
 	}
 DEBUG_PRINT_TIMER( "ToneMap: LogLum" );
@@ -528,7 +532,7 @@ DEBUG_PRINT_TIMER( "ToneMap: LogLum" );
 	modeTarget = false;
 	
 	if( useTextureBarrier ){
-		tsmgr.EnableTexture( 0, *defren.GetTextureTemporary1(), GetSamplerClampLinear() );
+		tsmgr.EnableArrayTexture( 0, *defren.GetTextureTemporary1(), GetSamplerClampLinear() );
 	}
 	
 	int round = 0;
@@ -570,11 +574,11 @@ DEBUG_PRINT_TIMER( "ToneMap: LogLum" );
 		}else{
 			if( modeTarget ){
 				defren.ActivateFBOTemporary1( false );
-				tsmgr.EnableTexture( 0, *defren.GetTextureTemporary2(), GetSamplerClampLinear() );
+				tsmgr.EnableArrayTexture( 0, *defren.GetTextureTemporary2(), GetSamplerClampLinear() );
 				
 			}else{
 				defren.ActivateFBOTemporary2( false );
-				tsmgr.EnableTexture( 0, *defren.GetTextureTemporary1(), GetSamplerClampLinear() );
+				tsmgr.EnableArrayTexture( 0, *defren.GetTextureTemporary1(), GetSamplerClampLinear() );
 			}
 		}
 		
@@ -589,10 +593,10 @@ DEBUG_PRINT_TIMER( "ToneMap: LogLum" );
 			decString text;
 			text.Format( "tonemap_avg_lumlog_%i_%ix%i_to_%ix%i", round++, lastWidth, lastHeight, curWidth, curHeight );
 			if( modeTarget || useTextureBarrier ){
-				renderThread.GetDebug().GetDebugSaveTexture().SaveTextureLevelConversion( *defren.GetTextureTemporary1(),
+				renderThread.GetDebug().GetDebugSaveTexture().SaveArrayTextureLevelConversion( *defren.GetTextureTemporary1(),
 					0, text.GetString(), deoglDebugSaveTexture::ecLogIntensity );
 			}else{
-				renderThread.GetDebug().GetDebugSaveTexture().SaveTextureLevelConversion( *defren.GetTextureTemporary2(),
+				renderThread.GetDebug().GetDebugSaveTexture().SaveArrayTextureLevelConversion( *defren.GetTextureTemporary2(),
 					0, text.GetString(), deoglDebugSaveTexture::ecLogIntensity );
 			}
 		}
@@ -685,10 +689,10 @@ DEBUG_PRINT_TIMER( "ToneMap: Average" );
 	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
 	
 	if( modeTarget && ! useTextureBarrier ){
-		tsmgr.EnableTexture( 0, *defren.GetTextureTemporary2(), GetSamplerClampLinear() );
+		tsmgr.EnableArrayTexture( 0, *defren.GetTextureTemporary2(), GetSamplerClampLinear() );
 		
 	}else{
-		tsmgr.EnableTexture( 0, *defren.GetTextureTemporary1(), GetSamplerClampLinear() );
+		tsmgr.EnableArrayTexture( 0, *defren.GetTextureTemporary1(), GetSamplerClampLinear() );
 	}
 	tsmgr.EnableTexture( 1, *lastParams, GetSamplerClampNearest() );
 	if( plan.GetWorld()->GetSkyEnvironmentMap() && plan.GetWorld()->GetSkyEnvironmentMap()->GetEnvironmentMap() ){
@@ -767,12 +771,12 @@ void deoglRenderToneMap::RenderBloomPass( deoglRenderPlan &plan, int &bloomWidth
 	
 	OGL_CHECK( renderThread, glViewport( 0, 0, curWidth, curHeight ) );
 	OGL_CHECK( renderThread, glScissor( 0, 0, curWidth, curHeight ) );
-	tsmgr.EnableTexture( 0, *defren.GetTextureColor(), GetSamplerClampLinear() );
+	tsmgr.EnableArrayTexture( 0, *defren.GetTextureColor(), GetSamplerClampLinear() );
 	tsmgr.EnableTexture( 1, *oglCamera->GetToneMapParamsTexture(), GetSamplerClampNearest() );
 	OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
 	
 	if( config.GetDebugSnapshot() == DEBUG_SNAPSHOT_TONEMAP ){
-		renderThread.GetDebug().GetDebugSaveTexture().SaveTexture( *defren.GetTextureTemporary1(), "tonemap_bright" );
+		renderThread.GetDebug().GetDebugSaveTexture().SaveArrayTexture( *defren.GetTextureTemporary1(), "tonemap_bright" );
 	}
 	
 	// determine the number of blur passes. depends right now on the size of the bright image.
@@ -818,7 +822,7 @@ void deoglRenderToneMap::RenderBloomPass( deoglRenderPlan &plan, int &bloomWidth
 	for( i=0; i<blurPassCount; i++ ){
 		// blur in x direction
 		defren.ActivateFBOTemporary2( false );
-		tsmgr.EnableTexture( 0, *defren.GetTextureTemporary1(), GetSamplerClampLinear() );
+		tsmgr.EnableArrayTexture( 0, *defren.GetTextureTemporary1(), GetSamplerClampLinear() );
 		
 		shader->SetParameterFloat( spbbOffsets1, blurTCOffsets[ 0 ] * pixelSizeU, 0.0f, -blurTCOffsets[ 0 ] * pixelSizeU, 0.0f );
 		shader->SetParameterFloat( spbbOffsets2, blurTCOffsets[ 1 ] * pixelSizeU, 0.0f, -blurTCOffsets[ 1 ] * pixelSizeU, 0.0f );
@@ -831,12 +835,12 @@ void deoglRenderToneMap::RenderBloomPass( deoglRenderPlan &plan, int &bloomWidth
 		if( config.GetDebugSnapshot() == DEBUG_SNAPSHOT_TONEMAP ){
 			decString text;
 			text.Format( "tonemap_bloom_%i_blur_x", i );
-			renderThread.GetDebug().GetDebugSaveTexture().SaveTexture( *defren.GetTextureTemporary2(), text.GetString() ); // temporary2
+			renderThread.GetDebug().GetDebugSaveTexture().SaveArrayTexture( *defren.GetTextureTemporary2(), text.GetString() ); // temporary2
 		}
 		
 		// blur in y direction
 		defren.ActivateFBOTemporary1( false );
-		tsmgr.EnableTexture( 0, *defren.GetTextureTemporary2(), GetSamplerClampLinear() );
+		tsmgr.EnableArrayTexture( 0, *defren.GetTextureTemporary2(), GetSamplerClampLinear() );
 		
 		shader->SetParameterFloat( spbbOffsets1, 0.0f, blurTCOffsets[ 0 ] * pixelSizeV, 0.0f, -blurTCOffsets[ 0 ] * pixelSizeV );
 		shader->SetParameterFloat( spbbOffsets2, 0.0f, blurTCOffsets[ 1 ] * pixelSizeV, 0.0f, -blurTCOffsets[ 1 ] * pixelSizeV );
@@ -849,7 +853,7 @@ void deoglRenderToneMap::RenderBloomPass( deoglRenderPlan &plan, int &bloomWidth
 		if( config.GetDebugSnapshot() == DEBUG_SNAPSHOT_TONEMAP ){
 			decString text;
 			text.Format( "tonemap_bloom_%i_blur_y", i );
-			renderThread.GetDebug().GetDebugSaveTexture().SaveTexture( *defren.GetTextureTemporary1(), text.GetString() );
+			renderThread.GetDebug().GetDebugSaveTexture().SaveArrayTexture( *defren.GetTextureTemporary1(), text.GetString() );
 		}
 	}
 	
@@ -1025,9 +1029,9 @@ void deoglRenderToneMap::RenderToneMappingPass( deoglRenderPlan &plan, int bloom
 	shader->SetParameterFloat( sptmOptions, bloomStrength, 0.0f, 0.0f, 0.0f );
 	shader->SetParameterFloat( sptmTCBloomClamp, clampBloomU, clampBloomV );
 	
-	tsmgr.EnableTexture( 0, *defren.GetTextureColor(), GetSamplerClampNearest() );
+	tsmgr.EnableArrayTexture( 0, *defren.GetTextureColor(), GetSamplerClampNearest() );
 	tsmgr.EnableTexture( 1, *oglCamera->GetToneMapParamsTexture(), GetSamplerClampNearest() );
-	tsmgr.EnableTexture( 2, *defren.GetTextureTemporary1(), GetSamplerClampLinear() );
+	tsmgr.EnableArrayTexture( 2, *defren.GetTextureTemporary1(), GetSamplerClampLinear() );
 	
 	OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
 }
@@ -1043,7 +1047,7 @@ void deoglRenderToneMap::RenderLDR( deoglRenderPlan &plan ){
 	
 	defren.ActivateFBOTemporary2( false );
 	
-	tsmgr.EnableTexture( 0, *defren.GetTextureColor(), GetSamplerClampNearest() );
+	tsmgr.EnableArrayTexture( 0, *defren.GetTextureColor(), GetSamplerClampNearest() );
 	
 	renderThread.GetShader().ActivateShader( pShaderFinalize );
 	shader = pShaderFinalize->GetCompiled();

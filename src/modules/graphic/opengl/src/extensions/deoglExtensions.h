@@ -325,6 +325,7 @@ public:
 		ext_ARB_multi_draw_indirect,
 		ext_ARB_indirect_parameters,
 		ext_ARB_bindless_texture,
+		ext_ARB_fragment_layer_viewport,
 		
 		ext_EXT_bindable_uniform,
 		ext_EXT_blend_equation_separate,

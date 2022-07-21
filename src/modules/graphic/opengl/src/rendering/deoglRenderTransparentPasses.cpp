@@ -534,8 +534,8 @@ DBG_ENTER_PARAM("RenderTransparentGeometryPass", "%p", mask)
 	renderThread.GetShader().ActivateShader( pShaderCopyDepthColor );
 	shader = pShaderCopyDepthColor->GetCompiled();
 	
-	tsmgr.EnableTexture( 0, *defren.GetDepthTexture2(), GetSamplerClampNearest() );
-	tsmgr.EnableTexture( 1, *defren.GetTextureColor(), GetSamplerClampNearest() );
+	tsmgr.EnableArrayTexture( 0, *defren.GetDepthTexture2(), GetSamplerClampNearest() );
+	tsmgr.EnableArrayTexture( 1, *defren.GetTextureColor(), GetSamplerClampNearest() );
 	
 	defren.SetShaderParamFSQuad( *shader, spcdQuadParams );
 	defren.RenderFSQuadVAO();
@@ -784,7 +784,7 @@ DBG_ENTER_PARAM("RenderTransparentLimitDepth", "%p", mask)
 		OGL_CHECK( renderThread, glEnable( GL_SCISSOR_TEST ) );
 		
 		renderThread.GetShader().ActivateShader( pShaderCopyDepthLimit );
-		tsmgr.EnableTexture( 0, *defren.GetDepthTexture3(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 0, *defren.GetDepthTexture3(), GetSamplerClampNearest() );
 		defren.SetShaderParamFSQuad( *pShaderCopyDepthLimit->GetCompiled(), spcdQuadParams );
 		defren.RenderFSQuadVAO();
 		defren.SwapDepthTextures(); // solid depth is now depth1
@@ -991,7 +991,7 @@ void deoglRenderTransparentPasses::CopyColorToTemporary(){
 	renderThread.GetShader().ActivateShader( pShaderCopyColor );
 	deoglShaderCompiled * const shader = pShaderCopyColor->GetCompiled();
 	
-	renderThread.GetTexture().GetStages().EnableTexture( 0,
+	renderThread.GetTexture().GetStages().EnableArrayTexture( 0,
 		*defren.GetTextureColor(), GetSamplerClampNearest() );
 	
 	defren.SetShaderParamFSQuad( *shader, spcdQuadParams );

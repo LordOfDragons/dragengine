@@ -74,8 +74,6 @@ pUseEncodeDepth( false ),
 pDisableStencil( false ),
 pStencilOnlyOnRB( false ),
 
-pDefRenEncDepth( false ),
-pDefRenUsePOTs( false ),
 pDefRenSizeLimit( 0 ),
 pUseHDRR( true ),
 pHDRRMaxIntensity( 1.5f ),
@@ -441,19 +439,6 @@ void deoglConfiguration::SetStencilOnlyOnRB( bool stencilOnlyOnRB ){
 }
 
 
-
-void deoglConfiguration::SetDefRenEncDepth( bool useEncDepth ){
-	//pDefRenEncDepth = useEncDepth;
-	//pDirty = true;
-}
-
-void deoglConfiguration::SetDefRenUsePOTs( bool usePOTs ){
-	if( usePOTs == pDefRenUsePOTs ){
-		return;
-	}
-	pDefRenUsePOTs = usePOTs;
-	pDirty = true;
-}
 
 void deoglConfiguration::SetDefRenSizeLimit( int size ){
 	size = decMath::max( size, 0 );

@@ -743,6 +743,7 @@ const deoglRCanvasRenderWorld &canvas ){
 		plan.SetUpsideDown( false );
 		plan.SetLodMaxPixelError( config.GetLODMaxPixelError() );
 		plan.SetLodLevelOffset( 0 );
+			/* TESTING */ // plan.SetStereoRender( true );
 		
 		const deoglDeveloperMode &devmode = renderThread.GetDebug().GetDeveloperMode();
 		plan.SetDebugTiming( ! context.GetFBO() && devmode.GetEnabled() && devmode.GetShowDebugInfo() );
@@ -764,7 +765,7 @@ const deoglRCanvasRenderWorld &canvas ){
 		tsmgr.EnableTexture( 0, *vr->GetLeftEye().GetRenderTarget()->GetTexture(), GetSamplerClampLinear() );
 		
 	}else{
-		tsmgr.EnableTexture( 0, *defren.GetPostProcessTexture(), GetSamplerClampLinear() );
+		tsmgr.EnableArrayTexture( 0, *defren.GetPostProcessTexture(), GetSamplerClampLinear() );
 	}
 	
 	if( context.GetMask() ){

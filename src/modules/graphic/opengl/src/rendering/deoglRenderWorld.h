@@ -44,6 +44,7 @@ private:
 	deoglSPBlockUBO *pRenderPB;
 	deoglSPBlockUBO *pRenderLuminancePB;
 	deoglSPBlockUBO *pRenderCubePB;
+	deoglSPBlockUBO *pRenderStereoPB;
 	deoglRenderTask *pRenderTask;
 	deoglAddToRenderTask *pAddToRenderTask;
 	deoglParticleSorter *pParticleSorter;
@@ -81,6 +82,9 @@ public:
 	
 	/** Render parameter block cube map. */
 	inline deoglSPBlockUBO *GetRenderCubePB() const{ return pRenderCubePB; }
+	
+	/** Render parameter block dual view. */
+	inline deoglSPBlockUBO *GetRenderStereoPB() const{ return pRenderStereoPB; }
 	
 	/** Render task. */
 	inline deoglRenderTask *GetRenderTask() const{ return pRenderTask; }

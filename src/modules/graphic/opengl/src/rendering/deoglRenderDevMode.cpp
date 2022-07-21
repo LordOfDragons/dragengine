@@ -152,9 +152,6 @@ deoglRenderDevMode::deoglRenderDevMode( deoglRenderThread &renderThread ) : deog
 		
 		sources = shaderManager.GetSourcesNamed( "DefRen Shape" );
 		defines.AddDefine( "WITH_SELECTOR", "1" );
-		if( defren.GetUseEncodedDepth() ){
-			defines.AddDefine( "ENCODE_DEPTH", "1" );
-		}
 		if( defren.GetUseInverseDepth() ){
 			defines.AddDefine( "INVERSE_DEPTH", "1" );
 		}

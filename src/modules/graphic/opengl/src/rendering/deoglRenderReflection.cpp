@@ -300,17 +300,11 @@ deoglRenderBase( renderThread )
 			if( ! sources ){
 				DETHROW( deeInvalidParam );
 			}
-			if( config.GetDefRenEncDepth() ){
-				defines.AddDefine( "DECODE_IN_DEPTH", true );
-			}
 			defines.AddDefine( "NO_TEXCOORD", true );
 			defines.AddDefine( "INITIAL", true );
 			pShaderMinMaxMipMapInitial = shaderManager.GetProgramWith( sources, defines );
 			defines.RemoveAllDefines();
 			
-			if( config.GetDefRenEncDepth() ){
-				defines.AddDefine( "DECODE_IN_DEPTH", true );
-			}
 			defines.AddDefine( "NO_TEXCOORD", true );
 			defines.AddDefine( "DOWNSAMPLE", true );
 			pShaderMinMaxMipMapDownsample = shaderManager.GetProgramWith( sources, defines );
@@ -321,18 +315,12 @@ deoglRenderBase( renderThread )
 			if( ! sources ){
 				DETHROW( deeInvalidParam );
 			}
-			if( config.GetDefRenEncDepth() ){
-				defines.AddDefine( "DECODE_IN_DEPTH", true );
-			}
 			defines.AddDefine( "NO_TEXCOORD", true );
 			defines.AddDefine( "CLAMP_TC", true );
 			defines.AddDefine( "FUNC_MIN", true );
 			pShaderMinMaxMipMapMin = shaderManager.GetProgramWith( sources, defines );
 			defines.RemoveAllDefines();
 			
-			if( config.GetDefRenEncDepth() ){
-				defines.AddDefine( "DECODE_IN_DEPTH", true );
-			}
 			defines.AddDefine( "NO_TEXCOORD", true );
 			defines.AddDefine( "CLAMP_TC", true );
 			defines.AddDefine( "FUNC_MAX", true );
@@ -344,9 +332,6 @@ deoglRenderBase( renderThread )
 			if( ! sources ){
 				DETHROW( deeInvalidParam );
 			}
-			if( config.GetDefRenEncDepth() ){
-				defines.AddDefine( "DECODE_IN_DEPTH", true );
-			}
 			defines.AddDefine( "NO_TEXCOORD", true );
 			defines.AddDefine( "CLAMP_TC", true );
 			defines.AddDefine( "SPLIT_VERSION", true );
@@ -354,9 +339,6 @@ deoglRenderBase( renderThread )
 			pShaderMinMaxMipMapInitial = shaderManager.GetProgramWith( sources, defines );
 			defines.RemoveAllDefines();
 			
-			if( config.GetDefRenEncDepth() ){
-				defines.AddDefine( "DECODE_IN_DEPTH", true );
-			}
 			defines.AddDefine( "NO_TEXCOORD", true );
 			defines.AddDefine( "SPLIT_VERSION", true );
 			pShaderMinMaxMipMapDownsample = shaderManager.GetProgramWith( sources, defines );
@@ -375,9 +357,6 @@ deoglRenderBase( renderThread )
 		// version will be used using screen-space stepping with z-position
 		// 
 		sources = shaderManager.GetSourcesNamed( "DefRen Reflection ScreenSpace" );
-		if( config.GetDefRenEncDepth() ){
-			defines.AddDefine( "DECODE_IN_DEPTH", true );
-		}
 		if( pUseEquiEnvMap ){
 			defines.AddDefine( "ENVMAP_EQUI", true );
 		}
@@ -414,9 +393,6 @@ deoglRenderBase( renderThread )
 		}
 		if( bugUBODirectLinkDeadloop ){
 			defines.AddDefine( "BUG_UBO_DIRECT_LINK_DEAD_LOOP", true );
-		}
-		if( config.GetDefRenEncDepth() ){
-			defines.AddDefine( "DECODE_IN_DEPTH", true );
 		}
 		if( pUseEquiEnvMap ){
 			defines.AddDefine( "ENVMAP_EQUI", true );
@@ -462,9 +438,6 @@ deoglRenderBase( renderThread )
 		
 		
 		sources = shaderManager.GetSourcesNamed( "DefRen Reflection" );
-		if( config.GetDefRenEncDepth() ){
-			defines.AddDefine( "DECODE_IN_DEPTH", true );
-		}
 		if( indirectMatrixAccessBug ){
 			defines.AddDefine( "UBO_IDMATACCBUG", true );
 		}
@@ -1455,18 +1428,18 @@ OGL_CHECK( renderThread, glDisable( GL_STENCIL_TEST ) );
 	
 	// set textures
 	if( renderThread.GetCapabilities().GetMaxDrawBuffers() >= 8 ){
-		tsmgr.EnableTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
-		tsmgr.EnableTexture( 1, *defren.GetTextureDiffuse(), GetSamplerClampNearest() );
-		tsmgr.EnableTexture( 2, *defren.GetTextureNormal(), GetSamplerClampNearest() );
-		tsmgr.EnableTexture( 3, *defren.GetTextureReflectivity(), GetSamplerClampNearest() );
-		tsmgr.EnableTexture( 4, *defren.GetTextureRoughness(), GetSamplerClampNearest() );
-		tsmgr.EnableTexture( 5, *defren.GetTextureAOSolidity(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 1, *defren.GetTextureDiffuse(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 2, *defren.GetTextureNormal(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 3, *defren.GetTextureReflectivity(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 4, *defren.GetTextureRoughness(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 5, *defren.GetTextureAOSolidity(), GetSamplerClampNearest() );
 		
 	}else{
-		tsmgr.EnableTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
-		tsmgr.EnableTexture( 1, *defren.GetTextureDiffuse(), GetSamplerClampNearest() );
-		tsmgr.EnableTexture( 2, *defren.GetTextureNormal(), GetSamplerClampNearest() );
-		tsmgr.EnableTexture( 3, *defren.GetTextureReflectivity(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 1, *defren.GetTextureDiffuse(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 2, *defren.GetTextureNormal(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 3, *defren.GetTextureReflectivity(), GetSamplerClampNearest() );
 		tsmgr.EnableTexture( 4, *renderThread.GetDefaultTextures().GetAO(), GetSamplerClampNearest() );
 		tsmgr.EnableTexture( 5, *renderThread.GetDefaultTextures().GetAO(), GetSamplerClampNearest() );
 	}
@@ -1479,7 +1452,7 @@ OGL_CHECK( renderThread, glDisable( GL_STENCIL_TEST ) );
 	DEBUG_PRINT_TIMER( "Reflection: Render" );
 	
 	if( renderThread.GetConfiguration().GetDebugSnapshot() == 60 ){
-		renderThread.GetDebug().GetDebugSaveTexture().SaveTexture( *defren.GetTextureTemporary1(), "refl_reflection" );
+		renderThread.GetDebug().GetDebugSaveTexture().SaveArrayTexture( *defren.GetTextureTemporary1(), "refl_reflection" );
 		renderThread.GetConfiguration().SetDebugSnapshot( 0 );
 	}
 }
@@ -1638,7 +1611,7 @@ void deoglRenderReflection::RenderDepthMinMaxMipMap( deoglRenderPlan &plan ){
 		renderThread.GetShader().ActivateShader( pShaderMinMaxMipMapInitial );
 		shader = pShaderMinMaxMipMapInitial->GetCompiled();
 		
-		tsmgr.EnableTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
 		
 		shader->SetParameterInt( spmmmmTCClamp, defren.GetWidth() - 1, defren.GetHeight() - 1 );
 		
@@ -1649,7 +1622,7 @@ void deoglRenderReflection::RenderDepthMinMaxMipMap( deoglRenderPlan &plan ){
 		renderThread.GetShader().ActivateShader( pShaderMinMaxMipMapDownsample );
 		shader = pShaderMinMaxMipMapDownsample->GetCompiled();
 		
-		tsmgr.EnableTexture( 0, *depthMinMap.GetTexture(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 0, *depthMinMap.GetTexture(), GetSamplerClampNearest() );
 		
 		for( i=1; i<mipMapLevelCount; i++ ){
 			renderThread.GetFramebuffer().Activate( depthMinMap.GetFBOAt( i ) );
@@ -1673,7 +1646,7 @@ void deoglRenderReflection::RenderDepthMinMaxMipMap( deoglRenderPlan &plan ){
 			width = depthMinMap.GetWidth();
 			
 			text.Format( "depth_minmax_level0_%ix%i", width, height );
-			renderThread.GetDebug().GetDebugSaveTexture().SaveTextureLevelConversion(
+			renderThread.GetDebug().GetDebugSaveTexture().SaveArrayTextureLevelConversion(
 				*depthMinMap.GetTexture(), 0, text.GetString(), defren.GetUseInverseDepth() ?
 					deoglDebugSaveTexture::ecDepthBufferInverse : deoglDebugSaveTexture::ecNoConversion );
 			
@@ -1682,7 +1655,7 @@ void deoglRenderReflection::RenderDepthMinMaxMipMap( deoglRenderPlan &plan ){
 				height = decMath::max( height >> 1, 1 );
 				
 				text.Format( "depth_minmax_level%i_%ix%i", i, width, height );
-				renderThread.GetDebug().GetDebugSaveTexture().SaveTextureLevelConversion(
+				renderThread.GetDebug().GetDebugSaveTexture().SaveArrayTextureLevelConversion(
 					*depthMinMap.GetTexture(), i, text.GetString(), defren.GetUseInverseDepth() ?
 						deoglDebugSaveTexture::ecDepthBufferInverse : deoglDebugSaveTexture::ecNoConversion	);
 			}
@@ -1715,14 +1688,14 @@ void deoglRenderReflection::RenderDepthMinMaxMipMap( deoglRenderPlan &plan ){
 				shader->SetParameterInt( spmmmmTCClamp, defren.GetWidth() - 1, defren.GetHeight() - 1 );
 				shader->SetParameterInt( spmmmmMipMapLevel, 0 );
 				
-				tsmgr.EnableTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
+				tsmgr.EnableArrayTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
 				
 			}else{
 				shader->SetParameterInt( spmmmmTCClamp, width - 1, height - 1 );
 				shader->SetParameterInt( spmmmmMipMapLevel, i - 1 );
 				
 				if( i == 1 ){
-					tsmgr.EnableTexture( 0, *depthMinMap.GetTextureMin(), GetSamplerClampNearest() );
+					tsmgr.EnableArrayTexture( 0, *depthMinMap.GetTextureMin(), GetSamplerClampNearest() );
 				}
 				
 				width >>= 1;
@@ -1742,10 +1715,10 @@ void deoglRenderReflection::RenderDepthMinMaxMipMap( deoglRenderPlan &plan ){
 			if( renderThread.GetConfiguration().GetDebugSnapshot() == 62 ){
 				decString text;
 				text.Format( "depth_minmax_min_level%i_%ix%i", i, width, height );
-				renderThread.GetDebug().GetDebugSaveTexture().SaveDepthTextureLevel(
+				renderThread.GetDebug().GetDebugSaveTexture().SaveDepthArrayTextureLevel(
 					*depthMinMap.GetTextureMin(), i, text.GetString(), deoglDebugSaveTexture::edtDepth );
 				if( i > 0 ){
-					tsmgr.EnableTexture( 0, *depthMinMap.GetTextureMin(), GetSamplerClampNearest() );
+					tsmgr.EnableArrayTexture( 0, *depthMinMap.GetTextureMin(), GetSamplerClampNearest() );
 				}
 			}
 		}
@@ -1764,14 +1737,14 @@ void deoglRenderReflection::RenderDepthMinMaxMipMap( deoglRenderPlan &plan ){
 				shader->SetParameterInt( spmmmmTCClamp, defren.GetWidth() - 1, defren.GetHeight() - 1 );
 				shader->SetParameterInt( spmmmmMipMapLevel, 0 );
 				
-				tsmgr.EnableTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
+				tsmgr.EnableArrayTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
 				
 			}else{
 				shader->SetParameterInt( spmmmmTCClamp, width - 1, height - 1 );
 				shader->SetParameterInt( spmmmmMipMapLevel, i - 1 );
 				
 				if( i == 1 ){
-					tsmgr.EnableTexture( 0, *depthMinMap.GetTextureMax(), GetSamplerClampNearest() );
+					tsmgr.EnableArrayTexture( 0, *depthMinMap.GetTextureMax(), GetSamplerClampNearest() );
 				}
 				
 				width >>= 1;
@@ -1791,10 +1764,10 @@ void deoglRenderReflection::RenderDepthMinMaxMipMap( deoglRenderPlan &plan ){
 			if( renderThread.GetConfiguration().GetDebugSnapshot() == 62 ){
 				decString text;
 				text.Format( "depth_minmax_max_level%i_%ix%i", i, width, height );
-				renderThread.GetDebug().GetDebugSaveTexture().SaveDepthTextureLevel(
+				renderThread.GetDebug().GetDebugSaveTexture().SaveDepthArrayTextureLevel(
 					*depthMinMap.GetTextureMax(), i, text.GetString(), deoglDebugSaveTexture::edtDepth );
 				if( i > 0 ){
-					tsmgr.EnableTexture( 0, *depthMinMap.GetTextureMax(), GetSamplerClampNearest() );
+					tsmgr.EnableArrayTexture( 0, *depthMinMap.GetTextureMax(), GetSamplerClampNearest() );
 				}
 			}
 		}
@@ -1822,7 +1795,7 @@ void deoglRenderReflection::RenderDepthMinMaxMipMap( deoglRenderPlan &plan ){
 		renderThread.GetShader().ActivateShader( pShaderMinMaxMipMapInitial );
 		shader = pShaderMinMaxMipMapInitial->GetCompiled();
 		
-		tsmgr.EnableTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
 		
 		shader->SetParameterInt( spmmmmTCClamp, defren.GetWidth() - 1, defren.GetHeight() - 1 );
 		shader->SetParameterInt( spmmmmMipMapLevel, 0 );
@@ -1833,7 +1806,7 @@ void deoglRenderReflection::RenderDepthMinMaxMipMap( deoglRenderPlan &plan ){
 		if( renderThread.GetConfiguration().GetDebugSnapshot() == 62 ){
 			decString text;
 			text.Format( "depth_minmax_level0_%ix%i", width, height );
-			renderThread.GetDebug().GetDebugSaveTexture().SaveDepthTextureLevel(
+			renderThread.GetDebug().GetDebugSaveTexture().SaveDepthArrayTextureLevel(
 				*depthMinMap.GetTexture(), 0, text.GetString(), deoglDebugSaveTexture::edtDepth );
 		}
 		
@@ -1841,7 +1814,7 @@ void deoglRenderReflection::RenderDepthMinMaxMipMap( deoglRenderPlan &plan ){
 		renderThread.GetShader().ActivateShader( pShaderMinMaxMipMapDownsample );
 		shader = pShaderMinMaxMipMapDownsample->GetCompiled();
 		
-		tsmgr.EnableTexture( 0, *depthMinMap.GetTexture(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 0, *depthMinMap.GetTexture(), GetSamplerClampNearest() );
 		
 		for( i=1; i<mipMapLevelCount; i++ ){
 			renderThread.GetFramebuffer().Activate( depthMinMap.GetFBOAt( i ) );
@@ -1867,9 +1840,9 @@ void deoglRenderReflection::RenderDepthMinMaxMipMap( deoglRenderPlan &plan ){
 			if( renderThread.GetConfiguration().GetDebugSnapshot() == 62 ){
 				decString text;
 				text.Format( "depth_minmax_level%i_%ix%i", i, width, height );
-				renderThread.GetDebug().GetDebugSaveTexture().SaveDepthTextureLevel(
+				renderThread.GetDebug().GetDebugSaveTexture().SaveDepthArrayTextureLevel(
 					*depthMinMap.GetTexture(), i, text.GetString(), deoglDebugSaveTexture::edtDepth );
-				tsmgr.EnableTexture( 0, *depthMinMap.GetTexture(), GetSamplerClampNearest() );
+				tsmgr.EnableArrayTexture( 0, *depthMinMap.GetTexture(), GetSamplerClampNearest() );
 			}
 		}
 	}
@@ -1911,7 +1884,7 @@ void deoglRenderReflection::CopyColorToTemporary1( deoglRenderPlan &plan ){
 	
 	defren.SetShaderParamFSQuad( *shader, spccQuadParams );
 	
-	tsmgr.EnableTexture( 0, *defren.GetTextureColor(), GetSamplerClampNearest() );
+	tsmgr.EnableArrayTexture( 0, *defren.GetTextureColor(), GetSamplerClampNearest() );
 	
 	defren.RenderFSQuadVAO();
 	
@@ -1929,7 +1902,7 @@ void deoglRenderReflection::CopyColorToTemporary1( deoglRenderPlan &plan ){
 		level = 0;
 		
 		text.Format( "refl_ssr_copycolor_level0_%ix%i", width, height );
-		renderThread.GetDebug().GetDebugSaveTexture().SaveTextureLevelConversion( *defren.GetTextureTemporary1(), 0,
+		renderThread.GetDebug().GetDebugSaveTexture().SaveArrayTextureLevelConversion( *defren.GetTextureTemporary1(), 0,
 			text.GetString(), deoglDebugSaveTexture::ecColorLinear2sRGB );
 		
 		while( width > 1 && height > 1 ){
@@ -1944,7 +1917,7 @@ void deoglRenderReflection::CopyColorToTemporary1( deoglRenderPlan &plan ){
 			level++;
 			
 			text.Format( "refl_ssr_copycolor_level%i_%ix%i", level, width, height );
-			renderThread.GetDebug().GetDebugSaveTexture().SaveTextureLevelConversion( *defren.GetTextureTemporary1(), level,
+			renderThread.GetDebug().GetDebugSaveTexture().SaveArrayTextureLevelConversion( *defren.GetTextureTemporary1(), level,
 				text.GetString(), deoglDebugSaveTexture::ecColorLinear2sRGB );
 		}
 		
@@ -2122,9 +2095,9 @@ void deoglRenderReflection::CopyMaterial( deoglRenderPlan &plan, bool solid ){
 	
 	OGL_CHECK( renderThread, glViewport( 0, 0, plan.GetViewportWidth(), plan.GetViewportHeight() ) );
 	
-	tsmgr.EnableTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
-	tsmgr.EnableTexture( 1, *defren.GetTextureDiffuse(), GetSamplerClampNearest() );
-	tsmgr.EnableTexture( 2, *defren.GetTextureNormal(), GetSamplerClampNearest() );
+	tsmgr.EnableArrayTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
+	tsmgr.EnableArrayTexture( 1, *defren.GetTextureDiffuse(), GetSamplerClampNearest() );
+	tsmgr.EnableArrayTexture( 2, *defren.GetTextureNormal(), GetSamplerClampNearest() );
 	
 	defren.RenderFSQuadVAO();
 	
@@ -2389,22 +2362,22 @@ void deoglRenderReflection::RenderScreenSpace( deoglRenderPlan &plan ){
 	shader->SetParameterFloat( spssRoughnessTapCountScale, ( float )roughnessTapMax / roughnessTapRange );
 	
 	if( renderThread.GetCapabilities().GetMaxDrawBuffers() >= 8 ){
-		tsmgr.EnableTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
 		if( deoglDRDepthMinMax::USAGE_VERSION != -1 ){
-			tsmgr.EnableTexture( 1, *defren.GetDepthMinMax().GetTexture(), GetSamplerClampNearestMipMap() );
+			tsmgr.EnableArrayTexture( 1, *defren.GetDepthMinMax().GetTexture(), GetSamplerClampNearestMipMap() );
 		}
-		tsmgr.EnableTexture( 2, *defren.GetTextureDiffuse(), GetSamplerClampNearest() );
-		tsmgr.EnableTexture( 3, *defren.GetTextureNormal(), GetSamplerClampNearest() );
-		tsmgr.EnableTexture( 4, *defren.GetTextureRoughness(), GetSamplerClampNearest() );
-		tsmgr.EnableTexture( 5, *defren.GetTextureAOSolidity(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 2, *defren.GetTextureDiffuse(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 3, *defren.GetTextureNormal(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 4, *defren.GetTextureRoughness(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 5, *defren.GetTextureAOSolidity(), GetSamplerClampNearest() );
 		
 	}else{
-		tsmgr.EnableTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
 		if( deoglDRDepthMinMax::USAGE_VERSION != -1 ){
-			tsmgr.EnableTexture( 1, *defren.GetDepthMinMax().GetTexture(), GetSamplerClampNearestMipMap() );
+			tsmgr.EnableArrayTexture( 1, *defren.GetDepthMinMax().GetTexture(), GetSamplerClampNearestMipMap() );
 		}
-		tsmgr.EnableTexture( 2, *defren.GetTextureDiffuse(), GetSamplerClampNearest() );
-		tsmgr.EnableTexture( 3, *defren.GetTextureNormal(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 2, *defren.GetTextureDiffuse(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 3, *defren.GetTextureNormal(), GetSamplerClampNearest() );
 		tsmgr.EnableTexture( 4, *renderThread.GetDefaultTextures().GetAO(), GetSamplerClampNearest() );
 		tsmgr.EnableTexture( 5, *renderThread.GetDefaultTextures().GetAO(), GetSamplerClampNearest() );
 	}
@@ -2553,25 +2526,25 @@ void deoglRenderReflection::RenderScreenSpace( deoglRenderPlan &plan ){
 	*/
 	
 	if( renderThread.GetCapabilities().GetMaxDrawBuffers() >= 8 ){
-		tsmgr.EnableTexture( 0, *defren.GetTextureDiffuse(), GetSamplerClampNearest() );
-		tsmgr.EnableTexture( 1, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
-		tsmgr.EnableTexture( 2, *defren.GetTextureTemporary2(), GetSamplerClampLinear() );
-		tsmgr.EnableTexture( 3, *defren.GetTextureNormal(), GetSamplerClampNearest() );
-		tsmgr.EnableTexture( 4, *defren.GetTextureReflectivity(), GetSamplerClampNearest() );
-		tsmgr.EnableTexture( 5, *defren.GetTextureRoughness(), GetSamplerClampNearest() );
-		tsmgr.EnableTexture( 6, *defren.GetTextureAOSolidity(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 0, *defren.GetTextureDiffuse(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 1, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 2, *defren.GetTextureTemporary2(), GetSamplerClampLinear() );
+		tsmgr.EnableArrayTexture( 3, *defren.GetTextureNormal(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 4, *defren.GetTextureReflectivity(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 5, *defren.GetTextureRoughness(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 6, *defren.GetTextureAOSolidity(), GetSamplerClampNearest() );
 		
 	}else{
-		tsmgr.EnableTexture( 0, *defren.GetTextureDiffuse(), GetSamplerClampNearest() );
-		tsmgr.EnableTexture( 1, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
-		tsmgr.EnableTexture( 2, *defren.GetTextureTemporary2(), GetSamplerClampLinear() );
-		tsmgr.EnableTexture( 3, *defren.GetTextureNormal(), GetSamplerClampNearest() );
-		tsmgr.EnableTexture( 4, *defren.GetTextureReflectivity(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 0, *defren.GetTextureDiffuse(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 1, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 2, *defren.GetTextureTemporary2(), GetSamplerClampLinear() );
+		tsmgr.EnableArrayTexture( 3, *defren.GetTextureNormal(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 4, *defren.GetTextureReflectivity(), GetSamplerClampNearest() );
 		tsmgr.EnableTexture( 5, *renderThread.GetDefaultTextures().GetAO(), GetSamplerClampNearest() );
 		tsmgr.EnableTexture( 6, *renderThread.GetDefaultTextures().GetAO(), GetSamplerClampNearest() );
 	}
 	
-	tsmgr.EnableTexture( 7, *defren.GetTextureTemporary1(), GetSamplerClampLinearMipMap() );
+	tsmgr.EnableArrayTexture( 7, *defren.GetTextureTemporary1(), GetSamplerClampLinearMipMap() );
 	
 	if( config.GetEnvMapMethod() == deoglConfiguration::eemmSingle ){
 		if( pEnvMapEqui ){

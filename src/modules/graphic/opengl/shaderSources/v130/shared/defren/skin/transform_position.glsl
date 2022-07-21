@@ -5,7 +5,7 @@
 	const vec3 bbUp = vec3( 0.0, 1.0, 0.0 );
 #endif
 
-#if defined HAS_TESSELLATION_SHADER || defined GS_RENDER_CUBE || defined GS_RENDER_CASCADED
+#if defined HAS_TESSELLATION_SHADER || defined GS_RENDER_CUBE || defined GS_RENDER_CASCADED || defined GS_RENDER_STEREO
 	#define NO_TRANSFORMATION 1
 #endif
 

@@ -148,7 +148,7 @@ pRenderGI( NULL ),
 
 pLightPB( NULL ),
 pShadowPB( NULL ),
-pShadowCascadedPB( NULL ),
+pShadowCascadedPB( nullptr ),
 pShadowCubePB( NULL ),
 pOccMapPB( NULL ),
 pRenderTask( NULL ),
@@ -164,7 +164,6 @@ pDebugInfoTransparentCopyDepth( NULL ),
 pDebugInfoTransparentSSSSS( NULL )
 {
 	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
-	const deoglConfiguration &config = renderThread.GetConfiguration();
 	deoglShaderSources *sources;
 	deoglShaderDefines defines;
 	
@@ -173,9 +172,9 @@ pDebugInfoTransparentSSSSS( NULL )
 		pShaderCopyDepth = shaderManager.GetProgramWith( sources, defines );
 		
 		pLightPB = deoglLightShader::CreateSPBRender( renderThread );
-		pShadowPB = deoglSkinShader::CreateSPBRender( renderThread, false, false );
-		pShadowCascadedPB = deoglSkinShader::CreateSPBRender( renderThread, false, true );
-		pShadowCubePB = deoglSkinShader::CreateSPBRender( renderThread, true, false );
+		pShadowPB = deoglSkinShader::CreateSPBRender( renderThread );
+		pShadowCascadedPB = deoglSkinShader::CreateSPBRenderCascaded( renderThread );
+		pShadowCubePB = deoglSkinShader::CreateSPBRenderCubeMap( renderThread );
 		pOccMapPB = deoglSkinShader::CreateSPBOccMap( renderThread );
 		
 		pRenderTask = new deoglRenderTask( renderThread );
@@ -195,9 +194,6 @@ pDebugInfoTransparentSSSSS( NULL )
 		
 		
 		sources = shaderManager.GetSourcesNamed( "DefRen AmbientOcclusion Local" );
-		if( config.GetDefRenEncDepth() ){
-			defines.AddDefine( "DECODE_IN_DEPTH", "1" );
-		}
 		defines.AddDefine( "SSAO_RESOLUTION_COUNT", "1" ); // 1-4
 		pShaderAOLocal = shaderManager.GetProgramWith( sources, defines );
 		defines.RemoveAllDefines();
@@ -461,16 +457,16 @@ void deoglRenderLight::RenderAO( deoglRenderPlan &plan, bool solid ){
 	shader->SetParameterFloat( spaolMipMapParams,
 		( float )width, ( float )height, mipMapBase, mipMapMaxLevel );
 	
-	tsmgr.EnableTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearestMipMap() );
-	tsmgr.EnableTexture( 1, *defren.GetTextureDiffuse(), GetSamplerClampNearest() );
-	tsmgr.EnableTexture( 2, *defren.GetTextureNormal(), GetSamplerClampNearest() );
+	tsmgr.EnableArrayTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearestMipMap() );
+	tsmgr.EnableArrayTexture( 1, *defren.GetTextureDiffuse(), GetSamplerClampNearest() );
+	tsmgr.EnableArrayTexture( 2, *defren.GetTextureNormal(), GetSamplerClampNearest() );
 	
 	OGL_CHECK( renderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) );
 	
 	OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
 	
 	if( renderThread.GetConfiguration().GetDebugSnapshot() == 61 ){
-		renderThread.GetDebug().GetDebugSaveTexture().SaveTexture(
+		renderThread.GetDebug().GetDebugSaveTexture().SaveArrayTexture(
 			*defren.GetTextureAOSolidity(), "ao_local" );
 	}
 	
@@ -490,8 +486,8 @@ void deoglRenderLight::RenderAO( deoglRenderPlan &plan, bool solid ){
 	renderThread.GetShader().ActivateShader( pShaderAOBlur1 );
 	shader = pShaderAOBlur1->GetCompiled();
 	
-	tsmgr.EnableTexture( 0, *defren.GetTextureAOSolidity(), GetSamplerClampLinear() );
-	tsmgr.EnableTexture( 1, *defren.GetDepthTexture1(), GetSamplerClampLinear() );
+	tsmgr.EnableArrayTexture( 0, *defren.GetTextureAOSolidity(), GetSamplerClampLinear() );
+	tsmgr.EnableArrayTexture( 1, *defren.GetDepthTexture1(), GetSamplerClampLinear() );
 	
 	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_FALSE, GL_FALSE, GL_FALSE ) );
 	
@@ -520,7 +516,7 @@ void deoglRenderLight::RenderAO( deoglRenderPlan &plan, bool solid ){
 	OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
 	
 	if( renderThread.GetConfiguration().GetDebugSnapshot() == 61 ){
-		renderThread.GetDebug().GetDebugSaveTexture().SaveTexture(
+		renderThread.GetDebug().GetDebugSaveTexture().SaveArrayTexture(
 			*defren.GetTextureTemporary3(), "ao_local_blur1" );
 	}
 	
@@ -532,7 +528,7 @@ void deoglRenderLight::RenderAO( deoglRenderPlan &plan, bool solid ){
 	renderThread.GetShader().ActivateShader( pShaderAOBlur2 );
 	shader = pShaderAOBlur2->GetCompiled();
 	
-	tsmgr.EnableTexture( 0, *defren.GetTextureTemporary3(), GetSamplerClampLinear() );
+	tsmgr.EnableArrayTexture( 0, *defren.GetTextureTemporary3(), GetSamplerClampLinear() );
 	
 	OGL_CHECK( renderThread, glViewport( 0, 0, width, height ) );
 	OGL_CHECK( renderThread, glScissor( 0, 0, width, height ) );
@@ -573,7 +569,7 @@ void deoglRenderLight::RenderAO( deoglRenderPlan &plan, bool solid ){
 		renderThread.GetShader().ActivateShader( pShaderDebugAO );
 		shader = pShaderDebugAO->GetCompiled();
 		
-		tsmgr.EnableTexture( 0, *defren.GetTextureAOSolidity(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 0, *defren.GetTextureAOSolidity(), GetSamplerClampNearest() );
 		
 		OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
 		OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_FALSE ) );
@@ -592,7 +588,7 @@ void deoglRenderLight::RenderAO( deoglRenderPlan &plan, bool solid ){
 	}
 	
 	if( renderThread.GetConfiguration().GetDebugSnapshot() == 61 ){
-		renderThread.GetDebug().GetDebugSaveTexture().SaveTexture(
+		renderThread.GetDebug().GetDebugSaveTexture().SaveArrayTexture(
 			*defren.GetTextureAOSolidity(), "ao_local_blur2" );
 		renderThread.GetConfiguration().SetDebugSnapshot( 0 );
 	}
@@ -649,20 +645,20 @@ void deoglRenderLight::RenderSSSSS( deoglRenderPlan &plan, bool solid ){
 	shader->SetParameterFloat( spsssssTapDropRadiusThreshold, tapDropRadiusThreshold * largestPixelSize );
 	
 	if( renderThread.GetConfiguration().GetDebugSnapshot() == 1122 ){
-		renderThread.GetDebug().GetDebugSaveTexture().SaveTextureConversion( *defren.GetTextureDiffuse(),
+		renderThread.GetDebug().GetDebugSaveTexture().SaveArrayTextureConversion( *defren.GetTextureDiffuse(),
 			"sssss_texture1", deoglDebugSaveTexture::ecColorLinear2sRGB );
-		renderThread.GetDebug().GetDebugSaveTexture().SaveTextureConversion( *defren.GetTextureSubSurface(),
+		renderThread.GetDebug().GetDebugSaveTexture().SaveArrayTextureConversion( *defren.GetTextureSubSurface(),
 			"sssss_subsurface", deoglDebugSaveTexture::ecNoConversion );
-		renderThread.GetDebug().GetDebugSaveTexture().SaveTextureConversion( *defren.GetTextureTemporary2(),
+		renderThread.GetDebug().GetDebugSaveTexture().SaveArrayTextureConversion( *defren.GetTextureTemporary2(),
 			"sssss_temporary2", deoglDebugSaveTexture::ecColorLinearToneMapsRGB );
 		renderThread.GetConfiguration().SetDebugSnapshot( 0 );
 	}
 	
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
-	tsmgr.EnableTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
-	tsmgr.EnableTexture( 1, *defren.GetTextureDiffuse(), GetSamplerClampNearest() );
-	tsmgr.EnableTexture( 2, *defren.GetTextureSubSurface(), GetSamplerClampNearest() );
-	tsmgr.EnableTexture( 3, *defren.GetTextureTemporary2(), GetSamplerClampLinear() );
+	tsmgr.EnableArrayTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
+	tsmgr.EnableArrayTexture( 1, *defren.GetTextureDiffuse(), GetSamplerClampNearest() );
+	tsmgr.EnableArrayTexture( 2, *defren.GetTextureSubSurface(), GetSamplerClampNearest() );
+	tsmgr.EnableArrayTexture( 3, *defren.GetTextureTemporary2(), GetSamplerClampLinear() );
 	
 	OGL_CHECK( renderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) );
 	OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );

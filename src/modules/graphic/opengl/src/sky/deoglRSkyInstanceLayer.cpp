@@ -189,7 +189,6 @@ bool deoglRSkyInstanceLayer::GetShaderConfigFor( int shaderType, deoglLightShade
 	
 	config.SetTextureNoise( false );
 	
-	config.SetDecodeInDepth( oglconfig.GetDefRenEncDepth() );
 	config.SetFullScreenQuad( true );
 	
 	switch( shaderType ){

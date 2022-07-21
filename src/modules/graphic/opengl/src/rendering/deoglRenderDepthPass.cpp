@@ -65,6 +65,7 @@
 #include "../shapes/deoglShape.h"
 #include "../shapes/deoglShapeManager.h"
 #include "../texture/deoglTextureStageManager.h"
+#include "../texture/arraytexture/deoglArrayTexture.h"
 #include "../texture/texture2d/deoglTexture.h"
 #include "../vao/deoglVAO.h"
 
@@ -147,9 +148,6 @@ deoglRenderBase( renderThread )
 	
 	
 	sources = shaderManager.GetSourcesNamed( "DefRen Depth Downsample" );
-	if( config.GetDefRenEncDepth() ){
-		defines.AddDefine( "DECODE_IN_DEPTH", "1" );
-	}
 	if( defren.GetUseInverseDepth() ){
 		defines.AddDefine( "INVERSE_DEPTH", "1" );
 	}
@@ -701,7 +699,7 @@ DBG_ENTER("DownsampleDepth")
 	deoglRenderThread &renderThread = GetRenderThread();
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
-	deoglTexture &texture = *defren.GetDepthTexture1();
+	deoglArrayTexture &texture = *defren.GetDepthTexture1();
 	deoglShaderCompiled *shader;
 	int height, width, i;
 	
@@ -726,7 +724,7 @@ DBG_ENTER("DownsampleDepth")
 	renderThread.GetShader().ActivateShader( pShaderDepthDownsample );
 	shader = pShaderDepthDownsample->GetCompiled();
 	
-	tsmgr.EnableTexture( 0, texture, GetSamplerClampNearest() );
+	tsmgr.EnableArrayTexture( 0, texture, GetSamplerClampNearest() );
 	
 	for( i=1; i<=mipMapLevelCount; i++ ){
 		defren.ActivateFBODepthLevel( i );
@@ -749,7 +747,7 @@ DBG_ENTER("DownsampleDepth")
 		
 		for( i=0; i<=mipMapLevelCount; i++ ){
 			text.Format( "downsample_depth-pass%i", i );
-			renderThread.GetDebug().GetDebugSaveTexture().SaveDepthTextureLevel(
+			renderThread.GetDebug().GetDebugSaveTexture().SaveDepthArrayTextureLevel(
 				*defren.GetDepthTexture1(), i, text.GetString(), deoglDebugSaveTexture::edtDepth );
 		}
 	}

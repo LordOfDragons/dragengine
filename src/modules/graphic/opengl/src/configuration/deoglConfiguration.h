@@ -121,8 +121,6 @@ private:
 	bool pDisableStencil;
 	bool pStencilOnlyOnRB;
 	
-	bool pDefRenEncDepth;
-	bool pDefRenUsePOTs;
 	int pDefRenSizeLimit;
 	bool pUseHDRR;
 	float pHDRRMaxIntensity;
@@ -309,14 +307,6 @@ public:
 	/** Sets if stencil buffer is used only on renderbuffers ( broken hardware fix ). */
 	void SetStencilOnlyOnRB( bool stencilOnlyOnRB );
 	
-	/** Determines if depth has to be encoded for deferred rendering. */
-	inline bool GetDefRenEncDepth() const{ return pDefRenEncDepth; }
-	/** Sets if depth has to be encoded for deferred rendering. */
-	void SetDefRenEncDepth( bool useEncDepth );
-	/** Determines if power of two (POT) textures should be used for deferred rendering instead of non-POTs. */
-	inline bool GetDefRenUsePOTs() const{ return pDefRenUsePOTs; }
-	/** Sets if power of two (POT) textures should be used for deferred rendering instead of non-POTs. */
-	void SetDefRenUsePOTs( bool usePOTs );
 	/** Retrieves the size limit for rendering using deferred rendering or 0 for no limit. */
 	inline int GetDefRenSizeLimit() const{ return pDefRenSizeLimit; }
 	/** Sets the size limit for rendering using deferred rendering or 0 for no limit. */

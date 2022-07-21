@@ -68,9 +68,7 @@
 #include "parameters/debug/deoglPOcclusionReduction.h"
 #include "parameters/debug/deoglPOccTestMode.h"
 #include "parameters/debug/deoglPWireframeMode.h"
-#include "parameters/defren/deoglPDefRenEncDepth.h"
 #include "parameters/defren/deoglPDefRenSizeLimit.h"
-#include "parameters/defren/deoglPDefRenUsePOTs.h"
 #include "parameters/defren/deoglPHDRRMaximumIntensity.h"
 #include "parameters/defren/deoglPRenderDownScale.h"
 #include "parameters/defren/deoglPTranspLayerLimit.h"
@@ -680,8 +678,6 @@ void deGraphicOpenGl::pCreateParameters() {
 	pParameters.AddParameter( new deoglPShadowCubePCFSize( *this ) );
 	
 	pParameters.AddParameter( new deoglPHDRRMaximumIntensity( *this ) );
-	pParameters.AddParameter( new deoglPDefRenEncDepth( *this ) );
-	pParameters.AddParameter( new deoglPDefRenUsePOTs( *this ) );
 	pParameters.AddParameter( new deoglPDefRenSizeLimit( *this ) );
 	pParameters.AddParameter( new deoglPTranspLayerLimit( *this ) );
 	
