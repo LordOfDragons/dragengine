@@ -191,12 +191,10 @@ precision highp int;
 	#define pLightRange vParticleLightRange
 #endif
 
-#ifndef GI_RAY
-	#ifdef GS_RENDER_STEREO
-		flat in int vLayer;
-	#else
-		const int vLayer = 0;
-	#endif
+#if definedGS_RENDER_STEREO && ! defined GI_RAY
+	flat in int vLayer;
+#else
+	const int vLayer = 0;
 #endif
 
 
@@ -654,14 +652,16 @@ float evaluateShadowCube( in mediump SAMPLER_SHADOWCUBE texsm, in vec3 params, i
 //////////////////
 
 void main( void ){
-	#ifdef GI_RAY
-		ivec2 tc = ivec2( gl_FragCoord.xy );
-	#else
-		ivec3 tc = ivec3( gl_FragCoord.xy, vLayer );
-	#endif
+	ivec3 tcArray = ivec3( gl_FragCoord.xy, vLayer );
 	#ifdef LUMINANCE_ONLY
-		tc.xy *= pLumFragCoordScale;
+		tcArray.xy *= pLumFragCoordScale;
 	#else
+	
+	#ifdef GI_RAY
+		ivec2 tc = ivec2( tcArray );
+	#else
+		ivec3 tc = tcArray;
+	#endif
 	
 	// discard not inizalized fragments or fragements that are not supposed to be lit
 	vec4 diffuse = texelFetch( texDiffuse, tc, 0 );
@@ -852,7 +852,7 @@ void main( void ){
 	
 	// calculate the sss thickness from the shadow map if existing
 	#ifdef WITH_SUBSURFACE
-		vec3 absorptionRadius = texelFetch( texSubSurface, tc, 0 ).rgb;
+		vec3 absorptionRadius = texelFetch( texSubSurface, tcArray, 0 ).rgb;
 		float largestAbsorptionRadius = max( max( absorptionRadius.x, absorptionRadius.y ), absorptionRadius.z );
 		#ifdef SHADOW_CASTING
 			#ifdef TEXTURE_SHADOW1_SOLID
