@@ -7,9 +7,15 @@ uniform lowp ivec4 pOffsets2; // off3.x, off3.y, off4.x, off4.y
 uniform lowp ivec4 pOffsets3; // off5.x, off5.y, off6.x, off6.y
 uniform lowp ivec4 pOffsets4; // off7.x, off7.y, scaleX, scaleY
 
-uniform lowp sampler2D texValues;
+uniform lowp sampler2DArray texValues;
 
 in mediump vec2 vTexCoord;
+
+#ifdef GS_RENDER_STEREO
+	flat in int vLayer;
+#else
+	const int vLayer = 0;
+#endif
 
 out lowp float outValue;
 
@@ -21,17 +27,17 @@ void main( void ){
 	vec4 values1, values2;
 	ivec4 tc;
 	
-	values1.x = texelFetch( texValues, baseTC, 0 ).r;
+	values1.x = texelFetch( texValues, ivec3( baseTC, vLayer ), 0 ).r;
 	tc = min( baseTC.xyxy + pOffsets1, pClampTC.zwzw );
-	values1.y = texelFetch( texValues, tc.xy, 0 ).r; // vTexCoord + pOffsets1.xy
-	values1.z = texelFetch( texValues, tc.zw, 0 ).r; // vTexCoord + pOffsets1.zw
+	values1.y = texelFetch( texValues, ivec3( tc.xy, vLayer ), 0 ).r; // vTexCoord + pOffsets1.xy
+	values1.z = texelFetch( texValues, ivec3( tc.zw, vLayer ), 0 ).r; // vTexCoord + pOffsets1.zw
 	tc = min( baseTC.xyxy + pOffsets2, pClampTC.zwzw );
-	values1.w = texelFetch( texValues, tc.xy, 0 ).r; // vTexCoord + pOffsets2.xy
-	values2.x = texelFetch( texValues, tc.zw, 0 ).r; // vTexCoord + pOffsets2.zw
+	values1.w = texelFetch( texValues, ivec3( tc.xy, vLayer ), 0 ).r; // vTexCoord + pOffsets2.xy
+	values2.x = texelFetch( texValues, ivec3( tc.zw, vLayer ), 0 ).r; // vTexCoord + pOffsets2.zw
 	tc = min( baseTC.xyxy + pOffsets3, pClampTC.zwzw );
-	values2.y = texelFetch( texValues, tc.xy, 0 ).r; // vTexCoord + pOffsets3.xy
-	values2.z = texelFetch( texValues, tc.zw, 0 ).r; // vTexCoord + pOffsets3.zw
-	values2.w = texelFetch( texValues, min( baseTC + pOffsets4.xy, pClampTC.zw ), 0 ).r;
+	values2.y = texelFetch( texValues, ivec3( tc.xy, vLayer ), 0 ).r; // vTexCoord + pOffsets3.xy
+	values2.z = texelFetch( texValues, ivec3( tc.zw, vLayer ), 0 ).r; // vTexCoord + pOffsets3.zw
+	values2.w = texelFetch( texValues, ivec3( min( baseTC + pOffsets4.xy, pClampTC.zw ), vLayer ), 0 ).r;
 	
 	values1 = max( values1, values2 );
 	values1.xy = max( values1.xy, values1.zw );

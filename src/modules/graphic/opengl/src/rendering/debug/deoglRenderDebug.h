@@ -97,6 +97,9 @@ public:
 	/** Display array texture layer. */
 	void DisplayArrayTextureLayer( deoglRenderPlan &plan, deoglArrayTexture *texture, int layer, bool gammaCorrect );
 	
+	/** Display array texture layer. */
+	void DisplayArrayTextureLayerLevel( deoglRenderPlan &plan, deoglArrayTexture *texture, int layer, int level, bool gammaCorrect );
+	
 	
 	
 	/** Render component static information as colored boxes. */

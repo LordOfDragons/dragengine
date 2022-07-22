@@ -150,6 +150,7 @@ pTBORenderRectangle2( NULL )
 		pShaderOutTexLayer = shaderManager.GetProgramWith( sources, defines );
 		defines.RemoveAllDefines();
 		
+		defines.AddDefine( "TEXTURELEVEL", "1" );
 		defines.AddDefine( "ARRAYTEXTURE", "1" );
 		pShaderOutArrTex = shaderManager.GetProgramWith( sources, defines );
 		defines.RemoveAllDefines();
@@ -277,17 +278,37 @@ void deoglRenderDebug::DisplayTextureLevel( deoglRenderPlan &plan, deoglTexture 
 	tsmgr.DisableStage( 0 );
 }
 
-void deoglRenderDebug::DisplayArrayTextureLayer( deoglRenderPlan &plan, deoglArrayTexture *texture, int layer, bool gammaCorrect ){
+void deoglRenderDebug::DisplayArrayTextureLayer( deoglRenderPlan &plan,
+deoglArrayTexture *texture, int layer, bool gammaCorrect ){
+	DisplayArrayTextureLayerLevel( plan, texture, layer, 0, gammaCorrect );
+}
+
+void deoglRenderDebug::DisplayArrayTextureLayerLevel( deoglRenderPlan &plan,
+deoglArrayTexture *texture, int layer, int level, bool gammaCorrect ){
 	if( ! texture || layer < 0 || layer >= texture->GetLayerCount() ) DETHROW( deeInvalidParam );
 	
 	deoglRenderThread &renderThread = GetRenderThread();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	
-	int viewWidth = plan.GetViewportWidth();
-	int viewHeight = plan.GetViewportHeight();
 	int texWidth = texture->GetWidth();
 	int texHeight = texture->GetHeight();
+	int i;
+	
+	for( i=0; i<level; i++ ){
+		texWidth >>= 1;
+		if( texWidth < 1 ){
+			texWidth = 1;
+		}
+		
+		texHeight >>= 1;
+		if( texHeight < 1 ){
+			texHeight = 1;
+		}
+	}
+	
+	int viewWidth = plan.GetViewportWidth();
+	int viewHeight = plan.GetViewportHeight();
 	float scaleX = ( float )texWidth / ( float )viewWidth;
 	float scaleY = ( float )texHeight / ( float )viewHeight;
 	
@@ -328,6 +349,7 @@ void deoglRenderDebug::DisplayArrayTextureLayer( deoglRenderPlan &plan, deoglArr
 	}
 	
 	shader.SetParameterFloat( spotLayer, ( float )layer );
+	shader.SetParameterFloat( spotLevel, ( float )level );
 	
 	// set texture
 	tsmgr.EnableArrayTexture( 0, *texture, GetSamplerClampNearest() );

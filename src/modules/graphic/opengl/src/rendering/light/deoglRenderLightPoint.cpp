@@ -238,14 +238,6 @@ deoglRenderLightPoint::deoglRenderLightPoint( deoglRenderThread &renderThread,
 deoglRTRenderers &renderers ) :
 deoglRenderLightBase( renderThread ),
 
-pShaderLight( NULL ),
-pShaderLightShadow( NULL ),
-pShaderLightShadowTransp( NULL ),
-
-pShaderShadowSolid( NULL ),
-pShaderShadowHoles( NULL ),
-pShaderShadowTransp( NULL ),
-
 pShaderBoxBoundary1( NULL ),
 pShaderBoxBoundary2( NULL ),
 pShaderOccMap( NULL ),
@@ -280,60 +272,11 @@ pDebugInfoTransparentShadowFaceTranspTask( NULL ),
 pDebugInfoTransparentShadowFaceTranspRender( NULL ),
 pDebugInfoTransparentLight( NULL )
 {
-	const deoglConfiguration &config = renderThread.GetConfiguration();
 	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
-	bool useEncodeDepth = config.GetUseEncodeDepth();
 	deoglShaderSources *sources;
 	deoglShaderDefines defines;
 	
 	try{
-		sources = shaderManager.GetSourcesNamed( "DefRen Light Point" );
-		if( useEncodeDepth ){
-			defines.AddDefine( "GEOM_ENCODED_DEPTH", "1" );
-		}
-		pShaderLight = shaderManager.GetProgramWith( sources, defines );
-		
-		defines.AddDefine( "USE_SHADOW", "1" );
-		defines.AddDefine( "USE_DEPTH_CUBE", "1" );
-		//defines.AddDefine( "PCF_9TAP", "1" );
-		//defines.AddDefine( "PCF_VARTAP", "1" );
-		defines.AddDefine( "PCF_NOISETAP", "1" );
-		pShaderLightShadow = shaderManager.GetProgramWith( sources, defines );
-		
-		defines.AddDefine( "TRANSPARENT_SHADOW", "1" );
-		pShaderLightShadowTransp = shaderManager.GetProgramWith( sources, defines );
-		defines.RemoveAllDefines();
-		/*
-		if( useEncodeDepth ){
-			defines.AddDefine( "GEOM_ENCODED_DEPTH", "1" );
-		}
-		defines.AddDefine( "USE_SHADOW", "1" );
-		defines.AddDefine( "USE_DEPTH_CUBE", "1" );
-		defines.AddDefine( "PCF_9TAP", "1" );
-		defines.AddDefine( "WITH_STATIC_LIGHT", "1" );
-		pShaderLightStaticShadow = shamgr.GetProgramWith( sources, defines );
-		defines.RemoveAllDefines();
-		*/
-		
-		//defines.AddDefine( "USE_SHADOW", "1" );
-		//defines.AddDefine( "PCF_9TAP", "1" );
-		//defines.AddDefine( "NO_AMBIENT", "1" );
-		//pShaderLightShadowNoAmbient = shamgr.GetProgramWith( sources, defines );
-		
-		sources = shaderManager.GetSourcesNamed( "DefRen Shadow Point" );
-		pShaderShadowSolid = shaderManager.GetProgramWith( sources, defines );
-		defines.RemoveAllDefines();
-		
-		defines.AddDefine( "DISCARD_HOLES", "1" );
-		pShaderShadowHoles = shaderManager.GetProgramWith( sources, defines );
-		defines.RemoveAllDefines();
-		
-		defines.AddDefine( "TRANSPARENT", "1" );
-		pShaderShadowTransp = shaderManager.GetProgramWith( sources, defines );
-		defines.RemoveAllDefines();
-		
-		
-		
 		sources = shaderManager.GetSourcesNamed( "DefRen Light BoxBoundary" );
 		
 		defines.AddDefine( "DEPTH_INPUT", "1" );
@@ -2333,25 +2276,6 @@ void deoglRenderLightPoint::pCleanUp(){
 	}
 	if( pShaderBoxBoundary1 ){
 		pShaderBoxBoundary1->RemoveUsage();
-	}
-	
-	if( pShaderLight ){
-		pShaderLight->RemoveUsage();
-	}
-	if( pShaderLightShadow ){
-		pShaderLightShadow->RemoveUsage();
-	}
-	if( pShaderLightShadowTransp ){
-		pShaderLightShadowTransp->RemoveUsage();
-	}
-	if( pShaderShadowSolid ){
-		pShaderShadowSolid->RemoveUsage();
-	}
-	if( pShaderShadowHoles ){
-		pShaderShadowHoles->RemoveUsage();
-	}
-	if( pShaderShadowTransp ){
-		pShaderShadowTransp->RemoveUsage();
 	}
 	
 	if( pDebugInfoSolid ){

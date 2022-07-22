@@ -53,7 +53,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Get occlusion map for size. */
-	deoglOcclusionMap *Get( int width, int height );
+	deoglOcclusionMap *Get( int width, int height, int layerCount );
 	
 	/** Return occlusion map. */
 	void Return( deoglOcclusionMap *occlusionMap );

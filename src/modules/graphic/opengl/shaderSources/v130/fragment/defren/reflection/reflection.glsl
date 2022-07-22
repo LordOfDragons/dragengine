@@ -24,12 +24,12 @@ UBOLAYOUT uniform RenderParameters{
 // Samplers
 /////////////
 
-uniform HIGHP sampler2D texDepth;
-uniform lowp sampler2D texDiffuse;
-uniform lowp sampler2D texNormal;
-uniform lowp sampler2D texReflectivity;
-uniform lowp sampler2D texRoughness;
-uniform lowp sampler2D texAOSolidity;
+uniform HIGHP sampler2DArray texDepth;
+uniform lowp sampler2DArray texDiffuse;
+uniform lowp sampler2DArray texNormal;
+uniform lowp sampler2DArray texReflectivity;
+uniform lowp sampler2DArray texRoughness;
+uniform lowp sampler2DArray texAOSolidity;
 uniform mediump sampler2DArray texEnvMapArray;
 uniform mediump sampler2D texEnvMapSky;
 
@@ -39,6 +39,12 @@ uniform mediump sampler2D texEnvMapSky;
 ///////////////////
 
 in vec4 vScreenCoord;
+
+#ifdef GS_RENDER_STEREO
+	flat in int vLayer;
+#else
+	const int vLayer = 0;
+#endif
 
 out vec4 outColor;
 
@@ -59,7 +65,7 @@ out vec4 outColor;
 
 
 /** Calculate the reflections parameters. */
-void calculateReflectionParameters( in ivec2 tc, in vec3 position, out vec3 normal,
+void calculateReflectionParameters( in ivec3 tc, in vec3 position, out vec3 normal,
 out vec3 reflectivity, out float roughness, out vec3 reflectDir ){
 	// fetch reflectivity
 	reflectivity = texelFetch( texReflectivity, tc, 0 ).rgb;
@@ -236,7 +242,7 @@ void envMapReflection( in vec3 position, in vec3 reflectDir, in vec3 reflectivit
 //////////////////
 
 void main( void ){
-	ivec2 tc = ivec2( gl_FragCoord.xy );
+	ivec3 tc = ivec3( gl_FragCoord.xy, vLayer );
 	
 	// discard not inizalized fragments or fragements that are not supposed to be lit
 	if( texelFetch( texDiffuse, tc, 0 ).a == 0.0 ){
@@ -325,7 +331,7 @@ void main( void ){
 	}
 	
 	// determine position of fragment
-	ivec2 tc = ivec2( gl_FragCoord.xy );
+	ivec3 tc = ivec3( gl_FragCoord.xy, vLayer );
 	
 	#ifdef DECODE_IN_DEPTH
 		vec3 position = vec3( dot( texelFetch( texDepth, tc, 0 ).rgb, unpackDepth ) );

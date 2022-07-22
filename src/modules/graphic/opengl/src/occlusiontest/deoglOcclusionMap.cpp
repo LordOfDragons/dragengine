@@ -29,7 +29,7 @@
 #include "../framebuffer/deoglFramebufferManager.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTFramebuffer.h"
-#include "../texture/texture2d/deoglTexture.h"
+#include "../texture/arraytexture/deoglArrayTexture.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -41,9 +41,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglOcclusionMap::deoglOcclusionMap( deoglRenderThread &renderThread, int width, int height ) :
+deoglOcclusionMap::deoglOcclusionMap( deoglRenderThread &renderThread, int width, int height, int layerCount ) :
 pRenderThread( renderThread  ){
-	if( width < 4 || height < 4 ){
+	if( width < 4 || height < 4 || layerCount < 1 ){
 		DETHROW( deeInvalidParam );
 	}
 	
@@ -52,6 +52,7 @@ pRenderThread( renderThread  ){
 	
 	pWidth = width;
 	pHeight = height;
+	pLayerCount = layerCount;
 	pLevelCount = 1;
 	
 	try{
@@ -116,8 +117,8 @@ void deoglOcclusionMap::pCreateTextures(){
 		pLevelCount++;
 	}
 	
-	pTexture = new deoglTexture( pRenderThread );
-	pTexture->SetSize( pWidth, pHeight );
+	pTexture = new deoglArrayTexture( pRenderThread );
+	pTexture->SetSize( pWidth, pHeight, pLayerCount );
 	pTexture->SetDepthFormat( false, false );
 	pTexture->SetMipMapped( true );
 	pTexture->SetMipMapLevelCount( pLevelCount - 1 );
@@ -138,7 +139,7 @@ void deoglOcclusionMap::pCreateFBOs(){
 		
 		pRenderThread.GetFramebuffer().Activate( pFBOs[ i ] );
 		
-		pFBOs[ i ]->AttachDepthTextureLevel( pTexture, i );
+		pFBOs[ i ]->AttachDepthArrayTextureLevel( pTexture, i );
 		
 		const GLenum buffers[ 1 ] = { GL_NONE };
 		OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );

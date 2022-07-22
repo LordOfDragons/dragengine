@@ -39,7 +39,7 @@
 	uniform mediump SAMPLER_2D texRimEmissivity;
 #endif
 #ifdef DEPTH_TEST
-	uniform HIGHP sampler2D texDepthTest;
+	uniform HIGHP sampler2DArray texDepthTest;
 #endif
 #ifdef NODE_FRAGMENT_SAMPLERS
 NODE_FRAGMENT_SAMPLERS
@@ -99,8 +99,10 @@ NODE_FRAGMENT_SAMPLERS
 	#include "v130/shared/defren/skin/shared_spb_redirect.glsl"
 #endif
 
-#ifdef GS_RENDER_CASCADED
+#if defined GS_RENDER_CUBE || defined GS_RENDER_CASCADED || defined GS_RENDER_STEREO
 	flat in int vLayer;
+#else
+	const int vLayer = 0;
 #endif
 
 #include "v130/shared/defren/skin/shared_spb_texture_redirect.glsl"
@@ -347,9 +349,9 @@ void main( void ){
 		ivec2 tc = ivec2( gl_FragCoord.xy );
 		
 		#ifdef DECODE_IN_DEPTH
-		float depthTestValue = dot( texelFetch( texDepthTest, tc, 0 ).rgb, unpackDepth );
+		float depthTestValue = dot( texelFetch( texDepthTest, ivec3( tc, vLayer ), 0 ).rgb, unpackDepth );
 		#else
-		float depthTestValue = texelFetch( texDepthTest, tc, 0 ).r;
+		float depthTestValue = texelFetch( texDepthTest, ivec3( tc, vLayer ), 0 ).r;
 		#endif
 		
 		#ifdef INVERSE_DEPTH

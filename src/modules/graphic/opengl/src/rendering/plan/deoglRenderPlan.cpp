@@ -763,7 +763,8 @@ void deoglRenderPlan::pStartFindContent(){
 		DETHROW( deeInvalidParam );
 	}
 	
-	SetOcclusionMap( pRenderThread.GetTexture().GetOcclusionMapPool().Get( 256, 256 ) ); // 512
+	const deoglDeferredRendering &defren = pRenderThread.GetDeferredRendering();
+	SetOcclusionMap( pRenderThread.GetTexture().GetOcclusionMapPool().Get( 256, 256, defren.GetLayerCount() ) ); // 512
 	SetOcclusionTest( pRenderThread.GetOcclusionTestPool().Get() );
 	pOcclusionMapBaseLevel = 0; // logic to choose this comes later
 	pOcclusionTest->RemoveAllInputData();

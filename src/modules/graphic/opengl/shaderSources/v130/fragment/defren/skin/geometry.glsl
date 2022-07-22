@@ -51,7 +51,7 @@
 	uniform mediump SAMPLER_2D texEmissivity;
 #endif
 #ifdef TEXTURE_RENDERCOLOR
-	uniform mediump sampler2D texRenderColor;
+	uniform mediump sampler2DArray texRenderColor;
 #endif
 #ifdef TEXTURE_REFRACTION_DISTORT
 	uniform lowp SAMPLER_2D texRefractionDistort;
@@ -94,7 +94,7 @@
 	uniform lowp SAMPLER_2D texNonPbrMetalness;
 #endif
 #ifdef DEPTH_TEST
-	uniform HIGHP sampler2D texDepthTest;
+	uniform HIGHP sampler2DArray texDepthTest;
 #endif
 
 
@@ -149,6 +149,12 @@ in vec3 vNormal;
 	flat in int vSPBIndex;
 	#define spbIndex vSPBIndex
 	#include "v130/shared/defren/skin/shared_spb_redirect.glsl"
+#endif
+
+#ifdef GS_RENDER_STEREO
+	flat in int vLayer;
+#else
+	const int vLayer = 0;
 #endif
 
 #include "v130/shared/defren/skin/shared_spb_texture_redirect.glsl"
@@ -293,9 +299,9 @@ void main( void ){
 	// test against depth texture
 	#ifdef DEPTH_TEST
 		#ifdef DECODE_IN_DEPTH
-		float depthTestValue = dot( texelFetch( texDepthTest, tc, 0 ).rgb, unpackDepth );
+		float depthTestValue = dot( texelFetch( texDepthTest, ivec3( tc, vLayer ), 0 ).rgb, unpackDepth );
 		#else
-		float depthTestValue = texelFetch( texDepthTest, tc, 0 ).r;
+		float depthTestValue = texelFetch( texDepthTest, ivec3( tc, vLayer ), 0 ).r;
 		#endif
 		
 		#ifdef INVERSE_DEPTH
@@ -649,10 +655,10 @@ void main( void ){
 	#ifdef TEXTURE_RENDERCOLOR
 		vec4 renderColor;
 		#if defined TEXTURE_REFRACTION_DISTORT && ! defined WITH_OUTLINE
-			renderColor = textureLod( texRenderColor, clamp(
-				gl_FragCoord.xy * pScreenSpace.zw + distort, pViewport.xy, pViewport.zw ), 0.0 );
+			renderColor = textureLod( texRenderColor, vec3( clamp(
+				gl_FragCoord.xy * pScreenSpace.zw + distort, pViewport.xy, pViewport.zw ), vLayer ), 0.0 );
 		#else
-			renderColor = texelFetch( texRenderColor, tc, 0 );
+			renderColor = texelFetch( texRenderColor, ivec3( tc, vLayer ), 0 );
 		#endif
 		
 		outColor.rgb = mix( renderColor.rgb, outColor.rgb, color.a );

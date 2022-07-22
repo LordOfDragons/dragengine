@@ -122,6 +122,8 @@ out vec3 vNormal;
 
 #ifdef GS_RENDER_STEREO
 	flat out int vLayer;
+#else
+	const int vLayer = 0;
 #endif
 
 

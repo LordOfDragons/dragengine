@@ -3,10 +3,16 @@ precision highp int;
 
 uniform vec2 pOptions;
 
-uniform mediump sampler2D texColor;
+uniform mediump sampler2DArray texColor;
 uniform mediump sampler2D texToneMapParams;
 
 in vec2 vTexCoord;
+
+#ifdef GS_RENDER_STEREO
+	flat in int vLayer;
+#else
+	const int vLayer = 0;
+#endif
 
 out vec3 outColor;
 
@@ -17,10 +23,10 @@ const vec3 lumiFactors = vec3( 0.2125, 0.7154, 0.0721 );
 
 void main( void ){
 	vec4 params = texelFetch( texToneMapParams, tcParams, 0 ); // r=avgLum, g=imageKey, b=lwhite, a=brightPassThreshold
-	vec3 color = textureLod( texColor, vTexCoord, 0.0 ).rgb;
+	vec3 color = textureLod( texColor, vec3( vTexCoord, vLayer ), 0 ).rgb;
 	
 	float luminance = dot( color, lumiFactors );
-	float finalLum = max( luminance - params.w, 0.0 );
+	float finalLum = max( luminance - params.w, 0 );
 	outColor = color * vec3( finalLum / ( luminance + epsilon ) );
 	
 	/*

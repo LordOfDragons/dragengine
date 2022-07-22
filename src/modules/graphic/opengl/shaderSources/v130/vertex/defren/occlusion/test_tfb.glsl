@@ -1,9 +1,9 @@
 precision highp float;
 precision highp int;
 
-uniform HIGHP sampler2D texOccMap;
+uniform HIGHP sampler2DArray texOccMap;
 #ifdef DUAL_OCCMAP
-uniform HIGHP sampler2D texOccMap2;
+uniform HIGHP sampler2DArray texOccMap2;
 #endif
 
 uniform mat4 pMatrix; // camera-rotation and projection
@@ -29,6 +29,12 @@ uniform vec4 pFrustumTestMul;
 
 in vec3 inMinExtend;
 in vec3 inMaxExtend;
+
+#ifdef GS_RENDER_STEREO
+	flat in int vLayer;
+#else
+	const int vLayer = 0;
+#endif
 
 out float fbResult;
 
@@ -82,7 +88,7 @@ const vec2 vOneTwoThird = vec2( 1.0 / 3.0, 2.0 / 3.0 );
 
 // test box against occlusion map
 bool testBox( out float largestSample, in vec2 minExtend, in vec2 maxExtend,
-in float minDepth, in vec2 scaleSize, in float baseLevel, sampler2D occmap ){
+in float minDepth, in vec2 scaleSize, in float baseLevel, sampler2DArray occmap ){
 	vec2 size = ( maxExtend - minExtend ) * scaleSize;
 	
 	//if( min( size.x, size.y ) < 0.01 ){ //0.1 ){
@@ -118,14 +124,14 @@ in float minDepth, in vec2 scaleSize, in float baseLevel, sampler2D occmap ){
 		float level = baseLevel + max( ceil( log2( maxSize ) - baselog ), 0.0 );
 		vec4 steps = mix( minExtend.xxyy, maxExtend.xxyy, vOneTwoThird.xyxy );
 		vec4 samples, samplesAll;
-		vec2 tc;
+		vec3 tc = vec3( 0, 0, vLayer );
 		
 		// test pattern where we have to change only one texture coordinate component at the time:
 		// [ 6 7 10 11 ]
 		// [ 5 8  9 12 ]
 		// [ 4 3 14 13 ]
 		// [ 1 2 15 16 ]
-		tc = minExtend;
+		tc.xy = minExtend;
 		samples.x = textureLod( occmap, tc, level ).x;
 		tc.x = steps.x;
 		samples.y = textureLod( occmap, tc, level ).x;

@@ -49,6 +49,8 @@ private:
 	deoglShaderProgram *pShaderCanvasColorMask;
 	deoglShaderProgram *pShaderCanvasImage;
 	deoglShaderProgram *pShaderCanvasImageMask;
+	deoglShaderProgram *pShaderCanvasRenderWorld;
+	deoglShaderProgram *pShaderCanvasRenderWorldMask;
 	
 	GLenum pBlendSrc;
 	GLenum pBlendDest;

@@ -25,7 +25,7 @@
 #include <dragengine/common/math/decMath.h>
 
 class deoglRenderThread;
-class deoglTexture;
+class deoglArrayTexture;
 class deoglFramebuffer;
 
 
@@ -39,11 +39,12 @@ class deoglOcclusionMap{
 private:
 	deoglRenderThread &pRenderThread;
 	
-	deoglTexture *pTexture;
+	deoglArrayTexture *pTexture;
 	deoglFramebuffer **pFBOs;
 	
 	int pWidth;
 	int pHeight;
+	int pLayerCount;
 	int pLevelCount;
 	
 	
@@ -52,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create occlusion map. */
-	deoglOcclusionMap( deoglRenderThread &renderThread, int width, int height );
+	deoglOcclusionMap( deoglRenderThread &renderThread, int width, int height, int layerCount );
 	
 	/** Clean up occlusion map. */
 	~deoglOcclusionMap();
@@ -68,11 +69,14 @@ public:
 	/** Height of the base level. */
 	inline int GetHeight() const{ return pHeight; }
 	
+	/** Layer count. */
+	inline int GetLayerCount() const{ return pLayerCount; }
+	
 	/** Level count. */
 	inline int GetLevelCount() const{ return pLevelCount; }
 	
 	/** Texture. */
-	inline deoglTexture *GetTexture() const{ return pTexture; }
+	inline deoglArrayTexture *GetTexture() const{ return pTexture; }
 	
 	/** FBO for level. */
 	deoglFramebuffer *GetFBOAt( int level );

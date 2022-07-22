@@ -117,6 +117,8 @@ pShaderCanvasColor( NULL ),
 pShaderCanvasColorMask( NULL ),
 pShaderCanvasImage( NULL ),
 pShaderCanvasImageMask( NULL ),
+pShaderCanvasRenderWorld( nullptr ),
+pShaderCanvasRenderWorldMask( nullptr ),
 
 pDebugInfoCanvas( NULL ),
 pDebugInfoCanvasView( NULL ),
@@ -178,6 +180,13 @@ pDebugInfoPlanPrepareFinish( NULL )
 		
 		defines.AddDefine( "WITH_TEXTURE", "1" );
 		pShaderCanvasImageMask = shaderManager.GetProgramWith( sources, defines );
+		defines.RemoveAllDefines();
+		
+		defines.AddDefine( "WITH_RENDER_WORLD", "1" );
+		pShaderCanvasRenderWorld = shaderManager.GetProgramWith( sources, defines );
+		
+		defines.AddDefine( "WITH_MASK", "1" );
+		pShaderCanvasRenderWorldMask = shaderManager.GetProgramWith( sources, defines );
 		defines.RemoveAllDefines();
 		
 		
@@ -775,7 +784,7 @@ const deoglRCanvasRenderWorld &canvas ){
 	const decTexMatrix2 billboardTransform( decTexMatrix2::CreateScale( size ) );
 	const float transparency = context.GetTransparency();
 	
-	deoglShaderProgram * const program = context.GetMask() ? pShaderCanvasImageMask : pShaderCanvasImage;
+	deoglShaderProgram * const program = context.GetMask() ? pShaderCanvasRenderWorldMask : pShaderCanvasRenderWorld;
 	renderThread.GetShader().ActivateShader( program );
 	deoglShaderCompiled &shader = *program->GetCompiled();
 	
@@ -1071,6 +1080,12 @@ void deoglRenderCanvas::DevModeDebugInfoChanged(){
 //////////////////////
 
 void deoglRenderCanvas::pCleanUp(){
+	if( pShaderCanvasRenderWorldMask ){
+		pShaderCanvasRenderWorldMask->RemoveUsage();
+	}
+	if( pShaderCanvasRenderWorld ){
+		pShaderCanvasRenderWorld->RemoveUsage();
+	}
 	if( pShaderCanvasImage ){
 		pShaderCanvasImage->RemoveUsage();
 	}

@@ -837,7 +837,7 @@ void deoglRenderOcclusion::RenderOcclusionMap( deoglRenderPlan &plan, deoglRende
 	OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
 	OGL_CHECK( renderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) );
 	
-	tsmgr.EnableTexture( 0, *occmap.GetTexture(), GetSamplerClampNearestMipMap() );
+	tsmgr.EnableArrayTexture( 0, *occmap.GetTexture(), GetSamplerClampNearestMipMap() );
 	
 	for( i=baselevel+1; i<levelCount; i++ ){
 		width >>= 1;
@@ -879,7 +879,7 @@ deoglOcclusionMap &occlusionMap, int baselevel, float clipNear, const decMatrix 
 		shader->SetParameterFloat( spttfbBaseLevel, ( float )baselevel );
 		shader->SetParameterFloat( spttfbClipNear, clipNear );
 		
-		tsmgr.EnableTexture( 0, *occlusionMap.GetTexture(), GetSamplerClampNearestMipMap() );
+		tsmgr.EnableArrayTexture( 0, *occlusionMap.GetTexture(), GetSamplerClampNearestMipMap() );
 		
 		if( renderThread.GetCapabilities().GetRasterizerDiscard().Broken() ){
 			OGL_CHECK( renderThread, glColorMask( GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE ) );
@@ -919,7 +919,7 @@ deoglOcclusionMap &occlusionMap, int baselevel, float clipNear, const decMatrix 
 		shader->SetParameterFloat( sptScaleSize, ( float )occlusionMap.GetWidth(), ( float )occlusionMap.GetHeight() );
 		shader->SetParameterFloat( sptBaseLevel, ( float )baselevel );
 		
-		tsmgr.EnableTexture( 0, *occlusionMap.GetTexture(), GetSamplerClampNearestMipMap() );
+		tsmgr.EnableArrayTexture( 0, *occlusionMap.GetTexture(), GetSamplerClampNearestMipMap() );
 		
 		OGL_CHECK( renderThread, pglBindVertexArray( occlusionTest.GetVAO() ) );
 		OGL_CHECK( renderThread, glDrawArrays( GL_POINTS, 0, occlusionTest.GetInputDataCount() ) );
@@ -1009,7 +1009,7 @@ float clipNear2, const decMatrix &matrixCamera2, deoglRenderPlan &plan ){
 			frustumFactorMul[ 1 ], frustumFactorMul[ 2 ], frustumFactorMul[ 3 ] );
 		DEBUG_PRINT_TIMER( "Set Uniforms" );
 		
-		tsmgr.EnableTexture( 0, *occlusionMap.GetTexture(), GetSamplerClampNearestMipMap() );
+		tsmgr.EnableArrayTexture( 0, *occlusionMap.GetTexture(), GetSamplerClampNearestMipMap() );
 		DEBUG_PRINT_TIMER( "Set Texture" );
 		
 		if( renderThread.GetCapabilities().GetRasterizerDiscard().Broken() ){
@@ -1060,7 +1060,7 @@ float clipNear2, const decMatrix &matrixCamera2, deoglRenderPlan &plan ){
 		shader->SetParameterFloat( sptFrustumTestMul, frustumFactorMul[ 0 ], frustumFactorMul[ 1 ], frustumFactorMul[ 2 ], frustumFactorMul[ 3 ] );
 		*/
 		
-		tsmgr.EnableTexture( 0, *occlusionMap.GetTexture(), GetSamplerClampNearestMipMap() );
+		tsmgr.EnableArrayTexture( 0, *occlusionMap.GetTexture(), GetSamplerClampNearestMipMap() );
 		
 		OGL_CHECK( renderThread, pglBindVertexArray( occlusionTest.GetVAO() ) );
 		OGL_CHECK( renderThread, glDrawArrays( GL_POINTS, 0, occlusionTest.GetInputDataCount() ) );
@@ -1097,8 +1097,8 @@ deoglOcclusionMap &occlusionMap2, int baselevel2, float clipNear2, const decMatr
 			shader->SetParameterFloat( spttfbClipNear2, clipNear2 );
 			DEBUG_PRINT_TIMER( "Set Uniforms" );
 			
-			tsmgr.EnableTexture( 0, *occlusionMap.GetTexture(), GetSamplerClampNearestMipMap() );
-			tsmgr.EnableTexture( 1, *occlusionMap2.GetTexture(), GetSamplerClampNearestMipMap() );
+			tsmgr.EnableArrayTexture( 0, *occlusionMap.GetTexture(), GetSamplerClampNearestMipMap() );
+			tsmgr.EnableArrayTexture( 1, *occlusionMap2.GetTexture(), GetSamplerClampNearestMipMap() );
 			DEBUG_PRINT_TIMER( "Set Texture" );
 			
 			OGL_CHECK( renderThread, glEnable( GL_RASTERIZER_DISCARD ) );
@@ -1138,8 +1138,8 @@ deoglOcclusionMap &occlusionMap2, int baselevel2, float clipNear2, const decMatr
 			shader->SetParameterFloat( sptScaleSize2, ( float )occlusionMap2.GetWidth(), ( float )occlusionMap2.GetHeight() );
 			shader->SetParameterFloat( sptBaseLevel2, ( float )baselevel2 );
 			
-			tsmgr.EnableTexture( 0, *occlusionMap.GetTexture(), GetSamplerClampNearestMipMap() );
-			tsmgr.EnableTexture( 1, *occlusionMap2.GetTexture(), GetSamplerClampNearestMipMap() );
+			tsmgr.EnableArrayTexture( 0, *occlusionMap.GetTexture(), GetSamplerClampNearestMipMap() );
+			tsmgr.EnableArrayTexture( 1, *occlusionMap2.GetTexture(), GetSamplerClampNearestMipMap() );
 			
 			OGL_CHECK( renderThread, pglBindVertexArray( occlusionTest.GetVAO() ) );
 			OGL_CHECK( renderThread, glDrawArrays( GL_POINTS, 0, occlusionTest.GetInputDataCount() ) );

@@ -4,7 +4,12 @@
 	const vec3 unpackDepth = vec3( 1.0, 1.0 / 256.0, 1.0 / 65536.0 );
 #endif
 
-vec3 normalFromDepth( in ivec2 texcoord, in float centerDepth, in vec3 centerPosition ){
+#ifdef GI_RAY
+vec3 normalFromDepth( in ivec2 texcoord, in float centerDepth, in vec3 centerPosition )
+#else
+vec3 normalFromDepth( in ivec3 texcoord, in float centerDepth, in vec3 centerPosition )
+#endif
+{
 	/*
 	the simple solution uses derivatives. this produces wrong results
 	along corners and is also not usable in compute shaders

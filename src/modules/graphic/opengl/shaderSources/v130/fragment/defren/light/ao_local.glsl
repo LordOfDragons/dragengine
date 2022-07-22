@@ -13,14 +13,20 @@ uniform vec4 pParamSSAO; // self-occlusion, epsilon, scale, randomAngleConstant
 uniform vec4 pParamTap; // count, radius, radius-influence, radius-limit
 uniform vec4 pMipMapParams; // tcScaleU, tcScaleV, logBase, maxLevel
 
-uniform HIGHP sampler2D texDepth;
+uniform HIGHP sampler2DArray texDepth;
 #ifdef USE_DEPTH_MIPMAP
-uniform HIGHP sampler2D texDepthMinMax;
+uniform HIGHP sampler2DArray texDepthMinMax;
 #endif
-uniform lowp sampler2D texDiffuse;
-uniform lowp sampler2D texNormal;
+uniform lowp sampler2DArray texDiffuse;
+uniform lowp sampler2DArray texNormal;
 
 in vec2 vTexCoord;
+
+#ifdef GS_RENDER_STEREO
+	flat in int vLayer;
+#else
+	const int vLayer = 0;
+#endif
 
 out vec3 outAO; // ao, ssao, solidity
 
@@ -56,9 +62,9 @@ float occlusion( in vec2 tc, in float level, in vec3 position, in vec3 normal ){
 	tc = clamp( tc, pTCClamp.xy, pTCClamp.zw );
 	
 	#ifdef DECODE_IN_DEPTH
-		vec3 spos = vec3( dot( textureLod( texDepth, tc, level ).rgb, unpackDepth ) );
+		vec3 spos = vec3( dot( textureLod( texDepth, vec3( tc, vLayer ), level ).rgb, unpackDepth ) );
 	#else
-		vec3 spos = vec3( textureLod( texDepth, tc, level ).r );
+		vec3 spos = vec3( textureLod( texDepth, vec3( tc, vLayer ), level ).r );
 	#endif
 	spos.z = pPosTransform.x / ( pPosTransform.y - spos.z );
 	spos.xy = tc * pTCTransform.xy + pTCTransform.zw;
@@ -104,7 +110,7 @@ float screenSpaceAO( in vec2 tc, in vec3 position, in vec3 normal, in float radi
 //////////////////
 
 void main( void ){
-	ivec2 tc = ivec2( gl_FragCoord.xy );
+	ivec3 tc = ivec3( gl_FragCoord.xy, vLayer );
 	
 	outAO = vec3( 1.0 );
 	

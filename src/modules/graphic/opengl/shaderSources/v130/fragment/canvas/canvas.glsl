@@ -10,11 +10,14 @@ uniform vec4 pTCClamp; // left, top, right, bottom
 #ifdef WITH_TEXTURE
 uniform lowp sampler2D texColor;
 #endif
+#ifdef WITH_RENDER_WORLD
+uniform lowp sampler2DArray texColor;
+#endif
 #ifdef WITH_MASK
 uniform lowp sampler2D texMask;
 #endif
 
-#ifdef WITH_TEXTURE
+#if defined WITH_TEXTURE || defined WITH_RENDER_WORLD
 in vec2 vTexCoord;
 #endif
 #ifdef WITH_MASK
@@ -31,13 +34,18 @@ void main( void ){
 	
 	// fragment color
 	#ifdef WITH_TEXTURE
-	outColor = pColorTransform * pow( texture( texColor, clamp( vTexCoord, pTCClamp.xy, pTCClamp.zw ) ), pGamma ) + pColorTransform2;
+		outColor = pow( texture( texColor, clamp( vTexCoord, pTCClamp.xy, pTCClamp.zw ) ), pGamma );
+		outColor *= pColorTransform;
+	#elif defined WITH_RENDER_WORLD
+		outColor = pow( texture( texColor, vec3( clamp( vTexCoord, pTCClamp.xy, pTCClamp.zw ), 0 ) ), pGamma );
+		outColor *= pColorTransform;
 	#else
-	outColor = vec4( pColorTransform[0][0], pColorTransform[1][1], pColorTransform[2][2], pColorTransform[3][3] ) + pColorTransform2;
+		outColor = vec4( pColorTransform[0][0], pColorTransform[1][1], pColorTransform[2][2], pColorTransform[3][3] );
 	#endif
+	outColor += pColorTransform2;
 	
 	// mask
 	#ifdef WITH_MASK
-	outColor.a *= texture( texMask, vTexCoordMask ).r;
+		outColor.a *= texture( texMask, vTexCoordMask ).r;
 	#endif
 }

@@ -7,7 +7,13 @@ uniform int pMipMapLevel;
 	uniform int pSplitPos;
 #endif
 
-uniform HIGHP sampler2D texDepth;
+uniform HIGHP sampler2DArray texDepth;
+
+#ifdef GS_RENDER_STEREO
+	flat in int vLayer;
+#else
+	const int vLayer = 0;
+#endif
 
 #ifdef DECODE_IN_DEPTH
 	const vec3 unpackDepth = vec3( 1.0, 1.0 / 256.0, 1.0 / 65536.0 );
@@ -40,15 +46,15 @@ void main( void ){
 	#endif
 	
 	#ifdef DECODE_IN_DEPTH
-		depth.x = dot( texelFetch( texDepth, tc.xy, pMipMapLevel ).rgb, unpackDepth );
-		depth.y = dot( texelFetch( texDepth, tc.zy, pMipMapLevel ).rgb, unpackDepth );
-		depth.z = dot( texelFetch( texDepth, tc.xw, pMipMapLevel ).rgb, unpackDepth );
-		depth.w = dot( texelFetch( texDepth, tc.zw, pMipMapLevel ).rgb, unpackDepth );
+		depth.x = dot( texelFetch( texDepth, ivec3( tc.xy, vLayer ), pMipMapLevel ).rgb, unpackDepth );
+		depth.y = dot( texelFetch( texDepth, ivec3( tc.zy, vLayer ), pMipMapLevel ).rgb, unpackDepth );
+		depth.z = dot( texelFetch( texDepth, ivec3( tc.xw, vLayer ), pMipMapLevel ).rgb, unpackDepth );
+		depth.w = dot( texelFetch( texDepth, ivec3( tc.zw, vLayer ), pMipMapLevel ).rgb, unpackDepth );
 	#else
-		depth.x = texelFetch( texDepth, tc.xy, pMipMapLevel ).r; // (s*2, t*2)
-		depth.y = texelFetch( texDepth, tc.zy, pMipMapLevel ).r; // (s*2+1, t*2)
-		depth.z = texelFetch( texDepth, tc.xw, pMipMapLevel ).r; // (s*2, t*2+1)
-		depth.w = texelFetch( texDepth, tc.zw, pMipMapLevel ).r; // (s*2+1, t*2+1)
+		depth.x = texelFetch( texDepth, ivec3( tc.xy, vLayer ), pMipMapLevel ).r; // (s*2, t*2)
+		depth.y = texelFetch( texDepth, ivec3( tc.zy, vLayer ), pMipMapLevel ).r; // (s*2+1, t*2)
+		depth.z = texelFetch( texDepth, ivec3( tc.xw, vLayer ), pMipMapLevel ).r; // (s*2, t*2+1)
+		depth.w = texelFetch( texDepth, ivec3( tc.zw, vLayer ), pMipMapLevel ).r; // (s*2+1, t*2+1)
 	#endif
 	
 	#ifdef SPLIT_VERSION

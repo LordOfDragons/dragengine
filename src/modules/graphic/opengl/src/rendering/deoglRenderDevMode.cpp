@@ -985,7 +985,7 @@ void deoglRenderDevMode::RenderOccMapLevel( deoglRenderPlan &plan ){
 		occMapLevel = occMapMaxLevel;
 	}
 	
-	GetRenderThread().GetRenderers().GetDebug().DisplayTextureLevel( plan, occmap.GetTexture(), occMapLevel, false );
+	GetRenderThread().GetRenderers().GetDebug().DisplayArrayTextureLayerLevel( plan, occmap.GetTexture(), 0, occMapLevel, false );
 }
 
 void deoglRenderDevMode::RenderHeightTerrainLODLevels( deoglRenderPlan &plan, const decPoint &position, decPoint &size ){

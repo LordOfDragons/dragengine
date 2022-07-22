@@ -79,16 +79,16 @@ precision highp int;
 	uniform lowp sampler2D texNormal;
 	uniform lowp sampler2D texReflectivity; // reflectivity.rgb, roughness
 #else
-	uniform HIGHP sampler2D texDepth;
-	uniform lowp sampler2D texDiffuse;
-	uniform lowp sampler2D texNormal;
-	uniform lowp sampler2D texReflectivity;
-	uniform lowp sampler2D texRoughness;
-	uniform lowp sampler2D texAOSolidity;
+	uniform HIGHP sampler2DArray texDepth;
+	uniform lowp sampler2DArray texDiffuse;
+	uniform lowp sampler2DArray texNormal;
+	uniform lowp sampler2DArray texReflectivity;
+	uniform lowp sampler2DArray texRoughness;
+	uniform lowp sampler2DArray texAOSolidity;
 #endif
 
 #ifdef WITH_SUBSURFACE
-	uniform mediump sampler2D texSubSurface;
+	uniform mediump sampler2DArray texSubSurface;
 #endif
 #ifdef TEXTURE_SHADOW1_SOLID
 	#ifdef SMA1_CUBE
@@ -189,6 +189,14 @@ precision highp int;
 	#define pLightPosition vParticleLightPosition
 	#define pLightColor vParticleLightColor
 	#define pLightRange vParticleLightRange
+#endif
+
+#ifndef GI_RAY
+	#ifdef GS_RENDER_STEREO
+		flat in int vLayer;
+	#else
+		const int vLayer = 0;
+	#endif
 #endif
 
 
@@ -646,11 +654,14 @@ float evaluateShadowCube( in mediump SAMPLER_SHADOWCUBE texsm, in vec3 params, i
 //////////////////
 
 void main( void ){
-	#ifdef LUMINANCE_ONLY
-	ivec2 tc = ivec2( gl_FragCoord.xy * pLumFragCoordScale );
+	#ifdef GI_RAY
+		ivec2 tc = ivec2( gl_FragCoord.xy );
 	#else
-	ivec2 tc = ivec2( gl_FragCoord.xy );
+		ivec3 tc = ivec3( gl_FragCoord.xy, vLayer );
 	#endif
+	#ifdef LUMINANCE_ONLY
+		tc.xy *= pLumFragCoordScale;
+	#else
 	
 	// discard not inizalized fragments or fragements that are not supposed to be lit
 	vec4 diffuse = texelFetch( texDiffuse, tc, 0 );

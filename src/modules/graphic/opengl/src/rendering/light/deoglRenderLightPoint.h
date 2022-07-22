@@ -89,14 +89,6 @@ public:
 	
 	
 private:
-	deoglShaderProgram *pShaderLight;
-	deoglShaderProgram *pShaderLightShadow;
-	deoglShaderProgram *pShaderLightShadowTransp;
-	
-	deoglShaderProgram *pShaderShadowSolid;
-	deoglShaderProgram *pShaderShadowHoles;
-	deoglShaderProgram *pShaderShadowTransp;
-	
 	deoglShaderProgram *pShaderBoxBoundary1;
 	deoglShaderProgram *pShaderBoxBoundary1Ambient;
 	deoglShaderProgram *pShaderBoxBoundary2;

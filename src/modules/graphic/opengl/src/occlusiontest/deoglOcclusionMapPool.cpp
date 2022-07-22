@@ -48,8 +48,8 @@ deoglOcclusionMapPool::~deoglOcclusionMapPool(){
 // Management
 ///////////////
 
-deoglOcclusionMap *deoglOcclusionMapPool::Get( int width, int height ){
-	if( width < 1 || height < 1 ){
+deoglOcclusionMap *deoglOcclusionMapPool::Get( int width, int height, int layerCount ){
+	if( width < 1 || height < 1 || layerCount < 1 ){
 		DETHROW( deeInvalidParam );
 	}
 	
@@ -64,7 +64,7 @@ deoglOcclusionMap *deoglOcclusionMapPool::Get( int width, int height ){
 		}
 	}
 	
-	return new deoglOcclusionMap( pRenderThread, width, height );
+	return new deoglOcclusionMap( pRenderThread, width, height, layerCount );
 }
 
 void deoglOcclusionMapPool::Return( deoglOcclusionMap *occlusionMap ){

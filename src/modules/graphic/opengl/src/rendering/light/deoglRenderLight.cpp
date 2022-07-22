@@ -204,6 +204,7 @@ pDebugInfoTransparentSSSSS( NULL )
 		defines.AddDefine( "OUT_DATA_SIZE", "1" );
 		defines.AddDefine( "TEX_DATA_SIZE", "1" );
 		defines.AddDefine( "TEX_DATA_SWIZZLE", "g" );
+		defines.AddDefine( "INPUT_ARRAY_TEXTURES", "1" );
 		pShaderAOBlur1 = shaderManager.GetProgramWith( sources, defines );
 		defines.RemoveAllDefines();
 		
@@ -212,6 +213,7 @@ pDebugInfoTransparentSSSSS( NULL )
 		defines.AddDefine( "OUT_DATA_SIZE", "3" );
 		defines.AddDefine( "OUT_DATA_SWIZZLE", "g" );
 		defines.AddDefine( "TEX_DATA_SIZE", "1" );
+		defines.AddDefine( "INPUT_ARRAY_TEXTURES", "1" );
 		pShaderAOBlur2 = shaderManager.GetProgramWith( sources, defines );
 		defines.RemoveAllDefines();
 		

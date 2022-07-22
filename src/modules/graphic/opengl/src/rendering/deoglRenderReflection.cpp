@@ -287,6 +287,7 @@ deoglRenderBase( renderThread )
 	
 	try{
 		sources = shaderManager.GetSourcesNamed( "DefRen Copy Color" );
+		defines.AddDefine( "INPUT_ARRAY_TEXTURE", true );
 		pShaderCopyColor = shaderManager.GetProgramWith( sources, defines );
 		
 		defines.AddDefine( "MIPMAP", true );

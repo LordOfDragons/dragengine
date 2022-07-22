@@ -15,14 +15,14 @@ uniform int pEnvMapIndex;
 
 
 
-uniform HIGHP sampler2D texDepth;
-uniform lowp sampler2D texNormal;
-uniform lowp sampler2D texReflectivity;
-uniform lowp sampler2D texRoughness;
-uniform lowp sampler2D texAOSolidity;
-uniform lowp isampler2D texIndices;
-uniform mediump sampler2D texDistance1;
-uniform mediump sampler2D texDistance2;
+uniform HIGHP sampler2DArray texDepth;
+uniform lowp sampler2DArray texNormal;
+uniform lowp sampler2DArray texReflectivity;
+uniform lowp sampler2DArray texRoughness;
+uniform lowp sampler2DArray texAOSolidity;
+uniform lowp isampler2DArray texIndices;
+uniform mediump sampler2DArray texDistance1;
+uniform mediump sampler2DArray texDistance2;
 uniform mediump samplerCube texEnvMap;
 
 #ifdef FULLSCREENQUAD
@@ -31,20 +31,28 @@ uniform mediump samplerCube texEnvMap;
 	in vec3 vVolumePos;
 #endif
 
+#ifdef GS_RENDER_STEREO
+	flat in int vLayer;
+#else
+	const int vLayer = 0;
+#endif
+
 out vec4 outColor;
 
 #include "v130/shared/normal.glsl"
 
 
 void main( void ){
+	vec3 tcScreen( vScreenCoord.xy, vLayer );
+	
 	// get indices and discard if this envmap is not matched
-	ivec2 indices = texture( texIndices, vScreenCoord.xy ).rg;
+	ivec2 indices = texture( texIndices, tcScreen ).rg;
 	if( all( notEqual( indices, ivec2( pEnvMapIndex ) ) ) ) discard;
 	
 	// get distances and calculate the blend weight according to them
 	vec2 distances;
-	distances.x = texture( texDistance1, vScreenCoord.xy ).r;
-	distances.y = texture( texDistance2, vScreenCoord.xy ).r;
+	distances.x = texture( texDistance1, tcScreen ).r;
+	distances.y = texture( texDistance2, tcScreen ).r;
 	distances *= vec2( pScaleDistance );
 	
 	float weight = clamp( ( distances.y - distances.x ) * pBlendFactors.x + pBlendFactors.y, 0.0, 1.0 );
@@ -54,7 +62,7 @@ void main( void ){
 	}
 	
 	// determine position of fragment
-	ivec2 tc = ivec2( gl_FragCoord.xy );
+	ivec3 tc = ivec3( gl_FragCoord.xy, vLayer );
 	
 	#ifdef DECODE_IN_DEPTH
 		vec3 position = vec3( dot( texelFetch( texDepth, tc, 0 ).rgb, unpackDepth ) );

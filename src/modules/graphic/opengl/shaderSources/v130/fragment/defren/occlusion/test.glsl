@@ -1,9 +1,9 @@
 precision highp float;
 precision highp int;
 
-uniform HIGHP sampler2D texOccMap;
+uniform HIGHP sampler2DArray texOccMap;
 #ifdef DUAL_OCCMAP
-uniform HIGHP sampler2D texOccMap2;
+uniform HIGHP sampler2DArray texOccMap2;
 #endif
 
 uniform vec2 pScaleSize;
@@ -15,6 +15,12 @@ uniform float pBaseLevel2;
 
 in vec3 vMinExtend;
 in vec2 vMaxExtend;
+
+#ifdef GS_RENDER_STEREO
+	flat in int vLayer;
+#else
+	const int vLayer = 0;
+#endif
 
 out float outResult;
 
@@ -31,9 +37,9 @@ void main( void ){
 		float maxSize = max( size.x, size.y );
 		float level = ceil( log2( maxSize ) );
 		vec4 samples;
-		vec2 tc;
+		vec3 tc;
 		
-		tc = vec2( vMinExtend );
+		tc = vec3( vMinExtend.xy, vLayer );
 		samples.x = textureLod( texOccMap, tc, level ).x;
 		tc.x = vMaxExtend.x;
 		samples.y = textureLod( texOccMap, tc, level ).x;
@@ -61,14 +67,14 @@ void main( void ){
 		float level = max( ceil( log2( maxSize ) - baselog ), pBaseLevel );
 		vec4 steps = mix( vMinExtend.xxyy, vMaxExtend.xxyy, vec4( 1.0 / 3.0, 2.0 / 3.0, 1.0 / 3.0, 2.0 / 3.0 ) );
 		vec4 samples, samplesAll;
-		vec2 tc;
+		vec3 tc;
 		
 		// test pattern where we have to change only one texture coordinate component at the time:
 		// [ 6 7 10 11 ]
 		// [ 5 8  9 12 ]
 		// [ 4 3 14 13 ]
 		// [ 1 2 15 16 ]
-		tc = vec2( vMinExtend );
+		tc = vec3( vMinExtend.xy, vLayer );
 		samples.x = textureLod( texOccMap, tc, level ).x;
 		tc.x = steps.x;
 		samples.y = textureLod( texOccMap, tc, level ).x;

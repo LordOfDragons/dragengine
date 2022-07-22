@@ -30,12 +30,12 @@ precision highp int;
 	// - vec2 ray.texCoord = giRayCastFaceTexCoord() => requires RG16F
 	
 #else
-	uniform HIGHP sampler2D texDepth;
-	uniform lowp sampler2D texDiffuse;
-	uniform lowp sampler2D texNormal;
-	uniform lowp sampler2D texReflectivity;
-	uniform lowp sampler2D texRoughness;
-	uniform lowp sampler2D texAOSolidity;
+	uniform HIGHP sampler2DArray texDepth;
+	uniform lowp sampler2DArray texDiffuse;
+	uniform lowp sampler2DArray texNormal;
+	uniform lowp sampler2DArray texReflectivity;
+	uniform lowp sampler2DArray texRoughness;
+	uniform lowp sampler2DArray texAOSolidity;
 #endif
 
 uniform lowp sampler2DArray texGIIrradiance;
@@ -51,6 +51,14 @@ uniform HIGHP sampler2DArray texGIDistance;
 ///////////
 
 in vec2 vScreenCoord;
+
+#ifndef GI_RAY
+	#ifdef GS_RENDER_STEREO
+		flat in int vLayer;
+	#else
+		const int vLayer = 0;
+	#endif
+#endif
 
 
 // outputs
@@ -83,7 +91,11 @@ const vec3 lumiFactors = vec3( 0.2125, 0.7154, 0.0721 );
 //////////////////
 
 void main( void ){
-	ivec2 tc = ivec2( gl_FragCoord.xy );
+	#ifdef GI_RAY
+		ivec2 tc = ivec2( gl_FragCoord.xy );
+	#else
+		ivec3 tc = ivec3( gl_FragCoord.xy, vLayer );
+	#endif
 	
 	// discard not inizalized fragments or fragements that are not supposed to be lit
 	vec4 diffuse = texelFetch( texDiffuse, tc, 0 );
