@@ -25,6 +25,7 @@
 #include "deoglRTLeakTracker.h"
 #include "../deoglBasics.h"
 #include "../configuration/deoglConfiguration.h"
+#include "../debug/deoglDebugInformation.h"
 #include "../memory/deoglMemoryManager.h"
 
 #include <deSharedVulkan.h>
@@ -41,7 +42,6 @@
 class deGraphicOpenGl;
 class deoglCapabilities;
 class deoglConfiguration;
-class deoglDebugInformation;
 class deoglDeferredRendering;
 class deoglDelayedOperations;
 class deoglEnvMapSlotManager;
@@ -157,26 +157,26 @@ private:
 	int pFPSRate;
 	
 	// debug information
-	deoglDebugInformation *pDebugInfoModule;
+	deoglDebugInformation::Ref pDebugInfoModule;
 	
-	deoglDebugInformation *pDebugInfoThreadMain;
-	deoglDebugInformation *pDebugInfoThreadMainWaitFinish;
-	deoglDebugInformation *pDebugInfoThreadMainSynchronize;
+	deoglDebugInformation::Ref pDebugInfoThreadMain;
+	deoglDebugInformation::Ref pDebugInfoThreadMainWaitFinish;
+	deoglDebugInformation::Ref pDebugInfoThreadMainSynchronize;
 	
-	deoglDebugInformation *pDebugInfoThreadRender;
-	deoglDebugInformation *pDebugInfoThreadRenderSwap;
-	deoglDebugInformation *pDebugInfoThreadRenderBegin;
-	deoglDebugInformation *pDebugInfoThreadRenderWindows;
-	deoglDebugInformation *pDebugInfoThreadRenderWindowsPrepare;
-	deoglDebugInformation *pDebugInfoThreadRenderWindowsRender;
-	deoglDebugInformation *pDebugInfoThreadRenderCapture;
-	deoglDebugInformation *pDebugInfoThreadRenderEnd;
+	deoglDebugInformation::Ref pDebugInfoThreadRender;
+	deoglDebugInformation::Ref pDebugInfoThreadRenderSwap;
+	deoglDebugInformation::Ref pDebugInfoThreadRenderBegin;
+	deoglDebugInformation::Ref pDebugInfoThreadRenderWindows;
+	deoglDebugInformation::Ref pDebugInfoThreadRenderWindowsPrepare;
+	deoglDebugInformation::Ref pDebugInfoThreadRenderWindowsRender;
+	deoglDebugInformation::Ref pDebugInfoThreadRenderCapture;
+	deoglDebugInformation::Ref pDebugInfoThreadRenderEnd;
 	
-	deoglDebugInformation *pDebugInfoFrameLimiter;
-	deoglDebugInformation *pDebugInfoFLEstimMain;
-	deoglDebugInformation *pDebugInfoFLEstimRender;
-	deoglDebugInformation *pDebugInfoFLFrameRateMain;
-	deoglDebugInformation *pDebugInfoFLFrameRateRender;
+	deoglDebugInformation::Ref pDebugInfoFrameLimiter;
+	deoglDebugInformation::Ref pDebugInfoFLEstimMain;
+	deoglDebugInformation::Ref pDebugInfoFLEstimRender;
+	deoglDebugInformation::Ref pDebugInfoFLFrameRateMain;
+	deoglDebugInformation::Ref pDebugInfoFLFrameRateRender;
 	
 	decTimer pDebugTimerMainThread1;
 	decTimer pDebugTimerMainThread2;

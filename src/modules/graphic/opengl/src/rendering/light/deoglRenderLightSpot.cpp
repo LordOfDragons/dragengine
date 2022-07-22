@@ -243,30 +243,7 @@ deoglRenderLightBase( renderThread ),
 pShaderShadowCopy( NULL ),
 pShaderBoxBoundary1( NULL ),
 pShaderBoxBoundary2( NULL ),
-pShaderOccMap( NULL ),
-
-pDebugInfoSolid( NULL ),
-pDebugInfoTransparent( NULL ),
-
-pDebugInfoSolidDetail( NULL ),
-pDebugInfoSolidShadow( NULL ),
-pDebugInfoSolidShadowClear( NULL ),
-pDebugInfoSolidShadowClearTransp( NULL ),
-pDebugInfoSolidShadowTask( NULL ),
-pDebugInfoSolidShadowRender( NULL ),
-pDebugInfoSolidShadowTranspTask( NULL ),
-pDebugInfoSolidShadowTranspRender( NULL ),
-pDebugInfoSolidLight( NULL ),
-
-pDebugInfoTransparentDetail( NULL ),
-pDebugInfoTransparentShadow( NULL ),
-pDebugInfoTransparentShadowClear( NULL ),
-pDebugInfoTransparentShadowClearTransp( NULL ),
-pDebugInfoTransparentShadowTask( NULL ),
-pDebugInfoTransparentShadowRender( NULL ),
-pDebugInfoTransparentShadowTranspTask( NULL ),
-pDebugInfoTransparentShadowTranspRender( NULL ),
-pDebugInfoTransparentLight( NULL )
+pShaderOccMap( NULL )
 {
 	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
 	const deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
@@ -313,63 +290,63 @@ pDebugInfoTransparentLight( NULL )
 		const decColor colorBgSub2( 0.1f, 0.1f, 0.1f, 0.75f );
 		const decColor colorBgSub3( 0.15f, 0.15f, 0.15f, 0.75f );
 		
-		pDebugInfoSolid = new deoglDebugInformation( "Spot", colorText, colorBgUp );
-		pDebugInfoTransparent = new deoglDebugInformation( "Spot", colorText, colorBgUp );
+		pDebugInfoSolid.TakeOver( new deoglDebugInformation( "Spot", colorText, colorBgUp ) );
+		pDebugInfoTransparent.TakeOver( new deoglDebugInformation( "Spot", colorText, colorBgUp ) );
 		
 		
 		
-		pDebugInfoSolidDetail = new deoglDebugInformation( "Light Spot Solid", colorText, colorBg );
+		pDebugInfoSolidDetail.TakeOver( new deoglDebugInformation( "Light Spot Solid", colorText, colorBg ) );
 		
-		pDebugInfoSolidShadow = new deoglDebugInformation( "Shadow", colorText, colorBgSub );
+		pDebugInfoSolidShadow.TakeOver( new deoglDebugInformation( "Shadow", colorText, colorBgSub ) );
 		pDebugInfoSolidDetail->GetChildren().Add( pDebugInfoSolidShadow );
 		
-		pDebugInfoSolidShadowClear = new deoglDebugInformation( "Clear", colorText, colorBgSub2 );
+		pDebugInfoSolidShadowClear.TakeOver( new deoglDebugInformation( "Clear", colorText, colorBgSub2 ) );
 		pDebugInfoSolidShadow->GetChildren().Add( pDebugInfoSolidShadowClear );
 		
-		pDebugInfoSolidShadowClearTransp = new deoglDebugInformation( "Clear Transp", colorText, colorBgSub2 );
+		pDebugInfoSolidShadowClearTransp.TakeOver( new deoglDebugInformation( "Clear Transp", colorText, colorBgSub2 ) );
 		pDebugInfoSolidShadow->GetChildren().Add( pDebugInfoSolidShadowClearTransp );
 		
-		pDebugInfoSolidShadowTask = new deoglDebugInformation( "Task", colorText, colorBgSub3 );
+		pDebugInfoSolidShadowTask.TakeOver( new deoglDebugInformation( "Task", colorText, colorBgSub3 ) );
 		pDebugInfoSolidShadow->GetChildren().Add( pDebugInfoSolidShadowTask );
 		
-		pDebugInfoSolidShadowRender = new deoglDebugInformation( "Render", colorText, colorBgSub3 );
+		pDebugInfoSolidShadowRender.TakeOver( new deoglDebugInformation( "Render", colorText, colorBgSub3 ) );
 		pDebugInfoSolidShadow->GetChildren().Add( pDebugInfoSolidShadowRender );
 		
-		pDebugInfoSolidShadowTranspTask = new deoglDebugInformation( "Transp Task", colorText, colorBgSub3 );
+		pDebugInfoSolidShadowTranspTask.TakeOver( new deoglDebugInformation( "Transp Task", colorText, colorBgSub3 ) );
 		pDebugInfoSolidShadow->GetChildren().Add( pDebugInfoSolidShadowTranspTask );
 		
-		pDebugInfoSolidShadowTranspRender = new deoglDebugInformation( "Transp Render", colorText, colorBgSub3 );
+		pDebugInfoSolidShadowTranspRender.TakeOver( new deoglDebugInformation( "Transp Render", colorText, colorBgSub3 ) );
 		pDebugInfoSolidShadow->GetChildren().Add( pDebugInfoSolidShadowTranspRender );
 		
-		pDebugInfoSolidLight = new deoglDebugInformation( "Light", colorText, colorBgSub );
+		pDebugInfoSolidLight.TakeOver( new deoglDebugInformation( "Light", colorText, colorBgSub ) );
 		pDebugInfoSolidDetail->GetChildren().Add( pDebugInfoSolidLight );
 		
 		
 		
-		pDebugInfoTransparentDetail = new deoglDebugInformation( "Light Spot Transp", colorText, colorBg );
+		pDebugInfoTransparentDetail.TakeOver( new deoglDebugInformation( "Light Spot Transp", colorText, colorBg ) );
 		
-		pDebugInfoTransparentShadow = new deoglDebugInformation( "Shadow", colorText, colorBgSub );
+		pDebugInfoTransparentShadow.TakeOver( new deoglDebugInformation( "Shadow", colorText, colorBgSub ) );
 		pDebugInfoTransparentDetail->GetChildren().Add( pDebugInfoTransparentShadow );
 		
-		pDebugInfoTransparentShadowClear = new deoglDebugInformation( "Clear", colorText, colorBgSub2 );
+		pDebugInfoTransparentShadowClear.TakeOver( new deoglDebugInformation( "Clear", colorText, colorBgSub2 ) );
 		pDebugInfoTransparentShadow->GetChildren().Add( pDebugInfoTransparentShadowClear );
 		
-		pDebugInfoTransparentShadowClearTransp = new deoglDebugInformation( "Clear Transp", colorText, colorBgSub2 );
+		pDebugInfoTransparentShadowClearTransp.TakeOver( new deoglDebugInformation( "Clear Transp", colorText, colorBgSub2 ) );
 		pDebugInfoTransparentShadow->GetChildren().Add( pDebugInfoTransparentShadowClearTransp );
 		
-		pDebugInfoTransparentShadowTask = new deoglDebugInformation( "Task", colorText, colorBgSub3 );
+		pDebugInfoTransparentShadowTask.TakeOver( new deoglDebugInformation( "Task", colorText, colorBgSub3 ) );
 		pDebugInfoTransparentShadow->GetChildren().Add( pDebugInfoTransparentShadowTask );
 		
-		pDebugInfoTransparentShadowRender = new deoglDebugInformation( "Render", colorText, colorBgSub3 );
+		pDebugInfoTransparentShadowRender.TakeOver( new deoglDebugInformation( "Render", colorText, colorBgSub3 ) );
 		pDebugInfoTransparentShadow->GetChildren().Add( pDebugInfoTransparentShadowRender );
 		
-		pDebugInfoTransparentShadowTranspTask = new deoglDebugInformation( "Transp Task", colorText, colorBgSub3 );
+		pDebugInfoTransparentShadowTranspTask.TakeOver( new deoglDebugInformation( "Transp Task", colorText, colorBgSub3 ) );
 		pDebugInfoTransparentShadow->GetChildren().Add( pDebugInfoTransparentShadowTranspTask );
 		
-		pDebugInfoTransparentShadowTranspRender = new deoglDebugInformation( "Transp Render", colorText, colorBgSub3 );
+		pDebugInfoTransparentShadowTranspRender.TakeOver( new deoglDebugInformation( "Transp Render", colorText, colorBgSub3 ) );
 		pDebugInfoTransparentShadow->GetChildren().Add( pDebugInfoTransparentShadowTranspRender );
 		
-		pDebugInfoTransparentLight = new deoglDebugInformation( "Light", colorText, colorBgSub );
+		pDebugInfoTransparentLight.TakeOver( new deoglDebugInformation( "Light", colorText, colorBgSub ) );
 		pDebugInfoTransparentDetail->GetChildren().Add( pDebugInfoTransparentLight );
 		
 	}catch( const deException & ){
@@ -2060,68 +2037,5 @@ void deoglRenderLightSpot::pCleanUp(){
 	}
 	if( pShaderShadowCopy ){
 		pShaderShadowCopy->RemoveUsage();
-	}
-	
-	if( pDebugInfoSolid ){
-		pDebugInfoSolid->FreeReference();
-	}
-	if( pDebugInfoTransparent ){
-		pDebugInfoTransparent->FreeReference();
-	}
-	
-	if( pDebugInfoSolidDetail ){
-		pDebugInfoSolidDetail->FreeReference();
-	}
-	if( pDebugInfoSolidShadow ){
-		pDebugInfoSolidShadow->FreeReference();
-	}
-	if( pDebugInfoSolidShadowClear ){
-		pDebugInfoSolidShadowClear->FreeReference();
-	}
-	if( pDebugInfoSolidShadowClearTransp ){
-		pDebugInfoSolidShadowClearTransp->FreeReference();
-	}
-	if( pDebugInfoSolidShadowTask ){
-		pDebugInfoSolidShadowTask->FreeReference();
-	}
-	if( pDebugInfoSolidShadowRender ){
-		pDebugInfoSolidShadowRender->FreeReference();
-	}
-	if( pDebugInfoSolidShadowTranspTask ){
-		pDebugInfoSolidShadowTranspTask->FreeReference();
-	}
-	if( pDebugInfoSolidShadowTranspRender ){
-		pDebugInfoSolidShadowTranspRender->FreeReference();
-	}
-	if( pDebugInfoSolidLight ){
-		pDebugInfoSolidLight->FreeReference();
-	}
-	
-	if( pDebugInfoTransparentDetail ){
-		pDebugInfoTransparentDetail->FreeReference();
-	}
-	if( pDebugInfoTransparentShadow ){
-		pDebugInfoTransparentShadow->FreeReference();
-	}
-	if( pDebugInfoTransparentShadowClear ){
-		pDebugInfoTransparentShadowClear->FreeReference();
-	}
-	if( pDebugInfoTransparentShadowClearTransp ){
-		pDebugInfoTransparentShadowClearTransp->FreeReference();
-	}
-	if( pDebugInfoTransparentShadowTask ){
-		pDebugInfoTransparentShadowTask->FreeReference();
-	}
-	if( pDebugInfoTransparentShadowRender ){
-		pDebugInfoTransparentShadowRender->FreeReference();
-	}
-	if( pDebugInfoTransparentShadowTranspTask ){
-		pDebugInfoTransparentShadowTranspTask->FreeReference();
-	}
-	if( pDebugInfoTransparentShadowTranspRender ){
-		pDebugInfoTransparentShadowTranspRender->FreeReference();
-	}
-	if( pDebugInfoTransparentLight ){
-		pDebugInfoTransparentLight->FreeReference();
 	}
 }

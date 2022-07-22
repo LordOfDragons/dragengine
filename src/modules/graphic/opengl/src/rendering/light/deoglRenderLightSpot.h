@@ -101,28 +101,28 @@ private:
 	
 	
 	
-	deoglDebugInformation *pDebugInfoSolid;
-	deoglDebugInformation *pDebugInfoTransparent;
+	deoglDebugInformation::Ref pDebugInfoSolid;
+	deoglDebugInformation::Ref pDebugInfoTransparent;
 	
-	deoglDebugInformation *pDebugInfoSolidDetail;
-	deoglDebugInformation *pDebugInfoSolidShadow;
-	deoglDebugInformation *pDebugInfoSolidShadowClear;
-	deoglDebugInformation *pDebugInfoSolidShadowClearTransp;
-	deoglDebugInformation *pDebugInfoSolidShadowTask;
-	deoglDebugInformation *pDebugInfoSolidShadowRender;
-	deoglDebugInformation *pDebugInfoSolidShadowTranspTask;
-	deoglDebugInformation *pDebugInfoSolidShadowTranspRender;
-	deoglDebugInformation *pDebugInfoSolidLight;
+	deoglDebugInformation::Ref pDebugInfoSolidDetail;
+	deoglDebugInformation::Ref pDebugInfoSolidShadow;
+	deoglDebugInformation::Ref pDebugInfoSolidShadowClear;
+	deoglDebugInformation::Ref pDebugInfoSolidShadowClearTransp;
+	deoglDebugInformation::Ref pDebugInfoSolidShadowTask;
+	deoglDebugInformation::Ref pDebugInfoSolidShadowRender;
+	deoglDebugInformation::Ref pDebugInfoSolidShadowTranspTask;
+	deoglDebugInformation::Ref pDebugInfoSolidShadowTranspRender;
+	deoglDebugInformation::Ref pDebugInfoSolidLight;
 	
-	deoglDebugInformation *pDebugInfoTransparentDetail;
-	deoglDebugInformation *pDebugInfoTransparentShadow;
-	deoglDebugInformation *pDebugInfoTransparentShadowClear;
-	deoglDebugInformation *pDebugInfoTransparentShadowClearTransp;
-	deoglDebugInformation *pDebugInfoTransparentShadowTask;
-	deoglDebugInformation *pDebugInfoTransparentShadowRender;
-	deoglDebugInformation *pDebugInfoTransparentShadowTranspTask;
-	deoglDebugInformation *pDebugInfoTransparentShadowTranspRender;
-	deoglDebugInformation *pDebugInfoTransparentLight;
+	deoglDebugInformation::Ref pDebugInfoTransparentDetail;
+	deoglDebugInformation::Ref pDebugInfoTransparentShadow;
+	deoglDebugInformation::Ref pDebugInfoTransparentShadowClear;
+	deoglDebugInformation::Ref pDebugInfoTransparentShadowClearTransp;
+	deoglDebugInformation::Ref pDebugInfoTransparentShadowTask;
+	deoglDebugInformation::Ref pDebugInfoTransparentShadowRender;
+	deoglDebugInformation::Ref pDebugInfoTransparentShadowTranspTask;
+	deoglDebugInformation::Ref pDebugInfoTransparentShadowTranspRender;
+	deoglDebugInformation::Ref pDebugInfoTransparentLight;
 	
 	
 	

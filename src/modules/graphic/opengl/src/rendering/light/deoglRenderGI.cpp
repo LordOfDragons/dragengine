@@ -167,16 +167,7 @@ pShaderLightGIRay( NULL ),
 pShaderDebugProbe( NULL ),
 pShaderDebugProbeOffset( NULL ),
 pShaderDebugProbeUpdatePass1( NULL ),
-pShaderDebugProbeUpdatePass2( NULL ),
-
-pDebugInfoGI( NULL ),
-pDebugInfoGITraceRays( NULL ),
-pDebugInfoGIRenderMaterials( NULL ),
-pDebugInfoGIClearProbes( NULL ),
-pDebugInfoGIUpdateProbes( NULL ),
-pDebugInfoGIMoveProbes( NULL ),
-pDebugInfoGIRenderLight( NULL ),
-pDebugInfoGIRenderLightGIRay( NULL )
+pShaderDebugProbeUpdatePass2( NULL )
 {
 	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
 	deoglShaderSources *sources;
@@ -294,27 +285,27 @@ pDebugInfoGIRenderLightGIRay( NULL )
 		const decColor colorBg( 0.0f, 0.0f, 0.25f, 0.75f );
 		const decColor colorBgSub( 0.05f, 0.05f, 0.05f, 0.75f );
 		
-		pDebugInfoGI = new deoglDebugInformation( "GI", colorText, colorBg );
+		pDebugInfoGI.TakeOver( new deoglDebugInformation( "GI", colorText, colorBg ) );
 		
-		pDebugInfoGITraceRays = new deoglDebugInformation( "Trace Rays", colorText, colorBgSub );
+		pDebugInfoGITraceRays.TakeOver( new deoglDebugInformation( "Trace Rays", colorText, colorBgSub ) );
 		pDebugInfoGI->GetChildren().Add( pDebugInfoGITraceRays );
 		
-		pDebugInfoGIRenderMaterials = new deoglDebugInformation( "Render Materials", colorText, colorBgSub );
+		pDebugInfoGIRenderMaterials.TakeOver( new deoglDebugInformation( "Render Materials", colorText, colorBgSub ) );
 		pDebugInfoGI->GetChildren().Add( pDebugInfoGIRenderMaterials );
 		
-		pDebugInfoGIClearProbes = new deoglDebugInformation( "Clear Probes", colorText, colorBgSub );
+		pDebugInfoGIClearProbes.TakeOver( new deoglDebugInformation( "Clear Probes", colorText, colorBgSub ) );
 		pDebugInfoGI->GetChildren().Add( pDebugInfoGIClearProbes );
 		
-		pDebugInfoGIUpdateProbes = new deoglDebugInformation( "Update Probes", colorText, colorBgSub );
+		pDebugInfoGIUpdateProbes.TakeOver( new deoglDebugInformation( "Update Probes", colorText, colorBgSub ) );
 		pDebugInfoGI->GetChildren().Add( pDebugInfoGIUpdateProbes );
 		
-		pDebugInfoGIMoveProbes = new deoglDebugInformation( "Move Probes", colorText, colorBgSub );
+		pDebugInfoGIMoveProbes.TakeOver( new deoglDebugInformation( "Move Probes", colorText, colorBgSub ) );
 		pDebugInfoGI->GetChildren().Add( pDebugInfoGIMoveProbes );
 		
-		pDebugInfoGIRenderLightGIRay = new deoglDebugInformation( "Light Rays", colorText, colorBgSub );
+		pDebugInfoGIRenderLightGIRay.TakeOver( new deoglDebugInformation( "Light Rays", colorText, colorBgSub ) );
 		pDebugInfoGI->GetChildren().Add( pDebugInfoGIRenderLightGIRay );
 		
-		pDebugInfoGIRenderLight = new deoglDebugInformation( "Light Geometry", colorText, colorBgSub );
+		pDebugInfoGIRenderLight.TakeOver( new deoglDebugInformation( "Light Geometry", colorText, colorBgSub ) );
 		pDebugInfoGI->GetChildren().Add( pDebugInfoGIRenderLight );
 		
 		
@@ -1389,31 +1380,6 @@ void deoglRenderGI::pCleanUp(){
 	}
 	if( pShaderClearProbeDistance ){
 		pShaderClearProbeDistance->RemoveUsage();
-	}
-	
-	if( pDebugInfoGI ){
-		pDebugInfoGI->FreeReference();
-	}
-	if( pDebugInfoGITraceRays ){
-		pDebugInfoGITraceRays->FreeReference();
-	}
-	if( pDebugInfoGIRenderMaterials ){
-		pDebugInfoGIRenderMaterials->FreeReference();
-	}
-	if( pDebugInfoGIClearProbes ){
-		pDebugInfoGIClearProbes->FreeReference();
-	}
-	if( pDebugInfoGIUpdateProbes ){
-		pDebugInfoGIUpdateProbes->FreeReference();
-	}
-	if( pDebugInfoGIMoveProbes ){
-		pDebugInfoGIMoveProbes->FreeReference();
-	}
-	if( pDebugInfoGIRenderLight ){
-		pDebugInfoGIRenderLight->FreeReference();
-	}
-	if( pDebugInfoGIRenderLightGIRay ){
-		pDebugInfoGIRenderLightGIRay->FreeReference();
 	}
 }
 

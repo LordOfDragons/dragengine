@@ -161,25 +161,7 @@ pShaderAO( NULL ),
 pShaderClearDepth( NULL ),
 pShaderOccMesh( nullptr ),
 
-pSolidShadowMap( NULL ),
-
-pDebugInfoSolid( NULL ),
-pDebugInfoTransparent( NULL ),
-
-pDebugInfoSolidDetail( NULL ),
-pDebugInfoSolidShadow( NULL ),
-pDebugInfoSolidShadowOcclusion( NULL ),
-pDebugInfoSolidShadowSplit( NULL ),
-pDebugInfoSolidShadowSplitContent( NULL ),
-pDebugInfoSolidShadowSplitLODLevels( NULL ),
-pDebugInfoSolidShadowSplitClear( NULL ),
-pDebugInfoSolidShadowSplitTask( NULL ),
-pDebugInfoSolidShadowSplitRender( NULL ),
-pDebugInfoSolidShadowGI( NULL ),
-pDebugInfoSolidLight( NULL ),
-
-pDebugInfoTransparentDetail( NULL ),
-pDebugInfoTransparentLight( NULL )
+pSolidShadowMap( NULL )
 {
 // 	const deoglConfiguration &config = renderThread.GetConfiguration();
 	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
@@ -220,48 +202,48 @@ pDebugInfoTransparentLight( NULL )
 		const decColor colorBgSub2( 0.1f, 0.1f, 0.1f, 0.75f );
 		const decColor colorBgSub3( 0.15f, 0.15f, 0.15f, 0.75f );
 		
-		pDebugInfoSolid = new deoglDebugInformation( "Sky", colorText, colorBgUp );
-		pDebugInfoTransparent = new deoglDebugInformation( "Sky", colorText, colorBgUp );
+		pDebugInfoSolid.TakeOver( new deoglDebugInformation( "Sky", colorText, colorBgUp ) );
+		pDebugInfoTransparent.TakeOver( new deoglDebugInformation( "Sky", colorText, colorBgUp ) );
 		
 		
 		
-		pDebugInfoSolidDetail = new deoglDebugInformation( "Light Sky Solid", colorText, colorBg );
+		pDebugInfoSolidDetail.TakeOver( new deoglDebugInformation( "Light Sky Solid", colorText, colorBg ) );
 		
-		pDebugInfoSolidShadow = new deoglDebugInformation( "Shadow", colorText, colorBgSub );
+		pDebugInfoSolidShadow.TakeOver( new deoglDebugInformation( "Shadow", colorText, colorBgSub ) );
 		pDebugInfoSolidDetail->GetChildren().Add( pDebugInfoSolidShadow );
 		
-		pDebugInfoSolidShadowOcclusion = new deoglDebugInformation( "Occlusion", colorText, colorBgSub2 );
+		pDebugInfoSolidShadowOcclusion.TakeOver( new deoglDebugInformation( "Occlusion", colorText, colorBgSub2 ) );
 		pDebugInfoSolidShadow->GetChildren().Add( pDebugInfoSolidShadowOcclusion );
 		
-		pDebugInfoSolidShadowSplit = new deoglDebugInformation( "Splits", colorText, colorBgSub2 );
+		pDebugInfoSolidShadowSplit.TakeOver( new deoglDebugInformation( "Splits", colorText, colorBgSub2 ) );
 		pDebugInfoSolidShadow->GetChildren().Add( pDebugInfoSolidShadowSplit );
 		
-		pDebugInfoSolidShadowSplitContent = new deoglDebugInformation( "Add Elements", colorText, colorBgSub3 );
+		pDebugInfoSolidShadowSplitContent.TakeOver( new deoglDebugInformation( "Add Elements", colorText, colorBgSub3 ) );
 		pDebugInfoSolidShadowSplit->GetChildren().Add( pDebugInfoSolidShadowSplitContent );
 		
-		pDebugInfoSolidShadowSplitLODLevels = new deoglDebugInformation( "LOD Levels", colorText, colorBgSub3 );
+		pDebugInfoSolidShadowSplitLODLevels.TakeOver( new deoglDebugInformation( "LOD Levels", colorText, colorBgSub3 ) );
 		pDebugInfoSolidShadowSplit->GetChildren().Add( pDebugInfoSolidShadowSplitLODLevels );
 		
-		pDebugInfoSolidShadowSplitClear = new deoglDebugInformation( "Clear", colorText, colorBgSub3 );
+		pDebugInfoSolidShadowSplitClear.TakeOver( new deoglDebugInformation( "Clear", colorText, colorBgSub3 ) );
 		pDebugInfoSolidShadowSplit->GetChildren().Add( pDebugInfoSolidShadowSplitClear );
 		
-		pDebugInfoSolidShadowSplitTask = new deoglDebugInformation( "Task", colorText, colorBgSub3 );
+		pDebugInfoSolidShadowSplitTask.TakeOver( new deoglDebugInformation( "Task", colorText, colorBgSub3 ) );
 		pDebugInfoSolidShadowSplit->GetChildren().Add( pDebugInfoSolidShadowSplitTask );
 		
-		pDebugInfoSolidShadowSplitRender = new deoglDebugInformation( "Render", colorText, colorBgSub3 );
+		pDebugInfoSolidShadowSplitRender.TakeOver( new deoglDebugInformation( "Render", colorText, colorBgSub3 ) );
 		pDebugInfoSolidShadowSplit->GetChildren().Add( pDebugInfoSolidShadowSplitRender );
 		
-		pDebugInfoSolidShadowGI = new deoglDebugInformation( "Shadow GI", colorText, colorBgSub );
+		pDebugInfoSolidShadowGI.TakeOver( new deoglDebugInformation( "Shadow GI", colorText, colorBgSub ) );
 		pDebugInfoSolidDetail->GetChildren().Add( pDebugInfoSolidShadowGI );
 		
-		pDebugInfoSolidLight = new deoglDebugInformation( "Light", colorText, colorBgSub );
+		pDebugInfoSolidLight.TakeOver( new deoglDebugInformation( "Light", colorText, colorBgSub ) );
 		pDebugInfoSolidDetail->GetChildren().Add( pDebugInfoSolidLight );
 		
 		
 		
-		pDebugInfoTransparentDetail = new deoglDebugInformation( "Light Sky Transp", colorText, colorBg );
+		pDebugInfoTransparentDetail.TakeOver( new deoglDebugInformation( "Light Sky Transp", colorText, colorBg ) );
 		
-		pDebugInfoTransparentLight = new deoglDebugInformation( "Light", colorText, colorBgSub );
+		pDebugInfoTransparentLight.TakeOver( new deoglDebugInformation( "Light", colorText, colorBgSub ) );
 		pDebugInfoTransparentDetail->GetChildren().Add( pDebugInfoTransparentLight );
 		
 	}catch( const deException & ){
@@ -1567,53 +1549,5 @@ void deoglRenderLightSky::pCleanUp(){
 	
 	if( pColList2 ){
 		delete pColList2;
-	}
-	
-	if( pDebugInfoSolid ){
-		pDebugInfoSolid->FreeReference();
-	}
-	if( pDebugInfoTransparent ){
-		pDebugInfoTransparent->FreeReference();
-	}
-	
-	if( pDebugInfoSolidDetail ){
-		pDebugInfoSolidDetail->FreeReference();
-	}
-	if( pDebugInfoSolidShadow ){
-		pDebugInfoSolidShadow->FreeReference();
-	}
-	if( pDebugInfoSolidShadowOcclusion ){
-		pDebugInfoSolidShadowOcclusion->FreeReference();
-	}
-	if( pDebugInfoSolidShadowSplit ){
-		pDebugInfoSolidShadowSplit->FreeReference();
-	}
-	if( pDebugInfoSolidShadowSplitContent ){
-		pDebugInfoSolidShadowSplitContent->FreeReference();
-	}
-	if( pDebugInfoSolidShadowSplitLODLevels ){
-		pDebugInfoSolidShadowSplitLODLevels->FreeReference();
-	}
-	if( pDebugInfoSolidShadowSplitClear ){
-		pDebugInfoSolidShadowSplitClear->FreeReference();
-	}
-	if( pDebugInfoSolidShadowSplitTask ){
-		pDebugInfoSolidShadowSplitTask->FreeReference();
-	}
-	if( pDebugInfoSolidShadowSplitRender ){
-		pDebugInfoSolidShadowSplitRender->FreeReference();
-	}
-	if( pDebugInfoSolidShadowGI ){
-		pDebugInfoSolidShadowGI->FreeReference();
-	}
-	if( pDebugInfoSolidLight ){
-		pDebugInfoSolidLight->FreeReference();
-	}
-	
-	if( pDebugInfoTransparentDetail ){
-		pDebugInfoTransparentDetail->FreeReference();
-	}
-	if( pDebugInfoTransparentLight ){
-		pDebugInfoTransparentLight->FreeReference();
 	}
 }

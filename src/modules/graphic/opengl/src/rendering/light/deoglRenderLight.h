@@ -66,14 +66,14 @@ private:
 	deoglRenderTask *pRenderTask;
 	deoglAddToRenderTask *pAddToRenderTask;
 	
-	deoglDebugInformation *pDebugInfoSolid;
-	deoglDebugInformation *pDebugInfoSolidCopyDepth;
-	deoglDebugInformation *pDebugInfoSolidParticle;
-	deoglDebugInformation *pDebugInfoSolidSSSSS;
+	deoglDebugInformation::Ref pDebugInfoSolid;
+	deoglDebugInformation::Ref pDebugInfoSolidCopyDepth;
+	deoglDebugInformation::Ref pDebugInfoSolidParticle;
+	deoglDebugInformation::Ref pDebugInfoSolidSSSSS;
 	
-	deoglDebugInformation *pDebugInfoTransparent;
-	deoglDebugInformation *pDebugInfoTransparentCopyDepth;
-	deoglDebugInformation *pDebugInfoTransparentSSSSS;
+	deoglDebugInformation::Ref pDebugInfoTransparent;
+	deoglDebugInformation::Ref pDebugInfoTransparentCopyDepth;
+	deoglDebugInformation::Ref pDebugInfoTransparentSSSSS;
 	
 	
 	

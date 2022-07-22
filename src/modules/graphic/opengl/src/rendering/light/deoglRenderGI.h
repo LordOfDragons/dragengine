@@ -66,14 +66,14 @@ private:
 	
 	
 	
-	deoglDebugInformation *pDebugInfoGI;
-	deoglDebugInformation *pDebugInfoGITraceRays;
-	deoglDebugInformation *pDebugInfoGIRenderMaterials;
-	deoglDebugInformation *pDebugInfoGIClearProbes;
-	deoglDebugInformation *pDebugInfoGIUpdateProbes;
-	deoglDebugInformation *pDebugInfoGIMoveProbes;
-	deoglDebugInformation *pDebugInfoGIRenderLight;
-	deoglDebugInformation *pDebugInfoGIRenderLightGIRay;
+	deoglDebugInformation::Ref pDebugInfoGI;
+	deoglDebugInformation::Ref pDebugInfoGITraceRays;
+	deoglDebugInformation::Ref pDebugInfoGIRenderMaterials;
+	deoglDebugInformation::Ref pDebugInfoGIClearProbes;
+	deoglDebugInformation::Ref pDebugInfoGIUpdateProbes;
+	deoglDebugInformation::Ref pDebugInfoGIMoveProbes;
+	deoglDebugInformation::Ref pDebugInfoGIRenderLight;
+	deoglDebugInformation::Ref pDebugInfoGIRenderLightGIRay;
 	
 	
 	

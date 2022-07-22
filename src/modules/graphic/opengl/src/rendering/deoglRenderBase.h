@@ -23,11 +23,11 @@
 #define _DEOGLRENDERBASE_H_
 
 #include "../deoglBasics.h"
+#include "../debug/deoglDebugInformation.h"
 
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/utils/decTimer.h>
 
-class deoglDebugInformation;
 class deoglCollideList;
 class deoglRenderPlan;
 class deoglRenderThread;
