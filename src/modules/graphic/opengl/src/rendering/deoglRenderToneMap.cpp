@@ -308,18 +308,6 @@ deoglRenderToneMap::deoglRenderToneMap( deoglRenderThread &renderThread ) : deog
 	pFBOToneMapParams = NULL;
 	pTextureToneMapParams = NULL;
 	
-	pShaderColor2LogLum = NULL;
-	pShaderAvgLogLum = NULL;
-	pShaderParameters = NULL;
-	pShaderBrightPass = NULL;
-	pShaderBloomReduce = NULL;
-	pShaderBloomBlur = NULL;
-	pShaderBloomAdd = NULL;
-	pShaderToneMap = NULL;
-	pShaderFinalize = NULL;
-	
-	pShaderLumPrepare = NULL;
-	
 	try{
 		sources = shaderManager.GetSourcesNamed( "ToneMap Color2LogLum" );
 		pShaderColor2LogLum = shaderManager.GetProgramWith( sources, defines );
@@ -1067,37 +1055,6 @@ void deoglRenderToneMap::RenderLDR( deoglRenderPlan &plan ){
 //////////////////////
 
 void deoglRenderToneMap::pCleanUp(){
-	if( pShaderColor2LogLum ){
-		pShaderColor2LogLum->RemoveUsage();
-	}
-	if( pShaderAvgLogLum ){
-		pShaderAvgLogLum->RemoveUsage();
-	}
-	if( pShaderParameters ){
-		pShaderParameters->RemoveUsage();
-	}
-	if( pShaderBrightPass ){
-		pShaderBrightPass->RemoveUsage();
-	}
-	if( pShaderBloomReduce ){
-		pShaderBloomReduce->RemoveUsage();
-	}
-	if( pShaderBloomBlur ){
-		pShaderBloomBlur->RemoveUsage();
-	}
-	if( pShaderBloomAdd ){
-		pShaderBloomAdd->RemoveUsage();
-	}
-	if( pShaderToneMap ){
-		pShaderToneMap->RemoveUsage();
-	}
-	if( pShaderFinalize ){
-		pShaderFinalize->RemoveUsage();
-	}
-	if( pShaderLumPrepare ){
-		pShaderLumPrepare->RemoveUsage();
-	}
-	
 	if( pTextureToneMapParams ){
 		delete pTextureToneMapParams;
 	}

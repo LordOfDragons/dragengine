@@ -92,7 +92,7 @@ deoglRenderBase( renderThread )
 	deoglShaderDefines defines;
 	
 	sources = shaderManager.GetSourcesNamed( "DefRen Skin Debug" );
-	pShaderDEBUG.TakeOver( shaderManager.GetProgramWith( sources, defines ) );
+	pShaderDebug = shaderManager.GetProgramWith( sources, defines );
 }
 
 deoglRenderGeometryPass::~deoglRenderGeometryPass(){

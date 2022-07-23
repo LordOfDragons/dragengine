@@ -154,13 +154,6 @@ enum eSPRenderTaskEnvMap{
 deoglRenderGeometry::deoglRenderGeometry( deoglRenderThread &renderThread ) : deoglRenderBase( renderThread ){
 // 	deoglConfiguration &config = ogl->GetConfiguration();
 // 	const bool useEncodeDepth = config.GetUseEncodeDepth();
-	pShaderParticle = NULL;
-	
-	pShaderTransformPositions = NULL;
-	pShaderCalcNormalsTangents = NULL;
-	pShaderWriteSkinnedVBO = NULL;
-	
-	pShaderApproxTransformVNT = NULL;
 	
 	#ifndef ANDROID
 	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
@@ -727,26 +720,4 @@ GLuint tboWeightMatrices, GLuint vboTransformed, int firstPoint, int pointCount 
 //////////////////////
 
 void deoglRenderGeometry::pCleanUp(){
-	if( pShaderApproxTransformVNT ){
-		pShaderApproxTransformVNT->RemoveUsage();
-		pShaderApproxTransformVNT = NULL;
-	}
-	
-	if( pShaderWriteSkinnedVBO ){
-		pShaderWriteSkinnedVBO->RemoveUsage();
-		pShaderWriteSkinnedVBO = NULL;
-	}
-	if( pShaderCalcNormalsTangents ){
-		pShaderCalcNormalsTangents->RemoveUsage();
-		pShaderCalcNormalsTangents = NULL;
-	}
-	if( pShaderTransformPositions ){
-		pShaderTransformPositions->RemoveUsage();
-		pShaderTransformPositions = NULL;
-	}
-	
-	if( pShaderParticle ){
-		pShaderParticle->RemoveUsage();
-		pShaderParticle = NULL;
-	}
 }

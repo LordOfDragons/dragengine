@@ -31,7 +31,6 @@ class deoglRCanvasRenderWorld;
 class deoglRCanvasCanvasView;
 class deoglRCanvasImage;
 class deoglRCanvasPaint;
-class deoglShaderProgram;
 class deoglRenderTarget;
 
 
@@ -45,12 +44,12 @@ private:
 	GLuint pVAOShapes;
 	GLuint pActiveVAO;
 	
-	deoglShaderProgram *pShaderCanvasColor;
-	deoglShaderProgram *pShaderCanvasColorMask;
-	deoglShaderProgram *pShaderCanvasImage;
-	deoglShaderProgram *pShaderCanvasImageMask;
-	deoglShaderProgram *pShaderCanvasRenderWorld;
-	deoglShaderProgram *pShaderCanvasRenderWorldMask;
+	deoglShaderProgramUsage pShaderCanvasColor;
+	deoglShaderProgramUsage pShaderCanvasColorMask;
+	deoglShaderProgramUsage pShaderCanvasImage;
+	deoglShaderProgramUsage pShaderCanvasImageMask;
+	deoglShaderProgramUsage pShaderCanvasRenderWorld;
+	deoglShaderProgramUsage pShaderCanvasRenderWorldMask;
 	
 	GLenum pBlendSrc;
 	GLenum pBlendDest;

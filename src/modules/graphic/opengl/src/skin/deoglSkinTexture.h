@@ -24,13 +24,13 @@
 
 #include "deoglSkinTextureProperty.h"
 #include "channel/deoglSkinChannel.h"
+#include "shader/deoglSkinShader.h"
 
 #include <dragengine/common/math/decMath.h>
 
 class deoglRenderThread;
 class deoglRSkin;
 class deoglSPBlockUBO;
-class deoglSkinShader;
 class deoglSkinShaderConfig;
 class deoglSharedSPBElement;
 class deoglShaderParameterBlock;
@@ -229,7 +229,7 @@ private:
 	bool pRenderableChannels;
 	bool pRenderableMaterialProperties;
 	deoglSkinChannel *pChannels[ deoglSkinChannel::CHANNEL_COUNT ];
-	deoglSkinShader *pShaders[ ShaderTypeCount ];
+	deoglSkinShader::Ref pShaders[ ShaderTypeCount ];
 	deoglSharedSPBElement *pSharedSPBElement;
 	
 	decColor pAbsorption;

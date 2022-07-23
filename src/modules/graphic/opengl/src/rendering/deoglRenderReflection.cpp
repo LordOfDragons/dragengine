@@ -247,23 +247,6 @@ deoglRenderBase( renderThread )
 	deoglShaderSources *sources;
 	deoglShaderDefines defines;
 	
-	pShaderCopyColor = NULL;
-	pShaderCopyColorMipMap = NULL;
-	pShaderMinMaxMipMapMin = NULL;
-	pShaderMinMaxMipMapMax = NULL;
-	pShaderMinMaxMipMapInitial = NULL;
-	pShaderMinMaxMipMapDownsample = NULL;
-	pShaderScreenSpace = NULL;
-	pShaderApplyReflections = NULL;
-	
-	pShaderCopyMaterial = NULL;
-	pShaderEnvMapLightGI = NULL;
-	pShaderEnvMapCopy = NULL;
-	pShaderReflection = NULL;
-	pShaderCubeMap2EquiMap = NULL;
-	pShaderBuildEnvMap = NULL;
-	pShaderEnvMapMask = NULL;
-	
 	pRenderParamBlock = NULL;
 	pRenderTask = NULL;
 	pAddToRenderTask = NULL;
@@ -2598,55 +2581,6 @@ void deoglRenderReflection::pCleanUp(){
 	}
 	if( pEnvMap ){
 		delete pEnvMap;
-	}
-	
-	if( pShaderEnvMapMask ){
-		pShaderEnvMapMask->RemoveUsage();
-	}
-	if( pShaderBuildEnvMap ){
-		pShaderBuildEnvMap->RemoveUsage();
-	}
-	if( pShaderCubeMap2EquiMap ){
-		pShaderCubeMap2EquiMap->RemoveUsage();
-	}
-	if( pShaderReflection ){
-		pShaderReflection->RemoveUsage();
-	}
-	if( pShaderEnvMapLightGI ){
-		pShaderEnvMapLightGI->RemoveUsage();
-	}
-	if( pShaderEnvMapCopy ){
-		pShaderEnvMapCopy->RemoveUsage();
-	}
-	if( pShaderCopyMaterial ){
-		pShaderCopyMaterial->RemoveUsage();
-	}
-	
-	if( pShaderApplyReflections ){
-		pShaderApplyReflections->RemoveUsage();
-	}
-	if( pShaderScreenSpace ){
-		pShaderScreenSpace->RemoveUsage();
-	}
-	if( pShaderMinMaxMipMapMax ){
-		pShaderMinMaxMipMapMax->RemoveUsage();
-	}
-	if( pShaderMinMaxMipMapMin ){
-		pShaderMinMaxMipMapMin->RemoveUsage();
-	}
-	
-	if( pShaderMinMaxMipMapDownsample ){
-		pShaderMinMaxMipMapDownsample->RemoveUsage();
-	}
-	if( pShaderMinMaxMipMapInitial ){
-		pShaderMinMaxMipMapInitial->RemoveUsage();
-	}
-	
-	if( pShaderCopyColorMipMap ){
-		pShaderCopyColorMipMap->RemoveUsage();
-	}
-	if( pShaderCopyColor ){
-		pShaderCopyColor->RemoveUsage();
 	}
 	
 	if( pEnvMapsParamBlock ){

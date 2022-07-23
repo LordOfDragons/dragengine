@@ -238,12 +238,7 @@ lodFovY( 0.0f ){
 
 deoglRenderLightSpot::deoglRenderLightSpot( deoglRenderThread &renderThread,
 deoglRTRenderers &renderers ) :
-deoglRenderLightBase( renderThread ),
-
-pShaderShadowCopy( NULL ),
-pShaderBoxBoundary1( NULL ),
-pShaderBoxBoundary2( NULL ),
-pShaderOccMap( NULL )
+deoglRenderLightBase( renderThread )
 {
 	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
 	const deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
@@ -2023,19 +2018,4 @@ void deoglRenderLightSpot::DevModeDebugInfoChanged(){
 //////////////////////
 
 void deoglRenderLightSpot::pCleanUp(){
-	if( pShaderOccMap ){
-		pShaderOccMap->RemoveUsage();
-	}
-	if( pShaderBoxBoundary2 ){
-		pShaderBoxBoundary2->RemoveUsage();
-	}
-	if( pShaderBoxBoundary1Ambient ){
-		pShaderBoxBoundary1Ambient->RemoveUsage();
-	}
-	if( pShaderBoxBoundary1 ){
-		pShaderBoxBoundary1->RemoveUsage();
-	}
-	if( pShaderShadowCopy ){
-		pShaderShadowCopy->RemoveUsage();
-	}
 }

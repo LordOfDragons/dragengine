@@ -31,7 +31,6 @@ class deoglRenderPlan;
 class deoglRenderPlanLight;
 class deoglRLight;
 class deoglSPBlockUBO;
-class deoglShaderProgram;
 class deoglShadowMapper;
 class deoglRTRenderers;
 class deoglRenderPlanMasked;
@@ -89,11 +88,11 @@ public:
 	
 	
 private:
-	deoglShaderProgram *pShaderBoxBoundary1;
-	deoglShaderProgram *pShaderBoxBoundary1Ambient;
-	deoglShaderProgram *pShaderBoxBoundary2;
-	deoglShaderProgram *pShaderOccMap;
-	deoglShaderProgram *pShaderOccMapCube;
+	deoglShaderProgramUsage pShaderBoxBoundary1;
+	deoglShaderProgramUsage pShaderBoxBoundary1Ambient;
+	deoglShaderProgramUsage pShaderBoxBoundary2;
+	deoglShaderProgramUsage pShaderOccMap;
+	deoglShaderProgramUsage pShaderOccMapCube;
 	
 	int pCubeFaces[ 6 ];
 	

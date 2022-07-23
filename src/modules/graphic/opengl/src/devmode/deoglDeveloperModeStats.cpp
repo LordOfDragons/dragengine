@@ -288,17 +288,16 @@ void deoglDeveloperModeStats::ShaderSources( const decUnicodeArgumentList &comma
 void deoglDeveloperModeStats::ShaderPrograms( const decUnicodeArgumentList &command, decUnicodeString &answer ){
 	deoglShaderManager &shaderManager = pRenderThread.GetShader().GetShaderManager();
 	const char *defineName, *defineValue;
-	deoglShaderProgram *program;
 	int p, programCount;
 	int d, defineCount;
 	decString text;
 	
 	programCount = shaderManager.GetProgramCount();
 	for( p=0; p<programCount; p++ ){
-		program = shaderManager.GetProgramAt( p );
-		const deoglShaderDefines &defines = program->GetDefines();
+		const deoglShaderProgram &program = shaderManager.GetProgramAt( p );
+		const deoglShaderDefines &defines = program.GetDefines();
 		
-		text.Format( "- Shader '%s' Defines(", program->GetSources()->GetName().GetString() );
+		text.Format( "- Shader '%s' Defines(", program.GetSources()->GetName().GetString() );
 		
 		defineCount = defines.GetDefineCount();
 		for( d=0; d<defineCount; d++ ){
@@ -327,7 +326,7 @@ void deoglDeveloperModeStats::SkinShaders( const decUnicodeArgumentList &command
 	answer.AppendFromUTF8( text.GetString() );
 	
 	for( i=0; i<shaderCount; i++ ){
-		const deoglSkinShader &shader = *manager.GetShaderAt( i );
+		const deoglSkinShader &shader = manager.GetShaderAt( i );
 		
 		shader.GetConfig().DebugGetConfigString( configString );
 		

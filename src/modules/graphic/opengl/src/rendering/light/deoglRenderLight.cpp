@@ -131,15 +131,6 @@ deoglRenderLight::deoglRenderLight( deoglRenderThread &renderThread,
 deoglRTRenderers &renderers ) :
 deoglRenderLightBase( renderThread ),
 
-pShaderCopyDepth( NULL ),
-
-pShaderAOLocal( NULL ),
-pShaderAOBlur1( NULL ),
-pShaderAOBlur2( NULL ),
-pShaderDebugAO( NULL ),
-
-pShaderSSSSS( NULL ),
-
 pRenderLightSpot( NULL ),
 pRenderLightSky( NULL ),
 pRenderLightPoint( NULL ),
@@ -790,26 +781,6 @@ void deoglRenderLight::pCleanUp(){
 	}
 	if( pLightPB ){
 		pLightPB->FreeReference();
-	}
-	
-	if( pShaderSSSSS ){
-		pShaderSSSSS->RemoveUsage();
-	}
-	
-	if( pShaderDebugAO ){
-		pShaderDebugAO->RemoveUsage();
-	}
-	if( pShaderAOBlur2 ){
-		pShaderAOBlur2->RemoveUsage();
-	}
-	if( pShaderAOBlur1 ){
-		pShaderAOBlur1->RemoveUsage();
-	}
-	if( pShaderAOLocal ){
-		pShaderAOLocal->RemoveUsage();
-	}
-	if( pShaderCopyDepth ){
-		pShaderCopyDepth->RemoveUsage();
 	}
 	
 	deoglDebugInformationList &dilist = GetRenderThread().GetDebug().GetDebugInformationList();

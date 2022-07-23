@@ -24,7 +24,6 @@
 
 #include "deoglRenderBase.h"
 #include "deoglRenderWorldInfo.h"
-#include "../shaders/deoglShaderProgramUsage.h"
 
 class deoglAddToRenderTask;
 class deoglAddToRenderTaskParticles;

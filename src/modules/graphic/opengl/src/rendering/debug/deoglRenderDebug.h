@@ -28,7 +28,6 @@ class deoglArrayTexture;
 class deoglDebugFont;
 class deoglRComponent;
 class deoglRenderPlan;
-class deoglShaderProgram;
 class deoglTexture;
 class deoglDebugFont;
 class deoglDynamicTBOFloat32;
@@ -47,17 +46,17 @@ private:
 		decColor color;
 	};
 	
-	deoglShaderProgram *pShaderXRay;
-	deoglShaderProgram *pShaderSolid;
+	deoglShaderProgramUsage pShaderXRay;
+	deoglShaderProgramUsage pShaderSolid;
 	
-	deoglShaderProgram *pShaderSphere;
+	deoglShaderProgramUsage pShaderSphere;
 	
-	deoglShaderProgram *pShaderOutTex;
-	deoglShaderProgram *pShaderOutTexLayer;
-	deoglShaderProgram *pShaderOutArrTex;
+	deoglShaderProgramUsage pShaderOutTex;
+	deoglShaderProgramUsage pShaderOutTexLayer;
+	deoglShaderProgramUsage pShaderOutArrTex;
 	
-	deoglShaderProgram *pShaderRenderText;
-	deoglShaderProgram *pShaderRectangle;
+	deoglShaderProgramUsage pShaderRenderText;
+	deoglShaderProgramUsage pShaderRectangle;
 	
 	deoglDebugFont *pDebugFont;
 	

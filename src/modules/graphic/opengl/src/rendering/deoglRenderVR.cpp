@@ -55,8 +55,7 @@
 ////////////////////////////
 
 deoglRenderVR::deoglRenderVR( deoglRenderThread &renderThread ) :
-deoglRenderBase( renderThread ),
-pShaderHiddenArea( nullptr )
+deoglRenderBase( renderThread )
 {
 	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
 	deoglShaderSources *sources;
@@ -143,7 +142,4 @@ void deoglRenderVR::RenderHiddenArea( deoglRenderPlan &plan ){
 //////////////////////
 
 void deoglRenderVR::pCleanUp(){
-	if( pShaderHiddenArea ){
-		pShaderHiddenArea->RemoveUsage();
-	}
 }

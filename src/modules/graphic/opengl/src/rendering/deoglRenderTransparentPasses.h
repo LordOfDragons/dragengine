@@ -23,7 +23,6 @@
 #define _DEOGLRENDERTRANSPARENTPASSES_H_
 
 #include "deoglRenderBase.h"
-#include "../shaders/deoglShaderProgramUsage.h"
 
 class deoglRenderPlan;
 class deoglRenderPlanMasked;

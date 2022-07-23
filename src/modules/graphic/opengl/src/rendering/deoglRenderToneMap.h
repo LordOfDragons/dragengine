@@ -26,7 +26,6 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class deoglShaderProgram;
 class deoglRenderPlan;
 class deoglFramebuffer;
 class deoglTexture;
@@ -42,17 +41,17 @@ private:
 	deoglFramebuffer *pFBOToneMapParams;
 	deoglTexture *pTextureToneMapParams;
 	
-	deoglShaderProgram *pShaderColor2LogLum;
-	deoglShaderProgram *pShaderAvgLogLum;
-	deoglShaderProgram *pShaderParameters;
-	deoglShaderProgram *pShaderBrightPass;
-	deoglShaderProgram *pShaderBloomReduce;
-	deoglShaderProgram *pShaderBloomBlur;
-	deoglShaderProgram *pShaderBloomAdd;
-	deoglShaderProgram *pShaderToneMap;
-	deoglShaderProgram *pShaderFinalize;
+	deoglShaderProgramUsage pShaderColor2LogLum;
+	deoglShaderProgramUsage pShaderAvgLogLum;
+	deoglShaderProgramUsage pShaderParameters;
+	deoglShaderProgramUsage pShaderBrightPass;
+	deoglShaderProgramUsage pShaderBloomReduce;
+	deoglShaderProgramUsage pShaderBloomBlur;
+	deoglShaderProgramUsage pShaderBloomAdd;
+	deoglShaderProgramUsage pShaderToneMap;
+	deoglShaderProgramUsage pShaderFinalize;
 	
-	deoglShaderProgram *pShaderLumPrepare;
+	deoglShaderProgramUsage pShaderLumPrepare;
 	
 	
 public:

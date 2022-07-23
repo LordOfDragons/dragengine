@@ -24,7 +24,6 @@
 
 #include "deoglRenderBase.h"
 #include "deoglRenderTranspCounting.h"
-#include "../shaders/deoglShaderProgramUsage.h"
 
 
 class deoglRenderPlan;

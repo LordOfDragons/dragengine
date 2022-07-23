@@ -34,6 +34,7 @@
 #include "../../shaders/deoglShaderDefines.h"
 #include "../../shaders/deoglShaderManager.h"
 #include "../../shaders/deoglShaderProgram.h"
+#include "../../shaders/deoglShaderProgramUsage.h"
 #include "../../shaders/deoglShaderSources.h"
 #include "../../shaders/paramblock/deoglSPBlockUBO.h"
 #include "../../shaders/paramblock/deoglSPBParameter.h"
@@ -105,7 +106,6 @@ void deoglCapCheckRasterizerDiscard::Check( GLuint fbo ){
 		.GetUseFBOTex2DFormatFor( deoglCapsFmtSupport::eutfR8 );
 	GLubyte pixels[ 9 ] = { 255, 255, 255, 255, 255, 255, 255, 255, 255 };
 	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
-	deoglShaderProgram *shader = NULL;
 	deoglShaderSources *sources;
 	deoglShaderDefines defines;
 	GLuint texture = 0;
@@ -118,7 +118,7 @@ void deoglCapCheckRasterizerDiscard::Check( GLuint fbo ){
 		if( ! sources ){
 			DETHROW( deeInvalidParam );
 		}
-		shader = shaderManager.GetProgramWith( sources, defines );
+		deoglShaderProgramUsage shader( shaderManager.GetProgramWith( sources, defines ) );
 		
 		// generate test texture
 		OGL_CHECK( renderThread, glGenTextures( 1, &texture ) );
@@ -193,19 +193,13 @@ void deoglCapCheckRasterizerDiscard::Check( GLuint fbo ){
 		OGL_CHECK( renderThread, glDeleteTextures( 1, &texture ) );
 		texture = 0;
 		
-		shader->RemoveUsage();
-		
 	}catch( const deException & ){
-		if( shader ){
-			shader->RemoveUsage();
-		}
 		if( vbo ){
 			pglDeleteBuffers( 1, &vbo );
 		}
 		if( texture ){
 			glDeleteTextures( 1, &texture );
 		}
-		
 		throw;
 	}
 	

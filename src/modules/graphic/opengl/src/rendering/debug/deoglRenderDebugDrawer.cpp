@@ -78,11 +78,6 @@ deoglRenderDebugDrawer::deoglRenderDebugDrawer( deoglRenderThread &renderThread 
 	deoglShaderSources *sources;
 	deoglShaderDefines defines;
 	
-	pShaderShapeXRay = NULL;
-	pShaderShapeSolid = NULL;
-	pShaderMeshXRay = NULL;
-	pShaderMeshSolid = NULL;
-	
 	try{
 		sources = shaderManager.GetSourcesNamed( "DefRen Shape" );
 		defines.AddDefine( "WITH_SELECTOR", "1" );
@@ -197,18 +192,6 @@ void deoglRenderDebugDrawer::RenderDebugDrawers( deoglRenderPlan &plan ){
 //////////////////////
 
 void deoglRenderDebugDrawer::pCleanUp(){
-	if( pShaderMeshXRay ){
-		pShaderMeshXRay->RemoveUsage();
-	}
-	if( pShaderMeshSolid ){
-		pShaderMeshSolid->RemoveUsage();
-	}
-	if( pShaderShapeXRay ){
-		pShaderShapeXRay->RemoveUsage();
-	}
-	if( pShaderShapeSolid ){
-		pShaderShapeSolid->RemoveUsage();
-	}
 }
 
 

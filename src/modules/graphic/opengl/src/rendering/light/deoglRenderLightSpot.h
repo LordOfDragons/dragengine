@@ -30,7 +30,6 @@ class deoglRenderPlan;
 class deoglRenderPlanLight;
 class deoglRLight;
 class deoglSPBlockUBO;
-class deoglShaderProgram;
 class deoglShadowMapper;
 class deoglTexture;
 class deoglRTRenderers;
@@ -92,11 +91,11 @@ public:
 	
 	
 private:
-	deoglShaderProgram *pShaderShadowCopy;
-	deoglShaderProgram *pShaderBoxBoundary1;
-	deoglShaderProgram *pShaderBoxBoundary1Ambient;
-	deoglShaderProgram *pShaderBoxBoundary2;
-	deoglShaderProgram *pShaderOccMap;
+	deoglShaderProgramUsage pShaderShadowCopy;
+	deoglShaderProgramUsage pShaderBoxBoundary1;
+	deoglShaderProgramUsage pShaderBoxBoundary1Ambient;
+	deoglShaderProgramUsage pShaderBoxBoundary2;
+	deoglShaderProgramUsage pShaderOccMap;
 	deoglCollideList pCollideList;
 	
 	

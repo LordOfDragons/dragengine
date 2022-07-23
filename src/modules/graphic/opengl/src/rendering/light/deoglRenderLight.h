@@ -33,7 +33,6 @@ class deoglRenderGI;
 class deoglRenderTask;
 class deoglRLight;
 class deoglSPBlockUBO;
-class deoglShaderProgram;
 class deoglRTRenderers;
 class deoglRenderPlanMasked;
 
@@ -43,14 +42,14 @@ class deoglRenderPlanMasked;
  */
 class deoglRenderLight : public deoglRenderLightBase{
 private:
-	deoglShaderProgram *pShaderCopyDepth;
+	deoglShaderProgramUsage pShaderCopyDepth;
 	
-	deoglShaderProgram *pShaderAOLocal;
-	deoglShaderProgram *pShaderAOBlur1;
-	deoglShaderProgram *pShaderAOBlur2;
-	deoglShaderProgram *pShaderDebugAO;
+	deoglShaderProgramUsage pShaderAOLocal;
+	deoglShaderProgramUsage pShaderAOBlur1;
+	deoglShaderProgramUsage pShaderAOBlur2;
+	deoglShaderProgramUsage pShaderDebugAO;
 	
-	deoglShaderProgram *pShaderSSSSS;
+	deoglShaderProgramUsage pShaderSSSSS;
 	
 	deoglRenderLightSpot *pRenderLightSpot;
 	deoglRenderLightSky *pRenderLightSky;

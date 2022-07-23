@@ -24,6 +24,7 @@
 
 #include "../deoglBasics.h"
 #include "../debug/deoglDebugInformation.h"
+#include "../shaders/deoglShaderProgramUsage.h"
 
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/utils/decTimer.h>

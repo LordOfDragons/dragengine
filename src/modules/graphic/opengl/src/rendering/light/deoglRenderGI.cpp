@@ -146,28 +146,7 @@ enum eSPDebugProbeUpdate{
 ////////////////////////////
 
 deoglRenderGI::deoglRenderGI( deoglRenderThread &renderThread ) :
-deoglRenderLightBase( renderThread ),
-
-pShaderResizeMaterials( NULL ),
-pShaderTraceRays( NULL ),
-pShaderTraceRaysCache( NULL ),
-pShaderCopyRayCache( NULL ),
-pShaderInitFromRayCache( NULL ),
-pShaderCopyProbeIrradiance( NULL ),
-pShaderUpdateProbeIrradiance( NULL ),
-pShaderUpdateProbeDistance( NULL ),
-pShaderClearProbeIrradiance( NULL ),
-pShaderClearProbeDistance( NULL ),
-pShaderMoveProbes( NULL ),
-pShaderDynamicState( NULL ),
-pShaderProbeOffset( NULL ),
-pShaderProbeExtends( NULL ),
-pShaderLight( NULL ),
-pShaderLightGIRay( NULL ),
-pShaderDebugProbe( NULL ),
-pShaderDebugProbeOffset( NULL ),
-pShaderDebugProbeUpdatePass1( NULL ),
-pShaderDebugProbeUpdatePass2( NULL )
+deoglRenderLightBase( renderThread )
 {
 	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
 	deoglShaderSources *sources;
@@ -1321,66 +1300,6 @@ void deoglRenderGI::DevModeDebugInfoChanged(){
 //////////////////////
 
 void deoglRenderGI::pCleanUp(){
-	if( pShaderDebugProbeUpdatePass1 ){
-		pShaderDebugProbeUpdatePass1->RemoveUsage();
-	}
-	if( pShaderDebugProbeUpdatePass2 ){
-		pShaderDebugProbeUpdatePass2->RemoveUsage();
-	}
-	if( pShaderDebugProbeOffset ){
-		pShaderDebugProbeOffset->RemoveUsage();
-	}
-	if( pShaderDebugProbe ){
-		pShaderDebugProbe->RemoveUsage();
-	}
-	if( pShaderLight ){
-		pShaderLight->RemoveUsage();
-	}
-	if( pShaderLightGIRay ){
-		pShaderLightGIRay->RemoveUsage();
-	}
-	if( pShaderResizeMaterials ){
-		pShaderResizeMaterials->RemoveUsage();
-	}
-	if( pShaderTraceRays ){
-		pShaderTraceRays->RemoveUsage();
-	}
-	if( pShaderTraceRaysCache ){
-		pShaderTraceRaysCache->RemoveUsage();
-	}
-	if( pShaderCopyRayCache ){
-		pShaderCopyRayCache->RemoveUsage();
-	}
-	if( pShaderInitFromRayCache ){
-		pShaderInitFromRayCache->RemoveUsage();
-	}
-	if( pShaderCopyProbeIrradiance ){
-		pShaderCopyProbeIrradiance->RemoveUsage();
-	}
-	if( pShaderUpdateProbeIrradiance ){
-		pShaderUpdateProbeIrradiance->RemoveUsage();
-	}
-	if( pShaderUpdateProbeDistance ){
-		pShaderUpdateProbeDistance->RemoveUsage();
-	}
-	if( pShaderMoveProbes ){
-		pShaderMoveProbes->RemoveUsage();
-	}
-	if( pShaderDynamicState ){
-		pShaderDynamicState->RemoveUsage();
-	}
-	if( pShaderProbeOffset ){
-		pShaderProbeOffset->RemoveUsage();
-	}
-	if( pShaderProbeExtends ){
-		pShaderProbeExtends->RemoveUsage();
-	}
-	if( pShaderClearProbeIrradiance ){
-		pShaderClearProbeIrradiance->RemoveUsage();
-	}
-	if( pShaderClearProbeDistance ){
-		pShaderClearProbeDistance->RemoveUsage();
-	}
 }
 
 void deoglRenderGI::pCreateUBORenderLight(){

@@ -61,8 +61,7 @@ enum eSPEffect{
 
 deoglREffectDistortImage::deoglREffectDistortImage( deoglRenderThread &renderThread ) :
 deoglREffect( renderThread ),
-pImage( NULL ),
-pShader( NULL ){
+pImage( NULL ){
 	LEAK_CHECK_CREATE( renderThread, EffectDistortImage );
 }
 
@@ -70,9 +69,6 @@ deoglREffectDistortImage::~deoglREffectDistortImage(){
 	LEAK_CHECK_FREE( GetRenderThread(), EffectDistortImage );
 	if( pImage ){
 		pImage->FreeReference();
-	}
-	if( pShader ){
-		pShader->RemoveUsage();
 	}
 }
 

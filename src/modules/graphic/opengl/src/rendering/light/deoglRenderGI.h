@@ -26,12 +26,10 @@
 
 #include <dragengine/deObjectReference.h>
 
-
 class deoglGIState;
 class deoglGIBVH;
 class deoglRenderTask;
 class deoglSPBlockUBO;
-class deoglShaderProgram;
 class deoglTexture;
 
 
@@ -40,26 +38,26 @@ class deoglTexture;
  */
 class deoglRenderGI : public deoglRenderLightBase{
 private:
-	deoglShaderProgram *pShaderResizeMaterials;
-	deoglShaderProgram *pShaderTraceRays;
-	deoglShaderProgram *pShaderTraceRaysCache;
-	deoglShaderProgram *pShaderCopyRayCache;
-	deoglShaderProgram *pShaderInitFromRayCache;
-	deoglShaderProgram *pShaderCopyProbeIrradiance;
-	deoglShaderProgram *pShaderUpdateProbeIrradiance;
-	deoglShaderProgram *pShaderUpdateProbeDistance;
-	deoglShaderProgram *pShaderClearProbeIrradiance;
-	deoglShaderProgram *pShaderClearProbeDistance;
-	deoglShaderProgram *pShaderMoveProbes;
-	deoglShaderProgram *pShaderDynamicState;
-	deoglShaderProgram *pShaderProbeOffset;
-	deoglShaderProgram *pShaderProbeExtends;
-	deoglShaderProgram *pShaderLight;
-	deoglShaderProgram *pShaderLightGIRay;
-	deoglShaderProgram *pShaderDebugProbe;
-	deoglShaderProgram *pShaderDebugProbeOffset;
-	deoglShaderProgram *pShaderDebugProbeUpdatePass1;
-	deoglShaderProgram *pShaderDebugProbeUpdatePass2;
+	deoglShaderProgramUsage pShaderResizeMaterials;
+	deoglShaderProgramUsage pShaderTraceRays;
+	deoglShaderProgramUsage pShaderTraceRaysCache;
+	deoglShaderProgramUsage pShaderCopyRayCache;
+	deoglShaderProgramUsage pShaderInitFromRayCache;
+	deoglShaderProgramUsage pShaderCopyProbeIrradiance;
+	deoglShaderProgramUsage pShaderUpdateProbeIrradiance;
+	deoglShaderProgramUsage pShaderUpdateProbeDistance;
+	deoglShaderProgramUsage pShaderClearProbeIrradiance;
+	deoglShaderProgramUsage pShaderClearProbeDistance;
+	deoglShaderProgramUsage pShaderMoveProbes;
+	deoglShaderProgramUsage pShaderDynamicState;
+	deoglShaderProgramUsage pShaderProbeOffset;
+	deoglShaderProgramUsage pShaderProbeExtends;
+	deoglShaderProgramUsage pShaderLight;
+	deoglShaderProgramUsage pShaderLightGIRay;
+	deoglShaderProgramUsage pShaderDebugProbe;
+	deoglShaderProgramUsage pShaderDebugProbeOffset;
+	deoglShaderProgramUsage pShaderDebugProbeUpdatePass1;
+	deoglShaderProgramUsage pShaderDebugProbeUpdatePass2;
 	
 	deObjectReference pUBORenderLight;
 	deObjectReference pUBORenderLightSSS;

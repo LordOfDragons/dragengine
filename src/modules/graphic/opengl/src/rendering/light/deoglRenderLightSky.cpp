@@ -157,9 +157,6 @@ deoglRenderLightSky::deoglRenderLightSky( deoglRenderThread &renderThread ) :
 deoglRenderLightBase( renderThread ),
 
 pColList2( NULL ),
-pShaderAO( NULL ),
-pShaderClearDepth( NULL ),
-pShaderOccMesh( nullptr ),
 
 pSolidShadowMap( NULL )
 {
@@ -1535,16 +1532,6 @@ void deoglRenderLightSky::pCleanUp(){
 	if( pSolidShadowMap ){
 		pSolidShadowMap->SetInUse( false );
 		pSolidShadowMap = NULL;
-	}
-	
-	if( pShaderOccMesh ){
-		pShaderOccMesh->RemoveUsage();
-	}
-	if( pShaderClearDepth ){
-		pShaderClearDepth->RemoveUsage();
-	}
-	if( pShaderAO ){
-		pShaderAO->RemoveUsage();
 	}
 	
 	if( pColList2 ){

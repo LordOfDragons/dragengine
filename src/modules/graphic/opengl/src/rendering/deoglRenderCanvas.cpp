@@ -113,13 +113,6 @@ pVBOShapes( 0 ),
 pVAOShapes( 0 ),
 pActiveVAO( 0 ),
 
-pShaderCanvasColor( NULL ),
-pShaderCanvasColorMask( NULL ),
-pShaderCanvasImage( NULL ),
-pShaderCanvasImageMask( NULL ),
-pShaderCanvasRenderWorld( nullptr ),
-pShaderCanvasRenderWorldMask( nullptr ),
-
 pDebugTimeCanvasView( 0.0f ),
 pDebugCountCanvasView( 0 ),
 pDebugTimeCanvasImage( 0.0f ),
@@ -1054,25 +1047,6 @@ void deoglRenderCanvas::DevModeDebugInfoChanged(){
 //////////////////////
 
 void deoglRenderCanvas::pCleanUp(){
-	if( pShaderCanvasRenderWorldMask ){
-		pShaderCanvasRenderWorldMask->RemoveUsage();
-	}
-	if( pShaderCanvasRenderWorld ){
-		pShaderCanvasRenderWorld->RemoveUsage();
-	}
-	if( pShaderCanvasImage ){
-		pShaderCanvasImage->RemoveUsage();
-	}
-	if( pShaderCanvasImageMask ){
-		pShaderCanvasImageMask->RemoveUsage();
-	}
-	if( pShaderCanvasColor ){
-		pShaderCanvasColor->RemoveUsage();
-	}
-	if( pShaderCanvasColorMask ){
-		pShaderCanvasColorMask->RemoveUsage();
-	}
-	
 	deoglDelayedOperations &dops = GetRenderThread().GetDelayedOperations();
 	dops.DeleteOpenGLVertexArray( pVAOShapes );
 	dops.DeleteOpenGLBuffer( pVBOShapes );

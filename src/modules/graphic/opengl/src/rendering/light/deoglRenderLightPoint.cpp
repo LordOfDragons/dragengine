@@ -236,12 +236,7 @@ lodOffset( 0 ){
 
 deoglRenderLightPoint::deoglRenderLightPoint( deoglRenderThread &renderThread,
 deoglRTRenderers &renderers ) :
-deoglRenderLightBase( renderThread ),
-
-pShaderBoxBoundary1( NULL ),
-pShaderBoxBoundary2( NULL ),
-pShaderOccMap( NULL ),
-pShaderOccMapCube( NULL )
+deoglRenderLightBase( renderThread )
 {
 	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
 	deoglShaderSources *sources;
@@ -2233,19 +2228,4 @@ void deoglRenderLightPoint::DevModeDebugInfoChanged(){
 //////////////////////
 
 void deoglRenderLightPoint::pCleanUp(){
-	if( pShaderOccMapCube ){
-		pShaderOccMapCube->RemoveUsage();
-	}
-	if( pShaderOccMap ){
-		pShaderOccMap->RemoveUsage();
-	}
-	if( pShaderBoxBoundary2 ){
-		pShaderBoxBoundary2->RemoveUsage();
-	}
-	if( pShaderBoxBoundary1Ambient ){
-		pShaderBoxBoundary1Ambient->RemoveUsage();
-	}
-	if( pShaderBoxBoundary1 ){
-		pShaderBoxBoundary1->RemoveUsage();
-	}
 }

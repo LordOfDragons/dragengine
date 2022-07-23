@@ -188,7 +188,7 @@ pDebugInfo( renderThread )
 		
 		
 		sources = shaderManager.GetSourcesNamed( "DefRen Finalize" );
-		pShaderFinalize.TakeOver( shaderManager.GetProgramWith( sources, defines ) );
+		pShaderFinalize = shaderManager.GetProgramWith( sources, defines );
 		
 		
 		DevModeDebugInfoChanged();

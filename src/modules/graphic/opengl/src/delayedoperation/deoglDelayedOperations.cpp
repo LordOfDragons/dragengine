@@ -96,10 +96,7 @@ pHasInitOperations( false ),
 pOGLObjects( nullptr ),
 pOGLObjectCount( 0 ),
 pOGLObjectSize( 0 ),
-pHasSynchronizeOperations( false ),
-
-pShaderGenConeMap( NULL ),
-pShaderGenConeMapLayer( NULL )
+pHasSynchronizeOperations( false )
 {
 	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
 	deoglShaderSources *sources;
@@ -441,6 +438,10 @@ void deoglDelayedOperations::Clear(){
 //////////////////////
 
 void deoglDelayedOperations::pCleanUp(){
+	// drop shaders to avoid cleanup finding them as leaking
+	pShaderGenConeMap = nullptr;
+	pShaderGenConeMapLayer = nullptr;
+	
 	// free lists. this can produce deletion objects which we can report as problems
 	pInitImageList.RemoveAll();
 	pInitSkinList.RemoveAll();
@@ -455,16 +456,6 @@ void deoglDelayedOperations::pCleanUp(){
 	
 	// process outstanding synchronization actions
 	ProcessSynchronizeOperations();
-	
-	// clean up the rest
-	if( pShaderGenConeMapLayer ){
-		pShaderGenConeMapLayer->RemoveUsage();
-		pShaderGenConeMapLayer = NULL;
-	}
-	if( pShaderGenConeMap ){
-		pShaderGenConeMap->RemoveUsage();
-		pShaderGenConeMap = NULL;
-	}
 }
 
 

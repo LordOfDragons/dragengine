@@ -184,19 +184,6 @@ static const int vCubeFaces[] = {
 deoglRenderOcclusion::deoglRenderOcclusion( deoglRenderThread &renderThread ) :
 deoglRenderBase( renderThread ),
 
-pShaderOccMap( NULL ),
-pShaderOccMapClipPlane( NULL ),
-pShaderOccMapOrtho( NULL ),
-pShaderOccMapOrthoClipPlane( NULL ),
-pShaderOccMapDownSample( NULL ),
-pShaderOccTest( NULL ),
-pShaderOccTestDual( NULL ),
-pShaderOccTestSun( NULL ),
-pShaderOccTestTFB( NULL ),
-pShaderOccTestTFBDual( NULL ),
-pShaderOccTestTFBSun( NULL ),
-pShaderOccMapCube( NULL ),
-
 pRenderParamBlock( NULL ),
 pOccMapFrustumParamBlock( NULL ),
 pRenderTask( NULL ),
@@ -1357,43 +1344,6 @@ deoglCubeMap *cubemap, const decDVector &position, float imageDistance, float vi
 //////////////////////
 
 void deoglRenderOcclusion::pCleanUp(){
-	if( pShaderOccMap ){
-		pShaderOccMap->RemoveUsage();
-	}
-	if( pShaderOccMapClipPlane ){
-		pShaderOccMapClipPlane->RemoveUsage();
-	}
-	if( pShaderOccMapOrtho ){
-		pShaderOccMapOrtho->RemoveUsage();
-	}
-	if( pShaderOccMapOrthoClipPlane ){
-		pShaderOccMapOrthoClipPlane->RemoveUsage();
-	}
-	if( pShaderOccMapDownSample ){
-		pShaderOccMapDownSample->RemoveUsage();
-	}
-	if( pShaderOccTest ){
-		pShaderOccTest->RemoveUsage();
-	}
-	if( pShaderOccTestDual ){
-		pShaderOccTestDual->RemoveUsage();
-	}
-	if( pShaderOccTestSun ){
-		pShaderOccTestSun->RemoveUsage();
-	}
-	if( pShaderOccTestTFB ){
-		pShaderOccTestTFB->RemoveUsage();
-	}
-	if( pShaderOccTestTFBDual ){
-		pShaderOccTestTFBDual->RemoveUsage();
-	}
-	if( pShaderOccTestTFBSun ){
-		pShaderOccTestTFBSun->RemoveUsage();
-	}
-	if( pShaderOccMapCube ){
-		pShaderOccMapCube->RemoveUsage();
-	}
-	
 	if( pAddToRenderTask ){
 		delete pAddToRenderTask;
 	}

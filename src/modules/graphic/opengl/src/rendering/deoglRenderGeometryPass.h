@@ -23,8 +23,6 @@
 #define _DEOGLRENDERGEOMETRYPASS_H_
 
 #include "deoglRenderBase.h"
-#include "../shaders/deoglShaderProgramUsage.h"
-
 
 class deoglRenderPlan;
 class deoglRenderPlanMasked;
@@ -35,7 +33,7 @@ class deoglRenderPlanMasked;
  */
 class deoglRenderGeometryPass : public deoglRenderBase{
 private:
-	deoglShaderProgramUsage pShaderDEBUG;
+	deoglShaderProgramUsage pShaderDebug;
 	
 	
 	

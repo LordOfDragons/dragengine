@@ -100,18 +100,6 @@ enum eSPRectangle{
 deoglRenderDebug::deoglRenderDebug( deoglRenderThread &renderThread ) :
 deoglRenderBase( renderThread ),
 
-pShaderXRay( NULL ),
-pShaderSolid( NULL ),
-
-pShaderSphere( NULL ),
-
-pShaderOutTex( NULL ),
-pShaderOutTexLayer( NULL ),
-pShaderOutArrTex( NULL ),
-
-pShaderRenderText( NULL ),
-pShaderRectangle( NULL ),
-
 pDebugFont( NULL ),
 
 pTBORenderText1( NULL ),
@@ -596,30 +584,5 @@ void deoglRenderDebug::pCleanUp(){
 	}
 	if( pDebugFont ){
 		delete pDebugFont;
-	}
-	
-	if( pShaderRectangle ){
-		pShaderRectangle->RemoveUsage();
-	}
-	if( pShaderXRay ){
-		pShaderXRay->RemoveUsage();
-	}
-	if( pShaderSolid ){
-		pShaderSolid->RemoveUsage();
-	}
-	if( pShaderSphere ){
-		pShaderSphere->RemoveUsage();
-	}
-	if( pShaderOutTex ){
-		pShaderOutTex->RemoveUsage();
-	}
-	if( pShaderOutTexLayer ){
-		pShaderOutTexLayer->RemoveUsage();
-	}
-	if( pShaderOutArrTex ){
-		pShaderOutArrTex->RemoveUsage();
-	}
-	if( pShaderRenderText ){
-		pShaderRenderText->RemoveUsage();
 	}
 }

@@ -46,6 +46,8 @@ class deoglShaderParameterBlock;
  */
 class deoglSkinShader : public deObject{
 public:
+	typedef deTObjectReference<deoglSkinShader> Ref;
+	
 	static int REFLECTION_TEST_MODE;
 	
 	/** Texture targets. */

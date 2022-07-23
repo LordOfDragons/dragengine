@@ -27,7 +27,6 @@
 #include <dragengine/common/collection/decPointerList.h>
 
 class deoglRWorld;
-class deoglShaderProgram;
 
 
 /**
@@ -35,7 +34,7 @@ class deoglShaderProgram;
  */
 class deoglRenderVR : public deoglRenderBase{
 private:
-	deoglShaderProgram *pShaderHiddenArea;
+	deoglShaderProgramUsage pShaderHiddenArea;
 	
 	
 	

@@ -23,8 +23,7 @@
 #define _DEOGLREFFECTFILTERKERNEL_H_
 
 #include "deoglREffect.h"
-
-class deoglShaderProgram;
+#include "../../shaders/deoglShaderProgramUsage.h"
 
 
 /**
@@ -37,8 +36,8 @@ private:
 	int pKernelCols;
 	float pScale;
 	
-	deoglShaderProgram *pShader;
-	deoglShaderProgram *pShaderDownsample;
+	deoglShaderProgramUsage pShader;
+	deoglShaderProgramUsage pShaderDownsample;
 	
 public:
 	/** \name Constructors and Destructors */

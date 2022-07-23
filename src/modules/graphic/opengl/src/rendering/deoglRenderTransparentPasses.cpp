@@ -123,19 +123,19 @@ deoglRenderBase( renderThread )
 	if( defren.GetUseInverseDepth() ){
 		defines.AddDefine( "SHADOW_INVERSE_DEPTH", "1" );
 	}
-	pShaderCopyDepthColor.TakeOver( shaderManager.GetProgramWith( sources, defines ) );
+	pShaderCopyDepthColor = shaderManager.GetProgramWith( sources, defines );
 	defines.RemoveAllDefines();
 	
 	defines.AddDefine( "DEPTH_TEST", "1" );
 	if( ! defren.GetUseInverseDepth() ){
 		defines.AddDefine( "SHADOW_INVERSE_DEPTH", "1" );
 	}
-	pShaderCopyDepthLimit.TakeOver( shaderManager.GetProgramWith( sources, defines ) );
+	pShaderCopyDepthLimit = shaderManager.GetProgramWith( sources, defines );
 	defines.RemoveAllDefines();
 	
 	
 	sources = shaderManager.GetSourcesNamed( "DefRen Copy Color" );
-	pShaderCopyColor.TakeOver( shaderManager.GetProgramWith( sources, defines ) );
+	pShaderCopyColor = shaderManager.GetProgramWith( sources, defines );
 }
 
 deoglRenderTransparentPasses::~deoglRenderTransparentPasses(){

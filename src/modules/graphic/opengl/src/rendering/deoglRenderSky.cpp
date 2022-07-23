@@ -211,10 +211,6 @@ deoglRenderSky::deoglRenderSky( deoglRenderThread &renderThread ) : deoglRenderB
 	deoglShaderSources *sources;
 	deoglShaderDefines defines;
 	
-	pShaderSkySphere = NULL;
-	pShaderSkyBox = NULL;
-	pShaderBody = NULL;
-	
 	try{
 		sources = shaderManager.GetSourcesNamed( "Sky Sky-Sphere" );
 		pShaderSkySphere = shaderManager.GetProgramWith( sources, defines );
@@ -945,13 +941,4 @@ decColor deoglRenderSky::LinearBgColor( const deoglRSkyInstance &instance, bool 
 //////////////////////
 
 void deoglRenderSky::pCleanUp(){
-	if( pShaderSkySphere ){
-		pShaderSkySphere->RemoveUsage();
-	}
-	if( pShaderSkyBox ){
-		pShaderSkyBox->RemoveUsage();
-	}
-	if( pShaderBody ){
-		pShaderBody->RemoveUsage();
-	}
 }

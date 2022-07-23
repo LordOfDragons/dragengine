@@ -315,6 +315,7 @@ void deoglCapabilities::DetectCapabilities(){
 #include "../shaders/deoglShaderDefines.h"
 #include "../shaders/deoglShaderManager.h"
 #include "../shaders/deoglShaderProgram.h"
+#include "../shaders/deoglShaderProgramUsage.h"
 #include "../shaders/deoglShaderSources.h"
 #include "../texture/pixelbuffer/deoglPixelBuffer.h"
 #include "../texture/texture2d/deoglTexture.h"
@@ -387,7 +388,6 @@ void deoglCapabilities::pAndroidTest( deoglFramebuffer *framebuffer ){
 	deoglShaderManager &shaderManager = pRenderThread.GetShader().GetShaderManager();
 	deoglPixelBuffer pixelBuffer( deoglPixelBuffer::epfFloat4, 1, 1, 1 );
 	deoglPixelBuffer::sFloat4 * const pixels = pixelBuffer.GetPointerFloat4();
-	deoglShaderProgram *shader = NULL;
 	deoglTexture *texture = NULL;
 	deoglShaderSources *sources;
 	deoglShaderDefines defines;
@@ -398,7 +398,7 @@ void deoglCapabilities::pAndroidTest( deoglFramebuffer *framebuffer ){
 		if( ! sources ){
 			DETHROW( deeInvalidParam );
 		}
-		shader = shaderManager.GetProgramWith( sources, defines );
+		deoglShaderProgramUsage shader( shaderManager.GetProgramWith( sources, defines ) );
 		
 		// create test texture
 		texture = new deoglTexture( pRenderThread );
@@ -437,9 +437,6 @@ void deoglCapabilities::pAndroidTest( deoglFramebuffer *framebuffer ){
 		OGL_CHECK( pRenderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
 		OGL_CHECK( pRenderThread, pglBindVertexArray( 0 ) );
 		
-		shader->RemoveUsage();
-		shader = NULL;
-		
 		// retrieve the results and clean up
 		framebuffer->DetachAllImages();
 		texture->GetPixels( pixelBuffer );
@@ -448,9 +445,6 @@ void deoglCapabilities::pAndroidTest( deoglFramebuffer *framebuffer ){
 		texture = NULL;
 		
 	}catch( const deException &e ){
-		if( shader ){
-			shader->RemoveUsage();
-		}
 		if( texture ){
 			delete texture;
 		}

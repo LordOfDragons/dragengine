@@ -63,8 +63,8 @@ enum eSPEffect{
 
 deoglREffectOverlayImage::deoglREffectOverlayImage( deoglRenderThread &renderThread ) :
 deoglREffect( renderThread ),
-pImage( NULL ),
-pShader( NULL ){
+pImage( NULL )
+{
 	LEAK_CHECK_CREATE( renderThread, EffectOverlayImage );
 }
 
@@ -72,9 +72,6 @@ deoglREffectOverlayImage::~deoglREffectOverlayImage(){
 	LEAK_CHECK_FREE( GetRenderThread(), EffectOverlayImage );
 	if( pImage ){
 		pImage->FreeReference();
-	}
-	if( pShader ){
-		pShader->RemoveUsage();
 	}
 }
 

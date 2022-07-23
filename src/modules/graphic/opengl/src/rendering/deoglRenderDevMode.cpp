@@ -137,10 +137,6 @@ deoglRenderDevMode::deoglRenderDevMode( deoglRenderThread &renderThread ) : deog
 	pVBOShapes = 0;
 	pVAOShapes = 0;
 	
-	pShaderSolidColor2D = NULL;
-	pShaderSolidColor3D = NULL;
-	pShaderShape = NULL;
-	
 	try{
 		pCreateShapesVAO();
 		
@@ -1821,16 +1817,6 @@ const decPoint &parentPosition, const deoglDebugInformation &debugInformation ){
 //////////////////////
 
 void deoglRenderDevMode::pCleanUp(){
-	if( pShaderSolidColor2D ){
-		pShaderSolidColor2D->RemoveUsage();
-	}
-	if( pShaderSolidColor3D ){
-		pShaderSolidColor3D->RemoveUsage();
-	}
-	if( pShaderShape ){
-		pShaderShape->RemoveUsage();
-	}
-	
 	deoglDelayedOperations &dops = GetRenderThread().GetDelayedOperations();
 	dops.DeleteOpenGLVertexArray( pVAOShapes );
 	dops.DeleteOpenGLBuffer( pVBOShapes );

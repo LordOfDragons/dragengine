@@ -26,7 +26,7 @@ class deoglShaderProgram;
 
 
 /**
- * \brief Shader program usage holder.
+ * Shader program usage holder.
  * 
  * Safe way to hold an shader program usage with correct usage handling.
  * Storing \em NULL is allowed. Initial value is \em NULL.
@@ -44,90 +44,70 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create empty shader program usage holder. */
+	/** Create empty shader program usage holder. */
 	deoglShaderProgramUsage();
 	
 	/**
-	 * \brief Create shader program usage holder with shader program.
+	 * Create shader program usage holder with shader program.
 	 * 
 	 * deoglShaderProgramUsage is added if shader program is not \em NULL.
 	 */
 	deoglShaderProgramUsage( deoglShaderProgram *program );
 	
 	/**
-	 * \brief Create shader program usage holder with shader program from another holder.
+	 * Create shader program usage holder with shader program from another holder.
 	 * 
 	 * deoglShaderProgramUsage is added if shader program in holder is not \em NULL.
 	 */
 	deoglShaderProgramUsage( const deoglShaderProgramUsage &usage );
 	
 	/**
-	 * \brief Clean up shader program usage holder.
+	 * Clean up shader program usage holder.
 	 * 
 	 * Decrease usage if shader program is not \em NULL.
 	 */
 	~deoglShaderProgramUsage();
+	
+	/** Create shader program usage taking over usage. */
+	static deoglShaderProgramUsage New( deoglShaderProgram *program );
 	/*@}*/
 	
 	
 	
 	/** \name Management */
 	/*@{*/
-	/**
-	 * \brief Set shader program without adding usage.
-	 * 
-	 * Use this method if the shader program to hold has been added a usage already. This is
-	 * the case with created shader programs as well as certain methods returning newly created
-	 * shader programs. In all these cases the shader program has to be held without adding a usage.
-	 * For all other situations use the constructor or assignment operator.
-	 * 
-	 * It is allowed for \em shader program to be a \em NULL shader program.
-	 */
-	void TakeOver( deoglShaderProgram *program );
-	
-	/** \brief Shader program is \em NULL. */
+	/** Shader program is \em NULL. */
 	bool operator!() const;
 	
-	/** \brief Test if shader program is not \em NULL. */
+	/** Test if shader program is not \em NULL. */
 	operator bool() const;
 	
-	/** \brief Pointer to shader program. */
+	/** Pointer to shader program. */
 	inline operator deoglShaderProgram*() const{ return pProgram; }
 	
 	/**
-	 * \brief deoglShaderProgramUsage to shader program.
+	 * deoglShaderProgramUsage to shader program.
 	 * 
 	 * \throws deeNullPointer if shader program is \em NULL.
 	 */
 	operator deoglShaderProgram&() const;
 	
 	/**
-	 * \brief Pointer to shader program.
+	 * Pointer to shader program.
 	 * 
 	 * \throws deeNullPointer if shader program is \em NULL.
 	 */
 	deoglShaderProgram* operator->() const;
 	
 	/**
-	 * \brief Store shader program.
-	 * 
-	 * If an shader program is already held its usage is decreased and the new shader
-	 * program stored. If the new shader program is not \em NULL a usage is added.
-	 */
-	deoglShaderProgramUsage &operator=( deoglShaderProgram *program );
-	
-	/**
-	 * \brief Store shader program.
+	 * Store shader program.
 	 * 
 	 * If an shader program is already held its usage is decreased and the new shader
 	 * program stored. If the new shader program is not \em NULL a usage is added.
 	 */
 	deoglShaderProgramUsage &operator=( const deoglShaderProgramUsage &usage );
 	
-	/** \brief Test if shader program is held by this holder. */
-	inline bool operator==( deoglShaderProgram *program ) const{ return pProgram == program; }
-	
-	/** \brief Test if shader program is held by this holder. */
+	/** Test if shader program is held by this holder. */
 	inline bool operator==( const deoglShaderProgramUsage &usage ) const{
 		return pProgram == usage.pProgram;
 	}

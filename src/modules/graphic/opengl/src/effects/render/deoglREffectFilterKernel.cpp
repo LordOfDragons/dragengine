@@ -69,9 +69,7 @@ deoglREffect( renderThread ),
 pKernel( NULL ),
 pKernelRows( 0 ),
 pKernelCols( 0 ),
-pScale( 1.0f ),
-pShader( NULL ),
-pShaderDownsample( NULL )
+pScale( 1.0f )
 {
 	LEAK_CHECK_CREATE( renderThread, EffectFilterKernel );
 }
@@ -80,12 +78,6 @@ deoglREffectFilterKernel::~deoglREffectFilterKernel(){
 	LEAK_CHECK_FREE( GetRenderThread(), EffectFilterKernel );
 	if( pKernel ){
 		delete [] pKernel;
-	}
-	if( pShaderDownsample ){
-		pShaderDownsample->RemoveUsage();
-	}
-	if( pShader ){
-		pShader->RemoveUsage();
 	}
 }
 

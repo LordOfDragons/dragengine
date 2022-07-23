@@ -28,7 +28,6 @@
 #include "deoglSkinTexture.h"
 #include "deoglSkinPropertyMap.h"
 #include "deoglSkinRenderable.h"
-#include "shader/deoglSkinShader.h"
 #include "shader/deoglSkinShaderManager.h"
 #include "state/deoglSkinState.h"
 #include "state/deoglSkinStateRenderable.h"
@@ -368,10 +367,6 @@ pSharedSPBElement( NULL )
 	
 	for( i=0; i<deoglSkinChannel::CHANNEL_COUNT; i++ ){
 		pChannels[ i ] = NULL;
-	}
-	
-	for( i=0; i<ShaderTypeCount; i++ ){
-		pShaders[ i ] = NULL;
 	}
 	
 	pAbsorption.Set( 0.0f, 0.0f, 0.0f );
@@ -1495,18 +1490,11 @@ const deoglSkinTextureProperty &deoglSkinTexture::GetMaterialPropertyAt( int pro
 //////////////////////
 
 void deoglSkinTexture::pCleanUp(){
-	int i;
-	
-	for( i=0; i<ShaderTypeCount; i++ ){
-		if( pShaders[ i ] ){
-			pShaders[ i ]->FreeReference();
-			pShaders[ i ] = NULL;
-		}
-	}
 	if( pSharedSPBElement ){
 		pSharedSPBElement->FreeReference();
 	}
 	
+	int i;
 	for( i=0; i<deoglSkinChannel::CHANNEL_COUNT; i++ ){
 		if( pChannels[ i ] ){
 			delete pChannels[ i ];

@@ -36,7 +36,6 @@ class deoglRenderPlanMasked;
 class deoglRenderTask;
 class deoglRSkyInstanceLayer;
 class deoglRSkyLayer;
-class deoglShaderProgram;
 class deoglSPBlockUBO;
 class deoglRenderTaskSharedShader;
 
@@ -46,18 +45,18 @@ class deoglRenderTaskSharedShader;
  */
 class deoglRenderOcclusion : public deoglRenderBase{
 private:
-	deoglShaderProgram *pShaderOccMap;
-	deoglShaderProgram *pShaderOccMapClipPlane;
-	deoglShaderProgram *pShaderOccMapOrtho;
-	deoglShaderProgram *pShaderOccMapOrthoClipPlane;
-	deoglShaderProgram *pShaderOccMapDownSample;
-	deoglShaderProgram *pShaderOccTest;
-	deoglShaderProgram *pShaderOccTestDual;
-	deoglShaderProgram *pShaderOccTestSun;
-	deoglShaderProgram *pShaderOccTestTFB;
-	deoglShaderProgram *pShaderOccTestTFBDual;
-	deoglShaderProgram *pShaderOccTestTFBSun;
-	deoglShaderProgram *pShaderOccMapCube;
+	deoglShaderProgramUsage pShaderOccMap;
+	deoglShaderProgramUsage pShaderOccMapClipPlane;
+	deoglShaderProgramUsage pShaderOccMapOrtho;
+	deoglShaderProgramUsage pShaderOccMapOrthoClipPlane;
+	deoglShaderProgramUsage pShaderOccMapDownSample;
+	deoglShaderProgramUsage pShaderOccTest;
+	deoglShaderProgramUsage pShaderOccTestDual;
+	deoglShaderProgramUsage pShaderOccTestSun;
+	deoglShaderProgramUsage pShaderOccTestTFB;
+	deoglShaderProgramUsage pShaderOccTestTFBDual;
+	deoglShaderProgramUsage pShaderOccTestTFBSun;
+	deoglShaderProgramUsage pShaderOccMapCube;
 	
 	deoglSPBlockUBO *pRenderParamBlock;
 	deoglSPBlockUBO *pOccMapFrustumParamBlock;

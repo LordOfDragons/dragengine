@@ -58,16 +58,13 @@ enum eSPEffect{
 ////////////////////////////
 
 deoglREffectColorMatrix::deoglREffectColorMatrix( deoglRenderThread &renderThread ) :
-deoglREffect( renderThread ),
-pShader( NULL ){
+deoglREffect( renderThread )
+{
 	LEAK_CHECK_CREATE( renderThread, EffectColorMatrix );
 }
 
 deoglREffectColorMatrix::~deoglREffectColorMatrix(){
 	LEAK_CHECK_FREE( GetRenderThread(), EffectColorMatrix );
-	if( pShader ){
-		pShader->RemoveUsage();
-	}
 }
 
 

@@ -136,13 +136,13 @@ deoglRenderBase( renderThread )
 	sources = shaderManager.GetSourcesNamed( "DefRen Copy Depth" );
 	
 	defines.AddDefine( "DEPTH_TEST", "1" );
-	pShaderCopyDepth.TakeOver( shaderManager.GetProgramWith( sources, defines ) );
+	pShaderCopyDepth = shaderManager.GetProgramWith( sources, defines );
 	
 	defines.AddDefine( "COPY_COLOR", "1" );
 	if( defren.GetUseInverseDepth() ){
 		defines.AddDefine( "SHADOW_INVERSE_DEPTH", "1" );
 	}
-	pShaderCopyDepthColor.TakeOver( shaderManager.GetProgramWith( sources, defines ) );
+	pShaderCopyDepthColor = shaderManager.GetProgramWith( sources, defines );
 	defines.RemoveAllDefines();
 	
 	
@@ -153,7 +153,7 @@ deoglRenderBase( renderThread )
 	}
 	defines.AddDefine( "NO_TEXCOORD", "1" );
 	defines.AddDefine( "USE_MIN_FUNCTION", "1" ); // so it works for SSR. should also work for SSAO
-	pShaderDepthDownsample.TakeOver( shaderManager.GetProgramWith( sources, defines ) );
+	pShaderDepthDownsample = shaderManager.GetProgramWith( sources, defines );
 	defines.RemoveAllDefines();
 	
 	
@@ -163,14 +163,14 @@ deoglRenderBase( renderThread )
 		defines.AddDefine( "ENCODE_DEPTH", "1" );
 	}
 	
-	pShaderDepthSolid.TakeOver( shaderManager.GetProgramWith( sources, defines ) );
+	pShaderDepthSolid = shaderManager.GetProgramWith( sources, defines );
 	
 	defines.AddDefine( "USE_CLIP_PLANE", "1" );
 	if( config.GetUseEncodeDepth() ){
 		defines.AddDefine( "ENCODE_DEPTH", "1" );
 	}
 	
-	pShaderDepthClipSolid.TakeOver( shaderManager.GetProgramWith( sources, defines ) );
+	pShaderDepthClipSolid = shaderManager.GetProgramWith( sources, defines );
 	
 	
 	
@@ -178,30 +178,30 @@ deoglRenderBase( renderThread )
 	if( config.GetUseEncodeDepth() ){
 		defines.AddDefine( "ENCODE_DEPTH", "1" );
 	}
-	pShaderParticleDepthSolid.TakeOver( shaderManager.GetProgramWith( sources, defines ) );
+	pShaderParticleDepthSolid = shaderManager.GetProgramWith( sources, defines );
 	
 	defines.AddDefine( "CLIP_DEPTH", "1" );
-	pShaderParticleDepthSolidCD.TakeOver( shaderManager.GetProgramWith( sources, defines ) );
+	pShaderParticleDepthSolidCD = shaderManager.GetProgramWith( sources, defines );
 	defines.RemoveAllDefines();
 	
 	defines.AddDefine( "IGNORE_HOLES", "1" );
 	if( config.GetUseEncodeDepth() ){
 		defines.AddDefine( "ENCODE_DEPTH", "1" );
 	}
-	pShaderParticleDepthHoles.TakeOver( shaderManager.GetProgramWith( sources, defines ) );
+	pShaderParticleDepthHoles = shaderManager.GetProgramWith( sources, defines );
 	
 	defines.AddDefine( "CLIP_DEPTH", "1" );
-	pShaderParticleDepthHolesCD.TakeOver( shaderManager.GetProgramWith( sources, defines ) );
+	pShaderParticleDepthHolesCD = shaderManager.GetProgramWith( sources, defines );
 	defines.RemoveAllDefines();
 	
 	defines.AddDefine( "USE_CLIP_PLANE", "1" );
 	if( config.GetUseEncodeDepth() ){
 		defines.AddDefine( "ENCODE_DEPTH", "1" );
 	}
-	pShaderParticleDepthClipSolid.TakeOver( shaderManager.GetProgramWith( sources, defines ) );
+	pShaderParticleDepthClipSolid = shaderManager.GetProgramWith( sources, defines );
 	
 	defines.AddDefine( "CLIP_DEPTH", "1" );
-	pShaderParticleDepthClipSolidCD.TakeOver( shaderManager.GetProgramWith( sources, defines ) );
+	pShaderParticleDepthClipSolidCD = shaderManager.GetProgramWith( sources, defines );
 	defines.RemoveAllDefines();
 	
 	defines.AddDefine( "USE_CLIP_PLANE", "1" );
@@ -209,10 +209,10 @@ deoglRenderBase( renderThread )
 	if( config.GetUseEncodeDepth() ){
 		defines.AddDefine( "ENCODE_DEPTH", "1" );
 	}
-	pShaderParticleDepthClipHoles.TakeOver( shaderManager.GetProgramWith( sources, defines ) );
+	pShaderParticleDepthClipHoles = shaderManager.GetProgramWith( sources, defines );
 	
 	defines.AddDefine( "CLIP_DEPTH", "1" );
-	pShaderParticleDepthClipHolesCD.TakeOver( shaderManager.GetProgramWith( sources, defines ) );
+	pShaderParticleDepthClipHolesCD = shaderManager.GetProgramWith( sources, defines );
 	defines.RemoveAllDefines();
 }
 

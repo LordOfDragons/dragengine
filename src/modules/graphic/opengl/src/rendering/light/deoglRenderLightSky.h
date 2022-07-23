@@ -31,7 +31,6 @@ class deoglRenderPlan;
 class deoglRLight;
 class deoglRSkyLayer;
 class deoglSPBlockUBO;
-class deoglShaderProgram;
 class deoglShadowMapper;
 class deoglRSkyInstanceLayer;
 class deoglRenderPlanSkyLight;
@@ -44,9 +43,9 @@ class deoglSkyLayerGICascade;
 class deoglRenderLightSky : public deoglRenderLightBase{
 private:
 	deoglCollideList *pColList2;
-	deoglShaderProgram *pShaderAO;
-	deoglShaderProgram *pShaderClearDepth;
-	deoglShaderProgram *pShaderOccMesh;
+	deoglShaderProgramUsage pShaderAO;
+	deoglShaderProgramUsage pShaderClearDepth;
+	deoglShaderProgramUsage pShaderOccMesh;
 	
 	deoglRenderableDepthArrayTexture *pSolidShadowMap;
 	
@@ -87,7 +86,7 @@ public:
 	/** \name Rendering */
 	/*@{*/
 	/** Occlusion mesh shader. */
-	inline deoglShaderProgram *GetShaderOccMesh() const{ return pShaderOccMesh; }
+	inline const deoglShaderProgramUsage &GetShaderOccMesh() const{ return pShaderOccMesh; }
 	
 	/** Render lights. */
 	void RenderLights( deoglRenderPlan &plan, bool solid, const deoglRenderPlanMasked *mask );

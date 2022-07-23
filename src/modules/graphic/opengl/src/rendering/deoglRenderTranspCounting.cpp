@@ -120,17 +120,17 @@ pCount( 0 )
 	
 	
 	sources = shaderManager.GetSourcesNamed( "DefRen Transparency Count Layers Particles" );
-	pShaderTraCountDepthParticle.TakeOver( shaderManager.GetProgramWith( sources, defines ) );
+	pShaderTraCountDepthParticle = shaderManager.GetProgramWith( sources, defines );
 	
 	defines.AddDefine( "USE_CLIP_PLANE", "1" );
-	pShaderTraCountDepthParticleClip.TakeOver( shaderManager.GetProgramWith( sources, defines ) );
+	pShaderTraCountDepthParticleClip = shaderManager.GetProgramWith( sources, defines );
 	defines.RemoveAllDefines();
 	
 	sources = shaderManager.GetSourcesNamed( "DefRen Transparency Max Count" );
-	pShaderTraCountMaxCount.TakeOver( shaderManager.GetProgramWith( sources, defines ) );
+	pShaderTraCountMaxCount = shaderManager.GetProgramWith( sources, defines );
 	
 	sources = shaderManager.GetSourcesNamed( "DefRen Transparency Get Count" );
-	pShaderTraCountGetCount.TakeOver( shaderManager.GetProgramWith( sources, defines ) );
+	pShaderTraCountGetCount = shaderManager.GetProgramWith( sources, defines );
 	
 	
 	
